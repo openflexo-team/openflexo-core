@@ -44,9 +44,9 @@ import org.apache.commons.lang3.reflect.TypeUtils;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
+import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.ModelSlotInstance;
 import org.openflexo.foundation.fml.rt.TypeAwareModelSlotInstance;
-import org.openflexo.foundation.fml.rt.action.CreateVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.ModelSlotInstanceConfiguration;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.model.annotations.Getter;
@@ -116,7 +116,7 @@ public interface TypeAwareModelSlot<M extends FlexoModel<M, MM> & TechnologyObje
 	public String generateUniqueURIName(TypeAwareModelSlotInstance msInstance, String proposedName, String uriPrefix);
 
 	public static abstract class TypeAwareModelSlotImpl<M extends FlexoModel<M, MM> & TechnologyObject<?>, MM extends FlexoMetaModel<MM> & TechnologyObject<?>>
-			extends ModelSlotImpl<M>implements TypeAwareModelSlot<M, MM> {
+			extends ModelSlotImpl<M> implements TypeAwareModelSlot<M, MM> {
 
 		private static final Logger logger = Logger.getLogger(TypeAwareModelSlot.class.getPackage().getName());
 
@@ -128,7 +128,7 @@ public interface TypeAwareModelSlot<M extends FlexoModel<M, MM> & TechnologyObje
 		 */
 		@Override
 		public abstract ModelSlotInstanceConfiguration<? extends TypeAwareModelSlot<M, MM>, M> createConfiguration(
-				CreateVirtualModelInstance action);
+				AbstractVirtualModelInstance<?, ?> virtualModelInstance, FlexoProject project);
 
 		/**
 		 * Return a new String (full URI) uniquely identifying a new object in related technology, according to the conventions of related
@@ -192,8 +192,8 @@ public interface TypeAwareModelSlot<M extends FlexoModel<M, MM> & TechnologyObje
 		public FlexoMetaModelResource<M, MM, ?> getMetaModelResource() {
 			if (metaModelResource == null && StringUtils.isNotEmpty(metaModelURI) && getServiceManager() != null
 					&& getServiceManager().getResourceManager() != null) {
-				metaModelResource = (FlexoMetaModelResource<M, MM, ?>) getServiceManager().getResourceManager()
-						.getMetaModelWithURI(metaModelURI, getModelSlotTechnologyAdapter());
+				metaModelResource = (FlexoMetaModelResource<M, MM, ?>) getServiceManager().getResourceManager().getMetaModelWithURI(
+						metaModelURI, getModelSlotTechnologyAdapter());
 				logger.info("Looked-up " + metaModelResource + " for " + metaModelURI);
 			}
 			// Temporary hack to lookup parent slot (to be refactored)
@@ -256,8 +256,8 @@ public interface TypeAwareModelSlot<M extends FlexoModel<M, MM> & TechnologyObje
 		 */
 		@SuppressWarnings("unchecked")
 		public final Class<? extends FlexoModel<?, ?>> getModelClass() {
-			return (Class<? extends FlexoModel<?, ?>>) TypeUtils.getTypeArguments(getClass(), TypeAwareModelSlot.class)
-					.get(TypeAwareModelSlot.class.getTypeParameters()[0]);
+			return (Class<? extends FlexoModel<?, ?>>) TypeUtils.getTypeArguments(getClass(), TypeAwareModelSlot.class).get(
+					TypeAwareModelSlot.class.getTypeParameters()[0]);
 		}
 
 		/**
@@ -268,8 +268,8 @@ public interface TypeAwareModelSlot<M extends FlexoModel<M, MM> & TechnologyObje
 		@Override
 		@SuppressWarnings("unchecked")
 		public final Class<? extends FlexoMetaModel<?>> getMetaModelClass() {
-			return (Class<? extends FlexoMetaModel<?>>) TypeUtils.getTypeArguments(getClass(), TypeAwareModelSlot.class)
-					.get(TypeAwareModelSlot.class.getTypeParameters()[1]);
+			return (Class<? extends FlexoMetaModel<?>>) TypeUtils.getTypeArguments(getClass(), TypeAwareModelSlot.class).get(
+					TypeAwareModelSlot.class.getTypeParameters()[1]);
 		}
 
 		/**

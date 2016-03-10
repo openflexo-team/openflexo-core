@@ -104,7 +104,7 @@ import org.openflexo.model.validation.ValidationRule;
 @ModelEntity
 @ImplementationClass(MatchFlexoConceptInstance.MatchFlexoConceptInstanceImpl.class)
 @XMLElement
-public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInstance> {
+public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInstance, VirtualModelInstance> {
 
 	@PropertyIdentifier(type = DataBinding.class)
 	public static final String VIRTUAL_MODEL_INSTANCE_KEY = "virtualModelInstance";
@@ -173,7 +173,7 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 
 	public CreateFlexoConceptInstanceParameter getParameter(FlexoBehaviourParameter p);
 
-	public static abstract class MatchFlexoConceptInstanceImpl extends FMLRTActionImpl<FlexoConceptInstance>
+	public static abstract class MatchFlexoConceptInstanceImpl extends FMLRTActionImpl<FlexoConceptInstance, VirtualModelInstance>
 			implements MatchFlexoConceptInstance, PropertyChangeListener {
 
 		private FlexoConcept flexoConceptType;
@@ -650,6 +650,11 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 		public Type getAssignableType() {
 			return FlexoConceptInstanceType.getFlexoConceptInstanceType(getFlexoConceptType());
 		}
+
+		@Override
+		public Class<VirtualModelInstance> getVirtualModelInstanceClass() {
+			return VirtualModelInstance.class;
+		}
 	}
 
 	@DefineValidationRule
@@ -760,7 +765,7 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 
 						for (FMLRTModelSlot ms : object.getOwningVirtualModel().getModelSlots(FMLRTModelSlot.class)) {
 							// System.out.println("modelSlot " + ms + " vm=" + ms.getAddressedVirtualModel());
-							if (object.getFlexoConceptType().getVirtualModel().isAssignableFrom(ms.getAddressedVirtualModel())) {
+							if (object.getFlexoConceptType().getVirtualModel().isAssignableFrom(ms.getAccessedVirtualModel())) {
 								((ValidationError) returned).addToFixProposals(new UseFMLRTModelSlot(ms));
 							}
 						}
@@ -769,7 +774,7 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 							for (FMLRTModelSlot ms : ((AbstractVirtualModel<?>) object.getRootOwner().getFlexoConcept())
 									.getModelSlots(FMLRTModelSlot.class)) {
 								// System.out.println("modelSlot " + ms + " vm=" + ms.getAddressedVirtualModel());
-								if (object.getFlexoConceptType().getVirtualModel().isAssignableFrom(ms.getAddressedVirtualModel())) {
+								if (object.getFlexoConceptType().getVirtualModel().isAssignableFrom(ms.getAccessedVirtualModel())) {
 									((ValidationError) returned).addToFixProposals(new UseFMLRTModelSlot(ms));
 								}
 							}

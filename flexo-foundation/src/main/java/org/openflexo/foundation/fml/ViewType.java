@@ -38,8 +38,6 @@
 
 package org.openflexo.foundation.fml;
 
-import java.lang.reflect.Type;
-
 import org.openflexo.foundation.fml.rt.View;
 
 /**
@@ -67,10 +65,11 @@ public class ViewType extends VirtualModelInstanceType {
 		return View.class;
 	}
 
-	public static Type getViewType(ViewPoint viewPoint) {
+	public static ViewType getViewType(ViewPoint viewPoint) {
 		if (viewPoint != null) {
 			return viewPoint.getViewType();
-		} else {
+		}
+		else {
 			return null;
 		}
 	}

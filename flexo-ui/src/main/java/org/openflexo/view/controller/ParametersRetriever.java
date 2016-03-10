@@ -120,14 +120,15 @@ public class ParametersRetriever<ES extends FlexoBehaviour> {
 
 	private FIBComponent makeWidget(final FlexoBehaviourParameter parameter, FIBPanel panel, int index) {
 
-		for (TechnologyAdapter ta : controller.getApplicationContext().getTechnologyAdapterService().getTechnologyAdapters()) {
-			TechnologyAdapterController<?> tac = controller.getTechnologyAdapterController(ta);
-			FIBComponent returned = tac.makeWidget(parameter, panel, index, action, fibModelFactory);
-			if (returned != null) {
-				return returned;
+		if (controller != null) {
+			for (TechnologyAdapter ta : controller.getApplicationContext().getTechnologyAdapterService().getTechnologyAdapters()) {
+				TechnologyAdapterController<?> tac = controller.getTechnologyAdapterController(ta);
+				FIBComponent returned = tac.makeWidget(parameter, panel, index, action, fibModelFactory);
+				if (returned != null) {
+					return returned;
+				}
 			}
 		}
-
 		return null;
 
 	}

@@ -74,7 +74,8 @@ import org.openflexo.toolbox.StringUtils;
 @ImplementationClass(FlexoBehaviourParameter.FlexoBehaviourParameterImpl.class)
 @Imports({ @Import(CheckboxParameter.class), @Import(DropDownParameter.class), @Import(FloatParameter.class),
 		@Import(IntegerParameter.class), @Import(ListParameter.class), @Import(TextAreaParameter.class), @Import(TextFieldParameter.class),
-		@Import(FlexoConceptInstanceParameter.class), @Import(URIParameter.class), @Import(TechnologyObjectParameter.class) })
+		@Import(FlexoConceptInstanceParameter.class), @Import(URIParameter.class), @Import(TechnologyObjectParameter.class),
+		@Import(FlexoResourceParameter.class) })
 public interface FlexoBehaviourParameter extends FlexoBehaviourObject, FunctionArgument {
 
 	public static enum WidgetType {
@@ -94,7 +95,8 @@ public interface FlexoBehaviourParameter extends FlexoBehaviourObject, FunctionA
 		FLEXO_OBJECT,
 		LIST,
 		FLEXO_CONCEPT,
-		TECHNOLOGY_OBJECT;
+		TECHNOLOGY_OBJECT,
+		TECHNOLOGY_RESOURCE;
 	}
 
 	@PropertyIdentifier(type = String.class)
@@ -220,11 +222,11 @@ public interface FlexoBehaviourParameter extends FlexoBehaviourObject, FunctionA
 				return FlexoBehaviourParameterImpl.this.getType();
 			};
 		};
-
+		
 		public BindingDefinition getConditionalBindingDefinition() {
 			return CONDITIONAL;
 		}
-
+		
 		public BindingDefinition getDefaultValueBindingDefinition() {
 			return DEFAULT_VALUE;
 		}*/
@@ -268,7 +270,7 @@ public interface FlexoBehaviourParameter extends FlexoBehaviourObject, FunctionA
 		/*public boolean getUsePaletteLabelAsDefaultValue() {
 			return usePaletteLabelAsDefaultValue;
 		}
-
+		
 		public void setUsePaletteLabelAsDefaultValue(boolean usePaletteLabelAsDefaultValue) {
 			this.usePaletteLabelAsDefaultValue = usePaletteLabelAsDefaultValue;
 		}*/

@@ -46,13 +46,16 @@ import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType.FlexoConceptInstanceTypeFactory;
+import org.openflexo.foundation.fml.ViewType;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelInstanceType;
 import org.openflexo.foundation.fml.annotations.DeclareModelSlots;
+import org.openflexo.foundation.fml.annotations.DeclareResourceTypes;
 import org.openflexo.foundation.fml.annotations.DeclareTechnologySpecificTypes;
 import org.openflexo.foundation.fml.rm.ViewPointResource;
 import org.openflexo.foundation.fml.rt.rm.ViewResource;
 import org.openflexo.foundation.fml.rt.rm.ViewResourceImpl;
+import org.openflexo.foundation.fml.rt.rm.VirtualModelInstanceResource;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
 import org.openflexo.foundation.resource.RepositoryFolder;
@@ -69,8 +72,9 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
  * @author sylvain
  * 
  */
-@DeclareModelSlots({ FMLRTModelSlot.class })
-@DeclareTechnologySpecificTypes({ FlexoConceptInstanceType.class, VirtualModelInstanceType.class })
+@DeclareModelSlots({ VirtualModelInstanceModelSlot.class, ViewModelSlot.class })
+@DeclareTechnologySpecificTypes({ FlexoConceptInstanceType.class, VirtualModelInstanceType.class, ViewType.class })
+@DeclareResourceTypes({ ViewResource.class, VirtualModelInstanceResource.class })
 public class FMLRTTechnologyAdapter extends TechnologyAdapter {
 
 	private static final Logger logger = Logger.getLogger(FMLRTTechnologyAdapter.class.getPackage().getName());
@@ -95,7 +99,7 @@ public class FMLRTTechnologyAdapter extends TechnologyAdapter {
 	 */
 	public FMLRTModelSlot makeVirtualModelModelSlot(final VirtualModel containerVirtualModel, final VirtualModel addressedVirtualModel) {
 		final FMLRTModelSlot returned = this.makeModelSlot(FMLRTModelSlot.class, containerVirtualModel);
-		returned.setAddressedVirtualModel(addressedVirtualModel);
+		returned.setAccessedVirtualModel(addressedVirtualModel);
 		return returned;
 	}
 
@@ -166,6 +170,10 @@ public class FMLRTTechnologyAdapter extends TechnologyAdapter {
 	private boolean isValidViewDirectory(final File candidateFile) {
 		if (candidateFile.exists() && candidateFile.isDirectory() && candidateFile.canRead()
 				&& candidateFile.getName().endsWith(ViewResource.VIEW_SUFFIX)) {
+			if (candidateFile.getParentFile().getName().endsWith(ViewResource.VIEW_SUFFIX)) {
+				// We dont try to interpret here a sub-view in a view
+				return false;
+			}
 			final String baseName = candidateFile.getName().substring(0,
 					candidateFile.getName().length() - ViewResource.VIEW_SUFFIX.length());
 			final File xmlFile = new File(candidateFile, baseName + ".xml");

@@ -77,7 +77,7 @@ public interface PrimitiveActorReference<T> extends ActorReference<T> {
 	@Override
 	public PrimitiveRole<T> getFlexoRole();
 
-	public static abstract class PrimitiveActorReferenceImpl<T> extends ActorReferenceImpl<T> implements PrimitiveActorReference<T> {
+	public static abstract class PrimitiveActorReferenceImpl<T> extends ActorReferenceImpl<T>implements PrimitiveActorReference<T> {
 
 		private static final Logger logger = FlexoLogger.getLogger(PrimitiveActorReference.class.getPackage().toString());
 
@@ -121,7 +121,7 @@ public interface PrimitiveActorReference<T> extends ActorReference<T> {
 		@Override
 		public Class<? extends T> getActorClass() {
 
-			if (getFlexoRole().getPrimitiveType() == null) {
+			if (getFlexoRole() == null || getFlexoRole().getPrimitiveType() == null) {
 				return null;
 			}
 

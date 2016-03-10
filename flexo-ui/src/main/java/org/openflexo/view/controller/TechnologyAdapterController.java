@@ -58,6 +58,7 @@ import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.FlexoConceptInstanceParameter;
+import org.openflexo.foundation.fml.FlexoResourceParameter;
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.IntegerParameter;
 import org.openflexo.foundation.fml.ListParameter;
@@ -77,10 +78,13 @@ import org.openflexo.foundation.fml.inspector.TextAreaInspectorEntry;
 import org.openflexo.foundation.fml.inspector.TextFieldInspectorEntry;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstance;
+import org.openflexo.foundation.fml.rt.editionaction.AddSubView;
+import org.openflexo.foundation.fml.rt.editionaction.AddVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.editionaction.MatchFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.SelectFlexoConceptInstance;
 import org.openflexo.foundation.nature.ProjectNature;
 import org.openflexo.foundation.nature.ProjectNatureService;
+import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
@@ -276,7 +280,17 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 	public abstract ImageIcon getIconForTechnologyObject(Class<? extends TechnologyObject<?>> objectClass);
 
 	/**
-	 * Return icon representing supplied pattern property
+	 * Return icon representing supplied model slot class
+	 * 
+	 * @param object
+	 * @return
+	 */
+	public ImageIcon getIconForModelSlot(Class<? extends ModelSlot<?>> modelSlotClass) {
+		return getTechnologyIcon();
+	}
+
+	/**
+	 * Return icon representing supplied flexo role class
 	 * 
 	 * @param object
 	 * @return
@@ -293,6 +307,12 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 
 		if (AddFlexoConceptInstance.class.isAssignableFrom(editionActionClass)) {
 			return IconFactory.getImageIcon(FMLRTIconLibrary.FLEXO_CONCEPT_INSTANCE_ICON, IconLibrary.DUPLICATE);
+		}
+		else if (AddVirtualModelInstance.class.isAssignableFrom(editionActionClass)) {
+			return IconFactory.getImageIcon(FMLRTIconLibrary.VIRTUAL_MODEL_INSTANCE_ICON, IconLibrary.DUPLICATE);
+		}
+		else if (AddSubView.class.isAssignableFrom(editionActionClass)) {
+			return IconFactory.getImageIcon(FMLRTIconLibrary.VIEW_ICON, IconLibrary.DUPLICATE);
 		}
 		else if (SelectFlexoConceptInstance.class.isAssignableFrom(editionActionClass)) {
 			return IconFactory.getImageIcon(FMLRTIconLibrary.FLEXO_CONCEPT_INSTANCE_ICON, IconLibrary.IMPORT);
@@ -616,6 +636,29 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 							new DataBinding<Object>("data.serviceManager.viewPointLibrary"), true));
 
 			return registerWidget(epiSelector, parameter, panel, index);
+		}
+		else if (parameter instanceof FlexoResourceParameter) {
+			FIBCustom resourceSelector = fibModelFactory.newFIBCustom();
+			resourceSelector.setBindingFactory(parameter.getBindingFactory());
+			Class resourceSelectorClass;
+			try {
+				resourceSelectorClass = Class.forName("org.openflexo.components.widget.FIBResourceSelector");
+				resourceSelector.setComponentClass(resourceSelectorClass);
+			} catch (ClassNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			resourceSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(resourceSelector,
+					new DataBinding<Object>("component.technologyAdapter"),
+					new DataBinding<Object>("data.parametersDefinitions." + parameter.getName() + ".resourceTechnologyAdapter"), true));
+			resourceSelector.addToAssignments(
+					fibModelFactory.newFIBCustomAssignment(resourceSelector, new DataBinding<Object>("component.resourceDataClass"),
+							new DataBinding<Object>("data.parametersDefinitions." + parameter.getName() + ".resourceDataType"), true));
+			resourceSelector.addToAssignments(
+					fibModelFactory.newFIBCustomAssignment(resourceSelector, new DataBinding<Object>("component.resourceManager"),
+							new DataBinding<Object>("data.serviceManager.resourceManager"), true));
+
+			return registerWidget(resourceSelector, parameter, panel, index);
 		}
 
 		return null;

@@ -38,113 +38,84 @@
 
 package org.openflexo.foundation.fml.rt.action;
 
-import java.security.InvalidParameterException;
 import java.util.Vector;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject;
-import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.FlexoProject;
-import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionType;
+import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.rm.ViewPointResource;
 import org.openflexo.foundation.fml.rt.View;
 import org.openflexo.foundation.fml.rt.ViewLibrary;
-import org.openflexo.foundation.fml.rt.View.ViewImpl;
-import org.openflexo.foundation.fml.rt.rm.ViewResource;
-import org.openflexo.foundation.resource.RepositoryFolder;
-import org.openflexo.foundation.resource.SaveResourceException;
-import org.openflexo.toolbox.JavaUtils;
-import org.openflexo.toolbox.StringUtils;
 
-public class CreateView extends FlexoAction<CreateView, RepositoryFolder, FlexoObject> {
+/**
+ * Abstract base implementation for an action which aims at creating a new {@link View}
+ * 
+ * @author sylvain
+ * 
+ * @param <T>
+ *            type of container of View
+ */
+public abstract class CreateView<A extends CreateView<A, T>, T extends FlexoObject>
+		extends AbstractCreateVirtualModelInstance<A, T, View, ViewPoint> {
 
 	private static final Logger logger = Logger.getLogger(CreateView.class.getPackage().getName());
 
-	public static FlexoActionType<CreateView, RepositoryFolder, FlexoObject> actionType = new FlexoActionType<CreateView, RepositoryFolder, FlexoObject>(
-			"create_view", FlexoActionType.newMenu, FlexoActionType.defaultGroup, FlexoActionType.ADD_ACTION_TYPE) {
-
-		/**
-		 * Factory method
-		 */
-		@Override
-		public CreateView makeNewAction(RepositoryFolder focusedObject, Vector<FlexoObject> globalSelection, FlexoEditor editor) {
-			return new CreateView(focusedObject, globalSelection, editor);
-		}
-
-		@Override
-		public boolean isVisibleForSelection(RepositoryFolder object, Vector<FlexoObject> globalSelection) {
-			return object.getResourceRepository() instanceof ViewLibrary;
-		}
-
-		@Override
-		public boolean isEnabledForSelection(RepositoryFolder object, Vector<FlexoObject> globalSelection) {
-			return object != null;
-		}
-
-	};
-
-	static {
-		FlexoObjectImpl.addActionForClass(CreateView.actionType, RepositoryFolder.class);
-	}
-
-	private View newView;
+	// private View newView;
 
 	// private boolean useViewPoint = true;
-	private String newViewName;
-	private String newViewTitle;
-	private ViewPointResource viewpointResource;
+	// private String newViewName;
+	// private String newViewTitle;
+	// private ViewPointResource viewpointResource;
 	// public boolean createVirtualModel = false;
 	// public boolean createDiagram = false;
 
-	public boolean skipChoosePopup = false;
+	// public boolean skipChoosePopup = false;
 
-	CreateView(RepositoryFolder focusedObject, Vector<FlexoObject> globalSelection, FlexoEditor editor) {
+	protected CreateView(FlexoActionType<A, T, FlexoObject> actionType, T focusedObject, Vector<FlexoObject> globalSelection,
+			FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 	}
 
-	@Override
+	/*@Override
 	protected void doAction(Object context) throws SaveResourceException {
 		logger.info("Add view in folder " + getFolder());
-
+	
 		if (StringUtils.isNotEmpty(newViewTitle) && StringUtils.isEmpty(newViewName)) {
 			newViewName = JavaUtils.getClassName(newViewTitle);
 		}
-
+	
 		if (StringUtils.isNotEmpty(newViewName) && StringUtils.isEmpty(newViewTitle)) {
 			newViewTitle = newViewName;
 		}
-
+	
 		if (getFolder() == null) {
 			throw new InvalidParameterException("folder is undefined");
 		}
 		if (StringUtils.isEmpty(newViewName)) {
 			throw new InvalidParameterException("view name is undefined");
 		}
-
+	
 		int index = 1;
 		String baseName = newViewName;
 		while (!getFolder().isValidResourceName(newViewName)) {
 			newViewName = baseName + index;
 			index++;
 		}
-
+	
 		newView = ViewImpl.newView(newViewName, newViewTitle, viewpointResource.getViewPoint(), getFolder(), getProject());
-
+	
 		logger.info("Added view " + newView + " in folder " + getFolder() + " for project " + getProject());
+	
+		getViewLibrary().registerResource((ViewResource) getNewView().getResource(), getFocusedObject());
+	
+	}*/
 
-		getViewLibrary().registerResource((ViewResource) newView.getResource(), getFocusedObject());
+	public abstract ViewLibrary getViewLibrary();
 
-	}
-
-	public ViewLibrary getViewLibrary() {
-		if (getFocusedObject().getResourceRepository() instanceof ViewLibrary) {
-			return (ViewLibrary) getFocusedObject().getResourceRepository();
-		}
-		return null;
-	}
-
+	@Override
 	public FlexoProject getProject() {
 		if (getViewLibrary() != null) {
 			return getViewLibrary().getProject();
@@ -152,72 +123,73 @@ public class CreateView extends FlexoAction<CreateView, RepositoryFolder, FlexoO
 		return null;
 	}
 
-	public RepositoryFolder<ViewResource> getFolder() {
-		return getFocusedObject();
-	}
-
-	@Override
+	/*@Override
 	public boolean isValid() {
-
+	
 		// System.out.println("viewpointResource=" + viewpointResource);
-
+	
 		if (getFolder() == null) {
 			return false;
-		} else if (viewpointResource == null) {
+		}
+		else if (viewpointResource == null) {
 			return false;
 		}
 		if (StringUtils.isEmpty(newViewTitle)) {
 			return false;
 		}
-
+	
 		String viewName = newViewName;
 		if (StringUtils.isNotEmpty(newViewTitle) && StringUtils.isEmpty(newViewName)) {
 			viewName = JavaUtils.getClassName(newViewTitle);
 		}
-
+	
 		if (getFocusedObject().getResourceWithName(viewName) != null) {
 			return false;
 		}
 		return true;
-	}
+	}*/
 
 	public View getNewView() {
-		return newView;
+		return getNewVirtualModelInstance();
 	}
 
 	public String getNewViewName() {
-		return newViewName;
+		return getNewVirtualModelInstanceName();
 	}
 
 	public void setNewViewName(String newViewName) {
-		boolean wasValid = isValid();
-		this.newViewName = newViewName;
+		setNewVirtualModelInstanceName(newViewName);
 		getPropertyChangeSupport().firePropertyChange("newViewName", null, newViewName);
-		getPropertyChangeSupport().firePropertyChange("isValid", wasValid, isValid());
 	}
 
 	public String getNewViewTitle() {
-		if (newViewTitle == null) {
-			return getNewViewName();
-		}
-		return newViewTitle;
+		return getNewVirtualModelInstanceTitle();
 	}
 
 	public void setNewViewTitle(String newViewTitle) {
-		boolean wasValid = isValid();
-		this.newViewTitle = newViewTitle;
+		setNewVirtualModelInstanceTitle(newViewTitle);
 		getPropertyChangeSupport().firePropertyChange("newViewTitle", null, newViewTitle);
-		getPropertyChangeSupport().firePropertyChange("isValid", wasValid, isValid());
+	}
+
+	public ViewPoint getViewPoint() {
+		return getVirtualModel();
 	}
 
 	public ViewPointResource getViewpointResource() {
-		return viewpointResource;
+		if (getVirtualModel() != null) {
+			return (ViewPointResource) getVirtualModel().getResource();
+		}
+		return null;
 	}
 
 	public void setViewpointResource(ViewPointResource viewpointResource) {
-		boolean wasValid = isValid();
-		this.viewpointResource = viewpointResource;
-		getPropertyChangeSupport().firePropertyChange("viewpointResource", null, viewpointResource);
-		getPropertyChangeSupport().firePropertyChange("isValid", wasValid, isValid());
+		ViewPointResource oldViewpointResource = getViewpointResource();
+		if (viewpointResource != null) {
+			setVirtualModel(viewpointResource.getViewPoint());
+		}
+		else {
+			setVirtualModel(null);
+		}
+		getPropertyChangeSupport().firePropertyChange("viewpointResource", oldViewpointResource, viewpointResource);
 	}
 }

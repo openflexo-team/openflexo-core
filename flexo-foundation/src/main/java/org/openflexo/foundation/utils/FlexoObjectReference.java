@@ -315,6 +315,7 @@ public class FlexoObjectReference<O extends FlexoObject> extends KVCFlexoObject 
 			if (resource instanceof PamelaResource) {
 				List<Object> allObjects = ((PamelaResource<?, ?>) resource).getFactory().getEmbeddedObjects(resourceData,
 						EmbeddingType.CLOSURE);
+				allObjects.add(resourceData);
 				for (Object temp : allObjects) {
 					if (temp instanceof FlexoObject) {
 						FlexoObject o = (FlexoObject) temp;

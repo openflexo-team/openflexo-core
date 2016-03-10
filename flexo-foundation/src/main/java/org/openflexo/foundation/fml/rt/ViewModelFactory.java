@@ -38,12 +38,8 @@
 
 package org.openflexo.foundation.fml.rt;
 
-import org.openflexo.foundation.DefaultPamelaResourceModelFactory;
 import org.openflexo.foundation.fml.rt.rm.ViewResource;
-import org.openflexo.model.ModelContextLibrary;
-import org.openflexo.model.converter.DataBindingConverter;
-import org.openflexo.model.converter.FlexoVersionConverter;
-import org.openflexo.model.converter.RelativePathResourceConverter;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.model.factory.EditingContext;
 import org.openflexo.model.factory.ModelFactory;
@@ -55,14 +51,11 @@ import org.openflexo.model.factory.ModelFactory;
  * @author sylvain
  * 
  */
-public class ViewModelFactory extends DefaultPamelaResourceModelFactory<ViewResource> {
+public class ViewModelFactory extends AbstractVirtualModelInstanceModelFactory<ViewResource> {
 
-	public ViewModelFactory(ViewResource viewResource, EditingContext editingContext) throws ModelDefinitionException {
-		super(viewResource, ModelContextLibrary.getModelContext(View.class));
-		setEditingContext(editingContext);
-		addConverter(new DataBindingConverter());
-		addConverter(new FlexoVersionConverter());
-		addConverter(new RelativePathResourceConverter(viewResource.getFlexoIODelegate().getParentPath()));
+	public ViewModelFactory(ViewResource viewResource, EditingContext editingContext, TechnologyAdapterService taService)
+			throws ModelDefinitionException {
+		super(viewResource, editingContext, taService);
 	}
-	
+
 }

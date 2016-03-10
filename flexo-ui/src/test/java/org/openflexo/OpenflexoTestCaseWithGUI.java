@@ -75,7 +75,7 @@ public abstract class OpenflexoTestCaseWithGUI extends OpenflexoTestCase {
 	}
 
 	@AfterClass
-	public synchronized static void tearDownClass() {
+	public static void tearDownClass() throws Exception {
 		if (serviceManager != null) {
 			FlexoResourceCenterService RCService = serviceManager.getResourceCenterService();
 			List<FlexoResourceCenter> listRC = RCService.getResourceCenters();
@@ -86,6 +86,8 @@ public abstract class OpenflexoTestCaseWithGUI extends OpenflexoTestCase {
 				}
 			}
 		}
+		deleteTestResourceCenters();
+		unloadServiceManager();
 	}
 
 	protected static FlexoServiceManager instanciateTestServiceManager() {

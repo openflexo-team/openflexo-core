@@ -70,9 +70,14 @@ public class FMLRTIconLibrary extends IconLibrary {
 
 	public static final ImageIconResource VIEW_LIBRARY_ICON = new ImageIconResource(
 			ResourceLocator.locateResource("Icons/Model/VE/ViewLibrary.png"));
-	public static final ImageIconResource VIEW_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/Model/VE/View.png"));
+
+	public static final ImageIconResource VIEW_ICON = new ImageIconResource(
+			ResourceLocator.locateResource("Icons/Model/VE/View_16x16.png"));
 	public static final ImageIconResource VIEW_MEDIUM_ICON = new ImageIconResource(
 			ResourceLocator.locateResource("Icons/Model/VE/View_32x32.png"));
+	public static final ImageIconResource VIEW_BIG_ICON = new ImageIconResource(
+			ResourceLocator.locateResource("Icons/Model/VE/View_64x64.png"));
+
 	public static final ImageIconResource VIRTUAL_MODEL_INSTANCE_ICON = new ImageIconResource(
 			ResourceLocator.locateResource("Icons/Model/VE/VirtualModelInstance.png"));
 	public static final ImageIconResource VIRTUAL_MODEL_INSTANCE_MEDIUM_ICON = new ImageIconResource(
@@ -92,11 +97,14 @@ public class FMLRTIconLibrary extends IconLibrary {
 	public static ImageIcon iconForObject(ViewObject object) {
 		if (object instanceof View) {
 			return VIEW_ICON;
-		} else if (object instanceof ModelSlotInstance) {
-			return MODEL_SLOT_INSTANCE_ICON;
-		} else if (object instanceof VirtualModelInstance) {
+		}
+		else if (object instanceof ModelSlotInstance) {
+			return FMLIconLibrary.iconForObject(((ModelSlotInstance) object).getModelSlot());
+		}
+		else if (object instanceof VirtualModelInstance) {
 			return VIRTUAL_MODEL_INSTANCE_ICON;
-		} else if (object instanceof FlexoConceptInstance) {
+		}
+		else if (object instanceof FlexoConceptInstance) {
 			return FLEXO_CONCEPT_INSTANCE_ICON;
 		}
 		logger.warning("No icon for " + object.getClass());

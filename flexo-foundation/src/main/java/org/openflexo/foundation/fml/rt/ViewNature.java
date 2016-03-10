@@ -38,8 +38,8 @@
 
 package org.openflexo.foundation.fml.rt;
 
+import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.ViewPointNature;
-import org.openflexo.foundation.nature.FlexoNature;
 
 /**
  * Interface defining the nature of a {@link View}<br>
@@ -49,6 +49,6 @@ import org.openflexo.foundation.nature.FlexoNature;
  * @author sylvain
  * 
  */
-public interface ViewNature extends FlexoNature<View> {
+public interface ViewNature extends AbstractVirtualModelInstanceNature<View, ViewPoint> {
 
 }

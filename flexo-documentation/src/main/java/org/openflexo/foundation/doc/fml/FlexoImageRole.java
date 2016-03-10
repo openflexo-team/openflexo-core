@@ -31,8 +31,8 @@ import org.openflexo.foundation.doc.FlexoDocParagraph;
 import org.openflexo.foundation.doc.FlexoDocument;
 import org.openflexo.foundation.doc.FlexoDrawingRun;
 import org.openflexo.foundation.fml.FlexoRole;
+import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstanceModelFactory;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
-import org.openflexo.foundation.fml.rt.VirtualModelInstanceModelFactory;
 import org.openflexo.foundation.fml.rt.VirtualModelInstanceNature;
 import org.openflexo.foundation.nature.ScreenshotableNature;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
@@ -46,8 +46,8 @@ import org.openflexo.toolbox.StringUtils;
 
 @ModelEntity(isAbstract = true)
 @ImplementationClass(FlexoImageRole.FlexoImageRoleImpl.class)
-public interface FlexoImageRole<R extends FlexoDrawingRun<D, TA>, D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
-		extends FlexoRole<R> {
+public interface FlexoImageRole<R extends FlexoDrawingRun<D, TA>, D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends
+		FlexoRole<R> {
 
 	@PropertyIdentifier(type = FlexoDrawingRun.class)
 	public static final String DRAWING_RUN_KEY = "drawingRun";
@@ -149,7 +149,7 @@ public interface FlexoImageRole<R extends FlexoDrawingRun<D, TA>, D extends Flex
 	public List<Class<? extends ScreenshotableNature<?>>> getAvailableNatures();
 
 	public static abstract class FlexoImageRoleImpl<R extends FlexoDrawingRun<D, TA>, D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
-			extends FlexoRoleImpl<R>implements FlexoImageRole<R, D, TA> {
+			extends FlexoRoleImpl<R> implements FlexoImageRole<R, D, TA> {
 
 		private R drawingRun;
 		private String paragraphId;
@@ -227,7 +227,7 @@ public interface FlexoImageRole<R extends FlexoDrawingRun<D, TA>, D extends Flex
 
 		@Override
 		public ImageActorReference<R> makeActorReference(R drawingRun, FlexoConceptInstance fci) {
-			VirtualModelInstanceModelFactory factory = fci.getFactory();
+			AbstractVirtualModelInstanceModelFactory<?> factory = fci.getFactory();
 			ImageActorReference<R> returned = factory.newInstance(ImageActorReference.class);
 			returned.setFlexoRole(this);
 			returned.setFlexoConceptInstance(fci);

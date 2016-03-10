@@ -46,11 +46,11 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.FlexoProject;
+import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
+import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstanceModelFactory;
 import org.openflexo.foundation.fml.rt.FreeModelSlotInstance;
 import org.openflexo.foundation.fml.rt.View;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
-import org.openflexo.foundation.fml.rt.VirtualModelInstanceModelFactory;
-import org.openflexo.foundation.fml.rt.action.CreateVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.ModelSlotInstanceConfiguration;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
@@ -79,10 +79,9 @@ public class FreeModelSlotInstanceConfiguration<RD extends ResourceData<RD> & Te
 	private String relativePath;
 	private String filename;
 
-	protected FreeModelSlotInstanceConfiguration(MS ms, CreateVirtualModelInstance<?> action) {
-		super(ms, action);
-		FlexoResourceCenterService rcService = action.getFocusedObject().getViewPoint().getViewPointLibrary().getServiceManager()
-				.getResourceCenterService();
+	protected FreeModelSlotInstanceConfiguration(MS ms, AbstractVirtualModelInstance<?, ?> virtualModelInstance, FlexoProject project) {
+		super(ms, virtualModelInstance, project);
+		FlexoResourceCenterService rcService = ms.getServiceManager().getResourceCenterService();
 		if (rcService.getResourceCenters().size() > 0) {
 			resourceCenter = rcService.getResourceCenters().get(0);
 		}
@@ -112,8 +111,8 @@ public class FreeModelSlotInstanceConfiguration<RD extends ResourceData<RD> & Te
 	}
 
 	@Override
-	public FreeModelSlotInstance<RD, MS> createModelSlotInstance(VirtualModelInstance vmInstance, View view) {
-		VirtualModelInstanceModelFactory factory = vmInstance.getFactory();
+	public FreeModelSlotInstance<RD, MS> createModelSlotInstance(AbstractVirtualModelInstance<?, ?> vmInstance, View view) {
+		AbstractVirtualModelInstanceModelFactory<?> factory = vmInstance.getFactory();
 		FreeModelSlotInstance<RD, MS> returned = factory.newInstance(FreeModelSlotInstance.class);
 		returned.setModelSlot(getModelSlot());
 		returned.setVirtualModelInstance(vmInstance);
@@ -227,7 +226,7 @@ public class FreeModelSlotInstanceConfiguration<RD extends ResourceData<RD> & Te
 	}
 
 	public void setFilename(String filename) {
-		//System.out.println("******** setFileName with " + filename);
+		// System.out.println("******** setFileName with " + filename);
 		if (!filename.equals(this.filename)) {
 			String oldValue = this.filename;
 			this.filename = filename;
@@ -241,14 +240,14 @@ public class FreeModelSlotInstanceConfiguration<RD extends ResourceData<RD> & Te
 	}
 
 	public void setResource(TechnologyAdapterResource<RD, ?> resource) {
-		//System.out.println("Hop, on set la resource a " + resource);
-		//System.out.println("filename=" + getFilename());
+		// System.out.println("Hop, on set la resource a " + resource);
+		// System.out.println("filename=" + getFilename());
 		if (resource != this.resource) {
 			TechnologyAdapterResource<RD, ?> oldValue = this.resource;
 			this.resource = resource;
 			getPropertyChangeSupport().firePropertyChange("resource", oldValue, resource);
 		}
-		//System.out.println("filename=" + getFilename());
+		// System.out.println("filename=" + getFilename());
 	}
 
 	@Override

@@ -38,18 +38,8 @@
 
 package org.openflexo.foundation.fml.rt;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.openflexo.foundation.DefaultPamelaResourceModelFactory;
-import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.annotations.DeclareActorReferences;
 import org.openflexo.foundation.fml.rt.rm.VirtualModelInstanceResource;
-import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
-import org.openflexo.model.converter.DataBindingConverter;
-import org.openflexo.model.converter.FlexoVersionConverter;
-import org.openflexo.model.converter.RelativePathResourceConverter;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.model.factory.EditingContext;
 import org.openflexo.model.factory.ModelFactory;
@@ -61,52 +51,11 @@ import org.openflexo.model.factory.ModelFactory;
  * @author sylvain
  * 
  */
-public class VirtualModelInstanceModelFactory extends DefaultPamelaResourceModelFactory<VirtualModelInstanceResource> {
-
-	/*public VirtualModelInstanceModelFactory() throws ModelDefinitionException {
-		super(ModelContextLibrary.getModelContext(VirtualModelInstance.class));
-		addConverter(new DataBindingConverter());
-		addConverter(new FlexoVersionConverter());
-	}*/
+public class VirtualModelInstanceModelFactory extends AbstractVirtualModelInstanceModelFactory<VirtualModelInstanceResource> {
 
 	public VirtualModelInstanceModelFactory(VirtualModelInstanceResource virtualModelInstanceResource, EditingContext editingContext,
 			TechnologyAdapterService taService) throws ModelDefinitionException {
-		super(virtualModelInstanceResource, allClassesForModelContext(taService));
-		setEditingContext(editingContext);
-		addConverter(new DataBindingConverter());
-		addConverter(new FlexoVersionConverter());
-		if (virtualModelInstanceResource != null) {
-			addConverter(new RelativePathResourceConverter(virtualModelInstanceResource.getFlexoIODelegate().getParentPath()));
-			addConverter(virtualModelInstanceResource.getProject().getObjectReferenceConverter());
-		}
-
+		super(virtualModelInstanceResource, editingContext, taService);
 	}
 
-	/**
-	 * Iterate on all defined {@link TechnologyAdapter} to extract classes to expose being involved in technology adapter as VirtualModel
-	 * parts, and return a newly created ModelContext dedicated to {@link VirtualModel} manipulations
-	 * 
-	 * @param taService
-	 * @return
-	 * @throws ModelDefinitionException
-	 */
-	private static List<Class<?>> allClassesForModelContext(TechnologyAdapterService taService) throws ModelDefinitionException {
-		List<Class<?>> classes = new ArrayList<Class<?>>();
-		classes.add(VirtualModelInstance.class);
-		if (taService != null) {
-			for (TechnologyAdapter ta : taService.getTechnologyAdapters()) {
-				for (Class<?> modelSlotClass : ta.getAvailableModelSlotTypes()) {
-					classes.add(modelSlotClass);
-					DeclareActorReferences arDeclarations = modelSlotClass.getAnnotation(DeclareActorReferences.class);
-					if (arDeclarations != null) {
-						for (Class<? extends ActorReference> arClass : arDeclarations.value()) {
-							classes.add(arClass);
-						}
-					}
-				}
-			}
-		}
-
-		return classes;
-	}
 }

@@ -47,13 +47,9 @@ import org.openflexo.foundation.fml.rm.ViewPointResource;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.fml.rt.View;
 import org.openflexo.foundation.fml.rt.ViewLibrary;
-import org.openflexo.foundation.fml.rt.ViewModelFactory;
 import org.openflexo.foundation.resource.DirectoryContainerResource;
-import org.openflexo.foundation.resource.FlexoProjectResource;
 import org.openflexo.foundation.resource.FlexoResource;
-import org.openflexo.foundation.resource.PamelaResource;
 import org.openflexo.foundation.technologyadapter.FlexoModelResource;
-import org.openflexo.foundation.technologyadapter.TechnologyAdapterResource;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
@@ -69,8 +65,7 @@ import org.openflexo.model.annotations.XMLElement;
 @ModelEntity
 @ImplementationClass(ViewResourceImpl.class)
 @XMLElement
-public interface ViewResource extends PamelaResource<View, ViewModelFactory>, FlexoProjectResource<View>, DirectoryContainerResource<View>,
-		TechnologyAdapterResource<View, FMLRTTechnologyAdapter>,
+public interface ViewResource extends AbstractVirtualModelInstanceResource<View, ViewPoint>, DirectoryContainerResource<View>,
 		FlexoModelResource<View, ViewPoint, FMLRTTechnologyAdapter, FMLTechnologyAdapter> {
 
 	public static final String CORE_FILE_SUFFIX = ".xml";

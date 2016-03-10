@@ -43,8 +43,8 @@ import java.lang.reflect.Type;
 import org.openflexo.connie.BindingVariable;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
+import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstanceModelFactory;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
-import org.openflexo.foundation.fml.rt.VirtualModelInstanceModelFactory;
 import org.openflexo.foundation.ontology.IFlexoOntologyClass;
 import org.openflexo.foundation.ontology.IFlexoOntologyIndividual;
 import org.openflexo.foundation.ontology.IndividualOfClass;
@@ -79,8 +79,8 @@ public interface IndividualRole<I extends IFlexoOntologyIndividual<?>> extends O
 
 	public void setOntologicType(IFlexoOntologyClass<?> ontologyClass);
 
-	public static abstract class IndividualRoleImpl<I extends IFlexoOntologyIndividual<?>> extends OntologicObjectRoleImpl<I>
-			implements IndividualRole<I> {
+	public static abstract class IndividualRoleImpl<I extends IFlexoOntologyIndividual<?>> extends OntologicObjectRoleImpl<I> implements
+			IndividualRole<I> {
 
 		public IndividualRoleImpl() {
 			super();
@@ -161,11 +161,11 @@ public interface IndividualRole<I extends IFlexoOntologyIndividual<?>> extends O
 		}
 
 		@Override
-		public ConceptActorReference<I> makeActorReference(I object, FlexoConceptInstance epi) {
-			VirtualModelInstanceModelFactory factory = epi.getFactory();
+		public ConceptActorReference<I> makeActorReference(I object, FlexoConceptInstance fci) {
+			AbstractVirtualModelInstanceModelFactory<?> factory = fci.getFactory();
 			ConceptActorReference<I> returned = factory.newInstance(ConceptActorReference.class);
 			returned.setFlexoRole(this);
-			returned.setFlexoConceptInstance(epi);
+			returned.setFlexoConceptInstance(fci);
 			returned.setModellingElement(object);
 			return returned;
 		}
@@ -173,15 +173,14 @@ public interface IndividualRole<I extends IFlexoOntologyIndividual<?>> extends O
 	}
 
 	@DefineValidationRule
-	public static class IndividualFlexoRoleMustDefineAValidConceptClass
-			extends ValidationRule<IndividualFlexoRoleMustDefineAValidConceptClass, IndividualRole> {
+	public static class IndividualFlexoRoleMustDefineAValidConceptClass extends
+			ValidationRule<IndividualFlexoRoleMustDefineAValidConceptClass, IndividualRole> {
 		public IndividualFlexoRoleMustDefineAValidConceptClass() {
 			super(IndividualRole.class, "individual_role_must_define_a_valid_concept_class");
 		}
 
 		@Override
-		public ValidationIssue<IndividualFlexoRoleMustDefineAValidConceptClass, IndividualRole> applyValidation(
-				IndividualRole patternRole) {
+		public ValidationIssue<IndividualFlexoRoleMustDefineAValidConceptClass, IndividualRole> applyValidation(IndividualRole patternRole) {
 			if (patternRole.getOntologicType() == null) {
 				return new ValidationError<IndividualFlexoRoleMustDefineAValidConceptClass, IndividualRole>(this, patternRole,
 						"individual_role_does_not_define_any_concept_class");

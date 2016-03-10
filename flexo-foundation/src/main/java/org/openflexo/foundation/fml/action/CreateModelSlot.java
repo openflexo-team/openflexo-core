@@ -137,7 +137,7 @@ public class CreateModelSlot extends FlexoAction<CreateModelSlot, AbstractVirtua
 			}*/
 			newModelSlot.setName(modelSlotName);
 			if (newModelSlot instanceof FMLRTModelSlot) {
-				((FMLRTModelSlot) newModelSlot).setVirtualModelResource(vmRes);
+				((FMLRTModelSlot) newModelSlot).setAccessedVirtualModelResource(vmRes);
 
 			} else if (newModelSlot instanceof TypeAwareModelSlot) {
 				((TypeAwareModelSlot) newModelSlot).setMetaModelResource(mmRes);

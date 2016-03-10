@@ -7,7 +7,7 @@
         <version>1.8.0-SYLVAIN-SNAPSHOT</version>
 	</parent>
 	<artifactId>flexodocresourcemanager</artifactId>
- 	<name>Help :: FlexoDocResourceManager</name>
+ 	<name>FlexoDocResourceManager</name>
 	<build>
 		<plugins>
 			<plugin>

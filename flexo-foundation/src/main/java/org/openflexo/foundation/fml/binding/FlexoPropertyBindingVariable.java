@@ -46,6 +46,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.connie.BindingVariable;
 import org.openflexo.foundation.fml.FlexoProperty;
+import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 
 public class FlexoPropertyBindingVariable extends BindingVariable implements PropertyChangeListener {
@@ -130,6 +131,14 @@ public class FlexoPropertyBindingVariable extends BindingVariable implements Pro
 	}
 
 	public Object getValue(FlexoConceptInstance flexoConceptInstance) {
+
+		if (flexoProperty instanceof FlexoRole) {
+			if (flexoProperty.getCardinality().isMultipleCardinality()) {
+				return flexoConceptInstance.getFlexoActorList((FlexoRole<?>) flexoProperty);
+			} else if (flexoProperty instanceof FlexoRole) {
+				return flexoConceptInstance.getFlexoActor((FlexoRole<?>) flexoProperty);
+			}
+		}
 
 		return flexoConceptInstance.getFlexoPropertyValue(flexoProperty);
 

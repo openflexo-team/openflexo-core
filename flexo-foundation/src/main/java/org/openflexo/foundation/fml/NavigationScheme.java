@@ -45,7 +45,7 @@ import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.FlexoObject;
-import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
+import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.gina.annotation.FIBPanel;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -71,7 +71,7 @@ public interface NavigationScheme extends AbstractActionScheme {
 	@Setter(TARGET_OBJECT_KEY)
 	public void setTargetObject(DataBinding<?> targetObject);
 
-	public FlexoObject evaluateTargetObject(FlexoConceptInstance flexoConceptInstance);
+	public FlexoObject evaluateTargetObject(RunTimeEvaluationContext evaluationContext);
 
 	public static abstract class NavigationSchemeImpl extends AbstractActionSchemeImpl implements NavigationScheme {
 
@@ -102,10 +102,10 @@ public interface NavigationScheme extends AbstractActionScheme {
 		}
 
 		@Override
-		public FlexoObject evaluateTargetObject(FlexoConceptInstance flexoConceptInstance) {
+		public FlexoObject evaluateTargetObject(RunTimeEvaluationContext evaluationContext) {
 			if (getTargetObject().isValid()) {
 				try {
-					return (FlexoObject) getTargetObject().getBindingValue(flexoConceptInstance);
+					return (FlexoObject) getTargetObject().getBindingValue(evaluationContext);
 				} catch (TypeMismatchException e) {
 					e.printStackTrace();
 				} catch (NullReferenceException e) {

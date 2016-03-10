@@ -7,7 +7,7 @@
         <version>1.8.0-SYLVAIN-SNAPSHOT</version>
 	</parent>
 	<artifactId>fml-parser</artifactId>
-	<name>Openflexo-core : FML parser</name>
+	<name>FML parser</name>
 	<build>
 		<plugins>
 			<plugin>

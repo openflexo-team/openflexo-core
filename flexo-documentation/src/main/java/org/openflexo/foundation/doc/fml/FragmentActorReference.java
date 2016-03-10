@@ -135,8 +135,8 @@ public interface FragmentActorReference<F extends FlexoDocFragment<?, ?>> extend
 	 */
 	public void reinjectDataFromDocument();
 
-	public abstract static class FragmentActorReferenceImpl<F extends FlexoDocFragment<?, ?>> extends ActorReferenceImpl<F>
-			implements FragmentActorReference<F> {
+	public abstract static class FragmentActorReferenceImpl<F extends FlexoDocFragment<?, ?>> extends ActorReferenceImpl<F> implements
+			FragmentActorReference<F> {
 
 		private static final Logger logger = FlexoLogger.getLogger(FragmentActorReference.class.getPackage().toString());
 
@@ -173,11 +173,10 @@ public interface FragmentActorReference<F extends FlexoDocFragment<?, ?>> extend
 								if (index == 0) {
 									startElement = element;
 								}
-								else if (index == getElementReferences().size() - 1) {
+								if (index == getElementReferences().size() - 1) {
 									endElement = element;
 								}
-							}
-							else {
+							} else {
 								logger.warning("Could not find element matching " + er.getElementId());
 							}
 							index++;
@@ -189,8 +188,7 @@ public interface FragmentActorReference<F extends FlexoDocFragment<?, ?>> extend
 							e.printStackTrace();
 						}
 					}
-				}
-				else {
+				} else {
 					logger.warning("Could not access to document from model slot " + getModelSlotInstance());
 				}
 			}

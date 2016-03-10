@@ -58,6 +58,6 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 @Target(value = ElementType.TYPE)
 public @interface DeclareModelSlots {
 
-	public Class<? extends ModelSlot<?>>[] value();
+	public Class<? extends ModelSlot>[]value();
 
 }

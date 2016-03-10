@@ -38,6 +38,7 @@
 
 package org.openflexo.foundation.resource;
 
+import org.openflexo.foundation.action.NotImplementedException;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.Import;
 import org.openflexo.model.annotations.Imports;
@@ -121,4 +122,6 @@ public interface FlexoIODelegate<I> extends AccessibleProxyObject {
 	 * Called when the {@link FlexoResource} this delegate handle I/O has been renamed.
 	 */
 	public void rename() throws CannotRenameException;
+
+	public void save(FlexoResource<?> resource) throws NotImplementedException;
 }

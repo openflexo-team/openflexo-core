@@ -66,6 +66,8 @@ import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext.ReturnException;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstance;
+import org.openflexo.foundation.fml.rt.editionaction.AddSubView;
+import org.openflexo.foundation.fml.rt.editionaction.AddVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.editionaction.MatchFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.SelectFlexoConceptInstance;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
@@ -91,10 +93,10 @@ import org.openflexo.toolbox.StringUtils;
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(EditionAction.EditionActionImpl.class)
-@Imports({ @Import(AddToListAction.class), @Import(AddFlexoConceptInstance.class), @Import(DeclarationAction.class),
-		@Import(AssignationAction.class), @Import(ReturnStatement.class), @Import(ExpressionAction.class),
-		@Import(SelectFlexoConceptInstance.class), @Import(MatchFlexoConceptInstance.class), @Import(RemoveFromListAction.class),
-		@Import(DeleteAction.class), @Import(ConditionalAction.class), @Import(IterationAction.class),
+@Imports({ @Import(AddToListAction.class), @Import(AddFlexoConceptInstance.class), @Import(AddVirtualModelInstance.class),
+		@Import(AddSubView.class), @Import(DeclarationAction.class), @Import(AssignationAction.class), @Import(ReturnStatement.class),
+		@Import(ExpressionAction.class), @Import(SelectFlexoConceptInstance.class), @Import(MatchFlexoConceptInstance.class),
+		@Import(RemoveFromListAction.class), @Import(DeleteAction.class), @Import(ConditionalAction.class), @Import(IterationAction.class),
 		@Import(FetchRequestIterationAction.class), @Import(ExecutionAction.class), @Import(DeclareFlexoRole.class) })
 public abstract interface EditionAction extends FMLControlGraph {
 

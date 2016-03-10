@@ -7,7 +7,7 @@
         <version>1.8.0-SYLVAIN-SNAPSHOT</version>
 	</parent>
 	<artifactId>flexo-ontology-ui</artifactId>
-	<name>Openflexo-core : FlexoOntology UI layer</name>
+	<name>FlexoOntology-UI</name>
 	<build>
 		<plugins>
 			<plugin>

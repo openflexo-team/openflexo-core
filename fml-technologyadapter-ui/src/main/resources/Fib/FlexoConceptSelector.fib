@@ -31,16 +31,15 @@
 			enable="" clickAction="" doubleClickAction="" rightClickAction=""
 			enterPressedAction="" valueChangedAction="" />
 	</Panel>
-	<Browser root="data.rootObject" iteratorClassName="org.openflexo.foundation.fml.FlexoConcept"
+	<Browser root="data.rootObject" iteratorClassName="org.openflexo.foundation.fml.FlexoConcept" deepExploration="true"
 		visibleRowCount="5" rowHeight="18" boundToSelectionManager="false"
 		selectionMode="DiscontiguousTreeSelection" selected="data.selectedValue"
 		showFooter="true" rootVisible="true" showRootsHandle="true" format=""
-		icon="" tooltip="" localize="true" enable="" manageDynamicModel="true"
+		localize="true" manageDynamicModel="true"
 		clickAction="controller.selectedObjectChanged()" doubleClickAction="controller.apply()"
-		rightClickAction="" enterPressedAction="controller.apply()"
-		valueChangedAction="" name="ViewPointBrowser" index="2" data=""
-		constraints="twocols(expandHorizontally=true;expandVertically=true;index=2;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=center)"
-		visible="">
+		enterPressedAction="controller.apply()"
+		name="ViewPointBrowser" index="2" 
+		constraints="twocols(expandHorizontally=true;expandVertically=true;index=2;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=center)">
 		<BrowserElement dataClassName="org.openflexo.foundation.fml.ViewPointLibrary"
 			label="&quot;Viewpoint Library&quot;" icon="controller.iconForObject(viewPointLibrary)"
 			isEditable="false" filtered="false" defaultVisible="true" name="viewPointLibrary">

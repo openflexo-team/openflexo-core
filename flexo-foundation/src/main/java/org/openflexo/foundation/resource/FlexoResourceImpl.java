@@ -528,10 +528,11 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 		String returned = (String) performSuperGetter(URI);
 
 		if (returned == null && getResourceCenter() != null) {
-			returned = getResourceCenter().getDefaultResourceURI(this);
+			returned = computeDefaultURI();
 		}
 
-		if (returned == null && (getFlexoIODelegate() instanceof FileFlexoIODelegate)) {
+		if (returned == null && (getFlexoIODelegate() instanceof FileFlexoIODelegate)
+				&& (((FileFlexoIODelegate) getFlexoIODelegate()).getFile() != null)) {
 			if (((FileFlexoIODelegate) getFlexoIODelegate()).getFile() != null) {
 				return ((FileFlexoIODelegate) getFlexoIODelegate()).getFile().toURI().toString();
 			}
@@ -539,4 +540,7 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 		return returned;
 	}
 
+	public String computeDefaultURI() {
+		return getResourceCenter().getDefaultResourceURI(this);
+	}
 }

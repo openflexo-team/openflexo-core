@@ -59,8 +59,8 @@ import org.openflexo.view.controller.ControllerActionInitializer;
 import org.openflexo.view.controller.FlexoController;
 import org.openflexo.view.controller.ParametersRetriever;
 
-public class NavigationSchemeActionInitializer
-		extends ActionInitializer<NavigationSchemeAction, FlexoConceptInstance, VirtualModelInstanceObject> {
+public class NavigationSchemeActionInitializer extends
+		ActionInitializer<NavigationSchemeAction, FlexoConceptInstance, VirtualModelInstanceObject> {
 
 	private static final Logger logger = Logger.getLogger(ControllerActionInitializer.class.getPackage().getName());
 
@@ -77,21 +77,14 @@ public class NavigationSchemeActionInitializer
 					return false;
 				}
 
-				if (action.getTargetObject() == null) {
-					// If target diagram is not existant, we must create it
-					// First retrieve parameters
+				// First retrieve parameters
 
-					ParametersRetriever<NavigationScheme> parameterRetriever = new ParametersRetriever<NavigationScheme>(action,
-							getController());
-					if (action.escapeParameterRetrievingWhenValid && parameterRetriever.isSkipable()) {
-						return true;
-					}
-					return parameterRetriever.retrieveParameters();
-				} else {
-					// Target diagram is already existing, finalizer will show it
-					// First retrieve parameters
+				ParametersRetriever<NavigationScheme> parameterRetriever = new ParametersRetriever<NavigationScheme>(action,
+						getController());
+				if (action.escapeParameterRetrievingWhenValid && parameterRetriever.isSkipable()) {
 					return true;
 				}
+				return parameterRetriever.retrieveParameters();
 
 			}
 		};

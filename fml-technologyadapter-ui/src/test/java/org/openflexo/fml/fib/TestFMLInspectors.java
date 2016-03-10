@@ -66,6 +66,11 @@ public class TestFMLInspectors extends GenericFIBInspectorTestCase {
 	}
 
 	@Test
+	public void testAbstractAddFlexoConceptInstanceInspector() {
+		validateFIB("Inspectors/FML/EditionAction/AbstractAddFlexoConceptInstance.inspector");
+	}
+
+	@Test
 	public void testAddClassInspector() {
 		validateFIB("Inspectors/FML/EditionAction/AddClass.inspector");
 	}
@@ -81,8 +86,18 @@ public class TestFMLInspectors extends GenericFIBInspectorTestCase {
 	}
 
 	@Test
+	public void testAddSubViewInspector() {
+		validateFIB("Inspectors/FML/EditionAction/AddSubView.inspector");
+	}
+
+	@Test
 	public void testAddToListActionInspector() {
 		validateFIB("Inspectors/FML/EditionAction/AddToListAction.inspector");
+	}
+
+	@Test
+	public void testAddVirtualModelInstanceInspector() {
+		validateFIB("Inspectors/FML/EditionAction/AddVirtualModelInstance.inspector");
 	}
 
 	@Test
@@ -248,6 +263,11 @@ public class TestFMLInspectors extends GenericFIBInspectorTestCase {
 	@Test
 	public void testFlexoConceptInstanceParameterInspector() {
 		validateFIB("Inspectors/FML/FlexoBehaviourParameter/FlexoConceptInstanceParameter.inspector");
+	}
+
+	@Test
+	public void testFlexoResourceParameterInspector() {
+		validateFIB("Inspectors/FML/FlexoBehaviourParameter/FlexoResourceParameter.inspector");
 	}
 
 	@Test
@@ -436,6 +456,11 @@ public class TestFMLInspectors extends GenericFIBInspectorTestCase {
 	}
 
 	@Test
+	public void testFMLRTModelSlotInspector() {
+		validateFIB("Inspectors/FML/ModelSlot/FMLRTModelSlot.inspector");
+	}
+
+	@Test
 	public void testModelSlotInspector() {
 		validateFIB("Inspectors/FML/ModelSlot/ModelSlot.inspector");
 	}
@@ -446,8 +471,13 @@ public class TestFMLInspectors extends GenericFIBInspectorTestCase {
 	}
 
 	@Test
-	public void testVirtualModelModelSlotInspector() {
-		validateFIB("Inspectors/FML/ModelSlot/VirtualModelModelSlot.inspector");
+	public void testViewModelSlotInspector() {
+		validateFIB("Inspectors/FML/ModelSlot/ViewModelSlot.inspector");
+	}
+
+	@Test
+	public void testVirtualModelInstanceModelSlotInspector() {
+		validateFIB("Inspectors/FML/ModelSlot/VirtualModelInstanceModelSlot.inspector");
 	}
 
 	@Test

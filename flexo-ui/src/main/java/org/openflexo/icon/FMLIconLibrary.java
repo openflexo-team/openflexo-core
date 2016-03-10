@@ -172,6 +172,17 @@ public class FMLIconLibrary extends IconLibrary {
 	public static final ImageIconResource UNKNOWN_ICON = new ImageIconResource(
 			ResourceLocator.locateResource("Icons/Model/VE/UnknownIcon.gif"));
 
+	public static final ImageIconResource STRING_PRIMITIVE_ICON = new ImageIconResource(
+			ResourceLocator.locateResource("Icons/Model/VPM/StringPrimitiveIcon.gif"));
+	public static final ImageIconResource MULTI_STRING_PRIMITIVE_ICON = new ImageIconResource(
+			ResourceLocator.locateResource("Icons/Model/VPM/MultiStringPrimitiveIcon.gif"));
+	public static final ImageIconResource INTEGER_PRIMITIVE_ICON = new ImageIconResource(
+			ResourceLocator.locateResource("Icons/Model/VPM/IntegerPrimitiveIcon.gif"));
+	public static final ImageIconResource DOUBLE_PRIMITIVE_ICON = new ImageIconResource(
+			ResourceLocator.locateResource("Icons/Model/VPM/DoublePrimitiveIcon.gif"));
+	public static final ImageIconResource BOOLEAN_PRIMITIVE_ICON = new ImageIconResource(
+			ResourceLocator.locateResource("Icons/Model/VPM/BooleanPrimitiveIcon.gif"));
+
 	public static final ImageIconResource EXPRESSION_ACTION_ICON = new ImageIconResource(
 			ResourceLocator.locateResource("Icons/Model/VPM/ExpressionActionIcon.png"));
 	public static final ImageIconResource CONDITIONAL_ACTION_ICON = new ImageIconResource(
@@ -217,9 +228,28 @@ public class FMLIconLibrary extends IconLibrary {
 		else if (object instanceof ModelSlot) {
 			TechnologyAdapterController<?> tac = getTechnologyAdapterController(((ModelSlot) object).getModelSlotTechnologyAdapter());
 			if (tac != null) {
-				return IconFactory.getImageIcon(tac.getTechnologyIcon(), MODEL_SLOT_ICON_MARKER);
+				// return IconFactory.getImageIcon(tac.getTechnologyIcon(), MODEL_SLOT_ICON_MARKER);
+				return IconFactory.getImageIcon(tac.getIconForModelSlot((Class<? extends ModelSlot<?>>) object.getClass()),
+						MODEL_SLOT_ICON_MARKER);
 			}
 			return MODEL_SLOT_ICON;
+		}
+		else if (object instanceof PrimitiveRole) {
+			if (((PrimitiveRole) object).getPrimitiveType() != null) {
+				switch (((PrimitiveRole) object).getPrimitiveType()) {
+					case String:
+						return FMLIconLibrary.STRING_PRIMITIVE_ICON;
+					case Integer:
+						return FMLIconLibrary.INTEGER_PRIMITIVE_ICON;
+					case Double:
+						return FMLIconLibrary.DOUBLE_PRIMITIVE_ICON;
+					case Float:
+						return FMLIconLibrary.DOUBLE_PRIMITIVE_ICON;
+					case Boolean:
+						return FMLIconLibrary.BOOLEAN_PRIMITIVE_ICON;
+				}
+			}
+			return FMLIconLibrary.UNKNOWN_ICON;
 		}
 		else if (object instanceof FlexoRole && ((FlexoRole) object).getModelSlot() != null) {
 			TechnologyAdapterController<?> tac = getTechnologyAdapterController(
@@ -339,20 +369,9 @@ public class FMLIconLibrary extends IconLibrary {
 			}
 		}
 		else if (object instanceof FlexoConceptInstanceRole) {
-			return FLEXO_CONCEPT_ICON;
+			return FMLRTIconLibrary.FLEXO_CONCEPT_INSTANCE_ICON;
 		}
-		else if (object instanceof PrimitiveRole) {
-			return UNKNOWN_ICON;
-		}
-		/*else if (object instanceof OntologicObjectRole && ((OntologicObjectRole<?>) object).getModelSlot() != null) {
-		TechnologyAdapterController<?> tac = getTechnologyAdapterController(((OntologicObjectRole<?>) object).getModelSlot()
-				.getModelSlotTechnologyAdapter());
-		if (tac != null) {
-			Type accessedType = ((OntologicObjectRole<?>) object).getType();
-			Class accessedTypeBaseClass = TypeUtils.getBaseClass(accessedType);
-			return tac.getIconForTechnologyObject(accessedTypeBaseClass);
-		}
-		}*/else if (object instanceof AbstractProperty) {
+		else if (object instanceof AbstractProperty) {
 			return ABSTRACT_PROPERTY_ICON;
 		}
 		else if (object instanceof ExpressionProperty) {

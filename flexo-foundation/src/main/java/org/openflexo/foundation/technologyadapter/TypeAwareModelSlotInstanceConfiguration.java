@@ -47,11 +47,10 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoProject;
+import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
+import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstanceModelFactory;
 import org.openflexo.foundation.fml.rt.TypeAwareModelSlotInstance;
 import org.openflexo.foundation.fml.rt.View;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
-import org.openflexo.foundation.fml.rt.VirtualModelInstanceModelFactory;
-import org.openflexo.foundation.fml.rt.action.CreateVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.ModelSlotInstanceConfiguration;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
@@ -79,10 +78,9 @@ public abstract class TypeAwareModelSlotInstanceConfiguration<M extends FlexoMod
 	protected String relativePath;
 	protected String filename;
 
-	protected TypeAwareModelSlotInstanceConfiguration(MS ms, CreateVirtualModelInstance<?> action) {
-		super(ms, action);
-		FlexoResourceCenterService rcService = action.getFocusedObject().getViewPoint().getViewPointLibrary().getServiceManager()
-				.getResourceCenterService();
+	protected TypeAwareModelSlotInstanceConfiguration(MS ms, AbstractVirtualModelInstance<?, ?> virtualModelInstance, FlexoProject project) {
+		super(ms, virtualModelInstance, project);
+		FlexoResourceCenterService rcService = project.getServiceManager().getResourceCenterService();
 		if (rcService.getResourceCenters().size() > 0) {
 			resourceCenter = rcService.getResourceCenters().get(0);
 		}
@@ -112,8 +110,8 @@ public abstract class TypeAwareModelSlotInstanceConfiguration<M extends FlexoMod
 	}
 
 	@Override
-	public TypeAwareModelSlotInstance<M, MM, MS> createModelSlotInstance(VirtualModelInstance vmInstance, View view) {
-		VirtualModelInstanceModelFactory factory = vmInstance.getFactory();
+	public TypeAwareModelSlotInstance<M, MM, MS> createModelSlotInstance(AbstractVirtualModelInstance<?, ?> vmInstance, View view) {
+		AbstractVirtualModelInstanceModelFactory<?> factory = vmInstance.getFactory();
 		TypeAwareModelSlotInstance<M, MM, MS> returned = factory.newInstance(TypeAwareModelSlotInstance.class);
 		returned.setModelSlot(getModelSlot());
 		returned.setVirtualModelInstance(vmInstance);
