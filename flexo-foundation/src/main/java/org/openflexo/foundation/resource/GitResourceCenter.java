@@ -37,12 +37,24 @@ import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 import org.eclipse.jgit.treewalk.CanonicalTreeParser;
 import org.eclipse.jgit.treewalk.FileTreeIterator;
+import org.openflexo.foundation.resource.DirectoryResourceCenter.DirectoryResourceCenterEntry;
+import org.openflexo.foundation.resource.FlexoResourceCenter.ResourceCenterEntry;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.gitUtils.GitCheckoutPick;
 import org.openflexo.gitUtils.GitFile;
 import org.openflexo.gitUtils.GitIODelegateFactory;
 import org.openflexo.gitUtils.GitSaveStrategy;
 import org.openflexo.gitUtils.GitSaveStrategy.GitSaveStrategyBuilder;
+import org.openflexo.model.annotations.Getter;
+import org.openflexo.model.annotations.Implementation;
+import org.openflexo.model.annotations.ImplementationClass;
+import org.openflexo.model.annotations.ModelEntity;
+import org.openflexo.model.annotations.PropertyIdentifier;
+import org.openflexo.model.annotations.Setter;
+import org.openflexo.model.annotations.XMLAttribute;
+import org.openflexo.model.annotations.XMLElement;
+import org.openflexo.model.exceptions.ModelDefinitionException;
+import org.openflexo.model.factory.ModelFactory;
 import org.openflexo.gitUtils.GitVersion;
 import org.openflexo.gitUtils.SerializationArtefactFile;
 import org.openflexo.toolbox.FlexoVersion;
@@ -69,6 +81,67 @@ public class GitResourceCenter extends FileSystemBasedResourceCenter {
 	private List<GitFile> cache = new ArrayList<>();
 
 	private File cacheDirectory;
+	
+	
+	@ModelEntity
+	@ImplementationClass(GitResourceCenterEntry.GitResourceCenterEntryImpl.class)
+	@XMLElement
+	public static interface GitResourceCenterEntry extends ResourceCenterEntry<GitResourceCenter> {
+		@PropertyIdentifier(type = File.class)
+		public static final String GIT_DIRECTORY_KEY = "gitDirectory";
+
+		@Getter(GIT_DIRECTORY_KEY)
+		@XMLAttribute
+		public File getGitDirectory();
+
+		@Setter(GIT_DIRECTORY_KEY)
+		public void setGitDirectory(File aDirectory);
+
+		@Implementation
+		public static abstract class GitResourceCenterEntryImpl implements GitResourceCenterEntry {
+			@Override
+			public GitResourceCenter makeResourceCenter() {
+				return GitResourceCenter.instanciateNewGitResourceCenter(getGitDirectory());
+			}
+
+			@Override
+			public boolean equals(Object obj) {
+				if (obj instanceof GitResourceCenterEntry) {
+					return getGitDirectory() != null && getGitDirectory().equals(((GitResourceCenterEntry) obj).getGitDirectory());
+				}
+				return false;
+			}
+		}
+
+	}
+	
+	private GitResourceCenterEntry entry;
+	
+	@Override
+	public ResourceCenterEntry<?> getResourceCenterEntry() {
+		if (entry == null) {
+			try {
+				ModelFactory factory = new ModelFactory(GitResourceCenterEntry.class);
+				entry = factory.newInstance(GitResourceCenterEntry.class);
+				entry.setGitDirectory(getGitRepository().getWorkTree());
+			} catch (ModelDefinitionException e) {
+				e.printStackTrace();
+			}
+		}
+		return entry;
+	}
+	
+	public static GitResourceCenter instanciateNewGitResourceCenter(File gitDirectory) {
+		logger.info("Instanciate GitResourceCenter from " + gitDirectory.getAbsolutePath());
+		GitResourceCenter gitResourceCenter = null;
+		try {
+			gitResourceCenter = new GitResourceCenter(gitDirectory);
+			gitResourceCenter.update();
+		} catch (IllegalStateException | IOException | GitAPIException e1) {
+			e1.printStackTrace();
+		}
+		return gitResourceCenter;
+	}
 	
 	public GitResourceCenter(File gitRepository) throws IllegalStateException, IOException, GitAPIException {
 		super(gitRepository);
@@ -561,7 +634,6 @@ public class GitResourceCenter extends FileSystemBasedResourceCenter {
 	@Override
 	public void update() throws IOException {
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override

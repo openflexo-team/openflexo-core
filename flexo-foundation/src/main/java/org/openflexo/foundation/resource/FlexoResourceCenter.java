@@ -50,6 +50,7 @@ import javax.annotation.Nullable;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.fml.ViewPointRepository;
 import org.openflexo.foundation.resource.DirectoryResourceCenter.DirectoryResourceCenterEntry;
+import org.openflexo.foundation.resource.GitResourceCenter.GitResourceCenterEntry;
 import org.openflexo.foundation.resource.JarResourceCenter.JarResourceCenterEntry;
 import org.openflexo.foundation.resource.RemoteResourceCenter.RemoteResourceCenterEntry;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
@@ -83,7 +84,8 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, FlexoObject {
 	@ModelEntity
 	@XMLElement
 	@Imports({ @Import(DirectoryResourceCenterEntry.class), @Import(RemoteResourceCenterEntry.class),
-			@Import(JarResourceCenterEntry.class) })
+			@Import(JarResourceCenterEntry.class),
+			@Import(GitResourceCenterEntry.class) })
 	public static interface ResourceCenterEntry<RC extends FlexoResourceCenter<?>> {
 
 		public RC makeResourceCenter();

@@ -171,6 +171,7 @@ public class ModuleInspectorController extends Observable implements Observer {
 				appendVisibleFor(inspector);
 				appendEditableCondition(inspector);
 				Progress.progress(FlexoLocalization.localizedForKey("loaded_inspector") + " " + inspector.getDataClass().getSimpleName());
+				
 			}
 		};
 		inspectorGroups.add(newInspectorGroup);

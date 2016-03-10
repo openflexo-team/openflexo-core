@@ -72,24 +72,28 @@ import org.openflexo.toolbox.FlexoVersion;
 import org.openflexo.toolbox.IProgress;
 
 /**
- * An abstract implementation of a {@link FlexoResourceCenter} based on a file system.
+ * An abstract implementation of a {@link FlexoResourceCenter} based on a file
+ * system.
  * 
  * It defines a {@link File} which is a directory containing all resources
  * 
  * @author sylvain
  * 
  */
-public abstract class FileSystemBasedResourceCenter extends FileResourceRepository<FlexoResource<?>>implements FlexoResourceCenter<File> {
+public abstract class FileSystemBasedResourceCenter extends FileResourceRepository<FlexoResource<?>>
+		implements FlexoResourceCenter<File> {
 
 	protected static final Logger logger = Logger.getLogger(FileSystemBasedResourceCenter.class.getPackage().getName());
 
 	private final File rootDirectory;
 
-	// private final HashMap<TechnologyAdapter, ModelRepository<?, ?, ?, ?, ?>> modelRepositories = new HashMap<TechnologyAdapter,
+	// private final HashMap<TechnologyAdapter, ModelRepository<?, ?, ?, ?, ?>>
+	// modelRepositories = new HashMap<TechnologyAdapter,
 	// ModelRepository<?, ?, ?, ?, ?>>();
-	// private final HashMap<TechnologyAdapter, MetaModelRepository<?, ?, ?, ?>> metaModelRepositories = new HashMap<TechnologyAdapter,
+	// private final HashMap<TechnologyAdapter, MetaModelRepository<?, ?, ?, ?>>
+	// metaModelRepositories = new HashMap<TechnologyAdapter,
 	// MetaModelRepository<?, ?, ?, ?>>();
-	
+
 	private TechnologyAdapterService technologyAdapterService;
 
 	public TechnologyAdapterService getTechnologyAdapterService() {
@@ -101,7 +105,7 @@ public abstract class FileSystemBasedResourceCenter extends FileResourceReposito
 	}
 
 	private IODelegateFactory<File> delegateFactory;
-	
+
 	public FileSystemBasedResourceCenter(File rootDirectory) {
 		super(null, rootDirectory);
 		this.rootDirectory = rootDirectory;
@@ -117,7 +121,7 @@ public abstract class FileSystemBasedResourceCenter extends FileResourceReposito
 	public void setDelegateFactory(IODelegateFactory<File> delegateFactory) {
 		this.delegateFactory = delegateFactory;
 	}
-	
+
 	@Override
 	public FlexoResourceCenter<?> getResourceCenter() {
 		return this;
@@ -154,8 +158,8 @@ public abstract class FileSystemBasedResourceCenter extends FileResourceReposito
 				if (resourceClass.isAssignableFrom(r.getClass())) {
 					return (R) r;
 				}
-				logger.warning("Found resource matching file " + aFile + " but not of desired type: " + r.getClass() + " instead of "
-						+ resourceClass);
+				logger.warning("Found resource matching file " + aFile + " but not of desired type: " + r.getClass()
+						+ " instead of " + resourceClass);
 				return null;
 			}
 		}
@@ -167,7 +171,8 @@ public abstract class FileSystemBasedResourceCenter extends FileResourceReposito
 
 	@Override
 	public String toString() {
-		return super.toString() + " directory=" + (getRootDirectory() != null ? getRootDirectory().getAbsolutePath() : null);
+		return super.toString() + " directory="
+				+ (getRootDirectory() != null ? getRootDirectory().getAbsolutePath() : null);
 	}
 
 	@Override
@@ -179,12 +184,13 @@ public abstract class FileSystemBasedResourceCenter extends FileResourceReposito
 		return null;
 	}
 
-	/*@Override
-	public void initialize(ViewPointLibrary viewPointLibrary) {
-		logger.info("Initializing ViewPointLibrary for " + this);
-		viewPointRepository = new ViewPointRepository(this, viewPointLibrary);
-		exploreDirectoryLookingForViewPoints(getRootDirectory(), viewPointLibrary);
-	}*/
+	/*
+	 * @Override public void initialize(ViewPointLibrary viewPointLibrary) {
+	 * logger.info("Initializing ViewPointLibrary for " + this);
+	 * viewPointRepository = new ViewPointRepository(this, viewPointLibrary);
+	 * exploreDirectoryLookingForViewPoints(getRootDirectory(),
+	 * viewPointLibrary); }
+	 */
 
 	/**
 	 * Retrieve (creates it when not existant) folder containing supplied file
@@ -193,7 +199,8 @@ public abstract class FileSystemBasedResourceCenter extends FileResourceReposito
 	 * @param aFile
 	 * @return
 	 */
-	protected <R extends FlexoResource<?>> RepositoryFolder<R> retrieveRepositoryFolder(ResourceRepository<R> repository, File aFile) {
+	protected <R extends FlexoResource<?>> RepositoryFolder<R> retrieveRepositoryFolder(
+			ResourceRepository<R> repository, File aFile) {
 		try {
 			return repository.getRepositoryFolder(aFile, true);
 		} catch (IOException e) {
@@ -209,21 +216,16 @@ public abstract class FileSystemBasedResourceCenter extends FileResourceReposito
 	 * @param viewPointLibrary
 	 * @return a flag indicating if some ViewPoints were found
 	 */
-	/*private boolean exploreDirectoryLookingForViewPoints(File directory, ViewPointLibrary viewPointLibrary) {
-		boolean returned = false;
-		logger.fine("Exploring " + directory);
-		if (directory.exists() && directory.isDirectory() && directory.canRead()) {
-			for (File f : directory.listFiles()) {
-				ViewPointResource vpRes = analyseAsViewPoint(f);
-				if (f.isDirectory() && !f.getName().equals("CVS")) {
-					if (exploreDirectoryLookingForViewPoints(f, viewPointLibrary)) {
-						returned = true;
-					}
-				}
-			}
-		}
-		return returned;
-	}*/
+	/*
+	 * private boolean exploreDirectoryLookingForViewPoints(File directory,
+	 * ViewPointLibrary viewPointLibrary) { boolean returned = false;
+	 * logger.fine("Exploring " + directory); if (directory.exists() &&
+	 * directory.isDirectory() && directory.canRead()) { for (File f :
+	 * directory.listFiles()) { ViewPointResource vpRes = analyseAsViewPoint(f);
+	 * if (f.isDirectory() && !f.getName().equals("CVS")) { if
+	 * (exploreDirectoryLookingForViewPoints(f, viewPointLibrary)) { returned =
+	 * true; } } } } return returned; }
+	 */
 
 	/**
 	 * 
@@ -232,31 +234,28 @@ public abstract class FileSystemBasedResourceCenter extends FileResourceReposito
 	 * @param viewPointLibrary
 	 * @return a flag indicating if some ViewPoints were found
 	 */
-	/*private ViewPointResource analyseAsViewPoint(File candidateFile) {
-		if (candidateFile.exists() && candidateFile.isDirectory() && candidateFile.canRead()
-				&& candidateFile.getName().endsWith(".viewpoint")) {
-			ViewPointResource vpRes = ViewPointResourceImpl.retrieveViewPointResource(candidateFile,
-					viewPointRepository.getViewPointLibrary());
-			if (vpRes != null) {
-				logger.info("Found and register viewpoint " + vpRes.getURI()
-						+ (vpRes instanceof FlexoFileResource ? " file=" + ((FlexoFileResource) vpRes).getFile().getAbsolutePath() : ""));
-				RepositoryFolder<ViewPointResource> folder = retrieveRepositoryFolder(viewPointRepository, candidateFile);
-				viewPointRepository.registerResource(vpRes, folder);
-				// Also register the resource in the ResourceCenter seen as a ResourceRepository
-				try {
-					registerResource(vpRes, getRepositoryFolder(candidateFile, true));
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-				return vpRes;
-			} else {
-				logger.warning("While exploring resource center looking for viewpoints : cannot retrieve resource for file "
-						+ candidateFile.getAbsolutePath());
-			}
-		}
-	
-		return null;
-	}*/
+	/*
+	 * private ViewPointResource analyseAsViewPoint(File candidateFile) { if
+	 * (candidateFile.exists() && candidateFile.isDirectory() &&
+	 * candidateFile.canRead() &&
+	 * candidateFile.getName().endsWith(".viewpoint")) { ViewPointResource vpRes
+	 * = ViewPointResourceImpl.retrieveViewPointResource(candidateFile,
+	 * viewPointRepository.getViewPointLibrary()); if (vpRes != null) {
+	 * logger.info("Found and register viewpoint " + vpRes.getURI() + (vpRes
+	 * instanceof FlexoFileResource ? " file=" + ((FlexoFileResource)
+	 * vpRes).getFile().getAbsolutePath() : ""));
+	 * RepositoryFolder<ViewPointResource> folder =
+	 * retrieveRepositoryFolder(viewPointRepository, candidateFile);
+	 * viewPointRepository.registerResource(vpRes, folder); // Also register the
+	 * resource in the ResourceCenter seen as a ResourceRepository try {
+	 * registerResource(vpRes, getRepositoryFolder(candidateFile, true)); }
+	 * catch (IOException e) { e.printStackTrace(); } return vpRes; } else {
+	 * logger.warning(
+	 * "While exploring resource center looking for viewpoints : cannot retrieve resource for file "
+	 * + candidateFile.getAbsolutePath()); } }
+	 * 
+	 * return null; }
+	 */
 
 	@Override
 	public void initialize(TechnologyAdapterService technologyAdapterService) {
@@ -267,7 +266,8 @@ public abstract class FileSystemBasedResourceCenter extends FileResourceReposito
 		this.technologyAdapterService = technologyAdapterService;
 		for (TechnologyAdapter technologyAdapter : technologyAdapterService.getTechnologyAdapters()) {
 			logger.info("Initializing resource center " + this + " with adapter " + technologyAdapter.getName());
-			Progress.progress(FlexoLocalization.localizedForKey("initializing_adapter") + " " + technologyAdapter.getName());
+			Progress.progress(
+					FlexoLocalization.localizedForKey("initializing_adapter") + " " + technologyAdapter.getName());
 			technologyAdapter.initializeResourceCenter(this);
 		}
 	}
@@ -297,8 +297,7 @@ public abstract class FileSystemBasedResourceCenter extends FileResourceReposito
 		List<File> allFiles = new ArrayList<File>();
 		if (getRootDirectory() != null) {
 			appendFiles(getRootDirectory(), allFiles);
-		}
-		else {
+		} else {
 			logger.warning("ResourceCenter: " + this + " rootDirectory is null");
 		}
 		return allFiles.iterator();
@@ -355,7 +354,8 @@ public abstract class FileSystemBasedResourceCenter extends FileResourceReposito
 			};
 
 			ScheduledExecutorService newScheduledThreadPool = Executors.newScheduledThreadPool(1);
-			scheduleWithFixedDelay = newScheduledThreadPool.scheduleWithFixedDelay(directoryWatcher, 0, 1, TimeUnit.SECONDS);
+			scheduleWithFixedDelay = newScheduledThreadPool.scheduleWithFixedDelay(directoryWatcher, 0, 1,
+					TimeUnit.SECONDS);
 		}
 	}
 
@@ -400,12 +400,12 @@ public abstract class FileSystemBasedResourceCenter extends FileResourceReposito
 		if (!isIgnorable(renamedFile)) {
 			System.out.println("File RENAMED from  " + oldFile.getName() + " to " + renamedFile.getName() + " in "
 					+ renamedFile.getParentFile().getAbsolutePath());
-			/*if (technologyAdapterService != null) {
-				for (TechnologyAdapter adapter : technologyAdapterService.getTechnologyAdapters()) {
-					logger.info("fileDeleted " + file + " with adapter " + adapter.getName());
-					adapter.contentsDeleted(this, file);
-				}
-			}*/
+			/*
+			 * if (technologyAdapterService != null) { for (TechnologyAdapter
+			 * adapter : technologyAdapterService.getTechnologyAdapters()) {
+			 * logger.info("fileDeleted " + file + " with adapter " +
+			 * adapter.getName()); adapter.contentsDeleted(this, file); } }
+			 */
 		}
 	}
 
@@ -452,7 +452,8 @@ public abstract class FileSystemBasedResourceCenter extends FileResourceReposito
 
 	private HashMap<Class<? extends ResourceRepository<?>>, ResourceRepository<?>> getRepositoriesForAdapter(
 			TechnologyAdapter technologyAdapter) {
-		HashMap<Class<? extends ResourceRepository<?>>, ResourceRepository<?>> map = repositories.get(technologyAdapter);
+		HashMap<Class<? extends ResourceRepository<?>>, ResourceRepository<?>> map = repositories
+				.get(technologyAdapter);
 		if (map == null) {
 			map = new HashMap<Class<? extends ResourceRepository<?>>, ResourceRepository<?>>();
 			repositories.put(technologyAdapter, map);
@@ -461,19 +462,21 @@ public abstract class FileSystemBasedResourceCenter extends FileResourceReposito
 	}
 
 	@Override
-	public final <R extends ResourceRepository<?>> R getRepository(Class<? extends R> repositoryType, TechnologyAdapter technologyAdapter) {
-		HashMap<Class<? extends ResourceRepository<?>>, ResourceRepository<?>> map = getRepositoriesForAdapter(technologyAdapter);
+	public final <R extends ResourceRepository<?>> R getRepository(Class<? extends R> repositoryType,
+			TechnologyAdapter technologyAdapter) {
+		HashMap<Class<? extends ResourceRepository<?>>, ResourceRepository<?>> map = getRepositoriesForAdapter(
+				technologyAdapter);
 		return (R) map.get(repositoryType);
 	}
 
 	@Override
-	public final <R extends ResourceRepository<?>> void registerRepository(R repository, Class<? extends R> repositoryType,
-			TechnologyAdapter technologyAdapter) {
-		HashMap<Class<? extends ResourceRepository<?>>, ResourceRepository<?>> map = getRepositoriesForAdapter(technologyAdapter);
+	public final <R extends ResourceRepository<?>> void registerRepository(R repository,
+			Class<? extends R> repositoryType, TechnologyAdapter technologyAdapter) {
+		HashMap<Class<? extends ResourceRepository<?>>, ResourceRepository<?>> map = getRepositoriesForAdapter(
+				technologyAdapter);
 		if (map.get(repositoryType) == null) {
 			map.put(repositoryType, repository);
-		}
-		else {
+		} else {
 			logger.warning("Repository already registered: " + repositoryType + " for " + repository);
 		}
 	}
@@ -484,15 +487,16 @@ public abstract class FileSystemBasedResourceCenter extends FileResourceReposito
 	}
 
 	@Override
-	public <T extends ResourceData<T>> List<FlexoResource<T>> retrieveResource(String uri, Class<T> type, IProgress progress) {
+	public <T extends ResourceData<T>> List<FlexoResource<T>> retrieveResource(String uri, Class<T> type,
+			IProgress progress) {
 		// TODO: provide support for class and version
 		FlexoResource<T> uniqueResource = retrieveResource(uri, null, null, progress);
 		return Collections.singletonList(uniqueResource);
 	}
 
 	@Override
-	public <T extends ResourceData<T>> FlexoResource<T> retrieveResource(String uri, FlexoVersion version, Class<T> type,
-			IProgress progress) {
+	public <T extends ResourceData<T>> FlexoResource<T> retrieveResource(String uri, FlexoVersion version,
+			Class<T> type, IProgress progress) {
 		// TODO: provide support for class and version
 		return (FlexoResource<T>) retrieveResource(uri, progress);
 	}
@@ -528,7 +532,8 @@ public abstract class FileSystemBasedResourceCenter extends FileResourceReposito
 
 	/**
 	 * Compute and return a default URI for supplied resource<br>
-	 * If resource does not provide URI support, this might be delegated to the {@link FlexoResourceCenter} through this method
+	 * If resource does not provide URI support, this might be delegated to the
+	 * {@link FlexoResourceCenter} through this method
 	 * 
 	 * @param resource
 	 * @return
@@ -547,8 +552,7 @@ public abstract class FileSystemBasedResourceCenter extends FileResourceReposito
 					}
 					if (getDefaultBaseURI().endsWith(File.separator)) {
 						return getDefaultBaseURI() + path.replace(File.separator, "/") + resource.getName();
-					}
-					else {
+					} else {
 						return getDefaultBaseURI() + "/" + path.replace(File.separator, "/") + resource.getName();
 					}
 				}
@@ -556,7 +560,5 @@ public abstract class FileSystemBasedResourceCenter extends FileResourceReposito
 		}
 		return null;
 	}
-
-	
 
 }
