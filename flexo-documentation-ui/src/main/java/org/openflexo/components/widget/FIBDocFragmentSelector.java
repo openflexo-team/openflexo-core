@@ -188,21 +188,21 @@ public abstract class FIBDocFragmentSelector<F extends FlexoDocFragment<D, TA>, 
 
 	public class FragmentSelectorDetailsPanel extends SelectorDetailsPanel {
 
-		private FIBCustomWidget<?, ?> docEditorWidget = null;
+		private FIBCustomWidget<?, ?, ?> docEditorWidget = null;
 
 		protected FragmentSelectorDetailsPanel(F anObject) {
 			super(anObject);
 			update();
 		}
 
-		public FIBCustomWidget<?, ?> getDocEditorWidget() {
+		public FIBCustomWidget<?, ?, ?> getDocEditorWidget() {
 			if (docEditorWidget == null) {
 				docEditorWidget = retrieveDocEditorWidget();
 			}
 			return docEditorWidget;
 		}
 
-		private FIBCustomWidget<?, ?> retrieveDocEditorWidget() {
+		private FIBCustomWidget<?, ?, ?> retrieveDocEditorWidget() {
 			List<FIBComponent> listComponent = getFIBComponent().getAllSubComponents();
 			for (FIBComponent c : listComponent) {
 				if (c instanceof FIBCustom) {
@@ -248,7 +248,7 @@ public abstract class FIBDocFragmentSelector<F extends FlexoDocFragment<D, TA>, 
 		getPropertyChangeSupport().firePropertyChange("selectedDocumentElements", null, selection);
 	}
 
-	protected void selectFragmentInDocumentEditor(F fragment, FIBCustomWidget<?, ?> documentEditorWidget) {
+	protected void selectFragmentInDocumentEditor(F fragment, FIBCustomWidget<?, ?, ?> documentEditorWidget) {
 
 	}
 

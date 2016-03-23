@@ -158,20 +158,20 @@ public abstract class FIBDocTableSelector<T extends FlexoDocTable<D, TA>, D exte
 
 	public class TableSelectorDetailsPanel extends SelectorDetailsPanel {
 
-		private FIBCustomWidget<?, ?> docEditorWidget = null;
+		private FIBCustomWidget<?, ?, ?> docEditorWidget = null;
 
 		protected TableSelectorDetailsPanel(T anObject) {
 			super(anObject);
 		}
 
-		public FIBCustomWidget<?, ?> getDocEditorWidget() {
+		public FIBCustomWidget<?, ?, ?> getDocEditorWidget() {
 			if (docEditorWidget == null) {
 				docEditorWidget = retrieveDocEditorWidget();
 			}
 			return docEditorWidget;
 		}
 
-		private FIBCustomWidget<?, ?> retrieveDocEditorWidget() {
+		private FIBCustomWidget<?, ?, ?> retrieveDocEditorWidget() {
 			List<FIBComponent> listComponent = getFIBComponent().getAllSubComponents();
 			for (FIBComponent c : listComponent) {
 				if (c instanceof FIBCustom) {
@@ -218,7 +218,7 @@ public abstract class FIBDocTableSelector<T extends FlexoDocTable<D, TA>, D exte
 
 	}
 
-	protected void selectTableInDocumentEditor(T table, FIBCustomWidget<?, ?> documentEditorWidget) {
+	protected void selectTableInDocumentEditor(T table, FIBCustomWidget<?, ?, ?> documentEditorWidget) {
 
 	}
 

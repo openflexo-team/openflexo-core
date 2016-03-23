@@ -143,20 +143,20 @@ public abstract class FIBDocImageSelector<T extends FlexoDrawingRun<D, TA>, D ex
 
 	public class ImageSelectorDetailsPanel extends SelectorDetailsPanel {
 
-		private FIBCustomWidget<?, ?> docEditorWidget = null;
+		private FIBCustomWidget<?, ?, ?> docEditorWidget = null;
 
 		protected ImageSelectorDetailsPanel(T anObject) {
 			super(anObject);
 		}
 
-		public FIBCustomWidget<?, ?> getDocEditorWidget() {
+		public FIBCustomWidget<?, ?, ?> getDocEditorWidget() {
 			if (docEditorWidget == null) {
 				docEditorWidget = retrieveDocEditorWidget();
 			}
 			return docEditorWidget;
 		}
 
-		private FIBCustomWidget<?, ?> retrieveDocEditorWidget() {
+		private FIBCustomWidget<?, ?, ?> retrieveDocEditorWidget() {
 			List<FIBComponent> listComponent = getFIBComponent().getAllSubComponents();
 			for (FIBComponent c : listComponent) {
 				if (c instanceof FIBCustom) {
@@ -203,7 +203,7 @@ public abstract class FIBDocImageSelector<T extends FlexoDrawingRun<D, TA>, D ex
 
 	}
 
-	protected void selectImageInDocumentEditor(T drawingRun, FIBCustomWidget<?, ?> documentEditorWidget) {
+	protected void selectImageInDocumentEditor(T drawingRun, FIBCustomWidget<?, ?, ?> documentEditorWidget) {
 
 	}
 
