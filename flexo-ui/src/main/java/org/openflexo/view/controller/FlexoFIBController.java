@@ -74,7 +74,6 @@ import org.openflexo.icon.UtilsIconLibrary;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.selection.SelectionManager;
-import org.openflexo.toolbox.HasPropertyChangeSupport;
 import org.openflexo.view.FIBBrowserActionAdapter;
 
 /**
@@ -123,12 +122,12 @@ public class FlexoFIBController extends FIBController implements GraphicalFlexoO
 
 	@Override
 	public void delete() {
-		if (getDataObject() instanceof FlexoObservable) {
+		/*if (getDataObject() instanceof FlexoObservable) {
 			((FlexoObservable) getDataObject()).deleteObserver(this);
 		}
 		if (getDataObject() instanceof HasPropertyChangeSupport) {
 			((HasPropertyChangeSupport) getDataObject()).getPropertyChangeSupport().removePropertyChangeListener(this);
-		}
+		}*/
 		super.delete();
 	}
 
