@@ -109,7 +109,8 @@ public class ParametersRetriever<ES extends FlexoBehaviour> {
 	public boolean retrieveParameters() {
 
 		FIBComponent component = makeFIB(true, true);
-		FIBDialog dialog = FIBDialog.instanciateDialog(component, action, null, true, FlexoLocalization.getMainLocalizer());
+		FIBDialog dialog = FIBDialog.instanciateDialog(component, action, controller.getFlexoFrame(), true,
+				FlexoLocalization.getMainLocalizer());
 		if (!action.getFlexoBehaviour().getDefinePopupDefaultSize()) {
 			dialog.setMinimumSize(new Dimension(500, 50));
 		}
@@ -273,7 +274,7 @@ public class ParametersRetriever<ES extends FlexoBehaviour> {
 	/*public class URIPanel extends FIBPanel {
 	public FIBTextField tf;
 	public FIBLabel uriLabel;
-
+	
 	public URIPanel(final URIParameter parameter) {
 		super();
 		setName(parameter.getName() + "URIPanel");
