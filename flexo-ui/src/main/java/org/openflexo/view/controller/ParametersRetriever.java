@@ -110,7 +110,7 @@ public class ParametersRetriever<ES extends FlexoBehaviour> {
 	public boolean retrieveParameters() {
 
 		FIBComponent component = makeFIB(true, true);
-		JFIBDialog dialog = JFIBDialog.instanciateDialog(component, action, null, true, FlexoLocalization.getMainLocalizer());
+		JFIBDialog dialog = JFIBDialog.instanciateDialog(component, action, controller.getFlexoFrame(), true, FlexoLocalization.getMainLocalizer());
 		if (!action.getFlexoBehaviour().getDefinePopupDefaultSize()) {
 			dialog.setMinimumSize(new Dimension(500, 50));
 		}

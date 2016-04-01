@@ -185,7 +185,7 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>>
 	 * @param flexoRoleClass
 	 * @return
 	 */
-	public abstract <PR extends FlexoRole<?>> PR makeFlexoRole(Class<PR> patternRoleClass);
+	public abstract <PR extends FlexoRole<?>> PR makeFlexoRole(Class<PR> flexoRoleClass);
 
 	/**
 	 * Creates and return a new {@link EditionAction} of supplied class.<br>
@@ -290,9 +290,9 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>>
 		 * @return
 		 */
 		@Override
-		public final <PR extends FlexoRole<?>> PR makeFlexoRole(Class<PR> patternRoleClass) {
+		public <PR extends FlexoRole<?>> PR makeFlexoRole(Class<PR> flexoRoleClass) {
 			FMLModelFactory factory = getFMLModelFactory();
-			return factory.newInstance(patternRoleClass);
+			return factory.newInstance(flexoRoleClass);
 		}
 
 		@Override
