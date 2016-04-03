@@ -85,7 +85,7 @@ public interface VirtualModel extends AbstractVirtualModel<VirtualModel> {
 	@Setter(VIEW_POINT_KEY)
 	public void setViewPoint(ViewPoint aViewPoint);
 
-	public static abstract class VirtualModelImpl extends AbstractVirtualModelImpl<VirtualModel>implements VirtualModel {
+	public static abstract class VirtualModelImpl extends AbstractVirtualModelImpl<VirtualModel> implements VirtualModel {
 
 		private static final Logger logger = Logger.getLogger(VirtualModel.class.getPackage().getName());
 
@@ -179,6 +179,14 @@ public interface VirtualModel extends AbstractVirtualModel<VirtualModel> {
 			return getViewPoint();
 		}
 
+		@Override
+		public void setModified(boolean modified) {
+			super.setModified(modified);
+			if (modified) {
+				System.out.println("Modified: " + this);
+				Thread.dumpStack();
+			}
+		}
 	}
 
 }
