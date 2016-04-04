@@ -257,6 +257,6 @@ public abstract class FIBDocFragmentSelector<F extends FlexoDocFragment<D, TA>, 
 		if (editedObject == null) {
 			return "";
 		}
-		return editedObject.getStringRepresentation();
+		return editedObject.getStringRepresentationPreview();
 	}
 }
