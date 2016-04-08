@@ -59,8 +59,8 @@ import org.openflexo.view.controller.ControllerActionInitializer;
 import org.openflexo.view.controller.FlexoController;
 import org.openflexo.view.controller.ParametersRetriever;
 
-public class SynchronizationSchemeActionInitializer extends
-		ActionInitializer<SynchronizationSchemeAction, AbstractVirtualModelInstance<?, ?>, VirtualModelInstanceObject> {
+public class SynchronizationSchemeActionInitializer
+		extends ActionInitializer<SynchronizationSchemeAction, AbstractVirtualModelInstance<?, ?>, VirtualModelInstanceObject> {
 
 	private static final Logger logger = Logger.getLogger(ControllerActionInitializer.class.getPackage().getName());
 
@@ -73,6 +73,7 @@ public class SynchronizationSchemeActionInitializer extends
 		return new FlexoActionInitializer<SynchronizationSchemeAction>() {
 			@Override
 			public boolean run(EventObject e, SynchronizationSchemeAction action) {
+				getController().willExecute(action);
 				ParametersRetriever<SynchronizationScheme> parameterRetriever = new ParametersRetriever<SynchronizationScheme>(action,
 						getController());
 				if (action.escapeParameterRetrievingWhenValid && parameterRetriever.isSkipable()) {
@@ -88,6 +89,7 @@ public class SynchronizationSchemeActionInitializer extends
 		return new FlexoActionFinalizer<SynchronizationSchemeAction>() {
 			@Override
 			public boolean run(EventObject e, SynchronizationSchemeAction action) {
+				getController().hasExecuted(action);
 				return true;
 			}
 		};
