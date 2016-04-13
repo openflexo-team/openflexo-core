@@ -60,6 +60,7 @@ import org.openflexo.foundation.fml.inspector.InspectorEntry;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.task.Progress;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
+import org.openflexo.gina.FIBLibrary;
 import org.openflexo.gina.model.FIBComponent;
 import org.openflexo.gina.model.FIBContainer;
 import org.openflexo.gina.model.FIBModelFactory;
@@ -104,21 +105,11 @@ public class ModuleInspectorController extends Observable implements Observer {
 
 	private Object currentInspectedObject = null;
 
-	/*public static FIBModelFactory INSPECTOR_FACTORY;
-	
-	static {
-		try {
-			INSPECTOR_FACTORY = new FIBModelFactory(FIBInspector.class);
-		} catch (ModelDefinitionException e1) {
-			e1.printStackTrace();
-		}
-	}*/
-
 	public ModuleInspectorController(final FlexoController flexoController) {
 		this.flexoController = flexoController;
 
 		inspectorGroups = new ArrayList<InspectorGroup>();
-		coreInspectorGroup = new InspectorGroup(ResourceLocator.locateResource("Inspectors/COMMON"));
+		coreInspectorGroup = new InspectorGroup(ResourceLocator.locateResource("Inspectors/COMMON"), getInspectorsFIBLibrary());
 		inspectorGroups.add(coreInspectorGroup);
 
 		flexoConceptInspectors = new Hashtable<FlexoConcept, FIBInspector>();
@@ -163,8 +154,12 @@ public class ModuleInspectorController extends Observable implements Observer {
 		return returned;
 	}*/
 
+	private FIBLibrary getInspectorsFIBLibrary() {
+		return getFlexoController().getApplicationContext().getApplicationFIBLibraryService().getApplicationFIBLibrary();
+	}
+
 	public InspectorGroup loadDirectory(Resource inspectorsDirectory, InspectorGroup... parentInspectorGroups) {
-		InspectorGroup newInspectorGroup = new InspectorGroup(inspectorsDirectory, parentInspectorGroups) {
+		InspectorGroup newInspectorGroup = new InspectorGroup(inspectorsDirectory, getInspectorsFIBLibrary(), parentInspectorGroups) {
 			@Override
 			public void progress(Resource f, FIBInspector inspector) {
 				super.progress(f, inspector);

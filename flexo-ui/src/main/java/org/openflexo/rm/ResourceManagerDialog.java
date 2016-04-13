@@ -42,7 +42,6 @@ import java.util.logging.Logger;
 
 import org.openflexo.ApplicationContext;
 import org.openflexo.foundation.resource.ResourceManager;
-import org.openflexo.gina.FIBLibrary;
 import org.openflexo.gina.swing.utils.JFIBDialog;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.logging.FlexoLogger;
@@ -59,9 +58,9 @@ public class ResourceManagerDialog extends JFIBDialog<ResourceManager> {
 
 	public static final Resource FIB_FILE = ResourceLocator.locateResource("Fib/FlexoEditingContext.fib");
 
-	public ResourceManagerDialog(ApplicationContext context) {
-		super(FIBLibrary.instance().retrieveFIBComponent(FIB_FILE), context.getResourceManager(), FlexoFrame.getActiveFrame(), true,
-				FlexoLocalization.getMainLocalizer());
+	public ResourceManagerDialog(ApplicationContext applicationContext) {
+		super(applicationContext.getApplicationFIBLibraryService().retrieveFIBComponent(FIB_FILE), applicationContext.getResourceManager(),
+				FlexoFrame.getActiveFrame(), true, FlexoLocalization.getMainLocalizer());
 		setResizable(false);
 	}
 }

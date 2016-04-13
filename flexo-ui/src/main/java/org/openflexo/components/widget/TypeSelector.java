@@ -70,7 +70,7 @@ import org.openflexo.connie.type.WilcardTypeImpl;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.PrimitiveRole.PrimitiveType;
 import org.openflexo.foundation.fml.TechnologyAdapterTypeFactory;
-import org.openflexo.gina.FIBLibrary;
+import org.openflexo.gina.ApplicationFIBLibrary;
 import org.openflexo.gina.controller.FIBController;
 import org.openflexo.gina.model.FIBComponent;
 import org.openflexo.gina.model.widget.FIBCustom;
@@ -759,7 +759,7 @@ public class TypeSelector extends TextFieldCustomPopup<Type>
 		protected TypeSelectorDetailsPanel(Type aClass) {
 			super();
 
-			fibComponent = FIBLibrary.instance().retrieveFIBComponent(FIB_FILE_NAME, true);
+			fibComponent = ApplicationFIBLibrary.instance().retrieveFIBComponent(FIB_FILE_NAME, true);
 			controller = new CustomFIBController(fibComponent);
 			fibView = (JFIBView<?, ?>) controller.buildView(fibComponent);
 
@@ -891,7 +891,7 @@ public class TypeSelector extends TextFieldCustomPopup<Type>
 		logButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				FlexoLoggingViewer.showLoggingViewer(FlexoLoggingManager.instance(), dialog);
+				FlexoLoggingViewer.showLoggingViewer(FlexoLoggingManager.instance(), ApplicationFIBLibrary.instance(), dialog);
 			}
 		});
 

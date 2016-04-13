@@ -42,11 +42,12 @@ import java.awt.Window;
 import java.beans.PropertyChangeSupport;
 import java.util.logging.Logger;
 
+import org.openflexo.ApplicationContext;
 import org.openflexo.fib.AskResourceCenterDirectory;
 import org.openflexo.foundation.resource.DirectoryResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
-import org.openflexo.gina.FIBLibrary;
+import org.openflexo.gina.ApplicationFIBLibrary;
 import org.openflexo.gina.controller.FIBController.Status;
 import org.openflexo.gina.model.FIBComponent;
 import org.openflexo.gina.swing.utils.JFIBDialog;
@@ -96,8 +97,16 @@ public class ResourceCenterEditor implements HasPropertyChangeSupport {
 		return _pcSupport;
 	}
 
+	public ApplicationFIBLibrary getApplicationFIBLibrary() {
+		return getApplicationContext().getApplicationFIBLibraryService().getApplicationFIBLibrary();
+	}
+
+	public ApplicationContext getApplicationContext() {
+		return (ApplicationContext) rcService.getServiceManager();
+	}
+
 	public void addResourceCenter() {
-		FIBComponent askRCDirectoryComponent = FIBLibrary.instance().retrieveFIBComponent(AskResourceCenterDirectory.FIB_FILE);
+		FIBComponent askRCDirectoryComponent = getApplicationFIBLibrary().retrieveFIBComponent(AskResourceCenterDirectory.FIB_FILE);
 		AskResourceCenterDirectory askDir = new AskResourceCenterDirectory();
 		JFIBDialog dialog = JFIBDialog.instanciateAndShowDialog(askRCDirectoryComponent, askDir, FlexoFrame.getActiveFrame(), true,
 				FlexoLocalization.getMainLocalizer());
@@ -134,7 +143,7 @@ public class ResourceCenterEditor implements HasPropertyChangeSupport {
 		ProgressWindow.showProgressWindow(owner, FlexoLocalization.localizedForKey(stepname), 1);
 		ProgressWindow.instance().setProgress(FlexoLocalization.localizedForKey(stepname));
 	}
-
+	
 	private void hideProgress() {
 		ProgressWindow.hideProgressWindow();
 	}*/

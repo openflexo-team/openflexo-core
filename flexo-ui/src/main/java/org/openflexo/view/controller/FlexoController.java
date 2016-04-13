@@ -150,7 +150,6 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.foundation.utils.FlexoProgress;
 import org.openflexo.foundation.validation.FlexoValidationModel;
-import org.openflexo.gina.FIBLibrary;
 import org.openflexo.gina.controller.FIBController.Status;
 import org.openflexo.gina.swing.editor.ComponentValidationWindow;
 import org.openflexo.gina.swing.utils.localization.LocalizedEditor;
@@ -173,6 +172,7 @@ import org.openflexo.model.validation.ValidationRule;
 import org.openflexo.model.validation.ValidationRuleFilter;
 import org.openflexo.module.FlexoModule;
 import org.openflexo.module.ModuleLoader;
+import org.openflexo.prefs.ApplicationFIBLibraryService;
 import org.openflexo.prefs.FlexoPreferences;
 import org.openflexo.project.ProjectLoader;
 import org.openflexo.rm.Resource;
@@ -819,7 +819,7 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 	public LocalizedEditor getMainLocalizedEditor() {
 		if (mainLocalizedEditor == null) {
 			mainLocalizedEditor = new LocalizedEditor(getFlexoFrame(), "localized_editor", FlexoLocalization.getMainLocalizer(),
-					FlexoLocalization.getMainLocalizer(), true, false);
+					FlexoLocalization.getMainLocalizer(), getApplicationFIBLibraryService().getApplicationFIBLibrary(), true, false);
 		}
 		return mainLocalizedEditor;
 	}
@@ -1750,12 +1750,12 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 
 	public FlexoProgress willLoad(Resource fibResource) {
 
-		if (!FIBLibrary.instance().componentIsLoaded(fibResource)) {
+		if (!getApplicationFIBLibraryService().componentIsLoaded(fibResource)) {
 			Progress.progress(FlexoLocalization.localizedForKey("loading_component") + " " + fibResource);
 
 			FlexoProgress progress = ProgressWindow.makeProgressWindow(FlexoLocalization.localizedForKey("loading_interface..."), 3);
 			// progress.setProgress("loading_component");
-			FIBLibrary.instance().retrieveFIBComponent(fibResource);
+			getApplicationFIBLibraryService().retrieveFIBComponent(fibResource);
 			// progress.setProgress("build_interface");
 			// return progress;
 			return null;
@@ -1941,6 +1941,10 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 	public <TA extends TechnologyAdapter> TA getTechnologyAdapter(Class<TA> technologyAdapterClass) {
 		TechnologyAdapterService taService = getApplicationContext().getTechnologyAdapterService();
 		return taService.getTechnologyAdapter(technologyAdapterClass);
+	}
+
+	public ApplicationFIBLibraryService getApplicationFIBLibraryService() {
+		return getApplicationContext().getApplicationFIBLibraryService();
 	}
 
 	// ================================================
@@ -2178,7 +2182,7 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 			System.out.println(" > " + e + " resource=" + e.getName() + " type=" + e.getType() + " save=" + e.saveThisResource());
 		}*/
 
-		ReviewUnsavedDialog dialog = new ReviewUnsavedDialog(getApplicationContext().getResourceManager());
+		ReviewUnsavedDialog dialog = new ReviewUnsavedDialog(getApplicationContext(), getApplicationContext().getResourceManager());
 		dialog.showDialog();
 
 		// FIBDialog<ResourceSavingInfo> dialog =

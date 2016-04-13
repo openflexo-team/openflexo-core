@@ -52,7 +52,7 @@ import org.openflexo.foundation.action.FlexoActionInitializer;
 import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.action.FlexoActionVisibleCondition;
 import org.openflexo.foundation.action.FlexoExceptionHandler;
-import org.openflexo.gina.FIBLibrary;
+import org.openflexo.gina.ApplicationFIBLibrary;
 import org.openflexo.gina.controller.FIBController.Status;
 import org.openflexo.gina.model.FIBComponent;
 import org.openflexo.gina.swing.utils.JFIBDialog;
@@ -104,8 +104,12 @@ public abstract class ActionInitializer<A extends FlexoAction<A, T1, T2>, T1 ext
 		return dialog.getStatus() == Status.VALIDATED;
 	}*/
 
+	public ApplicationFIBLibrary getApplicationFIBLibrary() {
+		return getController().getApplicationContext().getApplicationFIBLibraryService().getApplicationFIBLibrary();
+	}
+
 	public boolean instanciateAndShowDialog(Object object, Resource fibResource) {
-		FIBComponent fibComponent = FIBLibrary.instance().retrieveFIBComponent(fibResource);
+		FIBComponent fibComponent = getApplicationFIBLibrary().retrieveFIBComponent(fibResource);
 		JFIBDialog dialog = JFIBDialog.instanciateAndShowDialog(fibComponent, object, FlexoFrame.getActiveFrame(), true,
 				new FlexoFIBController(fibComponent, SwingViewFactory.INSTANCE, getController()));
 		return dialog.getStatus() == Status.VALIDATED;
@@ -119,7 +123,7 @@ public abstract class ActionInitializer<A extends FlexoAction<A, T1, T2>, T1 ext
 	}*/
 
 	public Status instanciateShowDialogAndReturnStatus(Object object, Resource fibResource) {
-		FIBComponent fibComponent = FIBLibrary.instance().retrieveFIBComponent(fibResource);
+		FIBComponent fibComponent = getApplicationFIBLibrary().retrieveFIBComponent(fibResource);
 		JFIBDialog dialog = JFIBDialog.instanciateAndShowDialog(fibComponent, object, FlexoFrame.getActiveFrame(), true,
 				new FlexoFIBController(fibComponent, SwingViewFactory.INSTANCE, getController()));
 		return dialog.getStatus();

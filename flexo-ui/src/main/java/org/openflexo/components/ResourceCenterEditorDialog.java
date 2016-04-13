@@ -41,9 +41,8 @@ package org.openflexo.components;
 import java.awt.Window;
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.FlexoServiceManager;
+import org.openflexo.ApplicationContext;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
-import org.openflexo.gina.FIBLibrary;
 import org.openflexo.gina.swing.utils.JFIBDialog;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.rm.Resource;
@@ -70,36 +69,37 @@ public class ResourceCenterEditorDialog extends JFIBDialog<ResourceCenterEditor>
 	// private static ResourceCenterEditor instance;
 	private static ResourceCenterEditorDialog dialog;
 
-	public static ResourceCenterEditorDialog getResourceCenterEditorDialog(FlexoServiceManager serviceManager, Window parent) {
-		System.out.println("showResourceCenterEditor with " + serviceManager);
+	public static ResourceCenterEditorDialog getResourceCenterEditorDialog(ApplicationContext applicationContext, Window parent,
+			boolean modal) {
+		System.out.println("showResourceCenterEditor with " + applicationContext);
 
 		if (dialog == null) {
-			dialog = new ResourceCenterEditorDialog(serviceManager, parent);
+			dialog = new ResourceCenterEditorDialog(applicationContext, parent, modal);
 		}
 
 		return dialog;
 	}
 
-	public static void showResourceCenterEditorDialog(FlexoServiceManager serviceManager, Window parent) {
-		System.out.println("showResourceCenterEditor with " + serviceManager);
+	public static void showResourceCenterEditorDialog(ApplicationContext applicationContext, Window parent, boolean modal) {
+		System.out.println("showResourceCenterEditor with " + applicationContext);
 
 		if (dialog == null) {
-			dialog = getResourceCenterEditorDialog(serviceManager, parent);
+			dialog = getResourceCenterEditorDialog(applicationContext, parent, modal);
 		}
 		dialog.showDialog();
 	}
 
-	public static ResourceCenterEditor getResourceCenterEditor(FlexoServiceManager serviceManager) {
+	public static ResourceCenterEditor getResourceCenterEditor(ApplicationContext applicationContext) {
 		if (resourceCenterEditor == null) {
-			resourceCenterEditor = new ResourceCenterEditor(serviceManager.getResourceCenterService());
+			resourceCenterEditor = new ResourceCenterEditor(applicationContext.getResourceCenterService());
 		}
 		return resourceCenterEditor;
 	}
 
-	public ResourceCenterEditorDialog(FlexoServiceManager serviceManager, Window parent) {
+	public ResourceCenterEditorDialog(ApplicationContext applicationContext, Window parent, boolean modal) {
 
-		super(FIBLibrary.instance().retrieveFIBComponent(RESOURCE_CENTER_EDITOR_FIB, true), getResourceCenterEditor(serviceManager),
-				parent, false, FlexoLocalization.getMainLocalizer());
+		super(applicationContext.getApplicationFIBLibraryService().retrieveFIBComponent(RESOURCE_CENTER_EDITOR_FIB, true),
+				getResourceCenterEditor(applicationContext), parent, modal, FlexoLocalization.getMainLocalizer());
 		getData().setOwner(this);
 		setTitle("Resource Center Editor");
 	}

@@ -67,7 +67,7 @@ import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoServiceManager;
-import org.openflexo.gina.FIBLibrary;
+import org.openflexo.gina.ApplicationFIBLibrary;
 import org.openflexo.gina.controller.FIBController;
 import org.openflexo.gina.model.FIBComponent;
 import org.openflexo.gina.model.FIBContainer;
@@ -487,7 +487,7 @@ public abstract class FIBFlexoObjectSelector<T extends FlexoObject> extends Text
 		protected SelectorDetailsPanel(T anObject) {
 			super();
 
-			fibComponent = (FIBContainer) FIBLibrary.instance().retrieveFIBComponent(getFIBResource());
+			fibComponent = (FIBContainer) ApplicationFIBLibrary.instance().retrieveFIBComponent(getFIBResource());
 			controller = makeCustomFIBController(fibComponent);
 			fibView = (JFIBView<?, ?>) controller.buildView(fibComponent);
 

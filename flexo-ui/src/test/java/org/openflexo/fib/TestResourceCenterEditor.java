@@ -44,21 +44,21 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.openflexo.OpenflexoTestCaseWithGUI;
 import org.openflexo.components.ResourceCenterEditorDialog;
 import org.openflexo.fib.testutils.FIBDialogGraphicalContextDelegate;
-import org.openflexo.foundation.OpenflexoTestCase;
 import org.openflexo.foundation.resource.DirectoryResourceCenter;
 import org.openflexo.test.OrderedRunner;
 import org.openflexo.test.TestOrder;
 
 /**
- * Test the ReviewUnsavedDialog widget
+ * Test the ResourceCenterEditor widget
  * 
  * @author sylvain
  * 
  */
 @RunWith(OrderedRunner.class)
-public class TestResourceCenterEditor extends OpenflexoTestCase {
+public class TestResourceCenterEditor extends OpenflexoTestCaseWithGUI {
 
 	private static FIBDialogGraphicalContextDelegate gcDelegate;
 
@@ -75,7 +75,7 @@ public class TestResourceCenterEditor extends OpenflexoTestCase {
 	@Test
 	@TestOrder(2)
 	public void testInstanciateWidget() {
-		ResourceCenterEditorDialog dialog = ResourceCenterEditorDialog.getResourceCenterEditorDialog(serviceManager, null);
+		ResourceCenterEditorDialog dialog = ResourceCenterEditorDialog.getResourceCenterEditorDialog(serviceManager, null, true);
 
 		log("instanciated " + dialog);
 		System.out.println("rcs= " + serviceManager.getResourceCenterService().getResourceCenters());

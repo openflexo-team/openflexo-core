@@ -36,20 +36,17 @@
  * 
  */
 
-
 package org.openflexo.rm;
 
 import java.awt.Window;
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.resource.FlexoResource;
+import org.openflexo.ApplicationContext;
 import org.openflexo.foundation.resource.MissingFlexoResource;
-import org.openflexo.gina.FIBLibrary;
 import org.openflexo.gina.swing.utils.JFIBDialog;
 import org.openflexo.localization.FlexoLocalization;
 
-
-public class ResourceMissingEditorDialog extends JFIBDialog<ResourceMissingEditor>{
+public class ResourceMissingEditorDialog extends JFIBDialog<ResourceMissingEditor> {
 
 	static final Logger logger = Logger.getLogger(ResourceMissingEditorDialog.class.getPackage().getName());
 
@@ -57,28 +54,30 @@ public class ResourceMissingEditorDialog extends JFIBDialog<ResourceMissingEdito
 
 	private static ResourceMissingEditorDialog dialog;
 
-	public static ResourceMissingEditorDialog getResourceMissingEditorDialog(MissingFlexoResource missingResource, ResourceConsistencyService service, Window parent) {
+	public static ResourceMissingEditorDialog getResourceMissingEditorDialog(MissingFlexoResource missingResource,
+			ResourceConsistencyService service, ApplicationContext applicationContext, Window parent) {
 		if (dialog == null) {
-			dialog = new ResourceMissingEditorDialog(missingResource, service, parent);
+			dialog = new ResourceMissingEditorDialog(missingResource, service, applicationContext, parent);
 		}
 		return dialog;
 	}
 
-	public static void showResourceMissingEditorDialog(MissingFlexoResource missingResource, ResourceConsistencyService service, Window parent) {
+	public static void showResourceMissingEditorDialog(MissingFlexoResource missingResource, ResourceConsistencyService service,
+			ApplicationContext applicationContext, Window parent) {
 		if (dialog == null) {
-			dialog = getResourceMissingEditorDialog(missingResource, service, parent);
+			dialog = getResourceMissingEditorDialog(missingResource, service, applicationContext, parent);
 		}
 		dialog.setData(new ResourceMissingEditor(missingResource, service));
 		dialog.showDialog();
 	}
 
-	public ResourceMissingEditorDialog(MissingFlexoResource missingResource, ResourceConsistencyService service, Window parent) {
+	public ResourceMissingEditorDialog(MissingFlexoResource missingResource, ResourceConsistencyService service,
+			ApplicationContext applicationContext, Window parent) {
 
-		super(FIBLibrary.instance().retrieveFIBComponent(RESOURCE_MISSING_EDITOR_FIB,true), new ResourceMissingEditor(missingResource, service), parent,
-				true, FlexoLocalization.getMainLocalizer());
+		super(applicationContext.getApplicationFIBLibraryService().retrieveFIBComponent(RESOURCE_MISSING_EDITOR_FIB, true),
+				new ResourceMissingEditor(missingResource, service), parent, true, FlexoLocalization.getMainLocalizer());
 		getData().setOwner(this);
 		setTitle("Resource Missing Editor");
 	}
 
 }
-	

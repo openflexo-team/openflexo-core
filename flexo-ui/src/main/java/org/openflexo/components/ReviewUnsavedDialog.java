@@ -42,11 +42,11 @@ import java.util.logging.Logger;
 
 import javax.swing.JFrame;
 
+import org.openflexo.ApplicationContext;
 import org.openflexo.foundation.resource.ResourceManager;
 import org.openflexo.foundation.resource.SaveResourceExceptionList;
 import org.openflexo.foundation.resource.SaveResourcePermissionDeniedException;
 import org.openflexo.foundation.utils.FlexoProgressFactory;
-import org.openflexo.gina.FIBLibrary;
 import org.openflexo.gina.swing.utils.JFIBDialog;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.rm.Resource;
@@ -73,18 +73,18 @@ public class ReviewUnsavedDialog extends JFIBDialog<ResourceSavingInfo> {
 	 * Constructor without frame argument: defaut Flexo active Frame will be used
 	 * 
 	 */
-	public ReviewUnsavedDialog(ResourceManager resourceManager) {
-		this(resourceManager, FlexoFrame.getActiveFrame());
+	public ReviewUnsavedDialog(ApplicationContext applicationContext, ResourceManager resourceManager) {
+		this(applicationContext, resourceManager, FlexoFrame.getActiveFrame());
 	}
 
 	/**
 	 * Constructor with JFrame argument
 	 * 
 	 */
-	public ReviewUnsavedDialog(ResourceManager resourceManager, JFrame frame) {
+	public ReviewUnsavedDialog(ApplicationContext applicationContext, ResourceManager resourceManager, JFrame frame) {
 
-		super(FIBLibrary.instance().retrieveFIBComponent(FIB_FILE_NAME), new ResourceSavingInfo(resourceManager), frame, true,
-				FlexoLocalization.getMainLocalizer());
+		super(applicationContext.getApplicationFIBLibraryService().retrieveFIBComponent(FIB_FILE_NAME),
+				new ResourceSavingInfo(resourceManager), frame, true, FlexoLocalization.getMainLocalizer());
 		this.resourceManager = resourceManager;
 		setTitle("Save modified resources");
 

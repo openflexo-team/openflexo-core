@@ -43,12 +43,11 @@ import java.util.logging.Logger;
 
 import org.openflexo.ApplicationContext;
 import org.openflexo.ApplicationData;
-import org.openflexo.gina.FIBLibrary;
 import org.openflexo.gina.swing.utils.JFIBDialog;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.logging.FlexoLogger;
-import org.openflexo.rm.ResourceLocator;
 import org.openflexo.rm.Resource;
+import org.openflexo.rm.ResourceLocator;
 import org.openflexo.view.FlexoFrame;
 
 /**
@@ -60,13 +59,11 @@ public class WelcomeDialog extends JFIBDialog<ApplicationData> {
 
 	private static final Logger logger = FlexoLogger.getLogger(WelcomeDialog.class.getPackage().getName());
 
-	
-
 	public static final Resource FIB_FILE = ResourceLocator.locateResource("Fib/WelcomePanel.fib");
 
-	public WelcomeDialog(ApplicationContext context) {
-		super(FIBLibrary.instance().retrieveFIBComponent(FIB_FILE), new ApplicationData(context), FlexoFrame.getActiveFrame(), true,
-				FlexoLocalization.getMainLocalizer());
+	public WelcomeDialog(ApplicationContext applicationContext) {
+		super(applicationContext.getApplicationFIBLibraryService().retrieveFIBComponent(FIB_FILE), new ApplicationData(applicationContext),
+				FlexoFrame.getActiveFrame(), true, FlexoLocalization.getMainLocalizer());
 		setResizable(false);
 	}
 }

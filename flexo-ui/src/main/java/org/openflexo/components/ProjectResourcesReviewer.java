@@ -53,6 +53,6 @@ public class ProjectResourcesReviewer extends ReviewUnsavedDialog {
 
 	// TODO: only save resource for supplied project
 	public ProjectResourcesReviewer(FlexoEditor editor, ApplicationContext applicationContext) {
-		super(applicationContext.getResourceManager());
+		super(applicationContext, applicationContext.getResourceManager());
 	}
 }

@@ -45,7 +45,7 @@ import java.util.logging.Logger;
 
 import org.junit.runner.RunWith;
 import org.openflexo.OpenflexoTestCaseWithGUI;
-import org.openflexo.gina.FIBLibrary;
+import org.openflexo.gina.ApplicationFIBLibrary;
 import org.openflexo.gina.model.FIBComponent;
 import org.openflexo.gina.swing.utils.FIBJPanel;
 import org.openflexo.localization.FlexoLocalization;
@@ -68,7 +68,7 @@ public abstract class OpenflexoFIBTestCase extends OpenflexoTestCaseWithGUI {
 	public void validateFIB(Resource fibResouce) throws InterruptedException {
 		try {
 			System.out.println("Validating fib file " + fibResouce);
-			FIBComponent component = FIBLibrary.instance().retrieveFIBComponent(fibResouce);
+			FIBComponent component = ApplicationFIBLibrary.instance().retrieveFIBComponent(fibResouce);
 			if (component == null) {
 				fail("Component not found: " + fibResouce.getURI());
 			}
@@ -78,13 +78,13 @@ public abstract class OpenflexoFIBTestCase extends OpenflexoTestCaseWithGUI {
 			}
 			assertEquals(0, validationReport.getErrorsCount());
 		} finally {
-			FIBLibrary.instance().removeFIBComponentFromCache(fibResouce);
+			ApplicationFIBLibrary.instance().removeFIBComponentFromCache(fibResouce);
 		}
 	}
 
 	// SHould not be used any more
 	/*
-
+	
 	public void validateFIB(String fibFileName) {
 		try {
 			System.out.println("Validating fib file " + fibFileName);
@@ -104,7 +104,7 @@ public abstract class OpenflexoFIBTestCase extends OpenflexoTestCaseWithGUI {
 	*/
 
 	public <T> FIBJPanel<T> instanciateFIB(Resource fibResource, T context, final Class<T> contextType) {
-		return new FIBJPanel<T>(fibResource, context, FlexoLocalization.getMainLocalizer()) {
+		return new FIBJPanel<T>(fibResource, context, ApplicationFIBLibrary.instance(), FlexoLocalization.getMainLocalizer()) {
 
 			@Override
 			public Class<T> getRepresentedType() {
@@ -122,18 +122,18 @@ public abstract class OpenflexoFIBTestCase extends OpenflexoTestCaseWithGUI {
 	/*
 		public <T> FIBJPanel<T> instanciateFIB(String fibFileName, T context, final Class<T> contextType) {
 			return new FIBJPanel<T>(fibFileName, context, FlexoLocalization.getMainLocalizer()) {
-
+	
 				@Override
 				public Class<T> getRepresentedType() {
 					return contextType;
 				}
-
+	
 				@Override
 				public void delete() {
 				}
-
+	
 			};
-
+	
 		}
 		*/
 }

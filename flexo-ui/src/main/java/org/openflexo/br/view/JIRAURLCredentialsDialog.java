@@ -90,7 +90,8 @@ public class JIRAURLCredentialsDialog {
 	public static boolean askLoginPassword(ApplicationContext applicationContext) {
 		JIRAURLCredentialsDialog credentialsDialog = new JIRAURLCredentialsDialog(applicationContext);
 		JFIBDialog<JIRAURLCredentialsDialog> dialog = JFIBDialog.instanciateAndShowDialog(URL_FIB_FILE, credentialsDialog,
-				FlexoFrame.getActiveFrame(), true, FlexoLocalization.getMainLocalizer());
+				applicationContext.getApplicationFIBLibraryService().getApplicationFIBLibrary(), FlexoFrame.getActiveFrame(), true,
+				FlexoLocalization.getMainLocalizer());
 		if (dialog.getStatus() == Status.VALIDATED) {
 			applicationContext.getAdvancedPrefs().setBugReportUser(credentialsDialog.login);
 			applicationContext.getAdvancedPrefs().setBugReportPassword(credentialsDialog.password);

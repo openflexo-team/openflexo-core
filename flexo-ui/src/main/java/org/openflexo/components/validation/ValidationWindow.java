@@ -41,6 +41,7 @@ package org.openflexo.components.validation;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 
+import org.openflexo.ApplicationContext;
 import org.openflexo.editor.SelectAndFocusObjectTask;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.gina.model.FIBComponent;
@@ -74,7 +75,7 @@ public class ValidationWindow extends JDialog {
 	public ValidationWindow(JFrame frame, FlexoController controller) {
 		super(frame, FlexoLocalization.localizedForKey(FlexoLocalization.getMainLocalizer(), "validation"), ModalityType.MODELESS);
 		this.controller = controller;
-		validationPanel = new FlexoValidationPanel(null, FlexoLocalization.getMainLocalizer());
+		validationPanel = new FlexoValidationPanel(null, controller.getApplicationContext(), FlexoLocalization.getMainLocalizer());
 		getContentPane().add(validationPanel);
 		pack();
 	}
@@ -117,8 +118,9 @@ public class ValidationWindow extends JDialog {
 
 	protected class FlexoValidationPanel extends ValidationPanel {
 
-		public FlexoValidationPanel(ValidationReport validationReport, LocalizedDelegate parentLocalizer) {
-			super(validationReport, parentLocalizer);
+		public FlexoValidationPanel(ValidationReport validationReport, ApplicationContext applicationContext,
+				LocalizedDelegate parentLocalizer) {
+			super(validationReport, applicationContext.getApplicationFIBLibraryService().getApplicationFIBLibrary(), parentLocalizer);
 		}
 
 		@Override

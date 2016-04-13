@@ -52,7 +52,6 @@ import javax.swing.SwingConstants;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.GraphicalFlexoObserver;
 import org.openflexo.foundation.task.Progress;
-import org.openflexo.gina.FIBLibrary;
 import org.openflexo.gina.model.FIBComponent;
 import org.openflexo.gina.model.listener.FIBSelectionListener;
 import org.openflexo.rm.Resource;
@@ -67,8 +66,8 @@ import org.openflexo.view.controller.model.FlexoPerspective;
  * @author sguerin
  * 
  */
-public abstract class FIBModuleView<O extends FlexoObject> extends SelectionSynchronizedFIBView implements
-		SelectionSynchronizedModuleView<O>, GraphicalFlexoObserver, FIBSelectionListener, Scrollable {
+public abstract class FIBModuleView<O extends FlexoObject> extends SelectionSynchronizedFIBView
+		implements SelectionSynchronizedModuleView<O>, GraphicalFlexoObserver, FIBSelectionListener, Scrollable {
 	static final Logger logger = Logger.getLogger(FIBModuleView.class.getPackage().getName());
 
 	// private Object representedObject;
@@ -80,7 +79,7 @@ public abstract class FIBModuleView<O extends FlexoObject> extends SelectionSync
 	}
 
 	public FIBModuleView(O representedObject, FlexoController controller, Resource fibResource, boolean addScrollBar) {
-		this(representedObject, controller, FIBLibrary.instance().retrieveFIBComponent(fibResource), addScrollBar);
+		this(representedObject, controller, controller.getApplicationFIBLibraryService().retrieveFIBComponent(fibResource), addScrollBar);
 		controller.willLoad(fibResource);
 	}
 
@@ -150,24 +149,24 @@ public abstract class FIBModuleView<O extends FlexoObject> extends SelectionSync
 	@Override
 	public int getScrollableUnitIncrement(Rectangle visibleRect, int orientation, int direction) {
 		switch (orientation) {
-		case SwingConstants.VERTICAL:
-			return visibleRect.height / 10;
-		case SwingConstants.HORIZONTAL:
-			return visibleRect.width / 10;
-		default:
-			throw new IllegalArgumentException("Invalid orientation: " + orientation);
+			case SwingConstants.VERTICAL:
+				return visibleRect.height / 10;
+			case SwingConstants.HORIZONTAL:
+				return visibleRect.width / 10;
+			default:
+				throw new IllegalArgumentException("Invalid orientation: " + orientation);
 		}
 	}
 
 	@Override
 	public int getScrollableBlockIncrement(Rectangle visibleRect, int orientation, int direction) {
 		switch (orientation) {
-		case SwingConstants.VERTICAL:
-			return visibleRect.height;
-		case SwingConstants.HORIZONTAL:
-			return visibleRect.width;
-		default:
-			throw new IllegalArgumentException("Invalid orientation: " + orientation);
+			case SwingConstants.VERTICAL:
+				return visibleRect.height;
+			case SwingConstants.HORIZONTAL:
+				return visibleRect.width;
+			default:
+				throw new IllegalArgumentException("Invalid orientation: " + orientation);
 		}
 	}
 

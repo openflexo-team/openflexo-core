@@ -41,8 +41,7 @@ package org.openflexo.components;
 import java.awt.Window;
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.FlexoServiceManager;
-import org.openflexo.gina.FIBLibrary;
+import org.openflexo.ApplicationContext;
 import org.openflexo.gina.swing.utils.JFIBDialog;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.model.undo.UndoManager;
@@ -64,27 +63,27 @@ public class UndoManagerDialog extends JFIBDialog<UndoManager> {
 
 	private static UndoManagerDialog dialog;
 
-	public static UndoManagerDialog getUndoManagerDialog(FlexoServiceManager serviceManager, Window parent) {
+	public static UndoManagerDialog getUndoManagerDialog(ApplicationContext applicationContext, Window parent) {
 		if (dialog == null) {
-			dialog = new UndoManagerDialog(serviceManager, parent);
+			dialog = new UndoManagerDialog(applicationContext, parent);
 		}
 
 		return dialog;
 	}
 
-	public static void showUndoManagerDialog(FlexoServiceManager serviceManager, Window parent) {
-		System.out.println("showUndoManagerDialog with " + serviceManager);
+	public static void showUndoManagerDialog(ApplicationContext applicationContext, Window parent) {
+		System.out.println("showUndoManagerDialog with " + applicationContext);
 
 		if (dialog == null) {
-			dialog = getUndoManagerDialog(serviceManager, parent);
+			dialog = getUndoManagerDialog(applicationContext, parent);
 		}
 		dialog.showDialog();
 	}
 
-	public UndoManagerDialog(FlexoServiceManager serviceManager, Window parent) {
+	public UndoManagerDialog(ApplicationContext applicationContext, Window parent) {
 
-		super(FIBLibrary.instance().retrieveFIBComponent(UNDO_MANAGER_FIB, true), serviceManager.getEditingContext().getUndoManager(),
-				parent, false, FlexoLocalization.getMainLocalizer());
+		super(applicationContext.getApplicationFIBLibraryService().retrieveFIBComponent(UNDO_MANAGER_FIB, true),
+				applicationContext.getEditingContext().getUndoManager(), parent, false, FlexoLocalization.getMainLocalizer());
 
 		setTitle("Undo Manager");
 

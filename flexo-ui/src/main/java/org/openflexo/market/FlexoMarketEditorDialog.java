@@ -41,17 +41,15 @@ package org.openflexo.market;
 import java.awt.Window;
 import java.util.logging.Logger;
 
+import org.openflexo.ApplicationContext;
 import org.openflexo.foundation.remoteresources.FlexoUpdateService;
-import org.openflexo.gina.FIBLibrary;
 import org.openflexo.gina.swing.utils.JFIBDialog;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
 
+public class FlexoMarketEditorDialog extends JFIBDialog<FlexoMarketEditor> {
 
-public class FlexoMarketEditorDialog extends JFIBDialog<FlexoMarketEditor>{
-
-	
 	static final Logger logger = Logger.getLogger(FlexoMarketEditorDialog.class.getPackage().getName());
 
 	public static final Resource FLEXO_MARKET_EDITOR_FIB = ResourceLocator.locateResource("Fib/FlexoMarketEditor.fib");
@@ -60,39 +58,39 @@ public class FlexoMarketEditorDialog extends JFIBDialog<FlexoMarketEditor>{
 
 	private static FlexoMarketEditorDialog dialog;
 
-	public static FlexoMarketEditorDialog getFlexoMarketEditorDialog(FlexoUpdateService service, Window parent) {
+	public static FlexoMarketEditorDialog getFlexoMarketEditorDialog(FlexoUpdateService service, ApplicationContext applicationContext,
+			Window parent) {
 		System.out.println("showFlexoMarketEditorDialog with " + service);
 
 		if (dialog == null) {
-			dialog = new FlexoMarketEditorDialog(service, parent);
+			dialog = new FlexoMarketEditorDialog(service, applicationContext, parent);
 		}
 
 		return dialog;
 	}
 
-	public static void showFlexoMarketEditorDialog(FlexoUpdateService service, Window parent) {
+	public static void showFlexoMarketEditorDialog(FlexoUpdateService service, ApplicationContext applicationContext, Window parent) {
 		System.out.println("showFlexoMarketEditor with " + service);
 
 		if (dialog == null) {
-			dialog = getFlexoMarketEditorDialog(service, parent);
+			dialog = getFlexoMarketEditorDialog(service, applicationContext, parent);
 		}
 		dialog.showDialog();
 	}
 
-	public static FlexoMarketEditor getFlexoMarketEditor(FlexoUpdateService service) {
+	public static FlexoMarketEditor getFlexoMarketEditor(FlexoUpdateService service, ApplicationContext applicationContext) {
 		if (flexoMarketEditor == null) {
-			flexoMarketEditor = new FlexoMarketEditor(service);
+			flexoMarketEditor = new FlexoMarketEditor(service, applicationContext);
 		}
 		return flexoMarketEditor;
 	}
 
-	public FlexoMarketEditorDialog(FlexoUpdateService service, Window parent) {
+	public FlexoMarketEditorDialog(FlexoUpdateService service, ApplicationContext applicationContext, Window parent) {
 
-		super(FIBLibrary.instance().retrieveFIBComponent(FLEXO_MARKET_EDITOR_FIB,true), getFlexoMarketEditor(service), parent,
-				true, FlexoLocalization.getMainLocalizer());
+		super(applicationContext.getApplicationFIBLibraryService().retrieveFIBComponent(FLEXO_MARKET_EDITOR_FIB, true),
+				getFlexoMarketEditor(service, applicationContext), parent, true, FlexoLocalization.getMainLocalizer());
 		getData().setOwner(this);
 		setTitle("Flexo Market Editor");
 	}
 
 }
-	

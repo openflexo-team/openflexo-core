@@ -41,11 +41,11 @@ package org.openflexo.drm.ui;
 import java.util.logging.Logger;
 
 import org.openflexo.drm.DocResourceCenter;
+import org.openflexo.gina.ApplicationFIBLibrary;
 import org.openflexo.gina.swing.utils.FIBJPanel;
 import org.openflexo.localization.FlexoLocalization;
-import org.openflexo.rm.ResourceLocator;
 import org.openflexo.rm.Resource;
-import org.openflexo.rm.ResourceLocatorDelegate;
+import org.openflexo.rm.ResourceLocator;
 
 /**
  * Browser for DocResourceCenter elements
@@ -57,8 +57,6 @@ import org.openflexo.rm.ResourceLocatorDelegate;
 public class DREBrowser extends FIBJPanel<DocResourceCenter> {
 
 	protected static final Logger logger = Logger.getLogger(DREBrowser.class.getPackage().getName());
-	
-
 
 	public static final Resource FIB_FILE = ResourceLocator.locateResource("Fib/DREBrowser.fib");
 
@@ -67,7 +65,7 @@ public class DREBrowser extends FIBJPanel<DocResourceCenter> {
 	// ================================================
 
 	public DREBrowser(DocResourceCenter drc) {
-		super(FIB_FILE, drc, FlexoLocalization.getMainLocalizer());
+		super(FIB_FILE, drc, ApplicationFIBLibrary.instance(), FlexoLocalization.getMainLocalizer());
 	}
 
 	@Override

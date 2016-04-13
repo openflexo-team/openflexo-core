@@ -108,8 +108,9 @@ public class SaveProjectsDialog {
 
 	public SaveProjectsDialog(FlexoController controller, List<FlexoProject> modifiedProjects) {
 		data = new ProjectList(modifiedProjects);
-		JFIBDialog<ProjectList> dialog = JFIBDialog.instanciateDialog(FIB_FILE_NAME, data, FlexoFrame.getActiveFrame(), true,
-				FlexoLocalization.getMainLocalizer());
+		JFIBDialog<ProjectList> dialog = JFIBDialog.instanciateDialog(FIB_FILE_NAME, data,
+				controller.getApplicationContext().getApplicationFIBLibraryService().getApplicationFIBLibrary(),
+				FlexoFrame.getActiveFrame(), true, FlexoLocalization.getMainLocalizer());
 		if (dialog.getController() instanceof FlexoFIBController) {
 			((FlexoFIBController) dialog.getController()).setFlexoController(controller);
 		}

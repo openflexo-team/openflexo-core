@@ -47,7 +47,6 @@ import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionType;
-import org.openflexo.gina.FIBLibrary;
 import org.openflexo.gina.model.FIBComponent;
 import org.openflexo.gina.model.FIBContainer;
 import org.openflexo.gina.model.listener.FIBSelectionListener;
@@ -76,7 +75,7 @@ public abstract class FIBBrowserView<O> extends SelectionSynchronizedFIBView imp
 	}
 
 	public FIBBrowserView(O representedObject, FlexoController controller, Resource fibResource, boolean addScrollBar) {
-		this(representedObject, controller, FIBLibrary.instance().retrieveFIBComponent(fibResource), addScrollBar);
+		this(representedObject, controller, controller.getApplicationFIBLibraryService().retrieveFIBComponent(fibResource), addScrollBar);
 		controller.willLoad(fibResource);
 	}
 
@@ -85,11 +84,11 @@ public abstract class FIBBrowserView<O> extends SelectionSynchronizedFIBView imp
 	public FIBBrowserView(O representedObject, FlexoController controller, String fibResourcePath) {
 		this(representedObject, controller, fibResourcePath, false, controller.willLoad(fibResourcePath));
 	}
-
+	
 	public FIBBrowserView(O representedObject, FlexoController controller, String fibResourcePath, FlexoProgress progress) {
 		this(representedObject, controller, fibResourcePath, false, progress);
 	}
-
+	
 	public FIBBrowserView(O representedObject, FlexoController controller, String fibResourcePath, boolean addScrollBar,
 			FlexoProgress progress) {
 		this(representedObject, controller, FIBLibrary.instance().retrieveFIBComponent(fibResourcePath), addScrollBar, progress);
@@ -138,8 +137,8 @@ public abstract class FIBBrowserView<O> extends SelectionSynchronizedFIBView imp
 		for (FIBBrowserElement el : browser.getElements()) {
 			if (el.getDataClass() != null) {
 				if (FlexoObject.class.isAssignableFrom(el.getDataClass())) {
-					List<FlexoActionType<?, ?, ?>> actionList = FlexoObjectImpl.getActionList((Class<? extends FlexoObject>) el
-							.getDataClass());
+					List<FlexoActionType<?, ?, ?>> actionList = FlexoObjectImpl
+							.getActionList((Class<? extends FlexoObject>) el.getDataClass());
 					for (FlexoActionType<?, ?, ?> actionType : actionList) {
 						boolean foundAction = false;
 						for (FIBBrowserAction action : el.getActions()) {

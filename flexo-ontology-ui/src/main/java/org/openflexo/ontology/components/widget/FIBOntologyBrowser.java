@@ -54,6 +54,7 @@ import org.openflexo.foundation.ontology.IFlexoOntology;
 import org.openflexo.foundation.ontology.IFlexoOntologyClass;
 import org.openflexo.foundation.ontology.IFlexoOntologyConcept;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
+import org.openflexo.gina.ApplicationFIBLibrary;
 import org.openflexo.gina.model.FIBComponent;
 import org.openflexo.gina.model.FIBContainer;
 import org.openflexo.gina.model.widget.FIBBrowser;
@@ -86,7 +87,7 @@ import org.openflexo.view.controller.TechnologyAdapterControllerService;
  * 
  */
 @SuppressWarnings("serial")
-public abstract class FIBOntologyBrowser extends FIBJPanel<FIBOntologyBrowser> implements PropertyChangeListener {
+public abstract class FIBOntologyBrowser extends FIBJPanel<FIBOntologyBrowser>implements PropertyChangeListener {
 
 	static final Logger logger = Logger.getLogger(FIBOntologyBrowser.class.getPackage().getName());
 
@@ -110,7 +111,7 @@ public abstract class FIBOntologyBrowser extends FIBJPanel<FIBOntologyBrowser> i
 	}
 
 	protected FIBOntologyBrowser(Resource fibFile, IFlexoOntology ontology) {
-		super(fibFile, null, FlexoLocalization.getMainLocalizer());
+		super(fibFile, null, ApplicationFIBLibrary.instance(), FlexoLocalization.getMainLocalizer());
 		matchingValues = new ArrayList<IFlexoOntologyConcept>();
 		model = makeBrowserModel(ontology);
 		// setOntology(ontology);
@@ -450,7 +451,8 @@ public abstract class FIBOntologyBrowser extends FIBJPanel<FIBOntologyBrowser> i
 	public String getButtonText() {
 		if (isSearching()) {
 			return "done";
-		} else {
+		}
+		else {
 			return "search";
 		}
 	}

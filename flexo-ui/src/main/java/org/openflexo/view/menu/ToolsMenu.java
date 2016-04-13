@@ -55,7 +55,6 @@ import javax.swing.filechooser.FileFilter;
 
 import org.openflexo.Flexo;
 import org.openflexo.FlexoCst;
-import org.openflexo.application.FlexoApplication;
 import org.openflexo.br.view.JIRAIssueReportDialog;
 import org.openflexo.components.ResourceCenterEditorDialog;
 import org.openflexo.components.UndoManagerDialog;
@@ -104,7 +103,7 @@ public class ToolsMenu extends FlexoMenu {
 	public JMenuItem timeTraveler;
 
 	public SaveDocSubmissionItem saveDocSubmissions;
-	
+
 	public JMenuItem market;
 
 	public ToolsMenu(FlexoController controller) {
@@ -126,9 +125,9 @@ public class ToolsMenu extends FlexoMenu {
 		addSeparator();
 		add(repairProject = new ValidateProjectItem());
 		add(timeTraveler = new TimeTraveler());
-		
+
 		// A market...
-		if(Flexo.isDev){
+		if (Flexo.isDev) {
 			addSeparator();
 			add(market = new OpenflexoMarketItem());
 		}
@@ -158,8 +157,8 @@ public class ToolsMenu extends FlexoMenu {
 
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
-			ResourceCenterEditorDialog.showResourceCenterEditorDialog(getController().getApplicationContext(), getController()
-					.getFlexoFrame());
+			ResourceCenterEditorDialog.showResourceCenterEditorDialog(getController().getApplicationContext(),
+					getController().getFlexoFrame(), false);
 		}
 	}
 
@@ -182,7 +181,8 @@ public class ToolsMenu extends FlexoMenu {
 
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
-			FlexoLoggingViewer.showLoggingViewer(FlexoLoggingManager.instance(), getController().getFlexoFrame());
+			FlexoLoggingViewer.showLoggingViewer(FlexoLoggingManager.instance(),
+					getController().getApplicationFIBLibraryService().getApplicationFIBLibrary(), getController().getFlexoFrame());
 		}
 	}
 
@@ -193,7 +193,8 @@ public class ToolsMenu extends FlexoMenu {
 	public class UndoManagerItem extends FlexoMenuItem {
 
 		public UndoManagerItem() {
-			super(new UndoManagerAction(), "undo_manager", KeyStroke.getKeyStroke(KeyEvent.VK_U, FlexoCst.META_MASK), getController(), true);
+			super(new UndoManagerAction(), "undo_manager", KeyStroke.getKeyStroke(KeyEvent.VK_U, FlexoCst.META_MASK), getController(),
+					true);
 		}
 
 	}
@@ -298,8 +299,8 @@ public class ToolsMenu extends FlexoMenu {
 
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
-			JIRAIssueReportDialog.newBugReport(getController().getModule(), getController().getProject(), getController()
-					.getApplicationContext());
+			JIRAIssueReportDialog.newBugReport(getController().getModule(), getController().getProject(),
+					getController().getApplicationContext());
 		}
 
 	}
@@ -339,7 +340,8 @@ public class ToolsMenu extends FlexoMenu {
 					File savedFile;
 					if (!chooser.getSelectedFile().getName().endsWith(".dsr")) {
 						savedFile = new File(chooser.getSelectedFile().getParentFile(), chooser.getSelectedFile().getName() + ".dsr");
-					} else {
+					}
+					else {
 						savedFile = chooser.getSelectedFile();
 					}
 					DocResourceManager drm = getController().getApplicationContext().getDocResourceManager();
@@ -350,7 +352,8 @@ public class ToolsMenu extends FlexoMenu {
 					e1.printStackTrace();
 					return;
 				}
-			} else {
+			}
+			else {
 				// cancelled, return.
 				return;
 			}
@@ -434,7 +437,8 @@ public class ToolsMenu extends FlexoMenu {
 			AutoSaveService autoSaveService = getAutoSaveService();
 			if (autoSaveService != null) {
 				autoSaveService.showTimeTravelerDialog();
-			} else {
+			}
+			else {
 				if (FlexoController.confirm(FlexoLocalization.localizedForKey("time_traveling_is_disabled") + ". "
 						+ FlexoLocalization.localizedForKey("would_you_like_to_activate_it_now?"))) {
 					getController().getApplicationContext().getGeneralPreferences().setAutoSaveEnabled(true);
@@ -454,18 +458,18 @@ public class ToolsMenu extends FlexoMenu {
 			setIcon(IconLibrary.MARKET16x16_ICON);
 		}
 	}
-	
+
 	public class OpenflexoMarketAction extends AbstractAction {
 		public OpenflexoMarketAction() {
 			super();
 		}
-		
+
 		@Override
 		public void actionPerformed(ActionEvent event) {
-			
-			FlexoMarketEditorDialog.showFlexoMarketEditorDialog(getController().getApplicationContext().getFlexoUpdateService(), getController()
-					.getFlexoFrame());
-			
+
+			FlexoMarketEditorDialog.showFlexoMarketEditorDialog(getController().getApplicationContext().getFlexoUpdateService(),
+					getController().getApplicationContext(), getController().getFlexoFrame());
+
 		}
 	}
 }

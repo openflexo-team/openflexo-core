@@ -36,20 +36,17 @@
  * 
  */
 
-
 package org.openflexo.rm;
 
 import java.awt.Window;
 import java.util.logging.Logger;
 
-import org.openflexo.gina.FIBLibrary;
+import org.openflexo.ApplicationContext;
 import org.openflexo.gina.swing.utils.JFIBDialog;
 import org.openflexo.localization.FlexoLocalization;
 
+public class ConflictedResourceEditorDialog extends JFIBDialog<ConflictedResourceEditor> {
 
-public class ConflictedResourceEditorDialog extends JFIBDialog<ConflictedResourceEditor>{
-
-	
 	/**
 	 * 
 	 */
@@ -61,28 +58,30 @@ public class ConflictedResourceEditorDialog extends JFIBDialog<ConflictedResourc
 
 	private static ConflictedResourceEditorDialog dialog;
 
-	public static ConflictedResourceEditorDialog getResourceConsistencyEditorDialog(ConflictedResourceSet resources, ResourceConsistencyService service, Window parent) {
+	public static ConflictedResourceEditorDialog getResourceConsistencyEditorDialog(ConflictedResourceSet resources,
+			ResourceConsistencyService service, ApplicationContext applicationContext, Window parent) {
 		if (dialog == null) {
-			dialog = new ConflictedResourceEditorDialog(resources,service, parent);
+			dialog = new ConflictedResourceEditorDialog(resources, service, applicationContext, parent);
 		}
 		return dialog;
 	}
 
-	public static void showResourceConsistencyEditorDialog(ConflictedResourceSet resources, ResourceConsistencyService service, Window parent) {
+	public static void showResourceConsistencyEditorDialog(ConflictedResourceSet resources, ResourceConsistencyService service,
+			ApplicationContext applicationContext, Window parent) {
 		if (dialog == null) {
-			dialog = getResourceConsistencyEditorDialog(resources, service, parent);
+			dialog = getResourceConsistencyEditorDialog(resources, service, applicationContext, parent);
 		}
 		dialog.setData(new ConflictedResourceEditor(resources, service));
 		dialog.showDialog();
 	}
 
-	public ConflictedResourceEditorDialog(ConflictedResourceSet resources, ResourceConsistencyService service, Window parent) {
+	public ConflictedResourceEditorDialog(ConflictedResourceSet resources, ResourceConsistencyService service,
+			ApplicationContext applicationContext, Window parent) {
 
-		super(FIBLibrary.instance().retrieveFIBComponent(RESOURCE_CONSISTENCY_EDITOR_FIB,true), new ConflictedResourceEditor(resources, service), parent,
-				true, FlexoLocalization.getMainLocalizer());
+		super(applicationContext.getApplicationFIBLibraryService().retrieveFIBComponent(RESOURCE_CONSISTENCY_EDITOR_FIB, true),
+				new ConflictedResourceEditor(resources, service), parent, true, FlexoLocalization.getMainLocalizer());
 		getData().setOwner(this);
 		setTitle("Resource Consistency Editor");
 	}
 
 }
-	

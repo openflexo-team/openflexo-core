@@ -48,7 +48,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openflexo.TestApplicationContext;
 import org.openflexo.fib.swing.utils.SwingGraphicalContextDelegate;
-import org.openflexo.gina.FIBLibrary;
+import org.openflexo.gina.ApplicationFIBLibrary;
 import org.openflexo.gina.controller.FIBController;
 import org.openflexo.gina.swing.view.SwingViewFactory;
 import org.openflexo.localization.FlexoLocalization;
@@ -87,8 +87,9 @@ public class TestPreferences extends FIBTestCase {
 	public void testInstanciateGeneralPreferences() {
 		Resource generalPreferences = ResourceLocator.locateResource("Fib/Prefs/GeneralPreferences.fib");
 
-		FIBController controller = FIBController.instanciateController(FIBLibrary.instance().retrieveFIBComponent(generalPreferences),
-				SwingViewFactory.INSTANCE, FlexoLocalization.getMainLocalizer());
+		FIBController controller = FIBController.instanciateController(
+				ApplicationFIBLibrary.instance().retrieveFIBComponent(generalPreferences), SwingViewFactory.INSTANCE,
+				FlexoLocalization.getMainLocalizer());
 		assertNotNull(controller);
 		controller.setDataObject(applicationContext.getGeneralPreferences());
 		controller.buildView();
@@ -102,7 +103,7 @@ public class TestPreferences extends FIBTestCase {
 	public void testInstanciateAdvancedPrefs() {
 		Resource advancedPrefs = ResourceLocator.locateResource("Fib/Prefs/AdvancedPrefs.fib");
 
-		FIBController controller = FIBController.instanciateController(FIBLibrary.instance().retrieveFIBComponent(advancedPrefs),
+		FIBController controller = FIBController.instanciateController(ApplicationFIBLibrary.instance().retrieveFIBComponent(advancedPrefs),
 				SwingViewFactory.INSTANCE, FlexoLocalization.getMainLocalizer());
 		assertNotNull(controller);
 		controller.setDataObject(applicationContext.getAdvancedPrefs());

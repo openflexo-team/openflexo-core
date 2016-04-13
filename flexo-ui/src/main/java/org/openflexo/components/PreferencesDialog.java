@@ -43,7 +43,6 @@ import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 
 import org.openflexo.ApplicationContext;
-import org.openflexo.gina.FIBLibrary;
 import org.openflexo.gina.model.FIBComponent;
 import org.openflexo.gina.swing.utils.JFIBDialog;
 import org.openflexo.gina.swing.view.SwingViewFactory;
@@ -90,9 +89,11 @@ public class PreferencesDialog extends JFIBDialog<FlexoPreferences> {
 
 	public PreferencesDialog(ApplicationContext applicationContext, Window parent) {
 
-		super(FIBLibrary.instance().retrieveFIBComponent(PREFERENCES_FIB, true),
+		super(applicationContext.getApplicationFIBLibraryService().retrieveFIBComponent(PREFERENCES_FIB, true),
 				applicationContext.getPreferencesService().getFlexoPreferences(), parent, true,
-				new PreferencesFIBController(FIBLibrary.instance().retrieveFIBComponent(PREFERENCES_FIB, true), SwingViewFactory.INSTANCE));
+				new PreferencesFIBController(
+						applicationContext.getApplicationFIBLibraryService().retrieveFIBComponent(PREFERENCES_FIB, true),
+						SwingViewFactory.INSTANCE));
 
 		setTitle("Preferences");
 

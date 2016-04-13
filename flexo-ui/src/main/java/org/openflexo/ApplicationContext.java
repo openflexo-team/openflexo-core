@@ -63,6 +63,7 @@ import org.openflexo.foundation.task.FlexoTaskManager;
 import org.openflexo.foundation.utils.ProjectLoadingHandler;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.module.ModuleLoader;
+import org.openflexo.prefs.ApplicationFIBLibraryService;
 import org.openflexo.prefs.PreferencesService;
 import org.openflexo.project.ProjectLoader;
 import org.openflexo.rm.AddResourceCenterTask;
@@ -96,6 +97,7 @@ public abstract class ApplicationContext extends DefaultFlexoServiceManager impl
 	public ApplicationContext() {
 		super();
 
+		registerApplicationFIBLibraryService();
 		registerModuleLoaderService();
 		registerPreferencesService();
 
@@ -120,6 +122,13 @@ public abstract class ApplicationContext extends DefaultFlexoServiceManager impl
 		registerService(resourceConsistencyService);
 	}
 
+	private void registerApplicationFIBLibraryService() {
+		if (getApplicationFIBLibraryService() == null) {
+			ApplicationFIBLibraryService applicationFIBLibraryService = createApplicationFIBLibraryService();
+			registerService(applicationFIBLibraryService);
+		}
+	}
+
 	private void registerPreferencesService() {
 		registerModuleLoaderService();
 		if (getPreferencesService() == null) {
@@ -137,6 +146,10 @@ public abstract class ApplicationContext extends DefaultFlexoServiceManager impl
 
 	public PreferencesService getPreferencesService() {
 		return getService(PreferencesService.class);
+	}
+
+	public ApplicationFIBLibraryService getApplicationFIBLibraryService() {
+		return getService(ApplicationFIBLibraryService.class);
 	}
 
 	public ModuleLoader getModuleLoader() {
@@ -198,6 +211,10 @@ public abstract class ApplicationContext extends DefaultFlexoServiceManager impl
 	protected abstract FlexoEditor createApplicationEditor();
 
 	protected abstract TechnologyAdapterControllerService createTechnologyAdapterControllerService();
+
+	protected ApplicationFIBLibraryService createApplicationFIBLibraryService() {
+		return new ApplicationFIBLibraryService();
+	}
 
 	protected abstract PreferencesService createPreferencesService();
 
