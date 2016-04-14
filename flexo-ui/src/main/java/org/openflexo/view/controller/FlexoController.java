@@ -51,7 +51,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -151,6 +150,7 @@ import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.foundation.utils.FlexoProgress;
 import org.openflexo.foundation.validation.FlexoValidationModel;
 import org.openflexo.gina.controller.FIBController.Status;
+import org.openflexo.gina.model.FIBMouseEvent;
 import org.openflexo.gina.swing.editor.ComponentValidationWindow;
 import org.openflexo.gina.swing.utils.localization.LocalizedEditor;
 import org.openflexo.gina.utils.InspectorGroup;
@@ -1680,7 +1680,7 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 		}
 	}
 
-	public void objectWasRightClicked(Object object, MouseEvent e) {
+	public void objectWasRightClicked(Object object, FIBMouseEvent e) {
 		// logger.info("Object was right-clicked: " + object + "event=" + e);
 		if (object instanceof FlexoObject) {
 			FlexoObject relevantObject = getRelevantObject((FlexoObject) object);

@@ -39,7 +39,6 @@
 
 package org.openflexo.view.controller;
 
-import java.awt.event.MouseEvent;
 import java.util.List;
 import java.util.Vector;
 import java.util.logging.Logger;
@@ -68,6 +67,7 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.gina.controller.FIBController;
 import org.openflexo.gina.model.FIBComponent;
 import org.openflexo.gina.model.FIBModelFactory;
+import org.openflexo.gina.model.FIBMouseEvent;
 import org.openflexo.gina.view.FIBView;
 import org.openflexo.gina.view.GinaViewFactory;
 import org.openflexo.icon.UtilsIconLibrary;
@@ -219,16 +219,16 @@ public class FlexoFIBController extends FIBController implements GraphicalFlexoO
 	}
 
 	public void doubleClick(Object object) {
-		// System.out.println("doubleClick with " + object);
-		// System.out.println("getFlexoController()=" + getFlexoController());
+		System.out.println("doubleClick with " + object);
+		System.out.println("getFlexoController()=" + getFlexoController());
 		if (getFlexoController() != null) {
 			getFlexoController().objectWasDoubleClicked(object);
 		}
 	}
 
-	public void rightClick(Object object, MouseEvent e) {
-		// System.out.println("rightClick with " + object);
-		// System.out.println("getFlexoController()=" + getFlexoController());
+	public void rightClick(Object object, FIBMouseEvent e) {
+		System.out.println("rightClick with " + object);
+		System.out.println("getFlexoController()=" + getFlexoController());
 		if (getFlexoController() != null) {
 			getFlexoController().objectWasRightClicked(object, e);
 		}

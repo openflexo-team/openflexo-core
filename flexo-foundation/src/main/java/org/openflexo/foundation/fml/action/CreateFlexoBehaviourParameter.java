@@ -49,6 +49,7 @@ import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.action.NotImplementedException;
+import org.openflexo.foundation.fml.AbstractVirtualModel;
 import org.openflexo.foundation.fml.CheckboxParameter;
 import org.openflexo.foundation.fml.DropDownParameter;
 import org.openflexo.foundation.fml.FMLModelFactory;
@@ -204,6 +205,15 @@ public class CreateFlexoBehaviourParameter extends FlexoAction<CreateFlexoBehavi
 		if (getFocusedObject() != null && getFocusedObject().getOwningVirtualModel() != null
 				&& getFocusedObject().getOwningVirtualModel().getModelSlots() != null) {
 			for (ModelSlot<?> ms : getFocusedObject().getOwningVirtualModel().getModelSlots()) {
+				for (Class<? extends FlexoBehaviourParameter> paramType : ms.getAvailableFlexoBehaviourParameterTypes()) {
+					if (!availableParameterTypes.contains(paramType)) {
+						availableParameterTypes.add(paramType);
+					}
+				}
+			}
+		}
+		if (getFocusedObject().getFlexoConcept() instanceof AbstractVirtualModel) {
+			for (ModelSlot<?> ms : ((AbstractVirtualModel<?>) getFocusedObject().getFlexoConcept()).getModelSlots()) {
 				for (Class<? extends FlexoBehaviourParameter> paramType : ms.getAvailableFlexoBehaviourParameterTypes()) {
 					if (!availableParameterTypes.contains(paramType)) {
 						availableParameterTypes.add(paramType);
