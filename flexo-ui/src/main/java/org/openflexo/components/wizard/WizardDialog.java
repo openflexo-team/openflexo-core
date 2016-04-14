@@ -43,6 +43,7 @@ import java.awt.Dimension;
 import java.util.logging.Logger;
 
 import org.openflexo.ApplicationContext;
+import org.openflexo.gina.ApplicationFIBLibrary;
 import org.openflexo.gina.model.FIBComponent;
 import org.openflexo.gina.swing.utils.JFIBDialog;
 import org.openflexo.gina.swing.view.SwingViewFactory;
@@ -70,9 +71,9 @@ public class WizardDialog extends JFIBDialog<Wizard> {
 	public WizardDialog(Wizard wizard, FlexoController controller) {
 		// We first initialize the FIBComponent in order to have the FlexoController well initialized in the WizardPanelController
 		// Otherwise, first step of wizard will have a controller with a null FlexoController
-		super(getFIBComponent(controller.getApplicationContext()), wizard, FlexoFrame.getActiveFrame(), true,
-				makeFIBController(getFIBComponent(controller.getApplicationContext()), SwingViewFactory.INSTANCE,
-						FlexoLocalization.getMainLocalizer(), wizard));
+		super(getFIBComponent(controller != null ? controller.getApplicationContext() : null), wizard, FlexoFrame.getActiveFrame(), true,
+				makeFIBController(getFIBComponent(controller != null ? controller.getApplicationContext() : null),
+						SwingViewFactory.INSTANCE, FlexoLocalization.getMainLocalizer(), wizard));
 		if (wizard instanceof FlexoWizard) {
 			getController().setFlexoController(((FlexoWizard) wizard).getController());
 		}
@@ -104,7 +105,12 @@ public class WizardDialog extends JFIBDialog<Wizard> {
 	}
 
 	private static FIBComponent getFIBComponent(ApplicationContext applicationContext) {
-		return applicationContext.getApplicationFIBLibraryService().retrieveFIBComponent(FIB_FILE);
+		if (applicationContext != null) {
+			return applicationContext.getApplicationFIBLibraryService().retrieveFIBComponent(FIB_FILE);
+		}
+		else {
+			return ApplicationFIBLibrary.instance().retrieveFIBComponent(FIB_FILE);
+		}
 	}
 
 	protected static WizardPanelController makeFIBController(FIBComponent fibComponent, GinaViewFactory<?> viewFactory,
