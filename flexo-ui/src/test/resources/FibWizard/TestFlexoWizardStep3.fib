@@ -2,6 +2,7 @@
 <Panel id="0" darkLevel="0" useScrollBar="false" borderLeft="0"
 	protectContent="false" height="99" name="TestFlexoWizardTest3"
 	layout="twocols"
+	controllerClassName="org.openflexo.view.controller.FlexoFIBController"
 	border="empty" trackViewPortWidth="true" width="99"
 	dataClassName="org.openflexo.components.wizard.WizardStep3" titleFont="Lucida Grande,0,13"
 	borderTop="5" trackViewPortHeight="true">

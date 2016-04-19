@@ -51,6 +51,7 @@ import org.junit.runner.RunWith;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.fib.swing.utils.SwingGraphicalContextDelegate;
 import org.openflexo.fib.utils.OpenflexoFIBTestCase;
+import org.openflexo.fml.controller.FMLFIBController;
 import org.openflexo.foundation.DefaultFlexoEditor;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.fml.ActionScheme;
@@ -71,7 +72,9 @@ import org.openflexo.foundation.fml.action.CreatePrimitiveRole;
 import org.openflexo.foundation.fml.controlgraph.ConditionalAction;
 import org.openflexo.foundation.fml.editionaction.AssignationAction;
 import org.openflexo.foundation.fml.editionaction.ExpressionAction;
+import org.openflexo.gina.ApplicationFIBLibrary;
 import org.openflexo.gina.swing.utils.FIBJPanel;
+import org.openflexo.gina.utils.InspectorGroup;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.test.OrderedRunner;
@@ -257,7 +260,13 @@ public class TestVirtualModelView extends OpenflexoFIBTestCase {
 	public void testInstanciateWidget() {
 
 		FIBJPanel<VirtualModel> widget = instanciateFIB(fibResource, virtualModel, VirtualModel.class);
+		FMLFIBController fibController = (FMLFIBController) widget.getController();
+		InspectorGroup fmlInspectorGroup = new InspectorGroup(ResourceLocator.locateResource("Inspectors/FML"),
+				ApplicationFIBLibrary.instance());
+		fibController.setDefaultInspectorGroup(fmlInspectorGroup);
 
+		// ModuleInspectorController inspectorController = new ModuleInspectorController(null);
+		// fibController.setInspectorController
 		gcDelegate.addTab("TestVirtualModel", widget.getController());
 	}
 

@@ -41,6 +41,8 @@ package org.openflexo.fml.controller;
 import java.io.FileNotFoundException;
 import java.util.logging.Logger;
 
+import org.openflexo.connie.DataBinding;
+import org.openflexo.connie.expr.BindingValue;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.action.DeleteRepositoryFolder;
 import org.openflexo.foundation.fml.AbstractProperty;
@@ -98,9 +100,10 @@ import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.gina.model.FIBComponent;
-import org.openflexo.gina.model.container.FIBPanel;
 import org.openflexo.gina.model.container.FIBTab;
+import org.openflexo.gina.model.widget.FIBTextField;
 import org.openflexo.gina.utils.FIBInspector;
+import org.openflexo.gina.utils.InspectorGroup;
 import org.openflexo.gina.view.GinaViewFactory;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.rm.Resource;
@@ -636,10 +639,40 @@ public class FMLFIBController extends FlexoFIBController {
 	}
 
 	public FIBInspector inspectorForObject(FMLObject object) {
-		return getFlexoController().getModuleInspectorController().inspectorForObject(object);
+		if (object == null) {
+			return null;
+		}
+		if (getFlexoController() != null) {
+			return getFlexoController().getModuleInspectorController().inspectorForObject(object);
+		}
+		if (defaultInspectorGroup != null) {
+
+			FIBInspector returned = defaultInspectorGroup.inspectorForClass(object.getClass());
+
+			System.out.println("################ Pour " + object + " l'inspecteur c'est " + returned);
+
+			// System.out.println(returned.getFIBLibrary().getFIBModelFactory().stringRepresentation(returned));
+
+			/*FIBTab advancedTab = (FIBTab) returned.getTabPanel().getSubComponentNamed("AdvancedTab");
+
+			FIBTextField tf = (FIBTextField) advancedTab.getSubComponentNamed("FlexoConceptTextField");
+
+			System.out.println("J'ai mon TF=" + tf);
+
+			DataBinding<?> dataBinding = tf.getData();
+			System.out.println("data=" + dataBinding);
+
+			BindingValue bv = (BindingValue) dataBinding.getExpression();
+
+			System.out.println("bv=" + bv.getBindingVariable() + " of " + bv.getBindingVariable().getClass());
+			System.out.println("path[0]=" + bv.getBindingPath().get(0));
+*/
+			return returned;
+		}
+		return null;
 	}
 
-	public FIBPanel basicInspectorTabForObject(FMLObject object) {
+	public FIBTab basicInspectorTabForObject(FMLObject object) {
 		// return inspectorForObject(object);
 
 		FIBInspector inspector = inspectorForObject(object);
@@ -651,6 +684,19 @@ public class FMLFIBController extends FlexoFIBController {
 			return returned;
 		}
 		return null;
+	}
+
+	// Debug
+	private InspectorGroup defaultInspectorGroup;
+
+	// Debug
+	public InspectorGroup getDefaultInspectorGroup() {
+		return defaultInspectorGroup;
+	}
+
+	// Debug
+	public void setDefaultInspectorGroup(InspectorGroup defaultInspectorGroup) {
+		this.defaultInspectorGroup = defaultInspectorGroup;
 	}
 
 }
