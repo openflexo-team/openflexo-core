@@ -653,7 +653,7 @@ public class FMLFIBController extends FlexoFIBController {
 
 			// System.out.println(returned.getFIBLibrary().getFIBModelFactory().stringRepresentation(returned));
 
-			/*FIBTab advancedTab = (FIBTab) returned.getTabPanel().getSubComponentNamed("AdvancedTab");
+			FIBTab advancedTab = (FIBTab) returned.getTabPanel().getSubComponentNamed("AdvancedTab");
 
 			FIBTextField tf = (FIBTextField) advancedTab.getSubComponentNamed("FlexoConceptTextField");
 
@@ -666,7 +666,16 @@ public class FMLFIBController extends FlexoFIBController {
 
 			System.out.println("bv=" + bv.getBindingVariable() + " of " + bv.getBindingVariable().getClass());
 			System.out.println("path[0]=" + bv.getBindingPath().get(0));
-*/
+
+			System.out.println("BM=" + tf.getData().getOwner().getBindingModel());
+
+			if (tf.getData().getOwner() instanceof FIBComponent) {
+				FIBComponent fib = (FIBComponent) tf.getData().getOwner();
+				System.out.println(fib.getFIBLibrary().stringRepresentation(fib));
+				System.out.println("Root component:");
+				System.out.println(fib.getFIBLibrary().stringRepresentation(fib.getRootComponent()));
+			}
+
 			return returned;
 		}
 		return null;
