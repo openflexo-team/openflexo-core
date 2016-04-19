@@ -14,7 +14,7 @@
 				name="EditionActionTypeLabel" localize="true" />
 			<TextField index="1" data="data.implementedInterface.simpleName"
 				constraints="twocols(expandHorizontally=true;expandVertically=false;index=1;location=right)"
-				name="FlexoConceptTextField" readOnly="true" localize="true"
+				name="EditionActionTypeTextField" readOnly="true" localize="true"
 				columns="10" />
 			<Label manageDynamicModel="false" useScrollBar="false"
 				localize="true" align="left" index="10000"
