@@ -41,8 +41,6 @@ package org.openflexo.fml.controller;
 import java.io.FileNotFoundException;
 import java.util.logging.Logger;
 
-import org.openflexo.connie.DataBinding;
-import org.openflexo.connie.expr.BindingValue;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.action.DeleteRepositoryFolder;
 import org.openflexo.foundation.fml.AbstractProperty;
@@ -101,7 +99,6 @@ import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.gina.model.FIBComponent;
 import org.openflexo.gina.model.container.FIBTab;
-import org.openflexo.gina.model.widget.FIBTextField;
 import org.openflexo.gina.utils.FIBInspector;
 import org.openflexo.gina.utils.InspectorGroup;
 import org.openflexo.gina.view.GinaViewFactory;
@@ -646,37 +643,7 @@ public class FMLFIBController extends FlexoFIBController {
 			return getFlexoController().getModuleInspectorController().inspectorForObject(object);
 		}
 		if (defaultInspectorGroup != null) {
-
-			FIBInspector returned = defaultInspectorGroup.inspectorForClass(object.getClass());
-
-			System.out.println("################ Pour " + object + " l'inspecteur c'est " + returned);
-
-			// System.out.println(returned.getFIBLibrary().getFIBModelFactory().stringRepresentation(returned));
-
-			FIBTab advancedTab = (FIBTab) returned.getTabPanel().getSubComponentNamed("AdvancedTab");
-
-			FIBTextField tf = (FIBTextField) advancedTab.getSubComponentNamed("FlexoConceptTextField");
-
-			System.out.println("J'ai mon TF=" + tf);
-
-			DataBinding<?> dataBinding = tf.getData();
-			System.out.println("data=" + dataBinding);
-
-			BindingValue bv = (BindingValue) dataBinding.getExpression();
-
-			System.out.println("bv=" + bv.getBindingVariable() + " of " + bv.getBindingVariable().getClass());
-			System.out.println("path[0]=" + bv.getBindingPath().get(0));
-
-			System.out.println("BM=" + tf.getData().getOwner().getBindingModel());
-
-			if (tf.getData().getOwner() instanceof FIBComponent) {
-				FIBComponent fib = (FIBComponent) tf.getData().getOwner();
-				System.out.println(fib.getFIBLibrary().stringRepresentation(fib));
-				System.out.println("Root component:");
-				System.out.println(fib.getFIBLibrary().stringRepresentation(fib.getRootComponent()));
-			}
-
-			return returned;
+			return defaultInspectorGroup.inspectorForClass(object.getClass());
 		}
 		return null;
 	}
