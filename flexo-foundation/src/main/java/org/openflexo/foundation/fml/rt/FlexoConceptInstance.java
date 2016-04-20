@@ -469,7 +469,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 		 *            the property to lookup
 		 */
 		@Override
-		public <T> T getFlexoActor(FlexoRole<T> flexoRole) {
+		public <T> T getFlexoActor(final FlexoRole<T> flexoRole) {
 			if (flexoRole == null) {
 				logger.warning("Unexpected null flexoProperty");
 				return null;
@@ -516,6 +516,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 		// TODO: optimize this method while caching those lists
 		@Override
 		public <T> List<T> getFlexoActorList(final FlexoRole<T> flexoRole) {
+
 			if (flexoRole == null) {
 				logger.warning("Unexpected null flexoProperty");
 				return null;
@@ -536,8 +537,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 				returned = new ArrayList<T>(existingList) {
 					@Override
 					public boolean add(T e) {
-						System.out.println(">>>>>>>>>> Hop, on ajoute un acteur " + e);
-						Thread.dumpStack();
+						// System.out.println("Adding element "+e+" to list for actor " + flexoRole);
 						addToFlexoActors(e, flexoRole);
 						return super.add(e);
 					}
@@ -635,8 +635,8 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 		@Override
 		public <T> void setFlexoActor(T object, FlexoRole<T> flexoRole) {
 			if (logger.isLoggable(Level.FINE)) {
-				logger.fine(">>>>>>>>> setObjectForFlexoRole flexoRole: " + flexoRole + " set " + object + " was "
-						+ getFlexoActor(flexoRole));
+				logger.fine(
+						">>>>>>>>> setObjectForFlexoRole flexoRole: " + flexoRole + " set " + object + " was " + getFlexoActor(flexoRole));
 			}
 			T oldObject = getFlexoActor(flexoRole);
 			if (object != oldObject) {
@@ -770,8 +770,8 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 
 		@Override
 		public FlexoConcept getFlexoConcept() {
-			if (getOwningVirtualModelInstance() != null && getOwningVirtualModelInstance().getVirtualModel() != null
-					&& flexoConcept == null && StringUtils.isNotEmpty(flexoConceptURI)) {
+			if (getOwningVirtualModelInstance() != null && getOwningVirtualModelInstance().getVirtualModel() != null && flexoConcept == null
+					&& StringUtils.isNotEmpty(flexoConceptURI)) {
 				flexoConcept = getOwningVirtualModelInstance().getVirtualModel().getFlexoConcept(flexoConceptURI);
 				if (flexoConcept == null) {
 					logger.warning("Could not find FlexoConcept with uri=" + flexoConceptURI + " (searched in "
@@ -926,7 +926,8 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 
 			if (variable.getVariableName().equals(FlexoConceptInspector.FORMATTER_INSTANCE_PROPERTY)) {
 				return this;
-			} else if (variable instanceof FlexoRoleBindingVariable && getFlexoConcept() != null) {
+			}
+			/*else if (variable instanceof FlexoRoleBindingVariable && getFlexoConcept() != null) {
 				FlexoRole<?> role = ((FlexoRoleBindingVariable) variable).getFlexoRole();
 				// Handle here case of FlexoRole relates to VirtualModelInstance container
 				if (role.getFlexoConcept() == getFlexoConcept().getOwningVirtualModel()) {
@@ -937,7 +938,8 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 				}
 				logger.warning("Unexpected " + variable);
 				// return null;
-			} else if (variable instanceof FlexoPropertyBindingVariable && getFlexoConcept() != null
+			}*/
+			else if (variable instanceof FlexoPropertyBindingVariable && getFlexoConcept() != null
 					&& ((FlexoPropertyBindingVariable) variable).getFlexoProperty().getFlexoConcept() == getFlexoConcept()) {
 				return ((FlexoPropertyBindingVariable) variable).getValue(this);
 			} else if (variable.getVariableName().equals(FlexoConceptBindingModel.REFLEXIVE_ACCESS_PROPERTY)) {
@@ -972,8 +974,8 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 						+ getClass());
 				return;
 			} else if (variable.getVariableName().equals(FlexoConceptBindingModel.FLEXO_CONCEPT_INSTANCE_PROPERTY)) {
-				logger.warning("Forbidden write access " + FlexoConceptBindingModel.FLEXO_CONCEPT_INSTANCE_PROPERTY + " in " + this
-						+ " of " + getClass());
+				logger.warning("Forbidden write access " + FlexoConceptBindingModel.FLEXO_CONCEPT_INSTANCE_PROPERTY + " in " + this + " of "
+						+ getClass());
 				return;
 			}
 

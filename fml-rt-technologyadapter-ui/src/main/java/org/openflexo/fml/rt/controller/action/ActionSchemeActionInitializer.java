@@ -72,6 +72,7 @@ public class ActionSchemeActionInitializer extends ActionInitializer<ActionSchem
 		return new FlexoActionInitializer<ActionSchemeAction>() {
 			@Override
 			public boolean run(EventObject e, ActionSchemeAction action) {
+				getController().willExecute(action);
 				ParametersRetriever<AbstractActionScheme> parameterRetriever = new ParametersRetriever<AbstractActionScheme>(action,
 						getController());
 				if (action.escapeParameterRetrievingWhenValid && parameterRetriever.isSkipable()) {
@@ -87,6 +88,7 @@ public class ActionSchemeActionInitializer extends ActionInitializer<ActionSchem
 		return new FlexoActionFinalizer<ActionSchemeAction>() {
 			@Override
 			public boolean run(EventObject e, ActionSchemeAction action) {
+				getController().hasExecuted(action);
 				return true;
 			}
 		};

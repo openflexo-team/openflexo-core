@@ -59,8 +59,8 @@ import org.openflexo.view.controller.ControllerActionInitializer;
 import org.openflexo.view.controller.FlexoController;
 import org.openflexo.view.controller.ParametersRetriever;
 
-public class NavigationSchemeActionInitializer extends
-		ActionInitializer<NavigationSchemeAction, FlexoConceptInstance, VirtualModelInstanceObject> {
+public class NavigationSchemeActionInitializer
+		extends ActionInitializer<NavigationSchemeAction, FlexoConceptInstance, VirtualModelInstanceObject> {
 
 	private static final Logger logger = Logger.getLogger(ControllerActionInitializer.class.getPackage().getName());
 
@@ -77,6 +77,8 @@ public class NavigationSchemeActionInitializer extends
 					return false;
 				}
 
+				getController().willExecute(action);
+
 				// First retrieve parameters
 
 				ParametersRetriever<NavigationScheme> parameterRetriever = new ParametersRetriever<NavigationScheme>(action,
@@ -84,6 +86,7 @@ public class NavigationSchemeActionInitializer extends
 				if (action.escapeParameterRetrievingWhenValid && parameterRetriever.isSkipable()) {
 					return true;
 				}
+				getController().hasExecuted(action);
 				return parameterRetriever.retrieveParameters();
 
 			}
