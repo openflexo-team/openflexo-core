@@ -5,17 +5,17 @@
 		<artifactId>openflexo-component</artifactId>
         <version>0.4-SNAPSHOT</version>
 	</parent>
-	<version>1.8.0-SYLVAIN-SNAPSHOT</version>
+	<version>1.8.0-SNAPSHOT</version>
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>openflexo-core</artifactId>
 	<name>Openflexo-Core</name>
 	<packaging>pom</packaging>
 	<properties>
-		<gina.version>2.0-SYLVAIN-SNAPSHOT</gina.version>
-		<connie.version>1.3-SYLVAIN-SNAPSHOT</connie.version>
-		<pamela.version>1.3-SYLVAIN-SNAPSHOT</pamela.version>
-		<diana.version>1.3-SYLVAIN-SNAPSHOT</diana.version>
-		<openflexoutils.version>1.3-SYLVAIN-SNAPSHOT</openflexoutils.version>
+		<gina.version>2.0-SNAPSHOT</gina.version>
+		<connie.version>1.3-SNAPSHOT</connie.version>
+		<pamela.version>1.3-SNAPSHOT</pamela.version>
+		<diana.version>1.3-SNAPSHOT</diana.version>
+		<openflexoutils.version>1.3-SNAPSHOT</openflexoutils.version>
 		<google.guice.version>3.0</google.guice.version>
 		<core.logo>https://media.openflexo.org/images/gina_logo64x64.png</core.logo>
 	    <sitedeploy.dir>/home/www/sites/openflexo-core</sitedeploy.dir>
