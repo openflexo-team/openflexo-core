@@ -462,7 +462,7 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 				list = new ArrayList<FlexoConceptInstance>();
 				flexoConceptInstances.put(fci.getFlexoConceptURI(), list);
 			}
-			list.remove(fci.getFlexoID());
+			list.remove(fci);
 			performSuperRemover(FLEXO_CONCEPT_INSTANCES_KEY, fci);
 			// orderedFlexoConceptInstances.remove(fci);
 			// getPropertyChangeSupport().firePropertyChange(FLEXO_CONCEPT_INSTANCES_KEY, fci, null);
