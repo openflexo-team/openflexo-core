@@ -44,6 +44,7 @@ import org.openflexo.ApplicationContext;
 import org.openflexo.foundation.FlexoService;
 import org.openflexo.foundation.FlexoServiceImpl;
 import org.openflexo.gina.ApplicationFIBLibrary;
+import org.openflexo.gina.ApplicationFIBLibrary.ApplicationFIBLibraryImpl;
 import org.openflexo.gina.model.FIBComponent;
 import org.openflexo.gina.model.FIBModelFactory;
 import org.openflexo.rm.Resource;
@@ -68,7 +69,7 @@ public class ApplicationFIBLibraryService extends FlexoServiceImpl implements Fl
 
 	@Override
 	public void initialize() {
-		applicationFIBLibrary = ApplicationFIBLibrary.instance();
+		applicationFIBLibrary = ApplicationFIBLibraryImpl.instance();
 	}
 
 	public ApplicationFIBLibrary getApplicationFIBLibrary() {

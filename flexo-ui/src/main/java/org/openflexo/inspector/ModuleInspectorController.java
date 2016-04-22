@@ -60,7 +60,7 @@ import org.openflexo.foundation.fml.inspector.InspectorEntry;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.task.Progress;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
-import org.openflexo.gina.ApplicationFIBLibrary;
+import org.openflexo.gina.ApplicationFIBLibrary.ApplicationFIBLibraryImpl;
 import org.openflexo.gina.FIBLibrary;
 import org.openflexo.gina.model.FIBComponent;
 import org.openflexo.gina.model.FIBContainer;
@@ -159,7 +159,7 @@ public class ModuleInspectorController extends Observable implements Observer {
 		if (getFlexoController() != null) {
 			return getFlexoController().getApplicationContext().getApplicationFIBLibraryService().getApplicationFIBLibrary();
 		}
-		return ApplicationFIBLibrary.instance();
+		return ApplicationFIBLibraryImpl.instance();
 	}
 
 	public InspectorGroup loadDirectory(Resource inspectorsDirectory, InspectorGroup... parentInspectorGroups) {

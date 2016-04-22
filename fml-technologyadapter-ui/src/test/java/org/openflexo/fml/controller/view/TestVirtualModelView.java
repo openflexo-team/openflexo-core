@@ -72,7 +72,7 @@ import org.openflexo.foundation.fml.action.CreatePrimitiveRole;
 import org.openflexo.foundation.fml.controlgraph.ConditionalAction;
 import org.openflexo.foundation.fml.editionaction.AssignationAction;
 import org.openflexo.foundation.fml.editionaction.ExpressionAction;
-import org.openflexo.gina.ApplicationFIBLibrary;
+import org.openflexo.gina.ApplicationFIBLibrary.ApplicationFIBLibraryImpl;
 import org.openflexo.gina.swing.utils.FIBJPanel;
 import org.openflexo.gina.utils.InspectorGroup;
 import org.openflexo.rm.Resource;
@@ -262,7 +262,7 @@ public class TestVirtualModelView extends OpenflexoFIBTestCase {
 		FIBJPanel<VirtualModel> widget = instanciateFIB(fibResource, virtualModel, VirtualModel.class);
 		FMLFIBController fibController = (FMLFIBController) widget.getController();
 		InspectorGroup fmlInspectorGroup = new InspectorGroup(ResourceLocator.locateResource("Inspectors/FML"),
-				ApplicationFIBLibrary.instance());
+				ApplicationFIBLibraryImpl.instance());
 		fibController.setDefaultInspectorGroup(fmlInspectorGroup);
 
 		// ModuleInspectorController inspectorController = new ModuleInspectorController(null);

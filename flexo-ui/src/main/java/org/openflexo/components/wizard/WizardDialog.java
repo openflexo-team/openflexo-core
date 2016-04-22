@@ -43,7 +43,7 @@ import java.awt.Dimension;
 import java.util.logging.Logger;
 
 import org.openflexo.ApplicationContext;
-import org.openflexo.gina.ApplicationFIBLibrary;
+import org.openflexo.gina.ApplicationFIBLibrary.ApplicationFIBLibraryImpl;
 import org.openflexo.gina.model.FIBComponent;
 import org.openflexo.gina.swing.utils.JFIBDialog;
 import org.openflexo.gina.swing.view.SwingViewFactory;
@@ -109,7 +109,7 @@ public class WizardDialog extends JFIBDialog<Wizard> {
 			return applicationContext.getApplicationFIBLibraryService().retrieveFIBComponent(FIB_FILE);
 		}
 		else {
-			return ApplicationFIBLibrary.instance().retrieveFIBComponent(FIB_FILE);
+			return ApplicationFIBLibraryImpl.instance().retrieveFIBComponent(FIB_FILE);
 		}
 	}
 

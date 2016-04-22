@@ -41,7 +41,7 @@ package org.openflexo.drm.ui;
 import java.util.logging.Logger;
 
 import org.openflexo.drm.DocResourceCenter;
-import org.openflexo.gina.ApplicationFIBLibrary;
+import org.openflexo.gina.ApplicationFIBLibrary.ApplicationFIBLibraryImpl;
 import org.openflexo.gina.swing.utils.FIBJPanel;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.rm.Resource;
@@ -65,7 +65,7 @@ public class DREBrowser extends FIBJPanel<DocResourceCenter> {
 	// ================================================
 
 	public DREBrowser(DocResourceCenter drc) {
-		super(FIB_FILE, drc, ApplicationFIBLibrary.instance(), FlexoLocalization.getMainLocalizer());
+		super(FIB_FILE, drc, ApplicationFIBLibraryImpl.instance(), FlexoLocalization.getMainLocalizer());
 	}
 
 	@Override

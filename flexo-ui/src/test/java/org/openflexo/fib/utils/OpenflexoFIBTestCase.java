@@ -45,7 +45,7 @@ import java.util.logging.Logger;
 
 import org.junit.runner.RunWith;
 import org.openflexo.OpenflexoTestCaseWithGUI;
-import org.openflexo.gina.ApplicationFIBLibrary;
+import org.openflexo.gina.ApplicationFIBLibrary.ApplicationFIBLibraryImpl;
 import org.openflexo.gina.model.FIBComponent;
 import org.openflexo.gina.swing.utils.FIBJPanel;
 import org.openflexo.localization.FlexoLocalization;
@@ -68,7 +68,7 @@ public abstract class OpenflexoFIBTestCase extends OpenflexoTestCaseWithGUI {
 	public void validateFIB(Resource fibResouce) throws InterruptedException {
 		try {
 			System.out.println("Validating fib file " + fibResouce);
-			FIBComponent component = ApplicationFIBLibrary.instance().retrieveFIBComponent(fibResouce);
+			FIBComponent component = ApplicationFIBLibraryImpl.instance().retrieveFIBComponent(fibResouce);
 			if (component == null) {
 				fail("Component not found: " + fibResouce.getURI());
 			}
@@ -78,7 +78,7 @@ public abstract class OpenflexoFIBTestCase extends OpenflexoTestCaseWithGUI {
 			}
 			assertEquals(0, validationReport.getErrorsCount());
 		} finally {
-			ApplicationFIBLibrary.instance().removeFIBComponentFromCache(fibResouce);
+			ApplicationFIBLibraryImpl.instance().removeFIBComponentFromCache(fibResouce);
 		}
 	}
 
@@ -104,7 +104,7 @@ public abstract class OpenflexoFIBTestCase extends OpenflexoTestCaseWithGUI {
 	*/
 
 	public <T> FIBJPanel<T> instanciateFIB(Resource fibResource, T context, final Class<T> contextType) {
-		return new FIBJPanel<T>(fibResource, context, ApplicationFIBLibrary.instance(), FlexoLocalization.getMainLocalizer()) {
+		return new FIBJPanel<T>(fibResource, context, ApplicationFIBLibraryImpl.instance(), FlexoLocalization.getMainLocalizer()) {
 
 			@Override
 			public Class<T> getRepresentedType() {

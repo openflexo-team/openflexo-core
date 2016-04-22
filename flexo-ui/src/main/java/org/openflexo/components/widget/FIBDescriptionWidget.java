@@ -43,7 +43,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoObject;
-import org.openflexo.gina.ApplicationFIBLibrary;
+import org.openflexo.gina.ApplicationFIBLibrary.ApplicationFIBLibraryImpl;
 import org.openflexo.gina.controller.FIBController;
 import org.openflexo.gina.model.FIBComponent;
 import org.openflexo.gina.swing.utils.FIBJPanel;
@@ -67,7 +67,7 @@ public class FIBDescriptionWidget extends FIBJPanel<FlexoObject> {
 	public static final Resource FIB_FILE = ResourceLocator.locateResource("Fib/DescriptionWidget.fib");
 
 	public FIBDescriptionWidget(FlexoObject editedObject) {
-		super(FIB_FILE, editedObject, ApplicationFIBLibrary.instance(), FlexoLocalization.getMainLocalizer());
+		super(FIB_FILE, editedObject, ApplicationFIBLibraryImpl.instance(), FlexoLocalization.getMainLocalizer());
 	}
 
 	@Override
