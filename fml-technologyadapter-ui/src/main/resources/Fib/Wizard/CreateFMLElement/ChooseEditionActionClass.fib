@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Panel id="0" darkLevel="0" useScrollBar="false" protectContent="false"
-	layout="border" controllerClassName="org.openflexo.view.controller.FlexoFIBController"
+	layout="border" controllerClassName="org.openflexo.fml.controller.FMLFIBController"
 	border="empty" trackViewPortWidth="true"
 	dataClassName="org.openflexo.fml.controller.action.CreateEditionActionWizard$ChooseEditionActionClass"
 	trackViewPortHeight="true">
@@ -162,7 +162,7 @@
 				localize="true" visible="iterationTypeRBL.data='FetchRequest'" />
 			<RadioButtonList manageDynamicModel="false" columns="1"
 				index="9" localize="true" visible="iterationTypeRBL.data='FetchRequest'"
-				constraints="twocols(expandHorizontally=false;expandVertically=false;index=9;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=right)"
+				constraints="twocols(expandHorizontally=true;expandVertically=true;index=9;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=right)"
 				format="object.simpleName" showText="true" iteratorClassName="java.lang.Class"
 				vGap="-2" showIcon="true" useScrollBar="true" data="data.fetchRequestClass"
 				autoSelectFirstRow="true" hGap="0"

@@ -110,7 +110,8 @@ public class ParametersRetriever<ES extends FlexoBehaviour> {
 	public boolean retrieveParameters() {
 
 		FIBComponent component = makeFIB(true, true);
-		JFIBDialog dialog = JFIBDialog.instanciateDialog(component, action, controller.getFlexoFrame(), true, FlexoLocalization.getMainLocalizer());
+		JFIBDialog dialog = JFIBDialog.instanciateDialog(component, action, controller.getFlexoFrame(), true,
+				FlexoLocalization.getMainLocalizer());
 		if (!action.getFlexoBehaviour().getDefinePopupDefaultSize()) {
 			dialog.setMinimumSize(new Dimension(500, 50));
 		}
@@ -142,7 +143,9 @@ public class ParametersRetriever<ES extends FlexoBehaviour> {
 		final FlexoBehaviour flexoBehaviour = action.getFlexoBehaviour();
 
 		FIBPanel returned = fibModelFactory.newFIBPanel();
-		returned.getVariable("data").setType(FlexoBehaviourActionType.getFlexoBehaviourActionType(action.getFlexoBehaviour()));
+		if (returned.getVariable("data") != null) {
+			returned.getVariable("data").setType(FlexoBehaviourActionType.getFlexoBehaviourActionType(action.getFlexoBehaviour()));
+		}
 		returned.setBindingFactory(action.getFlexoBehaviour().getBindingFactory());
 
 		returned.setLayout(Layout.twocols);

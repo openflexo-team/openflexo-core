@@ -88,8 +88,8 @@ import org.openflexo.foundation.fml.rt.editionaction.SelectVirtualModelInstance;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 
-public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLControlGraph, FMLObject>
-		implements Bindable, PropertyChangeListener {
+public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLControlGraph, FMLObject> implements Bindable,
+		PropertyChangeListener {
 
 	private static final Logger logger = Logger.getLogger(CreateEditionAction.class.getPackage().getName());
 
@@ -271,6 +271,9 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 	}
 
 	public Class<? extends FetchRequest<?, ?>> getFetchRequestClass() {
+		if (fetchRequestClass == null && availableFetchRequests != null && !availableFetchRequests.isEmpty()) {
+			setFetchRequestClass(availableFetchRequests.get(0));
+		}
 		return fetchRequestClass;
 	}
 
