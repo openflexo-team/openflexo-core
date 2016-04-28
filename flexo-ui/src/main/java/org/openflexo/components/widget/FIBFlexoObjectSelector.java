@@ -172,15 +172,13 @@ public abstract class FIBFlexoObjectSelector<T extends FlexoObject> extends Text
 							}
 						}
 					});
-				}
-				else if (e.getKeyCode() == KeyEvent.VK_UP) {
+				} else if (e.getKeyCode() == KeyEvent.VK_UP) {
 					if (getCustomPanel() != null) {
 						getCustomPanel().getFIBListWidget().requestFocusInWindow();
 						getCustomPanel().getFIBListWidget()
 								.setSelectedIndex(getCustomPanel().getFIBListWidget().getMultipleValueModel().getSize() - 1);
 					}
-				}
-				else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
+				} else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
 					if (getCustomPanel() != null) {
 						getCustomPanel().getFIBListWidget().requestFocusInWindow();
 						getCustomPanel().getFIBListWidget().setSelectedIndex(0);
@@ -307,8 +305,7 @@ public abstract class FIBFlexoObjectSelector<T extends FlexoObject> extends Text
 		pcSupport.firePropertyChange("selectedObject", old, selectedObject);
 		if (isAcceptableValue(selectedObject)) {
 			setSelectedValue((T) selectedObject);
-		}
-		else {
+		} else {
 			setSelectedValue(null);
 		}
 	}
@@ -431,8 +428,7 @@ public abstract class FIBFlexoObjectSelector<T extends FlexoObject> extends Text
 	public void setRevertValue(T oldValue) {
 		if (oldValue != null) {
 			_revertValue = oldValue;
-		}
-		else {
+		} else {
 			_revertValue = null;
 		}
 		if (logger.isLoggable(Level.FINE)) {
@@ -489,7 +485,7 @@ public abstract class FIBFlexoObjectSelector<T extends FlexoObject> extends Text
 
 			fibComponent = (FIBContainer) ApplicationFIBLibraryImpl.instance().retrieveFIBComponent(getFIBResource());
 			controller = makeCustomFIBController(fibComponent);
-			fibView = (JFIBView<?, ?>) controller.buildView(fibComponent);
+			fibView = (JFIBView<?, ?>) controller.buildView(fibComponent, true);
 
 			controller.setDataObject(FIBFlexoObjectSelector.this, true);
 
@@ -617,8 +613,7 @@ public abstract class FIBFlexoObjectSelector<T extends FlexoObject> extends Text
 					&& !object.hasDescription()) {
 				if (returned instanceof ImageIcon) {
 					returned = IconFactory.getImageIcon((ImageIcon) returned, new IconMarker[] { IconLibrary.WARNING });
-				}
-				else {
+				} else {
 					logger.severe("CANNOT decorate a non ImageIcon for " + this);
 				}
 			}
@@ -642,8 +637,7 @@ public abstract class FIBFlexoObjectSelector<T extends FlexoObject> extends Text
 			public int filterRGB(int x, int y, int rgb) {
 				if (rgb == target1) {
 					return replacement1;
-				}
-				else if (rgb == target2) {
+				} else if (rgb == target2) {
 					return replacement2;
 				}
 				return rgb;
