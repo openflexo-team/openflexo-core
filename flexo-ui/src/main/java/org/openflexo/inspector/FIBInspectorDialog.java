@@ -141,8 +141,11 @@ public class FIBInspectorDialog extends JDialog implements Observer {
 			if (object instanceof FlexoResource) {
 				FlexoResource<?> resource = (FlexoResource<?>) object;
 				if (resource instanceof TechnologyAdapterResource) {
-					setIconImage(FlexoController.statelessIconForTechnologyAdapterResource((TechnologyAdapterResource<?, ?>) resource)
-							.getImage());
+					ImageIcon imageIcon = FlexoController
+							.statelessIconForTechnologyAdapterResource((TechnologyAdapterResource<?, ?>) resource);
+					if (imageIcon != null) {
+						setIconImage(imageIcon.getImage());
+					}
 				} else {
 					setIconImage(IconLibrary.OPENFLEXO_NOTEXT_16.getImage());
 				}
