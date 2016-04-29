@@ -17,10 +17,10 @@
 				name="Name" localize="true" columns="10" />
 			<Label label="label" index="2"
 				constraints="twocols(expandHorizontally=false;expandVertically=false;index=2;location=left)"
-				localize="true" />
+				localize="true" name="LabelLabel"/>
 			<TextField index="3" data="data.label"
 				constraints="twocols(expandHorizontally=true;expandVertically=false;index=3;location=right)"
-				name="Label" localize="true" columns="10" />
+				name="LabelTF" localize="true" columns="10" />
 
 			<Label label="parameters" index="4"
 				constraints="twocols(expandHorizontally=false;expandVertically=false;index=2;location=left)"

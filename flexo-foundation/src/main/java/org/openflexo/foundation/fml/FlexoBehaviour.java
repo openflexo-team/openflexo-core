@@ -132,6 +132,9 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 	public void setFlexoConcept(FlexoConcept flexoConcept);
 
 	@Override
+	public Type getReturnType();
+
+	@Override
 	@Getter(value = NAME_KEY)
 	@XMLAttribute
 	public String getName();
@@ -253,6 +256,14 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 		 * Stores a chained collections of objects which are involved in validation
 		 */
 		private final ChainedCollection<FMLObject> validableObjects = null;
+
+		@Override
+		public Type getReturnType() {
+			if (getControlGraph() != null) {
+				return getControlGraph().getInferedType();
+			}
+			return Void.TYPE;
+		}
 
 		@Override
 		public FlexoBehaviourType getFlexoBehaviourType() {
@@ -778,11 +789,6 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 		@Override
 		public void setHeight(int height) {
 			this.height = height;
-		}
-
-		@Override
-		public Type getReturnType() {
-			return Void.TYPE;
 		}
 
 		@Override
