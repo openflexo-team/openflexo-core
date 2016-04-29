@@ -320,13 +320,13 @@ public class ViewPointLibrary extends DefaultFlexoObject implements FlexoService
 	@Override
 	public void initialize() {
 		if (getResourceCenterService() != null) {
-			// At initialization, initialize all already existing FlexoResourceCenter with this ViewPointLibrary
-			// Some FlexoResourceCenter may have already initialized, the goal is here to register in ViewPointLibrary any ViewPoint already
-			// found
-			FMLTechnologyAdapter vmTA = getTechnologyAdapterService().getTechnologyAdapter(FMLTechnologyAdapter.class);
+
+			FMLTechnologyAdapter fmlTA = getTechnologyAdapterService().getTechnologyAdapter(FMLTechnologyAdapter.class);
+			getTechnologyAdapterService().activateTechnologyAdapter(fmlTA);
+
 			for (FlexoResourceCenter rc : getResourceCenters()) {
 				// Register Viewpoint viewpoint resources
-				ViewPointRepository vprfb = (ViewPointRepository) rc.getRepository(ViewPointRepository.class, vmTA);
+				ViewPointRepository vprfb = (ViewPointRepository) rc.getRepository(ViewPointRepository.class, fmlTA);
 				for (ViewPointResource vpRes : vprfb.getAllResources()) {
 					vpRes.setViewPointLibrary(this);
 					registerViewPoint(vpRes);

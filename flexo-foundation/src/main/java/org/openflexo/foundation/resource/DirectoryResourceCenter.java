@@ -85,8 +85,8 @@ public class DirectoryResourceCenter extends FileSystemBasedResourceCenter {
 		@Implementation
 		public static abstract class DirectoryResourceCenterEntryImpl implements DirectoryResourceCenterEntry {
 			@Override
-			public DirectoryResourceCenter makeResourceCenter() {
-				return DirectoryResourceCenter.instanciateNewDirectoryResourceCenter(getDirectory());
+			public DirectoryResourceCenter makeResourceCenter(FlexoResourceCenterService rcService) {
+				return DirectoryResourceCenter.instanciateNewDirectoryResourceCenter(getDirectory(), rcService);
 			}
 
 			@Override
@@ -100,18 +100,19 @@ public class DirectoryResourceCenter extends FileSystemBasedResourceCenter {
 
 	}
 
-	public DirectoryResourceCenter(File resourceCenterDirectory) {
-		super(resourceCenterDirectory);
+	public DirectoryResourceCenter(File resourceCenterDirectory, FlexoResourceCenterService rcService) {
+		super(resourceCenterDirectory, rcService);
 	}
 
-	public DirectoryResourceCenter(File resourceCenterDirectory, String defaultBaseURI) {
-		super(resourceCenterDirectory);
+	public DirectoryResourceCenter(File resourceCenterDirectory, String defaultBaseURI, FlexoResourceCenterService rcService) {
+		super(resourceCenterDirectory, rcService);
 		setDefaultBaseURI(defaultBaseURI);
 	}
 
-	public static DirectoryResourceCenter instanciateNewDirectoryResourceCenter(File resourceCenterDirectory) {
+	public static DirectoryResourceCenter instanciateNewDirectoryResourceCenter(File resourceCenterDirectory,
+			FlexoResourceCenterService rcService) {
 		logger.info("Instanciate ResourceCenter from " + resourceCenterDirectory.getAbsolutePath());
-		DirectoryResourceCenter directoryResourceCenter = new DirectoryResourceCenter(resourceCenterDirectory);
+		DirectoryResourceCenter directoryResourceCenter = new DirectoryResourceCenter(resourceCenterDirectory, rcService);
 		try {
 			directoryResourceCenter.update();
 		} catch (IOException e) {

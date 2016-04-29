@@ -77,7 +77,7 @@ public abstract class RemoteResourceCenter extends ResourceRepository<FlexoResou
 		@Implementation
 		public static abstract class RemoteResourceCenterEntryImpl implements RemoteResourceCenterEntry {
 			@Override
-			public RemoteResourceCenter makeResourceCenter() {
+			public RemoteResourceCenter makeResourceCenter(FlexoResourceCenterService rcService) {
 				// TODO Auto-generated method stub
 				return null;
 			}

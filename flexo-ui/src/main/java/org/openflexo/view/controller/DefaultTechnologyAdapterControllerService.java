@@ -48,10 +48,15 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoService;
 import org.openflexo.foundation.FlexoServiceImpl;
+import org.openflexo.foundation.FlexoServiceManager.ServiceRegistered;
+import org.openflexo.foundation.FlexoServiceManager.TechnologyAdapterHasBeenActivated;
+import org.openflexo.foundation.FlexoServiceManager.TechnologyAdapterHasBeenDisactivated;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.nature.ProjectNatureService;
+import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.task.Progress;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.model.exceptions.ModelDefinitionException;
@@ -114,7 +119,8 @@ public abstract class DefaultTechnologyAdapterControllerService extends FlexoSer
 		if (loadedAdapters.containsKey(technologyAdapterController.getClass())) {
 			logger.severe("Cannot include TechnologyAdapter with classname '" + technologyAdapterController.getClass().getName()
 					+ "' because it already exists !!!! A TechnologyAdapter name MUST be unique !");
-		} else {
+		}
+		else {
 			loadedAdapters.put(technologyAdapterController.getClass(), technologyAdapterController);
 		}
 		logger.info("Loaded " + technologyAdapterController.getClass());
@@ -157,7 +163,7 @@ public abstract class DefaultTechnologyAdapterControllerService extends FlexoSer
 				registerTechnologyAdapterController(technologyAdapterController);
 				return (TAC) technologyAdapterController;
 			}
-			
+		
 		}*/
 
 		return null;
@@ -168,6 +174,7 @@ public abstract class DefaultTechnologyAdapterControllerService extends FlexoSer
 	 * 
 	 * @return
 	 */
+	@Override
 	public Collection<TechnologyAdapterController<?>> getLoadedAdapterControllers() {
 		return loadedAdapters.values();
 	}
@@ -179,31 +186,79 @@ public abstract class DefaultTechnologyAdapterControllerService extends FlexoSer
 			// When a module is loaded, register all loaded technology adapter controllers with new new loaded module action initializer
 			// The newly loaded module will be able to provide all tooling provided by the technology adapter
 
+			System.out.println("!!!!!!!!!!!!!!!!!!!!!!!! On vient de charger le module " + notification);
+
 			// We have to start with the FMLTechnologyAdapter, if it exists
 			for (TechnologyAdapterController<?> adapterController : getLoadedAdapterControllers()) {
 				if (adapterController.getTechnologyAdapter() instanceof FMLTechnologyAdapter) {
-					Progress.progress(FlexoLocalization.localizedForKey("initialize_actions_for_technology_adapter") + " "
-							+ adapterController.getTechnologyAdapter().getName());
-					adapterController.initializeModule(((ModuleLoaded) notification).getLoadedModule());
+					System.out.println("Activated " + adapterController.getTechnologyAdapter() + " ? " + adapterController.isActivated());
+					if (adapterController.isActivated()) {
+						Progress.progress(FlexoLocalization.localizedForKey("initialize_actions_for_technology_adapter") + " "
+								+ adapterController.getTechnologyAdapter().getName());
+						adapterController.activate(((ModuleLoaded) notification).getLoadedModule());
+					}
 				}
 			}
 
 			for (TechnologyAdapterController<?> adapterController : getLoadedAdapterControllers()) {
 				if (!(adapterController.getTechnologyAdapter() instanceof FMLTechnologyAdapter)) {
-					Progress.progress(FlexoLocalization.localizedForKey("initialize_actions_for_technology_adapter") + " "
-							+ adapterController.getTechnologyAdapter().getName());
-					adapterController.initializeModule(((ModuleLoaded) notification).getLoadedModule());
+					System.out.println("Activated " + adapterController.getTechnologyAdapter() + " ? " + adapterController.isActivated());
+					if (adapterController.isActivated()) {
+						Progress.progress(FlexoLocalization.localizedForKey("initialize_actions_for_technology_adapter") + " "
+								+ adapterController.getTechnologyAdapter().getName());
+						adapterController.activate(((ModuleLoaded) notification).getLoadedModule());
+					}
 				}
 			}
 		}
+
+		if (caller instanceof TechnologyAdapterService) {
+			if (notification instanceof ServiceRegistered) {
+				/*for (FlexoResourceCenter rc : getResourceCenters()) {
+					rc.initialize((TechnologyAdapterService) caller);
+				}*/
+			}
+			else if (notification instanceof TechnologyAdapterHasBeenActivated) {
+				activateTechnology(((TechnologyAdapterHasBeenActivated) notification).getTechnologyAdapter());
+			}
+			else if (notification instanceof TechnologyAdapterHasBeenDisactivated) {
+				disactivateTechnology(((TechnologyAdapterHasBeenActivated) notification).getTechnologyAdapter());
+			}
+		}
+
 	}
 
 	@Override
 	public void initialize() {
 		loadAvailableTechnologyAdapterControllers();
-		for (TechnologyAdapterController<?> ta : getLoadedAdapterControllers()) {
-			ta.initialize();
+		for (TechnologyAdapter ta : getServiceManager().getTechnologyAdapterService().getTechnologyAdapters()) {
+			if (ta.isActivated()) {
+				TechnologyAdapterController<?> tac = getTechnologyAdapterController(ta);
+				tac.activate();
+			}
 		}
+	}
+
+	/**
+	 * Enable a {@link TechnologyAdapter}<br>
+	 * The {@link FlexoResourceCenter} should scan the resources that it may interpret
+	 * 
+	 * @param technologyAdapter
+	 */
+	@Override
+	public void activateTechnology(TechnologyAdapter technologyAdapter) {
+		getTechnologyAdapterController(technologyAdapter).activate();
+	}
+
+	/**
+	 * Disable a {@link TechnologyAdapter}<br>
+	 * The {@link FlexoResourceCenter} is notified to free the resources that it is managing, if possible
+	 * 
+	 * @param technologyAdapter
+	 */
+	@Override
+	public void disactivateTechnology(TechnologyAdapter technologyAdapter) {
+		getTechnologyAdapterController(technologyAdapter).disactivate();
 	}
 
 	/**

@@ -44,6 +44,8 @@ import java.util.List;
 import org.openflexo.foundation.FlexoService;
 import org.openflexo.foundation.FlexoServiceImpl;
 import org.openflexo.foundation.FlexoServiceManager.ServiceRegistered;
+import org.openflexo.foundation.FlexoServiceManager.TechnologyAdapterHasBeenActivated;
+import org.openflexo.foundation.FlexoServiceManager.TechnologyAdapterHasBeenDisactivated;
 import org.openflexo.foundation.resource.FlexoResourceCenter.ResourceCenterEntry;
 import org.openflexo.foundation.resource.PamelaResourceImpl.WillDeleteFileOnDiskNotification;
 import org.openflexo.foundation.resource.PamelaResourceImpl.WillRenameFileOnDiskNotification;
@@ -87,66 +89,14 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 	public static FlexoResourceCenterService getNewInstance(List<ResourceCenterEntry<?>> resourceCenterEntries) {
 		DefaultResourceCenterService returned = (DefaultResourceCenterService) getNewInstance();
 		for (ResourceCenterEntry<?> entry : resourceCenterEntries) {
-			FlexoResourceCenter rc = entry.makeResourceCenter();
+			FlexoResourceCenter rc = entry.makeResourceCenter(returned);
 			returned.addToResourceCenters(rc);
 		}
-
-		/*for (File directory : resourceCenterDirectories) {
-			if (directory != null && directory.isDirectory() && directory.exists()) {
-				returned.addToDirectoryResourceCenter(directory);
-			}
-		}*/
-		/*if (resourceCenterDirectory != null && resourceCenterDirectory.isDirectory() && resourceCenterDirectory.exists()) {
-			returned.addToDirectoryResourceCenter(resourceCenterDirectory);
-		} else {
-			File defaultRCFile = tryToFindDefaultResourceCenterDirectory();
-			if (defaultRCFile != null && defaultRCFile.isDirectory() && defaultRCFile.exists()) {
-				returned.addToDirectoryResourceCenter(defaultRCFile);
-			}
-		}*/
 		return returned;
 	}
-
-	/*private static File tryToFindDefaultResourceCenterDirectory() {
-		File root = FileUtils.getApplicationDataDirectory();
-		File file = null;
-		boolean ok = false;
-		int i = 0;
-		String base = "FlexoResourceCenter";
-		String attempt = base;
-		while (!ok && i < 100) {
-			file = new File(root, attempt);
-			if (!file.exists()) {
-				ok = file.mkdirs();
-			} else {
-				ok = file.isDirectory() && file.canWrite();
-			}
-			i++;
-			attempt = base + "-" + i;
-		}
-		i = 0;
-		while (!ok && i < 1000) {
-			try {
-				file = File.createTempFile("FlexoResourceCenter", null);
-				file.delete();
-				file.mkdirs();
-				ok = file.exists() && file.canWrite();
-				i++;
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-		return file;
-	}*/
 
 	public DefaultResourceCenterService() {
 	}
-
-	/*public DirectoryResourceCenter addToDirectoryResourceCenter(File aDirectory) {
-		DirectoryResourceCenter returned = DirectoryResourceCenter.instanciateNewDirectoryResourceCenter(aDirectory);
-		addToResourceCenters(returned);
-		return returned;
-	}*/
 
 	@Override
 	public void addToResourceCenters(FlexoResourceCenter resourceCenter) {
@@ -262,9 +212,6 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 
 	@Override
 	public void receiveNotification(FlexoService caller, ServiceNotification notification) {
-		/*if (notification instanceof ProjectLoaded) {
-			addToResourceCenters(((ProjectLoaded) notification).getProject());
-		}*/
 		if (notification instanceof WillWriteFileOnDiskNotification) {
 			for (FlexoResourceCenter rc : getResourceCenters()) {
 				if (rc instanceof FileSystemBasedResourceCenter) {
@@ -289,19 +236,22 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 		}
 		if (caller instanceof TechnologyAdapterService) {
 			if (notification instanceof ServiceRegistered) {
-				for (FlexoResourceCenter rc : getResourceCenters()) {
+				/*for (FlexoResourceCenter rc : getResourceCenters()) {
 					rc.initialize((TechnologyAdapterService) caller);
+				}*/
+			}
+			else if (notification instanceof TechnologyAdapterHasBeenActivated) {
+				for (FlexoResourceCenter rc : getResourceCenters()) {
+					rc.activateTechnology(((TechnologyAdapterHasBeenActivated) notification).getTechnologyAdapter());
+				}
+			}
+			else if (notification instanceof TechnologyAdapterHasBeenDisactivated) {
+				for (FlexoResourceCenter rc : getResourceCenters()) {
+					rc.disactivateTechnology(((TechnologyAdapterHasBeenActivated) notification).getTechnologyAdapter());
 				}
 			}
 		}
 
-		/*if (caller instanceof ViewPointLibrary) {
-			if (notification instanceof ServiceRegistered) {
-				for (FlexoResourceCenter rc : getResourceCenters()) {
-					rc.getViewPointRepository().setViewPointLibrary((ViewPointLibrary)caller);
-				}
-			}
-		}*/
 	}
 
 	/**

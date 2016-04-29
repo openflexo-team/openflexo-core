@@ -79,10 +79,7 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 
 	private static final Logger logger = Logger.getLogger(DefaultTechnologyAdapterService.class.getPackage().getName());
 
-	private FlexoResourceCenterService flexoResourceCenterService;
-
 	private Map<Class, TechnologyAdapter> loadedAdapters;
-	private Map<TechnologyAdapter, TechnologyContextManager> technologyContextManagers;
 
 	public static TechnologyAdapterService getNewInstance(FlexoResourceCenterService resourceCenterService) {
 		try {
@@ -114,7 +111,6 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 		if (loadedAdapters == null) {
 
 			loadedAdapters = new Hashtable<Class, TechnologyAdapter>();
-			technologyContextManagers = new Hashtable<TechnologyAdapter, TechnologyContextManager>();
 
 			logger.info("Loading available technology adapters...");
 
@@ -163,10 +159,6 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 	private void registerTechnologyAdapter(TechnologyAdapter technologyAdapter) {
 		logger.fine("Found " + technologyAdapter);
 		technologyAdapter.setTechnologyAdapterService(this);
-		TechnologyContextManager tcm = technologyAdapter.createTechnologyContextManager(getFlexoResourceCenterService());
-		if (tcm != null) {
-			technologyContextManagers.put(technologyAdapter, tcm);
-		}
 		addToTechnologyAdapters(technologyAdapter);
 
 		logger.info("Load " + technologyAdapter.getName() + " as " + technologyAdapter.getClass());
@@ -208,8 +200,11 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 	 * @return
 	 */
 	@Override
-	public TechnologyContextManager getTechnologyContextManager(TechnologyAdapter technologyAdapter) {
-		return technologyContextManagers.get(technologyAdapter);
+	public TechnologyContextManager<?> getTechnologyContextManager(TechnologyAdapter technologyAdapter) {
+		if (technologyAdapter == null) {
+			return null;
+		}
+		return technologyAdapter.getTechnologyContextManager();
 	}
 
 	@Override
@@ -218,15 +213,15 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 			if (notification instanceof ResourceCenterAdded) {
 				FlexoResourceCenter rc = ((ResourceCenterAdded) notification).getAddedResourceCenter();
 				Progress.progress(FlexoLocalization.localizedForKey("initializing") + " " + rc);
-				rc.initialize(this);
 				for (TechnologyAdapter ta : getTechnologyAdapters()) {
-					Progress.progress(FlexoLocalization.localizedForKey("scan_resources_for_technology_adapters") + " " + ta.getName());
-					ta.resourceCenterAdded(rc);
+					if (ta.isActivated()) {
+						Progress.progress(FlexoLocalization.localizedForKey("scan_resources_for_technology_adapters") + " " + ta.getName());
+						ta.resourceCenterAdded(rc);
+					}
 				}
 			}
 			if (notification instanceof ResourceCenterRemoved) {
 				FlexoResourceCenter rc = ((ResourceCenterRemoved) notification).getRemovedResourceCenter();
-				rc.finalize(this);
 				for (TechnologyAdapter ta : getTechnologyAdapters()) {
 					ta.resourceCenterRemoved(rc);
 				}
@@ -237,12 +232,6 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 	@Override
 	public void initialize() {
 		loadAvailableTechnologyAdapters();
-		for (TechnologyAdapter ta : getTechnologyAdapters()) {
-			ta.initialize();
-		}
-		for (FlexoResourceCenter rc : getFlexoResourceCenterService().getResourceCenters()) {
-			rc.initialize(this);
-		}
 	}
 
 	/*@Override
@@ -425,6 +414,30 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 	public <T extends CustomType> void registerTypeClass(Class<T> typeClass, CustomTypeFactory<T> factory) {
 		// System.out.println("registering " + typeClass + " with " + factory);
 		customTypeFactories.put(typeClass, factory);
+	}
+
+	/**
+	 * Enable a {@link TechnologyAdapter}<br>
+	 * All resources centers are notified to scan the resources that they may interpret
+	 * 
+	 * @param technologyAdapter
+	 */
+	@Override
+	public void activateTechnologyAdapter(TechnologyAdapter technologyAdapter) {
+
+		getServiceManager().activateTechnologyAdapter(technologyAdapter);
+	}
+
+	/**
+	 * Disable a {@link TechnologyAdapter}<br>
+	 * All resources centers are notified to free the resources that they are managing, if possible
+	 * 
+	 * @param technologyAdapter
+	 */
+	@Override
+	public void disactivateTechnologyAdapter(TechnologyAdapter technologyAdapter) {
+
+		getServiceManager().disactivateTechnologyAdapter(technologyAdapter);
 	}
 
 }

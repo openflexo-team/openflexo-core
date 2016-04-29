@@ -53,7 +53,6 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.eclipse.jgit.api.errors.GitAPIException;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.openflexo.foundation.fml.FMLObject;
@@ -96,11 +95,11 @@ public abstract class OpenflexoTestCase {
 	private static final String TEST_RESOURCE_CENTER_URI = "http://openflexo.org/test/TestResourceCenter";
 
 	protected static DirectoryResourceCenter resourceCenter;
-	
+
 	protected static GitResourceCenter gitResourceCenter;
-	
+
 	protected static FlexoServiceManager serviceManager;
-	
+
 	protected static File testResourceCenterDirectory;
 	protected static List<File> testResourceCenterDirectoriesToRemove;
 
@@ -223,11 +222,10 @@ public abstract class OpenflexoTestCase {
 
 					FlexoResourceCenterService rcService = DefaultResourceCenterService.getNewInstance();
 					rcService.addToResourceCenters(
-							resourceCenter = new DirectoryResourceCenter(testResourceCenterDirectory, TEST_RESOURCE_CENTER_URI));
+							resourceCenter = new DirectoryResourceCenter(testResourceCenterDirectory, TEST_RESOURCE_CENTER_URI, rcService));
 					System.out.println("Copied TestResourceCenter to " + testResourceCenterDirectory);
 
 					// ici il y a des truc a voir
-					
 
 					return rcService;
 				} catch (IOException e) {

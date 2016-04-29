@@ -42,6 +42,7 @@ package org.openflexo.view.controller;
 import java.util.Collection;
 
 import org.openflexo.foundation.FlexoService;
+import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
@@ -106,5 +107,21 @@ public interface TechnologyAdapterControllerService extends FlexoService {
 			FlexoPerspective perspective);
 
 	public Collection<TechnologyAdapterController<?>> getLoadedAdapterControllers();
+
+	/**
+	 * Enable a {@link TechnologyAdapter}<br>
+	 * The {@link FlexoResourceCenter} should scan the resources that it may interpret
+	 * 
+	 * @param technologyAdapter
+	 */
+	public void activateTechnology(TechnologyAdapter technologyAdapter);
+
+	/**
+	 * Disable a {@link TechnologyAdapter}<br>
+	 * The {@link FlexoResourceCenter} is notified to free the resources that it is managing, if possible
+	 * 
+	 * @param technologyAdapter
+	 */
+	public void disactivateTechnology(TechnologyAdapter technologyAdapter);
 
 }

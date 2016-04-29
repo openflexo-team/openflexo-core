@@ -2,7 +2,7 @@
  * 
  * Copyright (c) 2014, Openflexo
  * 
- * This file is part of Flexo-foundation, a component of the software infrastructure 
+ * This file is part of Flexo-ui, a component of the software infrastructure 
  * developed at Openflexo.
  * 
  * 
@@ -36,38 +36,47 @@
  * 
  */
 
-package org.openflexo.foundation;
+package org.openflexo.rm;
 
-import java.io.File;
-
-import org.openflexo.foundation.resource.DirectoryResourceCenter;
+import org.openflexo.foundation.task.Progress;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
+import org.openflexo.localization.FlexoLocalization;
+import org.openflexo.task.FlexoApplicationTask;
 
 /**
- * Test purposes: implements an FlexoServiceManager with a unique ResourceCenter
+ * A task used to disactivate a {@link TechnologyAdapter}
  * 
  * @author sylvain
- * 
+ *
  */
-public class TestFlexoServiceManager extends DefaultFlexoServiceManager {
+public class DisactivateTechnologyAdapterTask extends FlexoApplicationTask {
 
-	private final File resourceCenterDirectory;
+	private final TechnologyAdapterService taService;
+	private final TechnologyAdapter technologyAdapter;
 
-	public static class FlexoTestEditor extends DefaultFlexoEditor {
-		public FlexoTestEditor(FlexoProject project, FlexoServiceManager sm) {
-			super(project, sm);
-		}
-
-	}
-
-	public TestFlexoServiceManager(File resourceCenterDirectory) {
-		super();
-		this.resourceCenterDirectory = resourceCenterDirectory;
-		getResourceCenterService().addToResourceCenters(new DirectoryResourceCenter(resourceCenterDirectory, getResourceCenterService()));
+	public DisactivateTechnologyAdapterTask(TechnologyAdapterService taService, TechnologyAdapter technologyAdapter) {
+		super(FlexoLocalization.localizedForKey("disactivate_technology") + " " + technologyAdapter.getName(),
+				taService.getServiceManager());
+		this.taService = taService;
+		this.technologyAdapter = technologyAdapter;
 	}
 
 	@Override
-	protected FlexoEditor createApplicationEditor() {
-		return new FlexoTestEditor(null, this);
+	public void performTask() {
+
+		Progress.setExpectedProgressSteps(getServiceManager().getResourceCenterService().getResourceCenters().size() + 2);
+		technologyAdapter.disactivate();
+		taService.getServiceManager().notify(taService,
+				taService.getServiceManager().new TechnologyAdapterHasBeenDisactivated(technologyAdapter));
 	}
 
+	public TechnologyAdapter getTechnologyAdapter() {
+		return technologyAdapter;
+	}
+
+	@Override
+	public boolean isCancellable() {
+		return true;
+	}
 }

@@ -53,7 +53,6 @@ import org.openflexo.foundation.resource.DirectoryResourceCenter.DirectoryResour
 import org.openflexo.foundation.resource.JarResourceCenter.JarResourceCenterEntry;
 import org.openflexo.foundation.resource.RemoteResourceCenter.RemoteResourceCenterEntry;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
-import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.model.annotations.Import;
 import org.openflexo.model.annotations.Imports;
 import org.openflexo.model.annotations.ModelEntity;
@@ -85,7 +84,7 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, FlexoObject {
 			@Import(JarResourceCenterEntry.class) })
 	public static interface ResourceCenterEntry<RC extends FlexoResourceCenter<?>> {
 
-		public RC makeResourceCenter();
+		public RC makeResourceCenter(FlexoResourceCenterService rcService);
 	}
 
 	/**
@@ -113,18 +112,20 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, FlexoObject {
 	// public void initialize(ViewPointLibrary viewPointLibrary);
 
 	/**
-	 * Initialize the FlexoResourceCenter by matching contents of this {@link FlexoResourceCenter} with all available technologies.<br>
+	 * Enable a {@link TechnologyAdapter}<br>
+	 * The {@link FlexoResourceCenter} should scan the resources that it may interpret
 	 * 
-	 * @param technologyAdapterService
+	 * @param technologyAdapter
 	 */
-	public void initialize(TechnologyAdapterService technologyAdapterService);
+	public void activateTechnology(TechnologyAdapter technologyAdapter);
 
 	/**
-	 * Finalize the FlexoResourceCenter<br>
+	 * Disable a {@link TechnologyAdapter}<br>
+	 * The {@link FlexoResourceCenter} is notified to free the resources that it is managing, if possible
 	 * 
-	 * @param technologyAdapterService
+	 * @param technologyAdapter
 	 */
-	public void finalize(TechnologyAdapterService technologyAdapterService);
+	public void disactivateTechnology(TechnologyAdapter technologyAdapter);
 
 	/**
 	 * Returns all resources available in this resource center

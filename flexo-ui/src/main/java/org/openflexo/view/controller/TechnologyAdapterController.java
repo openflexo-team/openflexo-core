@@ -48,11 +48,11 @@ import java.util.logging.Logger;
 
 import javax.swing.ImageIcon;
 
+import org.openflexo.ApplicationContext;
 import org.openflexo.components.widget.FIBTechnologyBrowser;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.FlexoProject;
-import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.CheckboxParameter;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.FlexoBehaviour;
@@ -110,6 +110,7 @@ import org.openflexo.icon.FMLRTIconLibrary;
 import org.openflexo.icon.IconFactory;
 import org.openflexo.icon.IconLibrary;
 import org.openflexo.module.FlexoModule;
+import org.openflexo.module.ModuleLoader;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.view.ModuleView;
@@ -166,22 +167,56 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 	public abstract Class<TA> getTechnologyAdapterClass();
 
 	/**
-	 * Called when a FlexoModule is to be initialized with this {@link TechnologyAdapterController}<br>
-	 * This means that all features and GUIs available with this technology adapter will be made available to module<br>
+	 * Called to activate the {@link TechnologyAdapterController} We do it for all loaded modules. This means that all features and GUIs
+	 * available with this technology adapter will be made available to module<br>
 	 * 
 	 * From a technical point of view, we first initialize inspectors and then actions
-	 * 
-	 * @param module
 	 */
-	public final void initializeModule(FlexoModule module) {
-		initializeInspectors(module.getFlexoController());
-		initializeActions(module.getFlexoController().getControllerActionInitializer());
-
-		// Here we iterate on all technology browsers that have been built for this TechnologyAdapter
-		// We just have initialized some new actions, that have to be reflected in already existing browsers
-		for (FIBTechnologyBrowser<TA> b : technologyBrowsers) {
-			b.initializeFIBComponent();
+	public void activate() {
+		if (getServiceManager() != null) {
+			ModuleLoader moduleLoader = getServiceManager().getModuleLoader();
+			for (FlexoModule<?> module : moduleLoader.getLoadedModuleInstances()) {
+				activate(module);
+			}
+			// Here we iterate on all technology browsers that have been built for this TechnologyAdapter
+			// We just have initialized some new actions, that have to be reflected in already existing browsers
+			for (FIBTechnologyBrowser<TA> b : technologyBrowsers) {
+				b.initializeFIBComponent();
+			}
 		}
+		isActivated = true;
+	}
+
+	/**
+	 * Called to activate the {@link TechnologyAdapter}
+	 */
+	public void disactivate() {
+		isActivated = false;
+	}
+
+	/**
+	 * Called to activate the {@link TechnologyAdapterController} We do it for all loaded modules. This means that all features and GUIs
+	 * available with this technology adapter will be made available to module<br>
+	 * 
+	 * From a technical point of view, we first initialize inspectors and then actions
+	 */
+	public void activate(FlexoModule<?> module) {
+		if (module.getFlexoController() != null) {
+			initializeInspectors(module.getFlexoController());
+			initializeActions(module.getFlexoController().getControllerActionInitializer());
+		}
+	}
+
+	/**
+	 * Called to activate the {@link TechnologyAdapter}
+	 */
+	public void disactivate(FlexoModule<?> module) {
+	}
+
+	private boolean isActivated = false;
+
+	public boolean isActivated() {
+		return isActivated;
 	}
 
 	/**
@@ -219,15 +254,8 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 		return null;
 	}
 
-	/**
-	 * Initialize
-	 */
-	public void initialize() {
-
-	}
-
-	public FlexoServiceManager getServiceManager() {
-		return getTechnologyAdapter().getTechnologyAdapterService().getServiceManager();
+	public ApplicationContext getServiceManager() {
+		return (ApplicationContext) getTechnologyAdapter().getTechnologyAdapterService().getServiceManager();
 	}
 
 	/**

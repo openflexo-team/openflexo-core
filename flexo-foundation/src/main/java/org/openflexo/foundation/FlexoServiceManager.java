@@ -132,8 +132,46 @@ public abstract class FlexoServiceManager {
 		return null;
 	}
 
-	protected void resourceCenterRemoved(FlexoResourceCenter<?> resourceCenter) {
+	protected FlexoTask resourceCenterRemoved(FlexoResourceCenter<?> resourceCenter) {
 		getResourceCenterService().removeFromResourceCenters(resourceCenter);
+		return null;
+	}
+
+	/**
+	 * Enable a {@link TechnologyAdapter}<br>
+	 * All resources centers are notified to scan the resources that they may interpret
+	 * 
+	 * @param technologyAdapter
+	 */
+	public FlexoTask activateTechnologyAdapter(TechnologyAdapter technologyAdapter) {
+
+		if (technologyAdapter.isActivated()) {
+			return null;
+		}
+
+		technologyAdapter.activate();
+
+		notify(getTechnologyAdapterService(), new TechnologyAdapterHasBeenActivated(technologyAdapter));
+
+		return null;
+	}
+
+	/**
+	 * Disable a {@link TechnologyAdapter}<br>
+	 * All resources centers are notified to free the resources that they are managing, if possible
+	 * 
+	 * @param technologyAdapter
+	 */
+	public FlexoTask disactivateTechnologyAdapter(TechnologyAdapter technologyAdapter) {
+
+		if (!technologyAdapter.isActivated()) {
+			return null;
+		}
+
+		technologyAdapter.disactivate();
+		notify(getTechnologyAdapterService(), new TechnologyAdapterHasBeenDisactivated(technologyAdapter));
+
+		return null;
 	}
 
 	public <S extends FlexoService> S getService(Class<S> serviceClass) {
@@ -196,6 +234,42 @@ public abstract class FlexoServiceManager {
 	}
 
 	public class ServiceRegistered implements ServiceNotification {
+	}
+
+	/**
+	 * Notification of a TechnologyAdapter that has been activated
+	 * 
+	 * @author sylvain
+	 * 
+	 */
+	public class TechnologyAdapterHasBeenActivated implements ServiceNotification {
+		private final TechnologyAdapter technologyAdapter;
+
+		public TechnologyAdapterHasBeenActivated(TechnologyAdapter technologyAdapter) {
+			this.technologyAdapter = technologyAdapter;
+		}
+
+		public TechnologyAdapter getTechnologyAdapter() {
+			return technologyAdapter;
+		}
+	}
+
+	/**
+	 * Notification of a TechnologyAdapter that has been disactivated
+	 * 
+	 * @author sylvain
+	 * 
+	 */
+	public class TechnologyAdapterHasBeenDisactivated implements ServiceNotification {
+		private final TechnologyAdapter technologyAdapter;
+
+		public TechnologyAdapterHasBeenDisactivated(TechnologyAdapter technologyAdapter) {
+			this.technologyAdapter = technologyAdapter;
+		}
+
+		public TechnologyAdapter getTechnologyAdapter() {
+			return technologyAdapter;
+		}
 	}
 
 	protected abstract FlexoEditingContext createEditingContext();

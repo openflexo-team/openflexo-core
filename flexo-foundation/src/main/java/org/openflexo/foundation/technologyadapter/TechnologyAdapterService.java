@@ -165,4 +165,19 @@ public interface TechnologyAdapterService extends FlexoService {
 	 */
 	public <T extends CustomType> void registerTypeClass(Class<T> typeClass, CustomTypeFactory<T> factory);
 
+	/**
+	 * Enable a {@link TechnologyAdapter}<br>
+	 * All resources centers are notified to scan the resources that they may interpret
+	 * 
+	 * @param technologyAdapter
+	 */
+	public void activateTechnologyAdapter(TechnologyAdapter technologyAdapter);
+
+	/**
+	 * Disable a {@link TechnologyAdapter}<br>
+	 * All resources centers are notified to free the resources that they are managing, if possible
+	 * 
+	 * @param technologyAdapter
+	 */
+	public void disactivateTechnologyAdapter(TechnologyAdapter technologyAdapter);
 }

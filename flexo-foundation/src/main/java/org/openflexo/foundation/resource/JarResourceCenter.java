@@ -52,8 +52,9 @@ import java.util.logging.Logger;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.ViewPointRepository;
+import org.openflexo.foundation.task.Progress;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
-import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
+import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.Implementation;
 import org.openflexo.model.annotations.ModelEntity;
@@ -93,15 +94,16 @@ public class JarResourceCenter<R extends FlexoResource<?>> extends ResourceRepos
 	 */
 	private JarResourceImpl jarResourceImpl;
 
-	private TechnologyAdapterService technologyAdapterService;
+	private FlexoResourceCenterService rcService;
 
 	/**
 	 * Contructor based on a given JarResource
 	 * 
 	 * @param jarResourceImpl
 	 */
-	public JarResourceCenter(JarResourceImpl jarResourceImpl) {
+	public JarResourceCenter(JarResourceImpl jarResourceImpl, FlexoResourceCenterService rcService) {
 		super(null);
+		this.rcService = rcService;
 		this.jarFile = jarResourceImpl.getJarfile();
 		this.jarResourceImpl = jarResourceImpl;
 
@@ -112,8 +114,9 @@ public class JarResourceCenter<R extends FlexoResource<?>> extends ResourceRepos
 	 * 
 	 * @param jarFile
 	 */
-	public JarResourceCenter(JarFile jarFile) {
+	public JarResourceCenter(JarFile jarFile, FlexoResourceCenterService rcService) {
 		super(null);
+		this.rcService = rcService;
 		ClasspathResourceLocatorImpl locator = (ClasspathResourceLocatorImpl) ResourceLocator
 				.getInstanceForLocatorClass(ClasspathResourceLocatorImpl.class);
 		jarResourceImpl = (JarResourceImpl) locator.locateResource(jarFile.getName());
@@ -144,16 +147,23 @@ public class JarResourceCenter<R extends FlexoResource<?>> extends ResourceRepos
 	}
 
 	@Override
-	public void initialize(TechnologyAdapterService technologyAdapterService) {
-
-		// logger.info("*********** INITIALIZING new JarResourceResourceCenter on " + getJarResource());
-
-		logger.info("Initializing " + technologyAdapterService);
-		this.technologyAdapterService = technologyAdapterService;
-		for (TechnologyAdapter technologyAdapter : technologyAdapterService.getTechnologyAdapters()) {
-			logger.info("Initializing resource center " + this + " with adapter " + technologyAdapter.getName());
-			technologyAdapter.initializeResourceCenter(this);
+	public FlexoServiceManager getServiceManager() {
+		if (getFlexoResourceCenterService() == null) {
+			return super.getServiceManager();
 		}
+		return getFlexoResourceCenterService().getServiceManager();
+	}
+
+	public FlexoResourceCenterService getFlexoResourceCenterService() {
+		return rcService;
+	}
+
+	@Override
+	public void activateTechnology(TechnologyAdapter technologyAdapter) {
+
+		logger.info("Activating resource center " + this + " with adapter " + technologyAdapter.getName());
+		Progress.progress(FlexoLocalization.localizedForKey("initializing_adapter") + " " + technologyAdapter.getName());
+		technologyAdapter.initializeResourceCenter(this);
 	}
 
 	/**
@@ -162,18 +172,10 @@ public class JarResourceCenter<R extends FlexoResource<?>> extends ResourceRepos
 	 * @param technologyAdapterService
 	 */
 	@Override
-	public void finalize(TechnologyAdapterService technologyAdapterService) {
+	public void disactivateTechnology(TechnologyAdapter technologyAdapter) {
 
-		// logger.info("*********** FINALIZE JarResourceResourceCenter on " + getJarResource());
+		logger.info("Disactivating resource center " + this + " with adapter " + technologyAdapter.getName());
 		// TODO
-	}
-
-	@Override
-	public FlexoServiceManager getServiceManager() {
-		if (technologyAdapterService != null) {
-			return technologyAdapterService.getServiceManager();
-		}
-		return null;
 	}
 
 	/**
@@ -288,7 +290,7 @@ public class JarResourceCenter<R extends FlexoResource<?>> extends ResourceRepos
 	 */
 	public static void addJarFileInResourceCenter(JarFile jarFile, FlexoResourceCenterService rcService) {
 		logger.info("Try to create a resource center from a jar file : " + jarFile.getName());
-		rcService.addToResourceCenters(new JarResourceCenter(jarFile));
+		rcService.addToResourceCenters(new JarResourceCenter(jarFile, rcService));
 		rcService.storeDirectoryResourceCenterLocations();
 	}
 
@@ -326,11 +328,11 @@ public class JarResourceCenter<R extends FlexoResource<?>> extends ResourceRepos
 		@Implementation
 		public static abstract class JarResourceCenterEntryImpl implements JarResourceCenterEntry {
 			@Override
-			public JarResourceCenter makeResourceCenter() {
+			public JarResourceCenter<?> makeResourceCenter(FlexoResourceCenterService rcService) {
 				JarFile jarFile;
 				try {
 					jarFile = new JarFile(getFile());
-					return new JarResourceCenter(jarFile);
+					return new JarResourceCenter(jarFile, rcService);
 				} catch (IOException e) {
 					return null;
 				}
@@ -354,8 +356,8 @@ public class JarResourceCenter<R extends FlexoResource<?>> extends ResourceRepos
 	// TODO Remove this
 	@Override
 	public ViewPointRepository getViewPointRepository() {
-		if (technologyAdapterService != null) {
-			FMLTechnologyAdapter vmTA = technologyAdapterService.getTechnologyAdapter(FMLTechnologyAdapter.class);
+		if (getServiceManager() != null) {
+			FMLTechnologyAdapter vmTA = getServiceManager().getTechnologyAdapterService().getTechnologyAdapter(FMLTechnologyAdapter.class);
 			return getRepository(ViewPointRepository.class, vmTA);
 		}
 		return null;

@@ -68,8 +68,8 @@ import com.google.gson.GsonBuilder;
 
 public class ControllerModel extends ControllerModelObject implements PropertyChangeListener {
 
-	private static final java.util.logging.Logger logger = org.openflexo.logging.FlexoLogger.getLogger(ControllerModel.class.getPackage()
-			.getName());
+	private static final java.util.logging.Logger logger = org.openflexo.logging.FlexoLogger
+			.getLogger(ControllerModel.class.getPackage().getName());
 
 	public static final String RIGHT_VIEW_VISIBLE = "rightViewVisible";
 	public static final String LEFT_VIEW_VISIBLE = "leftViewVisible";
@@ -185,7 +185,8 @@ public class ControllerModel extends ControllerModelObject implements PropertyCh
 	public FlexoPerspective getCurrentPerspective() {
 		if (currentLocation != null) {
 			return currentLocation.getPerspective();
-		} else {
+		}
+		else {
 			return null;
 		}
 	}
@@ -199,6 +200,7 @@ public class ControllerModel extends ControllerModelObject implements PropertyCh
 
 		FlexoObject object = getCurrentObject();
 		if (currentPerspective != null) {
+			currentPerspective.willShow();
 			if (object == null || !currentPerspective.hasModuleViewForObject(object)) {
 				object = currentPerspective.getDefaultObject(object != null ? object : getCurrentProject());
 			}
@@ -234,7 +236,8 @@ public class ControllerModel extends ControllerModelObject implements PropertyCh
 		// if (requiresProject()) {
 		if (currentLocation.getEditor() != null) {
 			return currentLocation.getEditor();
-		} else {
+		}
+		else {
 			return context.getApplicationEditor();
 		}
 	}
@@ -249,7 +252,8 @@ public class ControllerModel extends ControllerModelObject implements PropertyCh
 				Location location = getLastLocationForEditor(currentEditor, null);
 				if (location != null && location != NO_LOCATION) {
 					setCurrentLocation(location);
-				} else {
+				}
+				else {
 					FlexoObject object = null;
 					if (getCurrentEditor() == null && currentEditor != null && currentEditor.getProject() != null
 							&& getCurrentPerspective() != null) {
@@ -306,7 +310,8 @@ public class ControllerModel extends ControllerModelObject implements PropertyCh
 	public void setCurrentLocation(Location location) {
 		if (location != null && location.equals(getCurrentLocation())) {
 			return;
-		} else if (location != null) {
+		}
+		else if (location != null) {
 			setCurrentLocation(location.getEditor(), location.getObject(), location.getPerspective());
 		}
 	}
@@ -378,16 +383,16 @@ public class ControllerModel extends ControllerModelObject implements PropertyCh
 	private void notifyLocationChange(Location old, Location newLocation) {
 
 		if (old == null || old.getEditor() != currentLocation.getEditor()) {
-			getPropertyChangeSupport()
-					.firePropertyChange(CURRENT_EDITOR, old != null ? old.getEditor() : null, currentLocation.getEditor());
+			getPropertyChangeSupport().firePropertyChange(CURRENT_EDITOR, old != null ? old.getEditor() : null,
+					currentLocation.getEditor());
 		}
 		if (old == null || old.getPerspective() != currentLocation.getPerspective()) {
 			getPropertyChangeSupport().firePropertyChange(CURRENT_PERSPECTIVE, old != null ? old.getPerspective() : null,
 					currentLocation.getPerspective());
 		}
 		if (old == null || old.getObject() != currentLocation.getObject()) {
-			getPropertyChangeSupport()
-					.firePropertyChange(CURRENT_OBJECT, old != null ? old.getObject() : null, currentLocation.getObject());
+			getPropertyChangeSupport().firePropertyChange(CURRENT_OBJECT, old != null ? old.getObject() : null,
+					currentLocation.getObject());
 		}
 		getPropertyChangeSupport().firePropertyChange(CURRENT_LOCATION, old, currentLocation);
 	}
@@ -493,14 +498,17 @@ public class ControllerModel extends ControllerModelObject implements PropertyCh
 				if (getCurrentPerspective() != null) {
 					FlexoObject object = getCurrentPerspective().getDefaultObject(project);
 					setCurrentLocation(getProjectLoader().getEditorForProject(project), object, getCurrentPerspective());
-				} else {
+				}
+				else {
 					setCurrentProject(project);
 				}
-			} else if (evt.getPropertyName().equals(ProjectLoader.PROJECT_CLOSED)) {
+			}
+			else if (evt.getPropertyName().equals(ProjectLoader.PROJECT_CLOSED)) {
 				handleProjectRemoval((FlexoProject) evt.getOldValue());
 				setCurrentProject(null);
 			}
-		} else if (evt.getOldValue() instanceof FlexoObject
+		}
+		else if (evt.getOldValue() instanceof FlexoObject
 				&& evt.getPropertyName().equals(((FlexoObject) evt.getOldValue()).getDeletedProperty())) {
 			handleObjectDeletion((FlexoObject) evt.getOldValue());
 		}
@@ -540,7 +548,8 @@ public class ControllerModel extends ControllerModelObject implements PropertyCh
 		if (currentLocation != null && currentLocation.getObject() == deletedObject) {
 			if (canGoBack()) {
 				historyBack();
-			} else {
+			}
+			else {
 				setCurrentObject(null);
 			}
 		}
@@ -570,7 +579,8 @@ public class ControllerModel extends ControllerModelObject implements PropertyCh
 		if (layout != null) {
 			// System.out.println("Parsing layout: " + layout);
 			return getLayoutFromString(layout);
-		} else {
+		}
+		else {
 			return null;
 		}
 	}

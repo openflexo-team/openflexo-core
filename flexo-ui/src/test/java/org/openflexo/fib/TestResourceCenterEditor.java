@@ -68,7 +68,8 @@ public class TestResourceCenterEditor extends OpenflexoTestCaseWithGUI {
 		instanciateTestServiceManager(true);
 		File newEmptyRC = new File(resourceCenter.getDirectory().getParent(), resourceCenter.getDirectory().getName() + "New");
 		newEmptyRC.mkdirs();
-		serviceManager.getResourceCenterService().addToResourceCenters(resourceCenter = new DirectoryResourceCenter(newEmptyRC));
+		serviceManager.getResourceCenterService()
+				.addToResourceCenters(resourceCenter = new DirectoryResourceCenter(newEmptyRC, serviceManager.getResourceCenterService()));
 
 	}
 

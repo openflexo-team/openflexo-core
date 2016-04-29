@@ -134,4 +134,15 @@ public class TechnologyPerspective<TA extends TechnologyAdapter> extends FlexoPe
 		return false;
 	}
 
+	/**
+	 * Hook triggered when a perspective is about to be shown
+	 */
+	@Override
+	public void willShow() {
+		System.out.println("TechnologyPerspective for " + technologyAdapter + " will be activated");
+		if (!getTechnologyAdapter().isActivated()) {
+			getTechnologyAdapter().getTechnologyAdapterService().activateTechnologyAdapter(getTechnologyAdapter());
+		}
+	}
+
 }

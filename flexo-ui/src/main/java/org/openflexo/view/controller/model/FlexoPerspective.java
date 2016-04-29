@@ -373,4 +373,9 @@ public abstract class FlexoPerspective extends ControllerModelObject {
 		// Do nothing here
 	}
 
+	/**
+	 * Hook triggered when a perspective is about to be shown
+	 */
+	public void willShow() {
+	}
 }

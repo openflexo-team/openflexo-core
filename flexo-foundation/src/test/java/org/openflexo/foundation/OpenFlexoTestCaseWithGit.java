@@ -9,7 +9,6 @@ import java.util.List;
 
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.openflexo.foundation.resource.DefaultResourceCenterService;
-import org.openflexo.foundation.resource.DirectoryResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
 import org.openflexo.foundation.resource.GitResourceCenter;
 import org.openflexo.rm.ClasspathResourceLocatorImpl;
@@ -19,15 +18,15 @@ import org.openflexo.toolbox.FileUtils;
 
 /**
  * Provide a git environment for tests cases
+ * 
  * @author Arkantea
  *
  */
 public class OpenFlexoTestCaseWithGit extends OpenflexoProjectAtRunTimeTestCase {
-	
+
 	private static GitResourceCenter gitResourceCenter;
 	private static final String TEST_RESOURCE_CENTER_URI = "http://openflexo.org/test/TestResourceCenter";
 
-	
 	protected static FlexoServiceManager instanciateTestServiceManager(final boolean generateCompoundTestResourceCenter) {
 		File previousResourceCenterDirectoryToRemove = null;
 		if (testResourceCenterDirectory != null && testResourceCenterDirectory.exists()) {
@@ -71,26 +70,26 @@ public class OpenFlexoTestCaseWithGit extends OpenflexoProjectAtRunTimeTestCase 
 					else {
 
 						Resource tstRC = ResourceLocator.locateResource("TestResourceCenter");
-						System.out.println("Ressource Container Uri "+tstRC.getURI());
+						System.out.println("Ressource Container Uri " + tstRC.getURI());
 						for (Resource resource : tstRC.getContents()) {
-							System.out.println("Resource URI : "+resource.getURI());
+							System.out.println("Resource URI : " + resource.getURI());
 						}
 						System.out.println("Copied from " + tstRC);
 						FileUtils.copyResourceToDir(tstRC, testResourceCenterDirectory);
 					}
 
-
 					FlexoResourceCenterService rcService = DefaultResourceCenterService.getNewInstance();
-//					rcService.addToResourceCenters(
-//							resourceCenter = new DirectoryResourceCenter(testResourceCenterDirectory, TEST_RESOURCE_CENTER_URI));
-//					System.out.println("Copied TestResourceCenter to " + testResourceCenterDirectory);
+					// rcService.addToResourceCenters(
+					// resourceCenter = new DirectoryResourceCenter(testResourceCenterDirectory, TEST_RESOURCE_CENTER_URI));
+					// System.out.println("Copied TestResourceCenter to " + testResourceCenterDirectory);
 					try {
-						rcService.addToResourceCenters(gitResourceCenter = new GitResourceCenter(testResourceCenterDirectory,testResourceCenterDirectory));
+						rcService.addToResourceCenters(gitResourceCenter = new GitResourceCenter(testResourceCenterDirectory,
+								testResourceCenterDirectory, rcService));
 					} catch (IllegalStateException | GitAPIException e) {
 						e.printStackTrace();
 					}
 					// ici il y a des truc a voir
-					
+
 					return rcService;
 				} catch (IOException e) {
 					e.printStackTrace();
@@ -110,6 +109,5 @@ public class OpenFlexoTestCaseWithGit extends OpenflexoProjectAtRunTimeTestCase 
 		}
 		return serviceManager;
 	}
-	
-	
+
 }

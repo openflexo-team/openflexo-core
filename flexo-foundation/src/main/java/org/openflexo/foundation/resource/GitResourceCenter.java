@@ -14,47 +14,47 @@ import org.openflexo.gitUtils.IODelegateFactory;
 import org.openflexo.toolbox.FlexoVersion;
 import org.openflexo.toolbox.IProgress;
 
-public class GitResourceCenter extends  FileSystemBasedResourceCenter   {
-	
-	public GitResourceCenter(File resourceCenterDirectory,File gitRepository) throws IllegalStateException, IOException, GitAPIException {
-		super(resourceCenterDirectory);
+public class GitResourceCenter extends FileSystemBasedResourceCenter {
+
+	public GitResourceCenter(File resourceCenterDirectory, File gitRepository, FlexoResourceCenterService rcService)
+			throws IllegalStateException, IOException, GitAPIException {
+		super(resourceCenterDirectory, rcService);
 		initializeRepositoryGit(gitRepository);
 		gitIODelegateFactory = new GitIODelegateFactory();
 	}
-	
 
 	protected static final Logger logger = Logger.getLogger(GitResourceCenter.class.getPackage().getName());
-	
+
 	private IODelegateFactory<File> gitIODelegateFactory;
-	
+
 	/**
 	 * For a first impl, consider that one GitResourceCenter holds one gitRepository
 	 */
-	
-	private Repository gitRepository; 
+
+	private Repository gitRepository;
 	private Git git;
-	
+
 	public Repository getGitRepository() {
 		return gitRepository;
 	}
-	
+
 	public IODelegateFactory<File> getGitIODelegateFactory() {
 		return gitIODelegateFactory;
 	}
-	
+
 	public void initializeRepositoryGit(File gitFile) throws IOException, IllegalStateException, GitAPIException {
 		File gitDir = new File(gitFile.getAbsolutePath(), ".git");
 		Git.init().setDirectory(gitFile).call();
-		
-		//Our GitRepository is of type file
+
+		// Our GitRepository is of type file
 		gitRepository = FileRepositoryBuilder.create(gitDir);
 		System.out.println("Created a new repository at " + gitRepository.getDirectory());
-		//Where files are checked
-		System.out.println("Working tree : "+ gitRepository.getWorkTree());
-		//Where index is checked
-		System.out.println("Index File : "+gitRepository.getIndexFile());
+		// Where files are checked
+		System.out.println("Working tree : " + gitRepository.getWorkTree());
+		// Where index is checked
+		System.out.println("Index File : " + gitRepository.getIndexFile());
 		git = new Git(gitRepository);
-		
+
 		logger.info("New Git Repository Created");
 	}
 
@@ -65,23 +65,21 @@ public class GitResourceCenter extends  FileSystemBasedResourceCenter   {
 	}
 
 	@Override
-	public void publishResource(FlexoResource<?> resource, FlexoVersion newVersion, IProgress progress)
-			throws Exception {
+	public void publishResource(FlexoResource<?> resource, FlexoVersion newVersion, IProgress progress) throws Exception {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void update() throws IOException {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public String getDefaultBaseURI() {
 		// TODO Auto-generated method stub
 		return null;
-	}	
+	}
 
-	
 }

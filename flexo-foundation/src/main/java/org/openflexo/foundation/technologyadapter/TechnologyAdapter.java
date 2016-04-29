@@ -79,6 +79,7 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 	private static final Logger logger = Logger.getLogger(TechnologyAdapter.class.getPackage().getName());
 
 	private TechnologyAdapterService technologyAdapterService;
+	private TechnologyContextManager<?> technologyContextManager;
 	private List<Class<? extends ModelSlot<?>>> availableModelSlotTypes;
 	private List<Class<? extends VirtualModelInstanceNature>> availableVirtualModelInstanceNatures;
 	private List<Class<? extends TechnologyAdapterResource<?, ?>>> availableResourceTypes;
@@ -117,7 +118,7 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 	 * 
 	 * @return
 	 */
-	public abstract TechnologyContextManager createTechnologyContextManager(FlexoResourceCenterService service);
+	public abstract TechnologyContextManager<?> createTechnologyContextManager(FlexoResourceCenterService service);
 
 	/**
 	 * Return the {@link TechnologyContextManager} for this technology shared by all {@link FlexoResourceCenter} declared in the scope of
@@ -125,8 +126,8 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 	 * 
 	 * @return
 	 */
-	public TechnologyContextManager getTechnologyContextManager() {
-		return getTechnologyAdapterService().getTechnologyContextManager(this);
+	public TechnologyContextManager<?> getTechnologyContextManager() {
+		return technologyContextManager;
 	}
 
 	/**
@@ -137,15 +138,25 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 	public abstract TechnologyAdapterBindingFactory getTechnologyAdapterBindingFactory();
 
 	/**
-	 * Provides a hook to finalize initialization of a TechnologyAdapter.<br>
-	 * This method is called:
-	 * <ul>
-	 * <li>after all TechnologyAdapter have been loaded</li>
-	 * <li>after all {@link FlexoResourceCenter} have been initialized</li>
-	 * </ul>
+	 * Called to activate the {@link TechnologyAdapter}
 	 */
-	public void initialize() {
+	public void activate() {
+		technologyContextManager = createTechnologyContextManager(getTechnologyAdapterService().getFlexoResourceCenterService());
 		initTechnologySpecificTypes(getTechnologyAdapterService());
+		isActivated = true;
+	}
+
+	/**
+	 * Called to activate the {@link TechnologyAdapter}
+	 */
+	public void disactivate() {
+		isActivated = false;
+	}
+
+	private boolean isActivated = false;
+
+	public boolean isActivated() {
+		return isActivated;
 	}
 
 	/**

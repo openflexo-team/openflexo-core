@@ -135,7 +135,7 @@ public class TestApplicationContext extends ApplicationContext {
 
 			FlexoResourceCenterService rcService = DefaultResourceCenterService.getNewInstance();
 			rcService.addToResourceCenters(
-					resourceCenter = new DirectoryResourceCenter(testResourceCenterDirectory, TEST_RESOURCE_CENTER_URI));
+					resourceCenter = new DirectoryResourceCenter(testResourceCenterDirectory, TEST_RESOURCE_CENTER_URI, rcService));
 			System.out.println("Copied TestResourceCenter to " + testResourceCenterDirectory);
 
 			// ici il y a des truc a voir

@@ -111,7 +111,7 @@ public class ResourceCenterEditor implements HasPropertyChangeSupport {
 		JFIBDialog dialog = JFIBDialog.instanciateAndShowDialog(askRCDirectoryComponent, askDir, FlexoFrame.getActiveFrame(), true,
 				FlexoLocalization.getMainLocalizer());
 		if (dialog.getStatus() == Status.VALIDATED) {
-			DirectoryResourceCenter newRC = new DirectoryResourceCenter(askDir.getLocalResourceDirectory());
+			DirectoryResourceCenter newRC = new DirectoryResourceCenter(askDir.getLocalResourceDirectory(), rcService);
 			AddResourceCenterTask task = new AddResourceCenterTask(getRcService(), newRC);
 			rcService.getServiceManager().getTaskManager().scheduleExecution(task);
 		}

@@ -267,10 +267,26 @@ public abstract class ApplicationContext extends DefaultFlexoServiceManager impl
 	}
 
 	@Override
-	protected void resourceCenterRemoved(FlexoResourceCenter<?> resourceCenter) {
+	protected RemoveResourceCenterTask resourceCenterRemoved(FlexoResourceCenter<?> resourceCenter) {
 		RemoveResourceCenterTask removeRCTask = new RemoveResourceCenterTask(getResourceCenterService(), resourceCenter);
 		getTaskManager().scheduleExecution(removeRCTask);
+		return removeRCTask;
 	}
+
+	/*@Override
+	public ActivateTechnologyAdapterTask activateTechnologyAdapter(TechnologyAdapter technologyAdapter) {
+		ActivateTechnologyAdapterTask activateTATask = new ActivateTechnologyAdapterTask(getTechnologyAdapterService(), technologyAdapter);
+		getTaskManager().scheduleExecution(activateTATask);
+		return activateTATask;
+	}
+	
+	@Override
+	public DisactivateTechnologyAdapterTask disactivateTechnologyAdapter(TechnologyAdapter technologyAdapter) {
+		DisactivateTechnologyAdapterTask disactivateTATask = new DisactivateTechnologyAdapterTask(getTechnologyAdapterService(),
+				technologyAdapter);
+		getTaskManager().scheduleExecution(disactivateTATask);
+		return disactivateTATask;
+	}*/
 
 	private boolean defaultPackagedResourceCenterIsNotInstalled;
 

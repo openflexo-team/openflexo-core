@@ -60,7 +60,6 @@ import org.openflexo.foundation.resource.DirectoryResourceCenter.DirectoryResour
 import org.openflexo.foundation.task.Progress;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterResource;
-import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.model.factory.ModelFactory;
@@ -88,10 +87,13 @@ public abstract class FileSystemBasedResourceCenter extends FileResourceReposito
 	// private final HashMap<TechnologyAdapter, MetaModelRepository<?, ?, ?, ?>> metaModelRepositories = new HashMap<TechnologyAdapter,
 	// MetaModelRepository<?, ?, ?, ?>>();
 
-	private TechnologyAdapterService technologyAdapterService;
+	// private TechnologyAdapterService technologyAdapterService;
 
-	public FileSystemBasedResourceCenter(File rootDirectory) {
+	private FlexoResourceCenterService rcService;
+
+	public FileSystemBasedResourceCenter(File rootDirectory, FlexoResourceCenterService rcService) {
 		super(null, rootDirectory);
+		this.rcService = rcService;
 		this.rootDirectory = rootDirectory;
 		startDirectoryWatching();
 	}
@@ -148,10 +150,14 @@ public abstract class FileSystemBasedResourceCenter extends FileResourceReposito
 		return super.toString() + " directory=" + (getRootDirectory() != null ? getRootDirectory().getAbsolutePath() : null);
 	}
 
+	public FlexoResourceCenterService getFlexoResourceCenterService() {
+		return rcService;
+	}
+
 	@Override
 	public ViewPointRepository getViewPointRepository() {
-		if (technologyAdapterService != null) {
-			FMLTechnologyAdapter vmTA = technologyAdapterService.getTechnologyAdapter(FMLTechnologyAdapter.class);
+		if (rcService != null) {
+			FMLTechnologyAdapter vmTA = getServiceManager().getTechnologyAdapterService().getTechnologyAdapter(FMLTechnologyAdapter.class);
 			return getRepository(ViewPointRepository.class, vmTA);
 		}
 		return null;
@@ -237,17 +243,11 @@ public abstract class FileSystemBasedResourceCenter extends FileResourceReposito
 	}*/
 
 	@Override
-	public void initialize(TechnologyAdapterService technologyAdapterService) {
+	public void activateTechnology(TechnologyAdapter technologyAdapter) {
 
-		logger.info("*********** INITIALIZING new FileSystemBasedResourceCenter on " + getDirectory());
-
-		logger.info("Initializing " + technologyAdapterService);
-		this.technologyAdapterService = technologyAdapterService;
-		for (TechnologyAdapter technologyAdapter : technologyAdapterService.getTechnologyAdapters()) {
-			logger.info("Initializing resource center " + this + " with adapter " + technologyAdapter.getName());
-			Progress.progress(FlexoLocalization.localizedForKey("initializing_adapter") + " " + technologyAdapter.getName());
-			technologyAdapter.initializeResourceCenter(this);
-		}
+		logger.info("Activating resource center " + this + " with adapter " + technologyAdapter.getName());
+		Progress.progress(FlexoLocalization.localizedForKey("initializing_adapter") + " " + technologyAdapter.getName());
+		technologyAdapter.initializeResourceCenter(this);
 	}
 
 	/**
@@ -256,18 +256,18 @@ public abstract class FileSystemBasedResourceCenter extends FileResourceReposito
 	 * @param technologyAdapterService
 	 */
 	@Override
-	public void finalize(TechnologyAdapterService technologyAdapterService) {
+	public void disactivateTechnology(TechnologyAdapter technologyAdapter) {
 
-		logger.info("*********** FINALIZE FileSystemBasedResourceCenter on " + getDirectory());
+		logger.info("Disactivating resource center " + this + " with adapter " + technologyAdapter.getName());
 		// TODO
 	}
 
 	@Override
 	public FlexoServiceManager getServiceManager() {
-		if (technologyAdapterService != null) {
-			return technologyAdapterService.getServiceManager();
+		if (getFlexoResourceCenterService() == null) {
+			return super.getServiceManager();
 		}
-		return null;
+		return getFlexoResourceCenterService().getServiceManager();
 	}
 
 	@Override
@@ -353,10 +353,12 @@ public abstract class FileSystemBasedResourceCenter extends FileResourceReposito
 		if (!isIgnorable(file)) {
 			System.out.println("File ADDED " + file.getName() + " in " + file.getParentFile().getAbsolutePath());
 			// analyseAsViewPoint(file);
-			if (technologyAdapterService != null) {
-				for (TechnologyAdapter adapter : technologyAdapterService.getTechnologyAdapters()) {
-					logger.info("fileAdded " + file + " with adapter " + adapter.getName());
-					adapter.contentsAdded(this, file);
+			if (getServiceManager() != null) {
+				for (TechnologyAdapter adapter : getServiceManager().getTechnologyAdapterService().getTechnologyAdapters()) {
+					if (adapter.isActivated()) {
+						logger.info("fileAdded " + file + " with adapter " + adapter.getName());
+						adapter.contentsAdded(this, file);
+					}
 				}
 			}
 		}
@@ -365,8 +367,8 @@ public abstract class FileSystemBasedResourceCenter extends FileResourceReposito
 	protected void fileDeleted(File file) {
 		if (!isIgnorable(file)) {
 			System.out.println("File DELETED " + file.getName() + " in " + file.getParentFile().getAbsolutePath());
-			if (technologyAdapterService != null) {
-				for (TechnologyAdapter adapter : technologyAdapterService.getTechnologyAdapters()) {
+			if (getServiceManager() != null) {
+				for (TechnologyAdapter adapter : getServiceManager().getTechnologyAdapterService().getTechnologyAdapters()) {
 					logger.info("fileDeleted " + file + " with adapter " + adapter.getName());
 					adapter.contentsDeleted(this, file);
 				}

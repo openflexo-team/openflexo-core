@@ -36,7 +36,6 @@
  * 
  */
 
-
 package org.openflexo.rm;
 
 import java.awt.Window;
@@ -47,21 +46,20 @@ import org.openflexo.foundation.resource.DirectoryResourceCenter;
 import org.openflexo.foundation.resource.MissingFlexoResource;
 import org.openflexo.toolbox.HasPropertyChangeSupport;
 
+public class ResourceMissingEditor implements HasPropertyChangeSupport {
 
-public class ResourceMissingEditor implements HasPropertyChangeSupport{
-	
 	private final PropertyChangeSupport _pcSupport;
-	
+
 	private Window owner;
-	
+
 	private final ResourceConsistencyService service;
-	
+
 	private String errorMessage;
-	
+
 	private MissingFlexoResource missingResource;
-	
+
 	private File missingFile;
-	
+
 	public File getMissingFile() {
 		return missingFile;
 	}
@@ -69,7 +67,7 @@ public class ResourceMissingEditor implements HasPropertyChangeSupport{
 	public void setMissingFile(File missingFile) {
 		this.missingFile = missingFile;
 	}
-	
+
 	public Window getOwner() {
 		return owner;
 	}
@@ -77,23 +75,22 @@ public class ResourceMissingEditor implements HasPropertyChangeSupport{
 	public void setOwner(Window owner) {
 		this.owner = owner;
 	}
-	
-	public ResourceMissingEditor(MissingFlexoResource missingResource, ResourceConsistencyService service){
-		 _pcSupport = new PropertyChangeSupport(this);
+
+	public ResourceMissingEditor(MissingFlexoResource missingResource, ResourceConsistencyService service) {
+		_pcSupport = new PropertyChangeSupport(this);
 		this.service = service;
 		this.missingResource = missingResource;
 	}
-	
 
-    @Override
-    public String getDeletedProperty() {
-        return null;
-    }
+	@Override
+	public String getDeletedProperty() {
+		return null;
+	}
 
-    @Override
-    public PropertyChangeSupport getPropertyChangeSupport() {
-        return _pcSupport;
-    }
+	@Override
+	public PropertyChangeSupport getPropertyChangeSupport() {
+		return _pcSupport;
+	}
 
 	public MissingFlexoResource getMissingResource() {
 		return missingResource;
@@ -102,11 +99,11 @@ public class ResourceMissingEditor implements HasPropertyChangeSupport{
 	public void setMissingResource(MissingFlexoResource missingResource) {
 		this.missingResource = missingResource;
 	}
-	
-	public void load(){
-		DirectoryResourceCenter newRC = new DirectoryResourceCenter(getMissingFile().getParentFile());
+
+	public void load() {
+		DirectoryResourceCenter newRC = new DirectoryResourceCenter(getMissingFile().getParentFile(),
+				service.getServiceManager().getResourceCenterService());
 		service.getServiceManager().getResourceCenterService().addToResourceCenters(newRC);
-		
+
 	}
 }
-	
