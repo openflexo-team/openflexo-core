@@ -103,8 +103,7 @@ public abstract class FlexoServiceManager {
 			notify(service, new ServiceRegistered());
 
 			service.initialize();
-		}
-		else {
+		} else {
 			logger.warning("Trying to register null FlexoService");
 		}
 	}
@@ -116,14 +115,10 @@ public abstract class FlexoServiceManager {
 			}
 		}
 		if (notification instanceof ProjectLoaded) {
-			if (!getResourceCenterService().getResourceCenters().contains(((ProjectLoaded) notification).getProject())) {
-				resourceCenterAdded(((ProjectLoaded) notification).getProject());
-			}
+			resourceCenterAdded(((ProjectLoaded) notification).getProject());
 		}
 		if (notification instanceof ProjectClosed) {
-			if (getResourceCenterService().getResourceCenters().contains(((ProjectClosed) notification).getProject())) {
-				resourceCenterRemoved(((ProjectClosed) notification).getProject());
-			}
+			resourceCenterRemoved(((ProjectClosed) notification).getProject());
 		}
 	}
 

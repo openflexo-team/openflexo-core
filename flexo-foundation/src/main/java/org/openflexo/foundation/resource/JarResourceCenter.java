@@ -94,7 +94,7 @@ public class JarResourceCenter<R extends FlexoResource<?>> extends ResourceRepos
 	 */
 	private JarResourceImpl jarResourceImpl;
 
-	private FlexoResourceCenterService rcService;
+	private final FlexoResourceCenterService rcService;
 
 	/**
 	 * Contructor based on a given JarResource
@@ -219,8 +219,7 @@ public class JarResourceCenter<R extends FlexoResource<?>> extends ResourceRepos
 		HashMap<Class<? extends ResourceRepository<?>>, ResourceRepository<?>> map = getRepositoriesForAdapter(technologyAdapter);
 		if (map.get(repositoryType) == null) {
 			map.put(repositoryType, repository);
-		}
-		else {
+		} else {
 			logger.warning("Repository already registered: " + repositoryType + " for " + repository);
 		}
 	}

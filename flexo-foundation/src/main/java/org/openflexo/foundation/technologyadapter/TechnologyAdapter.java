@@ -160,12 +160,25 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 	}
 
 	/**
+	 * Initialize the supplied resource center with the technology, if not already done
+	 * 
+	 * @param resourceCenter
+	 */
+	public final <I> void initializeResourceCenter(FlexoResourceCenter<I> resourceCenter) {
+		if (!resourceCentersManagingThisTechnology.contains(resourceCenter)) {
+			performInitializeResourceCenter(resourceCenter);
+			resourceCentersManagingThisTechnology.add(resourceCenter);
+		}
+
+	}
+
+	/**
 	 * Initialize the supplied resource center with the technology<br>
 	 * ResourceCenter is scanned, ResourceRepositories are created and new technology-specific resources are build and registered.
 	 * 
 	 * @param resourceCenter
 	 */
-	public abstract <I> void initializeResourceCenter(FlexoResourceCenter<I> resourceCenter);
+	protected abstract <I> void performInitializeResourceCenter(FlexoResourceCenter<I> resourceCenter);
 
 	public abstract <I> boolean isIgnorable(FlexoResourceCenter<I> resourceCenter, I contents);
 
@@ -173,12 +186,15 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 
 	public abstract <I> void contentsDeleted(FlexoResourceCenter<I> resourceCenter, I contents);
 
+	private final List<FlexoResourceCenter<?>> resourceCentersManagingThisTechnology = new ArrayList<>();
+
 	/**
 	 * Provides a hook to detect when a new resource center was added or discovered
 	 * 
 	 * @param newResourceCenter
 	 */
 	public void resourceCenterAdded(FlexoResourceCenter<?> newResourceCenter) {
+		initializeResourceCenter(newResourceCenter);
 		setChanged();
 		notifyObservers(new DataModification(null, newResourceCenter));
 	}
@@ -329,8 +345,7 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 			// containerVirtualModel.addToModelSlots(returned);
 			returned.setModelSlotTechnologyAdapter(this);
 			return returned;
-		}
-		else {
+		} else {
 			logger.warning("INVESTIGATE: VirtualModel is null, unable to create a new ModelSlot!");
 			return null;
 		}
@@ -368,8 +383,7 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 				File candidateFile = null;
 				if (resource.getFlexoIODelegate() instanceof DirectoryBasedFlexoIODelegate) {
 					candidateFile = ((DirectoryBasedFlexoIODelegate) resource.getFlexoIODelegate()).getDirectory();
-				}
-				else if (resource.getFlexoIODelegate() instanceof FileFlexoIODelegate) {
+				} else if (resource.getFlexoIODelegate() instanceof FileFlexoIODelegate) {
 					candidateFile = ((FileFlexoIODelegate) resource.getFlexoIODelegate()).getFile();
 				}
 

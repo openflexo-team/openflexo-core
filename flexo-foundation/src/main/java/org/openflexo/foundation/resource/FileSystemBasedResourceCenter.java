@@ -76,7 +76,7 @@ import org.openflexo.toolbox.IProgress;
  * @author sylvain
  * 
  */
-public abstract class FileSystemBasedResourceCenter extends FileResourceRepository<FlexoResource<?>>implements FlexoResourceCenter<File> {
+public abstract class FileSystemBasedResourceCenter extends FileResourceRepository<FlexoResource<?>> implements FlexoResourceCenter<File> {
 
 	protected static final Logger logger = Logger.getLogger(FileSystemBasedResourceCenter.class.getPackage().getName());
 
@@ -89,7 +89,7 @@ public abstract class FileSystemBasedResourceCenter extends FileResourceReposito
 
 	// private TechnologyAdapterService technologyAdapterService;
 
-	private FlexoResourceCenterService rcService;
+	private final FlexoResourceCenterService rcService;
 
 	public FileSystemBasedResourceCenter(File rootDirectory, FlexoResourceCenterService rcService) {
 		super(null, rootDirectory);
@@ -275,8 +275,7 @@ public abstract class FileSystemBasedResourceCenter extends FileResourceReposito
 		List<File> allFiles = new ArrayList<File>();
 		if (getRootDirectory() != null) {
 			appendFiles(getRootDirectory(), allFiles);
-		}
-		else {
+		} else {
 			logger.warning("ResourceCenter: " + this + " rootDirectory is null");
 		}
 		return allFiles.iterator();
@@ -452,8 +451,7 @@ public abstract class FileSystemBasedResourceCenter extends FileResourceReposito
 		HashMap<Class<? extends ResourceRepository<?>>, ResourceRepository<?>> map = getRepositoriesForAdapter(technologyAdapter);
 		if (map.get(repositoryType) == null) {
 			map.put(repositoryType, repository);
-		}
-		else {
+		} else {
 			logger.warning("Repository already registered: " + repositoryType + " for " + repository);
 		}
 	}
@@ -527,8 +525,7 @@ public abstract class FileSystemBasedResourceCenter extends FileResourceReposito
 					}
 					if (getDefaultBaseURI().endsWith(File.separator)) {
 						return getDefaultBaseURI() + path.replace(File.separator, "/") + resource.getName();
-					}
-					else {
+					} else {
 						return getDefaultBaseURI() + "/" + path.replace(File.separator, "/") + resource.getName();
 					}
 				}

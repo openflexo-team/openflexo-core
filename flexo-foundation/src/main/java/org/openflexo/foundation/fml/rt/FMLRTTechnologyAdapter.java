@@ -135,7 +135,7 @@ public class FMLRTTechnologyAdapter extends TechnologyAdapter {
 	}
 
 	@Override
-	public <I> void initializeResourceCenter(final FlexoResourceCenter<I> resourceCenter) {
+	public <I> void performInitializeResourceCenter(final FlexoResourceCenter<I> resourceCenter) {
 
 		final ViewRepository viewRepository = this.getViewRepository(resourceCenter);
 

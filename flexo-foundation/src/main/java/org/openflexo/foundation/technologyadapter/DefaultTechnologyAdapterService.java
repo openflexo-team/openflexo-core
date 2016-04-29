@@ -129,8 +129,7 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 				registerTechnologyAdapter(technologyAdapter);
 			}
 			logger.info("Loading available technology adapters. Done.");
-		}
-		else {
+		} else {
 			Iterator<TechnologyAdapter> iterator = loader.iterator();
 			while (iterator.hasNext()) {
 				TechnologyAdapter technologyAdapter = iterator.next();
@@ -166,8 +165,7 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 		if (loadedAdapters.containsKey(technologyAdapter.getClass())) {
 			logger.severe("Cannot include TechnologyAdapter with classname '" + technologyAdapter.getClass().getName()
 					+ "' because it already exists !!!! A TechnologyAdapter name MUST be unique !");
-		}
-		else {
+		} else {
 			loadedAdapters.put(technologyAdapter.getClass(), technologyAdapter);
 		}
 	}
@@ -212,6 +210,7 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 		if (caller instanceof FlexoResourceCenterService) {
 			if (notification instanceof ResourceCenterAdded) {
 				FlexoResourceCenter rc = ((ResourceCenterAdded) notification).getAddedResourceCenter();
+				System.out.println("Bon, nouveau RC " + rc);
 				Progress.progress(FlexoLocalization.localizedForKey("initializing") + " " + rc);
 				for (TechnologyAdapter ta : getTechnologyAdapters()) {
 					if (ta.isActivated()) {

@@ -44,6 +44,7 @@ import java.util.Iterator;
 import java.util.logging.Logger;
 
 import org.apache.commons.io.FilenameUtils;
+import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.annotations.DeclareResourceTypes;
 import org.openflexo.foundation.fml.rm.ViewPointResource;
@@ -109,7 +110,7 @@ public class FMLTechnologyAdapter extends TechnologyAdapter {
 	}
 
 	@Override
-	public <I> void initializeResourceCenter(final FlexoResourceCenter<I> resourceCenter) {
+	public <I> void performInitializeResourceCenter(final FlexoResourceCenter<I> resourceCenter) {
 
 		final ViewPointRepository viewPointRepository = getViewPointRepository(resourceCenter);
 
@@ -185,8 +186,7 @@ public class FMLTechnologyAdapter extends TechnologyAdapter {
 			ViewPointResource vpRes = null;
 			if (candidateElement instanceof File) {
 				vpRes = ViewPointResourceImpl.retrieveViewPointResource((File) candidateElement, resourceCenter, getServiceManager());
-			}
-			else if (candidateElement instanceof InJarResourceImpl) {
+			} else if (candidateElement instanceof InJarResourceImpl) {
 				vpRes = ViewPointResourceImpl.retrieveViewPointResource((InJarResourceImpl) candidateElement, resourceCenter,
 						getServiceManager());
 			}
@@ -207,8 +207,7 @@ public class FMLTechnologyAdapter extends TechnologyAdapter {
 				RepositoryFolder<ViewPointResource> folder;
 				folder = repository.getRepositoryFolder(candidateElement, true);
 				repository.registerResource(vpRes, folder);
-			}
-			else {
+			} else {
 				logger.warning("While exploring resource center looking for viewpoints : cannot retrieve resource for element "
 						+ candidateElement);
 			}

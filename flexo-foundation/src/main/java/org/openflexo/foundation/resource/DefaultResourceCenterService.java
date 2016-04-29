@@ -100,19 +100,20 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 
 	@Override
 	public void addToResourceCenters(FlexoResourceCenter resourceCenter) {
-		performSuperAdder(RESOURCE_CENTERS, resourceCenter);
+		if (!getResourceCenters().contains(resourceCenter)) {
+			performSuperAdder(RESOURCE_CENTERS, resourceCenter);
+		}
 		if (getServiceManager() != null) {
-			if (getServiceManager() != null) {
-				getServiceManager().notify(this, new ResourceCenterAdded(resourceCenter));
-			}
+			getServiceManager().notify(this, new ResourceCenterAdded(resourceCenter));
 		}
 		getPropertyChangeSupport().firePropertyChange(RESOURCE_CENTERS, null, resourceCenter);
 	}
 
 	@Override
 	public void removeFromResourceCenters(FlexoResourceCenter resourceCenter) {
-		performSuperRemover(RESOURCE_CENTERS, resourceCenter);
-
+		if (getResourceCenters().contains(resourceCenter)) {
+			performSuperRemover(RESOURCE_CENTERS, resourceCenter);
+		}
 		// TODO: dereference all resources registerd in this ResourceCenter
 
 		// The resource center must be been dereferenced
@@ -239,13 +240,11 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 				/*for (FlexoResourceCenter rc : getResourceCenters()) {
 					rc.initialize((TechnologyAdapterService) caller);
 				}*/
-			}
-			else if (notification instanceof TechnologyAdapterHasBeenActivated) {
+			} else if (notification instanceof TechnologyAdapterHasBeenActivated) {
 				for (FlexoResourceCenter rc : getResourceCenters()) {
 					rc.activateTechnology(((TechnologyAdapterHasBeenActivated) notification).getTechnologyAdapter());
 				}
-			}
-			else if (notification instanceof TechnologyAdapterHasBeenDisactivated) {
+			} else if (notification instanceof TechnologyAdapterHasBeenDisactivated) {
 				for (FlexoResourceCenter rc : getResourceCenters()) {
 					rc.disactivateTechnology(((TechnologyAdapterHasBeenActivated) notification).getTechnologyAdapter());
 				}
