@@ -198,7 +198,12 @@ public class ParametersRetriever<ES extends FlexoBehaviour> {
 			label.setLabel(parameter.getLabel());
 			returned.addToSubComponents(label, new TwoColsLayoutConstraints(TwoColsLayoutLocation.left, false, false), index++);
 			FIBComponent widget = makeWidget(parameter, returned, index++);
-			widgets.put(parameter, widget);
+			if (widget != null) {
+				widgets.put(parameter, widget);
+			}
+			else {
+				logger.warning("Cannot instanciate widget for " + parameter + " of " + (parameter != null ? parameter.getClass() : "null"));
+			}
 		}
 		for (final FlexoBehaviourParameter parameter : flexoBehaviour.getParameters()) {
 			if (parameter instanceof URIParameter) {
