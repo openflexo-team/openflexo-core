@@ -39,6 +39,7 @@
 package org.openflexo.foundation.fml.rt;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -54,6 +55,7 @@ import org.openflexo.foundation.fml.rt.rm.VirtualModelInstanceResource;
 import org.openflexo.foundation.resource.FlexoIODelegate;
 import org.openflexo.foundation.resource.RepositoryFolder;
 import org.openflexo.foundation.resource.SaveResourceException;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.model.annotations.Adder;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.Getter.Cardinality;
@@ -141,7 +143,14 @@ public interface View extends AbstractVirtualModelInstance<View, ViewPoint> {
 
 	public boolean hasNature(ViewNature nature);
 
-	public static abstract class ViewImpl extends AbstractVirtualModelInstanceImpl<View, ViewPoint> implements View {
+	/**
+	 * Return the list of {@link TechnologyAdapter} used in the context of this {@link View}
+	 * 
+	 * @return
+	 */
+	public List<TechnologyAdapter> getRequiredTechnologyAdapters();
+
+	public static abstract class ViewImpl extends AbstractVirtualModelInstanceImpl<View, ViewPoint>implements View {
 
 		private static final Logger logger = Logger.getLogger(View.class.getPackage().getName());
 
@@ -262,7 +271,8 @@ public interface View extends AbstractVirtualModelInstance<View, ViewPoint> {
 		}
 
 		@Override
-		public List<AbstractVirtualModelInstance<?, ?>> getVirtualModelInstancesForVirtualModel(final AbstractVirtualModel<?> virtualModel) {
+		public List<AbstractVirtualModelInstance<?, ?>> getVirtualModelInstancesForVirtualModel(
+				final AbstractVirtualModel<?> virtualModel) {
 			List<AbstractVirtualModelInstance<?, ?>> returned = new ArrayList<AbstractVirtualModelInstance<?, ?>>();
 			for (AbstractVirtualModelInstance<?, ?> vmi : getVirtualModelInstances()) {
 				if (vmi.getVirtualModel() == virtualModel) {
@@ -292,7 +302,8 @@ public interface View extends AbstractVirtualModelInstance<View, ViewPoint> {
 					if (vmi.getName().equals(name)) {
 						return vmi;
 					}
-				} else {
+				}
+				else {
 					logger.warning("Name of VirtualModel is null: " + this.toString());
 				}
 			}
@@ -359,6 +370,23 @@ public interface View extends AbstractVirtualModelInstance<View, ViewPoint> {
 			/*logger.warning("Unexpected variable requested in View: " + variable + " of " + variable.getClass());
 			Thread.dumpStack();
 			return null;*/
+		}
+
+		/**
+		 * Return the list of {@link TechnologyAdapter} used in the context of this {@link View}
+		 * 
+		 * @return
+		 */
+		@Override
+		public List<TechnologyAdapter> getRequiredTechnologyAdapters() {
+			if (getViewPoint() != null) {
+				List<TechnologyAdapter> returned = getViewPoint().getRequiredTechnologyAdapters();
+				if (!returned.contains(getTechnologyAdapter())) {
+					returned.add(getTechnologyAdapter());
+				}
+				return returned;
+			}
+			return Collections.singletonList((TechnologyAdapter) getTechnologyAdapter());
 		}
 
 	}

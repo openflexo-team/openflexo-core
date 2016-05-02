@@ -60,6 +60,7 @@ import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.technologyadapter.FlexoMetaModel;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.foundation.technologyadapter.TypeAwareModelSlot;
 import org.openflexo.model.annotations.Adder;
@@ -316,6 +317,13 @@ public interface AbstractVirtualModel<VM extends AbstractVirtualModel<VM>>
 	public VirtualModelBindingModel getBindingModel();
 
 	public InnerConceptsFacet getInnerConceptsFacet();
+
+	/**
+	 * Return the list of {@link TechnologyAdapter} used in the context of this {@link AbstractVirtualModel}
+	 * 
+	 * @return
+	 */
+	public List<TechnologyAdapter> getRequiredTechnologyAdapters();
 
 	public static abstract class AbstractVirtualModelImpl<VM extends AbstractVirtualModel<VM>> extends FlexoConceptImpl
 			implements AbstractVirtualModel<VM> {
@@ -825,6 +833,24 @@ public interface AbstractVirtualModel<VM extends AbstractVirtualModel<VM>>
 			}
 			return innerConceptsFacet;
 		}
+
+		/**
+		 * Return the list of {@link TechnologyAdapter} used in the context of this {@link AbstractVirtualModel}
+		 * 
+		 * @return
+		 */
+		@Override
+		public List<TechnologyAdapter> getRequiredTechnologyAdapters() {
+			List<TechnologyAdapter> returned = new ArrayList<TechnologyAdapter>();
+			returned.add(getTechnologyAdapter());
+			for (ModelSlot<?> ms : getModelSlots()) {
+				if (!returned.contains(ms.getModelSlotTechnologyAdapter())) {
+					returned.add(ms.getModelSlotTechnologyAdapter());
+				}
+			}
+			return returned;
+		}
+
 	}
 
 	@DefineValidationRule

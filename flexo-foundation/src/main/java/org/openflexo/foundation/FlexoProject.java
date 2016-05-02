@@ -60,7 +60,9 @@ import org.openflexo.foundation.FlexoEditor.FlexoEditorFactory;
 import org.openflexo.foundation.ProjectDataResource.ProjectDataResourceImpl;
 import org.openflexo.foundation.ProjectDirectoryResource.ProjectDirectoryResourceImpl;
 import org.openflexo.foundation.converter.FlexoObjectReferenceConverter;
+import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.rt.ViewLibrary;
+import org.openflexo.foundation.fml.rt.rm.ViewResource;
 import org.openflexo.foundation.nature.ProjectNature;
 import org.openflexo.foundation.nature.ProjectWrapper;
 import org.openflexo.foundation.resource.DuplicateExternalRepositoryNameException;
@@ -75,6 +77,7 @@ import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.task.FlexoTask;
 import org.openflexo.foundation.task.Progress;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.utils.FlexoObjectIDManager;
 import org.openflexo.foundation.utils.FlexoObjectReference;
 import org.openflexo.foundation.utils.FlexoObjectReference.ReferenceOwner;
@@ -1489,6 +1492,23 @@ public class FlexoProject extends FileSystemBasedResourceCenter
 	@Override
 	public void objectDeleted(FlexoObjectReference<?> reference) {
 		logger.warning("TODO: implement this");
+	}
+
+	/**
+	 * Return the list of {@link TechnologyAdapter} used in the context of this {@link ViewPoint}
+	 * 
+	 * @return
+	 */
+	public List<TechnologyAdapter> getRequiredTechnologyAdapters() {
+		List<TechnologyAdapter> returned = new ArrayList<>();
+		for (ViewResource vr : getViewLibrary().getAllResources()) {
+			for (TechnologyAdapter ta : vr.getView().getRequiredTechnologyAdapters()) {
+				if (!returned.contains(ta)) {
+					returned.add(ta);
+				}
+			}
+		}
+		return returned;
 	}
 
 }

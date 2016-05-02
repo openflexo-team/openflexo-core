@@ -48,8 +48,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Logger;
 
-import org.eclipse.jgit.api.Git;
-import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.Repository;
 import org.jdom2.Attribute;
 import org.jdom2.Document;
@@ -63,9 +61,9 @@ import org.openflexo.foundation.fml.rm.ViewPointResourceImpl;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.fml.rt.View;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
-import org.openflexo.foundation.resource.GitResourceCenter;
 import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.utils.XMLUtils;
 import org.openflexo.model.annotations.Adder;
 import org.openflexo.model.annotations.DefineValidationRule;
@@ -222,7 +220,7 @@ public interface ViewPoint extends AbstractVirtualModel<ViewPoint> {
 	 * @author sylvain
 	 * 
 	 */
-	public static abstract class ViewPointImpl extends AbstractVirtualModelImpl<ViewPoint> implements ViewPoint {
+	public static abstract class ViewPointImpl extends AbstractVirtualModelImpl<ViewPoint>implements ViewPoint {
 
 		private static final Logger logger = Logger.getLogger(ViewPoint.class.getPackage().getName());
 
@@ -254,12 +252,13 @@ public interface ViewPoint extends AbstractVirtualModel<ViewPoint> {
 			}
 			return viewpoint;
 		}
-		
+
 		/*
 		 * TODO Implements a method to handle gitResourceCenter
 		 */
-		
-		public static ViewPoint newGitViewPoint(String baseName,String viewpointURI,File workTree, Repository gitRepository, ViewPointLibrary library, FlexoResourceCenter<?> resourceCenter) throws IOException{
+
+		public static ViewPoint newGitViewPoint(String baseName, String viewpointURI, File workTree, Repository gitRepository,
+				ViewPointLibrary library, FlexoResourceCenter<?> resourceCenter) throws IOException {
 			ViewPointResource vpRes = ViewPointResourceImpl.makeGitViewPointResource(baseName, viewpointURI, workTree, resourceCenter,
 					library.getServiceManager());
 			ViewPointImpl viewpoint = (ViewPointImpl) vpRes.getFactory().newInstance(ViewPoint.class);
@@ -268,11 +267,10 @@ public interface ViewPoint extends AbstractVirtualModel<ViewPoint> {
 			// And register it to the library
 			library.registerViewPoint(vpRes);
 			viewpoint.init(baseName, library);
-			
-			
+
 			return viewpoint;
 		}
-		
+
 		@Override
 		public FlexoVersion getModelVersion() {
 			if (getResource() != null) {
@@ -393,7 +391,8 @@ public interface ViewPoint extends AbstractVirtualModel<ViewPoint> {
 					if (virtualModelClass.equals(vm.getClass())) {
 						returned.add((VM) vm);
 					}
-				} else {
+				}
+				else {
 					if (virtualModelClass.isAssignableFrom(vm.getClass())) {
 						returned.add((VM) vm);
 					}
@@ -675,6 +674,26 @@ public interface ViewPoint extends AbstractVirtualModel<ViewPoint> {
 		public Collection<? extends Validable> getEmbeddedValidableObjects() {
 			return getVirtualModels();
 		}
+
+		/**
+		 * Return the list of {@link TechnologyAdapter} used in the context of this {@link ViewPoint}
+		 * 
+		 * @return
+		 */
+		@Override
+		public List<TechnologyAdapter> getRequiredTechnologyAdapters() {
+			List<TechnologyAdapter> returned = super.getRequiredTechnologyAdapters();
+			loadVirtualModelsWhenUnloaded();
+			for (VirtualModel vm : getVirtualModels()) {
+				for (TechnologyAdapter ta : vm.getRequiredTechnologyAdapters()) {
+					if (!returned.contains(ta)) {
+						returned.add(ta);
+					}
+				}
+			}
+			return returned;
+		}
+
 	}
 
 	@DefineValidationRule
@@ -702,7 +721,8 @@ public interface ViewPoint extends AbstractVirtualModel<ViewPoint> {
 		public ValidationIssue<ViewPointURIMustBeValid, ViewPoint> applyValidation(ViewPoint vp) {
 			if (StringUtils.isEmpty(vp.getURI())) {
 				return new ValidationError<ViewPointURIMustBeValid, ViewPoint>(this, vp, "viewpoint_has_no_uri");
-			} else {
+			}
+			else {
 				try {
 					new URL(vp.getURI());
 				} catch (MalformedURLException e) {

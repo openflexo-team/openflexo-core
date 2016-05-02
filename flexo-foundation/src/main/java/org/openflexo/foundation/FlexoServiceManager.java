@@ -103,7 +103,8 @@ public abstract class FlexoServiceManager {
 			notify(service, new ServiceRegistered());
 
 			service.initialize();
-		} else {
+		}
+		else {
 			logger.warning("Trying to register null FlexoService");
 		}
 	}
@@ -116,6 +117,9 @@ public abstract class FlexoServiceManager {
 		}
 		if (notification instanceof ProjectLoaded) {
 			resourceCenterAdded(((ProjectLoaded) notification).getProject());
+			for (TechnologyAdapter ta : ((ProjectLoaded) notification).getProject().getRequiredTechnologyAdapters()) {
+				activateTechnologyAdapter(ta);
+			}
 		}
 		if (notification instanceof ProjectClosed) {
 			resourceCenterRemoved(((ProjectClosed) notification).getProject());
