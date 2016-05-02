@@ -46,6 +46,7 @@ import java.util.logging.Logger;
 
 import javax.swing.AbstractAction;
 import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
 
 import org.openflexo.FlexoCst;
 import org.openflexo.action.CopyActionInitializer;
@@ -101,7 +102,8 @@ public class EditMenu extends FlexoMenu {
 	public FlexoUndoManager getUndoManager() {
 		if (_controller != null) {
 			FlexoEditingContext ec = _controller.getEditingContext();
-			if (ec != null)	return ec.getUndoManager();
+			if (ec != null)
+				return ec.getUndoManager();
 		}
 		return null;
 	}
@@ -145,7 +147,8 @@ public class EditMenu extends FlexoMenu {
 					}
 					updateWithUndoManagerState();
 				}
-			} else {
+			}
+			else {
 				if (evt.getPropertyName().equals(FlexoUndoManager.ACTION_HISTORY) || evt.getPropertyName().equals(FlexoUndoManager.ENABLED)
 						|| evt.getPropertyName().equals(FlexoUndoManager.START_RECORDING)
 						|| evt.getPropertyName().equals(FlexoUndoManager.STOP_RECORDING)
@@ -156,14 +159,29 @@ public class EditMenu extends FlexoMenu {
 		}
 
 		private void updateWithUndoManagerState() {
+			// Fixed OP-11 (DeadLock when opening several diagram in FME)
+			// This issue was caused be this method invokation during an application task (FlexoTask)
+			// This make a call to Swing (to enable/disable undo/redo item), and might lead to a DeadLock
+			// The solution is here to delay this update in the event dispatch thread
+			if (!SwingUtilities.isEventDispatchThread()) {
+				SwingUtilities.invokeLater(new Runnable() {
+					@Override
+					public void run() {
+						updateWithUndoManagerState();
+					}
+				});
+				return;
+			}
 			if (getUndoManager() != null) {
 				setEnabled(getUndoManager().canUndo());
 				if (getUndoManager().canUndo()) {
 					setText(FlexoLocalization.localizedForKey("undo") + " (" + getUndoManager().getUndoPresentationName() + ")");
-				} else {
+				}
+				else {
 					setText(FlexoLocalization.localizedForKey("undo"));
 				}
-			} else {
+			}
+			else {
 				setText(FlexoLocalization.localizedForKey("undo"));
 				setEnabled(false);
 			}
@@ -187,7 +205,8 @@ public class EditMenu extends FlexoMenu {
 				logger.info("Undoing: " + presentationName);
 				getUndoManager().undo();
 				_controller.setInfoMessage("Undone " + presentationName, true);
-			} else if (getUndoManager().canUndoIfStoppingCurrentEdition()) {
+			}
+			else if (getUndoManager().canUndoIfStoppingCurrentEdition()) {
 				getUndoManager().stopRecording(getUndoManager().getCurrentEdition());
 				if (getUndoManager().canUndo()) {
 					String presentationName = getUndoManager().editToBeUndone().getPresentationName();
@@ -195,7 +214,8 @@ public class EditMenu extends FlexoMenu {
 					getUndoManager().undo();
 					_controller.setInfoMessage("Undone " + presentationName, true);
 				}
-			} else {
+			}
+			else {
 				_controller.setInfoMessage("Cannot UNDO", true);
 				logger.info("Cannot UNDO");
 				getUndoManager().debug();
@@ -242,7 +262,8 @@ public class EditMenu extends FlexoMenu {
 					}
 					updateWithUndoManagerState();
 				}
-			} else {
+			}
+			else {
 				if (evt.getPropertyName().equals(FlexoUndoManager.ACTION_HISTORY) || evt.getPropertyName().equals(FlexoUndoManager.ENABLED)
 						|| evt.getPropertyName().equals(FlexoUndoManager.START_RECORDING)
 						|| evt.getPropertyName().equals(FlexoUndoManager.STOP_RECORDING)
@@ -257,10 +278,12 @@ public class EditMenu extends FlexoMenu {
 				setEnabled(getUndoManager().canRedo());
 				if (getUndoManager().canRedo()) {
 					setText(FlexoLocalization.localizedForKey("redo") + " (" + getUndoManager().getRedoPresentationName() + ")");
-				} else {
+				}
+				else {
 					setText(FlexoLocalization.localizedForKey("redo"));
 				}
-			} else {
+			}
+			else {
 				setEnabled(false);
 				setText(FlexoLocalization.localizedForKey("redo"));
 			}
@@ -280,7 +303,8 @@ public class EditMenu extends FlexoMenu {
 				logger.info("Redoing: " + presentationName);
 				getUndoManager().redo();
 				_controller.setInfoMessage("Redone " + presentationName, true);
-			} else {
+			}
+			else {
 				_controller.setInfoMessage("Cannot REDO", true);
 			}
 		}
