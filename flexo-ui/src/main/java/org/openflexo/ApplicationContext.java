@@ -278,6 +278,9 @@ public abstract class ApplicationContext extends DefaultFlexoServiceManager impl
 
 	@Override
 	public ActivateTechnologyAdapterTask activateTechnologyAdapter(TechnologyAdapter technologyAdapter) {
+		if (technologyAdapter.isActivated()) {
+			return null;
+		}
 		ActivateTechnologyAdapterTask activateTATask = new ActivateTechnologyAdapterTask(getTechnologyAdapterService(), technologyAdapter);
 		getTaskManager().scheduleExecution(activateTATask);
 		return activateTATask;
@@ -285,6 +288,9 @@ public abstract class ApplicationContext extends DefaultFlexoServiceManager impl
 
 	@Override
 	public DisactivateTechnologyAdapterTask disactivateTechnologyAdapter(TechnologyAdapter technologyAdapter) {
+		if (!technologyAdapter.isActivated()) {
+			return null;
+		}
 		DisactivateTechnologyAdapterTask disactivateTATask = new DisactivateTechnologyAdapterTask(getTechnologyAdapterService(),
 				technologyAdapter);
 		getTaskManager().scheduleExecution(disactivateTATask);
