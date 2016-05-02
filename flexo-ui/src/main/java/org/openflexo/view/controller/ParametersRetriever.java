@@ -53,6 +53,7 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.gina.controller.FIBController.Status;
 import org.openflexo.gina.model.FIBComponent;
 import org.openflexo.gina.model.FIBModelFactory;
+import org.openflexo.gina.model.FIBVariable;
 import org.openflexo.gina.model.container.FIBPanel;
 import org.openflexo.gina.model.container.FIBPanel.Border;
 import org.openflexo.gina.model.container.FIBPanel.FlowLayoutAlignment;
@@ -143,13 +144,13 @@ public class ParametersRetriever<ES extends FlexoBehaviour> {
 		final FlexoBehaviour flexoBehaviour = action.getFlexoBehaviour();
 
 		FIBPanel returned = fibModelFactory.newFIBPanel();
-		if (returned.getVariable("data") != null) {
-			returned.getVariable("data").setType(FlexoBehaviourActionType.getFlexoBehaviourActionType(action.getFlexoBehaviour()));
-		}
+
+		FIBVariable<?> dataVariable = fibModelFactory.newFIBVariable(returned, "data");
+		dataVariable.setType(FlexoBehaviourActionType.getFlexoBehaviourActionType(action.getFlexoBehaviour()));
+
 		returned.setBindingFactory(action.getFlexoBehaviour().getBindingFactory());
 
 		returned.setLayout(Layout.twocols);
-		returned.setDataClass(action.getClass());
 		returned.setBorder(Border.empty);
 		returned.setBorderTop(10);
 		returned.setBorderBottom(5);
