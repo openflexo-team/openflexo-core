@@ -51,6 +51,7 @@ import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
 import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.resource.ResourceRepository;
+import org.openflexo.foundation.task.FlexoTask;
 import org.openflexo.model.annotations.Adder;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.Getter.Cardinality;
@@ -171,7 +172,7 @@ public interface TechnologyAdapterService extends FlexoService {
 	 * 
 	 * @param technologyAdapter
 	 */
-	public void activateTechnologyAdapter(TechnologyAdapter technologyAdapter);
+	public FlexoTask activateTechnologyAdapter(TechnologyAdapter technologyAdapter);
 
 	/**
 	 * Disable a {@link TechnologyAdapter}<br>
@@ -179,5 +180,5 @@ public interface TechnologyAdapterService extends FlexoService {
 	 * 
 	 * @param technologyAdapter
 	 */
-	public void disactivateTechnologyAdapter(TechnologyAdapter technologyAdapter);
+	public FlexoTask disactivateTechnologyAdapter(TechnologyAdapter technologyAdapter);
 }

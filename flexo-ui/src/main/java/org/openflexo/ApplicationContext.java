@@ -60,13 +60,16 @@ import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
 import org.openflexo.foundation.resource.JarResourceCenter;
 import org.openflexo.foundation.task.FlexoTaskManager;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.utils.ProjectLoadingHandler;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.module.ModuleLoader;
 import org.openflexo.prefs.ApplicationFIBLibraryService;
 import org.openflexo.prefs.PreferencesService;
 import org.openflexo.project.ProjectLoader;
+import org.openflexo.rm.ActivateTechnologyAdapterTask;
 import org.openflexo.rm.AddResourceCenterTask;
+import org.openflexo.rm.DisactivateTechnologyAdapterTask;
 import org.openflexo.rm.RemoveResourceCenterTask;
 import org.openflexo.rm.ResourceConsistencyService;
 import org.openflexo.task.TaskManagerPanel;
@@ -273,20 +276,20 @@ public abstract class ApplicationContext extends DefaultFlexoServiceManager impl
 		return removeRCTask;
 	}
 
-	/*@Override
+	@Override
 	public ActivateTechnologyAdapterTask activateTechnologyAdapter(TechnologyAdapter technologyAdapter) {
 		ActivateTechnologyAdapterTask activateTATask = new ActivateTechnologyAdapterTask(getTechnologyAdapterService(), technologyAdapter);
 		getTaskManager().scheduleExecution(activateTATask);
 		return activateTATask;
 	}
-	
+
 	@Override
 	public DisactivateTechnologyAdapterTask disactivateTechnologyAdapter(TechnologyAdapter technologyAdapter) {
 		DisactivateTechnologyAdapterTask disactivateTATask = new DisactivateTechnologyAdapterTask(getTechnologyAdapterService(),
 				technologyAdapter);
 		getTaskManager().scheduleExecution(disactivateTATask);
 		return disactivateTATask;
-	}*/
+	}
 
 	private boolean defaultPackagedResourceCenterIsNotInstalled;
 

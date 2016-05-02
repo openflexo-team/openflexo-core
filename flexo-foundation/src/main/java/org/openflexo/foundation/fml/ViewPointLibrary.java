@@ -54,6 +54,7 @@ import org.openflexo.foundation.resource.DefaultResourceCenterService.ResourceCe
 import org.openflexo.foundation.resource.DefaultResourceCenterService.ResourceCenterRemoved;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
+import org.openflexo.foundation.task.FlexoTask;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.model.validation.Validable;
@@ -322,7 +323,12 @@ public class ViewPointLibrary extends DefaultFlexoObject implements FlexoService
 		if (getResourceCenterService() != null) {
 
 			FMLTechnologyAdapter fmlTA = getTechnologyAdapterService().getTechnologyAdapter(FMLTechnologyAdapter.class);
-			getTechnologyAdapterService().activateTechnologyAdapter(fmlTA);
+			FlexoTask activateFMLTATask = getTechnologyAdapterService().activateTechnologyAdapter(fmlTA);
+
+			if (activateFMLTATask != null) {
+				// We have to wait the task to be finished
+				getServiceManager().getTaskManager().waitTask(activateFMLTATask);
+			}
 
 			for (FlexoResourceCenter rc : getResourceCenters()) {
 				// Register Viewpoint viewpoint resources

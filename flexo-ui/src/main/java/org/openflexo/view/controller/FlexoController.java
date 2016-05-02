@@ -328,6 +328,32 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 	}
 
 	/**
+	 * Initialized technology perspective for FML technology adapter
+	 */
+	protected void initializeFMLTechnologyPerspective() {
+		initializeTechnologyPerspective(getFMLTechnologyAdapter());
+	}
+
+	/**
+	 * Initialized technology perspective for FML@RT technology adapter
+	 */
+	protected void initializeFMLRTTechnologyPerspective() {
+		initializeTechnologyPerspective(getFMLRTTechnologyAdapter());
+	}
+
+	/**
+	 * Initialize technology perspective for supplied technology adapter
+	 * 
+	 * @param ta
+	 */
+	private void initializeTechnologyPerspective(TechnologyAdapter ta) {
+		TechnologyAdapterController<?> tac = getTechnologyAdapterController(ta);
+		if (tac != null) {
+			tac.installTechnologyPerspective(this);
+		}
+	}
+
+	/**
 	 * Return {@link FMLTechnologyAdapter}
 	 * 
 	 * @return
