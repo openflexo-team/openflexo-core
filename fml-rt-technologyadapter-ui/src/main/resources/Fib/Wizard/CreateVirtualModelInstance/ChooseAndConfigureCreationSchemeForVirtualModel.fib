@@ -75,7 +75,10 @@
 				manageDynamicModel="true" useScrollBar="false"
 				data="data.action.creationSchemeAction" componentClassName="org.openflexo.view.controller.FIBParametersRetrieverWidget"
 				name="ParametersRetriverWidget" controllerClassName="org.openflexo.gina.controller.FIBController"
-				localize="true" constraints="border(location=center)" readOnly="false" />
+				localize="true" constraints="border(location=center)" readOnly="false">
+				<Assignment mandatory="true" value="controller.flexoController" variable="component.flexoController" />
+			</Custom>
+				
 		</Panel>
 		<Panel id="23" darkLevel="0" useScrollBar="false"
 			protectContent="false" layout="border"
