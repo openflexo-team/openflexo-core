@@ -186,12 +186,12 @@ public abstract class DefaultTechnologyAdapterControllerService extends FlexoSer
 			// When a module is loaded, register all loaded technology adapter controllers with new new loaded module action initializer
 			// The newly loaded module will be able to provide all tooling provided by the technology adapter
 
-			System.out.println("!!!!!!!!!!!!!!!!!!!!!!!! On vient de charger le module " + notification);
+			//System.out.println("!!!!!!!!!!!!!!!!!!!!!!!! On vient de charger le module " + notification);
 
 			// We have to start with the FMLTechnologyAdapter, if it exists
 			for (TechnologyAdapterController<?> adapterController : getLoadedAdapterControllers()) {
 				if (adapterController.getTechnologyAdapter() instanceof FMLTechnologyAdapter) {
-					System.out.println("Activated " + adapterController.getTechnologyAdapter() + " ? " + adapterController.isActivated());
+					//System.out.println("Activated " + adapterController.getTechnologyAdapter() + " ? " + adapterController.isActivated());
 					if (adapterController.isActivated()) {
 						Progress.progress(FlexoLocalization.localizedForKey("initialize_actions_for_technology_adapter") + " "
 								+ adapterController.getTechnologyAdapter().getName());
@@ -202,7 +202,7 @@ public abstract class DefaultTechnologyAdapterControllerService extends FlexoSer
 
 			for (TechnologyAdapterController<?> adapterController : getLoadedAdapterControllers()) {
 				if (!(adapterController.getTechnologyAdapter() instanceof FMLTechnologyAdapter)) {
-					System.out.println("Activated " + adapterController.getTechnologyAdapter() + " ? " + adapterController.isActivated());
+					//System.out.println("Activated " + adapterController.getTechnologyAdapter() + " ? " + adapterController.isActivated());
 					if (adapterController.isActivated()) {
 						Progress.progress(FlexoLocalization.localizedForKey("initialize_actions_for_technology_adapter") + " "
 								+ adapterController.getTechnologyAdapter().getName());
