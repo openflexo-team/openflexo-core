@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Panel id="0" darkLevel="0" useScrollBar="false" protectContent="false"
-	height="500" name="main" layout="gridbag"
+	height="400" name="main" layout="gridbag"
 	controllerClassName="org.openflexo.view.controller.FlexoFIBController"
 	border="empty" trackViewPortWidth="true" font="Lucida Grande,0,11"
-	width="800"
+	width="600"
 	dataClassName="org.openflexo.fml.rt.controller.action.CreateBasicVirtualModelInstanceWizard$ChooseVirtualModel"
 	titleFont="Lucida Grande,0,11" trackViewPortHeight="true">
 	<LocalizedDictionary id="1">
@@ -144,6 +144,20 @@
 		text="TextField" index="4" localize="true"
 		constraints="gridbag(anchor=center;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=4;insetsBottom=0;insetsLeft=0;insetsRight=20;insetsTop=0;padX=0;padY=0;weightX=1.0;weightY=0.0)"
 		readOnly="false" validateOnReturn="false" />
+		
+	<Label label="virtual_model" index="5"
+		constraints="gridbag(anchor=east;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=1;insetsBottom=10;insetsLeft=10;insetsRight=10;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+		localize="true" />
+	<Custom index="6"
+		data="data.virtualModelResource" componentClassName="org.openflexo.fml.controller.widget.FIBVirtualModelSelector"
+		name="VirtualModelSelector" controllerClassName="org.openflexo.gina.controller.FIBController"
+		localize="true"
+		constraints="gridbag(anchor=center;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=2;insetsBottom=10;insetsLeft=0;insetsRight=20;insetsTop=0;padX=0;padY=0;weightX=1.0;weightY=0.0)"
+		readOnly="false">
+		<Assignment mandatory="true" value="data.serviceManager.viewPointLibrary" variable="component.viewPointLibrary" />
+		<Assignment mandatory="true" value="data.action.containerViewpointResource" variable="component.viewPoint" />
+	</Custom>
+	<!--  
 	<SplitPanel id="72" useScrollBar="false"
 		controllerClassName="org.openflexo.gina.controller.FIBController"
 		index="5"
@@ -157,22 +171,7 @@
 			visibleRowCount="3" deepExploration="false" rowHeight="18"
 			iteratorClassName="org.openflexo.foundation.fml.VirtualModel"
 			useScrollBar="false" selected="data.virtualModel" name="VirtualModelBrowser"
-			rootVisible="true" readOnly="false">
-			
-		<!--  <BrowserElement dataClassName="org.openflexo.foundation.fml.rm.ViewPointResource"
-			label="viewPointResource.name" editableLabel="viewPointResource.name"
-			icon="controller.iconForObject(viewPointResource)"
-			isEditable="true" filtered="false" defaultVisible="true" 
-			name="viewPointResource">
-			<Children data="viewPointResource.contents" visible="viewPointResource.isLoaded"
-				name="subResources" />
-		</BrowserElement>
-		<BrowserElement dataClassName="org.openflexo.foundation.fml.rm.VirtualModelResource"
-			label="virtualModel.name" editableLabel="virtualModel.name"
-			icon="controller.iconForObject(virtualModel)"
-			isEditable="true" filtered="false" defaultVisible="true" name="virtualModel">
-		</BrowserElement>-->
-			
+			rootVisible="true" readOnly="false">			
 		 	<BrowserElement id="74"
 				icon="controller.iconForObject(viewPoint)" filtered="false" label="viewPoint.name"
 				defaultVisible="true" dataClassName="org.openflexo.foundation.fml.ViewPoint"
@@ -246,5 +245,5 @@
 				<Leaf id="93" weight="0.800000011920929" name="details" />
 			</ColSplit>
 		</RowSplit>
-	</SplitPanel>
+	</SplitPanel>-->
 </Panel>

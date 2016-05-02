@@ -57,6 +57,7 @@ import org.openflexo.foundation.fml.AbstractVirtualModel;
 import org.openflexo.foundation.fml.CreationScheme;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.ViewPoint;
+import org.openflexo.foundation.fml.rm.ViewPointResource;
 import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.ModelSlotInstance;
 import org.openflexo.foundation.fml.rt.View;
@@ -79,7 +80,7 @@ import org.openflexo.toolbox.StringUtils;
  *            type of container of newly created AbstractVirtualModelInstance
  */
 public abstract class AbstractCreateVirtualModelInstance<A extends AbstractCreateVirtualModelInstance<A, T, VMI, VM>, T extends FlexoObject, VMI extends AbstractVirtualModelInstance<VMI, VM>, VM extends AbstractVirtualModel<VM>>
-		extends FlexoAction<A, T, FlexoObject> implements FlexoObserver {
+		extends FlexoAction<A, T, FlexoObject>implements FlexoObserver {
 
 	private static final Logger logger = Logger.getLogger(AbstractCreateVirtualModelInstance.class.getPackage().getName());
 
@@ -135,8 +136,8 @@ public abstract class AbstractCreateVirtualModelInstance<A extends AbstractCreat
 		logger.info("Added virtual model instance " + newVirtualModelInstance + " in container " + getFocusedObject());
 
 		// System.out.println("OK, we have created the file " + newVirtualModelInstanceResource.getFile().getAbsolutePath());
-		System.out.println("OK, we have created the VirtualModelInstanceResource " + newVirtualModelInstanceResource.getURI()
-				+ " delegate=" + newVirtualModelInstanceResource.getFlexoIODelegate().stringRepresentation());
+		System.out.println("OK, we have created the VirtualModelInstanceResource " + newVirtualModelInstanceResource.getURI() + " delegate="
+				+ newVirtualModelInstanceResource.getFlexoIODelegate().stringRepresentation());
 
 		System.out.println("creationSchemeAction=" + creationSchemeAction);
 		System.out.println("escapeModelSlotConfiguration=" + escapeModelSlotConfiguration());
@@ -150,11 +151,12 @@ public abstract class AbstractCreateVirtualModelInstance<A extends AbstractCreat
 					ModelSlotInstance<?, ?> msi = configuration.createModelSlotInstance(newVirtualModelInstance, getContainerView());
 					msi.setVirtualModelInstance(newVirtualModelInstance);
 					newVirtualModelInstance.addToModelSlotInstances(msi);
-				} else {
+				}
+				else {
 					logger.warning("Wrong configuration for model slot: " + configuration.getModelSlot() + " error: "
 							+ configuration.getErrorMessage());
-					throw new InvalidArgumentException("Wrong configuration for model slot " + configuration.getModelSlot()
-							+ " configuration=" + configuration);
+					throw new InvalidArgumentException(
+							"Wrong configuration for model slot " + configuration.getModelSlot() + " configuration=" + configuration);
 				}
 			}
 		}
@@ -213,9 +215,11 @@ public abstract class AbstractCreateVirtualModelInstance<A extends AbstractCreat
 	public int getStepsNumber() {
 		if (virtualModel == null) {
 			return 1;
-		} else if (!getVirtualModel().hasCreationScheme()) {
+		}
+		else if (!getVirtualModel().hasCreationScheme()) {
 			return virtualModel.getModelSlots().size() + 1;
-		} else {
+		}
+		else {
 			return virtualModel.getModelSlots().size() + 2;
 		}
 	}
@@ -367,7 +371,8 @@ public abstract class AbstractCreateVirtualModelInstance<A extends AbstractCreat
 			creationSchemeAction.setCreationScheme(creationScheme);
 			creationSchemeAction.addObserver(this);
 			getPropertyChangeSupport().firePropertyChange("creationSchemeAction", null, creationSchemeAction);
-		} else {
+		}
+		else {
 			creationSchemeAction = null;
 		}
 		getPropertyChangeSupport().firePropertyChange("creationScheme", null, creationScheme);
@@ -396,13 +401,26 @@ public abstract class AbstractCreateVirtualModelInstance<A extends AbstractCreat
 
 	/**
 	 * Return the ViewPoint of the View acting as container of currently created {@link AbstractVirtualModelInstance}.<br>
-	 * Note that if we are creating a plain View, container might be null, and this method wil return null
+	 * Note that if we are creating a plain View, container might be null, and this method will return null
 	 * 
 	 * @return
 	 */
 	public ViewPoint getContainerViewpoint() {
 		if (getContainerView() != null) {
 			return getContainerView().getViewPoint();
+		}
+		return null;
+	}
+
+	/**
+	 * Return the resource of the ViewPoint of the View acting as container of currently created {@link AbstractVirtualModelInstance}.<br>
+	 * Note that if we are creating a plain View, container might be null, and this method wil return null
+	 * 
+	 * @return
+	 */
+	public ViewPointResource getContainerViewpointResource() {
+		if (getContainerViewpoint() != null) {
+			return (ViewPointResource) getContainerViewpoint().getResource();
 		}
 		return null;
 	}

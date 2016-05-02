@@ -52,6 +52,7 @@ import org.openflexo.components.wizard.WizardStep;
 import org.openflexo.foundation.fml.AbstractVirtualModel;
 import org.openflexo.foundation.fml.CreationScheme;
 import org.openflexo.foundation.fml.VirtualModel;
+import org.openflexo.foundation.fml.rm.AbstractVirtualModelResource;
 import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
 import org.openflexo.foundation.fml.rt.FMLRTModelSlotInstanceConfiguration;
@@ -73,8 +74,8 @@ import org.openflexo.toolbox.JavaUtils;
 import org.openflexo.toolbox.StringUtils;
 import org.openflexo.view.controller.FlexoController;
 
-public abstract class AbstractCreateVirtualModelInstanceWizard<A extends AbstractCreateVirtualModelInstance<?, ?, ?, ?>> extends
-		FlexoWizard {
+public abstract class AbstractCreateVirtualModelInstanceWizard<A extends AbstractCreateVirtualModelInstance<?, ?, ?, ?>>
+		extends FlexoWizard {
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(AbstractCreateVirtualModelInstanceWizard.class.getPackage().getName());
@@ -99,11 +100,14 @@ public abstract class AbstractCreateVirtualModelInstanceWizard<A extends Abstrac
 	private ConfigureModelSlot<?, ?> makeConfigureModelSlotStep(ModelSlot<?> ms) {
 		if (ms instanceof TypeAwareModelSlot) {
 			return new ConfigureTypeAwareModelSlot((TypeAwareModelSlot) ms);
-		} else if (ms instanceof FreeModelSlot) {
+		}
+		else if (ms instanceof FreeModelSlot) {
 			return new ConfigureFreeModelSlot((FreeModelSlot) ms);
-		} else if (ms instanceof FMLRTModelSlot) {
+		}
+		else if (ms instanceof FMLRTModelSlot) {
 			return new ConfigureVirtualModelModelSlot((FMLRTModelSlot) ms);
-		} else {
+		}
+		else {
 			logger.warning("Could not instantiate ConfigureModelSlot for " + ms);
 			return null;
 		}
@@ -186,8 +190,8 @@ public abstract class AbstractCreateVirtualModelInstanceWizard<A extends Abstrac
 				String oldNameValue = getNewVirtualModelInstanceName();
 				action.setNewVirtualModelInstanceTitle(newVirtualModelInstanceTitle);
 				getPropertyChangeSupport().firePropertyChange("newVirtualModelInstanceTitle", oldValue, newVirtualModelInstanceTitle);
-				getPropertyChangeSupport()
-						.firePropertyChange("newVirtualModelInstanceName", oldNameValue, getNewVirtualModelInstanceName());
+				getPropertyChangeSupport().firePropertyChange("newVirtualModelInstanceName", oldNameValue,
+						getNewVirtualModelInstanceName());
 				checkValidity();
 			}
 		}
@@ -201,6 +205,27 @@ public abstract class AbstractCreateVirtualModelInstanceWizard<A extends Abstrac
 				AbstractVirtualModel<?> oldValue = getVirtualModel();
 				((AbstractCreateVirtualModelInstance) action).setVirtualModel(virtualModel);
 				getPropertyChangeSupport().firePropertyChange("virtualModel", oldValue, virtualModel);
+				checkValidity();
+			}
+		}
+
+		public AbstractVirtualModelResource<VM> getVirtualModelResource() {
+			if (action.getVirtualModel() != null) {
+				return (AbstractVirtualModelResource<VM>) action.getVirtualModel().getResource();
+			}
+			return null;
+		}
+
+		public void setVirtualModelResource(AbstractVirtualModelResource<VM> virtualModelResource) {
+			if (getVirtualModelResource() != virtualModelResource) {
+				AbstractVirtualModelResource<?> oldValue = getVirtualModelResource();
+				if (virtualModelResource != null) {
+					((AbstractCreateVirtualModelInstance) action).setVirtualModel(virtualModelResource.getVirtualModel());
+				}
+				else {
+					action.setVirtualModel(null);
+				}
+				getPropertyChangeSupport().firePropertyChange("virtualModelResource", oldValue, virtualModelResource);
 				checkValidity();
 			}
 		}
@@ -222,7 +247,8 @@ public abstract class AbstractCreateVirtualModelInstanceWizard<A extends Abstrac
 			if (chooseVirtualModel.getVirtualModel().hasCreationScheme()) {
 				chooseAndConfigureCreationScheme = makeChooseAndConfigureCreationScheme();
 				addStep(chooseAndConfigureCreationScheme);
-			} else {
+			}
+			else {
 				for (ModelSlot<?> ms : chooseVirtualModel.getVirtualModel().getModelSlots()) {
 					ConfigureModelSlot<?, ?> step = makeConfigureModelSlotStep(ms);
 					if (step != null) {
@@ -252,8 +278,8 @@ public abstract class AbstractCreateVirtualModelInstanceWizard<A extends Abstrac
 	 * @author sylvain
 	 * 
 	 */
-	public abstract class ConfigureModelSlot<MS extends ModelSlot<RD>, RD extends ResourceData<RD> & TechnologyObject<?>> extends
-			WizardStep implements PropertyChangeListener {
+	public abstract class ConfigureModelSlot<MS extends ModelSlot<RD>, RD extends ResourceData<RD> & TechnologyObject<?>> extends WizardStep
+			implements PropertyChangeListener {
 
 		private final MS modelSlot;
 		private final ModelSlotInstanceConfiguration<MS, RD> configuration;
@@ -287,7 +313,8 @@ public abstract class AbstractCreateVirtualModelInstanceWizard<A extends Abstrac
 			boolean isValid = getConfiguration().isValidConfiguration();
 			if (!isValid) {
 				setIssueMessage(getConfiguration().getErrorMessage(), IssueMessageType.ERROR);
-			} else {
+			}
+			else {
 				setIssueMessage(FlexoLocalization.localizedForKey("valid_configuration"), IssueMessageType.INFO);
 			}
 			return isValid;
@@ -331,8 +358,8 @@ public abstract class AbstractCreateVirtualModelInstanceWizard<A extends Abstrac
 	 * 
 	 */
 	@FIBPanel("Fib/Wizard/CreateVirtualModelInstance/ConfigureFreeModelSlotInstance.fib")
-	public class ConfigureFreeModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> extends
-			ConfigureModelSlot<FreeModelSlot<RD>, RD> {
+	public class ConfigureFreeModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>>
+			extends ConfigureModelSlot<FreeModelSlot<RD>, RD> {
 
 		public ConfigureFreeModelSlot(FreeModelSlot<RD> modelSlot) {
 			super(modelSlot);
