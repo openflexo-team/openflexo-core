@@ -56,7 +56,9 @@ import java.util.logging.Logger;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.openflexo.foundation.fml.FMLObject;
+import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.ViewPoint;
+import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.resource.DefaultResourceCenterService;
 import org.openflexo.foundation.resource.DirectoryResourceCenter;
 import org.openflexo.foundation.resource.DirectoryResourceCenter.DirectoryResourceCenterEntry;
@@ -64,6 +66,8 @@ import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.FlexoResourceCenter.ResourceCenterEntry;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
 import org.openflexo.foundation.resource.GitResourceCenter;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.kvc.KeyValueLibrary;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.logging.FlexoLoggingManager;
@@ -169,10 +173,40 @@ public abstract class OpenflexoTestCase {
 		return null;
 	}
 
-	protected static FlexoServiceManager instanciateTestServiceManager() {
-		return instanciateTestServiceManager(false);
+	/**
+	 * Instantiate a default {@link FlexoServiceManager} well suited for test purpose<br>
+	 * FML and FML@RT technology adapters are activated in returned {@link FlexoServiceManager}, as well as technology adapters whose
+	 * classes are supplied as varargs arguments
+	 * 
+	 * @param taClasses
+	 * @return a newly created {@link FlexoServiceManager}
+	 */
+	protected static FlexoServiceManager instanciateTestServiceManager(Class<? extends TechnologyAdapter>... taClasses) {
+		serviceManager = instanciateTestServiceManager();
+		for (Class<? extends TechnologyAdapter> technologyAdapterClass : taClasses) {
+			serviceManager
+					.activateTechnologyAdapter(serviceManager.getTechnologyAdapterService().getTechnologyAdapter(technologyAdapterClass));
+		}
+		return serviceManager;
 	}
 
+	/**
+	 * Instantiate a default {@link FlexoServiceManager} well suited for test purpose<br>
+	 * FML and FML@RT technology adapters are activated in returned {@link FlexoServiceManager}
+	 * 
+	 * @return a newly created {@link FlexoServiceManager}
+	 */
+	protected static FlexoServiceManager instanciateTestServiceManager() {
+		return serviceManager = instanciateTestServiceManager(false);
+	}
+
+	/**
+	 * Instantiate a default {@link FlexoServiceManager} well suited for test purpose<br>
+	 * FML and FML@RT technology adapters are activated in returned {@link FlexoServiceManager}<br>
+	 * When set to true, generate a Test ResourceCenter with all found 'TestResourceCenter' dirs in workspace
+	 * 
+	 * @return a newly created {@link FlexoServiceManager}
+	 */
 	protected static FlexoServiceManager instanciateTestServiceManager(final boolean generateCompoundTestResourceCenter) {
 		File previousResourceCenterDirectoryToRemove = null;
 		if (testResourceCenterDirectory != null && testResourceCenterDirectory.exists()) {
@@ -237,6 +271,11 @@ public abstract class OpenflexoTestCase {
 			}
 
 		};
+
+		// Activate both FML and FML@RT technology adapters
+		TechnologyAdapterService taService = serviceManager.getTechnologyAdapterService();
+		taService.activateTechnologyAdapter(taService.getTechnologyAdapter(FMLTechnologyAdapter.class));
+		taService.activateTechnologyAdapter(taService.getTechnologyAdapter(FMLRTTechnologyAdapter.class));
 
 		if (previousResourceCenterDirectoryToRemove != null) {
 			if (testResourceCenterDirectoriesToRemove == null) {
