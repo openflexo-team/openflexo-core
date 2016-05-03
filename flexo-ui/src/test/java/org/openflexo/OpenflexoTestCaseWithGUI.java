@@ -119,6 +119,17 @@ public abstract class OpenflexoTestCaseWithGUI extends OpenflexoTestCase {
 		return serviceManager;
 	}
 
+	protected static ApplicationContext instanciateTestServiceManager(final boolean generateCompoundTestResourceCenter,
+			Class<? extends TechnologyAdapter>... taClasses) {
+		serviceManager = new TestApplicationContext(generateCompoundTestResourceCenter);
+		for (Class<? extends TechnologyAdapter> technologyAdapterClass : taClasses) {
+			serviceManager
+					.activateTechnologyAdapter(serviceManager.getTechnologyAdapterService().getTechnologyAdapter(technologyAdapterClass));
+		}
+		resourceCenter = (DirectoryResourceCenter) serviceManager.getResourceCenterService().getResourceCenters().get(0);
+		return serviceManager;
+	}
+
 	protected static ApplicationContext getFlexoServiceManager() {
 		return serviceManager;
 	}
