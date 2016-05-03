@@ -51,14 +51,19 @@ import org.openflexo.foundation.DefaultFlexoEditor;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.FlexoServiceManager;
+import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.ViewPointLibrary;
+import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.resource.DefaultResourceCenterService;
 import org.openflexo.foundation.resource.DirectoryResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
 import org.openflexo.foundation.technologyadapter.DefaultTechnologyAdapterService;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.foundation.utils.ProjectLoadingHandler;
 import org.openflexo.prefs.PreferencesService;
+import org.openflexo.rm.ActivateTechnologyAdapterTask;
+import org.openflexo.rm.DisactivateTechnologyAdapterTask;
 import org.openflexo.rm.FileSystemResourceLocatorImpl;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceConsistencyService;
@@ -96,6 +101,12 @@ public class TestApplicationContext extends ApplicationContext {
 	public TestApplicationContext(boolean generateCompoundTestResourceCenter) {
 		super();
 		this.generateCompoundTestResourceCenter = generateCompoundTestResourceCenter;
+
+		// Activate both FML and FML@RT technology adapters
+		TechnologyAdapterService taService = getTechnologyAdapterService();
+		taService.activateTechnologyAdapter(taService.getTechnologyAdapter(FMLTechnologyAdapter.class));
+		taService.activateTechnologyAdapter(taService.getTechnologyAdapter(FMLRTTechnologyAdapter.class));
+
 	}
 
 	@Override
@@ -208,4 +219,44 @@ public class TestApplicationContext extends ApplicationContext {
 	protected ResourceConsistencyService createResourceConsistencyService() {
 		return null;
 	}
+
+	/**
+	 * Enable a {@link TechnologyAdapter}<br>
+	 * All resources centers are notified to scan the resources that they may interpret
+	 * 
+	 * @param technologyAdapter
+	 */
+	@Override
+	public ActivateTechnologyAdapterTask activateTechnologyAdapter(TechnologyAdapter technologyAdapter) {
+
+		if (technologyAdapter.isActivated()) {
+			return null;
+		}
+
+		technologyAdapter.activate();
+
+		notify(getTechnologyAdapterService(), new TechnologyAdapterHasBeenActivated(technologyAdapter));
+
+		return null;
+	}
+
+	/**
+	 * Disable a {@link TechnologyAdapter}<br>
+	 * All resources centers are notified to free the resources that they are managing, if possible
+	 * 
+	 * @param technologyAdapter
+	 */
+	@Override
+	public DisactivateTechnologyAdapterTask disactivateTechnologyAdapter(TechnologyAdapter technologyAdapter) {
+
+		if (!technologyAdapter.isActivated()) {
+			return null;
+		}
+
+		technologyAdapter.disactivate();
+		notify(getTechnologyAdapterService(), new TechnologyAdapterHasBeenDisactivated(technologyAdapter));
+
+		return null;
+	}
+
 }

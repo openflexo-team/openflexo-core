@@ -50,6 +50,7 @@ import org.openflexo.foundation.OpenflexoTestCase;
 import org.openflexo.foundation.resource.DirectoryResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.logging.FlexoLoggingManager;
 
@@ -90,18 +91,35 @@ public abstract class OpenflexoTestCaseWithGUI extends OpenflexoTestCase {
 		unloadServiceManager();
 	}
 
-	protected static FlexoServiceManager instanciateTestServiceManager() {
+	/**
+	 * Instantiate a default {@link TestApplicationContext} well suited for test purpose<br>
+	 * FML and FML@RT technology adapters are activated in returned {@link FlexoServiceManager}, as well as technology adapters whose
+	 * classes are supplied as varargs arguments
+	 * 
+	 * @param taClasses
+	 * @return a newly created {@link FlexoServiceManager}
+	 */
+	protected static ApplicationContext instanciateTestServiceManager(Class<? extends TechnologyAdapter>... taClasses) {
+		serviceManager = instanciateTestServiceManager();
+		for (Class<? extends TechnologyAdapter> technologyAdapterClass : taClasses) {
+			serviceManager
+					.activateTechnologyAdapter(serviceManager.getTechnologyAdapterService().getTechnologyAdapter(technologyAdapterClass));
+		}
+		return serviceManager;
+	}
+
+	protected static ApplicationContext instanciateTestServiceManager() {
 		Flexo.isDev = true;
 		return instanciateTestServiceManager(false);
 	}
 
-	protected static FlexoServiceManager instanciateTestServiceManager(final boolean generateCompoundTestResourceCenter) {
+	protected static ApplicationContext instanciateTestServiceManager(final boolean generateCompoundTestResourceCenter) {
 		serviceManager = new TestApplicationContext(generateCompoundTestResourceCenter);
 		resourceCenter = (DirectoryResourceCenter) serviceManager.getResourceCenterService().getResourceCenters().get(0);
 		return serviceManager;
 	}
 
-	protected static FlexoServiceManager getFlexoServiceManager() {
+	protected static ApplicationContext getFlexoServiceManager() {
 		return serviceManager;
 	}
 

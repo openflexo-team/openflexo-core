@@ -44,7 +44,6 @@ import java.util.logging.Logger;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.resource.DirectoryResourceCenter;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.prefs.PreferencesService;
@@ -60,7 +59,7 @@ public class TestPreferencesService extends OpenflexoTestCaseWithGUI {
 
 	private static final Logger logger = FlexoLogger.getLogger(TestPreferencesService.class.getPackage().getName());
 
-	protected static FlexoServiceManager instanciateTestServiceManager() {
+	protected static ApplicationContext instanciateTestServiceManager() {
 		serviceManager = new TestApplicationContext() {
 			@Override
 			protected PreferencesService createPreferencesService() {
@@ -77,6 +76,6 @@ public class TestPreferencesService extends OpenflexoTestCaseWithGUI {
 		instanciateTestServiceManager();
 		assertNotNull(serviceManager.getPreferencesService());
 		assertNotNull(serviceManager.getPreferencesService().getPreferencesFactory());
-		
+
 	}
 }

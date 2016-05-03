@@ -42,11 +42,11 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.openflexo.ApplicationContext;
 import org.openflexo.OpenflexoTestCaseWithGUI;
 import org.openflexo.TestApplicationContext;
 import org.openflexo.components.PreferencesDialog;
 import org.openflexo.fib.testutils.FIBDialogGraphicalContextDelegate;
-import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.resource.DirectoryResourceCenter;
 import org.openflexo.prefs.PreferencesService;
 import org.openflexo.test.OrderedRunner;
@@ -63,7 +63,7 @@ public class TestPreferencesDialog extends OpenflexoTestCaseWithGUI {
 
 	private static FIBDialogGraphicalContextDelegate gcDelegate;
 
-	protected static FlexoServiceManager instanciateTestServiceManager() {
+	protected static ApplicationContext instanciateTestServiceManager() {
 		serviceManager = new TestApplicationContext() {
 			@Override
 			protected PreferencesService createPreferencesService() {
