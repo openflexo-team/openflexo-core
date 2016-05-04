@@ -207,6 +207,23 @@ public abstract class OpenflexoTestCase {
 	 * 
 	 * @return a newly created {@link FlexoServiceManager}
 	 */
+	protected static FlexoServiceManager instanciateTestServiceManager(final boolean generateCompoundTestResourceCenter,
+			Class<? extends TechnologyAdapter>... taClasses) {
+		serviceManager = instanciateTestServiceManager(generateCompoundTestResourceCenter);
+		for (Class<? extends TechnologyAdapter> technologyAdapterClass : taClasses) {
+			serviceManager
+					.activateTechnologyAdapter(serviceManager.getTechnologyAdapterService().getTechnologyAdapter(technologyAdapterClass));
+		}
+		return serviceManager;
+	}
+
+	/**
+	 * Instantiate a default {@link FlexoServiceManager} well suited for test purpose<br>
+	 * FML and FML@RT technology adapters are activated in returned {@link FlexoServiceManager}<br>
+	 * When set to true, generate a Test ResourceCenter with all found 'TestResourceCenter' dirs in workspace
+	 * 
+	 * @return a newly created {@link FlexoServiceManager}
+	 */
 	protected static FlexoServiceManager instanciateTestServiceManager(final boolean generateCompoundTestResourceCenter) {
 		File previousResourceCenterDirectoryToRemove = null;
 		if (testResourceCenterDirectory != null && testResourceCenterDirectory.exists()) {
