@@ -8,9 +8,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.jgit.api.errors.GitAPIException;
+import org.openflexo.foundation.fml.FMLTechnologyAdapter;
+import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.resource.DefaultResourceCenterService;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
 import org.openflexo.foundation.resource.GitResourceCenter;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.rm.ClasspathResourceLocatorImpl;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
@@ -26,6 +30,24 @@ public class OpenFlexoTestCaseWithGit extends OpenflexoProjectAtRunTimeTestCase 
 
 	private static GitResourceCenter gitResourceCenter;
 	private static final String TEST_RESOURCE_CENTER_URI = "http://openflexo.org/test/TestResourceCenter";
+
+	/**
+	 * Instantiate a default {@link FlexoServiceManager} well suited for test purpose<br>
+	 * FML and FML@RT technology adapters are activated in returned {@link FlexoServiceManager}, as well as technology adapters whose
+	 * classes are supplied as varargs arguments
+	 * 
+	 * @param taClasses
+	 * @return a newly created {@link FlexoServiceManager}
+	 */
+	protected static FlexoServiceManager instanciateTestServiceManager(final boolean generateCompoundTestResourceCenter,
+			Class<? extends TechnologyAdapter>... taClasses) {
+		serviceManager = instanciateTestServiceManager(generateCompoundTestResourceCenter);
+		for (Class<? extends TechnologyAdapter> technologyAdapterClass : taClasses) {
+			serviceManager
+					.activateTechnologyAdapter(serviceManager.getTechnologyAdapterService().getTechnologyAdapter(technologyAdapterClass));
+		}
+		return serviceManager;
+	}
 
 	protected static FlexoServiceManager instanciateTestServiceManager(final boolean generateCompoundTestResourceCenter) {
 		File previousResourceCenterDirectoryToRemove = null;
@@ -107,6 +129,12 @@ public class OpenFlexoTestCaseWithGit extends OpenflexoProjectAtRunTimeTestCase 
 			}
 			testResourceCenterDirectoriesToRemove.add(previousResourceCenterDirectoryToRemove);
 		}
+
+		// Activate both FML and FML@RT technology adapters
+		TechnologyAdapterService taService = serviceManager.getTechnologyAdapterService();
+		taService.activateTechnologyAdapter(taService.getTechnologyAdapter(FMLTechnologyAdapter.class));
+		taService.activateTechnologyAdapter(taService.getTechnologyAdapter(FMLRTTechnologyAdapter.class));
+
 		return serviceManager;
 	}
 
