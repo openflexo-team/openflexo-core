@@ -67,6 +67,17 @@
 		
 			<dependency>
 				<groupId>org.openflexo</groupId>
+				<artifactId>fml-technologyadapter-ui</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.openflexo</groupId>
+				<artifactId>fml-rt-technologyadapter-ui</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+		
+			<dependency>
+				<groupId>org.openflexo</groupId>
 				<artifactId>flexo-documentation</artifactId>
 				<version>${project.version}</version>
 			</dependency>
