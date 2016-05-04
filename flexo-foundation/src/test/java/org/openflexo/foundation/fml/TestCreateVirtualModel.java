@@ -146,11 +146,8 @@ public class TestCreateVirtualModel extends OpenflexoTestCase {
 		try {
 			FileUtils.copyContentDirToDir(directory, newDirectory);
 			// We wait here for the thread monitoring ResourceCenters to detect new files
-			Thread.sleep(3000);
+			((FileSystemBasedResourceCenter) resourceCenter).performDirectoryWatchingNow();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

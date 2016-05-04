@@ -159,8 +159,8 @@ public class TestFlexoConceptInstanceType extends OpenflexoProjectAtRunTimeTestC
 		assertEquals(ViewType.getViewType(viewPoint),
 				virtualModel.getBindingModel().bindingVariableNamed(ViewPointBindingModel.VIEW_PROPERTY).getType());
 		assertNotNull(virtualModel.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.VIRTUAL_MODEL_INSTANCE_PROPERTY));
-		assertEquals(VirtualModelInstanceType.getVirtualModelInstanceType(virtualModel), virtualModel.getBindingModel()
-				.bindingVariableNamed(VirtualModelBindingModel.VIRTUAL_MODEL_INSTANCE_PROPERTY).getType());
+		assertEquals(VirtualModelInstanceType.getVirtualModelInstanceType(virtualModel),
+				virtualModel.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.VIRTUAL_MODEL_INSTANCE_PROPERTY).getType());
 
 	}
 
@@ -335,11 +335,8 @@ public class TestFlexoConceptInstanceType extends OpenflexoProjectAtRunTimeTestC
 		try {
 			FileUtils.copyContentDirToDir(directory, newDirectory);
 			// We wait here for the thread monitoring ResourceCenters to detect new files
-			Thread.sleep(3000);
+			((FileSystemBasedResourceCenter) resourceCenter).performDirectoryWatchingNow();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
