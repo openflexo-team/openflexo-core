@@ -182,9 +182,40 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 
 	public abstract <I> boolean isIgnorable(FlexoResourceCenter<I> resourceCenter, I contents);
 
-	public abstract <I> void contentsAdded(FlexoResourceCenter<I> resourceCenter, I contents);
+	/**
+	 * Called when a new File has been discovered in directory representing this ResourceCenter
+	 * 
+	 * @param file
+	 * @return a boolean indicating if this file has been handled by the technology, when false ResourceCenter might resend notification
+	 */
+	public abstract <I> boolean contentsAdded(FlexoResourceCenter<I> resourceCenter, I contents);
 
-	public abstract <I> void contentsDeleted(FlexoResourceCenter<I> resourceCenter, I contents);
+	/**
+	 * Called when an existing File has been removed or deleted in directory representing this ResourceCenter
+	 * 
+	 * @param file
+	 * @return a boolean indicating if this file removing has been handled by the technology, when false ResourceCenter might resend
+	 *         notification
+	 */
+	public abstract <I> boolean contentsDeleted(FlexoResourceCenter<I> resourceCenter, I contents);
+
+	/**
+	 * Called when an existing File has been modified in directory representing this ResourceCenter
+	 * 
+	 * @param file
+	 * @return a boolean indicating if this file removing has been handled by the technology, when false ResourceCenter might resend
+	 *         notification
+	 */
+	public abstract <I> boolean contentsModified(FlexoResourceCenter<I> resourceCenter, I contents);
+
+	/**
+	 * Called when an existing File has been renamed in directory representing this ResourceCenter
+	 * 
+	 * @param file
+	 * @return a boolean indicating if this file removing has been handled by the technology, when false ResourceCenter might resend
+	 *         notification
+	 */
+	public abstract <I> boolean contentsRenamed(FlexoResourceCenter<I> resourceCenter, I contents, String oldName, String newName);
 
 	private final List<FlexoResourceCenter<?>> resourceCentersManagingThisTechnology = new ArrayList<>();
 
@@ -345,7 +376,8 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 			// containerVirtualModel.addToModelSlots(returned);
 			returned.setModelSlotTechnologyAdapter(this);
 			return returned;
-		} else {
+		}
+		else {
 			logger.warning("INVESTIGATE: VirtualModel is null, unable to create a new ModelSlot!");
 			return null;
 		}
@@ -383,7 +415,8 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 				File candidateFile = null;
 				if (resource.getFlexoIODelegate() instanceof DirectoryBasedFlexoIODelegate) {
 					candidateFile = ((DirectoryBasedFlexoIODelegate) resource.getFlexoIODelegate()).getDirectory();
-				} else if (resource.getFlexoIODelegate() instanceof FileFlexoIODelegate) {
+				}
+				else if (resource.getFlexoIODelegate() instanceof FileFlexoIODelegate) {
 					candidateFile = ((FileFlexoIODelegate) resource.getFlexoIODelegate()).getFile();
 				}
 

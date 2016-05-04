@@ -44,7 +44,6 @@ import java.util.Iterator;
 import java.util.logging.Logger;
 
 import org.apache.commons.io.FilenameUtils;
-import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.annotations.DeclareResourceTypes;
 import org.openflexo.foundation.fml.rm.ViewPointResource;
@@ -186,7 +185,8 @@ public class FMLTechnologyAdapter extends TechnologyAdapter {
 			ViewPointResource vpRes = null;
 			if (candidateElement instanceof File) {
 				vpRes = ViewPointResourceImpl.retrieveViewPointResource((File) candidateElement, resourceCenter, getServiceManager());
-			} else if (candidateElement instanceof InJarResourceImpl) {
+			}
+			else if (candidateElement instanceof InJarResourceImpl) {
 				vpRes = ViewPointResourceImpl.retrieveViewPointResource((InJarResourceImpl) candidateElement, resourceCenter,
 						getServiceManager());
 			}
@@ -207,7 +207,8 @@ public class FMLTechnologyAdapter extends TechnologyAdapter {
 				RepositoryFolder<ViewPointResource> folder;
 				folder = repository.getRepositoryFolder(candidateElement, true);
 				repository.registerResource(vpRes, folder);
-			} else {
+			}
+			else {
 				logger.warning("While exploring resource center looking for viewpoints : cannot retrieve resource for element "
 						+ candidateElement);
 			}
@@ -252,7 +253,7 @@ public class FMLTechnologyAdapter extends TechnologyAdapter {
 	}
 
 	@Override
-	public <I> void contentsAdded(final FlexoResourceCenter<I> resourceCenter, final I contents) {
+	public <I> boolean contentsAdded(final FlexoResourceCenter<I> resourceCenter, final I contents) {
 		if (!this.isIgnorable(resourceCenter, contents)) {
 			if (contents instanceof File) {
 				System.out.println("FMLTechnologyAdapter: File ADDED " + ((File) contents).getName() + " in "
@@ -261,19 +262,34 @@ public class FMLTechnologyAdapter extends TechnologyAdapter {
 				if (isValidViewPointDirectory(candidateFile)) {
 					final ViewPointResource vpRes = analyseAsViewPoint(contents, resourceCenter);
 					referenceResource(vpRes, resourceCenter);
+					return vpRes != null;
 				}
 			}
 		}
+		return false;
 	}
 
 	@Override
-	public <I> void contentsDeleted(final FlexoResourceCenter<I> resourceCenter, final I contents) {
+	public <I> boolean contentsDeleted(final FlexoResourceCenter<I> resourceCenter, final I contents) {
 		if (!this.isIgnorable(resourceCenter, contents)) {
 			if (contents instanceof File) {
 				System.out.println("FMLTechnologyAdapter: File DELETED " + ((File) contents).getName() + " in "
 						+ ((File) contents).getParentFile().getAbsolutePath());
 			}
 		}
+		return false;
+	}
+
+	@Override
+	public <I> boolean contentsModified(FlexoResourceCenter<I> resourceCenter, I contents) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public <I> boolean contentsRenamed(FlexoResourceCenter<I> resourceCenter, I contents, String oldName, String newName) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 	@Override

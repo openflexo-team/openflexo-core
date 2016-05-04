@@ -228,7 +228,7 @@ public class FMLRTTechnologyAdapter extends TechnologyAdapter {
 	}
 
 	@Override
-	public <I> void contentsAdded(final FlexoResourceCenter<I> resourceCenter, final I contents) {
+	public <I> boolean contentsAdded(final FlexoResourceCenter<I> resourceCenter, final I contents) {
 		if (!this.isIgnorable(resourceCenter, contents)) {
 			final ViewRepository viewRepository = this.getViewRepository(resourceCenter);
 			if (contents instanceof File) {
@@ -239,20 +239,35 @@ public class FMLRTTechnologyAdapter extends TechnologyAdapter {
 					final ViewResource vRes = this.analyseAsView(candidateFile, viewRepository);
 					if (vRes != null) {
 						this.referenceResource(vRes, resourceCenter);
+						return true;
 					}
 				}
 			}
 		}
+		return false;
 	}
 
 	@Override
-	public <I> void contentsDeleted(final FlexoResourceCenter<I> resourceCenter, final I contents) {
+	public <I> boolean contentsDeleted(final FlexoResourceCenter<I> resourceCenter, final I contents) {
 		if (!this.isIgnorable(resourceCenter, contents)) {
 			if (contents instanceof File) {
 				System.out.println("FMLRTTechnologyAdapter: File DELETED " + ((File) contents).getName() + " in "
 						+ ((File) contents).getParentFile().getAbsolutePath());
 			}
 		}
+		return false;
+	}
+
+	@Override
+	public <I> boolean contentsModified(FlexoResourceCenter<I> resourceCenter, I contents) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public <I> boolean contentsRenamed(FlexoResourceCenter<I> resourceCenter, I contents, String oldName, String newName) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 	private FlexoConceptInstanceTypeFactory fciFactory;

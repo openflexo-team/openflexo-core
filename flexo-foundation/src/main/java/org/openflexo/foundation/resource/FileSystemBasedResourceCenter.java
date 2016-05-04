@@ -47,6 +47,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -76,7 +77,7 @@ import org.openflexo.toolbox.IProgress;
  * @author sylvain
  * 
  */
-public abstract class FileSystemBasedResourceCenter extends FileResourceRepository<FlexoResource<?>> implements FlexoResourceCenter<File> {
+public abstract class FileSystemBasedResourceCenter extends FileResourceRepository<FlexoResource<?>>implements FlexoResourceCenter<File> {
 
 	protected static final Logger logger = Logger.getLogger(FileSystemBasedResourceCenter.class.getPackage().getName());
 
@@ -275,7 +276,8 @@ public abstract class FileSystemBasedResourceCenter extends FileResourceReposito
 		List<File> allFiles = new ArrayList<File>();
 		if (getRootDirectory() != null) {
 			appendFiles(getRootDirectory(), allFiles);
-		} else {
+		}
+		else {
 			logger.warning("ResourceCenter: " + this + " rootDirectory is null");
 		}
 		return allFiles.iterator();
@@ -306,33 +308,91 @@ public abstract class FileSystemBasedResourceCenter extends FileResourceReposito
 
 	private ScheduledFuture<?> scheduleWithFixedDelay;
 
+	public DirectoryWatcher getDirectoryWatcher() {
+		return directoryWatcher;
+	}
+
+	/**
+	 * Synchronous call to examine directory for structure modifications<br>
+	 * Return when the exploring task is finished
+	 */
+	public void performDirectoryWatchingNow() {
+		// directoryWatcher = new FileSystemBasedDirectoryWatcher(getRootDirectory());
+		if (directoryWatcher != null) {
+			if (directoryWatcher.isRunning()) {
+				stopDirectoryWatching();
+				directoryWatcher.waitCurrentExecution();
+				directoryWatcher.runNow();
+				startDirectoryWatching();
+			}
+			else {
+				directoryWatcher.runNow();
+			}
+		}
+	}
+
+	public class FileSystemBasedDirectoryWatcher extends DirectoryWatcher {
+		public FileSystemBasedDirectoryWatcher(File directory) {
+			super(directory);
+		}
+
+		@Override
+		protected void fileModified(File file) {
+			FileSystemBasedResourceCenter.this.fileModified(file);
+		}
+
+		@Override
+		protected void fileAdded(File file) {
+			FileSystemBasedResourceCenter.this.fileAdded(file);
+		}
+
+		@Override
+		protected void fileDeleted(File file) {
+			FileSystemBasedResourceCenter.this.fileDeleted(file);
+		}
+
+		@Override
+		protected void fileRenamed(File oldFile, File renamedFile) {
+			// TODO Auto-generated method stub
+		}
+
+		@Override
+		protected void performRun() {
+			if (DEBUG) {
+				System.out.println("BEGIN performRun() for " + FileSystemBasedDirectoryWatcher.this);
+			}
+
+			super.performRun();
+
+			if (DEBUG) {
+				System.out.println("Looking for files to be notified " + FileSystemBasedDirectoryWatcher.this);
+			}
+
+			fireAddedFilesToBeNotified();
+			fireDeletedFilesToBeNotified();
+			// System.out.println("Done for " + FileSystemBasedDirectoryWatcher.this);
+			isRunning = false;
+
+			if (DEBUG) {
+				System.out.println("END performRun() for " + FileSystemBasedDirectoryWatcher.this);
+			}
+
+		}
+
+	}
+
+	/**
+	 * Start asynchronous call to examine directory for structure modifications<br>
+	 * This start a timer that will be triggered every second
+	 */
 	public void startDirectoryWatching() {
 		if (getRootDirectory() != null && getRootDirectory().exists()) {
-			directoryWatcher = new DirectoryWatcher(getRootDirectory()) {
-				@Override
-				protected void fileModified(File file) {
-					FileSystemBasedResourceCenter.this.fileModified(file);
-				}
-
-				@Override
-				protected void fileAdded(File file) {
-					FileSystemBasedResourceCenter.this.fileAdded(file);
-				}
-
-				@Override
-				protected void fileDeleted(File file) {
-					FileSystemBasedResourceCenter.this.fileDeleted(file);
-				}
-
-				@Override
-				protected void fileRenamed(File oldFile, File renamedFile) {
-					// TODO Auto-generated method stub
-
-				}
-			};
-
+			if (directoryWatcher == null) {
+				directoryWatcher = new FileSystemBasedDirectoryWatcher(getRootDirectory());
+			}
 			ScheduledExecutorService newScheduledThreadPool = Executors.newScheduledThreadPool(1);
 			scheduleWithFixedDelay = newScheduledThreadPool.scheduleWithFixedDelay(directoryWatcher, 0, 1, TimeUnit.SECONDS);
+			// System.out.println("startDirectoryWatching() for " + rootDirectory);
 		}
 	}
 
@@ -348,17 +408,58 @@ public abstract class FileSystemBasedResourceCenter extends FileResourceReposito
 		}
 	}
 
-	protected synchronized void fileAdded(File file) {
+	private final Map<TechnologyAdapter, List<File>> addedFilesToBeRenotified = new HashMap<>();
+	private final Map<TechnologyAdapter, List<File>> removedFilesToBeRenotified = new HashMap<>();
+	private final Map<TechnologyAdapter, List<File>> modifiedFilesToBeRenotified = new HashMap<>();
+	private final Map<TechnologyAdapter, Map<File, File>> renamedFilesToBeRenotified = new HashMap<>();
+
+	/**
+	 * Notify that a new File has been discovered in directory representing this ResourceCenter
+	 * 
+	 * @param file
+	 * @return a boolean indicating if this file has been handled by a least one technology
+	 */
+	protected void fileAdded(File file) {
 		if (!isIgnorable(file)) {
 			System.out.println("File ADDED " + file.getName() + " in " + file.getParentFile().getAbsolutePath());
-			// analyseAsViewPoint(file);
-			if (getServiceManager() != null) {
+			if (getServiceManager() != null && getServiceManager().getTechnologyAdapterService() != null) {
 				for (TechnologyAdapter adapter : getServiceManager().getTechnologyAdapterService().getTechnologyAdapters()) {
+					List<File> filesToBeNotified = addedFilesToBeRenotified.get(adapter);
+					if (filesToBeNotified == null) {
+						filesToBeNotified = new ArrayList<File>();
+						addedFilesToBeRenotified.put(adapter, filesToBeNotified);
+					}
 					if (adapter.isActivated()) {
-						logger.info("fileAdded " + file + " with adapter " + adapter.getName());
-						adapter.contentsAdded(this, file);
+						if (!adapter.contentsAdded(this, file)) {
+							filesToBeNotified.add(file);
+						}
 					}
 				}
+
+			}
+			System.out.println("Done: File ADDED " + file.getName() + " in " + file.getParentFile().getAbsolutePath());
+		}
+	}
+
+	protected void fireAddedFilesToBeNotified() {
+		// System.out.println("fireAddedFilesToBeNotified()");
+		if (getServiceManager() != null && getServiceManager().getTechnologyAdapterService() != null) {
+			for (TechnologyAdapter adapter : getServiceManager().getTechnologyAdapterService().getTechnologyAdapters()) {
+				if (adapter.isActivated()) {
+					List<File> filesToBeNotified = addedFilesToBeRenotified.get(adapter);
+					if (filesToBeNotified != null && filesToBeNotified.size() > 0) {
+						for (File f : new ArrayList<File>(filesToBeNotified)) {
+							if (adapter.contentsAdded(this, f)) {
+								filesToBeNotified.remove(f);
+								logger.info("fileAdded (discovered later)" + f + " with adapter " + adapter.getName() + " : " + f);
+							}
+							logger.info("fileAdded but ignored for adapter " + adapter.getName() + " : " + f);
+						}
+					}
+				}
+				/*else {
+					System.out.println("Files ignored for TA: " + adapter + " : " + addedFilesToBeRenotified.get(adapter));
+				}*/
 			}
 		}
 	}
@@ -368,8 +469,40 @@ public abstract class FileSystemBasedResourceCenter extends FileResourceReposito
 			System.out.println("File DELETED " + file.getName() + " in " + file.getParentFile().getAbsolutePath());
 			if (getServiceManager() != null) {
 				for (TechnologyAdapter adapter : getServiceManager().getTechnologyAdapterService().getTechnologyAdapters()) {
-					logger.info("fileDeleted " + file + " with adapter " + adapter.getName());
-					adapter.contentsDeleted(this, file);
+					List<File> filesToBeNotified = removedFilesToBeRenotified.get(adapter);
+					if (filesToBeNotified == null) {
+						filesToBeNotified = new ArrayList<File>();
+						removedFilesToBeRenotified.put(adapter, filesToBeNotified);
+					}
+					if (adapter.isActivated()) {
+						logger.info("fileDeleted " + file + " with adapter " + adapter.getName());
+						if (adapter.contentsDeleted(this, file)) {
+							filesToBeNotified.remove(file);
+						}
+						else {
+							filesToBeNotified.add(file);
+						}
+					}
+				}
+			}
+		}
+	}
+
+	protected void fireDeletedFilesToBeNotified() {
+		// System.out.println("fireDeletedFilesToBeNotified()");
+		if (getServiceManager() != null && getServiceManager().getTechnologyAdapterService() != null) {
+			for (TechnologyAdapter adapter : getServiceManager().getTechnologyAdapterService().getTechnologyAdapters()) {
+				if (adapter.isActivated()) {
+					List<File> filesToBeNotified = removedFilesToBeRenotified.get(adapter);
+					if (filesToBeNotified != null && filesToBeNotified.size() > 0) {
+						for (File f : new ArrayList<File>(filesToBeNotified)) {
+							if (adapter.contentsDeleted(this, f)) {
+								filesToBeNotified.remove(f);
+								logger.info("fileDeleted (discovered later)" + f + " with adapter " + adapter.getName() + " : " + f);
+							}
+							logger.info("fileDeleted but ignored for adapter " + adapter.getName() + " : " + f);
+						}
+					}
 				}
 			}
 		}
@@ -451,7 +584,8 @@ public abstract class FileSystemBasedResourceCenter extends FileResourceReposito
 		HashMap<Class<? extends ResourceRepository<?>>, ResourceRepository<?>> map = getRepositoriesForAdapter(technologyAdapter);
 		if (map.get(repositoryType) == null) {
 			map.put(repositoryType, repository);
-		} else {
+		}
+		else {
 			logger.warning("Repository already registered: " + repositoryType + " for " + repository);
 		}
 	}
@@ -525,7 +659,8 @@ public abstract class FileSystemBasedResourceCenter extends FileResourceReposito
 					}
 					if (getDefaultBaseURI().endsWith(File.separator)) {
 						return getDefaultBaseURI() + path.replace(File.separator, "/") + resource.getName();
-					} else {
+					}
+					else {
 						return getDefaultBaseURI() + "/" + path.replace(File.separator, "/") + resource.getName();
 					}
 				}
