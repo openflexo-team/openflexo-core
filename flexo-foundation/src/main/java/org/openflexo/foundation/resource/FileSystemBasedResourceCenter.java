@@ -449,11 +449,9 @@ public abstract class FileSystemBasedResourceCenter extends FileResourceReposito
 					List<File> filesToBeNotified = addedFilesToBeRenotified.get(adapter);
 					if (filesToBeNotified != null && filesToBeNotified.size() > 0) {
 						for (File f : new ArrayList<File>(filesToBeNotified)) {
-							if (adapter.contentsAdded(this, f)) {
-								filesToBeNotified.remove(f);
-								logger.info("fileAdded (discovered later)" + f + " with adapter " + adapter.getName() + " : " + f);
-							}
-							logger.info("fileAdded but ignored for adapter " + adapter.getName() + " : " + f);
+							logger.info("fileAdded (discovered later)" + f + " with adapter " + adapter.getName() + " : " + f);
+							adapter.contentsAdded(this, f);
+							filesToBeNotified.remove(f);
 						}
 					}
 				}
