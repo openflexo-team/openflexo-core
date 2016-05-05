@@ -96,7 +96,7 @@ public abstract class OpenflexoTestCase {
 
 	private static final Logger logger = FlexoLogger.getLogger(OpenflexoTestCase.class.getPackage().getName());
 
-	private static final String TEST_RESOURCE_CENTER_URI = "http://openflexo.org/test/TestResourceCenter";
+	protected static final String TEST_RESOURCE_CENTER_URI = "http://openflexo.org/test/TestResourceCenter";
 
 	protected static DirectoryResourceCenter resourceCenter;
 
