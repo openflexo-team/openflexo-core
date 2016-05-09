@@ -48,6 +48,7 @@ import org.openflexo.gina.controller.FIBController;
 import org.openflexo.gina.model.FIBComponent;
 import org.openflexo.gina.swing.utils.FIBJPanel;
 import org.openflexo.gina.swing.view.SwingViewFactory;
+import org.openflexo.gina.view.GinaViewFactory;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.localization.LocalizedDelegate;
 import org.openflexo.rm.Resource;
@@ -92,6 +93,10 @@ public class FIBDescriptionWidget extends FIBJPanel<FlexoObject> {
 
 		public DescriptionWidgetFIBController(FIBComponent c) {
 			super(c, SwingViewFactory.INSTANCE);
+		}
+
+		public DescriptionWidgetFIBController(FIBComponent c, GinaViewFactory<?> viewFactory) {
+			super(c, viewFactory);
 		}
 
 		public String getSpecificDescription() {

@@ -48,6 +48,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openflexo.TestApplicationContext;
 import org.openflexo.fib.swing.utils.SwingGraphicalContextDelegate;
+import org.openflexo.gina.FIBTestCase;
 import org.openflexo.gina.ApplicationFIBLibrary.ApplicationFIBLibraryImpl;
 import org.openflexo.gina.controller.FIBController;
 import org.openflexo.gina.swing.view.SwingViewFactory;

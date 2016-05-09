@@ -47,13 +47,8 @@ import org.openflexo.fib.swing.utils.SwingGraphicalContextDelegate;
 import org.openflexo.foundation.OpenflexoTestCase;
 import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.ViewPointModelFactory;
-import org.openflexo.gina.controller.FIBController;
-import org.openflexo.gina.model.FIBComponent;
-import org.openflexo.gina.swing.editor.FIBAbstractEditor;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.model.factory.ModelFactory;
-import org.openflexo.rm.Resource;
-import org.openflexo.rm.ResourceLocator;
 
 /**
  * Test the structural and behavioural features of {@link FIBDescriptionWidget}
@@ -98,43 +93,6 @@ public class TestDescriptionWidget extends OpenflexoTestCase {
 	@After
 	public void tearDown() throws Exception {
 		gcDelegate.tearDown();
-	}
-
-	public static void main(String[] args) {
-		ModelFactory factory = null;
-		try {
-			factory = new ViewPointModelFactory(null, null);
-		} catch (ModelDefinitionException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		final ViewPoint object1 = factory.newInstance(ViewPoint.class);
-		object1.setDescription("This is the first object description");
-		final ViewPoint object2 = factory.newInstance(ViewPoint.class);
-		object2.setDescription("Here comes a description for the second object");
-		object2.setHasSpecificDescriptions(true);
-		object2.setSpecificDescriptionsForKey("a description for the first key", "key1");
-		object2.setSpecificDescriptionsForKey("a description for the second key", "key2");
-
-		final FIBDescriptionWidget widget = new FIBDescriptionWidget(object1);
-
-		FIBAbstractEditor editor = new FIBAbstractEditor() {
-			@Override
-			public Object[] getData() {
-				return makeArray(object1, object2);
-			}
-
-			@Override
-			public Resource getFIBResource() {
-				return ResourceLocator.locateSourceCodeResource(FIBDescriptionWidget.FIB_FILE);
-			}
-
-			@Override
-			public FIBController makeNewController(FIBComponent fibComponent) {
-				return widget.new DescriptionWidgetFIBController(fibComponent);
-			}
-		};
-		editor.launch();
 	}
 
 }

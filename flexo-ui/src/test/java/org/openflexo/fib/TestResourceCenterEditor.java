@@ -46,8 +46,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openflexo.OpenflexoTestCaseWithGUI;
 import org.openflexo.components.ResourceCenterEditorDialog;
-import org.openflexo.fib.testutils.FIBDialogGraphicalContextDelegate;
 import org.openflexo.foundation.resource.DirectoryResourceCenter;
+import org.openflexo.gina.testutils.FIBDialogGraphicalContextDelegate;
 import org.openflexo.test.OrderedRunner;
 import org.openflexo.test.TestOrder;
 

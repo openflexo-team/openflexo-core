@@ -47,9 +47,9 @@ import org.junit.runner.RunWith;
 import org.openflexo.ApplicationContext;
 import org.openflexo.OpenflexoProjectAtRunTimeTestCaseWithGUI;
 import org.openflexo.components.ReviewUnsavedDialog;
-import org.openflexo.fib.testutils.FIBDialogGraphicalContextDelegate;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoProject;
+import org.openflexo.gina.testutils.FIBDialogGraphicalContextDelegate;
 import org.openflexo.test.OrderedRunner;
 import org.openflexo.test.TestOrder;
 
