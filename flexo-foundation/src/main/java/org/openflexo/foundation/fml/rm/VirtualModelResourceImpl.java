@@ -255,6 +255,10 @@ public abstract class VirtualModelResourceImpl extends AbstractVirtualModelResou
 		if (!containerWasDeserializing) {
 			getContainer().stopDeserializing();
 		}
+
+		// Now we have to activate all required technologies
+		activateRequiredTechnologies();
+
 		return returned;
 	}
 

@@ -50,6 +50,8 @@ import org.openflexo.foundation.action.FlexoActionInitializer;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FlexoConceptObject;
 import org.openflexo.foundation.fml.action.CreateModelSlot;
+import org.openflexo.foundation.task.FlexoTask;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.gina.controller.FIBController.Status;
 import org.openflexo.icon.FMLIconLibrary;
 import org.openflexo.view.controller.ActionInitializer;
@@ -85,8 +87,17 @@ public class CreateModelSlotInitializer extends ActionInitializer<CreateModelSlo
 		return new FlexoActionFinalizer<CreateModelSlot>() {
 			@Override
 			public boolean run(EventObject e, CreateModelSlot action) {
-				getController().selectAndFocusObject(action.getNewModelSlot());
-				return true;
+				if (action.getNewModelSlot() != null) {
+					TechnologyAdapterService taService = getController().getApplicationContext().getTechnologyAdapterService();
+					FlexoTask activateTechnologyAdapter = taService
+							.activateTechnologyAdapter(action.getNewModelSlot().getModelSlotTechnologyAdapter());
+					if (activateTechnologyAdapter != null) {
+						getController().getApplicationContext().getTaskManager().waitTask(activateTechnologyAdapter);
+					}
+					getController().selectAndFocusObject(action.getNewModelSlot());
+					return true;
+				}
+				return false;
 			}
 		};
 	}

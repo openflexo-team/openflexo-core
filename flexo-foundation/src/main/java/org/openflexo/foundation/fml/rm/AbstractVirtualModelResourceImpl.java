@@ -39,6 +39,8 @@
 package org.openflexo.foundation.fml.rm;
 
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 
 import org.apache.commons.io.FilenameUtils;
@@ -53,6 +55,9 @@ import org.openflexo.foundation.resource.FileFlexoIODelegate;
 import org.openflexo.foundation.resource.InJarFlexoIODelegate;
 import org.openflexo.foundation.resource.PamelaResourceImpl;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
+import org.openflexo.foundation.task.FlexoTask;
+import org.openflexo.foundation.technologyadapter.ModelSlot;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.model.factory.AccessibleProxyObject;
 import org.openflexo.rm.BasicResourceImpl;
 import org.openflexo.rm.ClasspathResourceLocatorImpl;
@@ -107,7 +112,8 @@ public abstract class AbstractVirtualModelResourceImpl<VM extends AbstractVirtua
 		VM data = getLoadedResourceData();
 		if (data == null) {
 			logger.warning("INVESTIGATE: NO DATA has been derserialized from VirtualModelResource - " + this.getURI());
-		} else {
+		}
+		else {
 			for (FlexoConcept fc : data.getFlexoConcepts()) {
 				fc.finalizeDeserialization();
 			}
@@ -134,7 +140,8 @@ public abstract class AbstractVirtualModelResourceImpl<VM extends AbstractVirtua
 				FileSystemResourceLocatorImpl.appendDirectoryToFileSystemResourceLocator(parentPath);
 			}
 			return ResourceLocator.locateResource(parentPath);
-		} else if (getFlexoIODelegate() instanceof InJarFlexoIODelegate) {
+		}
+		else if (getFlexoIODelegate() instanceof InJarFlexoIODelegate) {
 			InJarResourceImpl resource = ((InJarFlexoIODelegate) getFlexoIODelegate()).getInJarResource();
 			String parentPath = FilenameUtils.getFullPath(resource.getRelativePath());
 			BasicResourceImpl parent = (BasicResourceImpl) ((ClasspathResourceLocatorImpl) (resource.getLocator())).getJarResourcesList()
@@ -147,9 +154,30 @@ public abstract class AbstractVirtualModelResourceImpl<VM extends AbstractVirtua
 	public String getDirectoryPath() {
 		if (getFlexoIODelegate() instanceof DirectoryBasedFlexoIODelegate) {
 			return ((DirectoryBasedFlexoIODelegate) getFlexoIODelegate()).getDirectory().getAbsolutePath();
-		} else if (getFlexoIODelegate() instanceof FileFlexoIODelegate) {
+		}
+		else if (getFlexoIODelegate() instanceof FileFlexoIODelegate) {
 			return ((FileFlexoIODelegate) getFlexoIODelegate()).getFile().getParentFile().getAbsolutePath();
 		}
 		return null;
 	}
+
+	/**
+	 * Activate all required technologies, while exploring declared model slots
+	 */
+	protected void activateRequiredTechnologies() {
+		if (getLoadedResourceData() != null) {
+			TechnologyAdapterService taService = getServiceManager().getTechnologyAdapterService();
+			List<FlexoTask> tasks = new ArrayList<>();
+			for (ModelSlot<?> ms : getLoadedResourceData().getModelSlots()) {
+				FlexoTask task = taService.activateTechnologyAdapter(ms.getModelSlotTechnologyAdapter());
+				if (task != null) {
+					tasks.add(task);
+				}
+			}
+			for (FlexoTask task : tasks) {
+				getServiceManager().getTaskManager().waitTask(task);
+			}
+		}
+	}
+
 }
