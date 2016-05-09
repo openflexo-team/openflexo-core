@@ -9,13 +9,6 @@
 			darkLevel="0" index="0" font="SansSerif,0,11" useScrollBar="true"
 			horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED"
 			verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED" name="BasicTab">
-			<Label name="ModelSlotLabel">
-				<Parameter name="hidden" value="true" />
-			</Label>
-			<DropDown name="ModelSlotDD">
-				<Parameter name="hidden" value="true" />
-			</DropDown>
-
 		</Tab>
 		<Tab title="Advanced" layout="twocols" titleFont="SansSerif,0,11"
 			darkLevel="0" index="2" font="SansSerif,0,11" useScrollBar="true"

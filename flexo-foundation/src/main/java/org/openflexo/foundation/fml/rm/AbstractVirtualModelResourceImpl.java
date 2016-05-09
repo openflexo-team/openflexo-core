@@ -49,6 +49,7 @@ import org.openflexo.foundation.fml.AbstractVirtualModel;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.FlexoConcept;
+import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.resource.CannotRenameException;
 import org.openflexo.foundation.resource.DirectoryBasedFlexoIODelegate;
 import org.openflexo.foundation.resource.FileFlexoIODelegate;
@@ -167,6 +168,7 @@ public abstract class AbstractVirtualModelResourceImpl<VM extends AbstractVirtua
 	protected void activateRequiredTechnologies() {
 		if (getLoadedResourceData() != null) {
 			TechnologyAdapterService taService = getServiceManager().getTechnologyAdapterService();
+			taService.activateTechnologyAdapter(taService.getTechnologyAdapter(FMLRTTechnologyAdapter.class));
 			List<FlexoTask> tasks = new ArrayList<>();
 			for (ModelSlot<?> ms : getLoadedResourceData().getModelSlots()) {
 				FlexoTask task = taService.activateTechnologyAdapter(ms.getModelSlotTechnologyAdapter());

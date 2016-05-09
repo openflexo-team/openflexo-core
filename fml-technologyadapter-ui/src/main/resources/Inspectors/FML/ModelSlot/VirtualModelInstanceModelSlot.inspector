@@ -9,22 +9,15 @@
 			darkLevel="0" index="0" font="SansSerif,0,11" useScrollBar="true"
 			horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED"
 			verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED" name="BasicTab">
-			<Label label="virtual_model" index="12"
-				constraints="twocols(expandHorizontally=false;expandVertically=false;index=12;location=left)"
+			<Label label="virtual_model" index="16"
+				constraints="twocols(expandHorizontally=false;expandVertically=false;location=left)"
 				name="VirtualModelLabel" localize="true" />
 			<Custom componentClassName="org.openflexo.fml.controller.widget.FIBVirtualModelSelector"
 				localize="true" manageDynamicModel="true" name="VirtualModelSelector"
-				index="13" data="data.accessedVirtualModelResource"
-				constraints="twocols(expandHorizontally=true;expandVertically=false;index=13;location=right)">
+				index="17" data="data.accessedVirtualModelResource"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;location=right)">
 				<Assignment variable="component.viewPoint" value="data.viewPoint.resource" />
 			</Custom>
-			<Label name="ModelSlotLabel">
-				<Parameter name="hidden" value="true" />
-			</Label>
-			<DropDown name="ModelSlotDD">
-				<Parameter name="hidden" value="true" />
-			</DropDown>
-
 		</Tab>
 		<Tab title="Advanced" layout="twocols" titleFont="SansSerif,0,11"
 			darkLevel="0" index="2" font="SansSerif,0,11" useScrollBar="true"
