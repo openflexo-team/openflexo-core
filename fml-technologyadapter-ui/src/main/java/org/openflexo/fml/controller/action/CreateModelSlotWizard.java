@@ -44,9 +44,9 @@ import java.util.logging.Logger;
 
 import org.openflexo.ApplicationContext;
 import org.openflexo.components.wizard.WizardStep;
-import org.openflexo.foundation.fml.AbstractVirtualModel;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
+import org.openflexo.foundation.fml.FlexoConceptObject;
 import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.action.CreateModelSlot;
@@ -65,7 +65,7 @@ import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.toolbox.StringUtils;
 import org.openflexo.view.controller.FlexoController;
 
-public class CreateModelSlotWizard extends AbstractCreateFMLElementWizard<CreateModelSlot, AbstractVirtualModel<?>, FMLObject> {
+public class CreateModelSlotWizard extends AbstractCreateFMLElementWizard<CreateModelSlot, FlexoConceptObject, FMLObject> {
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CreateModelSlotWizard.class.getPackage().getName());
@@ -137,21 +137,26 @@ public class CreateModelSlotWizard extends AbstractCreateFMLElementWizard<Create
 			if (StringUtils.isEmpty(getModelSlotName())) {
 				setIssueMessage(EMPTY_NAME, IssueMessageType.ERROR);
 				return false;
-			} else if (getFocusedObject() instanceof VirtualModel && getFocusedObject().getModelSlot(getModelSlotName()) != null) {
+			}
+			else if (getAction().getVirtualModel().getModelSlot(getModelSlotName()) != null) {
 				setIssueMessage(DUPLICATED_NAME, IssueMessageType.ERROR);
 				return false;
-			} else if (getTechnologyAdapter() == null) {
+			}
+			else if (getTechnologyAdapter() == null) {
 				setIssueMessage(NO_TECHNOLOGY_ADAPTER, IssueMessageType.ERROR);
 				return false;
-			} else if (getModelSlotClass() == null) {
+			}
+			else if (getModelSlotClass() == null) {
 				setIssueMessage(NO_MODEL_SLOT_TYPE, IssueMessageType.ERROR);
 				return false;
-			} else if (getTechnologyAdapter() instanceof FMLTechnologyAdapter) {
+			}
+			else if (getTechnologyAdapter() instanceof FMLTechnologyAdapter) {
 				if (getVmRes() == null) {
 					setIssueMessage(NO_VIRTUAL_MODEL, IssueMessageType.ERROR);
 					return false;
 				}
-			} else if (TypeAwareModelSlot.class.isAssignableFrom(getModelSlotClass())) {
+			}
+			else if (TypeAwareModelSlot.class.isAssignableFrom(getModelSlotClass())) {
 				if (getMmRes() == null) {
 					setIssueMessage(NO_META_MODEL, IssueMessageType.ERROR);
 					return false;
