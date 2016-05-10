@@ -212,7 +212,7 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 	}
 
 	@Override
-	public void receiveNotification(FlexoService caller, ServiceNotification notification) {
+	public synchronized void receiveNotification(FlexoService caller, ServiceNotification notification) {
 		if (notification instanceof WillWriteFileOnDiskNotification) {
 			for (FlexoResourceCenter rc : getResourceCenters()) {
 				if (rc instanceof FileSystemBasedResourceCenter) {
