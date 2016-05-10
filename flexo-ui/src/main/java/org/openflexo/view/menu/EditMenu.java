@@ -274,6 +274,19 @@ public class EditMenu extends FlexoMenu {
 		}
 
 		private void updateWithUndoManagerState() {
+			// Fix a Deadlock Similar to OP-11 (DeadLock when opening a diagram in FME after redoing/undoing on some other)
+			// This issue was caused be this method invokation during an application task (FlexoTask)
+			// This make a call to Swing (to enable/disable undo/redo item), and might lead to a DeadLock
+			// The solution is here to delay this update in the event dispatch thread
+			if (!SwingUtilities.isEventDispatchThread()) {
+				SwingUtilities.invokeLater(new Runnable() {
+					@Override
+					public void run() {
+						updateWithUndoManagerState();
+					}
+				});
+				return;
+			}		
 			if (getUndoManager() != null) {
 				setEnabled(getUndoManager().canRedo());
 				if (getUndoManager().canRedo()) {
@@ -284,8 +297,8 @@ public class EditMenu extends FlexoMenu {
 				}
 			}
 			else {
-				setEnabled(false);
 				setText(FlexoLocalization.localizedForKey("redo"));
+				setEnabled(false);
 			}
 		}
 
