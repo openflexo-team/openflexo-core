@@ -64,4 +64,9 @@ public class TestFMLCommonFibs extends GenericFIBTestCase {
 		validateFIB("Fib/VirtualModelSelector.fib");
 	}
 
+	@Test
+	public void testFlexoBehaviourSelector() {
+		validateFIB("Fib/FlexoBehaviourSelector.fib");
+	}
+
 }
