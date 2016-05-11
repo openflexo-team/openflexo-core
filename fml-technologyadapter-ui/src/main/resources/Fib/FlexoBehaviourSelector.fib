@@ -46,7 +46,8 @@
 		</BrowserElement>
 		<BrowserElement dataClassName="org.openflexo.foundation.fml.FlexoBehaviour"
 			label="flexoBehaviour.name" icon="controller.iconForObject(flexoBehaviour)"
-			tooltip="" enabled="" visible="" isEditable="false" editableLabel=""
+			enabled="data.isAcceptableValue(flexoBehaviour)"
+			isEditable="false"
 			filtered="false" defaultVisible="true" dynamicFont="" name="flexoBehaviour">
 		</BrowserElement>
 		

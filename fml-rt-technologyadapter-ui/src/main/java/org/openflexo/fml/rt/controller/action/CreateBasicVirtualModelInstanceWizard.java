@@ -98,5 +98,10 @@ public class CreateBasicVirtualModelInstanceWizard extends AbstractCreateVirtual
 
 	@FIBPanel("Fib/Wizard/CreateVirtualModelInstance/ChooseAndConfigureCreationSchemeForVirtualModel.fib")
 	public class ChooseAndConfigureCreationSchemeForVirtualModel extends AbstractChooseAndConfigureCreationScheme<VirtualModel> {
+
+		public ChooseAndConfigureCreationSchemeForVirtualModel() {
+			super(action.getCreationSchemeAction());
+		}
+
 	}
 }

@@ -82,7 +82,7 @@ public class NavigationSchemeActionInitializer
 				// First retrieve parameters
 
 				ParametersRetriever<NavigationScheme> parameterRetriever = new ParametersRetriever<NavigationScheme>(action,
-						getController());
+						getController() != null ? getController().getApplicationContext() : null);
 				if (action.escapeParameterRetrievingWhenValid && parameterRetriever.isSkipable()) {
 					return true;
 				}
@@ -102,7 +102,8 @@ public class NavigationSchemeActionInitializer
 					// Editor will handle switch to right module and perspective, and select target object
 					getEditor().focusOn(action.getTargetObject());
 					return true;
-				} else {
+				}
+				else {
 					return false;
 				}
 			}

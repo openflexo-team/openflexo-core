@@ -168,6 +168,10 @@ public class CreateViewWizard extends AbstractCreateVirtualModelInstanceWizard<C
 
 	@FIBPanel("Fib/Wizard/CreateView/ChooseAndConfigureCreationSchemeForViewPoint.fib")
 	public class ChooseAndConfigureCreationSchemeForViewPoint extends AbstractChooseAndConfigureCreationScheme<ViewPoint> {
+
+		public ChooseAndConfigureCreationSchemeForViewPoint() {
+			super(action.getCreationSchemeAction());
+		}
 	}
 
 }

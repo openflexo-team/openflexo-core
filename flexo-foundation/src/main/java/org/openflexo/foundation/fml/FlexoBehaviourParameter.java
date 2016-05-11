@@ -394,7 +394,15 @@ public interface FlexoBehaviourParameter extends FlexoBehaviourObject, FunctionA
 
 		@Override
 		public boolean isValid(FlexoBehaviourAction action, Object value) {
-			return !getIsRequired() || value != null;
+			if (!getIsRequired()) {
+				return true;
+			}
+
+			if (value instanceof String) {
+				return StringUtils.isNotEmpty((String) value);
+			}
+
+			return value != null;
 		}
 
 		@Override

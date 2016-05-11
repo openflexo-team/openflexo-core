@@ -2,7 +2,7 @@
 <Panel className="org.openflexo.gina.utils.FIBInspector" layout="twocols"
 	hGap="5" vGap="5" cols="2" rows="2" flowAlignment="LEFT" boxLayoutAxis="X_AXIS"
 	titleFont="SansSerif,0,12" darkLevel="0"
-	dataClassName="org.openflexo.foundation.fml.rt.VirtualModelInstance"
+	dataClassName="org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance"
 	controllerClassName="org.openflexo.inspector.FIBInspectorController"
 	font="SansSerif,0,12" name="Inspector">
 	<TabPanel name="Tab"

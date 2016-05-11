@@ -74,7 +74,7 @@ public class ActionSchemeActionInitializer extends ActionInitializer<ActionSchem
 			public boolean run(EventObject e, ActionSchemeAction action) {
 				getController().willExecute(action);
 				ParametersRetriever<AbstractActionScheme> parameterRetriever = new ParametersRetriever<AbstractActionScheme>(action,
-						getController());
+						getController() != null ? getController().getApplicationContext() : null);
 				if (action.escapeParameterRetrievingWhenValid && parameterRetriever.isSkipable()) {
 					return true;
 				}

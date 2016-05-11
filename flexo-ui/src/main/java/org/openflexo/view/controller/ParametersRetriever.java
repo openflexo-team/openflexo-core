@@ -43,6 +43,7 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.openflexo.ApplicationContext;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoBehaviourActionType;
@@ -78,7 +79,7 @@ public class ParametersRetriever<ES extends FlexoBehaviour> {
 	private static final Logger logger = Logger.getLogger(ParametersRetriever.class.getPackage().getName());
 
 	private final FlexoBehaviourAction<?, ES, ?> action;
-	private final FlexoController controller;
+	private final ApplicationContext applicationContext;
 
 	private static FIBModelFactory fibModelFactory;
 
@@ -90,9 +91,9 @@ public class ParametersRetriever<ES extends FlexoBehaviour> {
 		}
 	}
 
-	public ParametersRetriever(FlexoBehaviourAction<?, ES, ?> action, FlexoController controller) {
+	public ParametersRetriever(FlexoBehaviourAction<?, ES, ?> action, ApplicationContext applicationContext) {
 		this.action = action;
-		this.controller = controller;
+		this.applicationContext = applicationContext;
 		if (action != null) {
 			action.retrieveDefaultParameters();
 		}
@@ -111,8 +112,8 @@ public class ParametersRetriever<ES extends FlexoBehaviour> {
 	public boolean retrieveParameters() {
 
 		FIBComponent component = makeFIB(true, true);
-		JFIBDialog dialog = JFIBDialog.instanciateDialog(component, action, controller.getFlexoFrame(), true,
-				FlexoLocalization.getMainLocalizer());
+		JFIBDialog dialog = JFIBDialog.instanciateDialog(component, action,
+				applicationContext.getModuleLoader().getActiveModule().getFlexoFrame(), true, FlexoLocalization.getMainLocalizer());
 		if (!action.getFlexoBehaviour().getDefinePopupDefaultSize()) {
 			dialog.setMinimumSize(new Dimension(500, 50));
 		}
@@ -122,10 +123,14 @@ public class ParametersRetriever<ES extends FlexoBehaviour> {
 
 	private FIBComponent makeWidget(final FlexoBehaviourParameter parameter, FIBPanel panel, int index) {
 
-		if (controller != null) {
-			for (TechnologyAdapter ta : controller.getApplicationContext().getTechnologyAdapterService().getTechnologyAdapters()) {
-				TechnologyAdapterController<?> tac = controller.getTechnologyAdapterController(ta);
+		System.out.println("makeWidget for " + parameter + " applicationContext=" + applicationContext);
+
+		if (applicationContext != null) {
+			for (TechnologyAdapter ta : applicationContext.getTechnologyAdapterService().getTechnologyAdapters()) {
+				TechnologyAdapterController<?> tac = applicationContext.getTechnologyAdapterControllerService()
+						.getTechnologyAdapterController(ta);
 				FIBComponent returned = tac.makeWidget(parameter, panel, index, action, fibModelFactory);
+				System.out.println("Pour le parametre " + parameter + " je retourne " + returned);
 				if (returned != null) {
 					return returned;
 				}
@@ -197,9 +202,10 @@ public class ParametersRetriever<ES extends FlexoBehaviour> {
 			FIBLabel label = fibModelFactory.newFIBLabel();
 			label.setLabel(parameter.getLabel());
 			returned.addToSubComponents(label, new TwoColsLayoutConstraints(TwoColsLayoutLocation.left, false, false), index++);
-			FIBComponent widget = makeWidget(parameter, returned, index++);
+			FIBComponent widget = makeWidget(parameter, returned, index);
 			if (widget != null) {
 				widgets.put(parameter, widget);
+				index++;
 			}
 			else {
 				logger.warning("Cannot instanciate widget for " + parameter + " of " + (parameter != null ? parameter.getClass() : "null"));
@@ -255,6 +261,7 @@ public class ParametersRetriever<ES extends FlexoBehaviour> {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+
 		return returned;
 	}
 

@@ -49,8 +49,12 @@ import javax.swing.ImageIcon;
 import org.openflexo.ApplicationContext;
 import org.openflexo.components.wizard.FlexoWizard;
 import org.openflexo.components.wizard.WizardStep;
+import org.openflexo.foundation.DataModification;
+import org.openflexo.foundation.FlexoObservable;
+import org.openflexo.foundation.FlexoObserver;
 import org.openflexo.foundation.fml.AbstractVirtualModel;
 import org.openflexo.foundation.fml.CreationScheme;
+import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.rm.AbstractVirtualModelResource;
 import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
@@ -58,6 +62,8 @@ import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
 import org.openflexo.foundation.fml.rt.FMLRTModelSlotInstanceConfiguration;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.AbstractCreateVirtualModelInstance;
+import org.openflexo.foundation.fml.rt.action.CreationSchemeAction;
+import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.foundation.fml.rt.action.ModelSlotInstanceConfiguration;
 import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.technologyadapter.FlexoMetaModel;
@@ -155,6 +161,11 @@ public abstract class AbstractCreateVirtualModelInstanceWizard<A extends Abstrac
 				return false;
 			}
 
+			if (chooseCreationScheme() && getCreationScheme() == null) {
+				setIssueMessage(FlexoLocalization.localizedForKey("no_creation_scheme_selected"), IssueMessageType.ERROR);
+				return false;
+			}
+
 			if (!getNewVirtualModelInstanceName().equals(JavaUtils.getClassName(getNewVirtualModelInstanceName()))
 					&& !getNewVirtualModelInstanceName().equals(JavaUtils.getVariableName(getNewVirtualModelInstanceName()))) {
 				setIssueMessage(FlexoLocalization.localizedForKey("discouraged_name_for_new_virtual_model_instance"),
@@ -230,12 +241,31 @@ public abstract class AbstractCreateVirtualModelInstanceWizard<A extends Abstrac
 			}
 		}
 
+		public CreationScheme getCreationScheme() {
+			return action.getCreationScheme();
+		}
+
+		public void setCreationScheme(CreationScheme creationScheme) {
+
+			if (creationScheme != getCreationScheme()) {
+				CreationScheme oldValue = getCreationScheme();
+				action.setCreationScheme(creationScheme);
+				getPropertyChangeSupport().firePropertyChange("creationScheme", oldValue, creationScheme);
+				checkValidity();
+			}
+		}
+
 		@Override
 		public boolean isTransitionalStep() {
-			if (getVirtualModel() != null && getVirtualModel().getModelSlots().size() == 0 && !getVirtualModel().hasCreationScheme()) {
+			if (getVirtualModel() == null) {
 				return false;
 			}
-			return true;
+			if (chooseCreationScheme()) {
+				return true;
+			}
+			else {
+				return getVirtualModel().getModelSlots().size() > 0;
+			}
 		}
 
 		@Override
@@ -244,7 +274,7 @@ public abstract class AbstractCreateVirtualModelInstanceWizard<A extends Abstrac
 			// Two possibilities:
 			// - either chosen VirtualModel defines some CreationScheme, and we use it
 			// - otherwise, we configurate all model slots
-			if (chooseVirtualModel.getVirtualModel().hasCreationScheme()) {
+			if (chooseCreationScheme()) {
 				chooseAndConfigureCreationScheme = makeChooseAndConfigureCreationScheme();
 				addStep(chooseAndConfigureCreationScheme);
 			}
@@ -270,6 +300,31 @@ public abstract class AbstractCreateVirtualModelInstanceWizard<A extends Abstrac
 				chooseAndConfigureCreationScheme = null;
 			}
 		}
+
+		public Class<CreationScheme> getCreationSchemeType() {
+			return CreationScheme.class;
+		}
+
+		private String initializationOption;
+
+		public String getInitializationOption() {
+			return initializationOption;
+		}
+
+		public void setInitializationOption(String initializationOption) {
+			if ((initializationOption == null && this.initializationOption != null)
+					|| (initializationOption != null && !initializationOption.equals(this.initializationOption))) {
+				String oldValue = this.initializationOption;
+				this.initializationOption = initializationOption;
+				getPropertyChangeSupport().firePropertyChange("initializationOption", oldValue, initializationOption);
+				checkValidity();
+			}
+		}
+
+		public boolean chooseCreationScheme() {
+			return getInitializationOption() != null && getInitializationOption().equals("choose_a_creation_scheme");
+		}
+
 	}
 
 	/**
@@ -410,7 +465,33 @@ public abstract class AbstractCreateVirtualModelInstanceWizard<A extends Abstrac
 	 * 
 	 */
 	@FIBPanel("Fib/Wizard/CreateVirtualModelInstance/ChooseAndConfigureCreationScheme.fib")
-	public abstract class AbstractChooseAndConfigureCreationScheme<VM extends AbstractVirtualModel<VM>> extends WizardStep {
+	public abstract class AbstractChooseAndConfigureCreationScheme<VM extends AbstractVirtualModel<VM>> extends WizardStep
+			implements FlexoObserver {
+
+		private CreationSchemeAction creationSchemeAction;
+
+		public AbstractChooseAndConfigureCreationScheme(CreationSchemeAction creationSchemeAction) {
+
+			this.creationSchemeAction = creationSchemeAction;
+			if (creationSchemeAction != null) {
+				creationSchemeAction.addObserver(this);
+			}
+		}
+
+		@Override
+		public void delete() {
+			if (creationSchemeAction != null) {
+				creationSchemeAction.deleteObserver(this);
+			}
+			super.delete();
+		}
+
+		@Override
+		public void update(FlexoObservable observable, DataModification dataModification) {
+			if (dataModification.propertyName().equals(FlexoBehaviourAction.PARAMETER_VALUE_CHANGED)) {
+				checkValidity();
+			}
+		}
 
 		public A getAction() {
 			return action;
@@ -418,7 +499,7 @@ public abstract class AbstractCreateVirtualModelInstanceWizard<A extends Abstrac
 
 		@Override
 		public String getTitle() {
-			return FlexoLocalization.localizedForKey("choose_and_configure_creation_scheme_to_use");
+			return FlexoLocalization.localizedForKey("configure_creation_scheme_to_use");
 		}
 
 		@Override
@@ -427,7 +508,18 @@ public abstract class AbstractCreateVirtualModelInstanceWizard<A extends Abstrac
 				setIssueMessage(FlexoLocalization.localizedForKey("no_creation_scheme_selected"), IssueMessageType.ERROR);
 				return false;
 			}
-			// TODO: check parameters settings ?
+
+			for (FlexoBehaviourParameter parameter : action.getCreationScheme().getParameters()) {
+
+				if (!parameter.isValid(action.getCreationSchemeAction(), action.getCreationSchemeAction().getParameterValue(parameter))) {
+					// System.out.println(
+					// "Invalid parameter: " + parameter + " value=" + action.getCreationSchemeAction().getParameterValue(parameter));
+					setIssueMessage(FlexoLocalization.localizedForKey("invalid_parameter") + " : " + parameter.getName(),
+							IssueMessageType.ERROR);
+					return false;
+				}
+			}
+
 			return true;
 		}
 
@@ -436,8 +528,6 @@ public abstract class AbstractCreateVirtualModelInstanceWizard<A extends Abstrac
 		}
 
 		public void setCreationScheme(CreationScheme creationScheme) {
-
-			System.out.println("set creationScheme with " + creationScheme);
 
 			if (creationScheme != getCreationScheme()) {
 				CreationScheme oldValue = getCreationScheme();

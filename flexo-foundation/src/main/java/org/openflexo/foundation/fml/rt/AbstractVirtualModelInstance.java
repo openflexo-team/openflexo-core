@@ -489,6 +489,9 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 				// logger.warning("Unexpected null FlexoConcept");
 				return Collections.emptyList();
 			}
+			if (flexoConcept == getVirtualModel()) {
+				return Collections.singletonList((FlexoConceptInstance) this);
+			}
 			List<FlexoConceptInstance> list = flexoConceptInstances.get(flexoConcept.getURI());
 			if (list == null) {
 				list = new ArrayList<FlexoConceptInstance>();

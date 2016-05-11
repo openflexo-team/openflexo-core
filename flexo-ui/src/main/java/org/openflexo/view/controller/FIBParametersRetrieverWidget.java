@@ -41,6 +41,7 @@ package org.openflexo.view.controller;
 import java.awt.BorderLayout;
 import java.util.logging.Logger;
 
+import org.openflexo.ApplicationContext;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.gina.swing.utils.FIBJPanel;
 import org.openflexo.gina.swing.view.JFIBView;
@@ -55,7 +56,7 @@ public class FIBParametersRetrieverWidget extends FIBJPanel<FlexoBehaviourAction
 
 	static final Logger logger = Logger.getLogger(FIBParametersRetrieverWidget.class.getPackage().getName());
 
-	private FlexoController flexoController;
+	private ApplicationContext applicationContext;
 
 	public FIBParametersRetrieverWidget(FlexoBehaviourAction action) {
 		super((new ParametersRetriever(action, /*flexoController*/null)).makeFIB(false, false), action,
@@ -63,13 +64,13 @@ public class FIBParametersRetrieverWidget extends FIBJPanel<FlexoBehaviourAction
 		// this.flexoController = flexoController;
 	}
 
-	public FlexoController getFlexoController() {
-		return flexoController;
+	public ApplicationContext getApplicationContext() {
+		return applicationContext;
 	}
 
-	public void setFlexoController(FlexoController flexoController) {
-		System.out.println("***** setFlexoController with " + flexoController);
-		this.flexoController = flexoController;
+	public void setApplicationContext(ApplicationContext applicationContext) {
+		this.applicationContext = applicationContext;
+		fireEditedObjectChanged();
 	}
 
 	@Override
@@ -79,9 +80,10 @@ public class FIBParametersRetrieverWidget extends FIBJPanel<FlexoBehaviourAction
 
 	@Override
 	public void fireEditedObjectChanged() {
+		System.out.println("Hop, fireEditedObjectChanged() in FIBParametersRetrieverWidget");
 		FlexoBehaviourAction action = getEditedObject();
 		if (action != null) {
-			fibComponent = (new ParametersRetriever(action, flexoController)).makeFIB(false, false);
+			fibComponent = (new ParametersRetriever(action, applicationContext)).makeFIB(false, false);
 			controller = makeFIBController(fibComponent, localizer);
 			fibView = (JFIBView<?, ?>) controller.buildView(fibComponent, true);
 			removeAll();

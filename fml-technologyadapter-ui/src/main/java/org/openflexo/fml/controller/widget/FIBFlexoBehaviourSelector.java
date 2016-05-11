@@ -117,4 +117,8 @@ public class FIBFlexoBehaviourSelector extends FIBFlexoObjectSelector<FlexoBehav
 		}
 	}
 
+	@Override
+	public boolean isAcceptableValue(Object o) {
+		return super.isAcceptableValue(o);
+	}
 }

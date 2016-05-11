@@ -39,6 +39,7 @@
 package org.openflexo.fml.rt.controller.widget;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -157,25 +158,34 @@ public class FIBFlexoConceptInstanceSelector extends FIBProjectObjectSelector<Fl
 	public FlexoObject getRootObject() {
 		if (getFlexoConcept() != null) {
 			return getFlexoConcept();
-		} else if (getVirtualModel() != null) {
+		}
+		else if (getVirtualModel() != null) {
 			return getVirtualModel();
-		} else if (getViewPoint() != null) {
+		}
+		else if (getViewPoint() != null) {
 			return getViewPoint();
-		} else {
+		}
+		else {
 			return getViewPointLibrary();
 		}
 	}
 
 	public List<FlexoConceptInstance> getEPInstances(FlexoConcept ep) {
+
 		if (getVirtualModelInstance() != null) {
+			if (getVirtualModelInstance().getVirtualModel() == ep) {
+				return Collections.singletonList((FlexoConceptInstance) getVirtualModelInstance());
+			}
 			return getVirtualModelInstance().getFlexoConceptInstances(ep);
-		} else if (getView() != null) {
+		}
+		else if (getView() != null) {
 			List<FlexoConceptInstance> returned = new ArrayList<FlexoConceptInstance>();
 			for (AbstractVirtualModelInstance<?, ?> vmi : getView().getVirtualModelInstances()) {
 				returned.addAll(vmi.getFlexoConceptInstances(ep));
 			}
 			return returned;
-		} else if (getProject() != null) {
+		}
+		else if (getProject() != null) {
 			List<FlexoConceptInstance> returned = new ArrayList<FlexoConceptInstance>();
 			for (ViewResource vr : getProject().getViewLibrary().getAllResources()) {
 				for (AbstractVirtualModelInstance<?, ?> vmi : vr.getView().getVirtualModelInstances()) {
@@ -185,6 +195,12 @@ public class FIBFlexoConceptInstanceSelector extends FIBProjectObjectSelector<Fl
 			return returned;
 		}
 		return null;
+	}
+
+	@Override
+	public boolean isAcceptableValue(Object o) {
+		return super.isAcceptableValue(o) && o instanceof FlexoConceptInstance
+				&& ((FlexoConceptInstance) o).getFlexoConcept() == getFlexoConcept();
 	}
 
 	public View getView() {
@@ -217,12 +233,12 @@ public class FIBFlexoConceptInstanceSelector extends FIBProjectObjectSelector<Fl
 				selector.setViewPointLibrary(testApplicationContext.getViewPointLibrary());
 				return makeArray(selector);
 			}
-
+	
 			@Override
 			public File getFIBFile() {
 				return FIB_FILE;
 			}
-
+	
 			@Override
 			public FIBController makeNewController(FIBComponent component) {
 				return new FlexoFIBController(component);
