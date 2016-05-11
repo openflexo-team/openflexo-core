@@ -130,13 +130,31 @@ public class TaskManagerPanel extends JDialog implements PropertyChangeListener 
 	}
 
 	@Override
-	public void propertyChange(PropertyChangeEvent evt) {
+	public void propertyChange(final PropertyChangeEvent evt) {
+		if (!SwingUtilities.isEventDispatchThread()) {
+			SwingUtilities.invokeLater(new Runnable() {
+				@Override
+				public void run() {
+					propertyChange(evt);
+				}
+			});
+			return;
+		}
 		if (evt.getSource() == taskManager) {
 			updatePanel();
 		}
 	}
 
-	private synchronized void updatePanel() {
+	private void updatePanel() {
+		if (!SwingUtilities.isEventDispatchThread()) {
+			SwingUtilities.invokeLater(new Runnable() {
+				@Override
+				public void run() {
+					updatePanel();
+				}
+			});
+			return;
+		}
 		for (FlexoTask task : taskManager.getScheduledTasks()) {
 			TaskPanel p = taskPanels.get(task);
 			if (p == null) {
@@ -169,6 +187,17 @@ public class TaskManagerPanel extends JDialog implements PropertyChangeListener 
 	}
 
 	private synchronized void updateSizeAndCenter() {
+
+		if (!SwingUtilities.isEventDispatchThread()) {
+			SwingUtilities.invokeLater(new Runnable() {
+				@Override
+				public void run() {
+					updateSizeAndCenter();
+				}
+			});
+			return;
+		}
+
 		contentPane.setPreferredSize(new Dimension(PREFERRED_WIDTH, PREFERRED_HEIGHT * taskManager.getScheduledTasks().size()));
 
 		((JComponent) getContentPane()).revalidate();
@@ -195,6 +224,16 @@ public class TaskManagerPanel extends JDialog implements PropertyChangeListener 
 	 * @param flexoFrame
 	 */
 	public void center() {
+		if (!SwingUtilities.isEventDispatchThread()) {
+			SwingUtilities.invokeLater(new Runnable() {
+				@Override
+				public void run() {
+					center();
+				}
+			});
+			return;
+		}
+
 		Dimension dim;
 		/*if (initOwner != null && initOwner.isVisible()) {
 			dim = new Dimension(initOwner.getLocationOnScreen().x + initOwner.getWidth() / 2, initOwner.getLocationOnScreen().y
