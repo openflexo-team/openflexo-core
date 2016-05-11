@@ -281,7 +281,16 @@ public class TaskManagerPanel extends JDialog implements PropertyChangeListener 
 		}
 
 		@Override
-		public void propertyChange(PropertyChangeEvent evt) {
+		public void propertyChange(final PropertyChangeEvent evt) {
+			if (!SwingUtilities.isEventDispatchThread()) {
+				SwingUtilities.invokeLater(new Runnable() {
+					@Override
+					public void run() {
+						propertyChange(evt);
+					}
+				});
+				return;
+			}
 			if (evt.getSource() == task) {
 				if (evt.getPropertyName().equals(FlexoTask.TASK_STATUS_PROPERTY)) {
 					cancelButton.setEnabled(task.getTaskStatus() == TaskStatus.RUNNING && task.isCancellable());
