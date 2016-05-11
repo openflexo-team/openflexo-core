@@ -58,12 +58,6 @@
     <Localized key="FlexoConcept" lang="English" value="FlexoConcept" />
     <Localized key="FlexoConcept" lang="French" value="FlexoConcept" />
     <Localized key="FlexoConcept" lang="Dutch" value="FlexoConcept" />
-    <Localized key="PatternRole" lang="English" value="PatternRole" />
-    <Localized key="PatternRole" lang="French" value="PatternRole" />
-    <Localized key="PatternRole" lang="Dutch" value="PatternRole" />
-    <Localized key="pattern_role" lang="English" value="Pattern Role" />
-    <Localized key="pattern_role" lang="French" value="Pattern Role" />
-    <Localized key="pattern_role" lang="Dutch" value="Pattern Role" />
     <Localized key="actor" lang="English" value="actor" />
     <Localized key="actor" lang="French" value="actor" />
     <Localized key="actor" lang="Dutch" value="actor" />

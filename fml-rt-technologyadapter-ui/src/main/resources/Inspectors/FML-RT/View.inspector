@@ -9,61 +9,18 @@
 			darkLevel="0" index="0" font="SansSerif,0,11" useScrollBar="true"
 			horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED"
 			verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED" name="BasicTab">
-			<Label label="title" index="0"
-				constraints="twocols(expandHorizontally=false;expandVertically=false;index=0;location=left)"
-				name="TitleLabel" localize="true" />
-			<TextField index="1" data="data.title"
-				constraints="twocols(expandHorizontally=true;expandVertically=false;index=1;location=right)"
-				name="Title" localize="true" validateOnReturn="true" columns="10" />
-			<Label label="name" index="2"
-				constraints="twocols(expandHorizontally=false;expandVertically=false;index=2;location=left)"
-				name="NameLabel" localize="true" />
-			<TextField index="3" data="data.name"
-				constraints="twocols(expandHorizontally=true;expandVertically=false;index=3;location=right)"
-				name="Name" readOnly="true" localize="true" columns="10" />
-			<Label label="uri" index="4"
-				constraints="twocols(expandHorizontally=false;expandVertically=false;index=4;location=left)"
-				name="NameLabel" localize="true" />
-			<TextField index="5" data="data.uRI"
-				constraints="twocols(expandHorizontally=true;expandVertically=false;index=5;location=right)"
-				name="Name" readOnly="true" localize="true" columns="10" />
-			<Label label="viewpoint" index="6"
+			<Label label="viewpoint" index="8"
 				constraints="twocols(expandHorizontally=false;expandVertically=false;index=6;location=left)"
 				name="ViewpointNameLabel" localize="true" />
-			<TextField index="7" data="data.viewPoint.name"
+			<TextField index="9" data="data.viewPoint.name"
 				constraints="twocols(expandHorizontally=true;expandVertically=false;index=7;location=right)"
 				name="ViewpointName" readOnly="true" localize="true" columns="10" />
-			<Label label="viewpoint_uri" index="8"
+			<Label label="viewpoint_uri" index="10"
 				constraints="twocols(expandHorizontally=false;expandVertically=false;index=8;location=left)"
 				name="ViewpointURILabel" localize="true" />
-			<TextField index="9" data="data.viewPoint.uRI"
+			<TextField index="11" data="data.viewPoint.uRI"
 				constraints="twocols(expandHorizontally=true;expandVertically=false;index=9;location=right)"
 				name="ViewpointURI" readOnly="true" localize="true" columns="10" />
-			<Label label="version" index="10"
-				constraints="twocols(expandHorizontally=false;expandVertically=false;index=10;location=left)"
-				name="ViewpointVersionLabel" localize="true" />
-			<TextField index="11" data="data.viewPoint.version.toString"
-				constraints="twocols(expandHorizontally=true;expandVertically=false;index=11;location=right)"
-				name="ViewpointVersion" readOnly="true" localize="true" columns="10" />
-
-			<Label label="model_slots"
-				constraints="twocols(expandHorizontally=false;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=left)"
-				localize="true" />
-			<Table iteratorClassName="org.openflexo.foundation.fml.rt.ModelSlotInstance"
-				visibleRowCount="3" rowHeight="18" autoSelectFirstRow="false"
-				createNewRowOnClick="false" boundToSelectionManager="false"
-				showFooter="true" selectionMode="SingleSelection" localize="true"
-				manageDynamicModel="true" name="ModelSlotTable" index="0"
-				data="data.modelSlotInstances"
-				constraints="twocols(expandHorizontally=true;expandVertically=true;index=0;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)">
-				<IconColumn data="controller.iconForObject(iterator)"
-					title="icon" columnWidth="20" resizable="false" displayTitle="false"
-					name="icon" />
-				<TextFieldColumn data="iterator.modelSlot.name"
-					title="slot_name" columnWidth="40" resizable="true" displayTitle="true" />
-				<LabelColumn data="iterator.resource.URI" title="resource"
-					columnWidth="200" resizable="true" displayTitle="true" />
-			</Table>
 		</Tab>
 		<Tab title="Advanced" layout="twocols" titleFont="SansSerif,0,11"
 			darkLevel="0" index="2" font="SansSerif,0,11" useScrollBar="true"
