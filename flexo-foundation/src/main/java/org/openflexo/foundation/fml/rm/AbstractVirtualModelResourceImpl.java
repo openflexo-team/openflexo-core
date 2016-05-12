@@ -39,8 +39,6 @@
 package org.openflexo.foundation.fml.rm;
 
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Logger;
 
 import org.apache.commons.io.FilenameUtils;
@@ -168,16 +166,15 @@ public abstract class AbstractVirtualModelResourceImpl<VM extends AbstractVirtua
 	protected void activateRequiredTechnologies() {
 		if (getLoadedResourceData() != null) {
 			TechnologyAdapterService taService = getServiceManager().getTechnologyAdapterService();
-			taService.activateTechnologyAdapter(taService.getTechnologyAdapter(FMLRTTechnologyAdapter.class));
-			List<FlexoTask> tasks = new ArrayList<>();
+			FlexoTask activateFMLRT = taService.activateTechnologyAdapter(taService.getTechnologyAdapter(FMLRTTechnologyAdapter.class));
+			/*if (activateFMLRT != null) {
+				getServiceManager().getTaskManager().waitTask(activateFMLRT);
+			}*/
 			for (ModelSlot<?> ms : getLoadedResourceData().getModelSlots()) {
-				FlexoTask task = taService.activateTechnologyAdapter(ms.getModelSlotTechnologyAdapter());
-				if (task != null) {
-					tasks.add(task);
-				}
-			}
-			for (FlexoTask task : tasks) {
-				getServiceManager().getTaskManager().waitTask(task);
+				FlexoTask activateTA = taService.activateTechnologyAdapter(ms.getModelSlotTechnologyAdapter());
+				/*if (activateTA != null) {
+					getServiceManager().getTaskManager().waitTask(activateTA);
+				}*/
 			}
 		}
 	}

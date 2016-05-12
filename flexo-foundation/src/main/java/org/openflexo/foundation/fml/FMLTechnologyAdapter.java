@@ -43,6 +43,8 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.logging.Logger;
 
+import javax.swing.SwingUtilities;
+
 import org.apache.commons.io.FilenameUtils;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.annotations.DeclareResourceTypes;
@@ -137,7 +139,17 @@ public class FMLTechnologyAdapter extends TechnologyAdapter {
 		}
 
 		// Call it to update the current repositories
-		getPropertyChangeSupport().firePropertyChange("getAllRepositories()", null, resourceCenter);
+		if (!SwingUtilities.isEventDispatchThread()) {
+			SwingUtilities.invokeLater(new Runnable() {
+				@Override
+				public void run() {
+					getPropertyChangeSupport().firePropertyChange("getAllRepositories()", null, resourceCenter);
+				}
+			});
+		}
+		else {
+			getPropertyChangeSupport().firePropertyChange("getAllRepositories()", null, resourceCenter);
+		}
 	}
 
 	/**

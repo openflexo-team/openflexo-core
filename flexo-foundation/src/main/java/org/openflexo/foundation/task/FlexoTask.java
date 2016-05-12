@@ -161,7 +161,7 @@ public abstract class FlexoTask implements Runnable, HasPropertyChangeSupport {
 
 	@Override
 	public String toString() {
-		return "FlexoTask:" + getTaskTitle();
+		return "<FlexoTask:" + getTaskTitle() + " status=" + getTaskStatus() + " depends of: " + dependantTasks + ">";
 	}
 
 	protected synchronized void startExecution(FlexoTaskThread thread) {

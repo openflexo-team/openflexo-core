@@ -241,6 +241,8 @@ public class ThreadPoolFlexoTaskManager extends FlexoServiceImpl implements Flex
 		// logger.info(getClass().getSimpleName() + " service received notification " + notification + " from " + caller);
 	}
 
+	// private int i = 0;
+
 	@Override
 	public void waitTask(FlexoTask task) {
 		if (task.getTaskStatus() != TaskStatus.WAITING && task.getTaskStatus() != TaskStatus.RUNNING
@@ -249,8 +251,14 @@ public class ThreadPoolFlexoTaskManager extends FlexoServiceImpl implements Flex
 		}
 		while (task.getTaskStatus() == TaskStatus.WAITING || task.getTaskStatus() == TaskStatus.RUNNING
 				|| task.getTaskStatus() == TaskStatus.READY_TO_EXECUTE) {
+
+			/*if (Thread.currentThread() instanceof FlexoTaskThread && i % 10 == 0) {
+				System.out.println("Task " + ((FlexoTaskThread) Thread.currentThread()).getTask() + " beeing waiting task <" + task + "");
+			}*/
+
 			try {
 				Thread.sleep(100);
+				// i++;
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
