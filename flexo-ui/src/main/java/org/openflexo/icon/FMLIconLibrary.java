@@ -122,6 +122,10 @@ public class FMLIconLibrary extends IconLibrary {
 			ResourceLocator.locateResource("Icons/Model/VPM/VirtualModel_32x32.png"));
 	public static final ImageIconResource VIRTUAL_MODEL_BIG_ICON = new ImageIconResource(
 			ResourceLocator.locateResource("Icons/Model/VPM/VirtualModel_64x64.png"));
+	public static final ImageIconResource VIRTUAL_MODEL_SMALL_ICON = new ImageIconResource(
+			ResourceLocator.locateResource("Icons/Model/VPM/VirtualModel_8x8.png"));
+
+	public static final IconMarker VIRTUAL_MODEL_MARKER = new IconMarker(VIRTUAL_MODEL_SMALL_ICON, 8, 0);
 
 	public static final ImageIconResource MODEL_SLOT_ICON = new ImageIconResource(
 			ResourceLocator.locateResource("Icons/Model/VPM/ModelSlot.png"));
@@ -292,7 +296,6 @@ public class FMLIconLibrary extends IconLibrary {
 				return IconFactory.getImageIcon(FMLRTIconLibrary.FLEXO_CONCEPT_INSTANCE_ICON, IconLibrary.DUPLICATE);
 			}
 			else if (object instanceof SelectFlexoConceptInstance) {
-				System.out.println("et pas la ?");
 				return IconFactory.getImageIcon(FMLRTIconLibrary.FLEXO_CONCEPT_INSTANCE_ICON, IconLibrary.IMPORT);
 			}
 			else if (object instanceof MatchFlexoConceptInstance) {
