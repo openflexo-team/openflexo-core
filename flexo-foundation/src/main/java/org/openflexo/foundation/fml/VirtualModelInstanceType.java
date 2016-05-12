@@ -38,7 +38,9 @@
 
 package org.openflexo.foundation.fml;
 
+import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
+import org.openflexo.gina.annotation.FIBPanel;
 
 /**
  * Represent the type of a DiagramInstance of a given Diagram
@@ -75,6 +77,69 @@ public class VirtualModelInstanceType extends FlexoConceptInstanceType {
 		else {
 			// logger.warning("Trying to get a VirtualModelInstanceType for a null VirtualModel");
 			return UNDEFINED_VIRTUAL_MODEL_INSTANCE_TYPE;
+		}
+	}
+
+	/**
+	 * Factory for FlexoConceptInstanceType instances
+	 * 
+	 * @author sylvain
+	 * 
+	 */
+	@FIBPanel("Fib/CustomType/VirtualModelInstanceTypeFactory.fib")
+	public static class VirtualModelInstanceTypeFactory extends TechnologyAdapterTypeFactory<VirtualModelInstanceType> {
+
+		public VirtualModelInstanceTypeFactory(FMLRTTechnologyAdapter technologyAdapter) {
+			super(technologyAdapter);
+		}
+
+		@Override
+		public VirtualModelInstanceType makeCustomType(String configuration) {
+
+			AbstractVirtualModel<?> virtualModel = null;
+
+			if (configuration != null) {
+				virtualModel = getTechnologyAdapter().getTechnologyAdapterService().getServiceManager().getViewPointLibrary()
+						.getVirtualModel(configuration);
+			}
+			else {
+				virtualModel = getVirtualModelType();
+			}
+
+			if (virtualModel != null) {
+				return getVirtualModelInstanceType(virtualModel);
+			}
+			else {
+				// We don't return UNDEFINED_FLEXO_CONCEPT_INSTANCE_TYPE because we want here a mutable type
+				// if FlexoConcept might be resolved later
+				return new VirtualModelInstanceType(configuration);
+			}
+		}
+
+		private AbstractVirtualModel<?> virtualModelType;
+
+		public AbstractVirtualModel<?> getVirtualModelType() {
+			return virtualModelType;
+		}
+
+		public void setVirtualModelType(AbstractVirtualModel<?> virtualModelType) {
+			if (virtualModelType != this.virtualModelType) {
+				AbstractVirtualModel<?> oldVirtualModelType = this.virtualModelType;
+				this.virtualModelType = virtualModelType;
+				getPropertyChangeSupport().firePropertyChange("virtualModelType", oldVirtualModelType, virtualModelType);
+			}
+		}
+
+		@Override
+		public String toString() {
+			return "Instance of VirtualModel";
+		}
+
+		@Override
+		public void configureFactory(VirtualModelInstanceType type) {
+			if (type != null) {
+				setVirtualModelType(type.getVirtualModel());
+			}
 		}
 	}
 

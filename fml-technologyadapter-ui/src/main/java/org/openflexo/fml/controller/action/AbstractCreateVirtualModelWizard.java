@@ -51,10 +51,10 @@ import org.openflexo.components.wizard.WizardStep;
 import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.action.AbstractCreateVirtualModel;
+import org.openflexo.foundation.fml.action.AbstractCreateVirtualModel.ModelSlotEntry;
 import org.openflexo.foundation.fml.action.CreateFlexoConcept;
 import org.openflexo.foundation.fml.action.CreateViewPoint;
 import org.openflexo.foundation.fml.action.CreateVirtualModel;
-import org.openflexo.foundation.fml.action.AbstractCreateVirtualModel.ModelSlotEntry;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
@@ -80,8 +80,8 @@ import org.openflexo.view.controller.FlexoController;
  * @see CreateVirtualModel
  * @see CreateViewPoint
  */
-public abstract class AbstractCreateVirtualModelWizard<A extends AbstractCreateVirtualModel<?, ?, ?>> extends
-		AbstractCreateFlexoConceptWizard<A> {
+public abstract class AbstractCreateVirtualModelWizard<A extends AbstractCreateVirtualModel<?, ?, ?>>
+		extends AbstractCreateFlexoConceptWizard<A> {
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(AbstractCreateVirtualModelWizard.class.getPackage().getName());
@@ -159,7 +159,8 @@ public abstract class AbstractCreateVirtualModelWizard<A extends AbstractCreateV
 			if (getModelSlotEntries().size() == 0) {
 				setIssueMessage(FlexoLocalization.localizedForKey("no_model_slots_defined"), IssueMessageType.WARNING);
 				return true;
-			} else {
+			}
+			else {
 
 				// We try to detect duplicated names
 				for (ModelSlotEntry entry : getModelSlotEntries()) {
@@ -203,11 +204,14 @@ public abstract class AbstractCreateVirtualModelWizard<A extends AbstractCreateV
 		private ConfigureModelSlot<?> makeConfigureModelSlotStep(ModelSlotEntry msEntry) {
 			if (TypeAwareModelSlot.class.isAssignableFrom(msEntry.getModelSlotClass())) {
 				return new ConfigureTypeAwareModelSlot(msEntry);
-			} else if (FreeModelSlot.class.isAssignableFrom(msEntry.getModelSlotClass())) {
+			}
+			else if (FreeModelSlot.class.isAssignableFrom(msEntry.getModelSlotClass())) {
 				return new ConfigureFreeModelSlot(msEntry);
-			} else if (FMLRTModelSlot.class.isAssignableFrom(msEntry.getModelSlotClass())) {
+			}
+			else if (FMLRTModelSlot.class.isAssignableFrom(msEntry.getModelSlotClass())) {
 				return new ConfigureVirtualModelModelSlot(msEntry);
-			} else {
+			}
+			else {
 				logger.warning("Could not instantiate ConfigureModelSlot for " + msEntry);
 				return null;
 			}
@@ -269,6 +273,10 @@ public abstract class AbstractCreateVirtualModelWizard<A extends AbstractCreateV
 
 		@Override
 		public boolean isValid() {
+
+			System.out.println("Est ce que c'est valide: " + modelSlotEntry);
+			System.out.println("configurationErrorMessage = " + modelSlotEntry.getConfigurationErrorMessage());
+
 			String configurationErrorMessage = modelSlotEntry.getConfigurationErrorMessage();
 			if (StringUtils.isNotEmpty(configurationErrorMessage)) {
 				setIssueMessage(FlexoLocalization.localizedForKey("valid_model_slot_configuration"), IssueMessageType.INFO);

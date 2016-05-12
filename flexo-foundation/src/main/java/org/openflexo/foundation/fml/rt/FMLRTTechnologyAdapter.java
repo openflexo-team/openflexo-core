@@ -49,6 +49,7 @@ import org.openflexo.foundation.fml.FlexoConceptInstanceType.FlexoConceptInstanc
 import org.openflexo.foundation.fml.ViewType;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelInstanceType;
+import org.openflexo.foundation.fml.VirtualModelInstanceType.VirtualModelInstanceTypeFactory;
 import org.openflexo.foundation.fml.annotations.DeclareModelSlots;
 import org.openflexo.foundation.fml.annotations.DeclareResourceTypes;
 import org.openflexo.foundation.fml.annotations.DeclareTechnologySpecificTypes;
@@ -271,11 +272,12 @@ public class FMLRTTechnologyAdapter extends TechnologyAdapter {
 	}
 
 	private FlexoConceptInstanceTypeFactory fciFactory;
+	private VirtualModelInstanceTypeFactory vmiFactory;
 
 	@Override
 	public void initTechnologySpecificTypes(TechnologyAdapterService taService) {
 		taService.registerTypeClass(FlexoConceptInstanceType.class, getFlexoConceptInstanceTypeFactory());
-
+		taService.registerTypeClass(VirtualModelInstanceType.class, getVirtualModelInstanceTypeFactory());
 	}
 
 	protected FlexoConceptInstanceTypeFactory getFlexoConceptInstanceTypeFactory() {
@@ -283,6 +285,13 @@ public class FMLRTTechnologyAdapter extends TechnologyAdapter {
 			fciFactory = new FlexoConceptInstanceTypeFactory(this);
 		}
 		return fciFactory;
+	}
+
+	protected VirtualModelInstanceTypeFactory getVirtualModelInstanceTypeFactory() {
+		if (vmiFactory == null) {
+			vmiFactory = new VirtualModelInstanceTypeFactory(this);
+		}
+		return vmiFactory;
 	}
 
 	@Override

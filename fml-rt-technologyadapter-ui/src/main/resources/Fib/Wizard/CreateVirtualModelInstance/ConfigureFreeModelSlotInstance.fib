@@ -304,14 +304,14 @@
 			borderBottom="2" borderTitle="" titleFont="Lucida Grande,0,11"
 			borderTop="2" trackViewPortHeight="true">
 			<Label id="117"
-				visible="((OptionRadioButtonList.selected.name = &quot;SelectExistingResource&quot;) | (OptionRadioButtonList.selected.name = &quot;CreateSharedNewResource&quot;))"
+				visible="((data.configuration.option.name = &quot;SelectExistingResource&quot;) | (data.configuration.option.name = &quot;CreateSharedNewResource&quot;))"
 				manageDynamicModel="false" useScrollBar="false"
 				controllerClassName="org.openflexo.gina.controller.FIBController"
 				localize="true" align="left"
 				constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)"
 				label="resource_center" readOnly="false" />
 			<Custom id="118"
-				visible="((OptionRadioButtonList.selected.name = &quot;SelectExistingResource&quot;) | (OptionRadioButtonList.selected.name = &quot;CreateSharedNewResource&quot;))"
+				visible="((data.configuration.option.name = &quot;SelectExistingResource&quot;) | (data.configuration.option.name = &quot;CreateSharedNewResource&quot;))"
 				manageDynamicModel="true" useScrollBar="false"
 				data="data.configuration.resourceCenter" componentClassName="org.openflexo.components.widget.FIBResourceCenterSelector"
 				name="ResourceCenterSelector" controllerClassName="org.openflexo.gina.controller.FIBController"
@@ -326,14 +326,14 @@
 					variable="component.resourceCenterService" />
 			</Custom>
 			<Label id="122"
-				visible="(OptionRadioButtonList.selected.name = &quot;SelectExistingResource&quot;)"
+				visible="(data.configuration.option.name = &quot;SelectExistingResource&quot;)"
 				manageDynamicModel="false" useScrollBar="false"
 				controllerClassName="org.openflexo.gina.controller.FIBController"
 				localize="true" align="left"
 				constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)"
 				label="resource" readOnly="false" />
 			<Custom id="123"
-				visible="(OptionRadioButtonList.selected.name = &quot;SelectExistingResource&quot;)"
+				visible="(data.configuration.option.name = &quot;SelectExistingResource&quot;)"
 				manageDynamicModel="true" useScrollBar="false" data="data.configuration.resource"
 				componentClassName="org.openflexo.components.widget.FIBResourceSelector"
 				name="ResourceSelector" controllerClassName="org.openflexo.gina.controller.FIBController"
@@ -354,14 +354,14 @@
 					value="data.configuration.resourceCenter" variable="component.resourceCenter" />
 			</Custom>
 			<Label id="130"
-				visible="((OptionRadioButtonList.selected.name = &quot;CreatePrivateNewResource&quot;) | (OptionRadioButtonList.selected.name = &quot;CreateSharedNewResource&quot;))"
+				visible="((data.configuration.option.name = &quot;CreatePrivateNewResource&quot;) | (data.configuration.option.name = &quot;CreateSharedNewResource&quot;))"
 				manageDynamicModel="false" useScrollBar="false"
 				controllerClassName="org.openflexo.gina.controller.FIBController"
 				localize="true" align="left"
 				constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)"
 				label="resource_uri" readOnly="false" />
 			<TextField id="131" passwd="false"
-				visible="((OptionRadioButtonList.selected.name = &quot;CreatePrivateNewResource&quot;) | (OptionRadioButtonList.selected.name = &quot;CreateSharedNewResource&quot;))"
+				visible="((data.configuration.option.name = &quot;CreatePrivateNewResource&quot;) | (data.configuration.option.name = &quot;CreateSharedNewResource&quot;))"
 				manageDynamicModel="false" useScrollBar="false"
 				data="data.configuration.resourceUri" columns="7" name="ResourceURITF1"
 				controllerClassName="org.openflexo.gina.controller.FIBController"
@@ -369,14 +369,14 @@
 				constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
 				readOnly="false" validateOnReturn="false" />
 			<Label id="132"
-				visible="((OptionRadioButtonList.selected.name = &quot;CreatePrivateNewResource&quot;) | (OptionRadioButtonList.selected.name = &quot;CreateSharedNewResource&quot;))"
+				visible="((data.configuration.option.name = &quot;CreatePrivateNewResource&quot;) | (data.configuration.option.name = &quot;CreateSharedNewResource&quot;))"
 				manageDynamicModel="false" useScrollBar="false"
 				controllerClassName="org.openflexo.gina.controller.FIBController"
 				localize="true" align="left"
 				constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)"
 				label="relative_path" readOnly="false" />
 			<TextField id="133" passwd="false"
-				visible="((OptionRadioButtonList.selected.name = &quot;CreatePrivateNewResource&quot;) | (OptionRadioButtonList.selected.name = &quot;CreateSharedNewResource&quot;))"
+				visible="((data.configuration.option.name = &quot;CreatePrivateNewResource&quot;) | (data.configuration.option.name = &quot;CreateSharedNewResource&quot;))"
 				manageDynamicModel="false" useScrollBar="false"
 				data="data.configuration.relativePath" columns="7" name="RelativePathTF1"
 				controllerClassName="org.openflexo.gina.controller.FIBController"
@@ -384,14 +384,14 @@
 				constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
 				readOnly="false" validateOnReturn="false" />
 			<Label id="134"
-				visible="((OptionRadioButtonList.selected.name = &quot;CreatePrivateNewResource&quot;) | (OptionRadioButtonList.selected.name = &quot;CreateSharedNewResource&quot;))"
+				visible="((data.configuration.option.name = &quot;CreatePrivateNewResource&quot;) | (data.configuration.option.name = &quot;CreateSharedNewResource&quot;))"
 				manageDynamicModel="false" useScrollBar="false"
 				controllerClassName="org.openflexo.gina.controller.FIBController"
 				localize="true" align="left"
 				constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)"
 				label="file_name" readOnly="false" />
 			<TextField id="135" passwd="false"
-				visible="((OptionRadioButtonList.selected.name = &quot;CreatePrivateNewResource&quot;) | (OptionRadioButtonList.selected.name = &quot;CreateSharedNewResource&quot;))"
+				visible="((data.configuration.option.name = &quot;CreatePrivateNewResource&quot;) | (data.configuration.option.name = &quot;CreateSharedNewResource&quot;))"
 				manageDynamicModel="false" useScrollBar="false"
 				data="data.configuration.filename" columns="7" name="FileNameTF1"
 				controllerClassName="org.openflexo.gina.controller.FIBController"

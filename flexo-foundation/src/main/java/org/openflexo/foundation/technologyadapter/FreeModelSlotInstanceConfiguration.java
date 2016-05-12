@@ -86,10 +86,14 @@ public class FreeModelSlotInstanceConfiguration<RD extends ResourceData<RD> & Te
 			resourceCenter = rcService.getResourceCenters().get(0);
 		}
 		options = new ArrayList<ModelSlotInstanceConfiguration.ModelSlotInstanceConfigurationOption>();
+		initDefaultOptions();
+	}
+
+	protected void initDefaultOptions() {
 		options.add(DefaultModelSlotInstanceConfigurationOption.SelectExistingResource);
 		options.add(DefaultModelSlotInstanceConfigurationOption.CreatePrivateNewResource);
 		options.add(DefaultModelSlotInstanceConfigurationOption.CreateSharedNewResource);
-		if (!ms.getIsRequired()) {
+		if (!getModelSlot().getIsRequired()) {
 			options.add(DefaultModelSlotInstanceConfigurationOption.LeaveEmpty);
 		}
 		setOption(DefaultModelSlotInstanceConfigurationOption.SelectExistingResource);

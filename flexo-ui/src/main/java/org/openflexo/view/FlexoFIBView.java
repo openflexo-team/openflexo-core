@@ -115,7 +115,8 @@ public class FlexoFIBView extends JPanel implements GraphicalFlexoObserver, HasP
 
 		if (dataObject instanceof HasPropertyChangeSupport) {
 			manager.addListener(this, (HasPropertyChangeSupport) dataObject);
-		} else if (dataObject instanceof FlexoObservable) {
+		}
+		else if (dataObject instanceof FlexoObservable) {
 			((FlexoObservable) dataObject).addObserver(this);
 		}
 
@@ -139,7 +140,8 @@ public class FlexoFIBView extends JPanel implements GraphicalFlexoObserver, HasP
 
 		if (addScrollBar) {
 			add(new JScrollPane(fibView.getJComponent()), BorderLayout.CENTER);
-		} else {
+		}
+		else {
 			add(fibView.getJComponent(), BorderLayout.CENTER);
 		}
 
@@ -161,7 +163,8 @@ public class FlexoFIBView extends JPanel implements GraphicalFlexoObserver, HasP
 		if (returned instanceof FlexoFIBController) {
 			((FlexoFIBController) returned).setFlexoController(controller);
 			return (FlexoFIBController) returned;
-		} else if (fibComponent.getControllerClass() != null) {
+		}
+		else if (fibComponent.getControllerClass() != null) {
 			logger.warning("Controller for component " + fibComponent + " is not an instanceof FlexoFIBController");
 		}
 		return fibController = new FlexoFIBController(fibComponent, SwingViewFactory.INSTANCE, controller);
@@ -195,13 +198,15 @@ public class FlexoFIBView extends JPanel implements GraphicalFlexoObserver, HasP
 		// logger.info(">>>>>>> setDataObject with " + object);
 		if (this.dataObject instanceof HasPropertyChangeSupport) {
 			manager.removeListener(this, (HasPropertyChangeSupport) this.dataObject);
-		} else if (this.dataObject instanceof FlexoObservable) {
+		}
+		else if (this.dataObject instanceof FlexoObservable) {
 			((FlexoObservable) this.dataObject).deleteObserver(this);
 		}
 		dataObject = object;
 		if (dataObject instanceof HasPropertyChangeSupport) {
 			manager.addListener(this, (HasPropertyChangeSupport) this.dataObject);
-		} else if (dataObject instanceof FlexoObservable) {
+		}
+		else if (dataObject instanceof FlexoObservable) {
 			((FlexoObservable) dataObject).addObserver(this);
 		}
 		fibController.setDataObject(object, true);
@@ -299,7 +304,8 @@ public class FlexoFIBView extends JPanel implements GraphicalFlexoObserver, HasP
 					}
 				}, "InvokeLaterThread");
 				invokeLaterThread.start();
-			} else {
+			}
+			else {
 				System.out.println("Ignoring invokeLater");
 			}
 		}
