@@ -50,6 +50,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -155,7 +156,7 @@ public class TaskManagerPanel extends JDialog implements PropertyChangeListener 
 			});
 			return;
 		}
-		for (FlexoTask task : taskManager.getScheduledTasks()) {
+		for (FlexoTask task : new ArrayList<FlexoTask>(taskManager.getScheduledTasks())) {
 			TaskPanel p = taskPanels.get(task);
 			if (p == null) {
 				p = new TaskPanel(task);
