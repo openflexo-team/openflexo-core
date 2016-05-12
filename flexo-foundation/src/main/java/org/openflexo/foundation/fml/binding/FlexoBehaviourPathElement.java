@@ -59,6 +59,7 @@ import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.action.ActionSchemeAction;
 import org.openflexo.foundation.fml.rt.action.ActionSchemeActionType;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
+import org.openflexo.gina.view.widget.table.impl.FIBTableActionListener;
 
 /**
  * Modelize a call for execution of an FlexoBehaviour
@@ -109,8 +110,6 @@ public class FlexoBehaviourPathElement extends FunctionPathElement {
 	public Object getBindingValue(Object target, BindingEvaluationContext context)
 			throws TypeMismatchException, NullReferenceException, InvocationTargetTransformException {
 
-		// System.out.println("evaluate " + getMethodDefinition().getSignature() + " for " + target);
-
 		Object[] args = new Object[getFunction().getArguments().size()];
 		int i = 0;
 
@@ -126,16 +125,29 @@ public class FlexoBehaviourPathElement extends FunctionPathElement {
 			// logger.warning("Please implements execution of FlexoBehaviourPathElement here !!!! context=" + context + " of "
 			// + context.getClass() + " target=" + target);
 
-			if (context instanceof FlexoBehaviourAction && target instanceof FlexoConceptInstance) {
+			if (/*context instanceof FlexoBehaviourAction &&*/ target instanceof FlexoConceptInstance) {
 
-				FlexoBehaviourAction action = (FlexoBehaviourAction) context;
+				// FlexoBehaviourAction action = (FlexoBehaviourAction) context;
 				FlexoConceptInstance fci = (FlexoConceptInstance) target;
 				ActionSchemeActionType actionType = new ActionSchemeActionType((ActionScheme) getFlexoBehaviour(), fci);
-				ActionSchemeAction actionSchemeAction = actionType.makeNewEmbeddedAction(fci.getVirtualModelInstance(), null, action);
+				ActionSchemeAction actionSchemeAction = null;
+				if (context instanceof FlexoBehaviourAction) {
+					actionSchemeAction = actionType.makeNewEmbeddedAction(fci.getVirtualModelInstance(), null,
+							(FlexoBehaviourAction) context);
+				}
+				else {
+					// TODO: fin an elegant way to retrieve FlexoEditor (from FlexoController for example)
+					if (context instanceof FIBTableActionListener) {
+						FIBTableActionListener l = (FIBTableActionListener) context;
+						// System.out.println("controller=" + l.getController());
+					}
+					// Hack: execute without FlexoEditor
+					actionSchemeAction = actionType.makeNewAction(fci.getVirtualModelInstance(), null);
+				}
 				for (FlexoBehaviourParameter p : getFlexoBehaviour().getParameters()) {
 					DataBinding<?> param = getParameter(p);
 					Object paramValue = param.getBindingValue(context);
-					logger.fine("For parameter " + param + " value is " + paramValue);
+					// logger.fine("For parameter " + param + " value is " + paramValue);
 					if (paramValue != null) {
 						actionSchemeAction.setParameterValue(p, paramValue);
 					}
