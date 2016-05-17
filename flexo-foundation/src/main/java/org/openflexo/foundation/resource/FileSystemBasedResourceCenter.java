@@ -655,7 +655,8 @@ public abstract class FileSystemBasedResourceCenter extends FileResourceReposito
 						path = f.getName() + File.separator + path;
 						f = f.getParentFolder();
 					}
-					if (getDefaultBaseURI().endsWith(File.separator)) {
+					String defaultBaseURI = getDefaultBaseURI();
+					if (defaultBaseURI.endsWith(File.separator) || defaultBaseURI.endsWith("/") ) {
 						return getDefaultBaseURI() + path.replace(File.separator, "/") + resource.getName();
 					}
 					else {
