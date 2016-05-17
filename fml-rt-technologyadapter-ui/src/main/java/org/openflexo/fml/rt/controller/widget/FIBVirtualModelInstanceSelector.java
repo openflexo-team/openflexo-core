@@ -41,8 +41,8 @@ package org.openflexo.fml.rt.controller.widget;
 import java.util.logging.Logger;
 
 import org.openflexo.components.widget.FIBProjectObjectSelector;
-import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.fml.VirtualModel;
+import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.fml.rt.View;
 import org.openflexo.foundation.fml.rt.ViewLibrary;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
@@ -135,16 +135,17 @@ public class FIBVirtualModelInstanceSelector extends FIBProjectObjectSelector<Ab
 		this.virtualModel = virtualModel;
 	}
 
-	public FlexoObject getRootObject() {
+	public Object getRootObject() {
 		if (getView() != null) {
 			return getView().getResource();
-		}
-		else if (getViewLibrary() != null) {
+		} else if (getViewLibrary() != null) {
 			return getViewLibrary();
-		}
-		else {
+		} else if (getProject() != null) {
 			return getProject();
+		} else if (getServiceManager() != null) {
+			return getServiceManager().getTechnologyAdapterService().getTechnologyAdapter(FMLRTTechnologyAdapter.class);
 		}
+		return null;
 	}
 
 	@Override
