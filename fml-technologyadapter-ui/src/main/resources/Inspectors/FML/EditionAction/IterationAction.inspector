@@ -15,14 +15,14 @@
 			<TextField index="3" data="data.iteratorName"
 				constraints="twocols(expandHorizontally=true;expandVertically=false;index=3;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
 				localize="true" columns="6" text="TextField" />
-			<Label label="iteration" index="6"
+			<!--  <Label label="iteration" index="6"
 				constraints="twocols(expandHorizontally=true;expandVertically=false;index=4;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)"
 				localize="true" />
 			<Custom componentClassName="org.openflexo.gina.swing.utils.BindingSelector"
 				localize="true" manageDynamicModel="true" index="7" data="data.iteration"
 				constraints="twocols(expandHorizontally=true;expandVertically=false;index=5;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)">
 				<Assignment variable="component.bindable" value="data" />
-			</Custom>
+			</Custom>-->
 			<Label label="assign" index="8" 
 				constraints="twocols(expandHorizontally=true;expandVertically=false;index=2;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)"/>
 			<Panel darkLevel="1" useScrollBar="false" protectContent="false"

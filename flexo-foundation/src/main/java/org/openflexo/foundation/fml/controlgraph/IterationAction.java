@@ -190,7 +190,7 @@ public interface IterationAction extends ControlStructureAction, FMLControlGraph
 
 		@Override
 		public void setIteratorName(String iteratorName) {
-			if (!this.iteratorName.equals(iteratorName)) {
+			if (this.iteratorName == null || !this.iteratorName.equals(iteratorName)) {
 				String oldValue = this.iteratorName;
 				this.iteratorName = iteratorName;
 				// rebuildInferedBindingModel();
@@ -274,8 +274,7 @@ public interface IterationAction extends ControlStructureAction, FMLControlGraph
 			// NPE Protection when action has been deleted e.g.
 			if (getIterationAction() != null) {
 				return getHeaderContext() + " for (" + getIteratorName() + " : " + getIterationAction().getStringRepresentation() + ")";
-			}
-			else
+			} else
 				return "NULL ITERATION ACTION";
 		}
 
@@ -310,8 +309,7 @@ public interface IterationAction extends ControlStructureAction, FMLControlGraph
 		public FMLControlGraph getControlGraph(String ownerContext) {
 			if (CONTROL_GRAPH_KEY.equals(ownerContext)) {
 				return getControlGraph();
-			}
-			else if (ITERATION_CONTROL_GRAPH_KEY.equals(ownerContext)) {
+			} else if (ITERATION_CONTROL_GRAPH_KEY.equals(ownerContext)) {
 				return getIterationAction();
 			}
 			return null;
@@ -322,8 +320,7 @@ public interface IterationAction extends ControlStructureAction, FMLControlGraph
 
 			if (CONTROL_GRAPH_KEY.equals(ownerContext)) {
 				setControlGraph(controlGraph);
-			}
-			else if (ITERATION_CONTROL_GRAPH_KEY.equals(ownerContext)) {
+			} else if (ITERATION_CONTROL_GRAPH_KEY.equals(ownerContext)) {
 				setIterationAction((AssignableAction<List<?>>) controlGraph);
 			}
 		}
@@ -349,8 +346,7 @@ public interface IterationAction extends ControlStructureAction, FMLControlGraph
 			if (controlGraph == getControlGraph()) {
 				return getInferedBindingModel();
 				// return getControlGraph().getBindingModel();
-			}
-			else if (controlGraph == getIterationAction()) {
+			} else if (controlGraph == getIterationAction()) {
 				return getBindingModel();
 			}
 			logger.warning("Unexpected control graph: " + controlGraph);
