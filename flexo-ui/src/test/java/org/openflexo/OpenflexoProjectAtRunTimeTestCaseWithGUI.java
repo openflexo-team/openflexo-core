@@ -47,6 +47,7 @@ import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.OpenflexoProjectAtRunTimeTestCase;
 import org.openflexo.foundation.nature.ProjectNature;
 import org.openflexo.foundation.resource.DirectoryResourceCenter;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.logging.FlexoLoggingManager;
 
@@ -90,6 +91,16 @@ public abstract class OpenflexoProjectAtRunTimeTestCaseWithGUI extends Openflexo
 	protected static ApplicationContext instanciateTestServiceManager(final boolean generateCompoundTestResourceCenter) {
 		serviceManager = new TestApplicationContext(generateCompoundTestResourceCenter);
 		resourceCenter = (DirectoryResourceCenter) serviceManager.getResourceCenterService().getResourceCenters().get(0);
+		return (ApplicationContext) serviceManager;
+	}
+
+	protected static ApplicationContext instanciateTestServiceManager(final boolean generateCompoundTestResourceCenter,
+			Class<? extends TechnologyAdapter>... taClasses) {
+		serviceManager = instanciateTestServiceManager(generateCompoundTestResourceCenter);
+		for (Class<? extends TechnologyAdapter> technologyAdapterClass : taClasses) {
+			serviceManager
+					.activateTechnologyAdapter(serviceManager.getTechnologyAdapterService().getTechnologyAdapter(technologyAdapterClass));
+		}
 		return (ApplicationContext) serviceManager;
 	}
 
