@@ -651,7 +651,13 @@ public class FlexoProject extends FileSystemBasedResourceCenter
 	 */
 	public final ProjectWrapper<?> asNature(String projectNatureClassName) {
 		ProjectNature<?, ?> projectNature = getServiceManager().getProjectNatureService().getProjectNature(projectNatureClassName);
-		return projectNature.getProjectWrapper(this);
+		if (projectNature != null) {
+			return projectNature.getProjectWrapper(this);
+		}
+		else {
+			System.out.println("Could not lookup nature " + projectNatureClassName);
+			return null;
+		}
 	}
 
 	public ViewLibrary getViewLibrary() {
