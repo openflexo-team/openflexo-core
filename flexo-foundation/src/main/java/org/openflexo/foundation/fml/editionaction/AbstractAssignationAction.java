@@ -48,6 +48,8 @@ import org.openflexo.foundation.fml.controlgraph.FMLControlGraphOwner;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraphVisitor;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext.ReturnException;
+import org.openflexo.model.annotations.CloningStrategy;
+import org.openflexo.model.annotations.CloningStrategy.StrategyType;
 import org.openflexo.model.annotations.Embedded;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -74,6 +76,7 @@ public interface AbstractAssignationAction<T> extends AssignableAction<T>, FMLCo
 	@Getter(value = ASSIGNABLE_ACTION_KEY, inverse = FMLControlGraph.OWNER_KEY)
 	@XMLElement(context = "AssignableAction_")
 	@Embedded
+	@CloningStrategy(StrategyType.CLONE)
 	public AssignableAction<T> getAssignableAction();
 
 	@Setter(ASSIGNABLE_ACTION_KEY)
