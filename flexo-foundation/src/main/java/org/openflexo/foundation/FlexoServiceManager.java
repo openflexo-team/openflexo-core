@@ -103,8 +103,7 @@ public abstract class FlexoServiceManager {
 			notify(service, new ServiceRegistered());
 
 			service.initialize();
-		}
-		else {
+		} else {
 			logger.warning("Trying to register null FlexoService");
 		}
 	}
