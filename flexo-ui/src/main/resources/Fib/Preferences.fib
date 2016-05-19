@@ -19,9 +19,9 @@
       <Leaf id="13" weight="0.5" name="right" />
     </RowSplit>
   </SplitPanel>
-  <Panel id="14" darkLevel="0" vGap="5" useScrollBar="false" protectContent="false" hGap="5" layout="buttons" border="empty" flowAlignment="CENTER" trackViewPortWidth="true" index="1" constraints="border(anchor=center;fill=both;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=1;insetsBottom=0;insetsLeft=5;insetsRight=5;insetsTop=0;location=south;padX=0;padY=0;weightX=1.0;weightY=1.0;x=0;y=0)" trackViewPortHeight="true">
-    <Button id="16" manageDynamicModel="false" useScrollBar="false" buttonType="Trigger" localize="true" constraints="buttons()" label="apply" readOnly="false" />
-    <Button id="17" manageDynamicModel="false" useScrollBar="false" buttonType="Trigger" localize="true" constraints="buttons()" label="revert" readOnly="false" />
-    <Button id="18" manageDynamicModel="false" useScrollBar="false" buttonType="Trigger" localize="true" constraints="buttons()" label="save" readOnly="false" />
+  <Panel id="14" darkLevel="0" vGap="5" useScrollBar="false" protectContent="false" hGap="5" layout="flow" border="empty" flowAlignment="CENTER" trackViewPortWidth="true" index="1" constraints="border(anchor=center;fill=both;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=1;insetsBottom=0;insetsLeft=5;insetsRight=5;insetsTop=0;location=south;padX=0;padY=0;weightX=1.0;weightY=1.0;x=0;y=0)" trackViewPortHeight="true">
+    <Button id="16" manageDynamicModel="false" useScrollBar="false" buttonType="Trigger" localize="true" constraints="flow()" label="apply" readOnly="false" />
+    <Button id="17" manageDynamicModel="false" useScrollBar="false" buttonType="Trigger" localize="true" constraints="flow()" label="revert" readOnly="false" />
+    <Button id="18" manageDynamicModel="false" useScrollBar="false" buttonType="Trigger" localize="true" constraints="flow()" label="save" readOnly="false" />
   </Panel>
 </Panel>
