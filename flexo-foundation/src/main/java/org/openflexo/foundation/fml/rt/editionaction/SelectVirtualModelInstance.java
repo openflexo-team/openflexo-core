@@ -225,7 +225,7 @@ public interface SelectVirtualModelInstance extends FetchRequest<FMLRTModelSlot,
 
 		@Override
 		public VirtualModelResource getVirtualModelType() {
-			if (virtualModelType == null && virtualModelTypeURI != null && getViewPoint() != null) {
+			if (virtualModelType == null && virtualModelTypeURI != null && getViewPoint() != null && getViewPoint().getResource() != null) {
 				virtualModelType = ((ViewPointResource) getViewPoint().getResource()).getVirtualModelResource(virtualModelTypeURI);
 			}
 			return virtualModelType;
@@ -274,8 +274,7 @@ public interface SelectVirtualModelInstance extends FetchRequest<FMLRTModelSlot,
 					e.printStackTrace();
 				}
 				return null;
-			}
-			else {
+			} else {
 				logger.warning(getStringRepresentation() + " : Cannot find view on which to apply SelectVirtualModelInstance");
 				logger.warning("Additional info: getView()=" + getView());
 				return null;
