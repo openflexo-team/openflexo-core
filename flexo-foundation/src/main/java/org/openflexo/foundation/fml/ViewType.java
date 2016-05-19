@@ -38,7 +38,9 @@
 
 package org.openflexo.foundation.fml;
 
+import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.fml.rt.View;
+import org.openflexo.gina.annotation.FIBPanel;
 
 /**
  * Represent the type of a View conform to a given ViewPoint
@@ -68,9 +70,70 @@ public class ViewType extends VirtualModelInstanceType {
 	public static ViewType getViewType(ViewPoint viewPoint) {
 		if (viewPoint != null) {
 			return viewPoint.getViewType();
-		}
-		else {
+		} else {
 			return null;
 		}
 	}
+
+	/**
+	 * Factory for FlexoConceptInstanceType instances
+	 * 
+	 * @author sylvain
+	 * 
+	 */
+	@FIBPanel("Fib/CustomType/ViewTypeFactory.fib")
+	public static class ViewTypeFactory extends TechnologyAdapterTypeFactory<ViewType> {
+
+		public ViewTypeFactory(FMLRTTechnologyAdapter technologyAdapter) {
+			super(technologyAdapter);
+		}
+
+		@Override
+		public ViewType makeCustomType(String configuration) {
+
+			ViewPoint viewPoint = null;
+
+			if (configuration != null) {
+				viewPoint = getTechnologyAdapter().getTechnologyAdapterService().getServiceManager().getViewPointLibrary()
+						.getViewPoint(configuration);
+			} else {
+				viewPoint = getViewPointType();
+			}
+
+			if (viewPoint != null) {
+				return getViewType(viewPoint);
+			} else {
+				// We don't return UNDEFINED_FLEXO_CONCEPT_INSTANCE_TYPE because we want here a mutable type
+				// if FlexoConcept might be resolved later
+				return new ViewType(configuration);
+			}
+		}
+
+		private ViewPoint viewPointType;
+
+		public ViewPoint getViewPointType() {
+			return viewPointType;
+		}
+
+		public void setViewPointType(ViewPoint viewPointType) {
+			if (viewPointType != this.viewPointType) {
+				AbstractVirtualModel<?> oldVirtualModelType = this.viewPointType;
+				this.viewPointType = viewPointType;
+				getPropertyChangeSupport().firePropertyChange("viewPointType", oldVirtualModelType, viewPointType);
+			}
+		}
+
+		@Override
+		public String toString() {
+			return "Instance of VirtualModel";
+		}
+
+		@Override
+		public void configureFactory(ViewType type) {
+			if (type != null) {
+				setViewPointType(type.getViewPoint());
+			}
+		}
+	}
+
 }

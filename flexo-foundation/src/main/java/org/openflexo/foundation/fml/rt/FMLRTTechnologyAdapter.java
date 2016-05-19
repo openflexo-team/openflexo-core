@@ -47,6 +47,7 @@ import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType.FlexoConceptInstanceTypeFactory;
 import org.openflexo.foundation.fml.ViewType;
+import org.openflexo.foundation.fml.ViewType.ViewTypeFactory;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelInstanceType;
 import org.openflexo.foundation.fml.VirtualModelInstanceType.VirtualModelInstanceTypeFactory;
@@ -200,8 +201,7 @@ public class FMLRTTechnologyAdapter extends TechnologyAdapter {
 				logger.info("Found and register view " + vRes.getURI() + vRes.getFlexoIODelegate().toString());
 				viewRepository.registerResource(vRes, folder);
 				return vRes;
-			}
-			else {
+			} else {
 				logger.warning("While exploring resource center looking for views : cannot retrieve resource for file "
 						+ candidateFile.getAbsolutePath());
 			}
@@ -273,11 +273,13 @@ public class FMLRTTechnologyAdapter extends TechnologyAdapter {
 
 	private FlexoConceptInstanceTypeFactory fciFactory;
 	private VirtualModelInstanceTypeFactory vmiFactory;
+	private ViewTypeFactory viewFactory;
 
 	@Override
 	public void initTechnologySpecificTypes(TechnologyAdapterService taService) {
 		taService.registerTypeClass(FlexoConceptInstanceType.class, getFlexoConceptInstanceTypeFactory());
 		taService.registerTypeClass(VirtualModelInstanceType.class, getVirtualModelInstanceTypeFactory());
+		taService.registerTypeClass(ViewType.class, getViewTypeFactory());
 	}
 
 	protected FlexoConceptInstanceTypeFactory getFlexoConceptInstanceTypeFactory() {
@@ -292,6 +294,13 @@ public class FMLRTTechnologyAdapter extends TechnologyAdapter {
 			vmiFactory = new VirtualModelInstanceTypeFactory(this);
 		}
 		return vmiFactory;
+	}
+
+	protected ViewTypeFactory getViewTypeFactory() {
+		if (viewFactory == null) {
+			viewFactory = new ViewTypeFactory(this);
+		}
+		return viewFactory;
 	}
 
 	@Override
