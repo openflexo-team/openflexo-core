@@ -250,14 +250,12 @@ public abstract class ApplicationContext extends DefaultFlexoServiceManager impl
 			for (FlexoResourceCenter<?> rc : ((FlexoResourceCenterService) caller).getResourceCenters()) {
 				if (rc instanceof DirectoryResourceCenter) {
 					rcList.add(((DirectoryResourceCenter) rc).getDirectory());
-				}
-				else if (rc instanceof JarResourceCenter) {
+				} else if (rc instanceof JarResourceCenter) {
 					rcList.add(new File(((JarResourceCenter) rc).getJarResourceImpl().getRelativePath()));
 				}
 			}
 			getGeneralPreferences().setDirectoryResourceCenterList(rcList);
-		}
-		else if (notification instanceof DefaultPackageResourceCenterIsNotInstalled && caller instanceof FlexoResourceCenterService) {
+		} else if (notification instanceof DefaultPackageResourceCenterIsNotInstalled && caller instanceof FlexoResourceCenterService) {
 			defaultPackagedResourceCenterIsNotInstalled = true;
 		}
 	}
@@ -276,11 +274,20 @@ public abstract class ApplicationContext extends DefaultFlexoServiceManager impl
 		return removeRCTask;
 	}
 
+	private List<TechnologyAdapter> activatingTechnologyAdapters;
+
 	@Override
-	public ActivateTechnologyAdapterTask activateTechnologyAdapter(TechnologyAdapter technologyAdapter) {
+	public synchronized ActivateTechnologyAdapterTask activateTechnologyAdapter(TechnologyAdapter technologyAdapter) {
 		if (technologyAdapter.isActivated()) {
 			return null;
 		}
+		if (activatingTechnologyAdapters == null) {
+			activatingTechnologyAdapters = new ArrayList<>();
+		}
+		if (activatingTechnologyAdapters.contains(technologyAdapter)) {
+			return null;
+		}
+		activatingTechnologyAdapters.add(technologyAdapter);
 		ActivateTechnologyAdapterTask activateTATask = new ActivateTechnologyAdapterTask(getTechnologyAdapterService(), technologyAdapter);
 		getTaskManager().scheduleExecution(activateTATask);
 		return activateTATask;
