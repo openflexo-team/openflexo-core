@@ -218,7 +218,11 @@ public class JIRAIssue extends JIRAObject<JIRAIssue> {
 	}
 
 	public void setSummary(String summary) {
-		this.summary = summary;
+		if ((summary == null && this.summary != null) || (summary != null && !summary.equals(this.summary))) {
+			String oldValue = this.summary;
+			this.summary = summary;
+			getPropertyChangeSupport().firePropertyChange("summary", oldValue, summary);
+		}
 	}
 
 	public String getDescription() {
@@ -226,7 +230,11 @@ public class JIRAIssue extends JIRAObject<JIRAIssue> {
 	}
 
 	public void setDescription(String description) {
-		this.description = description;
+		if ((description == null && this.description != null) || (description != null && !description.equals(this.description))) {
+			String oldValue = this.description;
+			this.description = description;
+			getPropertyChangeSupport().firePropertyChange("description", oldValue, description);
+		}
 	}
 
 	public IssueType getIssuetype() {
@@ -234,7 +242,11 @@ public class JIRAIssue extends JIRAObject<JIRAIssue> {
 	}
 
 	public void setIssuetype(IssueType issuetype) {
-		this.issuetype = issuetype;
+		if ((issuetype == null && this.issuetype != null) || (issuetype != null && !issuetype.equals(this.issuetype))) {
+			IssueType oldValue = this.issuetype;
+			this.issuetype = issuetype;
+			getPropertyChangeSupport().firePropertyChange("issuetype", oldValue, issuetype);
+		}
 	}
 
 	public List<JIRAVersion> getVersions() {
@@ -314,11 +326,9 @@ public class JIRAIssue extends JIRAObject<JIRAIssue> {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-				} else if (List.class.isAssignableFrom(field.getType())
-						&& field.getGenericType() instanceof ParameterizedType
-						&& ((ParameterizedType) field.getGenericType()).getActualTypeArguments()[0] instanceof Class
-						&& JIRAObject.class.isAssignableFrom((Class<?>) ((ParameterizedType) field.getGenericType())
-								.getActualTypeArguments()[0])) {
+				} else if (List.class.isAssignableFrom(field.getType()) && field.getGenericType() instanceof ParameterizedType
+						&& ((ParameterizedType) field.getGenericType()).getActualTypeArguments()[0] instanceof Class && JIRAObject.class
+								.isAssignableFrom((Class<?>) ((ParameterizedType) field.getGenericType()).getActualTypeArguments()[0])) {
 					field.setAccessible(true);
 					try {
 						List<J> list = (List<J>) field.get(this);
@@ -368,10 +378,9 @@ public class JIRAIssue extends JIRAObject<JIRAIssue> {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-				} else if (List.class.isAssignableFrom(field.getType())
-						&& field.getGenericType() instanceof ParameterizedType
-						&& JIRAObject.class.isAssignableFrom(((ParameterizedType) field.getGenericType()).getActualTypeArguments()[0]
-								.getClass())) {
+				} else if (List.class.isAssignableFrom(field.getType()) && field.getGenericType() instanceof ParameterizedType
+						&& JIRAObject.class
+								.isAssignableFrom(((ParameterizedType) field.getGenericType()).getActualTypeArguments()[0].getClass())) {
 					field.setAccessible(true);
 					try {
 						List<J> list = (List<J>) field.get(this);

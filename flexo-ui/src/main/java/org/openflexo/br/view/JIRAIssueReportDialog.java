@@ -42,6 +42,8 @@ package org.openflexo.br.view;
 import java.awt.Dialog;
 import java.awt.Frame;
 import java.awt.Window;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileNotFoundException;
@@ -74,6 +76,7 @@ import org.openflexo.swing.ImageUtils.ImageType;
 import org.openflexo.toolbox.FileUtils;
 import org.openflexo.toolbox.FlexoVersion;
 import org.openflexo.toolbox.IProgress;
+import org.openflexo.toolbox.PropertyChangedSupportDefaultImplementation;
 import org.openflexo.toolbox.StringUtils;
 import org.openflexo.toolbox.ToolBox;
 import org.openflexo.toolbox.ZipUtils;
@@ -98,7 +101,7 @@ import org.openflexo.ws.jira.result.JIRAResult;
 import com.google.gson.JsonIOException;
 import com.google.gson.JsonSyntaxException;
 
-public class JIRAIssueReportDialog {
+public class JIRAIssueReportDialog extends PropertyChangedSupportDefaultImplementation {
 
 	private final class ReportProgress implements Progress {
 		int count = 0;
@@ -274,8 +277,7 @@ public class JIRAIssueReportDialog {
 					} catch (UnauthorizedJIRAAccessException e1) {
 						if (JIRAURLCredentialsDialog.askLoginPassword(serviceManager)) {
 							continue;
-						}
-						else {
+						} else {
 							break;
 						}
 					} catch (JIRAException e1) {
@@ -302,8 +304,7 @@ public class JIRAIssueReportDialog {
 					} catch (Exception e1) {
 						e1.printStackTrace();
 					}
-				}
-				else {
+				} else {
 					break;
 				}
 				if (!ok) {
@@ -339,6 +340,13 @@ public class JIRAIssueReportDialog {
 		this.serviceManager = serviceManager;
 		// this.project = serviceManager.getBugReportService().getOpenFlexoProject();
 		issue = new JIRAIssue();
+
+		issue.getPropertyChangeSupport().addPropertyChangeListener(new PropertyChangeListener() {
+			@Override
+			public void propertyChange(PropertyChangeEvent evt) {
+				getPropertyChangeSupport().firePropertyChange("isValid", !isValid(), isValid());
+			}
+		});
 
 		// issue.setIssuetype(project.getIssuetypes().get(0));
 		// issue.setProject(project);
@@ -416,23 +424,19 @@ public class JIRAIssueReportDialog {
 						if (submit) {
 							client.setTimeout(client.getTimeout() * 2);// Let's increase time out
 						}
-					}
-					else if (target.getException() instanceof UnknownHostException) {
+					} else if (target.getException() instanceof UnknownHostException) {
 						submit = FlexoController.confirm(
 								FlexoLocalization.localizedForKey("could_not_send_to_host_check_internet_connexion_and_try_again") + "? ");
 						// If the user want to stop, quit, otherwise clean the exception and try again
 						if (submit == false) {
 							throw target.getException();
-						}
-						else {
+						} else {
 							target.exception = null;
 						}
-					}
-					else {
+					} else {
 						throw target.getException();
 					}
-				}
-				else {
+				} else {
 					submit = false;
 				}
 			}
@@ -492,8 +496,7 @@ public class JIRAIssueReportDialog {
 			String commitID = "commit.id = " + ApplicationVersion.COMMIT_ID + "\n";
 			if (sendSystemProperties) {
 				issue.setSystemProperties(buildid + commitID + ToolBox.getSystemProperties(true));
-			}
-			else {
+			} else {
 				issue.setSystemProperties(buildid + commitID);
 			}
 
@@ -520,8 +523,7 @@ public class JIRAIssueReportDialog {
 					}
 				}*/
 				// getIssue().setVersion(selected);
-			}
-			else {
+			} else {
 				getIssue().setVersion(null);
 			}
 			// Always call make valid before replacing by identity members
