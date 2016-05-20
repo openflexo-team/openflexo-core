@@ -223,12 +223,6 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 			}
 		}
 
-		if (baseEditionAction instanceof AddFlexoConceptInstance) {
-			AddFlexoConceptInstance action = (AddFlexoConceptInstance) baseEditionAction;
-			System.out.println("J'ai mon action: " + action);
-			System.out.println("VMI = " + action.getVirtualModelInstance());
-		}
-
 		if (newEditionAction == null) {
 			newEditionAction = baseEditionAction;
 		}
