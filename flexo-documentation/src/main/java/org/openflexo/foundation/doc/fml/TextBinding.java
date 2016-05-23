@@ -497,8 +497,10 @@ public interface TextBinding<D extends FlexoDocument<D, TA>, TA extends Technolo
 					// System.out.println("Removing paragraph");
 					FlexoDocParagraph<D, TA> paragraphToRemove = (FlexoDocParagraph<D, TA>) container.getElements()
 							.get(lastParagraphIndex - i);
-					document.removeFromElements(paragraphToRemove);
+					// Removed references BEFORE to remove from elements
+					// (otherwise, identifier could not be computed anymore)
 					actorReference.removeReferencesTo(paragraphToRemove);
+					document.removeFromElements(paragraphToRemove);
 				}
 			}
 
