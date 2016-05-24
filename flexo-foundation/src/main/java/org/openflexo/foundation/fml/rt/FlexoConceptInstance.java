@@ -313,6 +313,16 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 			return super.getProject();
 		}
 
+		@Override
+		public void debug(String aLogString) {
+			System.out.println("FML@runtime DEBUG : " + aLogString);
+		}
+
+		@Override
+		public void log(String aLogString) {
+			System.err.println("FML@runtime LOG   : " + aLogString);
+		}
+
 		/**
 		 * Implements a local RunTimeEvaluationContext, in the context of this FlexoConceptInstance, but isolated. Variables beeing declared
 		 * here won't be visible from outside scope of this LocalRunTimeEvaluationContext
@@ -370,11 +380,21 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 			public void setValue(Object value, BindingVariable variable) {
 				if (localVariables.containsKey(variable.getVariableName())) {
 					localVariables.put(variable.getVariableName(), value);
-				} else {
+				}
+				else {
 					FlexoConceptInstanceImpl.this.setValue(value, variable);
 				}
 			}
 
+			@Override
+			public void debug(String aLogString) {
+				System.out.println("FML@runtime DEBUG : " + aLogString);
+			}
+
+			@Override
+			public void log(String aLogString) {
+				System.err.println("FML@runtime LOG   : " + aLogString);
+			}
 		}
 
 		@Override
@@ -383,7 +403,8 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 				// Take care that we don't manage here the multiple cardinality !!!
 				// This is performed in both classes: FlexoConceptFlexoPropertyPathElement and FlexoPropertyBindingVariable
 				return getFlexoActor((FlexoRole<T>) flexoProperty);
-			} else if (flexoProperty instanceof ExpressionProperty) {
+			}
+			else if (flexoProperty instanceof ExpressionProperty) {
 				try {
 					T returned = (T) ((ExpressionProperty<T>) flexoProperty).getExpression().getBindingValue(this);
 					return returned;
@@ -394,7 +415,8 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 				} catch (InvocationTargetException e) {
 					e.printStackTrace();
 				}
-			} else if (flexoProperty instanceof GetProperty) {
+			}
+			else if (flexoProperty instanceof GetProperty) {
 				FMLControlGraph getControlGraph = ((GetProperty<T>) flexoProperty).getGetControlGraph();
 				try {
 					RunTimeEvaluationContext localEvaluationContext = new LocalRunTimeEvaluationContext();
@@ -427,7 +449,8 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 			if ((value == null && oldValue != null) || (value != null && !value.equals(oldValue))) {
 				if (flexoProperty instanceof FlexoRole) {
 					setFlexoActor(value, (FlexoRole) flexoProperty);
-				} else if (flexoProperty instanceof ExpressionProperty) {
+				}
+				else if (flexoProperty instanceof ExpressionProperty) {
 					try {
 						((ExpressionProperty<T>) flexoProperty).getExpression().setBindingValue(value, this);
 					} catch (TypeMismatchException e) {
@@ -439,7 +462,8 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 					} catch (NotSettableContextException e) {
 						e.printStackTrace();
 					}
-				} else if (flexoProperty instanceof GetSetProperty) {
+				}
+				else if (flexoProperty instanceof GetSetProperty) {
 					FMLControlGraph setControlGraph = ((GetSetProperty<T>) flexoProperty).getSetControlGraph();
 					try {
 						// TODO: handle value beeing set, both in BindingModel AND he in LocalRunTimeEvaluationContext
@@ -652,7 +676,8 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 						ActorReference<T> ref = references.get(0);
 						ref.setModellingElement(object);
 						done = true;
-					} else if (references.size() > 0) {
+					}
+					else if (references.size() > 0) {
 						// Remove all existing references
 						for (ActorReference<T> actorReference : new ArrayList<ActorReference<T>>(references)) {
 							removeFromActors(actorReference);
@@ -835,7 +860,8 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 			if (actorReference.getRoleName() == null) {
 				logger.warning("Could not register ActorReference with null FlexoProperty: " + actorReference);
 				return;
-			} else {
+			}
+			else {
 				List<ActorReference<?>> references = (List) getReferences(actorReference.getRoleName());
 				references.add(actorReference);
 				// System.out.println("added " + actorReference + " for " + actorReference.getModellingElement());
@@ -855,7 +881,8 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 			if (actorReference.getRoleName() == null) {
 				logger.warning("Could not unregister ActorReference with null FlexoProperty: " + actorReference);
 				return;
-			} else {
+			}
+			else {
 				List<ActorReference<?>> references = (List) getReferences(actorReference.getRoleName());
 
 				actorReference.setFlexoConceptInstance(null);
@@ -906,7 +933,8 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 					e.printStackTrace();
 				}
 				return true;
-			} else {
+			}
+			else {
 				return false;
 			}
 		}
@@ -942,9 +970,11 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 			else if (variable instanceof FlexoPropertyBindingVariable && getFlexoConcept() != null
 					&& ((FlexoPropertyBindingVariable) variable).getFlexoProperty().getFlexoConcept() == getFlexoConcept()) {
 				return ((FlexoPropertyBindingVariable) variable).getValue(this);
-			} else if (variable.getVariableName().equals(FlexoConceptBindingModel.REFLEXIVE_ACCESS_PROPERTY)) {
+			}
+			else if (variable.getVariableName().equals(FlexoConceptBindingModel.REFLEXIVE_ACCESS_PROPERTY)) {
 				return getFlexoConcept();
-			} else if (variable.getVariableName().equals(FlexoConceptBindingModel.FLEXO_CONCEPT_INSTANCE_PROPERTY)) {
+			}
+			else if (variable.getVariableName().equals(FlexoConceptBindingModel.FLEXO_CONCEPT_INSTANCE_PROPERTY)) {
 				return this;
 			}
 
@@ -961,19 +991,23 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 				FlexoRole role = ((FlexoRoleBindingVariable) variable).getFlexoRole();
 				if (role != null) {
 					setFlexoActor(value, role);
-				} else {
+				}
+				else {
 					logger.warning("Unexpected property " + variable);
 				}
 				return;
-			} else if (variable instanceof FlexoPropertyBindingVariable && getFlexoConcept() != null) {
+			}
+			else if (variable instanceof FlexoPropertyBindingVariable && getFlexoConcept() != null) {
 				FlexoProperty property = getFlexoConcept().getAccessibleProperty(variable.getVariableName());
 				logger.warning("Not implemented: setValue() for " + variable);
 				return;
-			} else if (variable.getVariableName().equals(FlexoConceptBindingModel.REFLEXIVE_ACCESS_PROPERTY)) {
+			}
+			else if (variable.getVariableName().equals(FlexoConceptBindingModel.REFLEXIVE_ACCESS_PROPERTY)) {
 				logger.warning("Forbidden write access " + FlexoConceptBindingModel.REFLEXIVE_ACCESS_PROPERTY + " in " + this + " of "
 						+ getClass());
 				return;
-			} else if (variable.getVariableName().equals(FlexoConceptBindingModel.FLEXO_CONCEPT_INSTANCE_PROPERTY)) {
+			}
+			else if (variable.getVariableName().equals(FlexoConceptBindingModel.FLEXO_CONCEPT_INSTANCE_PROPERTY)) {
 				logger.warning("Forbidden write access " + FlexoConceptBindingModel.FLEXO_CONCEPT_INSTANCE_PROPERTY + " in " + this + " of "
 						+ getClass());
 				return;
@@ -998,11 +1032,13 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 			if (getFlexoConcept() != null) {
 				if (getFlexoConcept().getDefaultDeletionScheme() != null) {
 					return deleteWithScheme(getFlexoConcept().getDefaultDeletionScheme());
-				} else {
+				}
+				else {
 					// Generate on-the-fly default deletion scheme
 					return deleteWithScheme(getFlexoConcept().generateDefaultDeletionScheme());
 				}
-			} else {
+			}
+			else {
 				return super.delete(context);
 			}
 		}
@@ -1162,10 +1198,12 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 
 					if (obj instanceof String) {
 						return (String) obj;
-					} else {
+					}
+					else {
 						if (obj != null) {
 							return obj.toString();
-						} else
+						}
+						else
 							return EMPTY_STRING;
 					}
 
@@ -1191,7 +1229,8 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 				for (ActorReference<?> ref : refList) {
 					if (ref.getModellingElement() != null) {
 						sb.append((isFirst ? "" : ", ") + ref.getRoleName() + "=" + ref.getModellingElement().toString());
-					} else {
+					}
+					else {
 						sb.append((isFirst ? "" : ", ") + ref.getRoleName() + "=" + "No object found");
 					}
 					isFirst = false;

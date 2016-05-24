@@ -83,6 +83,20 @@ public interface RunTimeEvaluationContext extends SettableBindingEvaluationConte
 	 */
 	public void dereferenceVariable(String variableName);
 
+	/**
+	 * Send supplied logString to debug console
+	 * 
+	 * @param aLogString
+	 */
+	public void debug(String aLogString);
+
+	/**
+	 * Send supplied logString to log console
+	 * 
+	 * @param aLogString
+	 */
+	public void log(String aLogString);
+
 	@SuppressWarnings("serial")
 	public class ReturnException extends Exception {
 

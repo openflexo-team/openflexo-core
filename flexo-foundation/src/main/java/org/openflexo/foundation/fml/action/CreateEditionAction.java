@@ -77,6 +77,7 @@ import org.openflexo.foundation.fml.editionaction.DeleteAction;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.fml.editionaction.ExpressionAction;
 import org.openflexo.foundation.fml.editionaction.FetchRequest;
+import org.openflexo.foundation.fml.editionaction.LogAction;
 import org.openflexo.foundation.fml.editionaction.RemoveFromListAction;
 import org.openflexo.foundation.fml.editionaction.ReturnStatement;
 import org.openflexo.foundation.fml.editionaction.RoleSpecificAction;
@@ -164,6 +165,7 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 
 		FMLTechnologyAdapter fmlTA = getServiceManager().getTechnologyAdapterService().getTechnologyAdapter(FMLTechnologyAdapter.class);
 		addToAvailableActions(ExpressionAction.class, fmlTA);
+		addToAvailableActions(LogAction.class, fmlTA);
 		addToAvailableActions(ConditionalAction.class, fmlTA);
 		addToAvailableActions(IterationAction.class, fmlTA);
 		addToAvailableActions(WhileAction.class, fmlTA);
@@ -433,6 +435,9 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 		}
 		else if (org.openflexo.foundation.fml.editionaction.ExpressionAction.class.isAssignableFrom(editionActionClass)) {
 			returned = factory.newExpressionAction();
+		}
+		else if (org.openflexo.foundation.fml.editionaction.LogAction.class.isAssignableFrom(editionActionClass)) {
+			returned = factory.newLogAction();
 		}
 		else if (org.openflexo.foundation.fml.editionaction.AddToListAction.class.isAssignableFrom(editionActionClass)) {
 			returned = factory.newAddToListAction();

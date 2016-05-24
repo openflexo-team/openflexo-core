@@ -74,6 +74,7 @@ import org.openflexo.foundation.fml.editionaction.ExecutionAction;
 import org.openflexo.foundation.fml.editionaction.ExpressionAction;
 import org.openflexo.foundation.fml.editionaction.FetchRequest;
 import org.openflexo.foundation.fml.editionaction.FetchRequestCondition;
+import org.openflexo.foundation.fml.editionaction.LogAction;
 import org.openflexo.foundation.fml.editionaction.RemoveFromListAction;
 import org.openflexo.foundation.fml.editionaction.ReturnStatement;
 import org.openflexo.foundation.fml.inspector.CheckboxInspectorEntry;
@@ -560,6 +561,10 @@ public class FMLModelFactory extends FGEModelFactoryImpl implements PamelaResour
 		ReturnStatement<T> returned = newReturnStatement();
 		returned.setAssignableAction(assignableAction);
 		return returned;
+	}
+
+	public LogAction newLogAction() {
+		return newInstance(LogAction.class);
 	}
 
 	public <T> ExpressionAction<T> newExpressionAction() {

@@ -74,6 +74,7 @@ import org.openflexo.foundation.fml.editionaction.DeleteAction;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.fml.editionaction.ExpressionAction;
 import org.openflexo.foundation.fml.editionaction.FetchRequestCondition;
+import org.openflexo.foundation.fml.editionaction.LogAction;
 import org.openflexo.foundation.fml.editionaction.RemoveFromListAction;
 import org.openflexo.foundation.fml.editionaction.TechnologySpecificAction;
 import org.openflexo.foundation.fml.inspector.CheckboxInspectorEntry;
@@ -191,6 +192,8 @@ public class FMLIconLibrary extends IconLibrary {
 
 	public static final ImageIconResource EXPRESSION_ACTION_ICON = new ImageIconResource(
 			ResourceLocator.locateResource("Icons/Model/VPM/ExpressionActionIcon.png"));
+	public static final ImageIconResource LOG_ACTION_ICON = new ImageIconResource(
+			ResourceLocator.locateResource("Icons/Model/VPM/LogActionIcon.png"));
 	public static final ImageIconResource CONDITIONAL_ACTION_ICON = new ImageIconResource(
 			ResourceLocator.locateResource("Icons/Model/VPM/ConditionalActionIcon.png"));
 	public static final ImageIconResource ITERATION_ACTION_ICON = new ImageIconResource(
@@ -314,6 +317,9 @@ public class FMLIconLibrary extends IconLibrary {
 			}
 			else if (object instanceof ExpressionAction) {
 				return EXPRESSION_ACTION_ICON;
+			}
+			else if (object instanceof LogAction) {
+				return LOG_ACTION_ICON;
 			}
 			else if (object instanceof AbstractAssignationAction) {
 				return iconForObject(((AbstractAssignationAction) object).getAssignableAction());
