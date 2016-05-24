@@ -67,6 +67,7 @@ import org.openflexo.foundation.fml.controlgraph.ConditionalAction;
 import org.openflexo.foundation.fml.controlgraph.DefaultFMLControlGraphOwner;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
 import org.openflexo.foundation.fml.controlgraph.IterationAction;
+import org.openflexo.foundation.fml.controlgraph.WhileAction;
 import org.openflexo.foundation.fml.editionaction.AddToListAction;
 import org.openflexo.foundation.fml.editionaction.AssignableAction;
 import org.openflexo.foundation.fml.editionaction.AssignationAction;
@@ -161,10 +162,10 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 		// availableActions.add(DeclarationAction.class);
 
 		FMLTechnologyAdapter fmlTA = getServiceManager().getTechnologyAdapterService().getTechnologyAdapter(FMLTechnologyAdapter.class);
+		addToAvailableActions(ExpressionAction.class, fmlTA);
 		addToAvailableActions(ConditionalAction.class, fmlTA);
 		addToAvailableActions(IterationAction.class, fmlTA);
-		addToAvailableActions(ExpressionAction.class, fmlTA);
-		// addToAvailableActions(AddToListAction.class, fmlTA);
+		addToAvailableActions(WhileAction.class, fmlTA);
 		addToAvailableActions(RemoveFromListAction.class, fmlTA);
 		addToAvailableActions(AddFlexoConceptInstance.class, fmlTA);
 		addToAvailableActions(AddVirtualModelInstance.class, fmlTA);
@@ -206,16 +207,19 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 				newAssignationAction.setAssignableAction((AssignableAction) baseEditionAction);
 				newAssignationAction.setAssignation((DataBinding) getAssignation());
 				newEditionAction = newAssignationAction;
-			} else if (isVariableDeclaration()) {
+			}
+			else if (isVariableDeclaration()) {
 				DeclarationAction<?> newDeclarationAction = getFocusedObject().getFMLModelFactory().newDeclarationAction();
 				newDeclarationAction.setAssignableAction((AssignableAction) baseEditionAction);
 				newDeclarationAction.setVariableName(getDeclarationVariableName());
 				newEditionAction = newDeclarationAction;
-			} else if (isReturnStatement()) {
+			}
+			else if (isReturnStatement()) {
 				ReturnStatement<?> newReturnStatement = getFocusedObject().getFMLModelFactory().newReturnStatement();
 				newReturnStatement.setAssignableAction((AssignableAction) baseEditionAction);
 				newEditionAction = newReturnStatement;
-			} else if (isAddToListAction()) {
+			}
+			else if (isAddToListAction()) {
 				AddToListAction<?> newAddToListAction = getFocusedObject().getFMLModelFactory().newAddToListAction();
 				newAddToListAction.setAssignableAction((AssignableAction) baseEditionAction);
 				newAddToListAction.setList((DataBinding) getListExpression());
@@ -323,12 +327,15 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 		if (baseEditionAction instanceof AssignableAction) {
 			if (isAssignation()) {
 				return getAssignation() + " = " + baseEditionAction.getStringRepresentation();
-			} else if (isVariableDeclaration()) {
+			}
+			else if (isVariableDeclaration()) {
 				return TypeUtils.simpleRepresentation(((AssignableAction) baseEditionAction).getAssignableType()) + " "
 						+ getDeclarationVariableName() + " = " + baseEditionAction.getStringRepresentation();
-			} else if (isAddToListAction()) {
+			}
+			else if (isAddToListAction()) {
 				return getListExpression() + ".FML::AddToList(" + baseEditionAction.getStringRepresentation() + ")";
-			} else {
+			}
+			else {
 				return baseEditionAction.getStringRepresentation();
 			}
 		}
@@ -421,34 +428,51 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 
 		if (org.openflexo.foundation.fml.editionaction.AssignationAction.class.isAssignableFrom(editionActionClass)) {
 			returned = factory.newAssignationAction();
-		} else if (org.openflexo.foundation.fml.editionaction.ExpressionAction.class.isAssignableFrom(editionActionClass)) {
+		}
+		else if (org.openflexo.foundation.fml.editionaction.ExpressionAction.class.isAssignableFrom(editionActionClass)) {
 			returned = factory.newExpressionAction();
-		} else if (org.openflexo.foundation.fml.editionaction.AddToListAction.class.isAssignableFrom(editionActionClass)) {
+		}
+		else if (org.openflexo.foundation.fml.editionaction.AddToListAction.class.isAssignableFrom(editionActionClass)) {
 			returned = factory.newAddToListAction();
-		} else if (org.openflexo.foundation.fml.editionaction.RemoveFromListAction.class.isAssignableFrom(editionActionClass)) {
+		}
+		else if (org.openflexo.foundation.fml.editionaction.RemoveFromListAction.class.isAssignableFrom(editionActionClass)) {
 			returned = factory.newRemoveFromListAction();
-		} else if (AddFlexoConceptInstance.class.isAssignableFrom(editionActionClass)) {
+		}
+		else if (AddFlexoConceptInstance.class.isAssignableFrom(editionActionClass)) {
 			returned = factory.newAddFlexoConceptInstance();
-		} else if (AddVirtualModelInstance.class.isAssignableFrom(editionActionClass)) {
+		}
+		else if (AddVirtualModelInstance.class.isAssignableFrom(editionActionClass)) {
 			returned = factory.newAddVirtualModelInstance();
-		} else if (AddSubView.class.isAssignableFrom(editionActionClass)) {
+		}
+		else if (AddSubView.class.isAssignableFrom(editionActionClass)) {
 			returned = factory.newAddSubView();
-		} else if (MatchFlexoConceptInstance.class.isAssignableFrom(editionActionClass)) {
+		}
+		else if (MatchFlexoConceptInstance.class.isAssignableFrom(editionActionClass)) {
 			returned = factory.newMatchFlexoConceptInstance();
-		} else if (SelectFlexoConceptInstance.class.isAssignableFrom(editionActionClass)) {
+		}
+		else if (SelectFlexoConceptInstance.class.isAssignableFrom(editionActionClass)) {
 			returned = factory.newSelectFlexoConceptInstance();
-		} else if (SelectVirtualModelInstance.class.isAssignableFrom(editionActionClass)) {
+		}
+		else if (SelectVirtualModelInstance.class.isAssignableFrom(editionActionClass)) {
 			returned = factory.newSelectVirtualModelInstance();
-		} else if (DeleteAction.class.isAssignableFrom(editionActionClass)) {
+		}
+		else if (DeleteAction.class.isAssignableFrom(editionActionClass)) {
 			returned = factory.newDeleteAction();
-		} else if (ConditionalAction.class.isAssignableFrom(editionActionClass)) {
+		}
+		else if (ConditionalAction.class.isAssignableFrom(editionActionClass)) {
 			returned = factory.newConditionalAction();
-		} else if (IterationAction.class.isAssignableFrom(editionActionClass)) {
+		}
+		else if (WhileAction.class.isAssignableFrom(editionActionClass)) {
+			returned = factory.newWhileAction();
+		}
+		else if (IterationAction.class.isAssignableFrom(editionActionClass)) {
 			returned = factory.newIterationAction();
 			updateIteration((IterationAction) returned);
-		} else if (FetchRequest.class.isAssignableFrom(editionActionClass) && getModelSlot() != null) {
+		}
+		else if (FetchRequest.class.isAssignableFrom(editionActionClass) && getModelSlot() != null) {
 			returned = getModelSlot().makeFetchRequest((Class<FetchRequest<?, ?>>) editionActionClass);
-		} else if (TechnologySpecificAction.class.isAssignableFrom(editionActionClass) && getModelSlot() != null) {
+		}
+		else if (TechnologySpecificAction.class.isAssignableFrom(editionActionClass) && getModelSlot() != null) {
 			returned = getModelSlot().makeEditionAction((Class<TechnologySpecificAction<?, ?>>) editionActionClass);
 		}
 
@@ -458,7 +482,8 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 
 		if (RoleSpecificAction.class.isAssignableFrom(editionActionClass) && getFlexoRole() != null) {
 			((RoleSpecificAction) returned).setFlexoRole(getFlexoRole());
-		} else if (TechnologySpecificAction.class.isAssignableFrom(editionActionClass) && getModelSlot() != null) {
+		}
+		else if (TechnologySpecificAction.class.isAssignableFrom(editionActionClass) && getModelSlot() != null) {
 			((TechnologySpecificAction) returned).setModelSlot(getModelSlot());
 		}
 
@@ -506,7 +531,8 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 		if (modelSlot != null && !availableMS.contains(modelSlot)) {
 			if (availableMS.size() > 0) {
 				modelSlot = getAvailableModelSlotsForAction(getEditionActionClass()).get(0);
-			} else {
+			}
+			else {
 				modelSlot = null;
 			}
 		}
@@ -581,12 +607,14 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 		AbstractVirtualModel<?> abstractVirtualModel = null;
 		if (getFocusedObject().getOwner().getFlexoConcept() instanceof AbstractVirtualModel) {
 			abstractVirtualModel = (AbstractVirtualModel<?>) getFocusedObject().getOwner().getFlexoConcept();
-		} else if (getFocusedObject().getOwner().getOwningVirtualModel() != null) {
+		}
+		else if (getFocusedObject().getOwner().getOwningVirtualModel() != null) {
 			abstractVirtualModel = getFocusedObject().getOwner().getOwningVirtualModel();
 		}
 		if (abstractVirtualModel != null) {
 			return abstractVirtualModel.getModelSlots();
-		} else {
+		}
+		else {
 			return null;
 		}
 	}
@@ -653,7 +681,8 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 				if (typeAsString.startsWith("a") || typeAsString.startsWith("e") || typeAsString.startsWith("i")
 						|| typeAsString.startsWith("o") || typeAsString.startsWith("u")) {
 					return "an" + typeAsString.substring(0, 1).toUpperCase() + typeAsString.substring(1);
-				} else {
+				}
+				else {
 					return "a" + typeAsString.substring(0, 1).toUpperCase() + typeAsString.substring(1);
 				}
 			}
@@ -753,20 +782,20 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 		FMLModelFactory factory = getFocusedObject().getFMLModelFactory();
 		if (iterationAction != null) {
 			switch (getIterationType()) {
-			case Expression:
-				ExpressionAction exp = factory.newExpressionAction(getIterationExpression());
-				iterationAction.setIterationAction(exp);
-				break;
-			case FetchRequest:
-				FetchRequest<?, ?> fetchRequest = factory.newInstance(getFetchRequestClass());
-				iterationAction.setIterationAction(fetchRequest);
-				List<ModelSlot<?>> availableMS = getAvailableModelSlotsForAction(getFetchRequestClass());
-				if (availableMS.size() > 0) {
-					((TechnologySpecificAction) fetchRequest).setModelSlot(availableMS.get(0));
-				}
-				break;
-			default:
-				break;
+				case Expression:
+					ExpressionAction exp = factory.newExpressionAction(getIterationExpression());
+					iterationAction.setIterationAction(exp);
+					break;
+				case FetchRequest:
+					FetchRequest<?, ?> fetchRequest = factory.newInstance(getFetchRequestClass());
+					iterationAction.setIterationAction(fetchRequest);
+					List<ModelSlot<?>> availableMS = getAvailableModelSlotsForAction(getFetchRequestClass());
+					if (availableMS.size() > 0) {
+						((TechnologySpecificAction) fetchRequest).setModelSlot(availableMS.get(0));
+					}
+					break;
+				default:
+					break;
 			}
 		}
 	}

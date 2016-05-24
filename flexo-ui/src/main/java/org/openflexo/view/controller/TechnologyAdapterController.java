@@ -66,6 +66,7 @@ import org.openflexo.foundation.fml.TextAreaParameter;
 import org.openflexo.foundation.fml.TextFieldParameter;
 import org.openflexo.foundation.fml.controlgraph.ConditionalAction;
 import org.openflexo.foundation.fml.controlgraph.IterationAction;
+import org.openflexo.foundation.fml.controlgraph.WhileAction;
 import org.openflexo.foundation.fml.editionaction.AddToListAction;
 import org.openflexo.foundation.fml.editionaction.DeleteAction;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
@@ -361,6 +362,9 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 			return FMLIconLibrary.CONDITIONAL_ACTION_ICON;
 		}
 		else if (IterationAction.class.isAssignableFrom(editionActionClass)) {
+			return FMLIconLibrary.ITERATION_ACTION_ICON;
+		}
+		else if (WhileAction.class.isAssignableFrom(editionActionClass)) {
 			return FMLIconLibrary.ITERATION_ACTION_ICON;
 		}
 		else if (ExpressionAction.class.isAssignableFrom(editionActionClass)) {

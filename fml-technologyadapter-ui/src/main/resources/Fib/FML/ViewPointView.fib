@@ -77,9 +77,12 @@
 				filtered="false" defaultVisible="true" dynamicFont="" name="viewPoint">
 				<Children data="viewPoint.resource.contents" visible="viewPoint.resource.isLoaded"
 					cast="" name="subResources" />
-				<Children data="viewPoint.inspector" name="inspector" visible="viewPoint.resource.isLoaded"/>
-				<Children data="viewPoint.structuralFacet" name="structural" visible="viewPoint.resource.isLoaded"/>
-				<Children data="viewPoint.behaviouralFacet" name="behavioural" visible="viewPoint.resource.isLoaded"/>
+				<Children data="viewPoint.inspector" name="inspector"
+					visible="viewPoint.resource.isLoaded" />
+				<Children data="viewPoint.structuralFacet" name="structural"
+					visible="viewPoint.resource.isLoaded" />
+				<Children data="viewPoint.behaviouralFacet" name="behavioural"
+					visible="viewPoint.resource.isLoaded" />
 				<Children data="viewPoint.localizedDictionary" name="localizedDictionary" />
 				<BrowserAddAction method="controller.createVirtualModel(selected.resource)"
 					name="create_virtual_model" />
@@ -95,9 +98,12 @@
 					name="subresources" />
 				<Children data="virtualModel.loadedVirtualModel.allRootFlexoConcepts"
 					visible="virtualModel.isLoaded" name="rootFlexoConcepts" />
-				<Children data="virtualModel.virtualModel.inspector" name="inspector" visible="virtualModel.isLoaded"/>
-				<Children data="virtualModel.virtualModel.structuralFacet" name="structural" visible="virtualModel.isLoaded"/>
-				<Children data="virtualModel.virtualModel.behaviouralFacet" name="behavioural" visible="virtualModel.isLoaded"/>
+				<Children data="virtualModel.virtualModel.inspector" name="inspector"
+					visible="virtualModel.isLoaded" />
+				<Children data="virtualModel.virtualModel.structuralFacet"
+					name="structural" visible="virtualModel.isLoaded" />
+				<Children data="virtualModel.virtualModel.behaviouralFacet"
+					name="behavioural" visible="virtualModel.isLoaded" />
 				<BrowserRemoveAction method="controller.deleteVirtualModel(selected)"
 					name="delete_virtual_model" />
 				<BrowserAddAction
@@ -115,9 +121,9 @@
 				icon="controller.iconForObject(flexoConcept)" isEditable="true"
 				filtered="false" defaultVisible="true" name="flexoConcept">
 				<Children data="flexoConcept.childFlexoConcepts" name="children" />
-				<!--  <Children data="flexoConcept.inspector" name="inspector" />
-				<Children data="flexoConcept.structuralFacet" name="structural" />
-				<Children data="flexoConcept.behaviouralFacet" name="behavioural" />-->
+				<!-- <Children data="flexoConcept.inspector" name="inspector" /> <Children 
+					data="flexoConcept.structuralFacet" name="structural" /> <Children data="flexoConcept.behaviouralFacet" 
+					name="behavioural" /> -->
 				<BrowserAddAction method="controller.createFlexoConcept(selected)"
 					name="add_flexo_concept" />
 				<BrowserRemoveAction method="controller.deleteFlexoConcept(selected)"
@@ -141,31 +147,31 @@
 				isEditable="true" filtered="false" defaultVisible="true" name="modelSlot">
 				<BrowserRemoveAction method="controller.deleteFlexoConceptObject(selected)"
 					name="remove_flexo_concept" />
-				</BrowserElement>
+			</BrowserElement>
 
 			<BrowserElement dataClassName="org.openflexo.foundation.fml.FlexoRole"
 				label="flexoRole.name+' ('+flexoRole.cardinality.stringRepresentation+')'"
 				editableLabel="flexoRole.name" icon="controller.iconForObject(flexoRole)"
-				isEditable="true" filtered="false" defaultVisible="true" name="flexoRole" >
+				isEditable="true" filtered="false" defaultVisible="true" name="flexoRole">
 				<BrowserRemoveAction method="controller.deleteFlexoConceptObject(selected)"
 					name="remove_flexo_concept" />
-				</BrowserElement>
+			</BrowserElement>
 
 			<BrowserElement dataClassName="org.openflexo.foundation.fml.AbstractProperty"
 				label="flexoProperty.name" editableLabel="flexoProperty.name"
 				icon="controller.iconForObject(flexoProperty)" isEditable="true"
-				filtered="false" defaultVisible="true" name="flexoProperty" >
+				filtered="false" defaultVisible="true" name="flexoProperty">
 				<BrowserRemoveAction method="controller.deleteFlexoConceptObject(selected)"
 					name="remove_flexo_concept" />
-				</BrowserElement>
+			</BrowserElement>
 
 			<BrowserElement dataClassName="org.openflexo.foundation.fml.ExpressionProperty"
 				label="flexoProperty.name" editableLabel="flexoProperty.name"
 				icon="controller.iconForObject(flexoProperty)" isEditable="true"
-				filtered="false" defaultVisible="true" name="flexoProperty" >
+				filtered="false" defaultVisible="true" name="flexoProperty">
 				<BrowserRemoveAction method="controller.deleteFlexoConceptObject(selected)"
 					name="remove_flexo_concept" />
-				</BrowserElement>
+			</BrowserElement>
 
 			<BrowserElement dataClassName="org.openflexo.foundation.fml.GetSetProperty"
 				label="flexoProperty.name" editableLabel="flexoProperty.name"
@@ -204,12 +210,26 @@
 				isEditable="false" filtered="false" defaultVisible="true" name="iterationAction">
 				<Children data="iterationAction.controlGraph.flattenedSequence"
 					name="children" />
-				<BrowserRemoveAction
-					method="controller.deleteFlexoConceptObject(selected)" name="delete_action" />
+				<BrowserRemoveAction method="controller.deleteFlexoConceptObject(selected)"
+					name="delete_action" />
 				<BrowserAddAction method="controller.createEditionAction(selected)"
 					name="add_action" />
 				<BrowserAddAction
 					method="controller.createEditionActionInIteration(selected)" name="add_action_inside_iteration" />
+			</BrowserElement>
+			<BrowserElement
+				dataClassName="org.openflexo.foundation.fml.controlgraph.WhileAction"
+				label="whileAction.stringRepresentation" icon="controller.iconForObject(whileAction)"
+				isEditable="false" filtered="false" defaultVisible="true" name="whileAction">
+				<Children data="whileAction.controlGraph.flattenedSequence"
+					name="children" />
+				<BrowserRemoveAction method="controller.deleteFlexoConceptObject(selected)"
+					name="delete_action" />
+				<BrowserAddAction method="controller.createEditionAction(selected)"
+					name="add_action" />
+				<BrowserAddAction
+					method="controller.createEditionActionInWhileAction(selected)"
+					name="add_action_inside_iteration" />
 			</BrowserElement>
 			<BrowserElement
 				dataClassName="org.openflexo.foundation.fml.controlgraph.ConditionalAction"
@@ -220,8 +240,8 @@
 					name="thenChildren" />
 				<Children data="conditionalAction.elseControlGraph.flattenedSequence"
 					name="elseChildren" />
-				<BrowserRemoveAction
-					method="controller.deleteFlexoConceptObject(selected)" name="delete_action" />
+				<BrowserRemoveAction method="controller.deleteFlexoConceptObject(selected)"
+					name="delete_action" />
 				<BrowserAddAction method="controller.createEditionAction(selected)"
 					name="add_action" />
 				<BrowserAddAction
@@ -237,8 +257,8 @@
 				isEditable="false" filtered="false" defaultVisible="true" name="editionAction">
 				<BrowserAddAction method="controller.createEditionAction(selected)"
 					name="add_action" />
-				<BrowserRemoveAction
-					method="controller.deleteFlexoConceptObject(selected)" name="delete_action" />
+				<BrowserRemoveAction method="controller.deleteFlexoConceptObject(selected)"
+					name="delete_action" />
 			</BrowserElement>
 			<BrowserElement
 				dataClassName="org.openflexo.foundation.fml.inspector.FlexoConceptInspector"
@@ -246,25 +266,18 @@
 				tooltip="" enabled="" isEditable="false" editableLabel="" filtered="false"
 				defaultVisible="true" dynamicFont="" name="inspector">
 				<Children data="inspector.entries" name="entries" />
-				<BrowserAddAction method="controller.createInspectorEntry(data)" 
+				<BrowserAddAction method="controller.createInspectorEntry(data)"
 					name="add_inspector_entry" />
-				<!--  <BrowserAddAction method="data.createNewTextField" name="add_textfield" />
-				<BrowserAddAction method="data.inspector.createNewTextArea"
-					name="add_textarea" />
-				<BrowserAddAction method="data.inspector.createNewInteger"
-					name="add_integer" />
-				<BrowserAddAction method="data.inspector.createNewCheckbox"
-					name="add_checkbox" />
-				<BrowserAddAction method="data.inspector.createNewIndividual"
-					name="add_individual" />
-				<BrowserAddAction method="data.inspector.createNewClass"
-					name="add_class" />
-				<BrowserAddAction method="data.inspector.createNewObjectProperty"
-					name="add_object_property" />
-				<BrowserAddAction method="data.inspector.createNewDataProperty"
-					name="add_data_property" />
-				<BrowserAddAction method="data.inspector.createNewProperty"
-					name="add_property" />-->
+				<!-- <BrowserAddAction method="data.createNewTextField" name="add_textfield" 
+					/> <BrowserAddAction method="data.inspector.createNewTextArea" name="add_textarea" 
+					/> <BrowserAddAction method="data.inspector.createNewInteger" name="add_integer" 
+					/> <BrowserAddAction method="data.inspector.createNewCheckbox" name="add_checkbox" 
+					/> <BrowserAddAction method="data.inspector.createNewIndividual" name="add_individual" 
+					/> <BrowserAddAction method="data.inspector.createNewClass" name="add_class" 
+					/> <BrowserAddAction method="data.inspector.createNewObjectProperty" name="add_object_property" 
+					/> <BrowserAddAction method="data.inspector.createNewDataProperty" name="add_data_property" 
+					/> <BrowserAddAction method="data.inspector.createNewProperty" name="add_property" 
+					/> -->
 				<RemoveAction method="data.inspector.deleteEntry(selected)"
 					name="delete" />
 			</BrowserElement>
@@ -302,7 +315,8 @@
 					method="controller.createExpressionProperty(selected.flexoConcept)" />
 				<BrowserAddAction name="new_get_set_property"
 					method="controller.createGetSetProperty(selected.flexoConcept)" />
-                <BrowserRemoveAction name="delete" method="controller.deleteFlexoProperty(data,selected)" />
+				<BrowserRemoveAction name="delete"
+					method="controller.deleteFlexoProperty(data,selected)" />
 			</BrowserElement>
 			<BrowserElement
 				dataClassName="org.openflexo.foundation.fml.FlexoConceptBehaviouralFacet"

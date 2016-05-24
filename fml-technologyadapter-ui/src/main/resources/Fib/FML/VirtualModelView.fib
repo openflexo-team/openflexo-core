@@ -121,6 +121,20 @@
 					method="controller.createEditionActionInIteration(selected)" name="add_action_inside_iteration" />
 			</BrowserElement>
 			<BrowserElement
+				dataClassName="org.openflexo.foundation.fml.controlgraph.WhileAction"
+				label="whileAction.stringRepresentation" icon="controller.iconForObject(whileAction)"
+				isEditable="false" filtered="false" defaultVisible="true" name="whileAction">
+				<Children data="whileAction.controlGraph.flattenedSequence"
+					name="children" />
+				<BrowserRemoveAction method="controller.deleteFlexoConceptObject(selected)"
+					name="delete_action" />
+				<BrowserAddAction method="controller.createEditionAction(selected)"
+					name="add_action" />
+				<BrowserAddAction
+					method="controller.createEditionActionInWhileAction(selected)"
+					name="add_action_inside_iteration" />
+			</BrowserElement>
+			<BrowserElement
 				dataClassName="org.openflexo.foundation.fml.controlgraph.ConditionalAction"
 				label="conditionalAction.stringRepresentation" icon="controller.iconForObject(conditionalAction)"
 				isEditable="false" filtered="false" defaultVisible="true"

@@ -61,6 +61,7 @@ import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
 import org.openflexo.foundation.fml.controlgraph.FetchRequestIterationAction;
 import org.openflexo.foundation.fml.controlgraph.IterationAction;
 import org.openflexo.foundation.fml.controlgraph.Sequence;
+import org.openflexo.foundation.fml.controlgraph.WhileAction;
 import org.openflexo.foundation.fml.editionaction.AddToListAction;
 import org.openflexo.foundation.fml.editionaction.AssignableAction;
 import org.openflexo.foundation.fml.editionaction.AssignationAction;
@@ -578,6 +579,12 @@ public class FMLModelFactory extends FGEModelFactoryImpl implements PamelaResour
 
 	public IterationAction newIterationAction() {
 		IterationAction returned = newInstance(IterationAction.class);
+		returned.setControlGraph(newEmptyControlGraph());
+		return returned;
+	}
+
+	public WhileAction newWhileAction() {
+		WhileAction returned = newInstance(WhileAction.class);
 		returned.setControlGraph(newEmptyControlGraph());
 		return returned;
 	}

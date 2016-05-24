@@ -191,6 +191,11 @@ public class TestFMLInspectors extends GenericFIBInspectorTestCase {
 	}
 
 	@Test
+	public void testWhileActionInspector() {
+		validateFIB("Inspectors/FML/EditionAction/WhileAction.inspector");
+	}
+
+	@Test
 	public void testExpressionPropertyInspector() {
 		validateFIB("Inspectors/FML/ExpressionProperty.inspector");
 	}
