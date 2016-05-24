@@ -130,7 +130,13 @@ public class CreateFlexoBehaviour extends FlexoAction<CreateFlexoBehaviour, Flex
 			addFlexoConceptFlexoBehaviours((FlexoConcept) focusedObject);
 		}
 		else if (focusedObject instanceof FlexoConceptBehaviouralFacet) {
-			addFlexoConceptFlexoBehaviours(((FlexoConceptBehaviouralFacet) focusedObject).getFlexoConcept());
+			FlexoConcept facetConcept = ((FlexoConceptBehaviouralFacet) focusedObject).getFlexoConcept();
+			if (facetConcept instanceof AbstractVirtualModel<?>) {
+				addVirtualModelFlexoBehaviours((AbstractVirtualModel<?>) facetConcept);
+			}
+			else {
+				addFlexoConceptFlexoBehaviours(facetConcept);
+			}
 		}
 
 		parameterEntries = new ArrayList<CreateFlexoBehaviour.BehaviourParameterEntry>();
