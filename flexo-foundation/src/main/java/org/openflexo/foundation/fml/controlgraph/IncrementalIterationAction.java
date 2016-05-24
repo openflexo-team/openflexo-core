@@ -42,12 +42,12 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
-import org.apache.commons.lang3.reflect.TypeUtils;
 import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
+import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
@@ -127,7 +127,7 @@ public interface IncrementalIterationAction extends AbstractIterationAction {
 		@Override
 		public DataBinding<Number> getStartValue() {
 			if (startValue == null) {
-				startValue = new DataBinding<Number>(this, Number.class, BindingDefinitionType.GET);
+				startValue = new DataBinding<Number>("0", this, Number.class, BindingDefinitionType.GET);
 				startValue.setBindingName("startValue");
 			}
 			return startValue;
@@ -167,7 +167,7 @@ public interface IncrementalIterationAction extends AbstractIterationAction {
 		@Override
 		public DataBinding<Number> getIncrement() {
 			if (increment == null) {
-				increment = new DataBinding<Number>(this, Number.class, BindingDefinitionType.GET);
+				increment = new DataBinding<Number>("1", this, Number.class, BindingDefinitionType.GET);
 				increment.setBindingName("increment");
 			}
 			return increment;
@@ -244,15 +244,30 @@ public interface IncrementalIterationAction extends AbstractIterationAction {
 			Number exclusiveEndValue = evaluateExclusiveEndValue(evaluationContext);
 			Number increment = evaluateIncrement(evaluationContext);
 
-			for (double currentValue = startValue.doubleValue(); currentValue < exclusiveEndValue.doubleValue(); currentValue = currentValue
-					+ increment.doubleValue()) {
-				System.out.println("> working with " + getIteratorName() + "=" + currentValue);
-				evaluationContext.declareVariable(getIteratorName(), currentValue);
-				try {
-					getControlGraph().execute(evaluationContext);
-				} catch (ReturnException e) {
-					evaluationContext.dereferenceVariable(getIteratorName());
-					throw e;
+			if (TypeUtils.isTypeAssignableFrom(Integer.class, getItemType(), true)) {
+				for (long currentValue = startValue.longValue(); currentValue < exclusiveEndValue.longValue(); currentValue = currentValue
+						+ increment.longValue()) {
+					// System.out.println("> working with " + getIteratorName() + "=" + currentValue);
+					evaluationContext.declareVariable(getIteratorName(), currentValue);
+					try {
+						getControlGraph().execute(evaluationContext);
+					} catch (ReturnException e) {
+						evaluationContext.dereferenceVariable(getIteratorName());
+						throw e;
+					}
+				}
+			}
+			else {
+				for (double currentValue = startValue.doubleValue(); currentValue < exclusiveEndValue
+						.doubleValue(); currentValue = currentValue + increment.doubleValue()) {
+					// System.out.println("> working with " + getIteratorName() + "=" + currentValue);
+					evaluationContext.declareVariable(getIteratorName(), currentValue);
+					try {
+						getControlGraph().execute(evaluationContext);
+					} catch (ReturnException e) {
+						evaluationContext.dereferenceVariable(getIteratorName());
+						throw e;
+					}
 				}
 			}
 
@@ -313,8 +328,8 @@ public interface IncrementalIterationAction extends AbstractIterationAction {
 				return new ValidationError<IncrementalIterationActionMustDefineAValidIteration, IncrementalIterationAction>(this, action,
 						"iteration_action_does_not_define_a_valid_increment");
 			}
-			if (!TypeUtils.isAssignable(action.getItemType(), action.getExclusiveEndValue().getAnalyzedType())
-					|| !TypeUtils.isAssignable(action.getItemType(), action.getIncrement().getAnalyzedType())) {
+			if (!TypeUtils.isTypeAssignableFrom(action.getItemType(), action.getExclusiveEndValue().getAnalyzedType())
+					|| !TypeUtils.isTypeAssignableFrom(action.getItemType(), action.getIncrement().getAnalyzedType())) {
 				return new ValidationError<IncrementalIterationActionMustDefineAValidIteration, IncrementalIterationAction>(this, action,
 						"types_are_incompatible");
 			}
