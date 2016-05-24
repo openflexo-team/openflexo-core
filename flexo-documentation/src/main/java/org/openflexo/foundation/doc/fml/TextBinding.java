@@ -328,7 +328,15 @@ public interface TextBinding<D extends FlexoDocument<D, TA>, TA extends Technolo
 			FlexoDocRun<D, TA> templateEndRun = getTextSelection().getEndRun();
 			FlexoDocParagraph<D, TA> templateParagraph = (FlexoDocParagraph<D, TA>) getTextSelection().getStartElement();
 
-			if (actorReference.getElementsMatchingTemplateElement(getTextSelection().getStartElement()).size() > 0) {
+			List<FlexoDocElement<?, ?>> matchingElements = actorReference
+					.getElementsMatchingTemplateElement(getTextSelection().getStartElement());
+
+			/*if (matchingElements.size() == 0) {
+				System.out.println(
+						"Bizarre ca, je n'arrive pas a trouver les elements qui correspondent a " + getTextSelection().getStartElement());
+			}*/
+
+			if (matchingElements.size() > 0) {
 
 				FlexoDocElement<?, ?> targetDocumentElement = actorReference
 						.getElementsMatchingTemplateElement(getTextSelection().getStartElement()).get(0);
