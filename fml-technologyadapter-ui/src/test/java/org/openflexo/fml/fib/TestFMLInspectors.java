@@ -71,6 +71,11 @@ public class TestFMLInspectors extends GenericFIBInspectorTestCase {
 	}
 
 	@Test
+	public void testAbstractCreateResourceInspector() {
+		validateFIB("Inspectors/FML/EditionAction/AbstractCreateResource.inspector");
+	}
+
+	@Test
 	public void testAddClassInspector() {
 		validateFIB("Inspectors/FML/EditionAction/AddClass.inspector");
 	}
