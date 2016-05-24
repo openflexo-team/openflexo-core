@@ -60,6 +60,7 @@ import org.openflexo.foundation.fml.controlgraph.ConditionalAction;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraphVisitor;
 import org.openflexo.foundation.fml.controlgraph.FetchRequestIterationAction;
+import org.openflexo.foundation.fml.controlgraph.IncrementalIterationAction;
 import org.openflexo.foundation.fml.controlgraph.IterationAction;
 import org.openflexo.foundation.fml.controlgraph.Sequence;
 import org.openflexo.foundation.fml.controlgraph.WhileAction;
@@ -98,8 +99,8 @@ import org.openflexo.toolbox.StringUtils;
 		@Import(AddSubView.class), @Import(DeclarationAction.class), @Import(AssignationAction.class), @Import(ReturnStatement.class),
 		@Import(ExpressionAction.class), @Import(SelectFlexoConceptInstance.class), @Import(MatchFlexoConceptInstance.class),
 		@Import(RemoveFromListAction.class), @Import(DeleteAction.class), @Import(ConditionalAction.class), @Import(IterationAction.class),
-		@Import(WhileAction.class), @Import(FetchRequestIterationAction.class), @Import(ExecutionAction.class),
-		@Import(DeclareFlexoRole.class) })
+		@Import(WhileAction.class), @Import(IncrementalIterationAction.class), @Import(FetchRequestIterationAction.class),
+		@Import(ExecutionAction.class), @Import(DeclareFlexoRole.class) })
 public abstract interface EditionAction extends FMLControlGraph {
 
 	@PropertyIdentifier(type = ActionContainer.class)

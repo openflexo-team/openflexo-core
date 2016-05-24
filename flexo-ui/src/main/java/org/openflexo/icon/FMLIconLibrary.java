@@ -65,6 +65,7 @@ import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.ViewPointLocalizedDictionary;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.controlgraph.ConditionalAction;
+import org.openflexo.foundation.fml.controlgraph.IncrementalIterationAction;
 import org.openflexo.foundation.fml.controlgraph.IterationAction;
 import org.openflexo.foundation.fml.controlgraph.WhileAction;
 import org.openflexo.foundation.fml.editionaction.AbstractAssignationAction;
@@ -324,6 +325,9 @@ public class FMLIconLibrary extends IconLibrary {
 				return ITERATION_ACTION_ICON;
 			}
 			else if (object instanceof WhileAction) {
+				return ITERATION_ACTION_ICON;
+			}
+			else if (object instanceof IncrementalIterationAction) {
 				return ITERATION_ACTION_ICON;
 			}
 			else if (object instanceof DeleteAction) {

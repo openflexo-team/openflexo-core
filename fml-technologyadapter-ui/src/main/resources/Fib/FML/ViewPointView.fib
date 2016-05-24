@@ -232,6 +232,22 @@
 					name="add_action_inside_iteration" />
 			</BrowserElement>
 			<BrowserElement
+				dataClassName="org.openflexo.foundation.fml.controlgraph.IncrementalIterationAction"
+				label="incrementalIterationAction.stringRepresentation" icon="controller.iconForObject(incrementalIterationAction)"
+				isEditable="false" filtered="false" defaultVisible="true"
+				name="incrementalIterationAction">
+				<Children
+					data="incrementalIterationAction.controlGraph.flattenedSequence"
+					name="children" />
+				<BrowserRemoveAction method="controller.deleteFlexoConceptObject(selected)"
+					name="delete_action" />
+				<BrowserAddAction method="controller.createEditionAction(selected)"
+					name="add_action" />
+				<BrowserAddAction
+					method="controller.createEditionActionInIncrementalIterationAction(selected)"
+					name="add_action_inside_iteration" />
+			</BrowserElement>
+			<BrowserElement
 				dataClassName="org.openflexo.foundation.fml.controlgraph.ConditionalAction"
 				label="conditionalAction.stringRepresentation" icon="controller.iconForObject(conditionalAction)"
 				isEditable="false" filtered="false" defaultVisible="true"

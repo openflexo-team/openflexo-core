@@ -41,6 +41,7 @@ package org.openflexo.foundation.fml.binding;
 import java.beans.PropertyChangeEvent;
 
 import org.openflexo.connie.BindingModel;
+import org.openflexo.foundation.fml.controlgraph.AbstractIterationAction;
 import org.openflexo.foundation.fml.controlgraph.IterationAction;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
 
@@ -55,7 +56,7 @@ public class IterationActionBindingModel extends EditionActionBindingModel {
 
 	private final IterationActionBindingVariable iteratorBindingVariable;
 
-	public IterationActionBindingModel(IterationAction editionAction) {
+	public IterationActionBindingModel(AbstractIterationAction editionAction) {
 		super(editionAction);
 		iteratorBindingVariable = new IterationActionBindingVariable(editionAction);
 		addToBindingVariables(iteratorBindingVariable);

@@ -59,6 +59,7 @@ import org.openflexo.foundation.fml.controlgraph.ConditionalAction;
 import org.openflexo.foundation.fml.controlgraph.EmptyControlGraph;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
 import org.openflexo.foundation.fml.controlgraph.FetchRequestIterationAction;
+import org.openflexo.foundation.fml.controlgraph.IncrementalIterationAction;
 import org.openflexo.foundation.fml.controlgraph.IterationAction;
 import org.openflexo.foundation.fml.controlgraph.Sequence;
 import org.openflexo.foundation.fml.controlgraph.WhileAction;
@@ -585,6 +586,12 @@ public class FMLModelFactory extends FGEModelFactoryImpl implements PamelaResour
 
 	public WhileAction newWhileAction() {
 		WhileAction returned = newInstance(WhileAction.class);
+		returned.setControlGraph(newEmptyControlGraph());
+		return returned;
+	}
+
+	public IncrementalIterationAction newIncrementalIterationAction() {
+		IncrementalIterationAction returned = newInstance(IncrementalIterationAction.class);
 		returned.setControlGraph(newEmptyControlGraph());
 		return returned;
 	}

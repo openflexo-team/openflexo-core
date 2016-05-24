@@ -53,7 +53,8 @@ import org.openflexo.model.annotations.ModelEntity;
 
 @ModelEntity(isAbstract = true)
 @ImplementationClass(ControlStructureAction.ControlStructureActionImpl.class)
-@Imports({ @Import(ConditionalAction.class), @Import(IterationAction.class), @Import(WhileAction.class) })
+@Imports({ @Import(ConditionalAction.class), @Import(IterationAction.class), @Import(WhileAction.class),
+		@Import(IncrementalIterationAction.class) })
 public abstract interface ControlStructureAction extends EditionAction, FMLControlGraph, ActionContainer {
 
 	public static abstract class ControlStructureActionImpl extends EditionActionImpl implements ControlStructureAction {
