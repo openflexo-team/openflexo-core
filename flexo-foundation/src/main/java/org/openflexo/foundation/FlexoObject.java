@@ -213,9 +213,9 @@ public abstract interface FlexoObject extends AccessibleProxyObject, DeletablePr
 	// flexoConceptReferences);
 
 	/*public void addToFlexoConceptReferences(final FlexoObjectReference<FlexoConceptInstance> ref);
-	
+
 	public void removeFromFlexoConceptReferences(FlexoObjectReference<FlexoConceptInstance> ref);
-	*/
+	 */
 
 	/**
 	 * Return the {@link FlexoConceptInstance}
@@ -336,9 +336,13 @@ public abstract interface FlexoObject extends AccessibleProxyObject, DeletablePr
 		@Override
 		public FlexoServiceManager getServiceManager() {
 			if (this instanceof InnerResourceData) {
-				FlexoResource resource = ((InnerResourceData) this).getResourceData().getResource();
-				if (resource != null) {
-					return resource.getServiceManager();
+				ResourceData resdata = ((InnerResourceData) this).getResourceData();
+				// avoid NPE when deleting object
+				if (resdata != null){
+					FlexoResource resource = resdata.getResource();
+					if (resource != null) {
+						return resource.getServiceManager();
+					}
 				}
 			}
 			return null;
@@ -467,9 +471,9 @@ public abstract interface FlexoObject extends AccessibleProxyObject, DeletablePr
 
 		/*@Override
 		public void registerFlexoConceptReference(FlexoConceptInstance flexoConceptInstance) {
-		
+
 			FlexoObjectReference<FlexoConceptInstance> existingReference = getFlexoConceptReference(flexoConceptInstance);
-		
+
 			if (existingReference == null) {
 				addToFlexoConceptReferences(new FlexoObjectReference<FlexoConceptInstance>(flexoConceptInstance));
 			}
