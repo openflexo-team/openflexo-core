@@ -103,7 +103,8 @@ public abstract class FlexoServiceManager {
 			notify(service, new ServiceRegistered());
 
 			service.initialize();
-		} else {
+		}
+		else {
 			logger.warning("Trying to register null FlexoService");
 		}
 	}
@@ -215,9 +216,9 @@ public abstract class FlexoServiceManager {
 		return getService(FlexoProjectReferenceLoader.class);
 	}
 
-	/*public XMLSerializationService getXMLSerializationService() {
-		return getService(XMLSerializationService.class);
-	}*/
+	public ProjectLoader getProjectLoaderService() {
+		return getService(ProjectLoader.class);
+	}
 
 	public ResourceManager getResourceManager() {
 		return getService(ResourceManager.class);
@@ -289,5 +290,7 @@ public abstract class FlexoServiceManager {
 	protected abstract FlexoTaskManager createTaskManager();
 
 	protected abstract ScreenshotService createScreenshotService();
+
+	protected abstract ProjectLoader createProjectLoaderService();
 
 }

@@ -56,7 +56,7 @@ import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.module.FlexoModule;
 import org.openflexo.module.ModuleLoader;
-import org.openflexo.project.ProjectLoader;
+import org.openflexo.project.InteractiveProjectLoader;
 import org.openflexo.swing.layout.MultiSplitLayout.Node;
 import org.openflexo.swing.layout.MultiSplitLayoutTypeAdapterFactory;
 import org.openflexo.toolbox.ExtendedSet;
@@ -137,8 +137,8 @@ public class ControllerModel extends ControllerModelObject implements PropertyCh
 			leftViewVisible = context.getGeneralPreferences().getShowLeftView(module.getShortName());
 			rightViewVisible = context.getGeneralPreferences().getShowRightView(module.getShortName());
 		}
-		registrationManager.new PropertyChangeListenerRegistration(ProjectLoader.PROJECT_OPENED, this, context.getProjectLoader());
-		registrationManager.new PropertyChangeListenerRegistration(ProjectLoader.PROJECT_CLOSED, this, context.getProjectLoader());
+		registrationManager.new PropertyChangeListenerRegistration(InteractiveProjectLoader.PROJECT_OPENED, this, context.getProjectLoader());
+		registrationManager.new PropertyChangeListenerRegistration(InteractiveProjectLoader.PROJECT_CLOSED, this, context.getProjectLoader());
 		objects = new ArrayList<FlexoObject>();
 		locations = new ExtendedSet<Location>();
 		perspectives = new Vector<FlexoPerspective>();
@@ -150,7 +150,7 @@ public class ControllerModel extends ControllerModelObject implements PropertyCh
 		return context.getModuleLoader();
 	}
 
-	public ProjectLoader getProjectLoader() {
+	public InteractiveProjectLoader getProjectLoader() {
 		return context.getProjectLoader();
 	}
 
@@ -493,7 +493,7 @@ public class ControllerModel extends ControllerModelObject implements PropertyCh
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		if (evt.getSource() == getProjectLoader()) {
-			if (evt.getPropertyName().equals(ProjectLoader.PROJECT_OPENED)) {
+			if (evt.getPropertyName().equals(InteractiveProjectLoader.PROJECT_OPENED)) {
 				FlexoProject project = (FlexoProject) evt.getNewValue();
 				if (getCurrentPerspective() != null) {
 					FlexoObject object = getCurrentPerspective().getDefaultObject(project);
@@ -503,7 +503,7 @@ public class ControllerModel extends ControllerModelObject implements PropertyCh
 					setCurrentProject(project);
 				}
 			}
-			else if (evt.getPropertyName().equals(ProjectLoader.PROJECT_CLOSED)) {
+			else if (evt.getPropertyName().equals(InteractiveProjectLoader.PROJECT_CLOSED)) {
 				handleProjectRemoval((FlexoProject) evt.getOldValue());
 				setCurrentProject(null);
 			}

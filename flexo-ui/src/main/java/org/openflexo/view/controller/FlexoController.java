@@ -175,7 +175,7 @@ import org.openflexo.module.FlexoModule;
 import org.openflexo.module.ModuleLoader;
 import org.openflexo.prefs.ApplicationFIBLibraryService;
 import org.openflexo.prefs.FlexoPreferences;
-import org.openflexo.project.ProjectLoader;
+import org.openflexo.project.InteractiveProjectLoader;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.selection.MouseSelectionManager;
@@ -511,7 +511,7 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 		return null;
 	}
 
-	public final ProjectLoader getProjectLoader() {
+	public final InteractiveProjectLoader getProjectLoader() {
 		return getApplicationContext().getProjectLoader();
 	}
 

@@ -67,7 +67,7 @@ import org.openflexo.view.FlexoDialog;
 import org.openflexo.view.FlexoFrame;
 
 /**
- * AutoSave service working with the {@link ProjectLoader}<br>
+ * AutoSave service working with the {@link InteractiveProjectLoader}<br>
  * 
  * Perform automatic save for projects
  * 
@@ -82,9 +82,9 @@ public class AutoSaveService implements PropertyChangeListener {
 
 	private final FlexoProject project;
 
-	private final ProjectLoader projectLoader;
+	private final InteractiveProjectLoader projectLoader;
 
-	public AutoSaveService(ProjectLoader projectLoader, FlexoProject project) {
+	public AutoSaveService(InteractiveProjectLoader projectLoader, FlexoProject project) {
 		super();
 		this.projectLoader = projectLoader;
 		this.project = project;

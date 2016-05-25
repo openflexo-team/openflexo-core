@@ -43,7 +43,7 @@ import java.io.File;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoProject;
-import org.openflexo.project.ProjectLoader;
+import org.openflexo.project.InteractiveProjectLoader;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.rm.Resource;
 
@@ -60,7 +60,7 @@ public class FIBProjectSelector extends FIBFlexoObjectSelector<FlexoProject> {
 
 	public static Resource FIB_FILE_NAME = ResourceLocator.locateResource("Fib/ProjectSelector.fib");
 
-	private ProjectLoader projectLoader;
+	private InteractiveProjectLoader projectLoader;
 
 	public FIBProjectSelector(FlexoProject editedObject) {
 		super(editedObject);
@@ -85,12 +85,12 @@ public class FIBProjectSelector extends FIBFlexoObjectSelector<FlexoProject> {
 		return "";
 	}
 
-	public ProjectLoader getProjectLoader() {
+	public InteractiveProjectLoader getProjectLoader() {
 		return projectLoader;
 	}
 
-	public void setProjectLoader(ProjectLoader projectLoader) {
-		ProjectLoader old = this.projectLoader;
+	public void setProjectLoader(InteractiveProjectLoader projectLoader) {
+		InteractiveProjectLoader old = this.projectLoader;
 		this.projectLoader = projectLoader;
 		getPropertyChangeSupport().firePropertyChange("projectLoader", old, projectLoader);
 	}

@@ -62,11 +62,10 @@ import org.openflexo.foundation.resource.JarResourceCenter;
 import org.openflexo.foundation.task.FlexoTaskManager;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.utils.ProjectLoadingHandler;
-import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.module.ModuleLoader;
 import org.openflexo.prefs.ApplicationFIBLibraryService;
 import org.openflexo.prefs.PreferencesService;
-import org.openflexo.project.ProjectLoader;
+import org.openflexo.project.InteractiveProjectLoader;
 import org.openflexo.rm.ActivateTechnologyAdapterTask;
 import org.openflexo.rm.AddResourceCenterTask;
 import org.openflexo.rm.DisactivateTechnologyAdapterTask;
@@ -105,13 +104,6 @@ public abstract class ApplicationContext extends DefaultFlexoServiceManager impl
 		registerPreferencesService();
 
 		applicationEditor = createApplicationEditor();
-		try {
-			ProjectLoader projectLoader = new ProjectLoader();
-			registerService(projectLoader);
-		} catch (ModelDefinitionException e) {
-			e.printStackTrace();
-			throw new RuntimeException(e);
-		}
 
 		TechnologyAdapterControllerService technologyAdapterControllerService = createTechnologyAdapterControllerService();
 		registerService(technologyAdapterControllerService);
@@ -171,8 +163,8 @@ public abstract class ApplicationContext extends DefaultFlexoServiceManager impl
 		return getService(DocResourceManager.class);
 	}
 
-	public ProjectLoader getProjectLoader() {
-		return getService(ProjectLoader.class);
+	public InteractiveProjectLoader getProjectLoader() {
+		return getService(InteractiveProjectLoader.class);
 	}
 
 	public FlexoServerInstanceManager getFlexoServerInstanceManager() {
@@ -250,12 +242,14 @@ public abstract class ApplicationContext extends DefaultFlexoServiceManager impl
 			for (FlexoResourceCenter<?> rc : ((FlexoResourceCenterService) caller).getResourceCenters()) {
 				if (rc instanceof DirectoryResourceCenter) {
 					rcList.add(((DirectoryResourceCenter) rc).getDirectory());
-				} else if (rc instanceof JarResourceCenter) {
+				}
+				else if (rc instanceof JarResourceCenter) {
 					rcList.add(new File(((JarResourceCenter) rc).getJarResourceImpl().getRelativePath()));
 				}
 			}
 			getGeneralPreferences().setDirectoryResourceCenterList(rcList);
-		} else if (notification instanceof DefaultPackageResourceCenterIsNotInstalled && caller instanceof FlexoResourceCenterService) {
+		}
+		else if (notification instanceof DefaultPackageResourceCenterIsNotInstalled && caller instanceof FlexoResourceCenterService) {
 			defaultPackagedResourceCenterIsNotInstalled = true;
 		}
 	}

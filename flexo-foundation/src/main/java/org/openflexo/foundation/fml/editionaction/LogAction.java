@@ -49,6 +49,7 @@ import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
+import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext.LogLevel;
 import org.openflexo.model.annotations.DefineValidationRule;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -70,6 +71,8 @@ public interface LogAction extends EditionAction {
 
 	@PropertyIdentifier(type = DataBinding.class)
 	public static final String LOG_STRING_KEY = "logString";
+	@PropertyIdentifier(type = LogLevel.class)
+	public static final String LOG_LEVEL_KEY = "logLevel";
 
 	@Getter(value = LOG_STRING_KEY)
 	@XMLAttribute
@@ -78,11 +81,19 @@ public interface LogAction extends EditionAction {
 	@Setter(LOG_STRING_KEY)
 	public void setLogString(DataBinding<String> object);
 
+	@Getter(value = LOG_LEVEL_KEY)
+	@XMLAttribute
+	public LogLevel getLogLevel();
+
+	@Setter(LOG_LEVEL_KEY)
+	public void setLogLevel(LogLevel logLevel);
+
 	public static abstract class LogActionImpl extends EditionActionImpl implements LogAction {
 
 		private static final Logger logger = Logger.getLogger(LogAction.class.getPackage().getName());
 
 		private DataBinding<String> logString;
+		private LogLevel logLevel;
 
 		@Override
 		public String getStringRepresentation() {
@@ -117,6 +128,15 @@ public interface LogAction extends EditionAction {
 		}
 
 		@Override
+		public LogLevel getLogLevel() {
+			LogLevel returned = (LogLevel) performSuperGetter(LOG_LEVEL_KEY);
+			if (returned == null) {
+				return LogLevel.INFO;
+			}
+			return returned;
+		}
+
+		@Override
 		public Object execute(RunTimeEvaluationContext evaluationContext) {
 			String logString = null;
 			try {
@@ -129,7 +149,7 @@ public interface LogAction extends EditionAction {
 				e1.printStackTrace();
 			}
 
-			evaluationContext.log(logString);
+			evaluationContext.log(logString, getLogLevel());
 
 			return null;
 		}

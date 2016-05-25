@@ -64,14 +64,14 @@ import org.openflexo.view.controller.FlexoController;
  */
 public class LoadProjectTask extends FlexoApplicationTask {
 
-	private static final Logger logger = Logger.getLogger(ProjectLoader.class.getPackage().getName());
+	private static final Logger logger = Logger.getLogger(InteractiveProjectLoader.class.getPackage().getName());
 
-	private final ProjectLoader projectLoader;
+	private final InteractiveProjectLoader projectLoader;
 	private final File projectDirectory;
 	private FlexoEditor flexoEditor;
 	private final boolean asImportedProject;
 
-	public LoadProjectTask(ProjectLoader projectLoader, File projectDirectory, boolean asImportedProject) {
+	public LoadProjectTask(InteractiveProjectLoader projectLoader, File projectDirectory, boolean asImportedProject) {
 		super(FlexoLocalization.localizedForKey("loading_project") + " " + projectDirectory.getName(), projectLoader.getServiceManager());
 		this.projectLoader = projectLoader;
 		this.projectDirectory = projectDirectory;
@@ -105,7 +105,7 @@ public class LoadProjectTask extends FlexoApplicationTask {
 			Progress.progress(FlexoLocalization.localizedForKey("preinitialize_project") + projectDirectory.getAbsolutePath());
 			projectLoader.preInitialization(projectDirectory);
 		}
-		for (Entry<FlexoProject, FlexoEditor> e : projectLoader.editors.entrySet()) {
+		for (Entry<FlexoProject, FlexoEditor> e : projectLoader.getEditors().entrySet()) {
 			if (e.getKey().getProjectDirectory().equals(projectDirectory)) {
 				editor = e.getValue();
 			}

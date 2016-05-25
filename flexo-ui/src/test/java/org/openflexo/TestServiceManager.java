@@ -51,7 +51,7 @@ import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.module.ModuleLoader;
-import org.openflexo.project.ProjectLoader;
+import org.openflexo.project.InteractiveProjectLoader;
 import org.openflexo.test.OrderedRunner;
 import org.openflexo.test.TestOrder;
 import org.openflexo.view.controller.TechnologyAdapterControllerService;
@@ -79,7 +79,7 @@ public class TestServiceManager extends OpenflexoTestCase {
 		logger.info("services: "
 				+ testApplicationContext.getRegisteredServices());
 
-		assertNotNull(testApplicationContext.getService(ProjectLoader.class));
+		assertNotNull(testApplicationContext.getService(InteractiveProjectLoader.class));
 		assertNotNull(testApplicationContext.getService(ModuleLoader.class));
 		assertNotNull(testApplicationContext
 				.getService(FlexoResourceCenterService.class));

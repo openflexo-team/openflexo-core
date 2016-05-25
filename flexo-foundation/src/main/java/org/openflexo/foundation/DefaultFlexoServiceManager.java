@@ -100,6 +100,9 @@ public class DefaultFlexoServiceManager extends FlexoServiceManager {
 		ScreenshotService screenshotService = createScreenshotService();
 		registerService(screenshotService);
 
+		ProjectLoader projectLoaderService = createProjectLoaderService();
+		registerService(projectLoaderService);
+
 	}
 
 	@Override
@@ -140,6 +143,11 @@ public class DefaultFlexoServiceManager extends FlexoServiceManager {
 	@Override
 	protected ScreenshotService createScreenshotService() {
 		return DefaultScreenshotService.createInstance();
+	}
+
+	@Override
+	protected ProjectLoader createProjectLoaderService() {
+		return new ProjectLoader();
 	}
 
 	@Override

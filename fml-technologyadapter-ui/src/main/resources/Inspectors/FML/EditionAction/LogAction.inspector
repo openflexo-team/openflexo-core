@@ -18,6 +18,14 @@
 				visible="">
 				<Assignment variable="component.bindable" value="data" />
 			</Custom>
+			<Label label="log_level" index="4" data=""
+				constraints="twocols(expandHorizontally=true;expandVertically=false;index=2;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)"
+				localize="true" />
+			<DropDown index="5" data="data.logLevel"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;index=3;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
+				format="object.name"
+				autoSelectFirstRow="true">
+			</DropDown>
 
 		</Tab>
 	</TabPanel>
