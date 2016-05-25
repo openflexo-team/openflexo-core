@@ -48,22 +48,72 @@ import javax.swing.KeyStroke;
 import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.action.FlexoUndoManager;
+import org.openflexo.foundation.fml.rt.FMLConsole;
 import org.openflexo.foundation.resource.ResourceUpdateHandler;
 import org.openflexo.foundation.utils.FlexoProgressFactory;
 
+/**
+ * A {@link FlexoEditor} represents the run-time environment where a user is interacting with a {@link FlexoProject}<br>
+ * 
+ * A {@link FlexoEditor} provides access to:
+ * <ul>
+ * <li>the {@link FlexoServiceManager}</li>
+ * <li>a {@link FlexoUndoManager}</li>
+ * <li>a {@link FMLConsole}</li>
+ * </ul>
+ * 
+ * A {@link FlexoEditor} defines execution context for {@link FlexoAction} beeing executed on a {@link FlexoProject}.
+ * 
+ * @author sylvain
+ *
+ */
 public interface FlexoEditor {
 
+	/**
+	 * API for {@link FlexoEditor} factory
+	 * 
+	 * @author sylvain
+	 *
+	 */
 	public static interface FlexoEditorFactory {
 		public FlexoEditor makeFlexoEditor(FlexoProject project, FlexoServiceManager serviceManager);
 	}
 
+	/**
+	 * Return project beeing edited/executed
+	 * 
+	 * @return
+	 */
 	public FlexoProject getProject();
 
+	/**
+	 * Return {@link FlexoServiceManager} provided by the running application
+	 * 
+	 * @return
+	 */
 	public FlexoServiceManager getServiceManager();
 
+	/**
+	 * Return progress factory for this {@link FlexoEditor}<br>
+	 * (deprecated)
+	 * 
+	 * @return
+	 */
 	public FlexoProgressFactory getFlexoProgressFactory();
 
+	/**
+	 * Return {@link ResourceUpdateHandler} for this {@link FlexoEditor}<br>
+	 * 
+	 * @return
+	 */
 	public ResourceUpdateHandler getResourceUpdateHandler();
+
+	/**
+	 * Return {@link FMLConsole} for this {@link FlexoEditor}<br>
+	 * 
+	 * @return
+	 */
+	public FMLConsole getFMLConsole();
 
 	public boolean isInteractive();
 
