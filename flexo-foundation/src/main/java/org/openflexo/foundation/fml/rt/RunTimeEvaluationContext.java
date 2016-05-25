@@ -41,6 +41,7 @@ package org.openflexo.foundation.fml.rt;
 
 import org.openflexo.connie.BindingVariable;
 import org.openflexo.connie.binding.SettableBindingEvaluationContext;
+import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 
 /**
@@ -82,6 +83,25 @@ public interface RunTimeEvaluationContext extends SettableBindingEvaluationConte
 	 * @param variableName
 	 */
 	public void dereferenceVariable(String variableName);
+
+	/**
+	 * Send supplied logString to debug console
+	 * 
+	 * @param aLogString
+	 */
+	public void debug(String aLogString, FlexoConceptInstance fci, FlexoBehaviour behaviour);
+
+	/**
+	 * Send supplied logString to log console, with supplied log level
+	 * 
+	 * @param aLogString
+	 * @param logLevel
+	 */
+	public void log(String aLogString, LogLevel logLevel, FlexoConceptInstance fci, FlexoBehaviour behaviour);
+
+	public static enum LogLevel {
+		SEVERE, WARNING, INFO, FINE, FINER, FINEST, DEBUG
+	}
 
 	@SuppressWarnings("serial")
 	public class ReturnException extends Exception {

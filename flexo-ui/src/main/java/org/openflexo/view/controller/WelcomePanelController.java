@@ -56,7 +56,7 @@ import org.openflexo.module.Module;
 import org.openflexo.module.ModuleLoader;
 import org.openflexo.module.ModuleLoadingException;
 import org.openflexo.module.NatureSpecificModule;
-import org.openflexo.project.ProjectLoader;
+import org.openflexo.project.InteractiveProjectLoader;
 
 public class WelcomePanelController extends FlexoFIBController {
 
@@ -73,7 +73,7 @@ public class WelcomePanelController extends FlexoFIBController {
 		return getDataObject().getApplicationContext().getModuleLoader();
 	}
 
-	private ProjectLoader getProjectLoader() {
+	private InteractiveProjectLoader getProjectLoader() {
 		return getDataObject().getApplicationContext().getProjectLoader();
 	}
 

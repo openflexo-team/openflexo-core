@@ -59,8 +59,10 @@ import org.openflexo.foundation.fml.controlgraph.ConditionalAction;
 import org.openflexo.foundation.fml.controlgraph.EmptyControlGraph;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
 import org.openflexo.foundation.fml.controlgraph.FetchRequestIterationAction;
+import org.openflexo.foundation.fml.controlgraph.IncrementalIterationAction;
 import org.openflexo.foundation.fml.controlgraph.IterationAction;
 import org.openflexo.foundation.fml.controlgraph.Sequence;
+import org.openflexo.foundation.fml.controlgraph.WhileAction;
 import org.openflexo.foundation.fml.editionaction.AddToListAction;
 import org.openflexo.foundation.fml.editionaction.AssignableAction;
 import org.openflexo.foundation.fml.editionaction.AssignationAction;
@@ -72,6 +74,7 @@ import org.openflexo.foundation.fml.editionaction.ExecutionAction;
 import org.openflexo.foundation.fml.editionaction.ExpressionAction;
 import org.openflexo.foundation.fml.editionaction.FetchRequest;
 import org.openflexo.foundation.fml.editionaction.FetchRequestCondition;
+import org.openflexo.foundation.fml.editionaction.LogAction;
 import org.openflexo.foundation.fml.editionaction.RemoveFromListAction;
 import org.openflexo.foundation.fml.editionaction.ReturnStatement;
 import org.openflexo.foundation.fml.inspector.CheckboxInspectorEntry;
@@ -560,6 +563,10 @@ public class FMLModelFactory extends FGEModelFactoryImpl implements PamelaResour
 		return returned;
 	}
 
+	public LogAction newLogAction() {
+		return newInstance(LogAction.class);
+	}
+
 	public <T> ExpressionAction<T> newExpressionAction() {
 		return newInstance(ExpressionAction.class);
 	}
@@ -578,6 +585,18 @@ public class FMLModelFactory extends FGEModelFactoryImpl implements PamelaResour
 
 	public IterationAction newIterationAction() {
 		IterationAction returned = newInstance(IterationAction.class);
+		returned.setControlGraph(newEmptyControlGraph());
+		return returned;
+	}
+
+	public WhileAction newWhileAction() {
+		WhileAction returned = newInstance(WhileAction.class);
+		returned.setControlGraph(newEmptyControlGraph());
+		return returned;
+	}
+
+	public IncrementalIterationAction newIncrementalIterationAction() {
+		IncrementalIterationAction returned = newInstance(IncrementalIterationAction.class);
 		returned.setControlGraph(newEmptyControlGraph());
 		return returned;
 	}

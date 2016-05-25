@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Panel className="org.openflexo.gina.utils.FIBInspector" layout="border"
+	titleFont="SansSerif,0,12" darkLevel="0"
+	dataClassName="org.openflexo.foundation.fml.controlgraph.WhileAction"
+	controllerClassName="org.openflexo.fml.controller.FMLFIBInspectorController"
+	font="SansSerif,0,12" name="Inspector">
+	<TabPanel name="Tab" constraints="border(location=center)">
+		<Tab title="Basic" layout="twocols" titleFont="SansSerif,0,11"
+			darkLevel="0" index="0" font="SansSerif,0,11" useScrollBar="true"
+			horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED"
+			verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED" name="BasicTab">
+			<Label label="condition" index="2" data=""
+				constraints="twocols(expandHorizontally=true;expandVertically=false;index=2;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)"
+				localize="true"/>
+			<Custom componentClassName="org.openflexo.gina.swing.utils.BindingSelector"
+				manageDynamicModel="true" name="ConditionActionConditionalCC"
+				index="3" data="data.condition"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;index=3;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)">
+				<Assignment variable="component.bindable" value="data" />
+			</Custom>
+			<Label label="evaluate_after" index="4"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;index=2;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)"
+				localize="true" />
+			<CheckBox selected="true" index="5" data="data.evaluateConditionAfterCycle"
+				constraints="twocols(expandHorizontally=false;expandVertically=false;index=3;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
+				name="EvaluateConditionAfterCycleCB" localize="true" />
+
+		</Tab>
+	</TabPanel>
+	<LocalizedDictionary>
+		<Localized key="Advanced" lang="French" value="Avancé" />
+		<Localized key="Basic" lang="French" value="Basique" />
+	</LocalizedDictionary>
+	<Parameter name="title" value="Edition action" />
+</Panel>

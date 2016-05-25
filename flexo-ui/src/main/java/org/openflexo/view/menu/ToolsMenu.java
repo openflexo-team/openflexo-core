@@ -69,6 +69,7 @@ import org.openflexo.logging.FlexoLogger;
 import org.openflexo.logging.FlexoLoggingManager;
 import org.openflexo.market.FlexoMarketEditorDialog;
 import org.openflexo.project.AutoSaveService;
+import org.openflexo.view.FMLConsoleViewer;
 import org.openflexo.view.controller.FlexoController;
 import org.openflexo.view.controller.model.ControllerModel;
 
@@ -88,6 +89,7 @@ public class ToolsMenu extends FlexoMenu {
 
 	public JMenuItem manageResourceCenterItem;
 
+	public JMenuItem fmlConsoleItem;
 	public JMenuItem loggingItem;
 
 	public JMenuItem undoManagerItem;
@@ -110,6 +112,7 @@ public class ToolsMenu extends FlexoMenu {
 		super("tools", controller);
 		addSpecificItems();
 		add(manageResourceCenterItem = new ManageResourceCenterItem());
+		add(fmlConsoleItem = new FMLConsoleItem());
 		add(loggingItem = new LoggingItem());
 		if (Flexo.isDev) {
 			add(localizedEditorItem = new LocalizedEditorItem());
@@ -162,6 +165,30 @@ public class ToolsMenu extends FlexoMenu {
 		}
 	}
 
+	// ===================================================================
+	// ========================== FML Console ============================
+	// ===================================================================
+
+	public class FMLConsoleItem extends FlexoMenuItem {
+
+		public FMLConsoleItem() {
+			super(new FMLConsoleAction(), "fml_console", KeyStroke.getKeyStroke(KeyEvent.VK_L, FlexoCst.META_MASK), getController(), true);
+		}
+
+	}
+
+	public class FMLConsoleAction extends AbstractAction {
+		public FMLConsoleAction() {
+			super();
+		}
+
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			FMLConsoleViewer.showConsoleViewer(getController().getEditor().getFMLConsole(),
+					getController().getApplicationFIBLibraryService().getApplicationFIBLibrary(), getController().getFlexoFrame());
+		}
+	}
+
 	// ===============================================================
 	// ========================== Logging ============================
 	// ===============================================================
@@ -169,7 +196,7 @@ public class ToolsMenu extends FlexoMenu {
 	public class LoggingItem extends FlexoMenuItem {
 
 		public LoggingItem() {
-			super(new LoggingAction(), "show_logging", KeyStroke.getKeyStroke(KeyEvent.VK_L, FlexoCst.META_MASK), getController(), true);
+			super(new LoggingAction(), "show_application_logging", null, getController(), true);
 		}
 
 	}

@@ -65,11 +65,14 @@ import org.openflexo.foundation.fml.ListParameter;
 import org.openflexo.foundation.fml.TextAreaParameter;
 import org.openflexo.foundation.fml.TextFieldParameter;
 import org.openflexo.foundation.fml.controlgraph.ConditionalAction;
+import org.openflexo.foundation.fml.controlgraph.IncrementalIterationAction;
 import org.openflexo.foundation.fml.controlgraph.IterationAction;
+import org.openflexo.foundation.fml.controlgraph.WhileAction;
 import org.openflexo.foundation.fml.editionaction.AddToListAction;
 import org.openflexo.foundation.fml.editionaction.DeleteAction;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.fml.editionaction.ExpressionAction;
+import org.openflexo.foundation.fml.editionaction.LogAction;
 import org.openflexo.foundation.fml.editionaction.RemoveFromListAction;
 import org.openflexo.foundation.fml.inspector.CheckboxInspectorEntry;
 import org.openflexo.foundation.fml.inspector.InspectorEntry;
@@ -363,8 +366,17 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 		else if (IterationAction.class.isAssignableFrom(editionActionClass)) {
 			return FMLIconLibrary.ITERATION_ACTION_ICON;
 		}
+		else if (WhileAction.class.isAssignableFrom(editionActionClass)) {
+			return FMLIconLibrary.ITERATION_ACTION_ICON;
+		}
+		else if (IncrementalIterationAction.class.isAssignableFrom(editionActionClass)) {
+			return FMLIconLibrary.ITERATION_ACTION_ICON;
+		}
 		else if (ExpressionAction.class.isAssignableFrom(editionActionClass)) {
 			return FMLIconLibrary.EXPRESSION_ACTION_ICON;
+		}
+		else if (LogAction.class.isAssignableFrom(editionActionClass)) {
+			return FMLIconLibrary.LOG_ACTION_ICON;
 		}
 		return null;
 

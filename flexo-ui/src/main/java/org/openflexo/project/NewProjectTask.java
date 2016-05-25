@@ -62,16 +62,16 @@ public class NewProjectTask extends FlexoApplicationTask {
 	/**
 	 * 
 	 */
-	private final ProjectLoader projectLoader;
+	private final InteractiveProjectLoader projectLoader;
 	private final File projectDirectory;
 	private final ProjectNature<?, ?> projectNature;
 	private FlexoEditor flexoEditor;
 
-	public NewProjectTask(ProjectLoader projectLoader, File projectDirectory) {
+	public NewProjectTask(InteractiveProjectLoader projectLoader, File projectDirectory) {
 		this(projectLoader, projectDirectory, null);
 	}
 
-	public NewProjectTask(ProjectLoader projectLoader, File projectDirectory, ProjectNature<?, ?> projectNature) {
+	public NewProjectTask(InteractiveProjectLoader projectLoader, File projectDirectory, ProjectNature<?, ?> projectNature) {
 		super(FlexoLocalization.localizedForKey("new_project") + " " + projectDirectory.getName(), projectLoader.getServiceManager());
 		this.projectLoader = projectLoader;
 		this.projectDirectory = projectDirectory;

@@ -1,8 +1,9 @@
 /**
  * 
- * Copyright (c) 2014-2015, Openflexo
+ * Copyright (c) 2013-2014, Openflexo
+ * Copyright (c) 2011-2012, AgileBirds
  * 
- * This file is part of Flexo-foundation, a component of the software infrastructure 
+ * This file is part of Flexoutils, a component of the software infrastructure 
  * developed at Openflexo.
  * 
  * 
@@ -36,51 +37,46 @@
  * 
  */
 
-package org.openflexo.foundation.fml.binding;
+package org.openflexo.foundation.fml.rt.logging;
 
-import java.beans.PropertyChangeEvent;
-
-import org.openflexo.connie.BindingModel;
-import org.openflexo.foundation.fml.controlgraph.AbstractIterationAction;
-import org.openflexo.foundation.fml.controlgraph.IterationAction;
-import org.openflexo.foundation.fml.editionaction.EditionAction;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
- * This is the {@link BindingModel} exposed by a {@link EditionAction}<br>
- * This {@link BindingModel} is based on ActionContainer's {@link BindingModel}
+ * Utility class used to format logs of Flexo
  * 
- * @author sylvain
- * 
+ * @author sguerin
  */
-public class IterationActionBindingModel extends EditionActionBindingModel {
+public class FMLLoggingFormatter {
 
-	private final IterationActionBindingVariable iteratorBindingVariable;
+	private final DateFormat dateFormat = new SimpleDateFormat("dd/MM/yy HH:mm:ss,SSS");
 
-	public IterationActionBindingModel(AbstractIterationAction editionAction) {
-		super(editionAction);
-		iteratorBindingVariable = new IterationActionBindingVariable(editionAction);
-		addToBindingVariables(iteratorBindingVariable);
+	public static boolean logDate = true;
+
+	public String format(FMLLogRecord log) {
+		StringBuffer sb = new StringBuffer();
+		sb.append(formatString(logDate ? 30 : 10, log.level.toString() + (logDate ? " " + dateFormat.format(new Date(log.millis)) : "")));
+		sb.append(formatString(100, log.message));
+		sb.append(formatString(50, "[" + log.flexoConceptInstance + "." + log.behaviour.getName() + "]"));
+		return sb.toString();
 	}
 
-	/**
-	 * Delete this {@link BindingModel}
-	 */
-	@Override
-	public void delete() {
-		super.delete();
+	public static String formatString(int cols, String aString) {
+		char[] blank;
+		if (aString == null) {
+			aString = "null";
+		}
+		if (cols > aString.length()) {
+			blank = new char[cols - aString.length()];
+			for (int i = 0; i < cols - aString.length(); i++) {
+				blank[i] = ' ';
+			}
+			return aString + new String(blank);
+		}
+		else {
+			return aString;
+		}
 	}
 
-	@Override
-	public void propertyChange(PropertyChangeEvent evt) {
-		super.propertyChange(evt);
-	}
-
-	@Override
-	public IterationAction getEditionAction() {
-		return (IterationAction) super.getEditionAction();
-	}
-
-	public IterationActionBindingVariable getIteratorBindingVariable() {
-		return iteratorBindingVariable;
-	}
 }

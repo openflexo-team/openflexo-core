@@ -59,7 +59,7 @@ import org.openflexo.foundation.resource.ResourceSaved;
 import org.openflexo.foundation.resource.ResourceUnregistered;
 import org.openflexo.foundation.utils.OperationCancelledException;
 import org.openflexo.prefs.ModulePreferences;
-import org.openflexo.project.ProjectLoader;
+import org.openflexo.project.InteractiveProjectLoader;
 import org.openflexo.view.FlexoFrame;
 import org.openflexo.view.controller.FlexoController;
 
@@ -102,7 +102,7 @@ public abstract class FlexoModule<M extends FlexoModule<M>> implements DataFlexo
 		return getApplicationContext().getModuleLoader();
 	}
 
-	private ProjectLoader getProjectLoader() {
+	private InteractiveProjectLoader getProjectLoader() {
 		return getApplicationContext().getProjectLoader();
 	}
 

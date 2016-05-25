@@ -44,6 +44,7 @@ import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.BindingVariable;
+import org.openflexo.foundation.fml.controlgraph.AbstractIterationAction;
 import org.openflexo.foundation.fml.controlgraph.IterationAction;
 
 /**
@@ -55,10 +56,10 @@ import org.openflexo.foundation.fml.controlgraph.IterationAction;
 public class IterationActionBindingVariable extends BindingVariable implements PropertyChangeListener {
 	static final Logger logger = Logger.getLogger(IterationActionBindingVariable.class.getPackage().getName());
 
-	private final IterationAction action;
+	private final AbstractIterationAction action;
 	private Type lastKnownType = null;
 
-	public IterationActionBindingVariable(IterationAction action) {
+	public IterationActionBindingVariable(AbstractIterationAction action) {
 		super(action.getIteratorName(), action.getItemType(), true);
 		this.action = action;
 		if (action != null) {
@@ -90,7 +91,7 @@ public class IterationActionBindingVariable extends BindingVariable implements P
 		return null;
 	}
 
-	public IterationAction getAction() {
+	public AbstractIterationAction getAction() {
 		return action;
 	}
 
@@ -98,7 +99,7 @@ public class IterationActionBindingVariable extends BindingVariable implements P
 	public void propertyChange(PropertyChangeEvent evt) {
 		if (evt.getSource() == getAction()) {
 			if (evt.getPropertyName().equals(IterationAction.ITERATOR_NAME_KEY)) {
-					// System.out.println("Notify name changing for " + getFlexoRole() + " new=" + getVariableName());
+				// System.out.println("Notify name changing for " + getFlexoRole() + " new=" + getVariableName());
 				getPropertyChangeSupport().firePropertyChange(VARIABLE_NAME_PROPERTY, evt.getOldValue(), getVariableName());
 			}
 			if (lastKnownType != getType()) {

@@ -65,7 +65,7 @@ import org.openflexo.icon.IconLibrary;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.module.NatureSpecificModule;
 import org.openflexo.print.PrintManagingController;
-import org.openflexo.project.ProjectLoader;
+import org.openflexo.project.InteractiveProjectLoader;
 import org.openflexo.toolbox.ToolBox;
 import org.openflexo.view.controller.FlexoController;
 import org.openflexo.view.controller.model.ControllerModel;
@@ -482,7 +482,7 @@ public class FileMenu extends FlexoMenu {
 		public SaveAllProjectAction() {
 			super();
 			if (getProjectLoader() != null) {
-				manager.addListener(ProjectLoader.ROOT_PROJECTS, this, getProjectLoader());
+				manager.addListener(InteractiveProjectLoader.ROOT_PROJECTS, this, getProjectLoader());
 			}
 			updateEnability();
 		}
@@ -508,7 +508,7 @@ public class FileMenu extends FlexoMenu {
 		public void propertyChange(PropertyChangeEvent evt) {
 			if (getProjectLoader() != null) {
 				if (evt.getSource() == getProjectLoader()) {
-					if (ProjectLoader.ROOT_PROJECTS.equals(evt.getPropertyName())) {
+					if (InteractiveProjectLoader.ROOT_PROJECTS.equals(evt.getPropertyName())) {
 						updateEnability();
 					}
 				}
@@ -520,7 +520,7 @@ public class FileMenu extends FlexoMenu {
 		}
 	}
 
-	protected ProjectLoader getProjectLoader() {
+	protected InteractiveProjectLoader getProjectLoader() {
 		return getController().getProjectLoader();
 	}
 

@@ -46,12 +46,14 @@ import org.openflexo.drm.DocResourceManager;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.FlexoServiceManager;
+import org.openflexo.foundation.ProjectLoader;
 import org.openflexo.foundation.fml.ViewPointLibrary;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
 import org.openflexo.foundation.technologyadapter.DefaultTechnologyAdapterService;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.foundation.utils.ProjectLoadingHandler;
 import org.openflexo.prefs.PreferencesService;
+import org.openflexo.project.InteractiveProjectLoader;
 import org.openflexo.rm.ResourceConsistencyService;
 import org.openflexo.view.controller.DefaultTechnologyAdapterControllerService;
 import org.openflexo.view.controller.FlexoServerInstanceManager;
@@ -77,6 +79,11 @@ public class InteractiveApplicationContext extends ApplicationContext {
 		} else {*/
 		return new FullInteractiveProjectLoadingHandler(projectDirectory);
 		// }
+	}
+
+	@Override
+	protected ProjectLoader createProjectLoaderService() {
+		return new InteractiveProjectLoader();
 	}
 
 	@Override

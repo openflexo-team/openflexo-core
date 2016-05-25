@@ -53,6 +53,7 @@ import javax.swing.SwingUtilities;
 import org.openflexo.ApplicationContext;
 import org.openflexo.components.ProgressWindow;
 import org.openflexo.foundation.DefaultFlexoEditor;
+import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoProject;
@@ -80,6 +81,12 @@ import org.openflexo.logging.FlexoLogger;
 import org.openflexo.module.FlexoModule;
 import org.openflexo.module.ModuleLoader;
 
+/**
+ * Interactive implementation of a {@link FlexoEditor}
+ * 
+ * @author sylvain
+ *
+ */
 public class InteractiveFlexoEditor extends DefaultFlexoEditor {
 
 	private static final Logger logger = FlexoLogger.getLogger(InteractiveFlexoEditor.class.getPackage().getName());
@@ -148,11 +155,13 @@ public class InteractiveFlexoEditor extends DefaultFlexoEditor {
 
 				executeAction(action, e);
 				return action;
-			} else {
+			}
+			else {
 				logger.warning("Action Type was NULL!");
 				return null;
 			}
-		} else {
+		}
+		else {
 			logger.warning("Action was NULL!");
 			return null;
 		}
@@ -186,7 +195,8 @@ public class InteractiveFlexoEditor extends DefaultFlexoEditor {
 					}
 				};
 				applicationContext.getTaskManager().scheduleExecution(task);
-			} else {
+			}
+			else {
 				// Do it now, in this thread
 				doExecuteAction(action, event);
 			}
@@ -263,11 +273,13 @@ public class InteractiveFlexoEditor extends DefaultFlexoEditor {
 			if (exceptionHandler.handleException(exception, action)) {
 				// The exception has been handled, we may still have to execute finalizer, if any
 				return true;
-			} else {
+			}
+			else {
 				return false;
 			}
 
-		} else {
+		}
+		else {
 			return false;
 		}
 	}
@@ -356,10 +368,12 @@ public class InteractiveFlexoEditor extends DefaultFlexoEditor {
 				if (condition != null) {
 					return condition.isEnabled(actionType, focusedObject, globalSelection, this);
 				}
-			} else {
+			}
+			else {
 				return false;
 			}
-		} else {
+		}
+		else {
 			return false;
 		}
 		return true;
@@ -375,10 +389,12 @@ public class InteractiveFlexoEditor extends DefaultFlexoEditor {
 				if (condition != null) {
 					return condition.isVisible(actionType, focusedObject, globalSelection, this);
 				}
-			} else {
+			}
+			else {
 				return false;
 			}
-		} else {
+		}
+		else {
 			return false;
 		}
 		return true;
@@ -393,7 +409,8 @@ public class InteractiveFlexoEditor extends DefaultFlexoEditor {
 		}
 		if (actionType instanceof DeletionSchemeActionType) {
 			return FlexoController.statelessIconForObject(((DeletionSchemeActionType) actionType).getDeletionScheme());
-		} else if (actionType instanceof ActionSchemeActionType) {
+		}
+		else if (actionType instanceof ActionSchemeActionType) {
 			return FlexoController.statelessIconForObject(((ActionSchemeActionType) actionType).getActionScheme());
 		}
 

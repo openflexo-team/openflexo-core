@@ -49,10 +49,18 @@ import javax.swing.KeyStroke;
 import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.action.FlexoUndoManager;
+import org.openflexo.foundation.fml.rt.logging.FMLConsole;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.ResourceUpdateHandler;
 import org.openflexo.foundation.utils.FlexoProgressFactory;
 
+/**
+ * Default implementation of {@link FlexoEditor}
+ * 
+ * @author sylvain
+ * @see FlexoEditor
+ *
+ */
 public class DefaultFlexoEditor implements FlexoEditor {
 
 	private static final java.util.logging.Logger logger = org.openflexo.logging.FlexoLogger
@@ -61,6 +69,7 @@ public class DefaultFlexoEditor implements FlexoEditor {
 	private final FlexoProject project;
 	private final FlexoServiceManager serviceManager;
 	private final ResourceUpdateHandler resourceUpdateHandler;
+	private final FMLConsole console;
 
 	public DefaultFlexoEditor(FlexoProject project, FlexoServiceManager serviceManager) {
 		this.project = project;
@@ -75,6 +84,7 @@ public class DefaultFlexoEditor implements FlexoEditor {
 
 			}
 		};
+		console = new FMLConsole(this);
 	}
 
 	@Override
@@ -85,6 +95,11 @@ public class DefaultFlexoEditor implements FlexoEditor {
 	@Override
 	public FlexoServiceManager getServiceManager() {
 		return serviceManager;
+	}
+
+	@Override
+	public FMLConsole getFMLConsole() {
+		return console;
 	}
 
 	@Override
