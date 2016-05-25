@@ -102,8 +102,6 @@ public interface IterationAction extends AbstractIterationAction {
 
 		private static final Logger logger = Logger.getLogger(IterationAction.class.getPackage().getName());
 
-		private String iteratorName = "item";
-
 		@Override
 		public String getFMLRepresentation(FMLRepresentationContext context) {
 			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
@@ -216,14 +214,6 @@ public interface IterationAction extends AbstractIterationAction {
 		}
 
 		@Override
-		public void setControlGraph(FMLControlGraph aControlGraph) {
-			/*if (aControlGraph != null) {
-				aControlGraph.setOwnerContext(CONTROL_GRAPH_KEY);
-			}*/
-			performSuperSetter(CONTROL_GRAPH_KEY, aControlGraph);
-		}
-
-		@Override
 		public void setIterationAction(AssignableAction<? extends List<?>> iterationControlGraph) {
 			if (iterationControlGraph != null) {
 				iterationControlGraph.setOwnerContext(ITERATION_CONTROL_GRAPH_KEY);
@@ -235,7 +225,6 @@ public interface IterationAction extends AbstractIterationAction {
 		public BindingModel getBaseBindingModel(FMLControlGraph controlGraph) {
 			if (controlGraph == getControlGraph()) {
 				return getInferedBindingModel();
-				// return getControlGraph().getBindingModel();
 			}
 			else if (controlGraph == getIterationAction()) {
 				return getBindingModel();
