@@ -490,10 +490,10 @@ public final class FlexoFrame extends JFrame implements GraphicalFlexoObserver, 
 	public void validate() {
 		super.validate();
 		// TODO: is this hack still necessary ?
-		if (getController() != null && getController().getApplicationContext() != null
-				&& getController().getApplicationContext().getDocResourceManager() != null) {
-			getController().getApplicationContext().getDocResourceManager().validateWindow(this);
-		}
+		// if (getController() != null && getController().getApplicationContext() != null
+		//		&& getController().getApplicationContext().getDocResourceManager() != null) {
+		//	getController().getApplicationContext().getDocResourceManager().validateWindow(this);
+		//}
 	}
 
 	private Thread boundsSaver;
