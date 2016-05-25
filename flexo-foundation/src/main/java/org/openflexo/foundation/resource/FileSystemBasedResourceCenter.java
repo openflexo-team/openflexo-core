@@ -502,7 +502,7 @@ public abstract class FileSystemBasedResourceCenter extends FileResourceReposito
 						}
 					}
 				}
-				//XTOF:  avoid infinite loop of notifications
+				//XTOF: avoid infinite loop of notifications
 				removedFilesToBeRenotified.get(adapter).clear();
 			}
 		}
