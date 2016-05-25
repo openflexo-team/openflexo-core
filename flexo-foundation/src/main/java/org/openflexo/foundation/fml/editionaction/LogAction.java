@@ -48,6 +48,7 @@ import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
+import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext.LogLevel;
 import org.openflexo.model.annotations.DefineValidationRule;
@@ -149,7 +150,13 @@ public interface LogAction extends EditionAction {
 				e1.printStackTrace();
 			}
 
-			evaluationContext.log(logString, getLogLevel());
+			if (getRootOwner() instanceof FlexoBehaviour) {
+				evaluationContext.log(logString, getLogLevel(), evaluationContext.getFlexoConceptInstance(),
+						(FlexoBehaviour) getRootOwner());
+			}
+			else {
+				evaluationContext.log(logString, getLogLevel(), evaluationContext.getFlexoConceptInstance(), null);
+			}
 
 			return null;
 		}

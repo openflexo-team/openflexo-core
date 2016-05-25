@@ -535,16 +535,16 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 	}
 
 	@Override
-	public void debug(String aLogString) {
+	public void debug(String aLogString, FlexoConceptInstance fci, FlexoBehaviour behaviour) {
 		if (getEditor() != null) {
-			getEditor().getFMLConsole().debug(aLogString);
+			getEditor().getFMLConsole().debug(aLogString, fci, behaviour);
 		}
 	}
 
 	@Override
-	public void log(String aLogString, LogLevel logLevel) {
+	public void log(String aLogString, LogLevel logLevel, FlexoConceptInstance fci, FlexoBehaviour behaviour) {
 		if (getEditor() != null) {
-			getEditor().getFMLConsole().log(aLogString, logLevel);
+			getEditor().getFMLConsole().log(aLogString, logLevel, fci, behaviour);
 		}
 	}
 }

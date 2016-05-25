@@ -49,7 +49,7 @@ import javax.swing.KeyStroke;
 import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.action.FlexoUndoManager;
-import org.openflexo.foundation.fml.rt.FMLConsole;
+import org.openflexo.foundation.fml.rt.logging.FMLConsole;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.ResourceUpdateHandler;
 import org.openflexo.foundation.utils.FlexoProgressFactory;

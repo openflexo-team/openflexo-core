@@ -227,6 +227,11 @@ public interface View extends AbstractVirtualModelInstance<View, ViewPoint> {
 		}
 
 		@Override
+		public String extendedStringRepresentation() {
+			return getName() + ":" + getViewPoint().getName();
+		}
+
+		@Override
 		public View getResourceData() {
 			return this;
 		}

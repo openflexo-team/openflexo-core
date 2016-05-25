@@ -90,6 +90,11 @@ public class TestCommonFlexoFibs extends GenericFIBTestCase {
 	}
 
 	@Test
+	public void testFMLConsoleViewer() {
+		validateFIB("Fib/FMLConsoleViewer.fib");
+	}
+
+	@Test
 	public void testInstallDefaultPackagedResourceCenterDirectory() {
 		validateFIB("Fib/InstallDefaultPackagedResourceCenterDirectory.fib");
 	}

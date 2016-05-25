@@ -63,6 +63,7 @@ import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.fml.CloningScheme;
 import org.openflexo.foundation.fml.DeletionScheme;
 import org.openflexo.foundation.fml.ExpressionProperty;
+import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.FlexoRole;
@@ -315,16 +316,16 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 		}
 
 		@Override
-		public void debug(String aLogString) {
+		public void debug(String aLogString, FlexoConceptInstance fci, FlexoBehaviour behaviour) {
 			if (getFlexoEditor() != null) {
-				getFlexoEditor().getFMLConsole().debug(aLogString);
+				getFlexoEditor().getFMLConsole().debug(aLogString, fci, behaviour);
 			}
 		}
 
 		@Override
-		public void log(String aLogString, LogLevel logLevel) {
+		public void log(String aLogString, LogLevel logLevel, FlexoConceptInstance fci, FlexoBehaviour behaviour) {
 			if (getFlexoEditor() != null) {
-				getFlexoEditor().getFMLConsole().log(aLogString, logLevel);
+				getFlexoEditor().getFMLConsole().log(aLogString, logLevel, fci, behaviour);
 			}
 		}
 
@@ -399,13 +400,13 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 			}
 
 			@Override
-			public void debug(String aLogString) {
-				getFlexoConceptInstance().debug(aLogString);
+			public void debug(String aLogString, FlexoConceptInstance fci, FlexoBehaviour behaviour) {
+				getFlexoConceptInstance().debug(aLogString, fci, behaviour);
 			}
 
 			@Override
-			public void log(String aLogString, LogLevel logLevel) {
-				getFlexoConceptInstance().log(aLogString, logLevel);
+			public void log(String aLogString, LogLevel logLevel, FlexoConceptInstance fci, FlexoBehaviour behaviour) {
+				getFlexoConceptInstance().log(aLogString, logLevel, fci, behaviour);
 			}
 		}
 
