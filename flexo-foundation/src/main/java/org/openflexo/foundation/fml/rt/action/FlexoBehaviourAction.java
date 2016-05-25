@@ -536,12 +536,15 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 
 	@Override
 	public void debug(String aLogString) {
-		System.out.println("FML@runtime DEBUG : " + aLogString);
+		if (getEditor() != null) {
+			getEditor().getFMLConsole().debug(aLogString);
+		}
 	}
 
 	@Override
-	public void log(String aLogString) {
-		System.err.println("FML@runtime LOG   : " + aLogString);
+	public void log(String aLogString, LogLevel logLevel) {
+		if (getEditor() != null) {
+			getEditor().getFMLConsole().log(aLogString, logLevel);
+		}
 	}
-
 }

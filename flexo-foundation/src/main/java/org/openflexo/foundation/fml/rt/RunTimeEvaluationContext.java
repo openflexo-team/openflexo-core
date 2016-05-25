@@ -91,11 +91,16 @@ public interface RunTimeEvaluationContext extends SettableBindingEvaluationConte
 	public void debug(String aLogString);
 
 	/**
-	 * Send supplied logString to log console
+	 * Send supplied logString to log console, with supplied log level
 	 * 
 	 * @param aLogString
+	 * @param logLevel
 	 */
-	public void log(String aLogString);
+	public void log(String aLogString, LogLevel logLevel);
+
+	public static enum LogLevel {
+		SEVERE, WARNING, INFO, FINE, FINER, FINEST
+	}
 
 	@SuppressWarnings("serial")
 	public class ReturnException extends Exception {

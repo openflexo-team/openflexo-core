@@ -56,6 +56,7 @@ import org.openflexo.connie.binding.BindingValueChangeListener;
 import org.openflexo.connie.exception.NotSettableContextException;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
+import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoProject;
@@ -315,12 +316,23 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 
 		@Override
 		public void debug(String aLogString) {
-			System.out.println("FML@runtime DEBUG : " + aLogString);
+			if (getFlexoEditor() != null) {
+				getFlexoEditor().getFMLConsole().debug(aLogString);
+			}
 		}
 
 		@Override
-		public void log(String aLogString) {
-			System.err.println("FML@runtime LOG   : " + aLogString);
+		public void log(String aLogString, LogLevel logLevel) {
+			if (getFlexoEditor() != null) {
+				getFlexoEditor().getFMLConsole().log(aLogString, logLevel);
+			}
+		}
+
+		private FlexoEditor getFlexoEditor() {
+			if (getProject() != null && getServiceManager() != null) {
+				return getServiceManager().getProjectLoaderService().getEditorForProject(getProject());
+			}
+			return null;
 		}
 
 		/**
@@ -388,12 +400,12 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 
 			@Override
 			public void debug(String aLogString) {
-				System.out.println("FML@runtime DEBUG : " + aLogString);
+				getFlexoConceptInstance().debug(aLogString);
 			}
 
 			@Override
-			public void log(String aLogString) {
-				System.err.println("FML@runtime LOG   : " + aLogString);
+			public void log(String aLogString, LogLevel logLevel) {
+				getFlexoConceptInstance().log(aLogString, logLevel);
 			}
 		}
 

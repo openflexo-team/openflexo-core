@@ -39,6 +39,7 @@
 package org.openflexo.foundation.fml.rt;
 
 import org.openflexo.foundation.FlexoEditor;
+import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext.LogLevel;
 
 /**
  * Represent the console related to the execution of FML inside a {@link FlexoEditor} (related to a project)
@@ -57,4 +58,24 @@ public class FMLConsole {
 	public FlexoEditor getFlexoEditor() {
 		return editor;
 	}
+
+	/**
+	 * Receive aLogString as debug in console
+	 * 
+	 * @param aLogString
+	 */
+	public void debug(String aLogString) {
+		System.out.println("DEBUG " + aLogString);
+	}
+
+	/**
+	 * Send supplied logString to log console, with supplied log level
+	 * 
+	 * @param aLogString
+	 * @param logLevel
+	 */
+	public void log(String aLogString, LogLevel logLevel) {
+		System.out.println(logLevel.name() + " " + aLogString);
+	}
+
 }
