@@ -37,7 +37,7 @@
  * 
  */
 
-package org.openflexo;
+package org.openflexo.prefs;
 
 import java.awt.Rectangle;
 import java.io.File;
@@ -61,7 +61,6 @@ import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.model.annotations.XMLElement;
 import org.openflexo.model.converter.AWTRectangleConverter;
 import org.openflexo.model.validation.ValidationRule;
-import org.openflexo.prefs.PreferencesContainer;
 import org.openflexo.toolbox.StringUtils;
 
 /**

@@ -40,9 +40,7 @@ package org.openflexo.prefs;
 
 import java.io.File;
 
-import org.openflexo.AdvancedPrefs;
 import org.openflexo.ApplicationContext;
-import org.openflexo.GeneralPreferences;
 import org.openflexo.foundation.IOFlexoException;
 import org.openflexo.foundation.InconsistentDataException;
 import org.openflexo.foundation.InvalidModelDefinitionException;

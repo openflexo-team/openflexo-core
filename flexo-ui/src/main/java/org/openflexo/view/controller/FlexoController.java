@@ -93,7 +93,6 @@ import javax.xml.ws.Holder;
 
 import org.openflexo.ApplicationContext;
 import org.openflexo.FlexoCst;
-import org.openflexo.GeneralPreferences;
 import org.openflexo.components.ProgressWindow;
 import org.openflexo.components.ReviewUnsavedDialog;
 import org.openflexo.components.validation.ValidationWindow;
@@ -175,6 +174,7 @@ import org.openflexo.module.FlexoModule;
 import org.openflexo.module.ModuleLoader;
 import org.openflexo.prefs.ApplicationFIBLibraryService;
 import org.openflexo.prefs.FlexoPreferences;
+import org.openflexo.prefs.GeneralPreferences;
 import org.openflexo.project.InteractiveProjectLoader;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;

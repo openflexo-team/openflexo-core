@@ -36,13 +36,14 @@
  * 
  */
 
-package org.openflexo;
+package org.openflexo.prefs;
 
 import java.util.List;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenter.ResourceCenterEntry;
+import org.openflexo.foundation.resource.FlexoResourceCenterService;
 import org.openflexo.gina.annotation.FIBPanel;
 import org.openflexo.model.annotations.Adder;
 import org.openflexo.model.annotations.Getter;
@@ -53,7 +54,6 @@ import org.openflexo.model.annotations.PropertyIdentifier;
 import org.openflexo.model.annotations.Remover;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLElement;
-import org.openflexo.prefs.PreferencesContainer;
 
 /**
  * Preferences encoding all declared resource centers
@@ -65,7 +65,7 @@ import org.openflexo.prefs.PreferencesContainer;
 @ImplementationClass(ResourceCenterPreferences.ResourceCenterPreferencesImpl.class)
 @XMLElement
 @FIBPanel("Fib/Prefs/ResourceCenterPreferences.fib")
-public interface ResourceCenterPreferences extends PreferencesContainer {
+public interface ResourceCenterPreferences extends ServicePreferences<FlexoResourceCenterService> {
 
 	@PropertyIdentifier(type = ResourceCenterEntry.class, cardinality = Cardinality.LIST)
 	public static final String RESOURCE_CENTER_ENTRIES_KEY = "resourceCenterEntries";

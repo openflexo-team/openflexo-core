@@ -56,11 +56,11 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
-import org.openflexo.GeneralPreferences;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.utils.FlexoProgress;
 import org.openflexo.icon.IconLibrary;
 import org.openflexo.localization.FlexoLocalization;
+import org.openflexo.prefs.GeneralPreferences;
 import org.openflexo.project.FlexoAutoSaveThread.FlexoAutoSaveFile;
 import org.openflexo.toolbox.FileUtils;
 import org.openflexo.view.FlexoDialog;

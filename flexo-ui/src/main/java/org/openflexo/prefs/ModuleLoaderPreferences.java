@@ -36,7 +36,7 @@
  * 
  */
 
-package org.openflexo;
+package org.openflexo.prefs;
 
 import java.util.logging.Logger;
 
@@ -45,7 +45,6 @@ import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.XMLElement;
 import org.openflexo.module.ModuleLoader;
-import org.openflexo.prefs.ServicePreferences;
 
 /**
  * Preferences for the {@link ModuleLoader}

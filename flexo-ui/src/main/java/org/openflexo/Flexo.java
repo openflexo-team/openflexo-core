@@ -154,8 +154,7 @@ public class Flexo {
 				e.printStackTrace();
 			}
 			return System.getProperty("user.dir");
-		}
-		else {
+		} else {
 			return System.getProperty("user.dir");
 		}
 	}
@@ -206,17 +205,13 @@ public class Flexo {
 				}*/
 				if (args[i].equals("-nosplash")) {
 					noSplash = true;
-				}
-				else if (args[i].equalsIgnoreCase("DEV")) {
+				} else if (args[i].equalsIgnoreCase("DEV")) {
 					isDev = true;
-				}
-				else if (args[i].toLowerCase().contains("-demo")) {
+				} else if (args[i].toLowerCase().contains("-demo")) {
 					demoMode = true;
-				}
-				else if (args[i].toLowerCase().contains("-record")) {
+				} else if (args[i].toLowerCase().contains("-record")) {
 					recordMode = true;
-				}
-				else if (args[i].toLowerCase().contains("-play")) {
+				} else if (args[i].toLowerCase().contains("-play")) {
 					playMode = true;
 				}
 			}
@@ -355,8 +350,7 @@ public class Flexo {
 
 		if (fileNameToOpen == null) {
 			showWelcomDialog(applicationContext, splashWindow);
-		}
-		else {
+		} else {
 			try {
 				File projectDirectory = new File(fileNameToOpen);
 				if (splashWindow != null) {
@@ -379,8 +373,7 @@ public class Flexo {
 					if (loadProject.getThrownException() instanceof ProjectLoadingCancelledException) {
 						// project need a conversion, but user cancelled the conversion.
 						showWelcomDialog(applicationContext, null);
-					}
-					else if (loadProject.getThrownException() instanceof ProjectInitializerException) {
+					} else if (loadProject.getThrownException() instanceof ProjectInitializerException) {
 						loadProject.getThrownException().printStackTrace();
 						FlexoController.notify(FlexoLocalization.localizedForKey("could_not_open_project_located_at")
 								+ projectDirectory.getAbsolutePath());
@@ -408,7 +401,7 @@ public class Flexo {
 		welcomeDialog.toFront();
 	}
 
-	static void initUILAF(String value) {
+	public static void initUILAF(String value) {
 		if (UIManager.getLookAndFeel().getClass().getName().equals(value)) {
 			return;
 		}
@@ -470,8 +463,7 @@ public class Flexo {
 						if (previous != getRequestingURL() && applicationContext.getAdvancedPrefs().getProxyLogin() != null
 								&& applicationContext.getAdvancedPrefs().getProxyPassword() != null) {
 							count = 0;
-						}
-						else {
+						} else {
 							if (count < 3) {
 								RequestLoginDialog dialog = new RequestLoginDialog(applicationContext);
 								dialog.setVisible(true);
@@ -479,12 +471,10 @@ public class Flexo {
 									applicationContext.getAdvancedPrefs().setProxyLogin(dialog.getData().login);
 									applicationContext.getAdvancedPrefs().setProxyPassword(dialog.getData().password);
 									// AdvancedPrefs.save();
-								}
-								else {
+								} else {
 									throw new CancelException();
 								}
-							}
-							else {
+							} else {
 								if (logger.isLoggable(Level.WARNING)) {
 									logger.warning("Too many attempts (3) failed. Throwing exception to prevent locking.");
 								}
@@ -496,8 +486,7 @@ public class Flexo {
 					} finally {
 						previous = getRequestingURL();
 					}
-				}
-				else {
+				} else {
 					return null;
 				}
 			}
@@ -532,8 +521,7 @@ public class Flexo {
 				PrintStream ps1 = new PrintStream(outLogFile);
 				if (outputToConsole) {
 					System.setOut(new PrintStream(new DoublePrintStream(ps1, System.out)));
-				}
-				else {
+				} else {
 					System.setOut(ps1);
 				}
 			}
@@ -543,8 +531,7 @@ public class Flexo {
 				PrintStream ps1 = new PrintStream(errLogFile);
 				if (outputToConsole) {
 					System.setErr(new PrintStream(new DoublePrintStream(ps1, System.err)));
-				}
-				else {
+				} else {
 					System.setErr(ps1);
 				}
 			}
@@ -610,8 +597,7 @@ public class Flexo {
 				out = null;
 				attempt++;
 				continue;
-			}
-			else {
+			} else {
 				try {
 					lock.createNewFile();
 					boolean lockAcquired = false;
@@ -645,18 +631,15 @@ public class Flexo {
 			if (loggingFileName == null) {
 				if (isDev) {
 					loggingFile = ResourceLocator.locateResource("Config/logging_INFO.properties");
-				}
-				else {
+				} else {
 					loggingFile = ResourceLocator.locateResource("Config/logging_WARNING.properties");
 				}
 				if (loggingFile != null) {
 					loggingFileName = loggingFile.getURI();
-				}
-				else {
+				} else {
 					logger.severe("Unable to find default logging File");
 				}
-			}
-			else {
+			} else {
 				loggingFile = ResourceLocator.locateResource(loggingFileName);
 			}
 			if (loggingFile != null) {
@@ -711,8 +694,7 @@ public class Flexo {
 								applicationContext.getAdvancedPrefs().setLoggingFileName(configurationFile.getRelativePath());
 							}
 						});
-			}
-			else {
+			} else {
 				logger.severe("cannot read logging configuration file : " + System.getProperty("java.util.logging.config.file"));
 				return null;
 
