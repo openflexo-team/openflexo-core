@@ -42,13 +42,19 @@ import java.awt.Window;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 
+import javax.swing.Icon;
+
 import org.openflexo.ApplicationContext;
 import org.openflexo.gina.model.FIBComponent;
 import org.openflexo.gina.swing.utils.JFIBDialog;
 import org.openflexo.gina.swing.view.SwingViewFactory;
 import org.openflexo.gina.view.GinaViewFactory;
+import org.openflexo.icon.IconLibrary;
+import org.openflexo.module.Module;
 import org.openflexo.prefs.FlexoPreferences;
+import org.openflexo.prefs.ModulePreferences;
 import org.openflexo.prefs.PreferencesContainer;
+import org.openflexo.prefs.PreferencesService;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.view.controller.FlexoFIBController;
@@ -134,6 +140,33 @@ public class PreferencesDialog extends JFIBDialog<FlexoPreferences> {
 			}
 			
 			return null;*/
+		}
+
+		public Icon iconForPreferences(PreferencesContainer prefs) {
+			if (prefs instanceof ModulePreferences) {
+				Module<?> module = ((ModulePreferences<?>) prefs).getModule();
+				if (module != null) {
+					return module.getSmallIcon();
+				}
+			}
+			return IconLibrary.OPENFLEXO_NOTEXT_16;
+		}
+
+		private PreferencesService getPreferencesService() {
+			System.out.println("data = " + getDataObject());
+			return ((FlexoPreferences) getDataObject()).getPreferencesService();
+		}
+
+		public void apply() {
+			getPreferencesService().applyPreferences();
+		}
+
+		public void revert() {
+			getPreferencesService().revertToSaved();
+		}
+
+		public void save() {
+			getPreferencesService().savePreferences();
 		}
 	}
 

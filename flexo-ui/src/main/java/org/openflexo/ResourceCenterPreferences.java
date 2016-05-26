@@ -43,6 +43,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenter.ResourceCenterEntry;
+import org.openflexo.gina.annotation.FIBPanel;
 import org.openflexo.model.annotations.Adder;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.Getter.Cardinality;
@@ -55,14 +56,15 @@ import org.openflexo.model.annotations.XMLElement;
 import org.openflexo.prefs.PreferencesContainer;
 
 /**
- * Encodes rc preferences for the whole application
+ * Preferences encoding all declared resource centers
  * 
  * @author sguerin
  * 
  */
 @ModelEntity
 @ImplementationClass(ResourceCenterPreferences.ResourceCenterPreferencesImpl.class)
-@XMLElement(xmlTag = "ResourceCenterPreferences")
+@XMLElement
+@FIBPanel("Fib/Prefs/ResourceCenterPreferences.fib")
 public interface ResourceCenterPreferences extends PreferencesContainer {
 
 	@PropertyIdentifier(type = ResourceCenterEntry.class, cardinality = Cardinality.LIST)
@@ -91,9 +93,9 @@ public interface ResourceCenterPreferences extends PreferencesContainer {
 	 * @return
 	 */
 	/*public List<File> getDirectoryResourceCenterList();
-
+	
 	public void assertDirectoryResourceCenterRegistered(File dirRC);
-
+	
 	public void setDirectoryResourceCenterList(List<File> rcList);*/
 
 	public abstract class ResourceCenterPreferencesImpl extends PreferencesContainerImpl implements ResourceCenterPreferences {
