@@ -1,35 +1,71 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Panel id="0" darkLevel="0" useScrollBar="false" borderLeft="0"
 	protectContent="false" height="99" name="GeneralPreferencesPanel"
-	layout="twocols"
+	layout="border"
 	controllerClassName="org.openflexo.components.PreferencesDialog$PreferencesFIBController"
 	border="empty" trackViewPortWidth="true" width="99"
 	dataClassName="org.openflexo.prefs.FlexoPreferences" titleFont="Lucida Grande,0,13"
 	borderTop="5" trackViewPortHeight="true">
 	<Panel id="2" darkLevel="0" useScrollBar="false" protectContent="false"
-		layout="gridbag" border="empty" trackViewPortWidth="true" index="0"
+		layout="twocols" border="empty" trackViewPortWidth="true" index="0"
 		constraints="border(index=0;location=center)" borderTitle="Panel"
 		trackViewPortHeight="true">
 		<Image id="3" manageDynamicModel="false" useScrollBar="false"
 			data="data.applicationData.openflexoIcon.image" sizeAdjustment="AdjustDimensions"
 			imageHeight="100" index="0" localize="true" align="left"
-			constraints="gridbag(anchor=center;fill=none;gridHeight=0;gridWidth=1;gridX=-1;gridY=-1;index=0;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=20;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+			constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)"
 			readOnly="false" imageWidth="100" />
-		<Image id="4" manageDynamicModel="false" useScrollBar="false"
-			data="data.applicationData.openflexoTextIcon.image" sizeAdjustment="OriginalSize"
-			imageHeight="32" index="1" localize="true" align="left"
-			constraints="gridbag(anchor=west;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=46;padX=0;padY=0;weightX=0.0;weightY=0.0)"
-			readOnly="false" imageWidth="32" />
-		<Label id="5" manageDynamicModel="false" useScrollBar="false"
-			data="data.applicationData.businessName" foregroundColor="51,51,51" index="2"
-			localize="false" font="LucidaGrande-Bold,0,14" align="left"
-			constraints="gridbag(anchor=west;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=2;insetsBottom=0;insetsLeft=6;insetsRight=0;insetsTop=-6;padX=0;padY=0;weightX=0.0;weightY=0.0)"
-			label="label" readOnly="false" />
-		<Label id="6" manageDynamicModel="false" useScrollBar="false"
-			data="data.applicationData.version" index="3" localize="false" font="Dialog,2,11"
+		<Panel darkLevel="0" useScrollBar="false" protectContent="false"
+			layout="border" border="empty" trackViewPortWidth="true" index="0"
+			constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)"
+			borderTitle="Panel" trackViewPortHeight="true">
+			<Image id="4" manageDynamicModel="false" useScrollBar="false"
+				data="data.applicationData.openflexoTextIcon.image" sizeAdjustment="OriginalSize"
+				imageHeight="32" index="1" localize="true" align="left"
+				constraints="border(location=center)"
+				readOnly="false" imageWidth="32" />
+			<Label id="5" manageDynamicModel="false" useScrollBar="false"
+				data="data.applicationData.businessName" foregroundColor="51,51,51"
+				index="2" localize="false" font="Dialog,1,12" align="left"
+				constraints="border(location=south)"
+				label="label" readOnly="false" />
+		</Panel>
+		<Label manageDynamicModel="false" useScrollBar="false" localize="true"
 			align="left"
-			constraints="gridbag(anchor=west;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=3;insetsBottom=0;insetsLeft=5;insetsRight=0;insetsTop=-4;padX=0;padY=0;weightX=0.0;weightY=0.0)"
-			label="label" readOnly="false" />
+			constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)"
+			label="software_version" readOnly="false" />
+		<TextField passwd="false" manageDynamicModel="false"
+			useScrollBar="false" data="data.softwareVersion" columns="20" text="TextField"
+			localize="true"
+			constraints="twocols(expandHorizontally=false;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)"
+			readOnly="true" validateOnReturn="false" />
+		<Label manageDynamicModel="false" useScrollBar="false" localize="true"
+			align="left"
+			constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)"
+			label="java_version" readOnly="false" />
+		<TextField passwd="false" manageDynamicModel="false"
+			useScrollBar="false" data="data.javaVersion" columns="20" text="TextField"
+			localize="true"
+			constraints="twocols(expandHorizontally=false;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)"
+			readOnly="true" validateOnReturn="false" />
+		<Label manageDynamicModel="false" useScrollBar="false" localize="true"
+			align="left"
+			constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)"
+			label="platform" readOnly="false" />
+		<TextField passwd="false" manageDynamicModel="false"
+			useScrollBar="false" data="data.platform" columns="20" text="TextField"
+			localize="true"
+			constraints="twocols(expandHorizontally=false;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)"
+			readOnly="true" validateOnReturn="false" />
+		<Label manageDynamicModel="false" useScrollBar="false" localize="true"
+			align="left"
+			constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)"
+			label="heap_memory_size" readOnly="false" />
+		<TextField passwd="false" manageDynamicModel="false"
+			useScrollBar="false" data="data.heapMemory" columns="20" text="TextField"
+			localize="true"
+			constraints="twocols(expandHorizontally=false;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)"
+			readOnly="true" validateOnReturn="false" />
 	</Panel>
 
 </Panel>

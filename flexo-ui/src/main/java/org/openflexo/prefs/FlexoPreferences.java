@@ -39,12 +39,17 @@
 
 package org.openflexo.prefs;
 
+import java.lang.management.ManagementFactory;
+
 import org.openflexo.ApplicationContext;
 import org.openflexo.ApplicationData;
+import org.openflexo.ApplicationVersion;
+import org.openflexo.FlexoCst;
 import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.XMLElement;
+import org.openflexo.toolbox.ToolBox;
 
 /**
  * This class represents the whole preferences hierarchy
@@ -64,16 +69,42 @@ public interface FlexoPreferences extends PreferencesContainer, ResourceData<Fle
 
 	public ApplicationData getApplicationData();
 
+	public String softwareVersion();
+
+	public String javaVersion();
+
+	public String getPlatform();
+
+	public String getHeapMemory();
+
 	public static abstract class FlexoPreferencesImpl extends PreferencesContainerImpl implements FlexoPreferences {
 
 		@Override
 		public ApplicationData getApplicationData() {
-			System.out.println("Hop, le sm=" + getServiceManager());
-
 			if (getServiceManager() instanceof ApplicationContext) {
 				return ((ApplicationContext) getServiceManager()).getApplicationData();
 			}
 			return null;
+		}
+
+		@Override
+		public String softwareVersion() {
+			return FlexoCst.BUSINESS_APPLICATION_VERSION + " (build " + ApplicationVersion.BUILD_ID + ")";
+		}
+
+		@Override
+		public String javaVersion() {
+			return System.getProperty("java.version");
+		}
+
+		@Override
+		public String getPlatform() {
+			return ToolBox.getPLATFORM();
+		}
+
+		@Override
+		public String getHeapMemory() {
+			return ManagementFactory.getMemoryMXBean().getHeapMemoryUsage().getMax() / (1024 * 1024) + "Mb";
 		}
 
 	}
