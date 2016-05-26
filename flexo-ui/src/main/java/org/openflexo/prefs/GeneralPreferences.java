@@ -49,7 +49,6 @@ import java.util.StringTokenizer;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.resource.DirectoryResourceCenter;
-import org.openflexo.gina.annotation.FIBPanel;
 import org.openflexo.help.FlexoHelp;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.localization.Language;
@@ -72,7 +71,12 @@ import org.openflexo.toolbox.StringUtils;
 @ModelEntity
 @ImplementationClass(GeneralPreferences.GeneralPreferencesImpl.class)
 @XMLElement(xmlTag = "GeneralPreferences")
-@FIBPanel("Fib/Prefs/GeneralPreferences.fib")
+@Preferences(
+		shortName = "General",
+		longName = "General preferences",
+		FIBPanel = "Fib/Prefs/GeneralPreferences.fib",
+		smallIcon = "Icons/Flexo/OpenflexoNoText_16.png",
+		bigIcon = "Icons/Flexo/OpenflexoNoText_64.png")
 public interface GeneralPreferences extends PreferencesContainer {
 
 	public static final String LANGUAGE_KEY = "language";
@@ -109,7 +113,7 @@ public interface GeneralPreferences extends PreferencesContainer {
 	public static final String DIRECTORY_RESOURCE_CENTER_LIST = "directoryResourceCenterList";
 
 	/*private static final FlexoObserver observer = new FlexoObserver() {
-
+	
 		@Override
 		public void update(FlexoObservable observable, DataModification dataModification) {
 			if (dataModification instanceof PreferencesHaveChanged
@@ -119,11 +123,11 @@ public interface GeneralPreferences extends PreferencesContainer {
 				}
 			}
 		}
-
+	
 	};
-
+	
 	private static final String RESOURCE_LOCATION = "_location";
-
+	
 	static {
 		getPreferences().addObserver(observer);
 	}*/
@@ -342,7 +346,7 @@ public interface GeneralPreferences extends PreferencesContainer {
 	/*public static File getLocationForResource(String uri) {
 		return getPreferences().getFileProperty(uri + RESOURCE_LOCATION);
 	}
-
+	
 	public static void setLocationForResource(File file, String uri) {
 		getPreferences().setFileProperty(uri + RESOURCE_LOCATION, file, false);
 	}*/

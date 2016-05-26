@@ -30,7 +30,7 @@
 				iteratorClassName="org.openflexo.prefs.PreferencesContainer"
 				useScrollBar="false" name="PreferencesBrowser" rootVisible="true"
 				readOnly="false">
-				<BrowserElement id="3" filtered="false" label="prefContainer.name"
+				<BrowserElement id="3" filtered="false" label="controller.shortNameForPreferences(prefContainer)"
 					defaultVisible="true" dataClassName="org.openflexo.prefs.PreferencesContainer"
 					name="prefContainer" isEditable="false"
 					icon="controller.iconForPreferences(prefContainer)">
@@ -42,12 +42,71 @@
 			protectContent="false" layout="border" border="empty"
 			trackViewPortWidth="true" constraints="split(splitIdentifier=right)"
 			borderTitle="Panel" trackViewPortHeight="true">
+			
+			
+				<Panel id="117" darkLevel="0" backgroundColor="255,255,255"
+		useScrollBar="false" borderLeft="10" protectContent="false" opaque="true"
+		name="Header" layout="border" 
+		border="empty" borderRight="10" trackViewPortWidth="true"
+		constraints="border(location=north)" borderBottom="10" borderTop="10"
+		trackViewPortHeight="true">
+		<Image id="118" manageDynamicModel="false" useScrollBar="false"
+			data="controller.bigIconForPreferences(PreferencesBrowser.selected).image" sizeAdjustment="OriginalSize"
+			imageHeight="64" localize="true" align="left" constraints="border(location=east)"
+			readOnly="false" imageWidth="64" />
+		<Panel id="119" darkLevel="0" useScrollBar="false"
+			protectContent="false" layout="border"
+			border="empty" trackViewPortWidth="true" constraints="border(location=center)"
+			trackViewPortHeight="true">
+			<Label id="120" manageDynamicModel="false" useScrollBar="false"
+				data="controller.longNameForPreferences(PreferencesBrowser.selected)" controllerClassName="org.openflexo.gina.controller.FIBController"
+				localize="false" font="SansSerif,1,16" align="left"
+				constraints="border(location=center)" label="label" readOnly="false" />
+			<!--  <Panel id="121" darkLevel="0"
+				visible="data.currentStep.messageTypeIsToBeDisplayed"
+				backgroundColor="255,255,255" vGap="0" useScrollBar="false"
+				protectContent="false" hGap="0" opaque="true" layout="flow"
+				controllerClassName="org.openflexo.gina.controller.FIBController"
+				border="empty" flowAlignment="LEFT" trackViewPortWidth="true"
+				constraints="border(location=south)" trackViewPortHeight="true">
+				<Image id="122" manageDynamicModel="false" useScrollBar="false"
+					data="data.currentStep.issueMessageIcon.image" sizeAdjustment="OriginalSize"
+					controllerClassName="org.openflexo.gina.controller.FIBController"
+					imageHeight="16" localize="true" align="right" constraints="flow()"
+					readOnly="false" imageWidth="16" />
+				<Label id="123" manageDynamicModel="false" useScrollBar="false"
+					data="data.currentStep.issueMessage" controllerClassName="org.openflexo.gina.controller.FIBController"
+					localize="false" font="SansSerif,0,11" align="left" constraints="flow()"
+					label="label" readOnly="false" />
+			</Panel>-->
+		</Panel>
+	</Panel>
+			
+			
 			<FIBReferencedComponent id="6"
 				data="PreferencesBrowser.selected" manageDynamicModel="true"
 				useScrollBar="false" opaque="false" name="PreferencesDetailsWidget"
 				index="15" localize="true"
-				dynamicComponentFile="controller.fibForPreference(PreferencesBrowser.selected)"
-				constraints="border(location=center)" readOnly="false" />
+				dynamicComponentFile="controller.fibForPreferences(PreferencesBrowser.selected)"
+				constraints="border(location=center)" borderRight="10" borderLeft="10" borderBottom="5" borderTop="5" readOnly="false" />
+				
+					<Panel id="27" darkLevel="0" vGap="5" useScrollBar="false"
+		borderLeft="10" protectContent="false" hGap="5" name="ControlPanel"
+		layout="flow" controllerClassName="org.openflexo.gina.controller.FIBController"
+		border="empty" borderRight="10" flowAlignment="RIGHT"
+		trackViewPortWidth="true" constraints="border(location=south)"
+		borderBottom="5" borderTop="5" trackViewPortHeight="true">
+		<Button id="130" manageDynamicModel="false" useScrollBar="false"
+			buttonType="Trigger" action="controller.revert()"
+			localize="true" constraints="flow()" label="revert" readOnly="false" name="RevertButton"/>
+		<Button id="129" manageDynamicModel="false" useScrollBar="false"
+			buttonType="Trigger" action="controller.save()"
+			localize="true" constraints="flow()" label="save" readOnly="false" name="SaveButton"/>
+		<Button id="128" manageDynamicModel="false" useScrollBar="false"
+			buttonType="Trigger" action="controller.apply()"
+			localize="true" constraints="flow()" label="apply" readOnly="false" name="ApplyButton"/>
+	</Panel>
+				
 		</Panel>
 		<RowSplit id="10" weight="0.0" name="RowSplit">
 			<Leaf id="11" weight="0.3" name="left" />
@@ -55,19 +114,4 @@
 			<Leaf id="13" weight="0.7" name="right" />
 		</RowSplit>
 	</SplitPanel>
-	<Panel id="14" darkLevel="0" vGap="5" useScrollBar="false"
-		protectContent="false" hGap="5" layout="flow" border="empty"
-		flowAlignment="CENTER" trackViewPortWidth="true" index="1"
-		constraints="border(anchor=center;fill=both;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=1;insetsBottom=0;insetsLeft=5;insetsRight=5;insetsTop=0;location=south;padX=0;padY=0;weightX=1.0;weightY=1.0;x=0;y=0)"
-		trackViewPortHeight="true">
-		<Button id="16" manageDynamicModel="false" useScrollBar="false"
-			buttonType="Trigger" localize="true" constraints="flow()" label="apply"
-			readOnly="false" action="controller.apply()" />
-		<Button id="17" manageDynamicModel="false" useScrollBar="false"
-			buttonType="Trigger" localize="true" constraints="flow()" label="revert"
-			readOnly="false" action="controller.revert()" />
-		<Button id="18" manageDynamicModel="false" useScrollBar="false"
-			buttonType="Trigger" localize="true" constraints="flow()" label="save"
-			readOnly="false" action="controller.save()" />
-	</Panel>
 </Panel>

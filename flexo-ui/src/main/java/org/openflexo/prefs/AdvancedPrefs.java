@@ -49,7 +49,6 @@ import javax.swing.UIManager;
 
 import org.openflexo.Flexo;
 import org.openflexo.foundation.FlexoProperty;
-import org.openflexo.gina.annotation.FIBPanel;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
@@ -73,7 +72,12 @@ import org.openflexo.toolbox.ToolBox;
 @ModelEntity
 @ImplementationClass(AdvancedPrefs.AdvancedPrefsImpl.class)
 @XMLElement(xmlTag = "AdvancedPrefs")
-@FIBPanel("Fib/Prefs/AdvancedPrefs.fib")
+@Preferences(
+		shortName = "Advanced",
+		longName = "Advanced Preferences",
+		FIBPanel = "Fib/Prefs/AdvancedPrefs.fib",
+		smallIcon = "Icons/Flexo/OpenflexoNoText_16.png",
+		bigIcon = "Icons/Flexo/OpenflexoNoText_64.png")
 public interface AdvancedPrefs extends PreferencesContainer {
 
 	// private static final Class<AdvancedPrefs> ADVANCED_PREFERENCES = AdvancedPrefs.class;
@@ -133,7 +137,7 @@ public interface AdvancedPrefs extends PreferencesContainer {
 	public String getName() {
 		return "advanced";
 	}
-
+	
 	@Override
 	public File getInspectorFile() {
 		return new FileResource("Config/Preferences/AdvancedPrefs.inspector");

@@ -39,11 +39,13 @@
 package org.openflexo.components;
 
 import java.awt.Window;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Logger;
-import java.util.prefs.Preferences;
 
-import javax.swing.Icon;
+import javax.swing.ImageIcon;
 
+import org.apache.commons.lang3.StringUtils;
 import org.openflexo.ApplicationContext;
 import org.openflexo.gina.model.FIBComponent;
 import org.openflexo.gina.swing.utils.JFIBDialog;
@@ -53,10 +55,12 @@ import org.openflexo.icon.IconLibrary;
 import org.openflexo.module.Module;
 import org.openflexo.prefs.FlexoPreferences;
 import org.openflexo.prefs.ModulePreferences;
+import org.openflexo.prefs.Preferences;
 import org.openflexo.prefs.PreferencesContainer;
 import org.openflexo.prefs.PreferencesService;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
+import org.openflexo.toolbox.ImageIconResource;
 import org.openflexo.view.controller.FlexoFIBController;
 
 /**
@@ -111,50 +115,170 @@ public class PreferencesDialog extends JFIBDialog<FlexoPreferences> {
 			super(component, viewFactory);
 		}
 
-		public Resource fibForPreference(PreferencesContainer prefs) {
+		private final Map<PreferencesContainer, Resource> fibPanels = new HashMap<>();
+		private final Map<PreferencesContainer, ImageIcon> smallIcons = new HashMap<>();
+		private final Map<PreferencesContainer, ImageIcon> bigIcons = new HashMap<>();
+		private final Map<PreferencesContainer, String> shortNames = new HashMap<>();
+		private final Map<PreferencesContainer, String> longNames = new HashMap<>();
+
+		public Resource fibForPreferences(PreferencesContainer prefs) {
 
 			if (prefs == null) {
 				return null;
 			}
 
-			if (getFIBPanelForObject(prefs) != null) {
-				return getFIBPanelForObject(prefs);
-			}
+			Resource returned = fibPanels.get(prefs);
 
-			return null;
-
-			/*ModelEntity<?> prefsEntity = prefs.getFlexoPreferencesFactory().getModelEntityForInstance(prefs);
-			
-			if (prefsEntity != null) {
-			
-				// System.out.println("Entity=" + prefsEntity);
-				// System.out.println("Class=" + prefsEntity.getImplementedInterface());
-			
-				FIBPanel fibDeclaration = prefsEntity.getImplementedInterface().getAnnotation(FIBPanel.class);
-			
-				if (fibDeclaration != null) {
-					Resource returned = ResourceLocator.locateResource(fibDeclaration.value());
-					// System.out.println("Returning " + returned);
-					return returned;
+			if (returned == null) {
+				Preferences prefsMD = getPreferencesMetaData(prefs);
+				if (prefsMD == null) {
+					return null;
+				}
+				returned = ResourceLocator.locateResource(prefsMD.FIBPanel());
+				if (returned != null) {
+					fibPanels.put(prefs, returned);
 				}
 			}
-			
-			return null;*/
+
+			return returned;
 		}
 
-		public Icon iconForPreferences(PreferencesContainer prefs) {
+		public String shortNameForPreferences(PreferencesContainer prefs) {
+
+			if (prefs == null) {
+				return null;
+			}
+
+			String returned = shortNames.get(prefs);
+
+			if (returned == null) {
+				Preferences prefsMD = getPreferencesMetaData(prefs);
+				if (prefsMD != null && StringUtils.isNotEmpty(prefsMD.shortName())) {
+					returned = prefsMD.shortName();
+					if (returned != null) {
+						shortNames.put(prefs, returned);
+					}
+				}
+			}
+
+			if (returned == null) {
+				returned = prefs.getName();
+			}
+
+			return returned;
+
+		}
+
+		public String longNameForPreferences(PreferencesContainer prefs) {
+
+			if (prefs == null) {
+				return null;
+			}
+
+			String returned = longNames.get(prefs);
+
+			if (returned == null) {
+				Preferences prefsMD = getPreferencesMetaData(prefs);
+				if (prefsMD != null && StringUtils.isNotEmpty(prefsMD.longName())) {
+					returned = prefsMD.longName();
+					if (returned != null) {
+						longNames.put(prefs, returned);
+					}
+				}
+			}
+
+			if (returned == null) {
+				returned = prefs.getName();
+			}
+
+			return returned;
+
+		}
+
+		public ImageIcon iconForPreferences(PreferencesContainer prefs) {
+
+			if (prefs == null) {
+				return null;
+			}
+
 			if (prefs instanceof ModulePreferences) {
 				Module<?> module = ((ModulePreferences<?>) prefs).getModule();
 				if (module != null) {
 					return module.getSmallIcon();
 				}
 			}
-			return IconLibrary.OPENFLEXO_NOTEXT_16;
+
+			ImageIcon returned = smallIcons.get(prefs);
+
+			if (returned == null) {
+				Preferences prefsMD = getPreferencesMetaData(prefs);
+				if (prefsMD != null && StringUtils.isNotEmpty(prefsMD.smallIcon())) {
+					returned = new ImageIconResource(ResourceLocator.locateResource(prefsMD.smallIcon()));
+					if (returned != null) {
+						smallIcons.put(prefs, returned);
+					}
+				}
+			}
+
+			if (returned == null) {
+				returned = IconLibrary.OPENFLEXO_NOTEXT_16;
+			}
+
+			return returned;
+
+		}
+
+		public ImageIcon bigIconForPreferences(PreferencesContainer prefs) {
+
+			if (prefs == null) {
+				return null;
+			}
+
+			if (prefs instanceof ModulePreferences) {
+				Module<?> module = ((ModulePreferences<?>) prefs).getModule();
+				if (module != null) {
+					return module.getBigIcon();
+				}
+			}
+
+			ImageIcon returned = bigIcons.get(prefs);
+
+			if (returned == null) {
+				Preferences prefsMD = getPreferencesMetaData(prefs);
+				if (prefsMD != null && StringUtils.isNotEmpty(prefsMD.smallIcon())) {
+					returned = new ImageIconResource(ResourceLocator.locateResource(prefsMD.bigIcon()));
+					if (returned != null) {
+						bigIcons.put(prefs, returned);
+					}
+				}
+			}
+
+			if (returned == null) {
+				returned = IconLibrary.OPENFLEXO_NOTEXT_64;
+			}
+
+			return returned;
+
 		}
 
 		private PreferencesService getPreferencesService() {
-			System.out.println("data = " + getDataObject());
 			return ((FlexoPreferences) getDataObject()).getPreferencesService();
+		}
+
+		protected Preferences getPreferencesMetaData(PreferencesContainer prefs) {
+			Preferences returned = prefs.getClass().getAnnotation(Preferences.class);
+			if (returned == null) {
+				for (java.lang.reflect.Type t : prefs.getClass().getGenericInterfaces()) {
+					if (t instanceof Class) {
+						returned = ((Class<?>) t).getAnnotation(Preferences.class);
+						if (returned != null) {
+							return returned;
+						}
+					}
+				}
+
+			}
+			return returned;
 		}
 
 		public void apply() {

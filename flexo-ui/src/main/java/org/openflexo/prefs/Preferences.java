@@ -1,9 +1,8 @@
 /**
  * 
- * Copyright (c) 2013-2014, Openflexo
- * Copyright (c) 2011-2012, AgileBirds
+ * Copyright (c) 2014, Openflexo
  * 
- * This file is part of Flexo-ui, a component of the software infrastructure 
+ * This file is part of Gina-core, a component of the software infrastructure 
  * developed at Openflexo.
  * 
  * 
@@ -39,23 +38,28 @@
 
 package org.openflexo.prefs;
 
-import org.openflexo.foundation.resource.ResourceData;
-import org.openflexo.model.annotations.ModelEntity;
-import org.openflexo.model.annotations.XMLElement;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * This class represents the whole preferences hierarchy
+ * This annotation allows to specify a relative path to a FIB encoding a panel representing annotated class
  * 
- * @author sguerin
+ * @author sylvain
+ * 
  */
-@ModelEntity
-@XMLElement
-@Preferences(
-		shortName = "Preferences",
-		longName = "Openflexo Preferences",
-		FIBPanel = "Fib/Prefs/OpenflexoPreferences.fib",
-		smallIcon = "Icons/Flexo/OpenflexoNoText_16.png",
-		bigIcon = "Icons/Flexo/OpenflexoNoText_64.png")
-public interface FlexoPreferences extends PreferencesContainer, ResourceData<FlexoPreferences> {
+@Retention(RetentionPolicy.RUNTIME)
+@Target(value = ElementType.TYPE)
+public @interface Preferences {
 
+	public String shortName();
+
+	public String longName();
+
+	public String FIBPanel();
+
+	public String smallIcon();
+
+	public String bigIcon();
 }

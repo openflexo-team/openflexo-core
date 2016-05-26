@@ -65,6 +65,12 @@ import org.openflexo.model.annotations.XMLElement;
 @ImplementationClass(ResourceCenterPreferences.ResourceCenterPreferencesImpl.class)
 @XMLElement
 @FIBPanel("Fib/Prefs/ResourceCenterPreferences.fib")
+@Preferences(
+		shortName = "Resource centers",
+		longName = "Resource Centers Preferences",
+		FIBPanel = "Fib/Prefs/ResourceCenterPrefs.fib",
+		smallIcon = "Icons/Common/ResourceCenter.png",
+		bigIcon = "Icons/Common/ResourceCenter_64x64.png")
 public interface ResourceCenterPreferences extends ServicePreferences<FlexoResourceCenterService> {
 
 	@PropertyIdentifier(type = ResourceCenterEntry.class, cardinality = Cardinality.LIST)

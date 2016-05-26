@@ -41,7 +41,6 @@ package org.openflexo.prefs;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
-import org.openflexo.gina.annotation.FIBPanel;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.XMLElement;
@@ -55,7 +54,12 @@ import org.openflexo.model.annotations.XMLElement;
 @ModelEntity
 @ImplementationClass(TechnologyAdapterPreferences.TechnologyAdapterPreferencesImpl.class)
 @XMLElement
-@FIBPanel("Fib/Prefs/TechnologyAdapterPreferences.fib")
+@Preferences(
+		shortName = "Technology adapters",
+		longName = "Technology adapters Preferences",
+		FIBPanel = "Fib/Prefs/TechnologyAdapterPrefs.fib",
+		smallIcon = "Icons/Common/TechnologyAdapter.png",
+		bigIcon = "Icons/Common/TechnologyAdapter_64x64.png")
 public interface TechnologyAdapterPreferences extends ServicePreferences<TechnologyAdapterService> {
 
 	public abstract class TechnologyAdapterPreferencesImpl extends PreferencesContainerImpl implements TechnologyAdapterPreferences {
