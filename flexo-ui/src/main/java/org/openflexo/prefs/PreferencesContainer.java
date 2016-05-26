@@ -42,6 +42,7 @@ import java.util.List;
 
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoProperty;
+import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.model.annotations.Adder;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.Getter.Cardinality;
@@ -147,6 +148,14 @@ public interface PreferencesContainer extends FlexoObject {
 		public String getName() {
 			org.openflexo.model.ModelEntity e = getFlexoPreferencesFactory().getModelEntityForInstance(this);
 			return e.getImplementedInterface().getSimpleName();
+		}
+
+		@Override
+		public FlexoServiceManager getServiceManager() {
+			if (getPreferencesService() != null) {
+				return getPreferencesService().getServiceManager();
+			}
+			return super.getServiceManager();
 		}
 
 	}

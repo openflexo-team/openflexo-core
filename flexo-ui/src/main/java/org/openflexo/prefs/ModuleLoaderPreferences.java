@@ -40,7 +40,6 @@ package org.openflexo.prefs;
 
 import java.util.logging.Logger;
 
-import org.openflexo.gina.annotation.FIBPanel;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.XMLElement;
@@ -55,7 +54,12 @@ import org.openflexo.module.ModuleLoader;
 @ModelEntity
 @ImplementationClass(ModuleLoaderPreferences.ModuleLoaderPreferencesImpl.class)
 @XMLElement
-@FIBPanel("Fib/Prefs/ModuleLoaderPreferences.fib")
+@Preferences(
+		shortName = "Modules",
+		longName = "Modules Preferences",
+		FIBPanel = "Fib/Prefs/ModuleLoaderPrefs.fib",
+		smallIcon = "Icons/Common/Modules.png",
+		bigIcon = "Icons/Common/Modules_64x64.png")
 public interface ModuleLoaderPreferences extends ServicePreferences<ModuleLoader> {
 
 	public abstract class ModuleLoaderPreferencesImpl extends PreferencesContainerImpl implements ModuleLoaderPreferences {

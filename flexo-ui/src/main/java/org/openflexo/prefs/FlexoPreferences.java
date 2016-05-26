@@ -39,7 +39,10 @@
 
 package org.openflexo.prefs;
 
+import org.openflexo.ApplicationContext;
+import org.openflexo.ApplicationData;
 import org.openflexo.foundation.resource.ResourceData;
+import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.XMLElement;
 
@@ -49,6 +52,7 @@ import org.openflexo.model.annotations.XMLElement;
  * @author sguerin
  */
 @ModelEntity
+@ImplementationClass(FlexoPreferences.FlexoPreferencesImpl.class)
 @XMLElement
 @Preferences(
 		shortName = "Preferences",
@@ -58,4 +62,19 @@ import org.openflexo.model.annotations.XMLElement;
 		bigIcon = "Icons/Flexo/OpenflexoNoText_64.png")
 public interface FlexoPreferences extends PreferencesContainer, ResourceData<FlexoPreferences> {
 
+	public ApplicationData getApplicationData();
+
+	public static abstract class FlexoPreferencesImpl extends PreferencesContainerImpl implements FlexoPreferences {
+
+		@Override
+		public ApplicationData getApplicationData() {
+			System.out.println("Hop, le sm=" + getServiceManager());
+
+			if (getServiceManager() instanceof ApplicationContext) {
+				return ((ApplicationContext) getServiceManager()).getApplicationData();
+			}
+			return null;
+		}
+
+	}
 }

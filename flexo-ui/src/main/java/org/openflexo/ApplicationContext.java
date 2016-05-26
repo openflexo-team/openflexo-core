@@ -96,10 +96,14 @@ public abstract class ApplicationContext extends DefaultFlexoServiceManager impl
 
 	private final FlexoEditor applicationEditor;
 
+	private final ApplicationData applicationData;
+
 	// private ServerRestService serverRestService;
 
 	public ApplicationContext() {
 		super();
+
+		applicationData = new ApplicationData(this);
 
 		registerApplicationFIBLibraryService();
 		registerModuleLoaderService();
@@ -117,6 +121,10 @@ public abstract class ApplicationContext extends DefaultFlexoServiceManager impl
 		registerService(flexoServerInstanceManager);
 		ResourceConsistencyService resourceConsistencyService = createResourceConsistencyService();
 		registerService(resourceConsistencyService);
+	}
+
+	public ApplicationData getApplicationData() {
+		return applicationData;
 	}
 
 	private void registerApplicationFIBLibraryService() {
@@ -244,14 +252,12 @@ public abstract class ApplicationContext extends DefaultFlexoServiceManager impl
 			for (FlexoResourceCenter<?> rc : ((FlexoResourceCenterService) caller).getResourceCenters()) {
 				if (rc instanceof DirectoryResourceCenter) {
 					rcList.add(((DirectoryResourceCenter) rc).getDirectory());
-				}
-				else if (rc instanceof JarResourceCenter) {
+				} else if (rc instanceof JarResourceCenter) {
 					rcList.add(new File(((JarResourceCenter) rc).getJarResourceImpl().getRelativePath()));
 				}
 			}
 			getGeneralPreferences().setDirectoryResourceCenterList(rcList);
-		}
-		else if (notification instanceof DefaultPackageResourceCenterIsNotInstalled && caller instanceof FlexoResourceCenterService) {
+		} else if (notification instanceof DefaultPackageResourceCenterIsNotInstalled && caller instanceof FlexoResourceCenterService) {
 			defaultPackagedResourceCenterIsNotInstalled = true;
 		}
 	}

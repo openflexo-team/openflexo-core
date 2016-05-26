@@ -107,6 +107,8 @@ public class PreferencesDialog extends JFIBDialog<FlexoPreferences> {
 
 		setTitle("Preferences");
 
+		getController().objectAddedToSelection(applicationContext.getPreferencesService().getFlexoPreferences());
+
 	}
 
 	public static class PreferencesFIBController extends FlexoFIBController {

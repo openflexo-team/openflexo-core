@@ -62,7 +62,7 @@ public class WelcomeDialog extends JFIBDialog<ApplicationData> {
 	public static final Resource FIB_FILE = ResourceLocator.locateResource("Fib/WelcomePanel.fib");
 
 	public WelcomeDialog(ApplicationContext applicationContext) {
-		super(applicationContext.getApplicationFIBLibraryService().retrieveFIBComponent(FIB_FILE), new ApplicationData(applicationContext),
+		super(applicationContext.getApplicationFIBLibraryService().retrieveFIBComponent(FIB_FILE), applicationContext.getApplicationData(),
 				FlexoFrame.getActiveFrame(), true, FlexoLocalization.getMainLocalizer());
 		setResizable(false);
 	}

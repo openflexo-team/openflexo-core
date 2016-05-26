@@ -25,7 +25,7 @@
 			</Panel>
 			<Browser id="2" showFooter="true" showRootsHandle="true"
 				rowHeight="18" manageDynamicModel="true" root="data"
-				selectionMode="DiscontiguousTreeSelection" boundToSelectionManager="false"
+				selectionMode="DiscontiguousTreeSelection" boundToSelectionManager="true"
 				localize="true" constraints="border(location=center)"
 				iteratorClassName="org.openflexo.prefs.PreferencesContainer"
 				useScrollBar="false" name="PreferencesBrowser" rootVisible="true"

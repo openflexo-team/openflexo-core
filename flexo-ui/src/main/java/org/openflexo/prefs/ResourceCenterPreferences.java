@@ -44,7 +44,6 @@ import java.util.logging.Logger;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenter.ResourceCenterEntry;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
-import org.openflexo.gina.annotation.FIBPanel;
 import org.openflexo.model.annotations.Adder;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.Getter.Cardinality;
@@ -64,11 +63,10 @@ import org.openflexo.model.annotations.XMLElement;
 @ModelEntity
 @ImplementationClass(ResourceCenterPreferences.ResourceCenterPreferencesImpl.class)
 @XMLElement
-@FIBPanel("Fib/Prefs/ResourceCenterPreferences.fib")
 @Preferences(
 		shortName = "Resource centers",
 		longName = "Resource Centers Preferences",
-		FIBPanel = "Fib/Prefs/ResourceCenterPrefs.fib",
+		FIBPanel = "Fib/Prefs/ResourceCenterPreferences.fib",
 		smallIcon = "Icons/Common/ResourceCenter.png",
 		bigIcon = "Icons/Common/ResourceCenter_64x64.png")
 public interface ResourceCenterPreferences extends ServicePreferences<FlexoResourceCenterService> {
