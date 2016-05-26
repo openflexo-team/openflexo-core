@@ -65,6 +65,8 @@ public interface PreferencesContainer extends FlexoObject {
 	public static final String CONTENTS = "contents";
 	@PropertyIdentifier(type = PreferencesContainer.class)
 	public static final String CONTAINER = "container";
+	@PropertyIdentifier(type = PreferencesService.class)
+	public static final String PREFERENCES_SERVICE = "preferencesService";
 
 	@Getter(value = CONTAINER, inverse = CONTENTS)
 	public PreferencesContainer getContainer();
@@ -94,6 +96,12 @@ public interface PreferencesContainer extends FlexoObject {
 	public FlexoProperty assertProperty(String propertyName);
 
 	public String getName();
+
+	@Getter(value = PREFERENCES_SERVICE, ignoreType = true)
+	public PreferencesService getPreferencesService();
+
+	@Setter(PREFERENCES_SERVICE)
+	public void setPreferencesService(PreferencesService preferencesService);
 
 	public static abstract class PreferencesContainerImpl extends FlexoObjectImpl implements PreferencesContainer {
 

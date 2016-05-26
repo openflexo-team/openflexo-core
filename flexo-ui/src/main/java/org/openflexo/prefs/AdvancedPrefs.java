@@ -37,7 +37,7 @@
  * 
  */
 
-package org.openflexo;
+package org.openflexo.prefs;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -47,6 +47,7 @@ import java.util.logging.Logger;
 
 import javax.swing.UIManager;
 
+import org.openflexo.Flexo;
 import org.openflexo.foundation.FlexoProperty;
 import org.openflexo.gina.annotation.FIBPanel;
 import org.openflexo.model.annotations.Getter;
@@ -55,7 +56,6 @@ import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.model.annotations.XMLElement;
-import org.openflexo.prefs.PreferencesContainer;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.swing.FlexoFont;

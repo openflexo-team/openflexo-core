@@ -237,7 +237,6 @@ public abstract class Module<M extends FlexoModule<M>> {
 	 * Default implementation does nothing
 	 */
 	public void initialize() {
-
 	}
 
 	/**
@@ -293,13 +292,13 @@ public abstract class Module<M extends FlexoModule<M>> {
 	}*/
 
 	/*private class ModuleLoaderCallable implements Callable<FlexoModule> {
-
+	
 		private final FlexoModule module;
-
+	
 		public ModuleLoaderCallable(FlexoModule module) {
 			this.module = module;
 		}
-
+	
 		@Override
 		public FlexoModule call() throws Exception {
 			if (logger.isLoggable(Level.INFO)) {
