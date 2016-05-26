@@ -95,6 +95,7 @@ public class ToolsMenu extends FlexoMenu {
 	public JMenuItem undoManagerItem;
 
 	public JMenuItem localizedEditorItem;
+	public JMenuItem applicationFIBEditorItem;
 
 	public JMenuItem rmItem;
 
@@ -115,6 +116,8 @@ public class ToolsMenu extends FlexoMenu {
 		add(fmlConsoleItem = new FMLConsoleItem());
 		add(loggingItem = new LoggingItem());
 		if (Flexo.isDev) {
+			addSeparator();
+			add(applicationFIBEditorItem = new ApplicationFIBEditorItem());
 			add(localizedEditorItem = new LocalizedEditorItem());
 		}
 		add(rmItem = new ResourceManagerItem());
@@ -210,6 +213,30 @@ public class ToolsMenu extends FlexoMenu {
 		public void actionPerformed(ActionEvent arg0) {
 			FlexoLoggingViewer.showLoggingViewer(FlexoLoggingManager.instance(),
 					getController().getApplicationFIBLibraryService().getApplicationFIBLibrary(), getController().getFlexoFrame());
+		}
+	}
+
+	// ===================================================================
+	// ========================== FML Console ============================
+	// ===================================================================
+
+	public class ApplicationFIBEditorItem extends FlexoMenuItem {
+
+		public ApplicationFIBEditorItem() {
+			super(new ApplicationFIBEditorAction(), "GINA_FIB_editor", null, getController(), true);
+		}
+
+	}
+
+	public class ApplicationFIBEditorAction extends AbstractAction {
+		public ApplicationFIBEditorAction() {
+			super();
+		}
+
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			getController().getApplicationFIBLibraryService().getApplicationFIBEditor().setVisible(true);
+			getController().getApplicationFIBLibraryService().getApplicationFIBEditor().toFront();
 		}
 	}
 

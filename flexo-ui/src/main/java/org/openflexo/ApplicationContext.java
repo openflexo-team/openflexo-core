@@ -62,6 +62,7 @@ import org.openflexo.foundation.resource.JarResourceCenter;
 import org.openflexo.foundation.task.FlexoTaskManager;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.utils.ProjectLoadingHandler;
+import org.openflexo.gina.swing.editor.JFIBEditor;
 import org.openflexo.module.ModuleLoader;
 import org.openflexo.prefs.AdvancedPrefs;
 import org.openflexo.prefs.ApplicationFIBLibraryService;
@@ -121,7 +122,10 @@ public abstract class ApplicationContext extends DefaultFlexoServiceManager impl
 		registerService(flexoServerInstanceManager);
 		ResourceConsistencyService resourceConsistencyService = createResourceConsistencyService();
 		registerService(resourceConsistencyService);
+
 	}
+
+	private JFIBEditor applicationFIBEditor;
 
 	public ApplicationData getApplicationData() {
 		return applicationData;
@@ -252,12 +256,14 @@ public abstract class ApplicationContext extends DefaultFlexoServiceManager impl
 			for (FlexoResourceCenter<?> rc : ((FlexoResourceCenterService) caller).getResourceCenters()) {
 				if (rc instanceof DirectoryResourceCenter) {
 					rcList.add(((DirectoryResourceCenter) rc).getDirectory());
-				} else if (rc instanceof JarResourceCenter) {
+				}
+				else if (rc instanceof JarResourceCenter) {
 					rcList.add(new File(((JarResourceCenter) rc).getJarResourceImpl().getRelativePath()));
 				}
 			}
 			getGeneralPreferences().setDirectoryResourceCenterList(rcList);
-		} else if (notification instanceof DefaultPackageResourceCenterIsNotInstalled && caller instanceof FlexoResourceCenterService) {
+		}
+		else if (notification instanceof DefaultPackageResourceCenterIsNotInstalled && caller instanceof FlexoResourceCenterService) {
 			defaultPackagedResourceCenterIsNotInstalled = true;
 		}
 	}

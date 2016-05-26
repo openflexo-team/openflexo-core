@@ -47,6 +47,8 @@ import org.openflexo.gina.ApplicationFIBLibrary;
 import org.openflexo.gina.ApplicationFIBLibrary.ApplicationFIBLibraryImpl;
 import org.openflexo.gina.model.FIBComponent;
 import org.openflexo.gina.model.FIBModelFactory;
+import org.openflexo.gina.swing.editor.JFIBEditor;
+import org.openflexo.gina.swing.view.SwingViewFactory;
 import org.openflexo.rm.Resource;
 import org.openflexo.toolbox.HasPropertyChangeSupport;
 
@@ -62,6 +64,8 @@ public class ApplicationFIBLibraryService extends FlexoServiceImpl implements Fl
 
 	private ApplicationFIBLibrary applicationFIBLibrary;
 
+	private JFIBEditor applicationFIBEditor;
+
 	@Override
 	public ApplicationContext getServiceManager() {
 		return (ApplicationContext) super.getServiceManager();
@@ -70,10 +74,16 @@ public class ApplicationFIBLibraryService extends FlexoServiceImpl implements Fl
 	@Override
 	public void initialize() {
 		applicationFIBLibrary = ApplicationFIBLibraryImpl.instance();
+		applicationFIBEditor = new JFIBEditor(applicationFIBLibrary);
+		SwingViewFactory.INSTANCE.installInteractiveFIBEditor(applicationFIBEditor);
 	}
 
 	public ApplicationFIBLibrary getApplicationFIBLibrary() {
 		return applicationFIBLibrary;
+	}
+
+	public JFIBEditor getApplicationFIBEditor() {
+		return applicationFIBEditor;
 	}
 
 	public FIBComponent retrieveFIBComponent(Resource fibResource) {
