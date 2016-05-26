@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Panel id="0" darkLevel="0" useScrollBar="false" borderLeft="0"
-	protectContent="false" height="700" name="PreferencesPanel" layout="border"
+	protectContent="false" height="600" name="PreferencesPanel" layout="border"
 	controllerClassName="org.openflexo.components.PreferencesDialog$PreferencesFIBController"
-	border="empty" trackViewPortWidth="true" width="1000"
+	border="empty" trackViewPortWidth="true" width="700"
 	dataClassName="org.openflexo.prefs.FlexoPreferences" titleFont="Lucida Grande,0,13"
 	borderTop="5" trackViewPortHeight="true">
 	<SplitPanel id="1" useScrollBar="false" index="2"
