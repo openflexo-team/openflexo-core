@@ -47,11 +47,11 @@ import java.util.logging.Logger;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openflexo.foundation.OpenflexoTestCase;
+import org.openflexo.foundation.ProjectLoader;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.module.ModuleLoader;
-import org.openflexo.project.InteractiveProjectLoader;
 import org.openflexo.test.OrderedRunner;
 import org.openflexo.test.TestOrder;
 import org.openflexo.view.controller.TechnologyAdapterControllerService;
@@ -59,8 +59,7 @@ import org.openflexo.view.controller.TechnologyAdapterControllerService;
 @RunWith(OrderedRunner.class)
 public class TestServiceManager extends OpenflexoTestCase {
 
-	protected static final Logger logger = Logger
-			.getLogger(TestServiceManager.class.getPackage().getName());
+	protected static final Logger logger = Logger.getLogger(TestServiceManager.class.getPackage().getName());
 
 	private static ApplicationContext testApplicationContext;
 	private static FlexoResourceCenter resourceCenter;
@@ -73,20 +72,15 @@ public class TestServiceManager extends OpenflexoTestCase {
 	public void test0UseTestApplicationContext() {
 		log("test0UseTestApplicationContext()");
 		testApplicationContext = new TestApplicationContext();
-		resourceCenter = testApplicationContext.getResourceCenterService()
-				.getResourceCenters().get(0);
+		resourceCenter = testApplicationContext.getResourceCenterService().getResourceCenters().get(0);
 
-		logger.info("services: "
-				+ testApplicationContext.getRegisteredServices());
+		logger.info("services: " + testApplicationContext.getRegisteredServices());
 
-		assertNotNull(testApplicationContext.getService(InteractiveProjectLoader.class));
+		assertNotNull(testApplicationContext.getService(ProjectLoader.class));
 		assertNotNull(testApplicationContext.getService(ModuleLoader.class));
-		assertNotNull(testApplicationContext
-				.getService(FlexoResourceCenterService.class));
-		assertNotNull(testApplicationContext
-				.getService(TechnologyAdapterService.class));
-		assertNotNull(testApplicationContext
-				.getService(TechnologyAdapterControllerService.class));
+		assertNotNull(testApplicationContext.getService(FlexoResourceCenterService.class));
+		assertNotNull(testApplicationContext.getService(TechnologyAdapterService.class));
+		assertNotNull(testApplicationContext.getService(TechnologyAdapterControllerService.class));
 
 	}
 
@@ -97,8 +91,7 @@ public class TestServiceManager extends OpenflexoTestCase {
 	@TestOrder(2)
 	public void test1ModuleLoading() {
 		ModuleLoader moduleLoader = testApplicationContext.getModuleLoader();
-		assertEquals(moduleLoader,
-				testApplicationContext.getService(ModuleLoader.class));
+		assertEquals(moduleLoader, testApplicationContext.getService(ModuleLoader.class));
 
 		/*
 		 * UserType.setCurrentUserType(UserType.MAINTAINER);
