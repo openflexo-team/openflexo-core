@@ -1783,7 +1783,7 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 		if (!getApplicationFIBLibraryService().componentIsLoaded(fibResource)) {
 			Progress.progress(FlexoLocalization.localizedForKey("loading_component") + " " + fibResource);
 
-			FlexoProgress progress = ProgressWindow.makeProgressWindow(FlexoLocalization.localizedForKey("loading_interface..."), 3);
+			// FlexoProgress progress = ProgressWindow.makeProgressWindow(FlexoLocalization.localizedForKey("loading_interface..."), 3);
 			// progress.setProgress("loading_component");
 			getApplicationFIBLibraryService().retrieveFIBComponent(fibResource);
 			// progress.setProgress("build_interface");

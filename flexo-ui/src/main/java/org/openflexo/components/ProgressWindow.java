@@ -166,7 +166,8 @@ public class ProgressWindow extends JDialog implements FlexoProgress {
 	public synchronized static ProgressWindow makeProgressWindow(String title, int steps) {
 		if (_instance != null) {
 			logger.warning("Invoke creation of new progress window while an other one is displayed. Using old one.");
-		} else {
+		}
+		else {
 			_instance = new ProgressWindow(getActiveModuleFrame(), title, steps);
 		}
 		return _instance;
@@ -174,6 +175,7 @@ public class ProgressWindow extends JDialog implements FlexoProgress {
 
 	private ProgressWindow(Window window, String title, int steps) {
 		super(window);
+
 		setUndecorated(true);
 		initOwner = window;
 		if (initOwner != null) {
@@ -278,7 +280,8 @@ public class ProgressWindow extends JDialog implements FlexoProgress {
 				((JFrame) getOwner()).getGlassPane().addMouseMotionListener(mouseListener);
 				((JFrame) getOwner()).getGlassPane().addFocusListener(focusListener);
 				((JFrame) getOwner()).getGlassPane().requestFocusInWindow();
-			} else {
+			}
+			else {
 				((JFrame) getOwner()).getGlassPane().removeMouseListener(mouseListener);
 				((JFrame) getOwner()).getGlassPane().removeMouseMotionListener(mouseListener);
 				((JFrame) getOwner()).getGlassPane().removeFocusListener(focusListener);
@@ -297,7 +300,8 @@ public class ProgressWindow extends JDialog implements FlexoProgress {
 	public synchronized static void showProgressWindow(Window owner, String title, int steps) {
 		if (_instance != null) {
 			logger.warning("Try to open another ProgressWindow !!!!");
-		} else {
+		}
+		else {
 			_instance = new ProgressWindow(owner, title, steps);
 		}
 	}
@@ -390,7 +394,8 @@ public class ProgressWindow extends JDialog implements FlexoProgress {
 			secondaryProgressBar.setMaximum(steps);
 			secondaryProgress = 1;
 			secondaryProgressBar.setValue(secondaryProgress);
-		} else {
+		}
+		else {
 			isSecondaryProgressIndeterminate = true;
 			secondaryProgressBar.setIndeterminate(true);
 		}
@@ -446,9 +451,10 @@ public class ProgressWindow extends JDialog implements FlexoProgress {
 	public void center() {
 		Dimension dim;
 		if (initOwner != null && initOwner.isVisible()) {
-			dim = new Dimension(initOwner.getLocationOnScreen().x + initOwner.getWidth() / 2, initOwner.getLocationOnScreen().y
-					+ initOwner.getHeight() / 2);
-		} else {
+			dim = new Dimension(initOwner.getLocationOnScreen().x + initOwner.getWidth() / 2,
+					initOwner.getLocationOnScreen().y + initOwner.getHeight() / 2);
+		}
+		else {
 			dim = Toolkit.getDefaultToolkit().getScreenSize();
 		}
 		setLocation(dim.width - getSize().width / 2, dim.height - getSize().height / 2);
