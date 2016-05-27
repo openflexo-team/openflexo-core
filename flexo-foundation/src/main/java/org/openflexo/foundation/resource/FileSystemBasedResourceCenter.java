@@ -78,7 +78,7 @@ import org.openflexo.toolbox.StringUtils;
  * @author sylvain
  * 
  */
-public abstract class FileSystemBasedResourceCenter extends FileResourceRepository<FlexoResource<?>> implements FlexoResourceCenter<File> {
+public abstract class FileSystemBasedResourceCenter extends FileResourceRepository<FlexoResource<?>>implements FlexoResourceCenter<File> {
 
 	protected static final Logger logger = Logger.getLogger(FileSystemBasedResourceCenter.class.getPackage().getName());
 
@@ -277,7 +277,8 @@ public abstract class FileSystemBasedResourceCenter extends FileResourceReposito
 		List<File> allFiles = new ArrayList<File>();
 		if (getRootDirectory() != null) {
 			appendFiles(getRootDirectory(), allFiles);
-		} else {
+		}
+		else {
 			logger.warning("ResourceCenter: " + this + " rootDirectory is null");
 		}
 		return allFiles.iterator();
@@ -324,7 +325,8 @@ public abstract class FileSystemBasedResourceCenter extends FileResourceReposito
 				directoryWatcher.waitCurrentExecution();
 				directoryWatcher.runNow();
 				startDirectoryWatching();
-			} else {
+			}
+			else {
 				directoryWatcher.runNow();
 			}
 		}
@@ -475,7 +477,8 @@ public abstract class FileSystemBasedResourceCenter extends FileResourceReposito
 						logger.info("fileDeleted " + file + " with adapter " + adapter.getName());
 						if (adapter.contentsDeleted(this, file)) {
 							filesToBeNotified.remove(file);
-						} else {
+						}
+						else {
 							filesToBeNotified.add(file);
 						}
 					}
@@ -500,8 +503,10 @@ public abstract class FileSystemBasedResourceCenter extends FileResourceReposito
 						}
 					}
 				}
-				//XTOF: avoid infinite loop of notifications
-				removedFilesToBeRenotified.get(adapter).clear();
+				// XTOF: avoid infinite loop of notifications
+				if (removedFilesToBeRenotified != null && removedFilesToBeRenotified.get(adapter) != null) {
+					removedFilesToBeRenotified.get(adapter).clear();
+				}
 			}
 		}
 	}
@@ -582,7 +587,8 @@ public abstract class FileSystemBasedResourceCenter extends FileResourceReposito
 		HashMap<Class<? extends ResourceRepository<?>>, ResourceRepository<?>> map = getRepositoriesForAdapter(technologyAdapter);
 		if (map.get(repositoryType) == null) {
 			map.put(repositoryType, repository);
-		} else {
+		}
+		else {
 			logger.warning("Repository already registered: " + repositoryType + " for " + repository);
 		}
 	}
@@ -657,7 +663,8 @@ public abstract class FileSystemBasedResourceCenter extends FileResourceReposito
 					String defaultBaseURI = getDefaultBaseURI();
 					if (defaultBaseURI.endsWith(File.separator) || defaultBaseURI.endsWith("/")) {
 						return getDefaultBaseURI() + path.replace(File.separator, "/") + resource.getName();
-					} else {
+					}
+					else {
 						return getDefaultBaseURI() + "/" + path.replace(File.separator, "/") + resource.getName();
 					}
 				}
@@ -685,13 +692,15 @@ public abstract class FileSystemBasedResourceCenter extends FileResourceReposito
 				extension = "." + extension;
 			}
 			fileName = resourceName + extension;
-		} else {
+		}
+		else {
 			fileName = resourceName;
 		}
 		if (relativePath != null) {
 			if (!relativePath.endsWith(File.separator)) {
 				fileName = relativePath + File.separator + fileName;
-			} else {
+			}
+			else {
 				fileName = relativePath + fileName;
 			}
 		}
