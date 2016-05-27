@@ -66,7 +66,9 @@ import org.openflexo.gina.swing.editor.JFIBEditor;
 import org.openflexo.module.ModuleLoader;
 import org.openflexo.prefs.AdvancedPrefs;
 import org.openflexo.prefs.ApplicationFIBLibraryService;
+import org.openflexo.prefs.BugReportPreferences;
 import org.openflexo.prefs.GeneralPreferences;
+import org.openflexo.prefs.LoggingPreferences;
 import org.openflexo.prefs.PreferencesService;
 import org.openflexo.project.InteractiveProjectLoader;
 import org.openflexo.rm.ActivateTechnologyAdapterTask;
@@ -320,14 +322,28 @@ public abstract class ApplicationContext extends DefaultFlexoServiceManager impl
 
 	public GeneralPreferences getGeneralPreferences() {
 		if (getPreferencesService() != null) {
-			return getPreferencesService().getPreferences(GeneralPreferences.class);
+			return getPreferencesService().getGeneralPreferences();
 		}
 		return null;
 	}
 
 	public AdvancedPrefs getAdvancedPrefs() {
 		if (getPreferencesService() != null) {
-			return getPreferencesService().getPreferences(AdvancedPrefs.class);
+			return getPreferencesService().getAdvancedPrefs();
+		}
+		return null;
+	}
+
+	public LoggingPreferences getLoggingPreferences() {
+		if (getPreferencesService() != null) {
+			return getPreferencesService().getLoggingPreferences();
+		}
+		return null;
+	}
+
+	public BugReportPreferences getBugReportPreferences() {
+		if (getPreferencesService() != null) {
+			return getPreferencesService().getBugReportPreferences();
 		}
 		return null;
 	}

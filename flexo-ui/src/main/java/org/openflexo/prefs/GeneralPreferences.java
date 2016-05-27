@@ -82,7 +82,6 @@ public interface GeneralPreferences extends PreferencesContainer {
 	public static final String LANGUAGE_KEY = "language";
 	public static final String SMTP_SERVER_KEY = "smtpServer";
 	public static final String FAVORITE_MODULE_KEY = "favoriteModule";
-	public static final String BUG_REPORT_URL_KEY = "secureBugReportDirectActionUrl";
 	public static final String DEFAULT_DOC_FORMAT = "defaultDocFormat";
 	public static final String USER_IDENTIFIER_KEY = "userIdentifier";
 	public static final String LAST_OPENED_PROJECTS_1 = "lastProjects_1";
@@ -376,7 +375,8 @@ public interface GeneralPreferences extends PreferencesContainer {
 			performSuperSetter(LANGUAGE_KEY, language);
 			if (language != null && language.equals(Language.FRENCH)) {
 				Locale.setDefault(Locale.FRANCE);
-			} else {
+			}
+			else {
 				Locale.setDefault(Locale.US);
 			}
 			FlexoLocalization.setCurrentLanguage(language);
@@ -494,10 +494,12 @@ public interface GeneralPreferences extends PreferencesContainer {
 				if (userName.length() > 3) {
 					returned = userName.substring(0, 3);
 					returned = returned.toUpperCase();
-				} else if (userName.length() > 0) {
+				}
+				else if (userName.length() > 0) {
 					returned = userName.substring(0, userName.length());
 					returned = returned.toUpperCase();
-				} else {
+				}
+				else {
 					returned = "FLX";
 				}
 				// setUserIdentifier(returned);
@@ -588,7 +590,8 @@ public interface GeneralPreferences extends PreferencesContainer {
 			String directoriesAsString = getDirectoryResourceCenterListAsString();
 			if (StringUtils.isEmpty(directoriesAsString)) {
 				return Collections.emptyList();
-			} else {
+			}
+			else {
 				List<File> returned = new ArrayList<File>();
 				StringTokenizer st = new StringTokenizer(directoriesAsString, ",");
 				while (st.hasMoreTokens()) {
@@ -610,7 +613,8 @@ public interface GeneralPreferences extends PreferencesContainer {
 			}
 			if (alreadyRegistered.size() == 0) {
 				setDirectoryResourceCenterListAsString(dirRC.getAbsolutePath());
-			} else {
+			}
+			else {
 				setDirectoryResourceCenterListAsString(getDirectoryResourceCenterList() + "," + dirRC.getAbsolutePath());
 			}
 		}

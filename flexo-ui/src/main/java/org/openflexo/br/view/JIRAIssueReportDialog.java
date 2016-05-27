@@ -260,10 +260,10 @@ public class JIRAIssueReportDialog extends PropertyChangedSupportDefaultImplemen
 			while (!ok) {
 				if (dialog.getStatus() == Status.VALIDATED) {
 					try {
-						while (serviceManager.getAdvancedPrefs().getBugReportUser() == null
-								|| serviceManager.getAdvancedPrefs().getBugReportUser().trim().length() == 0
-								|| serviceManager.getAdvancedPrefs().getBugReportPassword() == null
-								|| serviceManager.getAdvancedPrefs().getBugReportPassword().trim().length() == 0) {
+						while (serviceManager.getBugReportPreferences().getBugReportUser() == null
+								|| serviceManager.getBugReportPreferences().getBugReportUser().trim().length() == 0
+								|| serviceManager.getBugReportPreferences().getBugReportPassword() == null
+								|| serviceManager.getBugReportPreferences().getBugReportPassword().trim().length() == 0) {
 							if (!JIRAURLCredentialsDialog.askLoginPassword(serviceManager)) {
 								break;
 							}
@@ -277,7 +277,8 @@ public class JIRAIssueReportDialog extends PropertyChangedSupportDefaultImplemen
 					} catch (UnauthorizedJIRAAccessException e1) {
 						if (JIRAURLCredentialsDialog.askLoginPassword(serviceManager)) {
 							continue;
-						} else {
+						}
+						else {
 							break;
 						}
 					} catch (JIRAException e1) {
@@ -304,7 +305,8 @@ public class JIRAIssueReportDialog extends PropertyChangedSupportDefaultImplemen
 					} catch (Exception e1) {
 						e1.printStackTrace();
 					}
-				} else {
+				}
+				else {
 					break;
 				}
 				if (!ok) {
@@ -407,8 +409,9 @@ public class JIRAIssueReportDialog extends PropertyChangedSupportDefaultImplemen
 	}
 
 	public boolean send() throws Exception {
-		JIRAClient client = new JIRAClient(serviceManager.getAdvancedPrefs().getBugReportUrl(),
-				serviceManager.getAdvancedPrefs().getBugReportUser(), serviceManager.getAdvancedPrefs().getBugReportPassword());
+		JIRAClient client = new JIRAClient(serviceManager.getBugReportPreferences().getBugReportUrl(),
+				serviceManager.getBugReportPreferences().getBugReportUser(),
+				serviceManager.getBugReportPreferences().getBugReportPassword());
 		final SubmitIssueReport report = new SubmitIssueReport();
 		SubmitIssueToJIRA target = new SubmitIssueToJIRA(client, report);
 		int steps = target.getNumberOfSteps();
@@ -424,19 +427,23 @@ public class JIRAIssueReportDialog extends PropertyChangedSupportDefaultImplemen
 						if (submit) {
 							client.setTimeout(client.getTimeout() * 2);// Let's increase time out
 						}
-					} else if (target.getException() instanceof UnknownHostException) {
+					}
+					else if (target.getException() instanceof UnknownHostException) {
 						submit = FlexoController.confirm(
 								FlexoLocalization.localizedForKey("could_not_send_to_host_check_internet_connexion_and_try_again") + "? ");
 						// If the user want to stop, quit, otherwise clean the exception and try again
 						if (submit == false) {
 							throw target.getException();
-						} else {
+						}
+						else {
 							target.exception = null;
 						}
-					} else {
+					}
+					else {
 						throw target.getException();
 					}
-				} else {
+				}
+				else {
 					submit = false;
 				}
 			}
@@ -496,7 +503,8 @@ public class JIRAIssueReportDialog extends PropertyChangedSupportDefaultImplemen
 			String commitID = "commit.id = " + ApplicationVersion.COMMIT_ID + "\n";
 			if (sendSystemProperties) {
 				issue.setSystemProperties(buildid + commitID + ToolBox.getSystemProperties(true));
-			} else {
+			}
+			else {
 				issue.setSystemProperties(buildid + commitID);
 			}
 
@@ -523,7 +531,8 @@ public class JIRAIssueReportDialog extends PropertyChangedSupportDefaultImplemen
 					}
 				}*/
 				// getIssue().setVersion(selected);
-			} else {
+			}
+			else {
 				getIssue().setVersion(null);
 			}
 			// Always call make valid before replacing by identity members
@@ -541,7 +550,7 @@ public class JIRAIssueReportDialog extends PropertyChangedSupportDefaultImplemen
 				if (submit.getKey() != null) {
 					JIRAIssue result = new JIRAIssue();
 					result.setKey(submit.getKey());
-					report.setIssueLink(serviceManager.getAdvancedPrefs().getBugReportUrl() + "/browse/" + submit.getKey());
+					report.setIssueLink(serviceManager.getBugReportPreferences().getBugReportUrl() + "/browse/" + submit.getKey());
 					if (sendLogs) {
 						ProgressWindow.instance().setProgress(FlexoLocalization.localizedForKey("sending_logs"));
 						progressAdapter.resetCount();
@@ -635,7 +644,7 @@ public class JIRAIssueReportDialog extends PropertyChangedSupportDefaultImplemen
 					}
 				}
 			} catch (UnknownHostException e) {
-				logger.severe("Not able to connect to URL " + serviceManager.getAdvancedPrefs().getBugReportUrl()
+				logger.severe("Not able to connect to URL " + serviceManager.getBugReportPreferences().getBugReportUrl()
 						+ ". Please check your internet connection.");
 				this.exception = e;
 			} catch (IOException e) {

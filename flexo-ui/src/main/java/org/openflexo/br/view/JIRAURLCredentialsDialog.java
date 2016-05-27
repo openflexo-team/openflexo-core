@@ -58,8 +58,8 @@ public class JIRAURLCredentialsDialog {
 
 	public JIRAURLCredentialsDialog(ApplicationContext applicationContext) {
 		this.applicationContext = applicationContext;
-		login = applicationContext.getAdvancedPrefs().getBugReportUser();
-		password = applicationContext.getAdvancedPrefs().getBugReportPassword();
+		login = applicationContext.getBugReportPreferences().getBugReportUser();
+		password = applicationContext.getBugReportPreferences().getBugReportPassword();
 	}
 
 	public String getLogin() {
@@ -79,12 +79,12 @@ public class JIRAURLCredentialsDialog {
 	}
 
 	public String getUrlLabel() {
-		return "<html><a href=\"" + applicationContext.getAdvancedPrefs().getBugReportUrl() + "\">"
-				+ applicationContext.getAdvancedPrefs().getBugReportUrl() + "</a></html>";
+		return "<html><a href=\"" + applicationContext.getBugReportPreferences().getBugReportUrl() + "\">"
+				+ applicationContext.getBugReportPreferences().getBugReportUrl() + "</a></html>";
 	}
 
 	public void openUrl() {
-		ToolBox.openURL(applicationContext.getAdvancedPrefs().getBugReportUrl());
+		ToolBox.openURL(applicationContext.getBugReportPreferences().getBugReportUrl());
 	}
 
 	public static boolean askLoginPassword(ApplicationContext applicationContext) {
@@ -93,8 +93,9 @@ public class JIRAURLCredentialsDialog {
 				applicationContext.getApplicationFIBLibraryService().getApplicationFIBLibrary(), FlexoFrame.getActiveFrame(), true,
 				FlexoLocalization.getMainLocalizer());
 		if (dialog.getStatus() == Status.VALIDATED) {
-			applicationContext.getAdvancedPrefs().setBugReportUser(credentialsDialog.login);
-			applicationContext.getAdvancedPrefs().setBugReportPassword(credentialsDialog.password);
+			applicationContext.getBugReportPreferences().setBugReportUser(credentialsDialog.login);
+			applicationContext.getBugReportPreferences().setBugReportPassword(credentialsDialog.password);
+			applicationContext.getPreferencesService().savePreferences();
 			// AdvancedPrefs.save();
 			return true;
 		}

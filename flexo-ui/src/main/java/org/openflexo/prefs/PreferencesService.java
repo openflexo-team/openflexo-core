@@ -38,7 +38,6 @@
 
 package org.openflexo.prefs;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -61,7 +60,6 @@ import org.openflexo.module.Module;
 import org.openflexo.module.ModuleLoader;
 import org.openflexo.prefs.FlexoPreferencesResource.FlexoPreferencesResourceImpl;
 import org.openflexo.toolbox.HasPropertyChangeSupport;
-import org.openflexo.toolbox.ToolBox;
 import org.openflexo.view.FlexoFrame;
 
 /**
@@ -117,14 +115,20 @@ public class PreferencesService extends FlexoServiceImpl implements FlexoService
 				initializePreferencesForModule(m);
 			}
 		}
+
+		managePreferences(LoggingPreferences.class, getFlexoPreferences());
+		managePreferences(BugReportPreferences.class, getFlexoPreferences());
+
 	}
 
 	private <S extends FlexoService> Class<? extends ServicePreferences<S>> getServicePreferencesClass(S service) {
 		if (service instanceof FlexoResourceCenterService) {
 			return (Class<? extends ServicePreferences<S>>) ResourceCenterPreferences.class;
-		} else if (service instanceof TechnologyAdapterService) {
+		}
+		else if (service instanceof TechnologyAdapterService) {
 			return (Class<? extends ServicePreferences<S>>) TechnologyAdapterPreferences.class;
-		} else if (service instanceof ModuleLoader) {
+		}
+		else if (service instanceof ModuleLoader) {
 			return (Class<? extends ServicePreferences<S>>) ModuleLoaderPreferences.class;
 		}
 		return null;
@@ -160,7 +164,8 @@ public class PreferencesService extends FlexoServiceImpl implements FlexoService
 					getResourceCenterPreferences().ensureResourceEntryIsPresent(addedFlexoResourceCenter.getResourceCenterEntry());
 				}
 				savePreferences();
-			} else if (notification instanceof ResourceCenterRemoved && !readOnly()) {
+			}
+			else if (notification instanceof ResourceCenterRemoved && !readOnly()) {
 				getResourceCenterPreferences().ensureResourceEntryIsNoMorePresent(
 						((ResourceCenterRemoved) notification).getRemovedResourceCenter().getResourceCenterEntry());
 				savePreferences();
@@ -197,6 +202,10 @@ public class PreferencesService extends FlexoServiceImpl implements FlexoService
 				classes.add(m.getPreferencesClass());
 			}
 		}
+
+		classes.add(LoggingPreferences.class);
+		classes.add(BugReportPreferences.class);
+
 		return classes;
 	}
 
@@ -220,34 +229,6 @@ public class PreferencesService extends FlexoServiceImpl implements FlexoService
 		return resource.getFactory();
 	}
 
-	public File getLogDirectory() {
-		File outputDir = new File(System.getProperty("user.home") + "/Library/Logs/OpenFlexo");
-		if (ToolBox.getPLATFORM() == ToolBox.WINDOWS) {
-			boolean ok = false;
-			String appData = System.getenv("LOCALAPPDATA");
-			if (appData != null) {
-				File f = new File(appData);
-				if (f.isDirectory() && f.canWrite()) {
-					outputDir = new File(f, "OpenFlexo/Logs");
-					ok = true;
-				}
-				if (!ok) {
-					appData = System.getenv("APPDATA");
-					if (appData != null) {
-						f = new File(appData);
-						if (f.isDirectory() && f.canWrite()) {
-							outputDir = new File(f, "OpenFlexo/Logs");
-							ok = true;
-						}
-					}
-				}
-			}
-		} else if (ToolBox.getPLATFORM() == ToolBox.LINUX) {
-			outputDir = new File(System.getProperty("user.home"), ".openflexo/logs");
-		}
-		return outputDir;
-	}
-
 	public <P extends PreferencesContainer> P getPreferences(Class<P> containerType) {
 		return getFlexoPreferences().getPreferences(containerType);
 	}
@@ -266,6 +247,14 @@ public class PreferencesService extends FlexoServiceImpl implements FlexoService
 
 	public AdvancedPrefs getAdvancedPrefs() {
 		return managePreferences(AdvancedPrefs.class, getFlexoPreferences());
+	}
+
+	public LoggingPreferences getLoggingPreferences() {
+		return managePreferences(LoggingPreferences.class, getFlexoPreferences());
+	}
+
+	public BugReportPreferences getBugReportPreferences() {
+		return managePreferences(BugReportPreferences.class, getFlexoPreferences());
 	}
 
 	public ResourceCenterPreferences getResourceCenterPreferences() {

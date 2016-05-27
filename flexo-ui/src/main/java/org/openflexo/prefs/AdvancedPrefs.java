@@ -55,8 +55,6 @@ import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.model.annotations.XMLElement;
-import org.openflexo.rm.Resource;
-import org.openflexo.rm.ResourceLocator;
 import org.openflexo.swing.FlexoFont;
 import org.openflexo.swing.LookAndFeel;
 import org.openflexo.swing.converter.LookAndFeelConverter;
@@ -87,8 +85,6 @@ public interface AdvancedPrefs extends PreferencesContainer {
 	public static final String ECLIPSE_WORKSPACE_DIRECTORY_KEY = "eclipseWorkspaceDirectory";
 
 	public static final String BROWSERFONT_KEY = "browser_font";
-
-	public static final String BUG_REPORT_URL_KEY = "bug_report_url";
 
 	public static final String WEB_SERVICE_INSTANCE = "webServiceInstance";
 	public static final String WEB_SERVICE_URL_KEY = "webServiceUrl";
@@ -124,14 +120,6 @@ public interface AdvancedPrefs extends PreferencesContainer {
 	public static final String PREFERENCE_OVERRIDE_FROM_FLEXO_PROPERTIES_DONE = "preference_override_from_flexo_properties_done";
 
 	public static final String ALLOWSDOCSUBMISSION = "allowsDocSubmission";
-	public static final String LOGCOUNT = "logCount";
-	public static final String KEEPLOGTRACE = "keepLogTrace";
-	public static final String DEFAULT_LOG_LEVEL = "default.logging.level";
-	public static final String CUSTOM_LOG_CONFIG_FILE = "logging.file.name";
-
-	// public static final String FLEXO_SERVER_INSTANCE_URL = "flexoserver_instance_url";
-	public static final String BUG_REPORT_USER = "bug_report_user";
-	public static final String BUG_REPORT_PASWORD = "bug_report_password";
 
 	/*@Override
 	public String getName() {
@@ -156,27 +144,6 @@ public interface AdvancedPrefs extends PreferencesContainer {
 
 	@Setter(ECLIPSE_WORKSPACE_DIRECTORY_KEY)
 	public void setEclipseWorkspaceDirectory(File f);
-
-	@Getter(value = BUG_REPORT_URL_KEY, defaultValue = "https://bugs.openflexo.org")
-	@XMLAttribute
-	public String getBugReportUrl();
-
-	@Setter(BUG_REPORT_URL_KEY)
-	public void setBugReportUrl(String bugReportURL);
-
-	@Getter(BUG_REPORT_PASWORD)
-	@XMLAttribute
-	public String getBugReportPassword();
-
-	@Setter(BUG_REPORT_PASWORD)
-	public void setBugReportPassword(String password);
-
-	@Getter(BUG_REPORT_USER)
-	@XMLAttribute
-	public String getBugReportUser();
-
-	@Setter(BUG_REPORT_USER)
-	public void setBugReportUser(String user);
 
 	@Getter(value = SYNCHRONIZED_BROWSER, defaultValue = "false")
 	@XMLAttribute
@@ -361,40 +328,6 @@ public interface AdvancedPrefs extends PreferencesContainer {
 	@Setter(PREFERENCE_OVERRIDE_FROM_FLEXO_PROPERTIES_DONE)
 	public void setPreferenceOverrideFromFlexoPropertiesDone(boolean preferenceOverrideFromFlexoPropertiesDone);
 
-	@Getter(value = KEEPLOGTRACE, defaultValue = "true")
-	@XMLAttribute
-	public boolean getIsLoggingTrace();
-
-	@Setter(KEEPLOGTRACE)
-	public void setIsLoggingTrace(boolean b);
-
-	@Getter(CUSTOM_LOG_CONFIG_FILE)
-	@XMLAttribute
-	public String getLoggingFileName();
-
-	@Setter(CUSTOM_LOG_CONFIG_FILE)
-	public void setLoggingFileName(String loggingFileName);
-
-	public Resource getCustomLoggingFile();
-
-	@Getter(DEFAULT_LOG_LEVEL)
-	@XMLAttribute
-	public String getDefaultLoggingLevelAsString();
-
-	@Setter(DEFAULT_LOG_LEVEL)
-	public void setDefaultLoggingLevelAsString(String aString);
-
-	public Level getDefaultLoggingLevel();
-
-	public void setDefaultLoggingLevel(Level l);
-
-	@Getter(value = LOGCOUNT, defaultValue = "-1")
-	@XMLAttribute
-	public int getMaxLogCount();
-
-	@Setter(LOGCOUNT)
-	public void setMaxLogCount(int c);
-
 	@Getter(value = ALLOWSDOCSUBMISSION, defaultValue = "false")
 	@XMLAttribute
 	public boolean getAllowsDocSubmission();
@@ -478,10 +411,12 @@ public interface AdvancedPrefs extends PreferencesContainer {
 								sb.append(noProxyHost);
 							}
 							System.setProperty("http.nonProxyHosts", sb.toString());
-						} else {
+						}
+						else {
 							System.clearProperty("http.nonProxyHosts");
 						}
-					} else {
+					}
+					else {
 						System.clearProperty("http.proxyHost");
 						System.clearProperty("http.proxyPort");
 						System.clearProperty("https.proxyHost");
@@ -708,40 +643,6 @@ public interface AdvancedPrefs extends PreferencesContainer {
 		public void setProxyPassword(String proxyPassword) {
 			performSuperSetter(PROXY_PASSWORD, proxyPassword);
 			applyProxySettings();
-		}
-
-		@Override
-		public Resource getCustomLoggingFile() {
-			if (getLoggingFileName() == null) {
-				return null;
-			}
-			return ResourceLocator.locateResource(getLoggingFileName());
-		}
-
-		@Override
-		public Level getDefaultLoggingLevel() {
-			String returned = getDefaultLoggingLevelAsString();
-			if (returned == null) {
-				return null;
-			} else if (returned.equals("SEVERE")) {
-				return Level.SEVERE;
-			} else if (returned.equals("WARNING")) {
-				return Level.WARNING;
-			} else if (returned.equals("INFO")) {
-				return Level.INFO;
-			} else if (returned.equals("FINE")) {
-				return Level.FINE;
-			} else if (returned.equals("FINER")) {
-				return Level.FINER;
-			} else if (returned.equals("FINEST")) {
-				return Level.FINEST;
-			}
-			return null;
-		}
-
-		@Override
-		public void setDefaultLoggingLevel(Level l) {
-			setDefaultLoggingLevelAsString(l.getName());
 		}
 
 	}

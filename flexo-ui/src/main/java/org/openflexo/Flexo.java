@@ -510,7 +510,7 @@ public class Flexo {
 	public static void remapStandardOuputs(boolean outputToConsole, final ApplicationContext applicationContext) {
 		try {
 			// First let's see if we will be able to write into the log directory
-			File outputDir = applicationContext.getPreferencesService().getLogDirectory();
+			File outputDir = applicationContext.getPreferencesService().getLoggingPreferences().getLogDirectory();
 			if (!outputDir.exists()) {
 				outputDir.mkdirs();
 			}
@@ -524,8 +524,8 @@ public class Flexo {
 					logger.severe("Can not write to " + outputDir.getAbsolutePath() + " because access is denied by the file system");
 				}
 			}
-			String outString = outputDir.getAbsolutePath() + "/Flexo.out";
-			String errString = outputDir.getAbsolutePath() + "/Flexo.err";
+			String outString = outputDir.getAbsolutePath() + "/Openflexo.out";
+			String errString = outputDir.getAbsolutePath() + "/Openflexo.err";
 
 			outLogFile = getOutputFile(outString);
 			if (outLogFile != null) {
@@ -661,22 +661,22 @@ public class Flexo {
 			}
 			if (loggingFile != null) {
 				logger.info("Default logging config file " + loggingFileName);
-				if (applicationContext.getAdvancedPrefs().getDefaultLoggingLevel() == null) {
-					applicationContext.getAdvancedPrefs().setDefaultLoggingLevel(Level.INFO);
+				if (applicationContext.getLoggingPreferences().getDefaultLoggingLevel() == null) {
+					applicationContext.getLoggingPreferences().setDefaultLoggingLevel(Level.INFO);
 				}
-				return FlexoLoggingManager.initialize(applicationContext.getAdvancedPrefs().getMaxLogCount(),
-						applicationContext.getAdvancedPrefs().getIsLoggingTrace(),
-						applicationContext.getAdvancedPrefs().getCustomLoggingFile() != null
-								? applicationContext.getAdvancedPrefs().getCustomLoggingFile() : loggingFile,
-						applicationContext.getAdvancedPrefs().getDefaultLoggingLevel(), new LoggingManagerDelegate() {
+				return FlexoLoggingManager.initialize(applicationContext.getLoggingPreferences().getMaxLogCount(),
+						applicationContext.getLoggingPreferences().getIsLoggingTrace(),
+						applicationContext.getLoggingPreferences().getCustomLoggingFile() != null
+								? applicationContext.getLoggingPreferences().getCustomLoggingFile() : loggingFile,
+						applicationContext.getLoggingPreferences().getDefaultLoggingLevel(), new LoggingManagerDelegate() {
 							@Override
 							public void setMaxLogCount(Integer maxLogCount) {
-								applicationContext.getAdvancedPrefs().setMaxLogCount(maxLogCount);
+								applicationContext.getLoggingPreferences().setMaxLogCount(maxLogCount);
 							}
 
 							@Override
 							public void setKeepLogTrace(boolean logTrace) {
-								applicationContext.getAdvancedPrefs().setIsLoggingTrace(logTrace);
+								applicationContext.getLoggingPreferences().setIsLoggingTrace(logTrace);
 							}
 
 							@Override
@@ -702,13 +702,13 @@ public class Flexo {
 								}
 								Resource loggingFile = ResourceLocator.locateResource("Config/logging_" + fileName + ".properties");
 								reloadLoggingFile(loggingFile);
-								applicationContext.getAdvancedPrefs().setLoggingFileName(null);
+								applicationContext.getLoggingPreferences().setLoggingFileName(null);
 							}
 
 							@Override
 							public void setConfigurationFileLocation(Resource configurationFile) {
 								reloadLoggingFile(configurationFile);
-								applicationContext.getAdvancedPrefs().setLoggingFileName(configurationFile.getRelativePath());
+								applicationContext.getLoggingPreferences().setLoggingFileName(configurationFile.getRelativePath());
 							}
 						});
 			}

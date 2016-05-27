@@ -36,7 +36,6 @@
  * 
  */
 
-
 package org.openflexo.br;
 
 import java.io.IOException;
@@ -177,15 +176,13 @@ public class BugReportService extends FlexoServiceImpl {
 
 		try {
 			Map<String, String> headers = new HashMap<String, String>();
-			if (getServiceManager().getAdvancedPrefs().getBugReportUser() != null
-					&& getServiceManager().getAdvancedPrefs().getBugReportUser().trim().length() > 0
-					&& getServiceManager().getAdvancedPrefs().getBugReportPassword() != null
-					&& getServiceManager().getAdvancedPrefs().getBugReportPassword().trim().length() > 0) {
-				headers.put(
-						"Authorization",
-						"Basic "
-								+ Base64.encodeBase64String((getServiceManager().getAdvancedPrefs().getBugReportUser() + ":" + getServiceManager()
-										.getAdvancedPrefs().getBugReportPassword()).getBytes("ISO-8859-1")));
+			if (getServiceManager().getBugReportPreferences().getBugReportUser() != null
+					&& getServiceManager().getBugReportPreferences().getBugReportUser().trim().length() > 0
+					&& getServiceManager().getBugReportPreferences().getBugReportPassword() != null
+					&& getServiceManager().getBugReportPreferences().getBugReportPassword().trim().length() > 0) {
+				headers.put("Authorization",
+						"Basic " + Base64.encodeBase64String((getServiceManager().getBugReportPreferences().getBugReportUser() + ":"
+								+ getServiceManager().getBugReportPreferences().getBugReportPassword()).getBytes("ISO-8859-1")));
 			}
 
 			for (Entry<String, Resource> entry : userProjectFiles.entrySet()) {
@@ -193,8 +190,9 @@ public class BugReportService extends FlexoServiceImpl {
 				Resource file = entry.getValue();
 				// Do not execute update if anonymous login, as it will not work!
 				if (file != null && file instanceof FileResourceImpl && headers.size() > 0) {
-					FileUtils.createOrUpdateFileFromURL(new URL(getServiceManager().getAdvancedPrefs().getBugReportUrl()
-							+ "/rest/api/2/issue/createmeta?expand=projects.issuetypes.fields&projectKeys=" + key),
+					FileUtils.createOrUpdateFileFromURL(
+							new URL(getServiceManager().getBugReportPreferences().getBugReportUrl()
+									+ "/rest/api/2/issue/createmeta?expand=projects.issuetypes.fields&projectKeys=" + key),
 							((FileResourceImpl) file).getFile(), headers);
 				}
 				else {
