@@ -57,7 +57,7 @@ import org.openflexo.module.ModuleLoader;
 @Preferences(
 		shortName = "Modules",
 		longName = "Modules Preferences",
-		FIBPanel = "Fib/Prefs/ModuleLoaderPrefs.fib",
+		FIBPanel = "Fib/Prefs/ModuleLoaderPreferences.fib",
 		smallIcon = "Icons/Common/Modules.png",
 		bigIcon = "Icons/Common/Modules_64x64.png")
 public interface ModuleLoaderPreferences extends ServicePreferences<ModuleLoader> {

@@ -171,6 +171,7 @@ import org.openflexo.model.validation.ValidationModel;
 import org.openflexo.model.validation.ValidationRule;
 import org.openflexo.model.validation.ValidationRuleFilter;
 import org.openflexo.module.FlexoModule;
+import org.openflexo.module.Module;
 import org.openflexo.module.ModuleLoader;
 import org.openflexo.prefs.ApplicationFIBLibraryService;
 import org.openflexo.prefs.FlexoPreferences;
@@ -2034,6 +2035,10 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 
 		if (object == null) {
 			return null;
+		}
+
+		if (object instanceof Module) {
+			return ((Module) object).getSmallIcon();
 		}
 
 		if (object instanceof FlexoActionCompoundEdit) {
