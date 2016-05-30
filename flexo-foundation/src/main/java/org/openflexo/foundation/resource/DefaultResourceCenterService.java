@@ -212,7 +212,7 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 	}
 
 	@Override
-	public synchronized void receiveNotification(FlexoService caller, ServiceNotification notification) {
+	public void receiveNotification(FlexoService caller, ServiceNotification notification) {
 		if (notification instanceof WillWriteFileOnDiskNotification) {
 			for (FlexoResourceCenter rc : getResourceCenters()) {
 				if (rc instanceof FileSystemBasedResourceCenter) {
@@ -240,11 +240,13 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 				/*for (FlexoResourceCenter rc : getResourceCenters()) {
 					rc.initialize((TechnologyAdapterService) caller);
 				}*/
-			} else if (notification instanceof TechnologyAdapterHasBeenActivated) {
+			}
+			else if (notification instanceof TechnologyAdapterHasBeenActivated) {
 				for (FlexoResourceCenter rc : getResourceCenters()) {
 					rc.activateTechnology(((TechnologyAdapterHasBeenActivated) notification).getTechnologyAdapter());
 				}
-			} else if (notification instanceof TechnologyAdapterHasBeenDisactivated) {
+			}
+			else if (notification instanceof TechnologyAdapterHasBeenDisactivated) {
 				for (FlexoResourceCenter rc : getResourceCenters()) {
 					rc.disactivateTechnology(((TechnologyAdapterHasBeenActivated) notification).getTechnologyAdapter());
 				}
