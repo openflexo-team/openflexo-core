@@ -263,7 +263,7 @@ public class PreferencesService extends FlexoServiceImpl implements FlexoService
 
 	public <S extends FlexoService> ServicePreferences<S> getServicePreferences(S service) {
 		Class<? extends ServicePreferences<S>> preferencesClass = getServicePreferencesClass(service);
-		System.out.println("preferencesClass for " + service + " is " + preferencesClass);
+		// System.out.println("preferencesClass for " + service + " is " + preferencesClass);
 		if (preferencesClass != null) {
 			ServicePreferences<S> preferences = managePreferences(preferencesClass, getFlexoPreferences());
 			if (preferences != null) {

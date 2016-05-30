@@ -137,8 +137,10 @@ public class ControllerModel extends ControllerModelObject implements PropertyCh
 			leftViewVisible = context.getGeneralPreferences().getShowLeftView(module.getShortName());
 			rightViewVisible = context.getGeneralPreferences().getShowRightView(module.getShortName());
 		}
-		registrationManager.new PropertyChangeListenerRegistration(InteractiveProjectLoader.PROJECT_OPENED, this, context.getProjectLoader());
-		registrationManager.new PropertyChangeListenerRegistration(InteractiveProjectLoader.PROJECT_CLOSED, this, context.getProjectLoader());
+		registrationManager.new PropertyChangeListenerRegistration(InteractiveProjectLoader.PROJECT_OPENED, this,
+				context.getProjectLoader());
+		registrationManager.new PropertyChangeListenerRegistration(InteractiveProjectLoader.PROJECT_CLOSED, this,
+				context.getProjectLoader());
 		objects = new ArrayList<FlexoObject>();
 		locations = new ExtendedSet<Location>();
 		perspectives = new Vector<FlexoPerspective>();
