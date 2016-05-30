@@ -511,6 +511,9 @@ public class Flexo {
 		try {
 			// First let's see if we will be able to write into the log directory
 			File outputDir = applicationContext.getPreferencesService().getLoggingPreferences().getLogDirectory();
+
+			logger.info("Mapping standard and errors outputs to " + outputDir);
+
 			if (!outputDir.exists()) {
 				outputDir.mkdirs();
 			}
