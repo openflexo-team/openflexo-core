@@ -219,7 +219,8 @@ public class JarResourceCenter<R extends FlexoResource<?>> extends ResourceRepos
 		HashMap<Class<? extends ResourceRepository<?>>, ResourceRepository<?>> map = getRepositoriesForAdapter(technologyAdapter);
 		if (map.get(repositoryType) == null) {
 			map.put(repositoryType, repository);
-		} else {
+		}
+		else {
 			logger.warning("Repository already registered: " + repositoryType + " for " + repository);
 		}
 	}
@@ -344,6 +345,12 @@ public class JarResourceCenter<R extends FlexoResource<?>> extends ResourceRepos
 	public String getDefaultBaseURI() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public void setDefaultBaseURI(String defaultBaseURI) {
+		// TODO Auto-generated method stub
+
 	}
 
 	@Override

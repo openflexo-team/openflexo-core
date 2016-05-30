@@ -65,6 +65,7 @@ import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.model.factory.ModelFactory;
 import org.openflexo.toolbox.DirectoryWatcher;
+import org.openflexo.toolbox.FileSystemMetaDataManager;
 import org.openflexo.toolbox.FileUtils;
 import org.openflexo.toolbox.FlexoVersion;
 import org.openflexo.toolbox.IProgress;
@@ -92,6 +93,8 @@ public abstract class FileSystemBasedResourceCenter extends FileResourceReposito
 	// private TechnologyAdapterService technologyAdapterService;
 
 	private final FlexoResourceCenterService rcService;
+
+	private final FileSystemMetaDataManager fsMetaDataManager = new FileSystemMetaDataManager();
 
 	public FileSystemBasedResourceCenter(File rootDirectory, FlexoResourceCenterService rcService) {
 		super(null, rootDirectory);
@@ -299,10 +302,10 @@ public abstract class FileSystemBasedResourceCenter extends FileResourceReposito
 
 	@Override
 	public String getName() {
-		if (getRootDirectory() != null) {
-			return getRootDirectory().getAbsolutePath();
-		}
-		return "unset";
+		/*if (getRootDirectory() != null) {
+			return getDefaultBaseURI() + " [" + getRootDirectory().getAbsolutePath() + "]";
+		}*/
+		return getDefaultBaseURI();
 	}
 
 	private DirectoryWatcher directoryWatcher;
@@ -707,6 +710,18 @@ public abstract class FileSystemBasedResourceCenter extends FileResourceReposito
 		File returned = new File(getDirectory(), fileName);
 		returned.getParentFile().mkdirs();
 		return returned;
+	}
+
+	@Override
+	public String getDefaultBaseURI() {
+		return fsMetaDataManager.getProperty(DEFAULT_BASE_URI, getDirectory().toURI().toString().replace(File.separator, "/"),
+				getDirectory());
+	}
+
+	@Override
+	public void setDefaultBaseURI(String defaultBaseURI) {
+		System.out.println("setDefaultBaseURI with " + defaultBaseURI);
+		fsMetaDataManager.setProperty(DEFAULT_BASE_URI, defaultBaseURI, getDirectory());
 	}
 
 }

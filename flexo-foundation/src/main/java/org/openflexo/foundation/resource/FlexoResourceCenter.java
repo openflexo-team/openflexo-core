@@ -72,6 +72,8 @@ import org.openflexo.toolbox.IProgress;
 @ModelEntity
 public interface FlexoResourceCenter<I> extends Iterable<I>, FlexoObject {
 
+	public static final String DEFAULT_BASE_URI = "defaultBaseURI";
+
 	/**
 	 * Provides a persistent entry allowing to instantiate a FlexoResourceCenter
 	 * 
@@ -105,11 +107,13 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, FlexoObject {
 	public abstract String getDefaultBaseURI();
 
 	/**
-	 * Initialize the FlexoResourceCenter by retrieving viewpoints defined in this {@link FlexoResourceCenter}<br>
+	 * Sets the default base URI associated with the {@link ResourceRepository}.<br>
 	 * 
-	 * @param technologyAdapterService
+	 * This URI might be used as default base URI for any resource stored in this repository, if no explicit URI was given to related
+	 * resource. Resulting URI will be given by concatenation of this base URI with base name for related resource
+	 * 
 	 */
-	// public void initialize(ViewPointLibrary viewPointLibrary);
+	public abstract void setDefaultBaseURI(String defaultBaseURI);
 
 	/**
 	 * Enable a {@link TechnologyAdapter}<br>
