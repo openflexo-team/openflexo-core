@@ -49,6 +49,7 @@ import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoBehaviourActionType;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.URIParameter;
+import org.openflexo.foundation.fml.ViewPointLocalizedDictionary;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.gina.controller.FIBController.Status;
@@ -172,7 +173,8 @@ public class ParametersRetriever<ES extends FlexoBehaviour> {
 		if (addTitle) {
 			FIBLabel titleLabel = fibModelFactory.newFIBLabel();
 			titleLabel.setAlign(Align.center);
-			titleLabel.setLabel(FlexoLocalization.localizedForKey(flexoBehaviour.getOwningVirtualModel().getLocalizedDictionary(),
+			ViewPointLocalizedDictionary dict = flexoBehaviour.getViewPoint().getLocalizedDictionary();
+			titleLabel.setLabel(FlexoLocalization.localizedForKey(dict,
 					flexoBehaviour.getLabel() != null ? flexoBehaviour.getLabel() : flexoBehaviour.getName()));
 			returned.addToSubComponents(titleLabel, new TwoColsLayoutConstraints(TwoColsLayoutLocation.center, true, false), 0);
 			index++;
@@ -191,8 +193,7 @@ public class ParametersRetriever<ES extends FlexoBehaviour> {
 				descriptionPanel.addToSubComponents(descriptionLabel, new BorderLayoutConstraints(BorderLayoutLocation.center));
 				returned.addToSubComponents(descriptionPanel, new TwoColsLayoutConstraints(TwoColsLayoutLocation.center, true, false), 1);
 				index++;
-			}
-			else {
+			} else {
 				((TwoColsLayoutConstraints) titleLabel.getConstraints()).setInsetsBottom(10);
 			}
 		}
@@ -206,8 +207,7 @@ public class ParametersRetriever<ES extends FlexoBehaviour> {
 			if (widget != null) {
 				widgets.put(parameter, widget);
 				index++;
-			}
-			else {
+			} else {
 				logger.warning("Cannot instanciate widget for " + parameter + " of " + (parameter != null ? parameter.getClass() : "null"));
 			}
 		}
