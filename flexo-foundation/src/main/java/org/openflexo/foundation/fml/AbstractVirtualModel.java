@@ -361,8 +361,7 @@ public interface AbstractVirtualModel<VM extends AbstractVirtualModel<VM>>
 			}
 			if (getResource() != null) {
 				return getResource().getFactory();
-			}
-			else {
+			} else {
 				return getDeserializationFactory();
 			}
 		}
@@ -424,8 +423,7 @@ public interface AbstractVirtualModel<VM extends AbstractVirtualModel<VM>>
 					} catch (CannotRenameException e) {
 						e.printStackTrace();
 					}
-				}
-				else {
+				} else {
 					super.setName(name);
 				}
 			}
@@ -848,6 +846,19 @@ public interface AbstractVirtualModel<VM extends AbstractVirtualModel<VM>>
 					returned.add(ms.getModelSlotTechnologyAdapter());
 				}
 			}
+			return returned;
+		}
+
+		/**
+		 * Return declared properties for this {@link FlexoConcept}<br>
+		 * Declared properties are those returned by getFlexoProperties() method
+		 * 
+		 * @return
+		 */
+		@Override
+		public List<FlexoProperty<?>> getDeclaredProperties() {
+			List<FlexoProperty<?>> returned = new ArrayList<FlexoProperty<?>>(getModelSlots());
+			returned.addAll(super.getDeclaredProperties());
 			return returned;
 		}
 
