@@ -46,7 +46,7 @@ import org.openflexo.connie.binding.BindingPathElement;
 import org.openflexo.connie.binding.SimplePathElement;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
+import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 
 public class VirtualModelModelSlotPathElement<MS extends ModelSlot> extends SimplePathElement {
@@ -72,17 +72,17 @@ public class VirtualModelModelSlotPathElement<MS extends ModelSlot> extends Simp
 
 	@Override
 	public Object getBindingValue(Object target, BindingEvaluationContext context) throws TypeMismatchException, NullReferenceException {
-		if (target instanceof VirtualModelInstance) {
-			VirtualModelInstance mvi = (VirtualModelInstance) target;
-			return mvi.getModelSlotInstance(modelSlot).getAccessedResourceData();
+		if (target instanceof AbstractVirtualModelInstance) {
+			AbstractVirtualModelInstance vmi = (AbstractVirtualModelInstance) target;
+			return vmi.getModelSlotInstance(modelSlot).getAccessedResourceData();
 		}
 		logger.warning("Please implement me, target=" + target + " context=" + context);
 		return null;
 	}
 
 	@Override
-	public void setBindingValue(Object value, Object target, BindingEvaluationContext context) throws TypeMismatchException,
-			NullReferenceException {
+	public void setBindingValue(Object value, Object target, BindingEvaluationContext context)
+			throws TypeMismatchException, NullReferenceException {
 		logger.warning("Please implement me, target=" + target + " context=" + context);
 	}
 
