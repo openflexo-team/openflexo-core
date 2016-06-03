@@ -129,6 +129,7 @@ public class FMLIconLibrary extends IconLibrary {
 			ResourceLocator.locateResource("Icons/Model/VPM/VirtualModel_8x8.png"));
 
 	public static final IconMarker VIRTUAL_MODEL_MARKER = new IconMarker(VIRTUAL_MODEL_SMALL_ICON, 8, 0);
+	public static final IconMarker VIRTUAL_MODEL_BIG_MARKER = new IconMarker(VIRTUAL_MODEL_MEDIUM_ICON, 32, 32);
 
 	public static final ImageIconResource MODEL_SLOT_ICON = new ImageIconResource(
 			ResourceLocator.locateResource("Icons/Model/VPM/ModelSlot.png"));
@@ -260,6 +261,9 @@ public class FMLIconLibrary extends IconLibrary {
 			}
 			return FMLIconLibrary.UNKNOWN_ICON;
 		}
+		else if (object instanceof FlexoConceptInstanceRole) {
+			return FMLRTIconLibrary.FLEXO_CONCEPT_INSTANCE_ICON;
+		}
 		else if (object instanceof FlexoRole && ((FlexoRole) object).getModelSlot() != null) {
 			TechnologyAdapterController<?> tac = getTechnologyAdapterController(
 					((FlexoRole) object).getModelSlot().getModelSlotTechnologyAdapter());
@@ -384,9 +388,6 @@ public class FMLIconLibrary extends IconLibrary {
 					}
 				}
 			}
-		}
-		else if (object instanceof FlexoConceptInstanceRole) {
-			return FMLRTIconLibrary.FLEXO_CONCEPT_INSTANCE_ICON;
 		}
 		else if (object instanceof AbstractProperty) {
 			return ABSTRACT_PROPERTY_ICON;
