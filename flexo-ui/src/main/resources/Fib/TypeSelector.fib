@@ -26,9 +26,19 @@
 			constraints="twocols(expandHorizontally=true;expandVertically=true;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=center)"
 			borderBottom="2" borderTop="2" trackViewPortHeight="true"
 			visible="data.hasBaseJavaClass">
-			<Custom componentClassName="org.openflexo.gina.swing.utils.ClassEditor"
+			<FIBReferencedComponent componentFile="Fib/ClassEditor.fib"
+				localize="true" manageDynamicModel="true" name="JavaClassEditor"
+				index="4" data="data.loadedClassesInfo"
+				constraints="border(location=center)"
+				opaque="false">
+				<!--  <ReferenceAssignment mandatory="true"
+					variable="controller.flexoController" value="controller.flexoController" />-->
+			</FIBReferencedComponent>
+
+
+			<!--  <Custom componentClassName="org.openflexo.gina.swing.utils.ClassEditor"
 				localize="true" manageDynamicModel="true" data="data.loadedClassesInfo"
-				constraints="border(location=center)" />
+				constraints="border(location=center)" />-->
 		</Panel>
 		<Panel darkLevel="0" useScrollBar="false" protectContent="false"
 			layout="border" borderRight="2" border="empty" trackViewPortWidth="true"
@@ -144,8 +154,8 @@
 			constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=center)"
 			borderBottom="2" borderTop="2" trackViewPortHeight="true"
 			visible="data.isCustomType">
-			<FIBReferencedComponent
-				manageDynamicModel="true" useScrollBar="false" data="data.customTypeFactory"
+			<FIBReferencedComponent manageDynamicModel="true"
+				useScrollBar="false" data="data.customTypeFactory"
 				controllerClassName="org.openflexo.view.controller.FlexoFIBController"
 				localize="true" dynamicComponentFile="data.customTypeFactory.fibComponentResource"
 				constraints="border(location=center)" readOnly="false">
