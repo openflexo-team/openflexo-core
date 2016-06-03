@@ -49,8 +49,8 @@ import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionType;
-import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FMLObject;
+import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.task.Progress;
@@ -74,7 +74,8 @@ public abstract class AbstractCreateVirtualModel<A extends FlexoAction<A, T1, T2
 
 	private final List<ModelSlotEntry> modelSlotEntries;
 
-	AbstractCreateVirtualModel(FlexoActionType<A, T1, T2> actionType, T1 focusedObject, Vector<T2> globalSelection, FlexoEditor editor) {
+	protected AbstractCreateVirtualModel(FlexoActionType<A, T1, T2> actionType, T1 focusedObject, Vector<T2> globalSelection,
+			FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 		modelSlotEntries = new ArrayList<AbstractCreateVirtualModel.ModelSlotEntry>();
 	}
@@ -194,7 +195,8 @@ public abstract class AbstractCreateVirtualModel<A extends FlexoAction<A, T1, T2
 				// The ModelSlot class is not consistent anymore
 				if (technologyAdapter.getAvailableModelSlotTypes().size() > 0) {
 					setModelSlotClass(technologyAdapter.getAvailableModelSlotTypes().get(0));
-				} else {
+				}
+				else {
 					setModelSlotClass(null);
 				}
 			}
