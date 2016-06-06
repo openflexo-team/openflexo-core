@@ -41,6 +41,8 @@ package org.openflexo.view.controller;
 
 import java.util.Collection;
 
+import org.openflexo.components.widget.CustomTypeEditor;
+import org.openflexo.connie.type.CustomType;
 import org.openflexo.foundation.FlexoService;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
@@ -123,5 +125,7 @@ public interface TechnologyAdapterControllerService extends FlexoService {
 	 * @param technologyAdapter
 	 */
 	public void disactivateTechnology(TechnologyAdapter technologyAdapter);
+
+	public <T extends CustomType> CustomTypeEditor<T> getCustomTypeEditor(Class<T> typeClass);
 
 }

@@ -58,11 +58,16 @@ public class SubPropertyOfProperty<TA extends TechnologyAdapter> implements Tech
 	 * @author sylvain
 	 * 
 	 */
-	public static class SubPropertyOfPropertyTypeFactory extends TechnologyAdapterTypeFactory<SubPropertyOfProperty<?>> implements
-			ReferenceOwner {
+	public static class SubPropertyOfPropertyTypeFactory extends TechnologyAdapterTypeFactory<SubPropertyOfProperty<?>>
+			implements ReferenceOwner {
 
 		public SubPropertyOfPropertyTypeFactory(FMLRTTechnologyAdapter technologyAdapter) {
 			super(technologyAdapter);
+		}
+
+		@Override
+		public Class<SubPropertyOfProperty<?>> getCustomType() {
+			return (Class) SubPropertyOfProperty.class;
 		}
 
 		@Override
@@ -187,7 +192,8 @@ public class SubPropertyOfProperty<TA extends TechnologyAdapter> implements Tech
 		if (ontologyProperty == null) {
 			if (other.ontologyProperty != null)
 				return false;
-		} else if (!ontologyProperty.equals(other.ontologyProperty))
+		}
+		else if (!ontologyProperty.equals(other.ontologyProperty))
 			return false;
 		return true;
 	}

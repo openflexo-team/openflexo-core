@@ -46,6 +46,8 @@ import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.logging.Logger;
 
+import org.openflexo.components.widget.CustomTypeEditor;
+import org.openflexo.connie.type.CustomType;
 import org.openflexo.foundation.FlexoService;
 import org.openflexo.foundation.FlexoServiceImpl;
 import org.openflexo.foundation.FlexoServiceManager.ServiceRegistered;
@@ -295,6 +297,21 @@ public abstract class DefaultTechnologyAdapterControllerService extends FlexoSer
 		TA technologyAdapter = object.getTechnologyAdapter();
 		TechnologyAdapterController<TA> taController = getTechnologyAdapterController(technologyAdapter);
 		return taController.getWindowTitleforObject(object, controller);
+	}
+
+	@Override
+	public <T extends CustomType> CustomTypeEditor<T> getCustomTypeEditor(Class<T> typeClass) {
+
+		for (TechnologyAdapter ta : getServiceManager().getTechnologyAdapterService().getTechnologyAdapters()) {
+			if (ta.isActivated()) {
+				TechnologyAdapterController<?> tac = getTechnologyAdapterController(ta);
+				CustomTypeEditor<T> returned = tac.getCustomTypeEditor(typeClass);
+				if (returned != null) {
+					return returned;
+				}
+			}
+		}
+		return null;
 	}
 
 }

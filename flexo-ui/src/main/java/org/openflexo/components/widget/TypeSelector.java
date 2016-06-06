@@ -51,6 +51,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -61,6 +62,7 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 
+import org.openflexo.ApplicationContext;
 import org.openflexo.connie.type.CustomType;
 import org.openflexo.connie.type.CustomTypeFactory;
 import org.openflexo.connie.type.GenericArrayTypeImpl;
@@ -103,6 +105,24 @@ public class TypeSelector extends TextFieldCustomPopup<Type>
 
 	public static Resource FIB_FILE_NAME = ResourceLocator.locateResource("Fib/TypeSelector.fib");
 
+	/*public static final Object VIEW_TYPE = new Object() {
+		@Override
+		public String toString() {
+			return "FML view";
+		}
+	};
+	public static final Object VIRTUAL_MODEL_INSTANCE_TYPE = new Object() {
+		@Override
+		public String toString() {
+			return "Virtual model instance";
+		}
+	};
+	public static final Object FLEXO_CONCEPT_INSTANCE_TYPE = new Object() {
+		@Override
+		public String toString() {
+			return "Flexo concept instance";
+		}
+	};*/
 	public static final Object JAVA_TYPE = new Object() {
 		@Override
 		public String toString() {
@@ -295,20 +315,69 @@ public class TypeSelector extends TextFieldCustomPopup<Type>
 		setFocusable(true);
 		pcSupport = new PropertyChangeSupport(this);
 		choices = new ArrayList<Object>();
-		for (PrimitiveType primitiveType : PrimitiveType.values()) {
-			choices.add(primitiveType);
-		}
-		choices.add(JAVA_TYPE);
-		choices.add(JAVA_LIST);
-		choices.add(JAVA_MAP);
-		choices.add(JAVA_ARRAY);
-		choices.add(JAVA_WILDCARD);
+		/*choices.add(VIEW_TYPE);
+		choices.add(VIRTUAL_MODEL_INSTANCE_TYPE);
+		choices.add(FLEXO_CONCEPT_INSTANCE_TYPE);*/
 
 		genericParameters = new ArrayList<GenericParameter>();
 		upperBounds = new ArrayList<GenericBound>();
 		lowerBounds = new ArrayList<GenericBound>();
 
+		updateChoices();
+		if (editedObject == null) {
+			choice = PrimitiveType.String;
+		}
+
 		fireEditedObjectChanged();
+	}
+
+	private Map<Class<? extends CustomType>, CustomTypeEditor<?>> customTypeEditors = new HashMap<>();
+	private Map<Class<? extends CustomType>, TechnologyAdapterTypeFactory<?>> customTypeFactories = new HashMap<>();
+
+	public <T extends CustomType> CustomTypeEditor<T> getCustomTypeEditor(Class<T> typeClass) {
+		return (CustomTypeEditor<T>) customTypeEditors.get(typeClass);
+	}
+
+	public <T extends CustomType> TechnologyAdapterTypeFactory<T> getCustomTypeFactory(Class<T> typeClass) {
+		return (TechnologyAdapterTypeFactory<T>) customTypeFactories.get(typeClass);
+	}
+
+	private void updateChoices() {
+		choices.clear();
+
+		// First add the primitives
+		for (PrimitiveType primitiveType : PrimitiveType.values()) {
+			choices.add(primitiveType);
+		}
+
+		// Then the technology specific types
+		if (getServiceManager() != null) {
+			for (Class<? extends CustomType> customType : getServiceManager().getTechnologyAdapterService().getCustomTypeFactories()
+					.keySet()) {
+				System.out.println("Found type " + customType);
+				choices.add(customType);
+				TechnologyAdapterTypeFactory<?> specificFactory = (TechnologyAdapterTypeFactory<?>) getServiceManager()
+						.getTechnologyAdapterService().getCustomTypeFactories().get(customType);
+				if (specificFactory != null) {
+					System.out.println("Found specific factory : " + specificFactory);
+					customTypeFactories.put(customType, specificFactory);
+				}
+				System.out.println("Factory " + specificFactory);
+				CustomTypeEditor<?> specificEditor = ((ApplicationContext) getServiceManager()).getTechnologyAdapterControllerService()
+						.getCustomTypeEditor(customType);
+				if (specificEditor != null) {
+					System.out.println("Found specific editor : " + specificEditor);
+					customTypeEditors.put(customType, specificEditor);
+				}
+			}
+		}
+
+		// Then all java types
+		choices.add(JAVA_TYPE);
+		choices.add(JAVA_LIST);
+		choices.add(JAVA_MAP);
+		choices.add(JAVA_ARRAY);
+		choices.add(JAVA_WILDCARD);
 	}
 
 	public List<Object> getChoices() {
@@ -317,6 +386,16 @@ public class TypeSelector extends TextFieldCustomPopup<Type>
 
 	public Object getChoice() {
 		return choice;
+	}
+
+	public String getPresentationName(Object aChoice) {
+		if (aChoice instanceof Class) {
+			CustomTypeEditor<?> editor = getCustomTypeEditor((Class<? extends CustomType>) aChoice);
+			if (editor != null) {
+				return editor.getPresentationName();
+			}
+		}
+		return aChoice.toString();
 	}
 
 	@Override
@@ -332,7 +411,13 @@ public class TypeSelector extends TextFieldCustomPopup<Type>
 	public void setChoice(Object choice) {
 		if (this.choice != choice) {
 			Class<?> oldBaseClass = getBaseClass();
-			TechnologyAdapterTypeFactory<?> oldCustomTypeFactory = getCustomTypeFactory();
+			TechnologyAdapterTypeFactory<?> oldCustomTypeFactory = getCurrentCustomTypeFactory();
+			CustomTypeEditor<?> oldCustomTypeEditor = getCurrentCustomTypeEditor();
+
+			/*boolean oldIsViewType = isViewType();
+			boolean oldIsVirtualModelInstanceType = isVirtualModelInstanceType();
+			boolean oldIsFlexoConceptInstanceType = isFlexoConceptInstanceType();*/
+
 			boolean oldIsJavaType = isJavaType();
 			boolean oldIsPrimitiveType = isPrimitiveType();
 			boolean oldIsJavaList = isJavaList();
@@ -350,7 +435,7 @@ public class TypeSelector extends TextFieldCustomPopup<Type>
 			this.choice = choice;
 
 			if (isCustomType()) {
-				TechnologyAdapterTypeFactory factory = getCustomTypeFactory();
+				TechnologyAdapterTypeFactory factory = getCurrentCustomTypeFactory();
 				factory.getPropertyChangeSupport().addPropertyChangeListener(this);
 				if (getEditedObject() instanceof CustomType) {
 					try {
@@ -359,16 +444,24 @@ public class TypeSelector extends TextFieldCustomPopup<Type>
 						// That may happen if we have changed from a CustomTypefactory to another CustomTypefactory
 						setEditedObject(factory.makeCustomType(null));
 					}
-				} else {
+				}
+				else {
 					setEditedObject(factory.makeCustomType(null));
 				}
-			} else if (choice instanceof PrimitiveType) {
+			}
+			else if (choice instanceof PrimitiveType) {
 				setEditedObject(((PrimitiveType) choice).getType());
-			} else {
+			}
+			else {
 				// Will cause the edited object to be recomputed from new configuration values
 				setBaseClass(oldBaseClass);
 			}
 			getPropertyChangeSupport().firePropertyChange("choice", old, choice);
+			/*getPropertyChangeSupport().firePropertyChange("isViewType", oldIsViewType, isViewType());
+			getPropertyChangeSupport().firePropertyChange("isVirtualModelInstanceType", oldIsVirtualModelInstanceType,
+					isVirtualModelInstanceType());
+			getPropertyChangeSupport().firePropertyChange("isFlexoConceptInstanceType", oldIsFlexoConceptInstanceType,
+					isFlexoConceptInstanceType());*/
 			getPropertyChangeSupport().firePropertyChange("isJavaType", oldIsJavaType, isJavaType());
 			getPropertyChangeSupport().firePropertyChange("isPrimitiveType", oldIsPrimitiveType, isPrimitiveType());
 			getPropertyChangeSupport().firePropertyChange("isJavaList", oldIsJavaList, isJavaList());
@@ -376,12 +469,25 @@ public class TypeSelector extends TextFieldCustomPopup<Type>
 			getPropertyChangeSupport().firePropertyChange("hasBaseJavaClass", oldHasBaseJavaClass, hasBaseJavaClass());
 			getPropertyChangeSupport().firePropertyChange("isJavaWildcard", oldIsJavaWildcard, isJavaWildcard());
 			getPropertyChangeSupport().firePropertyChange("isCustomType", oldIsCustomType, isCustomType());
-			getPropertyChangeSupport().firePropertyChange("customTypeFactory", oldCustomTypeFactory, getCustomTypeFactory());
+			getPropertyChangeSupport().firePropertyChange("currentCustomTypeFactory", oldCustomTypeFactory, getCurrentCustomTypeFactory());
+			getPropertyChangeSupport().firePropertyChange("currentCustomTypeEditor", oldCustomTypeEditor, getCurrentCustomTypeEditor());
 			if (isJavaType()) {
 				getPropertyChangeSupport().firePropertyChange("loadedClassesInfo", null, getLoadedClassesInfo());
 			}
 		}
 	}
+
+	/*public boolean isViewType() {
+		return (choice == VIEW_TYPE);
+	}
+	
+	public boolean isVirtualModelInstanceType() {
+		return (choice == VIRTUAL_MODEL_INSTANCE_TYPE);
+	}
+	
+	public boolean isFlexoConceptInstanceType() {
+		return (choice == FLEXO_CONCEPT_INSTANCE_TYPE);
+	}*/
 
 	public boolean isJavaType() {
 		return (choice instanceof PrimitiveType || choice == JAVA_TYPE || choice == JAVA_LIST || choice == JAVA_MAP || choice == JAVA_ARRAY
@@ -405,12 +511,19 @@ public class TypeSelector extends TextFieldCustomPopup<Type>
 	}
 
 	public boolean isCustomType() {
-		return (choice instanceof TechnologyAdapterTypeFactory);
+		return (choice instanceof Class);
 	}
 
-	public TechnologyAdapterTypeFactory<?> getCustomTypeFactory() {
+	public TechnologyAdapterTypeFactory<?> getCurrentCustomTypeFactory() {
 		if (isCustomType()) {
-			return (TechnologyAdapterTypeFactory<?>) choice;
+			return customTypeFactories.get(choice);
+		}
+		return null;
+	}
+
+	public CustomTypeEditor<?> getCurrentCustomTypeEditor() {
+		if (isCustomType()) {
+			return customTypeEditors.get(choice);
 		}
 		return null;
 	}
@@ -457,33 +570,34 @@ public class TypeSelector extends TextFieldCustomPopup<Type>
 		if (serviceManager != this.serviceManager) {
 			FlexoServiceManager oldValue = this.serviceManager;
 			this.serviceManager = serviceManager;
-			updateCustomTypes();
+			updateChoices();
 			getPropertyChangeSupport().firePropertyChange("serviceManager", oldValue, serviceManager);
 		}
 	}
 
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
-		if (isCustomType() && evt.getSource() == getCustomTypeFactory()) {
+		System.out.println("propertyChange with " + evt);
+		if (isCustomType() && evt.getSource() == getCurrentCustomTypeFactory()) {
 			// propertyChanged in CustomTypeFactory, regenerate new Type
-			setEditedObject(getCustomTypeFactory().makeCustomType(null));
+			setEditedObject(getCurrentCustomTypeFactory().makeCustomType(null));
 		}
 	}
 
-	private void updateCustomTypes() {
+	/*private void updateCustomTypes() {
 		for (Object o : new ArrayList<Object>(choices)) {
 			if (o instanceof CustomTypeFactory) {
 				choices.remove(o);
 			}
 		}
-
+	
 		for (Class<? extends CustomType> customTypeClass : serviceManager.getTechnologyAdapterService().getCustomTypeFactories().keySet()) {
 			CustomTypeFactory<?> ctfactory = serviceManager.getTechnologyAdapterService().getCustomTypeFactories().get(customTypeClass);
 			choices.add(ctfactory);
 		}
-
+	
 		getPropertyChangeSupport().firePropertyChange("choices", null, choices);
-	}
+	}*/
 
 	@Override
 	public void setEditedObject(Type object) {
@@ -498,7 +612,8 @@ public class TypeSelector extends TextFieldCustomPopup<Type>
 		PrimitiveType primitiveType = getPrimitiveType();
 		if (primitiveType != null) {
 			setChoice(primitiveType);
-		} else {
+		}
+		else {
 			if (getEditedObject() instanceof CustomType && serviceManager != null) {
 				CustomTypeFactory ctFactory = serviceManager.getTechnologyAdapterService().getCustomTypeFactories()
 						.get(getEditedObject().getClass());
@@ -506,7 +621,8 @@ public class TypeSelector extends TextFieldCustomPopup<Type>
 					setChoice(ctFactory);
 					ctFactory.configureFactory((CustomType) getEditedObject());
 				}
-			} else if (getEditedObject() instanceof Class) {
+			}
+			else if (getEditedObject() instanceof Class) {
 				setChoice(JAVA_TYPE);
 			}
 		}
@@ -565,7 +681,8 @@ public class TypeSelector extends TextFieldCustomPopup<Type>
 	private void updateGenericParameters(Class<?> baseClass) {
 		if (baseClass == null || baseClass.getTypeParameters().length == 0) {
 			genericParameters.clear();
-		} else {
+		}
+		else {
 			List<GenericParameter> genericParametersToRemove = new ArrayList<GenericParameter>(genericParameters);
 			for (TypeVariable<?> tv : baseClass.getTypeParameters()) {
 				GenericParameter foundGenericParameter = null;
@@ -617,31 +734,42 @@ public class TypeSelector extends TextFieldCustomPopup<Type>
 
 	public void setBaseClass(Class<?> baseClass) {
 
-		if (choice == JAVA_LIST) {
-			if (hasGenericParameters()) {
-				setEditedObject(new ParameterizedTypeImpl((List.class), makeParameterizedType(baseClass)));
-			} else {
-				setEditedObject(new ParameterizedTypeImpl((List.class), baseClass));
+		if (baseClass != getBaseClass()) {
+
+			if (choice == JAVA_LIST) {
+				if (hasGenericParameters()) {
+					setEditedObject(new ParameterizedTypeImpl((List.class), makeParameterizedType(baseClass)));
+				}
+				else {
+					setEditedObject(new ParameterizedTypeImpl((List.class), baseClass));
+				}
 			}
-		} else if (choice == JAVA_MAP) {
-			if (hasGenericParameters()) {
-				setEditedObject(new ParameterizedTypeImpl((Map.class), new Type[] { getKeyType(), makeParameterizedType(baseClass) }));
-			} else {
-				setEditedObject(new ParameterizedTypeImpl((Map.class), new Type[] { getKeyType(), baseClass }));
+			else if (choice == JAVA_MAP) {
+				if (hasGenericParameters()) {
+					setEditedObject(new ParameterizedTypeImpl((Map.class), new Type[] { getKeyType(), makeParameterizedType(baseClass) }));
+				}
+				else {
+					setEditedObject(new ParameterizedTypeImpl((Map.class), new Type[] { getKeyType(), baseClass }));
+				}
 			}
-		} else if (choice == JAVA_ARRAY) {
-			if (hasGenericParameters()) {
-				setEditedObject(new GenericArrayTypeImpl(makeParameterizedType(baseClass)));
-			} else {
-				setEditedObject(new GenericArrayTypeImpl(baseClass));
+			else if (choice == JAVA_ARRAY) {
+				if (hasGenericParameters()) {
+					setEditedObject(new GenericArrayTypeImpl(makeParameterizedType(baseClass)));
+				}
+				else {
+					setEditedObject(new GenericArrayTypeImpl(baseClass));
+				}
 			}
-		} else if (choice == JAVA_WILDCARD) {
-			updateWildcardType();
-		} else {
-			if (hasGenericParameters()) {
-				setEditedObject(makeParameterizedType(baseClass));
-			} else {
-				setEditedObject(baseClass);
+			else if (choice == JAVA_WILDCARD) {
+				updateWildcardType();
+			}
+			else {
+				if (hasGenericParameters()) {
+					setEditedObject(makeParameterizedType(baseClass));
+				}
+				else {
+					setEditedObject(baseClass);
+				}
 			}
 		}
 	}
@@ -705,7 +833,8 @@ public class TypeSelector extends TextFieldCustomPopup<Type>
 		// WARNING: we need here to clone to keep track back of previous data !!!
 		if (oldValue != null) {
 			_revertValue = oldValue;
-		} else {
+		}
+		else {
 			_revertValue = null;
 		}
 		if (LOGGER.isLoggable(Level.FINE)) {
@@ -804,6 +933,13 @@ public class TypeSelector extends TextFieldCustomPopup<Type>
 
 	@Override
 	public void apply() {
+
+		if (isCustomType()) {
+			System.out.println("On fait apply dans TypeSelector");
+			Type newType = getCurrentCustomTypeEditor().getEditedType();
+			System.out.println("newType=" + newType);
+			setEditedObject(newType);
+		}
 
 		setRevertValue(getEditedObject());
 		closePopup();

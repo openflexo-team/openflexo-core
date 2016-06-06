@@ -40,7 +40,12 @@ package org.openflexo.fml.rt.controller;
 
 import javax.swing.ImageIcon;
 
+import org.openflexo.components.widget.CustomTypeEditor;
 import org.openflexo.components.widget.FIBTechnologyBrowser;
+import org.openflexo.connie.type.CustomType;
+import org.openflexo.fml.controller.widget.FlexoConceptInstanceTypeEditor;
+import org.openflexo.fml.controller.widget.ViewTypeEditor;
+import org.openflexo.fml.controller.widget.VirtualModelInstanceTypeEditor;
 import org.openflexo.fml.rt.controller.action.ActionSchemeActionInitializer;
 import org.openflexo.fml.rt.controller.action.CreateBasicVirtualModelInstanceInitializer;
 import org.openflexo.fml.rt.controller.action.CreateViewInitializer;
@@ -59,9 +64,12 @@ import org.openflexo.foundation.fml.CreationScheme;
 import org.openflexo.foundation.fml.DeletionScheme;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoConceptInstanceRole;
+import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.NavigationScheme;
 import org.openflexo.foundation.fml.SynchronizationScheme;
+import org.openflexo.foundation.fml.ViewType;
+import org.openflexo.foundation.fml.VirtualModelInstanceType;
 import org.openflexo.foundation.fml.editionaction.DeleteAction;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;

@@ -50,6 +50,8 @@ import org.openflexo.gina.annotation.FIBPanel;
  */
 public class ViewType extends VirtualModelInstanceType {
 
+	public static ViewType UNDEFINED_VIEW_TYPE = new ViewType((ViewPoint) null);
+
 	public ViewType(ViewPoint aViewPoint) {
 		super(aViewPoint);
 	}
@@ -70,7 +72,8 @@ public class ViewType extends VirtualModelInstanceType {
 	public static ViewType getViewType(ViewPoint viewPoint) {
 		if (viewPoint != null) {
 			return viewPoint.getViewType();
-		} else {
+		}
+		else {
 			return null;
 		}
 	}
@@ -89,6 +92,11 @@ public class ViewType extends VirtualModelInstanceType {
 		}
 
 		@Override
+		public Class<ViewType> getCustomType() {
+			return ViewType.class;
+		}
+
+		@Override
 		public ViewType makeCustomType(String configuration) {
 
 			ViewPoint viewPoint = null;
@@ -96,13 +104,15 @@ public class ViewType extends VirtualModelInstanceType {
 			if (configuration != null) {
 				viewPoint = getTechnologyAdapter().getTechnologyAdapterService().getServiceManager().getViewPointLibrary()
 						.getViewPoint(configuration);
-			} else {
+			}
+			else {
 				viewPoint = getViewPointType();
 			}
 
 			if (viewPoint != null) {
 				return getViewType(viewPoint);
-			} else {
+			}
+			else {
 				// We don't return UNDEFINED_FLEXO_CONCEPT_INSTANCE_TYPE because we want here a mutable type
 				// if FlexoConcept might be resolved later
 				return new ViewType(configuration);

@@ -40,7 +40,9 @@ package org.openflexo.fml.controller;
 
 import javax.swing.ImageIcon;
 
+import org.openflexo.components.widget.CustomTypeEditor;
 import org.openflexo.components.widget.FIBTechnologyBrowser;
+import org.openflexo.connie.type.CustomType;
 import org.openflexo.fml.controller.action.AddParentFlexoConceptInitializer;
 import org.openflexo.fml.controller.action.CreateAbstractPropertyInitializer;
 import org.openflexo.fml.controller.action.CreateEditionActionInitializer;
@@ -66,6 +68,9 @@ import org.openflexo.fml.controller.view.ViewPointLocalizedDictionaryView;
 import org.openflexo.fml.controller.view.ViewPointView;
 import org.openflexo.fml.controller.view.VirtualModelView;
 import org.openflexo.fml.controller.widget.FIBViewPointLibraryBrowser;
+import org.openflexo.fml.controller.widget.FlexoConceptInstanceTypeEditor;
+import org.openflexo.fml.controller.widget.ViewTypeEditor;
+import org.openflexo.fml.controller.widget.VirtualModelInstanceTypeEditor;
 import org.openflexo.foundation.fml.ActionScheme;
 import org.openflexo.foundation.fml.CloningScheme;
 import org.openflexo.foundation.fml.CreationScheme;
@@ -74,12 +79,15 @@ import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceRole;
+import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.NavigationScheme;
 import org.openflexo.foundation.fml.SynchronizationScheme;
 import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.ViewPointLocalizedDictionary;
+import org.openflexo.foundation.fml.ViewType;
 import org.openflexo.foundation.fml.VirtualModel;
+import org.openflexo.foundation.fml.VirtualModelInstanceType;
 import org.openflexo.foundation.fml.editionaction.DeleteAction;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
@@ -122,6 +130,20 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 	@Override
 	public InspectorGroup getTechnologyAdapterInspectorGroup() {
 		return fmlInspectors;
+	}
+
+	@Override
+	protected CustomTypeEditor<?> makeCustomTypeEditor(Class<? extends CustomType> typeClass) {
+		if (typeClass.equals(ViewType.class)) {
+			return new ViewTypeEditor(getServiceManager());
+		}
+		else if (typeClass.equals(VirtualModelInstanceType.class)) {
+			return new VirtualModelInstanceTypeEditor(getServiceManager());
+		}
+		else if (typeClass.equals(FlexoConceptInstanceType.class)) {
+			return new FlexoConceptInstanceTypeEditor(getServiceManager());
+		}
+		return super.makeCustomTypeEditor(typeClass);
 	}
 
 	@Override
