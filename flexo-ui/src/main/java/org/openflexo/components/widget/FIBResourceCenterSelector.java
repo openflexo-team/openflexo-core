@@ -39,13 +39,12 @@
 
 package org.openflexo.components.widget;
 
-import java.io.File;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
-import org.openflexo.rm.ResourceLocator;
 import org.openflexo.rm.Resource;
+import org.openflexo.rm.ResourceLocator;
 
 /**
  * Widget allowing to select a FlexoResourceCenter while browsing in FlexoResourceCenterService
@@ -65,7 +64,6 @@ public class FIBResourceCenterSelector extends FIBFlexoObjectSelector<FlexoResou
 	public FIBResourceCenterSelector(FlexoResourceCenter editedObject) {
 		super(editedObject);
 	}
-
 
 	@Override
 	public Resource getFIBResource() {
@@ -103,7 +101,7 @@ public class FIBResourceCenterSelector extends FIBFlexoObjectSelector<FlexoResou
 	// Never commit this uncommented since it will not compile on continuous build
 	// To have icon, you need to choose "Test interface" in the editor (otherwise, flexo controller is not instantiated in EDIT mode)
 	/*public static void main(String[] args) {
-
+	
 		try {
 			FlexoLoggingManager.initialize(-1, true, null, Level.INFO, null);
 		} catch (SecurityException e) {
@@ -113,15 +111,15 @@ public class FIBResourceCenterSelector extends FIBFlexoObjectSelector<FlexoResou
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
+	
 		final ViewPointLibrary viewPointLibrary;
-
+	
 		final FlexoServiceManager serviceManager = new DefaultFlexoServiceManager() {
 			@Override
 			protected FlexoProjectReferenceLoader createProjectReferenceLoader() {
 				return null;
 			}
-
+	
 			@Override
 			protected FlexoEditor createApplicationEditor() {
 				return null;
@@ -129,7 +127,7 @@ public class FIBResourceCenterSelector extends FIBFlexoObjectSelector<FlexoResou
 		};
 		TechnologyAdapterControllerService tacService = DefaultTechnologyAdapterControllerService.getNewInstance();
 		serviceManager.registerService(tacService);
-
+	
 		FIBAbstractEditor editor = new FIBAbstractEditor() {
 			@Override
 			public Object[] getData() {
@@ -143,12 +141,12 @@ public class FIBResourceCenterSelector extends FIBFlexoObjectSelector<FlexoResou
 				//}
 				return makeArray(selector);
 			}
-
+	
 			@Override
 			public File getFIBFile() {
 				return FIB_FILE;
 			}
-
+	
 			@Override
 			public FIBController makeNewController(FIBComponent component) {
 				return new FlexoFIBController(component);

@@ -43,7 +43,6 @@ import java.util.logging.Logger;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.editionaction.FetchRequest;
-import org.openflexo.foundation.fml.editionaction.FetchRequest.FetchRequestImpl;
 import org.openflexo.foundation.ontology.IFlexoOntology;
 import org.openflexo.foundation.ontology.IFlexoOntologyClass;
 import org.openflexo.foundation.ontology.IFlexoOntologyIndividual;
@@ -71,8 +70,8 @@ import org.openflexo.toolbox.StringUtils;
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(SelectIndividual.SelectIndividualImpl.class)
-public abstract interface SelectIndividual<MS extends TypeAwareModelSlot<?, ?>, T extends IFlexoOntologyIndividual> extends
-		FetchRequest<MS, T> {
+public abstract interface SelectIndividual<MS extends TypeAwareModelSlot<?, ?>, T extends IFlexoOntologyIndividual>
+		extends FetchRequest<MS, T> {
 
 	@PropertyIdentifier(type = String.class)
 	public static final String ONTOLOGY_CLASS_URI_KEY = "ontologyClassURI";
@@ -92,8 +91,8 @@ public abstract interface SelectIndividual<MS extends TypeAwareModelSlot<?, ?>, 
 
 	public IFlexoOntology<?> getMetaModelAsOntology();
 
-	public static abstract class SelectIndividualImpl<MS extends TypeAwareModelSlot<?, ?>, T extends IFlexoOntologyIndividual> extends
-			FetchRequestImpl<MS, T> implements SelectIndividual<MS, T> {
+	public static abstract class SelectIndividualImpl<MS extends TypeAwareModelSlot<?, ?>, T extends IFlexoOntologyIndividual>
+			extends FetchRequestImpl<MS, T> implements SelectIndividual<MS, T> {
 
 		protected static final Logger logger = FlexoLogger.getLogger(SelectIndividual.class.getPackage().getName());
 
@@ -136,7 +135,8 @@ public abstract interface SelectIndividual<MS extends TypeAwareModelSlot<?, ?>, 
 		public void setType(IFlexoOntologyClass ontologyClass) {
 			if (ontologyClass != null) {
 				typeURI = ontologyClass.getURI();
-			} else {
+			}
+			else {
 				typeURI = null;
 			}
 		}

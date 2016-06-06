@@ -38,15 +38,14 @@
 
 package org.openflexo.fml.controller.widget;
 
-import java.io.File;
 import java.util.Collection;
 import java.util.logging.Logger;
 
 import org.openflexo.components.widget.FIBFlexoObjectSelector;
 import org.openflexo.foundation.fml.ViewPointLibrary;
 import org.openflexo.foundation.fml.rm.ViewPointResource;
-import org.openflexo.rm.ResourceLocator;
 import org.openflexo.rm.Resource;
+import org.openflexo.rm.ResourceLocator;
 
 /**
  * Widget allowing to select a ViewPoint while browsing in ViewPoint library
@@ -70,7 +69,6 @@ public class FIBViewPointSelector extends FIBFlexoObjectSelector<ViewPointResour
 		super.delete();
 		viewPointLibrary = null;
 	}
-
 
 	@Override
 	public Resource getFIBResource() {
@@ -118,7 +116,7 @@ public class FIBViewPointSelector extends FIBFlexoObjectSelector<ViewPointResour
 	// Never commit this uncommented since it will not compile on continuous build
 	// To have icon, you need to choose "Test interface" in the editor (otherwise, flexo controller is not insanciated in EDIT mode)
 	/*public static void main(String[] args) {
-
+	
 		try {
 			FlexoLoggingManager.initialize(-1, true, null, Level.INFO, null);
 		} catch (SecurityException e) {
@@ -128,22 +126,22 @@ public class FIBViewPointSelector extends FIBFlexoObjectSelector<ViewPointResour
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
+	
 		final ViewPointLibrary viewPointLibrary;
-
+	
 		final FlexoServiceManager serviceManager = new DefaultFlexoServiceManager() {
 			@Override
 			protected FlexoProjectReferenceLoader createProjectReferenceLoader() {
 				return null;
 			}
-
+	
 			@Override
 			protected FlexoEditor createApplicationEditor() {
 				return null;
 			}
 		};
 		viewPointLibrary = serviceManager.getViewPointLibrary();
-
+	
 		FIBAbstractEditor editor = new FIBAbstractEditor() {
 			@Override
 			public Object[] getData() {
@@ -151,12 +149,12 @@ public class FIBViewPointSelector extends FIBFlexoObjectSelector<ViewPointResour
 				selector.setViewPointLibrary(viewPointLibrary);
 				return makeArray(selector);
 			}
-
+	
 			@Override
 			public File getFIBFile() {
 				return FIB_FILE;
 			}
-
+	
 			@Override
 			public FIBController makeNewController(FIBComponent component) {
 				return new FlexoFIBController(component);

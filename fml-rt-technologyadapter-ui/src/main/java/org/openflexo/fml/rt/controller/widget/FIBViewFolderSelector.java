@@ -38,15 +38,14 @@
 
 package org.openflexo.fml.rt.controller.widget;
 
-import java.io.File;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.openflexo.components.widget.FIBFlexoObjectSelector;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.resource.RepositoryFolder;
-import org.openflexo.rm.ResourceLocator;
 import org.openflexo.rm.Resource;
+import org.openflexo.rm.ResourceLocator;
 
 /**
  * Widget allowing to select a View folder
@@ -68,7 +67,6 @@ public class FIBViewFolderSelector extends FIBFlexoObjectSelector<RepositoryFold
 	public FIBViewFolderSelector(RepositoryFolder editedObject) {
 		super(editedObject);
 	}
-
 
 	@Override
 	public Resource getFIBResource() {
@@ -120,12 +118,12 @@ public class FIBViewFolderSelector extends FIBFlexoObjectSelector<RepositoryFold
 				selector.setProject(project);
 				return makeArray(selector);
 			}
-
+	
 			@Override
 			public File getFIBFile() {
 				return FIB_FILE;
 			}
-
+	
 			@Override
 			public FIBController makeNewController(FIBComponent component) {
 				return new FlexoFIBController<FIBViewSelector>(component);

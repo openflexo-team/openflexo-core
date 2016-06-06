@@ -41,11 +41,11 @@ package org.openflexo.foundation.fml.binding;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
-import org.openflexo.connie.BindingEvaluationContext;
 import org.openflexo.connie.BindingModel;
 import org.openflexo.foundation.fml.ActionContainer;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.editionaction.AssignableAction;
+import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 
 /**
@@ -91,7 +91,7 @@ public abstract class ActionContainerBindingModel extends BindingModel implement
 		/*for (AssignableAction<?, ?> a : declarationBindingVariables.keySet()) {
 			a.getPropertyChangeSupport().removePropertyChangeListener(this);
 		}
-
+		
 		declarationBindingVariables.clear();*/
 
 		super.delete();
@@ -105,7 +105,8 @@ public abstract class ActionContainerBindingModel extends BindingModel implement
 				// Actions were touched
 				// updateAssignationVariables();
 			}
-		} else if (evt.getSource() instanceof AssignableAction<?>) {
+		}
+		else if (evt.getSource() instanceof AssignableAction<?>) {
 			// Something has changed in any of contained actions
 			// updateAssignationVariables();
 		}
@@ -118,9 +119,9 @@ public abstract class ActionContainerBindingModel extends BindingModel implement
 	// private final Map<AssignableAction<?>, DeclarationBindingVariable> declarationBindingVariables;
 
 	/*private void updateAssignationVariables() {
-
+	
 		List<AssignableAction<?, ?>> assignationToBeDeleted = new ArrayList<AssignableAction<?, ?>>(declarationBindingVariables.keySet());
-
+	
 		for (final EditionAction a : actionContainer.getActions()) {
 			if (a instanceof AssignableAction && ((AssignableAction) a).getIsVariableDeclaration()) {
 				if (assignationToBeDeleted.contains(a)) {
@@ -133,7 +134,7 @@ public abstract class ActionContainerBindingModel extends BindingModel implement
 				}
 			}
 		}
-
+	
 		for (AssignableAction<?, ?> a : assignationToBeDeleted) {
 			DeclarationBindingVariable bvToRemove = declarationBindingVariables.get(a);
 			removeFromBindingVariables(bvToRemove);
@@ -141,7 +142,7 @@ public abstract class ActionContainerBindingModel extends BindingModel implement
 			bvToRemove.delete();
 			a.getPropertyChangeSupport().removePropertyChangeListener(this);
 		}
-
+	
 	}*/
 
 }

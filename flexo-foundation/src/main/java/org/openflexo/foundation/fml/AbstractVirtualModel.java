@@ -645,9 +645,9 @@ public interface AbstractVirtualModel<VM extends AbstractVirtualModel<VM>>
 		@Deprecated
 		public Set<FlexoMetaModel<?>> getAllReferencedMetaModels() {
 			HashSet<FlexoMetaModel<?>> returned = new HashSet<FlexoMetaModel<?>>();
-			for (ModelSlot modelSlot : getModelSlots()) {
+			for (ModelSlot<?> modelSlot : getModelSlots()) {
 				if (modelSlot instanceof TypeAwareModelSlot) {
-					TypeAwareModelSlot tsModelSlot = (TypeAwareModelSlot) modelSlot;
+					TypeAwareModelSlot<?, ?> tsModelSlot = (TypeAwareModelSlot<?, ?>) modelSlot;
 					if (tsModelSlot.getMetaModelResource() != null) {
 						returned.add(tsModelSlot.getMetaModelResource().getMetaModelData());
 					}
@@ -760,7 +760,7 @@ public interface AbstractVirtualModel<VM extends AbstractVirtualModel<VM>>
 
 			if (getModelSlots().size() > 0) {
 				out.append(StringUtils.LINE_SEPARATOR, context);
-				for (ModelSlot modelSlot : getModelSlots()) {
+				for (ModelSlot<?> modelSlot : getModelSlots()) {
 					// if (modelSlot.getMetaModelResource() != null) {
 					out.append(modelSlot.getFMLRepresentation(context), context, 1);
 					out.append(StringUtils.LINE_SEPARATOR, context, 1);
@@ -863,7 +863,7 @@ public interface AbstractVirtualModel<VM extends AbstractVirtualModel<VM>>
 
 		@Override
 		public ValidationIssue<ShouldNotHaveReflexiveVirtualModelModelSlot, AbstractVirtualModel> applyValidation(AbstractVirtualModel vm) {
-			for (ModelSlot ms : ((AbstractVirtualModel<?>) vm).getModelSlots()) {
+			for (ModelSlot<?> ms : ((AbstractVirtualModel<?>) vm).getModelSlots()) {
 				if (ms instanceof FMLRTModelSlot && "virtualModelInstance".equals(ms.getName())) {
 					RemoveReflexiveVirtualModelModelSlot fixProposal = new RemoveReflexiveVirtualModelModelSlot(vm);
 					return new ValidationWarning<ShouldNotHaveReflexiveVirtualModelModelSlot, AbstractVirtualModel>(this, vm,
@@ -877,7 +877,7 @@ public interface AbstractVirtualModel<VM extends AbstractVirtualModel<VM>>
 		protected static class RemoveReflexiveVirtualModelModelSlot
 				extends FixProposal<ShouldNotHaveReflexiveVirtualModelModelSlot, AbstractVirtualModel> {
 
-			private final AbstractVirtualModel vm;
+			private final AbstractVirtualModel<?> vm;
 
 			public RemoveReflexiveVirtualModelModelSlot(AbstractVirtualModel vm) {
 				super("remove_reflexive_modelslot");
@@ -886,7 +886,7 @@ public interface AbstractVirtualModel<VM extends AbstractVirtualModel<VM>>
 
 			@Override
 			protected void fixAction() {
-				for (ModelSlot ms : new ArrayList<ModelSlot>(vm.getModelSlots())) {
+				for (ModelSlot<?> ms : new ArrayList<ModelSlot>(vm.getModelSlots())) {
 					if ("virtualModelInstance".equals(ms.getName())) {
 						vm.removeFromModelSlots(ms);
 					}

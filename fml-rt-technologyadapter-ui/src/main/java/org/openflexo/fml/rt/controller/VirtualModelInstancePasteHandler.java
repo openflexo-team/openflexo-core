@@ -172,7 +172,8 @@ public class VirtualModelInstancePasteHandler implements PasteHandler<AbstractVi
 				if (leaderClipboard.getSingleContents() instanceof FlexoConceptInstance) {
 					fciList.add((FlexoConceptInstance) leaderClipboard.getSingleContents());
 				}
-			} else {
+			}
+			else {
 				for (Object o : leaderClipboard.getMultipleContents()) {
 					if (o instanceof FlexoConceptInstance) {
 						fciList.add((FlexoConceptInstance) o);
@@ -213,7 +214,8 @@ public class VirtualModelInstancePasteHandler implements PasteHandler<AbstractVi
 								// the paste
 								if (modelSlotInstanceClipboard.isSingleObject()) {
 									copiedObjects.put(lastReferenceContents[0], copy);
-								} else {
+								}
+								else {
 									List copyList = (List) copy;
 									for (int i = 0; i < lastReferenceContents.length; i++) {
 										copiedObjects.put(lastReferenceContents[i], copyList.get(i));
@@ -231,14 +233,16 @@ public class VirtualModelInstancePasteHandler implements PasteHandler<AbstractVi
 									}
 								}
 
-							} else {
+							}
+							else {
 								System.out
 										.println("Cannot paste " + modelSlotInstanceClipboard.getTypes()[0] + " in " + pastingPointHolder);
 							}
 
 						}
 
-					} else {
+					}
+					else {
 						if (msi.getAccessedResourceData() != null
 								&& !(msi.getAccessedResourceData().getResource() instanceof PamelaResource)) {
 							logger.severe("Unexpected resource " + msi.getAccessedResourceData().getResource());

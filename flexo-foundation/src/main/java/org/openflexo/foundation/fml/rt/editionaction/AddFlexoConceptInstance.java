@@ -45,12 +45,7 @@ import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
-import org.openflexo.foundation.fml.rt.action.CreationSchemeAction;
-import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.gina.annotation.FIBPanel;
-import org.openflexo.model.annotations.Adder;
-import org.openflexo.model.annotations.CloningStrategy;
-import org.openflexo.model.annotations.CloningStrategy.StrategyType;
 import org.openflexo.model.annotations.DefineValidationRule;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
@@ -78,7 +73,7 @@ public interface AddFlexoConceptInstance<VMI extends AbstractVirtualModelInstanc
 		extends AbstractAddFlexoConceptInstance<FlexoConceptInstance, VMI> {
 
 	public static abstract class AddFlexoConceptInstanceImpl<VMI extends AbstractVirtualModelInstance<VMI, ?>>
-			extends AbstractAddFlexoConceptInstanceImpl<FlexoConceptInstance, VMI>implements AddFlexoConceptInstance<VMI> {
+			extends AbstractAddFlexoConceptInstanceImpl<FlexoConceptInstance, VMI> implements AddFlexoConceptInstance<VMI> {
 
 		static final Logger logger = Logger.getLogger(AddFlexoConceptInstance.class.getPackage().getName());
 

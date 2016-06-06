@@ -699,7 +699,7 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 		@Deprecated
 		public Set<FlexoMetaModel> getAllMetaModels() {
 			Set<FlexoMetaModel> allMetaModels = new HashSet<FlexoMetaModel>();
-			for (ModelSlotInstance instance : getModelSlotInstances()) {
+			for (ModelSlotInstance<?, ?> instance : getModelSlotInstances()) {
 				if (instance.getModelSlot() instanceof TypeAwareModelSlot
 						&& ((TypeAwareModelSlot) instance.getModelSlot()).getMetaModelResource() != null) {
 					allMetaModels.add(((TypeAwareModelSlot) instance.getModelSlot()).getMetaModelResource().getMetaModelData());
@@ -716,7 +716,7 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 		@Deprecated
 		public Set<FlexoModel<?, ?>> getAllModels() {
 			Set<FlexoModel<?, ?>> allModels = new HashSet<FlexoModel<?, ?>>();
-			for (ModelSlotInstance instance : getModelSlotInstances()) {
+			for (ModelSlotInstance<?, ?> instance : getModelSlotInstances()) {
 				if (instance.getResourceData() instanceof FlexoModel) {
 					allModels.add(instance.getResourceData());
 				}
@@ -868,13 +868,13 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 					if (value instanceof ResourceData) {
 						ModelSlotInstance msi = (getModelSlotInstance(ms));
 						if (msi == null) {
-							ModelSlotInstanceConfiguration<?, ?> msiConfiguration = ms
-									.createConfiguration((AbstractVirtualModelInstance) getFlexoConceptInstance(), getProject());
+							AbstractVirtualModelInstance<?, ?> flexoConceptInstance = (AbstractVirtualModelInstance<?, ?>) getFlexoConceptInstance();
+							ModelSlotInstanceConfiguration<?, ?> msiConfiguration = ms.createConfiguration(flexoConceptInstance,
+									getProject());
 							msiConfiguration.setOption(DefaultModelSlotInstanceConfigurationOption.SelectExistingResource);
-							msi = msiConfiguration.createModelSlotInstance((AbstractVirtualModelInstance) getFlexoConceptInstance(),
-									getView());
-							msi.setVirtualModelInstance((AbstractVirtualModelInstance) getFlexoConceptInstance());
-							((AbstractVirtualModelInstance) getFlexoConceptInstance()).addToModelSlotInstances(msi);
+							msi = msiConfiguration.createModelSlotInstance(flexoConceptInstance, getView());
+							msi.setVirtualModelInstance(flexoConceptInstance);
+							flexoConceptInstance.addToModelSlotInstances(msi);
 						}
 						msi.setAccessedResourceData((ResourceData) value);
 					}

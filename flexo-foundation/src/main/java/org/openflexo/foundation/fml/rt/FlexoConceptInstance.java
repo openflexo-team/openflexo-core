@@ -481,7 +481,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 					try {
 						// TODO: handle value beeing set, both in BindingModel AND he in LocalRunTimeEvaluationContext
 						RunTimeEvaluationContext localEvaluationContext = new LocalRunTimeEvaluationContext();
-						T returnedValue = null;
+						// FD unused T returnedValue = null;
 						try {
 							setControlGraph.execute(localEvaluationContext);
 						} catch (ReturnException e) {
@@ -1011,7 +1011,8 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 				return;
 			}
 			else if (variable instanceof FlexoPropertyBindingVariable && getFlexoConcept() != null) {
-				FlexoProperty property = getFlexoConcept().getAccessibleProperty(variable.getVariableName());
+				// FD unused FlexoProperty property =
+				getFlexoConcept().getAccessibleProperty(variable.getVariableName());
 				logger.warning("Not implemented: setValue() for " + variable);
 				return;
 			}

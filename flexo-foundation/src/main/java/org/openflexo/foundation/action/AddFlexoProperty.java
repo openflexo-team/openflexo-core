@@ -93,9 +93,9 @@ public class AddFlexoProperty extends FlexoAction<AddFlexoProperty, FlexoObject,
 		if (getFocusedObject() != null) {
 
 			if (getFocusedObject() instanceof InnerResourceData
-					&& ((InnerResourceData) getFocusedObject()).getResourceData().getResource() instanceof PamelaResource) {
+					&& ((InnerResourceData<?>) getFocusedObject()).getResourceData().getResource() instanceof PamelaResource) {
 
-				ModelFactory factory = ((PamelaResource) ((InnerResourceData) getFocusedObject()).getResourceData().getResource())
+				ModelFactory factory = ((PamelaResource<?, ?>) ((InnerResourceData<?>) getFocusedObject()).getResourceData().getResource())
 						.getFactory();
 
 				createdProperty = factory.newInstance(FlexoProperty.class);
@@ -103,7 +103,8 @@ public class AddFlexoProperty extends FlexoAction<AddFlexoProperty, FlexoObject,
 
 				if (getName() != null) {
 					createdProperty.setName(getName());
-				} else {
+				}
+				else {
 					createdProperty.setName(getNextPropertyName(getFocusedObject()));
 				}
 				if (getValue() != null) {

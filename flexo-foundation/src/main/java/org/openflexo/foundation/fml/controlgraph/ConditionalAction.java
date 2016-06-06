@@ -213,10 +213,10 @@ public interface ConditionalAction extends ControlStructureAction, FMLControlGra
 
 		@Override
 		public boolean evaluateCondition(BindingEvaluationContext evaluationContext) {
-			if (getCondition().isSet() && getCondition().isValid()) {
+			DataBinding<Boolean> condition = getCondition();
+			if (condition.isSet() && condition.isValid()) {
 				try {
-					DataBinding condition = getCondition();
-					Boolean returned = getCondition().getBindingValue(evaluationContext);
+					Boolean returned = condition.getBindingValue(evaluationContext);
 					if (returned == null) {
 						/*System.out.println("Evaluation of " + getCondition() + " returns null");
 						DataBinding db1 = new DataBinding<Object>("city1.name", getCondition().getOwner(), Object.class,

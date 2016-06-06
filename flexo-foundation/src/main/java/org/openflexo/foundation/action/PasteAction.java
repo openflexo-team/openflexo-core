@@ -124,7 +124,7 @@ public class PasteAction extends FlexoAction<PasteAction, FlexoObject, FlexoObje
 
 			// The checks are performed ONLY on leader clipboard (others clipboards are ignored)
 
-			PastingContext pastingContext = handler.retrievePastingContext(focusedObject, globalSelection, editingContext.getClipboard(),
+			PastingContext<?> pastingContext = handler.retrievePastingContext(focusedObject, globalSelection, editingContext.getClipboard(),
 					null);
 
 			if (pastingContext == null) {
@@ -171,9 +171,11 @@ public class PasteAction extends FlexoAction<PasteAction, FlexoObject, FlexoObje
 			pastedObjects = new ArrayList<FlexoObject>();
 			if (pasted instanceof List) {
 				pastedObjects.addAll((List) pasted);
-			} else if (pasted instanceof FlexoObject) {
+			}
+			else if (pasted instanceof FlexoObject) {
 				pastedObjects.add((FlexoObject) pasted);
-			} else {
+			}
+			else {
 				logger.warning("Unexpected " + pasted);
 			}
 			System.out.println("--------- END PASTE");

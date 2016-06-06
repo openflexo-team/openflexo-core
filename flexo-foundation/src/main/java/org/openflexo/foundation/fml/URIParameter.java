@@ -93,7 +93,8 @@ public interface URIParameter extends InnerModelSlotParameter<TypeAwareModelSlot
 			TypeAwareModelSlot<?, ?> returned = super.getModelSlot();
 			if (returned != null) {
 				return returned;
-			} else {
+			}
+			else {
 				if (getFlexoBehaviour() != null && getFlexoBehaviour().getOwningVirtualModel() != null) {
 					if (getFlexoBehaviour().getOwningVirtualModel().getModelSlots(TypeAwareModelSlot.class).size() > 0) {
 						return getFlexoBehaviour().getOwningVirtualModel().getModelSlots(TypeAwareModelSlot.class).get(0);
@@ -158,7 +159,8 @@ public interface URIParameter extends InnerModelSlotParameter<TypeAwareModelSlot
 			if (proposalIsNotUnique(action, proposedURI)) {
 				// declared_uri_must_be_unique_please_choose_an_other_uri
 				return false;
-			} else if (proposalIsWellFormed(action, proposedURI) == false) {
+			}
+			else if (proposalIsWellFormed(action, proposedURI) == false) {
 				// declared_uri_is_not_well_formed_please_choose_an_other_uri
 				return false;
 			}
@@ -171,8 +173,8 @@ public interface URIParameter extends InnerModelSlotParameter<TypeAwareModelSlot
 		}*/
 
 		private FlexoModel<?, ?> getFlexoModel(FlexoBehaviourAction<?, ?, ?> action) {
-			TypeAwareModelSlotInstance msInstance = (TypeAwareModelSlotInstance) action.getVirtualModelInstance().getModelSlotInstance(
-					getModelSlot());
+			TypeAwareModelSlotInstance<?, ?, ?> msInstance = (TypeAwareModelSlotInstance<?, ?, ?>) action.getVirtualModelInstance()
+					.getModelSlotInstance(getModelSlot());
 			return msInstance.getModel();
 		}
 
@@ -202,10 +204,11 @@ public interface URIParameter extends InnerModelSlotParameter<TypeAwareModelSlot
 				if (baseProposal == null) {
 					return null;
 				}
-				TypeAwareModelSlot modelSlot = getModelSlot();
+				TypeAwareModelSlot<?, ?> modelSlot = getModelSlot();
 
 				return modelSlot.generateUniqueURIName(
-						(TypeAwareModelSlotInstance) action.getVirtualModelInstance().getModelSlotInstance(modelSlot), baseProposal);
+						(TypeAwareModelSlotInstance<?, ?, ?>) action.getVirtualModelInstance().getModelSlotInstance(modelSlot),
+						baseProposal);
 
 				/*baseProposal = JavaUtils.getClassName(baseProposal);
 				String proposal = baseProposal;
@@ -235,7 +238,8 @@ public interface URIParameter extends InnerModelSlotParameter<TypeAwareModelSlot
 					}
 				}
 				return returned;
-			} else {
+			}
+			else {
 				return null;
 			}
 		}

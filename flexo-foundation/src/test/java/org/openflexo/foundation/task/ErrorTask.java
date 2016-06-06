@@ -58,9 +58,9 @@ public class ErrorTask extends FlexoTask {
 			e.printStackTrace();
 		}
 
-		int[] someInts = new int[1];
+		// FD unused int[] someInts = new int[1];
 
-		int v = someInts[2];
+		// FD unused int v = someInts[2];
 	}
 
 	@Override

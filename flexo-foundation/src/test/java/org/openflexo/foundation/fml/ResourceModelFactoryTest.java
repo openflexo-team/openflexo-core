@@ -71,7 +71,8 @@ public class ResourceModelFactoryTest {
 			ModelFactory factory = new ModelFactory(ViewPointResource.class);
 			ModelContext modelContext = factory.getModelContext();
 			for (Iterator<ModelEntity> it = modelContext.getEntities(); it.hasNext();) {
-				ModelEntity e = it.next();
+				// FD unused ModelEntity e =
+				it.next();
 			}
 			factory.checkMethodImplementations();
 		} catch (ModelDefinitionException e) {
@@ -91,7 +92,8 @@ public class ResourceModelFactoryTest {
 			ModelFactory factory = new ModelFactory(VirtualModelResource.class);
 			ModelContext modelContext = factory.getModelContext();
 			for (Iterator<ModelEntity> it = modelContext.getEntities(); it.hasNext();) {
-				ModelEntity e = it.next();
+				// FD unused ModelEntity e =
+				it.next();
 			}
 			factory.checkMethodImplementations();
 		} catch (ModelDefinitionException e) {
@@ -111,7 +113,8 @@ public class ResourceModelFactoryTest {
 			ModelFactory factory = new ModelFactory(ViewResource.class);
 			ModelContext modelContext = factory.getModelContext();
 			for (Iterator<ModelEntity> it = modelContext.getEntities(); it.hasNext();) {
-				ModelEntity e = it.next();
+				// FD unused ModelEntity e =
+				it.next();
 			}
 			factory.checkMethodImplementations();
 		} catch (ModelDefinitionException e) {
@@ -131,7 +134,8 @@ public class ResourceModelFactoryTest {
 			ModelFactory factory = new ModelFactory(VirtualModelInstanceResource.class);
 			ModelContext modelContext = factory.getModelContext();
 			for (Iterator<ModelEntity> it = modelContext.getEntities(); it.hasNext();) {
-				ModelEntity e = it.next();
+				// FD unused ModelEntity e =
+				it.next();
 			}
 			factory.checkMethodImplementations();
 		} catch (ModelDefinitionException e) {

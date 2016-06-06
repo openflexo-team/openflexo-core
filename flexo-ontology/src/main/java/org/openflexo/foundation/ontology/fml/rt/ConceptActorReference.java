@@ -42,7 +42,6 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.rt.ActorReference;
 import org.openflexo.foundation.fml.rt.ModelSlotInstance;
-import org.openflexo.foundation.fml.rt.ActorReference.ActorReferenceImpl;
 import org.openflexo.foundation.ontology.IFlexoOntologyObject;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.model.annotations.Getter;
@@ -77,8 +76,8 @@ public interface ConceptActorReference<T extends IFlexoOntologyObject> extends A
 	@Setter(CONCEPT_URI_KEY)
 	public void setConceptURI(String objectURI);
 
-	public static abstract class ConceptActorReferenceImpl<T extends IFlexoOntologyObject> extends ActorReferenceImpl<T> implements
-			ConceptActorReference<T> {
+	public static abstract class ConceptActorReferenceImpl<T extends IFlexoOntologyObject> extends ActorReferenceImpl<T>
+			implements ConceptActorReference<T> {
 
 		private static final Logger logger = FlexoLogger.getLogger(ConceptActorReference.class.getPackage().toString());
 
@@ -97,7 +96,7 @@ public interface ConceptActorReference<T extends IFlexoOntologyObject> extends A
 			setFlexoConceptInstance(epi);
 			setPatternRole(aPatternRole);
 			concept = o;
-
+		
 			ModelSlotInstance msInstance = getModelSlotInstance();
 			// Model Slot is responsible for URI mapping
 			conceptURI = msInstance.getModelSlot().getURIForObject(msInstance, o);
@@ -119,12 +118,14 @@ public interface ConceptActorReference<T extends IFlexoOntologyObject> extends A
 				ModelSlotInstance msInstance = getModelSlotInstance();
 				if (msInstance == null) {
 					logger.warning("Could not access model slot instance while looking up " + getConceptURI() + " role=" + getFlexoRole());
-				} else {
+				}
+				else {
 					if (msInstance.getResourceData() != null) {
 						// object = (T) getProject().getObject(objectURI);
 						/** Model Slot is responsible for URI mapping */
 						concept = (T) msInstance.getModelSlot().retrieveObjectWithURI(msInstance, conceptURI);
-					} else {
+					}
+					else {
 						logger.warning("Could not access to model in model slot " + getModelSlotInstance());
 						// logger.warning("Searched " + getModelSlotInstance().getModelURI());
 					}

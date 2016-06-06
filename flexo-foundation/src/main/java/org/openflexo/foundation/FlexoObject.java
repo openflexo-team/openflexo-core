@@ -213,7 +213,7 @@ public abstract interface FlexoObject extends AccessibleProxyObject, DeletablePr
 	// flexoConceptReferences);
 
 	/*public void addToFlexoConceptReferences(final FlexoObjectReference<FlexoConceptInstance> ref);
-
+	
 	public void removeFromFlexoConceptReferences(FlexoObjectReference<FlexoConceptInstance> ref);
 	 */
 
@@ -331,15 +331,15 @@ public abstract interface FlexoObject extends AccessibleProxyObject, DeletablePr
 		}
 
 		/**
-		 * Implements access to service manager of objects beeing part of a {@link ResourceData} accessed through a FlexoResource
+		 * Implements access to service manager of objects being part of a {@link ResourceData} accessed through a FlexoResource
 		 */
 		@Override
 		public FlexoServiceManager getServiceManager() {
 			if (this instanceof InnerResourceData) {
-				ResourceData resdata = ((InnerResourceData) this).getResourceData();
+				ResourceData<?> resdata = ((InnerResourceData<?>) this).getResourceData();
 				// avoid NPE when deleting object
-				if (resdata != null){
-					FlexoResource resource = resdata.getResource();
+				if (resdata != null) {
+					FlexoResource<?> resource = resdata.getResource();
 					if (resource != null) {
 						return resource.getServiceManager();
 					}
@@ -471,9 +471,9 @@ public abstract interface FlexoObject extends AccessibleProxyObject, DeletablePr
 
 		/*@Override
 		public void registerFlexoConceptReference(FlexoConceptInstance flexoConceptInstance) {
-
+		
 			FlexoObjectReference<FlexoConceptInstance> existingReference = getFlexoConceptReference(flexoConceptInstance);
-
+		
 			if (existingReference == null) {
 				addToFlexoConceptReferences(new FlexoObjectReference<FlexoConceptInstance>(flexoConceptInstance));
 			}
@@ -673,12 +673,12 @@ public abstract interface FlexoObject extends AccessibleProxyObject, DeletablePr
 
 			if (_actionListForClass != null) {
 				List<Class> entriesToRemove = new ArrayList<Class>();
-				for (Class aClass : _actionListForClass.keySet()) {
+				for (Class<?> aClass : _actionListForClass.keySet()) {
 					if (objectClass.isAssignableFrom(aClass)) {
 						entriesToRemove.add(aClass);
 					}
 				}
-				for (Class aClass : entriesToRemove) {
+				for (Class<?> aClass : entriesToRemove) {
 					logger.info("Recompute actions list for " + aClass);
 					_actionListForClass.remove(aClass);
 				}
@@ -706,7 +706,7 @@ public abstract interface FlexoObject extends AccessibleProxyObject, DeletablePr
 			_actionListForClass.put(aClass, newActionList);
 			if (logger.isLoggable(Level.FINE)) {
 				logger.fine("updateActionListFor() class: " + aClass);
-				for (FlexoActionType a : newActionList) {
+				for (FlexoActionType<?, ?, ?> a : newActionList) {
 					logger.finer(" > " + a);
 				}
 			}
@@ -997,10 +997,10 @@ public abstract interface FlexoObject extends AccessibleProxyObject, DeletablePr
 			// System.out.println("> Compute getEmbeddedValidableObjects() for " + this.getClass() + " : " + this);
 			ResourceData<?> resourceData = null;
 			if (this instanceof ResourceData) {
-				resourceData = (ResourceData) this;
+				resourceData = (ResourceData<?>) this;
 			}
 			else if (this instanceof InnerResourceData) {
-				resourceData = ((InnerResourceData) this).getResourceData();
+				resourceData = ((InnerResourceData<ResourceData>) this).getResourceData();
 			}
 			if (resourceData != null && resourceData.getResource() instanceof PamelaResource) {
 				List<?> embeddedObjects = ((PamelaResource) resourceData.getResource()).getFactory().getEmbeddedObjects(this,
@@ -1114,9 +1114,9 @@ public abstract interface FlexoObject extends AccessibleProxyObject, DeletablePr
 		 */
 		@Override
 		public long obtainNewFlexoID() {
-			if (this instanceof InnerResourceData && ((InnerResourceData) this).getResourceData() != null
-					&& ((InnerResourceData) this).getResourceData().getResource() instanceof PamelaResource) {
-				flexoID = ((PamelaResource<?, ?>) ((InnerResourceData) this).getResourceData().getResource()).getNewFlexoID();
+			if (this instanceof InnerResourceData && ((InnerResourceData<?>) this).getResourceData() != null
+					&& ((InnerResourceData<?>) this).getResourceData().getResource() instanceof PamelaResource) {
+				flexoID = ((PamelaResource<?, ?>) ((InnerResourceData<?>) this).getResourceData().getResource()).getNewFlexoID();
 			}
 			else {
 				flexoID = -1;
@@ -1133,10 +1133,11 @@ public abstract interface FlexoObject extends AccessibleProxyObject, DeletablePr
 		@Override
 		public void setFlexoID(long flexoID) {
 			if (flexoID > 0 && flexoID != this.flexoID) {
-				long oldId = this.flexoID;
+				// FD : seems unused
+				// long oldId = this.flexoID;
 				this.flexoID = flexoID;
-				if (this instanceof InnerResourceData && ((InnerResourceData) this).getResourceData() != null
-						&& ((InnerResourceData) this).getResourceData().getResource() instanceof PamelaResource) {
+				if (this instanceof InnerResourceData && ((InnerResourceData<?>) this).getResourceData() != null
+						&& ((InnerResourceData<?>) this).getResourceData().getResource() instanceof PamelaResource) {
 					// TODO sets last id of resource ?
 				}
 			}
@@ -1144,13 +1145,13 @@ public abstract interface FlexoObject extends AccessibleProxyObject, DeletablePr
 
 		@Override
 		public Class<?> getImplementedInterface() {
-			if (this instanceof ResourceData && ((ResourceData) this).getResource() instanceof PamelaResource) {
-				ModelFactory f = ((PamelaResource) ((ResourceData) this).getResource()).getFactory();
+			if (this instanceof ResourceData && ((ResourceData<?>) this).getResource() instanceof PamelaResource) {
+				ModelFactory f = ((PamelaResource) ((ResourceData<?>) this).getResource()).getFactory();
 				return f.getModelEntityForInstance(this).getImplementedInterface();
 			}
-			if (this instanceof InnerResourceData && ((InnerResourceData) this).getResourceData() != null
-					&& ((InnerResourceData) this).getResourceData().getResource() instanceof PamelaResource) {
-				ModelFactory f = ((PamelaResource) ((InnerResourceData) this).getResourceData().getResource()).getFactory();
+			if (this instanceof InnerResourceData && ((InnerResourceData<?>) this).getResourceData() != null
+					&& ((InnerResourceData<?>) this).getResourceData().getResource() instanceof PamelaResource) {
+				ModelFactory f = ((PamelaResource) ((InnerResourceData<?>) this).getResourceData().getResource()).getFactory();
 				return f.getModelEntityForInstance(this).getImplementedInterface();
 			}
 			return getClass();

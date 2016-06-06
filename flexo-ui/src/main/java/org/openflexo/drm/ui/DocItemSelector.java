@@ -38,8 +38,6 @@
 
 package org.openflexo.drm.ui;
 
-import java.io.File;
-
 import org.openflexo.components.widget.FIBFlexoObjectSelector;
 import org.openflexo.drm.DocItem;
 import org.openflexo.rm.Resource;
@@ -56,7 +54,7 @@ public class DocItemSelector extends FIBFlexoObjectSelector<DocItem> {
 
 	protected static final String EMPTY_STRING = "";
 
-	public static final Resource  FIB_FILE = ResourceLocator.locateResource("Fib/DocItemSelector.fib");
+	public static final Resource FIB_FILE = ResourceLocator.locateResource("Fib/DocItemSelector.fib");
 
 	public DocItemSelector(DocItem editedObject) {
 		super(editedObject);

@@ -163,7 +163,7 @@ public abstract interface FlexoRole<T> extends FlexoProperty<T> {
 	 */
 	public abstract ActorReference<T> makeActorReference(T object, FlexoConceptInstance fci);
 
-	public static abstract class FlexoRoleImpl<T> extends FlexoPropertyImpl<T>implements FlexoRole<T> {
+	public static abstract class FlexoRoleImpl<T> extends FlexoPropertyImpl<T> implements FlexoRole<T> {
 
 		// private static final Logger logger = Logger.getLogger(FlexoRole.class.getPackage().getName());
 
@@ -289,7 +289,7 @@ public abstract interface FlexoRole<T> extends FlexoProperty<T> {
 
 		@Override
 		public ValidationIssue<ShouldNotHaveReflexiveVirtualModelModelSlot, FlexoRole> applyValidation(FlexoRole aRole) {
-			ModelSlot ms = aRole.getModelSlot();
+			ModelSlot<?> ms = aRole.getModelSlot();
 			if (ms instanceof FMLRTModelSlot && "virtualModelInstance".equals(ms.getName())) {
 				RemoveReflexiveVirtualModelModelSlot fixProposal = new RemoveReflexiveVirtualModelModelSlot(aRole);
 				return new ValidationWarning<ShouldNotHaveReflexiveVirtualModelModelSlot, FlexoRole>(this, aRole,
@@ -302,7 +302,7 @@ public abstract interface FlexoRole<T> extends FlexoProperty<T> {
 		protected static class RemoveReflexiveVirtualModelModelSlot
 				extends FixProposal<ShouldNotHaveReflexiveVirtualModelModelSlot, FlexoRole> {
 
-			private final FlexoRole role;
+			private final FlexoRole<?> role;
 
 			public RemoveReflexiveVirtualModelModelSlot(FlexoRole aRole) {
 				super("remove_reflexive_modelslot");

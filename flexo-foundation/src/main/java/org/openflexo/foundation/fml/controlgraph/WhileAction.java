@@ -191,10 +191,10 @@ public interface WhileAction extends ControlStructureAction, FMLControlGraphOwne
 
 		@Override
 		public boolean evaluateCondition(BindingEvaluationContext evaluationContext) {
-			if (getCondition().isSet() && getCondition().isValid()) {
+			DataBinding<Boolean> condition = getCondition();
+			if (condition.isSet() && condition.isValid()) {
 				try {
-					DataBinding condition = getCondition();
-					Boolean returned = getCondition().getBindingValue(evaluationContext);
+					Boolean returned = condition.getBindingValue(evaluationContext);
 					if (returned == null) {
 						return false;
 					}

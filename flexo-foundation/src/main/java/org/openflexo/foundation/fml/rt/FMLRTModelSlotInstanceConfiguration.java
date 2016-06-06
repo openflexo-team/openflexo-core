@@ -85,14 +85,16 @@ public class FMLRTModelSlotInstanceConfiguration<VMI extends AbstractVirtualMode
 	}
 
 	@Override
-	public ModelSlotInstance<FMLRTModelSlot<VMI, VM>, VMI> createModelSlotInstance(AbstractVirtualModelInstance<?, ?> vmInstance, View view) {
+	public ModelSlotInstance<FMLRTModelSlot<VMI, VM>, VMI> createModelSlotInstance(AbstractVirtualModelInstance<?, ?> vmInstance,
+			View view) {
 		AbstractVirtualModelInstanceModelFactory<?> factory = vmInstance.getFactory();
 		VirtualModelModelSlotInstance returned = factory.newInstance(VirtualModelModelSlotInstance.class);
 		returned.setModelSlot(getModelSlot());
 		returned.setVirtualModelInstance(vmInstance);
 		if (getAddressedVirtualModelInstanceResource() != null) {
 			returned.setVirtualModelInstanceURI(getAddressedVirtualModelInstanceResource().getURI());
-		} else {
+		}
+		else {
 			logger.warning("Addressed virtual model instance is null");
 		}
 		return returned;
@@ -102,7 +104,8 @@ public class FMLRTModelSlotInstanceConfiguration<VMI extends AbstractVirtualMode
 		return addressedVirtualModelInstanceResource;
 	}
 
-	public void setAddressedVirtualModelInstanceResource(AbstractVirtualModelInstanceResource<VMI, VM> addressedVirtualModelInstanceResource) {
+	public void setAddressedVirtualModelInstanceResource(
+			AbstractVirtualModelInstanceResource<VMI, VM> addressedVirtualModelInstanceResource) {
 		if (this.addressedVirtualModelInstanceResource != addressedVirtualModelInstanceResource) {
 			AbstractVirtualModelInstanceResource<VMI, VM> oldValue = this.addressedVirtualModelInstanceResource;
 			this.addressedVirtualModelInstanceResource = addressedVirtualModelInstanceResource;
@@ -122,12 +125,14 @@ public class FMLRTModelSlotInstanceConfiguration<VMI extends AbstractVirtualMode
 				return false;
 			}
 			return true;
-		} else if (getOption() == DefaultModelSlotInstanceConfigurationOption.CreateNewVirtualModel) {
+		}
+		else if (getOption() == DefaultModelSlotInstanceConfigurationOption.CreateNewVirtualModel) {
 			// Not implemented yet
 			setErrorMessage(FlexoLocalization.localizedForKey("not_implemented_yet"));
 			return false;
 
-		} else if (getOption() == DefaultModelSlotInstanceConfigurationOption.LeaveEmpty) {
+		}
+		else if (getOption() == DefaultModelSlotInstanceConfigurationOption.LeaveEmpty) {
 			if (getModelSlot().getIsRequired()) {
 				setErrorMessage(FlexoLocalization.localizedForKey("virtual_model_instance_is_required"));
 				return false;
