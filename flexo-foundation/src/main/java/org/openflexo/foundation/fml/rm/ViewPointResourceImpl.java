@@ -50,7 +50,6 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.apache.commons.collections.IteratorUtils;
-import org.apache.commons.io.FilenameUtils;
 import org.jdom2.Attribute;
 import org.jdom2.Content;
 import org.jdom2.DataConversionException;
@@ -88,6 +87,7 @@ import org.openflexo.foundation.utils.XMLUtils;
 import org.openflexo.model.ModelContextLibrary;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.model.factory.ModelFactory;
+import org.openflexo.rm.FileResourceImpl;
 import org.openflexo.rm.InJarResourceImpl;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
@@ -324,12 +324,11 @@ public abstract class ViewPointResourceImpl extends AbstractVirtualModelResource
 					if (child.getURI().endsWith(".xml")) {
 						result = reader.readRootElement(child);
 						// Serialization artefact is File
-						if (result.getName().equals("VirtualModel") && getFlexoIODelegate() instanceof FileFlexoIODelegate) {
+						if (result.getName().equals("VirtualModel") && getFlexoIODelegate() instanceof FileFlexoIODelegate
+								&& child instanceof FileResourceImpl) {
 							VirtualModelResource virtualModelResource = VirtualModelResourceImpl.retrieveVirtualModelResource(
-									new File(FilenameUtils.getFullPath(child.getRelativePath())), /*
-																									 * ResourceLocator.
-																									 * retrieveResourceAsFile(child),
-																									 */ this, getServiceManager());
+									/*new File(FilenameUtils.getFullPath(child.getRelativePath()))*/
+									((FileResourceImpl) child).getFile().getParentFile(), this, getServiceManager());
 							addToContents(virtualModelResource);
 						}
 						// Serialization artefact is InJarResource
