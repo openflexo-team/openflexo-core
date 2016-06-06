@@ -140,13 +140,43 @@ public class TestCommonFlexoFibs extends GenericFIBTestCase {
 	}
 
 	@Test
+	public void testBugReportPreferences() {
+		validateFIB("Fib/Prefs/BugReportPreferences.fib");
+	}
+
+	@Test
 	public void testGeneralPreferences() {
 		validateFIB("Fib/Prefs/GeneralPreferences.fib");
 	}
 
 	@Test
+	public void testLoggingPreferences() {
+		validateFIB("Fib/Prefs/LoggingPreferences.fib");
+	}
+
+	@Test
+	public void testModuleLoaderPreferences() {
+		validateFIB("Fib/Prefs/ModuleLoaderPreferences.fib");
+	}
+
+	@Test
+	public void testOpenflexoPreferences() {
+		validateFIB("Fib/Prefs/OpenflexoPreferences.fib");
+	}
+
+	@Test
+	public void testResourceCenterPreferences() {
+		validateFIB("Fib/Prefs/ResourceCenterPreferences.fib");
+	}
+
+	@Test
 	public void testProjectSelector() {
 		validateFIB("Fib/ProjectSelector.fib");
+	}
+
+	@Test
+	public void testRepositoryFolderSelector() {
+		validateFIB("Fib/RepositoryFolderSelector.fib");
 	}
 
 	@Test

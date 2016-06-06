@@ -39,6 +39,7 @@
 
 package org.openflexo.foundation.resource;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.openflexo.foundation.FlexoService;
@@ -242,7 +243,9 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 				}*/
 			}
 			else if (notification instanceof TechnologyAdapterHasBeenActivated) {
-				for (FlexoResourceCenter rc : getResourceCenters()) {
+				// Avoid Concurrent Modification Exception issues
+				ArrayList<FlexoResourceCenter> listRC = new ArrayList<FlexoResourceCenter>(getResourceCenters());
+				for (FlexoResourceCenter rc : listRC) {
 					rc.activateTechnology(((TechnologyAdapterHasBeenActivated) notification).getTechnologyAdapter());
 				}
 			}

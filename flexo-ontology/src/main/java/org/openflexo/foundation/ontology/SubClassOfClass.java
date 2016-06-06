@@ -58,10 +58,15 @@ public class SubClassOfClass<TA extends TechnologyAdapter> implements Technology
 	 * @author sylvain
 	 * 
 	 */
-	public static class SubClassOfClassTypeFactory extends TechnologyAdapterTypeFactory<SubClassOfClass<?>> implements ReferenceOwner {
+	public static class SubClassOfClassTypeFactory extends TechnologyAdapterTypeFactory<SubClassOfClass<?>>implements ReferenceOwner {
 
 		public SubClassOfClassTypeFactory(FMLRTTechnologyAdapter technologyAdapter) {
 			super(technologyAdapter);
+		}
+
+		@Override
+		public Class<SubClassOfClass<?>> getCustomType() {
+			return (Class) SubClassOfClass.class;
 		}
 
 		@Override
@@ -187,7 +192,8 @@ public class SubClassOfClass<TA extends TechnologyAdapter> implements Technology
 		if (ontologyClass == null) {
 			if (other.ontologyClass != null)
 				return false;
-		} else if (!ontologyClass.equals(other.ontologyClass))
+		}
+		else if (!ontologyClass.equals(other.ontologyClass))
 			return false;
 		return true;
 	}

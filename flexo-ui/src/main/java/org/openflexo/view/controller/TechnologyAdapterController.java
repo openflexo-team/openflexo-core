@@ -49,8 +49,10 @@ import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 
 import org.openflexo.ApplicationContext;
+import org.openflexo.components.widget.CustomTypeEditor;
 import org.openflexo.components.widget.FIBTechnologyBrowser;
 import org.openflexo.connie.DataBinding;
+import org.openflexo.connie.type.CustomType;
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.fml.CheckboxParameter;
@@ -134,6 +136,8 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 
 	private TechnologyAdapterControllerService technologyAdapterControllerService;
 
+	private Map<Class<? extends CustomType>, CustomTypeEditor> customTypeEditors = new HashMap<>();
+
 	/**
 	 * Returns applicable {@link ProjectNatureService}
 	 * 
@@ -188,6 +192,8 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 			for (FIBTechnologyBrowser<TA> b : technologyBrowsers) {
 				b.initializeFIBComponent();
 			}
+
+			// initTechnologySpecificTypeEditors(getServiceManager().getTechnologyAdapterService());
 		}
 		isActivated = true;
 	}
@@ -340,31 +346,44 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 
 		if (AddFlexoConceptInstance.class.isAssignableFrom(editionActionClass)) {
 			return IconFactory.getImageIcon(FMLRTIconLibrary.FLEXO_CONCEPT_INSTANCE_ICON, IconLibrary.DUPLICATE);
-		} else if (AddVirtualModelInstance.class.isAssignableFrom(editionActionClass)) {
+		}
+		else if (AddVirtualModelInstance.class.isAssignableFrom(editionActionClass)) {
 			return IconFactory.getImageIcon(FMLRTIconLibrary.VIRTUAL_MODEL_INSTANCE_ICON, IconLibrary.DUPLICATE);
-		} else if (AddSubView.class.isAssignableFrom(editionActionClass)) {
+		}
+		else if (AddSubView.class.isAssignableFrom(editionActionClass)) {
 			return IconFactory.getImageIcon(FMLRTIconLibrary.VIEW_ICON, IconLibrary.DUPLICATE);
-		} else if (SelectFlexoConceptInstance.class.isAssignableFrom(editionActionClass)) {
+		}
+		else if (SelectFlexoConceptInstance.class.isAssignableFrom(editionActionClass)) {
 			return IconFactory.getImageIcon(FMLRTIconLibrary.FLEXO_CONCEPT_INSTANCE_ICON, IconLibrary.IMPORT);
-		} else if (MatchFlexoConceptInstance.class.isAssignableFrom(editionActionClass)) {
+		}
+		else if (MatchFlexoConceptInstance.class.isAssignableFrom(editionActionClass)) {
 			return IconFactory.getImageIcon(FMLRTIconLibrary.FLEXO_CONCEPT_INSTANCE_ICON, IconLibrary.SYNC);
-		} else if (AddToListAction.class.isAssignableFrom(editionActionClass)) {
+		}
+		else if (AddToListAction.class.isAssignableFrom(editionActionClass)) {
 			return IconFactory.getImageIcon(FMLIconLibrary.LIST_ICON, IconLibrary.POSITIVE_MARKER);
-		} else if (RemoveFromListAction.class.isAssignableFrom(editionActionClass)) {
+		}
+		else if (RemoveFromListAction.class.isAssignableFrom(editionActionClass)) {
 			return IconFactory.getImageIcon(FMLIconLibrary.LIST_ICON, IconLibrary.NEGATIVE_MARKER);
-		} else if (DeleteAction.class.isAssignableFrom(editionActionClass)) {
+		}
+		else if (DeleteAction.class.isAssignableFrom(editionActionClass)) {
 			return FMLIconLibrary.DELETE_ICON;
-		} else if (ConditionalAction.class.isAssignableFrom(editionActionClass)) {
+		}
+		else if (ConditionalAction.class.isAssignableFrom(editionActionClass)) {
 			return FMLIconLibrary.CONDITIONAL_ACTION_ICON;
-		} else if (IterationAction.class.isAssignableFrom(editionActionClass)) {
+		}
+		else if (IterationAction.class.isAssignableFrom(editionActionClass)) {
 			return FMLIconLibrary.ITERATION_ACTION_ICON;
-		} else if (WhileAction.class.isAssignableFrom(editionActionClass)) {
+		}
+		else if (WhileAction.class.isAssignableFrom(editionActionClass)) {
 			return FMLIconLibrary.ITERATION_ACTION_ICON;
-		} else if (IncrementalIterationAction.class.isAssignableFrom(editionActionClass)) {
+		}
+		else if (IncrementalIterationAction.class.isAssignableFrom(editionActionClass)) {
 			return FMLIconLibrary.ITERATION_ACTION_ICON;
-		} else if (ExpressionAction.class.isAssignableFrom(editionActionClass)) {
+		}
+		else if (ExpressionAction.class.isAssignableFrom(editionActionClass)) {
 			return FMLIconLibrary.EXPRESSION_ACTION_ICON;
-		} else if (LogAction.class.isAssignableFrom(editionActionClass)) {
+		}
+		else if (LogAction.class.isAssignableFrom(editionActionClass)) {
 			return FMLIconLibrary.LOG_ACTION_ICON;
 		}
 		return null;
@@ -537,7 +556,8 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 			tf.setValidateOnReturn(true); // Avoid too many ontologies manipulations
 			newTab.addToSubComponents(tf, new TwoColsLayoutConstraints(TwoColsLayoutLocation.right, true, false));
 			return tf;
-		} else if (entry instanceof TextAreaInspectorEntry) {
+		}
+		else if (entry instanceof TextAreaInspectorEntry) {
 			FIBTextArea ta = fibModelFactory.newFIBTextArea();
 			ta.setValidateOnReturn(true); // Avoid to many ontologies manipulations
 			ta.setUseScrollBar(true);
@@ -545,11 +565,13 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 			ta.setVerticalScrollbarPolicy(VerticalScrollBarPolicy.VERTICAL_SCROLLBAR_AS_NEEDED);
 			newTab.addToSubComponents(ta, new TwoColsLayoutConstraints(TwoColsLayoutLocation.right, true, true));
 			return ta;
-		} else if (entry instanceof CheckboxInspectorEntry) {
+		}
+		else if (entry instanceof CheckboxInspectorEntry) {
 			FIBCheckBox cb = fibModelFactory.newFIBCheckBox();
 			newTab.addToSubComponents(cb, new TwoColsLayoutConstraints(TwoColsLayoutLocation.right, true, false));
 			return cb;
-		} else if (entry instanceof IntegerInspectorEntry) {
+		}
+		else if (entry instanceof IntegerInspectorEntry) {
 			FIBNumber number = fibModelFactory.newFIBNumber();
 			number.setNumberType(NumberType.IntegerType);
 			newTab.addToSubComponents(number, new TwoColsLayoutConstraints(TwoColsLayoutLocation.right, true, false));
@@ -574,7 +596,8 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 			FIBTextField tf = fibModelFactory.newFIBTextField();
 			tf.setName(parameter.getName() + "TextField");
 			return registerWidget(tf, parameter, panel, index);
-		} else if (parameter instanceof TextAreaParameter) {
+		}
+		else if (parameter instanceof TextAreaParameter) {
 			FIBTextArea ta = fibModelFactory.newFIBTextArea();
 			ta.setName(parameter.getName() + "TextArea");
 			ta.setValidateOnReturn(true); // Avoid too many ontologies manipulations
@@ -582,16 +605,19 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 			ta.setHorizontalScrollbarPolicy(HorizontalScrollBarPolicy.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 			ta.setVerticalScrollbarPolicy(VerticalScrollBarPolicy.VERTICAL_SCROLLBAR_AS_NEEDED);
 			return registerWidget(ta, parameter, panel, index, true, true);
-		} else if (parameter instanceof CheckboxParameter) {
+		}
+		else if (parameter instanceof CheckboxParameter) {
 			FIBCheckBox cb = fibModelFactory.newFIBCheckBox();
 			cb.setName(parameter.getName() + "CheckBox");
 			return registerWidget(cb, parameter, panel, index);
-		} else if (parameter instanceof IntegerParameter) {
+		}
+		else if (parameter instanceof IntegerParameter) {
 			FIBNumber number = fibModelFactory.newFIBNumber();
 			number.setName(parameter.getName() + "Number");
 			number.setNumberType(NumberType.IntegerType);
 			return registerWidget(number, parameter, panel, index);
-		} else if (parameter instanceof ListParameter) {
+		}
+		else if (parameter instanceof ListParameter) {
 			ListParameter listParameter = (ListParameter) parameter;
 			FIBCheckboxList cbList = fibModelFactory.newFIBCheckboxList();
 			cbList.setName(parameter.getName() + "CheckboxList");
@@ -622,7 +648,8 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 			cbList.setVerticalScrollbarPolicy(VerticalScrollBarPolicy.VERTICAL_SCROLLBAR_AS_NEEDED);
 
 			return registerWidget(cbList, parameter, panel, index, true, true);
-		} else if (parameter instanceof FlexoConceptInstanceParameter) {
+		}
+		else if (parameter instanceof FlexoConceptInstanceParameter) {
 			FIBCustom epiSelector = fibModelFactory.newFIBCustom();
 			epiSelector.setBindingFactory(parameter.getBindingFactory());
 			Class fciSelectorClass;
@@ -643,7 +670,7 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 							fibModelFactory.newFIBCustomAssignment(epiSelector, new DataBinding<Object>("component.virtualModelInstance"),
 									new DataBinding<Object>(
 											"data." + ((FlexoConceptInstanceParameter) parameter).getVirtualModelInstance().toString()),
-									true));
+							true));
 
 			epiSelector
 					.addToAssignments(fibModelFactory.newFIBCustomAssignment(epiSelector, new DataBinding<Object>("component.flexoConcept"),
@@ -657,7 +684,8 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 							new DataBinding<Object>("data.serviceManager.viewPointLibrary"), true));
 
 			return registerWidget(epiSelector, parameter, panel, index);
-		} else if (parameter instanceof FlexoResourceParameter) {
+		}
+		else if (parameter instanceof FlexoResourceParameter) {
 			FIBCustom resourceSelector = fibModelFactory.newFIBCustom();
 			resourceSelector.setBindingFactory(parameter.getBindingFactory());
 			Class resourceSelectorClass;
@@ -705,6 +733,31 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 	 * @param availableParameterTypes
 	 */
 	public void appendSpecificFlexoBehaviourParameters(List<Class<? extends FlexoBehaviourParameter>> availableParameterTypes) {
+	}
+
+	/**
+	 * Hook allowing to register technology-specific types
+	 * 
+	 * @param converter
+	 */
+	/*public void initTechnologySpecificTypeEditors(TechnologyAdapterService taService) {
+		for (Class<? extends CustomType> typeClass : taService.getCustomTypeFactories().keySet()) {
+			CustomTypeEditor editor = makeCustomTypeEditor(typeClass);
+			customTypeEditors.put(typeClass, editor);
+		}
+	}*/
+
+	protected CustomTypeEditor makeCustomTypeEditor(Class<? extends CustomType> typeClass) {
+		return null;
+	}
+
+	public <T extends CustomType> CustomTypeEditor<T> getCustomTypeEditor(Class<T> typeClass) {
+		CustomTypeEditor<T> returned = customTypeEditors.get(typeClass);
+		if (returned == null) {
+			returned = makeCustomTypeEditor(typeClass);
+			customTypeEditors.put(typeClass, returned);
+		}
+		return returned;
 	}
 
 }

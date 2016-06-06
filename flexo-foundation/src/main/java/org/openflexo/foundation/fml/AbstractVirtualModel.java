@@ -851,6 +851,31 @@ public interface AbstractVirtualModel<VM extends AbstractVirtualModel<VM>>
 			return returned;
 		}
 
+		/**
+		 * Return {@link FlexoProperty} identified by supplied name, which is to be retrieved in all accessible properties<br>
+		 * Note that returned property is not necessary one of declared property, but might be inherited.
+		 * 
+		 * @param flexoPropertyName
+		 * @return
+		 * @see #getAccessibleProperties()
+		 */
+		@Override
+		public FlexoProperty<?> getAccessibleProperty(String propertyName) {
+
+			FlexoProperty<?> returned = super.getAccessibleProperty(propertyName);
+
+			if (returned != null) {
+				return returned;
+			}
+
+			for (FlexoProperty<?> p : getModelSlots()) {
+				if (p.getName().equals(propertyName)) {
+					return p;
+				}
+			}
+			return null;
+		}
+
 	}
 
 	@DefineValidationRule

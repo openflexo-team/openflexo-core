@@ -58,10 +58,15 @@ public class IndividualOfClass<TA extends TechnologyAdapter> implements Technolo
 	 * @author sylvain
 	 * 
 	 */
-	public static class IndividualOfClassTypeFactory extends TechnologyAdapterTypeFactory<IndividualOfClass<?>> implements ReferenceOwner {
+	public static class IndividualOfClassTypeFactory extends TechnologyAdapterTypeFactory<IndividualOfClass<?>>implements ReferenceOwner {
 
 		public IndividualOfClassTypeFactory(FMLRTTechnologyAdapter technologyAdapter) {
 			super(technologyAdapter);
+		}
+
+		@Override
+		public Class<IndividualOfClass<?>> getCustomType() {
+			return (Class) IndividualOfClass.class;
 		}
 
 		@Override
@@ -187,7 +192,8 @@ public class IndividualOfClass<TA extends TechnologyAdapter> implements Technolo
 		if (ontologyClass == null) {
 			if (other.ontologyClass != null)
 				return false;
-		} else if (!ontologyClass.equals(other.ontologyClass))
+		}
+		else if (!ontologyClass.equals(other.ontologyClass))
 			return false;
 		return true;
 	}

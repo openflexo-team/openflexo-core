@@ -94,6 +94,11 @@ public class VirtualModelInstanceType extends FlexoConceptInstanceType {
 		}
 
 		@Override
+		public Class<VirtualModelInstanceType> getCustomType() {
+			return VirtualModelInstanceType.class;
+		}
+
+		@Override
 		public VirtualModelInstanceType makeCustomType(String configuration) {
 
 			AbstractVirtualModel<?> virtualModel = null;

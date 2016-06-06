@@ -110,6 +110,13 @@ public class RepositoryFolder<R extends FlexoResource<?>> extends DefaultFlexoOb
 
 	}
 
+	public String getPathRelativeToRepository() {
+		if (getParentFolder() != null) {
+			return getParentFolder().getPathRelativeToRepository() + "/" + getName();
+		}
+		return getName();
+	}
+
 	public String getFullQualifiedPath() {
 		if (getFile() != null) {
 			return getFile().getAbsolutePath();
