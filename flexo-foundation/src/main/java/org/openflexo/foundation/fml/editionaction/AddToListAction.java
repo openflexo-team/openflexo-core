@@ -48,6 +48,7 @@ import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
+import org.openflexo.connie.expr.BindingValue;
 import org.openflexo.connie.type.ParameterizedTypeImpl;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
@@ -100,7 +101,7 @@ public interface AddToListAction<T> extends AssignableAction<T>, FMLControlGraph
 	@Setter(ASSIGNABLE_ACTION_KEY)
 	public void setAssignableAction(AssignableAction<T> assignableAction);
 
-	public static abstract class AddToListActionImpl<T> extends AssignableActionImpl<T>implements AddToListAction<T> {
+	public static abstract class AddToListActionImpl<T> extends AssignableActionImpl<T> implements AddToListAction<T> {
 
 		private static final Logger logger = Logger.getLogger(AddToListAction.class.getPackage().getName());
 
@@ -110,13 +111,14 @@ public interface AddToListAction<T> extends AssignableAction<T>, FMLControlGraph
 		@Override
 		public String getFMLRepresentation(FMLRepresentationContext context) {
 			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
-			out.append(getList().toString() + ".FML::AddToList(" + getAssignableAction().getStringRepresentation() + ")", context);
+			out.append((getList() != null ? getList().toString() + "." : "") + "FML::AddToList("
+					+ (getAssignableAction() != null ? getAssignableAction().getStringRepresentation() : "") + ")", context);
 			return out.toString();
 		}
 
 		@Override
 		public String getStringRepresentation() {
-			return getHeaderContext() + (getList() != null ? getList().toString() : "") + ".FML::AddToList("
+			return getHeaderContext() + (getList() != null ? getList().toString() + "." : "") + "FML::AddToList("
 					+ (getAssignableAction() != null ? getAssignableAction().getStringRepresentation() : "") + ")";
 		}
 
@@ -189,13 +191,24 @@ public interface AddToListAction<T> extends AssignableAction<T>, FMLControlGraph
 			try {
 
 				if (list != null) {
+					System.out.println(
+							"Attention, j'evalue la liste " + list + " valid=" + list.isValid() + " reason=" + list.invalidBindingReason());
 					List<T> listObj = list.getBindingValue(evaluationContext);
-					if (objToAdd != null) {
-						listObj.add(objToAdd);
+					if (listObj == null) {
+						logger.warning("Null list for binding " + list + " cannot add " + objToAdd);
+						if (list.isBindingValue()) {
+							System.out.println("last path= " + ((BindingValue) list.getExpression()).getLastBindingPathElement());
+							System.out.println(
+									"last path class = " + ((BindingValue) list.getExpression()).getLastBindingPathElement().getClass());
+						}
 					}
 					else {
-						logger.warning("Won't add null object to list");
-
+						if (objToAdd != null) {
+							listObj.add(objToAdd);
+						}
+						else {
+							logger.warning("Won't add null object to list");
+						}
 					}
 				}
 				else {
