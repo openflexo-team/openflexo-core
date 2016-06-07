@@ -70,8 +70,8 @@ import org.openflexo.toolbox.StringUtils;
 @ModelEntity
 @ImplementationClass(FreeModelSlotInstance.FreeModelSlotInstanceImpl.class)
 @XMLElement
-public interface FreeModelSlotInstance<RD extends ResourceData<RD> & TechnologyObject<?>, MS extends FreeModelSlot<RD>> extends
-		ModelSlotInstance<MS, RD> {
+public interface FreeModelSlotInstance<RD extends ResourceData<RD> & TechnologyObject<?>, MS extends FreeModelSlot<RD>>
+		extends ModelSlotInstance<MS, RD> {
 
 	@PropertyIdentifier(type = String.class)
 	public static final String RESOURCE_URI_KEY = "resourceURI";
@@ -109,17 +109,31 @@ public interface FreeModelSlotInstance<RD extends ResourceData<RD> & TechnologyO
 		}
 
 		@Override
+		public TechnologyAdapterResource<RD, ?> getResource() {
+			TechnologyAdapterResource<RD, ?> returned = super.getResource();
+			if (returned == null && StringUtils.isNotEmpty(resourceURI) && getServiceManager() != null
+					&& getServiceManager().getResourceManager() != null) {
+				//System.out.println("------------> OK, je cherche la resource " + resourceURI);
+				returned = (TechnologyAdapterResource<RD, ?>) getServiceManager().getResourceManager().getResource(resourceURI,
+						getVersion());
+				//System.out.println("Je trouve " + returned);
+				setResource(returned, false);
+			}
+			return returned;
+		}
+
+		@Override
 		public RD getAccessedResourceData() {
 			if (accessedResourceData == null && getServiceManager() != null) {
 
 				TechnologyAdapterResource<RD, ?> resource = getResource();
 
-				if (resource == null && StringUtils.isNotEmpty(resourceURI) && getServiceManager() != null
+				/*if (resource == null && StringUtils.isNotEmpty(resourceURI) && getServiceManager() != null
 						&& getServiceManager().getResourceManager() != null) {
 					resource = (TechnologyAdapterResource<RD, ?>) getServiceManager().getResourceManager().getResource(resourceURI,
 							getVersion());
 					setResource(resource, false);
-				}
+				}*/
 				if (resource != null) {
 					try {
 						accessedResourceData = resource.getResourceData(null);
