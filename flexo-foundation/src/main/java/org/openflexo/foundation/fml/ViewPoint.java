@@ -44,7 +44,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -220,7 +219,7 @@ public interface ViewPoint extends AbstractVirtualModel<ViewPoint> {
 	 * @author sylvain
 	 * 
 	 */
-	public static abstract class ViewPointImpl extends AbstractVirtualModelImpl<ViewPoint>implements ViewPoint {
+	public static abstract class ViewPointImpl extends AbstractVirtualModelImpl<ViewPoint> implements ViewPoint {
 
 		private static final Logger logger = Logger.getLogger(ViewPoint.class.getPackage().getName());
 
@@ -369,7 +368,7 @@ public interface ViewPoint extends AbstractVirtualModel<ViewPoint> {
 				if (getResource() != null) {
 					for (org.openflexo.foundation.resource.FlexoResource<?> r : getResource().getContents()) {
 						if (r instanceof VirtualModelResource) {
-							VirtualModel vm = ((VirtualModelResource) r).getVirtualModel();
+							((VirtualModelResource) r).getVirtualModel();
 						}
 					}
 				}
@@ -534,9 +533,7 @@ public interface ViewPoint extends AbstractVirtualModel<ViewPoint> {
 				if (root != null) {
 					Element importElement = XMLUtils.getElement(document, "imports");
 					if (importElement != null) {
-						Iterator it = importElement.getAttributes().iterator();
-						while (it.hasNext()) {
-							Attribute at = (Attribute) it.next();
+						for (Attribute at : importElement.getAttributes()) {
 							if (at.getName().equals("resource")) {
 								// System.out.println("Returned " + at.getValue());
 								String returned = at.getValue();
@@ -577,7 +574,7 @@ public interface ViewPoint extends AbstractVirtualModel<ViewPoint> {
 
 			if (getModelSlots().size() > 0) {
 				out.append(StringUtils.LINE_SEPARATOR, context);
-				for (ModelSlot modelSlot : getModelSlots()) {
+				for (ModelSlot<?> modelSlot : getModelSlots()) {
 					// if (modelSlot.getMetaModelResource() != null) {
 					out.append(modelSlot.getFMLRepresentation(context), context, 1);
 					out.append(StringUtils.LINE_SEPARATOR, context, 1);

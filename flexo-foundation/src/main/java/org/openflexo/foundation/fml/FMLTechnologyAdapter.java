@@ -112,8 +112,8 @@ public class FMLTechnologyAdapter extends TechnologyAdapter {
 
 	@Override
 	public <I> void performInitializeResourceCenter(final FlexoResourceCenter<I> resourceCenter) {
-
-		final ViewPointRepository viewPointRepository = getViewPointRepository(resourceCenter);
+		// FD unused
+		// final ViewPointRepository viewPointRepository = getViewPointRepository(resourceCenter);
 
 		// Iterate
 		Iterator<I> it = resourceCenter.iterator();
@@ -124,7 +124,8 @@ public class FMLTechnologyAdapter extends TechnologyAdapter {
 				// if (item instanceof File) {
 				// final File candidateFile = (File) item;
 				// if (this.isValidViewPointDirectory(item)) {
-				final ViewPointResource vpRes = analyseAsViewPoint(item, resourceCenter);
+				// FD unused final ViewPointResource vpRes =
+				analyseAsViewPoint(item, resourceCenter);
 				// this.referenceResource(vpRes, resourceCenter);
 				// }
 				// }

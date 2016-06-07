@@ -98,7 +98,7 @@ import org.openflexo.toolbox.StringUtils;
 import org.openflexo.xml.XMLRootElementInfo;
 import org.openflexo.xml.XMLRootElementReader;
 
-public abstract class ViewPointResourceImpl extends AbstractVirtualModelResourceImpl<ViewPoint>implements ViewPointResource {
+public abstract class ViewPointResourceImpl extends AbstractVirtualModelResourceImpl<ViewPoint> implements ViewPointResource {
 
 	static final Logger logger = Logger.getLogger(FlexoXMLFileResourceImpl.class.getPackage().getName());
 
@@ -584,7 +584,8 @@ public abstract class ViewPointResourceImpl extends AbstractVirtualModelResource
 		logger.fine("Creating directory " + diagramSpecificationDir.getAbsolutePath());
 
 		try {
-			Document viewPointDocument = XMLUtils.readXMLFile(xmlFile);
+			// FD unused Document viewPointDocument =
+			XMLUtils.readXMLFile(xmlFile);
 			Document diagramSpecificationDocument = XMLUtils.readXMLFile(xmlFile);
 
 			for (File f : viewPointDirectory.listFiles()) {
@@ -635,7 +636,8 @@ public abstract class ViewPointResourceImpl extends AbstractVirtualModelResource
 
 	@Override
 	public List<VirtualModelResource> getVirtualModelResources() {
-		ViewPoint vp = getViewPoint();
+		// FD unused ViewPoint vp =
+		getViewPoint();
 		return getContents(VirtualModelResource.class);
 	}
 
@@ -742,7 +744,7 @@ public abstract class ViewPointResourceImpl extends AbstractVirtualModelResource
 			Element typedDiagramModelSlot = null;
 			boolean foundThis = false;
 			for (Element thisMs : thisModelSlots) {
-				// Retriev the ID and URI of this DiagramModelSlot
+				// Retrieve the ID and URI of this DiagramModelSlot
 				if (thisMs.getAttribute("name") != null && thisMs.getAttributeValue("name").equals("this") && !foundThis) {
 					// Store its ID and its URI
 					thisID = thisMs.getAttribute("id").getIntValue();
@@ -852,7 +854,7 @@ public abstract class ViewPointResourceImpl extends AbstractVirtualModelResource
 				}
 			}
 
-			// Create the diagram specificaion xml file
+			// Create the diagram specification xml file
 			File diagramSpecificationFile = new File(diagramSpecificationFolder, file.getName());
 			Document diagramSpecification = new Document();
 			Element rootElement = new Element("DiagramSpecification");

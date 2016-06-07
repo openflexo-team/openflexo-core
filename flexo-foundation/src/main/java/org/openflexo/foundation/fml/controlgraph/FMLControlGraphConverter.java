@@ -66,21 +66,22 @@ public class FMLControlGraphConverter {
 
 		if (anAction instanceof DeclareFlexoRole) {
 			DeclareFlexoRole declareFlexoRole = (DeclareFlexoRole) anAction;
-			AssignationAction action = owner.getFMLModelFactory().newAssignationAction(declareFlexoRole.getObject());
+			AssignationAction<?> action = owner.getFMLModelFactory().newAssignationAction(declareFlexoRole.getObject());
 			action.initializeDeserialization(owner.getFMLModelFactory());
 			action.getAssignableAction().initializeDeserialization(owner.getFMLModelFactory());
 			action.setAssignation(declareFlexoRole.getDeprecatedAssignation());
 			anAction = action;
 		}
 		if (anAction instanceof AssignableAction && !(anAction instanceof AssignationAction)) {
-			AssignableAction assignableAction = (AssignableAction) anAction;
+			AssignableAction<?> assignableAction = (AssignableAction<?>) anAction;
 			if (StringUtils.isNotEmpty(assignableAction.getDeprecatedVariableName())) {
-				DeclarationAction action = owner.getFMLModelFactory().newDeclarationAction(assignableAction.getDeprecatedVariableName(),
+				DeclarationAction<?> action = owner.getFMLModelFactory().newDeclarationAction(assignableAction.getDeprecatedVariableName(),
 						assignableAction);
 				action.initializeDeserialization(owner.getFMLModelFactory());
 				action.getAssignableAction().initializeDeserialization(owner.getFMLModelFactory());
 				anAction = action;
-			} else if (assignableAction.getDeprecatedAssignation() != null && assignableAction.getDeprecatedAssignation().isSet()) {
+			}
+			else if (assignableAction.getDeprecatedAssignation() != null && assignableAction.getDeprecatedAssignation().isSet()) {
 				AssignationAction action = owner.getFMLModelFactory().newAssignationAction(assignableAction);
 				action.initializeDeserialization(owner.getFMLModelFactory());
 				action.getAssignableAction().initializeDeserialization(owner.getFMLModelFactory());
@@ -89,33 +90,32 @@ public class FMLControlGraphConverter {
 			}
 		}
 
-		if (anAction instanceof AssignationAction && StringUtils.isNotEmpty(((AssignationAction) anAction).getDeprecatedVariableName())
-				&& ((AssignationAction) anAction).getDeprecatedValue() != null
-				&& ((AssignationAction) anAction).getDeprecatedValue().isSet()) {
-			AssignationAction assignationAction = (AssignationAction) anAction;
-			DeclarationAction action = owner.getFMLModelFactory().newDeclarationAction(assignationAction.getDeprecatedVariableName(),
-					assignationAction.getDeprecatedValue());
-			action.initializeDeserialization(owner.getFMLModelFactory());
-			action.getAssignableAction().initializeDeserialization(owner.getFMLModelFactory());
-			anAction = action;
-		}
-
-		if (anAction instanceof AssignationAction && ((AssignationAction) anAction).getDeprecatedAssignation() != null
-				&& ((AssignationAction) anAction).getDeprecatedAssignation().isSet()) {
-			AssignableAction assignationAction = (AssignableAction) anAction;
-			AssignationAction action = owner.getFMLModelFactory().newAssignationAction(((AssignationAction) anAction).getDeprecatedValue());
-			action.initializeDeserialization(owner.getFMLModelFactory());
-			action.getAssignableAction().initializeDeserialization(owner.getFMLModelFactory());
-			action.setAssignation(assignationAction.getDeprecatedAssignation());
-			anAction = action;
+		if (anAction instanceof AssignationAction) {
+			AssignationAction<?> assignationAction = (AssignationAction<?>) anAction;
+			if (StringUtils.isNotEmpty(assignationAction.getDeprecatedVariableName()) && assignationAction.getDeprecatedValue() != null
+					&& assignationAction.getDeprecatedValue().isSet()) {
+				DeclarationAction<?> action = owner.getFMLModelFactory().newDeclarationAction(assignationAction.getDeprecatedVariableName(),
+						assignationAction.getDeprecatedValue());
+				action.initializeDeserialization(owner.getFMLModelFactory());
+				action.getAssignableAction().initializeDeserialization(owner.getFMLModelFactory());
+				anAction = action;
+			}
+			if (assignationAction.getDeprecatedAssignation() != null && assignationAction.getDeprecatedAssignation().isSet()) {
+				AssignationAction action = owner.getFMLModelFactory()
+						.newAssignationAction(((AssignationAction) anAction).getDeprecatedValue());
+				action.initializeDeserialization(owner.getFMLModelFactory());
+				action.getAssignableAction().initializeDeserialization(owner.getFMLModelFactory());
+				action.setAssignation(assignationAction.getDeprecatedAssignation());
+				anAction = action;
+			}
 		}
 
 		if (anAction instanceof IterationAction && ((IterationAction) anAction).getIteration() != null
 				&& ((IterationAction) anAction).getIteration().isSet()) {
 
 			IterationAction iterationAction = (IterationAction) anAction;
-			ExpressionAction<? extends List<?>> iterationAsExpression = owner.getFMLModelFactory().newExpressionAction(
-					iterationAction.getIteration());
+			ExpressionAction<? extends List<?>> iterationAsExpression = owner.getFMLModelFactory()
+					.newExpressionAction(iterationAction.getIteration());
 			iterationAsExpression.initializeDeserialization(owner.getFMLModelFactory());
 			iterationAction.setIterationAction(iterationAsExpression);
 			iterationAction.setIteration(null);
@@ -135,8 +135,8 @@ public class FMLControlGraphConverter {
 				&& ((ExecutionAction) anAction).getExecution().isSet()) {
 
 			ExecutionAction executionAction = (ExecutionAction) anAction;
-			ExpressionAction<? extends List<?>> executionAsExpression = owner.getFMLModelFactory().newExpressionAction(
-					executionAction.getExecution());
+			ExpressionAction<? extends List<?>> executionAsExpression = owner.getFMLModelFactory()
+					.newExpressionAction(executionAction.getExecution());
 			executionAsExpression.initializeDeserialization(owner.getFMLModelFactory());
 			anAction = executionAsExpression;
 		}
@@ -174,7 +174,8 @@ public class FMLControlGraphConverter {
 		if (controlGraph == null) {
 			// If control graph is null, action will be new new control graph
 			owner.setControlGraph(anAction, ownerContext);
-		} else {
+		}
+		else {
 			// Otherwise, sequentially append action
 			controlGraph.initializeDeserialization(owner.getFMLModelFactory());
 			controlGraph.sequentiallyAppend(anAction);

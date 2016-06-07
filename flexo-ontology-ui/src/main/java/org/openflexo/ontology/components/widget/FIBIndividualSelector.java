@@ -87,7 +87,7 @@ import org.openflexo.view.controller.TechnologyAdapterControllerService;
  * 
  */
 @SuppressWarnings("serial")
-public class FIBIndividualSelector extends FIBFlexoObjectSelector<IFlexoOntologyIndividual>implements Bindable {
+public class FIBIndividualSelector extends FIBFlexoObjectSelector<IFlexoOntologyIndividual> implements Bindable {
 	static final Logger logger = Logger.getLogger(FIBIndividualSelector.class.getPackage().getName());
 
 	public static final Resource FIB_FILE = ResourceLocator.locateResource("Fib/FIBIndividualSelector.fib");
@@ -254,20 +254,21 @@ public class FIBIndividualSelector extends FIBFlexoObjectSelector<IFlexoOntology
 			return editedObject.getName();
 		}
 
-		if (editedObject != null) {
-			try {
-				String returned = renderer.getBindingValue(new BindingEvaluationContext() {
-					@Override
-					public Object getValue(BindingVariable variable) {
-						return editedObject;
-					}
-				});
-				return returned;
-			} catch (Exception e) {
-				return editedObject.getName();
-			}
+		// FD remove code : test is a tautology because of previous test editedObject != null is true
+		// if (editedObject != null) {
+		try {
+			String returned = renderer.getBindingValue(new BindingEvaluationContext() {
+				@Override
+				public Object getValue(BindingVariable variable) {
+					return editedObject;
+				}
+			});
+			return returned;
+		} catch (Exception e) {
+			return editedObject.getName();
 		}
-		return editedObject.getName();
+		// }
+		// return editedObject.getName();
 	}
 
 	public String getContextOntologyURI() {
@@ -307,7 +308,7 @@ public class FIBIndividualSelector extends FIBFlexoObjectSelector<IFlexoOntology
 		return getContext();
 	}
 
-	public void setOntology(IFlexoOntology ontology) {
+	public void setOntology(IFlexoOntology<?> ontology) {
 		setContext(ontology);
 	}
 

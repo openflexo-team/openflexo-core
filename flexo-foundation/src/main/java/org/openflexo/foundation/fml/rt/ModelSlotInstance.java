@@ -253,10 +253,11 @@ public abstract interface ModelSlotInstance<MS extends ModelSlot<? extends RD>, 
 		 */
 		@Override
 		public void setAccessedResourceData(RD accessedResourceData) {
-			boolean requiresUpdate = false;
-			if (this.accessedResourceData != accessedResourceData) {
-				requiresUpdate = true;
-			}
+			// FD unused
+			// boolean requiresUpdate = false;
+			// if (this.accessedResourceData != accessedResourceData) {
+			// requiresUpdate = true;
+			// }
 
 			this.accessedResourceData = accessedResourceData;
 			setResource((TechnologyAdapterResource<RD, ?>) accessedResourceData.getResource());

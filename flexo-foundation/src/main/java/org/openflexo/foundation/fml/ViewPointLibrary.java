@@ -209,8 +209,8 @@ public class ViewPointLibrary extends DefaultFlexoObject implements FlexoService
 		// Unregister the viewpoint resource from the viewpoint repository
 		FMLTechnologyAdapter vmTA = getTechnologyAdapterService().getTechnologyAdapter(FMLTechnologyAdapter.class);
 		List<FlexoResourceCenter> resourceCenters = getResourceCenterService().getResourceCenters();
-		for (FlexoResourceCenter rc : resourceCenters) {
-			ViewPointRepository vprfb = (ViewPointRepository) rc.getRepository(ViewPointRepository.class, vmTA);
+		for (FlexoResourceCenter<?> rc : resourceCenters) {
+			ViewPointRepository vprfb = rc.getRepository(ViewPointRepository.class, vmTA);
 			if ((vprfb != null) && (vprfb.getAllResources().contains(vpRes))) {
 				vprfb.unregisterResource(vpRes);
 			}
@@ -264,14 +264,14 @@ public class ViewPointLibrary extends DefaultFlexoObject implements FlexoService
 	public void receiveNotification(FlexoService caller, ServiceNotification notification) {
 		if (caller instanceof FlexoResourceCenterService) {
 			if (notification instanceof ResourceCenterAdded) {
-				FlexoResourceCenter newRC = ((ResourceCenterAdded) notification).getAddedResourceCenter();
+				FlexoResourceCenter<?> newRC = ((ResourceCenterAdded) notification).getAddedResourceCenter();
 				// A new resource center has just been referenced, initialize it related to viewpoint exploring
 				// newRC.initialize(this);
 
 				getPropertyChangeSupport().firePropertyChange("getResourceCenters()", null, newRC);
 			}
 			if (notification instanceof ResourceCenterRemoved) {
-				FlexoResourceCenter newRC = ((ResourceCenterRemoved) notification).getRemovedResourceCenter();
+				FlexoResourceCenter<?> newRC = ((ResourceCenterRemoved) notification).getRemovedResourceCenter();
 				// A new resource center has just been referenced, initialize it related to viewpoint exploring
 				// newRC.initialize(this);
 
@@ -330,9 +330,9 @@ public class ViewPointLibrary extends DefaultFlexoObject implements FlexoService
 				getServiceManager().getTaskManager().waitTask(activateFMLTATask);
 			}
 
-			for (FlexoResourceCenter rc : getResourceCenters()) {
+			for (FlexoResourceCenter<?> rc : getResourceCenters()) {
 				// Register Viewpoint viewpoint resources
-				ViewPointRepository vprfb = (ViewPointRepository) rc.getRepository(ViewPointRepository.class, fmlTA);
+				ViewPointRepository vprfb = rc.getRepository(ViewPointRepository.class, fmlTA);
 				for (ViewPointResource vpRes : vprfb.getAllResources()) {
 					vpRes.setViewPointLibrary(this);
 					registerViewPoint(vpRes);

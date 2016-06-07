@@ -150,7 +150,7 @@ public interface View extends AbstractVirtualModelInstance<View, ViewPoint> {
 	 */
 	public List<TechnologyAdapter> getRequiredTechnologyAdapters();
 
-	public static abstract class ViewImpl extends AbstractVirtualModelInstanceImpl<View, ViewPoint>implements View {
+	public static abstract class ViewImpl extends AbstractVirtualModelInstanceImpl<View, ViewPoint> implements View {
 
 		private static final Logger logger = Logger.getLogger(View.class.getPackage().getName());
 
@@ -175,7 +175,9 @@ public interface View extends AbstractVirtualModelInstance<View, ViewPoint> {
 
 			newView.setTitle(viewTitle);
 
-			FlexoIODelegate<?> delegate = newViewResource.getFlexoIODelegate();
+			// FD unused
+			// FlexoIODelegate<?> delegate =
+			newViewResource.getFlexoIODelegate();
 			// System.out.println("Saving " + delegate.stringRepresentation());
 
 			// Save it

@@ -180,12 +180,8 @@ public class DocResourceManager extends FlexoServiceImpl {
 	public File getDRMFile() {
 		if (drmFile == null) {
 			Resource drmResource = ResourceLocator.locateResource("DocResourceCenter.xml");
-			if (drmResource instanceof FileResourceImpl) {
-				logger.info("Found DRM File : " + drmResource.getURI());
-				drmFile = ((FileResourceImpl) drmResource).getFile();
-			}
-			else if (drmResource == null) {
-				logger.info("DRM File not found: " + drmResource.getURI());
+			if (drmResource == null) {
+				logger.info("DRM File not found");
 				try {
 					drmResource = new FileResourceImpl(
 							new File(((FileResourceImpl) getDocResourceCenterDirectory()).getFile(), "DocResourceCenter.xml"));
@@ -193,6 +189,10 @@ public class DocResourceManager extends FlexoServiceImpl {
 					logger.severe("Unable to create DocResourceCenter files");
 					e.printStackTrace();
 				}
+				drmFile = ((FileResourceImpl) drmResource).getFile();
+			}
+			else if (drmResource instanceof FileResourceImpl) {
+				logger.info("Found DRM File : " + drmResource.getURI());
 				drmFile = ((FileResourceImpl) drmResource).getFile();
 			}
 		}

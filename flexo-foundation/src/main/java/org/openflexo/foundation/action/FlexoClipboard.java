@@ -46,8 +46,8 @@ import java.util.Map;
 import org.openflexo.fge.control.exceptions.CopyException;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.InnerResourceData;
-import org.openflexo.foundation.fml.PrimitiveRole;
 import org.openflexo.foundation.fml.FlexoRole.RoleCloningStrategy;
+import org.openflexo.foundation.fml.PrimitiveRole;
 import org.openflexo.foundation.fml.rt.ActorReference;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.rm.VirtualModelInstanceResource;
@@ -91,7 +91,8 @@ public class FlexoClipboard {
 		Clipboard returned;
 		if (leaderResource != null) {
 			returned = clipboards.get(leaderResource);
-		} else {
+		}
+		else {
 			returned = clipboards.values().iterator().next();
 		}
 
@@ -124,11 +125,12 @@ public class FlexoClipboard {
 									&& (!(actor.getFlexoRole() instanceof PrimitiveRole))) {
 								if ((actor.getModellingElement() instanceof InnerResourceData)
 										&& (actor.getModellingElement() instanceof FlexoObject)
-										&& (((InnerResourceData) actor.getModellingElement()).getResourceData() != null)
-										&& (((InnerResourceData) actor.getModellingElement()).getResourceData().getResource() instanceof PamelaResource)) {
+										&& (((InnerResourceData<?>) actor.getModellingElement()).getResourceData() != null)
+										&& (((InnerResourceData<?>) actor.getModellingElement()).getResourceData()
+												.getResource() instanceof PamelaResource)) {
 									// This actor is referenced by the flexo concept instance
 									// Add it in the clipboard of associated PamelaResource
-									PamelaResource<?, ?> modelSlotSpecificResource = (PamelaResource<?, ?>) ((InnerResourceData) actor
+									PamelaResource<?, ?> modelSlotSpecificResource = (PamelaResource<?, ?>) ((InnerResourceData<?>) actor
 											.getModellingElement()).getResourceData().getResource();
 									List<FlexoObject> alreadyExistingObjects = extendedObjectsToBeCopied.get(modelSlotSpecificResource);
 									if (alreadyExistingObjects == null) {
@@ -149,8 +151,8 @@ public class FlexoClipboard {
 		return extendedObjectsToBeCopied;
 	}
 
-	public static FlexoClipboard copy(Map<PamelaResource<?, ?>, List<FlexoObject>> objectsToBeCopied, FlexoObject leader, Object copyContext)
-			throws CopyException {
+	public static FlexoClipboard copy(Map<PamelaResource<?, ?>, List<FlexoObject>> objectsToBeCopied, FlexoObject leader,
+			Object copyContext) throws CopyException {
 
 		// This map will be augmented by all modelling element which are actors of a FlexoRole
 		Map<PamelaResource<?, ?>, List<FlexoObject>> extendedObjectsToBeCopied = extendsMapOfObjectsToBeCopied(objectsToBeCopied);
@@ -194,10 +196,10 @@ public class FlexoClipboard {
 		}
 
 		if (leader instanceof InnerResourceData) {
-			if (((InnerResourceData) leader).getResourceData() != null) {
-				FlexoResource<?> resource = ((InnerResourceData) leader).getResourceData().getResource();
+			if (((InnerResourceData<?>) leader).getResourceData() != null) {
+				FlexoResource<?> resource = ((InnerResourceData<?>) leader).getResourceData().getResource();
 				if (resource instanceof PamelaResource) {
-					returned.leaderResource = (PamelaResource) resource;
+					returned.leaderResource = (PamelaResource<?, ?>) resource;
 				}
 			}
 		}
@@ -245,10 +247,10 @@ public class FlexoClipboard {
 		}
 
 		if (leader instanceof InnerResourceData) {
-			if (((InnerResourceData) leader).getResourceData() != null) {
-				FlexoResource<?> resource = ((InnerResourceData) leader).getResourceData().getResource();
+			if (((InnerResourceData<?>) leader).getResourceData() != null) {
+				FlexoResource<?> resource = ((InnerResourceData<?>) leader).getResourceData().getResource();
 				if (resource instanceof PamelaResource) {
-					returned.leaderResource = (PamelaResource) resource;
+					returned.leaderResource = (PamelaResource<?, ?>) resource;
 				}
 			}
 		}

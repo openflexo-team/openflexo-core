@@ -160,7 +160,8 @@ public abstract class FlexoObservable extends KVCFlexoObject implements HasPrope
 				WeakReference<FlexoObserver> reference = i.next();
 				if (reference.get() == null) {
 					i.remove();
-				} else if (reference.get() == o) {
+				}
+				else if (reference.get() == o) {
 					i.remove();
 					break;
 				}
@@ -252,8 +253,8 @@ public abstract class FlexoObservable extends KVCFlexoObject implements HasPrope
 	 * careful with method such as indexOf, contains, etc... which usually rely on equals() method. They have been overriden to use
 	 * explicitly the == operator.
 	 */
-	public Vector getAllObservers() {
-		Vector returned = new Vector() {
+	public Vector<FlexoObserver> getAllObservers() {
+		Vector<FlexoObserver> returned = new Vector<FlexoObserver>() {
 
 			@Override
 			public synchronized int indexOf(Object o, int index) {
@@ -271,7 +272,8 @@ public abstract class FlexoObservable extends KVCFlexoObject implements HasPrope
 			WeakReference<FlexoObserver> reference = i.next();
 			if (reference.get() == null) {
 				i.remove();
-			} else {
+			}
+			else {
 				returned.add(reference.get());
 			}
 		}
@@ -282,19 +284,14 @@ public abstract class FlexoObservable extends KVCFlexoObject implements HasPrope
 	 * Prints array of all current observers, as a snapshot of the state of current FlexoObservers.
 	 */
 	public void printObservers() {
-		Enumeration e = getAllObservers().elements();
 		if (logger.isLoggable(Level.INFO)) {
 			logger.info("Observers of: " + getClass().getName() + " / " + this);
 		}
 		int i = 0;
-		while (e.hasMoreElements()) {
-			Object object = e.nextElement();
-			if (object instanceof FlexoObserver) {
-				FlexoObserver o = (FlexoObserver) object;
-				if (logger.isLoggable(Level.INFO)) {
-					logger.info(" * " + i + " hash= " + Integer.toHexString(o.hashCode()) + " FlexoObserver: " + o.getClass().getName()
-							+ " / " + o);
-				}
+		for (FlexoObserver o : getAllObservers()) {
+			if (logger.isLoggable(Level.INFO)) {
+				logger.info(" * " + i + " hash= " + Integer.toHexString(o.hashCode()) + " FlexoObserver: " + o.getClass().getName() + " / "
+						+ o);
 			}
 			i++;
 		}
@@ -366,9 +363,9 @@ public abstract class FlexoObservable extends KVCFlexoObject implements HasPrope
 	/**
 	 * Enable observing for all observers of class 'observerClass' and all related subclasses
 	 */
-	public synchronized void enableObserving(Class observerClass) {
-		for (Enumeration en = observerClasses.keys(); en.hasMoreElements();) {
-			Class temp = (Class) en.nextElement();
+	public synchronized void enableObserving(Class<?> observerClass) {
+		for (Enumeration<?> en = observerClasses.keys(); en.hasMoreElements();) {
+			Class<?> temp = (Class<?>) en.nextElement();
 			if (observerClass.isAssignableFrom(temp)) {
 				if (logger.isLoggable(Level.FINE)) {
 					logger.fine("Enable observing for " + temp.getName());
@@ -381,9 +378,9 @@ public abstract class FlexoObservable extends KVCFlexoObject implements HasPrope
 	/**
 	 * Disable observing for all observers of class 'observerClass' and all related subclasses
 	 */
-	public synchronized void disableObserving(Class observerClass) {
-		for (Enumeration en = observerClasses.keys(); en.hasMoreElements();) {
-			Class temp = (Class) en.nextElement();
+	public synchronized void disableObserving(Class<?> observerClass) {
+		for (Enumeration<?> en = observerClasses.keys(); en.hasMoreElements();) {
+			Class<?> temp = (Class<?>) en.nextElement();
 			if (observerClass.isAssignableFrom(temp)) {
 				if (logger.isLoggable(Level.FINE)) {
 					logger.fine("Disable observing for " + temp.getName());
@@ -408,7 +405,8 @@ public abstract class FlexoObservable extends KVCFlexoObject implements HasPrope
 				WeakReference<FlexoObserver> reference = i.next();
 				if (reference.get() == null) {
 					i.remove();
-				} else if (reference.get() == observer) {
+				}
+				else if (reference.get() == observer) {
 					return true;
 				}
 			}

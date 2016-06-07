@@ -71,8 +71,8 @@ public abstract interface InnerModelSlotParameter<MS extends ModelSlot<?>> exten
 
 	public List<? extends ModelSlot> getAccessibleModelSlots();
 
-	public static abstract class InnerModelSlotParameterImpl<MS extends ModelSlot<?>> extends FlexoBehaviourParameterImpl implements
-			InnerModelSlotParameter<MS> {
+	public static abstract class InnerModelSlotParameterImpl<MS extends ModelSlot<?>> extends FlexoBehaviourParameterImpl
+			implements InnerModelSlotParameter<MS> {
 
 		private MS modelSlot;
 
@@ -95,8 +95,8 @@ public abstract interface InnerModelSlotParameter<MS extends ModelSlot<?>> exten
 	}
 
 	@DefineValidationRule
-	public static class ShouldNotHaveReflexiveVirtualModelModelSlot extends
-			ValidationRule<ShouldNotHaveReflexiveVirtualModelModelSlot, InnerModelSlotParameter> {
+	public static class ShouldNotHaveReflexiveVirtualModelModelSlot
+			extends ValidationRule<ShouldNotHaveReflexiveVirtualModelModelSlot, InnerModelSlotParameter> {
 
 		public ShouldNotHaveReflexiveVirtualModelModelSlot() {
 			super(InnerModelSlotParameter.class, "Parameter_should_not_have_reflexive_model_slot_no_more");
@@ -105,7 +105,7 @@ public abstract interface InnerModelSlotParameter<MS extends ModelSlot<?>> exten
 		@Override
 		public ValidationIssue<ShouldNotHaveReflexiveVirtualModelModelSlot, InnerModelSlotParameter> applyValidation(
 				InnerModelSlotParameter aParameter) {
-			ModelSlot ms = aParameter.getModelSlot();
+			ModelSlot<?> ms = aParameter.getModelSlot();
 			if (ms instanceof FMLRTModelSlot && "virtualModelInstance".equals(ms.getName())) {
 				RemoveReflexiveVirtualModelModelSlot fixProposal = new RemoveReflexiveVirtualModelModelSlot(aParameter);
 				return new ValidationWarning<ShouldNotHaveReflexiveVirtualModelModelSlot, InnerModelSlotParameter>(this, aParameter,
@@ -115,10 +115,10 @@ public abstract interface InnerModelSlotParameter<MS extends ModelSlot<?>> exten
 			return null;
 		}
 
-		protected static class RemoveReflexiveVirtualModelModelSlot extends
-				FixProposal<ShouldNotHaveReflexiveVirtualModelModelSlot, InnerModelSlotParameter> {
+		protected static class RemoveReflexiveVirtualModelModelSlot
+				extends FixProposal<ShouldNotHaveReflexiveVirtualModelModelSlot, InnerModelSlotParameter> {
 
-			private final InnerModelSlotParameter parameter;
+			private final InnerModelSlotParameter<?> parameter;
 
 			public RemoveReflexiveVirtualModelModelSlot(InnerModelSlotParameter aParameter) {
 				super("remove_reflexive_modelslot");

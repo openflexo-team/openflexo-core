@@ -97,7 +97,8 @@ public class FlexoMenuItem extends JMenuItem implements FlexoActionSource, Prope
 		}
 		if (localizeActionName) {
 			setText(FlexoLocalization.localizedForKey(flexoActionName, this));
-		} else {
+		}
+		else {
 			setText(flexoActionName);
 		}
 	}
@@ -107,7 +108,7 @@ public class FlexoMenuItem extends JMenuItem implements FlexoActionSource, Prope
 		setIcon(icon);
 	}
 
-	public FlexoMenuItem(FlexoActionType actionType, KeyStroke accelerator, Icon icon, FlexoController controller) {
+	public FlexoMenuItem(FlexoActionType<?, ?, ?> actionType, KeyStroke accelerator, Icon icon, FlexoController controller) {
 		this(actionType, controller);
 		setIcon(icon);
 		if (accelerator != null) {
@@ -115,12 +116,12 @@ public class FlexoMenuItem extends JMenuItem implements FlexoActionSource, Prope
 		}
 	}
 
-	public FlexoMenuItem(FlexoActionType actionType, Icon icon, FlexoController controller) {
+	public FlexoMenuItem(FlexoActionType<?, ?, ?> actionType, Icon icon, FlexoController controller) {
 		this(actionType, controller);
 		setIcon(icon);
 	}
 
-	public FlexoMenuItem(FlexoActionType actionType, FlexoController controller) {
+	public FlexoMenuItem(FlexoActionType<?, ?, ?> actionType, FlexoController controller) {
 		super();
 		this.actionType = actionType;
 		_controller = controller;
@@ -148,13 +149,14 @@ public class FlexoMenuItem extends JMenuItem implements FlexoActionSource, Prope
 	}
 
 	/**
-     * 
-     */
+	 * 
+	 */
 	public void itemWillShow() {
 		if (actionType instanceof FlexoActionType && getSelectionManager() != null) {
 			if (getFocusedObject() == null || getFocusedObject().getActionList().indexOf(actionType) > -1) {
 				setEnabled(actionType.isEnabled(getFocusedObject(), getGlobalSelection()));
-			} else {
+			}
+			else {
 				setEnabled(false);
 			}
 		}

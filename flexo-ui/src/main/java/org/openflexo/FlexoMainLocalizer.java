@@ -39,15 +39,11 @@
 
 package org.openflexo;
 
-import java.beans.PropertyChangeSupport;
-import java.util.Hashtable;
-import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.localization.Language;
-import org.openflexo.localization.LocalizedDelegate;
 import org.openflexo.localization.LocalizedDelegateImpl;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
@@ -67,8 +63,6 @@ public class FlexoMainLocalizer extends LocalizedDelegateImpl {
 
 	private static Resource _localizedDirectory = null;
 	private static FlexoMainLocalizer instance = null;
-
-
 
 	/**
 	 * Return directory where localized dictionnaries for main localizer are stored
@@ -91,11 +85,12 @@ public class FlexoMainLocalizer extends LocalizedDelegateImpl {
 		super(getMainLocalizerLocalizedDirectory(), null, Flexo.isDev, Flexo.isDev);
 		// If we want to update locales, we have to retrieve source code dictionaries
 		if (Flexo.isDev) {
-			// Get Localized from flexolocalization here  because we need main Localized support to come from gina project
-			Resource sourceCodeResource = ResourceLocator.locateSourceCodeResource(getLocalizedDirectoryResource(),".*flexolocalization.*");
+			// Get Localized from flexolocalization here because we need main Localized support to come from gina project
+			Resource sourceCodeResource = ResourceLocator.locateSourceCodeResource(getLocalizedDirectoryResource(),
+					".*flexolocalization.*");
 			if (sourceCodeResource != null) {
 				setLocalizedDirectoryResource(sourceCodeResource);
-			} 
+			}
 		}
 	}
 

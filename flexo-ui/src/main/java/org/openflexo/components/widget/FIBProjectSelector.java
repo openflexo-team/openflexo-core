@@ -39,13 +39,12 @@
 
 package org.openflexo.components.widget;
 
-import java.io.File;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.project.InteractiveProjectLoader;
-import org.openflexo.rm.ResourceLocator;
 import org.openflexo.rm.Resource;
+import org.openflexo.rm.ResourceLocator;
 
 /**
  * Widget allowing to select a ViewPoint
@@ -123,7 +122,7 @@ public class FIBProjectSelector extends FIBFlexoObjectSelector<FlexoProject> {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-
+	
 				ProjectLoader projectLoader = Mockito.mock(ProjectLoader.class);
 				Mockito.when(projectLoader.getRootProjects()).thenReturn(Arrays.asList(project));
 				mockPropertyChangeSupport(projectLoader);
@@ -134,16 +133,16 @@ public class FIBProjectSelector extends FIBFlexoObjectSelector<FlexoProject> {
 				selector.setProjectLoader(projectLoader);
 				return makeArray(selector);
 			}
-
+	
 			private void mockPropertyChangeSupport(HasPropertyChangeSupport changeSupport) {
 				Mockito.when(changeSupport.getPropertyChangeSupport()).thenReturn(new PropertyChangeSupport(changeSupport));
 			}
-
+	
 			@Override
 			public File getFIBFile() {
 				return FIB_FILE;
 			}
-
+	
 			@Override
 			public FIBController makeNewController(FIBComponent component) {
 				return new FlexoFIBController(component);

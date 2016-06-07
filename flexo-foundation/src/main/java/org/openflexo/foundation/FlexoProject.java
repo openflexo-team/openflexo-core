@@ -116,7 +116,7 @@ import org.openflexo.toolbox.ZipUtils;
  * @author sguerin
  */
 public class FlexoProject extends FileSystemBasedResourceCenter
-		/*ResourceRepository<FlexoResource<?>>*/implements Validable, ResourceData<FlexoProject>, ReferenceOwner {
+		/*ResourceRepository<FlexoResource<?>>*/ implements Validable, ResourceData<FlexoProject>, ReferenceOwner {
 
 	protected static final Logger logger = Logger.getLogger(FlexoProject.class.getPackage().getName());
 
@@ -1079,6 +1079,7 @@ public class FlexoProject extends FileSystemBasedResourceCenter
 			List<FlexoProjectObject> badObjects = object.getObjectIDManager().checkProject(true);
 			if (badObjects.size() > 0) {
 				DuplicateObjectIDIssue issues = new DuplicateObjectIDIssue(object);
+				// TODO FD pour SG pourquoi obj pas utilisé dans la boucle ?
 				for (FlexoProjectObject obj : badObjects) {
 					issues.addToContainedIssues(new InformationIssue<FlexoIDMustBeUnique, FlexoProject>(object,
 							"identifier_of_($object.fullyQualifiedName)_was_duplicated_and_reset_to_($object.flexoID)"));

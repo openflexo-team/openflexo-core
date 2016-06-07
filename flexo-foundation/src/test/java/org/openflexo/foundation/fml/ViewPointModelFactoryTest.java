@@ -44,7 +44,6 @@ import java.util.Iterator;
 import java.util.logging.Logger;
 
 import org.junit.Test;
-import org.openflexo.foundation.fml.ViewPointModelFactory;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.model.ModelContext;
 import org.openflexo.model.ModelEntity;
@@ -66,8 +65,7 @@ public class ViewPointModelFactoryTest {
 			ViewPointModelFactory factory = new ViewPointModelFactory(null, null);
 			ModelContext modelContext = factory.getModelContext();
 			for (Iterator<ModelEntity> it = modelContext.getEntities(); it.hasNext();) {
-				ModelEntity e = it.next();
-				System.out.println("> Found " + e.getImplementedInterface());
+				System.out.println("> Found " + it.next().getImplementedInterface());
 			}
 		} catch (ModelDefinitionException e) {
 			e.printStackTrace();
