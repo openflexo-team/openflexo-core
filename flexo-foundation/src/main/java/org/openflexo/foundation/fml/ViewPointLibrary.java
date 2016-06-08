@@ -333,9 +333,15 @@ public class ViewPointLibrary extends DefaultFlexoObject implements FlexoService
 			for (FlexoResourceCenter<?> rc : getResourceCenters()) {
 				// Register Viewpoint viewpoint resources
 				ViewPointRepository vprfb = rc.getRepository(ViewPointRepository.class, fmlTA);
-				for (ViewPointResource vpRes : vprfb.getAllResources()) {
-					vpRes.setViewPointLibrary(this);
-					registerViewPoint(vpRes);
+				// System.out.println("vprfb=" + vprfb);
+				if (vprfb == null) {
+					logger.warning("Could not retrieve ViewPointRepository from RC: " + rc);
+				}
+				else {
+					for (ViewPointResource vpRes : vprfb.getAllResources()) {
+						vpRes.setViewPointLibrary(this);
+						registerViewPoint(vpRes);
+					}
 				}
 			}
 		}
