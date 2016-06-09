@@ -39,6 +39,7 @@
 package org.openflexo.foundation.fml.controlgraph;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -159,9 +160,10 @@ public interface IterationAction extends AbstractIterationAction {
 
 		@Override
 		public Object execute(RunTimeEvaluationContext evaluationContext) throws ReturnException, FlexoException {
+
 			List<?> items = evaluateIteration(evaluationContext);
 			if (items != null) {
-				for (Object item : items) {
+				for (Object item : new ArrayList<Object>(items)) {
 					// System.out.println("> working with " + getIteratorName() + "=" + item);
 					evaluationContext.declareVariable(getIteratorName(), item);
 					try {
