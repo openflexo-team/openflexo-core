@@ -570,13 +570,20 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 					}
 				}
 				// CAUTION: tricky area
-				// To be able to generically handle adding in a list of roles, we should override add method here
+				// To be able to generically handle adding and removing in a list of roles, we should override add and remove methods here
 				returned = new ArrayList<T>(existingList) {
 					@Override
 					public boolean add(T e) {
 						// System.out.println("Adding element "+e+" to list for actor " + flexoRole);
 						addToFlexoActors(e, flexoRole);
 						return super.add(e);
+					}
+
+					@Override
+					public boolean remove(Object o) {
+						// System.out.println("Removing element "+o+" from list for actor " + flexoRole);
+						removeFromFlexoActors((T) o, flexoRole);
+						return super.remove(o);
 					}
 				};
 				actorLists.put(flexoRole, returned);
@@ -1049,11 +1056,14 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 				}
 				else {
 					// Generate on-the-fly default deletion scheme
-					return deleteWithScheme(getFlexoConcept().generateDefaultDeletionScheme());
+					DeletionScheme ds = getFlexoConcept().generateDefaultDeletionScheme();
+					return deleteWithScheme(ds);
 				}
 			}
 			else {
-				return super.delete(context);
+				boolean returned = super.delete(context);
+				getPropertyChangeSupport().firePropertyChange(getDeletedProperty(), false, true);
+				return returned;
 			}
 		}
 
@@ -1064,6 +1074,18 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 			if (isDeleted()) {
 				return false;
 			}
+
+			if (deletionScheme != null && deletionScheme.getControlGraph() != null) {
+				try {
+					deletionScheme.getControlGraph().execute(this);
+				} catch (ReturnException e) {
+					// TODO: think about that
+					e.printStackTrace();
+				} catch (FlexoException e) {
+					e.printStackTrace();
+				}
+			}
+
 			AbstractVirtualModelInstance<?, ?> container = getOwningVirtualModelInstance();
 			if (container != null) {
 				container.removeFromFlexoConceptInstances(this);
@@ -1086,7 +1108,9 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 							+ primaryPatternActor);
 				}
 			}*/
-			return super.delete();
+			boolean returned = super.delete();
+			getPropertyChangeSupport().firePropertyChange(getDeletedProperty(), false, true);
+			return returned;
 		}
 
 		/**

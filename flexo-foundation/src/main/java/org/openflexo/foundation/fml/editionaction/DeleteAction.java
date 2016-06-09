@@ -134,6 +134,7 @@ public interface DeleteAction<T extends FlexoObject> extends EditionAction {
 
 		@Override
 		public T execute(RunTimeEvaluationContext evaluationContext) {
+
 			T objectToDelete = null;
 			try {
 				objectToDelete = getObject().getBindingValue(evaluationContext);
@@ -144,6 +145,7 @@ public interface DeleteAction<T extends FlexoObject> extends EditionAction {
 			} catch (InvocationTargetException e1) {
 				e1.printStackTrace();
 			}
+
 			if (objectToDelete == null) {
 				return null;
 			}

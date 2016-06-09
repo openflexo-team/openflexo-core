@@ -42,15 +42,12 @@ import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.openflexo.connie.BindingVariable;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.action.InvalidParametersException;
 import org.openflexo.foundation.action.NotImplementedException;
 import org.openflexo.foundation.fml.DeletionScheme;
 import org.openflexo.foundation.fml.FlexoBehaviour;
-import org.openflexo.foundation.fml.FlexoRole;
-import org.openflexo.foundation.fml.binding.FlexoRoleBindingVariable;
 import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstanceObject;
@@ -61,25 +58,25 @@ public class DeletionSchemeAction extends FlexoBehaviourAction<DeletionSchemeAct
 
 	/*public static FlexoActionType<DeletionSchemeAction, FlexoConceptInstance, VirtualModelInstanceObject> actionType = new FlexoActionType<DeletionSchemeAction, FlexoConceptInstance, VirtualModelInstanceObject>(
 			"delete_flexo_concept_instance", FlexoActionType.editGroup, FlexoActionType.DELETE_ACTION_TYPE) {
-
+	
 		@Override
 		public DeletionSchemeAction makeNewAction(FlexoConceptInstance focusedObject, Vector<VirtualModelInstanceObject> globalSelection,
 				FlexoEditor editor) {
 			return new DeletionSchemeAction(focusedObject, globalSelection, editor);
 		}
-
+	
 		@Override
 		public boolean isVisibleForSelection(FlexoConceptInstance object, Vector<VirtualModelInstanceObject> globalSelection) {
 			return false;
 		}
-
+	
 		@Override
 		public boolean isEnabledForSelection(FlexoConceptInstance object, Vector<VirtualModelInstanceObject> globalSelection) {
 			return true;
 		}
-
+	
 	};
-
+	
 	static {
 		FlexoObjectImpl.addActionForClass(actionType, FlexoConceptInstance.class);
 	}*/
@@ -140,7 +137,8 @@ public class DeletionSchemeAction extends FlexoBehaviourAction<DeletionSchemeAct
 			FlexoConceptInstance vObject = getFocusedObject();
 			if (vObject instanceof AbstractVirtualModelInstance) {
 				vmInstance = (AbstractVirtualModelInstance<?, ?>) getFocusedObject();
-			} else if (vObject instanceof FlexoConceptInstance) {
+			}
+			else if (vObject instanceof FlexoConceptInstance) {
 				vmInstance = vObject.getVirtualModelInstance();
 			}
 		}
@@ -154,7 +152,7 @@ public class DeletionSchemeAction extends FlexoBehaviourAction<DeletionSchemeAct
 	/*public DeletionScheme getDeletionScheme() {
 		return deletionScheme;
 	}
-
+	
 	public void setDeletionScheme(DeletionScheme deletionScheme) {
 		this.deletionScheme = deletionScheme;
 	}*/
@@ -168,14 +166,14 @@ public class DeletionSchemeAction extends FlexoBehaviourAction<DeletionSchemeAct
 	public FlexoConceptInstance getFlexoConceptInstance() {
 		return getFlexoConceptInstanceToDelete();
 	}
-
+	
 	public FlexoConceptInstance getFlexoConceptInstanceToDelete() {
 		if (flexoConceptInstanceToDelete == null && getFocusedObject() instanceof DiagramElement) {
 			flexoConceptInstanceToDelete = ((DiagramElement) getFocusedObject()).getFlexoConceptInstance();
 		}
 		return flexoConceptInstanceToDelete;
 	}
-
+	
 	public void setFlexoConceptInstanceToDelete(FlexoConceptInstance flexoConceptInstanceToDelete) {
 		this.flexoConceptInstanceToDelete = flexoConceptInstanceToDelete;
 	}*/
@@ -185,22 +183,28 @@ public class DeletionSchemeAction extends FlexoBehaviourAction<DeletionSchemeAct
 		return getVirtualModelInstance();
 	}
 
-	@Override
+	/*@Override
 	public Object getValue(BindingVariable variable) {
 		FlexoConceptInstance fci = this.getFlexoConceptInstanceToDelete();
 		if (fci != null && variable != null) {
 			if (variable instanceof FlexoRoleBindingVariable) {
 				FlexoRole<?> role = ((FlexoRoleBindingVariable) variable).getFlexoRole();
 				if (role != null) {
-					return fci.getFlexoActor(role);
-				} else {
+					if (role.getCardinality().isMultipleCardinality()) {
+						return fci.getFlexoActorList(role);
+					}
+					else {
+						return fci.getFlexoActor(role);
+					}
+				}
+				else {
 					logger.warning("Trying to delete a null actor for : " + fci.getFlexoConceptURI() + "/" + variable.toString());
 				}
 			}
 			return super.getValue(variable);
 		}
 		return null;
-	}
+	}*/
 
 	public FlexoConceptInstance getFlexoConceptInstanceToDelete() {
 		if (flexoConceptInstanceToDelete == null && getFocusedObject() != null) {
