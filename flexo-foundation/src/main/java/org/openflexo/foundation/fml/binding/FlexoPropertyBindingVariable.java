@@ -136,7 +136,7 @@ public class FlexoPropertyBindingVariable extends BindingVariable implements Pro
 			if (flexoProperty.getCardinality().isMultipleCardinality()) {
 				return flexoConceptInstance.getFlexoActorList((FlexoRole<?>) flexoProperty);
 			}
-			else if (flexoProperty instanceof FlexoRole) {
+			else {
 				return flexoConceptInstance.getFlexoActor((FlexoRole<?>) flexoProperty);
 			}
 		}
