@@ -317,8 +317,6 @@ public class FlexoObjectReference<O extends FlexoObject> extends KVCFlexoObject 
 			// Ensure the resource is loaded
 			ResourceData<?> resourceData = resource.getResourceData(null);
 
-			System.out.println("On cherche " + modelObjectIdentifier + " dans " + resourceIdentifier);
-
 			if (resource instanceof PamelaResource) {
 				return (O) ((PamelaResource<?, ?>) resource).getFlexoObject(flexoID, userIdentifier);
 				/*List<Object> allObjects = ((PamelaResource<?, ?>) resource).getFactory().getEmbeddedObjects(resourceData,
