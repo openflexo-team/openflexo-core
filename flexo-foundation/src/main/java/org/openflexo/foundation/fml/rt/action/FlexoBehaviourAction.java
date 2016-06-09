@@ -83,7 +83,7 @@ import org.openflexo.toolbox.StringUtils;
  * @param <A>
  */
 public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB, O>, FB extends FlexoBehaviour, O extends VirtualModelInstanceObject>
-		extends FlexoAction<A, O, VirtualModelInstanceObject>implements RunTimeEvaluationContext {
+		extends FlexoAction<A, O, VirtualModelInstanceObject> implements RunTimeEvaluationContext {
 
 	private static final Logger logger = Logger.getLogger(FlexoBehaviourAction.class.getPackage().getName());
 
@@ -222,7 +222,7 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 	}
 
 	public void setParameterValue(FlexoBehaviourParameter parameter, Object value) {
-		System.out.println("setParameterValue " + value + " for parameter " + parameter.getName());
+		// System.out.println("setParameterValue " + value + " for parameter " + parameter.getName());
 		parameterValues.put(parameter, value);
 		/*for (FlexoBehaviourParameter p : getEditionScheme().getParameters()) {
 			if (p instanceof URIParameter) {
