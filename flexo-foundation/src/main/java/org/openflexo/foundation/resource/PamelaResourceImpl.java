@@ -43,7 +43,10 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -54,6 +57,7 @@ import org.jdom2.Element;
 import org.jdom2.JDOMException;
 import org.jdom2.filter.ElementFilter;
 import org.jdom2.input.SAXBuilder;
+import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoService.ServiceNotification;
 import org.openflexo.foundation.IOFlexoException;
 import org.openflexo.foundation.InconsistentDataException;
@@ -66,6 +70,7 @@ import org.openflexo.kvc.AccessorInvocationException;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.model.exceptions.InvalidDataException;
 import org.openflexo.model.exceptions.ModelDefinitionException;
+import org.openflexo.model.factory.EmbeddingType;
 import org.openflexo.model.factory.ModelFactory;
 import org.openflexo.model.undo.AtomicEdit;
 import org.openflexo.toolbox.FileUtils;
@@ -129,7 +134,8 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends 
 		F factory = getFactory();
 		if (factory != null) {
 			factory.startDeserializing();
-		} else {
+		}
+		else {
 			logger.warning("Trying to deserialize with a NULL factory!!!");
 			System.err.println(Throwables.getStackTraceAsString(new Throwable()));
 		}
@@ -147,7 +153,8 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends 
 		getFactory().stopDeserializing();
 		if (getLoadedResourceData() != null) {
 			getLoadedResourceData().clearIsModified();
-		} else {
+		}
+		else {
 			logger.warning("Could not access loaded resource data");
 		}
 	}
@@ -540,6 +547,70 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends 
 		}
 	}
 
+	private Map<String, Map<Long, FlexoObject>> objects;
+	private boolean isIndexing = false;
+
+	@Override
+	public boolean isIndexing() {
+		return isIndexing;
+	}
+
+	/**
+	 * Internally called to index all objects found in resource
+	 * 
+	 */
+	protected void indexResource() {
+
+		isIndexing = true;
+		//System.out.println("Indexing PamelaResource " + this);
+		objects = new HashMap<>();
+		List<Object> allObjects = getFactory().getEmbeddedObjects(getLoadedResourceData(), EmbeddingType.CLOSURE);
+		allObjects.add(getLoadedResourceData());
+		for (Object temp : allObjects) {
+			if (temp instanceof FlexoObject) {
+				FlexoObject o = (FlexoObject) temp;
+				Map<Long, FlexoObject> objectsForUserIdentifier = objects.get(o.getUserIdentifier());
+				if (objectsForUserIdentifier == null) {
+					objectsForUserIdentifier = new HashMap<>();
+					objects.put(o.getUserIdentifier(), objectsForUserIdentifier);
+				}
+				objectsForUserIdentifier.put(o.getFlexoID(), o);
+			}
+		}
+		//System.out.println("Done indexing PamelaResource " + this);
+		isIndexing = false;
+	}
+
+	/**
+	 * Retrieve object with supplied flexoId and userIdentifier
+	 * 
+	 * @param flexoId
+	 * @param userIdentifier
+	 * @return
+	 */
+	@Override
+	public FlexoObject getFlexoObject(Long flexoId, String userIdentifier) {
+
+		if (flexoId == null || userIdentifier == null) {
+			return null;
+		}
+
+		if (!isLoaded()) {
+			return null;
+		}
+
+		if (objects == null) {
+			indexResource();
+		}
+
+		Map<Long, FlexoObject> objectsForUserIdentifier = objects.get(userIdentifier);
+		if (objectsForUserIdentifier != null) {
+			return objectsForUserIdentifier.get(flexoId);
+		}
+
+		return null;
+	}
+
 	/**
 	 * Read an XML input stream from File and return the parsed Document
 	 */
@@ -561,7 +632,8 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends 
 		Iterator it = document.getDescendants(new ElementFilter(name));
 		if (it.hasNext()) {
 			return (Element) it.next();
-		} else {
+		}
+		else {
 			return null;
 		}
 	}
@@ -570,7 +642,8 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends 
 		Iterator it = from.getDescendants(new ElementFilter(name));
 		if (it.hasNext()) {
 			return (Element) it.next();
-		} else {
+		}
+		else {
 			return null;
 		}
 	}

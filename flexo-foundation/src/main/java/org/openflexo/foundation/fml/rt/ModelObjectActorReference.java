@@ -41,6 +41,7 @@ package org.openflexo.foundation.fml.rt;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoObject;
+import org.openflexo.foundation.resource.PamelaResource;
 import org.openflexo.foundation.utils.FlexoObjectReference;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.model.annotations.Getter;
@@ -73,8 +74,8 @@ public interface ModelObjectActorReference<T extends FlexoObject> extends ActorR
 	@Setter(OBJECT_REFERENCE_KEY)
 	public void setObjectReference(FlexoObjectReference<T> objectReference);
 
-	public static abstract class ModelObjectActorReferenceImpl<T extends FlexoObject> extends ActorReferenceImpl<T> implements
-			ModelObjectActorReference<T> {
+	public static abstract class ModelObjectActorReferenceImpl<T extends FlexoObject> extends ActorReferenceImpl<T>
+			implements ModelObjectActorReference<T> {
 
 		private static final Logger logger = FlexoLogger.getLogger(ModelObjectActorReference.class.getPackage().toString());
 
@@ -84,16 +85,22 @@ public interface ModelObjectActorReference<T extends FlexoObject> extends ActorR
 		public void setModellingElement(T object) {
 			if (object != null) {
 				setObjectReference(new FlexoObjectReference<T>(object));
-			} else {
+			}
+			else {
 				setObjectReference(null);
 			}
 		}
 
 		@Override
 		public synchronized T getModellingElement() {
+			if (getResourceData() != null && getResourceData().getResource() instanceof PamelaResource
+					&& ((PamelaResource) getResourceData().getResource()).isIndexing()) {
+				return null;
+			}
 			if (isLoading) {
 				return null;
-			} else if (getObjectReference() != null) {
+			}
+			else if (getObjectReference() != null) {
 				isLoading = true;
 				T returned = getObjectReference().getObject(true);
 				if (returned == null) {

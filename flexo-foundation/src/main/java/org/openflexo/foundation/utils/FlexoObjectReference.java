@@ -41,7 +41,6 @@ package org.openflexo.foundation.utils;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.FileNotFoundException;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -58,7 +57,6 @@ import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.resource.ResourceLoadingListener;
 import org.openflexo.logging.FlexoLogger;
-import org.openflexo.model.factory.EmbeddingType;
 
 /**
  * Implements a reference to a {@link FlexoObject}.<br>
@@ -119,7 +117,8 @@ public class FlexoObjectReference<O extends FlexoObject> extends KVCFlexoObject 
 							+ ((InnerResourceData) modelObject).getResourceData().getResource().getURI() + SEPARATOR
 							+ modelObject.getUserIdentifier() + ID_SEPARATOR + String.valueOf(modelObject.getFlexoID())
 							+ (serializeClassName ? SEPARATOR + modelObject.getClass().getName() : "");
-				} else {
+				}
+				else {
 					return ((InnerResourceData) modelObject).getResourceData().getResource().getURI() + SEPARATOR
 							+ modelObject.getUserIdentifier() + ID_SEPARATOR + String.valueOf(modelObject.getFlexoID())
 							+ (serializeClassName ? SEPARATOR + modelObject.getClass().getName() : "");
@@ -167,11 +166,13 @@ public class FlexoObjectReference<O extends FlexoObject> extends KVCFlexoObject 
 		if (modelObject instanceof InnerResourceData && ((InnerResourceData) modelObject).getResourceData() != null) {
 			if (((InnerResourceData) modelObject).getResourceData().getResource() != null) {
 				this.resourceIdentifier = ((InnerResourceData) modelObject).getResourceData().getResource().getURI();
-			} else {
+			}
+			else {
 				logger.warning("object " + modelObject + " has a resource data (" + ((InnerResourceData) modelObject).getResourceData()
 						+ ") with null resource ");
 			}
-		} else {
+		}
+		else {
 			logger.warning("object " + modelObject + " has no resource data !");
 		}
 		if (modelObject != null) {
@@ -182,9 +183,11 @@ public class FlexoObjectReference<O extends FlexoObject> extends KVCFlexoObject 
 
 		if (object instanceof FlexoProjectObject) {
 			setOwner(((FlexoProjectObject) object).getProject());
-		} else if (object instanceof InnerResourceData) {
+		}
+		else if (object instanceof InnerResourceData) {
 			setOwner(((InnerResourceData) object).getResourceData().getResource());
-		} else {
+		}
+		else {
 			logger.warning("Could not find any Reference owner for " + object);
 		}
 	}
@@ -289,13 +292,15 @@ public class FlexoObjectReference<O extends FlexoObject> extends KVCFlexoObject 
 				if (modelObject != null) {
 					status = ReferenceStatus.RESOLVED;
 					owner.notifyObjectLoaded(this);
-				} else if (getResource(force) == null || getResource(force).isLoaded()
+				}
+				else if (getResource(force) == null || getResource(force).isLoaded()
 				// TODO: OLD FlexoResource scheme
 				/*&& (!(getResource(force) instanceof FlexoXMLStorageResource) || !((FlexoXMLStorageResource) getResource(force))
 						.getIsLoading())*/) {
 					if (getResource(force) == null) {
 						status = ReferenceStatus.RESOURCE_NOT_FOUND;
-					} else {
+					}
+					else {
 						status = ReferenceStatus.NOT_FOUND;
 					}
 					if (force) {
@@ -312,8 +317,11 @@ public class FlexoObjectReference<O extends FlexoObject> extends KVCFlexoObject 
 			// Ensure the resource is loaded
 			ResourceData<?> resourceData = resource.getResourceData(null);
 
+			System.out.println("On cherche " + modelObjectIdentifier + " dans " + resourceIdentifier);
+
 			if (resource instanceof PamelaResource) {
-				List<Object> allObjects = ((PamelaResource<?, ?>) resource).getFactory().getEmbeddedObjects(resourceData,
+				return (O) ((PamelaResource<?, ?>) resource).getFlexoObject(flexoID, userIdentifier);
+				/*List<Object> allObjects = ((PamelaResource<?, ?>) resource).getFactory().getEmbeddedObjects(resourceData,
 						EmbeddingType.CLOSURE);
 				allObjects.add(resourceData);
 				for (Object temp : allObjects) {
@@ -323,7 +331,7 @@ public class FlexoObjectReference<O extends FlexoObject> extends KVCFlexoObject 
 							return (O) temp;
 						}
 					}
-				}
+				}*/
 			}
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
@@ -350,7 +358,8 @@ public class FlexoObjectReference<O extends FlexoObject> extends KVCFlexoObject 
 		FlexoResource<?> res = getResource(force);
 		if (res == null) {
 			return null;
-		} else {
+		}
+		else {
 			// System.out.println("Found resource");
 			return findObjectInResource(res);
 		}
@@ -377,7 +386,8 @@ public class FlexoObjectReference<O extends FlexoObject> extends KVCFlexoObject 
 	public String getResourceIdentifier() {
 		if (resource != null) {
 			return resource.getURI();
-		} else {
+		}
+		else {
 			return resourceIdentifier;
 		}
 	}
@@ -389,7 +399,8 @@ public class FlexoObjectReference<O extends FlexoObject> extends KVCFlexoObject 
 	public FlexoProject getReferringProject(boolean force) {
 		if (modelObject instanceof FlexoProjectObject) {
 			return ((FlexoProjectObject) modelObject).getProject();
-		} else {
+		}
+		else {
 			// TODO: lookup project using projectIdentifier
 			return null;
 		}
@@ -408,14 +419,16 @@ public class FlexoObjectReference<O extends FlexoObject> extends KVCFlexoObject 
 				this.owner = owner;
 				if (this.owner != null) {
 					((FlexoProject) this.owner).addToObjectReferences(this);
-				} else {
+				}
+				else {
 					if (owner != null) {
 						if (logger.isLoggable(Level.WARNING)) {
 							logger.warning("No project found for " + owner + " " + getStringRepresentation());
 						}
 					}
 				}
-			} else {
+			}
+			else {
 				this.owner = owner;
 			}
 		}
@@ -424,7 +437,8 @@ public class FlexoObjectReference<O extends FlexoObject> extends KVCFlexoObject 
 	public String getStringRepresentation() {
 		if (modelObject != null) {
 			return getSerializationRepresentationForObject(modelObject, serializeClassName);
-		} else {
+		}
+		else {
 			return resourceIdentifier + SEPARATOR + userIdentifier + ID_SEPARATOR + flexoID
 					+ (serializeClassName ? SEPARATOR + className : "");
 		}
