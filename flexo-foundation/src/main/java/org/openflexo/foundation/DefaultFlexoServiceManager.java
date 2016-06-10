@@ -41,6 +41,8 @@ package org.openflexo.foundation;
 
 import org.openflexo.foundation.FlexoProject.FlexoProjectReferenceLoader;
 import org.openflexo.foundation.fml.ViewPointLibrary;
+import org.openflexo.foundation.localization.DefaultLocalizationService;
+import org.openflexo.foundation.localization.LocalizationService;
 import org.openflexo.foundation.nature.DefaultProjectNatureService;
 import org.openflexo.foundation.nature.DefaultScreenshotService;
 import org.openflexo.foundation.nature.ProjectNatureService;
@@ -68,6 +70,9 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 public class DefaultFlexoServiceManager extends FlexoServiceManager {
 
 	public DefaultFlexoServiceManager() {
+
+		LocalizationService localizationService = createLocalizationService();
+		registerService(localizationService);
 
 		FlexoEditingContext editingContext = createEditingContext();
 		registerService(editingContext);
@@ -160,6 +165,11 @@ public class DefaultFlexoServiceManager extends FlexoServiceManager {
 	protected FlexoEditor createApplicationEditor() {
 		// Please override
 		return null;
+	}
+
+	@Override
+	protected LocalizationService createLocalizationService() {
+		return new DefaultLocalizationService();
 	}
 
 	public String debug() {

@@ -46,6 +46,7 @@ import java.util.logging.Logger;
 import org.openflexo.foundation.FlexoProject.FlexoProjectReferenceLoader;
 import org.openflexo.foundation.FlexoService.ServiceNotification;
 import org.openflexo.foundation.fml.ViewPointLibrary;
+import org.openflexo.foundation.localization.LocalizationService;
 import org.openflexo.foundation.nature.ProjectNatureService;
 import org.openflexo.foundation.nature.ScreenshotService;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
@@ -192,6 +193,10 @@ public abstract class FlexoServiceManager {
 		}
 	}
 
+	public LocalizationService getLocalizationService() {
+		return getService(LocalizationService.class);
+	}
+
 	public FlexoEditingContext getEditingContext() {
 		return getService(FlexoEditingContext.class);
 	}
@@ -284,6 +289,8 @@ public abstract class FlexoServiceManager {
 	protected abstract ProjectNatureService createProjectNatureService();
 
 	protected abstract ViewPointLibrary createViewPointLibraryService();
+
+	protected abstract LocalizationService createLocalizationService();
 
 	protected abstract ResourceManager createResourceManager();
 

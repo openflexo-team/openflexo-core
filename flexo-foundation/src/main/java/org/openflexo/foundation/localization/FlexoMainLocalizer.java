@@ -37,54 +37,39 @@
  * 
  */
 
-package org.openflexo;
+package org.openflexo.foundation.localization;
 
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.openflexo.localization.FlexoLocalization;
-import org.openflexo.localization.Language;
+import org.openflexo.localization.LocalizedDelegate;
 import org.openflexo.localization.LocalizedDelegateImpl;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
 
 /**
  * This is the general Openflexo localized implementation<br>
- * Default localized directory is managed here
+ * Default localized directory is managed in FlexoLocalization directory<br>
+ * 
+ * This implementation use the deprecated localization resources stored in GINA to rebuild all dictionaries
  * 
  * @author sylvain
  * 
  */
 public class FlexoMainLocalizer extends LocalizedDelegateImpl {
 
-	private static final Logger logger = Logger.getLogger(FlexoLocalization.class.getPackage().getName());
+	private static final Logger logger = Logger.getLogger(FlexoMainLocalizer.class.getPackage().getName());
 
-	public static final String LOCALIZATION_DIRNAME = "Localized";
+	public static final String DEPRECATED_LOCALIZATION_DIRNAME = "Localized";
+	public static final String FLEXO_LOCALIZATION_DIRNAME = "FlexoLocalization";
 
-	private static Resource _localizedDirectory = null;
-	private static FlexoMainLocalizer instance = null;
-
-	/**
-	 * Return directory where localized dictionnaries for main localizer are stored
-	 * 
-	 * @return
-	 */
-	private static Resource getMainLocalizerLocalizedDirectory() {
-
-		if (_localizedDirectory == null) {
-			_localizedDirectory = ResourceLocator.locateResource(LOCALIZATION_DIRNAME);
-
-			if (logger.isLoggable(Level.FINE)) {
-				logger.fine("Setting localized directory" + _localizedDirectory.getURI());
-			}
-		}
-		return _localizedDirectory;
+	private static LocalizedDelegate makeDeprecatedLocalizer() {
+		return new LocalizedDelegateImpl(ResourceLocator.locateResource(DEPRECATED_LOCALIZATION_DIRNAME), null, false, false);
 	}
 
-	private FlexoMainLocalizer() {
-		super(getMainLocalizerLocalizedDirectory(), null, Flexo.isDev, Flexo.isDev);
+	public FlexoMainLocalizer(boolean isDev) {
+		super(ResourceLocator.locateResource(FLEXO_LOCALIZATION_DIRNAME), makeDeprecatedLocalizer(), isDev, isDev);
 		// If we want to update locales, we have to retrieve source code dictionaries
-		if (Flexo.isDev) {
+		if (isDev) {
 			// Get Localized from flexolocalization here because we need main Localized support to come from gina project
 			Resource sourceCodeResource = ResourceLocator.locateSourceCodeResource(getLocalizedDirectoryResource(),
 					".*flexolocalization.*");
@@ -94,15 +79,8 @@ public class FlexoMainLocalizer extends LocalizedDelegateImpl {
 		}
 	}
 
-	public static FlexoMainLocalizer getInstance() {
-		if (instance == null) {
-			instance = new FlexoMainLocalizer();
-		}
-		return instance;
+	public LocalizedDelegate getDeprecatedLocalizer() {
+		return getParent();
 	}
 
-	public static void main(String[] args) {
-		FlexoLocalization.initWith(new FlexoMainLocalizer());
-		System.out.println("Returning " + FlexoLocalization.localizedForKeyAndLanguage("save", Language.FRENCH));
-	}
 }
