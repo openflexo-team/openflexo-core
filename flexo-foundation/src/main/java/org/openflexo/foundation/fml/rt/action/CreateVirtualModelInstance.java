@@ -65,6 +65,8 @@ public abstract class CreateVirtualModelInstance<A extends CreateVirtualModelIns
 
 	private static final Logger logger = Logger.getLogger(CreateVirtualModelInstance.class.getPackage().getName());
 
+	private boolean openAfterCreation = true;
+
 	protected CreateVirtualModelInstance(FlexoActionType<A, View, FlexoObject> actionType, View focusedObject,
 			Vector<FlexoObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
@@ -92,6 +94,17 @@ public abstract class CreateVirtualModelInstance<A extends CreateVirtualModelIns
 			return getFocusedObject().getProject();
 		}
 		return null;
+	}
+
+	public boolean openAfterCreation() {
+		return openAfterCreation;
+	}
+
+	public void setOpenAfterCreation(boolean openAfterCreation) {
+		if (openAfterCreation != this.openAfterCreation) {
+			this.openAfterCreation = openAfterCreation;
+			getPropertyChangeSupport().firePropertyChange("openAfterCreation", !openAfterCreation, openAfterCreation);
+		}
 	}
 
 }

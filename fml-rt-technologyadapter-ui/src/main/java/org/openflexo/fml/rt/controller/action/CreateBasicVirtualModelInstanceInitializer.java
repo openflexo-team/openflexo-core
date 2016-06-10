@@ -103,7 +103,9 @@ public class CreateBasicVirtualModelInstanceInitializer extends ActionInitialize
 			@Override
 			public boolean run(EventObject e, CreateBasicVirtualModelInstance action) {
 				// getController().setCurrentEditedObjectAsModuleView(action.getNewVirtualModelInstance());
-				getController().selectAndFocusObject(action.getNewVirtualModelInstance());
+				if (action.openAfterCreation()) {
+					getController().selectAndFocusObject(action.getNewVirtualModelInstance());
+				}
 				return true;
 			}
 		};

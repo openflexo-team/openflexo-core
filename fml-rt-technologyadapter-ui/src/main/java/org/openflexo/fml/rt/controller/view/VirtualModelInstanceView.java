@@ -60,6 +60,8 @@ public class VirtualModelInstanceView extends FIBModuleView<VirtualModelInstance
 	public VirtualModelInstanceView(VirtualModelInstance vmInstance, FlexoController controller, FlexoPerspective perspective) {
 		super(vmInstance, controller, CommonFIB.VIRTUAL_MODEL_INSTANCE_VIEW_FIB);
 		this.perspective = perspective;
+
+		Thread.dumpStack();
 	}
 
 	@Override
