@@ -112,8 +112,12 @@ public class FMLTechnologyAdapter extends TechnologyAdapter {
 
 	@Override
 	public <I> void performInitializeResourceCenter(final FlexoResourceCenter<I> resourceCenter) {
-		// FD unused
-		// final ViewPointRepository viewPointRepository = getViewPointRepository(resourceCenter);
+		// Take care that this call will create the ViewPointRepository
+		// Don not comment this line
+		final ViewPointRepository viewPointRepository = getViewPointRepository(resourceCenter);
+
+		// @FD: this is an other way to remove the warning ;-)
+		System.out.println("I'm beeing using the " + viewPointRepository);
 
 		// Iterate
 		Iterator<I> it = resourceCenter.iterator();
