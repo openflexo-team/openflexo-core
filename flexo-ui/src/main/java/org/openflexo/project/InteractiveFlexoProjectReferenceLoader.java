@@ -43,7 +43,7 @@ import java.util.logging.Logger;
 
 import javax.swing.JFileChooser;
 
-import org.openflexo.ApplicationContext;
+import org.openflexo.InteractiveApplicationContext;
 import org.openflexo.components.ProjectChooserComponent;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoProject;
@@ -69,8 +69,8 @@ public class InteractiveFlexoProjectReferenceLoader extends FlexoServiceImpl imp
 	}
 
 	@Override
-	public ApplicationContext getServiceManager() {
-		return (ApplicationContext) super.getServiceManager();
+	public InteractiveApplicationContext getServiceManager() {
+		return (InteractiveApplicationContext) super.getServiceManager();
 	}
 
 	@Override

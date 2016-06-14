@@ -46,6 +46,7 @@ import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -58,9 +59,12 @@ import org.openflexo.FlexoCst;
 import org.openflexo.components.NewProjectComponent;
 import org.openflexo.components.OpenProjectComponent;
 import org.openflexo.foundation.FlexoEditor;
+import org.openflexo.foundation.ProjectLoader;
 import org.openflexo.foundation.nature.ProjectNature;
 import org.openflexo.foundation.resource.SaveResourceExceptionList;
 import org.openflexo.foundation.utils.OperationCancelledException;
+import org.openflexo.foundation.utils.ProjectInitializerException;
+import org.openflexo.foundation.utils.ProjectLoadingCancelledException;
 import org.openflexo.icon.IconLibrary;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.module.NatureSpecificModule;
@@ -250,9 +254,26 @@ public class FileMenu extends FlexoMenu {
 				if (getController().getModule().getModule() instanceof NatureSpecificModule) {
 					ProjectNature<?, ?> nature = getController().getApplicationContext().getProjectNatureService()
 							.getProjectNature(((NatureSpecificModule) getController().getModule().getModule()).getNatureClass());
-					getProjectLoader().newProject(projectDirectory, nature);
-				} else {
-					getProjectLoader().newProject(projectDirectory);
+					try {
+						getProjectLoader().newProject(projectDirectory, nature);
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (ProjectInitializerException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+				else {
+					try {
+						getProjectLoader().newProject(projectDirectory);
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (ProjectInitializerException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
 			}
 		}
@@ -261,7 +282,8 @@ public class FileMenu extends FlexoMenu {
 	public class OpenProjectItem extends FlexoMenuItem {
 
 		public OpenProjectItem() {
-			super(new OpenProjectAction(), "open_project", KeyStroke.getKeyStroke(KeyEvent.VK_O, FlexoCst.META_MASK), getController(), true);
+			super(new OpenProjectAction(), "open_project", KeyStroke.getKeyStroke(KeyEvent.VK_O, FlexoCst.META_MASK), getController(),
+					true);
 			setIcon(IconLibrary.OPEN_ICON);
 		}
 	}
@@ -276,13 +298,15 @@ public class FileMenu extends FlexoMenu {
 			File projectDirectory = OpenProjectComponent.getProjectDirectory(getController().getApplicationContext());
 			if (projectDirectory != null) {
 				// try {
-				getProjectLoader().loadProject(projectDirectory);
-				/*} catch (ProjectLoadingCancelledException e) {
+				try {
+					getProjectLoader().loadProject(projectDirectory);
+				} catch (ProjectLoadingCancelledException e) {
+					// Nothing to do
 				} catch (ProjectInitializerException e) {
 					e.printStackTrace();
-					FlexoController.notify(FlexoLocalization.localizedForKey("could_not_open_project_located_at")
-							+ projectDirectory.getAbsolutePath());
-				}*/
+					FlexoController.notify(
+							FlexoLocalization.localizedForKey("could_not_open_project_located_at") + projectDirectory.getAbsolutePath());
+				}
 			}
 		}
 	}
@@ -352,14 +376,15 @@ public class FileMenu extends FlexoMenu {
 
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
-			// try {
-			getProjectLoader().loadProject(projectDirectory);
-			/*} catch (ProjectLoadingCancelledException e) {
+			try {
+				getProjectLoader().loadProject(projectDirectory);
+			} catch (ProjectLoadingCancelledException e) {
+				// Nothing to do
 			} catch (ProjectInitializerException e) {
 				e.printStackTrace();
-				FlexoController.notify(FlexoLocalization.localizedForKey("could_not_open_project_located_at")
-						+ projectDirectory.getAbsolutePath());
-			}*/
+				FlexoController.notify(
+						FlexoLocalization.localizedForKey("could_not_open_project_located_at") + projectDirectory.getAbsolutePath());
+			}
 		}
 	}
 
@@ -471,8 +496,8 @@ public class FileMenu extends FlexoMenu {
 	public class SaveAllProjectItem extends FlexoMenuItem {
 
 		public SaveAllProjectItem() {
-			super(new SaveAllProjectAction(), "save_all_project", KeyStroke.getKeyStroke(KeyEvent.VK_S, FlexoCst.META_MASK
-					| KeyEvent.SHIFT_MASK), getController(), true);
+			super(new SaveAllProjectAction(), "save_all_project",
+					KeyStroke.getKeyStroke(KeyEvent.VK_S, FlexoCst.META_MASK | KeyEvent.SHIFT_MASK), getController(), true);
 			setIcon(IconLibrary.SAVE_ALL_ICON);
 		}
 
@@ -520,7 +545,7 @@ public class FileMenu extends FlexoMenu {
 		}
 	}
 
-	protected InteractiveProjectLoader getProjectLoader() {
+	protected ProjectLoader getProjectLoader() {
 		return getController().getProjectLoader();
 	}
 
@@ -543,15 +568,15 @@ public class FileMenu extends FlexoMenu {
 
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
-			// try {
-			getProjectLoader().reloadProject(getController().getProject());
-			/*} catch (ProjectLoadingCancelledException e) {
-
+			try {
+				getProjectLoader().reloadProject(getController().getProject());
+			} catch (ProjectLoadingCancelledException e) {
+				// Nothing to do
 			} catch (ProjectInitializerException e) {
 				e.printStackTrace();
-				FlexoController.notify(FlexoLocalization.localizedForKey("could_not_open_project_located_at")
-						+ e.getProjectDirectory().getAbsolutePath());
-			}*/
+				FlexoController.notify(
+						FlexoLocalization.localizedForKey("could_not_open_project_located_at") + e.getProjectDirectory().getAbsolutePath());
+			}
 		}
 
 	}
@@ -597,8 +622,10 @@ public class FileMenu extends FlexoMenu {
 	public class QuitItem extends FlexoMenuItem {
 
 		public QuitItem() {
-			super(new QuitAction(), "quit", ToolBox.getPLATFORM() == ToolBox.WINDOWS ? KeyStroke.getKeyStroke(KeyEvent.VK_F4,
-					InputEvent.ALT_MASK) : KeyStroke.getKeyStroke(KeyEvent.VK_Q, FlexoCst.META_MASK), getController(), true);
+			super(new QuitAction(), "quit",
+					ToolBox.getPLATFORM() == ToolBox.WINDOWS ? KeyStroke.getKeyStroke(KeyEvent.VK_F4, InputEvent.ALT_MASK)
+							: KeyStroke.getKeyStroke(KeyEvent.VK_Q, FlexoCst.META_MASK),
+					getController(), true);
 		}
 
 	}

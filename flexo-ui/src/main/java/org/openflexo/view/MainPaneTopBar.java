@@ -62,6 +62,7 @@ import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.module.Module;
 import org.openflexo.module.ModuleLoader;
 import org.openflexo.module.ModuleLoadingException;
+import org.openflexo.project.InteractiveProjectLoader;
 import org.openflexo.swing.BarButton;
 import org.openflexo.swing.CustomPopup;
 import org.openflexo.toolbox.PropertyChangeListenerRegistrationManager;
@@ -71,8 +72,8 @@ import org.openflexo.view.controller.model.FlexoPerspective;
 
 public class MainPaneTopBar extends JMenuBar {
 
-	private static final java.util.logging.Logger logger = org.openflexo.logging.FlexoLogger.getLogger(MainPaneTopBar.class.getPackage()
-			.getName());
+	private static final java.util.logging.Logger logger = org.openflexo.logging.FlexoLogger
+			.getLogger(MainPaneTopBar.class.getPackage().getName());
 
 	private final PropertyChangeListenerRegistrationManager registrationManager;
 
@@ -153,7 +154,8 @@ public class MainPaneTopBar extends JMenuBar {
 					// button.setSelected(model.getModuleLoader().isActive(module));
 					if (module.equals(controller.getModule().getModule())) {
 						button.setSelected(true);
-					} else {
+					}
+					else {
 						button.setSelected(false);
 					}
 				}
@@ -228,7 +230,8 @@ public class MainPaneTopBar extends JMenuBar {
 			public void fireApplyPerformed() {
 				if (projectSelector.getEditedObject() != null) {
 					model.setCurrentProject(projectSelector.getEditedObject());
-				} else {
+				}
+				else {
 					projectSelector.setEditedObject(model.getCurrentProject());
 				}
 			}
@@ -248,7 +251,9 @@ public class MainPaneTopBar extends JMenuBar {
 		}, model);
 		projectSelector.setShowReset(false);
 		projectSelector.setFlexoController(controller);
-		projectSelector.setProjectLoader(model.getProjectLoader());
+		if (model.getProjectLoader() instanceof InteractiveProjectLoader) {
+			projectSelector.setProjectLoader((InteractiveProjectLoader) model.getProjectLoader());
+		}
 		left.add(projectSelector);
 	}
 
@@ -267,7 +272,8 @@ public class MainPaneTopBar extends JMenuBar {
 			public void propertyChange(PropertyChangeEvent evt) {
 				if (evt.getNewValue() != null) {
 					insertPerspective((FlexoPerspective) evt.getNewValue());
-				} else {
+				}
+				else {
 					if (logger.isLoggable(Level.WARNING)) {
 						logger.warning("Perspective removal not supported by top bar.");
 					}
@@ -348,14 +354,14 @@ public class MainPaneTopBar extends JMenuBar {
 
 	protected void updateLeftViewToggleIcon() {
 		leftViewToggle.setIcon(model.isLeftViewVisible() ? IconLibrary.TOGGLE_ARROW_BOTTOM_ICON : IconLibrary.TOGGLE_ARROW_TOP_ICON);
-		leftViewToggle.setRolloverIcon(model.isLeftViewVisible() ? IconLibrary.TOGGLE_ARROW_BOTTOM_SELECTED_ICON
-				: IconLibrary.TOGGLE_ARROW_TOP_SELECTED_ICON);
+		leftViewToggle.setRolloverIcon(
+				model.isLeftViewVisible() ? IconLibrary.TOGGLE_ARROW_BOTTOM_SELECTED_ICON : IconLibrary.TOGGLE_ARROW_TOP_SELECTED_ICON);
 	}
 
 	protected void updateRightViewToggleIcon() {
 		rightViewToggle.setIcon(model.isRightViewVisible() ? IconLibrary.TOGGLE_ARROW_BOTTOM_ICON : IconLibrary.TOGGLE_ARROW_TOP_ICON);
-		rightViewToggle.setRolloverIcon(model.isRightViewVisible() ? IconLibrary.TOGGLE_ARROW_BOTTOM_SELECTED_ICON
-				: IconLibrary.TOGGLE_ARROW_TOP_SELECTED_ICON);
+		rightViewToggle.setRolloverIcon(
+				model.isRightViewVisible() ? IconLibrary.TOGGLE_ARROW_BOTTOM_SELECTED_ICON : IconLibrary.TOGGLE_ARROW_TOP_SELECTED_ICON);
 	}
 
 	private JButton getToggleVisibilityButton() {

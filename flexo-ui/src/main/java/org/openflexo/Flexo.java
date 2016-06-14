@@ -252,7 +252,7 @@ public class Flexo {
 		// First init localization with default location
 		// FlexoLocalization.initWith(FlexoMainLocalizer.getInstance());
 
-		final ApplicationContext applicationContext = new InteractiveApplicationContext();
+		final InteractiveApplicationContext applicationContext = new InteractiveApplicationContext();
 
 		remapStandardOuputs(isDev, applicationContext);
 
@@ -334,7 +334,7 @@ public class Flexo {
 		}
 	}
 
-	protected static void initFlexo(ApplicationContext applicationContext, SplashWindow splashWindow) {
+	protected static void initFlexo(InteractiveApplicationContext applicationContext, SplashWindow splashWindow) {
 		if (ToolBox.getPLATFORM() == ToolBox.MACOS) {
 			System.setProperty("apple.laf.useScreenMenuBar", "true");
 		}

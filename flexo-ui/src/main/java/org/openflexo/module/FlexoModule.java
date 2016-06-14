@@ -52,6 +52,7 @@ import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoObservable;
 import org.openflexo.foundation.FlexoService;
 import org.openflexo.foundation.FlexoService.ServiceNotification;
+import org.openflexo.foundation.ProjectLoader;
 import org.openflexo.foundation.resource.ProjectClosed;
 import org.openflexo.foundation.resource.ResourceModified;
 import org.openflexo.foundation.resource.ResourceRegistered;
@@ -59,7 +60,6 @@ import org.openflexo.foundation.resource.ResourceSaved;
 import org.openflexo.foundation.resource.ResourceUnregistered;
 import org.openflexo.foundation.utils.OperationCancelledException;
 import org.openflexo.prefs.ModulePreferences;
-import org.openflexo.project.InteractiveProjectLoader;
 import org.openflexo.view.FlexoFrame;
 import org.openflexo.view.controller.FlexoController;
 
@@ -78,7 +78,7 @@ public abstract class FlexoModule<M extends FlexoModule<M>> implements DataFlexo
 	private FlexoController controller;
 
 	private final ApplicationContext applicationContext;
-	private ModulePreferences<M> preferences = null;
+	private final ModulePreferences<M> preferences = null;
 
 	public FlexoModule(ApplicationContext applicationContext) {
 		super();
@@ -103,7 +103,7 @@ public abstract class FlexoModule<M extends FlexoModule<M>> implements DataFlexo
 		return getApplicationContext().getModuleLoader();
 	}
 
-	private InteractiveProjectLoader getProjectLoader() {
+	private ProjectLoader getProjectLoader() {
 		return getApplicationContext().getProjectLoader();
 	}
 
