@@ -331,8 +331,8 @@ public class TypeSelector extends TextFieldCustomPopup<Type>
 		fireEditedObjectChanged();
 	}
 
-	private Map<Class<? extends CustomType>, CustomTypeEditor<?>> customTypeEditors = new HashMap<>();
-	private Map<Class<? extends CustomType>, TechnologyAdapterTypeFactory<?>> customTypeFactories = new HashMap<>();
+	private final Map<Class<? extends CustomType>, CustomTypeEditor<?>> customTypeEditors = new HashMap<>();
+	private final Map<Class<? extends CustomType>, TechnologyAdapterTypeFactory<?>> customTypeFactories = new HashMap<>();
 
 	public <T extends CustomType> CustomTypeEditor<T> getCustomTypeEditor(Class<T> typeClass) {
 		return (CustomTypeEditor<T>) customTypeEditors.get(typeClass);
@@ -363,11 +363,13 @@ public class TypeSelector extends TextFieldCustomPopup<Type>
 					customTypeFactories.put(customType, specificFactory);
 				}
 				System.out.println("Factory " + specificFactory);
-				CustomTypeEditor<?> specificEditor = ((ApplicationContext) getServiceManager()).getTechnologyAdapterControllerService()
-						.getCustomTypeEditor(customType);
-				if (specificEditor != null) {
-					System.out.println("Found specific editor : " + specificEditor);
-					customTypeEditors.put(customType, specificEditor);
+				if (getServiceManager() instanceof ApplicationContext) {
+					CustomTypeEditor<?> specificEditor = ((ApplicationContext) getServiceManager()).getTechnologyAdapterControllerService()
+							.getCustomTypeEditor(customType);
+					if (specificEditor != null) {
+						System.out.println("Found specific editor : " + specificEditor);
+						customTypeEditors.put(customType, specificEditor);
+					}
 				}
 			}
 		}

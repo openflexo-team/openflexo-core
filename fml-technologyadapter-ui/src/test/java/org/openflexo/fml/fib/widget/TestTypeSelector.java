@@ -47,12 +47,12 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.openflexo.OpenflexoTestCaseWithGUI;
 import org.openflexo.components.widget.TypeSelector;
 import org.openflexo.components.widget.TypeSelector.TypeSelectorDetailsPanel;
 import org.openflexo.fib.swing.utils.SwingGraphicalContextDelegate;
 import org.openflexo.foundation.DefaultFlexoEditor;
 import org.openflexo.foundation.FlexoEditor;
-import org.openflexo.foundation.OpenflexoTestCase;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.PrimitiveRole.PrimitiveType;
@@ -72,7 +72,7 @@ import org.openflexo.test.TestOrder;
  * 
  */
 @RunWith(OrderedRunner.class)
-public class TestTypeSelector extends OpenflexoTestCase {
+public class TestTypeSelector extends OpenflexoTestCaseWithGUI {
 
 	private static SwingGraphicalContextDelegate gcDelegate;
 
@@ -103,8 +103,8 @@ public class TestTypeSelector extends OpenflexoTestCase {
 	@TestOrder(1)
 	public void testSomeConcepts() throws SaveResourceException {
 
-		CreateViewPoint addViewPointAction = CreateViewPoint.actionType.makeNewAction(resourceCenter.getViewPointRepository()
-				.getRootFolder(), null, editor);
+		CreateViewPoint addViewPointAction = CreateViewPoint.actionType
+				.makeNewAction(resourceCenter.getViewPointRepository().getRootFolder(), null, editor);
 		addViewPointAction.setNewViewPointName(VIEWPOINT_NAME);
 		addViewPointAction.setNewViewPointURI(VIEWPOINT_URI);
 		addViewPointAction.doAction();
@@ -136,6 +136,7 @@ public class TestTypeSelector extends OpenflexoTestCase {
 	public void testInstanciateWidgetWithString() {
 
 		typeSelector = new TypeSelector(String.class);
+		typeSelector.setServiceManager(serviceManager);
 		gcDelegate.addTab("TypeSelector", ((TypeSelectorDetailsPanel) typeSelector.getCustomPanel()).getController());
 		assertSame(typeSelector.getChoice(), PrimitiveType.String);
 	}
@@ -145,8 +146,7 @@ public class TestTypeSelector extends OpenflexoTestCase {
 	public void checkCustomTypes() {
 		typeSelector.setServiceManager(serviceManager);
 		System.out.println("customTypeFactories=" + serviceManager.getTechnologyAdapterService().getCustomTypeFactories());
-		assertTrue(typeSelector.getChoices().contains(
-				serviceManager.getTechnologyAdapterService().getCustomTypeFactories().get(FlexoConceptInstanceType.class)));
+		assertTrue(typeSelector.getChoices().contains(FlexoConceptInstanceType.class));
 	}
 
 	@Test
