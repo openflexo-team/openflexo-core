@@ -251,7 +251,7 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 			}
 			else if (notification instanceof TechnologyAdapterHasBeenDisactivated) {
 				for (FlexoResourceCenter rc : getResourceCenters()) {
-					rc.disactivateTechnology(((TechnologyAdapterHasBeenActivated) notification).getTechnologyAdapter());
+					rc.disactivateTechnology(((TechnologyAdapterHasBeenDisactivated) notification).getTechnologyAdapter());
 				}
 			}
 		}
