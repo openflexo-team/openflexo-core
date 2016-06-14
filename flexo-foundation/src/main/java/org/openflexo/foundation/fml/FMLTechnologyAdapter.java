@@ -113,7 +113,7 @@ public class FMLTechnologyAdapter extends TechnologyAdapter {
 	@Override
 	public <I> void performInitializeResourceCenter(final FlexoResourceCenter<I> resourceCenter) {
 		// Take care that this call will create the ViewPointRepository
-		// Don not comment this line
+		// Do not comment this line
 		final ViewPointRepository viewPointRepository = getViewPointRepository(resourceCenter);
 
 		// @FD: this is an other way to remove the warning ;-)

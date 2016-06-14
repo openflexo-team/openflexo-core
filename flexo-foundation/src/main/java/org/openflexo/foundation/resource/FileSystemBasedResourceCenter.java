@@ -79,7 +79,7 @@ import org.openflexo.toolbox.StringUtils;
  * @author sylvain
  * 
  */
-public abstract class FileSystemBasedResourceCenter extends FileResourceRepository<FlexoResource<?>>implements FlexoResourceCenter<File> {
+public abstract class FileSystemBasedResourceCenter extends FileResourceRepository<FlexoResource<?>> implements FlexoResourceCenter<File> {
 
 	protected static final Logger logger = Logger.getLogger(FileSystemBasedResourceCenter.class.getPackage().getName());
 
@@ -590,6 +590,10 @@ public abstract class FileSystemBasedResourceCenter extends FileResourceReposito
 		HashMap<Class<? extends ResourceRepository<?>>, ResourceRepository<?>> map = getRepositoriesForAdapter(technologyAdapter);
 		if (map.get(repositoryType) == null) {
 			map.put(repositoryType, repository);
+			getPropertyChangeSupport().firePropertyChange("getRegisteredRepositories(TechnologyAdapter)", null,
+					getRegistedRepositories(technologyAdapter));
+			technologyAdapter.getPropertyChangeSupport().firePropertyChange("getAllRepositories()", null,
+					technologyAdapter.getAllRepositories());
 		}
 		else {
 			logger.warning("Repository already registered: " + repositoryType + " for " + repository);
