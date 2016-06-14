@@ -447,7 +447,7 @@ public abstract class ResourceRepository<R extends FlexoResource<?>> extends Def
 	private List<String> getPathTo(InJarResourceImpl resource) {
 		if (!getRootFolder().getChildren().contains(resource)) {
 			List<String> pathTo = new ArrayList<String>();
-			StringTokenizer string = new StringTokenizer(resource.getURI().toString(),
+			StringTokenizer string = new StringTokenizer(resource.getURI(),
 					Character.toString(ClasspathResourceLocatorImpl.PATH_SEP.toCharArray()[0]));
 			while (string.hasMoreTokens()) {
 				pathTo.add(string.nextToken());
