@@ -61,6 +61,7 @@ import org.openflexo.icon.IconLibrary;
 import org.openflexo.module.Module;
 import org.openflexo.module.ModuleLoader;
 import org.openflexo.module.ModuleLoadingException;
+import org.openflexo.project.InteractiveProjectLoader;
 import org.openflexo.swing.BarButton;
 import org.openflexo.swing.CustomPopup;
 import org.openflexo.toolbox.PropertyChangeListenerRegistrationManager;
@@ -249,7 +250,9 @@ public class MainPaneTopBar extends JMenuBar {
 		}, model);
 		projectSelector.setShowReset(false);
 		projectSelector.setFlexoController(controller);
-		projectSelector.setProjectLoader(model.getProjectLoader());
+		if (model.getProjectLoader() instanceof InteractiveProjectLoader) {
+			projectSelector.setProjectLoader((InteractiveProjectLoader) model.getProjectLoader());
+		}
 		left.add(projectSelector);
 	}
 

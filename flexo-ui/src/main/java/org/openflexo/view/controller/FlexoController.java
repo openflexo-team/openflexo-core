@@ -107,6 +107,7 @@ import org.openflexo.foundation.FlexoProjectObject;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.PamelaResourceModelFactory;
 import org.openflexo.foundation.ProjectData;
+import org.openflexo.foundation.ProjectLoader;
 import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.action.FlexoUndoManager.FlexoActionCompoundEdit;
@@ -177,7 +178,6 @@ import org.openflexo.module.ModuleLoader;
 import org.openflexo.prefs.ApplicationFIBLibraryService;
 import org.openflexo.prefs.FlexoPreferences;
 import org.openflexo.prefs.GeneralPreferences;
-import org.openflexo.project.InteractiveProjectLoader;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.selection.MouseSelectionManager;
@@ -513,7 +513,7 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 		return null;
 	}
 
-	public final InteractiveProjectLoader getProjectLoader() {
+	public final ProjectLoader getProjectLoader() {
 		return getApplicationContext().getProjectLoader();
 	}
 

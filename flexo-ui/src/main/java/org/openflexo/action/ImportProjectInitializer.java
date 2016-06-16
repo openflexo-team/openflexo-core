@@ -45,6 +45,7 @@ import java.util.logging.Logger;
 import javax.swing.Icon;
 import javax.swing.JFileChooser;
 
+import org.openflexo.InteractiveApplicationContext;
 import org.openflexo.components.ProjectChooserComponent;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoException;
@@ -106,6 +107,10 @@ public class ImportProjectInitializer extends ActionInitializer<ImportProject, F
 		return new FlexoActionInitializer<ImportProject>() {
 			@Override
 			public boolean run(EventObject e, ImportProject action) {
+				if (!(getController().getApplicationContext() instanceof InteractiveApplicationContext)) {
+					return false;
+				}
+
 				if (action.getProjectToImport() != null) {
 					return true;
 				}
@@ -116,8 +121,8 @@ public class ImportProjectInitializer extends ActionInitializer<ImportProject, F
 					if (chooser.showOpenDialog() == JFileChooser.APPROVE_OPTION && chooser.getSelectedFile() != null) {
 						FlexoEditor editor = null;
 
-						LoadProjectTask loadProject = getController().getApplicationContext().getProjectLoader()
-								.loadProject(chooser.getSelectedFile(), true);
+						LoadProjectTask loadProject = ((InteractiveApplicationContext) getController().getApplicationContext())
+								.getProjectLoader().loadProject(chooser.getSelectedFile(), true);
 						getController().getApplicationContext().getTaskManager().waitTask(loadProject);
 						if (loadProject.getTaskStatus() == TaskStatus.EXCEPTION_THROWN) {
 							if (loadProject.getThrownException() instanceof ProjectLoadingCancelledException) {

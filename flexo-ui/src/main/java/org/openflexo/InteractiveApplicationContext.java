@@ -87,6 +87,11 @@ public class InteractiveApplicationContext extends ApplicationContext {
 	}
 
 	@Override
+	public InteractiveProjectLoader getProjectLoader() {
+		return getService(InteractiveProjectLoader.class);
+	}
+
+	@Override
 	protected TechnologyAdapterService createTechnologyAdapterService(FlexoResourceCenterService resourceCenterService) {
 		return DefaultTechnologyAdapterService.getNewInstance(resourceCenterService);
 	}

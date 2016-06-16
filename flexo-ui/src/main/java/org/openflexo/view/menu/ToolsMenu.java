@@ -69,6 +69,7 @@ import org.openflexo.logging.FlexoLogger;
 import org.openflexo.logging.FlexoLoggingManager;
 import org.openflexo.market.FlexoMarketEditorDialog;
 import org.openflexo.project.AutoSaveService;
+import org.openflexo.project.InteractiveProjectLoader;
 import org.openflexo.view.FMLConsoleViewer;
 import org.openflexo.view.controller.FlexoController;
 import org.openflexo.view.controller.model.ControllerModel;
@@ -468,7 +469,10 @@ public class ToolsMenu extends FlexoMenu {
 	}
 
 	protected AutoSaveService getAutoSaveService() {
-		return getController().getProjectLoader().getAutoSaveService(getController().getProject());
+		if (getController().getProjectLoader() instanceof InteractiveProjectLoader) {
+			return ((InteractiveProjectLoader) getController().getProjectLoader()).getAutoSaveService(getController().getProject());
+		}
+		return null;
 	}
 
 	public class TimeTraveler extends FlexoMenuItem {

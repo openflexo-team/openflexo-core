@@ -43,24 +43,24 @@ import java.util.List;
 
 import org.openflexo.toolbox.ImageIconResource;
 
-
-public class FlexoRemoteRepositoryImpl implements FlexoRemoteRepository{
+public class FlexoRemoteRepositoryImpl implements FlexoRemoteRepository {
 
 	private String name;
-	
+
 	private String uri;
-	
+
 	private List<FlexoBundle> flexoBundles;
-	
-	public FlexoRemoteRepositoryImpl(String name, String uri){
+
+	public FlexoRemoteRepositoryImpl(String name, String uri) {
 		this.name = name;
 		this.uri = uri;
 		initialize();
 	}
-	private void initialize(){
+
+	protected void initialize() {
 		flexoBundles = new ArrayList<FlexoBundle>();
 	}
-	
+
 	@Override
 	public String getName() {
 		return name;
@@ -71,6 +71,7 @@ public class FlexoRemoteRepositoryImpl implements FlexoRemoteRepository{
 		return uri;
 	}
 
+	@Override
 	public void setUri(String anUri) {
 		this.uri = anUri;
 	}
@@ -87,7 +88,7 @@ public class FlexoRemoteRepositoryImpl implements FlexoRemoteRepository{
 
 	@Override
 	public List<FlexoBundle> getFlexoBundles() {
-		if(flexoBundles == null){
+		if (flexoBundles == null) {
 			flexoBundles = new ArrayList<FlexoBundle>();
 		}
 		return flexoBundles;
@@ -97,11 +98,10 @@ public class FlexoRemoteRepositoryImpl implements FlexoRemoteRepository{
 	public ImageIconResource getIcon() {
 		return null;
 	}
+
 	@Override
 	public void setName(String name) {
 		this.name = name;
 	}
-	
 
 }
-	
