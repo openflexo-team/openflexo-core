@@ -38,6 +38,8 @@
 
 package org.openflexo.foundation.fml;
 
+import java.awt.Component;
+import java.awt.Frame;
 import java.beans.PropertyChangeSupport;
 import java.io.File;
 import java.text.Collator;
@@ -45,8 +47,18 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
+import java.util.WeakHashMap;
+import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import javax.swing.AbstractButton;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JTabbedPane;
+import javax.swing.border.TitledBorder;
+import javax.swing.table.TableColumn;
 
 import org.openflexo.connie.BindingModel;
 import org.openflexo.foundation.fml.inspector.InspectorEntry;
@@ -114,6 +126,11 @@ public interface ViewPointLocalizedDictionary extends FMLObject, org.openflexo.l
 		// private Vector<LocalizedEntry> _entries;
 		private final Hashtable<Language, Hashtable<String, String>> _values;
 		private List<DynamicEntry> entries = null;
+
+		private final WeakHashMap<Component, String> _storedLocalizedForComponents = new WeakHashMap<Component, String>();
+		private final WeakHashMap<JComponent, String> _storedLocalizedForComponentTooltips = new WeakHashMap<JComponent, String>();
+		private final WeakHashMap<TitledBorder, String> _storedLocalizedForBorders = new WeakHashMap<TitledBorder, String>();
+		private final WeakHashMap<TableColumn, String> _storedLocalizedForTableColumn = new WeakHashMap<TableColumn, String>();
 
 		public ViewPointLocalizedDictionaryImpl() {
 			super();
@@ -196,13 +213,18 @@ public interface ViewPointLocalizedDictionary extends FMLObject, org.openflexo.l
 			return dict;
 		}
 
-		/*public String getDefaultValue(String key, Language language) {
-			// logger.info("Searched default value for key "+key+" return "+FlexoLocalization.localizedForKey(key));
-			if (getParent() != null) {
-				return FlexoLocalization.localizedForKeyAndLanguage(getParent(), key, language);
-			}
-			return key;
-		}*/
+		/**
+		 * This is general and main method to use localized in Flexo.<br>
+		 * Applicable language is chosen from the one defined in FlexoLocalization (configurable from GeneralPreferences).<br>
+		 * Use english names for keys, such as 'some_english_words'
+		 * 
+		 * @param key
+		 * @return String matching specified key and language defined as default in {@link FlexoLocalization}
+		 */
+		@Override
+		public String localizedForKey(String key) {
+			return localizedForKeyAndLanguage(key, FlexoLocalization.getCurrentLanguage());
+		}
 
 		@Override
 		public String localizedForKeyAndLanguage(String key, Language language, boolean createsNewEntriesIfNonExistant) {
@@ -230,6 +252,116 @@ public interface ViewPointLocalizedDictionary extends FMLObject, org.openflexo.l
 				return defaultValue;
 			}
 			return returned;*/
+		}
+
+		// TODO: duplicated code as in LocalizedDelegateImpl, please refactor this to avoid code duplication
+		@Override
+		public String localizedForKeyWithParams(String key, Object... object) {
+			String base = localizedForKey(key);
+			return FlexoLocalization.replaceAllParamsInString(base, object);
+		}
+
+		// TODO: duplicated code as in LocalizedDelegateImpl, please refactor this to avoid code duplication
+		@Override
+		public String localizedForKey(String key, Component component) {
+			if (logger.isLoggable(Level.FINE)) {
+				logger.finest("localizedForKey called with " + key + " for " + component.getClass().getName());
+			}
+			_storedLocalizedForComponents.put(component, key);
+			return localizedForKey(key);
+		}
+
+		// TODO: duplicated code as in LocalizedDelegateImpl, please refactor this to avoid code duplication
+		@Override
+		public String localizedTooltipForKey(String key, JComponent component) {
+			if (logger.isLoggable(Level.FINE)) {
+				logger.finest("localizedForKey called with " + key + " for " + component.getClass().getName());
+			}
+			_storedLocalizedForComponentTooltips.put(component, key);
+			return localizedForKey(key);
+		}
+
+		// TODO: duplicated code as in LocalizedDelegateImpl, please refactor this to avoid code duplication
+		@Override
+		public String localizedForKey(String key, TitledBorder border) {
+			if (logger.isLoggable(Level.FINE)) {
+				logger.finest("localizedForKey called with " + key + " for border " + border.getClass().getName());
+			}
+			_storedLocalizedForBorders.put(border, key);
+			return localizedForKey(key);
+		}
+
+		// TODO: duplicated code as in LocalizedDelegateImpl, please refactor this to avoid code duplication
+		@Override
+		public String localizedForKey(String key, TableColumn column) {
+			if (logger.isLoggable(Level.FINE)) {
+				logger.finest("localizedForKey called with " + key + " for border " + column.getClass().getName());
+			}
+			_storedLocalizedForTableColumn.put(column, key);
+			return localizedForKey(key);
+		}
+
+		// TODO: duplicated code as in LocalizedDelegateImpl, please refactor this to avoid code duplication
+		@Override
+		public void clearStoredLocalizedForComponents() {
+			_storedLocalizedForComponents.clear();
+			_storedLocalizedForBorders.clear();
+			// _storedAdditionalStrings.clear();
+			_storedLocalizedForTableColumn.clear();
+			// localizationListeners.clear();
+		}
+
+		// TODO: duplicated code as in LocalizedDelegateImpl, please refactor this to avoid code duplication
+		@Override
+		public void updateGUILocalized() {
+			for (Map.Entry<Component, String> e : _storedLocalizedForComponents.entrySet()) {
+				Component component = e.getKey();
+				String string = e.getValue();
+				String text = localizedForKey(string);
+				/*String additionalString = _storedAdditionalStrings.get(component);
+				if (additionalString != null) {
+					text = text + additionalString;
+				}*/
+				if (component instanceof AbstractButton) {
+					((AbstractButton) component).setText(text);
+				}
+				if (component instanceof JLabel) {
+					((JLabel) component).setText(text);
+				}
+				component.setName(text);
+				if (component.getParent() instanceof JTabbedPane) {
+					if (((JTabbedPane) component.getParent()).indexOfComponent(component) > -1) {
+						((JTabbedPane) component.getParent()).setTitleAt(((JTabbedPane) component.getParent()).indexOfComponent(component),
+								text);
+					}
+				}
+				if (component.getParent() != null && component.getParent().getParent() instanceof JTabbedPane) {
+					if (((JTabbedPane) component.getParent().getParent()).indexOfComponent(component) > -1) {
+						((JTabbedPane) component.getParent().getParent())
+								.setTitleAt(((JTabbedPane) component.getParent().getParent()).indexOfComponent(component), text);
+					}
+				}
+			}
+			for (Map.Entry<JComponent, String> e : _storedLocalizedForComponentTooltips.entrySet()) {
+				JComponent component = e.getKey();
+				String string = e.getValue();
+				String text = localizedForKey(string);
+				component.setToolTipText(text);
+			}
+			for (Map.Entry<TitledBorder, String> e : _storedLocalizedForBorders.entrySet()) {
+				String string = e.getValue();
+				String text = localizedForKey(string);
+				e.getKey().setTitle(text);
+			}
+			for (Map.Entry<TableColumn, String> e : _storedLocalizedForTableColumn.entrySet()) {
+				String string = e.getValue();
+				String text = localizedForKey(string);
+				e.getKey().setHeaderValue(text);
+			}
+			for (Frame f : Frame.getFrames()) {
+				f.repaint();
+			}
+
 		}
 
 		public void setLocalizedForKeyAndLanguage(String key, String value, Language language) {
