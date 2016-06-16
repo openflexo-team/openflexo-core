@@ -44,7 +44,6 @@ import java.util.List;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.foundation.validation.FlexoValidationModel;
-import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.localization.LocalizedDelegate;
 import org.openflexo.localization.LocalizedDelegateImpl;
 import org.openflexo.model.ModelContext;
@@ -63,9 +62,8 @@ import org.openflexo.rm.ResourceLocator;
 @SuppressWarnings("serial")
 public class FMLValidationModel extends FlexoValidationModel {
 
-	private static Resource fibValidationLocalizedDelegate = ResourceLocator.locateResource("FlexoLocalization/MLValidation");
-	private static LocalizedDelegate VALIDATION_LOCALIZATION = new LocalizedDelegateImpl(fibValidationLocalizedDelegate, null,
-			true, true);
+	private static Resource fibValidationLocalizedDelegate = ResourceLocator.locateResource("FlexoLocalization/FMLValidation");
+	private static LocalizedDelegate VALIDATION_LOCALIZATION = new LocalizedDelegateImpl(fibValidationLocalizedDelegate, null, true, true);
 
 	/**
 	 * Iterate on all defined {@link TechnologyAdapter} to extract classes to expose being involved in technology adapter as VirtualModel
@@ -89,53 +87,53 @@ public class FMLValidationModel extends FlexoValidationModel {
 		/*registerRule(new FlexoConcept.FlexoConceptShouldHaveRoles());
 		registerRule(new FlexoConcept.FlexoConceptShouldHaveEditionSchemes());
 		registerRule(new FlexoConcept.FlexoConceptShouldHaveDeletionScheme());
-
+		
 		registerRule(new FlexoRole.FlexoRoleMustHaveAName());
 		registerRule(new ClassRole.ClassRoleMustDefineAValidConceptClass());
 		registerRule(new IndividualRole.IndividualFlexoRoleMustDefineAValidConceptClass());
 		// registerRule(new DataPropertyStatementPatternRole.DataPropertyStatementPatternRoleMustDefineAValidProperty());
 		// registerRule(new ObjectPropertyStatementPatternRole.ObjectPropertyStatementPatternRoleMustDefineAValidProperty());
-
+		
 		registerRule(new InspectorEntry.DataBindingIsRequiredAndMustBeValid());
-
+		
 		registerRule(new URIParameter.BaseURIBindingIsRequiredAndMustBeValid());
-
+		
 		registerRule(new EditionAction.ConditionalBindingMustBeValid());
 		registerRule(new AssignableAction.AssignationBindingMustBeValid());
-
+		
 		registerRule(new AddIndividual.AddIndividualActionMustDefineAnOntologyClass());
 		registerRule(new AddIndividual.URIBindingIsRequiredAndMustBeValid());
-
+		
 		registerRule(new DataPropertyAssertion.DataPropertyAssertionMustDefineAnOntologyProperty());
 		registerRule(new DataPropertyAssertion.ValueBindingIsRequiredAndMustBeValid());
 		registerRule(new ObjectPropertyAssertion.ObjectPropertyAssertionMustDefineAnOntologyProperty());
 		registerRule(new ObjectPropertyAssertion.ObjectBindingIsRequiredAndMustBeValid());
-
+		
 		registerRule(new AddClass.AddClassActionMustDefineAnOntologyClass());
 		registerRule(new AddClass.URIBindingIsRequiredAndMustBeValid());
-
+		
 		// registerRule(new AddStatement.SubjectIsRequiredAndMustBeValid());
 		// registerRule(new AddObjectPropertyStatement.AddObjectPropertyStatementActionMustDefineAnObjectProperty());
 		// registerRule(new AddObjectPropertyStatement.ObjectIsRequiredAndMustBeValid());
 		// registerRule(new AddDataPropertyStatement.AddDataPropertyStatementActionMustDefineADataProperty());
 		// registerRule(new AddDataPropertyStatement.ValueIsRequiredAndMustBeValid());
-
-
+		
+		
 		// registerRule(new DeclareFlexoRole.AssignationBindingIsRequiredAndMustBeValid());
 		registerRule(new DeclareFlexoRole.ObjectBindingIsRequiredAndMustBeValid());
-
+		
 		registerRule(new DeleteAction.ObjectToDeleteBindingIsRequiredAndMustBeValid());
-
+		
 		// registerRule(new GraphicalAction.GraphicalActionMustHaveASubject());
 		// registerRule(new GraphicalAction.GraphicalActionMustDefineAValue());
-
+		
 		registerRule(new AddFlexoConceptInstance.VirtualModelInstanceBindingIsRequiredAndMustBeValid());
 		registerRule(new AddFlexoConceptInstance.AddFlexoConceptInstanceMustAddressACreationScheme());
 		registerRule(new AddFlexoConceptInstance.AddFlexoConceptInstanceParametersMustBeValid());
-
+		
 		registerRule(new ConditionalAction.ConditionBindingIsRequiredAndMustBeValid());
 		registerRule(new IterationAction.IterationBindingIsRequiredAndMustBeValid());
-
+		
 		// Notify that the validation model is complete and that inheritance
 		// computation could be performed
 		update();*/
