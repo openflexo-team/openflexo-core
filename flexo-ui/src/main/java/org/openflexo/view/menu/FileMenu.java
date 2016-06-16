@@ -66,6 +66,7 @@ import org.openflexo.foundation.utils.OperationCancelledException;
 import org.openflexo.foundation.utils.ProjectInitializerException;
 import org.openflexo.foundation.utils.ProjectLoadingCancelledException;
 import org.openflexo.icon.IconLibrary;
+import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.module.NatureSpecificModule;
 import org.openflexo.print.PrintManagingController;
 import org.openflexo.project.InteractiveProjectLoader;
@@ -303,8 +304,8 @@ public class FileMenu extends FlexoMenu {
 					// Nothing to do
 				} catch (ProjectInitializerException e) {
 					e.printStackTrace();
-					FlexoController.notify(
-							FlexoLocalization.localizedForKey("could_not_open_project_located_at") + projectDirectory.getAbsolutePath());
+					FlexoController.notify(FlexoLocalization.getMainLocalizer().localizedForKey("could_not_open_project_located_at")
+							+ projectDirectory.getAbsolutePath());
 				}
 			}
 		}
@@ -381,8 +382,8 @@ public class FileMenu extends FlexoMenu {
 				// Nothing to do
 			} catch (ProjectInitializerException e) {
 				e.printStackTrace();
-				FlexoController.notify(
-						FlexoLocalization.localizedForKey("could_not_open_project_located_at") + projectDirectory.getAbsolutePath());
+				FlexoController.notify(FlexoLocalization.getMainLocalizer().localizedForKey("could_not_open_project_located_at")
+						+ projectDirectory.getAbsolutePath());
 			}
 		}
 	}
@@ -573,8 +574,8 @@ public class FileMenu extends FlexoMenu {
 				// Nothing to do
 			} catch (ProjectInitializerException e) {
 				e.printStackTrace();
-				FlexoController.notify(
-						FlexoLocalization.getMainLocalizer().localizedForKey("could_not_open_project_located_at") + e.getProjectDirectory().getAbsolutePath());
+				FlexoController.notify(FlexoLocalization.getMainLocalizer().localizedForKey("could_not_open_project_located_at")
+						+ e.getProjectDirectory().getAbsolutePath());
 			}
 		}
 
