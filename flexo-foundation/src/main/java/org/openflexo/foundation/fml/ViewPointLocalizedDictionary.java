@@ -153,7 +153,7 @@ public interface ViewPointLocalizedDictionary extends FMLObject, org.openflexo.l
 		public Vector<ViewPointLocalizedEntry> getEntries() {
 			return _entries;
 		}
-
+		
 		public void setEntries(Vector<LocalizedEntry> someEntries) {
 			_entries = someEntries;
 		}*/
@@ -205,12 +205,12 @@ public interface ViewPointLocalizedDictionary extends FMLObject, org.openflexo.l
 		}*/
 
 		@Override
-		public String getLocalizedForKeyAndLanguage(String key, Language language, boolean createsNewEntriesIfNonExistant) {
-			return getLocalizedForKeyAndLanguage(key, language);
+		public String localizedForKeyAndLanguage(String key, Language language, boolean createsNewEntriesIfNonExistant) {
+			return localizedForKeyAndLanguage(key, language);
 		}
 
 		@Override
-		public String getLocalizedForKeyAndLanguage(String key, Language language) {
+		public String localizedForKeyAndLanguage(String key, Language language) {
 			// if (isSearchingNewEntries) logger.info("-------> called localizedForKeyAndLanguage() key="+key+" lang="+language);
 			return getDictForLang(language).get(key);
 
@@ -241,7 +241,8 @@ public interface ViewPointLocalizedDictionary extends FMLObject, org.openflexo.l
 				newEntry.setKey(key);
 				newEntry.setValue(value);
 				addToLocalizedEntries(newEntry);
-			} else {
+			}
+			else {
 				entry.setValue(value);
 			}
 		}
@@ -364,7 +365,8 @@ public interface ViewPointLocalizedDictionary extends FMLObject, org.openflexo.l
 
 		private void checkAndRegisterLocalized(String key) {
 			handleNewEntry = true;
-			FlexoLocalization.localizedForKey(this, key);
+			// TODO: fix this !
+			// FlexoLocalization.localizedForKey(this, key);
 			// getLocalizedForKeyAndLanguage(key, FlexoLocalization.getCurrentLanguage());
 			handleNewEntry = false;
 		}
@@ -405,24 +407,23 @@ public interface ViewPointLocalizedDictionary extends FMLObject, org.openflexo.l
 		@Override
 		public void searchTranslation(LocalizedEntry entry) {
 			if (getParent() != null) {
-				String englishTranslation = FlexoLocalization.localizedForKeyAndLanguage(getParent(), entry.getKey(), Language.ENGLISH,
-						false);
+				String englishTranslation = getParent().localizedForKeyAndLanguage(entry.getKey(), Language.ENGLISH, false);
 				if (entry.getKey().equals(englishTranslation)) {
 					englishTranslation = automaticEnglishTranslation(entry.getKey());
 				}
 				entry.setEnglish(englishTranslation);
-				String dutchTranslation = FlexoLocalization.localizedForKeyAndLanguage(getParent(), entry.getKey(), Language.DUTCH, false);
+				String dutchTranslation = getParent().localizedForKeyAndLanguage(entry.getKey(), Language.DUTCH, false);
 				if (entry.getKey().equals(dutchTranslation)) {
 					dutchTranslation = automaticDutchTranslation(entry.getKey());
 				}
 				entry.setDutch(dutchTranslation);
-				String frenchTranslation = FlexoLocalization
-						.localizedForKeyAndLanguage(getParent(), entry.getKey(), Language.FRENCH, false);
+				String frenchTranslation = getParent().localizedForKeyAndLanguage(entry.getKey(), Language.FRENCH, false);
 				if (entry.getKey().equals(frenchTranslation)) {
 					frenchTranslation = automaticFrenchTranslation(entry.getKey());
 				}
 				entry.setFrench(frenchTranslation);
-			} else {
+			}
+			else {
 				String englishTranslation = entry.getKey().toString();
 				englishTranslation = englishTranslation.replace("_", " ");
 				englishTranslation = englishTranslation.substring(0, 1).toUpperCase() + englishTranslation.substring(1);
@@ -519,8 +520,7 @@ public interface ViewPointLocalizedDictionary extends FMLObject, org.openflexo.l
 			@Override
 			public String getEnglish() {
 				// The locale might be found in parent localizer
-				String returned = FlexoLocalization
-						.localizedForKeyAndLanguage(ViewPointLocalizedDictionaryImpl.this, key, Language.ENGLISH);
+				String returned = localizedForKeyAndLanguage(key, Language.ENGLISH);
 				if (returned == null) {
 					returned = key;
 				}
@@ -537,7 +537,7 @@ public interface ViewPointLocalizedDictionary extends FMLObject, org.openflexo.l
 			@Override
 			public String getFrench() {
 				// The locale might be found in parent localizer
-				String returned = FlexoLocalization.localizedForKeyAndLanguage(ViewPointLocalizedDictionaryImpl.this, key, Language.FRENCH);
+				String returned = localizedForKeyAndLanguage(key, Language.FRENCH);
 				if (returned == null) {
 					returned = key;
 				}
@@ -554,7 +554,7 @@ public interface ViewPointLocalizedDictionary extends FMLObject, org.openflexo.l
 			@Override
 			public String getDutch() {
 				// The locale might be found in parent localizer
-				String returned = FlexoLocalization.localizedForKeyAndLanguage(ViewPointLocalizedDictionaryImpl.this, key, Language.DUTCH);
+				String returned = localizedForKeyAndLanguage(key, Language.DUTCH);
 				if (returned == null) {
 					returned = key;
 				}
@@ -579,7 +579,8 @@ public interface ViewPointLocalizedDictionary extends FMLObject, org.openflexo.l
 					setEnglish(addHTMLSupport(getEnglish()));
 					setFrench(addHTMLSupport(getFrench()));
 					setDutch(addHTMLSupport(getDutch()));
-				} else {
+				}
+				else {
 					setEnglish(removeHTMLSupport(getEnglish()));
 					setFrench(removeHTMLSupport(getFrench()));
 					setDutch(removeHTMLSupport(getDutch()));

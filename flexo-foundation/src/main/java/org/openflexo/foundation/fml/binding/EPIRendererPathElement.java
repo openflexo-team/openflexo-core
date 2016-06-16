@@ -64,7 +64,7 @@ public class EPIRendererPathElement extends SimplePathElement {
 
 	@Override
 	public String getTooltipText(Type resultingType) {
-		return FlexoLocalization.localizedForKey("renderer");
+		return FlexoLocalization.getMainLocalizer().localizedForKey("renderer");
 	}
 
 	@Override
@@ -84,8 +84,8 @@ public class EPIRendererPathElement extends SimplePathElement {
 	}
 
 	@Override
-	public void setBindingValue(Object value, Object target, BindingEvaluationContext context) throws TypeMismatchException,
-			NullReferenceException {
+	public void setBindingValue(Object value, Object target, BindingEvaluationContext context)
+			throws TypeMismatchException, NullReferenceException {
 		// Not applicable
 	}
 

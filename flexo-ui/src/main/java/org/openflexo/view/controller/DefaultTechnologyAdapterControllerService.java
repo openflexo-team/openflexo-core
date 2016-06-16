@@ -60,7 +60,6 @@ import org.openflexo.foundation.task.Progress;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
-import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.model.factory.ModelFactory;
 import org.openflexo.module.ModuleLoader.ModuleLoaded;
@@ -196,7 +195,7 @@ public abstract class DefaultTechnologyAdapterControllerService extends FlexoSer
 					// System.out.println("Activated " + adapterController.getTechnologyAdapter() + " ? " +
 					// adapterController.isActivated());
 					if (adapterController.isActivated()) {
-						Progress.progress(FlexoLocalization.localizedForKey("initialize_actions_for_technology_adapter") + " "
+						Progress.progress(getLocales().localizedForKey("initialize_actions_for_technology_adapter") + " "
 								+ adapterController.getTechnologyAdapter().getName());
 						adapterController.activate(((ModuleLoaded) notification).getLoadedModule());
 					}
@@ -208,7 +207,7 @@ public abstract class DefaultTechnologyAdapterControllerService extends FlexoSer
 					// System.out.println("Activated " + adapterController.getTechnologyAdapter() + " ? " +
 					// adapterController.isActivated());
 					if (adapterController.isActivated()) {
-						Progress.progress(FlexoLocalization.localizedForKey("initialize_actions_for_technology_adapter") + " "
+						Progress.progress(getLocales().localizedForKey("initialize_actions_for_technology_adapter") + " "
 								+ adapterController.getTechnologyAdapter().getName());
 						adapterController.activate(((ModuleLoaded) notification).getLoadedModule());
 					}

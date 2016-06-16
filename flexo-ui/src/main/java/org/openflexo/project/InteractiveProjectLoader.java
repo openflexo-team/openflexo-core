@@ -178,10 +178,11 @@ public class InteractiveProjectLoader extends ProjectLoader {
 			}
 		});
 		try {
-			ProgressWindow.showProgressWindow(FlexoLocalization.localizedForKey("saving"), projects.size());
+			ProgressWindow.showProgressWindow(FlexoLocalization.getMainLocalizer().localizedForKey("saving"), projects.size());
 			for (FlexoProject project : projects) {
 				try {
-					ProgressWindow.setProgressInstance(FlexoLocalization.localizedForKey("saving") + " " + project.getDisplayName());
+					ProgressWindow.setProgressInstance(
+							FlexoLocalization.getMainLocalizer().localizedForKey("saving") + " " + project.getDisplayName());
 					project.save(ProgressWindow.instance());
 				} catch (SaveResourceException e) {
 					e.printStackTrace();
@@ -201,7 +202,7 @@ public class InteractiveProjectLoader extends ProjectLoader {
 			informUserAboutPermissionDeniedException((SaveResourcePermissionDeniedException) e);
 		}
 		else {
-			FlexoController.showError(FlexoLocalization.localizedForKey("error_during_saving"));
+			FlexoController.showError(FlexoLocalization.getMainLocalizer().localizedForKey("error_during_saving"));
 		}
 		logger.warning("Exception raised: " + e.getClass().getName() + ". See console for details.");
 		logger.warning(e.getMessage());
@@ -210,16 +211,19 @@ public class InteractiveProjectLoader extends ProjectLoader {
 
 	private static void informUserAboutPermissionDeniedException(SaveResourcePermissionDeniedException e) {
 		if (e instanceof FileFlexoIODelegate && ((FileFlexoIODelegate) e).getFile().isDirectory()) {
-			FlexoController.showError(FlexoLocalization.localizedForKey("permission_denied"),
-					FlexoLocalization.localizedForKey("project_was_not_properly_saved_permission_denied_directory") + "\n" + e.toString());
+			FlexoController.showError(FlexoLocalization.getMainLocalizer().localizedForKey("permission_denied"),
+					FlexoLocalization.getMainLocalizer().localizedForKey("project_was_not_properly_saved_permission_denied_directory")
+							+ "\n" + e.toString());
 		}
 		else if (e instanceof FileFlexoIODelegate) {
-			FlexoController.showError(FlexoLocalization.localizedForKey("permission_denied"),
-					FlexoLocalization.localizedForKey("project_was_not_properly_saved_permission_denied_file") + "\n" + e.toString());
+			FlexoController.showError(FlexoLocalization.getMainLocalizer().localizedForKey("permission_denied"),
+					FlexoLocalization.getMainLocalizer().localizedForKey("project_was_not_properly_saved_permission_denied_file") + "\n"
+							+ e.toString());
 		}
 		else {
-			FlexoController.showError(FlexoLocalization.localizedForKey("permission_denied"),
-					FlexoLocalization.localizedForKey("project_was_not_properly_saved_permission_denied") + "\n" + e.toString());
+			FlexoController.showError(FlexoLocalization.getMainLocalizer().localizedForKey("permission_denied"),
+					FlexoLocalization.getMainLocalizer().localizedForKey("project_was_not_properly_saved_permission_denied") + "\n"
+							+ e.toString());
 		}
 	}
 

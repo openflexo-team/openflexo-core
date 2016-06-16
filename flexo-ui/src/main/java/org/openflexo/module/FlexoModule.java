@@ -58,8 +58,12 @@ import org.openflexo.foundation.resource.ResourceRegistered;
 import org.openflexo.foundation.resource.ResourceSaved;
 import org.openflexo.foundation.resource.ResourceUnregistered;
 import org.openflexo.foundation.utils.OperationCancelledException;
+import org.openflexo.localization.FlexoLocalization;
+import org.openflexo.localization.LocalizedDelegate;
+import org.openflexo.localization.LocalizedDelegateImpl;
 import org.openflexo.prefs.ModulePreferences;
 import org.openflexo.project.InteractiveProjectLoader;
+import org.openflexo.rm.ResourceLocator;
 import org.openflexo.view.FlexoFrame;
 import org.openflexo.view.controller.FlexoController;
 
@@ -87,7 +91,25 @@ public abstract class FlexoModule<M extends FlexoModule<M>> implements DataFlexo
 
 	public void initModule() {
 		controller = createControllerForModule();
+		locales = new LocalizedDelegateImpl(ResourceLocator.locateResource(getLocalizationDirectory()),
+				getApplicationContext().getLocalizationService().getFlexoLocalizer(), true, true);
 	}
+
+	private LocalizedDelegate locales = null;
+
+	/**
+	 * Return the locales relative to this module
+	 * 
+	 * @return
+	 */
+	public LocalizedDelegate getLocales() {
+		if (locales == null) {
+			return FlexoLocalization.getMainLocalizer();
+		}
+		return locales;
+	}
+
+	public abstract String getLocalizationDirectory();
 
 	public abstract Module<M> getModule();
 

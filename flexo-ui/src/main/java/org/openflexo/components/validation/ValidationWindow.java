@@ -73,7 +73,7 @@ public class ValidationWindow extends JDialog {
 	private boolean isDisposed = false;
 
 	public ValidationWindow(JFrame frame, FlexoController controller) {
-		super(frame, FlexoLocalization.localizedForKey(FlexoLocalization.getMainLocalizer(), "validation"), ModalityType.MODELESS);
+		super(frame, controller.getFlexoLocales().localizedForKey("validation"), ModalityType.MODELESS);
 		this.controller = controller;
 		validationPanel = new FlexoValidationPanel(null, controller.getApplicationContext(), FlexoLocalization.getMainLocalizer());
 		getContentPane().add(validationPanel);

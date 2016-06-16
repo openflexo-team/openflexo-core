@@ -52,10 +52,9 @@ import org.openflexo.foundation.fml.rm.ViewPointResource;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.resource.RepositoryFolder;
 import org.openflexo.gina.annotation.FIBPanel;
+import org.openflexo.icon.FMLIconLibrary;
 import org.openflexo.icon.IconFactory;
 import org.openflexo.icon.IconLibrary;
-import org.openflexo.icon.FMLIconLibrary;
-import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.toolbox.StringUtils;
 import org.openflexo.view.controller.FlexoController;
 
@@ -73,7 +72,7 @@ public class CreateViewPointWizard extends AbstractCreateVirtualModelWizard<Crea
 
 	@Override
 	public String getWizardTitle() {
-		return FlexoLocalization.localizedForKey("create_view_point");
+		return getAction().getLocales().localizedForKey("create_view_point");
 	}
 
 	@Override
@@ -109,35 +108,43 @@ public class CreateViewPointWizard extends AbstractCreateVirtualModelWizard<Crea
 
 		@Override
 		public String getTitle() {
-			return FlexoLocalization.localizedForKey("describe_view_point");
+			return getAction().getLocales().localizedForKey("describe_view_point");
 		}
 
 		@Override
 		public boolean isValid() {
 
 			if (getViewPointFolder() == null) {
-				setIssueMessage(FlexoLocalization.localizedForKey("no_folder_defined"), IssueMessageType.ERROR);
+				setIssueMessage(getAction().getLocales().localizedForKey("no_folder_defined"), IssueMessageType.ERROR);
 				return false;
-			} else if (StringUtils.isEmpty(getNewViewPointName())) {
-				setIssueMessage(FlexoLocalization.localizedForKey("please_supply_valid_view_point_name"), IssueMessageType.ERROR);
+			}
+			else if (StringUtils.isEmpty(getNewViewPointName())) {
+				setIssueMessage(getAction().getLocales().localizedForKey("please_supply_valid_view_point_name"), IssueMessageType.ERROR);
 				return false;
-			} else if (StringUtils.isEmpty(getNewViewPointURI())) {
-				setIssueMessage(FlexoLocalization.localizedForKey("please_supply_uri"), IssueMessageType.ERROR);
+			}
+			else if (StringUtils.isEmpty(getNewViewPointURI())) {
+				setIssueMessage(getAction().getLocales().localizedForKey("please_supply_uri"), IssueMessageType.ERROR);
 				return false;
-			} else if (!isValidURI()) {
-				setIssueMessage(FlexoLocalization.localizedForKey("please_supply_valid_uri"), IssueMessageType.ERROR);
+			}
+			else if (!isValidURI()) {
+				setIssueMessage(getAction().getLocales().localizedForKey("please_supply_valid_uri"), IssueMessageType.ERROR);
 				return false;
-			} else if (getAction().getViewPointLibrary() == null) {
-				setIssueMessage(FlexoLocalization.localizedForKey("could_not_access_viewpoint_library"), IssueMessageType.ERROR);
+			}
+			else if (getAction().getViewPointLibrary() == null) {
+				setIssueMessage(getAction().getLocales().localizedForKey("could_not_access_viewpoint_library"), IssueMessageType.ERROR);
 				return false;
-			} else if (getAction().getViewPointLibrary().getViewPointResource(getNewViewPointURI()) != null) {
-				setIssueMessage(FlexoLocalization.localizedForKey("already_existing_viewpoint_uri"), IssueMessageType.ERROR);
+			}
+			else if (getAction().getViewPointLibrary().getViewPointResource(getNewViewPointURI()) != null) {
+				setIssueMessage(getAction().getLocales().localizedForKey("already_existing_viewpoint_uri"), IssueMessageType.ERROR);
 				return false;
-			} else if (getViewPointFolder().getResourceWithName(getNewViewPointName()) != null) {
-				setIssueMessage(FlexoLocalization.localizedForKey("already_existing_viewpoint_name"), IssueMessageType.ERROR);
+			}
+			else if (getViewPointFolder().getResourceWithName(getNewViewPointName()) != null) {
+				setIssueMessage(getAction().getLocales().localizedForKey("already_existing_viewpoint_name"), IssueMessageType.ERROR);
 				return false;
-			} else if (StringUtils.isEmpty(getNewViewPointDescription())) {
-				setIssueMessage(FlexoLocalization.localizedForKey("it_is_recommanded_to_describe_view_point"), IssueMessageType.WARNING);
+			}
+			else if (StringUtils.isEmpty(getNewViewPointDescription())) {
+				setIssueMessage(getAction().getLocales().localizedForKey("it_is_recommanded_to_describe_view_point"),
+						IssueMessageType.WARNING);
 			}
 
 			return true;

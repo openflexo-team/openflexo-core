@@ -58,7 +58,7 @@ public class AddResourceCenterTask extends FlexoApplicationTask {
 	private final FlexoResourceCenter<?> newResourceCenter;
 
 	public AddResourceCenterTask(FlexoResourceCenterService rcService, FlexoResourceCenter<?> newResourceCenter) {
-		super(FlexoLocalization.localizedForKey("adding_resource_center") + " " + newResourceCenter.toString(),
+		super(FlexoLocalization.getMainLocalizer().localizedForKey("adding_resource_center") + " " + newResourceCenter.toString(),
 				rcService.getServiceManager());
 		this.rcService = rcService;
 		this.newResourceCenter = newResourceCenter;

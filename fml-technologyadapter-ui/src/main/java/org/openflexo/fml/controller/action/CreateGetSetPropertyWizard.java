@@ -42,7 +42,6 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.action.CreateGetSetProperty;
 import org.openflexo.gina.annotation.FIBPanel;
-import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.view.controller.FlexoController;
 
 public class CreateGetSetPropertyWizard extends AbstractCreateFlexoPropertyWizard<CreateGetSetProperty> {
@@ -61,7 +60,7 @@ public class CreateGetSetPropertyWizard extends AbstractCreateFlexoPropertyWizar
 
 	@Override
 	public String getWizardTitle() {
-		return FlexoLocalization.localizedForKey("create_get_set_property");
+		return getAction().getLocales().localizedForKey("create_get_set_property");
 	}
 
 	@Override
@@ -85,7 +84,7 @@ public class CreateGetSetPropertyWizard extends AbstractCreateFlexoPropertyWizar
 
 		@Override
 		public String getTitle() {
-			return FlexoLocalization.localizedForKey("describe_get_set_property");
+			return getAction().getLocales().localizedForKey("describe_get_set_property");
 		}
 
 		@Override

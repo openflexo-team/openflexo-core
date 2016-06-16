@@ -44,7 +44,6 @@ import java.awt.Component;
 import javax.swing.JOptionPane;
 
 import org.openflexo.foundation.FlexoProject;
-import org.openflexo.localization.FlexoLocalization;
 
 /**
  * @author gpolet
@@ -56,9 +55,9 @@ public class SaveDialog extends JOptionPane {
 
 	public SaveDialog(Component parent, FlexoProject project) {
 		retval = JOptionPane.showConfirmDialog(parent,
-				FlexoLocalization.localizedForKey("project_has_unsaved_changes") + ": " + project.getProjectDirectory().getAbsolutePath()
-						+ "\n" + FlexoLocalization.localizedForKey("would_you_like_to_save_the_changes?"),
-				FlexoLocalization.localizedForKey("exiting_flexo"), JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+				project.getLocales().localizedForKey("project_has_unsaved_changes") + ": " + project.getProjectDirectory().getAbsolutePath()
+						+ "\n" + project.getLocales().localizedForKey("would_you_like_to_save_the_changes?"),
+				project.getLocales().localizedForKey("exiting_flexo"), JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
 	}
 
 	public int getRetval() {

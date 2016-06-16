@@ -67,7 +67,6 @@ import org.openflexo.foundation.PamelaResourceModelFactory;
 import org.openflexo.foundation.action.FlexoUndoManager.IgnoreHandler;
 import org.openflexo.foundation.utils.ProjectLoadingCancelledException;
 import org.openflexo.kvc.AccessorInvocationException;
-import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.model.exceptions.InvalidDataException;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.model.factory.EmbeddingType;
@@ -105,7 +104,7 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends 
 	@Override
 	public final void save(IProgress progress) throws SaveResourceException {
 		if (progress != null) {
-			progress.setProgress(FlexoLocalization.localizedForKey("saving") + " " + this.getName());
+			progress.setProgress(getLocales().localizedForKey("saving") + " " + this.getName());
 		}
 		if (!isLoaded()) {
 			return;
@@ -185,9 +184,9 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends 
 
 		isLoading = true;
 		if (progress != null) {
-			progress.setProgress(FlexoLocalization.localizedForKey("loading") + " " + this.getName());
+			progress.setProgress(getLocales().localizedForKey("loading") + " " + this.getName());
 			progress.resetSecondaryProgress(4);
-			progress.setProgress(FlexoLocalization.localizedForKey("loading_from_disk"));
+			progress.setProgress(getLocales().localizedForKey("loading_from_disk"));
 		}
 
 		LoadResourceException exception = null;
@@ -562,7 +561,7 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends 
 	protected void indexResource() {
 
 		isIndexing = true;
-		//System.out.println("Indexing PamelaResource " + this);
+		// System.out.println("Indexing PamelaResource " + this);
 		objects = new HashMap<>();
 		List<Object> allObjects = getFactory().getEmbeddedObjects(getLoadedResourceData(), EmbeddingType.CLOSURE);
 		allObjects.add(getLoadedResourceData());
@@ -577,7 +576,7 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends 
 				objectsForUserIdentifier.put(o.getFlexoID(), o);
 			}
 		}
-		//System.out.println("Done indexing PamelaResource " + this);
+		// System.out.println("Done indexing PamelaResource " + this);
 		isIndexing = false;
 	}
 

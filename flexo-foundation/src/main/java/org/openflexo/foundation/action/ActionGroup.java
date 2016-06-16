@@ -41,7 +41,7 @@ package org.openflexo.foundation.action;
 
 import javax.swing.Icon;
 
-import org.openflexo.localization.FlexoLocalization;
+import org.openflexo.localization.LocalizedDelegate;
 
 public class ActionGroup {
 
@@ -64,12 +64,12 @@ public class ActionGroup {
 		return _actionMenuName;
 	}
 
-	public String getLocalizedName() {
-		return FlexoLocalization.localizedForKey(_actionMenuName);
+	public String getLocalizedName(LocalizedDelegate locales) {
+		return locales.localizedForKey(_actionMenuName);
 	}
 
-	public String getLocalizedDescription() {
-		return FlexoLocalization.localizedForKey(_actionMenuName + "_description");
+	public String getLocalizedDescription(LocalizedDelegate locales) {
+		return locales.localizedForKey(_actionMenuName + "_description");
 	}
 
 	public Icon getSmallIcon() {

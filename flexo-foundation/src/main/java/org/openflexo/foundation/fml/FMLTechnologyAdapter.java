@@ -79,6 +79,11 @@ public class FMLTechnologyAdapter extends TechnologyAdapter {
 	}
 
 	@Override
+	public String getLocalizationDirectory() {
+		return "FlexoLocalization/FMLTechnologyAdapter";
+	}
+
+	@Override
 	public TechnologyAdapterBindingFactory getTechnologyAdapterBindingFactory() {
 		// no specific binding factory for this technology
 		return null;

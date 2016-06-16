@@ -42,7 +42,6 @@ import java.util.List;
 
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
-import org.openflexo.localization.FlexoLocalization;
 
 /**
  * This abstract class is the base class for a element replacing transformation<br>
@@ -86,19 +85,19 @@ public abstract class FlexoRoleSettingStrategy<A extends AbstractDeclareInFlexoC
 	@Override
 	public boolean isValid() {
 		if (getTransformationAction() == null) {
-			setIssueMessage(FlexoLocalization.localizedForKey(NO_TRANSFORMATION_ACTION_DEFINED), IssueMessageType.ERROR);
+			setIssueMessage(getLocales().localizedForKey(NO_TRANSFORMATION_ACTION_DEFINED), IssueMessageType.ERROR);
 			return false;
 		}
 		if (getTransformationAction().getFlexoConcept() == null) {
-			setIssueMessage(FlexoLocalization.localizedForKey(NO_FLEXO_CONCEPT_DEFINED), IssueMessageType.ERROR);
+			setIssueMessage(getLocales().localizedForKey(NO_FLEXO_CONCEPT_DEFINED), IssueMessageType.ERROR);
 			return false;
 		}
 		if (getFlexoRole() == null) {
-			setIssueMessage(FlexoLocalization.localizedForKey(NO_ROLE_DEFINED), IssueMessageType.ERROR);
+			setIssueMessage(getLocales().localizedForKey(NO_ROLE_DEFINED), IssueMessageType.ERROR);
 			return false;
 		}
 		if (getFlexoRole().getFlexoConcept() != getTransformationAction().getFlexoConcept()) {
-			setIssueMessage(FlexoLocalization.localizedForKey(INVALID_ROLE), IssueMessageType.ERROR);
+			setIssueMessage(getLocales().localizedForKey(INVALID_ROLE), IssueMessageType.ERROR);
 			return false;
 		}
 		return true;

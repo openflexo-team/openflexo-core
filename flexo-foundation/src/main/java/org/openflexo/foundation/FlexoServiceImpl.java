@@ -41,6 +41,8 @@ package org.openflexo.foundation;
 
 import java.util.logging.Logger;
 
+import org.openflexo.localization.LocalizedDelegate;
+
 /**
  * Abstract base implementation of a {@link FlexoService}
  * 
@@ -68,6 +70,10 @@ public abstract class FlexoServiceImpl extends FlexoObservable implements FlexoS
 		return serviceManager;
 	}
 
+	public LocalizedDelegate getLocales() {
+		return getServiceManager().getLocalizationService().getFlexoLocalizer();
+	}
+
 	@Override
 	public String getDeletedProperty() {
 		// TODO Auto-generated method stub
@@ -77,8 +83,9 @@ public abstract class FlexoServiceImpl extends FlexoObservable implements FlexoS
 	/**
 	 * Called to stop the service
 	 */
-	public void stop(){
-		logger.warning("STOP Method for service should be overriden in each service [" + this.getClass().getCanonicalName() +"]");
+	@Override
+	public void stop() {
+		logger.warning("STOP Method for service should be overriden in each service [" + this.getClass().getCanonicalName() + "]");
 	}
 
 }

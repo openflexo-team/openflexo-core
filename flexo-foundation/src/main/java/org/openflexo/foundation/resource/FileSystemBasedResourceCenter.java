@@ -61,7 +61,6 @@ import org.openflexo.foundation.resource.DirectoryResourceCenter.DirectoryResour
 import org.openflexo.foundation.task.Progress;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterResource;
-import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.model.factory.ModelFactory;
 import org.openflexo.toolbox.DirectoryWatcher;
@@ -79,7 +78,7 @@ import org.openflexo.toolbox.StringUtils;
  * @author sylvain
  * 
  */
-public abstract class FileSystemBasedResourceCenter extends FileResourceRepository<FlexoResource<?>> implements FlexoResourceCenter<File> {
+public abstract class FileSystemBasedResourceCenter extends FileResourceRepository<FlexoResource<?>>implements FlexoResourceCenter<File> {
 
 	protected static final Logger logger = Logger.getLogger(FileSystemBasedResourceCenter.class.getPackage().getName());
 
@@ -251,7 +250,7 @@ public abstract class FileSystemBasedResourceCenter extends FileResourceReposito
 	public void activateTechnology(TechnologyAdapter technologyAdapter) {
 
 		logger.info("Activating resource center " + this + " with adapter " + technologyAdapter.getName());
-		Progress.progress(FlexoLocalization.localizedForKey("initializing_adapter") + " " + technologyAdapter.getName());
+		Progress.progress(getLocales().localizedForKey("initializing_adapter") + " " + technologyAdapter.getName());
 		technologyAdapter.initializeResourceCenter(this);
 	}
 

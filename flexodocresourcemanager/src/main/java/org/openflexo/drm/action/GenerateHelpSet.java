@@ -137,12 +137,12 @@ public class GenerateHelpSet extends FlexoAction<GenerateHelpSet, DocResourceCen
 	@Override
 	protected void doAction(Object context) {
 		logger.info("GenerateHelpSet");
-		makeFlexoProgress(FlexoLocalization.localizedForKey("generating_helpset"), configurations.size() + 2);
+		makeFlexoProgress(FlexoLocalization.getMainLocalizer().localizedForKey("generating_helpset"), configurations.size() + 2);
 		getHelpsetDirectory().mkdirs();
 		for (HelpSetConfiguration config : configurations) {
 			DRMHelpSet helpSet = new DRMHelpSet(getFocusedObject(), getHelpsetDirectory(), getBaseName(), config);
 			logger.info("Generating " + helpSet.getLocalizedName());
-			setProgress(FlexoLocalization.localizedForKey("generating") + " " + helpSet.getHelpSetDirectory().getName());
+			setProgress(FlexoLocalization.getMainLocalizer().localizedForKey("generating") + " " + helpSet.getHelpSetDirectory().getName());
 			helpSet.generate(getFlexoProgress());
 			generatedHelpsets.put(config, helpSet);
 		}

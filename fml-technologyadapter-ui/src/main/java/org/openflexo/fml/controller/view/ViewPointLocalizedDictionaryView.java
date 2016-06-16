@@ -39,6 +39,7 @@
 package org.openflexo.fml.controller.view;
 
 import org.openflexo.fml.controller.CommonFIB;
+import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.ViewPointLocalizedDictionary;
 import org.openflexo.view.FIBModuleView;
@@ -52,13 +53,14 @@ import org.openflexo.view.controller.model.FlexoPerspective;
  * @author sguerin
  * 
  */
-public class ViewPointLocalizedDictionaryView extends FIBModuleView<ViewPointLocalizedDictionary> /* implements FIBMouseClickListener*/{
+public class ViewPointLocalizedDictionaryView extends FIBModuleView<ViewPointLocalizedDictionary> /* implements FIBMouseClickListener*/ {
 
 	private final FlexoPerspective perspective;
 
 	public ViewPointLocalizedDictionaryView(ViewPointLocalizedDictionary viewPointLocalizedDictionary, FlexoController controller,
 			FlexoPerspective perspective) {
-		super(viewPointLocalizedDictionary, controller, CommonFIB.VIEWPOINT_LOCALIZED_DICTIONARY_VIEW_FIB);
+		super(viewPointLocalizedDictionary, controller, CommonFIB.VIEWPOINT_LOCALIZED_DICTIONARY_VIEW_FIB,
+				controller.getTechnologyAdapter(FMLTechnologyAdapter.class).getLocales());
 		this.perspective = perspective;
 	}
 

@@ -66,7 +66,6 @@ import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.resource.ResourceRepository;
 import org.openflexo.foundation.task.FlexoTask;
 import org.openflexo.foundation.task.Progress;
-import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.model.factory.ModelFactory;
 
@@ -213,11 +212,10 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 		if (caller instanceof FlexoResourceCenterService) {
 			if (notification instanceof ResourceCenterAdded) {
 				FlexoResourceCenter rc = ((ResourceCenterAdded) notification).getAddedResourceCenter();
-				System.out.println("Bon, nouveau RC " + rc);
-				Progress.progress(FlexoLocalization.localizedForKey("initializing") + " " + rc);
+				Progress.progress(getLocales().localizedForKey("initializing") + " " + rc);
 				for (TechnologyAdapter ta : getTechnologyAdapters()) {
 					if (ta.isActivated()) {
-						Progress.progress(FlexoLocalization.localizedForKey("scan_resources_for_technology_adapters") + " " + ta.getName());
+						Progress.progress(getLocales().localizedForKey("scan_resources_for_technology_adapters") + " " + ta.getName());
 						ta.resourceCenterAdded(rc);
 					}
 				}

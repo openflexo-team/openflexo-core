@@ -46,6 +46,7 @@ import org.openflexo.foundation.fml.rt.ActorReference;
 import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
+import org.openflexo.localization.LocalizedDelegate;
 import org.openflexo.model.annotations.DefineValidationRule;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -163,7 +164,7 @@ public abstract interface FlexoRole<T> extends FlexoProperty<T> {
 	 */
 	public abstract ActorReference<T> makeActorReference(T object, FlexoConceptInstance fci);
 
-	public static abstract class FlexoRoleImpl<T> extends FlexoPropertyImpl<T> implements FlexoRole<T> {
+	public static abstract class FlexoRoleImpl<T> extends FlexoPropertyImpl<T>implements FlexoRole<T> {
 
 		// private static final Logger logger = Logger.getLogger(FlexoRole.class.getPackage().getName());
 
@@ -256,6 +257,14 @@ public abstract interface FlexoRole<T> extends FlexoProperty<T> {
 			out.append("FlexoRole " + getName() + " as " + getModelSlot().getModelSlotTechnologyAdapter().getIdentifier() + "::"
 					+ getImplementedInterface().getSimpleName() + " conformTo " + getTypeDescription() + ";", context);
 			return out.toString();
+		}
+
+		@Override
+		public LocalizedDelegate getLocales() {
+			if (getModelSlot() != null && getModelSlot().getModelSlotTechnologyAdapter() != null) {
+				return getModelSlot().getModelSlotTechnologyAdapter().getLocales();
+			}
+			return super.getLocales();
 		}
 
 	}

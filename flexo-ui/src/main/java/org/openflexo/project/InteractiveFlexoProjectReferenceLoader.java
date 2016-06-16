@@ -96,8 +96,8 @@ public class InteractiveFlexoProjectReferenceLoader extends FlexoServiceImpl imp
 					projectChooser = new ProjectChooserComponent(FlexoFrame.getActiveFrame(), getServiceManager()) {
 					};
 					projectChooser.setOpenMode();
-					projectChooser
-							.setTitle(FlexoLocalization.localizedForKey("locate_project") + " " + ref.getName() + " " + ref.getVersion());
+					projectChooser.setTitle(FlexoLocalization.getMainLocalizer().localizedForKey("locate_project") + " " + ref.getName()
+							+ " " + ref.getVersion());
 				}
 				int ret = projectChooser.showOpenDialog();
 				if (ret == JFileChooser.APPROVE_OPTION) {
@@ -125,8 +125,8 @@ public class InteractiveFlexoProjectReferenceLoader extends FlexoServiceImpl imp
 				else if (loadProject.getThrownException() instanceof ProjectInitializerException) {
 					loadProject.getThrownException().printStackTrace();
 					if (!retrievedFromResourceCenter) {
-						FlexoController.notify(
-								FlexoLocalization.localizedForKey("could_not_load_project_at") + " " + selectedFile.getAbsolutePath());
+						FlexoController.notify(FlexoLocalization.getMainLocalizer().localizedForKey("could_not_load_project_at") + " "
+								+ selectedFile.getAbsolutePath());
 						selectedFile = null;
 					}
 				}
@@ -141,11 +141,13 @@ public class InteractiveFlexoProjectReferenceLoader extends FlexoServiceImpl imp
 					return project;
 				}
 				else {
-					boolean ok = FlexoController.confirm(FlexoLocalization.localizedForKey("project_version_do_not_match") + ". "
-							+ project.getVersion() + " " + FlexoLocalization.localizedForKey("was_found")
-							+ FlexoLocalization.localizedForKey("but") + " " + ref.getVersion() + " "
-							+ FlexoLocalization.localizedForKey("was_expected") + "\n"
-							+ FlexoLocalization.localizedForKey("would_you_like_to_switch_to_version:") + " " + project.getVersion());
+					boolean ok = FlexoController
+							.confirm(FlexoLocalization.getMainLocalizer().localizedForKey("project_version_do_not_match") + ". "
+									+ project.getVersion() + " " + FlexoLocalization.getMainLocalizer().localizedForKey("was_found")
+									+ FlexoLocalization.getMainLocalizer().localizedForKey("but") + " " + ref.getVersion() + " "
+									+ FlexoLocalization.getMainLocalizer().localizedForKey("was_expected") + "\n"
+									+ FlexoLocalization.getMainLocalizer().localizedForKey("would_you_like_to_switch_to_version:") + " "
+									+ project.getVersion());
 					if (ok) {
 						return project;
 					}
@@ -159,10 +161,11 @@ public class InteractiveFlexoProjectReferenceLoader extends FlexoServiceImpl imp
 					selectedFile = null;
 					continue;
 				}
-				FlexoController.notify(FlexoLocalization.localizedForKey("project_uri_do_not_match") + ".\n"
-						+ FlexoLocalization.localizedForKey("uri") + " " + project.getProjectURI() + " "
-						+ FlexoLocalization.localizedForKey("was_found") + "\n" + FlexoLocalization.localizedForKey("but") + " " + ref + " "
-						+ FlexoLocalization.localizedForKey("was_expected"));
+				FlexoController.notify(FlexoLocalization.getMainLocalizer().localizedForKey("project_uri_do_not_match") + ".\n"
+						+ FlexoLocalization.getMainLocalizer().localizedForKey("uri") + " " + project.getProjectURI() + " "
+						+ FlexoLocalization.getMainLocalizer().localizedForKey("was_found") + "\n"
+						+ FlexoLocalization.getMainLocalizer().localizedForKey("but") + " " + ref + " "
+						+ FlexoLocalization.getMainLocalizer().localizedForKey("was_expected"));
 			}
 			selectedFile = null;
 		}

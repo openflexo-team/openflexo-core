@@ -62,7 +62,6 @@ import org.openflexo.foundation.nature.ProjectNature;
 import org.openflexo.foundation.resource.SaveResourceExceptionList;
 import org.openflexo.foundation.utils.OperationCancelledException;
 import org.openflexo.icon.IconLibrary;
-import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.module.NatureSpecificModule;
 import org.openflexo.print.PrintManagingController;
 import org.openflexo.project.InteractiveProjectLoader;
@@ -94,7 +93,7 @@ public class FileMenu extends FlexoMenu {
 		add(new NewProjectItem());
 		add(new OpenProjectItem());
 		add(recentProjectMenu = new JMenu());
-		recentProjectMenu.setText(FlexoLocalization.localizedForKey("recent_projects", recentProjectMenu));
+		recentProjectMenu.setText(_controller.getFlexoLocales().localizedForKey("recent_projects", recentProjectMenu));
 		add(new CloseProjectItem());
 		add(new ImportProjectMenuItem());
 		add(new SaveProjectItem());
@@ -144,7 +143,7 @@ public class FileMenu extends FlexoMenu {
 	public void addToExportItems(FlexoMenuItem exportItem) {
 		if (exportMenu == null) {
 			exportMenu = new JMenu();
-			exportMenu.setText(FlexoLocalization.localizedForKey("export", exportMenu));
+			exportMenu.setText(_controller.getFlexoLocales().localizedForKey("export", exportMenu));
 		}
 		exportMenu.add(exportItem);
 	}
@@ -152,7 +151,7 @@ public class FileMenu extends FlexoMenu {
 	public void addToImportItems(FlexoMenuItem importItem) {
 		if (importMenu == null) {
 			importMenu = new JMenu();
-			importMenu.setText(FlexoLocalization.localizedForKey("import", importMenu));
+			importMenu.setText(_controller.getFlexoLocales().localizedForKey("import", importMenu));
 		}
 		importMenu.add(importItem);
 	}
@@ -251,7 +250,8 @@ public class FileMenu extends FlexoMenu {
 					ProjectNature<?, ?> nature = getController().getApplicationContext().getProjectNatureService()
 							.getProjectNature(((NatureSpecificModule) getController().getModule().getModule()).getNatureClass());
 					getProjectLoader().newProject(projectDirectory, nature);
-				} else {
+				}
+				else {
 					getProjectLoader().newProject(projectDirectory);
 				}
 			}
@@ -261,7 +261,8 @@ public class FileMenu extends FlexoMenu {
 	public class OpenProjectItem extends FlexoMenuItem {
 
 		public OpenProjectItem() {
-			super(new OpenProjectAction(), "open_project", KeyStroke.getKeyStroke(KeyEvent.VK_O, FlexoCst.META_MASK), getController(), true);
+			super(new OpenProjectAction(), "open_project", KeyStroke.getKeyStroke(KeyEvent.VK_O, FlexoCst.META_MASK), getController(),
+					true);
 			setIcon(IconLibrary.OPEN_ICON);
 		}
 	}
@@ -422,8 +423,8 @@ public class FileMenu extends FlexoMenu {
 					getProjectLoader().saveProjects(Arrays.asList(getController().getProject()));
 				} catch (SaveResourceExceptionList e) {
 					e.printStackTrace();
-					FlexoController.showError(FlexoLocalization.localizedForKey("errors_during_saving"),
-							FlexoLocalization.localizedForKey("errors_during_saving"));
+					FlexoController.showError(_controller.getFlexoLocales().localizedForKey("errors_during_saving"),
+							_controller.getFlexoLocales().localizedForKey("errors_during_saving"));
 				} finally {
 					getController().getFlexoFrame().setCursor(c);
 				}
@@ -471,8 +472,8 @@ public class FileMenu extends FlexoMenu {
 	public class SaveAllProjectItem extends FlexoMenuItem {
 
 		public SaveAllProjectItem() {
-			super(new SaveAllProjectAction(), "save_all_project", KeyStroke.getKeyStroke(KeyEvent.VK_S, FlexoCst.META_MASK
-					| KeyEvent.SHIFT_MASK), getController(), true);
+			super(new SaveAllProjectAction(), "save_all_project",
+					KeyStroke.getKeyStroke(KeyEvent.VK_S, FlexoCst.META_MASK | KeyEvent.SHIFT_MASK), getController(), true);
 			setIcon(IconLibrary.SAVE_ALL_ICON);
 		}
 
@@ -496,8 +497,8 @@ public class FileMenu extends FlexoMenu {
 					getProjectLoader().saveAllProjects();
 				} catch (SaveResourceExceptionList e) {
 					e.printStackTrace();
-					FlexoController.showError(FlexoLocalization.localizedForKey("errors_during_saving"),
-							FlexoLocalization.localizedForKey("errors_during_saving"));
+					FlexoController.showError(_controller.getFlexoLocales().localizedForKey("errors_during_saving"),
+							_controller.getFlexoLocales().localizedForKey("errors_during_saving"));
 				} finally {
 					getController().getFlexoFrame().setCursor(c);
 				}
@@ -546,7 +547,7 @@ public class FileMenu extends FlexoMenu {
 			// try {
 			getProjectLoader().reloadProject(getController().getProject());
 			/*} catch (ProjectLoadingCancelledException e) {
-
+			
 			} catch (ProjectInitializerException e) {
 				e.printStackTrace();
 				FlexoController.notify(FlexoLocalization.localizedForKey("could_not_open_project_located_at")
@@ -597,8 +598,10 @@ public class FileMenu extends FlexoMenu {
 	public class QuitItem extends FlexoMenuItem {
 
 		public QuitItem() {
-			super(new QuitAction(), "quit", ToolBox.getPLATFORM() == ToolBox.WINDOWS ? KeyStroke.getKeyStroke(KeyEvent.VK_F4,
-					InputEvent.ALT_MASK) : KeyStroke.getKeyStroke(KeyEvent.VK_Q, FlexoCst.META_MASK), getController(), true);
+			super(new QuitAction(), "quit",
+					ToolBox.getPLATFORM() == ToolBox.WINDOWS ? KeyStroke.getKeyStroke(KeyEvent.VK_F4, InputEvent.ALT_MASK)
+							: KeyStroke.getKeyStroke(KeyEvent.VK_Q, FlexoCst.META_MASK),
+					getController(), true);
 		}
 
 	}

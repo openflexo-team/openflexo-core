@@ -85,7 +85,8 @@ public class ResourceSavingInfo {
 
 		IProgress progress = null;
 		if (progressFactory != null) {
-			progress = progressFactory.makeFlexoProgress(FlexoLocalization.localizedForKey("saving_resources"), resourcesToSave.size());
+			progress = progressFactory.makeFlexoProgress(FlexoLocalization.getMainLocalizer().localizedForKey("saving_resources"),
+					resourcesToSave.size());
 		}
 		for (ResourceSavingEntryInfo e : entries) {
 			if (e.saveThisResource()) {

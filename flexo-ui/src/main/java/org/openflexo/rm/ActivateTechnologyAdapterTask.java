@@ -57,7 +57,8 @@ public class ActivateTechnologyAdapterTask extends FlexoApplicationTask {
 	private final TechnologyAdapter technologyAdapter;
 
 	public ActivateTechnologyAdapterTask(TechnologyAdapterService taService, TechnologyAdapter technologyAdapter) {
-		super(FlexoLocalization.localizedForKey("activate_technology") + " " + technologyAdapter.getName(), taService.getServiceManager());
+		super(FlexoLocalization.getMainLocalizer().localizedForKey("activate_technology") + " " + technologyAdapter.getName(),
+				taService.getServiceManager());
 		this.taService = taService;
 		this.technologyAdapter = technologyAdapter;
 

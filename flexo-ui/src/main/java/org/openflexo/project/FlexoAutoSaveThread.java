@@ -173,23 +173,25 @@ public class FlexoAutoSaveThread extends Thread {
 			}
 		}
 		Collections.sort(projects, new Comparator<FlexoAutoSaveFile>() { // This comparator will make oldest files first and newer ones last
-					// in the queue
-					/**
-					 * Overrides compare
-					 * 
-					 * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
-					 */
-					@Override
-					public int compare(FlexoAutoSaveFile o1, FlexoAutoSaveFile o2) {
-						if (o1.lastModified() < o2.lastModified()) {
-							return -1;
-						} else if (o1.lastModified() > o2.lastModified()) {
-							return 1;
-						} else {
-							return 0;
-						}
-					}
-				});
+			// in the queue
+			/**
+			 * Overrides compare
+			 * 
+			 * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
+			 */
+			@Override
+			public int compare(FlexoAutoSaveFile o1, FlexoAutoSaveFile o2) {
+				if (o1.lastModified() < o2.lastModified()) {
+					return -1;
+				}
+				else if (o1.lastModified() > o2.lastModified()) {
+					return 1;
+				}
+				else {
+					return 0;
+				}
+			}
+		});
 	}
 
 	/**
@@ -243,7 +245,8 @@ public class FlexoAutoSaveThread extends Thread {
 			boolean needsSave = false;
 			if (projects.size() == 0) {
 				needsSave = true;
-			} else {
+			}
+			else {
 				Date lastAutoSave = projects.getLast().getCreationDate();
 				for (FlexoResource<?> resource : project.getAllResources()) {
 					if (resource.getLastUpdate().after(lastAutoSave)) {
@@ -272,7 +275,8 @@ public class FlexoAutoSaveThread extends Thread {
 				}
 				if (saveActionSuccess) {
 					projects.add(new FlexoAutoSaveFile(nextSaveDirectory, new Date()));
-				} else {
+				}
+				else {
 					SwingUtilities.invokeLater(new AutoSaveActionFailed());
 				}
 				if (projects.size() >= numberOfIntermediateSave && numberOfIntermediateSave > 0) {
@@ -344,11 +348,9 @@ public class FlexoAutoSaveThread extends Thread {
 			if (autoSaveFailedNotified) {
 				return;
 			}
-			FlexoController.showError(
-					FlexoLocalization.localizedForKey("auto_save_action_failed"),
-					FlexoLocalization.localizedForKey("auto_save_action_could_not_be_performed")
-							+ "\n"
-							+ FlexoLocalization
+			FlexoController.showError(FlexoLocalization.getMainLocalizer().localizedForKey("auto_save_action_failed"),
+					FlexoLocalization.getMainLocalizer().localizedForKey("auto_save_action_could_not_be_performed") + "\n"
+							+ FlexoLocalization.getMainLocalizer()
 									.localizedForKey("verify_that_your_disk_is_not_full_and_that_you_can_write_in_the_temp_directory."));
 			autoSaveFailedNotified = true;
 		}
@@ -396,10 +398,13 @@ public class FlexoAutoSaveThread extends Thread {
 			long current = System.currentTimeMillis();
 			long offset = current - creationDate.getTime();
 			if (offset < 60 * 60 * 1000) {
-				return FlexoLocalization.localizedForKeyWithParams("($minutes) minutes_ago", this);
-			} else if (offset < 24 * 60 * 60 * 1000) {
-				return FlexoLocalization.localizedForKeyWithParams("($hours) hours_ago_and_($minutesOverHours)_minutes", this);
-			} else {
+				return FlexoLocalization.getMainLocalizer().localizedForKeyWithParams("($minutes) minutes_ago", this);
+			}
+			else if (offset < 24 * 60 * 60 * 1000) {
+				return FlexoLocalization.getMainLocalizer().localizedForKeyWithParams("($hours) hours_ago_and_($minutesOverHours)_minutes",
+						this);
+			}
+			else {
 				return formatter.format(creationDate);
 			}
 		}

@@ -56,7 +56,6 @@ import org.openflexo.foundation.FlexoEditingContext;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.action.FlexoUndoManager;
 import org.openflexo.icon.IconLibrary;
-import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.view.controller.FlexoController;
 import org.openflexo.view.controller.model.ControllerModel;
 
@@ -175,14 +174,15 @@ public class EditMenu extends FlexoMenu {
 			if (getUndoManager() != null) {
 				setEnabled(getUndoManager().canUndo());
 				if (getUndoManager().canUndo()) {
-					setText(FlexoLocalization.localizedForKey("undo") + " (" + getUndoManager().getUndoPresentationName() + ")");
+					setText(_controller.getFlexoLocales().localizedForKey("undo") + " (" + getUndoManager().getUndoPresentationName()
+							+ ")");
 				}
 				else {
-					setText(FlexoLocalization.localizedForKey("undo"));
+					setText(_controller.getFlexoLocales().localizedForKey("undo"));
 				}
 			}
 			else {
-				setText(FlexoLocalization.localizedForKey("undo"));
+				setText(_controller.getFlexoLocales().localizedForKey("undo"));
 				setEnabled(false);
 			}
 		}
@@ -286,18 +286,19 @@ public class EditMenu extends FlexoMenu {
 					}
 				});
 				return;
-			}		
+			}
 			if (getUndoManager() != null) {
 				setEnabled(getUndoManager().canRedo());
 				if (getUndoManager().canRedo()) {
-					setText(FlexoLocalization.localizedForKey("redo") + " (" + getUndoManager().getRedoPresentationName() + ")");
+					setText(_controller.getFlexoLocales().localizedForKey("redo") + " (" + getUndoManager().getRedoPresentationName()
+							+ ")");
 				}
 				else {
-					setText(FlexoLocalization.localizedForKey("redo"));
+					setText(_controller.getFlexoLocales().localizedForKey("redo"));
 				}
 			}
 			else {
-				setText(FlexoLocalization.localizedForKey("redo"));
+				setText(_controller.getFlexoLocales().localizedForKey("redo"));
 				setEnabled(false);
 			}
 		}

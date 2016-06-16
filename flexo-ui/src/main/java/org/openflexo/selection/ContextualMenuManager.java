@@ -244,9 +244,8 @@ public class ContextualMenuManager {
 		if (focusedObject != null) {
 			ContextualMenu contextualMenu = new ContextualMenu();
 			for (FlexoActionType next : focusedObject.getActionList()) {
-				if (filter.acceptActionType(next)
-						&& getEditor().isActionVisible(next, focusedObject,
-								_selectionManager != null ? _selectionManager.getSelection() : null)) {
+				if (filter.acceptActionType(next) && getEditor().isActionVisible(next, focusedObject,
+						_selectionManager != null ? _selectionManager.getSelection() : null)) {
 					contextualMenu.putAction(next);
 				}
 			}
@@ -275,7 +274,8 @@ public class ContextualMenuManager {
 				}
 			}
 			_popupMenu = contextualMenu.makePopupMenu(focusedObject);
-		} else {
+		}
+		else {
 			_popupMenu = new JPopupMenu();
 		}
 		return _popupMenu;
@@ -292,7 +292,8 @@ public class ContextualMenuManager {
 			if (_popupMenu.getComponentCount() > 0) {
 				_popupMenu.show(_invoker, position.x, position.y);
 				_isPopupMenuDisplayed = true;
-			} else {
+			}
+			else {
 				resetContextualMenuTriggering();
 			}
 		}
@@ -322,7 +323,8 @@ public class ContextualMenuManager {
 						_subMenus.put(actionType.getActionMenu(), subMenu);
 					}
 					subMenu.addAction(actionType);
-				} else {
+				}
+				else {
 					addAction(actionType);
 				}
 			}
@@ -366,7 +368,8 @@ public class ContextualMenuManager {
 					if (nextElement instanceof FlexoActionType) {
 						// System.out.println("Ajout de "+nextElement);
 						makeMenuItem((FlexoActionType) nextElement, focusedObject, returned);
-					} else if (nextElement instanceof ContextualSubMenu) {
+					}
+					else if (nextElement instanceof ContextualSubMenu) {
 						// System.out.println("Ajout de "+nextElement);
 						JMenuItem item = ((ContextualSubMenu) nextElement).makeMenu(focusedObject);
 						returned.add(item);
@@ -415,7 +418,7 @@ public class ContextualMenuManager {
 		public JMenu makeMenu(FlexoObject focusedObject) {
 			boolean addSeparator = false;
 			JMenu returned = new JMenu();
-			returned.setText(getActionMenu().getLocalizedName());
+			returned.setText(getActionMenu().getLocalizedName(focusedObject.getLocales()));
 			if (getActionMenu().getSmallIcon() != null) {
 				returned.setIcon(getActionMenu().getSmallIcon());
 			}
@@ -469,8 +472,8 @@ public class ContextualMenuManager {
 			}
 			return item;
 		} catch (ClassCastException exception) {
-			logger.warning("ClassCastException raised while trying to build FlexoAction " + actionType + " Exception: "
-					+ exception.getMessage());
+			logger.warning(
+					"ClassCastException raised while trying to build FlexoAction " + actionType + " Exception: " + exception.getMessage());
 			return null;
 		}
 	}
@@ -494,8 +497,8 @@ public class ContextualMenuManager {
 			}
 			return item;
 		} catch (ClassCastException exception) {
-			logger.warning("ClassCastException raised while trying to build FlexoAction " + actionType + " Exception: "
-					+ exception.getMessage());
+			logger.warning(
+					"ClassCastException raised while trying to build FlexoAction " + actionType + " Exception: " + exception.getMessage());
 			return null;
 		}
 	}

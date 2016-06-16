@@ -58,8 +58,8 @@ import org.openflexo.view.controller.FlexoController;
 
 public class HelpActionizer extends ActionInitializer<HelpAction, FlexoObject, FlexoObject> {
 
-	private static final java.util.logging.Logger logger = org.openflexo.logging.FlexoLogger.getLogger(HelpActionizer.class.getPackage()
-			.getName());
+	private static final java.util.logging.Logger logger = org.openflexo.logging.FlexoLogger
+			.getLogger(HelpActionizer.class.getPackage().getName());
 
 	public HelpActionizer(ControllerActionInitializer actionInitializer) {
 		super(HelpAction.actionType, actionInitializer);
@@ -87,7 +87,7 @@ public class HelpActionizer extends ActionInitializer<HelpAction, FlexoObject, F
 						FlexoHelp.getHelpBroker().setCurrentID(item.getIdentifier());
 						FlexoHelp.getHelpBroker().setDisplayed(true);
 					} catch (BadIDException exception) {
-						FlexoController.showError(FlexoLocalization.localizedForKey("sorry_no_help_available_for") + " "
+						FlexoController.showError(FlexoLocalization.getMainLocalizer().localizedForKey("sorry_no_help_available_for") + " "
 								+ item.getIdentifier());
 						return false;
 					}

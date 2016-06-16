@@ -193,13 +193,15 @@ public class DocItemFolder extends DRMObject {
 		DocItem item = getItemNamed(primaryDocItemId);
 		if (item == null) {
 			this.primaryDocItemId = primaryDocItemId;
-		} else if (item.getFolder() == this) {
+		}
+		else if (item.getFolder() == this) {
 			_primaryDocItem = item;
 		}
 	}
 
 	public void createDefaultPrimaryDocItem() {
-		_primaryDocItem = DocItem.createDocItem(getIdentifier(), FlexoLocalization.localizedForKey("no_description"), this, false);
+		_primaryDocItem = DocItem.createDocItem(getIdentifier(), FlexoLocalization.getMainLocalizer().localizedForKey("no_description"),
+				this, false);
 	}
 
 	private boolean itemsNeedsReordering = true;

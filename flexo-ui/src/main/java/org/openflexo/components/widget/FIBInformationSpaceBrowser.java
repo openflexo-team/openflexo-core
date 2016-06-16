@@ -49,6 +49,7 @@ import org.openflexo.foundation.technologyadapter.FlexoMetaModel;
 import org.openflexo.foundation.technologyadapter.FlexoModel;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
+import org.openflexo.localization.LocalizedDelegate;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.view.FIBBrowserView;
@@ -70,8 +71,8 @@ public class FIBInformationSpaceBrowser extends FIBBrowserView<ResourceManager> 
 
 	public static final Resource FIB_FILE = ResourceLocator.locateResource("Fib/FIBInformationSpaceBrowser.fib");
 
-	public FIBInformationSpaceBrowser(ResourceManager resourceManager, FlexoController controller) {
-		super(resourceManager, controller, FIB_FILE);
+	public FIBInformationSpaceBrowser(ResourceManager resourceManager, FlexoController controller, LocalizedDelegate locales) {
+		super(resourceManager, controller, FIB_FILE, locales);
 	}
 
 	// Please uncomment this for a live test

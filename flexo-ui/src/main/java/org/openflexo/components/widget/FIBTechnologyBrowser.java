@@ -41,6 +41,7 @@ package org.openflexo.components.widget;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
+import org.openflexo.localization.LocalizedDelegate;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.view.FIBBrowserView;
@@ -58,11 +59,12 @@ public class FIBTechnologyBrowser<TA extends TechnologyAdapter> extends FIBBrows
 
 	public static final Resource FIB_FILE = ResourceLocator.locateResource("Fib/FIBTechnologyBrowser.fib");
 
-	public FIBTechnologyBrowser(TechnologyAdapter technologyAdapter, FlexoController controller) {
-		super(technologyAdapter, controller, FIB_FILE);
+	public FIBTechnologyBrowser(TechnologyAdapter technologyAdapter, FlexoController controller, LocalizedDelegate locales) {
+		super(technologyAdapter, controller, FIB_FILE, locales);
 	}
 
-	protected FIBTechnologyBrowser(TechnologyAdapter technologyAdapter, FlexoController controller, Resource fibFile) {
-		super(technologyAdapter, controller, fibFile);
+	protected FIBTechnologyBrowser(TechnologyAdapter technologyAdapter, FlexoController controller, Resource fibFile,
+			LocalizedDelegate locales) {
+		super(technologyAdapter, controller, fibFile, locales);
 	}
 }

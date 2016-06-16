@@ -55,6 +55,7 @@ import org.openflexo.gina.controller.FIBController;
 import org.openflexo.gina.model.FIBComponent;
 import org.openflexo.gina.model.listener.FIBSelectionListener;
 import org.openflexo.gina.view.FIBView;
+import org.openflexo.localization.LocalizedDelegate;
 import org.openflexo.rm.Resource;
 import org.openflexo.selection.SelectionListener;
 import org.openflexo.selection.SelectionManager;
@@ -69,38 +70,25 @@ import org.openflexo.view.controller.FlexoController;
 public class SelectionSynchronizedFIBView extends FlexoFIBView implements SelectionListener, GraphicalFlexoObserver, FIBSelectionListener {
 	static final Logger logger = Logger.getLogger(SelectionSynchronizedFIBView.class.getPackage().getName());
 
-	public SelectionSynchronizedFIBView(Object representedObject, FlexoController controller, Resource fibResource) {
-		this(representedObject, controller, fibResource, false);
+	public SelectionSynchronizedFIBView(Object representedObject, FlexoController controller, Resource fibResource,
+			LocalizedDelegate locales) {
+		this(representedObject, controller, fibResource, locales, false);
 		if (controller != null) {
 			controller.willLoad(fibResource);
 		}
 	}
 
-	public SelectionSynchronizedFIBView(Object representedObject, FlexoController controller, Resource fibResource, boolean addScrollBar) {
+	public SelectionSynchronizedFIBView(Object representedObject, FlexoController controller, Resource fibResource,
+			LocalizedDelegate locales, boolean addScrollBar) {
 		this(representedObject, controller,
 				(controller != null ? controller.getApplicationFIBLibraryService().retrieveFIBComponent(fibResource)
 						: ApplicationFIBLibraryImpl.instance().retrieveFIBComponent(fibResource)),
-				addScrollBar);
+				locales, addScrollBar);
 	}
 
-	// REMOVED as we should only use Resource everywhere
-	/*
-		public SelectionSynchronizedFIBView(Object representedObject, FlexoController controller, String fibResourcePath, FlexoProgress progress) {
-			this(representedObject, controller, fibResourcePath, false, progress);
-		}
-		public SelectionSynchronizedFIBView(Object representedObject, FlexoController controller, String fibResourcePath) {
-			this(representedObject, controller, fibResourcePath, false, controller != null ? controller.willLoad(fibResourcePath) : null);
-		}
-	
-		public SelectionSynchronizedFIBView(Object representedObject, FlexoController controller, String fibResourcePath, boolean addScrollBar,
-				FlexoProgress progress) {
-			this(representedObject, controller, FIBLibrary.instance().retrieveFIBComponent(ResourceLocator.locateResource(fibResourcePath)), addScrollBar, progress);
-		}
-	 */
-
 	protected SelectionSynchronizedFIBView(Object representedObject, FlexoController controller, FIBComponent fibComponent,
-			boolean addScrollBar) {
-		super(representedObject, controller, fibComponent, addScrollBar);
+			LocalizedDelegate locales, boolean addScrollBar) {
+		super(representedObject, controller, fibComponent, locales, addScrollBar);
 		getFIBView().getController().addSelectionListener(this);
 		if (controller != null && controller.getSelectionManager() != null) {
 			logger.fine("Added selection manager for " + getClass().getSimpleName());

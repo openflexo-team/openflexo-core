@@ -64,9 +64,9 @@ import javax.swing.table.TableColumn;
 import org.openflexo.FlexoCst;
 import org.openflexo.drm.DocItemAction;
 import org.openflexo.drm.DocSubmissionReport;
-import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.view.FlexoDialog;
 import org.openflexo.view.FlexoFrame;
+import org.openflexo.view.controller.FlexoController;
 
 /**
  * Dialog allowing to show and select doc submission items
@@ -91,6 +91,8 @@ public class DocSubmissionReportDialog extends FlexoDialog {
 	protected JTable reviewTable;
 	protected HTMLPreviewPanel previewPanel;
 
+	private FlexoController controller;
+
 	/**
 	 * Constructor
 	 * 
@@ -98,16 +100,18 @@ public class DocSubmissionReportDialog extends FlexoDialog {
 	 * @param resources
 	 *            : a vector of FlexoStorageResource
 	 */
-	public DocSubmissionReportDialog(DocSubmissionReport report) {
+	public DocSubmissionReportDialog(DocSubmissionReport report, FlexoController controller) {
 		super(FlexoFrame.getActiveFrame(), true);
+		this.controller = controller;
 		returned = CANCEL;
-		setTitle(FlexoLocalization.localizedForKey("import_doc_submission_report"));
+		setTitle(controller.getModuleLocales().localizedForKey("import_doc_submission_report"));
 		getContentPane().setLayout(new BorderLayout());
 		_docSubmissionReportModel = new DocSubmissionReportModel(report);
 
 		JLabel question = new JLabel(" ", SwingConstants.CENTER);
 		question.setFont(FlexoCst.BIG_FONT);
-		JLabel hint1 = new JLabel(FlexoLocalization.localizedForKey("select_the_doc_submissions_you_want_to_import"), SwingConstants.CENTER);
+		JLabel hint1 = new JLabel(controller.getModuleLocales().localizedForKey("select_the_doc_submissions_you_want_to_import"),
+				SwingConstants.CENTER);
 		// hint1.setFont(FlexoCst.MEDIUM_FONT);
 		// JLabel hint2 = new
 		// JLabel(FlexoLocalization.localizedForKey("select_the_resources_that_you_want_to_save"),JLabel.CENTER);
@@ -152,10 +156,10 @@ public class DocSubmissionReportDialog extends FlexoDialog {
 		controlPanel = new JPanel();
 		controlPanel.setLayout(new FlowLayout());
 
-		JButton confirmButton = new JButton(FlexoLocalization.localizedForKey("import"));
-		JButton cancelButton = new JButton(FlexoLocalization.localizedForKey("cancel"));
-		JButton selectAllButton = new JButton(FlexoLocalization.localizedForKey("select_all"));
-		JButton deselectAllButton = new JButton(FlexoLocalization.localizedForKey("deselect_all"));
+		JButton confirmButton = new JButton(controller.getModuleLocales().localizedForKey("import"));
+		JButton cancelButton = new JButton(controller.getModuleLocales().localizedForKey("cancel"));
+		JButton selectAllButton = new JButton(controller.getModuleLocales().localizedForKey("select_all"));
+		JButton deselectAllButton = new JButton(controller.getModuleLocales().localizedForKey("deselect_all"));
 
 		cancelButton.addActionListener(new ActionListener() {
 			@Override
@@ -219,7 +223,7 @@ public class DocSubmissionReportDialog extends FlexoDialog {
 
 			shortHTMLDescriptionPanel = new JPanel(new BorderLayout());
 			JLabel shortDescription = new JLabel();
-			shortDescription.setText(FlexoLocalization.localizedForKey("short_formatted_description", shortDescription));
+			shortDescription.setText(controller.getModuleLocales().localizedForKey("short_formatted_description", shortDescription));
 			shortDescription.setHorizontalAlignment(SwingConstants.CENTER);
 			shortDescription.setForeground(Color.DARK_GRAY);
 			shortHTMLDescriptionLabel = new JLabel();
@@ -233,7 +237,7 @@ public class DocSubmissionReportDialog extends FlexoDialog {
 
 			fullHTMLDescriptionPanel = new JPanel(new BorderLayout());
 			JLabel fullDescription = new JLabel();
-			fullDescription.setText(FlexoLocalization.localizedForKey("full_formatted_description", fullDescription));
+			fullDescription.setText(controller.getModuleLocales().localizedForKey("full_formatted_description", fullDescription));
 			fullDescription.setHorizontalAlignment(SwingConstants.CENTER);
 			fullDescription.setForeground(Color.DARK_GRAY);
 			fullHTMLDescriptionLabel = new JLabel();
@@ -254,7 +258,8 @@ public class DocSubmissionReportDialog extends FlexoDialog {
 			if (action != null && action.getVersion() != null) {
 				shortHTMLDescriptionLabel.setText("<html>" + action.getVersion().getShortHTMLDescription() + "</html>");
 				fullHTMLDescriptionLabel.setText("<html>" + action.getVersion().getFullHTMLDescription() + "</html>");
-			} else {
+			}
+			else {
 				shortHTMLDescriptionLabel.setText("");
 				fullHTMLDescriptionLabel.setText("");
 			}
@@ -274,24 +279,24 @@ public class DocSubmissionReportDialog extends FlexoDialog {
 
 	public int getPreferedColumnSize(int arg0) {
 		switch (arg0) {
-		case 0:
-			return 25; // checkbox
-		case 1:
-			return 100; // name
-		case 2:
-			return 80; // author
-		case 3:
-			return 150; // date
-		case 4:
-			return 80; // action
-		case 5:
-			return 80; // language
-		case 6:
-			return 50; // version
-		case 7:
-			return 200; // note
-		default:
-			return 50;
+			case 0:
+				return 25; // checkbox
+			case 1:
+				return 100; // name
+			case 2:
+				return 80; // author
+			case 3:
+				return 150; // date
+			case 4:
+				return 80; // action
+			case 5:
+				return 80; // language
+			case 6:
+				return 50; // version
+			case 7:
+				return 200; // note
+			default:
+				return 50;
 		}
 	}
 
@@ -334,20 +339,27 @@ public class DocSubmissionReportDialog extends FlexoDialog {
 		public String getColumnName(int columnIndex) {
 			if (columnIndex == 0) {
 				return " ";
-			} else if (columnIndex == 1) {
-				return FlexoLocalization.localizedForKey("doc_item");
-			} else if (columnIndex == 2) {
-				return FlexoLocalization.localizedForKey("author");
-			} else if (columnIndex == 3) {
-				return FlexoLocalization.localizedForKey("date");
-			} else if (columnIndex == 4) {
-				return FlexoLocalization.localizedForKey("action");
-			} else if (columnIndex == 5) {
-				return FlexoLocalization.localizedForKey("language");
-			} else if (columnIndex == 6) {
-				return FlexoLocalization.localizedForKey("version");
-			} else if (columnIndex == 7) {
-				return FlexoLocalization.localizedForKey("note");
+			}
+			else if (columnIndex == 1) {
+				return controller.getModuleLocales().localizedForKey("doc_item");
+			}
+			else if (columnIndex == 2) {
+				return controller.getModuleLocales().localizedForKey("author");
+			}
+			else if (columnIndex == 3) {
+				return controller.getModuleLocales().localizedForKey("date");
+			}
+			else if (columnIndex == 4) {
+				return controller.getModuleLocales().localizedForKey("action");
+			}
+			else if (columnIndex == 5) {
+				return controller.getModuleLocales().localizedForKey("language");
+			}
+			else if (columnIndex == 6) {
+				return controller.getModuleLocales().localizedForKey("version");
+			}
+			else if (columnIndex == 7) {
+				return controller.getModuleLocales().localizedForKey("note");
 			}
 			return "???";
 		}
@@ -356,7 +368,8 @@ public class DocSubmissionReportDialog extends FlexoDialog {
 		public Class getColumnClass(int columnIndex) {
 			if (columnIndex == 0) {
 				return Boolean.class;
-			} else {
+			}
+			else {
 				return String.class;
 			}
 		}
@@ -374,19 +387,26 @@ public class DocSubmissionReportDialog extends FlexoDialog {
 			DocItemAction action = getActionAt(rowIndex);
 			if (columnIndex == 0) {
 				return _shouldImport.elementAt(rowIndex);
-			} else if (columnIndex == 1) {
+			}
+			else if (columnIndex == 1) {
 				return action.getItem().getIdentifier();
-			} else if (columnIndex == 2) {
+			}
+			else if (columnIndex == 2) {
 				return action.getAuthorId();
-			} else if (columnIndex == 3) {
+			}
+			else if (columnIndex == 3) {
 				return action.getLocalizedFullActionDate();
-			} else if (columnIndex == 4) {
+			}
+			else if (columnIndex == 4) {
 				return action.getLocalizedActionType();
-			} else if (columnIndex == 5) {
+			}
+			else if (columnIndex == 5) {
 				return action.getVersion().getLanguage().getIdentifier();
-			} else if (columnIndex == 6) {
+			}
+			else if (columnIndex == 6) {
 				return action.getVersion().getVersion();
-			} else if (columnIndex == 7) {
+			}
+			else if (columnIndex == 7) {
 				return action.getNote();
 			}
 			return null;

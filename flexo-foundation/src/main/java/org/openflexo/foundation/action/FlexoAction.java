@@ -48,13 +48,16 @@ import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoObservable;
-import org.openflexo.foundation.FlexoProjectObject;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.action.FlexoUndoManager.FlexoActionCompoundEdit;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
+import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.foundation.utils.FlexoProgress;
 import org.openflexo.foundation.utils.FlexoProgressFactory;
+import org.openflexo.localization.FlexoLocalization;
+import org.openflexo.localization.LocalizedDelegate;
 import org.openflexo.logging.FlexoLogger;
 
 /**
@@ -430,8 +433,8 @@ public abstract class FlexoAction<A extends FlexoAction<A, T1, T2>, T1 extends F
 		if (getEditor() != null) {
 			return getEditor().getServiceManager();
 		}
-		else if (getFocusedObject() instanceof FlexoProjectObject) {
-			return ((FlexoProjectObject) getFocusedObject()).getServiceManager();
+		else if (getFocusedObject() instanceof FlexoObject) {
+			return ((FlexoObject) getFocusedObject()).getServiceManager();
 		}
 		return null;
 	}
@@ -452,6 +455,23 @@ public abstract class FlexoAction<A extends FlexoAction<A, T1, T2>, T1 extends F
 	public void setCompoundEdit(FlexoActionCompoundEdit compoundEdit) {
 		this.compoundEdit = compoundEdit;
 		compoundEdit.setAction(this);
+	}
+
+	public static LocalizedDelegate getLocales(FlexoServiceManager serviceManager) {
+		if (serviceManager != null) {
+			return serviceManager.getLocalizationService().getFlexoLocalizer();
+		}
+		return FlexoLocalization.getMainLocalizer();
+	}
+
+	public LocalizedDelegate getLocales() {
+		if (getFocusedObject() instanceof TechnologyObject) {
+			TechnologyAdapter ta = ((TechnologyObject) getFocusedObject()).getTechnologyAdapter();
+			if (ta != null) {
+				return ta.getLocales();
+			}
+		}
+		return getLocales(getServiceManager());
 	}
 
 }

@@ -43,6 +43,7 @@ import java.beans.PropertyChangeSupport;
 import javax.swing.ImageIcon;
 
 import org.openflexo.icon.UtilsIconLibrary;
+import org.openflexo.localization.LocalizedDelegate;
 import org.openflexo.toolbox.HasPropertyChangeSupport;
 import org.openflexo.toolbox.StringUtils;
 
@@ -70,6 +71,10 @@ public abstract class TransformationStrategy<A extends TransformationAction<A, ?
 
 	public A getTransformationAction() {
 		return transformationAction;
+	}
+
+	public LocalizedDelegate getLocales() {
+		return getTransformationAction().getLocales();
 	}
 
 	public void delete() {
@@ -120,7 +125,8 @@ public abstract class TransformationStrategy<A extends TransformationAction<A, ?
 			getPropertyChangeSupport().firePropertyChange("issueMessage", null, getIssueMessage());
 			getPropertyChangeSupport().firePropertyChange("issueMessageType", null, getIssueMessageType());
 			getPropertyChangeSupport().firePropertyChange("issueMessageIcon", null, getIssueMessageIcon());
-		} else {
+		}
+		else {
 			// Nothing to do
 		}
 		lastNotifiedValidity = validity;
@@ -180,14 +186,14 @@ public abstract class TransformationStrategy<A extends TransformationAction<A, ?
 			return null;
 		}
 		switch (getIssueMessageType()) {
-		case ERROR:
-			return UtilsIconLibrary.ERROR_ICON;
-		case WARNING:
-			return UtilsIconLibrary.WARNING_ICON;
-		case INFO:
-			return UtilsIconLibrary.OK_ICON;
-		default:
-			return null;
+			case ERROR:
+				return UtilsIconLibrary.ERROR_ICON;
+			case WARNING:
+				return UtilsIconLibrary.WARNING_ICON;
+			case INFO:
+				return UtilsIconLibrary.OK_ICON;
+			default:
+				return null;
 		}
 	}
 

@@ -63,6 +63,9 @@ import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
 import org.openflexo.foundation.resource.RepositoryFolder;
 import org.openflexo.foundation.resource.ResourceRepository;
+import org.openflexo.localization.LocalizedDelegate;
+import org.openflexo.localization.LocalizedDelegateImpl;
+import org.openflexo.rm.ResourceLocator;
 
 /**
  * This class represents a technology adapter<br>
@@ -83,6 +86,8 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 	private List<Class<? extends ModelSlot<?>>> availableModelSlotTypes;
 	private List<Class<? extends VirtualModelInstanceNature>> availableVirtualModelInstanceNatures;
 	private List<Class<? extends TechnologyAdapterResource<?, ?>>> availableResourceTypes;
+
+	private LocalizedDelegate locales = null;
 
 	// private List<Class<? extends TechnologySpecificType<?>>> availableTechnologySpecificTypes;
 
@@ -143,6 +148,8 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 	public void activate() {
 		technologyContextManager = createTechnologyContextManager(getTechnologyAdapterService().getFlexoResourceCenterService());
 		initTechnologySpecificTypes(getTechnologyAdapterService());
+		locales = new LocalizedDelegateImpl(ResourceLocator.locateResource(getLocalizationDirectory()),
+				getTechnologyAdapterService().getServiceManager().getLocalizationService().getFlexoLocalizer(), true, true);
 		isActivated = true;
 	}
 
@@ -487,4 +494,16 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 	 * @return
 	 */
 	public abstract String getIdentifier();
+
+	/**
+	 * Return the locales relative to this technology
+	 * 
+	 * @return
+	 */
+	public LocalizedDelegate getLocales() {
+		return locales;
+	}
+
+	public abstract String getLocalizationDirectory();
+
 }

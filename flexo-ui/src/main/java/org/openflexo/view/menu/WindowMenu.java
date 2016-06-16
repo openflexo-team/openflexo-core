@@ -118,18 +118,19 @@ public class WindowMenu extends FlexoMenu implements PropertyChangeListener {
 		loadWindowMenu = new JMenu();
 		for (Module<?> m : controller.getModuleLoader().getKnownModules()) {
 			JMenuItem item = new JMenuItem(new SwitchToModuleAction(m));
-			item.setText(FlexoLocalization.localizedForKey(m.getName(), item));
+			item.setText(controller.getModuleLocales().localizedForKey(m.getName(), item));
 			item.setIcon(m.getSmallIcon());
 			moduleMenuItems.put(m, item);
 			if (getModuleLoader().isLoaded(m)) {
 				add(item);
-			} else {
+			}
+			else {
 				loadWindowMenu.add(item);
 			}
 		}
 		addSeparator();
 
-		loadWindowMenu.setText(FlexoLocalization.localizedForKey("load_module", loadWindowMenu));
+		loadWindowMenu.setText(FlexoLocalization.getMainLocalizer().localizedForKey("load_module", loadWindowMenu));
 		add(loadWindowMenu);
 
 		add(closeModuleItem = new CloseModuleItem());
@@ -178,13 +179,14 @@ public class WindowMenu extends FlexoMenu implements PropertyChangeListener {
 			inspectorWindowItem.setState(getController().getModuleInspectorController().getInspectorDialog().isVisible());
 		}
 		if (getController().getApplicationContext().getPreferencesService().getPreferencesDialog() != null) {
-			preferencesWindowItem.setState(getController().getApplicationContext().getPreferencesService().getPreferencesDialog()
-					.isVisible());
+			preferencesWindowItem
+					.setState(getController().getApplicationContext().getPreferencesService().getPreferencesDialog().isVisible());
 		}
 		if (checkConsistencyWindowItem != null) {
 			if (getController().getValidationWindow(false) != null) {
 				checkConsistencyWindowItem.setState(getController().getValidationWindow().isVisible());
-			} else {
+			}
+			else {
 				checkConsistencyWindowItem.setEnabled(false);
 			}
 		}
@@ -207,7 +209,8 @@ public class WindowMenu extends FlexoMenu implements PropertyChangeListener {
 		if (relativeWindowItem != null) {
 			remove(relativeWindowItem);
 			relativeWindowItems.remove(window);
-		} else {
+		}
+		else {
 			if (logger.isLoggable(Level.WARNING)) {
 				logger.warning("Inconsistent data in WindowMenu");
 			}
@@ -219,7 +222,8 @@ public class WindowMenu extends FlexoMenu implements PropertyChangeListener {
 
 		if (relativeWindowItem != null) {
 			relativeWindowItem.setText(name);
-		} else {
+		}
+		else {
 			if (logger.isLoggable(Level.WARNING)) {
 				logger.warning("Inconsistent data in WindowMenu");
 			}
@@ -235,7 +239,7 @@ public class WindowMenu extends FlexoMenu implements PropertyChangeListener {
 			KeyStroke accelerator = KeyStroke.getKeyStroke(KeyEvent.VK_I, FlexoCst.META_MASK);
 			setAccelerator(accelerator);
 			getController().registerActionForKeyStroke(action, accelerator, "inspectFromMenu");
-			setText(FlexoLocalization.localizedForKey("inspector", this));
+			setText(FlexoLocalization.getMainLocalizer().localizedForKey("inspector", this));
 		}
 
 	}
@@ -263,7 +267,7 @@ public class WindowMenu extends FlexoMenu implements PropertyChangeListener {
 			super();
 			PreferencesWindowAction action = new PreferencesWindowAction();
 			setAction(action);
-			setText(FlexoLocalization.localizedForKey("preferences", this));
+			setText(FlexoLocalization.getMainLocalizer().localizedForKey("preferences", this));
 		}
 	}
 
@@ -285,7 +289,7 @@ public class WindowMenu extends FlexoMenu implements PropertyChangeListener {
 			super();
 			CheckConsistencyWindowAction action = new CheckConsistencyWindowAction();
 			setAction(action);
-			setText(FlexoLocalization.localizedForKey("validation_window", this));
+			setText(FlexoLocalization.getMainLocalizer().localizedForKey("validation_window", this));
 		}
 
 	}
@@ -311,7 +315,7 @@ public class WindowMenu extends FlexoMenu implements PropertyChangeListener {
 			super();
 			action = new RelativeWindowAction(window);
 			setAction(action);
-			setText(FlexoLocalization.localizedForKey(window.getName(), this));
+			setText(FlexoLocalization.getMainLocalizer().localizedForKey(window.getName(), this));
 		}
 
 	}
@@ -370,7 +374,8 @@ public class WindowMenu extends FlexoMenu implements PropertyChangeListener {
 	public void propertyChange(PropertyChangeEvent evt) {
 		if (evt.getPropertyName().equals(ModuleLoader.MODULE_LOADED)) {
 			notifyModuleHasBeenLoaded((Module<?>) evt.getNewValue());
-		} else if (evt.getPropertyName().equals(ModuleLoader.MODULE_UNLOADED)) {
+		}
+		else if (evt.getPropertyName().equals(ModuleLoader.MODULE_UNLOADED)) {
 			notifyModuleHasBeenUnloaded((Module<?>) evt.getOldValue());
 		}
 	}
@@ -379,7 +384,7 @@ public class WindowMenu extends FlexoMenu implements PropertyChangeListener {
 
 		public CloseModuleItem() {
 			super(new CloseModuleAction());
-			setText(FlexoLocalization.localizedForKey("close_module", this));
+			setText(FlexoLocalization.getMainLocalizer().localizedForKey("close_module", this));
 		}
 
 	}
@@ -420,11 +425,12 @@ public class WindowMenu extends FlexoMenu implements PropertyChangeListener {
 		public void actionPerformed(ActionEvent arg0) {
 			if (isShowed) {
 				getController().hideControlPanel();
-				_item.setText(FlexoLocalization.localizedForKey("show_control_panel"));
+				_item.setText(FlexoLocalization.getMainLocalizer().localizedForKey("show_control_panel"));
 				isShowed = false;
-			} else {
+			}
+			else {
 				getController().showControlPanel();
-				_item.setText(FlexoLocalization.localizedForKey("hide_control_panel"));
+				_item.setText(FlexoLocalization.getMainLocalizer().localizedForKey("hide_control_panel"));
 				isShowed = true;
 			}
 		}
@@ -448,9 +454,10 @@ public class WindowMenu extends FlexoMenu implements PropertyChangeListener {
 
 		public void updateText() {
 			if (!getController().getControllerModel().isRightViewVisible()) {
-				setText(FlexoLocalization.localizedForKey(getShowPaletteString()));
-			} else {
-				setText(FlexoLocalization.localizedForKey(getHidePaletteString()));
+				setText(FlexoLocalization.getMainLocalizer().localizedForKey(getShowPaletteString()));
+			}
+			else {
+				setText(FlexoLocalization.getMainLocalizer().localizedForKey(getHidePaletteString()));
 			}
 		}
 
@@ -480,16 +487,18 @@ public class WindowMenu extends FlexoMenu implements PropertyChangeListener {
 		public void propertyChange(PropertyChangeEvent evt) {
 			if (evt.getPropertyName().equals(ControllerModel.LEFT_VIEW_VISIBLE)) {
 				updateText();
-			} else {
+			}
+			else {
 				super.propertyChange(evt);
 			}
 		}
 
 		private void updateText() {
 			if (!getController().getControllerModel().isLeftViewVisible()) {
-				setText(FlexoLocalization.localizedForKey("show_browser"));
-			} else {
-				setText(FlexoLocalization.localizedForKey("hide_browser"));
+				setText(FlexoLocalization.getMainLocalizer().localizedForKey("show_browser"));
+			}
+			else {
+				setText(FlexoLocalization.getMainLocalizer().localizedForKey("hide_browser"));
 			}
 		}
 

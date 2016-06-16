@@ -52,7 +52,9 @@ import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.FlexoServiceManager;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapterResource;
 import org.openflexo.foundation.utils.FlexoObjectReference;
+import org.openflexo.localization.LocalizedDelegate;
 import org.openflexo.model.factory.AccessibleProxyObject;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocatorDelegate;
@@ -108,8 +110,8 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 	 * @throws ResourceLoadingCancelledException
 	 */
 	@Override
-	public synchronized RD getResourceData(IProgress progress) throws ResourceLoadingCancelledException, ResourceLoadingCancelledException,
-			FileNotFoundException, FlexoException {
+	public synchronized RD getResourceData(IProgress progress)
+			throws ResourceLoadingCancelledException, ResourceLoadingCancelledException, FileNotFoundException, FlexoException {
 
 		if (isLoading()) {
 			// logger.warning("trying to load a resource data from itself, please investigate");
@@ -542,5 +544,13 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 
 	public String computeDefaultURI() {
 		return getResourceCenter().getDefaultResourceURI(this);
+	}
+
+	@Override
+	public LocalizedDelegate getLocales() {
+		if (this instanceof TechnologyAdapterResource) {
+			return ((TechnologyAdapterResource) this).getTechnologyAdapter().getLocales();
+		}
+		return super.getLocales();
 	}
 }

@@ -59,7 +59,6 @@ import org.openflexo.gina.annotation.FIBPanel;
 import org.openflexo.icon.FMLIconLibrary;
 import org.openflexo.icon.IconFactory;
 import org.openflexo.icon.IconLibrary;
-import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.view.controller.FlexoController;
 
 public class CreateEditionActionWizard extends AbstractCreateFMLElementWizard<CreateEditionAction, FMLControlGraph, FMLObject> {
@@ -71,10 +70,8 @@ public class CreateEditionActionWizard extends AbstractCreateFMLElementWizard<Cr
 
 	private static final Dimension DIMENSIONS = new Dimension(800, 700);
 
-	private static final String NO_EDITION_ACTION_TYPE = FlexoLocalization
-			.localizedForKey("please_choose_an_edition_action_or_control_structure");
-	private static final String DUPLICATED_VARIABLE_NAME = FlexoLocalization
-			.localizedForKey("this_variable_name_shadow_an_other_identifier");
+	private static final String NO_EDITION_ACTION_TYPE = "please_choose_an_edition_action_or_control_structure";
+	private static final String DUPLICATED_VARIABLE_NAME = "this_variable_name_shadow_an_other_identifier";
 
 	public CreateEditionActionWizard(CreateEditionAction action, FlexoController controller) {
 		super(action, controller);
@@ -83,7 +80,7 @@ public class CreateEditionActionWizard extends AbstractCreateFMLElementWizard<Cr
 
 	@Override
 	public String getWizardTitle() {
-		return FlexoLocalization.localizedForKey("create_edition_action");
+		return getAction().getLocales().localizedForKey("create_edition_action");
 	}
 
 	@Override
@@ -135,20 +132,20 @@ public class CreateEditionActionWizard extends AbstractCreateFMLElementWizard<Cr
 
 		@Override
 		public String getTitle() {
-			return FlexoLocalization.localizedForKey("choose_edition_action");
+			return getAction().getLocales().localizedForKey("choose_edition_action");
 		}
 
 		@Override
 		public boolean isValid() {
 
 			if (getEditionActionClass() == null) {
-				setIssueMessage(NO_EDITION_ACTION_TYPE, IssueMessageType.ERROR);
+				setIssueMessage(getAction().getLocales().localizedForKey(NO_EDITION_ACTION_TYPE), IssueMessageType.ERROR);
 				return false;
 			}
 
 			if (getAction().isVariableDeclaration()
 					&& getFocusedObject().getInferedBindingModel().bindingVariableNamed(getAction().getDeclarationVariableName()) != null) {
-				setIssueMessage(DUPLICATED_VARIABLE_NAME, IssueMessageType.ERROR);
+				setIssueMessage(getAction().getLocales().localizedForKey(DUPLICATED_VARIABLE_NAME), IssueMessageType.ERROR);
 				return false;
 			}
 

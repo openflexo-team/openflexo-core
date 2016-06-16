@@ -45,7 +45,6 @@ import java.util.logging.Logger;
 import javax.swing.JFrame;
 
 import org.openflexo.icon.IconLibrary;
-import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.module.FlexoModule;
 import org.openflexo.view.controller.FlexoController;
 
@@ -115,7 +114,7 @@ public abstract class FlexoRelativeWindow extends JFrame /*implements FocusListe
 	    if (logger.isLoggable(Level.FINE))
 	        logger.fine("focusGained in " + this.getClass().getName());
 	}
-
+	
 	public void focusLost(FocusEvent e)
 	{
 	    if (logger.isLoggable(Level.FINE))
@@ -134,7 +133,8 @@ public abstract class FlexoRelativeWindow extends JFrame /*implements FocusListe
 				super.setVisible(true);
 				requestSetVisible = false;
 			}
-		} else {
+		}
+		else {
 			requestSetVisible = true;
 			super.setVisible(false);
 			requestSetVisible = false;
@@ -203,7 +203,7 @@ public abstract class FlexoRelativeWindow extends JFrame /*implements FocusListe
 	public abstract String getName();
 
 	public String getLocalizedName() {
-		return FlexoLocalization.localizedForKey(getName());
+		return getController().getModuleLocales().localizedForKey(getName());
 	}
 
 	@Override

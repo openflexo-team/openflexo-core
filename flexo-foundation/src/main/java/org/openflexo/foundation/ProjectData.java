@@ -45,7 +45,6 @@ import org.openflexo.foundation.resource.FlexoProjectReference;
 import org.openflexo.foundation.resource.ProjectImportLoopException;
 import org.openflexo.foundation.resource.ProjectResourceData;
 import org.openflexo.foundation.utils.ProjectLoadingCancelledException;
-import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.model.ModelContextLibrary;
 import org.openflexo.model.annotations.Adder;
 import org.openflexo.model.annotations.Embedded;
@@ -134,8 +133,8 @@ public interface ProjectData extends FlexoProjectObject, AccessibleProxyObject, 
 	public void setImportedProjects(List<FlexoProjectReference> importedProjects);
 
 	@Adder(IMPORTED_PROJECTS)
-	public void addToImportedProjects(FlexoProjectReference projectReference) throws ProjectImportLoopException,
-			ProjectLoadingCancelledException;
+	public void addToImportedProjects(FlexoProjectReference projectReference)
+			throws ProjectImportLoopException, ProjectLoadingCancelledException;
 
 	@Remover(value = IMPORTED_PROJECTS)
 	public void removeFromImportedProjects(FlexoProjectReference projectReference);
@@ -221,10 +220,10 @@ public interface ProjectData extends FlexoProjectObject, AccessibleProxyObject, 
 		@Override
 		public String canImportProject(FlexoProject project) {
 			if (project.getProjectURI().equals(getProject().getProjectURI())) {
-				return FlexoLocalization.localizedForKey("cannot_import_itself");
+				return getLocales().localizedForKey("cannot_import_itself");
 			}
 			if (getProjectReferenceWithURI(project.getProjectURI()) != null) {
-				return FlexoLocalization.localizedForKey("project_already_imported");
+				return getLocales().localizedForKey("project_already_imported");
 			}
 			return null;
 		}

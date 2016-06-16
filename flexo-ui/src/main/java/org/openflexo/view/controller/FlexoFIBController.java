@@ -252,8 +252,8 @@ public class FlexoFIBController extends FIBController implements GraphicalFlexoO
 	@Override
 	public boolean handleException(Throwable t) {
 		if (t instanceof InvalidNameException) {
-			FlexoController
-					.showError(FlexoLocalization.localizedForKey("invalid_name") + " : " + ((InvalidNameException) t).getExplanation());
+			FlexoController.showError(FlexoLocalization.getMainLocalizer().localizedForKey("invalid_name") + " : "
+					+ ((InvalidNameException) t).getExplanation());
 			return true;
 		}
 		return super.handleException(t);

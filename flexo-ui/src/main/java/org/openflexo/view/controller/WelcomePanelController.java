@@ -99,7 +99,7 @@ public class WelcomePanelController extends FlexoFIBController {
 			validateAndDispose();
 		} catch (ModuleLoadingException e) {
 			e.printStackTrace();
-			FlexoController.notify(FlexoLocalization.localizedForKey("could_not_load_module") + " " + e.getModule());
+			FlexoController.notify(FlexoLocalization.getMainLocalizer().localizedForKey("could_not_load_module") + " " + e.getModule());
 			show();
 		}
 	}
@@ -118,7 +118,7 @@ public class WelcomePanelController extends FlexoFIBController {
 			loadModuleTask = getModuleLoader().switchToModule(module);
 		} catch (ModuleLoadingException e) {
 			e.printStackTrace();
-			FlexoController.notify(FlexoLocalization.localizedForKey("could_not_load_module") + " " + e.getModule());
+			FlexoController.notify(FlexoLocalization.getMainLocalizer().localizedForKey("could_not_load_module") + " " + e.getModule());
 			show();
 		}
 
@@ -155,7 +155,7 @@ public class WelcomePanelController extends FlexoFIBController {
 			loadModuleTask = getModuleLoader().switchToModule(module);
 		} catch (ModuleLoadingException e) {
 			e.printStackTrace();
-			FlexoController.notify(FlexoLocalization.localizedForKey("could_not_load_module") + " " + e.getModule());
+			FlexoController.notify(FlexoLocalization.getMainLocalizer().localizedForKey("could_not_load_module") + " " + e.getModule());
 			show();
 		}
 

@@ -45,13 +45,12 @@ import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.IOFlexoException;
 import org.openflexo.foundation.action.FlexoActionType;
-import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.FMLObject;
+import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModel.VirtualModelImpl;
 import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.task.Progress;
-import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.toolbox.StringUtils;
 
 public class CreateVirtualModel extends AbstractCreateVirtualModel<CreateVirtualModel, ViewPoint, FMLObject> {
@@ -101,12 +100,12 @@ public class CreateVirtualModel extends AbstractCreateVirtualModel<CreateVirtual
 	@Override
 	protected void doAction(Object context) throws IOFlexoException, SaveResourceException {
 
-		Progress.progress(FlexoLocalization.localizedForKey("create_virtual_model"));
+		Progress.progress(getLocales().localizedForKey("create_virtual_model"));
 
 		newVirtualModel = VirtualModelImpl.newVirtualModel(newVirtualModelName, getFocusedObject());
 		newVirtualModel.setDescription(newVirtualModelDescription);
 
-		Progress.progress(FlexoLocalization.localizedForKey("create_model_slots"));
+		Progress.progress(getLocales().localizedForKey("create_model_slots"));
 		performCreateModelSlots();
 
 		newVirtualModel.getPropertyChangeSupport().firePropertyChange("name", null, newVirtualModel.getName());

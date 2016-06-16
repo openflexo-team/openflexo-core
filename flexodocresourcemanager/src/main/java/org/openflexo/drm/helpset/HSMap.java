@@ -87,7 +87,8 @@ public class HSMap extends KVCFlexoObject {
 						logger.fine("Generate map entry for " + next);
 						_entries.add(new HSMapEntry(next));
 					}
-				} else {
+				}
+				else {
 					if (logger.isLoggable(Level.FINE)) {
 						logger.fine("Ignoring " + next);
 					}
@@ -121,7 +122,8 @@ public class HSMap extends KVCFlexoObject {
 				String title;
 				if (docItem.getTitle(_language) != null) {
 					title = docItem.getTitle(_language);
-				} else {
+				}
+				else {
 					title = docItem.getIdentifier();
 				}
 				StringBuilder sb = new StringBuilder();
@@ -152,7 +154,8 @@ public class HSMap extends KVCFlexoObject {
 							inheritanceText = inheritanceParent.getLastApprovedActionForLanguage(_language).getVersion() + "<br>"
 									+ inheritanceText;
 						}
-					} else if (firstNonHiddenParent == null) {
+					}
+					else if (firstNonHiddenParent == null) {
 						firstNonHiddenParent = inheritanceParent;
 					}
 					inheritanceParent = inheritanceParent.getInheritanceParentItem();
@@ -161,8 +164,9 @@ public class HSMap extends KVCFlexoObject {
 
 				if (docItem.getLastApprovedActionForLanguage(_language) != null) {
 					contents.append(docItem.getLastApprovedActionForLanguage(_language).getVersion());
-				} else {
-					contents.append(FlexoLocalization.localizedForKeyAndLanguage("no_documentation", lang));
+				}
+				else {
+					contents.append(FlexoLocalization.getMainLocalizer().localizedForKeyAndLanguage("no_documentation", lang));
 				}
 
 				/*for (Enumeration en=docItem.getEmbeddingChildItems().elements(); en.hasMoreElements();) {
@@ -199,13 +203,14 @@ public class HSMap extends KVCFlexoObject {
 								String subItemTitle;
 								if (next.getTitle(_language) != null) {
 									subItemTitle = next.getTitle(_language);
-								} else {
+								}
+								else {
 									subItemTitle = next.getIdentifier();
 								}
 								embeddedItemsAtThisLevel.append("<H3>" + subItemTitle + "</H3>\n");
 								if (next.getLastApprovedActionForLanguage(_language) != null) {
 									embeddedItemsAtThisLevel.append(next.getLastApprovedActionForLanguage(_language));
-								}/*
+								} /*
 									else {
 									   embeddedItemsAtThisLevel.append(FlexoLocalization.localizedForKeyAndLanguage("no_documentation",lang));
 									}*/
@@ -215,19 +220,23 @@ public class HSMap extends KVCFlexoObject {
 					if (hasEmbeddedItemsToInclude) {
 						if (currentDocItem == docItem) { // We are at this level
 							if (embeddedItemsAtThisLevel.length() > 0) {
-								contents.append("<H2>" + FlexoLocalization.localizedForKeyAndLanguage("declared_attributes", lang)
+								contents.append("<H2>"
+										+ FlexoLocalization.getMainLocalizer().localizedForKeyAndLanguage("declared_attributes", lang)
 										+ "</H2>\n");
 								contents.append(embeddedItemsAtThisLevel.toString());
 							}
-						} else { // Inherited items
+						}
+						else { // Inherited items
 							if (embeddedItemsAtThisLevel.length() > 0) {
 								String inheritedItemsTitle;
 								if (!currentDocItem.isPublished()) {
 									inheritedItemsTitle = currentDocItem.getTitle(_language);
-								} else {
+								}
+								else {
 									inheritedItemsTitle = currentDocItem.getHTMLLinkFrom(docItem, _language);
 								}
-								contents.append("<H2>" + FlexoLocalization.localizedForKeyAndLanguage("attributes_inherited_from", lang)
+								contents.append("<H2>"
+										+ FlexoLocalization.getMainLocalizer().localizedForKeyAndLanguage("attributes_inherited_from", lang)
 										+ " " + inheritedItemsTitle + "</H2>\n");
 								contents.append(embeddedItemsAtThisLevel.toString());
 							}
@@ -278,7 +287,7 @@ public class HSMap extends KVCFlexoObject {
 			}
 			StringBuffer returned = new StringBuffer();
 			returned.append("<p>");
-			returned.append("<b>" + FlexoLocalization.localizedForKeyAndLanguage("extends", lang) + "</b> ");
+			returned.append("<b>" + FlexoLocalization.getMainLocalizer().localizedForKeyAndLanguage("extends", lang) + "</b> ");
 			returned.append(firstNonHiddenParent.getHTMLLinkFrom(docItem, _language));
 			returned.append("</p>");
 			return returned.toString();
@@ -290,7 +299,7 @@ public class HSMap extends KVCFlexoObject {
 			}
 			StringBuffer returned = new StringBuffer();
 			returned.append("<p>");
-			returned.append("<b>" + FlexoLocalization.localizedForKeyAndLanguage("found_in", lang) + "</b> ");
+			returned.append("<b>" + FlexoLocalization.getMainLocalizer().localizedForKeyAndLanguage("found_in", lang) + "</b> ");
 			returned.append(docItem.getEmbeddingParentItem().getHTMLLinkFrom(docItem, _language));
 			returned.append("</p>");
 			return returned.toString();
@@ -308,7 +317,8 @@ public class HSMap extends KVCFlexoObject {
 			}
 			StringBuffer returned = new StringBuffer();
 			returned.append("<p>");
-			returned.append("<b>" + FlexoLocalization.localizedForKeyAndLanguage("inheritance_child_items", lang) + "</b> ");
+			returned.append(
+					"<b>" + FlexoLocalization.getMainLocalizer().localizedForKeyAndLanguage("inheritance_child_items", lang) + "</b> ");
 			boolean isFirst = true;
 			for (Enumeration en = docItem.getDerivedInheritanceChildItems().elements(); en.hasMoreElements();) {
 				DocItem next = (DocItem) en.nextElement();
@@ -333,7 +343,8 @@ public class HSMap extends KVCFlexoObject {
 			}
 			StringBuffer returned = new StringBuffer();
 			returned.append("<p>");
-			returned.append("<b>" + FlexoLocalization.localizedForKeyAndLanguage("embedding_child_items", lang) + "</b> ");
+			returned.append(
+					"<b>" + FlexoLocalization.getMainLocalizer().localizedForKeyAndLanguage("embedding_child_items", lang) + "</b> ");
 			boolean isFirst = true;
 			for (Enumeration<DocItem> en = embeddedChilds.elements(); en.hasMoreElements();) {
 				DocItem next = en.nextElement();
@@ -352,7 +363,7 @@ public class HSMap extends KVCFlexoObject {
 			}
 			StringBuffer returned = new StringBuffer();
 			returned.append("<p>");
-			returned.append("<b>" + FlexoLocalization.localizedForKeyAndLanguage("related_to_items", lang) + "</b> ");
+			returned.append("<b>" + FlexoLocalization.getMainLocalizer().localizedForKeyAndLanguage("related_to_items", lang) + "</b> ");
 			boolean isFirst = true;
 			for (Enumeration en = docItem.getRelatedToItems().elements(); en.hasMoreElements();) {
 				DocItem next = (DocItem) en.nextElement();
@@ -384,7 +395,7 @@ public class HSMap extends KVCFlexoObject {
 	}
 
 	/*private static XMLMapping _mapMapping;
-
+	
 	public static XMLMapping getMapMapping() {
 		if (_mapMapping == null) {
 			File hsMapModelFile;

@@ -132,8 +132,10 @@ public class FIBInspectorPanel extends JPanel implements Observer, ChangeListene
 
 	private FIBView<?, ?> buildViewFor(FIBInspector inspector) {
 
-		FIBView<?, ?> inspectorView = FIBController.makeView(inspector, SwingViewFactory.INSTANCE, FlexoLocalization.getMainLocalizer(),
-				true);
+		System.out.println("------ On construit une FIBView<?, ?> pour l'inspecteur " + inspector);
+		System.out.println("locales=" + inspector.getLocales());
+
+		FIBView<?, ?> inspectorView = FIBController.makeView(inspector, SwingViewFactory.INSTANCE, inspector.getLocales(), true);
 		FIBController controller = inspectorView.getController();
 		if (controller instanceof FlexoFIBController) {
 			((FlexoFIBController) controller).setFlexoController(inspectorController.getFlexoController());
@@ -259,7 +261,8 @@ public class FIBInspectorPanel extends JPanel implements Observer, ChangeListene
 			}
 			tabPanelView.getJComponent().addChangeListener(this);
 			// System.out.println("addChangeListener for "+tabPanelView.getJComponent());
-		} else {
+		}
+		else {
 			logger.warning("No inspector view for " + newInspector);
 			switchToEmptyContent();
 		}
@@ -288,12 +291,15 @@ public class FIBInspectorPanel extends JPanel implements Observer, ChangeListene
 		}
 		if (notification instanceof EmptySelectionActivated) {
 			switchToEmptyContent();
-		} else if (notification instanceof MultipleSelectionActivated) {
+		}
+		else if (notification instanceof MultipleSelectionActivated) {
 			switchToMultipleSelection();
-		} else if (notification instanceof InspectorSwitching) {
+		}
+		else if (notification instanceof InspectorSwitching) {
 			switchToInspector(
 					((InspectorSwitching) notification).getNewInspector()/*, ((InspectorSwitching) notification).updateEPTabs()*/);
-		} else if (notification instanceof InspectedObjectChanged) {
+		}
+		else if (notification instanceof InspectedObjectChanged) {
 			switchToObject(((InspectedObjectChanged) notification).getInspectedObject());
 		}
 	}

@@ -42,7 +42,6 @@ package org.openflexo.foundation.technologyadapter;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.ResourceRepository;
-import org.openflexo.localization.FlexoLocalization;
 
 /**
  * A {@link MetaModelRepository} stores all resources storing metamodels relative to a given technology<br>
@@ -64,7 +63,7 @@ public abstract class MetaModelRepository<R extends FlexoMetaModelResource<M, MM
 	 */
 	public MetaModelRepository(TA technologyAdapter, FlexoResourceCenter<?> resourceCenter) {
 		super(technologyAdapter, resourceCenter);
-		getRootFolder().setRepositoryContext(FlexoLocalization.localizedForKey("[Metamodels]"));
+		getRootFolder().setRepositoryContext(resourceCenter.getLocales().localizedForKey("[Metamodels]"));
 		getRootFolder().setDescription(
 				"MetaModelRepository for technology " + technologyAdapter.getName() + " resource center: " + resourceCenter);
 	}

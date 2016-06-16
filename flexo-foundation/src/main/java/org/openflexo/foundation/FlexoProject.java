@@ -86,7 +86,6 @@ import org.openflexo.foundation.utils.ProjectInitializerException;
 import org.openflexo.foundation.utils.ProjectLoadingCancelledException;
 import org.openflexo.foundation.utils.ProjectLoadingHandler;
 import org.openflexo.foundation.validation.FlexoProjectValidationModel;
-import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.model.annotations.DefineValidationRule;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.model.validation.CompoundIssue;
@@ -188,7 +187,7 @@ public class FlexoProject extends FileSystemBasedResourceCenter
 	public static FlexoEditor openProject(File aProjectDirectory, FlexoEditorFactory editorFactory, FlexoServiceManager serviceManager,
 			FlexoProgress progress) throws ProjectInitializerException, ProjectLoadingCancelledException {
 
-		Progress.progress(FlexoLocalization.localizedForKey("opening_project") + aProjectDirectory.getAbsolutePath());
+		Progress.progress(getLocales(serviceManager).localizedForKey("opening_project") + aProjectDirectory.getAbsolutePath());
 
 		if (!aProjectDirectory.exists()) {
 			throw new ProjectInitializerException("This directory does not exists: " + aProjectDirectory, aProjectDirectory);
@@ -273,7 +272,7 @@ public class FlexoProject extends FileSystemBasedResourceCenter
 
 	private List<File> filesToDelete;
 
-	private String projectDescription = FlexoLocalization.localizedForKey("no_description");
+	private String projectDescription = "";
 
 	private final long firstOperationFlexoID = -1;
 
@@ -440,7 +439,7 @@ public class FlexoProject extends FileSystemBasedResourceCenter
 				removeBackupFiles(progress, tempProjectDirectory);
 			}
 			if (progress != null) {
-				progress.setProgress(FlexoLocalization.localizedForKey("zipping_project"));
+				progress.setProgress(getLocales().localizedForKey("zipping_project"));
 			}
 			ZipUtils.makeZip(zipFile, tempProjectDirectory, progress, null,
 					lightenProject ? Deflater.BEST_COMPRESSION : Deflater.DEFAULT_COMPRESSION);
@@ -458,12 +457,12 @@ public class FlexoProject extends FileSystemBasedResourceCenter
 			}
 		});
 		if (progress != null) {
-			progress.setProgress(FlexoLocalization.localizedForKey("removing_backups"));
+			progress.setProgress(getLocales().localizedForKey("removing_backups"));
 			progress.resetSecondaryProgress(tildes.size());
 		}
 		for (File tilde : tildes) {
 			if (progress != null) {
-				progress.setSecondaryProgress(FlexoLocalization.localizedForKey("removing") + " " + tilde.getName());
+				progress.setSecondaryProgress(getLocales().localizedForKey("removing") + " " + tilde.getName());
 			}
 			tilde.delete();
 		}
@@ -549,14 +548,14 @@ public class FlexoProject extends FileSystemBasedResourceCenter
 		}
 		List<FlexoResource<?>> unsaved = getUnsavedResources();
 		if (progress != null) {
-			progress.setProgress(FlexoLocalization.localizedForKey("saving_modified_resources"));
+			progress.setProgress(getLocales().localizedForKey("saving_modified_resources"));
 			progress.resetSecondaryProgress(unsaved.size() + 1);
 		}
 		boolean resourceSaved = false;
 		try {
 			for (FlexoResource<?> r : unsaved) {
 				if (progress != null) {
-					progress.setSecondaryProgress(FlexoLocalization.localizedForKey("saving_resource_") + r);
+					progress.setSecondaryProgress(getLocales().localizedForKey("saving_resource_") + r);
 				}
 				r.save(null);
 			}
@@ -1186,7 +1185,7 @@ public class FlexoProject extends FileSystemBasedResourceCenter
 		if (getCreationDate() != null) {
 			return new SimpleDateFormat("dd/MM HH:mm:ss").format(getCreationDate());
 		}
-		return FlexoLocalization.localizedForKey("unknown");
+		return getLocales().localizedForKey("unknown");
 	}
 
 	public String getCreationUserId() {

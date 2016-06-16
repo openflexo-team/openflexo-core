@@ -55,7 +55,6 @@ import org.openflexo.foundation.fml.rt.View;
 import org.openflexo.foundation.fml.rt.action.CreateBasicVirtualModelInstance;
 import org.openflexo.gina.controller.FIBController.Status;
 import org.openflexo.icon.FMLRTIconLibrary;
-import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.view.controller.ActionInitializer;
 import org.openflexo.view.controller.ControllerActionInitializer;
 import org.openflexo.view.controller.FlexoController;
@@ -117,7 +116,7 @@ public class CreateBasicVirtualModelInstanceInitializer extends ActionInitialize
 			@Override
 			public boolean handleException(FlexoException exception, CreateBasicVirtualModelInstance action) {
 				if (exception instanceof NotImplementedException) {
-					FlexoController.notify(FlexoLocalization.localizedForKey("not_implemented_yet"));
+					FlexoController.notify(action.getLocales().localizedForKey("not_implemented_yet"));
 					return true;
 				}
 				return false;

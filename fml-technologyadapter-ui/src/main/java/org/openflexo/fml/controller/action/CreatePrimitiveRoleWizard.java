@@ -44,7 +44,6 @@ import org.openflexo.foundation.fml.PrimitiveRole.PrimitiveType;
 import org.openflexo.foundation.fml.action.CreatePrimitiveRole;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.gina.annotation.FIBPanel;
-import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.view.controller.FlexoController;
 
 public class CreatePrimitiveRoleWizard extends AbstractCreateFlexoRoleWizard<CreatePrimitiveRole, ModelSlot<?>> {
@@ -52,7 +51,7 @@ public class CreatePrimitiveRoleWizard extends AbstractCreateFlexoRoleWizard<Cre
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CreatePrimitiveRoleWizard.class.getPackage().getName());
 
-	private static final String NO_PRIMITIVE_TYPE = FlexoLocalization.localizedForKey("please_choose_primitive_type");
+	private static final String NO_PRIMITIVE_TYPE = "please_choose_primitive_type";
 
 	public CreatePrimitiveRoleWizard(CreatePrimitiveRole action, FlexoController controller) {
 		super(action, controller);
@@ -65,7 +64,7 @@ public class CreatePrimitiveRoleWizard extends AbstractCreateFlexoRoleWizard<Cre
 
 	@Override
 	public String getWizardTitle() {
-		return FlexoLocalization.localizedForKey("create_primitive_role");
+		return getAction().getLocales().localizedForKey("create_primitive_role");
 	}
 
 	@Override
@@ -90,7 +89,7 @@ public class CreatePrimitiveRoleWizard extends AbstractCreateFlexoRoleWizard<Cre
 			}
 
 			if (getPrimitiveType() == null) {
-				setIssueMessage(NO_PRIMITIVE_TYPE, IssueMessageType.ERROR);
+				setIssueMessage(getAction().getLocales().localizedForKey(NO_PRIMITIVE_TYPE), IssueMessageType.ERROR);
 				return false;
 			}
 

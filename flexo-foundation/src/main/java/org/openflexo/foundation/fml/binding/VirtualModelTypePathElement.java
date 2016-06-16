@@ -64,7 +64,7 @@ public class VirtualModelTypePathElement extends SimplePathElement {
 
 	@Override
 	public String getTooltipText(Type resultingType) {
-		return FlexoLocalization.localizedForKey("virtual_model_as_type_of_virtual_model_instance");
+		return FlexoLocalization.getMainLocalizer().localizedForKey("virtual_model_as_type_of_virtual_model_instance");
 	}
 
 	@Override

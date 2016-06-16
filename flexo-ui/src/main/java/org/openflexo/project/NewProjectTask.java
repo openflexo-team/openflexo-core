@@ -72,7 +72,8 @@ public class NewProjectTask extends FlexoApplicationTask {
 	}
 
 	public NewProjectTask(InteractiveProjectLoader projectLoader, File projectDirectory, ProjectNature<?, ?> projectNature) {
-		super(FlexoLocalization.localizedForKey("new_project") + " " + projectDirectory.getName(), projectLoader.getServiceManager());
+		super(FlexoLocalization.getMainLocalizer().localizedForKey("new_project") + " " + projectDirectory.getName(),
+				projectLoader.getServiceManager());
 		this.projectLoader = projectLoader;
 		this.projectDirectory = projectDirectory;
 		this.projectNature = projectNature;
@@ -134,8 +135,10 @@ public class NewProjectTask extends FlexoApplicationTask {
 	@Override
 	protected void notifyThrownException(Exception e) {
 
-		showException(FlexoLocalization.localizedForKey("could_not_create_project"),
-				FlexoLocalization.localizedForKey("could_not_create_project_located_at") + projectDirectory.getAbsolutePath(), e);
+		showException(FlexoLocalization.getMainLocalizer().localizedForKey("could_not_create_project"),
+				FlexoLocalization.getMainLocalizer().localizedForKey("could_not_create_project_located_at")
+						+ projectDirectory.getAbsolutePath(),
+				e);
 		e.printStackTrace();
 	}
 }

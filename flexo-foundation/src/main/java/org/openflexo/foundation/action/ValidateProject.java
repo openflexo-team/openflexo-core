@@ -45,7 +45,6 @@ import java.util.logging.Logger;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.FlexoProjectObject;
-import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.model.validation.ValidationReport;
 
 public class ValidateProject extends FlexoAction<ValidateProject, FlexoProjectObject, FlexoProjectObject> {
@@ -90,8 +89,8 @@ public class ValidateProject extends FlexoAction<ValidateProject, FlexoProjectOb
 	@Override
 	protected void doAction(Object context) {
 		logger.info("Validate project");
-		makeFlexoProgress(FlexoLocalization.localizedForKey("check_model_consistency"), 5);
-		setProgress(FlexoLocalization.localizedForKey("loading_required_resources"));
+		makeFlexoProgress(getLocales().localizedForKey("check_model_consistency"), 5);
+		setProgress(getLocales().localizedForKey("loading_required_resources"));
 
 		/*if (getProject().getFlexoComponentLibrary(false) != null) {
 			// We validate the component library model
@@ -168,7 +167,7 @@ public class ValidateProject extends FlexoAction<ValidateProject, FlexoProjectOb
 			}
 		}
 	};
-
+	
 	private final FlexoObserver wkfValidationObserver = new FlexoObserver() {
 		@Override
 		public void update(FlexoObservable observable, DataModification dataModification) {
@@ -185,11 +184,11 @@ public class ValidateProject extends FlexoAction<ValidateProject, FlexoProjectOb
 				} else if (dataModification instanceof ValidationFinishedNotification) {
 					// Nothing
 				}
-
+	
 			}
 		}
 	};
-
+	
 	private final FlexoObserver dkvValidationObserver = new FlexoObserver() {
 		@Override
 		public void update(FlexoObservable observable, DataModification dataModification) {
@@ -206,11 +205,11 @@ public class ValidateProject extends FlexoAction<ValidateProject, FlexoProjectOb
 				} else if (dataModification instanceof ValidationFinishedNotification) {
 					// Nothing
 				}
-
+	
 			}
 		}
 	};
-
+	
 	private final FlexoObserver dmValidationObserver = new FlexoObserver() {
 		@Override
 		public void update(FlexoObservable observable, DataModification dataModification) {
@@ -227,7 +226,7 @@ public class ValidateProject extends FlexoAction<ValidateProject, FlexoProjectOb
 				} else if (dataModification instanceof ValidationFinishedNotification) {
 					// Nothing
 				}
-
+	
 			}
 		}
 	};*/

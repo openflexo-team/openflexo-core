@@ -67,7 +67,7 @@ import org.openflexo.foundation.fml.SynchronizationScheme;
 import org.openflexo.foundation.task.Progress;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
-import org.openflexo.localization.FlexoLocalization;
+import org.openflexo.localization.LocalizedDelegate;
 import org.openflexo.toolbox.PropertyChangedSupportDefaultImplementation;
 import org.openflexo.toolbox.StringUtils;
 
@@ -147,7 +147,7 @@ public class CreateFlexoBehaviour extends FlexoAction<CreateFlexoBehaviour, Flex
 	}
 
 	public BehaviourParameterEntry newParameterEntry() {
-		BehaviourParameterEntry returned = new BehaviourParameterEntry("param" + (getParameterEntries().size() + 1));
+		BehaviourParameterEntry returned = new BehaviourParameterEntry("param" + (getParameterEntries().size() + 1), getLocales());
 		parameterEntries.add(returned);
 		getPropertyChangeSupport().firePropertyChange("parameterEntries", null, returned);
 		return returned;
@@ -261,7 +261,7 @@ public class CreateFlexoBehaviour extends FlexoAction<CreateFlexoBehaviour, Flex
 	}
 
 	private void performCreateParameter(BehaviourParameterEntry entry) {
-		Progress.progress(FlexoLocalization.localizedForKey("create_parameter") + " " + entry.getParameterName());
+		Progress.progress(getLocales().localizedForKey("create_parameter") + " " + entry.getParameterName());
 		CreateFlexoBehaviourParameter action = CreateFlexoBehaviourParameter.actionType.makeNewEmbeddedAction(getNewFlexoBehaviour(), null,
 				this);
 		action.setParameterName(entry.getParameterName());
@@ -340,15 +340,22 @@ public class CreateFlexoBehaviour extends FlexoAction<CreateFlexoBehaviour, Flex
 		private boolean required = true;
 		private String description;
 
-		public BehaviourParameterEntry(String paramName) {
+		private LocalizedDelegate locales;
+
+		public BehaviourParameterEntry(String paramName, LocalizedDelegate locales) {
 			super();
 			this.parameterName = paramName;
+			this.locales = locales;
 		}
 
 		public void delete() {
 			parameterName = null;
 			description = null;
 			parameterClass = null;
+		}
+
+		public LocalizedDelegate getLocales() {
+			return locales;
 		}
 
 		public Class<? extends FlexoBehaviourParameter> getParameterClass() {
@@ -393,10 +400,10 @@ public class CreateFlexoBehaviour extends FlexoAction<CreateFlexoBehaviour, Flex
 		public String getConfigurationErrorMessage() {
 
 			if (StringUtils.isEmpty(getParameterName())) {
-				return FlexoLocalization.localizedForKey("please_supply_valid_parameter_name");
+				return getLocales().localizedForKey("please_supply_valid_parameter_name");
 			}
 			if (getParameterClass() == null) {
-				return FlexoLocalization.localizedForKey("no_parameter_type_defined_for") + " " + getParameterName();
+				return getLocales().localizedForKey("no_parameter_type_defined_for") + " " + getParameterName();
 			}
 
 			return null;
@@ -404,7 +411,7 @@ public class CreateFlexoBehaviour extends FlexoAction<CreateFlexoBehaviour, Flex
 
 		public String getConfigurationWarningMessage() {
 			if (StringUtils.isEmpty(getParameterDescription())) {
-				return FlexoLocalization.localizedForKey("it_is_recommanded_to_describe_parameter") + " " + getParameterName();
+				return getLocales().localizedForKey("it_is_recommanded_to_describe_parameter") + " " + getParameterName();
 			}
 			return null;
 

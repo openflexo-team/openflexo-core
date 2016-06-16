@@ -46,7 +46,6 @@ import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.fml.AbstractVirtualModel;
 import org.openflexo.foundation.fml.rt.action.ModelSlotInstanceConfiguration;
 import org.openflexo.foundation.fml.rt.rm.AbstractVirtualModelInstanceResource;
-import org.openflexo.localization.FlexoLocalization;
 
 /**
  * This class is used to stored the configuration of a {@link FMLRTModelSlot} which has to be instantiated
@@ -121,20 +120,20 @@ public class FMLRTModelSlotInstanceConfiguration<VMI extends AbstractVirtualMode
 		}
 		if (getOption() == DefaultModelSlotInstanceConfigurationOption.SelectExistingVirtualModel) {
 			if (getAddressedVirtualModelInstanceResource() == null) {
-				setErrorMessage(FlexoLocalization.localizedForKey("no_virtual_model_instance_selected"));
+				setErrorMessage(getProject().getLocales().localizedForKey("no_virtual_model_instance_selected"));
 				return false;
 			}
 			return true;
 		}
 		else if (getOption() == DefaultModelSlotInstanceConfigurationOption.CreateNewVirtualModel) {
 			// Not implemented yet
-			setErrorMessage(FlexoLocalization.localizedForKey("not_implemented_yet"));
+			setErrorMessage(getProject().getLocales().localizedForKey("not_implemented_yet"));
 			return false;
 
 		}
 		else if (getOption() == DefaultModelSlotInstanceConfigurationOption.LeaveEmpty) {
 			if (getModelSlot().getIsRequired()) {
-				setErrorMessage(FlexoLocalization.localizedForKey("virtual_model_instance_is_required"));
+				setErrorMessage(getProject().getLocales().localizedForKey("virtual_model_instance_is_required"));
 				return false;
 			}
 			return true;

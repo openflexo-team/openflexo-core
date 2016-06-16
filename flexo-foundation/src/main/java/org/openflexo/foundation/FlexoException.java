@@ -39,8 +39,6 @@
 
 package org.openflexo.foundation;
 
-import org.openflexo.localization.FlexoLocalization;
-
 /**
  * Thrown when invoking modification on FLEXO model
  * 
@@ -77,12 +75,13 @@ public class FlexoException extends Exception {
 		return _localizationKey;
 	}
 
-	@Override
+	// BAD idea to introduce a such dependancy
+	/*@Override
 	public String getLocalizedMessage() {
 		if (_localizationKey == null) {
 			return getMessage();
 		}
 		return FlexoLocalization.localizedForKey(_localizationKey);
-	}
+	}*/
 
 }

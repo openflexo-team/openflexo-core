@@ -43,7 +43,6 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.action.CreateAbstractProperty;
 import org.openflexo.gina.annotation.FIBPanel;
-import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.view.controller.FlexoController;
 
 public class CreateAbstractPropertyWizard extends AbstractCreateFlexoPropertyWizard<CreateAbstractProperty> {
@@ -51,7 +50,7 @@ public class CreateAbstractPropertyWizard extends AbstractCreateFlexoPropertyWiz
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CreateAbstractPropertyWizard.class.getPackage().getName());
 
-	private static final String NO_PROPERTY_TYPE = FlexoLocalization.localizedForKey("please_choose_a_property_type");
+	private static final String NO_PROPERTY_TYPE = "please_choose_a_property_type";
 
 	public CreateAbstractPropertyWizard(CreateAbstractProperty action, FlexoController controller) {
 		super(action, controller);
@@ -64,7 +63,7 @@ public class CreateAbstractPropertyWizard extends AbstractCreateFlexoPropertyWiz
 
 	@Override
 	public String getWizardTitle() {
-		return FlexoLocalization.localizedForKey("create_abstract_property");
+		return getAction().getLocales().localizedForKey("create_abstract_property");
 	}
 
 	@Override
@@ -88,7 +87,7 @@ public class CreateAbstractPropertyWizard extends AbstractCreateFlexoPropertyWiz
 
 		@Override
 		public String getTitle() {
-			return FlexoLocalization.localizedForKey("describe_abstract_property");
+			return getAction().getLocales().localizedForKey("describe_abstract_property");
 		}
 
 		@Override
@@ -99,7 +98,7 @@ public class CreateAbstractPropertyWizard extends AbstractCreateFlexoPropertyWiz
 			}
 
 			if (getPropertyType() == null) {
-				setIssueMessage(NO_PROPERTY_TYPE, IssueMessageType.ERROR);
+				setIssueMessage(getAction().getLocales().localizedForKey(NO_PROPERTY_TYPE), IssueMessageType.ERROR);
 				return false;
 			}
 

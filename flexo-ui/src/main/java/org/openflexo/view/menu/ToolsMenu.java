@@ -376,7 +376,7 @@ public class ToolsMenu extends FlexoMenu {
 		public void actionPerformed(ActionEvent arg0) {
 			JFileChooser chooser = new JFileChooser();
 			chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-			chooser.setDialogTitle(FlexoLocalization.localizedForKey("please_select_a_file"));
+			chooser.setDialogTitle(FlexoLocalization.getMainLocalizer().localizedForKey("please_select_a_file"));
 			chooser.setFileFilter(new FileFilter() {
 				@Override
 				public boolean accept(File f) {
@@ -385,7 +385,7 @@ public class ToolsMenu extends FlexoMenu {
 
 				@Override
 				public String getDescription() {
-					return FlexoLocalization.localizedForKey("doc_submission_report_files");
+					return FlexoLocalization.getMainLocalizer().localizedForKey("doc_submission_report_files");
 				}
 
 			});
@@ -401,7 +401,8 @@ public class ToolsMenu extends FlexoMenu {
 					DocResourceManager drm = getController().getApplicationContext().getDocResourceManager();
 					drm.getSessionSubmissions().save(savedFile);
 					drm.getSessionSubmissions().clear();
-					FlexoController.notify(FlexoLocalization.localizedForKey("doc_submission_report_successfully_saved"));
+					FlexoController
+							.notify(FlexoLocalization.getMainLocalizer().localizedForKey("doc_submission_report_successfully_saved"));
 				} catch (Exception e1) {
 					e1.printStackTrace();
 					return;
@@ -493,8 +494,8 @@ public class ToolsMenu extends FlexoMenu {
 				autoSaveService.showTimeTravelerDialog();
 			}
 			else {
-				if (FlexoController.confirm(FlexoLocalization.localizedForKey("time_traveling_is_disabled") + ". "
-						+ FlexoLocalization.localizedForKey("would_you_like_to_activate_it_now?"))) {
+				if (FlexoController.confirm(FlexoLocalization.getMainLocalizer().localizedForKey("time_traveling_is_disabled") + ". "
+						+ FlexoLocalization.getMainLocalizer().localizedForKey("would_you_like_to_activate_it_now?"))) {
 					getController().getApplicationContext().getGeneralPreferences().setAutoSaveEnabled(true);
 					getController().getApplicationContext().getPreferencesService().savePreferences();
 					getAutoSaveService().showTimeTravelerDialog();

@@ -165,7 +165,7 @@ public abstract class Module<M extends FlexoModule<M>> {
 	}
 
 	public String getLocalizedName() {
-		return FlexoLocalization.localizedForKey(getName());
+		return FlexoLocalization.getMainLocalizer().localizedForKey(getName());
 	}
 
 	public final String getDescription() {
@@ -173,7 +173,7 @@ public abstract class Module<M extends FlexoModule<M>> {
 	}
 
 	public String getLocalizedDescription() {
-		return FlexoLocalization.localizedForKey(getDescription());
+		return FlexoLocalization.getMainLocalizer().localizedForKey(getDescription());
 	}
 
 	/**

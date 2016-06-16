@@ -56,7 +56,8 @@ public class LoadModuleTask extends FlexoApplicationTask {
 	private final Module module;
 
 	public LoadModuleTask(ModuleLoader moduleLoader, Module module) {
-		super(FlexoLocalization.localizedForKey("loading_module") + " " + module.getLocalizedName(), moduleLoader.getServiceManager());
+		super(FlexoLocalization.getMainLocalizer().localizedForKey("loading_module") + " " + module.getLocalizedName(),
+				moduleLoader.getServiceManager());
 		this.moduleLoader = moduleLoader;
 		this.module = module;
 	}

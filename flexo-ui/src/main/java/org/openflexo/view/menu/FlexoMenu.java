@@ -49,7 +49,6 @@ import javax.swing.JMenuItem;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
 
-import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.module.ModuleLoader;
 import org.openflexo.toolbox.PropertyChangeListenerRegistrationManager;
 import org.openflexo.view.controller.FlexoController;
@@ -74,7 +73,7 @@ public abstract class FlexoMenu extends JMenu implements MouseListener, MenuList
 		super();
 		manager = new PropertyChangeListenerRegistrationManager();
 		setController(controller);
-		setText(FlexoLocalization.localizedForKey(value, this));
+		setText(controller.getModuleLocales().localizedForKey(value, this));
 		addMouseListener(this);
 		addMenuListener(this);
 	}
@@ -150,14 +149,15 @@ public abstract class FlexoMenu extends JMenu implements MouseListener, MenuList
 	}
 
 	/**
-     *
-     */
+	 *
+	 */
 	public void refreshMenu() {
 		for (int i = 0; i < getItemCount(); i++) {
 			JMenuItem item = getItem(i);
 			if (item instanceof FlexoMenuItem) {
 				((FlexoMenuItem) item).itemWillShow();
-			} else if (item instanceof FlexoMenu) {
+			}
+			else if (item instanceof FlexoMenu) {
 				((FlexoMenu) item).refreshMenu();
 			}
 		}

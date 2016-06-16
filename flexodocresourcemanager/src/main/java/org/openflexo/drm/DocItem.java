@@ -282,7 +282,8 @@ public class DocItem extends DRMObject {
 			DocItem next = (DocItem) en.nextElement();
 			if (!next.isPublished()) {
 				returned.addAll(next.getDerivedInheritanceChildItems());
-			} else {
+			}
+			else {
 				returned.add(next);
 			}
 		}
@@ -514,23 +515,24 @@ public class DocItem extends DRMObject {
 		if (lastPendingAction != null
 				&& lastPendingAction.getVersion().getVersion().isGreaterThan(lastApprovedAction.getVersion().getVersion())) {
 			return AVAILABLE_NEWER_VERSION_PENDING;
-		} else {
+		}
+		else {
 			return AVAILABLE_UP_TO_DATE;
 		}
 	}
 
 	public String getLocalizedStatusForLanguage(Language language) {
 		switch (getStatusForLanguage(language)) {
-		case NO_DOCUMENTED:
-			return FlexoLocalization.localizedForKey("no_documentation");
-		case APPROVING_PENDING:
-			return FlexoLocalization.localizedForKey("approving_pending");
-		case AVAILABLE_NEWER_VERSION_PENDING:
-			return FlexoLocalization.localizedForKey("available_newer_version_pending");
-		case AVAILABLE_UP_TO_DATE:
-			return FlexoLocalization.localizedForKey("available_and_up_to_date");
-		default:
-			return "???";
+			case NO_DOCUMENTED:
+				return FlexoLocalization.getMainLocalizer().localizedForKey("no_documentation");
+			case APPROVING_PENDING:
+				return FlexoLocalization.getMainLocalizer().localizedForKey("approving_pending");
+			case AVAILABLE_NEWER_VERSION_PENDING:
+				return FlexoLocalization.getMainLocalizer().localizedForKey("available_newer_version_pending");
+			case AVAILABLE_UP_TO_DATE:
+				return FlexoLocalization.getMainLocalizer().localizedForKey("available_and_up_to_date");
+			default:
+				return "???";
 		}
 	}
 
@@ -602,7 +604,8 @@ public class DocItem extends DRMObject {
 					string2 = docItem2.getIdentifier();
 				}
 				return string1.compareTo(string2);
-			} else {
+			}
+			else {
 				return docItem1.getIdentifier().compareTo(docItem2.getIdentifier());
 			}
 		}
@@ -643,11 +646,13 @@ public class DocItem extends DRMObject {
 			if (item.getStatusForLanguage(_language) == NO_DOCUMENTED) {
 				issue = new ValidationError(this, object,
 						"doc_item_($object.identifier)_has_no_documentation_for_language_($validationRule.languageIdentifier)");
-			} else if (item.getStatusForLanguage(_language) == APPROVING_PENDING) {
+			}
+			else if (item.getStatusForLanguage(_language) == APPROVING_PENDING) {
 				issue = new ValidationError(this, object,
 						"doc_item_($object.identifier)_has_unvalidated_documentation_proposal_for_language_($validationRule.languageIdentifier)");
 				issue.addToFixProposals(new ApprovePendingVersion(item.getLastPendingActionForLanguage(_language).getVersion()));
-			} else if (item.getStatusForLanguage(_language) == AVAILABLE_NEWER_VERSION_PENDING) {
+			}
+			else if (item.getStatusForLanguage(_language) == AVAILABLE_NEWER_VERSION_PENDING) {
 				issue = new ValidationWarning(this, object,
 						"doc_item_($object.identifier)_is_available_for_language_($validationRule.languageIdentifier)_but_a_newer_version_is_pending");
 				issue.addToFixProposals(new ApprovePendingVersion(item.getLastPendingActionForLanguage(_language).getVersion()));

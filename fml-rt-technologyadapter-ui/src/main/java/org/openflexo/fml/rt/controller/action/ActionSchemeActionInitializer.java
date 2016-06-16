@@ -53,7 +53,6 @@ import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstanceObject;
 import org.openflexo.foundation.fml.rt.action.ActionSchemeAction;
 import org.openflexo.icon.FMLIconLibrary;
-import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.view.controller.ActionInitializer;
 import org.openflexo.view.controller.ControllerActionInitializer;
 import org.openflexo.view.controller.FlexoController;
@@ -100,7 +99,7 @@ public class ActionSchemeActionInitializer extends ActionInitializer<ActionSchem
 			@Override
 			public boolean handleException(FlexoException exception, ActionSchemeAction action) {
 				if (exception instanceof NotImplementedException) {
-					FlexoController.notify(FlexoLocalization.localizedForKey("not_implemented_yet"));
+					FlexoController.notify(action.getLocales().localizedForKey("not_implemented_yet"));
 					return true;
 				}
 				return false;

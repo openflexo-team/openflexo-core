@@ -84,7 +84,7 @@ public class FlexoValidationModel extends ValidationModel {
 
 	@Override
 	public String localizedInContext(String key, Object context) {
-		String localized = validationLocalization.getLocalizedForKeyAndLanguage(key, FlexoLocalization.getCurrentLanguage(), true);
+		String localized = validationLocalization.localizedForKeyAndLanguage(key, FlexoLocalization.getCurrentLanguage(), true);
 		if (localized.contains("($")) {
 			String asBindingExpression = asBindingExpression(localized);
 			try {
@@ -95,6 +95,10 @@ public class FlexoValidationModel extends ValidationModel {
 			}
 		}
 		return localized;
+	}
+
+	public LocalizedDelegate getLocales() {
+		return validationLocalization;
 	}
 
 }

@@ -42,7 +42,6 @@ package org.openflexo.view;
 import javax.swing.JPanel;
 
 import org.openflexo.foundation.FlexoObject;
-import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.view.controller.FlexoController;
 import org.openflexo.view.controller.model.FlexoPerspective;
 
@@ -54,8 +53,8 @@ public class EmptyPanel<O extends FlexoObject> extends JPanel implements ModuleV
 	private String title = "";
 
 	/**
-     * 
-     */
+	 * 
+	 */
 	public EmptyPanel(FlexoController controller, FlexoPerspective perspective, O representedObject) {
 		this.controller = controller;
 		this.perspective = perspective;
@@ -121,7 +120,7 @@ public class EmptyPanel<O extends FlexoObject> extends JPanel implements ModuleV
 
 	public String getTitle() {
 		if (title == null) {
-			return FlexoLocalization.localizedForKey(getRepresentedObject().getClass().getSimpleName());
+			return controller.getModuleLocales().localizedForKey(getRepresentedObject().getClass().getSimpleName());
 		}
 		return title;
 	}

@@ -91,7 +91,8 @@ public abstract class TrackComponentCH {
 	private void addMouseListener(Container component, MouseListener listener) {
 		if (component instanceof JComponent && docResourceManager.getDocForComponent((JComponent) component) != null) {
 			listener = addMouseListener((JComponent) component);
-		} else if (listener != null) {
+		}
+		else if (listener != null) {
 			component.addMouseListener(listener);
 		}
 		for (int i = 0; i < component.getComponentCount(); i++) {
@@ -111,7 +112,8 @@ public abstract class TrackComponentCH {
 		if (component instanceof JComponent) {
 			if (listeners.get(component) != null) {
 				listener = removeMouseListener((JComponent) component);
-			} else if (listener != null) {
+			}
+			else if (listener != null) {
 				component.removeMouseListener(listener);
 			}
 		}
@@ -140,8 +142,8 @@ public abstract class TrackComponentCH {
 		private Border oldBorder;
 
 		/**
-         * 
-         */
+		 * 
+		 */
 		public ComponentCHListener(JComponent componentWithHelp) {
 			this.componentWithHelp = componentWithHelp;
 		}
@@ -158,7 +160,7 @@ public abstract class TrackComponentCH {
 				try {
 					applyTracking(focusedComponent);
 				} catch (javax.help.BadIDException ex) {
-					FlexoController.notify(FlexoLocalization.localizedForKey("no_help_for_this_part"));
+					FlexoController.notify(FlexoLocalization.getMainLocalizer().localizedForKey("no_help_for_this_part"));
 				}
 			}
 		}

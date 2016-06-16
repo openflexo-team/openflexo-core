@@ -105,7 +105,6 @@ import org.openflexo.icon.FMLIconLibrary;
 import org.openflexo.icon.FMLRTIconLibrary;
 import org.openflexo.icon.IconFactory;
 import org.openflexo.icon.IconLibrary;
-import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.view.EmptyPanel;
 import org.openflexo.view.ModuleView;
 import org.openflexo.view.controller.ControllerActionInitializer;
@@ -124,7 +123,7 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 
 	@Override
 	protected void initializeInspectors(FlexoController controller) {
-		fmlInspectors = controller.loadInspectorGroup("FML", controller.getCoreInspectorGroup());
+		fmlInspectors = controller.loadInspectorGroup("FML", getTechnologyAdapter().getLocales(), controller.getCoreInspectorGroup());
 	}
 
 	@Override
@@ -343,7 +342,7 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 			return ((FlexoConcept) object).getName();
 		}
 		if (object instanceof ViewPointLocalizedDictionary) {
-			return FlexoLocalization.localizedForKey("localized_dictionary_for") + " "
+			return getLocales().localizedForKey("localized_dictionary_for") + " "
 					+ ((ViewPointLocalizedDictionary) object).getViewPoint().getName();
 		}
 		if (object != null) {

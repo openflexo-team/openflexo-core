@@ -58,7 +58,6 @@ import javax.swing.UIManager;
 import org.openflexo.components.widget.FIBProjectSelector;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.icon.IconLibrary;
-import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.module.Module;
 import org.openflexo.module.ModuleLoader;
 import org.openflexo.module.ModuleLoadingException;
@@ -71,8 +70,8 @@ import org.openflexo.view.controller.model.FlexoPerspective;
 
 public class MainPaneTopBar extends JMenuBar {
 
-	private static final java.util.logging.Logger logger = org.openflexo.logging.FlexoLogger.getLogger(MainPaneTopBar.class.getPackage()
-			.getName());
+	private static final java.util.logging.Logger logger = org.openflexo.logging.FlexoLogger
+			.getLogger(MainPaneTopBar.class.getPackage().getName());
 
 	private final PropertyChangeListenerRegistrationManager registrationManager;
 
@@ -127,7 +126,7 @@ public class MainPaneTopBar extends JMenuBar {
 	private void initModules() {
 		for (final Module<?> module : model.getModuleLoader().getKnownModules()) {
 			final JButton button = new BarButton(module.getMediumIcon());
-			button.setToolTipText(FlexoLocalization.localizedTooltipForKey(module.getName(), button));
+			button.setToolTipText(controller.getModuleLocales().localizedTooltipForKey(module.getName(), button));
 			button.setEnabled(true);
 			button.setFocusable(false);
 			if (forcePreferredSize && button.getIcon() != null) {
@@ -153,7 +152,8 @@ public class MainPaneTopBar extends JMenuBar {
 					// button.setSelected(model.getModuleLoader().isActive(module));
 					if (module.equals(controller.getModule().getModule())) {
 						button.setSelected(true);
-					} else {
+					}
+					else {
 						button.setSelected(false);
 					}
 				}
@@ -228,7 +228,8 @@ public class MainPaneTopBar extends JMenuBar {
 			public void fireApplyPerformed() {
 				if (projectSelector.getEditedObject() != null) {
 					model.setCurrentProject(projectSelector.getEditedObject());
-				} else {
+				}
+				else {
 					projectSelector.setEditedObject(model.getCurrentProject());
 				}
 			}
@@ -267,7 +268,8 @@ public class MainPaneTopBar extends JMenuBar {
 			public void propertyChange(PropertyChangeEvent evt) {
 				if (evt.getNewValue() != null) {
 					insertPerspective((FlexoPerspective) evt.getNewValue());
-				} else {
+				}
+				else {
 					if (logger.isLoggable(Level.WARNING)) {
 						logger.warning("Perspective removal not supported by top bar.");
 					}
@@ -281,7 +283,7 @@ public class MainPaneTopBar extends JMenuBar {
 
 	private void insertPerspective(final FlexoPerspective p) {
 		final JButton button = new BarButton(p.getActiveIcon());
-		button.setToolTipText(FlexoLocalization.localizedTooltipForKey(p.getName(), button));
+		button.setToolTipText(controller.getModuleLocales().localizedTooltipForKey(p.getName(), button));
 		if (forcePreferredSize) {
 			int size = Math.max(button.getIcon().getIconWidth() + 8, button.getIcon().getIconHeight() + 4);
 			button.setPreferredSize(new Dimension(size, size));
@@ -348,14 +350,14 @@ public class MainPaneTopBar extends JMenuBar {
 
 	protected void updateLeftViewToggleIcon() {
 		leftViewToggle.setIcon(model.isLeftViewVisible() ? IconLibrary.TOGGLE_ARROW_BOTTOM_ICON : IconLibrary.TOGGLE_ARROW_TOP_ICON);
-		leftViewToggle.setRolloverIcon(model.isLeftViewVisible() ? IconLibrary.TOGGLE_ARROW_BOTTOM_SELECTED_ICON
-				: IconLibrary.TOGGLE_ARROW_TOP_SELECTED_ICON);
+		leftViewToggle.setRolloverIcon(
+				model.isLeftViewVisible() ? IconLibrary.TOGGLE_ARROW_BOTTOM_SELECTED_ICON : IconLibrary.TOGGLE_ARROW_TOP_SELECTED_ICON);
 	}
 
 	protected void updateRightViewToggleIcon() {
 		rightViewToggle.setIcon(model.isRightViewVisible() ? IconLibrary.TOGGLE_ARROW_BOTTOM_ICON : IconLibrary.TOGGLE_ARROW_TOP_ICON);
-		rightViewToggle.setRolloverIcon(model.isRightViewVisible() ? IconLibrary.TOGGLE_ARROW_BOTTOM_SELECTED_ICON
-				: IconLibrary.TOGGLE_ARROW_TOP_SELECTED_ICON);
+		rightViewToggle.setRolloverIcon(
+				model.isRightViewVisible() ? IconLibrary.TOGGLE_ARROW_BOTTOM_SELECTED_ICON : IconLibrary.TOGGLE_ARROW_TOP_SELECTED_ICON);
 	}
 
 	private JButton getToggleVisibilityButton() {

@@ -52,7 +52,6 @@ import org.openflexo.gina.annotation.FIBPanel;
 import org.openflexo.icon.FMLRTIconLibrary;
 import org.openflexo.icon.IconFactory;
 import org.openflexo.icon.IconLibrary;
-import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.toolbox.JavaUtils;
 import org.openflexo.toolbox.StringUtils;
 import org.openflexo.view.controller.FlexoController;
@@ -84,7 +83,7 @@ public class CreateViewWizard extends AbstractCreateVirtualModelInstanceWizard<C
 
 	@Override
 	public String getWizardTitle() {
-		return FlexoLocalization.localizedForKey("create_view");
+		return action.getLocales().localizedForKey("create_view");
 	}
 
 	@Override
@@ -103,37 +102,37 @@ public class CreateViewWizard extends AbstractCreateVirtualModelInstanceWizard<C
 
 		@Override
 		public String getTitle() {
-			return FlexoLocalization.localizedForKey("choose_viewpoint");
+			return action.getLocales().localizedForKey("choose_viewpoint");
 		}
 
 		@Override
 		public boolean isValid() {
 
 			if (getFolder() == null) {
-				setIssueMessage(FlexoLocalization.localizedForKey("no_folder_defined"), IssueMessageType.ERROR);
+				setIssueMessage(action.getLocales().localizedForKey("no_folder_defined"), IssueMessageType.ERROR);
 				return false;
 			}
 			if (getViewPoint() == null) {
-				setIssueMessage(FlexoLocalization.localizedForKey("no_viewpoint_selected"), IssueMessageType.ERROR);
+				setIssueMessage(action.getLocales().localizedForKey("no_viewpoint_selected"), IssueMessageType.ERROR);
 				return false;
 			}
 			if (StringUtils.isEmpty(getNewVirtualModelInstanceName())) {
-				setIssueMessage(FlexoLocalization.localizedForKey("no_view_name_defined"), IssueMessageType.ERROR);
+				setIssueMessage(action.getLocales().localizedForKey("no_view_name_defined"), IssueMessageType.ERROR);
 				return false;
 			}
 
 			if (StringUtils.isEmpty(getNewVirtualModelInstanceTitle())) {
-				setIssueMessage(FlexoLocalization.localizedForKey("no_view_title_defined"), IssueMessageType.ERROR);
+				setIssueMessage(action.getLocales().localizedForKey("no_view_title_defined"), IssueMessageType.ERROR);
 				return false;
 			}
 			if (!action.isValidVirtualModelInstanceName(getNewVirtualModelInstanceName())) {
-				setIssueMessage(FlexoLocalization.localizedForKey("a_view_with_that_name_already_exists"), IssueMessageType.ERROR);
+				setIssueMessage(action.getLocales().localizedForKey("a_view_with_that_name_already_exists"), IssueMessageType.ERROR);
 				return false;
 			}
 
 			if (!getNewVirtualModelInstanceName().equals(JavaUtils.getClassName(getNewVirtualModelInstanceName()))
 					&& !getNewVirtualModelInstanceName().equals(JavaUtils.getVariableName(getNewVirtualModelInstanceName()))) {
-				setIssueMessage(FlexoLocalization.localizedForKey("discouraged_name_for_new_view"), IssueMessageType.WARNING);
+				setIssueMessage(action.getLocales().localizedForKey("discouraged_name_for_new_view"), IssueMessageType.WARNING);
 			}
 
 			return true;

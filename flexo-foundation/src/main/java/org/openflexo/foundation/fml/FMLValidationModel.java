@@ -46,6 +46,7 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.foundation.validation.FlexoValidationModel;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.localization.LocalizedDelegate;
+import org.openflexo.localization.LocalizedDelegateImpl;
 import org.openflexo.model.ModelContext;
 import org.openflexo.model.ModelContextLibrary;
 import org.openflexo.model.exceptions.ModelDefinitionException;
@@ -60,10 +61,10 @@ import org.openflexo.rm.ResourceLocator;
  * 
  */
 @SuppressWarnings("serial")
-public class ViewPointValidationModel extends FlexoValidationModel {
+public class FMLValidationModel extends FlexoValidationModel {
 
-	private static Resource fibValidationLocalizedDelegate = ResourceLocator.locateResource("FlexoLocalization/ViewPointValidation");
-	private static LocalizedDelegate VALIDATION_LOCALIZATION = FlexoLocalization.getLocalizedDelegate(fibValidationLocalizedDelegate, null,
+	private static Resource fibValidationLocalizedDelegate = ResourceLocator.locateResource("FlexoLocalization/MLValidation");
+	private static LocalizedDelegate VALIDATION_LOCALIZATION = new LocalizedDelegateImpl(fibValidationLocalizedDelegate, null,
 			true, true);
 
 	/**
@@ -82,7 +83,7 @@ public class ViewPointValidationModel extends FlexoValidationModel {
 		return ModelContextLibrary.getCompoundModelContext(classes.toArray(new Class<?>[classes.size()]));
 	}
 
-	public ViewPointValidationModel(TechnologyAdapterService taService) throws ModelDefinitionException {
+	public FMLValidationModel(TechnologyAdapterService taService) throws ModelDefinitionException {
 		super(computeModelContext(taService), VALIDATION_LOCALIZATION);
 
 		/*registerRule(new FlexoConcept.FlexoConceptShouldHaveRoles());

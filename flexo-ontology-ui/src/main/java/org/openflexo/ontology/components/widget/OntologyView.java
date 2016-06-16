@@ -44,6 +44,7 @@ import java.util.Vector;
 
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.ontology.IFlexoOntology;
+import org.openflexo.localization.LocalizedDelegate;
 import org.openflexo.selection.SelectionListener;
 import org.openflexo.view.SelectionSynchronizedModuleView;
 import org.openflexo.view.controller.FlexoController;
@@ -57,13 +58,13 @@ import org.openflexo.view.controller.model.FlexoPerspective;
  * 
  */
 @SuppressWarnings("serial")
-public abstract class OntologyView<T extends FlexoObject & IFlexoOntology> extends FIBOntologyEditor implements
-		SelectionSynchronizedModuleView<T> {
+public abstract class OntologyView<T extends FlexoObject & IFlexoOntology> extends FIBOntologyEditor
+		implements SelectionSynchronizedModuleView<T> {
 
 	private final FlexoPerspective declaredPerspective;
 
-	public OntologyView(T object, FlexoController controller, FlexoPerspective perspective) {
-		super(object, controller);
+	public OntologyView(T object, FlexoController controller, FlexoPerspective perspective, LocalizedDelegate locales) {
+		super(object, controller, locales);
 		declaredPerspective = perspective;
 	}
 

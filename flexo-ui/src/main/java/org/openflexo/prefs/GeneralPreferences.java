@@ -380,7 +380,7 @@ public interface GeneralPreferences extends PreferencesContainer {
 				Locale.setDefault(Locale.US);
 			}
 			FlexoLocalization.setCurrentLanguage(language);
-			FlexoLocalization.updateGUILocalized();
+			// FlexoLocalization.updateGUILocalized();
 			if (language != null) {
 				FlexoHelp.configure(language.getIdentifier(), null/*UserType.getCurrentUserType().getIdentifier()*/);
 				FlexoHelp.reloadHelpSet();

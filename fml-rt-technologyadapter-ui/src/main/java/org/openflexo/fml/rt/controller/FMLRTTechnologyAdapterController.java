@@ -40,12 +40,7 @@ package org.openflexo.fml.rt.controller;
 
 import javax.swing.ImageIcon;
 
-import org.openflexo.components.widget.CustomTypeEditor;
 import org.openflexo.components.widget.FIBTechnologyBrowser;
-import org.openflexo.connie.type.CustomType;
-import org.openflexo.fml.controller.widget.FlexoConceptInstanceTypeEditor;
-import org.openflexo.fml.controller.widget.ViewTypeEditor;
-import org.openflexo.fml.controller.widget.VirtualModelInstanceTypeEditor;
 import org.openflexo.fml.rt.controller.action.ActionSchemeActionInitializer;
 import org.openflexo.fml.rt.controller.action.CreateBasicVirtualModelInstanceInitializer;
 import org.openflexo.fml.rt.controller.action.CreateViewInitializer;
@@ -64,12 +59,9 @@ import org.openflexo.foundation.fml.CreationScheme;
 import org.openflexo.foundation.fml.DeletionScheme;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoConceptInstanceRole;
-import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.NavigationScheme;
 import org.openflexo.foundation.fml.SynchronizationScheme;
-import org.openflexo.foundation.fml.ViewType;
-import org.openflexo.foundation.fml.VirtualModelInstanceType;
 import org.openflexo.foundation.fml.editionaction.DeleteAction;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
@@ -88,7 +80,6 @@ import org.openflexo.icon.FMLIconLibrary;
 import org.openflexo.icon.FMLRTIconLibrary;
 import org.openflexo.icon.IconFactory;
 import org.openflexo.icon.IconLibrary;
-import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.view.EmptyPanel;
 import org.openflexo.view.ModuleView;
 import org.openflexo.view.controller.ControllerActionInitializer;
@@ -111,7 +102,8 @@ public class FMLRTTechnologyAdapterController extends TechnologyAdapterControlle
 	@Override
 	protected void initializeInspectors(FlexoController controller) {
 
-		fmlRTInspectorGroup = controller.loadInspectorGroup("FML-RT", getFMLTechnologyAdapterInspectorGroup());
+		fmlRTInspectorGroup = controller.loadInspectorGroup("FML-RT", getTechnologyAdapter().getLocales(),
+				getFMLTechnologyAdapterInspectorGroup());
 		// actionInitializer.getController().getModuleInspectorController()
 		// .loadDirectory(ResourceLocator.locateResource("src/main/resources/Inspectors/Fiacre"));
 	}
@@ -281,7 +273,7 @@ public class FMLRTTechnologyAdapterController extends TechnologyAdapterControlle
 	@Override
 	public String getWindowTitleforObject(TechnologyObject<FMLRTTechnologyAdapter> object, FlexoController controller) {
 		if (object instanceof ViewLibrary) {
-			return FlexoLocalization.localizedForKey("view_library");
+			return getLocales().localizedForKey("view_library");
 		}
 		if (object instanceof VirtualModelInstance) {
 			return ((VirtualModelInstance) object).getTitle();

@@ -77,7 +77,6 @@ import org.openflexo.foundation.utils.OperationCancelledException;
 import org.openflexo.foundation.utils.ProjectInitializerException;
 import org.openflexo.foundation.utils.ProjectLoadingCancelledException;
 import org.openflexo.gina.controller.FIBController.Status;
-import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.logging.FlexoLoggingFormatter;
 import org.openflexo.logging.FlexoLoggingManager;
 import org.openflexo.logging.FlexoLoggingManager.LoggingManagerDelegate;
@@ -384,15 +383,17 @@ public class Flexo {
 					}
 					else if (loadProject.getThrownException() instanceof ProjectInitializerException) {
 						loadProject.getThrownException().printStackTrace();
-						FlexoController.notify(FlexoLocalization.localizedForKey("could_not_open_project_located_at")
-								+ projectDirectory.getAbsolutePath());
+						FlexoController.notify(applicationContext.getLocalizationService().getFlexoLocalizer()
+								.localizedForKey("could_not_open_project_located_at") + projectDirectory.getAbsolutePath());
 						showWelcomDialog(applicationContext, null);
 					}
 				}
 
 			} catch (ModuleLoadingException e) {
 				e.printStackTrace();
-				FlexoController.notify(FlexoLocalization.localizedForKey("could_not_load_module") + " " + e.getModule());
+				FlexoController
+						.notify(applicationContext.getLocalizationService().getFlexoLocalizer().localizedForKey("could_not_load_module")
+								+ " " + e.getModule());
 				showWelcomDialog(applicationContext, null);
 			}
 		}
