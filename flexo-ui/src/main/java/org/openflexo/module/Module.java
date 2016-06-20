@@ -52,6 +52,7 @@ import org.openflexo.foundation.task.Progress;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.localization.Language;
 import org.openflexo.prefs.ModulePreferences;
+import org.openflexo.toolbox.PropertyChangedSupportDefaultImplementation;
 
 /**
  * Represents a Module in Openflexo intrastructure. A module is a software component.
@@ -62,7 +63,7 @@ import org.openflexo.prefs.ModulePreferences;
  * @author sguerin
  * 
  */
-public abstract class Module<M extends FlexoModule<M>> {
+public abstract class Module<M extends FlexoModule<M>> extends PropertyChangedSupportDefaultImplementation {
 
 	private static final Logger logger = Logger.getLogger(Module.class.getPackage().getName());
 
@@ -265,6 +266,8 @@ public abstract class Module<M extends FlexoModule<M>> {
 			Progress.progress("init_help_entry");
 			getApplicationContext().getDocResourceManager().ensureHelpEntryForModuleHaveBeenCreated(loadedModuleInstance);
 		}
+
+		getPropertyChangeSupport().firePropertyChange("loaded", false, true);
 
 		return loadedModuleInstance;
 	}

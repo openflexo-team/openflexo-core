@@ -63,6 +63,7 @@ import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
 import org.openflexo.foundation.resource.RepositoryFolder;
 import org.openflexo.foundation.resource.ResourceRepository;
+import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.localization.LocalizedDelegate;
 import org.openflexo.localization.LocalizedDelegateImpl;
 import org.openflexo.rm.ResourceLocator;
@@ -146,11 +147,14 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 	 * Called to activate the {@link TechnologyAdapter}
 	 */
 	public void activate() {
-		technologyContextManager = createTechnologyContextManager(getTechnologyAdapterService().getFlexoResourceCenterService());
-		initTechnologySpecificTypes(getTechnologyAdapterService());
-		locales = new LocalizedDelegateImpl(ResourceLocator.locateResource(getLocalizationDirectory()),
-				getTechnologyAdapterService().getServiceManager().getLocalizationService().getFlexoLocalizer(), true, true);
-		isActivated = true;
+		if (!isActivated()) {
+			technologyContextManager = createTechnologyContextManager(getTechnologyAdapterService().getFlexoResourceCenterService());
+			initTechnologySpecificTypes(getTechnologyAdapterService());
+			locales = new LocalizedDelegateImpl(ResourceLocator.locateResource(getLocalizationDirectory()),
+					getTechnologyAdapterService().getServiceManager().getLocalizationService().getFlexoLocalizer(), true, true);
+			isActivated = true;
+			getPropertyChangeSupport().firePropertyChange("activated", false, true);
+		}
 	}
 
 	/**
@@ -496,15 +500,18 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 	public abstract String getIdentifier();
 
 	/**
-	 * Return the locales relative to this technology
+	 * Return the locales relative to this technology<br>
+	 * If the technology is not activated, locales are not loaded, and this method will return null
 	 * 
 	 * @return
 	 */
 	public LocalizedDelegate getLocales() {
 		// XTOF: TA must be activated for Locales to be accessible.
-		if (!isActivated){
-			this.activate();
+		// SYL: we dont' want to load the TA just for that
+		if (!isActivated) {
+			return FlexoLocalization.getMainLocalizer();
 		}
+
 		return locales;
 	}
 
