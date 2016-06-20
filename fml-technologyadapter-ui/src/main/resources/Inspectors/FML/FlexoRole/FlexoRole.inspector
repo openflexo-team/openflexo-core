@@ -25,7 +25,7 @@
 			<DropDown index="7" data="data.cardinality"
 				constraints="twocols(expandHorizontally=false;expandVertically=false;index=3;location=right)"
 				name="CardinalityDD" format="object.stringRepresentation"
-				localize="true"
+				localize="false"
 				iteratorClassName="org.openflexo.foundation.fml.PropertyCardinality"
 				autoSelectFirstRow="false" showReset="false" />
 
