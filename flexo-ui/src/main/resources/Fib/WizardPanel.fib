@@ -59,7 +59,7 @@
 				<Label id="23" manageDynamicModel="false" useScrollBar="false"
 					data="data.currentStep.issueMessage" controllerClassName="org.openflexo.gina.controller.FIBController"
 					localize="false" font="SansSerif,0,11" align="left" constraints="flow()"
-					label="label" readOnly="false" />
+					label="label" readOnly="false"/>
 			</Panel>
 			<Panel id="24" darkLevel="0" useScrollBar="false"
 				protectContent="false" layout="border"
@@ -74,7 +74,7 @@
 				<Label id="26" manageDynamicModel="false" useScrollBar="false"
 					data="((data.currentStep.isTransitionalStep &amp; (data.currentStep.index = data.steps.size)) ? (data.currentStep.index.toString + &quot;/...&quot;) : ((data.currentStep.index.toString + &quot;/&quot;) + data.steps.size.toString))"
 					controllerClassName="org.openflexo.gina.controller.FIBController"
-					localize="true" align="left" constraints="border(location=west)"
+					localize="false" align="left" constraints="border(location=west)"
 					label="label" readOnly="false" />
 			</Panel>
 		</Panel>
