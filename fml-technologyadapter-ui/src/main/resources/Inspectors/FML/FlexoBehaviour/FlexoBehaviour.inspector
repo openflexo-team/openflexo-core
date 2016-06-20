@@ -25,7 +25,7 @@
 			<Label label="parameters" index="4"
 				constraints="twocols(expandHorizontally=false;expandVertically=false;index=2;location=left)"
 				localize="true" />
-			<Panel layout="border" border="empty" 
+			<Panel layout="border" border="empty" name="ParametersPanel"
 				borderTop="2" borderBottom="2" borderRight="2"
 				darkLevel="1" index="5"
 				constraints="twocols(expandHorizontally=true;expandVertically=true;index=5;location=right)"
