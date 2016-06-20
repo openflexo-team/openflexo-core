@@ -501,6 +501,10 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 	 * @return
 	 */
 	public LocalizedDelegate getLocales() {
+		// XTOF: TA must be activated for Locales to be accessible.
+		if (!isActivated){
+			this.activate();
+		}
 		return locales;
 	}
 
