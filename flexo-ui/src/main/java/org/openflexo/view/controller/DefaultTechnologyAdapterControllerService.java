@@ -164,7 +164,7 @@ public abstract class DefaultTechnologyAdapterControllerService extends FlexoSer
 				registerTechnologyAdapterController(technologyAdapterController);
 				return (TAC) technologyAdapterController;
 			}
-		
+
 		}*/
 
 		return null;
@@ -184,29 +184,32 @@ public abstract class DefaultTechnologyAdapterControllerService extends FlexoSer
 	public void receiveNotification(FlexoService caller, ServiceNotification notification) {
 		logger.fine("TechnologyAdapterController service received notification " + notification + " from " + caller);
 		if (notification instanceof ModuleLoaded) {
+
 			// When a module is loaded, register all loaded technology adapter controllers with new new loaded module action initializer
 			// The newly loaded module will be able to provide all tooling provided by the technology adapter
 
 			// System.out.println("!!!!!!!!!!!!!!!!!!!!!!!! On vient de charger le module " + notification);
 
 			// We have to start with the FMLTechnologyAdapter, if it exists
-			for (TechnologyAdapterController<?> adapterController : getLoadedAdapterControllers()) {
-				if (adapterController.getTechnologyAdapter() instanceof FMLTechnologyAdapter) {
-					// System.out.println("Activated " + adapterController.getTechnologyAdapter() + " ? " +
-					// adapterController.isActivated());
-					if (adapterController.isActivated()) {
-						Progress.progress(getLocales().localizedForKey("initialize_actions_for_technology_adapter") + " "
-								+ adapterController.getTechnologyAdapter().getName());
-						adapterController.activate(((ModuleLoaded) notification).getLoadedModule());
-					}
+			TechnologyAdapter ta = getServiceManager().getTechnologyAdapterService().getTechnologyAdapter(FMLTechnologyAdapter.class);
+			if (ta != null) {
+				TechnologyAdapterController<TechnologyAdapter> adapterController = this.getTechnologyAdapterController(ta);
+				// System.out.println("Activated " + adapterController.getTechnologyAdapter() + " ? " +
+				// adapterController.isActivated());
+				if (ta.isActivated()) {
+					Progress.progress(getLocales().localizedForKey("initialize_actions_for_technology_adapter") + " "
+							+ adapterController.getTechnologyAdapter().getName());
+					adapterController.activate(((ModuleLoaded) notification).getLoadedModule());
 				}
 			}
 
+
 			for (TechnologyAdapterController<?> adapterController : getLoadedAdapterControllers()) {
-				if (!(adapterController.getTechnologyAdapter() instanceof FMLTechnologyAdapter)) {
+				ta = adapterController.getTechnologyAdapter();
+				if (!(ta instanceof FMLTechnologyAdapter)) {
 					// System.out.println("Activated " + adapterController.getTechnologyAdapter() + " ? " +
 					// adapterController.isActivated());
-					if (adapterController.isActivated()) {
+					if (ta.isActivated()) {
 						Progress.progress(getLocales().localizedForKey("initialize_actions_for_technology_adapter") + " "
 								+ adapterController.getTechnologyAdapter().getName());
 						adapterController.activate(((ModuleLoaded) notification).getLoadedModule());
