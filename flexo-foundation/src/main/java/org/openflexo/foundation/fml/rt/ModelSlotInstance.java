@@ -259,8 +259,12 @@ public abstract interface ModelSlotInstance<MS extends ModelSlot<? extends RD>, 
 			// requiresUpdate = true;
 			// }
 
+			// NPE Protection when deleting VMI
+			if (accessedResourceData != null){
+				logger.warning("resourceData will be set to null for ModelSlot: " + this.modelSlotName);
+				setResource((TechnologyAdapterResource<RD, ?>) accessedResourceData.getResource());
+			}
 			this.accessedResourceData = accessedResourceData;
-			setResource((TechnologyAdapterResource<RD, ?>) accessedResourceData.getResource());
 
 			/*if (requiresUpdate) {
 				// The virtual model can be synchronized with the new resource data.

@@ -52,12 +52,17 @@ import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
+import org.openflexo.model.annotations.DefineValidationRule;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.PropertyIdentifier;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
+import org.openflexo.model.validation.FixProposal;
+import org.openflexo.model.validation.ValidationIssue;
+import org.openflexo.model.validation.ValidationRule;
+import org.openflexo.model.validation.ValidationWarning;
 
 /**
  * Abstract edition action allowing to create an empty resource in a {@link FlexoResourceCenter}, at a specified relative path<br>
@@ -74,7 +79,7 @@ import org.openflexo.model.annotations.XMLAttribute;
 @ModelEntity(isAbstract = true)
 @ImplementationClass(AbstractCreateResource.AbstractCreateResourceImpl.class)
 public interface AbstractCreateResource<MS extends ModelSlot<RD>, RD extends ResourceData<RD> & TechnologyObject<?>>
-		extends TechnologySpecificAction<MS, RD> {
+extends TechnologySpecificAction<MS, RD> {
 
 	@PropertyIdentifier(type = DataBinding.class)
 	public static final String RESOURCE_NAME_KEY = "resourceName";
@@ -114,7 +119,7 @@ public interface AbstractCreateResource<MS extends ModelSlot<RD>, RD extends Res
 	public void setRelativePath(String relativePath);
 
 	public static abstract class AbstractCreateResourceImpl<MS extends ModelSlot<RD>, RD extends ResourceData<RD> & TechnologyObject<?>>
-			extends TechnologySpecificActionImpl<MS, RD> implements AbstractCreateResource<MS, RD> {
+	extends TechnologySpecificActionImpl<MS, RD> implements AbstractCreateResource<MS, RD> {
 
 		private static final Logger logger = Logger.getLogger(AbstractCreateResource.class.getPackage().getName());
 
@@ -235,6 +240,48 @@ public interface AbstractCreateResource<MS extends ModelSlot<RD>, RD extends Res
 
 		@Override
 		public abstract Type getAssignableType();
+
+
+	}
+	
+	/* Validation Rule to avoid ResourceCenter to be Null/Empty */
+
+	@DefineValidationRule
+	public static class ResourceCenterShouldNotBeNull
+	extends ValidationRule<ResourceCenterShouldNotBeNull, TechnologySpecificAction<?, ?>> {
+
+		public ResourceCenterShouldNotBeNull() {
+			super(TechnologySpecificAction.class, "CreateResource_need_a_rc");
+		}
+
+		@Override
+		public ValidationIssue<ResourceCenterShouldNotBeNull, TechnologySpecificAction<?, ?>> applyValidation(
+				TechnologySpecificAction<?, ?> anAction) {
+			DataBinding rcbinding = ((AbstractCreateResource) anAction).getResourceCenter();
+			if (rcbinding == null || rcbinding.isNull() || rcbinding.getExpression() == null) {
+				SetResourceCenterBeingProjectByDefault fixProposal = new SetResourceCenterBeingProjectByDefault(anAction);
+				return new ValidationWarning<ResourceCenterShouldNotBeNull, TechnologySpecificAction<?, ?>>(this, anAction,
+						"CreateResource_should_not_have_null_RC", fixProposal);
+
+			}
+			return null;
+		}
+
+		protected static class SetResourceCenterBeingProjectByDefault
+		extends FixProposal<ResourceCenterShouldNotBeNull, TechnologySpecificAction<?, ?>> {
+
+			private final TechnologySpecificAction<?, ?> action;
+
+			public SetResourceCenterBeingProjectByDefault(TechnologySpecificAction<?, ?> anAction) {
+				super("set_rc_defaulting_to_project");
+				this.action = anAction;
+			}
+
+			@Override
+			protected void fixAction() {
+				((AbstractCreateResource<?, ?>) action).getResourceCenter().setUnparsedBinding("project");
+			}
+		}
 
 	}
 }
