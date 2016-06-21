@@ -73,7 +73,7 @@ public abstract class AbstractDeclareInFlexoConceptWizard<A extends AbstractDecl
 	 * @author sylvain
 	 *
 	 */
-	@FIBPanel("Fib/Wizard/DeclareDiagramElementInFlexoConcept/ChooseOption.fib")
+	@FIBPanel("Fib/Wizard/DeclareInFlexoConcept/ChooseOption.fib")
 	public class ChooseOption extends WizardStep {
 
 		public ApplicationContext getServiceManager() {
