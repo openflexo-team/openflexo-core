@@ -216,6 +216,7 @@ public abstract class AbstractCreateVirtualModelInstanceWizard<A extends Abstrac
 				AbstractVirtualModel<?> oldValue = getVirtualModel();
 				((AbstractCreateVirtualModelInstance) action).setVirtualModel(virtualModel);
 				getPropertyChangeSupport().firePropertyChange("virtualModel", oldValue, virtualModel);
+				getPropertyChangeSupport().firePropertyChange("creationScheme", null, getCreationScheme());
 				checkValidity();
 			}
 		}

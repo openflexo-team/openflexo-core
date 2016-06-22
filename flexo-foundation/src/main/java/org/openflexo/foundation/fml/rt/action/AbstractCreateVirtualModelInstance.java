@@ -262,6 +262,10 @@ public abstract class AbstractCreateVirtualModelInstance<A extends AbstractCreat
 				for (ModelSlot<?> ms : this.virtualModel.getModelSlots()) {
 					modelSlotConfigurations.put(ms, ms.createConfiguration(null, getProject()));
 				}
+				if (virtualModel.getCreationSchemes().size() > 0) {
+					System.out.println("Tiens, je trouve un CreationScheme: " + virtualModel.getCreationSchemes().get(0));
+					setCreationScheme(virtualModel.getCreationSchemes().get(0));
+				}
 			}
 			setChanged();
 			notifyObservers(new DataModification("isActionValidable", false, true));
