@@ -105,18 +105,18 @@ public interface AssignationAction<T> extends AbstractAssignationAction<T> {
 		@Override
 		public DataBinding<? super T> getAssignation() {
 			if (assignation == null) {
-				assignation = new DataBinding<Object>(this, Object.class, DataBinding.BindingDefinitionType.GET_SET) {
-					@Override
-					public Type getDeclaredType() {
-						return getAssignableNotNullType();
-					}
-				};
-				assignation.setDeclaredType(getAssignableNotNullType());
+				assignation = new DataBinding<Object>(this, Object.class, DataBinding.BindingDefinitionType.GET_SET)/*{
+																													@Override
+																													public Type getDeclaredType() {
+																													return getAssignableNotNullType();
+																													}
+																													}*/;
+				// assignation.setDeclaredType(getAssignableNotNullType());
 				assignation.setBindingName("assignation");
 				assignation.setMandatory(true);
 
 			}
-			assignation.setDeclaredType(getAssignableNotNullType());
+			// assignation.setDeclaredType(getAssignableNotNullType());
 			return assignation;
 		}
 
@@ -124,13 +124,13 @@ public interface AssignationAction<T> extends AbstractAssignationAction<T> {
 		public void setAssignation(DataBinding<? super T> assignation) {
 			if (assignation != null) {
 				this.assignation = new DataBinding<Object>(assignation.toString(), this, Object.class,
-						DataBinding.BindingDefinitionType.GET_SET) {
-					@Override
-					public Type getDeclaredType() {
-						return getAssignableNotNullType();
-					}
-				};
-				assignation.setDeclaredType(getAssignableNotNullType());
+						DataBinding.BindingDefinitionType.GET_SET) /*{
+																	@Override
+																	public Type getDeclaredType() {
+																	return getAssignableNotNullType();
+																	}
+																	}*/;
+				// assignation.setDeclaredType(getAssignableNotNullType());
 				assignation.setBindingName("assignation");
 				assignation.setMandatory(true);
 			}

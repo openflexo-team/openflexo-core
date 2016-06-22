@@ -128,7 +128,7 @@
 				data="data.definePopupDefaultSize"
 				constraints="twocols(expandHorizontally=true;expandVertically=false;index=16;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)"
 				localize="true" />
-			<Panel layout="flow" hGap="0" vGap="0" flowAlignment="LEADING"
+			<Panel layout="flow" hGap="0" vGap="0" flowAlignment="LEADING" name="PopupSizePanel"
 				borderTitle="Panel" titleFont="SansSerif,0,11" darkLevel="0" index="17"
 				constraints="twocols(expandHorizontally=true;expandVertically=false;index=17;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)">
 				<Label label="define_popup_size" index="0"

@@ -62,8 +62,6 @@ public class VirtualModelInstanceView extends FIBModuleView<VirtualModelInstance
 		super(vmInstance, controller, CommonFIB.VIRTUAL_MODEL_INSTANCE_VIEW_FIB,
 				controller.getTechnologyAdapter(FMLRTTechnologyAdapter.class).getLocales());
 		this.perspective = perspective;
-
-		Thread.dumpStack();
 	}
 
 	@Override
