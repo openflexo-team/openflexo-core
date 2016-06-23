@@ -273,13 +273,17 @@ public class FMLTechnologyAdapter extends TechnologyAdapter {
 	public <I> boolean contentsAdded(final FlexoResourceCenter<I> resourceCenter, final I contents) {
 		if (!this.isIgnorable(resourceCenter, contents)) {
 			if (contents instanceof File) {
-				System.out.println("FMLTechnologyAdapter: File ADDED " + ((File) contents).getName() + " in "
-						+ ((File) contents).getParentFile().getAbsolutePath());
 				final File candidateFile = (File) contents;
+				System.out.println("FMLTechnologyAdapter: File ADDED " + candidateFile.getName() + " in "
+						+ candidateFile.getParentFile().getAbsolutePath());
 				if (isValidViewPointDirectory(candidateFile)) {
 					final ViewPointResource vpRes = analyseAsViewPoint(contents, resourceCenter);
-					referenceResource(vpRes, resourceCenter);
-					return vpRes != null;
+					if (vpRes != null) {
+						referenceResource(vpRes, resourceCenter);
+						return true;
+					}
+					else
+						return false;
 				}
 			}
 		}
