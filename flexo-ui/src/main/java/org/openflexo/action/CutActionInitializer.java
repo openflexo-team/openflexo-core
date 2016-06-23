@@ -51,7 +51,6 @@ import org.openflexo.foundation.action.CutAction;
 import org.openflexo.foundation.action.FlexoActionFinalizer;
 import org.openflexo.foundation.action.FlexoActionInitializer;
 import org.openflexo.icon.IconLibrary;
-import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.view.controller.ActionInitializer;
 import org.openflexo.view.controller.ControllerActionInitializer;
 import org.openflexo.view.controller.FlexoController;
@@ -71,7 +70,7 @@ public class CutActionInitializer extends ActionInitializer<CutAction, FlexoObje
 		return new FlexoActionInitializer<CutAction>() {
 			@Override
 			public boolean run(EventObject e, CutAction action) {
-				return FlexoController.confirm(FlexoLocalization.localizedForKey("would_you_like_to_cut_those_objects"));
+				return FlexoController.confirm(action.getLocales().localizedForKey("would_you_like_to_cut_those_objects"));
 			}
 		};
 	}

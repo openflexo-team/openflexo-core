@@ -64,7 +64,7 @@ public class ViewPointTypePathElement extends SimplePathElement {
 
 	@Override
 	public String getTooltipText(Type resultingType) {
-		return FlexoLocalization.localizedForKey("view_point_as_type_of_view");
+		return FlexoLocalization.getMainLocalizer().localizedForKey("view_point_as_type_of_view");
 	}
 
 	@Override

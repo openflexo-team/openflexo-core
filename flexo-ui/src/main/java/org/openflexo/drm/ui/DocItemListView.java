@@ -60,9 +60,10 @@ import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
 
 import org.openflexo.drm.DocItem;
+import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.icon.DREIconLibrary;
 import org.openflexo.icon.IconLibrary;
-import org.openflexo.localization.FlexoLocalization;
+import org.openflexo.view.controller.FlexoController;
 
 public class DocItemListView extends JPanel {
 	static final Logger logger = Logger.getLogger(DocItemListView.class.getPackage().getName());
@@ -71,10 +72,15 @@ public class DocItemListView extends JPanel {
 	private JScrollPane scrollPane;
 	private DocItemListViewFooter footer;
 
+	private final FlexoController controller;
+	private final FlexoEditor editor;
+
 	DocItemListModel _listModel;
 
-	public DocItemListView(String unlocalizedTitle, DocItemListModel listModel) {
+	public DocItemListView(String unlocalizedTitle, DocItemListModel listModel, FlexoController controller, FlexoEditor editor) {
 		super(new BorderLayout());
+		this.controller = controller;
+		this.editor = editor;
 		_listModel = listModel;
 		list = new JList(new DocItemListViewListModel());
 		list.setCellRenderer(new DocItemListViewCellRenderer());
@@ -82,7 +88,7 @@ public class DocItemListView extends JPanel {
 		add(scrollPane, BorderLayout.CENTER);
 		JLabel title = new JLabel();
 		title.setForeground(Color.DARK_GRAY);
-		title.setText(FlexoLocalization.localizedForKey(unlocalizedTitle, title));
+		title.setText(controller.getFlexoLocales().localizedForKey(unlocalizedTitle, title));
 		title.setHorizontalAlignment(SwingConstants.CENTER);
 		title.setBorder(BorderFactory.createEmptyBorder(3, 3, 3, 3));
 		add(title, BorderLayout.NORTH);

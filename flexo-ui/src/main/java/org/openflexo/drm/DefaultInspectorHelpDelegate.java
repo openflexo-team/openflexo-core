@@ -68,7 +68,8 @@ public class DefaultInspectorHelpDelegate implements HelpDelegate {
 				FlexoHelp.getHelpBroker().setCurrentID(item.getIdentifier());
 				FlexoHelp.getHelpBroker().setDisplayed(true);
 			} catch (BadIDException exception) {
-				FlexoController.showError(FlexoLocalization.localizedForKey("sorry_no_help_available_for") + " " + item.getIdentifier());
+				FlexoController.showError(
+						FlexoLocalization.getMainLocalizer().localizedForKey("sorry_no_help_available_for") + " " + item.getIdentifier());
 				return false;
 			}
 			return true;
@@ -78,7 +79,7 @@ public class DefaultInspectorHelpDelegate implements HelpDelegate {
 
 	@Override
 	public boolean isHelpAvailableFor(Class<? extends FlexoObject> objectClass, String propertyName) {
-		ApplicationContext applicationContext = (ApplicationContext) docResourceManager.getServiceManager();
+		ApplicationContext applicationContext = docResourceManager.getServiceManager();
 		Language language = docResourceManager.getLanguage(applicationContext.getGeneralPreferences().getLanguage());
 		DocItem propertyModelItem = docResourceManager.getDocItemFor(objectClass);
 		if (propertyModelItem != null) {
@@ -91,7 +92,7 @@ public class DefaultInspectorHelpDelegate implements HelpDelegate {
 
 	@Override
 	public String getHelpFor(Class<? extends FlexoObject> objectClass, String propertyName) {
-		ApplicationContext applicationContext = (ApplicationContext) docResourceManager.getServiceManager();
+		ApplicationContext applicationContext = docResourceManager.getServiceManager();
 		Language language = docResourceManager.getLanguage(applicationContext.getGeneralPreferences().getLanguage());
 		DocItem propertyModelItem = docResourceManager.getDocItemFor(objectClass);
 		if (propertyModelItem != null) {

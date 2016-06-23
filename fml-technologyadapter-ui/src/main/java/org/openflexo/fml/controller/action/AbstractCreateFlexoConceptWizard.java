@@ -51,7 +51,6 @@ import org.openflexo.foundation.fml.action.CreateViewPoint;
 import org.openflexo.foundation.fml.action.CreateVirtualModel;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.gina.annotation.FIBPanel;
-import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.view.controller.FlexoController;
 
 /**
@@ -112,7 +111,7 @@ public abstract class AbstractCreateFlexoConceptWizard<A extends AbstractCreateF
 
 		@Override
 		public String getTitle() {
-			return FlexoLocalization.localizedForKey("configure_new_flexo_concept");
+			return getAction().getLocales().localizedForKey("configure_new_flexo_concept");
 		}
 
 		@Override
@@ -185,8 +184,8 @@ public abstract class AbstractCreateFlexoConceptWizard<A extends AbstractCreateF
 
 		@Override
 		public boolean isTransitionalStep() {
-			return getDefineSomeRoles() || getDefineSomeBehaviours() || getDefineDefaultCreationScheme()
-					|| getDefineDefaultDeletionScheme() || getDefineInspector();
+			return getDefineSomeRoles() || getDefineSomeBehaviours() || getDefineDefaultCreationScheme() || getDefineDefaultDeletionScheme()
+					|| getDefineInspector();
 		}
 
 		@Override

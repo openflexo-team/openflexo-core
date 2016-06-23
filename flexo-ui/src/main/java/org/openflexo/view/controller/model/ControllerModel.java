@@ -54,6 +54,7 @@ import org.openflexo.ApplicationContext;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoProject;
+import org.openflexo.foundation.ProjectLoader;
 import org.openflexo.module.FlexoModule;
 import org.openflexo.module.ModuleLoader;
 import org.openflexo.project.InteractiveProjectLoader;
@@ -137,6 +138,7 @@ public class ControllerModel extends ControllerModelObject implements PropertyCh
 			leftViewVisible = context.getGeneralPreferences().getShowLeftView(module.getShortName());
 			rightViewVisible = context.getGeneralPreferences().getShowRightView(module.getShortName());
 		}
+
 		registrationManager.new PropertyChangeListenerRegistration(InteractiveProjectLoader.PROJECT_OPENED, this,
 				context.getProjectLoader());
 		registrationManager.new PropertyChangeListenerRegistration(InteractiveProjectLoader.PROJECT_CLOSED, this,
@@ -152,7 +154,7 @@ public class ControllerModel extends ControllerModelObject implements PropertyCh
 		return context.getModuleLoader();
 	}
 
-	public InteractiveProjectLoader getProjectLoader() {
+	public ProjectLoader getProjectLoader() {
 		return context.getProjectLoader();
 	}
 

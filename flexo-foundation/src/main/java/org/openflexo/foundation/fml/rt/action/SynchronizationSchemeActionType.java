@@ -48,8 +48,8 @@ import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstanceObject;
 import org.openflexo.localization.LocalizedDelegate;
 
-public class SynchronizationSchemeActionType extends
-		FlexoActionType<SynchronizationSchemeAction, AbstractVirtualModelInstance<?, ?>, VirtualModelInstanceObject> {
+public class SynchronizationSchemeActionType
+		extends FlexoActionType<SynchronizationSchemeAction, AbstractVirtualModelInstance<?, ?>, VirtualModelInstanceObject> {
 
 	private final SynchronizationScheme synchronizationScheme;
 	private final FlexoConceptInstance flexoConceptInstance;
@@ -61,7 +61,7 @@ public class SynchronizationSchemeActionType extends
 	}
 
 	@Override
-	public LocalizedDelegate getLocalizer() {
+	public LocalizedDelegate getLocales() {
 		return synchronizationScheme.getLocalizedDictionary();
 	}
 

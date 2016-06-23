@@ -203,20 +203,20 @@ public abstract class FlexoActionType<A extends FlexoAction<A, T1, T2>, T1 exten
 		return _actionName;
 	}
 
-	public LocalizedDelegate getLocalizer() {
+	public LocalizedDelegate getLocales() {
 		return FlexoLocalization.getMainLocalizer();
 	}
 
 	public String getLocalizedName() {
-		return FlexoLocalization.localizedForKey(getLocalizer(), _actionName);
+		return getLocales().localizedForKey(_actionName);
 	}
 
 	public String getLocalizedName(Component component) {
-		return FlexoLocalization.localizedForKey(getLocalizer(), _actionName, component);
+		return getLocales().localizedForKey(_actionName, component);
 	}
 
 	public String getLocalizedDescription() {
-		return FlexoLocalization.localizedForKey(getLocalizer(), _actionName + "_description");
+		return getLocales().localizedForKey(_actionName + "_description");
 	}
 
 	/**
@@ -301,13 +301,13 @@ public abstract class FlexoActionType<A extends FlexoAction<A, T1, T2>, T1 exten
 
 	public String getDisabledReason(T1 object, Vector<T2> globalSelection, FlexoEditor editor) {
 		if (object != null && object.getActionList().indexOf(this) == -1) {
-			return FlexoLocalization.localizedForKey("action") + " " + getLocalizedName() + " "
-					+ FlexoLocalization.localizedForKey("is_not_active_for") + " "
-					+ FlexoLocalization.localizedForKey(object.getClass().getSimpleName());
+			return getLocales().localizedForKey("action") + " " + getLocalizedName() + " "
+					+ getLocales().localizedForKey("is_not_active_for") + " "
+					+ getLocales().localizedForKey(object.getClass().getSimpleName());
 		}
 		if (!isEnabledForSelection(object, globalSelection)) {
-			return FlexoLocalization.localizedForKey("action") + " " + getLocalizedName() + " "
-					+ FlexoLocalization.localizedForKey("is_not_active_for_this_selection");
+			return getLocales().localizedForKey("action") + " " + getLocalizedName() + " "
+					+ getLocales().localizedForKey("is_not_active_for_this_selection");
 		}
 		return null;
 	}

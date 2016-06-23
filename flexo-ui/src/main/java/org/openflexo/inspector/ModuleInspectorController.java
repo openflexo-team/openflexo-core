@@ -74,6 +74,7 @@ import org.openflexo.gina.model.widget.FIBLabel;
 import org.openflexo.gina.utils.FIBInspector;
 import org.openflexo.gina.utils.InspectorGroup;
 import org.openflexo.localization.FlexoLocalization;
+import org.openflexo.localization.LocalizedDelegate;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.view.controller.FlexoController;
@@ -110,7 +111,8 @@ public class ModuleInspectorController extends Observable implements Observer {
 		this.flexoController = flexoController;
 
 		inspectorGroups = new ArrayList<InspectorGroup>();
-		coreInspectorGroup = new InspectorGroup(ResourceLocator.locateResource("Inspectors/COMMON"), getInspectorsFIBLibrary());
+		coreInspectorGroup = new InspectorGroup(ResourceLocator.locateResource("Inspectors/COMMON"), getInspectorsFIBLibrary(),
+				flexoController.getFlexoLocales());
 		inspectorGroups.add(coreInspectorGroup);
 
 		flexoConceptInspectors = new Hashtable<FlexoConcept, FIBInspector>();
@@ -162,14 +164,16 @@ public class ModuleInspectorController extends Observable implements Observer {
 		return ApplicationFIBLibraryImpl.instance();
 	}
 
-	public InspectorGroup loadDirectory(Resource inspectorsDirectory, InspectorGroup... parentInspectorGroups) {
-		InspectorGroup newInspectorGroup = new InspectorGroup(inspectorsDirectory, getInspectorsFIBLibrary(), parentInspectorGroups) {
+	public InspectorGroup loadDirectory(Resource inspectorsDirectory, LocalizedDelegate locales, InspectorGroup... parentInspectorGroups) {
+		InspectorGroup newInspectorGroup = new InspectorGroup(inspectorsDirectory, getInspectorsFIBLibrary(), locales,
+				parentInspectorGroups) {
 			@Override
 			public void progress(Resource f, FIBInspector inspector) {
 				super.progress(f, inspector);
 				appendVisibleFor(inspector);
 				appendEditableCondition(inspector);
-				Progress.progress(FlexoLocalization.localizedForKey("loaded_inspector") + " " + inspector.getDataClass().getSimpleName());
+				Progress.progress(FlexoLocalization.getMainLocalizer().localizedForKey("loaded_inspector") + " "
+						+ inspector.getDataClass().getSimpleName());
 			}
 		};
 		inspectorGroups.add(newInspectorGroup);
@@ -228,10 +232,12 @@ public class ModuleInspectorController extends Observable implements Observer {
 			DataBinding<Boolean> enable = widget.getEnable();
 			if (enable != null && enable.isValid()) {
 				widget.setEnable(new DataBinding<Boolean>(enable.toString() + " & " + CONTROLLER_EDITABLE_BINDING));
-			} else {
+			}
+			else {
 				widget.setEnable(new DataBinding<Boolean>(CONTROLLER_EDITABLE_BINDING));
 			}
-		} else if (component instanceof FIBContainer) {
+		}
+		else if (component instanceof FIBContainer) {
 			for (FIBComponent child : ((FIBContainer) component).getSubComponents()) {
 				appendEditableCondition(child);
 			}
@@ -345,7 +351,8 @@ public class ModuleInspectorController extends Observable implements Observer {
 		FIBInspector returned = flexoConceptInspectors.get(concept);
 		if (returned != null) {
 			return returned;
-		} else {
+		}
+		else {
 			returned = inspectorForClass(conceptInstance.getImplementedInterface());
 			returned = (FIBInspector) returned.cloneObject();
 			// FIBTab basicTab = (FIBTab) returned.getTabPanel().getChildAt(0);
@@ -454,7 +461,8 @@ public class ModuleInspectorController extends Observable implements Observer {
 		if (newInspector == null) {
 			logger.warning("No inspector for " + object);
 			switchToEmptyContent();
-		} else {
+		}
+		else {
 			/*boolean updateEPTabs = false;
 			if (object instanceof FlexoConceptInstance) {
 				updateEPTabs = newInspector.updateFlexoConceptInstanceInspector((FlexoConceptInstance) object);
@@ -480,9 +488,11 @@ public class ModuleInspectorController extends Observable implements Observer {
 			InspectorSelection inspectorSelection = (InspectorSelection) notification;
 			if (inspectorSelection instanceof EmptySelection) {
 				switchToEmptyContent();
-			} else if (inspectorSelection instanceof MultipleSelection) {
+			}
+			else if (inspectorSelection instanceof MultipleSelection) {
 				switchToMultipleSelection();
-			} else if (inspectorSelection instanceof UniqueSelection) {
+			}
+			else if (inspectorSelection instanceof UniqueSelection) {
 				inspectObject(((UniqueSelection) inspectorSelection).getInspectedObject());
 			}
 		}
@@ -598,7 +608,7 @@ public class ModuleInspectorController extends Observable implements Observer {
 		ViewPointLocalizedDictionary localizedDictionary = ep.getViewPoint().getLocalizedDictionary();
 		for (final InspectorEntry entry : ep.getInspector().getEntries()) {
 			FIBLabel label = getFactory().newFIBLabel();
-			String entryLabel = localizedDictionary.getLocalizedForKeyAndLanguage(entry.getLabel(), FlexoLocalization.getCurrentLanguage());
+			String entryLabel = localizedDictionary.localizedForKeyAndLanguage(entry.getLabel(), FlexoLocalization.getCurrentLanguage());
 			if (entryLabel == null) {
 				entryLabel = entry.getLabel();
 			}

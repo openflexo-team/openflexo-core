@@ -52,7 +52,7 @@ public enum ActionType {
 	}
 
 	public String getLocalizedName() {
-		return FlexoLocalization.localizedForKey(getName());
+		return FlexoLocalization.getMainLocalizer().localizedForKey(getName());
 	}
 
 	ActionType(String _name) {

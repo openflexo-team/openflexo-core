@@ -48,7 +48,6 @@ import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.gina.annotation.FIBPanel;
-import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.view.controller.FlexoController;
 
 public class CreateFlexoConceptInstanceRoleWizard extends AbstractCreateFlexoRoleWizard<CreateFlexoConceptInstanceRole, FMLRTModelSlot> {
@@ -56,7 +55,7 @@ public class CreateFlexoConceptInstanceRoleWizard extends AbstractCreateFlexoRol
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CreateFlexoConceptInstanceRoleWizard.class.getPackage().getName());
 
-	private static final String NO_FLEXO_CONCEPT_TYPE = FlexoLocalization.localizedForKey("please_choose_type_of_flexo_concept");
+	private static final String NO_FLEXO_CONCEPT_TYPE = "please_choose_type_of_flexo_concept";
 
 	public CreateFlexoConceptInstanceRoleWizard(CreateFlexoConceptInstanceRole action, FlexoController controller) {
 		super(action, controller);
@@ -69,7 +68,7 @@ public class CreateFlexoConceptInstanceRoleWizard extends AbstractCreateFlexoRol
 
 	@Override
 	public String getWizardTitle() {
-		return FlexoLocalization.localizedForKey("create_flexo_concept_instance_role");
+		return getAction().getLocales().localizedForKey("create_flexo_concept_instance_role");
 	}
 
 	@Override
@@ -94,7 +93,7 @@ public class CreateFlexoConceptInstanceRoleWizard extends AbstractCreateFlexoRol
 			}
 
 			if (getFlexoConceptInstanceType() == null) {
-				setIssueMessage(NO_FLEXO_CONCEPT_TYPE, IssueMessageType.ERROR);
+				setIssueMessage(getAction().getLocales().localizedForKey(NO_FLEXO_CONCEPT_TYPE), IssueMessageType.ERROR);
 				return false;
 			}
 			return true;

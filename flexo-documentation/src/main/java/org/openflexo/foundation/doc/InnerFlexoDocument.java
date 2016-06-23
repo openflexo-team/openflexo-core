@@ -51,8 +51,9 @@ public interface InnerFlexoDocument<D extends FlexoDocument<D, TA>, TA extends T
 	@Setter(DOCUMENT_KEY)
 	public void setFlexoDocument(D flexoDocument);
 
-	public static abstract class InnerFlexoDocumentImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends
-			FlexoDocObjectImpl<D, TA> implements InnerFlexoDocument<D, TA> {
+	public static abstract class InnerFlexoDocumentImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
+			extends FlexoDocObjectImpl<D, TA>implements InnerFlexoDocument<D, TA> {
+
 	}
 
 }

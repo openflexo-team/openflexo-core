@@ -89,6 +89,11 @@ public class FMLRTTechnologyAdapter extends TechnologyAdapter {
 		return "FML@runtime technology adapter";
 	}
 
+	@Override
+	public String getLocalizationDirectory() {
+		return "FlexoLocalization/FMLRTTechnologyAdapter";
+	}
+
 	/**
 	 * Creates and return a new {@link FMLRTModelSlot} adressing supplied VirtualModel.<br>
 	 * 
@@ -201,7 +206,8 @@ public class FMLRTTechnologyAdapter extends TechnologyAdapter {
 				logger.info("Found and register view " + vRes.getURI() + vRes.getFlexoIODelegate().toString());
 				viewRepository.registerResource(vRes, folder);
 				return vRes;
-			} else {
+			}
+			else {
 				logger.warning("While exploring resource center looking for views : cannot retrieve resource for file "
 						+ candidateFile.getAbsolutePath());
 			}

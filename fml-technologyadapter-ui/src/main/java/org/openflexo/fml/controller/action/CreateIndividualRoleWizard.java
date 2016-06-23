@@ -47,7 +47,6 @@ import org.openflexo.foundation.ontology.fml.IndividualRole;
 import org.openflexo.foundation.ontology.fml.action.CreateIndividualRole;
 import org.openflexo.foundation.ontology.technologyadapter.FlexoOntologyModelSlot;
 import org.openflexo.gina.annotation.FIBPanel;
-import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.view.controller.FlexoController;
 
 public class CreateIndividualRoleWizard extends AbstractCreateFlexoRoleWizard<CreateIndividualRole, FlexoOntologyModelSlot<?, ?, ?>> {
@@ -55,7 +54,7 @@ public class CreateIndividualRoleWizard extends AbstractCreateFlexoRoleWizard<Cr
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CreateIndividualRoleWizard.class.getPackage().getName());
 
-	private static final String NO_INDIVIDUAL_TYPE = FlexoLocalization.localizedForKey("please_choose_individual_type");
+	private static final String NO_INDIVIDUAL_TYPE = "please_choose_individual_type";
 
 	public CreateIndividualRoleWizard(CreateIndividualRole action, FlexoController controller) {
 		super(action, controller);
@@ -68,7 +67,7 @@ public class CreateIndividualRoleWizard extends AbstractCreateFlexoRoleWizard<Cr
 
 	@Override
 	public String getWizardTitle() {
-		return FlexoLocalization.localizedForKey("create_individual_role");
+		return getAction().getLocales().localizedForKey("create_individual_role");
 	}
 
 	@Override
@@ -93,12 +92,12 @@ public class CreateIndividualRoleWizard extends AbstractCreateFlexoRoleWizard<Cr
 			}
 
 			if (getFlexoRoleClass() == null) {
-				setIssueMessage(NO_ROLE_TYPE, IssueMessageType.ERROR);
+				setIssueMessage(getAction().getLocales().localizedForKey(NO_ROLE_TYPE), IssueMessageType.ERROR);
 				return false;
 			}
 
 			if (getIndividualType() == null) {
-				setIssueMessage(NO_INDIVIDUAL_TYPE, IssueMessageType.ERROR);
+				setIssueMessage(getAction().getLocales().localizedForKey(NO_INDIVIDUAL_TYPE), IssueMessageType.ERROR);
 				return false;
 			}
 

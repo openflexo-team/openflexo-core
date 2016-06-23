@@ -53,6 +53,7 @@ import org.openflexo.gina.model.listener.FIBSelectionListener;
 import org.openflexo.gina.model.widget.FIBBrowser;
 import org.openflexo.gina.model.widget.FIBBrowserAction;
 import org.openflexo.gina.model.widget.FIBBrowserElement;
+import org.openflexo.localization.LocalizedDelegate;
 import org.openflexo.rm.Resource;
 import org.openflexo.view.FIBBrowserActionAdapter.FIBBrowserActionAdapterImpl;
 import org.openflexo.view.controller.FlexoController;
@@ -70,33 +71,20 @@ public abstract class FIBBrowserView<O> extends SelectionSynchronizedFIBView imp
 	// private FlexoController controller;
 	// private FIBViewImpl fibView;
 
-	public FIBBrowserView(O representedObject, FlexoController controller, Resource fibResource) {
-		this(representedObject, controller, fibResource, false);
+	public FIBBrowserView(O representedObject, FlexoController controller, Resource fibResource, LocalizedDelegate locales) {
+		this(representedObject, controller, fibResource, locales, false);
 	}
 
-	public FIBBrowserView(O representedObject, FlexoController controller, Resource fibResource, boolean addScrollBar) {
-		this(representedObject, controller, controller.getApplicationFIBLibraryService().retrieveFIBComponent(fibResource), addScrollBar);
+	public FIBBrowserView(O representedObject, FlexoController controller, Resource fibResource, LocalizedDelegate locales,
+			boolean addScrollBar) {
+		this(representedObject, controller, controller.getApplicationFIBLibraryService().retrieveFIBComponent(fibResource), locales,
+				addScrollBar);
 		controller.willLoad(fibResource);
 	}
 
-	// Removed as we should only used Resource everywhere
-	/*
-	public FIBBrowserView(O representedObject, FlexoController controller, String fibResourcePath) {
-		this(representedObject, controller, fibResourcePath, false, controller.willLoad(fibResourcePath));
-	}
-	
-	public FIBBrowserView(O representedObject, FlexoController controller, String fibResourcePath, FlexoProgress progress) {
-		this(representedObject, controller, fibResourcePath, false, progress);
-	}
-	
-	public FIBBrowserView(O representedObject, FlexoController controller, String fibResourcePath, boolean addScrollBar,
-			FlexoProgress progress) {
-		this(representedObject, controller, FIBLibrary.instance().retrieveFIBComponent(fibResourcePath), addScrollBar, progress);
-	}
-	 */
-
-	protected FIBBrowserView(O representedObject, FlexoController controller, FIBComponent fibComponent, boolean addScrollBar) {
-		super(representedObject, controller, fibComponent, addScrollBar);
+	protected FIBBrowserView(O representedObject, FlexoController controller, FIBComponent fibComponent, LocalizedDelegate locales,
+			boolean addScrollBar) {
+		super(representedObject, controller, fibComponent, locales, addScrollBar);
 	}
 
 	@Override

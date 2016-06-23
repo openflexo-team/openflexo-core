@@ -84,7 +84,7 @@ public class OpenflexoGinaSwingEditorTestCase extends OpenflexoTestCase {
 
 		try {
 			FlexoLoggingManager.initialize(-1, true, null, Level.INFO, null);
-			FlexoLocalization.initWith(FIBEditor.LOCALIZATION);
+			FlexoLocalization.initWith(FIBEditor.EDITOR_LOCALIZATION);
 		} catch (SecurityException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

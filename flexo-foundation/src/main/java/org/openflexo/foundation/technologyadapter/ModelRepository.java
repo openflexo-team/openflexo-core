@@ -44,7 +44,6 @@ import java.io.File;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.ResourceRepository;
-import org.openflexo.localization.FlexoLocalization;
 
 /**
  * A {@link ModelRepository} stores all resources storing models relative to a given technology<br>
@@ -60,16 +59,16 @@ public abstract class ModelRepository<R extends FlexoModelResource<M, MM, TA, TA
 
 	public ModelRepository(TA technologyAdapter, FlexoResourceCenter<?> resourceCenter) {
 		super(technologyAdapter, resourceCenter);
-		getRootFolder().setRepositoryContext(FlexoLocalization.localizedForKey("[Models]"));
-		getRootFolder().setDescription(
-				"ModelRepository for technology " + technologyAdapter.getName() + " resource center: " + resourceCenter);
+		getRootFolder().setRepositoryContext(resourceCenter.getLocales().localizedForKey("[Models]"));
+		getRootFolder()
+				.setDescription("ModelRepository for technology " + technologyAdapter.getName() + " resource center: " + resourceCenter);
 	}
 
 	public ModelRepository(TA technologyAdapter, FlexoResourceCenter<?> resourceCenter, File directory) {
 		super(technologyAdapter, resourceCenter, directory);
-		getRootFolder().setRepositoryContext(FlexoLocalization.localizedForKey("[Models]"));
-		getRootFolder().setDescription(
-				"ModelRepository for technology " + technologyAdapter.getName() + " resource center: " + resourceCenter);
+		getRootFolder().setRepositoryContext(resourceCenter.getLocales().localizedForKey("[Models]"));
+		getRootFolder()
+				.setDescription("ModelRepository for technology " + technologyAdapter.getName() + " resource center: " + resourceCenter);
 	}
 
 }

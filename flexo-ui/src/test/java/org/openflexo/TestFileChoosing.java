@@ -59,7 +59,6 @@ import javax.swing.KeyStroke;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
-import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.utils.FlexoFileChooserUtils;
 
 public class TestFileChoosing {
@@ -86,7 +85,7 @@ public class TestFileChoosing {
 			public void actionPerformed(ActionEvent e) {
 				JFileChooser chooser = new JFileChooser();
 				// chooser.setCurrentDirectory(AdvancedPrefs.getLastVisitedDirectory());
-				chooser.setDialogTitle(FlexoLocalization.localizedForKey("select_a_prj_directory"));
+				chooser.setDialogTitle("select_a_prj_directory");
 				chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
 				chooser.setFileFilter(FlexoFileChooserUtils.PROJECT_FILE_FILTER);
 				chooser.setFileView(FlexoFileChooserUtils.PROJECT_FILE_VIEW);

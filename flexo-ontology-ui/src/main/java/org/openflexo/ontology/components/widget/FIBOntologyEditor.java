@@ -59,6 +59,7 @@ import org.openflexo.gina.model.widget.FIBBrowser;
 import org.openflexo.gina.model.widget.FIBCustom.FIBCustomComponent.CustomComponentParameter;
 import org.openflexo.gina.swing.view.widget.JFIBBrowserWidget;
 import org.openflexo.icon.UtilsIconLibrary;
+import org.openflexo.localization.LocalizedDelegate;
 import org.openflexo.ontology.controller.FlexoOntologyTechnologyAdapterController;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
@@ -92,12 +93,12 @@ public abstract class FIBOntologyEditor extends SelectionSynchronizedFIBView {
 	private final List<IFlexoOntologyConcept> matchingValues;
 	private IFlexoOntologyConcept selectedValue;
 
-	public FIBOntologyEditor(IFlexoOntology ontology, FlexoController controller) {
-		this(ontology, controller, FIB_FILE);
+	public FIBOntologyEditor(IFlexoOntology ontology, FlexoController controller, LocalizedDelegate locales) {
+		this(ontology, controller, FIB_FILE, locales);
 	}
 
-	public FIBOntologyEditor(IFlexoOntology ontology, FlexoController controller, Resource fibFile) {
-		super(null, controller, fibFile);
+	public FIBOntologyEditor(IFlexoOntology ontology, FlexoController controller, Resource fibFile, LocalizedDelegate locales) {
+		super(null, controller, fibFile, locales);
 		matchingValues = new ArrayList<IFlexoOntologyConcept>();
 		model = makeBrowserModel(ontology);
 		// setOntology(ontology);
@@ -390,7 +391,8 @@ public abstract class FIBOntologyEditor extends SelectionSynchronizedFIBView {
 	public String getButtonText() {
 		if (isSearching()) {
 			return "done";
-		} else {
+		}
+		else {
 			return "search";
 		}
 	}

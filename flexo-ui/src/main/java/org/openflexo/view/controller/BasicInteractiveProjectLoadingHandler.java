@@ -65,31 +65,29 @@ public class BasicInteractiveProjectLoadingHandler extends InteractiveProjectLoa
 	}
 
 	private boolean askForProjectConversion() throws ProjectLoadingCancelledException {
-		String CONVERT = FlexoLocalization.localizedForKey("convert_project");
-		String DONT_CONVERT = FlexoLocalization.localizedForKey("don't_convert_project");
-		String CANCEL = FlexoLocalization.localizedForKey("cancel");
+		String CONVERT = FlexoLocalization.getMainLocalizer().localizedForKey("convert_project");
+		String DONT_CONVERT = FlexoLocalization.getMainLocalizer().localizedForKey("don't_convert_project");
+		String CANCEL = FlexoLocalization.getMainLocalizer().localizedForKey("cancel");
 		int choice = FlexoController.selectOption(
-				"<html><center>"
-						+ IconLibrary.UNFIXABLE_WARNING_ICON.getHTMLImg()
-						+ "<b>&nbsp;"
-						+ FlexoLocalization.localizedForKey("warning")
-						+ "</b></center><br>"
-						+ "<center>"
-						+ _projectDirectory.getName()
-						+ "</center><br>"
-						+ FlexoLocalization.localizedForKey("this_project_seems_to_have_been_created_with_an_older_version_of_flexo")
-						+ "<br>"
-						+ FlexoLocalization
-								.localizedForKey("would_you_like_to_convert_entire_project_to_new_version_of_flexo_(recommanded)")
-						+ "<br></html>", CONVERT, CONVERT, DONT_CONVERT, CANCEL);
+				"<html><center>" + IconLibrary.UNFIXABLE_WARNING_ICON.getHTMLImg() + "<b>&nbsp;"
+						+ FlexoLocalization.getMainLocalizer().localizedForKey("warning") + "</b></center><br>" + "<center>"
+						+ _projectDirectory.getName() + "</center><br>"
+						+ FlexoLocalization.getMainLocalizer()
+								.localizedForKey("this_project_seems_to_have_been_created_with_an_older_version_of_flexo")
+				+ "<br>"
+				+ FlexoLocalization.getMainLocalizer()
+						.localizedForKey("would_you_like_to_convert_entire_project_to_new_version_of_flexo_(recommanded)") + "<br></html>",
+				CONVERT, CONVERT, DONT_CONVERT, CANCEL);
 
 		if (choice == 0) { // CONVERT
 			alreadyAnswer = true;
 			return true;
-		} else if (choice == 1) { // DONT_CONVERT
+		}
+		else if (choice == 1) { // DONT_CONVERT
 			alreadyAnswer = true;
 			return false;
-		} else {
+		}
+		else {
 			throw new ProjectLoadingCancelledException();
 		}
 	}

@@ -24,7 +24,7 @@
 		localize="true" />
 	<DropDown index="15" data="data.cardinality"
 		constraints="gridbag(anchor=west;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=6;insetsBottom=0;insetsLeft=0;insetsRight=20;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)"
-		name="CardinalityDD" format="object.stringRepresentation" localize="true"
+		name="CardinalityDD" format="object.stringRepresentation" localize="false"
 		iteratorClassName="org.openflexo.foundation.fml.PropertyCardinality"
 		autoSelectFirstRow="false" showReset="false" />
 	<Label label="description" align="right" index="16"

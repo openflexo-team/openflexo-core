@@ -75,7 +75,6 @@ import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.foundation.technologyadapter.TypeAwareModelSlot;
 import org.openflexo.foundation.technologyadapter.TypeAwareModelSlotInstanceConfiguration;
 import org.openflexo.gina.annotation.FIBPanel;
-import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.toolbox.JavaUtils;
 import org.openflexo.toolbox.StringUtils;
 import org.openflexo.view.controller.FlexoController;
@@ -137,38 +136,39 @@ public abstract class AbstractCreateVirtualModelInstanceWizard<A extends Abstrac
 
 		@Override
 		public String getTitle() {
-			return FlexoLocalization.localizedForKey("choose_virtual_model");
+			return getAction().getLocales().localizedForKey("choose_virtual_model");
 		}
 
 		@Override
 		public boolean isValid() {
 			if (getVirtualModel() == null) {
-				setIssueMessage(FlexoLocalization.localizedForKey("no_virtual_model_type_selected"), IssueMessageType.ERROR);
+				setIssueMessage(getAction().getLocales().localizedForKey("no_virtual_model_type_selected"), IssueMessageType.ERROR);
 				return false;
 			}
 			if (StringUtils.isEmpty(getNewVirtualModelInstanceName())) {
-				setIssueMessage(FlexoLocalization.localizedForKey("no_virtual_model_instance_name_defined"), IssueMessageType.ERROR);
+				setIssueMessage(getAction().getLocales().localizedForKey("no_virtual_model_instance_name_defined"), IssueMessageType.ERROR);
 				return false;
 			}
 
 			if (StringUtils.isEmpty(getNewVirtualModelInstanceTitle())) {
-				setIssueMessage(FlexoLocalization.localizedForKey("no_virtual_model_instance_title_defined"), IssueMessageType.ERROR);
+				setIssueMessage(getAction().getLocales().localizedForKey("no_virtual_model_instance_title_defined"),
+						IssueMessageType.ERROR);
 				return false;
 			}
 			if (!action.isValidVirtualModelInstanceName(getNewVirtualModelInstanceName())) {
-				setIssueMessage(FlexoLocalization.localizedForKey("a_virtual_model_instance_with_that_name_already_exists"),
+				setIssueMessage(getAction().getLocales().localizedForKey("a_virtual_model_instance_with_that_name_already_exists"),
 						IssueMessageType.ERROR);
 				return false;
 			}
 
 			if (chooseCreationScheme() && getCreationScheme() == null) {
-				setIssueMessage(FlexoLocalization.localizedForKey("no_creation_scheme_selected"), IssueMessageType.ERROR);
+				setIssueMessage(getAction().getLocales().localizedForKey("no_creation_scheme_selected"), IssueMessageType.ERROR);
 				return false;
 			}
 
 			if (!getNewVirtualModelInstanceName().equals(JavaUtils.getClassName(getNewVirtualModelInstanceName()))
 					&& !getNewVirtualModelInstanceName().equals(JavaUtils.getVariableName(getNewVirtualModelInstanceName()))) {
-				setIssueMessage(FlexoLocalization.localizedForKey("discouraged_name_for_new_virtual_model_instance"),
+				setIssueMessage(getAction().getLocales().localizedForKey("discouraged_name_for_new_virtual_model_instance"),
 						IssueMessageType.WARNING);
 			}
 
@@ -216,6 +216,7 @@ public abstract class AbstractCreateVirtualModelInstanceWizard<A extends Abstrac
 				AbstractVirtualModel<?> oldValue = getVirtualModel();
 				((AbstractCreateVirtualModelInstance) action).setVirtualModel(virtualModel);
 				getPropertyChangeSupport().firePropertyChange("virtualModel", oldValue, virtualModel);
+				getPropertyChangeSupport().firePropertyChange("creationScheme", null, getCreationScheme());
 				checkValidity();
 			}
 		}
@@ -370,7 +371,7 @@ public abstract class AbstractCreateVirtualModelInstanceWizard<A extends Abstrac
 				setIssueMessage(getConfiguration().getErrorMessage(), IssueMessageType.ERROR);
 			}
 			else {
-				setIssueMessage(FlexoLocalization.localizedForKey("valid_configuration"), IssueMessageType.INFO);
+				setIssueMessage(getAction().getLocales().localizedForKey("valid_configuration"), IssueMessageType.INFO);
 			}
 			return isValid;
 		}
@@ -396,7 +397,7 @@ public abstract class AbstractCreateVirtualModelInstanceWizard<A extends Abstrac
 
 		@Override
 		public String getTitle() {
-			return FlexoLocalization.localizedForKey("configure_type_aware_model_slot") + " : " + getModelSlot().getName();
+			return getAction().getLocales().localizedForKey("configure_type_aware_model_slot") + " : " + getModelSlot().getName();
 		}
 
 		@Override
@@ -422,7 +423,7 @@ public abstract class AbstractCreateVirtualModelInstanceWizard<A extends Abstrac
 
 		@Override
 		public String getTitle() {
-			return FlexoLocalization.localizedForKey("configure_free_model_slot") + " : " + getModelSlot().getName();
+			return getAction().getLocales().localizedForKey("configure_free_model_slot") + " : " + getModelSlot().getName();
 		}
 
 		@Override
@@ -448,7 +449,7 @@ public abstract class AbstractCreateVirtualModelInstanceWizard<A extends Abstrac
 
 		@Override
 		public String getTitle() {
-			return FlexoLocalization.localizedForKey("configure_virtual_model_slot") + " : " + getModelSlot().getName();
+			return getAction().getLocales().localizedForKey("configure_virtual_model_slot") + " : " + getModelSlot().getName();
 		}
 
 		@Override
@@ -499,13 +500,13 @@ public abstract class AbstractCreateVirtualModelInstanceWizard<A extends Abstrac
 
 		@Override
 		public String getTitle() {
-			return FlexoLocalization.localizedForKey("configure_creation_scheme_to_use");
+			return getAction().getLocales().localizedForKey("configure_creation_scheme_to_use");
 		}
 
 		@Override
 		public boolean isValid() {
 			if (getCreationScheme() == null) {
-				setIssueMessage(FlexoLocalization.localizedForKey("no_creation_scheme_selected"), IssueMessageType.ERROR);
+				setIssueMessage(getAction().getLocales().localizedForKey("no_creation_scheme_selected"), IssueMessageType.ERROR);
 				return false;
 			}
 
@@ -514,7 +515,7 @@ public abstract class AbstractCreateVirtualModelInstanceWizard<A extends Abstrac
 				if (!parameter.isValid(action.getCreationSchemeAction(), action.getCreationSchemeAction().getParameterValue(parameter))) {
 					// System.out.println(
 					// "Invalid parameter: " + parameter + " value=" + action.getCreationSchemeAction().getParameterValue(parameter));
-					setIssueMessage(FlexoLocalization.localizedForKey("invalid_parameter") + " : " + parameter.getName(),
+					setIssueMessage(getAction().getLocales().localizedForKey("invalid_parameter") + " : " + parameter.getName(),
 							IssueMessageType.ERROR);
 					return false;
 				}

@@ -68,7 +68,6 @@ import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoServiceImpl;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.resource.SaveResourceException;
-import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.localization.Language;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.module.FlexoModule;
@@ -728,7 +727,7 @@ public class DocResourceManager extends FlexoServiceImpl {
 		}*/
 
 		if (tooltipText == null) {
-			tooltipText = FlexoLocalization.localizedForKeyAndLanguage("no_documentation",
+			tooltipText = getServiceManager().getLocalizationService().getFlexoLocalizer().localizedForKeyAndLanguage("no_documentation",
 					getServiceManager().getGeneralPreferences().getLanguage());
 		}
 

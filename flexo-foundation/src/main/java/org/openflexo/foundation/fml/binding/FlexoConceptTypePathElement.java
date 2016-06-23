@@ -64,7 +64,7 @@ public class FlexoConceptTypePathElement extends SimplePathElement {
 
 	@Override
 	public String getTooltipText(Type resultingType) {
-		return FlexoLocalization.localizedForKey("flexo_concept_as_type_of_flexo_concept_instance");
+		return FlexoLocalization.getMainLocalizer().localizedForKey("flexo_concept_as_type_of_flexo_concept_instance");
 	}
 
 	@Override

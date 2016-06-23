@@ -59,7 +59,7 @@ public class NavigationSchemeActionType extends FlexoActionType<NavigationScheme
 	}
 
 	@Override
-	public LocalizedDelegate getLocalizer() {
+	public LocalizedDelegate getLocales() {
 		return navigationScheme.getLocalizedDictionary();
 	}
 

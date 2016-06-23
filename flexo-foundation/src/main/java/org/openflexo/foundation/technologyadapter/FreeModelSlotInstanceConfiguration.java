@@ -56,7 +56,6 @@ import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
 import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
-import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.toolbox.StringUtils;
 
 /**
@@ -130,19 +129,23 @@ public class FreeModelSlotInstanceConfiguration<RD extends ResourceData<RD> & Te
 			if (getOption() == DefaultModelSlotInstanceConfigurationOption.SelectExistingResource) {
 				if (resource != null) {
 					msInstance.setAccessedResourceData(getResource().getResourceData(null));
-				} else {
+				}
+				else {
 					logger.warning("No resource for model slot " + getModelSlot());
 				}
-			} else if (getOption() == DefaultModelSlotInstanceConfigurationOption.CreatePrivateNewResource) {
+			}
+			else if (getOption() == DefaultModelSlotInstanceConfigurationOption.CreatePrivateNewResource) {
 				resource = createProjectSpecificEmptyResource(msInstance, getModelSlot());
 				if (getResource() != null) {
 					RD resourceData = getResource().getResourceData(null);
 					if (resourceData != null) {
 						msInstance.setAccessedResourceData(resourceData);
-					} else {
+					}
+					else {
 						msInstance.setResource(getResource());
 					}
-				} else {
+				}
+				else {
 					logger.warning("Could not create ProjectSpecificEmtpyResource for model slot " + getModelSlot());
 				}
 			} /* else if (getOption() == DefaultModelSlotInstanceConfigurationOption.CreateSharedNewResource) {
@@ -179,7 +182,8 @@ public class FreeModelSlotInstanceConfiguration<RD extends ResourceData<RD> & Te
 		View view = null;
 		if (msInstance.getView() != null) {
 			view = msInstance.getView();
-		} else if (msInstance.getVirtualModelInstance() != null && msInstance.getVirtualModelInstance().getView() != null) {
+		}
+		else if (msInstance.getVirtualModelInstance() != null && msInstance.getVirtualModelInstance().getView() != null) {
 			view = msInstance.getVirtualModelInstance().getView();
 		}
 		return view;
@@ -257,49 +261,52 @@ public class FreeModelSlotInstanceConfiguration<RD extends ResourceData<RD> & Te
 		}
 		if (getOption() == DefaultModelSlotInstanceConfigurationOption.SelectExistingResource) {
 			if (getResource() == null) {
-				setErrorMessage(FlexoLocalization.localizedForKey("no_resource_selected"));
+				setErrorMessage(getLocales().localizedForKey("no_resource_selected"));
 				return false;
 			}
 			return true;
-		} else if (getOption() == DefaultModelSlotInstanceConfigurationOption.CreatePrivateNewResource) {
+		}
+		else if (getOption() == DefaultModelSlotInstanceConfigurationOption.CreatePrivateNewResource) {
 			if (StringUtils.isEmpty(getResourceUri())) {
-				setErrorMessage(FlexoLocalization.localizedForKey("please_supply_valid_uri"));
+				setErrorMessage(getLocales().localizedForKey("please_supply_valid_uri"));
 				return false;
 			}
 			try {
 				new URL(getResourceUri());
 			} catch (MalformedURLException e) {
-				setErrorMessage(FlexoLocalization.localizedForKey("malformed_uri"));
+				setErrorMessage(getLocales().localizedForKey("malformed_uri"));
 				return false;
 			}
 			if (StringUtils.isEmpty(getRelativePath())) {
-				setErrorMessage(FlexoLocalization.localizedForKey("please_supply_valid_relative_path"));
+				setErrorMessage(getLocales().localizedForKey("please_supply_valid_relative_path"));
 				return false;
 			}
 			return checkValidFileName();
-		} else if (getOption() == DefaultModelSlotInstanceConfigurationOption.CreateSharedNewResource) {
+		}
+		else if (getOption() == DefaultModelSlotInstanceConfigurationOption.CreateSharedNewResource) {
 			if (getResourceCenter() == null) {
-				setErrorMessage(FlexoLocalization.localizedForKey("please_select_a_resource_center"));
+				setErrorMessage(getLocales().localizedForKey("please_select_a_resource_center"));
 				return false;
 			}
 			if (StringUtils.isEmpty(getResourceUri())) {
-				setErrorMessage(FlexoLocalization.localizedForKey("please_supply_valid_uri"));
+				setErrorMessage(getLocales().localizedForKey("please_supply_valid_uri"));
 				return false;
 			}
 			try {
 				new URL(getResourceUri());
 			} catch (MalformedURLException e) {
-				setErrorMessage(FlexoLocalization.localizedForKey("malformed_uri"));
+				setErrorMessage(getLocales().localizedForKey("malformed_uri"));
 				return false;
 			}
 			if (StringUtils.isEmpty(getRelativePath())) {
-				setErrorMessage(FlexoLocalization.localizedForKey("please_supply_valid_relative_path"));
+				setErrorMessage(getLocales().localizedForKey("please_supply_valid_relative_path"));
 				return false;
 			}
 			return checkValidFileName();
-		} else if (getOption() == DefaultModelSlotInstanceConfigurationOption.LeaveEmpty) {
+		}
+		else if (getOption() == DefaultModelSlotInstanceConfigurationOption.LeaveEmpty) {
 			if (getModelSlot().getIsRequired()) {
-				setErrorMessage(FlexoLocalization.localizedForKey("resource_is_required"));
+				setErrorMessage(getLocales().localizedForKey("resource_is_required"));
 				return false;
 			}
 			return true;
@@ -309,7 +316,7 @@ public class FreeModelSlotInstanceConfiguration<RD extends ResourceData<RD> & Te
 
 	protected boolean checkValidFileName() {
 		if (StringUtils.isEmpty(getFilename())) {
-			setErrorMessage(FlexoLocalization.localizedForKey("please_supply_valid_file_name"));
+			setErrorMessage(getLocales().localizedForKey("please_supply_valid_file_name"));
 			return false;
 		}
 		return true;

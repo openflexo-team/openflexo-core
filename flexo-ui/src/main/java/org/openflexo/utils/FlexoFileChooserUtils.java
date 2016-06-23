@@ -46,14 +46,13 @@ import javax.swing.Icon;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileView;
 
-import org.openflexo.icon.FilesIconLibrary;
 import org.openflexo.icon.IconLibrary;
 import org.openflexo.localization.FlexoLocalization;
 
 public class FlexoFileChooserUtils {
 
-	public static class FlexoPaletteFileFilter extends FileFilter {
-
+	/*public static class FlexoPaletteFileFilter extends FileFilter {
+	
 		@Override
 		public boolean accept(File f) {
 			if (f.isDirectory()) {
@@ -61,25 +60,20 @@ public class FlexoFileChooserUtils {
 			}
 			return false;
 		}
-
+	
 		@Override
 		public String getDescription() {
 			return FlexoLocalization.localizedForKey("flexo_palettes");
 		}
+	
+	}*/
 
-	}
-
-	public static class FlexoPaletteFileView extends FileView {
-
+	/*public static class FlexoPaletteFileView extends FileView {
+	
 		protected FlexoPaletteFileView() {
-
+	
 		}
-
-		/**
-		 * Overrides isTraversable
-		 * 
-		 * @see javax.swing.filechooser.FileView#isTraversable(java.io.File)
-		 */
+	
 		@Override
 		public Boolean isTraversable(File f) {
 			if (f == null || !f.isDirectory()) {
@@ -89,7 +83,7 @@ public class FlexoFileChooserUtils {
 				return Boolean.FALSE;
 			}
 			File[] files = f.listFiles(new java.io.FileFilter() {
-
+	
 				@Override
 				public boolean accept(File file) {
 					return !file.isDirectory() && file.getName().toLowerCase().endsWith(".woxml");
@@ -100,19 +94,14 @@ public class FlexoFileChooserUtils {
 			}
 			return super.isTraversable(f);
 		}
-
-		/**
-		 * Overrides getIcon
-		 * 
-		 * @see javax.swing.filechooser.FileView#getIcon(java.io.File)
-		 */
+	
 		@Override
 		public Icon getIcon(File f) {
 			if (f.getName().toLowerCase().endsWith(".iepalette")) {
 				return FilesIconLibrary.SMALL_FOLDER_ICON;
 			} else if (f.isDirectory()) {
 				File[] files = f.listFiles(new java.io.FileFilter() {
-
+	
 					@Override
 					public boolean accept(File file) {
 						return !file.isDirectory() && file.getName().toLowerCase().endsWith(".woxml");
@@ -127,7 +116,7 @@ public class FlexoFileChooserUtils {
 				return super.getIcon(f);
 			}
 		}
-	}
+	}*/
 
 	public static class FlexoProjectFileFilter extends FileFilter {
 
@@ -141,7 +130,7 @@ public class FlexoFileChooserUtils {
 
 		@Override
 		public String getDescription() {
-			return FlexoLocalization.localizedForKey("flexo_projects");
+			return FlexoLocalization.getMainLocalizer().localizedForKey("flexo_projects");
 		}
 
 	}
@@ -183,7 +172,8 @@ public class FlexoFileChooserUtils {
 			}
 			if (f.getName().toLowerCase().endsWith(".prj")) {
 				return Boolean.FALSE;
-			} else {
+			}
+			else {
 				return super.isTraversable(f);
 			}
 		}
@@ -197,7 +187,8 @@ public class FlexoFileChooserUtils {
 		public Icon getIcon(File f) {
 			if (f.getName().toLowerCase().endsWith(".prj")) {
 				return IconLibrary.OPENFLEXO_NOTEXT_16;
-			} else {
+			}
+			else {
 				return super.getIcon(f);
 			}
 		}
@@ -209,8 +200,8 @@ public class FlexoFileChooserUtils {
 
 	public static final FilenameFilter PROJECT_FILE_NAME_FILTER = new FlexoProjectFilenameFilter();
 
-	public static final FileView PALETTE_FILE_VIEW = new FlexoPaletteFileView();
+	// public static final FileView PALETTE_FILE_VIEW = new FlexoPaletteFileView();
 
-	public static final FileFilter PALETTE_FILE_FILTER = new FlexoPaletteFileFilter();
+	// public static final FileFilter PALETTE_FILE_FILTER = new FlexoPaletteFileFilter();
 
 }

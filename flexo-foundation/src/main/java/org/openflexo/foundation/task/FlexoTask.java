@@ -89,49 +89,49 @@ public abstract class FlexoTask implements Runnable, HasPropertyChangeSupport {
 		WAITING {
 			@Override
 			public String getLocalizedName() {
-				return FlexoLocalization.localizedForKey("waiting");
+				return FlexoLocalization.getMainLocalizer().localizedForKey("waiting");
 			}
 		},
 		READY_TO_EXECUTE {
 			@Override
 			public String getLocalizedName() {
-				return FlexoLocalization.localizedForKey("ready_to_execute");
+				return FlexoLocalization.getMainLocalizer().localizedForKey("ready_to_execute");
 			}
 		},
 		RUNNING {
 			@Override
 			public String getLocalizedName() {
-				return FlexoLocalization.localizedForKey("running");
+				return FlexoLocalization.getMainLocalizer().localizedForKey("running");
 			}
 		},
 		FINISHED {
 			@Override
 			public String getLocalizedName() {
-				return FlexoLocalization.localizedForKey("finished");
+				return FlexoLocalization.getMainLocalizer().localizedForKey("finished");
 			}
 		},
 		EXCEPTION_THROWN {
 			@Override
 			public String getLocalizedName() {
-				return FlexoLocalization.localizedForKey("exception_thrown");
+				return FlexoLocalization.getMainLocalizer().localizedForKey("exception_thrown");
 			}
 		},
 		CANCEL_REQUESTED {
 			@Override
 			public String getLocalizedName() {
-				return FlexoLocalization.localizedForKey("cancel_requested");
+				return FlexoLocalization.getMainLocalizer().localizedForKey("cancel_requested");
 			}
 		},
 		CANCELLED {
 			@Override
 			public String getLocalizedName() {
-				return FlexoLocalization.localizedForKey("cancelled");
+				return FlexoLocalization.getMainLocalizer().localizedForKey("cancelled");
 			}
 		},
 		UNKNOWN {
 			@Override
 			public String getLocalizedName() {
-				return FlexoLocalization.localizedForKey("unknown_task_status");
+				return FlexoLocalization.getMainLocalizer().localizedForKey("unknown_task_status");
 			}
 		};
 		public abstract String getLocalizedName();

@@ -72,7 +72,7 @@ public class ViewPointLibrary extends DefaultFlexoObject implements FlexoService
 
 	private static final Logger logger = Logger.getLogger(ViewPointLibrary.class.getPackage().getName());
 
-	public ViewPointValidationModel viewPointValidationModel;
+	public FMLValidationModel viewPointValidationModel;
 
 	private final Map<String, ViewPointResource> map;
 
@@ -347,10 +347,10 @@ public class ViewPointLibrary extends DefaultFlexoObject implements FlexoService
 		}
 	}
 
-	public ViewPointValidationModel getViewPointValidationModel() {
+	public FMLValidationModel getViewPointValidationModel() {
 		if (viewPointValidationModel == null && serviceManager != null) {
 			try {
-				viewPointValidationModel = new ViewPointValidationModel(serviceManager.getTechnologyAdapterService());
+				viewPointValidationModel = new FMLValidationModel(serviceManager.getTechnologyAdapterService());
 			} catch (ModelDefinitionException e) {
 				e.printStackTrace();
 			}

@@ -56,7 +56,6 @@ import org.openflexo.foundation.fml.rt.rm.ViewResource;
 import org.openflexo.foundation.resource.RepositoryFolder;
 import org.openflexo.gina.controller.FIBController.Status;
 import org.openflexo.icon.FMLRTIconLibrary;
-import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.view.controller.ActionInitializer;
 import org.openflexo.view.controller.ControllerActionInitializer;
 import org.openflexo.view.controller.FlexoController;
@@ -77,7 +76,8 @@ public class CreateViewInitializer extends ActionInitializer<CreateViewInFolder,
 				// ((FlexoProject)action.getFocusedObject().getResourceRepository()).getViewPointRepository().getViewPointLibrary().getViewPoints();
 				if (action.skipChoosePopup()) {
 					return true;
-				} else {
+				}
+				else {
 					Wizard wizard = new CreateViewWizard(action, getController());
 					WizardDialog dialog = new WizardDialog(wizard, getController());
 					dialog.showDialog();
@@ -99,10 +99,10 @@ public class CreateViewInitializer extends ActionInitializer<CreateViewInFolder,
 			@Override
 			public boolean run(EventObject e, CreateViewInFolder action) {
 				System.out.println("Hop, on notifie pour la nouvelle resource");
-				action.getNewView().getResource().getPropertyChangeSupport()
-						.firePropertyChange("contents", null, action.getNewView().getResource().getContents());
-				action.getFocusedObject().getPropertyChangeSupport()
-						.firePropertyChange("resources", null, action.getFocusedObject().getResources());
+				action.getNewView().getResource().getPropertyChangeSupport().firePropertyChange("contents", null,
+						action.getNewView().getResource().getContents());
+				action.getFocusedObject().getPropertyChangeSupport().firePropertyChange("resources", null,
+						action.getFocusedObject().getResources());
 
 				// getController().setCurrentEditedObjectAsModuleView(action.getNewView());
 				getController().selectAndFocusObject(action.getNewView());
@@ -120,7 +120,7 @@ public class CreateViewInitializer extends ActionInitializer<CreateViewInFolder,
 			@Override
 			public boolean handleException(FlexoException exception, CreateViewInFolder action) {
 				if (exception instanceof NotImplementedException) {
-					FlexoController.notify(FlexoLocalization.localizedForKey("not_implemented_yet"));
+					FlexoController.notify(action.getLocales().localizedForKey("not_implemented_yet"));
 					return true;
 				}
 				return false;

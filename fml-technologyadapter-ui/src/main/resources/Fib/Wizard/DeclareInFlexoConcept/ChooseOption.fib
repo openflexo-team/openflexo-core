@@ -75,7 +75,7 @@
 	<RadioButtonList id="27" manageDynamicModel="true"
 		columns="1" description="" controllerClassName="org.openflexo.gina.controller.FIBController"
 		index="1" localize="true" font="LucidaGrande,0,13"
-		constraints="twocols(anchor=center;expandHorizontally=false;expandVertically=false;fill=horizontal;gridHeight=1;gridWidth=0;gridX=0;gridY=1;index=1;insetsBottom=0;insetsLeft=0;insetsRight=10;insetsTop=0;location=center;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+		constraints="twocols(anchor=center;expandHorizontally=true;expandVertically=false;fill=horizontal;gridHeight=1;gridWidth=0;gridX=0;gridY=1;index=1;insetsBottom=0;insetsLeft=0;insetsRight=10;insetsTop=0;location=right;padX=0;padY=0;weightX=0.0;weightY=0.0)"
 		format="object.name" showText="true"
 		iteratorClassName="org.openflexo.foundation.action.transformation.AbstractDeclareInFlexoConcept$DeclareInFlexoConceptChoices"
 		vGap="0" showIcon="false" useScrollBar="false" data="data.primaryChoice"

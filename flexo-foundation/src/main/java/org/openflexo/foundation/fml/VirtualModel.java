@@ -49,7 +49,6 @@ import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.View;
 import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.task.Progress;
-import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
@@ -104,7 +103,7 @@ public interface VirtualModel extends AbstractVirtualModel<VirtualModel> {
 		 */
 		public static VirtualModel newVirtualModel(String baseName, ViewPoint viewPoint) throws SaveResourceException {
 
-			Progress.progress(FlexoLocalization.localizedForKey("create_virtual_model_resource"));
+			Progress.progress(viewPoint.getLocales().localizedForKey("create_virtual_model_resource"));
 			File viewPointDirectory = ResourceLocator.retrieveResourceAsFile(((ViewPointResource) viewPoint.getResource()).getDirectory());
 			// File virtualModelDirectory = new File(ResourceLocator.retrieveResourceAsFile(((ViewPointResource) viewPoint.getResource())
 			// .getDirectory()), baseName);
@@ -115,13 +114,13 @@ public interface VirtualModel extends AbstractVirtualModel<VirtualModel> {
 			ViewPointLibrary viewPointLibrary = viewPoint.getViewPointLibrary();
 			VirtualModelResource vmRes = VirtualModelResourceImpl.makeVirtualModelResource(baseName, viewPointDirectory,
 					(ViewPointResource) viewPoint.getResource(), viewPointLibrary.getServiceManager());
-			Progress.progress(FlexoLocalization.localizedForKey("create_virtual_model_resource_data"));
+			Progress.progress(viewPoint.getLocales().localizedForKey("create_virtual_model_resource_data"));
 			VirtualModel virtualModel = vmRes.getFactory().newVirtualModel();
 			virtualModel.setViewPoint(viewPoint);
 			vmRes.setResourceData(virtualModel);
 			virtualModel.setResource(vmRes);
 			viewPoint.addToVirtualModels(virtualModel);
-			Progress.progress(FlexoLocalization.localizedForKey("save_virtual_model_resource"));
+			Progress.progress(viewPoint.getLocales().localizedForKey("save_virtual_model_resource"));
 			virtualModel.getResource().save(null);
 
 			return virtualModel;

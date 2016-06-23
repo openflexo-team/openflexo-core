@@ -38,15 +38,29 @@
 
 package org.openflexo.foundation.fml;
 
+import java.awt.Component;
+import java.awt.Frame;
 import java.beans.PropertyChangeSupport;
 import java.io.File;
 import java.text.Collator;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
+import java.util.WeakHashMap;
+import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import javax.swing.AbstractButton;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JTabbedPane;
+import javax.swing.border.TitledBorder;
+import javax.swing.table.TableColumn;
 
 import org.openflexo.connie.BindingModel;
 import org.openflexo.foundation.fml.inspector.InspectorEntry;
@@ -65,6 +79,7 @@ import org.openflexo.model.annotations.PropertyIdentifier;
 import org.openflexo.model.annotations.Remover;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLElement;
+import org.openflexo.model.undo.CompoundEdit;
 import org.openflexo.toolbox.HTMLUtils;
 import org.openflexo.toolbox.StringUtils;
 
@@ -103,6 +118,9 @@ public interface ViewPointLocalizedDictionary extends FMLObject, org.openflexo.l
 
 	public void searchNewEntries();
 
+	public DynamicEntry addEntry(String key);
+
+	@Override
 	public DynamicEntry addEntry();
 
 	public void deleteEntry(DynamicEntry entry);
@@ -112,16 +130,19 @@ public interface ViewPointLocalizedDictionary extends FMLObject, org.openflexo.l
 		private static final Logger logger = Logger.getLogger(ViewPointLocalizedDictionary.class.getPackage().getName());
 
 		// private Vector<LocalizedEntry> _entries;
-		private final Hashtable<Language, Hashtable<String, String>> _values;
+		private final Map<Language, Hashtable<String, String>> _values;
+		private Map<String, DynamicEntry> entriesMap = null;
 		private List<DynamicEntry> entries = null;
+
+		private final WeakHashMap<Component, String> _storedLocalizedForComponents = new WeakHashMap<Component, String>();
+		private final WeakHashMap<JComponent, String> _storedLocalizedForComponentTooltips = new WeakHashMap<JComponent, String>();
+		private final WeakHashMap<TitledBorder, String> _storedLocalizedForBorders = new WeakHashMap<TitledBorder, String>();
+		private final WeakHashMap<TableColumn, String> _storedLocalizedForTableColumn = new WeakHashMap<TableColumn, String>();
 
 		public ViewPointLocalizedDictionaryImpl() {
 			super();
-			// _entries = new Vector<LocalizedEntry>();
-			_values = new Hashtable<Language, Hashtable<String, String>>();
-			/*if (builder != null) {
-				owner = builder.getVirtualModel();
-			}*/
+			_values = new HashMap<>();
+			entriesMap = new HashMap<>();
 		}
 
 		@Override
@@ -130,40 +151,19 @@ public interface ViewPointLocalizedDictionary extends FMLObject, org.openflexo.l
 			return null;
 		}
 
-		/*public ViewPointLocalizedDictionaryImpl() {
-			super();
-			_entries = new Vector<ViewPointLocalizedEntry>();
-			_values = new Hashtable<Language, Hashtable<String, String>>();
-			if (builder != null) {
-				owner = builder.getViewPoint();
-			}
-		}*/
-
 		@Override
 		public ViewPoint getResourceData() {
 			return getOwner();
 		}
-
-		/*@Override
-		public ViewPoint getViewPoint() {
-			return getOwner();
-		}*/
-
-		/*@Override
-		public Vector<ViewPointLocalizedEntry> getEntries() {
-			return _entries;
-		}
-
-		public void setEntries(Vector<LocalizedEntry> someEntries) {
-			_entries = someEntries;
-		}*/
 
 		@Override
 		public void addToLocalizedEntries(ViewPointLocalizedEntry entry) {
 			performSuperAdder(LOCALIZED_ENTRIES_KEY, entry);
 			// entry.setLocalizedDictionary(this);
 			// _entries.add(entry);
-			logger.fine("Add entry key:" + entry.getKey() + " lang=" + entry.getLanguage() + " value:" + entry.getValue());
+			if (logger.isLoggable(Level.FINE)) {
+				logger.fine("Add entry key:" + entry.getKey() + " lang=" + entry.getLanguage() + " value:" + entry.getValue());
+			}
 			Language lang = Language.retrieveLanguage(entry.getLanguage());
 			if (lang == null) {
 				logger.warning("Undefined language: " + entry.getLanguage());
@@ -171,12 +171,6 @@ public interface ViewPointLocalizedDictionary extends FMLObject, org.openflexo.l
 			}
 			getDictForLang(lang).put(entry.getKey(), entry.getValue());
 		}
-
-		/*@Override
-		public void removeFromEntries(ViewPointLocalizedEntry entry) {
-			entry.setLocalizedDictionary(null);
-			_entries.remove(entry);
-		}*/
 
 		private ViewPointLocalizedEntry getLocalizedEntry(Language language, String key) {
 			for (ViewPointLocalizedEntry entry : getLocalizedEntries()) {
@@ -196,40 +190,196 @@ public interface ViewPointLocalizedDictionary extends FMLObject, org.openflexo.l
 			return dict;
 		}
 
-		/*public String getDefaultValue(String key, Language language) {
-			// logger.info("Searched default value for key "+key+" return "+FlexoLocalization.localizedForKey(key));
-			if (getParent() != null) {
-				return FlexoLocalization.localizedForKeyAndLanguage(getParent(), key, language);
-			}
-			return key;
-		}*/
-
+		/**
+		 * Return String matching specified key and language set as default language<br>
+		 * 
+		 * This is general and main method to use localized in Flexo.<br>
+		 * Applicable language is chosen from the one defined in FlexoLocalization (configurable from GeneralPreferences).<br>
+		 * Use english names for keys, such as 'some_english_words'<br>
+		 * 
+		 * Usage example: <code>localizedForKey("some_english_words")</code>
+		 * 
+		 * @param key
+		 * @return String matching specified key and language defined as default in {@link FlexoLocalization}
+		 */
 		@Override
-		public String getLocalizedForKeyAndLanguage(String key, Language language, boolean createsNewEntriesIfNonExistant) {
-			return getLocalizedForKeyAndLanguage(key, language);
+		public String localizedForKey(String key) {
+			return localizedForKeyAndLanguage(key, FlexoLocalization.getCurrentLanguage());
 		}
 
+		/**
+		 * Return String matching specified key and language<br>
+		 * 
+		 * @param key
+		 * @param language
+		 * @return
+		 */
 		@Override
-		public String getLocalizedForKeyAndLanguage(String key, Language language) {
-			// if (isSearchingNewEntries) logger.info("-------> called localizedForKeyAndLanguage() key="+key+" lang="+language);
-			return getDictForLang(language).get(key);
+		public String localizedForKeyAndLanguage(String key, Language language) {
+			return localizedForKeyAndLanguage(key, language, handleNewEntry(key, language));
+		}
 
-			/*String returned = getDictForLang(language).get(key);
-			if (returned == null) {
-				String defaultValue = getDefaultValue(key, language);
-				if (handleNewEntry(key, language)) {
-					if (!key.equals(defaultValue)) {
-						addToEntries(new ViewPointLocalizedEntry(this, key, language.getName(), defaultValue));
-						logger.fine("Calc ViewPointLocalizedDictionary: store value " + defaultValue + " for key " + key + " for language " + language);
-					} else {
-						getDictForLang(language).put(key, defaultValue);
-						logger.fine("Calc ViewPointLocalizedDictionary: undefined value for key " + key + " for language " + language);
-					}
-					// dynamicEntries = null;
-				}
-				return defaultValue;
+		/**
+		 * Return String matching specified key and language<br>
+		 * If #createsNewEntryInFirstEditableParent set to true, will try to enter a new traduction.<br>
+		 * LocalizedDelegate are recursively requested to their parents, and the first one who respond true to
+		 * {@link #handleNewEntry(String, Language)} will add a new entry
+		 * 
+		 * @param key
+		 * @param language
+		 * @return
+		 */
+		// TODO: duplicated code as in LocalizedDelegateImpl, please refactor this to avoid code duplication
+		@Override
+		public String localizedForKeyAndLanguage(String key, Language language, boolean createsNewEntryInFirstEditableParent) {
+
+			if (key == null || StringUtils.isEmpty(key)) {
+				return null;
 			}
-			return returned;*/
+
+			/*boolean debug = false;
+			
+			if (key.equals("Super classes")) {
+				System.out.println("OK, j'ai le truc Super classes");
+				System.out.println("createsNewEntryInFirstEditableParent=" + createsNewEntryInFirstEditableParent);
+				debug = true;
+				LocalizedDelegate l = this;
+				while (l.getParent() != null) {
+					System.out.println("> " + l);
+					l = l.getParent();
+				}
+				// Thread.dumpStack();
+			}*/
+
+			String localized = getDictForLang(language).get(key);
+
+			if (localized == null) {
+				// Not found in this delegate
+				if (handleNewEntry(key, language)) {
+					// We then have to create entry here
+					addEntry(key);
+					return getDictForLang(language).get(key);
+				}
+				else {
+					if (getParent() != null) {
+						// Nice, we forward the request to the parent
+						return getParent().localizedForKeyAndLanguage(key, language, createsNewEntryInFirstEditableParent);
+					}
+					return key;
+				}
+			}
+
+			return localized;
+		}
+
+		// TODO: duplicated code as in LocalizedDelegateImpl, please refactor this to avoid code duplication
+		@Override
+		public String localizedForKeyWithParams(String key, Object... object) {
+			String base = localizedForKey(key);
+			return FlexoLocalization.replaceAllParamsInString(base, object);
+		}
+
+		// TODO: duplicated code as in LocalizedDelegateImpl, please refactor this to avoid code duplication
+		@Override
+		public String localizedForKey(String key, Component component) {
+			if (logger.isLoggable(Level.FINE)) {
+				logger.finest("localizedForKey called with " + key + " for " + component.getClass().getName());
+			}
+			_storedLocalizedForComponents.put(component, key);
+			return localizedForKey(key);
+		}
+
+		// TODO: duplicated code as in LocalizedDelegateImpl, please refactor this to avoid code duplication
+		@Override
+		public String localizedTooltipForKey(String key, JComponent component) {
+			if (logger.isLoggable(Level.FINE)) {
+				logger.finest("localizedForKey called with " + key + " for " + component.getClass().getName());
+			}
+			_storedLocalizedForComponentTooltips.put(component, key);
+			return localizedForKey(key);
+		}
+
+		// TODO: duplicated code as in LocalizedDelegateImpl, please refactor this to avoid code duplication
+		@Override
+		public String localizedForKey(String key, TitledBorder border) {
+			if (logger.isLoggable(Level.FINE)) {
+				logger.finest("localizedForKey called with " + key + " for border " + border.getClass().getName());
+			}
+			_storedLocalizedForBorders.put(border, key);
+			return localizedForKey(key);
+		}
+
+		// TODO: duplicated code as in LocalizedDelegateImpl, please refactor this to avoid code duplication
+		@Override
+		public String localizedForKey(String key, TableColumn column) {
+			if (logger.isLoggable(Level.FINE)) {
+				logger.finest("localizedForKey called with " + key + " for border " + column.getClass().getName());
+			}
+			_storedLocalizedForTableColumn.put(column, key);
+			return localizedForKey(key);
+		}
+
+		// TODO: duplicated code as in LocalizedDelegateImpl, please refactor this to avoid code duplication
+		@Override
+		public void clearStoredLocalizedForComponents() {
+			_storedLocalizedForComponents.clear();
+			_storedLocalizedForBorders.clear();
+			// _storedAdditionalStrings.clear();
+			_storedLocalizedForTableColumn.clear();
+			// localizationListeners.clear();
+		}
+
+		// TODO: duplicated code as in LocalizedDelegateImpl, please refactor this to avoid code duplication
+		@Override
+		public void updateGUILocalized() {
+			for (Map.Entry<Component, String> e : _storedLocalizedForComponents.entrySet()) {
+				Component component = e.getKey();
+				String string = e.getValue();
+				String text = localizedForKey(string);
+				/*String additionalString = _storedAdditionalStrings.get(component);
+				if (additionalString != null) {
+					text = text + additionalString;
+				}*/
+				if (component instanceof AbstractButton) {
+					((AbstractButton) component).setText(text);
+				}
+				if (component instanceof JLabel) {
+					((JLabel) component).setText(text);
+				}
+				component.setName(text);
+				if (component.getParent() instanceof JTabbedPane) {
+					if (((JTabbedPane) component.getParent()).indexOfComponent(component) > -1) {
+						((JTabbedPane) component.getParent()).setTitleAt(((JTabbedPane) component.getParent()).indexOfComponent(component),
+								text);
+					}
+				}
+				if (component.getParent() != null && component.getParent().getParent() instanceof JTabbedPane) {
+					if (((JTabbedPane) component.getParent().getParent()).indexOfComponent(component) > -1) {
+						((JTabbedPane) component.getParent().getParent())
+								.setTitleAt(((JTabbedPane) component.getParent().getParent()).indexOfComponent(component), text);
+					}
+				}
+			}
+			for (Map.Entry<JComponent, String> e : _storedLocalizedForComponentTooltips.entrySet()) {
+				JComponent component = e.getKey();
+				String string = e.getValue();
+				String text = localizedForKey(string);
+				component.setToolTipText(text);
+			}
+			for (Map.Entry<TitledBorder, String> e : _storedLocalizedForBorders.entrySet()) {
+				String string = e.getValue();
+				String text = localizedForKey(string);
+				e.getKey().setTitle(text);
+			}
+			for (Map.Entry<TableColumn, String> e : _storedLocalizedForTableColumn.entrySet()) {
+				String string = e.getValue();
+				String text = localizedForKey(string);
+				e.getKey().setHeaderValue(text);
+			}
+			for (Frame f : Frame.getFrames()) {
+				f.repaint();
+			}
+
 		}
 
 		public void setLocalizedForKeyAndLanguage(String key, String value, Language language) {
@@ -241,7 +391,8 @@ public interface ViewPointLocalizedDictionary extends FMLObject, org.openflexo.l
 				newEntry.setKey(key);
 				newEntry.setValue(value);
 				addToLocalizedEntries(newEntry);
-			} else {
+			}
+			else {
 				entry.setValue(value);
 			}
 		}
@@ -255,8 +406,8 @@ public interface ViewPointLocalizedDictionary extends FMLObject, org.openflexo.l
 
 		// This method is really not efficient, but only called in the context of locales editor
 		// This issue is not really severe.
-		private Vector<String> buildAllKeys() {
-			Vector<String> returned = new Vector<String>();
+		private List<String> buildAllKeys() {
+			List<String> returned = new ArrayList<String>();
 			for (Language l : _values.keySet()) {
 				for (String key : _values.get(l).keySet()) {
 					if (!returned.contains(key)) {
@@ -274,7 +425,7 @@ public interface ViewPointLocalizedDictionary extends FMLObject, org.openflexo.l
 			if (entries == null) {
 				entries = new Vector<DynamicEntry>();
 				for (String key : buildAllKeys()) {
-					entries.add(new DynamicEntryImpl(key));
+					entries.add(getEntry(key, true));
 				}
 				Collections.sort(entries, new Comparator<DynamicEntry>() {
 					@Override
@@ -286,16 +437,16 @@ public interface ViewPointLocalizedDictionary extends FMLObject, org.openflexo.l
 			return entries;
 		}
 
-		private DynamicEntry getEntry(String key) {
+		private DynamicEntry getEntry(String key, boolean createKeyWhenMissing) {
 			if (key == null) {
 				return null;
 			}
-			for (DynamicEntry entry : getEntries()) {
-				if (key.equals(entry.getKey())) {
-					return entry;
-				}
+			DynamicEntry entry = entriesMap.get(key);
+			if (entry == null && createKeyWhenMissing) {
+				entry = new DynamicEntryImpl(key);
+				entriesMap.put(key, entry);
 			}
-			return null;
+			return entry;
 		}
 
 		public void refresh() {
@@ -306,28 +457,79 @@ public interface ViewPointLocalizedDictionary extends FMLObject, org.openflexo.l
 		}
 
 		@Override
+		public DynamicEntry addEntry(String aKey) {
+
+			DynamicEntry returned = getEntry(aKey, false);
+			if (returned != null) {
+				searchTranslation(returned);
+				refresh();
+			}
+			else {
+				for (Language l : FlexoLocalization.getAvailableLanguages()) {
+					ViewPointLocalizedEntry newEntry = getViewPoint().getFMLModelFactory().newInstance(ViewPointLocalizedEntry.class);
+					newEntry.setLanguage(l.getName());
+					newEntry.setKey(aKey);
+					newEntry.setValue(aKey);
+					addToLocalizedEntries(newEntry);
+				}
+				entries = null;
+				returned = getEntry(aKey, true);
+				if (returned != null) {
+					searchTranslation(returned);
+					refresh();
+				}
+				else {
+					logger.warning("Could not created localization key " + aKey);
+				}
+			}
+
+			return returned;
+		}
+
+		@Override
 		public DynamicEntry addEntry() {
-			String newKey = "key";
-			Vector<String> allKeys = buildAllKeys();
-			boolean keyAlreadyExists = allKeys.contains(newKey);
+
+			CompoundEdit ce = null;
+			FMLModelFactory factory = null;
+
+			if (getViewPoint() != null) {
+				factory = getViewPoint().getFMLModelFactory();
+				if (factory != null) {
+					if (!factory.getEditingContext().getUndoManager().isBeeingRecording()) {
+						ce = factory.getEditingContext().getUndoManager().startRecording("add_localized_entry");
+					}
+				}
+			}
+
+			String keyToCreate = "key";
+			boolean keyAlreadyExists = (getEntry(keyToCreate, false) != null);
 			int index = 1;
 			while (keyAlreadyExists) {
-				newKey = "key" + index;
-				keyAlreadyExists = allKeys.contains(newKey);
+				keyToCreate = "key" + index;
+				keyAlreadyExists = (getEntry(keyToCreate, false) != null);
 				index++;
 			}
 
-			ViewPointLocalizedEntry newEntry = getViewPoint().getFMLModelFactory().newInstance(ViewPointLocalizedEntry.class);
-			newEntry.setLanguage(FlexoLocalization.getCurrentLanguage().getName());
-			newEntry.setKey(newKey);
-			newEntry.setValue(newKey);
-			addToLocalizedEntries(newEntry);
-			refresh();
-			return getEntry(newKey);
+			DynamicEntry returned = addEntry(keyToCreate);
+
+			if (factory != null) {
+				if (ce != null) {
+					factory.getEditingContext().getUndoManager().stopRecording(ce);
+				}
+				else if (factory.getEditingContext().getUndoManager().isBeeingRecording()) {
+					factory.getEditingContext().getUndoManager()
+							.stopRecording(factory.getEditingContext().getUndoManager().getCurrentEdition());
+				}
+			}
+
+			return returned;
 		}
 
 		@Override
 		public void deleteEntry(DynamicEntry entry) {
+			if (entry.getKey() != null) {
+				entriesMap.remove(entry.getKey());
+			}
 			for (Language l : Language.availableValues()) {
 				_values.get(l).remove(entry.getKey());
 				ViewPointLocalizedEntry e = getLocalizedEntry(l, entry.getKey());
@@ -341,32 +543,66 @@ public interface ViewPointLocalizedDictionary extends FMLObject, org.openflexo.l
 
 		@Override
 		public void searchNewEntries() {
-			logger.info("Search new entries");
+			logger.info("Search new entries for " + getViewPoint());
+
+			CompoundEdit ce = null;
+			FMLModelFactory factory = null;
+
+			if (getViewPoint() != null) {
+				factory = getViewPoint().getFMLModelFactory();
+				if (factory != null) {
+					if (!factory.getEditingContext().getUndoManager().isBeeingRecording()) {
+						ce = factory.getEditingContext().getUndoManager().startRecording("localize_viewpoint");
+					}
+				}
+			}
+
+			handleNewEntry = true;
+			getViewPoint().loadVirtualModelsWhenUnloaded();
 			for (VirtualModel vm : getViewPoint().getVirtualModels()) {
-				for (FlexoConcept ep : vm.getFlexoConcepts()) {
-					checkAndRegisterLocalized(ep.getName());
-					for (FlexoBehaviour es : ep.getFlexoBehaviours()) {
+				for (FlexoConcept concept : vm.getFlexoConcepts()) {
+					checkAndRegisterLocalized(concept.getName());
+					for (FlexoBehaviour es : concept.getFlexoBehaviours()) {
 						checkAndRegisterLocalized(es.getLabel());
 						checkAndRegisterLocalized(es.getDescription());
 						for (FlexoBehaviourParameter p : es.getParameters()) {
 							checkAndRegisterLocalized(p.getLabel());
 						}
-						for (InspectorEntry entry : ep.getInspector().getEntries()) {
+						for (InspectorEntry entry : concept.getInspector().getEntries()) {
 							checkAndRegisterLocalized(entry.getLabel());
 						}
 					}
 				}
 			}
 			entries = null;
-			getViewPoint().setChanged();
-			getViewPoint().notifyObservers();
+			handleNewEntry = false;
+
+			if (factory != null) {
+				if (ce != null) {
+					factory.getEditingContext().getUndoManager().stopRecording(ce);
+				}
+				else if (factory.getEditingContext().getUndoManager().isBeeingRecording()) {
+					factory.getEditingContext().getUndoManager()
+							.stopRecording(factory.getEditingContext().getUndoManager().getCurrentEdition());
+				}
+			}
+
+			// getViewPoint().setChanged();
+			// getViewPoint().notifyObservers();
 		}
 
 		private void checkAndRegisterLocalized(String key) {
-			handleNewEntry = true;
-			FlexoLocalization.localizedForKey(this, key);
-			// getLocalizedForKeyAndLanguage(key, FlexoLocalization.getCurrentLanguage());
-			handleNewEntry = false;
+			// System.out.println("checkAndRegisterLocalized for " + key);
+			if (StringUtils.isEmpty(key)) {
+				return;
+			}
+			if (getEntry(key, false) != null) {
+				searchTranslation(getEntry(key, false));
+				return;
+			}
+			else {
+				addEntry(key);
+			}
 		}
 
 		@Override
@@ -376,7 +612,7 @@ public interface ViewPointLocalizedDictionary extends FMLObject, org.openflexo.l
 
 		@Override
 		public boolean registerNewEntry(String key, Language language, String value) {
-			System.out.println("Register entry key=" + key + " lang=" + language + " value=" + value);
+			// System.out.println("Register entry key=" + key + " lang=" + language + " value=" + value);
 			setLocalizedForKeyAndLanguage(key, value, language);
 			return true;
 		}
@@ -398,6 +634,7 @@ public interface ViewPointLocalizedDictionary extends FMLObject, org.openflexo.l
 
 		@Override
 		public void searchLocalized() {
+			// System.out.println("Retrieving locales to be translated from " + this);
 			searchNewEntries();
 			getPropertyChangeSupport().firePropertyChange("entries", null, getEntries());
 		}
@@ -405,24 +642,23 @@ public interface ViewPointLocalizedDictionary extends FMLObject, org.openflexo.l
 		@Override
 		public void searchTranslation(LocalizedEntry entry) {
 			if (getParent() != null) {
-				String englishTranslation = FlexoLocalization.localizedForKeyAndLanguage(getParent(), entry.getKey(), Language.ENGLISH,
-						false);
+				String englishTranslation = getParent().localizedForKeyAndLanguage(entry.getKey(), Language.ENGLISH, false);
 				if (entry.getKey().equals(englishTranslation)) {
 					englishTranslation = automaticEnglishTranslation(entry.getKey());
 				}
 				entry.setEnglish(englishTranslation);
-				String dutchTranslation = FlexoLocalization.localizedForKeyAndLanguage(getParent(), entry.getKey(), Language.DUTCH, false);
+				String dutchTranslation = getParent().localizedForKeyAndLanguage(entry.getKey(), Language.DUTCH, false);
 				if (entry.getKey().equals(dutchTranslation)) {
 					dutchTranslation = automaticDutchTranslation(entry.getKey());
 				}
 				entry.setDutch(dutchTranslation);
-				String frenchTranslation = FlexoLocalization
-						.localizedForKeyAndLanguage(getParent(), entry.getKey(), Language.FRENCH, false);
+				String frenchTranslation = getParent().localizedForKeyAndLanguage(entry.getKey(), Language.FRENCH, false);
 				if (entry.getKey().equals(frenchTranslation)) {
 					frenchTranslation = automaticFrenchTranslation(entry.getKey());
 				}
 				entry.setFrench(frenchTranslation);
-			} else {
+			}
+			else {
 				String englishTranslation = entry.getKey().toString();
 				englishTranslation = englishTranslation.replace("_", " ");
 				englishTranslation = englishTranslation.substring(0, 1).toUpperCase() + englishTranslation.substring(1);
@@ -464,23 +700,28 @@ public interface ViewPointLocalizedDictionary extends FMLObject, org.openflexo.l
 			}
 
 			@Override
-			public String getDeletedProperty() {
-				// TODO
-				return null;
+			public final String getDeletedProperty() {
+				return DELETED_PROPERTY;
 			}
 
 			@Override
 			public void delete() {
+				deleteEntry(this);
+
+				/*System.out.println("Suppression de l'entree " + getKey());
+				System.out.println("entries=" + entries);
 				if (entries != null) {
+					System.out.println("contains=" + entries.contains(this));
 					entries.remove(this);
-					for (Language l : Language.getAvailableLanguages()) {
-						ViewPointLocalizedEntry e = getLocalizedEntry(l, key);
-						if (e != null) {
-							System.out.println("Removing " + e.getValue() + " for key " + key + " language=" + l);
-							removeFromLocalizedEntries(e);
-						}
+				}
+				for (Language l : Language.getAvailableLanguages()) {
+					ViewPointLocalizedEntry e = getLocalizedEntry(l, key);
+					if (e != null) {
+						System.out.println("Removing " + e.getValue() + " for key " + key + " language=" + l);
+						removeFromLocalizedEntries(e);
 					}
 				}
+				*/
 			}
 
 			@Override
@@ -505,22 +746,10 @@ public interface ViewPointLocalizedDictionary extends FMLObject, org.openflexo.l
 				key = aNewKey;
 			}
 
-			/*@Override
-			public void setKey(String aKey) {
-				String englishValue = getEnglish();
-				String frenchValue = getFrench();
-				String dutchValue = getDutch();
-				key = aKey;
-				setEnglish(englishValue);
-				setFrench(frenchValue);
-				setDutch(dutchValue);
-			}*/
-
 			@Override
 			public String getEnglish() {
 				// The locale might be found in parent localizer
-				String returned = FlexoLocalization
-						.localizedForKeyAndLanguage(ViewPointLocalizedDictionaryImpl.this, key, Language.ENGLISH);
+				String returned = localizedForKeyAndLanguage(key, Language.ENGLISH);
 				if (returned == null) {
 					returned = key;
 				}
@@ -530,14 +759,16 @@ public interface ViewPointLocalizedDictionary extends FMLObject, org.openflexo.l
 			@Override
 			public void setEnglish(String value) {
 				String oldValue = getEnglish();
-				setLocalizedForKeyAndLanguage(key, value, Language.ENGLISH);
-				getPropertyChangeSupport().firePropertyChange("english", oldValue, getEnglish());
+				if ((value == null && oldValue != null) || (value != null && !value.equals(oldValue))) {
+					setLocalizedForKeyAndLanguage(key, value, Language.ENGLISH);
+					getPropertyChangeSupport().firePropertyChange("english", oldValue, getEnglish());
+				}
 			}
 
 			@Override
 			public String getFrench() {
 				// The locale might be found in parent localizer
-				String returned = FlexoLocalization.localizedForKeyAndLanguage(ViewPointLocalizedDictionaryImpl.this, key, Language.FRENCH);
+				String returned = localizedForKeyAndLanguage(key, Language.FRENCH);
 				if (returned == null) {
 					returned = key;
 				}
@@ -547,14 +778,16 @@ public interface ViewPointLocalizedDictionary extends FMLObject, org.openflexo.l
 			@Override
 			public void setFrench(String value) {
 				String oldValue = getFrench();
-				setLocalizedForKeyAndLanguage(key, value, Language.FRENCH);
-				getPropertyChangeSupport().firePropertyChange("french", oldValue, getFrench());
+				if ((value == null && oldValue != null) || (value != null && !value.equals(oldValue))) {
+					setLocalizedForKeyAndLanguage(key, value, Language.FRENCH);
+					getPropertyChangeSupport().firePropertyChange("french", oldValue, getFrench());
+				}
 			}
 
 			@Override
 			public String getDutch() {
 				// The locale might be found in parent localizer
-				String returned = FlexoLocalization.localizedForKeyAndLanguage(ViewPointLocalizedDictionaryImpl.this, key, Language.DUTCH);
+				String returned = localizedForKeyAndLanguage(key, Language.DUTCH);
 				if (returned == null) {
 					returned = key;
 				}
@@ -564,8 +797,10 @@ public interface ViewPointLocalizedDictionary extends FMLObject, org.openflexo.l
 			@Override
 			public void setDutch(String value) {
 				String oldValue = getDutch();
-				setLocalizedForKeyAndLanguage(key, value, Language.DUTCH);
-				getPropertyChangeSupport().firePropertyChange("dutch", oldValue, getDutch());
+				if ((value == null && oldValue != null) || (value != null && !value.equals(oldValue))) {
+					setLocalizedForKeyAndLanguage(key, value, Language.DUTCH);
+					getPropertyChangeSupport().firePropertyChange("dutch", oldValue, getDutch());
+				}
 			}
 
 			@Override
@@ -579,7 +814,8 @@ public interface ViewPointLocalizedDictionary extends FMLObject, org.openflexo.l
 					setEnglish(addHTMLSupport(getEnglish()));
 					setFrench(addHTMLSupport(getFrench()));
 					setDutch(addHTMLSupport(getDutch()));
-				} else {
+				}
+				else {
 					setEnglish(removeHTMLSupport(getEnglish()));
 					setFrench(removeHTMLSupport(getFrench()));
 					setDutch(removeHTMLSupport(getDutch()));

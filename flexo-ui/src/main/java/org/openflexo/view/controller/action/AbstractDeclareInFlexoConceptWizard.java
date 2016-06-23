@@ -51,11 +51,10 @@ import org.openflexo.foundation.action.transformation.FlexoRoleSettingStrategy;
 import org.openflexo.foundation.action.transformation.TransformationStrategy;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.gina.annotation.FIBPanel;
-import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.view.controller.FlexoController;
 
-public abstract class AbstractDeclareInFlexoConceptWizard<A extends AbstractDeclareInFlexoConcept<A, ?, ?>> extends
-		AbstractTransformationWizard<A> {
+public abstract class AbstractDeclareInFlexoConceptWizard<A extends AbstractDeclareInFlexoConcept<A, ?, ?>>
+		extends AbstractTransformationWizard<A> {
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(AbstractDeclareInFlexoConceptWizard.class.getPackage().getName());
@@ -74,7 +73,7 @@ public abstract class AbstractDeclareInFlexoConceptWizard<A extends AbstractDecl
 	 * @author sylvain
 	 *
 	 */
-	@FIBPanel("Fib/Wizard/DeclareDiagramElementInFlexoConcept/ChooseOption.fib")
+	@FIBPanel("Fib/Wizard/DeclareInFlexoConcept/ChooseOption.fib")
 	public class ChooseOption extends WizardStep {
 
 		public ApplicationContext getServiceManager() {
@@ -87,7 +86,7 @@ public abstract class AbstractDeclareInFlexoConceptWizard<A extends AbstractDecl
 
 		@Override
 		public String getTitle() {
-			return FlexoLocalization.localizedForKey("choose_an_option");
+			return getAction().getLocales().localizedForKey("choose_an_option");
 		}
 
 		@Override
@@ -99,10 +98,11 @@ public abstract class AbstractDeclareInFlexoConceptWizard<A extends AbstractDecl
 		public boolean isValid() {
 
 			if (getPrimaryChoice() == null) {
-				setIssueMessage(FlexoLocalization.localizedForKey("please_choose_an_option"), IssueMessageType.ERROR);
+				setIssueMessage(getAction().getLocales().localizedForKey("please_choose_an_option"), IssueMessageType.ERROR);
 				return false;
-			} else if (getVirtualModelResource() == null) {
-				setIssueMessage(FlexoLocalization.localizedForKey("please_select_a_virtual_model"), IssueMessageType.ERROR);
+			}
+			else if (getVirtualModelResource() == null) {
+				setIssueMessage(getAction().getLocales().localizedForKey("please_select_a_virtual_model"), IssueMessageType.ERROR);
 				return false;
 			}
 			return true;
@@ -137,12 +137,12 @@ public abstract class AbstractDeclareInFlexoConceptWizard<A extends AbstractDecl
 
 		public List<? extends TransformationStrategy<A>> getAvailableStrategies() {
 			switch (getPrimaryChoice()) {
-			case REPLACE_ELEMENT_IN_EXISTING_FLEXO_CONCEPT:
-				return getAction().getAvailableFlexoRoleSettingStrategies();
-			case CREATE_ELEMENT_IN_EXISTING_FLEXO_CONCEPT:
-				return getAction().getAvailableFlexoRoleCreationStrategies();
-			case CREATES_FLEXO_CONCEPT:
-				return getAction().getAvailableFlexoConceptCreationStrategies();
+				case REPLACE_ELEMENT_IN_EXISTING_FLEXO_CONCEPT:
+					return getAction().getAvailableFlexoRoleSettingStrategies();
+				case CREATE_ELEMENT_IN_EXISTING_FLEXO_CONCEPT:
+					return getAction().getAvailableFlexoRoleCreationStrategies();
+				case CREATES_FLEXO_CONCEPT:
+					return getAction().getAvailableFlexoConceptCreationStrategies();
 			}
 			return null;
 		}
@@ -151,15 +151,15 @@ public abstract class AbstractDeclareInFlexoConceptWizard<A extends AbstractDecl
 		public void performTransition() {
 
 			switch (chooseOption.getPrimaryChoice()) {
-			case REPLACE_ELEMENT_IN_EXISTING_FLEXO_CONCEPT:
-				detailedStep = replaceElementInExistingFlexoConcept();
-				break;
-			case CREATE_ELEMENT_IN_EXISTING_FLEXO_CONCEPT:
-				detailedStep = createsElementInExistingFlexoConcept();
-				break;
-			case CREATES_FLEXO_CONCEPT:
-				detailedStep = chooseNewFlexoConcept();
-				break;
+				case REPLACE_ELEMENT_IN_EXISTING_FLEXO_CONCEPT:
+					detailedStep = replaceElementInExistingFlexoConcept();
+					break;
+				case CREATE_ELEMENT_IN_EXISTING_FLEXO_CONCEPT:
+					detailedStep = createsElementInExistingFlexoConcept();
+					break;
+				case CREATES_FLEXO_CONCEPT:
+					detailedStep = chooseNewFlexoConcept();
+					break;
 			}
 
 			addStep(detailedStep);

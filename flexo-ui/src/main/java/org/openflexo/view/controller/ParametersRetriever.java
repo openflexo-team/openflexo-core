@@ -174,8 +174,8 @@ public class ParametersRetriever<ES extends FlexoBehaviour> {
 			FIBLabel titleLabel = fibModelFactory.newFIBLabel();
 			titleLabel.setAlign(Align.center);
 			ViewPointLocalizedDictionary dict = flexoBehaviour.getViewPoint().getLocalizedDictionary();
-			titleLabel.setLabel(FlexoLocalization.localizedForKey(dict,
-					flexoBehaviour.getLabel() != null ? flexoBehaviour.getLabel() : flexoBehaviour.getName()));
+			titleLabel.setLabel(
+					dict.localizedForKey(flexoBehaviour.getLabel() != null ? flexoBehaviour.getLabel() : flexoBehaviour.getName()));
 			returned.addToSubComponents(titleLabel, new TwoColsLayoutConstraints(TwoColsLayoutLocation.center, true, false), 0);
 			index++;
 
@@ -193,7 +193,8 @@ public class ParametersRetriever<ES extends FlexoBehaviour> {
 				descriptionPanel.addToSubComponents(descriptionLabel, new BorderLayoutConstraints(BorderLayoutLocation.center));
 				returned.addToSubComponents(descriptionPanel, new TwoColsLayoutConstraints(TwoColsLayoutLocation.center, true, false), 1);
 				index++;
-			} else {
+			}
+			else {
 				((TwoColsLayoutConstraints) titleLabel.getConstraints()).setInsetsBottom(10);
 			}
 		}
@@ -207,7 +208,8 @@ public class ParametersRetriever<ES extends FlexoBehaviour> {
 			if (widget != null) {
 				widgets.put(parameter, widget);
 				index++;
-			} else {
+			}
+			else {
 				logger.warning("Cannot instanciate widget for " + parameter + " of " + (parameter != null ? parameter.getClass() : "null"));
 			}
 		}

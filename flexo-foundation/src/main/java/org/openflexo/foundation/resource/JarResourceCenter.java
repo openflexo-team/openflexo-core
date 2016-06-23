@@ -55,7 +55,6 @@ import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.ViewPointRepository;
 import org.openflexo.foundation.task.Progress;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
-import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.Implementation;
 import org.openflexo.model.annotations.ModelEntity;
@@ -163,7 +162,7 @@ public class JarResourceCenter<R extends FlexoResource<?>> extends ResourceRepos
 	public void activateTechnology(TechnologyAdapter technologyAdapter) {
 
 		logger.info("Activating resource center " + this + " with adapter " + technologyAdapter.getName());
-		Progress.progress(FlexoLocalization.localizedForKey("initializing_adapter") + " " + technologyAdapter.getName());
+		Progress.progress(technologyAdapter.getLocales().localizedForKey("initializing_adapter") + " " + technologyAdapter.getName());
 		technologyAdapter.initializeResourceCenter(this);
 	}
 

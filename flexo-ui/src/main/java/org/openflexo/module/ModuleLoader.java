@@ -158,7 +158,8 @@ public class ModuleLoader extends FlexoServiceImpl implements FlexoService, HasP
 		if (knownModules.containsKey(module.getClass())) {
 			logger.severe("Cannot include Module with classname '" + module.getClass().getName()
 					+ "' because it already exists !!!! A Module name MUST be unique !");
-		} else {
+		}
+		else {
 			knownModules.put(module.getClass(), module);
 		}
 	}
@@ -297,7 +298,8 @@ public class ModuleLoader extends FlexoServiceImpl implements FlexoService, HasP
 			module.unload();
 			getPropertyChangeSupport().firePropertyChange(MODULE_UNLOADED, module, null);
 			getServiceManager().notify(this, new ModuleUnloaded(unloadedInstance));
-		} else {
+		}
+		else {
 			if (logger.isLoggable(Level.WARNING)) {
 				logger.warning("Unable to unload unloaded module " + module.getName());
 			}
@@ -387,7 +389,8 @@ public class ModuleLoader extends FlexoServiceImpl implements FlexoService, HasP
 			if (module.getLoadedModuleInstance() != null) {
 				getServiceManager().notify(this, new ModuleLoaded(module.getLoadedModuleInstance()));
 				return module.getLoadedModuleInstance();
-			} else {
+			}
+			else {
 				logger.severe("Module " + module + " could not be loaded");
 				return null;
 			}
@@ -421,7 +424,8 @@ public class ModuleLoader extends FlexoServiceImpl implements FlexoService, HasP
 		if (module.isLoaded()) {
 			performSwitchToModule(module);
 			return null;
-		} else {
+		}
+		else {
 			LoadModuleTask task = new LoadModuleTask(this, module);
 			getServiceManager().getTaskManager().scheduleExecution(task);
 			return task;
@@ -483,7 +487,8 @@ public class ModuleLoader extends FlexoServiceImpl implements FlexoService, HasP
 	public void quit(boolean askConfirmation) throws OperationCancelledException {
 		if (askConfirmation) {
 			proceedQuit();
-		} else {
+		}
+		else {
 			proceedQuitWithoutConfirmation();
 		}
 	}
@@ -497,16 +502,18 @@ public class ModuleLoader extends FlexoServiceImpl implements FlexoService, HasP
 				saveModifiedProjects();
 			} catch (SaveResourceExceptionList e) {
 				e.printStackTrace();
-				if (FlexoController.confirm(FlexoLocalization.localizedForKey("error_during_saving") + "\n"
-						+ FlexoLocalization.localizedForKey("would_you_like_to_exit_anyway"))) {
+				if (FlexoController.confirm(FlexoLocalization.getMainLocalizer().localizedForKey("error_during_saving") + "\n"
+						+ FlexoLocalization.getMainLocalizer().localizedForKey("would_you_like_to_exit_anyway"))) {
 					proceedQuitWithoutConfirmation();
 				}
 			}
 			proceedQuitWithoutConfirmation();
-		} else {
-			if (FlexoController.confirm(FlexoLocalization.localizedForKey("really_quit"))) {
+		}
+		else {
+			if (FlexoController.confirm(FlexoLocalization.getMainLocalizer().localizedForKey("really_quit"))) {
 				proceedQuitWithoutConfirmation();
-			} else {
+			}
+			else {
 				throw new OperationCancelledException();
 			}
 		}
@@ -517,7 +524,8 @@ public class ModuleLoader extends FlexoServiceImpl implements FlexoService, HasP
 				applicationContext.getProjectLoader().getModifiedProjects());
 		if (dialog.isOk()) {
 			applicationContext.getProjectLoader().saveProjects(dialog.getSelectedProject());
-		} else { // CANCEL
+		}
+		else { // CANCEL
 			if (logger.isLoggable(Level.INFO)) {
 				logger.info("Exiting FLEXO Application Suite... CANCELLED");
 			}

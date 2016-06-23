@@ -59,8 +59,8 @@ public class FlexoMainLocalizer extends LocalizedDelegateImpl {
 
 	private static final Logger logger = Logger.getLogger(FlexoMainLocalizer.class.getPackage().getName());
 
-	public static final String DEPRECATED_LOCALIZATION_DIRNAME = "Localized";
-	public static final String FLEXO_LOCALIZATION_DIRNAME = "FlexoLocalization";
+	public static final String DEPRECATED_LOCALIZATION_DIRNAME = "FlexoLocalization/Deprecated";
+	public static final String FLEXO_LOCALIZATION_DIRNAME = "FlexoLocalization/General";
 
 	private static LocalizedDelegate makeDeprecatedLocalizer() {
 		return new LocalizedDelegateImpl(ResourceLocator.locateResource(DEPRECATED_LOCALIZATION_DIRNAME), null, false, false);

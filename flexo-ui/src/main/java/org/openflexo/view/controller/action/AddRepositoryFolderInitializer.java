@@ -49,7 +49,6 @@ import org.openflexo.foundation.action.FlexoActionFinalizer;
 import org.openflexo.foundation.action.FlexoActionInitializer;
 import org.openflexo.foundation.resource.RepositoryFolder;
 import org.openflexo.icon.IconLibrary;
-import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.view.controller.ActionInitializer;
 import org.openflexo.view.controller.ControllerActionInitializer;
 import org.openflexo.view.controller.FlexoController;
@@ -74,22 +73,23 @@ public class AddRepositoryFolderInitializer extends ActionInitializer<AddReposit
 								FlexoLocalization.localizedForKey("enter_name_for_the_new_folder"),
 								Pattern.compile(FileUtils.GOOD_CHARACTERS_REG_EXP + "+"),
 								FlexoLocalization.localizedForKey("folder_name_cannot_contain_:_\\_\"_:_*_?_<_>_/"));*/
-						newFolderName = FlexoController.askForString(FlexoLocalization.localizedForKey("enter_name_for_the_new_folder"));
+						newFolderName = FlexoController.askForString(action.getLocales().localizedForKey("enter_name_for_the_new_folder"));
 						if (newFolderName == null) {
 							return false;
 						}
 						if (newFolderName.trim().length() == 0) {
-							FlexoController.showError(FlexoLocalization.localizedForKey("a_folder_name_cannot_be_empty"));
+							FlexoController.showError(action.getLocales().localizedForKey("a_folder_name_cannot_be_empty"));
 							return false;
 						}
 						if (action.getFocusedObject().getFolderNamed(newFolderName) != null) {
-							FlexoController.notify(FlexoLocalization.localizedForKey("there_is_already_a_folder_with that name"));
+							FlexoController.notify(action.getLocales().localizedForKey("there_is_already_a_folder_with that name"));
 							newFolderName = null;
 						}
 					}
 					action.setNewFolderName(newFolderName);
 					return true;
-				} else {
+				}
+				else {
 					return false;
 				}
 			}

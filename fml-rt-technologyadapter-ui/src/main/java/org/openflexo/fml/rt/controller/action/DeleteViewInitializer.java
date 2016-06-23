@@ -49,7 +49,6 @@ import org.openflexo.foundation.action.FlexoActionInitializer;
 import org.openflexo.foundation.fml.rt.View;
 import org.openflexo.foundation.fml.rt.action.DeleteView;
 import org.openflexo.icon.IconLibrary;
-import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.view.controller.ActionInitializer;
 import org.openflexo.view.controller.ControllerActionInitializer;
 import org.openflexo.view.controller.FlexoController;
@@ -67,7 +66,7 @@ public class DeleteViewInitializer extends ActionInitializer<DeleteView, View, F
 		return new FlexoActionInitializer<DeleteView>() {
 			@Override
 			public boolean run(EventObject e, DeleteView action) {
-				return FlexoController.confirm(FlexoLocalization.localizedForKey("really_delete_this_view_?"));
+				return FlexoController.confirm(action.getLocales().localizedForKey("really_delete_this_view_?"));
 			}
 		};
 	}

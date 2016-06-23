@@ -115,6 +115,11 @@ public abstract class AbstractCreateVirtualModelInstance<A extends AbstractCreat
 	protected void doAction(Object context) throws FlexoException {
 		logger.info("Add virtual model instance in view " + getFocusedObject() + " creationSchemeAction=" + creationSchemeAction);
 
+		System.out.println("VirtualModelBeeing created: " + getVirtualModel());
+		if (creationSchemeAction != null && creationSchemeAction.getCreationScheme() != null) {
+			System.out.println("FML: " + creationSchemeAction.getCreationScheme().getFMLRepresentation());
+		}
+
 		System.out.println("getNewVirtualModelInstanceName()=" + getNewVirtualModelInstanceName());
 		System.out.println("getNewVirtualModelInstanceTitle()=" + getNewVirtualModelInstanceTitle());
 
@@ -262,6 +267,10 @@ public abstract class AbstractCreateVirtualModelInstance<A extends AbstractCreat
 				for (ModelSlot<?> ms : this.virtualModel.getModelSlots()) {
 					modelSlotConfigurations.put(ms, ms.createConfiguration(null, getProject()));
 				}
+				/*if (virtualModel.getCreationSchemes().size() > 0) {
+					System.out.println("Tiens, je trouve un CreationScheme: " + virtualModel.getCreationSchemes().get(0));
+					setCreationScheme(virtualModel.getCreationSchemes().get(0));
+				}*/
 			}
 			setChanged();
 			notifyObservers(new DataModification("isActionValidable", false, true));

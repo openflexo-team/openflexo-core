@@ -42,12 +42,14 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.fml.FMLObject;
+import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
 import org.openflexo.foundation.fml.controlgraph.IterationAction;
 import org.openflexo.foundation.fml.editionaction.AbstractAssignationAction;
 import org.openflexo.foundation.fml.editionaction.FetchRequestCondition;
 import org.openflexo.gina.swing.view.widget.JFIBBrowserWidget;
+import org.openflexo.localization.LocalizedDelegate;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.view.FIBModuleView;
@@ -68,7 +70,7 @@ public abstract class FlexoConceptView<EP extends FlexoConcept> extends FIBModul
 	private final FlexoPerspective perspective;
 
 	public FlexoConceptView(EP flexoConcept, Resource fibFile, FlexoController controller, FlexoPerspective perspective) {
-		super(flexoConcept, controller, fibFile);
+		super(flexoConcept, controller, fibFile, controller.getTechnologyAdapter(FMLTechnologyAdapter.class).getLocales());
 		this.perspective = perspective;
 
 		if (getFIBView("FlexoConceptBrowser") instanceof JFIBBrowserWidget) {
@@ -83,8 +85,9 @@ public abstract class FlexoConceptView<EP extends FlexoConcept> extends FIBModul
 
 	}
 
-	public FlexoConceptView(EP flexoConcept, String fibFileName, FlexoController controller, FlexoPerspective perspective) {
-		super(flexoConcept, controller, ResourceLocator.locateResource(fibFileName));
+	public FlexoConceptView(EP flexoConcept, String fibFileName, FlexoController controller, FlexoPerspective perspective,
+			LocalizedDelegate locales) {
+		super(flexoConcept, controller, ResourceLocator.locateResource(fibFileName), locales);
 		this.perspective = perspective;
 	}
 

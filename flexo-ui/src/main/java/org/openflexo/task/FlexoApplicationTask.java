@@ -42,6 +42,8 @@ import javax.swing.SwingUtilities;
 
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.task.FlexoTask;
+import org.openflexo.localization.FlexoLocalization;
+import org.openflexo.localization.LocalizedDelegate;
 import org.openflexo.model.undo.CompoundEdit;
 import org.openflexo.view.controller.FlexoController;
 
@@ -63,6 +65,13 @@ public abstract class FlexoApplicationTask extends FlexoTask {
 
 	public FlexoServiceManager getServiceManager() {
 		return serviceManager;
+	}
+
+	public LocalizedDelegate getLocales() {
+		if (getServiceManager() != null) {
+			return getServiceManager().getLocalizationService().getFlexoLocalizer();
+		}
+		return FlexoLocalization.getMainLocalizer();
 	}
 
 	/**

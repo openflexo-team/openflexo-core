@@ -23,6 +23,7 @@ package org.openflexo.foundation.doc;
 import org.openflexo.foundation.InnerResourceData;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
+import org.openflexo.localization.LocalizedDelegate;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 
@@ -62,6 +63,14 @@ public interface FlexoDocObject<D extends FlexoDocument<D, TA>, TA extends Techn
 				return getFlexoDocument().getTechnologyAdapter();
 			}
 			return null;
+		}
+
+		@Override
+		public LocalizedDelegate getLocales() {
+			if (getTechnologyAdapter() != null) {
+				return getTechnologyAdapter().getLocales();
+			}
+			return super.getLocales();
 		}
 
 	}

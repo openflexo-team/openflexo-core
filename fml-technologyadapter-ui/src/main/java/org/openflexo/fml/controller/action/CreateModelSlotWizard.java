@@ -61,7 +61,6 @@ import org.openflexo.gina.annotation.FIBPanel;
 import org.openflexo.icon.FMLIconLibrary;
 import org.openflexo.icon.IconFactory;
 import org.openflexo.icon.IconLibrary;
-import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.toolbox.StringUtils;
 import org.openflexo.view.controller.FlexoController;
 
@@ -70,12 +69,12 @@ public class CreateModelSlotWizard extends AbstractCreateFMLElementWizard<Create
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CreateModelSlotWizard.class.getPackage().getName());
 
-	private static final String DUPLICATED_NAME = FlexoLocalization.localizedForKey("this_name_is_already_used_please_choose_an_other_one");
-	private static final String EMPTY_NAME = FlexoLocalization.localizedForKey("model_slot_must_have_an_non_empty_and_unique_name");
-	private static final String NO_TECHNOLOGY_ADAPTER = FlexoLocalization.localizedForKey("please_choose_a_technology_adapter");
-	private static final String NO_MODEL_SLOT_TYPE = FlexoLocalization.localizedForKey("please_choose_a_model_slot_type");
-	private static final String NO_META_MODEL = FlexoLocalization.localizedForKey("please_choose_a_valid_metamodel");
-	private static final String NO_VIRTUAL_MODEL = FlexoLocalization.localizedForKey("please_choose_a_valid_virtual_model");
+	private static final String DUPLICATED_NAME = "this_name_is_already_used_please_choose_an_other_one";
+	private static final String EMPTY_NAME = "model_slot_must_have_an_non_empty_and_unique_name";
+	private static final String NO_TECHNOLOGY_ADAPTER = "please_choose_a_technology_adapter";
+	private static final String NO_MODEL_SLOT_TYPE = "please_choose_a_model_slot_type";
+	private static final String NO_META_MODEL = "please_choose_a_valid_metamodel";
+	private static final String NO_VIRTUAL_MODEL = "please_choose_a_valid_virtual_model";
 
 	private final DescribeModelSlot describeModelSlot;
 
@@ -88,7 +87,7 @@ public class CreateModelSlotWizard extends AbstractCreateFMLElementWizard<Create
 
 	@Override
 	public String getWizardTitle() {
-		return FlexoLocalization.localizedForKey("create_model_slot");
+		return getAction().getLocales().localizedForKey("create_model_slot");
 	}
 
 	@Override
@@ -128,43 +127,44 @@ public class CreateModelSlotWizard extends AbstractCreateFMLElementWizard<Create
 
 		@Override
 		public String getTitle() {
-			return FlexoLocalization.localizedForKey("describe_model_slot");
+			return getAction().getLocales().localizedForKey("describe_model_slot");
 		}
 
 		@Override
 		public boolean isValid() {
 
 			if (StringUtils.isEmpty(getModelSlotName())) {
-				setIssueMessage(EMPTY_NAME, IssueMessageType.ERROR);
+				setIssueMessage(getAction().getLocales().localizedForKey(EMPTY_NAME), IssueMessageType.ERROR);
 				return false;
 			}
 			else if (getAction().getVirtualModel().getModelSlot(getModelSlotName()) != null) {
-				setIssueMessage(DUPLICATED_NAME, IssueMessageType.ERROR);
+				setIssueMessage(getAction().getLocales().localizedForKey(DUPLICATED_NAME), IssueMessageType.ERROR);
 				return false;
 			}
 			else if (getTechnologyAdapter() == null) {
-				setIssueMessage(NO_TECHNOLOGY_ADAPTER, IssueMessageType.ERROR);
+				setIssueMessage(getAction().getLocales().localizedForKey(NO_TECHNOLOGY_ADAPTER), IssueMessageType.ERROR);
 				return false;
 			}
 			else if (getModelSlotClass() == null) {
-				setIssueMessage(NO_MODEL_SLOT_TYPE, IssueMessageType.ERROR);
+				setIssueMessage(getAction().getLocales().localizedForKey(NO_MODEL_SLOT_TYPE), IssueMessageType.ERROR);
 				return false;
 			}
 			else if (getTechnologyAdapter() instanceof FMLTechnologyAdapter) {
 				if (getVmRes() == null) {
-					setIssueMessage(NO_VIRTUAL_MODEL, IssueMessageType.ERROR);
+					setIssueMessage(getAction().getLocales().localizedForKey(NO_VIRTUAL_MODEL), IssueMessageType.ERROR);
 					return false;
 				}
 			}
 			else if (TypeAwareModelSlot.class.isAssignableFrom(getModelSlotClass())) {
 				if (getMmRes() == null) {
-					setIssueMessage(NO_META_MODEL, IssueMessageType.ERROR);
+					setIssueMessage(getAction().getLocales().localizedForKey(NO_META_MODEL), IssueMessageType.ERROR);
 					return false;
 				}
 			}
 
 			if (StringUtils.isEmpty(getDescription())) {
-				setIssueMessage(FlexoLocalization.localizedForKey("it_is_recommanded_to_describe_model_slot"), IssueMessageType.WARNING);
+				setIssueMessage(getAction().getLocales().localizedForKey("it_is_recommanded_to_describe_model_slot"),
+						IssueMessageType.WARNING);
 			}
 
 			return true;

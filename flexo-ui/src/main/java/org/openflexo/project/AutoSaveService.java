@@ -157,7 +157,8 @@ public class AutoSaveService implements PropertyChangeListener {
 	public File getAutoSaveDirectory() {
 		if (autoSaveThread != null) {
 			return autoSaveThread.getTempDirectory();
-		} else {
+		}
+		else {
 			return null;
 		}
 	}
@@ -175,12 +176,12 @@ public class AutoSaveService implements PropertyChangeListener {
 		((PropertyListParameter) parameters[1]).addReadOnlyTextFieldColumn("path", "path", 450, true);*/
 		JPanel north = new JPanel(new FlowLayout(FlowLayout.CENTER));
 		north.setBackground(Color.WHITE);
-		JLabel label = new JLabel("<html>" + FlexoLocalization.localizedForKey("time_travel_info") + "</html>",
+		JLabel label = new JLabel("<html>" + FlexoLocalization.getMainLocalizer().localizedForKey("time_travel_info") + "</html>",
 				IconLibrary.TIME_TRAVEL_ICON, SwingConstants.LEFT);
 		north.add(label);
 		// AskParametersPanel panel = new AskParametersPanel(project, parameters);
 		JPanel south = new JPanel(new FlowLayout(FlowLayout.CENTER));
-		JButton cancel = new JButton(FlexoLocalization.localizedForKey("cancel"));
+		JButton cancel = new JButton(FlexoLocalization.getMainLocalizer().localizedForKey("cancel"));
 		cancel.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -188,7 +189,7 @@ public class AutoSaveService implements PropertyChangeListener {
 				resume();
 			}
 		});
-		JButton ok = new JButton(FlexoLocalization.localizedForKey("restore"));
+		JButton ok = new JButton(FlexoLocalization.getMainLocalizer().localizedForKey("restore"));
 		ok.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -230,7 +231,7 @@ public class AutoSaveService implements PropertyChangeListener {
 		dialog.getContentPane().add(new JLabel("Please reimplement this"));
 		dialog.getContentPane().add(north, BorderLayout.NORTH);
 		dialog.getContentPane().add(south, BorderLayout.SOUTH);
-		dialog.setTitle(FlexoLocalization.localizedForKey("time_traveler"));
+		dialog.setTitle(FlexoLocalization.getMainLocalizer().localizedForKey("time_traveler"));
 		dialog.validate();
 		dialog.pack();
 		dialog.show();
@@ -241,23 +242,25 @@ public class AutoSaveService implements PropertyChangeListener {
 		File dest = null;
 		int attempt = 0;
 		while (dest == null || dest.exists()) {
-			dest = new File(projectDirectory.getParentFile(), projectDirectory.getName() + ".restore" + (attempt == 0 ? "" : "." + attempt));
+			dest = new File(projectDirectory.getParentFile(),
+					projectDirectory.getName() + ".restore" + (attempt == 0 ? "" : "." + attempt));
 			attempt++;
 		}
 		if (progress != null) {
-			progress.setProgress(FlexoLocalization.localizedForKey("creating_restore_project_at") + " " + dest.getAbsolutePath());
+			progress.setProgress(
+					FlexoLocalization.getMainLocalizer().localizedForKey("creating_restore_project_at") + " " + dest.getAbsolutePath());
 		}
 		FileUtils.copyContentDirToDir(projectDirectory, dest);
 		if (progress != null) {
-			progress.setProgress(FlexoLocalization.localizedForKey("closing_project"));
+			progress.setProgress(FlexoLocalization.getMainLocalizer().localizedForKey("closing_project"));
 		}
 		projectLoader.closeProject(project);
 		if (progress != null) {
-			progress.setProgress(FlexoLocalization.localizedForKey("deleting_project"));
+			progress.setProgress(FlexoLocalization.getMainLocalizer().localizedForKey("deleting_project"));
 		}
 		FileUtils.deleteDir(projectDirectory);
 		if (progress != null) {
-			progress.setProgress(FlexoLocalization.localizedForKey("restoring_project"));
+			progress.setProgress(FlexoLocalization.getMainLocalizer().localizedForKey("restoring_project"));
 		}
 		FileUtils.copyContentDirToDir(autoSaveFile.getDirectory(), projectDirectory);
 		if (progress != null) {
@@ -281,12 +284,15 @@ public class AutoSaveService implements PropertyChangeListener {
 			if (GeneralPreferences.AUTO_SAVE_ENABLED.equals(key)) {
 				if (getGeneralPreferences().getAutoSaveEnabled()) {
 					start();
-				} else {
+				}
+				else {
 					stop();
 				}
-			} else if (GeneralPreferences.AUTO_SAVE_INTERVAL.equals(key)) {
+			}
+			else if (GeneralPreferences.AUTO_SAVE_INTERVAL.equals(key)) {
 				setAutoSaveInterval();
-			} else if (GeneralPreferences.AUTO_SAVE_LIMIT.equals(key)) {
+			}
+			else if (GeneralPreferences.AUTO_SAVE_LIMIT.equals(key)) {
 				setAutoSaveLimit();
 			}
 		}

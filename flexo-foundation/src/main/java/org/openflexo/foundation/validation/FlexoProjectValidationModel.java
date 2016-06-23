@@ -40,13 +40,9 @@
 package org.openflexo.foundation.validation;
 
 import org.openflexo.foundation.FlexoProject;
-import org.openflexo.localization.FlexoLocalization;
-import org.openflexo.localization.LocalizedDelegate;
 import org.openflexo.model.ModelContextLibrary;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.model.validation.Validable;
-import org.openflexo.rm.Resource;
-import org.openflexo.rm.ResourceLocator;
 
 /**
  * @author gpolet, sylvain
@@ -54,12 +50,13 @@ import org.openflexo.rm.ResourceLocator;
  */
 public class FlexoProjectValidationModel extends FlexoValidationModel {
 
-	private static Resource fibValidationLocalizedDelegate = ResourceLocator.locateResource("Localized/ProjectValidation");
-	private static LocalizedDelegate VALIDATION_LOCALIZATION = FlexoLocalization.getLocalizedDelegate(fibValidationLocalizedDelegate, null,
-			true, true);
+	// private static Resource fibValidationLocalizedDelegate = ResourceLocator.locateResource("Localized/ProjectValidation");
+	// private static LocalizedDelegate VALIDATION_LOCALIZATION = FlexoLocalization.getLocalizedDelegate(fibValidationLocalizedDelegate,
+	// null,
+	// true, true);
 
 	public FlexoProjectValidationModel() throws ModelDefinitionException {
-		super(ModelContextLibrary.getCompoundModelContext(FlexoProject.class), VALIDATION_LOCALIZATION);
+		super(ModelContextLibrary.getCompoundModelContext(FlexoProject.class), null/*VALIDATION_LOCALIZATION*/);
 		// registerRule(new FlexoProject.AllResourcesMustBeDefinedInProject());
 		// registerRule(new FlexoProject.FlexoIDMustBeUnique());
 		// registerRule(new FlexoProject.NameOfResourceMustBeKeyOfHashtableEntry());

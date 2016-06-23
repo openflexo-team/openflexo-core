@@ -59,6 +59,7 @@ import org.openflexo.gina.swing.view.JFIBView;
 import org.openflexo.gina.swing.view.SwingViewFactory;
 import org.openflexo.gina.view.FIBView;
 import org.openflexo.localization.FlexoLocalization;
+import org.openflexo.localization.LocalizedDelegate;
 import org.openflexo.rm.Resource;
 import org.openflexo.toolbox.HasPropertyChangeSupport;
 import org.openflexo.toolbox.PropertyChangeListenerRegistrationManager;
@@ -87,27 +88,18 @@ public class FlexoFIBView extends JPanel implements GraphicalFlexoObserver, HasP
 
 	protected PropertyChangeListenerRegistrationManager manager = new PropertyChangeListenerRegistrationManager();
 
-	public FlexoFIBView(Object representedObject, FlexoController controller, Resource fibResource) {
-		this(representedObject, controller, fibResource, false);
+	public FlexoFIBView(Object representedObject, FlexoController controller, Resource fibResource, LocalizedDelegate locales) {
+		this(representedObject, controller, fibResource, locales, false);
 	}
 
-	public FlexoFIBView(Object representedObject, FlexoController controller, Resource fibResource, boolean addScrollBar) {
-		this(representedObject, controller, controller.getApplicationFIBLibraryService().retrieveFIBComponent(fibResource), addScrollBar);
+	public FlexoFIBView(Object representedObject, FlexoController controller, Resource fibResource, LocalizedDelegate locales,
+			boolean addScrollBar) {
+		this(representedObject, controller, controller.getApplicationFIBLibraryService().retrieveFIBComponent(fibResource), locales,
+				addScrollBar);
 	}
 
-	// Removed as we should only use Resource everywhere
-	/*
-	public FlexoFIBView(Object representedObject, FlexoController controller, String fibResourcePath, FlexoProgress progress) {
-		this(representedObject, controller, fibResourcePath, false, progress);
-	}
-	
-	public FlexoFIBView(Object representedObject, FlexoController controller, String fibResourcePath, boolean addScrollBar,
-			FlexoProgress progress) {
-		this(representedObject, controller, FIBLibrary.instance().retrieveFIBComponent(fibResourcePath), addScrollBar, progress);
-	}
-	*/
-
-	protected FlexoFIBView(Object dataObject, FlexoController controller, FIBComponent fibComponent, boolean addScrollBar) {
+	protected FlexoFIBView(Object dataObject, FlexoController controller, FIBComponent fibComponent, LocalizedDelegate locales,
+			boolean addScrollBar) {
 		super(new BorderLayout());
 		this.dataObject = dataObject;
 		this.controller = controller;
@@ -124,7 +116,7 @@ public class FlexoFIBView extends JPanel implements GraphicalFlexoObserver, HasP
 
 		initializeFIBComponent();
 
-		fibController = createFibController(fibComponent, controller);
+		fibController = createFibController(fibComponent, controller, locales);
 
 		Progress.progress("builing_view");
 
@@ -157,9 +149,9 @@ public class FlexoFIBView extends JPanel implements GraphicalFlexoObserver, HasP
 	 * @param controller
 	 * @return the newly created FlexoFIBController
 	 */
-	protected FlexoFIBController createFibController(FIBComponent fibComponent, FlexoController controller) {
+	protected FlexoFIBController createFibController(FIBComponent fibComponent, FlexoController controller, LocalizedDelegate locales) {
 		FIBController returned = FIBController.instanciateController(fibComponent, SwingViewFactory.INSTANCE,
-				FlexoLocalization.getMainLocalizer());
+				locales != null ? locales : FlexoLocalization.getMainLocalizer());
 		if (returned instanceof FlexoFIBController) {
 			((FlexoFIBController) returned).setFlexoController(controller);
 			return (FlexoFIBController) returned;

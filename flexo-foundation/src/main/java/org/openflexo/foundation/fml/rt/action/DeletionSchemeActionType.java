@@ -60,7 +60,7 @@ public class DeletionSchemeActionType extends FlexoActionType<DeletionSchemeActi
 	}
 
 	@Override
-	public LocalizedDelegate getLocalizer() {
+	public LocalizedDelegate getLocales() {
 		return deletionScheme.getLocalizedDictionary();
 	}
 

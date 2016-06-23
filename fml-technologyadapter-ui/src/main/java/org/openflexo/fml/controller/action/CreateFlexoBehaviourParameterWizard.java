@@ -56,18 +56,17 @@ import org.openflexo.gina.annotation.FIBPanel;
 import org.openflexo.icon.FMLIconLibrary;
 import org.openflexo.icon.IconFactory;
 import org.openflexo.icon.IconLibrary;
-import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.toolbox.StringUtils;
 import org.openflexo.view.controller.FlexoController;
 
-public class CreateFlexoBehaviourParameterWizard extends
-		AbstractCreateFMLElementWizard<CreateFlexoBehaviourParameter, FlexoBehaviourObject, FMLObject> {
+public class CreateFlexoBehaviourParameterWizard
+		extends AbstractCreateFMLElementWizard<CreateFlexoBehaviourParameter, FlexoBehaviourObject, FMLObject> {
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CreateFlexoBehaviourParameterWizard.class.getPackage().getName());
 
-	private static final String DUPLICATED_NAME = FlexoLocalization.localizedForKey("this_name_is_already_used_please_choose_an_other_one");
-	private static final String EMPTY_NAME = FlexoLocalization.localizedForKey("edition_behaviour_must_have_an_non_empty_and_unique_name");
+	private static final String DUPLICATED_NAME = "this_name_is_already_used_please_choose_an_other_one";
+	private static final String EMPTY_NAME = "edition_behaviour_must_have_an_non_empty_and_unique_name";
 
 	private final DescribeFlexoBehaviourParameter describeParameter;
 
@@ -80,7 +79,7 @@ public class CreateFlexoBehaviourParameterWizard extends
 
 	@Override
 	public String getWizardTitle() {
-		return FlexoLocalization.localizedForKey("create_behaviour_parameter");
+		return getAction().getLocales().localizedForKey("create_behaviour_parameter");
 	}
 
 	@Override
@@ -120,21 +119,23 @@ public class CreateFlexoBehaviourParameterWizard extends
 
 		@Override
 		public String getTitle() {
-			return FlexoLocalization.localizedForKey("describe_behaviour_parameter");
+			return getAction().getLocales().localizedForKey("describe_behaviour_parameter");
 		}
 
 		@Override
 		public boolean isValid() {
 
 			if (StringUtils.isEmpty(getParameterName())) {
-				setIssueMessage(EMPTY_NAME, IssueMessageType.ERROR);
+				setIssueMessage(getAction().getLocales().localizedForKey(EMPTY_NAME), IssueMessageType.ERROR);
 				return false;
-			} else if (getFocusedObject().getFlexoBehaviour().getParameter(getParameterName()) != null) {
-				setIssueMessage(DUPLICATED_NAME, IssueMessageType.ERROR);
+			}
+			else if (getFocusedObject().getFlexoBehaviour().getParameter(getParameterName()) != null) {
+				setIssueMessage(getAction().getLocales().localizedForKey(DUPLICATED_NAME), IssueMessageType.ERROR);
 				return false;
 			}
 			if (StringUtils.isEmpty(getDescription())) {
-				setIssueMessage(FlexoLocalization.localizedForKey("it_is_recommanded_to_describe_parameter"), IssueMessageType.WARNING);
+				setIssueMessage(getAction().getLocales().localizedForKey("it_is_recommanded_to_describe_parameter"),
+						IssueMessageType.WARNING);
 			}
 
 			return true;

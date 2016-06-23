@@ -62,7 +62,7 @@ import org.openflexo.foundation.utils.FlexoProjectUtil;
 import org.openflexo.foundation.utils.ProjectInitializerException;
 import org.openflexo.foundation.utils.ProjectLoadingCancelledException;
 import org.openflexo.foundation.utils.UnreadableProjectException;
-import org.openflexo.localization.FlexoLocalization;
+import org.openflexo.localization.LocalizedDelegate;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.model.factory.ModelFactory;
 import org.openflexo.toolbox.FileUtils;
@@ -163,7 +163,9 @@ public class ProjectLoader extends FlexoServiceImpl implements HasPropertyChange
 			throw new ProjectLoadingCancelledException(e.getMessage());
 		}
 
-		Progress.progress(FlexoLocalization.localizedForKey("opening_project") + projectDirectory.getAbsolutePath());
+		LocalizedDelegate locales = getServiceManager().getLocalizationService().getFlexoLocalizer();
+
+		Progress.progress(locales.localizedForKey("opening_project") + projectDirectory.getAbsolutePath());
 
 		FlexoEditor editor = null;
 
@@ -172,7 +174,7 @@ public class ProjectLoader extends FlexoServiceImpl implements HasPropertyChange
 		}
 		if (!asImportedProject) {
 			// Adds to recent project
-			Progress.progress(FlexoLocalization.localizedForKey("preinitialize_project") + projectDirectory.getAbsolutePath());
+			Progress.progress(locales.localizedForKey("preinitialize_project") + projectDirectory.getAbsolutePath());
 			preInitialization(projectDirectory);
 		}
 		for (Entry<FlexoProject, FlexoEditor> e : editors.entrySet()) {
@@ -193,7 +195,7 @@ public class ProjectLoader extends FlexoServiceImpl implements HasPropertyChange
 			} catch (ProjectInitializerException e1) {
 				throw e1;
 			}
-			Progress.progress(FlexoLocalization.localizedForKey("create_and_open_editor"));
+			Progress.progress(locales.localizedForKey("create_and_open_editor"));
 			newEditor(editor);
 		}
 		if (!asImportedProject) {
@@ -201,7 +203,7 @@ public class ProjectLoader extends FlexoServiceImpl implements HasPropertyChange
 		}
 
 		// Notify project just loaded
-		Progress.progress(FlexoLocalization.localizedForKey("notify_editors"));
+		Progress.progress(locales.localizedForKey("notify_editors"));
 		getServiceManager().notify(this, new ProjectLoaded(editor.getProject()));
 
 		return null;

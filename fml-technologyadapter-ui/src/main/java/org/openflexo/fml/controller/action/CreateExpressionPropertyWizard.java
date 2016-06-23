@@ -46,7 +46,6 @@ import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.foundation.fml.action.CreateExpressionProperty;
 import org.openflexo.gina.annotation.FIBPanel;
-import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.view.controller.FlexoController;
 
 public class CreateExpressionPropertyWizard extends AbstractCreateFlexoPropertyWizard<CreateExpressionProperty> {
@@ -54,8 +53,8 @@ public class CreateExpressionPropertyWizard extends AbstractCreateFlexoPropertyW
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CreateExpressionPropertyWizard.class.getPackage().getName());
 
-	private static final String NO_EXPRESSION = FlexoLocalization.localizedForKey("please_define_an_expression");
-	private static final String INVALID_EXPRESSION = FlexoLocalization.localizedForKey("expression_is_not_valid");
+	private static final String NO_EXPRESSION = "please_define_an_expression";
+	private static final String INVALID_EXPRESSION = "expression_is_not_valid";
 
 	public CreateExpressionPropertyWizard(CreateExpressionProperty action, FlexoController controller) {
 		super(action, controller);
@@ -68,7 +67,7 @@ public class CreateExpressionPropertyWizard extends AbstractCreateFlexoPropertyW
 
 	@Override
 	public String getWizardTitle() {
-		return FlexoLocalization.localizedForKey("create_expression_property");
+		return getAction().getLocales().localizedForKey("create_expression_property");
 	}
 
 	@Override
@@ -92,7 +91,7 @@ public class CreateExpressionPropertyWizard extends AbstractCreateFlexoPropertyW
 
 		@Override
 		public String getTitle() {
-			return FlexoLocalization.localizedForKey("describe_expression_property");
+			return getAction().getLocales().localizedForKey("describe_expression_property");
 		}
 
 		@Override
@@ -103,11 +102,11 @@ public class CreateExpressionPropertyWizard extends AbstractCreateFlexoPropertyW
 			}
 
 			if (getExpression() == null || !getExpression().isSet()) {
-				setIssueMessage(NO_EXPRESSION, IssueMessageType.ERROR);
+				setIssueMessage(getAction().getLocales().localizedForKey(NO_EXPRESSION), IssueMessageType.ERROR);
 				return false;
 			}
 			else if (getExpression() != null && getExpression().isSet() && !getExpression().isValid()) {
-				setIssueMessage(INVALID_EXPRESSION, IssueMessageType.ERROR);
+				setIssueMessage(getAction().getLocales().localizedForKey(INVALID_EXPRESSION), IssueMessageType.ERROR);
 				return false;
 			}
 

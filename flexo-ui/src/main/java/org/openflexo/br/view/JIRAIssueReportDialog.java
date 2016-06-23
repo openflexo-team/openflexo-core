@@ -64,9 +64,11 @@ import org.openflexo.ApplicationVersion;
 import org.openflexo.Flexo;
 import org.openflexo.components.ProgressWindow;
 import org.openflexo.foundation.FlexoProject;
+import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.gina.controller.FIBController.Status;
 import org.openflexo.gina.swing.utils.JFIBDialog;
 import org.openflexo.localization.FlexoLocalization;
+import org.openflexo.localization.LocalizedDelegate;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.module.FlexoModule;
 import org.openflexo.rm.Resource;
@@ -270,9 +272,11 @@ public class JIRAIssueReportDialog extends PropertyChangedSupportDefaultImplemen
 						}
 						ok = dialog.getData().send();
 					} catch (MalformedURLException e1) {
-						FlexoController.showError(FlexoLocalization.localizedForKey("could_not_send_bug_report") + " " + e1.getMessage());
+						FlexoController
+								.showError(getLocales(serviceManager).localizedForKey("could_not_send_bug_report") + " " + e1.getMessage());
 					} catch (UnknownHostException e1) {
-						FlexoController.showError(FlexoLocalization.localizedForKey("could_not_send_bug_report") + " " + e1.getMessage());
+						FlexoController
+								.showError(getLocales(serviceManager).localizedForKey("could_not_send_bug_report") + " " + e1.getMessage());
 						ok = true;
 					} catch (UnauthorizedJIRAAccessException e1) {
 						if (JIRAURLCredentialsDialog.askLoginPassword(serviceManager)) {
@@ -297,11 +301,13 @@ public class JIRAIssueReportDialog extends PropertyChangedSupportDefaultImplemen
 								if (sb.length() > 0) {
 									sb.append('\n');
 								}
-								sb.append(FlexoLocalization.localizedForKey("field") + " " + FlexoLocalization.localizedForKey(e2.getKey())
-										+ " : " + FlexoLocalization.localizedForKey(e2.getValue()));
+								sb.append(getLocales(serviceManager).localizedForKey("field") + " "
+										+ getLocales(serviceManager).localizedForKey(e2.getKey()) + " : "
+										+ getLocales(serviceManager).localizedForKey(e2.getValue()));
 							}
 						}
-						FlexoController.notify(FlexoLocalization.localizedForKey("could_not_send_bug_report") + ":\n" + sb.toString());
+						FlexoController
+								.notify(getLocales(serviceManager).localizedForKey("could_not_send_bug_report") + ":\n" + sb.toString());
 					} catch (Exception e1) {
 						e1.printStackTrace();
 					}
@@ -315,22 +321,14 @@ public class JIRAIssueReportDialog extends PropertyChangedSupportDefaultImplemen
 			}
 		} catch (JsonSyntaxException e1) {
 			e1.printStackTrace();
-			FlexoController.showError(FlexoLocalization.localizedForKey("cannot_read_JIRA_project_file"));
+			FlexoController.showError(getLocales(serviceManager).localizedForKey("cannot_read_JIRA_project_file"));
 		} catch (JsonIOException e1) {
 			e1.printStackTrace();
-			FlexoController.showError(FlexoLocalization.localizedForKey("cannot_read_JIRA_project_file"));
+			FlexoController.showError(getLocales(serviceManager).localizedForKey("cannot_read_JIRA_project_file"));
 		} catch (FileNotFoundException e1) {
 			e1.printStackTrace();
-			FlexoController.showError(FlexoLocalization.localizedForKey("cannot_read_JIRA_project_file"));
+			FlexoController.showError(getLocales(serviceManager).localizedForKey("cannot_read_JIRA_project_file"));
 		}
-	}
-
-	private void setServiceManager(ApplicationContext serviceManager) {
-		this.serviceManager = serviceManager;
-	}
-
-	private void setFlexoProject(FlexoProject project) {
-		this.flexoProject = project;
 	}
 
 	private JIRAIssueReportDialog() throws JsonSyntaxException, JsonIOException, FileNotFoundException {
@@ -371,6 +369,29 @@ public class JIRAIssueReportDialog extends PropertyChangedSupportDefaultImplemen
 		if (e != null) {
 			issue.setStacktrace(e.getClass().getName() + ": " + e.getMessage() + "\n" + ToolBox.getStackTraceAsString(e));
 		}
+	}
+
+	public ApplicationContext getServiceManager() {
+		return serviceManager;
+	}
+
+	private void setServiceManager(ApplicationContext serviceManager) {
+		this.serviceManager = serviceManager;
+	}
+
+	private void setFlexoProject(FlexoProject project) {
+		this.flexoProject = project;
+	}
+
+	public static LocalizedDelegate getLocales(FlexoServiceManager serviceManager) {
+		if (serviceManager != null) {
+			return serviceManager.getLocalizationService().getFlexoLocalizer();
+		}
+		return FlexoLocalization.getMainLocalizer();
+	}
+
+	public LocalizedDelegate getLocales() {
+		return getLocales(getServiceManager());
 	}
 
 	public List<JIRAProject> getProjects() {
@@ -415,22 +436,21 @@ public class JIRAIssueReportDialog extends PropertyChangedSupportDefaultImplemen
 		final SubmitIssueReport report = new SubmitIssueReport();
 		SubmitIssueToJIRA target = new SubmitIssueToJIRA(client, report);
 		int steps = target.getNumberOfSteps();
-		ProgressWindow.showProgressWindow(FlexoLocalization.localizedForKey("submitting_bug_report"), steps);
+		ProgressWindow.showProgressWindow(getLocales().localizedForKey("submitting_bug_report"), steps);
 		try {
 			boolean submit = true;
 			while (submit) {
 				target.run();
 				if (target.getException() != null) {
 					if (target.getException() instanceof SocketTimeoutException) {
-						submit = FlexoController
-								.confirm(FlexoLocalization.localizedForKey("could_not_send_incident_so_far_keep_trying") + "? ");
+						submit = FlexoController.confirm(getLocales().localizedForKey("could_not_send_incident_so_far_keep_trying") + "? ");
 						if (submit) {
 							client.setTimeout(client.getTimeout() * 2);// Let's increase time out
 						}
 					}
 					else if (target.getException() instanceof UnknownHostException) {
 						submit = FlexoController.confirm(
-								FlexoLocalization.localizedForKey("could_not_send_to_host_check_internet_connexion_and_try_again") + "? ");
+								getLocales().localizedForKey("could_not_send_to_host_check_internet_connexion_and_try_again") + "? ");
 						// If the user want to stop, quit, otherwise clean the exception and try again
 						if (submit == false) {
 							throw target.getException();
@@ -539,7 +559,7 @@ public class JIRAIssueReportDialog extends PropertyChangedSupportDefaultImplemen
 			getIssue().makeValid();
 			getIssue().<JIRAObject> replaceMembersByIdentityMembers();
 			try {
-				ProgressWindow.instance().setProgress(FlexoLocalization.localizedForKey("creating_issue"));
+				ProgressWindow.instance().setProgress(getLocales().localizedForKey("creating_issue"));
 				progressAdapter.resetCount();
 				JIRAResult submit = client.submit(new SubmitIssue(getIssue()), Method.POST, progressAdapter);
 				if (submit.getErrorMessages() != null && submit.getErrorMessages().size() > 0) {
@@ -552,24 +572,24 @@ public class JIRAIssueReportDialog extends PropertyChangedSupportDefaultImplemen
 					result.setKey(submit.getKey());
 					report.setIssueLink(serviceManager.getBugReportPreferences().getBugReportUrl() + "/browse/" + submit.getKey());
 					if (sendLogs) {
-						ProgressWindow.instance().setProgress(FlexoLocalization.localizedForKey("sending_logs"));
+						ProgressWindow.instance().setProgress(getLocales().localizedForKey("sending_logs"));
 						progressAdapter.resetCount();
 						try {
 							client.attachFilesToIssue(result, progressAdapter, Flexo.getErrLogFile());
 						} catch (IOException e) {
-							report.addToErrors(FlexoLocalization.localizedForKey("could_not_attach_file") + " "
+							report.addToErrors(getLocales().localizedForKey("could_not_attach_file") + " "
 									+ Flexo.getErrLogFile().getAbsolutePath() + "\n\t" + e.getMessage());
 						}
 					}
 					if (attachFile != null) {
 						ProgressWindow.instance()
-								.setProgress(FlexoLocalization.localizedForKey("sending_file") + " " + attachFile.getAbsolutePath());
+								.setProgress(getLocales().localizedForKey("sending_file") + " " + attachFile.getAbsolutePath());
 						progressAdapter.resetCount();
 						try {
 							client.attachFilesToIssue(result, progressAdapter, attachFile);
 						} catch (IOException e) {
-							report.addToErrors(FlexoLocalization.localizedForKey("could_not_attach_file") + " "
-									+ attachFile.getAbsolutePath() + "\n\t" + e.getMessage());
+							report.addToErrors(getLocales().localizedForKey("could_not_attach_file") + " " + attachFile.getAbsolutePath()
+									+ "\n\t" + e.getMessage());
 						}
 					}
 					if (sendProject) {
@@ -585,7 +605,7 @@ public class JIRAIssueReportDialog extends PropertyChangedSupportDefaultImplemen
 									return !pathname.getName().endsWith("~");
 								}
 							};
-							ProgressWindow.instance().setProgress(FlexoLocalization.localizedForKey("compressing_project"));
+							ProgressWindow.instance().setProgress(getLocales().localizedForKey("compressing_project"));
 							ProgressWindow.instance()
 									.resetSecondaryProgress(FileUtils.countFilesInDirectory(projectDirectory, true, filter));
 							try {
@@ -611,15 +631,14 @@ public class JIRAIssueReportDialog extends PropertyChangedSupportDefaultImplemen
 									}
 								}, filter, Deflater.BEST_COMPRESSION);
 								try {
-									ProgressWindow.instance().setProgress(FlexoLocalization.localizedForKey("sending_project"));
+									ProgressWindow.instance().setProgress(getLocales().localizedForKey("sending_project"));
 									progressAdapter.resetCount();
 									client.attachFilesToIssue(result, progressAdapter, zipFile);
 								} catch (IOException e) {
-									report.addToErrors(
-											FlexoLocalization.localizedForKey("could_not_attach_project") + " " + e.getMessage());
+									report.addToErrors(getLocales().localizedForKey("could_not_attach_project") + " " + e.getMessage());
 								}
 							} catch (IOException e) {
-								report.addToErrors(FlexoLocalization.localizedForKey("could_not_zip_project") + " " + e.getMessage());
+								report.addToErrors(getLocales().localizedForKey("could_not_zip_project") + " " + e.getMessage());
 							}
 						}
 					}
@@ -628,13 +647,13 @@ public class JIRAIssueReportDialog extends PropertyChangedSupportDefaultImplemen
 							Frame frame = Frame.getFrames()[i];
 							if (frame instanceof FlexoFrame) {
 								ProgressWindow.instance()
-										.setProgress(FlexoLocalization.localizedForKey("sending_screenshot") + " " + frame.getTitle());
+										.setProgress(getLocales().localizedForKey("sending_screenshot") + " " + frame.getTitle());
 								progressAdapter.resetCount();
 								attachScreenshotToIssue(client, result, frame, frame.getTitle(), progressAdapter, report);
 								for (Window w : frame.getOwnedWindows()) {
 									if (w instanceof FlexoDialog || w instanceof JFIBDialog) {
 										ProgressWindow.instance().setProgress(
-												FlexoLocalization.localizedForKey("sending_screenshot") + " " + ((Dialog) w).getTitle());
+												getLocales().localizedForKey("sending_screenshot") + " " + ((Dialog) w).getTitle());
 										progressAdapter.resetCount();
 										attachScreenshotToIssue(client, result, w, ((Dialog) w).getTitle(), progressAdapter, report);
 									}
@@ -672,8 +691,7 @@ public class JIRAIssueReportDialog extends PropertyChangedSupportDefaultImplemen
 				ImageUtils.saveImageToFile(ImageUtils.createImageFromComponent(window), file, ImageType.PNG);
 				client.attachFilesToIssue(result, progress, file);
 			} catch (Exception e) {
-				report.addToErrors(
-						FlexoLocalization.localizedForKey("could_not_attach_screenshot") + " " + title + "\n\t" + e.getMessage());
+				report.addToErrors(getLocales().localizedForKey("could_not_attach_screenshot") + " " + title + "\n\t" + e.getMessage());
 				logger.log(Level.SEVERE, "Error when trying to send screenshot: " + title, e);
 			}
 		}

@@ -57,7 +57,6 @@ import org.openflexo.gina.annotation.FIBPanel;
 import org.openflexo.icon.FMLIconLibrary;
 import org.openflexo.icon.IconFactory;
 import org.openflexo.icon.IconLibrary;
-import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.view.controller.FlexoController;
 
 public class AddParentFlexoConceptWizard extends FlexoWizard {
@@ -65,7 +64,7 @@ public class AddParentFlexoConceptWizard extends FlexoWizard {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(AddParentFlexoConceptWizard.class.getPackage().getName());
 
-	private static final String INCONSISTENT_HIERARCHY = FlexoLocalization.localizedForKey("inconsistent_flexo_concept_hierarchy");
+	private static final String INCONSISTENT_HIERARCHY = "inconsistent_flexo_concept_hierarchy";
 
 	private DescribeNewParentConcepts describeNewParentConcepts;
 
@@ -90,7 +89,7 @@ public class AddParentFlexoConceptWizard extends FlexoWizard {
 
 	@Override
 	public String getWizardTitle() {
-		return FlexoLocalization.localizedForKey("define_parent_concepts");
+		return getAction().getLocales().localizedForKey("define_parent_concepts");
 	}
 
 	@Override
@@ -135,7 +134,7 @@ public class AddParentFlexoConceptWizard extends FlexoWizard {
 
 		@Override
 		public String getTitle() {
-			return FlexoLocalization.localizedForKey("define_parent_concepts");
+			return getAction().getLocales().localizedForKey("define_parent_concepts");
 		}
 
 		public AbstractVirtualModel<?> getVirtualModel() {
@@ -147,7 +146,7 @@ public class AddParentFlexoConceptWizard extends FlexoWizard {
 
 			for (ParentFlexoConceptEntry entry : getParentFlexoConceptEntries()) {
 				if (getAction().getFocusedObject().isSuperConceptOf(entry.getParentConcept())) {
-					setIssueMessage(INCONSISTENT_HIERARCHY, IssueMessageType.ERROR);
+					setIssueMessage(getAction().getLocales().localizedForKey(INCONSISTENT_HIERARCHY), IssueMessageType.ERROR);
 					return false;
 				}
 			}

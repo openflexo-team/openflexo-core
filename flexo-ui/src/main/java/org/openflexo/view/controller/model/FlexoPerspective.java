@@ -54,7 +54,6 @@ import org.openflexo.foundation.nature.ProjectNature;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
-import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.swing.layout.MultiSplitLayout.Node;
 import org.openflexo.view.EmptyPanel;
 import org.openflexo.view.ModuleView;
@@ -110,7 +109,7 @@ public abstract class FlexoPerspective extends ControllerModelObject {
 	}
 
 	public String getLocalizedName() {
-		return FlexoLocalization.localizedForKey(getName());
+		return getController().getModuleLocales().localizedForKey(getName());
 	}
 
 	@Override

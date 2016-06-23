@@ -39,7 +39,6 @@
 package org.openflexo.foundation.action.transformation;
 
 import org.openflexo.foundation.fml.FlexoConcept;
-import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.toolbox.StringUtils;
 
 /**
@@ -77,7 +76,7 @@ public abstract class FlexoConceptCreationStrategy<A extends AbstractDeclareInFl
 	@Override
 	public boolean isValid() {
 		if (StringUtils.isEmpty(getFlexoConceptName())) {
-			setIssueMessage(FlexoLocalization.localizedForKey(NO_FLEXO_NAME_DEFINED), IssueMessageType.ERROR);
+			setIssueMessage(getLocales().localizedForKey(NO_FLEXO_NAME_DEFINED), IssueMessageType.ERROR);
 			return false;
 		}
 		return true;

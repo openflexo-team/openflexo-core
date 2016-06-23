@@ -42,7 +42,9 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 import org.openflexo.foundation.task.Progress;
+import org.openflexo.foundation.validation.FlexoValidationModel;
 import org.openflexo.localization.FlexoLocalization;
+import org.openflexo.localization.LocalizedDelegate;
 import org.openflexo.model.validation.Validable;
 import org.openflexo.model.validation.ValidationModel;
 import org.openflexo.model.validation.ValidationReport;
@@ -62,10 +64,21 @@ public class ValidationTask extends FlexoApplicationTask implements PropertyChan
 	private final FlexoFIBValidationController controller;
 
 	public ValidationTask(ValidationModel validationModel, Validable objectToValidate, FlexoFIBValidationController controller) {
-		super(FlexoLocalization.localizedForKey("validating") + " " + objectToValidate, null);
+		super(getLocales(validationModel).localizedForKey("validating") + " " + objectToValidate, null);
 		this.validationModel = validationModel;
 		this.objectToValidate = objectToValidate;
 		this.controller = controller;
+	}
+
+	private static LocalizedDelegate getLocales(ValidationModel validationModel) {
+		if (validationModel instanceof FlexoValidationModel) {
+			return ((FlexoValidationModel) validationModel).getLocales();
+		}
+		return FlexoLocalization.getMainLocalizer();
+	}
+
+	public LocalizedDelegate getLocales() {
+		return getLocales(validationModel);
 	}
 
 	@Override
@@ -77,7 +90,7 @@ public class ValidationTask extends FlexoApplicationTask implements PropertyChan
 
 		validationModel.getPropertyChangeSupport().removePropertyChangeListener(this);
 
-		Progress.progress(FlexoLocalization.localizedForKey("displaying_validation_report"));
+		Progress.progress(getLocales().localizedForKey("displaying_validation_report"));
 		controller.setDataObject(report);
 	}
 
@@ -98,14 +111,18 @@ public class ValidationTask extends FlexoApplicationTask implements PropertyChan
 			Progress.setExpectedProgressSteps((Integer) evt.getNewValue());
 			// ProgressWindow.showProgressWindow(FlexoLocalization.localizedForKey("validating") + " " + evt.getOldValue().toString(),
 			// (Integer) evt.getNewValue());
-		} else if (evt.getPropertyName().equals(ValidationReport.VALIDATION_OBJECT)) {
+		}
+		else if (evt.getPropertyName().equals(ValidationReport.VALIDATION_OBJECT)) {
 			// System.out.println(FlexoLocalization.localizedForKey("validating") + " " + evt.getNewValue().toString());
-			Progress.progress(FlexoLocalization.localizedForKey("validating") + " " + evt.getNewValue().toString());
-		} else if (evt.getPropertyName().equals(ValidationReport.VALIDATION_END)) {
-		} else if (evt.getPropertyName().equals(ValidationReport.OBJECT_VALIDATION_START)) {
+			Progress.progress(getLocales().localizedForKey("validating") + " " + evt.getNewValue().toString());
+		}
+		else if (evt.getPropertyName().equals(ValidationReport.VALIDATION_END)) {
+		}
+		else if (evt.getPropertyName().equals(ValidationReport.OBJECT_VALIDATION_START)) {
 			// System.out.println(FlexoLocalization.localizedForKey("validating") + " " + evt.getNewValue().toString());
 			// Progress.progress(FlexoLocalization.localizedForKey("validating") + " " + evt.getNewValue().toString());
-		} else if (evt.getPropertyName().equals(ValidationReport.VALIDATE_WITH_RULE)) {
+		}
+		else if (evt.getPropertyName().equals(ValidationReport.VALIDATE_WITH_RULE)) {
 		}
 	}
 

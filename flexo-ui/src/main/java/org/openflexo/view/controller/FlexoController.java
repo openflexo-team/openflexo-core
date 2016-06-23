@@ -107,6 +107,7 @@ import org.openflexo.foundation.FlexoProjectObject;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.PamelaResourceModelFactory;
 import org.openflexo.foundation.ProjectData;
+import org.openflexo.foundation.ProjectLoader;
 import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.action.FlexoUndoManager.FlexoActionCompoundEdit;
@@ -161,6 +162,7 @@ import org.openflexo.icon.IconLibrary;
 import org.openflexo.icon.IconMarker;
 import org.openflexo.inspector.ModuleInspectorController;
 import org.openflexo.localization.FlexoLocalization;
+import org.openflexo.localization.LocalizedDelegate;
 import org.openflexo.model.undo.AddCommand;
 import org.openflexo.model.undo.AtomicEdit;
 import org.openflexo.model.undo.CreateCommand;
@@ -176,7 +178,6 @@ import org.openflexo.module.ModuleLoader;
 import org.openflexo.prefs.ApplicationFIBLibraryService;
 import org.openflexo.prefs.FlexoPreferences;
 import org.openflexo.prefs.GeneralPreferences;
-import org.openflexo.project.InteractiveProjectLoader;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.selection.MouseSelectionManager;
@@ -244,7 +245,7 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 		super();
 		// ProgressWindow.setProgressInstance(FlexoLocalization.localizedForKey("init_module_controller"));
 
-		Progress.progress(FlexoLocalization.localizedForKey("init_module_controller"));
+		Progress.progress(FlexoLocalization.getMainLocalizer().localizedForKey("init_module_controller"));
 
 		this.module = module;
 		locationsForView = ArrayListMultimap.create();
@@ -273,10 +274,10 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 		getFlexoFrame().getContentPane().add(mainPane, BorderLayout.CENTER);
 		((JComponent) getFlexoFrame().getContentPane()).revalidate();
 
-		Progress.progress(FlexoLocalization.localizedForKey("init_inspectors"));
+		Progress.progress(FlexoLocalization.getMainLocalizer().localizedForKey("init_inspectors"));
 		initInspectors();
 
-		Progress.progress(FlexoLocalization.localizedForKey("init_perspectives"));
+		Progress.progress(FlexoLocalization.getMainLocalizer().localizedForKey("init_perspectives"));
 		initializePerspectives();
 
 		if (getApplicationContext().getGeneralPreferences() != null) {
@@ -512,7 +513,7 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 		return null;
 	}
 
-	public final InteractiveProjectLoader getProjectLoader() {
+	public final ProjectLoader getProjectLoader() {
 		return getApplicationContext().getProjectLoader();
 	}
 
@@ -581,7 +582,7 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 	 *
 	 */
 	public void initInspectors() {
-		moduleInspectorGroup = loadInspectorGroup(getModule().getShortName().toUpperCase(), getCoreInspectorGroup());
+		moduleInspectorGroup = loadInspectorGroup(getModule().getShortName().toUpperCase(), getModuleLocales(), getCoreInspectorGroup());
 		getSelectionManager().addObserver(getModuleInspectorController());
 	}
 
@@ -592,10 +593,10 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 		return mainInspectorController;
 	}
 
-	public InspectorGroup loadInspectorGroup(String inspectorGroup, InspectorGroup... parentInspectorGroups) {
+	public InspectorGroup loadInspectorGroup(String inspectorGroup, LocalizedDelegate locales, InspectorGroup... parentInspectorGroups) {
 		// TODO : To be optimized
 		Resource inspectorsDir = ResourceLocator.locateResource("Inspectors/" + inspectorGroup);
-		return getModuleInspectorController().loadDirectory(inspectorsDir, parentInspectorGroups);
+		return getModuleInspectorController().loadDirectory(inspectorsDir, locales, parentInspectorGroups);
 	}
 
 	public FlexoFrame getFlexoFrame() {
@@ -648,7 +649,7 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 	}
 
 	public static void showError(String msg) throws HeadlessException {
-		showError(FlexoLocalization.localizedForKey("error"), msg);
+		showError(FlexoLocalization.getMainLocalizer().localizedForKey("error"), msg);
 	}
 
 	public static void showError(String title, String msg) throws HeadlessException {
@@ -656,7 +657,7 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 	}
 
 	public static void notify(String msg) throws HeadlessException {
-		showMessageDialog(msg, FlexoLocalization.localizedForKey("confirmation"), JOptionPane.INFORMATION_MESSAGE);
+		showMessageDialog(msg, FlexoLocalization.getMainLocalizer().localizedForKey("confirmation"), JOptionPane.INFORMATION_MESSAGE);
 	}
 
 	public static boolean notifyWithCheckbox(String title, String msg, String checkboxText, boolean defaultValue) {
@@ -697,15 +698,16 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 	}
 
 	public static int ask(String msg) throws HeadlessException {
-		return showConfirmDialog(msg, FlexoLocalization.localizedForKey("information"), JOptionPane.YES_NO_OPTION,
+		return showConfirmDialog(msg, FlexoLocalization.getMainLocalizer().localizedForKey("information"), JOptionPane.YES_NO_OPTION,
 				JOptionPane.QUESTION_MESSAGE);
 	}
 
 	public static boolean confirmWithWarning(String msg) throws HeadlessException {
-		return showOptionDialog(FlexoFrame.getActiveFrame(), msg, FlexoLocalization.localizedForKey("information"),
+		return showOptionDialog(FlexoFrame.getActiveFrame(), msg, FlexoLocalization.getMainLocalizer().localizedForKey("information"),
 				JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null,
-				new Object[] { FlexoLocalization.localizedForKey("yes"), FlexoLocalization.localizedForKey("no") },
-				FlexoLocalization.localizedForKey("no")) == JOptionPane.YES_OPTION;
+				new Object[] { FlexoLocalization.getMainLocalizer().localizedForKey("yes"),
+						FlexoLocalization.getMainLocalizer().localizedForKey("no") },
+				FlexoLocalization.getMainLocalizer().localizedForKey("no")) == JOptionPane.YES_OPTION;
 	}
 
 	public static boolean confirm(String msg) throws HeadlessException {
@@ -723,11 +725,12 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 	}
 
 	public static String askForString(String msg) throws HeadlessException {
-		return showInputDialog(msg, FlexoLocalization.localizedForKey("information"), JOptionPane.QUESTION_MESSAGE);
+		return showInputDialog(msg, FlexoLocalization.getMainLocalizer().localizedForKey("information"), JOptionPane.QUESTION_MESSAGE);
 	}
 
 	public static String askForString(Component parentComponent, String msg) throws HeadlessException {
-		return showInputDialog(parentComponent, msg, FlexoLocalization.localizedForKey("information"), JOptionPane.OK_CANCEL_OPTION);
+		return showInputDialog(parentComponent, msg, FlexoLocalization.getMainLocalizer().localizedForKey("information"),
+				JOptionPane.OK_CANCEL_OPTION);
 	}
 
 	public static String askForStringMatchingPattern(String msg, Pattern pattern, String localizedPattern) {
@@ -740,12 +743,12 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 	}
 
 	public static int selectOption(String msg, String[] options, String initialOption) {
-		return showOptionDialog(FlexoFrame.getActiveFrame(), msg, FlexoLocalization.localizedForKey("confirmation"),
+		return showOptionDialog(FlexoFrame.getActiveFrame(), msg, FlexoLocalization.getMainLocalizer().localizedForKey("confirmation"),
 				JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, initialOption);
 	}
 
 	public static int selectOption(String msg, String initialOption, String... options) {
-		return showOptionDialog(FlexoFrame.getActiveFrame(), msg, FlexoLocalization.localizedForKey("confirmation"),
+		return showOptionDialog(FlexoFrame.getActiveFrame(), msg, FlexoLocalization.getMainLocalizer().localizedForKey("confirmation"),
 				JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, initialOption);
 	}
 
@@ -955,7 +958,8 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 		boolean isLocalized = false;
 		Object[] availableOptions = null;
 		if (optionType == JOptionPane.OK_CANCEL_OPTION && options == null) {
-			availableOptions = new Object[] { FlexoLocalization.localizedForKey("OK"), FlexoLocalization.localizedForKey("cancel") };
+			availableOptions = new Object[] { FlexoLocalization.getMainLocalizer().localizedForKey("OK"),
+					FlexoLocalization.getMainLocalizer().localizedForKey("cancel") };
 			pane = new JOptionPane(message, messageType, optionType, icon, availableOptions, availableOptions[0]) {
 				@Override
 				public int getMaxCharactersPerLineCount() {
@@ -966,7 +970,8 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 			// pane.setInitialSelectionValue();
 		}
 		else if (optionType == JOptionPane.YES_NO_OPTION && options == null) {
-			availableOptions = new Object[] { FlexoLocalization.localizedForKey("yes"), FlexoLocalization.localizedForKey("no") };
+			availableOptions = new Object[] { FlexoLocalization.getMainLocalizer().localizedForKey("yes"),
+					FlexoLocalization.getMainLocalizer().localizedForKey("no") };
 			pane = new JOptionPane(message, messageType, optionType, icon, availableOptions, availableOptions[0]) {
 				@Override
 				public int getMaxCharactersPerLineCount() {
@@ -977,8 +982,9 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 			// pane.setInitialSelectionValue(availableOptions[1]);
 		}
 		else if (optionType == JOptionPane.YES_NO_CANCEL_OPTION && options == null) {
-			availableOptions = new Object[] { FlexoLocalization.localizedForKey("yes"), FlexoLocalization.localizedForKey("no"),
-					FlexoLocalization.localizedForKey("cancel") };
+			availableOptions = new Object[] { FlexoLocalization.getMainLocalizer().localizedForKey("yes"),
+					FlexoLocalization.getMainLocalizer().localizedForKey("no"),
+					FlexoLocalization.getMainLocalizer().localizedForKey("cancel") };
 			pane = new JOptionPane(message, messageType, optionType, icon, availableOptions, availableOptions[0]) {
 				@Override
 				public int getMaxCharactersPerLineCount() {
@@ -1154,7 +1160,8 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 				parentComponent = ProgressWindow.instance();
 			}
 		}
-		Object[] availableOptions = new Object[] { FlexoLocalization.localizedForKey("OK"), FlexoLocalization.localizedForKey("cancel") };
+		Object[] availableOptions = new Object[] { FlexoLocalization.getMainLocalizer().localizedForKey("OK"),
+				FlexoLocalization.getMainLocalizer().localizedForKey("cancel") };
 		JOptionPane pane = new JOptionPane(message, messageType, JOptionPane.OK_CANCEL_OPTION, icon, availableOptions, availableOptions[0]);
 
 		pane.setWantsInput(true);
@@ -1612,9 +1619,12 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 			if (e.getMessage().indexOf("Location") > -1) {
 				location = e.getMessage().substring(e.getMessage().indexOf("Location") + 9).trim();
 			}
-			FlexoController.notify(FlexoLocalization.localizedForKey("could_not_connect_to_web_sevice") + ": "
-					+ FlexoLocalization.localizedForKey("the_url_seems_incorrect")
-					+ (location != null ? "\n" + FlexoLocalization.localizedForKey("try_with_this_one") + " " + location : ""));
+			FlexoController
+					.notify(FlexoLocalization.getMainLocalizer().localizedForKey("could_not_connect_to_web_sevice") + ": "
+							+ FlexoLocalization.getMainLocalizer().localizedForKey("the_url_seems_incorrect")
+							+ (location != null
+									? "\n" + FlexoLocalization.getMainLocalizer().localizedForKey("try_with_this_one") + " " + location
+									: ""));
 			return false;
 		} /*
 			if (e instanceof WebApplicationException) {
@@ -1639,29 +1649,29 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 			}
 			*/
 		if (e.getCause() instanceof ConnectException) {
-			return FlexoController.confirm(FlexoLocalization.localizedForKey("connection_error")
+			return FlexoController.confirm(FlexoLocalization.getMainLocalizer().localizedForKey("connection_error")
 					+ (e.getCause().getMessage() != null ? " (" + e.getCause().getMessage() + ")" : "") + "\n"
-					+ FlexoLocalization.localizedForKey("would_you_like_to_try_again?"));
+					+ FlexoLocalization.getMainLocalizer().localizedForKey("would_you_like_to_try_again?"));
 		}
 		else if (e.getMessage() != null && "(500)Apple WebObjects".equals(e.getMessage())
 				|| e.getMessage().startsWith("No such operation")) {
-			return FlexoController.confirm(FlexoLocalization.localizedForKey("could_not_connect_to_web_sevice") + ": "
-					+ FlexoLocalization.localizedForKey("the_url_seems_incorrect") + "\n"
-					+ FlexoLocalization.localizedForKey("would_you_like_to_try_again?"));
+			return FlexoController.confirm(FlexoLocalization.getMainLocalizer().localizedForKey("could_not_connect_to_web_sevice") + ": "
+					+ FlexoLocalization.getMainLocalizer().localizedForKey("the_url_seems_incorrect") + "\n"
+					+ FlexoLocalization.getMainLocalizer().localizedForKey("would_you_like_to_try_again?"));
 		}
 		else if (e.toString() != null && e.toString().startsWith("javax.net.ssl.SSLHandshakeException")) {
-			return FlexoController.confirm(FlexoLocalization.localizedForKey("connection_error") + ": " + e + "\n"
-					+ FlexoLocalization.localizedForKey("would_you_like_to_try_again?"));
+			return FlexoController.confirm(FlexoLocalization.getMainLocalizer().localizedForKey("connection_error") + ": " + e + "\n"
+					+ FlexoLocalization.getMainLocalizer().localizedForKey("would_you_like_to_try_again?"));
 		}
 		else if (e instanceof SocketTimeoutException) {
-			return FlexoController.confirm(FlexoLocalization.localizedForKey("connection_timeout") + "\n"
-					+ FlexoLocalization.localizedForKey("would_you_like_to_try_again?"));
+			return FlexoController.confirm(FlexoLocalization.getMainLocalizer().localizedForKey("connection_timeout") + "\n"
+					+ FlexoLocalization.getMainLocalizer().localizedForKey("would_you_like_to_try_again?"));
 		}
 		else if (e instanceof IOException || e.getCause() instanceof IOException) {
 			IOException ioEx = (IOException) (e instanceof IOException ? e : e.getCause());
-			return FlexoController.confirm(FlexoLocalization.localizedForKey("connection_error") + ": "
-					+ FlexoLocalization.localizedForKey(ioEx.getClass().getSimpleName()) + " " + ioEx.getMessage() + "\n"
-					+ FlexoLocalization.localizedForKey("would_you_like_to_try_again?"));
+			return FlexoController.confirm(FlexoLocalization.getMainLocalizer().localizedForKey("connection_error") + ": "
+					+ FlexoLocalization.getMainLocalizer().localizedForKey(ioEx.getClass().getSimpleName()) + " " + ioEx.getMessage() + "\n"
+					+ FlexoLocalization.getMainLocalizer().localizedForKey("would_you_like_to_try_again?"));
 		}
 		else {
 			if (e.getMessage() != null && e.getMessage().indexOf("Content is not allowed in prolog") > -1) {
@@ -1670,10 +1680,10 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 				return false;
 			}
 			else {
-				return FlexoController.confirm(FlexoLocalization.localizedForKey("webservice_remote_error") + " \n"
+				return FlexoController.confirm(FlexoLocalization.getMainLocalizer().localizedForKey("webservice_remote_error") + " \n"
 						+ (e.getMessage() == null || "java.lang.NullPointerException".equals(e.getMessage())
 								? "Check your connection parameters.\nThe service may be temporary unavailable." : e.getMessage())
-						+ "\n" + FlexoLocalization.localizedForKey("would_you_like_to_try_again?"));
+						+ "\n" + FlexoLocalization.getMainLocalizer().localizedForKey("would_you_like_to_try_again?"));
 			}
 		}
 		/*FlexoController.notify(FlexoLocalization.localizedForKey("webservice_connection_failed"));
@@ -1782,7 +1792,7 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 	public FlexoProgress willLoad(Resource fibResource) {
 
 		if (!getApplicationFIBLibraryService().componentIsLoaded(fibResource)) {
-			Progress.progress(FlexoLocalization.localizedForKey("loading_component") + " " + fibResource);
+			Progress.progress(FlexoLocalization.getMainLocalizer().localizedForKey("loading_component") + " " + fibResource);
 
 			// FlexoProgress progress = ProgressWindow.makeProgressWindow(FlexoLocalization.localizedForKey("loading_interface..."), 3);
 			// progress.setProgress("loading_component");
@@ -1871,14 +1881,14 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 	 *            the object to focus on
 	 */
 	public void selectAndFocusObject(FlexoObject object) {
-		Progress.progress(FlexoLocalization.localizedForKey("select_and_focus") + " " + object);
+		Progress.progress(FlexoLocalization.getMainLocalizer().localizedForKey("select_and_focus") + " " + object);
 		if (object instanceof FlexoProject) {
 			getControllerModel().setCurrentProject((FlexoProject) object);
 		}
 		else {
 			setCurrentEditedObjectAsModuleView(object);
 		}
-		Progress.progress(FlexoLocalization.localizedForKey("selecting") + " " + object);
+		Progress.progress(FlexoLocalization.getMainLocalizer().localizedForKey("selecting") + " " + object);
 		getSelectionManager().setSelectedObject(object);
 	}
 
@@ -2322,6 +2332,30 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 	 * @param action
 	 */
 	public void hasExecuted(FlexoBehaviourAction<?, ?, ?> action) {
+	}
+
+	/**
+	 * Return the flexo locales (general locales for Openflexo application)
+	 * 
+	 * @return
+	 */
+	public LocalizedDelegate getFlexoLocales() {
+		if (getApplicationContext() != null) {
+			return getApplicationContext().getLocalizationService().getFlexoLocalizer();
+		}
+		return FlexoLocalization.getMainLocalizer();
+	}
+
+	/**
+	 * Return the locales relative to the module of this FlexoController
+	 * 
+	 * @return
+	 */
+	public LocalizedDelegate getModuleLocales() {
+		if (getModule() != null) {
+			return getModule().getLocales();
+		}
+		return FlexoLocalization.getMainLocalizer();
 	}
 
 }

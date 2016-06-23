@@ -66,7 +66,6 @@ import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.foundation.technologyadapter.TypeAwareModelSlot;
 import org.openflexo.gina.annotation.FIBPanel;
-import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.toolbox.StringUtils;
 import org.openflexo.view.controller.FlexoController;
 
@@ -126,7 +125,7 @@ public abstract class AbstractCreateVirtualModelWizard<A extends AbstractCreateV
 
 		@Override
 		public String getTitle() {
-			return FlexoLocalization.localizedForKey("configure_model_slots");
+			return getAction().getLocales().localizedForKey("configure_model_slots");
 		}
 
 		public List<ModelSlotEntry> getModelSlotEntries() {
@@ -157,7 +156,7 @@ public abstract class AbstractCreateVirtualModelWizard<A extends AbstractCreateV
 		public boolean isValid() {
 
 			if (getModelSlotEntries().size() == 0) {
-				setIssueMessage(FlexoLocalization.localizedForKey("no_model_slots_defined"), IssueMessageType.WARNING);
+				setIssueMessage(getAction().getLocales().localizedForKey("no_model_slots_defined"), IssueMessageType.WARNING);
 				return true;
 			}
 			else {
@@ -167,7 +166,7 @@ public abstract class AbstractCreateVirtualModelWizard<A extends AbstractCreateV
 					String modelSlotName = entry.getModelSlotName();
 					for (ModelSlotEntry entry2 : getModelSlotEntries()) {
 						if ((entry != entry2) && (entry.getModelSlotName().equals(entry2.getModelSlotName()))) {
-							setIssueMessage(FlexoLocalization.localizedForKey("duplicated_model_slot_name") + " : " + modelSlotName,
+							setIssueMessage(getAction().getLocales().localizedForKey("duplicated_model_slot_name") + " : " + modelSlotName,
 									IssueMessageType.ERROR);
 							return false;
 						}
@@ -189,7 +188,7 @@ public abstract class AbstractCreateVirtualModelWizard<A extends AbstractCreateV
 					}
 				}
 				if (!hasWarnings) {
-					setIssueMessage(FlexoLocalization.localizedForKey("all_model_slots_are_valid"), IssueMessageType.INFO);
+					setIssueMessage(getAction().getLocales().localizedForKey("all_model_slots_are_valid"), IssueMessageType.INFO);
 				}
 				return true;
 			}
@@ -279,7 +278,7 @@ public abstract class AbstractCreateVirtualModelWizard<A extends AbstractCreateV
 
 			String configurationErrorMessage = modelSlotEntry.getConfigurationErrorMessage();
 			if (StringUtils.isNotEmpty(configurationErrorMessage)) {
-				setIssueMessage(FlexoLocalization.localizedForKey("valid_model_slot_configuration"), IssueMessageType.INFO);
+				setIssueMessage(getAction().getLocales().localizedForKey("valid_model_slot_configuration"), IssueMessageType.INFO);
 				return false;
 			}
 			return true;
@@ -306,7 +305,8 @@ public abstract class AbstractCreateVirtualModelWizard<A extends AbstractCreateV
 
 		@Override
 		public String getTitle() {
-			return FlexoLocalization.localizedForKey("configure_type_aware_model_slot") + " : " + getModelSlotEntry().getModelSlotName();
+			return getAction().getLocales().localizedForKey("configure_type_aware_model_slot") + " : "
+					+ getModelSlotEntry().getModelSlotName();
 		}
 
 		public FlexoMetaModelResource<M, MM, ?> getMetaModelResource() {
@@ -328,7 +328,7 @@ public abstract class AbstractCreateVirtualModelWizard<A extends AbstractCreateV
 				return false;
 			}
 			if (getMetaModelResource() == null) {
-				setIssueMessage(FlexoLocalization.localizedForKey("please_provide_a_valid_meta_model"), IssueMessageType.ERROR);
+				setIssueMessage(getAction().getLocales().localizedForKey("please_provide_a_valid_meta_model"), IssueMessageType.ERROR);
 				return false;
 			}
 			return true;
@@ -351,7 +351,7 @@ public abstract class AbstractCreateVirtualModelWizard<A extends AbstractCreateV
 
 		@Override
 		public String getTitle() {
-			return FlexoLocalization.localizedForKey("configure_free_model_slot") + " : " + getModelSlotEntry().getModelSlotName();
+			return getAction().getLocales().localizedForKey("configure_free_model_slot") + " : " + getModelSlotEntry().getModelSlotName();
 		}
 
 	}
@@ -371,7 +371,8 @@ public abstract class AbstractCreateVirtualModelWizard<A extends AbstractCreateV
 
 		@Override
 		public String getTitle() {
-			return FlexoLocalization.localizedForKey("configure_virtual_model_slot") + " : " + getModelSlotEntry().getModelSlotName();
+			return getAction().getLocales().localizedForKey("configure_virtual_model_slot") + " : "
+					+ getModelSlotEntry().getModelSlotName();
 		}
 
 		public VirtualModelResource getVirtualModelResource() {
@@ -393,7 +394,7 @@ public abstract class AbstractCreateVirtualModelWizard<A extends AbstractCreateV
 				return false;
 			}
 			if (getVirtualModelResource() == null) {
-				setIssueMessage(FlexoLocalization.localizedForKey("please_provide_a_valid_virtual_model"), IssueMessageType.ERROR);
+				setIssueMessage(getAction().getLocales().localizedForKey("please_provide_a_valid_virtual_model"), IssueMessageType.ERROR);
 				return false;
 			}
 			return true;

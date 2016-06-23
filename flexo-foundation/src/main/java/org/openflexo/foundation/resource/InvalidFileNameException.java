@@ -87,7 +87,7 @@ public class InvalidFileNameException extends FlexoException {
 	 */
 	@Override
 	public String getLocalizedMessage() {
-		return FlexoLocalization.localizedForKey("invalid_file_name") + " " + getRelativePath() != null ? getRelativePath()
-				: " null relative path";
+		return FlexoLocalization.getMainLocalizer().localizedForKey("invalid_file_name") + " " + getRelativePath() != null
+				? getRelativePath() : " null relative path";
 	}
 }

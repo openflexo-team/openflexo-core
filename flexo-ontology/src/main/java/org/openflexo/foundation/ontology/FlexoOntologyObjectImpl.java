@@ -43,6 +43,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.DefaultFlexoObject;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
+import org.openflexo.localization.LocalizedDelegate;
 
 /**
  * This is the default abstract implementation of all objects encoding models or metamodels conform to FlexoOntology layer
@@ -94,6 +95,14 @@ public abstract class FlexoOntologyObjectImpl<TA extends TechnologyAdapter> exte
 
 	public final boolean isOntologyDataProperty() {
 		return this instanceof IFlexoOntologyDataProperty;
+	}
+
+	@Override
+	public LocalizedDelegate getLocales() {
+		if (getTechnologyAdapter() != null) {
+			return getTechnologyAdapter().getLocales();
+		}
+		return super.getLocales();
 	}
 
 }

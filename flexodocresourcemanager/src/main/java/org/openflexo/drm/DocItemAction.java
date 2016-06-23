@@ -142,24 +142,25 @@ public class DocItemAction extends DRMObject {
 	}
 
 	public String getLocalizedName() {
-		return FlexoLocalization
-				.localizedForKeyWithParams(
-						"($version.version)/($version.languageId)_($localizedActionType)_on_($localizedSmallActionDate)_by_($authorId)_($statusName)",
-						this);
+		return FlexoLocalization.getMainLocalizer().localizedForKeyWithParams(
+				"($version.version)/($version.languageId)_($localizedActionType)_on_($localizedSmallActionDate)_by_($authorId)_($statusName)",
+				this);
 	}
 
 	public String getLocalizedActionType() {
-		return FlexoLocalization.localizedForKey(getActionType().getName());
+		return FlexoLocalization.getMainLocalizer().localizedForKey(getActionType().getName());
 	}
 
 	public String getLocalizedSmallActionDate() {
 		// Typically "dd/MM/yyyy" in french, "MM/dd, yyyy" in english
-		return new SimpleDateFormat(FlexoLocalization.localizedForKey("doc_item_action_date_format_simple")).format(getActionDate());
+		return new SimpleDateFormat(FlexoLocalization.getMainLocalizer().localizedForKey("doc_item_action_date_format_simple"))
+				.format(getActionDate());
 	}
 
 	public String getLocalizedFullActionDate() {
 		// Typically "dd/MM/yyyy" in french, "MM/dd, yyyy" in english
-		return new SimpleDateFormat(FlexoLocalization.localizedForKey("doc_item_action_date_format_extended")).format(getActionDate());
+		return new SimpleDateFormat(FlexoLocalization.getMainLocalizer().localizedForKey("doc_item_action_date_format_extended"))
+				.format(getActionDate());
 	}
 
 	public boolean isApproved() {
@@ -198,13 +199,13 @@ public class DocItemAction extends DRMObject {
 			return "";
 		}
 		if (isApproved()) {
-			return FlexoLocalization.localizedForKey("[approved]");
+			return FlexoLocalization.getMainLocalizer().localizedForKey("[approved]");
 		}
 		if (isRefused()) {
-			return FlexoLocalization.localizedForKey("[refused]");
+			return FlexoLocalization.getMainLocalizer().localizedForKey("[refused]");
 		}
 		if (isPending()) {
-			return FlexoLocalization.localizedForKey("[pending]");
+			return FlexoLocalization.getMainLocalizer().localizedForKey("[pending]");
 		}
 		return "";
 	}

@@ -51,6 +51,7 @@ import org.openflexo.foundation.FlexoEditor.FlexoEditorFactory;
 import org.openflexo.foundation.FlexoService;
 import org.openflexo.foundation.FlexoService.ServiceNotification;
 import org.openflexo.foundation.FlexoServiceManager;
+import org.openflexo.foundation.ProjectLoader;
 import org.openflexo.foundation.remoteresources.FlexoUpdateService;
 import org.openflexo.foundation.resource.DefaultResourceCenterService;
 import org.openflexo.foundation.resource.DefaultResourceCenterService.DefaultPackageResourceCenterIsNotInstalled;
@@ -70,7 +71,6 @@ import org.openflexo.prefs.BugReportPreferences;
 import org.openflexo.prefs.GeneralPreferences;
 import org.openflexo.prefs.LoggingPreferences;
 import org.openflexo.prefs.PreferencesService;
-import org.openflexo.project.InteractiveProjectLoader;
 import org.openflexo.rm.ActivateTechnologyAdapterTask;
 import org.openflexo.rm.AddResourceCenterTask;
 import org.openflexo.rm.DisactivateTechnologyAdapterTask;
@@ -179,8 +179,8 @@ public abstract class ApplicationContext extends DefaultFlexoServiceManager impl
 		return getService(DocResourceManager.class);
 	}
 
-	public InteractiveProjectLoader getProjectLoader() {
-		return getService(InteractiveProjectLoader.class);
+	public ProjectLoader getProjectLoader() {
+		return getService(ProjectLoader.class);
 	}
 
 	public FlexoServerInstanceManager getFlexoServerInstanceManager() {

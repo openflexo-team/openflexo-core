@@ -247,7 +247,7 @@ public class ResourceConsistencyService extends FlexoServiceImpl {
 		if (StringUtils.isEmpty(resourceURI)) {
 			return null;
 		}
-		for (FlexoResource<?> r : getResourceManager().getRegisteredResources()) {
+		for (FlexoResource<?> r : new ArrayList<FlexoResource<?>>(getResourceManager().getRegisteredResources())) {
 			if (resourceURI.equals(r.getURI())) {
 				flexoResources.add(r);
 			}

@@ -114,7 +114,7 @@ public class SaveProjectsDialog {
 		if (dialog.getController() instanceof FlexoFIBController) {
 			((FlexoFIBController) dialog.getController()).setFlexoController(controller);
 		}
-		dialog.setTitle(FlexoLocalization.localizedForKey("project_has_unsaved_changes"));
+		dialog.setTitle(controller.getFlexoLocales().localizedForKey("project_has_unsaved_changes"));
 		dialog.showDialog();
 		ok = dialog.getController().getStatus() == Status.YES;
 	}

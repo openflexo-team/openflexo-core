@@ -56,7 +56,6 @@ import org.openflexo.gina.annotation.FIBPanel;
 import org.openflexo.icon.FMLIconLibrary;
 import org.openflexo.icon.IconFactory;
 import org.openflexo.icon.IconLibrary;
-import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.toolbox.StringUtils;
 import org.openflexo.view.controller.FlexoController;
 
@@ -65,8 +64,8 @@ public class CreateInspectorEntryWizard extends AbstractCreateFMLElementWizard<C
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CreateInspectorEntryWizard.class.getPackage().getName());
 
-	private static final String DUPLICATED_NAME = FlexoLocalization.localizedForKey("this_name_is_already_used_please_choose_an_other_one");
-	private static final String EMPTY_NAME = FlexoLocalization.localizedForKey("edition_behaviour_must_have_an_non_empty_and_unique_name");
+	private static final String DUPLICATED_NAME = "this_name_is_already_used_please_choose_an_other_one";
+	private static final String EMPTY_NAME = "edition_behaviour_must_have_an_non_empty_and_unique_name";
 
 	private final DescribeInspectorEntry describeInspectorEntry;
 
@@ -79,7 +78,7 @@ public class CreateInspectorEntryWizard extends AbstractCreateFMLElementWizard<C
 
 	@Override
 	public String getWizardTitle() {
-		return FlexoLocalization.localizedForKey("create_inspector_entry");
+		return getAction().getLocales().localizedForKey("create_inspector_entry");
 	}
 
 	@Override
@@ -119,21 +118,22 @@ public class CreateInspectorEntryWizard extends AbstractCreateFMLElementWizard<C
 
 		@Override
 		public String getTitle() {
-			return FlexoLocalization.localizedForKey("describe_inspector_entry");
+			return getAction().getLocales().localizedForKey("describe_inspector_entry");
 		}
 
 		@Override
 		public boolean isValid() {
 
 			if (StringUtils.isEmpty(getEntryName())) {
-				setIssueMessage(EMPTY_NAME, IssueMessageType.ERROR);
+				setIssueMessage(getAction().getLocales().localizedForKey(EMPTY_NAME), IssueMessageType.ERROR);
 				return false;
-			} else if (getFocusedObject().getEntry(getEntryName()) != null) {
-				setIssueMessage(DUPLICATED_NAME, IssueMessageType.ERROR);
+			}
+			else if (getFocusedObject().getEntry(getEntryName()) != null) {
+				setIssueMessage(getAction().getLocales().localizedForKey(DUPLICATED_NAME), IssueMessageType.ERROR);
 				return false;
 			}
 			if (StringUtils.isEmpty(getDescription())) {
-				setIssueMessage(FlexoLocalization.localizedForKey("it_is_recommanded_to_describe_entry"), IssueMessageType.WARNING);
+				setIssueMessage(getAction().getLocales().localizedForKey("it_is_recommanded_to_describe_entry"), IssueMessageType.WARNING);
 			}
 
 			return true;

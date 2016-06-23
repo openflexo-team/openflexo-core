@@ -58,8 +58,10 @@ import org.openflexo.foundation.action.SortFlexoProperties;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.PamelaResource;
 import org.openflexo.foundation.resource.ResourceData;
+import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.foundation.utils.FlexoObjectReference;
 import org.openflexo.localization.FlexoLocalization;
+import org.openflexo.localization.LocalizedDelegate;
 import org.openflexo.model.annotations.Adder;
 import org.openflexo.model.annotations.CloningStrategy;
 import org.openflexo.model.annotations.CloningStrategy.StrategyType;
@@ -273,6 +275,14 @@ public abstract interface FlexoObject extends AccessibleProxyObject, DeletablePr
 	 * Also notify the {@link FlexoEditingContext}
 	 */
 	public void setIsModified();
+
+	/**
+	 * Return the locales attached to this {@link FlexoObject}.<br>
+	 * This is the responsability of subclasses to implements a proper scheme
+	 * 
+	 * @return
+	 */
+	public LocalizedDelegate getLocales();
 
 	public static abstract class FlexoObjectImpl extends FlexoObservable implements FlexoObject {
 
@@ -819,11 +829,26 @@ public abstract interface FlexoObject extends AccessibleProxyObject, DeletablePr
 			}
 		}
 
+		public static LocalizedDelegate getLocales(FlexoServiceManager serviceManager) {
+			if (serviceManager != null) {
+				return serviceManager.getLocalizationService().getFlexoLocalizer();
+			}
+			return FlexoLocalization.getMainLocalizer();
+		}
+
+		@Override
+		public LocalizedDelegate getLocales() {
+			if (this instanceof TechnologyObject && ((TechnologyObject<?>) this).getTechnologyAdapter() != null) {
+				return ((TechnologyObject<?>) this).getTechnologyAdapter().getLocales();
+			}
+			return getLocales(getServiceManager());
+		}
+
 		/**
 		 * @return
 		 */
 		public String getLocalizedClassName() {
-			return FlexoLocalization.localizedForKey(getClass().getSimpleName());
+			return getLocales().localizedForKey(getClass().getSimpleName());
 		}
 
 		@Override

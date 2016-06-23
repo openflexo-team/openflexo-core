@@ -49,16 +49,15 @@ import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.technologyadapter.FlexoMetaModel;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
-import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.view.controller.FlexoController;
 
-public abstract class AbstractCreateFlexoRoleWizard<A extends AbstractCreateFlexoRole<A, MS>, MS extends ModelSlot<?>> extends
-		AbstractCreateFlexoPropertyWizard<A> {
+public abstract class AbstractCreateFlexoRoleWizard<A extends AbstractCreateFlexoRole<A, MS>, MS extends ModelSlot<?>>
+		extends AbstractCreateFlexoPropertyWizard<A> {
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(AbstractCreateFlexoRoleWizard.class.getPackage().getName());
 
-	protected static final String NO_ROLE_TYPE = FlexoLocalization.localizedForKey("please_choose_a_role_type");
+	protected static final String NO_ROLE_TYPE = "please_choose_a_role_type";
 
 	public AbstractCreateFlexoRoleWizard(A action, FlexoController controller) {
 		super(action, controller);
@@ -69,9 +68,10 @@ public abstract class AbstractCreateFlexoRoleWizard<A extends AbstractCreateFlex
 
 	@Override
 	public String getWizardTitle() {
-		return FlexoLocalization.localizedForKey("create_flexo_role");
+		return getAction().getLocales().localizedForKey("create_flexo_role");
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public AbstractDescribeFlexoRole getDescribeProperty() {
 		return (AbstractDescribeFlexoRole) super.getDescribeProperty();
@@ -87,7 +87,7 @@ public abstract class AbstractCreateFlexoRoleWizard<A extends AbstractCreateFlex
 
 		@Override
 		public String getTitle() {
-			return FlexoLocalization.localizedForKey("describe_flexo_role");
+			return getAction().getLocales().localizedForKey("describe_flexo_role");
 		}
 
 		@Override
@@ -98,7 +98,7 @@ public abstract class AbstractCreateFlexoRoleWizard<A extends AbstractCreateFlex
 			}
 
 			if (getFlexoRoleClass() == null) {
-				setIssueMessage(NO_ROLE_TYPE, IssueMessageType.ERROR);
+				setIssueMessage(getAction().getLocales().localizedForKey(NO_ROLE_TYPE), IssueMessageType.ERROR);
 				return false;
 			}
 

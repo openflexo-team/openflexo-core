@@ -91,9 +91,9 @@ public class HelpMenu extends FlexoMenu implements Observer {
 				&& getController().getApplicationContext().getDocResourceManager().getDocResourceCenter() != null) {
 
 			generalHelp = new JMenuItem();
-			generalHelp.setAccelerator(ToolBox.getPLATFORM() == ToolBox.MACOS ? KeyStroke.getKeyStroke(KeyEvent.VK_HELP, 0) : KeyStroke
-					.getKeyStroke(KeyEvent.VK_F1, 0));
-			generalHelp.setText(FlexoLocalization.localizedForKey("general_help", generalHelp));
+			generalHelp.setAccelerator(ToolBox.getPLATFORM() == ToolBox.MACOS ? KeyStroke.getKeyStroke(KeyEvent.VK_HELP, 0)
+					: KeyStroke.getKeyStroke(KeyEvent.VK_F1, 0));
+			generalHelp.setText(FlexoLocalization.getMainLocalizer().localizedForKey("general_help", generalHelp));
 			DocItem drcItem = getController().getApplicationContext().getDocResourceManager().getDocResourceCenterItem();
 			if (drcItem != null) {
 				CSH.setHelpIDString(generalHelp, drcItem.getIdentifier());
@@ -102,16 +102,16 @@ public class HelpMenu extends FlexoMenu implements Observer {
 			add(generalHelp);
 
 			flexoHelp = new JMenuItem();
-			flexoHelp.setText(FlexoLocalization.localizedForKey("flexo_help", flexoHelp));
-			CSH.setHelpIDString(flexoHelp, getController().getApplicationContext().getDocResourceManager().getFlexoToolSetItem()
-					.getIdentifier());
+			flexoHelp.setText(FlexoLocalization.getMainLocalizer().localizedForKey("flexo_help", flexoHelp));
+			CSH.setHelpIDString(flexoHelp,
+					getController().getApplicationContext().getDocResourceManager().getFlexoToolSetItem().getIdentifier());
 			flexoHelp.addActionListener(helpActionListener);
 			add(flexoHelp);
 
 			modelingHelp = new JMenuItem();
-			modelingHelp.setText(FlexoLocalization.localizedForKey("modeling_help", modelingHelp));
-			CSH.setHelpIDString(modelingHelp, getController().getApplicationContext().getDocResourceManager().getFlexoModelItem()
-					.getIdentifier());
+			modelingHelp.setText(FlexoLocalization.getMainLocalizer().localizedForKey("modeling_help", modelingHelp));
+			CSH.setHelpIDString(modelingHelp,
+					getController().getApplicationContext().getDocResourceManager().getFlexoModelItem().getIdentifier());
 			modelingHelp.addActionListener(helpActionListener);
 			add(modelingHelp);
 
@@ -120,7 +120,7 @@ public class HelpMenu extends FlexoMenu implements Observer {
 			int i = 0;
 			for (Module<?> module : controller.getApplicationContext().getModuleLoader().getKnownModules()) {
 				modulesHelp[i] = new JMenuItem();
-				modulesHelp[i].setText(FlexoLocalization.localizedForKey(module.getName(), modulesHelp[i]));
+				modulesHelp[i].setText(FlexoLocalization.getMainLocalizer().localizedForKey(module.getName(), modulesHelp[i]));
 				CSH.setHelpIDString(modulesHelp[i], module.getHelpTopic());
 				modulesHelp[i].addActionListener(helpActionListener);
 				add(modulesHelp[i]);
@@ -129,7 +129,7 @@ public class HelpMenu extends FlexoMenu implements Observer {
 
 			addSeparator();
 			helpOn = new JMenuItem();
-			helpOn.setText(FlexoLocalization.localizedForKey("help_on", helpOn));
+			helpOn.setText(FlexoLocalization.getMainLocalizer().localizedForKey("help_on", helpOn));
 			// helpOn.addActionListener(new CSH.DisplayHelpAfterTracking(FlexoHelp.getHelpBroker()));
 			helpOn.addActionListener(new ActionListener() {
 				@Override
@@ -141,7 +141,7 @@ public class HelpMenu extends FlexoMenu implements Observer {
 
 			if (getModuleLoader().allowsDocSubmission()) {
 				submitHelpFor = new JMenuItem();
-				submitHelpFor.setText(FlexoLocalization.localizedForKey("submit_help_for", submitHelpFor));
+				submitHelpFor.setText(FlexoLocalization.getMainLocalizer().localizedForKey("submit_help_for", submitHelpFor));
 				// helpOn.addActionListener(new CSH.DisplayHelpAfterTracking(FlexoHelp.getHelpBroker()));
 				submitHelpFor.addActionListener(new ActionListener() {
 					@Override
@@ -156,7 +156,7 @@ public class HelpMenu extends FlexoMenu implements Observer {
 		if (ToolBox.getPLATFORM() != ToolBox.MACOS) {
 			addSeparator();
 			aboutFlexo = new JMenuItem();
-			aboutFlexo.setText(FlexoLocalization.localizedForKey("about_flexo", aboutFlexo));
+			aboutFlexo.setText(FlexoLocalization.getMainLocalizer().localizedForKey("about_flexo", aboutFlexo));
 			aboutFlexo.addActionListener(new ActionListener() {
 
 				@Override

@@ -59,14 +59,14 @@ public class FIBViewPointLibraryBrowser extends FIBTechnologyBrowser<FMLTechnolo
 	public static final Resource FIB_FILE = ResourceLocator.locateResource("Fib/Widget/FIBViewPointLibraryBrowser.fib");
 
 	public FIBViewPointLibraryBrowser(FMLTechnologyAdapter technologyAdapter, FlexoController controller) {
-		super(technologyAdapter, controller, FIB_FILE);
+		super(technologyAdapter, controller, FIB_FILE, controller.getTechnologyAdapter(FMLTechnologyAdapter.class).getLocales());
 	}
 
 	// Please uncomment this for a live test
 	// Never commit this uncommented since it will not compile on continuous build
 	// To have icon, you need to choose "Test interface" in the editor (otherwise, flexo controller is not insanciated in EDIT mode)
 	/*public static void main(String[] args) {
-
+	
 		try {
 			FlexoLoggingManager.initialize(-1, true, null, Level.INFO, null);
 		} catch (SecurityException e) {
@@ -76,41 +76,41 @@ public class FIBViewPointLibraryBrowser extends FIBTechnologyBrowser<FMLTechnolo
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
+	
 		final FlexoServiceManager serviceManager = new DefaultFlexoServiceManager() {
 			@Override
 			protected FlexoProjectReferenceLoader createProjectReferenceLoader() {
 				return null;
 			}
-
+	
 			@Override
 			protected FlexoEditor createApplicationEditor() {
 				return null;
 			}
 		};
 		final ViewPointLibrary viewPointLibrary = serviceManager.getViewPointLibrary();
-
+	
 		// System.out.println("Resource centers=" + viewPointLibrary.getResourceCenterService().getResourceCenters());
 		// System.exit(-1);
-
+	
 		FIBAbstractEditor editor = new FIBAbstractEditor() {
 			@Override
 			public Object[] getData() {
 				return makeArray(viewPointLibrary);
 			}
-
+	
 			@Override
 			public File getFIBFile() {
 				return FIB_FILE;
 			}
-
+	
 			@Override
 			public FIBController makeNewController(FIBComponent component) {
 				return new FlexoFIBController(component);
 			}
 		};
 		editor.launch();
-
+	
 	}*/
 
 }

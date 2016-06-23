@@ -62,13 +62,18 @@ import org.openflexo.drm.DocResourceManager;
 import org.openflexo.foundation.DataModification;
 import org.openflexo.foundation.FlexoObservable;
 import org.openflexo.foundation.GraphicalFlexoObserver;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
+import org.openflexo.gina.swing.utils.localization.LocalizedEditor;
 import org.openflexo.gina.swing.utils.logging.FlexoLoggingViewer;
 import org.openflexo.icon.IconLibrary;
 import org.openflexo.localization.FlexoLocalization;
+import org.openflexo.localization.LocalizedDelegate;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.logging.FlexoLoggingManager;
 import org.openflexo.market.FlexoMarketEditorDialog;
+import org.openflexo.module.Module;
 import org.openflexo.project.AutoSaveService;
+import org.openflexo.project.InteractiveProjectLoader;
 import org.openflexo.view.FMLConsoleViewer;
 import org.openflexo.view.controller.FlexoController;
 import org.openflexo.view.controller.model.ControllerModel;
@@ -94,7 +99,7 @@ public class ToolsMenu extends FlexoMenu {
 
 	public JMenuItem undoManagerItem;
 
-	public JMenuItem localizedEditorItem;
+	public FlexoMenu localizedEditorsMenu;
 	public JMenuItem applicationFIBEditorItem;
 
 	public JMenuItem rmItem;
@@ -118,7 +123,7 @@ public class ToolsMenu extends FlexoMenu {
 		if (Flexo.isDev) {
 			addSeparator();
 			add(applicationFIBEditorItem = new ApplicationFIBEditorItem());
-			add(localizedEditorItem = new LocalizedEditorItem());
+			add(localizedEditorsMenu = new LocalizedEditorMenu(getController()));
 		}
 		add(rmItem = new ResourceManagerItem());
 		add(undoManagerItem = new UndoManagerItem());
@@ -265,26 +270,183 @@ public class ToolsMenu extends FlexoMenu {
 	}
 
 	// ==========================================================================
-	// ========================== Localized Editor
-	// ==============================
+	// ========================== Localized management ==========================
 	// ==========================================================================
 
-	public class LocalizedEditorItem extends FlexoMenuItem {
+	public class LocalizedEditorMenu extends FlexoMenu {
 
-		public LocalizedEditorItem() {
-			super(new LocalizedEditorAction(), "localized_editor", null, getController(), true);
+		private LocalizedEditorItem flexoLocalesItem;
+
+		public LocalizedEditorMenu(FlexoController controller) {
+			super("localization_editor", controller);
+
+			add(flexoLocalesItem = new LocalizedEditorItem("general_locales", getController().getFlexoLocales()));
+
+			addSeparator();
+
+			for (TechnologyAdapter ta : controller.getApplicationContext().getTechnologyAdapterService().getTechnologyAdapters()) {
+				JMenuItem item = new TechnologyLocalizedItem(ta);
+				item.setIcon(controller.getApplicationContext().getTechnologyAdapterControllerService().getTechnologyAdapterController(ta)
+						.getTechnologyIcon());
+				add(item);
+			}
+
+			addSeparator();
+
+			for (Module<?> m : controller.getModuleLoader().getKnownModules()) {
+				JMenuItem item = new ModuleLocalizedItem(m);
+				item.setIcon(m.getSmallIcon());
+				add(item);
+			}
+
+			/*for (Module<?> m : controller.getModuleLoader().getKnownModules()) {
+				JMenuItem item = new TechnologyLocalizedItem(technologyAdapter)
+			
+			
+						new JMenuItem(new SwitchToModuleAction(m));
+				item.setText(controller.getModuleLocales().localizedForKey(m.getName(), item));
+				item.setIcon(m.getSmallIcon());
+				moduleMenuItems.put(m, item);
+				if (getModuleLoader().isLoaded(m)) {
+					add(item);
+				}
+				else {
+					loadWindowMenu.add(item);
+				}
+			}*/
+
 		}
 
 	}
 
+	public class LocalizedEditorItem extends FlexoMenuItem {
+
+		public LocalizedEditorItem(String localesName, LocalizedDelegate locales) {
+			super(new LocalizedEditorAction(localesName, locales), localesName, null, getController(), true);
+		}
+
+	}
+
+	public class TechnologyLocalizedItem extends FlexoMenuItem {
+
+		public TechnologyLocalizedItem(TechnologyAdapter technologyAdapter) {
+			super(new TechnologyLocalizedEditorAction(technologyAdapter), technologyAdapter.getName(), null, getController(), true);
+		}
+
+	}
+
+	public class ModuleLocalizedItem extends FlexoMenuItem {
+
+		public ModuleLocalizedItem(Module<?> module) {
+			super(new ModuleLocalizedEditorAction(module), module.getName(), null, getController(), true);
+		}
+
+	}
+
+	public class TechnologyLocalizedEditorAction extends LocalizedEditorAction implements PropertyChangeListener {
+
+		private TechnologyAdapter technologyAdapter;
+
+		public TechnologyLocalizedEditorAction(TechnologyAdapter technologyAdapter) {
+			super(technologyAdapter.getName(), null);
+			this.technologyAdapter = technologyAdapter;
+			if (technologyAdapter != null) {
+				technologyAdapter.getPropertyChangeSupport().addPropertyChangeListener(this);
+				setEnabled(technologyAdapter.isActivated());
+			}
+			else {
+				setEnabled(false);
+			}
+		}
+
+		@Override
+		public void propertyChange(PropertyChangeEvent evt) {
+			if (evt.getPropertyName().equals("activated") && technologyAdapter != null) {
+				setEnabled(technologyAdapter.isActivated());
+			}
+		}
+
+		@Override
+		public LocalizedDelegate getLocales() {
+			if (technologyAdapter != null) {
+				return technologyAdapter.getLocales();
+			}
+			return null;
+		}
+
+		/*@Override
+		public boolean isEnabled() {
+			if (technologyAdapter != null) {
+				return technologyAdapter.isActivated();
+			}
+			return super.isEnabled();
+		}*/
+	}
+
+	public class ModuleLocalizedEditorAction extends LocalizedEditorAction implements PropertyChangeListener {
+
+		private Module<?> module;
+
+		public ModuleLocalizedEditorAction(Module<?> module) {
+			super(module.getName(), null);
+			this.module = module;
+			if (module != null) {
+				module.getPropertyChangeSupport().addPropertyChangeListener(this);
+				setEnabled(module.isLoaded());
+			}
+			else {
+				setEnabled(false);
+			}
+		}
+
+		@Override
+		public void propertyChange(PropertyChangeEvent evt) {
+			if (evt.getPropertyName().equals("loaded") && module != null) {
+				setEnabled(module.isLoaded());
+			}
+		}
+
+		@Override
+		public LocalizedDelegate getLocales() {
+			return module.getLoadedModuleInstance().getLocales();
+		}
+
+		/*@Override
+		public boolean isEnabled() {
+			if (module != null) {
+				return module.isLoaded();
+			}
+			return super.isEnabled();
+		}*/
+	}
+
 	public class LocalizedEditorAction extends AbstractAction {
-		public LocalizedEditorAction() {
+
+		private LocalizedDelegate locales;
+		private String localesName;
+		private LocalizedEditor localizedEditor;
+
+		public LocalizedEditorAction(String localesName, LocalizedDelegate locales) {
 			super();
+			this.locales = locales;
+			this.localesName = localesName;
+		}
+
+		public LocalizedDelegate getLocales() {
+			return locales;
+		}
+
+		private LocalizedEditor getLocalizedEditor() {
+			if (localizedEditor == null) {
+				localizedEditor = new LocalizedEditor(getController().getFlexoFrame(), localesName, getLocales(),
+						FlexoLocalization.getMainLocalizer(), true, false);
+			}
+			return localizedEditor;
 		}
 
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
-			getController().getMainLocalizedEditor().setVisible(true);
+			getLocalizedEditor().setVisible(true);
 		}
 	}
 
@@ -376,7 +538,7 @@ public class ToolsMenu extends FlexoMenu {
 		public void actionPerformed(ActionEvent arg0) {
 			JFileChooser chooser = new JFileChooser();
 			chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-			chooser.setDialogTitle(FlexoLocalization.localizedForKey("please_select_a_file"));
+			chooser.setDialogTitle(FlexoLocalization.getMainLocalizer().localizedForKey("please_select_a_file"));
 			chooser.setFileFilter(new FileFilter() {
 				@Override
 				public boolean accept(File f) {
@@ -385,7 +547,7 @@ public class ToolsMenu extends FlexoMenu {
 
 				@Override
 				public String getDescription() {
-					return FlexoLocalization.localizedForKey("doc_submission_report_files");
+					return FlexoLocalization.getMainLocalizer().localizedForKey("doc_submission_report_files");
 				}
 
 			});
@@ -401,7 +563,8 @@ public class ToolsMenu extends FlexoMenu {
 					DocResourceManager drm = getController().getApplicationContext().getDocResourceManager();
 					drm.getSessionSubmissions().save(savedFile);
 					drm.getSessionSubmissions().clear();
-					FlexoController.notify(FlexoLocalization.localizedForKey("doc_submission_report_successfully_saved"));
+					FlexoController
+							.notify(FlexoLocalization.getMainLocalizer().localizedForKey("doc_submission_report_successfully_saved"));
 				} catch (Exception e1) {
 					e1.printStackTrace();
 					return;
@@ -467,7 +630,10 @@ public class ToolsMenu extends FlexoMenu {
 	}
 
 	protected AutoSaveService getAutoSaveService() {
-		return getController().getProjectLoader().getAutoSaveService(getController().getProject());
+		if (getController().getProjectLoader() instanceof InteractiveProjectLoader) {
+			return ((InteractiveProjectLoader) getController().getProjectLoader()).getAutoSaveService(getController().getProject());
+		}
+		return null;
 	}
 
 	public class TimeTraveler extends FlexoMenuItem {
@@ -493,8 +659,8 @@ public class ToolsMenu extends FlexoMenu {
 				autoSaveService.showTimeTravelerDialog();
 			}
 			else {
-				if (FlexoController.confirm(FlexoLocalization.localizedForKey("time_traveling_is_disabled") + ". "
-						+ FlexoLocalization.localizedForKey("would_you_like_to_activate_it_now?"))) {
+				if (FlexoController.confirm(FlexoLocalization.getMainLocalizer().localizedForKey("time_traveling_is_disabled") + ". "
+						+ FlexoLocalization.getMainLocalizer().localizedForKey("would_you_like_to_activate_it_now?"))) {
 					getController().getApplicationContext().getGeneralPreferences().setAutoSaveEnabled(true);
 					getController().getApplicationContext().getPreferencesService().savePreferences();
 					getAutoSaveService().showTimeTravelerDialog();

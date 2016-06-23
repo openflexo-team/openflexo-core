@@ -192,7 +192,7 @@ public class ResourceManager extends FlexoServiceImpl implements FlexoService {
 		if (StringUtils.isEmpty(resourceURI)) {
 			return null;
 		}
-		for (FlexoResource r : resources) {
+		for (FlexoResource r : new ArrayList<>(resources)) {
 			if (resourceURI.equals(r.getURI())) {
 				return r;
 			}

@@ -96,7 +96,6 @@ import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.gina.swing.view.widget.JFIBHtmlEditorWidget;
-import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.localization.Language;
 import org.openflexo.view.controller.FlexoController;
 
@@ -189,7 +188,7 @@ public abstract class AbstractDocItemView extends JPanel {
 		};
 		titleTF.getDocument().addDocumentListener(titleListener);
 
-		JLabel titleLabel = new JLabel(FlexoLocalization.localizedForKey("title") + " : ");
+		JLabel titleLabel = new JLabel(controller.getFlexoLocales().localizedForKey("title") + " : ");
 		topPanel.add(titleLabel, BorderLayout.WEST);
 		topPanel.add(titleTF, BorderLayout.CENTER);
 		topPanel.add(languageCB, BorderLayout.EAST);
@@ -201,7 +200,7 @@ public abstract class AbstractDocItemView extends JPanel {
 		descriptionTA = new JTextArea();
 		descriptionTA.setRows(3);
 		JLabel descriptionLabel = new JLabel();
-		descriptionLabel.setText(FlexoLocalization.localizedForKey("maintainer_description", descriptionLabel));
+		descriptionLabel.setText(controller.getFlexoLocales().localizedForKey("maintainer_description", descriptionLabel));
 		descriptionLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		descriptionLabel.setForeground(Color.DARK_GRAY);
 		descriptionLabel.setBorder(BorderFactory.createEmptyBorder(3, 3, 3, 3));
@@ -270,7 +269,7 @@ public abstract class AbstractDocItemView extends JPanel {
 					_controller.selectAndFocusObject(anItem);
 				}
 			}
-		});
+		}, controller, editor);
 		embeddingChildsListView = new DocItemListView("embedding_child_items", new DocItemListView.DocItemListModel() {
 			@Override
 			public Vector<DocItem> getItems() {
@@ -294,7 +293,7 @@ public abstract class AbstractDocItemView extends JPanel {
 					_controller.selectAndFocusObject(anItem);
 				}
 			}
-		});
+		}, controller, editor);
 		relatedToListView = new DocItemListView("related_to_items", new DocItemListView.DocItemListModel() {
 			@Override
 			public Vector<DocItem> getItems() {
@@ -320,7 +319,7 @@ public abstract class AbstractDocItemView extends JPanel {
 					_controller.selectAndFocusObject(anItem);
 				}
 			}
-		});
+		}, controller, editor);
 
 		bottomPanel.add(inheritanceChildsListView);
 		bottomPanel.add(embeddingChildsListView);
@@ -455,7 +454,7 @@ public abstract class AbstractDocItemView extends JPanel {
 			// RelativeImageView.addToImagePaths(_docItem.getFolder().getDirectory());
 			shortHTMLDescriptionPanel = new JPanel(new BorderLayout());
 			JLabel shortDescription = new JLabel();
-			shortDescription.setText(FlexoLocalization.localizedForKey("short_formatted_description", shortDescription));
+			shortDescription.setText(_controller.getFlexoLocales().localizedForKey("short_formatted_description", shortDescription));
 			shortDescription.setHorizontalAlignment(SwingConstants.CENTER);
 			shortDescription.setForeground(Color.DARK_GRAY);
 			shortHTMLDescriptionLabel = new JEditorPane();
@@ -469,7 +468,7 @@ public abstract class AbstractDocItemView extends JPanel {
 
 			fullHTMLDescriptionPanel = new JPanel(new BorderLayout());
 			JLabel fullDescription = new JLabel();
-			fullDescription.setText(FlexoLocalization.localizedForKey("full_formatted_description", fullDescription));
+			fullDescription.setText(_controller.getFlexoLocales().localizedForKey("full_formatted_description", fullDescription));
 			fullDescription.setHorizontalAlignment(SwingConstants.CENTER);
 			fullDescription.setForeground(Color.DARK_GRAY);
 			fullHTMLDescriptionLabel = new JEditorPane();
@@ -502,7 +501,7 @@ public abstract class AbstractDocItemView extends JPanel {
 			// TODO To re-implement when new Wysiwyg editor will be re-written
 			/*
 			abstract class FlexoWysiwygHelpDocEditor extends FlexoWysiwygLight {
-
+			
 				public FlexoWysiwygHelpDocEditor(String htmlContent, File cssFile, boolean isViewSourceAvailable) {
 					super(htmlContent, cssFile, isViewSourceAvailable);
 					setBorder(BorderFactory.createEmptyBorder(20, 0, 0, 0));
@@ -511,7 +510,7 @@ public abstract class AbstractDocItemView extends JPanel {
 				}
 			}
 			*/
-			
+
 			File cssFile = getDocResourceManager().getDocumentationCssResourceFile();
 			// TODO : To be re-written when Wysiwyg editor is re-written
 			/*
@@ -523,7 +522,7 @@ public abstract class AbstractDocItemView extends JPanel {
 				}
 			};
 			shortHTMLDescriptionEditor.setPreferredSize(new Dimension(850, 250));
-
+			
 			fullHTMLDescriptionEditor = new FlexoWysiwygHelpDocEditor(FlexoLocalization.localizedForKey("write_documentation_here"),
 					cssFile, true) {
 				@Override
@@ -532,7 +531,7 @@ public abstract class AbstractDocItemView extends JPanel {
 				}
 			};
 			fullHTMLDescriptionEditor.setPreferredSize(new Dimension(850, 500));
-*/
+			*/
 			// END change AJA
 
 			add(shortHTMLDescriptionPanel, BorderLayout.NORTH);
@@ -586,21 +585,25 @@ public abstract class AbstractDocItemView extends JPanel {
 					                     DocItemVersion version = historyPanel.getCurrentAction().getVersion();*/
 					shortHTMLDescriptionEditor.setData(version.getShortHTMLDescription()); // change AJA
 					fullHTMLDescriptionEditor.setData(version.getFullHTMLDescription()); // change AJA
-				} else {
+				}
+				else {
 					logger.warning("You are about to edit a null version, which is a strange situation. Good luck !");
 				}
-			} else {
+			}
+			else {
 				if (isEditing()) {
 					closeEdition();
 				}
-				if (historyPanel != null && historyPanel.getCurrentAction() != null && historyPanel.getCurrentAction().getVersion() != null) {
+				if (historyPanel != null && historyPanel.getCurrentAction() != null
+						&& historyPanel.getCurrentAction().getVersion() != null) {
 					DocItemVersion version = historyPanel.getCurrentAction().getVersion();
 					if (version.getShortHTMLDescription() == null) {
 						shortHTMLDescriptionLabel.setForeground(Color.GRAY);
 						/*shortHTMLDescriptionLabel.setVerticalAlignment(JLabel.CENTER);
 						shortHTMLDescriptionLabel.setHorizontalAlignment(JLabel.CENTER);*/
-						shortHTMLDescriptionLabel.setText(FlexoLocalization.localizedForKey("not_defined"));
-					} else {
+						shortHTMLDescriptionLabel.setText(_controller.getFlexoLocales().localizedForKey("not_defined"));
+					}
+					else {
 						shortHTMLDescriptionLabel.setForeground(Color.BLACK);
 						/*shortHTMLDescriptionLabel.setVerticalAlignment(JLabel.TOP);
 						shortHTMLDescriptionLabel.setHorizontalAlignment(JLabel.LEFT);*/
@@ -610,22 +613,24 @@ public abstract class AbstractDocItemView extends JPanel {
 						fullHTMLDescriptionLabel.setForeground(Color.GRAY);
 						/*fullHTMLDescriptionLabel.setVerticalAlignment(JLabel.CENTER);
 						fullHTMLDescriptionLabel.setHorizontalAlignment(JLabel.CENTER); */
-						fullHTMLDescriptionLabel.setText(FlexoLocalization.localizedForKey("not_defined"));
-					} else {
+						fullHTMLDescriptionLabel.setText(_controller.getFlexoLocales().localizedForKey("not_defined"));
+					}
+					else {
 						fullHTMLDescriptionLabel.setForeground(Color.BLACK);
 						/*fullHTMLDescriptionLabel.setVerticalAlignment(JLabel.TOP);
 						fullHTMLDescriptionLabel.setHorizontalAlignment(JLabel.LEFT);*/
 						fullHTMLDescriptionLabel.setText("<html>" + version.getFullHTMLDescription() + "</html>");
 					}
-				} else {
+				}
+				else {
 					fullHTMLDescriptionLabel.setForeground(Color.GRAY);
 					/*fullHTMLDescriptionLabel.setVerticalAlignment(JLabel.CENTER);
 					fullHTMLDescriptionLabel.setHorizontalAlignment(JLabel.CENTER);*/
-					fullHTMLDescriptionLabel.setText(FlexoLocalization.localizedForKey("no_selection"));
+					fullHTMLDescriptionLabel.setText(_controller.getFlexoLocales().localizedForKey("no_selection"));
 					shortHTMLDescriptionLabel.setForeground(Color.GRAY);
 					/*shortHTMLDescriptionLabel.setVerticalAlignment(JLabel.CENTER);
 					shortHTMLDescriptionLabel.setHorizontalAlignment(JLabel.CENTER);*/
-					shortHTMLDescriptionLabel.setText(FlexoLocalization.localizedForKey("no_selection"));
+					shortHTMLDescriptionLabel.setText(_controller.getFlexoLocales().localizedForKey("no_selection"));
 				}
 			}
 			updateViewerEditorPaths();
@@ -700,7 +705,8 @@ public abstract class AbstractDocItemView extends JPanel {
 		public void setCurrentAction(DocItemAction currentAction) {
 			if (currentAction == null) {
 				actionList.clearSelection();
-			} else {
+			}
+			else {
 				actionList.setSelectedValue(currentAction, true);
 			}
 		}
@@ -708,7 +714,7 @@ public abstract class AbstractDocItemView extends JPanel {
 		protected HistoryPanel() {
 			super(new BorderLayout());
 			JLabel historyLabel = new JLabel();
-			historyLabel.setText(FlexoLocalization.localizedForKey("history", historyLabel));
+			historyLabel.setText(_controller.getFlexoLocales().localizedForKey("history", historyLabel));
 			historyLabel.setHorizontalAlignment(SwingConstants.CENTER);
 			historyLabel.setBorder(BorderFactory.createEmptyBorder(3, 3, 3, 3));
 			actionList = new JList(new HistoryPanelListModel()/*_docItem.getActions()*/);
@@ -718,7 +724,7 @@ public abstract class AbstractDocItemView extends JPanel {
 			actionPanel = new JPanel(new FlowLayout());
 
 			editButton = new JButton();
-			editButton.setText(FlexoLocalization.localizedForKey("edit"));
+			editButton.setText(_controller.getFlexoLocales().localizedForKey("edit"));
 			editButton.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
@@ -731,27 +737,32 @@ public abstract class AbstractDocItemView extends JPanel {
 			actionPanel.add(editButton);
 
 			submitReviewButton = new JButton();
-			submitReviewButton.setText(FlexoLocalization.localizedForKey("submit"));
+			submitReviewButton.setText(_controller.getFlexoLocales().localizedForKey("submit"));
 			submitReviewButton.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					if (_docItem.getLastActionForLanguage(getCurrentLanguage()) == null) {
 						if (!getDocResourceManager().isEdited(_docItem)) {
 							getDocResourceManager().beginVersionSubmission(_docItem, getCurrentLanguage());
-						} else {
+						}
+						else {
 							historyPanel.setCurrentAction(getDocResourceManager().endVersionSubmission(_docItem));
 						}
-					} else if (_docItem.getLastActionForLanguage(getCurrentLanguage()) == getCurrentAction()) {
+					}
+					else if (_docItem.getLastActionForLanguage(getCurrentLanguage()) == getCurrentAction()) {
 						if (!getDocResourceManager().isEdited(_docItem)) {
 							getDocResourceManager().beginVersionReview(getCurrentAction().getVersion());
-						} else {
+						}
+						else {
 							if (getDocResourceManager().isSubmitting(_docItem)) {
 								historyPanel.setCurrentAction(getDocResourceManager().endVersionReview(_docItem));
-							} else {
+							}
+							else {
 								getDocResourceManager().stopEditVersion(getCurrentAction().getVersion());
 							}
 						}
-					} else {
+					}
+					else {
 						if (getDocResourceManager().isEdited(_docItem)) {
 							/*	if (editorPanel.shortHTMLDescriptionEditor.getEkitCore().isSourceWindowActive())
 									editorPanel.shortHTMLDescriptionEditor.getEkitCore().toggleSourceWindow();
@@ -766,7 +777,7 @@ public abstract class AbstractDocItemView extends JPanel {
 			actionPanel.add(submitReviewButton);
 
 			approveButton = new JButton();
-			approveButton.setText(FlexoLocalization.localizedForKey("approve"));
+			approveButton.setText(_controller.getFlexoLocales().localizedForKey("approve"));
 			approveButton.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
@@ -779,7 +790,7 @@ public abstract class AbstractDocItemView extends JPanel {
 			actionPanel.add(approveButton);
 
 			refuseButton = new JButton();
-			refuseButton.setText(FlexoLocalization.localizedForKey("refuse"));
+			refuseButton.setText(_controller.getFlexoLocales().localizedForKey("refuse"));
 			refuseButton.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
@@ -850,7 +861,8 @@ public abstract class AbstractDocItemView extends JPanel {
 					if (docItemAction.getActionType() == ActionType.REFUSED) {
 						returned.setForeground(Color.RED);
 					}
-				} else {
+				}
+				else {
 					returned.setForeground(Color.LIGHT_GRAY);
 				}
 				return returned;
@@ -868,17 +880,19 @@ public abstract class AbstractDocItemView extends JPanel {
 		protected void refreshButtons() {
 			actionList.setEnabled(!getDocResourceManager().isEdited(_docItem));
 			if (getDocResourceManager().isEdited(_docItem)) {
-				submitReviewButton.setText(FlexoLocalization.localizedForKey("done"));
+				submitReviewButton.setText(_controller.getFlexoLocales().localizedForKey("done"));
 				submitReviewButton.setEnabled(true);
 				approveButton.setEnabled(false);
 				refuseButton.setEnabled(false);
 				editButton.setEnabled(false);
-			} else {
+			}
+			else {
 				if (_docItem.getLastActionForLanguage(getCurrentLanguage()) == null) {
-					submitReviewButton.setText(FlexoLocalization.localizedForKey("submit"));
+					submitReviewButton.setText(_controller.getFlexoLocales().localizedForKey("submit"));
 					submitReviewButton.setEnabled(true);
-				} else {
-					submitReviewButton.setText(FlexoLocalization.localizedForKey("review"));
+				}
+				else {
+					submitReviewButton.setText(_controller.getFlexoLocales().localizedForKey("review"));
 					submitReviewButton.setEnabled(_docItem.getLastActionForLanguage(getCurrentLanguage()) == getCurrentAction());
 				}
 				if (getCurrentAction() != null && getCurrentAction().isProposal()
@@ -886,15 +900,16 @@ public abstract class AbstractDocItemView extends JPanel {
 					approveButton.setEnabled(true);
 					refuseButton.setEnabled(true);
 					editButton.setEnabled(true);
-				} else {
+				}
+				else {
 					approveButton.setEnabled(false);
 					refuseButton.setEnabled(false);
 					editButton.setEnabled(false);
 				}
 
 			}
-			approveButton.setText(FlexoLocalization.localizedForKey("approve"));
-			refuseButton.setText(FlexoLocalization.localizedForKey("refuse"));
+			approveButton.setText(_controller.getFlexoLocales().localizedForKey("approve"));
+			refuseButton.setText(_controller.getFlexoLocales().localizedForKey("refuse"));
 
 		}
 
@@ -907,7 +922,8 @@ public abstract class AbstractDocItemView extends JPanel {
 				languageTF.setText("");
 				noteTA.setText("");
 				noteTA.setEnabled(false);
-			} else {
+			}
+			else {
 				authorTF.setText(getCurrentAction().getAuthorId());
 				actionTF.setText(getCurrentAction().getActionType().getLocalizedName());
 				dateTF.setText(getCurrentAction().getLocalizedFullActionDate());
@@ -922,7 +938,8 @@ public abstract class AbstractDocItemView extends JPanel {
 			DocItemAction lastApprovedAction = _docItem.getLastApprovedActionForLanguage(getCurrentLanguage());
 			if (lastApprovedAction != null) {
 				setCurrentAction(lastApprovedAction);
-			} else {
+			}
+			else {
 				setCurrentAction(_docItem.getLastActionForLanguage(getCurrentLanguage()));
 			}
 
@@ -941,7 +958,7 @@ public abstract class AbstractDocItemView extends JPanel {
 
 		protected void addField(String text, JComponent component, boolean expandX, boolean expandY) {
 			JLabel label = new JLabel();
-			label.setText(FlexoLocalization.localizedForKey(text, label));
+			label.setText(_controller.getFlexoLocales().localizedForKey(text, label));
 			GridBagConstraints c = new GridBagConstraints();
 			c.fill = GridBagConstraints.NONE;
 			c.insets = new Insets(3, 3, 3, 3);
@@ -949,7 +966,8 @@ public abstract class AbstractDocItemView extends JPanel {
 			c.gridwidth = GridBagConstraints.RELATIVE;
 			if (expandY) {
 				c.anchor = GridBagConstraints.NORTHEAST;
-			} else {
+			}
+			else {
 				c.anchor = GridBagConstraints.EAST;
 			}
 			_gridbag.setConstraints(label, c);
@@ -961,7 +979,8 @@ public abstract class AbstractDocItemView extends JPanel {
 					c.weighty = 1.0;
 					// c.gridheight = GridBagConstraints.RELATIVE;
 				}
-			} else {
+			}
+			else {
 				c.fill = GridBagConstraints.NONE;
 				c.anchor = GridBagConstraints.WEST;
 
@@ -1028,7 +1047,8 @@ public abstract class AbstractDocItemView extends JPanel {
 		titleTF.getDocument().removeDocumentListener(titleListener);
 		if (title != null) {
 			titleTF.setText(title);
-		} else {
+		}
+		else {
 			titleTF.setText("");
 		}
 		titleTF.getDocument().addDocumentListener(titleListener);

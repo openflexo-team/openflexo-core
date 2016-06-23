@@ -58,6 +58,7 @@ import org.openflexo.logging.FlexoLogger;
  * @author sylvain
  * 
  */
+@Deprecated
 public class ConvertViewPoint1Action extends FlexoAction<ConvertViewPoint1Action, FlexoObject, FlexoObject> {
 
 	private static final Logger logger = FlexoLogger.getLogger(ConvertViewPoint1Action.class.getPackage().getName());

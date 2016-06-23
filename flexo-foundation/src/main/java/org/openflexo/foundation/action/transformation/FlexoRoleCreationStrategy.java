@@ -40,7 +40,6 @@ package org.openflexo.foundation.action.transformation;
 
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
-import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.toolbox.StringUtils;
 
 /**
@@ -98,19 +97,19 @@ public abstract class FlexoRoleCreationStrategy<A extends AbstractDeclareInFlexo
 	@Override
 	public boolean isValid() {
 		if (getTransformationAction() == null) {
-			setIssueMessage(FlexoLocalization.localizedForKey(NO_TRANSFORMATION_ACTION_DEFINED), IssueMessageType.ERROR);
+			setIssueMessage(getLocales().localizedForKey(NO_TRANSFORMATION_ACTION_DEFINED), IssueMessageType.ERROR);
 			return false;
 		}
 		if (getTransformationAction().getFlexoConcept() == null) {
-			setIssueMessage(FlexoLocalization.localizedForKey(NO_FLEXO_CONCEPT_DEFINED), IssueMessageType.ERROR);
+			setIssueMessage(getLocales().localizedForKey(NO_FLEXO_CONCEPT_DEFINED), IssueMessageType.ERROR);
 			return false;
 		}
 		if (StringUtils.isEmpty(getNewRoleName())) {
-			setIssueMessage(FlexoLocalization.localizedForKey(NO_ROLE_NAME_DEFINED), IssueMessageType.ERROR);
+			setIssueMessage(getLocales().localizedForKey(NO_ROLE_NAME_DEFINED), IssueMessageType.ERROR);
 			return false;
 		}
 		if (getTransformationAction().getFlexoConcept().getAccessibleProperty(getNewRoleName()) != null) {
-			setIssueMessage(FlexoLocalization.localizedForKey(DUPLICATED_ROLE_NAME), IssueMessageType.ERROR);
+			setIssueMessage(getLocales().localizedForKey(DUPLICATED_ROLE_NAME), IssueMessageType.ERROR);
 			return false;
 		}
 		return true;

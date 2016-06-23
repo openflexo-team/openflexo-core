@@ -40,14 +40,18 @@
 package org.openflexo.view.controller;
 
 import java.io.File;
+import java.io.IOException;
 
 import org.openflexo.ApplicationData;
 import org.openflexo.components.NewProjectComponent;
 import org.openflexo.components.OpenProjectComponent;
+import org.openflexo.foundation.ProjectLoader;
 import org.openflexo.foundation.nature.ProjectNature;
 import org.openflexo.foundation.nature.ProjectNatureService;
 import org.openflexo.foundation.task.FlexoTaskManager;
 import org.openflexo.foundation.utils.OperationCancelledException;
+import org.openflexo.foundation.utils.ProjectInitializerException;
+import org.openflexo.foundation.utils.ProjectLoadingCancelledException;
 import org.openflexo.gina.model.FIBComponent;
 import org.openflexo.gina.view.GinaViewFactory;
 import org.openflexo.localization.FlexoLocalization;
@@ -56,7 +60,6 @@ import org.openflexo.module.Module;
 import org.openflexo.module.ModuleLoader;
 import org.openflexo.module.ModuleLoadingException;
 import org.openflexo.module.NatureSpecificModule;
-import org.openflexo.project.InteractiveProjectLoader;
 
 public class WelcomePanelController extends FlexoFIBController {
 
@@ -73,7 +76,7 @@ public class WelcomePanelController extends FlexoFIBController {
 		return getDataObject().getApplicationContext().getModuleLoader();
 	}
 
-	private InteractiveProjectLoader getProjectLoader() {
+	private ProjectLoader getProjectLoader() {
 		return getDataObject().getApplicationContext().getProjectLoader();
 	}
 
@@ -99,12 +102,12 @@ public class WelcomePanelController extends FlexoFIBController {
 			validateAndDispose();
 		} catch (ModuleLoadingException e) {
 			e.printStackTrace();
-			FlexoController.notify(FlexoLocalization.localizedForKey("could_not_load_module") + " " + e.getModule());
+			FlexoController.notify(FlexoLocalization.getMainLocalizer().localizedForKey("could_not_load_module") + " " + e.getModule());
 			show();
 		}
 	}
 
-	public void openProject(File projectDirectory, Module module) {
+	public void openProject(File projectDirectory, Module module) throws ProjectLoadingCancelledException, ProjectInitializerException {
 
 		if (projectDirectory == null) {
 			projectDirectory = OpenProjectComponent.getProjectDirectory(getDataObject().getApplicationContext());
@@ -118,30 +121,17 @@ public class WelcomePanelController extends FlexoFIBController {
 			loadModuleTask = getModuleLoader().switchToModule(module);
 		} catch (ModuleLoadingException e) {
 			e.printStackTrace();
-			FlexoController.notify(FlexoLocalization.localizedForKey("could_not_load_module") + " " + e.getModule());
+			FlexoController.notify(FlexoLocalization.getMainLocalizer().localizedForKey("could_not_load_module") + " " + e.getModule());
 			show();
 		}
 
-		// try {
-
 		getProjectLoader().loadProject(projectDirectory, loadModuleTask);
-
-		// LoadProjectTask loadProjectTask = new LoadProjectTask(getProjectLoader(), projectDirectory);
-		// loadProjectTask.addToDependantTasks(loadModuleTask);
-		// getTaskManager().scheduleExecution(loadProjectTask);
-
-		/*} catch (ProjectLoadingCancelledException e) {
-		} catch (ProjectInitializerException e) {
-			e.printStackTrace();
-			FlexoController.notify(FlexoLocalization.localizedForKey("could_not_open_project_located_at")
-					+ e.getProjectDirectory().getAbsolutePath());
-		}*/
 
 		validateAndDispose();
 
 	}
 
-	public void newProject(Module module) {
+	public void newProject(Module module) throws IOException, ProjectInitializerException {
 		File projectDirectory;
 		projectDirectory = NewProjectComponent.getProjectDirectory(getDataObject().getApplicationContext());
 		if (projectDirectory == null) {
@@ -155,7 +145,7 @@ public class WelcomePanelController extends FlexoFIBController {
 			loadModuleTask = getModuleLoader().switchToModule(module);
 		} catch (ModuleLoadingException e) {
 			e.printStackTrace();
-			FlexoController.notify(FlexoLocalization.localizedForKey("could_not_load_module") + " " + e.getModule());
+			FlexoController.notify(FlexoLocalization.getMainLocalizer().localizedForKey("could_not_load_module") + " " + e.getModule());
 			show();
 		}
 

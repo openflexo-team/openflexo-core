@@ -69,6 +69,7 @@ import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.technologyadapter.FlexoMetaModel;
 import org.openflexo.foundation.technologyadapter.FlexoModel;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapterResource;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.foundation.technologyadapter.TypeAwareModelSlot;
 import org.openflexo.model.annotations.Adder;
@@ -865,6 +866,19 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 			if (variable instanceof ModelSlotBindingVariable && getVirtualModel() != null) {
 				ModelSlot<?> ms = getVirtualModel().getModelSlot(variable.getVariableName());
 				if (ms != null) {
+					if (value instanceof TechnologyAdapterResource){
+						ModelSlotInstance msi = (getModelSlotInstance(ms));
+						if (msi == null) {
+							AbstractVirtualModelInstance<?, ?> flexoConceptInstance = (AbstractVirtualModelInstance<?, ?>) getFlexoConceptInstance();
+							ModelSlotInstanceConfiguration<?, ?> msiConfiguration = ms.createConfiguration(flexoConceptInstance,
+									getProject());
+							msiConfiguration.setOption(DefaultModelSlotInstanceConfigurationOption.SelectExistingResource);
+							msi = msiConfiguration.createModelSlotInstance(flexoConceptInstance, getView());
+							msi.setVirtualModelInstance(flexoConceptInstance);
+							flexoConceptInstance.addToModelSlotInstances(msi);
+						}
+						msi.setResource((TechnologyAdapterResource) value);
+					}
 					if (value instanceof ResourceData) {
 						ModelSlotInstance msi = (getModelSlotInstance(ms));
 						if (msi == null) {

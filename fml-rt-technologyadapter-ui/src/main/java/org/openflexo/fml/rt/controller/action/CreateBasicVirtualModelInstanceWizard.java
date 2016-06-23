@@ -48,7 +48,6 @@ import org.openflexo.gina.annotation.FIBPanel;
 import org.openflexo.icon.FMLRTIconLibrary;
 import org.openflexo.icon.IconFactory;
 import org.openflexo.icon.IconLibrary;
-import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.view.controller.FlexoController;
 import org.openflexo.view.controller.action.AbstractCreateVirtualModelInstanceWizard;
 
@@ -63,7 +62,7 @@ public class CreateBasicVirtualModelInstanceWizard extends AbstractCreateVirtual
 
 	@Override
 	public String getWizardTitle() {
-		return FlexoLocalization.localizedForKey("create_virtual_model_instance");
+		return action.getLocales().localizedForKey("create_virtual_model_instance");
 	}
 
 	@Override
@@ -92,7 +91,7 @@ public class CreateBasicVirtualModelInstanceWizard extends AbstractCreateVirtual
 
 		@Override
 		public String getTitle() {
-			return FlexoLocalization.localizedForKey("choose_virtual_model");
+			return action.getLocales().localizedForKey("choose_virtual_model");
 		}
 	}
 

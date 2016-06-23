@@ -40,7 +40,6 @@
 package org.openflexo.foundation.action;
 
 import org.openflexo.foundation.FlexoException;
-import org.openflexo.localization.FlexoLocalization;
 
 /**
  * @author gpolet
@@ -65,8 +64,8 @@ public class FlexoActionExecutionFailed extends FlexoException {
 	 */
 	@Override
 	public String getLocalizedMessage() {
-		return FlexoLocalization.localizedForKey("execution_of_action") + " " + failedAction.getLocalizedName() + " "
-				+ FlexoLocalization.localizedForKey("has_failed");
+		return failedAction.getLocales().localizedForKey("execution_of_action") + " " + failedAction.getLocalizedName() + " "
+				+ failedAction.getLocales().localizedForKey("has_failed");
 	}
 
 }

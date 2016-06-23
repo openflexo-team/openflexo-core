@@ -56,7 +56,6 @@ import org.openflexo.foundation.remoteresources.FlexoUpdateService;
 import org.openflexo.gina.controller.FIBController.Status;
 import org.openflexo.gina.model.FIBComponent;
 import org.openflexo.gina.swing.utils.JFIBDialog;
-import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.toolbox.HasPropertyChangeSupport;
@@ -126,8 +125,9 @@ public class FlexoMarketEditor implements HasPropertyChangeSupport {
 	}
 
 	private void showProgress(String stepname) {
-		ProgressWindow.showProgressWindow(owner, FlexoLocalization.localizedForKey(stepname), 1);
-		ProgressWindow.instance().setProgress(FlexoLocalization.localizedForKey(stepname));
+		ProgressWindow.showProgressWindow(owner, applicationContext.getLocalizationService().getFlexoLocalizer().localizedForKey(stepname),
+				1);
+		ProgressWindow.instance().setProgress(applicationContext.getLocalizationService().getFlexoLocalizer().localizedForKey(stepname));
 	}
 
 	private void hideProgress() {

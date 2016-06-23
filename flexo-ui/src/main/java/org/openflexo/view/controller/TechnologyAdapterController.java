@@ -114,6 +114,7 @@ import org.openflexo.icon.FMLIconLibrary;
 import org.openflexo.icon.FMLRTIconLibrary;
 import org.openflexo.icon.IconFactory;
 import org.openflexo.icon.IconLibrary;
+import org.openflexo.localization.LocalizedDelegate;
 import org.openflexo.module.FlexoModule;
 import org.openflexo.module.ModuleLoader;
 import org.openflexo.rm.Resource;
@@ -172,6 +173,15 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 	 * @return
 	 */
 	public abstract Class<TA> getTechnologyAdapterClass();
+
+	/**
+	 * Return the locales relative to this technology
+	 * 
+	 * @return
+	 */
+	public LocalizedDelegate getLocales() {
+		return getTechnologyAdapter().getLocales();
+	}
 
 	/**
 	 * Called to activate the {@link TechnologyAdapterController} We do it for all loaded modules. This means that all features and GUIs
@@ -538,7 +548,7 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 	 * @return
 	 */
 	protected FIBTechnologyBrowser<TA> buildTechnologyBrowser(FlexoController controller) {
-		return new FIBTechnologyBrowser<TA>(getTechnologyAdapter(), controller);
+		return new FIBTechnologyBrowser<TA>(getTechnologyAdapter(), controller, getTechnologyAdapter().getLocales());
 	}
 
 	/**

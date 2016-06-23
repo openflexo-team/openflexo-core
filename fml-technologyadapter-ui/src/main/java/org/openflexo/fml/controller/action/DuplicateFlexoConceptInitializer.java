@@ -45,11 +45,10 @@ import javax.swing.Icon;
 
 import org.openflexo.foundation.action.FlexoActionFinalizer;
 import org.openflexo.foundation.action.FlexoActionInitializer;
-import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FMLObject;
+import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.action.DuplicateFlexoConcept;
 import org.openflexo.icon.FMLIconLibrary;
-import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.view.controller.ActionInitializer;
 import org.openflexo.view.controller.ControllerActionInitializer;
 import org.openflexo.view.controller.FlexoController;
@@ -67,7 +66,7 @@ public class DuplicateFlexoConceptInitializer extends ActionInitializer<Duplicat
 		return new FlexoActionInitializer<DuplicateFlexoConcept>() {
 			@Override
 			public boolean run(EventObject e, DuplicateFlexoConcept action) {
-				String s = FlexoController.askForString(FlexoLocalization.localizedForKey("please_provide_new_name"));
+				String s = FlexoController.askForString(action.getLocales().localizedForKey("please_provide_new_name"));
 				if (s == null) {
 					return false;
 				}

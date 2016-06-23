@@ -40,6 +40,7 @@ package org.openflexo.fml.controller.view;
 
 import org.openflexo.fml.controller.CommonFIB;
 import org.openflexo.foundation.FlexoObject;
+import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.gina.model.listener.FIBMouseClickListener;
@@ -61,7 +62,8 @@ public class ViewPointView extends FIBModuleView<ViewPoint>implements FIBMouseCl
 	private final FlexoPerspective perspective;
 
 	public ViewPointView(ViewPoint viewPoint, FlexoController controller, FlexoPerspective perspective) {
-		super(viewPoint, controller, CommonFIB.VIEWPOINT_VIEW_FIB);
+		super(viewPoint, controller, CommonFIB.VIEWPOINT_VIEW_FIB,
+				controller.getTechnologyAdapter(FMLTechnologyAdapter.class).getLocales());
 		this.perspective = perspective;
 	}
 

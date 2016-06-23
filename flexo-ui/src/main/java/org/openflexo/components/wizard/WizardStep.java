@@ -238,8 +238,11 @@ public abstract class WizardStep implements HasPropertyChangeSupport {
 			getPropertyChangeSupport().firePropertyChange("issueMessage", null, getIssueMessage());
 			getPropertyChangeSupport().firePropertyChange("issueMessageType", null, getIssueMessageType());
 			getPropertyChangeSupport().firePropertyChange("issueMessageIcon", null, getIssueMessageIcon());
-			wizard.updateStatus();
-		} else {
+			if (wizard != null) {
+				wizard.updateStatus();
+			}
+		}
+		else {
 			// Nothing to do
 		}
 		lastNotifiedValidity = validity;
@@ -273,14 +276,14 @@ public abstract class WizardStep implements HasPropertyChangeSupport {
 	private IssueMessageType getIssueMessageType(
 			org.openflexo.foundation.action.transformation.TransformationStrategy.IssueMessageType messageType) {
 		switch (messageType) {
-		case INFO:
-			return IssueMessageType.INFO;
-		case WARNING:
-			return IssueMessageType.WARNING;
-		case ERROR:
-			return IssueMessageType.ERROR;
-		default:
-			return null;
+			case INFO:
+				return IssueMessageType.INFO;
+			case WARNING:
+				return IssueMessageType.WARNING;
+			case ERROR:
+				return IssueMessageType.ERROR;
+			default:
+				return null;
 		}
 	}
 
@@ -322,14 +325,14 @@ public abstract class WizardStep implements HasPropertyChangeSupport {
 			return null;
 		}
 		switch (getIssueMessageType()) {
-		case ERROR:
-			return UtilsIconLibrary.ERROR_ICON;
-		case WARNING:
-			return UtilsIconLibrary.WARNING_ICON;
-		case INFO:
-			return UtilsIconLibrary.OK_ICON;
-		default:
-			return null;
+			case ERROR:
+				return UtilsIconLibrary.ERROR_ICON;
+			case WARNING:
+				return UtilsIconLibrary.WARNING_ICON;
+			case INFO:
+				return UtilsIconLibrary.OK_ICON;
+			default:
+				return null;
 		}
 	}
 

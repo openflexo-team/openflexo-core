@@ -91,7 +91,7 @@ public class PrintPreviewDialog extends FlexoDialog {
 		_controller = controller;
 		_printableComponent = printableProcessView;
 
-		setTitle(FlexoLocalization.localizedForKey("print_preview"));
+		setTitle(FlexoLocalization.getMainLocalizer().localizedForKey("print_preview"));
 
 		JPanel topPanel = new JPanel(new FlowLayout());
 		JButton plusScale = new JButton("+");
@@ -170,8 +170,8 @@ public class PrintPreviewDialog extends FlexoDialog {
 		};
 		previewScaleSlider.addChangeListener(previewScaleChangeListener);
 
-		final JCheckBox showPages = new JCheckBox(FlexoLocalization.localizedForKey("show_pages"), _printableComponent
-				.getPrintableDelegate().showPages());
+		final JCheckBox showPages = new JCheckBox(FlexoLocalization.getMainLocalizer().localizedForKey("show_pages"),
+				_printableComponent.getPrintableDelegate().showPages());
 		showPages.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -180,8 +180,8 @@ public class PrintPreviewDialog extends FlexoDialog {
 				_printableComponent.getPrintableDelegate().refresh();
 			}
 		});
-		final JCheckBox showTitle = new JCheckBox(FlexoLocalization.localizedForKey("show_title"), _printableComponent
-				.getPrintableDelegate().showTitles());
+		final JCheckBox showTitle = new JCheckBox(FlexoLocalization.getMainLocalizer().localizedForKey("show_title"),
+				_printableComponent.getPrintableDelegate().showTitles());
 		showTitle.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -213,7 +213,7 @@ public class PrintPreviewDialog extends FlexoDialog {
 
 		JPanel bottomPanel = new JPanel(new FlowLayout());
 		JButton printButton = new JButton();
-		printButton.setText(FlexoLocalization.localizedForKey("print", printButton));
+		printButton.setText(FlexoLocalization.getMainLocalizer().localizedForKey("print", printButton));
 		printButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -224,7 +224,7 @@ public class PrintPreviewDialog extends FlexoDialog {
 		});
 
 		JButton saveAsJPGButton = new JButton();
-		saveAsJPGButton.setText(FlexoLocalization.localizedForKey("save_as_image", saveAsJPGButton));
+		saveAsJPGButton.setText(FlexoLocalization.getMainLocalizer().localizedForKey("save_as_image", saveAsJPGButton));
 		saveAsJPGButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -235,7 +235,7 @@ public class PrintPreviewDialog extends FlexoDialog {
 		});
 
 		JButton cancelButton = new JButton();
-		cancelButton.setText(FlexoLocalization.localizedForKey("cancel", cancelButton));
+		cancelButton.setText(FlexoLocalization.getMainLocalizer().localizedForKey("cancel", cancelButton));
 		cancelButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -245,7 +245,7 @@ public class PrintPreviewDialog extends FlexoDialog {
 		});
 
 		JButton pageSetupButton = new JButton();
-		pageSetupButton.setText(FlexoLocalization.localizedForKey("page_setup", pageSetupButton));
+		pageSetupButton.setText(FlexoLocalization.getMainLocalizer().localizedForKey("page_setup", pageSetupButton));
 		pageSetupButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -259,7 +259,7 @@ public class PrintPreviewDialog extends FlexoDialog {
 		});
 
 		JButton fitToPageButton = new JButton();
-		fitToPageButton.setText(FlexoLocalization.localizedForKey("fit_to_page", fitToPageButton));
+		fitToPageButton.setText(FlexoLocalization.getMainLocalizer().localizedForKey("fit_to_page", fitToPageButton));
 		fitToPageButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -294,7 +294,8 @@ public class PrintPreviewDialog extends FlexoDialog {
 	protected void update() {
 		scaleTF.setText("" + (int) (_printableComponent.getPrintableDelegate().getScale() * 100) + "%");
 		pagesLabel.setText(_printableComponent.getPrintableDelegate().getWidthPageNb() + " x "
-				+ _printableComponent.getPrintableDelegate().getHeightPageNb() + " " + FlexoLocalization.localizedForKey("pages"));
+				+ _printableComponent.getPrintableDelegate().getHeightPageNb() + " "
+				+ FlexoLocalization.getMainLocalizer().localizedForKey("pages"));
 		scrollPane.getViewport().reshape(scrollPane.getViewport().getViewPosition().x, scrollPane.getViewport().getViewPosition().y,
 				_printableComponent.getWidth(), _printableComponent.getHeight());
 		scrollPane.revalidate();
@@ -314,7 +315,7 @@ public class PrintPreviewDialog extends FlexoDialog {
 	public void saveAsJpeg() {
 		JFileChooser chooser = new JFileChooser();
 		chooser.setDialogType(JFileChooser.SAVE_DIALOG);
-		chooser.setDialogTitle(FlexoLocalization.localizedForKey("save_as_image", chooser));
+		chooser.setDialogTitle(FlexoLocalization.getMainLocalizer().localizedForKey("save_as_image", chooser));
 
 		int returnVal = chooser.showSaveDialog(null);
 		if (returnVal == JFileChooser.CANCEL_OPTION) {
@@ -326,14 +327,17 @@ public class PrintPreviewDialog extends FlexoDialog {
 				if (!dest.getName().toLowerCase().endsWith(".png")) {
 					dest = new File(dest.getAbsolutePath() + ".png");
 				}
-			} else {
+			}
+			else {
 				if (logger.isLoggable(Level.WARNING)) {
 					logger.warning("Invalid file name. The following characters are not allowed: "
 							+ FileUtils.BAD_CHARACTERS_FOR_FILE_NAME_REG_EXP);
 				}
-				FlexoController.notify(FlexoLocalization.localizedForKey("file_name_cannot_contain_\\___&_#_{_}_[_]_%_~"));
+				FlexoController
+						.notify(FlexoLocalization.getMainLocalizer().localizedForKey("file_name_cannot_contain_\\___&_#_{_}_[_]_%_~"));
 			}
-		} else {
+		}
+		else {
 			if (logger.isLoggable(Level.WARNING)) {
 				logger.warning("No project specified !");
 			}

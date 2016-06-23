@@ -138,8 +138,8 @@ public class FlexoApplication {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		FlexoHelp
-				.configure(applicationContext.getGeneralPreferences().getLanguage().getIdentifier(), null/*UserType.getCurrentUserType().getIdentifier()*/);
+		FlexoHelp.configure(applicationContext.getGeneralPreferences().getLanguage().getIdentifier(),
+				null/*UserType.getCurrentUserType().getIdentifier()*/);
 		FlexoHelp.reloadHelpSet();
 		FlexoObjectImpl.setCurrentUserIdentifier(applicationContext.getGeneralPreferences().getUserIdentifier());// Loads the preferences
 		FlexoObjectImpl.setHelpRetriever(new DefaultHelpRetriever(applicationContext.getDocResourceManager()));
@@ -169,7 +169,8 @@ public class FlexoApplication {
 		private synchronized boolean testAndSetIsReportingBug() {
 			if (isReportingBug) {
 				return true;
-			} else {
+			}
+			else {
 				isReportingBug = true;
 				return false;
 			}
@@ -207,7 +208,8 @@ public class FlexoApplication {
 					return;
 				}
 				if (exception instanceof TooManyFailedAttemptException || exception.getCause() instanceof TooManyFailedAttemptException) {
-					FlexoController.showError(FlexoLocalization.localizedForKey("too_many_failed_attempt_to_authenticate_to_proxy"));
+					FlexoController.showError(
+							FlexoLocalization.getMainLocalizer().localizedForKey("too_many_failed_attempt_to_authenticate_to_proxy"));
 					return;
 				}
 
@@ -226,20 +228,25 @@ public class FlexoApplication {
 					try {
 						if (exception instanceof InvalidParametersException) {
 							message = "InvalidParametersException: " + exception.getMessage() + ". Edit a bug report ?";
-						} else if (exception instanceof NotImplementedException) {
-							message = FlexoLocalization.localizedForKey("feature_not_implemented:_") + exception.getMessage() + " "
-									+ FlexoLocalization.localizedForKey("would_you_like_to_send_a_report");
-						} else {
-							message = FlexoLocalization.localizedForKey("unexpected_exception_occured") + " "
-									+ FlexoLocalization.localizedForKey("would_you_like_to_send_a_report");
+						}
+						else if (exception instanceof NotImplementedException) {
+							message = FlexoLocalization.getMainLocalizer().localizedForKey("feature_not_implemented:_")
+									+ exception.getMessage() + " "
+									+ FlexoLocalization.getMainLocalizer().localizedForKey("would_you_like_to_send_a_report");
+						}
+						else {
+							message = FlexoLocalization.getMainLocalizer().localizedForKey("unexpected_exception_occured") + " "
+									+ FlexoLocalization.getMainLocalizer().localizedForKey("would_you_like_to_send_a_report");
 						}
 					} catch (RuntimeException e3) {// This catch is here in case the localization layer has crashed
 						e3.printStackTrace();
 						if (exception instanceof InvalidParametersException) {
 							message = "InvalidParametersException: " + exception.getMessage() + ". Edit a bug report ?";
-						} else if (exception instanceof NotImplementedException) {
+						}
+						else if (exception instanceof NotImplementedException) {
 							message = "Feature not implemented: " + exception.getMessage() + ". Edit a bug report ?";
-						} else {
+						}
+						else {
 							message = "Unexpected exception occured: " + exception.getClass().getName() + ". Edit a bug report ?";
 						}
 					}
@@ -249,8 +256,8 @@ public class FlexoApplication {
 								if (FlexoController.confirm(message)) {
 									FlexoFrame frame = FlexoFrame.getActiveFrame(false);
 									JIRAIssueReportDialog.newBugReport((Exception) exception, frame != null ? frame.getModule() : null,
-											frame != null ? frame.getController().getProject() : null, frame != null ? frame
-													.getController().getApplicationContext() : null);
+											frame != null ? frame.getController().getProject() : null,
+											frame != null ? frame.getController().getApplicationContext() : null);
 								}
 							} catch (HeadlessException e1) {
 								e1.printStackTrace();
@@ -259,13 +266,15 @@ public class FlexoApplication {
 							} finally {
 								resetIsReportingBug();
 							}
-						} else {
+						}
+						else {
 							if (logger.isLoggable(Level.SEVERE)) {
 								logger.severe("Already reporting a bug. Ignoring another exception: " + exception);
 							}
 						}
 					}
-				} else {
+				}
+				else {
 					if (logger.isLoggable(Level.INFO)) {
 						logger.info("Ignoring exception: " + exception);
 					}
@@ -343,7 +352,8 @@ public class FlexoApplication {
 				if (exceptions.size() > 100) {
 					exceptions.remove(100);
 				}
-			} else {
+			}
+			else {
 				return true;
 			}
 
@@ -354,9 +364,8 @@ public class FlexoApplication {
 
 			// if the bug came from the FileChooser (Windows or Metal)
 			// or the AquaDirectoryModel, ignore it.
-			if (bug instanceof NullPointerException
-					&& (msg.indexOf("MetalFileChooserUI") != -1 || msg.indexOf("WindowsFileChooserUI") != -1 || msg
-							.indexOf("AquaDirectoryModel") != -1)) {
+			if (bug instanceof NullPointerException && (msg.indexOf("MetalFileChooserUI") != -1 || msg.indexOf("WindowsFileChooserUI") != -1
+					|| msg.indexOf("AquaDirectoryModel") != -1)) {
 				return true;
 			}
 
@@ -378,7 +387,8 @@ public class FlexoApplication {
 				}
 				bug.printStackTrace();
 				return true;
-			} else {
+			}
+			else {
 				// Same for exceptions where denali appear only as
 				// org.openflexo.application.FlexoApplication$EventProcessor.dispatchEvent()
 				int index = msg.indexOf("org.openflexo");

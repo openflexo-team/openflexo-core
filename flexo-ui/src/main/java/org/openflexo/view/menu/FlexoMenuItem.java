@@ -60,7 +60,6 @@ import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.action.FlexoActionSource;
 import org.openflexo.foundation.action.FlexoActionType;
-import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.selection.SelectionManager;
 import org.openflexo.view.controller.FlexoController;
@@ -83,7 +82,7 @@ public class FlexoMenuItem extends JMenuItem implements FlexoActionSource, Prope
 		super();
 		_controller = controller;
 		_controller.getPropertyChangeSupport().addPropertyChangeListener(this);
-		setText(FlexoLocalization.localizedForKey(unlocalizedMenuName, this));
+		setText(controller.getModuleLocales().localizedForKey(unlocalizedMenuName, this));
 	}
 
 	public FlexoMenuItem(AbstractAction action, String flexoActionName, KeyStroke accelerator, FlexoController controller,
@@ -96,7 +95,7 @@ public class FlexoMenuItem extends JMenuItem implements FlexoActionSource, Prope
 			_controller.registerActionForKeyStroke(action, accelerator, flexoActionName);
 		}
 		if (localizeActionName) {
-			setText(FlexoLocalization.localizedForKey(flexoActionName, this));
+			setText(controller.getModuleLocales().localizedForKey(flexoActionName, this));
 		}
 		else {
 			setText(flexoActionName);
@@ -126,7 +125,7 @@ public class FlexoMenuItem extends JMenuItem implements FlexoActionSource, Prope
 		this.actionType = actionType;
 		_controller = controller;
 		setAction(new EditionAction(actionType, this));
-		setText(FlexoLocalization.localizedForKey(actionType.getUnlocalizedName(), this));
+		setText(controller.getModuleLocales().localizedForKey(actionType.getUnlocalizedName(), this));
 	}
 
 	@Override

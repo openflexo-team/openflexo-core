@@ -59,7 +59,7 @@ public class ActionSchemeActionType extends FlexoActionType<ActionSchemeAction, 
 	}
 
 	@Override
-	public LocalizedDelegate getLocalizer() {
+	public LocalizedDelegate getLocales() {
 		return actionScheme.getLocalizedDictionary();
 	}
 

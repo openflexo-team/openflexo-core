@@ -51,7 +51,6 @@ import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterResource;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.foundation.technologyadapter.TypeAwareModelSlot;
-import org.openflexo.localization.FlexoLocalization;
 
 /**
  * This class is used to stored the configuration of a {@link ModelSlot} which has to be instantiated
@@ -60,8 +59,8 @@ import org.openflexo.localization.FlexoLocalization;
  * @author sylvain
  * 
  */
-public abstract class ModelSlotInstanceConfiguration<MS extends ModelSlot<RD>, RD extends ResourceData<RD> & TechnologyObject<?>> extends
-		DefaultFlexoObject {
+public abstract class ModelSlotInstanceConfiguration<MS extends ModelSlot<RD>, RD extends ResourceData<RD> & TechnologyObject<?>>
+		extends DefaultFlexoObject {
 
 	private final AbstractVirtualModelInstance<?, ?> virtualModelInstance;
 	private final FlexoProject project;
@@ -80,35 +79,35 @@ public abstract class ModelSlotInstanceConfiguration<MS extends ModelSlot<RD>, R
 		 * Retrieve an existing resource from a ResourceCenter
 		 */
 		SelectExistingResource, /**
-		 * Retrieve an existing model from a ResourceCenter
-		 */
+								 * Retrieve an existing model from a ResourceCenter
+								 */
 		SelectExistingModel, /**
-		 * Retrieve an existing metamodel from a ResourceCenter
-		 */
+								 * Retrieve an existing metamodel from a ResourceCenter
+								 */
 		SelectExistingMetaModel, /**
-		 * Create a dedicated model in the scope of current {@link FlexoProject}
-		 */
+									 * Create a dedicated model in the scope of current {@link FlexoProject}
+									 */
 		CreatePrivateNewModel, /**
-		 * Create a resource in a ResourceCenter (the resource might be shared and concurrently accessed)
-		 */
+								 * Create a resource in a ResourceCenter (the resource might be shared and concurrently accessed)
+								 */
 		CreatePrivateNewResource, /**
-		 * Create a model in a ResourceCenter (the model might be shared and concurrently accessed)
-		 */
+									 * Create a model in a ResourceCenter (the model might be shared and concurrently accessed)
+									 */
 		CreateSharedNewModel, /**
-		 * Create a resource in a ResourceCenter (the resource might be shared and concurrently accessed)
-		 */
+								 * Create a resource in a ResourceCenter (the resource might be shared and concurrently accessed)
+								 */
 		CreateSharedNewResource, /**
-		 * Retrieve an existing virtual model instance
-		 */
+									 * Retrieve an existing virtual model instance
+									 */
 		SelectExistingVirtualModel, /**
-		 * Creates a new virtual model
-		 */
+									 * Creates a new virtual model
+									 */
 		CreateNewVirtualModel, /**
-		 * Leave empty and decide later
-		 */
+								 * Leave empty and decide later
+								 */
 		LeaveEmpty, /**
-		 * Let Openflexo manage this
-		 */
+					 * Let Openflexo manage this
+					 */
 		Autoconfigure;
 
 		@Override
@@ -166,7 +165,7 @@ public abstract class ModelSlotInstanceConfiguration<MS extends ModelSlot<RD>, R
 
 	public boolean isValidConfiguration() {
 		if (option == null) {
-			setErrorMessage(FlexoLocalization.localizedForKey("please_select_an_option"));
+			setErrorMessage(getProject().getLocales().localizedForKey("please_select_an_option"));
 			return false;
 		}
 		return true;

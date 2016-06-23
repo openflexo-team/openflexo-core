@@ -53,7 +53,6 @@ import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionSource;
 import org.openflexo.foundation.action.FlexoActionType;
-import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.view.controller.FlexoController;
 
 public class FlexoActionButton extends JButton {
@@ -72,7 +71,7 @@ public class FlexoActionButton extends JButton {
 		this.controller = controller;
 		action = new ButtonAction(actionType, unlocalizedActionName);
 		setText(action.getLocalizedName(this));
-		setToolTipText(FlexoLocalization.localizedTooltipForKey(action._unlocalizedName, this));
+		setToolTipText(controller.getModuleLocales().localizedTooltipForKey(action._unlocalizedName, this));
 		if (getEditor() != null) {
 			if (getEditor().getEnabledIconFor(actionType) != null) {
 				setIcon(getEditor().getEnabledIconFor(actionType));
@@ -88,7 +87,8 @@ public class FlexoActionButton extends JButton {
 	private FlexoEditor getEditor() {
 		if (controller != null) {
 			return controller.getEditor();
-		} else {
+		}
+		else {
 			return null;
 		}
 	}
@@ -146,8 +146,9 @@ public class FlexoActionButton extends JButton {
 			if (_unlocalizedName == null) {
 				return actionType.getLocalizedName(component);
 
-			} else {
-				return FlexoLocalization.localizedForKey(_unlocalizedName, component);
+			}
+			else {
+				return controller.getModuleLocales().localizedForKey(_unlocalizedName, component);
 			}
 		}
 

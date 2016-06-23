@@ -262,7 +262,7 @@ public class TestVirtualModelView extends OpenflexoFIBTestCase {
 		FIBJPanel<VirtualModel> widget = instanciateFIB(fibResource, virtualModel, VirtualModel.class);
 		FMLFIBController fibController = (FMLFIBController) widget.getController();
 		InspectorGroup fmlInspectorGroup = new InspectorGroup(ResourceLocator.locateResource("Inspectors/FML"),
-				ApplicationFIBLibraryImpl.instance());
+				ApplicationFIBLibraryImpl.instance(), null);
 		fibController.setDefaultInspectorGroup(fmlInspectorGroup);
 
 		// ModuleInspectorController inspectorController = new ModuleInspectorController(null);

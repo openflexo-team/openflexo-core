@@ -97,7 +97,7 @@ public abstract class InteractiveProjectLoadingHandler implements ProjectLoading
 		for (ResourceToConvert resourceToConvert : resourcesToConvert) {
 			resources.add(resourceToConvert.getResource());
 		}
-		progress.setProgress(FlexoLocalization.localizedForKey("converting_project"));
+		progress.setProgress(FlexoLocalization.getMainLocalizer().localizedForKey("converting_project"));
 		progress.resetSecondaryProgress(resourcesToConvert.size());
 		performingAutomaticConversion = true;
 		// DependencyAlgorithmScheme scheme = project.getDependancyScheme();
@@ -105,9 +105,9 @@ public abstract class InteractiveProjectLoadingHandler implements ProjectLoading
 		// project.setDependancyScheme(DependencyAlgorithmScheme.Pessimistic);
 		// FlexoResource.sortResourcesWithDependancies(resources);
 		for (PamelaResource<?, ?> res : resources) {
-			progress.setSecondaryProgress(FlexoLocalization.localizedForKey("converting") + " " + res.getURI() + " "
-					+ FlexoLocalization.localizedForKey("from") + " " + res.getModelVersion() + " "
-					+ FlexoLocalization.localizedForKey("to") + " " + res.latestVersion());
+			progress.setSecondaryProgress(FlexoLocalization.getMainLocalizer().localizedForKey("converting") + " " + res.getURI() + " "
+					+ FlexoLocalization.getMainLocalizer().localizedForKey("from") + " " + res.getModelVersion() + " "
+					+ FlexoLocalization.getMainLocalizer().localizedForKey("to") + " " + res.latestVersion());
 			if (!res.isDeleted()) {
 				try {
 					res.getResourceData(null);
@@ -120,7 +120,7 @@ public abstract class InteractiveProjectLoadingHandler implements ProjectLoading
 				} catch (FlexoException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
-				}// Converts the resource by loading it.
+				} // Converts the resource by loading it.
 			}
 		}
 		// project.setDependancyScheme(scheme);
@@ -133,13 +133,10 @@ public abstract class InteractiveProjectLoadingHandler implements ProjectLoading
 		if (resource.getFlexoIODelegate() instanceof FileFlexoIODelegate) {
 			FileFlexoIODelegate r = (FileFlexoIODelegate) (resource.getFlexoIODelegate());
 			if (e.getMessage().indexOf("JDOMParseException") > -1 && !GraphicsEnvironment.isHeadless()) {
-				JOptionPane.showMessageDialog(
-						null,
-						"Could not load project: file '"
-								+ r.getFile().getAbsolutePath()
-								+ "' contains invalid XML!\n"
-								+ e.getMessage().substring(e.getMessage().indexOf("JDOMParseException") + 20,
-										e.getMessage().indexOf("StackTrace") - 1), "XML error", JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(null,
+						"Could not load project: file '" + r.getFile().getAbsolutePath() + "' contains invalid XML!\n" + e.getMessage()
+								.substring(e.getMessage().indexOf("JDOMParseException") + 20, e.getMessage().indexOf("StackTrace") - 1),
+						"XML error", JOptionPane.ERROR_MESSAGE);
 
 			}
 			e.printStackTrace();
@@ -147,12 +144,12 @@ public abstract class InteractiveProjectLoadingHandler implements ProjectLoading
 				logger.info("Full exception message: " + e.getMessage());
 			}
 			if (!GraphicsEnvironment.isHeadless()) {
-				JOptionPane.showMessageDialog(
-						null,
-						FlexoLocalization.localizedForKey("could_not_open_resource_manager_file") + "\n"
-								+ FlexoLocalization.localizedForKey("to_avoid_damaging_the_project_flexo_will_exit") + "\n"
-								+ FlexoLocalization.localizedForKey("error_is_caused_by_file") + " : '" + r.getFile().getAbsolutePath()
-								+ "'", FlexoLocalization.localizedForKey("error_during_opening_project"), JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(null,
+						FlexoLocalization.getMainLocalizer().localizedForKey("could_not_open_resource_manager_file") + "\n"
+								+ FlexoLocalization.getMainLocalizer().localizedForKey("to_avoid_damaging_the_project_flexo_will_exit")
+								+ "\n" + FlexoLocalization.getMainLocalizer().localizedForKey("error_is_caused_by_file") + " : '"
+								+ r.getFile().getAbsolutePath() + "'",
+						FlexoLocalization.getMainLocalizer().localizedForKey("error_during_opening_project"), JOptionPane.ERROR_MESSAGE);
 			}
 		}
 	}

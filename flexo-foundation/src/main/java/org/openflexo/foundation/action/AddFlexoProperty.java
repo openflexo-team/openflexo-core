@@ -48,7 +48,6 @@ import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.FlexoProperty;
 import org.openflexo.foundation.InnerResourceData;
 import org.openflexo.foundation.resource.PamelaResource;
-import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.model.factory.ModelFactory;
 
 public class AddFlexoProperty extends FlexoAction<AddFlexoProperty, FlexoObject, FlexoObject> {
@@ -148,7 +147,7 @@ public class AddFlexoProperty extends FlexoAction<AddFlexoProperty, FlexoObject,
 	}
 
 	public String getNextPropertyName(FlexoObject owner) {
-		String base = FlexoLocalization.localizedForKey("property");
+		String base = getLocales().localizedForKey("property");
 		String attempt = base;
 		int i = 1;
 		while (owner.getPropertyNamed(attempt) != null) {

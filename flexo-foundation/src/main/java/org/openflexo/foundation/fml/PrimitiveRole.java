@@ -99,7 +99,7 @@ public interface PrimitiveRole<T> extends FlexoRole<T> {
 
 		@Override
 		public String toString() {
-			return FlexoLocalization.localizedForKey(name());
+			return FlexoLocalization.getMainLocalizer().localizedForKey(name());
 		}
 	}
 
@@ -113,7 +113,7 @@ public interface PrimitiveRole<T> extends FlexoRole<T> {
 	@Setter(PRIMITIVE_TYPE_KEY)
 	public void setPrimitiveType(PrimitiveType primitiveType);
 
-	public static abstract class PrimitiveRoleImpl<T> extends FlexoRoleImpl<T> implements PrimitiveRole<T> {
+	public static abstract class PrimitiveRoleImpl<T> extends FlexoRoleImpl<T>implements PrimitiveRole<T> {
 
 		protected static final Logger logger = FlexoLogger.getLogger(PrimitiveRole.class.getPackage().getName());
 
@@ -150,7 +150,7 @@ public interface PrimitiveRole<T> extends FlexoRole<T> {
 			if (primitiveType == null) {
 				return null;
 			}
-			return FlexoLocalization.localizedForKey(primitiveType.name());
+			return FlexoLocalization.getMainLocalizer().localizedForKey(primitiveType.name());
 		}
 
 		@Override

@@ -73,7 +73,7 @@ public class ProjectResourcesPerspective extends FlexoPerspective {
 		super("resources_perspective", controller);
 
 		projectResourcesBrowser = new FIBProjectResourcesBrowser(controller.getProject() != null ? controller.getProject() : null,
-				controller);
+				controller, controller.getFlexoLocales());
 
 		setTopLeftView(projectResourcesBrowser);
 
@@ -101,10 +101,10 @@ public class ProjectResourcesPerspective extends FlexoPerspective {
 	@Override
 	public String getWindowTitleforObject(FlexoObject object, FlexoController controller) {
 		if (object == null) {
-			return FlexoLocalization.localizedForKey("no_selection");
+			return FlexoLocalization.getMainLocalizer().localizedForKey("no_selection");
 		}
 		if (object instanceof ViewLibrary) {
-			return FlexoLocalization.localizedForKey("view_library");
+			return FlexoLocalization.getMainLocalizer().localizedForKey("view_library");
 		}
 		if (object instanceof VirtualModelInstance) {
 			return ((VirtualModelInstance) object).getTitle();
@@ -118,7 +118,8 @@ public class ProjectResourcesPerspective extends FlexoPerspective {
 		return object.toString();
 	}
 
-	private <TA extends TechnologyAdapter> String getWindowTitleForTechnologyObject(TechnologyObject<TA> object, FlexoController controller) {
+	private <TA extends TechnologyAdapter> String getWindowTitleForTechnologyObject(TechnologyObject<TA> object,
+			FlexoController controller) {
 		TechnologyAdapterControllerService tacService = getController().getApplicationContext().getTechnologyAdapterControllerService();
 		TechnologyAdapterController<TA> tac = tacService.getTechnologyAdapterController(object.getTechnologyAdapter());
 		return tac.getWindowTitleforObject(object, controller);

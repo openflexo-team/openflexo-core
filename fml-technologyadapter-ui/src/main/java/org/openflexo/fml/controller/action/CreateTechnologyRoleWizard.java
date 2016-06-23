@@ -45,7 +45,6 @@ import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.action.CreateTechnologyRole;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.gina.annotation.FIBPanel;
-import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.view.controller.FlexoController;
 
 public class CreateTechnologyRoleWizard extends AbstractCreateFlexoRoleWizard<CreateTechnologyRole, ModelSlot<?>> {
@@ -64,7 +63,7 @@ public class CreateTechnologyRoleWizard extends AbstractCreateFlexoRoleWizard<Cr
 
 	@Override
 	public String getWizardTitle() {
-		return FlexoLocalization.localizedForKey("create_technology_specific_role");
+		return getAction().getLocales().localizedForKey("create_technology_specific_role");
 	}
 
 	@Override

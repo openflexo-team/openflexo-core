@@ -69,38 +69,33 @@ public class FullInteractiveProjectLoadingHandler extends InteractiveProjectLoad
 			return true;
 		}
 
-		String CONVERT_ALL = FlexoLocalization.localizedForKey("convert_all_resources");
-		String CONVERT = FlexoLocalization.localizedForKey("convert_this_resource");
-		String DONT_CONVERT = FlexoLocalization.localizedForKey("don't_convert_this_resource");
-		String CANCEL = FlexoLocalization.localizedForKey("cancel");
-		int choice = FlexoController
-				.selectOption(
-						"<html><center>"
-								+ IconLibrary.UNFIXABLE_WARNING_ICON.getHTMLImg()
-								+ "<b>&nbsp;"
-								+ FlexoLocalization.localizedForKey("warning")
-								+ "</b></center><br>"
-								+ FlexoLocalization.localizedForKey("resource")
-								+ " <b>"
-								+ resource.getURI()
-								+ "</b><br>"
-								+ FlexoLocalization
-										.localizedForKey("this_resource_has_been_serialized_with_an_older_version_than_the_one_declared_as_current_application_version")
-								+ "<br>"
-								+ FlexoLocalization
-										.localizedForKey("should_i_convert_this_resource_to_latest_version_(recommanded_choice)") + "<br>"
-								// + FlexoLocalization.localizedForKey("current_version") + " : <b>" + resource.getXmlVersion() + "</b><br>"
-								// + FlexoLocalization.localizedForKey("will_be_converted_to_version") + " : <b>" + resource.latestVersion()
-								+ "</b><br></html>", CONVERT_ALL, CONVERT_ALL, CONVERT, DONT_CONVERT, CANCEL);
+		String CONVERT_ALL = FlexoLocalization.getMainLocalizer().localizedForKey("convert_all_resources");
+		String CONVERT = FlexoLocalization.getMainLocalizer().localizedForKey("convert_this_resource");
+		String DONT_CONVERT = FlexoLocalization.getMainLocalizer().localizedForKey("don't_convert_this_resource");
+		String CANCEL = FlexoLocalization.getMainLocalizer().localizedForKey("cancel");
+		int choice = FlexoController.selectOption("<html><center>" + IconLibrary.UNFIXABLE_WARNING_ICON.getHTMLImg() + "<b>&nbsp;"
+				+ FlexoLocalization.getMainLocalizer().localizedForKey("warning") + "</b></center><br>"
+				+ FlexoLocalization.getMainLocalizer().localizedForKey("resource") + " <b>" + resource.getURI() + "</b><br>"
+				+ FlexoLocalization.getMainLocalizer().localizedForKey(
+						"this_resource_has_been_serialized_with_an_older_version_than_the_one_declared_as_current_application_version")
+				+ "<br>" + FlexoLocalization.getMainLocalizer()
+						.localizedForKey("should_i_convert_this_resource_to_latest_version_(recommanded_choice)")
+				+ "<br>"
+				// + FlexoLocalization.localizedForKey("current_version") + " : <b>" + resource.getXmlVersion() + "</b><br>"
+				// + FlexoLocalization.localizedForKey("will_be_converted_to_version") + " : <b>" + resource.latestVersion()
+				+ "</b><br></html>", CONVERT_ALL, CONVERT_ALL, CONVERT, DONT_CONVERT, CANCEL);
 
 		if (choice == 0) { // CONVERT_ALL
 			alwaysUpgradeResourceToLatestVersion = true;
 			return true;
-		} else if (choice == 1) { // CONVERT
+		}
+		else if (choice == 1) { // CONVERT
 			return true;
-		} else if (choice == 2) { // DONT_CONVERT
+		}
+		else if (choice == 2) { // DONT_CONVERT
 			return false;
-		} else {
+		}
+		else {
 			if (ProgressWindow.hasInstance()) {
 				ProgressWindow.instance().hideWindow();
 			}
@@ -120,21 +115,24 @@ public class FullInteractiveProjectLoadingHandler extends InteractiveProjectLoad
 			return useOlderMappingHashtable.get(resource);
 		}
 
-		String TRY_TO_RECOVER = FlexoLocalization.localizedForKey("try_to_recover_resource");
-		String CANCEL = FlexoLocalization.localizedForKey("cancel");
+		String TRY_TO_RECOVER = FlexoLocalization.getMainLocalizer().localizedForKey("try_to_recover_resource");
+		String CANCEL = FlexoLocalization.getMainLocalizer().localizedForKey("cancel");
 		int choice = FlexoController.selectOption(
 				"<html><center>" + IconLibrary.UNFIXABLE_WARNING_ICON.getHTMLImg() + "<b>&nbsp;"
-						+ FlexoLocalization.localizedForKey("warning") + "</b></center><br>"
-						+ FlexoLocalization.localizedForKey("resource") + " <b>" + resource.getURI() + "</b><br>"
-						+ FlexoLocalization.localizedForKey("this_resource_could_not_be_deserialized_with_declared_version") + "<br>"
-						+ FlexoLocalization.localizedForKey("should_i_try_to_recover_by_using_older_versions") + "<br>" + "<i>"
-						+ FlexoLocalization.localizedForKey("you_may_loose_some_informations") + "</i><br></html>", TRY_TO_RECOVER,
-				TRY_TO_RECOVER, CANCEL);
+						+ FlexoLocalization.getMainLocalizer().localizedForKey("warning") + "</b></center><br>"
+						+ FlexoLocalization.getMainLocalizer().localizedForKey("resource") + " <b>" + resource.getURI() + "</b><br>"
+						+ FlexoLocalization.getMainLocalizer()
+								.localizedForKey("this_resource_could_not_be_deserialized_with_declared_version")
+						+ "<br>" + FlexoLocalization.getMainLocalizer().localizedForKey("should_i_try_to_recover_by_using_older_versions")
+						+ "<br>" + "<i>" + FlexoLocalization.getMainLocalizer().localizedForKey("you_may_loose_some_informations")
+						+ "</i><br></html>",
+				TRY_TO_RECOVER, TRY_TO_RECOVER, CANCEL);
 
 		if (choice == 0) {
 			useOlderMappingHashtable.put(resource, true);
 			return true;
-		} else {
+		}
+		else {
 			throw new ProjectLoadingCancelledException();
 		}
 	}
@@ -167,13 +165,13 @@ public class FullInteractiveProjectLoadingHandler extends InteractiveProjectLoad
 	// TODO: reimplement this
 
 	/*private static class ProjectConversionDialog extends FlexoDialog {
-
+	
 		private enum ReturnedStatus {
 			CANCEL, CONVERT, SKIP_CONVERSION
 		};
-
+	
 		ReturnedStatus status;
-
+	
 		ProjectConversionDialog(FlexoProject project, Vector<ResourceToConvert> resourcesToConvert) {
 			super((JFrame) null, FlexoLocalization.localizedForKey("project_conversion"), true);
 			LabelParameter infoLabel = new LabelParameter("info", "info", "<html><center>"
@@ -190,9 +188,9 @@ public class FullInteractiveProjectLoadingHandler extends InteractiveProjectLoad
 			resourcesParam.addReadOnlyTextFieldColumn("name", "name", 150, true);
 			resourcesParam.addReadOnlyTextFieldColumn("currentVersion", "old_version", 100, true);
 			resourcesParam.addReadOnlyTextFieldColumn("latestVersion", "new_version", 100, true);
-
+	
 			AskParametersPanel panel = new AskParametersPanel(project, infoLabel, resourcesParam);
-
+	
 			getContentPane().setLayout(new BorderLayout());
 			getContentPane().add(panel, BorderLayout.CENTER);
 			JPanel controlPanel = new JPanel(new FlowLayout());
@@ -234,9 +232,9 @@ public class FullInteractiveProjectLoadingHandler extends InteractiveProjectLoad
 			validate();
 			pack();
 			setVisible(true);
-
+	
 		}
-
+	
 		protected ReturnedStatus getStatus() {
 			return status;
 		}

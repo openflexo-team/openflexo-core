@@ -54,6 +54,7 @@ import org.openflexo.foundation.GraphicalFlexoObserver;
 import org.openflexo.foundation.task.Progress;
 import org.openflexo.gina.model.FIBComponent;
 import org.openflexo.gina.model.listener.FIBSelectionListener;
+import org.openflexo.localization.LocalizedDelegate;
 import org.openflexo.rm.Resource;
 import org.openflexo.selection.SelectionListener;
 import org.openflexo.view.controller.FlexoController;
@@ -74,17 +75,20 @@ public abstract class FIBModuleView<O extends FlexoObject> extends SelectionSync
 	// private FlexoController controller;
 	// private FIBViewImpl fibView;
 
-	public FIBModuleView(O representedObject, FlexoController controller, Resource fibResource) {
-		this(representedObject, controller, fibResource, false);
+	public FIBModuleView(O representedObject, FlexoController controller, Resource fibResource, LocalizedDelegate locales) {
+		this(representedObject, controller, fibResource, locales, false);
 	}
 
-	public FIBModuleView(O representedObject, FlexoController controller, Resource fibResource, boolean addScrollBar) {
-		this(representedObject, controller, controller.getApplicationFIBLibraryService().retrieveFIBComponent(fibResource), addScrollBar);
+	public FIBModuleView(O representedObject, FlexoController controller, Resource fibResource, LocalizedDelegate locales,
+			boolean addScrollBar) {
+		this(representedObject, controller, controller.getApplicationFIBLibraryService().retrieveFIBComponent(fibResource), locales,
+				addScrollBar);
 		controller.willLoad(fibResource);
 	}
 
-	protected FIBModuleView(O representedObject, FlexoController controller, FIBComponent fibComponent, boolean addScrollBar) {
-		super(representedObject, controller, fibComponent, addScrollBar);
+	protected FIBModuleView(O representedObject, FlexoController controller, FIBComponent fibComponent, LocalizedDelegate locales,
+			boolean addScrollBar) {
+		super(representedObject, controller, fibComponent, locales, addScrollBar);
 		Progress.progress("instantiating_fib_component");
 	}
 
@@ -95,9 +99,9 @@ public abstract class FIBModuleView<O extends FlexoObject> extends SelectionSync
 	}
 
 	@Override
-	protected FlexoFIBController createFibController(FIBComponent fibComponent, FlexoController controller) {
+	protected FlexoFIBController createFibController(FIBComponent fibComponent, FlexoController controller, LocalizedDelegate locales) {
 		Progress.progress("initializing_fib_controller");
-		return super.createFibController(fibComponent, controller);
+		return super.createFibController(fibComponent, controller, locales);
 	}
 
 	@Override
