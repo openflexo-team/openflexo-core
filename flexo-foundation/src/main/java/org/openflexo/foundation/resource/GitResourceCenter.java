@@ -2,6 +2,7 @@ package org.openflexo.foundation.resource;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.logging.Logger;
 
@@ -9,8 +10,6 @@ import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
-import org.openflexo.gitUtils.GitIODelegateFactory;
-import org.openflexo.gitUtils.IODelegateFactory;
 import org.openflexo.toolbox.FlexoVersion;
 import org.openflexo.toolbox.IProgress;
 
@@ -60,25 +59,23 @@ public class GitResourceCenter extends FileSystemBasedResourceCenter {
 
 	@Override
 	public Collection<? extends FlexoResource<?>> getAllResources(IProgress progress) {
-		// TODO Auto-generated method stub
-		return null;
+		// TODO Not yet implemented
+		return new ArrayList<FlexoResource<?>>();
 	}
 
 	@Override
 	public void publishResource(FlexoResource<?> resource, FlexoVersion newVersion, IProgress progress) throws Exception {
-		// TODO Auto-generated method stub
-
+		// TODO Not yet implemented
 	}
 
 	@Override
 	public void update() throws IOException {
-		// TODO Auto-generated method stub
-
+		// TODO Not yet implemented
 	}
 
 	@Override
 	public String getDefaultBaseURI() {
-		// TODO Auto-generated method stub
+		// TODO Not yet implemented
 		return null;
 	}
 

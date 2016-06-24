@@ -38,9 +38,9 @@
 
 package org.openflexo.foundation.task;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
+
+import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 
 public class ErrorTask extends FlexoTask {
 
@@ -48,18 +48,18 @@ public class ErrorTask extends FlexoTask {
 		super(name);
 	}
 
+	@SuppressWarnings(value = "RANGE_ARRAY_INDEX", justification = "The exception is intensional for test purpose")
 	@Override
 	public void performTask() {
-		
+
 		Progress.setExpectedProgressSteps(10);
 
 		try {
 			Thread.sleep((new Random(System.currentTimeMillis())).nextInt(2000));
 		} catch (InterruptedException e) {
-			// TODO Auto-generated 	catch block
 			e.printStackTrace();
 		}
-		
+
 		int[] someInts = new int[1];
 
 		someInts[2]++;

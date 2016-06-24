@@ -1,10 +1,7 @@
-package org.openflexo.gitUtils;
+package org.openflexo.foundation.resource;
 
 import java.io.File;
 
-import org.openflexo.foundation.resource.FlexoIODelegate;
-import org.openflexo.foundation.resource.FlexoIOGitDelegate;
-import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.model.ModelContextLibrary;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.model.factory.ModelFactory;

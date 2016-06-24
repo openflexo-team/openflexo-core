@@ -78,6 +78,13 @@
       <version>4.1.0.201509280440-r</version>
     </dependency>
 
+  <!-- Findbugs annotations -->
+	<dependency>	
+    	<groupId>com.google.code.findbugs</groupId>
+    	<artifactId>annotations</artifactId>
+    	<version>3.0.1u2</version>
+	</dependency>
+
   <!-- JUnit Test Support -->
     <dependency>
       <groupId>org.eclipse.jgit</groupId>

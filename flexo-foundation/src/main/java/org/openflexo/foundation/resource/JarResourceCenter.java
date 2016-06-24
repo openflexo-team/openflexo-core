@@ -41,6 +41,7 @@ package org.openflexo.foundation.resource;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -295,20 +296,18 @@ public class JarResourceCenter<R extends FlexoResource<?>> extends ResourceRepos
 
 	@Override
 	public Collection<? extends FlexoResource<?>> getAllResources(IProgress progress) {
-		// TODO Auto-generated method stub
-		return null;
+		// TODO Not yet implemented
+		return new ArrayList<FlexoResource<?>>();
 	}
 
 	@Override
 	public void publishResource(FlexoResource<?> resource, FlexoVersion newVersion, IProgress progress) throws Exception {
-		// TODO Auto-generated method stub
-
+		// TODO Not yet implemented
 	}
 
 	@Override
 	public void update() throws IOException {
-		// TODO Auto-generated method stub
-
+		// TODO Not yet implemented
 	}
 
 	@ModelEntity
@@ -342,19 +341,19 @@ public class JarResourceCenter<R extends FlexoResource<?>> extends ResourceRepos
 
 	@Override
 	public String getDefaultBaseURI() {
-		// TODO Auto-generated method stub
+		// TODO Not yet implemented
 		return null;
 	}
 
 	@Override
 	public void setDefaultBaseURI(String defaultBaseURI) {
-		// TODO Auto-generated method stub
+		// TODO Not yet implemented
 
 	}
 
 	@Override
 	public boolean isIgnorable(InJarResourceImpl artefact) {
-		// TODO Auto-generated method stub
+		// TODO Not yet implemented
 		return false;
 	}
 
@@ -394,7 +393,7 @@ public class JarResourceCenter<R extends FlexoResource<?>> extends ResourceRepos
 
 	@Override
 	public String getDefaultResourceURI(FlexoResource<?> resource) {
-		// TODO Auto-generated method stub
+		// TODO Not yet implemented
 		return null;
 	}
 }
