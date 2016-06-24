@@ -113,8 +113,6 @@ public class FlexoBehaviourParameterValuePathElement extends SimplePathElement i
 	public Object getBindingValue(Object target, BindingEvaluationContext context) throws TypeMismatchException, NullReferenceException {
 		if (target instanceof Hashtable) {
 			Hashtable<FlexoBehaviourParameter, Object> allParameters = (Hashtable<FlexoBehaviourParameter, Object>) target;
-			System.out.println("je retourne " + allParameters.get(parameter));
-			System.out.println("Mais j'ai: " + allParameters);
 			return allParameters.get(parameter);
 		}
 		logger.warning("Please implement me, target=" + target + " context=" + context);
