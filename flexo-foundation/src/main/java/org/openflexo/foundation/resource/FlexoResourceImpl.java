@@ -59,6 +59,7 @@ import org.openflexo.model.factory.AccessibleProxyObject;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocatorDelegate;
 import org.openflexo.toolbox.IProgress;
+import org.openflexo.toolbox.StringUtils;
 
 /**
  * Default implementation for {@link FlexoResource}<br>
@@ -176,19 +177,23 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 	 */
 	@Override
 	public void setName(String aName) throws CannotRenameException {
-		if (aName != null) {
-			if (getFlexoIODelegate() != null && getFlexoIODelegate().hasWritePermission()) {
-				performSuperSetter(NAME, aName);
-				if (getFlexoIODelegate() != null) {
-					getFlexoIODelegate().rename();
-				}
-			}
-			else if (!isDeleting()) {
-				throw new CannotRenameException(this);
+		if (StringUtils.isEmpty(aName)) {
+			logger.warning("Trying to rename a FlexoResource with a null or empty name. Please investigate.");
+			return;
+		}
+		if (getFlexoIODelegate() != null && getFlexoIODelegate().hasWritePermission()) {
+			performSuperSetter(NAME, aName);
+			if (getFlexoIODelegate() != null) {
+				getFlexoIODelegate().rename();
 			}
 		}
-		else {
-			logger.warning("Trying to rename a FlexoResource to null!");
+		else if (!isDeleting()) {
+			System.out.println("Trying to rename " + this + " from " + getName() + " to " + aName);
+			System.out.println("IOdelegate=" + getFlexoIODelegate());
+			if (getFlexoIODelegate() != null) {
+				System.out.println("Write permission: " + getFlexoIODelegate().hasWritePermission());
+			}
+			throw new CannotRenameException(this);
 		}
 	}
 

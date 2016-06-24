@@ -87,7 +87,7 @@ import com.google.common.base.Throwables;
  * 
  */
 public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends ModelFactory & PamelaResourceModelFactory>
-		extends FlexoResourceImpl<RD>implements PamelaResource<RD, F> {
+		extends FlexoResourceImpl<RD> implements PamelaResource<RD, F> {
 
 	private static final Logger logger = Logger.getLogger(PamelaResourceImpl.class.getPackage().getName());
 
