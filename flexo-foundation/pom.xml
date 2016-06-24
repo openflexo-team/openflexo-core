@@ -80,9 +80,9 @@
 
   <!-- Findbugs annotations -->
 	<dependency>	
-    	<groupId>com.google.code.findbugs</groupId>
-    	<artifactId>annotations</artifactId>
-    	<version>3.0.1u2</version>
+    	<groupId>net.sourceforge.findbugs</groupId>
+		<artifactId>annotations</artifactId>
+		<version>1.3.2</version>	
 	</dependency>
 
   <!-- JUnit Test Support -->
