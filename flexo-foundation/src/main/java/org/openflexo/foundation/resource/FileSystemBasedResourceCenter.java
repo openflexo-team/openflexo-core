@@ -84,16 +84,12 @@ public abstract class FileSystemBasedResourceCenter extends FileResourceReposito
 
 	private final File rootDirectory;
 
-	// private final HashMap<TechnologyAdapter, ModelRepository<?, ?, ?, ?, ?>> modelRepositories = new HashMap<TechnologyAdapter,
-	// ModelRepository<?, ?, ?, ?, ?>>();
-	// private final HashMap<TechnologyAdapter, MetaModelRepository<?, ?, ?, ?>> metaModelRepositories = new HashMap<TechnologyAdapter,
-	// MetaModelRepository<?, ?, ?, ?>>();
-
-	// private TechnologyAdapterService technologyAdapterService;
-
 	private final FlexoResourceCenterService rcService;
 
 	private final FileSystemMetaDataManager fsMetaDataManager = new FileSystemMetaDataManager();
+
+	private final Map<TechnologyAdapter, HashMap<Class<? extends ResourceRepository<?>>, ResourceRepository<?>>> repositories = new HashMap<>();
+	// private final Map<TechnologyAdapter, ResourceRepository<?>> globalRepositories = new HashMap<>();
 
 	public FileSystemBasedResourceCenter(File rootDirectory, FlexoResourceCenterService rcService) {
 		super(null, rootDirectory);
@@ -565,8 +561,6 @@ public abstract class FileSystemBasedResourceCenter extends FileResourceReposito
 		return false;
 	}
 
-	private final HashMap<TechnologyAdapter, HashMap<Class<? extends ResourceRepository<?>>, ResourceRepository<?>>> repositories = new HashMap<TechnologyAdapter, HashMap<Class<? extends ResourceRepository<?>>, ResourceRepository<?>>>();
-
 	private HashMap<Class<? extends ResourceRepository<?>>, ResourceRepository<?>> getRepositoriesForAdapter(
 			TechnologyAdapter technologyAdapter) {
 		HashMap<Class<? extends ResourceRepository<?>>, ResourceRepository<?>> map = repositories.get(technologyAdapter);
@@ -583,6 +577,39 @@ public abstract class FileSystemBasedResourceCenter extends FileResourceReposito
 		return (R) map.get(repositoryType);
 	}
 
+	/**
+	 * Register global repository for this resource center<br>
+	 * It is stated that the global repository contains all resources which supplied technology adapter has discovered and may interpret<br>
+	 * This is the resource repository which is generally given in GUIs (such as browsers) to display the contents of a resource center for
+	 * a given technology
+	 * 
+	 * @param repository
+	 * @param technologyAdapter
+	 */
+	/*@Override
+	public final void registerGlobalRepository(ResourceRepository<?> repository, TechnologyAdapter technologyAdapter) {
+		if (repository != null && technologyAdapter != null) {
+			globalRepositories.put(technologyAdapter, repository);
+		}
+	}*/
+
+	/**
+	 * Return the global repository for this resource center and for supplied technology adapter<br>
+	 * It is stated that the global repository contains all resources which supplied technology adapter has discovered and may interpret<br>
+	 * This is the resource repository which is generally given in GUIs (such as browsers) to display the contents of a resource center for
+	 * a given technology
+	 * 
+	 * @param technologyAdapter
+	 * @return
+	 */
+	/*@Override
+	public ResourceRepository<?> getGlobalRepository(TechnologyAdapter technologyAdapter) {
+		if (technologyAdapter != null) {
+			return globalRepositories.get(technologyAdapter);
+		}
+		return null;
+	}*/
+
 	@Override
 	public final <R extends ResourceRepository<?>> void registerRepository(R repository, Class<? extends R> repositoryType,
 			TechnologyAdapter technologyAdapter) {
@@ -591,8 +618,8 @@ public abstract class FileSystemBasedResourceCenter extends FileResourceReposito
 			map.put(repositoryType, repository);
 			getPropertyChangeSupport().firePropertyChange("getRegisteredRepositories(TechnologyAdapter)", null,
 					getRegistedRepositories(technologyAdapter));
-			technologyAdapter.getPropertyChangeSupport().firePropertyChange("getAllRepositories()", null,
-					technologyAdapter.getAllRepositories());
+			// Call it to update the current repositories
+			technologyAdapter.notifyRepositoryStructureChanged();
 		}
 		else {
 			logger.warning("Repository already registered: " + repositoryType + " for " + repository);

@@ -153,12 +153,14 @@ public class FMLTechnologyAdapter extends TechnologyAdapter {
 			SwingUtilities.invokeLater(new Runnable() {
 				@Override
 				public void run() {
-					getPropertyChangeSupport().firePropertyChange("getAllRepositories()", null, resourceCenter);
+					// Call it to update the current repositories
+					notifyRepositoryStructureChanged();
 				}
 			});
 		}
 		else {
-			getPropertyChangeSupport().firePropertyChange("getAllRepositories()", null, resourceCenter);
+			// Call it to update the current repositories
+			notifyRepositoryStructureChanged();
 		}
 	}
 

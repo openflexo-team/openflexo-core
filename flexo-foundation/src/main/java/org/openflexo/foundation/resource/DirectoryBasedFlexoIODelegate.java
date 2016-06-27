@@ -196,10 +196,17 @@ public interface DirectoryBasedFlexoIODelegate extends FileFlexoIODelegate {
 					}
 				}
 				return returned;
-			} else {
+			}
+			else {
 				logger.warning("Delete requested for READ-ONLY file resource " + this);
 				return false;
 			}
+		}
+
+		@Override
+		public RepositoryFolder<?> getRepositoryFolder(ResourceRepository<?> resourceRepository, boolean createWhenNonExistent)
+				throws IOException {
+			return resourceRepository.getRepositoryFolder(getDirectory(), true);
 		}
 
 	}

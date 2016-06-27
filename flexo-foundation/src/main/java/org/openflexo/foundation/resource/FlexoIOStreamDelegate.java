@@ -125,7 +125,8 @@ public interface FlexoIOStreamDelegate<I> extends FlexoIODelegate<I> {
 			if ((_diskLastModifiedDate == null || _diskLastModifiedDate.getTime() == 0 || !exists()) && !_isSaving) {
 				if (getSerializationArtefact() != null && exists()) {
 					_diskLastModifiedDate = FileUtils.getDiskLastModifiedDate((File) getSerializationArtefact());
-				} else {
+				}
+				else {
 					// logger.warning("File "+getFile().getAbsolutePath()+" doesn't exist");
 					_diskLastModifiedDate = new Date(0); // means never
 					_lastWrittenOnDisk = new Date(0);
@@ -152,7 +153,8 @@ public interface FlexoIOStreamDelegate<I> extends FlexoIODelegate<I> {
 					// and we update accordingly so that the resource checking thread won't think that the resource was updated by another
 					// application
 					_lastWrittenOnDisk = _diskLastModifiedDate;
-				} else if (_lastWrittenOnDisk.getTime() - _diskLastModifiedDate.getTime() > ACCEPTABLE_FS_DELAY) {
+				}
+				else if (_lastWrittenOnDisk.getTime() - _diskLastModifiedDate.getTime() > ACCEPTABLE_FS_DELAY) {
 					if (exists()) { // Warn it only if file exists:
 						// otherwise it's normal
 						logger.warning("Resource " + this
@@ -176,11 +178,13 @@ public interface FlexoIOStreamDelegate<I> extends FlexoIODelegate<I> {
 			if (getSerializationArtefact() == null || !exists()) {
 				if (getSerializationArtefact() != null) {
 					logger.warning("resetDiskLastModifiedDate() called for non existant file: " + toString());
-				} else {
+				}
+				else {
 					logger.warning("resetDiskLastModifiedDate() called for null file on resource " + this);
 				}
 				_setLastWrittenOnDisk(null);
-			} else {
+			}
+			else {
 				_setLastWrittenOnDisk(new Date());
 			}
 		}

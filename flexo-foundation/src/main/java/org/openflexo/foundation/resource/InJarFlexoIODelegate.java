@@ -38,6 +38,7 @@
 
 package org.openflexo.foundation.resource;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
@@ -65,7 +66,7 @@ public interface InJarFlexoIODelegate extends FlexoIOStreamDelegate<InJarResourc
 	@Setter(IN_JAR_RESOURCE)
 	public void setInJarResource(InJarResourceImpl inJarResource);
 
-	public abstract class InJarFlexoIODelegateImpl extends FlexoIOStreamDelegateImpl<InJarResourceImpl> implements InJarFlexoIODelegate {
+	public abstract class InJarFlexoIODelegateImpl extends FlexoIOStreamDelegateImpl<InJarResourceImpl>implements InJarFlexoIODelegate {
 
 		public static InJarFlexoIODelegate makeInJarFlexoIODelegate(InJarResourceImpl inJarResource, ModelFactory factory) {
 			InJarFlexoIODelegate delegate = factory.newInstance(InJarFlexoIODelegate.class);
@@ -134,6 +135,12 @@ public interface InJarFlexoIODelegate extends FlexoIOStreamDelegate<InJarResourc
 		@Override
 		public void save(FlexoResource<?> resource) throws NotImplementedException {
 			throw new NotImplementedException("In-jar resources cannot be saved");
+		}
+
+		@Override
+		public RepositoryFolder<?> getRepositoryFolder(ResourceRepository<?> resourceRepository, boolean createWhenNonExistent)
+				throws IOException {
+			return resourceRepository.getRootFolder();
 		}
 	}
 

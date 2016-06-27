@@ -86,7 +86,7 @@ public interface FileFlexoIODelegate extends FlexoIOStreamDelegate<File> {
 	public String getFileName();
 
 	@Implementation
-	public abstract class FileFlexoIODelegateImpl extends FlexoIOStreamDelegateImpl<File> implements FileFlexoIODelegate {
+	public abstract class FileFlexoIODelegateImpl extends FlexoIOStreamDelegateImpl<File>implements FileFlexoIODelegate {
 
 		private final Logger logger = Logger.getLogger(FileFlexoIODelegateImpl.class.getPackage().getName());
 
@@ -102,13 +102,19 @@ public interface FileFlexoIODelegate extends FlexoIOStreamDelegate<File> {
 		}
 
 		@Override
+		public RepositoryFolder<?> getRepositoryFolder(ResourceRepository<?> resourceRepository, boolean createWhenNonExistent)
+				throws IOException {
+			return resourceRepository.getRepositoryFolder(getFile(), true);
+		}
+
+		@Override
 		public synchronized boolean hasWritePermission() {
 			return getFile() == null || (!getFile().exists() || getFile().canWrite()) && getFile().getParentFile() != null
 					&& (!getFile().getParentFile().exists() || getFile().getParentFile().canWrite());
 		}
 
 		private boolean renameFileTo(String name) throws InvalidFileNameException, IOException {
-			if (name != null &&getFile() != null){
+			if (name != null && getFile() != null) {
 				File newFile = new File(getFile().getParentFile(), name);
 				if (getFile().exists()) {
 					FileUtils.rename(getFile(), newFile);
@@ -120,7 +126,8 @@ public interface FileFlexoIODelegate extends FlexoIOStreamDelegate<File> {
 				}
 				return true;
 			}
-			else return false;
+			else
+				return false;
 		}
 
 		/**
@@ -130,7 +137,8 @@ public interface FileFlexoIODelegate extends FlexoIOStreamDelegate<File> {
 		public boolean delete() {
 			if (hasWritePermission()) {
 				return delete(true);
-			} else {
+			}
+			else {
 				logger.warning("Delete requested for READ-ONLY file resource " + this);
 				return false;
 			}
@@ -155,7 +163,8 @@ public interface FileFlexoIODelegate extends FlexoIOStreamDelegate<File> {
 			}
 			if (lock != null) {
 				lock.start();
-			} else {
+			}
+			else {
 				notifyHasBeenWrittenOnDisk();
 			}
 		}
@@ -173,7 +182,8 @@ public interface FileFlexoIODelegate extends FlexoIOStreamDelegate<File> {
 					}
 				}
 				return true;
-			} else {
+			}
+			else {
 				logger.warning("Delete requested for READ-ONLY file resource " + this);
 				return false;
 			}
@@ -222,7 +232,8 @@ public interface FileFlexoIODelegate extends FlexoIOStreamDelegate<File> {
 		public String getParentPath() {
 			if (getFile().isDirectory()) {
 				return getFile().getAbsolutePath();
-			} else {
+			}
+			else {
 				return getFile().getParent();
 			}
 		}

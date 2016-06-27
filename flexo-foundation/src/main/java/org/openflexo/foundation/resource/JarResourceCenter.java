@@ -96,6 +96,8 @@ public class JarResourceCenter<R extends FlexoResource<?>> extends ResourceRepos
 
 	private final FlexoResourceCenterService rcService;
 
+	// private final Map<TechnologyAdapter, ResourceRepository<?>> globalRepositories = new HashMap<>();
+
 	/**
 	 * Contructor based on a given JarResource
 	 * 
@@ -229,6 +231,39 @@ public class JarResourceCenter<R extends FlexoResource<?>> extends ResourceRepos
 	public Collection<ResourceRepository<?>> getRegistedRepositories(TechnologyAdapter technologyAdapter) {
 		return getRepositoriesForAdapter(technologyAdapter).values();
 	}
+
+	/**
+	 * Register global repository for this resource center<br>
+	 * It is stated that the global repository contains all resources which supplied technology adapter has discovered and may interpret<br>
+	 * This is the resource repository which is generally given in GUIs (such as browsers) to display the contents of a resource center for
+	 * a given technology
+	 * 
+	 * @param repository
+	 * @param technologyAdapter
+	 */
+	/*@Override
+	public final void registerGlobalRepository(ResourceRepository<?> repository, TechnologyAdapter technologyAdapter) {
+		if (repository != null && technologyAdapter != null) {
+			globalRepositories.put(technologyAdapter, repository);
+		}
+	}*/
+
+	/**
+	 * Return the global repository for this resource center and for supplied technology adapter<br>
+	 * It is stated that the global repository contains all resources which supplied technology adapter has discovered and may interpret<br>
+	 * This is the resource repository which is generally given in GUIs (such as browsers) to display the contents of a resource center for
+	 * a given technology
+	 * 
+	 * @param technologyAdapter
+	 * @return
+	 */
+	/*@Override
+	public ResourceRepository<?> getGlobalRepository(TechnologyAdapter technologyAdapter) {
+		if (technologyAdapter != null) {
+			return globalRepositories.get(technologyAdapter);
+		}
+		return null;
+	}*/
 
 	@Override
 	public <T extends ResourceData<T>> List<FlexoResource<T>> retrieveResource(String uri, Class<T> type, IProgress progress) {

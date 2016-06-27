@@ -43,7 +43,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.DataModification;
@@ -442,6 +444,22 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 				e.printStackTrace();
 			}
 		}
+
+		registerResourceInGlobalRepository(resource, resourceCenter);
+
+	}
+
+	protected void registerResourceInGlobalRepository(FlexoResource<?> resource, FlexoResourceCenter<?> resourceCenter) {
+		TechnologyAdapterGlobalRepository globalRepository = getGlobalRepository(resourceCenter);
+		if (globalRepository != null) {
+			RepositoryFolder<?> folderInGlobalRepository;
+			try {
+				globalRepository.registerResource(resource, resource.getFlexoIODelegate().getRepositoryFolder(globalRepository, true));
+			} catch (IOException e) {
+				logger.warning("Unexpected I/O exception: " + e);
+				e.printStackTrace();
+			}
+		}
 	}
 
 	/**
@@ -457,6 +475,48 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 
 	// Override when required
 	public void initFMLModelFactory(FMLModelFactory fMLModelFactory) {
+	}
+
+	/**
+	 * Return the list of all non-empty global repository for this technology adapter<br>
+	 * It is stated that the global repository contains all resources which supplied technology adapter has discovered and may interpret,
+	 * for a given resource center<br>
+	 * Global repositories are resource repositories which are generally given in GUIs (such as browsers) to display the contents of a
+	 * resource center for a given technology
+	 * 
+	 * @param technologyAdapter
+	 * @return
+	 */
+	/**
+	 * Return the list of all non-empty {@link ResourceRepository} discovered in the scope of {@link FlexoServiceManager}, related to
+	 * technology as supplied by {@link TechnologyAdapter} parameter
+	 * 
+	 * @param technologyAdapter
+	 * @return
+	 */
+	public List<ResourceRepository<?>> getGlobalRepositories() {
+		List<ResourceRepository<?>> returned = new ArrayList<ResourceRepository<?>>();
+		for (FlexoResourceCenter<?> rc : getTechnologyAdapterService().getServiceManager().getResourceCenterService()
+				.getResourceCenters()) {
+			// System.out.println("Pour le RC " + rc);
+			ResourceRepository<?> globalRepository = getGlobalRepository(rc);// rc.getGlobalRepository(this);
+			// System.out.println("global repo = " + globalRepository);
+			if (globalRepository != null) {
+				returned.add(globalRepository);
+			}
+		}
+		return returned;
+	}
+
+	private Map<FlexoResourceCenter<?>, TechnologyAdapterGlobalRepository> globalRepositories = new HashMap<>();
+
+	public TechnologyAdapterGlobalRepository getGlobalRepository(FlexoResourceCenter<?> rc) {
+		TechnologyAdapterGlobalRepository returned = globalRepositories.get(rc);
+		if (returned == null) {
+			returned = new TechnologyAdapterGlobalRepository(this, rc);
+			globalRepositories.put(rc, returned);
+		}
+		return returned;
 	}
 
 	/**
@@ -476,6 +536,15 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 			}
 		}
 		return returned;
+	}
+
+	/**
+	 * Called to notify that the structure of registered and/or global repositories has changed
+	 */
+	public void notifyRepositoryStructureChanged() {
+		getPropertyChangeSupport().firePropertyChange("getAllRepositories()", null, getAllRepositories());
+		getPropertyChangeSupport().firePropertyChange("getGlobalRepositories()", null, getGlobalRepositories());
+
 	}
 
 	@Override

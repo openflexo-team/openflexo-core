@@ -38,6 +38,8 @@
 
 package org.openflexo.foundation.resource;
 
+import java.io.IOException;
+
 import org.openflexo.foundation.action.NotImplementedException;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.Import;
@@ -124,4 +126,8 @@ public interface FlexoIODelegate<I> extends AccessibleProxyObject {
 	public void rename() throws CannotRenameException;
 
 	public void save(FlexoResource<?> resource) throws NotImplementedException;
+
+	public RepositoryFolder<?> getRepositoryFolder(ResourceRepository<?> resourceRepository, boolean createWhenNonExistent)
+			throws IOException;
+
 }
