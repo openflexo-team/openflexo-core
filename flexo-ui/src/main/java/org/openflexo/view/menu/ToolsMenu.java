@@ -286,8 +286,11 @@ public class ToolsMenu extends FlexoMenu {
 
 			for (TechnologyAdapter ta : controller.getApplicationContext().getTechnologyAdapterService().getTechnologyAdapters()) {
 				JMenuItem item = new TechnologyLocalizedItem(ta);
-				item.setIcon(controller.getApplicationContext().getTechnologyAdapterControllerService().getTechnologyAdapterController(ta)
-						.getTechnologyIcon());
+				if (controller.getApplicationContext().getTechnologyAdapterControllerService() != null && controller.getApplicationContext()
+						.getTechnologyAdapterControllerService().getTechnologyAdapterController(ta) != null) {
+					item.setIcon(controller.getApplicationContext().getTechnologyAdapterControllerService()
+							.getTechnologyAdapterController(ta).getTechnologyIcon());
+				}
 				add(item);
 			}
 
@@ -345,7 +348,7 @@ public class ToolsMenu extends FlexoMenu {
 
 	public class TechnologyLocalizedEditorAction extends LocalizedEditorAction implements PropertyChangeListener {
 
-		private TechnologyAdapter technologyAdapter;
+		private final TechnologyAdapter technologyAdapter;
 
 		public TechnologyLocalizedEditorAction(TechnologyAdapter technologyAdapter) {
 			super(technologyAdapter.getName(), null);
@@ -385,7 +388,7 @@ public class ToolsMenu extends FlexoMenu {
 
 	public class ModuleLocalizedEditorAction extends LocalizedEditorAction implements PropertyChangeListener {
 
-		private Module<?> module;
+		private final Module<?> module;
 
 		public ModuleLocalizedEditorAction(Module<?> module) {
 			super(module.getName(), null);
@@ -422,8 +425,8 @@ public class ToolsMenu extends FlexoMenu {
 
 	public class LocalizedEditorAction extends AbstractAction {
 
-		private LocalizedDelegate locales;
-		private String localesName;
+		private final LocalizedDelegate locales;
+		private final String localesName;
 		private LocalizedEditor localizedEditor;
 
 		public LocalizedEditorAction(String localesName, LocalizedDelegate locales) {
