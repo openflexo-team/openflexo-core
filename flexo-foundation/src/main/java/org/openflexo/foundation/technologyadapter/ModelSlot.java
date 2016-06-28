@@ -758,12 +758,16 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>>
 
 			// Also iterate on all behaviours, and find EditionAction that are declared with this model slot
 			for (FlexoBehaviour behaviour : getVirtualModel().getFlexoBehaviours()) {
-				behaviour.getControlGraph().accept(cgVisitor);
+				if (behaviour.getControlGraph() != null) {
+					behaviour.getControlGraph().accept(cgVisitor);
+				}
 			}
 			// Also iterate on all behaviours of all inner FlexoConcept, and find EditionAction that are declared with this model slot
 			for (FlexoConcept concept : getVirtualModel().getFlexoConcepts()) {
 				for (FlexoBehaviour behaviour : concept.getFlexoBehaviours()) {
-					behaviour.getControlGraph().accept(cgVisitor);
+					if (behaviour.getControlGraph() != null) {
+						behaviour.getControlGraph().accept(cgVisitor);
+					}
 				}
 			}
 			// Also iterate on GetProperty
