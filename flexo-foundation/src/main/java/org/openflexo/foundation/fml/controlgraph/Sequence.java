@@ -276,7 +276,13 @@ public interface Sequence extends FMLControlGraph, FMLControlGraphOwner {
 
 		@Override
 		public Type getInferedType() {
+			if (getControlGraph1() == null) {
+				return Void.class;
+			}
 			Type inferedType1 = getControlGraph1().getInferedType();
+			if (getControlGraph2() == null) {
+				return inferedType1;
+			}
 			Type inferedType2 = getControlGraph2().getInferedType();
 			if (inferedType1.equals(Void.class)) {
 				return inferedType2;
