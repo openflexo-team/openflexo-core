@@ -431,17 +431,19 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 			}
 			else if (flexoProperty instanceof GetProperty) {
 				FMLControlGraph getControlGraph = ((GetProperty<T>) flexoProperty).getGetControlGraph();
-				try {
-					RunTimeEvaluationContext localEvaluationContext = new LocalRunTimeEvaluationContext();
-					T returnedValue = null;
+				if (getControlGraph != null) {
 					try {
-						getControlGraph.execute(localEvaluationContext);
-					} catch (ReturnException e) {
-						returnedValue = (T) e.getReturnedValue();
+						RunTimeEvaluationContext localEvaluationContext = new LocalRunTimeEvaluationContext();
+						T returnedValue = null;
+						try {
+							getControlGraph.execute(localEvaluationContext);
+						} catch (ReturnException e) {
+							returnedValue = (T) e.getReturnedValue();
+						}
+						return returnedValue;
+					} catch (FlexoException e) {
+						e.printStackTrace();
 					}
-					return returnedValue;
-				} catch (FlexoException e) {
-					e.printStackTrace();
 				}
 			}
 			logger.warning("Not implemented: getValue() for " + this + " property=" + flexoProperty);
@@ -988,7 +990,8 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 				// return null;
 			}*/
 			else if (variable instanceof FlexoPropertyBindingVariable && getFlexoConcept() != null
-					&& ((FlexoPropertyBindingVariable) variable).getFlexoProperty().getFlexoConcept() == getFlexoConcept()) {
+			// && ((FlexoPropertyBindingVariable) variable).getFlexoProperty().getFlexoConcept() == getFlexoConcept()) {
+					&& ((FlexoPropertyBindingVariable) variable).getFlexoProperty().getFlexoConcept().isAssignableFrom(getFlexoConcept())) {
 				return ((FlexoPropertyBindingVariable) variable).getValue(this);
 			}
 			else if (variable.getVariableName().equals(FlexoConceptBindingModel.REFLEXIVE_ACCESS_PROPERTY)) {
