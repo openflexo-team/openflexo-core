@@ -58,7 +58,8 @@ public class FMLLoggingFormatter {
 		StringBuffer sb = new StringBuffer();
 		sb.append(formatString(logDate ? 30 : 10, log.level.toString() + (logDate ? " " + dateFormat.format(new Date(log.millis)) : "")));
 		sb.append(formatString(100, log.message));
-		sb.append(formatString(50, "[" + log.flexoConceptInstance + "." + log.behaviour.getName() + "]"));
+		sb.append(
+				formatString(50, "[" + log.flexoConceptInstance + "." + (log.behaviour != null ? log.behaviour.getName() : "null") + "]"));
 		return sb.toString();
 	}
 
