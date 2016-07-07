@@ -141,7 +141,7 @@ public class FlexoUpdateService extends FlexoServiceImpl {
 				for (URL url : flexoBundle.getURLs()) {
 					String name = url.getFile().substring(url.getFile().lastIndexOf('/') + 1);
 					JarFile file = new JarFile(localPaths.get(0) + File.separator + name);
-					JarResourceCenter.addJarFileInResourceCenter(file, getServiceManager().getResourceCenterService());
+					JarResourceCenter.addJarFile(file, getServiceManager().getResourceCenterService());
 				}
 			} catch (IOException e) {
 				// TODO Auto-generated catch block

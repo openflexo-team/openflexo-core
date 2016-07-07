@@ -209,12 +209,14 @@ public class JarResourceCenter<R extends FlexoResource<?>> extends ResourceRepos
 		return map;
 	}
 
+	@SuppressWarnings({ "hiding", "unchecked" })
 	@Override
 	public final <R extends ResourceRepository<?>> R getRepository(Class<? extends R> repositoryType, TechnologyAdapter technologyAdapter) {
 		HashMap<Class<? extends ResourceRepository<?>>, ResourceRepository<?>> map = getRepositoriesForAdapter(technologyAdapter);
 		return (R) map.get(repositoryType);
 	}
 
+	@SuppressWarnings("hiding")
 	@Override
 	public final <R extends ResourceRepository<?>> void registerRepository(R repository, Class<? extends R> repositoryType,
 			TechnologyAdapter technologyAdapter) {
@@ -296,9 +298,9 @@ public class JarResourceCenter<R extends FlexoResource<?>> extends ResourceRepos
 	 * 
 	 * @param rcService
 	 */
-	public static void addAllJarFromClassPathResourceCenters(FlexoResourceCenterService rcService) {
+	public static void addAllJarFromClassPath(FlexoResourceCenterService rcService) {
 		for (JarFile file : ClassPathUtils.getClassPathJarFiles()) {
-			addJarFileInResourceCenter(file, rcService);
+			addJarFile(file, rcService);
 		}
 	}
 
@@ -308,13 +310,17 @@ public class JarResourceCenter<R extends FlexoResource<?>> extends ResourceRepos
 	 * 
 	 * @param rcService
 	 */
-	public static void addNamedJarFromClassPathResourceCenters(FlexoResourceCenterService rcService, String name) {
+	@SuppressWarnings("rawtypes")
+	public static JarResourceCenter addNamedJarFromClassPath(FlexoResourceCenterService rcService, String name) {
+		JarResourceCenter rc = null;
 		for (JarFile file : ClassPathUtils.getClassPathJarFiles()) {
 			System.out.println(file.getName());
 			if ((file.getName().endsWith(name + ".jar")) || (name.endsWith(".jar") && file.getName().endsWith(name))) {
-				addJarFileInResourceCenter(file, rcService);
+				rc = addJarFile(file, rcService);
+				break;
 			}
 		}
+		return rc;
 	}
 
 	/**
@@ -323,10 +329,13 @@ public class JarResourceCenter<R extends FlexoResource<?>> extends ResourceRepos
 	 * @param jarFile
 	 * @param rcService
 	 */
-	public static void addJarFileInResourceCenter(JarFile jarFile, FlexoResourceCenterService rcService) {
+	@SuppressWarnings("rawtypes")
+	public static JarResourceCenter addJarFile(JarFile jarFile, FlexoResourceCenterService rcService) {
 		logger.info("Try to create a resource center from a jar file : " + jarFile.getName());
-		rcService.addToResourceCenters(new JarResourceCenter(jarFile, rcService));
+		JarResourceCenter rc = new JarResourceCenter(jarFile, rcService);
+		rcService.addToResourceCenters(rc);
 		rcService.storeDirectoryResourceCenterLocations();
+		return rc;
 	}
 
 	@Override
