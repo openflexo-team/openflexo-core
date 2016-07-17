@@ -41,7 +41,6 @@ package org.openflexo.fml.controller;
 
 import java.util.logging.Logger;
 
-import org.openflexo.connie.BindingVariable;
 import org.openflexo.foundation.DataModification;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoObservable;
@@ -88,19 +87,6 @@ public class FMLFIBInspectorController extends FMLFIBController {
 		else {
 			return true;
 		}
-	}
-
-	@Override
-	public Object getValue(BindingVariable variable) {
-		/*if (variable instanceof FlexoConceptInstanceBindingVariable) {
-			if (getDataObject() instanceof FlexoObject) {
-				List<FlexoObjectReference<FlexoConceptInstance>> refs = ((FlexoObject) getDataObject()).getFlexoConceptReferences();
-				if (refs != null && ((FlexoConceptInstanceBindingVariable) variable).getIndex() < refs.size()) {
-					return refs.get(((FlexoConceptInstanceBindingVariable) variable).getIndex()).getObject();
-				}
-			}
-		}*/
-		return super.getValue(variable);
 	}
 
 	// NOTE: this has moved to SwingViewFactory !!!
