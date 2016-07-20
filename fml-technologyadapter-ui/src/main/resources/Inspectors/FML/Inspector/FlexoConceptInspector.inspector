@@ -42,7 +42,7 @@
 			constraints="twocols(expandHorizontally=true;expandVertically=false;location=left)" />
 
 		<Panel layout="border" borderTitle="Panel" titleFont="SansSerif,0,11"
-			darkLevel="0" index="1" data=""
+			darkLevel="0" index="1" 
 			constraints="twocols(expandHorizontally=true;expandVertically=true;location=right)"
 			visible="" opaque="false" name="InspectorPropertyBrowserPanel">
 			<Table iteratorClassName="org.openflexo.foundation.fml.inspector.InspectorEntry"
@@ -94,7 +94,7 @@
 					name="add_property" />-->
 			</Table>
 			<Panel layout="box" boxLayoutAxis="Y_AXIS" borderTitle="Panel"
-				titleFont="SansSerif,0,11" darkLevel="0" index="2" data=""
+				titleFont="SansSerif,0,11" darkLevel="0" index="2"
 				constraints="border(anchor=north;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=east;padX=0;padY=0;weightX=0.0;weightY=0.0)"
 				visible="" opaque="false" name="InspectorOrderingPanel">
 				<Button action="data.entryFirst(InspectorPropertyTable.selected)"

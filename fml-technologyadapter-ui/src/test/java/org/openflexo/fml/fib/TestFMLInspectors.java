@@ -146,8 +146,18 @@ public class TestFMLInspectors extends GenericFIBInspectorTestCase {
 	}
 
 	@Test
+	public void testIncrementalIterationActionInspector() {
+		validateFIB("Inspectors/FML/EditionAction/IncrementalIterationAction.inspector");
+	}
+
+	@Test
 	public void testIterationActionInspector() {
 		validateFIB("Inspectors/FML/EditionAction/IterationAction.inspector");
+	}
+
+	@Test
+	public void testLogActionInspector() {
+		validateFIB("Inspectors/FML/EditionAction/LogAction.inspector");
 	}
 
 	@Test
