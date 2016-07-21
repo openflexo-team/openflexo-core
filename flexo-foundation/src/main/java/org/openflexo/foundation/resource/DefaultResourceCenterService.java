@@ -91,7 +91,9 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 		DefaultResourceCenterService returned = (DefaultResourceCenterService) getNewInstance();
 		for (ResourceCenterEntry<?> entry : resourceCenterEntries) {
 			FlexoResourceCenter rc = entry.makeResourceCenter(returned);
-			returned.addToResourceCenters(rc);
+			if (rc != null) {
+				returned.addToResourceCenters(rc);
+			}
 		}
 		return returned;
 	}
@@ -246,12 +248,16 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 				// Avoid Concurrent Modification Exception issues
 				ArrayList<FlexoResourceCenter> listRC = new ArrayList<FlexoResourceCenter>(getResourceCenters());
 				for (FlexoResourceCenter rc : listRC) {
-					rc.activateTechnology(((TechnologyAdapterHasBeenActivated) notification).getTechnologyAdapter());
+					if (rc != null) {
+						rc.activateTechnology(((TechnologyAdapterHasBeenActivated) notification).getTechnologyAdapter());
+					}
 				}
 			}
 			else if (notification instanceof TechnologyAdapterHasBeenDisactivated) {
 				for (FlexoResourceCenter rc : getResourceCenters()) {
-					rc.disactivateTechnology(((TechnologyAdapterHasBeenDisactivated) notification).getTechnologyAdapter());
+					if (rc != null) {
+						rc.disactivateTechnology(((TechnologyAdapterHasBeenDisactivated) notification).getTechnologyAdapter());
+					}
 				}
 			}
 		}
