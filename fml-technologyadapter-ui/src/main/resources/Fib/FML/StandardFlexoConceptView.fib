@@ -13,15 +13,6 @@
 			<Leaf name="right" weight="0.699999988079071" />
 		</RowSplit>
 
-		<FIBReferencedComponent
-			dynamicComponent="controller.inspectorForObject(FlexoConceptBrowser.selected)"
-			localize="true" manageDynamicModel="true" name="InspectedWidget"
-			index="15" data="FlexoConceptBrowser.selected" constraints="split(index=0;location=north;splitIdentifier=right)"
-			opaque="false">
-			<ReferenceAssignment mandatory="true"
-				variable="controller.flexoController" value="controller.flexoController" />
-		</FIBReferencedComponent>
-
 		<Browser root="data" iteratorClassName="java.lang.Object"
 			visibleRowCount="5" rowHeight="18" boundToSelectionManager="true"
 			selectionMode="DiscontiguousTreeSelection" showFooter="true"
@@ -244,6 +235,17 @@
 					method="controller.createAdvancedScheme(selected.flexoConcept)" />
 			</BrowserElement>
 		</Browser>
+
+		<FIBReferencedComponent
+			dynamicComponent="controller.inspectorForObject(FlexoConceptBrowser.selected)"
+			localize="true" manageDynamicModel="true" name="InspectedWidget"
+			index="15" data="FlexoConceptBrowser.selected" constraints="split(index=0;location=north;splitIdentifier=right)"
+			opaque="false">
+			<ReferenceAssignment mandatory="true"
+				variable="controller.flexoController" value="controller.flexoController" />
+		</FIBReferencedComponent>
+
+
 	</SplitPanel>
 
 	<LocalizedDictionary />
