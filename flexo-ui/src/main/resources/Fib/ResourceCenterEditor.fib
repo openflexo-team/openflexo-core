@@ -1,78 +1,218 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Panel id="0" borderLeft="0" height="700" name="LocalizedEditor" layout="gridbag" controllerClassName="org.openflexo.view.controller.FlexoFIBController" border="empty" borderRight="0" trackViewPortWidth="true" width="1000" borderBottom="0" titleFont="Lucida Grande,0,13" borderTop="5" trackViewPortHeight="true">
-  <LocalizedDictionary id="1" />
-  <SplitPanel id="2" name="FIBSplitPanel" index="2" constraints="gridbag(anchor=center;fill=both;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=1;insetsBottom=0;insetsLeft=5;insetsRight=5;insetsTop=0;location=center;padX=0;padY=0;weightX=1.0;weightY=1.0;x=0;y=0)">
-    <Table id="3" showFooter="true" manageDynamicModel="true" selectionMode="MultipleIntervalSelection" index="1" font="Lucida Grande,0,11" constraints="split(anchor=center;fill=both;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=1;insetsBottom=0;insetsLeft=5;insetsRight=5;insetsTop=0;location=center;padX=0;padY=0;splitIdentifier=left;weightX=1.0;weightY=1.0;x=0;y=0)" visibleRowCount="5" rowHeight="18" textSelectionColor="255,255,255" iteratorClassName="org.openflexo.foundation.resource.FlexoResourceCenter" backgroundSelectionColor="41,90,209" backgroundNonSelectionColor="255,255,255" data="data.rcService.resourceCenters" autoSelectFirstRow="true" name="RCTable" textNonSelectionColor="0,0,0" backgroundSecondarySelectionColor="173,215,255">
-      <IconColumn id="4" data="controller.iconForObject(iterator)" displayTitle="false" title="icon" name="icon" columnWidth="20" resizable="false" showIcon="false" />
-      <LabelColumn id="5" data="iterator.name" displayTitle="true" title="Resource Center" name="label" columnWidth="100" resizable="true" showIcon="false" />
-      <Dependancy id="6" componentName="RCActionsPanel" />
-    </Table>
-    <Panel id="7" data="($org.openflexo.foundation.resource.FileSystemBasedResourceCenter)RCTable.selected" borderLeft="0" name="FSRCBrowserPanel" layout="border" border="empty" borderRight="0" trackViewPortWidth="true" constraints="split(splitIdentifier=right)" borderBottom="0" borderTitle="Panel" borderTop="0" trackViewPortHeight="true">
-      <Browser id="8" showFooter="true" showRootsHandle="true" root="RCTable.selected" manageDynamicModel="true" height="100" selectionMode="DiscontiguousTreeSelection" width="100" constraints="border(location=center;splitIdentifier=right)" visibleRowCount="3" rowHeight="18" textSelectionColor="255,255,255" iteratorClassName="java.lang.Object" backgroundSelectionColor="9,80,208" backgroundNonSelectionColor="255,255,255" name="Browser" textNonSelectionColor="0,0,0" rootVisible="true" backgroundSecondarySelectionColor="178,215,255">
-        <BrowserElement id="9" icon="controller.iconForObject(fsResourceCenter)" label="fsResourceCenter.name" dataClassName="org.openflexo.foundation.resource.FileSystemBasedResourceCenter" name="fsResourceCenter" isEditable="false">
-          <Children id="10" name="subFolders" data="fsResourceCenter.rootFolder.children" />
-          <Children id="11" name="resources" data="fsResourceCenter.rootFolder.resources" />
-        </BrowserElement>
-        <BrowserElement id="12" icon="controller.iconForObject(jarResourceCenter)" label="jarResourceCenter.name" dataClassName="org.openflexo.foundation.resource.JarResourceCenter" name="jarResourceCenter" isEditable="false">
-          <Children id="13" name="subFolders" data="jarResourceCenter.rootFolder.children" />
-          <Children id="14" name="resources" data="jarResourceCenter.rootFolder.resources" />
-        </BrowserElement>
-        <BrowserElement id="15" icon="controller.iconForObject(folder)" label="folder.displayableName" dataClassName="org.openflexo.foundation.resource.RepositoryFolder" name="folder" isEditable="false">
-          <Children id="16" name="subFolders" data="folder.children" />
-          <Children id="17" name="resources" data="folder.resources" />
-        </BrowserElement>
-        <BrowserElement id="18" icon="controller.iconForObject(resource)" label="resource.name" dataClassName="org.openflexo.foundation.resource.FlexoResource" name="resource" isEditable="false" />
-        <BrowserElement id="19" icon="controller.iconForObject(resourceCenter)" label="resourceCenter.name" dataClassName="org.openflexo.foundation.resource.FlexoResourceCenter" name="resourceCenter" isEditable="false" />
-      </Browser>
-      <Panel id="20" borderLeft="2" name="FIBPanel" layout="border" border="empty" borderRight="2" trackViewPortWidth="true" constraints="border(location=north)" borderBottom="2" borderTitle="" borderTop="2" trackViewPortHeight="true">
-        <TextField id="21" columns="7" name="TextField" text="TextField" constraints="border(location=center)" />
-        <Button id="22" buttonType="Trigger" name="Button" constraints="border(location=east)" label="search" />
-      </Panel>
-      <FIBVariable id="23" name="data" value="($org.openflexo.foundation.resource.FileSystemBasedResourceCenter)RCTable.selected" type="org.openflexo.foundation.resource.FileSystemBasedResourceCenter" />
-    </Panel>
-    <RowSplit id="24" weight="0.0" name="RowSplit">
-      <Leaf id="25" weight="0.4000000059604645" name="left" />
-      <Divider id="26" />
-      <Leaf id="27" weight="0.6000000238418579" name="right" />
-    </RowSplit>
-  </SplitPanel>
-  <Panel id="28" data="($org.openflexo.foundation.resource.FileSystemBasedResourceCenter)RCTable.selected" borderLeft="2" name="RCActionsPanel" layout="gridbag" border="empty" borderRight="2" trackViewPortWidth="true" index="2" font="LucidaGrande,0,10" constraints="gridbag(anchor=center;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=2;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)" borderBottom="2" borderTitle="" titleFont="LucidaGrande,0,10" borderTop="2" trackViewPortHeight="true">
-    <Button id="29" buttonType="Trigger" name="AddButton" action="data.addResourceCenter()" index="0" constraints="gridbag(anchor=center;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=0;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)" label="add" />
-    <Button id="30" enable="(RCTable.selected.class.simpleName = &quot;DirectoryResourceCenter&quot;)" buttonType="Trigger" name="RemoveButton" action="data.removeResourceCenter(RCTable.selected)" index="1" constraints="gridbag(anchor=center;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)" label="remove" />
-    <Label id="31" data="data.rcService.resourceCenters.size.toString" name="Label" index="3" align="right" constraints="gridbag(anchor=east;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=3;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=east;padX=0;padY=0;weightX=1.0;weightY=0.0)" label="" />
-    <Label id="32" name="ResourceCentersFoundLabel" index="4" align="left" constraints="gridbag(anchor=center;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=4;insetsBottom=0;insetsLeft=-5;insetsRight=0;insetsTop=0;location=south;padX=0;padY=0;weightX=0.0;weightY=0.0)" label="resource_centers_found" />
-    <FIBVariable id="33" name="data" value="($org.openflexo.foundation.resource.FileSystemBasedResourceCenter)RCTable.selected" type="org.openflexo.foundation.resource.FileSystemBasedResourceCenter" />
-  </Panel>
-  <Panel id="34" darkLevel="1" borderLeft="2" name="FIBPanel2" layout="twocols" border="empty" borderRight="2" trackViewPortWidth="true" index="3" font="SansSerif,0,12" constraints="gridbag(anchor=center;fill=both;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=3;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=1.0;weightY=0.0)" borderBottom="2" borderTitle="" titleFont="SansSerif,0,12" borderTop="2" trackViewPortHeight="true">
-    <Label id="35" name="Label2" align="left" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)" label="URI" />
-    <TextField id="36" data="RCTable.selected.defaultBaseURI" columns="7" name="TextField3" text="" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)" validateOnReturn="true" />
-    <Label id="37" name="ResourceCenterLabel" index="4" align="left" constraints="twocols(expandHorizontally=true;expandVertically=false;index=4;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)" label="Resource Center" />
-    <TextField id="38" data="RCTable.selected.name" columns="7" name="TextField" text="TextField" index="5" constraints="twocols(expandHorizontally=true;expandVertically=false;index=5;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)" readOnly="true" />
-    <Label id="39" name="TypeLabel" index="6" align="left" constraints="twocols(expandHorizontally=true;expandVertically=false;index=6;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)" label="type" />
-    <TextField id="40" data="RCTable.selected.class.simpleName" columns="7" name="TextField2" text="TextField" index="7" constraints="twocols(expandHorizontally=true;expandVertically=false;index=7;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)" readOnly="true" />
-    <Label id="41" name="DirectoryLabel" index="8" align="left" constraints="twocols(expandHorizontally=true;expandVertically=false;index=8;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)" label="directory" />
-    <Panel id="42" data="($org.openflexo.foundation.resource.FileSystemBasedResourceCenter)RCTable.selected" borderLeft="0" name="FSRCPanel" layout="border" border="empty" borderRight="0" trackViewPortWidth="true" index="8" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)" borderBottom="0" borderTitle="Panel" titleFont="SansSerif,0,12" borderTop="0" trackViewPortHeight="true">
-      <File id="43" data="FSRCPanel.data.rootDirectory" name="FileSelector" index="11" constraints="border(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=center)" />
-      <FIBVariable id="44" name="data" value="($org.openflexo.foundation.resource.FileSystemBasedResourceCenter)RCTable.selected" type="org.openflexo.foundation.resource.FileSystemBasedResourceCenter" />
-    </Panel>
-    <CheckBox id="45" manageDynamicModel="true" selected="true" name="EnableRCCheckbox" index="8" constraints="twocols(expandHorizontally=true;expandVertically=false;index=0;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=left)" />
-    <Label id="46" name="EnableResourceCenterLabel" index="8" align="left" constraints="twocols(expandHorizontally=true;expandVertically=false;index=0;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)" label="enable_resource_center" />
-    <CheckBox id="47" manageDynamicModel="true" selected="true" name="AllowsEditingCheckbox" index="8" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=left)" />
-    <Label id="48" name="AllowsEditingLabel" index="8" align="left" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)" label="allows_editing" />
-    <CheckBox id="49" manageDynamicModel="true" selected="true" name="AllowsPublishingCB" index="8" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=left)" />
-    <Label id="50" name="AllowsPublishingLabel" index="8" align="left" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)" label="allows_publishing" />
-    <CheckBox id="51" manageDynamicModel="true" selected="true" name="WatchCB" index="8" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=left)" />
-    <Panel id="52" vGap="0" borderLeft="0" hGap="0" name="FIBPanel" layout="flow" border="empty" borderRight="0" flowAlignment="LEADING" trackViewPortWidth="true" index="8" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)" borderBottom="0" borderTitle="Panel" titleFont="SansSerif,0,12" borderTop="0" trackViewPortHeight="true">
-      <Label id="53" name="WatchResourceCenterEveryLabel" index="8" align="left" constraints="flow(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=center)" label="watch_resource_center_every" />
-      <Number id="54" minValue="1" columns="3" name="Integer" maxValue="1000" increment="1" index="8" constraints="flow()" numberType="IntegerType" />
-      <Label id="55" name="SecondsLabel" index="8" align="left" constraints="flow()" label="seconds" />
-    </Panel>
-  </Panel>
-  <Panel id="56" vGap="5" borderLeft="2" hGap="5" name="RCActionsPanel2" layout="flow" border="empty" borderRight="2" flowAlignment="CENTER" trackViewPortWidth="true" index="2" constraints="gridbag(anchor=center;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=2;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=10;padX=0;padY=0;weightX=0.0;weightY=0.0)" borderBottom="2" borderTitle="" borderTop="2" trackViewPortHeight="true">
-    <Button id="57" buttonType="Trigger" name="Button2" action="controller.chooseQuitAndDispose()" constraints="flow()" label="close" />
-    <Button id="58" buttonType="Trigger" name="Button3" action="data.refreshResourceCenter(RCTable.selected)" constraints="flow()" label="refresh" />
-    <Button id="59" buttonType="Trigger" name="Button4" constraints="flow()" label="open_preferences..." />
-    <Button id="60" buttonType="Trigger" name="Button5" action="data.saveResourceCenters()" constraints="flow()" label="save" />
-  </Panel>
-  <FIBVariable id="61" name="data" type="org.openflexo.view.controller.ResourceCenterEditor" />
+<Panel id="0" borderLeft="0" height="700" name="LocalizedEditor"
+	layout="gridbag" controllerClassName="org.openflexo.view.controller.FlexoFIBController"
+	border="empty" borderRight="0" trackViewPortWidth="true" width="1000"
+	borderBottom="0" titleFont="Lucida Grande,0,13" borderTop="5"
+	trackViewPortHeight="true">
+	<LocalizedDictionary id="1" />
+	<SplitPanel id="2" name="FIBSplitPanel" index="2"
+		constraints="gridbag(anchor=center;fill=both;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=1;insetsBottom=0;insetsLeft=5;insetsRight=5;insetsTop=0;location=center;padX=0;padY=0;weightX=1.0;weightY=1.0;x=0;y=0)">
+		<Table id="3" showFooter="true" manageDynamicModel="true"
+			selectionMode="MultipleIntervalSelection" index="1" font="Lucida Grande,0,11"
+			constraints="split(anchor=center;fill=both;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=1;insetsBottom=0;insetsLeft=5;insetsRight=5;insetsTop=0;location=center;padX=0;padY=0;splitIdentifier=left;weightX=1.0;weightY=1.0;x=0;y=0)"
+			visibleRowCount="5" rowHeight="18" textSelectionColor="255,255,255"
+			iteratorClassName="org.openflexo.foundation.resource.FlexoResourceCenter"
+			backgroundSelectionColor="41,90,209" backgroundNonSelectionColor="255,255,255"
+			data="data.rcService.resourceCenters" autoSelectFirstRow="true" name="RCTable"
+			textNonSelectionColor="0,0,0" backgroundSecondarySelectionColor="173,215,255">
+			<IconColumn id="4" data="controller.iconForObject(iterator)"
+				displayTitle="false" title="icon" name="icon" columnWidth="20"
+				resizable="false" showIcon="false" />
+			<LabelColumn id="5" data="iterator.name" displayTitle="true"
+				title="Resource Center" name="label" columnWidth="100" resizable="true"
+				showIcon="false" />
+			<Dependancy id="6" componentName="RCActionsPanel" />
+		</Table>
+		<Panel id="7" borderLeft="0" name="FSRCBrowserPanel" layout="border"
+			border="empty" borderRight="0" trackViewPortWidth="true"
+			constraints="split(splitIdentifier=right)" borderBottom="0"
+			borderTitle="Panel" borderTop="0" trackViewPortHeight="true">
+			<FIBVariable name="selectedResourceCenter"
+				value="($org.openflexo.foundation.resource.FileSystemBasedResourceCenter)RCTable.selected"
+				type="org.openflexo.foundation.resource.FileSystemBasedResourceCenter" />
+			<Browser id="8" showFooter="true" showRootsHandle="true"
+				root="RCTable.selected" manageDynamicModel="true" height="100"
+				selectionMode="DiscontiguousTreeSelection" width="100"
+				constraints="border(location=center;splitIdentifier=right)"
+				visibleRowCount="3" rowHeight="18" textSelectionColor="255,255,255"
+				iteratorClassName="java.lang.Object" backgroundSelectionColor="9,80,208"
+				backgroundNonSelectionColor="255,255,255" name="Browser"
+				textNonSelectionColor="0,0,0" rootVisible="true"
+				backgroundSecondarySelectionColor="178,215,255">
+				<BrowserElement id="9"
+					icon="controller.iconForObject(fsResourceCenter)" label="fsResourceCenter.name"
+					dataClassName="org.openflexo.foundation.resource.FileSystemBasedResourceCenter"
+					name="fsResourceCenter" isEditable="false">
+					<Children id="10" name="subFolders"
+						data="fsResourceCenter.rootFolder.children" />
+					<Children id="11" name="resources"
+						data="fsResourceCenter.rootFolder.resources" />
+				</BrowserElement>
+				<BrowserElement id="12"
+					icon="controller.iconForObject(jarResourceCenter)" label="jarResourceCenter.name"
+					dataClassName="org.openflexo.foundation.resource.JarResourceCenter"
+					name="jarResourceCenter" isEditable="false">
+					<Children id="13" name="subFolders"
+						data="jarResourceCenter.rootFolder.children" />
+					<Children id="14" name="resources"
+						data="jarResourceCenter.rootFolder.resources" />
+				</BrowserElement>
+				<BrowserElement id="15" icon="controller.iconForObject(folder)"
+					label="folder.displayableName" dataClassName="org.openflexo.foundation.resource.RepositoryFolder"
+					name="folder" isEditable="false">
+					<Children id="16" name="subFolders" data="folder.children" />
+					<Children id="17" name="resources" data="folder.resources" />
+				</BrowserElement>
+				<BrowserElement id="18"
+					icon="controller.iconForObject(resource)" label="resource.name"
+					dataClassName="org.openflexo.foundation.resource.FlexoResource"
+					name="resource" isEditable="false" />
+				<BrowserElement id="19"
+					icon="controller.iconForObject(resourceCenter)" label="resourceCenter.name"
+					dataClassName="org.openflexo.foundation.resource.FlexoResourceCenter"
+					name="resourceCenter" isEditable="false" />
+			</Browser>
+			<Panel id="20" borderLeft="2" name="FIBPanel" layout="border"
+				border="empty" borderRight="2" trackViewPortWidth="true"
+				constraints="border(location=north)" borderBottom="2" borderTitle=""
+				borderTop="2" trackViewPortHeight="true">
+				<TextField id="21" columns="7" name="TextField" text="TextField"
+					constraints="border(location=center)" />
+				<Button id="22" buttonType="Trigger" name="Button"
+					constraints="border(location=east)" label="search" />
+			</Panel>
+		</Panel>
+		<RowSplit id="24" weight="0.0" name="RowSplit">
+			<Leaf id="25" weight="0.4000000059604645" name="left" />
+			<Divider id="26" />
+			<Leaf id="27" weight="0.6000000238418579" name="right" />
+		</RowSplit>
+	</SplitPanel>
+	<Panel id="28" borderLeft="2" name="RCActionsPanel" layout="gridbag"
+		border="empty" borderRight="2" trackViewPortWidth="true" index="2"
+		font="LucidaGrande,0,10"
+		constraints="gridbag(anchor=center;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=2;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+		borderBottom="2" borderTitle="" titleFont="LucidaGrande,0,10"
+		borderTop="2" trackViewPortHeight="true">
+		<FIBVariable name="selectedResourceCenter"
+			value="($org.openflexo.foundation.resource.FileSystemBasedResourceCenter)RCTable.selected"
+			type="org.openflexo.foundation.resource.FileSystemBasedResourceCenter" />
+		<Button id="29" buttonType="Trigger" name="AddButton"
+			action="data.addResourceCenter()" index="0"
+			constraints="gridbag(anchor=center;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=0;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+			label="add" />
+		<Button id="30"
+			enable="(RCTable.selected.class.simpleName = &quot;DirectoryResourceCenter&quot;)"
+			buttonType="Trigger" name="RemoveButton"
+			action="data.removeResourceCenter(RCTable.selected)" index="1"
+			constraints="gridbag(anchor=center;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+			label="remove" />
+		<Label id="31" data="data.rcService.resourceCenters.size.toString"
+			name="Label" index="3" align="right"
+			constraints="gridbag(anchor=east;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=3;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=east;padX=0;padY=0;weightX=1.0;weightY=0.0)"
+			label="" />
+		<Label id="32" name="ResourceCentersFoundLabel" index="4" align="left"
+			constraints="gridbag(anchor=center;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=4;insetsBottom=0;insetsLeft=-5;insetsRight=0;insetsTop=0;location=south;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+			label="resource_centers_found" />
+	</Panel>
+	<Panel id="34" darkLevel="1" borderLeft="2" name="FIBPanel2"
+		layout="twocols" border="empty" borderRight="2" trackViewPortWidth="true"
+		index="3" font="SansSerif,0,12"
+		constraints="gridbag(anchor=center;fill=both;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=3;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=1.0;weightY=0.0)"
+		borderBottom="2" borderTitle="" titleFont="SansSerif,0,12" borderTop="2"
+		trackViewPortHeight="true">
+		<Label id="35" name="Label2" align="left"
+			constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)"
+			label="URI" />
+		<TextField id="36" data="RCTable.selected.defaultBaseURI"
+			columns="7" name="TextField3" text=""
+			constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)"
+			validateOnReturn="true" />
+		<Label id="37" name="ResourceCenterLabel" index="4" align="left"
+			constraints="twocols(expandHorizontally=true;expandVertically=false;index=4;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)"
+			label="Resource Center" />
+		<TextField id="38" data="RCTable.selected.name" columns="7"
+			name="TextField" text="TextField" index="5"
+			constraints="twocols(expandHorizontally=true;expandVertically=false;index=5;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
+			readOnly="true" />
+		<Label id="39" name="TypeLabel" index="6" align="left"
+			constraints="twocols(expandHorizontally=true;expandVertically=false;index=6;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)"
+			label="type" />
+		<TextField id="40" data="RCTable.selected.class.simpleName"
+			columns="7" name="TextField2" text="TextField" index="7"
+			constraints="twocols(expandHorizontally=true;expandVertically=false;index=7;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
+			readOnly="true" />
+		<Label id="41" name="DirectoryLabel" index="8" align="left"
+			constraints="twocols(expandHorizontally=true;expandVertically=false;index=8;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)"
+			label="directory" />
+		<Panel id="42"
+			data="($org.openflexo.foundation.resource.FileSystemBasedResourceCenter)RCTable.selected"
+			borderLeft="0" name="FSRCPanel" layout="border" border="empty"
+			borderRight="0" trackViewPortWidth="true" index="8"
+			constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
+			borderBottom="0" borderTitle="Panel" titleFont="SansSerif,0,12"
+			borderTop="0" trackViewPortHeight="true">
+			<File id="43" data="FSRCPanel.data.rootDirectory" name="FileSelector"
+				index="11"
+				constraints="border(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=center)" />
+			<FIBVariable id="44" name="data"
+				value="($org.openflexo.foundation.resource.FileSystemBasedResourceCenter)RCTable.selected"
+				type="org.openflexo.foundation.resource.FileSystemBasedResourceCenter" />
+		</Panel>
+		<CheckBox id="45" manageDynamicModel="true" selected="true"
+			name="EnableRCCheckbox" index="8"
+			constraints="twocols(expandHorizontally=true;expandVertically=false;index=0;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=left)" />
+		<Label id="46" name="EnableResourceCenterLabel" index="8" align="left"
+			constraints="twocols(expandHorizontally=true;expandVertically=false;index=0;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
+			label="enable_resource_center" />
+		<CheckBox id="47" manageDynamicModel="true" selected="true"
+			name="AllowsEditingCheckbox" index="8"
+			constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=left)" />
+		<Label id="48" name="AllowsEditingLabel" index="8" align="left"
+			constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
+			label="allows_editing" />
+		<CheckBox id="49" manageDynamicModel="true" selected="true"
+			name="AllowsPublishingCB" index="8"
+			constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=left)" />
+		<Label id="50" name="AllowsPublishingLabel" index="8" align="left"
+			constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
+			label="allows_publishing" />
+		<CheckBox id="51" manageDynamicModel="true" selected="true"
+			name="WatchCB" index="8"
+			constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=left)" />
+		<Panel id="52" vGap="0" borderLeft="0" hGap="0" name="FIBPanel"
+			layout="flow" border="empty" borderRight="0" flowAlignment="LEADING"
+			trackViewPortWidth="true" index="8"
+			constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
+			borderBottom="0" borderTitle="Panel" titleFont="SansSerif,0,12"
+			borderTop="0" trackViewPortHeight="true">
+			<Label id="53" name="WatchResourceCenterEveryLabel" index="8"
+				align="left"
+				constraints="flow(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=center)"
+				label="watch_resource_center_every" />
+			<Number id="54" minValue="1" columns="3" name="Integer"
+				maxValue="1000" increment="1" index="8" constraints="flow()"
+				numberType="IntegerType" />
+			<Label id="55" name="SecondsLabel" index="8" align="left"
+				constraints="flow()" label="seconds" />
+		</Panel>
+	</Panel>
+	<Panel id="56" vGap="5" borderLeft="2" hGap="5" name="RCActionsPanel2"
+		layout="flow" border="empty" borderRight="2" flowAlignment="CENTER"
+		trackViewPortWidth="true" index="2"
+		constraints="gridbag(anchor=center;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=2;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=10;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+		borderBottom="2" borderTitle="" borderTop="2" trackViewPortHeight="true">
+		<Button id="57" buttonType="Trigger" name="Button2"
+			action="controller.chooseQuitAndDispose()" constraints="flow()"
+			label="close" />
+		<Button id="58" buttonType="Trigger" name="Button3"
+			action="data.refreshResourceCenter(RCTable.selected)" constraints="flow()"
+			label="refresh" />
+		<Button id="59" buttonType="Trigger" name="Button4"
+			constraints="flow()" label="open_preferences..." />
+		<Button id="60" buttonType="Trigger" name="Button5"
+			action="data.saveResourceCenters()" constraints="flow()" label="save" />
+	</Panel>
+	<FIBVariable id="61" name="data"
+		type="org.openflexo.view.controller.ResourceCenterEditor" />
 </Panel>

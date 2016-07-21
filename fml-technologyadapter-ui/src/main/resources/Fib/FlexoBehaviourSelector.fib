@@ -19,7 +19,7 @@
 		autoSelectFirstRow="true" />
 	<Panel layout="gridbag" borderTitle="Panel" darkLevel="0" index="1"
 		constraints="twocols(expandHorizontally=true;expandVertically=false;index=1;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=center)"
-		visible="" name="Matches" opaque="false">
+		name="Matches" opaque="false">
 		<Label label="dsffdsmksdfmkfdsmkfdsmkdfskmsdf" align="right"
 			index="0"
 			data="((&quot;Found &quot; + data.matchingValues.size) + &quot; matches&quot;)"
@@ -53,7 +53,7 @@
 		
 	</Browser>
 	<Panel layout="flow" hGap="5" vGap="0" flowAlignment="CENTER"
-		borderTitle="Panel" darkLevel="0" index="3" data=""
+		borderTitle="Panel" darkLevel="0" index="3"
 		constraints="twocols(expandHorizontally=true;expandVertically=false;index=3;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=center)"
 		visible="" opaque="false">
 		<Button action="controller.apply()" buttonIcon="" buttonType="Trigger"

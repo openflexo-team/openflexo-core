@@ -82,6 +82,18 @@ public class FlexoConceptFlexoPropertyPathElement<P extends FlexoProperty<?>> ex
 		return flexoProperty;
 	}
 
+	/**
+	 * Invoke dynamic binding on supplied {@link FlexoConceptInstance} for declared {@link FlexoProperty}<br>
+	 * (find the most specialized property accessible in supplied {@link FlexoConceptInstance} matching API of FlexoProperty this path
+	 * element refers to)
+	 * 
+	 * @param flexoConceptInstance
+	 * @return
+	 */
+	public FlexoProperty<?> getEffectiveProperty(FlexoConceptInstance flexoConceptInstance) {
+		return flexoConceptInstance.getFlexoConcept().getAccessibleProperty(flexoProperty.getName());
+	}
+
 	@Override
 	public String getLabel() {
 		return getPropertyName();
@@ -101,16 +113,21 @@ public class FlexoConceptFlexoPropertyPathElement<P extends FlexoProperty<?>> ex
 	public Object getBindingValue(Object target, BindingEvaluationContext context) throws TypeMismatchException, NullReferenceException {
 		if (target instanceof FlexoConceptInstance) {
 			FlexoConceptInstance flexoConceptInstance = (FlexoConceptInstance) target;
-			if (flexoProperty instanceof FlexoRole) {
-				if (flexoProperty.getCardinality().isMultipleCardinality()) {
-					return flexoConceptInstance.getFlexoActorList((FlexoRole<?>) flexoProperty);
+			// We have to first lookup the exact property to be executed
+			// This is where the dynamic binding is evaluated
+			// effectiveProperty might not be the property to be executed, if supplied flexoConceptInstance
+			// definition override flexoProperty
+			FlexoProperty<?> effectiveProperty = getEffectiveProperty(flexoConceptInstance);
+			if (effectiveProperty instanceof FlexoRole) {
+				if (effectiveProperty.getCardinality().isMultipleCardinality()) {
+					return flexoConceptInstance.getFlexoActorList((FlexoRole<?>) effectiveProperty);
 				}
-				else if (flexoProperty instanceof FlexoRole) {
-					return flexoConceptInstance.getFlexoActor((FlexoRole<?>) flexoProperty);
+				else if (effectiveProperty instanceof FlexoRole) {
+					return flexoConceptInstance.getFlexoActor((FlexoRole<?>) effectiveProperty);
 				}
 			}
 			else {
-				return flexoConceptInstance.getFlexoPropertyValue((FlexoProperty) flexoProperty);
+				return flexoConceptInstance.getFlexoPropertyValue((FlexoProperty) effectiveProperty);
 			}
 		}
 		logger.warning("Please implement me, target=" + target + " context=" + context);
@@ -122,7 +139,8 @@ public class FlexoConceptFlexoPropertyPathElement<P extends FlexoProperty<?>> ex
 			throws TypeMismatchException, NullReferenceException {
 		if (target instanceof FlexoConceptInstance) {
 			FlexoConceptInstance flexoConceptInstance = (FlexoConceptInstance) target;
-			flexoConceptInstance.setFlexoPropertyValue((FlexoProperty) flexoProperty, value);
+			FlexoProperty<?> effectiveProperty = getEffectiveProperty(flexoConceptInstance);
+			flexoConceptInstance.setFlexoPropertyValue((FlexoProperty) effectiveProperty, value);
 			return;
 		}
 		logger.warning("Please implement me, target=" + target + " context=" + context);

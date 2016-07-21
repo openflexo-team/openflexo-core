@@ -583,8 +583,8 @@ public abstract class AbstractDocItemView extends JPanel {
 					/*                 if ((historyPanel.getCurrentAction() != null)
 					                         && (historyPanel.getCurrentAction().getVersion() != null)) {
 					                     DocItemVersion version = historyPanel.getCurrentAction().getVersion();*/
-					shortHTMLDescriptionEditor.setData(version.getShortHTMLDescription()); // change AJA
-					fullHTMLDescriptionEditor.setData(version.getFullHTMLDescription()); // change AJA
+					shortHTMLDescriptionEditor.setValue(version.getShortHTMLDescription()); // change AJA
+					fullHTMLDescriptionEditor.setValue(version.getFullHTMLDescription()); // change AJA
 				}
 				else {
 					logger.warning("You are about to edit a null version, which is a strange situation. Good luck !");
