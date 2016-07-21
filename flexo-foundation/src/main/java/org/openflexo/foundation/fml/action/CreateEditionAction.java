@@ -465,6 +465,9 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 		else if (SelectVirtualModelInstance.class.isAssignableFrom(editionActionClass)) {
 			returned = factory.newSelectVirtualModelInstance();
 		}
+		else if (DeleteFlexoConceptInstance.class.isAssignableFrom(editionActionClass)) {
+			returned = factory.newDeleteFlexoConceptInstanceAction();
+		}
 		else if (DeleteAction.class.isAssignableFrom(editionActionClass)) {
 			returned = factory.newDeleteAction();
 		}
@@ -496,6 +499,8 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 			((RoleSpecificAction) returned).setFlexoRole(getFlexoRole());
 		}
 		else if (TechnologySpecificAction.class.isAssignableFrom(editionActionClass) && getModelSlot() != null) {
+			System.out.println("editionActionClass="+editionActionClass);
+			System.out.println("returned="+returned);
 			((TechnologySpecificAction) returned).setModelSlot(getModelSlot());
 		}
 

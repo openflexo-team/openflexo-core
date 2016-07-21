@@ -90,6 +90,7 @@ import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstancePara
 import org.openflexo.foundation.fml.rt.editionaction.AddSubView;
 import org.openflexo.foundation.fml.rt.editionaction.AddVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.editionaction.CreateFlexoConceptInstanceParameter;
+import org.openflexo.foundation.fml.rt.editionaction.DeleteFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.DeleteFlexoConceptInstanceParameter;
 import org.openflexo.foundation.fml.rt.editionaction.MatchFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.MatchingCriteria;
@@ -497,6 +498,10 @@ public class FMLModelFactory extends FGEModelFactoryImpl implements PamelaResour
 
 	public DeleteAction newDeleteAction() {
 		return newInstance(DeleteAction.class);
+	}
+
+	public DeleteFlexoConceptInstance newDeleteFlexoConceptInstanceAction() {
+		return newInstance(DeleteFlexoConceptInstance.class);
 	}
 
 	public MatchFlexoConceptInstance newMatchFlexoConceptInstance() {
