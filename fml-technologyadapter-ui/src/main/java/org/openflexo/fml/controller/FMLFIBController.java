@@ -39,6 +39,8 @@
 package org.openflexo.fml.controller;
 
 import java.io.FileNotFoundException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoException;
@@ -672,14 +674,27 @@ public class FMLFIBController extends FlexoFIBController {
 		return null;
 	}
 
+	// We store here a map of cloned basic tabs associated to their original FIBInspector
+	// for performances reasons: we don't want to clone multiple times
+	private Map<FIBInspector, FIBTab> basicInspectorTabs = new HashMap<>();
+
 	public FIBTab basicInspectorTabForObject(FMLObject object) {
 		// return inspectorForObject(object);
 
 		FIBInspector inspector = inspectorForObject(object);
 		if (inspector != null && inspector.getTabPanel() != null) {
-			FIBTab returned = (FIBTab) inspector.getTabPanel().getSubComponentNamed("BasicTab");
-			if (returned != null) {
-				returned.setControllerClass(FMLFIBInspectorController.class);
+			FIBTab returned = basicInspectorTabs.get(inspector);
+			if (returned == null) {
+				FIBTab originalBasicTab = (FIBTab) inspector.getTabPanel().getSubComponentNamed("BasicTab");
+				if (originalBasicTab != null) {
+					// We have here to clone the component, because original component refers to a root container
+					// that we don't want to be displayed. So we clone the component, and define a clean API on it using setDataClass()
+					returned = (FIBTab) originalBasicTab.cloneObject();
+					returned.setControllerClass(FMLFIBInspectorController.class);
+					returned.setDataClass(
+							originalBasicTab.getRootComponent().getVariable(FIBComponent.DEFAULT_DATA_VARIABLE).getTypeClass());
+					basicInspectorTabs.put(inspector, returned);
+				}
 			}
 			return returned;
 		}
