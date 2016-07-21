@@ -80,7 +80,7 @@ public class CreateTechnologyRole extends AbstractCreateFlexoRole<CreateTechnolo
 	private static final Logger logger = Logger.getLogger(CreateTechnologyRole.class.getPackage().getName());
 
 	public static FlexoActionType<CreateTechnologyRole, FlexoConceptObject, FMLObject> actionType = new FlexoActionType<CreateTechnologyRole, FlexoConceptObject, FMLObject>(
-			"create_technology_role", FlexoActionType.newMenu, FlexoActionType.defaultGroup, FlexoActionType.ADD_ACTION_TYPE) {
+			"create_technology_role", FlexoActionType.newPropertyMenu, FlexoActionType.defaultGroup, FlexoActionType.ADD_ACTION_TYPE) {
 
 		/**
 		 * Factory method
@@ -135,7 +135,8 @@ public class CreateTechnologyRole extends AbstractCreateFlexoRole<CreateTechnolo
 			if (getModelSlot() != null) {
 				newFlexoRole = getModelSlot().makeFlexoRole(flexoRoleClass);
 				newFlexoRole.setModelSlot(getModelSlot());
-			} else {
+			}
+			else {
 				FMLModelFactory factory = getFocusedObject().getFMLModelFactory();
 				newFlexoRole = factory.newInstance(flexoRoleClass);
 			}
@@ -170,7 +171,8 @@ public class CreateTechnologyRole extends AbstractCreateFlexoRole<CreateTechnolo
 
 		if (getFocusedObject() instanceof VirtualModel) {
 			return ((VirtualModel) getFocusedObject()).getModelSlots();
-		} else if (getFocusedObject() != null && getFocusedObject().getOwningVirtualModel() != null) {
+		}
+		else if (getFocusedObject() != null && getFocusedObject().getOwningVirtualModel() != null) {
 			return getFocusedObject().getOwningVirtualModel().getModelSlots();
 		}
 		return null;
@@ -183,7 +185,8 @@ public class CreateTechnologyRole extends AbstractCreateFlexoRole<CreateTechnolo
 		if (getFlexoRoleClass() != null && !getAvailableFlexoRoleTypes().contains(getFlexoRoleClass())) {
 			if (getAvailableFlexoRoleTypes().size() > 0) {
 				setFlexoRoleClass(getAvailableFlexoRoleTypes().get(0));
-			} else {
+			}
+			else {
 				setFlexoRoleClass(null);
 			}
 		}

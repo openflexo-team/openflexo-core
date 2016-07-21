@@ -69,7 +69,7 @@ public class CreateGetSetProperty extends AbstractCreateFlexoProperty<CreateGetS
 	private static final Logger logger = Logger.getLogger(CreateGetSetProperty.class.getPackage().getName());
 
 	public static FlexoActionType<CreateGetSetProperty, FlexoConceptObject, FMLObject> actionType = new FlexoActionType<CreateGetSetProperty, FlexoConceptObject, FMLObject>(
-			"create_get_set_property", FlexoActionType.newMenu, FlexoActionType.defaultGroup, FlexoActionType.ADD_ACTION_TYPE) {
+			"create_get_set_property", FlexoActionType.newPropertyMenu, FlexoActionType.defaultGroup, FlexoActionType.ADD_ACTION_TYPE) {
 
 		/**
 		 * Factory method

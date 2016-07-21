@@ -300,7 +300,7 @@ public class ContextualMenuManager {
 	}
 
 	protected class ContextualMenu extends Hashtable<ActionGroup, ContextualMenuGroup> {
-		private final Hashtable<ActionMenu, ContextualSubMenu> _subMenus = new Hashtable<ActionMenu, ContextualSubMenu>();
+		final Hashtable<ActionMenu, ContextualSubMenu> _subMenus = new Hashtable<ActionMenu, ContextualSubMenu>();
 
 		public Enumeration<ContextualMenuGroup> orderedGroups() {
 			Vector<ContextualMenuGroup> orderedGroups = new Vector<ContextualMenuGroup>(values());
@@ -316,17 +316,41 @@ public class ContextualMenuManager {
 		public void putAction(FlexoActionType actionType) {
 			if (acceptAction(actionType)) {
 				if (actionType.getActionMenu() != null) {
-					ContextualSubMenu subMenu = _subMenus.get(actionType.getActionMenu());
+					ContextualSubMenu subMenu = ensureSubMenuCreated(actionType.getActionMenu());
+
+					/*ContextualSubMenu subMenu = _subMenus.get(actionType.getActionMenu());
 					if (subMenu == null) {
 						subMenu = new ContextualSubMenu(actionType.getActionMenu());
 						addSubMenu(subMenu);
 						_subMenus.put(actionType.getActionMenu(), subMenu);
-					}
+					}*/
 					subMenu.addAction(actionType);
 				}
 				else {
 					addAction(actionType);
 				}
+			}
+		}
+
+		private ContextualSubMenu ensureSubMenuCreated(ActionMenu actionMenu) {
+			if (actionMenu.getParentMenu() != null) {
+				ContextualSubMenu parentMenu = ensureSubMenuCreated(actionMenu.getParentMenu());
+				ContextualSubMenu subMenu = parentMenu._subMenus.get(actionMenu);
+				if (subMenu == null) {
+					subMenu = new ContextualSubMenu(parentMenu, actionMenu);
+					parentMenu.addSubMenu(subMenu);
+					parentMenu._subMenus.put(actionMenu, subMenu);
+				}
+				return subMenu;
+			}
+			else {
+				ContextualSubMenu subMenu = _subMenus.get(actionMenu);
+				if (subMenu == null) {
+					subMenu = new ContextualSubMenu(this, actionMenu);
+					addSubMenu(subMenu);
+					_subMenus.put(actionMenu, subMenu);
+				}
+				return subMenu;
 			}
 		}
 
@@ -365,12 +389,13 @@ public class ContextualMenuManager {
 				// "+menuGroup._actionGroup.getLocalizedName());
 				for (Enumeration en2 = menuGroup.elements(); en2.hasMoreElements();) {
 					Object nextElement = en2.nextElement();
+
 					if (nextElement instanceof FlexoActionType) {
-						// System.out.println("Ajout de "+nextElement);
+						// System.out.println("Ajout de " + nextElement);
 						makeMenuItem((FlexoActionType) nextElement, focusedObject, returned);
 					}
 					else if (nextElement instanceof ContextualSubMenu) {
-						// System.out.println("Ajout de "+nextElement);
+						// System.out.println("Ajout de " + nextElement);
 						JMenuItem item = ((ContextualSubMenu) nextElement).makeMenu(focusedObject);
 						returned.add(item);
 					}
@@ -406,9 +431,15 @@ public class ContextualMenuManager {
 
 	protected class ContextualSubMenu extends ContextualMenu {
 		private final ActionMenu _actionMenu;
+		private final ContextualMenu parentMenu;
 
-		public ContextualSubMenu(ActionMenu actionMenu) {
+		public ContextualSubMenu(ContextualMenu parentMenu, ActionMenu actionMenu) {
 			_actionMenu = actionMenu;
+			this.parentMenu = parentMenu;
+		}
+
+		public ContextualMenu getParentMenu() {
+			return parentMenu;
 		}
 
 		public ActionMenu getActionMenu() {
@@ -432,6 +463,10 @@ public class ContextualMenuManager {
 					Object nextElement = en2.nextElement();
 					if (nextElement instanceof FlexoActionType) {
 						makeMenuItem((FlexoActionType) nextElement, focusedObject, returned);
+					}
+					else if (nextElement instanceof ContextualSubMenu) {
+						JMenuItem item = ((ContextualSubMenu) nextElement).makeMenu(focusedObject);
+						returned.add(item);
 					}
 				}
 			}

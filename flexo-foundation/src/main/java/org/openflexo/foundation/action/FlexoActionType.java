@@ -72,6 +72,9 @@ public abstract class FlexoActionType<A extends FlexoAction<A, T1, T2>, T1 exten
 	public static final ActionGroup newMenuGroup3 = new ActionGroup("new_group_3", 2);
 	public static final ActionGroup newMenuGroup4 = new ActionGroup("new_group_4", 2);
 
+	public static final ActionMenu newVirtualModelMenu = new ActionMenu("virtual_model", defaultGroup, newMenu);
+	public static final ActionMenu newPropertyMenu = new ActionMenu("property", defaultGroup, newMenu);
+
 	public static final ActionMenu importMenu = new ActionMenu("import", defaultGroup);
 	public static final ActionMenu exportMenu = new ActionMenu("export", defaultGroup);
 	public static final ActionMenu convertMenu = new ActionMenu("convert_to", defaultGroup);

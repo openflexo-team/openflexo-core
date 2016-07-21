@@ -80,7 +80,7 @@ public class CreateIndividualRole extends AbstractCreateFlexoRole<CreateIndividu
 	private final List<Class<? extends FlexoRole<?>>> vmAvailableFlexoRoleTypes = null;
 
 	public static FlexoActionType<CreateIndividualRole, FlexoConceptObject, FMLObject> actionType = new FlexoActionType<CreateIndividualRole, FlexoConceptObject, FMLObject>(
-			"create_individual_role", FlexoActionType.newMenu, FlexoActionType.defaultGroup, FlexoActionType.ADD_ACTION_TYPE) {
+			"create_individual_role", FlexoActionType.newPropertyMenu, FlexoActionType.defaultGroup, FlexoActionType.ADD_ACTION_TYPE) {
 
 		/**
 		 * Factory method
@@ -129,7 +129,8 @@ public class CreateIndividualRole extends AbstractCreateFlexoRole<CreateIndividu
 			if (getModelSlot() != null) {
 				newFlexoRole = getModelSlot().makeFlexoRole(getFlexoRoleClass());
 				newFlexoRole.setModelSlot(getModelSlot());
-			} else {
+			}
+			else {
 				FMLModelFactory factory = getFocusedObject().getFMLModelFactory();
 				newFlexoRole = factory.newInstance(getFlexoRoleClass());
 			}
@@ -157,7 +158,8 @@ public class CreateIndividualRole extends AbstractCreateFlexoRole<CreateIndividu
 
 		if (getFocusedObject() instanceof VirtualModel) {
 			return (List) ((VirtualModel) getFocusedObject()).getModelSlots(FlexoOntologyModelSlot.class);
-		} else if (getFocusedObject() != null && getFocusedObject().getOwningVirtualModel() != null) {
+		}
+		else if (getFocusedObject() != null && getFocusedObject().getOwningVirtualModel() != null) {
 			return (List) getFocusedObject().getOwningVirtualModel().getModelSlots(FlexoOntologyModelSlot.class);
 		}
 		return null;
@@ -170,7 +172,8 @@ public class CreateIndividualRole extends AbstractCreateFlexoRole<CreateIndividu
 		if (getFlexoRoleClass() != null && !getAvailableFlexoRoleTypes().contains(getFlexoRoleClass())) {
 			if (getAvailableFlexoRoleTypes().size() > 0) {
 				setFlexoRoleClass(getAvailableFlexoRoleTypes().get(0));
-			} else {
+			}
+			else {
 				setFlexoRoleClass(null);
 			}
 		}

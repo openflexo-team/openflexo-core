@@ -74,7 +74,7 @@ public class CreatePrimitiveRole extends AbstractCreateFlexoRole<CreatePrimitive
 	private static final Logger logger = Logger.getLogger(CreatePrimitiveRole.class.getPackage().getName());
 
 	public static FlexoActionType<CreatePrimitiveRole, FlexoConceptObject, FMLObject> actionType = new FlexoActionType<CreatePrimitiveRole, FlexoConceptObject, FMLObject>(
-			"create_primitive_role", FlexoActionType.newMenu, FlexoActionType.defaultGroup, FlexoActionType.ADD_ACTION_TYPE) {
+			"create_primitive_role", FlexoActionType.newPropertyMenu, FlexoActionType.defaultGroup, FlexoActionType.ADD_ACTION_TYPE) {
 
 		/**
 		 * Factory method

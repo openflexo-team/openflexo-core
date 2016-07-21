@@ -45,8 +45,9 @@ import org.openflexo.localization.LocalizedDelegate;
 
 public class ActionMenu {
 
+	private ActionMenu _parentMenu;
 	private ActionGroup _actionGroup;
-	private String _actionMenuName;
+	private final String _actionMenuName;
 	private Icon _smallIcon;
 
 	protected ActionMenu(String actionMenuName) {
@@ -67,6 +68,16 @@ public class ActionMenu {
 	protected ActionMenu(String actionMenuName, ActionGroup actionGroup, Icon icon) {
 		this(actionMenuName, actionGroup);
 		setSmallIcon(icon);
+	}
+
+	protected ActionMenu(String actionMenuName, ActionGroup actionGroup, Icon icon, ActionMenu parentMenu) {
+		this(actionMenuName, actionGroup, icon);
+		_parentMenu = parentMenu;
+	}
+
+	protected ActionMenu(String actionMenuName, ActionGroup actionGroup, ActionMenu parentMenu) {
+		this(actionMenuName, actionGroup);
+		_parentMenu = parentMenu;
 	}
 
 	public String getUnlocalizedName() {
@@ -97,4 +108,7 @@ public class ActionMenu {
 		_actionGroup = actionGroup;
 	}
 
+	public ActionMenu getParentMenu() {
+		return _parentMenu;
+	}
 }

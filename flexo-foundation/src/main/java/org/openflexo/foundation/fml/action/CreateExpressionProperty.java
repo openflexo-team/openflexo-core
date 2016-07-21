@@ -70,7 +70,7 @@ public class CreateExpressionProperty extends AbstractCreateFlexoProperty<Create
 	private static final Logger logger = Logger.getLogger(CreateExpressionProperty.class.getPackage().getName());
 
 	public static FlexoActionType<CreateExpressionProperty, FlexoConceptObject, FMLObject> actionType = new FlexoActionType<CreateExpressionProperty, FlexoConceptObject, FMLObject>(
-			"create_expression_property", FlexoActionType.newMenu, FlexoActionType.defaultGroup, FlexoActionType.ADD_ACTION_TYPE) {
+			"create_expression_property", FlexoActionType.newPropertyMenu, FlexoActionType.defaultGroup, FlexoActionType.ADD_ACTION_TYPE) {
 
 		/**
 		 * Factory method
