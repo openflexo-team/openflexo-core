@@ -59,7 +59,8 @@ public class CreateVirtualModel extends AbstractCreateVirtualModel<CreateVirtual
 	private static final Logger logger = Logger.getLogger(CreateVirtualModel.class.getPackage().getName());
 
 	public static FlexoActionType<CreateVirtualModel, ViewPoint, FMLObject> actionType = new FlexoActionType<CreateVirtualModel, ViewPoint, FMLObject>(
-			"create_virtual_model", FlexoActionType.newMenu, FlexoActionType.defaultGroup, FlexoActionType.ADD_ACTION_TYPE) {
+			"create_basic_virtual_model", FlexoActionType.newVirtualModelMenu, FlexoActionType.defaultGroup,
+			FlexoActionType.ADD_ACTION_TYPE) {
 
 		/**
 		 * Factory method

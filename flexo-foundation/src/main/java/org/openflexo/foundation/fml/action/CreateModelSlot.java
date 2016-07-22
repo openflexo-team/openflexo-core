@@ -67,7 +67,7 @@ public class CreateModelSlot extends AbstractCreateFlexoProperty<CreateModelSlot
 	private static final Logger logger = Logger.getLogger(CreateModelSlot.class.getPackage().getName());
 
 	public static FlexoActionType<CreateModelSlot, FlexoConceptObject, FMLObject> actionType = new FlexoActionType<CreateModelSlot, FlexoConceptObject, FMLObject>(
-			"create_model_slot", FlexoActionType.newMenu, FlexoActionType.defaultGroup, FlexoActionType.ADD_ACTION_TYPE) {
+			"create_model_slot", FlexoActionType.newPropertyMenu, FlexoActionType.defaultGroup, FlexoActionType.ADD_ACTION_TYPE) {
 
 		/**
 		 * Factory method

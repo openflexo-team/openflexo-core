@@ -80,14 +80,15 @@ import org.openflexo.foundation.technologyadapter.ModelSlot;
  * <li>may declare a valid description</li>
  * </ul>
  */
-public class CreateFlexoConceptInstanceRole extends AbstractCreateFlexoRole<CreateFlexoConceptInstanceRole, FMLRTModelSlot> implements
-		Bindable {
+public class CreateFlexoConceptInstanceRole extends AbstractCreateFlexoRole<CreateFlexoConceptInstanceRole, FMLRTModelSlot>
+		implements Bindable {
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CreateFlexoConceptInstanceRole.class.getPackage().getName());
 
 	public static FlexoActionType<CreateFlexoConceptInstanceRole, FlexoConceptObject, FMLObject> actionType = new FlexoActionType<CreateFlexoConceptInstanceRole, FlexoConceptObject, FMLObject>(
-			"create_flexo_concept_instance_role", FlexoActionType.newMenu, FlexoActionType.defaultGroup, FlexoActionType.ADD_ACTION_TYPE) {
+			"create_flexo_concept_instance_role", FlexoActionType.newPropertyMenu, FlexoActionType.defaultGroup,
+			FlexoActionType.ADD_ACTION_TYPE) {
 
 		/**
 		 * Factory method
@@ -129,7 +130,8 @@ public class CreateFlexoConceptInstanceRole extends AbstractCreateFlexoRole<Crea
 
 		if (getModelSlot() != null) {
 			newFlexoRole = getModelSlot().makeFlexoRole(FlexoConceptInstanceRole.class);
-		} else {
+		}
+		else {
 			FMLModelFactory factory = getFocusedObject().getFMLModelFactory();
 			newFlexoRole = factory.newInstance(FlexoConceptInstanceRole.class);
 		}
@@ -159,7 +161,8 @@ public class CreateFlexoConceptInstanceRole extends AbstractCreateFlexoRole<Crea
 	public AbstractVirtualModel<?> getModelSlotVirtualModel() {
 		if (getModelSlot() == null || !useModelSlot) {
 			return getFlexoConcept().getVirtualModel();
-		} else {
+		}
+		else {
 			if (getModelSlot().getAccessedVirtualModelResource() != null) {
 				return getModelSlot().getAccessedVirtualModelResource().getVirtualModel();
 			}
@@ -178,7 +181,8 @@ public class CreateFlexoConceptInstanceRole extends AbstractCreateFlexoRole<Crea
 	public List<FMLRTModelSlot> getAvailableModelSlots() {
 		if (getFocusedObject() instanceof VirtualModel) {
 			return ((VirtualModel) getFocusedObject()).getModelSlots(FMLRTModelSlot.class);
-		} else if (getFocusedObject() != null && getFocusedObject().getOwningVirtualModel() != null) {
+		}
+		else if (getFocusedObject() != null && getFocusedObject().getOwningVirtualModel() != null) {
 			return getFocusedObject().getOwningVirtualModel().getModelSlots(FMLRTModelSlot.class);
 		}
 		return null;
@@ -191,12 +195,14 @@ public class CreateFlexoConceptInstanceRole extends AbstractCreateFlexoRole<Crea
 		// The action is visible for FlexoConcept and StructuralFacet.
 		if (getFocusedObject() instanceof FlexoConceptStructuralFacet) {
 			flexoConcept = ((FlexoConceptStructuralFacet) getFocusedObject()).getFlexoConcept();
-		} else {
+		}
+		else {
 			flexoConcept = (FlexoConcept) getFocusedObject();
 		}
 		if (flexoConcept instanceof VirtualModel && ((VirtualModel) flexoConcept).getModelSlots(FMLRTModelSlot.class).size() > 0) {
 			return ((VirtualModel) flexoConcept).getModelSlots(FMLRTModelSlot.class).get(0);
-		} else if (flexoConcept != null && flexoConcept.getOwningVirtualModel() != null
+		}
+		else if (flexoConcept != null && flexoConcept.getOwningVirtualModel() != null
 				&& flexoConcept.getOwningVirtualModel().getModelSlots(FMLRTModelSlot.class).size() > 0) {
 			if (getFlexoRoleClass() == null) {
 				return flexoConcept.getOwningVirtualModel().getModelSlots(FMLRTModelSlot.class).get(0);

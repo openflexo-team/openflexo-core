@@ -42,12 +42,13 @@
 		localize="true" />
 	<Panel layout="border" borderTitle="Panel" titleFont="SansSerif,0,12"
 		darkLevel="0" index="8"
-		data="($org.openflexo.foundation.resource.FileSystemBasedResourceCenter)RCTable.selected"
-		dataClassName="org.openflexo.foundation.resource.FileSystemBasedResourceCenter"
 		constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
 		name="FSRCPanel">
+		<FIBVariable name="selectedResourceCenter"
+			value="($org.openflexo.foundation.resource.FileSystemBasedResourceCenter)RCTable.selected"
+			type="org.openflexo.foundation.resource.FileSystemBasedResourceCenter" />
 		<File isDirectory="false" localize="true" index="11"
-			data="FSRCPanel.data.rootDirectory"
+			data="selectedResourceCenter.rootDirectory"
 			constraints="border(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=center)" />
 	</Panel>
 	<CheckBox selected="true" index="8"
@@ -79,7 +80,7 @@
 			localize="true" />
 		<Number allowsNull="false" minValue="0" maxValue="2147483647"
 			increment="1" numberType="IntegerType" columns="3" index="8"
-			constraints="flow()" name="Integer" localize="true" enable="WatchCB.data" />
+			constraints="flow()" name="Integer" localize="true" enable="WatchCB.value" />
 		<Label label="seconds" index="8" constraints="flow()" localize="true" />
 	</Panel>
 </Panel>

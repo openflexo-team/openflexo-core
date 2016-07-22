@@ -70,13 +70,14 @@ public class CreateAbstractProperty extends AbstractCreateFlexoProperty<CreateAb
 	private static final Logger logger = Logger.getLogger(CreateAbstractProperty.class.getPackage().getName());
 
 	public static FlexoActionType<CreateAbstractProperty, FlexoConceptObject, FMLObject> actionType = new FlexoActionType<CreateAbstractProperty, FlexoConceptObject, FMLObject>(
-			"create_abstract_property", FlexoActionType.newMenu, FlexoActionType.defaultGroup, FlexoActionType.ADD_ACTION_TYPE) {
+			"create_abstract_property", FlexoActionType.newPropertyMenu, FlexoActionType.defaultGroup, FlexoActionType.ADD_ACTION_TYPE) {
 
 		/**
 		 * Factory method
 		 */
 		@Override
-		public CreateAbstractProperty makeNewAction(FlexoConceptObject focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
+		public CreateAbstractProperty makeNewAction(FlexoConceptObject focusedObject, Vector<FMLObject> globalSelection,
+				FlexoEditor editor) {
 			return new CreateAbstractProperty(focusedObject, globalSelection, editor);
 		}
 

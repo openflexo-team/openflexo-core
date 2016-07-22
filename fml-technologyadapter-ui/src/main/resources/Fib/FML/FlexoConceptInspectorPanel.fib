@@ -5,7 +5,7 @@
 	constraints="border(location=center)" visible="" opaque="false">
 	<Panel layout="twocols" hGap="5" vGap="5" flowAlignment="LEADING"
 		borderTitle="Panel" borderTop="2" borderBottom="3" titleFont="SansSerif,0,11"
-		darkLevel="0" index="0" data=""
+		darkLevel="0" index="0" 
 		constraints="border(anchor=east;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=0;insetsBottom=0;insetsLeft=0;insetsRight=5;insetsTop=0;location=north;padX=0;padY=0;weightX=0.0;weightY=0.0)"
 		visible="" opaque="false">
 		<Label label="inspector_name" index="0" data=""
@@ -39,18 +39,17 @@
 		</Custom>
 		<LocalizedDictionary />
 	</Panel>
-	<SplitPanel index="1" data=""
-		constraints="border(anchor=center;fill=both;gridHeight=0;gridWidth=1;gridX=-1;gridY=-1;index=1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=center;padX=0;padY=0;weightX=0.0;weightY=0.0)"
-		visible="">
+	<SplitPanel index="1" 
+		constraints="border(anchor=center;fill=both;gridHeight=0;gridWidth=1;gridX=-1;gridY=-1;index=1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=center;padX=0;padY=0;weightX=0.0;weightY=0.0)">
 		<RowSplit name="RowSplit" weight="0.0">
 			<Leaf name="left" weight="0.0" />
 			<Divider />
 			<Leaf name="right" weight="0.5" />
 		</RowSplit>
 		<Panel layout="border" borderTitle="Panel" titleFont="SansSerif,0,11"
-			darkLevel="0" index="1" data=""
+			darkLevel="0" index="1" 
 			constraints="split(anchor=center;fill=both;gridHeight=0;gridWidth=1;gridX=-1;gridY=-1;index=1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;splitIdentifier=left;weightX=0.0;weightY=0.0)"
-			visible="" opaque="false" name="InspectorPropertyBrowserPanel">
+			opaque="false" name="InspectorPropertyBrowserPanel">
 			<Table iteratorClassName="org.openflexo.foundation.fml.inspector.InspectorEntry"
 				autoSelectFirstRow="true" createNewRowOnClick="false"
 				boundToSelectionManager="true" showFooter="true"
@@ -102,7 +101,7 @@
 					name="add_property" />-->
 			</Table>
 			<Panel layout="box" boxLayoutAxis="Y_AXIS" borderTitle="Panel"
-				titleFont="SansSerif,0,11" darkLevel="0" index="2" data=""
+				titleFont="SansSerif,0,11" darkLevel="0" index="2" 
 				constraints="border(anchor=north;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=east;padX=0;padY=0;weightX=0.0;weightY=0.0)"
 				visible="" opaque="false" name="InspectorOrderingPanel">
 				<Button action="data.entryFirst(InspectorPropertyTable.selected)"
@@ -153,7 +152,7 @@
 			</Panel>
 		</Panel>
 		<Panel layout="gridbag" borderTitle="Panel" titleFont="SansSerif,0,11"
-			darkLevel="0" index="1" data=""
+			darkLevel="0" index="1"
 			constraints="split(anchor=center;fill=both;gridHeight=0;gridWidth=0;gridX=-1;gridY=-1;index=1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;splitIdentifier=right;weightX=1.0;weightY=1.0)"
 			visible="" opaque="false" name="InspectorPropertyDetailPanel">
 			<Panel layout="border" borderTitle="Simple property" titleFont="SansSerif,0,11"
@@ -162,7 +161,7 @@
 				visible="(InspectorPropertyTable.selected = null)" opaque="false"
 				name="EmptyPanel">
 				<Label label="please_select_an_entry" align="center" index="0"
-					data="" constraints="border(index=0;location=center)" visible=""
+					constraints="border(index=0;location=center)" visible=""
 					format="" icon="" tooltip="" localize="true" enable="" clickAction=""
 					doubleClickAction="" rightClickAction="" enterPressedAction=""
 					valueChangedAction="" valueTransform="" valueValidator="">
@@ -171,12 +170,10 @@
 			</Panel>
 			<Panel layout="gridbag" borderLeft="5" borderRight="3"
 				titleFont="SansSerif,0,11" darkLevel="0" index="1"
-				 dataClassName="org.openflexo.foundation.fml.inspector.InspectorEntry"
 				constraints="gridbag(anchor=center;fill=both;gridHeight=0;gridWidth=0;gridX=-1;gridY=-1;index=1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=center;padX=0;padY=0;weightX=1.0;weightY=1.0)"
 				opaque="false"
 				useScrollBar="true" horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED"
 				verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED" name="EntryPanel">
-				<!-- data="InspectorPropertyTable.selected" -->
 				<FIBReferencedComponent
 						dynamicComponentFile="controller.inspectorForObject(InspectorPropertyTable.selected)"
 						localize="true" manageDynamicModel="true" name="InspectorEntryWidget"
