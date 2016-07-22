@@ -72,8 +72,8 @@ public abstract class FMLNaturePerspective extends TechnologyPerspective<FMLTech
 	private final FlexoConceptNature flexoConceptNature;
 
 	public FMLNaturePerspective(ViewPointNature viewpointNature, VirtualModelNature virtualModelNature,
-			FlexoConceptNature flexoConceptNature, FMLTechnologyAdapter fmlRTtechnologyAdapter,
-			TechnologyAdapter handlingTechnologyAdapter, FlexoController controller) {
+			FlexoConceptNature flexoConceptNature, FMLTechnologyAdapter fmlRTtechnologyAdapter, TechnologyAdapter handlingTechnologyAdapter,
+			FlexoController controller) {
 		super(fmlRTtechnologyAdapter, controller);
 		this.handlingTechnologyAdapter = handlingTechnologyAdapter;
 		this.viewpointNature = viewpointNature;
@@ -169,5 +169,13 @@ public abstract class FMLNaturePerspective extends TechnologyPerspective<FMLTech
 	protected abstract ModuleView<VirtualModel> createModuleViewForVirtualModel(VirtualModel virtualModel);
 
 	protected abstract ModuleView<FlexoConcept> createModuleViewForFlexoConcept(FlexoConcept flexoConcept);
+
+	@Override
+	public void willShow() {
+		super.willShow();
+		if (!getHandlingTechnologyAdapter().isActivated()) {
+			getHandlingTechnologyAdapter().getTechnologyAdapterService().activateTechnologyAdapter(getHandlingTechnologyAdapter());
+		}
+	}
 
 }

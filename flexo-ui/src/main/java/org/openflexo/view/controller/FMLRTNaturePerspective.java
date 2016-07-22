@@ -183,4 +183,12 @@ public abstract class FMLRTNaturePerspective extends TechnologyPerspective<FMLRT
 
 	protected abstract ModuleView<FlexoConceptInstance> createModuleViewForFlexoConceptInstance(FlexoConceptInstance flexoConceptInstance);
 
+	@Override
+	public void willShow() {
+		super.willShow();
+		if (!getHandlingTechnologyAdapter().isActivated()) {
+			getHandlingTechnologyAdapter().getTechnologyAdapterService().activateTechnologyAdapter(getHandlingTechnologyAdapter());
+		}
+	}
+
 }
