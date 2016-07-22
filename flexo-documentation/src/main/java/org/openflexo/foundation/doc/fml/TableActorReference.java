@@ -158,7 +158,7 @@ public interface TableActorReference<T extends FlexoDocTable<?, ?>> extends Acto
 	public void reinjectDataFromDocument();
 
 	public abstract static class TableActorReferenceImpl<T extends FlexoDocTable<?, ?>> extends ActorReferenceImpl<T>
-			implements TableActorReference<T> {
+	implements TableActorReference<T> {
 
 		private static final Logger logger = FlexoLogger.getLogger(TableActorReference.class.getPackage().toString());
 
@@ -228,31 +228,36 @@ public interface TableActorReference<T extends FlexoDocTable<?, ?>> extends Acto
 				// Retrieve template table
 				T templateTable = tableRole.getTable();
 
-				for (int i = 0; i < aTable.getTableRows().size(); i++) {
-					FlexoDocTableRow<?, ?> generatedRow = aTable.getTableRows().get(i);
-					if (generatedRow.getTableCells().size() > 0 && generatedRow.getTableCells().get(0).getParagraphs().size() > 0) {
-						FlexoDocParagraph<?, ?> generatedParagraph = generatedRow.getTableCells().get(0).getParagraphs().get(0);
-						if (StringUtils.isNotEmpty(generatedParagraph.getBaseIdentifier())) {
-							FlexoDocElement<?, ?> templateParagraph = templateTable
-									.getElementWithIdentifier(generatedParagraph.getBaseIdentifier());
-							FlexoDocTableCell<?, ?> templateCell = (FlexoDocTableCell<?, ?>) templateParagraph.getContainer();
-							FlexoDocTableRow<?, ?> templateRow = templateCell.getRow();
-							if (templateRow != null) {
-								if (templateRow.getIndex() < tableRole.getStartIterationIndex()
-										|| templateRow.getIndex() > tableRole.getEndIterationIndex()) {
-									// This means that we found a matching between the two rows, outside iteration area
-									// we need to store that information as a StaticRowReference
-									System.out.println("OK pour la ligne " + i + " je trouve " + templateRow.getIdentifier());
-									StaticRowReference srr = getFactory().newInstance(StaticRowReference.class);
-									srr.setRowId(generatedRow.getIdentifier());
-									srr.setTemplateRowId(templateRow.getIdentifier());
-									addToStaticRowReferences(srr);
-									System.out
-											.println("OK j'associe " + generatedRow.getIdentifier() + " a " + templateRow.getIdentifier());
+				if (aTable != null) {
+					for (int i = 0; i < aTable.getTableRows().size(); i++) {
+						FlexoDocTableRow<?, ?> generatedRow = aTable.getTableRows().get(i);
+						if (generatedRow.getTableCells().size() > 0 && generatedRow.getTableCells().get(0).getParagraphs().size() > 0) {
+							FlexoDocParagraph<?, ?> generatedParagraph = generatedRow.getTableCells().get(0).getParagraphs().get(0);
+							if (StringUtils.isNotEmpty(generatedParagraph.getBaseIdentifier())) {
+								FlexoDocElement<?, ?> templateParagraph = templateTable
+										.getElementWithIdentifier(generatedParagraph.getBaseIdentifier());
+								FlexoDocTableCell<?, ?> templateCell = (FlexoDocTableCell<?, ?>) templateParagraph.getContainer();
+								FlexoDocTableRow<?, ?> templateRow = templateCell.getRow();
+								if (templateRow != null) {
+									if (templateRow.getIndex() < tableRole.getStartIterationIndex()
+											|| templateRow.getIndex() > tableRole.getEndIterationIndex()) {
+										// This means that we found a matching between the two rows, outside iteration area
+										// we need to store that information as a StaticRowReference
+										System.out.println("OK pour la ligne " + i + " je trouve " + templateRow.getIdentifier());
+										StaticRowReference srr = getFactory().newInstance(StaticRowReference.class);
+										srr.setRowId(generatedRow.getIdentifier());
+										srr.setTemplateRowId(templateRow.getIdentifier());
+										addToStaticRowReferences(srr);
+										System.out
+										.println("OK j'associe " + generatedRow.getIdentifier() + " a " + templateRow.getIdentifier());
+									}
 								}
 							}
 						}
 					}
+				}
+				else {
+					logger.warning("INVESTIGATE: Setting a tableActorReference ("+ this.getRoleName() +") to NULL in Concept" + this.getFlexoConceptInstance());
 				}
 				table = aTable;
 			}
