@@ -71,6 +71,7 @@ import org.openflexo.fml.controller.widget.FIBViewPointLibraryBrowser;
 import org.openflexo.fml.controller.widget.FlexoConceptInstanceTypeEditor;
 import org.openflexo.fml.controller.widget.ViewTypeEditor;
 import org.openflexo.fml.controller.widget.VirtualModelInstanceTypeEditor;
+import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.fml.ActionScheme;
 import org.openflexo.foundation.fml.CloningScheme;
 import org.openflexo.foundation.fml.CreationScheme;
@@ -179,6 +180,9 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 		actionInitializer.getEditingContext().registerPasteHandler(new FlexoConceptPasteHandler());
 		actionInitializer.getEditingContext().registerPasteHandler(new ActionContainerPasteHandler());
 		actionInitializer.getEditingContext().registerPasteHandler(new FlexoBehaviourPasteHandler());
+
+		FlexoActionType.newVirtualModelMenu.setSmallIcon(FMLIconLibrary.VIRTUAL_MODEL_ICON);
+		FlexoActionType.newPropertyMenu.setSmallIcon(FMLIconLibrary.FLEXO_ROLE_ICON);
 	}
 
 	@Override
