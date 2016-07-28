@@ -1,0 +1,3 @@
+rootProject.name = 'openflexo-core'
+
+include 'flexo-foundation' 
