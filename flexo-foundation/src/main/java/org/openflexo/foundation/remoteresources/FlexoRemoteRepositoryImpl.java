@@ -41,7 +41,7 @@ package org.openflexo.foundation.remoteresources;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.openflexo.toolbox.ImageIconResource;
+import org.openflexo.icon.ImageIconResource;
 
 public class FlexoRemoteRepositoryImpl implements FlexoRemoteRepository {
 

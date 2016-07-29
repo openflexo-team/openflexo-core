@@ -49,7 +49,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Logger;
 
-import org.apache.commons.collections.IteratorUtils;
+import org.apache.commons.collections4.IteratorUtils;
 import org.jdom2.Attribute;
 import org.jdom2.Content;
 import org.jdom2.DataConversionException;
@@ -734,7 +734,7 @@ public abstract class ViewPointResourceImpl extends AbstractVirtualModelResource
 			// Retrieve Diagram Model slots references
 			Iterator<? extends Content> thisModelSlotsIterator = diagram
 					.getDescendants(new ElementFilter("DiagramModelSlot").or(new ElementFilter(ADDRESSED_DIAGRAM_MODEL_SLOT)));
-			List<Element> thisModelSlots = IteratorUtils.toList(thisModelSlotsIterator);
+			List<Element> thisModelSlots = toList(thisModelSlotsIterator);
 
 			// Retrieve the DiagramModelSlot (this), and transform it to a
 			// virtual model slot with a virtual model uri
@@ -776,7 +776,7 @@ public abstract class ViewPointResourceImpl extends AbstractVirtualModelResource
 			// Update ids for all model slots
 			Iterator<? extends Content> diagramModelSlotsIterator = diagram
 					.getDescendants(new ElementFilter("DiagramModelSlot").or(new ElementFilter(ADDRESSED_DIAGRAM_MODEL_SLOT)));
-			List<Element> thisDiagramModelSlots = IteratorUtils.toList(diagramModelSlotsIterator);
+			List<Element> thisDiagramModelSlots = toList(diagramModelSlotsIterator);
 			for (Element diagramMs : thisDiagramModelSlots) {
 				if (diagramMs.getAttribute("id") != null && typedDiagramModelSlot != null) {
 					diagramMs.setAttribute("id", typedDiagramModelSlot.getAttributeValue("id"));
@@ -949,7 +949,7 @@ public abstract class ViewPointResourceImpl extends AbstractVirtualModelResource
 		convertOldNameToNewNames("EditionPattern", "FlexoConcept", document);
 		// Parent pattern property is no more an attribute but an element
 		IteratorIterable<? extends Content> fcElementsIterator = document.getDescendants(new ElementFilter("FlexoConcept"));
-		List<Element> fcElements = IteratorUtils.toList(fcElementsIterator);
+		List<Element> fcElements = toList(fcElementsIterator);
 
 		for (Element fc : fcElements) {
 			if (fc.getAttribute("parentEditionPattern") != null) {
@@ -1012,7 +1012,7 @@ public abstract class ViewPointResourceImpl extends AbstractVirtualModelResource
 		// Retrieve Fetch Actions
 		IteratorIterable<? extends Content> fetchElementsIterator = document
 				.getDescendants(new ElementFilter("FetchRequestIterationAction"));
-		List<Element> fetchElements = IteratorUtils.toList(fetchElementsIterator);
+		List<Element> fetchElements = toList(fetchElementsIterator);
 		for (Element fetchElement : fetchElements) {
 			for (Element child : fetchElement.getChildren()) {
 				if (child.getName().equals("AddressedSelectEditionPatternInstance")) {
@@ -1116,7 +1116,7 @@ public abstract class ViewPointResourceImpl extends AbstractVirtualModelResource
 		// Retrieve Connector GRs
 		IteratorIterable<? extends Content> connectorGRElementsIterator = document
 				.getDescendants(new ElementFilter("ConnectorGraphicalRepresentation"));
-		List<Element> connectorGRElements = IteratorUtils.toList(connectorGRElementsIterator);
+		List<Element> connectorGRElements = toList(connectorGRElementsIterator);
 		for (Element connectorGRElement : connectorGRElements) {
 			Element grSpec = null;
 			if (connectorGRElement.getChild("RectPolylinConnector") != null) {
@@ -1246,7 +1246,7 @@ public abstract class ViewPointResourceImpl extends AbstractVirtualModelResource
 			Element paletteElementBinding = new Element("FMLDiagramPaletteElementBinding");
 			Attribute paletteElementId = new Attribute("paletteElementID", paletteUri + "#" + ep.getValue() + id.getValue());
 			paletteElementBinding.getAttributes().add(paletteElementId);
-			// Find cooresponding dropscheme
+			// Find corresponding dropscheme
 			for (Element dropScheme : dropSchemeElements) {
 				if (dropScheme.getAttributeValue("name").equals(ds.getValue())
 						&& dropScheme.getParentElement().getAttributeValue("name").equals(ep.getValue())) {
@@ -1404,5 +1404,18 @@ public abstract class ViewPointResourceImpl extends AbstractVirtualModelResource
 	@Override
 	public void gitSave() {
 
+	}
+
+	private static List<Element> toList(Iterator<? extends Content> iterator) {
+		if (iterator == null) {
+			throw new NullPointerException("Iterator must not be null");
+		}
+		List<Element> result = new ArrayList<>();
+		while (iterator.hasNext()) {
+			Content elt = iterator.next();
+			if (elt instanceof Element)
+				result.add((Element) elt);
+		}
+		return result;
 	}
 }

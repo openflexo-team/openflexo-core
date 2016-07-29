@@ -93,7 +93,7 @@ import org.openflexo.model.validation.ValidationRule;
 @ImplementationClass(SelectVirtualModelInstance.SelectVirtualModelInstanceImpl.class)
 @XMLElement
 @FML("SelectVirtualModelInstance")
-public interface SelectVirtualModelInstance extends FetchRequest<FMLRTModelSlot, AbstractVirtualModelInstance<?, ?>> {
+public interface SelectVirtualModelInstance extends FetchRequest<FMLRTModelSlot<?, ?>, AbstractVirtualModelInstance<?, ?>> {
 
 	@PropertyIdentifier(type = String.class)
 	public static final String VIRTUAL_MODEL_TYPE_URI_KEY = "virtualModelTypeURI";
@@ -121,8 +121,8 @@ public interface SelectVirtualModelInstance extends FetchRequest<FMLRTModelSlot,
 
 	public ViewPoint getAddressedViewPoint();
 
-	public static abstract class SelectVirtualModelInstanceImpl extends FetchRequestImpl<FMLRTModelSlot, AbstractVirtualModelInstance<?, ?>>
-			implements SelectVirtualModelInstance {
+	public static abstract class SelectVirtualModelInstanceImpl
+			extends FetchRequestImpl<FMLRTModelSlot<?, ?>, AbstractVirtualModelInstance<?, ?>> implements SelectVirtualModelInstance {
 
 		protected static final Logger logger = FlexoLogger.getLogger(SelectVirtualModelInstance.class.getPackage().getName());
 
@@ -274,7 +274,8 @@ public interface SelectVirtualModelInstance extends FetchRequest<FMLRTModelSlot,
 					e.printStackTrace();
 				}
 				return null;
-			} else {
+			}
+			else {
 				logger.warning(getStringRepresentation() + " : Cannot find view on which to apply SelectVirtualModelInstance");
 				logger.warning("Additional info: getView()=" + getView());
 				return null;

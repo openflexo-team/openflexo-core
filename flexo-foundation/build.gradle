@@ -6,5 +6,12 @@ dependencies {
   compile group: "org.openflexo", name: "diana-core", version: "1.+"
 
   compile group: 'org.eclipse.jgit', name: 'org.eclipse.jgit', version: '4.3.1.201605051710-r'
-  compile group: 'org.apache.commons', name: 'commons-collections4', version: '4.1'
+  //  compile group: 'org.apache.commons', name: 'commons-collections4', version: '4.1'
+  compile 'com.google.inject:guice:4.1.0'
+  compile 'findbugs:annotations:1.0.0'
+  compile 'xerces:xercesImpl:2.11.0'
+}
+
+test {
+  exclude '**/TestLoadViewPoint*'// > testLoadViewPointFromAClassPathJar
 }

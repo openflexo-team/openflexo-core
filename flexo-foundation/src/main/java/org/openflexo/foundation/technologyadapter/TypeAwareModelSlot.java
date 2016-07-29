@@ -113,7 +113,7 @@ public interface TypeAwareModelSlot<M extends FlexoModel<M, MM> & TechnologyObje
 	 */
 	public String generateUniqueURIName(TypeAwareModelSlotInstance msInstance, String proposedName);
 
-	public String generateUniqueURIName(TypeAwareModelSlotInstance msInstance, String proposedName, String uriPrefix);
+	public String generateUniqueURIName(TypeAwareModelSlotInstance<?, ?, ?> msInstance, String proposedName, String uriPrefix);
 
 	public static abstract class TypeAwareModelSlotImpl<M extends FlexoModel<M, MM> & TechnologyObject<?>, MM extends FlexoMetaModel<MM> & TechnologyObject<?>>
 			extends ModelSlotImpl<M> implements TypeAwareModelSlot<M, MM> {
@@ -163,7 +163,7 @@ public interface TypeAwareModelSlot<M extends FlexoModel<M, MM> & TechnologyObje
 		}
 
 		@Override
-		public String generateUniqueURIName(TypeAwareModelSlotInstance msInstance, String proposedName, String uriPrefix) {
+		public String generateUniqueURIName(TypeAwareModelSlotInstance<?, ?, ?> msInstance, String proposedName, String uriPrefix) {
 			if (msInstance == null || msInstance.getResourceData() == null) {
 				return proposedName;
 			}
@@ -192,8 +192,8 @@ public interface TypeAwareModelSlot<M extends FlexoModel<M, MM> & TechnologyObje
 		public FlexoMetaModelResource<M, MM, ?> getMetaModelResource() {
 			if (metaModelResource == null && StringUtils.isNotEmpty(metaModelURI) && getServiceManager() != null
 					&& getServiceManager().getResourceManager() != null) {
-				metaModelResource = (FlexoMetaModelResource<M, MM, ?>) getServiceManager().getResourceManager().getMetaModelWithURI(
-						metaModelURI, getModelSlotTechnologyAdapter());
+				metaModelResource = (FlexoMetaModelResource<M, MM, ?>) getServiceManager().getResourceManager()
+						.getMetaModelWithURI(metaModelURI, getModelSlotTechnologyAdapter());
 				logger.info("Looked-up " + metaModelResource + " for " + metaModelURI);
 			}
 			// Temporary hack to lookup parent slot (to be refactored)
@@ -256,8 +256,8 @@ public interface TypeAwareModelSlot<M extends FlexoModel<M, MM> & TechnologyObje
 		 */
 		@SuppressWarnings("unchecked")
 		public final Class<? extends FlexoModel<?, ?>> getModelClass() {
-			return (Class<? extends FlexoModel<?, ?>>) TypeUtils.getTypeArguments(getClass(), TypeAwareModelSlot.class).get(
-					TypeAwareModelSlot.class.getTypeParameters()[0]);
+			return (Class<? extends FlexoModel<?, ?>>) TypeUtils.getTypeArguments(getClass(), TypeAwareModelSlot.class)
+					.get(TypeAwareModelSlot.class.getTypeParameters()[0]);
 		}
 
 		/**
@@ -268,8 +268,8 @@ public interface TypeAwareModelSlot<M extends FlexoModel<M, MM> & TechnologyObje
 		@Override
 		@SuppressWarnings("unchecked")
 		public final Class<? extends FlexoMetaModel<?>> getMetaModelClass() {
-			return (Class<? extends FlexoMetaModel<?>>) TypeUtils.getTypeArguments(getClass(), TypeAwareModelSlot.class).get(
-					TypeAwareModelSlot.class.getTypeParameters()[1]);
+			return (Class<? extends FlexoMetaModel<?>>) TypeUtils.getTypeArguments(getClass(), TypeAwareModelSlot.class)
+					.get(TypeAwareModelSlot.class.getTypeParameters()[1]);
 		}
 
 		/**

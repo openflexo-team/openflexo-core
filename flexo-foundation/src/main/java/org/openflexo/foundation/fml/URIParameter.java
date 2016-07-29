@@ -89,7 +89,7 @@ public interface URIParameter extends InnerModelSlotParameter<TypeAwareModelSlot
 		}
 
 		@Override
-		public TypeAwareModelSlot<?, ?> getModelSlot() {
+		public TypeAwareModelSlot getModelSlot() {
 			TypeAwareModelSlot<?, ?> returned = super.getModelSlot();
 			if (returned != null) {
 				return returned;
@@ -173,7 +173,7 @@ public interface URIParameter extends InnerModelSlotParameter<TypeAwareModelSlot
 		}*/
 
 		private FlexoModel<?, ?> getFlexoModel(FlexoBehaviourAction<?, ?, ?> action) {
-			TypeAwareModelSlotInstance<?, ?, ?> msInstance = (TypeAwareModelSlotInstance<?, ?, ?>) action.getVirtualModelInstance()
+			TypeAwareModelSlotInstance msInstance = (TypeAwareModelSlotInstance) action.getVirtualModelInstance()
 					.getModelSlotInstance(getModelSlot());
 			return msInstance.getModel();
 		}
@@ -204,7 +204,7 @@ public interface URIParameter extends InnerModelSlotParameter<TypeAwareModelSlot
 				if (baseProposal == null) {
 					return null;
 				}
-				TypeAwareModelSlot<?, ?> modelSlot = getModelSlot();
+				TypeAwareModelSlot modelSlot = getModelSlot();
 
 				return modelSlot.generateUniqueURIName(
 						(TypeAwareModelSlotInstance<?, ?, ?>) action.getVirtualModelInstance().getModelSlotInstance(modelSlot),

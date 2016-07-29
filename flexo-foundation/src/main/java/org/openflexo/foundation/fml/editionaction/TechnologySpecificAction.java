@@ -93,7 +93,7 @@ public abstract interface TechnologySpecificAction<MS extends ModelSlot<?>, T> e
 
 	public List<FMLRTModelSlot> getAvailableVirtualModelModelSlots();
 
-	public ModelSlotInstance<MS, ?> getModelSlotInstance(RunTimeEvaluationContext evaluationContext);
+	public ModelSlotInstance getModelSlotInstance(RunTimeEvaluationContext evaluationContext);
 
 	public TechnologyAdapter getModelSlotTechnologyAdapter();
 
@@ -165,7 +165,7 @@ public abstract interface TechnologySpecificAction<MS extends ModelSlot<?>, T> e
 		}
 
 		@Override
-		public ModelSlotInstance<MS, ?> getModelSlotInstance(RunTimeEvaluationContext action) {
+		public ModelSlotInstance getModelSlotInstance(RunTimeEvaluationContext action) {
 			if (action.getVirtualModelInstance() != null) {
 				AbstractVirtualModelInstance<?, ?> vmi = action.getVirtualModelInstance();
 				// Following line does not compile with Java7 (don't understand why)

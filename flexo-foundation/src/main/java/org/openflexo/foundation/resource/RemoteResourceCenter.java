@@ -57,7 +57,7 @@ import org.openflexo.model.factory.ModelFactory;
  * 
  */
 // TODO
-public abstract class RemoteResourceCenter extends ResourceRepository<FlexoResource<?>>implements FlexoResourceCenter {
+public abstract class RemoteResourceCenter extends ResourceRepository<FlexoResource<?>> implements FlexoResourceCenter<Object> {
 
 	protected static final Logger logger = Logger.getLogger(RemoteResourceCenter.class.getPackage().getName());
 
