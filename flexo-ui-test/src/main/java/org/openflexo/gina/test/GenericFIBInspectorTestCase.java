@@ -36,7 +36,7 @@
  * 
  */
 
-package org.openflexo.gina.utils;
+package org.openflexo.gina.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -47,7 +47,7 @@ import java.util.logging.Logger;
 import org.openflexo.gina.ApplicationFIBLibrary.ApplicationFIBLibraryImpl;
 import org.openflexo.gina.model.FIBComponent;
 import org.openflexo.gina.model.FIBModelFactory;
-import org.openflexo.gina.test.GenericFIBTestCase;
+import org.openflexo.gina.utils.FIBInspector;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.model.validation.ValidationError;
 import org.openflexo.model.validation.ValidationReport;
