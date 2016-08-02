@@ -36,7 +36,7 @@
  * 
  */
 
-package org.openflexo;
+package org.openflexo.gina.test;
 
 import java.io.File;
 import java.io.IOException;
@@ -45,6 +45,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.junit.AfterClass;
+import org.openflexo.ApplicationContext;
+import org.openflexo.Flexo;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.resource.DirectoryResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenter;

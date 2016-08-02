@@ -36,7 +36,7 @@
  * 
  */
 
-package org.openflexo.gina.utils;
+package org.openflexo.gina.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -44,7 +44,6 @@ import static org.junit.Assert.fail;
 import java.util.logging.Logger;
 
 import org.junit.runner.RunWith;
-import org.openflexo.OpenflexoTestCaseWithGUI;
 import org.openflexo.gina.ApplicationFIBLibrary.ApplicationFIBLibraryImpl;
 import org.openflexo.gina.model.FIBComponent;
 import org.openflexo.gina.swing.utils.FIBJPanel;

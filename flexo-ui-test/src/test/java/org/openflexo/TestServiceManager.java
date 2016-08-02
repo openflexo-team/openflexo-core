@@ -51,6 +51,7 @@ import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.foundation.test.OpenflexoTestCase;
+import org.openflexo.gina.test.TestApplicationContext;
 import org.openflexo.module.ModuleLoader;
 import org.openflexo.test.OrderedRunner;
 import org.openflexo.test.TestOrder;

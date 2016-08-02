@@ -48,6 +48,7 @@ import org.openflexo.foundation.nature.ProjectNature;
 import org.openflexo.foundation.resource.DirectoryResourceCenter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.test.OpenflexoProjectAtRunTimeTestCase;
+import org.openflexo.gina.test.TestApplicationContext;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.logging.FlexoLoggingManager;
 

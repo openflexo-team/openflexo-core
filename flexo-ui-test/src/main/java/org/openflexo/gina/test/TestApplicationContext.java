@@ -37,7 +37,7 @@
  * 
  */
 
-package org.openflexo;
+package org.openflexo.gina.test;
 
 import static org.junit.Assert.fail;
 
@@ -45,6 +45,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
+import org.openflexo.ApplicationContext;
 import org.openflexo.br.BugReportService;
 import org.openflexo.drm.DocResourceManager;
 import org.openflexo.foundation.DefaultFlexoEditor;

@@ -1,0 +1,11 @@
+dependencies {
+  // openflexo dep
+  compile relativeProject(':flexo-foundation')
+  compile relativeProject(':flexo-ui')
+  // external dep
+
+  // testing dep
+  testCompile group: "org.openflexo", name: "gina-test", version: "1.+"
+  testCompile relativeProject(':flexo-ui-test')
+  testRuntime relativeProject(':fml-technologyadapter-ui')
+}

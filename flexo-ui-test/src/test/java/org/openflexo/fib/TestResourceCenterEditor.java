@@ -44,10 +44,10 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.openflexo.OpenflexoTestCaseWithGUI;
 import org.openflexo.components.ResourceCenterEditorDialog;
 import org.openflexo.foundation.resource.DirectoryResourceCenter;
 import org.openflexo.gina.swing.test.FIBDialogGraphicalContextDelegate;
+import org.openflexo.gina.test.OpenflexoTestCaseWithGUI;
 import org.openflexo.test.OrderedRunner;
 import org.openflexo.test.TestOrder;
 

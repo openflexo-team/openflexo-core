@@ -39,7 +39,7 @@
 package org.openflexo.fml.fib;
 
 import org.junit.Test;
-import org.openflexo.gina.utils.GenericFIBInspectorTestCase;
+import org.openflexo.gina.test.GenericFIBInspectorTestCase;
 import org.openflexo.rm.FileResourceImpl;
 import org.openflexo.rm.ResourceLocator;
 
