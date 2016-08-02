@@ -1,0 +1,31 @@
+dependencies {
+  // openflexo dep
+  compile relativeProject(':flexo-foundation')
+  //  compile group: "org.openflexo", name: "connie-core", version: "1.+"
+  // external dep
+
+  // testing dep
+  testCompile relativeProject(':flexo-foundation-test')
+  //  testCompile group: "org.openflexo", name: "gina-test", version: "1.+"
+  testCompile relativeProject(':flexo-test-resources')
+}
+
+apply plugin: 'sablecc'
+
+sablecc {
+  inputDir = "src/main/resources/grammar"
+  intermediateDir = "target/generated-sources/grammar"
+  outputDir = "target/generated-sources/sablecc"  //  outputDir = "src/main/java"
+}
+
+sourceSets {
+ main {
+   java {
+     srcDir 'target/generated-sources/sablecc'
+   }
+   resources {
+     srcDir 'target/generated-sources/sablecc'
+     includes = [ "**/*.dat" ]
+   }
+ }
+}
