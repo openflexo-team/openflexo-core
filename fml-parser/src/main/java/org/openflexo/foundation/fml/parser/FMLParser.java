@@ -78,13 +78,7 @@ public class FMLParser {
 			System.out.println("Parsing: " + inputFile);
 
 			// Create a Parser instance.
-			BufferedReader bf = new BufferedReader(in);
-
-			PushbackReader pb = new PushbackReader(bf, 1024);
-
-			Lexer l = new Lexer(pb);
-
-			Parser p = new Parser(l);
+			Parser p = new Parser(new Lexer(new PushbackReader(new BufferedReader(in), 1024)));
 
 			// Parse the input.
 			Start tree = p.parse();
