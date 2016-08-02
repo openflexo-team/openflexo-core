@@ -14,8 +14,3 @@ dependencies {
   testCompile group: "org.openflexo", name: "testutils", version: "1.+"
   testCompile relativeProject(':flexo-test-resources')
 }
-
-test {
-  //  include '**/TestLoadViewPoint*'
-  exclude '**/TestLoadViewPoint*'// > "http://openflexo.org/test/TestViewPoint2"
-}

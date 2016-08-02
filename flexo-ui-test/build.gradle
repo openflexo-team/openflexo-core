@@ -8,4 +8,5 @@ dependencies {
   testCompile group: "org.openflexo", name: "testutils", version: "1.+"
   testCompile group: "org.openflexo", name: "gina-swing-editor-test", version: "1.+"
   testCompile relativeProject(':flexo-test-resources')
+  testCompile relativeProject(':flexo-foundation-test')
 }

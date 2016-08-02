@@ -1,0 +1,13 @@
+dependencies {
+  // openflexo dep
+  compile relativeProject(':flexo-foundation')
+  // external dep
+
+  // testing dep
+  testCompile group: "org.openflexo", name: "testutils", version: "1.+"
+  testCompile relativeProject(':flexo-test-resources')
+}
+
+test {
+  exclude '**/TestLoadViewPoint*'// > "http://openflexo.org/test/TestViewPoint2"
+}
