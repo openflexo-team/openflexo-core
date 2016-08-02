@@ -39,7 +39,7 @@
 package org.openflexo.ontology.fib;
 
 import org.junit.Test;
-import org.openflexo.gina.utils.GenericFIBTestCase;
+import org.openflexo.gina.test.GenericFIBTestCase;
 import org.openflexo.rm.FileResourceImpl;
 import org.openflexo.rm.ResourceLocator;
 
