@@ -36,39 +36,39 @@
  * 
  */
 
-package org.openflexo.foundation.task;
+package org.openflexo.foundation.test.task;
 
 import java.util.Random;
 
-import edu.umd.cs.findbugs.annotations.SuppressWarnings;
+import org.openflexo.foundation.task.FlexoTask;
+import org.openflexo.foundation.task.Progress;
 
-public class ErrorTask extends FlexoTask {
+public class ExampleTask extends FlexoTask {
 
-	public ErrorTask(String name) {
+	public ExampleTask(String name) {
 		super(name);
 	}
 
-	@SuppressWarnings(value = "RANGE_ARRAY_INDEX", justification = "The exception is intensional for test purpose")
 	@Override
 	public void performTask() {
 
-		Progress.setExpectedProgressSteps(10);
+		Progress.setExpectedProgressSteps(100);
 
+		System.out.println(Thread.currentThread().getName() + " Start. Thread: " + Thread.currentThread());
 		try {
-			Thread.sleep((new Random(System.currentTimeMillis())).nextInt(2000));
+			Thread.sleep((new Random(System.currentTimeMillis())).nextInt(2000) + 500);
+			for (int i = 0; i < 100; i++) {
+				Progress.progress();
+				Thread.sleep(30);
+			}
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-
-		int[] someInts = new int[1];
-
-		someInts[2]++;
+		System.out.println(Thread.currentThread().getName() + " End.");
 	}
 
 	@Override
-	protected synchronized void finishedExecution() {
-		super.finishedExecution();
-		System.out.println("A yes j'ai fini avec le status " + getTaskStatus());
+	public boolean isCancellable() {
+		return true;
 	}
-
 }

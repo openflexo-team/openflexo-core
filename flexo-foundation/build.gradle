@@ -1,17 +1,21 @@
 dependencies {
+  // openflexo dep
   compile group: "org.openflexo", name: "pamela-core", version: "1.+"
   compile group: "org.openflexo", name: "flexolocalization", version: "1.+"
   compile group: "org.openflexo", name: "gina-api", version: "1.+"
   compile group: "org.openflexo", name: "diana-api", version: "1.+"
   compile group: "org.openflexo", name: "diana-core", version: "1.+"
-
+  // external dep
   compile group: 'org.eclipse.jgit', name: 'org.eclipse.jgit', version: '4.3.1.201605051710-r'
-  //  compile group: 'org.apache.commons', name: 'commons-collections4', version: '4.1'
-  compile 'com.google.inject:guice:4.1.0'
-  compile 'findbugs:annotations:1.0.0'
-  compile 'xerces:xercesImpl:2.11.0'
+  compile group: 'com.google.inject', name: 'guice', version: '4.1.0'
+  compile group: 'findbugs', name: 'annotations', version: '1.0.0'
+  compile group: 'xerces', name: 'xercesImpl', version: '2.11.0'
+  // testing dep
+  testCompile group: "org.openflexo", name: "testutils", version: "1.+"
+  testCompile relativeProject(':flexo-test-resources')
 }
 
 test {
-  exclude '**/TestLoadViewPoint*'// > testLoadViewPointFromAClassPathJar
+  //  include '**/TestLoadViewPoint*'
+  exclude '**/TestLoadViewPoint*'// > "http://openflexo.org/test/TestViewPoint2"
 }

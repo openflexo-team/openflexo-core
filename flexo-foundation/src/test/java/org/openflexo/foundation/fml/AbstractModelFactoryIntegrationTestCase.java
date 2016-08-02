@@ -43,10 +43,10 @@ import static org.junit.Assert.fail;
 
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.OpenflexoTestCase;
 import org.openflexo.foundation.technologyadapter.DefaultTechnologyAdapterService;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
+import org.openflexo.foundation.test.OpenflexoTestCase;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.model.exceptions.MissingImplementationException;
 import org.openflexo.model.exceptions.ModelDefinitionException;

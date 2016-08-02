@@ -43,13 +43,13 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.openflexo.foundation.OpenflexoTestCase;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.FMLValidationModel;
 import org.openflexo.foundation.fml.editionaction.AssignationAction;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
+import org.openflexo.foundation.test.OpenflexoTestCase;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.model.validation.ValidationRule;
 import org.openflexo.model.validation.ValidationRuleSet;

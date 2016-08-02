@@ -43,7 +43,7 @@ import static org.junit.Assert.assertFalse;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openflexo.foundation.FlexoEditor;
-import org.openflexo.gina.testutils.FIBDialogGraphicalContextDelegate;
+import org.openflexo.gina.swing.test.FIBDialogGraphicalContextDelegate;
 import org.openflexo.gina.utils.OpenflexoFIBTestCase;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;

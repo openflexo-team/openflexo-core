@@ -43,6 +43,8 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 import org.openflexo.foundation.task.FlexoTask.TaskStatus;
+import org.openflexo.foundation.test.task.ErrorTask;
+import org.openflexo.foundation.test.task.ExampleTask;
 
 public class TestFlexoTaskManager {
 

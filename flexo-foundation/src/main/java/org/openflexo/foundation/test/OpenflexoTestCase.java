@@ -36,7 +36,7 @@
  * 
  */
 
-package org.openflexo.foundation;
+package org.openflexo.foundation.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -55,6 +55,12 @@ import java.util.logging.Logger;
 
 import org.junit.After;
 import org.junit.AfterClass;
+import org.openflexo.foundation.DefaultFlexoEditor;
+import org.openflexo.foundation.DefaultFlexoServiceManager;
+import org.openflexo.foundation.FlexoEditingContext;
+import org.openflexo.foundation.FlexoEditor;
+import org.openflexo.foundation.FlexoProject;
+import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.ViewPoint;

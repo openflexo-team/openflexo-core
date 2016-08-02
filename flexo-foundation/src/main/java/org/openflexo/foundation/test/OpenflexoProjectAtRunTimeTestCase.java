@@ -36,7 +36,7 @@
  * 
  */
 
-package org.openflexo.foundation;
+package org.openflexo.foundation.test;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
@@ -51,7 +51,11 @@ import java.util.logging.Logger;
 import javax.naming.InvalidNameException;
 
 import org.junit.AfterClass;
+import org.openflexo.foundation.DefaultFlexoEditor;
+import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoEditor.FlexoEditorFactory;
+import org.openflexo.foundation.FlexoProject;
+import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.nature.ProjectNature;
 import org.openflexo.foundation.resource.DefaultResourceCenterService;
 import org.openflexo.foundation.resource.DirectoryResourceCenter.DirectoryResourceCenterEntry;
@@ -136,7 +140,8 @@ public abstract class OpenflexoProjectAtRunTimeTestCase extends OpenflexoTestCas
 		retval = new File("tmp/tests/FlexoResources/", resourceRelativeName);
 		if (retval.exists()) {
 			return retval;
-		} else if (logger.isLoggable(Level.WARNING)) {
+		}
+		else if (logger.isLoggable(Level.WARNING)) {
 			logger.warning("Could not find resource " + resourceRelativeName);
 		}
 		return null;

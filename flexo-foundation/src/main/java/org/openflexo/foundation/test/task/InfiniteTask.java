@@ -36,11 +36,14 @@
  * 
  */
 
-package org.openflexo.foundation.task;
+package org.openflexo.foundation.test.task;
 
 import java.math.BigInteger;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+
+import org.openflexo.foundation.task.FlexoTask;
+import org.openflexo.foundation.task.Progress;
 
 public class InfiniteTask extends FlexoTask {
 

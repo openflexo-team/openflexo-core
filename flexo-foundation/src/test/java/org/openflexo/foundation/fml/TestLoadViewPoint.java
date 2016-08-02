@@ -43,12 +43,8 @@ import static org.junit.Assert.assertNotNull;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.openflexo.foundation.OpenflexoTestCase;
-import org.openflexo.foundation.fml.FlexoConcept;
-import org.openflexo.foundation.fml.ViewPoint;
-import org.openflexo.foundation.fml.ViewPointLibrary;
-import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.resource.JarResourceCenter;
+import org.openflexo.foundation.test.OpenflexoTestCase;
 import org.openflexo.test.OrderedRunner;
 import org.openflexo.test.TestOrder;
 
@@ -69,7 +65,7 @@ public class TestLoadViewPoint extends OpenflexoTestCase {
 	public void testinstanciateTestServiceManager() {
 		instanciateTestServiceManager();
 		JarResourceCenter.addNamedJarFromClassPath(getFlexoServiceManager().getResourceCenterService(), "testViewpoint2-1.0");
-		
+
 		System.out.println("ServiceManager= " + serviceManager);
 		assertNotNull(serviceManager);
 
@@ -85,7 +81,6 @@ public class TestLoadViewPoint extends OpenflexoTestCase {
 	@TestOrder(2)
 	public void testLoadViewPoint() {
 
-		
 		ViewPointLibrary vpLib = serviceManager.getViewPointLibrary();
 
 		System.out.println("VPLibrary=" + vpLib);
@@ -141,7 +136,7 @@ public class TestLoadViewPoint extends OpenflexoTestCase {
 		assertEquals(flexoConceptE, flexoConceptC.getChildFlexoConcepts().get(0));
 
 	}
-	
+
 	/**
 	 * Test the loading
 	 */
@@ -149,10 +144,9 @@ public class TestLoadViewPoint extends OpenflexoTestCase {
 	@TestOrder(3)
 	public void testLoadViewPointFromAClassPathJar() {
 
-		
-		//JarResourceCenter.addNamedJarFromClassPathResourceCenters(getFlexoServiceManager().getResourceCenterService(), "org\\openflexo\\testViewpoint2\\1.0\\testViewpoint2-1.0");
-				
-		
+		// JarResourceCenter.addNamedJarFromClassPathResourceCenters(getFlexoServiceManager().getResourceCenterService(),
+		// "org\\openflexo\\testViewpoint2\\1.0\\testViewpoint2-1.0");
+
 		ViewPointLibrary vpLib = serviceManager.getViewPointLibrary();
 
 		System.out.println("VPLibrary=" + vpLib);
@@ -162,11 +156,12 @@ public class TestLoadViewPoint extends OpenflexoTestCase {
 
 		assertEquals(1, vpLib.getLoadedViewPoints().size());
 
-		ViewPoint viewPoint = vpLib.getViewPoint("http://openflexo.org/test/TestViewPoint2");
+		String url = "http://openflexo.org/test/TestViewPoint2";
+		ViewPoint viewPoint = vpLib.getViewPoint(url);
 
 		System.out.println("ViewPoint=" + viewPoint);
 
-		assertNotNull(viewPoint);
+		assertNotNull("cannot get view point from " + url, viewPoint);
 
 		VirtualModel virtualModel = viewPoint.getVirtualModelNamed("TestVirtualModel");
 		System.out.println("virtualModel=" + virtualModel);

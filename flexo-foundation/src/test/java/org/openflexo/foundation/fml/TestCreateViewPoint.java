@@ -47,10 +47,10 @@ import java.io.IOException;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.openflexo.foundation.OpenflexoTestCase;
 import org.openflexo.foundation.fml.ViewPoint.ViewPointImpl;
 import org.openflexo.foundation.fml.rm.ViewPointResource;
 import org.openflexo.foundation.resource.FileSystemBasedResourceCenter;
+import org.openflexo.foundation.test.OpenflexoTestCase;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.test.OrderedRunner;
 import org.openflexo.test.TestOrder;

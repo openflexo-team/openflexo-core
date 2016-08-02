@@ -41,6 +41,7 @@ package org.openflexo.foundation;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
+import org.openflexo.foundation.test.OpenflexoProjectAtRunTimeTestCase;
 
 /**
  * This unit test is intented to test project creation facilities

@@ -123,7 +123,8 @@ public class TestApplicationContext extends ApplicationContext {
 	protected FlexoResourceCenterService createResourceCenterService() {
 		try {
 			File tempFile = File.createTempFile("Temp", "");
-			File testResourceCenterDirectory = new File(tempFile.getParentFile(), tempFile.getName() + "TestResourceCenter");
+			String filename = tempFile.getName() + "TestResourceCenter";
+			File testResourceCenterDirectory = new File(tempFile.getParentFile(), filename);
 			testResourceCenterDirectory.mkdirs();
 
 			System.out.println("Creating TestResourceCenter " + testResourceCenterDirectory);

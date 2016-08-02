@@ -39,7 +39,7 @@
 package org.openflexo.drm;
 
 import org.openflexo.drm.action.GenerateHelpSet;
-import org.openflexo.foundation.OpenflexoTestCase;
+import org.openflexo.foundation.test.OpenflexoTestCase;
 
 public class TestGenerateHelpSet extends OpenflexoTestCase {
 

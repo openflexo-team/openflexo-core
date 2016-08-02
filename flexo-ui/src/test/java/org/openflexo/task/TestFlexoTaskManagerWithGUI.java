@@ -48,10 +48,10 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import org.openflexo.foundation.task.ErrorTask;
-import org.openflexo.foundation.task.ExampleTask;
-import org.openflexo.foundation.task.InfiniteTask;
 import org.openflexo.foundation.task.ThreadPoolFlexoTaskManager;
+import org.openflexo.foundation.test.task.ErrorTask;
+import org.openflexo.foundation.test.task.ExampleTask;
+import org.openflexo.foundation.test.task.InfiniteTask;
 
 public class TestFlexoTaskManagerWithGUI {
 

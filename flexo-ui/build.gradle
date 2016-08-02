@@ -1,17 +1,32 @@
 dependencies {
-//   compile group: "org.openflexo", name: "pamela-core", version: "1.+"
-//   compile group: "org.openflexo", name: "flexolocalization", version: "1.+"
-//   compile group: "org.openflexo", name: "gina-api", version: "1.+"
-//   compile group: "org.openflexo", name: "diana-api", version: "1.+"
-//   compile group: "org.openflexo", name: "diana-core", version: "1.+"
-// 
-//   compile group: 'org.eclipse.jgit', name: 'org.eclipse.jgit', version: '4.3.1.201605051710-r'
-//   //  compile group: 'org.apache.commons', name: 'commons-collections4', version: '4.1'
-//   compile 'com.google.inject:guice:4.1.0'
-//   compile 'findbugs:annotations:1.0.0'
-//   compile 'xerces:xercesImpl:2.11.0'
+  // openflexo dep
+  compile relativeProject(':flexo-foundation')
+  compile relativeProject(':flexodocresourcemanager')
+  compile group: "org.openflexo", name: "connie-core", version: "1.+"
+  compile group: "org.openflexo", name: "gina-swing", version: "1.+"
+  compile group: "org.openflexo", name: "gina-swing-editor", version: "1.+"
+  compile group: "org.openflexo", name: "diana-swing", version: "1.+"
+  compile group: "org.openflexo", name: "flexohelp", version: "1.+"
+  // external dep
+
+  // testing dep
+  testCompile group: "org.openflexo", name: "gina-test", version: "1.+"
+  testCompile group: "org.openflexo", name: "testutils", version: "1.+"
+  testCompile group: "org.openflexo", name: "gina-swing-editor-test", version: "1.+"
+  testCompile relativeProject(':flexo-test-resources')
+}
+
+// To be able to use private apple api
+compileJava {
+    options.compilerArgs << "-XDignore.symbol.file=true"
+    options.fork = true
+    options.forkOptions.executable = 'javac'
 }
 
 test {
-  //  exclude '**/TestLoadViewPoint*'// > testLoadViewPointFromAClassPathJar
+  //testLogging {
+  //   showStandardStreams = true
+  //}
+    //    include '**/TestPreferences*'// > testLoadViewPointFromAClassPathJar
+    //    exclude '**/TestLoadViewPoint*'// > testLoadViewPointFromAClassPathJar
 }

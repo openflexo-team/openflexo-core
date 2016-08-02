@@ -47,7 +47,7 @@ import org.openflexo.OpenflexoTestCaseWithGUI;
 import org.openflexo.TestApplicationContext;
 import org.openflexo.components.PreferencesDialog;
 import org.openflexo.foundation.resource.DirectoryResourceCenter;
-import org.openflexo.gina.testutils.FIBDialogGraphicalContextDelegate;
+import org.openflexo.gina.swing.test.FIBDialogGraphicalContextDelegate;
 import org.openflexo.prefs.PreferencesService;
 import org.openflexo.test.OrderedRunner;
 import org.openflexo.test.TestOrder;
