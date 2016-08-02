@@ -10,7 +10,4 @@ dependencies {
   compile group: 'com.google.inject', name: 'guice', version: '4.1.0'
   compile group: 'findbugs', name: 'annotations', version: '1.0.0'
   compile group: 'xerces', name: 'xercesImpl', version: '2.11.0'
-  // testing dep
-  testCompile group: "org.openflexo", name: "testutils", version: "1.+"
-  testCompile relativeProject(':flexo-test-resources')
 }

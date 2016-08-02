@@ -36,13 +36,14 @@
  * 
  */
 
-package org.openflexo.foundation.fml;
+package org.openflexo.foundation.test.fml;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
 import java.util.logging.Logger;
 
+import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.technologyadapter.DefaultTechnologyAdapterService;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
