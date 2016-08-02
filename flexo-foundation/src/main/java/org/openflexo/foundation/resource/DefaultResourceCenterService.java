@@ -76,7 +76,6 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 
 	private static final ClassLoader cl = ClassLoader.getSystemClassLoader();
 
-
 	/**
 	 * Instantiate a new DefaultResourceCenterService with only the UserResourceCenter
 	 * 
@@ -120,11 +119,11 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 	 */
 	public void loadAvailableRCFromClassPath() {
 
-		logger.info("Loading available  ResourceCenters from classpath");	
-		
+		logger.info("Loading available  ResourceCenters from classpath");
+
 		Enumeration<URL> urlList;
 		try {
-			urlList = cl.getResources("META-INF/resourceCenters/"+FlexoResourceCenter.class.getCanonicalName());
+			urlList = cl.getResources("META-INF/resourceCenters/" + FlexoResourceCenter.class.getCanonicalName());
 
 			if (urlList != null && urlList.hasMoreElements()) {
 				FlexoResourceCenter rc = null;
@@ -134,31 +133,30 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 					StringWriter writer = new StringWriter();
 					IOUtils.copy(url.openStream(), writer, "UTF-8");
 					String rcBaseUri = writer.toString();
-					
-					if (url.getProtocol().equals("file")){
-						String dirPath = URLDecoder.decode(url.getPath().substring(0, url.getPath().indexOf("META-INF")),
-								"UTF-8");
+
+					if (url.getProtocol().equals("file")) {
+						String dirPath = URLDecoder.decode(url.getPath().substring(0, url.getPath().indexOf("META-INF")), "UTF-8");
 						File rcDir = new File(dirPath);
-						if (rcDir.exists()){
-							rc = 	new DirectoryResourceCenter(rcDir, this);
+						if (rcDir.exists()) {
+							rc = new DirectoryResourceCenter(rcDir, this);
 							rc.setDefaultBaseURI(rcBaseUri);
 							this.addToResourceCenters(rc);
-							}
 						}
-					else if (url.getProtocol().equals("jar")){
+					}
+					else if (url.getProtocol().equals("jar")) {
 
 						String jarPath = URLDecoder.decode(url.getPath().substring(0, url.getPath().indexOf("!")).replace("+", "%2B"),
 								"UTF-8");
 
 						URI jarURI = new URI(jarPath);
-						rc = JarResourceCenter.addJarFile(new JarFile(new File(jarURI)),this);
-						
+						rc = JarResourceCenter.addJarFile(new JarFile(new File(jarURI)), this);
+
 					}
 					else {
 						logger.warning("INVESTIGATE: don't know how to deal with RC accessed through " + url.getProtocol());
 					}
-					
-					if (rc != null){
+
+					if (rc != null) {
 						rc.setDefaultBaseURI(rcBaseUri);
 						this.addToResourceCenters(rc);
 						rc = null;
@@ -175,6 +173,7 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 			e.printStackTrace();
 		}
 	}
+
 	@Override
 	public void addToResourceCenters(FlexoResourceCenter resourceCenter) {
 		if (!getResourceCenters().contains(resourceCenter)) {

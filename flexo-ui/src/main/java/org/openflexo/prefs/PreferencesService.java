@@ -123,13 +123,13 @@ public class PreferencesService extends FlexoServiceImpl implements FlexoService
 
 	private <S extends FlexoService> Class<? extends ServicePreferences<S>> getServicePreferencesClass(S service) {
 		if (service instanceof FlexoResourceCenterService) {
-			return (Class<? extends ServicePreferences<S>>) ResourceCenterPreferences.class;
+			return (Class<? extends ServicePreferences<S>>) (Class) ResourceCenterPreferences.class;
 		}
 		else if (service instanceof TechnologyAdapterService) {
-			return (Class<? extends ServicePreferences<S>>) TechnologyAdapterPreferences.class;
+			return (Class<? extends ServicePreferences<S>>) (Class) TechnologyAdapterPreferences.class;
 		}
 		else if (service instanceof ModuleLoader) {
-			return (Class<? extends ServicePreferences<S>>) ModuleLoaderPreferences.class;
+			return (Class<? extends ServicePreferences<S>>) (Class) ModuleLoaderPreferences.class;
 		}
 		return null;
 	}

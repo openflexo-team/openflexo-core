@@ -42,7 +42,6 @@ package org.openflexo.icon;
 import javax.swing.ImageIcon;
 
 import org.openflexo.rm.ResourceLocator;
-import org.openflexo.toolbox.ImageIconResource;
 
 /**
  * Utility class containing all icons used in context of FPSModule
@@ -52,32 +51,43 @@ import org.openflexo.toolbox.ImageIconResource;
  */
 public class FPSIconLibrary extends IconLibrary {
 
-	
-
 	// Module icons
 	public static final ImageIcon FPS_SMALL_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/FPS/module-fps-16.png"));
 	public static final ImageIcon FPS_MEDIUM_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/FPS/module-fps-32.png"));
-	public static final ImageIcon FPS_MEDIUM_ICON_WITH_HOVER = new ImageIconResource(ResourceLocator.locateResource("Icons/FPS/module-fps-hover-32.png"));
+	public static final ImageIcon FPS_MEDIUM_ICON_WITH_HOVER = new ImageIconResource(
+			ResourceLocator.locateResource("Icons/FPS/module-fps-hover-32.png"));
 	public static final ImageIcon FPS_BIG_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/FPS/module-fps-hover-64.png"));
 
 	// Editor icons
-	public static final ImageIcon FPS_MARK_AS_MERGED_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/FPS/MarkAsMergedIcon.gif"));
-	public static final ImageIcon FPS_MARK_AS_MERGED_DISABLED_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/FPS/MarkAsMergedIcon-disabled.gif"));
+	public static final ImageIcon FPS_MARK_AS_MERGED_ICON = new ImageIconResource(
+			ResourceLocator.locateResource("Icons/FPS/MarkAsMergedIcon.gif"));
+	public static final ImageIcon FPS_MARK_AS_MERGED_DISABLED_ICON = new ImageIconResource(
+			ResourceLocator.locateResource("Icons/FPS/MarkAsMergedIcon-disabled.gif"));
 	public static final ImageIcon FPS_UPDATE_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/FPS/UpdateIcon.gif"));
-	public static final ImageIcon FPS_UPDATE_DISABLED_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/FPS/UpdateIcon-disabled.gif"));
+	public static final ImageIcon FPS_UPDATE_DISABLED_ICON = new ImageIconResource(
+			ResourceLocator.locateResource("Icons/FPS/UpdateIcon-disabled.gif"));
 	public static final ImageIcon FPS_COMMIT_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/FPS/CommitIcon.gif"));
-	public static final ImageIcon FPS_COMMIT_DISABLED_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/FPS/CommitIcon-disabled.gif"));
-	public static final ImageIcon RESOLVED_CONFLICT_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/FPS/ResolvedConflict.gif"));
+	public static final ImageIcon FPS_COMMIT_DISABLED_ICON = new ImageIconResource(
+			ResourceLocator.locateResource("Icons/FPS/CommitIcon-disabled.gif"));
+	public static final ImageIcon RESOLVED_CONFLICT_ICON = new ImageIconResource(
+			ResourceLocator.locateResource("Icons/FPS/ResolvedConflict.gif"));
 
-	public static final ImageIcon FPS_AFP_ACTIVE_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/FPS/AllFilesViewMode.gif"));
-	public static final ImageIcon FPS_CFP_ACTIVE_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/FPS/ConflictingViewMode.gif"));
-	public static final ImageIcon FPS_IFP_ACTIVE_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/FPS/InterestingFilesViewMode.gif"));
-	public static final ImageIcon FPS_LMP_ACTIVE_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/FPS/LocallyModifiedViewMode.gif"));
-	public static final ImageIcon FPS_RMP_ACTIVE_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/FPS/RemotelyModifiedViewMode.gif"));
+	public static final ImageIcon FPS_AFP_ACTIVE_ICON = new ImageIconResource(
+			ResourceLocator.locateResource("Icons/FPS/AllFilesViewMode.gif"));
+	public static final ImageIcon FPS_CFP_ACTIVE_ICON = new ImageIconResource(
+			ResourceLocator.locateResource("Icons/FPS/ConflictingViewMode.gif"));
+	public static final ImageIcon FPS_IFP_ACTIVE_ICON = new ImageIconResource(
+			ResourceLocator.locateResource("Icons/FPS/InterestingFilesViewMode.gif"));
+	public static final ImageIcon FPS_LMP_ACTIVE_ICON = new ImageIconResource(
+			ResourceLocator.locateResource("Icons/FPS/LocallyModifiedViewMode.gif"));
+	public static final ImageIcon FPS_RMP_ACTIVE_ICON = new ImageIconResource(
+			ResourceLocator.locateResource("Icons/FPS/RemotelyModifiedViewMode.gif"));
 
 	// Model icons
-	public static final ImageIcon CVS_REPOSITORY_LIST_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/FPS/RepositoryList.gif"));
-	public static final ImageIcon CVS_REPOSITORY_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/FPS/CVSRepository.gif"));
+	public static final ImageIcon CVS_REPOSITORY_LIST_ICON = new ImageIconResource(
+			ResourceLocator.locateResource("Icons/FPS/RepositoryList.gif"));
+	public static final ImageIcon CVS_REPOSITORY_ICON = new ImageIconResource(
+			ResourceLocator.locateResource("Icons/FPS/CVSRepository.gif"));
 	public static final ImageIcon CVS_MODULE_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/FPS/CVSModule.gif"));
 
 }
