@@ -5,8 +5,4 @@ dependencies {
   // external dep
 
   // testing dep
-  // testCompile group: "org.openflexo", name: "gina-test", version: "1.+"
-  //  testCompile group: "org.openflexo", name: "testutils", version: "1.+"
-  //  testCompile group: "org.openflexo", name: "gina-swing-editor-test", version: "1.+"
-  //  testCompile relativeProject(':flexo-test-resources')
 }
