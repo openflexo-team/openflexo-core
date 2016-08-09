@@ -65,37 +65,6 @@ public class DirectoryResourceCenter extends FileSystemBasedResourceCenter {
 
 	protected static final Logger logger = Logger.getLogger(DirectoryResourceCenter.class.getPackage().getName());
 
-	@ModelEntity
-	@ImplementationClass(DirectoryResourceCenterEntry.DirectoryResourceCenterEntryImpl.class)
-	@XMLElement
-	public static interface DirectoryResourceCenterEntry extends ResourceCenterEntry<DirectoryResourceCenter> {
-		@PropertyIdentifier(type = File.class)
-		public static final String DIRECTORY_KEY = "directory";
-
-		@Getter(DIRECTORY_KEY)
-		@XMLAttribute
-		public File getDirectory();
-
-		@Setter(DIRECTORY_KEY)
-		public void setDirectory(File aDirectory);
-
-		@Implementation
-		public static abstract class DirectoryResourceCenterEntryImpl implements DirectoryResourceCenterEntry {
-			@Override
-			public DirectoryResourceCenter makeResourceCenter(FlexoResourceCenterService rcService) {
-				return DirectoryResourceCenter.instanciateNewDirectoryResourceCenter(getDirectory(), rcService);
-			}
-
-			@Override
-			public boolean equals(Object obj) {
-				if (obj instanceof DirectoryResourceCenterEntry) {
-					return getDirectory() != null && getDirectory().equals(((DirectoryResourceCenterEntry) obj).getDirectory());
-				}
-				return false;
-			}
-		}
-
-	}
 
 	public DirectoryResourceCenter(File resourceCenterDirectory, FlexoResourceCenterService rcService) {
 		super(resourceCenterDirectory, rcService);

@@ -76,10 +76,23 @@ public abstract class RemoteResourceCenter extends ResourceRepository<FlexoResou
 
 		@Implementation
 		public static abstract class RemoteResourceCenterEntryImpl implements RemoteResourceCenterEntry {
+
+			private boolean isSystem = false;
+			
 			@Override
 			public RemoteResourceCenter makeResourceCenter(FlexoResourceCenterService rcService) {
 				// TODO Auto-generated method stub
 				return null;
+			}
+
+			@Override
+			public boolean isSystemEntry(){
+				return false;
+			}
+
+			@Override
+			public void setIsSystemEntry(boolean isSystemEntry){
+				// Does Nothing
 			}
 		}
 

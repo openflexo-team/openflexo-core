@@ -57,10 +57,18 @@ import java.util.logging.Logger;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.ViewPointRepository;
-import org.openflexo.foundation.resource.DirectoryResourceCenter.DirectoryResourceCenterEntry;
+import org.openflexo.foundation.resource.FlexoResourceCenter.ResourceCenterEntry;
 import org.openflexo.foundation.task.Progress;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterResource;
+import org.openflexo.model.annotations.Getter;
+import org.openflexo.model.annotations.Implementation;
+import org.openflexo.model.annotations.ImplementationClass;
+import org.openflexo.model.annotations.ModelEntity;
+import org.openflexo.model.annotations.PropertyIdentifier;
+import org.openflexo.model.annotations.Setter;
+import org.openflexo.model.annotations.XMLAttribute;
+import org.openflexo.model.annotations.XMLElement;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.model.factory.ModelFactory;
 import org.openflexo.toolbox.DirectoryWatcher;
@@ -650,14 +658,14 @@ public abstract class FileSystemBasedResourceCenter extends FileResourceReposito
 		return getResource(uri);
 	}
 
-	private DirectoryResourceCenterEntry entry;
+	private FSBasedResourceCenterEntry entry;
 
 	@Override
 	public ResourceCenterEntry<?> getResourceCenterEntry() {
 		if (entry == null) {
 			try {
-				ModelFactory factory = new ModelFactory(DirectoryResourceCenterEntry.class);
-				entry = factory.newInstance(DirectoryResourceCenterEntry.class);
+				ModelFactory factory = new ModelFactory(FSBasedResourceCenterEntry.class);
+				entry = factory.newInstance(FSBasedResourceCenterEntry.class);
 				entry.setDirectory(getDirectory());
 			} catch (ModelDefinitionException e) {
 				e.printStackTrace();
@@ -750,8 +758,52 @@ public abstract class FileSystemBasedResourceCenter extends FileResourceReposito
 
 	@Override
 	public void setDefaultBaseURI(String defaultBaseURI) {
-		System.out.println("setDefaultBaseURI with " + defaultBaseURI);
 		fsMetaDataManager.setProperty(DEFAULT_BASE_URI, defaultBaseURI, getDirectory());
 	}
 
+
+	@ModelEntity
+	@ImplementationClass(FSBasedResourceCenterEntry.FSBasedResourceCenterEntryImpl.class)
+	@XMLElement
+	public static interface FSBasedResourceCenterEntry extends ResourceCenterEntry<DirectoryResourceCenter> {
+		@PropertyIdentifier(type = File.class)
+		public static final String DIRECTORY_KEY = "directory";
+
+		@Getter(DIRECTORY_KEY)
+		@XMLAttribute
+		public File getDirectory();
+
+		@Setter(DIRECTORY_KEY)
+		public void setDirectory(File aDirectory);
+
+		@Implementation
+		public static abstract class FSBasedResourceCenterEntryImpl implements FSBasedResourceCenterEntry {
+			
+			private boolean isSystem = false;
+			
+			@Override
+			public DirectoryResourceCenter makeResourceCenter(FlexoResourceCenterService rcService) {
+				return DirectoryResourceCenter.instanciateNewDirectoryResourceCenter(getDirectory(), rcService);
+			}
+
+			@Override
+			public boolean equals(Object obj) {
+				if (obj instanceof FSBasedResourceCenterEntry) {
+					return getDirectory() != null && getDirectory().equals(((FSBasedResourceCenterEntry) obj).getDirectory());
+				}
+				return false;
+			}
+			
+			@Override
+			public boolean isSystemEntry(){
+				return isSystem;
+			}
+			@Override
+			public void setIsSystemEntry(boolean isSystemEntry){
+				isSystem = isSystemEntry;
+			}
+		}
+
+	}
+	
 }

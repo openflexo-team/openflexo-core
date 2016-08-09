@@ -49,7 +49,7 @@ import javax.annotation.Nullable;
 
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.fml.ViewPointRepository;
-import org.openflexo.foundation.resource.DirectoryResourceCenter.DirectoryResourceCenterEntry;
+import org.openflexo.foundation.resource.FileSystemBasedResourceCenter.FSBasedResourceCenterEntry;
 import org.openflexo.foundation.resource.JarResourceCenter.JarResourceCenterEntry;
 import org.openflexo.foundation.resource.RemoteResourceCenter.RemoteResourceCenterEntry;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
@@ -82,11 +82,26 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, FlexoObject {
 	 */
 	@ModelEntity
 	@XMLElement
-	@Imports({ @Import(DirectoryResourceCenterEntry.class), @Import(RemoteResourceCenterEntry.class),
+	@Imports({ @Import(FSBasedResourceCenterEntry.class), @Import(RemoteResourceCenterEntry.class),
 			@Import(JarResourceCenterEntry.class) })
 	public static interface ResourceCenterEntry<RC extends FlexoResourceCenter<?>> {
 
 		public RC makeResourceCenter(FlexoResourceCenterService rcService);
+		
+		/**
+		 * Tells if the ResourceCenterEntry has been declared at user ou system level
+		 * 
+		 * @return boolean
+		 */
+		public boolean isSystemEntry();
+		
+		/**
+		 * Sets ResourceCenterEntry has being declared at user ou system level
+		 * 
+		 * @return boolean
+		 */
+		public void setIsSystemEntry(boolean isSystem);
+		
 	}
 
 	/**

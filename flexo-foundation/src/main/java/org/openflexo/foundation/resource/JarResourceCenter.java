@@ -397,6 +397,17 @@ implements FlexoResourceCenter<InJarResourceImpl> {
 					return null;
 				}
 			}
+
+			@Override
+			public boolean isSystemEntry(){
+				// For now, jarRC are only added from ClassPath
+				return true;
+			}
+
+			@Override
+			public void setIsSystemEntry(boolean isSystemEntry){
+				// Does Nothing
+			}
 		}
 
 	}
