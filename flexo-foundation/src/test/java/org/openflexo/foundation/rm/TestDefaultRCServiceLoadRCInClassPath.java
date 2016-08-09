@@ -69,7 +69,7 @@ public class TestDefaultRCServiceLoadRCInClassPath extends OpenflexoTestCase {
 	private static DefaultResourceCenterService rcService ;
 	private static ViewPoint testVP;
 
-	private static FlexoResourceCenter testRC;
+	private static FlexoResourceCenter testRC,testRCfromCP;
 
 	/**
 	 * Instantiate test resource center
@@ -87,17 +87,21 @@ public class TestDefaultRCServiceLoadRCInClassPath extends OpenflexoTestCase {
 		rcService = (DefaultResourceCenterService) serviceManager.getResourceCenterService();
 
 		assertNotNull (rcService);
-
-		rcService.loadAvailableRCFromClassPath();;
 		
 		for ( FlexoResourceCenter rc: rcService.getResourceCenters()){
-			log("FOUND: RC names" + rc.getName() + "[" + rc.getDefaultBaseURI() + "]");
+			log("FOUND: RC name " + rc.getName() + "  [" + rc.getDefaultBaseURI() + "]");
 			if (rc.getDefaultBaseURI().equals("http://openflexo.org/test/TestResourceCenter")) {
 				testRC = rc;
+			}
+			if (rc.getDefaultBaseURI().equals("http://openflexo.org/testingRCsOnCP")) {
+				testRCfromCP = rc;
 			}
 		}
 
 		assertNotNull(testRC);
+		
+		assertFalse(testRC.getResourceCenterEntry().isSystemEntry());
+		assertTrue(testRCfromCP.getResourceCenterEntry().isSystemEntry());
 
 	}
 

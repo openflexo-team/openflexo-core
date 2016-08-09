@@ -54,7 +54,7 @@ import org.junit.AfterClass;
 import org.openflexo.foundation.FlexoEditor.FlexoEditorFactory;
 import org.openflexo.foundation.nature.ProjectNature;
 import org.openflexo.foundation.resource.DefaultResourceCenterService;
-import org.openflexo.foundation.resource.DirectoryResourceCenter.DirectoryResourceCenterEntry;
+import org.openflexo.foundation.resource.FileSystemBasedResourceCenter.FSBasedResourceCenterEntry;
 import org.openflexo.foundation.resource.FlexoResourceCenter.ResourceCenterEntry;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
 import org.openflexo.foundation.resource.SaveResourceException;
@@ -187,8 +187,8 @@ public abstract class OpenflexoProjectAtRunTimeTestCase extends OpenflexoTestCas
 
 	protected static FlexoResourceCenterService getNewResourceCenter(String name) {
 		try {
-			ModelFactory factory = new ModelFactory(DirectoryResourceCenterEntry.class);
-			DirectoryResourceCenterEntry entry = factory.newInstance(DirectoryResourceCenterEntry.class);
+			ModelFactory factory = new ModelFactory(FSBasedResourceCenterEntry.class);
+			FSBasedResourceCenterEntry entry = factory.newInstance(FSBasedResourceCenterEntry.class);
 			entry.setDirectory(FileUtils.createTempDirectory(name, "ResourceCenter"));
 			List<ResourceCenterEntry<?>> rcList = new ArrayList<ResourceCenterEntry<?>>();
 			rcList.add(entry);
