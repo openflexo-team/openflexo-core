@@ -343,7 +343,12 @@ public abstract class FlexoPerspective extends ControllerModelObject {
 		TechnologyAdapterService taService = controller.getApplicationContext().getTechnologyAdapterService();
 		for (TechnologyAdapter ta : taService.getTechnologyAdapters()) {
 			TechnologyAdapterController<?> tac = tacService.getTechnologyAdapterController(ta);
-			returned.addAll(tac.getSpecificProjectNatures(project));
+			if (tac != null){
+				returned.addAll(tac.getSpecificProjectNatures(project));
+			}
+			else {
+				logger.warning("INVESTIGATE: there is a enabled TA with no TAC enabled (not yet): "+ ta.getClass().getCanonicalName() );
+			}
 		}
 		return returned;
 	}
