@@ -47,6 +47,7 @@ import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.OpenflexoProjectAtRunTimeTestCase;
 import org.openflexo.foundation.nature.ProjectNature;
 import org.openflexo.foundation.resource.DirectoryResourceCenter;
+import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.logging.FlexoLoggingManager;
@@ -90,7 +91,13 @@ public abstract class OpenflexoProjectAtRunTimeTestCaseWithGUI extends Openflexo
 
 	protected static ApplicationContext instanciateTestServiceManager(final boolean generateCompoundTestResourceCenter) {
 		serviceManager = new TestApplicationContext(generateCompoundTestResourceCenter);
-		resourceCenter = (DirectoryResourceCenter) serviceManager.getResourceCenterService().getResourceCenters().get(0);
+		for (FlexoResourceCenter rc : serviceManager.getResourceCenterService().getResourceCenters()) {
+			// Select the first directory ResourceCenter
+			if (rc instanceof DirectoryResourceCenter){
+				resourceCenter = (DirectoryResourceCenter) rc;
+				break;
+			}
+		}
 		return (ApplicationContext) serviceManager;
 	}
 
