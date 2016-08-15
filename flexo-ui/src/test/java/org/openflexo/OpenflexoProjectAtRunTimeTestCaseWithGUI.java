@@ -73,17 +73,6 @@ public abstract class OpenflexoProjectAtRunTimeTestCaseWithGUI extends Openflexo
 		}
 	}
 
-	/*@AfterClass
-	public synchronized static void tearDownClass() {
-		FlexoResourceCenterService RCService = serviceManager.getResourceCenterService();
-		List<FlexoResourceCenter> listRC = RCService.getResourceCenters();
-		for (FlexoResourceCenter rc : listRC) {
-			if (rc instanceof DirectoryResourceCenter) {
-				File RCDirectory = ((DirectoryResourceCenter) rc).getDirectory();
-				RCDirectory.deleteOnExit();
-			}
-		}
-	}*/
 
 	protected static ApplicationContext instanciateTestServiceManager() {
 		return instanciateTestServiceManager(false);
@@ -93,7 +82,7 @@ public abstract class OpenflexoProjectAtRunTimeTestCaseWithGUI extends Openflexo
 		serviceManager = new TestApplicationContext(generateCompoundTestResourceCenter);
 		for (FlexoResourceCenter rc : serviceManager.getResourceCenterService().getResourceCenters()) {
 			// Select the first directory ResourceCenter
-			if (rc instanceof DirectoryResourceCenter){
+			if (rc instanceof DirectoryResourceCenter && ! rc.getResourceCenterEntry().isSystemEntry()){
 				resourceCenter = (DirectoryResourceCenter) rc;
 				break;
 			}
