@@ -40,6 +40,7 @@ package org.openflexo.foundation.fml.rt;
 
 import java.util.logging.Logger;
 
+import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.technologyadapter.FlexoMetaModel;
 import org.openflexo.foundation.technologyadapter.FlexoModel;
 import org.openflexo.foundation.technologyadapter.FlexoModelResource;
@@ -112,9 +113,10 @@ public interface TypeAwareModelSlotInstance<M extends FlexoModel<M, MM> & Techno
 		 */
 		@Override
 		public M getAccessedResourceData() {
-			if (getModelSlot() != null && getVirtualModelInstance() != null && getServiceManager().getResourceManager() != null
+			FlexoServiceManager svcManager = getServiceManager();
+			if (getModelSlot() != null && getVirtualModelInstance() != null && svcManager != null && svcManager.getResourceManager() != null
 					&& accessedResourceData == null && StringUtils.isNotEmpty(modelURI)) {
-				FlexoModelResource<M, ?, ?, ?> modelResource = (FlexoModelResource<M, ?, ?, ?>) getServiceManager().getResourceManager()
+				FlexoModelResource<M, ?, ?, ?> modelResource = (FlexoModelResource<M, ?, ?, ?>) svcManager.getResourceManager()
 						.getModelWithURI(modelURI, getModelSlot().getModelSlotTechnologyAdapter());
 				if (modelResource != null) {
 					accessedResourceData = modelResource.getModel();
