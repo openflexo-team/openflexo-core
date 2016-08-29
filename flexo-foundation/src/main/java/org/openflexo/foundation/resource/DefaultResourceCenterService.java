@@ -64,10 +64,6 @@ import org.openflexo.foundation.resource.PamelaResourceImpl.WillWriteFileOnDiskN
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.model.factory.ModelFactory;
-import org.openflexo.rm.ClasspathResourceLocatorImpl;
-import org.openflexo.rm.Resource;
-import org.openflexo.rm.ResourceLocator;
-import org.openflexo.rm.ResourceLocatorDelegate;
 
 /**
  * Default implementation for the {@link FlexoResourceCenterService} Manage the {@link UserResourceCenter} and the default
@@ -79,7 +75,6 @@ import org.openflexo.rm.ResourceLocatorDelegate;
 public abstract class DefaultResourceCenterService extends FlexoServiceImpl implements FlexoResourceCenterService {
 
 	private static final ClassLoader cl = ClassLoader.getSystemClassLoader();
-
 
 	/**
 	 * Instantiate a new DefaultResourceCenterService with only the UserResourceCenter
@@ -127,14 +122,14 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 	 */
 	private void loadAvailableRCFromClassPath() {
 
-		logger.info("Loading available  ResourceCenters from classpath");	
+		logger.info("Loading available  ResourceCenters from classpath");
 
 		Enumeration<URL> urlList;
-		ArrayList<FlexoResourceCenter> rcList = new ArrayList<FlexoResourceCenter>( this.getResourceCenters());
+		ArrayList<FlexoResourceCenter> rcList = new ArrayList<FlexoResourceCenter>(this.getResourceCenters());
 
 		try {
-			urlList = cl.getResources("META-INF/resourceCenters/"+FlexoResourceCenter.class.getCanonicalName());
-		
+			urlList = cl.getResources("META-INF/resourceCenters/" + FlexoResourceCenter.class.getCanonicalName());
+
 			if (urlList != null && urlList.hasMoreElements()) {
 				FlexoResourceCenter rc = null;
 				boolean rcExists = false;
@@ -145,28 +140,30 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 					IOUtils.copy(url.openStream(), writer, "UTF-8");
 					String rcBaseUri = writer.toString();
 
+					System.out.println("Attempt to loading RC " + rcBaseUri);
+
 					rcExists = false;
-					for (FlexoResourceCenter r : rcList){
+					for (FlexoResourceCenter r : rcList) {
 						rcExists = r.getDefaultBaseURI().equals(rcBaseUri) || rcExists;
 					}
-					if (!rcExists){
-						if (url.getProtocol().equals("file")){
+					if (!rcExists) {
+						if (url.getProtocol().equals("file")) {
 							// When it is a file and it is contained in target/classes directory then we
 							// replace with directory from source code (development mode)
-							String dirPath = URLDecoder.decode(url.getPath().substring(0, url.getPath().indexOf("META-INF")),
-									"UTF-8").replace("target/classes", "src/main/resources");
+							String dirPath = URLDecoder.decode(url.getPath().substring(0, url.getPath().indexOf("META-INF")), "UTF-8")
+									.replace("target/classes", "src/main/resources");
 							File rcDir = new File(dirPath);
-							if (rcDir.exists()){
-								rc = 	new DirectoryResourceCenter(rcDir, this);
+							if (rcDir.exists()) {
+								rc = new DirectoryResourceCenter(rcDir, this);
 							}
 						}
-						else if (url.getProtocol().equals("jar")){
+						else if (url.getProtocol().equals("jar")) {
 
 							String jarPath = URLDecoder.decode(url.getPath().substring(0, url.getPath().indexOf("!")).replace("+", "%2B"),
 									"UTF-8");
 
 							URI jarURI = new URI(jarPath);
-							rc = JarResourceCenter.addJarFile(new JarFile(new File(jarURI)),this);
+							rc = JarResourceCenter.addJarFile(new JarFile(new File(jarURI)), this);
 
 						}
 						else {
@@ -177,7 +174,7 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 						logger.warning("an RC already exists with DefaultBaseURI: " + rcBaseUri);
 					}
 
-					if (rc != null){
+					if (rc != null) {
 						rc.setDefaultBaseURI(rcBaseUri);
 						rc.getResourceCenterEntry().setIsSystemEntry(true);
 						this.addToResourceCenters(rc);
@@ -195,6 +192,7 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 			e.printStackTrace();
 		}
 	}
+
 	@Override
 	public void addToResourceCenters(FlexoResourceCenter resourceCenter) {
 		if (!getResourceCenters().contains(resourceCenter)) {
