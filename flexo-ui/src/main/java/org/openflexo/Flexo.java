@@ -160,7 +160,8 @@ public class Flexo {
 	}
 
 	@SuppressWarnings("restriction")
-	private static void registerShutdownHook() {
+	protected
+	static void registerShutdownHook() {
 		try {
 			Class.forName("sun.misc.Signal");
 			Class.forName("sun.misc.SignalHandler");
