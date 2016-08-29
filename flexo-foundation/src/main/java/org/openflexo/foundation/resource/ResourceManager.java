@@ -134,7 +134,7 @@ public class ResourceManager extends FlexoServiceImpl implements FlexoService {
 			logger.info("Resource already registered: " + resource);
 		}
 		if (resource.getURI() == null) {
-			logger.info("Resource with null URI: " + resource );
+			logger.info("Resource with null URI: " + resource);
 			resource.getURI();
 			Thread.dumpStack();
 		}
@@ -188,6 +188,15 @@ public class ResourceManager extends FlexoServiceImpl implements FlexoService {
 		return returned;
 	}
 
+	/**
+	 * Returns a resource identified by the given <code>uri</code><br>
+	 * No specific version is searched, return the last found version<br>
+	 * From a methodological point of view, this method is generally used to retrieve a snapshot version
+	 * 
+	 * @param uri
+	 *            the URI of the resource
+	 * @return the resource with the given <code>uri</code>, or null if it cannot be found.
+	 */
 	public FlexoResource<?> getResource(String resourceURI) {
 
 		if (StringUtils.isEmpty(resourceURI)) {
@@ -199,6 +208,23 @@ public class ResourceManager extends FlexoServiceImpl implements FlexoService {
 			}
 		}
 		return null;
+	}
+
+	/**
+	 * Returns a typed resource identified by the given <code>uri</code><br>
+	 * No specific version is searched, return the last found version<br>
+	 * From a methodological point of view, this method is generally used to retrieve a snapshot version
+	 * 
+	 * @param uri
+	 *            the URI of the resource
+	 * @param type
+	 *            the type of the resource data reference by the resource to retrieve. The implementation is responsible to make the
+	 *            appropriate type verifications.
+	 * @return the resource with the given <code>uri</code>, or null if it cannot be found.
+	 */
+	public @Nullable <T extends ResourceData<T>> FlexoResource<T> getResource(@Nonnull String uri, @Nonnull Class<T> type) {
+		// TODO: a better type checking would be better
+		return (FlexoResource<T>) getResource(uri);
 	}
 
 	public void addToFilesToDelete(File f) {
