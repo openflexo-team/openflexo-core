@@ -10,6 +10,7 @@ import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
+import org.openflexo.toolbox.FileUtils;
 import org.openflexo.toolbox.FlexoVersion;
 import org.openflexo.toolbox.IProgress;
 
@@ -32,7 +33,21 @@ public class GitResourceCenter extends FileSystemBasedResourceCenter {
 
 	private Repository gitRepository;
 	private Git git;
+	//  .git directory
+	private File gitDir;
 
+
+	@Override
+	public boolean isIgnorable(File file) {
+		if (file.isDirectory() && file.getName().equals(".git")) {
+			return true;
+		}
+		if (FileUtils.isFileContainedIn(file, gitDir)) {
+			return true;
+		}
+		return super.isIgnorable(file);
+	}
+	
 	public Repository getGitRepository() {
 		return gitRepository;
 	}
@@ -42,11 +57,13 @@ public class GitResourceCenter extends FileSystemBasedResourceCenter {
 	}
 
 	public void initializeRepositoryGit(File gitFile) throws IOException, IllegalStateException, GitAPIException {
-		File gitDir = new File(gitFile.getAbsolutePath(), ".git");
-		Git.init().setDirectory(gitFile).call();
+		gitDir = new File(gitFile.getAbsolutePath(), ".git");
+		if (!gitDir.exists()){
+			Git.init().setDirectory(gitFile).call();
+			}
 
 		// Our GitRepository is of type file
-		gitRepository = FileRepositoryBuilder.create(gitDir);
+		gitRepository = FileRepositoryBuilder.create(gitDir); 
 		System.out.println("Created a new repository at " + gitRepository.getDirectory());
 		// Where files are checked
 		System.out.println("Working tree : " + gitRepository.getWorkTree());
