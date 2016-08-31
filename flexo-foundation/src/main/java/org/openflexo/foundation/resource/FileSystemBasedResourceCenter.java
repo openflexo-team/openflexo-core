@@ -57,7 +57,7 @@ import java.util.logging.Logger;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.ViewPointRepository;
-import org.openflexo.foundation.resource.FlexoResourceCenter.ResourceCenterEntry;
+import org.openflexo.foundation.resource.FileFlexoIODelegate.FileFlexoIODelegateImpl;
 import org.openflexo.foundation.task.Progress;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterResource;
@@ -86,7 +86,7 @@ import org.openflexo.toolbox.StringUtils;
  * @author sylvain
  * 
  */
-public abstract class FileSystemBasedResourceCenter extends FileResourceRepository<FlexoResource<?>>implements FlexoResourceCenter<File> {
+public abstract class FileSystemBasedResourceCenter extends FileResourceRepository<FlexoResource<?>> implements FlexoResourceCenter<File> {
 
 	protected static final Logger logger = Logger.getLogger(FileSystemBasedResourceCenter.class.getPackage().getName());
 
@@ -761,6 +761,15 @@ public abstract class FileSystemBasedResourceCenter extends FileResourceReposito
 		fsMetaDataManager.setProperty(DEFAULT_BASE_URI, defaultBaseURI, getDirectory());
 	}
 
+	@Override
+	public String retrieveName(File serializationArtefact) {
+		return serializationArtefact.getName();
+	}
+
+	@Override
+	public FileFlexoIODelegate makeFlexoIODelegate(File serializationArtefact, FlexoResourceFactory<?, ?, ?> resourceFactory) {
+		return FileFlexoIODelegateImpl.makeFileFlexoIODelegate(serializationArtefact, resourceFactory);
+	}
 
 	@ModelEntity
 	@ImplementationClass(FSBasedResourceCenterEntry.FSBasedResourceCenterEntryImpl.class)
@@ -778,9 +787,9 @@ public abstract class FileSystemBasedResourceCenter extends FileResourceReposito
 
 		@Implementation
 		public static abstract class FSBasedResourceCenterEntryImpl implements FSBasedResourceCenterEntry {
-			
+
 			private boolean isSystem = false;
-			
+
 			@Override
 			public DirectoryResourceCenter makeResourceCenter(FlexoResourceCenterService rcService) {
 				return DirectoryResourceCenter.instanciateNewDirectoryResourceCenter(getDirectory(), rcService);
@@ -793,17 +802,18 @@ public abstract class FileSystemBasedResourceCenter extends FileResourceReposito
 				}
 				return false;
 			}
-			
+
 			@Override
-			public boolean isSystemEntry(){
+			public boolean isSystemEntry() {
 				return isSystem;
 			}
+
 			@Override
-			public void setIsSystemEntry(boolean isSystemEntry){
+			public void setIsSystemEntry(boolean isSystemEntry) {
 				isSystem = isSystemEntry;
 			}
 		}
 
 	}
-	
+
 }

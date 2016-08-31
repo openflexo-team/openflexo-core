@@ -40,27 +40,20 @@ package org.openflexo.foundation.resource;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.StringWriter;
 import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.ServiceLoader;
 import java.util.jar.JarFile;
 import java.util.logging.Logger;
 
-import org.apache.commons.io.IOUtils;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.ViewPointRepository;
+import org.openflexo.foundation.resource.InJarFlexoIODelegate.InJarFlexoIODelegateImpl;
 import org.openflexo.foundation.task.Progress;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.model.annotations.Getter;
@@ -73,10 +66,8 @@ import org.openflexo.model.annotations.XMLElement;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.model.factory.ModelFactory;
 import org.openflexo.rm.ClasspathResourceLocatorImpl;
-import org.openflexo.rm.FileResourceImpl;
 import org.openflexo.rm.InJarResourceImpl;
 import org.openflexo.rm.JarResourceImpl;
-import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.toolbox.ClassPathUtils;
 import org.openflexo.toolbox.FlexoVersion;
@@ -90,17 +81,17 @@ import org.openflexo.toolbox.IProgress;
  * @param <R>
  */
 public class JarResourceCenter<R extends FlexoResource<?>> extends ResourceRepository<FlexoResource<?>>
-implements FlexoResourceCenter<InJarResourceImpl> {
+		implements FlexoResourceCenter<InJarResourceImpl> {
 
 	protected static final Logger logger = Logger.getLogger(ResourceRepository.class.getPackage().getName());
-	
+
 	/**
 	 * A jar file the resource center might interpret
 	 */
 	private final JarFile jarFile;
-	
-	/** A string that is used to identify the JarRC
-	 * and build uri of resources included in the RC
+
+	/**
+	 * A string that is used to identify the JarRC and build uri of resources included in the RC
 	 * 
 	 */
 	private String rcBaseUri;
@@ -320,8 +311,6 @@ implements FlexoResourceCenter<InJarResourceImpl> {
 		}
 	}
 
-
-
 	/**
 	 * Add the first jar from the class path found with this name Example : path of the jar in the class path :
 	 * c:/a/b/c/org/openflexo/myjar.jar Name : org.openflexo.myjar Return the c:/a/b/c/org/openflexo/myjar.jar
@@ -399,13 +388,13 @@ implements FlexoResourceCenter<InJarResourceImpl> {
 			}
 
 			@Override
-			public boolean isSystemEntry(){
+			public boolean isSystemEntry() {
 				// For now, jarRC are only added from ClassPath
 				return true;
 			}
 
 			@Override
-			public void setIsSystemEntry(boolean isSystemEntry){
+			public void setIsSystemEntry(boolean isSystemEntry) {
 				// Does Nothing
 			}
 		}
@@ -467,4 +456,16 @@ implements FlexoResourceCenter<InJarResourceImpl> {
 	public String getDefaultResourceURI(FlexoResource<?> resource) {
 		return resource.getName();
 	}
+
+	@Override
+	public String retrieveName(InJarResourceImpl serializationArtefact) {
+		return serializationArtefact.getURL().getFile();
+	}
+
+	@Override
+	public InJarFlexoIODelegate makeFlexoIODelegate(InJarResourceImpl serializationArtefact,
+			FlexoResourceFactory<?, ?, ?> resourceFactory) {
+		return InJarFlexoIODelegateImpl.makeInJarFlexoIODelegate(serializationArtefact, resourceFactory);
+	}
+
 }

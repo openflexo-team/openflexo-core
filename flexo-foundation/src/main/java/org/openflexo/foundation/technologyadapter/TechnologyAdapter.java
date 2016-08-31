@@ -41,6 +41,8 @@ package org.openflexo.foundation.technologyadapter;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -63,6 +65,7 @@ import org.openflexo.foundation.resource.FileFlexoIODelegate;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
+import org.openflexo.foundation.resource.FlexoResourceFactory;
 import org.openflexo.foundation.resource.RepositoryFolder;
 import org.openflexo.foundation.resource.ResourceRepository;
 import org.openflexo.localization.FlexoLocalization;
@@ -86,9 +89,17 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 
 	private TechnologyAdapterService technologyAdapterService;
 	private TechnologyContextManager<?> technologyContextManager;
+
+	private final List<FlexoResourceFactory<?, ?, ?>> resourceFactories;
+
 	private List<Class<? extends ModelSlot<?>>> availableModelSlotTypes;
 	private List<Class<? extends VirtualModelInstanceNature>> availableVirtualModelInstanceNatures;
-	private List<Class<? extends TechnologyAdapterResource<?, ?>>> availableResourceTypes;
+	private final List<Class<? extends TechnologyAdapterResource<?, ?>>> availableResourceTypes;
+
+	public TechnologyAdapter() {
+		resourceFactories = new ArrayList<>();
+		availableResourceTypes = new ArrayList<Class<? extends TechnologyAdapterResource<?, ?>>>();
+	}
 
 	private LocalizedDelegate locales = null;
 
@@ -151,6 +162,7 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 	public void activate() {
 		if (!isActivated()) {
 			technologyContextManager = createTechnologyContextManager(getTechnologyAdapterService().getFlexoResourceCenterService());
+			initResourceFactories();
 			initTechnologySpecificTypes(getTechnologyAdapterService());
 			locales = new LocalizedDelegateImpl(ResourceLocator.locateResource(getLocalizationDirectory()),
 					getTechnologyAdapterService().getServiceManager().getLocalizationService().getFlexoLocalizer(), true, true);
@@ -170,6 +182,10 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 
 	public boolean isActivated() {
 		return isActivated;
+	}
+
+	public List<FlexoResourceFactory<?, ?, ?>> getResourceFactories() {
+		return resourceFactories;
 	}
 
 	/**
@@ -300,77 +316,52 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 		return availableVirtualModelInstanceNatures;
 	}
 
-	public List<Class<? extends TechnologyAdapterResource<?, ?>>> getAvailableResourceTypes() {
-		if (availableResourceTypes == null) {
-			availableResourceTypes = computeAvailableResourceTypes();
-		}
-		return availableResourceTypes;
-	}
-
-	private List<Class<? extends TechnologyAdapterResource<?, ?>>> computeAvailableResourceTypes() {
-		availableResourceTypes = new ArrayList<Class<? extends TechnologyAdapterResource<?, ?>>>();
+	protected void initResourceFactories() {
+		resourceFactories.clear();
+		availableResourceTypes.clear();
 		Class<?> cl = getClass();
 		if (cl.isAnnotationPresent(DeclareResourceTypes.class)) {
 			DeclareResourceTypes allResourceTypes = cl.getAnnotation(DeclareResourceTypes.class);
-			for (Class<? extends TechnologyAdapterResource> resourceClass : allResourceTypes.value()) {
-				availableResourceTypes.add((Class<? extends TechnologyAdapterResource<?, ?>>) resourceClass);
-			}
-		}
-		return availableResourceTypes;
-	}
-
-	/*public List<Class<? extends TechnologySpecificType<?>>> getAvailableTechnologySpecificTypes() {
-		if (availableTechnologySpecificTypes == null) {
-			availableTechnologySpecificTypes = computeAvailableTechnologySpecificTypes();
-		}
-		return availableTechnologySpecificTypes;
-	}
-	
-	protected List<Class<? extends TechnologySpecificType<?>>> computeAvailableTechnologySpecificTypes() {
-		availableTechnologySpecificTypes = new ArrayList<Class<? extends TechnologySpecificType<?>>>();
-		appendDeclareTechnologySpecificTypes(availableTechnologySpecificTypes, getClass());
-		if (!availableTechnologySpecificTypes.contains(FlexoConceptInstanceType.class)) {
-			availableTechnologySpecificTypes.add(FlexoConceptInstanceType.class);
-		}
-		if (!availableTechnologySpecificTypes.contains(VirtualModelInstanceType.class)) {
-			availableTechnologySpecificTypes.add(VirtualModelInstanceType.class);
-		}
-		if (!availableTechnologySpecificTypes.contains(ViewType.class)) {
-			availableTechnologySpecificTypes.add(ViewType.class);
-		}
-	
-		if (hasTypeAwareModelSlot()) {
-			if (!availableTechnologySpecificTypes.contains(IndividualOfClass.class)) {
-				availableTechnologySpecificTypes.add((Class) IndividualOfClass.class);
-			}
-			if (!availableTechnologySpecificTypes.contains(SubClassOfClass.class)) {
-				availableTechnologySpecificTypes.add((Class) SubClassOfClass.class);
-			}
-			if (!availableTechnologySpecificTypes.contains(SubPropertyOfProperty.class)) {
-				availableTechnologySpecificTypes.add((Class) SubPropertyOfProperty.class);
-			}
-		}
-		return availableTechnologySpecificTypes;
-	}
-	
-	private void appendDeclareTechnologySpecificTypes(List<Class<? extends TechnologySpecificType<?>>> aList, Class<?> cl) {
-		if (cl.isAnnotationPresent(DeclareTechnologySpecificTypes.class)) {
-			DeclareTechnologySpecificTypes allTypes = cl.getAnnotation(DeclareTechnologySpecificTypes.class);
-			for (Class<? extends TechnologySpecificType<?>> typeClass : allTypes.value()) {
-				if (!availableTechnologySpecificTypes.contains(typeClass)) {
-					availableTechnologySpecificTypes.add(typeClass);
+			for (Class<? extends FlexoResourceFactory<?, ?, ?>> resourceFactoryClass : allResourceTypes.value()) {
+				Constructor<? extends FlexoResourceFactory<?, ?, ?>> constructor;
+				try {
+					constructor = resourceFactoryClass.getConstructor();
+					FlexoResourceFactory<?, ?, ?> newFactory = constructor.newInstance();
+					resourceFactories.add(newFactory);
+					availableResourceTypes.add(newFactory.getResourceClass());
+					logger.info("Initialized ResourceFactory for " + newFactory.getResourceClass().getSimpleName());
+				} catch (NoSuchMethodException e) {
+					logger.warning(
+							"Unexpected NoSuchMethodException while initializing ResourceFactory " + resourceFactoryClass.getSimpleName());
+					e.printStackTrace();
+				} catch (SecurityException e) {
+					logger.warning(
+							"Unexpected SecurityException while initializing ResourceFactory " + resourceFactoryClass.getSimpleName());
+					e.printStackTrace();
+				} catch (InstantiationException e) {
+					logger.warning(
+							"Unexpected InstantiationException while initializing ResourceFactory " + resourceFactoryClass.getSimpleName());
+					e.printStackTrace();
+				} catch (IllegalAccessException e) {
+					logger.warning(
+							"Unexpected IllegalAccessException while initializing ResourceFactory " + resourceFactoryClass.getSimpleName());
+					e.printStackTrace();
+				} catch (IllegalArgumentException e) {
+					logger.warning("Unexpected IllegalArgumentException while initializing ResourceFactory "
+							+ resourceFactoryClass.getSimpleName());
+					e.printStackTrace();
+				} catch (InvocationTargetException e) {
+					logger.warning("Unexpected InvocationTargetException while initializing ResourceFactory "
+							+ resourceFactoryClass.getSimpleName());
+					e.printStackTrace();
 				}
 			}
 		}
-		if (cl.getSuperclass() != null) {
-			appendDeclareTechnologySpecificTypes(aList, cl.getSuperclass());
-		}
-	
-		for (Class superInterface : cl.getInterfaces()) {
-			appendDeclareTechnologySpecificTypes(aList, superInterface);
-		}
-	
-	}*/
+	}
+
+	public List<Class<? extends TechnologyAdapterResource<?, ?>>> getAvailableResourceTypes() {
+		return availableResourceTypes;
+	}
 
 	/**
 	 * Creates and return a new {@link ModelSlot} of supplied class.<br>
@@ -508,7 +499,7 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 		return returned;
 	}
 
-	private Map<FlexoResourceCenter<?>, TechnologyAdapterGlobalRepository> globalRepositories = new HashMap<>();
+	private final Map<FlexoResourceCenter<?>, TechnologyAdapterGlobalRepository> globalRepositories = new HashMap<>();
 
 	public TechnologyAdapterGlobalRepository getGlobalRepository(FlexoResourceCenter<?> rc) {
 		TechnologyAdapterGlobalRepository returned = globalRepositories.get(rc);

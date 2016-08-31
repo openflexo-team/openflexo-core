@@ -64,7 +64,7 @@ import org.openflexo.toolbox.IProgress;
  * A {@link FlexoResourceCenter} is a symbolic repository storing {@link FlexoResource} from artefacts of type I
  * 
  * @param <I>
- *            I is the type of iterable artefacts this resource center stores
+ *            I is the type of iterable serialization artefacts this resource center stores
  * 
  * @author sylvain
  * 
@@ -82,26 +82,25 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, FlexoObject {
 	 */
 	@ModelEntity
 	@XMLElement
-	@Imports({ @Import(FSBasedResourceCenterEntry.class), @Import(RemoteResourceCenterEntry.class),
-			@Import(JarResourceCenterEntry.class) })
+	@Imports({ @Import(FSBasedResourceCenterEntry.class), @Import(RemoteResourceCenterEntry.class), @Import(JarResourceCenterEntry.class) })
 	public static interface ResourceCenterEntry<RC extends FlexoResourceCenter<?>> {
 
 		public RC makeResourceCenter(FlexoResourceCenterService rcService);
-		
+
 		/**
 		 * Tells if the ResourceCenterEntry has been declared at user ou system level
 		 * 
 		 * @return boolean
 		 */
 		public boolean isSystemEntry();
-		
+
 		/**
 		 * Sets ResourceCenterEntry has being declared at user ou system level
 		 * 
 		 * @return boolean
 		 */
 		public void setIsSystemEntry(boolean isSystem);
-		
+
 	}
 
 	/**
@@ -295,4 +294,20 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, FlexoObject {
 	 * @return
 	 */
 	public String getDefaultResourceURI(FlexoResource<?> resource);
+
+	/**
+	 * Retrieve name to be used as a name for resource, using supplied serialization artefact
+	 * 
+	 * @param serializationArtefact
+	 * @return
+	 */
+	public String retrieveName(I serializationArtefact);
+
+	/**
+	 * Build a new {@link FlexoIODelegate} for a given serialization artefact
+	 * 
+	 * @param serializationArtefact
+	 * @return
+	 */
+	public FlexoIODelegate<I> makeFlexoIODelegate(I serializationArtefact, FlexoResourceFactory<?, ?, ?> resourceFactory);
 }
