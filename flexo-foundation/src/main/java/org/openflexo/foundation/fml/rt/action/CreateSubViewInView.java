@@ -111,7 +111,7 @@ public class CreateSubViewInView extends CreateView<CreateSubViewInView, ViewRes
 
 	@Override
 	public ViewResource makeVirtualModelInstanceResource() throws SaveResourceException {
-		return ViewImpl.newSubView(getNewViewName(), getNewViewTitle(), getVirtualModel(), getFocusedObject(), getResourceCenter());
+		return ViewImpl.newSubView(getNewViewName(), getNewViewTitle(), getVirtualModel(), getFocusedObject(), getProject());
 	}
 
 	@Override
@@ -119,7 +119,7 @@ public class CreateSubViewInView extends CreateView<CreateSubViewInView, ViewRes
 
 		super.doAction(context);
 
-		logger.info("Added view " + getNewView() + " in view " + getFocusedObject() + " for project " + getResourceCenter());
+		logger.info("Added view " + getNewView() + " in view " + getFocusedObject() + " for project " + getProject());
 
 		// getViewLibrary().registerResource((ViewResource) getNewView().getResource(), getFocusedObject());
 

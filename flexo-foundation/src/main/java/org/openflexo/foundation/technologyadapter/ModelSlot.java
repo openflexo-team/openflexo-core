@@ -77,7 +77,6 @@ import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.ModelSlotInstance;
 import org.openflexo.foundation.fml.rt.action.ModelSlotInstanceConfiguration;
-import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.model.annotations.CloningStrategy;
 import org.openflexo.model.annotations.CloningStrategy.StrategyType;
@@ -237,7 +236,7 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>>
 	public abstract Object retrieveObjectWithURI(ModelSlotInstance<? extends ModelSlot<RD>, RD> msInstance, String objectURI);
 
 	public abstract ModelSlotInstanceConfiguration<? extends ModelSlot<RD>, RD> createConfiguration(
-			AbstractVirtualModelInstance<?, ?> virtualModelInstance, FlexoResourceCenter<?> rc);
+			AbstractVirtualModelInstance<?, ?> virtualModelInstance, FlexoProject project);
 
 	public String getModelSlotDescription();
 
@@ -635,7 +634,7 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>>
 
 		@Override
 		public abstract ModelSlotInstanceConfiguration<? extends ModelSlot<RD>, RD> createConfiguration(
-				AbstractVirtualModelInstance<?, ?> virtualModelInstance, FlexoResourceCenter<?> rc);
+				AbstractVirtualModelInstance<?, ?> virtualModelInstance, FlexoProject project);
 
 		/**
 		 * A Model Slot is responsible for URI mapping

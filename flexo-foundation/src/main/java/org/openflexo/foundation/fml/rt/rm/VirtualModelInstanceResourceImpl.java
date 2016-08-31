@@ -101,14 +101,15 @@ public abstract class VirtualModelInstanceResourceImpl extends AbstractVirtualMo
 
 			File xmlFile = new File(delegate.getFile().getParentFile(), baseName + VirtualModelInstanceResource.VIRTUAL_MODEL_SUFFIX);
 			returned.setFlexoIODelegate(FileFlexoIODelegateImpl.makeFileFlexoIODelegate(xmlFile, factory));
-			returned.setVirtualModelResource((VirtualModelResource) virtualModel.getResource());
-			returned.setResourceCenter(view.getResourceCenter());
-			returned.setServiceManager(view.getResourceCenter().getServiceManager());
-			returned.setFactory(new VirtualModelInstanceModelFactory(returned, view.getResourceCenter().getServiceManager().getEditingContext(),
-					view.getResourceCenter().getServiceManager().getTechnologyAdapterService()));
+			returned.setProject(view.getProject());
+			returned.setFactory(new VirtualModelInstanceModelFactory(returned, view.getProject().getServiceManager().getEditingContext(),
+					view.getProject().getServiceManager().getTechnologyAdapterService()));
 			returned.initName(name);
 			// returned.setURI(view.getResource().getURI() + "/" + baseName);
 			//System.out.println(">>>>>>>>>>> virtualModel=" + virtualModel);
+			returned.setVirtualModelResource((VirtualModelResource) virtualModel.getResource());
+			returned.setResourceCenter(view.getProject());
+			returned.setServiceManager(view.getProject().getServiceManager());
 
 			view.getResource().addToContents(returned);
 			view.getResource().notifyContentsAdded(returned);
@@ -135,10 +136,10 @@ public abstract class VirtualModelInstanceResourceImpl extends AbstractVirtualMo
 			FileFlexoIODelegate fileIODelegate = factory.newInstance(FileFlexoIODelegate.class);
 			returned.setFlexoIODelegate(fileIODelegate);
 			fileIODelegate.setFile(xmlFile);
-			returned.setResourceCenter(viewResource.getResourceCenter());
+			returned.setProject(viewResource.getProject());
 			returned.setFactory(
-					new VirtualModelInstanceModelFactory(returned, viewResource.getResourceCenter().getServiceManager().getEditingContext(),
-							viewResource.getResourceCenter().getServiceManager().getTechnologyAdapterService()));
+					new VirtualModelInstanceModelFactory(returned, viewResource.getProject().getServiceManager().getEditingContext(),
+							viewResource.getProject().getServiceManager().getTechnologyAdapterService()));
 			returned.initName(baseName);
 			// returned.setURI(viewResource.getURI() + "/" + baseName);
 			VirtualModelInstanceInfo vmiInfo = findVirtualModelInstanceInfo(xmlFile, "VirtualModelInstance");
@@ -156,8 +157,8 @@ public abstract class VirtualModelInstanceResourceImpl extends AbstractVirtualMo
 			}
 			viewResource.addToContents(returned);
 			viewResource.notifyContentsAdded(returned);
-			returned.setResourceCenter(viewResource.getResourceCenter());
-			returned.setServiceManager(viewResource.getResourceCenter().getServiceManager());
+			returned.setResourceCenter(viewResource.getProject());
+			returned.setServiceManager(viewResource.getProject().getServiceManager());
 			return returned;
 		} catch (ModelDefinitionException e) {
 			e.printStackTrace();

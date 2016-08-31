@@ -48,7 +48,6 @@ import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.fml.rt.View;
-import org.openflexo.foundation.resource.FlexoResourceCenter;
 
 public class DeleteView extends FlexoAction<DeleteView, View, FlexoObject> {
 
@@ -94,9 +93,9 @@ public class DeleteView extends FlexoAction<DeleteView, View, FlexoObject> {
 		}
 	}
 
-	public FlexoResourceCenter<?> getResourceCenter() {
+	public FlexoProject getProject() {
 		if (getFocusedObject() != null) {
-			return getFocusedObject().getResourceCenter();
+			return getFocusedObject().getProject();
 		}
 		return null;
 	}

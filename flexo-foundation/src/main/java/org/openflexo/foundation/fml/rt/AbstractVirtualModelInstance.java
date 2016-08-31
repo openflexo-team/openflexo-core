@@ -840,7 +840,7 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 				return getView();
 			}
 			else if (variable.getVariableName().equals(ViewPointBindingModel.PROJECT_PROPERTY)) {
-				return getResourceCenter();
+				return getProject();
 			}
 			else if (variable.getVariableName().equals(VirtualModelBindingModel.VIRTUAL_MODEL_INSTANCE_PROPERTY)) {
 				return this;
@@ -871,7 +871,7 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 						if (msi == null) {
 							AbstractVirtualModelInstance<?, ?> flexoConceptInstance = (AbstractVirtualModelInstance<?, ?>) getFlexoConceptInstance();
 							ModelSlotInstanceConfiguration<?, ?> msiConfiguration = ms.createConfiguration(flexoConceptInstance,
-									getResourceCenter());
+									getProject());
 							msiConfiguration.setOption(DefaultModelSlotInstanceConfigurationOption.SelectExistingResource);
 							msi = msiConfiguration.createModelSlotInstance(flexoConceptInstance, getView());
 							msi.setVirtualModelInstance(flexoConceptInstance);
@@ -884,7 +884,7 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 						if (msi == null) {
 							AbstractVirtualModelInstance<?, ?> flexoConceptInstance = (AbstractVirtualModelInstance<?, ?>) getFlexoConceptInstance();
 							ModelSlotInstanceConfiguration<?, ?> msiConfiguration = ms.createConfiguration(flexoConceptInstance,
-									getResourceCenter());
+									getProject());
 							msiConfiguration.setOption(DefaultModelSlotInstanceConfigurationOption.SelectExistingResource);
 							msi = msiConfiguration.createModelSlotInstance(flexoConceptInstance, getView());
 							msi.setVirtualModelInstance(flexoConceptInstance);

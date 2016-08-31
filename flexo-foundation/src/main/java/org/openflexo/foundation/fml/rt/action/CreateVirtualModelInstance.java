@@ -50,7 +50,6 @@ import org.openflexo.foundation.fml.rt.View;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance.VirtualModelInstanceImpl;
 import org.openflexo.foundation.fml.rt.rm.VirtualModelInstanceResource;
-import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.SaveResourceException;
 
 /**
@@ -90,9 +89,9 @@ public abstract class CreateVirtualModelInstance<A extends CreateVirtualModelIns
 	}
 
 	@Override
-	public FlexoResourceCenter<?> getResourceCenter() {
+	public FlexoProject getProject() {
 		if (getFocusedObject() != null) {
-			return getFocusedObject().getResourceCenter();
+			return getFocusedObject().getProject();
 		}
 		return null;
 	}

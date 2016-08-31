@@ -45,7 +45,6 @@ import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.ModelSlotInstance;
 import org.openflexo.foundation.fml.rt.View;
-import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.technologyadapter.FlexoMetaModelResource;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
@@ -64,7 +63,7 @@ public abstract class ModelSlotInstanceConfiguration<MS extends ModelSlot<RD>, R
 		extends DefaultFlexoObject {
 
 	private final AbstractVirtualModelInstance<?, ?> virtualModelInstance;
-	private final FlexoResourceCenter<?> rc;
+	private final FlexoProject project;
 	private final MS modelSlot;
 	private ModelSlotInstanceConfigurationOption option;
 
@@ -117,9 +116,9 @@ public abstract class ModelSlotInstanceConfiguration<MS extends ModelSlot<RD>, R
 		}
 	}
 
-	protected ModelSlotInstanceConfiguration(MS ms, AbstractVirtualModelInstance<?, ?> virtualModelInstance, FlexoResourceCenter<?> rc) {
+	protected ModelSlotInstanceConfiguration(MS ms, AbstractVirtualModelInstance<?, ?> virtualModelInstance, FlexoProject project) {
 		this.virtualModelInstance = virtualModelInstance;
-		this.rc = rc;
+		this.project = project;
 		modelSlot = ms;
 	}
 
@@ -127,8 +126,8 @@ public abstract class ModelSlotInstanceConfiguration<MS extends ModelSlot<RD>, R
 		return virtualModelInstance;
 	}
 
-	public FlexoResourceCenter<?> getResourceCenter() {
-		return rc;
+	public FlexoProject getProject() {
+		return project;
 	}
 
 	public MS getModelSlot() {
@@ -166,7 +165,7 @@ public abstract class ModelSlotInstanceConfiguration<MS extends ModelSlot<RD>, R
 
 	public boolean isValidConfiguration() {
 		if (option == null) {
-			setErrorMessage(getResourceCenter().getLocales().localizedForKey("please_select_an_option"));
+			setErrorMessage(getProject().getLocales().localizedForKey("please_select_an_option"));
 			return false;
 		}
 		return true;

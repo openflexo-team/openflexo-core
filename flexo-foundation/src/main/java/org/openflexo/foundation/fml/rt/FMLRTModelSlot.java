@@ -62,7 +62,6 @@ import org.openflexo.foundation.fml.rt.editionaction.AddVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.editionaction.DeleteFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.SelectFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.SelectVirtualModelInstance;
-import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.model.annotations.Getter;
@@ -150,8 +149,8 @@ public interface FMLRTModelSlot<VMI extends AbstractVirtualModelInstance<VMI, VM
 
 		@Override
 		public ModelSlotInstanceConfiguration<? extends FMLRTModelSlot<VMI, VM>, VMI> createConfiguration(
-				AbstractVirtualModelInstance<?, ?> virtualModelInstance, FlexoResourceCenter<?> rc) {
-			return new FMLRTModelSlotInstanceConfiguration(this, virtualModelInstance, rc);
+				AbstractVirtualModelInstance<?, ?> virtualModelInstance, FlexoProject project) {
+			return new FMLRTModelSlotInstanceConfiguration(this, virtualModelInstance, project);
 		}
 
 		protected AbstractVirtualModelResource<VM> virtualModelResource;

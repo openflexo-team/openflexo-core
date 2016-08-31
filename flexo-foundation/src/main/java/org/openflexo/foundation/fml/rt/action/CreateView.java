@@ -43,12 +43,12 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject;
+import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.rm.ViewPointResource;
 import org.openflexo.foundation.fml.rt.View;
 import org.openflexo.foundation.fml.rt.ViewLibrary;
-import org.openflexo.foundation.resource.FlexoResourceCenter;
 
 /**
  * Abstract base implementation for an action which aims at creating a new {@link View}
@@ -116,9 +116,9 @@ public abstract class CreateView<A extends CreateView<A, T>, T extends FlexoObje
 	public abstract ViewLibrary getViewLibrary();
 
 	@Override
-	public FlexoResourceCenter<?> getResourceCenter() {
+	public FlexoProject getProject() {
 		if (getViewLibrary() != null) {
-			return getViewLibrary().getResourceCenter();
+			return getViewLibrary().getProject();
 		}
 		return null;
 	}

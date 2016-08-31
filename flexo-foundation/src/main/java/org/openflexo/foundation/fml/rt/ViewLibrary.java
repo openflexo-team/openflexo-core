@@ -46,7 +46,6 @@ import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.rt.rm.AbstractVirtualModelInstanceResource;
 import org.openflexo.foundation.fml.rt.rm.ViewResource;
-import org.openflexo.foundation.resource.FlexoResourceCenter;
 
 /**
  * The {@link ViewLibrary} contains all {@link ViewResource} referenced in a {@link FlexoProject}<br>
@@ -62,24 +61,25 @@ public class ViewLibrary extends ViewRepository {
 
 	private static final String VIEWS = "Views";
 
-	private final FlexoResourceCenter<?> rc;
+	private final FlexoProject project;
 
 	/**
 	 * Create a new ViewLibrary.
 	 */
-	public ViewLibrary(FlexoResourceCenter<?> rc) {
-		super(rc.getServiceManager().getTechnologyAdapterService().getTechnologyAdapter(FMLRTTechnologyAdapter.class), rc);
-		this.rc = rc;
-		getRootFolder().setName(rc.getName());
-		getRootFolder().setFullQualifiedPath("/");
+	public ViewLibrary(FlexoProject project) {
+		super(project.getServiceManager().getTechnologyAdapterService().getTechnologyAdapter(FMLRTTechnologyAdapter.class), project,
+				/*getExpectedViewLibraryDirectory(project)*/project.getProjectDirectory());
+		this.project = project;
+		getRootFolder().setName(project.getName());
+		getRootFolder().setFullQualifiedPath(project.getProjectDirectory().getAbsolutePath());
 		// exploreDirectoryLookingForViews(getDirectory(), getRootFolder());
 
 	}
 
 	@Override
 	public FlexoServiceManager getServiceManager() {
-		if (getResourceCenter() != null) {
-			return getResourceCenter().getServiceManager();
+		if (getProject() != null) {
+			return getProject().getServiceManager();
 		}
 		return null;
 	}
@@ -104,8 +104,8 @@ public class ViewLibrary extends ViewRepository {
 		return returned;
 	}
 
-	public FlexoResourceCenter<?> getResourceCenter() {
-		return rc;
+	public FlexoProject getProject() {
+		return project;
 	}
 
 	public List<View> getViewsForViewPointWithURI(String vpURI) {
@@ -177,7 +177,7 @@ public class ViewLibrary extends ViewRepository {
 
 	@Override
 	public String getDefaultBaseURI() {
-		return getResourceCenter().getDefaultBaseURI() + "/" + VIEWS;
+		return getProject().getURI() + "/" + VIEWS;
 	}
 
 }
