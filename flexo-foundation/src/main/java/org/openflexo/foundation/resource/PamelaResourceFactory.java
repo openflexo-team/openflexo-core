@@ -63,9 +63,17 @@ public abstract class PamelaResourceFactory<R extends TechnologyAdapterResource<
 	}
 
 	@Override
-	protected <I> R initResource(I serializationArtefact, FlexoResourceCenter<I> resourceCenter,
+	protected <I> R initResourceForRetrieving(I serializationArtefact, FlexoResourceCenter<I> resourceCenter,
 			TechnologyContextManager<TA> technologyContextManager, String uri) throws ModelDefinitionException {
-		R returned = super.initResource(serializationArtefact, resourceCenter, technologyContextManager, uri);
+		R returned = super.initResourceForRetrieving(serializationArtefact, resourceCenter, technologyContextManager, uri);
+		returned.setFactory(makeResourceDataFactory(returned, technologyContextManager));
+		return returned;
+	}
+
+	@Override
+	protected <I> R initResourceForCreation(I serializationArtefact, FlexoResourceCenter<I> resourceCenter,
+			TechnologyContextManager<TA> technologyContextManager, String uri) throws ModelDefinitionException {
+		R returned = super.initResourceForCreation(serializationArtefact, resourceCenter, technologyContextManager, uri);
 		returned.setFactory(makeResourceDataFactory(returned, technologyContextManager));
 		return returned;
 	}

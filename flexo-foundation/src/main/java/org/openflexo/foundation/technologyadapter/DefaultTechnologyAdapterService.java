@@ -311,10 +311,10 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 	 * @return
 	 */
 	@Override
-	public List<ResourceRepository<?>> getAllRepositories(TechnologyAdapter technologyAdapter) {
-		List<ResourceRepository<?>> returned = new ArrayList<ResourceRepository<?>>();
+	public List<ResourceRepository<?, ?>> getAllRepositories(TechnologyAdapter technologyAdapter) {
+		List<ResourceRepository<?, ?>> returned = new ArrayList<ResourceRepository<?, ?>>();
 		for (FlexoResourceCenter<?> rc : getFlexoResourceCenterService().getResourceCenters()) {
-			Collection<ResourceRepository<?>> repCollection = rc.getRegistedRepositories(technologyAdapter);
+			Collection<? extends ResourceRepository<?, ?>> repCollection = rc.getRegistedRepositories(technologyAdapter);
 			if (repCollection != null) {
 				returned.addAll(repCollection);
 			}
@@ -330,15 +330,15 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 	 * @return
 	 */
 	@Override
-	public <RD extends ResourceData<RD>> List<ResourceRepository<? extends FlexoResource<RD>>> getAllRepositories(
+	public <RD extends ResourceData<RD>> List<ResourceRepository<? extends FlexoResource<RD>, ?>> getAllRepositories(
 			TechnologyAdapter technologyAdapter, Class<RD> resourceDataClass) {
-		List<ResourceRepository<? extends FlexoResource<RD>>> returned = new ArrayList<ResourceRepository<? extends FlexoResource<RD>>>();
+		List<ResourceRepository<? extends FlexoResource<RD>, ?>> returned = new ArrayList<>();
 		for (FlexoResourceCenter<?> rc : getFlexoResourceCenterService().getResourceCenters()) {
-			Collection<ResourceRepository<?>> repCollection = rc.getRegistedRepositories(technologyAdapter);
+			Collection<? extends ResourceRepository<?, ?>> repCollection = rc.getRegistedRepositories(technologyAdapter);
 			if (repCollection != null) {
-				for (ResourceRepository<?> rep : repCollection) {
+				for (ResourceRepository<?, ?> rep : repCollection) {
 					if (resourceDataClass.isAssignableFrom(rep.getResourceDataClass())) {
-						returned.add((ResourceRepository<? extends FlexoResource<RD>>) rep);
+						returned.add((ResourceRepository<? extends FlexoResource<RD>, ?>) rep);
 					}
 				}
 			}
@@ -354,14 +354,14 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 	 * @return
 	 */
 	@Override
-	public List<ModelRepository<?, ?, ?, ?, ?>> getAllModelRepositories(TechnologyAdapter technologyAdapter) {
-		List<ModelRepository<?, ?, ?, ?, ?>> returned = new ArrayList<ModelRepository<?, ?, ?, ?, ?>>();
+	public List<ModelRepository<?, ?, ?, ?, ?, ?>> getAllModelRepositories(TechnologyAdapter technologyAdapter) {
+		List<ModelRepository<?, ?, ?, ?, ?, ?>> returned = new ArrayList<>();
 		for (FlexoResourceCenter<?> rc : getFlexoResourceCenterService().getResourceCenters()) {
-			Collection<ResourceRepository<?>> repCollection = rc.getRegistedRepositories(technologyAdapter);
+			Collection<? extends ResourceRepository<?, ?>> repCollection = rc.getRegistedRepositories(technologyAdapter);
 			if (repCollection != null) {
-				for (ResourceRepository<?> rep : repCollection) {
+				for (ResourceRepository<?, ?> rep : repCollection) {
 					if (rep instanceof ModelRepository) {
-						returned.add((ModelRepository<?, ?, ?, ?, ?>) rep);
+						returned.add((ModelRepository<?, ?, ?, ?, ?, ?>) rep);
 					}
 				}
 			}
@@ -377,14 +377,14 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 	 * @return
 	 */
 	@Override
-	public List<MetaModelRepository<?, ?, ?, ?>> getAllMetaModelRepositories(TechnologyAdapter technologyAdapter) {
-		List<MetaModelRepository<?, ?, ?, ?>> returned = new ArrayList<MetaModelRepository<?, ?, ?, ?>>();
+	public List<MetaModelRepository<?, ?, ?, ?, ?>> getAllMetaModelRepositories(TechnologyAdapter technologyAdapter) {
+		List<MetaModelRepository<?, ?, ?, ?, ?>> returned = new ArrayList<>();
 		for (FlexoResourceCenter<?> rc : getFlexoResourceCenterService().getResourceCenters()) {
-			Collection<ResourceRepository<?>> repCollection = rc.getRegistedRepositories(technologyAdapter);
+			Collection<? extends ResourceRepository<?, ?>> repCollection = rc.getRegistedRepositories(technologyAdapter);
 			if (repCollection != null) {
-				for (ResourceRepository<?> rep : repCollection) {
+				for (ResourceRepository<?, ?> rep : repCollection) {
 					if (rep instanceof MetaModelRepository) {
-						returned.add((MetaModelRepository<?, ?, ?, ?>) rep);
+						returned.add((MetaModelRepository<?, ?, ?, ?, ?>) rep);
 					}
 				}
 			}

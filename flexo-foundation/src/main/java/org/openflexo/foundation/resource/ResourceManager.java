@@ -299,7 +299,7 @@ public class ResourceManager extends FlexoServiceImpl implements FlexoService {
 	 * @param technologyAdapter
 	 * @return
 	 */
-	public List<ResourceRepository<?>> getAllRepositories(TechnologyAdapter technologyAdapter) {
+	public List<ResourceRepository<?, ?>> getAllRepositories(TechnologyAdapter technologyAdapter) {
 		if (getServiceManager() != null) {
 			return getServiceManager().getTechnologyAdapterService().getAllRepositories(technologyAdapter);
 		}
@@ -313,7 +313,7 @@ public class ResourceManager extends FlexoServiceImpl implements FlexoService {
 	 * @param technologyAdapter
 	 * @return
 	 */
-	public <RD extends ResourceData<RD>> List<ResourceRepository<? extends FlexoResource<RD>>> getAllRepositories(
+	public <RD extends ResourceData<RD>> List<ResourceRepository<? extends FlexoResource<RD>, ?>> getAllRepositories(
 			TechnologyAdapter technologyAdapter, Class<RD> resourceDataClass) {
 		if (getServiceManager() != null) {
 			return getServiceManager().getTechnologyAdapterService().getAllRepositories(technologyAdapter, resourceDataClass);
@@ -407,7 +407,7 @@ public class ResourceManager extends FlexoServiceImpl implements FlexoService {
 	 * @param technologyAdapter
 	 * @return
 	 */
-	public List<ModelRepository<?, ?, ?, ?, ?>> getAllModelRepositories(TechnologyAdapter technologyAdapter) {
+	public List<ModelRepository<?, ?, ?, ?, ?, ?>> getAllModelRepositories(TechnologyAdapter technologyAdapter) {
 		if (getServiceManager() != null) {
 			return getServiceManager().getTechnologyAdapterService().getAllModelRepositories(technologyAdapter);
 		}
@@ -421,7 +421,7 @@ public class ResourceManager extends FlexoServiceImpl implements FlexoService {
 	 * @param technologyAdapter
 	 * @return
 	 */
-	public List<MetaModelRepository<?, ?, ?, ?>> getAllMetaModelRepositories(TechnologyAdapter technologyAdapter) {
+	public List<MetaModelRepository<?, ?, ?, ?, ?>> getAllMetaModelRepositories(TechnologyAdapter technologyAdapter) {
 		if (getServiceManager() != null) {
 			return getServiceManager().getTechnologyAdapterService().getAllMetaModelRepositories(technologyAdapter);
 		}

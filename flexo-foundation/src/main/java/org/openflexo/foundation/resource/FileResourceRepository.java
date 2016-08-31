@@ -50,7 +50,9 @@ import java.util.logging.Logger;
  * @param <R>
  * @param <TA>
  */
-public abstract class FileResourceRepository<R extends FlexoResource<?>> extends ResourceRepository<R> {
+@Deprecated
+// Should be removed
+public abstract class FileResourceRepository<R extends FlexoResource<?>> extends ResourceRepository<R, File> {
 
 	private static final Logger logger = Logger.getLogger(FileResourceRepository.class.getPackage().getName());
 
@@ -59,7 +61,7 @@ public abstract class FileResourceRepository<R extends FlexoResource<?>> extends
 	/**
 	 * Creates a new {@link FileResourceRepository}
 	 */
-	public FileResourceRepository(FlexoResourceCenter<?> resourceCenter, File directory) {
+	public FileResourceRepository(FlexoResourceCenter<File> resourceCenter, File directory) {
 		super(resourceCenter);
 		this.directory = directory;
 	}

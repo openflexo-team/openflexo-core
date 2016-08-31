@@ -65,29 +65,29 @@ import org.openflexo.toolbox.StringUtils;
  * @author sylvain
  * 
  */
-public class CreateViewPoint extends AbstractCreateVirtualModel<CreateViewPoint, RepositoryFolder<ViewPointResource>, FMLObject> {
+public class CreateViewPoint extends AbstractCreateVirtualModel<CreateViewPoint, RepositoryFolder<ViewPointResource, ?>, FMLObject> {
 
 	private static final Logger logger = Logger.getLogger(CreateViewPoint.class.getPackage().getName());
 
-	public static FlexoActionType<CreateViewPoint, RepositoryFolder<ViewPointResource>, FMLObject> actionType = new FlexoActionType<CreateViewPoint, RepositoryFolder<ViewPointResource>, FMLObject>(
+	public static FlexoActionType<CreateViewPoint, RepositoryFolder<ViewPointResource, ?>, FMLObject> actionType = new FlexoActionType<CreateViewPoint, RepositoryFolder<ViewPointResource, ?>, FMLObject>(
 			"create_viewpoint", FlexoActionType.newMenu, FlexoActionType.defaultGroup, FlexoActionType.ADD_ACTION_TYPE) {
 
 		/**
 		 * Factory method
 		 */
 		@Override
-		public CreateViewPoint makeNewAction(RepositoryFolder<ViewPointResource> focusedObject, Vector<FMLObject> globalSelection,
+		public CreateViewPoint makeNewAction(RepositoryFolder<ViewPointResource, ?> focusedObject, Vector<FMLObject> globalSelection,
 				FlexoEditor editor) {
 			return new CreateViewPoint(focusedObject, globalSelection, editor);
 		}
 
 		@Override
-		public boolean isVisibleForSelection(RepositoryFolder<ViewPointResource> object, Vector<FMLObject> globalSelection) {
+		public boolean isVisibleForSelection(RepositoryFolder<ViewPointResource, ?> object, Vector<FMLObject> globalSelection) {
 			return object.getResourceRepository() instanceof ViewPointRepository;
 		}
 
 		@Override
-		public boolean isEnabledForSelection(RepositoryFolder<ViewPointResource> object, Vector<FMLObject> globalSelection) {
+		public boolean isEnabledForSelection(RepositoryFolder<ViewPointResource, ?> object, Vector<FMLObject> globalSelection) {
 			return object != null;
 		}
 
@@ -134,7 +134,7 @@ public class CreateViewPoint extends AbstractCreateVirtualModel<CreateViewPoint,
 				getFocusedObject().getResourceRepository().getResourceCenter());
 		newViewPoint.setDescription(getNewViewPointDescription());
 
-		vpRepository.registerResource((ViewPointResource) newViewPoint.getResource(), getFocusedObject());
+		vpRepository.registerResource(newViewPoint.getResource(), getFocusedObject());
 
 	}
 

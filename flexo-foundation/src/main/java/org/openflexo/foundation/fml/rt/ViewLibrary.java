@@ -38,6 +38,7 @@
 
 package org.openflexo.foundation.fml.rt;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -55,7 +56,7 @@ import org.openflexo.foundation.fml.rt.rm.ViewResource;
  * @author sylvain
  */
 
-public class ViewLibrary extends ViewRepository {
+public class ViewLibrary extends ViewRepository<File> {
 
 	private static final Logger logger = Logger.getLogger(ViewLibrary.class.getPackage().getName());
 

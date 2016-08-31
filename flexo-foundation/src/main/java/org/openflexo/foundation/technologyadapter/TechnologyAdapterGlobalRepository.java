@@ -46,7 +46,7 @@ import org.openflexo.foundation.resource.FlexoResourceCenter;
  * @author sylvain
  * 
  */
-public class TechnologyAdapterGlobalRepository extends TechnologyAdapterFileResourceRepository {
+public class TechnologyAdapterGlobalRepository extends TechnologyAdapterResourceRepository {
 
 	public TechnologyAdapterGlobalRepository(TechnologyAdapter adapter, FlexoResourceCenter<?> resourceCenter) {
 		super(adapter, resourceCenter);

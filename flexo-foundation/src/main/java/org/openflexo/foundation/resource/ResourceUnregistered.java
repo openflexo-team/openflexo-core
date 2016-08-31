@@ -44,14 +44,14 @@ import org.openflexo.foundation.FlexoService.ServiceNotification;
 
 public class ResourceUnregistered extends DataModification implements ServiceNotification {
 
-	private RepositoryFolder<?> folder;
+	private RepositoryFolder<?, ?> folder;
 
-	public ResourceUnregistered(FlexoResource<?> resource, RepositoryFolder<?> folder) {
+	public ResourceUnregistered(FlexoResource<?> resource, RepositoryFolder<?, ?> folder) {
 		super("resources", null, resource);
 		this.folder = folder;
 	}
 
-	public RepositoryFolder<?> getFolder() {
+	public RepositoryFolder<?, ?> getFolder() {
 		return folder;
 	}
 

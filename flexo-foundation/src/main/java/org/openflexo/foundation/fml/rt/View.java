@@ -137,7 +137,7 @@ public interface View extends AbstractVirtualModelInstance<View, ViewPoint> {
 
 	public ViewPoint getViewPoint();
 
-	public RepositoryFolder<ViewResource> getFolder();
+	public RepositoryFolder<ViewResource, ?> getFolder();
 
 	public ViewLibrary getViewLibrary();
 
@@ -150,7 +150,7 @@ public interface View extends AbstractVirtualModelInstance<View, ViewPoint> {
 	 */
 	public List<TechnologyAdapter> getRequiredTechnologyAdapters();
 
-	public static abstract class ViewImpl extends AbstractVirtualModelInstanceImpl<View, ViewPoint> implements View {
+	public static abstract class ViewImpl extends AbstractVirtualModelInstanceImpl<View, ViewPoint>implements View {
 
 		private static final Logger logger = Logger.getLogger(View.class.getPackage().getName());
 
@@ -159,7 +159,7 @@ public interface View extends AbstractVirtualModelInstance<View, ViewPoint> {
 		// private final List<ModelSlotInstance<?, ?>> modelSlotInstances;
 
 		// TODO: move this to ViewResource
-		public static ViewResource newView(String viewName, String viewTitle, ViewPoint viewPoint, RepositoryFolder<ViewResource> folder,
+		public static ViewResource newView(String viewName, String viewTitle, ViewPoint viewPoint, RepositoryFolder<ViewResource, ?> folder,
 				FlexoProject project) throws SaveResourceException {
 
 			ViewResource newViewResource = ViewResourceImpl.makeViewResource(viewName, folder, viewPoint, project.getViewLibrary());
@@ -328,7 +328,7 @@ public interface View extends AbstractVirtualModelInstance<View, ViewPoint> {
 		}
 
 		@Override
-		public RepositoryFolder<ViewResource> getFolder() {
+		public RepositoryFolder<ViewResource, ?> getFolder() {
 			if (getResource() != null) {
 				return getViewLibrary().getParentFolder((ViewResource) getResource());
 			}

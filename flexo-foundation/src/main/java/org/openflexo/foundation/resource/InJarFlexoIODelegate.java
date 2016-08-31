@@ -51,6 +51,7 @@ import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLElement;
 import org.openflexo.model.factory.ModelFactory;
 import org.openflexo.rm.InJarResourceImpl;
+import org.openflexo.rm.Resource;
 
 @ModelEntity
 @ImplementationClass(InJarFlexoIODelegate.InJarFlexoIODelegateImpl.class)
@@ -138,10 +139,16 @@ public interface InJarFlexoIODelegate extends FlexoIOStreamDelegate<InJarResourc
 		}
 
 		@Override
-		public RepositoryFolder<?> getRepositoryFolder(ResourceRepository<?> resourceRepository, boolean createWhenNonExistent)
-				throws IOException {
+		public RepositoryFolder<?, InJarResourceImpl> getRepositoryFolder(ResourceRepository<?, InJarResourceImpl> resourceRepository,
+				boolean createWhenNonExistent) throws IOException {
 			return resourceRepository.getRootFolder();
 		}
+
+		@Override
+		public Resource getSerializationArtefactAsResource() {
+			return getSerializationArtefact();
+		}
+
 	}
 
 }

@@ -80,7 +80,7 @@ import org.openflexo.toolbox.IProgress;
  *
  * @param <R>
  */
-public class JarResourceCenter<R extends FlexoResource<?>> extends ResourceRepository<FlexoResource<?>>
+public class JarResourceCenter<R extends FlexoResource<?>> extends ResourceRepository<FlexoResource<?>, InJarResourceImpl>
 		implements FlexoResourceCenter<InJarResourceImpl> {
 
 	protected static final Logger logger = Logger.getLogger(ResourceRepository.class.getPackage().getName());
@@ -142,7 +142,7 @@ public class JarResourceCenter<R extends FlexoResource<?>> extends ResourceRepos
 	}
 
 	@Override
-	public FlexoResourceCenter<?> getResourceCenter() {
+	public JarResourceCenter<R> getResourceCenter() {
 		return this;
 	}
 
@@ -204,13 +204,14 @@ public class JarResourceCenter<R extends FlexoResource<?>> extends ResourceRepos
 		return "unset";
 	}
 
-	private final HashMap<TechnologyAdapter, HashMap<Class<? extends ResourceRepository<?>>, ResourceRepository<?>>> repositories = new HashMap<TechnologyAdapter, HashMap<Class<? extends ResourceRepository<?>>, ResourceRepository<?>>>();
+	private final HashMap<TechnologyAdapter, HashMap<Class<? extends ResourceRepository<?, InJarResourceImpl>>, ResourceRepository<?, InJarResourceImpl>>> repositories = new HashMap<>();
 
-	private HashMap<Class<? extends ResourceRepository<?>>, ResourceRepository<?>> getRepositoriesForAdapter(
+	private HashMap<Class<? extends ResourceRepository<?, InJarResourceImpl>>, ResourceRepository<?, InJarResourceImpl>> getRepositoriesForAdapter(
 			TechnologyAdapter technologyAdapter) {
-		HashMap<Class<? extends ResourceRepository<?>>, ResourceRepository<?>> map = repositories.get(technologyAdapter);
+		HashMap<Class<? extends ResourceRepository<?, InJarResourceImpl>>, ResourceRepository<?, InJarResourceImpl>> map = repositories
+				.get(technologyAdapter);
 		if (map == null) {
-			map = new HashMap<Class<? extends ResourceRepository<?>>, ResourceRepository<?>>();
+			map = new HashMap<Class<? extends ResourceRepository<?, InJarResourceImpl>>, ResourceRepository<?, InJarResourceImpl>>();
 			repositories.put(technologyAdapter, map);
 		}
 		return map;
@@ -218,16 +219,19 @@ public class JarResourceCenter<R extends FlexoResource<?>> extends ResourceRepos
 
 	@SuppressWarnings({ "hiding", "unchecked" })
 	@Override
-	public final <R extends ResourceRepository<?>> R getRepository(Class<? extends R> repositoryType, TechnologyAdapter technologyAdapter) {
-		HashMap<Class<? extends ResourceRepository<?>>, ResourceRepository<?>> map = getRepositoriesForAdapter(technologyAdapter);
+	public final <R extends ResourceRepository<?, InJarResourceImpl>> R getRepository(Class<? extends R> repositoryType,
+			TechnologyAdapter technologyAdapter) {
+		HashMap<Class<? extends ResourceRepository<?, InJarResourceImpl>>, ResourceRepository<?, InJarResourceImpl>> map = getRepositoriesForAdapter(
+				technologyAdapter);
 		return (R) map.get(repositoryType);
 	}
 
 	@SuppressWarnings("hiding")
 	@Override
-	public final <R extends ResourceRepository<?>> void registerRepository(R repository, Class<? extends R> repositoryType,
-			TechnologyAdapter technologyAdapter) {
-		HashMap<Class<? extends ResourceRepository<?>>, ResourceRepository<?>> map = getRepositoriesForAdapter(technologyAdapter);
+	public final <R extends ResourceRepository<?, InJarResourceImpl>> void registerRepository(R repository,
+			Class<? extends R> repositoryType, TechnologyAdapter technologyAdapter) {
+		HashMap<Class<? extends ResourceRepository<?, InJarResourceImpl>>, ResourceRepository<?, InJarResourceImpl>> map = getRepositoriesForAdapter(
+				technologyAdapter);
 		if (map.get(repositoryType) == null) {
 			map.put(repositoryType, repository);
 		}
@@ -237,7 +241,7 @@ public class JarResourceCenter<R extends FlexoResource<?>> extends ResourceRepos
 	}
 
 	@Override
-	public Collection<ResourceRepository<?>> getRegistedRepositories(TechnologyAdapter technologyAdapter) {
+	public Collection<ResourceRepository<?, InJarResourceImpl>> getRegistedRepositories(TechnologyAdapter technologyAdapter) {
 		return getRepositoriesForAdapter(technologyAdapter).values();
 	}
 
@@ -466,6 +470,13 @@ public class JarResourceCenter<R extends FlexoResource<?>> extends ResourceRepos
 	public InJarFlexoIODelegate makeFlexoIODelegate(InJarResourceImpl serializationArtefact,
 			FlexoResourceFactory<?, ?, ?> resourceFactory) {
 		return InJarFlexoIODelegateImpl.makeInJarFlexoIODelegate(serializationArtefact, resourceFactory);
+	}
+
+	@Override
+	public <R extends FlexoResource<?>> RepositoryFolder<R, InJarResourceImpl> getRepositoryFolder(
+			FlexoIODelegate<InJarResourceImpl> ioDelegate, ResourceRepository<R, InJarResourceImpl> resourceRepository) {
+		// TODO
+		return null;
 	}
 
 }

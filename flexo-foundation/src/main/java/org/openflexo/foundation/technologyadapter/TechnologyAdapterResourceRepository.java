@@ -1,6 +1,7 @@
 /**
  * 
- * Copyright (c) 2014, Openflexo
+ * Copyright (c) 2013-2014, Openflexo
+ * Copyright (c) 2012-2012, AgileBirds
  * 
  * This file is part of Flexo-foundation, a component of the software infrastructure 
  * developed at Openflexo.
@@ -38,10 +39,8 @@
 
 package org.openflexo.foundation.technologyadapter;
 
-import java.io.File;
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.resource.FileSystemBasedResourceCenter;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.ResourceData;
@@ -56,40 +55,31 @@ import org.openflexo.foundation.resource.ResourceRepository;
  * @param <R>
  * @param <TA>
  */
-public abstract class TechnologyAdapterResourceRepository<R extends TechnologyAdapterResource<RD, TA> & FlexoResource<RD>, TA extends TechnologyAdapter, RD extends ResourceData<RD> & TechnologyObject<TA>>
-		extends ResourceRepository<R> {
+public abstract class TechnologyAdapterResourceRepository<R extends TechnologyAdapterResource<RD, TA> & FlexoResource<RD>, TA extends TechnologyAdapter, RD extends ResourceData<RD> & TechnologyObject<TA>, I>
+		extends ResourceRepository<R, I> {
 
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TechnologyAdapterResourceRepository.class.getPackage().getName());
 
 	private final TA technologyAdapter;
-	private FlexoResourceCenter<?> resourceCenter;
 
-	public TechnologyAdapterResourceRepository(TA technologyAdapter, FlexoResourceCenter<?> resourceCenter) {
-		this(technologyAdapter, resourceCenter,
-				resourceCenter instanceof FileSystemBasedResourceCenter ? ((FileSystemBasedResourceCenter) resourceCenter)
-						.getRootDirectory() : null);
-	}
-
-	public TechnologyAdapterResourceRepository(TA technologyAdapter, FlexoResourceCenter<?> resourceCenter, File directory) {
+	public TechnologyAdapterResourceRepository(TA technologyAdapter, FlexoResourceCenter<I> resourceCenter) {
+		// this(technologyAdapter, resourceCenter, resourceCenter instanceof FileSystemBasedResourceCenter
+		// ? ((FileSystemBasedResourceCenter) resourceCenter).getRootDirectory() : null);
 		super(resourceCenter);
 		this.technologyAdapter = technologyAdapter;
-		this.resourceCenter = resourceCenter;
-		// getRootFolder().setName(resourceCenter.getName());
 		getRootFolder().setFullQualifiedPath(resourceCenter.getName());
 		getRootFolder().setDescription(
-				"Resource Repository for technology " + technologyAdapter.getName() + " resource center: " + resourceCenter);
+				"FileResource Repository for technology " + technologyAdapter.getName() + " resource center: " + resourceCenter);
+	}
+
+	public TechnologyAdapterResourceRepository(TA technologyAdapter, FlexoResourceCenter<I> resourceCenter, I baseArtefact) {
+		this(technologyAdapter, resourceCenter);
+		setBaseArtefact(baseArtefact);
 	}
 
 	public TA getTechnologyAdapter() {
 		return technologyAdapter;
-	}
-
-	public FlexoResourceCenter getResourceCenter() {
-		return resourceCenter;
-	}
-
-	public void setResourceCenter(FlexoResourceCenter resourceCenter) {
-		this.resourceCenter = resourceCenter;
 	}
 
 }

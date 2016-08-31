@@ -59,7 +59,7 @@ public abstract class FlexoResourceFactory<R extends TechnologyAdapterResource<R
 	 * @throws ModelDefinitionException
 	 */
 	protected FlexoResourceFactory(Class<R> resourceClass) throws ModelDefinitionException {
-		super(ModelContextLibrary.getCompoundModelContext(resourceClass, FileFlexoIODelegate.class));
+		super(ModelContextLibrary.getCompoundModelContext(resourceClass, FileFlexoIODelegate.class, DirectoryBasedFlexoIODelegate.class));
 		this.resourceClass = resourceClass;
 	}
 
@@ -79,13 +79,16 @@ public abstract class FlexoResourceFactory<R extends TechnologyAdapterResource<R
 	 * @param serializationArtefact
 	 * @param resourceCenter
 	 * @param technologyContextManager
+	 * @param createEmptyContents
+	 *            when set to true, initiate contents of resource with technology specific empty contents
 	 * @return
 	 * @throws SaveResourceException
 	 * @throws ModelDefinitionException
 	 */
 	public <I> R makeResource(I serializationArtefact, FlexoResourceCenter<I> resourceCenter,
-			TechnologyContextManager<TA> technologyContextManager) throws SaveResourceException, ModelDefinitionException {
-		return makeResource(serializationArtefact, resourceCenter, technologyContextManager, null);
+			TechnologyContextManager<TA> technologyContextManager, boolean createEmptyContents)
+					throws SaveResourceException, ModelDefinitionException {
+		return makeResource(serializationArtefact, resourceCenter, technologyContextManager, null, createEmptyContents);
 	}
 
 	/**
@@ -102,13 +105,30 @@ public abstract class FlexoResourceFactory<R extends TechnologyAdapterResource<R
 	 * @throws ModelDefinitionException
 	 */
 	public <I> R makeResource(I serializationArtefact, FlexoResourceCenter<I> resourceCenter,
-			TechnologyContextManager<TA> technologyContextManager, String uri) throws SaveResourceException, ModelDefinitionException {
-		R returned = initResource(serializationArtefact, resourceCenter, technologyContextManager, uri);
-		registerResource(returned, serializationArtefact, resourceCenter, technologyContextManager);
+			TechnologyContextManager<TA> technologyContextManager, String uri, boolean createEmptyContents)
+					throws SaveResourceException, ModelDefinitionException {
+		R returned = initResourceForCreation(serializationArtefact, resourceCenter, technologyContextManager, uri);
+		registerResource(returned, resourceCenter, technologyContextManager);
+
+		if (createEmptyContents) {
+			RD resourceData = makeEmptyResourceData(returned);
+			resourceData.setResource(returned);
+			returned.setResourceData(resourceData);
+			returned.setModified(true);
+			returned.save(null);
+		}
 
 		returned.setResourceData(makeEmptyResourceData(returned));
 		returned.save(null);
 
+		return returned;
+	}
+
+	protected <I> R initResourceForCreation(I serializationArtefact, FlexoResourceCenter<I> resourceCenter,
+			TechnologyContextManager<TA> technologyContextManager, String uri) throws ModelDefinitionException {
+		R returned = newInstance(resourceClass);
+		returned.initName(resourceCenter.retrieveName(serializationArtefact));
+		returned.setFlexoIODelegate(makeFlexoIODelegate(serializationArtefact, resourceCenter));
 		return returned;
 	}
 
@@ -122,27 +142,77 @@ public abstract class FlexoResourceFactory<R extends TechnologyAdapterResource<R
 	 */
 	public <I> R retrieveResource(I serializationArtefact, FlexoResourceCenter<I> resourceCenter,
 			TechnologyContextManager<TA> technologyContextManager) throws ModelDefinitionException {
-		R returned = initResource(serializationArtefact, resourceCenter, technologyContextManager, null);
-		registerResource(returned, serializationArtefact, resourceCenter, technologyContextManager);
+		R returned = initResourceForRetrieving(serializationArtefact, resourceCenter, technologyContextManager, null);
+		registerResource(returned, resourceCenter, technologyContextManager);
 		return returned;
 	}
 
-	protected <I> R initResource(I serializationArtefact, FlexoResourceCenter<I> resourceCenter,
+	protected <I> R initResourceForRetrieving(I serializationArtefact, FlexoResourceCenter<I> resourceCenter,
 			TechnologyContextManager<TA> technologyContextManager, String uri) throws ModelDefinitionException {
 		R returned = newInstance(resourceClass);
 		returned.initName(resourceCenter.retrieveName(serializationArtefact));
-		returned.setFlexoIODelegate(resourceCenter.makeFlexoIODelegate(serializationArtefact, this));
+		returned.setFlexoIODelegate(makeFlexoIODelegate(serializationArtefact, resourceCenter));
 		return returned;
 	}
 
-	protected <I> R registerResource(R resource, I serializationArtefact, FlexoResourceCenter<I> resourceCenter,
+	protected <I> FlexoIODelegate<I> makeFlexoIODelegate(I serializationArtefact, FlexoResourceCenter<I> resourceCenter) {
+		return resourceCenter.makeFlexoIODelegate(serializationArtefact, this);
+	}
+
+	/**
+	 * Called to register a resource in a given {@link FlexoResourceCenter} and a given technology
+	 * 
+	 * @param resource
+	 * @param resourceCenter
+	 * @param technologyContextManager
+	 * @return
+	 */
+	protected <I> R registerResource(R resource, FlexoResourceCenter<I> resourceCenter,
 			TechnologyContextManager<TA> technologyContextManager) {
 		resource.setResourceCenter(resourceCenter);
 		resource.setServiceManager(technologyContextManager.getServiceManager());
 		resource.setTechnologyAdapter(technologyContextManager.getTechnologyAdapter());
 		resource.setTechnologyContextManager(technologyContextManager);
 		technologyContextManager.registerResource(resource);
+
+		// Register the resource in the global repository of technology adapter
+		registerResourceInResourceRepository(resource, technologyContextManager.getTechnologyAdapter().getGlobalRepository(resourceCenter));
+
+		// Also register the resource in the ResourceCenter seen as a ResourceRepository
+		if (resourceCenter instanceof ResourceRepository) {
+			registerResourceInResourceRepository(resource, (ResourceRepository) resourceCenter);
+		}
+
 		return resource;
+	}
+
+	/**
+	 * Called to unregister a resource from a given {@link FlexoResourceCenter} and a given technology
+	 * 
+	 * @param resource
+	 * @param resourceCenter
+	 * @param technologyContextManager
+	 * @return
+	 */
+	protected <I> R unregisterResource(R resource, FlexoResourceCenter<I> resourceCenter,
+			TechnologyContextManager<TA> technologyContextManager) {
+		// TODO
+		logger.warning("unregisterResource() not implemented yet");
+		return resource;
+	}
+
+	/**
+	 * Internally called to register a {@link FlexoResource} in a {@link ResourceRepository}<br>
+	 * Folder in computed according to I/O delegate type
+	 * 
+	 * @param resource
+	 * @param resourceRepository
+	 */
+	protected <I> void registerResourceInResourceRepository(R resource, ResourceRepository<R, I> resourceRepository) {
+		FlexoResourceCenter<I> resourceCenter = resourceRepository.getResourceCenter();
+		FlexoIODelegate<I> ioDelegate = (FlexoIODelegate<I>) resource.getFlexoIODelegate();
+		RepositoryFolder<R, I> folder = resourceCenter.getRepositoryFolder(ioDelegate, resourceRepository);
+		resourceRepository.registerResource(resource, folder);
 	}
 
 	/**

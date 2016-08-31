@@ -86,7 +86,7 @@ import org.openflexo.toolbox.StringUtils;
  * @author sylvain
  * 
  */
-public abstract class FileSystemBasedResourceCenter extends FileResourceRepository<FlexoResource<?>> implements FlexoResourceCenter<File> {
+public abstract class FileSystemBasedResourceCenter extends ResourceRepository<FlexoResource<?>, File>implements FlexoResourceCenter<File> {
 
 	protected static final Logger logger = Logger.getLogger(FileSystemBasedResourceCenter.class.getPackage().getName());
 
@@ -96,19 +96,24 @@ public abstract class FileSystemBasedResourceCenter extends FileResourceReposito
 
 	private final FileSystemMetaDataManager fsMetaDataManager = new FileSystemMetaDataManager();
 
-	private final Map<TechnologyAdapter, HashMap<Class<? extends ResourceRepository<?>>, ResourceRepository<?>>> repositories = new HashMap<>();
+	private final Map<TechnologyAdapter, HashMap<Class<? extends ResourceRepository<?, File>>, ResourceRepository<?, File>>> repositories = new HashMap<>();
 	// private final Map<TechnologyAdapter, ResourceRepository<?>> globalRepositories = new HashMap<>();
 
 	public FileSystemBasedResourceCenter(File rootDirectory, FlexoResourceCenterService rcService) {
-		super(null, rootDirectory);
+		super(null);
+		setBaseArtefact(rootDirectory);
 		this.rcService = rcService;
 		this.rootDirectory = rootDirectory;
 		startDirectoryWatching();
 	}
 
 	@Override
-	public FlexoResourceCenter<?> getResourceCenter() {
+	public FlexoResourceCenter<File> getResourceCenter() {
 		return this;
+	}
+
+	public File getDirectory() {
+		return getRootDirectory();
 	}
 
 	public File getRootDirectory() {
@@ -124,7 +129,7 @@ public abstract class FileSystemBasedResourceCenter extends FileResourceReposito
 			return null;
 		}
 
-		RepositoryFolder<?> folder = null;
+		RepositoryFolder<?, File> folder = null;
 		try {
 			folder = getRepositoryFolder(aFile, false);
 		} catch (IOException e) {
@@ -185,7 +190,8 @@ public abstract class FileSystemBasedResourceCenter extends FileResourceReposito
 	 * @param aFile
 	 * @return
 	 */
-	protected <R extends FlexoResource<?>> RepositoryFolder<R> retrieveRepositoryFolder(ResourceRepository<R> repository, File aFile) {
+	protected <R extends FlexoResource<?>> RepositoryFolder<R, File> retrieveRepositoryFolder(ResourceRepository<R, File> repository,
+			File aFile) {
 		try {
 			return repository.getRepositoryFolder(aFile, true);
 		} catch (IOException e) {
@@ -569,19 +575,21 @@ public abstract class FileSystemBasedResourceCenter extends FileResourceReposito
 		return false;
 	}
 
-	private HashMap<Class<? extends ResourceRepository<?>>, ResourceRepository<?>> getRepositoriesForAdapter(
+	private HashMap<Class<? extends ResourceRepository<?, File>>, ResourceRepository<?, File>> getRepositoriesForAdapter(
 			TechnologyAdapter technologyAdapter) {
-		HashMap<Class<? extends ResourceRepository<?>>, ResourceRepository<?>> map = repositories.get(technologyAdapter);
+		HashMap<Class<? extends ResourceRepository<?, File>>, ResourceRepository<?, File>> map = repositories.get(technologyAdapter);
 		if (map == null) {
-			map = new HashMap<Class<? extends ResourceRepository<?>>, ResourceRepository<?>>();
+			map = new HashMap<Class<? extends ResourceRepository<?, File>>, ResourceRepository<?, File>>();
 			repositories.put(technologyAdapter, map);
 		}
 		return map;
 	}
 
 	@Override
-	public final <R extends ResourceRepository<?>> R getRepository(Class<? extends R> repositoryType, TechnologyAdapter technologyAdapter) {
-		HashMap<Class<? extends ResourceRepository<?>>, ResourceRepository<?>> map = getRepositoriesForAdapter(technologyAdapter);
+	public final <R extends ResourceRepository<?, File>> R getRepository(Class<? extends R> repositoryType,
+			TechnologyAdapter technologyAdapter) {
+		HashMap<Class<? extends ResourceRepository<?, File>>, ResourceRepository<?, File>> map = getRepositoriesForAdapter(
+				technologyAdapter);
 		return (R) map.get(repositoryType);
 	}
 
@@ -619,9 +627,10 @@ public abstract class FileSystemBasedResourceCenter extends FileResourceReposito
 	}*/
 
 	@Override
-	public final <R extends ResourceRepository<?>> void registerRepository(R repository, Class<? extends R> repositoryType,
+	public final <R extends ResourceRepository<?, File>> void registerRepository(R repository, Class<? extends R> repositoryType,
 			TechnologyAdapter technologyAdapter) {
-		HashMap<Class<? extends ResourceRepository<?>>, ResourceRepository<?>> map = getRepositoriesForAdapter(technologyAdapter);
+		HashMap<Class<? extends ResourceRepository<?, File>>, ResourceRepository<?, File>> map = getRepositoriesForAdapter(
+				technologyAdapter);
 		if (map.get(repositoryType) == null) {
 			map.put(repositoryType, repository);
 			getPropertyChangeSupport().firePropertyChange("getRegisteredRepositories(TechnologyAdapter)", null,
@@ -635,7 +644,7 @@ public abstract class FileSystemBasedResourceCenter extends FileResourceReposito
 	}
 
 	@Override
-	public Collection<ResourceRepository<?>> getRegistedRepositories(TechnologyAdapter technologyAdapter) {
+	public Collection<ResourceRepository<?, File>> getRegistedRepositories(TechnologyAdapter technologyAdapter) {
 		return getRepositoriesForAdapter(technologyAdapter).values();
 	}
 
@@ -769,6 +778,34 @@ public abstract class FileSystemBasedResourceCenter extends FileResourceReposito
 	@Override
 	public FileFlexoIODelegate makeFlexoIODelegate(File serializationArtefact, FlexoResourceFactory<?, ?, ?> resourceFactory) {
 		return FileFlexoIODelegateImpl.makeFileFlexoIODelegate(serializationArtefact, resourceFactory);
+	}
+
+	@Override
+	public FlexoIODelegate<File> makeDirectoryBasedFlexoIODelegate(File serializationArtefact, String directoryExtension,
+			String fileExtension, FlexoResourceFactory<?, ?, ?> resourceFactory) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public <R extends FlexoResource<?>> RepositoryFolder<R, File> getRepositoryFolder(FlexoIODelegate<File> ioDelegate,
+			ResourceRepository<R, File> resourceRepository) {
+
+		File candidateFile = null;
+		if (ioDelegate instanceof DirectoryBasedFlexoIODelegate) {
+			candidateFile = ((DirectoryBasedFlexoIODelegate) ioDelegate).getDirectory();
+		}
+		else if (ioDelegate instanceof FileFlexoIODelegate) {
+			candidateFile = ((FileFlexoIODelegate) ioDelegate).getFile();
+		}
+		try {
+			return resourceRepository.getRepositoryFolder(candidateFile, true);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return resourceRepository.getRootFolder();
+		}
+
 	}
 
 	@ModelEntity

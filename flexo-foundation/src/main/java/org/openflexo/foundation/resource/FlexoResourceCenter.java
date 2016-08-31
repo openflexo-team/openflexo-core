@@ -258,7 +258,8 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, FlexoObject {
 	 * @param technologyAdapter
 	 * @return the registered repository
 	 */
-	public <R extends ResourceRepository<?>> R getRepository(Class<? extends R> repositoryType, TechnologyAdapter technologyAdapter);
+	// TODO: change to getRepository(Class<? extends R> repositoryType, Class <? extends TechnologyAdapter technologyAdapterClass)
+	public <R extends ResourceRepository<?, I>> R getRepository(Class<? extends R> repositoryType, TechnologyAdapter technologyAdapter);
 
 	/**
 	 * Register supplied repository for a given type and technology
@@ -268,7 +269,7 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, FlexoObject {
 	 * @param repositoryType
 	 * @param technologyAdapter
 	 */
-	public <R extends ResourceRepository<?>> void registerRepository(R repository, Class<? extends R> repositoryType,
+	public <R extends ResourceRepository<?, I>> void registerRepository(R repository, Class<? extends R> repositoryType,
 			TechnologyAdapter technologyAdapter);
 
 	/**
@@ -277,7 +278,7 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, FlexoObject {
 	 * @param technologyAdapter
 	 * @return
 	 */
-	public Collection<ResourceRepository<?>> getRegistedRepositories(TechnologyAdapter technologyAdapter);
+	public Collection<? extends ResourceRepository<?, I>> getRegistedRepositories(TechnologyAdapter technologyAdapter);
 
 	public ResourceCenterEntry<?> getResourceCenterEntry();
 
@@ -310,4 +311,23 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, FlexoObject {
 	 * @return
 	 */
 	public FlexoIODelegate<I> makeFlexoIODelegate(I serializationArtefact, FlexoResourceFactory<?, ?, ?> resourceFactory);
+
+	/**
+	 * Build a new {@link FlexoIODelegate} for a given serialization artefact
+	 * 
+	 * @param serializationArtefact
+	 * @return
+	 */
+	public FlexoIODelegate<I> makeDirectoryBasedFlexoIODelegate(I serializationArtefact, String directoryExtension, String fileExtension,
+			FlexoResourceFactory<?, ?, ?> resourceFactory);
+
+	/**
+	 * Computes the folder for serialization item supported by supplied I/O delegate
+	 * 
+	 * @param ioDelegate
+	 * @param resourceRepository
+	 * @return
+	 */
+	public <R extends FlexoResource<?>> RepositoryFolder<R, I> getRepositoryFolder(FlexoIODelegate<I> ioDelegate,
+			ResourceRepository<R, I> resourceRepository);
 }

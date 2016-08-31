@@ -52,19 +52,24 @@ import org.openflexo.toolbox.StringUtils;
 /**
  * Represents a folder, as an organization item inside a {@link ResourceRepository}
  * 
+ * @param <R>
+ *            type of resources being stored in this {@link ResourceRepository}
+ * @param <I>
+ *            serialization artefact type
+ *
  * @author sylvain
  * 
  */
-public class RepositoryFolder<R extends FlexoResource<?>> extends DefaultFlexoObject {
+public class RepositoryFolder<R extends FlexoResource<?>, I> extends DefaultFlexoObject {
 
 	private static final Logger logger = Logger.getLogger(RepositoryFolder.class.getPackage().getName());
 
-	private final ResourceRepository<R> resourceRepository;
+	private final ResourceRepository<R, I> resourceRepository;
 	private String name;
 	private String fullQualifiedPath;
 	private String repositoryContext = null;
-	private RepositoryFolder<R> parent;
-	private final ArrayList<RepositoryFolder<R>> children;
+	private RepositoryFolder<R, I> parent;
+	private final ArrayList<RepositoryFolder<R, I>> children;
 	private final ArrayList<R> resources;
 
 	public static final String NAME_KEY = "name";
@@ -73,11 +78,11 @@ public class RepositoryFolder<R extends FlexoResource<?>> extends DefaultFlexoOb
 	public static final String CHILDREN_KEY = "children";
 	public static final String RESOURCES_KEY = "resources";
 
-	public RepositoryFolder(String name, RepositoryFolder<R> parentFolder, ResourceRepository<R> resourceRepository) {
+	public RepositoryFolder(String name, RepositoryFolder<R, I> parentFolder, ResourceRepository<R, I> resourceRepository) {
 		this.resourceRepository = resourceRepository;
 		this.name = name;
 		this.parent = parentFolder;
-		children = new ArrayList<RepositoryFolder<R>>();
+		children = new ArrayList<RepositoryFolder<R, I>>();
 		resources = new ArrayList<R>();
 		if (parentFolder != null) {
 			parentFolder.addToChildren(this);
@@ -138,11 +143,11 @@ public class RepositoryFolder<R extends FlexoResource<?>> extends DefaultFlexoOb
 		}
 	}
 
-	public List<RepositoryFolder<R>> getChildren() {
+	public List<RepositoryFolder<R, I>> getChildren() {
 		return children;
 	}
 
-	public void addToChildren(RepositoryFolder<R> aFolder) {
+	public void addToChildren(RepositoryFolder<R, I> aFolder) {
 		children.add(aFolder);
 		aFolder.parent = this;
 		setChanged();
@@ -150,7 +155,7 @@ public class RepositoryFolder<R extends FlexoResource<?>> extends DefaultFlexoOb
 		getPropertyChangeSupport().firePropertyChange(CHILDREN_KEY, null, aFolder);
 	}
 
-	public void removeFromChildren(RepositoryFolder<R> aFolder) {
+	public void removeFromChildren(RepositoryFolder<R, I> aFolder) {
 		children.remove(aFolder);
 		aFolder.parent = null;
 		setChanged();
@@ -158,7 +163,7 @@ public class RepositoryFolder<R extends FlexoResource<?>> extends DefaultFlexoOb
 		getPropertyChangeSupport().firePropertyChange(CHILDREN_KEY, aFolder, null);
 	}
 
-	public RepositoryFolder<R> getParentFolder() {
+	public RepositoryFolder<R, I> getParentFolder() {
 		return parent;
 	}
 
@@ -166,8 +171,8 @@ public class RepositoryFolder<R extends FlexoResource<?>> extends DefaultFlexoOb
 		return getParentFolder() == null;
 	}
 
-	public RepositoryFolder<R> getFolderNamed(String newFolderName) {
-		for (RepositoryFolder<R> f : children) {
+	public RepositoryFolder<R, I> getFolderNamed(String newFolderName) {
+		for (RepositoryFolder<R, I> f : children) {
 			if (f.getName().equals(newFolderName)) {
 				return f;
 			}
@@ -204,7 +209,7 @@ public class RepositoryFolder<R extends FlexoResource<?>> extends DefaultFlexoOb
 		getPropertyChangeSupport().firePropertyChange(RESOURCES_KEY, resource, null);
 	}
 
-	public ResourceRepository<?> getResourceRepository() {
+	public ResourceRepository<?, ?> getResourceRepository() {
 		return resourceRepository;
 	}
 
@@ -234,8 +239,8 @@ public class RepositoryFolder<R extends FlexoResource<?>> extends DefaultFlexoOb
 		return getResourceWithName(resourceName) == null;
 	}
 
-	public boolean isFatherOf(RepositoryFolder<R> folder) {
-		RepositoryFolder<R> f = folder.getParentFolder();
+	public boolean isFatherOf(RepositoryFolder<R, I> folder) {
+		RepositoryFolder<R, I> f = folder.getParentFolder();
 		while (f != null) {
 			if (f.equals(this)) {
 				return true;
@@ -285,13 +290,13 @@ public class RepositoryFolder<R extends FlexoResource<?>> extends DefaultFlexoOb
 	 * @param resource
 	 * @return
 	 */
-	public RepositoryFolder<R> getRepositoryFolder(R resource) {
+	public RepositoryFolder<R, I> getRepositoryFolder(R resource) {
 		if (getResources().contains(resource)) {
 			return this;
 		}
 		if (getChildren() != null && getChildren().size() > 0) {
-			for (RepositoryFolder<R> child : getChildren()) {
-				RepositoryFolder<R> returned = child.getRepositoryFolder(resource);
+			for (RepositoryFolder<R, I> child : getChildren()) {
+				RepositoryFolder<R, I> returned = child.getRepositoryFolder(resource);
 				if (returned != null) {
 					return returned;
 				}

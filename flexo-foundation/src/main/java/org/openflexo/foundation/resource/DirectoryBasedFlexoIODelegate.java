@@ -204,7 +204,7 @@ public interface DirectoryBasedFlexoIODelegate extends FileFlexoIODelegate {
 		}
 
 		@Override
-		public RepositoryFolder<?> getRepositoryFolder(ResourceRepository<?> resourceRepository, boolean createWhenNonExistent)
+		public RepositoryFolder<?, File> getRepositoryFolder(ResourceRepository<?, File> resourceRepository, boolean createWhenNonExistent)
 				throws IOException {
 			return resourceRepository.getRepositoryFolder(getDirectory(), true);
 		}

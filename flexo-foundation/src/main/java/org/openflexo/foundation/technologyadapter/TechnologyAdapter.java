@@ -46,6 +46,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -60,17 +61,17 @@ import org.openflexo.foundation.fml.annotations.DeclareResourceTypes;
 import org.openflexo.foundation.fml.annotations.DeclareVirtualModelInstanceNatures;
 import org.openflexo.foundation.fml.rt.VirtualModelInstanceNature;
 import org.openflexo.foundation.nature.ProjectNatureService;
-import org.openflexo.foundation.resource.DirectoryBasedFlexoIODelegate;
-import org.openflexo.foundation.resource.FileFlexoIODelegate;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
 import org.openflexo.foundation.resource.FlexoResourceFactory;
 import org.openflexo.foundation.resource.RepositoryFolder;
+import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.resource.ResourceRepository;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.localization.LocalizedDelegate;
 import org.openflexo.localization.LocalizedDelegateImpl;
+import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.rm.ResourceLocator;
 
 /**
@@ -207,44 +208,116 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 	 * 
 	 * @param resourceCenter
 	 */
-	protected abstract <I> void performInitializeResourceCenter(FlexoResourceCenter<I> resourceCenter);
+	public final <I> void performInitializeResourceCenter(FlexoResourceCenter<I> resourceCenter) {
+
+		/*DocXDocumentRepository docXRepository = resourceCenter.getRepository(DocXDocumentRepository.class, this);
+		if (docXRepository == null) {
+			docXRepository = createDocXDocumentRepository(resourceCenter);
+		}*/
+
+		Iterator<I> it = resourceCenter.iterator();
+
+		while (it.hasNext()) {
+			I serializationArtefact = it.next();
+
+			if (!isIgnorable(resourceCenter, serializationArtefact)) {
+				for (FlexoResourceFactory<?, ?, ?> resourceFactory : getResourceFactories()) {
+					tryToLookupResource(resourceFactory, resourceCenter, serializationArtefact);
+				}
+			}
+
+			// DocXDocumentResource wbRes = tryToLookupDocX(resourceCenter, serializationArtefact);
+		}
+
+		// Call it to update the current repositories
+		notifyRepositoryStructureChanged();
+	}
+
+	/**
+	 * Internally called to lookup resources from serialization artefacts
+	 * 
+	 * @param resourceFactory
+	 * @param resourceCenter
+	 * @param serializationArtefact
+	 * @return
+	 */
+	private <RF extends FlexoResourceFactory<R, RD, TA>, R extends TechnologyAdapterResource<RD, TA>, RD extends ResourceData<RD> & TechnologyObject<TA>, TA extends TechnologyAdapter, I> R tryToLookupResource(
+			RF resourceFactory, FlexoResourceCenter<I> resourceCenter, I serializationArtefact) {
+
+		TechnologyContextManager<TA> technologyContextManager = (TechnologyContextManager<TA>) getTechnologyContextManager();
+		if (resourceFactory.isValidArtefact(serializationArtefact, resourceCenter)) {
+			try {
+				return resourceFactory.retrieveResource(serializationArtefact, resourceCenter, technologyContextManager);
+			} catch (ModelDefinitionException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return null;
+	}
 
 	public abstract <I> boolean isIgnorable(FlexoResourceCenter<I> resourceCenter, I contents);
 
 	/**
-	 * Called when a new File has been discovered in directory representing this ResourceCenter
+	 * Called when a new serialization artefact has been discovered
 	 * 
-	 * @param file
+	 * @param resourceCenter
+	 * @param serializationArtefact
 	 * @return a boolean indicating if this file has been handled by the technology, when false ResourceCenter might resend notification
 	 */
-	public abstract <I> boolean contentsAdded(FlexoResourceCenter<I> resourceCenter, I contents);
+	public final <I> boolean contentsAdded(FlexoResourceCenter<I> resourceCenter, I serializationArtefact) {
+		boolean hasBeenLookedUp = false;
+		if (!isIgnorable(resourceCenter, serializationArtefact)) {
+			for (FlexoResourceFactory<?, ?, ?> resourceFactory : getResourceFactories()) {
+				FlexoResource<?> resource = tryToLookupResource(resourceFactory, resourceCenter, serializationArtefact);
+				if (resource != null) {
+					hasBeenLookedUp = true;
+				}
+			}
+		}
+		return hasBeenLookedUp;
+	}
 
 	/**
-	 * Called when an existing File has been removed or deleted in directory representing this ResourceCenter
+	 * Called when an existing serialization artefact has been removed or deleted<br>
+	 * The matching resources are looked-up and referenced from infrastructure
 	 * 
-	 * @param file
+	 * @param resourceCenter
+	 * @param serializationArtefact
 	 * @return a boolean indicating if this file removing has been handled by the technology, when false ResourceCenter might resend
 	 *         notification
 	 */
-	public abstract <I> boolean contentsDeleted(FlexoResourceCenter<I> resourceCenter, I contents);
+	public final <I> boolean contentsDeleted(FlexoResourceCenter<I> resourceCenter, I serializationArtefact) {
+		// TODO
+		return false;
+	}
 
 	/**
-	 * Called when an existing File has been modified in directory representing this ResourceCenter
+	 * Called when an existing serialization artefact has been modified in directory representing this ResourceCenter
 	 * 
-	 * @param file
+	 * @param resourceCenter
+	 * @param serializationArtefact
 	 * @return a boolean indicating if this file removing has been handled by the technology, when false ResourceCenter might resend
 	 *         notification
 	 */
-	public abstract <I> boolean contentsModified(FlexoResourceCenter<I> resourceCenter, I contents);
+	public final <I> boolean contentsModified(FlexoResourceCenter<I> resourceCenter, I serializationArtefact) {
+		// TODO
+		return false;
+	}
 
 	/**
-	 * Called when an existing File has been renamed in directory representing this ResourceCenter
+	 * Called when an existing serialization artefact has been renamed in directory representing this ResourceCenter
 	 * 
-	 * @param file
+	 * @param resourceCenter
+	 * @param serializationArtefact
 	 * @return a boolean indicating if this file removing has been handled by the technology, when false ResourceCenter might resend
 	 *         notification
 	 */
-	public abstract <I> boolean contentsRenamed(FlexoResourceCenter<I> resourceCenter, I contents, String oldName, String newName);
+	public final <I> boolean contentsRenamed(FlexoResourceCenter<I> resourceCenter, I serializationArtefact, String oldName,
+			String newName) {
+		// TODO
+		return false;
+	}
 
 	private final List<FlexoResourceCenter<?>> resourceCentersManagingThisTechnology = new ArrayList<>();
 
@@ -395,7 +468,8 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 	 * @param aFile
 	 * @return
 	 */
-	protected <R extends FlexoResource<?>> RepositoryFolder<R> retrieveRepositoryFolder(ResourceRepository<R> repository, File aFile) {
+	protected <R extends FlexoResource<?>> RepositoryFolder<R, ?> retrieveRepositoryFolder(ResourceRepository<R, ?> repository,
+			File aFile) {
 		try {
 			return repository.getRepositoryFolder(aFile, true);
 		} catch (IOException e) {
@@ -410,7 +484,7 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 	 * @param resource
 	 * @param resourceCenter
 	 */
-	public void referenceResource(FlexoResource<?> resource, FlexoResourceCenter<?> resourceCenter) {
+	/*public void referenceResource(FlexoResource<?> resource, FlexoResourceCenter<?> resourceCenter) {
 		resource.setResourceCenter(resourceCenter);
 		if (resourceCenter instanceof ResourceRepository && resource != null
 				&& resource.getFlexoIODelegate() instanceof FileFlexoIODelegate) {
@@ -423,24 +497,19 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 				else if (resource.getFlexoIODelegate() instanceof FileFlexoIODelegate) {
 					candidateFile = ((FileFlexoIODelegate) resource.getFlexoIODelegate()).getFile();
 				}
-
-				/*if (resource instanceof DirectoryContainerResource) {
-					candidateFile = ResourceLocator.retrieveResourceAsFile(((DirectoryContainerResource<?>) resource).getDirectory());
-				} else {
-					candidateFile = ((FileFlexoIODelegate) resource.getFlexoIODelegate()).getFile();
-				}*/
+	
 				((ResourceRepository) resourceCenter).registerResource(resource,
 						((ResourceRepository<?>) resourceCenter).getRepositoryFolder(candidateFile, true));
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
-
+	
 		registerResourceInGlobalRepository(resource, resourceCenter);
+	
+	}*/
 
-	}
-
-	protected void registerResourceInGlobalRepository(FlexoResource<?> resource, FlexoResourceCenter<?> resourceCenter) {
+	/*protected void registerResourceInGlobalRepository(FlexoResource<?> resource, FlexoResourceCenter<?> resourceCenter) {
 		TechnologyAdapterGlobalRepository globalRepository = getGlobalRepository(resourceCenter);
 		if (globalRepository != null) {
 			RepositoryFolder<?> folderInGlobalRepository;
@@ -451,7 +520,7 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 				e.printStackTrace();
 			}
 		}
-	}
+	}*/
 
 	/**
 	 * Called when a resource has been dereferenced by the {@link TechnologyAdapter}
@@ -459,10 +528,10 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 	 * @param resource
 	 * @param resourceCenter
 	 */
-	public void dereferenceResource(FlexoResource<?> resource, FlexoResourceCenter<?> resourceCenter) {
+	/*public void dereferenceResource(FlexoResource<?> resource, FlexoResourceCenter<?> resourceCenter) {
 		// TODO
 		logger.warning("dereferenceResource() not implemented yet");
-	}
+	}*/
 
 	// Override when required
 	public void initFMLModelFactory(FMLModelFactory fMLModelFactory) {
@@ -485,12 +554,12 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 	 * @param technologyAdapter
 	 * @return
 	 */
-	public List<ResourceRepository<?>> getGlobalRepositories() {
-		List<ResourceRepository<?>> returned = new ArrayList<ResourceRepository<?>>();
+	public List<ResourceRepository<?, ?>> getGlobalRepositories() {
+		List<ResourceRepository<?, ?>> returned = new ArrayList<ResourceRepository<?, ?>>();
 		for (FlexoResourceCenter<?> rc : getTechnologyAdapterService().getServiceManager().getResourceCenterService()
 				.getResourceCenters()) {
 			// System.out.println("Pour le RC " + rc);
-			ResourceRepository<?> globalRepository = getGlobalRepository(rc);// rc.getGlobalRepository(this);
+			ResourceRepository<?, ?> globalRepository = getGlobalRepository(rc);// rc.getGlobalRepository(this);
 			// System.out.println("global repo = " + globalRepository);
 			if (globalRepository != null) {
 				returned.add(globalRepository);
@@ -517,11 +586,11 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 	 * @param technologyAdapter
 	 * @return
 	 */
-	public List<ResourceRepository<?>> getAllRepositories() {
-		List<ResourceRepository<?>> returned = new ArrayList<ResourceRepository<?>>();
+	public List<ResourceRepository<?, ?>> getAllRepositories() {
+		List<ResourceRepository<?, ?>> returned = new ArrayList<>();
 		for (FlexoResourceCenter<?> rc : getTechnologyAdapterService().getServiceManager().getResourceCenterService()
 				.getResourceCenters()) {
-			Collection<ResourceRepository<?>> repCollection = rc.getRegistedRepositories(this);
+			Collection<? extends ResourceRepository<?, ?>> repCollection = rc.getRegistedRepositories(this);
 			if (repCollection != null) {
 				returned.addAll(repCollection);
 			}

@@ -100,7 +100,7 @@ public abstract class ViewResourceImpl extends AbstractVirtualModelInstanceResou
 
 	static final Logger logger = Logger.getLogger(ViewResourceImpl.class.getPackage().getName());
 
-	public static ViewResource makeViewResource(String name, RepositoryFolder<ViewResource> folder, ViewPoint viewPoint,
+	public static ViewResource makeViewResource(String name, RepositoryFolder<ViewResource, ?> folder, ViewPoint viewPoint,
 			ViewLibrary viewLibrary) {
 		ViewResource returned = makeViewResourceInDirectory(name, folder.getFile(), viewPoint, viewLibrary);
 		// returned.setURI(viewLibrary.getProject().getURI() + "/" + returned.getName());
@@ -165,7 +165,7 @@ public abstract class ViewResourceImpl extends AbstractVirtualModelInstanceResou
 		return null;
 	}
 
-	public static ViewResource retrieveViewResource(File viewDirectory, RepositoryFolder<ViewResource> folder, ViewLibrary viewLibrary) {
+	public static ViewResource retrieveViewResource(File viewDirectory, RepositoryFolder<ViewResource, ?> folder, ViewLibrary viewLibrary) {
 
 		ViewResource returned = retrieveViewResourceFromDirectory(viewDirectory, viewLibrary);
 		// returned.setURI(viewLibrary.getProject().getURI() + "/" + returned.getName());

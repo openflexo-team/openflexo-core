@@ -51,5 +51,5 @@ import org.openflexo.foundation.resource.ResourceRepository;
 @Target(value = ElementType.TYPE)
 public @interface DeclareRepositoryType {
 
-	public Class<? extends ResourceRepository<?>>[] value();
+	public Class<? extends ResourceRepository>[]value();
 }

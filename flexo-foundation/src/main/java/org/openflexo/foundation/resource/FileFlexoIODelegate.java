@@ -45,6 +45,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.MalformedURLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -56,6 +57,9 @@ import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.model.annotations.XMLElement;
 import org.openflexo.model.factory.ModelFactory;
+import org.openflexo.rm.BasicResourceImpl.LocatorNotFoundException;
+import org.openflexo.rm.FileResourceImpl;
+import org.openflexo.rm.Resource;
 import org.openflexo.toolbox.FileUtils;
 
 /**
@@ -102,7 +106,7 @@ public interface FileFlexoIODelegate extends FlexoIOStreamDelegate<File> {
 		}
 
 		@Override
-		public RepositoryFolder<?> getRepositoryFolder(ResourceRepository<?> resourceRepository, boolean createWhenNonExistent)
+		public RepositoryFolder<?, File> getRepositoryFolder(ResourceRepository<?, File> resourceRepository, boolean createWhenNonExistent)
 				throws IOException {
 			return resourceRepository.getRepositoryFolder(getFile(), true);
 		}
@@ -274,6 +278,21 @@ public interface FileFlexoIODelegate extends FlexoIOStreamDelegate<File> {
 		public void save(FlexoResource<?> resource) throws NotImplementedException {
 			// TODO Auto-generated method stub
 		}
+
+		@Override
+		public Resource getSerializationArtefactAsResource() {
+			try {
+				return new FileResourceImpl(getSerializationArtefact());
+			} catch (MalformedURLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (LocatorNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return null;
+		}
+
 	}
 
 }
