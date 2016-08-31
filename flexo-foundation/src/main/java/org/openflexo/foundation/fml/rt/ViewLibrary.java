@@ -76,6 +76,14 @@ public class ViewLibrary extends ViewRepository {
 
 	}
 
+	public ViewLibrary(FMLRTTechnologyAdapter ta, FlexoResourceCenter<?> rc) {
+		super(ta, rc);
+		this.rc = rc;
+		getRootFolder().setName(rc.getName());
+		getRootFolder().setFullQualifiedPath("/");
+		// exploreDirectoryLookingForViews(getDirectory(), getRootFolder());
+	}
+
 	@Override
 	public FlexoServiceManager getServiceManager() {
 		if (getResourceCenter() != null) {

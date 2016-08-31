@@ -220,7 +220,7 @@ public class FMLRTTechnologyAdapter extends TechnologyAdapter {
 	 * Creates and return a view repository for current {@link TechnologyAdapter} and supplied {@link FlexoResourceCenter}
 	 */
 	public ViewRepository createViewRepository(final FlexoResourceCenter<?> resourceCenter) {
-		final ViewRepository returned = new ViewRepository(this, resourceCenter);
+		final ViewRepository returned = new ViewLibrary(this,resourceCenter);
 		resourceCenter.registerRepository(returned, ViewRepository.class, this);
 		return returned;
 	}
