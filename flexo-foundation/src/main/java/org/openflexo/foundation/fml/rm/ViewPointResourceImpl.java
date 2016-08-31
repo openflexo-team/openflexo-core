@@ -88,62 +88,6 @@ public abstract class ViewPointResourceImpl extends AbstractVirtualModelResource
 
 	static final Logger logger = Logger.getLogger(FlexoXMLFileResourceImpl.class.getPackage().getName());
 
-	public static ViewPointResource retrieveViewPointResource(InJarResourceImpl inJarResource, FlexoResourceCenter<?> resourceCenter,
-			FlexoServiceManager serviceManager) {
-		try {
-			ModelFactory factory = new ModelFactory(
-					ModelContextLibrary.getCompoundModelContext(InJarFlexoIODelegate.class, ViewPointResource.class));
-			ViewPointResourceImpl returned = (ViewPointResourceImpl) factory.newInstance(ViewPointResource.class);
-
-			returned.setFlexoIODelegate(InJarFlexoIODelegateImpl.makeInJarFlexoIODelegate(inJarResource, factory));
-
-			// String parentPath =
-			// FilenameUtils.getFullPath(inJarResource.getRelativePath());
-			// BasicResourceImpl parent = (BasicResourceImpl)
-			// ((ClasspathResourceLocatorImpl)(inJarResource.getLocator())).getJarResourcesList().get(parentPath);
-
-			ViewPointInfo vpi = findViewPointInfo(returned.getFlexoIOStreamDelegate().getInputStream());
-			if (vpi == null) {
-				// Unable to retrieve infos, just abort
-				return null;
-			}
-
-			// returned.setDirectory(parent);
-			returned.setURI(vpi.uri);
-			returned.initName(vpi.name);
-			if (StringUtils.isNotEmpty(vpi.version)) {
-				returned.setVersion(new FlexoVersion(vpi.version));
-			}
-
-			if (StringUtils.isEmpty(vpi.modelVersion)) {
-				returned.setModelVersion(new FlexoVersion("0.1"));
-			}
-			else {
-				returned.setModelVersion(new FlexoVersion(vpi.modelVersion));
-			}
-
-			returned.setFactory(new FMLModelFactory(returned, serviceManager));
-
-			// If ViewPointLibrary not initialized yet, we will do it later in
-			// ViewPointLibrary.initialize() method
-			if (serviceManager.getViewPointLibrary() != null) {
-				returned.setViewPointLibrary(serviceManager.getViewPointLibrary());
-				serviceManager.getViewPointLibrary().registerViewPoint(returned);
-			}
-
-			returned.setResourceCenter(resourceCenter);
-			returned.setServiceManager(serviceManager);
-
-			// Now look for virtual models
-			returned.exploreVirtualModels(returned.getDirectory());
-
-			return returned;
-		} catch (ModelDefinitionException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
-
 	/*
 	 * if (getDirectory().exists() && getDirectory().isDirectory()) { for
 	 * (File f : getDirectory().listFiles()) { if (f.isDirectory()) { File

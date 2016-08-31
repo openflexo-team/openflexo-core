@@ -38,39 +38,24 @@
 
 package org.openflexo.foundation.fml.rm;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Iterator;
 import java.util.logging.Logger;
 
-import org.apache.commons.io.FilenameUtils;
 import org.jdom2.Attribute;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
-import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.IOFlexoException;
 import org.openflexo.foundation.InconsistentDataException;
 import org.openflexo.foundation.InvalidModelDefinitionException;
 import org.openflexo.foundation.InvalidXMLException;
-import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.resource.DirectoryBasedFlexoIODelegate;
-import org.openflexo.foundation.resource.DirectoryBasedFlexoIODelegate.DirectoryBasedFlexoIODelegateImpl;
 import org.openflexo.foundation.resource.FlexoFileNotFoundException;
-import org.openflexo.foundation.resource.InJarFlexoIODelegate;
-import org.openflexo.foundation.resource.InJarFlexoIODelegate.InJarFlexoIODelegateImpl;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
-import org.openflexo.model.ModelContextLibrary;
-import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.model.factory.AccessibleProxyObject;
-import org.openflexo.model.factory.ModelFactory;
-import org.openflexo.rm.InJarResourceImpl;
-import org.openflexo.rm.Resource;
-import org.openflexo.toolbox.FlexoVersion;
 import org.openflexo.toolbox.IProgress;
 import org.openflexo.toolbox.StringUtils;
 
@@ -78,137 +63,6 @@ public abstract class VirtualModelResourceImpl extends AbstractVirtualModelResou
 		implements VirtualModelResource, AccessibleProxyObject {
 
 	static final Logger logger = Logger.getLogger(VirtualModelResourceImpl.class.getPackage().getName());
-
-	public static VirtualModelResource makeVirtualModelResource(String name, File containerDir, ViewPointResource viewPointResource,
-			FlexoServiceManager serviceManager) {
-		try {
-			ModelFactory factory = new ModelFactory(
-					ModelContextLibrary.getCompoundModelContext(DirectoryBasedFlexoIODelegate.class, VirtualModelResource.class));
-			VirtualModelResourceImpl returned = (VirtualModelResourceImpl) factory.newInstance(VirtualModelResource.class);
-			returned.initName(name);
-
-			returned.setFlexoIODelegate(DirectoryBasedFlexoIODelegateImpl.makeDirectoryBasedFlexoIODelegate(containerDir, "",
-					CORE_FILE_SUFFIX, returned, factory));
-
-			/*DirectoryBasedFlexoIODelegate delegate = (DirectoryBasedFlexoIODelegate) returned.getFlexoIODelegate();
-			System.out.println("Nouveau VM");
-			System.out.println("containerDir=" + containerDir);
-			System.out.println("dir=" + delegate.getDirectory());
-			System.out.println("file=" + delegate.getFile());*/
-
-			// returned.setFlexoIODelegate(FileFlexoIODelegateImpl.makeFileFlexoIODelegate(virtualModelXMLFile, factory));
-			returned.setURI(viewPointResource.getURI() + "/" + name);
-			returned.setResourceCenter(viewPointResource.getResourceCenter());
-			returned.setServiceManager(serviceManager);
-			viewPointResource.addToContents(returned);
-			viewPointResource.notifyContentsAdded(returned);
-
-			// TODO: the factory should be instantiated and managed by the ProjectNatureService, which should react to the registering
-			// of a new TA, and which is responsible to update the VirtualModelFactory of all VirtualModelResource
-			returned.setFactory(new FMLModelFactory(returned, serviceManager));
-
-			return returned;
-		} catch (ModelDefinitionException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
-
-	public static VirtualModelResource retrieveVirtualModelResource(File virtualModelDirectory/*, File virtualModelXMLFile*/,
-			ViewPointResource viewPointResource, FlexoServiceManager serviceManager) {
-		try {
-			ModelFactory factory = new ModelFactory(
-					ModelContextLibrary.getCompoundModelContext(DirectoryBasedFlexoIODelegate.class, VirtualModelResource.class));
-			VirtualModelResourceImpl returned = (VirtualModelResourceImpl) factory.newInstance(VirtualModelResource.class);
-			String baseName = virtualModelDirectory.getName();
-			File xmlFile = new File(virtualModelDirectory, baseName + CORE_FILE_SUFFIX);
-			VirtualModelInfo vpi = null;
-			try {
-				vpi = findVirtualModelInfo(new FileInputStream(xmlFile));
-			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			if (vpi == null) {
-				// Unable to retrieve infos, just abort
-				return null;
-			}
-
-			returned.initName(baseName);
-			returned.setFlexoIODelegate(DirectoryBasedFlexoIODelegateImpl
-					.makeDirectoryBasedFlexoIODelegate(virtualModelDirectory.getParentFile(), "", CORE_FILE_SUFFIX, returned, factory));
-
-			// returned.setFlexoIODelegate(FileFlexoIODelegateImpl.makeFileFlexoIODelegate(xmlFile, factory));
-			returned.setURI(viewPointResource.getURI() + "/" + virtualModelDirectory.getName());
-			if (StringUtils.isNotEmpty(vpi.version)) {
-				returned.setVersion(new FlexoVersion(vpi.version));
-			}
-			returned.setModelVersion(new FlexoVersion(StringUtils.isNotEmpty(vpi.modelVersion) ? vpi.modelVersion : "0.1"));
-
-			// If ViewPointLibrary not initialized yet, we will do it later in ViewPointLibrary.initialize() method
-			/*if (serviceManager.getViewPointLibrary() != null) {
-				returned.setViewPointLibrary(serviceManager.getViewPointLibrary());
-			}*/
-
-			returned.setResourceCenter(viewPointResource.getResourceCenter());
-			returned.setServiceManager(serviceManager);
-
-			logger.fine("VirtualModelResource " + xmlFile.getAbsolutePath() + " version " + returned.getModelVersion());
-
-			// TODO: the factory should be instantiated and managed by the ProjectNatureService, which should react to the registering
-			// of a new TA, and which is responsible to update the VirtualModelFactory of all VirtualModelResource
-			returned.setFactory(new FMLModelFactory(returned, serviceManager));
-
-			return returned;
-		} catch (ModelDefinitionException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
-
-	public static VirtualModelResource retrieveVirtualModelResource(InJarResourceImpl inJarResource, Resource parent,
-			ViewPointResource viewPointResource, FlexoServiceManager serviceManager) {
-		try {
-			ModelFactory factory = new ModelFactory(
-					ModelContextLibrary.getCompoundModelContext(InJarFlexoIODelegate.class, VirtualModelResource.class));
-			VirtualModelResourceImpl returned = (VirtualModelResourceImpl) factory.newInstance(VirtualModelResource.class);
-
-			returned.setFlexoIODelegate(InJarFlexoIODelegateImpl.makeInJarFlexoIODelegate(inJarResource, factory));
-			VirtualModelInfo vpi = findVirtualModelInfo(returned.getFlexoIOStreamDelegate().getInputStream());
-			if (vpi == null) {
-				// Unable to retrieve infos, just abort
-				return null;
-			}
-
-			// returned.setFile(xmlFile);
-			// returned.setDirectory(parent);
-			returned.initName(vpi.name);
-			returned.setURI(viewPointResource.getURI() + "/" + FilenameUtils.getBaseName(inJarResource.getRelativePath()));
-			if (StringUtils.isNotEmpty(vpi.version)) {
-				returned.setVersion(new FlexoVersion(vpi.version));
-			}
-			returned.setModelVersion(new FlexoVersion(StringUtils.isNotEmpty(vpi.modelVersion) ? vpi.modelVersion : "0.1"));
-
-			// If ViewPointLibrary not initialized yet, we will do it later in ViewPointLibrary.initialize() method
-			/*if (serviceManager.getViewPointLibrary() != null) {
-				returned.setViewPointLibrary(serviceManager.getViewPointLibrary());
-			}*/
-
-			returned.setResourceCenter(viewPointResource.getResourceCenter());
-			returned.setServiceManager(serviceManager);
-
-			logger.fine("VirtualModelResource " + returned.getFlexoIODelegate().toString() + " version " + returned.getModelVersion());
-
-			// TODO: the factory should be instantiated and managed by the ProjectNatureService, which should react to the registering
-			// of a new TA, and which is responsible to update the VirtualModelFactory of all VirtualModelResource
-			returned.setFactory(new FMLModelFactory(returned, serviceManager));
-
-			return returned;
-		} catch (ModelDefinitionException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
 
 	/**
 	 * Return virtual model stored by this resource when loaded<br>
