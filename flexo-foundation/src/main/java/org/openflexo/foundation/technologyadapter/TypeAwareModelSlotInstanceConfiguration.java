@@ -78,9 +78,9 @@ public abstract class TypeAwareModelSlotInstanceConfiguration<M extends FlexoMod
 	protected String filename;
 
 	protected TypeAwareModelSlotInstanceConfiguration(MS ms, AbstractVirtualModelInstance<?, ?> virtualModelInstance,
-			FlexoProject project) {
-		super(ms, virtualModelInstance, project);
-		FlexoResourceCenterService rcService = project.getServiceManager().getResourceCenterService();
+			FlexoResourceCenter<?> rc) {
+		super(ms, virtualModelInstance, rc);
+		FlexoResourceCenterService rcService = rc.getServiceManager().getResourceCenterService();
 		if (rcService.getResourceCenters().size() > 0) {
 			resourceCenter = rcService.getResourceCenters().get(0);
 		}
@@ -126,7 +126,6 @@ public abstract class TypeAwareModelSlotInstanceConfiguration<M extends FlexoMod
 				System.out.println("Select model with uri " + getModelResource().getURI());
 				msInstance.setAccessedResourceData(getModelResource().getModel());
 				msInstance.setModelURI(getModelResource().getURI());
-				msInstance.setProject(view.getProject());
 				msInstance.setView(view);
 			}
 			else {
@@ -134,7 +133,7 @@ public abstract class TypeAwareModelSlotInstanceConfiguration<M extends FlexoMod
 			}
 		}
 		else if (getOption() == DefaultModelSlotInstanceConfigurationOption.CreatePrivateNewModel) {
-			modelResource = createProjectSpecificEmptyModel(msInstance, getModelSlot(), view.getProject());
+			modelResource = createProjectSpecificEmptyModel(msInstance, getModelSlot(), view.getResourceCenter());
 			// System.out.println("***** modelResource = " + modelResource);
 			// System.out.println("***** model = " + modelResource.getModel());
 			// System.out.println("***** modelResource2 = " + modelResource.getModel().getResource());
@@ -155,7 +154,6 @@ public abstract class TypeAwareModelSlotInstanceConfiguration<M extends FlexoMod
 			if (modelResource != null) {
 				msInstance.setAccessedResourceData(getModelResource().getModel());
 				msInstance.setModelURI(getModelResource().getURI());
-				msInstance.setProject(view.getProject());
 				msInstance.setView(view);
 				// System.out.println("***** Created model resource " + getModelResource());
 				// System.out.println("***** Created model " + getModelResource().getModel());
@@ -180,8 +178,8 @@ public abstract class TypeAwareModelSlotInstanceConfiguration<M extends FlexoMod
 	}
 
 	private FlexoModelResource<M, MM, ?, ?> createProjectSpecificEmptyModel(TypeAwareModelSlotInstance<M, MM, MS> msInstance, MS modelSlot,
-			FlexoProject project) {
-		return modelSlot.createProjectSpecificEmptyModel(project, getFilename(), getModelUri(), modelSlot.getMetaModelResource());
+			FlexoResourceCenter<?> rc) {
+		return modelSlot.createProjectSpecificEmptyModel(rc, getFilename(), getModelUri(), modelSlot.getMetaModelResource());
 	}
 
 	/*private FlexoModelResource<M, MM> createSharedEmptyModel(TypeAwareModelSlotInstance<M, MM, MS> msInstance, MS modelSlot) {

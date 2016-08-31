@@ -322,7 +322,7 @@ public class FlexoProject extends FileSystemBasedResourceCenter
 
 	}
 
-	private FlexoProject(File aProjectDirectory, FlexoServiceManager serviceManager) {
+	protected FlexoProject(File aProjectDirectory, FlexoServiceManager serviceManager) {
 		super(aProjectDirectory, serviceManager.getResourceCenterService());
 		this.serviceManager = serviceManager;
 		// xmlMappings = serviceManager.getXMLSerializationService();

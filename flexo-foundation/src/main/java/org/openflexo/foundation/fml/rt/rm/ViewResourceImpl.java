@@ -146,7 +146,7 @@ public abstract class ViewResourceImpl extends AbstractVirtualModelInstanceResou
 					CORE_FILE_SUFFIX, returned, factory));
 			// System.out.println("Je sauve la nouvelle sous-vue en " + ((FileFlexoIODelegate) returned.getFlexoIODelegate()).getFile());
 
-			returned.setProject(viewLibrary.getProject());
+			returned.setResourceCenter(viewLibrary.getResourceCenter());
 			returned.setVersion(new FlexoVersion("1.0"));
 			// returned.setURI(viewLibrary.getProject().getURI() + "/" + name);
 			// returned.setFlexoIODelegate(FileFlexoIODelegateImpl.makeFileFlexoIODelegate(xmlFile, factory));
@@ -155,7 +155,7 @@ public abstract class ViewResourceImpl extends AbstractVirtualModelInstanceResou
 			returned.setFactory(new ViewModelFactory(returned, viewLibrary.getServiceManager().getEditingContext(),
 					viewLibrary.getServiceManager().getTechnologyAdapterService()));
 
-			returned.setResourceCenter(viewLibrary.getProject());
+			returned.setResourceCenter(viewLibrary.getResourceCenter());
 			returned.setServiceManager(viewLibrary.getServiceManager());
 
 			return returned;
@@ -196,18 +196,18 @@ public abstract class ViewResourceImpl extends AbstractVirtualModelInstanceResou
 			returned.setFlexoIODelegate(FileFlexoIODelegateImpl.makeFileFlexoIODelegate(xmlFile, factory));
 			returned.initName(vpi.name);
 
-			returned.setProject(viewLibrary.getProject());
+			// returned.setProject(viewLibrary.getProject());
 
 			if (StringUtils.isNotEmpty(vpi.viewPointURI)) {
 				returned.viewpointURI = vpi.viewPointURI;
 				returned.setViewPointResource(viewLibrary.getServiceManager().getViewPointLibrary().getViewPointResource(vpi.viewPointURI));
 			}
 			returned.setViewLibrary(viewLibrary);
+			returned.setResourceCenter(viewLibrary.getResourceCenter());
+			returned.setServiceManager(viewLibrary.getServiceManager());
+
 			returned.setFactory(new ViewModelFactory(returned, viewLibrary.getServiceManager().getEditingContext(),
 					viewLibrary.getServiceManager().getTechnologyAdapterService()));
-
-			returned.setResourceCenter(viewLibrary.getProject());
-			returned.setServiceManager(viewLibrary.getServiceManager());
 
 			logger.fine("ViewResource " + xmlFile.getAbsolutePath() + " version " + returned.getModelVersion());
 
@@ -393,8 +393,8 @@ public abstract class ViewResourceImpl extends AbstractVirtualModelInstanceResou
 		if (getContainer() != null) {
 			return getContainer().getURI() + "/" + getName();
 		}
-		if (getProject() != null) {
-			return getProject().getURI() + "/" + getName();
+		if (getResourceCenter() != null) {
+			return getResourceCenter().getDefaultBaseURI() + "/" + getName();
 		}
 		return null;
 	}

@@ -61,7 +61,7 @@ import org.openflexo.model.annotations.Setter;
 @ModelEntity(isAbstract = true)
 @ImplementationClass(AbstractVirtualModelInstanceResourceImpl.class)
 public interface AbstractVirtualModelInstanceResource<VMI extends AbstractVirtualModelInstance<VMI, VM>, VM extends AbstractVirtualModel<VM>>
-		extends PamelaResource<VMI, AbstractVirtualModelInstanceModelFactory<?>>, FlexoProjectResource<VMI>,
+		extends PamelaResource<VMI, AbstractVirtualModelInstanceModelFactory<?>>,
 		TechnologyAdapterResource<VMI, FMLRTTechnologyAdapter> {
 
 	public static final String VIRTUAL_MODEL_RESOURCE = "virtualModelResource";

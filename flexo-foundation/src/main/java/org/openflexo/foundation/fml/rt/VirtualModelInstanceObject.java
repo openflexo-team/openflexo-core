@@ -40,10 +40,12 @@ package org.openflexo.foundation.fml.rt;
 
 import java.util.logging.Logger;
 
+import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.InnerResourceData;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.rt.rm.AbstractVirtualModelInstanceResource;
 import org.openflexo.foundation.resource.FlexoResource;
+import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -78,6 +80,7 @@ public interface VirtualModelInstanceObject extends ViewObject, InnerResourceDat
 
 	public AbstractVirtualModelInstanceModelFactory<?> getFactory();
 
+	
 	public abstract class VirtualModelInstanceObjectImpl extends ViewObjectImpl implements VirtualModelInstanceObject {
 
 		private static final Logger logger = Logger.getLogger(VirtualModelInstanceObject.class.getPackage().getName());
@@ -101,6 +104,17 @@ public interface VirtualModelInstanceObject extends ViewObject, InnerResourceDat
 				return getVirtualModelInstance().getView();
 			}
 			return null;
+		}
+
+
+		/** 
+		 * Returns FlexoResourceCenter that contains the ViewResource containing this ViewObject
+		 * 
+		 * @return
+		 */
+		@Override
+		public FlexoResourceCenter<?> getResourceCenter() {
+			return getVirtualModelInstance().getResource().getResourceCenter();
 		}
 
 		/**

@@ -68,6 +68,7 @@ import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.TypeAwareModelSlotInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstanceObject;
+import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.technologyadapter.TypeAwareModelSlot;
 import org.openflexo.toolbox.StringUtils;
 
@@ -158,9 +159,9 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 		return true;
 	}
 
-	public FlexoProject getProject() {
+	public FlexoResourceCenter<?> getResourceCenter() {
 		if (getFocusedObject() != null) {
-			return getFocusedObject().getProject();
+			return getFocusedObject().getResourceCenter();
 		}
 		return null;
 	}
