@@ -72,9 +72,8 @@ public abstract class AbstractVirtualModelInstanceModelFactory<R extends Abstrac
 		addConverter(new FlexoVersionConverter());
 		if (virtualModelInstanceResource != null) {
 			addConverter(new RelativePathResourceConverter(virtualModelInstanceResource.getFlexoIODelegate().getParentPath()));
-			if (virtualModelInstanceResource.getResourceCenter() instanceof FlexoProject) {
-				addConverter(((FlexoProject) virtualModelInstanceResource.getResourceCenter()).getObjectReferenceConverter());
-			}
+			addConverter(virtualModelInstanceResource.getResourceCenter().getObjectReferenceConverter());
+
 		}
 
 	}

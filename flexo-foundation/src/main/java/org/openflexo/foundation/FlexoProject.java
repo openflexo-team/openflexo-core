@@ -256,7 +256,6 @@ public class FlexoProject extends FileSystemBasedResourceCenter
 
 	private final List<FlexoObjectReference> objectReferences = new ArrayList<FlexoObjectReference>();
 
-	protected FlexoObjectReferenceConverter objectReferenceConverter = new FlexoObjectReferenceConverter(this);
 
 	private boolean lastUniqueIDHasBeenSet = false;
 	private long lastID = Integer.MIN_VALUE;
@@ -986,14 +985,6 @@ public class FlexoProject extends FileSystemBasedResourceCenter
 			return attempt;
 		}*/
 
-	public FlexoObjectReferenceConverter getObjectReferenceConverter() {
-		return objectReferenceConverter;
-	}
-
-	public void setObjectReferenceConverter(FlexoObjectReferenceConverter objectReferenceConverter) {
-		this.objectReferenceConverter = objectReferenceConverter;
-	}
-
 	public boolean isHoldingProjectRegistration() {
 		return holdObjectRegistration;
 	}
@@ -1478,26 +1469,6 @@ public class FlexoProject extends FileSystemBasedResourceCenter
 	@Override
 	public String getDefaultBaseURI() {
 		return getURI();
-	}
-
-	@Override
-	public void notifyObjectLoaded(FlexoObjectReference<?> reference) {
-		// logger.warning("TODO: implement this");
-	}
-
-	@Override
-	public void objectCantBeFound(FlexoObjectReference<?> reference) {
-		logger.warning("TODO: implement this");
-	}
-
-	@Override
-	public void objectSerializationIdChanged(FlexoObjectReference<?> reference) {
-		setChanged();
-	}
-
-	@Override
-	public void objectDeleted(FlexoObjectReference<?> reference) {
-		logger.warning("TODO: implement this");
 	}
 
 	/**

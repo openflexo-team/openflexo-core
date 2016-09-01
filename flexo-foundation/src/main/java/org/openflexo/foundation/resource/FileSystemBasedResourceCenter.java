@@ -55,12 +55,15 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoServiceManager;
+import org.openflexo.foundation.converter.FlexoObjectReferenceConverter;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.ViewPointRepository;
 import org.openflexo.foundation.resource.FlexoResourceCenter.ResourceCenterEntry;
 import org.openflexo.foundation.task.Progress;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterResource;
+import org.openflexo.foundation.utils.FlexoObjectReference;
+import org.openflexo.foundation.utils.FlexoObjectReference.ReferenceOwner;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.Implementation;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -86,7 +89,7 @@ import org.openflexo.toolbox.StringUtils;
  * @author sylvain
  * 
  */
-public abstract class FileSystemBasedResourceCenter extends FileResourceRepository<FlexoResource<?>>implements FlexoResourceCenter<File> {
+public abstract class FileSystemBasedResourceCenter extends FileResourceRepository<FlexoResource<?>>implements FlexoResourceCenter<File>, ReferenceOwner {
 
 	protected static final Logger logger = Logger.getLogger(FileSystemBasedResourceCenter.class.getPackage().getName());
 
@@ -759,6 +762,48 @@ public abstract class FileSystemBasedResourceCenter extends FileResourceReposito
 	@Override
 	public void setDefaultBaseURI(String defaultBaseURI) {
 		fsMetaDataManager.setProperty(DEFAULT_BASE_URI, defaultBaseURI, getDirectory());
+	}
+	
+	/**
+	 *  access to ObjectReference Converter used to translate strings to ObjectReference
+	 */
+	
+	protected FlexoObjectReferenceConverter objectReferenceConverter = new FlexoObjectReferenceConverter(this);
+	
+	@Override
+	public FlexoObjectReferenceConverter getObjectReferenceConverter() {
+		return objectReferenceConverter;
+	}
+	
+	@Override
+	public void setObjectReferenceConverter(FlexoObjectReferenceConverter objectReferenceConverter) {
+		this.objectReferenceConverter = objectReferenceConverter;
+	}
+
+
+	/*
+	 * ReferenceOwner default implementation => does nothing
+	 * @see org.openflexo.foundation.utils.FlexoObjectReference.ReferenceOwner#notifyObjectLoaded(org.openflexo.foundation.utils.FlexoObjectReference)
+	 */
+	
+	@Override
+	public void notifyObjectLoaded(FlexoObjectReference<?> reference) {
+		// logger.warning("TODO: implement this");
+	}
+
+	@Override
+	public void objectCantBeFound(FlexoObjectReference<?> reference) {
+		logger.warning("TODO: implement this");
+	}
+
+	@Override
+	public void objectSerializationIdChanged(FlexoObjectReference<?> reference) {
+		setChanged();
+	}
+
+	@Override
+	public void objectDeleted(FlexoObjectReference<?> reference) {
+		logger.warning("TODO: implement this");
 	}
 
 
