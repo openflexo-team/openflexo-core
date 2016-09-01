@@ -22,9 +22,11 @@ package org.openflexo.foundation.fml.rm;
 
 import java.util.logging.Logger;
 
+import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.resource.FlexoIODelegate;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
+import org.openflexo.foundation.technologyadapter.TechnologyContextManager;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 
 /**
@@ -33,7 +35,7 @@ import org.openflexo.model.exceptions.ModelDefinitionException;
  * @author sylvain
  *
  */
-public abstract class VirtualModelResourceFactory extends AbstractVirtualModelResourceFactory<VirtualModel, VirtualModelResource> {
+public class VirtualModelResourceFactory extends AbstractVirtualModelResourceFactory<VirtualModel, VirtualModelResource> {
 
 	private static final Logger logger = Logger.getLogger(VirtualModelResourceFactory.class.getPackage().getName());
 
@@ -45,6 +47,23 @@ public abstract class VirtualModelResourceFactory extends AbstractVirtualModelRe
 	public VirtualModel makeEmptyResourceData(VirtualModelResource resource) {
 		// TODO
 		return null;
+	}
+
+	public <I> VirtualModelResource retrieveVirtualModelResource(I serializationArtefact,
+			TechnologyContextManager<FMLTechnologyAdapter> technologyContextManager, ViewPointResource viewPointResource)
+			throws ModelDefinitionException {
+
+		FlexoResourceCenter<I> resourceCenter = (FlexoResourceCenter<I>) viewPointResource.getResourceCenter();
+		String name = resourceCenter.retrieveName(serializationArtefact);
+		VirtualModelResource returned = initResourceForRetrieving(serializationArtefact, resourceCenter, technologyContextManager,
+				viewPointResource.getURI() + "/" + name);
+
+		viewPointResource.addToContents(returned);
+		viewPointResource.notifyContentsAdded(returned);
+
+		registerResource(returned, resourceCenter, technologyContextManager);
+
+		return returned;
 	}
 
 	@Override

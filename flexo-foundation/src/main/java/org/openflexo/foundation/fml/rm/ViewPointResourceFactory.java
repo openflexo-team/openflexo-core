@@ -62,8 +62,15 @@ public abstract class ViewPointResourceFactory extends AbstractVirtualModelResou
 
 	private static XMLRootElementReader reader = new XMLRootElementReader();
 
+	private final VirtualModelResourceFactory virtualModelResourceFactory;
+
 	public ViewPointResourceFactory() throws ModelDefinitionException {
 		super(ViewPointResource.class);
+		virtualModelResourceFactory = new VirtualModelResourceFactory();
+	}
+
+	public VirtualModelResourceFactory getVirtualModelResourceFactory() {
+		return virtualModelResourceFactory;
 	}
 
 	@Override
