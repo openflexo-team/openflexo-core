@@ -70,7 +70,7 @@ public class ViewLibrary extends ViewRepository {
 	public ViewLibrary(FlexoResourceCenter<?> rc) {
 		super(rc.getServiceManager().getTechnologyAdapterService().getTechnologyAdapter(FMLRTTechnologyAdapter.class), rc);
 		this.rc = rc;
-		getRootFolder().setName(rc.getName());
+		getRootFolder().setName(rc.getName(),false);
 		getRootFolder().setFullQualifiedPath("/");
 		// exploreDirectoryLookingForViews(getDirectory(), getRootFolder());
 
