@@ -51,6 +51,9 @@ import org.openflexo.model.factory.ModelFactory;
  * @author sylvain
  * 
  */
+
+// TODO: must be refactored in order to be used by the ServiceManager to provide resource retreiving
+
 public class FlexoObjectReferenceConverter extends Converter<FlexoObjectReference<?>> {
 
 	/**

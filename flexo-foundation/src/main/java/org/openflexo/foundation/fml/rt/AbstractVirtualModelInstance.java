@@ -842,6 +842,9 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 			else if (variable.getVariableName().equals(ViewPointBindingModel.PROJECT_PROPERTY)) {
 				return getResourceCenter();
 			}
+			else if (variable.getVariableName().equals(ViewPointBindingModel.RC_PROPERTY)) {
+				return getResourceCenter();
+			}
 			else if (variable.getVariableName().equals(VirtualModelBindingModel.VIRTUAL_MODEL_INSTANCE_PROPERTY)) {
 				return this;
 			}

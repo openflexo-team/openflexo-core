@@ -56,20 +56,19 @@ import org.openflexo.foundation.resource.FlexoResourceCenter;
  * @author sylvain
  */
 
+// TODO : Merge ViewRepository / ViewLibrary
+
 public class ViewLibrary extends ViewRepository {
 
 	private static final Logger logger = Logger.getLogger(ViewLibrary.class.getPackage().getName());
 
 	private static final String VIEWS = "Views";
 
-	private final FlexoResourceCenter<?> rc;
-
 	/**
 	 * Create a new ViewLibrary.
 	 */
 	public ViewLibrary(FlexoResourceCenter<?> rc) {
 		super(rc.getServiceManager().getTechnologyAdapterService().getTechnologyAdapter(FMLRTTechnologyAdapter.class), rc);
-		this.rc = rc;
 		getRootFolder().setName(rc.getName(),false);
 		getRootFolder().setFullQualifiedPath("/");
 		// exploreDirectoryLookingForViews(getDirectory(), getRootFolder());
@@ -78,7 +77,6 @@ public class ViewLibrary extends ViewRepository {
 
 	public ViewLibrary(FMLRTTechnologyAdapter ta, FlexoResourceCenter<?> rc) {
 		super(ta, rc);
-		this.rc = rc;
 		getRootFolder().setName(rc.getName());
 		getRootFolder().setFullQualifiedPath("/");
 		// exploreDirectoryLookingForViews(getDirectory(), getRootFolder());
@@ -111,11 +109,7 @@ public class ViewLibrary extends ViewRepository {
 				project.getServiceManager().getTechnologyAdapterService().getTechnologyAdapter(FMLRTTechnologyAdapter.class));
 		return returned;
 	}
-
-	public FlexoResourceCenter<?> getResourceCenter() {
-		return rc;
-	}
-
+	
 	public List<View> getViewsForViewPointWithURI(String vpURI) {
 		List<View> views = new ArrayList<View>();
 		for (ViewResource vr : getAllResources()) {

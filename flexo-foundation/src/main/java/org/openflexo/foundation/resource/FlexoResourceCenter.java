@@ -298,7 +298,7 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, FlexoObject, Refere
 	 */
 	public String getDefaultResourceURI(FlexoResource<?> resource);
 	
-
+	// TODO: must be refactored because it is from the responsability of the servicemanager
 	/**
 	 * the ObjectReferenceConverter is used when de-serializing resources that contains a reference to another FlexoObject (URI)
 	 * Typically for VirtualModelInstance referencing resources via ModelSlots
