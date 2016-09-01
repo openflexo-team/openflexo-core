@@ -51,6 +51,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import javax.swing.SwingUtilities;
+
 import org.openflexo.foundation.DataModification;
 import org.openflexo.foundation.FlexoObservable;
 import org.openflexo.foundation.FlexoServiceManager;
@@ -189,6 +191,18 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 		return resourceFactories;
 	}
 
+	public <R extends FlexoResourceFactory<?, ?, ?>> R getResourceFactory(Class<R> resourceFactory) {
+		if (!isActivated()) {
+			activate();
+		}
+		for (FlexoResourceFactory<?, ?, ?> frf : getResourceFactories()) {
+			if (resourceFactory.isAssignableFrom(frf.getClass())) {
+				return (R) frf;
+			}
+		}
+		return null;
+	}
+
 	/**
 	 * Initialize the supplied resource center with the technology, if not already done
 	 * 
@@ -230,7 +244,20 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 		}
 
 		// Call it to update the current repositories
-		notifyRepositoryStructureChanged();
+		if (!SwingUtilities.isEventDispatchThread()) {
+			SwingUtilities.invokeLater(new Runnable() {
+				@Override
+				public void run() {
+					// Call it to update the current repositories
+					notifyRepositoryStructureChanged();
+				}
+			});
+		}
+		else {
+			// Call it to update the current repositories
+			notifyRepositoryStructureChanged();
+		}
+
 	}
 
 	/**
@@ -602,6 +629,7 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 	 * Called to notify that the structure of registered and/or global repositories has changed
 	 */
 	public void notifyRepositoryStructureChanged() {
+
 		getPropertyChangeSupport().firePropertyChange("getAllRepositories()", null, getAllRepositories());
 		getPropertyChangeSupport().firePropertyChange("getGlobalRepositories()", null, getGlobalRepositories());
 

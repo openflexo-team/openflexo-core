@@ -47,7 +47,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.logging.Logger;
 
-import org.eclipse.jgit.lib.Repository;
 import org.jdom2.Attribute;
 import org.jdom2.Document;
 import org.jdom2.Element;
@@ -56,11 +55,8 @@ import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOu
 import org.openflexo.foundation.fml.binding.FlexoConceptBindingFactory;
 import org.openflexo.foundation.fml.binding.ViewPointBindingModel;
 import org.openflexo.foundation.fml.rm.ViewPointResource;
-import org.openflexo.foundation.fml.rm.ViewPointResourceImpl;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.fml.rt.View;
-import org.openflexo.foundation.resource.FlexoResourceCenter;
-import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.utils.XMLUtils;
@@ -219,7 +215,7 @@ public interface ViewPoint extends AbstractVirtualModel<ViewPoint> {
 	 * @author sylvain
 	 * 
 	 */
-	public static abstract class ViewPointImpl extends AbstractVirtualModelImpl<ViewPoint> implements ViewPoint {
+	public static abstract class ViewPointImpl extends AbstractVirtualModelImpl<ViewPoint>implements ViewPoint {
 
 		private static final Logger logger = Logger.getLogger(ViewPoint.class.getPackage().getName());
 
@@ -233,8 +229,13 @@ public interface ViewPoint extends AbstractVirtualModel<ViewPoint> {
 
 		private final ViewType viewType = new ViewType(this);;
 
-		// TODO: move this code to the ViewPointResource
-		public static ViewPoint newViewPoint(String baseName, String viewpointURI, File containerDir, ViewPointLibrary library,
+		// Used during deserialization, do not use it
+		public ViewPointImpl() {
+			super();
+			virtualModels = new ArrayList<VirtualModel>();
+		}
+
+		/*public static ViewPoint newViewPoint(String baseName, String viewpointURI, File containerDir, ViewPointLibrary library,
 				FlexoResourceCenter<?> resourceCenter) {
 			ViewPointResource vpRes = ViewPointResourceImpl.makeViewPointResource(baseName, viewpointURI, containerDir, resourceCenter,
 					library.getServiceManager());
@@ -250,13 +251,13 @@ public interface ViewPoint extends AbstractVirtualModel<ViewPoint> {
 				e.printStackTrace();
 			}
 			return viewpoint;
-		}
+		}*/
 
 		/*
 		 * TODO Implements a method to handle gitResourceCenter
 		 */
 
-		public static ViewPoint newGitViewPoint(String baseName, String viewpointURI, File workTree, Repository gitRepository,
+		/*public static ViewPoint newGitViewPoint(String baseName, String viewpointURI, File workTree, Repository gitRepository,
 				ViewPointLibrary library, FlexoResourceCenter<?> resourceCenter) throws IOException {
 			ViewPointResource vpRes = ViewPointResourceImpl.makeGitViewPointResource(baseName, viewpointURI, workTree, resourceCenter,
 					library.getServiceManager());
@@ -266,9 +267,9 @@ public interface ViewPoint extends AbstractVirtualModel<ViewPoint> {
 			// And register it to the library
 			library.registerViewPoint(vpRes);
 			viewpoint.init(baseName, library);
-
+		
 			return viewpoint;
-		}
+		}*/
 
 		@Override
 		public FlexoVersion getModelVersion() {
@@ -283,12 +284,6 @@ public interface ViewPoint extends AbstractVirtualModel<ViewPoint> {
 			if (getResource() != null) {
 				getResource().setModelVersion(aVersion);
 			}
-		}
-
-		// Used during deserialization, do not use it
-		public ViewPointImpl() {
-			super();
-			virtualModels = new ArrayList<VirtualModel>();
 		}
 
 		public void init(String baseName, /* File viewpointDir, File xmlFile,*/ViewPointLibrary library/*, ViewPointFolder folder*/) {

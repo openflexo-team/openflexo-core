@@ -39,15 +39,8 @@
 package org.openflexo.foundation.fml.rm;
 
 import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Iterator;
 import java.util.logging.Logger;
 
-import org.jdom2.Attribute;
-import org.jdom2.Document;
-import org.jdom2.Element;
-import org.jdom2.JDOMException;
 import org.openflexo.foundation.IOFlexoException;
 import org.openflexo.foundation.InconsistentDataException;
 import org.openflexo.foundation.InvalidModelDefinitionException;
@@ -57,7 +50,6 @@ import org.openflexo.foundation.resource.FlexoFileNotFoundException;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.model.factory.AccessibleProxyObject;
 import org.openflexo.toolbox.IProgress;
-import org.openflexo.toolbox.StringUtils;
 
 public abstract class VirtualModelResourceImpl extends AbstractVirtualModelResourceImpl<VirtualModel>
 		implements VirtualModelResource, AccessibleProxyObject {
@@ -122,107 +114,6 @@ public abstract class VirtualModelResourceImpl extends AbstractVirtualModelResou
 		getPropertyChangeSupport().firePropertyChange("virtualModel", null, getLoadedResourceData());
 		getPropertyChangeSupport().firePropertyChange("loadedVirtualModel", null, getLoadedResourceData());
 	}
-
-	private static class VirtualModelInfo {
-		public String version;
-		public String name;
-		public String modelVersion;
-	}
-
-	private static VirtualModelInfo findVirtualModelInfo(InputStream inputStream) {
-		Document document;
-		try {
-			// logger.fine("Try to find infos for " + virtualModelDirectory);
-
-			// String baseName = virtualModelDirectory.getName();
-			// File xmlFile = new File(virtualModelDirectory, baseName + ".xml");
-
-			// if (xmlFile.exists()) {
-
-			document = readXMLInputStream(inputStream);// (xmlFile);
-			Element root = getElement(document, "VirtualModel");
-			if (root != null) {
-				VirtualModelInfo returned = new VirtualModelInfo();
-				Iterator<Attribute> it = root.getAttributes().iterator();
-				while (it.hasNext()) {
-					Attribute at = it.next();
-					if (at.getName().equals("name")) {
-						logger.fine("Returned " + at.getValue());
-						returned.name = at.getValue();
-					}
-					else if (at.getName().equals("version")) {
-						logger.fine("Returned " + at.getValue());
-						returned.version = at.getValue();
-					}
-					else if (at.getName().equals("modelVersion")) {
-						logger.fine("Returned " + at.getValue());
-						returned.modelVersion = at.getValue();
-					}
-				}
-				if (StringUtils.isEmpty(returned.name)) {
-					// returned.name = virtualModelDirectory.getName();
-					returned.name = "NoName";
-				}
-				return returned;
-			}
-			/*} else {
-				logger.warning("While analysing virtual model candidate: " + virtualModelDirectory.getAbsolutePath() + " cannot find file "
-						+ xmlFile.getAbsolutePath());
-			}*/
-		} catch (JDOMException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		logger.fine("Returned null");
-		return null;
-	}
-
-	/*private static VirtualModelInfo findVirtualModelInfo(File virtualModelDirectory) {
-		Document document;
-		try {
-			logger.fine("Try to find infos for " + virtualModelDirectory);
-	
-			String baseName = virtualModelDirectory.getName();
-			File xmlFile = new File(virtualModelDirectory, baseName + ".xml");
-	
-			if (xmlFile.exists()) {
-	
-				document = readXMLFile(xmlFile);
-				Element root = getElement(document, "VirtualModel");
-				if (root != null) {
-					VirtualModelInfo returned = new VirtualModelInfo();
-					Iterator<Attribute> it = root.getAttributes().iterator();
-					while (it.hasNext()) {
-						Attribute at = it.next();
-						if (at.getName().equals("name")) {
-							logger.fine("Returned " + at.getValue());
-							returned.name = at.getValue();
-						} else if (at.getName().equals("version")) {
-							logger.fine("Returned " + at.getValue());
-							returned.version = at.getValue();
-						} else if (at.getName().equals("modelVersion")) {
-							logger.fine("Returned " + at.getValue());
-							returned.modelVersion = at.getValue();
-						}
-					}
-					if (StringUtils.isEmpty(returned.name)) {
-						returned.name = virtualModelDirectory.getName();
-					}
-					return returned;
-				}
-			} else {
-				logger.warning("While analysing virtual model candidate: " + virtualModelDirectory.getAbsolutePath() + " cannot find file "
-						+ xmlFile.getAbsolutePath());
-			}
-		} catch (JDOMException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		logger.fine("Returned null");
-		return null;
-	}*/
 
 	@Override
 	public ViewPointResource getContainer() {

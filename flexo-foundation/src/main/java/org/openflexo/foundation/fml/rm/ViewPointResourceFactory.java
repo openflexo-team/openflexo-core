@@ -34,15 +34,12 @@ import org.jdom2.Element;
 import org.jdom2.JDOMException;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.ViewPoint;
+import org.openflexo.foundation.fml.ViewPoint.ViewPointImpl;
 import org.openflexo.foundation.resource.FlexoIODelegate;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
-import org.openflexo.foundation.resource.InJarFlexoIODelegate;
 import org.openflexo.foundation.resource.PamelaResourceImpl;
 import org.openflexo.foundation.technologyadapter.TechnologyContextManager;
 import org.openflexo.model.exceptions.ModelDefinitionException;
-import org.openflexo.rm.FileResourceImpl;
-import org.openflexo.rm.InJarResourceImpl;
-import org.openflexo.rm.Resource;
 import org.openflexo.toolbox.FlexoVersion;
 import org.openflexo.toolbox.StringUtils;
 import org.openflexo.xml.XMLRootElementInfo;
@@ -75,13 +72,43 @@ public abstract class ViewPointResourceFactory extends AbstractVirtualModelResou
 
 	@Override
 	public ViewPoint makeEmptyResourceData(ViewPointResource resource) {
-		// TODO
-		return null;
+
+		ViewPointImpl viewpoint = (ViewPointImpl) resource.getFactory().newInstance(ViewPoint.class);
+
+		return viewpoint;
 	}
+
+	/*public static ViewPoint newViewPoint(String baseName, String viewpointURI, File containerDir, ViewPointLibrary library,
+			FlexoResourceCenter<?> resourceCenter) {
+		ViewPointResource vpRes = ViewPointResourceImpl.makeViewPointResource(baseName, viewpointURI, containerDir, resourceCenter,
+				library.getServiceManager());
+		ViewPointImpl viewpoint = (ViewPointImpl) vpRes.getFactory().newInstance(ViewPoint.class);
+		vpRes.setResourceData(viewpoint);
+		viewpoint.setResource(vpRes);
+		// And register it to the library
+		library.registerViewPoint(vpRes);
+		viewpoint.init(baseName, library);
+		try {
+			vpRes.save(null);
+		} catch (SaveResourceException e) {
+			e.printStackTrace();
+		}
+		return viewpoint;
+	}*/
 
 	@Override
 	public <I> boolean isValidArtefact(I serializationArtefact, FlexoResourceCenter<I> resourceCenter) {
-		return resourceCenter.retrieveName(serializationArtefact).endsWith(VIEWPOINT_SUFFIX);
+
+		if (resourceCenter.exists(serializationArtefact) && resourceCenter.isDirectory(serializationArtefact)
+				&& resourceCenter.canRead(serializationArtefact)
+				&& resourceCenter.retrieveName(serializationArtefact).endsWith(VIEWPOINT_SUFFIX)) {
+			/*final String baseName = candidateFile.getName().substring(0,
+					candidateFile.getName().length() - ViewPointResource.VIEWPOINT_SUFFIX.length());
+			final File xmlFile = new File(candidateFile, baseName + ".xml");
+			return xmlFile.exists();*/
+			return true;
+		}
+		return false;
 	}
 
 	@Override
@@ -101,7 +128,7 @@ public abstract class ViewPointResourceFactory extends AbstractVirtualModelResou
 		}
 
 		// Now look for virtual models
-		exploreVirtualModels(resource, resource.getFlexoIODelegate().getSerializationArtefactAsResource());
+		exploreVirtualModels(resource, technologyContextManager);
 
 		return resource;
 
@@ -144,11 +171,20 @@ public abstract class ViewPointResourceFactory extends AbstractVirtualModelResou
 
 			returned.setURI(vpi.uri);
 			returned.initName(baseName);
+			if (StringUtils.isNotEmpty(vpi.version)) {
+				returned.setVersion(new FlexoVersion(vpi.version));
+			}
+			else {
+				returned.setVersion(new FlexoVersion("0.1"));
+			}
+			if (StringUtils.isNotEmpty(vpi.modelVersion)) {
+				returned.setModelVersion(new FlexoVersion(vpi.modelVersion));
+			}
+			else {
+				returned.setModelVersion(new FlexoVersion("1.0"));
+			}
 
 		}
-
-		// SGU: why this ???
-		returned.setModelVersion(new FlexoVersion("1.0"));
 
 		return returned;
 	}
@@ -158,42 +194,46 @@ public abstract class ViewPointResourceFactory extends AbstractVirtualModelResou
 		return resourceCenter.makeDirectoryBasedFlexoIODelegate(serializationArtefact, VIEWPOINT_SUFFIX, CORE_FILE_SUFFIX, this);
 	}
 
-	private void exploreVirtualModels(ViewPointResource viewPointResource, Resource parent) {
+	private void exploreVirtualModels(ViewPointResource viewPointResource,
+			TechnologyContextManager<FMLTechnologyAdapter> technologyContextManager) {
+
+		exploreResource(viewPointResource.getFlexoIODelegate().getSerializationArtefact(), viewPointResource, technologyContextManager);
+	}
+
+	private <I> void exploreResource(I serializationArtefect, ViewPointResource viewPointResource,
+			TechnologyContextManager<FMLTechnologyAdapter> technologyContextManager) {
 		XMLRootElementInfo result = null;
 
-		if (parent == null) {
+		if (serializationArtefect == null) {
 			return;
 		}
 
-		for (Resource child : parent.getContents()) {
-			if (child.isContainer()) {
-				exploreVirtualModels(viewPointResource, child);
-			}
-			else {
-				try {
-					if (child.getURI().endsWith(".xml")) {
-						result = reader.readRootElement(child);
-						// Serialization artefact is File
-						if (result.getName().equals("VirtualModel") && child instanceof FileResourceImpl) {
-							VirtualModelResource virtualModelResource = VirtualModelResourceImpl.retrieveVirtualModelResource(
-									((FileResourceImpl) child).getFile().getParentFile(), this, viewPointResource.getServiceManager());
+		FlexoResourceCenter<I> resourceCenter = (FlexoResourceCenter<I>) viewPointResource.getResourceCenter();
+
+		for (I child : resourceCenter.getContents(serializationArtefect)) {
+			try {
+				if (resourceCenter.retrieveName(child).endsWith(".xml")) {
+					result = reader.readRootElement(
+							((FlexoIODelegate) viewPointResource.getFlexoIODelegate()).getSerializationArtefactAsResource(child));
+					if (result.getName().equals("VirtualModel")) {
+						VirtualModelResource virtualModelResource;
+						try {
+							virtualModelResource = getVirtualModelResourceFactory().retrieveVirtualModelResource(serializationArtefect,
+									technologyContextManager, viewPointResource);
 							viewPointResource.addToContents(virtualModelResource);
-						}
-						// Serialization artefact is InJarResource
-						else if (result.getName().equals("VirtualModel")
-								&& viewPointResource.getFlexoIODelegate() instanceof InJarFlexoIODelegate) {
-							VirtualModelResource virtualModelResource = VirtualModelResourceImpl.retrieveVirtualModelResource(
-									(InJarResourceImpl) child, parent, this, viewPointResource.getServiceManager());
-							viewPointResource.addToContents(virtualModelResource);
+						} catch (ModelDefinitionException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
 						}
 					}
-				} catch (IOException e) {
-					logger.warning("Unexpected IOException while reading " + child);
-					e.printStackTrace();
 				}
-
+			} catch (IOException e) {
+				logger.warning("Unexpected IOException while reading " + child);
+				e.printStackTrace();
 			}
 
+			// recursively call
+			exploreResource(child, viewPointResource, technologyContextManager);
 		}
 	}
 

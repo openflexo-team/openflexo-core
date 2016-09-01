@@ -49,12 +49,14 @@ import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.IOFlexoException;
 import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.fml.FMLObject;
+import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.ViewPoint.ViewPointImpl;
 import org.openflexo.foundation.fml.ViewPointLibrary;
 import org.openflexo.foundation.fml.ViewPointRepository;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.rm.ViewPointResource;
+import org.openflexo.foundation.fml.rm.ViewPointResourceFactory;
 import org.openflexo.foundation.resource.RepositoryFolder;
 import org.openflexo.toolbox.JavaUtils;
 import org.openflexo.toolbox.StringUtils;
@@ -128,6 +130,13 @@ public class CreateViewPoint extends AbstractCreateVirtualModel<CreateViewPoint,
 		File newViewPointDir = getDirectoryWhereToCreateTheViewPoint();
 
 		logger.info("Creating viewpoint " + newViewPointDir.getAbsolutePath());
+
+		FMLTechnologyAdapter fmlTechnologyAdapter = getServiceManager().getTechnologyAdapterService()
+				.getTechnologyAdapter(FMLTechnologyAdapter.class);
+		ViewPointResourceFactory factory = fmlTechnologyAdapter.getViewPointResourceFactory();
+
+		ViewPointResource newViewPointResource = factory.makeResource(serializationArtefact,
+				getViewPointFolder().getResourceRepository().getResourceCenter(), fmlTechnologyAdapter.getTechnologyContextManager(), true);
 
 		// Instanciate new ViewPoint
 		newViewPoint = ViewPointImpl.newViewPoint(getBaseName(), getNewViewPointURI(), newViewPointDir, viewPointLibrary,

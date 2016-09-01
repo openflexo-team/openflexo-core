@@ -84,7 +84,7 @@ public interface FlexoIODelegate<I> extends AccessibleProxyObject {
 	@Setter(SERIALIZATION_ARTEFACT)
 	public void setSerializationArtefact(I artefact);
 
-	public Resource getSerializationArtefactAsResource();
+	public Resource getSerializationArtefactAsResource(I serializationArtefact);
 
 	/**
 	 * Indicates whether this resource can be edited or not. Returns <code>true</code> if the resource cannot be edited, else returns

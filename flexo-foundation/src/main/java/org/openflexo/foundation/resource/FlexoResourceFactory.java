@@ -118,9 +118,6 @@ public abstract class FlexoResourceFactory<R extends TechnologyAdapterResource<R
 			returned.save(null);
 		}
 
-		returned.setResourceData(makeEmptyResourceData(returned));
-		returned.save(null);
-
 		return returned;
 	}
 

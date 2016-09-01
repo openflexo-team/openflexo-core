@@ -20,14 +20,28 @@
 
 package org.openflexo.foundation.fml.rm;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Iterator;
 import java.util.logging.Logger;
 
+import org.jdom2.Attribute;
+import org.jdom2.Document;
+import org.jdom2.Element;
+import org.jdom2.JDOMException;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.resource.FlexoIODelegate;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
+import org.openflexo.foundation.resource.PamelaResourceImpl;
+import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.technologyadapter.TechnologyContextManager;
 import org.openflexo.model.exceptions.ModelDefinitionException;
+import org.openflexo.toolbox.FlexoVersion;
+import org.openflexo.toolbox.StringUtils;
 
 /**
  * Implementation of PamelaResourceFactory for {@link ViewPointResource}
@@ -45,16 +59,130 @@ public class VirtualModelResourceFactory extends AbstractVirtualModelResourceFac
 
 	@Override
 	public VirtualModel makeEmptyResourceData(VirtualModelResource resource) {
-		// TODO
+		return resource.getFactory().newVirtualModel();
+	}
+
+	public <I> VirtualModelResource makeVirtualModelResource(I serializationArtefact, ViewPointResource viewPointResource,
+			TechnologyContextManager<FMLTechnologyAdapter> technologyContextManager, boolean createEmptyContents)
+					throws SaveResourceException, ModelDefinitionException {
+
+		FlexoResourceCenter<I> resourceCenter = (FlexoResourceCenter<I>) viewPointResource.getResourceCenter();
+		String name = resourceCenter.retrieveName(serializationArtefact);
+		VirtualModelResource returned = initResourceForCreation(serializationArtefact, resourceCenter, technologyContextManager,
+				viewPointResource.getURI() + "/" + name);
+
+		viewPointResource.addToContents(returned);
+		viewPointResource.notifyContentsAdded(returned);
+
+		registerResource(returned, resourceCenter, technologyContextManager);
+
+		if (createEmptyContents) {
+			VirtualModel resourceData = makeEmptyResourceData(returned);
+			resourceData.setResource(returned);
+			returned.setResourceData(resourceData);
+			returned.setModified(true);
+			returned.save(null);
+		}
+
+		returned.save(null);
+
+		return returned;
+	}
+
+	@Override
+	protected <I> VirtualModelResource initResourceForRetrieving(I serializationArtefact, FlexoResourceCenter<I> resourceCenter,
+			TechnologyContextManager<FMLTechnologyAdapter> technologyContextManager, String uri) throws ModelDefinitionException {
+
+		VirtualModelResource returned = super.initResourceForRetrieving(serializationArtefact, resourceCenter, technologyContextManager,
+				uri);
+
+		// TODO: refactor this to io/delegate
+		if (serializationArtefact instanceof File) {
+			String artefactName = resourceCenter.retrieveName(serializationArtefact);
+			File xmlFile = new File((File) serializationArtefact, artefactName + CORE_FILE_SUFFIX);
+			VirtualModelInfo vpi = null;
+			try {
+				vpi = findVirtualModelInfo(new FileInputStream(xmlFile));
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			if (vpi == null) {
+				// Unable to retrieve infos, just abort
+				return null;
+			}
+
+			returned.setURI(uri);
+			returned.initName(artefactName);
+			returned.setVersion(new FlexoVersion(vpi.version));
+			returned.setModelVersion(new FlexoVersion(vpi.modelVersion));
+
+		}
+		return returned;
+	}
+
+	private static class VirtualModelInfo {
+		public String version;
+		public String name;
+		public String modelVersion;
+	}
+
+	private static VirtualModelInfo findVirtualModelInfo(InputStream inputStream) {
+		Document document;
+		try {
+			// logger.fine("Try to find infos for " + virtualModelDirectory);
+
+			// String baseName = virtualModelDirectory.getName();
+			// File xmlFile = new File(virtualModelDirectory, baseName + ".xml");
+
+			// if (xmlFile.exists()) {
+
+			document = PamelaResourceImpl.readXMLInputStream(inputStream);// (xmlFile);
+			Element root = PamelaResourceImpl.getElement(document, "VirtualModel");
+			if (root != null) {
+				VirtualModelInfo returned = new VirtualModelInfo();
+				Iterator<Attribute> it = root.getAttributes().iterator();
+				while (it.hasNext()) {
+					Attribute at = it.next();
+					if (at.getName().equals("name")) {
+						logger.fine("Returned " + at.getValue());
+						returned.name = at.getValue();
+					}
+					else if (at.getName().equals("version")) {
+						logger.fine("Returned " + at.getValue());
+						returned.version = at.getValue();
+					}
+					else if (at.getName().equals("modelVersion")) {
+						logger.fine("Returned " + at.getValue());
+						returned.modelVersion = at.getValue();
+					}
+				}
+				if (StringUtils.isEmpty(returned.name)) {
+					// returned.name = virtualModelDirectory.getName();
+					returned.name = "NoName";
+				}
+				return returned;
+			}
+			/*} else {
+				logger.warning("While analysing virtual model candidate: " + virtualModelDirectory.getAbsolutePath() + " cannot find file "
+						+ xmlFile.getAbsolutePath());
+			}*/
+		} catch (JDOMException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		logger.fine("Returned null");
 		return null;
 	}
 
 	public <I> VirtualModelResource retrieveVirtualModelResource(I serializationArtefact,
 			TechnologyContextManager<FMLTechnologyAdapter> technologyContextManager, ViewPointResource viewPointResource)
-			throws ModelDefinitionException {
+					throws ModelDefinitionException {
 
 		FlexoResourceCenter<I> resourceCenter = (FlexoResourceCenter<I>) viewPointResource.getResourceCenter();
 		String name = resourceCenter.retrieveName(serializationArtefact);
+
 		VirtualModelResource returned = initResourceForRetrieving(serializationArtefact, resourceCenter, technologyContextManager,
 				viewPointResource.getURI() + "/" + name);
 

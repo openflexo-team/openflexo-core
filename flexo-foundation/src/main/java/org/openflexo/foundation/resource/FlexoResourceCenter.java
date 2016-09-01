@@ -305,6 +305,15 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, FlexoObject {
 	public String retrieveName(I serializationArtefact);
 
 	/**
+	 * Return list of serialization actefacts contained in supplied serialization actifact<br>
+	 * Return empty list if supplied serialization artefact has no contents
+	 * 
+	 * @param serializationArtefact
+	 * @return
+	 */
+	public List<I> getContents(I serializationArtefact);
+
+	/**
 	 * Build a new {@link FlexoIODelegate} for a given serialization artefact
 	 * 
 	 * @param serializationArtefact
@@ -330,4 +339,10 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, FlexoObject {
 	 */
 	public <R extends FlexoResource<?>> RepositoryFolder<R, I> getRepositoryFolder(FlexoIODelegate<I> ioDelegate,
 			ResourceRepository<R, I> resourceRepository);
+
+	public boolean exists(I serializationArtefact);
+
+	public boolean canRead(I serializationArtefact);
+
+	public boolean isDirectory(I serializationArtefact);
 }

@@ -280,9 +280,9 @@ public interface FileFlexoIODelegate extends FlexoIOStreamDelegate<File> {
 		}
 
 		@Override
-		public Resource getSerializationArtefactAsResource() {
+		public Resource getSerializationArtefactAsResource(File serializationArtefact) {
 			try {
-				return new FileResourceImpl(getSerializationArtefact());
+				return new FileResourceImpl(serializationArtefact);
 			} catch (MalformedURLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

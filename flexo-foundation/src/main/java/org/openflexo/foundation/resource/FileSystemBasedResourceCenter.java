@@ -42,6 +42,7 @@ package org.openflexo.foundation.resource;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -773,6 +774,33 @@ public abstract class FileSystemBasedResourceCenter extends ResourceRepository<F
 	@Override
 	public String retrieveName(File serializationArtefact) {
 		return serializationArtefact.getName();
+	}
+
+	/**
+	 * Return list of serialization actefacts contained in supplied serialization actifact<br>
+	 * Return empty list if supplied serialization artefact has no contents
+	 * 
+	 * @param serializationArtefact
+	 * @return
+	 */
+	@Override
+	public List<File> getContents(File serializationArtefact) {
+		return Arrays.asList(serializationArtefact.listFiles());
+	}
+
+	@Override
+	public boolean isDirectory(File serializationArtefact) {
+		return serializationArtefact.isDirectory();
+	}
+
+	@Override
+	public boolean exists(File serializationArtefact) {
+		return serializationArtefact.exists();
+	}
+
+	@Override
+	public boolean canRead(File serializationArtefact) {
+		return serializationArtefact.canRead();
 	}
 
 	@Override

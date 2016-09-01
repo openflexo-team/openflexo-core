@@ -466,10 +466,44 @@ public class JarResourceCenter<R extends FlexoResource<?>> extends ResourceRepos
 		return serializationArtefact.getURL().getFile();
 	}
 
+	/**
+	 * Return list of serialization actefacts contained in supplied serialization actifact<br>
+	 * Return empty list if supplied serialization artefact has no contents
+	 * 
+	 * @param serializationArtefact
+	 * @return
+	 */
+	@Override
+	public List<InJarResourceImpl> getContents(InJarResourceImpl serializationArtefact) {
+		return (List) serializationArtefact.getContents();
+	}
+
+	@Override
+	public boolean isDirectory(InJarResourceImpl serializationArtefact) {
+		return serializationArtefact.isContainer();
+	}
+
+	@Override
+	public boolean exists(InJarResourceImpl serializationArtefact) {
+		return true;
+	}
+
+	@Override
+	public boolean canRead(InJarResourceImpl serializationArtefact) {
+		return true;
+	}
+
 	@Override
 	public InJarFlexoIODelegate makeFlexoIODelegate(InJarResourceImpl serializationArtefact,
 			FlexoResourceFactory<?, ?, ?> resourceFactory) {
 		return InJarFlexoIODelegateImpl.makeInJarFlexoIODelegate(serializationArtefact, resourceFactory);
+	}
+
+	@Override
+	public FlexoIODelegate<InJarResourceImpl> makeDirectoryBasedFlexoIODelegate(InJarResourceImpl serializationArtefact,
+			String directoryExtension, String fileExtension, FlexoResourceFactory<?, ?, ?> resourceFactory) {
+		// Not applicable
+		return null;
 	}
 
 	@Override

@@ -145,8 +145,8 @@ public interface InJarFlexoIODelegate extends FlexoIOStreamDelegate<InJarResourc
 		}
 
 		@Override
-		public Resource getSerializationArtefactAsResource() {
-			return getSerializationArtefact();
+		public Resource getSerializationArtefactAsResource(InJarResourceImpl serializationArtefact) {
+			return serializationArtefact;
 		}
 
 	}
