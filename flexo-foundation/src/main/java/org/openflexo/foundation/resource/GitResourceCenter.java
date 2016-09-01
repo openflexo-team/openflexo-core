@@ -128,10 +128,4 @@ public class GitResourceCenter extends FileSystemBasedResourceCenter {
 		// TODO Not yet implemented
 	}
 
-	@Override
-	public String getDefaultBaseURI() {
-		// TODO Not yet implemented
-		return null;
-	}
-
 }
