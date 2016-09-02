@@ -111,14 +111,19 @@ public abstract class FlexoResourceFactory<R extends TechnologyAdapterResource<R
 		registerResource(returned, resourceCenter, technologyContextManager);
 
 		if (createEmptyContents) {
-			RD resourceData = makeEmptyResourceData(returned);
-			resourceData.setResource(returned);
-			returned.setResourceData(resourceData);
-			returned.setModified(true);
+			createEmptyContents(returned);
 			returned.save(null);
 		}
 
 		return returned;
+	}
+
+	protected RD createEmptyContents(R resource) {
+		RD resourceData = makeEmptyResourceData(resource);
+		resourceData.setResource(resource);
+		resource.setResourceData(resourceData);
+		resource.setModified(true);
+		return resourceData;
 	}
 
 	protected <I> R initResourceForCreation(I serializationArtefact, FlexoResourceCenter<I> resourceCenter,

@@ -60,8 +60,8 @@ import org.openflexo.model.factory.ModelFactory;
  * @author sylvain
  * 
  */
-public abstract class AbstractVirtualModelInstanceModelFactory<R extends AbstractVirtualModelInstanceResource<?, ?>> extends
-		DefaultPamelaResourceModelFactory<R> {
+public abstract class AbstractVirtualModelInstanceModelFactory<R extends AbstractVirtualModelInstanceResource<?, ?>>
+		extends DefaultPamelaResourceModelFactory<R> {
 
 	public AbstractVirtualModelInstanceModelFactory(R virtualModelInstanceResource, EditingContext editingContext,
 			TechnologyAdapterService taService) throws ModelDefinitionException {
@@ -71,7 +71,9 @@ public abstract class AbstractVirtualModelInstanceModelFactory<R extends Abstrac
 		addConverter(new FlexoVersionConverter());
 		if (virtualModelInstanceResource != null) {
 			addConverter(new RelativePathResourceConverter(virtualModelInstanceResource.getFlexoIODelegate().getParentPath()));
-			addConverter(virtualModelInstanceResource.getProject().getObjectReferenceConverter());
+			if (virtualModelInstanceResource.getProject() != null) {
+				addConverter(virtualModelInstanceResource.getProject().getObjectReferenceConverter());
+			}
 		}
 
 	}

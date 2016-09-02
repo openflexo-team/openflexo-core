@@ -51,6 +51,7 @@ import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.ViewPoint.ViewPointImpl;
 import org.openflexo.foundation.fml.ViewPointLibrary;
 import org.openflexo.foundation.resource.FlexoFileNotFoundException;
+import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.FlexoXMLFileResourceImpl;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.toolbox.FlexoVersion;
@@ -164,5 +165,23 @@ public abstract class ViewPointResourceImpl extends AbstractVirtualModelResource
 	@Override
 	public void gitSave() {
 
+	}
+
+	@Override
+	public void addToContents(FlexoResource<?> resource) {
+		performSuperAdder(CONTENTS, resource);
+		notifyContentsAdded(resource);
+		/*if (resource instanceof VirtualModelResource) {
+			System.out.println("getViewPoint()=" + getViewPoint());
+			getViewPoint().addToVirtualModels(((VirtualModelResource) resource).getVirtualModel());
+		}*/
+	}
+
+	@Override
+	public void removeFromContents(FlexoResource<?> resource) {
+		performSuperRemover(CONTENTS, resource);
+		/*if (resource instanceof VirtualModelResource) {
+			getViewPoint().removeFromVirtualModels(((VirtualModelResource) resource).getVirtualModel());
+		}*/
 	}
 }

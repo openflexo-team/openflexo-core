@@ -138,13 +138,6 @@ public class TestCreateVirtualModel extends OpenflexoTestCase {
 
 		assertSame(newViewPoint, newVirtualModel.getOwningVirtualModel());
 
-		/*if (newVirtualModel instanceof ViewPoint) {
-			assertEquals(null, newVirtualModel.getOwningVirtualModel());
-		}
-		else {
-			assertNotNull(newVirtualModel.getOwningVirtualModel());
-		}*/
-
 		assertEquals(newVirtualModel, newVirtualModel.getFlexoConcept());
 		assertEquals(newVirtualModel, newVirtualModel.getResourceData());
 

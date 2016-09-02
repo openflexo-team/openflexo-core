@@ -59,6 +59,13 @@ public class VirtualModelResourceFactory extends AbstractVirtualModelResourceFac
 		return resource.getFactory().newVirtualModel();
 	}
 
+	@Override
+	protected VirtualModel createEmptyContents(VirtualModelResource resource) {
+		VirtualModel returned = super.createEmptyContents(resource);
+		resource.getContainer().getViewPoint().addToVirtualModels(returned);
+		return returned;
+	}
+
 	public <I> VirtualModelResource makeVirtualModelResource(String baseName, ViewPointResource viewPointResource,
 			TechnologyContextManager<FMLTechnologyAdapter> technologyContextManager, boolean createEmptyContents)
 					throws SaveResourceException, ModelDefinitionException {
@@ -71,22 +78,13 @@ public class VirtualModelResourceFactory extends AbstractVirtualModelResourceFac
 				viewPointResource.getURI() + "/" + baseName);
 
 		viewPointResource.addToContents(returned);
-		viewPointResource.notifyContentsAdded(returned);
 
 		registerResource(returned, resourceCenter, technologyContextManager);
 
 		if (createEmptyContents) {
-			VirtualModel resourceData = makeEmptyResourceData(returned);
-			resourceData.setResource(returned);
-			returned.setResourceData(resourceData);
-			returned.setModified(true);
-
-			System.out.println("serializationArtefact=" + serializationArtefact);
-
+			createEmptyContents(returned);
 			returned.save(null);
 		}
-
-		returned.save(null);
 
 		return returned;
 	}
