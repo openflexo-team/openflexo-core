@@ -47,12 +47,14 @@ import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.action.LongRunningAction;
+import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.fml.rt.View;
-import org.openflexo.foundation.fml.rt.View.ViewImpl;
 import org.openflexo.foundation.fml.rt.ViewLibrary;
 import org.openflexo.foundation.fml.rt.rm.ViewResource;
+import org.openflexo.foundation.fml.rt.rm.ViewResourceFactory;
 import org.openflexo.foundation.resource.RepositoryFolder;
 import org.openflexo.foundation.resource.SaveResourceException;
+import org.openflexo.model.exceptions.ModelDefinitionException;
 
 /**
  * Action used to create a new {@link View} in a repository folder
@@ -121,7 +123,21 @@ public class CreateViewInFolder extends CreateView<CreateViewInFolder, Repositor
 
 	@Override
 	public ViewResource makeVirtualModelInstanceResource() throws SaveResourceException {
-		return ViewImpl.newView(getNewViewName(), getNewViewTitle(), getVirtualModel(), getFolder(), getProject());
+
+		FMLRTTechnologyAdapter fmlRTTechnologyAdapter = getServiceManager().getTechnologyAdapterService()
+				.getTechnologyAdapter(FMLRTTechnologyAdapter.class);
+		ViewResourceFactory factory = fmlRTTechnologyAdapter.getViewResourceFactory();
+		ViewResource returned;
+		try {
+			returned = factory.makeViewResource(getNewViewName(), null, getFolder(), fmlRTTechnologyAdapter.getTechnologyContextManager(),
+					true);
+			returned.getLoadedResourceData().setTitle(getNewViewTitle());
+			return returned;
+		} catch (ModelDefinitionException e) {
+			e.printStackTrace();
+			return null;
+		}
+		// return ViewImpl.newView(getNewViewName(), getNewViewTitle(), getVirtualModel(), getFolder(), getProject());
 	}
 
 	@Override

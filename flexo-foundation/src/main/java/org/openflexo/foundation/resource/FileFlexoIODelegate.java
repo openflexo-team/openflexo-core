@@ -45,21 +45,19 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.MalformedURLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.action.NotImplementedException;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.Implementation;
+import org.openflexo.model.annotations.Import;
+import org.openflexo.model.annotations.Imports;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.model.annotations.XMLElement;
 import org.openflexo.model.factory.ModelFactory;
-import org.openflexo.rm.BasicResourceImpl.LocatorNotFoundException;
-import org.openflexo.rm.FileResourceImpl;
-import org.openflexo.rm.Resource;
 import org.openflexo.toolbox.FileUtils;
 
 /**
@@ -72,6 +70,7 @@ import org.openflexo.toolbox.FileUtils;
  */
 @ModelEntity
 @XMLElement
+@Imports({ @Import(DirectoryBasedFlexoIODelegate.class) })
 public interface FileFlexoIODelegate extends FlexoIOStreamDelegate<File> {
 
 	public static final String FILE = "file";
@@ -279,7 +278,7 @@ public interface FileFlexoIODelegate extends FlexoIOStreamDelegate<File> {
 			// TODO Auto-generated method stub
 		}
 
-		@Override
+		/*@Override
 		public Resource getSerializationArtefactAsResource(File serializationArtefact) {
 			try {
 				return new FileResourceImpl(serializationArtefact);
@@ -291,7 +290,7 @@ public interface FileFlexoIODelegate extends FlexoIOStreamDelegate<File> {
 				e.printStackTrace();
 			}
 			return null;
-		}
+		}*/
 
 	}
 

@@ -46,15 +46,11 @@ import java.util.logging.Logger;
 import org.openflexo.connie.BindingVariable;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.fml.AbstractVirtualModel;
-import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.binding.ViewPointBindingModel;
 import org.openflexo.foundation.fml.rt.rm.ViewResource;
-import org.openflexo.foundation.fml.rt.rm.ViewResourceImpl;
 import org.openflexo.foundation.fml.rt.rm.VirtualModelInstanceResource;
-import org.openflexo.foundation.resource.FlexoIODelegate;
 import org.openflexo.foundation.resource.RepositoryFolder;
-import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.model.annotations.Adder;
 import org.openflexo.model.annotations.Getter;
@@ -159,27 +155,27 @@ public interface View extends AbstractVirtualModelInstance<View, ViewPoint> {
 		// private final List<ModelSlotInstance<?, ?>> modelSlotInstances;
 
 		// TODO: move this to ViewResource
-		public static ViewResource newView(String viewName, String viewTitle, ViewPoint viewPoint, RepositoryFolder<ViewResource, ?> folder,
+		/*public static ViewResource newView(String viewName, String viewTitle, ViewPoint viewPoint, RepositoryFolder<ViewResource, ?> folder,
 				FlexoProject project) throws SaveResourceException {
-
+		
 			ViewResource newViewResource = ViewResourceImpl.makeViewResource(viewName, folder, viewPoint, project.getViewLibrary());
 			FMLTechnologyAdapter vmTA = project.getServiceManager().getTechnologyAdapterService()
 					.getTechnologyAdapter(FMLTechnologyAdapter.class);
-
+		
 			View newView = newViewResource.getFactory().newInstance(View.class);
-
+		
 			newView.setProject(project);
-
+		
 			newViewResource.setResourceData(newView);
 			newView.setResource(newViewResource);
-
+		
 			newView.setTitle(viewTitle);
-
+		
 			// FD unused
 			// FlexoIODelegate<?> delegate =
 			newViewResource.getFlexoIODelegate();
 			// System.out.println("Saving " + delegate.stringRepresentation());
-
+		
 			// Save it
 			newViewResource.save(null);
 			// File viewDirectory = new File(folder.getFile(), viewName + ViewResource.VIEW_SUFFIX);
@@ -187,28 +183,28 @@ public interface View extends AbstractVirtualModelInstance<View, ViewPoint> {
 			// newView.save();
 			vmTA.referenceResource(newViewResource, project);
 			return newViewResource;
-		}
+		}*/
 
 		// TODO: move this to ViewResource
-		public static ViewResource newSubView(String viewName, String viewTitle, ViewPoint viewPoint, ViewResource container,
+		/*public static ViewResource newSubView(String viewName, String viewTitle, ViewPoint viewPoint, ViewResource container,
 				FlexoProject project) throws SaveResourceException {
-
+		
 			ViewResource newViewResource = ViewResourceImpl.makeSubViewResource(viewName, container, viewPoint, project.getViewLibrary());
 			FMLTechnologyAdapter vmTA = project.getServiceManager().getTechnologyAdapterService()
 					.getTechnologyAdapter(FMLTechnologyAdapter.class);
-
+		
 			View newView = newViewResource.getFactory().newInstance(View.class);
-
+		
 			newView.setProject(project);
-
+		
 			newViewResource.setResourceData(newView);
 			newView.setResource(newViewResource);
-
+		
 			newView.setTitle(viewTitle);
-
+		
 			FlexoIODelegate<?> delegate = newViewResource.getFlexoIODelegate();
 			System.out.println("Saving " + delegate.stringRepresentation());
-
+		
 			// Save it
 			newViewResource.save(null);
 			// File viewDirectory = new File(folder.getFile(), viewName + ViewResource.VIEW_SUFFIX);
@@ -216,7 +212,7 @@ public interface View extends AbstractVirtualModelInstance<View, ViewPoint> {
 			// newView.save();
 			vmTA.referenceResource(newViewResource, project);
 			return newViewResource;
-		}
+		}*/
 
 		@Override
 		public final boolean hasNature(ViewNature nature) {

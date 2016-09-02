@@ -59,7 +59,7 @@ public abstract class FlexoResourceFactory<R extends TechnologyAdapterResource<R
 	 * @throws ModelDefinitionException
 	 */
 	protected FlexoResourceFactory(Class<R> resourceClass) throws ModelDefinitionException {
-		super(ModelContextLibrary.getCompoundModelContext(resourceClass, FileFlexoIODelegate.class, DirectoryBasedFlexoIODelegate.class));
+		super(ModelContextLibrary.getCompoundModelContext(resourceClass, FlexoIODelegate.class));
 		this.resourceClass = resourceClass;
 	}
 
@@ -125,6 +125,7 @@ public abstract class FlexoResourceFactory<R extends TechnologyAdapterResource<R
 			TechnologyContextManager<TA> technologyContextManager, String uri) throws ModelDefinitionException {
 		R returned = newInstance(resourceClass);
 		returned.initName(resourceCenter.retrieveName(serializationArtefact));
+		returned.setURI(uri);
 		returned.setFlexoIODelegate(makeFlexoIODelegate(serializationArtefact, resourceCenter));
 		return returned;
 	}
@@ -139,16 +140,18 @@ public abstract class FlexoResourceFactory<R extends TechnologyAdapterResource<R
 	 */
 	public <I> R retrieveResource(I serializationArtefact, FlexoResourceCenter<I> resourceCenter,
 			TechnologyContextManager<TA> technologyContextManager) throws ModelDefinitionException {
-		R returned = initResourceForRetrieving(serializationArtefact, resourceCenter, technologyContextManager, null);
+		R returned = initResourceForRetrieving(serializationArtefact, resourceCenter, technologyContextManager);
 		registerResource(returned, resourceCenter, technologyContextManager);
 		return returned;
 	}
 
 	protected <I> R initResourceForRetrieving(I serializationArtefact, FlexoResourceCenter<I> resourceCenter,
-			TechnologyContextManager<TA> technologyContextManager, String uri) throws ModelDefinitionException {
+			TechnologyContextManager<TA> technologyContextManager) throws ModelDefinitionException {
 		R returned = newInstance(resourceClass);
 		returned.initName(resourceCenter.retrieveName(serializationArtefact));
+
 		returned.setFlexoIODelegate(makeFlexoIODelegate(serializationArtefact, resourceCenter));
+
 		return returned;
 	}
 

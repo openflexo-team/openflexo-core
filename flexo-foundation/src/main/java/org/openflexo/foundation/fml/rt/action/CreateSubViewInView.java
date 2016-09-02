@@ -46,11 +46,13 @@ import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.FlexoActionType;
+import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.fml.rt.View;
-import org.openflexo.foundation.fml.rt.View.ViewImpl;
 import org.openflexo.foundation.fml.rt.ViewLibrary;
 import org.openflexo.foundation.fml.rt.rm.ViewResource;
+import org.openflexo.foundation.fml.rt.rm.ViewResourceFactory;
 import org.openflexo.foundation.resource.SaveResourceException;
+import org.openflexo.model.exceptions.ModelDefinitionException;
 
 /**
  * Action used to create a new {@link View} in a repository folder
@@ -111,7 +113,21 @@ public class CreateSubViewInView extends CreateView<CreateSubViewInView, ViewRes
 
 	@Override
 	public ViewResource makeVirtualModelInstanceResource() throws SaveResourceException {
-		return ViewImpl.newSubView(getNewViewName(), getNewViewTitle(), getVirtualModel(), getFocusedObject(), getProject());
+
+		FMLRTTechnologyAdapter fmlRTTechnologyAdapter = getServiceManager().getTechnologyAdapterService()
+				.getTechnologyAdapter(FMLRTTechnologyAdapter.class);
+		ViewResourceFactory factory = fmlRTTechnologyAdapter.getViewResourceFactory();
+		ViewResource returned;
+		try {
+			returned = factory.makeViewResource(getNewViewName(), (ViewResource) getContainerView().getResource(),
+					fmlRTTechnologyAdapter.getTechnologyContextManager(), true);
+			returned.getLoadedResourceData().setTitle(getNewViewTitle());
+			return returned;
+		} catch (ModelDefinitionException e) {
+			e.printStackTrace();
+			return null;
+		}
+		// return ViewImpl.newSubView(getNewViewName(), getNewViewTitle(), getVirtualModel(), getFocusedObject(), getProject());
 	}
 
 	@Override

@@ -64,6 +64,7 @@ public class RepositoryFolder<R extends FlexoResource<?>, I> extends DefaultFlex
 
 	private static final Logger logger = Logger.getLogger(RepositoryFolder.class.getPackage().getName());
 
+	private I serializationArtefact;
 	private final ResourceRepository<R, I> resourceRepository;
 	private String name;
 	private String fullQualifiedPath;
@@ -78,15 +79,20 @@ public class RepositoryFolder<R extends FlexoResource<?>, I> extends DefaultFlex
 	public static final String CHILDREN_KEY = "children";
 	public static final String RESOURCES_KEY = "resources";
 
-	public RepositoryFolder(String name, RepositoryFolder<R, I> parentFolder, ResourceRepository<R, I> resourceRepository) {
+	public RepositoryFolder(I serializationArtefact, RepositoryFolder<R, I> parentFolder, ResourceRepository<R, I> resourceRepository) {
+		this.serializationArtefact = serializationArtefact;
 		this.resourceRepository = resourceRepository;
-		this.name = name;
+		this.name = resourceRepository.getResourceCenter().retrieveName(serializationArtefact);
 		this.parent = parentFolder;
 		children = new ArrayList<RepositoryFolder<R, I>>();
 		resources = new ArrayList<R>();
 		if (parentFolder != null) {
 			parentFolder.addToChildren(this);
 		}
+	}
+
+	public I getSerializationArtefact() {
+		return serializationArtefact;
 	}
 
 	public String getName() {
@@ -209,11 +215,13 @@ public class RepositoryFolder<R extends FlexoResource<?>, I> extends DefaultFlex
 		getPropertyChangeSupport().firePropertyChange(RESOURCES_KEY, resource, null);
 	}
 
-	public ResourceRepository<?, ?> getResourceRepository() {
+	public ResourceRepository<R, I> getResourceRepository() {
 		return resourceRepository;
 	}
 
 	// TODO : might be an issue here, while create a File systematically when it is not a FileResourceRepository?
+	// Remove this method
+	@Deprecated
 	public File getFile() {
 		if (isRootFolder()) {
 			if (getResourceRepository() instanceof FileResourceRepository) {

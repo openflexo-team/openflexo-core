@@ -111,7 +111,7 @@ public class JarResourceCenter<R extends FlexoResource<?>> extends ResourceRepos
 	 * @param jarResourceImpl
 	 */
 	public JarResourceCenter(JarResourceImpl jarResourceImpl, FlexoResourceCenterService rcService) {
-		super(null);
+		super(null, null);
 		this.rcService = rcService;
 		this.jarFile = jarResourceImpl.getJarfile();
 		this.jarResourceImpl = jarResourceImpl;
@@ -124,7 +124,7 @@ public class JarResourceCenter<R extends FlexoResource<?>> extends ResourceRepos
 	 * @param jarFile
 	 */
 	public JarResourceCenter(JarFile jarFile, FlexoResourceCenterService rcService) {
-		super(null);
+		super(null, null);
 		this.rcService = rcService;
 		ClasspathResourceLocatorImpl locator = (ClasspathResourceLocatorImpl) ResourceLocator
 				.getInstanceForLocatorClass(ClasspathResourceLocatorImpl.class);
@@ -467,6 +467,17 @@ public class JarResourceCenter<R extends FlexoResource<?>> extends ResourceRepos
 	}
 
 	/**
+	 * Return serialization artefact containing supplied serialization artefact (parent directory)
+	 * 
+	 * @param serializationArtefact
+	 * @return
+	 */
+	@Override
+	public InJarResourceImpl getContainer(InJarResourceImpl serializationArtefact) {
+		return (InJarResourceImpl) serializationArtefact.getContainer();
+	}
+
+	/**
 	 * Return list of serialization actefacts contained in supplied serialization actifact<br>
 	 * Return empty list if supplied serialization artefact has no contents
 	 * 
@@ -491,6 +502,18 @@ public class JarResourceCenter<R extends FlexoResource<?>> extends ResourceRepos
 	@Override
 	public boolean canRead(InJarResourceImpl serializationArtefact) {
 		return true;
+	}
+
+	@Override
+	public InJarResourceImpl createDirectory(String name, InJarResourceImpl parentDirectory) {
+		// Not applicable
+		return null;
+	}
+
+	@Override
+	public InJarResourceImpl createEntry(String name, InJarResourceImpl parentDirectory) {
+		// Not applicable
+		return null;
 	}
 
 	@Override

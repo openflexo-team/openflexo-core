@@ -45,19 +45,20 @@ import java.util.Vector;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoEditor;
+import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
-import org.openflexo.foundation.IOFlexoException;
 import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.ViewPoint;
-import org.openflexo.foundation.fml.ViewPoint.ViewPointImpl;
 import org.openflexo.foundation.fml.ViewPointLibrary;
 import org.openflexo.foundation.fml.ViewPointRepository;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.rm.ViewPointResource;
 import org.openflexo.foundation.fml.rm.ViewPointResourceFactory;
 import org.openflexo.foundation.resource.RepositoryFolder;
+import org.openflexo.foundation.resource.SaveResourceException;
+import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.toolbox.JavaUtils;
 import org.openflexo.toolbox.StringUtils;
 
@@ -116,7 +117,7 @@ public class CreateViewPoint extends AbstractCreateVirtualModel<CreateViewPoint,
 	}
 
 	@Override
-	protected void doAction(Object context) throws IOFlexoException {
+	protected void doAction(Object context) throws FlexoException {
 
 		if (!(getFocusedObject().getResourceRepository() instanceof ViewPointRepository)) {
 			return;
@@ -124,8 +125,8 @@ public class CreateViewPoint extends AbstractCreateVirtualModel<CreateViewPoint,
 
 		logger.info("Create new viewpoint");
 
-		ViewPointLibrary viewPointLibrary = getViewPointLibrary();
-		ViewPointRepository vpRepository = (ViewPointRepository) getFocusedObject().getResourceRepository();
+		// ViewPointLibrary viewPointLibrary = getViewPointLibrary();
+		// ViewPointRepository vpRepository = (ViewPointRepository) getFocusedObject().getResourceRepository();
 
 		File newViewPointDir = getDirectoryWhereToCreateTheViewPoint();
 
@@ -135,15 +136,22 @@ public class CreateViewPoint extends AbstractCreateVirtualModel<CreateViewPoint,
 				.getTechnologyAdapter(FMLTechnologyAdapter.class);
 		ViewPointResourceFactory factory = fmlTechnologyAdapter.getViewPointResourceFactory();
 
-		ViewPointResource newViewPointResource = factory.makeResource(serializationArtefact,
-				getViewPointFolder().getResourceRepository().getResourceCenter(), fmlTechnologyAdapter.getTechnologyContextManager(), true);
+		try {
+			ViewPointResource newViewPointResource = factory.makeViewPointResource(getBaseName(), getNewViewPointURI(),
+					getViewPointFolder(), fmlTechnologyAdapter.getTechnologyContextManager(), true);
+			newViewPoint = newViewPointResource.getLoadedResourceData();
+			newViewPoint.setDescription(getNewViewPointDescription());
+		} catch (SaveResourceException e) {
+			throw new SaveResourceException(null);
+		} catch (ModelDefinitionException e) {
+			throw new FlexoException(e);
+		}
 
 		// Instanciate new ViewPoint
-		newViewPoint = ViewPointImpl.newViewPoint(getBaseName(), getNewViewPointURI(), newViewPointDir, viewPointLibrary,
-				getFocusedObject().getResourceRepository().getResourceCenter());
-		newViewPoint.setDescription(getNewViewPointDescription());
+		// newViewPoint = ViewPointImpl.newViewPoint(getBaseName(), getNewViewPointURI(), newViewPointDir, viewPointLibrary,
+		// getFocusedObject().getResourceRepository().getResourceCenter());
 
-		vpRepository.registerResource(newViewPoint.getResource(), getFocusedObject());
+		// vpRepository.registerResource(newViewPoint.getResource(), getFocusedObject());
 
 	}
 

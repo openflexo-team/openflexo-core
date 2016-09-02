@@ -426,10 +426,15 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 				Constructor<? extends FlexoResourceFactory<?, ?, ?>> constructor;
 				try {
 					constructor = resourceFactoryClass.getConstructor();
+					logger.info("Loading resource factory " + resourceFactoryClass + " using " + constructor);
 					FlexoResourceFactory<?, ?, ?> newFactory = constructor.newInstance();
 					resourceFactories.add(newFactory);
 					availableResourceTypes.add(newFactory.getResourceClass());
 					logger.info("Initialized ResourceFactory for " + newFactory.getResourceClass().getSimpleName());
+				} catch (InstantiationException e) {
+					logger.warning(
+							"Unexpected InstantiationException while initializing ResourceFactory " + resourceFactoryClass.getSimpleName());
+					e.printStackTrace();
 				} catch (NoSuchMethodException e) {
 					logger.warning(
 							"Unexpected NoSuchMethodException while initializing ResourceFactory " + resourceFactoryClass.getSimpleName());
@@ -437,10 +442,6 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 				} catch (SecurityException e) {
 					logger.warning(
 							"Unexpected SecurityException while initializing ResourceFactory " + resourceFactoryClass.getSimpleName());
-					e.printStackTrace();
-				} catch (InstantiationException e) {
-					logger.warning(
-							"Unexpected InstantiationException while initializing ResourceFactory " + resourceFactoryClass.getSimpleName());
 					e.printStackTrace();
 				} catch (IllegalAccessException e) {
 					logger.warning(

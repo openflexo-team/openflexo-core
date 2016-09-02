@@ -99,7 +99,7 @@ public abstract class RemoteResourceCenter extends ResourceRepository<FlexoResou
 	}
 
 	public RemoteResourceCenter(FlexoResourceCenter<Object> resourceCenter) {
-		super(resourceCenter);
+		super(resourceCenter, null);
 	}
 
 	public String getURL() {

@@ -28,6 +28,7 @@ import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.resource.PamelaResourceFactory;
 import org.openflexo.foundation.technologyadapter.TechnologyContextManager;
 import org.openflexo.model.exceptions.ModelDefinitionException;
+import org.openflexo.toolbox.FlexoVersion;
 
 /**
  * Generic implementation of PamelaResourceFactory for {@link AbstractVirtualModelResource}
@@ -38,6 +39,7 @@ import org.openflexo.model.exceptions.ModelDefinitionException;
 public abstract class AbstractVirtualModelResourceFactory<VM extends AbstractVirtualModel<VM>, VMR extends AbstractVirtualModelResource<VM>>
 		extends PamelaResourceFactory<VMR, VM, FMLTechnologyAdapter, FMLModelFactory> {
 
+	public static final FlexoVersion CURRENT_FML_VERSION = new FlexoVersion("1.0");
 	public static final String CORE_FILE_SUFFIX = ".xml";
 
 	private static final Logger logger = Logger.getLogger(AbstractVirtualModelResourceFactory.class.getPackage().getName());

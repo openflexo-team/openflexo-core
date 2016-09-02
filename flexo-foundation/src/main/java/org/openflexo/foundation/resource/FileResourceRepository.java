@@ -62,7 +62,7 @@ public abstract class FileResourceRepository<R extends FlexoResource<?>> extends
 	 * Creates a new {@link FileResourceRepository}
 	 */
 	public FileResourceRepository(FlexoResourceCenter<File> resourceCenter, File directory) {
-		super(resourceCenter);
+		super(resourceCenter, directory);
 		this.directory = directory;
 	}
 

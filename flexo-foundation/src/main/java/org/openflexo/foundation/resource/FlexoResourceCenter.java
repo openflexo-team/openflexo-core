@@ -297,12 +297,27 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, FlexoObject {
 	public String getDefaultResourceURI(FlexoResource<?> resource);
 
 	/**
+	 * Return base serialization artefact (top-level container)
+	 * 
+	 * @return
+	 */
+	public I getBaseArtefact();
+
+	/**
 	 * Retrieve name to be used as a name for resource, using supplied serialization artefact
 	 * 
 	 * @param serializationArtefact
 	 * @return
 	 */
 	public String retrieveName(I serializationArtefact);
+
+	/**
+	 * Return serialization artefact containing supplied serialization artefact (parent directory)
+	 * 
+	 * @param serializationArtefact
+	 * @return
+	 */
+	public I getContainer(I serializationArtefact);
 
 	/**
 	 * Return list of serialization actefacts contained in supplied serialization actifact<br>
@@ -340,9 +355,45 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, FlexoObject {
 	public <R extends FlexoResource<?>> RepositoryFolder<R, I> getRepositoryFolder(FlexoIODelegate<I> ioDelegate,
 			ResourceRepository<R, I> resourceRepository);
 
+	/**
+	 * Create container serialization artefact, with supplied name and parent serialization artefact
+	 * 
+	 * @param name
+	 * @param parentDirectory
+	 * @return
+	 */
+	public I createDirectory(String name, I parentDirectory);
+
+	/**
+	 * Create simple serialization artefact, with supplied name and parent serialization artefact
+	 * 
+	 * @param name
+	 * @param parentDirectory
+	 * @return
+	 */
+	public I createEntry(String name, I parentDirectory);
+
+	/**
+	 * Return boolean indicating if supplied serialization artefact already exists (is under its serialized form)
+	 * 
+	 * @param serializationArtefact
+	 * @return
+	 */
 	public boolean exists(I serializationArtefact);
 
+	/**
+	 * Return boolean indicating if supplied serialization artefact is readable (read access enabled)
+	 * 
+	 * @param serializationArtefact
+	 * @return
+	 */
 	public boolean canRead(I serializationArtefact);
 
+	/**
+	 * Return boolean indicating if supplied serialization artefact is a container artefact (a directory in the FS for example)
+	 * 
+	 * @param serializationArtefact
+	 * @return
+	 */
 	public boolean isDirectory(I serializationArtefact);
 }

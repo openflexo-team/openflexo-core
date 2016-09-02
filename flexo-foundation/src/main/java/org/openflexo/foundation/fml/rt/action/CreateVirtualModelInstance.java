@@ -46,11 +46,15 @@ import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.fml.VirtualModel;
+import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.fml.rt.View;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance.VirtualModelInstanceImpl;
+import org.openflexo.foundation.fml.rt.rm.ViewResource;
 import org.openflexo.foundation.fml.rt.rm.VirtualModelInstanceResource;
+import org.openflexo.foundation.fml.rt.rm.VirtualModelInstanceResourceFactory;
+import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.SaveResourceException;
+import org.openflexo.model.exceptions.ModelDefinitionException;
 
 /**
  * Abstract base implementation for an action which aims at creating a new {@link VirtualModelInstance} in a {@link View}
@@ -74,8 +78,30 @@ public abstract class CreateVirtualModelInstance<A extends CreateVirtualModelIns
 
 	@Override
 	public VirtualModelInstanceResource makeVirtualModelInstanceResource() throws SaveResourceException {
-		return VirtualModelInstanceImpl.newVirtualModelInstance(getNewVirtualModelInstanceName(), getNewVirtualModelInstanceTitle(),
-				getVirtualModel(), getFocusedObject());
+
+		FMLRTTechnologyAdapter fmlRTTechnologyAdapter = getServiceManager().getTechnologyAdapterService()
+				.getTechnologyAdapter(FMLRTTechnologyAdapter.class);
+		VirtualModelInstanceResourceFactory factory = fmlRTTechnologyAdapter.getViewResourceFactory()
+				.getVirtualModelInstanceResourceFactory();
+
+		FlexoResourceCenter rc = getFocusedObject().getResource().getResourceCenter();
+
+		Object serializationArtefact = rc.createDirectory(getNewVirtualModelInstanceName(),
+				getFocusedObject().getResource().getFlexoIODelegate().getSerializationArtefact());
+
+		VirtualModelInstanceResource returned;
+		try {
+			returned = factory.makeVirtualModelInstanceResource(serializationArtefact, (ViewResource) getFocusedObject().getResource(),
+					fmlRTTechnologyAdapter.getTechnologyContextManager(), true);
+			returned.getLoadedResourceData().setTitle(getNewVirtualModelInstanceTitle());
+			return returned;
+		} catch (ModelDefinitionException e) {
+			e.printStackTrace();
+			return null;
+		}
+
+		// return VirtualModelInstanceImpl.newVirtualModelInstance(getNewVirtualModelInstanceName(), getNewVirtualModelInstanceTitle(),
+		// getVirtualModel(), getFocusedObject());
 	}
 
 	@Override

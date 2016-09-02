@@ -57,11 +57,6 @@ public class ViewRepository<I> extends ModelRepository<ViewResource, View, ViewP
 		getRootFolder().setRepositoryContext(null);
 	}
 
-	public ViewRepository(FMLRTTechnologyAdapter adapter, FlexoResourceCenter<I> resourceCenter, I directory) {
-		super(adapter, resourceCenter, directory);
-		getRootFolder().setRepositoryContext(null);
-	}
-
 	private static final String DEFAULT_BASE_URI = "http://www.openflexo.org/FML/Views";
 
 	@Override

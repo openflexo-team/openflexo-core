@@ -48,7 +48,6 @@ import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.PropertyIdentifier;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.factory.AccessibleProxyObject;
-import org.openflexo.rm.Resource;
 
 /**
  * Flexo IO Delegate makes a link between a flexo resource and a serialization artefact.
@@ -72,7 +71,7 @@ public interface FlexoIODelegate<I> extends AccessibleProxyObject {
 	 */
 	public static final String SERIALIZATION_ARTEFACT = "serialization_artefact";
 
-	@Getter(value = FLEXO_RESOURCE, inverse = FlexoResource.FLEXO_IO_DELEGATE)
+	@Getter(value = FLEXO_RESOURCE)
 	public FlexoResource<?> getFlexoResource();
 
 	@Setter(FLEXO_RESOURCE)
@@ -84,7 +83,7 @@ public interface FlexoIODelegate<I> extends AccessibleProxyObject {
 	@Setter(SERIALIZATION_ARTEFACT)
 	public void setSerializationArtefact(I artefact);
 
-	public Resource getSerializationArtefactAsResource(I serializationArtefact);
+	// public Resource getSerializationArtefactAsResource(I serializationArtefact);
 
 	/**
 	 * Indicates whether this resource can be edited or not. Returns <code>true</code> if the resource cannot be edited, else returns

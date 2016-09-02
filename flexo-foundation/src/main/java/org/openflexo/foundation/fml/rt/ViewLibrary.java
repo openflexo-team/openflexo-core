@@ -68,8 +68,7 @@ public class ViewLibrary extends ViewRepository<File> {
 	 * Create a new ViewLibrary.
 	 */
 	public ViewLibrary(FlexoProject project) {
-		super(project.getServiceManager().getTechnologyAdapterService().getTechnologyAdapter(FMLRTTechnologyAdapter.class), project,
-				/*getExpectedViewLibraryDirectory(project)*/project.getProjectDirectory());
+		super(project.getServiceManager().getTechnologyAdapterService().getTechnologyAdapter(FMLRTTechnologyAdapter.class), project);
 		this.project = project;
 		getRootFolder().setName(project.getName());
 		getRootFolder().setFullQualifiedPath(project.getProjectDirectory().getAbsolutePath());

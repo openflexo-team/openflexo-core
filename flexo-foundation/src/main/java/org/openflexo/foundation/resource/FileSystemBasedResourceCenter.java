@@ -58,6 +58,7 @@ import java.util.logging.Logger;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.ViewPointRepository;
+import org.openflexo.foundation.resource.DirectoryBasedFlexoIODelegate.DirectoryBasedFlexoIODelegateImpl;
 import org.openflexo.foundation.resource.FileFlexoIODelegate.FileFlexoIODelegateImpl;
 import org.openflexo.foundation.task.Progress;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
@@ -101,8 +102,8 @@ public abstract class FileSystemBasedResourceCenter extends ResourceRepository<F
 	// private final Map<TechnologyAdapter, ResourceRepository<?>> globalRepositories = new HashMap<>();
 
 	public FileSystemBasedResourceCenter(File rootDirectory, FlexoResourceCenterService rcService) {
-		super(null);
-		setBaseArtefact(rootDirectory);
+		super(null, rootDirectory);
+		// setBaseArtefact(rootDirectory);
 		this.rcService = rcService;
 		this.rootDirectory = rootDirectory;
 		startDirectoryWatching();
@@ -777,7 +778,18 @@ public abstract class FileSystemBasedResourceCenter extends ResourceRepository<F
 	}
 
 	/**
-	 * Return list of serialization actefacts contained in supplied serialization actifact<br>
+	 * Return serialization artefact containing supplied serialization artefact (parent directory)
+	 * 
+	 * @param serializationArtefact
+	 * @return
+	 */
+	@Override
+	public File getContainer(File serializationArtefact) {
+		return serializationArtefact.getParentFile();
+	}
+
+	/**
+	 * Return list of serialization artefacts contained in supplied serialization actifact<br>
 	 * Return empty list if supplied serialization artefact has no contents
 	 * 
 	 * @param serializationArtefact
@@ -785,7 +797,23 @@ public abstract class FileSystemBasedResourceCenter extends ResourceRepository<F
 	 */
 	@Override
 	public List<File> getContents(File serializationArtefact) {
-		return Arrays.asList(serializationArtefact.listFiles());
+		File[] contents = serializationArtefact.listFiles();
+		if (contents != null) {
+			return Arrays.asList(contents);
+		}
+		return Collections.emptyList();
+	}
+
+	@Override
+	public File createDirectory(String name, File parentDirectory) {
+		File returned = new File(parentDirectory, name);
+		returned.mkdirs();
+		return returned;
+	}
+
+	@Override
+	public File createEntry(String name, File parentDirectory) {
+		return new File(parentDirectory, name);
 	}
 
 	@Override
@@ -811,8 +839,10 @@ public abstract class FileSystemBasedResourceCenter extends ResourceRepository<F
 	@Override
 	public FlexoIODelegate<File> makeDirectoryBasedFlexoIODelegate(File serializationArtefact, String directoryExtension,
 			String fileExtension, FlexoResourceFactory<?, ?, ?> resourceFactory) {
-		// TODO Auto-generated method stub
-		return null;
+		String baseName = serializationArtefact.getName().substring(0,
+				serializationArtefact.getName().length() - directoryExtension.length());
+		return DirectoryBasedFlexoIODelegateImpl.makeDirectoryBasedFlexoIODelegate(serializationArtefact.getParentFile(), baseName,
+				directoryExtension, fileExtension, resourceFactory);
 	}
 
 	@Override

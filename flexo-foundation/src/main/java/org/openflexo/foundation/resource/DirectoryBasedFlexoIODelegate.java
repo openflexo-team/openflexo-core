@@ -112,17 +112,22 @@ public interface DirectoryBasedFlexoIODelegate extends FileFlexoIODelegate {
 
 		private File directory;
 
-		public static DirectoryBasedFlexoIODelegate makeDirectoryBasedFlexoIODelegate(File containerDir, String directoryExtension,
-				String fileExtension, DirectoryContainerResource<?> resource, ModelFactory factory) {
+		public static DirectoryBasedFlexoIODelegate makeDirectoryBasedFlexoIODelegate(File containerDir, String baseName,
+				String directoryExtension, String fileExtension, ModelFactory factory) {
 			DirectoryBasedFlexoIODelegate fileIODelegate = factory.newInstance(DirectoryBasedFlexoIODelegate.class);
 			fileIODelegate.setDirectoryExtension(directoryExtension);
 			fileIODelegate.setFileExtension(fileExtension);
-			File directory = new File(containerDir, resource.getName() + directoryExtension);
-			File file = new File(directory, resource.getName() + fileExtension);
+			File directory = new File(containerDir, baseName + directoryExtension);
+			File file = new File(directory, baseName + fileExtension);
 			fileIODelegate.setDirectory(directory);
 			fileIODelegate.setFile(file);
 			return fileIODelegate;
 		}
+
+		/*@Override
+		public File getSerializationArtefact() {
+			return getDirectory();
+		}*/
 
 		@Override
 		public File getDirectory() {

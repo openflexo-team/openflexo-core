@@ -62,11 +62,4 @@ public abstract class ModelRepository<R extends FlexoModelResource<M, MM, TA, TA
 				.setDescription("ModelRepository for technology " + technologyAdapter.getName() + " resource center: " + resourceCenter);
 	}
 
-	public ModelRepository(TA technologyAdapter, FlexoResourceCenter<I> resourceCenter, I directory) {
-		super(technologyAdapter, resourceCenter, directory);
-		getRootFolder().setRepositoryContext(resourceCenter.getLocales().localizedForKey("[Models]"));
-		getRootFolder()
-				.setDescription("ModelRepository for technology " + technologyAdapter.getName() + " resource center: " + resourceCenter);
-	}
-
 }

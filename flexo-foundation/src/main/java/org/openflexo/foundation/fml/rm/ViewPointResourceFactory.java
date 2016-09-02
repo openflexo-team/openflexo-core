@@ -21,10 +21,7 @@
 package org.openflexo.foundation.fml.rm;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Iterator;
 import java.util.logging.Logger;
 
@@ -37,8 +34,10 @@ import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.ViewPoint.ViewPointImpl;
 import org.openflexo.foundation.resource.FlexoIODelegate;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
-import org.openflexo.foundation.resource.PamelaResourceImpl;
+import org.openflexo.foundation.resource.RepositoryFolder;
+import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.technologyadapter.TechnologyContextManager;
+import org.openflexo.foundation.utils.XMLUtils;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.toolbox.FlexoVersion;
 import org.openflexo.toolbox.StringUtils;
@@ -51,7 +50,7 @@ import org.openflexo.xml.XMLRootElementReader;
  * @author sylvain
  *
  */
-public abstract class ViewPointResourceFactory extends AbstractVirtualModelResourceFactory<ViewPoint, ViewPointResource> {
+public class ViewPointResourceFactory extends AbstractVirtualModelResourceFactory<ViewPoint, ViewPointResource> {
 
 	private static final Logger logger = Logger.getLogger(ViewPointResourceFactory.class.getPackage().getName());
 
@@ -76,6 +75,16 @@ public abstract class ViewPointResourceFactory extends AbstractVirtualModelResou
 		ViewPointImpl viewpoint = (ViewPointImpl) resource.getFactory().newInstance(ViewPoint.class);
 
 		return viewpoint;
+	}
+
+	public <I> ViewPointResource makeViewPointResource(String baseName, String viewpointURI, RepositoryFolder<ViewPointResource, I> folder,
+			TechnologyContextManager<FMLTechnologyAdapter> technologyContextManager, boolean createEmptyContents)
+					throws SaveResourceException, ModelDefinitionException {
+
+		FlexoResourceCenter<I> resourceCenter = folder.getResourceRepository().getResourceCenter();
+		I serializationArtefact = resourceCenter.createDirectory(baseName + VIEWPOINT_SUFFIX, folder.getSerializationArtefact());
+
+		return makeResource(serializationArtefact, resourceCenter, technologyContextManager, viewpointURI, createEmptyContents);
 	}
 
 	/*public static ViewPoint newViewPoint(String baseName, String viewpointURI, File containerDir, ViewPointLibrary library,
@@ -139,51 +148,40 @@ public abstract class ViewPointResourceFactory extends AbstractVirtualModelResou
 			TechnologyContextManager<FMLTechnologyAdapter> technologyContextManager, String uri) throws ModelDefinitionException {
 		ViewPointResource returned = super.initResourceForCreation(serializationArtefact, resourceCenter, technologyContextManager, uri);
 
-		// SGU: why this ???
 		returned.setVersion(new FlexoVersion("0.1"));
-		returned.setModelVersion(new FlexoVersion("1.0"));
+		returned.setModelVersion(CURRENT_FML_VERSION);
 
 		return returned;
 	}
 
 	@Override
 	protected <I> ViewPointResource initResourceForRetrieving(I serializationArtefact, FlexoResourceCenter<I> resourceCenter,
-			TechnologyContextManager<FMLTechnologyAdapter> technologyContextManager, String uri) throws ModelDefinitionException {
+			TechnologyContextManager<FMLTechnologyAdapter> technologyContextManager) throws ModelDefinitionException {
 
-		ViewPointResource returned = super.initResourceForRetrieving(serializationArtefact, resourceCenter, technologyContextManager, uri);
+		ViewPointResource returned = super.initResourceForRetrieving(serializationArtefact, resourceCenter, technologyContextManager);
 
-		// TODO: refactor this
-		if (serializationArtefact instanceof File) {
-			String artefactName = resourceCenter.retrieveName(serializationArtefact);
-			String baseName = artefactName.substring(0, artefactName.length() - VIEWPOINT_SUFFIX.length());
-			File xmlFile = new File((File) serializationArtefact, baseName + CORE_FILE_SUFFIX);
-			ViewPointInfo vpi = null;
-			try {
-				vpi = findViewPointInfo(new FileInputStream(xmlFile));
-			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			if (vpi == null) {
-				// Unable to retrieve infos, just abort
-				return null;
-			}
+		String artefactName = resourceCenter.retrieveName(serializationArtefact);
+		String baseName = artefactName.substring(0, artefactName.length() - VIEWPOINT_SUFFIX.length());
+		ViewPointInfo vpi = findViewPointInfo(serializationArtefact);
+		if (vpi == null) {
+			// Unable to retrieve infos, just abort
+			logger.warning("Cannot retrieve info from " + serializationArtefact);
+			return null;
+		}
 
-			returned.setURI(vpi.uri);
-			returned.initName(baseName);
-			if (StringUtils.isNotEmpty(vpi.version)) {
-				returned.setVersion(new FlexoVersion(vpi.version));
-			}
-			else {
-				returned.setVersion(new FlexoVersion("0.1"));
-			}
-			if (StringUtils.isNotEmpty(vpi.modelVersion)) {
-				returned.setModelVersion(new FlexoVersion(vpi.modelVersion));
-			}
-			else {
-				returned.setModelVersion(new FlexoVersion("1.0"));
-			}
-
+		returned.setURI(vpi.uri);
+		returned.initName(baseName);
+		if (StringUtils.isNotEmpty(vpi.version)) {
+			returned.setVersion(new FlexoVersion(vpi.version));
+		}
+		else {
+			returned.setVersion(new FlexoVersion("0.1"));
+		}
+		if (StringUtils.isNotEmpty(vpi.modelVersion)) {
+			returned.setModelVersion(new FlexoVersion(vpi.modelVersion));
+		}
+		else {
+			returned.setModelVersion(CURRENT_FML_VERSION);
 		}
 
 		return returned;
@@ -194,15 +192,17 @@ public abstract class ViewPointResourceFactory extends AbstractVirtualModelResou
 		return resourceCenter.makeDirectoryBasedFlexoIODelegate(serializationArtefact, VIEWPOINT_SUFFIX, CORE_FILE_SUFFIX, this);
 	}
 
-	private void exploreVirtualModels(ViewPointResource viewPointResource,
+	private <I> void exploreVirtualModels(ViewPointResource viewPointResource,
 			TechnologyContextManager<FMLTechnologyAdapter> technologyContextManager) {
 
-		exploreResource(viewPointResource.getFlexoIODelegate().getSerializationArtefact(), viewPointResource, technologyContextManager);
+		FlexoResourceCenter<I> resourceCenter = (FlexoResourceCenter<I>) viewPointResource.getResourceCenter();
+		I directory = resourceCenter.getContainer((I) viewPointResource.getFlexoIODelegate().getSerializationArtefact());
+
+		exploreResource(directory, viewPointResource, technologyContextManager);
 	}
 
 	private <I> void exploreResource(I serializationArtefect, ViewPointResource viewPointResource,
 			TechnologyContextManager<FMLTechnologyAdapter> technologyContextManager) {
-		XMLRootElementInfo result = null;
 
 		if (serializationArtefect == null) {
 			return;
@@ -213,14 +213,16 @@ public abstract class ViewPointResourceFactory extends AbstractVirtualModelResou
 		for (I child : resourceCenter.getContents(serializationArtefect)) {
 			try {
 				if (resourceCenter.retrieveName(child).endsWith(".xml")) {
-					result = reader.readRootElement(
-							((FlexoIODelegate) viewPointResource.getFlexoIODelegate()).getSerializationArtefactAsResource(child));
-					if (result.getName().equals("VirtualModel")) {
+					// TODO refactor this
+					XMLRootElementInfo result = null;
+					if (child instanceof File) {
+						result = reader.readRootElement((File) child);
+					}
+					if (result != null && result.getName().equals("VirtualModel")) {
 						VirtualModelResource virtualModelResource;
 						try {
 							virtualModelResource = getVirtualModelResourceFactory().retrieveVirtualModelResource(serializationArtefect,
 									technologyContextManager, viewPointResource);
-							viewPointResource.addToContents(virtualModelResource);
 						} catch (ModelDefinitionException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
@@ -244,53 +246,65 @@ public abstract class ViewPointResourceFactory extends AbstractVirtualModelResou
 		public String modelVersion;
 	}
 
-	private static ViewPointInfo findViewPointInfo(InputStream inputStream) {
+	private <I> ViewPointInfo findViewPointInfo(I serializationArtefact) {
 		Document document;
-		try {
-			document = PamelaResourceImpl.readXMLInputStream(inputStream);
-			Element root = PamelaResourceImpl.getElement(document, "ViewPoint");
-			if (root != null) {
-				ViewPointInfo returned = new ViewPointInfo();
-				Iterator<Attribute> it = root.getAttributes().iterator();
-				while (it.hasNext()) {
-					Attribute at = it.next();
-					if (at.getName().equals("uri")) {
-						logger.fine("Returned " + at.getValue());
-						returned.uri = at.getValue();
-					}
-					else if (at.getName().equals("name")) {
-						logger.fine("Returned " + at.getValue());
-						returned.name = at.getValue();
-					}
-					else if (at.getName().equals("version")) {
-						logger.fine("Returned " + at.getValue());
-						returned.version = at.getValue();
-					}
-					else if (at.getName().equals("modelVersion")) {
-						logger.fine("Returned " + at.getValue());
-						returned.modelVersion = at.getValue();
-					}
-				}
-				if (StringUtils.isEmpty(returned.name)) {
-					if (StringUtils.isNotEmpty(returned.uri)) {
-						if (returned.uri.indexOf("/") > -1) {
-							returned.name = returned.uri.substring(returned.uri.lastIndexOf("/") + 1);
-						}
-						else if (returned.uri.indexOf("\\") > -1) {
-							returned.name = returned.uri.substring(returned.uri.lastIndexOf("\\") + 1);
-						}
-						else {
-							returned.name = returned.uri;
-						}
-					}
-				}
-				return returned;
 
+		if (serializationArtefact instanceof File) {
+			try {
+				File viewpointDirectory = (File) serializationArtefact;
+				logger.fine("Try to find infos for " + viewpointDirectory);
+
+				String baseName = viewpointDirectory.getName().substring(0,
+						viewpointDirectory.getName().length() - VIEWPOINT_SUFFIX.length());
+				File xmlFile = new File(viewpointDirectory, baseName + ".xml");
+
+				if (xmlFile.exists()) {
+					document = XMLUtils.readXMLFile(xmlFile);
+					Element root = XMLUtils.getElement(document, "ViewPoint");
+					if (root != null) {
+						ViewPointInfo returned = new ViewPointInfo();
+						Iterator<Attribute> it = root.getAttributes().iterator();
+						while (it.hasNext()) {
+							Attribute at = it.next();
+							if (at.getName().equals("uri")) {
+								logger.fine("Returned " + at.getValue());
+								returned.uri = at.getValue();
+							}
+							else if (at.getName().equals("name")) {
+								logger.fine("Returned " + at.getValue());
+								returned.name = at.getValue();
+							}
+							else if (at.getName().equals("version")) {
+								logger.fine("Returned " + at.getValue());
+								returned.version = at.getValue();
+							}
+							else if (at.getName().equals("modelVersion")) {
+								logger.fine("Returned " + at.getValue());
+								returned.modelVersion = at.getValue();
+							}
+						}
+						if (StringUtils.isEmpty(returned.name)) {
+							if (StringUtils.isNotEmpty(returned.uri)) {
+								if (returned.uri.indexOf("/") > -1) {
+									returned.name = returned.uri.substring(returned.uri.lastIndexOf("/") + 1);
+								}
+								else if (returned.uri.indexOf("\\") > -1) {
+									returned.name = returned.uri.substring(returned.uri.lastIndexOf("\\") + 1);
+								}
+								else {
+									returned.name = returned.uri;
+								}
+							}
+						}
+						return returned;
+
+					}
+				}
+			} catch (JDOMException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
-		} catch (JDOMException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
 		}
 		logger.fine("Returned null");
 		return null;

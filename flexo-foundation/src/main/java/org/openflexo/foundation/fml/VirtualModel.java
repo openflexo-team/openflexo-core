@@ -41,6 +41,7 @@ package org.openflexo.foundation.fml;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.binding.VirtualModelBindingModel;
+import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.View;
 import org.openflexo.model.annotations.Getter;
@@ -135,6 +136,9 @@ public interface VirtualModel extends AbstractVirtualModel<VirtualModel> {
 
 		@Override
 		public ViewPoint getViewPoint() {
+			if (viewPoint == null && getResource() != null && getResource().getContainer() != null) {
+				viewPoint = ((VirtualModelResource) getResource()).getContainer().getLoadedResourceData();
+			}
 			return viewPoint;
 		}
 

@@ -56,6 +56,4 @@ import org.openflexo.model.annotations.XMLElement;
 @XMLElement
 public interface VirtualModelInstanceResource extends AbstractVirtualModelInstanceResource<VirtualModelInstance, VirtualModel> {
 
-	public static final String VIRTUAL_MODEL_SUFFIX = ".vmxml";
-
 }

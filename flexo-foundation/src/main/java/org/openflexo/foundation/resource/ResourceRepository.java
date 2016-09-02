@@ -91,11 +91,24 @@ public abstract class ResourceRepository<R extends FlexoResource<?>, I> extends 
 	/**
 	 * Creates a new {@link ResourceRepository}
 	 */
-	public ResourceRepository(FlexoResourceCenter<I> resourceCenter) {
+	public ResourceRepository(FlexoResourceCenter<I> resourceCenter, I baseArtefact) {
 		this.resourceCenter = resourceCenter;
 		resources = new HashMap<String, R>();
-		rootFolder = new RepositoryFolder<R, I>("root", null, this);
+		rootFolder = new RepositoryFolder<R, I>(baseArtefact, null, this);
+		this.baseArtefact = baseArtefact;
 	}
+
+	public I getBaseArtefact() {
+		return baseArtefact;
+	}
+
+	/*private void setBaseArtefact(I baseArtefact) {
+		if ((baseArtefact == null && this.baseArtefact != null) || (baseArtefact != null && !baseArtefact.equals(this.baseArtefact))) {
+			I oldValue = this.baseArtefact;
+			this.baseArtefact = baseArtefact;
+			getPropertyChangeSupport().firePropertyChange("baseArtefact", oldValue, baseArtefact);
+		}
+	}*/
 
 	public RepositoryFolder<R, I> getRootFolder() {
 		return rootFolder;
@@ -237,7 +250,8 @@ public abstract class ResourceRepository<R extends FlexoResource<?>, I> extends 
 	public RepositoryFolder<R, I> createNewFolder(String folderName, RepositoryFolder<R, I> parentFolder) {
 		// System.out.println("Create folder " + folderName + " parent=" + parentFolder);
 		// System.out.println("parent file = " + parentFolder.getFile());
-		RepositoryFolder<R, I> newFolder = new RepositoryFolder<R, I>(folderName, parentFolder, this);
+		I serializationArtefact = getResourceCenter().createDirectory(folderName, parentFolder.getSerializationArtefact());
+		RepositoryFolder<R, I> newFolder = new RepositoryFolder<R, I>(serializationArtefact, parentFolder, this);
 		newFolder.getFile().mkdirs();
 
 		return newFolder;
@@ -478,7 +492,8 @@ public abstract class ResourceRepository<R extends FlexoResource<?>, I> extends 
 				RepositoryFolder<R, I> currentFolder = returned.getFolderNamed(pathElement);
 				if (currentFolder == null) {
 					if (createWhenNonExistent) {
-						RepositoryFolder<R, I> newFolder = new RepositoryFolder<R, I>(pathElement, returned, this);
+						RepositoryFolder<R, I> newFolder = new RepositoryFolder<R, I>(currentFolder.getSerializationArtefact(), returned,
+								this);
 						currentFolder = newFolder;
 					}
 					else {
@@ -516,18 +531,6 @@ public abstract class ResourceRepository<R extends FlexoResource<?>, I> extends 
 	@Override
 	public String toString() {
 		return getClass().getSimpleName() + " with " + getAllResources().size() + " resources";
-	}
-
-	public I getBaseArtefact() {
-		return baseArtefact;
-	}
-
-	protected void setBaseArtefact(I baseArtefact) {
-		if ((baseArtefact == null && this.baseArtefact != null) || (baseArtefact != null && !baseArtefact.equals(this.baseArtefact))) {
-			I oldValue = this.baseArtefact;
-			this.baseArtefact = baseArtefact;
-			getPropertyChangeSupport().firePropertyChange("baseArtefact", oldValue, baseArtefact);
-		}
 	}
 
 }

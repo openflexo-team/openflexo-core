@@ -38,13 +38,8 @@
 
 package org.openflexo.foundation.fml.rt;
 
-import java.util.logging.Logger;
-
 import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.rt.rm.VirtualModelInstanceResource;
-import org.openflexo.foundation.fml.rt.rm.VirtualModelInstanceResourceImpl;
-import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.technologyadapter.FlexoModel;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
@@ -72,30 +67,30 @@ public interface VirtualModelInstance extends AbstractVirtualModelInstance<Virtu
 	public static abstract class VirtualModelInstanceImpl extends AbstractVirtualModelInstanceImpl<VirtualModelInstance, VirtualModel>
 			implements VirtualModelInstance {
 
-		private static final Logger logger = Logger.getLogger(VirtualModelInstance.class.getPackage().getName());
-
+		/*private static final Logger logger = Logger.getLogger(VirtualModelInstance.class.getPackage().getName());
+		
 		// TODO: move this code to the VirtualModelInstanceResource
 		public static VirtualModelInstanceResource newVirtualModelInstance(String virtualModelName, String virtualModelTitle,
 				VirtualModel virtualModel, View view) throws SaveResourceException {
-
+		
 			VirtualModelInstanceResource newVirtualModelResource = VirtualModelInstanceResourceImpl
 					.makeVirtualModelInstanceResource(virtualModelName, virtualModel, view);
-
+		
 			VirtualModelInstanceImpl newVirtualModelInstance = (VirtualModelInstanceImpl) newVirtualModelResource.getFactory()
 					.newInstance(VirtualModelInstance.class);
 			newVirtualModelInstance.setVirtualModel(virtualModel);
-
+		
 			newVirtualModelResource.setResourceData(newVirtualModelInstance);
 			newVirtualModelInstance.setResource(newVirtualModelResource);
 			newVirtualModelInstance.setTitle(virtualModelTitle);
-
+		
 			view.getResource().addToContents(newVirtualModelResource);
 			view.getResource().notifyContentsAdded(newVirtualModelResource);
-
+		
 			newVirtualModelResource.save(null);
-
+		
 			return newVirtualModelResource;
-		}
+		}*/
 
 		@Override
 		public String toString() {
