@@ -224,23 +224,24 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 	 */
 	public final <I> void performInitializeResourceCenter(FlexoResourceCenter<I> resourceCenter) {
 
-		/*DocXDocumentRepository docXRepository = resourceCenter.getRepository(DocXDocumentRepository.class, this);
-		if (docXRepository == null) {
-			docXRepository = createDocXDocumentRepository(resourceCenter);
-		}*/
+		logger.info("--------> performInitializeResourceCenter " + getName() + " for " + resourceCenter);
 
 		Iterator<I> it = resourceCenter.iterator();
 
 		while (it.hasNext()) {
 			I serializationArtefact = it.next();
 
+			// System.out.println("pour " + serializationArtefact);
+
 			if (!isIgnorable(resourceCenter, serializationArtefact)) {
 				for (FlexoResourceFactory<?, ?, ?> resourceFactory : getResourceFactories()) {
-					tryToLookupResource(resourceFactory, resourceCenter, serializationArtefact);
+					FlexoResource r = tryToLookupResource(resourceFactory, resourceCenter, serializationArtefact);
+					if (r != null) {
+						System.out.println("Look-up resource " + r);
+					}
 				}
 			}
 
-			// DocXDocumentResource wbRes = tryToLookupDocX(resourceCenter, serializationArtefact);
 		}
 
 		// Call it to update the current repositories

@@ -38,8 +38,12 @@
 
 package org.openflexo.foundation.fml;
 
+import java.io.FileNotFoundException;
+
+import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
+import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.gina.annotation.FIBPanel;
 
 /**
@@ -104,8 +108,19 @@ public class VirtualModelInstanceType extends FlexoConceptInstanceType {
 			AbstractVirtualModel<?> virtualModel = null;
 
 			if (configuration != null) {
-				virtualModel = getTechnologyAdapter().getTechnologyAdapterService().getServiceManager().getViewPointLibrary()
-						.getVirtualModel(configuration);
+				try {
+					virtualModel = getTechnologyAdapter().getTechnologyAdapterService().getServiceManager().getViewPointLibrary()
+							.getVirtualModel(configuration).getVirtualModel();
+				} catch (FileNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (ResourceLoadingCancelledException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (FlexoException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 			else {
 				virtualModel = getVirtualModelType();

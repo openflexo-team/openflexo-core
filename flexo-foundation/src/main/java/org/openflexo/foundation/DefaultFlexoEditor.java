@@ -41,7 +41,6 @@ package org.openflexo.foundation;
 
 import java.util.EventObject;
 import java.util.Vector;
-import java.util.logging.Level;
 
 import javax.swing.Icon;
 import javax.swing.KeyStroke;
@@ -146,14 +145,16 @@ public class DefaultFlexoEditor implements FlexoEditor {
 		if (!action.getActionType().isEnabled(action.getFocusedObject(), action.getGlobalSelection())) {
 			return null;
 		}
-		if (action.getFocusedObject() instanceof FlexoProjectObject
+		// TODO: check this
+		// This consrtaints has been released
+		/*if (action.getFocusedObject() instanceof FlexoProjectObject
 				&& ((FlexoProjectObject) action.getFocusedObject()).getProject() != getProject()) {
 			if (logger.isLoggable(Level.WARNING)) {
 				logger.warning("Focused object project is not the same as my project. Refusing to edit and execute action "
 						+ action.getLocalizedName());
 			}
 			return null;
-		}
+		}*/
 		try {
 			return action.doActionInContext();
 		} catch (FlexoException e1) {

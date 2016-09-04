@@ -52,7 +52,6 @@ import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.rm.ViewResource;
 import org.openflexo.foundation.fml.rt.rm.VirtualModelInstanceResource;
 import org.openflexo.foundation.fml.rt.rm.VirtualModelInstanceResourceFactory;
-import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 
@@ -84,15 +83,10 @@ public abstract class CreateVirtualModelInstance<A extends CreateVirtualModelIns
 		VirtualModelInstanceResourceFactory factory = fmlRTTechnologyAdapter.getViewResourceFactory()
 				.getVirtualModelInstanceResourceFactory();
 
-		FlexoResourceCenter rc = getFocusedObject().getResource().getResourceCenter();
-
-		Object serializationArtefact = rc.createDirectory(getNewVirtualModelInstanceName(),
-				getFocusedObject().getResource().getFlexoIODelegate().getSerializationArtefact());
-
 		VirtualModelInstanceResource returned;
 		try {
-			returned = factory.makeVirtualModelInstanceResource(serializationArtefact, (ViewResource) getFocusedObject().getResource(),
-					fmlRTTechnologyAdapter.getTechnologyContextManager(), true);
+			returned = factory.makeVirtualModelInstanceResource(getNewVirtualModelInstanceName(), getVirtualModel(),
+					(ViewResource) getFocusedObject().getResource(), fmlRTTechnologyAdapter.getTechnologyContextManager(), true);
 			returned.getLoadedResourceData().setTitle(getNewVirtualModelInstanceTitle());
 			return returned;
 		} catch (ModelDefinitionException e) {

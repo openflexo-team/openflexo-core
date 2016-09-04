@@ -21,6 +21,7 @@
 package org.openflexo.foundation.fml.rt.rm;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.logging.Logger;
@@ -29,14 +30,17 @@ import org.jdom2.Attribute;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
+import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.VirtualModel;
+import org.openflexo.foundation.fml.rm.AbstractVirtualModelResource;
 import org.openflexo.foundation.fml.rm.ViewPointResource;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstanceModelFactory;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
+import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.technologyadapter.TechnologyContextManager;
 import org.openflexo.foundation.utils.XMLUtils;
@@ -74,12 +78,14 @@ public class VirtualModelInstanceResourceFactory
 				technologyContextManager.getTechnologyAdapter().getServiceManager().getTechnologyAdapterService());
 	}
 
-	public <I> VirtualModelInstanceResource makeVirtualModelInstanceResource(I serializationArtefact, ViewResource viewResource,
-			TechnologyContextManager<FMLRTTechnologyAdapter> technologyContextManager, boolean createEmptyContents)
-					throws SaveResourceException, ModelDefinitionException {
+	public <I> VirtualModelInstanceResource makeVirtualModelInstanceResource(String name, VirtualModel virtualModel,
+			ViewResource viewResource, TechnologyContextManager<FMLRTTechnologyAdapter> technologyContextManager,
+			boolean createEmptyContents) throws SaveResourceException, ModelDefinitionException {
 
 		FlexoResourceCenter<I> resourceCenter = (FlexoResourceCenter<I>) viewResource.getResourceCenter();
-		String name = resourceCenter.retrieveName(serializationArtefact);
+		I serializationArtefact = resourceCenter.createEntry(name + VIRTUAL_MODEL_INSTANCE_SUFFIX,
+				resourceCenter.getContainer((I) viewResource.getFlexoIODelegate().getSerializationArtefact()));
+
 		VirtualModelInstanceResource returned = initResourceForCreation(serializationArtefact, resourceCenter, technologyContextManager,
 				viewResource.getURI() + "/" + name);
 
@@ -90,6 +96,7 @@ public class VirtualModelInstanceResourceFactory
 
 		if (createEmptyContents) {
 			VirtualModelInstance resourceData = makeEmptyResourceData(returned);
+			resourceData.setVirtualModel(virtualModel);
 			resourceData.setResource(returned);
 			returned.setResourceData(resourceData);
 			returned.setModified(true);
@@ -124,6 +131,7 @@ public class VirtualModelInstanceResourceFactory
 			TechnologyContextManager<FMLRTTechnologyAdapter> technologyContextManager, String uri) throws ModelDefinitionException {
 		VirtualModelInstanceResource returned = super.initResourceForCreation(serializationArtefact, resourceCenter,
 				technologyContextManager, uri);
+		returned.setVersion(INITIAL_REVISION);
 		returned.setModelVersion(CURRENT_FML_RT_VERSION);
 		return returned;
 	}
@@ -134,12 +142,17 @@ public class VirtualModelInstanceResourceFactory
 		VirtualModelInstanceResource returned = super.initResourceForRetrieving(serializationArtefact, resourceCenter,
 				technologyContextManager);
 
+		System.out.println("Passe je bien la ?");
+
 		VirtualModelInstanceInfo vmiInfo = findVirtualModelInstanceInfo(serializationArtefact);
 
 		if (vmiInfo == null) {
 			// Unable to retrieve infos, just abort
+			logger.warning("Cannot retrieve info from " + serializationArtefact);
 			return null;
 		}
+
+		System.out.println("vmiInfo.virtualModelURI" + vmiInfo.virtualModelURI);
 
 		String artefactName = resourceCenter.retrieveName(serializationArtefact);
 		String baseName = artefactName.substring(0, artefactName.length() - VIRTUAL_MODEL_INSTANCE_SUFFIX.length());
@@ -150,7 +163,7 @@ public class VirtualModelInstanceResourceFactory
 			returned.setVersion(new FlexoVersion(vmiInfo.version));
 		}
 		else {
-			returned.setVersion(new FlexoVersion("0.1"));
+			returned.setVersion(INITIAL_REVISION);
 		}
 		if (StringUtils.isNotEmpty(vmiInfo.modelVersion)) {
 			returned.setModelVersion(new FlexoVersion(vmiInfo.modelVersion));
@@ -159,9 +172,35 @@ public class VirtualModelInstanceResourceFactory
 			returned.setModelVersion(CURRENT_FML_RT_VERSION);
 		}
 
+		System.out.println("Alors ici....");
+		System.out.println("vmiInfo.virtualModelURI=" + vmiInfo.virtualModelURI);
+
 		if (StringUtils.isNotEmpty(vmiInfo.virtualModelURI)) {
+			VirtualModel vm = null;
 			FlexoServiceManager sm = technologyContextManager.getServiceManager();
-			VirtualModel vm = sm.getViewPointLibrary().getVirtualModel(vmiInfo.virtualModelURI);
+
+			try {
+				vm = sm.getViewPointLibrary().getVirtualModel(vmiInfo.virtualModelURI);
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ResourceLoadingCancelledException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (FlexoException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			if (vm == null) {
+				System.out.println("Alors on ne trouve pas " + vmiInfo.virtualModelURI);
+				System.out.println("Les VPS que je connais: " + sm.getViewPointLibrary().getViewPoints());
+				ViewPointResource vpres = sm.getViewPointLibrary().getViewPoints().iterator().next();
+				System.out.println("vpres=" + vpres);
+				System.out.println("vms=" + vpres.getVirtualModelResources());
+				for (AbstractVirtualModelResource<?> vmres : vpres.getVirtualModelResources()) {
+					System.out.println("> " + vmres.getURI());
+				}
+			}
 			returned.setVirtualModelResource((VirtualModelResource) vm.getResource());
 		}
 

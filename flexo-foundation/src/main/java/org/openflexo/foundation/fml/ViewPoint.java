@@ -271,21 +271,6 @@ public interface ViewPoint extends AbstractVirtualModel<ViewPoint> {
 			return viewpoint;
 		}*/
 
-		@Override
-		public FlexoVersion getModelVersion() {
-			if (getResource() != null) {
-				return getResource().getModelVersion();
-			}
-			return null;
-		}
-
-		@Override
-		public void setModelVersion(FlexoVersion aVersion) {
-			if (getResource() != null) {
-				getResource().setModelVersion(aVersion);
-			}
-		}
-
 		public void init(String baseName, /* File viewpointDir, File xmlFile,*/ViewPointLibrary library/*, ViewPointFolder folder*/) {
 			logger.info("Registering viewpoint " + baseName + " URI=" + getViewPointURI());
 

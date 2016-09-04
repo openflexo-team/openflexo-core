@@ -111,6 +111,7 @@ public class VirtualModelResourceFactory extends AbstractVirtualModelResourceFac
 	protected <I> VirtualModelResource initResourceForCreation(I serializationArtefact, FlexoResourceCenter<I> resourceCenter,
 			TechnologyContextManager<FMLTechnologyAdapter> technologyContextManager, String uri) throws ModelDefinitionException {
 		VirtualModelResource returned = super.initResourceForCreation(serializationArtefact, resourceCenter, technologyContextManager, uri);
+		returned.setVersion(INITIAL_REVISION);
 		returned.setModelVersion(CURRENT_FML_VERSION);
 		return returned;
 	}

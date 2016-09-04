@@ -39,6 +39,7 @@ import org.openflexo.toolbox.FlexoVersion;
 public abstract class AbstractVirtualModelResourceFactory<VM extends AbstractVirtualModel<VM>, VMR extends AbstractVirtualModelResource<VM>>
 		extends PamelaResourceFactory<VMR, VM, FMLTechnologyAdapter, FMLModelFactory> {
 
+	public static final FlexoVersion INITIAL_REVISION = new FlexoVersion("0.1");
 	public static final FlexoVersion CURRENT_FML_VERSION = new FlexoVersion("1.0");
 	public static final String CORE_FILE_SUFFIX = ".xml";
 

@@ -29,6 +29,7 @@ import org.jdom2.Attribute;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
+import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.fml.rt.View;
@@ -144,6 +145,11 @@ public class ViewResourceFactory extends AbstractVirtualModelInstanceResourceFac
 		// Register the resource in the ViewRepository of supplied resource center
 		registerResourceInResourceRepository(resource, technologyContextManager.getTechnologyAdapter().getViewRepository(resourceCenter));
 
+		// TODO: refactor this
+		if (resourceCenter instanceof FlexoProject) {
+			registerResourceInResourceRepository(resource, ((FlexoProject) resourceCenter).getViewLibrary());
+		}
+
 		// Now look for virtual model instances and sub-views
 		exploreViewContents(resource, technologyContextManager);
 
@@ -177,6 +183,7 @@ public class ViewResourceFactory extends AbstractVirtualModelInstanceResourceFac
 	protected <I> ViewResource initResourceForCreation(I serializationArtefact, FlexoResourceCenter<I> resourceCenter,
 			TechnologyContextManager<FMLRTTechnologyAdapter> technologyContextManager, String uri) throws ModelDefinitionException {
 		ViewResource returned = super.initResourceForCreation(serializationArtefact, resourceCenter, technologyContextManager, uri);
+		returned.setVersion(INITIAL_REVISION);
 		returned.setModelVersion(CURRENT_FML_RT_VERSION);
 		return returned;
 	}
@@ -185,14 +192,23 @@ public class ViewResourceFactory extends AbstractVirtualModelInstanceResourceFac
 	protected <I> ViewResource initResourceForRetrieving(I serializationArtefact, FlexoResourceCenter<I> resourceCenter,
 			TechnologyContextManager<FMLRTTechnologyAdapter> technologyContextManager) throws ModelDefinitionException {
 
+		System.out.println("On passe ici ?");
+
 		ViewResource returned = super.initResourceForRetrieving(serializationArtefact, resourceCenter, technologyContextManager);
+
+		System.out.println("et la ? ");
 
 		ViewInfo vpi = findViewInfo(serializationArtefact);
 
+		System.out.println("vpi=" + vpi);
+
 		if (vpi == null) {
 			// Unable to retrieve infos, just abort
+			logger.warning("Cannot retrieve info from " + serializationArtefact);
 			return null;
 		}
+
+		System.out.println("vpi.viewPointURI=" + vpi.viewPointURI);
 
 		String artefactName = resourceCenter.retrieveName(serializationArtefact);
 		String baseName = artefactName.substring(0, artefactName.length() - VIEW_SUFFIX.length());
@@ -203,7 +219,7 @@ public class ViewResourceFactory extends AbstractVirtualModelInstanceResourceFac
 			returned.setVersion(new FlexoVersion(vpi.version));
 		}
 		else {
-			returned.setVersion(new FlexoVersion("0.1"));
+			returned.setVersion(INITIAL_REVISION);
 		}
 		if (StringUtils.isNotEmpty(vpi.modelVersion)) {
 			returned.setModelVersion(new FlexoVersion(vpi.modelVersion));
@@ -238,8 +254,12 @@ public class ViewResourceFactory extends AbstractVirtualModelInstanceResourceFac
 
 		FlexoResourceCenter<I> resourceCenter = (FlexoResourceCenter<I>) viewResource.getResourceCenter();
 
-		for (I child : resourceCenter.getContents(serializationArtefact)) {
+		System.out.println("Je regarde mes vmi...");
+
+		for (I child : resourceCenter.getContents(resourceCenter.getContainer(serializationArtefact))) {
+			System.out.println("par exemple " + child);
 			if (getVirtualModelInstanceResourceFactory().isValidArtefact(child, resourceCenter)) {
+				System.out.println("valide celui-la");
 				try {
 					VirtualModelInstanceResource virtualModelInstanceResource = getVirtualModelInstanceResourceFactory()
 							.retrieveVirtualModelInstanceResource(child, technologyContextManager, viewResource);

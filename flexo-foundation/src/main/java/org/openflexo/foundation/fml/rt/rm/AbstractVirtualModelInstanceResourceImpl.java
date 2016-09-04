@@ -63,8 +63,8 @@ import org.openflexo.toolbox.IProgress;
  * 
  */
 public abstract class AbstractVirtualModelInstanceResourceImpl<VMI extends AbstractVirtualModelInstance<VMI, VM>, VM extends AbstractVirtualModel<VM>>
-		extends PamelaResourceImpl<VMI, AbstractVirtualModelInstanceModelFactory<?>> implements
-		AbstractVirtualModelInstanceResource<VMI, VM> {
+		extends PamelaResourceImpl<VMI, AbstractVirtualModelInstanceModelFactory<?>>
+		implements AbstractVirtualModelInstanceResource<VMI, VM> {
 
 	static final Logger logger = Logger.getLogger(AbstractVirtualModelInstanceResourceImpl.class.getPackage().getName());
 
@@ -95,6 +95,12 @@ public abstract class AbstractVirtualModelInstanceResourceImpl<VMI extends Abstr
 		}
 		startDeserializing();
 		VMI returned = super.loadResourceData(progress);
+
+		System.out.println("Je suis " + getClass().getSimpleName());
+		System.out.println("getVirtualModelResource()=" + getVirtualModelResource());
+
+		returned.setVirtualModel(getVirtualModelResource().getVirtualModel());
+
 		if (getContainer() != null) {
 			getContainer().getView().addToVirtualModelInstances(returned);
 		}

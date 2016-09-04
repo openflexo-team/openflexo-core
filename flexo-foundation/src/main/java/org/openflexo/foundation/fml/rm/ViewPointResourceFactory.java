@@ -148,7 +148,7 @@ public class ViewPointResourceFactory extends AbstractVirtualModelResourceFactor
 			TechnologyContextManager<FMLTechnologyAdapter> technologyContextManager, String uri) throws ModelDefinitionException {
 		ViewPointResource returned = super.initResourceForCreation(serializationArtefact, resourceCenter, technologyContextManager, uri);
 
-		returned.setVersion(new FlexoVersion("0.1"));
+		returned.setVersion(INITIAL_REVISION);
 		returned.setModelVersion(CURRENT_FML_VERSION);
 
 		return returned;
