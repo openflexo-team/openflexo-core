@@ -45,6 +45,8 @@ import java.io.OutputStream;
 import org.openflexo.foundation.action.NotImplementedException;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
+import org.openflexo.model.annotations.Import;
+import org.openflexo.model.annotations.Imports;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.PropertyIdentifier;
 import org.openflexo.model.annotations.Setter;
@@ -55,6 +57,7 @@ import org.openflexo.rm.InJarResourceImpl;
 @ModelEntity
 @ImplementationClass(InJarFlexoIODelegate.InJarFlexoIODelegateImpl.class)
 @XMLElement
+@Imports({ @Import(DirectoryBasedJarIODelegate.class) })
 public interface InJarFlexoIODelegate extends FlexoIOStreamDelegate<InJarResourceImpl> {
 
 	@PropertyIdentifier(type = InJarResourceImpl.class)
@@ -72,6 +75,11 @@ public interface InJarFlexoIODelegate extends FlexoIOStreamDelegate<InJarResourc
 			InJarFlexoIODelegate delegate = factory.newInstance(InJarFlexoIODelegate.class);
 			delegate.setInJarResource(inJarResource);
 			return delegate;
+		}
+
+		@Override
+		public InJarResourceImpl getSerializationArtefact() {
+			return getInJarResource();
 		}
 
 		@Override

@@ -20,25 +20,18 @@
 
 package org.openflexo.foundation.fml.rm;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Iterator;
 import java.util.logging.Logger;
 
-import org.jdom2.Attribute;
-import org.jdom2.Document;
-import org.jdom2.Element;
-import org.jdom2.JDOMException;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.resource.FlexoIODelegate;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.technologyadapter.TechnologyContextManager;
-import org.openflexo.foundation.utils.XMLUtils;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.toolbox.FlexoVersion;
 import org.openflexo.toolbox.StringUtils;
+import org.openflexo.xml.XMLRootElementInfo;
 
 /**
  * Implementation of PamelaResourceFactory for {@link ViewPointResource}
@@ -126,7 +119,7 @@ public class VirtualModelResourceFactory extends AbstractVirtualModelResourceFac
 		returned.initName(artefactName);
 
 		VirtualModelInfo vpi = null;
-		vpi = findVirtualModelInfo(serializationArtefact);
+		vpi = findVirtualModelInfo(returned, resourceCenter);
 		if (vpi != null) {
 			if (StringUtils.isNotEmpty(vpi.version)) {
 				returned.setVersion(new FlexoVersion(vpi.version));
@@ -156,16 +149,27 @@ public class VirtualModelResourceFactory extends AbstractVirtualModelResourceFac
 		public String modelVersion;
 	}
 
-	private <I> VirtualModelInfo findVirtualModelInfo(I serializationArtefact) {
-		Document document;
+	private <I> VirtualModelInfo findVirtualModelInfo(VirtualModelResource resource, FlexoResourceCenter<I> resourceCenter) {
+
+		VirtualModelInfo returned = new VirtualModelInfo();
+		XMLRootElementInfo xmlRootElementInfo = resourceCenter
+				.getXMLRootElementInfo((I) resource.getFlexoIODelegate().getSerializationArtefact());
+		if (xmlRootElementInfo.getName().equals("VirtualModel")) {
+			returned.name = xmlRootElementInfo.getAttribute("name");
+			returned.version = xmlRootElementInfo.getAttribute("version");
+			returned.modelVersion = xmlRootElementInfo.getAttribute("modelVersion");
+		}
+		return returned;
+
+		/*Document document;
 		if (serializationArtefact instanceof File) {
 			try {
 				File viewDirectory = (File) serializationArtefact;
 				logger.fine("Try to find infos for " + viewDirectory);
-
+		
 				String baseName = viewDirectory.getName();
 				File xmlFile = new File(viewDirectory, baseName + ".xml");
-
+		
 				if (xmlFile.exists()) {
 					document = XMLUtils.readXMLFile(xmlFile);
 					Element root = XMLUtils.getElement(document, "VirtualModel");
@@ -193,10 +197,6 @@ public class VirtualModelResourceFactory extends AbstractVirtualModelResourceFac
 						}
 						return returned;
 					}
-					/*} else {
-					logger.warning("While analysing virtual model candidate: " + virtualModelDirectory.getAbsolutePath() + " cannot find file "
-						+ xmlFile.getAbsolutePath());
-					}*/
 				}
 			} catch (JDOMException e) {
 				e.printStackTrace();
@@ -205,7 +205,7 @@ public class VirtualModelResourceFactory extends AbstractVirtualModelResourceFac
 			}
 		}
 		logger.fine("Returned null");
-		return null;
+		return null;*/
 	}
 
 	@Override

@@ -20,15 +20,8 @@
 
 package org.openflexo.foundation.fml.rt.rm;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Iterator;
 import java.util.logging.Logger;
 
-import org.jdom2.Attribute;
-import org.jdom2.Document;
-import org.jdom2.Element;
-import org.jdom2.JDOMException;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.rm.ViewPointResource;
@@ -40,10 +33,10 @@ import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.RepositoryFolder;
 import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.technologyadapter.TechnologyContextManager;
-import org.openflexo.foundation.utils.XMLUtils;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.toolbox.FlexoVersion;
 import org.openflexo.toolbox.StringUtils;
+import org.openflexo.xml.XMLRootElementInfo;
 
 /**
  * Implementation of PamelaResourceFactory for {@link ViewResource}
@@ -202,7 +195,7 @@ public class ViewResourceFactory extends AbstractVirtualModelInstanceResourceFac
 
 		returned.initName(baseName);
 
-		ViewInfo vpi = findViewInfo(serializationArtefact);
+		ViewInfo vpi = findViewInfo(returned, resourceCenter);
 		if (vpi != null) {
 			returned.setURI(vpi.uri);
 			if (StringUtils.isNotEmpty(vpi.version)) {
@@ -287,17 +280,34 @@ public class ViewResourceFactory extends AbstractVirtualModelInstanceResourceFac
 		public String modelVersion;
 	}
 
-	private static <I> ViewInfo findViewInfo(I serializationArtefact) {
-		Document document;
+	private <I> ViewInfo findViewInfo(ViewResource resource, FlexoResourceCenter<I> resourceCenter) {
 
+		ViewInfo returned = new ViewInfo();
+		XMLRootElementInfo xmlRootElementInfo = resourceCenter
+				.getXMLRootElementInfo((I) resource.getFlexoIODelegate().getSerializationArtefact());
+		if (xmlRootElementInfo.getName().equals("View")) {
+			returned.uri = xmlRootElementInfo.getAttribute("uri");
+			returned.name = xmlRootElementInfo.getAttribute("name");
+			returned.viewPointURI = xmlRootElementInfo.getAttribute("viewPointURI");
+			returned.viewPointVersion = xmlRootElementInfo.getAttribute("viewPointVersion");
+			returned.version = xmlRootElementInfo.getAttribute("version");
+			returned.modelVersion = xmlRootElementInfo.getAttribute("modelVersion");
+
+		}
+		return returned;
+	}
+
+	/*private static <I> ViewInfo findViewInfo(I serializationArtefact) {
+		Document document;
+	
 		if (serializationArtefact instanceof File) {
 			try {
 				File viewDirectory = (File) serializationArtefact;
 				logger.fine("Try to find infos for " + viewDirectory);
-
+	
 				String baseName = viewDirectory.getName().substring(0, viewDirectory.getName().length() - 5);
 				File xmlFile = new File(viewDirectory, baseName + ".xml");
-
+	
 				if (xmlFile.exists()) {
 					document = XMLUtils.readXMLFile(xmlFile);
 					Element root = XMLUtils.getElement(document, "View");
@@ -342,7 +352,7 @@ public class ViewResourceFactory extends AbstractVirtualModelInstanceResourceFac
 			return null;
 		}
 		return null;
-	}
+	}*/
 
 	/*public static ViewResource makeViewResource(String name, RepositoryFolder<ViewResource, ?> folder, ViewPoint viewPoint,
 		ViewLibrary viewLibrary) {

@@ -95,6 +95,10 @@ public class RepositoryFolder<R extends FlexoResource<?>, I> extends DefaultFlex
 		return serializationArtefact;
 	}
 
+	public void setSerializationArtefact(I serializationArtefact) {
+		this.serializationArtefact = serializationArtefact;
+	}
+
 	public String getName() {
 		if (getFile() != null) {
 			return getFile().getName();

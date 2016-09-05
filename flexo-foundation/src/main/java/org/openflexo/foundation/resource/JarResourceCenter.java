@@ -47,12 +47,14 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.StringTokenizer;
 import java.util.jar.JarFile;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.ViewPointRepository;
+import org.openflexo.foundation.resource.DirectoryBasedJarIODelegate.DirectoryBasedJarIODelegateImpl;
 import org.openflexo.foundation.resource.InJarFlexoIODelegate.InJarFlexoIODelegateImpl;
 import org.openflexo.foundation.task.Progress;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
@@ -68,10 +70,13 @@ import org.openflexo.model.factory.ModelFactory;
 import org.openflexo.rm.ClasspathResourceLocatorImpl;
 import org.openflexo.rm.InJarResourceImpl;
 import org.openflexo.rm.JarResourceImpl;
+import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.toolbox.ClassPathUtils;
 import org.openflexo.toolbox.FlexoVersion;
 import org.openflexo.toolbox.IProgress;
+import org.openflexo.xml.XMLRootElementInfo;
+import org.openflexo.xml.XMLRootElementReader;
 
 /**
  * A Jar resource center references a set of resources inside a Jar.
@@ -80,7 +85,7 @@ import org.openflexo.toolbox.IProgress;
  *
  * @param <R>
  */
-public class JarResourceCenter<R extends FlexoResource<?>> extends ResourceRepository<FlexoResource<?>, InJarResourceImpl>
+public class JarResourceCenter extends ResourceRepository<FlexoResource<?>, InJarResourceImpl>
 		implements FlexoResourceCenter<InJarResourceImpl> {
 
 	protected static final Logger logger = Logger.getLogger(ResourceRepository.class.getPackage().getName());
@@ -111,7 +116,7 @@ public class JarResourceCenter<R extends FlexoResource<?>> extends ResourceRepos
 	 * @param jarResourceImpl
 	 */
 	public JarResourceCenter(JarResourceImpl jarResourceImpl, FlexoResourceCenterService rcService) {
-		super(null, null);
+		super(null, jarResourceImpl.getRootEntry());
 		this.rcService = rcService;
 		this.jarFile = jarResourceImpl.getJarfile();
 		this.jarResourceImpl = jarResourceImpl;
@@ -133,6 +138,7 @@ public class JarResourceCenter<R extends FlexoResource<?>> extends ResourceRepos
 			try {
 				jarResourceImpl = new JarResourceImpl(ResourceLocator.getInstanceForLocatorClass(ClasspathResourceLocatorImpl.class),
 						jarFile);
+				setBaseArtefact(jarResourceImpl.getRootEntry());
 			} catch (MalformedURLException e) {
 				logger.warning("Unable to create a Jar Resource Center for jar " + jarFile.getName());
 			}
@@ -142,7 +148,7 @@ public class JarResourceCenter<R extends FlexoResource<?>> extends ResourceRepos
 	}
 
 	@Override
-	public JarResourceCenter<R> getResourceCenter() {
+	public JarResourceCenter getResourceCenter() {
 		return this;
 	}
 
@@ -343,6 +349,7 @@ public class JarResourceCenter<R extends FlexoResource<?>> extends ResourceRepos
 	public static JarResourceCenter addJarFile(JarFile jarFile, FlexoResourceCenterService rcService) {
 		logger.info("Try to create a resource center from a jar file : " + jarFile.getName());
 		JarResourceCenter rc = new JarResourceCenter(jarFile, rcService);
+
 		rc.setDefaultBaseURI(jarFile.getName());
 		rcService.addToResourceCenters(rc);
 		rcService.storeDirectoryResourceCenterLocations();
@@ -381,7 +388,7 @@ public class JarResourceCenter<R extends FlexoResource<?>> extends ResourceRepos
 		@Implementation
 		public static abstract class JarResourceCenterEntryImpl implements JarResourceCenterEntry {
 			@Override
-			public JarResourceCenter<?> makeResourceCenter(FlexoResourceCenterService rcService) {
+			public JarResourceCenter makeResourceCenter(FlexoResourceCenterService rcService) {
 				JarFile jarFile;
 				try {
 					jarFile = new JarFile(getFile());
@@ -468,7 +475,7 @@ public class JarResourceCenter<R extends FlexoResource<?>> extends ResourceRepos
 			if (returned.endsWith("/")) {
 				returned = returned.substring(0, returned.length() - 1);
 			}
-			System.out.println("On retourne " + returned);
+			returned = returned.substring(returned.lastIndexOf("/") + 1);
 			return returned;
 		}
 		return getName();
@@ -482,7 +489,11 @@ public class JarResourceCenter<R extends FlexoResource<?>> extends ResourceRepos
 	 */
 	@Override
 	public InJarResourceImpl getContainer(InJarResourceImpl serializationArtefact) {
-		return (InJarResourceImpl) serializationArtefact.getContainer();
+		Resource container = serializationArtefact.getContainer();
+		if (container instanceof InJarResourceImpl) {
+			return (InJarResourceImpl) container;
+		}
+		return null;
 	}
 
 	/**
@@ -494,7 +505,7 @@ public class JarResourceCenter<R extends FlexoResource<?>> extends ResourceRepos
 	 */
 	@Override
 	public List<InJarResourceImpl> getContents(InJarResourceImpl serializationArtefact) {
-		return (List) serializationArtefact.getContents();
+		return serializationArtefact.getContents();
 	}
 
 	@Override
@@ -518,6 +529,24 @@ public class JarResourceCenter<R extends FlexoResource<?>> extends ResourceRepos
 		return null;
 	}
 
+	/**
+	 * Get container serialization artefact, with supplied name and parent serialization artefact
+	 * 
+	 * @param name
+	 * @param parentDirectory
+	 * @return
+	 */
+	@Override
+	public InJarResourceImpl getDirectory(String name, InJarResourceImpl parentDirectory) {
+		for (InJarResourceImpl r : parentDirectory.getContents()) {
+			// System.out.println(" * " + r.getName() + " " + r);
+			if (name.equals(r.getName())) {
+				return r;
+			}
+		}
+		return null;
+	}
+
 	@Override
 	public InJarResourceImpl createEntry(String name, InJarResourceImpl parentDirectory) {
 		// Not applicable
@@ -533,15 +562,65 @@ public class JarResourceCenter<R extends FlexoResource<?>> extends ResourceRepos
 	@Override
 	public FlexoIODelegate<InJarResourceImpl> makeDirectoryBasedFlexoIODelegate(InJarResourceImpl serializationArtefact,
 			String directoryExtension, String fileExtension, FlexoResourceFactory<?, ?, ?> resourceFactory) {
-		// Not applicable
-		return null;
+
+		String baseName = retrieveName(serializationArtefact).substring(0,
+				retrieveName(serializationArtefact).length() - directoryExtension.length());
+		return DirectoryBasedJarIODelegateImpl.makeDirectoryBasedFlexoIODelegate(serializationArtefact.getContainer(), baseName,
+				directoryExtension, fileExtension, this, resourceFactory);
+	}
+
+	@Override
+	public XMLRootElementInfo getXMLRootElementInfo(InJarResourceImpl serializationArtefact) {
+		XMLRootElementReader reader = new XMLRootElementReader();
+		try {
+			return reader.readRootElement(serializationArtefact);
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}
+
 	}
 
 	@Override
 	public <R extends FlexoResource<?>> RepositoryFolder<R, InJarResourceImpl> getRepositoryFolder(
 			FlexoIODelegate<InJarResourceImpl> ioDelegate, ResourceRepository<R, InJarResourceImpl> resourceRepository) {
-		// TODO
-		return null;
+
+		InJarResourceImpl candidateFile = null;
+		if (ioDelegate instanceof DirectoryBasedJarIODelegate) {
+			candidateFile = ((DirectoryBasedJarIODelegate) ioDelegate).getDirectory();
+		}
+		else if (ioDelegate instanceof InJarFlexoIODelegate) {
+			candidateFile = ((InJarFlexoIODelegate) ioDelegate).getInJarResource();
+		}
+		try {
+			return resourceRepository.getRepositoryFolder(candidateFile, true);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return resourceRepository.getRootFolder();
+		}
+	}
+
+	/**
+	 * Get the set of path in the case of InJarResource
+	 * 
+	 * @param resource
+	 * @return
+	 */
+	@Override
+	public List<String> getPathTo(InJarResourceImpl resource) {
+		if (!getRootFolder().getChildren().contains(resource)) {
+			List<String> pathTo = new ArrayList<String>();
+			StringTokenizer string = new StringTokenizer(/*resource.getURI()*/resource.getEntry().getName(),
+					Character.toString(ClasspathResourceLocatorImpl.PATH_SEP.toCharArray()[0]));
+			while (string.hasMoreTokens()) {
+				pathTo.add(string.nextToken());
+			}
+			return pathTo;
+		}
+		else {
+			return null;
+		}
 	}
 
 }

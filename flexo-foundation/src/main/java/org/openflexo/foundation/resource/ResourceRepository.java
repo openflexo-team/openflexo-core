@@ -46,7 +46,6 @@ import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
-import java.util.StringTokenizer;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -56,8 +55,6 @@ import org.openflexo.foundation.DataFlexoObserver;
 import org.openflexo.foundation.DataModification;
 import org.openflexo.foundation.DefaultFlexoObject;
 import org.openflexo.foundation.FlexoObservable;
-import org.openflexo.rm.ClasspathResourceLocatorImpl;
-import org.openflexo.rm.InJarResourceImpl;
 import org.openflexo.toolbox.FileUtils;
 
 /**
@@ -102,13 +99,14 @@ public abstract class ResourceRepository<R extends FlexoResource<?>, I> extends 
 		return baseArtefact;
 	}
 
-	/*private void setBaseArtefact(I baseArtefact) {
+	protected void setBaseArtefact(I baseArtefact) {
 		if ((baseArtefact == null && this.baseArtefact != null) || (baseArtefact != null && !baseArtefact.equals(this.baseArtefact))) {
 			I oldValue = this.baseArtefact;
 			this.baseArtefact = baseArtefact;
 			getPropertyChangeSupport().firePropertyChange("baseArtefact", oldValue, baseArtefact);
+			rootFolder.setSerializationArtefact(baseArtefact);
 		}
-	}*/
+	}
 
 	public RepositoryFolder<R, I> getRootFolder() {
 		return rootFolder;
@@ -423,58 +421,9 @@ public abstract class ResourceRepository<R extends FlexoResource<?>, I> extends 
 	 * @return
 	 * @throws IOException
 	 */
-	public RepositoryFolder<R, I> getRepositoryFolder(Object element, boolean createWhenNonExistent) throws IOException {
-		List<String> pathTo = null;
-		if (element instanceof File) {
-			pathTo = getPathTo((File) element);
-		}
-		else if (element instanceof InJarResourceImpl) {
-			pathTo = getPathTo((InJarResourceImpl) element);
-		}
+	public RepositoryFolder<R, I> getRepositoryFolder(I serializationArtefact, boolean createWhenNonExistent) throws IOException {
+		List<String> pathTo = getResourceCenter().getPathTo(serializationArtefact);
 		return getRepositoryFolder(pathTo, createWhenNonExistent);
-	}
-
-	/**
-	 * Get the set of path in the case of File
-	 * 
-	 * @param aFile
-	 * @return
-	 * @throws IOException
-	 */
-	private List<String> getPathTo(File aFile) throws IOException {
-		if (FileUtils.directoryContainsFile(getRootFolder().getFile(), aFile, true)) {
-			List<String> pathTo = new ArrayList<String>();
-			File f = aFile.getParentFile().getCanonicalFile();
-			while (f != null && !f.equals(getRootFolder().getFile().getCanonicalFile())) {
-				pathTo.add(0, f.getName());
-				f = f.getParentFile();
-			}
-			return pathTo;
-		}
-		else {
-			return null;
-		}
-	}
-
-	/**
-	 * Get the set of path in the case of InJarResource
-	 * 
-	 * @param resource
-	 * @return
-	 */
-	private List<String> getPathTo(InJarResourceImpl resource) {
-		if (!getRootFolder().getChildren().contains(resource)) {
-			List<String> pathTo = new ArrayList<String>();
-			StringTokenizer string = new StringTokenizer(resource.getURI(),
-					Character.toString(ClasspathResourceLocatorImpl.PATH_SEP.toCharArray()[0]));
-			while (string.hasMoreTokens()) {
-				pathTo.add(string.nextToken());
-			}
-			return pathTo;
-		}
-		else {
-			return null;
-		}
 	}
 
 	/**
@@ -485,15 +434,15 @@ public abstract class ResourceRepository<R extends FlexoResource<?>, I> extends 
 	 * @return
 	 * @throws IOException
 	 */
-	public RepositoryFolder<R, I> getRepositoryFolder(List<String> pathTo, boolean createWhenNonExistent) throws IOException {
+	private RepositoryFolder<R, I> getRepositoryFolder(List<String> pathTo, boolean createWhenNonExistent) throws IOException {
 		RepositoryFolder<R, I> returned = getRootFolder();
 		if (pathTo != null) {
 			for (String pathElement : pathTo) {
 				RepositoryFolder<R, I> currentFolder = returned.getFolderNamed(pathElement);
 				if (currentFolder == null) {
 					if (createWhenNonExistent) {
-						RepositoryFolder<R, I> newFolder = new RepositoryFolder<R, I>(currentFolder.getSerializationArtefact(), returned,
-								this);
+						I serializationArtefact = getResourceCenter().getDirectory(pathElement, returned.getSerializationArtefact());
+						RepositoryFolder<R, I> newFolder = new RepositoryFolder<R, I>(serializationArtefact, returned, this);
 						currentFolder = newFolder;
 					}
 					else {

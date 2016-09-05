@@ -201,17 +201,17 @@ public interface FlexoIOStreamDelegate<I> extends FlexoIODelegate<I> {
 
 		}
 
-		@SuppressWarnings("unchecked")
+		/*@SuppressWarnings("unchecked")
 		@Override
 		public I getSerializationArtefact() {
 			return (I) getInputStream();
 		}
-
+		
 		@SuppressWarnings("unchecked")
 		@Override
 		public void setSerializationArtefact(I artefact) {
 			setInputStream((InputStream) artefact);
-		}
+		}*/
 
 		@Override
 		public String getDeletedProperty() {

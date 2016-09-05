@@ -39,7 +39,6 @@
 
 package org.openflexo.foundation.technologyadapter;
 
-import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -232,14 +231,14 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 		while (it.hasNext()) {
 			I serializationArtefact = it.next();
 
-			if (resourceCenter instanceof JarResourceCenter) {
+			/*if (resourceCenter instanceof JarResourceCenter) {
 				System.out.println("pour " + serializationArtefact);
-			}
+			}*/
 
 			if (!isIgnorable(resourceCenter, serializationArtefact)) {
-				if (resourceCenter instanceof JarResourceCenter) {
+				/*if (resourceCenter instanceof JarResourceCenter) {
 					System.out.println("on ignore pas " + serializationArtefact);
-				}
+				}*/
 				for (FlexoResourceFactory<?, ?, ?> resourceFactory : getResourceFactories()) {
 					FlexoResource r = tryToLookupResource(resourceFactory, resourceCenter, serializationArtefact);
 					if (r != null) {
@@ -506,10 +505,10 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 	 * @param aFile
 	 * @return
 	 */
-	protected <R extends FlexoResource<?>> RepositoryFolder<R, ?> retrieveRepositoryFolder(ResourceRepository<R, ?> repository,
-			File aFile) {
+	protected <R extends FlexoResource<?>, I> RepositoryFolder<R, I> retrieveRepositoryFolder(ResourceRepository<R, I> repository,
+			I serializationArtefact) {
 		try {
-			return repository.getRepositoryFolder(aFile, true);
+			return repository.getRepositoryFolder(serializationArtefact, true);
 		} catch (IOException e) {
 			e.printStackTrace();
 			return repository.getRootFolder();

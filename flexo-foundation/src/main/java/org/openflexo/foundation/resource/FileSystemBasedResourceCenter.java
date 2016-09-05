@@ -79,6 +79,8 @@ import org.openflexo.toolbox.FileUtils;
 import org.openflexo.toolbox.FlexoVersion;
 import org.openflexo.toolbox.IProgress;
 import org.openflexo.toolbox.StringUtils;
+import org.openflexo.xml.XMLRootElementInfo;
+import org.openflexo.xml.XMLRootElementReader;
 
 /**
  * An abstract implementation of a {@link FlexoResourceCenter} based on a file system.
@@ -813,6 +815,19 @@ public abstract class FileSystemBasedResourceCenter extends ResourceRepository<F
 		return returned;
 	}
 
+	/**
+	 * Get container serialization artefact, with supplied name and parent serialization artefact
+	 * 
+	 * @param name
+	 * @param parentDirectory
+	 * @return
+	 */
+	@Override
+	public File getDirectory(String name, File parentDirectory) {
+		File returned = new File(parentDirectory, name);
+		return returned;
+	}
+
 	@Override
 	public File createEntry(String name, File parentDirectory) {
 		return new File(parentDirectory, name);
@@ -848,6 +863,18 @@ public abstract class FileSystemBasedResourceCenter extends ResourceRepository<F
 	}
 
 	@Override
+	public XMLRootElementInfo getXMLRootElementInfo(File serializationArtefact) {
+		XMLRootElementReader reader = new XMLRootElementReader();
+		try {
+			return reader.readRootElement(serializationArtefact);
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}
+
+	}
+
+	@Override
 	public <R extends FlexoResource<?>> RepositoryFolder<R, File> getRepositoryFolder(FlexoIODelegate<File> ioDelegate,
 			ResourceRepository<R, File> resourceRepository) {
 
@@ -866,6 +893,29 @@ public abstract class FileSystemBasedResourceCenter extends ResourceRepository<F
 			return resourceRepository.getRootFolder();
 		}
 
+	}
+
+	/**
+	 * Get the set of path in the case of File
+	 * 
+	 * @param aFile
+	 * @return
+	 * @throws IOException
+	 */
+	@Override
+	public List<String> getPathTo(File aFile) throws IOException {
+		if (FileUtils.directoryContainsFile(getRootFolder().getFile(), aFile, true)) {
+			List<String> pathTo = new ArrayList<String>();
+			File f = aFile.getParentFile().getCanonicalFile();
+			while (f != null && !f.equals(getRootFolder().getFile().getCanonicalFile())) {
+				pathTo.add(0, f.getName());
+				f = f.getParentFile();
+			}
+			return pathTo;
+		}
+		else {
+			return null;
+		}
 	}
 
 	@ModelEntity

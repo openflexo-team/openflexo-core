@@ -20,16 +20,9 @@
 
 package org.openflexo.foundation.fml.rt.rm;
 
-import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.Iterator;
 import java.util.logging.Logger;
 
-import org.jdom2.Attribute;
-import org.jdom2.Document;
-import org.jdom2.Element;
-import org.jdom2.JDOMException;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.VirtualModel;
@@ -42,10 +35,10 @@ import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.technologyadapter.TechnologyContextManager;
-import org.openflexo.foundation.utils.XMLUtils;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.toolbox.FlexoVersion;
 import org.openflexo.toolbox.StringUtils;
+import org.openflexo.xml.XMLRootElementInfo;
 
 /**
  * Implementation of PamelaResourceFactory for {@link ViewPointResource}
@@ -145,7 +138,7 @@ public class VirtualModelInstanceResourceFactory
 		String baseName = artefactName.substring(0, artefactName.length() - VIRTUAL_MODEL_INSTANCE_SUFFIX.length());
 		returned.initName(baseName);
 
-		VirtualModelInstanceInfo vmiInfo = findVirtualModelInstanceInfo(serializationArtefact);
+		VirtualModelInstanceInfo vmiInfo = findVirtualModelInstanceInfo(returned, resourceCenter);
 		if (vmiInfo != null) {
 			returned.setURI(vmiInfo.uri);
 			if (StringUtils.isNotEmpty(vmiInfo.version)) {
@@ -202,17 +195,33 @@ public class VirtualModelInstanceResourceFactory
 		public String modelVersion;
 	}
 
-	protected <I> VirtualModelInstanceInfo findVirtualModelInstanceInfo(I serializationArtefact) {
-		Document document;
+	private <I> VirtualModelInstanceInfo findVirtualModelInstanceInfo(VirtualModelInstanceResource resource,
+			FlexoResourceCenter<I> resourceCenter) {
 
+		VirtualModelInstanceInfo returned = new VirtualModelInstanceInfo();
+		XMLRootElementInfo xmlRootElementInfo = resourceCenter
+				.getXMLRootElementInfo((I) resource.getFlexoIODelegate().getSerializationArtefact());
+		if (xmlRootElementInfo.getName().equals("VirtualModelInstance")) {
+			returned.name = xmlRootElementInfo.getAttribute("name");
+			returned.uri = xmlRootElementInfo.getAttribute("uri");
+			returned.virtualModelURI = xmlRootElementInfo.getAttribute("virtualModelURI");
+			returned.version = xmlRootElementInfo.getAttribute("version");
+			returned.modelVersion = xmlRootElementInfo.getAttribute("modelVersion");
+		}
+		return returned;
+	}
+
+	/*protected <I> VirtualModelInstanceInfo findVirtualModelInstanceInfo(I serializationArtefact) {
+		Document document;
+	
 		if (serializationArtefact instanceof File) {
 			try {
 				File virtualModelInstanceFile = (File) serializationArtefact;
 				logger.fine("Try to find infos for " + virtualModelInstanceFile);
-
+	
 				String baseName = virtualModelInstanceFile.getName().substring(0,
 						virtualModelInstanceFile.getName().length() - VIRTUAL_MODEL_INSTANCE_SUFFIX.length());
-
+	
 				if (virtualModelInstanceFile.exists()) {
 					document = XMLUtils.readXMLFile(virtualModelInstanceFile);
 					Element root = XMLUtils.getElement(document, "VirtualModelInstance");
@@ -253,7 +262,7 @@ public class VirtualModelInstanceResourceFactory
 		}
 		logger.fine("Returned null");
 		return null;
-	}
+	}*/
 
 	@Override
 	public <I> boolean isValidArtefact(I serializationArtefact, FlexoResourceCenter<I> resourceCenter) {

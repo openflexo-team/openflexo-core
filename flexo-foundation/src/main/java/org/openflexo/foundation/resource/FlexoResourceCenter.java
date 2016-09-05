@@ -59,6 +59,7 @@ import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.XMLElement;
 import org.openflexo.toolbox.FlexoVersion;
 import org.openflexo.toolbox.IProgress;
+import org.openflexo.xml.XMLRootElementInfo;
 
 /**
  * A {@link FlexoResourceCenter} is a symbolic repository storing {@link FlexoResource} from artefacts of type I
@@ -365,6 +366,15 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, FlexoObject {
 	public I createDirectory(String name, I parentDirectory);
 
 	/**
+	 * Get container serialization artefact, with supplied name and parent serialization artefact
+	 * 
+	 * @param name
+	 * @param parentDirectory
+	 * @return
+	 */
+	public I getDirectory(String name, I parentDirectory);
+
+	/**
 	 * Create simple serialization artefact, with supplied name and parent serialization artefact
 	 * 
 	 * @param name
@@ -396,4 +406,15 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, FlexoObject {
 	 * @return
 	 */
 	public boolean isDirectory(I serializationArtefact);
+
+	/**
+	 * Return XMLRootElementInfo asserting serialization artefact encodes a XML contents
+	 * 
+	 * @param serializationArtefact
+	 * @return
+	 */
+	public XMLRootElementInfo getXMLRootElementInfo(I serializationArtefact);
+
+	public List<String> getPathTo(I serializationArtefact) throws IOException;
+
 }
