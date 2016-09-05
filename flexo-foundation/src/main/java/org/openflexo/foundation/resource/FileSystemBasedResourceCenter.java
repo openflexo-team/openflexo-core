@@ -337,14 +337,12 @@ public abstract class FileSystemBasedResourceCenter extends ResourceRepository<F
 		// directoryWatcher = new FileSystemBasedDirectoryWatcher(getRootDirectory());
 		if (directoryWatcher != null) {
 			if (directoryWatcher.isRunning()) {
-				System.out.println("hop, j'arrive la running=true");
 				stopDirectoryWatching();
 				directoryWatcher.waitCurrentExecution();
 				directoryWatcher.runNow();
 				startDirectoryWatching();
 			}
 			else {
-				System.out.println("hop, j'arrive la running=false");
 				directoryWatcher.runNow();
 			}
 		}
