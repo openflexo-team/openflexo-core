@@ -49,6 +49,7 @@ import org.openflexo.foundation.InvalidModelDefinitionException;
 import org.openflexo.foundation.InvalidXMLException;
 import org.openflexo.foundation.fml.AbstractVirtualModel;
 import org.openflexo.foundation.fml.ViewPoint;
+import org.openflexo.foundation.fml.rm.AbstractVirtualModelResource;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.fml.rt.View;
 import org.openflexo.foundation.resource.FileFlexoIODelegate;
@@ -178,6 +179,11 @@ public abstract class ViewResourceImpl extends AbstractVirtualModelInstanceResou
 			return getProject().getURI() + "/" + getName();
 		}
 		return null;
+	}
+
+	@Override
+	public AbstractVirtualModelResource<ViewPoint> getVirtualModelResource() {
+		return getViewPointResource();
 	}
 
 }

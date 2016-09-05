@@ -258,10 +258,6 @@ public class TestCreateVirtualModelInstance extends OpenflexoProjectAtRunTimeTes
 		assertNotNull(editor);
 		assertNotNull(project);
 
-		System.out.println("Je cherche la vue " + newView.getURI());
-		System.out.println("J'ai: " + project.getViewLibrary().getAllResources());
-		System.out.println("Mais: " + project.getAllResources());
-
 		ViewResource newViewResource = project.getViewLibrary().getView(newView.getURI());
 		assertNotNull(newViewResource);
 		assertNull(newViewResource.getLoadedResourceData());

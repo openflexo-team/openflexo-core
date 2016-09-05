@@ -145,7 +145,6 @@ public abstract class FlexoResourceFactory<R extends TechnologyAdapterResource<R
 	 */
 	public <I> R retrieveResource(I serializationArtefact, FlexoResourceCenter<I> resourceCenter,
 			TechnologyContextManager<TA> technologyContextManager) throws ModelDefinitionException {
-		System.out.println("On fait un retrieve pour " + serializationArtefact);
 		R returned = initResourceForRetrieving(serializationArtefact, resourceCenter, technologyContextManager);
 		registerResource(returned, resourceCenter, technologyContextManager);
 		return returned;

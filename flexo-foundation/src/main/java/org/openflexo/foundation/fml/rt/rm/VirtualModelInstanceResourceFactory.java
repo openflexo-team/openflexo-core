@@ -33,7 +33,6 @@ import org.jdom2.JDOMException;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.rm.AbstractVirtualModelResource;
 import org.openflexo.foundation.fml.rm.ViewPointResource;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
@@ -142,8 +141,6 @@ public class VirtualModelInstanceResourceFactory
 		VirtualModelInstanceResource returned = super.initResourceForRetrieving(serializationArtefact, resourceCenter,
 				technologyContextManager);
 
-		System.out.println("Passe je bien la ?");
-
 		VirtualModelInstanceInfo vmiInfo = findVirtualModelInstanceInfo(serializationArtefact);
 
 		if (vmiInfo == null) {
@@ -151,8 +148,6 @@ public class VirtualModelInstanceResourceFactory
 			logger.warning("Cannot retrieve info from " + serializationArtefact);
 			return null;
 		}
-
-		System.out.println("vmiInfo.virtualModelURI" + vmiInfo.virtualModelURI);
 
 		String artefactName = resourceCenter.retrieveName(serializationArtefact);
 		String baseName = artefactName.substring(0, artefactName.length() - VIRTUAL_MODEL_INSTANCE_SUFFIX.length());
@@ -172,9 +167,6 @@ public class VirtualModelInstanceResourceFactory
 			returned.setModelVersion(CURRENT_FML_RT_VERSION);
 		}
 
-		System.out.println("Alors ici....");
-		System.out.println("vmiInfo.virtualModelURI=" + vmiInfo.virtualModelURI);
-
 		if (StringUtils.isNotEmpty(vmiInfo.virtualModelURI)) {
 			VirtualModel vm = null;
 			FlexoServiceManager sm = technologyContextManager.getServiceManager();
@@ -192,16 +184,11 @@ public class VirtualModelInstanceResourceFactory
 				e.printStackTrace();
 			}
 			if (vm == null) {
-				System.out.println("Alors on ne trouve pas " + vmiInfo.virtualModelURI);
-				System.out.println("Les VPS que je connais: " + sm.getViewPointLibrary().getViewPoints());
-				ViewPointResource vpres = sm.getViewPointLibrary().getViewPoints().iterator().next();
-				System.out.println("vpres=" + vpres);
-				System.out.println("vms=" + vpres.getVirtualModelResources());
-				for (AbstractVirtualModelResource<?> vmres : vpres.getVirtualModelResources()) {
-					System.out.println("> " + vmres.getURI());
-				}
+				logger.warning("Could not find virtual model " + vmiInfo.virtualModelURI);
 			}
-			returned.setVirtualModelResource((VirtualModelResource) vm.getResource());
+			else {
+				returned.setVirtualModelResource((VirtualModelResource) vm.getResource());
+			}
 		}
 
 		return returned;

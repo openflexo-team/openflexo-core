@@ -31,6 +31,7 @@ import org.jdom2.Element;
 import org.jdom2.JDOMException;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.fml.ViewPoint;
+import org.openflexo.foundation.fml.rm.ViewPointResource;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.fml.rt.View;
 import org.openflexo.foundation.fml.rt.ViewModelFactory;
@@ -75,17 +76,19 @@ public class ViewResourceFactory extends AbstractVirtualModelInstanceResourceFac
 		return resource.getFactory().newInstance(View.class);
 	}
 
-	public <I> ViewResource makeViewResource(String baseName, String viewURI, RepositoryFolder<ViewResource, I> folder,
-			TechnologyContextManager<FMLRTTechnologyAdapter> technologyContextManager, boolean createEmptyContents)
-					throws SaveResourceException, ModelDefinitionException {
+	public <I> ViewResource makeViewResource(String baseName, String viewURI, ViewPointResource viewPointResource,
+			RepositoryFolder<ViewResource, I> folder, TechnologyContextManager<FMLRTTechnologyAdapter> technologyContextManager,
+			boolean createEmptyContents) throws SaveResourceException, ModelDefinitionException {
 
 		FlexoResourceCenter<I> resourceCenter = folder.getResourceRepository().getResourceCenter();
 		I serializationArtefact = resourceCenter.createDirectory(baseName + VIEW_SUFFIX, folder.getSerializationArtefact());
 
-		return makeResource(serializationArtefact, resourceCenter, technologyContextManager, viewURI, createEmptyContents);
+		ViewResource returned = makeResource(serializationArtefact, resourceCenter, technologyContextManager, viewURI, createEmptyContents);
+		returned.setViewPointResource(viewPointResource);
+		return returned;
 	}
 
-	public <I> ViewResource makeViewResource(String baseName, ViewResource parentViewResource,
+	public <I> ViewResource makeViewResource(String baseName, ViewPointResource viewPointResource, ViewResource parentViewResource,
 			TechnologyContextManager<FMLRTTechnologyAdapter> technologyContextManager, boolean createEmptyContents)
 					throws SaveResourceException, ModelDefinitionException {
 
@@ -95,6 +98,7 @@ public class ViewResourceFactory extends AbstractVirtualModelInstanceResourceFac
 
 		ViewResource returned = makeResource(serializationArtefact, resourceCenter, technologyContextManager,
 				parentViewResource.getURI() + "/" + baseName + VIEW_SUFFIX, createEmptyContents);
+		returned.setViewPointResource(viewPointResource);
 		parentViewResource.addToContents(returned);
 		parentViewResource.notifyContentsAdded(returned);
 		return returned;
@@ -192,23 +196,13 @@ public class ViewResourceFactory extends AbstractVirtualModelInstanceResourceFac
 	protected <I> ViewResource initResourceForRetrieving(I serializationArtefact, FlexoResourceCenter<I> resourceCenter,
 			TechnologyContextManager<FMLRTTechnologyAdapter> technologyContextManager) throws ModelDefinitionException {
 
-		System.out.println("On passe ici ?");
-
 		ViewResource returned = super.initResourceForRetrieving(serializationArtefact, resourceCenter, technologyContextManager);
-
-		System.out.println("et la ? ");
-
 		ViewInfo vpi = findViewInfo(serializationArtefact);
-
-		System.out.println("vpi=" + vpi);
-
 		if (vpi == null) {
 			// Unable to retrieve infos, just abort
 			logger.warning("Cannot retrieve info from " + serializationArtefact);
 			return null;
 		}
-
-		System.out.println("vpi.viewPointURI=" + vpi.viewPointURI);
 
 		String artefactName = resourceCenter.retrieveName(serializationArtefact);
 		String baseName = artefactName.substring(0, artefactName.length() - VIEW_SUFFIX.length());
@@ -230,6 +224,8 @@ public class ViewResourceFactory extends AbstractVirtualModelInstanceResourceFac
 
 		if (StringUtils.isNotEmpty(vpi.viewPointURI)) {
 			returned.setViewPointResource(resourceCenter.getServiceManager().getViewPointLibrary().getViewPointResource(vpi.viewPointURI));
+			returned.setVirtualModelResource(
+					resourceCenter.getServiceManager().getViewPointLibrary().getViewPointResource(vpi.viewPointURI));
 		}
 
 		return returned;
@@ -254,12 +250,8 @@ public class ViewResourceFactory extends AbstractVirtualModelInstanceResourceFac
 
 		FlexoResourceCenter<I> resourceCenter = (FlexoResourceCenter<I>) viewResource.getResourceCenter();
 
-		System.out.println("Je regarde mes vmi...");
-
 		for (I child : resourceCenter.getContents(resourceCenter.getContainer(serializationArtefact))) {
-			System.out.println("par exemple " + child);
 			if (getVirtualModelInstanceResourceFactory().isValidArtefact(child, resourceCenter)) {
-				System.out.println("valide celui-la");
 				try {
 					VirtualModelInstanceResource virtualModelInstanceResource = getVirtualModelInstanceResourceFactory()
 							.retrieveVirtualModelInstanceResource(child, technologyContextManager, viewResource);

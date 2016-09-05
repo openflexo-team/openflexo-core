@@ -129,8 +129,8 @@ public class CreateViewInFolder extends CreateView<CreateViewInFolder, Repositor
 		ViewResourceFactory factory = fmlRTTechnologyAdapter.getViewResourceFactory();
 		ViewResource returned;
 		try {
-			returned = factory.makeViewResource(getNewViewName(), null, getFolder(), fmlRTTechnologyAdapter.getTechnologyContextManager(),
-					true);
+			returned = factory.makeViewResource(getNewViewName(), null, getViewpointResource(), getFolder(),
+					fmlRTTechnologyAdapter.getTechnologyContextManager(), true);
 			returned.getLoadedResourceData().setTitle(getNewViewTitle());
 			return returned;
 		} catch (ModelDefinitionException e) {

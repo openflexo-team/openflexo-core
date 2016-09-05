@@ -98,6 +98,9 @@ public abstract class AbstractVirtualModelInstanceResourceImpl<VMI extends Abstr
 
 		System.out.println("Je suis " + getClass().getSimpleName());
 		System.out.println("getVirtualModelResource()=" + getVirtualModelResource());
+		if (this instanceof ViewResourceImpl) {
+			System.out.println("getViewPointResource()=" + ((ViewResourceImpl) this).getViewPointResource());
+		}
 
 		returned.setVirtualModel(getVirtualModelResource().getVirtualModel());
 

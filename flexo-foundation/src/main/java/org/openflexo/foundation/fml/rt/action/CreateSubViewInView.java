@@ -119,7 +119,7 @@ public class CreateSubViewInView extends CreateView<CreateSubViewInView, ViewRes
 		ViewResourceFactory factory = fmlRTTechnologyAdapter.getViewResourceFactory();
 		ViewResource returned;
 		try {
-			returned = factory.makeViewResource(getNewViewName(), (ViewResource) getContainerView().getResource(),
+			returned = factory.makeViewResource(getNewViewName(), getViewpointResource(), (ViewResource) getContainerView().getResource(),
 					fmlRTTechnologyAdapter.getTechnologyContextManager(), true);
 			returned.getLoadedResourceData().setTitle(getNewViewTitle());
 			return returned;
