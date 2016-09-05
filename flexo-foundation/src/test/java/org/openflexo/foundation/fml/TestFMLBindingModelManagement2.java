@@ -52,7 +52,6 @@ import org.openflexo.foundation.DefaultFlexoEditor;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.OpenflexoProjectAtRunTimeTestCase;
 import org.openflexo.foundation.fml.PrimitiveRole.PrimitiveType;
-import org.openflexo.foundation.fml.VirtualModel.VirtualModelImpl;
 import org.openflexo.foundation.fml.action.CreateEditionAction;
 import org.openflexo.foundation.fml.action.CreateFlexoBehaviour;
 import org.openflexo.foundation.fml.action.CreateFlexoBehaviourParameter;
@@ -72,6 +71,7 @@ import org.openflexo.foundation.fml.editionaction.FetchRequestCondition;
 import org.openflexo.foundation.fml.rm.ViewPointResource;
 import org.openflexo.foundation.fml.rm.ViewPointResourceFactory;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
+import org.openflexo.foundation.fml.rm.VirtualModelResourceFactory;
 import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.editionaction.SelectFlexoConceptInstance;
 import org.openflexo.foundation.resource.SaveResourceException;
@@ -161,12 +161,20 @@ public class TestFMLBindingModelManagement2 extends OpenflexoProjectAtRunTimeTes
 
 	/**
 	 * Test {@link VirtualModel} creation, check {@link BindingModel}
+	 * 
+	 * @throws ModelDefinitionException
 	 */
 	@Test
 	@TestOrder(3)
-	public void testCreateVirtualModel() throws SaveResourceException {
+	public void testCreateVirtualModel() throws SaveResourceException, ModelDefinitionException {
 
-		virtualModel = VirtualModelImpl.newVirtualModel("VM1", viewPoint);
+		FMLTechnologyAdapter fmlTechnologyAdapter = serviceManager.getTechnologyAdapterService()
+				.getTechnologyAdapter(FMLTechnologyAdapter.class);
+		VirtualModelResourceFactory factory = fmlTechnologyAdapter.getViewPointResourceFactory().getVirtualModelResourceFactory();
+		VirtualModelResource newVMResource = factory.makeVirtualModelResource("VM1", viewPoint.getViewPointResource(),
+				fmlTechnologyAdapter.getTechnologyContextManager(), true);
+		virtualModel = newVMResource.getLoadedResourceData();
+
 		assertTrue(ResourceLocator.retrieveResourceAsFile(((VirtualModelResource) virtualModel.getResource()).getDirectory()).exists());
 		assertTrue(((VirtualModelResource) virtualModel.getResource()).getFlexoIODelegate().exists());
 
