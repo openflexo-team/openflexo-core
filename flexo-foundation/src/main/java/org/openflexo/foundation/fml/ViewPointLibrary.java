@@ -243,15 +243,16 @@ public class ViewPointLibrary extends DefaultFlexoObject implements FlexoService
 		if (returned != null) {
 			return returned;
 		}
-		returned = _getVirtualModel(flexoConceptURI).getLoadedResourceData();
-		if (returned != null) {
-			return returned;
+		VirtualModelResource vmRes = _getVirtualModel(flexoConceptURI);
+		if (vmRes != null && vmRes.getLoadedResourceData() != null) {
+			return vmRes.getLoadedResourceData();
 		}
 		if (flexoConceptURI.indexOf("#") > -1) {
 			String virtualModelURI = flexoConceptURI.substring(0, flexoConceptURI.indexOf("#"));
 			String flexoConceptName = flexoConceptURI.substring(flexoConceptURI.indexOf("#") + 1);
-			VirtualModel vm = _getVirtualModel(virtualModelURI).getLoadedResourceData();
-			if (vm != null) {
+			vmRes = _getVirtualModel(flexoConceptURI);
+			if (vmRes != null && _getVirtualModel(virtualModelURI).getLoadedResourceData() != null) {
+				VirtualModel vm = _getVirtualModel(virtualModelURI).getLoadedResourceData();
 				return vm.getFlexoConcept(flexoConceptName);
 			}
 			logger.warning("Cannot find virtual model " + virtualModelURI + " while searching flexo concept:" + flexoConceptURI + " ("

@@ -44,7 +44,6 @@ import org.openflexo.foundation.utils.XMLUtils;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.toolbox.FlexoVersion;
 import org.openflexo.toolbox.StringUtils;
-import org.openflexo.xml.XMLRootElementReader;
 
 /**
  * Implementation of PamelaResourceFactory for {@link ViewResource}
@@ -58,7 +57,7 @@ public class ViewResourceFactory extends AbstractVirtualModelInstanceResourceFac
 
 	public static final String VIEW_SUFFIX = ".view";
 
-	private static XMLRootElementReader reader = new XMLRootElementReader();
+	// private static XMLRootElementReader reader = new XMLRootElementReader();
 
 	private final VirtualModelInstanceResourceFactory virtualModelInstanceResourceFactory;
 
@@ -197,35 +196,39 @@ public class ViewResourceFactory extends AbstractVirtualModelInstanceResourceFac
 			TechnologyContextManager<FMLRTTechnologyAdapter> technologyContextManager) throws ModelDefinitionException {
 
 		ViewResource returned = super.initResourceForRetrieving(serializationArtefact, resourceCenter, technologyContextManager);
-		ViewInfo vpi = findViewInfo(serializationArtefact);
-		if (vpi == null) {
-			// Unable to retrieve infos, just abort
-			logger.warning("Cannot retrieve info from " + serializationArtefact);
-			return null;
-		}
 
 		String artefactName = resourceCenter.retrieveName(serializationArtefact);
 		String baseName = artefactName.substring(0, artefactName.length() - VIEW_SUFFIX.length());
 
-		returned.setURI(vpi.uri);
 		returned.initName(baseName);
-		if (StringUtils.isNotEmpty(vpi.version)) {
-			returned.setVersion(new FlexoVersion(vpi.version));
-		}
-		else {
-			returned.setVersion(INITIAL_REVISION);
-		}
-		if (StringUtils.isNotEmpty(vpi.modelVersion)) {
-			returned.setModelVersion(new FlexoVersion(vpi.modelVersion));
-		}
-		else {
-			returned.setModelVersion(CURRENT_FML_RT_VERSION);
-		}
 
-		if (StringUtils.isNotEmpty(vpi.viewPointURI)) {
-			returned.setViewPointResource(resourceCenter.getServiceManager().getViewPointLibrary().getViewPointResource(vpi.viewPointURI));
-			returned.setVirtualModelResource(
-					resourceCenter.getServiceManager().getViewPointLibrary().getViewPointResource(vpi.viewPointURI));
+		ViewInfo vpi = findViewInfo(serializationArtefact);
+		if (vpi != null) {
+			returned.setURI(vpi.uri);
+			if (StringUtils.isNotEmpty(vpi.version)) {
+				returned.setVersion(new FlexoVersion(vpi.version));
+			}
+			else {
+				returned.setVersion(INITIAL_REVISION);
+			}
+			if (StringUtils.isNotEmpty(vpi.modelVersion)) {
+				returned.setModelVersion(new FlexoVersion(vpi.modelVersion));
+			}
+			else {
+				returned.setModelVersion(CURRENT_FML_RT_VERSION);
+			}
+			if (StringUtils.isNotEmpty(vpi.viewPointURI)) {
+				returned.setViewPointResource(
+						resourceCenter.getServiceManager().getViewPointLibrary().getViewPointResource(vpi.viewPointURI));
+				returned.setVirtualModelResource(
+						resourceCenter.getServiceManager().getViewPointLibrary().getViewPointResource(vpi.viewPointURI));
+			}
+		}
+		else {
+			// Unable to retrieve infos, just abort
+			logger.warning("Cannot retrieve info from " + serializationArtefact);
+			returned.setVersion(INITIAL_REVISION);
+			returned.setModelVersion(CURRENT_FML_RT_VERSION);
 		}
 
 		return returned;

@@ -123,25 +123,27 @@ public class VirtualModelResourceFactory extends AbstractVirtualModelResourceFac
 		VirtualModelResource returned = super.initResourceForRetrieving(serializationArtefact, resourceCenter, technologyContextManager);
 
 		String artefactName = resourceCenter.retrieveName(serializationArtefact);
+		returned.initName(artefactName);
+
 		VirtualModelInfo vpi = null;
 		vpi = findVirtualModelInfo(serializationArtefact);
-		if (vpi == null) {
-			// Unable to retrieve infos, just abort
+		if (vpi != null) {
+			if (StringUtils.isNotEmpty(vpi.version)) {
+				returned.setVersion(new FlexoVersion(vpi.version));
+			}
+			else {
+				returned.setVersion(INITIAL_REVISION);
+			}
+			if (StringUtils.isNotEmpty(vpi.modelVersion)) {
+				returned.setModelVersion(new FlexoVersion(vpi.modelVersion));
+			}
+			else {
+				returned.setModelVersion(CURRENT_FML_VERSION);
+			}
+		}
+		else {
 			logger.warning("Cannot retrieve info from " + serializationArtefact);
-			return null;
-		}
-
-		returned.initName(artefactName);
-		if (StringUtils.isNotEmpty(vpi.version)) {
-			returned.setVersion(new FlexoVersion(vpi.version));
-		}
-		else {
-			returned.setVersion(new FlexoVersion("0.1"));
-		}
-		if (StringUtils.isNotEmpty(vpi.modelVersion)) {
-			returned.setModelVersion(new FlexoVersion(vpi.modelVersion));
-		}
-		else {
+			returned.setVersion(INITIAL_REVISION);
 			returned.setModelVersion(CURRENT_FML_VERSION);
 		}
 

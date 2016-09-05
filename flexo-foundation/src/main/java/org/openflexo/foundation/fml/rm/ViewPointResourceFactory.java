@@ -110,7 +110,8 @@ public class ViewPointResourceFactory extends AbstractVirtualModelResourceFactor
 
 		if (resourceCenter.exists(serializationArtefact) && resourceCenter.isDirectory(serializationArtefact)
 				&& resourceCenter.canRead(serializationArtefact)
-				&& resourceCenter.retrieveName(serializationArtefact).endsWith(VIEWPOINT_SUFFIX)) {
+				&& (resourceCenter.retrieveName(serializationArtefact).endsWith(VIEWPOINT_SUFFIX)
+		/*|| resourceCenter.retrieveName(serializationArtefact).endsWith(VIEWPOINT_SUFFIX + "/")*/)) {
 			/*final String baseName = candidateFile.getName().substring(0,
 					candidateFile.getName().length() - ViewPointResource.VIEWPOINT_SUFFIX.length());
 			final File xmlFile = new File(candidateFile, baseName + ".xml");
@@ -162,25 +163,28 @@ public class ViewPointResourceFactory extends AbstractVirtualModelResourceFactor
 
 		String artefactName = resourceCenter.retrieveName(serializationArtefact);
 		String baseName = artefactName.substring(0, artefactName.length() - VIEWPOINT_SUFFIX.length());
-		ViewPointInfo vpi = findViewPointInfo(serializationArtefact);
-		if (vpi == null) {
-			// Unable to retrieve infos, just abort
-			logger.warning("Cannot retrieve info from " + serializationArtefact);
-			return null;
-		}
 
-		returned.setURI(vpi.uri);
 		returned.initName(baseName);
-		if (StringUtils.isNotEmpty(vpi.version)) {
-			returned.setVersion(new FlexoVersion(vpi.version));
+
+		ViewPointInfo vpi = findViewPointInfo(serializationArtefact);
+		if (vpi != null) {
+			returned.setURI(vpi.uri);
+			if (StringUtils.isNotEmpty(vpi.version)) {
+				returned.setVersion(new FlexoVersion(vpi.version));
+			}
+			else {
+				returned.setVersion(INITIAL_REVISION);
+			}
+			if (StringUtils.isNotEmpty(vpi.modelVersion)) {
+				returned.setModelVersion(new FlexoVersion(vpi.modelVersion));
+			}
+			else {
+				returned.setModelVersion(CURRENT_FML_VERSION);
+			}
 		}
 		else {
-			returned.setVersion(new FlexoVersion("0.1"));
-		}
-		if (StringUtils.isNotEmpty(vpi.modelVersion)) {
-			returned.setModelVersion(new FlexoVersion(vpi.modelVersion));
-		}
-		else {
+			logger.warning("Cannot retrieve info from " + serializationArtefact);
+			returned.setVersion(INITIAL_REVISION);
 			returned.setModelVersion(CURRENT_FML_VERSION);
 		}
 

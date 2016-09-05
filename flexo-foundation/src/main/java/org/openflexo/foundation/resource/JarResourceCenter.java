@@ -463,7 +463,15 @@ public class JarResourceCenter<R extends FlexoResource<?>> extends ResourceRepos
 
 	@Override
 	public String retrieveName(InJarResourceImpl serializationArtefact) {
-		return serializationArtefact.getURL().getFile();
+		if (serializationArtefact != null) {
+			String returned = serializationArtefact.getURL().getFile();
+			if (returned.endsWith("/")) {
+				returned = returned.substring(0, returned.length() - 1);
+			}
+			System.out.println("On retourne " + returned);
+			return returned;
+		}
+		return getName();
 	}
 
 	/**

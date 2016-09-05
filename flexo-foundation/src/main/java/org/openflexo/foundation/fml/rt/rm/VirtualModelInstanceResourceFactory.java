@@ -141,54 +141,53 @@ public class VirtualModelInstanceResourceFactory
 		VirtualModelInstanceResource returned = super.initResourceForRetrieving(serializationArtefact, resourceCenter,
 				technologyContextManager);
 
-		VirtualModelInstanceInfo vmiInfo = findVirtualModelInstanceInfo(serializationArtefact);
-
-		if (vmiInfo == null) {
-			// Unable to retrieve infos, just abort
-			logger.warning("Cannot retrieve info from " + serializationArtefact);
-			return null;
-		}
-
 		String artefactName = resourceCenter.retrieveName(serializationArtefact);
 		String baseName = artefactName.substring(0, artefactName.length() - VIRTUAL_MODEL_INSTANCE_SUFFIX.length());
-
-		returned.setURI(vmiInfo.uri);
 		returned.initName(baseName);
-		if (StringUtils.isNotEmpty(vmiInfo.version)) {
-			returned.setVersion(new FlexoVersion(vmiInfo.version));
-		}
-		else {
-			returned.setVersion(INITIAL_REVISION);
-		}
-		if (StringUtils.isNotEmpty(vmiInfo.modelVersion)) {
-			returned.setModelVersion(new FlexoVersion(vmiInfo.modelVersion));
-		}
-		else {
-			returned.setModelVersion(CURRENT_FML_RT_VERSION);
-		}
 
-		if (StringUtils.isNotEmpty(vmiInfo.virtualModelURI)) {
-			VirtualModel vm = null;
-			FlexoServiceManager sm = technologyContextManager.getServiceManager();
-
-			try {
-				vm = sm.getViewPointLibrary().getVirtualModel(vmiInfo.virtualModelURI);
-			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (ResourceLoadingCancelledException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (FlexoException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			if (vm == null) {
-				logger.warning("Could not find virtual model " + vmiInfo.virtualModelURI);
+		VirtualModelInstanceInfo vmiInfo = findVirtualModelInstanceInfo(serializationArtefact);
+		if (vmiInfo != null) {
+			returned.setURI(vmiInfo.uri);
+			if (StringUtils.isNotEmpty(vmiInfo.version)) {
+				returned.setVersion(new FlexoVersion(vmiInfo.version));
 			}
 			else {
-				returned.setVirtualModelResource((VirtualModelResource) vm.getResource());
+				returned.setVersion(INITIAL_REVISION);
 			}
+			if (StringUtils.isNotEmpty(vmiInfo.modelVersion)) {
+				returned.setModelVersion(new FlexoVersion(vmiInfo.modelVersion));
+			}
+			else {
+				returned.setModelVersion(CURRENT_FML_RT_VERSION);
+			}
+			if (StringUtils.isNotEmpty(vmiInfo.virtualModelURI)) {
+				VirtualModel vm = null;
+				FlexoServiceManager sm = technologyContextManager.getServiceManager();
+				try {
+					vm = sm.getViewPointLibrary().getVirtualModel(vmiInfo.virtualModelURI);
+				} catch (FileNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (ResourceLoadingCancelledException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (FlexoException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				if (vm == null) {
+					logger.warning("Could not find virtual model " + vmiInfo.virtualModelURI);
+				}
+				else {
+					returned.setVirtualModelResource((VirtualModelResource) vm.getResource());
+				}
+			}
+
+		}
+		else {
+			logger.warning("Cannot retrieve info from " + serializationArtefact);
+			returned.setVersion(INITIAL_REVISION);
+			returned.setModelVersion(CURRENT_FML_RT_VERSION);
 		}
 
 		return returned;

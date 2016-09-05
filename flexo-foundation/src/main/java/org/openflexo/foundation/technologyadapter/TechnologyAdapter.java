@@ -67,6 +67,7 @@ import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
 import org.openflexo.foundation.resource.FlexoResourceFactory;
+import org.openflexo.foundation.resource.JarResourceCenter;
 import org.openflexo.foundation.resource.RepositoryFolder;
 import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.resource.ResourceRepository;
@@ -231,9 +232,14 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 		while (it.hasNext()) {
 			I serializationArtefact = it.next();
 
-			// System.out.println("pour " + serializationArtefact);
+			if (resourceCenter instanceof JarResourceCenter) {
+				System.out.println("pour " + serializationArtefact);
+			}
 
 			if (!isIgnorable(resourceCenter, serializationArtefact)) {
+				if (resourceCenter instanceof JarResourceCenter) {
+					System.out.println("on ignore pas " + serializationArtefact);
+				}
 				for (FlexoResourceFactory<?, ?, ?> resourceFactory : getResourceFactories()) {
 					FlexoResource r = tryToLookupResource(resourceFactory, resourceCenter, serializationArtefact);
 					if (r != null) {
@@ -274,6 +280,9 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 
 		TechnologyContextManager<TA> technologyContextManager = (TechnologyContextManager<TA>) getTechnologyContextManager();
 		if (resourceFactory.isValidArtefact(serializationArtefact, resourceCenter)) {
+			if (resourceCenter instanceof JarResourceCenter) {
+				System.out.println("valid artefact " + serializationArtefact);
+			}
 			try {
 				return resourceFactory.retrieveResource(serializationArtefact, resourceCenter, technologyContextManager);
 			} catch (ModelDefinitionException e) {
