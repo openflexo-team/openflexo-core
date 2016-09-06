@@ -54,6 +54,7 @@ import org.junit.AfterClass;
 import org.openflexo.foundation.FlexoEditor.FlexoEditorFactory;
 import org.openflexo.foundation.nature.ProjectNature;
 import org.openflexo.foundation.resource.DefaultResourceCenterService;
+import org.openflexo.foundation.resource.FileSystemBasedResourceCenter;
 import org.openflexo.foundation.resource.FileSystemBasedResourceCenter.FSBasedResourceCenterEntry;
 import org.openflexo.foundation.resource.FlexoResourceCenter.ResourceCenterEntry;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
@@ -64,6 +65,8 @@ import org.openflexo.logging.FlexoLogger;
 import org.openflexo.logging.FlexoLoggingManager;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.model.factory.ModelFactory;
+import org.openflexo.rm.FileResourceImpl;
+import org.openflexo.rm.Resource;
 import org.openflexo.toolbox.FileUtils;
 
 /**
@@ -136,7 +139,8 @@ public abstract class OpenflexoProjectAtRunTimeTestCase extends OpenflexoTestCas
 		retval = new File("tmp/tests/FlexoResources/", resourceRelativeName);
 		if (retval.exists()) {
 			return retval;
-		} else if (logger.isLoggable(Level.WARNING)) {
+		}
+		else if (logger.isLoggable(Level.WARNING)) {
 			logger.warning("Could not find resource " + resourceRelativeName);
 		}
 		return null;
@@ -252,6 +256,22 @@ public abstract class OpenflexoProjectAtRunTimeTestCase extends OpenflexoTestCas
 			prj.save();
 		} catch (SaveResourceException e) {
 			fail("Cannot save project");
+		}
+	}
+
+	protected void reloadResourceCenter(Resource oldRCDirectory) {
+		if (oldRCDirectory instanceof FileResourceImpl) {
+			File directory = ((FileResourceImpl) oldRCDirectory).getFile();
+			File newDirectory = new File(((FileSystemBasedResourceCenter) resourceCenter).getDirectory(), directory.getName());
+			newDirectory.mkdirs();
+			try {
+				FileUtils.copyContentDirToDir(directory, newDirectory);
+				// We wait here for the thread monitoring ResourceCenters to detect new files
+				((FileSystemBasedResourceCenter) resourceCenter).performDirectoryWatchingNow();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	}
 

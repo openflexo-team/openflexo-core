@@ -44,9 +44,7 @@ import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -64,14 +62,12 @@ import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.fml.rt.action.CreateBasicVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.CreateViewInFolder;
 import org.openflexo.foundation.fml.rt.rm.ViewResource;
-import org.openflexo.foundation.resource.FileSystemBasedResourceCenter;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.test.OrderedRunner;
 import org.openflexo.test.TestOrder;
-import org.openflexo.toolbox.FileUtils;
 
 /**
  * This unit test is intented to test View creation facilities with a ViewPoint created on the fly
@@ -239,18 +235,7 @@ public class TestCreateVirtualModelInstance extends OpenflexoProjectAtRunTimeTes
 		FlexoProject oldProject = project;
 
 		instanciateTestServiceManager();
-		File directory = ResourceLocator.retrieveResourceAsFile(newViewPointResource.getDirectory());
-		File newDirectory = new File(((FileSystemBasedResourceCenter) resourceCenter).getDirectory(), directory.getName());
-		newDirectory.mkdirs();
-
-		try {
-			FileUtils.copyContentDirToDir(directory, newDirectory);
-			// We wait here for the thread monitoring ResourceCenters to detect new files
-			((FileSystemBasedResourceCenter) resourceCenter).performDirectoryWatchingNow();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		reloadResourceCenter(newViewPointResource.getDirectory());
 
 		editor = reloadProject(project.getDirectory());
 		project = editor.getProject();
