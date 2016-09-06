@@ -43,7 +43,6 @@ import java.util.logging.Logger;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType.FlexoConceptInstanceTypeFactory;
-import org.openflexo.foundation.fml.ViewPointRepository;
 import org.openflexo.foundation.fml.ViewType;
 import org.openflexo.foundation.fml.ViewType.ViewTypeFactory;
 import org.openflexo.foundation.fml.VirtualModel;
@@ -127,10 +126,13 @@ public class FMLRTTechnologyAdapter extends TechnologyAdapter {
 	}
 
 	public <I> ViewRepository<I> getViewRepository(FlexoResourceCenter<I> resourceCenter) {
-		ViewRepository<I> returned = resourceCenter.getRepository(ViewRepository.class, this);
+		ViewRepository<I> returned = resourceCenter.getRepository(ViewLibrary.class, this);
 		if (returned == null) {
-			returned = new ViewRepository<I>(this, resourceCenter);
-			resourceCenter.registerRepository(returned, ViewPointRepository.class, this);
+			returned = new ViewLibrary(this, resourceCenter);
+			resourceCenter.registerRepository(returned, ViewLibrary.class, this);
+			resourceCenter.registerRepository(returned, ViewRepository.class, this);
+			// returned = new ViewRepository<I>(this, resourceCenter);
+			// resourceCenter.registerRepository(returned, ViewPointRepository.class, this);
 		}
 		return returned;
 	}

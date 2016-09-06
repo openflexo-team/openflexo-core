@@ -175,8 +175,8 @@ public abstract class ViewResourceImpl extends AbstractVirtualModelInstanceResou
 		if (getContainer() != null) {
 			return getContainer().getURI() + "/" + getName();
 		}
-		if (getProject() != null) {
-			return getProject().getURI() + "/" + getName();
+		if (getResourceCenter() != null) {
+			return getResourceCenter().getDefaultBaseURI() + "/" + getName();
 		}
 		return null;
 	}

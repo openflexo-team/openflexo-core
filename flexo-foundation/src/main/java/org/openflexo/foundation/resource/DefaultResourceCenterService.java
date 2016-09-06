@@ -46,6 +46,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
@@ -162,8 +163,10 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 							String jarPath = URLDecoder.decode(url.getPath().substring(0, url.getPath().indexOf("!")).replace("+", "%2B"),
 									"UTF-8");
 
-							URI jarURI = new URI(jarPath);
-							rc = JarResourceCenter.addJarFile(new JarFile(new File(jarURI)), this);
+							URL jarURL = new URL(jarPath);
+							URI jarURI = new URI(jarURL.getProtocol(), jarURL.getUserInfo(), jarURL.getHost(), jarURL.getPort(), jarURL.getPath(), jarURL.getQuery(), jarURL.getRef());
+
+							rc = JarResourceCenter.addJarFile(new JarFile(new File(jarURI)),this);
 
 						}
 						else {

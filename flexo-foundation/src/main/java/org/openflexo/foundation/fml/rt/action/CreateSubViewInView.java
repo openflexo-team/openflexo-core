@@ -135,7 +135,7 @@ public class CreateSubViewInView extends CreateView<CreateSubViewInView, ViewRes
 
 		super.doAction(context);
 
-		logger.info("Added view " + getNewView() + " in view " + getFocusedObject() + " for project " + getProject());
+		logger.info("Added view " + getNewView() + " in view " + getFocusedObject() + " for resource center " + getResourceCenter());
 
 		// getViewLibrary().registerResource((ViewResource) getNewView().getResource(), getFocusedObject());
 

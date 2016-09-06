@@ -49,7 +49,6 @@ import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoObservable;
 import org.openflexo.foundation.FlexoObserver;
-import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.InvalidArgumentException;
 import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionType;
@@ -63,6 +62,7 @@ import org.openflexo.foundation.fml.rt.ModelSlotInstance;
 import org.openflexo.foundation.fml.rt.View;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.rm.AbstractVirtualModelInstanceResource;
+import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.toolbox.JavaUtils;
@@ -265,7 +265,7 @@ public abstract class AbstractCreateVirtualModelInstance<A extends AbstractCreat
 			modelSlotConfigurations.clear();
 			if (this.virtualModel != null) {
 				for (ModelSlot<?> ms : this.virtualModel.getModelSlots()) {
-					modelSlotConfigurations.put(ms, ms.createConfiguration(null, getProject()));
+					modelSlotConfigurations.put(ms, ms.createConfiguration(null, getResourceCenter()));
 				}
 				/*if (virtualModel.getCreationSchemes().size() > 0) {
 					System.out.println("Tiens, je trouve un CreationScheme: " + virtualModel.getCreationSchemes().get(0));
@@ -451,7 +451,7 @@ public abstract class AbstractCreateVirtualModelInstance<A extends AbstractCreat
 	 * 
 	 * @return
 	 */
-	public abstract FlexoProject getProject();
+	public abstract FlexoResourceCenter<?> getResourceCenter();
 
 	public boolean skipChoosePopup() {
 		return skipChoosePopup;

@@ -40,7 +40,6 @@ package org.openflexo.foundation.technologyadapter;
 
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FreeModelSlotInstance;
 import org.openflexo.foundation.fml.rt.ModelSlotInstance;
@@ -75,7 +74,7 @@ public abstract interface FreeModelSlot<RD extends ResourceData<RD> & Technology
 		 */
 		@Override
 		public abstract ModelSlotInstanceConfiguration<? extends FreeModelSlot<RD>, RD> createConfiguration(
-				AbstractVirtualModelInstance<?, ?> virtualModelInstance, FlexoProject project);
+				AbstractVirtualModelInstance<?, ?> virtualModelInstance, FlexoResourceCenter<?> rc);
 
 		/**
 		 * Instantiate a new IndividualRole

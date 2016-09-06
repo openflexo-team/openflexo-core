@@ -38,7 +38,6 @@
 
 package org.openflexo.foundation.fml.rt;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -47,6 +46,7 @@ import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.rt.rm.AbstractVirtualModelInstanceResource;
 import org.openflexo.foundation.fml.rt.rm.ViewResource;
+import org.openflexo.foundation.resource.FlexoResourceCenter;
 
 /**
  * The {@link ViewLibrary} contains all {@link ViewResource} referenced in a {@link FlexoProject}<br>
@@ -56,30 +56,36 @@ import org.openflexo.foundation.fml.rt.rm.ViewResource;
  * @author sylvain
  */
 
-public class ViewLibrary extends ViewRepository<File> {
+// TODO : Merge ViewRepository / ViewLibrary
+
+public class ViewLibrary<I> extends ViewRepository<I> {
 
 	private static final Logger logger = Logger.getLogger(ViewLibrary.class.getPackage().getName());
 
 	private static final String VIEWS = "Views";
 
-	private final FlexoProject project;
-
 	/**
 	 * Create a new ViewLibrary.
 	 */
-	public ViewLibrary(FlexoProject project) {
-		super(project.getServiceManager().getTechnologyAdapterService().getTechnologyAdapter(FMLRTTechnologyAdapter.class), project);
-		this.project = project;
-		getRootFolder().setName(project.getName());
-		getRootFolder().setFullQualifiedPath(project.getProjectDirectory().getAbsolutePath());
+	public ViewLibrary(FlexoResourceCenter<I> rc) {
+		super(rc.getServiceManager().getTechnologyAdapterService().getTechnologyAdapter(FMLRTTechnologyAdapter.class), rc);
+		getRootFolder().setName(rc.getName(), false);
+		getRootFolder().setFullQualifiedPath("/");
 		// exploreDirectoryLookingForViews(getDirectory(), getRootFolder());
 
 	}
 
+	public ViewLibrary(FMLRTTechnologyAdapter ta, FlexoResourceCenter<I> rc) {
+		super(ta, rc);
+		getRootFolder().setName(rc.getName());
+		getRootFolder().setFullQualifiedPath("/");
+		// exploreDirectoryLookingForViews(getDirectory(), getRootFolder());
+	}
+
 	@Override
 	public FlexoServiceManager getServiceManager() {
-		if (getProject() != null) {
-			return getProject().getServiceManager();
+		if (getResourceCenter() != null) {
+			return getResourceCenter().getServiceManager();
 		}
 		return null;
 	}
@@ -102,10 +108,6 @@ public class ViewLibrary extends ViewRepository<File> {
 		project.registerRepository(returned, ViewLibrary.class,
 				project.getServiceManager().getTechnologyAdapterService().getTechnologyAdapter(FMLRTTechnologyAdapter.class));
 		return returned;
-	}
-
-	public FlexoProject getProject() {
-		return project;
 	}
 
 	public List<View> getViewsForViewPointWithURI(String vpURI) {
@@ -177,7 +179,7 @@ public class ViewLibrary extends ViewRepository<File> {
 
 	@Override
 	public String getDefaultBaseURI() {
-		return getProject().getURI() + "/" + VIEWS;
+		return getResourceCenter().getDefaultBaseURI() + "/" + VIEWS;
 	}
 
 }

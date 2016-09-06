@@ -145,7 +145,7 @@ public class CreateViewInFolder extends CreateView<CreateViewInFolder, Repositor
 
 		super.doAction(context);
 
-		logger.info("Added view " + getNewView() + " in folder " + getFolder() + " for project " + getProject());
+		logger.info("Added view " + getNewView() + " in folder " + getFolder() + " for resource center " + getResourceCenter());
 
 		getViewLibrary().registerResource((ViewResource) getNewView().getResource(), (RepositoryFolder) getFocusedObject());
 

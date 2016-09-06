@@ -42,6 +42,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.openflexo.foundation.DefaultPamelaResourceModelFactory;
+import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.annotations.DeclareActorReferences;
 import org.openflexo.foundation.fml.rt.rm.AbstractVirtualModelInstanceResource;
@@ -60,8 +61,8 @@ import org.openflexo.model.factory.ModelFactory;
  * @author sylvain
  * 
  */
-public abstract class AbstractVirtualModelInstanceModelFactory<R extends AbstractVirtualModelInstanceResource<?, ?>>
-		extends DefaultPamelaResourceModelFactory<R> {
+public abstract class AbstractVirtualModelInstanceModelFactory<R extends AbstractVirtualModelInstanceResource<?, ?>> extends
+		DefaultPamelaResourceModelFactory<R> {
 
 	public AbstractVirtualModelInstanceModelFactory(R virtualModelInstanceResource, EditingContext editingContext,
 			TechnologyAdapterService taService) throws ModelDefinitionException {
@@ -71,9 +72,8 @@ public abstract class AbstractVirtualModelInstanceModelFactory<R extends Abstrac
 		addConverter(new FlexoVersionConverter());
 		if (virtualModelInstanceResource != null) {
 			addConverter(new RelativePathResourceConverter(virtualModelInstanceResource.getFlexoIODelegate().getParentPath()));
-			if (virtualModelInstanceResource.getProject() != null) {
-				addConverter(virtualModelInstanceResource.getProject().getObjectReferenceConverter());
-			}
+			addConverter(virtualModelInstanceResource.getResourceCenter().getObjectReferenceConverter());
+
 		}
 
 	}

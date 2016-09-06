@@ -76,6 +76,7 @@ import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
 import org.openflexo.foundation.fml.editionaction.DeleteAction;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.fml.inspector.FlexoConceptInspector;
+import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.model.annotations.Adder;
 import org.openflexo.model.annotations.CloningStrategy;
@@ -104,7 +105,7 @@ import org.openflexo.toolbox.StringUtils;
 @ModelEntity
 @ImplementationClass(FlexoConceptInstance.FlexoConceptInstanceImpl.class)
 @XMLElement
-public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindable, RunTimeEvaluationContext {
+public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceObject, Bindable, RunTimeEvaluationContext {
 
 	public static final String DELETED_PROPERTY = "deleted";
 	public static final String EMPTY_STRING = "<emtpy>";
@@ -308,11 +309,12 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 		}
 
 		@Override
-		public FlexoProject getProject() {
+		public FlexoResourceCenter<?> getResourceCenter() {
+			View prout = getView();
 			if (getView() != null && getView() != this) {
-				return getView().getProject();
+				return getView().getResourceCenter();
 			}
-			return super.getProject();
+			return super.getResourceCenter();
 		}
 
 		@Override
@@ -330,8 +332,9 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 		}
 
 		private FlexoEditor getFlexoEditor() {
-			if (getProject() != null && getServiceManager() != null) {
-				return getServiceManager().getProjectLoaderService().getEditorForProject(getProject());
+			if (getResourceCenter() != null && getServiceManager() != null) {
+				// XTOF To be checked Later
+				// return getServiceManager().getProjectLoaderService().getEditorForProject(getResourceCenter());
 			}
 			return null;
 		}
