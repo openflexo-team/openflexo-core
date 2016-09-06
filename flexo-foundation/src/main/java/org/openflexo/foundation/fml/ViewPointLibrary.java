@@ -250,7 +250,7 @@ public class ViewPointLibrary extends DefaultFlexoObject implements FlexoService
 		if (flexoConceptURI.indexOf("#") > -1) {
 			String virtualModelURI = flexoConceptURI.substring(0, flexoConceptURI.indexOf("#"));
 			String flexoConceptName = flexoConceptURI.substring(flexoConceptURI.indexOf("#") + 1);
-			vmRes = _getVirtualModel(flexoConceptURI);
+			vmRes = _getVirtualModel(virtualModelURI);
 			if (vmRes != null && _getVirtualModel(virtualModelURI).getLoadedResourceData() != null) {
 				VirtualModel vm = _getVirtualModel(virtualModelURI).getLoadedResourceData();
 				return vm.getFlexoConcept(flexoConceptName);

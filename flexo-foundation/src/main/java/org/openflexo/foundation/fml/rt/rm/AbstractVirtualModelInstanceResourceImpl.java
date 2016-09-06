@@ -96,12 +96,6 @@ public abstract class AbstractVirtualModelInstanceResourceImpl<VMI extends Abstr
 		startDeserializing();
 		VMI returned = super.loadResourceData(progress);
 
-		System.out.println("Je suis " + getClass().getSimpleName());
-		System.out.println("getVirtualModelResource()=" + getVirtualModelResource());
-		if (this instanceof ViewResourceImpl) {
-			System.out.println("getViewPointResource()=" + ((ViewResourceImpl) this).getViewPointResource());
-		}
-
 		returned.setVirtualModel(getVirtualModelResource().getVirtualModel());
 
 		if (getContainer() != null) {

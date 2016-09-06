@@ -44,7 +44,6 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.BindingVariable;
-import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.fml.AbstractVirtualModel;
 import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.binding.ViewPointBindingModel;
@@ -79,11 +78,20 @@ public interface View extends AbstractVirtualModelInstance<View, ViewPoint> {
 
 	@PropertyIdentifier(type = String.class)
 	public static final String VIEW_POINT_URI_KEY = "viewPointURI";
+	@PropertyIdentifier(type = String.class)
+	public static final String VIEW_URI_KEY = "viewURI";
 	@PropertyIdentifier(type = FlexoVersion.class)
 	public static final String VIEW_POINT_VERSION_KEY = "viewPointVersion";
 
 	@PropertyIdentifier(type = VirtualModelInstance.class, cardinality = Cardinality.LIST)
 	public static final String VIRTUAL_MODEL_INSTANCES_KEY = "virtualModelInstances";
+
+	@Getter(value = VIEW_URI_KEY)
+	@XMLAttribute(xmlTag = "uri")
+	public String getViewURI();
+
+	@Setter(VIEW_URI_KEY)
+	public void setViewURI(String viewURI);
 
 	@Getter(value = VIEW_POINT_URI_KEY)
 	@XMLAttribute
@@ -147,7 +155,7 @@ public interface View extends AbstractVirtualModelInstance<View, ViewPoint> {
 	 */
 	public List<TechnologyAdapter> getRequiredTechnologyAdapters();
 
-	public static abstract class ViewImpl extends AbstractVirtualModelInstanceImpl<View, ViewPoint>implements View {
+	public static abstract class ViewImpl extends AbstractVirtualModelInstanceImpl<View, ViewPoint> implements View {
 
 		private static final Logger logger = Logger.getLogger(View.class.getPackage().getName());
 
@@ -165,7 +173,7 @@ public interface View extends AbstractVirtualModelInstance<View, ViewPoint> {
 			FMLRTTechnologyAdapter rtTA = rc.getServiceManager().getTechnologyAdapterService()
 					.getTechnologyAdapter(FMLRTTechnologyAdapter.class);			
 			
-
+		
 			
 			ViewResource newViewResource = ViewResourceImpl.makeViewResource(viewName, folder, viewPoint, (ViewLibrary) rc.getRepository(ViewLibrary.class, rtTA ));
 		
@@ -198,7 +206,7 @@ public interface View extends AbstractVirtualModelInstance<View, ViewPoint> {
 			
 			FMLTechnologyAdapter vmTA = rc.getServiceManager().getTechnologyAdapterService()
 					.getTechnologyAdapter(FMLTechnologyAdapter.class);
-
+		
 			FMLRTTechnologyAdapter rtTA = rc.getServiceManager().getTechnologyAdapterService()
 					.getTechnologyAdapter(FMLRTTechnologyAdapter.class);
 			
@@ -233,6 +241,30 @@ public interface View extends AbstractVirtualModelInstance<View, ViewPoint> {
 		@Override
 		public ViewImpl getView() {
 			return this;
+		}
+
+		@Override
+		public String getURI() {
+			return getViewURI();
+		}
+
+		@Override
+		public String getViewURI() {
+			if (getResource() != null) {
+				return getResource().getURI();
+			}
+			return null;
+		}
+
+		@Override
+		public void setViewURI(String vpURI) {
+			if (vpURI != null) {
+				// We prevent ',' so that we can use it as a delimiter in tags.
+				vpURI = vpURI.replace(",", "");
+			}
+			if (getResource() != null) {
+				getResource().setURI(vpURI);
+			}
 		}
 
 		@Override
@@ -335,14 +367,14 @@ public interface View extends AbstractVirtualModelInstance<View, ViewPoint> {
 			FlexoResourceCenter<?> rc = getResourceCenter();
 			FMLRTTechnologyAdapter rtTA = rc.getServiceManager().getTechnologyAdapterService()
 					.getTechnologyAdapter(FMLRTTechnologyAdapter.class);
-			
+
 			return rc.getRepository(ViewLibrary.class, rtTA);
 		}
 
 		@Override
 		public RepositoryFolder<ViewResource, ?> getFolder() {
 			if (getResource() != null) {
-				return getViewLibrary().getParentFolder((ViewResource) getResource());
+				return getViewLibrary().getParentFolder(getResource());
 			}
 			return null;
 		}
