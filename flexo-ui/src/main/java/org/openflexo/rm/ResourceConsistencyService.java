@@ -71,8 +71,8 @@ public class ResourceConsistencyService extends FlexoServiceImpl {
 
 	private int skip = 1;
 
-	private String[] options1 = { "Don't show this message again", "Show conflicted resources" };
-	private String[] options2 = { "Don't show this message again", "Close message" };
+	private final String[] options1 = { "Don't show this message again", "Show conflicted resources" };
+	private final String[] options2 = { "Don't show this message again", "Close message" };
 
 	public ResourceConsistencyService() {
 	}
@@ -188,7 +188,7 @@ public class ResourceConsistencyService extends FlexoServiceImpl {
 	private void informOfViewPointMissing(ViewResourceImpl resource) {
 		if (resource != null) {
 			FlexoController.notify("<html> " + "<h3>Viewpoint resources is missing!</h3>" + "<p>View <font color=\"red\">"
-					+ resource.getURI() + " requires Viewpoint: " + resource.viewpointURI
+					+ resource.getURI() + " requires Viewpoint: " + resource.getViewPoint().getURI()
 					+ "</br>Please add resources in resource centers and restart Openflexo</html>");
 		}
 	}

@@ -168,8 +168,8 @@ public class FIBRepositoryFolderSelector extends FIBFlexoObjectSelector<Reposito
 		if (super.isAcceptableValue(o)) {
 			if (o instanceof RepositoryFolder) {
 				if (getTechnologyAdapter() != null) {
-					if (((RepositoryFolder<?>) o).getResourceRepository() instanceof TechnologyAdapterResourceRepository) {
-						TechnologyAdapterResourceRepository repo = (TechnologyAdapterResourceRepository) ((RepositoryFolder<?>) o)
+					if (((RepositoryFolder<?, ?>) o).getResourceRepository() instanceof TechnologyAdapterResourceRepository) {
+						TechnologyAdapterResourceRepository repo = (TechnologyAdapterResourceRepository) ((RepositoryFolder<?, ?>) o)
 								.getResourceRepository();
 						return repo.getTechnologyAdapter() == getTechnologyAdapter();
 					}
@@ -179,7 +179,7 @@ public class FIBRepositoryFolderSelector extends FIBFlexoObjectSelector<Reposito
 				}
 				if (getResourceDataClass() != null) {
 					return getResourceDataClass()
-							.isAssignableFrom((((RepositoryFolder<?>) o).getResourceRepository()).getResourceDataClass());
+							.isAssignableFrom((((RepositoryFolder<?, ?>) o).getResourceRepository()).getResourceDataClass());
 				}
 				return true;
 			}
