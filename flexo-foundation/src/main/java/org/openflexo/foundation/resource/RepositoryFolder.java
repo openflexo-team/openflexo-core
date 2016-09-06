@@ -110,6 +110,19 @@ public class RepositoryFolder<R extends FlexoResource<?>> extends DefaultFlexoOb
 
 	}
 
+	// TODO: fix this as I don't knwo if RepositoryFolder should not be subclassed for DirectoryBasedRepositoryFolder
+	public void setName(String name, boolean renameFile) {
+		if (renameFile){
+			setName(name);
+		}
+		else {
+			String oldName = this.name;
+			this.name = name;
+
+			getPropertyChangeSupport().firePropertyChange(NAME_KEY, oldName, name);
+		}
+	}
+
 	public String getPathRelativeToRepository() {
 		if (getParentFolder() != null) {
 			return getParentFolder().getPathRelativeToRepository() + "/" + getName();

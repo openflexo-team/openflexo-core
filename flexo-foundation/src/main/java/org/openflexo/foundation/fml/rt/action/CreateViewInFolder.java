@@ -127,7 +127,7 @@ public class CreateViewInFolder extends CreateView<CreateViewInFolder, Repositor
 
 	@Override
 	public ViewResource makeVirtualModelInstanceResource() throws SaveResourceException {
-		return ViewImpl.newView(getNewViewName(), getNewViewTitle(), getVirtualModel(), getFolder(), getProject());
+		return ViewImpl.newView(getNewViewName(), getNewViewTitle(), getVirtualModel(), getFolder(), getResourceCenter());
 	}
 
 	@Override
@@ -135,7 +135,7 @@ public class CreateViewInFolder extends CreateView<CreateViewInFolder, Repositor
 
 		super.doAction(context);
 
-		logger.info("Added view " + getNewView() + " in folder " + getFolder() + " for project " + getProject());
+		logger.info("Added view " + getNewView() + " in folder " + getFolder() + " for project " + getResourceCenter());
 
 		getViewLibrary().registerResource((ViewResource) getNewView().getResource(), getFocusedObject());
 

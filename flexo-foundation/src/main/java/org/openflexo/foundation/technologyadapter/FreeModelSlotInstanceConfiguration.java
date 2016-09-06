@@ -78,8 +78,8 @@ public class FreeModelSlotInstanceConfiguration<RD extends ResourceData<RD> & Te
 	private String relativePath;
 	private String filename;
 
-	protected FreeModelSlotInstanceConfiguration(MS ms, AbstractVirtualModelInstance<?, ?> virtualModelInstance, FlexoProject project) {
-		super(ms, virtualModelInstance, project);
+	protected FreeModelSlotInstanceConfiguration(MS ms, AbstractVirtualModelInstance<?, ?> virtualModelInstance, FlexoResourceCenter<?> rc) {
+		super(ms, virtualModelInstance, rc);
 		FlexoResourceCenterService rcService = ms.getServiceManager().getResourceCenterService();
 		if (rcService.getResourceCenters().size() > 0) {
 			resourceCenter = rcService.getResourceCenters().get(0);

@@ -41,7 +41,6 @@ package org.openflexo.foundation.ontology.technologyadapter;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.DataBinding;
-import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.fml.AbstractCreationScheme;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
@@ -52,6 +51,7 @@ import org.openflexo.foundation.ontology.IFlexoOntologyClass;
 import org.openflexo.foundation.ontology.fml.IndividualRole;
 import org.openflexo.foundation.ontology.fml.editionaction.AddIndividual;
 import org.openflexo.foundation.ontology.fml.rt.FlexoOntologyModelSlotInstance;
+import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.technologyadapter.FlexoMetaModel;
 import org.openflexo.foundation.technologyadapter.FlexoMetaModelResource;
 import org.openflexo.foundation.technologyadapter.FlexoModel;
@@ -106,7 +106,7 @@ public interface FlexoOntologyModelSlot<M extends FlexoModel<M, MM> & IFlexoOnto
 		 */
 		@Override
 		public abstract ModelSlotInstanceConfiguration<? extends FlexoOntologyModelSlot<M, MM, TA>, M> createConfiguration(
-				AbstractVirtualModelInstance<?, ?> virtualModelInstance, FlexoProject project);
+				AbstractVirtualModelInstance<?, ?> virtualModelInstance, FlexoResourceCenter<?> rc);
 
 		/**
 		 * Instantiate a new IndividualRole

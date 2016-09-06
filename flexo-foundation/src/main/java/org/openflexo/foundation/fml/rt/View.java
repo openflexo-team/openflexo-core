@@ -53,6 +53,7 @@ import org.openflexo.foundation.fml.rt.rm.ViewResource;
 import org.openflexo.foundation.fml.rt.rm.ViewResourceImpl;
 import org.openflexo.foundation.fml.rt.rm.VirtualModelInstanceResource;
 import org.openflexo.foundation.resource.FlexoIODelegate;
+import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.RepositoryFolder;
 import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
@@ -71,7 +72,7 @@ import org.openflexo.toolbox.FlexoVersion;
 /**
  * A {@link View} is the run-time concept (instance) of a {@link ViewPoint}.<br>
  * <p/>
- * A {@link View} is instantiated inside a {@link FlexoProject}.
+ * A {@link View} is instantiated inside a {@link FlexoResourceCenter}.
  * 
  * @author sylvain
  */
@@ -160,16 +161,21 @@ public interface View extends AbstractVirtualModelInstance<View, ViewPoint> {
 
 		// TODO: move this to ViewResource
 		public static ViewResource newView(String viewName, String viewTitle, ViewPoint viewPoint, RepositoryFolder<ViewResource> folder,
-				FlexoProject project) throws SaveResourceException {
+				FlexoResourceCenter<?> rc) throws SaveResourceException {
 
-			ViewResource newViewResource = ViewResourceImpl.makeViewResource(viewName, folder, viewPoint, project.getViewLibrary());
-			FMLTechnologyAdapter vmTA = project.getServiceManager().getTechnologyAdapterService()
+			FMLTechnologyAdapter vmTA = rc.getServiceManager().getTechnologyAdapterService()
 					.getTechnologyAdapter(FMLTechnologyAdapter.class);
+			
+			FMLRTTechnologyAdapter rtTA = rc.getServiceManager().getTechnologyAdapterService()
+					.getTechnologyAdapter(FMLRTTechnologyAdapter.class);			
+			
+
+			
+			ViewResource newViewResource = ViewResourceImpl.makeViewResource(viewName, folder, viewPoint, (ViewLibrary) rc.getRepository(ViewLibrary.class, rtTA ));
 
 			View newView = newViewResource.getFactory().newInstance(View.class);
 
-			newView.setProject(project);
-
+			
 			newViewResource.setResourceData(newView);
 			newView.setResource(newViewResource);
 
@@ -185,21 +191,25 @@ public interface View extends AbstractVirtualModelInstance<View, ViewPoint> {
 			// File viewDirectory = new File(folder.getFile(), viewName + ViewResource.VIEW_SUFFIX);
 			// newViewResource.setDirectory(ResourceLocator.locateResource(viewDirectory.getAbsolutePath()));
 			// newView.save();
-			vmTA.referenceResource(newViewResource, project);
+			vmTA.referenceResource(newViewResource, rc);
 			return newViewResource;
 		}
 
 		// TODO: move this to ViewResource
 		public static ViewResource newSubView(String viewName, String viewTitle, ViewPoint viewPoint, ViewResource container,
-				FlexoProject project) throws SaveResourceException {
-
-			ViewResource newViewResource = ViewResourceImpl.makeSubViewResource(viewName, container, viewPoint, project.getViewLibrary());
-			FMLTechnologyAdapter vmTA = project.getServiceManager().getTechnologyAdapterService()
+				FlexoResourceCenter<?> rc) throws SaveResourceException {
+			
+			FMLTechnologyAdapter vmTA = rc.getServiceManager().getTechnologyAdapterService()
 					.getTechnologyAdapter(FMLTechnologyAdapter.class);
+
+			FMLRTTechnologyAdapter rtTA = rc.getServiceManager().getTechnologyAdapterService()
+					.getTechnologyAdapter(FMLRTTechnologyAdapter.class);
+			
+			ViewResource newViewResource = ViewResourceImpl.makeSubViewResource(viewName, container, viewPoint, (ViewLibrary) rc.getRepository(ViewLibrary.class, rtTA ));
+
 
 			View newView = newViewResource.getFactory().newInstance(View.class);
 
-			newView.setProject(project);
 
 			newViewResource.setResourceData(newView);
 			newView.setResource(newViewResource);
@@ -214,7 +224,7 @@ public interface View extends AbstractVirtualModelInstance<View, ViewPoint> {
 			// File viewDirectory = new File(folder.getFile(), viewName + ViewResource.VIEW_SUFFIX);
 			// newViewResource.setDirectory(ResourceLocator.locateResource(viewDirectory.getAbsolutePath()));
 			// newView.save();
-			vmTA.referenceResource(newViewResource, project);
+			vmTA.referenceResource(newViewResource, rc);
 			return newViewResource;
 		}
 
@@ -239,9 +249,9 @@ public interface View extends AbstractVirtualModelInstance<View, ViewPoint> {
 		}
 
 		@Override
-		public FlexoProject getProject() {
+		public FlexoResourceCenter<?> getResourceCenter() {
 			if (getResource() != null) {
-				return getResource().getProject();
+				return getResource().getResourceCenter();
 			}
 			return null;
 		}
@@ -324,7 +334,12 @@ public interface View extends AbstractVirtualModelInstance<View, ViewPoint> {
 
 		@Override
 		public ViewLibrary getViewLibrary() {
-			return getProject().getViewLibrary();
+
+			FlexoResourceCenter<?> rc = getResourceCenter();
+			FMLRTTechnologyAdapter rtTA = rc.getServiceManager().getTechnologyAdapterService()
+					.getTechnologyAdapter(FMLRTTechnologyAdapter.class);
+			
+			return rc.getRepository(ViewLibrary.class, rtTA);
 		}
 
 		@Override
