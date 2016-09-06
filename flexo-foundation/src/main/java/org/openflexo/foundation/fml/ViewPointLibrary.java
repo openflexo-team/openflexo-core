@@ -160,9 +160,11 @@ public class ViewPointLibrary extends DefaultFlexoObject implements FlexoService
 		if (virtualModelURI.contains("/")) {
 			String viewPointURI = virtualModelURI.substring(0, virtualModelURI.lastIndexOf("/"));
 			ViewPointResource vpres = getViewPointResource(viewPointURI);
-			VirtualModelResource returned = vpres.getVirtualModelResource(virtualModelURI);
-			if (returned != null) {
-				return returned;
+			if (vpres != null) {
+				VirtualModelResource returned = vpres.getVirtualModelResource(virtualModelURI);
+				if (returned != null) {
+					return returned;
+				}
 			}
 		}
 		return null;
