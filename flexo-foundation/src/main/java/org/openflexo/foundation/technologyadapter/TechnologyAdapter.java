@@ -242,7 +242,7 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 				for (FlexoResourceFactory<?, ?, ?> resourceFactory : getResourceFactories()) {
 					FlexoResource r = tryToLookupResource(resourceFactory, resourceCenter, serializationArtefact);
 					if (r != null) {
-						System.out.println("Look-up resource " + r);
+						System.out.println("Look-up resource " + r.getImplementedInterface().getSimpleName() + " " + r.getURI());
 					}
 				}
 			}
