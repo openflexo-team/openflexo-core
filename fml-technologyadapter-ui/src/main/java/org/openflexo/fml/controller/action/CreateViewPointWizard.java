@@ -151,7 +151,7 @@ public class CreateViewPointWizard extends AbstractCreateVirtualModelWizard<Crea
 		}
 
 		@SuppressWarnings("unchecked")
-		public RepositoryFolder<ViewPointResource> getViewPointFolder() {
+		public RepositoryFolder<ViewPointResource, ?> getViewPointFolder() {
 			return getAction().getViewPointFolder();
 		}
 

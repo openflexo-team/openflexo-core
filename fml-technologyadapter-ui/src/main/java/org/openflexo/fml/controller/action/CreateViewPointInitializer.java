@@ -56,7 +56,7 @@ import org.openflexo.icon.FMLIconLibrary;
 import org.openflexo.view.controller.ActionInitializer;
 import org.openflexo.view.controller.ControllerActionInitializer;
 
-public class CreateViewPointInitializer extends ActionInitializer<CreateViewPoint, RepositoryFolder<ViewPointResource>, FMLObject> {
+public class CreateViewPointInitializer extends ActionInitializer<CreateViewPoint, RepositoryFolder<ViewPointResource, ?>, FMLObject> {
 
 	private static final Logger logger = Logger.getLogger(ControllerActionInitializer.class.getPackage().getName());
 
