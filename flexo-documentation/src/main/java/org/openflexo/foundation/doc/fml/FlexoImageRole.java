@@ -22,6 +22,7 @@ package org.openflexo.foundation.doc.fml;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
@@ -30,11 +31,13 @@ import org.openflexo.foundation.doc.FlexoDocElement;
 import org.openflexo.foundation.doc.FlexoDocParagraph;
 import org.openflexo.foundation.doc.FlexoDocument;
 import org.openflexo.foundation.doc.FlexoDrawingRun;
+import org.openflexo.foundation.doc.rm.FlexoDocumentResource;
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstanceModelFactory;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstanceNature;
 import org.openflexo.foundation.nature.ScreenshotableNature;
+import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -156,10 +159,18 @@ public interface FlexoImageRole<R extends FlexoDrawingRun<D, TA>, D extends Flex
 		private int runIndex = -1;
 		private Class<? extends ScreenshotableNature<?>> natureClass;
 
+		private static final Logger logger = Logger.getLogger(FlexoImageRole.class.getPackage().getName());
+
+		
 		@Override
 		public FlexoDocument<D, TA> getDocument() {
-			if (getModelSlot() instanceof FlexoDocumentModelSlot) {
-				return ((FlexoDocumentModelSlot<D>) getModelSlot()).getTemplateResource().getDocument();
+			ModelSlot<?> ms = getModelSlot();
+			if (ms instanceof FlexoDocumentModelSlot) {
+				 FlexoDocumentResource<D, ?, ?> tr = ((FlexoDocumentModelSlot<D>) ms).getTemplateResource();
+				if (tr != null )
+					return (tr.getDocument());
+				else 
+					logger.warning("Found a FlexoImageRole without Template Resource: " + this.toString());
 			}
 			return null;
 		}
