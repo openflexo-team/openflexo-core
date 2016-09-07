@@ -69,7 +69,7 @@ public interface ViewResource extends AbstractVirtualModelInstanceResource<View,
 		FlexoModelResource<View, ViewPoint, FMLRTTechnologyAdapter, FMLTechnologyAdapter> {
 
 	public static final String CORE_FILE_SUFFIX = ".xml";
-	public static final String VIEW_SUFFIX = ".view";
+	// public static final String VIEW_SUFFIX = ".view";
 
 	public static final String VIEW_LIBRARY = "viewLibrary";
 	public static final String DIRECTORY = "directory";

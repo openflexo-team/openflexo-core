@@ -63,7 +63,8 @@ public abstract class VirtualModelInstanceResourceImpl extends AbstractVirtualMo
 	@Override
 	public String computeDefaultURI() {
 		if (getContainer() != null) {
-			return getContainer().getURI() + "/" + getName() + VirtualModelInstanceResourceFactory.VIRTUAL_MODEL_INSTANCE_SUFFIX;
+			return getContainer().getURI() + "/" + (getName().endsWith(VirtualModelInstanceResourceFactory.VIRTUAL_MODEL_INSTANCE_SUFFIX)
+					? getName() : (getName() + VirtualModelInstanceResourceFactory.VIRTUAL_MODEL_INSTANCE_SUFFIX));
 		}
 		return null;
 	}

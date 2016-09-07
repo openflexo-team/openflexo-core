@@ -75,11 +75,13 @@ public class VirtualModelInstanceResourceFactory
 			boolean createEmptyContents) throws SaveResourceException, ModelDefinitionException {
 
 		FlexoResourceCenter<I> resourceCenter = (FlexoResourceCenter<I>) viewResource.getResourceCenter();
-		I serializationArtefact = resourceCenter.createEntry(name + VIRTUAL_MODEL_INSTANCE_SUFFIX,
+		I serializationArtefact = resourceCenter.createEntry(
+				(name.endsWith(VIRTUAL_MODEL_INSTANCE_SUFFIX) ? name : (name + VIRTUAL_MODEL_INSTANCE_SUFFIX)),
 				resourceCenter.getContainer((I) viewResource.getFlexoIODelegate().getSerializationArtefact()));
 
 		VirtualModelInstanceResource returned = initResourceForCreation(serializationArtefact, resourceCenter, technologyContextManager,
-				viewResource.getURI() + "/" + name);
+				viewResource.getURI() + "/"
+						+ (name.endsWith(VIRTUAL_MODEL_INSTANCE_SUFFIX) ? name : (name + VIRTUAL_MODEL_INSTANCE_SUFFIX)));
 
 		viewResource.addToContents(returned);
 		viewResource.notifyContentsAdded(returned);
@@ -135,7 +137,10 @@ public class VirtualModelInstanceResourceFactory
 				technologyContextManager);
 
 		String artefactName = resourceCenter.retrieveName(serializationArtefact);
-		String baseName = artefactName.substring(0, artefactName.length() - VIRTUAL_MODEL_INSTANCE_SUFFIX.length());
+		String baseName = artefactName;
+		if (artefactName.endsWith(VIRTUAL_MODEL_INSTANCE_SUFFIX)) {
+			baseName = artefactName.substring(0, artefactName.length() - VIRTUAL_MODEL_INSTANCE_SUFFIX.length());
+		}
 		returned.initName(baseName);
 
 		VirtualModelInstanceInfo vmiInfo = findVirtualModelInstanceInfo(returned, resourceCenter);

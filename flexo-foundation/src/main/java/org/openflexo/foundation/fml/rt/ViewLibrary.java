@@ -158,16 +158,19 @@ public class ViewLibrary<I> extends ViewRepository<I> {
 		if (getView(virtualModelInstanceURI) != null) {
 			return getView(virtualModelInstanceURI);
 		}
-		// System.out.println("lookup mvi " + virtualModelInstanceURI);
+		//System.out.println("lookup mvi " + virtualModelInstanceURI);
 		String viewURI = virtualModelInstanceURI.substring(0, virtualModelInstanceURI.lastIndexOf("/"));
-		// System.out.println("lookup view " + viewURI);
+		//System.out.println("lookup view " + viewURI);
 		ViewResource vr = getView(viewURI);
 		if (vr != null) {
 			for (AbstractVirtualModelInstanceResource<?, ?> vmir : vr.getContents(AbstractVirtualModelInstanceResource.class)) {
 				if (vmir.getURI().equals(virtualModelInstanceURI)) {
-					// System.out.println("Found " + vmir);
+					//System.out.println("Found " + vmir.getURI());
 					return vmir;
 				}
+				/*else {
+					System.out.println("Examined " + vmir.getURI());
+				}*/
 			}
 		}
 		else {

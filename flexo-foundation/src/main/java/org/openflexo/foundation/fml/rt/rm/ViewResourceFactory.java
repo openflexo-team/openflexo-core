@@ -50,8 +50,6 @@ public class ViewResourceFactory extends AbstractVirtualModelInstanceResourceFac
 
 	public static final String VIEW_SUFFIX = ".view";
 
-	// private static XMLRootElementReader reader = new XMLRootElementReader();
-
 	private final VirtualModelInstanceResourceFactory virtualModelInstanceResourceFactory;
 
 	public ViewResourceFactory() throws ModelDefinitionException {
@@ -73,7 +71,8 @@ public class ViewResourceFactory extends AbstractVirtualModelInstanceResourceFac
 			boolean createEmptyContents) throws SaveResourceException, ModelDefinitionException {
 
 		FlexoResourceCenter<I> resourceCenter = folder.getResourceRepository().getResourceCenter();
-		I serializationArtefact = resourceCenter.createDirectory(baseName + VIEW_SUFFIX, folder.getSerializationArtefact());
+		I serializationArtefact = resourceCenter.createDirectory((baseName.endsWith(VIEW_SUFFIX) ? baseName : baseName + VIEW_SUFFIX),
+				folder.getSerializationArtefact());
 
 		ViewResource returned = makeResource(serializationArtefact, resourceCenter, technologyContextManager, viewURI, createEmptyContents);
 		returned.setViewPointResource(viewPointResource);
@@ -85,11 +84,12 @@ public class ViewResourceFactory extends AbstractVirtualModelInstanceResourceFac
 					throws SaveResourceException, ModelDefinitionException {
 
 		FlexoResourceCenter<I> resourceCenter = (FlexoResourceCenter<I>) parentViewResource.getResourceCenter();
-		I serializationArtefact = resourceCenter.createDirectory(baseName + VIEW_SUFFIX,
+		I serializationArtefact = resourceCenter.createDirectory((baseName.endsWith(VIEW_SUFFIX) ? baseName : (baseName + VIEW_SUFFIX)),
 				(I) parentViewResource.getFlexoIODelegate().getSerializationArtefact());
 
 		ViewResource returned = makeResource(serializationArtefact, resourceCenter, technologyContextManager,
-				parentViewResource.getURI() + "/" + baseName + VIEW_SUFFIX, createEmptyContents);
+				parentViewResource.getURI() + "/" + baseName + (baseName.endsWith(VIEW_SUFFIX) ? baseName : (baseName + VIEW_SUFFIX)),
+				createEmptyContents);
 		returned.setViewPointResource(viewPointResource);
 		parentViewResource.addToContents(returned);
 		parentViewResource.notifyContentsAdded(returned);
@@ -191,12 +191,17 @@ public class ViewResourceFactory extends AbstractVirtualModelInstanceResourceFac
 		ViewResource returned = super.initResourceForRetrieving(serializationArtefact, resourceCenter, technologyContextManager);
 
 		String artefactName = resourceCenter.retrieveName(serializationArtefact);
-		String baseName = artefactName.substring(0, artefactName.length() - VIEW_SUFFIX.length());
+
+		String baseName = artefactName;
+		if (artefactName.endsWith(VIEW_SUFFIX)) {
+			baseName = artefactName.substring(0, artefactName.length() - VIEW_SUFFIX.length());
+		}
 
 		returned.initName(baseName);
 
 		ViewInfo vpi = findViewInfo(returned, resourceCenter);
 		if (vpi != null) {
+			System.out.println("******************* on sette l'URI a " + vpi.uri);
 			returned.setURI(vpi.uri);
 			if (StringUtils.isNotEmpty(vpi.version)) {
 				returned.setVersion(new FlexoVersion(vpi.version));
