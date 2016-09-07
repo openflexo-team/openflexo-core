@@ -90,6 +90,10 @@ public class GitResourceCenter extends FileSystemBasedResourceCenter {
 		return gitRepository;
 	}
 
+	public Git getGit(){
+		return this.git;
+	}
+	
 	public IODelegateFactory<File> getGitIODelegateFactory() {
 		return gitIODelegateFactory;
 	}
