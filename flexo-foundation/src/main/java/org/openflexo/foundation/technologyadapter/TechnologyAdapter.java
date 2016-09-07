@@ -39,19 +39,28 @@
 
 package org.openflexo.foundation.technologyadapter;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.jar.JarFile;
 import java.util.logging.Logger;
 
 import javax.swing.SwingUtilities;
 
+import org.apache.commons.io.IOUtils;
 import org.openflexo.foundation.DataModification;
 import org.openflexo.foundation.FlexoObservable;
 import org.openflexo.foundation.FlexoServiceManager;
@@ -62,6 +71,7 @@ import org.openflexo.foundation.fml.annotations.DeclareResourceTypes;
 import org.openflexo.foundation.fml.annotations.DeclareVirtualModelInstanceNatures;
 import org.openflexo.foundation.fml.rt.VirtualModelInstanceNature;
 import org.openflexo.foundation.nature.ProjectNatureService;
+import org.openflexo.foundation.resource.DirectoryResourceCenter;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
@@ -169,6 +179,7 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 			initTechnologySpecificTypes(getTechnologyAdapterService());
 			locales = new LocalizedDelegateImpl(ResourceLocator.locateResource(getLocalizationDirectory()),
 					getTechnologyAdapterService().getServiceManager().getLocalizationService().getFlexoLocalizer(), true, true);
+			loadPrivateResourceCenters();
 			isActivated = true;
 			getPropertyChangeSupport().firePropertyChange("activated", false, true);
 		}
@@ -246,9 +257,13 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 					}
 				}
 			}
-
 		}
 
+		resourceCenterHasBeenInitialized(resourceCenter);
+
+	}
+
+	protected void resourceCenterHasBeenInitialized(FlexoResourceCenter<?> rc) {
 		// Call it to update the current repositories
 		if (!SwingUtilities.isEventDispatchThread()) {
 			SwingUtilities.invokeLater(new Runnable() {
@@ -263,7 +278,6 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 			// Call it to update the current repositories
 			notifyRepositoryStructureChanged();
 		}
-
 	}
 
 	/**
@@ -683,5 +697,91 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 	}
 
 	public abstract String getLocalizationDirectory();
+
+	/**
+	 * Add all the RCs that contain an identification of a FlexoResourceCenter in META-INF<br>
+	 * (identified by META-INF/PrivateRC/org.openflexo.foundation.resource.FlexoResourceCenter) Those ResourceCenters are private resource
+	 * center and will be used as system resource centers.
+	 * 
+	 * WARNING: should only be called once
+	 * 
+	 */
+	protected void loadPrivateResourceCenters() {
+
+		logger.info("Loading available private ResourceCenters from classpath");
+
+		FlexoServiceManager serviceManager = getTechnologyAdapterService().getServiceManager();
+		Enumeration<URL> urlList;
+		ArrayList<FlexoResourceCenter> rcList = new ArrayList<FlexoResourceCenter>(
+				serviceManager.getResourceCenterService().getResourceCenters());
+
+		try {
+			urlList = ClassLoader.getSystemClassLoader().getResources("META-INF/PrivateRC/" + FlexoResourceCenter.class.getCanonicalName());
+
+			if (urlList != null && urlList.hasMoreElements()) {
+				FlexoResourceCenter rc = null;
+				boolean rcExists = false;
+				while (urlList.hasMoreElements()) {
+					URL url = urlList.nextElement();
+
+					StringWriter writer = new StringWriter();
+					IOUtils.copy(url.openStream(), writer, "UTF-8");
+					String rcBaseUri = writer.toString();
+
+					System.out.println("Protocol " + url.getProtocol() + ": Attempt to loading RC " + rcBaseUri + " from " + url);
+
+					rcExists = false;
+					for (FlexoResourceCenter r : rcList) {
+						rcExists = r.getDefaultBaseURI().equals(rcBaseUri) || rcExists;
+					}
+					if (!rcExists) {
+						if (url.getProtocol().equals("file")) {
+							// When it is a file and it is contained in target/classes directory then we
+							// replace with directory from source code (development mode)
+							String dirPath = URLDecoder.decode(url.getPath().substring(0, url.getPath().indexOf("META-INF")), "UTF-8")
+									.replace("target/classes", "src/main/resources");
+							File rcDir = new File(dirPath);
+							if (rcDir.exists()) {
+								rc = new DirectoryResourceCenter(rcDir, serviceManager.getResourceCenterService());
+							}
+						}
+						else if (url.getProtocol().equals("jar")) {
+
+							String jarPath = URLDecoder.decode(url.getPath().substring(0, url.getPath().indexOf("!")).replace("+", "%2B"),
+									"UTF-8");
+
+							URL jarURL = new URL(jarPath);
+							URI jarURI = new URI(jarURL.getProtocol(), jarURL.getUserInfo(), jarURL.getHost(), jarURL.getPort(),
+									jarURL.getPath(), jarURL.getQuery(), jarURL.getRef());
+
+							rc = JarResourceCenter.addJarFile(new JarFile(new File(jarURI)), serviceManager.getResourceCenterService());
+
+						}
+						else {
+							logger.warning("INVESTIGATE: don't know how to deal with RC accessed through " + url.getProtocol());
+						}
+					}
+					else {
+						logger.warning("an RC already exists with DefaultBaseURI: " + rcBaseUri);
+					}
+
+					if (rc != null) {
+						rc.setDefaultBaseURI(rcBaseUri);
+						rc.getResourceCenterEntry().setIsSystemEntry(true);
+						serviceManager.getResourceCenterService().addToResourceCenters(rc);
+						rc = null;
+					}
+
+				}
+
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (URISyntaxException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 
 }
