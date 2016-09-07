@@ -297,13 +297,13 @@ public class RepositoryFolder<R extends FlexoResource<?>, I> extends DefaultFlex
 	 * @return
 	 */
 	public RepositoryFolder<R, I> getRepositoryFolder(R resource) {
-		System.out.println("Repo folder " + getSerializationArtefact());
-		for (FlexoResource<?> r : getResources()) {
+		// System.out.println("Repo folder " + getSerializationArtefact());
+		/*for (FlexoResource<?> r : getResources()) {
 			System.out.println("resource: " + r.getFlexoIODelegate().getSerializationArtefact());
 		}
 		for (RepositoryFolder<R, I> f : getChildren()) {
 			System.out.println("subfolder: " + f.getSerializationArtefact());
-		}
+		}*/
 		// System.out.println("getResources()=" + getResources());
 		// System.out.println("getChildren()=" + getChildren());
 		if (getResources().contains(resource)) {
