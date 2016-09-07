@@ -49,6 +49,7 @@ import org.openflexo.foundation.resource.ResourceRepository;
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 @Target(value = ElementType.TYPE)
+@Deprecated
 public @interface DeclareRepositoryType {
 
 	public Class<? extends ResourceRepository>[]value();
