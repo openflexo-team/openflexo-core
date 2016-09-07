@@ -87,7 +87,7 @@ public abstract class FlexoResourceFactory<R extends TechnologyAdapterResource<R
 	 */
 	public <I> R makeResource(I serializationArtefact, FlexoResourceCenter<I> resourceCenter,
 			TechnologyContextManager<TA> technologyContextManager, boolean createEmptyContents)
-			throws SaveResourceException, ModelDefinitionException {
+					throws SaveResourceException, ModelDefinitionException {
 		return makeResource(serializationArtefact, resourceCenter, technologyContextManager, null, createEmptyContents);
 	}
 
@@ -106,7 +106,7 @@ public abstract class FlexoResourceFactory<R extends TechnologyAdapterResource<R
 	 */
 	public <I> R makeResource(I serializationArtefact, FlexoResourceCenter<I> resourceCenter,
 			TechnologyContextManager<TA> technologyContextManager, String uri, boolean createEmptyContents)
-			throws SaveResourceException, ModelDefinitionException {
+					throws SaveResourceException, ModelDefinitionException {
 		R returned = initResourceForCreation(serializationArtefact, resourceCenter, technologyContextManager, uri);
 		registerResource(returned, resourceCenter, technologyContextManager);
 

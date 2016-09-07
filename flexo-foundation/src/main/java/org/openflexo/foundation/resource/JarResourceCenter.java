@@ -483,6 +483,18 @@ public class JarResourceCenter extends ResourceRepository<FlexoResource<?>, InJa
 		return getName();
 	}
 
+	@Override
+	public InJarResourceImpl rename(InJarResourceImpl serializationArtefact, String newName) {
+		// Not applicable
+		return null;
+	}
+
+	@Override
+	public InJarResourceImpl delete(InJarResourceImpl serializationArtefact) {
+		// Not applicable
+		return null;
+	}
+
 	/**
 	 * Return serialization artefact containing supplied serialization artefact (parent directory)
 	 * 
@@ -629,7 +641,7 @@ public class JarResourceCenter extends ResourceRepository<FlexoResource<?>, InJa
 	 * ReferenceOwner default implementation => does nothing
 	 * @see org.openflexo.foundation.utils.FlexoObjectReference.ReferenceOwner#notifyObjectLoaded(org.openflexo.foundation.utils.FlexoObjectReference)
 	 */
-	
+
 	@Override
 	public void notifyObjectLoaded(FlexoObjectReference<?> reference) {
 		// logger.warning("TODO: implement this");
@@ -650,22 +662,20 @@ public class JarResourceCenter extends ResourceRepository<FlexoResource<?>, InJa
 		logger.warning("TODO: implement this");
 	}
 
-	
 	/**
-	 *  access to ObjectReference Converter used to translate strings to ObjectReference
+	 * access to ObjectReference Converter used to translate strings to ObjectReference
 	 */
-	
+
 	protected FlexoObjectReferenceConverter objectReferenceConverter = new FlexoObjectReferenceConverter(this);
-	
+
 	@Override
 	public FlexoObjectReferenceConverter getObjectReferenceConverter() {
 		return objectReferenceConverter;
 	}
-	
+
 	@Override
 	public void setObjectReferenceConverter(FlexoObjectReferenceConverter objectReferenceConverter) {
 		this.objectReferenceConverter = objectReferenceConverter;
 	}
 
-	
 }

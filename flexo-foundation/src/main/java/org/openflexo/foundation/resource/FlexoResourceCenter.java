@@ -307,12 +307,30 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, FlexoObject, Refere
 	public I getBaseArtefact();
 
 	/**
-	 * Retrieve name to be used as a name for resource, using supplied serialization artefact
+	 * Retrieve name of supplied serialization artefact
 	 * 
 	 * @param serializationArtefact
 	 * @return
 	 */
 	public String retrieveName(I serializationArtefact);
+
+	/**
+	 * Rename supplied serialization artefact<br>
+	 * Return renamed artefact
+	 * 
+	 * @param serializationArtefact
+	 * @return
+	 */
+	public I rename(I serializationArtefact, String newName);
+
+	/**
+	 * Delete supplied serialization artefact<br>
+	 * Return deleted artefact
+	 * 
+	 * @param serializationArtefact
+	 * @return
+	 */
+	public I delete(I serializationArtefact);
 
 	/**
 	 * Return serialization artefact containing supplied serialization artefact (parent directory)
@@ -419,20 +437,19 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, FlexoObject, Refere
 
 	public List<String> getPathTo(I serializationArtefact) throws IOException;
 
-
 	// TODO: must be refactored because it is from the responsability of the servicemanager
 	/**
-	 * the ObjectReferenceConverter is used when de-serializing resources that contains a reference to another FlexoObject (URI)
-	 * Typically for VirtualModelInstance referencing resources via ModelSlots
+	 * the ObjectReferenceConverter is used when de-serializing resources that contains a reference to another FlexoObject (URI) Typically
+	 * for VirtualModelInstance referencing resources via ModelSlots
 	 * 
 	 * @return
 	 */
 	public FlexoObjectReferenceConverter getObjectReferenceConverter();
 
-	/** 
-	 *  the ObjectReferenceConverter is used when de-serializing resources that contains a reference to another FlexoObject (URI)
-	 * Typically for VirtualModelInstance referencing resources via ModelSlots
-	 *  
+	/**
+	 * the ObjectReferenceConverter is used when de-serializing resources that contains a reference to another FlexoObject (URI) Typically
+	 * for VirtualModelInstance referencing resources via ModelSlots
+	 * 
 	 * @param objectReferenceConverter
 	 * @return
 	 */

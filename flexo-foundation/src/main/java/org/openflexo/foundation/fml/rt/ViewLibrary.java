@@ -68,17 +68,17 @@ public class ViewLibrary<I> extends ViewRepository<I> {
 	 * Create a new ViewLibrary.
 	 */
 	public ViewLibrary(FlexoResourceCenter<I> rc) {
-		super(rc.getServiceManager().getTechnologyAdapterService().getTechnologyAdapter(FMLRTTechnologyAdapter.class), rc);
-		getRootFolder().setName(rc.getName(), false);
-		getRootFolder().setFullQualifiedPath("/");
+		this(rc.getServiceManager().getTechnologyAdapterService().getTechnologyAdapter(FMLRTTechnologyAdapter.class), rc);
+		// getRootFolder().setName(rc.getName());
+		// getRootFolder().setFullQualifiedPath("/");
 		// exploreDirectoryLookingForViews(getDirectory(), getRootFolder());
 
 	}
 
 	public ViewLibrary(FMLRTTechnologyAdapter ta, FlexoResourceCenter<I> rc) {
 		super(ta, rc);
-		getRootFolder().setName(rc.getName());
-		getRootFolder().setFullQualifiedPath("/");
+		// getRootFolder().setName(rc.getName());
+		// getRootFolder().setFullQualifiedPath("/");
 		// exploreDirectoryLookingForViews(getDirectory(), getRootFolder());
 	}
 
@@ -158,14 +158,14 @@ public class ViewLibrary<I> extends ViewRepository<I> {
 		if (getView(virtualModelInstanceURI) != null) {
 			return getView(virtualModelInstanceURI);
 		}
-		//System.out.println("lookup mvi " + virtualModelInstanceURI);
+		// System.out.println("lookup mvi " + virtualModelInstanceURI);
 		String viewURI = virtualModelInstanceURI.substring(0, virtualModelInstanceURI.lastIndexOf("/"));
-		//System.out.println("lookup view " + viewURI);
+		// System.out.println("lookup view " + viewURI);
 		ViewResource vr = getView(viewURI);
 		if (vr != null) {
 			for (AbstractVirtualModelInstanceResource<?, ?> vmir : vr.getContents(AbstractVirtualModelInstanceResource.class)) {
 				if (vmir.getURI().equals(virtualModelInstanceURI)) {
-					//System.out.println("Found " + vmir.getURI());
+					// System.out.println("Found " + vmir.getURI());
 					return vmir;
 				}
 				/*else {

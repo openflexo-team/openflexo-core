@@ -250,7 +250,6 @@ public abstract class ResourceRepository<R extends FlexoResource<?>, I> extends 
 		// System.out.println("parent file = " + parentFolder.getFile());
 		I serializationArtefact = getResourceCenter().createDirectory(folderName, parentFolder.getSerializationArtefact());
 		RepositoryFolder<R, I> newFolder = new RepositoryFolder<R, I>(serializationArtefact, parentFolder, this);
-		newFolder.getFile().mkdirs();
 
 		return newFolder;
 	}
@@ -273,9 +272,6 @@ public abstract class ResourceRepository<R extends FlexoResource<?>, I> extends 
 	public void deleteFolder(RepositoryFolder<R, I> folder) {
 		RepositoryFolder<R, I> parentFolder = getParentFolder(folder);
 		if (parentFolder != null && folder.getResources().size() == 0) {
-			if (folder.getFile().exists()) {
-				folder.getFile().delete();
-			}
 			parentFolder.removeFromChildren(folder);
 			folder.delete();
 		}
@@ -292,9 +288,10 @@ public abstract class ResourceRepository<R extends FlexoResource<?>, I> extends 
 		if (getParentFolder(resource) == fromFolder) {
 			fromFolder.removeFromResources(resource);
 			toFolder.addToResources(resource);
+			// TODO: reimplement this with more genericity (delegate to RC)
 			if (resource.getFlexoIODelegate() instanceof FileFlexoIODelegate) {
 				File fromFile = ((FileFlexoIODelegate) resource.getFlexoIODelegate()).getFile();
-				File toFile = new File(toFolder.getFile(), fromFile.getName());
+				File toFile = new File((File) toFolder.getSerializationArtefact(), fromFile.getName());
 				try {
 					FileUtils.rename(fromFile, toFile);
 					((FileFlexoIODelegate) resource.getFlexoIODelegate()).setFile(toFile);

@@ -351,8 +351,8 @@ public class FlexoProject extends FileSystemBasedResourceCenter
 			}
 		}
 		setProjectDirectory(aProjectDirectory);
-		getRootFolder().setName(projectName);
-		getRootFolder().setFullQualifiedPath(aProjectDirectory.getAbsolutePath());
+		// getRootFolder().setName(projectName + ".prj");
+		// getRootFolder().setFullQualifiedPath(aProjectDirectory.getAbsolutePath());
 	}
 
 	@Override

@@ -238,9 +238,10 @@ public class CreateViewPoint extends AbstractCreateVirtualModel<CreateViewPoint,
 		return JavaUtils.getClassName(getNewViewPointName());
 	}
 
+	@Deprecated
 	private File getDirectoryWhereToCreateTheViewPoint() {
-		if (getFocusedObject() != null) {
-			return getFocusedObject().getFile();
+		if (getFocusedObject() != null && getFocusedObject().getSerializationArtefact() instanceof File) {
+			return (File) getFocusedObject().getSerializationArtefact();
 		}
 		return null;
 	}

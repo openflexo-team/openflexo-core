@@ -65,7 +65,6 @@ import org.openflexo.foundation.task.Progress;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterResource;
 import org.openflexo.foundation.utils.FlexoObjectReference;
-import org.openflexo.foundation.utils.FlexoObjectReference.ReferenceOwner;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.Implementation;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -711,8 +710,17 @@ public abstract class FileSystemBasedResourceCenter extends ResourceRepository<F
 			TechnologyAdapter ta = ((TechnologyAdapterResource<?, ?>) resource).getTechnologyAdapter();
 			for (ResourceRepository repository : getRegistedRepositories(ta)) {
 				if (repository.containsResource(resource)) {
+
 					String path = "";
 					RepositoryFolder f = repository.getRepositoryFolder(resource);
+
+					/*if (resource.getFlexoIODelegate() instanceof FileFlexoIODelegate) {
+						File file = ((FileFlexoIODelegate) resource.getFlexoIODelegate()).getFile();
+						System.out.println("Repository " + repository);
+						System.out.println("resource " + file);
+						System.out.println("folder: " + f);
+					}*/
+
 					while (f != null && !f.isRootFolder()) {
 						path = f.getName() + File.separator + path;
 						f = f.getParentFolder();
@@ -776,29 +784,28 @@ public abstract class FileSystemBasedResourceCenter extends ResourceRepository<F
 	public void setDefaultBaseURI(String defaultBaseURI) {
 		fsMetaDataManager.setProperty(DEFAULT_BASE_URI, defaultBaseURI, getDirectory());
 	}
-	
+
 	/**
-	 *  access to ObjectReference Converter used to translate strings to ObjectReference
+	 * access to ObjectReference Converter used to translate strings to ObjectReference
 	 */
-	
+
 	protected FlexoObjectReferenceConverter objectReferenceConverter = new FlexoObjectReferenceConverter(this);
-	
+
 	@Override
 	public FlexoObjectReferenceConverter getObjectReferenceConverter() {
 		return objectReferenceConverter;
 	}
-	
+
 	@Override
 	public void setObjectReferenceConverter(FlexoObjectReferenceConverter objectReferenceConverter) {
 		this.objectReferenceConverter = objectReferenceConverter;
 	}
 
-
 	/*
 	 * ReferenceOwner default implementation => does nothing
 	 * @see org.openflexo.foundation.utils.FlexoObjectReference.ReferenceOwner#notifyObjectLoaded(org.openflexo.foundation.utils.FlexoObjectReference)
 	 */
-	
+
 	@Override
 	public void notifyObjectLoaded(FlexoObjectReference<?> reference) {
 		// logger.warning("TODO: implement this");
@@ -822,6 +829,39 @@ public abstract class FileSystemBasedResourceCenter extends ResourceRepository<F
 	@Override
 	public String retrieveName(File serializationArtefact) {
 		return serializationArtefact.getName();
+	}
+
+	@Override
+	public File rename(File serializationArtefact, String newName) {
+		if (serializationArtefact.exists() && newName != null && !newName.equals(retrieveName(serializationArtefact))) {
+			File oldFile = serializationArtefact;
+			File newFile = new File(oldFile.getParentFile(), newName);
+			try {
+				//System.out.println("Rename " + oldFile + " to " + newFile);
+				//Thread.dumpStack();
+				FileUtils.rename(oldFile, newFile);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			return newFile;
+		}
+		else {
+			return serializationArtefact;
+		}
+
+	}
+
+	/**
+	 * Delete supplied serialization artefact<br>
+	 * Return deleted artefact
+	 * 
+	 * @param serializationArtefact
+	 * @return
+	 */
+	@Override
+	public File delete(File serializationArtefact) {
+		serializationArtefact.delete();
+		return serializationArtefact;
 	}
 
 	/**
@@ -929,7 +969,16 @@ public abstract class FileSystemBasedResourceCenter extends ResourceRepository<F
 			candidateFile = ((FileFlexoIODelegate) ioDelegate).getFile();
 		}
 		try {
-			return resourceRepository.getRepositoryFolder(candidateFile, true);
+			RepositoryFolder<R, File> returned = resourceRepository.getRepositoryFolder(candidateFile, true);
+			/*if (!returned.getSerializationArtefact().equals(candidateFile.getParentFile())
+					&& !returned.getSerializationArtefact().getAbsolutePath().contains("target")) {
+				System.out.println("N'importe quoi, on met " + candidateFile + " dans " + returned.getSerializationArtefact());
+				System.out.println("Root=" + resourceRepository.getRootFolder().getSerializationArtefact());
+				List<String> pathTo = getPathTo(candidateFile);
+				System.out.println("pathTo=" + pathTo);
+				System.exit(-1);
+			}*/
+			return returned;
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -947,10 +996,10 @@ public abstract class FileSystemBasedResourceCenter extends ResourceRepository<F
 	 */
 	@Override
 	public List<String> getPathTo(File aFile) throws IOException {
-		if (FileUtils.directoryContainsFile(getRootFolder().getFile(), aFile, true)) {
+		if (FileUtils.directoryContainsFile(getRootFolder().getSerializationArtefact(), aFile, true)) {
 			List<String> pathTo = new ArrayList<String>();
 			File f = aFile.getParentFile().getCanonicalFile();
-			while (f != null && !f.equals(getRootFolder().getFile().getCanonicalFile())) {
+			while (f != null && !f.equals(getRootFolder().getSerializationArtefact().getCanonicalFile())) {
 				pathTo.add(0, f.getName());
 				f = f.getParentFile();
 			}
