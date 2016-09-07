@@ -231,7 +231,8 @@ public final class FlexoConceptBindingFactory extends JavaBindingFactory {
 						returned.add(getSimplePathElement(pr, parent));
 					}
 					// TODO: performance issue
-					if (concept.getInspector().getRenderer().isSet() && concept.getInspector().getRenderer().isValid()) {
+					// TODO: investigate this @ILoveHacking
+ 					if (concept.getInspector().getRenderer().isSet()) {
 						returned.add(new EPIRendererPathElement(parent));
 					}
 					if (concept instanceof ViewPoint) {
