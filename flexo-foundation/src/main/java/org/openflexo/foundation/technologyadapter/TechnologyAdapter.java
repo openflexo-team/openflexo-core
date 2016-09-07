@@ -293,9 +293,6 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 
 		TechnologyContextManager<TA> technologyContextManager = (TechnologyContextManager<TA>) getTechnologyContextManager();
 		if (resourceFactory.isValidArtefact(serializationArtefact, resourceCenter)) {
-			if (resourceCenter instanceof JarResourceCenter) {
-				System.out.println("valid artefact " + serializationArtefact);
-			}
 			try {
 				return resourceFactory.retrieveResource(serializationArtefact, resourceCenter, technologyContextManager);
 			} catch (ModelDefinitionException e) {
