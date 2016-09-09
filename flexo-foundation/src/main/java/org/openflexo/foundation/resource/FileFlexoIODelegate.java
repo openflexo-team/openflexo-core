@@ -70,7 +70,7 @@ import org.openflexo.toolbox.FileUtils;
  */
 @ModelEntity
 @XMLElement
-@Imports({ @Import(DirectoryBasedFlexoIODelegate.class) })
+@Imports({ @Import(DirectoryBasedFlexoIODelegate.class), @Import(FlexoIOGitDelegate.class) })
 public interface FileFlexoIODelegate extends FlexoIOStreamDelegate<File> {
 
 	public static final String FILE = "file";

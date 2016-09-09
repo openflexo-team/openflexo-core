@@ -837,8 +837,8 @@ public abstract class FileSystemBasedResourceCenter extends ResourceRepository<F
 			File oldFile = serializationArtefact;
 			File newFile = new File(oldFile.getParentFile(), newName);
 			try {
-				//System.out.println("Rename " + oldFile + " to " + newFile);
-				//Thread.dumpStack();
+				// System.out.println("Rename " + oldFile + " to " + newFile);
+				// Thread.dumpStack();
 				FileUtils.rename(oldFile, newFile);
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -932,7 +932,8 @@ public abstract class FileSystemBasedResourceCenter extends ResourceRepository<F
 	}
 
 	@Override
-	public FileFlexoIODelegate makeFlexoIODelegate(File serializationArtefact, FlexoResourceFactory<?, ?, ?> resourceFactory) {
+	public FileFlexoIODelegate makeFlexoIODelegate(File serializationArtefact, FlexoResourceFactory<?, ?, ?> resourceFactory)
+			throws IOException {
 		return FileFlexoIODelegateImpl.makeFileFlexoIODelegate(serializationArtefact, resourceFactory);
 	}
 

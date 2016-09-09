@@ -355,7 +355,8 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, FlexoObject, Refere
 	 * @param serializationArtefact
 	 * @return
 	 */
-	public FlexoIODelegate<I> makeFlexoIODelegate(I serializationArtefact, FlexoResourceFactory<?, ?, ?> resourceFactory);
+	public FlexoIODelegate<I> makeFlexoIODelegate(I serializationArtefact, FlexoResourceFactory<?, ?, ?> resourceFactory)
+			throws IOException;
 
 	/**
 	 * Build a new {@link FlexoIODelegate} for a given serialization artefact

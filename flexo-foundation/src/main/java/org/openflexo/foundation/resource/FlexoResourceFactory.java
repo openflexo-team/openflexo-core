@@ -20,6 +20,7 @@
 
 package org.openflexo.foundation.resource;
 
+import java.io.IOException;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
@@ -163,7 +164,13 @@ public abstract class FlexoResourceFactory<R extends TechnologyAdapterResource<R
 	}
 
 	protected <I> FlexoIODelegate<I> makeFlexoIODelegate(I serializationArtefact, FlexoResourceCenter<I> resourceCenter) {
-		return resourceCenter.makeFlexoIODelegate(serializationArtefact, this);
+		try {
+			return resourceCenter.makeFlexoIODelegate(serializationArtefact, this);
+		} catch (IOException e) {
+			// TODO: find a better way to handle this
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 	/**
@@ -176,14 +183,20 @@ public abstract class FlexoResourceFactory<R extends TechnologyAdapterResource<R
 	 */
 	protected <I> R registerResource(R resource, FlexoResourceCenter<I> resourceCenter,
 			TechnologyContextManager<TA> technologyContextManager) {
+
+		System.out.println("On enregistre la resource " + resource.getName() + " dans le RC " + resourceCenter);
+		System.out.println("BaseURI=" + resourceCenter.getDefaultBaseURI());
+		// System.out.println("URI=" + resource.getURI());
+
 		resource.setResourceCenter(resourceCenter);
+		// Register the resource in the global repository of technology adapter
+		registerResourceInResourceRepository(resource, technologyContextManager.getTechnologyAdapter().getGlobalRepository(resourceCenter));
+		System.out.println("maintenant URI=" + resource.getURI());
+
 		resource.setServiceManager(technologyContextManager.getServiceManager());
 		resource.setTechnologyAdapter(technologyContextManager.getTechnologyAdapter());
 		resource.setTechnologyContextManager(technologyContextManager);
 		technologyContextManager.registerResource(resource);
-
-		// Register the resource in the global repository of technology adapter
-		registerResourceInResourceRepository(resource, technologyContextManager.getTechnologyAdapter().getGlobalRepository(resourceCenter));
 
 		// Also register the resource in the ResourceCenter seen as a ResourceRepository
 		if (resourceCenter instanceof ResourceRepository) {
