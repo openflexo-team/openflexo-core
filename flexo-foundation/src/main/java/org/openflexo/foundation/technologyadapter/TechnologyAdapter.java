@@ -229,7 +229,12 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 
 	/**
 	 * Initialize the supplied resource center with the technology<br>
-	 * ResourceCenter is scanned, ResourceRepositories are created and new technology-specific resources are build and registered.
+	 * 
+	 * Supplied resource center is scanned according to all declared {@link FlexoResourceFactory}.<br>
+	 * New technology-specific resources are build and registered.<br>
+	 * 
+	 * Note that if the technology declares model and meta-models, {@link FlexoResourceFactory} must be declared with a specific order
+	 * (metamodels BEFORE models), so that retrieving of models might find their respective metamodels
 	 * 
 	 * @param resourceCenter
 	 */
@@ -237,23 +242,21 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 
 		logger.info("--------> performInitializeResourceCenter " + getName() + " for " + resourceCenter);
 
-		Iterator<I> it = resourceCenter.iterator();
+		Iterator<I> it;
 
-		while (it.hasNext()) {
-			I serializationArtefact = it.next();
+		// We iterate on FlexoResourceFactory in the same order as they are declared in TechnologyAdapter
+		// (metamodels BEFORE models), so that retrieving of models might find their respective metamodels
+		for (FlexoResourceFactory<?, ?, ?> resourceFactory : getResourceFactories()) {
 
-			/*if (resourceCenter instanceof JarResourceCenter) {
-				System.out.println("pour " + serializationArtefact);
-			}*/
+			// Then we iterate on all resources found in the resource factory
+			it = resourceCenter.iterator();
 
-			if (!isIgnorable(resourceCenter, serializationArtefact)) {
-				/*if (resourceCenter instanceof JarResourceCenter) {
-					System.out.println("on ignore pas " + serializationArtefact);
-				}*/
-				for (FlexoResourceFactory<?, ?, ?> resourceFactory : getResourceFactories()) {
+			while (it.hasNext()) {
+				I serializationArtefact = it.next();
+				if (!isIgnorable(resourceCenter, serializationArtefact)) {
 					FlexoResource r = tryToLookupResource(resourceFactory, resourceCenter, serializationArtefact);
 					if (r != null) {
-						System.out.println("Look-up resource " + r.getImplementedInterface().getSimpleName() + " " + r.getURI());
+						logger.info("> Look-up resource " + r.getImplementedInterface().getSimpleName() + " " + r.getURI());
 					}
 				}
 			}
