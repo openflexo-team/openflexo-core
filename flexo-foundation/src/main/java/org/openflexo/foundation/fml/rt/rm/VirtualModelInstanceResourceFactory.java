@@ -97,8 +97,6 @@ public class VirtualModelInstanceResourceFactory
 			returned.save(null);
 		}
 
-		returned.save(null);
-
 		return returned;
 	}
 

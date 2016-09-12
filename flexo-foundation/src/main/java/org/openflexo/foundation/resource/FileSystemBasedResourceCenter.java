@@ -911,6 +911,14 @@ public abstract class FileSystemBasedResourceCenter extends ResourceRepository<F
 		return returned;
 	}
 
+	/**
+	 * Create simple serialization artefact, with supplied name and parent serialization artefact<br>
+	 * Name can also be a relative path name (with '/' as path separator)
+	 * 
+	 * @param name
+	 * @param parentDirectory
+	 * @return
+	 */
 	@Override
 	public File createEntry(String name, File parentDirectory) {
 		return new File(parentDirectory, name);
