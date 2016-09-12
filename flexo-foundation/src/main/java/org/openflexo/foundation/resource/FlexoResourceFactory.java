@@ -65,6 +65,17 @@ public abstract class FlexoResourceFactory<R extends TechnologyAdapterResource<R
 	}
 
 	/**
+	 * Generic constructor
+	 * 
+	 * @param resourceClass
+	 * @throws ModelDefinitionException
+	 */
+	protected FlexoResourceFactory(Class<R> resourceClass, Class<?>... requiredClasses) throws ModelDefinitionException {
+		super(ModelContextLibrary.getCompoundModelContext(resourceClass, requiredClasses));
+		this.resourceClass = resourceClass;
+	}
+
+	/**
 	 * Return class of {@link FlexoResource} beeing managed by this factory
 	 * 
 	 * @return
@@ -184,8 +195,8 @@ public abstract class FlexoResourceFactory<R extends TechnologyAdapterResource<R
 	protected <I> R registerResource(R resource, FlexoResourceCenter<I> resourceCenter,
 			TechnologyContextManager<TA> technologyContextManager) {
 
-		//System.out.println("On enregistre la resource " + resource.getName() + " dans le RC " + resourceCenter);
-		//System.out.println("BaseURI=" + resourceCenter.getDefaultBaseURI());
+		// System.out.println("On enregistre la resource " + resource.getName() + " dans le RC " + resourceCenter);
+		// System.out.println("BaseURI=" + resourceCenter.getDefaultBaseURI());
 		// System.out.println("URI=" + resource.getURI());
 
 		resource.setResourceCenter(resourceCenter);
