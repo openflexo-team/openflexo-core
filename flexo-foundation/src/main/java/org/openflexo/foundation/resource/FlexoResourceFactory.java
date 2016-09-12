@@ -184,14 +184,13 @@ public abstract class FlexoResourceFactory<R extends TechnologyAdapterResource<R
 	protected <I> R registerResource(R resource, FlexoResourceCenter<I> resourceCenter,
 			TechnologyContextManager<TA> technologyContextManager) {
 
-		System.out.println("On enregistre la resource " + resource.getName() + " dans le RC " + resourceCenter);
-		System.out.println("BaseURI=" + resourceCenter.getDefaultBaseURI());
+		//System.out.println("On enregistre la resource " + resource.getName() + " dans le RC " + resourceCenter);
+		//System.out.println("BaseURI=" + resourceCenter.getDefaultBaseURI());
 		// System.out.println("URI=" + resource.getURI());
 
 		resource.setResourceCenter(resourceCenter);
 		// Register the resource in the global repository of technology adapter
 		registerResourceInResourceRepository(resource, technologyContextManager.getTechnologyAdapter().getGlobalRepository(resourceCenter));
-		System.out.println("maintenant URI=" + resource.getURI());
 
 		resource.setServiceManager(technologyContextManager.getServiceManager());
 		resource.setTechnologyAdapter(technologyContextManager.getTechnologyAdapter());
