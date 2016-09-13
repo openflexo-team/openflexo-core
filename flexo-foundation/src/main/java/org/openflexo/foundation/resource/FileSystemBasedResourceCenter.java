@@ -92,7 +92,8 @@ import org.openflexo.xml.XMLRootElementReader;
  * @author sylvain
  * 
  */
-public abstract class FileSystemBasedResourceCenter extends ResourceRepository<FlexoResource<?>, File>implements FlexoResourceCenter<File> {
+public abstract class FileSystemBasedResourceCenter extends ResourceRepository<FlexoResource<?>, File>
+		implements FlexoResourceCenter<File> {
 
 	protected static final Logger logger = Logger.getLogger(FileSystemBasedResourceCenter.class.getPackage().getName());
 
@@ -174,7 +175,7 @@ public abstract class FileSystemBasedResourceCenter extends ResourceRepository<F
 	}
 
 	@Override
-	public ViewPointRepository getViewPointRepository() {
+	public ViewPointRepository<File> getViewPointRepository() {
 		if (rcService != null) {
 			FMLTechnologyAdapter vmTA = getServiceManager().getTechnologyAdapterService().getTechnologyAdapter(FMLTechnologyAdapter.class);
 			return getRepository(ViewPointRepository.class, vmTA);
@@ -596,6 +597,7 @@ public abstract class FileSystemBasedResourceCenter extends ResourceRepository<F
 			TechnologyAdapter technologyAdapter) {
 		HashMap<Class<? extends ResourceRepository<?, File>>, ResourceRepository<?, File>> map = getRepositoriesForAdapter(
 				technologyAdapter);
+
 		return (R) map.get(repositoryType);
 	}
 
@@ -635,8 +637,10 @@ public abstract class FileSystemBasedResourceCenter extends ResourceRepository<F
 	@Override
 	public final <R extends ResourceRepository<?, File>> void registerRepository(R repository, Class<? extends R> repositoryType,
 			TechnologyAdapter technologyAdapter) {
+
 		HashMap<Class<? extends ResourceRepository<?, File>>, ResourceRepository<?, File>> map = getRepositoriesForAdapter(
 				technologyAdapter);
+
 		if (map.get(repositoryType) == null) {
 			map.put(repositoryType, repository);
 			getPropertyChangeSupport().firePropertyChange("getRegisteredRepositories(TechnologyAdapter)", null,
