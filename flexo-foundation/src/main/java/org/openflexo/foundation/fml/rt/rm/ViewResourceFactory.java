@@ -81,7 +81,7 @@ public class ViewResourceFactory extends AbstractVirtualModelInstanceResourceFac
 
 	public <I> ViewResource makeViewResource(String baseName, ViewPointResource viewPointResource, ViewResource parentViewResource,
 			TechnologyContextManager<FMLRTTechnologyAdapter> technologyContextManager, boolean createEmptyContents)
-					throws SaveResourceException, ModelDefinitionException {
+			throws SaveResourceException, ModelDefinitionException {
 
 		FlexoResourceCenter<I> resourceCenter = (FlexoResourceCenter<I>) parentViewResource.getResourceCenter();
 		I serializationArtefact = resourceCenter.createDirectory((baseName.endsWith(VIEW_SUFFIX) ? baseName : (baseName + VIEW_SUFFIX)),
@@ -104,7 +104,7 @@ public class ViewResourceFactory extends AbstractVirtualModelInstanceResourceFac
 
 	public <I> ViewResource retrieveViewResource(I serializationArtefact, FlexoResourceCenter<I> resourceCenter,
 			TechnologyContextManager<FMLRTTechnologyAdapter> technologyContextManager, ViewResource parentViewResource)
-					throws ModelDefinitionException {
+			throws ModelDefinitionException {
 		ViewResource returned = retrieveResource(serializationArtefact, resourceCenter, technologyContextManager);
 		parentViewResource.addToContents(returned);
 		parentViewResource.notifyContentsAdded(returned);
@@ -201,7 +201,6 @@ public class ViewResourceFactory extends AbstractVirtualModelInstanceResourceFac
 
 		ViewInfo vpi = findViewInfo(returned, resourceCenter);
 		if (vpi != null) {
-			System.out.println("******************* on sette l'URI a " + vpi.uri);
 			returned.setURI(vpi.uri);
 			if (StringUtils.isNotEmpty(vpi.version)) {
 				returned.setVersion(new FlexoVersion(vpi.version));
@@ -216,10 +215,13 @@ public class ViewResourceFactory extends AbstractVirtualModelInstanceResourceFac
 				returned.setModelVersion(CURRENT_FML_RT_VERSION);
 			}
 			if (StringUtils.isNotEmpty(vpi.viewPointURI)) {
-				returned.setViewPointResource(
-						resourceCenter.getServiceManager().getViewPointLibrary().getViewPointResource(vpi.viewPointURI));
-				returned.setVirtualModelResource(
-						resourceCenter.getServiceManager().getViewPointLibrary().getViewPointResource(vpi.viewPointURI));
+				ViewPointResource vpResource = resourceCenter.getServiceManager().getViewPointLibrary()
+						.getViewPointResource(vpi.viewPointURI);
+				returned.setViewPointResource(vpResource);
+				returned.setVirtualModelResource(vpResource);
+				if (vpResource == null) {
+					logger.warning("Could not retrieve viewpoint: " + vpi.viewPointURI);
+				}
 			}
 		}
 		else {
