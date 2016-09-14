@@ -41,6 +41,8 @@ package org.openflexo.foundation.utils;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -51,6 +53,8 @@ import org.openflexo.foundation.FlexoProjectObject;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.InnerResourceData;
 import org.openflexo.foundation.KVCFlexoObject;
+import org.openflexo.foundation.fml.rt.rm.ViewResourceFactory;
+import org.openflexo.foundation.fml.rt.rm.VirtualModelInstanceResourceFactory;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.PamelaResource;
 import org.openflexo.foundation.resource.ResourceData;
@@ -376,9 +380,41 @@ public class FlexoObjectReference<O extends FlexoObject> extends KVCFlexoObject 
 		} else {*/
 		if (resource == null && getOwner() != null && getOwner().getServiceManager() != null) {
 			resource = getOwner().getServiceManager().getResourceManager().getResource(resourceIdentifier);
+			if (resource == null) {
+				// Temporary hack to maintain 1.7.x projects
+				return attemptToFindResourceIdentifiedBy(resourceIdentifier);
+			}
 		}
 		return resource;
 		// }
+	}
+
+	/**
+	 * Temporary ensure compatibility with previous versions of Openflexo
+	 * 
+	 * @param resourceIdentifier
+	 * @return
+	 */
+	@Deprecated
+	private FlexoResource<?> attemptToFindResourceIdentifiedBy(String resourceIdentifier) {
+		List<String> alternateURIs = new ArrayList<>();
+		if (resourceIdentifier.lastIndexOf("/") > -1) {
+			String s1 = resourceIdentifier.substring(0, resourceIdentifier.lastIndexOf("/"));
+			String s2 = resourceIdentifier.substring(resourceIdentifier.lastIndexOf("/"));
+			alternateURIs
+					.add(s1 + ViewResourceFactory.VIEW_SUFFIX + s2 + VirtualModelInstanceResourceFactory.VIRTUAL_MODEL_INSTANCE_SUFFIX);
+			alternateURIs.add(s1 + ViewResourceFactory.VIEW_SUFFIX + s2);
+			alternateURIs.add(s1 + s2 + VirtualModelInstanceResourceFactory.VIRTUAL_MODEL_INSTANCE_SUFFIX);
+		}
+		for (String alternateURI : alternateURIs) {
+			FlexoResource<?> resource = getOwner().getServiceManager().getResourceManager().getResource(alternateURI);
+			if (resource != null) {
+				logger.warning("Found alternate resource uri " + alternateURI + " instead of " + resourceIdentifier);
+				return resource;
+			}
+		}
+		logger.warning("Cannot find resource " + resourceIdentifier);
+		return null;
 	}
 
 	public String getResourceIdentifier() {
