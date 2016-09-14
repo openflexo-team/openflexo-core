@@ -268,7 +268,14 @@ public class ViewPointLibrary extends DefaultFlexoObject implements FlexoService
 			vmRes = _getVirtualModel(virtualModelURI);
 			if (vmRes != null) {
 				VirtualModel vm = vmRes.getVirtualModel();
-				return vm.getFlexoConcept(flexoConceptName);
+				if (vm != null) {
+					return vm.getFlexoConcept(flexoConceptName);
+				}
+				else {
+					// It is possible to come here, because this can be called during deserialization of VirtualModel itself
+					// In this case, the resource cannot be loaded yet (because already loading)
+					// Concept will be looked up later
+				}
 			}
 			logger.warning("Cannot find virtual model " + virtualModelURI + " while searching flexo concept:" + flexoConceptURI + " ("
 					+ flexoConceptName + ")");
