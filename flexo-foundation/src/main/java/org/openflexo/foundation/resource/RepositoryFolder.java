@@ -103,7 +103,7 @@ public class RepositoryFolder<R extends FlexoResource<?>, I> extends DefaultFlex
 		return (getResourceRepository().getResourceCenter().retrieveName(getSerializationArtefact()));
 	}
 
-	public void setName(String name/*, boolean renameSerializationArtefact*/) {
+	public void setName(String name) {
 		String oldName = this.name;
 		if (oldName != null && !oldName.equals(name)) {
 			this.name = name;
@@ -113,19 +113,6 @@ public class RepositoryFolder<R extends FlexoResource<?>, I> extends DefaultFlex
 
 	}
 
-	// TODO: fix this as I don't knwo if RepositoryFolder should not be subclassed for DirectoryBasedRepositoryFolder
-	/*public void setName(String name, boolean renameFile) {
-		if (renameFile) {
-			setName(name);
-		}
-		else {
-			String oldName = this.name;
-			this.name = name;
-	
-			getPropertyChangeSupport().firePropertyChange(NAME_KEY, oldName, name);
-		}
-	}*/
-
 	public String getPathRelativeToRepository() {
 		if (getParentFolder() != null) {
 			return getParentFolder().getPathRelativeToRepository() + "/" + getName();
@@ -133,26 +120,9 @@ public class RepositoryFolder<R extends FlexoResource<?>, I> extends DefaultFlex
 		return getName();
 	}
 
-	/*public String getFullQualifiedPath() {
-		if (getFile() != null) {
-			return getFile().getAbsolutePath();
-		}
-		return fullQualifiedPath;
+	public String getFullQualifiedPath() {
+		return getPathRelativeToRepository();
 	}
-	
-	public void setFullQualifiedPath(String fullQualifiedPath) {
-		String old = this.fullQualifiedPath;
-		this.fullQualifiedPath = fullQualifiedPath;
-		getPropertyChangeSupport().firePropertyChange(FULL_QUALIFIED_PATH_KEY, old, fullQualifiedPath);
-		if (name == null) {
-			if (fullQualifiedPath.lastIndexOf(File.separator) > -1) {
-				name = fullQualifiedPath.substring(fullQualifiedPath.lastIndexOf(File.separator));
-			}
-			else {
-				name = fullQualifiedPath;
-			}
-		}
-	}*/
 
 	public List<RepositoryFolder<R, I>> getChildren() {
 		return children;
@@ -216,21 +186,6 @@ public class RepositoryFolder<R extends FlexoResource<?>, I> extends DefaultFlex
 	public ResourceRepository<R, I> getResourceRepository() {
 		return resourceRepository;
 	}
-
-	// TODO : might be an issue here, while create a File systematically when it is not a FileResourceRepository?
-	// Remove this method
-	/*@Deprecated
-	public File getFile() {
-		if (isRootFolder()) {
-			if (getResourceRepository() instanceof FileResourceRepository) {
-				return ((FileResourceRepository) getResourceRepository()).getDirectory();
-			}
-			return null;
-		}
-		else {
-			return new File(getParentFolder().getFile(), name);
-		}
-	}*/
 
 	public R getResourceWithName(String resourceName) {
 		for (R resource : getResources()) {
