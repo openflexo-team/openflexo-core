@@ -227,7 +227,7 @@ public class JarResourceCenter extends ResourceRepository<FlexoResource<?>, InJa
 
 	@SuppressWarnings({ "hiding", "unchecked" })
 	@Override
-	public final <R extends ResourceRepository<?, InJarResourceImpl>> R getRepository(Class<? extends R> repositoryType,
+	public final <R extends ResourceRepository<?, InJarResourceImpl>> R retrieveRepository(Class<? extends R> repositoryType,
 			TechnologyAdapter technologyAdapter) {
 		HashMap<Class<? extends ResourceRepository<?, InJarResourceImpl>>, ResourceRepository<?, InJarResourceImpl>> map = getRepositoriesForAdapter(
 				technologyAdapter);
@@ -433,10 +433,10 @@ public class JarResourceCenter extends ResourceRepository<FlexoResource<?>, InJa
 
 	// TODO Remove this
 	@Override
-	public ViewPointRepository getViewPointRepository() {
+	public ViewPointRepository<?> getViewPointRepository() {
 		if (getServiceManager() != null) {
 			FMLTechnologyAdapter vmTA = getServiceManager().getTechnologyAdapterService().getTechnologyAdapter(FMLTechnologyAdapter.class);
-			return getRepository(ViewPointRepository.class, vmTA);
+			return vmTA.getViewPointRepository(this);
 		}
 		return null;
 	}

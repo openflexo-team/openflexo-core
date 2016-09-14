@@ -261,10 +261,9 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, FlexoObject, Refere
 	 * @param technologyAdapter
 	 * @return the registered repository
 	 */
-	// TODO: change to getRepository(Class<? extends R> repositoryType, Class <? extends TechnologyAdapter technologyAdapterClass)
-	@Deprecated
-	// Using this method is now discouraged, as life-cycle management do not guarantee that the repository is created
-	public <R extends ResourceRepository<?, I>> R getRepository(Class<? extends R> repositoryType, TechnologyAdapter technologyAdapter);
+	// TODO: change to retrieveRepository(Class<? extends R> repositoryType, Class <? extends TechnologyAdapter technologyAdapterClass)
+	public <R extends ResourceRepository<?, I>> R retrieveRepository(Class<? extends R> repositoryType,
+			TechnologyAdapter technologyAdapter);
 
 	/**
 	 * Register supplied repository for a given type and technology

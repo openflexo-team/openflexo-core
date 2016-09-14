@@ -241,7 +241,7 @@ public class FMLTechnologyAdapter extends TechnologyAdapter {
 	}*/
 
 	public <I> ViewPointRepository<I> getViewPointRepository(FlexoResourceCenter<I> resourceCenter) {
-		ViewPointRepository<I> returned = resourceCenter.getRepository(ViewPointRepository.class, this);
+		ViewPointRepository<I> returned = resourceCenter.retrieveRepository(ViewPointRepository.class, this);
 		if (returned == null) {
 			returned = new ViewPointRepository<I>(this, resourceCenter);
 			resourceCenter.registerRepository(returned, ViewPointRepository.class, this);

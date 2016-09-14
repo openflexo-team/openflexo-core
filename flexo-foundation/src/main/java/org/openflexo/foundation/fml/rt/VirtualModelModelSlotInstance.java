@@ -64,7 +64,7 @@ import org.openflexo.toolbox.StringUtils;
 @ImplementationClass(VirtualModelModelSlotInstance.VirtualModelModelSlotInstanceImpl.class)
 @XMLElement
 public interface VirtualModelModelSlotInstance<VMI extends AbstractVirtualModelInstance<VMI, VM>, VM extends AbstractVirtualModel<VM>>
-extends ModelSlotInstance<FMLRTModelSlot<VMI, VM>, VMI> {
+		extends ModelSlotInstance<FMLRTModelSlot<VMI, VM>, VMI> {
 
 	@PropertyIdentifier(type = String.class)
 	public static final String VIRTUAL_MODEL_INSTANCE_URI_KEY = "virtualModelInstanceURI";
@@ -77,7 +77,7 @@ extends ModelSlotInstance<FMLRTModelSlot<VMI, VM>, VMI> {
 	public void setVirtualModelInstanceURI(String virtualModelInstanceURI);
 
 	public static abstract class VirtualModelModelSlotInstanceImpl<VMI extends AbstractVirtualModelInstance<VMI, VM>, VM extends AbstractVirtualModel<VM>>
-	extends ModelSlotInstanceImpl<FMLRTModelSlot<VMI, VM>, VMI>implements VirtualModelModelSlotInstance<VMI, VM> {
+			extends ModelSlotInstanceImpl<FMLRTModelSlot<VMI, VM>, VMI>implements VirtualModelModelSlotInstance<VMI, VM> {
 
 		private static final Logger logger = Logger.getLogger(VirtualModelModelSlotInstance.class.getPackage().getName());
 
@@ -102,16 +102,19 @@ extends ModelSlotInstance<FMLRTModelSlot<VMI, VM>, VMI> {
 		@Override
 		public AbstractVirtualModelInstanceResource<VMI, VM> getResource() {
 			if (getVirtualModelInstance() != null && resource == null && StringUtils.isNotEmpty(virtualModelInstanceURI)) {
+
+				FMLRTTechnologyAdapter fmlRTTA = getServiceManager().getTechnologyAdapterService()
+						.getTechnologyAdapter(FMLRTTechnologyAdapter.class);
+				ViewLibrary<?> viewRepository;
+
 				if (getResourceCenter() != null) {
-					resource = (AbstractVirtualModelInstanceResource<VMI, VM>) getResourceCenter()
-							.getRepository(ViewLibrary.class, getServiceManager().getTechnologyAdapterService().getTechnologyAdapter(FMLRTTechnologyAdapter.class))
-							.getVirtualModelInstance(virtualModelInstanceURI);
+					viewRepository = (ViewLibrary<?>) fmlRTTA.getViewRepository(getResourceCenter());
 				}
 				else {
-					resource = (AbstractVirtualModelInstanceResource<VMI, VM>) getVirtualModelInstance().getView().getResourceCenter()
-							.getRepository(ViewLibrary.class, getServiceManager().getTechnologyAdapterService().getTechnologyAdapter(FMLRTTechnologyAdapter.class))
-							.getVirtualModelInstance(virtualModelInstanceURI);
+					viewRepository = (ViewLibrary<?>) fmlRTTA.getViewRepository(getVirtualModelInstance().getView().getResourceCenter());
 				}
+				resource = (AbstractVirtualModelInstanceResource<VMI, VM>) viewRepository.getVirtualModelInstance(virtualModelInstanceURI);
+
 			}
 
 			if (resource == null && StringUtils.isNotEmpty(virtualModelInstanceURI)) {

@@ -155,7 +155,7 @@ public interface View extends AbstractVirtualModelInstance<View, ViewPoint> {
 	 */
 	public List<TechnologyAdapter> getRequiredTechnologyAdapters();
 
-	public static abstract class ViewImpl extends AbstractVirtualModelInstanceImpl<View, ViewPoint> implements View {
+	public static abstract class ViewImpl extends AbstractVirtualModelInstanceImpl<View, ViewPoint>implements View {
 
 		private static final Logger logger = Logger.getLogger(View.class.getPackage().getName());
 
@@ -362,19 +362,18 @@ public interface View extends AbstractVirtualModelInstance<View, ViewPoint> {
 		}
 
 		@Override
-		public ViewLibrary getViewLibrary() {
+		public ViewLibrary<?> getViewLibrary() {
 
 			FlexoResourceCenter<?> rc = getResourceCenter();
 			FMLRTTechnologyAdapter rtTA = rc.getServiceManager().getTechnologyAdapterService()
 					.getTechnologyAdapter(FMLRTTechnologyAdapter.class);
-
-			return rc.getRepository(ViewLibrary.class, rtTA);
+			return (ViewLibrary<?>) rtTA.getViewRepository(rc);
 		}
 
 		@Override
 		public RepositoryFolder<ViewResource, ?> getFolder() {
 			if (getResource() != null) {
-				return getViewLibrary().getParentFolder(getResource());
+				return ((ViewLibrary) getViewLibrary()).getParentFolder(getResource());
 			}
 			return null;
 		}
