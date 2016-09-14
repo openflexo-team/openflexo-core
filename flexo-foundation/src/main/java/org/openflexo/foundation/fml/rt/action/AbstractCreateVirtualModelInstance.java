@@ -80,7 +80,7 @@ import org.openflexo.toolbox.StringUtils;
  *            type of container of newly created AbstractVirtualModelInstance
  */
 public abstract class AbstractCreateVirtualModelInstance<A extends AbstractCreateVirtualModelInstance<A, T, VMI, VM>, T extends FlexoObject, VMI extends AbstractVirtualModelInstance<VMI, VM>, VM extends AbstractVirtualModel<VM>>
-		extends FlexoAction<A, T, FlexoObject> implements FlexoObserver {
+		extends FlexoAction<A, T, FlexoObject>implements FlexoObserver {
 
 	private static final Logger logger = Logger.getLogger(AbstractCreateVirtualModelInstance.class.getPackage().getName());
 
@@ -265,7 +265,8 @@ public abstract class AbstractCreateVirtualModelInstance<A extends AbstractCreat
 			modelSlotConfigurations.clear();
 			if (this.virtualModel != null) {
 				for (ModelSlot<?> ms : this.virtualModel.getModelSlots()) {
-					modelSlotConfigurations.put(ms, ms.createConfiguration(null, getResourceCenter()));
+					ModelSlotInstanceConfiguration<?, ?> createConfiguration = ms.createConfiguration(null, getResourceCenter());
+					modelSlotConfigurations.put(ms, createConfiguration);
 				}
 				/*if (virtualModel.getCreationSchemes().size() > 0) {
 					System.out.println("Tiens, je trouve un CreationScheme: " + virtualModel.getCreationSchemes().get(0));
