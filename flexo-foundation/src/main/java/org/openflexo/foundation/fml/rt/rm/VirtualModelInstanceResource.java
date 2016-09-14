@@ -41,8 +41,10 @@ package org.openflexo.foundation.fml.rt.rm;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.resource.FlexoResource;
+import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
+import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLElement;
 
 /**
@@ -55,5 +57,13 @@ import org.openflexo.model.annotations.XMLElement;
 @ImplementationClass(VirtualModelInstanceResourceImpl.class)
 @XMLElement
 public interface VirtualModelInstanceResource extends AbstractVirtualModelInstanceResource<VirtualModelInstance, VirtualModel> {
+
+	public static final String VIRTUAL_MODEL_URI = "virtualModelURI";
+
+	@Getter(VIRTUAL_MODEL_URI)
+	public String getVirtualModelURI();
+
+	@Setter(VIRTUAL_MODEL_URI)
+	public void setVirtualModelURI(String virtualModelURI);
 
 }

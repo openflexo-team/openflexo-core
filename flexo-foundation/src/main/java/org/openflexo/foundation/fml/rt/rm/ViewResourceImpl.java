@@ -188,4 +188,18 @@ public abstract class ViewResourceImpl extends AbstractVirtualModelInstanceResou
 		return getViewPointResource();
 	}
 
+	private String viewpointURI;
+
+	@Override
+	public String getViewpointURI() {
+		if (getViewPointResource() != null) {
+			return getViewPointResource().getURI();
+		}
+		return viewpointURI;
+	}
+
+	@Override
+	public void setViewpointURI(String viewpointURI) {
+		this.viewpointURI = viewpointURI;
+	}
 }

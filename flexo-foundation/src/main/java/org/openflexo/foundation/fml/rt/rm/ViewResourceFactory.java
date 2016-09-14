@@ -74,14 +74,24 @@ public class ViewResourceFactory extends AbstractVirtualModelInstanceResourceFac
 		I serializationArtefact = resourceCenter.createDirectory((baseName.endsWith(VIEW_SUFFIX) ? baseName : baseName + VIEW_SUFFIX),
 				folder.getSerializationArtefact());
 
-		ViewResource returned = makeResource(serializationArtefact, resourceCenter, technologyContextManager, viewURI, createEmptyContents);
+		// ViewResource returned = makeResource(serializationArtefact, resourceCenter, technologyContextManager, viewURI,
+		// createEmptyContents);
+
+		ViewResource returned = initResourceForCreation(serializationArtefact, resourceCenter, technologyContextManager, viewURI);
 		returned.setViewPointResource(viewPointResource);
+		registerResource(returned, resourceCenter, technologyContextManager);
+
+		if (createEmptyContents) {
+			createEmptyContents(returned);
+			returned.save(null);
+		}
+
 		return returned;
 	}
 
 	public <I> ViewResource makeViewResource(String baseName, ViewPointResource viewPointResource, ViewResource parentViewResource,
 			TechnologyContextManager<FMLRTTechnologyAdapter> technologyContextManager, boolean createEmptyContents)
-			throws SaveResourceException, ModelDefinitionException {
+					throws SaveResourceException, ModelDefinitionException {
 
 		FlexoResourceCenter<I> resourceCenter = (FlexoResourceCenter<I>) parentViewResource.getResourceCenter();
 		I serializationArtefact = resourceCenter.createDirectory((baseName.endsWith(VIEW_SUFFIX) ? baseName : (baseName + VIEW_SUFFIX)),
@@ -104,7 +114,7 @@ public class ViewResourceFactory extends AbstractVirtualModelInstanceResourceFac
 
 	public <I> ViewResource retrieveViewResource(I serializationArtefact, FlexoResourceCenter<I> resourceCenter,
 			TechnologyContextManager<FMLRTTechnologyAdapter> technologyContextManager, ViewResource parentViewResource)
-			throws ModelDefinitionException {
+					throws ModelDefinitionException {
 		ViewResource returned = retrieveResource(serializationArtefact, resourceCenter, technologyContextManager);
 		parentViewResource.addToContents(returned);
 		parentViewResource.notifyContentsAdded(returned);
@@ -220,6 +230,8 @@ public class ViewResourceFactory extends AbstractVirtualModelInstanceResourceFac
 				returned.setViewPointResource(vpResource);
 				returned.setVirtualModelResource(vpResource);
 				if (vpResource == null) {
+					// In this case, serialize URI of viewpoint, to give a chance to find it later
+					returned.setViewpointURI(vpi.viewPointURI);
 					logger.warning("Could not retrieve viewpoint: " + vpi.viewPointURI);
 				}
 			}

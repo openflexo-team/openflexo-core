@@ -68,4 +68,20 @@ public abstract class VirtualModelInstanceResourceImpl extends AbstractVirtualMo
 		}
 		return null;
 	}
+
+	private String virtualModelURI;
+
+	@Override
+	public String getVirtualModelURI() {
+		if (getVirtualModelResource() != null) {
+			return getVirtualModelResource().getURI();
+		}
+		return virtualModelURI;
+	}
+
+	@Override
+	public void setVirtualModelURI(String virtualModelURI) {
+		this.virtualModelURI = virtualModelURI;
+	}
+
 }

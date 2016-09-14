@@ -172,13 +172,14 @@ public class VirtualModelInstanceResourceFactory
 					e.printStackTrace();
 				}
 				if (vm == null) {
+					// In this case, serialize URI of virtualmodel, to give a chance to find it later
+					returned.setVirtualModelURI(vmiInfo.virtualModelURI);
 					logger.warning("Could not find virtual model " + vmiInfo.virtualModelURI);
 				}
 				else {
 					returned.setVirtualModelResource((VirtualModelResource) vm.getResource());
 				}
 			}
-
 		}
 		else {
 			logger.warning("Cannot retrieve info from " + serializationArtefact);
