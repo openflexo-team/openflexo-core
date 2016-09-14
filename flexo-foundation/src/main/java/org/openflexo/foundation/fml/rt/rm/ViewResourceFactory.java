@@ -77,7 +77,7 @@ public class ViewResourceFactory extends AbstractVirtualModelInstanceResourceFac
 		// ViewResource returned = makeResource(serializationArtefact, resourceCenter, technologyContextManager, viewURI,
 		// createEmptyContents);
 
-		ViewResource returned = initResourceForCreation(serializationArtefact, resourceCenter, technologyContextManager, viewURI);
+		ViewResource returned = initResourceForCreation(serializationArtefact, resourceCenter, technologyContextManager, baseName, viewURI);
 		returned.setViewPointResource(viewPointResource);
 		registerResource(returned, resourceCenter, technologyContextManager);
 
@@ -97,7 +97,7 @@ public class ViewResourceFactory extends AbstractVirtualModelInstanceResourceFac
 		I serializationArtefact = resourceCenter.createDirectory((baseName.endsWith(VIEW_SUFFIX) ? baseName : (baseName + VIEW_SUFFIX)),
 				(I) parentViewResource.getFlexoIODelegate().getSerializationArtefact());
 
-		ViewResource returned = makeResource(serializationArtefact, resourceCenter, technologyContextManager,
+		ViewResource returned = makeResource(serializationArtefact, resourceCenter, technologyContextManager, baseName,
 				parentViewResource.getURI() + "/" + baseName + (baseName.endsWith(VIEW_SUFFIX) ? baseName : (baseName + VIEW_SUFFIX)),
 				createEmptyContents);
 		returned.setViewPointResource(viewPointResource);
@@ -187,8 +187,9 @@ public class ViewResourceFactory extends AbstractVirtualModelInstanceResourceFac
 
 	@Override
 	protected <I> ViewResource initResourceForCreation(I serializationArtefact, FlexoResourceCenter<I> resourceCenter,
-			TechnologyContextManager<FMLRTTechnologyAdapter> technologyContextManager, String uri) throws ModelDefinitionException {
-		ViewResource returned = super.initResourceForCreation(serializationArtefact, resourceCenter, technologyContextManager, uri);
+			TechnologyContextManager<FMLRTTechnologyAdapter> technologyContextManager, String name, String uri)
+					throws ModelDefinitionException {
+		ViewResource returned = super.initResourceForCreation(serializationArtefact, resourceCenter, technologyContextManager, name, uri);
 		returned.setVersion(INITIAL_REVISION);
 		returned.setModelVersion(CURRENT_FML_RT_VERSION);
 		return returned;

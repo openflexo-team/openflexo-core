@@ -86,7 +86,8 @@ public abstract class FlexoResourceFactory<R extends TechnologyAdapterResource<R
 
 	/**
 	 * Make a new empty resource for a given artefact, a resource center and a technology context manager.<br>
-	 * The newly created resource is set with empty contents as it is computed from {@link #makeEmptyResourceData()}
+	 * The newly created resource is set with empty contents as it is computed from {@link #makeEmptyResourceData()}<br>
+	 * Name of resource is retrieved from the name of serialization artefact, and uri is set to default (given by the resource center)
 	 * 
 	 * @param serializationArtefact
 	 * @param resourceCenter
@@ -100,13 +101,14 @@ public abstract class FlexoResourceFactory<R extends TechnologyAdapterResource<R
 	public <I> R makeResource(I serializationArtefact, FlexoResourceCenter<I> resourceCenter,
 			TechnologyContextManager<TA> technologyContextManager, boolean createEmptyContents)
 					throws SaveResourceException, ModelDefinitionException {
-		return makeResource(serializationArtefact, resourceCenter, technologyContextManager, null, createEmptyContents);
+		return makeResource(serializationArtefact, resourceCenter, technologyContextManager,
+				resourceCenter.retrieveName(serializationArtefact), null, createEmptyContents);
 	}
 
 	/**
 	 * Make a new empty resource for a given artefact, a resource center and a technology context manager.<br>
 	 * The newly created resource is set with empty contents as it is computed from {@link #makeEmptyResourceData()}<br>
-	 * URI is explicitely given to the new resource
+	 * Name and URI are explicitely given to the new resource
 	 * 
 	 * @param serializationArtefact
 	 * @param resourceCenter
@@ -117,9 +119,9 @@ public abstract class FlexoResourceFactory<R extends TechnologyAdapterResource<R
 	 * @throws ModelDefinitionException
 	 */
 	public <I> R makeResource(I serializationArtefact, FlexoResourceCenter<I> resourceCenter,
-			TechnologyContextManager<TA> technologyContextManager, String uri, boolean createEmptyContents)
+			TechnologyContextManager<TA> technologyContextManager, String name, String uri, boolean createEmptyContents)
 					throws SaveResourceException, ModelDefinitionException {
-		R returned = initResourceForCreation(serializationArtefact, resourceCenter, technologyContextManager, uri);
+		R returned = initResourceForCreation(serializationArtefact, resourceCenter, technologyContextManager, name, uri);
 		registerResource(returned, resourceCenter, technologyContextManager);
 
 		if (createEmptyContents) {
@@ -139,10 +141,10 @@ public abstract class FlexoResourceFactory<R extends TechnologyAdapterResource<R
 	}
 
 	protected <I> R initResourceForCreation(I serializationArtefact, FlexoResourceCenter<I> resourceCenter,
-			TechnologyContextManager<TA> technologyContextManager, String uri) throws ModelDefinitionException {
+			TechnologyContextManager<TA> technologyContextManager, String name, String uri) throws ModelDefinitionException {
 		R returned = newInstance(resourceClass);
 		returned.setResourceCenter(resourceCenter);
-		returned.initName(resourceCenter.retrieveName(serializationArtefact));
+		returned.initName(name);
 		returned.setURI(uri);
 		returned.setFlexoIODelegate(makeFlexoIODelegate(serializationArtefact, resourceCenter));
 		return returned;

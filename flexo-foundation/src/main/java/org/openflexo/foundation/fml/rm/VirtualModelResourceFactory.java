@@ -67,7 +67,7 @@ public class VirtualModelResourceFactory extends AbstractVirtualModelResourceFac
 		I serializationArtefact = resourceCenter.createDirectory(baseName,
 				resourceCenter.getContainer((I) viewPointResource.getFlexoIODelegate().getSerializationArtefact()));
 
-		VirtualModelResource returned = initResourceForCreation(serializationArtefact, resourceCenter, technologyContextManager,
+		VirtualModelResource returned = initResourceForCreation(serializationArtefact, resourceCenter, technologyContextManager, baseName,
 				viewPointResource.getURI() + "/" + baseName);
 
 		viewPointResource.addToContents(returned);
@@ -102,8 +102,10 @@ public class VirtualModelResourceFactory extends AbstractVirtualModelResourceFac
 
 	@Override
 	protected <I> VirtualModelResource initResourceForCreation(I serializationArtefact, FlexoResourceCenter<I> resourceCenter,
-			TechnologyContextManager<FMLTechnologyAdapter> technologyContextManager, String uri) throws ModelDefinitionException {
-		VirtualModelResource returned = super.initResourceForCreation(serializationArtefact, resourceCenter, technologyContextManager, uri);
+			TechnologyContextManager<FMLTechnologyAdapter> technologyContextManager, String name, String uri)
+					throws ModelDefinitionException {
+		VirtualModelResource returned = super.initResourceForCreation(serializationArtefact, resourceCenter, technologyContextManager, name,
+				uri);
 		returned.setVersion(INITIAL_REVISION);
 		returned.setModelVersion(CURRENT_FML_VERSION);
 		return returned;

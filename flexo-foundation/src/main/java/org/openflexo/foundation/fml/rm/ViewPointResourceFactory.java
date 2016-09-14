@@ -73,7 +73,7 @@ public class ViewPointResourceFactory extends AbstractVirtualModelResourceFactor
 		FlexoResourceCenter<I> resourceCenter = folder.getResourceRepository().getResourceCenter();
 		I serializationArtefact = resourceCenter.createDirectory(baseName + VIEWPOINT_SUFFIX, folder.getSerializationArtefact());
 
-		return makeResource(serializationArtefact, resourceCenter, technologyContextManager, viewpointURI, createEmptyContents);
+		return makeResource(serializationArtefact, resourceCenter, technologyContextManager, baseName, viewpointURI, createEmptyContents);
 	}
 
 	/*public static ViewPoint newViewPoint(String baseName, String viewpointURI, File containerDir, ViewPointLibrary library,
@@ -135,8 +135,10 @@ public class ViewPointResourceFactory extends AbstractVirtualModelResourceFactor
 
 	@Override
 	protected <I> ViewPointResource initResourceForCreation(I serializationArtefact, FlexoResourceCenter<I> resourceCenter,
-			TechnologyContextManager<FMLTechnologyAdapter> technologyContextManager, String uri) throws ModelDefinitionException {
-		ViewPointResource returned = super.initResourceForCreation(serializationArtefact, resourceCenter, technologyContextManager, uri);
+			TechnologyContextManager<FMLTechnologyAdapter> technologyContextManager, String name, String uri)
+					throws ModelDefinitionException {
+		ViewPointResource returned = super.initResourceForCreation(serializationArtefact, resourceCenter, technologyContextManager, name,
+				uri);
 
 		returned.setVersion(INITIAL_REVISION);
 		returned.setModelVersion(CURRENT_FML_VERSION);

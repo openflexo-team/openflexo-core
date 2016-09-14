@@ -80,7 +80,7 @@ public class VirtualModelInstanceResourceFactory
 				resourceCenter.getContainer((I) viewResource.getFlexoIODelegate().getSerializationArtefact()));
 
 		VirtualModelInstanceResource returned = initResourceForCreation(serializationArtefact, resourceCenter, technologyContextManager,
-				viewResource.getURI() + "/"
+				name, viewResource.getURI() + "/"
 						+ (name.endsWith(VIRTUAL_MODEL_INSTANCE_SUFFIX) ? name : (name + VIRTUAL_MODEL_INSTANCE_SUFFIX)));
 
 		viewResource.addToContents(returned);
@@ -120,9 +120,10 @@ public class VirtualModelInstanceResourceFactory
 
 	@Override
 	protected <I> VirtualModelInstanceResource initResourceForCreation(I serializationArtefact, FlexoResourceCenter<I> resourceCenter,
-			TechnologyContextManager<FMLRTTechnologyAdapter> technologyContextManager, String uri) throws ModelDefinitionException {
+			TechnologyContextManager<FMLRTTechnologyAdapter> technologyContextManager, String name, String uri)
+					throws ModelDefinitionException {
 		VirtualModelInstanceResource returned = super.initResourceForCreation(serializationArtefact, resourceCenter,
-				technologyContextManager, uri);
+				technologyContextManager, name, uri);
 		returned.setVersion(INITIAL_REVISION);
 		returned.setModelVersion(CURRENT_FML_RT_VERSION);
 		return returned;
