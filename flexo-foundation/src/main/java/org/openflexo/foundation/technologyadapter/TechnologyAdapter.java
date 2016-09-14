@@ -700,7 +700,8 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 
 	/**
 	 * Add all the RCs that contain an identification of a FlexoResourceCenter in META-INF<br>
-	 * (identified by META-INF/PrivateRC/org.openflexo.foundation.resource.FlexoResourceCenter) Those ResourceCenters are private resource
+	 * (identified by META-INF/PrivateRC/ID/org.openflexo.foundation.resource.FlexoResourceCenter)<br>
+	 * (ID is the identifier of technology adapter, given by {@link #getIdentifier()} method) Those ResourceCenters are private resource
 	 * center and will be used as system resource centers.
 	 * 
 	 * WARNING: should only be called once
@@ -716,7 +717,8 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 				serviceManager.getResourceCenterService().getResourceCenters());
 
 		try {
-			urlList = ClassLoader.getSystemClassLoader().getResources("META-INF/PrivateRC/" + FlexoResourceCenter.class.getCanonicalName());
+			urlList = ClassLoader.getSystemClassLoader()
+					.getResources("META-INF/PrivateRC/" + getIdentifier() + "/" + FlexoResourceCenter.class.getCanonicalName());
 
 			if (urlList != null && urlList.hasMoreElements()) {
 				FlexoResourceCenter rc = null;
