@@ -27,6 +27,7 @@ import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.rm.ViewPointResource;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.fml.rt.View;
+import org.openflexo.foundation.fml.rt.ViewLibrary;
 import org.openflexo.foundation.fml.rt.ViewModelFactory;
 import org.openflexo.foundation.resource.FlexoIODelegate;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
@@ -94,13 +95,22 @@ public class ViewResourceFactory extends AbstractVirtualModelInstanceResourceFac
 					throws SaveResourceException, ModelDefinitionException {
 
 		FlexoResourceCenter<I> resourceCenter = (FlexoResourceCenter<I>) parentViewResource.getResourceCenter();
+		I parentDir = resourceCenter.getContainer((I) parentViewResource.getFlexoIODelegate().getSerializationArtefact());
 		I serializationArtefact = resourceCenter.createDirectory((baseName.endsWith(VIEW_SUFFIX) ? baseName : (baseName + VIEW_SUFFIX)),
-				(I) parentViewResource.getFlexoIODelegate().getSerializationArtefact());
+				parentDir);
 
-		ViewResource returned = makeResource(serializationArtefact, resourceCenter, technologyContextManager, baseName,
-				parentViewResource.getURI() + "/" + baseName + (baseName.endsWith(VIEW_SUFFIX) ? baseName : (baseName + VIEW_SUFFIX)),
-				createEmptyContents);
+		String viewURI = parentViewResource.getURI() + "/" + baseName
+				+ (baseName.endsWith(VIEW_SUFFIX) ? baseName : (baseName + VIEW_SUFFIX));
+
+		ViewResource returned = initResourceForCreation(serializationArtefact, resourceCenter, technologyContextManager, baseName, viewURI);
 		returned.setViewPointResource(viewPointResource);
+		registerResource(returned, resourceCenter, technologyContextManager);
+
+		if (createEmptyContents) {
+			createEmptyContents(returned);
+			returned.save(null);
+		}
+
 		parentViewResource.addToContents(returned);
 		parentViewResource.notifyContentsAdded(returned);
 		return returned;
@@ -148,8 +158,12 @@ public class ViewResourceFactory extends AbstractVirtualModelInstanceResourceFac
 			TechnologyContextManager<FMLRTTechnologyAdapter> technologyContextManager) {
 		super.registerResource(resource, resourceCenter, technologyContextManager);
 
+		ViewLibrary<I> viewLibrary = technologyContextManager.getTechnologyAdapter().getViewRepository(resourceCenter);
+
+		// Sets the ViewLibrary
 		// Register the resource in the ViewRepository of supplied resource center
-		registerResourceInResourceRepository(resource, technologyContextManager.getTechnologyAdapter().getViewRepository(resourceCenter));
+		resource.setViewLibrary(viewLibrary);
+		registerResourceInResourceRepository(resource, viewLibrary);
 
 		// TODO: refactor this
 		if (resourceCenter instanceof FlexoProject) {
@@ -305,6 +319,9 @@ public class ViewResourceFactory extends AbstractVirtualModelInstanceResourceFac
 		ViewInfo returned = new ViewInfo();
 		XMLRootElementInfo xmlRootElementInfo = resourceCenter
 				.getXMLRootElementInfo((I) resource.getFlexoIODelegate().getSerializationArtefact());
+		if (xmlRootElementInfo == null) {
+			return null;
+		}
 		if (xmlRootElementInfo.getName().equals("View")) {
 			returned.uri = xmlRootElementInfo.getAttribute("uri");
 			returned.name = xmlRootElementInfo.getAttribute("name");

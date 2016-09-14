@@ -261,6 +261,9 @@ public class ViewPointResourceFactory extends AbstractVirtualModelResourceFactor
 		ViewPointInfo returned = new ViewPointInfo();
 		XMLRootElementInfo xmlRootElementInfo = resourceCenter
 				.getXMLRootElementInfo((I) resource.getFlexoIODelegate().getSerializationArtefact());
+		if (xmlRootElementInfo == null) {
+			return null;
+		}
 		if (xmlRootElementInfo.getName().equals("ViewPoint")) {
 			returned.uri = xmlRootElementInfo.getAttribute("uri");
 			returned.name = xmlRootElementInfo.getAttribute("name");

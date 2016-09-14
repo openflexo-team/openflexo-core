@@ -239,28 +239,45 @@ public class ViewPointLibrary extends DefaultFlexoObject implements FlexoService
 		return vpRes;
 	}
 
+	/**
+	 * Lookup and return {@link FlexoConcept} identified by supplied flexoConceptURI<br>
+	 * Return concept might be a {@link ViewPoint}, a {@link VirtualModel} or a simple {@link FlexoConcept}
+	 * 
+	 * @param flexoConceptURI
+	 * @return
+	 */
 	public FlexoConcept getFlexoConcept(String flexoConceptURI) {
 		FlexoConcept returned = null;
+
+		// Is that a viewpoint ?
 		returned = getViewPoint(flexoConceptURI);
 		if (returned != null) {
 			return returned;
 		}
+
+		// Is that a virtual model ?
 		VirtualModelResource vmRes = _getVirtualModel(flexoConceptURI);
-		if (vmRes != null && vmRes.getLoadedResourceData() != null) {
-			return vmRes.getLoadedResourceData();
+		if (vmRes != null) {
+			return vmRes.getVirtualModel();
 		}
+
+		// May be a simple concept ?
 		if (flexoConceptURI.indexOf("#") > -1) {
 			String virtualModelURI = flexoConceptURI.substring(0, flexoConceptURI.indexOf("#"));
 			String flexoConceptName = flexoConceptURI.substring(flexoConceptURI.indexOf("#") + 1);
 			vmRes = _getVirtualModel(virtualModelURI);
-			if (vmRes != null && _getVirtualModel(virtualModelURI).getLoadedResourceData() != null) {
-				VirtualModel vm = _getVirtualModel(virtualModelURI).getLoadedResourceData();
+			if (vmRes != null) {
+				VirtualModel vm = vmRes.getVirtualModel();
 				return vm.getFlexoConcept(flexoConceptName);
 			}
 			logger.warning("Cannot find virtual model " + virtualModelURI + " while searching flexo concept:" + flexoConceptURI + " ("
 					+ flexoConceptName + ")");
 		}
 		logger.warning("Cannot find flexo concept:" + flexoConceptURI);
+		/*String viewPointURI = flexoConceptURI.substring(0, flexoConceptURI.lastIndexOf("/"));
+		for (VirtualModelResource r : getViewPointResource(viewPointURI).getVirtualModelResources()) {
+			System.out.println("> VM " + r.getURI());
+		}*/
 		return null;
 	}
 

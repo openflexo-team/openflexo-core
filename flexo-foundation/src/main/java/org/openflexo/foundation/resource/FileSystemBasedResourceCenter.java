@@ -960,6 +960,10 @@ public abstract class FileSystemBasedResourceCenter extends ResourceRepository<F
 
 	@Override
 	public XMLRootElementInfo getXMLRootElementInfo(File serializationArtefact) {
+		if (!serializationArtefact.exists()) {
+			logger.warning("Could not extract XMLRootElementInfo from a non existant file: " + serializationArtefact);
+			return null;
+		}
 		XMLRootElementReader reader = new XMLRootElementReader();
 		try {
 			return reader.readRootElement(serializationArtefact);

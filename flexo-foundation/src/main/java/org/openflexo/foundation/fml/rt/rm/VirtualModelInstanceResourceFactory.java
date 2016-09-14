@@ -206,6 +206,9 @@ public class VirtualModelInstanceResourceFactory
 		VirtualModelInstanceInfo returned = new VirtualModelInstanceInfo();
 		XMLRootElementInfo xmlRootElementInfo = resourceCenter
 				.getXMLRootElementInfo((I) resource.getFlexoIODelegate().getSerializationArtefact());
+		if (xmlRootElementInfo == null) {
+			return null;
+		}
 		if (xmlRootElementInfo.getName().equals("VirtualModelInstance")) {
 			returned.name = xmlRootElementInfo.getAttribute("name");
 			returned.uri = xmlRootElementInfo.getAttribute("uri");

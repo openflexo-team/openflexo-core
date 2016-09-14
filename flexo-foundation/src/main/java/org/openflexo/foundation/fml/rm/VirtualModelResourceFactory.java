@@ -156,6 +156,9 @@ public class VirtualModelResourceFactory extends AbstractVirtualModelResourceFac
 		VirtualModelInfo returned = new VirtualModelInfo();
 		XMLRootElementInfo xmlRootElementInfo = resourceCenter
 				.getXMLRootElementInfo((I) resource.getFlexoIODelegate().getSerializationArtefact());
+		if (xmlRootElementInfo == null) {
+			return null;
+		}
 		if (xmlRootElementInfo.getName().equals("VirtualModel")) {
 			returned.name = xmlRootElementInfo.getAttribute("name");
 			returned.version = xmlRootElementInfo.getAttribute("version");
