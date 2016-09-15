@@ -57,7 +57,7 @@ import org.openflexo.model.factory.AccessibleProxyObject;
  * @param <I>
  */
 @ModelEntity(isAbstract = true)
-@Imports({ @Import(FlexoIOStreamDelegate.class) })
+@Imports({ @Import(FlexoIOStreamDelegate.class), @Import(ClassLoaderIODelegate.class) })
 public interface FlexoIODelegate<I> extends AccessibleProxyObject {
 
 	@PropertyIdentifier(type = String.class)
@@ -132,4 +132,10 @@ public interface FlexoIODelegate<I> extends AccessibleProxyObject {
 	public RepositoryFolder<?, I> getRepositoryFolder(ResourceRepository<?, I> resourceRepository, boolean createWhenNonExistent)
 			throws IOException;
 
+	/**
+	 * Used to retrieve a ClassLoader exposing code embedded in serialization artefact
+	 * 
+	 * @return
+	 */
+	public ClassLoader retrieveClassLoader();
 }

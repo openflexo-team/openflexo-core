@@ -40,6 +40,7 @@ package org.openflexo.foundation.resource;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -47,6 +48,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.jar.JarFile;
 import java.util.logging.Logger;
@@ -592,6 +594,39 @@ public class JarResourceCenter extends ResourceRepository<FlexoResource<?>, InJa
 			return null;
 		}
 
+	}
+
+	/**
+	 * Return properties stored in supplied directory<br>
+	 * Find the first entry whose name ends with .properties and analyze it as a {@link Properties} serialization
+	 * 
+	 * @return
+	 * @throws IOException
+	 */
+	@Override
+	public Properties getProperties(InJarResourceImpl directory) throws IOException {
+		System.out.println("Reading properties from JarEntry " + directory);
+		Properties returned = null;
+		if (isDirectory(directory)) {
+			InJarResourceImpl propertiesJarEntry = null;
+			for (InJarResourceImpl content : getContents(directory)) {
+				if (retrieveName(content).endsWith(".properties")) {
+					propertiesJarEntry = content;
+					break;
+				}
+			}
+			if (propertiesJarEntry != null) {
+				returned = new Properties();
+				InputStream is = propertiesJarEntry.openInputStream();
+				try {
+					returned.load(is);
+				} finally {
+					is.close();
+				}
+			}
+		}
+		System.out.println("Return properties: " + returned);
+		return returned;
 	}
 
 	@Override

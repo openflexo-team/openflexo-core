@@ -20,6 +20,7 @@
 
 package org.openflexo.foundation.fml.rt.rm;
 
+import java.io.IOException;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoProject;
@@ -117,14 +118,14 @@ public class ViewResourceFactory extends AbstractVirtualModelInstanceResourceFac
 	}
 
 	public <I> ViewResource retrieveViewResource(I serializationArtefact, FlexoResourceCenter<I> resourceCenter,
-			TechnologyContextManager<FMLRTTechnologyAdapter> technologyContextManager) throws ModelDefinitionException {
+			TechnologyContextManager<FMLRTTechnologyAdapter> technologyContextManager) throws ModelDefinitionException, IOException {
 		ViewResource returned = retrieveResource(serializationArtefact, resourceCenter, technologyContextManager);
 		return returned;
 	}
 
 	public <I> ViewResource retrieveViewResource(I serializationArtefact, FlexoResourceCenter<I> resourceCenter,
 			TechnologyContextManager<FMLRTTechnologyAdapter> technologyContextManager, ViewResource parentViewResource)
-					throws ModelDefinitionException {
+					throws ModelDefinitionException, IOException {
 		ViewResource returned = retrieveResource(serializationArtefact, resourceCenter, technologyContextManager);
 		parentViewResource.addToContents(returned);
 		parentViewResource.notifyContentsAdded(returned);
@@ -211,7 +212,7 @@ public class ViewResourceFactory extends AbstractVirtualModelInstanceResourceFac
 
 	@Override
 	protected <I> ViewResource initResourceForRetrieving(I serializationArtefact, FlexoResourceCenter<I> resourceCenter,
-			TechnologyContextManager<FMLRTTechnologyAdapter> technologyContextManager) throws ModelDefinitionException {
+			TechnologyContextManager<FMLRTTechnologyAdapter> technologyContextManager) throws ModelDefinitionException, IOException {
 
 		ViewResource returned = super.initResourceForRetrieving(serializationArtefact, resourceCenter, technologyContextManager);
 
@@ -288,12 +289,18 @@ public class ViewResourceFactory extends AbstractVirtualModelInstanceResourceFac
 				} catch (ModelDefinitionException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
 			}
 			else if (isValidArtefact(child, resourceCenter)) {
 				try {
 					ViewResource subViewResource = retrieveViewResource(child, resourceCenter, technologyContextManager, viewResource);
 				} catch (ModelDefinitionException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}

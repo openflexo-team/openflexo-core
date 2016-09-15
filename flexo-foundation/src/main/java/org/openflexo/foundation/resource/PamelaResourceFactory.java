@@ -20,6 +20,7 @@
 
 package org.openflexo.foundation.resource;
 
+import java.io.IOException;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.PamelaResourceModelFactory;
@@ -64,7 +65,7 @@ public abstract class PamelaResourceFactory<R extends TechnologyAdapterResource<
 
 	@Override
 	protected <I> R initResourceForRetrieving(I serializationArtefact, FlexoResourceCenter<I> resourceCenter,
-			TechnologyContextManager<TA> technologyContextManager) throws ModelDefinitionException {
+			TechnologyContextManager<TA> technologyContextManager) throws ModelDefinitionException, IOException {
 		R returned = super.initResourceForRetrieving(serializationArtefact, resourceCenter, technologyContextManager);
 		returned.setFactory(makeResourceDataFactory(returned, technologyContextManager));
 		return returned;

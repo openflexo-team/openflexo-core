@@ -40,6 +40,7 @@ package org.openflexo.foundation.resource;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -51,6 +52,7 @@ import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.model.annotations.XMLElement;
 import org.openflexo.model.factory.ModelFactory;
 import org.openflexo.toolbox.FileUtils;
+import org.openflexo.toolbox.JarInDirClassLoader;
 
 /**
  * Represents an I/O delegate based on a directory and a core file inside this directory<br>
@@ -212,6 +214,11 @@ public interface DirectoryBasedFlexoIODelegate extends FileFlexoIODelegate {
 		public RepositoryFolder<?, File> getRepositoryFolder(ResourceRepository<?, File> resourceRepository, boolean createWhenNonExistent)
 				throws IOException {
 			return resourceRepository.getRepositoryFolder(getDirectory(), true);
+		}
+
+		@Override
+		public ClassLoader retrieveClassLoader() {
+			return new JarInDirClassLoader(Collections.singletonList(getDirectory()));
 		}
 
 	}

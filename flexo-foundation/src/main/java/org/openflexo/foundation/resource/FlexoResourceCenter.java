@@ -43,6 +43,7 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Properties;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -437,6 +438,14 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, FlexoObject, Refere
 	 * @return
 	 */
 	public XMLRootElementInfo getXMLRootElementInfo(I serializationArtefact);
+
+	/**
+	 * Return properties stored in supplied directory<br>
+	 * Find the first entry whose name ends with .properties and analyze it as a {@link Properties} serialization
+	 * 
+	 * @return
+	 */
+	public Properties getProperties(I directory) throws IOException;
 
 	public List<String> getPathTo(I serializationArtefact) throws IOException;
 

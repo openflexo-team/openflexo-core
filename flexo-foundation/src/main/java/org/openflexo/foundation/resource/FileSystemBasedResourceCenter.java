@@ -40,6 +40,8 @@
 package org.openflexo.foundation.resource;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -49,6 +51,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -972,6 +975,31 @@ public abstract class FileSystemBasedResourceCenter extends ResourceRepository<F
 			return null;
 		}
 
+	}
+
+	/**
+	 * Return properties stored in supplied directory<br>
+	 * Find the first entry whose name ends with .properties and analyze it as a {@link Properties} serialization
+	 * 
+	 * @return
+	 * @throws IOException
+	 */
+	@Override
+	public Properties getProperties(File directory) throws IOException {
+		Properties returned = null;
+		if (directory != null && directory.isDirectory()) {
+			// Read first <xxx>.properties file.
+			File[] propertiesFiles = directory.listFiles(FileUtils.PropertiesFileNameFilter);
+			if (propertiesFiles.length == 1) {
+				try {
+					returned = new Properties();
+					returned.load(new FileReader(propertiesFiles[0]));
+				} catch (FileNotFoundException e) {
+					returned = null;
+				}
+			}
+		}
+		return returned;
 	}
 
 	@Override

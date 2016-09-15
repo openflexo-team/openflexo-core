@@ -21,6 +21,7 @@
 package org.openflexo.foundation.fml.rt.rm;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoException;
@@ -102,7 +103,7 @@ public class VirtualModelInstanceResourceFactory
 
 	public <I> VirtualModelInstanceResource retrieveVirtualModelInstanceResource(I serializationArtefact,
 			TechnologyContextManager<FMLRTTechnologyAdapter> technologyContextManager, ViewResource viewResource)
-					throws ModelDefinitionException {
+					throws ModelDefinitionException, IOException {
 
 		FlexoResourceCenter<I> resourceCenter = (FlexoResourceCenter<I>) viewResource.getResourceCenter();
 		String name = resourceCenter.retrieveName(serializationArtefact);
@@ -131,7 +132,7 @@ public class VirtualModelInstanceResourceFactory
 
 	@Override
 	protected <I> VirtualModelInstanceResource initResourceForRetrieving(I serializationArtefact, FlexoResourceCenter<I> resourceCenter,
-			TechnologyContextManager<FMLRTTechnologyAdapter> technologyContextManager) throws ModelDefinitionException {
+			TechnologyContextManager<FMLRTTechnologyAdapter> technologyContextManager) throws ModelDefinitionException, IOException {
 		VirtualModelInstanceResource returned = super.initResourceForRetrieving(serializationArtefact, resourceCenter,
 				technologyContextManager);
 

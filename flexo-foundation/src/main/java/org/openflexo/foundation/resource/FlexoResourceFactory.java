@@ -159,14 +159,14 @@ public abstract class FlexoResourceFactory<R extends TechnologyAdapterResource<R
 	 * @return
 	 */
 	public <I> R retrieveResource(I serializationArtefact, FlexoResourceCenter<I> resourceCenter,
-			TechnologyContextManager<TA> technologyContextManager) throws ModelDefinitionException {
+			TechnologyContextManager<TA> technologyContextManager) throws ModelDefinitionException, IOException {
 		R returned = initResourceForRetrieving(serializationArtefact, resourceCenter, technologyContextManager);
 		registerResource(returned, resourceCenter, technologyContextManager);
 		return returned;
 	}
 
 	protected <I> R initResourceForRetrieving(I serializationArtefact, FlexoResourceCenter<I> resourceCenter,
-			TechnologyContextManager<TA> technologyContextManager) throws ModelDefinitionException {
+			TechnologyContextManager<TA> technologyContextManager) throws ModelDefinitionException, IOException {
 		R returned = newInstance(resourceClass);
 		returned.setResourceCenter(resourceCenter);
 		returned.initName(resourceCenter.retrieveName(serializationArtefact));
@@ -197,13 +197,12 @@ public abstract class FlexoResourceFactory<R extends TechnologyAdapterResource<R
 	protected <I> R registerResource(R resource, FlexoResourceCenter<I> resourceCenter,
 			TechnologyContextManager<TA> technologyContextManager) {
 
-		// System.out.println("On enregistre la resource " + resource.getName() + " dans le RC " + resourceCenter);
-		// System.out.println("BaseURI=" + resourceCenter.getDefaultBaseURI());
-		// System.out.println("URI=" + resource.getURI());
-
 		resource.setResourceCenter(resourceCenter);
 		// Register the resource in the global repository of technology adapter
-		registerResourceInResourceRepository(resource, technologyContextManager.getTechnologyAdapter().getGlobalRepository(resourceCenter));
+		if (resourceCenter != null) {
+			registerResourceInResourceRepository(resource,
+					technologyContextManager.getTechnologyAdapter().getGlobalRepository(resourceCenter));
+		}
 
 		resource.setServiceManager(technologyContextManager.getServiceManager());
 		resource.setTechnologyAdapter(technologyContextManager.getTechnologyAdapter());

@@ -20,6 +20,7 @@
 
 package org.openflexo.foundation.fml.rm;
 
+import java.io.IOException;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
@@ -84,7 +85,7 @@ public class VirtualModelResourceFactory extends AbstractVirtualModelResourceFac
 
 	public <I> VirtualModelResource retrieveVirtualModelResource(I serializationArtefact,
 			TechnologyContextManager<FMLTechnologyAdapter> technologyContextManager, ViewPointResource viewPointResource)
-					throws ModelDefinitionException {
+					throws ModelDefinitionException, IOException {
 
 		FlexoResourceCenter<I> resourceCenter = (FlexoResourceCenter<I>) viewPointResource.getResourceCenter();
 		String name = resourceCenter.retrieveName(serializationArtefact);
@@ -113,7 +114,7 @@ public class VirtualModelResourceFactory extends AbstractVirtualModelResourceFac
 
 	@Override
 	protected <I> VirtualModelResource initResourceForRetrieving(I serializationArtefact, FlexoResourceCenter<I> resourceCenter,
-			TechnologyContextManager<FMLTechnologyAdapter> technologyContextManager) throws ModelDefinitionException {
+			TechnologyContextManager<FMLTechnologyAdapter> technologyContextManager) throws ModelDefinitionException, IOException {
 
 		VirtualModelResource returned = super.initResourceForRetrieving(serializationArtefact, resourceCenter, technologyContextManager);
 
