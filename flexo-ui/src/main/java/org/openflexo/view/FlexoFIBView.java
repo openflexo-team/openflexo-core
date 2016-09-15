@@ -72,6 +72,7 @@ import org.openflexo.view.controller.FlexoFIBController;
  * @author sguerin
  * 
  */
+@SuppressWarnings("serial")
 public class FlexoFIBView extends JPanel implements GraphicalFlexoObserver, HasPropertyChangeSupport, PropertyChangeListener {
 	static final Logger logger = Logger.getLogger(FlexoFIBView.class.getPackage().getName());
 
@@ -208,7 +209,7 @@ public class FlexoFIBView extends JPanel implements GraphicalFlexoObserver, HasP
 		return fibComponent;
 	}
 
-	public FIBView getFIBView() {
+	public FIBView<?, ?> getFIBView() {
 		return fibView;
 	}
 
@@ -216,7 +217,7 @@ public class FlexoFIBView extends JPanel implements GraphicalFlexoObserver, HasP
 		return fibController;
 	}
 
-	public FIBView getFIBView(String componentName) {
+	public FIBView<?, ?> getFIBView(String componentName) {
 		return fibController.viewForComponent(componentName);
 	}
 
