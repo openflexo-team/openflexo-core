@@ -360,8 +360,7 @@ public class JarResourceCenter extends ResourceRepository<FlexoResource<?>, InJa
 
 	@Override
 	public Collection<? extends FlexoResource<?>> getAllResources(IProgress progress) {
-		// TODO Not yet implemented
-		return new ArrayList<FlexoResource<?>>();
+		return getAllResources();
 	}
 
 	@Override
