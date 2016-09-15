@@ -74,6 +74,14 @@ public class GitResourceCenter extends FileSystemBasedResourceCenter {
 		gitIODelegateFactory = new GitIODelegateFactory();
 	}
 
+	/** 
+	 * needed for sub-classing and steel accessing to JGit Tooling
+	 * @return
+	 */
+	public Git getGit() {
+		return git;
+	}
+
 	@Override
 	public boolean isIgnorable(File file) {
 		if (file.isDirectory() && file.getName().equals(".git")) {
