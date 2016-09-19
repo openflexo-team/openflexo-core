@@ -648,7 +648,7 @@ public class JarResourceCenter extends ResourceRepository<FlexoResource<?>, InJa
 	 */
 	@Override
 	public Properties getProperties(InJarResourceImpl directory) throws IOException {
-		System.out.println("Reading properties from JarEntry " + directory);
+		// System.out.println("Reading properties from JarEntry " + directory);
 		Properties returned = null;
 		if (isDirectory(directory)) {
 			InJarResourceImpl propertiesJarEntry = null;
@@ -668,7 +668,7 @@ public class JarResourceCenter extends ResourceRepository<FlexoResource<?>, InJa
 				}
 			}
 		}
-		System.out.println("Return properties: " + returned);
+		// System.out.println("Return properties: " + returned);
 		return returned;
 	}
 

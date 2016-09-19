@@ -158,32 +158,8 @@ public interface DirectoryBasedJarIODelegate extends InJarFlexoIODelegate {
 
 		@Override
 		public ClassLoader retrieveClassLoader() {
-			System.out.println("Ok, je dois instancier un ClassLoader pour " + getDirectory().getURL());
-			/*List<URL> urlList = new ArrayList<>();
-			for (InJarResourceImpl r : getDirectory().getContents()) {
-				urlList.add(r.getURL());
-				System.out.println("> hop: " + r.getURL());
-			}
-			URL[] urlArray = urlList.toArray(new URL[urlList.size()]);*/
-
 			URL jarResource = getDirectory().getJarResource().getURL();
-			System.out.println("URL=" + jarResource);
-			URL[] urlArray = new URL[1];
-			urlArray[0] = jarResource;
-
 			ClassLoader returned = new JarClassLoader(jarResource, getClass().getClassLoader());
-
-			/*directory.ge
-			
-			File file = getJarFileToLoadFrom();   
-			String lcStr = getNameOfClassToLoad();   
-			URL jarfile = new URL("jar", "","file:" + file.getAbsolutePath()+"!/");    
-			URLClassLoader cl = URLClassLoader.newInstance(new URL[] {jarfile });   
-			Class loadedClass = cl.loadClass(lcStr);   
-			
-			return new JarInDirClassLoader(Collections.singletonList(getDirectory()));*/
-			System.out.println("Je retourne " + returned);
-			// System.exit(-1);
 			return returned;
 		}
 
