@@ -38,6 +38,10 @@
 
 package org.openflexo.foundation.resource;
 
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 
 import org.openflexo.model.annotations.Getter;
@@ -159,6 +163,31 @@ public interface DirectoryBasedJarIODelegate extends InJarFlexoIODelegate {
 		@Override
 		public void rename() throws CannotRenameException {
 			// Not applicable
+		}
+
+		@Override
+		public ClassLoader retrieveClassLoader() {
+			System.out.println("Ok, je dois instancier un ClassLoader pour " + getDirectory().getURL());
+			List<URL> urlList = new ArrayList<>();
+			for (InJarResourceImpl r : getDirectory().getContents()) {
+				urlList.add(r.getURL());
+				System.out.println("> hop: " + r.getURL());
+			}
+			URL[] urlArray = urlList.toArray(new URL[urlList.size()]);
+			ClassLoader returned = new URLClassLoader(urlArray, getClass().getClassLoader());
+
+			/*directory.ge
+			
+			File file = getJarFileToLoadFrom();   
+			String lcStr = getNameOfClassToLoad();   
+			URL jarfile = new URL("jar", "","file:" + file.getAbsolutePath()+"!/");    
+			URLClassLoader cl = URLClassLoader.newInstance(new URL[] {jarfile });   
+			Class loadedClass = cl.loadClass(lcStr);   
+			
+			return new JarInDirClassLoader(Collections.singletonList(getDirectory()));*/
+			System.out.println("Je retourne " + returned);
+			//System.exit(-1);
+			return returned;
 		}
 
 	}

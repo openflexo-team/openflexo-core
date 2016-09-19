@@ -61,6 +61,7 @@ import org.openflexo.foundation.resource.DirectoryBasedJarIODelegate.DirectoryBa
 import org.openflexo.foundation.resource.InJarFlexoIODelegate.InJarFlexoIODelegateImpl;
 import org.openflexo.foundation.task.Progress;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapterResource;
 import org.openflexo.foundation.utils.FlexoObjectReference;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.Implementation;
@@ -466,9 +467,51 @@ public class JarResourceCenter extends ResourceRepository<FlexoResource<?>, InJa
 		// Nothing to do for now
 	}
 
+	/**
+	 * Compute and return a default URI for supplied resource<br>
+	 * If resource does not provide URI support, this might be delegated to the {@link FlexoResourceCenter} through this method
+	 * 
+	 * @param resource
+	 * @return
+	 */
 	@Override
-	public String getDefaultResourceURI(FlexoResource<?> resource) {
-		return resource.getName();
+	public <R extends FlexoResource<?>> String getDefaultResourceURI(R resource) {
+		String defaultBaseURI = getDefaultBaseURI();
+		if (!defaultBaseURI.endsWith("/")) {
+			defaultBaseURI = defaultBaseURI + "/";
+		}
+		String lastPath;
+		if (resource.getFlexoIODelegate() instanceof DirectoryBasedJarIODelegate) {
+			lastPath = "";
+		}
+		else {
+			lastPath = resource.getName();
+		}
+		String relativePath = "";
+		if (resource instanceof TechnologyAdapterResource) {
+			TechnologyAdapter ta = ((TechnologyAdapterResource<?, ?>) resource).getTechnologyAdapter();
+			if (ta != null) {
+				ResourceRepository<R, InJarResourceImpl> repository = ta.getGlobalRepository(this);
+				if (repository != null && repository.containsResource(resource)) {
+					RepositoryFolder<R, InJarResourceImpl> f = repository.getRepositoryFolder(resource);
+					// System.out.println("*** Folder for " + resource.getFlexoIODelegate().getSerializationArtefact() + " is "
+					// + f.getSerializationArtefact());
+					while (f != null && !f.isRootFolder()) {
+						relativePath = f.getName() + "/" + relativePath;
+						f = f.getParentFolder();
+					}
+					/*if (resource.getName().equals("brest.city1")) {
+						System.out.println("OK on s'arrete pour regarder brest.city1");
+						System.out.println(repository.debug());
+					
+						System.exit(-1);
+					}*/
+				}
+			}
+		}
+		// System.out.println("Resource " + resource.getName() + " defaultBaseURI=" + defaultBaseURI + " relativePath=" + relativePath
+		// + " lastPath=" + lastPath);
+		return defaultBaseURI + relativePath + lastPath;
 	}
 
 	@Override
@@ -641,6 +684,10 @@ public class JarResourceCenter extends ResourceRepository<FlexoResource<?>, InJa
 			candidateFile = ((InJarFlexoIODelegate) ioDelegate).getInJarResource();
 		}
 		try {
+
+			// System.out.println("Folder for " + ioDelegate.getSerializationArtefact() + " is "
+			// + resourceRepository.getRepositoryFolder(candidateFile, true));
+
 			return resourceRepository.getRepositoryFolder(candidateFile, true);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -662,7 +709,10 @@ public class JarResourceCenter extends ResourceRepository<FlexoResource<?>, InJa
 			StringTokenizer string = new StringTokenizer(/*resource.getURI()*/resource.getEntry().getName(),
 					Character.toString(ClasspathResourceLocatorImpl.PATH_SEP.toCharArray()[0]));
 			while (string.hasMoreTokens()) {
-				pathTo.add(string.nextToken());
+				String next = string.nextToken();
+				if (string.hasMoreTokens()) {
+					pathTo.add(next);
+				}
 			}
 			return pathTo;
 		}

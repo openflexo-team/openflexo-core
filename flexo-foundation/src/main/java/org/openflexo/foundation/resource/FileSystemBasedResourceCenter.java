@@ -712,37 +712,42 @@ public abstract class FileSystemBasedResourceCenter extends ResourceRepository<F
 	 * @return
 	 */
 	@Override
-	public String getDefaultResourceURI(FlexoResource<?> resource) {
+	public <R extends FlexoResource<?>> String getDefaultResourceURI(R resource) {
+		String defaultBaseURI = getDefaultBaseURI();
+		if (!defaultBaseURI.endsWith("/")) {
+			defaultBaseURI = defaultBaseURI + "/";
+		}
+		String lastPath;
+		if (resource.getFlexoIODelegate() instanceof DirectoryBasedJarIODelegate) {
+			lastPath = "";
+		}
+		else {
+			lastPath = resource.getName();
+		}
+		String relativePath = "";
 		if (resource instanceof TechnologyAdapterResource) {
 			TechnologyAdapter ta = ((TechnologyAdapterResource<?, ?>) resource).getTechnologyAdapter();
-			for (ResourceRepository repository : getRegistedRepositories(ta)) {
-				if (repository.containsResource(resource)) {
-
-					String path = "";
-					RepositoryFolder f = repository.getRepositoryFolder(resource);
-
-					/*if (resource.getFlexoIODelegate() instanceof FileFlexoIODelegate) {
-						File file = ((FileFlexoIODelegate) resource.getFlexoIODelegate()).getFile();
-						System.out.println("Repository " + repository);
-						System.out.println("resource " + file);
-						System.out.println("folder: " + f);
-					}*/
-
+			if (ta != null) {
+				ResourceRepository<R, File> repository = ta.getGlobalRepository(this);
+				if (repository != null && repository.containsResource(resource)) {
+					RepositoryFolder<R, File> f = repository.getRepositoryFolder(resource);
+					// System.out.println("*** Folder for " + resource.getFlexoIODelegate().getSerializationArtefact() + " is "
+					// + f.getSerializationArtefact());
 					while (f != null && !f.isRootFolder()) {
-						path = f.getName() + File.separator + path;
+						relativePath = f.getName() + "/" + relativePath;
 						f = f.getParentFolder();
 					}
-					String defaultBaseURI = getDefaultBaseURI();
-					if (defaultBaseURI.endsWith(File.separator) || defaultBaseURI.endsWith("/")) {
-						return getDefaultBaseURI() + path.replace(File.separator, "/") + resource.getName();
-					}
-					else {
-						return getDefaultBaseURI() + "/" + path.replace(File.separator, "/") + resource.getName();
-					}
+					/*if (resource.getName().equals("brest.city1")) {
+						System.out.println("OK on s'arrete pour regarder brest.city1");
+						System.out.println(repository.debug());
+						// System.exit(-1);
+					}*/
 				}
 			}
 		}
-		return null;
+		// System.out.println("Resource " + resource.getName() + " defaultBaseURI=" + defaultBaseURI + " relativePath=" + relativePath
+		// + " lastPath=" + lastPath);
+		return defaultBaseURI + relativePath + lastPath;
 	}
 
 	/**

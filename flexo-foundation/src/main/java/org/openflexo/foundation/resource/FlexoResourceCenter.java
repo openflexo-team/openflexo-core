@@ -299,7 +299,7 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, FlexoObject, Refere
 	 * @param resource
 	 * @return
 	 */
-	public String getDefaultResourceURI(FlexoResource<?> resource);
+	public <R extends FlexoResource<?>> String getDefaultResourceURI(R resource);
 
 	/**
 	 * Return base serialization artefact (top-level container)

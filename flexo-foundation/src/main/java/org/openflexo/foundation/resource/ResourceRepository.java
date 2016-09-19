@@ -56,6 +56,7 @@ import org.openflexo.foundation.DataModification;
 import org.openflexo.foundation.DefaultFlexoObject;
 import org.openflexo.foundation.FlexoObservable;
 import org.openflexo.toolbox.FileUtils;
+import org.openflexo.toolbox.StringUtils;
 
 /**
  * A {@link ResourceRepository} stores all resources of a particular type.<br>
@@ -477,6 +478,22 @@ public abstract class ResourceRepository<R extends FlexoResource<?>, I> extends 
 	@Override
 	public String toString() {
 		return getClass().getSimpleName() + " with " + getAllResources().size() + " resources";
+	}
+
+	public String debug() {
+		StringBuffer sb = new StringBuffer();
+		return debug(rootFolder, sb, 0);
+	}
+
+	protected String debug(RepositoryFolder<R, I> f, StringBuffer sb, int indentLevel) {
+		for (RepositoryFolder<R, I> f2 : f.getChildren()) {
+			sb.append(StringUtils.buildWhiteSpaceIndentation(indentLevel * 2) + "> " + f2.getName() + "\n");
+			debug(f2, sb, indentLevel + 1);
+		}
+		for (R resource : f.getResources()) {
+			sb.append(StringUtils.buildWhiteSpaceIndentation(indentLevel * 2) + "- " + resource.getName() + "\n");
+		}
+		return sb.toString();
 	}
 
 }
