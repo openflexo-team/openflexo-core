@@ -39,19 +39,18 @@
 package org.openflexo.foundation.resource;
 
 import java.net.URL;
-import java.net.URLClassLoader;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Logger;
 
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.Implementation;
+import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.model.annotations.XMLElement;
 import org.openflexo.model.factory.ModelFactory;
 import org.openflexo.rm.InJarResourceImpl;
+import org.openflexo.toolbox.JarClassLoader;
 
 /**
  * Represents an I/O delegate based on a directory and a core file inside this directory<br>
@@ -65,6 +64,7 @@ import org.openflexo.rm.InJarResourceImpl;
  */
 @ModelEntity
 @XMLElement
+@ImplementationClass(DirectoryBasedJarIODelegate.DirectoryBasedJarIODelegateImpl.class)
 public interface DirectoryBasedJarIODelegate extends InJarFlexoIODelegate {
 
 	public static final String FILE_EXTENSION = "fileExtension";
@@ -119,29 +119,20 @@ public interface DirectoryBasedJarIODelegate extends InJarFlexoIODelegate {
 			fileIODelegate.setDirectoryExtension(directoryExtension);
 			fileIODelegate.setFileExtension(fileExtension);
 
-			System.out.println("Bon, il s'agit de construire le DirectoryBasedJarIODelegate");
-			System.out.println("containerDir=" + containerDir);
+			// System.out.println("Building DirectoryBasedJarIODelegate");
+			// System.out.println("containerDir=" + containerDir);
 
 			InJarResourceImpl directory = resourceCenter.getDirectory(baseName + directoryExtension, containerDir);
-			System.out.println("directory=" + directory);
+			// System.out.println("directory=" + directory);
 
 			InJarResourceImpl file = resourceCenter.getDirectory(baseName + fileExtension, directory);
-			System.out.println("file=" + file);
+			// System.out.println("file=" + file);
 
 			fileIODelegate.setDirectory(directory);
 			fileIODelegate.setInJarResource(file);
 
-			/*File directory = new File(containerDir, baseName + directoryExtension);
-			File file = new File(directory, baseName + fileExtension);
-			fileIODelegate.setDirectory(directory);
-			fileIODelegate.setFile(file);*/
 			return fileIODelegate;
 		}
-
-		/*@Override
-		public File getSerializationArtefact() {
-			return getDirectory();
-		}*/
 
 		@Override
 		public InJarResourceImpl getDirectory() {
@@ -168,13 +159,19 @@ public interface DirectoryBasedJarIODelegate extends InJarFlexoIODelegate {
 		@Override
 		public ClassLoader retrieveClassLoader() {
 			System.out.println("Ok, je dois instancier un ClassLoader pour " + getDirectory().getURL());
-			List<URL> urlList = new ArrayList<>();
+			/*List<URL> urlList = new ArrayList<>();
 			for (InJarResourceImpl r : getDirectory().getContents()) {
 				urlList.add(r.getURL());
 				System.out.println("> hop: " + r.getURL());
 			}
-			URL[] urlArray = urlList.toArray(new URL[urlList.size()]);
-			ClassLoader returned = new URLClassLoader(urlArray, getClass().getClassLoader());
+			URL[] urlArray = urlList.toArray(new URL[urlList.size()]);*/
+
+			URL jarResource = getDirectory().getJarResource().getURL();
+			System.out.println("URL=" + jarResource);
+			URL[] urlArray = new URL[1];
+			urlArray[0] = jarResource;
+
+			ClassLoader returned = new JarClassLoader(jarResource, getClass().getClassLoader());
 
 			/*directory.ge
 			
@@ -186,8 +183,13 @@ public interface DirectoryBasedJarIODelegate extends InJarFlexoIODelegate {
 			
 			return new JarInDirClassLoader(Collections.singletonList(getDirectory()));*/
 			System.out.println("Je retourne " + returned);
-			//System.exit(-1);
+			// System.exit(-1);
 			return returned;
+		}
+
+		@Override
+		public String toString() {
+			return "DirectoryBasedJarIODelegate " + super.toString();
 		}
 
 	}
