@@ -219,8 +219,8 @@ public abstract class ResourceRepository<R extends FlexoResource<?>, I> extends 
 			return;
 		}
 		resource.setResourceCenter(getResourceCenter());
-		resources.put(resource.getURI(), resource);
 		parentFolder.addToResources(resource);
+		resources.put(resource.getURI(), resource);
 	}
 
 	/**
