@@ -61,7 +61,6 @@ import org.openflexo.foundation.resource.DirectoryBasedJarIODelegate.DirectoryBa
 import org.openflexo.foundation.resource.InJarFlexoIODelegate.InJarFlexoIODelegateImpl;
 import org.openflexo.foundation.task.Progress;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
-import org.openflexo.foundation.technologyadapter.TechnologyAdapterResource;
 import org.openflexo.foundation.utils.FlexoObjectReference;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.Implementation;
@@ -480,15 +479,18 @@ public class JarResourceCenter extends ResourceRepository<FlexoResource<?>, InJa
 		if (!defaultBaseURI.endsWith("/")) {
 			defaultBaseURI = defaultBaseURI + "/";
 		}
-		String lastPath;
-		if (resource.getFlexoIODelegate() instanceof DirectoryBasedJarIODelegate) {
-			lastPath = "";
-		}
-		else {
-			lastPath = resource.getName();
-		}
+		String lastPath = resource.getName();
 		String relativePath = "";
-		if (resource instanceof TechnologyAdapterResource) {
+		if (resource.getFlexoIODelegate() != null) {
+			InJarResourceImpl serializationArtefact = (InJarResourceImpl) resource.getFlexoIODelegate().getSerializationArtefact();
+			InJarResourceImpl f = serializationArtefact.getContainer();
+			while (f != null && !(f.equals(getRootFolder().getSerializationArtefact()))) {
+				relativePath = f.getName() + "/" + relativePath;
+				f = f.getContainer();
+			}
+		}
+
+		/*if (resource instanceof TechnologyAdapterResource) {
 			TechnologyAdapter ta = ((TechnologyAdapterResource<?, ?>) resource).getTechnologyAdapter();
 			if (ta != null) {
 				ResourceRepository<R, InJarResourceImpl> repository = ta.getGlobalRepository(this);
@@ -500,15 +502,9 @@ public class JarResourceCenter extends ResourceRepository<FlexoResource<?>, InJa
 						relativePath = f.getName() + "/" + relativePath;
 						f = f.getParentFolder();
 					}
-					/*if (resource.getName().equals("brest.city1")) {
-						System.out.println("OK on s'arrete pour regarder brest.city1");
-						System.out.println(repository.debug());
-					
-						System.exit(-1);
-					}*/
 				}
 			}
-		}
+		}*/
 		// System.out.println("Resource " + resource.getName() + " defaultBaseURI=" + defaultBaseURI + " relativePath=" + relativePath
 		// + " lastPath=" + lastPath);
 		return defaultBaseURI + relativePath + lastPath;
