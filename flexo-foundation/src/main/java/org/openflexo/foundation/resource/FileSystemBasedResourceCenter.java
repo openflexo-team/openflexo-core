@@ -721,10 +721,12 @@ public abstract class FileSystemBasedResourceCenter extends ResourceRepository<F
 
 		if (resource.getFlexoIODelegate() != null) {
 			File serializationArtefact = (File) resource.getFlexoIODelegate().getSerializationArtefact();
-			File f = serializationArtefact.getParentFile();
-			while (f != null && !(f.equals(getRootFolder().getSerializationArtefact()))) {
-				relativePath = f.getName() + "/" + relativePath;
-				f = f.getParentFile();
+			if (serializationArtefact != null) {
+				File f = serializationArtefact.getParentFile();
+				while (f != null && !(f.equals(getRootFolder().getSerializationArtefact()))) {
+					relativePath = f.getName() + "/" + relativePath;
+					f = f.getParentFile();
+				}
 			}
 		}
 		return defaultBaseURI + relativePath + lastPath;

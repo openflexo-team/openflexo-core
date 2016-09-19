@@ -483,30 +483,15 @@ public class JarResourceCenter extends ResourceRepository<FlexoResource<?>, InJa
 		String relativePath = "";
 		if (resource.getFlexoIODelegate() != null) {
 			InJarResourceImpl serializationArtefact = (InJarResourceImpl) resource.getFlexoIODelegate().getSerializationArtefact();
-			InJarResourceImpl f = serializationArtefact.getContainer();
-			while (f != null && !(f.equals(getRootFolder().getSerializationArtefact()))) {
-				relativePath = f.getName() + "/" + relativePath;
-				f = f.getContainer();
+			if (serializationArtefact != null) {
+				InJarResourceImpl f = serializationArtefact.getContainer();
+				while (f != null && !(f.equals(getRootFolder().getSerializationArtefact()))) {
+					relativePath = f.getName() + "/" + relativePath;
+					f = f.getContainer();
+				}
 			}
 		}
 
-		/*if (resource instanceof TechnologyAdapterResource) {
-			TechnologyAdapter ta = ((TechnologyAdapterResource<?, ?>) resource).getTechnologyAdapter();
-			if (ta != null) {
-				ResourceRepository<R, InJarResourceImpl> repository = ta.getGlobalRepository(this);
-				if (repository != null && repository.containsResource(resource)) {
-					RepositoryFolder<R, InJarResourceImpl> f = repository.getRepositoryFolder(resource);
-					// System.out.println("*** Folder for " + resource.getFlexoIODelegate().getSerializationArtefact() + " is "
-					// + f.getSerializationArtefact());
-					while (f != null && !f.isRootFolder()) {
-						relativePath = f.getName() + "/" + relativePath;
-						f = f.getParentFolder();
-					}
-				}
-			}
-		}*/
-		// System.out.println("Resource " + resource.getName() + " defaultBaseURI=" + defaultBaseURI + " relativePath=" + relativePath
-		// + " lastPath=" + lastPath);
 		return defaultBaseURI + relativePath + lastPath;
 	}
 
