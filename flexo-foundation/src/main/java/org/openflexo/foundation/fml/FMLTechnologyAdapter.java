@@ -38,6 +38,8 @@
 
 package org.openflexo.foundation.fml;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoServiceManager;
@@ -50,7 +52,7 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapterBindingFactor
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterInitializationException;
 
 /**
- * This class defines and implements the Openflexo built-in virtual model technology adapter
+ * This class defines and implements the FML technology adapter (Flexo Modelling Language)
  * 
  * @author sylvain
  * 
@@ -97,149 +99,6 @@ public class FMLTechnologyAdapter extends TechnologyAdapter {
 		return this.getServiceManager().getViewPointLibrary();
 	}
 
-	/*@Override
-	public <I> void performInitializeResourceCenter(final FlexoResourceCenter<I> resourceCenter) {
-		// Take care that this call will create the ViewPointRepository
-		// Do not comment this line
-		final ViewPointRepository viewPointRepository = getViewPointRepository(resourceCenter);
-	
-		// @FD: this is an other way to remove the warning ;-)
-		System.out.println("I'm beeing using the " + viewPointRepository);
-	
-		// Iterate
-		Iterator<I> it = resourceCenter.iterator();
-	
-		while (it.hasNext()) {
-			final I item = it.next();
-			if (!this.isIgnorable(resourceCenter, item)) {
-				// if (item instanceof File) {
-				// final File candidateFile = (File) item;
-				// if (this.isValidViewPointDirectory(item)) {
-				// FD unused final ViewPointResource vpRes =
-				analyseAsViewPoint(item, resourceCenter);
-				// this.referenceResource(vpRes, resourceCenter);
-				// }
-				// }
-				// if (item instanceof InJarResourceImpl) {
-				// final InJarResourceImpl candidateJar = (InJarResourceImpl) item;
-				// if (this.isValidViewPointDirectory(candidateJar)) {
-				// final ViewPointResource vpRes = analyseAsViewPoint(candidateJar, resourceCenter);
-				// this.referenceResource(vpRes, resourceCenter);
-				// / }
-				// }
-			}
-		}
-	
-		// Call it to update the current repositories
-		if (!SwingUtilities.isEventDispatchThread()) {
-			SwingUtilities.invokeLater(new Runnable() {
-				@Override
-				public void run() {
-					// Call it to update the current repositories
-					notifyRepositoryStructureChanged();
-				}
-			});
-		}
-		else {
-			// Call it to update the current repositories
-			notifyRepositoryStructureChanged();
-		}
-	}*/
-
-	/**
-	 * Return boolean indicating if supplied {@link File} has the general form of a ViewPoint directory
-	 * 
-	 * @param candidateFile
-	 * @return
-	 */
-	/*private boolean isValidViewPointDirectory(final File candidateFile) {
-		if (candidateFile.exists() && candidateFile.isDirectory() && candidateFile.canRead()
-				&& candidateFile.getName().endsWith(ViewPointResource.VIEWPOINT_SUFFIX)) {
-			final String baseName = candidateFile.getName().substring(0,
-					candidateFile.getName().length() - ViewPointResource.VIEWPOINT_SUFFIX.length());
-			final File xmlFile = new File(candidateFile, baseName + ".xml");
-			return xmlFile.exists();
-		}
-		return false;
-	}*/
-
-	/**
-	 * Return boolean indicating if supplied {@link InJarResourceImpl} has the general form of a ViewPoint directory
-	 * 
-	 * @param candidateJar
-	 * @return
-	 */
-	/*private boolean isValidViewPointDirectory(final InJarResourceImpl candidateJar) {
-		String candidateJarName = FilenameUtils.getBaseName(candidateJar.getRelativePath());
-		if (candidateJar.getRelativePath().endsWith(".xml") && candidateJar.getRelativePath()
-				.endsWith(candidateJarName + ViewPointResource.VIEWPOINT_SUFFIX + "/" + candidateJarName + ".xml")) {
-			return true;
-		}
-		return false;
-	}*/
-
-	/**
-	 * Build and return {@link ViewPointResource} from a candidate file (a .viewpoint directory)<br>
-	 * Register this {@link ViewPointResource} in the supplied {@link ViewPointRepository} as well as in the {@link ViewPointLibrary}
-	 * 
-	 * @param candidateFile
-	 * @param viewPointRepository
-	 * @return the newly created {@link ViewPointResource}
-	 */
-	/*private ViewPointResource analyseAsViewPoint(final Object candidateElement, FlexoResourceCenter resourceCenter) {
-		if (this.isValidViewPoint(candidateElement)) {
-			ViewPointResource vpRes = null;
-			if (candidateElement instanceof File) {
-				vpRes = ViewPointResourceImpl.retrieveViewPointResource((File) candidateElement, resourceCenter, getServiceManager());
-			}
-			else if (candidateElement instanceof InJarResourceImpl) {
-				vpRes = ViewPointResourceImpl.retrieveViewPointResource((InJarResourceImpl) candidateElement, resourceCenter,
-						getServiceManager());
-			}
-			if (vpRes != null) {
-				ViewPointRepository viewPointFileBasedRepository = getViewPointRepository(resourceCenter);
-				registerResource(vpRes, viewPointFileBasedRepository, candidateElement);
-				referenceResource(vpRes, resourceCenter);
-				return vpRes;
-			}
-		}
-		return null;
-	}*/
-
-	/*private void registerResource(ViewPointResource vpRes, ViewPointRepository repository, Object candidateElement) {
-		try {
-			if (vpRes != null) {
-				logger.info("Found and register viewpoint " + vpRes.getURI() + vpRes.getFlexoIODelegate().toString());
-				RepositoryFolder<ViewPointResource> folder;
-				folder = repository.getRepositoryFolder(candidateElement, true);
-				repository.registerResource(vpRes, folder);
-			}
-			else {
-				logger.warning("While exploring resource center looking for viewpoints : cannot retrieve resource for element "
-						+ candidateElement);
-			}
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}*/
-
-	/**
-	 * Check it might correspond to a viewpoint
-	 * 
-	 * @param candidateElement
-	 * @return
-	 */
-	/*private boolean isValidViewPoint(Object candidateElement) {
-		if (candidateElement instanceof File && isValidViewPointDirectory(((File) candidateElement))) {
-			return true;
-		}
-		if (candidateElement instanceof InJarResourceImpl && isValidViewPointDirectory((InJarResourceImpl) candidateElement)) {
-			return true;
-		}
-		return false;
-	}*/
-
 	public <I> ViewPointRepository<I> getViewPointRepository(FlexoResourceCenter<I> resourceCenter) {
 		ViewPointRepository<I> returned = resourceCenter.retrieveRepository(ViewPointRepository.class, this);
 		if (returned == null) {
@@ -258,50 +117,6 @@ public class FMLTechnologyAdapter extends TechnologyAdapter {
 		return false;
 	}
 
-	/*@Override
-	public <I> boolean contentsAdded(final FlexoResourceCenter<I> resourceCenter, final I contents) {
-		if (!this.isIgnorable(resourceCenter, contents)) {
-			if (contents instanceof File) {
-				final File candidateFile = (File) contents;
-				System.out.println("FMLTechnologyAdapter: File ADDED " + candidateFile.getName() + " in "
-						+ candidateFile.getParentFile().getAbsolutePath());
-				if (isValidViewPointDirectory(candidateFile)) {
-					final ViewPointResource vpRes = analyseAsViewPoint(contents, resourceCenter);
-					if (vpRes != null) {
-						referenceResource(vpRes, resourceCenter);
-						return true;
-					}
-					else
-						return false;
-				}
-			}
-		}
-		return false;
-	}*/
-
-	/*@Override
-	public <I> boolean contentsDeleted(final FlexoResourceCenter<I> resourceCenter, final I contents) {
-		if (!this.isIgnorable(resourceCenter, contents)) {
-			if (contents instanceof File) {
-				System.out.println("FMLTechnologyAdapter: File DELETED " + ((File) contents).getName() + " in "
-						+ ((File) contents).getParentFile().getAbsolutePath());
-			}
-		}
-		return false;
-	}*/
-
-	/*@Override
-	public <I> boolean contentsModified(FlexoResourceCenter<I> resourceCenter, I contents) {
-		// TODO Auto-generated method stub
-		return false;
-	}*/
-
-	/*@Override
-	public <I> boolean contentsRenamed(FlexoResourceCenter<I> resourceCenter, I contents, String oldName, String newName) {
-		// TODO Auto-generated method stub
-		return false;
-	}*/
-
 	@Override
 	public String getIdentifier() {
 		return "FML";
@@ -311,4 +126,17 @@ public class FMLTechnologyAdapter extends TechnologyAdapter {
 		return getResourceFactory(ViewPointResourceFactory.class);
 	}
 
+	public List<ViewPointRepository<?>> getViewPointRepositories() {
+		List<ViewPointRepository<?>> returned = new ArrayList<>();
+		for (FlexoResourceCenter<?> rc : getServiceManager().getResourceCenterService().getResourceCenters()) {
+			returned.add(getViewPointRepository(rc));
+		}
+		return returned;
+	}
+
+	@Override
+	public void notifyRepositoryStructureChanged() {
+		super.notifyRepositoryStructureChanged();
+		getPropertyChangeSupport().firePropertyChange("getViewPointRepositories()", null, getViewPointRepositories());
+	}
 }
