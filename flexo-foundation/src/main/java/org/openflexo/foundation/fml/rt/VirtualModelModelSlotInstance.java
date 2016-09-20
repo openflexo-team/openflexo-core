@@ -102,14 +102,19 @@ public interface VirtualModelModelSlotInstance<VMI extends AbstractVirtualModelI
 		@Override
 		public AbstractVirtualModelInstanceResource<VMI, VM> getResource() {
 			if (getVirtualModelInstance() != null && resource == null && StringUtils.isNotEmpty(virtualModelInstanceURI)) {
-				if (getProject() != null) {
-					resource = (AbstractVirtualModelInstanceResource<VMI, VM>) getProject().getViewLibrary()
-							.getVirtualModelInstance(virtualModelInstanceURI);
+
+				FMLRTTechnologyAdapter fmlRTTA = getServiceManager().getTechnologyAdapterService()
+						.getTechnologyAdapter(FMLRTTechnologyAdapter.class);
+				ViewLibrary<?> viewRepository;
+
+				if (getResourceCenter() != null) {
+					viewRepository = (ViewLibrary<?>) fmlRTTA.getViewRepository(getResourceCenter());
 				}
 				else {
-					resource = (AbstractVirtualModelInstanceResource<VMI, VM>) getVirtualModelInstance().getView().getProject()
-							.getViewLibrary().getVirtualModelInstance(virtualModelInstanceURI);
+					viewRepository = (ViewLibrary<?>) fmlRTTA.getViewRepository(getVirtualModelInstance().getView().getResourceCenter());
 				}
+				resource = (AbstractVirtualModelInstanceResource<VMI, VM>) viewRepository.getVirtualModelInstance(virtualModelInstanceURI);
+
 			}
 
 			if (resource == null && StringUtils.isNotEmpty(virtualModelInstanceURI)) {

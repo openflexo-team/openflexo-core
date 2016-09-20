@@ -41,6 +41,7 @@ package org.openflexo.components.widget;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.FlexoProjectObject;
 
@@ -53,7 +54,7 @@ import org.openflexo.foundation.FlexoProjectObject;
  * 
  */
 @SuppressWarnings("serial")
-public abstract class FIBProjectObjectSelector<T extends FlexoProjectObject> extends FIBFlexoObjectSelector<T> {
+public abstract class FIBProjectObjectSelector<T extends FlexoObject> extends FIBFlexoObjectSelector<T> {
 
 	static final Logger logger = Logger.getLogger(FIBProjectObjectSelector.class.getPackage().getName());
 

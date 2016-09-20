@@ -38,8 +38,6 @@
 
 package org.openflexo.foundation.fml.rt;
 
-import java.io.File;
-
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.rt.rm.ViewResource;
@@ -52,15 +50,10 @@ import org.openflexo.foundation.technologyadapter.ModelRepository;
  * @author sylvain
  * 
  */
-public class ViewRepository extends ModelRepository<ViewResource, View, ViewPoint, FMLRTTechnologyAdapter, FMLTechnologyAdapter> {
+public class ViewRepository<I> extends ModelRepository<ViewResource, View, ViewPoint, FMLRTTechnologyAdapter, FMLTechnologyAdapter, I> {
 
-	public ViewRepository(FMLRTTechnologyAdapter adapter, FlexoResourceCenter<?> resourceCenter) {
+	public ViewRepository(FMLRTTechnologyAdapter adapter, FlexoResourceCenter<I> resourceCenter) {
 		super(adapter, resourceCenter);
-		getRootFolder().setRepositoryContext(null);
-	}
-
-	public ViewRepository(FMLRTTechnologyAdapter adapter, FlexoResourceCenter<?> resourceCenter, File directory) {
-		super(adapter, resourceCenter, directory);
 		getRootFolder().setRepositoryContext(null);
 	}
 

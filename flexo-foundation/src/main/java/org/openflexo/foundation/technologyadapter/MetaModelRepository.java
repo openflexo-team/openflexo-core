@@ -52,8 +52,8 @@ import org.openflexo.foundation.resource.ResourceRepository;
  * @param <R>
  * @param <TA>
  */
-public abstract class MetaModelRepository<R extends FlexoMetaModelResource<M, MM, TA> & FlexoResource<MM>, M extends FlexoModel<M, MM> & TechnologyObject<TA>, MM extends FlexoMetaModel<MM> & TechnologyObject<TA>, TA extends TechnologyAdapter>
-		extends TechnologyAdapterFileResourceRepository<R, TA, MM> {
+public abstract class MetaModelRepository<R extends FlexoMetaModelResource<M, MM, TA> & FlexoResource<MM>, M extends FlexoModel<M, MM> & TechnologyObject<TA>, MM extends FlexoMetaModel<MM> & TechnologyObject<TA>, TA extends TechnologyAdapter, I>
+		extends TechnologyAdapterResourceRepository<R, TA, MM, I> {
 
 	/**
 	 * Constructor.
@@ -61,7 +61,7 @@ public abstract class MetaModelRepository<R extends FlexoMetaModelResource<M, MM
 	 * @param technologyAdapter
 	 * @param resourceCenter
 	 */
-	public MetaModelRepository(TA technologyAdapter, FlexoResourceCenter<?> resourceCenter) {
+	public MetaModelRepository(TA technologyAdapter, FlexoResourceCenter<I> resourceCenter) {
 		super(technologyAdapter, resourceCenter);
 		getRootFolder().setRepositoryContext(resourceCenter.getLocales().localizedForKey("[Metamodels]"));
 		getRootFolder().setDescription(

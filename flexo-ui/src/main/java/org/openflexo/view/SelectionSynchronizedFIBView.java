@@ -67,6 +67,7 @@ import org.openflexo.view.controller.FlexoController;
  * @author sylvain
  * 
  */
+@SuppressWarnings("serial")
 public class SelectionSynchronizedFIBView extends FlexoFIBView implements SelectionListener, GraphicalFlexoObserver, FIBSelectionListener {
 	static final Logger logger = Logger.getLogger(SelectionSynchronizedFIBView.class.getPackage().getName());
 
@@ -98,7 +99,7 @@ public class SelectionSynchronizedFIBView extends FlexoFIBView implements Select
 
 	@Override
 	public void deleteView() {
-		FIBView aFibView = getFIBView();
+		FIBView<?, ?> aFibView = getFIBView();
 		FIBController aController = null;
 		if (aFibView != null) {
 			aController = aFibView.getController();

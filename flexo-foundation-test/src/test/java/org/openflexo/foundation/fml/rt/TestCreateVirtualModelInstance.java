@@ -51,11 +51,12 @@ import org.junit.runner.RunWith;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoProject;
+import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.ViewPoint;
-import org.openflexo.foundation.fml.ViewPoint.ViewPointImpl;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.action.CreateVirtualModel;
 import org.openflexo.foundation.fml.rm.ViewPointResource;
+import org.openflexo.foundation.fml.rm.ViewPointResourceFactory;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.fml.rt.action.CreateBasicVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.CreateViewInFolder;
@@ -63,6 +64,7 @@ import org.openflexo.foundation.fml.rt.rm.ViewResource;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.test.OpenflexoProjectAtRunTimeTestCase;
+import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.test.OrderedRunner;
 import org.openflexo.test.TestOrder;
@@ -76,28 +78,44 @@ import org.openflexo.test.TestOrder;
 @RunWith(OrderedRunner.class)
 public class TestCreateVirtualModelInstance extends OpenflexoProjectAtRunTimeTestCase {
 
+	public static final String VIEWPOINT_NAME = "TestViewPoint";
+	public static final String VIEWPOINT_URI = "http://openflexo.org/test/TestViewPoint";
+
 	private static ViewPoint newViewPoint;
 	private static VirtualModel newVirtualModel;
 	private static FlexoEditor editor;
 	private static FlexoProject project;
 	private static View newView;
 	private static VirtualModelInstance newVirtualModelInstance;
+	private static ViewPointResource newViewPointResource;
 
 	/**
 	 * Instantiate a ViewPoint with a VirtualModel
 	 * 
 	 * @throws SaveResourceException
+	 * @throws ModelDefinitionException
 	 */
 	@Test
 	@TestOrder(1)
-	public void testCreateViewPoint() throws SaveResourceException {
+	public void testCreateViewPoint() throws SaveResourceException, ModelDefinitionException {
 
 		log("testCreateViewPoint()");
 
 		instanciateTestServiceManager();
 		System.out.println("ResourceCenter= " + resourceCenter);
-		newViewPoint = ViewPointImpl.newViewPoint("TestViewPoint", "http://openflexo.org/test/TestViewPoint", resourceCenter.getDirectory(),
-				serviceManager.getViewPointLibrary(), resourceCenter);
+
+		FMLTechnologyAdapter fmlTechnologyAdapter = serviceManager.getTechnologyAdapterService()
+				.getTechnologyAdapter(FMLTechnologyAdapter.class);
+		ViewPointResourceFactory factory = fmlTechnologyAdapter.getViewPointResourceFactory();
+
+		newViewPointResource = factory.makeViewPointResource(VIEWPOINT_NAME, VIEWPOINT_URI,
+				fmlTechnologyAdapter.getGlobalRepository(resourceCenter).getRootFolder(),
+				fmlTechnologyAdapter.getTechnologyContextManager(), true);
+		newViewPoint = newViewPointResource.getLoadedResourceData();
+
+		// newViewPoint = ViewPointImpl.newViewPoint("TestViewPoint", "http://openflexo.org/test/TestViewPoint",
+		// resourceCenter.getDirectory(),
+		// serviceManager.getViewPointLibrary(), resourceCenter);
 		assertNotNull(newViewPoint);
 		assertNotNull(newViewPoint.getResource());
 		// assertTrue(((ViewPointResource) newViewPoint.getResource()).getDirectory().exists());
@@ -113,6 +131,9 @@ public class TestCreateVirtualModelInstance extends OpenflexoProjectAtRunTimeTes
 		// newVirtualModel = VirtualModelImpl.newVirtualModel("TestVirtualModel", newViewPoint);
 		assertTrue(ResourceLocator.retrieveResourceAsFile(((VirtualModelResource) newVirtualModel.getResource()).getDirectory()).exists());
 		assertTrue(((VirtualModelResource) newVirtualModel.getResource()).getFlexoIODelegate().exists());
+
+		newViewPoint.getResource().save(null);
+		newVirtualModel.getResource().save(null);
 	}
 
 	@Test
@@ -171,6 +192,7 @@ public class TestCreateVirtualModelInstance extends OpenflexoProjectAtRunTimeTes
 
 		log("testCreateVirtualModelInstance()");
 
+		System.out.println("newView=" + newView);
 		CreateBasicVirtualModelInstance action = CreateBasicVirtualModelInstance.actionType.makeNewAction(newView, null, editor);
 		action.setNewVirtualModelInstanceName("MyVirtualModelInstance");
 		action.setNewVirtualModelInstanceTitle("Test creation of a new VirtualModelInstance");
@@ -211,12 +233,16 @@ public class TestCreateVirtualModelInstance extends OpenflexoProjectAtRunTimeTes
 		log("testReloadProject()");
 
 		FlexoProject oldProject = project;
+
 		instanciateTestServiceManager();
+		reloadResourceCenter(newViewPointResource.getDirectory());
+
 		editor = reloadProject(project.getDirectory());
 		project = editor.getProject();
 		assertNotSame(oldProject, project);
 		assertNotNull(editor);
 		assertNotNull(project);
+
 		ViewResource newViewResource = project.getViewLibrary().getView(newView.getURI());
 		assertNotNull(newViewResource);
 		assertNull(newViewResource.getLoadedResourceData());

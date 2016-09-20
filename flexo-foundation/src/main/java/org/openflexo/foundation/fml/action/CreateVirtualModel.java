@@ -42,15 +42,20 @@ import java.util.Vector;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoEditor;
+import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.IOFlexoException;
 import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.fml.FMLObject;
+import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.VirtualModel.VirtualModelImpl;
+import org.openflexo.foundation.fml.rm.ViewPointResource;
+import org.openflexo.foundation.fml.rm.VirtualModelResource;
+import org.openflexo.foundation.fml.rm.VirtualModelResourceFactory;
 import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.task.Progress;
+import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.toolbox.StringUtils;
 
 public class CreateVirtualModel extends AbstractCreateVirtualModel<CreateVirtualModel, ViewPoint, FMLObject> {
@@ -99,12 +104,24 @@ public class CreateVirtualModel extends AbstractCreateVirtualModel<CreateVirtual
 	}
 
 	@Override
-	protected void doAction(Object context) throws IOFlexoException, SaveResourceException {
+	protected void doAction(Object context) throws IOFlexoException, SaveResourceException, FlexoException {
 
 		Progress.progress(getLocales().localizedForKey("create_virtual_model"));
 
-		newVirtualModel = VirtualModelImpl.newVirtualModel(newVirtualModelName, getFocusedObject());
-		newVirtualModel.setDescription(newVirtualModelDescription);
+		FMLTechnologyAdapter fmlTechnologyAdapter = getServiceManager().getTechnologyAdapterService()
+				.getTechnologyAdapter(FMLTechnologyAdapter.class);
+		VirtualModelResourceFactory factory = fmlTechnologyAdapter.getViewPointResourceFactory().getVirtualModelResourceFactory();
+
+		try {
+			VirtualModelResource vmResource = factory.makeVirtualModelResource(getNewVirtualModelName(),
+					(ViewPointResource) getFocusedObject().getResource(), fmlTechnologyAdapter.getTechnologyContextManager(), true);
+			newVirtualModel = vmResource.getLoadedResourceData();
+			newVirtualModel.setDescription(newVirtualModelDescription);
+		} catch (SaveResourceException e) {
+			throw new SaveResourceException(null);
+		} catch (ModelDefinitionException e) {
+			throw new FlexoException(e);
+		}
 
 		Progress.progress(getLocales().localizedForKey("create_model_slots"));
 		performCreateModelSlots();

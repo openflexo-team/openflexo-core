@@ -71,8 +71,8 @@ public class ResourceConsistencyService extends FlexoServiceImpl {
 
 	private int skip = 1;
 
-	private String[] options1 = { "Don't show this message again", "Show conflicted resources" };
-	private String[] options2 = { "Don't show this message again", "Close message" };
+	private final String[] options1 = { "Don't show this message again", "Show conflicted resources" };
+	private final String[] options2 = { "Don't show this message again", "Close message" };
 
 	public ResourceConsistencyService() {
 	}
@@ -187,9 +187,10 @@ public class ResourceConsistencyService extends FlexoServiceImpl {
 	 */
 	private void informOfViewPointMissing(ViewResourceImpl resource) {
 		if (resource != null) {
+			Thread.dumpStack();
 			FlexoController.notify("<html> " + "<h3>Viewpoint resources is missing!</h3>" + "<p>View <font color=\"red\">"
-					+ resource.getURI() + " requires Viewpoint: " + resource.viewpointURI
-					+ "</br>Please add resources in resource centers and restart Openflexo</html>");
+					+ resource.getURI() + "</font><br>requires Viewpoint: " + resource.getViewpointURI()
+					+ "<br>Please add resources in resource centers and restart Openflexo</html>");
 		}
 	}
 
@@ -220,6 +221,7 @@ public class ResourceConsistencyService extends FlexoServiceImpl {
 	}
 
 	private String informationMessageForConflictSet(ConflictedResourceSet conflict) {
+		Thread.dumpStack();
 		StringBuilder conflictsInformation = new StringBuilder();
 		conflictsInformation.append("<p> <font color=\"red\"> URI : " + conflict.getCommonUri() + " is owned by </font><br/>");
 		for (FlexoResource<?> fr : conflict.getConflictedResources()) {

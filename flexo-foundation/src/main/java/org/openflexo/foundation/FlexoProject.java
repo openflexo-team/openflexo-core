@@ -59,7 +59,6 @@ import javax.naming.InvalidNameException;
 import org.openflexo.foundation.FlexoEditor.FlexoEditorFactory;
 import org.openflexo.foundation.ProjectDataResource.ProjectDataResourceImpl;
 import org.openflexo.foundation.ProjectDirectoryResource.ProjectDirectoryResourceImpl;
-import org.openflexo.foundation.converter.FlexoObjectReferenceConverter;
 import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.rt.ViewLibrary;
 import org.openflexo.foundation.fml.rt.rm.ViewResource;
@@ -256,8 +255,6 @@ public class FlexoProject extends FileSystemBasedResourceCenter
 
 	private final List<FlexoObjectReference> objectReferences = new ArrayList<FlexoObjectReference>();
 
-	protected FlexoObjectReferenceConverter objectReferenceConverter = new FlexoObjectReferenceConverter(this);
-
 	private boolean lastUniqueIDHasBeenSet = false;
 	private long lastID = Integer.MIN_VALUE;
 
@@ -322,7 +319,7 @@ public class FlexoProject extends FileSystemBasedResourceCenter
 
 	}
 
-	private FlexoProject(File aProjectDirectory, FlexoServiceManager serviceManager) {
+	protected FlexoProject(File aProjectDirectory, FlexoServiceManager serviceManager) {
 		super(aProjectDirectory, serviceManager.getResourceCenterService());
 		this.serviceManager = serviceManager;
 		// xmlMappings = serviceManager.getXMLSerializationService();
@@ -354,8 +351,8 @@ public class FlexoProject extends FileSystemBasedResourceCenter
 			}
 		}
 		setProjectDirectory(aProjectDirectory);
-		getRootFolder().setName(projectName);
-		getRootFolder().setFullQualifiedPath(aProjectDirectory.getAbsolutePath());
+		// getRootFolder().setName(projectName + ".prj");
+		// getRootFolder().setFullQualifiedPath(aProjectDirectory.getAbsolutePath());
 	}
 
 	@Override
@@ -659,7 +656,7 @@ public class FlexoProject extends FileSystemBasedResourceCenter
 		}
 	}
 
-	public ViewLibrary getViewLibrary() {
+	public ViewLibrary<?> getViewLibrary() {
 		if (viewLibrary == null) {
 			viewLibrary = ViewLibrary.createNewViewLibrary(this);
 		}
@@ -985,14 +982,6 @@ public class FlexoProject extends FileSystemBasedResourceCenter
 			}
 			return attempt;
 		}*/
-
-	public FlexoObjectReferenceConverter getObjectReferenceConverter() {
-		return objectReferenceConverter;
-	}
-
-	public void setObjectReferenceConverter(FlexoObjectReferenceConverter objectReferenceConverter) {
-		this.objectReferenceConverter = objectReferenceConverter;
-	}
 
 	public boolean isHoldingProjectRegistration() {
 		return holdObjectRegistration;
@@ -1478,26 +1467,6 @@ public class FlexoProject extends FileSystemBasedResourceCenter
 	@Override
 	public String getDefaultBaseURI() {
 		return getURI();
-	}
-
-	@Override
-	public void notifyObjectLoaded(FlexoObjectReference<?> reference) {
-		// logger.warning("TODO: implement this");
-	}
-
-	@Override
-	public void objectCantBeFound(FlexoObjectReference<?> reference) {
-		logger.warning("TODO: implement this");
-	}
-
-	@Override
-	public void objectSerializationIdChanged(FlexoObjectReference<?> reference) {
-		setChanged();
-	}
-
-	@Override
-	public void objectDeleted(FlexoObjectReference<?> reference) {
-		logger.warning("TODO: implement this");
 	}
 
 	/**

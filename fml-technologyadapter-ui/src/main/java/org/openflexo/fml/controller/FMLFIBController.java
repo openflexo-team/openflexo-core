@@ -130,12 +130,12 @@ public class FMLFIBController extends FlexoFIBController {
 		super(component, viewFactory, controller);
 	}
 
-	public void deleteFolder(RepositoryFolder<?> folder) {
+	public void deleteFolder(RepositoryFolder<?, ?> folder) {
 		DeleteRepositoryFolder deleteRepositoryFolder = DeleteRepositoryFolder.actionType.makeNewAction(folder, null, getEditor());
 		deleteRepositoryFolder.doAction();
 	}
 
-	public ViewPoint createViewPoint(RepositoryFolder<ViewPointResource> folder) {
+	public ViewPoint createViewPoint(RepositoryFolder<ViewPointResource, ?> folder) {
 		CreateViewPoint createViewPoint = CreateViewPoint.actionType.makeNewAction(folder, null, getEditor());
 		createViewPoint.doAction();
 		return createViewPoint.getNewViewPoint();

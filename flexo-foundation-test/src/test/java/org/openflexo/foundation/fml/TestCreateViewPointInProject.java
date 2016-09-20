@@ -45,8 +45,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoProject;
-import org.openflexo.foundation.fml.ViewPoint.ViewPointImpl;
+import org.openflexo.foundation.fml.rm.ViewPointResource;
+import org.openflexo.foundation.fml.rm.ViewPointResourceFactory;
+import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.test.OpenflexoProjectAtRunTimeTestCase;
+import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.test.OrderedRunner;
 import org.openflexo.test.TestOrder;
 
@@ -58,6 +61,9 @@ import org.openflexo.test.TestOrder;
  */
 @RunWith(OrderedRunner.class)
 public class TestCreateViewPointInProject extends OpenflexoProjectAtRunTimeTestCase {
+
+	public static final String VIEWPOINT_NAME = "TestViewPoint";
+	public static final String VIEWPOINT_URI = "http://openflexo.org/test/TestViewPoint";
 
 	static FlexoEditor editor;
 	static FlexoProject project;
@@ -81,14 +87,28 @@ public class TestCreateViewPointInProject extends OpenflexoProjectAtRunTimeTestC
 
 	/**
 	 * Test the creation of the viewpoint
+	 * 
+	 * @throws ModelDefinitionException
+	 * @throws SaveResourceException
 	 */
 	@Test
 	@TestOrder(3)
-	public void testCreateViewPoint() {
-		ViewPoint newViewPoint = ViewPointImpl.newViewPoint("TestViewPoint", "http://openflexo.org/test/TestViewPoint",
-				project.getExpectedViewPointDirectory(), serviceManager.getViewPointLibrary(), resourceCenter);
+	public void testCreateViewPoint() throws SaveResourceException, ModelDefinitionException {
+
+		FMLTechnologyAdapter fmlTechnologyAdapter = serviceManager.getTechnologyAdapterService()
+				.getTechnologyAdapter(FMLTechnologyAdapter.class);
+		ViewPointResourceFactory factory = fmlTechnologyAdapter.getViewPointResourceFactory();
+
+		ViewPointResource newViewPointResource = factory.makeViewPointResource(VIEWPOINT_NAME, VIEWPOINT_URI,
+				fmlTechnologyAdapter.getGlobalRepository(project).getRootFolder(), fmlTechnologyAdapter.getTechnologyContextManager(),
+				true);
+		ViewPoint newViewPoint = newViewPointResource.getLoadedResourceData();
+
 		assertNotNull(newViewPoint);
 		assertNotNull(newViewPoint.getResource());
+
+		System.out
+				.println("Created viewpoint in project at: " + newViewPoint.getResource().getFlexoIODelegate().getSerializationArtefact());
 	}
 
 }

@@ -86,6 +86,7 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 			ModelFactory factory = new ModelFactory(FlexoResourceCenterService.class);
 			factory.setImplementingClassForInterface(DefaultResourceCenterService.class, FlexoResourceCenterService.class);
 			DefaultResourceCenterService returned = (DefaultResourceCenterService) factory.newInstance(FlexoResourceCenterService.class);
+			returned.loadAvailableRCFromClassPath();
 			return returned;
 		} catch (ModelDefinitionException e) {
 			e.printStackTrace();
@@ -116,17 +117,22 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 	/**
 	 * Add all the RCs that contain an identification of a FlexoResourceCenter in META-INF
 	 * 
+	 * WARNING: should only be called once
+	 * 
 	 */
-	public void loadAvailableRCFromClassPath() {
+	private void loadAvailableRCFromClassPath() {
 
 		logger.info("Loading available  ResourceCenters from classpath");
 
 		Enumeration<URL> urlList;
+		ArrayList<FlexoResourceCenter> rcList = new ArrayList<FlexoResourceCenter>(this.getResourceCenters());
+
 		try {
 			urlList = cl.getResources("META-INF/resourceCenters/" + FlexoResourceCenter.class.getCanonicalName());
 
 			if (urlList != null && urlList.hasMoreElements()) {
 				FlexoResourceCenter rc = null;
+				boolean rcExists = false;
 				while (urlList.hasMoreElements()) {
 					URL url = urlList.nextElement();
 
@@ -134,30 +140,46 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 					IOUtils.copy(url.openStream(), writer, "UTF-8");
 					String rcBaseUri = writer.toString();
 
-					if (url.getProtocol().equals("file")) {
-						String dirPath = URLDecoder.decode(url.getPath().substring(0, url.getPath().indexOf("META-INF")), "UTF-8");
-						File rcDir = new File(dirPath);
-						if (rcDir.exists()) {
-							rc = new DirectoryResourceCenter(rcDir, this);
-							rc.setDefaultBaseURI(rcBaseUri);
-							this.addToResourceCenters(rc);
+					System.out.println("Attempt to loading RC " + rcBaseUri);
+
+					rcExists = false;
+					for (FlexoResourceCenter r : rcList) {
+						rcExists = r.getDefaultBaseURI().equals(rcBaseUri) || rcExists;
+					}
+					if (!rcExists) {
+						if (url.getProtocol().equals("file")) {
+							// When it is a file and it is contained in target/classes directory then we
+							// replace with directory from source code (development mode)
+							String dirPath = URLDecoder.decode(url.getPath().substring(0, url.getPath().indexOf("META-INF")), "UTF-8")
+									.replace("target/classes", "src/main/resources");
+							File rcDir = new File(dirPath);
+							if (rcDir.exists()) {
+								rc = new DirectoryResourceCenter(rcDir, this);
+							}
+						}
+						else if (url.getProtocol().equals("jar")) {
+
+							String jarPath = URLDecoder.decode(url.getPath().substring(0, url.getPath().indexOf("!")).replace("+", "%2B"),
+									"UTF-8");
+
+							URL jarURL = new URL(jarPath);
+							URI jarURI = new URI(jarURL.getProtocol(), jarURL.getUserInfo(), jarURL.getHost(), jarURL.getPort(),
+									jarURL.getPath(), jarURL.getQuery(), jarURL.getRef());
+
+							rc = JarResourceCenter.addJarFile(new JarFile(new File(jarURI)), this);
+
+						}
+						else {
+							logger.warning("INVESTIGATE: don't know how to deal with RC accessed through " + url.getProtocol());
 						}
 					}
-					else if (url.getProtocol().equals("jar")) {
-
-						String jarPath = URLDecoder.decode(url.getPath().substring(0, url.getPath().indexOf("!")).replace("+", "%2B"),
-								"UTF-8");
-
-						URI jarURI = new URI(jarPath);
-						rc = JarResourceCenter.addJarFile(new JarFile(new File(jarURI)), this);
-
-					}
 					else {
-						logger.warning("INVESTIGATE: don't know how to deal with RC accessed through " + url.getProtocol());
+						logger.warning("an RC already exists with DefaultBaseURI: " + rcBaseUri);
 					}
 
 					if (rc != null) {
 						rc.setDefaultBaseURI(rcBaseUri);
+						rc.getResourceCenterEntry().setIsSystemEntry(true);
 						this.addToResourceCenters(rc);
 						rc = null;
 					}

@@ -45,7 +45,7 @@ import org.openflexo.foundation.fml.rm.ViewPointResource;
 import org.openflexo.foundation.fml.rt.ViewRepository;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.technologyadapter.ModelRepository;
-import org.openflexo.foundation.technologyadapter.TechnologyAdapterFileResourceRepository;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapterResourceRepository;
 
 /**
  * A {@link ViewRepository} contains some resources storing viewpoint, and contained in a given {@link FlexoResourceCenter}
@@ -53,7 +53,7 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapterFileResourceR
  * @author sylvain
  * 
  */
-public class ViewPointRepository extends TechnologyAdapterFileResourceRepository<ViewPointResource, FMLTechnologyAdapter, ViewPoint> {
+public class ViewPointRepository<I> extends TechnologyAdapterResourceRepository<ViewPointResource, FMLTechnologyAdapter, ViewPoint, I> {
 
 	private static final Logger logger = Logger.getLogger(ModelRepository.class.getPackage().getName());
 
@@ -61,7 +61,7 @@ public class ViewPointRepository extends TechnologyAdapterFileResourceRepository
 
 	private final FlexoServiceManager serviceManager;
 
-	public ViewPointRepository(FMLTechnologyAdapter adapter, FlexoResourceCenter<?> resourceCenter) {
+	public ViewPointRepository(FMLTechnologyAdapter adapter, FlexoResourceCenter<I> resourceCenter) {
 		super(adapter, resourceCenter);
 		this.serviceManager = adapter.getServiceManager();
 	}

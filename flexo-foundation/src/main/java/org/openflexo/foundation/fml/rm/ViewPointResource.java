@@ -53,8 +53,6 @@ import org.openflexo.model.annotations.XMLElement;
 @XMLElement
 public interface ViewPointResource extends AbstractVirtualModelResource<ViewPoint> {
 
-	public static final String VIEWPOINT_SUFFIX = ".viewpoint";
-
 	public static final String VIEW_POINT_LIBRARY = "viewPointLibrary";
 
 	// public static final String DIRECTORY = "directory";
@@ -72,6 +70,6 @@ public interface ViewPointResource extends AbstractVirtualModelResource<ViewPoin
 	public VirtualModelResource getVirtualModelResource(String virtualModelNameOrURI);
 
 	public boolean isDeprecatedVersion();
-	
+
 	public void gitSave();
 }

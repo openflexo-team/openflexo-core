@@ -44,14 +44,6 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.logging.Logger;
 
-import org.openflexo.model.annotations.Getter;
-import org.openflexo.model.annotations.Implementation;
-import org.openflexo.model.annotations.ImplementationClass;
-import org.openflexo.model.annotations.ModelEntity;
-import org.openflexo.model.annotations.PropertyIdentifier;
-import org.openflexo.model.annotations.Setter;
-import org.openflexo.model.annotations.XMLAttribute;
-import org.openflexo.model.annotations.XMLElement;
 import org.openflexo.toolbox.FlexoVersion;
 import org.openflexo.toolbox.IProgress;
 
@@ -64,38 +56,6 @@ import org.openflexo.toolbox.IProgress;
 public class DirectoryResourceCenter extends FileSystemBasedResourceCenter {
 
 	protected static final Logger logger = Logger.getLogger(DirectoryResourceCenter.class.getPackage().getName());
-
-	@ModelEntity
-	@ImplementationClass(DirectoryResourceCenterEntry.DirectoryResourceCenterEntryImpl.class)
-	@XMLElement
-	public static interface DirectoryResourceCenterEntry extends ResourceCenterEntry<DirectoryResourceCenter> {
-		@PropertyIdentifier(type = File.class)
-		public static final String DIRECTORY_KEY = "directory";
-
-		@Getter(DIRECTORY_KEY)
-		@XMLAttribute
-		public File getDirectory();
-
-		@Setter(DIRECTORY_KEY)
-		public void setDirectory(File aDirectory);
-
-		@Implementation
-		public static abstract class DirectoryResourceCenterEntryImpl implements DirectoryResourceCenterEntry {
-			@Override
-			public DirectoryResourceCenter makeResourceCenter(FlexoResourceCenterService rcService) {
-				return DirectoryResourceCenter.instanciateNewDirectoryResourceCenter(getDirectory(), rcService);
-			}
-
-			@Override
-			public boolean equals(Object obj) {
-				if (obj instanceof DirectoryResourceCenterEntry) {
-					return getDirectory() != null && getDirectory().equals(((DirectoryResourceCenterEntry) obj).getDirectory());
-				}
-				return false;
-			}
-		}
-
-	}
 
 	public DirectoryResourceCenter(File resourceCenterDirectory, FlexoResourceCenterService rcService) {
 		super(resourceCenterDirectory, rcService);
@@ -136,4 +96,5 @@ public class DirectoryResourceCenter extends FileSystemBasedResourceCenter {
 	public boolean isDeleted() {
 		return false;
 	}
+
 }

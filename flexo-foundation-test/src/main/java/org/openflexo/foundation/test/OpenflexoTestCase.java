@@ -67,7 +67,7 @@ import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.resource.DefaultResourceCenterService;
 import org.openflexo.foundation.resource.DirectoryResourceCenter;
-import org.openflexo.foundation.resource.DirectoryResourceCenter.DirectoryResourceCenterEntry;
+import org.openflexo.foundation.resource.FileSystemBasedResourceCenter.FSBasedResourceCenterEntry;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.FlexoResourceCenter.ResourceCenterEntry;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
@@ -258,7 +258,6 @@ public abstract class OpenflexoTestCase {
 
 					System.out.println("Creating TestResourceCenter [compound: " + generateCompoundTestResourceCenter + "] "
 							+ testResourceCenterDirectory);
-					System.out.println("***************** WARNING WARNING WARNING ************************");
 
 					if (generateCompoundTestResourceCenter) {
 
@@ -311,8 +310,8 @@ public abstract class OpenflexoTestCase {
 
 	protected static FlexoResourceCenterService getNewResourceCenter(String name) {
 		try {
-			ModelFactory factory = new ModelFactory(DirectoryResourceCenterEntry.class);
-			DirectoryResourceCenterEntry entry = factory.newInstance(DirectoryResourceCenterEntry.class);
+			ModelFactory factory = new ModelFactory(FSBasedResourceCenterEntry.class);
+			FSBasedResourceCenterEntry entry = factory.newInstance(FSBasedResourceCenterEntry.class);
 			entry.setDirectory(FileUtils.createTempDirectory(name, "ResourceCenter"));
 			List<ResourceCenterEntry<?>> rcList = new ArrayList<ResourceCenterEntry<?>>();
 			rcList.add(entry);

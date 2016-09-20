@@ -46,6 +46,7 @@ import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.nature.ProjectNature;
 import org.openflexo.foundation.resource.DirectoryResourceCenter;
+import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.test.OpenflexoProjectAtRunTimeTestCase;
 import org.openflexo.gina.test.TestApplicationContext;
@@ -73,25 +74,19 @@ public abstract class OpenflexoProjectAtRunTimeTestCaseWithGUI extends Openflexo
 		}
 	}
 
-	/*@AfterClass
-	public synchronized static void tearDownClass() {
-		FlexoResourceCenterService RCService = serviceManager.getResourceCenterService();
-		List<FlexoResourceCenter> listRC = RCService.getResourceCenters();
-		for (FlexoResourceCenter rc : listRC) {
-			if (rc instanceof DirectoryResourceCenter) {
-				File RCDirectory = ((DirectoryResourceCenter) rc).getDirectory();
-				RCDirectory.deleteOnExit();
-			}
-		}
-	}*/
-
 	protected static ApplicationContext instanciateTestServiceManager() {
 		return instanciateTestServiceManager(false);
 	}
 
 	protected static ApplicationContext instanciateTestServiceManager(final boolean generateCompoundTestResourceCenter) {
 		serviceManager = new TestApplicationContext(generateCompoundTestResourceCenter);
-		resourceCenter = (DirectoryResourceCenter) serviceManager.getResourceCenterService().getResourceCenters().get(0);
+		for (FlexoResourceCenter rc : serviceManager.getResourceCenterService().getResourceCenters()) {
+			// Select the first directory ResourceCenter
+			if (rc instanceof DirectoryResourceCenter && !rc.getResourceCenterEntry().isSystemEntry()) {
+				resourceCenter = (DirectoryResourceCenter) rc;
+				break;
+			}
+		}
 		return (ApplicationContext) serviceManager;
 	}
 

@@ -40,6 +40,7 @@ package org.openflexo.foundation.resource;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -51,6 +52,7 @@ import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.model.annotations.XMLElement;
 import org.openflexo.model.factory.ModelFactory;
 import org.openflexo.toolbox.FileUtils;
+import org.openflexo.toolbox.JarInDirClassLoader;
 
 /**
  * Represents an I/O delegate based on a directory and a core file inside this directory<br>
@@ -112,17 +114,22 @@ public interface DirectoryBasedFlexoIODelegate extends FileFlexoIODelegate {
 
 		private File directory;
 
-		public static DirectoryBasedFlexoIODelegate makeDirectoryBasedFlexoIODelegate(File containerDir, String directoryExtension,
-				String fileExtension, DirectoryContainerResource<?> resource, ModelFactory factory) {
+		public static DirectoryBasedFlexoIODelegate makeDirectoryBasedFlexoIODelegate(File containerDir, String baseName,
+				String directoryExtension, String fileExtension, ModelFactory factory) {
 			DirectoryBasedFlexoIODelegate fileIODelegate = factory.newInstance(DirectoryBasedFlexoIODelegate.class);
 			fileIODelegate.setDirectoryExtension(directoryExtension);
 			fileIODelegate.setFileExtension(fileExtension);
-			File directory = new File(containerDir, resource.getName() + directoryExtension);
-			File file = new File(directory, resource.getName() + fileExtension);
+			File directory = new File(containerDir, baseName + directoryExtension);
+			File file = new File(directory, baseName + fileExtension);
 			fileIODelegate.setDirectory(directory);
 			fileIODelegate.setFile(file);
 			return fileIODelegate;
 		}
+
+		/*@Override
+		public File getSerializationArtefact() {
+			return getDirectory();
+		}*/
 
 		@Override
 		public File getDirectory() {
@@ -204,9 +211,14 @@ public interface DirectoryBasedFlexoIODelegate extends FileFlexoIODelegate {
 		}
 
 		@Override
-		public RepositoryFolder<?> getRepositoryFolder(ResourceRepository<?> resourceRepository, boolean createWhenNonExistent)
+		public RepositoryFolder<?, File> getRepositoryFolder(ResourceRepository<?, File> resourceRepository, boolean createWhenNonExistent)
 				throws IOException {
 			return resourceRepository.getRepositoryFolder(getDirectory(), true);
+		}
+
+		@Override
+		public ClassLoader retrieveClassLoader() {
+			return new JarInDirClassLoader(Collections.singletonList(getDirectory()));
 		}
 
 	}

@@ -38,6 +38,7 @@
 
 package org.openflexo.foundation.fml;
 
+import java.io.FileNotFoundException;
 import java.util.Collection;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -47,13 +48,16 @@ import java.util.Vector;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.DefaultFlexoObject;
+import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoService;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.rm.ViewPointResource;
+import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.resource.DefaultResourceCenterService.ResourceCenterAdded;
 import org.openflexo.foundation.resource.DefaultResourceCenterService.ResourceCenterRemoved;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
+import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.task.FlexoTask;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.model.exceptions.ModelDefinitionException;
@@ -95,6 +99,12 @@ public class ViewPointLibrary extends DefaultFlexoObject implements FlexoService
 	 * @return
 	 */
 	public ViewPointResource getViewPointResource(String viewpointURI) {
+		/*System.out.println("On recherche " + viewpointURI);
+		System.out.println("On retourne " + map.get(viewpointURI));
+		System.out.println("Mais: " + getServiceManager().getResourceManager().getResource(viewpointURI, ViewPoint.class));
+		for (FlexoResource<?> r : getServiceManager().getResourceManager().getRegisteredResources()) {
+			System.out.println("   - " + r.getURI() + " " + r);
+		}*/
 		return map.get(viewpointURI);
 	}
 
@@ -130,21 +140,31 @@ public class ViewPointLibrary extends DefaultFlexoObject implements FlexoService
 	 * 
 	 * @param viewpointURI
 	 * @return
+	 * @throws FlexoException
+	 * @throws ResourceLoadingCancelledException
+	 * @throws FileNotFoundException
 	 */
-	public VirtualModel getVirtualModel(String virtualModelURI) {
-		VirtualModel returned = _getVirtualModel(virtualModelURI);
+	public VirtualModel getVirtualModel(String virtualModelURI)
+			throws FileNotFoundException, ResourceLoadingCancelledException, FlexoException {
+		VirtualModelResource returned = _getVirtualModel(virtualModelURI);
+		if (returned != null) {
+			return returned.getResourceData(null);
+		}
 		if (returned == null) {
 			logger.warning("Cannot find virtual model:" + virtualModelURI);
 		}
 		return null;
 	}
 
-	private VirtualModel _getVirtualModel(String virtualModelURI) {
+	private VirtualModelResource _getVirtualModel(String virtualModelURI) {
 		if (virtualModelURI.contains("/")) {
 			String viewPointURI = virtualModelURI.substring(0, virtualModelURI.lastIndexOf("/"));
-			ViewPoint vp = getViewPoint(viewPointURI);
-			if (vp != null) {
-				return vp.getVirtualModelNamed(virtualModelURI.substring(virtualModelURI.lastIndexOf("/") + 1));
+			ViewPointResource vpres = getViewPointResource(viewPointURI);
+			if (vpres != null) {
+				VirtualModelResource returned = vpres.getVirtualModelResource(virtualModelURI);
+				if (returned != null) {
+					return returned;
+				}
 			}
 		}
 		return null;
@@ -210,7 +230,7 @@ public class ViewPointLibrary extends DefaultFlexoObject implements FlexoService
 		FMLTechnologyAdapter vmTA = getTechnologyAdapterService().getTechnologyAdapter(FMLTechnologyAdapter.class);
 		List<FlexoResourceCenter> resourceCenters = getResourceCenterService().getResourceCenters();
 		for (FlexoResourceCenter<?> rc : resourceCenters) {
-			ViewPointRepository vprfb = rc.getRepository(ViewPointRepository.class, vmTA);
+			ViewPointRepository<?> vprfb = vmTA.getViewPointRepository(rc);
 			if ((vprfb != null) && (vprfb.getAllResources().contains(vpRes))) {
 				vprfb.unregisterResource(vpRes);
 			}
@@ -219,27 +239,52 @@ public class ViewPointLibrary extends DefaultFlexoObject implements FlexoService
 		return vpRes;
 	}
 
+	/**
+	 * Lookup and return {@link FlexoConcept} identified by supplied flexoConceptURI<br>
+	 * Return concept might be a {@link ViewPoint}, a {@link VirtualModel} or a simple {@link FlexoConcept}
+	 * 
+	 * @param flexoConceptURI
+	 * @return
+	 */
 	public FlexoConcept getFlexoConcept(String flexoConceptURI) {
 		FlexoConcept returned = null;
+
+		// Is that a viewpoint ?
 		returned = getViewPoint(flexoConceptURI);
 		if (returned != null) {
 			return returned;
 		}
-		returned = _getVirtualModel(flexoConceptURI);
-		if (returned != null) {
-			return returned;
+
+		// Is that a virtual model ?
+		VirtualModelResource vmRes = _getVirtualModel(flexoConceptURI);
+		if (vmRes != null) {
+			return vmRes.getVirtualModel();
 		}
+
+		// May be a simple concept ?
 		if (flexoConceptURI.indexOf("#") > -1) {
 			String virtualModelURI = flexoConceptURI.substring(0, flexoConceptURI.indexOf("#"));
 			String flexoConceptName = flexoConceptURI.substring(flexoConceptURI.indexOf("#") + 1);
-			VirtualModel vm = _getVirtualModel(virtualModelURI);
-			if (vm != null) {
-				return vm.getFlexoConcept(flexoConceptName);
+			vmRes = _getVirtualModel(virtualModelURI);
+			if (vmRes != null) {
+				VirtualModel vm = vmRes.getVirtualModel();
+				if (vm != null) {
+					return vm.getFlexoConcept(flexoConceptName);
+				}
+				else {
+					// It is possible to come here, because this can be called during deserialization of VirtualModel itself
+					// In this case, the resource cannot be loaded yet (because already loading)
+					// Concept will be looked up later
+				}
 			}
 			logger.warning("Cannot find virtual model " + virtualModelURI + " while searching flexo concept:" + flexoConceptURI + " ("
 					+ flexoConceptName + ")");
 		}
 		logger.warning("Cannot find flexo concept:" + flexoConceptURI);
+		/*String viewPointURI = flexoConceptURI.substring(0, flexoConceptURI.lastIndexOf("/"));
+		for (VirtualModelResource r : getViewPointResource(viewPointURI).getVirtualModelResources()) {
+			System.out.println("> VM " + r.getURI());
+		}*/
 		return null;
 	}
 
@@ -332,7 +377,7 @@ public class ViewPointLibrary extends DefaultFlexoObject implements FlexoService
 
 			for (FlexoResourceCenter<?> rc : getResourceCenters()) {
 				// Register Viewpoint viewpoint resources
-				ViewPointRepository vprfb = rc.getRepository(ViewPointRepository.class, fmlTA);
+				ViewPointRepository<?> vprfb = fmlTA.getViewPointRepository(rc);
 				// System.out.println("vprfb=" + vprfb);
 				if (vprfb == null) {
 					logger.warning("Could not retrieve ViewPointRepository from RC: " + rc);

@@ -220,6 +220,7 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends 
 			resourceData = performLoad();
 			isLoading = false;
 			resourceData.setResource(this);
+			resourceData.clearIsModified();
 			return resourceData;
 
 		} catch (IOException e) {

@@ -121,7 +121,7 @@ public interface TechnologyAdapterService extends FlexoService {
 	 * @param technologyAdapter
 	 * @return
 	 */
-	public List<ModelRepository<?, ?, ?, ?, ?>> getAllModelRepositories(TechnologyAdapter technologyAdapter);
+	public List<ModelRepository<?, ?, ?, ?, ?, ?>> getAllModelRepositories(TechnologyAdapter technologyAdapter);
 
 	/**
 	 * Return the list of all non-empty {@link MetaModelRepository} discovered in the scope of {@link FlexoServiceManager}, related to
@@ -130,7 +130,7 @@ public interface TechnologyAdapterService extends FlexoService {
 	 * @param technologyAdapter
 	 * @return
 	 */
-	public List<MetaModelRepository<?, ?, ?, ?>> getAllMetaModelRepositories(TechnologyAdapter technologyAdapter);
+	public List<MetaModelRepository<?, ?, ?, ?, ?>> getAllMetaModelRepositories(TechnologyAdapter technologyAdapter);
 
 	/**
 	 * Return the list of all non-empty {@link ResourceRepository} discovered in the scope of {@link FlexoServiceManager}, related to
@@ -139,7 +139,7 @@ public interface TechnologyAdapterService extends FlexoService {
 	 * @param technologyAdapter
 	 * @return
 	 */
-	public List<ResourceRepository<?>> getAllRepositories(TechnologyAdapter technologyAdapter);
+	public List<ResourceRepository<?, ?>> getAllRepositories(TechnologyAdapter technologyAdapter);
 
 	/**
 	 * Return the list of all non-empty {@link ResourceRepository} discovered in the scope of {@link FlexoServiceManager} which may give
@@ -148,7 +148,7 @@ public interface TechnologyAdapterService extends FlexoService {
 	 * @param technologyAdapter
 	 * @return
 	 */
-	public <RD extends ResourceData<RD>> List<ResourceRepository<? extends FlexoResource<RD>>> getAllRepositories(
+	public <RD extends ResourceData<RD>> List<ResourceRepository<? extends FlexoResource<RD>, ?>> getAllRepositories(
 			TechnologyAdapter technologyAdapter, Class<RD> resourceDataClass);
 
 	/**

@@ -67,6 +67,9 @@ public class ViewPointBindingModel extends VirtualModelBindingModel implements P
 
 	public static final String REFLEXIVE_ACCESS_PROPERTY = "viewPoint";
 	public static final String VIEW_PROPERTY = "view";
+	// TODO : to be renamed ResourceCenter
+	public static final String RC_PROPERTY = "resourceCenter";
+	@Deprecated
 	public static final String PROJECT_PROPERTY = "project";
 
 	private final BindingVariable reflexiveAccessBindingVariable;

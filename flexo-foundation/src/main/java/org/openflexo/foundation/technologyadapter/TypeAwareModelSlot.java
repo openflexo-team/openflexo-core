@@ -41,7 +41,6 @@ package org.openflexo.foundation.technologyadapter;
 import java.util.logging.Logger;
 
 import org.apache.commons.lang3.reflect.TypeUtils;
-import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
@@ -87,7 +86,7 @@ public interface TypeAwareModelSlot<M extends FlexoModel<M, MM> & TechnologyObje
 
 	public Class<? extends FlexoMetaModel<?>> getMetaModelClass();
 
-	public FlexoModelResource<M, MM, ?, ?> createProjectSpecificEmptyModel(FlexoProject project, String filename, String modelUri,
+	public FlexoModelResource<M, MM, ?, ?> createProjectSpecificEmptyModel(FlexoResourceCenter<?> rc, String filename, String modelUri,
 			FlexoMetaModelResource<M, MM, ?> metaModelResource);
 
 	public FlexoModelResource<M, MM, ?, ?> createSharedEmptyModel(FlexoResourceCenter<?> resourceCenter, String relativePath,
@@ -128,7 +127,7 @@ public interface TypeAwareModelSlot<M extends FlexoModel<M, MM> & TechnologyObje
 		 */
 		@Override
 		public abstract ModelSlotInstanceConfiguration<? extends TypeAwareModelSlot<M, MM>, M> createConfiguration(
-				AbstractVirtualModelInstance<?, ?> virtualModelInstance, FlexoProject project);
+				AbstractVirtualModelInstance<?, ?> virtualModelInstance, FlexoResourceCenter<?> rc);
 
 		/**
 		 * Return a new String (full URI) uniquely identifying a new object in related technology, according to the conventions of related
@@ -181,7 +180,7 @@ public interface TypeAwareModelSlot<M extends FlexoModel<M, MM> & TechnologyObje
 		}
 
 		@Override
-		public abstract FlexoModelResource<M, MM, ?, ?> createProjectSpecificEmptyModel(FlexoProject project, String filename,
+		public abstract FlexoModelResource<M, MM, ?, ?> createProjectSpecificEmptyModel(FlexoResourceCenter<?> rc, String filename,
 				String modelUri, FlexoMetaModelResource<M, MM, ?> metaModelResource);
 
 		@Override

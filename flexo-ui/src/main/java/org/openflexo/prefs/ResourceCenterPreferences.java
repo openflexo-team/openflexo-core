@@ -1,6 +1,6 @@
 /**
  * 
- * Copyright (c) 2014, Openflexo
+ * Copyright (c) 2014-2016 , Openflexo
  * 
  * This file is part of Flexo-ui, a component of the software infrastructure 
  * developed at Openflexo.
@@ -55,9 +55,10 @@ import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLElement;
 
 /**
- * Preferences encoding all declared resource centers
+ * Preferences encoding all user declared resource centers
+ * the ones that are declared at the "system-level" (i.e. globally or from the classpath) are not stored in user preferences
  * 
- * @author sguerin
+ * @author sguerin, xtof
  * 
  */
 @ModelEntity
@@ -91,21 +92,22 @@ public interface ResourceCenterPreferences extends ServicePreferences<FlexoResou
 
 	public void ensureResourceEntryIsNoMorePresent(ResourceCenterEntry<?> entry);
 
-	/**
-	 * Return the list all all {@link FlexoResourceCenter} registered for the session
+	/** Implementation Class 
 	 * 
-	 * @return
+	 * @author sylvain
+	 *
 	 */
-	/*public List<File> getDirectoryResourceCenterList();
-	
-	public void assertDirectoryResourceCenterRegistered(File dirRC);
-	
-	public void setDirectoryResourceCenterList(List<File> rcList);*/
-
 	public abstract class ResourceCenterPreferencesImpl extends PreferencesContainerImpl implements ResourceCenterPreferences {
 
 		private static final Logger logger = Logger.getLogger(ResourceCenterPreferences.class.getPackage().getName());
 
+		@Override
+		public void addToResourceCenterEntries(ResourceCenterEntry<?> aResourceCenterEntry){
+			if (!aResourceCenterEntry.isSystemEntry()){
+				this.performSuperAdder(RESOURCE_CENTER_ENTRIES_KEY,aResourceCenterEntry);
+				}
+		}
+		
 		@Override
 		public void ensureResourceEntryIsPresent(ResourceCenterEntry<?> entry) {
 

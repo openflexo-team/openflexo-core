@@ -64,8 +64,6 @@ import org.openflexo.foundation.DefaultFlexoEditor;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.fml.PrimitiveRole.PrimitiveType;
-import org.openflexo.foundation.fml.ViewPoint.ViewPointImpl;
-import org.openflexo.foundation.fml.VirtualModel.VirtualModelImpl;
 import org.openflexo.foundation.fml.action.CreateEditionAction;
 import org.openflexo.foundation.fml.action.CreateFlexoBehaviour;
 import org.openflexo.foundation.fml.action.CreateFlexoBehaviourParameter;
@@ -88,7 +86,9 @@ import org.openflexo.foundation.fml.editionaction.ExpressionAction;
 import org.openflexo.foundation.fml.editionaction.FetchRequestCondition;
 import org.openflexo.foundation.fml.inspector.FlexoConceptInspector;
 import org.openflexo.foundation.fml.rm.ViewPointResource;
+import org.openflexo.foundation.fml.rm.ViewPointResourceFactory;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
+import org.openflexo.foundation.fml.rm.VirtualModelResourceFactory;
 import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
 import org.openflexo.foundation.fml.rt.FMLRTModelSlotInstanceConfiguration;
@@ -110,6 +110,7 @@ import org.openflexo.foundation.fml.rt.rm.ViewResource;
 import org.openflexo.foundation.fml.rt.rm.VirtualModelInstanceResource;
 import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.test.OpenflexoProjectAtRunTimeTestCase;
+import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.test.OrderedRunner;
 import org.openflexo.test.TestOrder;
@@ -122,6 +123,10 @@ import org.openflexo.test.TestOrder;
  */
 @RunWith(OrderedRunner.class)
 public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTestCase {
+
+	public static final String VIEWPOINT_NAME = "TestViewPoint";
+	public static final String VIEWPOINT_URI = "http://openflexo.org/test/TestViewPoint";
+	public static final String VIRTUAL_MODEL_NAME = "TestVirtualModel";
 
 	static FlexoEditor editor;
 	static ViewPoint viewPoint;
@@ -157,12 +162,25 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 
 	/**
 	 * Test {@link ViewPoint} creation, check {@link BindingModel}
+	 * 
+	 * @throws ModelDefinitionException
+	 * @throws SaveResourceException
 	 */
 	@Test
 	@TestOrder(2)
-	public void testCreateViewPoint() {
-		viewPoint = ViewPointImpl.newViewPoint("TestViewPoint", "http://openflexo.org/test/TestViewPoint", resourceCenter.getDirectory(),
-				serviceManager.getViewPointLibrary(), resourceCenter);
+	public void testCreateViewPoint() throws SaveResourceException, ModelDefinitionException {
+
+		FMLTechnologyAdapter fmlTechnologyAdapter = serviceManager.getTechnologyAdapterService()
+				.getTechnologyAdapter(FMLTechnologyAdapter.class);
+		ViewPointResourceFactory factory = fmlTechnologyAdapter.getViewPointResourceFactory();
+
+		ViewPointResource newViewPointResource = factory.makeViewPointResource(VIEWPOINT_NAME, VIEWPOINT_URI,
+				fmlTechnologyAdapter.getGlobalRepository(resourceCenter).getRootFolder(),
+				fmlTechnologyAdapter.getTechnologyContextManager(), true);
+		viewPoint = newViewPointResource.getLoadedResourceData();
+
+		// viewPoint = ViewPointImpl.newViewPoint("TestViewPoint", "http://openflexo.org/test/TestViewPoint", resourceCenter.getDirectory(),
+		// serviceManager.getViewPointLibrary(), resourceCenter);
 		// assertTrue(((ViewPointResource) viewPoint.getResource()).getDirectory().exists());
 		// assertTrue(((ViewPointResource) viewPoint.getResource()).getFile().exists());
 		assertTrue(((ViewPointResource) viewPoint.getResource()).getDirectory() != null);
@@ -179,12 +197,21 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 
 	/**
 	 * Test {@link VirtualModel} creation, check {@link BindingModel}
+	 * 
+	 * @throws ModelDefinitionException
 	 */
 	@Test
 	@TestOrder(3)
-	public void testCreateVirtualModel() throws SaveResourceException {
+	public void testCreateVirtualModel() throws SaveResourceException, ModelDefinitionException {
 
-		virtualModel1 = VirtualModelImpl.newVirtualModel("VM1", viewPoint);
+		FMLTechnologyAdapter fmlTechnologyAdapter = serviceManager.getTechnologyAdapterService()
+				.getTechnologyAdapter(FMLTechnologyAdapter.class);
+		VirtualModelResourceFactory factory = fmlTechnologyAdapter.getViewPointResourceFactory().getVirtualModelResourceFactory();
+		VirtualModelResource newVMResource = factory.makeVirtualModelResource("VM1", viewPoint.getViewPointResource(),
+				fmlTechnologyAdapter.getTechnologyContextManager(), true);
+		virtualModel1 = newVMResource.getLoadedResourceData();
+
+		// virtualModel1 = VirtualModelImpl.newVirtualModel("VM1", viewPoint);
 		assertTrue(ResourceLocator.retrieveResourceAsFile(((VirtualModelResource) virtualModel1.getResource()).getDirectory()).exists());
 		assertTrue(((VirtualModelResource) virtualModel1.getResource()).getFlexoIODelegate().exists());
 
@@ -576,12 +603,22 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 
 	/**
 	 * Test management of VirtualModel's BindingModel
+	 * 
+	 * @throws ModelDefinitionException
 	 */
 	@Test
 	@TestOrder(8)
-	public void testVirtualModelBindingModelManagement() throws SaveResourceException {
+	public void testVirtualModelBindingModelManagement() throws SaveResourceException, ModelDefinitionException {
 
-		virtualModel2 = VirtualModelImpl.newVirtualModel("VM2", viewPoint);
+		FMLTechnologyAdapter fmlTechnologyAdapter = serviceManager.getTechnologyAdapterService()
+				.getTechnologyAdapter(FMLTechnologyAdapter.class);
+		VirtualModelResourceFactory factory = fmlTechnologyAdapter.getViewPointResourceFactory().getVirtualModelResourceFactory();
+
+		VirtualModelResource newVMResource2 = factory.makeVirtualModelResource("VM2", viewPoint.getViewPointResource(),
+				fmlTechnologyAdapter.getTechnologyContextManager(), true);
+		virtualModel2 = newVMResource2.getLoadedResourceData();
+
+		// virtualModel2 = VirtualModelImpl.newVirtualModel("VM2", viewPoint);
 		assertTrue(ResourceLocator.retrieveResourceAsFile(((VirtualModelResource) virtualModel2.getResource()).getDirectory()).exists());
 		assertTrue(((VirtualModelResource) virtualModel2.getResource()).getFlexoIODelegate().exists());
 
@@ -597,7 +634,10 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		assertEquals(VirtualModelInstanceType.getVirtualModelInstanceType(virtualModel2),
 				virtualModel2.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.VIRTUAL_MODEL_INSTANCE_PROPERTY).getType());
 
-		virtualModel3 = VirtualModelImpl.newVirtualModel("VM3", viewPoint);
+		VirtualModelResource newVMResource3 = factory.makeVirtualModelResource("VM3", viewPoint.getViewPointResource(),
+				fmlTechnologyAdapter.getTechnologyContextManager(), true);
+		virtualModel3 = newVMResource3.getLoadedResourceData();
+		// virtualModel3 = VirtualModelImpl.newVirtualModel("VM3", viewPoint);
 		assertTrue(ResourceLocator.retrieveResourceAsFile(((VirtualModelResource) virtualModel3.getResource()).getDirectory()).exists());
 		assertTrue(((VirtualModelResource) virtualModel3.getResource()).getFlexoIODelegate().exists());
 

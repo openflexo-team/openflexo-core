@@ -43,34 +43,38 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Properties;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import org.openflexo.foundation.FlexoObject;
+import org.openflexo.foundation.converter.FlexoObjectReferenceConverter;
 import org.openflexo.foundation.fml.ViewPointRepository;
-import org.openflexo.foundation.resource.DirectoryResourceCenter.DirectoryResourceCenterEntry;
+import org.openflexo.foundation.resource.FileSystemBasedResourceCenter.FSBasedResourceCenterEntry;
 import org.openflexo.foundation.resource.JarResourceCenter.JarResourceCenterEntry;
 import org.openflexo.foundation.resource.RemoteResourceCenter.RemoteResourceCenterEntry;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
+import org.openflexo.foundation.utils.FlexoObjectReference.ReferenceOwner;
 import org.openflexo.model.annotations.Import;
 import org.openflexo.model.annotations.Imports;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.XMLElement;
 import org.openflexo.toolbox.FlexoVersion;
 import org.openflexo.toolbox.IProgress;
+import org.openflexo.xml.XMLRootElementInfo;
 
 /**
  * A {@link FlexoResourceCenter} is a symbolic repository storing {@link FlexoResource} from artefacts of type I
  * 
  * @param <I>
- *            I is the type of iterable artefacts this resource center stores
+ *            I is the type of iterable serialization artefacts this resource center stores
  * 
  * @author sylvain
  * 
  */
 @ModelEntity
-public interface FlexoResourceCenter<I> extends Iterable<I>, FlexoObject {
+public interface FlexoResourceCenter<I> extends Iterable<I>, FlexoObject, ReferenceOwner {
 
 	public static final String DEFAULT_BASE_URI = "defaultBaseURI";
 
@@ -82,11 +86,25 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, FlexoObject {
 	 */
 	@ModelEntity
 	@XMLElement
-	@Imports({ @Import(DirectoryResourceCenterEntry.class), @Import(RemoteResourceCenterEntry.class),
-			@Import(JarResourceCenterEntry.class) })
+	@Imports({ @Import(FSBasedResourceCenterEntry.class), @Import(RemoteResourceCenterEntry.class), @Import(JarResourceCenterEntry.class) })
 	public static interface ResourceCenterEntry<RC extends FlexoResourceCenter<?>> {
 
 		public RC makeResourceCenter(FlexoResourceCenterService rcService);
+
+		/**
+		 * Tells if the ResourceCenterEntry has been declared at user ou system level
+		 * 
+		 * @return boolean
+		 */
+		public boolean isSystemEntry();
+
+		/**
+		 * Sets ResourceCenterEntry has being declared at user ou system level
+		 * 
+		 * @return boolean
+		 */
+		public void setIsSystemEntry(boolean isSystem);
+
 	}
 
 	/**
@@ -244,7 +262,9 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, FlexoObject {
 	 * @param technologyAdapter
 	 * @return the registered repository
 	 */
-	public <R extends ResourceRepository<?>> R getRepository(Class<? extends R> repositoryType, TechnologyAdapter technologyAdapter);
+	// TODO: change to retrieveRepository(Class<? extends R> repositoryType, Class <? extends TechnologyAdapter technologyAdapterClass)
+	public <R extends ResourceRepository<?, I>> R retrieveRepository(Class<? extends R> repositoryType,
+			TechnologyAdapter technologyAdapter);
 
 	/**
 	 * Register supplied repository for a given type and technology
@@ -254,7 +274,7 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, FlexoObject {
 	 * @param repositoryType
 	 * @param technologyAdapter
 	 */
-	public <R extends ResourceRepository<?>> void registerRepository(R repository, Class<? extends R> repositoryType,
+	public <R extends ResourceRepository<?, I>> void registerRepository(R repository, Class<? extends R> repositoryType,
 			TechnologyAdapter technologyAdapter);
 
 	/**
@@ -263,7 +283,7 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, FlexoObject {
 	 * @param technologyAdapter
 	 * @return
 	 */
-	public Collection<ResourceRepository<?>> getRegistedRepositories(TechnologyAdapter technologyAdapter);
+	public Collection<? extends ResourceRepository<?, I>> getRegistedRepositories(TechnologyAdapter technologyAdapter);
 
 	public ResourceCenterEntry<?> getResourceCenterEntry();
 
@@ -280,4 +300,170 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, FlexoObject {
 	 * @return
 	 */
 	public String getDefaultResourceURI(FlexoResource<?> resource);
+
+	/**
+	 * Return base serialization artefact (top-level container)
+	 * 
+	 * @return
+	 */
+	public I getBaseArtefact();
+
+	/**
+	 * Retrieve name of supplied serialization artefact
+	 * 
+	 * @param serializationArtefact
+	 * @return
+	 */
+	public String retrieveName(I serializationArtefact);
+
+	/**
+	 * Rename supplied serialization artefact<br>
+	 * Return renamed artefact
+	 * 
+	 * @param serializationArtefact
+	 * @return
+	 */
+	public I rename(I serializationArtefact, String newName);
+
+	/**
+	 * Delete supplied serialization artefact<br>
+	 * Return deleted artefact
+	 * 
+	 * @param serializationArtefact
+	 * @return
+	 */
+	public I delete(I serializationArtefact);
+
+	/**
+	 * Return serialization artefact containing supplied serialization artefact (parent directory)
+	 * 
+	 * @param serializationArtefact
+	 * @return
+	 */
+	public I getContainer(I serializationArtefact);
+
+	/**
+	 * Return list of serialization actefacts contained in supplied serialization actifact<br>
+	 * Return empty list if supplied serialization artefact has no contents
+	 * 
+	 * @param serializationArtefact
+	 * @return
+	 */
+	public List<I> getContents(I serializationArtefact);
+
+	/**
+	 * Build a new {@link FlexoIODelegate} for a given serialization artefact
+	 * 
+	 * @param serializationArtefact
+	 * @return
+	 */
+	public FlexoIODelegate<I> makeFlexoIODelegate(I serializationArtefact, FlexoResourceFactory<?, ?, ?> resourceFactory)
+			throws IOException;
+
+	/**
+	 * Build a new {@link FlexoIODelegate} for a given serialization artefact
+	 * 
+	 * @param serializationArtefact
+	 * @return
+	 */
+	public FlexoIODelegate<I> makeDirectoryBasedFlexoIODelegate(I serializationArtefact, String directoryExtension, String fileExtension,
+			FlexoResourceFactory<?, ?, ?> resourceFactory);
+
+	/**
+	 * Computes the folder for serialization item supported by supplied I/O delegate
+	 * 
+	 * @param ioDelegate
+	 * @param resourceRepository
+	 * @return
+	 */
+	public <R extends FlexoResource<?>> RepositoryFolder<R, I> getRepositoryFolder(FlexoIODelegate<I> ioDelegate,
+			ResourceRepository<R, I> resourceRepository);
+
+	/**
+	 * Create container serialization artefact, with supplied name and parent serialization artefact
+	 * 
+	 * @param name
+	 * @param parentDirectory
+	 * @return
+	 */
+	public I createDirectory(String name, I parentDirectory);
+
+	/**
+	 * Get container serialization artefact, with supplied name and parent serialization artefact
+	 * 
+	 * @param name
+	 * @param parentDirectory
+	 * @return
+	 */
+	public I getDirectory(String name, I parentDirectory);
+
+	/**
+	 * Create simple serialization artefact, with supplied name and parent serialization artefact<br>
+	 * Name can also be a relative path name (with '/' as path separator)
+	 * 
+	 * @param name
+	 * @param parentDirectory
+	 * @return
+	 */
+	public I createEntry(String name, I parentDirectory);
+
+	/**
+	 * Return boolean indicating if supplied serialization artefact already exists (is under its serialized form)
+	 * 
+	 * @param serializationArtefact
+	 * @return
+	 */
+	public boolean exists(I serializationArtefact);
+
+	/**
+	 * Return boolean indicating if supplied serialization artefact is readable (read access enabled)
+	 * 
+	 * @param serializationArtefact
+	 * @return
+	 */
+	public boolean canRead(I serializationArtefact);
+
+	/**
+	 * Return boolean indicating if supplied serialization artefact is a container artefact (a directory in the FS for example)
+	 * 
+	 * @param serializationArtefact
+	 * @return
+	 */
+	public boolean isDirectory(I serializationArtefact);
+
+	/**
+	 * Return XMLRootElementInfo asserting serialization artefact encodes a XML contents
+	 * 
+	 * @param serializationArtefact
+	 * @return
+	 */
+	public XMLRootElementInfo getXMLRootElementInfo(I serializationArtefact);
+
+	/**
+	 * Return properties stored in supplied directory<br>
+	 * Find the first entry whose name ends with .properties and analyze it as a {@link Properties} serialization
+	 * 
+	 * @return
+	 */
+	public Properties getProperties(I directory) throws IOException;
+
+	public List<String> getPathTo(I serializationArtefact) throws IOException;
+
+	// TODO: must be refactored because it is from the responsability of the servicemanager
+	/**
+	 * the ObjectReferenceConverter is used when de-serializing resources that contains a reference to another FlexoObject (URI) Typically
+	 * for VirtualModelInstance referencing resources via ModelSlots
+	 * 
+	 * @return
+	 */
+	public FlexoObjectReferenceConverter getObjectReferenceConverter();
+
+	/**
+	 * the ObjectReferenceConverter is used when de-serializing resources that contains a reference to another FlexoObject (URI) Typically
+	 * for VirtualModelInstance referencing resources via ModelSlots
+	 * 
+	 * @param objectReferenceConverter
+	 * @return
+	 */
+	public void setObjectReferenceConverter(FlexoObjectReferenceConverter objectReferenceConverter);
 }

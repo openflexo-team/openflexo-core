@@ -57,7 +57,7 @@ import org.openflexo.model.factory.ModelFactory;
  * 
  */
 // TODO
-public abstract class RemoteResourceCenter extends ResourceRepository<FlexoResource<?>> implements FlexoResourceCenter<Object> {
+public abstract class RemoteResourceCenter extends ResourceRepository<FlexoResource<?>, Object> implements FlexoResourceCenter<Object> {
 
 	protected static final Logger logger = Logger.getLogger(RemoteResourceCenter.class.getPackage().getName());
 
@@ -76,17 +76,30 @@ public abstract class RemoteResourceCenter extends ResourceRepository<FlexoResou
 
 		@Implementation
 		public static abstract class RemoteResourceCenterEntryImpl implements RemoteResourceCenterEntry {
+
+			private boolean isSystem = false;
+
 			@Override
 			public RemoteResourceCenter makeResourceCenter(FlexoResourceCenterService rcService) {
 				// TODO Auto-generated method stub
 				return null;
 			}
+
+			@Override
+			public boolean isSystemEntry() {
+				return false;
+			}
+
+			@Override
+			public void setIsSystemEntry(boolean isSystemEntry) {
+				// Does Nothing
+			}
 		}
 
 	}
 
-	public RemoteResourceCenter(FlexoResourceCenter<?> resourceCenter) {
-		super(resourceCenter);
+	public RemoteResourceCenter(FlexoResourceCenter<Object> resourceCenter) {
+		super(resourceCenter, null);
 	}
 
 	public String getURL() {

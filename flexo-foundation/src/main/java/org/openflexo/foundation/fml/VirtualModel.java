@@ -38,24 +38,17 @@
 
 package org.openflexo.foundation.fml;
 
-import java.io.File;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.binding.VirtualModelBindingModel;
-import org.openflexo.foundation.fml.rm.ViewPointResource;
-import org.openflexo.foundation.fml.rm.VirtualModelResource;
-import org.openflexo.foundation.fml.rm.VirtualModelResourceImpl;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.View;
-import org.openflexo.foundation.resource.SaveResourceException;
-import org.openflexo.foundation.task.Progress;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.PropertyIdentifier;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLElement;
-import org.openflexo.rm.ResourceLocator;
 
 /**
  * A {@link VirtualModel} is the specification of a model which will be instantied in a {@link View} as a set of federated models.
@@ -101,8 +94,8 @@ public interface VirtualModel extends AbstractVirtualModel<VirtualModel> {
 		 * @return
 		 * @throws SaveResourceException
 		 */
-		public static VirtualModel newVirtualModel(String baseName, ViewPoint viewPoint) throws SaveResourceException {
-
+		/*public static VirtualModel newVirtualModel(String baseName, ViewPoint viewPoint) throws SaveResourceException {
+		
 			Progress.progress(viewPoint.getLocales().localizedForKey("create_virtual_model_resource"));
 			File viewPointDirectory = ResourceLocator.retrieveResourceAsFile(((ViewPointResource) viewPoint.getResource()).getDirectory());
 			// File virtualModelDirectory = new File(ResourceLocator.retrieveResourceAsFile(((ViewPointResource) viewPoint.getResource())
@@ -122,24 +115,23 @@ public interface VirtualModel extends AbstractVirtualModel<VirtualModel> {
 			viewPoint.addToVirtualModels(virtualModel);
 			Progress.progress(viewPoint.getLocales().localizedForKey("save_virtual_model_resource"));
 			virtualModel.getResource().save(null);
-
+		
 			return virtualModel;
-		}
+		}*/
 
 		// Used during deserialization, do not use it
-		public VirtualModelImpl() {
+		/*public VirtualModelImpl() {
 			super();
-		}
+		}*/
 
 		/**
 		 * Creates a new VirtualModel in supplied viewpoint
 		 * 
 		 * @param viewPoint
 		 */
-		public VirtualModelImpl(ViewPoint viewPoint) {
-			this();
+		/*public VirtualModelImpl(ViewPoint viewPoint) {
 			setViewPoint(viewPoint);
-		}
+		}*/
 
 		@Override
 		public ViewPoint getViewPoint() {

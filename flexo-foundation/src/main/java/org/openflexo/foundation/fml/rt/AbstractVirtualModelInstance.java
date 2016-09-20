@@ -88,6 +88,7 @@ import org.openflexo.model.annotations.Remover;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.model.annotations.XMLElement;
+import org.openflexo.toolbox.FlexoVersion;
 import org.openflexo.toolbox.StringUtils;
 
 /**
@@ -114,6 +115,10 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 	public static final String NAME_KEY = "name";
 	@PropertyIdentifier(type = String.class)
 	public static final String TITLE_KEY = "title";
+	@PropertyIdentifier(type = FlexoVersion.class)
+	public static final String VERSION_KEY = "version";
+	@PropertyIdentifier(type = FlexoVersion.class)
+	public static final String MODEL_VERSION_KEY = "modelVersion";
 	@PropertyIdentifier(type = String.class)
 	public static final String VIRTUAL_MODEL_URI_KEY = "virtualModelURI";
 	@PropertyIdentifier(type = List.class)
@@ -127,6 +132,20 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 
 	@Setter(TITLE_KEY)
 	public void setTitle(String title);
+
+	@Getter(value = VERSION_KEY, isStringConvertable = true)
+	@XMLAttribute
+	public FlexoVersion getVersion();
+
+	@Setter(VERSION_KEY)
+	public void setVersion(FlexoVersion version);
+
+	@Getter(value = MODEL_VERSION_KEY, isStringConvertable = true)
+	@XMLAttribute
+	public FlexoVersion getModelVersion();
+
+	@Setter(MODEL_VERSION_KEY)
+	public void setModelVersion(FlexoVersion modelVersion);
 
 	public VM getVirtualModel();
 
@@ -355,11 +374,43 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 		}
 
 		@Override
+		public FlexoVersion getModelVersion() {
+			if (getResource() != null) {
+				return getResource().getModelVersion();
+			}
+			return null;
+		}
+
+		@Override
+		public void setModelVersion(FlexoVersion aVersion) {
+			if (getResource() != null) {
+				getResource().setModelVersion(aVersion);
+			}
+		}
+
+		@Override
 		public FMLRTTechnologyAdapter getTechnologyAdapter() {
 			if (getResource() != null) {
 				return getResource().getTechnologyAdapter();
 			}
 			return null;
+		}
+
+		@Override
+		public FlexoVersion getVersion() {
+			if (getResource() != null) {
+				return getResource().getVersion();
+			}
+			return null;
+		}
+
+		@Override
+		public void setVersion(FlexoVersion aVersion) {
+			if (requireChange(getVersion(), aVersion)) {
+				if (getResource() != null) {
+					getResource().setVersion(aVersion);
+				}
+			}
 		}
 
 		/**
@@ -840,7 +891,10 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 				return getView();
 			}
 			else if (variable.getVariableName().equals(ViewPointBindingModel.PROJECT_PROPERTY)) {
-				return getProject();
+				return getResourceCenter();
+			}
+			else if (variable.getVariableName().equals(ViewPointBindingModel.RC_PROPERTY)) {
+				return getResourceCenter();
 			}
 			else if (variable.getVariableName().equals(VirtualModelBindingModel.VIRTUAL_MODEL_INSTANCE_PROPERTY)) {
 				return this;
@@ -871,7 +925,7 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 						if (msi == null) {
 							AbstractVirtualModelInstance<?, ?> flexoConceptInstance = (AbstractVirtualModelInstance<?, ?>) getFlexoConceptInstance();
 							ModelSlotInstanceConfiguration<?, ?> msiConfiguration = ms.createConfiguration(flexoConceptInstance,
-									getProject());
+									getResourceCenter());
 							msiConfiguration.setOption(DefaultModelSlotInstanceConfigurationOption.SelectExistingResource);
 							msi = msiConfiguration.createModelSlotInstance(flexoConceptInstance, getView());
 							msi.setVirtualModelInstance(flexoConceptInstance);
@@ -884,7 +938,7 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 						if (msi == null) {
 							AbstractVirtualModelInstance<?, ?> flexoConceptInstance = (AbstractVirtualModelInstance<?, ?>) getFlexoConceptInstance();
 							ModelSlotInstanceConfiguration<?, ?> msiConfiguration = ms.createConfiguration(flexoConceptInstance,
-									getProject());
+									getResourceCenter());
 							msiConfiguration.setOption(DefaultModelSlotInstanceConfigurationOption.SelectExistingResource);
 							msi = msiConfiguration.createModelSlotInstance(flexoConceptInstance, getView());
 							msi.setVirtualModelInstance(flexoConceptInstance);

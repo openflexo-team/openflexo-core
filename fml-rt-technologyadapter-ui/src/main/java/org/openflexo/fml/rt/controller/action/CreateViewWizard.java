@@ -139,7 +139,7 @@ public class CreateViewWizard extends AbstractCreateVirtualModelInstanceWizard<C
 
 		}
 
-		public RepositoryFolder<ViewResource> getFolder() {
+		public RepositoryFolder<ViewResource, ?> getFolder() {
 			return action.getFolder();
 		}
 

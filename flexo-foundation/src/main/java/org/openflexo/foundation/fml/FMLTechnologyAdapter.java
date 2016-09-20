@@ -38,26 +38,16 @@
 
 package org.openflexo.foundation.fml;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Iterator;
 import java.util.logging.Logger;
 
-import javax.swing.SwingUtilities;
-
-import org.apache.commons.io.FilenameUtils;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.annotations.DeclareResourceTypes;
-import org.openflexo.foundation.fml.rm.ViewPointResource;
-import org.openflexo.foundation.fml.rm.ViewPointResourceImpl;
-import org.openflexo.foundation.fml.rm.VirtualModelResource;
+import org.openflexo.foundation.fml.rm.ViewPointResourceFactory;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
-import org.openflexo.foundation.resource.RepositoryFolder;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterBindingFactory;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterInitializationException;
-import org.openflexo.rm.InJarResourceImpl;
 
 /**
  * This class defines and implements the Openflexo built-in virtual model technology adapter
@@ -65,7 +55,7 @@ import org.openflexo.rm.InJarResourceImpl;
  * @author sylvain
  * 
  */
-@DeclareResourceTypes({ ViewPointResource.class, VirtualModelResource.class })
+@DeclareResourceTypes({ ViewPointResourceFactory.class })
 public class FMLTechnologyAdapter extends TechnologyAdapter {
 
 	private static final Logger logger = Logger.getLogger(FMLTechnologyAdapter.class.getPackage().getName());
@@ -107,26 +97,18 @@ public class FMLTechnologyAdapter extends TechnologyAdapter {
 		return this.getServiceManager().getViewPointLibrary();
 	}
 
-	public <I> ViewPointRepository getViewPointRepository(final FlexoResourceCenter<I> resourceCenter) {
-		ViewPointRepository viewPointRepository = resourceCenter.getRepository(ViewPointRepository.class, this);
-		if (viewPointRepository == null) {
-			viewPointRepository = this.createViewPointRepository(resourceCenter);
-		}
-		return viewPointRepository;
-	}
-
-	@Override
+	/*@Override
 	public <I> void performInitializeResourceCenter(final FlexoResourceCenter<I> resourceCenter) {
 		// Take care that this call will create the ViewPointRepository
 		// Do not comment this line
 		final ViewPointRepository viewPointRepository = getViewPointRepository(resourceCenter);
-
+	
 		// @FD: this is an other way to remove the warning ;-)
 		System.out.println("I'm beeing using the " + viewPointRepository);
-
+	
 		// Iterate
 		Iterator<I> it = resourceCenter.iterator();
-
+	
 		while (it.hasNext()) {
 			final I item = it.next();
 			if (!this.isIgnorable(resourceCenter, item)) {
@@ -147,7 +129,7 @@ public class FMLTechnologyAdapter extends TechnologyAdapter {
 				// }
 			}
 		}
-
+	
 		// Call it to update the current repositories
 		if (!SwingUtilities.isEventDispatchThread()) {
 			SwingUtilities.invokeLater(new Runnable() {
@@ -162,7 +144,7 @@ public class FMLTechnologyAdapter extends TechnologyAdapter {
 			// Call it to update the current repositories
 			notifyRepositoryStructureChanged();
 		}
-	}
+	}*/
 
 	/**
 	 * Return boolean indicating if supplied {@link File} has the general form of a ViewPoint directory
@@ -170,7 +152,7 @@ public class FMLTechnologyAdapter extends TechnologyAdapter {
 	 * @param candidateFile
 	 * @return
 	 */
-	private boolean isValidViewPointDirectory(final File candidateFile) {
+	/*private boolean isValidViewPointDirectory(final File candidateFile) {
 		if (candidateFile.exists() && candidateFile.isDirectory() && candidateFile.canRead()
 				&& candidateFile.getName().endsWith(ViewPointResource.VIEWPOINT_SUFFIX)) {
 			final String baseName = candidateFile.getName().substring(0,
@@ -179,7 +161,7 @@ public class FMLTechnologyAdapter extends TechnologyAdapter {
 			return xmlFile.exists();
 		}
 		return false;
-	}
+	}*/
 
 	/**
 	 * Return boolean indicating if supplied {@link InJarResourceImpl} has the general form of a ViewPoint directory
@@ -187,14 +169,14 @@ public class FMLTechnologyAdapter extends TechnologyAdapter {
 	 * @param candidateJar
 	 * @return
 	 */
-	private boolean isValidViewPointDirectory(final InJarResourceImpl candidateJar) {
+	/*private boolean isValidViewPointDirectory(final InJarResourceImpl candidateJar) {
 		String candidateJarName = FilenameUtils.getBaseName(candidateJar.getRelativePath());
 		if (candidateJar.getRelativePath().endsWith(".xml") && candidateJar.getRelativePath()
 				.endsWith(candidateJarName + ViewPointResource.VIEWPOINT_SUFFIX + "/" + candidateJarName + ".xml")) {
 			return true;
 		}
 		return false;
-	}
+	}*/
 
 	/**
 	 * Build and return {@link ViewPointResource} from a candidate file (a .viewpoint directory)<br>
@@ -204,7 +186,7 @@ public class FMLTechnologyAdapter extends TechnologyAdapter {
 	 * @param viewPointRepository
 	 * @return the newly created {@link ViewPointResource}
 	 */
-	private ViewPointResource analyseAsViewPoint(final Object candidateElement, FlexoResourceCenter resourceCenter) {
+	/*private ViewPointResource analyseAsViewPoint(final Object candidateElement, FlexoResourceCenter resourceCenter) {
 		if (this.isValidViewPoint(candidateElement)) {
 			ViewPointResource vpRes = null;
 			if (candidateElement instanceof File) {
@@ -222,9 +204,9 @@ public class FMLTechnologyAdapter extends TechnologyAdapter {
 			}
 		}
 		return null;
-	}
+	}*/
 
-	private void registerResource(ViewPointResource vpRes, ViewPointRepository repository, Object candidateElement) {
+	/*private void registerResource(ViewPointResource vpRes, ViewPointRepository repository, Object candidateElement) {
 		try {
 			if (vpRes != null) {
 				logger.info("Found and register viewpoint " + vpRes.getURI() + vpRes.getFlexoIODelegate().toString());
@@ -240,7 +222,7 @@ public class FMLTechnologyAdapter extends TechnologyAdapter {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	}
+	}*/
 
 	/**
 	 * Check it might correspond to a viewpoint
@@ -248,7 +230,7 @@ public class FMLTechnologyAdapter extends TechnologyAdapter {
 	 * @param candidateElement
 	 * @return
 	 */
-	private boolean isValidViewPoint(Object candidateElement) {
+	/*private boolean isValidViewPoint(Object candidateElement) {
 		if (candidateElement instanceof File && isValidViewPointDirectory(((File) candidateElement))) {
 			return true;
 		}
@@ -256,14 +238,14 @@ public class FMLTechnologyAdapter extends TechnologyAdapter {
 			return true;
 		}
 		return false;
-	}
+	}*/
 
-	/**
-	 * Creates and return a view repository for current {@link TechnologyAdapter} and supplied {@link FlexoResourceCenter}
-	 */
-	public ViewPointRepository createViewPointRepository(final FlexoResourceCenter<?> resourceCenter) {
-		final ViewPointRepository returned = new ViewPointRepository(this, resourceCenter);
-		resourceCenter.registerRepository(returned, ViewPointRepository.class, this);
+	public <I> ViewPointRepository<I> getViewPointRepository(FlexoResourceCenter<I> resourceCenter) {
+		ViewPointRepository<I> returned = resourceCenter.retrieveRepository(ViewPointRepository.class, this);
+		if (returned == null) {
+			returned = new ViewPointRepository<I>(this, resourceCenter);
+			resourceCenter.registerRepository(returned, ViewPointRepository.class, this);
+		}
 		return returned;
 	}
 
@@ -276,7 +258,7 @@ public class FMLTechnologyAdapter extends TechnologyAdapter {
 		return false;
 	}
 
-	@Override
+	/*@Override
 	public <I> boolean contentsAdded(final FlexoResourceCenter<I> resourceCenter, final I contents) {
 		if (!this.isIgnorable(resourceCenter, contents)) {
 			if (contents instanceof File) {
@@ -295,9 +277,9 @@ public class FMLTechnologyAdapter extends TechnologyAdapter {
 			}
 		}
 		return false;
-	}
+	}*/
 
-	@Override
+	/*@Override
 	public <I> boolean contentsDeleted(final FlexoResourceCenter<I> resourceCenter, final I contents) {
 		if (!this.isIgnorable(resourceCenter, contents)) {
 			if (contents instanceof File) {
@@ -306,23 +288,27 @@ public class FMLTechnologyAdapter extends TechnologyAdapter {
 			}
 		}
 		return false;
-	}
+	}*/
 
-	@Override
+	/*@Override
 	public <I> boolean contentsModified(FlexoResourceCenter<I> resourceCenter, I contents) {
 		// TODO Auto-generated method stub
 		return false;
-	}
+	}*/
 
-	@Override
+	/*@Override
 	public <I> boolean contentsRenamed(FlexoResourceCenter<I> resourceCenter, I contents, String oldName, String newName) {
 		// TODO Auto-generated method stub
 		return false;
-	}
+	}*/
 
 	@Override
 	public String getIdentifier() {
 		return "FML";
+	}
+
+	public ViewPointResourceFactory getViewPointResourceFactory() {
+		return getResourceFactory(ViewPointResourceFactory.class);
 	}
 
 }

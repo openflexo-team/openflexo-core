@@ -58,7 +58,8 @@ import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.nature.ProjectNature;
 import org.openflexo.foundation.resource.DefaultResourceCenterService;
-import org.openflexo.foundation.resource.DirectoryResourceCenter.DirectoryResourceCenterEntry;
+import org.openflexo.foundation.resource.FileSystemBasedResourceCenter;
+import org.openflexo.foundation.resource.FileSystemBasedResourceCenter.FSBasedResourceCenterEntry;
 import org.openflexo.foundation.resource.FlexoResourceCenter.ResourceCenterEntry;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
 import org.openflexo.foundation.resource.SaveResourceException;
@@ -68,6 +69,8 @@ import org.openflexo.logging.FlexoLogger;
 import org.openflexo.logging.FlexoLoggingManager;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.model.factory.ModelFactory;
+import org.openflexo.rm.FileResourceImpl;
+import org.openflexo.rm.Resource;
 import org.openflexo.toolbox.FileUtils;
 
 /**
@@ -192,8 +195,8 @@ public abstract class OpenflexoProjectAtRunTimeTestCase extends OpenflexoTestCas
 
 	protected static FlexoResourceCenterService getNewResourceCenter(String name) {
 		try {
-			ModelFactory factory = new ModelFactory(DirectoryResourceCenterEntry.class);
-			DirectoryResourceCenterEntry entry = factory.newInstance(DirectoryResourceCenterEntry.class);
+			ModelFactory factory = new ModelFactory(FSBasedResourceCenterEntry.class);
+			FSBasedResourceCenterEntry entry = factory.newInstance(FSBasedResourceCenterEntry.class);
 			entry.setDirectory(FileUtils.createTempDirectory(name, "ResourceCenter"));
 			List<ResourceCenterEntry<?>> rcList = new ArrayList<ResourceCenterEntry<?>>();
 			rcList.add(entry);
@@ -257,6 +260,22 @@ public abstract class OpenflexoProjectAtRunTimeTestCase extends OpenflexoTestCas
 			prj.save();
 		} catch (SaveResourceException e) {
 			fail("Cannot save project");
+		}
+	}
+
+	protected void reloadResourceCenter(Resource oldRCDirectory) {
+		if (oldRCDirectory instanceof FileResourceImpl) {
+			File directory = ((FileResourceImpl) oldRCDirectory).getFile();
+			File newDirectory = new File(((FileSystemBasedResourceCenter) resourceCenter).getDirectory(), directory.getName());
+			newDirectory.mkdirs();
+			try {
+				FileUtils.copyContentDirToDir(directory, newDirectory);
+				// We wait here for the thread monitoring ResourceCenters to detect new files
+				((FileSystemBasedResourceCenter) resourceCenter).performDirectoryWatchingNow();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	}
 

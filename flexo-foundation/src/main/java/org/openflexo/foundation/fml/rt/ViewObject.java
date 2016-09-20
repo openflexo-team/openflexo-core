@@ -40,8 +40,12 @@ package org.openflexo.foundation.fml.rt;
 
 import java.util.logging.Logger;
 
+import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoProjectObject;
+import org.openflexo.foundation.FlexoServiceManager;
+import org.openflexo.foundation.InnerResourceData;
 import org.openflexo.foundation.fml.ViewPoint;
+import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
@@ -56,7 +60,7 @@ import org.openflexo.model.annotations.Setter;
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(ViewObject.ViewObjectImpl.class)
-public interface ViewObject extends FlexoProjectObject {
+public interface ViewObject extends FlexoObject  {
 
 	@PropertyIdentifier(type = View.class)
 	public static final String VIEW_KEY = "view";
@@ -77,11 +81,36 @@ public interface ViewObject extends FlexoProjectObject {
 	@Setter(VIEW_KEY)
 	public void setView(View view);
 
-	public abstract class ViewObjectImpl extends FlexoProjectObjectImpl implements FlexoProjectObject {
+	/** 
+	 * Returns FlexoResourceCenter that contains the ViewResource containing this ViewObject
+	 * 
+	 * @return
+	 */
+	public FlexoResourceCenter<?> getResourceCenter();
+
+	public FlexoServiceManager getServiceManager();
+	
+	
+	public abstract class ViewObjectImpl extends FlexoObjectImpl implements ViewObject {
 
 		@SuppressWarnings("unused")
 		private static final Logger logger = Logger.getLogger(ViewObject.class.getPackage().getName());
 
+		@Override
+		public FlexoServiceManager getServiceManager() {
+			if (getResourceCenter() != null) {
+				return getResourceCenter().getServiceManager();
+			}
+			else 
+				return null;
+		}
+
+		@Override
+		public boolean delete(Object... context) {
+			return performSuperDelete(context);
+		}
+
 	}
+
 
 }

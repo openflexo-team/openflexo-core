@@ -73,7 +73,7 @@ public class MoveView extends FlexoAction<MoveView, View, View> {
 
 	};
 
-	private RepositoryFolder<ViewResource> folder;
+	private RepositoryFolder<ViewResource, ?> folder;
 
 	static {
 		FlexoObjectImpl.addActionForClass(actionType, View.class);
@@ -94,16 +94,16 @@ public class MoveView extends FlexoAction<MoveView, View, View> {
 		}
 	}
 
-	private void moveToFolder(View v, RepositoryFolder<ViewResource> folder) {
-		RepositoryFolder<ViewResource> oldFolder = v.getFolder();
-		v.getViewLibrary().moveResource((ViewResource) v.getResource(), oldFolder, folder);
+	private void moveToFolder(View v, RepositoryFolder<ViewResource, ?> folder) {
+		RepositoryFolder<ViewResource, ?> oldFolder = v.getFolder();
+		v.getViewLibrary().moveResource((ViewResource) v.getResource(), (RepositoryFolder) oldFolder, (RepositoryFolder) folder);
 	}
 
-	public RepositoryFolder<ViewResource> getFolder() {
+	public RepositoryFolder<ViewResource, ?> getFolder() {
 		return folder;
 	};
 
-	public void setFolder(RepositoryFolder<ViewResource> folder) {
+	public void setFolder(RepositoryFolder<ViewResource, ?> folder) {
 		this.folder = folder;
 	}
 }

@@ -40,6 +40,7 @@ package org.openflexo.foundation.converter;
 
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoProject;
+import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.utils.FlexoObjectReference;
 import org.openflexo.model.StringConverterLibrary.Converter;
 import org.openflexo.model.factory.ModelFactory;
@@ -50,21 +51,24 @@ import org.openflexo.model.factory.ModelFactory;
  * @author sylvain
  * 
  */
+
+// TODO: must be refactored in order to be used by the ServiceManager to provide resource retreiving
+
 public class FlexoObjectReferenceConverter extends Converter<FlexoObjectReference<?>> {
 
 	/**
 	 * 
 	 */
-	private final FlexoProject flexoProject;
+	private final FlexoResourceCenter<?> rc;
 
-	public FlexoObjectReferenceConverter(FlexoProject flexoProject) {
+	public FlexoObjectReferenceConverter(FlexoResourceCenter<?> rc) {
 		super(FlexoObjectReference.class);
-		this.flexoProject = flexoProject;
+		this.rc = rc;
 	}
 
 	@Override
 	public FlexoObjectReference<?> convertFromString(String value, ModelFactory factory) {
-		return new FlexoObjectReference<FlexoObject>(value, this.flexoProject);
+		return new FlexoObjectReference<FlexoObject>(value, this.rc);
 	}
 
 	@Override

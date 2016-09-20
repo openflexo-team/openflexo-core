@@ -152,6 +152,7 @@ public interface AbstractVirtualModel<VM extends AbstractVirtualModel<VM>>
 	public void setVersion(FlexoVersion version);
 
 	@Getter(value = MODEL_VERSION_KEY, isStringConvertable = true)
+	@XMLAttribute
 	public FlexoVersion getModelVersion();
 
 	@Setter(MODEL_VERSION_KEY)

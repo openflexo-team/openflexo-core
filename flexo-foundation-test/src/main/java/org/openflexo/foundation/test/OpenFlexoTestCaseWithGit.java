@@ -33,7 +33,7 @@ import org.openflexo.toolbox.FileUtils;
 public class OpenFlexoTestCaseWithGit extends OpenflexoProjectAtRunTimeTestCase {
 
 	private static GitResourceCenter gitResourceCenter;
-	private static final String TEST_RESOURCE_CENTER_URI = "http://openflexo.org/test/TestResourceCenter";
+	protected static final String TEST_RESOURCE_CENTER_URI = "http://openflexo.org/test/TestGitResourceCenter";
 
 	/**
 	 * Instantiate a default {@link FlexoServiceManager} well suited for test purpose<br>
@@ -108,12 +108,19 @@ public class OpenFlexoTestCaseWithGit extends OpenflexoProjectAtRunTimeTestCase 
 					// rcService.addToResourceCenters(
 					// resourceCenter = new DirectoryResourceCenter(testResourceCenterDirectory, TEST_RESOURCE_CENTER_URI));
 					// System.out.println("Copied TestResourceCenter to " + testResourceCenterDirectory);
+
+					System.out.println("OK, on cree un nouveau GitResourceCenter ");
+					System.out.println("testResourceCenterDirectory=" + testResourceCenterDirectory);
+
 					try {
 						rcService.addToResourceCenters(gitResourceCenter = new GitResourceCenter(testResourceCenterDirectory,
 								testResourceCenterDirectory, rcService));
+						gitResourceCenter.setDefaultBaseURI(TEST_RESOURCE_CENTER_URI);
 					} catch (IllegalStateException | GitAPIException e) {
 						e.printStackTrace();
 					}
+					System.out.println("Hop, c'est bon pour le GitResourceCenter");
+
 					// ici il y a des truc a voir
 
 					return rcService;

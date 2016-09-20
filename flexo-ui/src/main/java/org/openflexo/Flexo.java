@@ -105,7 +105,7 @@ import sun.misc.SignalHandler;
  * @author sguerin
  */
 public class Flexo {
-	private static final Logger logger = Logger.getLogger(Flexo.class.getPackage().getName());
+	protected static final Logger logger = Logger.getLogger(Flexo.class.getPackage().getName());
 
 	public static boolean isDev = false;
 
@@ -123,7 +123,7 @@ public class Flexo {
 		return demoMode;
 	}
 
-	private static String getResourcePath() {
+	protected static String getResourcePath() {
 		if (ToolBox.getPLATFORM() == ToolBox.MACOS) {
 
 			try {
@@ -160,7 +160,8 @@ public class Flexo {
 	}
 
 	@SuppressWarnings("restriction")
-	private static void registerShutdownHook() {
+	protected
+	static void registerShutdownHook() {
 		try {
 			Class.forName("sun.misc.Signal");
 			Class.forName("sun.misc.SignalHandler");
@@ -437,7 +438,7 @@ public class Flexo {
 		}
 	}
 
-	private static void initProxyManagement(final ApplicationContext applicationContext) {
+	protected static void initProxyManagement(final ApplicationContext applicationContext) {
 		applicationContext.getAdvancedPrefs().applyProxySettings();
 		final ProxySelector defaultSelector = ProxySelector.getDefault();
 		ProxySelector.setDefault(new ProxySelector() {

@@ -69,11 +69,12 @@ public interface ViewResource extends AbstractVirtualModelInstanceResource<View,
 		FlexoModelResource<View, ViewPoint, FMLRTTechnologyAdapter, FMLTechnologyAdapter> {
 
 	public static final String CORE_FILE_SUFFIX = ".xml";
-	public static final String VIEW_SUFFIX = ".view";
+	// public static final String VIEW_SUFFIX = ".view";
 
 	public static final String VIEW_LIBRARY = "viewLibrary";
 	public static final String DIRECTORY = "directory";
 	public static final String VIEWPOINT_RESOURCE = "viewPointResource";
+	public static final String VIEWPOINT_URI = "viewPointURI";
 
 	/**
 	 * Return the {@link ViewPoint} this view is conform to
@@ -93,6 +94,12 @@ public interface ViewResource extends AbstractVirtualModelInstanceResource<View,
 
 	@Setter(VIEWPOINT_RESOURCE)
 	public void setViewPointResource(ViewPointResource viewPointResource);
+
+	@Getter(VIEWPOINT_URI)
+	public String getViewpointURI();
+
+	@Setter(VIEWPOINT_URI)
+	public void setViewpointURI(String viewpointURI);
 
 	/**
 	 * Return the {@link View} this resource gives access to

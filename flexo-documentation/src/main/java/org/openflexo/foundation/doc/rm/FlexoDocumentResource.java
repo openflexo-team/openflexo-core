@@ -25,21 +25,12 @@ import org.openflexo.foundation.doc.FlexoDocument;
 import org.openflexo.foundation.resource.PamelaResource;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterResource;
-import org.openflexo.foundation.technologyadapter.TechnologyContextManager;
-import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ModelEntity;
-import org.openflexo.model.annotations.Setter;
 
 @ModelEntity(isAbstract = true)
 public abstract interface FlexoDocumentResource<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter, F extends DocumentFactory<D, TA>>
 		extends TechnologyAdapterResource<D, TA>, PamelaResource<D, F> {
-	public static final String TECHNOLOGY_CONTEXT_MANAGER = "technologyContextManager";
 
 	public D getDocument();
 
-	@Getter(value = "technologyContextManager", ignoreType = true)
-	public abstract TechnologyContextManager<TA> getTechnologyContextManager();
-
-	@Setter("technologyContextManager")
-	public abstract void setTechnologyContextManager(TechnologyContextManager<TA> paramDOCXTechnologyContextManager);
 }

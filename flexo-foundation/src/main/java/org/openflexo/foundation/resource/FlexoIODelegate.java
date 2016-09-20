@@ -57,7 +57,7 @@ import org.openflexo.model.factory.AccessibleProxyObject;
  * @param <I>
  */
 @ModelEntity(isAbstract = true)
-@Imports({ @Import(FlexoIOStreamDelegate.class) })
+@Imports({ @Import(FlexoIOStreamDelegate.class), @Import(ClassLoaderIODelegate.class) })
 public interface FlexoIODelegate<I> extends AccessibleProxyObject {
 
 	@PropertyIdentifier(type = String.class)
@@ -71,7 +71,7 @@ public interface FlexoIODelegate<I> extends AccessibleProxyObject {
 	 */
 	public static final String SERIALIZATION_ARTEFACT = "serialization_artefact";
 
-	@Getter(value = FLEXO_RESOURCE, inverse = FlexoResource.FLEXO_IO_DELEGATE)
+	@Getter(value = FLEXO_RESOURCE)
 	public FlexoResource<?> getFlexoResource();
 
 	@Setter(FLEXO_RESOURCE)
@@ -82,6 +82,8 @@ public interface FlexoIODelegate<I> extends AccessibleProxyObject {
 
 	@Setter(SERIALIZATION_ARTEFACT)
 	public void setSerializationArtefact(I artefact);
+
+	// public Resource getSerializationArtefactAsResource(I serializationArtefact);
 
 	/**
 	 * Indicates whether this resource can be edited or not. Returns <code>true</code> if the resource cannot be edited, else returns
@@ -127,7 +129,13 @@ public interface FlexoIODelegate<I> extends AccessibleProxyObject {
 
 	public void save(FlexoResource<?> resource) throws NotImplementedException;
 
-	public RepositoryFolder<?> getRepositoryFolder(ResourceRepository<?> resourceRepository, boolean createWhenNonExistent)
+	public RepositoryFolder<?, I> getRepositoryFolder(ResourceRepository<?, I> resourceRepository, boolean createWhenNonExistent)
 			throws IOException;
 
+	/**
+	 * Used to retrieve a ClassLoader exposing code embedded in serialization artefact
+	 * 
+	 * @return
+	 */
+	public ClassLoader retrieveClassLoader();
 }

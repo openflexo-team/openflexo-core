@@ -90,7 +90,6 @@ public class DefaultFlexoServiceManager extends FlexoServiceManager {
 		FlexoUpdateService flexoUpdateService = new FlexoUpdateService();
 		registerService(flexoUpdateService);
 
-		// System.err.println(debug());
 		FlexoResourceCenterService resourceCenterService = createResourceCenterService();
 		registerService(resourceCenterService);
 
@@ -203,7 +202,7 @@ public class DefaultFlexoServiceManager extends FlexoServiceManager {
 			sb.append("ResourceManager / Information Space\n");
 			if (getTechnologyAdapterService() != null) {
 				for (TechnologyAdapter ta : getTechnologyAdapterService().getTechnologyAdapters()) {
-					for (ResourceRepository<?> rep : getResourceManager().getAllRepositories(ta)) {
+					for (ResourceRepository<?, ?> rep : getResourceManager().getAllRepositories(ta)) {
 						System.out.println("Technology adapter: " + ta + " repository: " + rep + "\n");
 						for (FlexoResource<?> r : rep.getAllResources()) {
 							sb.append("> " + r.getURI() + "\n");

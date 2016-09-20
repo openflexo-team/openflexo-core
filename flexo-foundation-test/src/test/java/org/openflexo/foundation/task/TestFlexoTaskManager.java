@@ -42,10 +42,14 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.openflexo.foundation.task.FlexoTask.TaskStatus;
 import org.openflexo.foundation.test.task.ErrorTask;
 import org.openflexo.foundation.test.task.ExampleTask;
+import org.openflexo.test.OrderedRunner;
+import org.openflexo.test.TestOrder;
 
+@RunWith(OrderedRunner.class)
 public class TestFlexoTaskManager {
 
 	public static void main(String[] args) {
@@ -66,6 +70,7 @@ public class TestFlexoTaskManager {
 	 * We schedule some tasks and check they execute correctely
 	 */
 	@Test
+	@TestOrder(1)
 	public void test1() {
 
 		ExampleTask[] tasks = new ExampleTask[5];
@@ -143,6 +148,7 @@ public class TestFlexoTaskManager {
 	 * Meanwhile, we launch some other tasks
 	 */
 	@Test
+	@TestOrder(2)
 	public void test2() {
 
 		ExampleTask[] tasks = new ExampleTask[8];
@@ -251,6 +257,7 @@ public class TestFlexoTaskManager {
 	 * We schedule some tasks and try to interrupt one
 	 */
 	@Test
+	@TestOrder(3)
 	public void test3() {
 
 		ExampleTask[] tasks = new ExampleTask[5];
@@ -315,6 +322,7 @@ public class TestFlexoTaskManager {
 	 * We schedule some sequential tasks
 	 */
 	@Test
+	@TestOrder(4)
 	public void test4() {
 
 		// Instanciate a TaskManager with a thread pool of 3 threads
@@ -365,6 +373,7 @@ public class TestFlexoTaskManager {
 	 * We schedule a task which execution throws an exception
 	 */
 	@Test
+	@TestOrder(5)
 	public void test5() {
 
 		// Instanciate a TaskManager with a thread pool of 3 threads

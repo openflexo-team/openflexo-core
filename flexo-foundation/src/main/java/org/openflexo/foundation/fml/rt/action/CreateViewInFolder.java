@@ -47,12 +47,14 @@ import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.action.LongRunningAction;
+import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.fml.rt.View;
-import org.openflexo.foundation.fml.rt.View.ViewImpl;
 import org.openflexo.foundation.fml.rt.ViewLibrary;
 import org.openflexo.foundation.fml.rt.rm.ViewResource;
+import org.openflexo.foundation.fml.rt.rm.ViewResourceFactory;
 import org.openflexo.foundation.resource.RepositoryFolder;
 import org.openflexo.foundation.resource.SaveResourceException;
+import org.openflexo.model.exceptions.ModelDefinitionException;
 
 /**
  * Action used to create a new {@link View} in a repository folder
@@ -60,29 +62,29 @@ import org.openflexo.foundation.resource.SaveResourceException;
  * @author sylvain
  * 
  */
-public class CreateViewInFolder extends CreateView<CreateViewInFolder, RepositoryFolder<ViewResource>> implements LongRunningAction {
+public class CreateViewInFolder extends CreateView<CreateViewInFolder, RepositoryFolder<ViewResource, ?>>implements LongRunningAction {
 
 	private static final Logger logger = Logger.getLogger(CreateViewInFolder.class.getPackage().getName());
 
-	public static FlexoActionType<CreateViewInFolder, RepositoryFolder<ViewResource>, FlexoObject> actionType = new FlexoActionType<CreateViewInFolder, RepositoryFolder<ViewResource>, FlexoObject>(
+	public static FlexoActionType<CreateViewInFolder, RepositoryFolder<ViewResource, ?>, FlexoObject> actionType = new FlexoActionType<CreateViewInFolder, RepositoryFolder<ViewResource, ?>, FlexoObject>(
 			"create_view", FlexoActionType.newMenu, FlexoActionType.defaultGroup, FlexoActionType.ADD_ACTION_TYPE) {
 
 		/**
 		 * Factory method
 		 */
 		@Override
-		public CreateViewInFolder makeNewAction(RepositoryFolder<ViewResource> focusedObject, Vector<FlexoObject> globalSelection,
+		public CreateViewInFolder makeNewAction(RepositoryFolder<ViewResource, ?> focusedObject, Vector<FlexoObject> globalSelection,
 				FlexoEditor editor) {
 			return new CreateViewInFolder(focusedObject, globalSelection, editor);
 		}
 
 		@Override
-		public boolean isVisibleForSelection(RepositoryFolder<ViewResource> object, Vector<FlexoObject> globalSelection) {
+		public boolean isVisibleForSelection(RepositoryFolder<ViewResource, ?> object, Vector<FlexoObject> globalSelection) {
 			return object.getResourceRepository() instanceof ViewLibrary;
 		}
 
 		@Override
-		public boolean isEnabledForSelection(RepositoryFolder<ViewResource> object, Vector<FlexoObject> globalSelection) {
+		public boolean isEnabledForSelection(RepositoryFolder<ViewResource, ?> object, Vector<FlexoObject> globalSelection) {
 			return object != null;
 		}
 
@@ -92,15 +94,9 @@ public class CreateViewInFolder extends CreateView<CreateViewInFolder, Repositor
 		FlexoObjectImpl.addActionForClass(CreateViewInFolder.actionType, RepositoryFolder.class);
 	}
 
-	public CreateViewInFolder(
-	/*FlexoActionType<CreateView<RepositoryFolder<ViewResource>>, RepositoryFolder<ViewResource>, FlexoObject> actionType,*/
-	RepositoryFolder<ViewResource> focusedObject, Vector<FlexoObject> globalSelection, FlexoEditor editor) {
+	public CreateViewInFolder(RepositoryFolder<ViewResource, ?> focusedObject, Vector<FlexoObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 	}
-
-	/*CreateViewInFolder(RepositoryFolder<ViewResource> focusedObject, Vector<FlexoObject> globalSelection, FlexoEditor editor) {
-		super(actionType, focusedObject, globalSelection, editor);
-	}*/
 
 	// When creating a View in a folder, there is no container view
 	@Override
@@ -116,7 +112,7 @@ public class CreateViewInFolder extends CreateView<CreateViewInFolder, Repositor
 		return null;
 	}
 
-	public RepositoryFolder<ViewResource> getFolder() {
+	public RepositoryFolder<ViewResource, ?> getFolder() {
 		return getFocusedObject();
 	}
 
@@ -127,7 +123,21 @@ public class CreateViewInFolder extends CreateView<CreateViewInFolder, Repositor
 
 	@Override
 	public ViewResource makeVirtualModelInstanceResource() throws SaveResourceException {
-		return ViewImpl.newView(getNewViewName(), getNewViewTitle(), getVirtualModel(), getFolder(), getProject());
+
+		FMLRTTechnologyAdapter fmlRTTechnologyAdapter = getServiceManager().getTechnologyAdapterService()
+				.getTechnologyAdapter(FMLRTTechnologyAdapter.class);
+		ViewResourceFactory factory = fmlRTTechnologyAdapter.getViewResourceFactory();
+		ViewResource returned;
+		try {
+			returned = factory.makeViewResource(getNewViewName(), null, getViewpointResource(), getFolder(),
+					fmlRTTechnologyAdapter.getTechnologyContextManager(), true);
+			returned.getLoadedResourceData().setTitle(getNewViewTitle());
+			return returned;
+		} catch (ModelDefinitionException e) {
+			e.printStackTrace();
+			return null;
+		}
+		// return ViewImpl.newView(getNewViewName(), getNewViewTitle(), getVirtualModel(), getFolder(), getProject());
 	}
 
 	@Override
@@ -135,9 +145,9 @@ public class CreateViewInFolder extends CreateView<CreateViewInFolder, Repositor
 
 		super.doAction(context);
 
-		logger.info("Added view " + getNewView() + " in folder " + getFolder() + " for project " + getProject());
+		logger.info("Added view " + getNewView() + " in folder " + getFolder() + " for resource center " + getResourceCenter());
 
-		getViewLibrary().registerResource((ViewResource) getNewView().getResource(), getFocusedObject());
+		getViewLibrary().registerResource((ViewResource) getNewView().getResource(), (RepositoryFolder) getFocusedObject());
 
 	}
 

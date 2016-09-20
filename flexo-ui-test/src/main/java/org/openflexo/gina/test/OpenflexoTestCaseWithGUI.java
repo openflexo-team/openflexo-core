@@ -83,7 +83,7 @@ public abstract class OpenflexoTestCaseWithGUI extends OpenflexoTestCase {
 			FlexoResourceCenterService RCService = serviceManager.getResourceCenterService();
 			List<FlexoResourceCenter> listRC = RCService.getResourceCenters();
 			for (FlexoResourceCenter rc : listRC) {
-				if (rc instanceof DirectoryResourceCenter) {
+				if (rc instanceof DirectoryResourceCenter && !rc.getResourceCenterEntry().isSystemEntry()) {
 					File RCDirectory = ((DirectoryResourceCenter) rc).getDirectory();
 					RCDirectory.deleteOnExit();
 				}
@@ -117,7 +117,13 @@ public abstract class OpenflexoTestCaseWithGUI extends OpenflexoTestCase {
 
 	protected static ApplicationContext instanciateTestServiceManager(final boolean generateCompoundTestResourceCenter) {
 		serviceManager = new TestApplicationContext(generateCompoundTestResourceCenter);
-		resourceCenter = (DirectoryResourceCenter) serviceManager.getResourceCenterService().getResourceCenters().get(0);
+		for (FlexoResourceCenter rc : serviceManager.getResourceCenterService().getResourceCenters()) {
+			// Select the first directory ResourceCenter
+			if (rc instanceof DirectoryResourceCenter && !rc.getResourceCenterEntry().isSystemEntry()) {
+				resourceCenter = (DirectoryResourceCenter) rc;
+				break;
+			}
+		}
 		return serviceManager;
 	}
 
@@ -128,7 +134,13 @@ public abstract class OpenflexoTestCaseWithGUI extends OpenflexoTestCase {
 			serviceManager
 					.activateTechnologyAdapter(serviceManager.getTechnologyAdapterService().getTechnologyAdapter(technologyAdapterClass));
 		}
-		resourceCenter = (DirectoryResourceCenter) serviceManager.getResourceCenterService().getResourceCenters().get(0);
+		for (FlexoResourceCenter rc : serviceManager.getResourceCenterService().getResourceCenters()) {
+			// Select the first directory ResourceCenter
+			if (rc instanceof DirectoryResourceCenter) {
+				resourceCenter = (DirectoryResourceCenter) rc;
+				break;
+			}
+		}
 		return serviceManager;
 	}
 

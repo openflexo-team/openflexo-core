@@ -51,6 +51,8 @@ import java.util.logging.Logger;
 import org.openflexo.foundation.action.NotImplementedException;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.Implementation;
+import org.openflexo.model.annotations.Import;
+import org.openflexo.model.annotations.Imports;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
@@ -68,6 +70,7 @@ import org.openflexo.toolbox.FileUtils;
  */
 @ModelEntity
 @XMLElement
+@Imports({ @Import(DirectoryBasedFlexoIODelegate.class), @Import(FlexoIOGitDelegate.class) })
 public interface FileFlexoIODelegate extends FlexoIOStreamDelegate<File> {
 
 	public static final String FILE = "file";
@@ -102,7 +105,7 @@ public interface FileFlexoIODelegate extends FlexoIOStreamDelegate<File> {
 		}
 
 		@Override
-		public RepositoryFolder<?> getRepositoryFolder(ResourceRepository<?> resourceRepository, boolean createWhenNonExistent)
+		public RepositoryFolder<?, File> getRepositoryFolder(ResourceRepository<?, File> resourceRepository, boolean createWhenNonExistent)
 				throws IOException {
 			return resourceRepository.getRepositoryFolder(getFile(), true);
 		}
@@ -274,6 +277,21 @@ public interface FileFlexoIODelegate extends FlexoIOStreamDelegate<File> {
 		public void save(FlexoResource<?> resource) throws NotImplementedException {
 			// TODO Auto-generated method stub
 		}
+
+		/*@Override
+		public Resource getSerializationArtefactAsResource(File serializationArtefact) {
+			try {
+				return new FileResourceImpl(serializationArtefact);
+			} catch (MalformedURLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (LocatorNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return null;
+		}*/
+
 	}
 
 }
