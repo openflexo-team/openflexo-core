@@ -203,7 +203,7 @@ public class FMLModelFactory extends FGEModelFactoryImpl implements PamelaResour
 		classes.add(FlexoConceptBehaviouralFacet.class);
 		classes.add(FlexoBehaviourParameters.class);*/
 		for (TechnologyAdapter ta : taService.getTechnologyAdapters()) {
-			for (Class<?> modelSlotClass : ta.getAvailableModelSlotTypes()) {
+			for (Class<?> modelSlotClass : new ArrayList<>(ta.getAvailableModelSlotTypes())) {
 				classes.add(modelSlotClass);
 				DeclareFlexoRoles prDeclarations = modelSlotClass.getAnnotation(DeclareFlexoRoles.class);
 				if (prDeclarations != null) {
