@@ -283,6 +283,23 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 		}
 	}
 
+	private void resourceCenterHasBeenRemoved(FlexoResourceCenter<?> rc) {
+		// Call it to update the current repositories
+		if (!SwingUtilities.isEventDispatchThread()) {
+			SwingUtilities.invokeLater(new Runnable() {
+				@Override
+				public void run() {
+					// Call it to update the current repositories
+					notifyRepositoryStructureChanged();
+				}
+			});
+		}
+		else {
+			// Call it to update the current repositories
+			notifyRepositoryStructureChanged();
+		}
+	}
+
 	/**
 	 * Internally called to lookup resources from serialization artefacts
 	 * 
@@ -393,6 +410,7 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 	public void resourceCenterRemoved(FlexoResourceCenter<?> removedResourceCenter) {
 		setChanged();
 		notifyObservers(new DataModification(removedResourceCenter, null));
+		resourceCenterHasBeenRemoved(removedResourceCenter);
 	}
 
 	public boolean hasTypeAwareModelSlot() {

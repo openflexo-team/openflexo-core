@@ -46,7 +46,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLDecoder;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
@@ -164,9 +163,10 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 									"UTF-8");
 
 							URL jarURL = new URL(jarPath);
-							URI jarURI = new URI(jarURL.getProtocol(), jarURL.getUserInfo(), jarURL.getHost(), jarURL.getPort(), jarURL.getPath(), jarURL.getQuery(), jarURL.getRef());
+							URI jarURI = new URI(jarURL.getProtocol(), jarURL.getUserInfo(), jarURL.getHost(), jarURL.getPort(),
+									jarURL.getPath(), jarURL.getQuery(), jarURL.getRef());
 
-							rc = JarResourceCenter.addJarFile(new JarFile(new File(jarURI)),this);
+							rc = JarResourceCenter.addJarFile(new JarFile(new File(jarURI)), this);
 
 						}
 						else {
@@ -214,23 +214,10 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 		}
 		// TODO: dereference all resources registerd in this ResourceCenter
 
-		// The resource center must be been dereferenced
-
-		/*
-		ViewPointRepository vpr = newRC.getViewPointRepository();
-		for (ViewPointResource vpR : vpr.getAllResources()) {
-			if (((FileSystemBasedResourceCenter) vpr.getResourceCenter()).getResource(vpR.getURI()) != null) {
-				vpR.unloadResourceData();
-				unregisterViewPoint(vpR);
-				vpr.unregisterResource(vpR);
-			}
-		}
-		vpr.delete();*/
-
 		if (getServiceManager() != null) {
 			getServiceManager().notify(this, new ResourceCenterRemoved(resourceCenter));
 		}
-		getPropertyChangeSupport().firePropertyChange(RESOURCE_CENTERS, null, resourceCenter);
+		getPropertyChangeSupport().firePropertyChange(RESOURCE_CENTERS, resourceCenter, null);
 	}
 
 	/**
