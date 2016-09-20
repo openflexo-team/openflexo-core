@@ -66,7 +66,6 @@ import org.openflexo.foundation.resource.DirectoryBasedFlexoIODelegate.Directory
 import org.openflexo.foundation.resource.FileFlexoIODelegate.FileFlexoIODelegateImpl;
 import org.openflexo.foundation.task.Progress;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
-import org.openflexo.foundation.technologyadapter.TechnologyAdapterResource;
 import org.openflexo.foundation.utils.FlexoObjectReference;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.Implementation;
@@ -712,37 +711,25 @@ public abstract class FileSystemBasedResourceCenter extends ResourceRepository<F
 	 * @return
 	 */
 	@Override
-	public String getDefaultResourceURI(FlexoResource<?> resource) {
-		if (resource instanceof TechnologyAdapterResource) {
-			TechnologyAdapter ta = ((TechnologyAdapterResource<?, ?>) resource).getTechnologyAdapter();
-			for (ResourceRepository repository : getRegistedRepositories(ta)) {
-				if (repository.containsResource(resource)) {
+	public <R extends FlexoResource<?>> String getDefaultResourceURI(R resource) {
+		String defaultBaseURI = getDefaultBaseURI();
+		if (!defaultBaseURI.endsWith("/")) {
+			defaultBaseURI = defaultBaseURI + "/";
+		}
+		String lastPath = resource.getName();
+		String relativePath = "";
 
-					String path = "";
-					RepositoryFolder f = repository.getRepositoryFolder(resource);
-
-					/*if (resource.getFlexoIODelegate() instanceof FileFlexoIODelegate) {
-						File file = ((FileFlexoIODelegate) resource.getFlexoIODelegate()).getFile();
-						System.out.println("Repository " + repository);
-						System.out.println("resource " + file);
-						System.out.println("folder: " + f);
-					}*/
-
-					while (f != null && !f.isRootFolder()) {
-						path = f.getName() + File.separator + path;
-						f = f.getParentFolder();
-					}
-					String defaultBaseURI = getDefaultBaseURI();
-					if (defaultBaseURI.endsWith(File.separator) || defaultBaseURI.endsWith("/")) {
-						return getDefaultBaseURI() + path.replace(File.separator, "/") + resource.getName();
-					}
-					else {
-						return getDefaultBaseURI() + "/" + path.replace(File.separator, "/") + resource.getName();
-					}
+		if (resource.getFlexoIODelegate() != null) {
+			File serializationArtefact = (File) resource.getFlexoIODelegate().getSerializationArtefact();
+			if (serializationArtefact != null) {
+				File f = serializationArtefact.getParentFile();
+				while (f != null && !(f.equals(getRootFolder().getSerializationArtefact()))) {
+					relativePath = f.getName() + "/" + relativePath;
+					f = f.getParentFile();
 				}
 			}
 		}
-		return null;
+		return defaultBaseURI + relativePath + lastPath;
 	}
 
 	/**

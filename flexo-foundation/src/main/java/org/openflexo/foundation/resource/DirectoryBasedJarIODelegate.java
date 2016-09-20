@@ -38,16 +38,19 @@
 
 package org.openflexo.foundation.resource;
 
+import java.net.URL;
 import java.util.logging.Logger;
 
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.Implementation;
+import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.model.annotations.XMLElement;
 import org.openflexo.model.factory.ModelFactory;
 import org.openflexo.rm.InJarResourceImpl;
+import org.openflexo.toolbox.JarClassLoader;
 
 /**
  * Represents an I/O delegate based on a directory and a core file inside this directory<br>
@@ -61,6 +64,7 @@ import org.openflexo.rm.InJarResourceImpl;
  */
 @ModelEntity
 @XMLElement
+@ImplementationClass(DirectoryBasedJarIODelegate.DirectoryBasedJarIODelegateImpl.class)
 public interface DirectoryBasedJarIODelegate extends InJarFlexoIODelegate {
 
 	public static final String FILE_EXTENSION = "fileExtension";
@@ -115,29 +119,20 @@ public interface DirectoryBasedJarIODelegate extends InJarFlexoIODelegate {
 			fileIODelegate.setDirectoryExtension(directoryExtension);
 			fileIODelegate.setFileExtension(fileExtension);
 
-			System.out.println("Bon, il s'agit de construire le DirectoryBasedJarIODelegate");
-			System.out.println("containerDir=" + containerDir);
+			// System.out.println("Building DirectoryBasedJarIODelegate");
+			// System.out.println("containerDir=" + containerDir);
 
 			InJarResourceImpl directory = resourceCenter.getDirectory(baseName + directoryExtension, containerDir);
-			System.out.println("directory=" + directory);
+			// System.out.println("directory=" + directory);
 
 			InJarResourceImpl file = resourceCenter.getDirectory(baseName + fileExtension, directory);
-			System.out.println("file=" + file);
+			// System.out.println("file=" + file);
 
 			fileIODelegate.setDirectory(directory);
 			fileIODelegate.setInJarResource(file);
 
-			/*File directory = new File(containerDir, baseName + directoryExtension);
-			File file = new File(directory, baseName + fileExtension);
-			fileIODelegate.setDirectory(directory);
-			fileIODelegate.setFile(file);*/
 			return fileIODelegate;
 		}
-
-		/*@Override
-		public File getSerializationArtefact() {
-			return getDirectory();
-		}*/
 
 		@Override
 		public InJarResourceImpl getDirectory() {
@@ -159,6 +154,18 @@ public interface DirectoryBasedJarIODelegate extends InJarFlexoIODelegate {
 		@Override
 		public void rename() throws CannotRenameException {
 			// Not applicable
+		}
+
+		@Override
+		public ClassLoader retrieveClassLoader() {
+			URL jarResource = getDirectory().getJarResource().getURL();
+			ClassLoader returned = new JarClassLoader(jarResource, getClass().getClassLoader());
+			return returned;
+		}
+
+		@Override
+		public String toString() {
+			return "DirectoryBasedJarIODelegate " + super.toString();
 		}
 
 	}

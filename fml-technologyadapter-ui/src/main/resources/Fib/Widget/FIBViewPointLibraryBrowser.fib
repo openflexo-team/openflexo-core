@@ -14,11 +14,11 @@
 		valueValidator="" name="ViewPointLibraryBrowser" index="0" data=""
 		constraints="twocols(expandHorizontally=true;expandVertically=true;index=0;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=center)">
 		<BrowserElement
-			dataClassName="org.openflexo.foundation.technologyadapter.TechnologyAdapter"
+			dataClassName="org.openflexo.foundation.fml.FMLTechnologyAdapter"
 			label="technologyAdapter.name" icon="controller.iconForObject(technologyAdapter)"
 			tooltip="" enabled="" isEditable="false" editableLabel="" filtered="false"
 			defaultVisible="true" dynamicFont="" name="technologyAdapter">
-			<Children data="data.getAllRepositories()" cast="child.rootFolder"
+			<Children data="data.getViewPointRepositories()" cast="child.rootFolder"
 				name="repositories" />
 		</BrowserElement>
 		<BrowserElement dataClassName="org.openflexo.foundation.resource.RepositoryFolder"

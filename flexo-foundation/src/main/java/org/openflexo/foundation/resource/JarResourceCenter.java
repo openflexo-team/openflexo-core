@@ -466,9 +466,33 @@ public class JarResourceCenter extends ResourceRepository<FlexoResource<?>, InJa
 		// Nothing to do for now
 	}
 
+	/**
+	 * Compute and return a default URI for supplied resource<br>
+	 * If resource does not provide URI support, this might be delegated to the {@link FlexoResourceCenter} through this method
+	 * 
+	 * @param resource
+	 * @return
+	 */
 	@Override
-	public String getDefaultResourceURI(FlexoResource<?> resource) {
-		return resource.getName();
+	public <R extends FlexoResource<?>> String getDefaultResourceURI(R resource) {
+		String defaultBaseURI = getDefaultBaseURI();
+		if (!defaultBaseURI.endsWith("/")) {
+			defaultBaseURI = defaultBaseURI + "/";
+		}
+		String lastPath = resource.getName();
+		String relativePath = "";
+		if (resource.getFlexoIODelegate() != null) {
+			InJarResourceImpl serializationArtefact = (InJarResourceImpl) resource.getFlexoIODelegate().getSerializationArtefact();
+			if (serializationArtefact != null) {
+				InJarResourceImpl f = serializationArtefact.getContainer();
+				while (f != null && !(f.equals(getRootFolder().getSerializationArtefact()))) {
+					relativePath = f.getName() + "/" + relativePath;
+					f = f.getContainer();
+				}
+			}
+		}
+
+		return defaultBaseURI + relativePath + lastPath;
 	}
 
 	@Override
@@ -605,7 +629,7 @@ public class JarResourceCenter extends ResourceRepository<FlexoResource<?>, InJa
 	 */
 	@Override
 	public Properties getProperties(InJarResourceImpl directory) throws IOException {
-		System.out.println("Reading properties from JarEntry " + directory);
+		// System.out.println("Reading properties from JarEntry " + directory);
 		Properties returned = null;
 		if (isDirectory(directory)) {
 			InJarResourceImpl propertiesJarEntry = null;
@@ -625,7 +649,7 @@ public class JarResourceCenter extends ResourceRepository<FlexoResource<?>, InJa
 				}
 			}
 		}
-		System.out.println("Return properties: " + returned);
+		// System.out.println("Return properties: " + returned);
 		return returned;
 	}
 
@@ -641,6 +665,10 @@ public class JarResourceCenter extends ResourceRepository<FlexoResource<?>, InJa
 			candidateFile = ((InJarFlexoIODelegate) ioDelegate).getInJarResource();
 		}
 		try {
+
+			// System.out.println("Folder for " + ioDelegate.getSerializationArtefact() + " is "
+			// + resourceRepository.getRepositoryFolder(candidateFile, true));
+
 			return resourceRepository.getRepositoryFolder(candidateFile, true);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -662,7 +690,10 @@ public class JarResourceCenter extends ResourceRepository<FlexoResource<?>, InJa
 			StringTokenizer string = new StringTokenizer(/*resource.getURI()*/resource.getEntry().getName(),
 					Character.toString(ClasspathResourceLocatorImpl.PATH_SEP.toCharArray()[0]));
 			while (string.hasMoreTokens()) {
-				pathTo.add(string.nextToken());
+				String next = string.nextToken();
+				if (string.hasMoreTokens()) {
+					pathTo.add(next);
+				}
 			}
 			return pathTo;
 		}
