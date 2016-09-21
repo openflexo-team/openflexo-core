@@ -103,7 +103,7 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 	public static FlexoResourceCenterService getNewInstance(List<ResourceCenterEntry<?>> resourceCenterEntries) {
 		DefaultResourceCenterService returned = (DefaultResourceCenterService) getNewInstance();
 		for (ResourceCenterEntry<?> entry : resourceCenterEntries) {
-			FlexoResourceCenter rc = entry.makeResourceCenter(returned);
+			FlexoResourceCenter<?> rc = entry.makeResourceCenter(returned);
 			if (rc != null) {
 				returned.addToResourceCenters(rc);
 			}
@@ -125,13 +125,13 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 		logger.info("Loading available  ResourceCenters from classpath");
 
 		Enumeration<URL> urlList;
-		ArrayList<FlexoResourceCenter> rcList = new ArrayList<FlexoResourceCenter>(this.getResourceCenters());
+		ArrayList<FlexoResourceCenter<?>> rcList = new ArrayList<>(this.getResourceCenters());
 
 		try {
 			urlList = cl.getResources("META-INF/resourceCenters/" + FlexoResourceCenter.class.getCanonicalName());
 
 			if (urlList != null && urlList.hasMoreElements()) {
-				FlexoResourceCenter rc = null;
+				FlexoResourceCenter<?> rc = null;
 				boolean rcExists = false;
 				while (urlList.hasMoreElements()) {
 					URL url = urlList.nextElement();
@@ -143,7 +143,7 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 					System.out.println("Attempt to loading RC " + rcBaseUri);
 
 					rcExists = false;
-					for (FlexoResourceCenter r : rcList) {
+					for (FlexoResourceCenter<?> r : rcList) {
 						rcExists = r.getDefaultBaseURI().equals(rcBaseUri) || rcExists;
 					}
 					if (!rcExists) {
@@ -197,18 +197,19 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 	}
 
 	@Override
-	public void addToResourceCenters(FlexoResourceCenter resourceCenter) {
+	public void addToResourceCenters(FlexoResourceCenter<?> resourceCenter) {
 		if (!getResourceCenters().contains(resourceCenter)) {
+			logger.info("################################### addToResourceCenters() " + resourceCenter);
 			performSuperAdder(RESOURCE_CENTERS, resourceCenter);
+			if (getServiceManager() != null) {
+				getServiceManager().notify(this, new ResourceCenterAdded(resourceCenter));
+			}
+			getPropertyChangeSupport().firePropertyChange(RESOURCE_CENTERS, null, resourceCenter);
 		}
-		if (getServiceManager() != null) {
-			getServiceManager().notify(this, new ResourceCenterAdded(resourceCenter));
-		}
-		getPropertyChangeSupport().firePropertyChange(RESOURCE_CENTERS, null, resourceCenter);
 	}
 
 	@Override
-	public void removeFromResourceCenters(FlexoResourceCenter resourceCenter) {
+	public void removeFromResourceCenters(FlexoResourceCenter<?> resourceCenter) {
 		if (getResourceCenters().contains(resourceCenter)) {
 			performSuperRemover(RESOURCE_CENTERS, resourceCenter);
 		}
@@ -227,13 +228,13 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 	 * 
 	 */
 	public class ResourceCenterAdded implements ServiceNotification {
-		private final FlexoResourceCenter addedResourceCenter;
+		private final FlexoResourceCenter<?> addedResourceCenter;
 
-		public ResourceCenterAdded(FlexoResourceCenter addedResourceCenter) {
+		public ResourceCenterAdded(FlexoResourceCenter<?> addedResourceCenter) {
 			this.addedResourceCenter = addedResourceCenter;
 		}
 
-		public FlexoResourceCenter getAddedResourceCenter() {
+		public FlexoResourceCenter<?> getAddedResourceCenter() {
 			return addedResourceCenter;
 		}
 	}
@@ -245,13 +246,13 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 	 * 
 	 */
 	public class ResourceCenterRemoved implements ServiceNotification {
-		private final FlexoResourceCenter removedResourceCenter;
+		private final FlexoResourceCenter<?> removedResourceCenter;
 
-		public ResourceCenterRemoved(FlexoResourceCenter removedResourceCenter) {
+		public ResourceCenterRemoved(FlexoResourceCenter<?> removedResourceCenter) {
 			this.removedResourceCenter = removedResourceCenter;
 		}
 
-		public FlexoResourceCenter getRemovedResourceCenter() {
+		public FlexoResourceCenter<?> getRemovedResourceCenter() {
 			return removedResourceCenter;
 		}
 	}
@@ -299,14 +300,14 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 	@Override
 	public void receiveNotification(FlexoService caller, ServiceNotification notification) {
 		if (notification instanceof WillWriteFileOnDiskNotification) {
-			for (FlexoResourceCenter rc : getResourceCenters()) {
+			for (FlexoResourceCenter<?> rc : getResourceCenters()) {
 				if (rc instanceof FileSystemBasedResourceCenter) {
 					((FileSystemBasedResourceCenter) rc).willWrite(((WillWriteFileOnDiskNotification) notification).getFile());
 				}
 			}
 		}
 		if (notification instanceof WillRenameFileOnDiskNotification) {
-			for (FlexoResourceCenter rc : getResourceCenters()) {
+			for (FlexoResourceCenter<?> rc : getResourceCenters()) {
 				if (rc instanceof FileSystemBasedResourceCenter) {
 					((FileSystemBasedResourceCenter) rc).willRename(((WillRenameFileOnDiskNotification) notification).getFromFile(),
 							((WillRenameFileOnDiskNotification) notification).getToFile());
@@ -314,7 +315,7 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 			}
 		}
 		if (notification instanceof WillDeleteFileOnDiskNotification) {
-			for (FlexoResourceCenter rc : getResourceCenters()) {
+			for (FlexoResourceCenter<?> rc : getResourceCenters()) {
 				if (rc instanceof FileSystemBasedResourceCenter) {
 					((FileSystemBasedResourceCenter) rc).willDelete(((WillDeleteFileOnDiskNotification) notification).getFile());
 				}
@@ -328,15 +329,15 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 			}
 			else if (notification instanceof TechnologyAdapterHasBeenActivated) {
 				// Avoid Concurrent Modification Exception issues
-				ArrayList<FlexoResourceCenter> listRC = new ArrayList<FlexoResourceCenter>(getResourceCenters());
-				for (FlexoResourceCenter rc : listRC) {
+				ArrayList<FlexoResourceCenter<?>> listRC = new ArrayList<FlexoResourceCenter<?>>(getResourceCenters());
+				for (FlexoResourceCenter<?> rc : listRC) {
 					if (rc != null) {
 						rc.activateTechnology(((TechnologyAdapterHasBeenActivated) notification).getTechnologyAdapter());
 					}
 				}
 			}
 			else if (notification instanceof TechnologyAdapterHasBeenDisactivated) {
-				for (FlexoResourceCenter rc : getResourceCenters()) {
+				for (FlexoResourceCenter<?> rc : getResourceCenters()) {
 					if (rc != null) {
 						rc.disactivateTechnology(((TechnologyAdapterHasBeenDisactivated) notification).getTechnologyAdapter());
 					}
@@ -352,9 +353,9 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 
 	@Override
 	public void stop() {
-		List<FlexoResourceCenter> RCs = this.getResourceCenters();
+		List<FlexoResourceCenter<?>> RCs = getResourceCenters();
 
-		for (FlexoResourceCenter r : RCs) {
+		for (FlexoResourceCenter<?> r : RCs) {
 			r.stop();
 		}
 	}
