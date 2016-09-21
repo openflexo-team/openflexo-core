@@ -62,7 +62,7 @@ public class TestServiceManager extends OpenflexoTestCase {
 	protected static final Logger logger = Logger.getLogger(TestServiceManager.class.getPackage().getName());
 
 	private static ApplicationContext testApplicationContext;
-	private static FlexoResourceCenter resourceCenter;
+	private static FlexoResourceCenter<?> resourceCenter;
 
 	/**
 	 * Instanciate test ApplicationContext
@@ -73,6 +73,7 @@ public class TestServiceManager extends OpenflexoTestCase {
 		log("test0UseTestApplicationContext()");
 		testApplicationContext = new TestApplicationContext();
 		resourceCenter = testApplicationContext.getResourceCenterService().getResourceCenters().get(0);
+		logger.info("resource center=" + resourceCenter);
 
 		logger.info("services: " + testApplicationContext.getRegisteredServices());
 

@@ -58,6 +58,7 @@ import org.openflexo.test.TestOrder;
 @RunWith(OrderedRunner.class)
 public class TestPreferencesService extends OpenflexoTestCaseWithGUI {
 
+	@SuppressWarnings("unused")
 	private static final Logger logger = FlexoLogger.getLogger(TestPreferencesService.class.getPackage().getName());
 
 	protected static ApplicationContext instanciateTestServiceManager() {
@@ -67,9 +68,9 @@ public class TestPreferencesService extends OpenflexoTestCaseWithGUI {
 				return new PreferencesService();
 			}
 		};
-		for (FlexoResourceCenter rc : serviceManager.getResourceCenterService().getResourceCenters()) {
+		for (FlexoResourceCenter<?> rc : serviceManager.getResourceCenterService().getResourceCenters()) {
 			// Select the first directory ResourceCenter
-			if (rc instanceof DirectoryResourceCenter){
+			if (rc instanceof DirectoryResourceCenter) {
 				resourceCenter = (DirectoryResourceCenter) rc;
 				break;
 			}
