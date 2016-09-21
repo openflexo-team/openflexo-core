@@ -60,6 +60,7 @@ import org.openflexo.logging.FlexoLoggingManager;
  */
 public abstract class OpenflexoTestCaseWithGUI extends OpenflexoTestCase {
 
+	@SuppressWarnings("unused")
 	private static final Logger logger = FlexoLogger.getLogger(OpenflexoTestCaseWithGUI.class.getPackage().getName());
 
 	protected static DirectoryResourceCenter resourceCenter;
@@ -79,9 +80,9 @@ public abstract class OpenflexoTestCaseWithGUI extends OpenflexoTestCase {
 	public static void tearDownClass() throws Exception {
 		if (serviceManager != null) {
 			FlexoResourceCenterService RCService = serviceManager.getResourceCenterService();
-			List<FlexoResourceCenter> listRC = RCService.getResourceCenters();
-			for (FlexoResourceCenter rc : listRC) {
-				if (rc instanceof DirectoryResourceCenter && ! rc.getResourceCenterEntry().isSystemEntry()) {
+			List<FlexoResourceCenter<?>> listRC = RCService.getResourceCenters();
+			for (FlexoResourceCenter<?> rc : listRC) {
+				if (rc instanceof DirectoryResourceCenter && !rc.getResourceCenterEntry().isSystemEntry()) {
 					File RCDirectory = ((DirectoryResourceCenter) rc).getDirectory();
 					RCDirectory.deleteOnExit();
 				}
@@ -115,9 +116,9 @@ public abstract class OpenflexoTestCaseWithGUI extends OpenflexoTestCase {
 
 	protected static ApplicationContext instanciateTestServiceManager(final boolean generateCompoundTestResourceCenter) {
 		serviceManager = new TestApplicationContext(generateCompoundTestResourceCenter);
-		for (FlexoResourceCenter rc : serviceManager.getResourceCenterService().getResourceCenters()) {
+		for (FlexoResourceCenter<?> rc : serviceManager.getResourceCenterService().getResourceCenters()) {
 			// Select the first directory ResourceCenter
-			if (rc instanceof DirectoryResourceCenter && ! rc.getResourceCenterEntry().isSystemEntry()){
+			if (rc instanceof DirectoryResourceCenter && !rc.getResourceCenterEntry().isSystemEntry()) {
 				resourceCenter = (DirectoryResourceCenter) rc;
 				break;
 			}
@@ -132,9 +133,9 @@ public abstract class OpenflexoTestCaseWithGUI extends OpenflexoTestCase {
 			serviceManager
 					.activateTechnologyAdapter(serviceManager.getTechnologyAdapterService().getTechnologyAdapter(technologyAdapterClass));
 		}
-		for (FlexoResourceCenter rc : serviceManager.getResourceCenterService().getResourceCenters()) {
+		for (FlexoResourceCenter<?> rc : serviceManager.getResourceCenterService().getResourceCenters()) {
 			// Select the first directory ResourceCenter
-			if (rc instanceof DirectoryResourceCenter){
+			if (rc instanceof DirectoryResourceCenter) {
 				resourceCenter = (DirectoryResourceCenter) rc;
 				break;
 			}
