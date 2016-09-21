@@ -217,7 +217,11 @@ public class FMLRTTechnologyAdapter extends TechnologyAdapter {
 		if (resourceCenter.isIgnorable(contents)) {
 			return true;
 		}
-		// TODO: ignore .view subcontents
+		I parentFolder = resourceCenter.getContainer(contents);
+		if (parentFolder != null && resourceCenter.retrieveName(parentFolder).endsWith(ViewResourceFactory.VIEW_SUFFIX)) {
+			// ignore .view subcontents
+			return true;
+		}
 		return false;
 	}
 
