@@ -94,8 +94,7 @@ import org.openflexo.xml.XMLRootElementReader;
  * @author sylvain
  * 
  */
-public abstract class FileSystemBasedResourceCenter extends ResourceRepository<FlexoResource<?>, File>
-		implements FlexoResourceCenter<File> {
+public abstract class FileSystemBasedResourceCenter extends ResourceRepository<FlexoResource<?>, File>implements FlexoResourceCenter<File> {
 
 	protected static final Logger logger = Logger.getLogger(FileSystemBasedResourceCenter.class.getPackage().getName());
 
@@ -552,7 +551,7 @@ public abstract class FileSystemBasedResourceCenter extends ResourceRepository<F
 	private final List<File> willBeDeletedFiles = new ArrayList<File>();
 
 	public void willWrite(File file) {
-		System.out.println("----------> OK, je previens que je vais ecrire le fichier " + file);
+		// System.out.println("----------> OK, je previens que je vais ecrire le fichier " + file);
 		willBeWrittenFiles.add(file);
 	}
 
