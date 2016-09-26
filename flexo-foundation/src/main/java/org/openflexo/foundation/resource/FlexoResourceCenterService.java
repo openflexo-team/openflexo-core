@@ -65,16 +65,16 @@ public interface FlexoResourceCenterService extends FlexoService, AccessibleProx
 	public static final String RESOURCE_CENTERS = "resourceCenters";
 
 	@Getter(value = RESOURCE_CENTERS, cardinality = Cardinality.LIST, ignoreType = true)
-	public List<FlexoResourceCenter> getResourceCenters();
+	public List<FlexoResourceCenter<?>> getResourceCenters();
 
 	@Setter(RESOURCE_CENTERS)
-	public void setResourceCenters(List<FlexoResourceCenter> resourceCenters);
+	public void setResourceCenters(List<FlexoResourceCenter<?>> resourceCenters);
 
 	@Adder(RESOURCE_CENTERS)
-	public void addToResourceCenters(FlexoResourceCenter resourceCenter);
+	public void addToResourceCenters(FlexoResourceCenter<?> resourceCenter);
 
 	@Remover(RESOURCE_CENTERS)
-	public void removeFromResourceCenters(FlexoResourceCenter resourceCenter);
+	public void removeFromResourceCenters(FlexoResourceCenter<?> resourceCenter);
 
 	/**
 	 * Save all locations for registered resource centers on disk

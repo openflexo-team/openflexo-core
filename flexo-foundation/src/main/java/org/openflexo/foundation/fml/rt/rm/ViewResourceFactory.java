@@ -93,7 +93,7 @@ public class ViewResourceFactory extends AbstractVirtualModelInstanceResourceFac
 
 	public <I> ViewResource makeViewResource(String baseName, ViewPointResource viewPointResource, ViewResource parentViewResource,
 			TechnologyContextManager<FMLRTTechnologyAdapter> technologyContextManager, boolean createEmptyContents)
-					throws SaveResourceException, ModelDefinitionException {
+			throws SaveResourceException, ModelDefinitionException {
 
 		FlexoResourceCenter<I> resourceCenter = (FlexoResourceCenter<I>) parentViewResource.getResourceCenter();
 		I parentDir = resourceCenter.getContainer((I) parentViewResource.getFlexoIODelegate().getSerializationArtefact());
@@ -125,7 +125,7 @@ public class ViewResourceFactory extends AbstractVirtualModelInstanceResourceFac
 
 	public <I> ViewResource retrieveViewResource(I serializationArtefact, FlexoResourceCenter<I> resourceCenter,
 			TechnologyContextManager<FMLRTTechnologyAdapter> technologyContextManager, ViewResource parentViewResource)
-					throws ModelDefinitionException, IOException {
+			throws ModelDefinitionException, IOException {
 		ViewResource returned = retrieveResource(serializationArtefact, resourceCenter, technologyContextManager);
 		parentViewResource.addToContents(returned);
 		parentViewResource.notifyContentsAdded(returned);
@@ -203,7 +203,7 @@ public class ViewResourceFactory extends AbstractVirtualModelInstanceResourceFac
 	@Override
 	protected <I> ViewResource initResourceForCreation(I serializationArtefact, FlexoResourceCenter<I> resourceCenter,
 			TechnologyContextManager<FMLRTTechnologyAdapter> technologyContextManager, String name, String uri)
-					throws ModelDefinitionException {
+			throws ModelDefinitionException {
 		ViewResource returned = super.initResourceForCreation(serializationArtefact, resourceCenter, technologyContextManager, name, uri);
 		returned.setVersion(INITIAL_REVISION);
 		returned.setModelVersion(CURRENT_FML_RT_VERSION);

@@ -594,8 +594,14 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 	}
 
 	public InspectorGroup loadInspectorGroup(String inspectorGroup, LocalizedDelegate locales, InspectorGroup... parentInspectorGroups) {
-		// TODO : To be optimized
+
 		Resource inspectorsDir = ResourceLocator.locateResource("Inspectors/" + inspectorGroup);
+
+		if (inspectorsDir == null) {
+			logger.warning("Could not find Resource Inspectors/" + inspectorGroup);
+			return null;
+		}
+
 		return getModuleInspectorController().loadDirectory(inspectorsDir, locales, parentInspectorGroups);
 	}
 

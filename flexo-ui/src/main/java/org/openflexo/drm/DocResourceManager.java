@@ -181,14 +181,14 @@ public class DocResourceManager extends FlexoServiceImpl {
 			Resource drmResource = ResourceLocator.locateResource("DocResourceCenter.xml");
 			if (drmResource == null) {
 				logger.info("DRM File not found");
-				try {
+				/*try {
 					drmResource = new FileResourceImpl(
 							new File(((FileResourceImpl) getDocResourceCenterDirectory()).getFile(), "DocResourceCenter.xml"));
 				} catch (Exception e) {
 					logger.severe("Unable to create DocResourceCenter files");
 					e.printStackTrace();
 				}
-				drmFile = ((FileResourceImpl) drmResource).getFile();
+				drmFile = ((FileResourceImpl) drmResource).getFile();*/
 			}
 			else if (drmResource instanceof FileResourceImpl) {
 				logger.info("Found DRM File : " + drmResource.getURI());

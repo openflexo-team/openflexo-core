@@ -228,7 +228,7 @@ public class ViewPointLibrary extends DefaultFlexoObject implements FlexoService
 
 		// Unregister the viewpoint resource from the viewpoint repository
 		FMLTechnologyAdapter vmTA = getTechnologyAdapterService().getTechnologyAdapter(FMLTechnologyAdapter.class);
-		List<FlexoResourceCenter> resourceCenters = getResourceCenterService().getResourceCenters();
+		List<FlexoResourceCenter<?>> resourceCenters = getResourceCenterService().getResourceCenters();
 		for (FlexoResourceCenter<?> rc : resourceCenters) {
 			ViewPointRepository<?> vprfb = vmTA.getViewPointRepository(rc);
 			if ((vprfb != null) && (vprfb.getAllResources().contains(vpRes))) {
@@ -359,7 +359,7 @@ public class ViewPointLibrary extends DefaultFlexoObject implements FlexoService
 		return getServiceManager().getService(TechnologyAdapterService.class);
 	}
 
-	public List<FlexoResourceCenter> getResourceCenters() {
+	public List<FlexoResourceCenter<?>> getResourceCenters() {
 		return getResourceCenterService().getResourceCenters();
 	}
 

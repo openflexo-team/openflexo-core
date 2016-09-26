@@ -46,8 +46,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openflexo.foundation.resource.DirectoryResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
-import org.openflexo.gina.test.OpenflexoTestCaseWithGUI;
-import org.openflexo.gina.test.TestApplicationContext;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.prefs.PreferencesService;
 import org.openflexo.test.OrderedRunner;

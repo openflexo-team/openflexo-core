@@ -551,6 +551,7 @@ public abstract class FileSystemBasedResourceCenter extends ResourceRepository<F
 	private final List<File> willBeDeletedFiles = new ArrayList<File>();
 
 	public void willWrite(File file) {
+		// System.out.println("----------> OK, je previens que je vais ecrire le fichier " + file);
 		willBeWrittenFiles.add(file);
 	}
 

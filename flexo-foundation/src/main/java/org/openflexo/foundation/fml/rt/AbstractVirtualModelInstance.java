@@ -879,7 +879,13 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 					&& ((ModelSlotBindingVariable) variable).getFlexoProperty().getFlexoConcept() == getVirtualModel()) {
 				ModelSlot ms = getVirtualModel().getModelSlot(variable.getVariableName());
 				if (ms != null) {
-					return getModelSlotInstance(ms).getAccessedResourceData();
+					ModelSlotInstance<?, ?> modelSlotInstance = getModelSlotInstance(ms);
+					if (modelSlotInstance != null) {
+						return modelSlotInstance.getAccessedResourceData();
+					}
+					else {
+						logger.warning("Unexpected null model slot instance for " + variable + " in " + getURI());
+					}
 				}
 				logger.warning("Unexpected model slot " + variable);
 				return null;
