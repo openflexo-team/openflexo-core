@@ -75,7 +75,6 @@ import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.model.factory.ModelFactory;
 import org.openflexo.model.validation.ValidationError;
 import org.openflexo.model.validation.ValidationReport;
-import org.openflexo.rm.ClasspathResourceLocatorImpl;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.toolbox.FileUtils;
@@ -192,39 +191,42 @@ public abstract class OpenflexoTestCase {
 
 	/**
 	 * Instantiate a default {@link FlexoServiceManager} well suited for test purpose<br>
-	 * FML and FML@RT technology adapters are activated in returned {@link FlexoServiceManager}
-	 * 
-	 * @return a newly created {@link FlexoServiceManager}
-	 */
-	protected static FlexoServiceManager instanciateTestServiceManager() {
-		return serviceManager = instanciateTestServiceManager(false);
-	}
-
-	/**
-	 * Instantiate a default {@link FlexoServiceManager} well suited for test purpose<br>
 	 * FML and FML@RT technology adapters are activated in returned {@link FlexoServiceManager}<br>
-	 * When set to true, generate a Test ResourceCenter with all found 'TestResourceCenter' dirs in workspace
 	 * 
 	 * @return a newly created {@link FlexoServiceManager}
 	 */
-	protected static FlexoServiceManager instanciateTestServiceManager(final boolean generateCompoundTestResourceCenter,
-			Class<? extends TechnologyAdapter>... taClasses) {
-		serviceManager = instanciateTestServiceManager(generateCompoundTestResourceCenter);
-		for (Class<? extends TechnologyAdapter> technologyAdapterClass : taClasses) {
-			serviceManager
-					.activateTechnologyAdapter(serviceManager.getTechnologyAdapterService().getTechnologyAdapter(technologyAdapterClass));
-		}
+	protected static FlexoServiceManager instanciateBareTestServiceManager() {
+		serviceManager = new DefaultFlexoServiceManager() {
+
+			@Override
+			protected FlexoEditingContext createEditingContext() {
+				// In unit tests, we do NOT want to be warned against unexpected edits
+				return FlexoEditingContext.createInstance(false);
+			}
+
+			@Override
+			protected FlexoEditor createApplicationEditor() {
+				return new FlexoTestEditor(null, this);
+			}
+
+		};
+
+		// Activate both FML and FML@RT technology adapters
+		TechnologyAdapterService taService = serviceManager.getTechnologyAdapterService();
+		taService.activateTechnologyAdapter(taService.getTechnologyAdapter(FMLTechnologyAdapter.class));
+		taService.activateTechnologyAdapter(taService.getTechnologyAdapter(FMLRTTechnologyAdapter.class));
+
 		return serviceManager;
 	}
 
 	/**
 	 * Instantiate a default {@link FlexoServiceManager} well suited for test purpose<br>
 	 * FML and FML@RT technology adapters are activated in returned {@link FlexoServiceManager}<br>
-	 * When set to true, generate a Test ResourceCenter with all found 'TestResourceCenter' dirs in workspace
+	 * Generate a Test ResourceCenter with first found 'TestResourceCenter' in workspace
 	 * 
 	 * @return a newly created {@link FlexoServiceManager}
 	 */
-	protected static FlexoServiceManager instanciateTestServiceManager(final boolean generateCompoundTestResourceCenter) {
+	protected static FlexoServiceManager instanciateTestServiceManager() {
 		File previousResourceCenterDirectoryToRemove = null;
 		if (testResourceCenterDirectory != null && testResourceCenterDirectory.exists()) {
 			previousResourceCenterDirectoryToRemove = testResourceCenterDirectory;
@@ -250,25 +252,11 @@ public abstract class OpenflexoTestCase {
 					tempFile.delete();
 					testResourceCenterDirectory.mkdirs();
 
-					System.out.println("Creating TestResourceCenter [compound: " + generateCompoundTestResourceCenter + "] "
-							+ testResourceCenterDirectory);
+					System.out.println("Creating TestResourceCenter " + testResourceCenterDirectory);
 
-					if (generateCompoundTestResourceCenter) {
-
-						ClasspathResourceLocatorImpl locator = new ClasspathResourceLocatorImpl();
-
-						List<Resource> toto = locator.locateAllResources("TestResourceCenter");
-						for (Resource tstRC : toto) {
-							System.out.println(tstRC.toString());
-							FileUtils.copyResourceToDir(tstRC, testResourceCenterDirectory);
-						}
-					}
-					else {
-
-						Resource tstRC = ResourceLocator.locateResource("TestResourceCenter");
-						System.out.println("Copied from " + tstRC);
-						FileUtils.copyResourceToDir(tstRC, testResourceCenterDirectory);
-					}
+					Resource tstRC = ResourceLocator.locateResource("TestResourceCenter");
+					System.out.println("Copied from " + tstRC);
+					FileUtils.copyResourceToDir(tstRC, testResourceCenterDirectory);
 
 					FlexoResourceCenterService rcService = DefaultResourceCenterService.getNewInstance();
 					rcService.addToResourceCenters(

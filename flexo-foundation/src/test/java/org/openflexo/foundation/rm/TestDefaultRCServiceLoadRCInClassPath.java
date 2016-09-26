@@ -66,10 +66,10 @@ import org.openflexo.test.TestOrder;
 public class TestDefaultRCServiceLoadRCInClassPath extends OpenflexoTestCase {
 
 	public static FlexoProject project;
-	private static DefaultResourceCenterService rcService ;
+	private static DefaultResourceCenterService rcService;
 	private static ViewPoint testVP;
 
-	private static FlexoResourceCenter testRC,testRCfromCP;
+	private static FlexoResourceCenter testRC, testRCfromCP;
 
 	/**
 	 * Instantiate test resource center
@@ -81,14 +81,13 @@ public class TestDefaultRCServiceLoadRCInClassPath extends OpenflexoTestCase {
 
 		log("test0InstantiateResourceCenter()");
 
-		instanciateTestServiceManager(true, FMLTechnologyAdapter.class,FMLRTTechnologyAdapter.class);
-
+		instanciateTestServiceManager(FMLTechnologyAdapter.class, FMLRTTechnologyAdapter.class);
 
 		rcService = (DefaultResourceCenterService) serviceManager.getResourceCenterService();
 
-		assertNotNull (rcService);
-		
-		for ( FlexoResourceCenter rc: rcService.getResourceCenters()){
+		assertNotNull(rcService);
+
+		for (FlexoResourceCenter rc : rcService.getResourceCenters()) {
 			log("FOUND: RC name " + rc.getName() + "  [" + rc.getDefaultBaseURI() + "]");
 			if (rc.getDefaultBaseURI().equals("http://openflexo.org/test/TestResourceCenter")) {
 				testRC = rc;
@@ -99,7 +98,7 @@ public class TestDefaultRCServiceLoadRCInClassPath extends OpenflexoTestCase {
 		}
 
 		assertNotNull(testRC);
-		
+
 		assertFalse(testRC.getResourceCenterEntry().isSystemEntry());
 		assertTrue(testRCfromCP.getResourceCenterEntry().isSystemEntry());
 
@@ -114,7 +113,6 @@ public class TestDefaultRCServiceLoadRCInClassPath extends OpenflexoTestCase {
 		String viewPointURI = "http://openflexo.org/test/TestViewPoint1";
 		log("Testing ViewPoint loading: " + viewPointURI);
 
-
 		ViewPointResource vpRes = serviceManager.getViewPointLibrary().getViewPointResource(viewPointURI);
 
 		assertNotNull(vpRes);
@@ -122,7 +120,6 @@ public class TestDefaultRCServiceLoadRCInClassPath extends OpenflexoTestCase {
 
 		testVP = vpRes.getViewPoint();
 		assertTrue(vpRes.isLoaded());
-
 
 	}
 
