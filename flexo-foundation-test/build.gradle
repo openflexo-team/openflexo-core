@@ -6,8 +6,5 @@ dependencies {
   // testing dep
   testCompile group: "org.openflexo", name: "testutils", version: "1.+"
   testCompile relativeProject(':flexo-test-resources')
-}
-
-test {
-  exclude '**/TestLoadViewPoint*'// > "http://openflexo.org/test/TestViewPoint2"
+  testRuntime group: "org.openflexo", name: "testViewpoint2", version: "1.0"
 }

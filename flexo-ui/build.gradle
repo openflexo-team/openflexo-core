@@ -23,11 +23,3 @@ compileJava {
     options.fork = true
     options.forkOptions.executable = 'javac'
 }
-
-test {
-  //testLogging {
-  //   showStandardStreams = true
-  //}
-    //    include '**/TestPreferences*'// > testLoadViewPointFromAClassPathJar
-    //    exclude '**/TestLoadViewPoint*'// > testLoadViewPointFromAClassPathJar
-}

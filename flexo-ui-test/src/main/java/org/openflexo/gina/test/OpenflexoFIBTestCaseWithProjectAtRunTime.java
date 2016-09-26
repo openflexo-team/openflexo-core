@@ -36,7 +36,7 @@
  * 
  */
 
-package org.openflexo.gina.utils;
+package org.openflexo.gina.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
