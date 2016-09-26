@@ -92,7 +92,7 @@ public abstract interface SelectIndividual<MS extends TypeAwareModelSlot<?, ?>, 
 	public IFlexoOntology<?> getMetaModelAsOntology();
 
 	public static abstract class SelectIndividualImpl<MS extends TypeAwareModelSlot<?, ?>, T extends IFlexoOntologyIndividual>
-			extends FetchRequestImpl<MS, T> implements SelectIndividual<MS, T> {
+			extends FetchRequestImpl<MS, T>implements SelectIndividual<MS, T> {
 
 		protected static final Logger logger = FlexoLogger.getLogger(SelectIndividual.class.getPackage().getName());
 
@@ -128,6 +128,13 @@ public abstract interface SelectIndividual<MS extends TypeAwareModelSlot<?, ?>, 
 					&& getModelSlot().getMetaModelResource().getMetaModelData() != null) {
 				return (IFlexoOntologyClass) getModelSlot().getMetaModelResource().getMetaModelData().getObject(typeURI);
 			}
+			/*System.out.println("Pas trouve, getModelSlot()=" + getModelSlot());
+			if (getModelSlot() != null) {
+				System.out.println("Pas trouve, getModelSlot().getMetaModelResource()=" + getModelSlot().getMetaModelResource());
+				if (getModelSlot().getMetaModelResource() != null) {
+					System.out.println("Pas trouve, mmData=" + getModelSlot().getMetaModelResource().getMetaModelData());
+				}
+			}*/
 			return null;
 		}
 
