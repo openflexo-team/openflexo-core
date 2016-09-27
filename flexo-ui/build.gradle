@@ -9,12 +9,6 @@ dependencies {
   compile group: "org.openflexo", name: "flexohelp", version: "1.+"
   // external dep
   compile group: "org.openflexo.utils", name: "macos_ui_simulation", version: "1.+"
-
-  // testing dep
-  testCompile group: "org.openflexo", name: "gina-test", version: "1.+"
-  testCompile group: "org.openflexo", name: "testutils", version: "1.+"
-  testCompile group: "org.openflexo", name: "gina-swing-editor-test", version: "1.+"
-  testCompile relativeProject(':flexo-test-resources')
 }
 
 // To be able to use private apple api
