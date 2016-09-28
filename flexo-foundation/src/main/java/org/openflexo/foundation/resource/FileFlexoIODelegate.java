@@ -58,6 +58,8 @@ import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.model.annotations.XMLElement;
 import org.openflexo.model.factory.ModelFactory;
+import org.openflexo.rm.FileResourceImpl;
+import org.openflexo.rm.FileSystemResourceLocatorImpl;
 import org.openflexo.toolbox.FileUtils;
 
 /**
@@ -92,6 +94,8 @@ public interface FileFlexoIODelegate extends FlexoIOStreamDelegate<File> {
 	public abstract class FileFlexoIODelegateImpl extends FlexoIOStreamDelegateImpl<File>implements FileFlexoIODelegate {
 
 		private final Logger logger = Logger.getLogger(FileFlexoIODelegateImpl.class.getPackage().getName());
+
+		private static final FileSystemResourceLocatorImpl FS_RESOURCE_LOCATOR = new FileSystemResourceLocatorImpl();
 
 		public static FileFlexoIODelegate makeFileFlexoIODelegate(File file, ModelFactory factory) {
 			FileFlexoIODelegate fileIODelegate = factory.newInstance(FileFlexoIODelegate.class);
@@ -278,19 +282,14 @@ public interface FileFlexoIODelegate extends FlexoIOStreamDelegate<File> {
 			// TODO Auto-generated method stub
 		}
 
-		/*@Override
-		public Resource getSerializationArtefactAsResource(File serializationArtefact) {
-			try {
-				return new FileResourceImpl(serializationArtefact);
-			} catch (MalformedURLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (LocatorNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+		@Override
+		public FileResourceImpl locateResourceRelativeToParentPath(String relativePathName) {
+			File currentFile = new File(getSerializationArtefact().getParentFile(), relativePathName);
+			if (currentFile.exists()) {
+				return FS_RESOURCE_LOCATOR.retrieveResource(currentFile);
 			}
 			return null;
-		}*/
+		}
 
 	}
 

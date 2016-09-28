@@ -16,6 +16,8 @@ import org.openflexo.model.annotations.Import;
 import org.openflexo.model.annotations.Imports;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.factory.ModelFactory;
+import org.openflexo.rm.FileResourceImpl;
+import org.openflexo.rm.FileSystemResourceLocatorImpl;
 
 @ModelEntity
 @Imports({ @Import(DirectoryBasedFlexoIOGitDelegate.class) })
@@ -37,6 +39,8 @@ public interface FlexoIOGitDelegate extends FileFlexoIODelegate {
 	// @Implementation
 	// TODO: why this does not extends FileFlexoIODelegateImpl ????
 	public abstract class FlexoIOGitDelegateImpl extends FlexoIOStreamDelegateImpl<File>implements FlexoIOGitDelegate {
+
+		private static final FileSystemResourceLocatorImpl FS_RESOURCE_LOCATOR = new FileSystemResourceLocatorImpl();
 
 		private File file;
 		private ObjectId gitObjectId;
@@ -151,6 +155,15 @@ public interface FlexoIOGitDelegate extends FileFlexoIODelegate {
 		@Override
 		public Git getGit() {
 			// return git;
+			return null;
+		}
+
+		@Override
+		public FileResourceImpl locateResourceRelativeToParentPath(String relativePathName) {
+			File currentFile = new File(getSerializationArtefact().getParentFile(), relativePathName);
+			if (currentFile.exists()) {
+				return FS_RESOURCE_LOCATOR.retrieveResource(currentFile);
+			}
 			return null;
 		}
 

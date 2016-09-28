@@ -97,13 +97,13 @@ import org.openflexo.foundation.fml.rt.editionaction.MatchingCriteria;
 import org.openflexo.foundation.fml.rt.editionaction.SelectFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.SelectVirtualModelInstance;
 import org.openflexo.foundation.resource.PamelaResourceImpl.IgnoreLoadingEdits;
+import org.openflexo.foundation.resource.RelativePathResourceConverter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.model.ModelContext;
 import org.openflexo.model.ModelContextLibrary;
 import org.openflexo.model.converter.DataBindingConverter;
 import org.openflexo.model.converter.FlexoVersionConverter;
-import org.openflexo.model.converter.RelativePathResourceConverter;
 import org.openflexo.model.converter.TypeConverter;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.model.factory.EditingContext;
@@ -148,7 +148,7 @@ public class FMLModelFactory extends FGEModelFactoryImpl implements PamelaResour
 		addConverter(FGEUtils.STEPPED_DIMENSION_CONVERTER);
 		if (abstractVirtualModelResource != null) {
 			this.abstractVirtualModelResource = abstractVirtualModelResource;
-			addConverter(new RelativePathResourceConverter(abstractVirtualModelResource.getFlexoIODelegate().getParentPath()));
+			addConverter(new RelativePathResourceConverter(abstractVirtualModelResource.getFlexoIODelegate()));
 		}
 		for (TechnologyAdapter ta : taService.getTechnologyAdapters()) {
 			ta.initFMLModelFactory(this);

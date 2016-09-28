@@ -58,9 +58,9 @@ import org.openflexo.foundation.doc.FlexoDocFragment.FragmentConsistencyExceptio
 import org.openflexo.foundation.doc.TextSelection.TextMarker;
 import org.openflexo.foundation.doc.rm.FlexoDocumentResource;
 import org.openflexo.foundation.resource.PamelaResourceImpl.IgnoreLoadingEdits;
+import org.openflexo.foundation.resource.RelativePathResourceConverter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.model.ModelContext;
-import org.openflexo.model.converter.RelativePathResourceConverter;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.model.factory.EditingContext;
 import org.openflexo.model.factory.ModelFactory;
@@ -87,7 +87,7 @@ public abstract class DocumentFactory<D extends FlexoDocument<D, TA>, TA extends
 		this.resource = resource;
 		setEditingContext(editingContext);
 		if (resource != null) {
-			addConverter(new RelativePathResourceConverter(resource.getFlexoIODelegate().getParentPath()));
+			addConverter(new RelativePathResourceConverter(resource.getFlexoIODelegate()));
 		}
 	}
 
