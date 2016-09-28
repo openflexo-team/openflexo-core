@@ -52,12 +52,4 @@ public class TechnologyAdapterGlobalRepository extends TechnologyAdapterResource
 		super(adapter, resourceCenter);
 	}
 
-	// private static final String DEFAULT_BASE_URI = "http://www.openflexo.org/DiagramTechnologyAdapter/Diagrams";
-
-	@Override
-	public String getDefaultBaseURI() {
-		// return DEFAULT_BASE_URI;
-		return null;
-	}
-
 }

@@ -180,9 +180,4 @@ public class ViewLibrary<I> extends ViewRepository<I> {
 		return null;
 	}
 
-	@Override
-	public String getDefaultBaseURI() {
-		return getResourceCenter().getDefaultBaseURI() + "/" + VIEWS;
-	}
-
 }
