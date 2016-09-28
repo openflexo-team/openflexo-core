@@ -41,6 +41,8 @@ package org.openflexo.foundation.resource;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.StringTokenizer;
+import java.util.logging.Logger;
 
 import org.openflexo.foundation.action.NotImplementedException;
 import org.openflexo.model.annotations.Getter;
@@ -70,6 +72,8 @@ public interface InJarFlexoIODelegate extends FlexoIOStreamDelegate<InJarResourc
 	public void setInJarResource(InJarResourceImpl inJarResource);
 
 	public abstract class InJarFlexoIODelegateImpl extends FlexoIOStreamDelegateImpl<InJarResourceImpl>implements InJarFlexoIODelegate {
+
+		protected static final Logger logger = Logger.getLogger(InJarFlexoIODelegateImpl.class.getPackage().getName());
 
 		public static InJarFlexoIODelegate makeInJarFlexoIODelegate(InJarResourceImpl inJarResource, ModelFactory factory) {
 			InJarFlexoIODelegate delegate = factory.newInstance(InJarFlexoIODelegate.class);
@@ -155,6 +159,33 @@ public interface InJarFlexoIODelegate extends FlexoIOStreamDelegate<InJarResourc
 		public Resource getSerializationArtefactAsResource(InJarResourceImpl serializationArtefact) {
 			return serializationArtefact;
 		}*/
+
+		@Override
+		public InJarResourceImpl locateResourceRelativeToParentPath(String relativePathName) {
+			InJarResourceImpl current = getSerializationArtefact().getContainer();
+			StringTokenizer st = new StringTokenizer(relativePathName, "/\\");
+			while (st.hasMoreElements()) {
+				String pathElement = st.nextToken();
+				if (pathElement.equals("..")) {
+					current = current.getContainer();
+				}
+				else {
+					boolean foundChild = false;
+					for (InJarResourceImpl child : current.getContents()) {
+						if (child.getName().equals(pathElement)) {
+							current = child;
+							foundChild = true;
+							break;
+						}
+					}
+					if (!foundChild) {
+						logger.warning("Could not find contained path element " + pathElement + " for jar entry " + current);
+						return null;
+					}
+				}
+			}
+			return current;
+		}
 
 	}
 

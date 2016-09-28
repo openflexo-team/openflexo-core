@@ -242,6 +242,10 @@ public class RepositoryFolder<R extends FlexoResource<?>, I> extends DefaultFlex
 	}
 
 	public String getDisplayableName() {
+		if (isRootFolder()) {
+			return (StringUtils.isNotEmpty(getRepositoryContext()) ? getRepositoryContext() + " " : "")
+					+ getResourceRepository().getDefaultBaseURI();
+		}
 		return (StringUtils.isNotEmpty(getRepositoryContext()) ? getRepositoryContext() + " " : "") + getName();
 	}
 

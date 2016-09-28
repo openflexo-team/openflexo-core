@@ -2,7 +2,7 @@
  * 
  * Copyright (c) 2014, Openflexo
  * 
- * This file is part of Flexodiagram, a component of the software infrastructure 
+ * This file is part of Pamela-core, a component of the software infrastructure 
  * developed at Openflexo.
  * 
  * 
@@ -36,20 +36,42 @@
  * 
  */
 
-package org.openflexo.foundation.technologyadapter;
+package org.openflexo.foundation.resource;
 
-import org.openflexo.foundation.resource.FlexoResourceCenter;
+import java.util.logging.Level;
 
-/**
- * The global resource repository for Diagram Technology Adapter
- * 
- * @author sylvain
- * 
- */
-public class TechnologyAdapterGlobalRepository extends TechnologyAdapterResourceRepository {
+import org.openflexo.model.StringConverterLibrary.Converter;
+import org.openflexo.model.factory.ModelFactory;
+import org.openflexo.rm.Resource;
 
-	public TechnologyAdapterGlobalRepository(TechnologyAdapter adapter, FlexoResourceCenter<?> resourceCenter) {
-		super(adapter, resourceCenter);
+public class RelativePathResourceConverter extends Converter<Resource> {
+
+	private static final java.util.logging.Logger logger = org.openflexo.logging.FlexoLogger
+			.getLogger(RelativePathResourceConverter.class.getPackage().getName());
+
+	// private final String relativePath;
+	private final FlexoIODelegate<?> ioDelegate;
+
+	public RelativePathResourceConverter(FlexoIODelegate<?> ioDelegate) {
+		super(Resource.class);
+		this.ioDelegate = ioDelegate;
 	}
 
+	@Override
+	public Resource convertFromString(String value, ModelFactory factory) {
+
+		Resource resourceloc = ioDelegate.locateResourceRelativeToParentPath(value);
+
+		// Resource resourceloc = ResourceLocator.locateResource(ioDelegate.getParentPath() + "/" + value);
+
+		if (logger.isLoggable(Level.FINE)) {
+			logger.fine("********* convertFromString " + value + " return " + resourceloc.toString());
+		}
+		return resourceloc;
+	}
+
+	@Override
+	public String convertToString(Resource value) {
+		return value.makePathRelativeToString(ioDelegate.getParentPath());
+	}
 }

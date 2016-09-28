@@ -81,7 +81,7 @@ public class TestDefaultRCServiceLoadRCInClassPath extends OpenflexoTestCase {
 
 		log("test0InstantiateResourceCenter()");
 
-		instanciateTestServiceManager(true, FMLTechnologyAdapter.class, FMLRTTechnologyAdapter.class);
+		instanciateTestServiceManager(FMLTechnologyAdapter.class, FMLRTTechnologyAdapter.class);
 
 		rcService = (DefaultResourceCenterService) serviceManager.getResourceCenterService();
 

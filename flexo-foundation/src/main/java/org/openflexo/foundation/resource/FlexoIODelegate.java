@@ -48,6 +48,7 @@ import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.PropertyIdentifier;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.factory.AccessibleProxyObject;
+import org.openflexo.rm.Resource;
 
 /**
  * Flexo IO Delegate makes a link between a flexo resource and a serialization artefact.
@@ -138,4 +139,12 @@ public interface FlexoIODelegate<I> extends AccessibleProxyObject {
 	 * @return
 	 */
 	public ClassLoader retrieveClassLoader();
+
+	/**
+	 * Used to retrieve a resource stored in parent serialization artefact, and identified by a relativePathName
+	 * 
+	 * @param relativePathName
+	 * @return
+	 */
+	public Resource locateResourceRelativeToParentPath(String relativePathName);
 }

@@ -57,8 +57,6 @@ public class ViewPointRepository<I> extends TechnologyAdapterResourceRepository<
 
 	private static final Logger logger = Logger.getLogger(ModelRepository.class.getPackage().getName());
 
-	private static final String DEFAULT_BASE_URI = "http://www.openflexo.org/ViewPoints";
-
 	private final FlexoServiceManager serviceManager;
 
 	public ViewPointRepository(FMLTechnologyAdapter adapter, FlexoResourceCenter<I> resourceCenter) {
@@ -70,8 +68,4 @@ public class ViewPointRepository<I> extends TechnologyAdapterResourceRepository<
 		return serviceManager.getViewPointLibrary();
 	}
 
-	@Override
-	public String getDefaultBaseURI() {
-		return DEFAULT_BASE_URI;
-	}
 }

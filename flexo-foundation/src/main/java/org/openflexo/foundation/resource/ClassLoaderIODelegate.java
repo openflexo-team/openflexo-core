@@ -45,6 +45,7 @@ import org.openflexo.foundation.action.NotImplementedException;
 import org.openflexo.model.annotations.Implementation;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.XMLElement;
+import org.openflexo.rm.Resource;
 
 /**
  * AN I/O delegate plugged on a ClassLoader
@@ -131,6 +132,12 @@ public interface ClassLoaderIODelegate extends FlexoIODelegate<ClassLoader> {
 		@Override
 		public ClassLoader retrieveClassLoader() {
 			return getSerializationArtefact();
+		}
+
+		@Override
+		public Resource locateResourceRelativeToParentPath(String relativePathName) {
+			// Not applicable
+			return null;
 		}
 
 	}
