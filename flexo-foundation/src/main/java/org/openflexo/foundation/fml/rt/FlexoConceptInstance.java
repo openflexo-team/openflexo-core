@@ -714,6 +714,7 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 					addToActors(actorReference);
 				}
 
+				getResourceData().setIsModified();
 				setIsModified();
 
 				setChanged();
