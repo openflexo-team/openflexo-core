@@ -97,13 +97,13 @@ import org.openflexo.foundation.fml.rt.editionaction.MatchingCriteria;
 import org.openflexo.foundation.fml.rt.editionaction.SelectFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.SelectVirtualModelInstance;
 import org.openflexo.foundation.resource.PamelaResourceImpl.IgnoreLoadingEdits;
-import org.openflexo.foundation.resource.RelativePathResourceConverter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.model.ModelContext;
 import org.openflexo.model.ModelContextLibrary;
 import org.openflexo.model.converter.DataBindingConverter;
 import org.openflexo.model.converter.FlexoVersionConverter;
+import org.openflexo.model.converter.RelativePathResourceConverter;
 import org.openflexo.model.converter.TypeConverter;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.model.factory.EditingContext;
@@ -124,7 +124,7 @@ public class FMLModelFactory extends FGEModelFactoryImpl implements PamelaResour
 
 	protected static final Logger logger = Logger.getLogger(FMLModelFactory.class.getPackage().getName());
 
-	private AbstractVirtualModelResource<?> abstractVirtualModelResource;
+	private final AbstractVirtualModelResource<?> abstractVirtualModelResource;
 	private final FlexoServiceManager serviceManager;
 
 	private IgnoreLoadingEdits ignoreHandler = null;
@@ -134,6 +134,8 @@ public class FMLModelFactory extends FGEModelFactoryImpl implements PamelaResour
 
 	// TODO: the factory should be instantiated and managed by the ProjectNatureService, which should react to the registering
 	// of a new TA, and which is responsible to update the VirtualModelFactory of all VirtualModelResource
+
+	private RelativePathResourceConverter relativePathResourceConverter;
 
 	public FMLModelFactory(AbstractVirtualModelResource<?> abstractVirtualModelResource, FlexoServiceManager serviceManager)
 			throws ModelDefinitionException {
@@ -146,9 +148,12 @@ public class FMLModelFactory extends FGEModelFactoryImpl implements PamelaResour
 		addConverter(new FlexoVersionConverter());
 		addConverter(FGEUtils.POINT_CONVERTER);
 		addConverter(FGEUtils.STEPPED_DIMENSION_CONVERTER);
-		if (abstractVirtualModelResource != null) {
-			this.abstractVirtualModelResource = abstractVirtualModelResource;
-			addConverter(new RelativePathResourceConverter(abstractVirtualModelResource.getFlexoIODelegate()));
+		addConverter(relativePathResourceConverter = new RelativePathResourceConverter(null));
+		this.abstractVirtualModelResource = abstractVirtualModelResource;
+		if (abstractVirtualModelResource != null && abstractVirtualModelResource.getFlexoIODelegate() != null
+				&& abstractVirtualModelResource.getFlexoIODelegate().getSerializationArtefactAsResource() != null) {
+			relativePathResourceConverter.setContainerResource(
+					abstractVirtualModelResource.getFlexoIODelegate().getSerializationArtefactAsResource().getContainer());
 		}
 		for (TechnologyAdapter ta : taService.getTechnologyAdapters()) {
 			ta.initFMLModelFactory(this);

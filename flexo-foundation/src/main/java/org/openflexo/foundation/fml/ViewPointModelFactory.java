@@ -40,10 +40,10 @@ package org.openflexo.foundation.fml;
 
 import org.openflexo.foundation.DefaultPamelaResourceModelFactory;
 import org.openflexo.foundation.fml.rm.ViewPointResource;
-import org.openflexo.foundation.resource.RelativePathResourceConverter;
 import org.openflexo.model.ModelContextLibrary;
 import org.openflexo.model.converter.DataBindingConverter;
 import org.openflexo.model.converter.FlexoVersionConverter;
+import org.openflexo.model.converter.RelativePathResourceConverter;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.model.factory.EditingContext;
 import org.openflexo.model.factory.ModelFactory;
@@ -55,6 +55,7 @@ import org.openflexo.model.factory.ModelFactory;
  * @author sylvain
  * 
  */
+@Deprecated
 public class ViewPointModelFactory extends DefaultPamelaResourceModelFactory<ViewPointResource> {
 
 	public ViewPointModelFactory(ViewPointResource viewPointResource, EditingContext editingContext) throws ModelDefinitionException {
@@ -63,7 +64,8 @@ public class ViewPointModelFactory extends DefaultPamelaResourceModelFactory<Vie
 		addConverter(new DataBindingConverter());
 		addConverter(new FlexoVersionConverter());
 		if (viewPointResource != null) {
-			addConverter(new RelativePathResourceConverter(viewPointResource.getFlexoIODelegate()));
+			addConverter(new RelativePathResourceConverter(
+					viewPointResource.getFlexoIODelegate().getSerializationArtefactAsResource().getContainer()));
 		}
 	}
 

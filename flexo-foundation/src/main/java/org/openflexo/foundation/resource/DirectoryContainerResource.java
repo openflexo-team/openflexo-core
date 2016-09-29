@@ -43,6 +43,7 @@ import javax.xml.bind.annotation.XmlAttribute;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.Setter;
+import org.openflexo.model.converter.RelativePathResourceConverter;
 import org.openflexo.rm.Resource;
 
 /**
@@ -69,7 +70,7 @@ public interface DirectoryContainerResource<RD extends ResourceData<RD>> extends
 	 * @return
 	 */
 	@Deprecated
-	@Getter(DIRECTORY)
+	@Getter(value = DIRECTORY, ignoreType = true)
 	@XmlAttribute
 	public Resource getDirectory();
 

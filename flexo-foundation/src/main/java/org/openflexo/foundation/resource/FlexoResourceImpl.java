@@ -512,9 +512,14 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 		return null;
 	}
 
-	// TODO: check this
 	@Override
-	public String makePathRelativeToString(String pathRelative) {
+	public String computeRelativePath(Resource resource) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Resource locateResource(String relativePathName) {
 		// TODO Auto-generated method stub
 		return null;
 	}

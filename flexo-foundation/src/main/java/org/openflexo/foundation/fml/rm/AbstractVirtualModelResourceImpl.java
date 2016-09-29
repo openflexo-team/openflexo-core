@@ -41,7 +41,6 @@ package org.openflexo.foundation.fml.rm;
 import java.io.FileNotFoundException;
 import java.util.logging.Logger;
 
-import org.apache.commons.io.FilenameUtils;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.AbstractVirtualModel;
 import org.openflexo.foundation.fml.FMLModelFactory;
@@ -51,16 +50,11 @@ import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.resource.CannotRenameException;
 import org.openflexo.foundation.resource.DirectoryBasedFlexoIODelegate;
 import org.openflexo.foundation.resource.FileFlexoIODelegate;
-import org.openflexo.foundation.resource.InJarFlexoIODelegate;
 import org.openflexo.foundation.resource.PamelaResourceImpl;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.model.factory.AccessibleProxyObject;
-import org.openflexo.rm.BasicResourceImpl;
-import org.openflexo.rm.ClasspathResourceLocatorImpl;
-import org.openflexo.rm.FileSystemResourceLocatorImpl;
-import org.openflexo.rm.InJarResourceImpl;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
 
@@ -132,7 +126,12 @@ public abstract class AbstractVirtualModelResourceImpl<VM extends AbstractVirtua
 
 	@Override
 	public Resource getDirectory() {
-		if (getFlexoIODelegate() instanceof FileFlexoIODelegate) {
+		if (getFlexoIODelegate() != null && getFlexoIODelegate().getSerializationArtefactAsResource() != null) {
+			return getFlexoIODelegate().getSerializationArtefactAsResource().getContainer();
+		}
+		return null;
+
+		/*if (getFlexoIODelegate() instanceof FileFlexoIODelegate) {
 			String parentPath = getDirectoryPath();
 			if (ResourceLocator.locateResource(parentPath) == null) {
 				FileSystemResourceLocatorImpl.appendDirectoryToFileSystemResourceLocator(parentPath);
@@ -145,7 +144,7 @@ public abstract class AbstractVirtualModelResourceImpl<VM extends AbstractVirtua
 			BasicResourceImpl parent = ((ClasspathResourceLocatorImpl) (resource.getLocator())).getJarResourcesList().get(parentPath);
 			return parent;
 		}
-		return null;
+		return null;*/
 	}
 
 	public String getDirectoryPath() {
