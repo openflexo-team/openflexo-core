@@ -135,8 +135,7 @@ public interface ClassLoaderIODelegate extends FlexoIODelegate<ClassLoader> {
 		}
 
 		@Override
-		public Resource locateResourceRelativeToParentPath(String relativePathName) {
-			// Not applicable
+		public Resource getSerializationArtefactAsResource() {
 			return null;
 		}
 

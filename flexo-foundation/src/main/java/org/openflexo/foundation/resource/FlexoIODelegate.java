@@ -84,7 +84,7 @@ public interface FlexoIODelegate<I> extends AccessibleProxyObject {
 	@Setter(SERIALIZATION_ARTEFACT)
 	public void setSerializationArtefact(I artefact);
 
-	// public Resource getSerializationArtefactAsResource(I serializationArtefact);
+	public Resource getSerializationArtefactAsResource();
 
 	/**
 	 * Indicates whether this resource can be edited or not. Returns <code>true</code> if the resource cannot be edited, else returns
@@ -146,5 +146,5 @@ public interface FlexoIODelegate<I> extends AccessibleProxyObject {
 	 * @param relativePathName
 	 * @return
 	 */
-	public Resource locateResourceRelativeToParentPath(String relativePathName);
+	// public Resource locateResourceRelativeToParentPath(String relativePathName);
 }
