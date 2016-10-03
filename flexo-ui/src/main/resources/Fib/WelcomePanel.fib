@@ -1,121 +1,121 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Panel id="0" darkLevel="0" backgroundColor="245,255,246"
-	useScrollBar="false" protectContent="false" opaque="true" layout="border"
+<Panel id="0" backgroundColor="245,255,246" borderLeft="0"
+	sizeAdjustment="OriginalSize" opaque="true"
 	controllerClassName="org.openflexo.view.controller.WelcomePanelController"
-	border="empty" trackViewPortWidth="true" dataClassName="org.openflexo.ApplicationData"
-	trackViewPortHeight="true">
-	<LocalizedDictionary id="1" />
-	<Panel id="2" darkLevel="0" useScrollBar="false" protectContent="false"
-		layout="gridbag" border="empty" trackViewPortWidth="true" index="0"
-		constraints="border(index=0;location=north)" borderTitle="Panel"
-		trackViewPortHeight="true">
-		<Image id="3" manageDynamicModel="false" useScrollBar="false"
-			data="data.openflexoIcon.image" sizeAdjustment="AdjustDimensions"
-			imageHeight="100" index="0" localize="true" align="left"
-			constraints="gridbag(anchor=center;fill=none;gridHeight=0;gridWidth=1;gridX=-1;gridY=-1;index=0;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=20;padX=0;padY=0;weightX=0.0;weightY=0.0)"
-			readOnly="false" imageWidth="100" />
-		<Image id="4" manageDynamicModel="false" useScrollBar="false"
-			data="data.openflexoTextIcon.image" sizeAdjustment="OriginalSize"
-			imageHeight="32" index="1" localize="true" align="left"
-			constraints="gridbag(anchor=west;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=46;padX=0;padY=0;weightX=0.0;weightY=0.0)"
-			readOnly="false" imageWidth="32" />
-		<Label id="5" manageDynamicModel="false" useScrollBar="false"
-			data="data.businessName" foregroundColor="51,51,51" index="2"
-			localize="false" font="LucidaGrande-Bold,0,14" align="left"
-			constraints="gridbag(anchor=west;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=2;insetsBottom=0;insetsLeft=6;insetsRight=0;insetsTop=-6;padX=0;padY=0;weightX=0.0;weightY=0.0)"
-			label="label" readOnly="false" />
-		<Label id="6" manageDynamicModel="false" useScrollBar="false"
-			data="data.version" index="3" localize="false" font="Dialog,2,11"
+	borderRight="0" border="empty" trackViewPortWidth="true" align="left"
+	borderBottom="0" borderTop="0" trackViewPortHeight="true" layout="border">
+	<Panel id="1" borderLeft="0" sizeAdjustment="OriginalSize"
+		borderRight="0" border="empty" trackViewPortWidth="true" index="0"
+		align="left" constraints="border(index=0;location=north)"
+		borderBottom="0" borderTitle="Panel" borderTop="0"
+		trackViewPortHeight="true" layout="gridbag" name="FIBPanel">
+		<Image id="2" sizeAdjustment="AdjustDimensions" name="Image"
+			data="data.openflexoIcon.image" imageHeight="100" index="0" localize="true"
 			align="left"
+			constraints="gridbag(anchor=center;fill=none;gridHeight=0;gridWidth=1;gridX=-1;gridY=-1;index=0;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=20;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+			imageWidth="100" />
+		<Image id="3" sizeAdjustment="OriginalSize" name="Image2"
+			data="data.openflexoTextIcon.image" imageHeight="32" index="1"
+			localize="true" align="left"
+			constraints="gridbag(anchor=west;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=46;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+			imageWidth="32" />
+		<Label id="4" name="Label" data="data.businessName"
+			foregroundColor="51,51,51" index="2" font="LucidaGrande-Bold,0,14"
+			align="left"
+			constraints="gridbag(anchor=west;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=2;insetsBottom=0;insetsLeft=6;insetsRight=0;insetsTop=-6;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+			label="label" />
+		<Label id="5" name="Label2" data="data.version" index="3"
+			font="Dialog,2,11" align="left"
 			constraints="gridbag(anchor=west;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=3;insetsBottom=0;insetsLeft=5;insetsRight=0;insetsTop=-4;padX=0;padY=0;weightX=0.0;weightY=0.0)"
-			label="label" readOnly="false" />
+			label="label" />
 	</Panel>
-	<Panel id="7" darkLevel="0" useScrollBar="false" protectContent="false"
-		layout="gridbag" border="empty" trackViewPortWidth="true" index="0"
-		constraints="border(index=0;location=center)" borderTitle="Panel"
-		trackViewPortHeight="true">
-		<List id="8" manageDynamicModel="true" layoutOrientation="horizontal"
-			selectionMode="MultipleIntervalSelection" boundToSelectionManager="false"
-			index="0" localize="true"
+	<Panel id="6" borderLeft="0" sizeAdjustment="OriginalSize"
+		borderRight="0" border="empty" trackViewPortWidth="true" index="0"
+		align="left" constraints="border(index=0;location=center)"
+		borderBottom="0" borderTitle="Panel" borderTop="0"
+		trackViewPortHeight="true" layout="gridbag" name="FIBPanel2">
+		<List id="7" visible="(data.availableModules.size &gt; 1)"
+			manageDynamicModel="true" layoutOrientation="horizontal"
+			selectionMode="MultipleIntervalSelection" index="0" localize="true"
 			constraints="gridbag(anchor=center;fill=none;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=0;insetsBottom=13;insetsLeft=0;insetsRight=0;insetsTop=30;location=north;padX=0;padY=0;weightX=0.0;weightY=0.0)"
-			visibleRowCount="1" createNewRowOnClick="false" format="object.name"
-			rowHeight="32" showText="false" iteratorClassName="org.openflexo.module.Module"
-			showIcon="true" useScrollBar="false" selected="data.favoriteModule"
-			autoSelectFirstRow="true" name="ModuleList" icon="object.mediumIcon"
-			list="data.availableModules" readOnly="false" />
-		<Image id="9" manageDynamicModel="false" useScrollBar="false"
-			data="ModuleList.selected.bigIcon.image" height="64" sizeAdjustment="OriginalSize"
-			imageHeight="32" index="1" localize="true" width="64" align="left"
+			visibleRowCount="1" format="object.name" rowHeight="32" showText="false"
+			iteratorClassName="org.openflexo.module.Module" showIcon="true"
+			selected="data.favoriteModule" autoSelectFirstRow="true" name="ModuleList"
+			icon="object.mediumIcon" list="data.availableModules" />
+		<Image id="8" height="64" sizeAdjustment="OriginalSize" name="Image"
+			data="data.favoriteModule.bigIcon.image" imageHeight="32" index="1"
+			localize="true" width="64" align="left"
 			constraints="gridbag(anchor=center;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=1;insetsBottom=0;insetsLeft=20;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)"
-			readOnly="false" imageWidth="32" />
-		<Label id="10" manageDynamicModel="false" useScrollBar="false"
-			data="ModuleList.selected.name" index="2" localize="true"
-			font="LucidaGrande-Bold,1,16" align="left"
+			imageWidth="32" />
+		<Label id="9" name="Label" data="data.favoriteModule.name"
+			index="2" localize="true" font="LucidaGrande-Bold,1,16" align="left"
 			constraints="gridbag(anchor=west;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=2;insetsBottom=14;insetsLeft=3;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=1.0;weightY=0.0)"
-			label="label" readOnly="false" />
-		<Panel id="11" darkLevel="0" useScrollBar="false"
-			protectContent="false" height="96" layout="border" border="empty"
-			trackViewPortWidth="true" index="4" width="400"
+			label="label" />
+		<Panel id="10" borderLeft="0" height="96" sizeAdjustment="OriginalSize"
+			borderRight="0" border="empty" trackViewPortWidth="true" index="4"
+			align="left" width="400"
 			constraints="gridbag(anchor=north_west;fill=both;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=3;insetsBottom=0;insetsLeft=20;insetsRight=20;insetsTop=0;padX=0;padY=0;weightX=1.0;weightY=0)"
-			borderTitle="Panel" trackViewPortHeight="true">
-			<EditorPane id="12" verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED"
-				manageDynamicModel="false" useScrollBar="true"
-				data="ModuleList.selected.hTMLDescription" contentType="HTML"
-				opaque="false" index="3" localize="false" font="Arial,0,11"
+			borderBottom="0" borderTitle="Panel" borderTop="0"
+			trackViewPortHeight="true" layout="border" name="FIBPanel">
+			<EditorPane id="11" verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED"
+				useScrollBar="true" contentType="HTML" opaque="false" name="EditorPane"
+				data="data.favoriteModule.hTMLDescription" index="3" font="Arial,0,11"
 				constraints="border(anchor=north_west;fill=both;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=3;insetsBottom=0;insetsLeft=20;insetsRight=20;insetsTop=0;location=center;padX=0;padY=0;weightX=1.0;weightY=0)"
-				readOnly="true" validateOnReturn="false" horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_NEVER" />
+				readOnly="true" horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_NEVER" />
 		</Panel>
-		<Table id="13" showFooter="false" manageDynamicModel="true"
-			doubleClickAction="controller.openProject(RecentProjectTable.selected,ModuleList.selected)"
-			selectionMode="MultipleIntervalSelection" boundToSelectionManager="false"
+		<Table id="12" manageDynamicModel="true"
+			doubleClickAction="controller.openProject(RecentProjectTable.selected,data.favoriteModule)"
+			selectionMode="MultipleIntervalSelection" data="data.lastOpenedProjects"
 			index="4" localize="true"
 			constraints="gridbag(anchor=center;fill=both;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=4;insetsBottom=20;insetsLeft=20;insetsRight=20;insetsTop=20;padX=0;padY=0;weightX=0.0;weightY=1.0)"
-			visibleRowCount="5" createNewRowOnClick="false" rowHeight="18"
-			iteratorClassName="java.io.File" useScrollBar="false"
-			data="data.lastOpenedProjects" autoSelectFirstRow="false"
-			name="RecentProjectTable" readOnly="false">
-			<IconColumn id="14" data="data.projectIcon" displayTitle="false"
-				title="icon" name="icon" columnWidth="20" resizable="false" />
-			<LabelColumn id="15" data="iterator.name" displayTitle="true"
+			visibleRowCount="5" rowHeight="18" iteratorClassName="java.io.File"
+			backgroundNonSelectionColor="255,255,255" name="RecentProjectTable"
+			backgroundSecondarySelectionColor="178,215,255">
+			<IconColumn id="13" data="data.projectIcon" displayTitle="false"
+				title="icon" name="icon" columnWidth="20" resizable="false"
+				showIcon="false" />
+			<LabelColumn id="14" data="iterator.name" displayTitle="true"
 				title="project" name="label" columnWidth="100" resizable="true"
-				tooltip="iterator.name" />
-			<LabelColumn id="16" data="iterator.absolutePath"
+				showIcon="false" tooltip="iterator.name" />
+			<LabelColumn id="15" data="iterator.absolutePath"
 				displayTitle="true" title="path" name="label" columnWidth="300"
-				resizable="true" tooltip="iterator.absolutePath" />
+				resizable="true" showIcon="false" tooltip="iterator.absolutePath" />
 		</Table>
 	</Panel>
-	<Panel id="17" darkLevel="0" useScrollBar="false" protectContent="false"
-		layout="border" border="empty" trackViewPortWidth="true" index="0"
-		constraints="border(index=0;location=south)" borderTitle="Panel"
-		trackViewPortHeight="true">
-		<Panel id="18" darkLevel="0" vGap="10" useScrollBar="false"
-			protectContent="false" hGap="5" layout="flow" border="empty"
-			flowAlignment="CENTER" trackViewPortWidth="true" constraints="border(location=south)"
-			borderTitle="Panel" trackViewPortHeight="true">
-			<Panel id="19" cols="4" darkLevel="0" vGap="5" useScrollBar="false"
-				protectContent="false" hGap="5" layout="grid" border="empty"
-				flowAlignment="LEADING" trackViewPortWidth="true" constraints="flow()"
-				rows="1" trackViewPortHeight="true">
-				<Button id="20" manageDynamicModel="false" useScrollBar="false"
-					enable="(ModuleList.selected != null)" buttonType="Trigger"
-					name="NewProjectButton" action="controller.newProject(ModuleList.selected)"
-					localize="true" constraints="grid(x=0;y=0)" label="new_project"
-					readOnly="false" />
-				<Button id="21" manageDynamicModel="false" useScrollBar="false"
-					enable="((ModuleList.selected != null) &amp; (RecentProjectTable.selected != null))"
+	<Panel id="16" borderLeft="0" sizeAdjustment="OriginalSize"
+		borderRight="0" border="empty" trackViewPortWidth="true" index="0"
+		align="left" constraints="border(index=0;location=south)"
+		borderBottom="0" borderTitle="Panel" borderTop="0"
+		trackViewPortHeight="true" layout="border" name="FIBPanel3">
+		<Panel id="17" vGap="10" borderLeft="0" hGap="5" sizeAdjustment="OriginalSize"
+			borderRight="0" border="empty" trackViewPortWidth="true" align="left"
+			constraints="border(location=south)" borderBottom="0" borderTitle="Panel"
+			borderTop="0" trackViewPortHeight="true" layout="flow" name="FIBPanel2"
+			flowAlignment="CENTER">
+			<Panel id="18" cols="4" vGap="5" borderLeft="0" hGap="5"
+				sizeAdjustment="OriginalSize" borderRight="0" border="empty"
+				trackViewPortWidth="true" align="left" constraints="flow()"
+				borderBottom="0" rows="1" borderTop="0" trackViewPortHeight="true"
+				layout="grid" name="FIBPanel" flowAlignment="LEADING">
+				<Button id="19" enable="(data.favoriteModule != null)"
+					buttonType="Trigger" name="NewProjectButton"
+					action="controller.newProject(data.favoriteModule)" localize="true"
+					constraints="grid(x=0;y=0)" label="new_project" />
+				<Button id="20"
+					enable="((data.favoriteModule != null) &amp; (RecentProjectTable.selected != null))"
 					buttonType="Trigger" name="OpenProjectButton"
-					action="controller.openProject(RecentProjectTable.selected,ModuleList.selected)"
-					localize="true" constraints="grid(x=1;y=0)" label="open_project"
-					readOnly="false" />
-				<Button id="22" manageDynamicModel="false" useScrollBar="false"
-					enable="(ModuleList.selected != null)" buttonType="Trigger"
-					name="OpenModuleButton" action="controller.openModule(ModuleList.selected)"
-					localize="true" constraints="grid(x=2;y=0)" label="open_module"
-					readOnly="false" />
-				<Button id="23" manageDynamicModel="false" useScrollBar="false"
-					buttonType="Trigger" name="ExitButton" action="controller.exit()"
-					localize="true" constraints="grid(x=3;y=0)" label="Exit" readOnly="false" />
+					action="controller.openProject(RecentProjectTable.selected,data.favoriteModule)"
+					localize="true" constraints="grid(x=1;y=0)" label="open_project" />
+				<Button id="21" enable="(data.favoriteModule != null)"
+					buttonType="Trigger" name="OpenModuleButton"
+					action="controller.openModule(data.favoriteModule)" localize="true"
+					constraints="grid(x=2;y=0)" label="open_module" />
+				<Button id="22" buttonType="Trigger" name="ExitButton"
+					action="controller.exit()" localize="true" constraints="grid(x=3;y=0)"
+					label="Exit" />
 			</Panel>
 		</Panel>
 	</Panel>
+	<FIBVariable id="23" name="data" type="org.openflexo.ApplicationData" />
+	<LocalizedDictionary id="24" />
 </Panel>
