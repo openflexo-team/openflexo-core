@@ -160,8 +160,7 @@ public class Flexo {
 	}
 
 	@SuppressWarnings("restriction")
-	protected
-	static void registerShutdownHook() {
+	protected static void registerShutdownHook() {
 		try {
 			Class.forName("sun.misc.Signal");
 			Class.forName("sun.misc.SignalHandler");
@@ -197,6 +196,10 @@ public class Flexo {
 	public static void main(final String[] args) {
 		// String userTypeName = null;
 		boolean noSplash = false;
+
+		boolean applicationLocales = false;
+		String localesRelativePath = "";
+
 		if (args.length > 0) {
 			// ATTENTION: Argument cannot start with "-D", nor start with "-X", nor start with "-agentlib" since they are reserved keywords
 			// for JVM
@@ -207,8 +210,14 @@ public class Flexo {
 				if (args[i].equals("-nosplash")) {
 					noSplash = true;
 				}
-				else if (args[i].equalsIgnoreCase("DEV")) {
+				else if (args[i].equalsIgnoreCase("-dev") || args[i].equalsIgnoreCase("DEV")) {
 					isDev = true;
+				}
+				else if (args[i].equalsIgnoreCase("-locales")) {
+					applicationLocales = true;
+					if (i < args.length - 1) {
+						localesRelativePath = args[i + 1];
+					}
 				}
 				else if (args[i].toLowerCase().contains("-demo")) {
 					demoMode = true;
@@ -253,6 +262,10 @@ public class Flexo {
 		// FlexoLocalization.initWith(FlexoMainLocalizer.getInstance());
 
 		final InteractiveApplicationContext applicationContext = new InteractiveApplicationContext();
+
+		if (applicationLocales) {
+			applicationContext.getLocalizationService().initializeMainLocalizer(localesRelativePath);
+		}
 
 		remapStandardOuputs(isDev, applicationContext);
 

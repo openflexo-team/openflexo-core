@@ -43,7 +43,9 @@ import java.util.logging.Logger;
 import org.openflexo.foundation.FlexoServiceImpl;
 import org.openflexo.foundation.nature.ProjectNatureService;
 import org.openflexo.localization.FlexoLocalization;
+import org.openflexo.localization.LocalizedDelegate;
 import org.openflexo.localization.LocalizedDelegateImpl;
+import org.openflexo.rm.ResourceLocator;
 
 /**
  * Default implementation for {@link ProjectNatureService}
@@ -55,7 +57,7 @@ public class DefaultLocalizationService extends FlexoServiceImpl implements Loca
 
 	private static final Logger logger = Logger.getLogger(DefaultLocalizationService.class.getPackage().getName());
 
-	private FlexoMainLocalizer flexoLocalizer = null;
+	private LocalizedDelegate flexoLocalizer = null;
 
 	/*@Override
 	public void receiveNotification(FlexoService caller, ServiceNotification notification) {
@@ -69,15 +71,22 @@ public class DefaultLocalizationService extends FlexoServiceImpl implements Loca
 
 		flexoLocalizer = new FlexoMainLocalizer(true);
 
-		logger.info("Main localization directory: " + flexoLocalizer.getLocalizedDirectoryResource());
+		logger.info("Main localization directory: " + ((FlexoMainLocalizer) flexoLocalizer).getLocalizedDirectoryResource());
 		logger.info("Deprecated localization directory: "
-				+ ((LocalizedDelegateImpl) flexoLocalizer.getDeprecatedLocalizer()).getLocalizedDirectoryResource());
+				+ ((LocalizedDelegateImpl) ((FlexoMainLocalizer) flexoLocalizer).getDeprecatedLocalizer()).getLocalizedDirectoryResource());
 
 		FlexoLocalization.initWith(flexoLocalizer);
 	}
 
 	@Override
-	public FlexoMainLocalizer getFlexoLocalizer() {
+	public void initializeMainLocalizer(String relativePath) {
+
+		flexoLocalizer = new LocalizedDelegateImpl(ResourceLocator.locateResource(relativePath), new FlexoMainLocalizer(true), true, true);
+		FlexoLocalization.initWith(flexoLocalizer);
+	}
+
+	@Override
+	public LocalizedDelegate getFlexoLocalizer() {
 		return flexoLocalizer;
 	}
 
