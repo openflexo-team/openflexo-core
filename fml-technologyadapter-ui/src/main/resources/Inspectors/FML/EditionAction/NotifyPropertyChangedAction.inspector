@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Panel className="org.openflexo.gina.utils.FIBInspector" layout="border"
+	titleFont="SansSerif,0,12" darkLevel="0"
+	dataClassName="org.openflexo.foundation.fml.editionaction.NotifyPropertyChangedAction"
+	controllerClassName="org.openflexo.fml.controller.FMLFIBInspectorController"
+	font="SansSerif,0,12" name="Inspector">
+	<TabPanel name="Tab" constraints="border(location=center)">
+		<Tab title="Basic" layout="twocols" titleFont="SansSerif,0,11"
+			darkLevel="0" index="0" font="SansSerif,0,11" useScrollBar="true"
+			horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED"
+			verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED" name="BasicTab">
+			<Label label="object_to_notify" index="2" data=""
+				constraints="twocols(expandHorizontally=true;expandVertically=false;index=2;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)"
+				localize="true" />
+			<Custom componentClassName="org.openflexo.gina.swing.utils.BindingSelector"
+				localize="true" name="ObjectBS" index="3" data="data.object"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;index=3;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)">
+				<Assignment variable="component.bindable" value="data" />
+			</Custom>
+			<Label label="property_name" align="right" index="4"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;index=2;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)"
+				localize="true" />
+			<TextField index="5" data="data.propertyName"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;index=3;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
+				localize="true" columns="6" text="TextField" />
+			
+		</Tab>
+	</TabPanel>
+	<LocalizedDictionary>
+		<Localized key="Advanced" lang="French" value="Avancé" />
+		<Localized key="Basic" lang="French" value="Basique" />
+	</LocalizedDictionary>
+	<Parameter name="title" value="Notify action" />
+</Panel>

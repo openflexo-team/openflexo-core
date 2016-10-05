@@ -101,7 +101,7 @@ import org.openflexo.toolbox.StringUtils;
 		@Import(MatchFlexoConceptInstance.class), @Import(RemoveFromListAction.class), @Import(DeleteAction.class),
 		@Import(ConditionalAction.class), @Import(IterationAction.class), @Import(WhileAction.class),
 		@Import(IncrementalIterationAction.class), @Import(FetchRequestIterationAction.class), @Import(ExecutionAction.class),
-		@Import(DeclareFlexoRole.class) })
+		@Import(DeclareFlexoRole.class), @Import(NotifyPropertyChangedAction.class) })
 public abstract interface EditionAction extends FMLControlGraph {
 
 	@PropertyIdentifier(type = ActionContainer.class)

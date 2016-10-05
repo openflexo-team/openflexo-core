@@ -78,6 +78,7 @@ import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.fml.editionaction.ExpressionAction;
 import org.openflexo.foundation.fml.editionaction.FetchRequest;
 import org.openflexo.foundation.fml.editionaction.LogAction;
+import org.openflexo.foundation.fml.editionaction.NotifyPropertyChangedAction;
 import org.openflexo.foundation.fml.editionaction.RemoveFromListAction;
 import org.openflexo.foundation.fml.editionaction.ReturnStatement;
 import org.openflexo.foundation.fml.editionaction.RoleSpecificAction;
@@ -180,6 +181,7 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 		addToAvailableActions(SelectVirtualModelInstance.class, fmlTA);
 		addToAvailableActions(DeleteAction.class, fmlTA);
 		addToAvailableActions(DeleteFlexoConceptInstance.class, fmlTA);
+		addToAvailableActions(NotifyPropertyChangedAction.class, fmlTA);
 
 		for (ModelSlot<?> ms : getModelSlotsAccessibleFromFocusedObject()) {
 			for (Class<? extends TechnologySpecificAction<?, ?>> eaClass : ms.getAvailableEditionActionTypes()) {
@@ -441,6 +443,9 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 		else if (org.openflexo.foundation.fml.editionaction.LogAction.class.isAssignableFrom(editionActionClass)) {
 			returned = factory.newLogAction();
 		}
+		else if (org.openflexo.foundation.fml.editionaction.NotifyPropertyChangedAction.class.isAssignableFrom(editionActionClass)) {
+			returned = factory.newNotifyPropertyChangedAction();
+		}
 		else if (org.openflexo.foundation.fml.editionaction.AddToListAction.class.isAssignableFrom(editionActionClass)) {
 			returned = factory.newAddToListAction();
 		}
@@ -499,8 +504,8 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 			((RoleSpecificAction) returned).setFlexoRole(getFlexoRole());
 		}
 		else if (TechnologySpecificAction.class.isAssignableFrom(editionActionClass) && getModelSlot() != null) {
-			System.out.println("editionActionClass="+editionActionClass);
-			System.out.println("returned="+returned);
+			System.out.println("editionActionClass=" + editionActionClass);
+			System.out.println("returned=" + returned);
 			((TechnologySpecificAction) returned).setModelSlot(getModelSlot());
 		}
 
