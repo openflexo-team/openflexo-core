@@ -122,6 +122,7 @@ public interface DeleteAction<T extends FlexoObject> extends EditionAction {
 				object.setBindingDefinitionType(BindingDefinitionType.GET);
 			}
 			this.object = object;
+			notifiedBindingChanged(object);
 		}
 
 		@Override
