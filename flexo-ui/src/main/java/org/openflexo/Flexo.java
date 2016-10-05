@@ -187,14 +187,13 @@ public class Flexo {
 	}
 
 	/**
-	 * Launch method to start Flexo in multimodule mode. Program args are in dev: -userType MAINTAINER Dev -nosplash otherwise see windows
-	 * launchers or build.xml for package args VM args: -Xmx512M (for big projects push it to 1024) For MacOS also add: -Xdock:name=Flexo
-	 * -Dapple.laf.useScreenMenuBar=true
+	 * Launch method to start Flexo in multimodule mode. 
+	 * When in development mode, program args should be: Dev -nosplash 
+ 	 * For MacOS, you can also add: -Xdock:name=Flexo -Dapple.laf.useScreenMenuBar=true
 	 * 
 	 * @param args
 	 */
 	public static void main(final String[] args) {
-		// String userTypeName = null;
 		boolean noSplash = false;
 
 		boolean applicationLocales = false;
@@ -204,9 +203,6 @@ public class Flexo {
 			// ATTENTION: Argument cannot start with "-D", nor start with "-X", nor start with "-agentlib" since they are reserved keywords
 			// for JVM
 			for (int i = 0; i < args.length; i++) {
-				/*if (args[i].equals("-userType")) {
-					userTypeName = args[i + 1];
-				}*/
 				if (args[i].equals("-nosplash")) {
 					noSplash = true;
 				}
@@ -250,8 +246,6 @@ public class Flexo {
 		fsrl.appendToDirectories(System.getProperty("user.home"));
 		ResourceLocator.appendDelegate(fsrl);
 
-		// UserType userTypeNamed = UserType.getUserTypeNamed(userTypeName);
-		// UserType.setCurrentUserType(userTypeNamed);
 		SplashWindow splashWindow = null;
 		if (!noSplash) {
 			splashWindow = new SplashWindow(FlexoFrame.getActiveFrame());
