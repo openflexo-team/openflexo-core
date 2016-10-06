@@ -738,21 +738,7 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 
 	@Override
 	public BindingModel getBindingModel() {
-		// System.out.println("prout pour " + getFocusedObject().getStringRepresentation());
-		// System.out.println("je retourne " + getFocusedObject().getInferedBindingModel());
 		return getFocusedObject().getInferedBindingModel();
-
-		/*System.out.println("prout pour " + getFocusedObject().getStringRepresentation());
-		// return getFocusedObject().getOwner().getBaseBindingModel(getBaseEditionAction());
-		if (getFocusedObject() != null && getFocusedObject().getOwner() != null) {
-			FMLControlGraphOwner owner = getFocusedObject().getOwner();
-			if (owner instanceof FMLControlGraph) {
-				System.out.println("je retourne pour " + owner + " " + ((FMLControlGraph) owner).getInferedBindingModel());
-				return ((FMLControlGraph) owner).getInferedBindingModel();
-			}
-			return owner.getBindingModel();
-		}
-		return null;*/
 	}
 
 	@Override
