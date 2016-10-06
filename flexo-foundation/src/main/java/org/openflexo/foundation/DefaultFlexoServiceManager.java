@@ -69,6 +69,15 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
  */
 public class DefaultFlexoServiceManager extends FlexoServiceManager {
 
+	/**
+	 * Initialize a new {@link DefaultFlexoServiceManager}
+	 * 
+	 * @param localizationRelativePath
+	 *            a String identifying a relative path to use for main localization (such as "FlexoLocalization/MyLocales") of the
+	 *            application
+	 * @param devMode
+	 *            true when 'developer' mode set to true (enable more services)
+	 */
 	public DefaultFlexoServiceManager(String localizationRelativePath, boolean devMode) {
 
 		LocalizationService localizationService = createLocalizationService(localizationRelativePath);

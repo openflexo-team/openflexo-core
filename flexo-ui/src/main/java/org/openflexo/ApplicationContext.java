@@ -81,7 +81,7 @@ import org.openflexo.view.controller.FlexoServerInstanceManager;
 import org.openflexo.view.controller.TechnologyAdapterControllerService;
 
 /**
- * The {@link ApplicationContext} is the {@link FlexoServiceManager} at desktop application level.<br>
+ * The {@link ApplicationContext} is an implementation of {@link FlexoServiceManager} at desktop application level.<br>
  * 
  * It basically inherits from {@link FlexoServiceManager} by extending service manager with desktop-level services:<br>
  * <ul>
@@ -103,6 +103,15 @@ public abstract class ApplicationContext extends DefaultFlexoServiceManager impl
 
 	// private ServerRestService serverRestService;
 
+	/**
+	 * Initialize a new {@link ApplicationContext}
+	 * 
+	 * @param localizationRelativePath
+	 *            a String identifying a relative path to use for main localization (such as "FlexoLocalization/MyLocales") of the
+	 *            application
+	 * @param devMode
+	 *            true when 'developer' mode set to true (enable more services)
+	 */
 	public ApplicationContext(String localizationRelativePath, boolean devMode) {
 		super(localizationRelativePath, devMode);
 

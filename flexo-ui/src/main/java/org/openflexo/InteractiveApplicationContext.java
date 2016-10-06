@@ -61,8 +61,37 @@ import org.openflexo.view.controller.FullInteractiveProjectLoadingHandler;
 import org.openflexo.view.controller.InteractiveFlexoEditor;
 import org.openflexo.view.controller.TechnologyAdapterControllerService;
 
+/**
+ * An implementation of a {@link FlexoServiceManager} available in graphical and interactive context (desktop application).<br>
+ * Provide many services usefull in that context
+ * 
+ * It basically inherits from {@link ApplicationContext} by extending service manager with desktop-level services:<br>
+ * <ul>
+ * <li>{@link ProjectLoader}</li>
+ * <li>{@link BugReportService}</li>
+ * <li>{@link PreferencesService}</li>
+ * <li>...</li>
+ * </ul>
+ * 
+ * 
+ * @author sylvain
+ *
+ */
 public class InteractiveApplicationContext extends ApplicationContext {
 
+	/**
+	 * Initialize a new {@link InteractiveApplicationContext}
+	 * 
+	 * @param localizationRelativePath
+	 *            a String identifying a relative path to use for main localization (such as "FlexoLocalization/MyLocales") of the
+	 *            application
+	 * @param devMode
+	 *            true when 'developer' mode set to true (enable more services)
+	 * @param recordMode
+	 *            true when GINA 'record' mode set to true
+	 * @param playMode
+	 *            true when GINA 'play' mode set to true
+	 */
 	public InteractiveApplicationContext(String localizationRelativePath, boolean devMode, boolean recordMode, boolean playMode) {
 		super(localizationRelativePath, devMode);
 	}
