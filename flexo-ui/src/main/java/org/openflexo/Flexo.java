@@ -197,8 +197,7 @@ public class Flexo {
 		// String userTypeName = null;
 		boolean noSplash = false;
 
-		boolean applicationLocales = false;
-		String localesRelativePath = "";
+		String localesRelativePath = null;
 
 		if (args.length > 0) {
 			// ATTENTION: Argument cannot start with "-D", nor start with "-X", nor start with "-agentlib" since they are reserved keywords
@@ -214,7 +213,6 @@ public class Flexo {
 					isDev = true;
 				}
 				else if (args[i].equalsIgnoreCase("-locales")) {
-					applicationLocales = true;
 					if (i < args.length - 1) {
 						localesRelativePath = args[i + 1];
 					}
@@ -261,11 +259,8 @@ public class Flexo {
 		// First init localization with default location
 		// FlexoLocalization.initWith(FlexoMainLocalizer.getInstance());
 
-		final InteractiveApplicationContext applicationContext = new InteractiveApplicationContext();
-
-		if (applicationLocales) {
-			applicationContext.getLocalizationService().initializeMainLocalizer(localesRelativePath);
-		}
+		final InteractiveApplicationContext applicationContext = new InteractiveApplicationContext(localesRelativePath, isDev, recordMode,
+				playMode);
 
 		remapStandardOuputs(isDev, applicationContext);
 

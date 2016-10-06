@@ -290,7 +290,7 @@ public abstract class FlexoServiceManager {
 
 	protected abstract ViewPointLibrary createViewPointLibraryService();
 
-	protected abstract LocalizationService createLocalizationService();
+	protected abstract LocalizationService createLocalizationService(String relativePath);
 
 	protected abstract ResourceManager createResourceManager();
 

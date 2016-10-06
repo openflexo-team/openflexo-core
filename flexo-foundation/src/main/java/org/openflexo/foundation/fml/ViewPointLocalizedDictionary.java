@@ -237,39 +237,52 @@ public interface ViewPointLocalizedDictionary extends FMLObject, org.openflexo.l
 				return null;
 			}
 
-			/*boolean debug = false;
-			
-			if (key.equals("Super classes")) {
-				System.out.println("OK, j'ai le truc Super classes");
-				System.out.println("createsNewEntryInFirstEditableParent=" + createsNewEntryInFirstEditableParent);
-				debug = true;
-				LocalizedDelegate l = this;
-				while (l.getParent() != null) {
-					System.out.println("> " + l);
-					l = l.getParent();
-				}
-				// Thread.dumpStack();
-			}*/
-
 			String localized = getDictForLang(language).get(key);
 
 			if (localized == null) {
-				// Not found in this delegate
-				if (handleNewEntry(key, language)) {
-					// We then have to create entry here
-					addEntry(key);
-					return getDictForLang(language).get(key);
+				// Not found in this localizer what about parent ?
+				if (getParent() != null) {
+					if (getParent().hasKey(key, language, true)) {
+						// This is defined in parent localizer
+						// Nice, we forward the request to the parent
+						return getParent().localizedForKeyAndLanguage(key, language, false);
+					}
+					else if (createsNewEntryInFirstEditableParent && handleNewEntry(key, language)) {
+						addEntry(key);
+						return getDictForLang(language).get(key);
+					}
+					else {
+						return getParent().localizedForKeyAndLanguage(key, language, true);
+					}
 				}
 				else {
-					if (getParent() != null) {
-						// Nice, we forward the request to the parent
-						return getParent().localizedForKeyAndLanguage(key, language, createsNewEntryInFirstEditableParent);
+					// parent is null
+					if (handleNewEntry(key, language)) {
+						addEntry(key);
+						return getDictForLang(language).get(key);
 					}
 					return key;
 				}
 			}
 
 			return localized;
+		}
+
+		/**
+		 * Return boolean indicating if this delegate defines a translation for supplied key and language
+		 * 
+		 * @return
+		 */
+		@Override
+		public boolean hasKey(String key, Language language, boolean recursive) {
+			String localized = getDictForLang(language).get(key);
+			if (localized != null) {
+				return true;
+			}
+			if (recursive && getParent() != null) {
+				return getParent().hasKey(key, language, recursive);
+			}
+			return false;
 		}
 
 		// TODO: duplicated code as in LocalizedDelegateImpl, please refactor this to avoid code duplication

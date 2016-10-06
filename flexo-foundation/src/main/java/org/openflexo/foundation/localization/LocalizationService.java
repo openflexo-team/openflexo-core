@@ -56,6 +56,8 @@ public interface LocalizationService extends FlexoService {
 
 	public LocalizedDelegate getFlexoLocalizer();
 
-	public void initializeMainLocalizer(String relativePath);
+	public String getGeneralLocalizerRelativePath();
+
+	public void setGeneralLocalizerRelativePath(String relativePath);
 
 }
