@@ -60,7 +60,7 @@ public class TestFlexoServiceManager extends DefaultFlexoServiceManager {
 	}
 
 	public TestFlexoServiceManager(File resourceCenterDirectory) {
-		super();
+		super(null, true);
 		this.resourceCenterDirectory = resourceCenterDirectory;
 		getResourceCenterService().addToResourceCenters(new DirectoryResourceCenter(resourceCenterDirectory, getResourceCenterService()));
 	}

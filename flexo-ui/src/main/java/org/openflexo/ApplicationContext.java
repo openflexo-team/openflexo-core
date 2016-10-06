@@ -103,8 +103,8 @@ public abstract class ApplicationContext extends DefaultFlexoServiceManager impl
 
 	// private ServerRestService serverRestService;
 
-	public ApplicationContext() {
-		super();
+	public ApplicationContext(String localizationRelativePath, boolean devMode) {
+		super(localizationRelativePath, devMode);
 
 		applicationData = new ApplicationData(this);
 

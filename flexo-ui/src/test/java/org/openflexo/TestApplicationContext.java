@@ -99,7 +99,7 @@ public class TestApplicationContext extends ApplicationContext {
 	}
 
 	public TestApplicationContext(boolean generateCompoundTestResourceCenter) {
-		super();
+		super(null, true);
 		this.generateCompoundTestResourceCenter = generateCompoundTestResourceCenter;
 
 		// Activate both FML and FML@RT technology adapters

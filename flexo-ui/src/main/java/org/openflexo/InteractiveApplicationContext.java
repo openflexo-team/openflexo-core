@@ -62,6 +62,11 @@ import org.openflexo.view.controller.InteractiveFlexoEditor;
 import org.openflexo.view.controller.TechnologyAdapterControllerService;
 
 public class InteractiveApplicationContext extends ApplicationContext {
+
+	public InteractiveApplicationContext(String localizationRelativePath, boolean devMode, boolean recordMode, boolean playMode) {
+		super(localizationRelativePath, devMode);
+	}
+
 	@Override
 	public FlexoEditor makeFlexoEditor(FlexoProject project, FlexoServiceManager sm) {
 		return new InteractiveFlexoEditor(this, project);
