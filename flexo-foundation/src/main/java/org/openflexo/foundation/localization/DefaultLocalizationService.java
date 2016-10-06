@@ -81,6 +81,7 @@ public class DefaultLocalizationService extends FlexoServiceImpl implements Loca
 	@Override
 	public void initializeMainLocalizer(String relativePath) {
 
+		logger.info("Initializing localization with " + relativePath);
 		flexoLocalizer = new LocalizedDelegateImpl(ResourceLocator.locateResource(relativePath), new FlexoMainLocalizer(true), true, true);
 		FlexoLocalization.initWith(flexoLocalizer);
 	}
