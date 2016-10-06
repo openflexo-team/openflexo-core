@@ -83,6 +83,7 @@ loading_component=loading_component
 loading_module=Chargement du module
 loading_project=Chargement du projet
 localization_editor=localization_editor
+localize=localize
 localized_editor=Edition des traductions
 manage_resource_centers=G\u00E9rer les centres de resources...
 model_slots=model_slots
