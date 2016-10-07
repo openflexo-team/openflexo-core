@@ -62,6 +62,7 @@ public class ValidateProject extends FlexoAction<ValidateProject, FlexoProjectOb
 			return new ValidateProject(object, globalSelection, editor);
 		}
 
+		// TODO: revalidated action when FlexoProject will be refactored
 		@Override
 		public boolean isVisibleForSelection(FlexoProjectObject focusedObject, Vector<FlexoProjectObject> globalSelection) {
 			return false;
