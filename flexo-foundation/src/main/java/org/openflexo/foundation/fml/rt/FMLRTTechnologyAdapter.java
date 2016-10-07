@@ -38,6 +38,8 @@
 
 package org.openflexo.foundation.fml.rt;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoServiceManager;
@@ -214,7 +216,7 @@ public class FMLRTTechnologyAdapter extends TechnologyAdapter {
 
 	@Override
 	public <I> boolean isIgnorable(final FlexoResourceCenter<I> resourceCenter, final I contents) {
-		if (resourceCenter.isIgnorable(contents)) {
+		if (resourceCenter.isIgnorable(contents, this)) {
 			return true;
 		}
 		I parentFolder = resourceCenter.getContainer(contents);
@@ -307,6 +309,20 @@ public class FMLRTTechnologyAdapter extends TechnologyAdapter {
 
 	public ViewResourceFactory getViewResourceFactory() {
 		return getResourceFactory(ViewResourceFactory.class);
+	}
+
+	public List<ViewLibrary<?>> getViewLibraries() {
+		List<ViewLibrary<?>> returned = new ArrayList<>();
+		for (FlexoResourceCenter<?> rc : getServiceManager().getResourceCenterService().getResourceCenters()) {
+			returned.add(getViewRepository(rc));
+		}
+		return returned;
+	}
+
+	@Override
+	public void notifyRepositoryStructureChanged() {
+		super.notifyRepositoryStructureChanged();
+		getPropertyChangeSupport().firePropertyChange("getViewLibraries()", null, getViewLibraries());
 	}
 
 }

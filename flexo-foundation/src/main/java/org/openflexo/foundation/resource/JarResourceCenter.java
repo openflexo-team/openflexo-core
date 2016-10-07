@@ -427,8 +427,8 @@ public class JarResourceCenter extends ResourceRepository<FlexoResource<?>, InJa
 	}
 
 	@Override
-	public boolean isIgnorable(InJarResourceImpl artefact) {
-		// TODO Not yet implemented
+	public boolean isIgnorable(InJarResourceImpl artefact, TechnologyAdapter technologyAdapter) {
+		// Trivial implementation
 		return false;
 	}
 

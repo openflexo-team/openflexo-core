@@ -339,7 +339,6 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 	 * @return a boolean indicating if this file has been handled by the technology, when false ResourceCenter might resend notification
 	 */
 	public final <I> boolean contentsAdded(FlexoResourceCenter<I> resourceCenter, I serializationArtefact) {
-		System.out.println("!!!!!!!! Techno " + getIdentifier() + " On vient de m'ajouter ca sans me dire: " + serializationArtefact);
 		boolean hasBeenLookedUp = false;
 		if (!isIgnorable(resourceCenter, serializationArtefact)) {
 			for (FlexoResourceFactory<?, ?, ?> resourceFactory : getResourceFactories()) {
@@ -553,61 +552,6 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 			return repository.getRootFolder();
 		}
 	}
-
-	/**
-	 * Called when a resource has been looked-up by the {@link TechnologyAdapter}
-	 * 
-	 * @param resource
-	 * @param resourceCenter
-	 */
-	/*public void referenceResource(FlexoResource<?> resource, FlexoResourceCenter<?> resourceCenter) {
-		resource.setResourceCenter(resourceCenter);
-		if (resourceCenter instanceof ResourceRepository && resource != null
-				&& resource.getFlexoIODelegate() instanceof FileFlexoIODelegate) {
-			// Also register the resource in the ResourceCenter seen as a ResourceRepository
-			try {
-				File candidateFile = null;
-				if (resource.getFlexoIODelegate() instanceof DirectoryBasedFlexoIODelegate) {
-					candidateFile = ((DirectoryBasedFlexoIODelegate) resource.getFlexoIODelegate()).getDirectory();
-				}
-				else if (resource.getFlexoIODelegate() instanceof FileFlexoIODelegate) {
-					candidateFile = ((FileFlexoIODelegate) resource.getFlexoIODelegate()).getFile();
-				}
-	
-				((ResourceRepository) resourceCenter).registerResource(resource,
-						((ResourceRepository<?>) resourceCenter).getRepositoryFolder(candidateFile, true));
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-	
-		registerResourceInGlobalRepository(resource, resourceCenter);
-	
-	}*/
-
-	/*protected void registerResourceInGlobalRepository(FlexoResource<?> resource, FlexoResourceCenter<?> resourceCenter) {
-		TechnologyAdapterGlobalRepository globalRepository = getGlobalRepository(resourceCenter);
-		if (globalRepository != null) {
-			RepositoryFolder<?> folderInGlobalRepository;
-			try {
-				globalRepository.registerResource(resource, resource.getFlexoIODelegate().getRepositoryFolder(globalRepository, true));
-			} catch (IOException e) {
-				logger.warning("Unexpected I/O exception: " + e);
-				e.printStackTrace();
-			}
-		}
-	}*/
-
-	/**
-	 * Called when a resource has been dereferenced by the {@link TechnologyAdapter}
-	 * 
-	 * @param resource
-	 * @param resourceCenter
-	 */
-	/*public void dereferenceResource(FlexoResource<?> resource, FlexoResourceCenter<?> resourceCenter) {
-		// TODO
-		logger.warning("dereferenceResource() not implemented yet");
-	}*/
 
 	// Override when required
 	public void initFMLModelFactory(FMLModelFactory fMLModelFactory) {

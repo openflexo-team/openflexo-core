@@ -110,7 +110,7 @@ public class FMLTechnologyAdapter extends TechnologyAdapter {
 
 	@Override
 	public <I> boolean isIgnorable(final FlexoResourceCenter<I> resourceCenter, final I contents) {
-		if (resourceCenter.isIgnorable(contents)) {
+		if (resourceCenter.isIgnorable(contents, this)) {
 			return true;
 		}
 		// TODO: ignore .viewpoint subcontents

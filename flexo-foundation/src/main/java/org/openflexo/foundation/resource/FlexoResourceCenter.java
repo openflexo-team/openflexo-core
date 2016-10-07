@@ -253,7 +253,7 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, FlexoObject, Refere
 	 * @param artefact
 	 * @return
 	 */
-	public boolean isIgnorable(I artefact);
+	public boolean isIgnorable(I artefact, TechnologyAdapter technologyAdapter);
 
 	/**
 	 * Retrieve repository matching supplied type and technology
