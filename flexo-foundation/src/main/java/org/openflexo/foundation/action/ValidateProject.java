@@ -64,12 +64,12 @@ public class ValidateProject extends FlexoAction<ValidateProject, FlexoProjectOb
 
 		@Override
 		public boolean isVisibleForSelection(FlexoProjectObject focusedObject, Vector<FlexoProjectObject> globalSelection) {
-			return true;
+			return false;
 		}
 
 		@Override
 		public boolean isEnabledForSelection(FlexoProjectObject focusedObject, Vector<FlexoProjectObject> globalSelection) {
-			return true;
+			return false;
 		}
 
 	};
