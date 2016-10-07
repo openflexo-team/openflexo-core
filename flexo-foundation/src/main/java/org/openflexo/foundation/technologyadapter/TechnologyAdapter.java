@@ -55,6 +55,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.StringTokenizer;
 import java.util.jar.JarFile;
 import java.util.logging.Logger;
 
@@ -80,11 +81,13 @@ import org.openflexo.foundation.resource.JarResourceCenter;
 import org.openflexo.foundation.resource.RepositoryFolder;
 import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.resource.ResourceRepository;
+import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.localization.LocalizedDelegate;
 import org.openflexo.localization.LocalizedDelegateImpl;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.rm.ResourceLocator;
+import org.openflexo.toolbox.StringUtils;
 
 /**
  * This class represents a technology adapter<br>
@@ -336,6 +339,7 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 	 * @return a boolean indicating if this file has been handled by the technology, when false ResourceCenter might resend notification
 	 */
 	public final <I> boolean contentsAdded(FlexoResourceCenter<I> resourceCenter, I serializationArtefact) {
+		System.out.println("!!!!!!!! Techno " + getIdentifier() + " On vient de m'ajouter ca sans me dire: " + serializationArtefact);
 		boolean hasBeenLookedUp = false;
 		if (!isIgnorable(resourceCenter, serializationArtefact)) {
 			for (FlexoResourceFactory<?, ?, ?> resourceFactory : getResourceFactories()) {
@@ -642,7 +646,7 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 
 	private final Map<FlexoResourceCenter<?>, TechnologyAdapterGlobalRepository> globalRepositories = new HashMap<>();
 
-	public TechnologyAdapterGlobalRepository getGlobalRepository(FlexoResourceCenter<?> rc) {
+	public <I> TechnologyAdapterGlobalRepository getGlobalRepository(FlexoResourceCenter<I> rc) {
 		TechnologyAdapterGlobalRepository returned = globalRepositories.get(rc);
 		if (returned == null) {
 			returned = new TechnologyAdapterGlobalRepository(this, rc);
@@ -677,6 +681,94 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 
 		getPropertyChangeSupport().firePropertyChange("getAllRepositories()", null, getAllRepositories());
 		getPropertyChangeSupport().firePropertyChange("getGlobalRepositories()", null, getGlobalRepositories());
+
+	}
+
+	/**
+	 * Create a resource of a given technology, according to some conventions
+	 * 
+	 * @param resourceFactoryClass
+	 *            Class of factory beeing used: determine the type of resource to create
+	 * @param resourceCenter
+	 *            Resource center in which the resource will be created
+	 * @param resourceName
+	 *            Name of the resource beeing created (when not empty the extension may complete resource name)
+	 * @param resourceURI
+	 *            when not null, sets uri of resource
+	 * @param relativePath
+	 *            determine the location where the resource will be stored
+	 * @param extension
+	 *            when not null and not already present, will be appened to resourceName
+	 * @param createEmptyContents
+	 *            when set to true, create empty contents (technology specific)
+	 * @return
+	 * @throws SaveResourceException
+	 * @throws ModelDefinitionException
+	 */
+	public <I, R extends TechnologyAdapterResource<?, ?>, RF extends FlexoResourceFactory<R, ?, ?>> R createResource(
+			Class<RF> resourceFactoryClass, FlexoResourceCenter<I> resourceCenter, String resourceName, String resourceURI,
+			String relativePath, String extension, boolean createEmptyContents) throws SaveResourceException, ModelDefinitionException {
+
+		System.out.println("Creating resource from " + resourceFactoryClass);
+
+		RF resourceFactory = getResourceFactory(resourceFactoryClass);
+
+		System.out.println("ResourceFactory=" + resourceFactory);
+
+		I serializationArtefact = retrieveResourceSerializationArtefact(resourceCenter, resourceName, relativePath, extension);
+
+		System.out.println("serialization artefact=" + serializationArtefact);
+
+		R returned = (R) resourceFactory.makeResource(serializationArtefact, resourceCenter,
+				(TechnologyContextManager) getTechnologyContextManager(), resourceCenter.retrieveName(serializationArtefact), resourceURI,
+				createEmptyContents);
+
+		System.out.println("Return " + returned);
+
+		return returned;
+
+	}
+
+	/**
+	 * Internally used to retrieve serializationArtefact of a resource beeing created
+	 * 
+	 * @param resourceCenter
+	 * @param resourceName
+	 * @param relativePath
+	 * @param extension
+	 * @return
+	 */
+	protected <I> I retrieveResourceSerializationArtefact(FlexoResourceCenter<I> resourceCenter, String resourceName, String relativePath,
+			String extension) {
+
+		I containerBaseArtefact = resourceCenter.getBaseArtefact();
+
+		if (StringUtils.isEmpty(resourceName)) {
+			return containerBaseArtefact;
+		}
+		String artefactName;
+		if (extension != null && !resourceName.endsWith(extension)) {
+			if (!extension.startsWith(".")) {
+				extension = "." + extension;
+			}
+			artefactName = resourceName + extension;
+		}
+		else {
+			artefactName = resourceName;
+		}
+
+		I directory = containerBaseArtefact;
+
+		StringTokenizer st = new StringTokenizer(relativePath, "/\\");
+		while (st.hasMoreElements()) {
+			String pathName = st.nextToken();
+			directory = resourceCenter.getDirectory(pathName, directory);
+			if (directory == null) {
+				directory = resourceCenter.createDirectory(pathName, directory);
+			}
+		}
+
+		return resourceCenter.createEntry(artefactName, directory);
 
 	}
 
