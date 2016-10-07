@@ -356,22 +356,6 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends 
 		}
 	}
 
-	public void willWrite(File file) {
-		getServiceManager().notify(null, new WillWriteFileOnDiskNotification(file));
-	}
-
-	public void hasWritten(File file) {
-		getServiceManager().notify(null, new FileHasBeenWrittenOnDiskNotification(file));
-	}
-
-	public void willRename(File fromFile, File toFile) {
-		getServiceManager().notify(null, new WillRenameFileOnDiskNotification(fromFile, toFile));
-	}
-
-	public void willDelete(File file) {
-		getServiceManager().notify(null, new WillDeleteFileOnDiskNotification(file));
-	}
-
 	protected void _saveResourceData(boolean clearIsModified) throws SaveResourceException {
 		File temporaryFile = null;
 		FileWritingLock lock = getFlexoIOStreamDelegate().willWriteOnDisk();

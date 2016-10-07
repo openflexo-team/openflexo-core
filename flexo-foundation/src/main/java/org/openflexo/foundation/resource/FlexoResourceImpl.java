@@ -39,6 +39,7 @@
 
 package org.openflexo.foundation.resource;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -52,6 +53,10 @@ import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.FlexoServiceManager;
+import org.openflexo.foundation.resource.PamelaResourceImpl.FileHasBeenWrittenOnDiskNotification;
+import org.openflexo.foundation.resource.PamelaResourceImpl.WillDeleteFileOnDiskNotification;
+import org.openflexo.foundation.resource.PamelaResourceImpl.WillRenameFileOnDiskNotification;
+import org.openflexo.foundation.resource.PamelaResourceImpl.WillWriteFileOnDiskNotification;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterResource;
 import org.openflexo.foundation.utils.FlexoObjectReference;
 import org.openflexo.localization.LocalizedDelegate;
@@ -563,4 +568,21 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 		}
 		return super.getLocales();
 	}
+
+	public void willWrite(File file) {
+		getServiceManager().notify(null, new WillWriteFileOnDiskNotification(file));
+	}
+
+	public void hasWritten(File file) {
+		getServiceManager().notify(null, new FileHasBeenWrittenOnDiskNotification(file));
+	}
+
+	public void willRename(File fromFile, File toFile) {
+		getServiceManager().notify(null, new WillRenameFileOnDiskNotification(fromFile, toFile));
+	}
+
+	public void willDelete(File file) {
+		getServiceManager().notify(null, new WillDeleteFileOnDiskNotification(file));
+	}
+
 }
