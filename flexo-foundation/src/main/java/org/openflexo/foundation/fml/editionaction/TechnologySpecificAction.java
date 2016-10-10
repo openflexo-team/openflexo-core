@@ -102,7 +102,7 @@ public abstract interface TechnologySpecificAction<MS extends ModelSlot<?>, T> e
 
 		private static final Logger logger = Logger.getLogger(TechnologySpecificAction.class.getPackage().getName());
 
-		private MS modelSlot;
+		// private MS modelSlot;
 
 		@Override
 		public TechnologyAdapter getModelSlotTechnologyAdapter() {
@@ -110,25 +110,6 @@ public abstract interface TechnologySpecificAction<MS extends ModelSlot<?>, T> e
 				return getModelSlot().getModelSlotTechnologyAdapter();
 			}
 			return null;
-		}
-
-		@Override
-		public MS getModelSlot() {
-			if (modelSlot == null) {
-				if (getAvailableModelSlots() != null && getAvailableModelSlots().size() > 0) {
-					modelSlot = (MS) getAvailableModelSlots().get(0);
-				}
-			}
-			return modelSlot;
-		}
-
-		@Override
-		public void setModelSlot(MS modelSlot) {
-			if (modelSlot != this.modelSlot) {
-				MS oldValue = this.modelSlot;
-				this.modelSlot = modelSlot;
-				getPropertyChangeSupport().firePropertyChange("modelSlot", oldValue, modelSlot);
-			}
 		}
 
 		@Override

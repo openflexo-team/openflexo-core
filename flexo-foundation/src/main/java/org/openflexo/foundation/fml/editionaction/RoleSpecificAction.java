@@ -83,7 +83,7 @@ public abstract interface RoleSpecificAction<R extends FlexoRole<T>, MS extends 
 	public List<R> getAvailableRoles();
 
 	public static abstract class RoleSpecificActionImpl<R extends FlexoRole<T>, MS extends ModelSlot<?>, T>
-			extends TechnologySpecificActionImpl<MS, T>implements RoleSpecificAction<R, MS, T> {
+			extends TechnologySpecificActionImpl<MS, T> implements RoleSpecificAction<R, MS, T> {
 
 		private static final Logger logger = Logger.getLogger(RoleSpecificAction.class.getPackage().getName());
 
@@ -92,7 +92,7 @@ public abstract interface RoleSpecificAction<R extends FlexoRole<T>, MS extends 
 			if (getFlexoRole() != null) {
 				return (MS) getFlexoRole().getModelSlot();
 			}
-			return super.getModelSlot();
+			return (MS) performSuperGetter(TechnologySpecificAction.MODEL_SLOT_KEY);
 		}
 
 		/**

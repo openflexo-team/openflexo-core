@@ -798,9 +798,6 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 					FetchRequest<?, ?> fetchRequest = factory.newInstance(getFetchRequestClass());
 					iterationAction.setIterationAction(fetchRequest);
 					List<ModelSlot<?>> availableMS = getAvailableModelSlotsForAction(getFetchRequestClass());
-					if (availableMS.size() > 0) {
-						((TechnologySpecificAction) fetchRequest).setModelSlot(availableMS.get(0));
-					}
 					break;
 				default:
 					break;
