@@ -188,12 +188,14 @@ public abstract interface TechnologySpecificAction<MS extends ModelSlot<?>, T> e
 			for (ModelSlot<?> ms : msList) {
 				for (Class<?> editionActionType : ms.getAvailableEditionActionTypes()) {
 					if (TypeUtils.isAssignableTo(this, editionActionType)) {
-						returned.add(ms);
+						if (!returned.contains(ms))
+							returned.add(ms);
 					}
 				}
 				for (Class<?> editionActionType : ms.getAvailableFetchRequestActionTypes()) {
 					if (TypeUtils.isAssignableTo(this, editionActionType)) {
-						returned.add(ms);
+						if (!returned.contains(ms))
+							returned.add(ms);
 					}
 				}
 			}
