@@ -485,8 +485,21 @@ public interface ViewPoint extends AbstractVirtualModel<ViewPoint> {
 				}
 			}
 
+			// Is that a VirtualModel
+
+			VirtualModel vmConcept = this.getVirtualModelNamed(flexoConceptId);
+			if (vmConcept != null) {
+				return vmConcept;
+			}
+
 			// Is that a concept outside of scope of current ViewPoint ?
-			return getViewPointLibrary().getFlexoConcept(flexoConceptId);
+			// NPE Protection when de-serializing
+			if (getViewPointLibrary() == null) {
+				return null;
+			}
+			else {
+				return getViewPointLibrary().getFlexoConcept(flexoConceptId);
+			}
 
 		}
 
