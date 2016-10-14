@@ -182,7 +182,7 @@ public abstract interface TechnologySpecificAction<MS extends ModelSlot<?>, T> e
 					return (List<MS2>) ((ViewPoint) getFlexoConcept()).getModelSlots();
 				}
 			}
-			else if (getFlexoConcept() != null && getFlexoConcept().getOwningVirtualModel() != null) {
+			else if (concept != null && concept.getOwningVirtualModel() != null) {
 				return (List<MS2>) getFlexoConcept().getOwningVirtualModel().getModelSlots();
 			}
 			return null;
