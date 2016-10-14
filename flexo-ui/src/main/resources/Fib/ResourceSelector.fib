@@ -54,9 +54,11 @@
 			label="technologyAdapter.name" icon="controller.iconForObject(technologyAdapter)"
 			isEditable="false" filtered="false" defaultVisible="true"
 			name="technologyAdapter">
-			<Children
+				<Children data="data.getGlobalRepositories()" visible=""
+				cast="child.rootFolder" name="resourceRepositories" />
+			<!--  <Children
 				data="data.resourceManager.getAllRepositories(technologyAdapter)"
-				visible="true" cast="child.rootFolder" name="resourceRepositories" />
+				visible="true" cast="child.rootFolder" name="resourceRepositories" />-->
 		</BrowserElement>
 		<BrowserElement
 			dataClassName="org.openflexo.foundation.technologyadapter.TechnologyAdapterResource"
