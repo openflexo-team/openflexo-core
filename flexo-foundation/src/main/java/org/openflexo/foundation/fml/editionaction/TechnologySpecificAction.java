@@ -50,6 +50,7 @@ import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
+import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.ModelSlotInstance;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
@@ -150,12 +151,19 @@ public abstract interface TechnologySpecificAction<MS extends ModelSlot<?>, T> e
 
 		@Override
 		public ModelSlotInstance<MS, ?> getModelSlotInstance(RunTimeEvaluationContext action) {
-			if (action.getVirtualModelInstance() != null) {
-				AbstractVirtualModelInstance<?, ?> vmi = action.getVirtualModelInstance();
+			FlexoConceptInstance fci = action.getFlexoConceptInstance();
+			AbstractVirtualModelInstance<?, ?> vmi = null;
+			if (fci != null && fci instanceof AbstractVirtualModelInstance<?, ?>) {
+				vmi = (AbstractVirtualModelInstance<?, ?>) fci;
+			}
+			else if (action.getVirtualModelInstance() != null) {
+				vmi = action.getVirtualModelInstance();
+			}
+			if (vmi != null) {
 				// Following line does not compile with Java7 (don't understand why)
 				// That's the reason i tried to fix that compile issue with getGenericModelSlot() method (see below)
-				return action.getVirtualModelInstance().getModelSlotInstance(getModelSlot());
-				// return (ModelSlotInstance<MS, ?>) vmi.getModelSlotInstance(getGenericModelSlot());
+				return vmi.getModelSlotInstance(getModelSlot());
+				// return (ModelSlotInstance<MS, ?>) vmi.getModelSlotInstance(getGenericModelSlot
 			}
 			else {
 				logger.severe("Could not access virtual model instance for action " + action);
@@ -200,6 +208,18 @@ public abstract interface TechnologySpecificAction<MS extends ModelSlot<?>, T> e
 				}
 			}
 			return returned;
+		}
+
+		@Override
+		public MS getModelSlot() {
+			MS ms = (MS) performSuperGetter(MODEL_SLOT_KEY);
+			if (ms == null) {
+				List<ModelSlot<?>> availableMSs = this.getAvailableModelSlots();
+				if (availableMSs.size() == 1) {
+					ms = (MS) availableMSs.get(0);
+				}
+			}
+			return ms;
 		}
 
 		/**
