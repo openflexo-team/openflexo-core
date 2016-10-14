@@ -48,20 +48,20 @@
 			isEditable="false" filtered="false" defaultVisible="true" name="folder">
 			<Children data="folder.children" name="subFolders" />
 			<Children data="folder.resources" name="resource" />
-		</BrowserElement>
+		</BrowserElement>		
 		<BrowserElement
 			dataClassName="org.openflexo.foundation.technologyadapter.TechnologyAdapter"
 			label="technologyAdapter.name" icon="controller.iconForObject(technologyAdapter)"
 			isEditable="false" filtered="false" defaultVisible="true"
 			name="technologyAdapter">
-				<Children data="data.getGlobalRepositories()" visible=""
+				<Children data="technologyAdapter.getGlobalRepositories()" visible=""
 				cast="child.rootFolder" name="resourceRepositories" />
 			<!--  <Children
 				data="data.resourceManager.getAllRepositories(technologyAdapter)"
 				visible="true" cast="child.rootFolder" name="resourceRepositories" />-->
 		</BrowserElement>
 		<BrowserElement
-			dataClassName="org.openflexo.foundation.technologyadapter.TechnologyAdapterResource"
+			dataClassName="org.openflexo.foundation.resource.FlexoResource"
 			label="resource.name" icon="controller.iconForObject(resource)"
 			isEditable="false" filtered="false" defaultVisible="true" name="resource" />
 	</Browser>
