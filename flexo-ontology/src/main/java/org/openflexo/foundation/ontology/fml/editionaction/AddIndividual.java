@@ -88,8 +88,8 @@ public abstract interface AddIndividual<MS extends TypeAwareModelSlot<?, ?>, T e
 	public static final String OBJECT_ASSERTIONS_KEY = "objectAssertions";
 	@PropertyIdentifier(type = String.class)
 	public static final String ONTOLOGY_CLASS_URI_KEY = "ontologyClassURI";
-	@PropertyIdentifier(type = TypeAwareModelSlot.class)
-	public static final String MODEL_SLOT_KEY = "modelSlot";
+	// @PropertyIdentifier(type = TypeAwareModelSlot.class)
+	// public static final String MODEL_SLOT_KEY = "modelSlot";
 
 	@Getter(value = INDIVIDUAL_NAME_KEY)
 	@XMLAttribute
@@ -139,14 +139,14 @@ public abstract interface AddIndividual<MS extends TypeAwareModelSlot<?, ?>, T e
 
 	public void setOntologyClass(IFlexoOntologyClass ontologyClass);
 
-	@Override
+	/*@Override
 	@Getter(value = MODEL_SLOT_KEY)
 	@XMLElement
 	public MS getModelSlot();
-
+	
 	@Override
 	@Setter(MODEL_SLOT_KEY)
-	public void setModelSlot(MS modelSlot);
+	public void setModelSlot(MS modelSlot);*/
 
 	public ObjectPropertyAssertion createObjectPropertyAssertion();
 
@@ -157,7 +157,7 @@ public abstract interface AddIndividual<MS extends TypeAwareModelSlot<?, ?>, T e
 	public DataPropertyAssertion deleteDataPropertyAssertion(DataPropertyAssertion assertion);
 
 	public static abstract class AddIndividualImpl<MS extends TypeAwareModelSlot<?, ?>, T extends IFlexoOntologyIndividual<?>>
-			extends AddConceptImpl<MS, T>implements AddIndividual<MS, T> {
+			extends AddConceptImpl<MS, T> implements AddIndividual<MS, T> {
 
 		protected static final Logger logger = FlexoLogger.getLogger(AddIndividual.class.getPackage().getName());
 

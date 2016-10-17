@@ -66,10 +66,10 @@ public class LoadProjectTask extends FlexoApplicationTask {
 
 	private static final Logger logger = Logger.getLogger(InteractiveProjectLoader.class.getPackage().getName());
 
-	private final InteractiveProjectLoader projectLoader;
-	private final File projectDirectory;
+	protected final InteractiveProjectLoader projectLoader;
+	protected final File projectDirectory;
 	private FlexoEditor flexoEditor;
-	private final boolean asImportedProject;
+	protected final boolean asImportedProject;
 
 	public LoadProjectTask(InteractiveProjectLoader projectLoader, File projectDirectory, boolean asImportedProject) {
 		super(FlexoLocalization.getMainLocalizer().localizedForKey("loading_project") + " " + projectDirectory.getName(),

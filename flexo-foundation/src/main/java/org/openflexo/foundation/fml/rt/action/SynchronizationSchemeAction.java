@@ -54,8 +54,8 @@ import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstanceObject;
 
-public class SynchronizationSchemeAction extends
-		FlexoBehaviourAction<SynchronizationSchemeAction, SynchronizationScheme, AbstractVirtualModelInstance<?, ?>> {
+public class SynchronizationSchemeAction
+		extends FlexoBehaviourAction<SynchronizationSchemeAction, SynchronizationScheme, AbstractVirtualModelInstance<?, ?>> {
 
 	private static final Logger logger = Logger.getLogger(SynchronizationSchemeAction.class.getPackage().getName());
 
@@ -81,9 +81,9 @@ public class SynchronizationSchemeAction extends
 	 * @return
 	 */
 	@Override
-	public VirtualModelInstance getFlexoConceptInstance() {
+	public FlexoConceptInstance getFlexoConceptInstance() {
 		if (actionType != null) {
-			return (VirtualModelInstance) actionType.getFlexoConceptInstance();
+			return actionType.getFlexoConceptInstance();
 		}
 		return null;
 	}

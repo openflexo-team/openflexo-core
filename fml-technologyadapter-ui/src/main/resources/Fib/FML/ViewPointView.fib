@@ -394,14 +394,8 @@
 		<Localized key="description" lang="Dutch" value="Description" />
 		<Localized key="kind" lang="Dutch" value="Generic Type" />
 		<Localized key="type" lang="Dutch" value="Type" />
-		<Localized key="flexo_concept" lang="French" value="Edition pattern" />
-		<Localized key="flexo_concept" lang="English" value="Edition pattern" />
-		<Localized key="flexo_concepts_declared_in_this_calc" lang="English"
-			value="Edition patterns declared in this calc" />
-		<Localized key="flexo_concepts_declared_in_this_calc" lang="French"
-			value="Edition patterns déclarés dans ce calque" />
-		<Localized key="pattern_role" lang="French" value="Pattern Role" />
-		<Localized key="pattern_role" lang="English" value="Pattern Role" />
+		<Localized key="flexo_concept" lang="French" value="Flexo Concept" />
+		<Localized key="flexo_concept" lang="English" value="Flexo Concept" />
 		<Localized key="palette" lang="English" value="Palette" />
 		<Localized key="palette" lang="French" value="Palette" />
 		<Localized key="palette" lang="Dutch" value="Palette" />
@@ -411,9 +405,6 @@
 		<Localized key="example_diagram" lang="French" value="Example diagram" />
 		<Localized key="example_diagram" lang="English" value="Example diagram" />
 		<Localized key="example_diagram" lang="Dutch" value="Example diagram" />
-		<Localized key="flexo_concept" lang="Dutch" value="Editie pattern" />
-		<Localized key="pattern_role" lang="Dutch" value="Rol van de patroon" />
-		<Localized key="flexo_concepts_declared_in_this_calc" lang="Dutch"
-			value="Edition patterns declared in this calc" />
+		<Localized key="flexo_concept" lang="Dutch" value="Flexo Concept" />
 	</LocalizedDictionary>
 </Panel>

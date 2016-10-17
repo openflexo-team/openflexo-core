@@ -91,9 +91,21 @@ public class FileMenu extends FlexoMenu {
 
 	protected FlexoController _controller;
 
+	protected FileMenu(FlexoController controller, boolean empty) {
+		super("file", controller);
+		_controller = controller;
+		if (!empty) {
+			initDefaultEntries();
+		}
+	}
+
 	protected FileMenu(FlexoController controller) {
 		super("file", controller);
 		_controller = controller;
+		initDefaultEntries();
+	}
+
+	private void initDefaultEntries() {
 
 		add(new NewProjectItem());
 		add(new OpenProjectItem());
@@ -122,7 +134,7 @@ public class FileMenu extends FlexoMenu {
 		addSpecificItems();
 
 		add(new InspectProjectItem());
-		if (controller instanceof PrintManagingController) {
+		if (_controller instanceof PrintManagingController) {
 			addSeparator();
 			addPrintItems();
 			add(new PageSetUpItem());
