@@ -499,6 +499,9 @@ public class JarResourceCenter extends ResourceRepository<FlexoResource<?>, InJa
 	public String retrieveName(InJarResourceImpl serializationArtefact) {
 		if (serializationArtefact != null) {
 			String returned = serializationArtefact.getURL().getFile();
+			if (returned.endsWith("!")) {
+				returned = returned.substring(0, returned.length() - 1);
+			}
 			if (returned.endsWith("/")) {
 				returned = returned.substring(0, returned.length() - 1);
 			}
@@ -743,4 +746,11 @@ public class JarResourceCenter extends ResourceRepository<FlexoResource<?>, InJa
 		this.objectReferenceConverter = objectReferenceConverter;
 	}
 
+	@Override
+	public String getDisplayableName() {
+		if (jarResourceImpl != null) {
+			return jarResourceImpl.getJarFileName();
+		}
+		return "???";
+	}
 }

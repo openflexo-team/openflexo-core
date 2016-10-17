@@ -82,4 +82,9 @@ public abstract class TechnologyAdapterResourceRepository<R extends TechnologyAd
 		return getResourceCenter().getDefaultBaseURI() + "/" + getTechnologyAdapter().getIdentifier();
 	}
 
+	@Override
+	public String getDisplayableName() {
+		return getResourceCenter().getDisplayableName();
+	}
+
 }

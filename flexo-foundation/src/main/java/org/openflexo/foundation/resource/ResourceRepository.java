@@ -496,4 +496,5 @@ public abstract class ResourceRepository<R extends FlexoResource<?>, I> extends 
 		return sb.toString();
 	}
 
+	public abstract String getDisplayableName();
 }

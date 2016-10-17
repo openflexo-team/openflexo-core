@@ -215,7 +215,7 @@ public interface ViewPoint extends AbstractVirtualModel<ViewPoint> {
 	 * @author sylvain
 	 * 
 	 */
-	public static abstract class ViewPointImpl extends AbstractVirtualModelImpl<ViewPoint> implements ViewPoint {
+	public static abstract class ViewPointImpl extends AbstractVirtualModelImpl<ViewPoint>implements ViewPoint {
 
 		private static final Logger logger = Logger.getLogger(ViewPoint.class.getPackage().getName());
 
@@ -477,7 +477,7 @@ public interface ViewPoint extends AbstractVirtualModel<ViewPoint> {
 
 			// Implemented lazy loading for VirtualModel while searching FlexoConcept from URI
 
-			if (flexoConceptId.indexOf("#") > -1) {
+			if (flexoConceptId.indexOf("#") > -1 && getResource() != null) {
 				String virtualModelURI = flexoConceptId.substring(0, flexoConceptId.indexOf("#"));
 				VirtualModelResource vmRes = getResource().getContentWithURI(VirtualModelResource.class, virtualModelURI);
 				if (vmRes != null) {

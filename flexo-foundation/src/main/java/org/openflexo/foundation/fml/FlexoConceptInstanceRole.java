@@ -115,11 +115,11 @@ public interface FlexoConceptInstanceRole extends FlexoRole<FlexoConceptInstance
 	public AbstractVirtualModel<?> getVirtualModelType();
 
 	/*public FMLRTModelSlot<?, ?> getVirtualModelModelSlot();
-
+	
 	public void setVirtualModelModelSlot(FMLRTModelSlot<?, ?> modelSlot);*/
 
-	public static abstract class FlexoConceptInstanceRoleImpl extends FlexoRoleImpl<FlexoConceptInstance> implements
-			FlexoConceptInstanceRole {
+	public static abstract class FlexoConceptInstanceRoleImpl extends FlexoRoleImpl<FlexoConceptInstance>
+			implements FlexoConceptInstanceRole {
 
 		private static final Logger logger = Logger.getLogger(FlexoConceptInstanceRole.class.getPackage().getName());
 
@@ -295,7 +295,7 @@ public interface FlexoConceptInstanceRole extends FlexoRole<FlexoConceptInstance
 		public FMLRTModelSlot<?, ?> getVirtualModelModelSlot() {
 			return (FMLRTModelSlot<?, ?>) getModelSlot();
 		}
-
+		
 		@Override
 		public void setVirtualModelModelSlot(FMLRTModelSlot<?, ?> modelSlot) {
 			setModelSlot(modelSlot);
@@ -321,9 +321,20 @@ public interface FlexoConceptInstanceRole extends FlexoRole<FlexoConceptInstance
 				aVirtualModelInstance.setBindingDefinitionType(DataBinding.BindingDefinitionType.GET);
 			}
 			if (this.virtualModelInstance != aVirtualModelInstance) {
-				this.getPropertyChangeSupport()
-						.firePropertyChange("virtualModelInstance", this.virtualModelInstance, aVirtualModelInstance);
 				this.virtualModelInstance = aVirtualModelInstance;
+				this.getPropertyChangeSupport().firePropertyChange("virtualModelInstance", this.virtualModelInstance,
+						aVirtualModelInstance);
+			}
+		}
+
+		@Override
+		public void notifiedBindingChanged(DataBinding<?> dataBinding) {
+			super.notifiedBindingChanged(dataBinding);
+			if (dataBinding == getVirtualModelInstance()) {
+				getPropertyChangeSupport().firePropertyChange("virtualModelType", null, getVirtualModelType());
+				if (getFlexoConceptType() != null && !getFlexoConceptType().getVirtualModel().isAssignableFrom(getVirtualModelType())) {
+					setFlexoConceptType(null);
+				}
 			}
 		}
 
