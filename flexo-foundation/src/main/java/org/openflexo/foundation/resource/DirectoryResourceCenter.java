@@ -97,4 +97,8 @@ public class DirectoryResourceCenter extends FileSystemBasedResourceCenter {
 		return false;
 	}
 
+	@Override
+	public String getDisplayableName() {
+		return getDefaultBaseURI();
+	}
 }

@@ -115,13 +115,33 @@ public class RepositoryFolder<R extends FlexoResource<?>, I> extends DefaultFlex
 
 	public String getPathRelativeToRepository() {
 		if (getParentFolder() != null) {
-			return getParentFolder().getPathRelativeToRepository() + "/" + getName();
+			return getParentFolder().getPathRelativeToRepository();
 		}
 		return getName();
 	}
 
 	public String getFullQualifiedPath() {
-		return getPathRelativeToRepository();
+		if (resourceRepository == null || getResourceRepository().getBaseArtefact() == null) {
+			return null;
+		}
+		if (isRootFolder()) {
+			return getResourceRepository().getBaseArtefact().toString();
+		}
+		else {
+			return getResourceRepository().getBaseArtefact().toString() + "/" + getPathRelativeToRepository();
+		}
+	}
+
+	public String getDefaultBaseURI() {
+		if (resourceRepository == null) {
+			return null;
+		}
+		if (isRootFolder()) {
+			return getResourceRepository().getDefaultBaseURI();
+		}
+		else {
+			return getResourceRepository().getDefaultBaseURI() + "/" + getPathRelativeToRepository();
+		}
 	}
 
 	public List<RepositoryFolder<R, I>> getChildren() {
@@ -244,7 +264,7 @@ public class RepositoryFolder<R extends FlexoResource<?>, I> extends DefaultFlex
 	public String getDisplayableName() {
 		if (isRootFolder()) {
 			return (StringUtils.isNotEmpty(getRepositoryContext()) ? getRepositoryContext() + " " : "")
-					+ getResourceRepository().getDefaultBaseURI();
+					+ getResourceRepository().getDisplayableName();
 		}
 		return (StringUtils.isNotEmpty(getRepositoryContext()) ? getRepositoryContext() + " " : "") + getName();
 	}

@@ -234,4 +234,9 @@ public class GitResourceCenter extends FileSystemBasedResourceCenter {
 		System.out.println("get=" + getDefaultBaseURI());
 	}*/
 
+	@Override
+	public String getDisplayableName() {
+		return getDefaultBaseURI();
+	}
+
 }

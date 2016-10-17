@@ -115,6 +115,13 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, FlexoObject, Refere
 	public String getName();
 
 	/**
+	 * Return a user-friendly named identifier for this resource center
+	 * 
+	 * @return
+	 */
+	public String getDisplayableName();
+
+	/**
 	 * Return the default base URI associated with this {@link FlexoResourceCenter}.<br>
 	 * 
 	 * This URI might be used as default base URI for any resource stored in this repository, if no explicit URI was given to related
