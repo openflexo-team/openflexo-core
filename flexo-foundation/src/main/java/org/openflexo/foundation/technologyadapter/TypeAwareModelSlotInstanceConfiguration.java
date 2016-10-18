@@ -46,7 +46,6 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoException;
-import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstanceModelFactory;
 import org.openflexo.foundation.fml.rt.TypeAwareModelSlotInstance;
@@ -94,15 +93,6 @@ public abstract class TypeAwareModelSlotInstanceConfiguration<M extends FlexoMod
 		setOption(DefaultModelSlotInstanceConfigurationOption.SelectExistingModel);
 	}
 
-	/*@Override
-	public void setOption(org.openflexo.foundation.fml.rt.action.ModelSlotInstanceConfiguration.ModelSlotInstanceConfigurationOption option) {
-		super.setOption(option);
-		if (option == DefaultModelSlotInstanceConfigurationOption.SelectExistingModel) {
-			modelUri = null;
-			relativePath = null;
-			filename = null;
-		}
-	}*/
 
 	@Override
 	public List<ModelSlotInstanceConfigurationOption> getAvailableOptions() {
