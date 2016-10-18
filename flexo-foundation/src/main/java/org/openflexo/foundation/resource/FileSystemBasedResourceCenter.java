@@ -143,7 +143,7 @@ public abstract class FileSystemBasedResourceCenter extends ResourceRepository<F
 
 		RepositoryFolder<?, File> folder = null;
 		try {
-			folder = getRepositoryFolder(aFile, false);
+			folder = getParentRepositoryFolder(aFile, false);
 		} catch (IOException e) {
 			e.printStackTrace();
 			return null;
@@ -206,7 +206,7 @@ public abstract class FileSystemBasedResourceCenter extends ResourceRepository<F
 	protected <R extends FlexoResource<?>> RepositoryFolder<R, File> retrieveRepositoryFolder(ResourceRepository<R, File> repository,
 			File aFile) {
 		try {
-			return repository.getRepositoryFolder(aFile, true);
+			return repository.getParentRepositoryFolder(aFile, true);
 		} catch (IOException e) {
 			e.printStackTrace();
 			return repository.getRootFolder();
@@ -1020,7 +1020,7 @@ public abstract class FileSystemBasedResourceCenter extends ResourceRepository<F
 			candidateFile = ((FileFlexoIODelegate) ioDelegate).getFile();
 		}
 		try {
-			RepositoryFolder<R, File> returned = resourceRepository.getRepositoryFolder(candidateFile, true);
+			RepositoryFolder<R, File> returned = resourceRepository.getParentRepositoryFolder(candidateFile, true);
 			/*if (!returned.getSerializationArtefact().equals(candidateFile.getParentFile())
 					&& !returned.getSerializationArtefact().getAbsolutePath().contains("target")) {
 				System.out.println("N'importe quoi, on met " + candidateFile + " dans " + returned.getSerializationArtefact());

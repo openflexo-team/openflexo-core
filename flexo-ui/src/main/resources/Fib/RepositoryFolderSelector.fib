@@ -48,6 +48,9 @@
 			isEditable="false" filtered="false" defaultVisible="true" name="folder">
 			<Children data="folder.children" name="subFolders" />
 			<Children data="folder.resources" name="resource" />
+			<BrowserAddAction
+					method="controller.createNewFolder(selected)"
+					name="create_new_folder" />
 		</BrowserElement>
 		<BrowserElement
 			dataClassName="org.openflexo.foundation.technologyadapter.TechnologyAdapter"

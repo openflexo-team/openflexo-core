@@ -546,7 +546,7 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 	protected <R extends FlexoResource<?>, I> RepositoryFolder<R, I> retrieveRepositoryFolder(ResourceRepository<R, I> repository,
 			I serializationArtefact) {
 		try {
-			return repository.getRepositoryFolder(serializationArtefact, true);
+			return repository.getParentRepositoryFolder(serializationArtefact, true);
 		} catch (IOException e) {
 			e.printStackTrace();
 			return repository.getRootFolder();

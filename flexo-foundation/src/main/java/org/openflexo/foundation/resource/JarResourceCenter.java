@@ -676,7 +676,7 @@ public class JarResourceCenter extends ResourceRepository<FlexoResource<?>, InJa
 			// System.out.println("Folder for " + ioDelegate.getSerializationArtefact() + " is "
 			// + resourceRepository.getRepositoryFolder(candidateFile, true));
 
-			return resourceRepository.getRepositoryFolder(candidateFile, true);
+			return resourceRepository.getParentRepositoryFolder(candidateFile, true);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

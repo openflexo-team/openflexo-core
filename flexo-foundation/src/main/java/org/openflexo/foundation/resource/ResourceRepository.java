@@ -411,7 +411,21 @@ public abstract class ResourceRepository<R extends FlexoResource<?>, I> extends 
 	}
 
 	/**
-	 * Get the respository folder. The object can be accessed from different ways, for instance it can be a file or an InJarResource, so the
+	 * Get the parent repository folder. The object can be accessed from different ways, for instance it can be a file or an InJarResource,
+	 * so the path must be computed for each kind of access.
+	 * 
+	 * @param element
+	 * @param createWhenNonExistent
+	 * @return
+	 * @throws IOException
+	 */
+	public RepositoryFolder<R, I> getParentRepositoryFolder(I serializationArtefact, boolean createWhenNonExistent) throws IOException {
+		List<String> pathTo = getResourceCenter().getPathTo(serializationArtefact);
+		return getRepositoryFolder(pathTo, createWhenNonExistent);
+	}
+
+	/**
+	 * Get the repository folder. The object can be accessed from different ways, for instance it can be a file or an InJarResource, so the
 	 * path must be computed for each kind of access.
 	 * 
 	 * @param element
@@ -421,6 +435,7 @@ public abstract class ResourceRepository<R extends FlexoResource<?>, I> extends 
 	 */
 	public RepositoryFolder<R, I> getRepositoryFolder(I serializationArtefact, boolean createWhenNonExistent) throws IOException {
 		List<String> pathTo = getResourceCenter().getPathTo(serializationArtefact);
+		pathTo.add(getResourceCenter().retrieveName(serializationArtefact));
 		return getRepositoryFolder(pathTo, createWhenNonExistent);
 	}
 
@@ -441,6 +456,7 @@ public abstract class ResourceRepository<R extends FlexoResource<?>, I> extends 
 					if (createWhenNonExistent) {
 						I serializationArtefact = getResourceCenter().getDirectory(pathElement, returned.getSerializationArtefact());
 						RepositoryFolder<R, I> newFolder = new RepositoryFolder<R, I>(serializationArtefact, returned, this);
+						// returned.getPropertyChangeSupport().firePropertyChange("children", null, newFolder);
 						currentFolder = newFolder;
 					}
 					else {

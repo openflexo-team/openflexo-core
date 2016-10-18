@@ -116,7 +116,7 @@ public interface FileFlexoIODelegate extends FlexoIOStreamDelegate<File> {
 		@Override
 		public RepositoryFolder<?, File> getRepositoryFolder(ResourceRepository<?, File> resourceRepository, boolean createWhenNonExistent)
 				throws IOException {
-			return resourceRepository.getRepositoryFolder(getFile(), true);
+			return resourceRepository.getParentRepositoryFolder(getFile(), true);
 		}
 
 		@Override

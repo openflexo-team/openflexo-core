@@ -167,7 +167,7 @@ public class GitResourceCenter extends FileSystemBasedResourceCenter {
 
 		if (candidateFile != null) {
 			try {
-				RepositoryFolder<R, File> returned = resourceRepository.getRepositoryFolder(candidateFile, true);
+				RepositoryFolder<R, File> returned = resourceRepository.getParentRepositoryFolder(candidateFile, true);
 				return returned;
 			} catch (IOException e) {
 				e.printStackTrace();
