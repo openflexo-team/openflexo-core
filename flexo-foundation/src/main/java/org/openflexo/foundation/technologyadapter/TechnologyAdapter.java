@@ -277,10 +277,13 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 
 	}
 
-	protected <I> void foundFolder(FlexoResourceCenter<I> resourceCenter, I folder) throws IOException {
-		if (resourceCenter.isDirectory(folder)) {
+	protected final <I> void foundFolder(FlexoResourceCenter<I> resourceCenter, I folder) throws IOException {
+		if (resourceCenter.isDirectory(folder) && !isFolderIgnorable(resourceCenter, folder)) {
 			TechnologyAdapterGlobalRepository globalRepository = getGlobalRepository(resourceCenter);
 			RepositoryFolder newRepositoryFolder = globalRepository.getRepositoryFolder(folder, true);
+			for (ResourceRepository<?, I> repository : (List<ResourceRepository<?, I>>) (List) getAllRepositories()) {
+				repository.getRepositoryFolder(folder, true);
+			}
 			System.out.println("Hop, on a aussi le folder " + newRepositoryFolder.getPathRelativeToRepository());
 		}
 	}
@@ -357,6 +360,10 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 	}
 
 	public abstract <I> boolean isIgnorable(FlexoResourceCenter<I> resourceCenter, I contents);
+
+	public <I> boolean isFolderIgnorable(FlexoResourceCenter<I> resourceCenter, I contents) {
+		return isIgnorable(resourceCenter, contents);
+	}
 
 	/**
 	 * Called when a new serialization artefact has been discovered
@@ -642,11 +649,11 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 	 * @param technologyAdapter
 	 * @return
 	 */
-	public List<ResourceRepository<?, ?>> getAllRepositories() {
-		List<ResourceRepository<?, ?>> returned = new ArrayList<>();
+	public <I> List<ResourceRepository<?, I>> getAllRepositories() {
+		List<ResourceRepository<?, I>> returned = new ArrayList<>();
 		for (FlexoResourceCenter<?> rc : getTechnologyAdapterService().getServiceManager().getResourceCenterService()
 				.getResourceCenters()) {
-			Collection<? extends ResourceRepository<?, ?>> repCollection = rc.getRegistedRepositories(this, true);
+			Collection<? extends ResourceRepository<?, I>> repCollection = (Collection) rc.getRegistedRepositories(this, true);
 			if (repCollection != null) {
 				returned.addAll(repCollection);
 			}

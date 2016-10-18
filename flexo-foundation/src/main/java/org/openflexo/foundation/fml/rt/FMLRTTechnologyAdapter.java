@@ -38,7 +38,6 @@
 
 package org.openflexo.foundation.fml.rt;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -220,10 +219,20 @@ public class FMLRTTechnologyAdapter extends TechnologyAdapter {
 		if (resourceCenter.isIgnorable(contents, this)) {
 			return true;
 		}
-		I parentFolder = resourceCenter.getContainer(contents);
+		/*I parentFolder = resourceCenter.getContainer(contents);
 		if (parentFolder != null && resourceCenter.retrieveName(parentFolder).endsWith(ViewResourceFactory.VIEW_SUFFIX)) {
 			// ignore .view subcontents
 			return true;
+		}*/
+		return false;
+	}
+
+	@Override
+	public <I> boolean isFolderIgnorable(FlexoResourceCenter<I> resourceCenter, I contents) {
+		if (resourceCenter.isDirectory(contents)) {
+			if (isContainedInDirectoryWithSuffix(resourceCenter, contents, ViewResourceFactory.VIEW_SUFFIX)) {
+				return true;
+			}
 		}
 		return false;
 	}
@@ -326,13 +335,13 @@ public class FMLRTTechnologyAdapter extends TechnologyAdapter {
 		getPropertyChangeSupport().firePropertyChange("getViewLibraries()", null, getViewLibraries());
 	}
 
-	@Override
+	/*@Override
 	protected <I> void foundFolder(FlexoResourceCenter<I> resourceCenter, I folder) throws IOException {
 		super.foundFolder(resourceCenter, folder);
 		if (resourceCenter.isDirectory(folder)
 				&& !isContainedInDirectoryWithSuffix(resourceCenter, folder, ViewResourceFactory.VIEW_SUFFIX)) {
 			getViewRepository(resourceCenter).getRepositoryFolder(folder, true);
 		}
-	}
+	}*/
 
 }

@@ -38,7 +38,6 @@
 
 package org.openflexo.foundation.fml;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -114,7 +113,6 @@ public class FMLTechnologyAdapter extends TechnologyAdapter {
 		if (resourceCenter.isIgnorable(contents, this)) {
 			return true;
 		}
-		// TODO: ignore .viewpoint subcontents
 		return false;
 	}
 
@@ -142,12 +140,22 @@ public class FMLTechnologyAdapter extends TechnologyAdapter {
 	}
 
 	@Override
+	public <I> boolean isFolderIgnorable(FlexoResourceCenter<I> resourceCenter, I contents) {
+		if (resourceCenter.isDirectory(contents)) {
+			if (isContainedInDirectoryWithSuffix(resourceCenter, contents, ViewPointResourceFactory.VIEWPOINT_SUFFIX)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/*@Override
 	protected <I> void foundFolder(FlexoResourceCenter<I> resourceCenter, I folder) throws IOException {
 		super.foundFolder(resourceCenter, folder);
 		if (resourceCenter.isDirectory(folder)
 				&& !isContainedInDirectoryWithSuffix(resourceCenter, folder, ViewPointResourceFactory.VIEWPOINT_SUFFIX)) {
 			getViewPointRepository(resourceCenter).getRepositoryFolder(folder, true);
 		}
-	}
+	}*/
 
 }
