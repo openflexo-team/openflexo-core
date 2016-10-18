@@ -55,7 +55,7 @@
 			isEditable="false" filtered="false" defaultVisible="true"
 			name="technologyAdapter">
 			<Children
-				data="data.resourceManager.getAllRepositories(technologyAdapter)"
+				data="data.resourceManager.getGlobalRepositories(technologyAdapter)"
 				visible="true" cast="child.rootFolder" name="resourceRepositories" />
 		</BrowserElement>
 		<BrowserElement

@@ -610,7 +610,7 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 		List<ResourceRepository<?, ?>> returned = new ArrayList<>();
 		for (FlexoResourceCenter<?> rc : getTechnologyAdapterService().getServiceManager().getResourceCenterService()
 				.getResourceCenters()) {
-			Collection<? extends ResourceRepository<?, ?>> repCollection = rc.getRegistedRepositories(this);
+			Collection<? extends ResourceRepository<?, ?>> repCollection = rc.getRegistedRepositories(this, true);
 			if (repCollection != null) {
 				returned.addAll(repCollection);
 			}
@@ -841,6 +841,12 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+	/**
+	 * Hook to force the creation of all repositories (even empty)
+	 */
+	public void ensureAllRepositoriesAreCreated(FlexoResourceCenter<?> rc) {
 	}
 
 }

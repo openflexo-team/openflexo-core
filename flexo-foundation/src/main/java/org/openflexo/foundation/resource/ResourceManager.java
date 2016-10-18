@@ -61,6 +61,7 @@ import org.openflexo.foundation.technologyadapter.FlexoModelResource;
 import org.openflexo.foundation.technologyadapter.MetaModelRepository;
 import org.openflexo.foundation.technologyadapter.ModelRepository;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapterResourceRepository;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.toolbox.FileUtils;
 import org.openflexo.toolbox.FlexoVersion;
@@ -302,6 +303,22 @@ public class ResourceManager extends FlexoServiceImpl implements FlexoService {
 	public List<ResourceRepository<?, ?>> getAllRepositories(TechnologyAdapter technologyAdapter) {
 		if (getServiceManager() != null) {
 			return getServiceManager().getTechnologyAdapterService().getAllRepositories(technologyAdapter);
+		}
+		return null;
+	}
+
+	/**
+	 * Return the list of all global {@link ResourceRepository} discovered in this {@link InformationSpace}, related to technology as
+	 * supplied by {@link TechnologyAdapter} parameter.<br>
+	 * One global repository for each {@link FlexoResourceCenter} is returned
+	 * 
+	 * @param technologyAdapter
+	 * @return
+	 */
+	public <TA extends TechnologyAdapter> List<TechnologyAdapterResourceRepository<?, TA, ?, ?>> getGlobalRepositories(
+			TA technologyAdapter) {
+		if (getServiceManager() != null) {
+			return getServiceManager().getTechnologyAdapterService().getGlobalRepositories(technologyAdapter);
 		}
 		return null;
 	}

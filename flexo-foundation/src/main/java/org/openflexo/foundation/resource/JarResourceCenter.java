@@ -217,7 +217,10 @@ public class JarResourceCenter extends ResourceRepository<FlexoResource<?>, InJa
 	private final HashMap<TechnologyAdapter, HashMap<Class<? extends ResourceRepository<?, InJarResourceImpl>>, ResourceRepository<?, InJarResourceImpl>>> repositories = new HashMap<>();
 
 	private HashMap<Class<? extends ResourceRepository<?, InJarResourceImpl>>, ResourceRepository<?, InJarResourceImpl>> getRepositoriesForAdapter(
-			TechnologyAdapter technologyAdapter) {
+			TechnologyAdapter technologyAdapter, boolean considerEmptyRepositories) {
+		if (considerEmptyRepositories) {
+			technologyAdapter.ensureAllRepositoriesAreCreated(this);
+		}
 		HashMap<Class<? extends ResourceRepository<?, InJarResourceImpl>>, ResourceRepository<?, InJarResourceImpl>> map = repositories
 				.get(technologyAdapter);
 		if (map == null) {
@@ -232,7 +235,7 @@ public class JarResourceCenter extends ResourceRepository<FlexoResource<?>, InJa
 	public final <R extends ResourceRepository<?, InJarResourceImpl>> R retrieveRepository(Class<? extends R> repositoryType,
 			TechnologyAdapter technologyAdapter) {
 		HashMap<Class<? extends ResourceRepository<?, InJarResourceImpl>>, ResourceRepository<?, InJarResourceImpl>> map = getRepositoriesForAdapter(
-				technologyAdapter);
+				technologyAdapter, false);
 		return (R) map.get(repositoryType);
 	}
 
@@ -241,7 +244,7 @@ public class JarResourceCenter extends ResourceRepository<FlexoResource<?>, InJa
 	public final <R extends ResourceRepository<?, InJarResourceImpl>> void registerRepository(R repository,
 			Class<? extends R> repositoryType, TechnologyAdapter technologyAdapter) {
 		HashMap<Class<? extends ResourceRepository<?, InJarResourceImpl>>, ResourceRepository<?, InJarResourceImpl>> map = getRepositoriesForAdapter(
-				technologyAdapter);
+				technologyAdapter, false);
 		if (map.get(repositoryType) == null) {
 			map.put(repositoryType, repository);
 		}
@@ -251,8 +254,9 @@ public class JarResourceCenter extends ResourceRepository<FlexoResource<?>, InJa
 	}
 
 	@Override
-	public Collection<ResourceRepository<?, InJarResourceImpl>> getRegistedRepositories(TechnologyAdapter technologyAdapter) {
-		return getRepositoriesForAdapter(technologyAdapter).values();
+	public Collection<ResourceRepository<?, InJarResourceImpl>> getRegistedRepositories(TechnologyAdapter technologyAdapter,
+			boolean considerEmptyRepositories) {
+		return getRepositoriesForAdapter(technologyAdapter, considerEmptyRepositories).values();
 	}
 
 	/**

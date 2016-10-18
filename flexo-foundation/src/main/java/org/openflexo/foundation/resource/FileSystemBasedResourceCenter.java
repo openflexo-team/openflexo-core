@@ -94,7 +94,8 @@ import org.openflexo.xml.XMLRootElementReader;
  * @author sylvain
  * 
  */
-public abstract class FileSystemBasedResourceCenter extends ResourceRepository<FlexoResource<?>, File>implements FlexoResourceCenter<File> {
+public abstract class FileSystemBasedResourceCenter extends ResourceRepository<FlexoResource<?>, File>
+		implements FlexoResourceCenter<File> {
 
 	protected static final Logger logger = Logger.getLogger(FileSystemBasedResourceCenter.class.getPackage().getName());
 
@@ -602,7 +603,7 @@ public abstract class FileSystemBasedResourceCenter extends ResourceRepository<F
 			}
 		}
 		if (!fileIsStillToBeIgnored) {
-			//logger.info("End of file ignoring: " + file);
+			// logger.info("End of file ignoring: " + file);
 			willBeWrittenFiles.remove(file);
 		}
 
@@ -636,7 +637,10 @@ public abstract class FileSystemBasedResourceCenter extends ResourceRepository<F
 	}
 
 	private HashMap<Class<? extends ResourceRepository<?, File>>, ResourceRepository<?, File>> getRepositoriesForAdapter(
-			TechnologyAdapter technologyAdapter) {
+			TechnologyAdapter technologyAdapter, boolean considerEmptyRepositories) {
+		if (considerEmptyRepositories) {
+			technologyAdapter.ensureAllRepositoriesAreCreated(this);
+		}
 		HashMap<Class<? extends ResourceRepository<?, File>>, ResourceRepository<?, File>> map = repositories.get(technologyAdapter);
 		if (map == null) {
 			map = new HashMap<Class<? extends ResourceRepository<?, File>>, ResourceRepository<?, File>>();
@@ -649,7 +653,7 @@ public abstract class FileSystemBasedResourceCenter extends ResourceRepository<F
 	public final <R extends ResourceRepository<?, File>> R retrieveRepository(Class<? extends R> repositoryType,
 			TechnologyAdapter technologyAdapter) {
 		HashMap<Class<? extends ResourceRepository<?, File>>, ResourceRepository<?, File>> map = getRepositoriesForAdapter(
-				technologyAdapter);
+				technologyAdapter, false);
 
 		return (R) map.get(repositoryType);
 	}
@@ -659,12 +663,12 @@ public abstract class FileSystemBasedResourceCenter extends ResourceRepository<F
 			TechnologyAdapter technologyAdapter) {
 
 		HashMap<Class<? extends ResourceRepository<?, File>>, ResourceRepository<?, File>> map = getRepositoriesForAdapter(
-				technologyAdapter);
+				technologyAdapter, false);
 
 		if (map.get(repositoryType) == null) {
 			map.put(repositoryType, repository);
 			getPropertyChangeSupport().firePropertyChange("getRegisteredRepositories(TechnologyAdapter)", null,
-					getRegistedRepositories(technologyAdapter));
+					getRegistedRepositories(technologyAdapter, false));
 			// Call it to update the current repositories
 			technologyAdapter.notifyRepositoryStructureChanged();
 		}
@@ -674,8 +678,9 @@ public abstract class FileSystemBasedResourceCenter extends ResourceRepository<F
 	}
 
 	@Override
-	public Collection<ResourceRepository<?, File>> getRegistedRepositories(TechnologyAdapter technologyAdapter) {
-		return getRepositoriesForAdapter(technologyAdapter).values();
+	public Collection<ResourceRepository<?, File>> getRegistedRepositories(TechnologyAdapter technologyAdapter,
+			boolean considerEmptyRepositories) {
+		return getRepositoriesForAdapter(technologyAdapter, considerEmptyRepositories).values();
 	}
 
 	@Override

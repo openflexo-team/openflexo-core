@@ -142,6 +142,17 @@ public interface TechnologyAdapterService extends FlexoService {
 	public List<ResourceRepository<?, ?>> getAllRepositories(TechnologyAdapter technologyAdapter);
 
 	/**
+	 * Return the list of all global {@link ResourceRepository} discovered in this {@link InformationSpace}, related to technology as
+	 * supplied by {@link TechnologyAdapter} parameter.<br>
+	 * One global repository for each {@link FlexoResourceCenter} is returned
+	 * 
+	 * @param technologyAdapter
+	 * @return
+	 */
+	public <TA extends TechnologyAdapter> List<TechnologyAdapterResourceRepository<?, TA, ?, ?>> getGlobalRepositories(
+			TA technologyAdapter);
+
+	/**
 	 * Return the list of all non-empty {@link ResourceRepository} discovered in the scope of {@link FlexoServiceManager} which may give
 	 * access to some instance of supplied resource data class, related to technology as supplied by {@link TechnologyAdapter} parameter
 	 * 

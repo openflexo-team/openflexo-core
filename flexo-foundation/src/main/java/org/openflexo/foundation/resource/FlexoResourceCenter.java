@@ -290,7 +290,8 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, FlexoObject, Refere
 	 * @param technologyAdapter
 	 * @return
 	 */
-	public Collection<? extends ResourceRepository<?, I>> getRegistedRepositories(TechnologyAdapter technologyAdapter);
+	public Collection<? extends ResourceRepository<?, I>> getRegistedRepositories(TechnologyAdapter technologyAdapter,
+			boolean considerEmptyRepositories);
 
 	public ResourceCenterEntry<?> getResourceCenterEntry();
 
