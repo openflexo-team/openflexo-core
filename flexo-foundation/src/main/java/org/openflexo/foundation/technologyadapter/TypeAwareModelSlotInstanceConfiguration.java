@@ -70,7 +70,7 @@ public abstract class TypeAwareModelSlotInstanceConfiguration<M extends FlexoMod
 
 	protected List<ModelSlotInstanceConfigurationOption> options;
 
-	protected FlexoResourceCenter<?> resourceCenter;
+	protected FlexoResourceCenter<?> targetResourceCenter;
 	protected FlexoModelResource<M, MM, ?, ?> modelResource;
 	protected String modelUri;
 	protected String relativePath;
@@ -81,7 +81,7 @@ public abstract class TypeAwareModelSlotInstanceConfiguration<M extends FlexoMod
 		super(ms, virtualModelInstance, rc);
 		FlexoResourceCenterService rcService = rc.getServiceManager().getResourceCenterService();
 		if (rcService.getResourceCenters().size() > 0) {
-			resourceCenter = rcService.getResourceCenters().get(0);
+			targetResourceCenter = rcService.getResourceCenters().get(0);
 		}
 		options = new ArrayList<ModelSlotInstanceConfiguration.ModelSlotInstanceConfigurationOption>();
 		options.add(DefaultModelSlotInstanceConfigurationOption.SelectExistingModel);
@@ -92,7 +92,6 @@ public abstract class TypeAwareModelSlotInstanceConfiguration<M extends FlexoMod
 		}
 		setOption(DefaultModelSlotInstanceConfigurationOption.SelectExistingModel);
 	}
-
 
 	@Override
 	public List<ModelSlotInstanceConfigurationOption> getAvailableOptions() {
@@ -184,15 +183,17 @@ public abstract class TypeAwareModelSlotInstanceConfiguration<M extends FlexoMod
 		return getModelResource();
 	}
 
-	public FlexoResourceCenter<?> getResourceCenter() {
-		return resourceCenter;
+	public FlexoResourceCenter<?> getTargetResourceCenter() {
+		return targetResourceCenter;
 	}
 
-	public void setResourceCenter(FlexoResourceCenter<?> resourceCenter) {
-		if (this.resourceCenter != resourceCenter) {
-			FlexoResourceCenter<?> oldValue = this.resourceCenter;
-			this.resourceCenter = resourceCenter;
-			getPropertyChangeSupport().firePropertyChange("resourceCenter", oldValue, resourceCenter);
+	public void setTargetResourceCenter(FlexoResourceCenter<?> resourceCenter) {
+		if (this.targetResourceCenter != resourceCenter) {
+			FlexoResourceCenter<?> oldValue = this.targetResourceCenter;
+			this.targetResourceCenter = resourceCenter;
+			getPropertyChangeSupport().firePropertyChange("targetResourceCenter", oldValue, resourceCenter);
+			getPropertyChangeSupport().firePropertyChange("modelUri", oldValue, getModelUri());
+
 		}
 	}
 
@@ -208,8 +209,34 @@ public abstract class TypeAwareModelSlotInstanceConfiguration<M extends FlexoMod
 		}
 	}
 
+	@Override
+	public void setOption(ModelSlotInstanceConfigurationOption option) {
+
+		if (option == DefaultModelSlotInstanceConfigurationOption.CreatePrivateNewModel) {
+			setTargetResourceCenter(getResourceCenter());
+		}
+		super.setOption(option);
+	}
+
 	public String getModelUri() {
-		return modelUri;
+		if (modelUri == null) {
+			FlexoResourceCenter localRC;
+			if (getTargetResourceCenter() != null) {
+				localRC = getTargetResourceCenter();
+			}
+			else {
+				localRC = getResourceCenter();
+			}
+			String generatedUri = null;
+			if (relativePath != null)
+				generatedUri = localRC.getDefaultBaseURI() + relativePath + "/" + getFilename();
+			else
+				generatedUri = localRC.getDefaultBaseURI() + "/" + getFilename();
+			return generatedUri;
+		}
+		else
+			return modelUri;
+
 	}
 
 	public void setModelUri(String modelUri) {
@@ -241,11 +268,13 @@ public abstract class TypeAwareModelSlotInstanceConfiguration<M extends FlexoMod
 			String oldValue = this.filename;
 			this.filename = filename;
 			getPropertyChangeSupport().firePropertyChange("filename", oldValue, filename);
+			getPropertyChangeSupport().firePropertyChange("modelUri", oldValue, filename);
 		}
 	}
 
 	@Override
 	public boolean isValidConfiguration() {
+		String uri = getModelUri();
 		if (!super.isValidConfiguration()) {
 			return false;
 		}
@@ -257,12 +286,12 @@ public abstract class TypeAwareModelSlotInstanceConfiguration<M extends FlexoMod
 			return true;
 		}
 		else if (getOption() == DefaultModelSlotInstanceConfigurationOption.CreatePrivateNewModel) {
-			if (StringUtils.isEmpty(getModelUri())) {
+			if (StringUtils.isEmpty(uri)) {
 				setErrorMessage(getLocales().localizedForKey("please_supply_valid_uri"));
 				return false;
 			}
 			try {
-				new URL(getModelUri());
+				new URL(uri);
 			} catch (MalformedURLException e) {
 				setErrorMessage(getLocales().localizedForKey("malformed_uri"));
 				return false;
@@ -278,12 +307,12 @@ public abstract class TypeAwareModelSlotInstanceConfiguration<M extends FlexoMod
 				setErrorMessage(getLocales().localizedForKey("please_select_a_resource_center"));
 				return false;
 			}
-			if (StringUtils.isEmpty(getModelUri())) {
+			if (StringUtils.isEmpty(uri)) {
 				setErrorMessage(getLocales().localizedForKey("please_supply_valid_uri"));
 				return false;
 			}
 			try {
-				new URL(getModelUri());
+				new URL(uri);
 			} catch (MalformedURLException e) {
 				setErrorMessage(getLocales().localizedForKey("malformed_uri"));
 				return false;
