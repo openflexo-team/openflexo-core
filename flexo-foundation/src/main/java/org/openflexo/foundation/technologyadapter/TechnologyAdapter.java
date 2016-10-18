@@ -262,11 +262,27 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 						logger.info("> Look-up resource " + r.getImplementedInterface().getSimpleName() + " " + r.getURI());
 					}
 				}
+				if (resourceCenter.isDirectory(serializationArtefact)) {
+					try {
+						foundFolder(resourceCenter, serializationArtefact);
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
 			}
 		}
 
 		resourceCenterHasBeenInitialized(resourceCenter);
 
+	}
+
+	protected <I> void foundFolder(FlexoResourceCenter<I> resourceCenter, I folder) throws IOException {
+		if (resourceCenter.isDirectory(folder)) {
+			TechnologyAdapterGlobalRepository globalRepository = getGlobalRepository(resourceCenter);
+			RepositoryFolder newRepositoryFolder = globalRepository.getRepositoryFolder(folder, true);
+			System.out.println("Hop, on a aussi le folder " + newRepositoryFolder.getPathRelativeToRepository());
+		}
 	}
 
 	protected void resourceCenterHasBeenInitialized(FlexoResourceCenter<?> rc) {
@@ -346,6 +362,15 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 				if (resource != null) {
 					hasBeenLookedUp = true;
 				}
+				else if (resourceCenter.isDirectory(serializationArtefact)) {
+					try {
+						foundFolder(resourceCenter, serializationArtefact);
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+
 			}
 		}
 		return hasBeenLookedUp;

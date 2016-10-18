@@ -38,6 +38,7 @@
 
 package org.openflexo.foundation.fml;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -139,4 +140,13 @@ public class FMLTechnologyAdapter extends TechnologyAdapter {
 		super.notifyRepositoryStructureChanged();
 		getPropertyChangeSupport().firePropertyChange("getViewPointRepositories()", null, getViewPointRepositories());
 	}
+
+	@Override
+	protected <I> void foundFolder(FlexoResourceCenter<I> resourceCenter, I folder) throws IOException {
+		super.foundFolder(resourceCenter, folder);
+		if (resourceCenter.isDirectory(folder)) {
+			getViewPointRepository(resourceCenter).getRepositoryFolder(folder, true);
+		}
+	}
+
 }
