@@ -256,6 +256,7 @@ public abstract class TypeAwareModelSlotInstanceConfiguration<M extends FlexoMod
 			String oldValue = this.relativePath;
 			this.relativePath = relativePath;
 			getPropertyChangeSupport().firePropertyChange("relativePath", oldValue, relativePath);
+			getPropertyChangeSupport().firePropertyChange("modelUri", oldValue, filename);
 		}
 	}
 

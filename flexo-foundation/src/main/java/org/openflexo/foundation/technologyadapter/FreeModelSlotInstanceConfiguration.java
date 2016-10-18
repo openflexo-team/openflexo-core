@@ -225,8 +225,6 @@ public class FreeModelSlotInstanceConfiguration<RD extends ResourceData<RD> & Te
 				generatedUri = localRC.getDefaultBaseURI() + relativePath + "/" + getFilename();
 			else
 				generatedUri = localRC.getDefaultBaseURI() + "/" + getFilename();
-
-			getPropertyChangeSupport().firePropertyChange("modelUri", resourceUri, generatedUri);
 			return generatedUri;
 		}
 		else
@@ -250,6 +248,7 @@ public class FreeModelSlotInstanceConfiguration<RD extends ResourceData<RD> & Te
 			String oldValue = this.relativePath;
 			this.relativePath = relativePath;
 			getPropertyChangeSupport().firePropertyChange("relativePath", oldValue, relativePath);
+			getPropertyChangeSupport().firePropertyChange("resourceUri", oldValue, relativePath);
 		}
 	}
 
@@ -263,7 +262,7 @@ public class FreeModelSlotInstanceConfiguration<RD extends ResourceData<RD> & Te
 			String oldValue = this.filename;
 			this.filename = filename;
 			getPropertyChangeSupport().firePropertyChange("filename", oldValue, filename);
-			getPropertyChangeSupport().firePropertyChange("modelUri", oldValue, filename);
+			getPropertyChangeSupport().firePropertyChange("resourceUri", oldValue, filename);
 		}
 	}
 
