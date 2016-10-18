@@ -329,7 +329,8 @@ public class FMLRTTechnologyAdapter extends TechnologyAdapter {
 	@Override
 	protected <I> void foundFolder(FlexoResourceCenter<I> resourceCenter, I folder) throws IOException {
 		super.foundFolder(resourceCenter, folder);
-		if (resourceCenter.isDirectory(folder)) {
+		if (resourceCenter.isDirectory(folder)
+				&& !isContainedInDirectoryWithSuffix(resourceCenter, folder, ViewResourceFactory.VIEW_SUFFIX)) {
 			getViewRepository(resourceCenter).getRepositoryFolder(folder, true);
 		}
 	}

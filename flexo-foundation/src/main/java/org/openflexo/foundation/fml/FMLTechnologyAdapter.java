@@ -144,7 +144,8 @@ public class FMLTechnologyAdapter extends TechnologyAdapter {
 	@Override
 	protected <I> void foundFolder(FlexoResourceCenter<I> resourceCenter, I folder) throws IOException {
 		super.foundFolder(resourceCenter, folder);
-		if (resourceCenter.isDirectory(folder)) {
+		if (resourceCenter.isDirectory(folder)
+				&& !isContainedInDirectoryWithSuffix(resourceCenter, folder, ViewPointResourceFactory.VIEWPOINT_SUFFIX)) {
 			getViewPointRepository(resourceCenter).getRepositoryFolder(folder, true);
 		}
 	}

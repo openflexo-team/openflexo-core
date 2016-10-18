@@ -285,6 +285,17 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 		}
 	}
 
+	protected <I> boolean isContainedInDirectoryWithSuffix(FlexoResourceCenter<I> resourceCenter, I folder, String suffix) {
+		I current = folder;
+		while (current != null && !current.equals(resourceCenter.getBaseArtefact())) {
+			if (resourceCenter.retrieveName(current).endsWith(suffix)) {
+				return true;
+			}
+			current = resourceCenter.getContainer(current);
+		}
+		return false;
+	}
+
 	protected void resourceCenterHasBeenInitialized(FlexoResourceCenter<?> rc) {
 		// Call it to update the current repositories
 		if (!SwingUtilities.isEventDispatchThread()) {
