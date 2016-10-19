@@ -435,8 +435,13 @@ public abstract class ResourceRepository<R extends FlexoResource<?>, I> extends 
 	 */
 	public RepositoryFolder<R, I> getRepositoryFolder(I serializationArtefact, boolean createWhenNonExistent) throws IOException {
 		List<String> pathTo = getResourceCenter().getPathTo(serializationArtefact);
-		pathTo.add(getResourceCenter().retrieveName(serializationArtefact));
-		return getRepositoryFolder(pathTo, createWhenNonExistent);
+		// NPE Protection when serializationArtefact is not in the given resourceCenter
+		if (pathTo != null) {
+			pathTo.add(getResourceCenter().retrieveName(serializationArtefact));
+			return getRepositoryFolder(pathTo, createWhenNonExistent);
+		}
+		else
+			return null;
 	}
 
 	/**
