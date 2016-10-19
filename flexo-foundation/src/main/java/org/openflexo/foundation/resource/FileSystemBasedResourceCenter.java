@@ -94,7 +94,8 @@ import org.openflexo.xml.XMLRootElementReader;
  * @author sylvain
  * 
  */
-public abstract class FileSystemBasedResourceCenter extends ResourceRepository<FlexoResource<?>, File>implements FlexoResourceCenter<File> {
+public abstract class FileSystemBasedResourceCenter extends ResourceRepository<FlexoResource<?>, File>
+		implements FlexoResourceCenter<File> {
 
 	protected static final Logger logger = Logger.getLogger(FileSystemBasedResourceCenter.class.getPackage().getName());
 
@@ -602,7 +603,7 @@ public abstract class FileSystemBasedResourceCenter extends ResourceRepository<F
 			}
 		}
 		if (!fileIsStillToBeIgnored) {
-			//logger.info("End of file ignoring: " + file);
+			// logger.info("End of file ignoring: " + file);
 			willBeWrittenFiles.remove(file);
 		}
 
@@ -965,7 +966,7 @@ public abstract class FileSystemBasedResourceCenter extends ResourceRepository<F
 	@Override
 	public XMLRootElementInfo getXMLRootElementInfo(File serializationArtefact) {
 		if (!serializationArtefact.exists()) {
-			logger.warning("Could not extract XMLRootElementInfo from a non existant file: " + serializationArtefact);
+			// logger.warning("Could not extract XMLRootElementInfo from a non existant file: " + serializationArtefact);
 			return null;
 		}
 		XMLRootElementReader reader = new XMLRootElementReader();
