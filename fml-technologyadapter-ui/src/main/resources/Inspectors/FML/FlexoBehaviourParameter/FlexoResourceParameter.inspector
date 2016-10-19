@@ -1,46 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Panel className="org.openflexo.gina.utils.FIBInspector" layout="border"
-	titleFont="SansSerif,0,12" darkLevel="0"
-	dataClassName="org.openflexo.foundation.fml.FlexoResourceParameter"
-	controllerClassName="org.openflexo.fml.controller.FMLFIBInspectorController"
-	font="SansSerif,0,12" name="Inspector">
-	<TabPanel name="Tab" constraints="border(location=center)">
-		<Tab title="Basic" layout="twocols" titleFont="SansSerif,0,11"
-			darkLevel="0" index="0" font="SansSerif,0,11" useScrollBar="true"
-			horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED"
-			verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED" name="BasicTab">
-			<Label label="technology_adapter" align="right" index="12"
-				constraints="twocols(anchor=center;expandHorizontally=false;expandVertically=false;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=12;insetsBottom=0;insetsLeft=2;insetsRight=0;insetsTop=5;location=left;padX=0;padY=0;weightX=0.0;weightY=0.0)"
-				localize="true" />
-			<DropDown index="1" data="data.resourceTechnologyAdapter"
-				constraints="twocols(anchor=west;expandHorizontally=false;expandVertically=false;fill=none;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=11;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right;padX=0;padY=0;weightX=0.0;weightY=0.0)"
-				visible="" name="TechynologyAdapterDropDown" format="object.name"
-				icon="controller.iconForObject(object)" localize="true"
-				list="data.serviceManager.technologyAdapterService.technologyAdapters"
-				showIcon="true"
-				iteratorClassName="org.openflexo.foundation.technologyadapter.TechnologyAdapter"
-				autoSelectFirstRow="true">
-			</DropDown>
-			<Label label="resource_type" align="right" index="2"
-				constraints="twocols(anchor=center;expandHorizontally=false;expandVertically=false;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=12;insetsBottom=0;insetsLeft=2;insetsRight=0;insetsTop=5;location=left;padX=0;padY=0;weightX=0.0;weightY=0.0)"
-				localize="true" />
-			<DropDown index="1" data="data.technologyAdapterResourceType"
-				constraints="twocols(anchor=west;expandHorizontally=false;expandVertically=false;fill=none;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=11;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right;padX=0;padY=0;weightX=0.0;weightY=0.0)"
-				visible="" name="TechynologyAdapterDropDown" format="object.simpleName" localize="true"
-				list="data.resourceTechnologyAdapter.availableResourceTypes"
-				showIcon="true"
-				iteratorClassName="java.lang.Class"
-				autoSelectFirstRow="true">
-			</DropDown>
-		</Tab>
-		<Tab title="Advanced" layout="twocols" titleFont="SansSerif,0,11"
-			darkLevel="0" index="2" font="SansSerif,0,11" useScrollBar="true"
-			horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED"
-			verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED" name="AdvancedTab" />
-	</TabPanel>
-	<LocalizedDictionary>
-		<Localized key="Advanced" lang="French" value="Avancé" />
-		<Localized key="Basic" lang="French" value="Basique" />
-	</LocalizedDictionary>
-	<Parameter name="title" value="Resource Parameter" />
-</Panel>
+<Inspector xmlns:p="http://www.openflexo.org/pamela/" id="0" p:modelEntity="org.openflexo.gina.utils.FIBInspector" align="left" borderLeft="0" trackViewPortHeight="true" borderBottom="0" border="empty" sizeAdjustment="OriginalSize" controllerClassName="org.openflexo.fml.controller.FMLFIBInspectorController" borderRight="0" name="Inspector" borderTop="0" trackViewPortWidth="true" titleFont="SansSerif,0,12" layout="border" font="SansSerif,0,12">
+  <LocalizedDictionary id="1">
+    <Localized id="2" lang="French" value="Avancé" key="Advanced" />
+    <Localized id="3" lang="French" value="Basique" key="Basic" />
+  </LocalizedDictionary>
+  <Parameter id="4" name="title" value="Resource Parameter" />
+  <TabPanel id="5" constraints="border(location=center)" name="Tab">
+    <Tab id="6" useScrollBar="true" align="left" borderLeft="0" horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED" trackViewPortHeight="true" borderBottom="0" border="empty" sizeAdjustment="OriginalSize" index="0" borderRight="0" name="BasicTab" verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED" title="Basic" borderTop="0" trackViewPortWidth="true" titleFont="SansSerif,0,11" layout="twocols" font="SansSerif,0,11">
+      <Label id="7" localize="true" align="right" constraints="twocols(anchor=center;expandHorizontally=false;expandVertically=false;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=12;insetsBottom=0;insetsLeft=2;insetsRight=0;insetsTop=5;location=left;padX=0;padY=0;weightX=0.0;weightY=0.0)" enable="controller.flexoController.isEditable(data)" index="12" label="technology_adapter" name="TechnologyAdapterLabel" />
+      <DropDown id="8" showText="true" constraints="twocols(anchor=west;expandHorizontally=false;expandVertically=false;fill=none;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=11;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right;padX=0;padY=0;weightX=0.0;weightY=0.0)" enable="controller.flexoController.isEditable(data)" format="object.name" index="1" list="data.serviceManager.technologyAdapterService.technologyAdapters" name="TechynologyAdapterDropDown" localize="true" icon="controller.iconForObject(object)" iteratorClassName="org.openflexo.foundation.technologyadapter.TechnologyAdapter" data="data.resourceTechnologyAdapter" showIcon="true" />
+      <Label id="9" localize="true" align="right" constraints="twocols(anchor=center;expandHorizontally=false;expandVertically=false;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=12;insetsBottom=0;insetsLeft=2;insetsRight=0;insetsTop=5;location=left;padX=0;padY=0;weightX=0.0;weightY=0.0)" enable="controller.flexoController.isEditable(data)" index="2" label="resource_type" name="ResourceTypeLabel" />
+      <DropDown id="10" showText="true" constraints="twocols(anchor=west;expandHorizontally=false;expandVertically=false;fill=none;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=11;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right;padX=0;padY=0;weightX=0.0;weightY=0.0)" enable="controller.flexoController.isEditable(data)" format="object.simpleName" index="1" list="data.resourceTechnologyAdapter.availableResourceTypes" name="TechynologyAdapterDropDown" localize="true" iteratorClassName="java.lang.Class" data="data.technologyAdapterResourceType" showIcon="true" />
+    </Tab>
+    <Tab id="11" useScrollBar="true" align="left" borderLeft="0" horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED" trackViewPortHeight="true" borderBottom="0" border="empty" sizeAdjustment="OriginalSize" index="2" borderRight="0" name="AdvancedTab" verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED" title="Advanced" borderTop="0" trackViewPortWidth="true" titleFont="SansSerif,0,11" layout="twocols" font="SansSerif,0,11" />
+  </TabPanel>
+  <FIBVariable id="12" name="data" type="org.openflexo.foundation.fml.FlexoResourceParameter" />
+</Inspector>
