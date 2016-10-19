@@ -128,11 +128,11 @@ public class FMLRTTechnologyAdapter extends TechnologyAdapter {
 	}
 
 	public <I> ViewLibrary<I> getViewRepository(FlexoResourceCenter<I> resourceCenter) {
-		ViewLibrary<I> returned = (ViewLibrary<I>) resourceCenter.retrieveRepository(ViewRepository.class, this);
+		ViewLibrary<I> returned = (ViewLibrary<I>) resourceCenter.retrieveRepository(ViewLibrary.class, this);
 		if (returned == null) {
 			returned = new ViewLibrary(this, resourceCenter);
 			resourceCenter.registerRepository(returned, ViewLibrary.class, this);
-			resourceCenter.registerRepository(returned, ViewRepository.class, this);
+			// resourceCenter.registerRepository(returned, ViewRepository.class, this);
 			// returned = new ViewRepository<I>(this, resourceCenter);
 			// resourceCenter.registerRepository(returned, ViewPointRepository.class, this);
 		}
