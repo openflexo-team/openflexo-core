@@ -45,6 +45,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.image.RGBImageFilter;
 import java.beans.PropertyChangeSupport;
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -67,6 +68,9 @@ import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoServiceManager;
+import org.openflexo.foundation.resource.FlexoResourceCenter;
+import org.openflexo.foundation.resource.RepositoryFolder;
+import org.openflexo.foundation.resource.ResourceRepository;
 import org.openflexo.gina.ApplicationFIBLibrary.ApplicationFIBLibraryImpl;
 import org.openflexo.gina.controller.FIBController;
 import org.openflexo.gina.model.FIBComponent;
@@ -84,6 +88,7 @@ import org.openflexo.gina.view.widget.FIBListWidget;
 import org.openflexo.icon.IconFactory;
 import org.openflexo.icon.IconLibrary;
 import org.openflexo.icon.IconMarker;
+import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.rm.Resource;
 import org.openflexo.swing.TextFieldCustomPopup;
 import org.openflexo.toolbox.HasPropertyChangeSupport;
@@ -614,6 +619,17 @@ public abstract class FIBFlexoObjectSelector<T extends FlexoObject> extends Text
 			selector.setSelectedObject(null);
 			selector.setSelectedValue(null);
 			selector.apply();
+		}
+
+		public <I> RepositoryFolder<?, I> createNewFolder(RepositoryFolder<?, I> parentFolder) throws IOException {
+			String name = FlexoController.askForString(selector, FlexoLocalization.getMainLocalizer().localizedForKey("new_folder_name"));
+			ResourceRepository<?, I> repo = parentFolder.getResourceRepository();
+			FlexoResourceCenter<I> rc = repo.getResourceCenter();
+			I newFolderArtefact = rc.createDirectory(name, parentFolder.getSerializationArtefact());
+			RepositoryFolder<?, I> newRepositoryFolder = repo.getRepositoryFolder(newFolderArtefact, true);
+			selector.openPopup();
+			selector.setEditedObject(newRepositoryFolder);
+			return newRepositoryFolder;
 		}
 
 		protected final Icon decorateIcon(FlexoObject object, Icon returned) {

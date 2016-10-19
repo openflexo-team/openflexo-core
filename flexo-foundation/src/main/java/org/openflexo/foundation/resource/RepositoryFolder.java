@@ -115,7 +115,7 @@ public class RepositoryFolder<R extends FlexoResource<?>, I> extends DefaultFlex
 
 	public String getPathRelativeToRepository() {
 		if (getParentFolder() != null) {
-			return getParentFolder().getPathRelativeToRepository();
+			return getParentFolder().getPathRelativeToRepository() + "/" + getName();
 		}
 		return getName();
 	}

@@ -262,11 +262,41 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 						logger.info("> Look-up resource " + r.getImplementedInterface().getSimpleName() + " " + r.getURI());
 					}
 				}
+				if (resourceCenter.isDirectory(serializationArtefact)) {
+					try {
+						foundFolder(resourceCenter, serializationArtefact);
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
 			}
 		}
 
 		resourceCenterHasBeenInitialized(resourceCenter);
 
+	}
+
+	protected final <I> void foundFolder(FlexoResourceCenter<I> resourceCenter, I folder) throws IOException {
+		if (resourceCenter.isDirectory(folder) && !isFolderIgnorable(resourceCenter, folder)) {
+			TechnologyAdapterGlobalRepository globalRepository = getGlobalRepository(resourceCenter);
+			RepositoryFolder newRepositoryFolder = globalRepository.getRepositoryFolder(folder, true);
+			for (ResourceRepository<?, I> repository : (List<ResourceRepository<?, I>>) (List) getAllRepositories()) {
+				repository.getRepositoryFolder(folder, true);
+			}
+			System.out.println("Hop, on a aussi le folder " + newRepositoryFolder.getPathRelativeToRepository());
+		}
+	}
+
+	protected <I> boolean isContainedInDirectoryWithSuffix(FlexoResourceCenter<I> resourceCenter, I folder, String suffix) {
+		I current = folder;
+		while (current != null && !current.equals(resourceCenter.getBaseArtefact())) {
+			if (resourceCenter.retrieveName(current).endsWith(suffix)) {
+				return true;
+			}
+			current = resourceCenter.getContainer(current);
+		}
+		return false;
 	}
 
 	protected void resourceCenterHasBeenInitialized(FlexoResourceCenter<?> rc) {
@@ -331,6 +361,10 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 
 	public abstract <I> boolean isIgnorable(FlexoResourceCenter<I> resourceCenter, I contents);
 
+	public <I> boolean isFolderIgnorable(FlexoResourceCenter<I> resourceCenter, I contents) {
+		return isIgnorable(resourceCenter, contents);
+	}
+
 	/**
 	 * Called when a new serialization artefact has been discovered
 	 * 
@@ -346,6 +380,15 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 				if (resource != null) {
 					hasBeenLookedUp = true;
 				}
+				else if (resourceCenter.isDirectory(serializationArtefact)) {
+					try {
+						foundFolder(resourceCenter, serializationArtefact);
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+
 			}
 		}
 		return hasBeenLookedUp;
@@ -546,7 +589,7 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 	protected <R extends FlexoResource<?>, I> RepositoryFolder<R, I> retrieveRepositoryFolder(ResourceRepository<R, I> repository,
 			I serializationArtefact) {
 		try {
-			return repository.getRepositoryFolder(serializationArtefact, true);
+			return repository.getParentRepositoryFolder(serializationArtefact, true);
 		} catch (IOException e) {
 			e.printStackTrace();
 			return repository.getRootFolder();
@@ -606,11 +649,11 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 	 * @param technologyAdapter
 	 * @return
 	 */
-	public List<ResourceRepository<?, ?>> getAllRepositories() {
-		List<ResourceRepository<?, ?>> returned = new ArrayList<>();
+	public <I> List<ResourceRepository<?, I>> getAllRepositories() {
+		List<ResourceRepository<?, I>> returned = new ArrayList<>();
 		for (FlexoResourceCenter<?> rc : getTechnologyAdapterService().getServiceManager().getResourceCenterService()
 				.getResourceCenters()) {
-			Collection<? extends ResourceRepository<?, ?>> repCollection = rc.getRegistedRepositories(this);
+			Collection<? extends ResourceRepository<?, I>> repCollection = (Collection) rc.getRegistedRepositories(this, true);
 			if (repCollection != null) {
 				returned.addAll(repCollection);
 			}
@@ -841,6 +884,12 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+	/**
+	 * Hook to force the creation of all repositories (even empty)
+	 */
+	public void ensureAllRepositoriesAreCreated(FlexoResourceCenter<?> rc) {
 	}
 
 }

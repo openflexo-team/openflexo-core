@@ -143,7 +143,7 @@ public abstract class FileSystemBasedResourceCenter extends ResourceRepository<F
 
 		RepositoryFolder<?, File> folder = null;
 		try {
-			folder = getRepositoryFolder(aFile, false);
+			folder = getParentRepositoryFolder(aFile, false);
 		} catch (IOException e) {
 			e.printStackTrace();
 			return null;
@@ -206,7 +206,7 @@ public abstract class FileSystemBasedResourceCenter extends ResourceRepository<F
 	protected <R extends FlexoResource<?>> RepositoryFolder<R, File> retrieveRepositoryFolder(ResourceRepository<R, File> repository,
 			File aFile) {
 		try {
-			return repository.getRepositoryFolder(aFile, true);
+			return repository.getParentRepositoryFolder(aFile, true);
 		} catch (IOException e) {
 			e.printStackTrace();
 			return repository.getRootFolder();
@@ -637,7 +637,10 @@ public abstract class FileSystemBasedResourceCenter extends ResourceRepository<F
 	}
 
 	private HashMap<Class<? extends ResourceRepository<?, File>>, ResourceRepository<?, File>> getRepositoriesForAdapter(
-			TechnologyAdapter technologyAdapter) {
+			TechnologyAdapter technologyAdapter, boolean considerEmptyRepositories) {
+		if (considerEmptyRepositories) {
+			technologyAdapter.ensureAllRepositoriesAreCreated(this);
+		}
 		HashMap<Class<? extends ResourceRepository<?, File>>, ResourceRepository<?, File>> map = repositories.get(technologyAdapter);
 		if (map == null) {
 			map = new HashMap<Class<? extends ResourceRepository<?, File>>, ResourceRepository<?, File>>();
@@ -650,7 +653,7 @@ public abstract class FileSystemBasedResourceCenter extends ResourceRepository<F
 	public final <R extends ResourceRepository<?, File>> R retrieveRepository(Class<? extends R> repositoryType,
 			TechnologyAdapter technologyAdapter) {
 		HashMap<Class<? extends ResourceRepository<?, File>>, ResourceRepository<?, File>> map = getRepositoriesForAdapter(
-				technologyAdapter);
+				technologyAdapter, false);
 
 		return (R) map.get(repositoryType);
 	}
@@ -660,12 +663,12 @@ public abstract class FileSystemBasedResourceCenter extends ResourceRepository<F
 			TechnologyAdapter technologyAdapter) {
 
 		HashMap<Class<? extends ResourceRepository<?, File>>, ResourceRepository<?, File>> map = getRepositoriesForAdapter(
-				technologyAdapter);
+				technologyAdapter, false);
 
 		if (map.get(repositoryType) == null) {
 			map.put(repositoryType, repository);
 			getPropertyChangeSupport().firePropertyChange("getRegisteredRepositories(TechnologyAdapter)", null,
-					getRegistedRepositories(technologyAdapter));
+					getRegistedRepositories(technologyAdapter, false));
 			// Call it to update the current repositories
 			technologyAdapter.notifyRepositoryStructureChanged();
 		}
@@ -675,8 +678,9 @@ public abstract class FileSystemBasedResourceCenter extends ResourceRepository<F
 	}
 
 	@Override
-	public Collection<ResourceRepository<?, File>> getRegistedRepositories(TechnologyAdapter technologyAdapter) {
-		return getRepositoriesForAdapter(technologyAdapter).values();
+	public Collection<ResourceRepository<?, File>> getRegistedRepositories(TechnologyAdapter technologyAdapter,
+			boolean considerEmptyRepositories) {
+		return getRepositoriesForAdapter(technologyAdapter, considerEmptyRepositories).values();
 	}
 
 	@Override
@@ -1016,7 +1020,7 @@ public abstract class FileSystemBasedResourceCenter extends ResourceRepository<F
 			candidateFile = ((FileFlexoIODelegate) ioDelegate).getFile();
 		}
 		try {
-			RepositoryFolder<R, File> returned = resourceRepository.getRepositoryFolder(candidateFile, true);
+			RepositoryFolder<R, File> returned = resourceRepository.getParentRepositoryFolder(candidateFile, true);
 			/*if (!returned.getSerializationArtefact().equals(candidateFile.getParentFile())
 					&& !returned.getSerializationArtefact().getAbsolutePath().contains("target")) {
 				System.out.println("N'importe quoi, on met " + candidateFile + " dans " + returned.getSerializationArtefact());
