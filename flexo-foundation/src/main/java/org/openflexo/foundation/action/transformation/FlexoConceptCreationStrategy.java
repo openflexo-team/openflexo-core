@@ -111,4 +111,7 @@ public abstract class FlexoConceptCreationStrategy<A extends AbstractDeclareInFl
 		return newFlexoConcept;
 	}
 
+	public abstract String getPresentationName();
+
+	public abstract String getDescriptionKey();
 }

@@ -88,6 +88,7 @@ public abstract class AbstractTransformationWizard<A extends TransformationActio
 
 			if (!getStrategy().isValid()) {
 				setIssueMessage(getStrategy().getIssueMessage(), getStrategy().getIssueMessageType());
+				return false;
 			}
 			return true;
 		}

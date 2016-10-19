@@ -51,6 +51,7 @@ import org.openflexo.foundation.action.transformation.FlexoRoleSettingStrategy;
 import org.openflexo.foundation.action.transformation.TransformationStrategy;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.gina.annotation.FIBPanel;
+import org.openflexo.toolbox.StringUtils;
 import org.openflexo.view.controller.FlexoController;
 
 public abstract class AbstractDeclareInFlexoConceptWizard<A extends AbstractDeclareInFlexoConcept<A, ?, ?>>
@@ -60,8 +61,9 @@ public abstract class AbstractDeclareInFlexoConceptWizard<A extends AbstractDecl
 	private static final Logger logger = Logger.getLogger(AbstractDeclareInFlexoConceptWizard.class.getPackage().getName());
 
 	private final ChooseOption chooseOption;
-	private ChooseNewConceptCreationStrategy chooseNewConceptCreationStrategy;
 	private TransformationConfigurationStep<? extends TransformationStrategy<A>> detailedStep;
+
+	private AbstractChooseNewConceptCreationStrategy chooseNewConceptCreationStrategy;
 
 	public AbstractDeclareInFlexoConceptWizard(A action, FlexoController controller) {
 		super(action, controller);
@@ -187,13 +189,12 @@ public abstract class AbstractDeclareInFlexoConceptWizard<A extends AbstractDecl
 	}
 
 	/**
-	 * This step is used to select option
+	 * This step is used to select new concept creation strategy
 	 * 
 	 * @author sylvain
 	 *
 	 */
-	@FIBPanel("Fib/Wizard/DeclareInFlexoConcept/ChooseCreationStrategy.fib")
-	public class ChooseNewConceptCreationStrategy extends WizardStep {
+	public abstract class AbstractChooseNewConceptCreationStrategy extends WizardStep {
 
 		public ApplicationContext getServiceManager() {
 			return getController().getApplicationContext();
@@ -215,11 +216,30 @@ public abstract class AbstractDeclareInFlexoConceptWizard<A extends AbstractDecl
 
 		@Override
 		public boolean isValid() {
+			if (StringUtils.isEmpty(getFlexoConceptName())) {
+				setIssueMessage(getAction().getLocales().localizedForKey("please_choose_a_name_for_the_new_created_flexo_concept"),
+						IssueMessageType.ERROR);
+				return false;
+			}
 			if (getCreationStrategy() == null) {
 				setIssueMessage(getAction().getLocales().localizedForKey("please_choose_a_creation_strategy"), IssueMessageType.ERROR);
 				return false;
 			}
 			return true;
+		}
+
+		public String getFlexoConceptName() {
+			return getCreationStrategy().getFlexoConceptName();
+		}
+
+		public void setFlexoConceptName(String flexoConceptName) {
+			if (!flexoConceptName.equals(getFlexoConceptName())) {
+				String oldValue = getFlexoConceptName();
+				getCreationStrategy().setFlexoConceptName(flexoConceptName);
+				getPropertyChangeSupport().firePropertyChange("flexoConceptName", oldValue, flexoConceptName);
+				checkValidity();
+			}
+
 		}
 
 		public List<FlexoConceptCreationStrategy<A>> getAvailableFlexoConceptCreationStrategies() {
@@ -232,6 +252,7 @@ public abstract class AbstractDeclareInFlexoConceptWizard<A extends AbstractDecl
 
 		public void setCreationStrategy(FlexoConceptCreationStrategy<A> creationStrategy) {
 			if (creationStrategy != getCreationStrategy()) {
+				creationStrategy.setFlexoConceptName(getFlexoConceptName());
 				FlexoConceptCreationStrategy<A> oldValue = getCreationStrategy();
 				getAction().setFlexoConceptCreationStrategy(creationStrategy);
 				getPropertyChangeSupport().firePropertyChange("creationStrategy", oldValue, creationStrategy);
@@ -256,9 +277,7 @@ public abstract class AbstractDeclareInFlexoConceptWizard<A extends AbstractDecl
 
 	}
 
-	public ChooseNewConceptCreationStrategy chooseNewConceptCreationStrategy() {
-		return new ChooseNewConceptCreationStrategy();
-	}
+	public abstract AbstractChooseNewConceptCreationStrategy chooseNewConceptCreationStrategy();
 
 	public abstract TransformationConfigurationStep<? extends FlexoRoleSettingStrategy<A, ?, ?, ?>> replaceElementInExistingFlexoConcept();
 
