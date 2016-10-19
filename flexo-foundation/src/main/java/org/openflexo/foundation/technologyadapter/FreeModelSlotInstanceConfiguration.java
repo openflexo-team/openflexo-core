@@ -278,6 +278,7 @@ public class FreeModelSlotInstanceConfiguration<RD extends ResourceData<RD> & Te
 			TechnologyAdapterResource<RD, ?> oldValue = this.resource;
 			this.resource = resource;
 			getPropertyChangeSupport().firePropertyChange("resource", oldValue, resource);
+			getPropertyChangeSupport().firePropertyChange("resourceUri", oldValue, resource);
 		}
 		// System.out.println("filename=" + getFilename());
 	}
