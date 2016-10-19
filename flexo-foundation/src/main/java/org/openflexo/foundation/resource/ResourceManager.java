@@ -119,7 +119,8 @@ public class ResourceManager extends FlexoServiceImpl implements FlexoService {
 		logger.info("Initialized ResourceManager...");
 	}
 
-	public void registerResource(FlexoResource<?> resource) {
+	// It should be synchronized has the same resource could be registered several times in different threads
+	public synchronized void registerResource(FlexoResource<?> resource) {
 
 		if (resource.getResourceCenter() == null) {
 			logger.warning("Resource belonging to no ResourceCenter: " + resource);
