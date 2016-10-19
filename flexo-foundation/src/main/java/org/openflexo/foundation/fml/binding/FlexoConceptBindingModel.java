@@ -85,6 +85,8 @@ public class FlexoConceptBindingModel extends BindingModel implements PropertyCh
 
 	public static final String FLEXO_CONCEPT_INSTANCE_PROPERTY = "flexoConceptInstance";
 
+	public static final String FLEXO_CONCEPT_DESCRIPTION = "description";
+
 	/**
 	 * Build a new {@link BindingModel} dedicated to a FlexoConcept<br>
 	 * Note that this constructor is called for final {@link FlexoConcept} (not for {@link VirtualModel} or any of future subclass of
@@ -119,6 +121,9 @@ public class FlexoConceptBindingModel extends BindingModel implements PropertyCh
 		if (flexoConcept != null && flexoConcept.getPropertyChangeSupport() != null) {
 			flexoConcept.getPropertyChangeSupport().addPropertyChangeListener(this);
 		}
+		// Description variable comes from FlexoObject inheritance
+		addToBindingVariables(new BindingVariable(FLEXO_CONCEPT_DESCRIPTION, String.class));
+
 		propertyVariablesMap = new HashMap<FlexoProperty<?>, FlexoPropertyBindingVariable>();
 		updatePropertyVariables();
 		updateParentFlexoConceptListeners();
