@@ -258,8 +258,17 @@ public class ResourceConsistencyService extends FlexoServiceImpl {
 	}
 
 	public boolean multipleResourcesWithSameURI(FlexoResource<?> resource) {
-		if (resource.getURI() != null && getResources(resource.getURI()).size() > 1) {
-			return true;
+		String checkedURI = resource.getURI();
+		if (checkedURI != null) {
+			List<FlexoResource<?>> rscWithSameUri = getResources(checkedURI);
+			if (rscWithSameUri.size() > 1) {
+				boolean returned = false;
+				// check it is not a resource that has been registered several times
+				for (FlexoResource<?> r : rscWithSameUri) {
+					returned = returned || (r == resource);
+				}
+				return returned;
+			}
 		}
 		return false;
 	}

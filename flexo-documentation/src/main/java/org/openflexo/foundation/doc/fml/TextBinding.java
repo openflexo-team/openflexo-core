@@ -271,39 +271,46 @@ public interface TextBinding<D extends FlexoDocument<D, TA>, TA extends Technolo
 					performTextReplacementInMultilineContext(newStructure, actorReference);
 				}
 
-				else if (getTextSelection().isSingleParagraph()) {
-					FlexoDocRun<?, ?> templateStartRun = getTextSelection().getStartRun();
-					FlexoDocRun<?, ?> templateEndRun = getTextSelection().getEndRun();
-					List<String> newStructure = new ArrayList<String>();
-
-					if (getTextSelection().getStartCharacterIndex() > -1) {
-						if (templateStartRun instanceof FlexoTextRun) {
-							newStructure.add(((FlexoTextRun<?, ?>) templateStartRun).getText().substring(0,
-									getTextSelection().getStartCharacterIndex()));
-						}
-						newStructure.add(value);
-						if (getTextSelection().getEndCharacterIndex() > -1) {
-							if (templateEndRun instanceof FlexoTextRun) {
-								newStructure.add(((FlexoTextRun<?, ?>) templateEndRun).getText()
-										.substring(getTextSelection().getEndCharacterIndex()));
-							}
-						}
-					}
-					else {
-						newStructure.add(value);
-						if (getTextSelection().getEndCharacterIndex() > -1) {
-							if (templateEndRun instanceof FlexoTextRun) {
-								newStructure.add(((FlexoTextRun<?, ?>) templateEndRun).getText()
-										.substring(getTextSelection().getEndCharacterIndex()));
-							}
-						}
-					}
-
-					performTextReplacementInSingleParagraphContext(newStructure, actorReference);
-				}
-
 				else {
-					logger.warning("Inconsistent data: TextBinding with non-single-paragraph TextSelection must be declared as multiline");
+
+					TextSelection<D, TA> txtSelection = getTextSelection();
+					if (txtSelection.isSingleParagraph()) {
+						FlexoDocRun<?, ?> templateStartRun = txtSelection.getStartRun();
+						FlexoDocRun<?, ?> templateEndRun = txtSelection.getEndRun();
+						if (templateStartRun == templateEndRun) {
+							logger.warning("debut et fin sont identiques?");
+						}
+						List<String> newStructure = new ArrayList<String>();
+						if (txtSelection.getStartCharacterIndex() > -1) {
+							if (templateStartRun instanceof FlexoTextRun) {
+								newStructure.add(((FlexoTextRun<?, ?>) templateStartRun).getText().substring(0,
+										txtSelection.getStartCharacterIndex()));
+							}
+							newStructure.add(value);
+							if (txtSelection.getEndCharacterIndex() > -1) {
+								if (templateEndRun instanceof FlexoTextRun) {
+									newStructure.add(
+											((FlexoTextRun<?, ?>) templateEndRun).getText().substring(txtSelection.getEndCharacterIndex()));
+								}
+							}
+						}
+						else {
+							newStructure.add(value);
+							if (txtSelection.getEndCharacterIndex() > -1) {
+								if (templateEndRun instanceof FlexoTextRun) {
+									newStructure.add(
+											((FlexoTextRun<?, ?>) templateEndRun).getText().substring(txtSelection.getEndCharacterIndex()));
+								}
+							}
+						}
+
+						performTextReplacementInSingleParagraphContext(newStructure, actorReference);
+					}
+
+					else {
+						logger.warning(
+								"Inconsistent data: TextBinding with non-single-paragraph TextSelection must be declared as multiline");
+					}
 				}
 				// run.setText(value);
 

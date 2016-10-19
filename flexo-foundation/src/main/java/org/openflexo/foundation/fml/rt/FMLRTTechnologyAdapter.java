@@ -56,11 +56,13 @@ import org.openflexo.foundation.fml.annotations.DeclareTechnologySpecificTypes;
 import org.openflexo.foundation.fml.rm.ViewPointResource;
 import org.openflexo.foundation.fml.rt.rm.ViewResource;
 import org.openflexo.foundation.fml.rt.rm.ViewResourceFactory;
+import org.openflexo.foundation.fml.rt.rm.VirtualModelInstanceResource;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterBindingFactory;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterInitializationException;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapterResource;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 
 /**
@@ -84,6 +86,12 @@ public class FMLRTTechnologyAdapter extends TechnologyAdapter {
 	@Override
 	public String getName() {
 		return "FML@runtime technology adapter";
+	}
+
+	@Override
+	protected void initResourceFactories() {
+		super.initResourceFactories();
+		getAvailableResourceTypes().add((Class<? extends TechnologyAdapterResource<?, ?>>) VirtualModelInstanceResource.class);
 	}
 
 	@Override
@@ -128,11 +136,11 @@ public class FMLRTTechnologyAdapter extends TechnologyAdapter {
 	}
 
 	public <I> ViewLibrary<I> getViewRepository(FlexoResourceCenter<I> resourceCenter) {
-		ViewLibrary<I> returned = (ViewLibrary<I>) resourceCenter.retrieveRepository(ViewRepository.class, this);
+		ViewLibrary<I> returned = (ViewLibrary<I>) resourceCenter.retrieveRepository(ViewLibrary.class, this);
 		if (returned == null) {
 			returned = new ViewLibrary(this, resourceCenter);
 			resourceCenter.registerRepository(returned, ViewLibrary.class, this);
-			resourceCenter.registerRepository(returned, ViewRepository.class, this);
+			// resourceCenter.registerRepository(returned, ViewRepository.class, this);
 			// returned = new ViewRepository<I>(this, resourceCenter);
 			// resourceCenter.registerRepository(returned, ViewPointRepository.class, this);
 		}

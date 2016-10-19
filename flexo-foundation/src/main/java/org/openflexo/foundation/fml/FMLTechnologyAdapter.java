@@ -45,11 +45,13 @@ import java.util.logging.Logger;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.annotations.DeclareResourceTypes;
 import org.openflexo.foundation.fml.rm.ViewPointResourceFactory;
+import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterBindingFactory;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterInitializationException;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapterResource;
 
 /**
  * This class defines and implements the FML technology adapter (Flexo Modelling Language)
@@ -63,6 +65,12 @@ public class FMLTechnologyAdapter extends TechnologyAdapter {
 	private static final Logger logger = Logger.getLogger(FMLTechnologyAdapter.class.getPackage().getName());
 
 	public FMLTechnologyAdapter() throws TechnologyAdapterInitializationException {
+	}
+
+	@Override
+	protected void initResourceFactories() {
+		super.initResourceFactories();
+		getAvailableResourceTypes().add((Class<? extends TechnologyAdapterResource<?, ?>>) VirtualModelResource.class);
 	}
 
 	@Override

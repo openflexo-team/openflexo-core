@@ -282,7 +282,8 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 			TechnologyAdapterGlobalRepository globalRepository = getGlobalRepository(resourceCenter);
 			RepositoryFolder newRepositoryFolder = globalRepository.getRepositoryFolder(folder, true);
 			for (ResourceRepository<?, I> repository : (List<ResourceRepository<?, I>>) (List) getAllRepositories()) {
-				repository.getRepositoryFolder(folder, true);
+				if (repository.getResourceCenter() == resourceCenter)
+					repository.getRepositoryFolder(folder, true);
 			}
 			System.out.println("Hop, on a aussi le folder " + newRepositoryFolder.getPathRelativeToRepository());
 		}

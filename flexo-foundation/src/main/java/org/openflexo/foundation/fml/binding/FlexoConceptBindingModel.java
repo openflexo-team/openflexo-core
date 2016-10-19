@@ -48,6 +48,7 @@ import java.util.Map;
 
 import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.BindingVariable;
+import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.FlexoProperty;
@@ -119,6 +120,10 @@ public class FlexoConceptBindingModel extends BindingModel implements PropertyCh
 		if (flexoConcept != null && flexoConcept.getPropertyChangeSupport() != null) {
 			flexoConcept.getPropertyChangeSupport().addPropertyChangeListener(this);
 		}
+		// Description variables come from FlexoObject inheritance
+		addToBindingVariables(new BindingVariable(FlexoObject.DESCRIPTION_KEY, String.class));
+		addToBindingVariables(new BindingVariable(FlexoObject.SPECIFIC_DESCRIPTIONS_KEY, String.class));
+
 		propertyVariablesMap = new HashMap<FlexoProperty<?>, FlexoPropertyBindingVariable>();
 		updatePropertyVariables();
 		updateParentFlexoConceptListeners();
