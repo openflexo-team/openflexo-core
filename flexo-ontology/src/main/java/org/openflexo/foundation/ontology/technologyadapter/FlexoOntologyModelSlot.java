@@ -117,17 +117,19 @@ public interface FlexoOntologyModelSlot<M extends FlexoModel<M, MM> & IFlexoOnto
 		@Override
 		public IndividualRole<?> makeIndividualRole(IFlexoOntologyClass<?> type) {
 			IndividualRole<?> returned = makeFlexoRole(getIndividualRoleClass());
+			returned.setModelSlot(this);
 			returned.setOntologicType(type);
 			return returned;
 		}
 
 		@Override
-		public AddIndividual<? extends FlexoOntologyModelSlot<M, MM, TA>, ?> makeAddIndividualAction(IndividualRole<?> patternRole,
+		public AddIndividual<? extends FlexoOntologyModelSlot<M, MM, TA>, ?> makeAddIndividualAction(IndividualRole<?> flexoRole,
 				AbstractCreationScheme creationScheme) {
-			Class<? extends AddIndividual<? extends FlexoOntologyModelSlot<M, MM, TA>, ?>> addIndividualClass = (Class<? extends AddIndividual<? extends FlexoOntologyModelSlot<M, MM, TA>, ?>>) getEditionActionClass(AddIndividual.class);
-			AddIndividual<? extends FlexoOntologyModelSlot<M, MM, TA>, ?> returned = makeEditionAction(addIndividualClass);
+			Class<? extends AddIndividual<? extends FlexoOntologyModelSlot<M, MM, TA>, ?>> addIndividualClass = (Class<? extends AddIndividual<? extends FlexoOntologyModelSlot<M, MM, TA>, ?>>) getEditionActionClass(
+					AddIndividual.class);
+			AddIndividual returned = makeEditionAction(addIndividualClass);
+			returned.setModelSlot(this);
 
-			// returned.setAssignation(new DataBinding(patternRole.getRoleName()));
 			if (creationScheme.getParameter("uri") != null) {
 				returned.setIndividualName(new DataBinding("parameters.uri"));
 			}
