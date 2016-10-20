@@ -38,6 +38,10 @@
 
 package org.openflexo.foundation.action.transformation;
 
+import org.openflexo.connie.Bindable;
+import org.openflexo.connie.BindingFactory;
+import org.openflexo.connie.BindingModel;
+import org.openflexo.connie.DataBinding;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.toolbox.StringUtils;
 
@@ -48,7 +52,8 @@ import org.openflexo.toolbox.StringUtils;
  * @author sylvain
  *
  */
-public abstract class FlexoConceptCreationStrategy<A extends AbstractDeclareInFlexoConcept<A, ?, ?>> extends TransformationStrategy<A> {
+public abstract class FlexoConceptCreationStrategy<A extends AbstractDeclareInFlexoConcept<A, ?, ?>> extends TransformationStrategy<A>
+		implements Bindable {
 
 	private static final String NO_FLEXO_NAME_DEFINED = "no_flexo_name_defined";
 
@@ -114,4 +119,25 @@ public abstract class FlexoConceptCreationStrategy<A extends AbstractDeclareInFl
 	public abstract String getPresentationName();
 
 	public abstract String getDescriptionKey();
+
+	@Override
+	public BindingModel getBindingModel() {
+		return getTransformationAction().getVirtualModel().getBindingModel();
+	}
+
+	@Override
+	public BindingFactory getBindingFactory() {
+		return getTransformationAction().getVirtualModel().getBindingFactory();
+	}
+
+	@Override
+	public void notifiedBindingChanged(DataBinding<?> dataBinding) {
+		// By default, nothing to do
+	}
+
+	@Override
+	public void notifiedBindingDecoded(DataBinding<?> dataBinding) {
+		// By default, nothing to do
+	}
+
 }
