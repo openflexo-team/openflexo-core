@@ -39,6 +39,8 @@
 
 package org.openflexo.view.controller;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.List;
 import java.util.Vector;
 import java.util.logging.Logger;
@@ -63,6 +65,7 @@ import org.openflexo.foundation.action.PasteAction;
 import org.openflexo.foundation.action.PasteAction.PasteActionType;
 import org.openflexo.foundation.action.RemoveImportedProject;
 import org.openflexo.foundation.resource.FlexoProjectReference;
+import org.openflexo.foundation.resource.RepositoryFolder;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.gina.controller.FIBController;
 import org.openflexo.gina.model.FIBComponent;
@@ -73,6 +76,7 @@ import org.openflexo.gina.view.GinaViewFactory;
 import org.openflexo.icon.UtilsIconLibrary;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.model.exceptions.ModelDefinitionException;
+import org.openflexo.prefs.PresentationPreferences;
 import org.openflexo.selection.SelectionManager;
 import org.openflexo.view.FIBBrowserActionAdapter;
 
@@ -363,4 +367,54 @@ public class FlexoFIBController extends FIBController implements GraphicalFlexoO
 		return super.toString() + " FlexoController=" + getFlexoController();
 	}
 
+	private boolean preferencesRegistered = false;
+
+	protected void listenToPresentationPreferences() {
+		if (!preferencesRegistered) {
+			getFlexoController().getApplicationContext().getPresentationPreferences().getPropertyChangeSupport()
+					.addPropertyChangeListener(new PropertyChangeListener() {
+
+						@Override
+						public void propertyChange(PropertyChangeEvent evt) {
+							if (evt.getPropertyName().equals(PresentationPreferences.HIDE_EMPTY_FOLDERS)) {
+								// FlexoFIBController.this.getPropertyChangeSupport().firePropertyChange("shouldBeDisplayed(RepositoryFolder)",
+								// false, true);
+								FlexoFIBController.this.getPropertyChangeSupport()
+										.firePropertyChange("shouldBeDisplayed(RepositoryFolder<?,?>)", false, true);
+							}
+						}
+					});
+			preferencesRegistered = true;
+		}
+	}
+
+	public boolean hideEmptyFolders() {
+		listenToPresentationPreferences();
+		if (getFlexoController() == null) {
+			return false;
+		}
+		return getFlexoController().getApplicationContext().getPresentationPreferences().hideEmptyFolders();
+		// return true;
+	}
+
+	public boolean shouldBeDisplayed(RepositoryFolder<?, ?> folder) {
+		if (folder.isRootFolder()) {
+			return true;
+		}
+		if (!hideEmptyFolders()) {
+			return true;
+		}
+		if (folder.getResources().size() == 0) {
+			if (folder.getChildren().size() == 0) {
+				return false;
+			}
+			for (RepositoryFolder<?, ?> childFolder : folder.getChildren()) {
+				if (shouldBeDisplayed(childFolder)) {
+					return true;
+				}
+			}
+			return false;
+		}
+		return true;
+	}
 }

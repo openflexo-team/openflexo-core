@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Panel id="0" borderLeft="0" height="99" sizeAdjustment="OriginalSize" controllerClassName="org.openflexo.components.PreferencesDialog$PreferencesFIBController" border="empty" borderRight="0" trackViewPortWidth="true" align="left" width="99" borderBottom="0" titleFont="Lucida Grande,0,13" borderTop="5" trackViewPortHeight="true" layout="twocols" name="PresentationPreferencesPanel">
+  <Label id="1" name="UserIdentifierLabel" localize="true" align="left" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=20;insetsRight=0;insetsTop=0;location=left)" label="look_an_feel" />
+  <DropDown id="2" data="data.lookAndFeelInfo" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=20;insetsTop=0;location=right)" format="object.name" showText="true" iteratorClassName="javax.swing.UIManager$LookAndFeelInfo" showIcon="false" name="dropdown" list="data.availableLookAndFeels" />
+  <Label id="3" name="Label" localize="true" align="left" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=10;location=left)" label="browsers" />
+  <Panel id="4" borderLeft="0" sizeAdjustment="OriginalSize" border="rounded3d" borderRight="0" trackViewPortWidth="true" align="left" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=20;insetsTop=10;location=right)" borderBottom="0" borderTop="0" trackViewPortHeight="true" layout="twocols" name="FIBPanel">
+    <Label id="5" name="Label5" localize="true" align="left" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)" label="hide_empty_folders" />
+    <CheckBox id="6" selected="true" name="checkbox" data="data.hideEmptyFolders" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)" />
+    <Label id="7" name="Label4" localize="true" align="left" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)" label="synchronize_browsers" />
+    <CheckBox id="8" selected="true" name="checkbox" data="data.synchronizedBrowser" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)" />
+    <Label id="9" name="Label3" localize="true" align="left" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)" label="browser_font" />
+    <Font id="10" name="FontSelector" data="data.browserFont.font" sampleText="sample_for_this_font" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)" allowsNullText="define_color" />
+  </Panel>
+  <Label id="11" name="Label2" localize="true" align="left" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=10;location=left)" label="inspectors" />
+  <Panel id="12" borderLeft="0" sizeAdjustment="OriginalSize" border="rounded3d" borderRight="0" trackViewPortWidth="true" align="left" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=20;insetsTop=10;location=right)" borderBottom="0" borderTop="0" trackViewPortHeight="true" layout="twocols" name="FIBPanel2">
+    <Label id="13" name="Label6" localize="true" align="left" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)" label="always_on_top" />
+    <CheckBox id="14" selected="true" name="checkbox" data="data.inspectorAlwaysOnTop" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)" />
+    <Label id="15" name="Label7" localize="true" align="left" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)" label="inspectors_visible" />
+    <CheckBox id="16" selected="true" name="checkbox" data="data.inspectorVisible" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)" />
+  </Panel>
+  <FIBVariable id="17" name="data" type="org.openflexo.prefs.PresentationPreferences" />
+  <LocalizedDictionary id="18">
+    <Localized id="19" value="LookAndFeel" lang="English" key="look_an_feel" />
+    <Localized id="20" value="LookAndFeel" lang="Dutch" key="look_an_feel" />
+    <Localized id="21" value="LookAndFeel" lang="French" key="look_an_feel" />
+    <Localized id="22" value="Browsers" lang="English" key="browsers" />
+    <Localized id="23" value="Browsers" lang="Dutch" key="browsers" />
+    <Localized id="24" value="Navigateurs" lang="French" key="browsers" />
+    <Localized id="25" value="Hide empty folders" lang="English" key="hide_empty_folders" />
+    <Localized id="26" value="Hide empty folders" lang="Dutch" key="hide_empty_folders" />
+    <Localized id="27" value="Cacher les répertoires vides" lang="French" key="hide_empty_folders" />
+    <Localized id="28" value="Synchronize browsers" lang="English" key="synchronize_browsers" />
+    <Localized id="29" value="Synchronize browsers" lang="Dutch" key="synchronize_browsers" />
+    <Localized id="30" value="Synchroniser les navigateurs" lang="French" key="synchronize_browsers" />
+    <Localized id="31" value="Browser Font" lang="English" key="browser_font" />
+    <Localized id="32" value="Browser lettertype" lang="Dutch" key="browser_font" />
+    <Localized id="33" value="Police des navigateurs" lang="French" key="browser_font" />
+    <Localized id="34" value="Inspectors" lang="English" key="inspectors" />
+    <Localized id="35" value="Inspectors" lang="Dutch" key="inspectors" />
+    <Localized id="36" value="Inspecteurs" lang="French" key="inspectors" />
+    <Localized id="37" value="Always on top" lang="English" key="always_on_top" />
+    <Localized id="38" value="Always on top" lang="Dutch" key="always_on_top" />
+    <Localized id="39" value="Toujours visibles au dessus" lang="French" key="always_on_top" />
+    <Localized id="40" value="Inspectors visible" lang="English" key="inspectors_visible" />
+    <Localized id="41" value="Inspectors visible" lang="Dutch" key="inspectors_visible" />
+    <Localized id="42" value="Inspecteurs visibles" lang="French" key="inspectors_visible" />
+  </LocalizedDictionary>
+</Panel>

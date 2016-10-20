@@ -51,7 +51,6 @@ import org.openflexo.foundation.resource.FlexoResourceCenterService;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterBindingFactory;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterInitializationException;
-import org.openflexo.foundation.technologyadapter.TechnologyAdapterResource;
 
 /**
  * This class defines and implements the FML technology adapter (Flexo Modelling Language)
@@ -70,7 +69,7 @@ public class FMLTechnologyAdapter extends TechnologyAdapter {
 	@Override
 	protected void initResourceFactories() {
 		super.initResourceFactories();
-		getAvailableResourceTypes().add((Class<? extends TechnologyAdapterResource<?, ?>>) VirtualModelResource.class);
+		getAvailableResourceTypes().add(VirtualModelResource.class);
 	}
 
 	@Override
@@ -145,6 +144,12 @@ public class FMLTechnologyAdapter extends TechnologyAdapter {
 	public void notifyRepositoryStructureChanged() {
 		super.notifyRepositoryStructureChanged();
 		getPropertyChangeSupport().firePropertyChange("getViewPointRepositories()", null, getViewPointRepositories());
+	}
+
+	@Override
+	public void ensureAllRepositoriesAreCreated(FlexoResourceCenter<?> rc) {
+		super.ensureAllRepositoriesAreCreated(rc);
+		getViewPointRepository(rc);
 	}
 
 	@Override

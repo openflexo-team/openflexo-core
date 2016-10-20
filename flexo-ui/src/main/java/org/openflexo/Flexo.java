@@ -39,6 +39,35 @@
 
 package org.openflexo;
 
+import java.awt.Frame;
+import java.awt.Window;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintStream;
+import java.lang.management.ManagementFactory;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.net.Authenticator;
+import java.net.PasswordAuthentication;
+import java.net.Proxy;
+import java.net.ProxySelector;
+import java.net.SocketAddress;
+import java.net.URI;
+import java.net.URL;
+import java.nio.channels.FileLock;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.LogManager;
+import java.util.logging.Logger;
+
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
+
 import org.openflexo.application.FlexoApplication;
 import org.openflexo.components.RequestLoginDialog;
 import org.openflexo.components.SplashWindow;
@@ -65,33 +94,9 @@ import org.openflexo.utils.CancelException;
 import org.openflexo.utils.TooManyFailedAttemptException;
 import org.openflexo.view.FlexoFrame;
 import org.openflexo.view.controller.FlexoController;
+
 import sun.misc.Signal;
 import sun.misc.SignalHandler;
-
-import javax.swing.*;
-import java.awt.*;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.PrintStream;
-import java.lang.management.ManagementFactory;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.net.Authenticator;
-import java.net.PasswordAuthentication;
-import java.net.Proxy;
-import java.net.ProxySelector;
-import java.net.SocketAddress;
-import java.net.URI;
-import java.net.URL;
-import java.nio.channels.FileLock;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.LogManager;
-import java.util.logging.Logger;
 
 /**
  * Main class of the Flexo Application Suite
@@ -182,9 +187,8 @@ public class Flexo {
 	}
 
 	/**
-	 * Launch method to start Flexo in multimodule mode. 
-	 * When in development mode, program args should be: Dev -nosplash 
- 	 * For MacOS, you can also add: -Xdock:name=Flexo -Dapple.laf.useScreenMenuBar=true
+	 * Launch method to start Flexo in multimodule mode. When in development mode, program args should be: Dev -nosplash For MacOS, you can
+	 * also add: -Xdock:name=Flexo -Dapple.laf.useScreenMenuBar=true
 	 * 
 	 * @param args
 	 */
@@ -335,7 +339,7 @@ public class Flexo {
 		if (ToolBox.getPLATFORM() == ToolBox.MACOS) {
 			System.setProperty("apple.laf.useScreenMenuBar", "true");
 		}
-		initUILAF(applicationContext.getAdvancedPrefs().getLookAndFeelAsString());
+		initUILAF(applicationContext.getPresentationPreferences().getLookAndFeelAsString());
 		if (isDev) {
 			FlexoLoggingFormatter.logDate = false;
 		}

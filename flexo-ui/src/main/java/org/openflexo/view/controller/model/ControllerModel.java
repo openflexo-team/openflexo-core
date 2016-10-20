@@ -135,8 +135,8 @@ public class ControllerModel extends ControllerModelObject implements PropertyCh
 		this.module = module;
 		registrationManager = new PropertyChangeListenerRegistrationManager();
 		if (context.getGeneralPreferences() != null) {
-			leftViewVisible = context.getGeneralPreferences().getShowLeftView(module.getShortName());
-			rightViewVisible = context.getGeneralPreferences().getShowRightView(module.getShortName());
+			leftViewVisible = context.getPresentationPreferences().getShowLeftView(module.getShortName());
+			rightViewVisible = context.getPresentationPreferences().getShowRightView(module.getShortName());
 		}
 
 		registrationManager.new PropertyChangeListenerRegistration(InteractiveProjectLoader.PROJECT_OPENED, this,
@@ -578,7 +578,7 @@ public class ControllerModel extends ControllerModelObject implements PropertyCh
 
 		String layout = null;
 		if (context.getGeneralPreferences() != null) {
-			layout = context.getGeneralPreferences().getLayoutFor(getModule().getShortName() + perspective.getName());
+			layout = context.getPresentationPreferences().getLayoutFor(getModule().getShortName() + perspective.getName());
 		}
 		if (layout != null) {
 			// System.out.println("Parsing layout: " + layout);
@@ -594,7 +594,8 @@ public class ControllerModel extends ControllerModelObject implements PropertyCh
 	}
 
 	public void setLayoutForPerspective(FlexoPerspective perspective, Node layout) {
-		context.getGeneralPreferences().setLayoutFor(getGsonLayout().toJson(layout), getModule().getShortName() + perspective.getName());
+		context.getPresentationPreferences().setLayoutFor(getGsonLayout().toJson(layout),
+				getModule().getShortName() + perspective.getName());
 		context.getPreferencesService().savePreferences();
 	}
 
@@ -616,7 +617,7 @@ public class ControllerModel extends ControllerModelObject implements PropertyCh
 
 	public void setLeftViewVisible(boolean leftViewVisible) {
 		this.leftViewVisible = leftViewVisible;
-		context.getGeneralPreferences().setShowLeftView(getModule().getShortName(), leftViewVisible);
+		context.getPresentationPreferences().setShowLeftView(getModule().getShortName(), leftViewVisible);
 		context.getPreferencesService().savePreferences();
 		getPropertyChangeSupport().firePropertyChange(LEFT_VIEW_VISIBLE, !leftViewVisible, leftViewVisible);
 	}
@@ -627,7 +628,7 @@ public class ControllerModel extends ControllerModelObject implements PropertyCh
 
 	public void setRightViewVisible(boolean rightViewVisible) {
 		this.rightViewVisible = rightViewVisible;
-		context.getGeneralPreferences().setShowRightView(getModule().getShortName(), rightViewVisible);
+		context.getPresentationPreferences().setShowRightView(getModule().getShortName(), rightViewVisible);
 		context.getPreferencesService().savePreferences();
 		getPropertyChangeSupport().firePropertyChange(RIGHT_VIEW_VISIBLE, !rightViewVisible, rightViewVisible);
 	}

@@ -71,6 +71,7 @@ import org.openflexo.prefs.BugReportPreferences;
 import org.openflexo.prefs.GeneralPreferences;
 import org.openflexo.prefs.LoggingPreferences;
 import org.openflexo.prefs.PreferencesService;
+import org.openflexo.prefs.PresentationPreferences;
 import org.openflexo.rm.ActivateTechnologyAdapterTask;
 import org.openflexo.rm.AddResourceCenterTask;
 import org.openflexo.rm.DisactivateTechnologyAdapterTask;
@@ -332,6 +333,13 @@ public abstract class ApplicationContext extends DefaultFlexoServiceManager impl
 	public GeneralPreferences getGeneralPreferences() {
 		if (getPreferencesService() != null) {
 			return getPreferencesService().getGeneralPreferences();
+		}
+		return null;
+	}
+
+	public PresentationPreferences getPresentationPreferences() {
+		if (getPreferencesService() != null) {
+			return getPreferencesService().getPresentationPreferences();
 		}
 		return null;
 	}

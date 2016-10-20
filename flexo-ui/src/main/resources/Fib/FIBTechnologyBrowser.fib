@@ -26,19 +26,18 @@
 		</BrowserElement>
 		<BrowserElement dataClassName="org.openflexo.foundation.resource.RepositoryFolder"
 			label="folder.displayableName" icon="controller.iconForObject(folder)"
-			tooltip="" enabled="" visible="" isEditable="false" editableLabel=""
-			filtered="false" defaultVisible="true" dynamicFont="" name="folder">
-			<Children data="folder.children" visible="" cast=""
-				name="subFolders" />
-			<Children data="folder.resources" visible="" cast=""
-				name="resource" />
+			visible="controller.shouldBeDisplayed(folder)" isEditable="false"
+			editableLabel="" filtered="false" defaultVisible="true" name="folder">
+			<Children data="folder.children" name="subFolders" />
+			<Children data="folder.resources" name="resource" />
 		</BrowserElement>
 		<BrowserElement dataClassName="org.openflexo.foundation.resource.FlexoResource"
 			label="resource.name" icon="controller.iconForObject(resource)"
 			tooltip="" enabled="resource.isLoaded" visible="!(resource.isDeleted)"
 			isEditable="false" editableLabel="" filtered="false" defaultVisible="true"
-			dynamicFont="" name="resource">
-			<Children data="resource.contents" visible="resource.isLoaded" cast="" name="subResources" />
+			name="resource">
+			<Children data="resource.contents" visible="resource.isLoaded"
+				name="subResources" />
 		</BrowserElement>
 	</Browser>
 	<LocalizedDictionary />

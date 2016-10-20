@@ -142,7 +142,7 @@ public class ContextualMenuManager {
 	}
 
 	public void processMouseMoved(MouseEvent e) {
-		if (_isPopupMenuDisplayed && controller.getApplicationContext().getAdvancedPrefs().getCloseOnMouseOut()) {
+		if (_isPopupMenuDisplayed && controller.getApplicationContext().getPresentationPreferences().getCloseOnMouseOut()) {
 			Rectangle menuBounds = _popupMenu.getBounds();
 			menuBounds.width = menuBounds.width + 40;
 			menuBounds.height = menuBounds.height + 40;

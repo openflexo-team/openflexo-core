@@ -62,7 +62,6 @@ import org.openflexo.foundation.resource.FlexoResourceCenterService;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterBindingFactory;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterInitializationException;
-import org.openflexo.foundation.technologyadapter.TechnologyAdapterResource;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 
 /**
@@ -91,7 +90,7 @@ public class FMLRTTechnologyAdapter extends TechnologyAdapter {
 	@Override
 	protected void initResourceFactories() {
 		super.initResourceFactories();
-		getAvailableResourceTypes().add((Class<? extends TechnologyAdapterResource<?, ?>>) VirtualModelInstanceResource.class);
+		getAvailableResourceTypes().add(VirtualModelInstanceResource.class);
 	}
 
 	@Override
@@ -135,8 +134,14 @@ public class FMLRTTechnologyAdapter extends TechnologyAdapter {
 		return this.getTechnologyAdapterService().getServiceManager();
 	}
 
+	@Override
+	public void ensureAllRepositoriesAreCreated(FlexoResourceCenter<?> rc) {
+		super.ensureAllRepositoriesAreCreated(rc);
+		getViewRepository(rc);
+	}
+
 	public <I> ViewLibrary<I> getViewRepository(FlexoResourceCenter<I> resourceCenter) {
-		ViewLibrary<I> returned = (ViewLibrary<I>) resourceCenter.retrieveRepository(ViewLibrary.class, this);
+		ViewLibrary<I> returned = resourceCenter.retrieveRepository(ViewLibrary.class, this);
 		if (returned == null) {
 			returned = new ViewLibrary(this, resourceCenter);
 			resourceCenter.registerRepository(returned, ViewLibrary.class, this);

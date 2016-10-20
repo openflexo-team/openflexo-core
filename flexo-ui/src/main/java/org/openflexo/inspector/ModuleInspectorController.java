@@ -118,19 +118,19 @@ public class ModuleInspectorController extends Observable implements Observer {
 		inspectorDialog = new FIBInspectorDialog(this);
 		Boolean visible = null;
 		if (flexoController.getApplicationContext().getGeneralPreferences() != null) {
-			visible = flexoController.getApplicationContext().getGeneralPreferences().getInspectorVisible();
+			visible = flexoController.getApplicationContext().getPresentationPreferences().getInspectorVisible();
 		}
 		inspectorDialog.setVisible(visible == null || visible);
 		inspectorDialog.addComponentListener(new ComponentAdapter() {
 			@Override
 			public void componentShown(ComponentEvent e) {
-				flexoController.getApplicationContext().getGeneralPreferences().setInspectorVisible(true);
+				flexoController.getApplicationContext().getPresentationPreferences().setInspectorVisible(true);
 				flexoController.getApplicationContext().getPreferencesService().savePreferences();
 			}
 
 			@Override
 			public void componentHidden(ComponentEvent e) {
-				flexoController.getApplicationContext().getGeneralPreferences().setInspectorVisible(false);
+				flexoController.getApplicationContext().getPresentationPreferences().setInspectorVisible(false);
 				flexoController.getApplicationContext().getPreferencesService().savePreferences();
 			};
 		});

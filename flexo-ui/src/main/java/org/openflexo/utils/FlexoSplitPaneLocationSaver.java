@@ -79,12 +79,14 @@ public class FlexoSplitPaneLocationSaver implements PropertyChangeListener {
 	}
 
 	private void layoutSplitPane(String id, Double defaultDividerLocation) {
-		if (controller.getApplicationContext().getGeneralPreferences().getDividerLocationForSplitPaneWithID(id) >= 0) {
-			splitPane.setDividerLocation(controller.getApplicationContext().getGeneralPreferences()
-					.getDividerLocationForSplitPaneWithID(id));
-		} else if (defaultDividerLocation != null) {
+		if (controller.getApplicationContext().getPresentationPreferences().getDividerLocationForSplitPaneWithID(id) >= 0) {
+			splitPane.setDividerLocation(
+					controller.getApplicationContext().getPresentationPreferences().getDividerLocationForSplitPaneWithID(id));
+		}
+		else if (defaultDividerLocation != null) {
 			splitPane.setDividerLocation(defaultDividerLocation);
-		} else {
+		}
+		else {
 			splitPane.resetToPreferredSizes();
 		}
 		splitPane.addPropertyChangeListener(JSplitPane.DIVIDER_LOCATION_PROPERTY, this);
@@ -133,10 +135,11 @@ public class FlexoSplitPaneLocationSaver implements PropertyChangeListener {
 		int value = splitPane.getDividerLocation();
 		if (value > splitPane.getMaximumDividerLocation()) {
 			value = splitPane.getMaximumDividerLocation();
-		} else if (value < splitPane.getMinimumDividerLocation()) {
+		}
+		else if (value < splitPane.getMinimumDividerLocation()) {
 			value = splitPane.getMinimumDividerLocation();
 		}
-		controller.getApplicationContext().getGeneralPreferences().setDividerLocationForSplitPaneWithID(value, id);
+		controller.getApplicationContext().getPresentationPreferences().setDividerLocationForSplitPaneWithID(value, id);
 		controller.getApplicationContext().getPreferencesService().savePreferences(); // FlexoPreferences.savePreferences(true);
 		locationSaver = null;
 	}

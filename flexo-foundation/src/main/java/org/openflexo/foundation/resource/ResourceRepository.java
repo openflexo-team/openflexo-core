@@ -459,7 +459,7 @@ public abstract class ResourceRepository<R extends FlexoResource<?>, I> extends 
 					if (createWhenNonExistent) {
 						I serializationArtefact = getResourceCenter().getDirectory(pathElement, returned.getSerializationArtefact());
 						RepositoryFolder<R, I> newFolder = new RepositoryFolder<R, I>(serializationArtefact, returned, this);
-						System.out.println("On notifie " + newFolder + " pour " + returned);
+						// System.out.println("On notifie " + newFolder + " pour " + returned);
 						returned.getPropertyChangeSupport().firePropertyChange("children", null, newFolder);
 						currentFolder = newFolder;
 					}

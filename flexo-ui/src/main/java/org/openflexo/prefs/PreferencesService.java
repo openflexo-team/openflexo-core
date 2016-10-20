@@ -104,6 +104,7 @@ public class PreferencesService extends FlexoServiceImpl implements FlexoService
 		resource = FlexoPreferencesResourceImpl.makePreferencesResource(getServiceManager());
 		getFlexoPreferences().setPreferencesService(this);
 		managePreferences(GeneralPreferences.class, getFlexoPreferences());
+		managePreferences(PresentationPreferences.class, getFlexoPreferences());
 		managePreferences(AdvancedPrefs.class, getFlexoPreferences());
 
 		for (FlexoService service : getServiceManager().getRegisteredServices()) {
@@ -187,6 +188,7 @@ public class PreferencesService extends FlexoServiceImpl implements FlexoService
 		List<Class<?>> classes = new ArrayList<Class<?>>();
 		classes.add(FlexoPreferences.class);
 		classes.add(GeneralPreferences.class);
+		classes.add(PresentationPreferences.class);
 		classes.add(AdvancedPrefs.class);
 		classes.add(ResourceCenterPreferences.class);
 		classes.add(TechnologyAdapterPreferences.class);
@@ -243,6 +245,10 @@ public class PreferencesService extends FlexoServiceImpl implements FlexoService
 
 	public GeneralPreferences getGeneralPreferences() {
 		return managePreferences(GeneralPreferences.class, getFlexoPreferences());
+	}
+
+	public PresentationPreferences getPresentationPreferences() {
+		return managePreferences(PresentationPreferences.class, getFlexoPreferences());
 	}
 
 	public AdvancedPrefs getAdvancedPrefs() {

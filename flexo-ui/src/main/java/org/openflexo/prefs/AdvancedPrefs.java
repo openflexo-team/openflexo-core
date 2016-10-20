@@ -45,19 +45,12 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.swing.UIManager;
-
-import org.openflexo.Flexo;
-import org.openflexo.foundation.FlexoProperty;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.model.annotations.XMLElement;
-import org.openflexo.swing.FlexoFont;
-import org.openflexo.swing.LookAndFeel;
-import org.openflexo.swing.converter.LookAndFeelConverter;
 import org.openflexo.toolbox.ProxyUtils;
 import org.openflexo.toolbox.ToolBox;
 
@@ -84,8 +77,6 @@ public interface AdvancedPrefs extends PreferencesContainer {
 
 	public static final String ECLIPSE_WORKSPACE_DIRECTORY_KEY = "eclipseWorkspaceDirectory";
 
-	public static final String BROWSERFONT_KEY = "browser_font";
-
 	public static final String WEB_SERVICE_INSTANCE = "webServiceInstance";
 	public static final String WEB_SERVICE_URL_KEY = "webServiceUrl";
 	public static final String WEB_SERVICE_LOGIN_KEY = "webServiceLogin";
@@ -97,15 +88,7 @@ public interface AdvancedPrefs extends PreferencesContainer {
 
 	public static final String UNDO_LEVELS = "undoLevels";
 
-	public static final String SYNCHRONIZED_BROWSER = "synchronizedBrowser";
-
 	public static final String HIGHLIGHT_UNCOMMENTED_ITEMS = "hightlightUncommentedItem";
-
-	public static final String CLOSE_POPUP_ON_MOUSE_OUT = "close_popup_on_mouse_out";
-
-	public static final String LOOK_AND_FEEL = "look_and_feel";
-
-	public static final String HIDE_FILTERED_OBJECTS = "hideFilteredObjects";
 
 	public static final String USE_DEFAULT_PROXY_SETTINGS = "UseDefaultProxySettings";
 	public static final String NO_PROXY = "NoProxy";
@@ -145,27 +128,6 @@ public interface AdvancedPrefs extends PreferencesContainer {
 	@Setter(ECLIPSE_WORKSPACE_DIRECTORY_KEY)
 	public void setEclipseWorkspaceDirectory(File f);
 
-	@Getter(value = SYNCHRONIZED_BROWSER, defaultValue = "false")
-	@XMLAttribute
-	public boolean getSynchronizedBrowser();
-
-	@Setter(SYNCHRONIZED_BROWSER)
-	public void setSynchronizedBrowser(boolean synchronizedBrowser);
-
-	@Getter(value = BROWSERFONT_KEY, defaultValue = "Sans Serif,0,11", isStringConvertable = true)
-	@XMLAttribute
-	public FlexoFont getBrowserFont();
-
-	@Setter(BROWSERFONT_KEY)
-	public void setBrowserFont(FlexoFont font);
-
-	@Getter(value = CLOSE_POPUP_ON_MOUSE_OUT, defaultValue = "false")
-	@XMLAttribute
-	public boolean getCloseOnMouseOut();
-
-	@Setter(CLOSE_POPUP_ON_MOUSE_OUT)
-	public void setCloseOnMouseOut(boolean closeOnMouseOut);
-
 	@Getter(value = ENABLE_UNDO_MANAGER, defaultValue = "true")
 	@XMLAttribute
 	public boolean getEnableUndoManager();
@@ -186,22 +148,6 @@ public interface AdvancedPrefs extends PreferencesContainer {
 
 	@Setter(UNDO_LEVELS)
 	public void setUndoLevels(Integer undoLevels);
-
-	@Getter(value = LOOK_AND_FEEL, isStringConvertable = true)
-	@XMLAttribute
-	public LookAndFeel getLookAndFeel();
-
-	public String getLookAndFeelAsString();
-
-	@Setter(LOOK_AND_FEEL)
-	public void setLookAndFeel(LookAndFeel value);
-
-	@Getter(value = HIDE_FILTERED_OBJECTS, defaultValue = "true")
-	@XMLAttribute
-	public boolean hideFilteredObjects();
-
-	@Setter(HIDE_FILTERED_OBJECTS)
-	public void setHideFilteredObjects(boolean enabled);
 
 	@Getter(value = WEB_SERVICE_URL_KEY, defaultValue = "https://server.openflexo.com/Flexo/WebObjects/FlexoServer.woa/ws/PPMWebService")
 	@XMLAttribute
@@ -337,42 +283,11 @@ public interface AdvancedPrefs extends PreferencesContainer {
 
 	public abstract class AdvancedPrefsImpl extends PreferencesContainerImpl implements AdvancedPrefs {
 
-		private static final Logger logger = Logger.getLogger(GeneralPreferences.class.getPackage().getName());
-
-		private final LookAndFeelConverter LAF_CONVERTER = new LookAndFeelConverter();
+		private static final Logger logger = Logger.getLogger(AdvancedPrefs.class.getPackage().getName());
 
 		@Override
 		public String toString() {
 			return "AdvancedPrefs: " + super.toString();
-		}
-
-		@Override
-		public LookAndFeel getLookAndFeel() {
-			FlexoProperty p = assertProperty(ToolBox.getPLATFORM() + LOOK_AND_FEEL);
-			String returned = p.getValue();
-			if (returned == null) {
-				p = assertProperty(LOOK_AND_FEEL);
-				returned = p.getValue();
-			}
-			if (returned == null) {
-				returned = UIManager.getSystemLookAndFeelClassName();
-			}
-			// setLookAndFeel(LAF_CONVERTER.convertFromString(returned, null));
-			return LAF_CONVERTER.convertFromString(returned, null);
-		}
-
-		@Override
-		public String getLookAndFeelAsString() {
-			return LAF_CONVERTER.convertToString(getLookAndFeel());
-		}
-
-		@Override
-		public void setLookAndFeel(LookAndFeel value) {
-			if (value == null) {
-				value = LookAndFeel.getDefaultLookAndFeel();
-			}
-			assertProperty(ToolBox.getPLATFORM() + LOOK_AND_FEEL).setValue(LAF_CONVERTER.convertToString(value));
-			Flexo.initUILAF(LAF_CONVERTER.convertToString(value));
 		}
 
 		private boolean isApplying = false;
