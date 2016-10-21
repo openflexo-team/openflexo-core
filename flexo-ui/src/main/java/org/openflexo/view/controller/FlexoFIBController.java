@@ -68,6 +68,7 @@ import org.openflexo.foundation.resource.FlexoProjectReference;
 import org.openflexo.foundation.resource.RepositoryFolder;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.gina.controller.FIBController;
+import org.openflexo.gina.controller.FIBSelectable;
 import org.openflexo.gina.model.FIBComponent;
 import org.openflexo.gina.model.FIBModelFactory;
 import org.openflexo.gina.model.FIBMouseEvent;
@@ -417,4 +418,73 @@ public class FlexoFIBController extends FIBController implements GraphicalFlexoO
 		}
 		return true;
 	}
+
+	private SelectionManager localSelectionManager;
+	private boolean isLocalSelectionManagerUpdating = false;
+
+	/**
+	 * Return a local {@link SelectionManager}
+	 * 
+	 * When not already existant, instantiate a new {@link SelectionManager} - not bound to the {@link FlexoController}' selection manager A
+	 * local selection manager might be used to synchronize the selection of two widgets, inside a component (a view), independantly from
+	 * the main selection manager
+	 * 
+	 * @return
+	 */
+	public SelectionManager getLocalSelectionManager() {
+		if (localSelectionManager == null) {
+			localSelectionManager = new SelectionManager(null) {
+
+				@Override
+				public FlexoObject getRootFocusedObject() {
+					// not required here
+					return null;
+				}
+
+				@Override
+				public void addToSelected(FlexoObject object) {
+					super.addToSelected(object);
+					if (!isLocalSelectionManagerUpdating) {
+						objectAddedToSelection(object);
+					}
+				}
+
+				@Override
+				public void removeFromSelected(FlexoObject object) {
+					super.removeFromSelected(object);
+					if (!isLocalSelectionManagerUpdating) {
+						objectRemovedFromSelection(object);
+					}
+				}
+
+				@Override
+				public void resetSelection() {
+					super.resetSelection();
+					if (!isLocalSelectionManagerUpdating) {
+						selectionCleared();
+					}
+				}
+
+				@Override
+				public void resetSelection(boolean temporary) {
+					super.resetSelection(temporary);
+					if (!isLocalSelectionManagerUpdating) {
+						selectionCleared();
+					}
+				}
+			};
+		}
+		return localSelectionManager;
+	}
+
+	@Override
+	public <T> void updateSelection(FIBSelectable<T> widget, List<T> oldSelection, List<T> newSelection) {
+		super.updateSelection(widget, oldSelection, newSelection);
+		if (localSelectionManager != null) {
+			isLocalSelectionManagerUpdating = true;
+			localSelectionManager.setSelectedObjects((List) newSelection);
+			isLocalSelectionManagerUpdating = false;
+		}
+	}
+
 }
