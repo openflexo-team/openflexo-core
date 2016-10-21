@@ -38,6 +38,7 @@
 
 package org.openflexo.foundation.action.transformation;
 
+import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.toolbox.StringUtils;
@@ -78,6 +79,9 @@ public abstract class FlexoRoleCreationStrategy<A extends AbstractDeclareInFlexo
 	 * @return
 	 */
 	public String getNewRoleName() {
+		if (getNewFlexoRole() != null) {
+			return getNewFlexoRole().getName();
+		}
 		return newRoleName;
 	}
 
@@ -90,6 +94,9 @@ public abstract class FlexoRoleCreationStrategy<A extends AbstractDeclareInFlexo
 		if (!newRoleName.equals(getNewRoleName())) {
 			String oldValue = getNewRoleName();
 			this.newRoleName = newRoleName;
+			if (getNewFlexoRole() != null) {
+				getNewFlexoRole().setName(newRoleName);
+			}
 			getPropertyChangeSupport().firePropertyChange("newRoleName", oldValue, newRoleName);
 		}
 	}
@@ -108,11 +115,21 @@ public abstract class FlexoRoleCreationStrategy<A extends AbstractDeclareInFlexo
 			setIssueMessage(getLocales().localizedForKey(NO_ROLE_NAME_DEFINED), IssueMessageType.ERROR);
 			return false;
 		}
-		if (getTransformationAction().getFlexoConcept().getAccessibleProperty(getNewRoleName()) != null) {
+
+		if (isDuplicatedRoleName()) {
 			setIssueMessage(getLocales().localizedForKey(DUPLICATED_ROLE_NAME), IssueMessageType.ERROR);
 			return false;
 		}
 		return true;
+	}
+
+	private boolean isDuplicatedRoleName() {
+		for (FlexoProperty<?> p : getTransformationAction().getFlexoConcept().getAccessibleProperties()) {
+			if (p.getName().equals(getNewRoleName()) && p != getNewFlexoRole()) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/**
@@ -124,8 +141,13 @@ public abstract class FlexoRoleCreationStrategy<A extends AbstractDeclareInFlexo
 	 */
 	@Override
 	public final R performStrategy() {
-		newFlexoRole = createNewFlexoRole();
-		return newFlexoRole;
+		if (getNewFlexoRole() == null) {
+			createNewFlexoRole();
+		}
+		else {
+			// it has already beeing created during wizard
+		}
+		return getNewFlexoRole();
 	}
 
 	/**
@@ -135,9 +157,5 @@ public abstract class FlexoRoleCreationStrategy<A extends AbstractDeclareInFlexo
 	 */
 	protected abstract R createNewFlexoRole();
 
-	private R newFlexoRole;
-
-	public R getNewFlexoRole() {
-		return newFlexoRole;
-	}
+	public abstract R getNewFlexoRole();
 }
