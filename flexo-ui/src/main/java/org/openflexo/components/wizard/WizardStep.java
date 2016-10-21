@@ -343,6 +343,12 @@ public abstract class WizardStep implements HasPropertyChangeSupport {
 	}
 
 	/**
+	 * Hook executed when a wizard has been cancelled, current step is then called with this method
+	 */
+	public void cancelled() {
+	}
+
+	/**
 	 * Hook executed when a step has been reactivated after having finished
 	 */
 	public void reactivate() {
