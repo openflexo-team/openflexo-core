@@ -110,7 +110,9 @@ public abstract class SelectionManager extends Observable {
 		_selectionListeners = new Vector<SelectionListener>();
 
 		inspectionContext = new Hashtable<String, Object>();
-		inspectionContext.put(MODULE_KEY, getController().getModule().getClass().getName());
+		if (getController() != null) {
+			inspectionContext.put(MODULE_KEY, getController().getModule().getClass().getName());
+		}
 	}
 
 	public FlexoController getController() {
@@ -262,7 +264,8 @@ public abstract class SelectionManager extends Observable {
 					logger.fine("Removing " + obj + " because master view is not able to show it");
 				}
 				internallyRemoveFromSelected(obj);
-			} else {
+			}
+			else {
 				if (logger.isLoggable(Level.FINE)) {
 					logger.fine("Keeping " + obj + " because master view is able to show it");
 				}
@@ -531,21 +534,21 @@ public abstract class SelectionManager extends Observable {
 		}
 		return _clipboard.performSelectionCopy(getSelection());
 	}
-
+	
 	public boolean performSelectionPaste() {
 		if (logger.isLoggable(Level.FINE)) {
 			logger.fine("performSelectionPaste in " + getClass().getName());
 		}
 		return _clipboard.performSelectionPaste();
 	}
-
+	
 	public boolean performSelectionCut() {
 		if (logger.isLoggable(Level.WARNING)) {
 			logger.warning("Perform selection cut is not implemented");
 		}
 		return false;
 	}
-
+	
 	public boolean hasCopiedData() {
 		return _clipboard.hasCopiedData();
 	}*/
@@ -636,10 +639,12 @@ public abstract class SelectionManager extends Observable {
 	private void updateInspectorManagement() {
 		if (getSelectionSize() == 0) {
 			setCurrentInspectedObjectToNone();
-		} else if (getSelectionSize() == 1) {
+		}
+		else if (getSelectionSize() == 1) {
 			FlexoObject selection = getSelection().firstElement();
 			setCurrentInspectedObject(selection);
-		} else if (getSelectionSize() > 1) {
+		}
+		else if (getSelectionSize() > 1) {
 			setCurrentInspectedObjectToMultiple();
 		}
 		if (logger.isLoggable(Level.FINE)) {
