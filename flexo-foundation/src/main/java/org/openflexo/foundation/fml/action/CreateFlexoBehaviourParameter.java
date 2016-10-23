@@ -59,6 +59,7 @@ import org.openflexo.foundation.fml.FlexoBehaviourObject;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.FlexoConceptInstanceParameter;
 import org.openflexo.foundation.fml.FlexoResourceParameter;
+import org.openflexo.foundation.fml.FlexoVMIResourceParameter;
 import org.openflexo.foundation.fml.FloatParameter;
 import org.openflexo.foundation.fml.IntegerParameter;
 import org.openflexo.foundation.fml.ListParameter;
@@ -202,6 +203,7 @@ public class CreateFlexoBehaviourParameter extends FlexoAction<CreateFlexoBehavi
 		availableParameterTypes.add(URIParameter.class);
 		availableParameterTypes.add(FlexoResourceParameter.class);
 		availableParameterTypes.add(FlexoConceptInstanceParameter.class);
+		availableParameterTypes.add(FlexoVMIResourceParameter.class);
 		if (getFocusedObject() != null && getFocusedObject().getOwningVirtualModel() != null
 				&& getFocusedObject().getOwningVirtualModel().getModelSlots() != null) {
 			for (ModelSlot<?> ms : getFocusedObject().getOwningVirtualModel().getModelSlots()) {

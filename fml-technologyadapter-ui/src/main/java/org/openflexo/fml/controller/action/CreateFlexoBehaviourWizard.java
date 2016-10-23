@@ -42,33 +42,19 @@ import java.awt.Dimension;
 import java.awt.Image;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
 import org.openflexo.ApplicationContext;
 import org.openflexo.components.wizard.WizardStep;
-import org.openflexo.foundation.fml.AbstractVirtualModel;
-import org.openflexo.foundation.fml.CheckboxParameter;
-import org.openflexo.foundation.fml.DropDownParameter;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FlexoBehaviour;
-import org.openflexo.foundation.fml.FlexoBehaviourParameter;
-import org.openflexo.foundation.fml.FlexoConceptInstanceParameter;
 import org.openflexo.foundation.fml.FlexoConceptObject;
-import org.openflexo.foundation.fml.FloatParameter;
-import org.openflexo.foundation.fml.IntegerParameter;
-import org.openflexo.foundation.fml.ListParameter;
-import org.openflexo.foundation.fml.TechnologyObjectParameter;
-import org.openflexo.foundation.fml.TextAreaParameter;
-import org.openflexo.foundation.fml.TextFieldParameter;
-import org.openflexo.foundation.fml.URIParameter;
 import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.action.CreateFlexoBehaviour;
 import org.openflexo.foundation.fml.action.CreateFlexoBehaviour.BehaviourParameterEntry;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
-import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.gina.annotation.FIBPanel;
 import org.openflexo.icon.FMLIconLibrary;
 import org.openflexo.icon.IconFactory;
@@ -234,47 +220,6 @@ public class CreateFlexoBehaviourWizard extends AbstractCreateFMLElementWizard<C
 		@Override
 		public String getTitle() {
 			return getAction().getLocales().localizedForKey("configure_behaviour_parameters");
-		}
-
-		private List<Class<? extends FlexoBehaviourParameter>> availableParameterTypes = null;
-
-		public List<Class<? extends FlexoBehaviourParameter>> getAvailableParameterTypes() {
-			if (availableParameterTypes == null) {
-				availableParameterTypes = new ArrayList<Class<? extends FlexoBehaviourParameter>>();
-				availableParameterTypes.add(TextFieldParameter.class);
-				availableParameterTypes.add(TextAreaParameter.class);
-				availableParameterTypes.add(IntegerParameter.class);
-				availableParameterTypes.add(FloatParameter.class);
-				availableParameterTypes.add(ListParameter.class);
-				availableParameterTypes.add(CheckboxParameter.class);
-				availableParameterTypes.add(DropDownParameter.class);
-				availableParameterTypes.add(FlexoConceptInstanceParameter.class);
-				availableParameterTypes.add(TechnologyObjectParameter.class);
-				availableParameterTypes.add(URIParameter.class);
-
-				if (getFocusedObject() != null && getFocusedObject().getOwningVirtualModel() != null
-						&& getFocusedObject().getOwningVirtualModel().getModelSlots() != null) {
-					for (ModelSlot<?> ms : getFocusedObject().getOwningVirtualModel().getModelSlots()) {
-						for (Class<? extends FlexoBehaviourParameter> paramType : ms.getAvailableFlexoBehaviourParameterTypes()) {
-							if (!availableParameterTypes.contains(paramType)) {
-								availableParameterTypes.add(paramType);
-							}
-						}
-					}
-				}
-				if (getFocusedObject().getFlexoConcept() instanceof AbstractVirtualModel) {
-					for (ModelSlot<?> ms : ((AbstractVirtualModel<?>) getFocusedObject().getFlexoConcept()).getModelSlots()) {
-						for (Class<? extends FlexoBehaviourParameter> paramType : ms.getAvailableFlexoBehaviourParameterTypes()) {
-							if (!availableParameterTypes.contains(paramType)) {
-								availableParameterTypes.add(paramType);
-							}
-						}
-					}
-				}
-
-			}
-
-			return availableParameterTypes;
 		}
 
 		/*public static final Class[] AVAILABLE_TYPES = new Class[] { TextFieldParameter.class, TextAreaParameter.class, IntegerParameter.class,

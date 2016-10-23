@@ -75,7 +75,7 @@ import org.openflexo.toolbox.StringUtils;
 @Imports({ @Import(CheckboxParameter.class), @Import(DropDownParameter.class), @Import(FloatParameter.class),
 		@Import(IntegerParameter.class), @Import(ListParameter.class), @Import(TextAreaParameter.class), @Import(TextFieldParameter.class),
 		@Import(FlexoConceptInstanceParameter.class), @Import(URIParameter.class), @Import(TechnologyObjectParameter.class),
-		@Import(FlexoResourceParameter.class) })
+		@Import(FlexoResourceParameter.class), @Import(FlexoVMIResourceParameter.class) })
 public interface FlexoBehaviourParameter extends FlexoBehaviourObject, FunctionArgument {
 
 	public static enum WidgetType {
@@ -96,7 +96,8 @@ public interface FlexoBehaviourParameter extends FlexoBehaviourObject, FunctionA
 		LIST,
 		FLEXO_CONCEPT,
 		TECHNOLOGY_OBJECT,
-		TECHNOLOGY_RESOURCE;
+		TECHNOLOGY_RESOURCE,
+		VMI_RESOURCE;
 	}
 
 	@PropertyIdentifier(type = String.class)
