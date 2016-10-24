@@ -9,7 +9,7 @@
 			darkLevel="0" index="0" font="SansSerif,0,11" useScrollBar="true"
 			horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED"
 			verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED" name="BasicTab">
-			<Label label="ontology_class" align="right" index="6" data=""
+			<Label label="concept_class" align="right" index="6" data=""
 				constraints="twocols(expandHorizontally=true;expandVertically=false;index=6;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)"
 				visible="" format="" icon="" tooltip="" localize="true" enable=""
 				clickAction="" doubleClickAction="" rightClickAction=""
@@ -20,7 +20,7 @@
 				manageDynamicModel="true" opaque="false" clickAction=""
 				doubleClickAction="" rightClickAction="" enterPressedAction=""
 				valueChangedAction="" valueTransform="" valueValidator="" index="7"
-				data="data.ontologyClass"
+				data="data.ontologyClass" name="ClassSelector"
 				constraints="twocols(expandHorizontally=true;expandVertically=false;index=7;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
 				visible="">
 				<Assignment variable="component.context"
@@ -41,10 +41,10 @@
 				valueChangedAction="" valueTransform="" valueValidator="" index="9"
 				data="data.individualName"
 				constraints="twocols(expandHorizontally=true;expandVertically=false;index=9;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
-				visible="">
+				name="IndividualNameSelector">
 				<Assignment variable="component.bindable" value="data" />
 			</Custom>
-			<Label label="object_assertions" index="10" data=""
+			<Label label="object_assertions" index="14" data=""
 				constraints="twocols(expandHorizontally=false;expandVertically=false;index=10;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)"
 				visible="" format="" icon="" tooltip="" localize="true" enable=""
 				clickAction="" doubleClickAction="" rightClickAction=""
@@ -62,7 +62,7 @@
 				localize="true" enable="" manageDynamicModel="true" opaque="false"
 				clickAction="" doubleClickAction="" rightClickAction=""
 				enterPressedAction="" valueChangedAction="" valueTransform=""
-				valueValidator="" name="ObjectPropertyAssertionTable" index="11"
+				valueValidator="" name="ObjectPropertyAssertionTable" index="15"
 				data="data.objectAssertions"
 				constraints="twocols(expandHorizontally=true;expandVertically=true;index=11;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
 				visible="">
@@ -107,7 +107,7 @@
 				<RemoveAction method="data.deleteObjectPropertyAssertion(selected)"
 					isAvailable="" name="delete_object_assertion" />
 			</Table>
-			<Label label="data_assertions" index="12" data=""
+			<Label label="data_assertions" index="16" data=""
 				constraints="twocols(expandHorizontally=false;expandVertically=false;index=12;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=left)"
 				visible="" format="" icon="" tooltip="" localize="true" enable=""
 				clickAction="" doubleClickAction="" rightClickAction=""
@@ -125,7 +125,7 @@
 				localize="true" enable="" manageDynamicModel="true" opaque="false"
 				clickAction="" doubleClickAction="" rightClickAction=""
 				enterPressedAction="" valueChangedAction="" valueTransform=""
-				valueValidator="" name="DataPropertyAssertionTable" index="13"
+				valueValidator="" name="DataPropertyAssertionTable" index="17"
 				data="data.dataAssertions"
 				constraints="twocols(expandHorizontally=true;expandVertically=true;index=13;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
 				visible="">

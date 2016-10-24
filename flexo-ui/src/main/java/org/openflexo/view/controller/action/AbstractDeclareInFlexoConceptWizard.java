@@ -51,6 +51,7 @@ import org.openflexo.foundation.action.transformation.FlexoRoleSettingStrategy;
 import org.openflexo.foundation.action.transformation.TransformationStrategy;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.gina.annotation.FIBPanel;
+import org.openflexo.toolbox.StringUtils;
 import org.openflexo.view.controller.FlexoController;
 
 public abstract class AbstractDeclareInFlexoConceptWizard<A extends AbstractDeclareInFlexoConcept<A, ?, ?>>
@@ -61,6 +62,8 @@ public abstract class AbstractDeclareInFlexoConceptWizard<A extends AbstractDecl
 
 	private final ChooseOption chooseOption;
 	private TransformationConfigurationStep<? extends TransformationStrategy<A>> detailedStep;
+
+	private AbstractChooseNewConceptCreationStrategy chooseNewConceptCreationStrategy;
 
 	public AbstractDeclareInFlexoConceptWizard(A action, FlexoController controller) {
 		super(action, controller);
@@ -153,15 +156,114 @@ public abstract class AbstractDeclareInFlexoConceptWizard<A extends AbstractDecl
 			switch (chooseOption.getPrimaryChoice()) {
 				case REPLACE_ELEMENT_IN_EXISTING_FLEXO_CONCEPT:
 					detailedStep = replaceElementInExistingFlexoConcept();
+					addStep(detailedStep);
 					break;
 				case CREATE_ELEMENT_IN_EXISTING_FLEXO_CONCEPT:
 					detailedStep = createsElementInExistingFlexoConcept();
+					addStep(detailedStep);
 					break;
 				case CREATES_FLEXO_CONCEPT:
-					detailedStep = chooseNewFlexoConcept();
+					chooseNewConceptCreationStrategy = chooseNewConceptCreationStrategy();
+					addStep(chooseNewConceptCreationStrategy);
 					break;
 			}
 
+		}
+
+		@Override
+		public void discardTransition() {
+
+			switch (chooseOption.getPrimaryChoice()) {
+				case REPLACE_ELEMENT_IN_EXISTING_FLEXO_CONCEPT:
+				case CREATE_ELEMENT_IN_EXISTING_FLEXO_CONCEPT:
+					removeStep(detailedStep);
+					detailedStep = null;
+					break;
+				case CREATES_FLEXO_CONCEPT:
+					removeStep(chooseNewConceptCreationStrategy);
+					chooseNewConceptCreationStrategy = null;
+					break;
+			}
+		}
+
+	}
+
+	/**
+	 * This step is used to select new concept creation strategy
+	 * 
+	 * @author sylvain
+	 *
+	 */
+	public abstract class AbstractChooseNewConceptCreationStrategy extends WizardStep {
+
+		public ApplicationContext getServiceManager() {
+			return getController().getApplicationContext();
+		}
+
+		public A getAction() {
+			return AbstractDeclareInFlexoConceptWizard.this.getAction();
+		}
+
+		@Override
+		public String getTitle() {
+			return getAction().getLocales().localizedForKey("choose_a_creation_strategy");
+		}
+
+		@Override
+		public boolean isTransitionalStep() {
+			return true;
+		}
+
+		@Override
+		public boolean isValid() {
+			if (StringUtils.isEmpty(getFlexoConceptName())) {
+				setIssueMessage(getAction().getLocales().localizedForKey("please_choose_a_name_for_the_new_created_flexo_concept"),
+						IssueMessageType.ERROR);
+				return false;
+			}
+			if (getCreationStrategy() == null) {
+				setIssueMessage(getAction().getLocales().localizedForKey("please_choose_a_creation_strategy"), IssueMessageType.ERROR);
+				return false;
+			}
+			return true;
+		}
+
+		public String getFlexoConceptName() {
+			return getCreationStrategy().getFlexoConceptName();
+		}
+
+		public void setFlexoConceptName(String flexoConceptName) {
+			if (!flexoConceptName.equals(getFlexoConceptName())) {
+				String oldValue = getFlexoConceptName();
+				getCreationStrategy().setFlexoConceptName(flexoConceptName);
+				getPropertyChangeSupport().firePropertyChange("flexoConceptName", oldValue, flexoConceptName);
+				checkValidity();
+			}
+
+		}
+
+		public List<FlexoConceptCreationStrategy<A>> getAvailableFlexoConceptCreationStrategies() {
+			return getAction().getAvailableFlexoConceptCreationStrategies();
+		}
+
+		public FlexoConceptCreationStrategy<A> getCreationStrategy() {
+			return getAction().getFlexoConceptCreationStrategy();
+		}
+
+		public void setCreationStrategy(FlexoConceptCreationStrategy<A> creationStrategy) {
+			if (creationStrategy != getCreationStrategy()) {
+				creationStrategy.setFlexoConceptName(getFlexoConceptName());
+				FlexoConceptCreationStrategy<A> oldValue = getCreationStrategy();
+				getAction().setFlexoConceptCreationStrategy(creationStrategy);
+				getPropertyChangeSupport().firePropertyChange("creationStrategy", oldValue, creationStrategy);
+				checkValidity();
+			}
+		}
+
+		@Override
+		public void performTransition() {
+
+			detailedStep = configureConceptCreationStrategy();
 			addStep(detailedStep);
 
 		}
@@ -175,10 +277,12 @@ public abstract class AbstractDeclareInFlexoConceptWizard<A extends AbstractDecl
 
 	}
 
+	public abstract AbstractChooseNewConceptCreationStrategy chooseNewConceptCreationStrategy();
+
 	public abstract TransformationConfigurationStep<? extends FlexoRoleSettingStrategy<A, ?, ?, ?>> replaceElementInExistingFlexoConcept();
 
 	public abstract TransformationConfigurationStep<? extends FlexoRoleCreationStrategy<A, ?, ?, ?>> createsElementInExistingFlexoConcept();
 
-	public abstract TransformationConfigurationStep<? extends FlexoConceptCreationStrategy<A>> chooseNewFlexoConcept();
+	public abstract TransformationConfigurationStep<? extends FlexoConceptCreationStrategy<A>> configureConceptCreationStrategy();
 
 }

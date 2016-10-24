@@ -229,8 +229,10 @@ public abstract class Module<M extends FlexoModule<M>> extends PropertyChangedSu
 			}
 		}
 
-		return "<html>No description available for <b>" + getLocalizedName() + "</b>" + "<br>"
-				+ "Please submit documentation in documentation resource center" + "<br>" + "</html>";
+		return getLocalizedDescription();
+
+		/*return "<html>No description available for <b>" + getLocalizedName() + "</b>" + "<br>"
+				+ "Please submit documentation in documentation resource center" + "<br>" + "</html>";*/
 	}
 
 	/**

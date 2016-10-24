@@ -21,17 +21,15 @@
 			tooltip="" enabled="" visible="" isEditable="false" editableLabel=""
 			filtered="false" defaultVisible="true" dynamicFont=""
 			name="technologyAdapter">
-			<Children data="data.getAllRepositories()" visible=""
+			<Children data="data.getViewLibraries()" visible=""
 				cast="child.rootFolder" name="repositories" />
 		</BrowserElement>
 		<BrowserElement dataClassName="org.openflexo.foundation.resource.RepositoryFolder"
 			label="folder.displayableName" icon="controller.iconForObject(folder)"
-			tooltip="" enabled="" visible="" isEditable="false" editableLabel=""
+			visible="controller.shouldBeDisplayed(folder)" isEditable="false"
 			filtered="false" defaultVisible="true" dynamicFont="" name="folder">
-			<Children data="folder.children" visible="" cast=""
-				name="subFolders" />
-			<Children data="folder.resources" visible="" cast=""
-				name="resource" />
+			<Children data="folder.children" name="subFolders" />
+			<Children data="folder.resources" name="resource" />
 		</BrowserElement>
 		<BrowserElement dataClassName="org.openflexo.foundation.fml.rt.rm.ViewResource"
 			label="viewResource.name" icon="controller.iconForObject(viewResource)"

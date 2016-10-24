@@ -45,6 +45,7 @@ import java.util.logging.Logger;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.annotations.DeclareResourceTypes;
 import org.openflexo.foundation.fml.rm.ViewPointResourceFactory;
+import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
@@ -63,6 +64,12 @@ public class FMLTechnologyAdapter extends TechnologyAdapter {
 	private static final Logger logger = Logger.getLogger(FMLTechnologyAdapter.class.getPackage().getName());
 
 	public FMLTechnologyAdapter() throws TechnologyAdapterInitializationException {
+	}
+
+	@Override
+	protected void initResourceFactories() {
+		super.initResourceFactories();
+		getAvailableResourceTypes().add(VirtualModelResource.class);
 	}
 
 	@Override
@@ -110,10 +117,9 @@ public class FMLTechnologyAdapter extends TechnologyAdapter {
 
 	@Override
 	public <I> boolean isIgnorable(final FlexoResourceCenter<I> resourceCenter, final I contents) {
-		if (resourceCenter.isIgnorable(contents)) {
+		if (resourceCenter.isIgnorable(contents, this)) {
 			return true;
 		}
-		// TODO: ignore .viewpoint subcontents
 		return false;
 	}
 
@@ -139,4 +145,30 @@ public class FMLTechnologyAdapter extends TechnologyAdapter {
 		super.notifyRepositoryStructureChanged();
 		getPropertyChangeSupport().firePropertyChange("getViewPointRepositories()", null, getViewPointRepositories());
 	}
+
+	@Override
+	public void ensureAllRepositoriesAreCreated(FlexoResourceCenter<?> rc) {
+		super.ensureAllRepositoriesAreCreated(rc);
+		getViewPointRepository(rc);
+	}
+
+	@Override
+	public <I> boolean isFolderIgnorable(FlexoResourceCenter<I> resourceCenter, I contents) {
+		if (resourceCenter.isDirectory(contents)) {
+			if (isContainedInDirectoryWithSuffix(resourceCenter, contents, ViewPointResourceFactory.VIEWPOINT_SUFFIX)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/*@Override
+	protected <I> void foundFolder(FlexoResourceCenter<I> resourceCenter, I folder) throws IOException {
+		super.foundFolder(resourceCenter, folder);
+		if (resourceCenter.isDirectory(folder)
+				&& !isContainedInDirectoryWithSuffix(resourceCenter, folder, ViewPointResourceFactory.VIEWPOINT_SUFFIX)) {
+			getViewPointRepository(resourceCenter).getRepositoryFolder(folder, true);
+		}
+	}*/
+
 }

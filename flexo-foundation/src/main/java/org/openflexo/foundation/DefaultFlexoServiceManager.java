@@ -69,9 +69,18 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
  */
 public class DefaultFlexoServiceManager extends FlexoServiceManager {
 
-	public DefaultFlexoServiceManager() {
+	/**
+	 * Initialize a new {@link DefaultFlexoServiceManager}
+	 * 
+	 * @param localizationRelativePath
+	 *            a String identifying a relative path to use for main localization (such as "FlexoLocalization/MyLocales") of the
+	 *            application
+	 * @param devMode
+	 *            true when 'developer' mode set to true (enable more services)
+	 */
+	public DefaultFlexoServiceManager(String localizationRelativePath, boolean devMode) {
 
-		LocalizationService localizationService = createLocalizationService();
+		LocalizationService localizationService = createLocalizationService(localizationRelativePath);
 		registerService(localizationService);
 
 		FlexoEditingContext editingContext = createEditingContext();
@@ -168,8 +177,10 @@ public class DefaultFlexoServiceManager extends FlexoServiceManager {
 	}
 
 	@Override
-	protected LocalizationService createLocalizationService() {
-		return new DefaultLocalizationService();
+	protected LocalizationService createLocalizationService(String relativePath) {
+		LocalizationService returned = new DefaultLocalizationService();
+		returned.setGeneralLocalizerRelativePath(relativePath);
+		return returned;
 	}
 
 	public String debug() {

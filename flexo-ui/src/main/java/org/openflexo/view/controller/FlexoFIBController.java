@@ -39,6 +39,8 @@
 
 package org.openflexo.view.controller;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.List;
 import java.util.Vector;
 import java.util.logging.Logger;
@@ -63,8 +65,10 @@ import org.openflexo.foundation.action.PasteAction;
 import org.openflexo.foundation.action.PasteAction.PasteActionType;
 import org.openflexo.foundation.action.RemoveImportedProject;
 import org.openflexo.foundation.resource.FlexoProjectReference;
+import org.openflexo.foundation.resource.RepositoryFolder;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.gina.controller.FIBController;
+import org.openflexo.gina.controller.FIBSelectable;
 import org.openflexo.gina.model.FIBComponent;
 import org.openflexo.gina.model.FIBModelFactory;
 import org.openflexo.gina.model.FIBMouseEvent;
@@ -73,6 +77,7 @@ import org.openflexo.gina.view.GinaViewFactory;
 import org.openflexo.icon.UtilsIconLibrary;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.model.exceptions.ModelDefinitionException;
+import org.openflexo.prefs.PresentationPreferences;
 import org.openflexo.selection.SelectionManager;
 import org.openflexo.view.FIBBrowserActionAdapter;
 
@@ -361,6 +366,125 @@ public class FlexoFIBController extends FIBController implements GraphicalFlexoO
 	@Override
 	public String toString() {
 		return super.toString() + " FlexoController=" + getFlexoController();
+	}
+
+	private boolean preferencesRegistered = false;
+
+	protected void listenToPresentationPreferences() {
+		if (!preferencesRegistered) {
+			getFlexoController().getApplicationContext().getPresentationPreferences().getPropertyChangeSupport()
+					.addPropertyChangeListener(new PropertyChangeListener() {
+
+						@Override
+						public void propertyChange(PropertyChangeEvent evt) {
+							if (evt.getPropertyName().equals(PresentationPreferences.HIDE_EMPTY_FOLDERS)) {
+								// FlexoFIBController.this.getPropertyChangeSupport().firePropertyChange("shouldBeDisplayed(RepositoryFolder)",
+								// false, true);
+								FlexoFIBController.this.getPropertyChangeSupport()
+										.firePropertyChange("shouldBeDisplayed(RepositoryFolder<?,?>)", false, true);
+							}
+						}
+					});
+			preferencesRegistered = true;
+		}
+	}
+
+	public boolean hideEmptyFolders() {
+		listenToPresentationPreferences();
+		if (getFlexoController() == null) {
+			return false;
+		}
+		return getFlexoController().getApplicationContext().getPresentationPreferences().hideEmptyFolders();
+		// return true;
+	}
+
+	public boolean shouldBeDisplayed(RepositoryFolder<?, ?> folder) {
+		if (folder.isRootFolder()) {
+			return true;
+		}
+		if (!hideEmptyFolders()) {
+			return true;
+		}
+		if (folder.getResources().size() == 0) {
+			if (folder.getChildren().size() == 0) {
+				return false;
+			}
+			for (RepositoryFolder<?, ?> childFolder : folder.getChildren()) {
+				if (shouldBeDisplayed(childFolder)) {
+					return true;
+				}
+			}
+			return false;
+		}
+		return true;
+	}
+
+	private SelectionManager localSelectionManager;
+	private boolean isLocalSelectionManagerUpdating = false;
+
+	/**
+	 * Return a local {@link SelectionManager}
+	 * 
+	 * When not already existant, instantiate a new {@link SelectionManager} - not bound to the {@link FlexoController}' selection manager A
+	 * local selection manager might be used to synchronize the selection of two widgets, inside a component (a view), independantly from
+	 * the main selection manager
+	 * 
+	 * @return
+	 */
+	public SelectionManager getLocalSelectionManager() {
+		if (localSelectionManager == null) {
+			localSelectionManager = new SelectionManager(null) {
+
+				@Override
+				public FlexoObject getRootFocusedObject() {
+					// not required here
+					return null;
+				}
+
+				@Override
+				public void addToSelected(FlexoObject object) {
+					super.addToSelected(object);
+					if (!isLocalSelectionManagerUpdating) {
+						objectAddedToSelection(object);
+					}
+				}
+
+				@Override
+				public void removeFromSelected(FlexoObject object) {
+					super.removeFromSelected(object);
+					if (!isLocalSelectionManagerUpdating) {
+						objectRemovedFromSelection(object);
+					}
+				}
+
+				@Override
+				public void resetSelection() {
+					super.resetSelection();
+					if (!isLocalSelectionManagerUpdating) {
+						selectionCleared();
+					}
+				}
+
+				@Override
+				public void resetSelection(boolean temporary) {
+					super.resetSelection(temporary);
+					if (!isLocalSelectionManagerUpdating) {
+						selectionCleared();
+					}
+				}
+			};
+		}
+		return localSelectionManager;
+	}
+
+	@Override
+	public <T> void updateSelection(FIBSelectable<T> widget, List<T> oldSelection, List<T> newSelection) {
+		super.updateSelection(widget, oldSelection, newSelection);
+		if (localSelectionManager != null) {
+			isLocalSelectionManagerUpdating = true;
+			localSelectionManager.setSelectedObjects((List) newSelection);
+			isLocalSelectionManagerUpdating = false;
+		}
 	}
 
 }

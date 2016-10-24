@@ -1169,7 +1169,6 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 		Object[] availableOptions = new Object[] { FlexoLocalization.getMainLocalizer().localizedForKey("OK"),
 				FlexoLocalization.getMainLocalizer().localizedForKey("cancel") };
 		JOptionPane pane = new JOptionPane(message, messageType, JOptionPane.OK_CANCEL_OPTION, icon, availableOptions, availableOptions[0]);
-
 		pane.setWantsInput(true);
 		pane.setSelectionValues(selectionValues);
 		pane.setInitialSelectionValue(initialSelectionValue);

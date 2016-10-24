@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Panel id="0" darkLevel="0" useScrollBar="false" borderLeft="0"
-	protectContent="false" height="99" name="AdvancedPreferencesPanel"
-	layout="twocols"
-	controllerClassName="org.openflexo.components.PreferencesDialog$PreferencesFIBController"
-	border="empty" trackViewPortWidth="true" width="99"
-	dataClassName="org.openflexo.prefs.AdvancedPrefs" titleFont="Lucida Grande,0,13"
-	borderTop="5" trackViewPortHeight="true">
-	<Label id="1" manageDynamicModel="false" useScrollBar="false"
-		localize="true" align="left"
-		constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)"
-		label="TODO" readOnly="false" />
+<Panel id="0" borderLeft="0" height="99" sizeAdjustment="OriginalSize" controllerClassName="org.openflexo.components.PreferencesDialog$PreferencesFIBController" borderRight="0" border="empty" trackViewPortWidth="true" align="left" width="99" borderBottom="0" titleFont="Lucida Grande,0,13" borderTop="5" trackViewPortHeight="true" layout="twocols" name="AdvancedPreferencesPanel">
+  <Label id="1" name="TodoLabel" localize="true" align="left" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=20;insetsRight=0;insetsTop=0;location=left)" label="undo_manager" />
+  <Panel id="2" borderLeft="0" sizeAdjustment="OriginalSize" borderRight="0" border="rounded3d" trackViewPortWidth="true" align="left" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=20;insetsTop=0;location=right)" borderBottom="0" borderTop="0" trackViewPortHeight="true" layout="twocols" name="FIBPanel">
+    <Label id="3" name="Label" align="left" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)" label="enable_undo_manager" />
+    <CheckBox id="4" selected="true" name="checkbox" data="data.enableUndoManager" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)" />
+    <Label id="5" enable="data.enableUndoManager" name="Label2" align="left" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)" label="undo_levels" />
+    <Number id="6" minValue="0" columns="3" enable="data.enableUndoManager" name="Integer" data="data.undoLevels" maxValue="65535" increment="1" constraints="twocols(expandHorizontally=false;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)" numberType="IntegerType" />
+  </Panel>
+  <FIBVariable id="7" name="data" type="org.openflexo.prefs.AdvancedPrefs" />
+  <LocalizedDictionary id="8" />
 </Panel>

@@ -115,17 +115,10 @@ public interface FlexoResourceParameter extends FlexoBehaviourParameter {
 
 		@Override
 		public void setResourceTechnologyAdapter(TechnologyAdapter technologyAdapter) {
-			if (getTechnologyAdapterResourceType() != null && getServiceManager() != null) {
-				Class<? extends TechnologyAdapter> taClass = (Class<? extends TechnologyAdapter>) TypeUtils
-						.getTypeArgument(getTechnologyAdapterResourceType(), TechnologyAdapterResource.class, 1);
-				TechnologyAdapter actualTA = getServiceManager().getTechnologyAdapterService().getTechnologyAdapter(taClass);
-				if (actualTA != technologyAdapter) {
-					performSuperSetter(RESOURCE_TECHNOLOGY_ADAPTER_KEY, technologyAdapter);
-					setTechnologyAdapterResourceType(null);
-				}
-			}
-			else {
+			TechnologyAdapter oldValue = (TechnologyAdapter) performSuperGetter(RESOURCE_TECHNOLOGY_ADAPTER_KEY);
+			if (oldValue != technologyAdapter) {
 				performSuperSetter(RESOURCE_TECHNOLOGY_ADAPTER_KEY, technologyAdapter);
+				setTechnologyAdapterResourceType(null);
 			}
 		}
 

@@ -125,7 +125,7 @@ public abstract class ViewPointResourceImpl extends AbstractVirtualModelResource
 	 */
 	@Override
 	public boolean isLoadable() {
-		return !isDeprecatedVersion();
+		return super.isLoadable() && !isDeprecatedVersion();
 	}
 
 	@Override

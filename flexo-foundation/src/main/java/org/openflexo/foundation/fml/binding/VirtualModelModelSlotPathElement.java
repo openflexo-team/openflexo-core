@@ -60,6 +60,10 @@ public class VirtualModelModelSlotPathElement<MS extends ModelSlot> extends Simp
 		this.modelSlot = modelSlot;
 	}
 
+	public MS getModelSlot() {
+		return modelSlot;
+	}
+
 	@Override
 	public String getLabel() {
 		return modelSlot.getName();

@@ -58,12 +58,14 @@ import org.openflexo.foundation.FlexoServiceManager.ServiceRegistered;
 import org.openflexo.foundation.FlexoServiceManager.TechnologyAdapterHasBeenActivated;
 import org.openflexo.foundation.FlexoServiceManager.TechnologyAdapterHasBeenDisactivated;
 import org.openflexo.foundation.resource.FlexoResourceCenter.ResourceCenterEntry;
+import org.openflexo.foundation.resource.PamelaResourceImpl.FileHasBeenWrittenOnDiskNotification;
 import org.openflexo.foundation.resource.PamelaResourceImpl.WillDeleteFileOnDiskNotification;
 import org.openflexo.foundation.resource.PamelaResourceImpl.WillRenameFileOnDiskNotification;
 import org.openflexo.foundation.resource.PamelaResourceImpl.WillWriteFileOnDiskNotification;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.model.factory.ModelFactory;
+import org.openflexo.toolbox.FileUtils;
 
 /**
  * Default implementation for the {@link FlexoResourceCenterService} Manage the {@link UserResourceCenter} and the default
@@ -199,7 +201,7 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 	@Override
 	public void addToResourceCenters(FlexoResourceCenter<?> resourceCenter) {
 		if (!getResourceCenters().contains(resourceCenter)) {
-			logger.info("################################### addToResourceCenters() " + resourceCenter);
+			// logger.info("################################### addToResourceCenters() " + resourceCenter);
 			performSuperAdder(RESOURCE_CENTERS, resourceCenter);
 			if (getServiceManager() != null) {
 				getServiceManager().notify(this, new ResourceCenterAdded(resourceCenter));
@@ -302,22 +304,45 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 		if (notification instanceof WillWriteFileOnDiskNotification) {
 			for (FlexoResourceCenter<?> rc : getResourceCenters()) {
 				if (rc instanceof FileSystemBasedResourceCenter) {
-					((FileSystemBasedResourceCenter) rc).willWrite(((WillWriteFileOnDiskNotification) notification).getFile());
+					File rootDirectory = ((FileSystemBasedResourceCenter) rc).getRootDirectory();
+					File fileBeeingAdded = ((WillWriteFileOnDiskNotification) notification).getFile();
+					if (FileUtils.directoryContainsFile(rootDirectory, fileBeeingAdded, true)) {
+						((FileSystemBasedResourceCenter) rc).willWrite(fileBeeingAdded);
+					}
+				}
+			}
+		}
+		if (notification instanceof FileHasBeenWrittenOnDiskNotification) {
+			for (FlexoResourceCenter<?> rc : getResourceCenters()) {
+				if (rc instanceof FileSystemBasedResourceCenter) {
+					File rootDirectory = ((FileSystemBasedResourceCenter) rc).getRootDirectory();
+					File fileBeeingAdded = ((FileHasBeenWrittenOnDiskNotification) notification).getFile();
+					if (FileUtils.directoryContainsFile(rootDirectory, fileBeeingAdded, true)) {
+						((FileSystemBasedResourceCenter) rc).hasBeenWritten(fileBeeingAdded);
+					}
 				}
 			}
 		}
 		if (notification instanceof WillRenameFileOnDiskNotification) {
 			for (FlexoResourceCenter<?> rc : getResourceCenters()) {
 				if (rc instanceof FileSystemBasedResourceCenter) {
-					((FileSystemBasedResourceCenter) rc).willRename(((WillRenameFileOnDiskNotification) notification).getFromFile(),
-							((WillRenameFileOnDiskNotification) notification).getToFile());
+					File rootDirectory = ((FileSystemBasedResourceCenter) rc).getRootDirectory();
+					File fromFile = ((WillRenameFileOnDiskNotification) notification).getFromFile();
+					File toFile = ((WillRenameFileOnDiskNotification) notification).getToFile();
+					if (FileUtils.directoryContainsFile(rootDirectory, fromFile, true)) {
+						((FileSystemBasedResourceCenter) rc).willRename(fromFile, toFile);
+					}
 				}
 			}
 		}
 		if (notification instanceof WillDeleteFileOnDiskNotification) {
 			for (FlexoResourceCenter<?> rc : getResourceCenters()) {
 				if (rc instanceof FileSystemBasedResourceCenter) {
-					((FileSystemBasedResourceCenter) rc).willDelete(((WillDeleteFileOnDiskNotification) notification).getFile());
+					File rootDirectory = ((FileSystemBasedResourceCenter) rc).getRootDirectory();
+					File fileBeeingDeleted = ((WillDeleteFileOnDiskNotification) notification).getFile();
+					if (FileUtils.directoryContainsFile(rootDirectory, fileBeeingDeleted, true)) {
+						((FileSystemBasedResourceCenter) rc).willDelete(fileBeeingDeleted);
+					}
 				}
 			}
 		}

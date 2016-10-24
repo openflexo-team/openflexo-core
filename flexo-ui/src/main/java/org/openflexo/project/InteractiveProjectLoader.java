@@ -75,7 +75,7 @@ public class InteractiveProjectLoader extends ProjectLoader {
 
 	private static final Logger logger = Logger.getLogger(InteractiveProjectLoader.class.getPackage().getName());
 
-	private final Map<FlexoProject, AutoSaveService> autoSaveServices;
+	protected final Map<FlexoProject, AutoSaveService> autoSaveServices;
 
 	public InteractiveProjectLoader() {
 		super();
@@ -228,7 +228,7 @@ public class InteractiveProjectLoader extends ProjectLoader {
 	}
 
 	@Override
-	protected void preInitialization(File projectDirectory) {
+	public void preInitialization(File projectDirectory) {
 		getServiceManager().getGeneralPreferences().addToLastOpenedProjects(projectDirectory);
 		getServiceManager().getPreferencesService().savePreferences();
 	}

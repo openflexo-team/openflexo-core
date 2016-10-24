@@ -53,6 +53,12 @@ public class WizardPanelController extends FlexoFIBController {
 		return (Wizard) super.getDataObject();
 	}
 
+	@Override
+	public void cancelAndDispose() {
+		getDataObject().cancel();
+		super.cancelAndDispose();
+	}
+
 	public void finish() {
 		getDataObject().finish();
 		super.validateAndDispose();

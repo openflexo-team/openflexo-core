@@ -160,8 +160,7 @@ public class Flexo {
 	}
 
 	@SuppressWarnings("restriction")
-	protected
-	static void registerShutdownHook() {
+	protected static void registerShutdownHook() {
 		try {
 			Class.forName("sun.misc.Signal");
 			Class.forName("sun.misc.SignalHandler");
@@ -188,27 +187,30 @@ public class Flexo {
 	}
 
 	/**
-	 * Launch method to start Flexo in multimodule mode. Program args are in dev: -userType MAINTAINER Dev -nosplash otherwise see windows
-	 * launchers or build.xml for package args VM args: -Xmx512M (for big projects push it to 1024) For MacOS also add: -Xdock:name=Flexo
-	 * -Dapple.laf.useScreenMenuBar=true
+	 * Launch method to start Flexo in multimodule mode. When in development mode, program args should be: Dev -nosplash For MacOS, you can
+	 * also add: -Xdock:name=Flexo -Dapple.laf.useScreenMenuBar=true
 	 * 
 	 * @param args
 	 */
 	public static void main(final String[] args) {
-		// String userTypeName = null;
 		boolean noSplash = false;
+
+		String localesRelativePath = null;
+
 		if (args.length > 0) {
 			// ATTENTION: Argument cannot start with "-D", nor start with "-X", nor start with "-agentlib" since they are reserved keywords
 			// for JVM
 			for (int i = 0; i < args.length; i++) {
-				/*if (args[i].equals("-userType")) {
-					userTypeName = args[i + 1];
-				}*/
 				if (args[i].equals("-nosplash")) {
 					noSplash = true;
 				}
-				else if (args[i].equalsIgnoreCase("DEV")) {
+				else if (args[i].equalsIgnoreCase("-dev") || args[i].equalsIgnoreCase("DEV")) {
 					isDev = true;
+				}
+				else if (args[i].equalsIgnoreCase("-locales")) {
+					if (i < args.length - 1) {
+						localesRelativePath = args[i + 1];
+					}
 				}
 				else if (args[i].toLowerCase().contains("-demo")) {
 					demoMode = true;
@@ -241,8 +243,6 @@ public class Flexo {
 		fsrl.appendToDirectories(System.getProperty("user.home"));
 		ResourceLocator.appendDelegate(fsrl);
 
-		// UserType userTypeNamed = UserType.getUserTypeNamed(userTypeName);
-		// UserType.setCurrentUserType(userTypeNamed);
 		SplashWindow splashWindow = null;
 		if (!noSplash) {
 			splashWindow = new SplashWindow(FlexoFrame.getActiveFrame());
@@ -252,7 +252,8 @@ public class Flexo {
 		// First init localization with default location
 		// FlexoLocalization.initWith(FlexoMainLocalizer.getInstance());
 
-		final InteractiveApplicationContext applicationContext = new InteractiveApplicationContext();
+		final InteractiveApplicationContext applicationContext = new InteractiveApplicationContext(localesRelativePath, isDev, recordMode,
+				playMode);
 
 		remapStandardOuputs(isDev, applicationContext);
 
@@ -338,7 +339,7 @@ public class Flexo {
 		if (ToolBox.getPLATFORM() == ToolBox.MACOS) {
 			System.setProperty("apple.laf.useScreenMenuBar", "true");
 		}
-		initUILAF(applicationContext.getAdvancedPrefs().getLookAndFeelAsString());
+		initUILAF(applicationContext.getPresentationPreferences().getLookAndFeelAsString());
 		if (isDev) {
 			FlexoLoggingFormatter.logDate = false;
 		}
@@ -586,6 +587,11 @@ public class Flexo {
 			ps2.print((char) b);
 		}
 
+		@Override
+		public void flush() throws IOException {
+			ps1.flush();
+			ps2.flush();
+		}
 	}
 
 	private static File getOutputFile(String outString) throws IOException {

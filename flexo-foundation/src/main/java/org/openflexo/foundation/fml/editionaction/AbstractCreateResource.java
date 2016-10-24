@@ -48,9 +48,12 @@ import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
+import org.openflexo.foundation.resource.FlexoResourceFactory;
 import org.openflexo.foundation.resource.ResourceData;
+import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapterResource;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.model.annotations.DefineValidationRule;
 import org.openflexo.model.annotations.Getter;
@@ -59,6 +62,7 @@ import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.PropertyIdentifier;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
+import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.model.validation.FixProposal;
 import org.openflexo.model.validation.ValidationIssue;
 import org.openflexo.model.validation.ValidationRule;
@@ -78,8 +82,8 @@ import org.openflexo.model.validation.ValidationWarning;
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(AbstractCreateResource.AbstractCreateResourceImpl.class)
-public interface AbstractCreateResource<MS extends ModelSlot<RD>, RD extends ResourceData<RD> & TechnologyObject<?>>
-extends TechnologySpecificAction<MS, RD> {
+public interface AbstractCreateResource<MS extends ModelSlot<RD>, RD extends ResourceData<RD> & TechnologyObject<TA>, TA extends TechnologyAdapter>
+		extends TechnologySpecificAction<MS, RD> {
 
 	@PropertyIdentifier(type = DataBinding.class)
 	public static final String RESOURCE_NAME_KEY = "resourceName";
@@ -118,8 +122,8 @@ extends TechnologySpecificAction<MS, RD> {
 	@Setter(RELATIVE_PATH_KEY)
 	public void setRelativePath(String relativePath);
 
-	public static abstract class AbstractCreateResourceImpl<MS extends ModelSlot<RD>, RD extends ResourceData<RD> & TechnologyObject<?>>
-	extends TechnologySpecificActionImpl<MS, RD> implements AbstractCreateResource<MS, RD> {
+	public static abstract class AbstractCreateResourceImpl<MS extends ModelSlot<RD>, RD extends ResourceData<RD> & TechnologyObject<TA>, TA extends TechnologyAdapter>
+			extends TechnologySpecificActionImpl<MS, RD>implements AbstractCreateResource<MS, RD, TA> {
 
 		private static final Logger logger = Logger.getLogger(AbstractCreateResource.class.getPackage().getName());
 
@@ -241,14 +245,29 @@ extends TechnologySpecificAction<MS, RD> {
 		@Override
 		public abstract Type getAssignableType();
 
+		protected <I, R extends TechnologyAdapterResource<RD, TA>, RF extends FlexoResourceFactory<R, RD, TA>> R createResource(
+				TA technologyAdapter, Class<RF> resourceFactoryClass, FlexoResourceCenter<I> resourceCenter, String resourceName,
+				String resourceURI, String relativePath, String extension, boolean createEmptyContents)
+						throws SaveResourceException, ModelDefinitionException {
+
+			System.out.println("Creating resource from " + resourceFactoryClass);
+
+			if (technologyAdapter == null) {
+				logger.warning("Could not access TechnologyAdapter while creating resource from " + resourceFactoryClass);
+				return null;
+			}
+
+			return technologyAdapter.createResource(resourceFactoryClass, resourceCenter, resourceName, resourceURI, relativePath,
+					extension, createEmptyContents);
+		}
 
 	}
-	
+
 	/* Validation Rule to avoid ResourceCenter to be Null/Empty */
 
 	@DefineValidationRule
 	public static class ResourceCenterShouldNotBeNull
-	extends ValidationRule<ResourceCenterShouldNotBeNull, TechnologySpecificAction<?, ?>> {
+			extends ValidationRule<ResourceCenterShouldNotBeNull, TechnologySpecificAction<?, ?>> {
 
 		public ResourceCenterShouldNotBeNull() {
 			super(TechnologySpecificAction.class, "CreateResource_need_a_rc");
@@ -268,7 +287,7 @@ extends TechnologySpecificAction<MS, RD> {
 		}
 
 		protected static class SetResourceCenterBeingProjectByDefault
-		extends FixProposal<ResourceCenterShouldNotBeNull, TechnologySpecificAction<?, ?>> {
+				extends FixProposal<ResourceCenterShouldNotBeNull, TechnologySpecificAction<?, ?>> {
 
 			private final TechnologySpecificAction<?, ?> action;
 
@@ -279,7 +298,7 @@ extends TechnologySpecificAction<MS, RD> {
 
 			@Override
 			protected void fixAction() {
-				((AbstractCreateResource<?, ?>) action).getResourceCenter().setUnparsedBinding("project");
+				((AbstractCreateResource<?, ?, ?>) action).getResourceCenter().setUnparsedBinding("project");
 			}
 		}
 

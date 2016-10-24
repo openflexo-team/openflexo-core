@@ -146,7 +146,8 @@ public abstract class Wizard implements HasPropertyChangeSupport {
 	public WizardStep getPreviousStep(WizardStep page) {
 		if (page.isPreviousEnabled() && steps.indexOf(page) > 0) {
 			return steps.get(steps.indexOf(page) - 1);
-		} else {
+		}
+		else {
 			return null;
 		}
 	}
@@ -169,7 +170,8 @@ public abstract class Wizard implements HasPropertyChangeSupport {
 	public WizardStep getNextStep(WizardStep page) {
 		if (page.isNextEnabled() && steps.indexOf(page) > -1 && steps.indexOf(page) < steps.size() - 1) {
 			return steps.get(steps.indexOf(page) + 1);
-		} else {
+		}
+		else {
 			return null;
 		}
 	}
@@ -180,7 +182,8 @@ public abstract class Wizard implements HasPropertyChangeSupport {
 		}
 		if (currentStep.getPageImage() != null) {
 			return currentStep.getPageImage();
-		} else {
+		}
+		else {
 			return getDefaultPageImage();
 		}
 	}
@@ -250,6 +253,12 @@ public abstract class Wizard implements HasPropertyChangeSupport {
 	 */
 	public Dimension getPreferredSize() {
 		return null;
+	}
+
+	public void cancel() {
+		if (getCurrentStep() != null) {
+			getCurrentStep().cancelled();
+		}
 	}
 
 	public void finish() {

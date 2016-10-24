@@ -50,12 +50,11 @@ import java.util.Observable;
 import java.util.Observer;
 import java.util.logging.Logger;
 
-import org.openflexo.connie.BindingVariable;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.fml.FlexoConcept;
-import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.ViewPointLocalizedDictionary;
+import org.openflexo.foundation.fml.inspector.FlexoConceptInspector;
 import org.openflexo.foundation.fml.inspector.InspectorEntry;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.task.Progress;
@@ -65,6 +64,7 @@ import org.openflexo.gina.FIBLibrary;
 import org.openflexo.gina.model.FIBComponent;
 import org.openflexo.gina.model.FIBContainer;
 import org.openflexo.gina.model.FIBModelFactory;
+import org.openflexo.gina.model.FIBVariable;
 import org.openflexo.gina.model.FIBWidget;
 import org.openflexo.gina.model.container.FIBPanel.Layout;
 import org.openflexo.gina.model.container.FIBTab;
@@ -98,7 +98,6 @@ public class ModuleInspectorController extends Observable implements Observer {
 	private final FlexoController flexoController;
 
 	private final Map<FlexoConcept, FIBInspector> flexoConceptInspectors;
-	// private final Map<Class<?>, FIBInspector> inspectors;
 
 	private FIBInspector currentInspector = null;
 
@@ -119,19 +118,19 @@ public class ModuleInspectorController extends Observable implements Observer {
 		inspectorDialog = new FIBInspectorDialog(this);
 		Boolean visible = null;
 		if (flexoController.getApplicationContext().getGeneralPreferences() != null) {
-			visible = flexoController.getApplicationContext().getGeneralPreferences().getInspectorVisible();
+			visible = flexoController.getApplicationContext().getPresentationPreferences().getInspectorVisible();
 		}
 		inspectorDialog.setVisible(visible == null || visible);
 		inspectorDialog.addComponentListener(new ComponentAdapter() {
 			@Override
 			public void componentShown(ComponentEvent e) {
-				flexoController.getApplicationContext().getGeneralPreferences().setInspectorVisible(true);
+				flexoController.getApplicationContext().getPresentationPreferences().setInspectorVisible(true);
 				flexoController.getApplicationContext().getPreferencesService().savePreferences();
 			}
 
 			@Override
 			public void componentHidden(ComponentEvent e) {
-				flexoController.getApplicationContext().getGeneralPreferences().setInspectorVisible(false);
+				flexoController.getApplicationContext().getPresentationPreferences().setInspectorVisible(false);
 				flexoController.getApplicationContext().getPreferencesService().savePreferences();
 			};
 		});
@@ -343,6 +342,14 @@ public class ModuleInspectorController extends Observable implements Observer {
 		return inspectorForClass(object.getClass());
 	}
 
+	/**
+	 * Internally called to build an inspector for a given {@link FlexoConceptInstance}<br>
+	 * Inspector is build from {@link FlexoConceptInstance} classical inspector augmented with tab as defined in
+	 * {@link FlexoConceptInspector}
+	 * 
+	 * @param conceptInstance
+	 * @return
+	 */
 	private FIBInspector inspectorForFlexoConceptInstance(FlexoConceptInstance conceptInstance) {
 		FlexoConcept concept = conceptInstance.getFlexoConcept();
 		if (concept == null) {
@@ -353,12 +360,12 @@ public class ModuleInspectorController extends Observable implements Observer {
 			return returned;
 		}
 		else {
+			// First retrieve basic inspector (as defined in FlexoConceptInstance.inspector)
 			returned = inspectorForClass(conceptInstance.getImplementedInterface());
+			// Clone it
 			returned = (FIBInspector) returned.cloneObject();
-			// FIBTab basicTab = (FIBTab) returned.getTabPanel().getChildAt(0);
-			// System.out.println("basicTab=" + basicTab);
-			// returned.removeFromSubComponents(basicTab);
-			appendFlexoConceptInspectors(concept, returned);
+			// And append tab matching FlexoConceptInspector
+			appendFlexoConceptInspector(concept, returned);
 			flexoConceptInspectors.put(concept, returned);
 			return returned;
 		}
@@ -550,8 +557,8 @@ public class ModuleInspectorController extends Observable implements Observer {
 		currentInspector = null;
 	}
 
-	public void appendFlexoConceptInspectors(FlexoConcept concept, FIBInspector inspector) {
-		FIBTab newTab = makeFIBTab(concept, inspector);
+	private void appendFlexoConceptInspector(FlexoConcept concept, FIBInspector inspector) {
+		FIBTab newTab = makeFIBTab(concept);
 		inspector.getTabPanel().addToSubComponents(newTab, null, 0);
 
 		/*try {
@@ -572,41 +579,55 @@ public class ModuleInspectorController extends Observable implements Observer {
 		}*/
 	}
 
-	private FIBTab makeFIBTab(FlexoConcept flexoConcept, FIBInspector inspector) {
-		// logger.info("makeFIBTab " + refIndex + " for " + ep);
-		FIBTab newTab = createFIBTabForFlexoConcept(flexoConcept);
+	/**
+	 * Internally called to create {@link FIBTab} matching inspector of supplied {@link FlexoConcept}
+	 * 
+	 * @param flexoConcept
+	 * @param inspector
+	 * @return
+	 */
+	private FIBTab makeFIBTab(FlexoConcept flexoConcept) {
+		FIBTab newTab = getFactory().newFIBTab();
+		newTab.setTitle(flexoConcept.getInspector().getInspectorTitle());
+		newTab.setLayout(Layout.twocols);
+		newTab.setUseScrollBar(true);
 
-		// VERY IMPORTANT
-		// We MUST here redefine the type of inspected data
-		BindingVariable bv = inspector.getBindingModel().bindingVariableNamed("data");
-		if (bv != null && flexoConcept != null) {
-			bv.setType(FlexoConceptInstanceType.getFlexoConceptInstanceType(flexoConcept));
-		}
+		// We create a variable for inspector data
+		// This variable is called fci, with type FlexoConceptInstanceType<FlexoConcept>, and value 'data' (which is the
+		// FlexoConceptInstance)
+		// The goal of that variable definition is to provide type for inspected FlexoConceptInstance
+		FIBVariable<?> dataVariable = getFactory().newFIBVariable(newTab, "fci", flexoConcept.getInstanceType());
+		dataVariable.setValue(new DataBinding("data"));
+		newTab.addToVariables(dataVariable);
+		newTab.setName(flexoConcept.getName() + "Panel");
 
 		appendInspectorEntries(flexoConcept, newTab);
 		newTab.finalizeDeserialization();
+
+		/*for (FIBComponent c : newTab.getSubComponents()) {
+			System.out.println("> component " + c);
+			if (c instanceof FIBWidget) {
+				System.out.println("value=" + ((FIBWidget) c).getData());
+				System.out.println(
+						"valid=" + ((FIBWidget) c).getData().isValid() + " reason=" + ((FIBWidget) c).getData().invalidBindingReason());
+			}
+		}*/
+
 		return newTab;
 	}
 
-	protected FIBTab createFIBTabForFlexoConcept(FlexoConcept ep) {
-		// String epIdentifier = getFlexoConceptIdentifierForEPIReference(ep);
-		FIBTab newTab = getFactory().newFIBTab();
-		newTab.setTitle(ep.getInspector().getInspectorTitle());
-		newTab.setLayout(Layout.twocols);
-		newTab.setUseScrollBar(true);
-		// newTab.setDataClass(FlexoConceptInstance.class);
-		// newTab.setData(new DataBinding("data.flexoConceptReferences.get["+refIndex+"].flexoConceptInstance"));
-		// newTab.setData(new DataBinding("data.flexoConceptReferences.firstElement.flexoConceptInstance"));
-		newTab.setName(ep.getName() + "Panel");
-		return newTab;
-	}
-
-	private void appendInspectorEntries(FlexoConcept ep, FIBTab newTab) {
-		for (FlexoConcept parentEP : ep.getParentFlexoConcepts()) {
+	/**
+	 * Internally called to append all entries of supplied flexo concept
+	 * 
+	 * @param flexoConcept
+	 * @param newTab
+	 */
+	private void appendInspectorEntries(FlexoConcept flexoConcept, FIBTab newTab) {
+		for (FlexoConcept parentEP : flexoConcept.getParentFlexoConcepts()) {
 			appendInspectorEntries(parentEP, newTab);
 		}
-		ViewPointLocalizedDictionary localizedDictionary = ep.getViewPoint().getLocalizedDictionary();
-		for (final InspectorEntry entry : ep.getInspector().getEntries()) {
+		ViewPointLocalizedDictionary localizedDictionary = flexoConcept.getViewPoint().getLocalizedDictionary();
+		for (final InspectorEntry entry : flexoConcept.getInspector().getEntries()) {
 			FIBLabel label = getFactory().newFIBLabel();
 			String entryLabel = localizedDictionary.localizedForKeyAndLanguage(entry.getLabel(), FlexoLocalization.getCurrentLanguage());
 			if (entryLabel == null) {
@@ -616,7 +637,7 @@ public class ModuleInspectorController extends Observable implements Observer {
 			newTab.addToSubComponents(label, new TwoColsLayoutConstraints(TwoColsLayoutLocation.left, false, false));
 			FIBWidget widget = makeWidget(entry, newTab);
 			widget.setBindingFactory(entry.getBindingFactory());
-			widget.setData(new DataBinding<Object>("data." + entry.getData().toString()));
+			widget.setData(new DataBinding<Object>("fci." + entry.getData().toString()));
 			widget.setReadOnly(entry.getIsReadOnly());
 			/*System.out.println("Widget " + widget + " data=" + entry.getData());
 			System.out.println("valid:" + entry.getData().isValid());

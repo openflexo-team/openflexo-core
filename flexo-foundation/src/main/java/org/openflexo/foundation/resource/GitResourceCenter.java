@@ -74,8 +74,9 @@ public class GitResourceCenter extends FileSystemBasedResourceCenter {
 		gitIODelegateFactory = new GitIODelegateFactory();
 	}
 
-	/** 
+	/**
 	 * needed for sub-classing and steel accessing to JGit Tooling
+	 * 
 	 * @return
 	 */
 	public Git getGit() {
@@ -83,14 +84,17 @@ public class GitResourceCenter extends FileSystemBasedResourceCenter {
 	}
 
 	@Override
-	public boolean isIgnorable(File file) {
+	protected boolean isToBeIgnored(File file) {
+		if (super.isToBeIgnored(file)) {
+			return true;
+		}
 		if (file.isDirectory() && file.getName().equals(".git")) {
 			return true;
 		}
 		if (FileUtils.isFileContainedIn(file, gitDir)) {
 			return true;
 		}
-		return super.isIgnorable(file);
+		return false;
 	}
 
 	public Repository getGitRepository() {
@@ -163,7 +167,7 @@ public class GitResourceCenter extends FileSystemBasedResourceCenter {
 
 		if (candidateFile != null) {
 			try {
-				RepositoryFolder<R, File> returned = resourceRepository.getRepositoryFolder(candidateFile, true);
+				RepositoryFolder<R, File> returned = resourceRepository.getParentRepositoryFolder(candidateFile, true);
 				return returned;
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -229,5 +233,10 @@ public class GitResourceCenter extends FileSystemBasedResourceCenter {
 		super.setDefaultBaseURI(defaultBaseURI);
 		System.out.println("get=" + getDefaultBaseURI());
 	}*/
+
+	@Override
+	public String getDisplayableName() {
+		return getDefaultBaseURI();
+	}
 
 }

@@ -39,7 +39,6 @@
 
 package org.openflexo.prefs;
 
-import java.awt.Rectangle;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -58,7 +57,6 @@ import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.model.annotations.XMLElement;
-import org.openflexo.model.converter.AWTRectangleConverter;
 import org.openflexo.model.validation.ValidationRule;
 import org.openflexo.toolbox.StringUtils;
 
@@ -89,56 +87,17 @@ public interface GeneralPreferences extends PreferencesContainer {
 	public static final String LAST_OPENED_PROJECTS_3 = "lastProjects_3";
 	public static final String LAST_OPENED_PROJECTS_4 = "lastProjects_4";
 	public static final String LAST_OPENED_PROJECTS_5 = "lastProjects_5";
-	public static final String SYNCHRONIZED_BROWSER = "synchronizedBrowser";
-	public static final String INSPECTOR_VISIBLE = "inspector_visible";
-	public static final String INSPECTOR_ON_TOP = "inspector_always_on_top";
-	public static final String CLOSE_POPUP_ON_CLICK_OUT = "close_popup_on_click_out";
 	public static final String NOTIFY_VALID_PROJECT = "notify_valid_project";
-	public static final String BOUNDS_FOR_FRAME = "BoundsForFrame_";
-	public static final String SHOW_LEFT_VIEW = "showBrowserIn";
-	public static final String SHOW_RIGHT_VIEW = "showPaletteIn";
-	public static final String STATE_FOR_FRAME = "StateForFrame_";
-	public static final String LAYOUT_FOR = "LayoutFor_";
-	public static final String AUTO_SAVE_ENABLED = "AutoSaveEnabled";
-	public static final String AUTO_SAVE_INTERVAL = "AutoSaveInterval";
-	public static final String AUTO_SAVE_LIMIT = "AutoSaveLimit";
+	public static final String AUTO_SAVE_ENABLED = "autoSaveEnabled";
+	public static final String AUTO_SAVE_INTERVAL = "autoSaveInterval";
+	public static final String AUTO_SAVE_LIMIT = "autoSaveLimit";
 	public static final String LAST_IMAGE_DIRECTORY = "LAST_IMAGE_DIRECTORY";
-	public static final String SPLIT_DIVIDER_LOCATION = "SPLIT_DIVIDER_LOCATION_";
 
 	public static final String LOCAL_RESOURCE_CENTER_DIRECTORY = "localResourceCenterDirectory";
 
 	public static final String LOCAL_RESOURCE_CENTER_DIRECTORY2 = "localResourceCenterDirectory2";
 
 	public static final String DIRECTORY_RESOURCE_CENTER_LIST = "directoryResourceCenterList";
-
-	/*private static final FlexoObserver observer = new FlexoObserver() {
-	
-		@Override
-		public void update(FlexoObservable observable, DataModification dataModification) {
-			if (dataModification instanceof PreferencesHaveChanged
-					&& ((PreferencesHaveChanged) dataModification).propertyName().equals(LANGUAGE_KEY)) {
-				if (dataModification.oldValue() != dataModification.newValue()) {
-					setLanguage(getLanguage());
-				}
-			}
-		}
-	
-	};
-	
-	private static final String RESOURCE_LOCATION = "_location";
-	
-	static {
-		getPreferences().addObserver(observer);
-	}*/
-
-	/*public static GeneralPreferences getPreferences() {
-		return preferences(GENERAL_PREFERENCES);
-	}*/
-
-	/*@Override
-	public File getInspectorFile() {
-		return new FileResource("Config/Preferences/GeneralPrefs.inspector");
-	}*/
 
 	@Getter(value = LANGUAGE_KEY, isStringConvertable = true)
 	@XMLAttribute
@@ -162,27 +121,6 @@ public interface GeneralPreferences extends PreferencesContainer {
 
 	@Setter(FAVORITE_MODULE_KEY)
 	public void setFavoriteModuleName(String value);
-
-	@Getter(value = SYNCHRONIZED_BROWSER, defaultValue = "true")
-	@XMLAttribute
-	public boolean getSynchronizedBrowser();
-
-	@Setter(SYNCHRONIZED_BROWSER)
-	public void setSynchronizedBrowser(boolean synchronizedBrowser);
-
-	@Getter(value = INSPECTOR_VISIBLE, defaultValue = "false")
-	@XMLAttribute
-	public boolean getInspectorVisible();
-
-	@Setter(INSPECTOR_VISIBLE)
-	public void setInspectorVisible(boolean inspectorVisible);
-
-	@Getter(value = INSPECTOR_ON_TOP, defaultValue = "true")
-	@XMLAttribute
-	public boolean getInspectorAlwaysOnTop();
-
-	@Setter(INSPECTOR_ON_TOP)
-	public void setInspectorAlwaysOnTop(boolean inspectorAlwaysOnTop);
 
 	@Getter(LAST_OPENED_PROJECTS_1)
 	@XMLAttribute
@@ -245,32 +183,6 @@ public interface GeneralPreferences extends PreferencesContainer {
 	@Setter(NOTIFY_VALID_PROJECT)
 	public void setNotifyValidProject(boolean flag);
 
-	public Rectangle getBoundForFrameWithID(String id);
-
-	public void setBoundForFrameWithID(String id, Rectangle bounds);
-
-	public boolean getShowLeftView(String id);
-
-	public void setShowLeftView(String id, boolean status);
-
-	public boolean getShowRightView(String id);
-
-	public void setShowRightView(String id, boolean status);
-
-	public Integer getFrameStateForFrameWithID(String id);
-
-	/**
-	 * @param extendedState
-	 */
-	public void setFrameStateForFrameWithID(String id, Integer extendedState);
-
-	public String getLayoutFor(String id);
-
-	/**
-	 * @param extendedState
-	 */
-	public void setLayoutFor(String layout, String id);
-
 	@Getter(value = AUTO_SAVE_ENABLED, defaultValue = "true")
 	@XMLAttribute
 	public boolean getAutoSaveEnabled();
@@ -303,27 +215,6 @@ public interface GeneralPreferences extends PreferencesContainer {
 	@Setter(LAST_IMAGE_DIRECTORY)
 	public void setLastImageDirectory(File f);
 
-	public int getDividerLocationForSplitPaneWithID(String id);
-
-	public void setDividerLocationForSplitPaneWithID(int value, String id);
-
-	/*@Deprecated
-	private static File getLocalResourceCenterDirectory() {
-		File file = getPreferences().getDirectoryProperty(LOCAL_RESOURCE_CENTER_DIRECTORY2);
-		if (file == null) {
-			file = getPreferences().getDirectoryProperty(LOCAL_RESOURCE_CENTER_DIRECTORY);
-			if (file == null || file.isFile()) {
-				setLocalResourceCenterDirectory(file = new File(FileUtils.getApplicationDataDirectory(), "FlexoResourceCenter"));
-			}
-		}
-		return file;
-	}*/
-
-	/*@Deprecated
-	private static void setLocalResourceCenterDirectory(File directory) {
-		getPreferences().setDirectoryProperty(LOCAL_RESOURCE_CENTER_DIRECTORY2, directory);
-	}*/
-
 	@Getter(DIRECTORY_RESOURCE_CENTER_LIST)
 	@XMLAttribute
 	public String getDirectoryResourceCenterListAsString();
@@ -342,19 +233,10 @@ public interface GeneralPreferences extends PreferencesContainer {
 
 	public void setDirectoryResourceCenterList(List<File> rcList);
 
-	/*public static File getLocationForResource(String uri) {
-		return getPreferences().getFileProperty(uri + RESOURCE_LOCATION);
-	}
-	
-	public static void setLocationForResource(File file, String uri) {
-		getPreferences().setFileProperty(uri + RESOURCE_LOCATION, file, false);
-	}*/
-
 	public abstract class GeneralPreferencesImpl extends PreferencesContainerImpl implements GeneralPreferences {
 
+		@SuppressWarnings("unused")
 		private static final Logger logger = Logger.getLogger(GeneralPreferences.class.getPackage().getName());
-
-		private final AWTRectangleConverter RECTANGLE_CONVERTER = new AWTRectangleConverter();
 
 		@Override
 		public String toString() {
@@ -512,72 +394,6 @@ public interface GeneralPreferences extends PreferencesContainer {
 		public void setUserIdentifier(String aUserIdentifier) {
 			performSuperSetter(GeneralPreferences.USER_IDENTIFIER_KEY, aUserIdentifier);
 			FlexoObjectImpl.setCurrentUserIdentifier(aUserIdentifier);
-		}
-
-		@Override
-		public Rectangle getBoundForFrameWithID(String id) {
-			return RECTANGLE_CONVERTER.convertFromString(assertProperty(BOUNDS_FOR_FRAME + id).getValue(), null);
-		}
-
-		@Override
-		public void setBoundForFrameWithID(String id, Rectangle bounds) {
-			assertProperty(BOUNDS_FOR_FRAME + id).setValue(RECTANGLE_CONVERTER.convertToString(bounds));
-		}
-
-		@Override
-		public boolean getShowLeftView(String id) {
-			return assertProperty(SHOW_LEFT_VIEW + id).booleanValue(true);
-		}
-
-		@Override
-		public void setShowLeftView(String id, boolean status) {
-			assertProperty(SHOW_LEFT_VIEW + id).setBooleanValue(status);
-		}
-
-		@Override
-		public boolean getShowRightView(String id) {
-			return assertProperty(SHOW_RIGHT_VIEW + id).booleanValue(true);
-		}
-
-		@Override
-		public void setShowRightView(String id, boolean status) {
-			assertProperty(SHOW_RIGHT_VIEW + id).setBooleanValue(status);
-		}
-
-		@Override
-		public Integer getFrameStateForFrameWithID(String id) {
-			return assertProperty(SHOW_RIGHT_VIEW + id).getIntegerValue();
-		}
-
-		/**
-		 * @param extendedState
-		 */
-		@Override
-		public void setFrameStateForFrameWithID(String id, Integer extendedState) {
-			assertProperty(STATE_FOR_FRAME + id).setIntegerValue(extendedState);
-		}
-
-		@Override
-		public int getDividerLocationForSplitPaneWithID(String id) {
-			return assertProperty(SPLIT_DIVIDER_LOCATION + id).integerValue();
-		}
-
-		@Override
-		public void setDividerLocationForSplitPaneWithID(int value, String id) {
-			assertProperty(SPLIT_DIVIDER_LOCATION + id).setIntegerValue(value);
-		}
-
-		@Override
-		public String getLayoutFor(String id) {
-			return assertProperty(LAYOUT_FOR + id).getValue();
-		}
-
-		/**
-		 * @param extendedState
-		 */
-		@Override
-		public void setLayoutFor(String layout, String id) {
-			assertProperty(LAYOUT_FOR + id).setValue(layout);
 		}
 
 		/**

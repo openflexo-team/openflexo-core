@@ -87,6 +87,7 @@ public class FIBRepositoryFolderSelector extends FIBFlexoObjectSelector<Reposito
 	@Override
 	public String renderedString(RepositoryFolder editedObject) {
 		if (editedObject != null) {
+			// System.out.println("path relative to repo: " + editedObject + " value=" + editedObject.getPathRelativeToRepository());
 			return editedObject.getPathRelativeToRepository();
 		}
 		return "";
@@ -187,74 +188,4 @@ public class FIBRepositoryFolderSelector extends FIBFlexoObjectSelector<Reposito
 		return false;
 	}
 
-	// Please uncomment this for a live test
-	// Never commit this uncommented since it will not compile on continuous build
-	// To have icon, you need to choose "Test interface" in the editor (otherwise, flexo controller is not instantiated in EDIT mode)
-	/*public static void main(String[] args) {
-	
-		try {
-			FlexoLoggingManager.initialize(-1, true, null, Level.INFO, null);
-		} catch (SecurityException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	
-		// final ViewPointLibrary viewPointLibrary;
-	
-		final FlexoServiceManager serviceManager = new TestFlexoServiceManager(new FileResource(
-				"C:/Users/Vincent/git/openflexo/packaging/technologyadaptersintegration/src/test/resources/TestResourceCenter"));
-	
-		/*final FlexoServiceManager serviceManager = new DefaultFlexoServiceManager() {
-			@Override
-			protected FlexoProjectReferenceLoader createProjectReferenceLoader() {
-				return null;
-			}
-	
-			@Override
-			protected FlexoEditor createApplicationEditor() {
-				return null;
-			}
-		};*/
-	/*TechnologyAdapterControllerService tacService = DefaultTechnologyAdapterControllerService.getNewInstance();
-	serviceManager.registerService(tacService);
-	
-	final InformationSpace informationSpace = serviceManager.getInformationSpace();
-	
-	FIBAbstractEditor editor = new FIBAbstractEditor() {
-		@Override
-		public Object[] getData() {
-			FIBResourceSelector selector = new FIBResourceSelector(null);
-			selector.setInformationSpace(informationSpace);
-			try {
-				selector.setTechnologyAdapter(serviceManager.getTechnologyAdapterService().getTechnologyAdapter(
-						(Class<TechnologyAdapter>) Class.forName("org.openflexo.technologyadapter.excel.ExcelTechnologyAdapter")));
-			} catch (ClassNotFoundException e) {
-				e.printStackTrace();
-			}
-			return makeArray(selector);
-		}
-	
-		@Override
-		public File getFIBFile() {
-			return FIB_FILE;
-		}
-	
-		@Override
-		public FIBController makeNewController(FIBComponent component) {
-			return new FlexoFIBController(component);
-		}
-	};
-	editor.launch();
-	}*/
-
-	@Override
-	public void openPopup() {
-		System.out.println("ResourceManager=" + getResourceManager());
-		System.out.println("TA=" + getTechnologyAdapter());
-		System.out.println("RC=" + getResourceCenter());
-		super.openPopup();
-	}
 }

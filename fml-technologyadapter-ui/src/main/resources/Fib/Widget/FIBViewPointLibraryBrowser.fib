@@ -13,8 +13,7 @@
 		enterPressedAction="" valueChangedAction="" valueTransform=""
 		valueValidator="" name="ViewPointLibraryBrowser" index="0" data=""
 		constraints="twocols(expandHorizontally=true;expandVertically=true;index=0;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=center)">
-		<BrowserElement
-			dataClassName="org.openflexo.foundation.fml.FMLTechnologyAdapter"
+		<BrowserElement dataClassName="org.openflexo.foundation.fml.FMLTechnologyAdapter"
 			label="technologyAdapter.name" icon="controller.iconForObject(technologyAdapter)"
 			tooltip="" enabled="" isEditable="false" editableLabel="" filtered="false"
 			defaultVisible="true" dynamicFont="" name="technologyAdapter">
@@ -23,12 +22,12 @@
 		</BrowserElement>
 		<BrowserElement dataClassName="org.openflexo.foundation.resource.RepositoryFolder"
 			label="viewPointFolder.displayableName" icon="controller.iconForObject(viewPointFolder)"
-			tooltip="" enabled="" isEditable="false" editableLabel="" filtered="false"
-			defaultVisible="true" dynamicFont="" name="viewPointFolder">
-			<Children data="viewPointFolder.children" cast="" name="subFolders" />
-			<Children data="viewPointFolder.resources" cast="" name="resource" />
-			<!--  <BrowserRemoveAction
-				method="controller.deleteFolder(selected)" name="delete_folder" />-->
+			visible="controller.shouldBeDisplayed(viewPointFolder)" filtered="false"
+			defaultVisible="true" name="viewPointFolder">
+			<Children data="viewPointFolder.children" name="subFolders" />
+			<Children data="viewPointFolder.resources" name="resource" />
+			<!-- <BrowserRemoveAction method="controller.deleteFolder(selected)" name="delete_folder" 
+				/> -->
 			<BrowserAddAction method="controller.createViewPoint(selected)"
 				name="create_viewpoint" />
 		</BrowserElement>
@@ -41,8 +40,8 @@
 				name="subResources" />
 			<Children data="viewPointResource.viewPoint.localizedDictionary"
 				visible="viewPointResource.isLoaded" name="localizedDictionary" />
-			<BrowserRemoveAction
-				method="controller.deleteViewPoint(selected)" name="delete_viewpoint" />
+			<BrowserRemoveAction method="controller.deleteViewPoint(selected)"
+				name="delete_viewpoint" />
 			<BrowserAddAction method="controller.createVirtualModel(selected)"
 				name="create_virtual_model" />
 		</BrowserElement>
@@ -54,10 +53,10 @@
 				name="subresources" />
 			<Children data="virtualModel.loadedVirtualModel.allRootFlexoConcepts"
 				visible="virtualModel.isLoaded" name="rootFlexoConcepts" />
-			<BrowserRemoveAction
-				method="controller.deleteVirtualModel(selected)" name="delete_virtual_model" />
-			<BrowserAddAction method="controller.createFlexoConcept(selected.virtualModel)"
-				name="create_flexo_concept" />
+			<BrowserRemoveAction method="controller.deleteVirtualModel(selected)"
+				name="delete_virtual_model" />
+			<BrowserAddAction
+				method="controller.createFlexoConcept(selected.virtualModel)" name="create_flexo_concept" />
 		</BrowserElement>
 		<BrowserElement
 			dataClassName="org.openflexo.foundation.fml.ViewPointLocalizedDictionary"
@@ -71,8 +70,8 @@
 			filtered="false" defaultVisible="true" name="flexoConcept">
 			<Children data="flexoConcept.childFlexoConcepts" cast=""
 				name="children" />
-			<BrowserRemoveAction
-				method="controller.deleteFlexoConcept(selected)" name="delete_flexo_concept" />
+			<BrowserRemoveAction method="controller.deleteFlexoConcept(selected)"
+				name="delete_flexo_concept" />
 			<BrowserAddAction method="controller.createFlexoConcept(selected)"
 				name="create_flexo_concept" />
 		</BrowserElement>

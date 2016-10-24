@@ -43,7 +43,10 @@ import java.util.logging.Logger;
 import org.openflexo.foundation.FlexoServiceImpl;
 import org.openflexo.foundation.nature.ProjectNatureService;
 import org.openflexo.localization.FlexoLocalization;
+import org.openflexo.localization.LocalizedDelegate;
 import org.openflexo.localization.LocalizedDelegateImpl;
+import org.openflexo.rm.ResourceLocator;
+import org.openflexo.toolbox.StringUtils;
 
 /**
  * Default implementation for {@link ProjectNatureService}
@@ -55,7 +58,9 @@ public class DefaultLocalizationService extends FlexoServiceImpl implements Loca
 
 	private static final Logger logger = Logger.getLogger(DefaultLocalizationService.class.getPackage().getName());
 
-	private FlexoMainLocalizer flexoLocalizer = null;
+	private FlexoMainLocalizer mainLocalizer = null;
+	private LocalizedDelegate flexoLocalizer = null;
+	private String generalLocalizerRelativePath = null;
 
 	/*@Override
 	public void receiveNotification(FlexoService caller, ServiceNotification notification) {
@@ -67,17 +72,39 @@ public class DefaultLocalizationService extends FlexoServiceImpl implements Loca
 
 		logger.info("Initializing localization...");
 
-		flexoLocalizer = new FlexoMainLocalizer(true);
-
-		logger.info("Main localization directory: " + flexoLocalizer.getLocalizedDirectoryResource());
+		mainLocalizer = new FlexoMainLocalizer(true);
+		logger.info("Main localization directory: " + mainLocalizer.getLocalizedDirectoryResource());
 		logger.info("Deprecated localization directory: "
-				+ ((LocalizedDelegateImpl) flexoLocalizer.getDeprecatedLocalizer()).getLocalizedDirectoryResource());
+				+ ((LocalizedDelegateImpl) mainLocalizer.getDeprecatedLocalizer()).getLocalizedDirectoryResource());
+
+		if (StringUtils.isNotEmpty(getGeneralLocalizerRelativePath())) {
+			flexoLocalizer = new LocalizedDelegateImpl(ResourceLocator.locateResource(getGeneralLocalizerRelativePath()), mainLocalizer,
+					true, true);
+		}
+		else {
+			flexoLocalizer = mainLocalizer;
+		}
+
+		/*System.out.println("Localizers:");
+		System.out.println("flexoLocalizer=" + flexoLocalizer);
+		System.out.println("flexoLocalizer.getParent()=" + flexoLocalizer.getParent());
+		System.out.println("flexoLocalizer.getParent().getParent()=" + flexoLocalizer.getParent().getParent());*/
 
 		FlexoLocalization.initWith(flexoLocalizer);
 	}
 
 	@Override
-	public FlexoMainLocalizer getFlexoLocalizer() {
+	public String getGeneralLocalizerRelativePath() {
+		return generalLocalizerRelativePath;
+	}
+
+	@Override
+	public void setGeneralLocalizerRelativePath(String relativePath) {
+		this.generalLocalizerRelativePath = relativePath;
+	}
+
+	@Override
+	public LocalizedDelegate getFlexoLocalizer() {
 		return flexoLocalizer;
 	}
 

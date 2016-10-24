@@ -111,6 +111,7 @@ public class VirtualModelInstanceResourceFactory
 
 		VirtualModelInstanceResource returned = initResourceForRetrieving(serializationArtefact, resourceCenter, technologyContextManager);
 		returned.setURI(viewResource.getURI() + "/" + name);
+		returned.setServiceManager(resourceCenter.getServiceManager());
 
 		viewResource.addToContents(returned);
 		viewResource.notifyContentsAdded(returned);

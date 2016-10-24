@@ -84,8 +84,8 @@ import org.openflexo.view.controller.action.SortFlexoPropertiesActionizer;
 
 public class ControllerActionInitializer implements EditorProvider {
 
-	private static final java.util.logging.Logger logger = org.openflexo.logging.FlexoLogger.getLogger(ControllerActionInitializer.class
-			.getPackage().getName());
+	private static final java.util.logging.Logger logger = org.openflexo.logging.FlexoLogger
+			.getLogger(ControllerActionInitializer.class.getPackage().getName());
 
 	private final FlexoController _controller;
 
@@ -112,16 +112,27 @@ public class ControllerActionInitializer implements EditorProvider {
 			FlexoActionType<A, T1, T2> actionType, ActionInitializer<A, T1, T2> initializer) {
 		if (actionType != null) {
 			initializers.put(actionType, initializer);
-		} else {
+		}
+		else {
 			Type superClass = initializer.getClass().getGenericSuperclass();
 			if (superClass instanceof ParameterizedType) {
 				Class<?> actionClass = TypeUtils.getBaseClass(((ParameterizedType) superClass).getActualTypeArguments()[0]);
 				initializersByActionClass.put(actionClass, initializer);
-			} else {
+			}
+			else {
 				if (logger.isLoggable(Level.SEVERE)) {
-					logger.severe("You registered an action initializer without providing an action type and this method does not know how to retrieve the action Action class.");
+					logger.severe(
+							"You registered an action initializer without providing an action type and this method does not know how to retrieve the action Action class.");
 				}
 			}
+		}
+	}
+
+	public <A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> void clearInitializer(
+			FlexoActionType<A, T1, T2> actionType) {
+		if (actionType != null) {
+			System.out.println("Clear initializer for " + actionType);
+			initializers.remove(actionType);
 		}
 	}
 
@@ -167,10 +178,10 @@ public class ControllerActionInitializer implements EditorProvider {
 		// TODO : To be re-written when Wysiwyg editor is re-written
 		// new SubmitDocumentationActionizer(this);
 		// new UploadProjectInitializer(this);
-		
+
 		// Remove sinc it is unused now
 		// new ProjectExcelExportInitializer(this);
-		
+
 		new LoadAllImportedProjectInitializer(this);
 
 		new AddRepositoryFolderInitializer(this);

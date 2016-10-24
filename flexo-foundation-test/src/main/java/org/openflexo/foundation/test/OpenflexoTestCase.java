@@ -202,7 +202,7 @@ public abstract class OpenflexoTestCase {
 	 * @return a newly created {@link FlexoServiceManager}
 	 */
 	protected static FlexoServiceManager instanciateBareTestServiceManager() {
-		serviceManager = new DefaultFlexoServiceManager() {
+		serviceManager = new DefaultFlexoServiceManager(null, true) {
 
 			@Override
 			protected FlexoEditingContext createEditingContext() {
@@ -237,7 +237,7 @@ public abstract class OpenflexoTestCase {
 		if (testResourceCenterDirectory != null && testResourceCenterDirectory.exists()) {
 			previousResourceCenterDirectoryToRemove = testResourceCenterDirectory;
 		}
-		serviceManager = new DefaultFlexoServiceManager() {
+		serviceManager = new DefaultFlexoServiceManager(null, true) {
 
 			@Override
 			protected FlexoEditingContext createEditingContext() {

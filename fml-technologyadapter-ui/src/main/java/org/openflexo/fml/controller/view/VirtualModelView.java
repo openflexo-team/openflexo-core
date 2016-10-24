@@ -42,6 +42,7 @@ import org.openflexo.fml.controller.CommonFIB;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.gina.swing.view.widget.JFIBBrowserWidget;
+import org.openflexo.rm.Resource;
 import org.openflexo.view.controller.FlexoController;
 import org.openflexo.view.controller.model.FlexoPerspective;
 
@@ -55,6 +56,14 @@ public class VirtualModelView extends FlexoConceptView<VirtualModel> {
 
 	public VirtualModelView(VirtualModel virtualModel, FlexoController controller, FlexoPerspective perspective) {
 		super(virtualModel, CommonFIB.VIRTUAL_MODEL_VIEW_FIB, controller, perspective);
+		if (getFIBView("FlexoConceptBrowser") instanceof JFIBBrowserWidget) {
+			JFIBBrowserWidget<FMLObject> browser = (JFIBBrowserWidget<FMLObject>) getFIBView("FlexoConceptBrowser");
+			browser.performExpand(virtualModel.getInnerConceptsFacet());
+		}
+	}
+
+	public VirtualModelView(VirtualModel virtualModel, Resource fibFile, FlexoController controller, FlexoPerspective perspective) {
+		super(virtualModel, fibFile, controller, perspective);
 		if (getFIBView("FlexoConceptBrowser") instanceof JFIBBrowserWidget) {
 			JFIBBrowserWidget<FMLObject> browser = (JFIBBrowserWidget<FMLObject>) getFIBView("FlexoConceptBrowser");
 			browser.performExpand(virtualModel.getInnerConceptsFacet());

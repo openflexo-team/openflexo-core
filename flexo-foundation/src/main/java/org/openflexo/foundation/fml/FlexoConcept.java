@@ -118,6 +118,7 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 	@PropertyIdentifier(type = Boolean.class)
 	public static final String IS_ABSTRACT_KEY = "isAbstract";
 
+	// TODO: (SGU) i think we have to remove inverse property here
 	@Getter(value = OWNER_KEY, inverse = VirtualModel.FLEXO_CONCEPTS_KEY)
 	@CloningStrategy(StrategyType.IGNORE)
 	public AbstractVirtualModel<?> getOwner();

@@ -38,6 +38,8 @@
 
 package org.openflexo.foundation.fml.rt;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoServiceManager;
@@ -54,6 +56,7 @@ import org.openflexo.foundation.fml.annotations.DeclareTechnologySpecificTypes;
 import org.openflexo.foundation.fml.rm.ViewPointResource;
 import org.openflexo.foundation.fml.rt.rm.ViewResource;
 import org.openflexo.foundation.fml.rt.rm.ViewResourceFactory;
+import org.openflexo.foundation.fml.rt.rm.VirtualModelInstanceResource;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
@@ -82,6 +85,12 @@ public class FMLRTTechnologyAdapter extends TechnologyAdapter {
 	@Override
 	public String getName() {
 		return "FML@runtime technology adapter";
+	}
+
+	@Override
+	protected void initResourceFactories() {
+		super.initResourceFactories();
+		getAvailableResourceTypes().add(VirtualModelInstanceResource.class);
 	}
 
 	@Override
@@ -125,12 +134,18 @@ public class FMLRTTechnologyAdapter extends TechnologyAdapter {
 		return this.getTechnologyAdapterService().getServiceManager();
 	}
 
+	@Override
+	public void ensureAllRepositoriesAreCreated(FlexoResourceCenter<?> rc) {
+		super.ensureAllRepositoriesAreCreated(rc);
+		getViewRepository(rc);
+	}
+
 	public <I> ViewLibrary<I> getViewRepository(FlexoResourceCenter<I> resourceCenter) {
-		ViewLibrary<I> returned = (ViewLibrary<I>) resourceCenter.retrieveRepository(ViewRepository.class, this);
+		ViewLibrary<I> returned = resourceCenter.retrieveRepository(ViewLibrary.class, this);
 		if (returned == null) {
 			returned = new ViewLibrary(this, resourceCenter);
 			resourceCenter.registerRepository(returned, ViewLibrary.class, this);
-			resourceCenter.registerRepository(returned, ViewRepository.class, this);
+			// resourceCenter.registerRepository(returned, ViewRepository.class, this);
 			// returned = new ViewRepository<I>(this, resourceCenter);
 			// resourceCenter.registerRepository(returned, ViewPointRepository.class, this);
 		}
@@ -214,13 +229,23 @@ public class FMLRTTechnologyAdapter extends TechnologyAdapter {
 
 	@Override
 	public <I> boolean isIgnorable(final FlexoResourceCenter<I> resourceCenter, final I contents) {
-		if (resourceCenter.isIgnorable(contents)) {
+		if (resourceCenter.isIgnorable(contents, this)) {
 			return true;
 		}
-		I parentFolder = resourceCenter.getContainer(contents);
+		/*I parentFolder = resourceCenter.getContainer(contents);
 		if (parentFolder != null && resourceCenter.retrieveName(parentFolder).endsWith(ViewResourceFactory.VIEW_SUFFIX)) {
 			// ignore .view subcontents
 			return true;
+		}*/
+		return false;
+	}
+
+	@Override
+	public <I> boolean isFolderIgnorable(FlexoResourceCenter<I> resourceCenter, I contents) {
+		if (resourceCenter.isDirectory(contents)) {
+			if (isContainedInDirectoryWithSuffix(resourceCenter, contents, ViewResourceFactory.VIEW_SUFFIX)) {
+				return true;
+			}
 		}
 		return false;
 	}
@@ -308,5 +333,28 @@ public class FMLRTTechnologyAdapter extends TechnologyAdapter {
 	public ViewResourceFactory getViewResourceFactory() {
 		return getResourceFactory(ViewResourceFactory.class);
 	}
+
+	public List<ViewLibrary<?>> getViewLibraries() {
+		List<ViewLibrary<?>> returned = new ArrayList<>();
+		for (FlexoResourceCenter<?> rc : getServiceManager().getResourceCenterService().getResourceCenters()) {
+			returned.add(getViewRepository(rc));
+		}
+		return returned;
+	}
+
+	@Override
+	public void notifyRepositoryStructureChanged() {
+		super.notifyRepositoryStructureChanged();
+		getPropertyChangeSupport().firePropertyChange("getViewLibraries()", null, getViewLibraries());
+	}
+
+	/*@Override
+	protected <I> void foundFolder(FlexoResourceCenter<I> resourceCenter, I folder) throws IOException {
+		super.foundFolder(resourceCenter, folder);
+		if (resourceCenter.isDirectory(folder)
+				&& !isContainedInDirectoryWithSuffix(resourceCenter, folder, ViewResourceFactory.VIEW_SUFFIX)) {
+			getViewRepository(resourceCenter).getRepositoryFolder(folder, true);
+		}
+	}*/
 
 }

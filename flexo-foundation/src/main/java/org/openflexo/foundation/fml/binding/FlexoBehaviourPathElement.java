@@ -52,6 +52,8 @@ import org.openflexo.connie.exception.InvocationTargetTransformException;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.connie.type.TypeUtils;
+import org.openflexo.foundation.FlexoEditor;
+import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.fml.ActionScheme;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
@@ -59,7 +61,6 @@ import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.action.ActionSchemeAction;
 import org.openflexo.foundation.fml.rt.action.ActionSchemeActionType;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
-import org.openflexo.gina.view.widget.table.impl.FIBTableActionListener;
 
 /**
  * Modelize a call for execution of an FlexoBehaviour
@@ -131,18 +132,20 @@ public class FlexoBehaviourPathElement extends FunctionPathElement {
 				FlexoConceptInstance fci = (FlexoConceptInstance) target;
 				ActionSchemeActionType actionType = new ActionSchemeActionType((ActionScheme) getFlexoBehaviour(), fci);
 				ActionSchemeAction actionSchemeAction = null;
+
 				if (context instanceof FlexoBehaviourAction) {
 					actionSchemeAction = actionType.makeNewEmbeddedAction(fci.getVirtualModelInstance(), null,
 							(FlexoBehaviourAction) context);
 				}
 				else {
-					// TODO: fin an elegant way to retrieve FlexoEditor (from FlexoController for example)
-					if (context instanceof FIBTableActionListener) {
-						FIBTableActionListener l = (FIBTableActionListener) context;
-						// System.out.println("controller=" + l.getController());
+					FlexoEditor editor = null;
+
+					if (fci.getResourceCenter() instanceof FlexoProject) {
+						FlexoProject prj = (FlexoProject) fci.getResourceCenter();
+						editor = prj.getServiceManager().getProjectLoaderService().getEditorForProject(prj);
 					}
-					// Hack: execute without FlexoEditor
-					actionSchemeAction = actionType.makeNewAction(fci.getVirtualModelInstance(), null);
+
+					actionSchemeAction = actionType.makeNewAction(fci.getVirtualModelInstance(), null, editor);
 				}
 				for (FlexoBehaviourParameter p : getFlexoBehaviour().getParameters()) {
 					DataBinding<?> param = getParameter(p);

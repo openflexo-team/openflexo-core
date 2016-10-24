@@ -45,9 +45,12 @@ import java.util.logging.Logger;
 
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
+import org.openflexo.foundation.fml.FlexoConcept;
+import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
+import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.ModelSlotInstance;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
@@ -102,7 +105,7 @@ public abstract interface TechnologySpecificAction<MS extends ModelSlot<?>, T> e
 
 		private static final Logger logger = Logger.getLogger(TechnologySpecificAction.class.getPackage().getName());
 
-		private MS modelSlot;
+		// private MS modelSlot;
 
 		@Override
 		public TechnologyAdapter getModelSlotTechnologyAdapter() {
@@ -110,25 +113,6 @@ public abstract interface TechnologySpecificAction<MS extends ModelSlot<?>, T> e
 				return getModelSlot().getModelSlotTechnologyAdapter();
 			}
 			return null;
-		}
-
-		@Override
-		public MS getModelSlot() {
-			if (modelSlot == null) {
-				if (getAvailableModelSlots() != null && getAvailableModelSlots().size() > 0) {
-					modelSlot = (MS) getAvailableModelSlots().get(0);
-				}
-			}
-			return modelSlot;
-		}
-
-		@Override
-		public void setModelSlot(MS modelSlot) {
-			if (modelSlot != this.modelSlot) {
-				MS oldValue = this.modelSlot;
-				this.modelSlot = modelSlot;
-				getPropertyChangeSupport().firePropertyChange("modelSlot", oldValue, modelSlot);
-			}
 		}
 
 		@Override
@@ -153,8 +137,9 @@ public abstract interface TechnologySpecificAction<MS extends ModelSlot<?>, T> e
 		@SuppressWarnings("unchecked")
 		@Override
 		public <MS2 extends ModelSlot<?>> List<MS2> getAvailableModelSlots() {
-			if (getAllAvailableModelSlots() != null) {
-				return (List<MS2>) findAvailableModelSlots();
+			List<ModelSlot<?>> availableMS = getAllAvailableModelSlots();
+			if (availableMS != null) {
+				return (List<MS2>) findAvailableModelSlots(availableMS);
 			}
 			return Collections.emptyList();
 		}
@@ -166,12 +151,20 @@ public abstract interface TechnologySpecificAction<MS extends ModelSlot<?>, T> e
 
 		@Override
 		public ModelSlotInstance getModelSlotInstance(RunTimeEvaluationContext action) {
-			if (action.getVirtualModelInstance() != null) {
-				AbstractVirtualModelInstance<?, ?> vmi = action.getVirtualModelInstance();
+			FlexoConceptInstance fci = action.getFlexoConceptInstance();
+			AbstractVirtualModelInstance<?, ?> vmi = null;
+			if (fci != null && fci instanceof AbstractVirtualModelInstance<?, ?>) {
+				vmi = (AbstractVirtualModelInstance<?, ?>) fci;
+			}
+			else if (action.getVirtualModelInstance() != null) {
+				vmi = action.getVirtualModelInstance();
+			}
+			if (vmi != null) {
 				// Following line does not compile with Java7 (don't understand why)
 				// That's the reason i tried to fix that compile issue with getGenericModelSlot() method (see below)
-				return action.getVirtualModelInstance().getModelSlotInstance(getModelSlot());
-				// return (ModelSlotInstance<MS, ?>) vmi.getModelSlotInstance(getGenericModelSlot());
+				// FD, in Java 8 return vmi.getModelSlotInstance(getModelSlot()); does not compile hence the cast
+				return vmi.getModelSlotInstance((ModelSlot) getModelSlot());
+				// return (ModelSlotInstance<MS, ?>) vmi.getModelSlotInstance(getGenericModelSlot
 			}
 			else {
 				logger.severe("Could not access virtual model instance for action " + action);
@@ -181,30 +174,53 @@ public abstract interface TechnologySpecificAction<MS extends ModelSlot<?>, T> e
 
 		@SuppressWarnings("unchecked")
 		private <MS2 extends ModelSlot<?>> List<MS2> getAllAvailableModelSlots() {
-			if (getFlexoConcept() != null && getFlexoConcept() instanceof VirtualModel) {
-				return (List<MS2>) ((VirtualModel) getFlexoConcept()).getModelSlots();
+			FlexoConcept concept = getFlexoConcept();
+			if (concept != null) {
+				if (concept instanceof VirtualModel) {
+					return (List<MS2>) ((VirtualModel) getFlexoConcept()).getModelSlots();
+				}
+				else if (concept instanceof ViewPoint) {
+					return (List<MS2>) ((ViewPoint) getFlexoConcept()).getModelSlots();
+				}
 			}
-			else if (getFlexoConcept() != null && getFlexoConcept().getOwningVirtualModel() != null) {
+			else if (concept != null && concept.getOwningVirtualModel() != null) {
 				return (List<MS2>) getFlexoConcept().getOwningVirtualModel().getModelSlots();
 			}
 			return null;
 		}
 
-		private List<ModelSlot<?>> findAvailableModelSlots() {
+		private List<ModelSlot<?>> findAvailableModelSlots(List<ModelSlot<?>> msList) {
 			List<ModelSlot<?>> returned = new ArrayList<ModelSlot<?>>();
-			for (ModelSlot<?> ms : getAllAvailableModelSlots()) {
+			if (msList == null) {
+				msList = getAllAvailableModelSlots();
+			}
+			for (ModelSlot<?> ms : msList) {
 				for (Class<?> editionActionType : ms.getAvailableEditionActionTypes()) {
 					if (TypeUtils.isAssignableTo(this, editionActionType)) {
-						returned.add(ms);
+						if (!returned.contains(ms))
+							returned.add(ms);
 					}
 				}
 				for (Class<?> editionActionType : ms.getAvailableFetchRequestActionTypes()) {
 					if (TypeUtils.isAssignableTo(this, editionActionType)) {
-						returned.add(ms);
+						if (!returned.contains(ms))
+							returned.add(ms);
 					}
 				}
 			}
 			return returned;
+		}
+
+		@Override
+		public MS getModelSlot() {
+			MS ms = (MS) performSuperGetter(MODEL_SLOT_KEY);
+			if (ms == null) {
+				List<ModelSlot<?>> availableMSs = this.getAvailableModelSlots();
+				if (availableMSs.size() == 1) {
+					ms = (MS) availableMSs.get(0);
+				}
+			}
+			return ms;
 		}
 
 		/**

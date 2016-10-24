@@ -87,7 +87,7 @@ import com.google.common.base.Throwables;
  * 
  */
 public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends ModelFactory & PamelaResourceModelFactory>
-		extends FlexoResourceImpl<RD> implements PamelaResource<RD, F> {
+		extends FlexoResourceImpl<RD>implements PamelaResource<RD, F> {
 
 	private static final Logger logger = Logger.getLogger(PamelaResourceImpl.class.getPackage().getName());
 
@@ -314,6 +314,18 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends 
 		}
 	}
 
+	public static class FileHasBeenWrittenOnDiskNotification implements ServiceNotification {
+		private final File file;
+
+		public FileHasBeenWrittenOnDiskNotification(File file) {
+			this.file = file;
+		}
+
+		public File getFile() {
+			return file;
+		}
+	}
+
 	public static class WillRenameFileOnDiskNotification implements ServiceNotification {
 		private final File fromFile;
 		private final File toFile;
@@ -344,18 +356,6 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends 
 		}
 	}
 
-	public void willWrite(File file) {
-		getServiceManager().notify(null, new WillWriteFileOnDiskNotification(file));
-	}
-
-	public void willRename(File fromFile, File toFile) {
-		getServiceManager().notify(null, new WillRenameFileOnDiskNotification(fromFile, toFile));
-	}
-
-	public void willDelete(File file) {
-		getServiceManager().notify(null, new WillDeleteFileOnDiskNotification(file));
-	}
-
 	protected void _saveResourceData(boolean clearIsModified) throws SaveResourceException {
 		File temporaryFile = null;
 		FileWritingLock lock = getFlexoIOStreamDelegate().willWriteOnDisk();
@@ -366,8 +366,8 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends 
 
 		try {
 			File dir = getFile().getParentFile();
+			willWrite(dir);
 			if (!dir.exists()) {
-				willWrite(dir);
 				dir.mkdirs();
 			}
 			willWrite(getFile());
@@ -394,6 +394,9 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends 
 			}
 			getFlexoIOStreamDelegate().hasWrittenOnDisk(lock);
 			throw new SaveResourceException(getFlexoIODelegate(), e);
+		} finally {
+			hasWritten(getFile());
+			hasWritten(getFile().getParentFile());
 		}
 	}
 

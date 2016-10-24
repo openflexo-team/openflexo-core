@@ -149,6 +149,8 @@ public interface FlexoPreferencesResource extends PamelaResource<FlexoPreference
 				FlexoPreferences prefs = getFactory().newInstance(FlexoPreferences.class);
 				GeneralPreferences generalPrefs = getFactory().newInstance(GeneralPreferences.class);
 				prefs.addToContents(generalPrefs);
+				PresentationPreferences presentationPrefs = getFactory().newInstance(PresentationPreferences.class);
+				prefs.addToContents(presentationPrefs);
 				AdvancedPrefs advancedPrefs = getFactory().newInstance(AdvancedPrefs.class);
 				prefs.addToContents(advancedPrefs);
 				setResourceData(prefs);

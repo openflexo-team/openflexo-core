@@ -100,7 +100,7 @@ public class TestApplicationContext extends ApplicationContext {
 	}
 
 	public TestApplicationContext(boolean generateCompoundTestResourceCenter) {
-		super();
+		super(null, true);
 		this.generateCompoundTestResourceCenter = generateCompoundTestResourceCenter;
 
 		// Activate both FML and FML@RT technology adapters
@@ -124,8 +124,7 @@ public class TestApplicationContext extends ApplicationContext {
 	protected FlexoResourceCenterService createResourceCenterService() {
 		try {
 			File tempFile = File.createTempFile("Temp", "");
-			String filename = tempFile.getName() + "TestResourceCenter";
-			File testResourceCenterDirectory = new File(tempFile.getParentFile(), filename);
+			File testResourceCenterDirectory = new File(tempFile.getParentFile(), tempFile.getName() + "TestResourceCenter");
 			testResourceCenterDirectory.mkdirs();
 
 			System.out.println("Creating TestResourceCenter " + testResourceCenterDirectory);

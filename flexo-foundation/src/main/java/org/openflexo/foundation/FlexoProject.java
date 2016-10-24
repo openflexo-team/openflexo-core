@@ -1486,4 +1486,8 @@ public class FlexoProject extends FileSystemBasedResourceCenter
 		return returned;
 	}
 
+	@Override
+	public String getDisplayableName() {
+		return getName();
+	}
 }

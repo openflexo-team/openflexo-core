@@ -46,7 +46,6 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoException;
-import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstanceModelFactory;
 import org.openflexo.foundation.fml.rt.FreeModelSlotInstance;
@@ -72,17 +71,18 @@ public class FreeModelSlotInstanceConfiguration<RD extends ResourceData<RD> & Te
 
 	protected List<ModelSlotInstanceConfigurationOption> options;
 
-	private FlexoResourceCenter<?> resourceCenter;
+	private FlexoResourceCenter<?> targetResourceCenter;
 	private TechnologyAdapterResource<RD, ?> resource;
 	private String resourceUri;
 	private String relativePath;
 	private String filename;
 
-	protected FreeModelSlotInstanceConfiguration(MS ms, AbstractVirtualModelInstance<?, ?> virtualModelInstance, FlexoResourceCenter<?> rc) {
+	protected FreeModelSlotInstanceConfiguration(MS ms, AbstractVirtualModelInstance<?, ?> virtualModelInstance,
+			FlexoResourceCenter<?> rc) {
 		super(ms, virtualModelInstance, rc);
 		FlexoResourceCenterService rcService = ms.getServiceManager().getResourceCenterService();
 		if (rcService.getResourceCenters().size() > 0) {
-			resourceCenter = rcService.getResourceCenters().get(0);
+			targetResourceCenter = rcService.getResourceCenters().get(0);
 		}
 		options = new ArrayList<ModelSlotInstanceConfiguration.ModelSlotInstanceConfigurationOption>();
 		initDefaultOptions();
@@ -189,20 +189,46 @@ public class FreeModelSlotInstanceConfiguration<RD extends ResourceData<RD> & Te
 		return view;
 	}
 
-	public FlexoResourceCenter<?> getResourceCenter() {
-		return resourceCenter;
+	public FlexoResourceCenter<?> getTargetResourceCenter() {
+		return targetResourceCenter;
 	}
 
-	public void setResourceCenter(FlexoResourceCenter<?> resourceCenter) {
-		if (resourceCenter == null || !resourceCenter.equals(this.resourceCenter)) {
-			FlexoResourceCenter<?> oldValue = this.resourceCenter;
-			this.resourceCenter = resourceCenter;
-			getPropertyChangeSupport().firePropertyChange("resourceCenter", oldValue, resourceCenter);
+	public void setTargetResourceCenter(FlexoResourceCenter<?> resourceCenter) {
+		if (resourceCenter == null || !resourceCenter.equals(this.targetResourceCenter)) {
+			FlexoResourceCenter<?> oldValue = this.targetResourceCenter;
+			this.targetResourceCenter = resourceCenter;
+			getPropertyChangeSupport().firePropertyChange("targetResourceCenter", oldValue, resourceCenter);
+			getPropertyChangeSupport().firePropertyChange("resourceUri", oldValue, getResourceUri());
 		}
 	}
 
+	@Override
+	public void setOption(ModelSlotInstanceConfigurationOption option) {
+
+		if (option == DefaultModelSlotInstanceConfigurationOption.CreatePrivateNewResource) {
+			setTargetResourceCenter(getResourceCenter());
+		}
+		super.setOption(option);
+	}
+
 	public String getResourceUri() {
-		return resourceUri;
+		if (resourceUri == null) {
+			FlexoResourceCenter localRC;
+			if (getTargetResourceCenter() != null) {
+				localRC = getTargetResourceCenter();
+			}
+			else {
+				localRC = getResourceCenter();
+			}
+			String generatedUri = null;
+			if (relativePath != null)
+				generatedUri = localRC.getDefaultBaseURI() + relativePath + "/" + getFilename();
+			else
+				generatedUri = localRC.getDefaultBaseURI() + "/" + getFilename();
+			return generatedUri;
+		}
+		else
+			return resourceUri;
 	}
 
 	public void setResourceUri(String resourceUri) {
@@ -222,6 +248,7 @@ public class FreeModelSlotInstanceConfiguration<RD extends ResourceData<RD> & Te
 			String oldValue = this.relativePath;
 			this.relativePath = relativePath;
 			getPropertyChangeSupport().firePropertyChange("relativePath", oldValue, relativePath);
+			getPropertyChangeSupport().firePropertyChange("resourceUri", oldValue, relativePath);
 		}
 	}
 
@@ -235,6 +262,7 @@ public class FreeModelSlotInstanceConfiguration<RD extends ResourceData<RD> & Te
 			String oldValue = this.filename;
 			this.filename = filename;
 			getPropertyChangeSupport().firePropertyChange("filename", oldValue, filename);
+			getPropertyChangeSupport().firePropertyChange("resourceUri", oldValue, filename);
 		}
 	}
 
@@ -250,6 +278,7 @@ public class FreeModelSlotInstanceConfiguration<RD extends ResourceData<RD> & Te
 			TechnologyAdapterResource<RD, ?> oldValue = this.resource;
 			this.resource = resource;
 			getPropertyChangeSupport().firePropertyChange("resource", oldValue, resource);
+			getPropertyChangeSupport().firePropertyChange("resourceUri", oldValue, resource);
 		}
 		// System.out.println("filename=" + getFilename());
 	}

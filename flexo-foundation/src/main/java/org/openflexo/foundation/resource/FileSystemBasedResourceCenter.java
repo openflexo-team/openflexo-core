@@ -94,9 +94,13 @@ import org.openflexo.xml.XMLRootElementReader;
  * @author sylvain
  * 
  */
-public abstract class FileSystemBasedResourceCenter extends ResourceRepository<FlexoResource<?>, File>implements FlexoResourceCenter<File> {
+public abstract class FileSystemBasedResourceCenter extends ResourceRepository<FlexoResource<?>, File>
+		implements FlexoResourceCenter<File> {
 
 	protected static final Logger logger = Logger.getLogger(FileSystemBasedResourceCenter.class.getPackage().getName());
+
+	// Delay of DirectoryWatcher, in seconds
+	public static long DIRECTORY_WATCHER_DELAY = 3;
 
 	private final File rootDirectory;
 
@@ -139,7 +143,7 @@ public abstract class FileSystemBasedResourceCenter extends ResourceRepository<F
 
 		RepositoryFolder<?, File> folder = null;
 		try {
-			folder = getRepositoryFolder(aFile, false);
+			folder = getParentRepositoryFolder(aFile, false);
 		} catch (IOException e) {
 			e.printStackTrace();
 			return null;
@@ -202,7 +206,7 @@ public abstract class FileSystemBasedResourceCenter extends ResourceRepository<F
 	protected <R extends FlexoResource<?>> RepositoryFolder<R, File> retrieveRepositoryFolder(ResourceRepository<R, File> repository,
 			File aFile) {
 		try {
-			return repository.getRepositoryFolder(aFile, true);
+			return repository.getParentRepositoryFolder(aFile, true);
 		} catch (IOException e) {
 			e.printStackTrace();
 			return repository.getRootFolder();
@@ -308,7 +312,7 @@ public abstract class FileSystemBasedResourceCenter extends ResourceRepository<F
 	private void appendFiles(File directory, List<File> files) {
 		if (directory.exists() && directory.isDirectory() && directory.canRead()) {
 			for (File f : directory.listFiles()) {
-				if (!isIgnorable(f)) {
+				if (!isIgnorable(f, null)) {
 					files.add(f);
 					if (f.isDirectory()) {
 						appendFiles(f, files);
@@ -413,7 +417,8 @@ public abstract class FileSystemBasedResourceCenter extends ResourceRepository<F
 				directoryWatcher = new FileSystemBasedDirectoryWatcher(getRootDirectory());
 			}
 			ScheduledExecutorService newScheduledThreadPool = Executors.newScheduledThreadPool(1);
-			scheduleWithFixedDelay = newScheduledThreadPool.scheduleWithFixedDelay(directoryWatcher, 0, 1, TimeUnit.SECONDS);
+			scheduleWithFixedDelay = newScheduledThreadPool.scheduleWithFixedDelay(directoryWatcher, 0, DIRECTORY_WATCHER_DELAY,
+					TimeUnit.SECONDS);
 			// System.out.println("startDirectoryWatching() for " + rootDirectory);
 		}
 	}
@@ -425,7 +430,7 @@ public abstract class FileSystemBasedResourceCenter extends ResourceRepository<F
 	}
 
 	protected void fileModified(File file) {
-		if (!isIgnorable(file)) {
+		if (!isIgnorable(file, null)) {
 			System.out.println("File MODIFIED " + file.getName() + " in " + file.getParentFile().getAbsolutePath());
 		}
 	}
@@ -442,10 +447,11 @@ public abstract class FileSystemBasedResourceCenter extends ResourceRepository<F
 	 * @return a boolean indicating if this file has been handled by a least one technology
 	 */
 	protected void fileAdded(File file) {
-		if (!isIgnorable(file)) {
-			System.out.println("File ADDED " + file.getName() + " in " + file.getParentFile().getAbsolutePath());
-			if (getServiceManager() != null && getServiceManager().getTechnologyAdapterService() != null) {
-				for (TechnologyAdapter adapter : getServiceManager().getTechnologyAdapterService().getTechnologyAdapters()) {
+		System.out.println(
+				"File ADDED in resource center " + this + " : " + file.getName() + " in " + file.getParentFile().getAbsolutePath());
+		if (getServiceManager() != null && getServiceManager().getTechnologyAdapterService() != null) {
+			for (TechnologyAdapter adapter : getServiceManager().getTechnologyAdapterService().getTechnologyAdapters()) {
+				if (!isIgnorable(file, adapter)) {
 					List<File> filesToBeNotified = addedFilesToBeRenotified.get(adapter);
 					if (filesToBeNotified == null) {
 						filesToBeNotified = new ArrayList<File>();
@@ -457,10 +463,11 @@ public abstract class FileSystemBasedResourceCenter extends ResourceRepository<F
 						}
 					}
 				}
-
+				dismissIgnoredFilesWhenRequired(file, adapter);
 			}
-			System.out.println("Done: File ADDED " + file.getName() + " in " + file.getParentFile().getAbsolutePath());
+
 		}
+		System.out.println("Done: File ADDED " + file.getName() + " in " + file.getParentFile().getAbsolutePath());
 	}
 
 	protected void fireAddedFilesToBeNotified() {
@@ -485,10 +492,10 @@ public abstract class FileSystemBasedResourceCenter extends ResourceRepository<F
 	}
 
 	protected void fileDeleted(File file) {
-		if (!isIgnorable(file)) {
-			System.out.println("File DELETED " + file.getName() + " in " + file.getParentFile().getAbsolutePath());
-			if (getServiceManager() != null) {
-				for (TechnologyAdapter adapter : getServiceManager().getTechnologyAdapterService().getTechnologyAdapters()) {
+		System.out.println("File DELETED " + file.getName() + " in " + file.getParentFile().getAbsolutePath());
+		if (getServiceManager() != null) {
+			for (TechnologyAdapter adapter : getServiceManager().getTechnologyAdapterService().getTechnologyAdapters()) {
+				if (!isIgnorable(file, adapter)) {
 					List<File> filesToBeNotified = removedFilesToBeRenotified.get(adapter);
 					if (filesToBeNotified == null) {
 						filesToBeNotified = new ArrayList<File>();
@@ -533,7 +540,7 @@ public abstract class FileSystemBasedResourceCenter extends ResourceRepository<F
 	}
 
 	protected void fileRenamed(File oldFile, File renamedFile) {
-		if (!isIgnorable(renamedFile)) {
+		if (!isIgnorable(renamedFile, null)) {
 			System.out.println("File RENAMED from  " + oldFile.getName() + " to " + renamedFile.getName() + " in "
 					+ renamedFile.getParentFile().getAbsolutePath());
 			/*if (technologyAdapterService != null) {
@@ -545,14 +552,29 @@ public abstract class FileSystemBasedResourceCenter extends ResourceRepository<F
 		}
 	}
 
-	private final List<File> willBeWrittenFiles = new ArrayList<File>();
-	private final List<File> willBeRenamedFiles = new ArrayList<File>();
-	private final List<File> willBeRenamedAsFiles = new ArrayList<File>();
-	private final List<File> willBeDeletedFiles = new ArrayList<File>();
+	private final List<File> willBeWrittenFiles = new ArrayList<>();
+	private final Map<TechnologyAdapter, List<File>> writtenFiles = new HashMap<>();
+	private final List<File> willBeRenamedFiles = new ArrayList<>();
+	private final List<File> willBeRenamedAsFiles = new ArrayList<>();
+	private final List<File> willBeDeletedFiles = new ArrayList<>();
 
 	public void willWrite(File file) {
-		// System.out.println("----------> OK, je previens que je vais ecrire le fichier " + file);
-		willBeWrittenFiles.add(file);
+		if (!willBeWrittenFiles.contains(file)) {
+			willBeWrittenFiles.add(file);
+		}
+	}
+
+	public void hasBeenWritten(File file) {
+		for (TechnologyAdapter ta : getServiceManager().getTechnologyAdapterService().getTechnologyAdapters()) {
+			List<File> l = writtenFiles.get(ta);
+			if (l == null) {
+				l = new ArrayList<>();
+				writtenFiles.put(ta, l);
+			}
+			if (!l.contains(file)) {
+				l.add(file);
+			}
+		}
 	}
 
 	public void willRename(File fromFile, File toFile) {
@@ -564,10 +586,39 @@ public abstract class FileSystemBasedResourceCenter extends ResourceRepository<F
 		willBeDeletedFiles.add(file);
 	}
 
-	@Override
-	public boolean isIgnorable(File file) {
-		if (willBeWrittenFiles.contains(file)) {
+	private void dismissIgnoredFilesWhenRequired(File file, TechnologyAdapter technologyAdapter) {
+		if (technologyAdapter == null) {
+			return;
+		}
+		List<File> filesBeeingWritten = writtenFiles.get(technologyAdapter);
+		if (filesBeeingWritten != null && filesBeeingWritten.contains(file)) {
+			filesBeeingWritten.remove(file);
+		}
+		boolean fileIsStillToBeIgnored = false;
+		for (TechnologyAdapter ta : getServiceManager().getTechnologyAdapterService().getTechnologyAdapters()) {
+			List<File> l = writtenFiles.get(ta);
+			if (l != null && l.contains(file)) {
+				fileIsStillToBeIgnored = true;
+				break;
+			}
+		}
+		if (!fileIsStillToBeIgnored) {
+			// logger.info("End of file ignoring: " + file);
 			willBeWrittenFiles.remove(file);
+		}
+
+	}
+
+	protected boolean isToBeIgnored(File f) {
+		return f.getName().endsWith("~");
+	}
+
+	@Override
+	public boolean isIgnorable(File file, TechnologyAdapter technologyAdapter) {
+		if (isToBeIgnored(file)) {
+			return true;
+		}
+		if (willBeWrittenFiles.contains(file)) {
 			return true;
 		}
 		if (willBeRenamedFiles.contains(file)) {
@@ -586,7 +637,10 @@ public abstract class FileSystemBasedResourceCenter extends ResourceRepository<F
 	}
 
 	private HashMap<Class<? extends ResourceRepository<?, File>>, ResourceRepository<?, File>> getRepositoriesForAdapter(
-			TechnologyAdapter technologyAdapter) {
+			TechnologyAdapter technologyAdapter, boolean considerEmptyRepositories) {
+		if (considerEmptyRepositories) {
+			technologyAdapter.ensureAllRepositoriesAreCreated(this);
+		}
 		HashMap<Class<? extends ResourceRepository<?, File>>, ResourceRepository<?, File>> map = repositories.get(technologyAdapter);
 		if (map == null) {
 			map = new HashMap<Class<? extends ResourceRepository<?, File>>, ResourceRepository<?, File>>();
@@ -599,55 +653,22 @@ public abstract class FileSystemBasedResourceCenter extends ResourceRepository<F
 	public final <R extends ResourceRepository<?, File>> R retrieveRepository(Class<? extends R> repositoryType,
 			TechnologyAdapter technologyAdapter) {
 		HashMap<Class<? extends ResourceRepository<?, File>>, ResourceRepository<?, File>> map = getRepositoriesForAdapter(
-				technologyAdapter);
+				technologyAdapter, false);
 
 		return (R) map.get(repositoryType);
 	}
-
-	/**
-	 * Register global repository for this resource center<br>
-	 * It is stated that the global repository contains all resources which supplied technology adapter has discovered and may interpret<br>
-	 * This is the resource repository which is generally given in GUIs (such as browsers) to display the contents of a resource center for
-	 * a given technology
-	 * 
-	 * @param repository
-	 * @param technologyAdapter
-	 */
-	/*@Override
-	public final void registerGlobalRepository(ResourceRepository<?> repository, TechnologyAdapter technologyAdapter) {
-		if (repository != null && technologyAdapter != null) {
-			globalRepositories.put(technologyAdapter, repository);
-		}
-	}*/
-
-	/**
-	 * Return the global repository for this resource center and for supplied technology adapter<br>
-	 * It is stated that the global repository contains all resources which supplied technology adapter has discovered and may interpret<br>
-	 * This is the resource repository which is generally given in GUIs (such as browsers) to display the contents of a resource center for
-	 * a given technology
-	 * 
-	 * @param technologyAdapter
-	 * @return
-	 */
-	/*@Override
-	public ResourceRepository<?> getGlobalRepository(TechnologyAdapter technologyAdapter) {
-		if (technologyAdapter != null) {
-			return globalRepositories.get(technologyAdapter);
-		}
-		return null;
-	}*/
 
 	@Override
 	public final <R extends ResourceRepository<?, File>> void registerRepository(R repository, Class<? extends R> repositoryType,
 			TechnologyAdapter technologyAdapter) {
 
 		HashMap<Class<? extends ResourceRepository<?, File>>, ResourceRepository<?, File>> map = getRepositoriesForAdapter(
-				technologyAdapter);
+				technologyAdapter, false);
 
 		if (map.get(repositoryType) == null) {
 			map.put(repositoryType, repository);
 			getPropertyChangeSupport().firePropertyChange("getRegisteredRepositories(TechnologyAdapter)", null,
-					getRegistedRepositories(technologyAdapter));
+					getRegistedRepositories(technologyAdapter, false));
 			// Call it to update the current repositories
 			technologyAdapter.notifyRepositoryStructureChanged();
 		}
@@ -657,8 +678,9 @@ public abstract class FileSystemBasedResourceCenter extends ResourceRepository<F
 	}
 
 	@Override
-	public Collection<ResourceRepository<?, File>> getRegistedRepositories(TechnologyAdapter technologyAdapter) {
-		return getRepositoriesForAdapter(technologyAdapter).values();
+	public Collection<ResourceRepository<?, File>> getRegistedRepositories(TechnologyAdapter technologyAdapter,
+			boolean considerEmptyRepositories) {
+		return getRepositoriesForAdapter(technologyAdapter, considerEmptyRepositories).values();
 	}
 
 	@Override
@@ -796,11 +818,6 @@ public abstract class FileSystemBasedResourceCenter extends ResourceRepository<F
 		this.objectReferenceConverter = objectReferenceConverter;
 	}
 
-	/*
-	 * ReferenceOwner default implementation => does nothing
-	 * @see org.openflexo.foundation.utils.FlexoObjectReference.ReferenceOwner#notifyObjectLoaded(org.openflexo.foundation.utils.FlexoObjectReference)
-	 */
-
 	@Override
 	public void notifyObjectLoaded(FlexoObjectReference<?> reference) {
 		// logger.warning("TODO: implement this");
@@ -916,6 +933,7 @@ public abstract class FileSystemBasedResourceCenter extends ResourceRepository<F
 	 */
 	@Override
 	public File createEntry(String name, File parentDirectory) {
+		parentDirectory.mkdirs();
 		return new File(parentDirectory, name);
 	}
 
@@ -952,7 +970,7 @@ public abstract class FileSystemBasedResourceCenter extends ResourceRepository<F
 	@Override
 	public XMLRootElementInfo getXMLRootElementInfo(File serializationArtefact) {
 		if (!serializationArtefact.exists()) {
-			logger.warning("Could not extract XMLRootElementInfo from a non existant file: " + serializationArtefact);
+			// logger.warning("Could not extract XMLRootElementInfo from a non existant file: " + serializationArtefact);
 			return null;
 		}
 		XMLRootElementReader reader = new XMLRootElementReader();
@@ -1002,7 +1020,7 @@ public abstract class FileSystemBasedResourceCenter extends ResourceRepository<F
 			candidateFile = ((FileFlexoIODelegate) ioDelegate).getFile();
 		}
 		try {
-			RepositoryFolder<R, File> returned = resourceRepository.getRepositoryFolder(candidateFile, true);
+			RepositoryFolder<R, File> returned = resourceRepository.getParentRepositoryFolder(candidateFile, true);
 			/*if (!returned.getSerializationArtefact().equals(candidateFile.getParentFile())
 					&& !returned.getSerializationArtefact().getAbsolutePath().contains("target")) {
 				System.out.println("N'importe quoi, on met " + candidateFile + " dans " + returned.getSerializationArtefact());

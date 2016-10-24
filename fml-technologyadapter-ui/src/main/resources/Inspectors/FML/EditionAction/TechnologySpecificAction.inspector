@@ -19,7 +19,7 @@
 				localize="false" list="data.getAvailableModelSlots()" showIcon="true"
 				iteratorClassName="org.openflexo.foundation.technologyadapter.ModelSlot"
 				visible="data.getAvailableModelSlots().size &gt; 1"
-				autoSelectFirstRow="true" showReset="false" />
+				autoSelectFirstRow="false" showReset="true" />
 			  <TextField data="data.modelSlot.name" index="4"
 				constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
 				readOnly="true" localize="false" columns="7" name="ModelSlotTextField" 

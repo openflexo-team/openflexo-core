@@ -54,6 +54,7 @@ import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.VirtualModelInstanceType;
 import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.foundation.fml.editionaction.FetchRequest;
+import org.openflexo.foundation.fml.editionaction.TechnologySpecificAction;
 import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
@@ -136,6 +137,12 @@ public interface SelectFlexoConceptInstance extends FetchRequest<FMLRTModelSlot<
 		}
 
 		@Override
+		public void setModelSlot(FMLRTModelSlot modelSlot) {
+
+			performSuperSetter(TechnologySpecificAction.MODEL_SLOT_KEY, modelSlot);
+		}
+
+		@Override
 		public TechnologyAdapter getModelSlotTechnologyAdapter() {
 			if (getServiceManager() != null) {
 				return getServiceManager().getTechnologyAdapterService().getTechnologyAdapter(FMLRTTechnologyAdapter.class);
@@ -165,6 +172,7 @@ public interface SelectFlexoConceptInstance extends FetchRequest<FMLRTModelSlot<
 			}
 			this.virtualModelInstance = aVirtualModelInstance;
 			notifiedBindingChanged(virtualModelInstance);
+			getPropertyChangeSupport().firePropertyChange("addressedVirtualModel", getAddressedVirtualModel(), null);
 		}
 
 		@Override

@@ -55,6 +55,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.StringTokenizer;
 import java.util.jar.JarFile;
 import java.util.logging.Logger;
 
@@ -80,11 +81,13 @@ import org.openflexo.foundation.resource.JarResourceCenter;
 import org.openflexo.foundation.resource.RepositoryFolder;
 import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.resource.ResourceRepository;
+import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.localization.LocalizedDelegate;
 import org.openflexo.localization.LocalizedDelegateImpl;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.rm.ResourceLocator;
+import org.openflexo.toolbox.StringUtils;
 
 /**
  * This class represents a technology adapter<br>
@@ -259,11 +262,41 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 						logger.info("> Look-up resource " + r.getImplementedInterface().getSimpleName() + " " + r.getURI());
 					}
 				}
+				if (resourceCenter.isDirectory(serializationArtefact)) {
+					try {
+						foundFolder(resourceCenter, serializationArtefact);
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
 			}
 		}
 
 		resourceCenterHasBeenInitialized(resourceCenter);
 
+	}
+
+	protected final <I> void foundFolder(FlexoResourceCenter<I> resourceCenter, I folder) throws IOException {
+		if (resourceCenter.isDirectory(folder) && !isFolderIgnorable(resourceCenter, folder)) {
+			TechnologyAdapterGlobalRepository globalRepository = getGlobalRepository(resourceCenter);
+			RepositoryFolder newRepositoryFolder = globalRepository.getRepositoryFolder(folder, true);
+			for (ResourceRepository<?, I> repository : (List<ResourceRepository<?, I>>) (List) getAllRepositories()) {
+				if (repository.getResourceCenter() == resourceCenter)
+					repository.getRepositoryFolder(folder, true);
+			}
+		}
+	}
+
+	protected <I> boolean isContainedInDirectoryWithSuffix(FlexoResourceCenter<I> resourceCenter, I folder, String suffix) {
+		I current = folder;
+		while (current != null && !current.equals(resourceCenter.getBaseArtefact())) {
+			if (resourceCenter.retrieveName(current).endsWith(suffix)) {
+				return true;
+			}
+			current = resourceCenter.getContainer(current);
+		}
+		return false;
 	}
 
 	protected void resourceCenterHasBeenInitialized(FlexoResourceCenter<?> rc) {
@@ -328,6 +361,10 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 
 	public abstract <I> boolean isIgnorable(FlexoResourceCenter<I> resourceCenter, I contents);
 
+	public <I> boolean isFolderIgnorable(FlexoResourceCenter<I> resourceCenter, I contents) {
+		return isIgnorable(resourceCenter, contents);
+	}
+
 	/**
 	 * Called when a new serialization artefact has been discovered
 	 * 
@@ -343,6 +380,15 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 				if (resource != null) {
 					hasBeenLookedUp = true;
 				}
+				else if (resourceCenter.isDirectory(serializationArtefact)) {
+					try {
+						foundFolder(resourceCenter, serializationArtefact);
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+
 			}
 		}
 		return hasBeenLookedUp;
@@ -543,67 +589,12 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 	protected <R extends FlexoResource<?>, I> RepositoryFolder<R, I> retrieveRepositoryFolder(ResourceRepository<R, I> repository,
 			I serializationArtefact) {
 		try {
-			return repository.getRepositoryFolder(serializationArtefact, true);
+			return repository.getParentRepositoryFolder(serializationArtefact, true);
 		} catch (IOException e) {
 			e.printStackTrace();
 			return repository.getRootFolder();
 		}
 	}
-
-	/**
-	 * Called when a resource has been looked-up by the {@link TechnologyAdapter}
-	 * 
-	 * @param resource
-	 * @param resourceCenter
-	 */
-	/*public void referenceResource(FlexoResource<?> resource, FlexoResourceCenter<?> resourceCenter) {
-		resource.setResourceCenter(resourceCenter);
-		if (resourceCenter instanceof ResourceRepository && resource != null
-				&& resource.getFlexoIODelegate() instanceof FileFlexoIODelegate) {
-			// Also register the resource in the ResourceCenter seen as a ResourceRepository
-			try {
-				File candidateFile = null;
-				if (resource.getFlexoIODelegate() instanceof DirectoryBasedFlexoIODelegate) {
-					candidateFile = ((DirectoryBasedFlexoIODelegate) resource.getFlexoIODelegate()).getDirectory();
-				}
-				else if (resource.getFlexoIODelegate() instanceof FileFlexoIODelegate) {
-					candidateFile = ((FileFlexoIODelegate) resource.getFlexoIODelegate()).getFile();
-				}
-	
-				((ResourceRepository) resourceCenter).registerResource(resource,
-						((ResourceRepository<?>) resourceCenter).getRepositoryFolder(candidateFile, true));
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-	
-		registerResourceInGlobalRepository(resource, resourceCenter);
-	
-	}*/
-
-	/*protected void registerResourceInGlobalRepository(FlexoResource<?> resource, FlexoResourceCenter<?> resourceCenter) {
-		TechnologyAdapterGlobalRepository globalRepository = getGlobalRepository(resourceCenter);
-		if (globalRepository != null) {
-			RepositoryFolder<?> folderInGlobalRepository;
-			try {
-				globalRepository.registerResource(resource, resource.getFlexoIODelegate().getRepositoryFolder(globalRepository, true));
-			} catch (IOException e) {
-				logger.warning("Unexpected I/O exception: " + e);
-				e.printStackTrace();
-			}
-		}
-	}*/
-
-	/**
-	 * Called when a resource has been dereferenced by the {@link TechnologyAdapter}
-	 * 
-	 * @param resource
-	 * @param resourceCenter
-	 */
-	/*public void dereferenceResource(FlexoResource<?> resource, FlexoResourceCenter<?> resourceCenter) {
-		// TODO
-		logger.warning("dereferenceResource() not implemented yet");
-	}*/
 
 	// Override when required
 	public void initFMLModelFactory(FMLModelFactory fMLModelFactory) {
@@ -642,7 +633,7 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 
 	private final Map<FlexoResourceCenter<?>, TechnologyAdapterGlobalRepository> globalRepositories = new HashMap<>();
 
-	public TechnologyAdapterGlobalRepository getGlobalRepository(FlexoResourceCenter<?> rc) {
+	public <I> TechnologyAdapterGlobalRepository getGlobalRepository(FlexoResourceCenter<I> rc) {
 		TechnologyAdapterGlobalRepository returned = globalRepositories.get(rc);
 		if (returned == null) {
 			returned = new TechnologyAdapterGlobalRepository(this, rc);
@@ -658,11 +649,11 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 	 * @param technologyAdapter
 	 * @return
 	 */
-	public List<ResourceRepository<?, ?>> getAllRepositories() {
-		List<ResourceRepository<?, ?>> returned = new ArrayList<>();
+	public <I> List<ResourceRepository<?, I>> getAllRepositories() {
+		List<ResourceRepository<?, I>> returned = new ArrayList<>();
 		for (FlexoResourceCenter<?> rc : getTechnologyAdapterService().getServiceManager().getResourceCenterService()
 				.getResourceCenters()) {
-			Collection<? extends ResourceRepository<?, ?>> repCollection = rc.getRegistedRepositories(this);
+			Collection<? extends ResourceRepository<?, I>> repCollection = (Collection) rc.getRegistedRepositories(this, true);
 			if (repCollection != null) {
 				returned.addAll(repCollection);
 			}
@@ -677,6 +668,94 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 
 		getPropertyChangeSupport().firePropertyChange("getAllRepositories()", null, getAllRepositories());
 		getPropertyChangeSupport().firePropertyChange("getGlobalRepositories()", null, getGlobalRepositories());
+
+	}
+
+	/**
+	 * Create a resource of a given technology, according to some conventions
+	 * 
+	 * @param resourceFactoryClass
+	 *            Class of factory beeing used: determine the type of resource to create
+	 * @param resourceCenter
+	 *            Resource center in which the resource will be created
+	 * @param resourceName
+	 *            Name of the resource beeing created (when not empty the extension may complete resource name)
+	 * @param resourceURI
+	 *            when not null, sets uri of resource
+	 * @param relativePath
+	 *            determine the location where the resource will be stored
+	 * @param extension
+	 *            when not null and not already present, will be appened to resourceName
+	 * @param createEmptyContents
+	 *            when set to true, create empty contents (technology specific)
+	 * @return
+	 * @throws SaveResourceException
+	 * @throws ModelDefinitionException
+	 */
+	public <I, R extends TechnologyAdapterResource<?, ?>, RF extends FlexoResourceFactory<R, ?, ?>> R createResource(
+			Class<RF> resourceFactoryClass, FlexoResourceCenter<I> resourceCenter, String resourceName, String resourceURI,
+			String relativePath, String extension, boolean createEmptyContents) throws SaveResourceException, ModelDefinitionException {
+
+		System.out.println("Creating resource from " + resourceFactoryClass);
+
+		RF resourceFactory = getResourceFactory(resourceFactoryClass);
+
+		System.out.println("ResourceFactory=" + resourceFactory);
+
+		I serializationArtefact = retrieveResourceSerializationArtefact(resourceCenter, resourceName, relativePath, extension);
+
+		System.out.println("serialization artefact=" + serializationArtefact);
+
+		R returned = (R) resourceFactory.makeResource(serializationArtefact, resourceCenter,
+				(TechnologyContextManager) getTechnologyContextManager(), resourceCenter.retrieveName(serializationArtefact), resourceURI,
+				createEmptyContents);
+
+		System.out.println("Return " + returned);
+
+		return returned;
+
+	}
+
+	/**
+	 * Internally used to retrieve serializationArtefact of a resource beeing created
+	 * 
+	 * @param resourceCenter
+	 * @param resourceName
+	 * @param relativePath
+	 * @param extension
+	 * @return
+	 */
+	protected <I> I retrieveResourceSerializationArtefact(FlexoResourceCenter<I> resourceCenter, String resourceName, String relativePath,
+			String extension) {
+
+		I containerBaseArtefact = resourceCenter.getBaseArtefact();
+
+		if (StringUtils.isEmpty(resourceName)) {
+			return containerBaseArtefact;
+		}
+		String artefactName;
+		if (extension != null && !resourceName.endsWith(extension)) {
+			if (!extension.startsWith(".")) {
+				extension = "." + extension;
+			}
+			artefactName = resourceName + extension;
+		}
+		else {
+			artefactName = resourceName;
+		}
+
+		I directory = containerBaseArtefact;
+
+		StringTokenizer st = new StringTokenizer(relativePath, "/\\");
+		while (st.hasMoreElements()) {
+			String pathName = st.nextToken();
+			directory = resourceCenter.getDirectory(pathName, directory);
+			if (directory == null) {
+				directory = resourceCenter.createDirectory(pathName, directory);
+			}
+		}
+
+		return resourceCenter.createEntry(artefactName, directory);
 
 	}
 
@@ -805,6 +884,12 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+	/**
+	 * Hook to force the creation of all repositories (even empty)
+	 */
+	public void ensureAllRepositoriesAreCreated(FlexoResourceCenter<?> rc) {
 	}
 
 }

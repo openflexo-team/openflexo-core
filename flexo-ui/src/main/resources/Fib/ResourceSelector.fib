@@ -27,7 +27,7 @@
 			data="((&quot;Found &quot; + data.matchingValues.size) + &quot; matches&quot;)"
 			constraints="gridbag(anchor=east;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=0;insetsBottom=0;insetsLeft=0;insetsRight=5;insetsTop=0;padX=0;padY=0;weightX=1.0;weightY=0.0)"
 			visible="((data.matchingValues.size != 1) &amp; data.isFiltered)"
-			name="MatchesLabel" localize="true" />
+			name="MatchesLabel" localize="false" />
 	</Panel>
 	<Browser root="data.rootObject" deepExploration="true"
 		iteratorClassName="org.openflexo.foundation.technologyadapter.TechnologyAdapterResource"
@@ -48,18 +48,20 @@
 			isEditable="false" filtered="false" defaultVisible="true" name="folder">
 			<Children data="folder.children" name="subFolders" />
 			<Children data="folder.resources" name="resource" />
-		</BrowserElement>
+		</BrowserElement>		
 		<BrowserElement
 			dataClassName="org.openflexo.foundation.technologyadapter.TechnologyAdapter"
 			label="technologyAdapter.name" icon="controller.iconForObject(technologyAdapter)"
 			isEditable="false" filtered="false" defaultVisible="true"
 			name="technologyAdapter">
-			<Children
+				<Children data="technologyAdapter.getGlobalRepositories()" visible=""
+				cast="child.rootFolder" name="resourceRepositories" />
+			<!--  <Children
 				data="data.resourceManager.getAllRepositories(technologyAdapter)"
-				visible="true" cast="child.rootFolder" name="resourceRepositories" />
+				visible="true" cast="child.rootFolder" name="resourceRepositories" />-->
 		</BrowserElement>
 		<BrowserElement
-			dataClassName="org.openflexo.foundation.technologyadapter.TechnologyAdapterResource"
+			dataClassName="org.openflexo.foundation.resource.FlexoResource"
 			label="resource.name" icon="controller.iconForObject(resource)"
 			isEditable="false" filtered="false" defaultVisible="true" name="resource" />
 	</Browser>

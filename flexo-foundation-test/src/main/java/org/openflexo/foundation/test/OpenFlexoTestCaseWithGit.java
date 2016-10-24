@@ -58,7 +58,7 @@ public class OpenFlexoTestCaseWithGit extends OpenflexoProjectAtRunTimeTestCase 
 		if (testResourceCenterDirectory != null && testResourceCenterDirectory.exists()) {
 			previousResourceCenterDirectoryToRemove = testResourceCenterDirectory;
 		}
-		serviceManager = new DefaultFlexoServiceManager() {
+		serviceManager = new DefaultFlexoServiceManager(null, true) {
 
 			@Override
 			protected FlexoEditingContext createEditingContext() {
