@@ -107,11 +107,11 @@ public interface FlexoConceptObject extends FMLObject {
 			if (this instanceof VirtualModelObject) {
 				return ((VirtualModelObject) this).getVirtualModel();
 			}
-			if (getFlexoConcept() != null && getFlexoConcept().getOwner() != null) {
-				return getFlexoConcept().getOwner();
-			}
 			if (getFlexoConcept() instanceof AbstractVirtualModel) {
 				return (AbstractVirtualModel<?>) getFlexoConcept();
+			}
+			if (getFlexoConcept() != null && getFlexoConcept().getOwner() != null) {
+				return getFlexoConcept().getOwner();
 			}
 			return null;
 		}
