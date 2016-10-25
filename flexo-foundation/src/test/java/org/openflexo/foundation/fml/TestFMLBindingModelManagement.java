@@ -959,7 +959,7 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		AssignationAction<?> declareFlexoRoleInIteration2 = (AssignationAction<?>) createDeclareFlexoRoleInIteration2.getNewEditionAction();
 		assertNotNull(declareFlexoRoleInIteration2);
 		((ExpressionAction) declareFlexoRoleInIteration2.getAssignableAction())
-				.setExpression(new DataBinding<Object>("fci.toString.substring(4,3) != aStringInA"));
+				.setExpression(new DataBinding<Object>("fci.toString.substring(3,4) != aStringInA"));
 
 		System.out.println("FML=\n" + actionScheme.getFMLRepresentation());
 
@@ -994,7 +994,7 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		assertNull(declareFlexoRoleInIteration2.getBindingModel().bindingVariableNamed("fci"));
 		assertNotNull(declareFlexoRoleInIteration2.getBindingModel().bindingVariableNamed("iteratorHasChanged"));
 
-		assertEquals("(iteratorHasChanged.toString.substring(4,3) != aStringInA)",
+		assertEquals("(iteratorHasChanged.toString.substring(3,4) != aStringInA)",
 				((ExpressionAction) declareFlexoRoleInIteration2.getAssignableAction()).getExpression().toString());
 		assertTrue(((ExpressionAction) declareFlexoRoleInIteration2.getAssignableAction()).getExpression().isValid());
 
@@ -1859,6 +1859,7 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		FlexoBehaviourParameter p = actionScheme.getParameter("aFlag");
 		actionSchemeCreationAction.setParameterValue(p, false);
 		actionSchemeCreationAction.doAction();
+
 		assertTrue(actionSchemeCreationAction.hasActionExecutionSucceeded());
 
 		assertEquals("foo", fci.getFlexoActor("aStringInA"));
