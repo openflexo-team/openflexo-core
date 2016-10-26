@@ -191,6 +191,7 @@ public class CreateFlexoBehaviourParameter extends FlexoAction<CreateFlexoBehavi
 		return availableParameterTypes;
 	}
 
+	// TODO: this code is duplicated in createFlexoBehaviourWizard, it needs refactoring to avoid any mistake
 	private List<Class<? extends FlexoBehaviourParameter>> computeAvailableParameterTypes() {
 		availableParameterTypes = new ArrayList<Class<? extends FlexoBehaviourParameter>>();
 		availableParameterTypes.add(TextFieldParameter.class);
