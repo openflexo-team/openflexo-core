@@ -427,6 +427,8 @@ public class Flexo {
 			}
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
+		} catch (ClassCastException e) {
+			e.printStackTrace();
 		} catch (InstantiationException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
