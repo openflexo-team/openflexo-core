@@ -40,6 +40,7 @@ package org.openflexo.foundation.fml;
 
 import java.io.FileNotFoundException;
 
+import org.openflexo.connie.type.CustomTypeFactory;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
@@ -71,6 +72,33 @@ public class VirtualModelInstanceType extends FlexoConceptInstanceType {
 
 	public AbstractVirtualModel<?> getVirtualModel() {
 		return (AbstractVirtualModel<?>) getFlexoConcept();
+	}
+
+	@Override
+	public void resolve(CustomTypeFactory<?> factory) {
+		if (factory instanceof VirtualModelInstanceTypeFactory) {
+			VirtualModel virtualModel;
+			try {
+				virtualModel = ((VirtualModelInstanceTypeFactory) factory).getTechnologyAdapter().getTechnologyAdapterService()
+						.getServiceManager().getViewPointLibrary().getVirtualModel(conceptURI);
+				if (virtualModel != null) {
+					flexoConcept = virtualModel;
+					this.customTypeFactory = null;
+				}
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ResourceLoadingCancelledException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (FlexoException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		else {
+			super.resolve(factory);
+		}
 	}
 
 	public static VirtualModelInstanceType getVirtualModelInstanceType(AbstractVirtualModel<?> aVirtualModel) {

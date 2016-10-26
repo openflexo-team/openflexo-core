@@ -58,6 +58,10 @@ public class FlexoConceptInstanceType implements TechnologySpecificType<FMLTechn
 	protected FlexoConcept flexoConcept;
 	protected String conceptURI;
 
+	// factory stored for unresolved types
+	// should be nullified as quickly as possible (nullified when resolved)
+	protected CustomTypeFactory<?> customTypeFactory;
+
 	protected static final Logger logger = FlexoLogger.getLogger(FlexoConceptInstanceType.class.getPackage().getName());
 
 	public static FlexoConceptInstanceType UNDEFINED_FLEXO_CONCEPT_INSTANCE_TYPE = new FlexoConceptInstanceType((FlexoConcept) null);
@@ -139,6 +143,9 @@ public class FlexoConceptInstanceType implements TechnologySpecificType<FMLTechn
 	}
 
 	public FlexoConcept getFlexoConcept() {
+		if (!isResolved() && customTypeFactory != null) {
+			resolve(customTypeFactory);
+		}
 		return flexoConcept;
 	}
 
@@ -167,7 +174,7 @@ public class FlexoConceptInstanceType implements TechnologySpecificType<FMLTechn
 
 	@Override
 	public String simpleRepresentation() {
-		return getClass().getSimpleName() + "<" + (flexoConcept != null ? flexoConcept.getName() : "") + ">";
+		return getClass().getSimpleName() + "<" + (flexoConcept != null ? flexoConcept.getName() : "NotFound:" + conceptURI) + ">";
 	}
 
 	@Override
@@ -197,6 +204,10 @@ public class FlexoConceptInstanceType implements TechnologySpecificType<FMLTechn
 					.getServiceManager().getViewPointLibrary().getFlexoConcept(conceptURI);
 			if (concept != null) {
 				flexoConcept = concept;
+				this.customTypeFactory = null;
+			}
+			else {
+				this.customTypeFactory = factory;
 			}
 		}
 	}
