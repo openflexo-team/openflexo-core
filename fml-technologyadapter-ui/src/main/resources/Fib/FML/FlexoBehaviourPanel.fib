@@ -92,7 +92,7 @@
 						opaque="false"
 						rightClickAction="controller.rightClick(EditionActionBrowser.selected,event)">
 						<BrowserElement dataClassName="org.openflexo.foundation.fml.FlexoBehaviour"
-							label="flexoBehaviour.name" icon="controller.iconForObject(flexoBehaviour)"
+							label="flexoBehaviour.signature" icon="controller.iconForObject(flexoBehaviour)"
 							isEditable="false" filtered="false" defaultVisible="true"
 							name="flexoBehaviour">
 							<Children data="flexoBehaviour.controlGraph.flattenedSequence"

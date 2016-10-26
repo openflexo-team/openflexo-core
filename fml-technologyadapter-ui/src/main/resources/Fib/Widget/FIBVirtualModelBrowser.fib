@@ -47,7 +47,7 @@
 			tooltip="" enabled="" visible="" isEditable="false" editableLabel=""
 			filtered="false" defaultVisible="true" dynamicFont="" name="flexoProperty" />
 		<BrowserElement dataClassName="org.openflexo.foundation.fml.FlexoBehaviour"
-			label="flexoBehaviour.name" icon="controller.iconForObject(flexoBehaviour)"
+			label="flexoBehaviour.signature" icon="controller.iconForObject(flexoBehaviour)"
 			tooltip="" enabled="" visible="" isEditable="false" editableLabel=""
 			filtered="false" defaultVisible="true" dynamicFont="" name="flexoBehaviour">
 			<Children data="flexoBehaviour.parameters" visible="(flexoBehaviour.parameters.size &gt; 0)"
