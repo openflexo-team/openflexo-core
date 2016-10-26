@@ -99,7 +99,8 @@ public interface FlexoResourceParameter extends FlexoBehaviourParameter {
 
 		@Override
 		public WidgetType getWidget() {
-			return WidgetType.TECHNOLOGY_RESOURCE;
+			// return WidgetType.TECHNOLOGY_RESOURCE;
+			return WidgetType.CUSTOM_WIDGET;
 		}
 
 		@Override

@@ -360,6 +360,13 @@ public class FMLModelFactory extends FGEModelFactoryImpl implements PamelaResour
 		return returned;
 	}
 
+	public GenericBehaviourParameter newParameter(FlexoBehaviour behaviour) {
+		GenericBehaviourParameter returned = newInstance(GenericBehaviourParameter.class);
+		behaviour.addToParameters(returned);
+		return returned;
+	}
+
+	@Deprecated
 	public URIParameter newURIParameter() {
 		return newInstance(URIParameter.class);
 	}

@@ -40,6 +40,8 @@ package org.openflexo.foundation.fml;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
+import java.util.Arrays;
+import java.util.List;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.BindingEvaluationContext;
@@ -50,6 +52,9 @@ import org.openflexo.connie.binding.Function;
 import org.openflexo.connie.binding.Function.FunctionArgument;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
+import org.openflexo.connie.type.ParameterizedTypeImpl;
+import org.openflexo.connie.type.TypeUtils;
+import org.openflexo.foundation.fml.FlexoBehaviour.FlexoBehaviourImpl;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.model.annotations.CloningStrategy;
 import org.openflexo.model.annotations.CloningStrategy.StrategyType;
@@ -75,41 +80,33 @@ import org.openflexo.toolbox.StringUtils;
 @Imports({ @Import(CheckboxParameter.class), @Import(DropDownParameter.class), @Import(FloatParameter.class),
 		@Import(IntegerParameter.class), @Import(ListParameter.class), @Import(TextAreaParameter.class), @Import(TextFieldParameter.class),
 		@Import(FlexoConceptInstanceParameter.class), @Import(URIParameter.class), @Import(TechnologyObjectParameter.class),
-		@Import(FlexoResourceParameter.class), @Import(FlexoVMIResourceParameter.class) })
+		@Import(FlexoResourceParameter.class), @Import(FlexoVMIResourceParameter.class), @Import(GenericBehaviourParameter.class) })
 public interface FlexoBehaviourParameter extends FlexoBehaviourObject, FunctionArgument {
 
 	public static enum WidgetType {
-		URI,
-		TEXT_FIELD,
-		LOCALIZED_TEXT_FIELD,
-		TEXT_AREA,
-		INTEGER,
-		FLOAT,
-		CHECKBOX,
-		DROPDOWN,
-		INDIVIDUAL,
+		TEXT_FIELD, TEXT_AREA, URI, LOCALIZED_TEXT_FIELD, INTEGER, FLOAT, CHECKBOX, DROPDOWN, RADIO_BUTTON, CUSTOM_WIDGET;
+		/*INDIVIDUAL,
 		CLASS,
 		PROPERTY,
 		OBJECT_PROPERTY,
 		DATA_PROPERTY,
 		FLEXO_OBJECT,
-		LIST,
 		FLEXO_CONCEPT,
 		TECHNOLOGY_OBJECT,
 		TECHNOLOGY_RESOURCE,
-		VMI_RESOURCE;
+		VMI_RESOURCE;*/
 	}
 
 	@PropertyIdentifier(type = String.class)
 	public static final String NAME_KEY = "name";
-	@PropertyIdentifier(type = String.class)
-	public static final String LABEL_KEY = "label";
 	@PropertyIdentifier(type = DataBinding.class)
 	public static final String DEFAULT_VALUE_KEY = "defaultValue";
 	@PropertyIdentifier(type = String.class)
 	public static final String DESCRIPTION_KEY = "description";
-	@PropertyIdentifier(type = DataBinding.class)
-	public static final String CONDITIONAL_KEY = "conditional";
+	@PropertyIdentifier(type = Type.class)
+	public static final String TYPE_KEY = "type";
+	@PropertyIdentifier(type = WidgetType.class)
+	public static final String WIDGET_KEY = "widget";
 	@PropertyIdentifier(type = boolean.class)
 	public static final String IS_REQUIRED_KEY = "isRequired";
 	@PropertyIdentifier(type = FlexoBehaviour.class)
@@ -124,12 +121,19 @@ public interface FlexoBehaviourParameter extends FlexoBehaviourObject, FunctionA
 	@Setter(NAME_KEY)
 	public void setName(String name);
 
-	@Getter(value = LABEL_KEY)
+	@Getter(value = TYPE_KEY, isStringConvertable = true)
 	@XMLAttribute
-	public String getLabel();
+	public abstract Type getType();
 
-	@Setter(LABEL_KEY)
-	public void setLabel(String label);
+	@Setter(TYPE_KEY)
+	public void setType(Type aType);
+
+	@Getter(value = WIDGET_KEY)
+	@XMLAttribute
+	public WidgetType getWidget();
+
+	@Setter(WIDGET_KEY)
+	public void setWidget(WidgetType widget);
 
 	@Getter(value = DEFAULT_VALUE_KEY)
 	@XMLAttribute
@@ -147,13 +151,6 @@ public interface FlexoBehaviourParameter extends FlexoBehaviourObject, FunctionA
 	@Setter(DESCRIPTION_KEY)
 	public void setDescription(String description);
 
-	@Getter(value = CONDITIONAL_KEY)
-	@XMLAttribute
-	public DataBinding<Boolean> getConditional();
-
-	@Setter(CONDITIONAL_KEY)
-	public void setConditional(DataBinding<Boolean> conditional);
-
 	@Getter(value = IS_REQUIRED_KEY, defaultValue = "false")
 	@XMLAttribute
 	public boolean getIsRequired();
@@ -161,15 +158,21 @@ public interface FlexoBehaviourParameter extends FlexoBehaviourObject, FunctionA
 	@Setter(IS_REQUIRED_KEY)
 	public void setIsRequired(boolean isRequired);
 
-	public abstract Type getType();
+	public boolean isValid(FlexoBehaviourAction<?, ?, ?> action, Object value);
 
-	public boolean isValid(FlexoBehaviourAction action, Object value);
+	public Object getDefaultValue(BindingEvaluationContext evaluationContext);
 
-	public Object getDefaultValue(FlexoBehaviourAction<?, ?, ?> action);
+	public DataBinding<?> getContainer();
 
-	public boolean evaluateCondition(BindingEvaluationContext parameterRetriever);
+	public void setContainer(DataBinding<?> container);
 
-	public abstract WidgetType getWidget();
+	public Object getContainer(BindingEvaluationContext evaluationContext);
+
+	public DataBinding<List<?>> getList();
+
+	public void setList(DataBinding<List<?>> list);
+
+	public Object getList(BindingEvaluationContext evaluationContext);
 
 	public int getIndex();
 
@@ -180,17 +183,17 @@ public interface FlexoBehaviourParameter extends FlexoBehaviourObject, FunctionA
 	@Setter(FLEXO_BEHAVIOUR_KEY)
 	public void setBehaviour(FlexoBehaviour flexoBehaviour);
 
+	public List<WidgetType> getAvailableWidgetTypes();
+
+	public boolean isListType();
+
 	public static abstract class FlexoBehaviourParameterImpl extends FlexoBehaviourObjectImpl implements FlexoBehaviourParameter {
 
 		private static final Logger logger = Logger.getLogger(FlexoBehaviourParameter.class.getPackage().getName());
 
-		private String label;
-		// private boolean usePaletteLabelAsDefaultValue;
-
-		// private FlexoBehaviour _scheme;
-
-		private DataBinding<Boolean> conditional;
 		private DataBinding<?> defaultValue;
+		private DataBinding<?> container;
+		private DataBinding<List<?>> list;
 
 		public FlexoBehaviourParameterImpl() {
 			super();
@@ -212,84 +215,31 @@ public interface FlexoBehaviourParameter extends FlexoBehaviourObject, FunctionA
 		}
 
 		@Override
-		public abstract Type getType();
-
-		/*private final BindingDefinition CONDITIONAL = new BindingDefinition("conditional", Boolean.class,
-				DataBinding.BindingDefinitionType.GET, false);
-		private final BindingDefinition DEFAULT_VALUE = new BindingDefinition("defaultValue", Object.class,
-				DataBinding.BindingDefinitionType.GET, false) {
-			@Override
-			public Type getType() {
-				return FlexoBehaviourParameterImpl.this.getType();
-			};
-		};
-		
-		public BindingDefinition getConditionalBindingDefinition() {
-			return CONDITIONAL;
-		}
-		
-		public BindingDefinition getDefaultValueBindingDefinition() {
-			return DEFAULT_VALUE;
-		}*/
-
-		/*@Override
-		public void setBehaviour(FlexoBehaviour scheme) {
-			_scheme = scheme;
-		}*/
-
-		@Override
 		public FlexoBehaviour getFlexoBehaviour() {
 			return getBehaviour();
 		}
 
-		/*@Override
-		public FlexoBehaviour getBehaviour() {
-			return getFlexoBehaviour();
-		}*/
-
-		/*@Override
-		public VirtualModel getVirtualModel() {
-			if (getBehaviour() != null) {
-				return getBehaviour().getVirtualModel();
-			}
-			return null;
-		}*/
-
 		@Override
-		public String getLabel() {
-			if (label == null || StringUtils.isEmpty(label)) {
-				return getName();
+		public void setName(String name) {
+			String oldSignature = getFlexoBehaviour() != null ? getFlexoBehaviour().getSignature() : null;
+			super.setName(name);
+			if (getFlexoBehaviour() != null) {
+				((FlexoBehaviourImpl) getFlexoBehaviour()).updateSignature(oldSignature);
 			}
-			return label;
 		}
 
 		@Override
-		public void setLabel(String label) {
-			this.label = label;
-		}
-
-		/*public boolean getUsePaletteLabelAsDefaultValue() {
-			return usePaletteLabelAsDefaultValue;
-		}
-		
-		public void setUsePaletteLabelAsDefaultValue(boolean usePaletteLabelAsDefaultValue) {
-			this.usePaletteLabelAsDefaultValue = usePaletteLabelAsDefaultValue;
-		}*/
-
-		@Override
-		public boolean evaluateCondition(BindingEvaluationContext parameterRetriever) {
-			if (getConditional().isValid()) {
-				try {
-					return getConditional().getBindingValue(parameterRetriever);
-				} catch (TypeMismatchException e) {
-					e.printStackTrace();
-				} catch (NullReferenceException e) {
-					e.printStackTrace();
-				} catch (InvocationTargetException e) {
-					e.printStackTrace();
-				}
+		public void setType(Type aType) {
+			performSuperSetter(TYPE_KEY, aType);
+			listType = null;
+			if (list != null) {
+				list.setDeclaredType(getListType());
 			}
-			return true;
+			getPropertyChangeSupport().firePropertyChange("availableWidgetTypes", null, getAvailableWidgetTypes());
+			getPropertyChangeSupport().firePropertyChange("isListType", !isListType(), isListType());
+			if (!getAvailableWidgetTypes().contains(getWidget()) && getAvailableWidgetTypes().size() > 0) {
+				setWidget(getAvailableWidgetTypes().get(0));
+			}
 		}
 
 		@Override
@@ -306,26 +256,6 @@ public interface FlexoBehaviourParameter extends FlexoBehaviourObject, FunctionA
 		}
 
 		@Override
-		public DataBinding<Boolean> getConditional() {
-			if (conditional == null) {
-				conditional = new DataBinding<Boolean>(this, Boolean.class, DataBinding.BindingDefinitionType.GET);
-				conditional.setBindingName("conditional");
-			}
-			return conditional;
-		}
-
-		@Override
-		public void setConditional(DataBinding<Boolean> conditional) {
-			if (conditional != null) {
-				conditional.setOwner(this);
-				conditional.setDeclaredType(Boolean.class);
-				conditional.setBindingDefinitionType(DataBinding.BindingDefinitionType.GET);
-				conditional.setBindingName("conditional");
-			}
-			this.conditional = conditional;
-		}
-
-		@Override
 		public FlexoConcept getFlexoConcept() {
 			return getBehaviour() != null ? getBehaviour().getFlexoConcept() : null;
 		}
@@ -334,6 +264,86 @@ public interface FlexoBehaviourParameter extends FlexoBehaviourObject, FunctionA
 		public BindingModel getBindingModel() {
 			if (getBehaviour() != null) {
 				return getBehaviour().getBindingModel();
+			}
+			return null;
+		}
+
+		@Override
+		public DataBinding<?> getContainer() {
+			if (container == null) {
+				container = new DataBinding<Object>(this, Object.class, BindingDefinitionType.GET);
+				container.setBindingName("container");
+			}
+			return container;
+		}
+
+		@Override
+		public void setContainer(DataBinding<?> container) {
+			if (container != null) {
+				container.setOwner(this);
+				container.setBindingName("container");
+				container.setDeclaredType(Object.class);
+				container.setBindingDefinitionType(BindingDefinitionType.GET);
+			}
+			this.container = container;
+		}
+
+		@Override
+		public Object getContainer(BindingEvaluationContext evaluationContext) {
+			if (getContainer().isValid()) {
+				try {
+					return getContainer().getBindingValue(evaluationContext);
+				} catch (TypeMismatchException e) {
+					e.printStackTrace();
+				} catch (NullReferenceException e) {
+					e.printStackTrace();
+				} catch (InvocationTargetException e) {
+					e.printStackTrace();
+				}
+			}
+			return null;
+		}
+
+		@Override
+		public DataBinding<List<?>> getList() {
+			if (list == null) {
+				list = new DataBinding<List<?>>(this, getListType(), BindingDefinitionType.GET);
+			}
+			return list;
+		}
+
+		@Override
+		public void setList(DataBinding<List<?>> list) {
+			if (list != null) {
+				list.setOwner(this);
+				list.setBindingName("list");
+				list.setDeclaredType(getListType());
+				list.setBindingDefinitionType(BindingDefinitionType.GET);
+			}
+			this.list = list;
+		}
+
+		private ParameterizedTypeImpl listType = null;
+
+		private Type getListType() {
+			if (listType == null) {
+				listType = new ParameterizedTypeImpl(List.class, getType());
+			}
+			return listType;
+		}
+
+		@Override
+		public Object getList(BindingEvaluationContext evaluationContext) {
+			if (getList().isValid()) {
+				try {
+					return getList().getBindingValue(evaluationContext);
+				} catch (TypeMismatchException e) {
+					e.printStackTrace();
+				} catch (NullReferenceException e) {
+					e.printStackTrace();
+				} catch (InvocationTargetException e) {
+					e.printStackTrace();
+				}
 			}
 			return null;
 		}
@@ -359,7 +369,7 @@ public interface FlexoBehaviourParameter extends FlexoBehaviourObject, FunctionA
 		}
 
 		@Override
-		public Object getDefaultValue(FlexoBehaviourAction<?, ?, ?> action) {
+		public Object getDefaultValue(BindingEvaluationContext evaluationContext) {
 			// DiagramPaletteElement paletteElement = action instanceof DropSchemeAction ? ((DropSchemeAction) action).getPaletteElement() :
 			// null;
 
@@ -369,7 +379,7 @@ public interface FlexoBehaviourParameter extends FlexoBehaviourObject, FunctionA
 			}*/
 			if (getDefaultValue().isValid()) {
 				try {
-					return getDefaultValue().getBindingValue(action);
+					return getDefaultValue().getBindingValue(evaluationContext);
 				} catch (TypeMismatchException e) {
 					e.printStackTrace();
 				} catch (NullReferenceException e) {
@@ -421,5 +431,41 @@ public interface FlexoBehaviourParameter extends FlexoBehaviourObject, FunctionA
 			return getType();
 		}
 
+		@Override
+		public boolean isListType() {
+			return TypeUtils.isList(getType());
+		}
+
+		@Override
+		public List<WidgetType> getAvailableWidgetTypes() {
+			return getAvailableWidgetTypes(getType());
+		}
+
+		private static WidgetType[] STRING_WIDGET_TYPES = { WidgetType.TEXT_FIELD, WidgetType.TEXT_AREA, WidgetType.URI,
+				WidgetType.LOCALIZED_TEXT_FIELD, WidgetType.DROPDOWN, WidgetType.RADIO_BUTTON, WidgetType.CUSTOM_WIDGET };
+		private static WidgetType[] BOOLEAN_WIDGET_TYPES = { WidgetType.CHECKBOX, WidgetType.CUSTOM_WIDGET };
+		private static WidgetType[] FLOAT_WIDGET_TYPES = { WidgetType.FLOAT, WidgetType.CUSTOM_WIDGET };
+		private static WidgetType[] INTEGER_WIDGET_TYPES = { WidgetType.INTEGER, WidgetType.CUSTOM_WIDGET };
+		private static WidgetType[] LIST_WIDGET_TYPES = { WidgetType.DROPDOWN, WidgetType.RADIO_BUTTON, WidgetType.CUSTOM_WIDGET };
+		private static WidgetType[] CUSTOM_WIDGET_TYPES = { WidgetType.CUSTOM_WIDGET };
+
+		public static List<WidgetType> getAvailableWidgetTypes(Type type) {
+			if (TypeUtils.isString(type)) {
+				return Arrays.asList(STRING_WIDGET_TYPES);
+			}
+			else if (TypeUtils.isBoolean(type)) {
+				return Arrays.asList(BOOLEAN_WIDGET_TYPES);
+			}
+			else if (TypeUtils.isDouble(type) || TypeUtils.isFloat(type)) {
+				return Arrays.asList(FLOAT_WIDGET_TYPES);
+			}
+			else if (TypeUtils.isLong(type) || TypeUtils.isInteger(type) || TypeUtils.isShort(type)) {
+				return Arrays.asList(INTEGER_WIDGET_TYPES);
+			}
+			else if (TypeUtils.isList(type)) {
+				return Arrays.asList(LIST_WIDGET_TYPES);
+			}
+			return Arrays.asList(CUSTOM_WIDGET_TYPES);
+		}
 	}
 }

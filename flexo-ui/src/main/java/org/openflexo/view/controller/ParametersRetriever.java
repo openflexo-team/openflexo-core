@@ -202,7 +202,7 @@ public class ParametersRetriever<ES extends FlexoBehaviour> {
 		Hashtable<FlexoBehaviourParameter, FIBComponent> widgets = new Hashtable<FlexoBehaviourParameter, FIBComponent>();
 		for (final FlexoBehaviourParameter parameter : flexoBehaviour.getParameters()) {
 			FIBLabel label = fibModelFactory.newFIBLabel();
-			label.setLabel(parameter.getLabel());
+			label.setLabel(parameter.getName());
 			returned.addToSubComponents(label, new TwoColsLayoutConstraints(TwoColsLayoutLocation.left, false, false), index++);
 			FIBComponent widget = makeWidget(parameter, returned, index);
 			if (widget != null) {

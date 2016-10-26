@@ -100,7 +100,8 @@ public interface FlexoVMIResourceParameter extends FlexoResourceParameter {
 
 		@Override
 		public WidgetType getWidget() {
-			return WidgetType.VMI_RESOURCE;
+			// return WidgetType.VMI_RESOURCE;
+			return WidgetType.CUSTOM_WIDGET;
 		}
 
 		@Override

@@ -72,7 +72,7 @@ public interface ListParameter extends FlexoBehaviourParameter {
 	/*@Getter(value = LIST_TYPE_KEY)
 	@XMLAttribute
 	public ListType getListType();
-
+	
 	@Setter(LIST_TYPE_KEY)
 	public void setListType(ListType listType);*/
 
@@ -102,14 +102,14 @@ public interface ListParameter extends FlexoBehaviourParameter {
 
 		@Override
 		public WidgetType getWidget() {
-			return WidgetType.LIST;
+			return WidgetType.DROPDOWN;
 		}
 
 		/*@Override
 		public ListType getListType() {
 			return listType;
 		}
-
+		
 		@Override
 		public void setListType(ListType listType) {
 			this.listType = listType;

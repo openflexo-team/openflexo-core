@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Panel id="0" borderLeft="0" sizeAdjustment="OriginalSize"
+	controllerClassName="org.openflexo.view.controller.FlexoFIBController"
+	border="empty" borderRight="0" trackViewPortWidth="true" align="left"
+	borderBottom="0" borderTop="0" trackViewPortHeight="true" layout="twocols">
+	<Label id="1" name="NameLabel" index="1" localize="true" align="right"
+		constraints="twocols(anchor=east;expandHorizontally=true;expandVertically=false;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+		label="parameter_name" />
+	<TextField id="2" columns="20" name="ModelSlotName" data="data.parameterName"
+		text="TextField" index="2" localize="true"
+		constraints="twocols(anchor=west;expandHorizontally=true;expandVertically=false;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=2;insetsBottom=0;insetsLeft=0;insetsRight=20;insetsTop=0;location=right;padX=0;padY=0;weightX=1.0;weightY=0.0)" />
+	<Label id="3" name="ParameterTypeLabel" index="4" localize="true"
+		align="left"
+		constraints="twocols(anchor=east;expandHorizontally=false;expandVertically=false;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+		label="parameter_type" />
+	<Custom id="4" manageDynamicModel="true" dataClassForComponent="java.lang.reflect.Type"
+		componentClassName="org.openflexo.components.widget.TypeSelector"
+		name="CustomSelector" data="data.parameterType" index="0" localize="true"
+		constraints="twocols(anchor=west;expandHorizontally=true;expandVertically=false;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=0;insetsBottom=0;insetsLeft=0;insetsRight=20;insetsTop=0;location=right;padX=0;padY=0;weightX=0.0;weightY=0.0)">
+		<Assignment id="5" mandatory="true" value="controller.serviceManager"
+			variable="component.serviceManager" />
+	</Custom>
+	<Label id="6" name="Label3" localize="true" align="left"
+		constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)"
+		label="widget" />
+	<DropDown id="7" data="data.widgetType" localize="true"
+		constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=20;insetsTop=0;location=right)"
+		showText="true"
+		iteratorClassName="org.openflexo.foundation.fml.FlexoBehaviourParameter$WidgetType"
+		showIcon="false" autoSelectFirstRow="true" name="dropdown"
+		list="data.availableWidgetTypes" />
+	<Label id="8" visible="(data.widgetType = &quot;CUSTOM_WIDGET&quot;)"
+		name="Label4" localize="true" align="left"
+		constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)"
+		label="container" />
+	<Custom id="9" visible="(data.widgetType = &quot;CUSTOM_WIDGET&quot;)"
+		manageDynamicModel="true" dataClassForComponent="org.openflexo.connie.DataBinding"
+		componentClassName="org.openflexo.gina.swing.utils.BindingSelector"
+		name="CustomSelector" data="data.action.container"
+		constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=20;insetsTop=0;location=right)">
+		<Assignment id="10" mandatory="true" variable="component.bindable" />
+	</Custom>
+	<Label id="11" name="Label5" localize="true" align="left"
+		constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)"
+		label="default_value" />
+	<Custom id="12" manageDynamicModel="true"
+		dataClassForComponent="org.openflexo.connie.DataBinding"
+		componentClassName="org.openflexo.gina.swing.utils.BindingSelector"
+		name="CustomSelector2" data="data.action.defaultValue"
+		constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=20;insetsTop=0;location=right)">
+		<Assignment id="13" mandatory="true" variable="component.bindable" />
+	</Custom>
+	<Label id="14" visible="data.isList"
+		enable="(((controller.flexoController.isEditable(data) &amp; controller.flexoController.isEditable(data)) &amp; controller.flexoController.isEditable(data)) &amp; controller.flexoController.isEditable(data))"
+		name="Label6" localize="true" align="left"
+		constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)"
+		label="list_of_values" />
+	<Custom id="15" visible="data.isList" manageDynamicModel="true"
+		enable="((controller.flexoController.isEditable(data) &amp; controller.flexoController.isEditable(data)) &amp; controller.flexoController.isEditable(data))"
+		dataClassForComponent="org.openflexo.connie.DataBinding"
+		componentClassName="org.openflexo.gina.swing.utils.BindingSelector"
+		name="CustomSelector3" data="data.action.list"
+		constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=20;insetsTop=0;location=right)">
+		<Assignment id="16" mandatory="true" variable="component.bindable" />
+	</Custom>
+	<Label id="17" name="Label7" localize="true" align="left"
+		constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)"
+		label="required" />
+	<CheckBox id="18" selected="true" name="checkbox" data="data.isRequired"
+		constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)" />
+	<Label id="19" name="Label8" localize="true" align="left"
+		constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)"
+		label="description" />
+	<TextArea id="20" verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED"
+		useScrollBar="true" columns="8" name="TextArea2" data="data.description"
+		text="TextArea"
+		constraints="twocols(expandHorizontally=true;expandVertically=true;insetsBottom=20;insetsLeft=0;insetsRight=20;insetsTop=0;location=right)"
+		rows="3" validateOnReturn="true" horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED" />
+	<FIBVariable id="21" name="data"
+		type="org.openflexo.fml.controller.action.CreateGenericBehaviourParameterWizard$DescribeGenericBehaviourParameter" />
+	<LocalizedDictionary id="22" />
+</Panel>
