@@ -283,7 +283,7 @@ public class ModuleInspectorController extends Observable implements Observer {
 		}
 
 		Map<Class<?>, FIBInspector> potentialInspectors = new HashMap<Class<?>, FIBInspector>();
-		for (InspectorGroup inspectorGroup : inspectorGroups) {
+		for (InspectorGroup inspectorGroup : new ArrayList<>(inspectorGroups)) {
 			FIBInspector inspector = inspectorGroup.inspectorForClass(objectClass);
 			if (inspector != null) {
 				potentialInspectors.put(inspector.getDataClass(), inspector);
