@@ -43,6 +43,9 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoServiceManager;
+import org.openflexo.foundation.fml.FlexoConceptInstanceType.FlexoConceptInstanceTypeFactory;
+import org.openflexo.foundation.fml.ViewType.ViewTypeFactory;
+import org.openflexo.foundation.fml.VirtualModelInstanceType.VirtualModelInstanceTypeFactory;
 import org.openflexo.foundation.fml.annotations.DeclareResourceTypes;
 import org.openflexo.foundation.fml.rm.ViewPointResourceFactory;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
@@ -51,6 +54,7 @@ import org.openflexo.foundation.resource.FlexoResourceCenterService;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterBindingFactory;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterInitializationException;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 
 /**
  * This class defines and implements the FML technology adapter (Flexo Modelling Language)
@@ -100,6 +104,38 @@ public class FMLTechnologyAdapter extends TechnologyAdapter {
 
 	public FlexoServiceManager getServiceManager() {
 		return this.getTechnologyAdapterService().getServiceManager();
+	}
+
+	private FlexoConceptInstanceTypeFactory fciFactory;
+	private VirtualModelInstanceTypeFactory vmiFactory;
+	private ViewTypeFactory viewFactory;
+
+	@Override
+	public void initTechnologySpecificTypes(TechnologyAdapterService taService) {
+		taService.registerTypeClass(FlexoConceptInstanceType.class, getFlexoConceptInstanceTypeFactory());
+		taService.registerTypeClass(VirtualModelInstanceType.class, getVirtualModelInstanceTypeFactory());
+		taService.registerTypeClass(ViewType.class, getViewTypeFactory());
+	}
+
+	protected FlexoConceptInstanceTypeFactory getFlexoConceptInstanceTypeFactory() {
+		if (fciFactory == null) {
+			fciFactory = new FlexoConceptInstanceTypeFactory(this);
+		}
+		return fciFactory;
+	}
+
+	protected VirtualModelInstanceTypeFactory getVirtualModelInstanceTypeFactory() {
+		if (vmiFactory == null) {
+			vmiFactory = new VirtualModelInstanceTypeFactory(this);
+		}
+		return vmiFactory;
+	}
+
+	protected ViewTypeFactory getViewTypeFactory() {
+		if (viewFactory == null) {
+			viewFactory = new ViewTypeFactory(this);
+		}
+		return viewFactory;
 	}
 
 	public ViewPointLibrary getViewPointLibrary() {

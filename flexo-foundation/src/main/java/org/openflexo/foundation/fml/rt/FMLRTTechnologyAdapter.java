@@ -44,12 +44,9 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
-import org.openflexo.foundation.fml.FlexoConceptInstanceType.FlexoConceptInstanceTypeFactory;
 import org.openflexo.foundation.fml.ViewType;
-import org.openflexo.foundation.fml.ViewType.ViewTypeFactory;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelInstanceType;
-import org.openflexo.foundation.fml.VirtualModelInstanceType.VirtualModelInstanceTypeFactory;
 import org.openflexo.foundation.fml.annotations.DeclareModelSlots;
 import org.openflexo.foundation.fml.annotations.DeclareResourceTypes;
 import org.openflexo.foundation.fml.annotations.DeclareTechnologySpecificTypes;
@@ -62,7 +59,6 @@ import org.openflexo.foundation.resource.FlexoResourceCenterService;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterBindingFactory;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterInitializationException;
-import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 
 /**
  * This class defines and implements the Openflexo built-in FML@runtime technology adapter<br>
@@ -292,38 +288,6 @@ public class FMLRTTechnologyAdapter extends TechnologyAdapter {
 		// TODO Auto-generated method stub
 		return false;
 	}*/
-
-	private FlexoConceptInstanceTypeFactory fciFactory;
-	private VirtualModelInstanceTypeFactory vmiFactory;
-	private ViewTypeFactory viewFactory;
-
-	@Override
-	public void initTechnologySpecificTypes(TechnologyAdapterService taService) {
-		taService.registerTypeClass(FlexoConceptInstanceType.class, getFlexoConceptInstanceTypeFactory());
-		taService.registerTypeClass(VirtualModelInstanceType.class, getVirtualModelInstanceTypeFactory());
-		taService.registerTypeClass(ViewType.class, getViewTypeFactory());
-	}
-
-	protected FlexoConceptInstanceTypeFactory getFlexoConceptInstanceTypeFactory() {
-		if (fciFactory == null) {
-			fciFactory = new FlexoConceptInstanceTypeFactory(this);
-		}
-		return fciFactory;
-	}
-
-	protected VirtualModelInstanceTypeFactory getVirtualModelInstanceTypeFactory() {
-		if (vmiFactory == null) {
-			vmiFactory = new VirtualModelInstanceTypeFactory(this);
-		}
-		return vmiFactory;
-	}
-
-	protected ViewTypeFactory getViewTypeFactory() {
-		if (viewFactory == null) {
-			viewFactory = new ViewTypeFactory(this);
-		}
-		return viewFactory;
-	}
 
 	@Override
 	public String getIdentifier() {

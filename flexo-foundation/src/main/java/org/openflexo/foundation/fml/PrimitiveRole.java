@@ -99,7 +99,10 @@ public interface PrimitiveRole<T> extends FlexoRole<T> {
 
 		@Override
 		public String toString() {
-			return FlexoLocalization.getMainLocalizer().localizedForKey(name());
+			if (FlexoLocalization.getMainLocalizer() != null) {
+				return FlexoLocalization.getMainLocalizer().localizedForKey(name());
+			}
+			return name();
 		}
 	}
 

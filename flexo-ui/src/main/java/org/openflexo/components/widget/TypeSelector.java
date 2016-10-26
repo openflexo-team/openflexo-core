@@ -104,25 +104,8 @@ public class TypeSelector extends TextFieldCustomPopup<Type>
 	static final Logger LOGGER = Logger.getLogger(TypeSelector.class.getPackage().getName());
 
 	public static Resource FIB_FILE_NAME = ResourceLocator.locateResource("Fib/TypeSelector.fib");
+	public static Resource JAVA_CLASS_EDITOR_FIB_FILE_NAME = ResourceLocator.locateResource("Fib/ClassEditor.fib");
 
-	/*public static final Object VIEW_TYPE = new Object() {
-		@Override
-		public String toString() {
-			return "FML view";
-		}
-	};
-	public static final Object VIRTUAL_MODEL_INSTANCE_TYPE = new Object() {
-		@Override
-		public String toString() {
-			return "Virtual model instance";
-		}
-	};
-	public static final Object FLEXO_CONCEPT_INSTANCE_TYPE = new Object() {
-		@Override
-		public String toString() {
-			return "Flexo concept instance";
-		}
-	};*/
 	public static final Object JAVA_TYPE = new Object() {
 		@Override
 		public String toString() {
@@ -479,18 +462,6 @@ public class TypeSelector extends TextFieldCustomPopup<Type>
 		}
 	}
 
-	/*public boolean isViewType() {
-		return (choice == VIEW_TYPE);
-	}
-	
-	public boolean isVirtualModelInstanceType() {
-		return (choice == VIRTUAL_MODEL_INSTANCE_TYPE);
-	}
-	
-	public boolean isFlexoConceptInstanceType() {
-		return (choice == FLEXO_CONCEPT_INSTANCE_TYPE);
-	}*/
-
 	public boolean isJavaType() {
 		return (choice instanceof PrimitiveType || choice == JAVA_TYPE || choice == JAVA_LIST || choice == JAVA_MAP || choice == JAVA_ARRAY
 				|| choice == JAVA_WILDCARD);
@@ -608,7 +579,10 @@ public class TypeSelector extends TextFieldCustomPopup<Type>
 
 	@Override
 	public void fireEditedObjectChanged() {
+
 		super.fireEditedObjectChanged();
+
+		Class<?> baseClass = getBaseClass();
 
 		// First try to find the type of object
 		PrimitiveType primitiveType = getPrimitiveType();
@@ -619,8 +593,8 @@ public class TypeSelector extends TextFieldCustomPopup<Type>
 			if (getEditedObject() instanceof CustomType && serviceManager != null) {
 				CustomTypeFactory ctFactory = serviceManager.getTechnologyAdapterService().getCustomTypeFactories()
 						.get(getEditedObject().getClass());
-				if (ctFactory != null && choices.contains(ctFactory)) {
-					setChoice(ctFactory);
+				if (ctFactory != null && choices.contains(ctFactory.getCustomType())) {
+					setChoice(ctFactory.getCustomType());
 					ctFactory.configureFactory((CustomType) getEditedObject());
 				}
 			}
@@ -629,10 +603,8 @@ public class TypeSelector extends TextFieldCustomPopup<Type>
 			}
 		}
 		if (isJavaType()) {
-
-			updateGenericParameters(getBaseClass());
-
-			getLoadedClassesInfo().setSelectedClassInfo(LoadedClassesInfo.getClass(getBaseClass()));
+			updateGenericParameters(baseClass);
+			getLoadedClassesInfo().setSelectedClassInfo(LoadedClassesInfo.getClass(baseClass));
 			getPropertyChangeSupport().firePropertyChange("loadedClassesInfo", null, getLoadedClassesInfo());
 		}
 
@@ -982,6 +954,10 @@ public class TypeSelector extends TextFieldCustomPopup<Type>
 			return "";
 		}
 		return TypeUtils.simpleRepresentation(editedObject);
+	}
+
+	public Resource getJavaClassEditorComponentResource() {
+		return JAVA_CLASS_EDITOR_FIB_FILE_NAME;
 	}
 
 	/**

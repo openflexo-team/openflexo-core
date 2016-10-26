@@ -42,7 +42,6 @@ import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.type.CustomTypeFactory;
-import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.gina.annotation.FIBPanel;
 import org.openflexo.logging.FlexoLogger;
@@ -77,7 +76,7 @@ public class FlexoConceptInstanceType implements TechnologySpecificType<FMLTechn
 			return FlexoConceptInstanceType.class;
 		}
 
-		public FlexoConceptInstanceTypeFactory(FMLRTTechnologyAdapter technologyAdapter) {
+		public FlexoConceptInstanceTypeFactory(FMLTechnologyAdapter technologyAdapter) {
 			super(technologyAdapter);
 		}
 

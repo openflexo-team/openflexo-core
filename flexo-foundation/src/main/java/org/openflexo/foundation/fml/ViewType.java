@@ -38,7 +38,6 @@
 
 package org.openflexo.foundation.fml;
 
-import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.fml.rt.View;
 import org.openflexo.gina.annotation.FIBPanel;
 
@@ -87,7 +86,7 @@ public class ViewType extends VirtualModelInstanceType {
 	@FIBPanel("Fib/CustomType/ViewTypeFactory.fib")
 	public static class ViewTypeFactory extends TechnologyAdapterTypeFactory<ViewType> {
 
-		public ViewTypeFactory(FMLRTTechnologyAdapter technologyAdapter) {
+		public ViewTypeFactory(FMLTechnologyAdapter technologyAdapter) {
 			super(technologyAdapter);
 		}
 

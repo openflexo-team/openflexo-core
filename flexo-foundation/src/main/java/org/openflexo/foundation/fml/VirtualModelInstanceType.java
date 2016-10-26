@@ -41,7 +41,6 @@ package org.openflexo.foundation.fml;
 import java.io.FileNotFoundException;
 
 import org.openflexo.foundation.FlexoException;
-import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.gina.annotation.FIBPanel;
@@ -93,7 +92,7 @@ public class VirtualModelInstanceType extends FlexoConceptInstanceType {
 	@FIBPanel("Fib/CustomType/VirtualModelInstanceTypeFactory.fib")
 	public static class VirtualModelInstanceTypeFactory extends TechnologyAdapterTypeFactory<VirtualModelInstanceType> {
 
-		public VirtualModelInstanceTypeFactory(FMLRTTechnologyAdapter technologyAdapter) {
+		public VirtualModelInstanceTypeFactory(FMLTechnologyAdapter technologyAdapter) {
 			super(technologyAdapter);
 		}
 
@@ -110,7 +109,7 @@ public class VirtualModelInstanceType extends FlexoConceptInstanceType {
 			if (configuration != null) {
 				try {
 					virtualModel = getTechnologyAdapter().getTechnologyAdapterService().getServiceManager().getViewPointLibrary()
-							.getVirtualModel(configuration).getVirtualModel();
+							.getVirtualModel(configuration);
 				} catch (FileNotFoundException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
