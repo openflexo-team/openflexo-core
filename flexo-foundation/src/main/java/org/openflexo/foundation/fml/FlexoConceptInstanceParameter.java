@@ -105,7 +105,8 @@ public interface FlexoConceptInstanceParameter extends InnerModelSlotParameter<F
 
 		@Override
 		public WidgetType getWidget() {
-			return WidgetType.FLEXO_CONCEPT;
+			// return WidgetType.FLEXO_CONCEPT;
+			return WidgetType.CUSTOM_WIDGET;
 		}
 
 		@Override

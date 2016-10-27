@@ -183,7 +183,7 @@
 			</BrowserElement>
 
 			<BrowserElement dataClassName="org.openflexo.foundation.fml.FlexoBehaviour"
-				label="flexoBehaviour.name" editableLabel="flexoBehaviour.name"
+				label="flexoBehaviour.signature" editableLabel="flexoBehaviour.name"
 				icon="controller.iconForObject(flexoBehaviour)" isEditable="true"
 				filtered="false" defaultVisible="true" name="flexoBehaviour">
 				<Children data="flexoBehaviour.controlGraph.flattenedSequence"

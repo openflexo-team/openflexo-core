@@ -69,6 +69,7 @@ import org.openflexo.foundation.fml.URIParameter;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.toolbox.StringUtils;
 
+@Deprecated
 public class CreateFlexoBehaviourParameter extends FlexoAction<CreateFlexoBehaviourParameter, FlexoBehaviourObject, FMLObject> {
 
 	private static final Logger logger = Logger.getLogger(CreateFlexoBehaviourParameter.class.getPackage().getName());

@@ -112,8 +112,8 @@ public interface PropertyParameter extends InnerModelSlotParameter<TypeAwareMode
 
 	public TypeAwareModelSlot<?, ?> getTypeAwareModelSlot();
 
-	public static abstract class PropertyParameterImpl extends InnerModelSlotParameterImpl<TypeAwareModelSlot<?, ?>> implements
-			PropertyParameter {
+	public static abstract class PropertyParameterImpl extends InnerModelSlotParameterImpl<TypeAwareModelSlot<?, ?>>
+			implements PropertyParameter {
 
 		private String domainURI;
 		private String parentPropertyURI;
@@ -127,7 +127,8 @@ public interface PropertyParameter extends InnerModelSlotParameter<TypeAwareMode
 
 		@Override
 		public WidgetType getWidget() {
-			return WidgetType.PROPERTY;
+			// return WidgetType.PROPERTY;
+			return WidgetType.CUSTOM_WIDGET;
 		}
 
 		@Override
@@ -187,7 +188,8 @@ public interface PropertyParameter extends InnerModelSlotParameter<TypeAwareMode
 		public void setIsDynamicDomainValue(boolean isDynamic) {
 			if (isDynamic) {
 				isDynamicDomainValueSet = true;
-			} else {
+			}
+			else {
 				domainValue = null;
 				isDynamicDomainValueSet = false;
 			}

@@ -38,46 +38,27 @@
 
 package org.openflexo.foundation.fml;
 
-import java.lang.reflect.Type;
-import java.util.List;
+import java.util.logging.Logger;
 
-import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.XMLElement;
 
 /**
- * Allows the manipulation of an instance of a TechnologyObject
+ * Represents a parameter of a {@link FlexoBehaviour}
  * 
  * @author sylvain
  * 
  */
+// TODO: merge with FlexoBehaviourParameter
 @ModelEntity
-@ImplementationClass(TechnologyObjectParameter.TechnologyObjectParameterImpl.class)
-@XMLElement
-public interface TechnologyObjectParameter<MS extends ModelSlot<?>> extends InnerModelSlotParameter<MS> {
+@ImplementationClass(GenericBehaviourParameter.GenericBehaviourParameterImpl.class)
+@XMLElement(xmlTag = "GenericBehaviourParameter")
+public interface GenericBehaviourParameter extends FlexoBehaviourParameter {
 
-	public static abstract class TechnologyObjectParameterImpl<MS extends ModelSlot<?>> extends InnerModelSlotParameterImpl<MS>
-			implements TechnologyObjectParameter<MS> {
+	public static abstract class GenericBehaviourParameterImpl extends FlexoBehaviourParameterImpl implements GenericBehaviourParameter {
 
-		public TechnologyObjectParameterImpl() {
-			super();
-		}
+		private static final Logger logger = Logger.getLogger(GenericBehaviourParameter.class.getPackage().getName());
 
-		@Override
-		public Type getType() {
-			return Object.class;
-		};
-
-		@Override
-		public WidgetType getWidget() {
-			// return WidgetType.TECHNOLOGY_OBJECT;
-			return WidgetType.CUSTOM_WIDGET;
-		}
-
-		@Override
-		public List<ModelSlot> getAccessibleModelSlots() {
-			return getOwningVirtualModel().getModelSlots(ModelSlot.class);
-		}
 	}
 }
