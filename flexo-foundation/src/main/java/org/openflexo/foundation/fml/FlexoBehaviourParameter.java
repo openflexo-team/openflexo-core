@@ -244,7 +244,7 @@ public interface FlexoBehaviourParameter extends FlexoBehaviourObject, FunctionA
 
 		@Override
 		public String toString() {
-			return "FlexoConceptParameter: " + getName();
+			return "FlexoBehaviourParameter: " + getName();
 		}
 
 		@Override
