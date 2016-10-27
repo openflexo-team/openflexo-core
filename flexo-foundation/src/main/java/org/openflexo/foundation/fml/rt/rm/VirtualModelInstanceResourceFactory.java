@@ -20,11 +20,9 @@
 
 package org.openflexo.foundation.fml.rt.rm;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.rm.ViewPointResource;
@@ -33,7 +31,6 @@ import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstanceModelFactory;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
-import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.technologyadapter.TechnologyContextManager;
 import org.openflexo.model.exceptions.ModelDefinitionException;
@@ -161,27 +158,16 @@ public class VirtualModelInstanceResourceFactory
 				returned.setModelVersion(CURRENT_FML_RT_VERSION);
 			}
 			if (StringUtils.isNotEmpty(vmiInfo.virtualModelURI)) {
-				VirtualModel vm = null;
+				VirtualModelResource vmrsc = null;
 				FlexoServiceManager sm = technologyContextManager.getServiceManager();
-				try {
-					vm = sm.getViewPointLibrary().getVirtualModel(vmiInfo.virtualModelURI);
-				} catch (FileNotFoundException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (ResourceLoadingCancelledException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (FlexoException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				if (vm == null) {
+				vmrsc = sm.getViewPointLibrary().getVirtualModelResource(vmiInfo.virtualModelURI);
+				if (vmrsc == null) {
 					// In this case, serialize URI of virtualmodel, to give a chance to find it later
 					returned.setVirtualModelURI(vmiInfo.virtualModelURI);
 					logger.warning("Could not find virtual model " + vmiInfo.virtualModelURI);
 				}
 				else {
-					returned.setVirtualModelResource((VirtualModelResource) vm.getResource());
+					returned.setVirtualModelResource(vmrsc);
 				}
 			}
 		}
