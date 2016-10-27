@@ -978,7 +978,6 @@ public abstract class FileSystemBasedResourceCenter extends ResourceRepository<F
 			return reader.readRootElement(serializationArtefact);
 		} catch (IOException e) {
 			logger.warning("Cannot parse document in File: " + serializationArtefact.getAbsolutePath());
-			e.printStackTrace();
 			return null;
 		}
 
