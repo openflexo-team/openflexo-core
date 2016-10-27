@@ -1,195 +1,55 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Panel layout="border" darkLevel="0"
-	dataClassName="org.openflexo.components.widget.TypeSelector"
-	controllerClassName="org.openflexo.components.widget.TypeSelector$TypeSelectorDetailsPanel$CustomFIBController"
-	width="400" height="400">
-	<Panel id="2" darkLevel="0" useScrollBar="true" protectContent="false"
-		layout="border" 
-		border="empty" trackViewPortWidth="true" constraints="border(location=west)"
-		borderTitle="Panel" trackViewPortHeight="true"
-		horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_NEVER">
-		<RadioButtonList id="3" manageDynamicModel="false"
-			columns="1" index="2" localize="true"
-			constraints="border(anchor=center;expandHorizontally=true;expandVertically=true;fill=none;gridHeight=0;gridWidth=1;gridX=-1;gridY=-1;insetsBottom=0;insetsLeft=0;insetsRight=20;insetsTop=0;location=north;padX=0;padY=0;weightX=0.0;weightY=0.0)"
-			format="data.getPresentationName(object)" showText="true" iteratorClassName="java.lang.Object"
-			vGap="-2" showIcon="true" useScrollBar="true" data="data.choice"
-			autoSelectFirstRow="false" hGap="0" list="data.choices" readOnly="false" />
-	</Panel>
-	<Panel darkLevel="0" useScrollBar="true" protectContent="false"
-		layout="twocols" 
-		border="empty" trackViewPortWidth="true"
-		constraints="twocols(expandHorizontally=true;expandVertically=true;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=center)"
-		borderTitle="Panel" trackViewPortHeight="true"
-		horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_NEVER">
-		<Panel darkLevel="0" useScrollBar="false" protectContent="false"
-			layout="border" borderRight="2" border="empty" trackViewPortWidth="true"
-			constraints="twocols(expandHorizontally=true;expandVertically=true;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=center)"
-			borderBottom="2" borderTop="2" trackViewPortHeight="true"
-			visible="data.hasBaseJavaClass">
-			<FIBReferencedComponent dynamicComponentFile="data.javaClassEditorComponentResource"
-				localize="true" manageDynamicModel="true" name="JavaClassEditor"
-				index="4" data="data.loadedClassesInfo"
-				constraints="border(location=center)"
-				opaque="false">
-				<!--  <ReferenceAssignment mandatory="true"
-					variable="controller.flexoController" value="controller.flexoController" />-->
-			</FIBReferencedComponent>
-		</Panel>
-		<Panel darkLevel="0" useScrollBar="false" protectContent="false"
-			layout="border" borderRight="2" border="empty" trackViewPortWidth="true"
-			constraints="twocols(expandHorizontally=true;expandVertically=true;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=center)"
-			borderBottom="2" borderTop="2" trackViewPortHeight="true"
-			visible="data.isCustomType">
-			<FIBReferencedComponent dynamicComponentFile="data.currentCustomTypeEditor.FIBComponentResource"
-				localize="true" manageDynamicModel="true" name="CustomTypeEditorPanel"
-				index="4" data="data.currentCustomTypeEditor"
-				controllerFactory="data.currentCustomTypeEditor.makeFIBController()"
-				constraints="border(location=center)"
-				opaque="false">
-				<ReferenceAssignment mandatory="true"
-					variable="controller.flexoController" value="controller.flexoController" />
-			</FIBReferencedComponent>
-		</Panel>
-		<Panel darkLevel="0" useScrollBar="false" protectContent="false"
-			layout="border" borderRight="2" border="empty" trackViewPortWidth="true"
-			constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=center)"
-			borderBottom="2" borderTop="2" trackViewPortHeight="true"
-			visible="data.hasGenericParameters">
-			<Table
-				iteratorClassName="org.openflexo.components.widget.TypeSelector$GenericParameter"
-				visibleRowCount="3" rowHeight="18" autoSelectFirstRow="false"
-				createNewRowOnClick="false" boundToSelectionManager="false"
-				showFooter="false" selectionMode="MultipleIntervalSelection"
-				textSelectionColor="255,255,255" textNonSelectionColor="0,0,0"
-				backgroundSelectionColor="26,96,206"
-				backgroundSecondarySelectionColor="173,215,255"
-				backgroundNonSelectionColor="255,255,255" localize="true"
-				manageDynamicModel="true" name="GenericParametersTable" index="1"
-				data="data.genericParameters"
-				constraints="twocols(expandHorizontally=true;expandVertically=true;index=1;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=center)">
-				<IconColumn data="iterator.icon" title="" columnWidth="20"
-					resizable="false" displayTitle="true" name="icon" />
-				<LabelColumn data="iterator.typeVariable.name" title="type_variable"
-					columnWidth="50" resizable="true" displayTitle="true" />
-				<CustomColumn componentClassName="org.openflexo.components.widget.TypeSelector"
-					customRendering="false" format="iterator.typeStringRepresentation"
-					disableTerminateEditOnFocusLost="false" data="iterator.type" title="value"
-					columnWidth="100" resizable="true" displayTitle="true" name="value">
-					<!-- <ColumnAssignment variable="component.bindable" value="iterator" 
-						/> -->
-				</CustomColumn>
-				<LocalizedDictionary />
-			</Table>
-		</Panel>
-
-		<Label label="key_type"
-			constraints="twocols(expandHorizontally=false;expandVertically=false;location=left)"
-			borderBottom="2" borderTop="2" trackViewPortHeight="true" visible="data.isJavaMap">
-		</Label>
-
-		<Custom componentClassName="org.openflexo.components.widget.TypeSelector"
-			customRendering="false" format="data.keyTypeStringRepresentation"
-			constraints="twocols(expandHorizontally=true;expandVertically=false;location=right)"
-			data="data.keyType" visible="data.isJavaMap">
-			<!-- <CustomAssignment variable="component.bindable" value="iterator" 
-				/> -->
-		</Custom>
-
-		<Label label="extends"
-			constraints="twocols(expandHorizontally=false;expandVertically=false;location=left)"
-			borderBottom="2" borderTop="2" trackViewPortHeight="true"
-			visible="data.isJavaWildcard">
-		</Label>
-
-		<Table iteratorClassName="org.openflexo.components.widget.TypeSelector$GenericBound"
-			visibleRowCount="3" rowHeight="18" autoSelectFirstRow="false"
-			createNewRowOnClick="false" boundToSelectionManager="false"
-			showFooter="true" selectionMode="MultipleIntervalSelection"
-			textSelectionColor="255,255,255" textNonSelectionColor="0,0,0"
-			backgroundSelectionColor="26,96,206"
-			backgroundSecondarySelectionColor="173,215,255"
-			backgroundNonSelectionColor="255,255,255" localize="true"
-			manageDynamicModel="true" name="UpperBoundsTable" index="1"
-			data="data.upperBounds" visible="data.isJavaWildcard"
-			constraints="twocols(expandHorizontally=true;expandVertically=true;location=right)">
-			<IconColumn data="iterator.icon" title="" columnWidth="20"
-				resizable="false" displayTitle="true" name="icon" />
-			<CustomColumn componentClassName="org.openflexo.components.widget.TypeSelector"
-				customRendering="false" format="iterator.typeStringRepresentation"
-				disableTerminateEditOnFocusLost="false" data="iterator.type" title="value"
-				columnWidth="300" resizable="true" displayTitle="true" name="value">
-				<!-- <ColumnAssignment variable="component.bindable" value="iterator" 
-					/> -->
-			</CustomColumn>
-			<AddAction method="data.createUpperBound" name="add_upper_bound" />
-			<RemoveAction method="data.deleteUpperBound(selected)"
-				name="delete_upper_bound" />
-			<LocalizedDictionary />
-		</Table>
-
-		<Label label="super"
-			constraints="twocols(expandHorizontally=false;expandVertically=false;location=left)"
-			borderBottom="2" borderTop="2" trackViewPortHeight="true"
-			visible="data.isJavaWildcard">
-		</Label>
-
-		<Table iteratorClassName="org.openflexo.components.widget.TypeSelector$GenericBound"
-			visibleRowCount="3" rowHeight="18" autoSelectFirstRow="false"
-			createNewRowOnClick="false" boundToSelectionManager="false"
-			showFooter="true" selectionMode="MultipleIntervalSelection"
-			textSelectionColor="255,255,255" textNonSelectionColor="0,0,0"
-			backgroundSelectionColor="26,96,206"
-			backgroundSecondarySelectionColor="173,215,255"
-			backgroundNonSelectionColor="255,255,255" localize="true"
-			manageDynamicModel="true" name="UpperBoundsTable" index="1"
-			data="data.lowerBounds" visible="data.isJavaWildcard"
-			constraints="twocols(expandHorizontally=true;expandVertically=true;location=right)">
-			<IconColumn data="iterator.icon" title="" columnWidth="20"
-				resizable="false" displayTitle="true" name="icon" />
-			<CustomColumn componentClassName="org.openflexo.components.widget.TypeSelector"
-				customRendering="false" format="iterator.typeStringRepresentation"
-				disableTerminateEditOnFocusLost="false" data="iterator.type" title="value"
-				columnWidth="300" resizable="true" displayTitle="true" name="value">
-				<!-- <ColumnAssignment variable="component.bindable" value="iterator" 
-					/> -->
-			</CustomColumn>
-			<AddAction method="data.createLowerBound" name="add_lower_bound" />
-			<RemoveAction method="data.deleteLowerBound(selected)"
-				name="delete_lower_bound" />
-			<LocalizedDictionary />
-		</Table>
-
-		<!--  <Panel darkLevel="0" useScrollBar="false" protectContent="false"
-			layout="border" borderRight="2" border="empty" trackViewPortWidth="true"
-			constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=center)"
-			borderBottom="2" borderTop="2" trackViewPortHeight="true"
-			visible="data.isCustomType">
-			<FIBReferencedComponent manageDynamicModel="true"
-				useScrollBar="false" data="data.customTypeFactory"
-				controllerClassName="org.openflexo.view.controller.FlexoFIBController"
-				localize="true" dynamicComponentFile="data.customTypeFactory.fibComponentResource"
-				constraints="border(location=center)" readOnly="false">
-				<ReferenceAssignment id="34" mandatory="true"
-					value="controller.flexoController" variable="controller.flexoController" />
-			</FIBReferencedComponent>
-		</Panel> -->
-
-	</Panel>
-	<Panel layout="flow" hGap="5" vGap="0" flowAlignment="CENTER"
-		borderTitle="Panel" darkLevel="0" index="3" constraints="border(location=south)">
-		<Button action="controller.apply()" buttonType="Trigger" label="apply"
-			index="0" constraints="flow(index=0)" localize="true"
-			enable="(data.choice != null)">
-			<LocalizedDictionary />
-		</Button>
-		<Button action="controller.cancel()" buttonType="Trigger"
-			label="cancel" index="1" constraints="flow(index=1)" localize="true">
-			<LocalizedDictionary />
-		</Button>
-		<Button action="controller.reset()" buttonType="Trigger" label="reset"
-			index="2" constraints="flow(index=2)" localize="true">
-			<LocalizedDictionary />
-		</Button>
-	</Panel>
-	<LocalizedDictionary />
+<Panel id="0" borderLeft="0" height="400" sizeAdjustment="OriginalSize" controllerClassName="org.openflexo.components.widget.TypeSelector$TypeSelectorDetailsPanel$CustomFIBController" borderRight="0" border="empty" trackViewPortWidth="true" align="left" width="400" borderBottom="0" borderTop="0" trackViewPortHeight="true" layout="border">
+  <Panel id="1" verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED" borderLeft="0" sizeAdjustment="OriginalSize" borderRight="0" border="empty" trackViewPortWidth="true" align="left" constraints="border(location=west)" borderBottom="0" borderTitle="Panel" borderTop="0" trackViewPortHeight="true" horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_NEVER" useScrollBar="true" layout="border" name="FIBPanel">
+    <RadioButtonList id="2" verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED" data="data.choice" index="2" localize="true" constraints="border(anchor=center;expandHorizontally=true;expandVertically=true;fill=none;gridHeight=0;gridWidth=1;gridX=-1;gridY=-1;insetsBottom=0;insetsLeft=0;insetsRight=20;insetsTop=0;location=north;padX=0;padY=0;weightX=0.0;weightY=0.0)" format="data.getPresentationName(object)" showText="true" horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED" iteratorClassName="java.lang.Object" showIcon="true" useScrollBar="true" name="RadioButtonList" list="data.choices" />
+  </Panel>
+  <Panel id="3" verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED" borderLeft="0" sizeAdjustment="OriginalSize" borderRight="0" border="empty" trackViewPortWidth="true" align="left" constraints="border(expandHorizontally=true;expandVertically=true;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=center)" borderBottom="0" borderTitle="Panel" borderTop="0" trackViewPortHeight="true" horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_NEVER" useScrollBar="true" layout="twocols" name="FIBPanel4">
+    <Panel id="4" visible="data.hasBaseJavaClass" borderLeft="0" sizeAdjustment="OriginalSize" borderRight="2" border="empty" trackViewPortWidth="true" align="left" constraints="twocols(expandHorizontally=true;expandVertically=true;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=center)" borderBottom="2" borderTop="2" trackViewPortHeight="true" layout="border" name="FIBPanel">
+      <FIBReferencedComponent id="5" manageDynamicModel="true" opaque="false" name="JavaClassEditor" data="data.classEditor" index="4" localize="true" dynamicComponentFile="data.javaClassEditorComponentResource" constraints="border(location=center)" />
+    </Panel>
+    <Panel id="6" visible="data.isCustomType" borderLeft="0" sizeAdjustment="OriginalSize" borderRight="2" border="empty" trackViewPortWidth="true" align="left" constraints="twocols(expandHorizontally=true;expandVertically=true;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=center)" borderBottom="2" borderTop="2" trackViewPortHeight="true" layout="border" name="FIBPanel2">
+      <FIBReferencedComponent id="7" manageDynamicModel="true" opaque="false" name="CustomTypeEditorPanel" data="data.currentCustomTypeEditor" controllerFactory="data.currentCustomTypeEditor.makeFIBController()" index="4" localize="true" dynamicComponentFile="data.currentCustomTypeEditor.FIBComponentResource" constraints="border(location=center)">
+        <ReferenceAssignment id="8" mandatory="true" value="controller.flexoController" variable="controller.flexoController" />
+      </FIBReferencedComponent>
+    </Panel>
+    <Panel id="9" visible="data.hasGenericParameters" borderLeft="0" sizeAdjustment="OriginalSize" borderRight="2" border="empty" trackViewPortWidth="true" align="left" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=center)" borderBottom="2" borderTop="2" trackViewPortHeight="true" layout="border" name="FIBPanel3">
+      <Table id="10" manageDynamicModel="true" selectionMode="MultipleIntervalSelection" data="data.genericParameters" index="1" localize="true" constraints="border(expandHorizontally=true;expandVertically=true;index=1;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=center)" visibleRowCount="3" rowHeight="18" textSelectionColor="255,255,255" iteratorClassName="org.openflexo.components.widget.TypeSelector$GenericParameter" backgroundSelectionColor="26,96,206" backgroundNonSelectionColor="255,255,255" name="GenericParametersTable" textNonSelectionColor="0,0,0" backgroundSecondarySelectionColor="173,215,255">
+        <IconColumn id="11" data="iterator.icon" displayTitle="true" title="" name="icon" columnWidth="20" resizable="false" showIcon="false" />
+        <LabelColumn id="12" data="iterator.typeVariable.name" displayTitle="true" title="type_variable" name="type_variable" columnWidth="50" resizable="true" showIcon="false" />
+        <CustomColumn id="13" data="iterator.type" format="iterator.typeStringRepresentation" componentClassName="org.openflexo.components.widget.TypeSelector" displayTitle="true" title="value" name="value" columnWidth="100" resizable="true" showIcon="false" />
+        <LocalizedDictionary id="14" />
+      </Table>
+    </Panel>
+    <Label id="15" visible="data.isJavaMap" name="KeyTypeLabel" align="left" constraints="twocols(expandHorizontally=false;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)" label="key_type" />
+    <Custom id="16" visible="data.isJavaMap" manageDynamicModel="true" dataClassForComponent="java.lang.reflect.Type" componentClassName="org.openflexo.components.widget.TypeSelector" name="CustomSelector" data="data.keyType" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)" format="data.keyTypeStringRepresentation" />
+    <Label id="17" visible="data.isJavaWildcard" name="ExtendsLabel" align="left" constraints="twocols(expandHorizontally=false;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)" label="extends" />
+    <Table id="18" showFooter="true" visible="data.isJavaWildcard" manageDynamicModel="true" selectionMode="MultipleIntervalSelection" data="data.upperBounds" index="1" localize="true" constraints="twocols(expandHorizontally=true;expandVertically=true;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)" visibleRowCount="3" rowHeight="18" textSelectionColor="255,255,255" iteratorClassName="org.openflexo.components.widget.TypeSelector$GenericBound" backgroundSelectionColor="26,96,206" backgroundNonSelectionColor="255,255,255" name="UpperBoundsTable" textNonSelectionColor="0,0,0" backgroundSecondarySelectionColor="173,215,255">
+      <IconColumn id="19" data="iterator.icon" displayTitle="true" title="" name="icon" columnWidth="20" resizable="false" showIcon="false" />
+      <CustomColumn id="20" data="iterator.type" format="iterator.typeStringRepresentation" componentClassName="org.openflexo.components.widget.TypeSelector" displayTitle="true" title="value" name="value" columnWidth="300" resizable="true" showIcon="false" />
+      <LocalizedDictionary id="21" />
+      <AddAction id="22" name="add_upper_bound" method="data.createUpperBound" />
+      <RemoveAction id="23" name="delete_upper_bound" method="data.deleteUpperBound(selected)" />
+    </Table>
+    <Label id="24" visible="data.isJavaWildcard" name="SuperLabel" align="left" constraints="twocols(expandHorizontally=false;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)" label="super" />
+    <Table id="25" showFooter="true" visible="data.isJavaWildcard" manageDynamicModel="true" selectionMode="MultipleIntervalSelection" data="data.lowerBounds" index="1" localize="true" constraints="twocols(expandHorizontally=true;expandVertically=true;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)" visibleRowCount="3" rowHeight="18" textSelectionColor="255,255,255" iteratorClassName="org.openflexo.components.widget.TypeSelector$GenericBound" backgroundSelectionColor="26,96,206" backgroundNonSelectionColor="255,255,255" name="UpperBoundsTable" textNonSelectionColor="0,0,0" backgroundSecondarySelectionColor="173,215,255">
+      <IconColumn id="26" data="iterator.icon" displayTitle="true" title="" name="icon" columnWidth="20" resizable="false" showIcon="false" />
+      <CustomColumn id="27" data="iterator.type" format="iterator.typeStringRepresentation" componentClassName="org.openflexo.components.widget.TypeSelector" displayTitle="true" title="value" name="value" columnWidth="300" resizable="true" showIcon="false" />
+      <LocalizedDictionary id="28" />
+      <AddAction id="29" name="add_lower_bound" method="data.createLowerBound" />
+      <RemoveAction id="30" name="delete_lower_bound" method="data.deleteLowerBound(selected)" />
+    </Table>
+  </Panel>
+  <Panel id="31" vGap="0" borderLeft="0" hGap="5" sizeAdjustment="OriginalSize" borderRight="0" border="empty" trackViewPortWidth="true" index="3" align="left" constraints="border(location=south)" borderBottom="0" borderTitle="Panel" borderTop="0" trackViewPortHeight="true" layout="flow" name="FIBPanel5" flowAlignment="CENTER">
+    <Button id="32" enable="(data.choice != null)" buttonType="Trigger" name="Button" action="controller.apply()" index="0" localize="true" constraints="flow(index=0)" label="apply">
+      <LocalizedDictionary id="33" />
+    </Button>
+    <Button id="34" buttonType="Trigger" name="Button2" action="controller.cancel()" index="1" localize="true" constraints="flow(index=1)" label="cancel">
+      <LocalizedDictionary id="35" />
+    </Button>
+    <Button id="36" buttonType="Trigger" name="Button3" action="controller.reset()" index="2" localize="true" constraints="flow(index=2)" label="reset">
+      <LocalizedDictionary id="37" />
+    </Button>
+  </Panel>
+  <FIBVariable id="38" name="data" type="org.openflexo.components.widget.TypeSelector" />
+  <LocalizedDictionary id="39" />
 </Panel>

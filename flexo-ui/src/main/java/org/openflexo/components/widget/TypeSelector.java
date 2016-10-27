@@ -77,7 +77,7 @@ import org.openflexo.gina.controller.FIBController;
 import org.openflexo.gina.model.FIBComponent;
 import org.openflexo.gina.model.widget.FIBCustom;
 import org.openflexo.gina.model.widget.FIBCustom.FIBCustomComponent;
-import org.openflexo.gina.swing.utils.LoadedClassesInfo;
+import org.openflexo.gina.swing.utils.ClassEditor;
 import org.openflexo.gina.swing.utils.LoadedClassesInfo.ClassInfo;
 import org.openflexo.gina.swing.utils.logging.FlexoLoggingViewer;
 import org.openflexo.gina.swing.view.JFIBView;
@@ -458,7 +458,7 @@ public class TypeSelector extends TextFieldCustomPopup<Type>
 			getPropertyChangeSupport().firePropertyChange("currentCustomTypeFactory", oldCustomTypeFactory, getCurrentCustomTypeFactory());
 			getPropertyChangeSupport().firePropertyChange("currentCustomTypeEditor", oldCustomTypeEditor, getCurrentCustomTypeEditor());
 			if (isJavaType()) {
-				getPropertyChangeSupport().firePropertyChange("loadedClassesInfo", null, getLoadedClassesInfo());
+				getPropertyChangeSupport().firePropertyChange("classEditor", null, getClassEditor());
 			}
 		}
 	}
@@ -549,15 +549,6 @@ public class TypeSelector extends TextFieldCustomPopup<Type>
 		}
 	}
 
-	@Override
-	public void propertyChange(PropertyChangeEvent evt) {
-		System.out.println("propertyChange with " + evt);
-		if (isCustomType() && evt.getSource() == getCurrentCustomTypeFactory()) {
-			// propertyChanged in CustomTypeFactory, regenerate new Type
-			setEditedObject(getCurrentCustomTypeFactory().makeCustomType(null));
-		}
-	}
-
 	/*private void updateCustomTypes() {
 		for (Object o : new ArrayList<Object>(choices)) {
 			if (o instanceof CustomTypeFactory) {
@@ -605,8 +596,8 @@ public class TypeSelector extends TextFieldCustomPopup<Type>
 		}
 		if (isJavaType()) {
 			updateGenericParameters(baseClass);
-			getLoadedClassesInfo().setSelectedClassInfo(LoadedClassesInfo.getClass(baseClass));
-			getPropertyChangeSupport().firePropertyChange("loadedClassesInfo", null, getLoadedClassesInfo());
+			getClassEditor().setSelectedClassInfo(getClassEditor().getLoadedClassesInfo().getClass(baseClass));
+			// getPropertyChangeSupport().firePropertyChange("loadedClassesInfo", null, getLoadedClassesInfo());
 		}
 
 	}
@@ -711,6 +702,8 @@ public class TypeSelector extends TextFieldCustomPopup<Type>
 
 		if (baseClass != getBaseClass()) {
 
+			updateGenericParameters(baseClass);
+
 			if (choice == JAVA_LIST) {
 				if (hasGenericParameters()) {
 					setEditedObject(new ParameterizedTypeImpl((List.class), makeParameterizedType(baseClass)));
@@ -739,6 +732,7 @@ public class TypeSelector extends TextFieldCustomPopup<Type>
 				updateWildcardType();
 			}
 			else {
+
 				if (hasGenericParameters()) {
 					setEditedObject(makeParameterizedType(baseClass));
 				}
@@ -765,10 +759,39 @@ public class TypeSelector extends TextFieldCustomPopup<Type>
 
 	// private boolean isListeningLoadedClassesInfo = false;
 
-	private LoadedClassesInfo loadedClassesInfo = null;
+	// private LoadedClassesInfo loadedClassesInfo = null;
 
-	public LoadedClassesInfo getLoadedClassesInfo() {
+	@Override
+	public void propertyChange(PropertyChangeEvent evt) {
+		// System.out.println("propertyChange with " + evt);
+		if (isCustomType() && evt.getSource() == getCurrentCustomTypeFactory()) {
+			// propertyChanged in CustomTypeFactory, regenerate new Type
+			setEditedObject(getCurrentCustomTypeFactory().makeCustomType(null));
+		}
+		if (evt.getSource() == classEditor) {
+			if (evt.getPropertyName().equals("selectedClassInfo")) {
+				if (isJavaType()) {
+					ClassInfo classInfo = (ClassInfo) evt.getNewValue();
+					if (classInfo != null) {
+						setBaseClass(classInfo.getClazz());
+					}
+				}
+			}
+		}
+	}
 
+	private ClassEditor classEditor = null;
+
+	public ClassEditor getClassEditor() {
+		if (classEditor == null) {
+			classEditor = new ClassEditor();
+			classEditor.getPropertyChangeSupport().addPropertyChangeListener(this);
+		}
+		return classEditor;
+	}
+
+	/*public LoadedClassesInfo getLoadedClassesInfo() {
+	
 		if (loadedClassesInfo == null) {
 			loadedClassesInfo = new LoadedClassesInfo(getBaseClass());
 			loadedClassesInfo.getPropertyChangeSupport().addPropertyChangeListener(new PropertyChangeListener() {
@@ -783,14 +806,18 @@ public class TypeSelector extends TextFieldCustomPopup<Type>
 						}
 					}
 				}
-
+	
 			});
 		}
 		return loadedClassesInfo;
-	}
+	}*/
 
 	@Override
 	public void delete() {
+		if (classEditor != null) {
+			classEditor.getPropertyChangeSupport().removePropertyChangeListener(this);
+		}
+		classEditor.delete();
 		super.delete();
 		if (_selectorPanel != null) {
 			_selectorPanel.delete();
@@ -951,6 +978,7 @@ public class TypeSelector extends TextFieldCustomPopup<Type>
 
 	@Override
 	public String renderedString(Type editedObject) {
+
 		if (editedObject == null) {
 			return "";
 		}
@@ -974,14 +1002,14 @@ public class TypeSelector extends TextFieldCustomPopup<Type>
 		FlexoLoggingManager.initialize(-1, true, loggingFile, Level.INFO, null);
 		final JDialog dialog = new JDialog((Frame) null, false);
 
-		final TypeSelector selector = new TypeSelector(String.class);
-		selector.setRevertValue(Object.class);
+		final TypeSelector typeSelector = new TypeSelector(String.class);
+		typeSelector.setRevertValue(Object.class);
 
 		JButton closeButton = new JButton("Close");
 		closeButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				selector.delete();
+				typeSelector.delete();
 				dialog.dispose();
 				System.exit(0);
 			}
@@ -996,7 +1024,7 @@ public class TypeSelector extends TextFieldCustomPopup<Type>
 		});
 
 		JPanel panel = new JPanel(new VerticalLayout());
-		panel.add(selector);
+		panel.add(typeSelector);
 
 		panel.add(closeButton);
 		panel.add(logButton);
