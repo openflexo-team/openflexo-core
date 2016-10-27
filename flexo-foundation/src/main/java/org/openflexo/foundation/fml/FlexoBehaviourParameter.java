@@ -441,31 +441,38 @@ public interface FlexoBehaviourParameter extends FlexoBehaviourObject, FunctionA
 			return getAvailableWidgetTypes(getType());
 		}
 
-		private static WidgetType[] STRING_WIDGET_TYPES = { WidgetType.TEXT_FIELD, WidgetType.TEXT_AREA, WidgetType.URI,
+		private static WidgetType[] STRING_WIDGET_TYPES_ARRAY = { WidgetType.TEXT_FIELD, WidgetType.TEXT_AREA, WidgetType.URI,
 				WidgetType.LOCALIZED_TEXT_FIELD, WidgetType.DROPDOWN, WidgetType.RADIO_BUTTON, WidgetType.CUSTOM_WIDGET };
-		private static WidgetType[] BOOLEAN_WIDGET_TYPES = { WidgetType.CHECKBOX, WidgetType.CUSTOM_WIDGET };
-		private static WidgetType[] FLOAT_WIDGET_TYPES = { WidgetType.FLOAT, WidgetType.CUSTOM_WIDGET };
-		private static WidgetType[] INTEGER_WIDGET_TYPES = { WidgetType.INTEGER, WidgetType.CUSTOM_WIDGET };
-		private static WidgetType[] LIST_WIDGET_TYPES = { WidgetType.DROPDOWN, WidgetType.RADIO_BUTTON, WidgetType.CUSTOM_WIDGET };
-		private static WidgetType[] CUSTOM_WIDGET_TYPES = { WidgetType.CUSTOM_WIDGET };
+		private static WidgetType[] BOOLEAN_WIDGET_TYPES_ARRAY = { WidgetType.CHECKBOX, WidgetType.CUSTOM_WIDGET };
+		private static WidgetType[] FLOAT_WIDGET_TYPES_ARRAY = { WidgetType.FLOAT, WidgetType.CUSTOM_WIDGET };
+		private static WidgetType[] INTEGER_WIDGET_TYPES_ARRAY = { WidgetType.INTEGER, WidgetType.CUSTOM_WIDGET };
+		private static WidgetType[] LIST_WIDGET_TYPES_ARRAY = { WidgetType.DROPDOWN, WidgetType.RADIO_BUTTON, WidgetType.CUSTOM_WIDGET };
+		private static WidgetType[] CUSTOM_WIDGET_TYPES_ARRAY = { WidgetType.CUSTOM_WIDGET };
+
+		private static List<WidgetType> STRING_WIDGET_TYPES = Arrays.asList(STRING_WIDGET_TYPES_ARRAY);
+		private static List<WidgetType> BOOLEAN_WIDGET_TYPES = Arrays.asList(BOOLEAN_WIDGET_TYPES_ARRAY);
+		private static List<WidgetType> FLOAT_WIDGET_TYPES = Arrays.asList(FLOAT_WIDGET_TYPES_ARRAY);
+		private static List<WidgetType> INTEGER_WIDGET_TYPES = Arrays.asList(INTEGER_WIDGET_TYPES_ARRAY);
+		private static List<WidgetType> LIST_WIDGET_TYPES = Arrays.asList(LIST_WIDGET_TYPES_ARRAY);
+		private static List<WidgetType> CUSTOM_WIDGET_TYPES = Arrays.asList(CUSTOM_WIDGET_TYPES_ARRAY);
 
 		public static List<WidgetType> getAvailableWidgetTypes(Type type) {
 			if (TypeUtils.isString(type)) {
-				return Arrays.asList(STRING_WIDGET_TYPES);
+				return STRING_WIDGET_TYPES;
 			}
 			else if (TypeUtils.isBoolean(type)) {
-				return Arrays.asList(BOOLEAN_WIDGET_TYPES);
+				return BOOLEAN_WIDGET_TYPES;
 			}
 			else if (TypeUtils.isDouble(type) || TypeUtils.isFloat(type)) {
-				return Arrays.asList(FLOAT_WIDGET_TYPES);
+				return FLOAT_WIDGET_TYPES;
 			}
 			else if (TypeUtils.isLong(type) || TypeUtils.isInteger(type) || TypeUtils.isShort(type)) {
-				return Arrays.asList(INTEGER_WIDGET_TYPES);
+				return INTEGER_WIDGET_TYPES;
 			}
 			else if (TypeUtils.isList(type)) {
-				return Arrays.asList(LIST_WIDGET_TYPES);
+				return LIST_WIDGET_TYPES;
 			}
-			return Arrays.asList(CUSTOM_WIDGET_TYPES);
+			return CUSTOM_WIDGET_TYPES;
 		}
 	}
 }
