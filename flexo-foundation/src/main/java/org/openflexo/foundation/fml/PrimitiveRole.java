@@ -41,6 +41,7 @@ package org.openflexo.foundation.fml;
 import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
+import org.openflexo.connie.type.PrimitiveType;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstanceModelFactory;
@@ -62,49 +63,6 @@ import org.openflexo.model.annotations.XMLElement;
 @XMLElement
 @FML("PrimitiveRole")
 public interface PrimitiveRole<T> extends FlexoRole<T> {
-
-	public static enum PrimitiveType {
-		Boolean {
-			@Override
-			public Type getType() {
-				return Boolean.class;
-			}
-		},
-		String {
-			@Override
-			public Type getType() {
-				return String.class;
-			}
-		},
-		Integer {
-			@Override
-			public Type getType() {
-				return Integer.class;
-			}
-		},
-		Float {
-			@Override
-			public Type getType() {
-				return Float.class;
-			}
-		},
-		Double {
-			@Override
-			public Type getType() {
-				return Double.class;
-			}
-		};
-
-		public abstract Type getType();
-
-		@Override
-		public String toString() {
-			if (FlexoLocalization.getMainLocalizer() != null) {
-				return FlexoLocalization.getMainLocalizer().localizedForKey(name());
-			}
-			return name();
-		}
-	}
 
 	@PropertyIdentifier(type = PrimitiveType.class)
 	public static final String PRIMITIVE_TYPE_KEY = "primitiveType";

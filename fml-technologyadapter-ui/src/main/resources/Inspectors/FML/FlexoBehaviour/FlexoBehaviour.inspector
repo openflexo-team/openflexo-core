@@ -117,11 +117,11 @@
 						label="parameter_type" />
 					<Custom id="28" manageDynamicModel="true"
 						dataClassForComponent="java.lang.reflect.Type"
-						componentClassName="org.openflexo.components.widget.TypeSelector"
+						componentClassName="org.openflexo.gina.swing.utils.TypeSelector"
 						name="TypeSelector" data="ParametersTable.selected.type" localize="true"
 						constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)">
-						<Assignment id="29" mandatory="true"
-							value="controller.serviceManager" variable="component.serviceManager" />
+		<Assignment variable="component.customTypeManager" value="controller.serviceManager.technologyAdapterService" />
+		<Assignment variable="component.customTypeEditorProvider" value="controller.serviceManager.technologyAdapterControllerService" />
 					</Custom>
 					<Label id="30" name="Label3" localize="true" align="left"
 						constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)"

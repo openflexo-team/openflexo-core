@@ -13,11 +13,11 @@
 				constraints="twocols(expandHorizontally=false;expandVertically=false;index=6;location=left)"
 				localize="true">
 			</Label>
-			<Custom index="7" componentClassName="org.openflexo.components.widget.TypeSelector"
+			<Custom index="7" componentClassName="org.openflexo.gina.swing.utils.TypeSelector"
 				localize="true" manageDynamicModel="true" data="data.type"
 				constraints="twocols(expandHorizontally=true;expandVertically=false;index=7;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)">
-				<Assignment variable="component.serviceManager"
-					value="controller.serviceManager" />
+		<Assignment variable="component.customTypeManager" value="controller.serviceManager.technologyAdapterService" />
+		<Assignment variable="component.customTypeEditorProvider" value="controller.serviceManager.technologyAdapterControllerService" />
 			</Custom>
 		</Tab>
 	</TabPanel>

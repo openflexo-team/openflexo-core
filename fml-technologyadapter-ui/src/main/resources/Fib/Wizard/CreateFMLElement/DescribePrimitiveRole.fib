@@ -16,7 +16,7 @@
 	<DropDown index="14" data="data.primitiveType"
 		constraints="gridbag(anchor=west;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=6;insetsBottom=0;insetsLeft=0;insetsRight=20;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)"
 		name="PrimitiveDD" format="object.name" localize="true" showIcon="true"
-		iteratorClassName="org.openflexo.foundation.fml.PrimitiveRole$PrimitiveType"
+		iteratorClassName="org.openflexo.connie.type.PrimitiveType"
 		autoSelectFirstRow="false" >
 	</DropDown>
 	<Label label="cardinality" index="14"

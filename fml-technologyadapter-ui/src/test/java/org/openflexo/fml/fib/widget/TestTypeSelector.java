@@ -48,20 +48,20 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openflexo.OpenflexoTestCaseWithGUI;
-import org.openflexo.components.widget.TypeSelector;
-import org.openflexo.components.widget.TypeSelector.TypeSelectorDetailsPanel;
+import org.openflexo.connie.type.PrimitiveType;
 import org.openflexo.fib.swing.utils.SwingGraphicalContextDelegate;
 import org.openflexo.foundation.DefaultFlexoEditor;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
-import org.openflexo.foundation.fml.PrimitiveRole.PrimitiveType;
 import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.action.CreateFlexoConcept;
 import org.openflexo.foundation.fml.action.CreateViewPoint;
 import org.openflexo.foundation.fml.action.CreateVirtualModel;
 import org.openflexo.foundation.resource.SaveResourceException;
+import org.openflexo.gina.swing.utils.TypeSelector;
+import org.openflexo.gina.swing.utils.TypeSelector.TypeSelectorDetailsPanel;
 import org.openflexo.test.OrderedRunner;
 import org.openflexo.test.TestOrder;
 
@@ -136,7 +136,8 @@ public class TestTypeSelector extends OpenflexoTestCaseWithGUI {
 	public void testInstanciateWidgetWithString() {
 
 		typeSelector = new TypeSelector(String.class);
-		typeSelector.setServiceManager(serviceManager);
+		typeSelector.setCustomTypeManager(serviceManager.getTechnologyAdapterService());
+		typeSelector.setCustomTypeEditorProvider(serviceManager.getTechnologyAdapterControllerService());
 		gcDelegate.addTab("TypeSelector", ((TypeSelectorDetailsPanel) typeSelector.getCustomPanel()).getController());
 		assertSame(typeSelector.getChoice(), PrimitiveType.String);
 	}
@@ -144,7 +145,8 @@ public class TestTypeSelector extends OpenflexoTestCaseWithGUI {
 	@Test
 	@TestOrder(3)
 	public void checkCustomTypes() {
-		typeSelector.setServiceManager(serviceManager);
+		typeSelector.setCustomTypeManager(serviceManager.getTechnologyAdapterService());
+		typeSelector.setCustomTypeEditorProvider(serviceManager.getTechnologyAdapterControllerService());
 		System.out.println("customTypeFactories=" + serviceManager.getTechnologyAdapterService().getCustomTypeFactories());
 		assertTrue(typeSelector.getChoices().contains(FlexoConceptInstanceType.class));
 	}

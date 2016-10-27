@@ -49,7 +49,6 @@ import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 
 import org.openflexo.ApplicationContext;
-import org.openflexo.components.widget.CustomTypeEditor;
 import org.openflexo.components.widget.FIBTechnologyBrowser;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.type.CustomType;
@@ -108,6 +107,7 @@ import org.openflexo.gina.model.widget.FIBCheckboxList;
 import org.openflexo.gina.model.widget.FIBCustom;
 import org.openflexo.gina.model.widget.FIBNumber;
 import org.openflexo.gina.model.widget.FIBNumber.NumberType;
+import org.openflexo.gina.swing.utils.CustomTypeEditor;
 import org.openflexo.gina.model.widget.FIBTextArea;
 import org.openflexo.gina.model.widget.FIBTextField;
 import org.openflexo.gina.utils.InspectorGroup;

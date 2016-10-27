@@ -40,7 +40,7 @@ package org.openflexo.fml.controller.action;
 
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.fml.PrimitiveRole.PrimitiveType;
+import org.openflexo.connie.type.PrimitiveType;
 import org.openflexo.foundation.fml.action.CreatePrimitiveRole;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.gina.annotation.FIBPanel;

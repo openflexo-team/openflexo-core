@@ -44,6 +44,7 @@ import java.util.Map;
 
 import org.openflexo.connie.type.CustomType;
 import org.openflexo.connie.type.CustomTypeFactory;
+import org.openflexo.connie.type.CustomTypeManager;
 import org.openflexo.foundation.FlexoService;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.resource.FlexoResource;
@@ -70,7 +71,7 @@ import org.openflexo.model.annotations.Setter;
  */
 @ModelEntity
 @ImplementationClass(DefaultTechnologyAdapterService.class)
-public interface TechnologyAdapterService extends FlexoService {
+public interface TechnologyAdapterService extends FlexoService, CustomTypeManager {
 	public static final String TECHNOLOGY_ADAPTERS = "technologyAdapters";
 	public static final String RESOURCE_CENTER_SERVICE = "flexoResourceCenterService";
 
@@ -167,6 +168,7 @@ public interface TechnologyAdapterService extends FlexoService {
 	 * 
 	 * @return
 	 */
+	@Override
 	public Map<Class<? extends CustomType>, CustomTypeFactory<?>> getCustomTypeFactories();
 
 	/**

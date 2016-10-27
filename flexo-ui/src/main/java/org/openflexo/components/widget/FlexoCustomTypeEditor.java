@@ -39,7 +39,8 @@
 package org.openflexo.components.widget;
 
 import org.openflexo.connie.type.CustomType;
-import org.openflexo.rm.Resource;
+import org.openflexo.gina.swing.utils.CustomTypeEditor;
+import org.openflexo.gina.swing.utils.TypeSelector;
 import org.openflexo.view.controller.FlexoFIBController;
 
 /**
@@ -48,16 +49,7 @@ import org.openflexo.view.controller.FlexoFIBController;
  * @author sylvain
  *
  */
-public interface CustomTypeEditor<T extends CustomType> {
-
-	public String getPresentationName();
-
-	/**
-	 * Return class of custom type beeing handled by this editor
-	 * 
-	 * @return
-	 */
-	public Class<T> getCustomType();
+public interface FlexoCustomTypeEditor<T extends CustomType> extends CustomTypeEditor<T> {
 
 	/**
 	 * Factory for a FIBController managing component given by {@link #getEditor()} method
@@ -66,7 +58,4 @@ public interface CustomTypeEditor<T extends CustomType> {
 	 */
 	public FlexoFIBController makeFIBController();
 
-	public Resource getFIBComponentResource();
-
-	public T getEditedType();
 }

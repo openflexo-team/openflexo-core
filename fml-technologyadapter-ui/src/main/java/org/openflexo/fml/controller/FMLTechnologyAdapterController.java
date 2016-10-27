@@ -40,7 +40,6 @@ package org.openflexo.fml.controller;
 
 import javax.swing.ImageIcon;
 
-import org.openflexo.components.widget.CustomTypeEditor;
 import org.openflexo.components.widget.FIBTechnologyBrowser;
 import org.openflexo.connie.type.CustomType;
 import org.openflexo.fml.controller.action.AddParentFlexoConceptInitializer;
@@ -101,6 +100,7 @@ import org.openflexo.foundation.fml.rt.editionaction.SelectFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.SelectVirtualModelInstance;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
+import org.openflexo.gina.swing.utils.CustomTypeEditor;
 import org.openflexo.gina.utils.InspectorGroup;
 import org.openflexo.icon.FMLIconLibrary;
 import org.openflexo.icon.FMLRTIconLibrary;

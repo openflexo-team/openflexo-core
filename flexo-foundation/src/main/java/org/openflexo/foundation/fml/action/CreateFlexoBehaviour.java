@@ -38,6 +38,7 @@
 
 package org.openflexo.foundation.fml.action;
 
+import java.lang.reflect.Type;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -58,7 +59,6 @@ import org.openflexo.foundation.fml.DeletionScheme;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FlexoBehaviour;
-import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptBehaviouralFacet;
 import org.openflexo.foundation.fml.FlexoConceptObject;
@@ -262,12 +262,19 @@ public class CreateFlexoBehaviour extends FlexoAction<CreateFlexoBehaviour, Flex
 
 	private void performCreateParameter(BehaviourParameterEntry entry) {
 		Progress.progress(getLocales().localizedForKey("create_parameter") + " " + entry.getParameterName());
-		CreateFlexoBehaviourParameter action = CreateFlexoBehaviourParameter.actionType.makeNewEmbeddedAction(getNewFlexoBehaviour(), null,
+		/*CreateFlexoBehaviourParameter action = CreateFlexoBehaviourParameter.actionType.makeNewEmbeddedAction(getNewFlexoBehaviour(), null,
 				this);
 		action.setParameterName(entry.getParameterName());
 		action.setFlexoBehaviourParameterClass(entry.getParameterClass());
 		action.setDescription(entry.getParameterDescription());
+		action.doAction();*/
+		CreateGenericBehaviourParameter action = CreateGenericBehaviourParameter.actionType.makeNewEmbeddedAction(getNewFlexoBehaviour(),
+				null, this);
+		action.setParameterName(entry.getParameterName());
+		action.setParameterType(entry.getParameterType());
+		action.setDescription(entry.getParameterDescription());
 		action.doAction();
+
 	}
 
 	@Override
@@ -336,7 +343,7 @@ public class CreateFlexoBehaviour extends FlexoAction<CreateFlexoBehaviour, Flex
 	public static class BehaviourParameterEntry extends PropertyChangedSupportDefaultImplementation {
 
 		private String parameterName;
-		private Class<? extends FlexoBehaviourParameter> parameterClass;
+		private Type parameterType;
 		private boolean required = true;
 		private String description;
 
@@ -351,20 +358,11 @@ public class CreateFlexoBehaviour extends FlexoAction<CreateFlexoBehaviour, Flex
 		public void delete() {
 			parameterName = null;
 			description = null;
-			parameterClass = null;
+			parameterType = null;
 		}
 
 		public LocalizedDelegate getLocales() {
 			return locales;
-		}
-
-		public Class<? extends FlexoBehaviourParameter> getParameterClass() {
-			return parameterClass;
-		}
-
-		public void setParameterClass(Class<? extends FlexoBehaviourParameter> parameterClass) {
-			this.parameterClass = parameterClass;
-			getPropertyChangeSupport().firePropertyChange("parameterClass", parameterClass != null ? null : false, parameterClass);
 		}
 
 		public String getParameterName() {
@@ -377,6 +375,19 @@ public class CreateFlexoBehaviour extends FlexoAction<CreateFlexoBehaviour, Flex
 		public void setParameterName(String parameterName) {
 			this.parameterName = parameterName;
 			getPropertyChangeSupport().firePropertyChange("parameterName", null, parameterName);
+		}
+
+		public Type getParameterType() {
+			return parameterType;
+		}
+
+		public void setParameterType(Type parameterType) {
+			if ((parameterType == null && this.parameterType != null)
+					|| (parameterType != null && !parameterType.equals(this.parameterType))) {
+				Type oldValue = this.parameterType;
+				this.parameterType = parameterType;
+				getPropertyChangeSupport().firePropertyChange("parameterType", oldValue, parameterType);
+			}
 		}
 
 		public String getParameterDescription() {
@@ -402,7 +413,7 @@ public class CreateFlexoBehaviour extends FlexoAction<CreateFlexoBehaviour, Flex
 			if (StringUtils.isEmpty(getParameterName())) {
 				return getLocales().localizedForKey("please_supply_valid_parameter_name");
 			}
-			if (getParameterClass() == null) {
+			if (getParameterType() == null) {
 				return getLocales().localizedForKey("no_parameter_type_defined_for") + " " + getParameterName();
 			}
 

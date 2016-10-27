@@ -19,14 +19,15 @@
 			resizable="false" />
 		<TextFieldColumn id="4" data="iterator.parameterName"
 			displayTitle="true" title="parameter_name" columnWidth="200" resizable="true" />
-		<DropDownColumn
-			data="iterator.parameterClass" title="type" columnWidth="200"
-			resizable="true" displayTitle="true" name="parameterClassDD" format="object.simpleName"
-			list="data.availableParameterTypes"
-			iteratorClassName="java.lang.Class"
-			autoSelectFirstRow="true" />
+		<CustomColumn componentClassName="org.openflexo.gina.swing.utils.TypeSelector"
+			customRendering="false" disableTerminateEditOnFocusLost="false"
+			data="iterator.parameterType" format="" title="type" columnWidth="100"
+			resizable="true" displayTitle="true" name="type">
+		<ColumnAssignment variable="component.customTypeManager" value="data.serviceManager.technologyAdapterService" />
+		<ColumnAssignment variable="component.customTypeEditorProvider" value="data.serviceManager.technologyAdapterControllerService" />
+		</CustomColumn>
 		<TextFieldColumn id="7" data="iterator.parameterDescription"
-			displayTitle="true" title="description" name="descriptionTF" columnWidth="500"
+			displayTitle="true" title="description" name="descriptionTF" columnWidth="300"
 			resizable="true" />
 		<RemoveAction id="8" name="delete"
 			method="data.deleteParameterEntry(selected)" />
