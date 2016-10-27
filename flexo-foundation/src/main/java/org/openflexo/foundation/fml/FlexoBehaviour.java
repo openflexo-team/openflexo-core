@@ -242,7 +242,7 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 		private String name;
 		private String label;
 
-		private boolean definePopupDefaultSize = false;
+		// private boolean definePopupDefaultSize = false;
 		private int width = 800;
 		private int height = 600;
 
@@ -649,15 +649,15 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 			// updateBindingModels();
 		}
 
-		@Override
+		/*@Override
 		public boolean getDefinePopupDefaultSize() {
 			return definePopupDefaultSize;
 		}
-
+		
 		@Override
 		public void setDefinePopupDefaultSize(boolean definePopupDefaultSize) {
 			this.definePopupDefaultSize = definePopupDefaultSize;
-		}
+		}*/
 
 		@Override
 		public int getWidth() {
