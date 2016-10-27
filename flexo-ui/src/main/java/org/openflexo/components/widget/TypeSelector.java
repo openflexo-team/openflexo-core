@@ -50,6 +50,7 @@ import java.io.IOException;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
+import java.lang.reflect.WildcardType;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -201,12 +202,6 @@ public class TypeSelector extends TextFieldCustomPopup<Type>
 
 				setEditedObject(makeParameterizedType(getBaseClass()));
 
-				/*Type[] params = new Type[genericParameters.size()];
-				for (int i = 0; i < genericParameters.size(); i++) {
-					params[i] = genericParameters.get(i).getType();
-				}
-				setEditedObject(new ParameterizedTypeImpl(getBaseClass(), params));*/
-
 				getPropertyChangeSupport().firePropertyChange("type", oldValue, type);
 			}
 		}
@@ -262,13 +257,7 @@ public class TypeSelector extends TextFieldCustomPopup<Type>
 				Type oldValue = this.type;
 				this.type = type;
 
-				/*Type[] params = new Type[genericParameters.size()];
-				for (int i = 0; i < genericParameters.size(); i++) {
-					params[i] = genericParameters.get(i).getType();
-				}
-				setEditedObject(new ParameterizedTypeImpl(getBaseClass(), params));*/
-
-				updateWildcardType();
+				makeWildcardType();
 
 				getPropertyChangeSupport().firePropertyChange("type", oldValue, type);
 			}
@@ -294,13 +283,11 @@ public class TypeSelector extends TextFieldCustomPopup<Type>
 
 	public TypeSelector(Type editedObject) {
 		super(editedObject);
+
 		setRevertValue(editedObject);
 		setFocusable(true);
 		pcSupport = new PropertyChangeSupport(this);
 		choices = new ArrayList<Object>();
-		/*choices.add(VIEW_TYPE);
-		choices.add(VIRTUAL_MODEL_INSTANCE_TYPE);
-		choices.add(FLEXO_CONCEPT_INSTANCE_TYPE);*/
 
 		genericParameters = new ArrayList<GenericParameter>();
 		upperBounds = new ArrayList<GenericBound>();
@@ -400,10 +387,6 @@ public class TypeSelector extends TextFieldCustomPopup<Type>
 			TechnologyAdapterTypeFactory<?> oldCustomTypeFactory = getCurrentCustomTypeFactory();
 			CustomTypeEditor<?> oldCustomTypeEditor = getCurrentCustomTypeEditor();
 
-			/*boolean oldIsViewType = isViewType();
-			boolean oldIsVirtualModelInstanceType = isVirtualModelInstanceType();
-			boolean oldIsFlexoConceptInstanceType = isFlexoConceptInstanceType();*/
-
 			boolean oldIsJavaType = isJavaType();
 			boolean oldIsPrimitiveType = isPrimitiveType();
 			boolean oldIsJavaList = isJavaList();
@@ -442,12 +425,12 @@ public class TypeSelector extends TextFieldCustomPopup<Type>
 				// Will cause the edited object to be recomputed from new configuration values
 				setBaseClass(oldBaseClass);
 			}
+
+			if (choice == JAVA_WILDCARD && !(getEditedObject() instanceof WildcardType)) {
+				makeWildcardType();
+			}
+
 			getPropertyChangeSupport().firePropertyChange("choice", old, choice);
-			/*getPropertyChangeSupport().firePropertyChange("isViewType", oldIsViewType, isViewType());
-			getPropertyChangeSupport().firePropertyChange("isVirtualModelInstanceType", oldIsVirtualModelInstanceType,
-					isVirtualModelInstanceType());
-			getPropertyChangeSupport().firePropertyChange("isFlexoConceptInstanceType", oldIsFlexoConceptInstanceType,
-					isFlexoConceptInstanceType());*/
 			getPropertyChangeSupport().firePropertyChange("isJavaType", oldIsJavaType, isJavaType());
 			getPropertyChangeSupport().firePropertyChange("isPrimitiveType", oldIsPrimitiveType, isPrimitiveType());
 			getPropertyChangeSupport().firePropertyChange("isJavaList", oldIsJavaList, isJavaList());
@@ -549,21 +532,6 @@ public class TypeSelector extends TextFieldCustomPopup<Type>
 		}
 	}
 
-	/*private void updateCustomTypes() {
-		for (Object o : new ArrayList<Object>(choices)) {
-			if (o instanceof CustomTypeFactory) {
-				choices.remove(o);
-			}
-		}
-	
-		for (Class<? extends CustomType> customTypeClass : serviceManager.getTechnologyAdapterService().getCustomTypeFactories().keySet()) {
-			CustomTypeFactory<?> ctfactory = serviceManager.getTechnologyAdapterService().getCustomTypeFactories().get(customTypeClass);
-			choices.add(ctfactory);
-		}
-	
-		getPropertyChangeSupport().firePropertyChange("choices", null, choices);
-	}*/
-
 	@Override
 	public void setEditedObject(Type object) {
 		super.setEditedObject(object);
@@ -594,8 +562,16 @@ public class TypeSelector extends TextFieldCustomPopup<Type>
 				setChoice(JAVA_TYPE);
 			}
 		}
-		if (isJavaType()) {
+
+		if (getEditedObject() instanceof ParameterizedType) {
 			updateGenericParameters(baseClass);
+		}
+		else if (getEditedObject() instanceof WildcardType) {
+			setChoice(JAVA_WILDCARD);
+			updateWildcardBounds();
+		}
+
+		if (isJavaType()) {
 			getClassEditor().setSelectedClassInfo(getClassEditor().getLoadedClassesInfo().getClass(baseClass));
 			// getPropertyChangeSupport().firePropertyChange("loadedClassesInfo", null, getLoadedClassesInfo());
 		}
@@ -614,7 +590,7 @@ public class TypeSelector extends TextFieldCustomPopup<Type>
 		GenericBound returned = new GenericBound(Object.class);
 		upperBounds.add(returned);
 		getPropertyChangeSupport().firePropertyChange("upperBounds", null, returned);
-		updateWildcardType();
+		makeWildcardType();
 		return returned;
 	}
 
@@ -622,7 +598,7 @@ public class TypeSelector extends TextFieldCustomPopup<Type>
 		bound.delete();
 		upperBounds.remove(bound);
 		getPropertyChangeSupport().firePropertyChange("upperBounds", bound, null);
-		updateWildcardType();
+		makeWildcardType();
 	}
 
 	public List<GenericBound> getLowerBounds() {
@@ -633,7 +609,7 @@ public class TypeSelector extends TextFieldCustomPopup<Type>
 		GenericBound returned = new GenericBound(Object.class);
 		lowerBounds.add(returned);
 		getPropertyChangeSupport().firePropertyChange("lowerBounds", null, returned);
-		updateWildcardType();
+		makeWildcardType();
 		return returned;
 	}
 
@@ -641,7 +617,7 @@ public class TypeSelector extends TextFieldCustomPopup<Type>
 		bound.delete();
 		lowerBounds.remove(bound);
 		getPropertyChangeSupport().firePropertyChange("lowerBounds", bound, null);
-		updateWildcardType();
+		makeWildcardType();
 	}
 
 	private void updateGenericParameters(Class<?> baseClass) {
@@ -729,7 +705,7 @@ public class TypeSelector extends TextFieldCustomPopup<Type>
 				}
 			}
 			else if (choice == JAVA_WILDCARD) {
-				updateWildcardType();
+				makeWildcardType();
 			}
 			else {
 
@@ -747,7 +723,7 @@ public class TypeSelector extends TextFieldCustomPopup<Type>
 		setBaseClass(getBaseClass());
 	}
 
-	private void updateWildcardType() {
+	private void makeWildcardType() {
 		Type[] upper = new Type[upperBounds.size()];
 		for (int i = 0; i < upperBounds.size(); i++)
 			upper[i] = upperBounds.get(i).getType();
@@ -757,9 +733,26 @@ public class TypeSelector extends TextFieldCustomPopup<Type>
 		setEditedObject(new WilcardTypeImpl(upper, lower));
 	}
 
-	// private boolean isListeningLoadedClassesInfo = false;
+	private void updateWildcardBounds() {
 
-	// private LoadedClassesInfo loadedClassesInfo = null;
+		if (getEditedObject() instanceof WildcardType) {
+			WildcardType wildcardType = (WildcardType) getEditedObject();
+			upperBounds.clear();
+			lowerBounds.clear();
+
+			for (Type t : wildcardType.getUpperBounds()) {
+				GenericBound newUpperBound = new GenericBound(t);
+				upperBounds.add(newUpperBound);
+			}
+			for (Type t : wildcardType.getLowerBounds()) {
+				GenericBound newLowerBound = new GenericBound(t);
+				lowerBounds.add(newLowerBound);
+			}
+
+			getPropertyChangeSupport().firePropertyChange("upperBounds", null, getUpperBounds());
+			getPropertyChangeSupport().firePropertyChange("lowerBounds", null, getLowerBounds());
+		}
+	}
 
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
@@ -789,28 +782,6 @@ public class TypeSelector extends TextFieldCustomPopup<Type>
 		}
 		return classEditor;
 	}
-
-	/*public LoadedClassesInfo getLoadedClassesInfo() {
-	
-		if (loadedClassesInfo == null) {
-			loadedClassesInfo = new LoadedClassesInfo(getBaseClass());
-			loadedClassesInfo.getPropertyChangeSupport().addPropertyChangeListener(new PropertyChangeListener() {
-				@Override
-				public void propertyChange(PropertyChangeEvent evt) {
-					if (evt.getPropertyName().equals("selectedClassInfo")) {
-						if (isJavaType()) {
-							ClassInfo classInfo = (ClassInfo) evt.getNewValue();
-							if (classInfo != null) {
-								setBaseClass(classInfo.getClazz());
-							}
-						}
-					}
-				}
-	
-			});
-		}
-		return loadedClassesInfo;
-	}*/
 
 	@Override
 	public void delete() {
@@ -872,7 +843,7 @@ public class TypeSelector extends TextFieldCustomPopup<Type>
 		private JFIBView<?, ?> fibView;
 		private CustomFIBController controller;
 
-		protected TypeSelectorDetailsPanel(Type aClass) {
+		protected TypeSelectorDetailsPanel(Type editedObject) {
 			super();
 
 			fibComponent = ApplicationFIBLibraryImpl.instance().retrieveFIBComponent(FIB_FILE_NAME, true);
@@ -884,6 +855,7 @@ public class TypeSelector extends TextFieldCustomPopup<Type>
 			setLayout(new BorderLayout());
 			add(fibView.getResultingJComponent(), BorderLayout.CENTER);
 
+			fireEditedObjectChanged();
 		}
 
 		public void delete() {
@@ -899,6 +871,7 @@ public class TypeSelector extends TextFieldCustomPopup<Type>
 
 		public void update() {
 			controller.setDataObject(TypeSelector.this);
+			// fireEditedObjectChanged();
 		}
 
 		@Override
@@ -1002,7 +975,10 @@ public class TypeSelector extends TextFieldCustomPopup<Type>
 		FlexoLoggingManager.initialize(-1, true, loggingFile, Level.INFO, null);
 		final JDialog dialog = new JDialog((Frame) null, false);
 
-		final TypeSelector typeSelector = new TypeSelector(String.class);
+		// Type typeToEdit = String.class;
+		Type typeToEdit = new WilcardTypeImpl(String.class);
+
+		final TypeSelector typeSelector = new TypeSelector(typeToEdit);
 		typeSelector.setRevertValue(Object.class);
 
 		JButton closeButton = new JButton("Close");
