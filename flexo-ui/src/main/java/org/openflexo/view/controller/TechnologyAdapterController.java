@@ -61,6 +61,7 @@ import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.FlexoConceptInstanceParameter;
 import org.openflexo.foundation.fml.FlexoResourceParameter;
 import org.openflexo.foundation.fml.FlexoRole;
+import org.openflexo.foundation.fml.GenericBehaviourParameter;
 import org.openflexo.foundation.fml.IntegerParameter;
 import org.openflexo.foundation.fml.ListParameter;
 import org.openflexo.foundation.fml.TextAreaParameter;
@@ -105,11 +106,12 @@ import org.openflexo.gina.model.container.layout.TwoColsLayoutConstraints.TwoCol
 import org.openflexo.gina.model.widget.FIBCheckBox;
 import org.openflexo.gina.model.widget.FIBCheckboxList;
 import org.openflexo.gina.model.widget.FIBCustom;
+import org.openflexo.gina.model.widget.FIBLabel;
 import org.openflexo.gina.model.widget.FIBNumber;
 import org.openflexo.gina.model.widget.FIBNumber.NumberType;
-import org.openflexo.gina.swing.utils.CustomTypeEditor;
 import org.openflexo.gina.model.widget.FIBTextArea;
 import org.openflexo.gina.model.widget.FIBTextField;
+import org.openflexo.gina.swing.utils.CustomTypeEditor;
 import org.openflexo.gina.utils.InspectorGroup;
 import org.openflexo.icon.FMLIconLibrary;
 import org.openflexo.icon.FMLRTIconLibrary;
@@ -606,6 +608,77 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 	 */
 	public FIBComponent makeWidget(final FlexoBehaviourParameter parameter, FIBPanel panel, int index, FlexoBehaviourAction<?, ?, ?> action,
 			FIBModelFactory fibModelFactory) {
+		if (parameter instanceof GenericBehaviourParameter) {
+			switch (parameter.getWidget()) {
+				case TEXT_FIELD:
+				case URI:
+				case LOCALIZED_TEXT_FIELD:
+					FIBTextField tf = fibModelFactory.newFIBTextField();
+					tf.setName(parameter.getName() + "TextField");
+					return registerWidget(tf, parameter, panel, index);
+				case TEXT_AREA:
+					FIBTextArea ta = fibModelFactory.newFIBTextArea();
+					ta.setName(parameter.getName() + "TextArea");
+					ta.setValidateOnReturn(true); // Avoid too many ontologies manipulations
+					ta.setUseScrollBar(true);
+					ta.setHorizontalScrollbarPolicy(HorizontalScrollBarPolicy.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+					ta.setVerticalScrollbarPolicy(VerticalScrollBarPolicy.VERTICAL_SCROLLBAR_AS_NEEDED);
+					return registerWidget(ta, parameter, panel, index, true, true);
+				case CHECKBOX:
+					FIBCheckBox cb = fibModelFactory.newFIBCheckBox();
+					cb.setName(parameter.getName() + "CheckBox");
+					return registerWidget(cb, parameter, panel, index);
+				case INTEGER:
+					FIBNumber number = fibModelFactory.newFIBNumber();
+					number.setName(parameter.getName() + "Number");
+					number.setNumberType(NumberType.IntegerType);
+					return registerWidget(number, parameter, panel, index);
+				case FLOAT:
+					FIBNumber numberF = fibModelFactory.newFIBNumber();
+					numberF.setName(parameter.getName() + "Number");
+					numberF.setNumberType(NumberType.DoubleType);
+					return registerWidget(numberF, parameter, panel, index);
+				case DROPDOWN:
+				case RADIO_BUTTON:
+					ListParameter listParameter = (ListParameter) parameter;
+					FIBCheckboxList cbList = fibModelFactory.newFIBCheckboxList();
+					cbList.setName(parameter.getName() + "CheckboxList");
+					// TODO: repair this !!!
+					logger.warning("This feature is no more implemented, please repair this !!!");
+					cbList.setList(new DataBinding<List<?>>("data.parameters." + parameter.getName() + "TODO"));
+					/*if (listParameter.getListType() == ListType.ObjectProperty) {
+						cbList.setIteratorClass(IFlexoOntologyObjectProperty.class);
+						cbList.setFormat(new DataBinding<String>("object.name + \" (\"+object.domain.name+\")\""));
+						cbList.setShowIcon(true);
+						cbList.setIcon(new DataBinding<Icon>("controller.iconForObject(object)"));
+						cbList.setVGap(-2);
+					} else if (listParameter.getListType() == ListType.DataProperty) {
+						cbList.setIteratorClass(IFlexoOntologyDataProperty.class);
+						cbList.setFormat(new DataBinding<String>("object.name + \" (\"+object.domain.name+\")\""));
+						cbList.setShowIcon(true);
+						cbList.setIcon(new DataBinding<Icon>("controller.iconForObject(object)"));
+						cbList.setVGap(-2);
+					} else if (listParameter.getListType() == ListType.Property) {
+						cbList.setIteratorClass(IFlexoOntologyStructuralProperty.class);
+						cbList.setFormat(new DataBinding<String>("object.name + \" (\"+object.domain.name+\")\""));
+						cbList.setShowIcon(true);
+						cbList.setIcon(new DataBinding<Icon>("controller.iconForObject(object)"));
+						cbList.setVGap(-2);
+					}*/
+					cbList.setUseScrollBar(true);
+					cbList.setHorizontalScrollbarPolicy(HorizontalScrollBarPolicy.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+					cbList.setVerticalScrollbarPolicy(VerticalScrollBarPolicy.VERTICAL_SCROLLBAR_AS_NEEDED);
+
+					return registerWidget(cbList, parameter, panel, index, true, true);
+				case CUSTOM_WIDGET:
+					FIBLabel notFound = fibModelFactory.newFIBLabel("<not_found>");
+					notFound.setName(parameter.getName() + "NotFound");
+					return registerWidget(notFound, parameter, panel, index);
+				default:
+					break;
+			}
+		}
+
 		if (parameter instanceof TextFieldParameter) {
 			FIBTextField tf = fibModelFactory.newFIBTextField();
 			tf.setName(parameter.getName() + "TextField");

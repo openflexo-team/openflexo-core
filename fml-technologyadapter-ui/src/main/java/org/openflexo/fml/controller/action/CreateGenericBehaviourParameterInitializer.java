@@ -69,6 +69,9 @@ public class CreateGenericBehaviourParameterInitializer
 		return new FlexoActionInitializer<CreateGenericBehaviourParameter>() {
 			@Override
 			public boolean run(EventObject e, CreateGenericBehaviourParameter action) {
+				System.out.println("Ici avec action=" + action);
+				System.out.println("action.isEmbedded()=" + action.isEmbedded());
+				Thread.dumpStack();
 				Wizard wizard = new CreateGenericBehaviourParameterWizard(action, getController());
 				WizardDialog dialog = new WizardDialog(wizard, getController());
 				dialog.showDialog();

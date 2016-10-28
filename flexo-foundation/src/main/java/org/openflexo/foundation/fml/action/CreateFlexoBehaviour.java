@@ -46,6 +46,13 @@ import java.util.List;
 import java.util.Vector;
 import java.util.logging.Logger;
 
+import org.openflexo.connie.Bindable;
+import org.openflexo.connie.BindingFactory;
+import org.openflexo.connie.BindingModel;
+import org.openflexo.connie.DataBinding;
+import org.openflexo.connie.DataBinding.BindingDefinitionType;
+import org.openflexo.connie.type.ParameterizedTypeImpl;
+import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.FlexoAction;
@@ -59,6 +66,8 @@ import org.openflexo.foundation.fml.DeletionScheme;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FlexoBehaviour;
+import org.openflexo.foundation.fml.FlexoBehaviourParameter.FlexoBehaviourParameterImpl;
+import org.openflexo.foundation.fml.FlexoBehaviourParameter.WidgetType;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptBehaviouralFacet;
 import org.openflexo.foundation.fml.FlexoConceptObject;
@@ -76,7 +85,7 @@ public class CreateFlexoBehaviour extends FlexoAction<CreateFlexoBehaviour, Flex
 	private static final Logger logger = Logger.getLogger(CreateFlexoBehaviour.class.getPackage().getName());
 
 	public static FlexoActionType<CreateFlexoBehaviour, FlexoConceptObject, FMLObject> actionType = new FlexoActionType<CreateFlexoBehaviour, FlexoConceptObject, FMLObject>(
-			"create_flexo_behaviour", FlexoActionType.newMenu, FlexoActionType.defaultGroup, FlexoActionType.ADD_ACTION_TYPE) {
+			"flexo_behaviour", FlexoActionType.newMenu, FlexoActionType.defaultGroup, FlexoActionType.ADD_ACTION_TYPE) {
 
 		/**
 		 * Factory method
@@ -148,6 +157,7 @@ public class CreateFlexoBehaviour extends FlexoAction<CreateFlexoBehaviour, Flex
 
 	public BehaviourParameterEntry newParameterEntry() {
 		BehaviourParameterEntry returned = new BehaviourParameterEntry("param" + (getParameterEntries().size() + 1), getLocales());
+		returned.setParameterType(String.class);
 		parameterEntries.add(returned);
 		getPropertyChangeSupport().firePropertyChange("parameterEntries", null, returned);
 		return returned;
@@ -157,6 +167,36 @@ public class CreateFlexoBehaviour extends FlexoAction<CreateFlexoBehaviour, Flex
 		parameterEntries.remove(parameterEntryToDelete);
 		parameterEntryToDelete.delete();
 		getPropertyChangeSupport().firePropertyChange("parameterEntries", parameterEntryToDelete, null);
+	}
+
+	public void parameterFirst(BehaviourParameterEntry p) {
+		getParameterEntries().remove(p);
+		getParameterEntries().add(0, p);
+		getPropertyChangeSupport().firePropertyChange("parameterEntries", null, getParameterEntries());
+	}
+
+	public void parameterUp(BehaviourParameterEntry p) {
+		int index = getParameterEntries().indexOf(p);
+		if (index > 0) {
+			getParameterEntries().remove(p);
+			getParameterEntries().add(index - 1, p);
+			getPropertyChangeSupport().firePropertyChange("parameterEntries", null, getParameterEntries());
+		}
+	}
+
+	public void parameterDown(BehaviourParameterEntry p) {
+		int index = getParameterEntries().indexOf(p);
+		if (index > -1) {
+			getParameterEntries().remove(p);
+			getParameterEntries().add(index + 1, p);
+			getPropertyChangeSupport().firePropertyChange("parameterEntries", null, getParameterEntries());
+		}
+	}
+
+	public void parameterLast(BehaviourParameterEntry p) {
+		getParameterEntries().remove(p);
+		getParameterEntries().add(p);
+		getPropertyChangeSupport().firePropertyChange("parameterEntries", null, getParameterEntries());
 	}
 
 	private void addVirtualModelFlexoBehaviours(AbstractVirtualModel<?> virtualModel) {
@@ -262,16 +302,15 @@ public class CreateFlexoBehaviour extends FlexoAction<CreateFlexoBehaviour, Flex
 
 	private void performCreateParameter(BehaviourParameterEntry entry) {
 		Progress.progress(getLocales().localizedForKey("create_parameter") + " " + entry.getParameterName());
-		/*CreateFlexoBehaviourParameter action = CreateFlexoBehaviourParameter.actionType.makeNewEmbeddedAction(getNewFlexoBehaviour(), null,
-				this);
-		action.setParameterName(entry.getParameterName());
-		action.setFlexoBehaviourParameterClass(entry.getParameterClass());
-		action.setDescription(entry.getParameterDescription());
-		action.doAction();*/
 		CreateGenericBehaviourParameter action = CreateGenericBehaviourParameter.actionType.makeNewEmbeddedAction(getNewFlexoBehaviour(),
 				null, this);
 		action.setParameterName(entry.getParameterName());
 		action.setParameterType(entry.getParameterType());
+		action.setWidgetType(entry.getWidgetType());
+		action.setContainer(entry.getContainer());
+		action.setDefaultValue(entry.getDefaultValue());
+		action.setList(entry.getList());
+		action.setIsRequired(entry.isRequired());
 		action.setDescription(entry.getParameterDescription());
 		action.doAction();
 
@@ -340,12 +379,17 @@ public class CreateFlexoBehaviour extends FlexoAction<CreateFlexoBehaviour, Flex
 		getPropertyChangeSupport().firePropertyChange("isValid", wasValid, isValid());
 	}
 
-	public static class BehaviourParameterEntry extends PropertyChangedSupportDefaultImplementation {
+	public class BehaviourParameterEntry extends PropertyChangedSupportDefaultImplementation implements Bindable {
 
 		private String parameterName;
 		private Type parameterType;
 		private boolean required = true;
 		private String description;
+		private WidgetType widgetType;
+
+		private DataBinding<?> defaultValue;
+		private DataBinding<?> container;
+		private DataBinding<List<?>> list;
 
 		private LocalizedDelegate locales;
 
@@ -387,7 +431,35 @@ public class CreateFlexoBehaviour extends FlexoAction<CreateFlexoBehaviour, Flex
 				Type oldValue = this.parameterType;
 				this.parameterType = parameterType;
 				getPropertyChangeSupport().firePropertyChange("parameterType", oldValue, parameterType);
+				getPropertyChangeSupport().firePropertyChange("availableWidgetTypes", null, getAvailableWidgetTypes());
+				listType = null;
+				if (list != null) {
+					list.setDeclaredType(getListType());
+				}
+				if (defaultValue != null) {
+					defaultValue.setDeclaredType(getParameterType());
+				}
+				getPropertyChangeSupport().firePropertyChange("isListType", !isListType(), isListType());
+				if (!getAvailableWidgetTypes().contains(getWidgetType()) && getAvailableWidgetTypes().size() > 0) {
+					setWidgetType(getAvailableWidgetTypes().get(0));
+				}
 			}
+		}
+
+		public WidgetType getWidgetType() {
+			return widgetType;
+		}
+
+		public void setWidgetType(WidgetType widgetType) {
+			if ((widgetType == null && this.widgetType != null) || (widgetType != null && !widgetType.equals(this.widgetType))) {
+				WidgetType oldValue = this.widgetType;
+				this.widgetType = widgetType;
+				getPropertyChangeSupport().firePropertyChange("widgetType", oldValue, widgetType);
+			}
+		}
+
+		public List<WidgetType> getAvailableWidgetTypes() {
+			return FlexoBehaviourParameterImpl.getAvailableWidgetTypes(getParameterType());
 		}
 
 		public String getParameterDescription() {
@@ -416,6 +488,9 @@ public class CreateFlexoBehaviour extends FlexoAction<CreateFlexoBehaviour, Flex
 			if (getParameterType() == null) {
 				return getLocales().localizedForKey("no_parameter_type_defined_for") + " " + getParameterName();
 			}
+			if (getWidgetType() == null) {
+				return getLocales().localizedForKey("no_widget_type_defined_for") + " " + getParameterName();
+			}
 
 			return null;
 		}
@@ -426,6 +501,97 @@ public class CreateFlexoBehaviour extends FlexoAction<CreateFlexoBehaviour, Flex
 			}
 			return null;
 
+		}
+
+		public int getIndex() {
+			if (getParameterEntries() != null) {
+				return getParameterEntries().indexOf(this);
+			}
+			return -1;
+		}
+
+		public DataBinding<?> getDefaultValue() {
+			if (defaultValue == null) {
+				defaultValue = new DataBinding<Object>(this, getParameterType(), BindingDefinitionType.GET);
+				defaultValue.setBindingName("defaultValue");
+			}
+			return defaultValue;
+		}
+
+		public void setDefaultValue(DataBinding<?> defaultValue) {
+			if (defaultValue != null) {
+				defaultValue.setOwner(this);
+				defaultValue.setBindingName("defaultValue");
+				defaultValue.setDeclaredType(getParameterType());
+				defaultValue.setBindingDefinitionType(BindingDefinitionType.GET);
+			}
+			this.defaultValue = defaultValue;
+		}
+
+		public DataBinding<?> getContainer() {
+			if (container == null) {
+				container = new DataBinding<Object>(this, Object.class, BindingDefinitionType.GET);
+				container.setBindingName("container");
+			}
+			return container;
+		}
+
+		public void setContainer(DataBinding<?> container) {
+			if (container != null) {
+				container.setOwner(this);
+				container.setBindingName("container");
+				container.setDeclaredType(Object.class);
+				container.setBindingDefinitionType(BindingDefinitionType.GET);
+			}
+			this.container = container;
+		}
+
+		public DataBinding<List<?>> getList() {
+			if (list == null) {
+				list = new DataBinding<List<?>>(this, getListType(), BindingDefinitionType.GET);
+			}
+			return list;
+		}
+
+		public void setList(DataBinding<List<?>> list) {
+			if (list != null) {
+				list.setOwner(this);
+				list.setBindingName("list");
+				list.setDeclaredType(getListType());
+				list.setBindingDefinitionType(BindingDefinitionType.GET);
+			}
+			this.list = list;
+		}
+
+		private ParameterizedTypeImpl listType = null;
+
+		private Type getListType() {
+			if (listType == null) {
+				listType = new ParameterizedTypeImpl(List.class, getParameterType());
+			}
+			return listType;
+		}
+
+		public boolean isListType() {
+			return TypeUtils.isList(getParameterType());
+		}
+
+		@Override
+		public BindingModel getBindingModel() {
+			return getFocusedObject().getBindingModel();
+		}
+
+		@Override
+		public BindingFactory getBindingFactory() {
+			return getFocusedObject().getBindingFactory();
+		}
+
+		@Override
+		public void notifiedBindingChanged(DataBinding<?> dataBinding) {
+		}
+
+		@Override
+		public void notifiedBindingDecoded(DataBinding<?> dataBinding) {
 		}
 
 	}

@@ -190,6 +190,11 @@ public class CreateGenericBehaviourParameter extends FlexoAction<CreateGenericBe
 		newParameter = factory.newParameter(getFlexoBehaviour());
 		newParameter.setName(getParameterName());
 		newParameter.setType(getParameterType());
+		newParameter.setContainer(getContainer());
+		newParameter.setDefaultValue(getDefaultValue());
+		newParameter.setList(getList());
+		newParameter.setIsRequired(getIsRequired());
+		newParameter.setDescription(getDescription());
 	}
 
 	public FlexoBehaviourParameter getNewParameter() {

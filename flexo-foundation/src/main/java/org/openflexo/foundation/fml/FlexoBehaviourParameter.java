@@ -235,6 +235,9 @@ public interface FlexoBehaviourParameter extends FlexoBehaviourObject, FunctionA
 			if (list != null) {
 				list.setDeclaredType(getListType());
 			}
+			if (defaultValue != null) {
+				defaultValue.setDeclaredType(aType);
+			}
 			getPropertyChangeSupport().firePropertyChange("availableWidgetTypes", null, getAvailableWidgetTypes());
 			getPropertyChangeSupport().firePropertyChange("isListType", !isListType(), isListType());
 			if (!getAvailableWidgetTypes().contains(getWidget()) && getAvailableWidgetTypes().size() > 0) {
