@@ -155,6 +155,16 @@ public class CreateFlexoBehaviour extends FlexoAction<CreateFlexoBehaviour, Flex
 		return parameterEntries;
 	}
 
+	public void addToParameterEntries(BehaviourParameterEntry entry) {
+		parameterEntries.add(entry);
+		getPropertyChangeSupport().firePropertyChange("parameterEntry", null, entry);
+	}
+
+	public void removeFromParameterEntries(BehaviourParameterEntry entry) {
+		parameterEntries.remove(entry);
+		getPropertyChangeSupport().firePropertyChange("parameterEntry", entry, null);
+	}
+
 	public BehaviourParameterEntry newParameterEntry() {
 		BehaviourParameterEntry returned = new BehaviourParameterEntry("param" + (getParameterEntries().size() + 1), getLocales());
 		returned.setParameterType(String.class);

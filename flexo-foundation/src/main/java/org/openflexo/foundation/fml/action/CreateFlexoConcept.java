@@ -105,9 +105,13 @@ public class CreateFlexoConcept extends AbstractCreateFlexoConcept<CreateFlexoCo
 		newFlexoConcept = factory.newFlexoConcept();
 		newFlexoConcept.setName(getNewFlexoConceptName());
 
-		performSetParentConcepts();
-
 		getFocusedObject().addToFlexoConcepts(newFlexoConcept);
+
+		performSetParentConcepts();
+		performCreateProperties();
+		performCreateBehaviours();
+		performCreateInspectors();
+
 	}
 
 	@Override

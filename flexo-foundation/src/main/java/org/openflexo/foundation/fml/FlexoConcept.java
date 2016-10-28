@@ -901,6 +901,9 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 		public DeletionScheme generateDefaultDeletionScheme() {
 			DeletionScheme newDeletionScheme = getFMLModelFactory().newDeletionScheme();
 			newDeletionScheme.setName("deletion");
+			newDeletionScheme.setControlGraph(getFMLModelFactory().newEmptyControlGraph());
+			addToFlexoBehaviours(newDeletionScheme);
+
 			List<FlexoProperty<?>> propertiesToDelete = new ArrayList<FlexoProperty<?>>();
 			for (FlexoProperty<?> pr : getDeclaredProperties()) {
 				if (pr.defaultBehaviourIsToBeDeleted()) {
@@ -908,11 +911,10 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 				}
 			}
 			for (FlexoProperty<?> pr : propertiesToDelete) {
-				DeleteAction a = getFMLModelFactory().newDeleteAction();
-				a.setObject(new DataBinding<Object>(pr.getPropertyName()));
-				newDeletionScheme.addToActions(a);
+				DeleteAction deleteAction = getFMLModelFactory().newDeleteAction();
+				deleteAction.setObject(new DataBinding<Object>(pr.getPropertyName()));
+				newDeletionScheme.getControlGraph().sequentiallyAppend(deleteAction);
 			}
-			addToFlexoBehaviours(newDeletionScheme);
 			return newDeletionScheme;
 		}
 

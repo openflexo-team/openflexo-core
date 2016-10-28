@@ -288,7 +288,7 @@ public class CreateModelSlotWizard extends AbstractCreateFMLElementWizard<Create
 		}
 
 		public boolean isVirtualModelModelSlot() {
-			return getModelSlotClass() != null && getModelSlotClass().equals(FMLRTModelSlot.class);
+			return getModelSlotClass() != null && FMLRTModelSlot.class.isAssignableFrom(getModelSlotClass());
 		}
 
 	}

@@ -46,7 +46,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.fml.AbstractVirtualModel;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
@@ -166,7 +165,7 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>>
 
 	public List<Class<? extends FlexoRole<?>>> getAvailableFlexoRoleTypes();
 
-	public <R extends FlexoRole<?>> List<Class<? extends R>> getAvailableFlexoRoleTypes(Class<R> roleType);
+	// public <R extends FlexoRole<?>> List<Class<? extends R>> getAvailableFlexoRoleTypes(Class<R> roleType);
 
 	public List<Class<? extends TechnologySpecificAction<?, ?>>> getAvailableEditionActionTypes();
 
@@ -368,7 +367,8 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>>
 		@Override
 		public String getFMLRepresentation(FMLRepresentationContext context) {
 			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
-			out.append("ModelSlot " + getName() + " as " + getModelSlotTechnologyAdapter().getIdentifier() + "::"
+			out.append("ModelSlot " + getName() + " as "
+					+ (getModelSlotTechnologyAdapter() != null ? getModelSlotTechnologyAdapter().getIdentifier() : "???") + "::"
 					+ getImplementedInterface().getSimpleName() + " " + getFMLRepresentationForConformToStatement() + "required="
 					+ getIsRequired() + " readOnly=" + getIsReadOnly() + ";", context);
 			return out.toString();
@@ -394,7 +394,7 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>>
 
 		public abstract Class<? extends TechnologyAdapter> getTechnologyAdapterClass();
 
-		@Override
+		/*@Override
 		public <R extends FlexoRole<?>> List<Class<? extends R>> getAvailableFlexoRoleTypes(Class<R> roleType) {
 			List<Class<? extends R>> returned = new ArrayList<Class<? extends R>>();
 			for (Class<? extends FlexoRole<?>> roleClass : getAvailableFlexoRoleTypes()) {
@@ -403,40 +403,28 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>>
 				}
 			}
 			return returned;
-		}
+		}*/
 
 		@Override
 		public List<Class<? extends FlexoRole<?>>> getAvailableFlexoRoleTypes() {
 			if (availableFlexoRoleTypes == null) {
-				availableFlexoRoleTypes = computeAvailableFlexoRoleTypes();
+				availableFlexoRoleTypes = getAvailableFlexoRoleTypes((Class<? extends ModelSlot<?>>) getClass());
 			}
 			return availableFlexoRoleTypes;
 		}
 
-		private List<Class<? extends FlexoRole<?>>> computeAvailableFlexoRoleTypes() {
-			availableFlexoRoleTypes = new ArrayList<Class<? extends FlexoRole<?>>>();
-			appendDeclareFlexoRoles(availableFlexoRoleTypes, getClass());
-			return availableFlexoRoleTypes;
-
-			/*Class<?> cl = getClass();
-			if (cl.isAnnotationPresent(DeclareFlexoRoles.class)) {
-				DeclareFlexoRoles allPatternRoles = cl.getAnnotation(DeclareFlexoRoles.class);
-				for (DeclareFlexoRole patternRoleDeclaration : allPatternRoles.value()) {
-					availableFlexoRoleTypes.add(patternRoleDeclaration.flexoRoleClass());
-				}
-			}
-			// availableFlexoRoleTypes.add(FlexoConceptPatternRole.class);
-			// availableFlexoRoleTypes.add(FlexoModelObjectPatternRole.class);
-			// availableFlexoRoleTypes.add(PrimitiveRole.class);
-			return availableFlexoRoleTypes;*/
+		public static List<Class<? extends FlexoRole<?>>> getAvailableFlexoRoleTypes(Class<? extends ModelSlot<?>> modelSlotClass) {
+			List<Class<? extends FlexoRole<?>>> returned = new ArrayList<Class<? extends FlexoRole<?>>>();
+			appendDeclareFlexoRoles(returned, modelSlotClass);
+			return returned;
 		}
 
-		private void appendDeclareFlexoRoles(List<Class<? extends FlexoRole<?>>> aList, Class<?> cl) {
+		private static void appendDeclareFlexoRoles(List<Class<? extends FlexoRole<?>>> aList, Class<?> cl) {
 			if (cl.isAnnotationPresent(DeclareFlexoRoles.class)) {
 				DeclareFlexoRoles allFlexoRoles = cl.getAnnotation(DeclareFlexoRoles.class);
 				for (Class<? extends FlexoRole> roleClass : allFlexoRoles.value()) {
-					if (!availableFlexoRoleTypes.contains(roleClass)) {
-						availableFlexoRoleTypes.add((Class<FlexoRole<?>>) roleClass);
+					if (!aList.contains(roleClass)) {
+						aList.add((Class<FlexoRole<?>>) roleClass);
 					}
 				}
 			}

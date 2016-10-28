@@ -254,7 +254,8 @@ public abstract interface FlexoRole<T> extends FlexoProperty<T> {
 		@Override
 		public String getFMLRepresentation(FMLRepresentationContext context) {
 			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
-			out.append("FlexoRole " + getName() + " as " + getModelSlot().getModelSlotTechnologyAdapter().getIdentifier() + "::"
+			out.append("FlexoRole " + getName() + " as "
+					+ (getModelSlot() != null ? getModelSlot().getModelSlotTechnologyAdapter().getIdentifier() : "???") + "::"
 					+ getImplementedInterface().getSimpleName() + " conformTo " + getTypeDescription() + ";", context);
 			return out.toString();
 		}
