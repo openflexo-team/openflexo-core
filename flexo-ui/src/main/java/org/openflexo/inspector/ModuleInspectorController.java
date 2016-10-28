@@ -170,7 +170,9 @@ public class ModuleInspectorController extends Observable implements Observer {
 			public void progress(Resource f, FIBInspector inspector) {
 				super.progress(f, inspector);
 				appendVisibleFor(inspector);
-				appendEditableCondition(inspector);
+
+				// Dont do it anymore: perfs issues
+				// appendEditableCondition(inspector);
 				Progress.progress(FlexoLocalization.getMainLocalizer().localizedForKey("loaded_inspector") + " "
 						+ inspector.getDataClass().getSimpleName());
 			}
