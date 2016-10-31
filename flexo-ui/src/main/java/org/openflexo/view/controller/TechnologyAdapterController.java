@@ -59,6 +59,7 @@ import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.FlexoConceptInstanceParameter;
+import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.FlexoResourceParameter;
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.GenericBehaviourParameter;
@@ -66,6 +67,8 @@ import org.openflexo.foundation.fml.IntegerParameter;
 import org.openflexo.foundation.fml.ListParameter;
 import org.openflexo.foundation.fml.TextAreaParameter;
 import org.openflexo.foundation.fml.TextFieldParameter;
+import org.openflexo.foundation.fml.ViewType;
+import org.openflexo.foundation.fml.VirtualModelInstanceType;
 import org.openflexo.foundation.fml.controlgraph.ConditionalAction;
 import org.openflexo.foundation.fml.controlgraph.IncrementalIterationAction;
 import org.openflexo.foundation.fml.controlgraph.IterationAction;
@@ -632,12 +635,12 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 					FIBNumber number = fibModelFactory.newFIBNumber();
 					number.setName(parameter.getName() + "Number");
 					number.setNumberType(NumberType.IntegerType);
-					return registerWidget(number, parameter, panel, index);
+					return registerWidget(number, parameter, panel, index, false, false);
 				case FLOAT:
 					FIBNumber numberF = fibModelFactory.newFIBNumber();
 					numberF.setName(parameter.getName() + "Number");
 					numberF.setNumberType(NumberType.DoubleType);
-					return registerWidget(numberF, parameter, panel, index);
+					return registerWidget(numberF, parameter, panel, index, false, false);
 				case DROPDOWN:
 				case RADIO_BUTTON:
 					ListParameter listParameter = (ListParameter) parameter;
@@ -671,6 +674,77 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 
 					return registerWidget(cbList, parameter, panel, index, true, true);
 				case CUSTOM_WIDGET:
+
+					if (parameter.getType() instanceof ViewType) {
+						FIBCustom viewSelector = fibModelFactory.newFIBCustom();
+						viewSelector.setBindingFactory(parameter.getBindingFactory());
+						Class fciSelectorClass;
+						try {
+							fciSelectorClass = Class.forName("org.openflexo.fml.rt.controller.widget.FIBViewSelector");
+							viewSelector.setComponentClass(fciSelectorClass);
+						} catch (ClassNotFoundException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						viewSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(viewSelector,
+								new DataBinding<Object>("component.project"), new DataBinding<Object>("controller.editor.project"), true));
+						viewSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(viewSelector,
+								new DataBinding<Object>("component.view"),
+								new DataBinding<Object>(
+										"data.flexoConceptInstance." + ((GenericBehaviourParameter) parameter).getContainer().toString()),
+								true));
+						viewSelector.addToAssignments(
+								fibModelFactory.newFIBCustomAssignment(viewSelector, new DataBinding<Object>("component.expectedType"),
+										new DataBinding<Object>("data.parametersDefinitions." + parameter.getName() + ".type"), true));
+						return registerWidget(viewSelector, parameter, panel, index);
+					}
+					else if (parameter.getType() instanceof VirtualModelInstanceType) {
+						FIBCustom vmiSelector = fibModelFactory.newFIBCustom();
+						vmiSelector.setBindingFactory(parameter.getBindingFactory());
+						Class fciSelectorClass;
+						try {
+							fciSelectorClass = Class.forName("org.openflexo.fml.rt.controller.widget.FIBVirtualModelInstanceSelector");
+							vmiSelector.setComponentClass(fciSelectorClass);
+						} catch (ClassNotFoundException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						vmiSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(vmiSelector,
+								new DataBinding<Object>("component.project"), new DataBinding<Object>("controller.editor.project"), true));
+						vmiSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(vmiSelector,
+								new DataBinding<Object>("component.view"),
+								new DataBinding<Object>(
+										"data.flexoConceptInstance." + ((GenericBehaviourParameter) parameter).getContainer().toString()),
+								true));
+						vmiSelector.addToAssignments(
+								fibModelFactory.newFIBCustomAssignment(vmiSelector, new DataBinding<Object>("component.expectedType"),
+										new DataBinding<Object>("data.parametersDefinitions." + parameter.getName() + ".type"), true));
+						return registerWidget(vmiSelector, parameter, panel, index);
+					}
+					else if (parameter.getType() instanceof FlexoConceptInstanceType) {
+						FIBCustom fciSelector = fibModelFactory.newFIBCustom();
+						fciSelector.setBindingFactory(parameter.getBindingFactory());
+						Class fciSelectorClass;
+						try {
+							fciSelectorClass = Class.forName("org.openflexo.fml.rt.controller.widget.FIBFlexoConceptInstanceSelector");
+							fciSelector.setComponentClass(fciSelectorClass);
+						} catch (ClassNotFoundException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						fciSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(fciSelector,
+								new DataBinding<Object>("component.project"), new DataBinding<Object>("controller.editor.project"), true));
+						fciSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(fciSelector,
+								new DataBinding<Object>("component.virtualModelInstance"),
+								new DataBinding<Object>(
+										"data.flexoConceptInstance." + ((GenericBehaviourParameter) parameter).getContainer().toString()),
+								true));
+						fciSelector.addToAssignments(
+								fibModelFactory.newFIBCustomAssignment(fciSelector, new DataBinding<Object>("component.expectedType"),
+										new DataBinding<Object>("data.parametersDefinitions." + parameter.getName() + ".type"), true));
+						return registerWidget(fciSelector, parameter, panel, index);
+					}
+
 					FIBLabel notFound = fibModelFactory.newFIBLabel("<not_found>");
 					notFound.setName(parameter.getName() + "NotFound");
 					return registerWidget(notFound, parameter, panel, index);

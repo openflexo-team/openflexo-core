@@ -38,12 +38,19 @@
 
 package org.openflexo.fml.rt.controller.widget;
 
+import java.lang.reflect.Type;
+import java.util.List;
 import java.util.logging.Logger;
 
 import org.openflexo.components.widget.FIBProjectObjectSelector;
+import org.openflexo.foundation.fml.ViewPoint;
+import org.openflexo.foundation.fml.ViewType;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
+import org.openflexo.foundation.fml.rt.View;
 import org.openflexo.foundation.fml.rt.ViewLibrary;
+import org.openflexo.foundation.fml.rt.ViewRepository;
 import org.openflexo.foundation.fml.rt.rm.ViewResource;
+import org.openflexo.foundation.resource.RepositoryFolder;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
 
@@ -54,16 +61,20 @@ import org.openflexo.rm.ResourceLocator;
  * 
  */
 @SuppressWarnings("serial")
-public class FIBViewSelector extends FIBProjectObjectSelector<ViewResource> {
+public class FIBViewSelector extends FIBProjectObjectSelector<View> {
 
 	static final Logger logger = Logger.getLogger(FIBViewSelector.class.getPackage().getName());
 
 	public static Resource FIB_FILE = ResourceLocator.locateResource("Fib/ViewSelector.fib");
 
 	private ViewLibrary viewLibrary;
+	private Type expectedType;
+	private ViewType defaultExpectedType;
+	private ViewPoint viewPoint;
 
-	public FIBViewSelector(ViewResource editedObject) {
+	public FIBViewSelector(View editedObject) {
 		super(editedObject);
+		defaultExpectedType = editedObject != null ? ViewType.getViewType(editedObject.getViewPoint()) : ViewType.UNDEFINED_VIEW_TYPE;
 	}
 
 	@Override
@@ -72,12 +83,12 @@ public class FIBViewSelector extends FIBProjectObjectSelector<ViewResource> {
 	}
 
 	@Override
-	public Class<ViewResource> getRepresentedType() {
-		return ViewResource.class;
+	public Class<View> getRepresentedType() {
+		return View.class;
 	}
 
 	@Override
-	public String renderedString(ViewResource editedObject) {
+	public String renderedString(View editedObject) {
 		if (editedObject != null) {
 			return editedObject.getName();
 		}
@@ -93,15 +104,77 @@ public class FIBViewSelector extends FIBProjectObjectSelector<ViewResource> {
 		this.viewLibrary = viewLibrary;
 	}
 
+	/**
+	 * Return virtual model which selected VirtualModelInstance should conform
+	 * 
+	 * @return
+	 */
+	public ViewPoint getViewPoint() {
+		return viewPoint;
+	}
+
+	/**
+	 * Sets virtual model which selected VirtualModelInstance should conform
+	 * 
+	 * @param virtualModel
+	 */
+	@CustomComponentParameter(name = "viewPoint", type = CustomComponentParameter.Type.OPTIONAL)
+	public void setViewPoint(ViewPoint viewPoint) {
+		this.viewPoint = viewPoint;
+		defaultExpectedType = ViewType.getViewType(viewPoint);
+	}
+
+	public Type getExpectedType() {
+		if (expectedType == null) {
+			return defaultExpectedType;
+		}
+		return expectedType;
+	}
+
+	public void setExpectedType(Type expectedType) {
+
+		if ((expectedType == null && this.expectedType != null) || (expectedType != null && !expectedType.equals(this.expectedType))) {
+			Type oldValue = this.expectedType;
+			this.expectedType = expectedType;
+			getPropertyChangeSupport().firePropertyChange("expectedType", oldValue, expectedType);
+		}
+	}
+
 	public Object getRootObject() {
 		if (getViewLibrary() != null) {
 			return getViewLibrary();
-		} else if (getProject() != null) {
+		}
+		else if (getProject() != null) {
 			return getProject();
-		} else if (getServiceManager() != null) {
+		}
+		else if (getServiceManager() != null) {
 			return getServiceManager().getTechnologyAdapterService().getTechnologyAdapter(FMLRTTechnologyAdapter.class);
 		}
 		return null;
+	}
+
+	public List<ViewResource> getViewResources(RepositoryFolder<?, ?> folder) {
+		if (folder.getResourceRepository() instanceof ViewRepository) {
+			return (List) folder.getResources();
+		}
+		return null;
+	}
+
+	@Override
+	public boolean isAcceptableValue(Object o) {
+		if (!super.isAcceptableValue(o)) {
+			return false;
+		}
+		if (!(o instanceof View)) {
+			return false;
+		}
+		if (!(getExpectedType() instanceof ViewType)) {
+			return false;
+		}
+		View view = (View) o;
+		ViewType viewType = (ViewType) getExpectedType();
+		return (viewType.getViewPoint() == null) || (viewType.getViewPoint().isAssignableFrom(view.getVirtualModel()));
+
 	}
 
 	// Please uncomment this for a live test
