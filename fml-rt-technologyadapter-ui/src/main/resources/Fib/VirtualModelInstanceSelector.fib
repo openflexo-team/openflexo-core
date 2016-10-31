@@ -1,50 +1,94 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Panel layout="twocols" darkLevel="0" dataClassName="org.openflexo.fml.rt.controller.widget.FIBVirtualModelInstanceSelector" controllerClassName="org.openflexo.components.widget.FIBFlexoObjectSelector$SelectorFIBController" width="270" height="300">
-  <List visibleRowCount="4" rowHeight="18" createNewRowOnClick="false" boundToSelectionManager="true" selectionMode="MultipleIntervalSelection" selected="data.selectedValue" layoutOrientation="vertical" index="0" constraints="twocols(expandHorizontally=true;expandVertically=true;index=0;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=center)" visible="(data.matchingValues.size &gt; 1)" useScrollBar="true" horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED" verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED" name="PotentialMatches" format="object.name" icon="controller.iconForObject(object)" localize="true" manageDynamicModel="true" clickAction="controller.selectedObjectChanged()" doubleClickAction="controller.apply()" enterPressedAction="controller.apply()" list="data.matchingValues" showIcon="true" iteratorClassName="org.openflexo.foundation.fml.rt.rm.AbstractVirtualModelInstanceResource" autoSelectFirstRow="true" />
-  <Panel layout="gridbag" borderTitle="Panel" darkLevel="0" index="1" constraints="twocols(expandHorizontally=true;expandVertically=false;index=1;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=center)" name="Matches">
-    <Label align="right" index="0" data="((&quot;Found &quot; + data.matchingValues.size) + &quot; matches&quot;)" constraints="gridbag(anchor=east;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=0;insetsBottom=0;insetsLeft=0;insetsRight=5;insetsTop=0;padX=0;padY=0;weightX=1.0;weightY=0.0)" visible="((data.matchingValues.size != 1) &amp; data.isFiltered)" name="MatchesLabel" localize="false" />
-  </Panel>
-  <Browser root="data.rootObject" iteratorClassName="org.openflexo.foundation.fml.rt.rm.AbstractVirtualModelInstanceResource" visibleRowCount="5" rowHeight="18" boundToSelectionManager="false" selectionMode="DiscontiguousTreeSelection" selected="data.selectedValue" showFooter="true" rootVisible="true" showRootsHandle="true" localize="true" manageDynamicModel="true" clickAction="controller.selectedObjectChanged()" doubleClickAction="controller.apply()" enterPressedAction="controller.apply()" name="VirtualModelInstancesBrowser" index="2" constraints="twocols(expandHorizontally=true;expandVertically=true;index=2;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=center)">
-	<BrowserElement
+<Panel id="0" borderLeft="0" height="300" sizeAdjustment="OriginalSize"
+	controllerClassName="org.openflexo.components.widget.FIBFlexoObjectSelector$SelectorFIBController"
+	borderRight="0" border="empty" trackViewPortWidth="true" align="left"
+	width="270" borderBottom="0" borderTop="0" trackViewPortHeight="true"
+	layout="twocols">
+	<List id="1" verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED"
+		visible="(data.matchingValues.size &gt; 1)" manageDynamicModel="true"
+		layoutOrientation="vertical" doubleClickAction="controller.apply()"
+		selectionMode="MultipleIntervalSelection" boundToSelectionManager="true"
+		index="0" localize="true"
+		constraints="twocols(expandHorizontally=true;expandVertically=true;index=0;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=center)"
+		visibleRowCount="4" format="object.name" rowHeight="18" showText="true"
+		iteratorClassName="org.openflexo.foundation.fml.rt.rm.AbstractVirtualModelInstanceResource"
+		horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED" showIcon="true"
+		enterPressedAction="controller.apply()" useScrollBar="true"
+		selected="data.selectedValue" clickAction="controller.selectedObjectChanged()"
+		autoSelectFirstRow="true" name="PotentialMatches" icon="controller.iconForObject(object)"
+		list="data.matchingValues" />
+	<Panel id="2" borderLeft="0" sizeAdjustment="OriginalSize"
+		borderRight="0" border="empty" trackViewPortWidth="true" index="1"
+		align="left"
+		constraints="twocols(expandHorizontally=true;expandVertically=false;index=1;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=center)"
+		borderBottom="0" borderTitle="Panel" borderTop="0"
+		trackViewPortHeight="true" layout="gridbag" name="Matches">
+		<Label id="3"
+			visible="((data.matchingValues.size != 1) &amp; data.isFiltered)"
+			name="MatchesLabel"
+			data="((&quot;Found &quot; + data.matchingValues.size) + &quot; matches&quot;)"
+			index="0" align="right"
+			constraints="gridbag(anchor=east;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=0;insetsBottom=0;insetsLeft=0;insetsRight=5;insetsTop=0;padX=0;padY=0;weightX=1.0;weightY=0.0)" />
+	</Panel>
+	<Browser id="4" showFooter="true" showRootsHandle="true"
+		root="data.rootObject" manageDynamicModel="true" doubleClickAction="controller.apply()"
+		selectionMode="DiscontiguousTreeSelection" index="2" localize="true"
+		constraints="twocols(expandHorizontally=true;expandVertically=true;index=2;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=center)"
+		visibleRowCount="5" rowHeight="18" textSelectionColor="255,255,255"
+		iteratorClassName="org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance"
+		backgroundSelectionColor="9,80,208" enterPressedAction="controller.apply()"
+		backgroundNonSelectionColor="255,255,255" selected="data.selectedValue"
+		clickAction="controller.selectedObjectChanged()" name="VirtualModelInstancesBrowser"
+		textNonSelectionColor="0,0,0" rootVisible="true"
+		backgroundSecondarySelectionColor="178,215,255">
+		<BrowserElement id="5"
+			icon="controller.iconForObject(technologyAdapter)" label="technologyAdapter.name"
 			dataClassName="org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter"
-			label="technologyAdapter.name" icon="controller.iconForObject(technologyAdapter)"
-			tooltip="" enabled="" visible="" isEditable="false" editableLabel=""
-			filtered="false" defaultVisible="true" dynamicFont=""
-			name="technologyAdapter">
-			<Children data="technologyAdapter.getAllRepositories()" visible=""
-				cast="child.rootFolder" name="repositories" />
-	</BrowserElement>
-    <BrowserElement dataClassName="org.openflexo.foundation.fml.rt.ViewLibrary" label="&quot;View Library&quot;" icon="controller.iconForObject(library)" isEditable="false" filtered="false" defaultVisible="true" name="library">
-      <Children data="library.rootFolder.children" name="subFolders" />
-      <Children data="library.rootFolder.resources" name="views" />
-    </BrowserElement>
-    <BrowserElement dataClassName="org.openflexo.foundation.resource.RepositoryFolder" label="viewFolder.displayableName" icon="controller.iconForObject(viewFolder)" tooltip="" enabled="" visible="" isEditable="false" editableLabel="" filtered="false" defaultVisible="true" dynamicFont="" name="viewFolder">
-      <Children data="viewFolder.children" visible="" cast="" name="subFolders" />
-      <Children data="viewFolder.resources" visible="" cast="" name="views" />
-    </BrowserElement>
-    <BrowserElement dataClassName="org.openflexo.foundation.fml.rt.rm.ViewResource" label="viewResource.name" icon="controller.iconForObject(viewResource)" enabled="viewResource.isLoaded" isEditable="false" filtered="false" defaultVisible="true" name="viewResource">
-      <Children data="viewResource.contents" visible="viewResource.isLoaded" name="children" />
-    </BrowserElement>
-    <BrowserElement dataClassName="org.openflexo.foundation.fml.rt.rm.VirtualModelInstanceResource" label="virtualModelInstanceResource.name" icon="controller.iconForObject(virtualModelInstanceResource)" visible="(virtualModelInstanceResource.isLoaded) &amp; (data.isConformedToVirtualModel(virtualModelInstanceResource))" enabled="(virtualModelInstanceResource.isLoaded) &amp; (data.isConformedToVirtualModel(virtualModelInstanceResource))" isEditable="false" filtered="false" defaultVisible="true" name="virtualModelInstanceResource" />
-  </Browser>
-
-<!--   <Browser root="data.rootObject" iteratorClassName="org.openflexo.foundation.fml.rt.rm.VirtualModelInstanceResource" visibleRowCount="5" rowHeight="18" boundToSelectionManager="false" selectionMode="DiscontiguousTreeSelection" selected="data.selectedValue" showFooter="true" rootVisible="true" showRootsHandle="true" localize="true" manageDynamicModel="true" clickAction="controller.selectedObjectChanged()" doubleClickAction="controller.apply()" enterPressedAction="controller.apply()" name="VirtualModelInstancesBrowser" index="2" constraints="twocols(expandHorizontally=true;expandVertically=true;index=2;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=center)">
-    <BrowserElement dataClassName="org.openflexo.foundation.fml.rt.ViewLibrary" label="&quot;View Library&quot;" icon="controller.iconForObject(viewLibrary)" isEditable="false" filtered="false" defaultVisible="true" name="viewLibrary">
-      <Children data="viewLibrary.rootFolder" name="rootFolder" />
-    </BrowserElement>
-    <BrowserElement dataClassName="org.openflexo.foundation.resource.RepositoryFolder" label="viewFolder.name" icon="controller.iconForObject(viewFolder)" isEditable="false" filtered="false" defaultVisible="true" name="viewFolder">
-      <Children data="viewFolder.children" name="subFolders" />
-      <Children data="viewFolder.resources" name="views" />
-    </BrowserElement>
-    <BrowserElement dataClassName="org.openflexo.foundation.rm.ViewResource" label="viewResource.name" icon="controller.iconForObject(viewResource)" enabled="viewResource.isLoaded" isEditable="false" filtered="false" defaultVisible="true" name="viewResource">
-      <Children data="viewResource.contents" visible="viewResource.isLoaded" name="children" />
-    </BrowserElement>
-    <BrowserElement dataClassName="org.openflexo.foundation.fml.rt.rm.VirtualModelInstanceResource" label="virtualModelInstanceResource.name" icon="controller.iconForObject(virtualModelInstanceResource)" enabled="virtualModelInstanceResource.isLoaded" isEditable="false" filtered="false" defaultVisible="true" name="virtualModelInstanceResource" />
-  </Browser>-->
-  <Panel layout="flow" hGap="5" vGap="0" flowAlignment="CENTER" borderTitle="Panel" darkLevel="0" index="3" constraints="twocols(expandHorizontally=true;expandVertically=false;index=3;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=center)">
-    <Button action="controller.apply()" buttonType="Trigger" label="apply" localize="true" enable="(data.selectedValue != null)" index="0" constraints="flow(index=0)" />
-    <Button action="controller.cancel()" buttonType="Trigger" label="cancel" localize="true" index="1" constraints="flow(index=1)" />
-    <Button action="controller.reset()" buttonType="Trigger" label="reset" localize="true" index="2" constraints="flow(index=2)" />
-  </Panel>
-  <LocalizedDictionary />
+			name="technologyAdapter" isEditable="false">
+			<Children id="6" cast="child.rootFolder" name="repositories"
+				data="technologyAdapter.getAllRepositories()" />
+		</BrowserElement>
+		<BrowserElement id="7" icon="controller.iconForObject(library)"
+			label="&quot;View Library&quot;" dataClassName="org.openflexo.foundation.fml.rt.ViewLibrary"
+			name="library" isEditable="false">
+			<Children id="8" name="subFolders" data="library.rootFolder.children" />
+			<Children id="9" name="views" data="library.rootFolder.resources" />
+		</BrowserElement>
+		<BrowserElement id="10"
+			icon="controller.iconForObject(viewFolder)" label="viewFolder.displayableName"
+			dataClassName="org.openflexo.foundation.resource.RepositoryFolder"
+			name="viewFolder" isEditable="false">
+			<Children id="11" name="subFolders" data="viewFolder.children" />
+			<Children id="12" name="views" data="viewFolder.resources" />
+		</BrowserElement>
+		<BrowserElement id="13" enabled="viewResource.isLoaded"
+			icon="controller.iconForObject(viewResource)" label="viewResource.name"
+			dataClassName="org.openflexo.foundation.fml.rt.rm.ViewResource" name="viewResource"
+			isEditable="false">
+			<Children id="14" visible="viewResource.isLoaded" cast="child.virtualModelInstance"
+				name="children" data="viewResource.virtualModelInstanceResources" />
+		</BrowserElement>
+		<BrowserElement id="15"
+			enabled="data.isAcceptableValue(virtualModelInstance)" icon="controller.iconForObject(virtualModelInstance)"
+			label="virtualModelInstance.name" dataClassName="org.openflexo.foundation.fml.rt.VirtualModelInstance"
+			name="virtualModelInstance" isEditable="false" />
+	</Browser>
+	<Panel id="16" vGap="0" borderLeft="0" hGap="5" sizeAdjustment="OriginalSize"
+		borderRight="0" border="empty" trackViewPortWidth="true" index="3"
+		align="left"
+		constraints="twocols(expandHorizontally=true;expandVertically=false;index=3;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=center)"
+		borderBottom="0" borderTitle="Panel" borderTop="0"
+		trackViewPortHeight="true" layout="flow" name="FIBPanel"
+		flowAlignment="CENTER">
+		<Button id="17" enable="(data.selectedValue != null)"
+			buttonType="Trigger" name="Button" action="controller.apply()" index="0"
+			localize="true" constraints="flow(index=0)" label="apply" />
+		<Button id="18" buttonType="Trigger" name="Button2" action="controller.cancel()"
+			index="1" localize="true" constraints="flow(index=1)" label="cancel" />
+		<Button id="19" buttonType="Trigger" name="Button3" action="controller.reset()"
+			index="2" localize="true" constraints="flow(index=2)" label="reset" />
+	</Panel>
+	<FIBVariable id="20" name="data"
+		type="org.openflexo.fml.rt.controller.widget.FIBVirtualModelInstanceSelector" />
+	<LocalizedDictionary id="21" />
 </Panel>

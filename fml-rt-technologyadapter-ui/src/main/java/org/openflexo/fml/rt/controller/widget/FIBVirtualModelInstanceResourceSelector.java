@@ -44,11 +44,12 @@ import java.util.logging.Logger;
 import org.openflexo.components.widget.FIBProjectObjectSelector;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelInstanceType;
-import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.fml.rt.View;
 import org.openflexo.foundation.fml.rt.ViewLibrary;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
+import org.openflexo.foundation.fml.rt.rm.AbstractVirtualModelInstanceResource;
+import org.openflexo.foundation.fml.rt.rm.VirtualModelInstanceResource;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
 
@@ -59,11 +60,11 @@ import org.openflexo.rm.ResourceLocator;
  * 
  */
 @SuppressWarnings("serial")
-public class FIBVirtualModelInstanceSelector extends FIBProjectObjectSelector<AbstractVirtualModelInstance> {
+public class FIBVirtualModelInstanceResourceSelector extends FIBProjectObjectSelector<AbstractVirtualModelInstanceResource> {
 
-	static final Logger logger = Logger.getLogger(FIBVirtualModelInstanceSelector.class.getPackage().getName());
+	static final Logger logger = Logger.getLogger(FIBVirtualModelInstanceResourceSelector.class.getPackage().getName());
 
-	public static Resource FIB_FILE = ResourceLocator.locateResource("Fib/VirtualModelInstanceSelector.fib");
+	public static Resource FIB_FILE = ResourceLocator.locateResource("Fib/VirtualModelInstanceResourceSelector.fib");
 
 	private ViewLibrary viewLibrary;
 	private View view;
@@ -71,9 +72,10 @@ public class FIBVirtualModelInstanceSelector extends FIBProjectObjectSelector<Ab
 	private Type expectedType;
 	private VirtualModelInstanceType defaultExpectedType;
 
-	public FIBVirtualModelInstanceSelector(AbstractVirtualModelInstance editedObject) {
+	public FIBVirtualModelInstanceResourceSelector(VirtualModelInstanceResource editedObject) {
 		super(editedObject);
-		defaultExpectedType = editedObject != null ? VirtualModelInstanceType.getVirtualModelInstanceType(editedObject.getVirtualModel())
+		defaultExpectedType = editedObject != null
+				? VirtualModelInstanceType.getVirtualModelInstanceType(editedObject.getVirtualModelResource().getVirtualModel())
 				: VirtualModelInstanceType.UNDEFINED_VIRTUAL_MODEL_INSTANCE_TYPE;
 	}
 
@@ -91,12 +93,12 @@ public class FIBVirtualModelInstanceSelector extends FIBProjectObjectSelector<Ab
 	}
 
 	@Override
-	public Class<AbstractVirtualModelInstance> getRepresentedType() {
-		return AbstractVirtualModelInstance.class;
+	public Class<AbstractVirtualModelInstanceResource> getRepresentedType() {
+		return AbstractVirtualModelInstanceResource.class;
 	}
 
 	@Override
-	public String renderedString(AbstractVirtualModelInstance editedObject) {
+	public String renderedString(AbstractVirtualModelInstanceResource editedObject) {
 		if (editedObject != null) {
 			return editedObject.getName();
 		}
@@ -157,22 +159,41 @@ public class FIBVirtualModelInstanceSelector extends FIBProjectObjectSelector<Ab
 		return null;
 	}
 
+	/*@Override
+	protected boolean isAcceptableValue(Object o) {
+		if (o instanceof VirtualModelInstanceResource) {
+			VirtualModelInstance vmi = ((VirtualModelInstanceResource) o).getVirtualModelInstance();
+			if (getVirtualModel() != null) {
+				return vmi.getVirtualModel() == getVirtualModel();
+			}
+			return true;
+		}
+		return super.isAcceptableValue(o);
+	}*/
+
 	@Override
 	public boolean isAcceptableValue(Object o) {
 		if (!super.isAcceptableValue(o)) {
 			return false;
 		}
-		if (!(o instanceof VirtualModelInstance)) {
+		if (!(o instanceof VirtualModelInstanceResource)) {
 			return false;
 		}
 		if (!(getExpectedType() instanceof VirtualModelInstanceType)) {
 			return false;
 		}
-		VirtualModelInstance vmi = (VirtualModelInstance) o;
+		VirtualModelInstance vmi = ((VirtualModelInstanceResource) o).getVirtualModelInstance();
 		VirtualModelInstanceType vmiType = (VirtualModelInstanceType) getExpectedType();
 		return (vmiType.getVirtualModel() == null) || (vmiType.getVirtualModel().isAssignableFrom(vmi.getVirtualModel()));
 
 	}
+
+	/*public boolean isConformedToVirtualModel(VirtualModelInstanceResource vmiResource) {
+		if (vmiResource.getVirtualModelResource() != null && getVirtualModel() != null) {
+			return vmiResource.getVirtualModelResource().getVirtualModel() == getVirtualModel();
+		}
+		return false;
+	}*/
 
 	public Type getExpectedType() {
 		if (expectedType == null) {

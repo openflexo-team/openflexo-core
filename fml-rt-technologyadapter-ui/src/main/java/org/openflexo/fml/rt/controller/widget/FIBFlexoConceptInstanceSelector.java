@@ -38,6 +38,7 @@
 
 package org.openflexo.fml.rt.controller.widget;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -47,6 +48,7 @@ import org.openflexo.components.widget.FIBProjectObjectSelector;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.fml.FlexoConcept;
+import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.ViewPointLibrary;
 import org.openflexo.foundation.fml.VirtualModel;
@@ -84,9 +86,13 @@ public class FIBFlexoConceptInstanceSelector extends FIBProjectObjectSelector<Fl
 	private FlexoConcept flexoConcept;
 	private View view;
 	private VirtualModelInstance virtualModelInstance;
+	private Type expectedType;
+	private FlexoConceptInstanceType defaultExpectedType;
 
 	public FIBFlexoConceptInstanceSelector(FlexoConceptInstance editedObject) {
 		super(editedObject);
+		defaultExpectedType = editedObject != null ? FlexoConceptInstanceType.getFlexoConceptInstanceType(editedObject.getFlexoConcept())
+				: FlexoConceptInstanceType.UNDEFINED_FLEXO_CONCEPT_INSTANCE_TYPE;
 	}
 
 	@Override
@@ -153,6 +159,7 @@ public class FIBFlexoConceptInstanceSelector extends FIBProjectObjectSelector<Fl
 	public void setFlexoConcept(FlexoConcept flexoConcept) {
 		// System.out.println(">>>>>>>>> Sets FlexoConcept with " + flexoConcept);
 		this.flexoConcept = flexoConcept;
+		defaultExpectedType = FlexoConceptInstanceType.getFlexoConceptInstanceType(flexoConcept);
 	}
 
 	public FlexoObject getRootObject() {
@@ -164,6 +171,12 @@ public class FIBFlexoConceptInstanceSelector extends FIBProjectObjectSelector<Fl
 		}
 		else if (getViewPoint() != null) {
 			return getViewPoint();
+		}
+		else if (getView() != null) {
+			return getView().getViewPoint();
+		}
+		else if (getVirtualModelInstance() != null) {
+			return getVirtualModelInstance().getVirtualModel();
 		}
 		else {
 			return getViewPointLibrary();
@@ -199,8 +212,19 @@ public class FIBFlexoConceptInstanceSelector extends FIBProjectObjectSelector<Fl
 
 	@Override
 	public boolean isAcceptableValue(Object o) {
-		return super.isAcceptableValue(o) && o instanceof FlexoConceptInstance
-				&& ((FlexoConceptInstance) o).getFlexoConcept() == getFlexoConcept();
+		if (!super.isAcceptableValue(o)) {
+			return false;
+		}
+		if (!(o instanceof FlexoConceptInstance)) {
+			return false;
+		}
+		if (!(getExpectedType() instanceof FlexoConceptInstanceType)) {
+			return false;
+		}
+		FlexoConceptInstance fci = (FlexoConceptInstance) o;
+		FlexoConceptInstanceType fciType = (FlexoConceptInstanceType) getExpectedType();
+		return (fciType.getFlexoConcept() == null) || (fciType.getFlexoConcept().isAssignableFrom(fci.getFlexoConcept()));
+
 	}
 
 	public View getView() {
@@ -218,6 +242,22 @@ public class FIBFlexoConceptInstanceSelector extends FIBProjectObjectSelector<Fl
 
 	public void setVirtualModelInstance(VirtualModelInstance virtualModelInstance) {
 		this.virtualModelInstance = virtualModelInstance;
+	}
+
+	public Type getExpectedType() {
+		if (expectedType == null) {
+			return defaultExpectedType;
+		}
+		return expectedType;
+	}
+
+	public void setExpectedType(Type expectedType) {
+
+		if ((expectedType == null && this.expectedType != null) || (expectedType != null && !expectedType.equals(this.expectedType))) {
+			Type oldValue = this.expectedType;
+			this.expectedType = expectedType;
+			getPropertyChangeSupport().firePropertyChange("expectedType", oldValue, expectedType);
+		}
 	}
 
 	// Please uncomment this for a live test

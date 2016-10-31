@@ -42,47 +42,36 @@ import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
 import org.openflexo.components.widget.FIBProjectObjectSelector;
-import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.VirtualModelInstanceType;
-import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
+import org.openflexo.foundation.fml.ViewPoint;
+import org.openflexo.foundation.fml.ViewType;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.fml.rt.View;
 import org.openflexo.foundation.fml.rt.ViewLibrary;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
+import org.openflexo.foundation.fml.rt.rm.ViewResource;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
 
 /**
- * Widget allowing to select a VirtualModelInstance
+ * Widget allowing to select a ViewPoint
  * 
  * @author sguerin
  * 
  */
 @SuppressWarnings("serial")
-public class FIBVirtualModelInstanceSelector extends FIBProjectObjectSelector<AbstractVirtualModelInstance> {
+public class FIBViewResourceSelector extends FIBProjectObjectSelector<ViewResource> {
 
-	static final Logger logger = Logger.getLogger(FIBVirtualModelInstanceSelector.class.getPackage().getName());
+	static final Logger logger = Logger.getLogger(FIBViewResourceSelector.class.getPackage().getName());
 
-	public static Resource FIB_FILE = ResourceLocator.locateResource("Fib/VirtualModelInstanceSelector.fib");
+	public static Resource FIB_FILE = ResourceLocator.locateResource("Fib/ViewResourceSelector.fib");
 
 	private ViewLibrary viewLibrary;
-	private View view;
-	private VirtualModel virtualModel;
 	private Type expectedType;
-	private VirtualModelInstanceType defaultExpectedType;
+	private ViewType defaultExpectedType;
+	private ViewPoint viewPoint;
 
-	public FIBVirtualModelInstanceSelector(AbstractVirtualModelInstance editedObject) {
+	public FIBViewResourceSelector(ViewResource editedObject) {
 		super(editedObject);
-		defaultExpectedType = editedObject != null ? VirtualModelInstanceType.getVirtualModelInstanceType(editedObject.getVirtualModel())
-				: VirtualModelInstanceType.UNDEFINED_VIRTUAL_MODEL_INSTANCE_TYPE;
-	}
-
-	@Override
-	public void delete() {
-		super.delete();
-		viewLibrary = null;
-		view = null;
-		virtualModel = null;
+		defaultExpectedType = editedObject != null ? ViewType.getViewType(editedObject.getViewPoint()) : ViewType.UNDEFINED_VIEW_TYPE;
 	}
 
 	@Override
@@ -91,12 +80,12 @@ public class FIBVirtualModelInstanceSelector extends FIBProjectObjectSelector<Ab
 	}
 
 	@Override
-	public Class<AbstractVirtualModelInstance> getRepresentedType() {
-		return AbstractVirtualModelInstance.class;
+	public Class<ViewResource> getRepresentedType() {
+		return ViewResource.class;
 	}
 
 	@Override
-	public String renderedString(AbstractVirtualModelInstance editedObject) {
+	public String renderedString(ViewResource editedObject) {
 		if (editedObject != null) {
 			return editedObject.getName();
 		}
@@ -112,22 +101,13 @@ public class FIBVirtualModelInstanceSelector extends FIBProjectObjectSelector<Ab
 		this.viewLibrary = viewLibrary;
 	}
 
-	public View getView() {
-		return view;
-	}
-
-	@CustomComponentParameter(name = "view", type = CustomComponentParameter.Type.OPTIONAL)
-	public void setView(View view) {
-		this.view = view;
-	}
-
 	/**
 	 * Return virtual model which selected VirtualModelInstance should conform
 	 * 
 	 * @return
 	 */
-	public VirtualModel getVirtualModel() {
-		return virtualModel;
+	public ViewPoint getViewPoint() {
+		return viewPoint;
 	}
 
 	/**
@@ -135,43 +115,10 @@ public class FIBVirtualModelInstanceSelector extends FIBProjectObjectSelector<Ab
 	 * 
 	 * @param virtualModel
 	 */
-	@CustomComponentParameter(name = "virtualModel", type = CustomComponentParameter.Type.OPTIONAL)
-	public void setVirtualModel(VirtualModel virtualModel) {
-		this.virtualModel = virtualModel;
-		defaultExpectedType = VirtualModelInstanceType.getVirtualModelInstanceType(virtualModel);
-	}
-
-	public Object getRootObject() {
-		if (getView() != null) {
-			return getView().getResource();
-		}
-		else if (getViewLibrary() != null) {
-			return getViewLibrary();
-		}
-		else if (getProject() != null) {
-			return getProject();
-		}
-		else if (getServiceManager() != null) {
-			return getServiceManager().getTechnologyAdapterService().getTechnologyAdapter(FMLRTTechnologyAdapter.class);
-		}
-		return null;
-	}
-
-	@Override
-	public boolean isAcceptableValue(Object o) {
-		if (!super.isAcceptableValue(o)) {
-			return false;
-		}
-		if (!(o instanceof VirtualModelInstance)) {
-			return false;
-		}
-		if (!(getExpectedType() instanceof VirtualModelInstanceType)) {
-			return false;
-		}
-		VirtualModelInstance vmi = (VirtualModelInstance) o;
-		VirtualModelInstanceType vmiType = (VirtualModelInstanceType) getExpectedType();
-		return (vmiType.getVirtualModel() == null) || (vmiType.getVirtualModel().isAssignableFrom(vmi.getVirtualModel()));
-
+	@CustomComponentParameter(name = "viewPoint", type = CustomComponentParameter.Type.OPTIONAL)
+	public void setViewPoint(ViewPoint viewPoint) {
+		this.viewPoint = viewPoint;
+		defaultExpectedType = ViewType.getViewType(viewPoint);
 	}
 
 	public Type getExpectedType() {
@@ -190,6 +137,36 @@ public class FIBVirtualModelInstanceSelector extends FIBProjectObjectSelector<Ab
 		}
 	}
 
+	public Object getRootObject() {
+		if (getViewLibrary() != null) {
+			return getViewLibrary();
+		}
+		else if (getProject() != null) {
+			return getProject();
+		}
+		else if (getServiceManager() != null) {
+			return getServiceManager().getTechnologyAdapterService().getTechnologyAdapter(FMLRTTechnologyAdapter.class);
+		}
+		return null;
+	}
+
+	@Override
+	public boolean isAcceptableValue(Object o) {
+		if (!super.isAcceptableValue(o)) {
+			return false;
+		}
+		if (!(o instanceof ViewResource)) {
+			return false;
+		}
+		if (!(getExpectedType() instanceof ViewType)) {
+			return false;
+		}
+		View view = ((ViewResource) o).getView();
+		ViewType viewType = (ViewType) getExpectedType();
+		return (viewType.getViewPoint() == null) || (viewType.getViewPoint().isAssignableFrom(view.getVirtualModel()));
+
+	}
+
 	// Please uncomment this for a live test
 	// Never commit this uncommented since it will not compile on continuous build
 	// To have icon, you need to choose "Test interface" in the editor (otherwise, flexo controller is not insanciated in EDIT mode)
@@ -197,10 +174,10 @@ public class FIBVirtualModelInstanceSelector extends FIBProjectObjectSelector<Ab
 		FIBAbstractEditor editor = new FIBAbstractEditor() {
 			@Override
 			public Object[] getData() {
-				TestApplicationContext testApplicationContext = new TestApplicationContext(new FileResource(
-						"src/test/resources/TestResourceCenter"));
-				FIBVirtualModelSelector selector = new FIBVirtualModelSelector(null);
-				selector.setViewPointLibrary(testApplicationContext.getViewPointLibrary());
+				FlexoEditor editor = ProjectDialogEDITOR.loadProject(new FileResource("Prj/TestVE.prj"));
+				FlexoProject project = editor.getProject();
+				FIBViewSelector selector = new FIBViewSelector(null);
+				selector.setProject(project);
 				return makeArray(selector);
 			}
 	
@@ -211,7 +188,7 @@ public class FIBVirtualModelInstanceSelector extends FIBProjectObjectSelector<Ab
 	
 			@Override
 			public FIBController makeNewController(FIBComponent component) {
-				return new FlexoFIBController(component);
+				return new FlexoFIBController<FIBViewSelector>(component);
 			}
 		};
 		editor.launch();

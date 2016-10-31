@@ -792,6 +792,19 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 			if (getBehaviouralFacet() instanceof FlexoConceptBehaviouralFacetImpl) {
 				((FlexoConceptBehaviouralFacetImpl) getBehaviouralFacet()).notifiedBehavioursChanged(oldValue, newValue);
 			}
+			if (newValue instanceof CreationScheme) {
+				getPropertyChangeSupport().firePropertyChange("creationSchemes", null, getCreationSchemes());
+				getPropertyChangeSupport().firePropertyChange("abstractCreationSchemes", null, getAbstractCreationSchemes());
+			}
+			if (newValue instanceof ActionScheme) {
+				getPropertyChangeSupport().firePropertyChange("actionSchemes", null, getActionSchemes());
+			}
+			if (newValue instanceof DeletionScheme) {
+				getPropertyChangeSupport().firePropertyChange("deletionSchemes", null, getDeletionSchemes());
+			}
+			if (newValue instanceof NavigationScheme) {
+				getPropertyChangeSupport().firePropertyChange("navigationSchemes", null, getNavigationSchemes());
+			}
 		}
 
 		@Override

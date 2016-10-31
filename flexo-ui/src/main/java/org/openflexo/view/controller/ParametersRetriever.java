@@ -115,6 +115,7 @@ public class ParametersRetriever<ES extends FlexoBehaviour> {
 		FIBComponent component = makeFIB(true, true);
 		JFIBDialog dialog = JFIBDialog.instanciateDialog(component, action,
 				applicationContext.getModuleLoader().getActiveModule().getFlexoFrame(), true, FlexoLocalization.getMainLocalizer());
+		dialog.setTitle(action.getLocalizedName());
 		if (!action.getFlexoBehaviour().getDefinePopupDefaultSize()) {
 			dialog.setMinimumSize(new Dimension(500, 50));
 		}
@@ -131,7 +132,6 @@ public class ParametersRetriever<ES extends FlexoBehaviour> {
 				TechnologyAdapterController<?> tac = applicationContext.getTechnologyAdapterControllerService()
 						.getTechnologyAdapterController(ta);
 				FIBComponent returned = tac.makeWidget(parameter, panel, index, action, fibModelFactory);
-				System.out.println("Pour le parametre " + parameter + " je retourne " + returned);
 				if (returned != null) {
 					return returned;
 				}
@@ -153,6 +153,11 @@ public class ParametersRetriever<ES extends FlexoBehaviour> {
 
 		FIBVariable<?> dataVariable = fibModelFactory.newFIBVariable(returned, "data");
 		dataVariable.setType(FlexoBehaviourActionType.getFlexoBehaviourActionType(action.getFlexoBehaviour()));
+
+		/*FIBVariable<?> dataVariable = fibModelFactory.newFIBVariable(returned, "data");
+		dataVariable.setType(FlexoConceptInstanceType.getFlexoConceptInstanceType(flexoBehaviour.getFlexoConcept()));
+		FIBVariable<?> behaviourVariable = fibModelFactory.newFIBVariable(returned, "behaviour");
+		behaviourVariable.setType(FlexoBehaviourActionType.getFlexoBehaviourActionType(action.getFlexoBehaviour()));*/
 
 		returned.setBindingFactory(action.getFlexoBehaviour().getBindingFactory());
 

@@ -49,6 +49,7 @@ import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.fml.AbstractVirtualModel;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.VirtualModelInstanceType;
+import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 
@@ -86,7 +87,10 @@ public class VirtualModelInstancePathElement extends SimplePathElement {
 
 	@Override
 	public String getTooltipText(Type resultingType) {
-		return virtualModel.getDescription();
+		if (virtualModel != null) {
+			return virtualModel.getDescription();
+		}
+		return null;
 	}
 
 	@Override
@@ -94,13 +98,16 @@ public class VirtualModelInstancePathElement extends SimplePathElement {
 		if (target instanceof FlexoBehaviourAction) {
 			return ((FlexoBehaviourAction) target).getVirtualModelInstance();
 		}
+		if (target instanceof FlexoConceptInstance) {
+			return ((FlexoConceptInstance) target).getVirtualModelInstance();
+		}
 		logger.warning("Please implement me, target=" + target + " context=" + context);
 		return null;
 	}
 
 	@Override
-	public void setBindingValue(Object value, Object target, BindingEvaluationContext context) throws TypeMismatchException,
-			NullReferenceException {
+	public void setBindingValue(Object value, Object target, BindingEvaluationContext context)
+			throws TypeMismatchException, NullReferenceException {
 		logger.warning("Please implement me, target=" + target + " context=" + context);
 	}
 
