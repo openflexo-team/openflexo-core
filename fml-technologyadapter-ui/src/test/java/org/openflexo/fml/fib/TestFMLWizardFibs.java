@@ -56,8 +56,8 @@ public class TestFMLWizardFibs extends GenericFIBTestCase {
 	}
 
 	@Test
-	public void testConfigureAdditionalStepsForNewFlexoConcept() {
-		validateFIB("Fib/Wizard/CreateFMLElement/ConfigureAdditionalStepsForNewFlexoConcept.fib");
+	public void testConfigureBehavioursForNewFlexoConcept() {
+		validateFIB("Fib/Wizard/CreateFMLElement/ConfigureBehavioursForNewFlexoConcept.fib");
 	}
 
 	@Test
@@ -71,8 +71,18 @@ public class TestFMLWizardFibs extends GenericFIBTestCase {
 	}
 
 	@Test
+	public void testConfigureInspectorForNewFlexoConcept() {
+		validateFIB("Fib/Wizard/CreateFMLElement/ConfigureInspectorForNewFlexoConcept.fib");
+	}
+
+	@Test
 	public void testConfigureModelSlots() {
 		validateFIB("Fib/Wizard/CreateFMLElement/ConfigureModelSlots.fib");
+	}
+
+	@Test
+	public void testConfigurePropertiesForNewFlexoConcept() {
+		validateFIB("Fib/Wizard/CreateFMLElement/ConfigurePropertiesForNewFlexoConcept.fib");
 	}
 
 	@Test
@@ -113,6 +123,11 @@ public class TestFMLWizardFibs extends GenericFIBTestCase {
 	@Test
 	public void testDescribeFlexoConceptInstanceRole() {
 		validateFIB("Fib/Wizard/CreateFMLElement/DescribeFlexoConceptInstanceRole.fib");
+	}
+
+	@Test
+	public void testDescribeGenericBehaviourParameter() {
+		validateFIB("Fib/Wizard/CreateFMLElement/DescribeGenericBehaviourParameter.fib");
 	}
 
 	@Test

@@ -126,6 +126,18 @@ public class CreateVirtualModel extends AbstractCreateVirtualModel<CreateVirtual
 		Progress.progress(getLocales().localizedForKey("create_model_slots"));
 		performCreateModelSlots();
 
+		Progress.progress(getLocales().localizedForKey("set_parent_concepts"));
+		performSetParentConcepts();
+
+		Progress.progress(getLocales().localizedForKey("create_properties"));
+		performCreateProperties();
+
+		Progress.progress(getLocales().localizedForKey("create_behaviours"));
+		performCreateBehaviours();
+
+		Progress.progress(getLocales().localizedForKey("create_inspector"));
+		performCreateInspectors();
+
 		newVirtualModel.getPropertyChangeSupport().firePropertyChange("name", null, newVirtualModel.getName());
 		newVirtualModel.getResource().getPropertyChangeSupport().firePropertyChange("name", null, newVirtualModel.getName());
 	}

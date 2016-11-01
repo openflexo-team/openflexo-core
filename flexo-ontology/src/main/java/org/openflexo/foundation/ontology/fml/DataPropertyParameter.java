@@ -80,7 +80,8 @@ public interface DataPropertyParameter extends PropertyParameter {
 
 		@Override
 		public WidgetType getWidget() {
-			return WidgetType.DATA_PROPERTY;
+			// return WidgetType.DATA_PROPERTY;
+			return WidgetType.CUSTOM_WIDGET;
 		}
 
 		@Override

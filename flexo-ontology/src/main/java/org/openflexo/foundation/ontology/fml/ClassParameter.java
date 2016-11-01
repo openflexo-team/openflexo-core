@@ -95,7 +95,7 @@ public interface ClassParameter extends InnerModelSlotParameter<TypeAwareModelSl
 
 	public TypeAwareModelSlot<?, ?> getTypeAwareModelSlot();
 
-	public static abstract class ClassParameterImpl extends InnerModelSlotParameterImpl<TypeAwareModelSlot<?, ?>> implements ClassParameter {
+	public static abstract class ClassParameterImpl extends InnerModelSlotParameterImpl<TypeAwareModelSlot<?, ?>>implements ClassParameter {
 
 		private String conceptURI;
 		private DataBinding<IFlexoOntologyClass> conceptValue;
@@ -112,7 +112,8 @@ public interface ClassParameter extends InnerModelSlotParameter<TypeAwareModelSl
 
 		@Override
 		public WidgetType getWidget() {
-			return WidgetType.CLASS;
+			// return WidgetType.CLASS;
+			return WidgetType.CUSTOM_WIDGET;
 		}
 
 		@Override
@@ -167,7 +168,8 @@ public interface ClassParameter extends InnerModelSlotParameter<TypeAwareModelSl
 		public void setIsDynamicConceptValue(boolean isDynamic) {
 			if (isDynamic) {
 				isDynamicConceptValueSet = true;
-			} else {
+			}
+			else {
 				conceptValue = null;
 				isDynamicConceptValueSet = false;
 			}

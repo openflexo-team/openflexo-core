@@ -57,8 +57,8 @@ import org.openflexo.model.annotations.XMLElement;
 @XMLElement
 public interface TechnologyObjectParameter<MS extends ModelSlot<?>> extends InnerModelSlotParameter<MS> {
 
-	public static abstract class TechnologyObjectParameterImpl<MS extends ModelSlot<?>> extends InnerModelSlotParameterImpl<MS> implements
-			TechnologyObjectParameter<MS> {
+	public static abstract class TechnologyObjectParameterImpl<MS extends ModelSlot<?>> extends InnerModelSlotParameterImpl<MS>
+			implements TechnologyObjectParameter<MS> {
 
 		public TechnologyObjectParameterImpl() {
 			super();
@@ -71,12 +71,13 @@ public interface TechnologyObjectParameter<MS extends ModelSlot<?>> extends Inne
 
 		@Override
 		public WidgetType getWidget() {
-			return WidgetType.TECHNOLOGY_OBJECT;
+			// return WidgetType.TECHNOLOGY_OBJECT;
+			return WidgetType.CUSTOM_WIDGET;
 		}
-		
+
 		@Override
-		public List<ModelSlot> getAccessibleModelSlots(){
-			return  getOwningVirtualModel().getModelSlots(ModelSlot.class);
+		public List<ModelSlot> getAccessibleModelSlots() {
+			return getOwningVirtualModel().getModelSlots(ModelSlot.class);
 		}
 	}
 }

@@ -50,10 +50,10 @@ import org.junit.runner.RunWith;
 import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.type.ParameterizedTypeImpl;
+import org.openflexo.connie.type.PrimitiveType;
 import org.openflexo.foundation.DefaultFlexoEditor;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.action.AbstractCopyAction.InvalidSelectionException;
-import org.openflexo.foundation.fml.PrimitiveRole.PrimitiveType;
 import org.openflexo.foundation.fml.action.CreateEditionAction;
 import org.openflexo.foundation.fml.action.CreateFlexoBehaviour;
 import org.openflexo.foundation.fml.action.CreateFlexoConcept;
@@ -143,7 +143,7 @@ public class TestDeleteFlexoConceptObjects extends OpenflexoProjectAtRunTimeTest
 
 		System.out.println("ViewPoint BindingModel = " + viewPoint.getBindingModel());
 		assertNotNull(viewPoint.getBindingModel());
-		assertEquals(3, viewPoint.getBindingModel().getBindingVariablesCount());
+		assertEquals(5, viewPoint.getBindingModel().getBindingVariablesCount());
 		assertNotNull(viewPoint.getBindingModel().bindingVariableNamed(ViewPointBindingModel.REFLEXIVE_ACCESS_PROPERTY));
 		assertNotNull(viewPoint.getBindingModel().bindingVariableNamed(ViewPointBindingModel.VIEW_PROPERTY));
 		assertNotNull(viewPoint.getBindingModel().bindingVariableNamed(ViewPointBindingModel.PROJECT_PROPERTY));
@@ -170,7 +170,7 @@ public class TestDeleteFlexoConceptObjects extends OpenflexoProjectAtRunTimeTest
 		assertTrue(((VirtualModelResource) virtualModel.getResource()).getFlexoIODelegate().exists());
 
 		assertNotNull(virtualModel.getBindingModel());
-		assertEquals(5, virtualModel.getBindingModel().getBindingVariablesCount());
+		assertEquals(9, virtualModel.getBindingModel().getBindingVariablesCount());
 		assertNotNull(virtualModel.getBindingModel().bindingVariableNamed(ViewPointBindingModel.REFLEXIVE_ACCESS_PROPERTY));
 		assertNotNull(virtualModel.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.REFLEXIVE_ACCESS_PROPERTY));
 		assertNotNull(virtualModel.getBindingModel().bindingVariableNamed(ViewPointBindingModel.PROJECT_PROPERTY));
@@ -185,7 +185,7 @@ public class TestDeleteFlexoConceptObjects extends OpenflexoProjectAtRunTimeTest
 		viewPoint.removeFromVirtualModels(virtualModel);
 		System.out.println("VirtualModel BindingModel = " + virtualModel.getBindingModel());
 		assertNotNull(virtualModel.getBindingModel());
-		assertEquals(2, virtualModel.getBindingModel().getBindingVariablesCount());
+		assertEquals(4, virtualModel.getBindingModel().getBindingVariablesCount());
 		assertNotNull(virtualModel.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.REFLEXIVE_ACCESS_PROPERTY));
 		assertNotNull(virtualModel.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.VIRTUAL_MODEL_INSTANCE_PROPERTY));
 		// assertEquals(VirtualModelInstanceType.getVirtualModelInstanceType(virtualModel1), virtualModel1.getBindingModel()
@@ -194,7 +194,7 @@ public class TestDeleteFlexoConceptObjects extends OpenflexoProjectAtRunTimeTest
 		// We reconnect VirtualModel again, and we check BindingModel evolution
 		viewPoint.addToVirtualModels(virtualModel);
 		System.out.println("VirtualModel BindingModel = " + virtualModel.getBindingModel());
-		assertEquals(5, virtualModel.getBindingModel().getBindingVariablesCount());
+		assertEquals(9, virtualModel.getBindingModel().getBindingVariablesCount());
 		assertNotNull(virtualModel.getBindingModel().bindingVariableNamed(ViewPointBindingModel.REFLEXIVE_ACCESS_PROPERTY));
 		assertNotNull(virtualModel.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.REFLEXIVE_ACCESS_PROPERTY));
 		assertNotNull(virtualModel.getBindingModel().bindingVariableNamed(ViewPointBindingModel.PROJECT_PROPERTY));

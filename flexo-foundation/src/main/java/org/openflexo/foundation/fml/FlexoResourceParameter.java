@@ -82,9 +82,9 @@ public interface FlexoResourceParameter extends FlexoBehaviourParameter {
 
 		@Override
 		public Type getType() {
-			if (getTechnologyAdapterResourceType() != null) {
-				// return TypeUtils.getTypeArgument(getTechnologyAdapterResourceType(), TechnologyAdapterResource.class, 0);
-				return getTechnologyAdapterResourceType();
+			Class<? extends TechnologyAdapterResource<?, ?>> rsc_Type = getTechnologyAdapterResourceType();
+			if (rsc_Type != null) {
+				return rsc_Type;
 			}
 			return TechnologyAdapterResource.class;
 		}
@@ -99,7 +99,8 @@ public interface FlexoResourceParameter extends FlexoBehaviourParameter {
 
 		@Override
 		public WidgetType getWidget() {
-			return WidgetType.TECHNOLOGY_RESOURCE;
+			// return WidgetType.TECHNOLOGY_RESOURCE;
+			return WidgetType.CUSTOM_WIDGET;
 		}
 
 		@Override

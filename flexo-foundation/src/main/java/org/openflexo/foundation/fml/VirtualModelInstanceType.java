@@ -40,8 +40,8 @@ package org.openflexo.foundation.fml;
 
 import java.io.FileNotFoundException;
 
+import org.openflexo.connie.type.CustomTypeFactory;
 import org.openflexo.foundation.FlexoException;
-import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.gina.annotation.FIBPanel;
@@ -74,6 +74,33 @@ public class VirtualModelInstanceType extends FlexoConceptInstanceType {
 		return (AbstractVirtualModel<?>) getFlexoConcept();
 	}
 
+	@Override
+	public void resolve(CustomTypeFactory<?> factory) {
+		if (factory instanceof VirtualModelInstanceTypeFactory) {
+			VirtualModel virtualModel;
+			try {
+				virtualModel = ((VirtualModelInstanceTypeFactory) factory).getTechnologyAdapter().getTechnologyAdapterService()
+						.getServiceManager().getViewPointLibrary().getVirtualModel(conceptURI);
+				if (virtualModel != null) {
+					flexoConcept = virtualModel;
+					this.customTypeFactory = null;
+				}
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ResourceLoadingCancelledException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (FlexoException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		else {
+			super.resolve(factory);
+		}
+	}
+
 	public static VirtualModelInstanceType getVirtualModelInstanceType(AbstractVirtualModel<?> aVirtualModel) {
 		if (aVirtualModel != null) {
 			return (VirtualModelInstanceType) aVirtualModel.getInstanceType();
@@ -93,7 +120,7 @@ public class VirtualModelInstanceType extends FlexoConceptInstanceType {
 	@FIBPanel("Fib/CustomType/VirtualModelInstanceTypeFactory.fib")
 	public static class VirtualModelInstanceTypeFactory extends TechnologyAdapterTypeFactory<VirtualModelInstanceType> {
 
-		public VirtualModelInstanceTypeFactory(FMLRTTechnologyAdapter technologyAdapter) {
+		public VirtualModelInstanceTypeFactory(FMLTechnologyAdapter technologyAdapter) {
 			super(technologyAdapter);
 		}
 
@@ -110,7 +137,7 @@ public class VirtualModelInstanceType extends FlexoConceptInstanceType {
 			if (configuration != null) {
 				try {
 					virtualModel = getTechnologyAdapter().getTechnologyAdapterService().getServiceManager().getViewPointLibrary()
-							.getVirtualModel(configuration).getVirtualModel();
+							.getVirtualModel(configuration);
 				} catch (FileNotFoundException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();

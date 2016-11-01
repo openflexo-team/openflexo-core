@@ -59,13 +59,14 @@ public class CreateFlexoConcept extends AbstractCreateFlexoConcept<CreateFlexoCo
 	private static final Logger logger = Logger.getLogger(CreateFlexoConcept.class.getPackage().getName());
 
 	public static FlexoActionType<CreateFlexoConcept, AbstractVirtualModel<?>, FMLObject> actionType = new FlexoActionType<CreateFlexoConcept, AbstractVirtualModel<?>, FMLObject>(
-			"add_new_flexo_concept", FlexoActionType.newMenu, FlexoActionType.defaultGroup, FlexoActionType.ADD_ACTION_TYPE) {
+			"flexo_concept", FlexoActionType.newMenu, FlexoActionType.defaultGroup, FlexoActionType.ADD_ACTION_TYPE) {
 
 		/**
 		 * Factory method
 		 */
 		@Override
-		public CreateFlexoConcept makeNewAction(AbstractVirtualModel<?> focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
+		public CreateFlexoConcept makeNewAction(AbstractVirtualModel<?> focusedObject, Vector<FMLObject> globalSelection,
+				FlexoEditor editor) {
 			return new CreateFlexoConcept(focusedObject, globalSelection, editor);
 		}
 
@@ -96,17 +97,21 @@ public class CreateFlexoConcept extends AbstractCreateFlexoConcept<CreateFlexoCo
 	}
 
 	@Override
-	protected void doAction(Object context) throws NotImplementedException, InvalidParameterException,
-			InconsistentFlexoConceptHierarchyException {
+	protected void doAction(Object context)
+			throws NotImplementedException, InvalidParameterException, InconsistentFlexoConceptHierarchyException {
 
 		FMLModelFactory factory = getFocusedObject().getFMLModelFactory();
 
 		newFlexoConcept = factory.newFlexoConcept();
 		newFlexoConcept.setName(getNewFlexoConceptName());
 
-		performSetParentConcepts();
-
 		getFocusedObject().addToFlexoConcepts(newFlexoConcept);
+
+		performSetParentConcepts();
+		performCreateProperties();
+		performCreateBehaviours();
+		performCreateInspectors();
+
 	}
 
 	@Override
@@ -144,7 +149,8 @@ public class CreateFlexoConcept extends AbstractCreateFlexoConcept<CreateFlexoCo
 	public boolean isValid() {
 		if (StringUtils.isEmpty(newFlexoConceptName)) {
 			return false;
-		} else if (getFocusedObject() instanceof VirtualModel && getFocusedObject().getFlexoConcept(newFlexoConceptName) != null) {
+		}
+		else if (getFocusedObject() instanceof VirtualModel && getFocusedObject().getFlexoConcept(newFlexoConceptName) != null) {
 			return false;
 		}
 		return true;

@@ -39,6 +39,7 @@
 package org.openflexo.foundation.ontology.fml.action;
 
 import java.security.InvalidParameterException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 import java.util.logging.Logger;
@@ -115,7 +116,14 @@ public class CreateIndividualRole extends AbstractCreateFlexoRole<CreateIndividu
 
 	public List<Class<? extends IndividualRole<?>>> getAvailableFlexoRoleTypes() {
 		if (getModelSlot() != null) {
-			return (List) getModelSlot().getAvailableFlexoRoleTypes(IndividualRole.class);
+			List<Class<? extends IndividualRole<?>>> returned = new ArrayList<>();
+			List<Class<? extends FlexoRole<?>>> allRoles = getModelSlot().getAvailableFlexoRoleTypes();
+			for (Class<? extends FlexoRole<?>> roleClass : allRoles) {
+				if (IndividualRole.class.isAssignableFrom(roleClass)) {
+					returned.add((Class<? extends IndividualRole<?>>) roleClass);
+				}
+			}
+			return returned;
 		}
 		return null;
 	}

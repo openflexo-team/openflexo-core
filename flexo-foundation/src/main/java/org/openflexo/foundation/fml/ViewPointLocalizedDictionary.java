@@ -579,7 +579,7 @@ public interface ViewPointLocalizedDictionary extends FMLObject, org.openflexo.l
 						checkAndRegisterLocalized(es.getLabel());
 						checkAndRegisterLocalized(es.getDescription());
 						for (FlexoBehaviourParameter p : es.getParameters()) {
-							checkAndRegisterLocalized(p.getLabel());
+							checkAndRegisterLocalized(p.getName());
 						}
 						for (InspectorEntry entry : concept.getInspector().getEntries()) {
 							checkAndRegisterLocalized(entry.getLabel());

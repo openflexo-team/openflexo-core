@@ -59,6 +59,7 @@ import org.openflexo.foundation.fml.FlexoBehaviourObject;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.FlexoConceptInstanceParameter;
 import org.openflexo.foundation.fml.FlexoResourceParameter;
+import org.openflexo.foundation.fml.FlexoVMIResourceParameter;
 import org.openflexo.foundation.fml.FloatParameter;
 import org.openflexo.foundation.fml.IntegerParameter;
 import org.openflexo.foundation.fml.ListParameter;
@@ -68,6 +69,7 @@ import org.openflexo.foundation.fml.URIParameter;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.toolbox.StringUtils;
 
+@Deprecated
 public class CreateFlexoBehaviourParameter extends FlexoAction<CreateFlexoBehaviourParameter, FlexoBehaviourObject, FMLObject> {
 
 	private static final Logger logger = Logger.getLogger(CreateFlexoBehaviourParameter.class.getPackage().getName());
@@ -190,6 +192,7 @@ public class CreateFlexoBehaviourParameter extends FlexoAction<CreateFlexoBehavi
 		return availableParameterTypes;
 	}
 
+	// TODO: this code is duplicated in createFlexoBehaviourWizard, it needs refactoring to avoid any mistake
 	private List<Class<? extends FlexoBehaviourParameter>> computeAvailableParameterTypes() {
 		availableParameterTypes = new ArrayList<Class<? extends FlexoBehaviourParameter>>();
 		availableParameterTypes.add(TextFieldParameter.class);
@@ -202,6 +205,7 @@ public class CreateFlexoBehaviourParameter extends FlexoAction<CreateFlexoBehavi
 		availableParameterTypes.add(URIParameter.class);
 		availableParameterTypes.add(FlexoResourceParameter.class);
 		availableParameterTypes.add(FlexoConceptInstanceParameter.class);
+		availableParameterTypes.add(FlexoVMIResourceParameter.class);
 		if (getFocusedObject() != null && getFocusedObject().getOwningVirtualModel() != null
 				&& getFocusedObject().getOwningVirtualModel().getModelSlots() != null) {
 			for (ModelSlot<?> ms : getFocusedObject().getOwningVirtualModel().getModelSlots()) {

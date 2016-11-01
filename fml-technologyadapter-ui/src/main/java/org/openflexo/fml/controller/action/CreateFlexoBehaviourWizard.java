@@ -56,10 +56,11 @@ import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.FlexoConceptInstanceParameter;
 import org.openflexo.foundation.fml.FlexoConceptObject;
+import org.openflexo.foundation.fml.FlexoResourceParameter;
+import org.openflexo.foundation.fml.FlexoVMIResourceParameter;
 import org.openflexo.foundation.fml.FloatParameter;
 import org.openflexo.foundation.fml.IntegerParameter;
 import org.openflexo.foundation.fml.ListParameter;
-import org.openflexo.foundation.fml.TechnologyObjectParameter;
 import org.openflexo.foundation.fml.TextAreaParameter;
 import org.openflexo.foundation.fml.TextFieldParameter;
 import org.openflexo.foundation.fml.URIParameter;
@@ -238,19 +239,21 @@ public class CreateFlexoBehaviourWizard extends AbstractCreateFMLElementWizard<C
 
 		private List<Class<? extends FlexoBehaviourParameter>> availableParameterTypes = null;
 
+		// TODO: this code is duplicated in CreateFlexoBehaviourParameter, it needs refactoring to avoid any mistake
 		public List<Class<? extends FlexoBehaviourParameter>> getAvailableParameterTypes() {
 			if (availableParameterTypes == null) {
 				availableParameterTypes = new ArrayList<Class<? extends FlexoBehaviourParameter>>();
 				availableParameterTypes.add(TextFieldParameter.class);
 				availableParameterTypes.add(TextAreaParameter.class);
-				availableParameterTypes.add(IntegerParameter.class);
-				availableParameterTypes.add(FloatParameter.class);
-				availableParameterTypes.add(ListParameter.class);
 				availableParameterTypes.add(CheckboxParameter.class);
 				availableParameterTypes.add(DropDownParameter.class);
-				availableParameterTypes.add(FlexoConceptInstanceParameter.class);
-				availableParameterTypes.add(TechnologyObjectParameter.class);
+				availableParameterTypes.add(FloatParameter.class);
+				availableParameterTypes.add(IntegerParameter.class);
+				availableParameterTypes.add(ListParameter.class);
 				availableParameterTypes.add(URIParameter.class);
+				availableParameterTypes.add(FlexoResourceParameter.class);
+				availableParameterTypes.add(FlexoConceptInstanceParameter.class);
+				availableParameterTypes.add(FlexoVMIResourceParameter.class);
 
 				if (getFocusedObject() != null && getFocusedObject().getOwningVirtualModel() != null
 						&& getFocusedObject().getOwningVirtualModel().getModelSlots() != null) {
@@ -276,11 +279,6 @@ public class CreateFlexoBehaviourWizard extends AbstractCreateFMLElementWizard<C
 
 			return availableParameterTypes;
 		}
-
-		/*public static final Class[] AVAILABLE_TYPES = new Class[] { TextFieldParameter.class, TextAreaParameter.class, IntegerParameter.class,
-		FloatParameter.class, ListParameter.class, CheckboxParameter.class, DropDownParameter.class, ClassParameter.class,
-		FlexoConceptInstanceParameter.class, IndividualParameter.class, TechnologyObjectParameter.class, URIParameter.class };
-		*/
 
 		public List<BehaviourParameterEntry> getParameterEntries() {
 			return getAction().getParameterEntries();
@@ -348,6 +346,7 @@ public class CreateFlexoBehaviourWizard extends AbstractCreateFMLElementWizard<C
 			}
 
 		}
+
 	}
 
 }

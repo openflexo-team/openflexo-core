@@ -55,8 +55,8 @@ import org.openflexo.icon.FMLIconLibrary;
 import org.openflexo.view.controller.ActionInitializer;
 import org.openflexo.view.controller.ControllerActionInitializer;
 
-public class CreateFlexoBehaviourParameterInitializer extends
-		ActionInitializer<CreateFlexoBehaviourParameter, FlexoBehaviourObject, FMLObject> {
+public class CreateFlexoBehaviourParameterInitializer
+		extends ActionInitializer<CreateFlexoBehaviourParameter, FlexoBehaviourObject, FMLObject> {
 
 	private static final Logger logger = Logger.getLogger(ControllerActionInitializer.class.getPackage().getName());
 

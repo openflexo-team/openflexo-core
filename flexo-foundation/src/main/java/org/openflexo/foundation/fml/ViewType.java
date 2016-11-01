@@ -38,7 +38,7 @@
 
 package org.openflexo.foundation.fml;
 
-import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
+import org.openflexo.connie.type.CustomTypeFactory;
 import org.openflexo.foundation.fml.rt.View;
 import org.openflexo.gina.annotation.FIBPanel;
 
@@ -69,6 +69,22 @@ public class ViewType extends VirtualModelInstanceType {
 		return View.class;
 	}
 
+	@Override
+	public void resolve(CustomTypeFactory<?> factory) {
+		if (factory instanceof ViewTypeFactory) {
+			ViewPoint viewPoint;
+			viewPoint = ((ViewTypeFactory) factory).getTechnologyAdapter().getTechnologyAdapterService().getServiceManager()
+					.getViewPointLibrary().getViewPoint(conceptURI);
+			if (viewPoint != null) {
+				flexoConcept = viewPoint;
+				this.customTypeFactory = null;
+			}
+		}
+		else {
+			super.resolve(factory);
+		}
+	}
+
 	public static ViewType getViewType(ViewPoint viewPoint) {
 		if (viewPoint != null) {
 			return viewPoint.getViewType();
@@ -87,7 +103,7 @@ public class ViewType extends VirtualModelInstanceType {
 	@FIBPanel("Fib/CustomType/ViewTypeFactory.fib")
 	public static class ViewTypeFactory extends TechnologyAdapterTypeFactory<ViewType> {
 
-		public ViewTypeFactory(FMLRTTechnologyAdapter technologyAdapter) {
+		public ViewTypeFactory(FMLTechnologyAdapter technologyAdapter) {
 			super(technologyAdapter);
 		}
 

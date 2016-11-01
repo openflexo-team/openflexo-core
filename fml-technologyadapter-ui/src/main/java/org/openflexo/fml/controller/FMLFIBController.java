@@ -71,9 +71,9 @@ import org.openflexo.foundation.fml.action.CreateAbstractProperty;
 import org.openflexo.foundation.fml.action.CreateEditionAction;
 import org.openflexo.foundation.fml.action.CreateExpressionProperty;
 import org.openflexo.foundation.fml.action.CreateFlexoBehaviour;
-import org.openflexo.foundation.fml.action.CreateFlexoBehaviourParameter;
 import org.openflexo.foundation.fml.action.CreateFlexoConcept;
 import org.openflexo.foundation.fml.action.CreateFlexoConceptInstanceRole;
+import org.openflexo.foundation.fml.action.CreateGenericBehaviourParameter;
 import org.openflexo.foundation.fml.action.CreateGetSetProperty;
 import org.openflexo.foundation.fml.action.CreateInspectorEntry;
 import org.openflexo.foundation.fml.action.CreateModelSlot;
@@ -315,8 +315,12 @@ public class FMLFIBController extends FlexoFIBController {
 	}
 
 	public FlexoBehaviourParameter createFlexoBehaviourParameter(FlexoBehaviour flexoBehaviour) {
-		CreateFlexoBehaviourParameter createFlexoBehaviourParameter = CreateFlexoBehaviourParameter.actionType.makeNewAction(flexoBehaviour,
-				null, getEditor());
+		// CreateFlexoBehaviourParameter createFlexoBehaviourParameter =
+		// CreateFlexoBehaviourParameter.actionType.makeNewAction(flexoBehaviour,
+		// null, getEditor());
+		System.out.println("Hop , un nouveau parametre");
+		CreateGenericBehaviourParameter createFlexoBehaviourParameter = CreateGenericBehaviourParameter.actionType
+				.makeNewAction(flexoBehaviour, null, getEditor());
 		createFlexoBehaviourParameter.doAction();
 		return createFlexoBehaviourParameter.getNewParameter();
 	}

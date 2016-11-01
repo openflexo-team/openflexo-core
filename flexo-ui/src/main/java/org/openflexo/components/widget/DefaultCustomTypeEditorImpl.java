@@ -44,6 +44,7 @@ import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.gina.ApplicationFIBLibrary.ApplicationFIBLibraryImpl;
 import org.openflexo.gina.annotation.FIBPanel;
 import org.openflexo.gina.model.FIBComponent;
+import org.openflexo.gina.swing.utils.CustomTypeEditor;
 import org.openflexo.gina.swing.view.SwingViewFactory;
 import org.openflexo.gina.view.GinaViewFactory;
 import org.openflexo.rm.Resource;
@@ -59,7 +60,7 @@ import org.openflexo.view.controller.FlexoFIBController;
  * 
  */
 public abstract class DefaultCustomTypeEditorImpl<T extends CustomType> extends PropertyChangedSupportDefaultImplementation
-		implements CustomTypeEditor<T> {
+		implements FlexoCustomTypeEditor<T> {
 
 	private FlexoServiceManager serviceManager;
 

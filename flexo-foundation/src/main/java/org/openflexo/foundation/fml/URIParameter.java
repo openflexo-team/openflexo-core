@@ -43,6 +43,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.openflexo.connie.BindingEvaluationContext;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.connie.exception.NullReferenceException;
@@ -80,7 +81,7 @@ public interface URIParameter extends InnerModelSlotParameter<TypeAwareModelSlot
 
 	public List<FlexoBehaviourParameter> getDependancies();
 
-	public static abstract class URIParameterImpl extends InnerModelSlotParameterImpl<TypeAwareModelSlot<?, ?>> implements URIParameter {
+	public static abstract class URIParameterImpl extends InnerModelSlotParameterImpl<TypeAwareModelSlot<?, ?>>implements URIParameter {
 
 		private DataBinding<String> baseURI;
 
@@ -189,11 +190,11 @@ public interface URIParameter extends InnerModelSlotParameter<TypeAwareModelSlot
 		}
 
 		@Override
-		public Object getDefaultValue(FlexoBehaviourAction<?, ?, ?> action) {
+		public Object getDefaultValue(BindingEvaluationContext evaluationContext) {
 			if (getBaseURI().isValid()) {
 				String baseProposal = null;
 				try {
-					baseProposal = getBaseURI().getBindingValue(action);
+					baseProposal = getBaseURI().getBindingValue(evaluationContext);
 				} catch (TypeMismatchException e) {
 					e.printStackTrace();
 				} catch (NullReferenceException e) {
@@ -206,9 +207,11 @@ public interface URIParameter extends InnerModelSlotParameter<TypeAwareModelSlot
 				}
 				TypeAwareModelSlot modelSlot = getModelSlot();
 
-				return modelSlot.generateUniqueURIName(
+				/*return modelSlot.generateUniqueURIName(
 						(TypeAwareModelSlotInstance<?, ?, ?>) action.getVirtualModelInstance().getModelSlotInstance(modelSlot),
-						baseProposal);
+						baseProposal);*/
+
+				return baseProposal;
 
 				/*baseProposal = JavaUtils.getClassName(baseProposal);
 				String proposal = baseProposal;

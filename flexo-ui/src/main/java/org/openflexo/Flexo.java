@@ -425,16 +425,16 @@ public class Flexo {
 				}
 				SwingUtilities.updateComponentTreeUI(frame);
 			}
+			// prints the stacktrace but don't let Exception bothered initialization of L&F as it does not actually matter
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
+		} catch (ClassCastException e) {
+			e.printStackTrace();
 		} catch (InstantiationException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IllegalAccessException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (UnsupportedLookAndFeelException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

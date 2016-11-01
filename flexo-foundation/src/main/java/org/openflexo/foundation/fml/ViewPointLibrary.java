@@ -136,7 +136,7 @@ public class ViewPointLibrary extends DefaultFlexoObject implements FlexoService
 	}
 
 	/**
-	 * Retrieve, load and return ViewPoint identified by supplied URI
+	 * Retrieve, load and return ViewPoint/VirtualModel identified by supplied URI
 	 * 
 	 * @param viewpointURI
 	 * @return
@@ -146,7 +146,7 @@ public class ViewPointLibrary extends DefaultFlexoObject implements FlexoService
 	 */
 	public VirtualModel getVirtualModel(String virtualModelURI)
 			throws FileNotFoundException, ResourceLoadingCancelledException, FlexoException {
-		VirtualModelResource returned = _getVirtualModel(virtualModelURI);
+		VirtualModelResource returned = getVirtualModelResource(virtualModelURI);
 		if (returned != null) {
 			return returned.getResourceData(null);
 		}
@@ -156,7 +156,13 @@ public class ViewPointLibrary extends DefaultFlexoObject implements FlexoService
 		return null;
 	}
 
-	private VirtualModelResource _getVirtualModel(String virtualModelURI) {
+	/**
+	 * Retrieve and return ViewPoint/VirtualModel resource identified by supplied URI, without loading it
+	 * 
+	 * @param viewpointURI
+	 * @return
+	 */
+	public VirtualModelResource getVirtualModelResource(String virtualModelURI) {
 		if (virtualModelURI.contains("/")) {
 			String viewPointURI = virtualModelURI.substring(0, virtualModelURI.lastIndexOf("/"));
 			ViewPointResource vpres = getViewPointResource(viewPointURI);
@@ -256,7 +262,7 @@ public class ViewPointLibrary extends DefaultFlexoObject implements FlexoService
 		}
 
 		// Is that a virtual model ?
-		VirtualModelResource vmRes = _getVirtualModel(flexoConceptURI);
+		VirtualModelResource vmRes = getVirtualModelResource(flexoConceptURI);
 		if (vmRes != null) {
 			return vmRes.getVirtualModel();
 		}
@@ -265,7 +271,7 @@ public class ViewPointLibrary extends DefaultFlexoObject implements FlexoService
 		if (flexoConceptURI.indexOf("#") > -1) {
 			String virtualModelURI = flexoConceptURI.substring(0, flexoConceptURI.indexOf("#"));
 			String flexoConceptName = flexoConceptURI.substring(flexoConceptURI.indexOf("#") + 1);
-			vmRes = _getVirtualModel(virtualModelURI);
+			vmRes = getVirtualModelResource(virtualModelURI);
 			if (vmRes != null) {
 				VirtualModel vm = vmRes.getVirtualModel();
 				if (vm != null) {

@@ -46,7 +46,6 @@ import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.logging.Logger;
 
-import org.openflexo.components.widget.CustomTypeEditor;
 import org.openflexo.connie.type.CustomType;
 import org.openflexo.foundation.FlexoService;
 import org.openflexo.foundation.FlexoServiceImpl;
@@ -60,6 +59,7 @@ import org.openflexo.foundation.task.Progress;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
+import org.openflexo.gina.swing.utils.CustomTypeEditor;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.model.factory.ModelFactory;
 import org.openflexo.module.ModuleLoader.ModuleLoaded;

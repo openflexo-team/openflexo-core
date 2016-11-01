@@ -58,6 +58,7 @@ import org.openflexo.foundation.fml.rm.ViewPointResource;
 import org.openflexo.foundation.fml.rm.ViewPointResourceFactory;
 import org.openflexo.foundation.resource.RepositoryFolder;
 import org.openflexo.foundation.resource.SaveResourceException;
+import org.openflexo.foundation.task.Progress;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.toolbox.JavaUtils;
 import org.openflexo.toolbox.StringUtils;
@@ -147,12 +148,20 @@ public class CreateViewPoint extends AbstractCreateVirtualModel<CreateViewPoint,
 			throw new FlexoException(e);
 		}
 
-		// Instanciate new ViewPoint
-		// newViewPoint = ViewPointImpl.newViewPoint(getBaseName(), getNewViewPointURI(), newViewPointDir, viewPointLibrary,
-		// getFocusedObject().getResourceRepository().getResourceCenter());
+		Progress.progress(getLocales().localizedForKey("create_model_slots"));
+		performCreateModelSlots();
 
-		// vpRepository.registerResource(newViewPoint.getResource(), getFocusedObject());
+		Progress.progress(getLocales().localizedForKey("set_parent_concepts"));
+		performSetParentConcepts();
 
+		Progress.progress(getLocales().localizedForKey("create_properties"));
+		performCreateProperties();
+
+		Progress.progress(getLocales().localizedForKey("create_behaviours"));
+		performCreateBehaviours();
+
+		Progress.progress(getLocales().localizedForKey("create_inspector"));
+		performCreateInspectors();
 	}
 
 	public String getNewViewPointName() {

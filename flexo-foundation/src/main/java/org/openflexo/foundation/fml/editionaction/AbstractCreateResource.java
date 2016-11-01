@@ -38,10 +38,6 @@
 
 package org.openflexo.foundation.fml.editionaction;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Type;
-import java.util.logging.Logger;
-
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
@@ -67,6 +63,11 @@ import org.openflexo.model.validation.FixProposal;
 import org.openflexo.model.validation.ValidationIssue;
 import org.openflexo.model.validation.ValidationRule;
 import org.openflexo.model.validation.ValidationWarning;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Type;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Abstract edition action allowing to create an empty resource in a {@link FlexoResourceCenter}, at a specified relative path<br>
@@ -135,48 +136,27 @@ public interface AbstractCreateResource<MS extends ModelSlot<RD>, RD extends Res
 			return super.getAssignedFlexoProperty();
 		}
 
-		public String getResourceName(RunTimeEvaluationContext evaluationContext) {
-
-			if (getResourceName() != null && getResourceName().isSet() && getResourceName().isValid()) {
+		public <T> T evaluateDataBinding(DataBinding<T> dataBinding, RunTimeEvaluationContext evaluationContext) {
+			if (dataBinding != null && dataBinding.isSet() && dataBinding.isValid()) {
 				try {
-					return getResourceName().getBindingValue(evaluationContext);
-				} catch (TypeMismatchException e) {
-					e.printStackTrace();
-				} catch (NullReferenceException e) {
-					e.printStackTrace();
-				} catch (InvocationTargetException e) {
-					e.printStackTrace();
+					return dataBinding.getBindingValue(evaluationContext);
+				} catch (TypeMismatchException | NullReferenceException | InvocationTargetException e) {
+					logger.log(Level.WARNING, "Can't evaluate data binding " + dataBinding.getBindingName() + " (" + dataBinding.getExpression() +  ")");
 				}
 			}
 			return null;
+		}
+
+		public String getResourceName(RunTimeEvaluationContext evaluationContext) {
+			return evaluateDataBinding(getResourceName(), evaluationContext);
 		}
 
 		public String getResourceURI(RunTimeEvaluationContext evaluationContext) {
-			if (getResourceURI() != null && getResourceURI().isSet() && getResourceURI().isValid()) {
-				try {
-					return getResourceURI().getBindingValue(evaluationContext);
-				} catch (TypeMismatchException e) {
-					e.printStackTrace();
-				} catch (NullReferenceException e) {
-					e.printStackTrace();
-				} catch (InvocationTargetException e) {
-					e.printStackTrace();
-				}
-			}
-			return null;
+			return evaluateDataBinding(getResourceURI(), evaluationContext);
 		}
 
 		public FlexoResourceCenter<?> getResourceCenter(RunTimeEvaluationContext evaluationContext) {
-			try {
-				return getResourceCenter().getBindingValue(evaluationContext);
-			} catch (TypeMismatchException e) {
-				e.printStackTrace();
-			} catch (NullReferenceException e) {
-				e.printStackTrace();
-			} catch (InvocationTargetException e) {
-				e.printStackTrace();
-			}
-			return null;
+			return evaluateDataBinding(getResourceCenter(), evaluationContext);
 		}
 
 		@Override

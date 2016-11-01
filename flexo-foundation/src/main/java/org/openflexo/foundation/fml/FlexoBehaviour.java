@@ -150,7 +150,7 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 	@Setter(LABEL_KEY)
 	public void setLabel(String label);
 
-	@Getter(value = SKIP_CONFIRMATION_PANEL_KEY, defaultValue = "false")
+	@Getter(value = SKIP_CONFIRMATION_PANEL_KEY, defaultValue = "true")
 	@XMLAttribute
 	public boolean getSkipConfirmationPanel();
 
@@ -241,9 +241,8 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 
 		private String name;
 		private String label;
-		private boolean skipConfirmationPanel = false;
 
-		private boolean definePopupDefaultSize = false;
+		// private boolean definePopupDefaultSize = false;
 		private int width = 800;
 		private int height = 600;
 
@@ -356,104 +355,6 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 			this.label = label;
 		}
 
-		/*@Override
-		public FlexoConcept getFlexoConcept() {
-			return _flexoConcept;
-		}*/
-
-		/*@Override
-		public void setFlexoConcept(FlexoConcept flexoConcept) {
-			performSuperSetter(FLEXO_CONCEPT_KEY, flexoConcept);
-			// _flexoConcept = flexoConcept;
-			//updateBindingModels();
-		}*/
-
-		/*@Override
-		public Vector<EditionAction> getActions() {
-			return actions;
-		}
-		
-		@Override
-		public void setActions(Vector<EditionAction> actions) {
-			this.actions = actions;
-			setChanged();
-			notifyObservers();
-		}
-		
-		@Override
-		public void addToActions(EditionAction action) {
-			// action.setScheme(this);
-			action.setActionContainer(this);
-			actions.add(action);
-			setChanged();
-			notifyObservers();
-			notifyChange("actions", null, actions);
-		}
-		
-		@Override
-		public void removeFromActions(EditionAction action) {
-			// action.setScheme(null);
-			action.setActionContainer(null);
-			actions.remove(action);
-			setChanged();
-			notifyObservers();
-			notifyChange("actions", null, actions);
-		}*/
-
-		/*@Override
-		public int getIndex(EditionAction action) {
-			return actions.indexOf(action);
-		}
-		
-		@Override
-		public void insertActionAtIndex(EditionAction action, int index) {
-			// action.setScheme(this);
-			action.setActionContainer(this);
-			actions.insertElementAt(action, index);
-			setChanged();
-			notifyObservers();
-			notifyChange("actions", null, actions);
-		}
-		
-		@Override
-		public void actionFirst(EditionAction a) {
-			actions.remove(a);
-			actions.insertElementAt(a, 0);
-			setChanged();
-			notifyChange("actions", null, actions);
-		}
-		
-		@Override
-		public void actionUp(EditionAction a) {
-			int index = actions.indexOf(a);
-			if (index > 0) {
-				actions.remove(a);
-				actions.insertElementAt(a, index - 1);
-				setChanged();
-				notifyChange("actions", null, actions);
-			}
-		}
-		
-		@Override
-		public void actionDown(EditionAction a) {
-			int index = actions.indexOf(a);
-			if (index > -1) {
-				actions.remove(a);
-				actions.insertElementAt(a, index + 1);
-				setChanged();
-				notifyChange("actions", null, actions);
-			}
-		}
-		
-		@Override
-		public void actionLast(EditionAction a) {
-			actions.remove(a);
-			actions.add(a);
-			setChanged();
-			notifyChange("actions", null, actions);
-		}
-		 */
-
 		@Override
 		public void actionFirst(EditionAction a) {
 			getActions().remove(a);
@@ -488,69 +389,71 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 			getPropertyChangeSupport().firePropertyChange(ACTIONS_KEY, null, getActions());
 		}
 
-		/*	@Override
-			public Vector<FlexoBehaviourParameter> getParameters() {
-				return parameters;
-			}*/
-
-		/*@Override
+		@Override
 		public void setParameters(List<FlexoBehaviourParameter> someParameters) {
+			String oldSignature = getSignature();
 			performSuperSetter(PARAMETERS_KEY, someParameters);
-			updateBindingModels();
+			updateSignature(oldSignature);
 		}
-		
+
 		@Override
 		public void addToParameters(FlexoBehaviourParameter parameter) {
+			String oldSignature = getSignature();
 			performSuperAdder(PARAMETERS_KEY, parameter);
-			updateBindingModels();
+			updateSignature(oldSignature);
 		}
-		
+
 		@Override
 		public void removeFromParameters(FlexoBehaviourParameter parameter) {
+			String oldSignature = getSignature();
 			performSuperRemover(PARAMETERS_KEY, parameter);
-			updateBindingModels();
-		}*/
+			updateSignature(oldSignature);
+		}
 
 		@Override
 		public void parameterFirst(FlexoBehaviourParameter p) {
-			System.out.println("parameterFirst()");
+			String oldSignature = getSignature();
 			getParameters().remove(p);
 			getParameters().add(0, p);
 			setChanged();
 			notifyObservers(new DataModification("parameters", null, getParameters()));
+			updateSignature(oldSignature);
 		}
 
 		@Override
 		public void parameterUp(FlexoBehaviourParameter p) {
-			System.out.println("parameterUp()");
 			int index = getParameters().indexOf(p);
 			if (index > 0) {
+				String oldSignature = getSignature();
 				getParameters().remove(p);
 				getParameters().add(index - 1, p);
 				setChanged();
 				notifyObservers(new DataModification("parameters", null, getParameters()));
+				updateSignature(oldSignature);
 			}
 		}
 
 		@Override
 		public void parameterDown(FlexoBehaviourParameter p) {
-			System.out.println("parameterDown()");
 			int index = getParameters().indexOf(p);
 			if (index > -1) {
+				String oldSignature = getSignature();
 				getParameters().remove(p);
 				getParameters().add(index + 1, p);
 				setChanged();
 				notifyObservers(new DataModification("parameters", null, getParameters()));
+				updateSignature(oldSignature);
 			}
 		}
 
 		@Override
 		public void parameterLast(FlexoBehaviourParameter p) {
-			System.out.println("parameterLast()");
+			String oldSignature = getSignature();
 			getParameters().remove(p);
 			getParameters().add(p);
 			setChanged();
 			notifyObservers(new DataModification("parameters", null, getParameters()));
+			updateSignature(oldSignature);
 		}
 
 		/*public FlexoBehaviourParameter getParameter(String name) {
@@ -601,21 +504,6 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 			super.finalizeDeserialization();
 			// updateBindingModels();
 		}
-
-		@Override
-		public boolean getSkipConfirmationPanel() {
-			return skipConfirmationPanel;
-		}
-
-		@Override
-		public void setSkipConfirmationPanel(boolean skipConfirmationPanel) {
-			this.skipConfirmationPanel = skipConfirmationPanel;
-		}
-
-		/*@Override
-		public ActionContainerBindingModel getControlGraphBindingModel() {
-			return getBindingModel();
-		}*/
 
 		/**
 		 * Return the FlexoBehaviour's specific {@link BindingModel}.<br>
@@ -761,15 +649,15 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 			// updateBindingModels();
 		}
 
-		@Override
+		/*@Override
 		public boolean getDefinePopupDefaultSize() {
 			return definePopupDefaultSize;
 		}
-
+		
 		@Override
 		public void setDefinePopupDefaultSize(boolean definePopupDefaultSize) {
 			this.definePopupDefaultSize = definePopupDefaultSize;
-		}
+		}*/
 
 		@Override
 		public int getWidth() {
@@ -796,27 +684,40 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 			return getParameters();
 		}
 
-		private String editionSchemeSignature = null;
+		@Override
+		public void setName(String name) {
+			String oldSignature = getSignature();
+			super.setName(name);
+			updateSignature(oldSignature);
+		}
+
+		protected void updateSignature(String oldSignature) {
+			behaviourSignature = null;
+			getPropertyChangeSupport().firePropertyChange("signature", oldSignature, getSignature());
+		}
+
+		private String behaviourSignature = null;
 
 		@Override
 		public String getSignature() {
-			if (editionSchemeSignature == null) {
+			if (behaviourSignature == null) {
 				StringBuffer signature = new StringBuffer();
 				signature.append(getName());
 				signature.append("(");
 				signature.append(getParameterListAsString(false));
 				signature.append(")");
-				editionSchemeSignature = signature.toString();
+				behaviourSignature = signature.toString();
 			}
-			return editionSchemeSignature;
+			return behaviourSignature;
 		}
 
 		private String getParameterListAsString(boolean fullyQualified) {
 			StringBuffer returned = new StringBuffer();
 			boolean isFirst = true;
 			for (FlexoBehaviourParameter param : getParameters()) {
-				returned.append((isFirst ? "" : ",") + (fullyQualified ? TypeUtils.fullQualifiedRepresentation(param.getType())
-						: TypeUtils.simpleRepresentation(param.getType())));
+				// returned.append((isFirst ? "" : ",") + (fullyQualified ? TypeUtils.fullQualifiedRepresentation(param.getType())
+				// : TypeUtils.simpleRepresentation(param.getType())));
+				returned.append((isFirst ? "" : ",") + param.getName());
 				isFirst = false;
 			}
 			return returned.toString();

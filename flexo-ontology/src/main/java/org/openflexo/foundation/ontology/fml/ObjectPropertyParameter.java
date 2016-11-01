@@ -108,7 +108,8 @@ public interface ObjectPropertyParameter extends PropertyParameter {
 
 		@Override
 		public WidgetType getWidget() {
-			return WidgetType.OBJECT_PROPERTY;
+			// return WidgetType.OBJECT_PROPERTY;
+			return WidgetType.CUSTOM_WIDGET;
 		}
 
 		@Override
@@ -163,7 +164,8 @@ public interface ObjectPropertyParameter extends PropertyParameter {
 		public void setIsDynamicRangeValue(boolean isDynamic) {
 			if (isDynamic) {
 				isDynamicRangeValueSet = true;
-			} else {
+			}
+			else {
 				rangeValue = null;
 				isDynamicRangeValueSet = false;
 			}

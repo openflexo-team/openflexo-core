@@ -40,7 +40,6 @@ package org.openflexo.fml.controller;
 
 import javax.swing.ImageIcon;
 
-import org.openflexo.components.widget.CustomTypeEditor;
 import org.openflexo.components.widget.FIBTechnologyBrowser;
 import org.openflexo.connie.type.CustomType;
 import org.openflexo.fml.controller.action.AddParentFlexoConceptInitializer;
@@ -48,9 +47,9 @@ import org.openflexo.fml.controller.action.CreateAbstractPropertyInitializer;
 import org.openflexo.fml.controller.action.CreateEditionActionInitializer;
 import org.openflexo.fml.controller.action.CreateExpressionPropertyInitializer;
 import org.openflexo.fml.controller.action.CreateFlexoBehaviourInitializer;
-import org.openflexo.fml.controller.action.CreateFlexoBehaviourParameterInitializer;
 import org.openflexo.fml.controller.action.CreateFlexoConceptInitializer;
 import org.openflexo.fml.controller.action.CreateFlexoConceptInstanceRoleInitializer;
+import org.openflexo.fml.controller.action.CreateGenericBehaviourParameterInitializer;
 import org.openflexo.fml.controller.action.CreateGetSetPropertyInitializer;
 import org.openflexo.fml.controller.action.CreateIndividualRoleInitializer;
 import org.openflexo.fml.controller.action.CreateInspectorEntryInitializer;
@@ -101,6 +100,7 @@ import org.openflexo.foundation.fml.rt.editionaction.SelectFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.SelectVirtualModelInstance;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
+import org.openflexo.gina.swing.utils.CustomTypeEditor;
 import org.openflexo.gina.utils.InspectorGroup;
 import org.openflexo.icon.FMLIconLibrary;
 import org.openflexo.icon.FMLRTIconLibrary;
@@ -167,7 +167,8 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 		new CreateEditionActionInitializer(actionInitializer);
 		new CreateFlexoBehaviourInitializer(actionInitializer);
 		new CreateFlexoConceptInitializer(actionInitializer);
-		new CreateFlexoBehaviourParameterInitializer(actionInitializer);
+		// new CreateFlexoBehaviourParameterInitializer(actionInitializer);
+		new CreateGenericBehaviourParameterInitializer(actionInitializer);
 		new CreateInspectorEntryInitializer(actionInitializer);
 		// new DeleteFlexoConceptInitializer(actionInitializer);
 		// new DuplicateFlexoConceptInitializer(actionInitializer);

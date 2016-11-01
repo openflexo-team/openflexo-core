@@ -170,7 +170,9 @@ public class ModuleInspectorController extends Observable implements Observer {
 			public void progress(Resource f, FIBInspector inspector) {
 				super.progress(f, inspector);
 				appendVisibleFor(inspector);
-				appendEditableCondition(inspector);
+
+				// Dont do it anymore: perfs issues
+				// appendEditableCondition(inspector);
 				Progress.progress(FlexoLocalization.getMainLocalizer().localizedForKey("loaded_inspector") + " "
 						+ inspector.getDataClass().getSimpleName());
 			}
@@ -283,7 +285,7 @@ public class ModuleInspectorController extends Observable implements Observer {
 		}
 
 		Map<Class<?>, FIBInspector> potentialInspectors = new HashMap<Class<?>, FIBInspector>();
-		for (InspectorGroup inspectorGroup : inspectorGroups) {
+		for (InspectorGroup inspectorGroup : new ArrayList<>(inspectorGroups)) {
 			FIBInspector inspector = inspectorGroup.inspectorForClass(objectClass);
 			if (inspector != null) {
 				potentialInspectors.put(inspector.getDataClass(), inspector);

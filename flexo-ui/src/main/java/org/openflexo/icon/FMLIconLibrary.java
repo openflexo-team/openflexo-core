@@ -171,6 +171,8 @@ public class FMLIconLibrary extends IconLibrary {
 			ResourceLocator.locateResource("Icons/Model/VPM/DeletionSchemeIcon.png"));
 	public static final ImageIconResource NAVIGATION_SCHEME_ICON = new ImageIconResource(
 			ResourceLocator.locateResource("Icons/Model/VPM/NavigationSchemeIcon.png"));
+	public static final ImageIconResource FLEXO_CONCEPT_PARAMETER_BIG_ICON = new ImageIconResource(
+			ResourceLocator.locateResource("Icons/Model/VPM/ParameterIcon_64x64.png"));
 	public static final ImageIconResource FLEXO_CONCEPT_PARAMETER_ICON = new ImageIconResource(
 			ResourceLocator.locateResource("Icons/Model/VPM/ParameterIcon.png"));
 	public static final ImageIconResource FLEXO_CONCEPT_ACTION_ICON = new ImageIconResource(
