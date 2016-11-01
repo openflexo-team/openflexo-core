@@ -69,8 +69,11 @@ public class FIBParametersRetrieverWidget extends FIBJPanel<FlexoBehaviourAction
 	}
 
 	public void setApplicationContext(ApplicationContext applicationContext) {
-		this.applicationContext = applicationContext;
-		fireEditedObjectChanged();
+		// Avoid multiple call of fireEditedObjectChanged when not necessary
+		if (applicationContext != this.applicationContext) {
+			this.applicationContext = applicationContext;
+			fireEditedObjectChanged();
+		}
 	}
 
 	@Override
