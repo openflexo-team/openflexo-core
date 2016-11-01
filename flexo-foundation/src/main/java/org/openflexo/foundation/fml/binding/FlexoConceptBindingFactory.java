@@ -243,6 +243,7 @@ public final class FlexoConceptBindingFactory extends JavaBindingFactory {
 					else {
 						returned.add(new FlexoConceptTypePathElement(parent));
 					}
+					returned.add(new VirtualModelInstancePathElement(parent, VIRTUAL_MODEL_INSTANCE, concept.getOwningVirtualModel()));
 				}
 				return returned;
 			}

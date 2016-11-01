@@ -101,6 +101,10 @@ public interface FlexoBehaviourParameter extends FlexoBehaviourObject, FunctionA
 	public static final String NAME_KEY = "name";
 	@PropertyIdentifier(type = DataBinding.class)
 	public static final String DEFAULT_VALUE_KEY = "defaultValue";
+	@PropertyIdentifier(type = DataBinding.class)
+	public static final String CONTAINER_KEY = "container";
+	@PropertyIdentifier(type = DataBinding.class)
+	public static final String LIST_KEY = "list";
 	@PropertyIdentifier(type = String.class)
 	public static final String DESCRIPTION_KEY = "description";
 	@PropertyIdentifier(type = Type.class)
@@ -162,14 +166,20 @@ public interface FlexoBehaviourParameter extends FlexoBehaviourObject, FunctionA
 
 	public Object getDefaultValue(BindingEvaluationContext evaluationContext);
 
+	@Getter(value = CONTAINER_KEY)
+	@XMLAttribute
 	public DataBinding<?> getContainer();
 
+	@Setter(CONTAINER_KEY)
 	public void setContainer(DataBinding<?> container);
 
 	public Object getContainer(BindingEvaluationContext evaluationContext);
 
+	@Getter(value = LIST_KEY)
+	@XMLAttribute
 	public DataBinding<List<?>> getList();
 
+	@Setter(LIST_KEY)
 	public void setList(DataBinding<List<?>> list);
 
 	public Object getList(BindingEvaluationContext evaluationContext);

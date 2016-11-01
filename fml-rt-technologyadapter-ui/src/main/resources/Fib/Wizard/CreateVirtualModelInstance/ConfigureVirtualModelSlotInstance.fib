@@ -311,7 +311,7 @@
 		visible="(data.configuration.option.name = &quot;SelectExistingVirtualModel&quot;)"
 		manageDynamicModel="true" useScrollBar="false"
 		data="data.configuration.addressedVirtualModelInstanceResource"
-		componentClassName="org.openflexo.fml.rt.controller.widget.FIBVirtualModelInstanceSelector"
+		componentClassName="org.openflexo.fml.rt.controller.widget.FIBVirtualModelInstanceResourceSelector"
 		name="VirtualModelInstanceSelector" controllerClassName="org.openflexo.gina.controller.FIBController"
 		localize="true"
 		constraints="gridbag(anchor=west;expandHorizontally=true;expandVertically=false;fill=horizontal;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;insetsBottom=0;insetsLeft=2;insetsRight=20;insetsTop=0;location=right;padX=0;padY=0;weightX=1.0;weightY=0.0)"
