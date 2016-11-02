@@ -44,7 +44,7 @@ import org.openflexo.connie.BindingEvaluationContext;
 import org.openflexo.connie.binding.BindingPathElement;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
-import org.openflexo.foundation.fml.AbstractVirtualModel;
+import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.VirtualModelInstanceType;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
@@ -57,21 +57,22 @@ import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
  * @author sylvain
  *
  */
-public class VirtualModelInstancePathElement extends AbstractVirtualModelInstancePathElement<AbstractVirtualModel<?>> {
+public class ViewPathElement extends AbstractVirtualModelInstancePathElement<ViewPoint> {
 
-	private static final Logger logger = Logger.getLogger(VirtualModelInstancePathElement.class.getPackage().getName());
+	private static final Logger logger = Logger.getLogger(ViewPathElement.class.getPackage().getName());
 
-	public VirtualModelInstancePathElement(BindingPathElement parent, AbstractVirtualModel<?> virtualModel) {
-		super(parent, FlexoConceptBindingFactory.VIRTUAL_MODEL_INSTANCE, virtualModel);
+	public ViewPathElement(BindingPathElement parent, ViewPoint viewPoint) {
+		super(parent, FlexoConceptBindingFactory.VIEW, viewPoint);
 	}
 
 	@Override
 	public Object getBindingValue(Object target, BindingEvaluationContext context) throws TypeMismatchException, NullReferenceException {
+
 		if (target instanceof FlexoBehaviourAction) {
-			return ((FlexoBehaviourAction) target).getVirtualModelInstance();
+			return ((FlexoBehaviourAction) target).getVirtualModelInstance().getView();
 		}
 		if (target instanceof FlexoConceptInstance) {
-			return ((FlexoConceptInstance) target).getVirtualModelInstance();
+			return ((FlexoConceptInstance) target).getVirtualModelInstance().getView();
 		}
 		logger.warning("Please implement me, target=" + target + " context=" + context);
 		return null;

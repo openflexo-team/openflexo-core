@@ -68,8 +68,8 @@ import org.openflexo.gina.model.widget.FIBButton;
 import org.openflexo.gina.model.widget.FIBLabel;
 import org.openflexo.gina.model.widget.FIBLabel.Align;
 import org.openflexo.gina.swing.utils.JFIBDialog;
+import org.openflexo.gina.swing.view.SwingViewFactory;
 import org.openflexo.gina.view.GinaViewFactory;
-import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.model.validation.ValidationError;
 import org.openflexo.model.validation.ValidationReport;
@@ -114,18 +114,20 @@ public class ParametersRetriever<ES extends FlexoBehaviour> {
 
 		FIBComponent component = makeFIB(true, true);
 		JFIBDialog dialog = JFIBDialog.instanciateDialog(component, action,
-				applicationContext.getModuleLoader().getActiveModule().getFlexoFrame(), true, FlexoLocalization.getMainLocalizer());
+				applicationContext.getModuleLoader().getActiveModule().getFlexoFrame(), true, new ParametersRetrieverController(component,
+						SwingViewFactory.INSTANCE, applicationContext.getModuleLoader().getActiveModule().getController()));
 		dialog.setTitle(action.getLocalizedName());
 		if (!action.getFlexoBehaviour().getDefinePopupDefaultSize()) {
 			dialog.setMinimumSize(new Dimension(500, 50));
 		}
+
 		dialog.showDialog();
 		return dialog.getStatus() == Status.VALIDATED;
 	}
 
 	private FIBComponent makeWidget(final FlexoBehaviourParameter parameter, FIBPanel panel, int index) {
 
-		System.out.println("makeWidget for " + parameter + " applicationContext=" + applicationContext);
+		// System.out.println("makeWidget for " + parameter + " applicationContext=" + applicationContext);
 
 		if (applicationContext != null) {
 			for (TechnologyAdapter ta : applicationContext.getTechnologyAdapterService().getTechnologyAdapters()) {
@@ -325,6 +327,11 @@ public class ParametersRetriever<ES extends FlexoBehaviour> {
 
 		public ParametersRetrieverController(FIBComponent component, GinaViewFactory<?> viewFactory) {
 			super(component, viewFactory);
+		}
+
+		public ParametersRetrieverController(FIBComponent component, GinaViewFactory<?> viewFactory, FlexoController flexoController) {
+			super(component, viewFactory);
+			setFlexoController(flexoController);
 		}
 
 		public boolean isValidable(FlexoBehaviourAction<?, ?, ?> action) {

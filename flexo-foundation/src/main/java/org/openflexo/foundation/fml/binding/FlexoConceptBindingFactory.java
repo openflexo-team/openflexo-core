@@ -83,6 +83,8 @@ public final class FlexoConceptBindingFactory extends JavaBindingFactory {
 
 	public static final String FLEXO_CONCEPT_INSTANCE = "flexoConceptInstance";
 	public static final String VIRTUAL_MODEL_INSTANCE = "virtualModelInstance";
+	public static final String VIEW = "view";
+	public static final String RESOURCE_CENTER = "resourceCenter";
 
 	private final Map<BindingPathElement, Map<Object, SimplePathElement>> storedBindingPathElements;
 	private final ViewPoint viewPoint;
@@ -243,7 +245,9 @@ public final class FlexoConceptBindingFactory extends JavaBindingFactory {
 					else {
 						returned.add(new FlexoConceptTypePathElement(parent));
 					}
-					returned.add(new VirtualModelInstancePathElement(parent, VIRTUAL_MODEL_INSTANCE, concept.getOwningVirtualModel()));
+					returned.add(new VirtualModelInstancePathElement(parent, concept.getOwningVirtualModel()));
+					returned.add(new ViewPathElement(parent, concept.getViewPoint()));
+					returned.add(new ResourceCenterPathElement(parent));
 				}
 				return returned;
 			}
@@ -268,8 +272,9 @@ public final class FlexoConceptBindingFactory extends JavaBindingFactory {
 				if (!(flexoBehaviour instanceof CreationScheme)) {
 					returned.add(new FlexoConceptInstancePathElement(parent, FLEXO_CONCEPT_INSTANCE, flexoBehaviour.getFlexoConcept()));
 				}
-				returned.add(new VirtualModelInstancePathElement(parent, VIRTUAL_MODEL_INSTANCE,
-						flexoBehaviour.getFlexoConcept().getOwningVirtualModel()));
+				returned.add(new VirtualModelInstancePathElement(parent, flexoBehaviour.getFlexoConcept().getOwningVirtualModel()));
+				returned.add(new ViewPathElement(parent, flexoBehaviour.getFlexoConcept().getViewPoint()));
+				returned.add(new ResourceCenterPathElement(parent));
 				return returned;
 			}
 

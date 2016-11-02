@@ -38,40 +38,50 @@
 
 package org.openflexo.foundation.fml.binding;
 
+import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.BindingEvaluationContext;
 import org.openflexo.connie.binding.BindingPathElement;
+import org.openflexo.connie.binding.SimplePathElement;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
-import org.openflexo.foundation.fml.AbstractVirtualModel;
-import org.openflexo.foundation.fml.VirtualModelInstanceType;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
+import org.openflexo.foundation.resource.FlexoResourceCenter;
 
 /**
- * A path element which represents a {@link VirtualModelInstance} accessible at run-time<br>
- * The {@link VirtualModelInstance} is typed as {@link VirtualModelInstanceType}
+ * A path element which represents a {@link FlexoResourceCenter} accessible at run-time<br>
  * 
  * @author sylvain
  *
  */
-public class VirtualModelInstancePathElement extends AbstractVirtualModelInstancePathElement<AbstractVirtualModel<?>> {
+public class ResourceCenterPathElement extends SimplePathElement {
 
-	private static final Logger logger = Logger.getLogger(VirtualModelInstancePathElement.class.getPackage().getName());
+	private static final Logger logger = Logger.getLogger(ResourceCenterPathElement.class.getPackage().getName());
 
-	public VirtualModelInstancePathElement(BindingPathElement parent, AbstractVirtualModel<?> virtualModel) {
-		super(parent, FlexoConceptBindingFactory.VIRTUAL_MODEL_INSTANCE, virtualModel);
+	public ResourceCenterPathElement(BindingPathElement parent) {
+		super(parent, FlexoConceptBindingFactory.RESOURCE_CENTER, FlexoResourceCenter.class);
+	}
+
+	@Override
+	public String getLabel() {
+		return getPropertyName();
+	}
+
+	@Override
+	public String getTooltipText(Type resultingType) {
+		return null;
 	}
 
 	@Override
 	public Object getBindingValue(Object target, BindingEvaluationContext context) throws TypeMismatchException, NullReferenceException {
+
 		if (target instanceof FlexoBehaviourAction) {
-			return ((FlexoBehaviourAction) target).getVirtualModelInstance();
+			return ((FlexoBehaviourAction) target).getVirtualModelInstance().getResourceCenter();
 		}
 		if (target instanceof FlexoConceptInstance) {
-			return ((FlexoConceptInstance) target).getVirtualModelInstance();
+			return ((FlexoConceptInstance) target).getVirtualModelInstance().getResourceCenter();
 		}
 		logger.warning("Please implement me, target=" + target + " context=" + context);
 		return null;

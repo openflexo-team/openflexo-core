@@ -38,19 +38,10 @@
 
 package org.openflexo.fml.rt.controller.widget;
 
-import java.lang.reflect.Type;
-import java.util.List;
 import java.util.logging.Logger;
 
-import org.openflexo.components.widget.FIBProjectObjectSelector;
-import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.ViewType;
-import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.fml.rt.View;
-import org.openflexo.foundation.fml.rt.ViewLibrary;
-import org.openflexo.foundation.fml.rt.ViewRepository;
-import org.openflexo.foundation.fml.rt.rm.ViewResource;
-import org.openflexo.foundation.resource.RepositoryFolder;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
 
@@ -61,20 +52,20 @@ import org.openflexo.rm.ResourceLocator;
  * 
  */
 @SuppressWarnings("serial")
-public class FIBViewSelector extends FIBProjectObjectSelector<View> {
+public class FIBViewSelector extends FIBAbstractFMLRTObjectSelector<View> {
 
 	static final Logger logger = Logger.getLogger(FIBViewSelector.class.getPackage().getName());
 
 	public static Resource FIB_FILE = ResourceLocator.locateResource("Fib/ViewSelector.fib");
 
-	private ViewLibrary viewLibrary;
+	/*private ViewLibrary viewLibrary;
 	private Type expectedType;
 	private ViewType defaultExpectedType;
-	private ViewPoint viewPoint;
+	private ViewPoint viewPoint;*/
 
 	public FIBViewSelector(View editedObject) {
 		super(editedObject);
-		defaultExpectedType = editedObject != null ? ViewType.getViewType(editedObject.getViewPoint()) : ViewType.UNDEFINED_VIEW_TYPE;
+		// defaultExpectedType = editedObject != null ? ViewType.getViewType(editedObject.getViewPoint()) : ViewType.UNDEFINED_VIEW_TYPE;
 	}
 
 	@Override
@@ -87,59 +78,49 @@ public class FIBViewSelector extends FIBProjectObjectSelector<View> {
 		return View.class;
 	}
 
-	@Override
+	/*@Override
 	public String renderedString(View editedObject) {
 		if (editedObject != null) {
 			return editedObject.getName();
 		}
 		return "";
 	}
-
+	
 	public ViewLibrary getViewLibrary() {
 		return viewLibrary;
 	}
-
+	
 	@CustomComponentParameter(name = "viewLibrary", type = CustomComponentParameter.Type.OPTIONAL)
 	public void setViewLibrary(ViewLibrary viewLibrary) {
 		this.viewLibrary = viewLibrary;
 	}
-
-	/**
-	 * Return virtual model which selected VirtualModelInstance should conform
-	 * 
-	 * @return
-	 */
+	
 	public ViewPoint getViewPoint() {
 		return viewPoint;
 	}
-
-	/**
-	 * Sets virtual model which selected VirtualModelInstance should conform
-	 * 
-	 * @param virtualModel
-	 */
+	
 	@CustomComponentParameter(name = "viewPoint", type = CustomComponentParameter.Type.OPTIONAL)
 	public void setViewPoint(ViewPoint viewPoint) {
 		this.viewPoint = viewPoint;
 		defaultExpectedType = ViewType.getViewType(viewPoint);
 	}
-
+	
 	public Type getExpectedType() {
 		if (expectedType == null) {
 			return defaultExpectedType;
 		}
 		return expectedType;
 	}
-
+	
 	public void setExpectedType(Type expectedType) {
-
+	
 		if ((expectedType == null && this.expectedType != null) || (expectedType != null && !expectedType.equals(this.expectedType))) {
 			Type oldValue = this.expectedType;
 			this.expectedType = expectedType;
 			getPropertyChangeSupport().firePropertyChange("expectedType", oldValue, expectedType);
 		}
 	}
-
+	
 	public Object getRootObject() {
 		if (getViewLibrary() != null) {
 			return getViewLibrary();
@@ -152,13 +133,13 @@ public class FIBViewSelector extends FIBProjectObjectSelector<View> {
 		}
 		return null;
 	}
-
+	
 	public List<ViewResource> getViewResources(RepositoryFolder<?, ?> folder) {
 		if (folder.getResourceRepository() instanceof ViewRepository) {
 			return (List) folder.getResources();
 		}
 		return null;
-	}
+	}*/
 
 	@Override
 	public boolean isAcceptableValue(Object o) {

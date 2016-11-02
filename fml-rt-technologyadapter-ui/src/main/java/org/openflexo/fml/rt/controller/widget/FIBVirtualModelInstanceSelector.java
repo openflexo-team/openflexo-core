@@ -38,16 +38,10 @@
 
 package org.openflexo.fml.rt.controller.widget;
 
-import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
-import org.openflexo.components.widget.FIBProjectObjectSelector;
-import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelInstanceType;
 import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
-import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
-import org.openflexo.foundation.fml.rt.View;
-import org.openflexo.foundation.fml.rt.ViewLibrary;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
@@ -59,30 +53,30 @@ import org.openflexo.rm.ResourceLocator;
  * 
  */
 @SuppressWarnings("serial")
-public class FIBVirtualModelInstanceSelector extends FIBProjectObjectSelector<AbstractVirtualModelInstance> {
+public class FIBVirtualModelInstanceSelector extends FIBAbstractFMLRTObjectSelector<AbstractVirtualModelInstance> {
 
 	static final Logger logger = Logger.getLogger(FIBVirtualModelInstanceSelector.class.getPackage().getName());
 
 	public static Resource FIB_FILE = ResourceLocator.locateResource("Fib/VirtualModelInstanceSelector.fib");
 
-	private ViewLibrary viewLibrary;
+	/*private ViewLibrary viewLibrary;
 	private View view;
 	private VirtualModel virtualModel;
 	private Type expectedType;
-	private VirtualModelInstanceType defaultExpectedType;
+	private VirtualModelInstanceType defaultExpectedType;*/
 
 	public FIBVirtualModelInstanceSelector(AbstractVirtualModelInstance editedObject) {
 		super(editedObject);
-		defaultExpectedType = editedObject != null ? VirtualModelInstanceType.getVirtualModelInstanceType(editedObject.getVirtualModel())
-				: VirtualModelInstanceType.UNDEFINED_VIRTUAL_MODEL_INSTANCE_TYPE;
+		// defaultExpectedType = editedObject != null ? VirtualModelInstanceType.getVirtualModelInstanceType(editedObject.getVirtualModel())
+		// : VirtualModelInstanceType.UNDEFINED_VIRTUAL_MODEL_INSTANCE_TYPE;
 	}
 
 	@Override
 	public void delete() {
 		super.delete();
-		viewLibrary = null;
+		/*viewLibrary = null;
 		view = null;
-		virtualModel = null;
+		virtualModel = null;*/
 	}
 
 	@Override
@@ -95,52 +89,42 @@ public class FIBVirtualModelInstanceSelector extends FIBProjectObjectSelector<Ab
 		return AbstractVirtualModelInstance.class;
 	}
 
-	@Override
+	/*@Override
 	public String renderedString(AbstractVirtualModelInstance editedObject) {
 		if (editedObject != null) {
 			return editedObject.getName();
 		}
 		return "";
 	}
-
+	
 	public ViewLibrary getViewLibrary() {
 		return viewLibrary;
 	}
-
+	
 	@CustomComponentParameter(name = "viewLibrary", type = CustomComponentParameter.Type.OPTIONAL)
 	public void setViewLibrary(ViewLibrary viewLibrary) {
 		this.viewLibrary = viewLibrary;
 	}
-
+	
 	public View getView() {
 		return view;
 	}
-
+	
 	@CustomComponentParameter(name = "view", type = CustomComponentParameter.Type.OPTIONAL)
 	public void setView(View view) {
 		this.view = view;
 	}
-
-	/**
-	 * Return virtual model which selected VirtualModelInstance should conform
-	 * 
-	 * @return
-	 */
+	
 	public VirtualModel getVirtualModel() {
 		return virtualModel;
 	}
-
-	/**
-	 * Sets virtual model which selected VirtualModelInstance should conform
-	 * 
-	 * @param virtualModel
-	 */
+	
 	@CustomComponentParameter(name = "virtualModel", type = CustomComponentParameter.Type.OPTIONAL)
 	public void setVirtualModel(VirtualModel virtualModel) {
 		this.virtualModel = virtualModel;
 		defaultExpectedType = VirtualModelInstanceType.getVirtualModelInstanceType(virtualModel);
 	}
-
+	
 	public Object getRootObject() {
 		if (getView() != null) {
 			return getView().getResource();
@@ -156,7 +140,7 @@ public class FIBVirtualModelInstanceSelector extends FIBProjectObjectSelector<Ab
 		}
 		return null;
 	}
-
+	*/
 	@Override
 	public boolean isAcceptableValue(Object o) {
 		if (!super.isAcceptableValue(o)) {
@@ -174,21 +158,21 @@ public class FIBVirtualModelInstanceSelector extends FIBProjectObjectSelector<Ab
 
 	}
 
-	public Type getExpectedType() {
+	/*public Type getExpectedType() {
 		if (expectedType == null) {
 			return defaultExpectedType;
 		}
 		return expectedType;
 	}
-
+	
 	public void setExpectedType(Type expectedType) {
-
+	
 		if ((expectedType == null && this.expectedType != null) || (expectedType != null && !expectedType.equals(this.expectedType))) {
 			Type oldValue = this.expectedType;
 			this.expectedType = expectedType;
 			getPropertyChangeSupport().firePropertyChange("expectedType", oldValue, expectedType);
 		}
-	}
+	}*/
 
 	// Please uncomment this for a live test
 	// Never commit this uncommented since it will not compile on continuous build
