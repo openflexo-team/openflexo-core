@@ -66,6 +66,7 @@ public class CreateFlexoConceptInitializer extends ActionInitializer {
 		return new FlexoActionInitializer<CreateFlexoConcept>() {
 			@Override
 			public boolean run(EventObject e, CreateFlexoConcept action) {
+				action.setDefineSomeBehaviours(true);
 				Wizard wizard = new CreateFlexoConceptWizard(action, getController());
 				WizardDialog dialog = new WizardDialog(wizard, getController());
 				dialog.showDialog();

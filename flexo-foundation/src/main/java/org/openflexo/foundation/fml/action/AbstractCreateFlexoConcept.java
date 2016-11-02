@@ -392,7 +392,7 @@ public abstract class AbstractCreateFlexoConcept<A extends FlexoAction<A, T1, T2
 
 	}
 
-	private boolean defineSomeBehaviours = true;
+	private boolean defineSomeBehaviours = false;
 	private boolean defineDefaultCreationScheme = true;
 	private boolean defineDefaultDeletionScheme = true;
 	private boolean defineSynchronizationScheme = false;
