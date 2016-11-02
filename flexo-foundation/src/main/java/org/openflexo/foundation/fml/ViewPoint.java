@@ -227,7 +227,7 @@ public interface ViewPoint extends AbstractVirtualModel<ViewPoint> {
 		private ViewPointBindingModel bindingModel;
 		private final FlexoConceptBindingFactory bindingFactory = new FlexoConceptBindingFactory(this);
 
-		private final ViewType viewType = new ViewType(this);;
+		private final ViewType viewType = new ViewType(this);
 
 		// Used during deserialization, do not use it
 		public ViewPointImpl() {
