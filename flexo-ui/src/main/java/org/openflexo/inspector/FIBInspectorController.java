@@ -39,8 +39,6 @@
 
 package org.openflexo.inspector;
 
-import java.util.logging.Logger;
-
 import org.openflexo.foundation.DataModification;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoObservable;
@@ -49,12 +47,11 @@ import org.openflexo.foundation.InnerResourceData;
 import org.openflexo.foundation.action.AddFlexoProperty;
 import org.openflexo.foundation.resource.ResourceLoaded;
 import org.openflexo.gina.model.FIBComponent;
-import org.openflexo.gina.model.FIBModelFactory;
-import org.openflexo.gina.utils.FIBInspector;
 import org.openflexo.gina.view.GinaViewFactory;
 import org.openflexo.logging.FlexoLogger;
-import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.view.controller.FlexoFIBController;
+
+import java.util.logging.Logger;
 
 /**
  * Represents the controller of a JFIBInspector (FIBComponent) in the context of Swing graphical inspection
@@ -65,17 +62,6 @@ import org.openflexo.view.controller.FlexoFIBController;
 public class FIBInspectorController extends FlexoFIBController {
 
 	private static final Logger logger = FlexoLogger.getLogger(FIBInspectorController.class.getPackage().getName());
-
-	private static FIBModelFactory INSPECTOR_FACTORY;
-
-	static {
-		try {
-			INSPECTOR_FACTORY = new FIBModelFactory(FIBInspector.class);
-		} catch (ModelDefinitionException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
 
 	public FIBInspectorController(FIBComponent component, GinaViewFactory<?> viewFactory) {
 		super(component, viewFactory);
@@ -89,33 +75,6 @@ public class FIBInspectorController extends FlexoFIBController {
 			return true;
 		}
 	}
-
-	// NOTE: this has moved to SwingViewFactory !!!
-	/*@Override
-	protected void openFIBEditor(FIBComponent component, final MouseEvent event) {
-		if (component instanceof FIBInspector) {
-			JPopupMenu popup = new JPopupMenu();
-			for (FIBInspector current : getFlexoController().getModuleInspectorController().inspectorsForClass(component.getDataClass())) {
-				JMenuItem menuItem = new JMenuItem(current.getResource().getRelativePath());
-				// We dont use existing inspector which is already
-				// aggregated !!!
-				final FIBInspector inspectorToOpen = (FIBInspector) FIBLibrary.instance().retrieveFIBComponent(current.getResource(), false,
-						INSPECTOR_FACTORY);
-				menuItem.addActionListener(new ActionListener() {
-					@Override
-					public void actionPerformed(ActionEvent e) {
-						FIBInspectorController.super.openFIBEditor(inspectorToOpen, event);
-					}
-				});
-				popup.add(menuItem);
-			}
-			popup.show(event.getComponent(), event.getX(), event.getY());
-	
-		}
-		else {
-			super.openFIBEditor(component, event);
-		}
-	}*/
 
 	@Override
 	public void update(FlexoObservable o, DataModification dataModification) {

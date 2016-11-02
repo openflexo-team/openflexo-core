@@ -74,6 +74,8 @@ public class FIBParametersRetrieverWidget extends FIBJPanel<FlexoBehaviourAction
 	}
 
 	public void setApplicationContext(ApplicationContext applicationContext) {
+		// Avoid multiple call of fireEditedObjectChanged when not necessary
+		if (applicationContext != this.applicationContext) {
 		this.applicationContext = applicationContext;
 		if (getController() instanceof ParametersRetrieverController) {
 			if (applicationContext != null) {
@@ -82,6 +84,7 @@ public class FIBParametersRetrieverWidget extends FIBJPanel<FlexoBehaviourAction
 			}
 		}
 		fireEditedObjectChanged();
+		}
 	}
 
 	@Override
@@ -97,7 +100,6 @@ public class FIBParametersRetrieverWidget extends FIBJPanel<FlexoBehaviourAction
 
 	@Override
 	public void fireEditedObjectChanged() {
-		System.out.println("Hop, fireEditedObjectChanged() in FIBParametersRetrieverWidget, applicationContext=" + applicationContext);
 		FlexoBehaviourAction action = getEditedObject();
 		if (action != null) {
 			fibComponent = (new ParametersRetriever(action, applicationContext)).makeFIB(false, false);
