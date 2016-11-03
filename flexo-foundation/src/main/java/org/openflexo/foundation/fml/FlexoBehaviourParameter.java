@@ -383,13 +383,6 @@ public interface FlexoBehaviourParameter extends FlexoBehaviourObject, FunctionA
 
 		@Override
 		public Object getDefaultValue(BindingEvaluationContext evaluationContext) {
-			// DiagramPaletteElement paletteElement = action instanceof DropSchemeAction ? ((DropSchemeAction) action).getPaletteElement() :
-			// null;
-
-			// System.out.println("Default value for "+element.getName()+" ???");
-			/*if (getUsePaletteLabelAsDefaultValue() && paletteElement != null) {
-				return paletteElement.getName();
-			}*/
 			if (getDefaultValue().isValid()) {
 				try {
 					return getDefaultValue().getBindingValue(evaluationContext);
@@ -404,17 +397,17 @@ public interface FlexoBehaviourParameter extends FlexoBehaviourObject, FunctionA
 			return null;
 		}
 
-		private boolean isRequired = false;
-
+		/*private boolean isRequired = false;
+		
 		@Override
 		public boolean getIsRequired() {
 			return isRequired;
 		}
-
+		
 		@Override
 		public final void setIsRequired(boolean flag) {
 			isRequired = flag;
-		}
+		}*/
 
 		@Override
 		public boolean isValid(FlexoBehaviourAction action, Object value) {
