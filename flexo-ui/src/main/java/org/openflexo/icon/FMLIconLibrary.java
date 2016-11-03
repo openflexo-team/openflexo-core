@@ -269,9 +269,8 @@ public class FMLIconLibrary extends IconLibrary {
 		else if (object instanceof FlexoConceptInstanceRole) {
 			return FMLRTIconLibrary.FLEXO_CONCEPT_INSTANCE_ICON;
 		}
-		else if (object instanceof FlexoRole && ((FlexoRole) object).getModelSlot() != null) {
-			TechnologyAdapterController<?> tac = getTechnologyAdapterController(
-					((FlexoRole) object).getModelSlot().getModelSlotTechnologyAdapter());
+		else if (object instanceof FlexoRole /*&& ((FlexoRole) object).getModelSlot() != null*/) {
+			TechnologyAdapterController<?> tac = getTechnologyAdapterController(((FlexoRole) object).getRoleTechnologyAdapter());
 			if (tac != null) {
 				return tac.getIconForFlexoRole((Class<? extends FlexoRole<?>>) object.getClass());
 			}

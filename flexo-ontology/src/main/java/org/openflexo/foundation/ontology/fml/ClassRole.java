@@ -61,7 +61,7 @@ import org.openflexo.model.validation.ValidationRule;
 
 @ModelEntity(isAbstract = true)
 @ImplementationClass(ClassRole.ClassRoleImpl.class)
-public interface ClassRole<C extends IFlexoOntologyClass> extends OntologicObjectRole<IFlexoOntologyClass> {
+public interface ClassRole<C extends IFlexoOntologyClass> extends OntologicObjectRole<C> {
 
 	@PropertyIdentifier(type = String.class)
 	public static final String CONCEPT_URI_KEY = "conceptURI";
@@ -77,8 +77,7 @@ public interface ClassRole<C extends IFlexoOntologyClass> extends OntologicObjec
 
 	public void setOntologicType(IFlexoOntologyClass<?> ontologyClass);
 
-	public static abstract class ClassRoleImpl<C extends IFlexoOntologyClass> extends OntologicObjectRoleImpl<IFlexoOntologyClass>
-			implements ClassRole<C> {
+	public static abstract class ClassRoleImpl<C extends IFlexoOntologyClass> extends OntologicObjectRoleImpl<C>implements ClassRole<C> {
 
 		public ClassRoleImpl() {
 			super();
@@ -88,7 +87,7 @@ public interface ClassRole<C extends IFlexoOntologyClass> extends OntologicObjec
 		public String getFMLRepresentation(FMLRepresentationContext context) {
 			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
 			out.append("FlexoRole " + getName() + " as Class conformTo " + getTypeDescription() + " from " + "\""
-					+ getModelSlot().getMetaModelURI() + "\"" + " ;", context);
+					+ (getModelSlot() != null ? getModelSlot().getMetaModelURI() : "") + "\"" + " ;", context);
 			return out.toString();
 		}
 
@@ -149,9 +148,9 @@ public interface ClassRole<C extends IFlexoOntologyClass> extends OntologicObjec
 		}
 
 		@Override
-		public ConceptActorReference<IFlexoOntologyClass> makeActorReference(IFlexoOntologyClass object, FlexoConceptInstance fci) {
+		public ConceptActorReference<C> makeActorReference(C object, FlexoConceptInstance fci) {
 			AbstractVirtualModelInstanceModelFactory<?> factory = fci.getFactory();
-			ConceptActorReference<IFlexoOntologyClass> returned = factory.newInstance(ConceptActorReference.class);
+			ConceptActorReference<C> returned = factory.newInstance(ConceptActorReference.class);
 			returned.setFlexoRole(this);
 			returned.setFlexoConceptInstance(fci);
 			returned.setModellingElement(object);

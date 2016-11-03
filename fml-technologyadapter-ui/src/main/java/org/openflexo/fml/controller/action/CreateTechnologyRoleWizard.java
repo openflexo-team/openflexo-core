@@ -38,12 +38,24 @@
 
 package org.openflexo.fml.controller.action;
 
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
+import org.openflexo.connie.Bindable;
+import org.openflexo.connie.BindingFactory;
+import org.openflexo.connie.BindingModel;
+import org.openflexo.connie.DataBinding;
+import org.openflexo.connie.DataBinding.BindingDefinitionType;
+import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.action.CreateTechnologyRole;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
+import org.openflexo.foundation.technologyadapter.ModelSlot.ModelSlotImpl;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.gina.annotation.FIBPanel;
 import org.openflexo.view.controller.FlexoController;
 
@@ -78,7 +90,13 @@ public class CreateTechnologyRoleWizard extends AbstractCreateFlexoRoleWizard<Cr
 	 * 
 	 */
 	@FIBPanel("Fib/Wizard/CreateFMLElement/DescribeTechnologyRole.fib")
-	public class DescribeTechnologyRole extends AbstractDescribeFlexoRole {
+	public class DescribeTechnologyRole extends AbstractDescribeFlexoRole implements Bindable {
+
+		private TechnologyAdapter technologyAdapter;
+
+		private boolean required = true;
+		private DataBinding<?> defaultValue;
+		private DataBinding<?> container;
 
 		@Override
 		public boolean isValid() {
@@ -102,6 +120,21 @@ public class CreateTechnologyRoleWizard extends AbstractCreateFlexoRoleWizard<Cr
 			checkValidity();
 		}
 
+		public TechnologyAdapter getTechnologyAdapter() {
+			return technologyAdapter;
+		}
+
+		public void setTechnologyAdapter(TechnologyAdapter technologyAdapter) {
+			if ((technologyAdapter == null && this.technologyAdapter != null)
+					|| (technologyAdapter != null && !technologyAdapter.equals(this.technologyAdapter))) {
+				TechnologyAdapter oldValue = this.technologyAdapter;
+				this.technologyAdapter = technologyAdapter;
+				getPropertyChangeSupport().firePropertyChange("technologyAdapter", oldValue, technologyAdapter);
+				getPropertyChangeSupport().firePropertyChange("availableFlexoRoleTypes", null, getAvailableFlexoRoleTypes());
+				checkValidity();
+			}
+		}
+
 		@Override
 		public Class<? extends FlexoRole<?>> getFlexoRoleClass() {
 			return getAction().getFlexoRoleClass();
@@ -113,12 +146,112 @@ public class CreateTechnologyRoleWizard extends AbstractCreateFlexoRoleWizard<Cr
 				getAction().setFlexoRoleClass(flexoRoleClass);
 				getPropertyChangeSupport().firePropertyChange("flexoRoleClass", oldValue, flexoRoleClass);
 				getPropertyChangeSupport().firePropertyChange("roleName", null, getRoleName());
+				getDefaultValue().setDeclaredType(getDataType());
+				getPropertyChangeSupport().firePropertyChange("defaultValue", null, getDefaultValue());
 				checkValidity();
 			}
 		}
 
+		// TODO: bind with action
+		public boolean getIsRequired() {
+			return required;
+		}
+
+		public void setIsRequired(boolean required) {
+			if (required != getIsRequired()) {
+				this.required = required;
+				getPropertyChangeSupport().firePropertyChange("required", !required, required);
+			}
+		}
+
+		public Type getDataType() {
+			if (getFlexoRoleClass() != null) {
+				return TypeUtils.getTypeArgument(getFlexoRoleClass(), FlexoRole.class, 0);
+			}
+			return Object.class;
+		}
+
+		public DataBinding<?> getDefaultValue() {
+			if (defaultValue == null) {
+				defaultValue = new DataBinding<Object>(this, getDataType(), BindingDefinitionType.GET);
+				defaultValue.setBindingName("defaultValue");
+			}
+			return defaultValue;
+		}
+
+		public void setDefaultValue(DataBinding<?> defaultValue) {
+			if (defaultValue != null) {
+				defaultValue.setOwner(this);
+				defaultValue.setBindingName("defaultValue");
+				defaultValue.setDeclaredType(getDataType());
+				defaultValue.setBindingDefinitionType(BindingDefinitionType.GET);
+			}
+			this.defaultValue = defaultValue;
+		}
+
+		public DataBinding<?> getContainer() {
+			if (container == null) {
+				container = new DataBinding<Object>(this, Object.class, BindingDefinitionType.GET);
+				container.setBindingName("container");
+			}
+			return container;
+		}
+
+		public void setContainer(DataBinding<?> container) {
+			if (container != null) {
+				container.setOwner(this);
+				container.setBindingName("container");
+				container.setDeclaredType(Object.class);
+				container.setBindingDefinitionType(BindingDefinitionType.GET);
+			}
+			this.container = container;
+		}
+
+		private Map<TechnologyAdapter, List<Class<? extends FlexoRole<?>>>> availableFlexoRoleTypes = new HashMap<>();
+
 		public List<Class<? extends FlexoRole<?>>> getAvailableFlexoRoleTypes() {
-			return getAction().getAvailableFlexoRoleTypes();
+			if (getTechnologyAdapter() == null) {
+				return null;
+			}
+			List<Class<? extends FlexoRole<?>>> returned = availableFlexoRoleTypes.get(getTechnologyAdapter());
+			if (returned == null) {
+				returned = buildAvailableFlexoRoleTypes(getTechnologyAdapter());
+				availableFlexoRoleTypes.put(technologyAdapter, returned);
+			}
+			return returned;
+		}
+
+		private List<Class<? extends FlexoRole<?>>> buildAvailableFlexoRoleTypes(TechnologyAdapter ta) {
+			List<Class<? extends FlexoRole<?>>> returned = new ArrayList<>();
+			for (Class<? extends ModelSlot<?>> modelSlotClass : ta.getAvailableModelSlotTypes()) {
+				for (Class<? extends FlexoRole<?>> flexoRoleClass : ModelSlotImpl.getAvailableFlexoRoleTypes(modelSlotClass)) {
+					if (!returned.contains(flexoRoleClass)) {
+						returned.add(flexoRoleClass);
+					}
+				}
+			}
+			return returned;
+		}
+
+		@Override
+		public BindingModel getBindingModel() {
+			if (getFocusedObject() instanceof Bindable) {
+				return ((Bindable) getFocusedObject()).getBindingModel();
+			}
+			return null;
+		}
+
+		@Override
+		public BindingFactory getBindingFactory() {
+			return ((Bindable) getFocusedObject()).getBindingFactory();
+		}
+
+		@Override
+		public void notifiedBindingChanged(DataBinding<?> dataBinding) {
+		}
+
+		@Override
+		public void notifiedBindingDecoded(DataBinding<?> dataBinding) {
 		}
 
 	}

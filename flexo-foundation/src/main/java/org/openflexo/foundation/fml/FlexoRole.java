@@ -38,14 +38,25 @@
 
 package org.openflexo.foundation.fml;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
 
+import org.openflexo.connie.BindingEvaluationContext;
+import org.openflexo.connie.DataBinding;
+import org.openflexo.connie.DataBinding.BindingDefinitionType;
+import org.openflexo.connie.binding.BindingPathElement;
+import org.openflexo.connie.exception.NullReferenceException;
+import org.openflexo.connie.exception.TypeMismatchException;
+import org.openflexo.connie.expr.BindingValue;
 import org.openflexo.foundation.DataModification;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
+import org.openflexo.foundation.fml.binding.FlexoConceptFlexoPropertyPathElement;
+import org.openflexo.foundation.fml.binding.ModelSlotBindingVariable;
 import org.openflexo.foundation.fml.rt.ActorReference;
 import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.localization.LocalizedDelegate;
 import org.openflexo.model.annotations.DefineValidationRule;
 import org.openflexo.model.annotations.Getter;
@@ -89,6 +100,13 @@ public abstract interface FlexoRole<T> extends FlexoProperty<T> {
 	@PropertyIdentifier(type = PropertyCardinality.class)
 	public static final String CARDINALITY_KEY = "cardinality";
 
+	@PropertyIdentifier(type = DataBinding.class)
+	public static final String DEFAULT_VALUE_KEY = "defaultValue";
+	@PropertyIdentifier(type = DataBinding.class)
+	public static final String CONTAINER_KEY = "container";
+	@PropertyIdentifier(type = boolean.class)
+	public static final String IS_REQUIRED_KEY = "isRequired";
+
 	@Getter(value = ROLE_NAME_KEY)
 	public String getRoleName();
 
@@ -120,6 +138,31 @@ public abstract interface FlexoRole<T> extends FlexoProperty<T> {
 	@Setter(CARDINALITY_KEY)
 	public void setCardinality(PropertyCardinality cardinality);
 
+	@Getter(value = DEFAULT_VALUE_KEY)
+	@XMLAttribute
+	public DataBinding<?> getDefaultValue();
+
+	@Setter(DEFAULT_VALUE_KEY)
+	public void setDefaultValue(DataBinding<?> defaultValue);
+
+	@Getter(value = IS_REQUIRED_KEY, defaultValue = "false")
+	@XMLAttribute
+	public boolean getIsRequired();
+
+	@Setter(IS_REQUIRED_KEY)
+	public void setIsRequired(boolean isRequired);
+
+	public Object getDefaultValue(BindingEvaluationContext evaluationContext);
+
+	@Getter(value = CONTAINER_KEY)
+	@XMLAttribute
+	public DataBinding<?> getContainer();
+
+	@Setter(CONTAINER_KEY)
+	public void setContainer(DataBinding<?> container);
+
+	public Object getContainer(BindingEvaluationContext evaluationContext);
+
 	/**
 	 * Return the type of any instance of modelling element handled by this property.<br>
 	 * Note that if the cardinality of this property is multiple, this method will return the type of each modelling element.<br>
@@ -130,6 +173,16 @@ public abstract interface FlexoRole<T> extends FlexoProperty<T> {
 	 */
 	@Override
 	public Type getType();
+
+	/**
+	 * Return the {@link TechnologyAdapter} managing this kind of role
+	 */
+	public TechnologyAdapter getRoleTechnologyAdapter();
+
+	/**
+	 * Return the class of {@link TechnologyAdapter} managing this kind of role
+	 */
+	public Class<? extends TechnologyAdapter> getRoleTechnologyAdapterClass();
 
 	/**
 	 * Return cloning strategy to be applied for this property
@@ -169,6 +222,8 @@ public abstract interface FlexoRole<T> extends FlexoProperty<T> {
 		// private static final Logger logger = Logger.getLogger(FlexoRole.class.getPackage().getName());
 
 		private ModelSlot<?> modelSlot;
+		private DataBinding<?> defaultValue;
+		private DataBinding<?> container;
 
 		/**
 		 * Return flag indicating whether this property is abstract
@@ -185,8 +240,31 @@ public abstract interface FlexoRole<T> extends FlexoProperty<T> {
 			return false;
 		}
 
+		/**
+		 * Compute infered model slot from getContainer() binding
+		 * 
+		 * @return
+		 */
+		private ModelSlot<?> getInferedModelSlot() {
+			if (getContainer().isSet() && getContainer().isValid() && getContainer().isBindingValue()) {
+				BindingValue bindingValue = ((BindingValue) getContainer().getExpression());
+				BindingPathElement lastPathElement = bindingValue.getLastBindingPathElement();
+				if (lastPathElement instanceof ModelSlotBindingVariable) {
+					return ((ModelSlotBindingVariable) lastPathElement).getModelSlot();
+				}
+				else if (lastPathElement instanceof FlexoConceptFlexoPropertyPathElement
+						&& ((FlexoConceptFlexoPropertyPathElement) lastPathElement).getFlexoProperty() instanceof ModelSlot) {
+					return (ModelSlot<?>) ((FlexoConceptFlexoPropertyPathElement) lastPathElement).getFlexoProperty();
+				}
+			}
+			return null;
+		}
+
 		@Override
 		public ModelSlot<?> getModelSlot() {
+			if (modelSlot == null) {
+				return getInferedModelSlot();
+			}
 			return modelSlot;
 		}
 
@@ -252,6 +330,78 @@ public abstract interface FlexoRole<T> extends FlexoProperty<T> {
 		}
 
 		@Override
+		public DataBinding<?> getContainer() {
+			if (container == null) {
+				container = new DataBinding<Object>(this, Object.class, BindingDefinitionType.GET);
+				container.setBindingName("container");
+			}
+			return container;
+		}
+
+		@Override
+		public void setContainer(DataBinding<?> container) {
+			if (container != null) {
+				container.setOwner(this);
+				container.setBindingName("container");
+				container.setDeclaredType(Object.class);
+				container.setBindingDefinitionType(BindingDefinitionType.GET);
+			}
+			this.container = container;
+		}
+
+		@Override
+		public Object getContainer(BindingEvaluationContext evaluationContext) {
+			if (getContainer().isValid()) {
+				try {
+					return getContainer().getBindingValue(evaluationContext);
+				} catch (TypeMismatchException e) {
+					e.printStackTrace();
+				} catch (NullReferenceException e) {
+					e.printStackTrace();
+				} catch (InvocationTargetException e) {
+					e.printStackTrace();
+				}
+			}
+			return null;
+		}
+
+		@Override
+		public DataBinding<?> getDefaultValue() {
+			if (defaultValue == null) {
+				defaultValue = new DataBinding<Object>(this, getType(), BindingDefinitionType.GET);
+				defaultValue.setBindingName("defaultValue");
+			}
+			return defaultValue;
+		}
+
+		@Override
+		public void setDefaultValue(DataBinding<?> defaultValue) {
+			if (defaultValue != null) {
+				defaultValue.setOwner(this);
+				defaultValue.setBindingName("defaultValue");
+				defaultValue.setDeclaredType(getType());
+				defaultValue.setBindingDefinitionType(BindingDefinitionType.GET);
+			}
+			this.defaultValue = defaultValue;
+		}
+
+		@Override
+		public Object getDefaultValue(BindingEvaluationContext evaluationContext) {
+			if (getDefaultValue().isValid()) {
+				try {
+					return getDefaultValue().getBindingValue(evaluationContext);
+				} catch (TypeMismatchException e) {
+					e.printStackTrace();
+				} catch (NullReferenceException e) {
+					e.printStackTrace();
+				} catch (InvocationTargetException e) {
+					e.printStackTrace();
+				}
+			}
+			return null;
+		}
+
+		@Override
 		public String getFMLRepresentation(FMLRepresentationContext context) {
 			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
 			out.append("FlexoRole " + getName() + " as "
@@ -266,6 +416,29 @@ public abstract interface FlexoRole<T> extends FlexoProperty<T> {
 				return getModelSlot().getModelSlotTechnologyAdapter().getLocales();
 			}
 			return super.getLocales();
+		}
+
+		/**
+		 * Return the {@link TechnologyAdapter} managing this kind of role
+		 */
+		@Override
+		public final TechnologyAdapter getRoleTechnologyAdapter() {
+			if (getModelSlot() != null) {
+				return getModelSlot().getModelSlotTechnologyAdapter();
+			}
+
+			if (getServiceManager() != null) {
+				return getServiceManager().getTechnologyAdapterService().getTechnologyAdapter(getRoleTechnologyAdapterClass());
+			}
+			return null;
+		}
+
+		@Override
+		public void notifiedBindingChanged(DataBinding<?> dataBinding) {
+			super.notifiedBindingChanged(dataBinding);
+			if (dataBinding == getContainer()) {
+				getPropertyChangeSupport().firePropertyChange(MODEL_SLOT_KEY, null, getModelSlot());
+			}
 		}
 
 	}

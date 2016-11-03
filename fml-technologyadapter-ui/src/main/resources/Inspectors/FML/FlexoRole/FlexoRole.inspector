@@ -9,25 +9,62 @@
 			darkLevel="0" index="0" font="SansSerif,0,11" useScrollBar="true"
 			horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED"
 			verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED" name="BasicTab">
-			<Label label="model_slot" index="4" name="ModelSlotLabel"
+			<!--  <Label label="model_slot" index="4" name="ModelSlotLabel"
 				constraints="twocols(expandHorizontally=false;expandVertically=false;index=2;location=left)"
 				localize="true" />
-			<DropDown index="5" data="data.modelSlot" 
+			<DropDown index="5" data="data.modelSlot"
 				constraints="twocols(expandHorizontally=true;expandVertically=false;index=3;location=right)"
 				name="ModelSlotDD" readOnly="true" format="object.name"
 				icon="controller.iconForObject(object)" localize="true"
 				list="data.flexoConcept.virtualModel.modelSlots" showIcon="true"
 				iteratorClassName="org.openflexo.foundation.technologyadapter.ModelSlot"
-				autoSelectFirstRow="false" showReset="true" />
-			<Label label="cardinality" index="6"
+				autoSelectFirstRow="false" showReset="true" />-->
+			<Label name="TechnologyAdapterLabel" index="6" localize="true"
+				align="left"
+				constraints="twocols(expandHorizontally=false;expandVertically=false;index=2;location=left)"
+				label="technology" />
+			<DropDown manageDynamicModel="true" data="data.roleTechnologyAdapter"
+				index="7" localize="true" readOnly="true"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;index=3;location=right)"
+				format="object.name" showText="true"
+				iteratorClassName="org.openflexo.foundation.technologyadapter.TechnologyAdapter"
+				showIcon="true" name="TechnologyAdapterDD"
+				icon="controller.getTechnologyAdapterController(object).technologyIcon"
+				list="data.serviceManager.technologyAdapterService.technologyAdapters" />
+			<Label label="cardinality" index="8"
 				constraints="twocols(expandHorizontally=false;expandVertically=false;index=2;location=left)"
 				localize="true" />
-			<DropDown index="7" data="data.cardinality"
+			<DropDown index="9" data="data.cardinality"
 				constraints="twocols(expandHorizontally=false;expandVertically=false;index=3;location=right)"
-				name="CardinalityDD" format="object.stringRepresentation"
-				localize="false"
+				name="CardinalityDD" format="object.stringRepresentation" localize="false"
 				iteratorClassName="org.openflexo.foundation.fml.PropertyCardinality"
 				autoSelectFirstRow="false" showReset="false" />
+
+			<Label name="Label4" index="10" localize="true" align="left"
+				constraints="twocols(expandHorizontally=false;expandVertically=false;index=2;location=left)"
+				label="container" />
+			<Custom manageDynamicModel="true" index="11"
+				dataClassForComponent="org.openflexo.connie.DataBinding"
+				componentClassName="org.openflexo.gina.swing.utils.BindingSelector"
+				name="CustomSelector" data="data.container"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;index=3;location=right)">
+				<Assignment mandatory="true" variable="component.bindable" />
+			</Custom>
+			<Label name="Label5" index="12" localize="true" align="left"
+				constraints="twocols(expandHorizontally=false;expandVertically=false;index=2;location=left)"
+				label="default_value" />
+			<Custom manageDynamicModel="true" dataClassForComponent="org.openflexo.connie.DataBinding"
+				componentClassName="org.openflexo.gina.swing.utils.BindingSelector"
+				name="CustomSelector2" data="data.defaultValue" index="13"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;index=3;location=right)">
+				<Assignment mandatory="true" variable="component.bindable" />
+			</Custom>
+			<Label name="Label7" index="14" localize="true" align="left"
+				constraints="twocols(expandHorizontally=false;expandVertically=false;index=2;location=left)"
+				label="required" />
+			<CheckBox selected="true" name="checkbox" data="data.isRequired"
+				index="15"
+				constraints="twocols(expandHorizontally=false;expandVertically=false;index=3;location=right)" />
 
 		</Tab>
 	</TabPanel>
