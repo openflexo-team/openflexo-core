@@ -50,7 +50,7 @@ import org.openflexo.model.annotations.XMLElement;
  * @author sylvain
  * 
  */
-// TODO: merge with FlexoBehaviourParameter
+// TODO: merge with FlexoBehaviourParameter once all deprecated FlexoBehaviourParameter subinterfaces will be removed
 @ModelEntity
 @ImplementationClass(GenericBehaviourParameter.GenericBehaviourParameterImpl.class)
 @XMLElement(xmlTag = "GenericBehaviourParameter")

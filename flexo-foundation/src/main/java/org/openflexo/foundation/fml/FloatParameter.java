@@ -47,6 +47,8 @@ import org.openflexo.model.annotations.XMLElement;
 @ModelEntity
 @ImplementationClass(FloatParameter.FloatParameterImpl.class)
 @XMLElement
+// TODO: deprecated, use generic FlexoBehaviourParameter instead
+@Deprecated
 public interface FloatParameter extends FlexoBehaviourParameter {
 
 	public abstract class FloatParameterImpl extends FlexoBehaviourParameterImpl implements FloatParameter {

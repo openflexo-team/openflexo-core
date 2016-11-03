@@ -56,6 +56,8 @@ import org.openflexo.model.annotations.XMLElement;
 @ModelEntity
 @ImplementationClass(FlexoConceptInstanceParameter.FlexoConceptInstanceParameterImpl.class)
 @XMLElement
+// TODO: deprecated, use generic FlexoBehaviourParameter instead
+@Deprecated
 public interface FlexoConceptInstanceParameter extends InnerModelSlotParameter<FMLRTModelSlot<?, ?>> {
 
 	@PropertyIdentifier(type = String.class)

@@ -67,6 +67,8 @@ import org.openflexo.toolbox.StringUtils;
 @ModelEntity
 @ImplementationClass(URIParameter.URIParameterImpl.class)
 @XMLElement
+// TODO: deprecated, use generic FlexoBehaviourParameter instead
+@Deprecated
 public interface URIParameter extends InnerModelSlotParameter<TypeAwareModelSlot<?, ?>> {
 
 	@PropertyIdentifier(type = DataBinding.class)

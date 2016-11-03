@@ -58,6 +58,8 @@ import org.openflexo.model.annotations.XMLElement;
 @ModelEntity
 @ImplementationClass(ListParameter.ListParameterImpl.class)
 @XMLElement
+// TODO: deprecated, use generic FlexoBehaviourParameter instead
+@Deprecated
 public interface ListParameter extends FlexoBehaviourParameter {
 
 	/*public enum ListType {
@@ -76,10 +78,12 @@ public interface ListParameter extends FlexoBehaviourParameter {
 	@Setter(LIST_TYPE_KEY)
 	public void setListType(ListType listType);*/
 
+	@Override
 	@Getter(value = LIST_KEY)
 	@XMLAttribute
 	public DataBinding<List<?>> getList();
 
+	@Override
 	@Setter(LIST_KEY)
 	public void setList(DataBinding<List<?>> list);
 

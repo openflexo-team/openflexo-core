@@ -47,6 +47,8 @@ import org.openflexo.model.annotations.XMLElement;
 @ModelEntity
 @ImplementationClass(CheckboxParameter.CheckboxParameterImpl.class)
 @XMLElement(xmlTag = "CheckBoxParameter")
+// TODO: deprecated, use generic FlexoBehaviourParameter instead
+@Deprecated
 public interface CheckboxParameter extends FlexoBehaviourParameter {
 
 	public static abstract class CheckboxParameterImpl extends FlexoBehaviourParameterImpl implements CheckboxParameter {

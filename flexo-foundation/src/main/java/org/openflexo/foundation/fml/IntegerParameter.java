@@ -47,6 +47,8 @@ import org.openflexo.model.annotations.XMLElement;
 @ModelEntity
 @ImplementationClass(IntegerParameter.IntegerParameterImpl.class)
 @XMLElement
+// TODO: deprecated, use generic FlexoBehaviourParameter instead
+@Deprecated
 public interface IntegerParameter extends FlexoBehaviourParameter {
 
 	public static abstract class IntegerParameterImpl extends FlexoBehaviourParameterImpl implements IntegerParameter {

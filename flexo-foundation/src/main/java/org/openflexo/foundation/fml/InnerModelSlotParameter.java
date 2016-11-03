@@ -57,6 +57,8 @@ import org.openflexo.model.validation.ValidationWarning;
 
 @ModelEntity(isAbstract = true)
 @ImplementationClass(InnerModelSlotParameter.InnerModelSlotParameterImpl.class)
+// TODO: deprecated, use generic FlexoBehaviourParameter instead
+@Deprecated
 public abstract interface InnerModelSlotParameter<MS extends ModelSlot<?>> extends FlexoBehaviourParameter {
 
 	@PropertyIdentifier(type = ModelSlot.class)

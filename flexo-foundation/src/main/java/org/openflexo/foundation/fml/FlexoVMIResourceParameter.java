@@ -57,6 +57,8 @@ import org.openflexo.model.annotations.XMLElement;
 @ModelEntity
 @ImplementationClass(FlexoVMIResourceParameter.FlexoVMIResourceParameterImpl.class)
 @XMLElement
+// TODO: deprecated, use generic FlexoBehaviourParameter instead
+@Deprecated
 public interface FlexoVMIResourceParameter extends FlexoResourceParameter {
 
 	@PropertyIdentifier(type = String.class)
