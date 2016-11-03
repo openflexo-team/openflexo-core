@@ -43,6 +43,7 @@ import java.util.List;
 import java.util.Vector;
 import java.util.logging.Logger;
 
+import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.type.PrimitiveType;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
@@ -145,6 +146,14 @@ public class CreateTechnologyRole extends AbstractCreateFlexoRole<CreateTechnolo
 				newFlexoRole.setRoleName(getRoleName());
 				newFlexoRole.setCardinality(getCardinality());
 				newFlexoRole.setModelSlot(getModelSlot());
+
+				System.out.println("FlexoRoleClass= " + getFlexoRoleClass());
+				System.out.println("container= " + getContainer());
+				System.out.println("defaultValue= " + getDefaultValue());
+
+				newFlexoRole.setContainer(new DataBinding<Object>(getContainer().toString()));
+				newFlexoRole.setDefaultValue(new DataBinding<Object>(getDefaultValue().toString()));
+				newFlexoRole.setIsRequired(getIsRequired());
 				finalizeDoAction(context);
 			}
 		}

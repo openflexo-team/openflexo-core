@@ -365,7 +365,7 @@ public abstract class AbstractCreateFlexoConcept<A extends FlexoAction<A, T1, T2
 				if (entry.getTechnologyAdapter() != null) {
 					createModelSlot.setTechnologyAdapter(entry.getTechnologyAdapter());
 					createModelSlot.setModelSlotClass(entry.getModelSlotClass());
-					System.out.println("Trouve le ms: c'est " + entry.getModelSlotClass());
+					// System.out.println("ModelSlotClass=" + entry.getModelSlotClass());
 				}
 				break;
 			case TECHNOLOGY_ROLE:
@@ -374,8 +374,13 @@ public abstract class AbstractCreateFlexoConcept<A extends FlexoAction<A, T1, T2
 				action = createTechnologyRole;
 				createTechnologyRole.setRoleName(entry.getName());
 				if (entry.getTechnologyAdapter() != null && entry.getFlexoRoleClass() != null) {
-					System.out.println("Trouve le role: c'est " + entry.getFlexoRoleClass());
+					System.out.println("FlexoRoleClass= " + entry.getFlexoRoleClass());
+					System.out.println("container= " + entry.getContainer());
+					System.out.println("defaultValue= " + entry.getDefaultValue());
 					createTechnologyRole.setFlexoRoleClass(entry.getFlexoRoleClass());
+					createTechnologyRole.setIsRequired(entry.isRequired());
+					createTechnologyRole.setContainer(new DataBinding<Object>(entry.getContainer().toString()));
+					createTechnologyRole.setDefaultValue(new DataBinding<Object>(entry.getDefaultValue().toString()));
 				}
 				break;
 		}

@@ -42,6 +42,11 @@ import java.security.InvalidParameterException;
 import java.util.Vector;
 import java.util.logging.Logger;
 
+import org.openflexo.connie.Bindable;
+import org.openflexo.connie.BindingFactory;
+import org.openflexo.connie.BindingModel;
+import org.openflexo.connie.DataBinding;
+import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionType;
@@ -59,13 +64,16 @@ import org.openflexo.toolbox.StringUtils;
  *
  * @param <A>
  */
-public abstract class AbstractCreateFlexoProperty<A extends AbstractCreateFlexoProperty<A>> extends
-		FlexoAction<A, FlexoConceptObject, FMLObject> {
+public abstract class AbstractCreateFlexoProperty<A extends AbstractCreateFlexoProperty<A>>
+		extends FlexoAction<A, FlexoConceptObject, FMLObject>implements Bindable {
 
 	private static final Logger logger = Logger.getLogger(AbstractCreateFlexoProperty.class.getPackage().getName());
 
 	private String propertyName;
 	private String description;
+
+	private DataBinding<?> defaultValue;
+	private DataBinding<?> container;
 
 	AbstractCreateFlexoProperty(FlexoActionType<A, FlexoConceptObject, FMLObject> actionType, FlexoConceptObject focusedObject,
 			Vector<FMLObject> globalSelection, FlexoEditor editor) {
@@ -102,10 +110,47 @@ public abstract class AbstractCreateFlexoProperty<A extends AbstractCreateFlexoP
 	public boolean isValid() {
 		if (StringUtils.isEmpty(getPropertyName())) {
 			return false;
-		} else if (getFlexoConcept().getDeclaredProperty(getPropertyName()) != null) {
+		}
+		else if (getFlexoConcept().getDeclaredProperty(getPropertyName()) != null) {
 			return false;
 		}
 		return true;
+	}
+
+	public DataBinding<?> getContainer() {
+		if (container == null) {
+			container = new DataBinding<Object>(this, Object.class, BindingDefinitionType.GET);
+			container.setBindingName("container");
+		}
+		return container;
+	}
+
+	public void setContainer(DataBinding<?> container) {
+		if (container != null) {
+			container.setOwner(this);
+			container.setBindingName("container");
+			container.setDeclaredType(Object.class);
+			container.setBindingDefinitionType(BindingDefinitionType.GET);
+		}
+		this.container = container;
+	}
+
+	public DataBinding<?> getDefaultValue() {
+		if (defaultValue == null) {
+			defaultValue = new DataBinding<Object>(this, Object.class, BindingDefinitionType.GET);
+			defaultValue.setBindingName("defaultValue");
+		}
+		return defaultValue;
+	}
+
+	public void setDefaultValue(DataBinding<?> defaultValue) {
+		if (defaultValue != null) {
+			defaultValue.setOwner(this);
+			defaultValue.setBindingName("container");
+			defaultValue.setDeclaredType(Object.class);
+			defaultValue.setBindingDefinitionType(BindingDefinitionType.GET);
+		}
+		this.defaultValue = defaultValue;
 	}
 
 	public String getDescription() {
@@ -124,9 +169,38 @@ public abstract class AbstractCreateFlexoProperty<A extends AbstractCreateFlexoP
 		if (getFlexoConcept() != null && getNewFlexoProperty() != null) {
 			getNewFlexoProperty().setDescription(getDescription());
 			getFlexoConcept().addToFlexoProperties(getNewFlexoProperty());
-		} else {
+		}
+		else {
 			throw new InvalidParameterException("Could not create property");
 		}
+	}
+
+	@Override
+	public BindingModel getBindingModel() {
+		if (getFlexoConcept() != null) {
+			return getFlexoConcept().getBindingModel();
+		}
+		return null;
+	}
+
+	@Override
+	public BindingFactory getBindingFactory() {
+		if (getFlexoConcept() != null) {
+			return getFlexoConcept().getBindingFactory();
+		}
+		return null;
+	}
+
+	@Override
+	public void notifiedBindingChanged(DataBinding<?> dataBinding) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void notifiedBindingDecoded(DataBinding<?> dataBinding) {
+		// TODO Auto-generated method stub
+
 	}
 
 }

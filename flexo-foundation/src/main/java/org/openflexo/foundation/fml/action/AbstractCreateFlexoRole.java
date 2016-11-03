@@ -82,13 +82,7 @@ public abstract class AbstractCreateFlexoRole<A extends AbstractCreateFlexoRole<
 	private MS modelSlot;
 	protected MS defaultModelSlot;
 
-	private boolean isRequired = true;
-
-	// private boolean useModelSlot;
-	// private Class<? extends FlexoRole> flexoRoleClass;
-	// private IFlexoOntologyClass individualType;
-	// private FlexoConcept flexoConceptInstanceType;
-	// private PrimitiveType primitiveType = PrimitiveType.String;
+	private boolean isRequired;
 
 	private PropertyCardinality cardinality = PropertyCardinality.ZeroOne;
 
@@ -133,6 +127,17 @@ public abstract class AbstractCreateFlexoRole<A extends AbstractCreateFlexoRole<
 			PropertyCardinality oldPropertyCardinality = getCardinality();
 			this.cardinality = propertyCardinality;
 			getPropertyChangeSupport().firePropertyChange("cardinality", oldPropertyCardinality, propertyCardinality);
+		}
+	}
+
+	public boolean getIsRequired() {
+		return isRequired;
+	}
+
+	public void setIsRequired(boolean isRequired) {
+		if (isRequired != this.isRequired) {
+			this.isRequired = isRequired;
+			getPropertyChangeSupport().firePropertyChange("isRequired", !isRequired, isRequired);
 		}
 	}
 
