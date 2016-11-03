@@ -1,10 +1,3 @@
-0=0
-0\ errors,\ 0\ warnings=0 errors, 0 warnings
-0\ errors,\ 6\ warnings=0 errors, 6 warnings
-1=1
-2=2
-3\ errors,\ 0\ warnings=3 errors, 0 warnings
-4\ errors,\ 6\ warnings=4 errors, 6 warnings
 <html>build_a_new_concept_representing_an_individual</html>=<html>build_a_new_concept_representing_an_individual</html>
 <html>build_a_new_concept_without_connexion_to_any_data_source</html>=<html>build_a_new_concept_without_connexion_to_any_data_source</html>
 ABSTRACT_PROPERTY=ABSTRACT_PROPERTY
