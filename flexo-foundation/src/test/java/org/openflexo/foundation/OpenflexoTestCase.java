@@ -134,7 +134,25 @@ public abstract class OpenflexoTestCase {
 	}
 
 	protected static void deleteTestResourceCenters() {
-		if (DELETE_TEST_RESOURCE_CENTER_AFTER_TEST_EXECUTION) {
+		FlexoResourceCenterService RCService = null;
+
+		if (serviceManager != null) {
+			RCService = serviceManager.getResourceCenterService();
+		}
+		// Must stop ResourceCenterService before deleting resourceCenters
+		if (RCService != null) {
+			if (resourceCenter != null) {
+				RCService.removeFromResourceCenters(resourceCenter);
+			}
+			if (gitResourceCenter != null) {
+				RCService.removeFromResourceCenters(gitResourceCenter);
+			}
+			RCService.stop();
+		}
+
+		if (DELETE_TEST_RESOURCE_CENTER_AFTER_TEST_EXECUTION)
+
+		{
 			if (testResourceCenterDirectory != null) {
 				FileUtils.deleteDir(testResourceCenterDirectory);
 			}
@@ -145,6 +163,7 @@ public abstract class OpenflexoTestCase {
 			}
 		}
 		resourceCenter = null;
+		gitResourceCenter = null;
 	}
 
 	public static class FlexoTestEditor extends DefaultFlexoEditor {
