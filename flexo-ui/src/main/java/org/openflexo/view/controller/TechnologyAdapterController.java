@@ -625,46 +625,6 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 		resourceSelector.addToAssignments(
 				fibModelFactory.newFIBCustomAssignment(resourceSelector, new DataBinding<Object>("component.expectedType"),
 						new DataBinding<Object>("data.parametersDefinitions." + parameter.getName() + ".type"), true));
-						// resourceSelector.addToAssignments(
-						// fibModelFactory.newFIBCustomAssignment(resourceSelector, new DataBinding<Object>("component.resourceDataClass"),
-						// new DataBinding<Object>("controller.flexoController.applicationContext"), true));
-
-		/*String containerBinding = "";
-		if (parameter.getFlexoBehaviour() instanceof CreationScheme) {
-			containerBinding = "data." + FlexoConceptBindingFactory.VIRTUAL_MODEL_INSTANCE + "." + parameter.getContainer().toString();
-		}
-		else {
-			containerBinding = "data." + FlexoConceptBindingFactory.FLEXO_CONCEPT_INSTANCE + "." + parameter.getContainer().toString();
-		}
-		
-		if (parameter.getContainer().isSet() && parameter.getContainer().isValid()) {
-		
-			Type containerType = parameter.getContainer().getAnalyzedType();
-		
-			if (containerType instanceof ViewType) {
-				resourceSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(resourceSelector, new DataBinding<Object>("component.view"),
-						new DataBinding<Object>(containerBinding), true));
-			}
-			else if (containerType instanceof VirtualModelInstanceType) {
-				resourceSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(resourceSelector,
-						new DataBinding<Object>("component.virtualModelInstance"), new DataBinding<Object>(containerBinding), true));
-			}
-			else if (TypeUtils.isTypeAssignableFrom(FlexoResourceCenter.class, containerType)) {
-				resourceSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(resourceSelector,
-						new DataBinding<Object>("component.resourceCenter"), new DataBinding<Object>(containerBinding), true));
-			}
-		}
-		else {
-		
-			// No container defined, set service manager
-			resourceSelector.addToAssignments(
-					fibModelFactory.newFIBCustomAssignment(resourceSelector, new DataBinding<Object>("component.serviceManager"),
-							new DataBinding<Object>("controller.flexoController.applicationContext"), true));
-		}
-		
-		resourceSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(resourceSelector, new DataBinding<Object>("component.expectedType"),
-				new DataBinding<Object>("data.parametersDefinitions." + parameter.getName() + ".type"), true));*/
-
 		return registerWidget(resourceSelector, parameter, panel, index);
 
 	}
