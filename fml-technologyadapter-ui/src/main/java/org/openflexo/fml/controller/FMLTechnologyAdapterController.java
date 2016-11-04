@@ -68,6 +68,7 @@ import org.openflexo.fml.controller.view.ViewPointView;
 import org.openflexo.fml.controller.view.VirtualModelView;
 import org.openflexo.fml.controller.widget.FIBViewPointLibraryBrowser;
 import org.openflexo.fml.controller.widget.FlexoConceptInstanceTypeEditor;
+import org.openflexo.fml.controller.widget.FlexoResourceTypeEditor;
 import org.openflexo.fml.controller.widget.ViewTypeEditor;
 import org.openflexo.fml.controller.widget.VirtualModelInstanceTypeEditor;
 import org.openflexo.foundation.action.FlexoActionType;
@@ -98,6 +99,7 @@ import org.openflexo.foundation.fml.rt.VirtualModelInstanceModelSlot;
 import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.SelectFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.SelectVirtualModelInstance;
+import org.openflexo.foundation.resource.FlexoResourceType;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.gina.swing.utils.CustomTypeEditor;
@@ -134,7 +136,10 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 
 	@Override
 	protected CustomTypeEditor<?> makeCustomTypeEditor(Class<? extends CustomType> typeClass) {
-		if (typeClass.equals(ViewType.class)) {
+		if (typeClass.equals(FlexoResourceType.class)) {
+			return new FlexoResourceTypeEditor(getServiceManager());
+		}
+		else if (typeClass.equals(ViewType.class)) {
 			return new ViewTypeEditor(getServiceManager());
 		}
 		else if (typeClass.equals(VirtualModelInstanceType.class)) {
