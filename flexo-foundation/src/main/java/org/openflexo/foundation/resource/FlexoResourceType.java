@@ -42,8 +42,9 @@ import java.lang.reflect.Type;
 import java.util.List;
 import java.util.logging.Logger;
 
-import org.openflexo.connie.type.CustomType;
 import org.openflexo.connie.type.CustomTypeFactory;
+import org.openflexo.connie.type.JavaCustomType;
+import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.TechnologyAdapterTypeFactory;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
@@ -59,7 +60,7 @@ import org.openflexo.toolbox.StringUtils;
  * @author sylvain
  * 
  */
-public class FlexoResourceType implements CustomType {
+public class FlexoResourceType implements JavaCustomType {
 
 	protected FlexoResourceFactory<?, ?, ?> resourceFactory;
 	protected String resourceDataClassName;
@@ -170,18 +171,27 @@ public class FlexoResourceType implements CustomType {
 
 	@Override
 	public Class<?> getBaseClass() {
+		if (resourceFactory != null) {
+			return resourceFactory.getResourceClass();
+		}
 		return FlexoResource.class;
+	}
+
+	@Override
+	public Type getJavaType() {
+		return getBaseClass();
 	}
 
 	@Override
 	public boolean isTypeAssignableFrom(Type aType, boolean permissive) {
 		// System.out.println("isTypeAssignableFrom " + aType + " (i am a " + this + ")");
 
-		if (aType instanceof FlexoResourceType) {
+		/*if (aType instanceof FlexoResourceType) {
 			return (resourceFactory == null) || (resourceFactory.getResourceDataClass()
 					.isAssignableFrom(((FlexoResourceType) aType).getResourceFactory().getResourceDataClass()));
 		}
-		return false;
+		return false;*/
+		return TypeUtils.isTypeAssignableFrom(getJavaType(), aType, permissive);
 	}
 
 	@Override
