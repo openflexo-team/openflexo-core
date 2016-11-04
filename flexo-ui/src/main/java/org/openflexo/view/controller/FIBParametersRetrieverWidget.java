@@ -43,9 +43,14 @@ import java.util.logging.Logger;
 
 import org.openflexo.ApplicationContext;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
+import org.openflexo.gina.controller.FIBController;
+import org.openflexo.gina.model.FIBComponent;
 import org.openflexo.gina.swing.utils.FIBJPanel;
 import org.openflexo.gina.swing.view.JFIBView;
+import org.openflexo.gina.swing.view.SwingViewFactory;
 import org.openflexo.localization.FlexoLocalization;
+import org.openflexo.localization.LocalizedDelegate;
+import org.openflexo.view.controller.ParametersRetriever.ParametersRetrieverController;
 
 /**
  * Widget allowing to edit parameters of an FlexoBehaviour
@@ -69,8 +74,17 @@ public class FIBParametersRetrieverWidget extends FIBJPanel<FlexoBehaviourAction
 	}
 
 	public void setApplicationContext(ApplicationContext applicationContext) {
-		this.applicationContext = applicationContext;
-		fireEditedObjectChanged();
+		// Avoid multiple call of fireEditedObjectChanged when not necessary
+		if (applicationContext != this.applicationContext) {
+			this.applicationContext = applicationContext;
+			if (getController() instanceof ParametersRetrieverController) {
+				if (applicationContext != null) {
+					((ParametersRetrieverController) getController())
+							.setFlexoController(applicationContext.getModuleLoader().getActiveModule().getController());
+				}
+			}
+			fireEditedObjectChanged();
+		}
 	}
 
 	@Override
@@ -79,8 +93,13 @@ public class FIBParametersRetrieverWidget extends FIBJPanel<FlexoBehaviourAction
 	}
 
 	@Override
+	protected FIBController makeFIBController(FIBComponent fibComponent, LocalizedDelegate parentLocalizer) {
+		return new ParametersRetrieverController(fibComponent, SwingViewFactory.INSTANCE,
+				applicationContext != null ? applicationContext.getModuleLoader().getActiveModule().getController() : null);
+	}
+
+	@Override
 	public void fireEditedObjectChanged() {
-		System.out.println("Hop, fireEditedObjectChanged() in FIBParametersRetrieverWidget");
 		FlexoBehaviourAction action = getEditedObject();
 		if (action != null) {
 			fibComponent = (new ParametersRetriever(action, applicationContext)).makeFIB(false, false);

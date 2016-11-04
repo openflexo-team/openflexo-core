@@ -48,6 +48,7 @@ import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.ViewType;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.View;
+import org.openflexo.foundation.resource.FlexoResourceCenter;
 
 /**
  * This is the {@link BindingModel} exposed by a ViewPoint<br>
@@ -74,7 +75,9 @@ public class ViewPointBindingModel extends VirtualModelBindingModel implements P
 
 	private final BindingVariable reflexiveAccessBindingVariable;
 	private final BindingVariable viewBindingVariable;
+	@Deprecated
 	private final BindingVariable projectBindingVariable;
+	private final BindingVariable rcBindingVariable;
 
 	/**
 	 * Build a new {@link BindingModel} dedicated to a ViewPoint
@@ -95,6 +98,9 @@ public class ViewPointBindingModel extends VirtualModelBindingModel implements P
 
 		projectBindingVariable = new BindingVariable(PROJECT_PROPERTY, FlexoProject.class);
 		addToBindingVariables(projectBindingVariable);
+
+		rcBindingVariable = new BindingVariable(RC_PROPERTY, FlexoResourceCenter.class);
+		addToBindingVariables(rcBindingVariable);
 	}
 
 	public ViewPoint getViewPoint() {

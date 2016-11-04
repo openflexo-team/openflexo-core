@@ -69,6 +69,7 @@ import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.technologyadapter.FlexoMetaModel;
 import org.openflexo.foundation.technologyadapter.FlexoModel;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterResource;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.foundation.technologyadapter.TypeAwareModelSlot;
@@ -817,7 +818,13 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 
 		@Override
 		public boolean isSynchronizable() {
-			return getVirtualModel() != null && getVirtualModel().hasSynchronizationScheme();
+			// is synchronizable if virtualModel is not null, it has SynchronizationScheme and all needed TA are activated
+			VM vm = getVirtualModel();
+			boolean synchronizable = vm != null && vm.hasSynchronizationScheme();
+			for (TechnologyAdapter neededTA : vm.getRequiredTechnologyAdapters()) {
+				synchronizable = synchronizable && neededTA.isActivated();
+			}
+			return synchronizable;
 		}
 
 		/**

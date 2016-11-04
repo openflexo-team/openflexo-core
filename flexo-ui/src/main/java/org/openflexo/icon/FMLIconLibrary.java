@@ -112,6 +112,13 @@ public class FMLIconLibrary extends IconLibrary {
 	public static final ImageIconResource VIEWPOINT_LIBRARY_ICON = new ImageIconResource(
 			ResourceLocator.locateResource("Icons/Model/VPM/ViewPointLibrary.png"));
 
+	public static final ImageIconResource TECHNOLOGY_ADAPTER_ICON = new ImageIconResource(
+			ResourceLocator.locateResource("Icons/Common/TechnologyAdapter.png"));
+	public static final ImageIconResource TECHNOLOGY_ADAPTER_MEDIUM_ICON = new ImageIconResource(
+			ResourceLocator.locateResource("Icons/Common/TechnologyAdapter_32x32.png"));
+	public static final ImageIconResource TECHNOLOGY_ADAPTER_BIG_ICON = new ImageIconResource(
+			ResourceLocator.locateResource("Icons/Common/TechnologyAdapter_64x64.png"));
+
 	public static final ImageIconResource VIEWPOINT_ICON = new ImageIconResource(
 			ResourceLocator.locateResource("Icons/Model/VPM/ViewPoint.png"));
 	public static final ImageIconResource VIEWPOINT_MEDIUM_ICON = new ImageIconResource(
@@ -268,9 +275,8 @@ public class FMLIconLibrary extends IconLibrary {
 		else if (object instanceof FlexoConceptInstanceRole) {
 			return FMLRTIconLibrary.FLEXO_CONCEPT_INSTANCE_ICON;
 		}
-		else if (object instanceof FlexoRole && ((FlexoRole) object).getModelSlot() != null) {
-			TechnologyAdapterController<?> tac = getTechnologyAdapterController(
-					((FlexoRole) object).getModelSlot().getModelSlotTechnologyAdapter());
+		else if (object instanceof FlexoRole /*&& ((FlexoRole) object).getModelSlot() != null*/) {
+			TechnologyAdapterController<?> tac = getTechnologyAdapterController(((FlexoRole) object).getRoleTechnologyAdapter());
 			if (tac != null) {
 				return tac.getIconForFlexoRole((Class<? extends FlexoRole<?>>) object.getClass());
 			}

@@ -377,7 +377,9 @@ public abstract class AbstractCreateVirtualModelInstance<A extends AbstractCreat
 		boolean wasValidable = isActionValidable();
 		this.creationScheme = creationScheme;
 		if (creationScheme != null) {
-			creationSchemeAction = CreationSchemeAction.actionType.makeNewEmbeddedAction(null, null, this);
+			creationSchemeAction = CreationSchemeAction.actionType
+					.makeNewEmbeddedAction(getFocusedObject() instanceof AbstractVirtualModelInstance
+							? (AbstractVirtualModelInstance<?, ?>) getFocusedObject() : null, null, this);
 			creationSchemeAction.setCreationScheme(creationScheme);
 			creationSchemeAction.addObserver(this);
 			getPropertyChangeSupport().firePropertyChange("creationSchemeAction", null, creationSchemeAction);

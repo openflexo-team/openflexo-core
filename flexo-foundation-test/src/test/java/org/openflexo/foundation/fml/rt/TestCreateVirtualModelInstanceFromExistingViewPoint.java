@@ -214,6 +214,9 @@ public class TestCreateVirtualModelInstanceFromExistingViewPoint extends Openfle
 		ViewPointResource vpRes = newViewResource.getViewPointResource();
 		viewPoint = vpRes.getResourceData(null);
 		assertNotNull(viewPoint);
+
+		viewPoint.loadVirtualModelsWhenUnloaded();
+
 		assertEquals(1, viewPoint.getVirtualModels().size());
 		virtualModel = viewPoint.getVirtualModels().get(0);
 

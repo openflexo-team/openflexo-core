@@ -58,7 +58,7 @@ import org.openflexo.model.annotations.PropertyIdentifier;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
 
-@ModelEntity
+@ModelEntity(isAbstract = true)
 @ImplementationClass(PropertyRole.PropertyRoleImpl.class)
 public interface PropertyRole<T extends IFlexoOntologyStructuralProperty> extends OntologicObjectRole<T> {
 
@@ -89,8 +89,8 @@ public interface PropertyRole<T extends IFlexoOntologyStructuralProperty> extend
 
 	public void setDomain(IFlexoOntologyClass<?> c);
 
-	public abstract class PropertyRoleImpl<T extends IFlexoOntologyStructuralProperty> extends OntologicObjectRoleImpl<T> implements
-			PropertyRole<T> {
+	public abstract class PropertyRoleImpl<T extends IFlexoOntologyStructuralProperty> extends OntologicObjectRoleImpl<T>
+			implements PropertyRole<T> {
 
 		private String parentPropertyURI;
 		private String domainURI;

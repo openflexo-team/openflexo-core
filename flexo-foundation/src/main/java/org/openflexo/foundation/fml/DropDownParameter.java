@@ -48,6 +48,8 @@ import org.openflexo.model.annotations.XMLElement;
 @ModelEntity
 @ImplementationClass(DropDownParameter.DropDownParameterImpl.class)
 @XMLElement
+// TODO: deprecated, use generic FlexoBehaviourParameter instead
+@Deprecated
 public interface DropDownParameter extends FlexoBehaviourParameter {
 
 	public abstract class DropDownParameterImpl extends FlexoBehaviourParameterImpl implements DropDownParameter {

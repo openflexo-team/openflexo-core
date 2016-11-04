@@ -40,7 +40,7 @@
 			tooltip="" enabled="" visible="" isEditable="false" editableLabel=""
 			filtered="false" defaultVisible="true" dynamicFont=""
 			name="technologyAdapter">
-			<Children data="technologyAdapter.getAllRepositories()"
+			<Children data="technologyAdapter.getViewLibraries()"
 				visible="" cast="child.rootFolder" name="repositories" />
 		</BrowserElement>
 		<BrowserElement dataClassName="org.openflexo.foundation.fml.rt.ViewLibrary"

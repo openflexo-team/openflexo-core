@@ -55,6 +55,8 @@ import org.openflexo.model.annotations.XMLElement;
 @ModelEntity
 @ImplementationClass(TechnologyObjectParameter.TechnologyObjectParameterImpl.class)
 @XMLElement
+// TODO: deprecated, use generic FlexoBehaviourParameter instead
+@Deprecated
 public interface TechnologyObjectParameter<MS extends ModelSlot<?>> extends InnerModelSlotParameter<MS> {
 
 	public static abstract class TechnologyObjectParameterImpl<MS extends ModelSlot<?>> extends InnerModelSlotParameterImpl<MS>

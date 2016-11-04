@@ -23,6 +23,7 @@ package org.openflexo.foundation.resource;
 import java.io.IOException;
 import java.util.logging.Logger;
 
+import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterResource;
 import org.openflexo.foundation.technologyadapter.TechnologyContextManager;
@@ -53,6 +54,8 @@ public abstract class FlexoResourceFactory<R extends TechnologyAdapterResource<R
 
 	private final Class<R> resourceClass;
 
+	private final FlexoResourceType resourceType;
+
 	/**
 	 * Generic constructor
 	 * 
@@ -62,6 +65,7 @@ public abstract class FlexoResourceFactory<R extends TechnologyAdapterResource<R
 	protected FlexoResourceFactory(Class<R> resourceClass) throws ModelDefinitionException {
 		super(ModelContextLibrary.getCompoundModelContext(resourceClass, FlexoIODelegate.class));
 		this.resourceClass = resourceClass;
+		resourceType = new FlexoResourceType(this);
 	}
 
 	/**
@@ -73,6 +77,11 @@ public abstract class FlexoResourceFactory<R extends TechnologyAdapterResource<R
 	protected FlexoResourceFactory(Class<R> resourceClass, Class<?>... requiredClasses) throws ModelDefinitionException {
 		super(ModelContextLibrary.getCompoundModelContext(resourceClass, requiredClasses));
 		this.resourceClass = resourceClass;
+		resourceType = new FlexoResourceType(this);
+	}
+
+	public FlexoResourceType getResourceType() {
+		return resourceType;
 	}
 
 	/**
@@ -82,6 +91,14 @@ public abstract class FlexoResourceFactory<R extends TechnologyAdapterResource<R
 	 */
 	public Class<R> getResourceClass() {
 		return resourceClass;
+	}
+
+	public Class<RD> getResourceDataClass() {
+		return (Class<RD>) (TypeUtils.getBaseClass(TypeUtils.getTypeArgument(getResourceClass(), TechnologyAdapterResource.class, 0)));
+	}
+
+	public Class<TA> getTechnologyAdapterClass() {
+		return (Class<TA>) (TypeUtils.getBaseClass(TypeUtils.getTypeArgument(getResourceClass(), TechnologyAdapterResource.class, 1)));
 	}
 
 	/**

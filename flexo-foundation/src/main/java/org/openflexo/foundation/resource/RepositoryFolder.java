@@ -299,4 +299,19 @@ public class RepositoryFolder<R extends FlexoResource<?>, I> extends DefaultFlex
 		return null;
 	}
 
+	/**
+	 * Return boolean indicating if this folder contains some resources (at least one).<br>
+	 * Recursive implementation
+	 * 
+	 * @return
+	 */
+	public boolean containsResources() {
+		for (RepositoryFolder<R, I> child : getChildren()) {
+			if (child.containsResources()) {
+				return true;
+			}
+		}
+		return getResources().size() > 0;
+	}
+
 }

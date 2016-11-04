@@ -83,7 +83,6 @@ public abstract class FIBProjectObjectSelector<T extends FlexoObject> extends FI
 					logger.warning("Passing null project. If you rely on project this is unlikely to work");
 				}
 			}
-			System.out.println(">>>>>>>>> Sets project with " + project);
 			this.project = project;
 			getPropertyChangeSupport().firePropertyChange("project", oldProject, project);
 		}

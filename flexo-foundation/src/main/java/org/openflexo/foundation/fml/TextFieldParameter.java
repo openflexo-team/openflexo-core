@@ -47,6 +47,8 @@ import org.openflexo.model.annotations.XMLElement;
 @ModelEntity
 @ImplementationClass(TextFieldParameter.TextFieldParameterImpl.class)
 @XMLElement
+// TODO: deprecated, use generic FlexoBehaviourParameter instead
+@Deprecated
 public interface TextFieldParameter extends FlexoBehaviourParameter {
 
 	public static abstract class TextFieldParameterImpl extends FlexoBehaviourParameterImpl implements TextFieldParameter {

@@ -773,6 +773,12 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>>
 
 			return super.delete(context);
 		}
+
+		@Override
+		public Class<? extends TechnologyAdapter> getRoleTechnologyAdapterClass() {
+			return getModelSlotTechnologyAdapter().getClass();
+		}
+
 	}
 
 }

@@ -101,7 +101,7 @@ public abstract interface AddConcept<MS extends TypeAwareModelSlot<?, ?>, T> ext
 		 */
 		@Override
 		public MS getModelSlot() {
-			MS returned = (MS) performSuperGetter(TechnologySpecificAction.MODEL_SLOT_KEY);
+			MS returned = (MS) performSuperGetter(MODEL_SLOT_KEY);
 			if (returned == null && getOwningVirtualModel() != null) {
 				@SuppressWarnings("rawtypes")
 				List<TypeAwareModelSlot> msList = getOwningVirtualModel().getModelSlots(TypeAwareModelSlot.class);
@@ -110,6 +110,11 @@ public abstract interface AddConcept<MS extends TypeAwareModelSlot<?, ?>, T> ext
 				}
 			}
 			return returned;
+		}
+
+		@Override
+		public void setModelSlot(MS modelSlot) {
+			performSuperSetter(MODEL_SLOT_KEY, modelSlot);
 		}
 
 		@Override

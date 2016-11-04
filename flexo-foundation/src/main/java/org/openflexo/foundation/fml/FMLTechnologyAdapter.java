@@ -51,6 +51,8 @@ import org.openflexo.foundation.fml.rm.ViewPointResourceFactory;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
+import org.openflexo.foundation.resource.FlexoResourceType;
+import org.openflexo.foundation.resource.FlexoResourceType.FlexoResourceTypeFactory;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterBindingFactory;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterInitializationException;
@@ -106,15 +108,24 @@ public class FMLTechnologyAdapter extends TechnologyAdapter {
 		return this.getTechnologyAdapterService().getServiceManager();
 	}
 
+	private FlexoResourceTypeFactory resourceTypeFactory;
 	private FlexoConceptInstanceTypeFactory fciFactory;
 	private VirtualModelInstanceTypeFactory vmiFactory;
 	private ViewTypeFactory viewFactory;
 
 	@Override
 	public void initTechnologySpecificTypes(TechnologyAdapterService taService) {
+		taService.registerTypeClass(FlexoResourceType.class, getFlexoResourceTypeFactory());
 		taService.registerTypeClass(FlexoConceptInstanceType.class, getFlexoConceptInstanceTypeFactory());
 		taService.registerTypeClass(VirtualModelInstanceType.class, getVirtualModelInstanceTypeFactory());
 		taService.registerTypeClass(ViewType.class, getViewTypeFactory());
+	}
+
+	protected FlexoResourceTypeFactory getFlexoResourceTypeFactory() {
+		if (resourceTypeFactory == null) {
+			resourceTypeFactory = new FlexoResourceTypeFactory(this);
+		}
+		return resourceTypeFactory;
 	}
 
 	protected FlexoConceptInstanceTypeFactory getFlexoConceptInstanceTypeFactory() {

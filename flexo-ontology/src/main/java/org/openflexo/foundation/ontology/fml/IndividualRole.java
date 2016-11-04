@@ -79,8 +79,8 @@ public interface IndividualRole<I extends IFlexoOntologyIndividual<?>> extends O
 
 	public void setOntologicType(IFlexoOntologyClass<?> ontologyClass);
 
-	public static abstract class IndividualRoleImpl<I extends IFlexoOntologyIndividual<?>> extends OntologicObjectRoleImpl<I> implements
-			IndividualRole<I> {
+	public static abstract class IndividualRoleImpl<I extends IFlexoOntologyIndividual<?>> extends OntologicObjectRoleImpl<I>
+			implements IndividualRole<I> {
 
 		public IndividualRoleImpl() {
 			super();
@@ -89,8 +89,8 @@ public interface IndividualRole<I extends IFlexoOntologyIndividual<?>> extends O
 		@Override
 		public String getFMLRepresentation(FMLRepresentationContext context) {
 			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
-			out.append("FlexoRole " + getName() + " as Individual conformTo " + getTypeDescription() + " from " + getModelSlot().getName()
-					+ " ;", context);
+			out.append("FlexoRole " + getName() + " as Individual conformTo " + getTypeDescription()
+					+ (getModelSlot() != null ? " from " + getModelSlot().getName() : "") + " ;", context);
 			return out.toString();
 		}
 
@@ -116,7 +116,8 @@ public interface IndividualRole<I extends IFlexoOntologyIndividual<?>> extends O
 			Type returned;
 			if (getOntologicType() == null) {
 				returned = IFlexoOntologyIndividual.class;
-			} else {
+			}
+			else {
 				returned = IndividualOfClass.getIndividualOfClass(getOntologicType());
 			}
 			if (lastKnownType == null || !lastKnownType.equals(returned)) {
@@ -173,14 +174,15 @@ public interface IndividualRole<I extends IFlexoOntologyIndividual<?>> extends O
 	}
 
 	@DefineValidationRule
-	public static class IndividualFlexoRoleMustDefineAValidConceptClass extends
-			ValidationRule<IndividualFlexoRoleMustDefineAValidConceptClass, IndividualRole> {
+	public static class IndividualFlexoRoleMustDefineAValidConceptClass
+			extends ValidationRule<IndividualFlexoRoleMustDefineAValidConceptClass, IndividualRole> {
 		public IndividualFlexoRoleMustDefineAValidConceptClass() {
 			super(IndividualRole.class, "individual_role_must_define_a_valid_concept_class");
 		}
 
 		@Override
-		public ValidationIssue<IndividualFlexoRoleMustDefineAValidConceptClass, IndividualRole> applyValidation(IndividualRole patternRole) {
+		public ValidationIssue<IndividualFlexoRoleMustDefineAValidConceptClass, IndividualRole> applyValidation(
+				IndividualRole patternRole) {
 			if (patternRole.getOntologicType() == null) {
 				return new ValidationError<IndividualFlexoRoleMustDefineAValidConceptClass, IndividualRole>(this, patternRole,
 						"individual_role_does_not_define_any_concept_class");

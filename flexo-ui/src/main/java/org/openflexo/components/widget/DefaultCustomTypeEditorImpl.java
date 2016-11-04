@@ -91,14 +91,10 @@ public abstract class DefaultCustomTypeEditorImpl<T extends CustomType> extends 
 
 	@Override
 	public FlexoFIBController makeFIBController() {
-		// System.out.println("OK on arrive bien la, on cree bien le SelectorFIBController");
+		// System.out.println("makeFIBController() in DefaultCustomTypeEditorImpl");
 		FIBComponent component = ApplicationFIBLibraryImpl.instance().retrieveFIBComponent(getFIBComponentResource());
-		// System.out.println("component=" + component);
 		FlexoController controller = ((ApplicationContext) serviceManager).getModuleLoader().getActiveModule().getController();
-		// System.out.println("controller=" + controller);
 
-		// System.out.println("OK on arrive bien la, on cree bien le SelectorFIBController avec: " + conceptSelector + " component="
-		// + conceptSelector.getFIBComponent());
 		return new SelectorFIBController(component, this, controller);
 	}
 
@@ -112,6 +108,7 @@ public abstract class DefaultCustomTypeEditorImpl<T extends CustomType> extends 
 		public SelectorFIBController(FIBComponent component, DefaultCustomTypeEditorImpl editor, FlexoController controller) {
 			super(component, SwingViewFactory.INSTANCE);
 			this.editor = editor;
+			setFlexoController(controller);
 		}
 
 		public void selectedObjectChanged() {
@@ -121,5 +118,6 @@ public abstract class DefaultCustomTypeEditorImpl<T extends CustomType> extends 
 		public void apply() {
 			System.out.println("apply");
 		}
+
 	}
 }

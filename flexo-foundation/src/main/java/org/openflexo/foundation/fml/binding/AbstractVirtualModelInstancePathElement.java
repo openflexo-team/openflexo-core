@@ -36,36 +36,56 @@
  * 
  */
 
-package org.openflexo.foundation.fml;
+package org.openflexo.foundation.fml.binding;
 
 import java.lang.reflect.Type;
+import java.util.logging.Logger;
 
-import org.openflexo.model.annotations.ImplementationClass;
-import org.openflexo.model.annotations.ModelEntity;
-import org.openflexo.model.annotations.XMLElement;
+import org.openflexo.connie.binding.BindingPathElement;
+import org.openflexo.connie.binding.SimplePathElement;
+import org.openflexo.foundation.fml.AbstractVirtualModel;
+import org.openflexo.foundation.fml.FlexoConceptInstanceType;
+import org.openflexo.foundation.fml.VirtualModelInstanceType;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 
-@ModelEntity
-@ImplementationClass(CheckboxParameter.CheckboxParameterImpl.class)
-@XMLElement(xmlTag = "CheckBoxParameter")
-// TODO: deprecated, use generic FlexoBehaviourParameter instead
-@Deprecated
-public interface CheckboxParameter extends FlexoBehaviourParameter {
+/**
+ * A path element which represents a {@link VirtualModelInstance} accessible at run-time<br>
+ * The {@link VirtualModelInstance} is typed as {@link VirtualModelInstanceType}
+ * 
+ * @author sylvain
+ *
+ */
+public abstract class AbstractVirtualModelInstancePathElement<VM extends AbstractVirtualModel<?>> extends SimplePathElement {
 
-	public static abstract class CheckboxParameterImpl extends FlexoBehaviourParameterImpl implements CheckboxParameter {
+	private static final Logger logger = Logger.getLogger(AbstractVirtualModelInstancePathElement.class.getPackage().getName());
 
-		public CheckboxParameterImpl() {
-			super();
-		}
+	private final VM virtualModel;
 
-		@Override
-		public Type getType() {
-			return Boolean.class;
-		};
-
-		@Override
-		public WidgetType getWidget() {
-			return WidgetType.CHECKBOX;
-		}
-
+	public AbstractVirtualModelInstancePathElement(BindingPathElement parent, String pathElementName, VM virtualModel) {
+		super(parent, pathElementName, FlexoConceptInstanceType.getFlexoConceptInstanceType(virtualModel));
+		this.virtualModel = virtualModel;
 	}
+
+	public VM getVirtualModel() {
+		return virtualModel;
+	}
+
+	@Override
+	public Type getType() {
+		return FlexoConceptInstanceType.getFlexoConceptInstanceType(virtualModel);
+	}
+
+	@Override
+	public String getLabel() {
+		return getPropertyName();
+	}
+
+	@Override
+	public String getTooltipText(Type resultingType) {
+		if (virtualModel != null) {
+			return virtualModel.getDescription();
+		}
+		return null;
+	}
+
 }

@@ -35,22 +35,37 @@
 		doubleClickAction="controller.apply()" enterPressedAction="controller.apply()"
 		name="ViewPointBrowser" index="2"
 		constraints="twocols(expandHorizontally=true;expandVertically=true;index=2;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=center)">
-		<BrowserElement dataClassName="org.openflexo.foundation.fml.ViewPoint"
-			label="viewPoint.name" icon="controller.iconForObject(viewPoint)"
-			isEditable="false" filtered="false" defaultVisible="true" name="viewPoint">
-			<Children data="viewPoint.virtualModels" name="flexoConcepts" />
+
+		<BrowserElement
+			dataClassName="org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter"
+			label="technologyAdapter.name" icon="controller.iconForObject(technologyAdapter)"
+			tooltip="" enabled="" visible="" isEditable="false" editableLabel=""
+			filtered="false" defaultVisible="true" dynamicFont=""
+			name="technologyAdapter">
+			<Children data="technologyAdapter.getViewLibraries()" visible=""
+				cast="child.rootFolder" name="repositories" />
 		</BrowserElement>
-		<BrowserElement dataClassName="org.openflexo.foundation.fml.FlexoConcept"
-			label="flexoConcept.name" icon="controller.iconForObject(flexoConcept)"
-			isEditable="false" filtered="false" defaultVisible="true" name="flexoConcept">
-			<Children data="flexoConcept.childFlexoConcepts" name="children" />
-			<Children data="data.getEPInstances(flexoConcept)" name="epis" />
+		<BrowserElement dataClassName="org.openflexo.foundation.resource.RepositoryFolder"
+			label="folder.displayableName" icon="controller.iconForObject(folder)"
+			visible="data.isFolderVisible(folder)" isEditable="false" 
+			filtered="false" defaultVisible="true" name="folder">
+			<Children data="folder.children" 
+				name="subFolders" />
+			<Children data="data.getViewResources(folder)" name="viewsInFolder" cast="child.view"/>
 		</BrowserElement>
-		<BrowserElement dataClassName="org.openflexo.foundation.fml.VirtualModel"
-			label="virtualModel.name" icon="controller.iconForObject(virtualModel)"
-			isEditable="false" filtered="false" defaultVisible="true" name="virtualModel">
-			<Children data="virtualModel.allRootFlexoConcepts" name="children" />
-			<Children data="data.getEPInstances(virtualModel)" name="epis" />
+		<BrowserElement dataClassName="org.openflexo.foundation.fml.rt.View"
+			label="view.name" icon="controller.iconForObject(view)"
+			isEditable="false" visible="data.isViewVisible(view)"
+			filtered="false" defaultVisible="true"
+			name="view">
+			<Children data="view.virtualModelInstances" name="VMIInView"/>
+		</BrowserElement>
+		<BrowserElement dataClassName="org.openflexo.foundation.fml.rt.VirtualModelInstance"
+			label="virtualModelInstance.name" icon="controller.iconForObject(virtualModelInstance)"
+			isEditable="false" visible="data.isVirtualModelInstanceVisible(virtualModelInstance)"
+			filtered="false" defaultVisible="true"
+			name="virtualModelInstance">
+			<Children data="virtualModelInstance.flexoConceptInstances" name="FCIInVMI"/>
 		</BrowserElement>
 		<BrowserElement dataClassName="org.openflexo.foundation.fml.rt.FlexoConceptInstance"
 			enabled="data.isAcceptableValue(flexoConceptInstance)"

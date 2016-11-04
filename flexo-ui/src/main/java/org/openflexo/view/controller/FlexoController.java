@@ -131,6 +131,7 @@ import org.openflexo.foundation.resource.FlexoProjectReference;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
+import org.openflexo.foundation.resource.FlexoResourceFactory;
 import org.openflexo.foundation.resource.ProjectClosedNotification;
 import org.openflexo.foundation.resource.RepositoryFolder;
 import org.openflexo.foundation.resource.ResourceData;
@@ -1998,6 +1999,13 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 	// ================================================
 
 	public ImageIcon iconForObject(Object object) {
+
+		if (object instanceof FlexoResourceFactory) {
+			Class<? extends TechnologyAdapter> taClass = ((FlexoResourceFactory) object).getTechnologyAdapterClass();
+			TechnologyAdapterController<?> tac = getTechnologyAdapterController(taClass);
+			return tac.getIconForTechnologyObject(((FlexoResourceFactory) object).getResourceDataClass());
+		}
+
 		ImageIcon iconForObject = statelessIconForObject(object);
 		if (iconForObject != null) {
 			if (/*getModule().getModule().requireProject() &&*/object instanceof FlexoProjectObject && getProject() != null
@@ -2130,6 +2138,9 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 		}
 		else if (object instanceof FlexoResourceCenterService) {
 			return IconLibrary.INFORMATION_SPACE_ICON;
+		}
+		else if (object instanceof TechnologyAdapterService) {
+			return FMLIconLibrary.TECHNOLOGY_ADAPTER_ICON;
 		}
 		else if (object instanceof ViewPointLibrary) {
 			return FMLIconLibrary.VIEWPOINT_LIBRARY_ICON;

@@ -66,6 +66,8 @@ import org.openflexo.model.annotations.XMLElement;
 @ImplementationClass(PropertyParameter.PropertyParameterImpl.class)
 @XMLElement
 @Imports({ @Import(ObjectPropertyParameter.class), @Import(DataPropertyParameter.class) })
+// TODO: deprecated, use generic FlexoBehaviourParameter instead
+@Deprecated
 public interface PropertyParameter extends InnerModelSlotParameter<TypeAwareModelSlot<?, ?>> {
 
 	@PropertyIdentifier(type = String.class)

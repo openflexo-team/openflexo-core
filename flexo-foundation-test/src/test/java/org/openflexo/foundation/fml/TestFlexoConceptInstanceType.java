@@ -146,9 +146,10 @@ public class TestFlexoConceptInstanceType extends OpenflexoProjectAtRunTimeTestC
 
 		System.out.println("ViewPoint BindingModel = " + viewPoint.getBindingModel());
 		assertNotNull(viewPoint.getBindingModel());
-		assertEquals(5, viewPoint.getBindingModel().getBindingVariablesCount());
+		assertEquals(4, viewPoint.getBindingModel().getBindingVariablesCount());
 		assertNotNull(viewPoint.getBindingModel().bindingVariableNamed(ViewPointBindingModel.REFLEXIVE_ACCESS_PROPERTY));
 		assertNotNull(viewPoint.getBindingModel().bindingVariableNamed(ViewPointBindingModel.PROJECT_PROPERTY));
+		assertNotNull(viewPoint.getBindingModel().bindingVariableNamed(ViewPointBindingModel.RC_PROPERTY));
 		assertNotNull(viewPoint.getBindingModel().bindingVariableNamed(ViewPointBindingModel.VIEW_PROPERTY));
 
 	}
@@ -174,11 +175,12 @@ public class TestFlexoConceptInstanceType extends OpenflexoProjectAtRunTimeTestC
 		assertTrue(((VirtualModelResource) virtualModel.getResource()).getFlexoIODelegate().exists());
 
 		assertNotNull(virtualModel.getBindingModel());
-		assertEquals(9, virtualModel.getBindingModel().getBindingVariablesCount());
+		assertEquals(6, virtualModel.getBindingModel().getBindingVariablesCount());
 		assertNotNull(virtualModel.getBindingModel().bindingVariableNamed(ViewPointBindingModel.REFLEXIVE_ACCESS_PROPERTY));
 		assertNotNull(virtualModel.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.REFLEXIVE_ACCESS_PROPERTY));
 		assertNotNull(virtualModel.getBindingModel().bindingVariableNamed(ViewPointBindingModel.VIEW_PROPERTY));
 		assertNotNull(virtualModel.getBindingModel().bindingVariableNamed(ViewPointBindingModel.PROJECT_PROPERTY));
+		assertNotNull(virtualModel.getBindingModel().bindingVariableNamed(ViewPointBindingModel.RC_PROPERTY));
 		assertEquals(ViewType.getViewType(viewPoint),
 				virtualModel.getBindingModel().bindingVariableNamed(ViewPointBindingModel.VIEW_PROPERTY).getType());
 		assertNotNull(virtualModel.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.VIRTUAL_MODEL_INSTANCE_PROPERTY));
