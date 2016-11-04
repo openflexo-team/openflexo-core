@@ -38,7 +38,21 @@
 
 package org.openflexo.foundation;
 
-import junit.framework.AssertionFailedError;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.openflexo.foundation.fml.FMLObject;
@@ -65,17 +79,7 @@ import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.toolbox.FileUtils;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import static org.junit.Assert.*;
+import junit.framework.AssertionFailedError;
 
 /**
  * Provides a JUnit 4 generic environment of Openflexo-core for testing purposes
@@ -120,10 +124,11 @@ public abstract class OpenflexoTestCase {
 
 	protected static void unloadServiceManager() {
 		if (serviceManager != null) {
+			serviceManager.stopAllServices();
+
 			if (resourceCenter != null) {
 				deleteTestResourceCenters();
 			}
-			serviceManager.stopAllServices();
 		}
 		serviceManager = null;
 	}
