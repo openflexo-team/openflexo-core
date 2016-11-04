@@ -39,9 +39,12 @@
 
 package org.openflexo.components.widget;
 
+import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.resource.FlexoResourceCenter;
+import org.openflexo.foundation.resource.FlexoResourceType;
+import org.openflexo.foundation.resource.RepositoryFolder;
 import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.resource.ResourceManager;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
@@ -67,10 +70,19 @@ public class FIBResourceSelector extends FIBFlexoObjectSelector<TechnologyAdapte
 	private TechnologyAdapter technologyAdapter;
 	private FlexoResourceCenter<?> resourceCenter;
 	private Class<? extends ResourceData<?>> resourceDataClass;
+	private Type expectedType;
+	private FlexoResourceType defaultExpectedType;
 
 	public FIBResourceSelector(TechnologyAdapterResource editedObject) {
 		super(editedObject);
 		// logger.info(">>>>>>>>>> Create FIBResourceSelector: " + Integer.toHexString(hashCode()));
+		if (editedObject != null && editedObject.getServiceManager() != null) {
+			defaultExpectedType = FlexoResourceType.getFlexoResourceType(editedObject.getResourceDataClass(),
+					editedObject.getServiceManager().getTechnologyAdapterService());
+		}
+		else {
+			defaultExpectedType = FlexoResourceType.UNDEFINED_RESOURCE_TYPE;
+		}
 	}
 
 	@Override
@@ -92,6 +104,9 @@ public class FIBResourceSelector extends FIBFlexoObjectSelector<TechnologyAdapte
 	}
 
 	public ResourceManager getResourceManager() {
+		if (resourceManager == null && getServiceManager() != null) {
+			return getServiceManager().getResourceManager();
+		}
 		return resourceManager;
 	}
 
@@ -108,6 +123,10 @@ public class FIBResourceSelector extends FIBFlexoObjectSelector<TechnologyAdapte
 	}
 
 	public TechnologyAdapter getTechnologyAdapter() {
+		if (technologyAdapter == null && getServiceManager() != null && getExpectedType() instanceof FlexoResourceType) {
+			return getServiceManager().getTechnologyAdapterService()
+					.getTechnologyAdapter(((FlexoResourceType) getExpectedType()).getResourceFactory().getTechnologyAdapterClass());
+		}
 		return technologyAdapter;
 	}
 
@@ -149,6 +168,9 @@ public class FIBResourceSelector extends FIBFlexoObjectSelector<TechnologyAdapte
 	}
 
 	public Class<? extends ResourceData<?>> getResourceDataClass() {
+		if (resourceDataClass == null && getExpectedType() instanceof FlexoResourceType) {
+			return ((FlexoResourceType) getExpectedType()).getResourceFactory().getResourceDataClass();
+		}
 		return resourceDataClass;
 	}
 
@@ -159,7 +181,21 @@ public class FIBResourceSelector extends FIBFlexoObjectSelector<TechnologyAdapte
 		fireEditedObjectChanged();
 	}
 
-	//
+	public Type getExpectedType() {
+		if (expectedType == null) {
+			return defaultExpectedType;
+		}
+		return expectedType;
+	}
+
+	public void setExpectedType(Type expectedType) {
+
+		if ((expectedType == null && this.expectedType != null) || (expectedType != null && !expectedType.equals(this.expectedType))) {
+			Type oldValue = this.expectedType;
+			this.expectedType = expectedType;
+			getPropertyChangeSupport().firePropertyChange("expectedType", oldValue, expectedType);
+		}
+	}
 
 	@Override
 	protected boolean isAcceptableValue(Object o) {
@@ -178,6 +214,13 @@ public class FIBResourceSelector extends FIBFlexoObjectSelector<TechnologyAdapte
 			}
 		}
 		return false;
+	}
+
+	public boolean isFolderVisible(RepositoryFolder<?, ?> folder) {
+		if (!folder.containsResources()) {
+			return false;
+		}
+		return true;
 	}
 
 	// Please uncomment this for a live test
@@ -243,11 +286,4 @@ public class FIBResourceSelector extends FIBFlexoObjectSelector<TechnologyAdapte
 	editor.launch();
 	}*/
 
-	@Override
-	public void openPopup() {
-		System.out.println("ResourceManager=" + getResourceManager());
-		System.out.println("TA=" + getTechnologyAdapter());
-		System.out.println("RC=" + getResourceCenter());
-		super.openPopup();
-	}
 }

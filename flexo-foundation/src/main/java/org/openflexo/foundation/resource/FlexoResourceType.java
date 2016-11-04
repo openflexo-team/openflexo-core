@@ -196,9 +196,10 @@ public class FlexoResourceType implements JavaCustomType {
 
 	@Override
 	public String simpleRepresentation() {
-		return "FlexoResource" + "<"
+		return TypeUtils.simpleRepresentation(getJavaType());
+		/*return "FlexoResource" + "<"
 				+ (resourceFactory != null ? resourceFactory.getResourceDataClass().getSimpleName() : "NotFound:" + resourceDataClassName)
-				+ ">";
+				+ ">";*/
 	}
 
 	@Override
