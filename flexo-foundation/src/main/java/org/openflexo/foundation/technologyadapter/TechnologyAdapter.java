@@ -39,6 +39,28 @@
 
 package org.openflexo.foundation.technologyadapter;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.StringWriter;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.net.URLDecoder;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.StringTokenizer;
+import java.util.jar.JarFile;
+import java.util.logging.Logger;
+
+import javax.swing.SwingUtilities;
+
 import org.apache.commons.io.IOUtils;
 import org.openflexo.foundation.DataModification;
 import org.openflexo.foundation.FlexoObservable;
@@ -66,27 +88,6 @@ import org.openflexo.localization.LocalizedDelegateImpl;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.toolbox.StringUtils;
-
-import javax.swing.*;
-import java.io.File;
-import java.io.IOException;
-import java.io.StringWriter;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.net.URLDecoder;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.StringTokenizer;
-import java.util.jar.JarFile;
-import java.util.logging.Logger;
 
 /**
  * This class represents a technology adapter<br>
@@ -724,7 +725,7 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 	 * @param extension
 	 * @return
 	 */
-	protected <I> I retrieveResourceSerializationArtefact(FlexoResourceCenter<I> resourceCenter, String resourceName, String relativePath,
+	public <I> I retrieveResourceSerializationArtefact(FlexoResourceCenter<I> resourceCenter, String resourceName, String relativePath,
 			String extension) {
 
 		I containerBaseArtefact = resourceCenter.getBaseArtefact();

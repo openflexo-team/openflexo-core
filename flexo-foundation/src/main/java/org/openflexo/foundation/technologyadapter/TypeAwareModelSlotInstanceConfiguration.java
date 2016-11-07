@@ -168,7 +168,8 @@ public abstract class TypeAwareModelSlotInstanceConfiguration<M extends FlexoMod
 
 	private FlexoModelResource<M, MM, ?, ?> createProjectSpecificEmptyModel(TypeAwareModelSlotInstance<M, MM, MS> msInstance, MS modelSlot,
 			FlexoResourceCenter<?> rc) {
-		return modelSlot.createProjectSpecificEmptyModel(rc, getFilename(), getModelUri(), modelSlot.getMetaModelResource());
+		return modelSlot.createProjectSpecificEmptyModel(rc, getFilename(), getRelativePath(), getModelUri(),
+				modelSlot.getMetaModelResource());
 	}
 
 	/*private FlexoModelResource<M, MM> createSharedEmptyModel(TypeAwareModelSlotInstance<M, MM, MS> msInstance, MS modelSlot) {
