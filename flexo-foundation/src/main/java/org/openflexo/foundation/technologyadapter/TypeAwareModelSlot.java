@@ -86,8 +86,8 @@ public interface TypeAwareModelSlot<M extends FlexoModel<M, MM> & TechnologyObje
 
 	public Class<? extends FlexoMetaModel<?>> getMetaModelClass();
 
-	public FlexoModelResource<M, MM, ?, ?> createProjectSpecificEmptyModel(FlexoResourceCenter<?> rc, String filename, String modelUri,
-			FlexoMetaModelResource<M, MM, ?> metaModelResource);
+	public FlexoModelResource<M, MM, ?, ?> createProjectSpecificEmptyModel(FlexoResourceCenter<?> rc, String filename, String relativePath,
+			String modelUri, FlexoMetaModelResource<M, MM, ?> metaModelResource);
 
 	public FlexoModelResource<M, MM, ?, ?> createSharedEmptyModel(FlexoResourceCenter<?> resourceCenter, String relativePath,
 			String filename, String modelUri, FlexoMetaModelResource<M, MM, ?> metaModelResource);
@@ -115,7 +115,7 @@ public interface TypeAwareModelSlot<M extends FlexoModel<M, MM> & TechnologyObje
 	public String generateUniqueURIName(TypeAwareModelSlotInstance<?, ?, ?> msInstance, String proposedName, String uriPrefix);
 
 	public static abstract class TypeAwareModelSlotImpl<M extends FlexoModel<M, MM> & TechnologyObject<?>, MM extends FlexoMetaModel<MM> & TechnologyObject<?>>
-			extends ModelSlotImpl<M> implements TypeAwareModelSlot<M, MM> {
+			extends ModelSlotImpl<M>implements TypeAwareModelSlot<M, MM> {
 
 		private static final Logger logger = Logger.getLogger(TypeAwareModelSlot.class.getPackage().getName());
 
@@ -181,7 +181,7 @@ public interface TypeAwareModelSlot<M extends FlexoModel<M, MM> & TechnologyObje
 
 		@Override
 		public abstract FlexoModelResource<M, MM, ?, ?> createProjectSpecificEmptyModel(FlexoResourceCenter<?> rc, String filename,
-				String modelUri, FlexoMetaModelResource<M, MM, ?> metaModelResource);
+				String relativePath, String modelUri, FlexoMetaModelResource<M, MM, ?> metaModelResource);
 
 		@Override
 		public abstract FlexoModelResource<M, MM, ?, ?> createSharedEmptyModel(FlexoResourceCenter<?> resourceCenter, String relativePath,

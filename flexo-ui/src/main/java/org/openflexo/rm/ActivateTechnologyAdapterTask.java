@@ -88,4 +88,10 @@ public class ActivateTechnologyAdapterTask extends FlexoApplicationTask {
 	public boolean isCancellable() {
 		return true;
 	}
+
+	@Override
+	protected synchronized void finishedExecution() {
+		// TODO Auto-generated method stub
+		super.finishedExecution();
+	}
 }
