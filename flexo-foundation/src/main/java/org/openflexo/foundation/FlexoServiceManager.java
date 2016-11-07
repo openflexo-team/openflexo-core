@@ -174,6 +174,14 @@ public abstract class FlexoServiceManager {
 		return null;
 	}
 
+	/**
+	 * Callback when a {@link TechnologyAdapter} has finished activating
+	 * 
+	 * @param technologyAdapter
+	 */
+	public void hasActivated(TechnologyAdapter technologyAdapter) {
+	}
+
 	public <S extends FlexoService> S getService(Class<S> serviceClass) {
 		for (FlexoService s : registeredServices) {
 			if (serviceClass.isAssignableFrom(s.getClass())) {

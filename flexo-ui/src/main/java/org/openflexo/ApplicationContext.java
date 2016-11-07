@@ -41,7 +41,9 @@ package org.openflexo;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.openflexo.br.BugReportService;
 import org.openflexo.drm.DocResourceManager;
@@ -294,23 +296,42 @@ public abstract class ApplicationContext extends DefaultFlexoServiceManager impl
 		return removeRCTask;
 	}
 
-	private List<TechnologyAdapter> activatingTechnologyAdapters;
+	private Map<TechnologyAdapter, ActivateTechnologyAdapterTask> activatingTechnologyAdapters;
 
 	@Override
 	public synchronized ActivateTechnologyAdapterTask activateTechnologyAdapter(TechnologyAdapter technologyAdapter) {
+
+		// We try here to prevent activate all TA concurrently
+
+		System.out.println("Je veux activer " + technologyAdapter);
+
 		if (technologyAdapter.isActivated()) {
+			System.out.println("pas la peine, c'et deja active");
 			return null;
 		}
 		if (activatingTechnologyAdapters == null) {
-			activatingTechnologyAdapters = new ArrayList<>();
+			activatingTechnologyAdapters = new HashMap<>();
 		}
-		if (activatingTechnologyAdapters.contains(technologyAdapter)) {
+		if (activatingTechnologyAdapters.get(technologyAdapter) != null) {
+			System.out.println("pas la peine, c'est en train d'etre active");
 			return null;
 		}
-		activatingTechnologyAdapters.add(technologyAdapter);
 		ActivateTechnologyAdapterTask activateTATask = new ActivateTechnologyAdapterTask(getTechnologyAdapterService(), technologyAdapter);
+		for (TechnologyAdapter ta : activatingTechnologyAdapters.keySet()) {
+			activateTATask.addToDependantTasks(activatingTechnologyAdapters.get(ta));
+			System.out.println("> je vais attendre " + ta);
+		}
+
+		activatingTechnologyAdapters.put(technologyAdapter, activateTATask);
+
 		getTaskManager().scheduleExecution(activateTATask);
 		return activateTATask;
+	}
+
+	@Override
+	public void hasActivated(TechnologyAdapter technologyAdapter) {
+		super.hasActivated(technologyAdapter);
+		activatingTechnologyAdapters.remove(technologyAdapter);
 	}
 
 	@Override
