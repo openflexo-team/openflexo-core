@@ -153,12 +153,13 @@ public abstract class OpenflexoTestCase {
 		if (DELETE_TEST_RESOURCE_CENTER_AFTER_TEST_EXECUTION)
 
 		{
-			if (testResourceCenterDirectory != null) {
+			if (testResourceCenterDirectory != null && testResourceCenterDirectory.exists()) {
 				FileUtils.deleteDir(testResourceCenterDirectory);
 			}
 			if (testResourceCenterDirectoriesToRemove != null) {
 				for (File testResourceCenterDirectoryToRemove : testResourceCenterDirectoriesToRemove) {
-					FileUtils.deleteDir(testResourceCenterDirectoryToRemove);
+					if (testResourceCenterDirectoryToRemove != null && testResourceCenterDirectoryToRemove.exists())
+						FileUtils.deleteDir(testResourceCenterDirectoryToRemove);
 				}
 			}
 		}
