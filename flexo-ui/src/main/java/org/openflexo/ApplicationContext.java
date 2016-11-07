@@ -303,23 +303,21 @@ public abstract class ApplicationContext extends DefaultFlexoServiceManager impl
 
 		// We try here to prevent activate all TA concurrently
 
-		System.out.println("Je veux activer " + technologyAdapter);
-
 		if (technologyAdapter.isActivated()) {
-			System.out.println("pas la peine, c'et deja active");
+			// Already activated
 			return null;
 		}
 		if (activatingTechnologyAdapters == null) {
 			activatingTechnologyAdapters = new HashMap<>();
 		}
 		if (activatingTechnologyAdapters.get(technologyAdapter) != null) {
-			System.out.println("pas la peine, c'est en train d'etre active");
+			// About to be activated. No need to go further
 			return null;
 		}
 		ActivateTechnologyAdapterTask activateTATask = new ActivateTechnologyAdapterTask(getTechnologyAdapterService(), technologyAdapter);
 		for (TechnologyAdapter ta : activatingTechnologyAdapters.keySet()) {
 			activateTATask.addToDependantTasks(activatingTechnologyAdapters.get(ta));
-			System.out.println("> je vais attendre " + ta);
+			// System.out.println("> Waiting " + ta);
 		}
 
 		activatingTechnologyAdapters.put(technologyAdapter, activateTATask);
