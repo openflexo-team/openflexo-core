@@ -44,7 +44,7 @@
 			<Children data="resourceManager.technologyAdapters" name="resourceCenters" />
 		</BrowserElement>
 		<BrowserElement dataClassName="org.openflexo.foundation.resource.RepositoryFolder"
-			label="folder.displayableName" icon="controller.iconForObject(folder)"
+			label="folder.displayableName" icon="controller.iconForObject(folder)" visible="data.isFolderVisible(folder)" 
 			isEditable="false" filtered="false" defaultVisible="true" name="folder">
 			<Children data="folder.children" name="subFolders" />
 			<Children data="folder.resources" name="resource" />

@@ -97,6 +97,7 @@ import org.openflexo.foundation.fml.rt.editionaction.SelectFlexoConceptInstance;
 import org.openflexo.foundation.nature.ProjectNature;
 import org.openflexo.foundation.nature.ProjectNatureService;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
+import org.openflexo.foundation.resource.FlexoResourceType;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
@@ -604,6 +605,30 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 		return null;
 	}
 
+	private FIBComponent makeFlexoResourceSelector(final FlexoBehaviourParameter parameter, FIBPanel panel, int index,
+			FlexoBehaviourAction<?, ?, ?> action, FIBModelFactory fibModelFactory) {
+		FIBCustom resourceSelector = fibModelFactory.newFIBCustom();
+		resourceSelector.setBindingFactory(parameter.getBindingFactory());
+		Class resourceSelectorClass;
+		try {
+			resourceSelectorClass = Class.forName("org.openflexo.components.widget.FIBResourceSelector");
+			resourceSelector.setComponentClass(resourceSelectorClass);
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		resourceSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(resourceSelector,
+				new DataBinding<Object>("component.project"), new DataBinding<Object>("controller.editor.project"), true));
+		resourceSelector.addToAssignments(
+				fibModelFactory.newFIBCustomAssignment(resourceSelector, new DataBinding<Object>("component.serviceManager"),
+						new DataBinding<Object>("controller.flexoController.applicationContext"), true));
+		resourceSelector.addToAssignments(
+				fibModelFactory.newFIBCustomAssignment(resourceSelector, new DataBinding<Object>("component.expectedType"),
+						new DataBinding<Object>("data.parametersDefinitions." + parameter.getName() + ".type"), true));
+		return registerWidget(resourceSelector, parameter, panel, index);
+
+	}
+
 	private FIBComponent makeFlexoConceptInstanceSelector(final FlexoBehaviourParameter parameter, FIBPanel panel, int index,
 			FlexoBehaviourAction<?, ?, ?> action, FIBModelFactory fibModelFactory) {
 		FIBCustom fciSelector = fibModelFactory.newFIBCustom();
@@ -840,6 +865,9 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 					}
 					else if (parameter.getType() instanceof FlexoConceptInstanceType) {
 						return makeFlexoConceptInstanceSelector(parameter, panel, index, action, fibModelFactory);
+					}
+					else if (parameter.getType() instanceof FlexoResourceType) {
+						return makeFlexoResourceSelector(parameter, panel, index, action, fibModelFactory);
 					}
 
 					FIBLabel notFound = fibModelFactory.newFIBLabel("<not_found>");

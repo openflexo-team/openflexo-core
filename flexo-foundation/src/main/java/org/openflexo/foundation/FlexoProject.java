@@ -94,6 +94,7 @@ import org.openflexo.model.validation.ValidationIssue;
 import org.openflexo.model.validation.ValidationModel;
 import org.openflexo.model.validation.ValidationReport;
 import org.openflexo.model.validation.ValidationRule;
+import org.openflexo.toolbox.DirectoryWatcher;
 import org.openflexo.toolbox.FileUtils;
 import org.openflexo.toolbox.FlexoVersion;
 import org.openflexo.toolbox.IProgress;
@@ -578,6 +579,16 @@ public class FlexoProject extends FileSystemBasedResourceCenter
 
 		if (closed) {
 			return;
+		}
+		// Stops DirectoryWatcher if it exists?
+		DirectoryWatcher dw = this.getDirectoryWatcher();
+		if (dw != null) {
+			dw.cancel();
+		}
+		// Removes from resourceCenters
+		FlexoServiceManager svcManager = getServiceManager();
+		if (svcManager != null) {
+			svcManager.getResourceCenterService().removeFromResourceCenters(this);
 		}
 		closed = true;
 		if (logger.isLoggable(Level.INFO)) {

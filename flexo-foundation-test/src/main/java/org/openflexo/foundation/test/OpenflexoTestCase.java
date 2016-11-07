@@ -97,7 +97,7 @@ public abstract class OpenflexoTestCase {
 	 * !!!!! IMPORTANT !!!!!<br>
 	 * Do not forget to set back this flag to true when committing into a production environment
 	 */
-	public static final boolean DELETE_TEST_RESOURCE_CENTER_AFTER_TEST_EXECUTION = false;
+	public static final boolean DELETE_TEST_RESOURCE_CENTER_AFTER_TEST_EXECUTION = true;
 
 	private static final Logger logger = FlexoLogger.getLogger(OpenflexoTestCase.class.getPackage().getName());
 
@@ -130,26 +130,45 @@ public abstract class OpenflexoTestCase {
 
 	protected static void unloadServiceManager() {
 		if (serviceManager != null) {
+			serviceManager.stopAllServices();
+
 			if (resourceCenter != null) {
 				deleteTestResourceCenters();
 			}
-			serviceManager.stopAllServices();
 		}
 		serviceManager = null;
 	}
 
 	protected static void deleteTestResourceCenters() {
+		FlexoResourceCenterService RCService = null;
+
+		if (serviceManager != null) {
+			RCService = serviceManager.getResourceCenterService();
+		}
+		// Must stop ResourceCenterService before deleting resourceCenters
+		if (RCService != null) {
+			if (resourceCenter != null) {
+				RCService.removeFromResourceCenters(resourceCenter);
+			}
+			if (gitResourceCenter != null) {
+				RCService.removeFromResourceCenters(gitResourceCenter);
+			}
+			RCService.stop();
+		}
+
 		if (DELETE_TEST_RESOURCE_CENTER_AFTER_TEST_EXECUTION) {
-			if (testResourceCenterDirectory != null) {
+			if (testResourceCenterDirectory != null && testResourceCenterDirectory.exists()) {
 				FileUtils.deleteDir(testResourceCenterDirectory);
 			}
 			if (testResourceCenterDirectoriesToRemove != null) {
 				for (File testResourceCenterDirectoryToRemove : testResourceCenterDirectoriesToRemove) {
-					FileUtils.deleteDir(testResourceCenterDirectoryToRemove);
+					if (testResourceCenterDirectoryToRemove != null && testResourceCenterDirectoryToRemove.exists())
+						FileUtils.deleteDir(testResourceCenterDirectoryToRemove);
 				}
 			}
 		}
 		resourceCenter = null;
+		gitResourceCenter = null;
 	}
 
 	public static class FlexoTestEditor extends DefaultFlexoEditor {
