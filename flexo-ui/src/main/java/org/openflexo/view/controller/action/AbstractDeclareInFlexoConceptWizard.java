@@ -266,15 +266,25 @@ public abstract class AbstractDeclareInFlexoConceptWizard<A extends AbstractDecl
 			detailedStep = configureConceptCreationStrategy();
 			addStep(detailedStep);
 
+			configurePostProcessings();
+
 		}
 
 		@Override
 		public void discardTransition() {
 
+			discardPostProcessings();
+
 			removeStep(detailedStep);
 			detailedStep = null;
 		}
 
+	}
+
+	public void configurePostProcessings() {
+	}
+
+	public void discardPostProcessings() {
 	}
 
 	public abstract AbstractChooseNewConceptCreationStrategy chooseNewConceptCreationStrategy();
