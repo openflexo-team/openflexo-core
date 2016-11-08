@@ -391,11 +391,15 @@ public class FlexoFIBController extends FIBController implements GraphicalFlexoO
 
 	public boolean hideEmptyFolders() {
 		listenToPresentationPreferences();
-		if (getFlexoController() == null) {
+		FlexoController ctrl = getFlexoController();
+		if (ctrl == null) {
 			return false;
 		}
-		return getFlexoController().getApplicationContext().getPresentationPreferences().hideEmptyFolders();
-		// return true;
+		PresentationPreferences presPref = ctrl.getApplicationContext().getPresentationPreferences();
+		if (presPref != null)
+			return presPref.hideEmptyFolders();
+		else
+			return false;
 	}
 
 	public boolean shouldBeDisplayed(RepositoryFolder<?, ?> folder) {
