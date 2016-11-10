@@ -134,6 +134,10 @@ public class ViewResourceFactory extends AbstractVirtualModelInstanceResourceFac
 
 	@Override
 	public <I> boolean isValidArtefact(I serializationArtefact, FlexoResourceCenter<I> resourceCenter) {
+		return isValidArtefact(serializationArtefact, resourceCenter, true);
+	}
+
+	public <I> boolean isValidArtefact(I serializationArtefact, FlexoResourceCenter<I> resourceCenter, boolean ignoreSubViews) {
 
 		if (resourceCenter.exists(serializationArtefact) && resourceCenter.isDirectory(serializationArtefact)
 				&& resourceCenter.canRead(serializationArtefact)
@@ -142,6 +146,16 @@ public class ViewResourceFactory extends AbstractVirtualModelInstanceResourceFac
 					candidateFile.getName().length() - ViewPointResource.VIEW_SUFFIX.length());
 			final File xmlFile = new File(candidateFile, baseName + ".xml");
 			return xmlFile.exists();*/
+
+			if (ignoreSubViews) {
+				I parentArtefact = resourceCenter.getContainer(serializationArtefact);
+				if (parentArtefact != null && resourceCenter.retrieveName(parentArtefact).endsWith(VIEW_SUFFIX)) {
+					// This is a child view, we don't want to register it twice, this will be done
+					// during exploreViewContents() with the parent view
+					return false;
+				}
+			}
+
 			return true;
 		}
 		return false;
@@ -294,7 +308,7 @@ public class ViewResourceFactory extends AbstractVirtualModelInstanceResourceFac
 					e.printStackTrace();
 				}
 			}
-			else if (isValidArtefact(child, resourceCenter)) {
+			else if (isValidArtefact(child, resourceCenter, false)) { // We don't ignore subviews here !!!
 				try {
 					ViewResource subViewResource = retrieveViewResource(child, resourceCenter, technologyContextManager, viewResource);
 				} catch (ModelDefinitionException e) {
