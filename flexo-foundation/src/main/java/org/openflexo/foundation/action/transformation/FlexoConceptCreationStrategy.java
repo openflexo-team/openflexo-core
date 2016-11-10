@@ -55,7 +55,8 @@ import org.openflexo.toolbox.StringUtils;
 public abstract class FlexoConceptCreationStrategy<A extends AbstractDeclareInFlexoConcept<A, ?, ?>> extends TransformationStrategy<A>
 		implements Bindable {
 
-	private static final String NO_FLEXO_NAME_DEFINED = "no_flexo_name_defined";
+	private static final String NO_FLEXO_NAME_DEFINED = "no_name_defined_for_new_flexo_concept";
+	private static final String DUPLICATED_NAME = "a_flexo_concept_with_that_name_already_exists";
 
 	private String flexoConceptName;
 
@@ -82,6 +83,10 @@ public abstract class FlexoConceptCreationStrategy<A extends AbstractDeclareInFl
 	public boolean isValid() {
 		if (StringUtils.isEmpty(getFlexoConceptName())) {
 			setIssueMessage(getLocales().localizedForKey(NO_FLEXO_NAME_DEFINED), IssueMessageType.ERROR);
+			return false;
+		}
+		if (getTransformationAction().getVirtualModel().getFlexoConcept(getFlexoConceptName()) != null) {
+			setIssueMessage(getLocales().localizedForKey(DUPLICATED_NAME), IssueMessageType.ERROR);
 			return false;
 		}
 		return true;

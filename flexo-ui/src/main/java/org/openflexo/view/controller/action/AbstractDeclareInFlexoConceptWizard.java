@@ -221,6 +221,11 @@ public abstract class AbstractDeclareInFlexoConceptWizard<A extends AbstractDecl
 						IssueMessageType.ERROR);
 				return false;
 			}
+			if (getAction().getVirtualModel().getFlexoConcept(getFlexoConceptName()) != null) {
+				setIssueMessage(getAction().getLocales().localizedForKey("a_flexo_concept_with_that_name_already_exists"),
+						IssueMessageType.ERROR);
+				return false;
+			}
 			if (getCreationStrategy() == null) {
 				setIssueMessage(getAction().getLocales().localizedForKey("please_choose_a_creation_strategy"), IssueMessageType.ERROR);
 				return false;
