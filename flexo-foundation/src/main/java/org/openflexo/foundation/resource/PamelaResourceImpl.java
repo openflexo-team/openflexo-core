@@ -38,20 +38,7 @@
 
 package org.openflexo.foundation.resource;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import javax.swing.undo.UndoableEdit;
-
+import com.google.common.base.Throwables;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
@@ -64,11 +51,13 @@ import org.openflexo.foundation.InconsistentDataException;
 import org.openflexo.foundation.InvalidModelDefinitionException;
 import org.openflexo.foundation.InvalidXMLException;
 import org.openflexo.foundation.PamelaResourceModelFactory;
+import org.openflexo.foundation.action.FlexoUndoManager;
 import org.openflexo.foundation.action.FlexoUndoManager.IgnoreHandler;
 import org.openflexo.foundation.utils.ProjectLoadingCancelledException;
 import org.openflexo.kvc.AccessorInvocationException;
 import org.openflexo.model.exceptions.InvalidDataException;
 import org.openflexo.model.exceptions.ModelDefinitionException;
+import org.openflexo.model.factory.EditingContext;
 import org.openflexo.model.factory.EmbeddingType;
 import org.openflexo.model.factory.ModelFactory;
 import org.openflexo.model.undo.AtomicEdit;
@@ -76,7 +65,18 @@ import org.openflexo.toolbox.FileUtils;
 import org.openflexo.toolbox.FlexoVersion;
 import org.openflexo.toolbox.IProgress;
 
-import com.google.common.base.Throwables;
+import javax.swing.undo.UndoableEdit;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Default implementation for {@link PamelaResource} (a resource where underlying model is managed by PAMELA framework)
@@ -254,6 +254,34 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends 
 	protected RD performLoad() throws IOException, Exception {
 		// Retrieve the data from an input stream given by the FlexoIOStream delegate of the resource
 		return (RD) getFactory().deserialize(getFlexoIOStreamDelegate().getInputStream());
+	}
+
+	/**
+	 * Delete (dereference) resource data if resource data is loaded<br>
+	 * Also delete the resource data
+	 */
+	@Override
+	public void unloadResourceData(boolean deleteResourceData) {
+		if (isLoaded()) {
+			if (deleteResourceData) {
+
+				EditingContext editingContext =getServiceManager().getEditingContext();
+				FlexoUndoManager undoManager = null;
+				IgnoreHandler ignoreHandler = new IgnoreLoadingEdits(this);
+
+				if (editingContext != null && editingContext.getUndoManager() instanceof FlexoUndoManager) {
+					undoManager = (FlexoUndoManager) editingContext.getUndoManager();
+					undoManager.addToIgnoreHandlers(ignoreHandler);
+				}
+				resourceData.delete();
+				if (undoManager != null) {
+					undoManager.removeFromIgnoreHandlers(ignoreHandler);
+				}
+			}
+			resourceData = null;
+			// That's fine, resource is loaded, now let's notify the loading of the resources
+			notifyResourceUnloaded();
+		}
 	}
 
 	// This should be removed from Pamela Resource class
