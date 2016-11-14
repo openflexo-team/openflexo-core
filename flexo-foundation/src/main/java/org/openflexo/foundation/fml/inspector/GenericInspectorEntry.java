@@ -61,5 +61,10 @@ public interface GenericInspectorEntry extends InspectorEntry {
 
 		private static final Logger logger = Logger.getLogger(GenericInspectorEntry.class.getPackage().getName());
 
+		@Override
+		@Deprecated
+		public String getWidgetName() {
+			return null;
+		}
 	}
 }

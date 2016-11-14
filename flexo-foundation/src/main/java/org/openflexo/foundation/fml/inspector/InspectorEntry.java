@@ -56,7 +56,6 @@ import org.openflexo.foundation.fml.FlexoBehaviourParameter.WidgetType;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptObject;
 import org.openflexo.foundation.fml.binding.InspectorEntryBindingModel;
-import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.model.annotations.DefineValidationRule;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -157,10 +156,6 @@ public abstract interface InspectorEntry extends FlexoConceptObject, Bindable {
 
 	@Setter(WIDGET_KEY)
 	public void setWidget(WidgetType widget);
-
-	public boolean isValid(FlexoBehaviourAction<?, ?, ?> action, Object value);
-
-	public Object getDefaultValue(BindingEvaluationContext evaluationContext);
 
 	@Getter(value = CONTAINER_KEY)
 	@XMLAttribute
