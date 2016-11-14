@@ -38,8 +38,11 @@
 
 package org.openflexo.foundation.ontology.fml.inspector;
 
+import java.lang.reflect.Type;
+
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
+import org.openflexo.foundation.fml.FlexoBehaviourParameter.WidgetType;
 import org.openflexo.foundation.fml.inspector.InspectorEntry;
 import org.openflexo.foundation.ontology.IFlexoOntologyClass;
 import org.openflexo.foundation.ontology.IFlexoOntologyStructuralProperty;
@@ -114,9 +117,19 @@ public interface PropertyInspectorEntry extends InspectorEntry {
 			super();
 		}
 
-		@Override
+		/*@Override
 		public Class getDefaultDataClass() {
 			return IFlexoOntologyStructuralProperty.class;
+		}*/
+
+		@Override
+		public Type getType() {
+			return IFlexoOntologyStructuralProperty.class;
+		}
+
+		@Override
+		public WidgetType getWidget() {
+			return WidgetType.CUSTOM_WIDGET;
 		}
 
 		@Override
@@ -199,7 +212,8 @@ public interface PropertyInspectorEntry extends InspectorEntry {
 		public void setIsDynamicDomainValue(boolean isDynamic) {
 			if (isDynamic) {
 				isDynamicDomainValueSet = true;
-			} else {
+			}
+			else {
 				domainValue = null;
 				isDynamicDomainValueSet = false;
 			}

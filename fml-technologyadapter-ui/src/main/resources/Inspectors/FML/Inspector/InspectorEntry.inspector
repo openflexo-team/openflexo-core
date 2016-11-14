@@ -31,14 +31,14 @@
 				visible="" name="checkbox" localize="true" />
 			<Label label="data" index="6" 
 				constraints="twocols(expandHorizontally=false;expandVertically=false;index=6;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)"
-				visible="" name="data2" localize="true" />
+				name="data2" localize="true" />
 			<Custom componentClassName="org.openflexo.gina.swing.utils.BindingSelector"
 				localize="true" name="conditionalValue1" index="7" data="data.data"
 				constraints="twocols(expandHorizontally=true;expandVertically=false;index=7;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
 				opaque="false">
 				<Assignment variable="component.bindable" value="data" />
 			</Custom>
-			<Label label="conditional" index="19" data=""
+			<!--  <Label label="conditional" index="19" data=""
 				constraints="twocols(expandHorizontally=false;expandVertically=false;index=19;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)"
 				name="conditional" />
 			<Custom componentClassName="org.openflexo.gina.swing.utils.BindingSelector"
@@ -47,7 +47,7 @@
 				constraints="twocols(expandHorizontally=true;expandVertically=false;index=20;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
 				visible="" opaque="false">
 				<Assignment variable="component.bindable" value="data" />
-			</Custom>
+			</Custom>-->
 
 			<Label manageDynamicModel="false" useScrollBar="false"
 				localize="true" align="left" index="10000"

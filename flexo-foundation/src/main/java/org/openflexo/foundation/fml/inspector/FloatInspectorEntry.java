@@ -38,6 +38,9 @@
 
 package org.openflexo.foundation.fml.inspector;
 
+import java.lang.reflect.Type;
+
+import org.openflexo.foundation.fml.FlexoBehaviourParameter.WidgetType;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.XMLElement;
@@ -51,18 +54,30 @@ import org.openflexo.model.annotations.XMLElement;
 @ModelEntity
 @ImplementationClass(FloatInspectorEntry.FloatInspectorEntryImpl.class)
 @XMLElement(xmlTag = "Float")
+@Deprecated
 public interface FloatInspectorEntry extends InspectorEntry {
 
 	public abstract class FloatInspectorEntryImpl extends InspectorEntryImpl implements FloatInspectorEntry {
 
-		@Override
+		/*@Override
 		public Class getDefaultDataClass() {
 			return Float.class;
-		}
+		}*/
 
 		@Override
 		public String getWidgetName() {
 			return "Float";
 		}
+
+		@Override
+		public Type getType() {
+			return Double.class;
+		};
+
+		@Override
+		public WidgetType getWidget() {
+			return WidgetType.FLOAT;
+		}
+
 	}
 }

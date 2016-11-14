@@ -38,6 +38,9 @@
 
 package org.openflexo.foundation.fml.inspector;
 
+import java.lang.reflect.Type;
+
+import org.openflexo.foundation.fml.FlexoBehaviourParameter.WidgetType;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.XMLElement;
@@ -51,6 +54,7 @@ import org.openflexo.model.annotations.XMLElement;
 @ModelEntity
 @ImplementationClass(TextFieldInspectorEntry.TextFieldInspectorEntryImpl.class)
 @XMLElement(xmlTag = "TextField")
+@Deprecated
 public interface TextFieldInspectorEntry extends InspectorEntry {
 
 	public static abstract class TextFieldInspectorEntryImpl extends InspectorEntryImpl implements TextFieldInspectorEntry {
@@ -59,14 +63,25 @@ public interface TextFieldInspectorEntry extends InspectorEntry {
 			super();
 		}
 
-		@Override
+		/*@Override
 		public Class getDefaultDataClass() {
 			return String.class;
-		}
+		}*/
 
 		@Override
 		public String getWidgetName() {
 			return "TextField";
 		}
+
+		@Override
+		public Type getType() {
+			return String.class;
+		};
+
+		@Override
+		public WidgetType getWidget() {
+			return WidgetType.TEXT_FIELD;
+		}
+
 	}
 }

@@ -1,6 +1,6 @@
 /**
  * 
- * Copyright (c) 2014, Openflexo
+ * Copyright (c) 2014-2015, Openflexo
  * 
  * This file is part of Flexo-foundation, a component of the software infrastructure 
  * developed at Openflexo.
@@ -36,73 +36,30 @@
  * 
  */
 
-package org.openflexo.foundation.ontology.fml.inspector;
+package org.openflexo.foundation.fml.inspector;
 
-import java.lang.reflect.Type;
+import java.util.logging.Logger;
 
-import org.openflexo.foundation.ontology.BuiltInDataType;
-import org.openflexo.foundation.ontology.IFlexoOntologyDataProperty;
-import org.openflexo.model.annotations.Getter;
+import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
-import org.openflexo.model.annotations.PropertyIdentifier;
-import org.openflexo.model.annotations.Setter;
-import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.model.annotations.XMLElement;
 
 /**
- * Represents an inspector entry for an ontology object property
+ * Represents a parameter of a {@link FlexoBehaviour}
  * 
  * @author sylvain
  * 
  */
+// TODO: merge with InspectorEntry once all deprecated InspectorEntry subinterfaces will be removed
 @ModelEntity
-@ImplementationClass(DataPropertyInspectorEntry.DataPropertyInspectorEntryImpl.class)
-@XMLElement(xmlTag = "DataProperty")
-public interface DataPropertyInspectorEntry extends PropertyInspectorEntry {
+@ImplementationClass(GenericInspectorEntry.GenericInspectorEntryImpl.class)
+@XMLElement(xmlTag = "GenericInspectorEntry")
+public interface GenericInspectorEntry extends InspectorEntry {
 
-	@PropertyIdentifier(type = BuiltInDataType.class)
-	public static final String DATA_TYPE_KEY = "dataType";
+	public static abstract class GenericInspectorEntryImpl extends InspectorEntryImpl implements GenericInspectorEntry {
 
-	@Getter(value = DATA_TYPE_KEY)
-	@XMLAttribute
-	public BuiltInDataType getDataType();
-
-	@Setter(DATA_TYPE_KEY)
-	public void setDataType(BuiltInDataType dataType);
-
-	public static abstract class DataPropertyInspectorEntryImpl extends PropertyInspectorEntryImpl implements DataPropertyInspectorEntry {
-
-		private BuiltInDataType dataType;
-
-		public DataPropertyInspectorEntryImpl() {
-			super();
-		}
-
-		/*@Override
-		public Class getDefaultDataClass() {
-			return IFlexoOntologyDataProperty.class;
-		}*/
-
-		@Override
-		public Type getType() {
-			return IFlexoOntologyDataProperty.class;
-		}
-
-		@Override
-		public String getWidgetName() {
-			return "DataPropertySelector";
-		}
-
-		@Override
-		public BuiltInDataType getDataType() {
-			return dataType;
-		}
-
-		@Override
-		public void setDataType(BuiltInDataType dataType) {
-			this.dataType = dataType;
-		}
+		private static final Logger logger = Logger.getLogger(GenericInspectorEntry.class.getPackage().getName());
 
 	}
 }

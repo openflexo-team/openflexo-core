@@ -259,7 +259,7 @@ public class CreateGenericBehaviourParameter extends FlexoAction<CreateGenericBe
 	public void setDefaultValue(DataBinding<?> defaultValue) {
 		if (defaultValue != null) {
 			defaultValue.setOwner(this);
-			defaultValue.setBindingName("container");
+			defaultValue.setBindingName("defaultValue");
 			defaultValue.setDeclaredType(Object.class);
 			defaultValue.setBindingDefinitionType(BindingDefinitionType.GET);
 		}

@@ -38,6 +38,9 @@
 
 package org.openflexo.foundation.fml.inspector;
 
+import java.lang.reflect.Type;
+
+import org.openflexo.foundation.fml.FlexoBehaviourParameter.WidgetType;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.XMLElement;
@@ -51,6 +54,7 @@ import org.openflexo.model.annotations.XMLElement;
 @ModelEntity
 @ImplementationClass(CheckboxInspectorEntry.CheckboxInspectorEntryImpl.class)
 @XMLElement(xmlTag = "Checkbox")
+@Deprecated
 public interface CheckboxInspectorEntry extends InspectorEntry {
 
 	public static abstract class CheckboxInspectorEntryImpl extends InspectorEntryImpl implements CheckboxInspectorEntry {
@@ -59,14 +63,25 @@ public interface CheckboxInspectorEntry extends InspectorEntry {
 			super();
 		}
 
-		@Override
+		/*@Override
 		public Class getDefaultDataClass() {
 			return Boolean.class;
-		}
+		}*/
 
 		@Override
 		public String getWidgetName() {
 			return "Checkbox";
 		}
+
+		@Override
+		public Type getType() {
+			return Boolean.class;
+		};
+
+		@Override
+		public WidgetType getWidget() {
+			return WidgetType.CHECKBOX;
+		}
+
 	}
 }

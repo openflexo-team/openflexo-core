@@ -40,17 +40,22 @@ package org.openflexo.fml.controller.action;
 
 import java.awt.Dimension;
 import java.awt.Image;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.lang.reflect.Type;
 import java.util.List;
 import java.util.logging.Logger;
 
 import org.openflexo.ApplicationContext;
 import org.openflexo.components.wizard.WizardStep;
+import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.fml.FMLObject;
+import org.openflexo.foundation.fml.FlexoBehaviourParameter.FlexoBehaviourParameterImpl;
+import org.openflexo.foundation.fml.FlexoBehaviourParameter.WidgetType;
 import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.action.CreateInspectorEntry;
 import org.openflexo.foundation.fml.inspector.FlexoConceptInspector;
-import org.openflexo.foundation.fml.inspector.InspectorEntry;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.gina.annotation.FIBPanel;
 import org.openflexo.icon.FMLIconLibrary;
@@ -65,7 +70,8 @@ public class CreateInspectorEntryWizard extends AbstractCreateFMLElementWizard<C
 	private static final Logger logger = Logger.getLogger(CreateInspectorEntryWizard.class.getPackage().getName());
 
 	private static final String DUPLICATED_NAME = "this_name_is_already_used_please_choose_an_other_one";
-	private static final String EMPTY_NAME = "edition_behaviour_must_have_an_non_empty_and_unique_name";
+	private static final String EMPTY_NAME = "inspector_entry_must_have_an_non_empty_and_unique_name";
+	private static final String INVALID_DATA = "inspector_entry_should_define_valid_data";
 
 	private final DescribeInspectorEntry describeInspectorEntry;
 
@@ -102,7 +108,25 @@ public class CreateInspectorEntryWizard extends AbstractCreateFMLElementWizard<C
 	 *
 	 */
 	@FIBPanel("Fib/Wizard/CreateFMLElement/DescribeInspectorEntry.fib")
-	public class DescribeInspectorEntry extends WizardStep {
+	public class DescribeInspectorEntry extends WizardStep implements PropertyChangeListener {
+
+		public DescribeInspectorEntry() {
+			CreateInspectorEntryWizard.this.getAction().getPropertyChangeSupport().addPropertyChangeListener(this);
+		}
+
+		@Override
+		public void delete() {
+			CreateInspectorEntryWizard.this.getAction().getPropertyChangeSupport().removePropertyChangeListener(this);
+			super.delete();
+		}
+
+		@Override
+		public void propertyChange(PropertyChangeEvent evt) {
+			if (evt.getPropertyName().equals("data")) {
+				getPropertyChangeSupport().firePropertyChange("entryType", null, getEntryType());
+				checkValidity();
+			}
+		}
 
 		public ApplicationContext getServiceManager() {
 			return getController().getApplicationContext();
@@ -132,6 +156,10 @@ public class CreateInspectorEntryWizard extends AbstractCreateFMLElementWizard<C
 				setIssueMessage(getAction().getLocales().localizedForKey(DUPLICATED_NAME), IssueMessageType.ERROR);
 				return false;
 			}
+			else if (!getAction().getData().isValid()) {
+				setIssueMessage(getAction().getLocales().localizedForKey(INVALID_DATA), IssueMessageType.ERROR);
+				return false;
+			}
 			if (StringUtils.isEmpty(getDescription())) {
 				setIssueMessage(getAction().getLocales().localizedForKey("it_is_recommanded_to_describe_entry"), IssueMessageType.WARNING);
 			}
@@ -152,6 +180,45 @@ public class CreateInspectorEntryWizard extends AbstractCreateFMLElementWizard<C
 			}
 		}
 
+		public Type getEntryType() {
+			return getAction().getEntryType();
+		}
+
+		public void setEntryType(Type entryType) {
+			if ((entryType == null && getEntryType() != null) || (entryType != null && !entryType.equals(getEntryType()))) {
+				String oldEntryName = getEntryName();
+				Type oldValue = getEntryType();
+				getAction().setEntryType(entryType);
+				getPropertyChangeSupport().firePropertyChange("entryType", oldValue, entryType);
+				getPropertyChangeSupport().firePropertyChange("entryName", oldEntryName, getEntryName());
+				getPropertyChangeSupport().firePropertyChange("availableWidgetTypes", null, getAvailableWidgetTypes());
+				checkValidity();
+			}
+		}
+
+		public WidgetType getWidgetType() {
+			return getAction().getWidgetType();
+		}
+
+		public void setWidgetType(WidgetType widgetType) {
+			if (widgetType != getWidgetType()) {
+				WidgetType oldValue = getWidgetType();
+				getAction().setWidgetType(widgetType);
+				getPropertyChangeSupport().firePropertyChange("setWidgetType", oldValue, widgetType);
+				getPropertyChangeSupport().firePropertyChange("isList", !isList(), isList());
+				getPropertyChangeSupport().firePropertyChange("availableWidgetTypes", null, getAvailableWidgetTypes());
+				checkValidity();
+			}
+		}
+
+		public List<WidgetType> getAvailableWidgetTypes() {
+			return FlexoBehaviourParameterImpl.getAvailableWidgetTypes(getEntryType());
+		}
+
+		public boolean isList() {
+			return TypeUtils.isList(getEntryType());
+		}
+
 		public String getDescription() {
 			return getAction().getDescription();
 		}
@@ -165,10 +232,10 @@ public class CreateInspectorEntryWizard extends AbstractCreateFMLElementWizard<C
 			}
 		}
 
-		public Class<? extends InspectorEntry> getInspectorEntryClass() {
+		/*public Class<? extends InspectorEntry> getInspectorEntryClass() {
 			return getAction().getInspectorEntryClass();
 		}
-
+		
 		public void setInspectorEntryClass(Class<? extends InspectorEntry> entryClass) {
 			if (getInspectorEntryClass() != entryClass) {
 				Class<? extends InspectorEntry> oldValue = getInspectorEntryClass();
@@ -178,10 +245,10 @@ public class CreateInspectorEntryWizard extends AbstractCreateFMLElementWizard<C
 				checkValidity();
 			}
 		}
-
+		
 		public List<Class<? extends InspectorEntry>> getAvailableInspectorEntryTypes() {
 			return getAction().getAvailableInspectorEntryTypes();
-		}
+		}*/
 
 	}
 

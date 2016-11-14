@@ -56,6 +56,7 @@ import org.openflexo.foundation.technologyadapter.ModelSlot;
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 @Target(value = ElementType.TYPE)
+@Deprecated
 public @interface DeclareInspectorEntries {
 
 	public Class<? extends InspectorEntry>[] value();

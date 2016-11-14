@@ -42,6 +42,7 @@ import java.util.logging.Logger;
 
 import javax.swing.ImageIcon;
 
+import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.fml.AbstractProperty;
 import org.openflexo.foundation.fml.ActionScheme;
 import org.openflexo.foundation.fml.CloningScheme;
@@ -78,13 +79,8 @@ import org.openflexo.foundation.fml.editionaction.LogAction;
 import org.openflexo.foundation.fml.editionaction.NotifyPropertyChangedAction;
 import org.openflexo.foundation.fml.editionaction.RemoveFromListAction;
 import org.openflexo.foundation.fml.editionaction.TechnologySpecificAction;
-import org.openflexo.foundation.fml.inspector.CheckboxInspectorEntry;
 import org.openflexo.foundation.fml.inspector.FlexoConceptInspector;
-import org.openflexo.foundation.fml.inspector.FloatInspectorEntry;
 import org.openflexo.foundation.fml.inspector.InspectorEntry;
-import org.openflexo.foundation.fml.inspector.IntegerInspectorEntry;
-import org.openflexo.foundation.fml.inspector.TextAreaInspectorEntry;
-import org.openflexo.foundation.fml.inspector.TextFieldInspectorEntry;
 import org.openflexo.foundation.fml.rm.ViewPointResource;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstance;
@@ -419,21 +415,21 @@ public class FMLIconLibrary extends IconLibrary {
 			return LOCALIZATION_ICON;
 		}
 		else if (object instanceof InspectorEntry) {
-			if (object instanceof CheckboxInspectorEntry) {
-				return CHECKBOX_ICON;
+			InspectorEntry entry = (InspectorEntry) object;
+			if (TypeUtils.isString(entry.getType())) {
+				return FMLIconLibrary.STRING_PRIMITIVE_ICON;
 			}
-			else if (object instanceof FloatInspectorEntry) {
-				return SPINNER_ICON;
+			if (TypeUtils.isBoolean(entry.getType())) {
+				return FMLIconLibrary.BOOLEAN_PRIMITIVE_ICON;
 			}
-			else if (object instanceof IntegerInspectorEntry) {
-				return SPINNER_ICON;
+			if (TypeUtils.isInteger(entry.getType()) || TypeUtils.isLong(entry.getType()) || TypeUtils.isShort(entry.getType())
+					|| TypeUtils.isByte(entry.getType())) {
+				return FMLIconLibrary.INTEGER_PRIMITIVE_ICON;
 			}
-			else if (object instanceof TextAreaInspectorEntry) {
-				return TEXT_AREA_ICON;
+			if (TypeUtils.isFloat(entry.getType()) || TypeUtils.isDouble(entry.getType())) {
+				return FMLIconLibrary.DOUBLE_PRIMITIVE_ICON;
 			}
-			else if (object instanceof TextFieldInspectorEntry) {
-				return TEXT_FIELD_ICON;
-			}
+			return FLEXO_CONCEPT_PARAMETER_ICON;
 		}
 		else if (object instanceof TechnologyObject) {
 			return FlexoController.statelessIconForTechnologyObject((TechnologyObject<?>) object);

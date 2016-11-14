@@ -60,6 +60,7 @@ import org.openflexo.foundation.action.LongRunningAction;
 import org.openflexo.foundation.fml.CloningScheme;
 import org.openflexo.foundation.fml.CreationScheme;
 import org.openflexo.foundation.fml.FMLObject;
+import org.openflexo.foundation.fml.FlexoBehaviourParameter.FlexoBehaviourParameterImpl;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.FlexoRole;
@@ -89,14 +90,14 @@ import org.openflexo.toolbox.StringUtils;
  * 
  */
 public abstract class AbstractCreateFlexoConcept<A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FMLObject>
-		extends FlexoAction<A, T1, T2>implements LongRunningAction {
+		extends FlexoAction<A, T1, T2> implements LongRunningAction {
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(AbstractCreateFlexoConcept.class.getPackage().getName());
 
 	private final List<ParentFlexoConceptEntry> parentFlexoConceptEntries;
 
-	private List<PropertyEntry> propertiesEntries;
+	private final List<PropertyEntry> propertiesEntries;
 	private List<PropertyEntry> propertiesUsedForCreationScheme;
 	private List<PropertyEntry> propertiesUsedForInspector;
 
@@ -155,7 +156,13 @@ public abstract class AbstractCreateFlexoConcept<A extends FlexoAction<A, T1, T2
 
 	public List<PropertyEntry> getPropertiesUsedForInspector() {
 		if (propertiesUsedForInspector == null) {
-			propertiesUsedForInspector = new ArrayList<>();
+			propertiesUsedForInspector = new ArrayList<PropertyEntry>() {
+				@Override
+				public boolean add(AbstractCreateFlexoConcept<A, T1, T2>.PropertyEntry e) {
+					System.out.println("adding " + e);
+					return super.add(e);
+				}
+			};
 			propertiesUsedForInspector.addAll(getPropertiesEntries());
 		}
 		return propertiesUsedForInspector;
@@ -383,6 +390,8 @@ public abstract class AbstractCreateFlexoConcept<A extends FlexoAction<A, T1, T2
 			FlexoConceptInspector inspector = getNewFlexoConcept().getInspector();
 			System.out.println("Creating inspector " + inspector);
 
+			System.out.println("getPropertiesUsedForInspector()=" + getPropertiesUsedForInspector());
+
 			for (PropertyEntry entry : getPropertiesUsedForInspector()) {
 				performCreateInspectorEntry(entry, inspector);
 			}
@@ -392,104 +401,16 @@ public abstract class AbstractCreateFlexoConcept<A extends FlexoAction<A, T1, T2
 	private void performCreateInspectorEntry(PropertyEntry entry, FlexoConceptInspector inspector) {
 		Progress.progress(getLocales().localizedForKey("create_inspector_entry") + " " + entry.getName());
 
-		/*AbstractCreateFlexoProperty action = null;
-		
-		switch (entry.getPropertyType()) {
-			case PRIMITIVE:
-				CreatePrimitiveRole createPrimitive = CreatePrimitiveRole.actionType.makeNewEmbeddedAction(getNewFlexoConcept(), null,
-						this);
-				action = createPrimitive;
-				createPrimitive.setRoleName(entry.getName());
-				createPrimitive.setCardinality(entry.getCardinality());
-				if (TypeUtils.isString(entry.getType())) {
-					createPrimitive.setPrimitiveType(PrimitiveType.String);
-				}
-				if (TypeUtils.isBoolean(entry.getType())) {
-					createPrimitive.setPrimitiveType(PrimitiveType.Boolean);
-				}
-				if (TypeUtils.isInteger(entry.getType()) || TypeUtils.isLong(entry.getType()) || TypeUtils.isShort(entry.getType())
-						|| TypeUtils.isByte(entry.getType())) {
-					createPrimitive.setPrimitiveType(PrimitiveType.Integer);
-				}
-				if (TypeUtils.isFloat(entry.getType())) {
-					createPrimitive.setPrimitiveType(PrimitiveType.Float);
-				}
-				if (TypeUtils.isDouble(entry.getType())) {
-					createPrimitive.setPrimitiveType(PrimitiveType.Double);
-				}
-				break;
-			case ABSTRACT_PROPERTY:
-				CreateAbstractProperty createAbstractProperty = CreateAbstractProperty.actionType
-						.makeNewEmbeddedAction(getNewFlexoConcept(), null, this);
-				action = createAbstractProperty;
-				createAbstractProperty.setPropertyName(entry.getName());
-				createAbstractProperty.setPropertyType(entry.getType());
-				break;
-			case EXPRESSION_PROPERTY:
-				CreateExpressionProperty createExpressionProperty = CreateExpressionProperty.actionType
-						.makeNewEmbeddedAction(getNewFlexoConcept(), null, this);
-				action = createExpressionProperty;
-				createExpressionProperty.setPropertyName(entry.getName());
-				break;
-			case GET_PROPERTY:
-				CreateGetSetProperty createGetProperty = CreateGetSetProperty.actionType.makeNewEmbeddedAction(getNewFlexoConcept(), null,
-						this);
-				action = createGetProperty;
-				createGetProperty.setPropertyName(entry.getName());
-				break;
-			case GET_SET_PROPERTY:
-				CreateGetSetProperty createGetSetProperty = CreateGetSetProperty.actionType.makeNewEmbeddedAction(getNewFlexoConcept(),
-						null, this);
-				action = createGetSetProperty;
-				createGetSetProperty.setPropertyName(entry.getName());
-				break;
-			case FLEXO_CONCEPT_INSTANCE:
-				CreateFlexoConceptInstanceRole createFCIRole = CreateFlexoConceptInstanceRole.actionType
-						.makeNewEmbeddedAction(getNewFlexoConcept(), null, this);
-				action = createFCIRole;
-				createFCIRole.setPropertyName(entry.getName());
-				if (entry.getType() instanceof FlexoConceptInstanceType) {
-					createFCIRole.setFlexoConceptInstanceType(((FlexoConceptInstanceType) entry.getType()).getFlexoConcept());
-				}
-				createFCIRole.setVirtualModelInstance(new DataBinding<AbstractVirtualModelInstance<?, ?>>(entry.getContainer().toString()));
-				break;
-			case MODEL_SLOT:
-				CreateModelSlot createModelSlot = CreateModelSlot.actionType.makeNewEmbeddedAction(getNewFlexoConcept(), null, this);
-				action = createModelSlot;
-				createModelSlot.setModelSlotName(entry.getName());
-				if (entry.getTechnologyAdapter() != null) {
-					createModelSlot.setTechnologyAdapter(entry.getTechnologyAdapter());
-					createModelSlot.setModelSlotClass(entry.getModelSlotClass());
-					// System.out.println("ModelSlotClass=" + entry.getModelSlotClass());
-				}
-				break;
-			case TECHNOLOGY_ROLE:
-				CreateTechnologyRole createTechnologyRole = CreateTechnologyRole.actionType.makeNewEmbeddedAction(getNewFlexoConcept(),
-						null, this);
-				action = createTechnologyRole;
-				createTechnologyRole.setRoleName(entry.getName());
-				if (entry.getTechnologyAdapter() != null && entry.getFlexoRoleClass() != null) {
-					System.out.println("FlexoRoleClass= " + entry.getFlexoRoleClass());
-					System.out.println("container= " + entry.getContainer());
-					System.out.println("defaultValue= " + entry.getDefaultValue());
-					createTechnologyRole.setFlexoRoleClass(entry.getFlexoRoleClass());
-					createTechnologyRole.setIsRequired(entry.isRequired());
-					createTechnologyRole.setContainer(new DataBinding<Object>(entry.getContainer().toString()));
-					createTechnologyRole.setDefaultValue(new DataBinding<Object>(entry.getDefaultValue().toString()));
-				}
-				break;
-		}
-		
-		if (action != null) {
-			action.setDescription(entry.getDescription());
-			System.out.println("Executing action " + action + " valid=" + action.isValid());
-			action.doAction();
-		}
-		else {
-			System.out.println("Create property " + entry.getName() + " not implemented yet");
-		
-		}*/
-
+		CreateInspectorEntry action = CreateInspectorEntry.actionType.makeNewEmbeddedAction(inspector, null, this);
+		action.setEntryName(entry.getName());
+		action.setEntryType(entry.getType());
+		action.setWidgetType(FlexoBehaviourParameterImpl.getAvailableWidgetTypes(entry.getType()).get(0));
+		action.setContainer(entry.getContainer());
+		action.setData(new DataBinding(entry.getName()));
+		// action.setList(entry.getList());
+		action.setIsReadOnly(false);
+		action.setDescription(entry.getDescription());
+		action.doAction();
 	}
 
 	private boolean defineInspector = false;
@@ -624,7 +545,7 @@ public abstract class AbstractCreateFlexoConcept<A extends FlexoAction<A, T1, T2
 		private DataBinding<?> defaultValue;
 		private DataBinding<?> container;
 
-		private LocalizedDelegate locales;
+		private final LocalizedDelegate locales;
 
 		public PropertyEntry(String paramName, LocalizedDelegate locales) {
 			super();
