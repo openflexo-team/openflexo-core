@@ -70,6 +70,7 @@ import org.openflexo.foundation.fml.VirtualModelInstanceType;
 import org.openflexo.foundation.fml.action.CreateFlexoBehaviour.BehaviourParameterEntry;
 import org.openflexo.foundation.fml.editionaction.AssignationAction;
 import org.openflexo.foundation.fml.editionaction.ExpressionAction;
+import org.openflexo.foundation.fml.inspector.FlexoConceptInspector;
 import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
 import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.task.Progress;
@@ -272,28 +273,6 @@ public abstract class AbstractCreateFlexoConcept<A extends FlexoAction<A, T1, T2
 		}
 	}
 
-	protected void performCreateInspectors() {
-		/*if (getDefineSomeBehaviours()) {
-			if (getDefineDefaultCreationScheme()) {
-				CreateFlexoBehaviour createCreationScheme = CreateFlexoBehaviour.actionType.makeNewEmbeddedAction(getNewFlexoConcept(),
-						null, this);
-				createCreationScheme.setFlexoBehaviourName("create");
-				createCreationScheme.setFlexoBehaviourClass(CreationScheme.class);
-				for (PropertyEntry entry : propertiesUsedForCreationScheme) {
-					BehaviourParameterEntry newEntry = createCreationScheme.newParameterEntry();
-					newEntry.setParameterName(entry.getName());
-					newEntry.setParameterType(entry.getType());
-					newEntry.setContainer(entry.getContainer());
-					newEntry.setDefaultValue(entry.getDefaultValue());
-					newEntry.setParameterDescription(entry.getDescription());
-					newEntry.setParameterName(entry.getName());
-				}
-				System.out.println("action valide = " + createCreationScheme.isValid());
-				createCreationScheme.doAction();
-			}
-		}*/
-	}
-
 	private void performCreateProperty(PropertyEntry entry) {
 		Progress.progress(getLocales().localizedForKey("create_property") + " " + entry.getName());
 
@@ -395,6 +374,135 @@ public abstract class AbstractCreateFlexoConcept<A extends FlexoAction<A, T1, T2
 
 		}
 
+	}
+
+	protected void performCreateInspectors() {
+
+		if (getDefineInspector()) {
+
+			FlexoConceptInspector inspector = getNewFlexoConcept().getInspector();
+			System.out.println("Creating inspector " + inspector);
+
+			for (PropertyEntry entry : getPropertiesUsedForInspector()) {
+				performCreateInspectorEntry(entry, inspector);
+			}
+		}
+	}
+
+	private void performCreateInspectorEntry(PropertyEntry entry, FlexoConceptInspector inspector) {
+		Progress.progress(getLocales().localizedForKey("create_inspector_entry") + " " + entry.getName());
+
+		/*AbstractCreateFlexoProperty action = null;
+		
+		switch (entry.getPropertyType()) {
+			case PRIMITIVE:
+				CreatePrimitiveRole createPrimitive = CreatePrimitiveRole.actionType.makeNewEmbeddedAction(getNewFlexoConcept(), null,
+						this);
+				action = createPrimitive;
+				createPrimitive.setRoleName(entry.getName());
+				createPrimitive.setCardinality(entry.getCardinality());
+				if (TypeUtils.isString(entry.getType())) {
+					createPrimitive.setPrimitiveType(PrimitiveType.String);
+				}
+				if (TypeUtils.isBoolean(entry.getType())) {
+					createPrimitive.setPrimitiveType(PrimitiveType.Boolean);
+				}
+				if (TypeUtils.isInteger(entry.getType()) || TypeUtils.isLong(entry.getType()) || TypeUtils.isShort(entry.getType())
+						|| TypeUtils.isByte(entry.getType())) {
+					createPrimitive.setPrimitiveType(PrimitiveType.Integer);
+				}
+				if (TypeUtils.isFloat(entry.getType())) {
+					createPrimitive.setPrimitiveType(PrimitiveType.Float);
+				}
+				if (TypeUtils.isDouble(entry.getType())) {
+					createPrimitive.setPrimitiveType(PrimitiveType.Double);
+				}
+				break;
+			case ABSTRACT_PROPERTY:
+				CreateAbstractProperty createAbstractProperty = CreateAbstractProperty.actionType
+						.makeNewEmbeddedAction(getNewFlexoConcept(), null, this);
+				action = createAbstractProperty;
+				createAbstractProperty.setPropertyName(entry.getName());
+				createAbstractProperty.setPropertyType(entry.getType());
+				break;
+			case EXPRESSION_PROPERTY:
+				CreateExpressionProperty createExpressionProperty = CreateExpressionProperty.actionType
+						.makeNewEmbeddedAction(getNewFlexoConcept(), null, this);
+				action = createExpressionProperty;
+				createExpressionProperty.setPropertyName(entry.getName());
+				break;
+			case GET_PROPERTY:
+				CreateGetSetProperty createGetProperty = CreateGetSetProperty.actionType.makeNewEmbeddedAction(getNewFlexoConcept(), null,
+						this);
+				action = createGetProperty;
+				createGetProperty.setPropertyName(entry.getName());
+				break;
+			case GET_SET_PROPERTY:
+				CreateGetSetProperty createGetSetProperty = CreateGetSetProperty.actionType.makeNewEmbeddedAction(getNewFlexoConcept(),
+						null, this);
+				action = createGetSetProperty;
+				createGetSetProperty.setPropertyName(entry.getName());
+				break;
+			case FLEXO_CONCEPT_INSTANCE:
+				CreateFlexoConceptInstanceRole createFCIRole = CreateFlexoConceptInstanceRole.actionType
+						.makeNewEmbeddedAction(getNewFlexoConcept(), null, this);
+				action = createFCIRole;
+				createFCIRole.setPropertyName(entry.getName());
+				if (entry.getType() instanceof FlexoConceptInstanceType) {
+					createFCIRole.setFlexoConceptInstanceType(((FlexoConceptInstanceType) entry.getType()).getFlexoConcept());
+				}
+				createFCIRole.setVirtualModelInstance(new DataBinding<AbstractVirtualModelInstance<?, ?>>(entry.getContainer().toString()));
+				break;
+			case MODEL_SLOT:
+				CreateModelSlot createModelSlot = CreateModelSlot.actionType.makeNewEmbeddedAction(getNewFlexoConcept(), null, this);
+				action = createModelSlot;
+				createModelSlot.setModelSlotName(entry.getName());
+				if (entry.getTechnologyAdapter() != null) {
+					createModelSlot.setTechnologyAdapter(entry.getTechnologyAdapter());
+					createModelSlot.setModelSlotClass(entry.getModelSlotClass());
+					// System.out.println("ModelSlotClass=" + entry.getModelSlotClass());
+				}
+				break;
+			case TECHNOLOGY_ROLE:
+				CreateTechnologyRole createTechnologyRole = CreateTechnologyRole.actionType.makeNewEmbeddedAction(getNewFlexoConcept(),
+						null, this);
+				action = createTechnologyRole;
+				createTechnologyRole.setRoleName(entry.getName());
+				if (entry.getTechnologyAdapter() != null && entry.getFlexoRoleClass() != null) {
+					System.out.println("FlexoRoleClass= " + entry.getFlexoRoleClass());
+					System.out.println("container= " + entry.getContainer());
+					System.out.println("defaultValue= " + entry.getDefaultValue());
+					createTechnologyRole.setFlexoRoleClass(entry.getFlexoRoleClass());
+					createTechnologyRole.setIsRequired(entry.isRequired());
+					createTechnologyRole.setContainer(new DataBinding<Object>(entry.getContainer().toString()));
+					createTechnologyRole.setDefaultValue(new DataBinding<Object>(entry.getDefaultValue().toString()));
+				}
+				break;
+		}
+		
+		if (action != null) {
+			action.setDescription(entry.getDescription());
+			System.out.println("Executing action " + action + " valid=" + action.isValid());
+			action.doAction();
+		}
+		else {
+			System.out.println("Create property " + entry.getName() + " not implemented yet");
+		
+		}*/
+
+	}
+
+	private boolean defineInspector = false;
+
+	public boolean getDefineInspector() {
+		return defineInspector;
+	}
+
+	public void setDefineInspector(boolean defineInspector) {
+		if (defineInspector != this.defineInspector) {
+			this.defineInspector = defineInspector;
+			getPropertyChangeSupport().firePropertyChange("defineInspector", !defineInspector, defineInspector);
+		}
 	}
 
 	private boolean defineSomeBehaviours = false;

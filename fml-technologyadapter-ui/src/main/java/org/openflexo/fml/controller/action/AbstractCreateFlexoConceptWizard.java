@@ -260,8 +260,6 @@ public abstract class AbstractCreateFlexoConceptWizard<A extends AbstractCreateF
 	@FIBPanel("Fib/Wizard/CreateFMLElement/ConfigureInspectorForNewFlexoConcept.fib")
 	public class ConfigureInspectorForNewFlexoConcept extends WizardStep {
 
-		private boolean defineInspector = false;
-
 		public ApplicationContext getServiceManager() {
 			return getController().getApplicationContext();
 		}
@@ -282,12 +280,12 @@ public abstract class AbstractCreateFlexoConceptWizard<A extends AbstractCreateF
 		}
 
 		public boolean getDefineInspector() {
-			return defineInspector;
+			return getAction().getDefineInspector();
 		}
 
 		public void setDefineInspector(boolean defineInspector) {
-			if (defineInspector != this.defineInspector) {
-				this.defineInspector = defineInspector;
+			if (defineInspector != getDefineInspector()) {
+				getAction().setDefineInspector(defineInspector);
 				getPropertyChangeSupport().firePropertyChange("defineInspector", !defineInspector, defineInspector);
 				checkValidity();
 			}
