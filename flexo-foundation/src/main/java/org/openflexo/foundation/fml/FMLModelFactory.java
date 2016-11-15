@@ -80,6 +80,7 @@ import org.openflexo.foundation.fml.editionaction.RemoveFromListAction;
 import org.openflexo.foundation.fml.editionaction.ReturnStatement;
 import org.openflexo.foundation.fml.inspector.CheckboxInspectorEntry;
 import org.openflexo.foundation.fml.inspector.FlexoConceptInspector;
+import org.openflexo.foundation.fml.inspector.GenericInspectorEntry;
 import org.openflexo.foundation.fml.inspector.InspectorEntry;
 import org.openflexo.foundation.fml.inspector.IntegerInspectorEntry;
 import org.openflexo.foundation.fml.inspector.TextAreaInspectorEntry;
@@ -430,6 +431,12 @@ public class FMLModelFactory extends FGEModelFactoryImpl implements PamelaResour
 	public FlexoConceptInspector newFlexoConceptInspector(FlexoConcept ep) {
 		FlexoConceptInspector returned = newInstance(FlexoConceptInspector.class);
 		returned.setFlexoConcept(ep);
+		return returned;
+	}
+
+	public GenericInspectorEntry newInspectorEntry(FlexoConceptInspector inspector) {
+		GenericInspectorEntry returned = newInstance(GenericInspectorEntry.class);
+		inspector.addToEntries(returned);
 		return returned;
 	}
 

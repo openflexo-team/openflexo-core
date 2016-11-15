@@ -751,7 +751,6 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 			if (uri != null && !uri.isEmpty() && getOwningVirtualModel() != null) {
 				if (uri.contains(getOwningVirtualModel().getURI())) {
 					String behaviourname = uri.replace(getOwningVirtualModel().getURI(), "").substring(1);
-					System.out.println("XTOF :: je récupère " + behaviourname);
 					return getFlexoBehaviour(behaviourname);
 				}
 				else {

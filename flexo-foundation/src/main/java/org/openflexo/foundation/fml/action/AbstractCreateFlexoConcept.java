@@ -60,6 +60,7 @@ import org.openflexo.foundation.action.LongRunningAction;
 import org.openflexo.foundation.fml.CloningScheme;
 import org.openflexo.foundation.fml.CreationScheme;
 import org.openflexo.foundation.fml.FMLObject;
+import org.openflexo.foundation.fml.FlexoBehaviourParameter.FlexoBehaviourParameterImpl;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.FlexoRole;
@@ -70,6 +71,7 @@ import org.openflexo.foundation.fml.VirtualModelInstanceType;
 import org.openflexo.foundation.fml.action.CreateFlexoBehaviour.BehaviourParameterEntry;
 import org.openflexo.foundation.fml.editionaction.AssignationAction;
 import org.openflexo.foundation.fml.editionaction.ExpressionAction;
+import org.openflexo.foundation.fml.inspector.FlexoConceptInspector;
 import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
 import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.task.Progress;
@@ -88,14 +90,14 @@ import org.openflexo.toolbox.StringUtils;
  * 
  */
 public abstract class AbstractCreateFlexoConcept<A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FMLObject>
-		extends FlexoAction<A, T1, T2>implements LongRunningAction {
+		extends FlexoAction<A, T1, T2> implements LongRunningAction {
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(AbstractCreateFlexoConcept.class.getPackage().getName());
 
 	private final List<ParentFlexoConceptEntry> parentFlexoConceptEntries;
 
-	private List<PropertyEntry> propertiesEntries;
+	private final List<PropertyEntry> propertiesEntries;
 	private List<PropertyEntry> propertiesUsedForCreationScheme;
 	private List<PropertyEntry> propertiesUsedForInspector;
 
@@ -154,7 +156,13 @@ public abstract class AbstractCreateFlexoConcept<A extends FlexoAction<A, T1, T2
 
 	public List<PropertyEntry> getPropertiesUsedForInspector() {
 		if (propertiesUsedForInspector == null) {
-			propertiesUsedForInspector = new ArrayList<>();
+			propertiesUsedForInspector = new ArrayList<PropertyEntry>() {
+				@Override
+				public boolean add(AbstractCreateFlexoConcept<A, T1, T2>.PropertyEntry e) {
+					System.out.println("adding " + e);
+					return super.add(e);
+				}
+			};
 			propertiesUsedForInspector.addAll(getPropertiesEntries());
 		}
 		return propertiesUsedForInspector;
@@ -272,28 +280,6 @@ public abstract class AbstractCreateFlexoConcept<A extends FlexoAction<A, T1, T2
 		}
 	}
 
-	protected void performCreateInspectors() {
-		/*if (getDefineSomeBehaviours()) {
-			if (getDefineDefaultCreationScheme()) {
-				CreateFlexoBehaviour createCreationScheme = CreateFlexoBehaviour.actionType.makeNewEmbeddedAction(getNewFlexoConcept(),
-						null, this);
-				createCreationScheme.setFlexoBehaviourName("create");
-				createCreationScheme.setFlexoBehaviourClass(CreationScheme.class);
-				for (PropertyEntry entry : propertiesUsedForCreationScheme) {
-					BehaviourParameterEntry newEntry = createCreationScheme.newParameterEntry();
-					newEntry.setParameterName(entry.getName());
-					newEntry.setParameterType(entry.getType());
-					newEntry.setContainer(entry.getContainer());
-					newEntry.setDefaultValue(entry.getDefaultValue());
-					newEntry.setParameterDescription(entry.getDescription());
-					newEntry.setParameterName(entry.getName());
-				}
-				System.out.println("action valide = " + createCreationScheme.isValid());
-				createCreationScheme.doAction();
-			}
-		}*/
-	}
-
 	private void performCreateProperty(PropertyEntry entry) {
 		Progress.progress(getLocales().localizedForKey("create_property") + " " + entry.getName());
 
@@ -395,6 +381,49 @@ public abstract class AbstractCreateFlexoConcept<A extends FlexoAction<A, T1, T2
 
 		}
 
+	}
+
+	protected void performCreateInspectors() {
+
+		if (getDefineInspector()) {
+
+			FlexoConceptInspector inspector = getNewFlexoConcept().getInspector();
+			System.out.println("Creating inspector " + inspector);
+
+			System.out.println("getPropertiesUsedForInspector()=" + getPropertiesUsedForInspector());
+
+			for (PropertyEntry entry : getPropertiesUsedForInspector()) {
+				performCreateInspectorEntry(entry, inspector);
+			}
+		}
+	}
+
+	private void performCreateInspectorEntry(PropertyEntry entry, FlexoConceptInspector inspector) {
+		Progress.progress(getLocales().localizedForKey("create_inspector_entry") + " " + entry.getName());
+
+		CreateInspectorEntry action = CreateInspectorEntry.actionType.makeNewEmbeddedAction(inspector, null, this);
+		action.setEntryName(entry.getName());
+		action.setEntryType(entry.getType());
+		action.setWidgetType(FlexoBehaviourParameterImpl.getAvailableWidgetTypes(entry.getType()).get(0));
+		action.setContainer(entry.getContainer());
+		action.setData(new DataBinding(entry.getName()));
+		// action.setList(entry.getList());
+		action.setIsReadOnly(false);
+		action.setDescription(entry.getDescription());
+		action.doAction();
+	}
+
+	private boolean defineInspector = false;
+
+	public boolean getDefineInspector() {
+		return defineInspector;
+	}
+
+	public void setDefineInspector(boolean defineInspector) {
+		if (defineInspector != this.defineInspector) {
+			this.defineInspector = defineInspector;
+			getPropertyChangeSupport().firePropertyChange("defineInspector", !defineInspector, defineInspector);
+		}
 	}
 
 	private boolean defineSomeBehaviours = false;
@@ -516,7 +545,7 @@ public abstract class AbstractCreateFlexoConcept<A extends FlexoAction<A, T1, T2
 		private DataBinding<?> defaultValue;
 		private DataBinding<?> container;
 
-		private LocalizedDelegate locales;
+		private final LocalizedDelegate locales;
 
 		public PropertyEntry(String paramName, LocalizedDelegate locales) {
 			super();

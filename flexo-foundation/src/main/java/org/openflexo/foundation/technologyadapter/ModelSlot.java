@@ -132,10 +132,12 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>>
 	@Setter(OWNER_KEY)
 	public void setOwner(AbstractVirtualModel<?> virtualModel);
 
+	@Override
 	@Getter(value = IS_REQUIRED_KEY, defaultValue = "false")
 	@XMLAttribute
 	public boolean getIsRequired();
 
+	@Override
 	@Setter(IS_REQUIRED_KEY)
 	public void setIsRequired(boolean isRequired);
 
@@ -173,8 +175,10 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>>
 
 	public List<Class<? extends FlexoBehaviour>> getAvailableFlexoBehaviourTypes();
 
+	@Deprecated
 	public List<Class<? extends FlexoBehaviourParameter>> getAvailableFlexoBehaviourParameterTypes();
 
+	@Deprecated
 	public List<Class<? extends InspectorEntry>> getAvailableInspectorEntryTypes();
 
 	/**

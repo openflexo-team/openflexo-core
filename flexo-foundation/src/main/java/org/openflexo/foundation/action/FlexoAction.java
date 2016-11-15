@@ -474,4 +474,24 @@ public abstract class FlexoAction<A extends FlexoAction<A, T1, T2>, T1 extends F
 		return getLocales(getServiceManager());
 	}
 
+	public void performPostProcessings() {
+		for (PostProcessing pp : postProcessings) {
+			pp.run();
+		}
+	}
+
+	private List<PostProcessing> postProcessings = new ArrayList<>();
+
+	public void addToPostProcessing(PostProcessing postProcessing) {
+		postProcessings.add(postProcessing);
+	}
+
+	public void removeFromPostProcessing(PostProcessing postProcessing) {
+		postProcessings.remove(postProcessing);
+	}
+
+	public static interface PostProcessing extends Runnable {
+		public FlexoAction<?, ?, ?> getAction();
+	}
+
 }

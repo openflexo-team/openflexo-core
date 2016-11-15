@@ -38,6 +38,9 @@
 
 package org.openflexo.foundation.fml.inspector;
 
+import java.lang.reflect.Type;
+
+import org.openflexo.foundation.fml.FlexoBehaviourParameter.WidgetType;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.XMLElement;
@@ -51,6 +54,7 @@ import org.openflexo.model.annotations.XMLElement;
 @ModelEntity
 @ImplementationClass(IntegerInspectorEntry.IntegerInspectorEntryImpl.class)
 @XMLElement(xmlTag = "Integer")
+@Deprecated
 public interface IntegerInspectorEntry extends InspectorEntry {
 
 	public static abstract class IntegerInspectorEntryImpl extends InspectorEntryImpl implements IntegerInspectorEntry {
@@ -59,14 +63,25 @@ public interface IntegerInspectorEntry extends InspectorEntry {
 			super();
 		}
 
-		@Override
+		/*@Override
 		public Class getDefaultDataClass() {
 			return Integer.class;
-		}
+		}*/
 
 		@Override
 		public String getWidgetName() {
 			return "Integer";
 		}
+
+		@Override
+		public Type getType() {
+			return Integer.class;
+		};
+
+		@Override
+		public WidgetType getWidget() {
+			return WidgetType.INTEGER;
+		}
+
 	}
 }

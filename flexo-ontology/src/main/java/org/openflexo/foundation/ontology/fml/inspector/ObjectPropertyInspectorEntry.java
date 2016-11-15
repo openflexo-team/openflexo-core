@@ -39,6 +39,7 @@
 package org.openflexo.foundation.ontology.fml.inspector;
 
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Type;
 
 import org.openflexo.connie.BindingEvaluationContext;
 import org.openflexo.connie.DataBinding;
@@ -94,8 +95,8 @@ public interface ObjectPropertyInspectorEntry extends PropertyInspectorEntry {
 
 	public void setIsDynamicRangeValue(boolean isDynamic);
 
-	public static abstract class ObjectPropertyInspectorEntryImpl extends PropertyInspectorEntryImpl implements
-			ObjectPropertyInspectorEntry {
+	public static abstract class ObjectPropertyInspectorEntryImpl extends PropertyInspectorEntryImpl
+			implements ObjectPropertyInspectorEntry {
 
 		private String rangeURI;
 
@@ -105,8 +106,13 @@ public interface ObjectPropertyInspectorEntry extends PropertyInspectorEntry {
 			super();
 		}
 
-		@Override
+		/*@Override
 		public Class getDefaultDataClass() {
+			return IFlexoOntologyObjectProperty.class;
+		}*/
+
+		@Override
+		public Type getType() {
 			return IFlexoOntologyObjectProperty.class;
 		}
 
@@ -169,7 +175,8 @@ public interface ObjectPropertyInspectorEntry extends PropertyInspectorEntry {
 		public void setIsDynamicRangeValue(boolean isDynamic) {
 			if (isDynamic) {
 				isDynamicRangeValueSet = true;
-			} else {
+			}
+			else {
 				rangeValue = null;
 				isDynamicRangeValueSet = false;
 			}

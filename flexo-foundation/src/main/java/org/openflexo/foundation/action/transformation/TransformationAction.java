@@ -99,6 +99,7 @@ public abstract class TransformationAction<A extends TransformationAction<A, T1,
 
 		if (isValid()) {
 			getTransformationStrategy().performStrategy();
+			performPostProcessings();
 		}
 	}
 

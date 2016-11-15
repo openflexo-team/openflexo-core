@@ -221,6 +221,11 @@ public abstract class AbstractDeclareInFlexoConceptWizard<A extends AbstractDecl
 						IssueMessageType.ERROR);
 				return false;
 			}
+			if (getAction().getVirtualModel().getFlexoConcept(getFlexoConceptName()) != null) {
+				setIssueMessage(getAction().getLocales().localizedForKey("a_flexo_concept_with_that_name_already_exists"),
+						IssueMessageType.ERROR);
+				return false;
+			}
 			if (getCreationStrategy() == null) {
 				setIssueMessage(getAction().getLocales().localizedForKey("please_choose_a_creation_strategy"), IssueMessageType.ERROR);
 				return false;
@@ -266,15 +271,25 @@ public abstract class AbstractDeclareInFlexoConceptWizard<A extends AbstractDecl
 			detailedStep = configureConceptCreationStrategy();
 			addStep(detailedStep);
 
+			configurePostProcessings();
+
 		}
 
 		@Override
 		public void discardTransition() {
 
+			discardPostProcessings();
+
 			removeStep(detailedStep);
 			detailedStep = null;
 		}
 
+	}
+
+	public void configurePostProcessings() {
+	}
+
+	public void discardPostProcessings() {
 	}
 
 	public abstract AbstractChooseNewConceptCreationStrategy chooseNewConceptCreationStrategy();

@@ -49,6 +49,7 @@ import org.openflexo.connie.binding.Function;
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.DataModification;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
+import org.openflexo.foundation.fml.FlexoConceptInstanceType.FlexoConceptInstanceTypeFactory;
 import org.openflexo.foundation.fml.binding.FlexoBehaviourBindingModel;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraphConverter;
@@ -506,19 +507,27 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 			// TODO: remove this code once all deprecated FlexoBehaviourParameter subinterfaces will be removed
 			if (getDeserializationFactory() != null) {
 				for (FlexoBehaviourParameter p : new ArrayList<>(getParameters())) {
-					FMLModelFactory factory = getDeserializationFactory();
-					GenericBehaviourParameter newParameter = factory.newParameter(getFlexoBehaviour());
-					newParameter.setName(p.getName());
-					newParameter.setType(p.getType());
-					newParameter.setWidget(p.getWidget());
-					newParameter.setContainer(p.getContainer());
-					newParameter.setDefaultValue(p.getDefaultValue());
-					newParameter.setList(p.getList());
-					newParameter.setIsRequired(p.getIsRequired());
-					newParameter.setDescription(p.getDescription());
-					logger.info("Converted former parameter " + p + " into " + newParameter);
-					removeFromParameters(p);
-					addToParameters(newParameter);
+					if (!(p instanceof GenericBehaviourParameter)) {
+						FMLModelFactory factory = getDeserializationFactory();
+						GenericBehaviourParameter newParameter = factory.newParameter(getFlexoBehaviour());
+						newParameter.setName(p.getName());
+						newParameter.setType(p.getType());
+						if (p instanceof FlexoConceptInstanceParameter) {
+							FMLTechnologyAdapter ta = factory.getServiceManager().getTechnologyAdapterService()
+									.getTechnologyAdapter(FMLTechnologyAdapter.class);
+							FlexoConceptInstanceTypeFactory fciFactory = ta.getFlexoConceptInstanceTypeFactory();
+							newParameter.setType(fciFactory.makeCustomType(((FlexoConceptInstanceParameter) p)._getFlexoConceptTypeURI()));
+						}
+						newParameter.setWidget(p.getWidget());
+						newParameter.setContainer(p.getContainer());
+						newParameter.setDefaultValue(p.getDefaultValue());
+						newParameter.setList(p.getList());
+						newParameter.setIsRequired(p.getIsRequired());
+						newParameter.setDescription(p.getDescription());
+						logger.info("Converted former parameter " + p + " into " + newParameter + " with " + newParameter.getType());
+						removeFromParameters(p);
+						addToParameters(newParameter);
+					}
 				}
 			}
 

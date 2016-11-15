@@ -89,11 +89,11 @@
 					name="subresources" />
 				<Children data="virtualModel.loadedVirtualModel.allRootFlexoConcepts"
 					visible="virtualModel.isLoaded" name="rootFlexoConcepts" />
-				<Children data="virtualModel.virtualModel.inspector" name="inspector"
+				<Children data="virtualModel.loadedVirtualModel.inspector" name="inspector"
 					visible="virtualModel.isLoaded" />
-				<Children data="virtualModel.virtualModel.structuralFacet"
+				<Children data="virtualModel.loadedVirtualModel.structuralFacet"
 					name="structural" visible="virtualModel.isLoaded" />
-				<Children data="virtualModel.virtualModel.behaviouralFacet"
+				<Children data="virtualModel.loadedVirtualModel.behaviouralFacet"
 					name="behavioural" visible="virtualModel.isLoaded" />
 				<BrowserRemoveAction method="controller.deleteVirtualModel(selected)"
 					name="delete_virtual_model" />
@@ -272,7 +272,7 @@
 				label="&quot;Inspector&quot;" icon="controller.iconForObject(inspector)"
 				tooltip="" enabled="" isEditable="false" editableLabel="" filtered="false"
 				defaultVisible="true" dynamicFont="" name="inspector">
-				<Children data="inspector.entries" name="entries" />
+				<!--  <Children data="inspector.entries" name="entries" /> -->
 				<BrowserAddAction method="controller.createInspectorEntry(data)"
 					name="add_inspector_entry" />
 				<!-- <BrowserAddAction method="data.createNewTextField" name="add_textfield" 
@@ -288,11 +288,11 @@
 				<RemoveAction method="data.inspector.deleteEntry(selected)"
 					name="delete" />
 			</BrowserElement>
-			<BrowserElement
+			<!--  <BrowserElement
 				dataClassName="org.openflexo.foundation.fml.inspector.InspectorEntry"
 				label="inspectorEntry.name" icon="controller.iconForObject(inspectorEntry)"
 				isEditable="true" editableLabel="inspectorEntry.name" filtered="false"
-				defaultVisible="true" dynamicFont="" name="inspectorEntry" />
+				defaultVisible="true" dynamicFont="" name="inspectorEntry" />-->
 			<BrowserElement
 				dataClassName="org.openflexo.foundation.fml.controlgraph.ControlStructureAction"
 				label="" icon="controller.iconForObject(controlStructureAction)"

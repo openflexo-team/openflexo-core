@@ -652,9 +652,11 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 			containerBinding = "data." + FlexoConceptBindingFactory.FLEXO_CONCEPT_INSTANCE + "." + parameter.getContainer().toString();
 		}
 
-		if (parameter.getContainer().isSet() && parameter.getContainer().isValid()) {
+		DataBinding<?> container = parameter.getContainer();
 
-			Type containerType = parameter.getContainer().getAnalyzedType();
+		if (container.isSet() && container.isValid()) {
+
+			Type containerType = container.getAnalyzedType();
 
 			if (containerType instanceof ViewType) {
 				fciSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(fciSelector, new DataBinding<Object>("component.view"),
@@ -956,8 +958,9 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 							fibModelFactory.newFIBCustomAssignment(epiSelector, new DataBinding<Object>("component.virtualModelInstance"),
 									new DataBinding<Object>(
 											"data." + ((FlexoConceptInstanceParameter) parameter).getVirtualModelInstance().toString()),
-							true));
+									true));
 
+			// TODO: check but it seems that component.flexoConcept do not exist anymore
 			epiSelector
 					.addToAssignments(fibModelFactory.newFIBCustomAssignment(epiSelector, new DataBinding<Object>("component.flexoConcept"),
 							new DataBinding<Object>("data.parametersDefinitions." + parameter.getName() + ".flexoConceptType"), true));

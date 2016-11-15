@@ -39,12 +39,14 @@
 package org.openflexo.foundation.ontology.fml.inspector;
 
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Type;
 
 import org.openflexo.connie.BindingEvaluationContext;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
+import org.openflexo.foundation.fml.FlexoBehaviourParameter.WidgetType;
 import org.openflexo.foundation.fml.inspector.InspectorEntry;
 import org.openflexo.foundation.ontology.IFlexoOntologyClass;
 import org.openflexo.foundation.ontology.nature.FlexoOntologyVirtualModelNature;
@@ -105,9 +107,19 @@ public interface ClassInspectorEntry extends InspectorEntry {
 			super();
 		}
 
-		@Override
+		/*@Override
 		public Class getDefaultDataClass() {
 			return IFlexoOntologyClass.class;
+		}*/
+
+		@Override
+		public Type getType() {
+			return IFlexoOntologyClass.class;
+		}
+
+		@Override
+		public WidgetType getWidget() {
+			return WidgetType.CUSTOM_WIDGET;
 		}
 
 		@Override
@@ -167,7 +179,8 @@ public interface ClassInspectorEntry extends InspectorEntry {
 		public void setIsDynamicConceptValue(boolean isDynamic) {
 			if (isDynamic) {
 				isDynamicConceptValueSet = true;
-			} else {
+			}
+			else {
 				conceptValue = null;
 				isDynamicConceptValueSet = false;
 			}

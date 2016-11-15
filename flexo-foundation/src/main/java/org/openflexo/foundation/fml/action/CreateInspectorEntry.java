@@ -38,12 +38,19 @@
 
 package org.openflexo.foundation.fml.action;
 
+import java.lang.reflect.Type;
 import java.security.InvalidParameterException;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Vector;
 import java.util.logging.Logger;
 
+import org.openflexo.connie.Bindable;
+import org.openflexo.connie.BindingFactory;
+import org.openflexo.connie.BindingModel;
+import org.openflexo.connie.DataBinding;
+import org.openflexo.connie.DataBinding.BindingDefinitionType;
+import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.FlexoAction;
@@ -51,17 +58,12 @@ import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.action.NotImplementedException;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.FMLObject;
-import org.openflexo.foundation.fml.inspector.CheckboxInspectorEntry;
+import org.openflexo.foundation.fml.FlexoBehaviourParameter.WidgetType;
 import org.openflexo.foundation.fml.inspector.FlexoConceptInspector;
-import org.openflexo.foundation.fml.inspector.FloatInspectorEntry;
 import org.openflexo.foundation.fml.inspector.InspectorEntry;
-import org.openflexo.foundation.fml.inspector.IntegerInspectorEntry;
-import org.openflexo.foundation.fml.inspector.TextAreaInspectorEntry;
-import org.openflexo.foundation.fml.inspector.TextFieldInspectorEntry;
-import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.toolbox.StringUtils;
 
-public class CreateInspectorEntry extends FlexoAction<CreateInspectorEntry, FlexoConceptInspector, FMLObject> {
+public class CreateInspectorEntry extends FlexoAction<CreateInspectorEntry, FlexoConceptInspector, FMLObject> implements Bindable {
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CreateInspectorEntry.class.getPackage().getName());
@@ -95,8 +97,16 @@ public class CreateInspectorEntry extends FlexoAction<CreateInspectorEntry, Flex
 	}
 
 	private String entryName;
+
+	private Type entryType;
+	private WidgetType widgetType;
+
+	private DataBinding<?> data;
+	private DataBinding<?> container;
+	private DataBinding<List<?>> list;
+
 	private String description;
-	private Class<? extends InspectorEntry> inspectorEntryClass;
+	// private Class<? extends InspectorEntry> inspectorEntryClass;
 
 	private InspectorEntry newEntry;
 
@@ -106,8 +116,8 @@ public class CreateInspectorEntry extends FlexoAction<CreateInspectorEntry, Flex
 	}
 
 	public String getEntryName() {
-		if (StringUtils.isEmpty(entryName) && inspectorEntryClass != null) {
-			return getFocusedObject().getAvailableEntryName(inspectorEntryClass.getSimpleName().toLowerCase());
+		if (StringUtils.isEmpty(entryName)) {
+			return getFocusedObject().getAvailableEntryName(getDefaultEntryName());
 		}
 		return entryName;
 	}
@@ -120,21 +130,83 @@ public class CreateInspectorEntry extends FlexoAction<CreateInspectorEntry, Flex
 		}
 	}
 
+	public String getDefaultEntryName() {
+		if (getEntryType() != null) {
+			Class<?> baseClass = TypeUtils.getBaseClass(getEntryType());
+			return "a" + baseClass.getSimpleName();
+		}
+		return "entry";
+	}
+
+	public Type getEntryType() {
+		if (getData().isValid()) {
+			return getData().getAnalyzedType();
+		}
+		return entryType;
+	}
+
+	public void setEntryType(Type entryType) {
+		if ((entryType == null && getEntryType() != null) || (entryType != null && !entryType.equals(getEntryType()))) {
+			Type oldValue = this.entryType;
+			this.entryType = entryType;
+			getPropertyChangeSupport().firePropertyChange("entryType", oldValue, entryType);
+		}
+	}
+
+	public WidgetType getWidgetType() {
+		return widgetType;
+	}
+
+	public void setWidgetType(WidgetType widgetType) {
+		if ((widgetType == null && this.widgetType != null) || (widgetType != null && !widgetType.equals(this.widgetType))) {
+			WidgetType oldValue = this.widgetType;
+			this.widgetType = widgetType;
+			getPropertyChangeSupport().firePropertyChange("widgetType", oldValue, widgetType);
+		}
+	}
+
 	@Override
 	protected void doAction(Object context) throws NotImplementedException, InvalidParameterException {
-		// logger.info("Add InspectorEntry, name=" + getEntryName() + " type=" + inspectorEntryClass);
+		logger.info("Add InspectorEntry, name=" + getEntryName() + " type=" + getEntryType() + " widget=" + getWidgetType());
 
-		if (inspectorEntryClass != null) {
+		FMLModelFactory factory = getFocusedObject().getFMLModelFactory();
+		newEntry = factory.newInspectorEntry(getFocusedObject());
+		newEntry.setName(getEntryName());
+		newEntry.setType(getEntryType());
+		newEntry.setContainer(getContainer());
+		newEntry.setData(getData());
+		newEntry.setList(getList());
+		newEntry.setIsReadOnly(getIsReadOnly());
+		newEntry.setDescription(getDescription());
+
+		/*if (getEntryType() != null) {
+			if (getEntryType().equals(obj))
+		}*/
+
+		/*if (inspectorEntryClass != null) {
 			FMLModelFactory factory = getFocusedObject().getFMLModelFactory();
 			newEntry = factory.newInstance(inspectorEntryClass);
 			newEntry.setName(getEntryName());
 			getFocusedObject().addToEntries(newEntry);
-		}
+		}*/
 
 	}
 
 	public InspectorEntry getNewEntry() {
 		return newEntry;
+	}
+
+	private boolean readOnly;
+
+	public boolean getIsReadOnly() {
+		return readOnly;
+	}
+
+	public void setIsReadOnly(boolean readOnly) {
+		if (readOnly != this.readOnly) {
+			this.readOnly = readOnly;
+			getPropertyChangeSupport().firePropertyChange("readOnly", !readOnly, readOnly);
+		}
 	}
 
 	@Override
@@ -160,27 +232,99 @@ public class CreateInspectorEntry extends FlexoAction<CreateInspectorEntry, Flex
 		}
 	}
 
-	public Class<? extends InspectorEntry> getInspectorEntryClass() {
-		return inspectorEntryClass;
-	}
-
-	public void setInspectorEntryClass(Class<? extends InspectorEntry> inspectorEntryClass) {
-		if (inspectorEntryClass != this.inspectorEntryClass) {
-			Class<? extends InspectorEntry> oldValue = this.inspectorEntryClass;
-			this.inspectorEntryClass = inspectorEntryClass;
-			getPropertyChangeSupport().firePropertyChange("inspectorEntryClass", oldValue, inspectorEntryClass);
+	public DataBinding<?> getContainer() {
+		if (container == null) {
+			container = new DataBinding<Object>(this, Object.class, BindingDefinitionType.GET);
+			container.setBindingName("container");
 		}
+		return container;
 	}
 
-	private List<Class<? extends InspectorEntry>> availableInspectorEntryTypes;
+	public void setContainer(DataBinding<?> container) {
+		if (container != null) {
+			container.setOwner(this);
+			container.setBindingName("container");
+			container.setDeclaredType(Object.class);
+			container.setBindingDefinitionType(BindingDefinitionType.GET);
+		}
+		this.container = container;
+	}
 
+	public DataBinding<?> getData() {
+		if (data == null) {
+			data = new DataBinding<Object>(this, Object.class, BindingDefinitionType.GET);
+			data.setBindingName("data");
+		}
+		return data;
+	}
+
+	public void setData(DataBinding<?> data) {
+		if (data != null) {
+			data.setOwner(this);
+			data.setBindingName("data");
+			data.setDeclaredType(Object.class);
+			data.setBindingDefinitionType(BindingDefinitionType.GET);
+		}
+		this.data = data;
+	}
+
+	public DataBinding<List<?>> getList() {
+		if (list == null) {
+			list = new DataBinding<List<?>>(this, List.class, BindingDefinitionType.GET);
+		}
+		return list;
+	}
+
+	public void setList(DataBinding<List<?>> list) {
+		if (list != null) {
+			list.setOwner(this);
+			list.setBindingName("list");
+			list.setDeclaredType(List.class);
+			list.setBindingDefinitionType(BindingDefinitionType.GET);
+		}
+		this.list = list;
+	}
+
+	public List<WidgetType> getAvailableWidgetTypes() {
+		return Arrays.asList(WidgetType.values());
+	}
+
+	@Override
+	public BindingModel getBindingModel() {
+		if (getFocusedObject() != null) {
+			return getFocusedObject().getBindingModel();
+		}
+		return null;
+	}
+
+	@Override
+	public BindingFactory getBindingFactory() {
+		if (getFocusedObject() != null) {
+			return getFocusedObject().getBindingFactory();
+		}
+		return null;
+	}
+
+	@Override
+	public void notifiedBindingChanged(DataBinding<?> dataBinding) {
+		getPropertyChangeSupport().firePropertyChange(dataBinding.getBindingName(), null, dataBinding);
+	}
+
+	@Override
+	public void notifiedBindingDecoded(DataBinding<?> dataBinding) {
+		// TODO Auto-generated method stub
+
+	}
+
+	/*private List<Class<? extends InspectorEntry>> availableInspectorEntryTypes;
+	
 	public List<Class<? extends InspectorEntry>> getAvailableInspectorEntryTypes() {
 		if (availableInspectorEntryTypes == null) {
 			availableInspectorEntryTypes = computeAvailableInspectorEntryTypes();
 		}
 		return availableInspectorEntryTypes;
 	}
-
+	
 	private List<Class<? extends InspectorEntry>> computeAvailableInspectorEntryTypes() {
 		availableInspectorEntryTypes = new ArrayList<Class<? extends InspectorEntry>>();
 		availableInspectorEntryTypes.add(TextFieldInspectorEntry.class);
@@ -198,6 +342,6 @@ public class CreateInspectorEntry extends FlexoAction<CreateInspectorEntry, Flex
 			}
 		}
 		return availableInspectorEntryTypes;
-	}
+	}*/
 
 }

@@ -9,141 +9,178 @@
 			darkLevel="0" index="0" font="SansSerif,0,11" useScrollBar="true"
 			horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED"
 			verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED" name="BasicTab">
-		<Label label="inspector_title" index="0" data=""
-			constraints="twocols(expandHorizontally=false;expandVertically=false;index=0;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)"
-			visible="" format="" icon="" tooltip="" localize="true" enable=""
-			clickAction="" doubleClickAction="" rightClickAction=""
-			enterPressedAction="" valueChangedAction="" valueTransform=""
-			valueValidator="">
-			<LocalizedDictionary />
-		</Label>
-		<TextField index="1" data="data.inspectorTitle"
-			constraints="twocols(expandHorizontally=true;expandVertically=false;index=1;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
-			visible="" format="" icon="" tooltip="" localize="true" enable=""
-			clickAction="" doubleClickAction="" rightClickAction=""
-			enterPressedAction="" valueChangedAction="" valueTransform=""
-			valueValidator="" columns="30" text="TextField" editable="" />
-		<Label label="renderer" index="2" data=""
-			constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)"
-			visible="" format="" icon="" tooltip="" localize="true" enable=""
-			clickAction="" doubleClickAction="" rightClickAction=""
-			enterPressedAction="" valueChangedAction="" valueTransform=""
-			valueValidator="" />
-		<Custom componentClassName="org.openflexo.gina.swing.utils.BindingSelector"
-			format="" icon="" tooltip="" localize="true" enable=""
-			manageDynamicModel="true" clickAction="" doubleClickAction=""
-			rightClickAction="" enterPressedAction="" valueChangedAction=""
-			valueTransform="" valueValidator="" index="3" data="data.renderer"
-			constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
-			visible="">
-			<Assignment variable="component.bindable" value="data.formatter" />
-		</Custom>
-		<Label label="entries" index="4" data=""
-			constraints="twocols(expandHorizontally=true;expandVertically=false;location=left)" />
+			<Label label="inspector_title" index="0" 
+				constraints="twocols(expandHorizontally=false;expandVertically=false;index=0;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)">
+			</Label>
+			<TextField index="1" data="data.inspectorTitle"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;index=1;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
+				columns="30" text="TextField" />
+			<Label label="renderer" index="2" 
+				constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)" />
+			<Custom componentClassName="org.openflexo.gina.swing.utils.BindingSelector"
+				index="3" data="data.renderer"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)">
+				<Assignment variable="component.bindable" value="data.formatter" />
+			</Custom>
+			<Label label="entries" index="4" 
+				constraints="twocols(expandHorizontally=true;expandVertically=false;location=left)" />
 
-		<Panel layout="border" borderTitle="Panel" titleFont="SansSerif,0,11"
-			darkLevel="0" index="1" 
-			constraints="twocols(expandHorizontally=true;expandVertically=true;location=right)"
-			visible="" opaque="false" name="InspectorPropertyBrowserPanel">
-			<Table iteratorClassName="org.openflexo.foundation.fml.inspector.InspectorEntry"
-				autoSelectFirstRow="true" createNewRowOnClick="false"
-				boundToSelectionManager="true" showFooter="true"
-				selectionMode="MultipleIntervalSelection" selected=""
-				textSelectionColor="255,255,255" textNonSelectionColor="0,0,0"
-				backgroundSelectionColor="26,96,206"
-				backgroundSecondarySelectionColor="173,215,255"
-				backgroundNonSelectionColor="255,255,255" format="" icon="" tooltip=""
-				localize="true" enable="" manageDynamicModel="true" clickAction=""
-				doubleClickAction="" rightClickAction="" enterPressedAction=""
-				valueChangedAction="" valueTransform="" valueValidator=""
-				name="InspectorPropertyTable" index="1" data="data.entries"
-				constraints="border(anchor=center;fill=both;gridHeight=0;gridWidth=1;gridX=-1;gridY=-1;index=1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=center;padX=0;padY=0;weightX=0.0;weightY=0.0)"
-				visible="" opaque="false">
-				<TextFieldColumn isEditable="" data="iterator.name"
-					format="" title="name" columnWidth="100" resizable="true"
-					displayTitle="true" color="" bgColor="" tooltip=""
-					valueChangedAction="" name="textfield" />
-				<TextFieldColumn isEditable="" data="iterator.label"
-					format="" title="label" columnWidth="100" resizable="true"
-					displayTitle="true" color="" bgColor="" tooltip=""
-					valueChangedAction="" name="textfield" />
-				<LabelColumn data="iterator.widgetName" format="" title="widget"
-					columnWidth="100" resizable="true" displayTitle="true" color=""
-					bgColor="" tooltip="" valueChangedAction="" name="label" />
-				<AddAction method="controller.createInspectorEntry(data)" 
-					name="add_inspector_entry" />
-				<RemoveAction method="data.deleteEntry(selected)"
-					isAvailable="" name="delete" />
-				<!--  <AddAction method="data.createNewTextField" isAvailable=""
-					name="add_textfield" />
-				<AddAction method="data.createNewTextArea" isAvailable=""
-					name="add_textarea" />
-				<AddAction method="data.createNewInteger" isAvailable=""
-					name="add_integer" />
-				<AddAction method="data.createNewCheckbox" isAvailable=""
-					name="add_checkbox" />
-				<AddAction method="data.createNewIndividual" isAvailable=""
-					name="add_individual" />
-				<AddAction method="data.createNewClass" isAvailable=""
-					name="add_class" />
-				<AddAction method="data.createNewObjectProperty"
-					isAvailable="" name="add_object_property" />
-				<AddAction method="data.createNewDataProperty"
-					isAvailable="" name="add_data_property" />
-				<AddAction method="data.createNewProperty" isAvailable=""
-					name="add_property" />-->
-			</Table>
-			<Panel layout="box" boxLayoutAxis="Y_AXIS" borderTitle="Panel"
-				titleFont="SansSerif,0,11" darkLevel="0" index="2"
-				constraints="border(anchor=north;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=east;padX=0;padY=0;weightX=0.0;weightY=0.0)"
-				visible="" opaque="false" name="InspectorOrderingPanel">
-				<Button action="data.entryFirst(InspectorPropertyTable.selected)"
-					buttonIcon="controller.arrowTop" buttonType="Trigger" label=""
-					format="" icon="" tooltip="" localize="true"
-					enable="((InspectorPropertyTable.selected != null) &amp; (InspectorPropertyTable.selected.index &gt; 0))"
-					clickAction="" doubleClickAction="" rightClickAction=""
-					enterPressedAction="" valueChangedAction="" valueTransform=""
-					valueValidator="" name="InspectorEntryFirst" index="0" data=""
-					constraints="box(alignmentX=0.5;alignmentY=0.5;index=0;location=west)"
-					visible="" opaque="false">
-					<LocalizedDictionary />
-				</Button>
-				<Button action="data.entryUp(InspectorPropertyTable.selected)"
-					buttonIcon="controller.arrowUp" buttonType="Trigger" label=""
-					format="" icon="" tooltip="" localize="true"
-					enable="((InspectorPropertyTable.selected != null) &amp; (InspectorPropertyTable.selected.index &gt; 0))"
-					clickAction="" doubleClickAction="" rightClickAction=""
-					enterPressedAction="" valueChangedAction="" valueTransform=""
-					valueValidator="" name="InspectorEntryUp" index="1" data=""
-					constraints="box(alignmentX=0.5;alignmentY=0.5;index=1;location=north)"
-					visible="" opaque="false">
-					<LocalizedDictionary />
-				</Button>
-				<Button action="data.entryDown(InspectorPropertyTable.selected)"
-					buttonIcon="controller.arrowDown" buttonType="Trigger" label=""
-					format="" icon="" tooltip="" localize="true"
-					enable="((InspectorPropertyTable.selected != null) &amp; (InspectorPropertyTable.selected.index &lt; (data.entries.size - 1)))"
-					clickAction="" doubleClickAction="" rightClickAction=""
-					enterPressedAction="" valueChangedAction="" valueTransform=""
-					valueValidator="" name="InspectorEntryDown" index="2" data=""
-					constraints="box(alignmentX=0.5;alignmentY=0.5;index=2;location=center)"
-					visible="" opaque="false">
-					<LocalizedDictionary />
-				</Button>
-				<Button action="data.entryLast(InspectorPropertyTable.selected)"
-					buttonIcon="controller.arrowBottom" buttonType="Trigger" label=""
-					format="" icon="" tooltip="" localize="true"
-					enable="((InspectorPropertyTable.selected != null) &amp; (InspectorPropertyTable.selected.index &lt; (data.entries.size - 1)))"
-					clickAction="" doubleClickAction="" rightClickAction=""
-					enterPressedAction="" valueChangedAction="" valueTransform=""
-					valueValidator="" name="InspectorEntryLast" index="3" data=""
-					constraints="box(alignmentX=0.5;alignmentY=0.5;index=3;location=east)"
-					visible="" opaque="false">
-					<LocalizedDictionary />
-				</Button>
-				<LocalizedDictionary />
+			<Panel id="9" darkLevel="1" borderLeft="0" sizeAdjustment="OriginalSize"
+				opaque="false" border="empty" borderRight="2" trackViewPortWidth="true"
+				index="5" align="left"
+				constraints="twocols(expandHorizontally=true;expandVertically=true;index=5;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)"
+				borderBottom="2" titleFont="SansSerif,0,11" borderTop="2"
+				trackViewPortHeight="true" layout="gridbag" name="ParametersPanel">
+				<Table id="10" showFooter="true" manageDynamicModel="true"
+					enable="data != null" selectionMode="MultipleIntervalSelection"
+					data="data.entries" rightClickAction="controller.rightClick(EntriesTable.selected,event)"
+					boundToSelectionManager="true" index="0" localize="true"
+					font="SansSerif.plain,0,11"
+					constraints="gridbag(anchor=center;fill=both;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=center;padX=0;padY=0;weightX=0.0;weightY=1.0;x=0;y=0)"
+					iteratorClassName="org.openflexo.foundation.fml.inspector.InspectorEntry"
+					backgroundNonSelectionColor="255,255,255" autoSelectFirstRow="true"
+					name="EntriesTable" backgroundSecondarySelectionColor="178,215,255">
+					<IconColumn id="11" data="controller.iconForObject(iterator)"
+						displayTitle="false" title="icon" name="icon" columnWidth="20"
+						resizable="false" showIcon="false" />
+					<TextFieldColumn id="12" data="iterator.name"
+						displayTitle="true" title="entry" name="entry" columnWidth="120"
+						resizable="true" showIcon="false" />
+					<!-- <AddAction id="13" name="add_parameter" method="controller.createFlexoBehaviourParameter(data)" 
+						/> <RemoveAction id="14" name="delete" method="controller.deleteParameter(data,selected)" 
+						/> -->
+
+					<AddAction method="controller.createInspectorEntry(data)"
+						name="add_inspector_entry" />
+					<RemoveAction method="data.deleteEntry(selected)"
+						name="delete" />
+
+				</Table>
+				<Panel id="15" borderLeft="0" sizeAdjustment="OriginalSize"
+					opaque="false" border="empty" borderRight="0" trackViewPortWidth="true"
+					index="0" align="left"
+					constraints="gridbag(anchor=north;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=0;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=east;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+					borderBottom="0" borderTitle="Panel" boxLayoutAxis="Y_AXIS"
+					titleFont="SansSerif,0,11" borderTop="0" trackViewPortHeight="true"
+					layout="box" name="ParametersOrderingPanel">
+					<Button id="16"
+						enable="(EntriesTable.selected != null) &amp; (EntriesTable.selected.index &gt; 0)"
+						buttonIcon="controller.arrowTop" buttonType="Trigger" name="Button"
+						action="data.entryFirst(EntriesTable.selected)" index="0"
+						localize="true"
+						constraints="box(alignmentX=0.5;alignmentY=0.5;index=0;location=west)"
+						label="">
+					</Button>
+					<Button id="18"
+						enable="(EntriesTable.selected != null) &amp; (EntriesTable.selected.index &gt; 0)"
+						buttonIcon="controller.arrowUp" buttonType="Trigger" name="Button2"
+						action="data.entryUp(EntriesTable.selected)" index="1"
+						localize="true"
+						constraints="box(alignmentX=0.5;alignmentY=0.5;index=1;location=north)"
+						label="">
+					</Button>
+					<Button id="20"
+						enable="(EntriesTable.selected != null) &amp; (EntriesTable.selected.index &lt; (data.entries.size - 1))"
+						buttonIcon="controller.arrowDown" buttonType="Trigger" name="Button3"
+						action="data.entryDown(EntriesTable.selected)" index="2"
+						localize="true"
+						constraints="box(alignmentX=0.5;alignmentY=0.5;index=2;location=center)"
+						label="">
+					</Button>
+					<Button id="22"
+						enable="(EntriesTable.selected != null) &amp; (EntriesTable.selected.index &lt; (data.entries.size - 1))"
+						buttonIcon="controller.arrowBottom" buttonType="Trigger" name="Button4"
+						action="data.entryLast(EntriesTable.selected)" index="3"
+						localize="true"
+						constraints="box(alignmentX=0.5;alignmentY=0.5;index=3;location=east)"
+						label="">
+					</Button>
+				</Panel>
+				<Panel id="24" darkLevel="2" borderLeft="10" sizeAdjustment="OriginalSize"
+					border="rounded3d" borderRight="10" trackViewPortWidth="true"
+					index="2" align="left" enable="EntriesTable.selected != null"
+					constraints="gridbag(anchor=center;fill=both;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=2;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=1.0;weightY=1.0)"
+					borderBottom="10" titleFont="SansSerif,0,11" borderTop="10"
+					trackViewPortHeight="true" layout="twocols" name="DetailsPanel">
+					<Label id="25" name="Label" localize="true" align="left"
+						constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)"
+						label="entry_name" />
+					<TextField id="26" columns="7" name="TextField"
+						data="EntriesTable.selected.name"
+						constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)" />
+					<Label id="27" name="Label2" localize="true" align="left"
+						constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)"
+						label="entry_type" />
+					<Custom id="28" manageDynamicModel="true"
+						dataClassForComponent="java.lang.reflect.Type"
+						componentClassName="org.openflexo.gina.swing.utils.TypeSelector"
+						name="TypeSelector" data="EntriesTable.selected.type" localize="true"
+						constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)">
+						<Assignment variable="component.customTypeManager"
+							value="controller.serviceManager.technologyAdapterService" />
+						<Assignment variable="component.customTypeEditorProvider"
+							value="controller.serviceManager.technologyAdapterControllerService" />
+					</Custom>
+					<Label id="30" name="Label3" localize="true" align="left"
+						constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)"
+						label="widget" />
+					<DropDown id="31" data="EntriesTable.selected.widget"
+						localize="true"
+						constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)"
+						showText="true"
+						iteratorClassName="org.openflexo.foundation.fml.FlexoBehaviourParameter$WidgetType"
+						showIcon="false" autoSelectFirstRow="true" name="dropdown"
+						list="EntriesTable.selected.availableWidgetTypes" />
+					<Label id="32"
+						visible="(EntriesTable.selected.widget = &quot;CUSTOM_WIDGET&quot;)"
+						name="Label4" localize="true" align="left"
+						constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)"
+						label="container" />
+					<Custom id="33"
+						visible="(EntriesTable.selected.widget = &quot;CUSTOM_WIDGET&quot;)"
+						manageDynamicModel="true" dataClassForComponent="org.openflexo.connie.DataBinding"
+						componentClassName="org.openflexo.gina.swing.utils.BindingSelector"
+						name="CustomSelector" data="EntriesTable.selected.container"
+						constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)">
+						<Assignment id="34" mandatory="true" variable="component.bindable" />
+					</Custom>
+					<Label id="35" name="Label5" localize="true" align="left"
+						constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)"
+						label="data" />
+					<Custom id="36" manageDynamicModel="true"
+						dataClassForComponent="org.openflexo.connie.DataBinding"
+						componentClassName="org.openflexo.gina.swing.utils.BindingSelector"
+						name="CustomSelector2" data="EntriesTable.selected.data"
+						constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)">
+						<Assignment id="37" mandatory="true" variable="component.bindable" />
+					</Custom>
+					<Label id="38" visible="EntriesTable.selected.isListType"
+						name="Label6" localize="true" align="left"
+						constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)"
+						label="list_of_values" />
+					<Custom id="39" visible="EntriesTable.selected.isListType"
+						manageDynamicModel="true" dataClassForComponent="org.openflexo.connie.DataBinding"
+						componentClassName="org.openflexo.gina.swing.utils.BindingSelector"
+						name="CustomSelector3" data="EntriesTable.selected.list"
+						constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)">
+						<Assignment id="40" mandatory="true" variable="component.bindable" />
+					</Custom>
+					<Label id="41" name="Label7" localize="true" align="left"
+						constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)"
+						label="read_only" />
+					<CheckBox id="42" selected="true" name="checkbox"
+						data="EntriesTable.selected.isReadOnly"
+						constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)" />
+					<Label id="43" name="Label8" localize="true" align="left"
+						constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)"
+						label="description" />
+					<TextArea id="44" verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED"
+						useScrollBar="true" columns="8" name="TextArea2"
+						data="EntriesTable.selected.description" text="TextArea"
+						constraints="twocols(expandHorizontally=true;expandVertically=true;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)"
+						rows="3" validateOnReturn="true" horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED" />
+				</Panel>
 			</Panel>
-		</Panel>
 
 		</Tab>
 		<Tab title="Advanced" layout="twocols" titleFont="SansSerif,0,11"
