@@ -39,17 +39,6 @@
 
 package org.openflexo.foundation.resource;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import org.apache.commons.lang3.reflect.TypeUtils;
 import org.openflexo.foundation.DataFlexoObserver;
 import org.openflexo.foundation.DataModification;
@@ -57,6 +46,18 @@ import org.openflexo.foundation.DefaultFlexoObject;
 import org.openflexo.foundation.FlexoObservable;
 import org.openflexo.toolbox.FileUtils;
 import org.openflexo.toolbox.StringUtils;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Objects;
+import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * A {@link ResourceRepository} stores all resources of a particular type.<br>
@@ -180,7 +181,7 @@ public abstract class ResourceRepository<R extends FlexoResource<?>, I> extends 
 		// scheme to resolve resources from URI whose value has changed since registration
 		for (String oldURI : new ArrayList<String>(resources.keySet())) {
 			R resource = resources.get(oldURI);
-			if (!oldURI.equals(resource.getURI())) {
+			if (!Objects.equals(oldURI,resource.getURI())) {
 				resources.remove(oldURI);
 				resources.put(resource.getURI(), resource);
 			}
