@@ -185,7 +185,7 @@ public abstract class ResourceRepository<R extends FlexoResource<?>, I> extends 
 				resources.remove(oldURI);
 				resources.put(resource.getURI(), resource);
 			}
-			if (resource.getURI().equals(resourceURI)) {
+			if (Objects.equals(resource.getURI(),resourceURI)) {
 				return resource;
 			}
 		}
