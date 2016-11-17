@@ -551,7 +551,7 @@ public class JarResourceCenter extends ResourceRepository<FlexoResource<?>, InJa
 	 */
 	@Override
 	public List<InJarResourceImpl> getContents(InJarResourceImpl serializationArtefact) {
-		return serializationArtefact.getContents();
+		return serializationArtefact.getContents(false);
 	}
 
 	@Override
@@ -584,7 +584,7 @@ public class JarResourceCenter extends ResourceRepository<FlexoResource<?>, InJa
 	 */
 	@Override
 	public InJarResourceImpl getDirectory(String name, InJarResourceImpl parentDirectory) {
-		for (InJarResourceImpl r : parentDirectory.getContents()) {
+		for (InJarResourceImpl r : parentDirectory.getContents(false)) {
 			// System.out.println(" * " + r.getName() + " " + r);
 			if (name.equals(r.getName())) {
 				return r;

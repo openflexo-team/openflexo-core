@@ -92,16 +92,16 @@ public class TestJarResourceCenter extends OpenflexoTestCase {
 		assertNotNull(rootEntry);
 		assertEquals(1, rootEntry.getContents().size());
 
-		InJarResourceImpl resourceEntry = rootEntry.getContents().get(0);
+		InJarResourceImpl resourceEntry = rootEntry.getContents(false).get(0);
 		assertEquals(1, resourceEntry.getContents().size());
 
-		InJarResourceImpl testResourceCenterEntry = resourceEntry.getContents().get(0);
+		InJarResourceImpl testResourceCenterEntry = resourceEntry.getContents(false).get(0);
 		assertEquals(1, testResourceCenterEntry.getContents().size());
 
-		InJarResourceImpl viewpointsEntry = testResourceCenterEntry.getContents().get(0);
+		InJarResourceImpl viewpointsEntry = testResourceCenterEntry.getContents(false).get(0);
 		assertEquals(1, viewpointsEntry.getContents().size());
 
-		InJarResourceImpl vp2Entry = viewpointsEntry.getContents().get(0);
+		InJarResourceImpl vp2Entry = viewpointsEntry.getContents(false).get(0);
 		assertEquals(3, vp2Entry.getContents().size());
 
 	}

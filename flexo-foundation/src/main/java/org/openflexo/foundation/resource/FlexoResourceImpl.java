@@ -325,6 +325,12 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 		return getClass().getSimpleName() + "." + getURI() + "." + getVersion() + "." + getRevision();
 	}
 
+	@Override
+	public List<? extends Resource> getContents(boolean deep) {
+		// TODO: manage depth
+		return getContents();
+	}
+
 	/**
 	 * Returns a list of resources of supplied type contained by this resource.
 	 * 
@@ -481,7 +487,7 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 
 	// TODO: check this
 	@Override
-	public List<? extends Resource> getContents(Pattern pattern) {
+	public List<? extends Resource> getContents(Pattern pattern, boolean deep) {
 		// TODO Auto-generated method stub
 		return null;
 	}
