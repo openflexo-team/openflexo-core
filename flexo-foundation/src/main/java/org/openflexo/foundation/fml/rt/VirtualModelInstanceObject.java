@@ -113,8 +113,11 @@ public interface VirtualModelInstanceObject extends ViewObject, InnerResourceDat
 		 */
 		@Override
 		public FlexoResourceCenter<?> getResourceCenter() {
-			FlexoResource<?> resource = getVirtualModelInstance().getResource();
-			return resource != null ? resource.getResourceCenter() : null;
+			AbstractVirtualModelInstance<?, ?> virtualModelInstance = getVirtualModelInstance();
+			if (virtualModelInstance == null) return null;
+			FlexoResource<?> resource = virtualModelInstance.getResource();
+			if (resource == null) return null;
+			return resource.getResourceCenter();
 		}
 
 		/**

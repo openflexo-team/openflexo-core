@@ -38,11 +38,6 @@
 
 package org.openflexo.foundation.fml.rt;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.logging.Logger;
-
 import org.openflexo.connie.BindingVariable;
 import org.openflexo.foundation.fml.AbstractVirtualModel;
 import org.openflexo.foundation.fml.ViewPoint;
@@ -63,6 +58,11 @@ import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.model.annotations.XMLElement;
 import org.openflexo.toolbox.FlexoVersion;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * A {@link View} is the run-time concept (instance) of a {@link ViewPoint}.<br>
@@ -269,7 +269,8 @@ public interface View extends AbstractVirtualModelInstance<View, ViewPoint> {
 
 		@Override
 		public String extendedStringRepresentation() {
-			return getName() + ":" + getViewPoint().getName();
+			ViewPoint viewPoint = getViewPoint();
+			return getName() + ":" + (viewPoint != null ? viewPoint.getName() : "null");
 		}
 
 		@Override

@@ -38,11 +38,7 @@
 
 package org.openflexo.foundation.fml.rt.rm;
 
-import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Logger;
-
+import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.IOFlexoException;
 import org.openflexo.foundation.InconsistentDataException;
 import org.openflexo.foundation.InvalidModelDefinitionException;
@@ -59,6 +55,11 @@ import org.openflexo.rm.FileSystemResourceLocatorImpl;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.toolbox.IProgress;
+
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * Default implementation for {@link ViewResource}
@@ -140,8 +141,10 @@ public abstract class ViewResourceImpl extends AbstractVirtualModelInstanceResou
 
 	@Override
 	public boolean delete(Object... context) {
+		// gets service manager before deleting otherwise the service manager is null
+		FlexoServiceManager serviceManager = getServiceManager();
 		if (super.delete(context)) {
-			getServiceManager().getResourceManager().addToFilesToDelete(ResourceLocator.retrieveResourceAsFile(getDirectory()));
+			serviceManager.getResourceManager().addToFilesToDelete(ResourceLocator.retrieveResourceAsFile(getDirectory()));
 			return true;
 		}
 		return false;
@@ -157,7 +160,11 @@ public abstract class ViewResourceImpl extends AbstractVirtualModelInstanceResou
 	}
 
 	public String getDirectoryPath() {
-		return ((FileFlexoIODelegate) getFlexoIODelegate()).getFile().getParentFile().getAbsolutePath();
+		if (getFlexoIODelegate() instanceof FileFlexoIODelegate) {
+			FileFlexoIODelegate ioDelegate = (FileFlexoIODelegate) getFlexoIODelegate();
+			return ioDelegate.getFile().getParentFile().getAbsolutePath();
+		}
+		return "";
 	}
 
 	@Override
