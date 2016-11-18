@@ -38,9 +38,6 @@
 
 package org.openflexo.foundation.fml.rt;
 
-import java.util.logging.Logger;
-
-import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.InnerResourceData;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.rt.rm.AbstractVirtualModelInstanceResource;
@@ -52,6 +49,8 @@ import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.PropertyIdentifier;
 import org.openflexo.model.annotations.Setter;
+
+import java.util.logging.Logger;
 
 /**
  * A {@link VirtualModelInstanceObject} is an abstract run-time concept (instance) for an object "living" in a {@link VirtualModelInstance}
@@ -114,7 +113,8 @@ public interface VirtualModelInstanceObject extends ViewObject, InnerResourceDat
 		 */
 		@Override
 		public FlexoResourceCenter<?> getResourceCenter() {
-			return getVirtualModelInstance().getResource().getResourceCenter();
+			FlexoResource<?> resource = getVirtualModelInstance().getResource();
+			return resource != null ? resource.getResourceCenter() : null;
 		}
 
 		/**
