@@ -39,16 +39,6 @@
 
 package org.openflexo.view.controller;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.util.List;
-import java.util.Vector;
-import java.util.logging.Logger;
-
-import javax.naming.InvalidNameException;
-import javax.swing.ImageIcon;
-import javax.swing.SwingUtilities;
-
 import org.openflexo.ApplicationContext;
 import org.openflexo.foundation.DataModification;
 import org.openflexo.foundation.FlexoEditor;
@@ -80,6 +70,14 @@ import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.prefs.PresentationPreferences;
 import org.openflexo.selection.SelectionManager;
 import org.openflexo.view.FIBBrowserActionAdapter;
+
+import javax.naming.InvalidNameException;
+import javax.swing.*;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.List;
+import java.util.Vector;
+import java.util.logging.Logger;
 
 /**
  * Represents the controller of a FIBComponent in Openflexo graphical context (at this time, Swing)<br>
@@ -395,11 +393,13 @@ public class FlexoFIBController extends FIBController implements GraphicalFlexoO
 		if (ctrl == null) {
 			return false;
 		}
-		PresentationPreferences presPref = ctrl.getApplicationContext().getPresentationPreferences();
-		if (presPref != null)
-			return presPref.hideEmptyFolders();
-		else
-			return false;
+		ApplicationContext applicationContext = ctrl.getApplicationContext();
+		if (applicationContext == null) return false;
+
+		PresentationPreferences presPref = applicationContext.getPresentationPreferences();
+		if (presPref == null) return false;
+
+		return presPref.hideEmptyFolders();
 	}
 
 	public boolean shouldBeDisplayed(RepositoryFolder<?, ?> folder) {
