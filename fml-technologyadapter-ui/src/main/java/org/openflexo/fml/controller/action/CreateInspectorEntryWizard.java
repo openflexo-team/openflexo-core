@@ -219,6 +219,18 @@ public class CreateInspectorEntryWizard extends AbstractCreateFMLElementWizard<C
 			return TypeUtils.isList(getEntryType());
 		}
 
+		public boolean getIsReadOnly() {
+			return getAction().getIsReadOnly();
+		}
+
+		public void setIsReadOnly(boolean isReadOnly) {
+			if (isReadOnly != getIsReadOnly()) {
+				getAction().setIsReadOnly(isReadOnly);
+				getPropertyChangeSupport().firePropertyChange("isReadOnly", !isReadOnly, isReadOnly);
+				checkValidity();
+			}
+		}
+
 		public String getDescription() {
 			return getAction().getDescription();
 		}

@@ -84,6 +84,7 @@ import org.openflexo.foundation.fml.editionaction.LogAction;
 import org.openflexo.foundation.fml.editionaction.NotifyPropertyChangedAction;
 import org.openflexo.foundation.fml.editionaction.RemoveFromListAction;
 import org.openflexo.foundation.fml.inspector.CheckboxInspectorEntry;
+import org.openflexo.foundation.fml.inspector.GenericInspectorEntry;
 import org.openflexo.foundation.fml.inspector.InspectorEntry;
 import org.openflexo.foundation.fml.inspector.IntegerInspectorEntry;
 import org.openflexo.foundation.fml.inspector.TextAreaInspectorEntry;
@@ -148,7 +149,7 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 
 	private TechnologyAdapterControllerService technologyAdapterControllerService;
 
-	private Map<Class<? extends CustomType>, CustomTypeEditor> customTypeEditors = new HashMap<>();
+	private final Map<Class<? extends CustomType>, CustomTypeEditor> customTypeEditors = new HashMap<>();
 
 	/**
 	 * Returns applicable {@link ProjectNatureService}
@@ -574,7 +575,80 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 	 * @param fibModelFactory
 	 * @return
 	 */
+	// TODO: factorize code with makeWidget(FlexoBehaviourParameter)
 	public FIBWidget makeWidget(final InspectorEntry entry, FIBTab newTab, FIBModelFactory fibModelFactory) {
+		if (entry instanceof GenericInspectorEntry) {
+			switch (entry.getWidget()) {
+				case TEXT_FIELD:
+				case URI:
+				case LOCALIZED_TEXT_FIELD:
+					FIBTextField tf = fibModelFactory.newFIBTextField();
+					tf.setName(entry.getName() + "TextField");
+					newTab.addToSubComponents(tf, new TwoColsLayoutConstraints(TwoColsLayoutLocation.right, true, false));
+					return tf;
+				case TEXT_AREA:
+					FIBTextArea ta = fibModelFactory.newFIBTextArea();
+					ta.setName(entry.getName() + "TextArea");
+					ta.setValidateOnReturn(true); // Avoid too many ontologies manipulations
+					ta.setUseScrollBar(true);
+					ta.setHorizontalScrollbarPolicy(HorizontalScrollBarPolicy.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+					ta.setVerticalScrollbarPolicy(VerticalScrollBarPolicy.VERTICAL_SCROLLBAR_AS_NEEDED);
+					newTab.addToSubComponents(ta, new TwoColsLayoutConstraints(TwoColsLayoutLocation.right, true, true));
+					return ta;
+				case CHECKBOX:
+					FIBCheckBox cb = fibModelFactory.newFIBCheckBox();
+					cb.setName(entry.getName() + "CheckBox");
+					newTab.addToSubComponents(cb, new TwoColsLayoutConstraints(TwoColsLayoutLocation.right, true, false));
+					return cb;
+				case INTEGER:
+					FIBNumber number = fibModelFactory.newFIBNumber();
+					number.setName(entry.getName() + "Number");
+					number.setNumberType(NumberType.IntegerType);
+					newTab.addToSubComponents(number, new TwoColsLayoutConstraints(TwoColsLayoutLocation.right, false, false));
+					return number;
+				case FLOAT:
+					FIBNumber numberF = fibModelFactory.newFIBNumber();
+					numberF.setName(entry.getName() + "Number");
+					numberF.setNumberType(NumberType.DoubleType);
+					newTab.addToSubComponents(numberF, new TwoColsLayoutConstraints(TwoColsLayoutLocation.right, false, false));
+					return numberF;
+				case DROPDOWN:
+				case RADIO_BUTTON:
+					// ListParameter listParameter = (ListParameter) parameter;
+					FIBCheckboxList cbList = fibModelFactory.newFIBCheckboxList();
+					cbList.setName(entry.getName() + "CheckboxList");
+					// TODO: repair this !!!
+					logger.warning("This feature is no more implemented, please repair this !!!");
+					cbList.setList(new DataBinding<List<?>>("data.parameters." + entry.getName() + "TODO"));
+					cbList.setUseScrollBar(true);
+					cbList.setHorizontalScrollbarPolicy(HorizontalScrollBarPolicy.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+					cbList.setVerticalScrollbarPolicy(VerticalScrollBarPolicy.VERTICAL_SCROLLBAR_AS_NEEDED);
+					newTab.addToSubComponents(cbList, new TwoColsLayoutConstraints(TwoColsLayoutLocation.right, true, false));
+					return cbList;
+				case CUSTOM_WIDGET:
+
+					/*if (entry.getType() instanceof ViewType) {
+						return makeViewSelector(parameter, panel, index, action, fibModelFactory);
+					}
+					else if (entry.getType() instanceof VirtualModelInstanceType) {
+						return makeVirtualModelInstanceSelector(parameter, panel, index, action, fibModelFactory);
+					}
+					else if (entry.getType() instanceof FlexoConceptInstanceType) {
+						return makeFlexoConceptInstanceSelector(parameter, panel, index, action, fibModelFactory);
+					}
+					else if (entry.getType() instanceof FlexoResourceType) {
+						return makeFlexoResourceSelector(parameter, panel, index, action, fibModelFactory);
+					}*/
+
+					FIBLabel notFound = fibModelFactory.newFIBLabel("<not_implemented>");
+					notFound.setName(entry.getName() + "NotImplemented");
+					newTab.addToSubComponents(notFound, new TwoColsLayoutConstraints(TwoColsLayoutLocation.right, true, false));
+					return notFound;
+				default:
+					break;
+			}
+		}
+
 		if (entry instanceof TextFieldInspectorEntry) {
 			FIBTextField tf = fibModelFactory.newFIBTextField();
 			tf.setValidateOnReturn(true); // Avoid too many ontologies manipulations
@@ -827,7 +901,7 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 					return registerWidget(numberF, parameter, panel, index, false, false);
 				case DROPDOWN:
 				case RADIO_BUTTON:
-					ListParameter listParameter = (ListParameter) parameter;
+					// ListParameter listParameter = (ListParameter) parameter;
 					FIBCheckboxList cbList = fibModelFactory.newFIBCheckboxList();
 					cbList.setName(parameter.getName() + "CheckboxList");
 					// TODO: repair this !!!

@@ -70,7 +70,7 @@
 		constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)"
 		label="read_only" />
 	<CheckBox id="42" index="17" selected="true" name="checkbox"
-		data="EntriesTable.selected.isReadOnly"
+		data="data.isReadOnly"
 		constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)" />
 	<Label id="18" name="DescriptionLabel" index="18" localize="true"
 		align="right"

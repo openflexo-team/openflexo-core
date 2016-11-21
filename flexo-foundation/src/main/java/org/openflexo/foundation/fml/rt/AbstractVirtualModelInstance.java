@@ -821,8 +821,10 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 			// is synchronizable if virtualModel is not null, it has SynchronizationScheme and all needed TA are activated
 			VM vm = getVirtualModel();
 			boolean synchronizable = vm != null && vm.hasSynchronizationScheme();
-			for (TechnologyAdapter neededTA : vm.getRequiredTechnologyAdapters()) {
-				synchronizable = synchronizable && neededTA.isActivated();
+			if (synchronizable) {
+				for (TechnologyAdapter neededTA : vm.getRequiredTechnologyAdapters()) {
+					synchronizable = synchronizable && neededTA.isActivated();
+				}
 			}
 			return synchronizable;
 		}

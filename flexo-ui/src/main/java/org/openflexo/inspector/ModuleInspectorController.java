@@ -638,9 +638,11 @@ public class ModuleInspectorController extends Observable implements Observer {
 			label.setLabel(entryLabel);
 			newTab.addToSubComponents(label, new TwoColsLayoutConstraints(TwoColsLayoutLocation.left, false, false));
 			FIBWidget widget = makeWidget(entry, newTab);
-			widget.setBindingFactory(entry.getBindingFactory());
-			widget.setData(new DataBinding<Object>("fci." + entry.getData().toString()));
-			widget.setReadOnly(entry.getIsReadOnly());
+			if (widget != null) {
+				widget.setBindingFactory(entry.getBindingFactory());
+				widget.setData(new DataBinding<Object>("fci." + entry.getData().toString()));
+				widget.setReadOnly(entry.getIsReadOnly());
+			}
 			/*System.out.println("Widget " + widget + " data=" + entry.getData());
 			System.out.println("valid:" + entry.getData().isValid());
 			System.out.println("reason=" + entry.getData().invalidBindingReason());
@@ -660,7 +662,6 @@ public class ModuleInspectorController extends Observable implements Observer {
 	 * @return
 	 */
 	private FIBWidget makeWidget(final InspectorEntry entry, FIBTab newTab) {
-
 		for (TechnologyAdapter ta : flexoController.getApplicationContext().getTechnologyAdapterService().getTechnologyAdapters()) {
 			TechnologyAdapterController<?> tac = flexoController.getTechnologyAdapterController(ta);
 			FIBWidget returned = tac.makeWidget(entry, newTab, getFactory());
