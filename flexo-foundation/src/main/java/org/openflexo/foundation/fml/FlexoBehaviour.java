@@ -233,6 +233,34 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 	@Override
 	public FlexoBehaviourBindingModel getBindingModel();
 
+	/**
+	 * Return flag indicating if this behaviour overrides supplied behaviour<br>
+	 * Return true if and only if name and signature equals, and if both declared concepts are not the same and if there are directely
+	 * connected without any intermediate implementation
+	 * 
+	 * @param behaviour
+	 * @return
+	 */
+	public boolean overrides(FlexoBehaviour behaviour);
+
+	/**
+	 * Return flag indicating if this behaviour is overriden in supplied context
+	 * 
+	 * @param context
+	 * @return
+	 */
+	public boolean isOverridenInContext(FlexoConcept context);
+
+	/**
+	 * Return the most specialized behaviour to execute matching supplied behaviour name and signature<br>
+	 * (dynamic binding: can be only supplied behaviour or an other behaviour overriding supplied behaviour)
+	 * 
+	 * @param behaviour
+	 * @param context
+	 * @return
+	 */
+	public FlexoBehaviour getMostSpecializedBehaviour(FlexoConcept context);
+
 	public static abstract class FlexoBehaviourImpl extends FlexoBehaviourObjectImpl implements FlexoBehaviour {
 
 		protected FlexoBehaviourBindingModel bindingModel;
@@ -794,6 +822,75 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 		@Override
 		public void setControlGraph(FMLControlGraph controlGraph, String ownerContext) {
 			setControlGraph(controlGraph);
+		}
+
+		/**
+		 * Return flag indicating if this behaviour overrides supplied behaviour<br>
+		 * Return true if and only if name and signature equals, and if both declared concepts are not the same and if there are directely
+		 * connected without any intermediate implementation
+		 * 
+		 * @param behaviour
+		 * @return
+		 */
+		@Override
+		public boolean overrides(FlexoBehaviour behaviour) {
+
+			if (behaviour == null) {
+				return false;
+			}
+			if (behaviour == this) {
+				return false;
+			}
+
+			if (!getFlexoConcept().getAllParentFlexoConcepts().contains(behaviour.getFlexoConcept())) {
+				return false;
+			}
+
+			if (behaviour.getName().equals(getName())) {
+				if (behaviour.getParameters().size() == getParameters().size()) {
+					boolean allParametersMatch = true;
+					for (int i = 0; i < behaviour.getParameters().size(); i++) {
+						if (!behaviour.getParameters().get(i).getType().equals(getParameters().get(i).getType())) {
+							allParametersMatch = false;
+							break;
+						}
+					}
+					if (allParametersMatch) {
+						return true;
+					}
+				}
+			}
+			return false;
+		}
+
+		/**
+		 * Return flag indicating if this behaviour is overriden in supplied context
+		 * 
+		 * @param context
+		 * @return
+		 */
+		@Override
+		public boolean isOverridenInContext(FlexoConcept context) {
+			return (getMostSpecializedBehaviour(context) != this);
+
+		}
+
+		/**
+		 * Return the most specialized behaviour to execute matching supplied behaviour name and signature<br>
+		 * (dynamic binding: can be only supplied behaviour or an other behaviour overriding supplied behaviour)
+		 * 
+		 * @param behaviour
+		 * @param context
+		 * @return
+		 */
+		@Override
+		public FlexoBehaviour getMostSpecializedBehaviour(FlexoConcept context) {
+			Type[] signature = new Type[getParameters().size()];
+			for (int i = 0; i < getParameters().size(); i++) {
+				signature[i] = getParameters().get(i).getType();
+			}
+			return context.getFlexoBehaviour(getName(), signature);
+
 		}
 
 	}

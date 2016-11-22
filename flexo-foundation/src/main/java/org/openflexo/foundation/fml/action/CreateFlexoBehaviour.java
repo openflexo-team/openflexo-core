@@ -173,6 +173,13 @@ public class CreateFlexoBehaviour extends FlexoAction<CreateFlexoBehaviour, Flex
 		return returned;
 	}
 
+	public BehaviourParameterEntry newParameterEntry(String name, Type type) {
+		BehaviourParameterEntry returned = newParameterEntry();
+		returned.setParameterName(name);
+		returned.setParameterType(type);
+		return returned;
+	}
+
 	public void deleteParameterEntry(BehaviourParameterEntry parameterEntryToDelete) {
 		parameterEntries.remove(parameterEntryToDelete);
 		parameterEntryToDelete.delete();
@@ -401,7 +408,7 @@ public class CreateFlexoBehaviour extends FlexoAction<CreateFlexoBehaviour, Flex
 		private DataBinding<?> container;
 		private DataBinding<List<?>> list;
 
-		private LocalizedDelegate locales;
+		private final LocalizedDelegate locales;
 
 		public BehaviourParameterEntry(String paramName, LocalizedDelegate locales) {
 			super();

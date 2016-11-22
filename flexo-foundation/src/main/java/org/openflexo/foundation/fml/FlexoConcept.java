@@ -38,6 +38,7 @@
 
 package org.openflexo.foundation.fml;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -135,6 +136,10 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 	@Setter(NAME_KEY)
 	public void setName(String name);
 
+	public List<FlexoBehaviour> getDeclaredFlexoBehaviours();
+
+	public List<FlexoBehaviour> getAccessibleFlexoBehaviours();
+
 	@Getter(value = FLEXO_BEHAVIOURS_KEY, cardinality = Cardinality.LIST, inverse = FlexoBehaviour.FLEXO_CONCEPT_KEY)
 	@XMLElement(primary = true)
 	@CloningStrategy(StrategyType.CLONE)
@@ -151,8 +156,36 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 	@Remover(FLEXO_BEHAVIOURS_KEY)
 	public void removeFromFlexoBehaviours(FlexoBehaviour aFlexoBehaviour);
 
+	/**
+	 * Return first found declared FlexoBehaviour matching supplied name<br>
+	 * Use this method with caution as it does not guarantee unicity of the result nor of returned type
+	 * 
+	 * @param behaviourName
+	 * @return
+	 */
 	@Finder(collection = FLEXO_BEHAVIOURS_KEY, attribute = FlexoBehaviour.NAME_KEY)
-	public FlexoBehaviour getFlexoBehaviour(String editionSchemeName);
+	@Deprecated
+	public FlexoBehaviour getFlexoBehaviour(String behaviourName);
+
+	/**
+	 * Return {@link FlexoBehaviour} matching supplied name and signature (expressed with types)<br>
+	 * Search is perform in entire scope, and includes parent concept behaviours (inherited behaviours included)
+	 * 
+	 * @param behaviourName
+	 * @param parameters
+	 * @return
+	 */
+	public FlexoBehaviour getFlexoBehaviour(String behaviourName, Type... parameters);
+
+	/**
+	 * Return {@link FlexoBehaviour} matching supplied name and signature (expressed with types), which are declared for this concept.
+	 * Result does not include inherited behaviours.
+	 * 
+	 * @param behaviourName
+	 * @param parameters
+	 * @return
+	 */
+	public FlexoBehaviour getDeclaredFlexoBehaviour(String behaviourName, Type... parameters);
 
 	public FlexoBehaviour getFlexoBehaviourForURI(String uri);
 
@@ -320,9 +353,13 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 
 	public <ES extends FlexoBehaviour> List<ES> getFlexoBehaviours(Class<ES> editionSchemeClass);
 
+	public <ES extends FlexoBehaviour> List<ES> getAccessibleFlexoBehaviours(Class<ES> editionSchemeClass);
+
 	public List<AbstractActionScheme> getAbstractActionSchemes();
 
 	public List<ActionScheme> getActionSchemes();
+
+	public List<AbstractActionScheme> getAccessibleActionSchemes();
 
 	/**
 	 * Only one synchronization scheme is allowed
@@ -764,10 +801,126 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 		}
 
 		@Override
+		public FlexoBehaviour getFlexoBehaviour(String behaviourName, Type... parameters) {
+			FlexoBehaviour returned = getDeclaredFlexoBehaviour(behaviourName, parameters);
+			if (returned != null) {
+				return returned;
+			}
+			for (FlexoConcept parentConcept : getParentFlexoConcepts()) {
+				returned = parentConcept.getFlexoBehaviour(behaviourName, parameters);
+				if (returned != null) {
+					return returned;
+				}
+			}
+			return null;
+		}
+
+		@Override
+		public FlexoBehaviour getDeclaredFlexoBehaviour(String behaviourName, Type... parameters) {
+			for (FlexoBehaviour b : getDeclaredFlexoBehaviours()) {
+				if (b.getName().equals(behaviourName)) {
+					if (b.getParameters().size() == parameters.length) {
+						boolean allParametersMatch = true;
+						for (int i = 0; i < b.getParameters().size(); i++) {
+							if (!b.getParameters().get(i).getType().equals(parameters[i])) {
+								allParametersMatch = false;
+								break;
+							}
+						}
+						if (allParametersMatch) {
+							return b;
+						}
+					}
+				}
+			}
+			return null;
+		}
+
+		@Override
 		@SuppressWarnings("unchecked")
 		public <ES extends FlexoBehaviour> List<ES> getFlexoBehaviours(Class<ES> editionSchemeClass) {
 			List<ES> returned = new ArrayList<ES>();
 			for (FlexoBehaviour es : getFlexoBehaviours()) {
+				if (editionSchemeClass.isAssignableFrom(es.getClass())) {
+					returned.add((ES) es);
+				}
+			}
+			return returned;
+		}
+
+		@Override
+		@SuppressWarnings("unchecked")
+		public List<FlexoBehaviour> getDeclaredFlexoBehaviours() {
+			return getFlexoBehaviours();
+		}
+
+		/**
+		 * Return behaviours that are accessible from this FlexoConcept<br>
+		 * This method manages inheritance, and shadowed behaviours are discarded
+		 * 
+		 * @return
+		 */
+		@Override
+		@SuppressWarnings("unchecked")
+		public List<FlexoBehaviour> getAccessibleFlexoBehaviours() {
+
+			if (getParentFlexoConcepts().size() == 0) {
+				return getDeclaredFlexoBehaviours();
+			}
+
+			List<FlexoBehaviour> returned = new ArrayList<FlexoBehaviour>();
+			// List<FlexoBehaviour> inheritedBehaviours = new ArrayList<FlexoBehaviour>();
+			returned.addAll(getDeclaredFlexoBehaviours());
+			for (FlexoConcept parentConcept : getParentFlexoConcepts()) {
+				for (FlexoBehaviour behaviour : parentConcept.getAccessibleFlexoBehaviours()) {
+
+					if (!behaviour.isOverridenInContext(this)) {
+						returned.add(behaviour);
+					}
+
+					/*FlexoBehaviour mostSpecializedBehaviour = behaviour.getMostSpecializedBehaviour(this);
+					if (mostSpecializedBehaviour == behaviour) {
+						// This behaviour is inherited but not overriden
+						// We check that we don't have this behaviour yet
+						if (!inheritedBehaviours.contains(behaviour)) {
+							inheritedBehaviours.add(behaviour);
+						}
+					}*/
+
+					/*if (!mostSpecializedBehaviour.overrides(behaviour)) {
+						if (!inheritedBehaviours.contains(behaviour)) {
+							inheritedBehaviours.add(behaviour);
+						}
+					}*/
+					// TODO: manage override
+				}
+			}
+			// Now, we have to suppress all extra references
+			/*List<FlexoBehaviour> unnecessaryProperty = new ArrayList<FlexoBehaviour>();
+			for (FlexoBehaviour p : inheritedBehaviours) {
+				for (FlexoConcept parent : getParentFlexoConcepts()) {
+					for (FlexoBehaviour superP : parent.getAccessibleFlexoBehaviours()) {
+						if (inheritedBehaviours.contains(superP)) {
+							unnecessaryProperty.add(superP);
+						}
+					}
+				}
+			
+			}
+			
+			for (FlexoBehaviour removeThis : unnecessaryProperty) {
+				inheritedProperties.remove(removeThis);
+			}*/
+
+			// returned.addAll(inheritedBehaviours);
+			return returned;
+		}
+
+		@Override
+		@SuppressWarnings("unchecked")
+		public <ES extends FlexoBehaviour> List<ES> getAccessibleFlexoBehaviours(Class<ES> editionSchemeClass) {
+			List<ES> returned = new ArrayList<ES>();
+			for (FlexoBehaviour es : getAccessibleFlexoBehaviours()) {
 				if (editionSchemeClass.isAssignableFrom(es.getClass())) {
 					returned.add((ES) es);
 				}
@@ -809,6 +962,11 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 		@Override
 		public List<AbstractActionScheme> getAbstractActionSchemes() {
 			return getFlexoBehaviours(AbstractActionScheme.class);
+		}
+
+		@Override
+		public List<AbstractActionScheme> getAccessibleActionSchemes() {
+			return getAccessibleFlexoBehaviours(AbstractActionScheme.class);
 		}
 
 		@Override
