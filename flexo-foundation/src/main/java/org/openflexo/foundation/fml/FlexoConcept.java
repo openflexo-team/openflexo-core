@@ -359,7 +359,11 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 
 	public List<ActionScheme> getActionSchemes();
 
-	public List<AbstractActionScheme> getAccessibleActionSchemes();
+	public List<AbstractActionScheme> getAccessibleAbstractActionSchemes();
+
+	public List<ActionScheme> getAccessibleActionSchemes();
+
+	public List<DeletionScheme> getAccessibleDeletionSchemes();
 
 	/**
 	 * Only one synchronization scheme is allowed
@@ -965,8 +969,13 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 		}
 
 		@Override
-		public List<AbstractActionScheme> getAccessibleActionSchemes() {
+		public List<AbstractActionScheme> getAccessibleAbstractActionSchemes() {
 			return getAccessibleFlexoBehaviours(AbstractActionScheme.class);
+		}
+
+		@Override
+		public List<ActionScheme> getAccessibleActionSchemes() {
+			return getAccessibleFlexoBehaviours(ActionScheme.class);
 		}
 
 		@Override
@@ -995,6 +1004,11 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 		}
 
 		@Override
+		public List<DeletionScheme> getAccessibleDeletionSchemes() {
+			return getAccessibleFlexoBehaviours(DeletionScheme.class);
+		}
+
+		@Override
 		public List<NavigationScheme> getNavigationSchemes() {
 			return getFlexoBehaviours(NavigationScheme.class);
 		}
@@ -1011,7 +1025,7 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 
 		@Override
 		public boolean hasActionScheme() {
-			for (FlexoBehaviour es : getFlexoBehaviours()) {
+			for (FlexoBehaviour es : getAccessibleFlexoBehaviours()) {
 				if (es instanceof ActionScheme) {
 					return true;
 				}
@@ -1021,7 +1035,7 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 
 		@Override
 		public boolean hasCreationScheme() {
-			for (FlexoBehaviour es : getFlexoBehaviours()) {
+			for (FlexoBehaviour es : getAccessibleFlexoBehaviours()) {
 				if (es instanceof CreationScheme) {
 					return true;
 				}
@@ -1031,7 +1045,7 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 
 		@Override
 		public boolean hasDeletionScheme() {
-			for (FlexoBehaviour es : getFlexoBehaviours()) {
+			for (FlexoBehaviour es : getAccessibleFlexoBehaviours()) {
 				if (es instanceof DeletionScheme) {
 					return true;
 				}
@@ -1041,7 +1055,7 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 
 		@Override
 		public boolean hasSynchronizationScheme() {
-			for (FlexoBehaviour es : getFlexoBehaviours()) {
+			for (FlexoBehaviour es : getAccessibleFlexoBehaviours()) {
 				if (es instanceof SynchronizationScheme) {
 					return true;
 				}
@@ -1051,7 +1065,7 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 
 		@Override
 		public boolean hasNavigationScheme() {
-			for (FlexoBehaviour es : getFlexoBehaviours()) {
+			for (FlexoBehaviour es : getAccessibleFlexoBehaviours()) {
 				if (es instanceof NavigationScheme) {
 					return true;
 				}
@@ -1061,8 +1075,8 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 
 		@Override
 		public DeletionScheme getDefaultDeletionScheme() {
-			if (getDeletionSchemes().size() > 0) {
-				return getDeletionSchemes().get(0);
+			if (getAccessibleDeletionSchemes().size() > 0) {
+				return getAccessibleDeletionSchemes().get(0);
 			}
 			return null;
 		}
@@ -1070,7 +1084,7 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 		@Override
 		public DeletionScheme generateDefaultDeletionScheme() {
 			DeletionScheme newDeletionScheme = getFMLModelFactory().newDeletionScheme();
-			newDeletionScheme.setName("deletion");
+			newDeletionScheme.setName("delete");
 			newDeletionScheme.setControlGraph(getFMLModelFactory().newEmptyControlGraph());
 			addToFlexoBehaviours(newDeletionScheme);
 

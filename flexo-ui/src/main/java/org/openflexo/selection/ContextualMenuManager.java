@@ -257,7 +257,7 @@ public class ContextualMenuManager {
 						contextualMenu.putAction(new SynchronizationSchemeActionType(commonConcept.getSynchronizationScheme(), fci));
 					}
 					if (commonConcept.hasActionScheme()) {
-						for (ActionScheme as : commonConcept.getActionSchemes()) {
+						for (ActionScheme as : commonConcept.getAccessibleActionSchemes()) {
 							contextualMenu.putAction(new ActionSchemeActionType(as, fci));
 						}
 					}
@@ -267,7 +267,7 @@ public class ContextualMenuManager {
 						}
 					}
 					if (commonConcept.hasDeletionScheme()) {
-						for (DeletionScheme ds : commonConcept.getDeletionSchemes()) {
+						for (DeletionScheme ds : commonConcept.getAccessibleDeletionSchemes()) {
 							contextualMenu.putAction(new DeletionSchemeActionType(ds, fci));
 						}
 					}

@@ -309,7 +309,7 @@ public final class FlexoConceptBindingFactory extends JavaBindingFactory {
 
 		if (returned == null) {
 			returned = new ArrayList<FlexoBehaviourPathElement>();
-			for (AbstractActionScheme as : concept.getAccessibleActionSchemes()) {
+			for (AbstractActionScheme as : concept.getAccessibleAbstractActionSchemes()) {
 				returned.add(new FlexoBehaviourPathElement(parent, as, null));
 			}
 			map.put(concept, returned);
