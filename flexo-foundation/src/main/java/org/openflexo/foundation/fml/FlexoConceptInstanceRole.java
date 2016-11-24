@@ -38,6 +38,9 @@
 
 package org.openflexo.foundation.fml;
 
+import java.lang.reflect.Type;
+import java.util.logging.Logger;
+
 import org.openflexo.connie.DataBinding;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.annotations.FML;
@@ -59,9 +62,6 @@ import org.openflexo.model.annotations.XMLElement;
 import org.openflexo.model.validation.ValidationIssue;
 import org.openflexo.model.validation.ValidationRule;
 import org.openflexo.model.validation.ValidationWarning;
-
-import java.lang.reflect.Type;
-import java.util.logging.Logger;
 
 @ModelEntity
 @ImplementationClass(FlexoConceptInstanceRole.FlexoConceptInstanceRoleImpl.class)
@@ -334,8 +334,12 @@ public interface FlexoConceptInstanceRole extends FlexoRole<FlexoConceptInstance
 			super.notifiedBindingChanged(dataBinding);
 			if (dataBinding == getVirtualModelInstance()) {
 				getPropertyChangeSupport().firePropertyChange("virtualModelType", null, getVirtualModelType());
-
-				if (getFlexoConceptType() != null && !getFlexoConceptType().isAssignableFrom(getVirtualModelType())) {
+				// System.out.println("getVirtualModelInstance() changed");
+				// System.out.println("getFlexoConceptType()=" + getFlexoConceptType());
+				// System.out.println("getVirtualModelType()=" + getVirtualModelType());
+				if (getFlexoConceptType() != null && !getFlexoConceptType().getOwner().isAssignableFrom(getVirtualModelType())) {
+					// If existing concept type is not defined in a VirtualModel compatible with the virtual model type accessed by the
+					// binding, then nullify existing concept
 					setFlexoConceptType(null);
 				}
 
