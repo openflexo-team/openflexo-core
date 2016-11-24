@@ -310,7 +310,7 @@ public final class FlexoConceptBindingFactory extends JavaBindingFactory {
 		if (returned == null) {
 			returned = new ArrayList<FlexoBehaviourPathElement>();
 			for (AbstractActionScheme as : concept.getAccessibleAbstractActionSchemes()) {
-				returned.add(new FlexoBehaviourPathElement(parent, as, null));
+				returned.add(new FlexoBehaviourPathElement(parent, as, null, as.getFlexoConcept()));
 			}
 			map.put(concept, returned);
 		}
@@ -346,12 +346,11 @@ public final class FlexoConceptBindingFactory extends JavaBindingFactory {
 
 	@Override
 	public FunctionPathElement makeFunctionPathElement(BindingPathElement parent, Function function, List<DataBinding<?>> args) {
-		// System.out.println("makeFunctionPathElement with " + parent + " function=" + function + " args=" + args);
 		if (parent.getType() == null) {
 			return null;
 		}
 		if (parent.getType() instanceof FlexoConceptInstanceType && function instanceof FlexoBehaviour) {
-			return new FlexoBehaviourPathElement(parent, (FlexoBehaviour) function, args);
+			return new FlexoBehaviourPathElement(parent, (FlexoBehaviour) function, args, ((FlexoBehaviour) function).getFlexoConcept());
 		}
 		FunctionPathElement returned = super.makeFunctionPathElement(parent, function, args);
 		// Hook to specialize type returned by getFlexoConceptInstance(String)
@@ -374,6 +373,7 @@ public final class FlexoConceptBindingFactory extends JavaBindingFactory {
 			for (int i = 0; i < args.size(); i++) {
 				paramsTypes[i] = args.get(i).getAnalyzedType();
 			}
+
 			return conceptType.getFlexoBehaviour(functionName, paramsTypes);
 		}
 		return super.retrieveFunction(parentType, functionName, args);
