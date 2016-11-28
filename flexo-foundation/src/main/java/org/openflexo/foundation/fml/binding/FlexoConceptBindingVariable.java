@@ -38,6 +38,8 @@
 
 package org.openflexo.foundation.fml.binding;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
@@ -45,16 +47,27 @@ import org.openflexo.connie.BindingVariable;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 
-public class FlexoConceptInstanceBindingVariable extends BindingVariable {
-	static final Logger logger = Logger.getLogger(FlexoConceptInstanceBindingVariable.class.getPackage().getName());
+/**
+ * A {@link BindingVariable} implementation with a given {@link FlexoConcept} as type
+ * 
+ * @author sylvain
+ *
+ */
+public class FlexoConceptBindingVariable extends BindingVariable implements PropertyChangeListener {
+	static final Logger logger = Logger.getLogger(FlexoConceptBindingVariable.class.getPackage().getName());
 
-	private FlexoConcept flexoConcept;
-	private int index;
+	private final FlexoConcept flexoConcept;
 
-	public FlexoConceptInstanceBindingVariable(FlexoConcept anFlexoConcept, int index) {
-		super(anFlexoConcept.getOwningVirtualModel().getName() + "_" + anFlexoConcept.getName() + "_" + index, FlexoConceptInstanceType
-				.getFlexoConceptInstanceType(anFlexoConcept));
+	public FlexoConceptBindingVariable(String variableName, FlexoConcept anFlexoConcept) {
+		super(variableName, FlexoConceptInstanceType.getFlexoConceptInstanceType(anFlexoConcept));
 		this.flexoConcept = anFlexoConcept;
+		flexoConcept.getPropertyChangeSupport().addPropertyChangeListener(this);
+	}
+
+	@Override
+	public void delete() {
+		flexoConcept.getPropertyChangeSupport().removePropertyChangeListener(this);
+		super.delete();
 	}
 
 	@Override
@@ -71,7 +84,23 @@ public class FlexoConceptInstanceBindingVariable extends BindingVariable {
 		return flexoConcept;
 	}
 
-	public int getIndex() {
-		return index;
+	@Override
+	public void propertyChange(PropertyChangeEvent evt) {
+		if (evt.getSource() instanceof FlexoConcept) {
+			if (evt.getPropertyName().equals(FlexoConcept.FLEXO_PROPERTIES_KEY)
+					|| evt.getPropertyName().equals(FlexoConcept.FLEXO_BEHAVIOURS_KEY)) {
+				isNotifyingBindingPathChanged = true;
+				getPropertyChangeSupport().firePropertyChange(BINDING_PATH_CHANGED, false, true);
+				isNotifyingBindingPathChanged = false;
+			}
+		}
 	}
+
+	private boolean isNotifyingBindingPathChanged = false;
+
+	@Override
+	public boolean isNotifyingBindingPathChanged() {
+		return isNotifyingBindingPathChanged;
+	}
+
 }

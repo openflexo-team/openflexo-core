@@ -38,6 +38,8 @@
 
 package org.openflexo.foundation.fml.binding;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
@@ -58,7 +60,7 @@ import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
  * @author sylvain
  * 
  */
-public class FlexoConceptInstancePathElement extends SimplePathElement {
+public class FlexoConceptInstancePathElement extends SimplePathElement implements PropertyChangeListener {
 
 	private static final Logger logger = Logger.getLogger(FlexoConceptInstancePathElement.class.getPackage().getName());
 
@@ -67,10 +69,36 @@ public class FlexoConceptInstancePathElement extends SimplePathElement {
 	public FlexoConceptInstancePathElement(BindingPathElement parent, String pathElementName, FlexoConcept flexoConcept) {
 		super(parent, pathElementName, FlexoConceptInstanceType.getFlexoConceptInstanceType(flexoConcept));
 		this.flexoConcept = flexoConcept;
+		flexoConcept.getPropertyChangeSupport().addPropertyChangeListener(this);
+	}
+
+	@Override
+	public void delete() {
+		flexoConcept.getPropertyChangeSupport().removePropertyChangeListener(this);
+		super.delete();
 	}
 
 	public FlexoConcept getFlexoConcept() {
 		return flexoConcept;
+	}
+
+	@Override
+	public void propertyChange(PropertyChangeEvent evt) {
+		if (evt.getSource() instanceof FlexoConcept) {
+			if (evt.getPropertyName().equals(FlexoConcept.FLEXO_PROPERTIES_KEY)
+					|| evt.getPropertyName().equals(FlexoConcept.FLEXO_BEHAVIOURS_KEY)) {
+				isNotifyingBindingPathChanged = true;
+				getPropertyChangeSupport().firePropertyChange(BINDING_PATH_CHANGED, false, true);
+				isNotifyingBindingPathChanged = false;
+			}
+		}
+	}
+
+	private boolean isNotifyingBindingPathChanged = false;
+
+	@Override
+	public boolean isNotifyingBindingPathChanged() {
+		return isNotifyingBindingPathChanged;
 	}
 
 	@Override
@@ -98,8 +126,8 @@ public class FlexoConceptInstancePathElement extends SimplePathElement {
 	}
 
 	@Override
-	public void setBindingValue(Object value, Object target, BindingEvaluationContext context) throws TypeMismatchException,
-			NullReferenceException {
+	public void setBindingValue(Object value, Object target, BindingEvaluationContext context)
+			throws TypeMismatchException, NullReferenceException {
 		logger.warning("Please implement me, target=" + target + " context=" + context);
 	}
 

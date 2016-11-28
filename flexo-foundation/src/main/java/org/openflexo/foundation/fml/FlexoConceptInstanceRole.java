@@ -69,6 +69,8 @@ import org.openflexo.model.validation.ValidationWarning;
 @FML("FlexoConceptInstanceRole")
 public interface FlexoConceptInstanceRole extends FlexoRole<FlexoConceptInstance> {
 
+	@PropertyIdentifier(type = FlexoConcept.class)
+	public static final String FLEXO_CONCEPT_TYPE_KEY = "flexoConceptType";
 	@PropertyIdentifier(type = String.class)
 	public static final String FLEXO_CONCEPT_TYPE_URI_KEY = "flexoConceptTypeURI";
 	@PropertyIdentifier(type = String.class)
@@ -209,6 +211,7 @@ public interface FlexoConceptInstanceRole extends FlexoRole<FlexoConceptInstance
 			super.finalizeDeserialization();
 			if (flexoConceptType == null && _flexoConceptTypeURI != null && getViewPoint() != null) {
 				flexoConceptType = getViewPoint().getFlexoConcept(_flexoConceptTypeURI);
+				getPropertyChangeSupport().firePropertyChange(FLEXO_CONCEPT_TYPE_KEY, null, flexoConceptType);
 			}
 		}
 
