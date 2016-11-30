@@ -89,6 +89,7 @@ import org.openflexo.foundation.fml.ViewPointLocalizedDictionary;
 import org.openflexo.foundation.fml.ViewType;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelInstanceType;
+import org.openflexo.foundation.fml.action.DeleteFlexoConceptObjects;
 import org.openflexo.foundation.fml.editionaction.DeleteAction;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
@@ -178,7 +179,13 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 		// new DeleteFlexoConceptInitializer(actionInitializer);
 		// new DuplicateFlexoConceptInitializer(actionInitializer);
 		new ShowFMLRepresentationInitializer(actionInitializer);
-		new DeleteFlexoConceptObjectsInitializer(actionInitializer);
+
+		if (actionInitializer.getActionInitializer(DeleteFlexoConceptObjects.actionType) == null) {
+			new DeleteFlexoConceptObjectsInitializer(actionInitializer);
+		}
+		else {
+			// Already have an module specific initializer, skip DeleteFlexoConceptObjectsInitializer
+		}
 
 		new AddParentFlexoConceptInitializer(actionInitializer);
 

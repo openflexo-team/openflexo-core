@@ -112,7 +112,8 @@ public class DeleteFlexoConceptObjects extends FlexoAction<DeleteFlexoConceptObj
 		return getObjectsToDelete(getGlobalSelection(getFocusedObject(), getGlobalSelection()));
 	}
 
-	protected static List<FlexoConceptObject> getObjectsToDelete(List<FlexoConceptObject> globalSelection) throws InvalidSelectionException {
+	protected static List<FlexoConceptObject> getObjectsToDelete(List<FlexoConceptObject> globalSelection)
+			throws InvalidSelectionException {
 
 		List<FlexoConceptObject> allObjects = new ArrayList<FlexoConceptObject>();
 
@@ -124,7 +125,8 @@ public class DeleteFlexoConceptObjects extends FlexoAction<DeleteFlexoConceptObj
 				if (resource == null) {
 					resource = (AbstractVirtualModelResource<?>) o.getResourceData().getResource();
 					modelFactory = resource.getFactory();
-				} else {
+				}
+				else {
 					if ((AbstractVirtualModelResource<?>) o.getResourceData().getResource() != resource) {
 						throw new InvalidSelectionException("Multiple virtual model impacted");
 					}
