@@ -48,6 +48,7 @@ public class JIRAVersion extends JIRAObject<JIRAVersion> {
 	private String name;
 	private String iconUrl;
 	private boolean released;
+	private String description;
 
 	public String getName() {
 		return name;
@@ -71,5 +72,13 @@ public class JIRAVersion extends JIRAObject<JIRAVersion> {
 
 	public void setReleased(boolean released) {
 		this.released = released;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
 	}
 }
