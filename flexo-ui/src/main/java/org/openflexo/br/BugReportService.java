@@ -189,7 +189,9 @@ public class BugReportService extends FlexoServiceImpl {
 
 		try {
 
-			Progress.progress(FlexoLocalization.getMainLocalizer().localizedForKey("contacting") + " " + JIRA_URL);
+			if (FlexoLocalization.getMainLocalizer() != null) {
+				Progress.progress(FlexoLocalization.getMainLocalizer().localizedForKey("contacting") + " " + JIRA_URL);
+			}
 
 			URL url = new URL(JIRA_URL);
 			URLConnection urlc = url.openConnection();
@@ -197,7 +199,9 @@ public class BugReportService extends FlexoServiceImpl {
 			try {
 				bfr = new BufferedReader(new InputStreamReader(urlc.getInputStream()));
 			} catch (UnknownHostException e) {
-				FlexoController.showError(FlexoLocalization.getMainLocalizer().localizedForKey("cannot_contact") + " " + JIRA_URL);
+				if (FlexoLocalization.getMainLocalizer() != null) {
+					FlexoController.showError(FlexoLocalization.getMainLocalizer().localizedForKey("cannot_contact") + " " + JIRA_URL);
+				}
 				return;
 			}
 			JIRAProjectList projects = JIRAGson.getInstance().fromJson(bfr, JIRAProjectList.class);
@@ -273,7 +277,9 @@ public class BugReportService extends FlexoServiceImpl {
 
 	private static JIRAProject parseProject(JIRAProject p) {
 
-		Progress.progress(FlexoLocalization.getMainLocalizer().localizedForKey("getting_informations_for") + " " + p.getSelf());
+		if (FlexoLocalization.getMainLocalizer() != null) {
+			Progress.progress(FlexoLocalization.getMainLocalizer().localizedForKey("getting_informations_for") + " " + p.getSelf());
+		}
 		try {
 			URL url = new URL(p.getSelf());
 			URLConnection urlc = url.openConnection();
