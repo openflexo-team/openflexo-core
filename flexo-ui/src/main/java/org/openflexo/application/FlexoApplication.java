@@ -54,7 +54,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.ApplicationContext;
 import org.openflexo.Flexo;
-import org.openflexo.br.view.JIRAIssueReportDialog;
+import org.openflexo.br.SendBugReportServiceTask;
 import org.openflexo.components.ProgressWindow;
 import org.openflexo.drm.DefaultHelpRetriever;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
@@ -255,9 +255,12 @@ public class FlexoApplication {
 							try {
 								if (FlexoController.confirm(message)) {
 									FlexoFrame frame = FlexoFrame.getActiveFrame(false);
-									JIRAIssueReportDialog.newBugReport((Exception) exception, frame != null ? frame.getModule() : null,
+									SendBugReportServiceTask sendBugReport = new SendBugReportServiceTask((Exception) exception,
+											frame != null ? frame.getModule() : null,
 											frame != null ? frame.getController().getProject() : null,
 											frame != null ? frame.getController().getApplicationContext() : null);
+									frame.getController().getApplicationContext().getTaskManager().scheduleExecution(sendBugReport);
+
 								}
 							} catch (HeadlessException e1) {
 								e1.printStackTrace();

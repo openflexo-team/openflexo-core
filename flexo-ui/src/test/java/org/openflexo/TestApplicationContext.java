@@ -198,7 +198,7 @@ public class TestApplicationContext extends ApplicationContext {
 	}
 
 	@Override
-	protected BugReportService createBugReportService() {
+	public BugReportService createBugReportService() {
 		// not necessary
 		return null;
 	}

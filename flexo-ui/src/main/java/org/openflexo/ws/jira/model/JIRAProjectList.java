@@ -39,17 +39,17 @@
 
 package org.openflexo.ws.jira.model;
 
-import java.util.List;
+import java.util.ArrayList;
 
-public class JIRAProjectList {
+public class JIRAProjectList extends ArrayList<JIRAProject> {
 
-	private List<JIRAProject> projects;
-
+	/*private List<JIRAProject> projects;
+	
 	public List<JIRAProject> getProjects() {
 		return projects;
 	}
-
+	
 	public void setProjects(List<JIRAProject> projects) {
 		this.projects = projects;
-	}
+	}*/
 }

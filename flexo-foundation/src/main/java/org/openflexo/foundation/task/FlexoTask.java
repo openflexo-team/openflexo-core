@@ -72,6 +72,8 @@ public abstract class FlexoTask implements Runnable, HasPropertyChangeSupport {
 	public static final String CURRENT_PROGRESS_PROPERTY = "currentProgress";
 	public static final String EXPECTED_PROGRESS_STEPS_PROPERTY = "expectedProgressSteps";
 	public static final String CURRENT_STEP_NAME_PROPERTY = "currentStepName";
+	public static final String TASK_BAR_SHOW = "showTaskBar";
+	public static final String TASK_BAR_HIDE = "hideTaskBar";
 
 	private final String taskTitle;
 	private TaskStatus status;
@@ -282,6 +284,14 @@ public abstract class FlexoTask implements Runnable, HasPropertyChangeSupport {
 	public void progress(String stepName) {
 		progress();
 		setCurrentStepName(stepName);
+	}
+
+	public void hideTaskBar() {
+		getPropertyChangeSupport().firePropertyChange(TASK_BAR_HIDE, true, false);
+	}
+
+	public void showTaskBar() {
+		getPropertyChangeSupport().firePropertyChange(TASK_BAR_SHOW, false, true);
 	}
 
 	public void addToDependantTasks(FlexoTask task) {

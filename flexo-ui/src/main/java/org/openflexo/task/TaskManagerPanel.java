@@ -362,6 +362,12 @@ public class TaskManagerPanel extends JDialog implements PropertyChangeListener 
 				else if (evt.getPropertyName().equals(FlexoTask.CURRENT_STEP_NAME_PROPERTY)) {
 					updateStatusLabel();
 				}
+				else if (evt.getPropertyName().equals(FlexoTask.TASK_BAR_HIDE)) {
+					TaskManagerPanel.this.setVisible(false);
+				}
+				else if (evt.getPropertyName().equals(FlexoTask.TASK_BAR_SHOW)) {
+					TaskManagerPanel.this.setVisible(true);
+				}
 			}
 		}
 	}

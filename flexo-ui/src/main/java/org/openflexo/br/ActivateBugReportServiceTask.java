@@ -36,52 +36,45 @@
  * 
  */
 
-package org.openflexo.rm;
+package org.openflexo.br;
 
-import org.openflexo.foundation.task.FlexoTask;
+import org.openflexo.ApplicationContext;
 import org.openflexo.foundation.task.Progress;
-import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
-import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.task.FlexoApplicationTask;
 
 /**
- * A task used to activate a {@link BugReportService}
+ * A task used to activate {@link BugReportService}
  * 
  * @author sylvain
  *
  */
-public class ActivateTechnologyAdapterTask extends FlexoApplicationTask {
+public class ActivateBugReportServiceTask extends FlexoApplicationTask {
 
-	private final TechnologyAdapterService taService;
-	private final TechnologyAdapter technologyAdapter;
+	private BugReportService bugReportService;
 
-	public ActivateTechnologyAdapterTask(TechnologyAdapterService taService, TechnologyAdapter technologyAdapter) {
-		super(FlexoLocalization.getMainLocalizer().localizedForKey("activate_technology") + " " + technologyAdapter.getName(),
-				taService.getServiceManager());
-		this.taService = taService;
-		this.technologyAdapter = technologyAdapter;
+	public ActivateBugReportServiceTask(ApplicationContext applicationContext) {
+		super(FlexoLocalization.getMainLocalizer().localizedForKey("activate_bug_report_service"), applicationContext);
 
-		for (FlexoTask task : getServiceManager().getTaskManager().getScheduledTasks()) {
+		/*for (FlexoTask task : getServiceManager().getTaskManager().getScheduledTasks()) {
 			if (task instanceof AddResourceCenterTask) {
 				addToDependantTasks(task);
 			}
-		}
+		}*/
 	}
 
 	@Override
 	public void performTask() {
 
-		Progress.setExpectedProgressSteps(getServiceManager().getResourceCenterService().getResourceCenters().size() + 2);
+		Progress.setExpectedProgressSteps(20);
 
-		technologyAdapter.activate();
-		taService.getServiceManager().notify(taService,
-				taService.getServiceManager().new TechnologyAdapterHasBeenActivated(technologyAdapter));
+		bugReportService = ((ApplicationContext) getServiceManager()).createBugReportService();
+		getServiceManager().registerService(bugReportService);
 
 	}
 
-	public TechnologyAdapter getTechnologyAdapter() {
-		return technologyAdapter;
+	public BugReportService getBugReportService() {
+		return bugReportService;
 	}
 
 	@Override

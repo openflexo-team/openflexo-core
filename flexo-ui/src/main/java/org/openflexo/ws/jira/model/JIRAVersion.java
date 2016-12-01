@@ -47,6 +47,7 @@ public class JIRAVersion extends JIRAObject<JIRAVersion> {
 	private static final long serialVersionUID = -5892267955351510820L;
 	private String name;
 	private String iconUrl;
+	private boolean released;
 
 	public String getName() {
 		return name;
@@ -62,5 +63,13 @@ public class JIRAVersion extends JIRAObject<JIRAVersion> {
 
 	public void setIconUrl(String iconUrl) {
 		this.iconUrl = iconUrl;
+	}
+
+	public boolean isReleased() {
+		return released;
+	}
+
+	public void setReleased(boolean released) {
+		this.released = released;
 	}
 }
