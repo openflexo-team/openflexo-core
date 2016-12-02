@@ -138,6 +138,16 @@ public class JIRAIssue extends JIRAObject<JIRAIssue> {
 		}
 	}
 
+	private JIRAVersion fixVersion;
+
+	public JIRAVersion getFixVersion() {
+		return fixVersion;
+	}
+
+	public void setFixVersion(JIRAVersion fixVersion) {
+		this.fixVersion = fixVersion;
+	}
+
 	public List<JIRAComponent> getComponents() {
 		return components;
 	}

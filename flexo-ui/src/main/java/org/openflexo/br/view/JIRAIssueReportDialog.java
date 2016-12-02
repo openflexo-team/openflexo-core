@@ -278,6 +278,8 @@ public class JIRAIssueReportDialog extends PropertyChangedSupportDefaultImplemen
 			if (project != null) {
 				issue.setIssuetype(project.getIssueTypes().get(0));
 				issue.setProject(project);
+				issue.setVersion(project.getLastReleasedVersion());
+				issue.setFixVersion(project.getNextUnreleasedVersion());
 			}
 			if (issue.getIssuetype().getPriorityField() != null && issue.getIssuetype().getPriorityField().getAllowedValues() != null) {
 				JIRAPriority major = null;

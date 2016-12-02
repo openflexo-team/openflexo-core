@@ -99,9 +99,6 @@ public class SendBugReportServiceTask extends FlexoApplicationTask {
 				if (report.getIssue() != null) {
 					report.getIssue().setComponent(serviceManager.getBugReportService().getMostProbableProjectComponent(report.getProject(),
 							causeException, module));
-					if (report.getProject() != null) {
-						report.getIssue().setVersion(report.getProject().getLastReleasedVersion());
-					}
 				}
 			}
 			report.setFlexoProject(project);

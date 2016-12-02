@@ -115,6 +115,15 @@ public class JIRAProject extends JIRAObject<JIRAProject> {
 		return lastReleased;
 	}
 
+	public JIRAVersion getNextUnreleasedVersion() {
+		for (JIRAVersion v : getVersions()) {
+			if (!v.isReleased()) {
+				return v;
+			}
+		}
+		return null;
+	}
+
 	public List<JIRAComponent> getComponents() {
 		return components;
 	}
