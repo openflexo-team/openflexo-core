@@ -199,4 +199,13 @@ public class FlexoConceptFlexoPropertyPathElement<P extends FlexoProperty<?>> ex
 	public String toString() {
 		return "FlexoConceptFlexoPropertyPathElement " + getFlexoProperty().getName() + " (" + getBindingPath() + ")";
 	}
+
+	@Override
+	public boolean isSettable() {
+		if (flexoProperty != null) {
+			return !flexoProperty.isReadOnly();
+		}
+		return super.isSettable();
+	}
+
 }
