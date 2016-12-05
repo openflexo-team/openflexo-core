@@ -42,6 +42,7 @@ import java.io.FileNotFoundException;
 
 import org.openflexo.connie.type.CustomTypeFactory;
 import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.gina.annotation.FIBPanel;
@@ -135,18 +136,10 @@ public class VirtualModelInstanceType extends FlexoConceptInstanceType {
 			AbstractVirtualModel<?> virtualModel = null;
 
 			if (configuration != null) {
-				try {
-					virtualModel = getTechnologyAdapter().getTechnologyAdapterService().getServiceManager().getViewPointLibrary()
-							.getVirtualModel(configuration);
-				} catch (FileNotFoundException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (ResourceLoadingCancelledException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (FlexoException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+				VirtualModelResource virtualModelResource = getTechnologyAdapter().getTechnologyAdapterService().getServiceManager()
+						.getViewPointLibrary().getVirtualModelResource(configuration);
+				if (virtualModelResource != null && virtualModelResource.isLoaded()) {
+					virtualModel = virtualModelResource.getLoadedResourceData();
 				}
 			}
 			else {
