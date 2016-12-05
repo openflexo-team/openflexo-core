@@ -90,9 +90,6 @@ public abstract class ViewPointResourceImpl extends AbstractVirtualModelResource
 	public ViewPoint loadResourceData(IProgress progress) throws FlexoFileNotFoundException, IOFlexoException, InvalidXMLException,
 			InconsistentDataException, InvalidModelDefinitionException {
 
-		logger.info("Hop, on charge le vp: " + getURI());
-		Thread.dumpStack();
-
 		ViewPointImpl returned = (ViewPointImpl) super.loadResourceData(progress);
 
 		returned.clearIsModified();
