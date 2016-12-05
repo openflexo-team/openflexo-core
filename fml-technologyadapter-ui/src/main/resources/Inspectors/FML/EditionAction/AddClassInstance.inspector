@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Inspector xmlns:p="http://www.openflexo.org/pamela/" id="0" p:modelEntity="org.openflexo.gina.utils.FIBInspector" borderLeft="0" sizeAdjustment="OriginalSize" controllerClassName="org.openflexo.fml.controller.FMLFIBInspectorController" borderRight="0" border="empty" trackViewPortWidth="true" font="SansSerif,0,12" align="left" borderBottom="0" titleFont="SansSerif,0,12" borderTop="0" trackViewPortHeight="true" layout="border" name="Inspector">
+  <Parameter id="1" name="title" value="AddFlexoConceptInstance action" />
+  <TabPanel id="2" name="Tab" constraints="border(location=center)">
+    <Tab id="3" verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED" borderLeft="0" sizeAdjustment="OriginalSize" border="empty" borderRight="0" trackViewPortWidth="true" index="0" font="SansSerif,0,11" align="left" borderBottom="0" titleFont="SansSerif,0,11" borderTop="0" trackViewPortHeight="true" horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED" useScrollBar="true" title="Basic" layout="twocols" name="BasicTab">
+      <Label id="4" name="InstanceTypeLabel" index="5" localize="true" align="right" constraints="twocols(expandHorizontally=true;expandVertically=false;index=6;insetsBottom=0;insetsLeft=2;insetsRight=4;insetsTop=5;location=left)" label="instance_type" />
+      <Custom id="5" manageDynamicModel="true" dataClassForComponent="java.lang.reflect.Type" componentClassName="org.openflexo.gina.swing.utils.TypeSelector" name="TypeSelector" data="data.type" index="6" localize="true" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)">
+        <Assignment id="6" mandatory="true" variable="component.customTypeManager" />
+      </Custom>
+      <Label id="7" name="ParametersLabel" index="7" align="left" constraints="twocols(expandHorizontally=true;expandVertically=false;index=12;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)" label="parameters" />
+      <Table id="8" showFooter="true" manageDynamicModel="true" selectionMode="MultipleIntervalSelection" opaque="false" data="data.parameters" index="8" localize="true" constraints="twocols(expandHorizontally=true;expandVertically=true;index=11;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)" visibleRowCount="4" rowHeight="18" textSelectionColor="255,255,255" iteratorClassName="org.openflexo.connie.DataBinding" backgroundSelectionColor="26,96,206" backgroundNonSelectionColor="255,255,255" name="ConditionsTable" textNonSelectionColor="0,0,0" backgroundSecondarySelectionColor="173,215,255">
+        <CustomColumn id="9" data="iterator" format="object.toString" componentClassName="org.openflexo.gina.swing.utils.BindingSelector" displayTitle="true" title="parameter" name="parameter" columnWidth="80" resizable="true" showIcon="false">
+        </CustomColumn>
+        <AddAction id="11" name="add_parameter" method="data.createParameter()" />
+        <RemoveAction id="12" name="remove_parameter" method="data.removeFromParameters(selected)" />
+      </Table>
+    </Tab>
+  </TabPanel>
+  <FIBVariable id="13" name="data" type="org.openflexo.foundation.fml.rt.editionaction.AddClassInstance" />
+  <LocalizedDictionary id="14">
+    <Localized id="15" value="Avancé" lang="French" key="Advanced" />
+    <Localized id="16" value="Basique" lang="French" key="Basic" />
+  </LocalizedDictionary>
+</Inspector>

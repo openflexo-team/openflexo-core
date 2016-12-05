@@ -38,12 +38,6 @@
 
 package org.openflexo.foundation.fml.editionaction;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Type;
-import java.util.Collections;
-import java.util.List;
-import java.util.logging.Logger;
-
 import org.openflexo.connie.BindingEvaluationContext;
 import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.DataBinding;
@@ -67,6 +61,7 @@ import org.openflexo.foundation.fml.controlgraph.WhileAction;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext.ReturnException;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
+import org.openflexo.foundation.fml.rt.editionaction.AddClassInstance;
 import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.AddSubView;
 import org.openflexo.foundation.fml.rt.editionaction.AddVirtualModelInstance;
@@ -85,6 +80,12 @@ import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.toolbox.StringUtils;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Type;
+import java.util.Collections;
+import java.util.List;
+import java.util.logging.Logger;
+
 /**
  * Abstract class representing a primitive to be executed as an atomic action of an FlexoBehaviour
  * 
@@ -101,7 +102,7 @@ import org.openflexo.toolbox.StringUtils;
 		@Import(MatchFlexoConceptInstance.class), @Import(RemoveFromListAction.class), @Import(DeleteAction.class),
 		@Import(ConditionalAction.class), @Import(IterationAction.class), @Import(WhileAction.class),
 		@Import(IncrementalIterationAction.class), @Import(FetchRequestIterationAction.class), @Import(ExecutionAction.class),
-		@Import(DeclareFlexoRole.class), @Import(NotifyPropertyChangedAction.class) })
+		@Import(DeclareFlexoRole.class), @Import(NotifyPropertyChangedAction.class), @Import(AddClassInstance.class)})
 public abstract interface EditionAction extends FMLControlGraph {
 
 	@PropertyIdentifier(type = ActionContainer.class)

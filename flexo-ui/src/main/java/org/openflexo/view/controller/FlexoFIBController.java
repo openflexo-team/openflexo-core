@@ -40,6 +40,7 @@
 package org.openflexo.view.controller;
 
 import org.openflexo.ApplicationContext;
+import org.openflexo.connie.annotations.NotificationUnsafe;
 import org.openflexo.foundation.DataModification;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject;
@@ -237,6 +238,7 @@ public class FlexoFIBController extends FIBController implements GraphicalFlexoO
 		}
 	}
 
+	@NotificationUnsafe
 	public ImageIcon iconForObject(Object object) {
 		if (controller != null) {
 			return controller.iconForObject(object);
