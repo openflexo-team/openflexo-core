@@ -81,6 +81,9 @@ public class LoadProjectTask extends FlexoApplicationTask {
 
 	@Override
 	public void performTask() {
+
+		//System.out.println("Loading project " + projectDirectory);
+
 		Progress.setExpectedProgressSteps(10);
 		if (projectDirectory == null) {
 			throwException(new IllegalArgumentException("Project directory cannot be null"));
@@ -96,8 +99,6 @@ public class LoadProjectTask extends FlexoApplicationTask {
 
 		Progress.progress(FlexoLocalization.getMainLocalizer().localizedForKey("opening_project") + projectDirectory.getAbsolutePath());
 
-		FlexoEditor editor = null;
-
 		if (logger.isLoggable(Level.FINE)) {
 			logger.fine("Opening " + projectDirectory.getAbsolutePath());
 		}
@@ -109,28 +110,28 @@ public class LoadProjectTask extends FlexoApplicationTask {
 		}
 		for (Entry<FlexoProject, FlexoEditor> e : projectLoader.getEditors().entrySet()) {
 			if (e.getKey().getProjectDirectory().equals(projectDirectory)) {
-				editor = e.getValue();
+				flexoEditor = e.getValue();
 			}
 		}
-		if (editor == null) {
+		if (flexoEditor == null) {
 			try {
-				editor = FlexoProject.openProject(projectDirectory, projectLoader.getServiceManager(), projectLoader.getServiceManager(),
-						ProgressWindow.instance());
+				flexoEditor = FlexoProject.openProject(projectDirectory, projectLoader.getServiceManager(),
+						projectLoader.getServiceManager(), ProgressWindow.instance());
 			} catch (ProjectLoadingCancelledException e1) {
 				throwException(e1);
 			} catch (ProjectInitializerException e1) {
 				throwException(e1);
 			}
 			Progress.progress(FlexoLocalization.getMainLocalizer().localizedForKey("create_and_open_editor"));
-			projectLoader.newEditor(editor);
+			projectLoader.newEditor(flexoEditor);
 		}
 		if (!asImportedProject) {
-			projectLoader.addToRootProjects(editor.getProject());
+			projectLoader.addToRootProjects(flexoEditor.getProject());
 		}
 
 		// Notify project just loaded
 		Progress.progress(FlexoLocalization.getMainLocalizer().localizedForKey("notify_editors"));
-		projectLoader.getServiceManager().notify(projectLoader, new ProjectLoaded(editor.getProject()));
+		projectLoader.getServiceManager().notify(projectLoader, new ProjectLoaded(flexoEditor.getProject()));
 	}
 
 	public FlexoEditor getFlexoEditor() {
