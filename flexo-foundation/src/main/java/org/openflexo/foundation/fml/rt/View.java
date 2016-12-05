@@ -38,6 +38,11 @@
 
 package org.openflexo.foundation.fml.rt;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.logging.Logger;
+
 import org.openflexo.connie.BindingVariable;
 import org.openflexo.foundation.fml.AbstractVirtualModel;
 import org.openflexo.foundation.fml.ViewPoint;
@@ -58,11 +63,6 @@ import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.model.annotations.XMLElement;
 import org.openflexo.toolbox.FlexoVersion;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.logging.Logger;
 
 /**
  * A {@link View} is the run-time concept (instance) of a {@link ViewPoint}.<br>
@@ -368,7 +368,7 @@ public interface View extends AbstractVirtualModelInstance<View, ViewPoint> {
 			FlexoResourceCenter<?> rc = getResourceCenter();
 			FMLRTTechnologyAdapter rtTA = rc.getServiceManager().getTechnologyAdapterService()
 					.getTechnologyAdapter(FMLRTTechnologyAdapter.class);
-			return (ViewLibrary<?>) rtTA.getViewRepository(rc);
+			return rtTA.getViewRepository(rc);
 		}
 
 		@Override
