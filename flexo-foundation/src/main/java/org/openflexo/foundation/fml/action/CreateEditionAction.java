@@ -38,16 +38,6 @@
 
 package org.openflexo.foundation.fml.action;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.lang.reflect.Type;
-import java.security.InvalidParameterException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Vector;
-import java.util.logging.Logger;
-
 import org.openflexo.connie.Bindable;
 import org.openflexo.connie.BindingFactory;
 import org.openflexo.connie.BindingModel;
@@ -83,6 +73,7 @@ import org.openflexo.foundation.fml.editionaction.RemoveFromListAction;
 import org.openflexo.foundation.fml.editionaction.ReturnStatement;
 import org.openflexo.foundation.fml.editionaction.RoleSpecificAction;
 import org.openflexo.foundation.fml.editionaction.TechnologySpecificAction;
+import org.openflexo.foundation.fml.rt.editionaction.AddClassInstance;
 import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.AddSubView;
 import org.openflexo.foundation.fml.rt.editionaction.AddVirtualModelInstance;
@@ -92,6 +83,16 @@ import org.openflexo.foundation.fml.rt.editionaction.SelectFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.SelectVirtualModelInstance;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
+
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.lang.reflect.Type;
+import java.security.InvalidParameterException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Vector;
+import java.util.logging.Logger;
 
 public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLControlGraph, FMLObject>
 		implements Bindable, PropertyChangeListener {
@@ -454,6 +455,9 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 		}
 		else if (AddFlexoConceptInstance.class.isAssignableFrom(editionActionClass)) {
 			returned = factory.newAddFlexoConceptInstance();
+		}
+		else if (AddClassInstance.class.isAssignableFrom(editionActionClass)) {
+			returned = factory.newAddClassInstance();
 		}
 		else if (AddVirtualModelInstance.class.isAssignableFrom(editionActionClass)) {
 			returned = factory.newAddVirtualModelInstance();
