@@ -51,13 +51,12 @@ import org.openflexo.foundation.DataModification;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
-import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.FlexoConcept;
-import org.openflexo.foundation.fml.FlexoRole;
+import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.ListParameter;
 import org.openflexo.foundation.fml.URIParameter;
 import org.openflexo.foundation.fml.binding.FlexoBehaviourBindingModel;
@@ -214,8 +213,8 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 		/*System.out.println("On me demande la valeur du parametre " + parameter.getName() + " a priori c'est "
 				+ parameterValues.get(parameter));*/
 		if (parameter instanceof URIParameter) {
-			if (parameterValues.get(parameter) == null
-					|| parameterValues.get(parameter) instanceof String && StringUtils.isEmpty((String) parameterValues.get(parameter))) {
+			if (parameterValues.get(parameter) == null || parameterValues.get(parameter) instanceof String
+					&& StringUtils.isEmpty((String) parameterValues.get(parameter))) {
 				return ((URIParameter) parameter).getDefaultValue(this);
 			}
 		}
@@ -304,13 +303,13 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 	 * 
 	 * @param matchingFlexoConceptInstance
 	 */
-	public FlexoConceptInstance matchFlexoConceptInstance(FlexoConcept flexoConceptType, Hashtable<FlexoRole, Object> criterias) {
+	public FlexoConceptInstance matchFlexoConceptInstance(FlexoConcept flexoConceptType, Hashtable<FlexoProperty, Object> criterias) {
 		// System.out.println("MATCH epi on " + getVirtualModelInstance() + " for " + flexoConceptType + " with " + criterias);
 		AbstractVirtualModelInstance<?, ?> inst = getVirtualModelInstance();
 		for (FlexoConceptInstance epi : inst.getFlexoConceptInstances(flexoConceptType)) {
 			boolean allCriteriasMatching = true;
-			for (FlexoRole pr : criterias.keySet()) {
-				if (!FlexoObjectImpl.areSameValue(epi.getFlexoActor(pr), criterias.get(pr))) {
+			for (FlexoProperty pr : criterias.keySet()) {
+				if (!FlexoObjectImpl.areSameValue(epi.getFlexoPropertyValue(pr), criterias.get(pr))) {
 					allCriteriasMatching = false;
 				}
 			}
@@ -447,8 +446,7 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 			return;
 		}
 		else if (variable.getVariableName().equals(FlexoBehaviourBindingModel.PARAMETERS_PROPERTY)) {
-			logger.warning(
-					"Forbidden write access " + FlexoBehaviourBindingModel.PARAMETERS_PROPERTY + " in " + this + " of " + getClass());
+			logger.warning("Forbidden write access " + FlexoBehaviourBindingModel.PARAMETERS_PROPERTY + " in " + this + " of " + getClass());
 			return;
 		}
 		else if (variable.getVariableName().equals(FlexoBehaviourBindingModel.PARAMETERS_DEFINITION_PROPERTY)) {
@@ -462,8 +460,8 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 			return;
 		}
 
-		logger.warning(
-				"Unexpected variable requested in settable context in FlexoBehaviourAction: " + variable + " of " + variable.getClass());
+		logger.warning("Unexpected variable requested in settable context in FlexoBehaviourAction: " + variable + " of "
+				+ variable.getClass());
 	}
 
 	/*	public GraphicalRepresentation getOverridingGraphicalRepresentation(GraphicalElementPatternRole patternRole) {
@@ -500,8 +498,8 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 					try {
 						newURI = uriParam.getBaseURI().getBindingValue(FlexoBehaviourAction.this);
 
-						newURI = modelSlot.generateUniqueURIName(
-								(TypeAwareModelSlotInstance) getVirtualModelInstance().getModelSlotInstance(modelSlot), newURI);
+						newURI = modelSlot.generateUniqueURIName((TypeAwareModelSlotInstance) getVirtualModelInstance()
+								.getModelSlotInstance(modelSlot), newURI);
 						logger.info("Generated new URI " + newURI + " for " + getVirtualModelInstance().getModelSlotInstance(modelSlot));
 						// NPE Protection
 						if (newURI != null) {

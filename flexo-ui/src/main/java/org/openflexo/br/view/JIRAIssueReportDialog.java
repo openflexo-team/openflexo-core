@@ -48,13 +48,11 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.Deflater;
@@ -62,15 +60,13 @@ import java.util.zip.Deflater;
 import org.openflexo.ApplicationContext;
 import org.openflexo.ApplicationVersion;
 import org.openflexo.Flexo;
-import org.openflexo.components.ProgressWindow;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.FlexoServiceManager;
-import org.openflexo.gina.controller.FIBController.Status;
+import org.openflexo.foundation.task.Progress;
 import org.openflexo.gina.swing.utils.JFIBDialog;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.localization.LocalizedDelegate;
 import org.openflexo.logging.FlexoLogger;
-import org.openflexo.module.FlexoModule;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.swing.ImageUtils;
@@ -87,12 +83,9 @@ import org.openflexo.view.FlexoFrame;
 import org.openflexo.view.controller.FlexoController;
 import org.openflexo.ws.jira.JIRAClient;
 import org.openflexo.ws.jira.JIRAClient.Method;
-import org.openflexo.ws.jira.JIRAClient.Progress;
 import org.openflexo.ws.jira.JIRAException;
-import org.openflexo.ws.jira.UnauthorizedJIRAAccessException;
 import org.openflexo.ws.jira.action.SubmitIssue;
 import org.openflexo.ws.jira.model.JIRAComponent;
-import org.openflexo.ws.jira.model.JIRAErrors;
 import org.openflexo.ws.jira.model.JIRAIssue;
 import org.openflexo.ws.jira.model.JIRAObject;
 import org.openflexo.ws.jira.model.JIRAPriority;
@@ -104,26 +97,6 @@ import com.google.gson.JsonIOException;
 import com.google.gson.JsonSyntaxException;
 
 public class JIRAIssueReportDialog extends PropertyChangedSupportDefaultImplementation {
-
-	private final class ReportProgress implements Progress {
-		int count = 0;
-
-		@Override
-		public void setProgress(double percentage) {
-			int steps = (int) (percentage * 100);
-			steps -= count;
-			for (int i = 0; i < steps; i++) {
-				ProgressWindow.instance().setSecondaryProgress("");
-			}
-			count += steps;
-		}
-
-		public void resetCount() {
-			ProgressWindow.instance().resetSecondaryProgress(100);
-			count = 0;
-		}
-
-	}
 
 	public static class SubmitIssueReport {
 
@@ -219,126 +192,22 @@ public class JIRAIssueReportDialog extends PropertyChangedSupportDefaultImplemen
 	private ApplicationContext serviceManager;
 	private FlexoProject flexoProject;
 
-	public static void newBugReport(FlexoModule module, FlexoProject project, ApplicationContext serviceManager) {
+	/*public static void newBugReport(FlexoModule<?> module, FlexoProject project, ApplicationContext serviceManager) {
 		newBugReport(null, module, project, serviceManager);
 	}
+	
+	public static void newBugReport(Exception e, FlexoModule<?> module, FlexoProject project, ApplicationContext serviceManager) {
+	}*/
 
-	public static void newBugReport(Exception e, FlexoModule module, FlexoProject project, ApplicationContext serviceManager) {
-		try {
-			JIRAIssueReportDialog report = new JIRAIssueReportDialog(e, serviceManager);
-			if (module != null) {
-				JIRAProject moduleProject = serviceManager.getBugReportService().getOpenFlexoProject("MODULES");
-				if (moduleProject != null) {
-					report.setProject(moduleProject);
-					for (JIRAComponent comp : report.getAvailableComponents()) {
-						if (comp.getId().equals(module.getModule().getJiraComponentID())) {
-							report.getIssue().setComponent(comp);
-							break;
-						}
-					}
-				}
-			}
-			report.setFlexoProject(project);
-			report.setServiceManager(serviceManager);
-			/*
-			if (module != null) {
-				if (report.getIssue().getIssuetype().getComponentField() != null
-						&& report.getIssue().getIssuetype().getComponentField().getAllowedValues() != null) {
-					for (JIRAComponent comp : report.getIssue().getIssuetype().getComponentField().getAllowedValues()) {
-						if (comp.getId().equals(module.getModule().getJiraComponentID())) {
-							report.getIssue().setComponent(comp);
-							break;
-						}
-					}
-				}
-			}*/
-
-			JFIBDialog<JIRAIssueReportDialog> dialog = JFIBDialog.instanciateAndShowDialog(FIB_FILE, report,
-					serviceManager.getApplicationFIBLibraryService().getApplicationFIBLibrary(), FlexoFrame.getActiveFrame(), true,
-					FlexoLocalization.getMainLocalizer());
-
-			// FIB hrer
-			boolean ok = false;
-			while (!ok) {
-				if (dialog.getStatus() == Status.VALIDATED) {
-					try {
-						while (serviceManager.getBugReportPreferences().getBugReportUser() == null
-								|| serviceManager.getBugReportPreferences().getBugReportUser().trim().length() == 0
-								|| serviceManager.getBugReportPreferences().getBugReportPassword() == null
-								|| serviceManager.getBugReportPreferences().getBugReportPassword().trim().length() == 0) {
-							if (!JIRAURLCredentialsDialog.askLoginPassword(serviceManager)) {
-								break;
-							}
-						}
-						ok = dialog.getData().send();
-					} catch (MalformedURLException e1) {
-						FlexoController
-								.showError(getLocales(serviceManager).localizedForKey("could_not_send_bug_report") + " " + e1.getMessage());
-					} catch (UnknownHostException e1) {
-						FlexoController
-								.showError(getLocales(serviceManager).localizedForKey("could_not_send_bug_report") + " " + e1.getMessage());
-						ok = true;
-					} catch (UnauthorizedJIRAAccessException e1) {
-						if (JIRAURLCredentialsDialog.askLoginPassword(serviceManager)) {
-							continue;
-						}
-						else {
-							break;
-						}
-					} catch (JIRAException e1) {
-						StringBuilder sb = new StringBuilder();
-						JIRAErrors errors = e1.getErrors();
-						if (errors.getErrorMessages() != null) {
-							for (String s : errors.getErrorMessages()) {
-								if (sb.length() > 0) {
-									sb.append('\n');
-								}
-								sb.append(s);
-							}
-						}
-						if (errors.getErrors() != null) {
-							for (Entry<String, String> e2 : errors.getErrors().entrySet()) {
-								if (sb.length() > 0) {
-									sb.append('\n');
-								}
-								sb.append(getLocales(serviceManager).localizedForKey("field") + " "
-										+ getLocales(serviceManager).localizedForKey(e2.getKey()) + " : "
-										+ getLocales(serviceManager).localizedForKey(e2.getValue()));
-							}
-						}
-						FlexoController
-								.notify(getLocales(serviceManager).localizedForKey("could_not_send_bug_report") + ":\n" + sb.toString());
-					} catch (Exception e1) {
-						e1.printStackTrace();
-					}
-				}
-				else {
-					break;
-				}
-				if (!ok) {
-					dialog.setVisible(true);
-				}
-			}
-		} catch (JsonSyntaxException e1) {
-			e1.printStackTrace();
-			FlexoController.showError(getLocales(serviceManager).localizedForKey("cannot_read_JIRA_project_file"));
-		} catch (JsonIOException e1) {
-			e1.printStackTrace();
-			FlexoController.showError(getLocales(serviceManager).localizedForKey("cannot_read_JIRA_project_file"));
-		} catch (FileNotFoundException e1) {
-			e1.printStackTrace();
-			FlexoController.showError(getLocales(serviceManager).localizedForKey("cannot_read_JIRA_project_file"));
-		}
-	}
-
-	private JIRAIssueReportDialog() throws JsonSyntaxException, JsonIOException, FileNotFoundException {
+	/*private JIRAIssueReportDialog() throws JsonSyntaxException, JsonIOException, FileNotFoundException {
 		this(null, null);
-	}
+	}*/
 
-	private JIRAIssueReportDialog(Exception e, ApplicationContext serviceManager)
+	public JIRAIssueReportDialog(Exception e, ApplicationContext serviceManager)
 			throws JsonSyntaxException, JsonIOException, FileNotFoundException {
 		this.serviceManager = serviceManager;
 		// this.project = serviceManager.getBugReportService().getOpenFlexoProject();
+
 		issue = new JIRAIssue();
 
 		issue.getPropertyChangeSupport().addPropertyChangeListener(new PropertyChangeListener() {
@@ -375,11 +244,11 @@ public class JIRAIssueReportDialog extends PropertyChangedSupportDefaultImplemen
 		return serviceManager;
 	}
 
-	private void setServiceManager(ApplicationContext serviceManager) {
+	public void setServiceManager(ApplicationContext serviceManager) {
 		this.serviceManager = serviceManager;
 	}
 
-	private void setFlexoProject(FlexoProject project) {
+	public void setFlexoProject(FlexoProject project) {
 		this.flexoProject = project;
 	}
 
@@ -403,21 +272,29 @@ public class JIRAIssueReportDialog extends PropertyChangedSupportDefaultImplemen
 	}
 
 	public void setProject(JIRAProject project) {
-		this.project = project;
-		issue.setIssuetype(project.getIssuetypes().get(0));
-		issue.setProject(project);
-		if (issue.getIssuetype().getPriorityField() != null && issue.getIssuetype().getPriorityField().getAllowedValues() != null) {
-			JIRAPriority major = null;
-			for (JIRAPriority p : issue.getIssuetype().getPriorityField().getAllowedValues()) {
-				if ("Major".equals(p.getName())) {
-					major = p;
-					break;
-				}
-				if ("3".equals(p.getId())) {
-					major = p;
-				}
+		if (project != this.project) {
+			JIRAProject oldProject = this.project;
+			this.project = project;
+			if (project != null) {
+				issue.setIssuetype(project.getIssueTypes().get(0));
+				issue.setProject(project);
+				issue.setVersion(project.getLastReleasedVersion());
+				issue.setFixVersion(project.getNextUnreleasedVersion());
 			}
-			issue.setPriority(major);
+			if (issue.getIssuetype().getPriorityField() != null && issue.getIssuetype().getPriorityField().getAllowedValues() != null) {
+				JIRAPriority major = null;
+				for (JIRAPriority p : issue.getIssuetype().getPriorityField().getAllowedValues()) {
+					if ("Major".equals(p.getName())) {
+						major = p;
+						break;
+					}
+					if ("3".equals(p.getId())) {
+						major = p;
+					}
+				}
+				issue.setPriority(major);
+			}
+			getPropertyChangeSupport().firePropertyChange("project", oldProject, project);
 		}
 	}
 
@@ -436,40 +313,37 @@ public class JIRAIssueReportDialog extends PropertyChangedSupportDefaultImplemen
 		final SubmitIssueReport report = new SubmitIssueReport();
 		SubmitIssueToJIRA target = new SubmitIssueToJIRA(client, report);
 		int steps = target.getNumberOfSteps();
-		ProgressWindow.showProgressWindow(getLocales().localizedForKey("submitting_bug_report"), steps);
-		try {
-			boolean submit = true;
-			while (submit) {
-				target.run();
-				if (target.getException() != null) {
-					if (target.getException() instanceof SocketTimeoutException) {
-						submit = FlexoController.confirm(getLocales().localizedForKey("could_not_send_incident_so_far_keep_trying") + "? ");
-						if (submit) {
-							client.setTimeout(client.getTimeout() * 2);// Let's increase time out
-						}
+		boolean submit = true;
+		while (submit) {
+			target.run();
+			if (target.getException() != null) {
+				if (target.getException() instanceof SocketTimeoutException) {
+					submit = FlexoController.confirm(getLocales().localizedForKey("could_not_send_incident_so_far_keep_trying") + "? ");
+					if (submit) {
+						client.setTimeout(client.getTimeout() * 2);// Let's increase time out
 					}
-					else if (target.getException() instanceof UnknownHostException) {
-						submit = FlexoController.confirm(
-								getLocales().localizedForKey("could_not_send_to_host_check_internet_connexion_and_try_again") + "? ");
-						// If the user want to stop, quit, otherwise clean the exception and try again
-						if (submit == false) {
-							throw target.getException();
-						}
-						else {
-							target.exception = null;
-						}
+				}
+				else if (target.getException() instanceof UnknownHostException) {
+					submit = FlexoController
+							.confirm(getLocales().localizedForKey("could_not_send_to_host_check_internet_connexion_and_try_again") + "? ");
+					// If the user want to stop, quit, otherwise clean the exception and try again
+					if (submit == false) {
+						throw target.getException();
 					}
 					else {
-						throw target.getException();
+						target.exception = null;
 					}
 				}
 				else {
-					submit = false;
+					throw target.getException();
 				}
 			}
-		} finally {
-			ProgressWindow.hideProgressWindow();
+			else {
+				submit = false;
+			}
 		}
+
+		Progress.hideTaskBar();
 		JFIBDialog.instanciateAndShowDialog(REPORT_FIB_FILE, report,
 				serviceManager.getApplicationFIBLibraryService().getApplicationFIBLibrary(), FlexoFrame.getActiveFrame(), true,
 				FlexoLocalization.getMainLocalizer());
@@ -518,7 +392,6 @@ public class JIRAIssueReportDialog extends PropertyChangedSupportDefaultImplemen
 
 		@Override
 		public void run() {
-			ReportProgress progressAdapter = new ReportProgress();
 			String buildid = "build.id = " + ApplicationVersion.BUILD_ID + "\n";
 			String commitID = "commit.id = " + ApplicationVersion.COMMIT_ID + "\n";
 			if (sendSystemProperties) {
@@ -529,12 +402,12 @@ public class JIRAIssueReportDialog extends PropertyChangedSupportDefaultImplemen
 			}
 
 			if (getIssue().getIssuetype().getVersionField() != null) {
-				List<JIRAVersion> allowedValues = getIssue().getIssuetype().getVersionField().getAllowedValues();
+				// List<JIRAVersion> allowedValues = getIssue().getIssuetype().getVersionField().getAllowedValues();
 				// FlexoVersion flexoVersion = new FlexoVersion(ApplicationVersion.BUSINESS_APPLICATION_VERSION);
 				// FlexoVersion simpleVersion = new FlexoVersion(flexoVersion.major, flexoVersion.minor, flexoVersion.patch, -1, false,
 				// false);
-				FlexoVersion version = serviceManager.getBugReportService().getProjectVersion(project);
-				getIssue().setVersion(findClosedVersion(version, allowedValues));
+				// FlexoVersion version = serviceManager.getBugReportService().getProjectVersion(project);
+				getIssue().setVersion(/*findClosedVersion(version, allowedValues)*/project.getLastReleasedVersion());
 				/*JIRAVersion selected = null;
 				for (JIRAVersion version : allowedValues) {
 					if (serviceManager.getBugReportService().getGinaVersion().equals(version.getName())) {
@@ -559,9 +432,8 @@ public class JIRAIssueReportDialog extends PropertyChangedSupportDefaultImplemen
 			getIssue().makeValid();
 			getIssue().<JIRAObject> replaceMembersByIdentityMembers();
 			try {
-				ProgressWindow.instance().setProgress(getLocales().localizedForKey("creating_issue"));
-				progressAdapter.resetCount();
-				JIRAResult submit = client.submit(new SubmitIssue(getIssue()), Method.POST, progressAdapter);
+				org.openflexo.foundation.task.Progress.progress(getLocales().localizedForKey("creating_issue"));
+				JIRAResult submit = client.submit(new SubmitIssue(getIssue()), Method.POST);
 				if (submit.getErrorMessages() != null && submit.getErrorMessages().size() > 0) {
 					for (String error : submit.getErrorMessages()) {
 						report.addToErrors(error);
@@ -572,21 +444,18 @@ public class JIRAIssueReportDialog extends PropertyChangedSupportDefaultImplemen
 					result.setKey(submit.getKey());
 					report.setIssueLink(serviceManager.getBugReportPreferences().getBugReportUrl() + "/browse/" + submit.getKey());
 					if (sendLogs) {
-						ProgressWindow.instance().setProgress(getLocales().localizedForKey("sending_logs"));
-						progressAdapter.resetCount();
+						Progress.progress(getLocales().localizedForKey("sending_logs"));
 						try {
-							client.attachFilesToIssue(result, progressAdapter, Flexo.getErrLogFile());
+							client.attachFilesToIssue(result, Flexo.getErrLogFile());
 						} catch (IOException e) {
 							report.addToErrors(getLocales().localizedForKey("could_not_attach_file") + " "
 									+ Flexo.getErrLogFile().getAbsolutePath() + "\n\t" + e.getMessage());
 						}
 					}
 					if (attachFile != null) {
-						ProgressWindow.instance()
-								.setProgress(getLocales().localizedForKey("sending_file") + " " + attachFile.getAbsolutePath());
-						progressAdapter.resetCount();
+						Progress.progress(getLocales().localizedForKey("sending_file") + " " + attachFile.getAbsolutePath());
 						try {
-							client.attachFilesToIssue(result, progressAdapter, attachFile);
+							client.attachFilesToIssue(result, attachFile);
 						} catch (IOException e) {
 							report.addToErrors(getLocales().localizedForKey("could_not_attach_file") + " " + attachFile.getAbsolutePath()
 									+ "\n\t" + e.getMessage());
@@ -605,20 +474,17 @@ public class JIRAIssueReportDialog extends PropertyChangedSupportDefaultImplemen
 									return !pathname.getName().endsWith("~");
 								}
 							};
-							ProgressWindow.instance().setProgress(getLocales().localizedForKey("compressing_project"));
-							ProgressWindow.instance()
-									.resetSecondaryProgress(FileUtils.countFilesInDirectory(projectDirectory, true, filter));
+							Progress.progress(getLocales().localizedForKey("compressing_project"));
 							try {
 								ZipUtils.makeZip(zipFile, projectDirectory, new IProgress() {
 
 									@Override
 									public void setSecondaryProgress(String stepName) {
-										ProgressWindow.instance().setSecondaryProgress(stepName);
 									}
 
 									@Override
 									public void setProgress(String stepName) {
-
+										Progress.progress(stepName);
 									}
 
 									@Override
@@ -631,9 +497,8 @@ public class JIRAIssueReportDialog extends PropertyChangedSupportDefaultImplemen
 									}
 								}, filter, Deflater.BEST_COMPRESSION);
 								try {
-									ProgressWindow.instance().setProgress(getLocales().localizedForKey("sending_project"));
-									progressAdapter.resetCount();
-									client.attachFilesToIssue(result, progressAdapter, zipFile);
+									Progress.progress(getLocales().localizedForKey("sending_project"));
+									client.attachFilesToIssue(result, zipFile);
 								} catch (IOException e) {
 									report.addToErrors(getLocales().localizedForKey("could_not_attach_project") + " " + e.getMessage());
 								}
@@ -646,16 +511,13 @@ public class JIRAIssueReportDialog extends PropertyChangedSupportDefaultImplemen
 						for (int i = 0; i < Frame.getFrames().length; i++) {
 							Frame frame = Frame.getFrames()[i];
 							if (frame instanceof FlexoFrame) {
-								ProgressWindow.instance()
-										.setProgress(getLocales().localizedForKey("sending_screenshot") + " " + frame.getTitle());
-								progressAdapter.resetCount();
-								attachScreenshotToIssue(client, result, frame, frame.getTitle(), progressAdapter, report);
+								Progress.progress(getLocales().localizedForKey("sending_screenshot") + " " + frame.getTitle());
+								attachScreenshotToIssue(client, result, frame, frame.getTitle(), report);
 								for (Window w : frame.getOwnedWindows()) {
 									if (w instanceof FlexoDialog || w instanceof JFIBDialog) {
-										ProgressWindow.instance().setProgress(
+										Progress.progress(
 												getLocales().localizedForKey("sending_screenshot") + " " + ((Dialog) w).getTitle());
-										progressAdapter.resetCount();
-										attachScreenshotToIssue(client, result, w, ((Dialog) w).getTitle(), progressAdapter, report);
+										attachScreenshotToIssue(client, result, w, ((Dialog) w).getTitle(), report);
 									}
 								}
 							}
@@ -683,13 +545,12 @@ public class JIRAIssueReportDialog extends PropertyChangedSupportDefaultImplemen
 		}
 	}
 
-	private void attachScreenshotToIssue(JIRAClient client, JIRAIssue result, Window window, String title, Progress progress,
-			SubmitIssueReport report) {
+	private void attachScreenshotToIssue(JIRAClient client, JIRAIssue result, Window window, String title, SubmitIssueReport report) {
 		if (window.isVisible() && window.getSize().getWidth() > 0 && window.getSize().getHeight() > 0) {
 			try {
 				File file = new File(System.getProperty("java.io.tmpdir"), FileUtils.getValidFileName(title + ".png"));
 				ImageUtils.saveImageToFile(ImageUtils.createImageFromComponent(window), file, ImageType.PNG);
-				client.attachFilesToIssue(result, progress, file);
+				client.attachFilesToIssue(result, file);
 			} catch (Exception e) {
 				report.addToErrors(getLocales().localizedForKey("could_not_attach_screenshot") + " " + title + "\n\t" + e.getMessage());
 				logger.log(Level.SEVERE, "Error when trying to send screenshot: " + title, e);
@@ -698,7 +559,7 @@ public class JIRAIssueReportDialog extends PropertyChangedSupportDefaultImplemen
 	}
 
 	/*public Icon getIcon(JIRAProject project){
-		
+	
 	}*/
 
 	public List<JIRAComponent> getAvailableComponents() {

@@ -38,79 +38,79 @@
 
 package org.openflexo.br;
 
-import java.io.IOException;
+import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Properties;
 
 import org.apache.commons.codec.binary.Base64;
 import org.openflexo.ApplicationContext;
-import org.openflexo.ApplicationVersion;
 import org.openflexo.foundation.FlexoServiceImpl;
-import org.openflexo.rm.FileResourceImpl;
-import org.openflexo.rm.Resource;
-import org.openflexo.rm.ResourceLocator;
-import org.openflexo.toolbox.FileUtils;
-import org.openflexo.toolbox.FlexoVersion;
+import org.openflexo.foundation.task.Progress;
+import org.openflexo.localization.FlexoLocalization;
+import org.openflexo.module.FlexoModule;
+import org.openflexo.view.controller.FlexoController;
 import org.openflexo.ws.jira.JIRAGson;
+import org.openflexo.ws.jira.model.JIRAComponent;
 import org.openflexo.ws.jira.model.JIRAProject;
 import org.openflexo.ws.jira.model.JIRAProjectList;
-
-import com.google.gson.JsonIOException;
-import com.google.gson.JsonSyntaxException;
+import org.openflexo.ws.jira.model.JIRAVersion;
 
 public class BugReportService extends FlexoServiceImpl {
 
-	public List<JIRAProject> getProjects() {
-		return projects;
-	}
+	private static final String JIRA_URL = "https://bugs.openflexo.org/rest/api/2/project";
 
-	public void setProjects(List<JIRAProject> projects) {
-		this.projects = projects;
-	}
-
-	private static final Resource MODULES_FILE = ResourceLocator.locateResource("Config/jira_modules_project.json");
+	/*private static final Resource MODULES_FILE = ResourceLocator.locateResource("Config/jira_modules_project.json");
 	private static final Resource CONNIE_FILE = ResourceLocator.locateResource("Config/jira_connie_project.json");
 	private static final Resource TA_FILE = ResourceLocator.locateResource("Config/jira_ta_project.json");
 	private static final Resource DIANA_FILE = ResourceLocator.locateResource("Config/jira_diana_project.json");
 	private static final Resource PAMELA_FILE = ResourceLocator.locateResource("Config/jira_pamela_project.json");
 	private static final Resource CORE_FILE = ResourceLocator.locateResource("Config/jira_core_project.json");
 	private static final Resource GINA_FILE = ResourceLocator.locateResource("Config/jira_gina_project.json");
-
+	
 	private FlexoVersion ginaVersion;
 	private FlexoVersion dianaVersion;
 	private FlexoVersion pamelaVersion;
 	private FlexoVersion connieVersion;
-	private FlexoVersion distributionVersion;
+	private FlexoVersion distributionVersion;*/
 
-	private static final String MODULES_KEY = "MODULES";
+	/*private static final String MODULES_KEY = "MODULES";
 	private static final String TA_KEY = "TA";
 	private static final String DIANA_KEY = "DIANA";
 	private static final String CONNIE_KEY = "CONNIE";
 	private static final String PAMELA_KEY = "PAMELA";
 	private static final String CORE_KEY = "CORE";
-	private static final String GINA_KEY = "GINA";
+	private static final String GINA_KEY = "GINA";*/
 
-	private HashMap<String, Resource> userProjectFiles;
+	// private HashMap<String, Resource> userProjectFiles;
 	// private File userProjectFile;
 	private List<JIRAProject> projects;
+
+	private boolean isInitialized = false;
+
+	public BugReportService() {
+	}
+
+	public List<JIRAProject> getProjects() {
+		return projects;
+	}
+
+	/*public void setProjects(List<JIRAProject> projects) {
+		this.projects = projects;
+	}*/
 
 	@Override
 	public ApplicationContext getServiceManager() {
 		return (ApplicationContext) super.getServiceManager();
 	}
 
-	public BugReportService() {
-	}
-
-	public JIRAProject getOpenFlexoProject(String projectKey) {
+	public JIRAProject getJIRAProjectWithKey(String projectKey) {
 		for (JIRAProject jp : projects) {
 			if (jp.getKey().equals(projectKey))
 				return jp;
@@ -118,7 +118,31 @@ public class BugReportService extends FlexoServiceImpl {
 		return null;
 	}
 
-	public void loadProjectsFromFile(Resource file) {
+	public JIRAProject getJIRAProjectWithId(String id) {
+		for (JIRAProject jp : projects) {
+			if (jp.getId().equals(id))
+				return jp;
+		}
+		return null;
+	}
+
+	public JIRAProject getMostProbableProject(Exception e, FlexoModule<?> activeModule) {
+		for (JIRAProject project : getProjects()) {
+			if (project.getId().equals(activeModule.getModule().getJiraComponentID())) {
+				return project;
+			}
+		}
+		return getJIRAProjectWithKey("MODULES");
+	}
+
+	public JIRAComponent getMostProbableProjectComponent(JIRAProject project, Exception e, FlexoModule<?> activeModule) {
+		if (project != null && project.getComponents() != null && project.getComponents().size() > 0) {
+			return project.getComponents().get(0);
+		}
+		return null;
+	}
+
+	/*public void loadProjectsFromFile(Resource file) {
 		try {
 			InputStreamReader is = new InputStreamReader(file.openInputStream());
 			JIRAProjectList projects = JIRAGson.getInstance().fromJson(is, JIRAProjectList.class);
@@ -126,8 +150,8 @@ public class BugReportService extends FlexoServiceImpl {
 				logger.warning("INVESTIGATE : projects list is empty!! ");
 				this.projects = new ArrayList<JIRAProject>();
 			}
-
-			for (JIRAProject p : projects.getProjects()) {
+	
+			for (JIRAProject p : projects) {
 				if (p.getKey().equals(MODULES_KEY)) {
 					this.projects.add(p);
 				}
@@ -155,28 +179,61 @@ public class BugReportService extends FlexoServiceImpl {
 		} catch (JsonIOException e) {
 			e.printStackTrace();
 		}
-	}
+	}*/
 
 	@Override
 	public void initialize() {
 		logger.info("Initialized BugReportService");
-		if (userProjectFiles == null || userProjectFiles.isEmpty()) {
-			userProjectFiles = new HashMap<String, Resource>();
-			userProjectFiles.put(MODULES_KEY, MODULES_FILE);
-			userProjectFiles.put(CONNIE_KEY, CONNIE_FILE);
-			userProjectFiles.put(TA_KEY, TA_FILE);
-			userProjectFiles.put(DIANA_KEY, DIANA_FILE);
-			userProjectFiles.put(CONNIE_KEY, CONNIE_FILE);
-			userProjectFiles.put(PAMELA_KEY, PAMELA_FILE);
-			userProjectFiles.put(CORE_KEY, CORE_FILE);
-			userProjectFiles.put(GINA_KEY, GINA_FILE);
+
+		projects = new ArrayList<>();
+
+		try {
+
+			if (FlexoLocalization.getMainLocalizer() != null) {
+				Progress.progress(FlexoLocalization.getMainLocalizer().localizedForKey("contacting") + " " + JIRA_URL);
+			}
+
+			URL url = new URL(JIRA_URL);
+			URLConnection urlc = url.openConnection();
+			BufferedReader bfr = null;
+			try {
+				bfr = new BufferedReader(new InputStreamReader(urlc.getInputStream()));
+			} catch (UnknownHostException e) {
+				if (FlexoLocalization.getMainLocalizer() != null) {
+					FlexoController.showError(FlexoLocalization.getMainLocalizer().localizedForKey("cannot_contact") + " " + JIRA_URL);
+				}
+				return;
+			}
+			JIRAProjectList projects = JIRAGson.getInstance().fromJson(bfr, JIRAProjectList.class);
+			for (JIRAProject p : projects) {
+				JIRAProject detailedProject = parseProject(p);
+				this.projects.add(detailedProject);
+				System.out.println("******** Project " + detailedProject);
+				System.out.println("Id=" + detailedProject.getId());
+				System.out.println("Lead=" + detailedProject.getLead());
+				for (JIRAComponent component : detailedProject.getComponents()) {
+					System.out.println("Component " + component.getName() + " " + component);
+				}
+				for (JIRAVersion version : detailedProject.getVersions()) {
+					System.out.println("Version " + version.getName() + " " + version);
+				}
+				System.out.println("IssueTypes=" + detailedProject.getIssueTypes());
+				System.out.println("Last released version: "
+						+ (detailedProject.getLastReleasedVersion() != null ? detailedProject.getLastReleasedVersion().getName() : "none"));
+
+			}
+		} catch (Exception e) {
+			System.out.println("exception: " + e);
+			e.printStackTrace();
 		}
 
-		loadProjectVersions();
+		isInitialized = true;
+
+		// loadProjectVersions();
 
 		try {
 			Map<String, String> headers = new HashMap<String, String>();
-			if (getServiceManager().getBugReportPreferences().getBugReportUser() != null
+			if (getServiceManager() != null && getServiceManager().getBugReportPreferences().getBugReportUser() != null
 					&& getServiceManager().getBugReportPreferences().getBugReportUser().trim().length() > 0
 					&& getServiceManager().getBugReportPreferences().getBugReportPassword() != null
 					&& getServiceManager().getBugReportPreferences().getBugReportPassword().trim().length() > 0) {
@@ -185,7 +242,7 @@ public class BugReportService extends FlexoServiceImpl {
 								+ getServiceManager().getBugReportPreferences().getBugReportPassword()).getBytes("ISO-8859-1")));
 			}
 
-			for (Entry<String, Resource> entry : userProjectFiles.entrySet()) {
+			/*for (Entry<String, Resource> entry : userProjectFiles.entrySet()) {
 				String key = entry.getKey();
 				Resource file = entry.getValue();
 				// Do not execute update if anonymous login, as it will not work!
@@ -198,68 +255,46 @@ public class BugReportService extends FlexoServiceImpl {
 				else {
 					logger.severe("Unable to create File for Bug");
 				}
-			}
+			}*/
 
-		} catch (MalformedURLException e) {
+		} /*catch (MalformedURLException e) {
 			e.printStackTrace();
-		} catch (UnsupportedEncodingException e) {
+			}*/ catch (UnsupportedEncodingException e) {
 			logger.warning("Encoding error in a bug service request.");
 		}
-		if (!userProjectFiles.isEmpty()) {
+		/*if (!userProjectFiles.isEmpty()) {
 			for (Entry<String, Resource> entry : userProjectFiles.entrySet()) {
 				Resource file = entry.getValue();
 				loadProjectsFromFile(file);
 			}
-		}
+		}*/
 
 	}
 
-	/**
-	 * Load the version of the current project software components
-	 */
-	private void loadProjectVersions() {
-		Properties prop = new Properties();
+	public boolean isInitialized() {
+		return isInitialized;
+	}
+
+	private static JIRAProject parseProject(JIRAProject p) {
+
+		if (FlexoLocalization.getMainLocalizer() != null) {
+			Progress.progress(FlexoLocalization.getMainLocalizer().localizedForKey("getting_informations_for") + " " + p.getSelf());
+		}
 		try {
-			if (ResourceLocator.locateResource("gina.properties") != null) {
-				prop.load(ResourceLocator.locateResource("gina.properties").openInputStream());
-				ginaVersion = new FlexoVersion(prop.getProperty("gina.version"));
-			}
-			if (ResourceLocator.locateResource("diana.properties") != null) {
-				prop.load(ResourceLocator.locateResource("diana.properties").openInputStream());
-				dianaVersion = new FlexoVersion(prop.getProperty("diana.version"));
-			}
-			if (ResourceLocator.locateResource("connie.properties") != null) {
-				prop.load(ResourceLocator.locateResource("connie.properties").openInputStream());
-				connieVersion = new FlexoVersion(prop.getProperty("connie.version"));
-			}
-			if (ResourceLocator.locateResource("pamela.properties") != null) {
-				prop.load(ResourceLocator.locateResource("pamela.properties").openInputStream());
-				pamelaVersion = new FlexoVersion(prop.getProperty("pamela.version"));
-			}
-			distributionVersion = new FlexoVersion(ApplicationVersion.BUSINESS_APPLICATION_VERSION);
-		} catch (IOException e) {
-			logger.warning("Unable to identify a flexo component version.");
+			URL url = new URL(p.getSelf());
+			URLConnection urlc = url.openConnection();
+			BufferedReader bfr = new BufferedReader(new InputStreamReader(urlc.getInputStream()));
+			return JIRAGson.getInstance().fromJson(bfr, JIRAProject.class);
+		} catch (Exception e) {
+			System.out.println("exception: " + e);
+			e.printStackTrace();
+			return null;
 		}
 	}
 
-	public FlexoVersion getProjectVersion(JIRAProject project) {
-		FlexoVersion returned = null;
-		if (project.getKey().equals(DIANA_KEY)) {
-			returned = dianaVersion;
-		}
-		else if (project.getKey().equals(CONNIE_KEY)) {
-			returned = connieVersion;
-		}
-		else if (project.getKey().equals(PAMELA_KEY)) {
-			returned = pamelaVersion;
-		}
-		else if (project.getKey().equals(GINA_KEY)) {
-			returned = ginaVersion;
-		}
-		if (returned == null) {
-			returned = new FlexoVersion(distributionVersion.major, distributionVersion.minor, distributionVersion.patch, -1, false, false);
-		}
-		return returned;
+	public static void main(String[] args) {
+		BugReportService service = new BugReportService();
+		service.initialize();
 	}
 
 }

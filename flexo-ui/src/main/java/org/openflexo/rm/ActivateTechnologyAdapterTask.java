@@ -46,7 +46,7 @@ import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.task.FlexoApplicationTask;
 
 /**
- * A task used to activate a {@link TechnologyAdapter}
+ * A task used to activate a {@link BugReportService}
  * 
  * @author sylvain
  *

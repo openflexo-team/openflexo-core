@@ -51,11 +51,12 @@ import javax.swing.AbstractAction;
 import javax.swing.JFileChooser;
 import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileFilter;
 
 import org.openflexo.Flexo;
 import org.openflexo.FlexoCst;
-import org.openflexo.br.view.JIRAIssueReportDialog;
+import org.openflexo.br.SendBugReportServiceTask;
 import org.openflexo.components.ResourceCenterEditorDialog;
 import org.openflexo.components.UndoManagerDialog;
 import org.openflexo.drm.DocResourceManager;
@@ -518,8 +519,27 @@ public class ToolsMenu extends FlexoMenu {
 
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
-			JIRAIssueReportDialog.newBugReport(getController().getModule(), getController().getProject(),
-					getController().getApplicationContext());
+			if (getController().getApplicationContext().getBugReportService() == null
+					|| !getController().getApplicationContext().getBugReportService().isInitialized()) {
+				// not loaded yet, wait for the BugReportService to be activated
+				SwingUtilities.invokeLater(new Runnable() {
+					@Override
+					public void run() {
+						try {
+							Thread.sleep(100);
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						actionPerformed(null);
+					}
+				});
+			}
+			else {
+				SendBugReportServiceTask sendBugReport = new SendBugReportServiceTask(null, getController().getModule(),
+						getController().getProject(), getController().getApplicationContext());
+				getController().getApplicationContext().getTaskManager().scheduleExecution(sendBugReport);
+			}
 		}
 
 	}

@@ -131,7 +131,7 @@
       <Custom id="125" localize="true" manageDynamicModel="true" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)" dataClassForComponent="org.openflexo.foundation.technologyadapter.TechnologyAdapterResource" data="data.configuration.resource" visible="(data.configuration.option.name = &quot;SelectExistingResource&quot;)" componentClassName="org.openflexo.components.widget.FIBResourceSelector" name="ResourceSelector">
         <Assignment id="126" variable="component.flexoController" mandatory="true" />
         <Assignment id="127" variable="component.resourceManager" value="controller.flexoController.applicationContext.resourceManager" mandatory="true" />
-        <Assignment id="128" variable="component.resourceDataClass" mandatory="true" />
+        <Assignment id="128" variable="component.resourceDataClass" mandatory="true" value = "data.configuration.modelSlot.type"/>
         <Assignment id="129" variable="component.serviceManager" mandatory="true" />
         <Assignment id="130" variable="component.selectableCondition" mandatory="true" />
         <Assignment id="131" variable="component.technologyAdapter" value="data.configuration.modelSlot.modelSlotTechnologyAdapter" mandatory="true" />

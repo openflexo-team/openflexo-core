@@ -141,7 +141,7 @@ public class InteractiveApplicationContext extends ApplicationContext {
 	}
 
 	@Override
-	protected BugReportService createBugReportService() {
+	public BugReportService createBugReportService() {
 		return new BugReportService();
 	}
 

@@ -40,7 +40,6 @@ package org.openflexo.foundation.fml.binding;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -49,6 +48,7 @@ import java.util.Map;
 import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.BindingVariable;
 import org.openflexo.foundation.fml.FlexoConcept;
+import org.openflexo.foundation.fml.FlexoConceptInstanceRole;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.FlexoRole;
@@ -75,7 +75,6 @@ public class FlexoConceptBindingModel extends BindingModel implements PropertyCh
 	private final FlexoConcept flexoConcept;
 
 	private BindingVariable reflexiveAccessBindingVariable;
-	// private BindingVariable virtualModelInstanceBindingVariable;
 	private final Map<FlexoProperty<?>, FlexoPropertyBindingVariable> propertyVariablesMap;
 	private final List<FlexoConcept> knownParentConcepts = new ArrayList<FlexoConcept>();
 
@@ -97,13 +96,7 @@ public class FlexoConceptBindingModel extends BindingModel implements PropertyCh
 		reflexiveAccessBindingVariable = new BindingVariable(REFLEXIVE_ACCESS_PROPERTY, FlexoConcept.class);
 		addToBindingVariables(reflexiveAccessBindingVariable);
 		// TODO : Dirty, this should be fix when we have a clean type management system for the VM
-		flexoConceptInstanceBindingVariable = new BindingVariable(FLEXO_CONCEPT_INSTANCE_PROPERTY,
-				FlexoConceptInstanceType.getFlexoConceptInstanceType(flexoConcept)) {
-			@Override
-			public Type getType() {
-				return FlexoConceptInstanceType.getFlexoConceptInstanceType(flexoConcept);
-			}
-		};
+		flexoConceptInstanceBindingVariable = new FlexoConceptBindingVariable(FLEXO_CONCEPT_INSTANCE_PROPERTY, flexoConcept);
 		addToBindingVariables(flexoConceptInstanceBindingVariable);
 	}
 
@@ -119,9 +112,6 @@ public class FlexoConceptBindingModel extends BindingModel implements PropertyCh
 		if (flexoConcept != null && flexoConcept.getPropertyChangeSupport() != null) {
 			flexoConcept.getPropertyChangeSupport().addPropertyChangeListener(this);
 		}
-		// Description variables come from FlexoObject inheritance
-		// addToBindingVariables(new BindingVariable(FlexoObject.DESCRIPTION_KEY, String.class));
-		// addToBindingVariables(new BindingVariable(FlexoObject.SPECIFIC_DESCRIPTIONS_KEY, String.class));
 
 		propertyVariablesMap = new HashMap<FlexoProperty<?>, FlexoPropertyBindingVariable>();
 		updatePropertyVariables();
@@ -145,10 +135,6 @@ public class FlexoConceptBindingModel extends BindingModel implements PropertyCh
 	public FlexoConcept getFlexoConcept() {
 		return flexoConcept;
 	}
-
-	/*public BindingVariable getVirtualModelInstanceBindingVariable() {
-		return virtualModelInstanceBindingVariable;
-	}*/
 
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
@@ -192,7 +178,10 @@ public class FlexoConceptBindingModel extends BindingModel implements PropertyCh
 			}
 			else if (propertyVariablesMap.get(r) == null) {
 				FlexoPropertyBindingVariable bv;
-				if (r instanceof FlexoRole) {
+				if (r instanceof FlexoConceptInstanceRole) {
+					bv = new FlexoConceptInstanceRoleBindingVariable((FlexoConceptInstanceRole) r);
+				}
+				else if (r instanceof FlexoRole) {
 					bv = new FlexoRoleBindingVariable((FlexoRole<?>) r);
 				}
 				else {

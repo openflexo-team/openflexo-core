@@ -145,4 +145,12 @@ public class FlexoPropertyBindingVariable extends BindingVariable implements Pro
 
 	}
 
+	@Override
+	public boolean isSettable() {
+		if (flexoProperty != null) {
+			return !flexoProperty.isReadOnly();
+		}
+		return super.isSettable();
+	}
+
 }

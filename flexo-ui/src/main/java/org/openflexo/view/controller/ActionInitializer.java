@@ -42,6 +42,7 @@ package org.openflexo.view.controller;
 import javax.swing.Icon;
 import javax.swing.KeyStroke;
 
+import org.openflexo.ApplicationContext;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoProject;
@@ -57,6 +58,8 @@ import org.openflexo.gina.controller.FIBController.Status;
 import org.openflexo.gina.model.FIBComponent;
 import org.openflexo.gina.swing.utils.JFIBDialog;
 import org.openflexo.gina.swing.view.SwingViewFactory;
+import org.openflexo.localization.FlexoLocalization;
+import org.openflexo.localization.LocalizedDelegate;
 import org.openflexo.module.FlexoModule;
 import org.openflexo.rm.Resource;
 import org.openflexo.view.FlexoFrame;
@@ -199,6 +202,25 @@ public abstract class ActionInitializer<A extends FlexoAction<A, T1, T2>, T1 ext
 	 */
 	protected Icon getDisabledIcon() {
 		return null;
+	}
+
+	public LocalizedDelegate getModuleLocales(FlexoAction<?, ?, ?> action) {
+		if (action != null) {
+			if (action.getServiceManager() instanceof ApplicationContext) {
+				return ((ApplicationContext) action.getServiceManager()).getModuleLoader().getActiveModule().getLocales();
+			}
+			else {
+				return action.getLocales();
+			}
+		}
+		return FlexoLocalization.getMainLocalizer();
+	}
+
+	public LocalizedDelegate getActionLocales(FlexoAction<?, ?, ?> action) {
+		if (action != null) {
+			return action.getLocales();
+		}
+		return FlexoLocalization.getMainLocalizer();
 	}
 
 }

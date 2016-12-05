@@ -69,6 +69,8 @@ import java.util.logging.Logger;
 @FML("FlexoConceptInstanceRole")
 public interface FlexoConceptInstanceRole extends FlexoRole<FlexoConceptInstance> {
 
+	@PropertyIdentifier(type = FlexoConcept.class)
+	public static final String FLEXO_CONCEPT_TYPE_KEY = "flexoConceptType";
 	@PropertyIdentifier(type = String.class)
 	public static final String FLEXO_CONCEPT_TYPE_URI_KEY = "flexoConceptTypeURI";
 	@PropertyIdentifier(type = String.class)
@@ -209,6 +211,7 @@ public interface FlexoConceptInstanceRole extends FlexoRole<FlexoConceptInstance
 			super.finalizeDeserialization();
 			if (flexoConceptType == null && _flexoConceptTypeURI != null && getViewPoint() != null) {
 				flexoConceptType = getViewPoint().getFlexoConcept(_flexoConceptTypeURI);
+				getPropertyChangeSupport().firePropertyChange(FLEXO_CONCEPT_TYPE_KEY, null, flexoConceptType);
 			}
 		}
 
@@ -334,8 +337,12 @@ public interface FlexoConceptInstanceRole extends FlexoRole<FlexoConceptInstance
 			super.notifiedBindingChanged(dataBinding);
 			if (dataBinding == getVirtualModelInstance()) {
 				getPropertyChangeSupport().firePropertyChange("virtualModelType", null, getVirtualModelType());
-
-				if (getFlexoConceptType() != null && !getFlexoConceptType().isAssignableFrom(getVirtualModelType())) {
+				// System.out.println("getVirtualModelInstance() changed");
+				// System.out.println("getFlexoConceptType()=" + getFlexoConceptType());
+				// System.out.println("getVirtualModelType()=" + getVirtualModelType());
+				if (getFlexoConceptType() != null && getFlexoConceptType().getOwner() != null && !getFlexoConceptType().getOwner().isAssignableFrom(getVirtualModelType())) {
+					// If existing concept type is not defined in a VirtualModel compatible with the virtual model type accessed by the
+					// binding, then nullify existing concept
 					setFlexoConceptType(null);
 				}
 

@@ -1,8 +1,8 @@
 /**
  * 
- * Copyright (c) 2014-2015, Openflexo
+ * Copyright (c) 2014, Openflexo
  * 
- * This file is part of Flexo-foundation, a component of the software infrastructure 
+ * This file is part of Flexo-ui, a component of the software infrastructure 
  * developed at Openflexo.
  * 
  * 
@@ -36,42 +36,55 @@
  * 
  */
 
-package org.openflexo.foundation.fml.binding;
+package org.openflexo.br;
 
-import java.lang.reflect.Type;
-import java.util.logging.Logger;
+import org.openflexo.ApplicationContext;
+import org.openflexo.foundation.task.Progress;
+import org.openflexo.localization.FlexoLocalization;
+import org.openflexo.task.FlexoApplicationTask;
 
-import org.openflexo.connie.BindingVariable;
-import org.openflexo.foundation.fml.FlexoConcept;
-import org.openflexo.foundation.fml.FlexoConceptInstanceType;
+/**
+ * A task used to activate {@link BugReportService}
+ * 
+ * @author sylvain
+ *
+ */
+public class ActivateBugReportServiceTask extends FlexoApplicationTask {
 
-public class FlexoConceptInstanceBindingVariable extends BindingVariable {
-	static final Logger logger = Logger.getLogger(FlexoConceptInstanceBindingVariable.class.getPackage().getName());
+	private BugReportService bugReportService;
 
-	private FlexoConcept flexoConcept;
-	private int index;
+	public ActivateBugReportServiceTask(ApplicationContext applicationContext) {
+		super(FlexoLocalization.getMainLocalizer().localizedForKey("activate_bug_report_service"), applicationContext);
 
-	public FlexoConceptInstanceBindingVariable(FlexoConcept anFlexoConcept, int index) {
-		super(anFlexoConcept.getOwningVirtualModel().getName() + "_" + anFlexoConcept.getName() + "_" + index, FlexoConceptInstanceType
-				.getFlexoConceptInstanceType(anFlexoConcept));
-		this.flexoConcept = anFlexoConcept;
+		/*for (FlexoTask task : getServiceManager().getTaskManager().getScheduledTasks()) {
+			if (task instanceof AddResourceCenterTask) {
+				addToDependantTasks(task);
+			}
+		}*/
 	}
 
 	@Override
-	public Type getType() {
-		return FlexoConceptInstanceType.getFlexoConceptInstanceType(flexoConcept);
+	public void performTask() {
+
+		Progress.setExpectedProgressSteps(20);
+
+		bugReportService = ((ApplicationContext) getServiceManager()).createBugReportService();
+		getServiceManager().registerService(bugReportService);
+
+	}
+
+	public BugReportService getBugReportService() {
+		return bugReportService;
 	}
 
 	@Override
-	public String getTooltipText(Type resultingType) {
-		return flexoConcept.getDescription();
+	public boolean isCancellable() {
+		return true;
 	}
 
-	public FlexoConcept getFlexoConcept() {
-		return flexoConcept;
-	}
-
-	public int getIndex() {
-		return index;
+	@Override
+	protected synchronized void finishedExecution() {
+		// TODO Auto-generated method stub
+		super.finishedExecution();
 	}
 }

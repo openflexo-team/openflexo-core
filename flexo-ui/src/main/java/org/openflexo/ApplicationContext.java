@@ -45,6 +45,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.openflexo.br.ActivateBugReportServiceTask;
 import org.openflexo.br.BugReportService;
 import org.openflexo.drm.DocResourceManager;
 import org.openflexo.foundation.DefaultFlexoServiceManager;
@@ -181,12 +182,51 @@ public abstract class ApplicationContext extends DefaultFlexoServiceManager impl
 
 	public BugReportService getBugReportService() {
 		if (getService(BugReportService.class) == null) {
-			BugReportService bugReportService = createBugReportService();
-			registerService(bugReportService);
+
+			ActivateBugReportServiceTask activateBRTask = new ActivateBugReportServiceTask(this);
+
+			// BugReportService bugReportService = createBugReportService();
+			// registerService(bugReportService);
+
+			getTaskManager().scheduleExecution(activateBRTask);
+			// getTaskManager().waitTask(activateBRTask);
+
+			return activateBRTask.getBugReportService();
 		}
 		return getService(BugReportService.class);
 	}
 
+	/*
+	 
+	 	@Override
+	public synchronized ActivateTechnologyAdapterTask activateTechnologyAdapter(TechnologyAdapter technologyAdapter) {
+	
+		// We try here to prevent activate all TA concurrently
+	
+		if (technologyAdapter.isActivated()) {
+			// Already activated
+			return null;
+		}
+		if (activatingTechnologyAdapters == null) {
+			activatingTechnologyAdapters = new HashMap<>();
+		}
+		if (activatingTechnologyAdapters.get(technologyAdapter) != null) {
+			// About to be activated. No need to go further
+			return null;
+		}
+		ActivateTechnologyAdapterTask activateTATask = new ActivateTechnologyAdapterTask(getTechnologyAdapterService(), technologyAdapter);
+		for (TechnologyAdapter ta : activatingTechnologyAdapters.keySet()) {
+			activateTATask.addToDependantTasks(activatingTechnologyAdapters.get(ta));
+			// System.out.println("> Waiting " + ta);
+		}
+	
+		activatingTechnologyAdapters.put(technologyAdapter, activateTATask);
+	
+		getTaskManager().scheduleExecution(activateTATask);
+		return activateTATask;
+	}
+	
+	*/
 	public DocResourceManager getDocResourceManager() {
 		return getService(DocResourceManager.class);
 	}
@@ -241,7 +281,7 @@ public abstract class ApplicationContext extends DefaultFlexoServiceManager impl
 
 	protected abstract PreferencesService createPreferencesService();
 
-	protected abstract BugReportService createBugReportService();
+	public abstract BugReportService createBugReportService();
 
 	protected abstract DocResourceManager createDocResourceManager();
 

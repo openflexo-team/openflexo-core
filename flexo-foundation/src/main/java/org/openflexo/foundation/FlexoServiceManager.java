@@ -111,7 +111,7 @@ public abstract class FlexoServiceManager {
 	}
 
 	public void notify(FlexoService caller, ServiceNotification notification) {
-		for (FlexoService s : registeredServices) {
+		for (FlexoService s : new ArrayList<>(registeredServices)) {
 			if (s != caller) {
 				s.receiveNotification(caller, notification);
 			}

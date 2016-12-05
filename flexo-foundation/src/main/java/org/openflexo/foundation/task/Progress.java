@@ -46,7 +46,7 @@ public class Progress {
 			System.out.println("Hop on commence la tache " + ((FlexoTaskThread) currentThread).getTask());
 		}
 	}
-
+	
 	public static void endTask() {
 		Thread currentThread = Thread.currentThread();
 		if (currentThread instanceof FlexoTaskThread) {
@@ -74,4 +74,19 @@ public class Progress {
 			((FlexoTaskThread) currentThread).getTask().progress(stepName);
 		}
 	}
+
+	public static void hideTaskBar() {
+		Thread currentThread = Thread.currentThread();
+		if (currentThread instanceof FlexoTaskThread) {
+			((FlexoTaskThread) currentThread).getTask().hideTaskBar();
+		}
+	}
+
+	public static void showTaskBar() {
+		Thread currentThread = Thread.currentThread();
+		if (currentThread instanceof FlexoTaskThread) {
+			((FlexoTaskThread) currentThread).getTask().showTaskBar();
+		}
+	}
+
 }

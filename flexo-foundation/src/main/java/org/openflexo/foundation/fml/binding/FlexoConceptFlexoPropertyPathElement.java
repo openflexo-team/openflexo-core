@@ -48,6 +48,8 @@ import org.openflexo.connie.binding.BindingPathElement;
 import org.openflexo.connie.binding.SimplePathElement;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
+import org.openflexo.foundation.fml.FlexoConcept;
+import org.openflexo.foundation.fml.FlexoConceptInstanceRole;
 import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
@@ -68,10 +70,16 @@ public class FlexoConceptFlexoPropertyPathElement<P extends FlexoProperty<?>> ex
 		if (flexoProperty != null && flexoProperty.getPropertyChangeSupport() != null) {
 			flexoProperty.getPropertyChangeSupport().addPropertyChangeListener(this);
 		}
+		if (flexoProperty instanceof FlexoConceptInstanceRole && ((FlexoConceptInstanceRole) flexoProperty).getFlexoConceptType() != null) {
+			((FlexoConceptInstanceRole) flexoProperty).getFlexoConceptType().getPropertyChangeSupport().addPropertyChangeListener(this);
+		}
 	}
 
 	@Override
 	public void delete() {
+		if (flexoProperty instanceof FlexoConceptInstanceRole && ((FlexoConceptInstanceRole) flexoProperty).getFlexoConceptType() != null) {
+			((FlexoConceptInstanceRole) flexoProperty).getFlexoConceptType().getPropertyChangeSupport().removePropertyChangeListener(this);
+		}
 		if (flexoProperty != null && flexoProperty.getPropertyChangeSupport() != null) {
 			flexoProperty.getPropertyChangeSupport().removePropertyChangeListener(this);
 		}
@@ -170,6 +178,34 @@ public class FlexoConceptFlexoPropertyPathElement<P extends FlexoProperty<?>> ex
 				lastKnownType = getType();
 			}
 		}
+		if (evt.getSource() instanceof FlexoConcept) {
+			if (evt.getPropertyName().equals(FlexoConcept.FLEXO_PROPERTIES_KEY)
+					|| evt.getPropertyName().equals(FlexoConcept.FLEXO_BEHAVIOURS_KEY)) {
+				isNotifyingBindingPathChanged = true;
+				getPropertyChangeSupport().firePropertyChange(BINDING_PATH_CHANGED, false, true);
+				isNotifyingBindingPathChanged = false;
+			}
+		}
+	}
+
+	private boolean isNotifyingBindingPathChanged = false;
+
+	@Override
+	public boolean isNotifyingBindingPathChanged() {
+		return isNotifyingBindingPathChanged;
+	}
+
+	@Override
+	public String toString() {
+		return "FlexoConceptFlexoPropertyPathElement " + getFlexoProperty().getName() + " (" + getBindingPath() + ")";
+	}
+
+	@Override
+	public boolean isSettable() {
+		if (flexoProperty != null) {
+			return !flexoProperty.isReadOnly();
+		}
+		return super.isSettable();
 	}
 
 }
