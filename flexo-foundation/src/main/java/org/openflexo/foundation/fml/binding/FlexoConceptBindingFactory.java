@@ -342,7 +342,7 @@ public final class FlexoConceptBindingFactory extends JavaBindingFactory {
 		if (returned == null || forceUpdate) {
 			returned = new ArrayList<FlexoBehaviourPathElement>();
 			for (AbstractActionScheme as : concept.getAccessibleAbstractActionSchemes()) {
-				returned.add(new FlexoBehaviourPathElement(parent, as, null, as.getFlexoConcept()));
+				returned.add(new FlexoBehaviourPathElement(parent, as, null));
 			}
 			map.put(concept, returned);
 		}
@@ -382,7 +382,7 @@ public final class FlexoConceptBindingFactory extends JavaBindingFactory {
 			return null;
 		}
 		if (parent.getType() instanceof FlexoConceptInstanceType && function instanceof FlexoBehaviour) {
-			return new FlexoBehaviourPathElement(parent, (FlexoBehaviour) function, args, ((FlexoBehaviour) function).getFlexoConcept());
+			return new FlexoBehaviourPathElement(parent, (FlexoBehaviour) function, args);
 		}
 		FunctionPathElement returned = super.makeFunctionPathElement(parent, function, args);
 		// Hook to specialize type returned by getFlexoConceptInstance(String)

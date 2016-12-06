@@ -43,7 +43,6 @@ import java.lang.reflect.Type;
 import java.util.List;
 import java.util.logging.Logger;
 
-import org.openflexo.connie.Bindable;
 import org.openflexo.connie.BindingEvaluationContext;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.binding.BindingPathElement;
@@ -73,9 +72,11 @@ public class FlexoBehaviourPathElement extends FunctionPathElement {
 
 	static final Logger logger = Logger.getLogger(FlexoBehaviourPathElement.class.getPackage().getName());
 
-	public FlexoBehaviourPathElement(BindingPathElement parent, FlexoBehaviour flexoBehaviour, List<DataBinding<?>> args, Bindable owner) {
+	public FlexoBehaviourPathElement(BindingPathElement parent, FlexoBehaviour flexoBehaviour, List<DataBinding<?>> args) {
 		super(parent, flexoBehaviour, args);
-		instanciateParameters(owner);
+
+		// Do not instanciate parameters now, we will do it later
+		// instanciateParameters(owner);
 		if (flexoBehaviour != null) {
 			for (FunctionArgument arg : flexoBehaviour.getArguments()) {
 				DataBinding<?> argValue = getParameter(arg);
