@@ -182,7 +182,12 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 	 */
 	@Override
 	public void declareVariable(String variableName, Object value) {
-		variables.put(variableName, value);
+		if (value != null) {
+			variables.put(variableName, value);
+		}
+		else {
+			variables.remove(variableName);
+		}
 	}
 
 	/**
@@ -213,8 +218,8 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 		/*System.out.println("On me demande la valeur du parametre " + parameter.getName() + " a priori c'est "
 				+ parameterValues.get(parameter));*/
 		if (parameter instanceof URIParameter) {
-			if (parameterValues.get(parameter) == null || parameterValues.get(parameter) instanceof String
-					&& StringUtils.isEmpty((String) parameterValues.get(parameter))) {
+			if (parameterValues.get(parameter) == null
+					|| parameterValues.get(parameter) instanceof String && StringUtils.isEmpty((String) parameterValues.get(parameter))) {
 				return ((URIParameter) parameter).getDefaultValue(this);
 			}
 		}
@@ -266,6 +271,11 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 				getFlexoBehaviour().getControlGraph().execute(this);
 			} catch (ReturnException e) {
 				returnedValue = e.getReturnedValue();
+			} catch (Exception e) {
+				logger.warning("Unexpected exception while executing FML control graph");
+				System.err.println(getFlexoBehaviour().getFMLRepresentation());
+				e.printStackTrace();
+				throw new FlexoException(e);
 			}
 		}
 
@@ -445,7 +455,8 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 			return;
 		}
 		else if (variable.getVariableName().equals(FlexoBehaviourBindingModel.PARAMETERS_PROPERTY)) {
-			logger.warning("Forbidden write access " + FlexoBehaviourBindingModel.PARAMETERS_PROPERTY + " in " + this + " of " + getClass());
+			logger.warning(
+					"Forbidden write access " + FlexoBehaviourBindingModel.PARAMETERS_PROPERTY + " in " + this + " of " + getClass());
 			return;
 		}
 		else if (variable.getVariableName().equals(FlexoBehaviourBindingModel.PARAMETERS_DEFINITION_PROPERTY)) {
@@ -459,8 +470,8 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 			return;
 		}
 
-		logger.warning("Unexpected variable requested in settable context in FlexoBehaviourAction: " + variable + " of "
-				+ variable.getClass());
+		logger.warning(
+				"Unexpected variable requested in settable context in FlexoBehaviourAction: " + variable + " of " + variable.getClass());
 	}
 
 	/*	public GraphicalRepresentation getOverridingGraphicalRepresentation(GraphicalElementPatternRole patternRole) {
@@ -497,8 +508,8 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 					try {
 						newURI = uriParam.getBaseURI().getBindingValue(FlexoBehaviourAction.this);
 
-						newURI = modelSlot.generateUniqueURIName((TypeAwareModelSlotInstance) getVirtualModelInstance()
-								.getModelSlotInstance(modelSlot), newURI);
+						newURI = modelSlot.generateUniqueURIName(
+								(TypeAwareModelSlotInstance) getVirtualModelInstance().getModelSlotInstance(modelSlot), newURI);
 						logger.info("Generated new URI " + newURI + " for " + getVirtualModelInstance().getModelSlotInstance(modelSlot));
 						// NPE Protection
 						if (newURI != null) {
