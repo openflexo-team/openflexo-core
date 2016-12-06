@@ -651,8 +651,8 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 	 */
 	public <I> List<ResourceRepository<?, I>> getAllRepositories() {
 		List<ResourceRepository<?, I>> returned = new ArrayList<>();
-		for (FlexoResourceCenter<?> rc : getTechnologyAdapterService().getServiceManager().getResourceCenterService()
-				.getResourceCenters()) {
+		for (FlexoResourceCenter<?> rc : new ArrayList<>(
+				getTechnologyAdapterService().getServiceManager().getResourceCenterService().getResourceCenters())) {
 			Collection<? extends ResourceRepository<?, I>> repCollection = (Collection) rc.getRegistedRepositories(this, true);
 			if (repCollection != null) {
 				returned.addAll(repCollection);

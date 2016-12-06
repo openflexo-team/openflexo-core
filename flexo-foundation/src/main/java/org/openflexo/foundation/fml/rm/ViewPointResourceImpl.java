@@ -92,18 +92,6 @@ public abstract class ViewPointResourceImpl extends AbstractVirtualModelResource
 
 		ViewPointImpl returned = (ViewPointImpl) super.loadResourceData(progress);
 
-		// Vincent : the name should already exsit no?
-		// String baseName = getDirectory().getRelativePath().substring(0,
-		// getDirectory().getRelativePath().length() - 10);
-		// returned.init(baseName,/* getDirectory(),
-		// getFile(),*/getViewPointLibrary());
-
-		/*
-		 * for (VirtualModel vm : returned.getVirtualModels()) { for
-		 * (FlexoConcept ep : vm.getFlexoConcepts()) {
-		 * ep.finalizeFlexoConceptDeserialization(); } vm.clearIsModified(); }
-		 */
-
 		returned.clearIsModified();
 
 		// Now we have to activate all required technologies
@@ -148,8 +136,8 @@ public abstract class ViewPointResourceImpl extends AbstractVirtualModelResource
 
 	@Override
 	public List<VirtualModelResource> getVirtualModelResources() {
-		// FD unused ViewPoint vp =
-		getViewPoint();
+		// We try not to load the ViewPoint yet
+		// getViewPoint();
 		return getContents(VirtualModelResource.class);
 	}
 

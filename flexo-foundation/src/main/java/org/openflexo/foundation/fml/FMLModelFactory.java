@@ -38,10 +38,6 @@
 
 package org.openflexo.foundation.fml;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Logger;
-
 import org.openflexo.connie.DataBinding;
 import org.openflexo.fge.FGEModelFactoryImpl;
 import org.openflexo.fge.FGEUtils;
@@ -87,6 +83,7 @@ import org.openflexo.foundation.fml.inspector.TextAreaInspectorEntry;
 import org.openflexo.foundation.fml.inspector.TextFieldInspectorEntry;
 import org.openflexo.foundation.fml.rm.AbstractVirtualModelResource;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
+import org.openflexo.foundation.fml.rt.editionaction.AddClassInstance;
 import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstanceParameter;
 import org.openflexo.foundation.fml.rt.editionaction.AddSubView;
@@ -110,6 +107,10 @@ import org.openflexo.model.converter.TypeConverter;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.model.factory.EditingContext;
 import org.openflexo.model.factory.ModelFactory;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * {@link ModelFactory} used to handle VirtualModel models<br>
@@ -494,6 +495,10 @@ public class FMLModelFactory extends FGEModelFactoryImpl implements PamelaResour
 
 	public AddFlexoConceptInstance newAddFlexoConceptInstance() {
 		return newInstance(AddFlexoConceptInstance.class);
+	}
+
+	public AddClassInstance newAddClassInstance() {
+		return newInstance(AddClassInstance.class);
 	}
 
 	public AddVirtualModelInstance newAddVirtualModelInstance() {

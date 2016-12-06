@@ -43,6 +43,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.DataBinding;
@@ -319,15 +320,19 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 
 		@Override
 		public FCI execute(RunTimeEvaluationContext evaluationContext) {
-			logger.info("--------------> Perform performAddFlexoConceptInstance " + evaluationContext);
+			if (logger.isLoggable(Level.FINE)) {
+				logger.fine("--------------> Perform performAddFlexoConceptInstance " + evaluationContext);
+			}
 			VMI vmInstance = getVirtualModelInstance(evaluationContext);
 			if (vmInstance == null) {
 				logger.warning("null VirtualModelInstance");
 				return null;
 			}
-			logger.info("vmInstance=" + vmInstance);
-			logger.info("concept=" + (getCreationScheme() != null ? getCreationScheme().getFlexoConcept() : null));
-			logger.info("getCreationScheme()=" + getCreationScheme());
+			if (logger.isLoggable(Level.FINE)) {
+				logger.fine("vmInstance=" + vmInstance);
+				logger.fine("concept=" + (getCreationScheme() != null ? getCreationScheme().getFlexoConcept() : null));
+				logger.fine("getCreationScheme()=" + getCreationScheme());
+			}
 			if (evaluationContext instanceof FlexoBehaviourAction) {
 				CreationSchemeAction creationSchemeAction = CreationSchemeAction.actionType.makeNewEmbeddedAction(vmInstance, null,
 						(FlexoBehaviourAction<?, ?, ?>) evaluationContext);
@@ -337,7 +342,9 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 				for (AddFlexoConceptInstanceParameter p : getParameters()) {
 					FlexoBehaviourParameter param = p.getParam();
 					Object value = p.evaluateParameterValue((FlexoBehaviourAction<?, ?, ?>) evaluationContext);
-					logger.info("For parameter " + param + " value is " + value);
+					if (logger.isLoggable(Level.FINE)) {
+						logger.fine("For parameter " + param + " value is " + value);
+					}
 					if (value != null) {
 						creationSchemeAction.setParameterValue(p.getParam(),
 								p.evaluateParameterValue((FlexoBehaviourAction<?, ?, ?>) evaluationContext));
@@ -345,7 +352,9 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 				}
 				creationSchemeAction.doAction();
 				if (creationSchemeAction.hasActionExecutionSucceeded()) {
-					logger.info("Successfully performed performAddFlexoConcept " + evaluationContext);
+					if (logger.isLoggable(Level.FINE)) {
+						logger.fine("Successfully performed performAddFlexoConcept " + evaluationContext);
+					}
 					return (FCI) creationSchemeAction.getFlexoConceptInstance();
 				}
 			}
