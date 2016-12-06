@@ -19,8 +19,8 @@
 				index="3" localize="true"
 				constraints="twocols(expandHorizontally=true;expandVertically=false;index=2;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=right)"
 				readOnly="false">
-				<Assignment id="4" mandatory="true" value="data"
-					variable="component.bindable" />
+				<!--  <Assignment id="4" mandatory="true" value="data"
+					variable="component.bindable" />-->
 			</Custom>
 		</Tab>
 	</TabPanel>
