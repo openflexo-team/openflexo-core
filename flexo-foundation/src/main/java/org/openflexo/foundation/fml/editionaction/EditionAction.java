@@ -96,7 +96,7 @@ import java.util.logging.Logger;
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(EditionAction.EditionActionImpl.class)
-@Imports({ @Import(AddToListAction.class), @Import(AddFlexoConceptInstance.class), @Import(AddVirtualModelInstance.class),
+@Imports({ @Import(AddToListAction.class), @Import(AddFlexoConceptInstance.class), @Import(AddVirtualModelInstance.class), @Import(AddClassInstance.class),
 		@Import(AddSubView.class), @Import(DeclarationAction.class), @Import(AssignationAction.class), @Import(ReturnStatement.class),
 		@Import(ExpressionAction.class), @Import(LogAction.class), @Import(SelectFlexoConceptInstance.class),
 		@Import(MatchFlexoConceptInstance.class), @Import(RemoveFromListAction.class), @Import(DeleteAction.class),

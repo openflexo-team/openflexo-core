@@ -38,10 +38,6 @@
 
 package org.openflexo.icon;
 
-import java.util.logging.Logger;
-
-import javax.swing.ImageIcon;
-
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.ModelSlotInstance;
 import org.openflexo.foundation.fml.rt.View;
@@ -51,6 +47,9 @@ import org.openflexo.foundation.fml.rt.rm.ViewResource;
 import org.openflexo.foundation.fml.rt.rm.VirtualModelInstanceResource;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.toolbox.ImageIconResource;
+
+import javax.swing.*;
+import java.util.logging.Logger;
 
 /**
  * Utility class containing all icons used in context of FML@runtime technology adapter
@@ -92,6 +91,8 @@ public class FMLRTIconLibrary extends IconLibrary {
 			ResourceLocator.locateResource("Icons/Model/VE/ModelSlotInstance.png"));
 	public static final ImageIconResource VIRTUAL_MODEL_INSTANCE_SMALL_ICON = new ImageIconResource(
 			ResourceLocator.locateResource("Icons/Model/VE/VirtualModelInstance_8x8.png"));
+	public static final ImageIconResource FLEXO_CLASS_INSTANCE_ICON = new ImageIconResource(
+			ResourceLocator.locateResource("Icons/Java/ClassPublic.gif"));
 
 	public static final IconMarker VIRTUAL_MODEL_INSTANCE_MARKER = new IconMarker(VIRTUAL_MODEL_INSTANCE_SMALL_ICON, 8, 0);
 
