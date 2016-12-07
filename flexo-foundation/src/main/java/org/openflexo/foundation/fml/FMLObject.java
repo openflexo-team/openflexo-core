@@ -161,6 +161,13 @@ public interface FMLObject
 	@Override
 	public AbstractVirtualModel<?> getResourceData();
 
+	/**
+	 * Hook called when {@link ViewPoint} has been declared as enclosing context<br>
+	 * Because {@link #getBindingFactory()} rely on {@link ViewPoint} enclosing, we must provide this hook to give a chance to objects
+	 * that rely on ViewPoint instanciation context to update their bindings (some bindings might becomes valid)
+	 */
+	public void notifiedViewPointChanged();
+
 	public static abstract class FMLObjectImpl extends FlexoObjectImpl implements FMLObject {
 
 		private static final Logger logger = Logger.getLogger(FMLObject.class.getPackage().getName());
@@ -301,6 +308,16 @@ public interface FMLObject
 				return getViewPoint().getBindingFactory();
 			}
 			return null;
+		}
+
+		/**
+		 * Hook called when {@link ViewPoint} has been declared as enclosing context<br>
+		 * Because {@link #getBindingFactory()} rely on {@link ViewPoint} enclosing, we must provide this hook to give a chance to objects
+		 * that rely on ViewPoint instanciation context to update their bindings (some bindings might becomes valid)<br>
+		 * Default implementation does nothing
+		 */
+		@Override
+		public void notifiedViewPointChanged() {
 		}
 
 		/*@Override

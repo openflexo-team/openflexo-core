@@ -54,6 +54,7 @@ import org.openflexo.foundation.fml.binding.FlexoBehaviourBindingModel;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraphConverter;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraphOwner;
+import org.openflexo.foundation.fml.controlgraph.FMLControlGraphVisitor;
 import org.openflexo.foundation.fml.editionaction.AssignableAction;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.fml.editionaction.TechnologySpecificAction;
@@ -891,6 +892,23 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 			}
 			return context.getFlexoBehaviour(getName(), signature);
 
+		}
+
+		/**
+		 * Hook called when {@link ViewPoint} has been declared as enclosing context<br>
+		 * Because {@link #getBindingFactory()} rely on {@link ViewPoint} enclosing, we must provide this hook to give a chance to objects
+		 * that rely on ViewPoint instanciation context to update their bindings (some bindings might becomes valid)
+		 */
+		@Override
+		public void notifiedViewPointChanged() {
+			super.notifiedViewPointChanged();
+			FMLControlGraphVisitor cgVisitor = new FMLControlGraphVisitor() {
+				@Override
+				public void visit(FMLControlGraph controlGraph) {
+					controlGraph.notifiedViewPointChanged();
+				}
+			};
+			getControlGraph().accept(cgVisitor);
 		}
 
 	}

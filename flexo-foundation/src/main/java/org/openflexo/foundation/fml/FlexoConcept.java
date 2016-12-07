@@ -1300,6 +1300,19 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 			return out.toString();
 		}
 
+		/**
+		 * Hook called when {@link ViewPoint} has been declared as enclosing context<br>
+		 * Because {@link #getBindingFactory()} rely on {@link ViewPoint} enclosing, we must provide this hook to give a chance to objects
+		 * that rely on ViewPoint instanciation context to update their bindings (some bindings might becomes valid)
+		 */
+		@Override
+		public void notifiedViewPointChanged() {
+			super.notifiedViewPointChanged();
+			for (FlexoBehaviour behaviour : getFlexoBehaviours()) {
+				behaviour.notifiedViewPointChanged();
+			}
+		}
+
 	}
 
 	@DefineValidationRule
