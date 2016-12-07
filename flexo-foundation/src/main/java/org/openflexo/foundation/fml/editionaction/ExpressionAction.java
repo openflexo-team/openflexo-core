@@ -79,18 +79,63 @@ public interface ExpressionAction<T> extends AssignableAction<T> {
 	@Override
 	public Type getAssignableType();
 
-	public static abstract class ExpressionActionImpl<T> extends AssignableActionImpl<T>implements ExpressionAction<T> {
+	public static abstract class ExpressionActionImpl<T> extends AssignableActionImpl<T> implements ExpressionAction<T> {
 
 		private static final Logger logger = Logger.getLogger(ExpressionAction.class.getPackage().getName());
 
 		private DataBinding<T> expression;
 
+		private Type assignableType = null;
+
 		@Override
 		public Type getAssignableType() {
-			if (getExpression() != null && getExpression().isSet() && getExpression().isValid()) {
-				return getExpression().getAnalyzedType();
+
+			if (assignableType == null) {
+				if (getExpression() != null && getExpression().isSet() && getExpression().isValid()) {
+					assignableType = getExpression().getAnalyzedType();
+				}
+				else {
+					// Expression is not valid
+					// We wont try to decode it again unless explicit call to #notifyTypeMightHaveChanged()
+					assignableType = Object.class;
+				}
 			}
-			return Object.class;
+			if (assignableType == null) {
+				return Object.class;
+			}
+			return assignableType;
+		}
+
+		@Override
+		public void notifiedViewPointChanged() {
+			super.notifiedViewPointChanged();
+			notifyTypeMightHaveChanged();
+		}
+
+		/**
+		 * Called to explicitely check assignable type<br>
+		 * Force expression DataBinding to be re-evaluated
+		 */
+		private void notifyTypeMightHaveChanged() {
+			assignableType = null;
+			getPropertyChangeSupport().firePropertyChange("assignableType", null, getAssignableType());
+			getPropertyChangeSupport().firePropertyChange("iteratorType", null, getIteratorType());
+		}
+
+		@Override
+		public void notifiedBindingChanged(DataBinding<?> dataBinding) {
+			super.notifiedBindingChanged(dataBinding);
+			if (dataBinding == getExpression()) {
+				notifyTypeMightHaveChanged();
+			}
+		}
+
+		@Override
+		public void notifiedBindingDecoded(DataBinding<?> dataBinding) {
+			super.notifiedBindingDecoded(dataBinding);
+			if (dataBinding == getExpression()) {
+				notifyTypeMightHaveChanged();
+			}
 		}
 
 		@Override
