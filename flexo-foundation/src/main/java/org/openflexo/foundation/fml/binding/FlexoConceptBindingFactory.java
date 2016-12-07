@@ -53,6 +53,7 @@ import org.openflexo.connie.binding.BindingPathElement;
 import org.openflexo.connie.binding.Function;
 import org.openflexo.connie.binding.FunctionPathElement;
 import org.openflexo.connie.binding.SimplePathElement;
+import org.openflexo.connie.expr.Constant.ObjectConstant;
 import org.openflexo.connie.expr.Constant.StringConstant;
 import org.openflexo.connie.java.JavaBindingFactory;
 import org.openflexo.connie.type.TypeUtils;
@@ -71,7 +72,10 @@ import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.TechnologySpecificType;
 import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.VirtualModel;
+import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
+import org.openflexo.foundation.fml.rt.View;
 import org.openflexo.foundation.fml.rt.ViewObject;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterBindingFactory;
@@ -283,7 +287,7 @@ public final class FlexoConceptBindingFactory extends JavaBindingFactory {
 	 *
 	 */
 	@SuppressWarnings("serial")
-	class BehavioursForConcepts extends HashMap<FlexoConcept, List<FlexoBehaviourPathElement>> implements PropertyChangeListener {
+	class BehavioursForConcepts extends HashMap<FlexoConcept, List<FlexoBehaviourPathElement>>implements PropertyChangeListener {
 
 		@Override
 		public List<FlexoBehaviourPathElement> put(FlexoConcept concept, List<FlexoBehaviourPathElement> value) {
@@ -401,11 +405,31 @@ public final class FlexoConceptBindingFactory extends JavaBindingFactory {
 	public Function retrieveFunction(Type parentType, String functionName, List<DataBinding<?>> args) {
 		if (parentType instanceof FlexoConceptInstanceType) {
 			FlexoConcept conceptType = ((FlexoConceptInstanceType) parentType).getFlexoConcept();
+			//System.out.println("Looking for behaviour " + functionName + " avec " + args);
+			//System.out.println("conceptType=" + conceptType);
 			Type[] paramsTypes = new Type[args.size()];
 			for (int i = 0; i < args.size(); i++) {
-				paramsTypes[i] = args.get(i).getAnalyzedType();
+				if (args.get(i).getExpression() instanceof ObjectConstant) {
+					Object value = ((ObjectConstant) args.get(i).getExpression()).getValue();
+					if (value instanceof View) {
+						paramsTypes[i] = ((View) value).getViewPoint().getInstanceType();
+					}
+					else if (value instanceof VirtualModelInstance) {
+						paramsTypes[i] = ((VirtualModelInstance) value).getVirtualModel().getInstanceType();
+					}
+					else if (value instanceof FlexoConceptInstance) {
+						paramsTypes[i] = ((FlexoConceptInstance) value).getFlexoConcept().getInstanceType();
+					}
+					else {
+						paramsTypes[i] = value.getClass();
+					}
+				}
+				else {
+					paramsTypes[i] = args.get(i).getAnalyzedType();
+				}
+				//System.out.println("> " + args.get(i) + " of " + paramsTypes[i]);
 			}
-
+			//System.out.println("Returned: " + conceptType.getFlexoBehaviour(functionName, paramsTypes));
 			return conceptType.getFlexoBehaviour(functionName, paramsTypes);
 		}
 		return super.retrieveFunction(parentType, functionName, args);
