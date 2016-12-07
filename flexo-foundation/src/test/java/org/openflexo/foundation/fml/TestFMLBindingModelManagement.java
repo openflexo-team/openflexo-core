@@ -74,6 +74,7 @@ import org.openflexo.foundation.fml.action.CreatePrimitiveRole;
 import org.openflexo.foundation.fml.binding.FlexoBehaviourBindingModel;
 import org.openflexo.foundation.fml.binding.FlexoConceptBindingModel;
 import org.openflexo.foundation.fml.binding.FlexoPropertyBindingVariable;
+import org.openflexo.foundation.fml.binding.IterationActionBindingVariable;
 import org.openflexo.foundation.fml.binding.ViewPointBindingModel;
 import org.openflexo.foundation.fml.binding.VirtualModelBindingModel;
 import org.openflexo.foundation.fml.controlgraph.ConditionalAction;
@@ -981,14 +982,26 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 
 		assertTrue(declareFlexoRoleInIteration2.getAssignation().isValid());
 
-		/*System.out.println("expression=" + ((ExpressionAction) declareFlexoRoleInIteration2.getAssignableAction()).getExpression());
+		System.out.println("expression=" + ((ExpressionAction) declareFlexoRoleInIteration2.getAssignableAction()).getExpression());
 		System.out.println("valid=" + ((ExpressionAction) declareFlexoRoleInIteration2.getAssignableAction()).getExpression().isValid());
-		System.out.println("reason="
-				+ ((ExpressionAction) declareFlexoRoleInIteration2.getAssignableAction()).getExpression().invalidBindingReason());
-		
-		System.out.println("viewpoint1=" + declareFlexoRoleInIteration2.getAssignableAction().getViewPoint());
+		System.out.println(
+				"reason=" + ((ExpressionAction) declareFlexoRoleInIteration2.getAssignableAction()).getExpression().invalidBindingReason());
+
+		/*System.out.println("viewpoint1=" + declareFlexoRoleInIteration2.getAssignableAction().getViewPoint());
 		System.out.println("viewpoint2=" + declareFlexoRoleInIteration2.getViewPoint());
 		System.out.println("getBindingFactory=" + declareFlexoRoleInIteration2.getBindingFactory());*/
+
+		IterationActionBindingVariable fciBindingVariable = (IterationActionBindingVariable) declareFlexoRoleInIteration2.getBindingModel()
+				.bindingVariableNamed("fci");
+		System.out.println("fciBindingVariable=" + fciBindingVariable + " of " + fciBindingVariable.getClass());
+		System.out.println("action=" + fciBindingVariable.getAction());
+		System.out.println("type=" + fciBindingVariable.getType());
+		ExpressionAction expressionAction = (ExpressionAction) ((IterationAction) fciBindingVariable.getAction()).getIterationAction();
+		System.out.println("expressionAction=" + expressionAction.getExpression());
+		System.out.println("valid=" + expressionAction.getExpression().isValid());
+		System.out.println("reason=" + expressionAction.getExpression().invalidBindingReason());
+		System.out.println("expressionAction.type=" + expressionAction.getAssignableType());
+		System.out.println("expressionAction.iterator=" + expressionAction.getIteratorType());
 
 		assertTrue(((ExpressionAction) declareFlexoRoleInIteration2.getAssignableAction()).getExpression().isValid());
 

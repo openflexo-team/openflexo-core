@@ -312,7 +312,7 @@ public interface ConditionalAction extends ControlStructureAction, FMLControlGra
 
 		@Override
 		public void setOwner(FMLControlGraphOwner owner) {
-			performSuperSetter(OWNER_KEY, owner);
+			super.setOwner(owner);
 			if (getThenControlGraph() != null) {
 				getThenControlGraph().getBindingModel().setBaseBindingModel(getInferedBindingModel());
 			}

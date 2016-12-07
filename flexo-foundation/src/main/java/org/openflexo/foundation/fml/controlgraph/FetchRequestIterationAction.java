@@ -301,7 +301,7 @@ public interface FetchRequestIterationAction extends ControlStructureAction, FML
 
 		@Override
 		public void setOwner(FMLControlGraphOwner owner) {
-			performSuperSetter(OWNER_KEY, owner);
+			super.setOwner(owner);
 			if (getControlGraph() != null) {
 				getControlGraph().getBindingModel().setBaseBindingModel(getBaseBindingModel(getControlGraph()));
 			}

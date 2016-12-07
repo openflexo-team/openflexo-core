@@ -565,6 +565,8 @@ public class TestFMLBindingModelManagement2 extends OpenflexoProjectAtRunTimeTes
 		// ...}
 		// }
 
+		System.out.println("FML WAS : " + actionScheme.getFMLRepresentation());
+
 		System.out.println("Iteration1: " + iteration1.getFMLRepresentation());
 		System.out.println("Iteration2: " + iteration2.getFMLRepresentation());
 
@@ -574,7 +576,7 @@ public class TestFMLBindingModelManagement2 extends OpenflexoProjectAtRunTimeTes
 
 		System.out.println("CG is a " + cg.getClass());
 
-		System.out.println("FML: " + actionScheme.getFMLRepresentation());
+		System.out.println("FML NOW : " + actionScheme.getFMLRepresentation());
 
 		assertEquals(iteration2, cg.getOwner());
 

@@ -167,7 +167,7 @@ public class FlexoBehaviourPathElement extends FunctionPathElement {
 				actionSchemeAction.doAction();
 				if (actionSchemeAction.hasActionExecutionSucceeded()) {
 					logger.fine("Successfully performed ActionScheme " + getFlexoBehaviour() + " for " + fci);
-					return actionSchemeAction.getFlexoConceptInstance();
+					return actionSchemeAction.getReturnedValue();
 				}
 				if (actionSchemeAction.getThrownException() != null) {
 					throw new InvocationTargetTransformException(new InvocationTargetException(actionSchemeAction.getThrownException()));

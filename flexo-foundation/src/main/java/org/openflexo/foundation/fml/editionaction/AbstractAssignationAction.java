@@ -131,7 +131,7 @@ public interface AbstractAssignationAction<T> extends AssignableAction<T>, FMLCo
 
 		@Override
 		public void setOwner(FMLControlGraphOwner owner) {
-			performSuperSetter(OWNER_KEY, owner);
+			super.setOwner(owner);
 			if (getAssignableAction() != null) {
 				getAssignableAction().getBindingModel().setBaseBindingModel(getBaseBindingModel(getAssignableAction()));
 			}

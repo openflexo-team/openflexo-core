@@ -79,7 +79,7 @@ public interface ExpressionAction<T> extends AssignableAction<T> {
 	@Override
 	public Type getAssignableType();
 
-	public static abstract class ExpressionActionImpl<T> extends AssignableActionImpl<T> implements ExpressionAction<T> {
+	public static abstract class ExpressionActionImpl<T> extends AssignableActionImpl<T>implements ExpressionAction<T> {
 
 		private static final Logger logger = Logger.getLogger(ExpressionAction.class.getPackage().getName());
 
@@ -94,11 +94,11 @@ public interface ExpressionAction<T> extends AssignableAction<T> {
 				if (getExpression() != null && getExpression().isSet() && getExpression().isValid()) {
 					assignableType = getExpression().getAnalyzedType();
 				}
-				else {
+				/*else {
 					// Expression is not valid
 					// We wont try to decode it again unless explicit call to #notifyTypeMightHaveChanged()
 					assignableType = Object.class;
-				}
+				}*/
 			}
 			if (assignableType == null) {
 				return Object.class;
@@ -107,8 +107,8 @@ public interface ExpressionAction<T> extends AssignableAction<T> {
 		}
 
 		@Override
-		public void notifiedViewPointChanged() {
-			super.notifiedViewPointChanged();
+		public void notifiedScopeChanged() {
+			super.notifiedScopeChanged();
 			notifyTypeMightHaveChanged();
 		}
 

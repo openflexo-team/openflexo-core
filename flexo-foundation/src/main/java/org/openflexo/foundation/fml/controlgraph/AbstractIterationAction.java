@@ -157,7 +157,7 @@ public interface AbstractIterationAction extends ControlStructureAction, FMLCont
 
 		@Override
 		public void setOwner(FMLControlGraphOwner owner) {
-			performSuperSetter(OWNER_KEY, owner);
+			super.setOwner(owner);
 			if (getControlGraph() != null) {
 				getControlGraph().getBindingModel().setBaseBindingModel(getBaseBindingModel(getControlGraph()));
 			}

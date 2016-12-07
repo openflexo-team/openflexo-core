@@ -247,7 +247,8 @@ public interface Sequence extends FMLControlGraph, FMLControlGraphOwner {
 
 		@Override
 		public void setOwner(FMLControlGraphOwner owner) {
-			performSuperSetter(OWNER_KEY, owner);
+			super.setOwner(owner);
+
 			if (getControlGraph1() != null) {
 
 				// System.out.println("WAS: " + getControlGraph1().getInferedBindingModel());

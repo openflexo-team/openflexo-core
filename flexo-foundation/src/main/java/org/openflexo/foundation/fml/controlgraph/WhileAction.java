@@ -279,7 +279,7 @@ public interface WhileAction extends ControlStructureAction, FMLControlGraphOwne
 
 		@Override
 		public void setOwner(FMLControlGraphOwner owner) {
-			performSuperSetter(OWNER_KEY, owner);
+			super.setOwner(owner);
 			if (getControlGraph() != null) {
 				getControlGraph().getBindingModel().setBaseBindingModel(getInferedBindingModel());
 			}

@@ -77,7 +77,7 @@ public interface VirtualModel extends AbstractVirtualModel<VirtualModel> {
 	@Setter(VIEW_POINT_KEY)
 	public void setViewPoint(ViewPoint aViewPoint);
 
-	public static abstract class VirtualModelImpl extends AbstractVirtualModelImpl<VirtualModel> implements VirtualModel {
+	public static abstract class VirtualModelImpl extends AbstractVirtualModelImpl<VirtualModel>implements VirtualModel {
 
 		private static final Logger logger = Logger.getLogger(VirtualModel.class.getPackage().getName());
 
@@ -145,7 +145,7 @@ public interface VirtualModel extends AbstractVirtualModel<VirtualModel> {
 				this.viewPoint = viewPoint;
 				// updateBindingModel();
 				getPropertyChangeSupport().firePropertyChange(VIEW_POINT_KEY, oldViewPoint, viewPoint);
-				notifiedViewPointChanged();
+				notifiedScopeChanged();
 			}
 		}
 
@@ -172,15 +172,20 @@ public interface VirtualModel extends AbstractVirtualModel<VirtualModel> {
 		}
 
 		/**
-		 * Hook called when {@link ViewPoint} has been declared as enclosing context<br>
-		 * Because {@link #getBindingFactory()} rely on {@link ViewPoint} enclosing, we must provide this hook to give a chance to objects
-		 * that rely on ViewPoint instanciation context to update their bindings (some bindings might becomes valid)
+		 * Hook called when scope of a FMLObject changed.<br>
+		 * 
+		 * It happens for example when a {@link VirtualModel} is declared to be contained in a {@link ViewPoint}<br>
+		 * On that example {@link #getBindingFactory()} rely on {@link ViewPoint} enclosing, we must provide this hook to give a chance to
+		 * objects that rely on ViewPoint instanciation context to update their bindings (some bindings might becomes valid)<br>
+		 * 
+		 * It may also happen if an EditionAction is moved from a control graph to another control graph, etc...<br>
+		 * 
 		 */
 		@Override
-		public void notifiedViewPointChanged() {
-			super.notifiedViewPointChanged();
+		public void notifiedScopeChanged() {
+			super.notifiedScopeChanged();
 			for (FlexoConcept concept : getFlexoConcepts()) {
-				concept.notifiedViewPointChanged();
+				concept.notifiedScopeChanged();
 			}
 		}
 	}

@@ -162,11 +162,16 @@ public interface FMLObject
 	public AbstractVirtualModel<?> getResourceData();
 
 	/**
-	 * Hook called when {@link ViewPoint} has been declared as enclosing context<br>
-	 * Because {@link #getBindingFactory()} rely on {@link ViewPoint} enclosing, we must provide this hook to give a chance to objects
-	 * that rely on ViewPoint instanciation context to update their bindings (some bindings might becomes valid)
+	 * Hook called when scope of a FMLObject changed.<br>
+	 * 
+	 * It happens for example when a {@link VirtualModel} is declared to be contained in a {@link ViewPoint}<br>
+	 * On that example {@link #getBindingFactory()} rely on {@link ViewPoint} enclosing, we must provide this hook to give a chance to
+	 * objects that rely on ViewPoint instanciation context to update their bindings (some bindings might becomes valid)<br>
+	 * 
+	 * It may also happen if an EditionAction is moved from a control graph to another control graph, etc...
+	 * 
 	 */
-	public void notifiedViewPointChanged();
+	public void notifiedScopeChanged();
 
 	public static abstract class FMLObjectImpl extends FlexoObjectImpl implements FMLObject {
 
@@ -311,13 +316,18 @@ public interface FMLObject
 		}
 
 		/**
-		 * Hook called when {@link ViewPoint} has been declared as enclosing context<br>
-		 * Because {@link #getBindingFactory()} rely on {@link ViewPoint} enclosing, we must provide this hook to give a chance to objects
-		 * that rely on ViewPoint instanciation context to update their bindings (some bindings might becomes valid)<br>
+		 * Hook called when scope of a FMLObject changed.<br>
+		 * 
+		 * It happens for example when a {@link VirtualModel} is declared to be contained in a {@link ViewPoint}<br>
+		 * On that example {@link #getBindingFactory()} rely on {@link ViewPoint} enclosing, we must provide this hook to give a chance to
+		 * objects that rely on ViewPoint instanciation context to update their bindings (some bindings might becomes valid)<br>
+		 * 
+		 * It may also happen if an EditionAction is moved from a control graph to another control graph, etc...<br>
+		 * 
 		 * Default implementation does nothing
 		 */
 		@Override
-		public void notifiedViewPointChanged() {
+		public void notifiedScopeChanged() {
 		}
 
 		/*@Override

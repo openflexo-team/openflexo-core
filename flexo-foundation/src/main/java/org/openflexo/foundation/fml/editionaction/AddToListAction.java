@@ -281,7 +281,7 @@ public interface AddToListAction<T> extends AssignableAction<T>, FMLControlGraph
 
 		@Override
 		public void setOwner(FMLControlGraphOwner owner) {
-			performSuperSetter(OWNER_KEY, owner);
+			super.setOwner(owner);
 			if (getAssignableAction() != null) {
 				getAssignableAction().getBindingModel().setBaseBindingModel(getBaseBindingModel(getAssignableAction()));
 			}

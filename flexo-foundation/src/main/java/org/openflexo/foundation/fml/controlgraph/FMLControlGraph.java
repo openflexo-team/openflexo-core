@@ -320,5 +320,24 @@ public abstract interface FMLControlGraph extends FlexoConceptObject {
 			}
 		}
 
+		@Override
+		public void setOwner(FMLControlGraphOwner owner) {
+			performSuperSetter(OWNER_KEY, owner);
+
+			// System.out.println("BEGIN change owner for " + getFMLRepresentation());
+
+			// We should recursively call #notifiedScopeChanged() on all contained control graphs
+			FMLControlGraphVisitor cgVisitor = new FMLControlGraphVisitor() {
+				@Override
+				public void visit(FMLControlGraph controlGraph) {
+					controlGraph.notifiedScopeChanged();
+				}
+			};
+			accept(cgVisitor);
+
+			// System.out.println("END change owner for " + getFMLRepresentation());
+
+		}
+
 	}
 }
