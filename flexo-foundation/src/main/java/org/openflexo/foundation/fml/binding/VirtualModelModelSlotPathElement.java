@@ -83,15 +83,26 @@ public class VirtualModelModelSlotPathElement<MS extends ModelSlot> extends Simp
 			if (msi != null) {
 				return msi.getAccessedResourceData();
 			}
+			return null;
 		}
-		logger.warning("Please implement me, target=" + target + " context=" + context);
+		logger.warning("Please implement me, modelSlot=" + modelSlot + " target=" + target + " context=" + context);
 		return null;
 	}
 
 	@Override
 	public void setBindingValue(Object value, Object target, BindingEvaluationContext context)
 			throws TypeMismatchException, NullReferenceException {
-		logger.warning("Please implement me, target=" + target + " context=" + context);
+
+		if (target instanceof AbstractVirtualModelInstance) {
+
+			System.out.println("OK, on tente de mettre la valeur suivante a " + modelSlot + " : " + value);
+
+			AbstractVirtualModelInstance<?, ?> vmi = (AbstractVirtualModelInstance) target;
+			vmi.setFlexoPropertyValue(modelSlot, value);
+			return;
+		}
+
+		logger.warning("Please implement me, modelSlot=" + modelSlot + " target=" + target + " context=" + context);
 	}
 
 }
