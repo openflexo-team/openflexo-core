@@ -114,12 +114,18 @@ public class FlexoBehaviourPathElement extends FunctionPathElement {
 	public Object getBindingValue(Object target, BindingEvaluationContext context)
 			throws TypeMismatchException, NullReferenceException, InvocationTargetTransformException {
 
+		System.out.println("****************** Computing FlexoBehaviourPathElement");
+		System.out.println("getFunction()=" + getFunction());
+		System.out.println("target=" + target);
+		System.out.println("context=" + context);
+
 		Object[] args = new Object[getFunction().getArguments().size()];
 		int i = 0;
 
 		for (FlexoBehaviourParameter param : getFunction().getArguments()) {
 			try {
 				args[i] = TypeUtils.castTo(getParameter(param).getBindingValue(context), param.getType());
+				System.out.println("> " + param.getArgumentName() + " " + getParameter(param) + "=" + args[i]);
 			} catch (InvocationTargetException e) {
 				throw new InvocationTargetTransformException(e);
 			}
