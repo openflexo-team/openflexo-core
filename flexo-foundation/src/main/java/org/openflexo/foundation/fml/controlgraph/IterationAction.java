@@ -49,6 +49,8 @@ import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
+import org.openflexo.foundation.fml.binding.IterationActionBindingModel;
+import org.openflexo.foundation.fml.binding.IterationActionBindingVariable;
 import org.openflexo.foundation.fml.editionaction.AssignableAction;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext.ReturnException;
@@ -161,10 +163,15 @@ public interface IterationAction extends AbstractIterationAction {
 		@Override
 		public Object execute(RunTimeEvaluationContext evaluationContext) throws ReturnException, FlexoException {
 
+			//System.out.println("Execute iteration");
+			//System.out.println("InferedBM=" + getInferedBindingModel());
+			//IterationActionBindingVariable bv = ((IterationActionBindingModel) getInferedBindingModel()).getIteratorBindingVariable();
+			//System.out.println("bv=" + bv + " type=" + bv.getType());
 			List<?> items = evaluateIteration(evaluationContext);
+			//System.out.println("items=" + items);
 			if (items != null) {
 				for (Object item : new ArrayList<Object>(items)) {
-					// System.out.println("> working with " + getIteratorName() + "=" + item);
+					//System.out.println("> working with " + getIteratorName() + "=" + item);
 					evaluationContext.declareVariable(getIteratorName(), item);
 					try {
 						getControlGraph().execute(evaluationContext);
@@ -248,6 +255,14 @@ public interface IterationAction extends AbstractIterationAction {
 			super.setOwner(owner);
 			if (getIterationAction() != null) {
 				getIterationAction().getBindingModel().setBaseBindingModel(getBaseBindingModel(getIterationAction()));
+			}
+		}
+
+		@Override
+		public void accept(FMLControlGraphVisitor visitor) {
+			super.accept(visitor);
+			if (getIterationAction() != null) {
+				getIterationAction().accept(visitor);
 			}
 		}
 
