@@ -1307,10 +1307,21 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 			return sb.toString();
 		}
 
+		// Used to avoid loops while computing toString()
+		private boolean toStringIsBuilding = false;
+
 		@Override
 		public String toString() {
-			return getImplementedInterface().getSimpleName() + ":" + (getFlexoConcept() != null ? getFlexoConcept().getName() : "null")
-					+ "[ID=" + getFlexoID() + "]" + (hasValidRenderer() ? " [" + getStringRepresentation() + "]" : "");
+			if (toStringIsBuilding) {
+				return getImplementedInterface().getSimpleName() + ":" + (getFlexoConcept() != null ? getFlexoConcept().getName() : "null")
+						+ "[ID=" + getFlexoID() + "]";
+			}
+			toStringIsBuilding = true;
+			String returned = getImplementedInterface().getSimpleName() + ":"
+					+ (getFlexoConcept() != null ? getFlexoConcept().getName() : "null") + "[ID=" + getFlexoID() + "]"
+					+ (hasValidRenderer() ? " [" + getStringRepresentation() + "]" : "");
+			toStringIsBuilding = false;
+			return returned;
 		}
 
 		/**
