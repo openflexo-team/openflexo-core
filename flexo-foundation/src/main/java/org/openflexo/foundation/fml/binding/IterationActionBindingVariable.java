@@ -59,19 +59,38 @@ public class IterationActionBindingVariable extends BindingVariable implements P
 	private final AbstractIterationAction action;
 	private Type lastKnownType = null;
 
+	// private boolean debug = false;
+
 	public IterationActionBindingVariable(AbstractIterationAction action) {
 		super(action.getIteratorName(), action.getItemType(), true);
 		this.action = action;
+		/*if (action.getIteratorName() != null && action.getIteratorName().equals("phase")) {
+			debug = true;
+		}*/
 		if (action != null) {
 			lastKnownType = action.getItemType();
 		}
+		// if (debug) {
+		// System.out.println("******* Got iterator " + action.getIteratorName() + " type=" + lastKnownType);
+		// }
 		if (action != null && action.getPropertyChangeSupport() != null) {
+			// if (debug)
+			// System.out.println("****** Listening " + action.getFMLRepresentation());
 			action.getPropertyChangeSupport().addPropertyChangeListener(this);
+		}
+		if (action instanceof IterationAction && ((IterationAction) action).getIterationAction() != null
+				&& ((IterationAction) action).getIterationAction().getPropertyChangeSupport() != null) {
+			// if (debug)
+			// System.out.println("****** Also listening " + ((IterationAction) action).getIterationAction().getFMLRepresentation());
+			((IterationAction) action).getIterationAction().getPropertyChangeSupport().addPropertyChangeListener(this);
 		}
 	}
 
 	@Override
 	public void delete() {
+		if (action instanceof IterationAction && ((IterationAction) action).getIterationAction().getPropertyChangeSupport() != null) {
+			((IterationAction) action).getIterationAction().getPropertyChangeSupport().removePropertyChangeListener(this);
+		}
 		if (action != null && action.getPropertyChangeSupport() != null) {
 			action.getPropertyChangeSupport().removePropertyChangeListener(this);
 		}
@@ -97,16 +116,39 @@ public class IterationActionBindingVariable extends BindingVariable implements P
 
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
+		// if (debug) {
+		// System.out.println("****** propertyChange " + evt.getPropertyName() + " source=" + evt.getSource());
+		// }
 		if (evt.getSource() == getAction()) {
 			if (evt.getPropertyName().equals(IterationAction.ITERATOR_NAME_KEY)) {
 				// System.out.println("Notify name changing for " + getFlexoRole() + " new=" + getVariableName());
 				getPropertyChangeSupport().firePropertyChange(VARIABLE_NAME_PROPERTY, evt.getOldValue(), getVariableName());
 			}
-			if (lastKnownType != getType()) {
-				// System.out.println("Notify type changing");
-				getPropertyChangeSupport().firePropertyChange(TYPE_PROPERTY, lastKnownType, getType());
-				lastKnownType = getType();
+			iteratorTypeMightHaveChanged();
+			if (evt.getPropertyName().equals(IterationAction.ITERATION_CONTROL_GRAPH_KEY)) {
+				if (action instanceof IterationAction && ((IterationAction) action).getIterationAction() != null
+						&& ((IterationAction) action).getIterationAction().getPropertyChangeSupport() != null) {
+					// if (debug)
+					// System.out
+					// .println("****** Also listening " + ((IterationAction) action).getIterationAction().getFMLRepresentation());
+					((IterationAction) action).getIterationAction().getPropertyChangeSupport().addPropertyChangeListener(this);
+				}
+				iteratorTypeMightHaveChanged();
 			}
 		}
+		if ((getAction() instanceof IterationAction) && (evt.getSource() == ((IterationAction) getAction()).getIterationAction())) {
+			iteratorTypeMightHaveChanged();
+		}
 	}
+
+	private void iteratorTypeMightHaveChanged() {
+		if (lastKnownType != getType()) {
+			// if (debug) {
+			// System.out.println("Iterator type changed for " + getType());
+			// }
+			getPropertyChangeSupport().firePropertyChange(TYPE_PROPERTY, lastKnownType, getType());
+			lastKnownType = getType();
+		}
+	}
+
 }
