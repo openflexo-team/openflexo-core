@@ -69,6 +69,7 @@ import org.openflexo.foundation.fml.rt.TypeAwareModelSlotInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstanceObject;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.technologyadapter.TypeAwareModelSlot;
+import org.openflexo.foundation.utils.OperationCancelledException;
 import org.openflexo.toolbox.StringUtils;
 
 /**
@@ -264,15 +265,17 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 	/**
 	 * This is the internal code performing execution of the control graph of {@link FlexoBehaviour}
 	 */
-	protected void executeControlGraph() throws FlexoException {
+	protected void executeControlGraph() throws OperationCancelledException, FlexoException {
 
 		if (getFlexoBehaviour() != null && getFlexoBehaviour().getControlGraph() != null) {
 			try {
 				getFlexoBehaviour().getControlGraph().execute(this);
 			} catch (ReturnException e) {
 				returnedValue = e.getReturnedValue();
+			} catch (OperationCancelledException e) {
+				throw e;
 			} catch (Exception e) {
-				logger.warning("Unexpected exception while executing FML control graph");
+				logger.warning("Unexpected exception while executing FML control graph: " + e);
 				System.err.println(getFlexoBehaviour().getFMLRepresentation());
 				e.printStackTrace();
 				throw new FlexoException(e);
