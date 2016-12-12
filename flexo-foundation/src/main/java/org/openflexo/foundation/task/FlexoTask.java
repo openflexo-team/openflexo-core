@@ -38,22 +38,22 @@
 
 package org.openflexo.foundation.task;
 
+import org.openflexo.localization.FlexoLocalization;
+import org.openflexo.toolbox.HasPropertyChangeSupport;
+
 import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-import org.openflexo.localization.FlexoLocalization;
-import org.openflexo.toolbox.HasPropertyChangeSupport;
-
 /**
- * Represents a long-running task launchable in Openflexo infrastructure<br>
+ * Represents a long-running task launch-able in OpenFlexo infrastructure<br>
  * A {@link FlexoTask} is executed in a given instance of {@link FlexoTaskManager}<br>
- * Life-cyle of a {@link FlexoTask} is this:
+ * Life-cycle of a {@link FlexoTask} is this:
  * <ul>
- * <li>WAITING: at the creation of the task, and when execution of task is conditionned by the end of execution of some other tasks</li>
+ * <li>WAITING: at the creation of the task, and when execution of task is conditioned by the end of execution of some other tasks</li>
  * <li>READY_TO_EXECUTE: when the task is ready to execute (when all dependant tasks have finished their job)</li>
- * <li>RUNNING: while the task is beeing executed</li>
+ * <li>RUNNING: while the task is being executed</li>
  * <li>FINISHED: when the task has successfully executed</li>
  * <li>EXCEPTION_THROWN: when the task has raised an exception</li>
  * <li>CANCEL_REQUESTED: when cancel has been requested for this task</li>
