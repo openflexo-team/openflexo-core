@@ -38,24 +38,6 @@
 
 package org.openflexo.foundation;
 
-import java.io.File;
-import java.io.FilenameFilter;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.Hashtable;
-import java.util.List;
-import java.util.Map;
-import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.regex.Pattern;
-import java.util.zip.Deflater;
-
-import javax.naming.InvalidNameException;
-
 import org.openflexo.foundation.FlexoEditor.FlexoEditorFactory;
 import org.openflexo.foundation.ProjectDataResource.ProjectDataResourceImpl;
 import org.openflexo.foundation.ProjectDirectoryResource.ProjectDirectoryResourceImpl;
@@ -100,6 +82,24 @@ import org.openflexo.toolbox.FlexoVersion;
 import org.openflexo.toolbox.IProgress;
 import org.openflexo.toolbox.ToolBox;
 import org.openflexo.toolbox.ZipUtils;
+
+import javax.naming.InvalidNameException;
+import java.io.File;
+import java.io.FilenameFilter;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.regex.Pattern;
+import java.util.zip.Deflater;
 
 /**
  * This class represents an Openflexo project.<br>
@@ -385,9 +385,7 @@ public class FlexoProject extends FileSystemBasedResourceCenter
 	}
 
 	public void save(FlexoProgress progress) throws SaveResourceException {
-		if (logger.isLoggable(Level.INFO)) {
-			logger.info("Saving project...");
-		}
+		logger.info("Saving project...");
 
 		getResource().save(progress);
 		getProjectDataResource().save(progress);
@@ -396,21 +394,28 @@ public class FlexoProject extends FileSystemBasedResourceCenter
 
 		getServiceManager().getResourceManager().deleteFilesToBeDeleted();
 
-		if (logger.isLoggable(Level.INFO)) {
-			logger.info("Saving project... DONE");
-		}
-
+		logger.info("Saving project... DONE");
 	}
 
-	// TODO: please implement this
 	public void saveAs(File newProjectDirectory, FlexoProgress progress) throws SaveResourceException {
-		if (logger.isLoggable(Level.INFO)) {
-			logger.info("Saving project as...");
+		logger.info("Saving project as... (" + newProjectDirectory +")" );
+
+		if (Objects.equals(getRootDirectory(), newProjectDirectory)) {
+			save(progress);
+		} else {
+			try {
+				// sets project directory
+				setProjectDirectory(newProjectDirectory);
+
+				File current = getRootDirectory();
+				FileUtils.copyContentDirToDir(current, newProjectDirectory);
+
+			} catch (IOException e) {
+				throw new SaveResourceException(getResource().getFlexoIODelegate(), e);
+			}
 		}
 
-		// TODO
-		logger.warning("Project 'Saving As' not implemented yet");
-
+		logger.info("Saving project as... (" + newProjectDirectory +") DONE");
 	}
 
 	/**

@@ -38,18 +38,6 @@
 
 package org.openflexo.foundation;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import org.openflexo.foundation.nature.ProjectNature;
 import org.openflexo.foundation.resource.FlexoProjectReference;
 import org.openflexo.foundation.resource.ProjectClosed;
@@ -67,6 +55,18 @@ import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.model.factory.ModelFactory;
 import org.openflexo.toolbox.FileUtils;
 import org.openflexo.toolbox.HasPropertyChangeSupport;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * This {@link FlexoService} allows to instanciate {@link FlexoProject} through a {@link FlexoEditor} for a given
@@ -394,79 +394,28 @@ public class ProjectLoader extends FlexoServiceImpl implements HasPropertyChange
 		}*/
 	}
 
-	public void saveAsProject(FlexoProject project) {
-		logger.warning("Not implemented yet");
-		// TODO
-		/*project.getXmlMappings();
-		List<FlexoVersion> availableVersions = new ArrayList<FlexoVersion>(XMLSerializationService.getReleaseVersions());
-		Collections.sort(availableVersions, Collections.reverseOrder(FlexoVersion.comparator));
-		
-		final DirectoryParameter targetPrjDirectory = new DirectoryParameter("targetPrjDirectory", "new_project_file", project
-				.getProjectDirectory().getParentFile()) {
-			@Override
-			public void setValue(File value) {
-				if (!value.getName().endsWith(".prj")) {
-					value = new File(value.getParentFile(), value.getName() + ".prj");
-				}
-				super.setValue(value);
+	public void saveAsProject(File projectDirectory, FlexoProject project)
+			throws IOException, SaveResourceException, ProjectInitializerException, ProjectLoadingCancelledException
+	{
+		closeProject(project);
+
+		if (projectDirectory.exists()) {
+			// We should have already asked the user if the new project has to override the old one
+			// so we really delete the old project
+
+			File backupProject = new File(projectDirectory.getParentFile(), projectDirectory.getName() + "~");
+			if (backupProject.exists()) {
+				FileUtils.recursiveDeleteFile(backupProject);
 			}
-		};
-		targetPrjDirectory.setDepends("targetPrjDirectory");
-		targetPrjDirectory.addParameter(FileEditWidget.TITLE, "select_a_prj_directory");
-		targetPrjDirectory.addParameter(FileEditWidget.FILTER, "*.prj");
-		targetPrjDirectory.addParameter(FileEditWidget.MODE, FileEditWidget.SAVE);
-		final DynamicDropDownParameter<FlexoVersion> versionParam = new DynamicDropDownParameter<FlexoVersion>("version", "version",
-				availableVersions, availableVersions.get(0));
-		versionParam.setShowReset(false);
-		
-		AskParametersDialog dialog = AskParametersDialog.createAskParametersDialog(project, null,
-				FlexoLocalization.localizedForKey("save_project_as"),
-				FlexoLocalization.localizedForKey("enter_parameters_for_project_saving"), new AskParametersDialog.ValidationCondition() {
-					@Override
-					public boolean isValid(ParametersModel model) {
-						if (versionParam.getValue() == null) {
-							errorMessage = FlexoLocalization.localizedForKey("please_submit_a_version");
-							return false;
-						}
-						if (targetPrjDirectory.getValue() == null) {
-							errorMessage = FlexoLocalization.localizedForKey("please_submit_a_prj_directory");
-							return false;
-						}
-						if (!(targetPrjDirectory.getValue().getName().endsWith(".prj") && !targetPrjDirectory.getValue().exists())) {
-							errorMessage = FlexoLocalization.localizedForKey("please_submit_a_valid_prj_directory");
-							return false;
-						}
-						return true;
-					}
-				}, targetPrjDirectory, versionParam);
-		
-		System.setProperty("apple.awt.fileDialogForDirectories", "false");
-		if (dialog.getStatus() == AskParametersDialog.VALIDATE) {
-			File projectDirectory = targetPrjDirectory.getValue();
-			if (projectDirectory == null) {
-				return;
-			} else if (!projectDirectory.exists()) {
-				if (!projectDirectory.mkdirs()) {
-					FlexoController.notify(FlexoLocalization.localizedForKey("could_not_create_prj_directory"));
-					return;
-				}
-			}
-			if (!projectDirectory.canWrite()) {
-				FlexoController.notify(FlexoLocalization.localizedForKey("could_not_save_permission_denied"));
-				return;
-			}
-			try {
-				ProgressWindow.showProgressWindow(FlexoLocalization.localizedForKey("saving"), 1);
-				project.saveAs(projectDirectory, ProgressWindow.instance(),
-						FlexoCst.BUSINESS_APPLICATION_VERSION.equals(versionParam.getValue()) ? null : versionParam.getValue(), true, true);
-				GeneralPreferences.addToLastOpenedProjects(projectDirectory);
-				ProgressWindow.hideProgressWindow();
-			} catch (SaveResourceException e) {
-				e.printStackTrace();
-				ProgressWindow.hideProgressWindow();
-				FlexoController.notify(FlexoLocalization.localizedForKey("save_as_operation_failed"));
-			}
-		}*/
+			FileUtils.rename(projectDirectory, backupProject);
+		}
+
+
+		project.saveAs(projectDirectory, null);
+
+
+		loadProject(projectDirectory);
+
 	}
 
 	public List<FlexoProject> getModifiedProjects() {
