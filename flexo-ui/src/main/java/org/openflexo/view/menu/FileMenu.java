@@ -490,9 +490,13 @@ public class FileMenu extends FlexoMenu {
 
 	}
 
-	public class SaveAsProjectAction extends AbstractAction {
+	public class SaveAsProjectAction extends AbstractAction implements PropertyChangeListener {
 		public SaveAsProjectAction() {
 			super();
+			if (getController() != null) {
+				manager.addListener(ControllerModel.CURRENT_EDITOR, this, getController().getControllerModel());
+			}
+			updateEnability();
 		}
 
 		@Override
@@ -506,6 +510,21 @@ public class FileMenu extends FlexoMenu {
 					e.printStackTrace();
 				}
 			}
+		}
+
+		@Override
+		public void propertyChange(PropertyChangeEvent evt) {
+			if (getController() != null) {
+				if (evt.getSource() == getController().getControllerModel()) {
+					if (ControllerModel.CURRENT_EDITOR.equals(evt.getPropertyName())) {
+						updateEnability();
+					}
+				}
+			}
+		}
+
+		private void updateEnability() {
+			setEnabled(getController() != null && getController().getProject() != null);
 		}
 
 	}
