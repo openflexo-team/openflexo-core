@@ -38,6 +38,15 @@
 
 package org.openflexo.project;
 
+import org.openflexo.foundation.FlexoProject;
+import org.openflexo.foundation.resource.FlexoResource;
+import org.openflexo.foundation.resource.SaveResourceException;
+import org.openflexo.localization.FlexoLocalization;
+import org.openflexo.logging.FlexoLogger;
+import org.openflexo.toolbox.FileUtils;
+import org.openflexo.view.controller.FlexoController;
+
+import javax.swing.*;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
@@ -50,16 +59,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import javax.swing.SwingUtilities;
-
-import org.openflexo.foundation.FlexoProject;
-import org.openflexo.foundation.resource.FlexoResource;
-import org.openflexo.foundation.resource.SaveResourceException;
-import org.openflexo.localization.FlexoLocalization;
-import org.openflexo.logging.FlexoLogger;
-import org.openflexo.toolbox.FileUtils;
-import org.openflexo.view.controller.FlexoController;
 
 /**
  * @author gpolet
@@ -265,7 +264,7 @@ public class FlexoAutoSaveThread extends Thread {
 				boolean saveActionSuccess = true;
 				File nextSaveDirectory = getNextSaveDirectory();
 				try {
-					project.saveAs(nextSaveDirectory, null);
+					project.saveAs(nextSaveDirectory);
 				} catch (SaveResourceException e) {
 					saveActionSuccess = false;
 					e.printStackTrace();

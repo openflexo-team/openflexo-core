@@ -237,6 +237,19 @@ public class FlexoProject extends FileSystemBasedResourceCenter
 		return editor;
 	}
 
+	public static String nameFromDirectory(File projectDirectory) {
+		String projectName = projectDirectory.getName().replaceAll(BAD_CHARACTERS_REG_EXP, " ");
+		if (projectName.endsWith(".prj")) {
+			projectName = projectName.substring(0, projectName.length() - 4);
+		}
+		else {
+			if (logger.isLoggable(Level.WARNING)) {
+				logger.warning("Project directory does not end with '.prj'");
+			}
+		}
+		return projectName;
+	}
+
 	public static final String BASE_PROJECT_URI = "http://www.openflexo.org/projects";
 	public static final String RESOURCES = "resources";
 
@@ -323,14 +336,7 @@ public class FlexoProject extends FileSystemBasedResourceCenter
 	protected FlexoProject(File aProjectDirectory, FlexoServiceManager serviceManager) {
 		super(aProjectDirectory, serviceManager.getResourceCenterService());
 		this.serviceManager = serviceManager;
-		// xmlMappings = serviceManager.getXMLSerializationService();
-		// Just to be sure, we initialize them here
-		/*if (allRegisteredObjects == null) {
-				allRegisteredObjects = new Vector<FlexoModelObject>();
-			}*/
-		/*if (_recentlyCreatedObjects == null) {
-				_recentlyCreatedObjects = new Vector<FlexoModelObject>();
-			}*/
+
 		editors = new Vector<FlexoEditor>();
 		synchronized (FlexoProject.class) {
 			id = ID++;
@@ -339,21 +345,9 @@ public class FlexoProject extends FileSystemBasedResourceCenter
 		_externalRepositories = new ArrayList<ProjectExternalRepository>();
 		repositoriesCache = new Hashtable<String, ProjectExternalRepository>();
 		filesToDelete = new Vector<File>();
-		// resources = new ResourceHashtable();
-		// docTypes = new Vector<DocType>();
 
-		projectName = aProjectDirectory.getName().replaceAll(BAD_CHARACTERS_REG_EXP, " ");
-		if (projectName.endsWith(".prj")) {
-			projectName = projectName.substring(0, projectName.length() - 4);
-		}
-		else {
-			if (logger.isLoggable(Level.WARNING)) {
-				logger.warning("Project directory does not end with '.prj'");
-			}
-		}
+		projectName = nameFromDirectory(aProjectDirectory);
 		setProjectDirectory(aProjectDirectory);
-		// getRootFolder().setName(projectName + ".prj");
-		// getRootFolder().setFullQualifiedPath(aProjectDirectory.getAbsolutePath());
 	}
 
 	@Override
@@ -368,8 +362,6 @@ public class FlexoProject extends FileSystemBasedResourceCenter
 
 	/**
 	 * Overrides setChanged
-	 * 
-	 * @see org.openflexo.foundation.FlexoXMLSerializableObject#setChanged()
 	 */
 	@Override
 	public void setChanged() {
@@ -397,11 +389,11 @@ public class FlexoProject extends FileSystemBasedResourceCenter
 		logger.info("Saving project... DONE");
 	}
 
-	public void saveAs(File newProjectDirectory, FlexoProgress progress) throws SaveResourceException {
+	public void saveAs(File newProjectDirectory) throws SaveResourceException, InvalidNameException {
 		logger.info("Saving project as... (" + newProjectDirectory +")" );
 
-		if (Objects.equals(getRootDirectory(), newProjectDirectory)) {
-			save(progress);
+		if (Objects.equals(getProjectDirectory(), newProjectDirectory)) {
+			save();
 		} else {
 			try {
 				// sets project directory

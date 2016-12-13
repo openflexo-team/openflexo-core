@@ -394,9 +394,7 @@ public class ProjectLoader extends FlexoServiceImpl implements HasPropertyChange
 		}*/
 	}
 
-	public void saveAsProject(File projectDirectory, FlexoProject project)
-			throws IOException, SaveResourceException, ProjectInitializerException, ProjectLoadingCancelledException
-	{
+	public void saveAsProject(File projectDirectory, FlexoProject project) throws Exception {
 		closeProject(project);
 
 		if (projectDirectory.exists()) {
@@ -410,12 +408,9 @@ public class ProjectLoader extends FlexoServiceImpl implements HasPropertyChange
 			FileUtils.rename(projectDirectory, backupProject);
 		}
 
-
-		project.saveAs(projectDirectory, null);
-
+		project.saveAs(projectDirectory);
 
 		loadProject(projectDirectory);
-
 	}
 
 	public List<FlexoProject> getModifiedProjects() {
