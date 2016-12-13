@@ -38,6 +38,7 @@
 
 package org.openflexo.foundation;
 
+import org.apache.commons.io.filefilter.FileFilterUtils;
 import org.openflexo.foundation.FlexoEditor.FlexoEditorFactory;
 import org.openflexo.foundation.ProjectDataResource.ProjectDataResourceImpl;
 import org.openflexo.foundation.ProjectDirectoryResource.ProjectDirectoryResourceImpl;
@@ -78,6 +79,7 @@ import org.openflexo.model.validation.ValidationReport;
 import org.openflexo.model.validation.ValidationRule;
 import org.openflexo.toolbox.DirectoryWatcher;
 import org.openflexo.toolbox.FileUtils;
+import org.openflexo.toolbox.FileUtils.CopyStrategy;
 import org.openflexo.toolbox.FlexoVersion;
 import org.openflexo.toolbox.IProgress;
 import org.openflexo.toolbox.ToolBox;
@@ -389,8 +391,8 @@ public class FlexoProject extends FileSystemBasedResourceCenter
 		logger.info("Saving project... DONE");
 	}
 
-	public void saveAs(File newProjectDirectory) throws SaveResourceException, InvalidNameException {
-		logger.info("Saving project as... (" + newProjectDirectory +")" );
+	public void copyTo(File newProjectDirectory) throws SaveResourceException, InvalidNameException {
+		logger.info("Copy project to... (" + newProjectDirectory +")" );
 
 		if (Objects.equals(getProjectDirectory(), newProjectDirectory)) {
 			save();
@@ -400,14 +402,14 @@ public class FlexoProject extends FileSystemBasedResourceCenter
 				setProjectDirectory(newProjectDirectory);
 
 				File current = getRootDirectory();
-				FileUtils.copyContentDirToDir(current, newProjectDirectory);
+				FileUtils.copyContentDirToDir(current, newProjectDirectory, CopyStrategy.REPLACE, FileFilterUtils.notFileFilter(FileFilterUtils.suffixFileFilter("~")));
 
 			} catch (IOException e) {
 				throw new SaveResourceException(getResource().getFlexoIODelegate(), e);
 			}
 		}
 
-		logger.info("Saving project as... (" + newProjectDirectory +") DONE");
+		logger.info("Copy project to... (" + newProjectDirectory +") DONE");
 	}
 
 	/**
@@ -427,7 +429,7 @@ public class FlexoProject extends FileSystemBasedResourceCenter
 			File tempProjectDirectory = FileUtils
 					.createTempDirectory(getProjectName().length() > 2 ? getProjectName() : "FlexoProject-" + getProjectName(), "");
 			tempProjectDirectory = new File(tempProjectDirectory, getProjectDirectory().getName());
-			// saveAs(tempProjectDirectory, progress, null, false, copyCVSFiles);
+			// copyTo(tempProjectDirectory, progress, null, false, copyCVSFiles);
 			if (lightenProject) {
 				// replaceBigJarsWithEmtpyJars(progress, tempProjectDirectory);
 				// removeScreenshots(progress, tempProjectDirectory);
@@ -654,14 +656,15 @@ public class FlexoProject extends FileSystemBasedResourceCenter
 	 * @return
 	 */
 	public final ProjectWrapper<?> asNature(String projectNatureClassName) {
-		ProjectNature<?, ?> projectNature = getServiceManager().getProjectNatureService().getProjectNature(projectNatureClassName);
-		if (projectNature != null) {
-			return projectNature.getProjectWrapper(this);
+		if (!closed) {
+			ProjectNature<?, ?> projectNature = getServiceManager().getProjectNatureService().getProjectNature(projectNatureClassName);
+			if (projectNature != null) {
+				return projectNature.getProjectWrapper(this);
+			}
 		}
-		else {
-			System.out.println("Could not lookup nature " + projectNatureClassName);
-			return null;
-		}
+
+		System.out.println("Could not lookup nature " + projectNatureClassName);
+		return null;
 	}
 
 	public ViewLibrary<?> getViewLibrary() {
