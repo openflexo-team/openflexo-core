@@ -116,15 +116,19 @@ public class ProjectLoader extends FlexoServiceImpl implements HasPropertyChange
 	}
 
 	public boolean hasEditorForProjectDirectory(File projectDirectory) {
+		return getEditorForProjectDirectory(projectDirectory) != null;
+	}
+
+	public FlexoEditor getEditorForProjectDirectory(File projectDirectory) {
 		if (projectDirectory == null) {
-			return false;
+			return null;
 		}
 		for (Entry<FlexoProject, FlexoEditor> e : editors.entrySet()) {
 			if (e.getKey().getProjectDirectory().equals(projectDirectory)) {
-				return true;
+				return e.getValue();
 			}
 		}
-		return false;
+		return null;
 	}
 
 	public Map<FlexoProject, FlexoEditor> getEditors() {
@@ -149,7 +153,16 @@ public class ProjectLoader extends FlexoServiceImpl implements HasPropertyChange
 	 * @throws ProjectInitializerException
 	 */
 	public FlexoTask loadProject(File projectDirectory, boolean asImportedProject, FlexoTask... tasksToBeExecutedBefore)
+			throws ProjectInitializerException, ProjectLoadingCancelledException
+	{
+
+		internalLoadProject(projectDirectory, asImportedProject);
+		return null;
+	}
+
+	private FlexoEditor internalLoadProject(File projectDirectory, boolean asImportedProject)
 			throws ProjectInitializerException, ProjectLoadingCancelledException {
+		LocalizedDelegate locales = getServiceManager().getLocalizationService().getFlexoLocalizer();
 
 		if (projectDirectory == null) {
 			throw new IllegalArgumentException("Project directory cannot be null");
@@ -162,8 +175,6 @@ public class ProjectLoader extends FlexoServiceImpl implements HasPropertyChange
 		} catch (UnreadableProjectException e) {
 			throw new ProjectLoadingCancelledException(e.getMessage());
 		}
-
-		LocalizedDelegate locales = getServiceManager().getLocalizationService().getFlexoLocalizer();
 
 		Progress.progress(locales.localizedForKey("opening_project") + projectDirectory.getAbsolutePath());
 
@@ -206,8 +217,7 @@ public class ProjectLoader extends FlexoServiceImpl implements HasPropertyChange
 		Progress.progress(locales.localizedForKey("notify_editors"));
 		getServiceManager().notify(this, new ProjectLoaded(editor.getProject()));
 
-		return null;
-
+		return editor;
 	}
 
 	public FlexoTask reloadProject(FlexoProject project) throws ProjectLoadingCancelledException, ProjectInitializerException {
@@ -395,8 +405,11 @@ public class ProjectLoader extends FlexoServiceImpl implements HasPropertyChange
 	}
 
 	public void saveAsProject(File projectDirectory, FlexoProject project) throws Exception {
+		// closes the selected project
+		String oldProjectUriPrefix = FlexoProjectUtil.uriPrefix(project.getProjectURI());
 		closeProject(project);
 
+		// prepare
 		if (projectDirectory.exists()) {
 			// We should have already asked the user if the new project has to override the old one
 			// so we really delete the old project
@@ -408,10 +421,17 @@ public class ProjectLoader extends FlexoServiceImpl implements HasPropertyChange
 			FileUtils.rename(projectDirectory, backupProject);
 		}
 
-		project.saveAs(projectDirectory);
+		project.copyTo(projectDirectory);
 
-		loadProject(projectDirectory);
+		FlexoEditor editor = internalLoadProject(projectDirectory, false);
+		FlexoProject reloaded = editor.getProject();
+		reloaded.setURI(null);
+		reloaded.setProjectName(FlexoProject.nameFromDirectory(projectDirectory));
+		//FlexoProjectUtil.updateProjectPrefixRecursively(reloaded, oldProjectUriPrefix);
+		reloaded.save();
 	}
+
+
 
 	public List<FlexoProject> getModifiedProjects() {
 		List<FlexoProject> projects = new ArrayList<FlexoProject>(editors.size());

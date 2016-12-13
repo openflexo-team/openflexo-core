@@ -39,15 +39,18 @@
 
 package org.openflexo.foundation.utils;
 
+import org.openflexo.foundation.FlexoProject;
+import org.openflexo.foundation.resource.FlexoResource;
+import org.openflexo.localization.FlexoLocalization;
+import org.openflexo.rm.Resource;
+import org.openflexo.toolbox.FlexoVersion;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import org.openflexo.localization.FlexoLocalization;
-import org.openflexo.toolbox.FlexoVersion;
 
 public class FlexoProjectUtil {
 
@@ -146,4 +149,34 @@ public class FlexoProjectUtil {
 		return f;
 	}
 
+	public static void updateProjectPrefixRecursively(FlexoProject project, String oldPrefix) {
+		String newPrefix = FlexoProjectUtil.uriPrefix(project.getProjectURI());
+		for (FlexoResource<?> flexoResource : project.getAllResources()) {
+			String uri = flexoResource.getURI();
+			System.out.println("Reloaded resource " + flexoResource.getName() + " -> " + uri);
+			FlexoProjectUtil.updateResourceUriPrefix(flexoResource, oldPrefix, newPrefix);
+
+		}
+	}
+
+	public static String uriPrefix(String uri) {
+		int lastIndex = uri.lastIndexOf('_') + 1;
+		return lastIndex > 0 && lastIndex < uri.length() ? uri.substring(0, lastIndex)  : uri;
+	}
+
+	private static void updateResourceUriPrefix(FlexoResource resource, String oldPrefix, String newPrefix) {
+		String uri = resource.getURI();
+		if (uri.startsWith(oldPrefix)) {
+			String newUri = newPrefix + uri.substring(oldPrefix.length());
+			resource.setURI(newUri);
+		}
+
+		for (Object child : resource.getContents(true)) {
+			if (child instanceof Resource) {
+				FlexoResource childResource = (FlexoResource) child;
+				System.out.println("- " + resource.getName() + " -> " + resource.getURI());
+				FlexoProjectUtil.updateResourceUriPrefix(childResource, oldPrefix, newPrefix);
+			}
+		}
+	}
 }
