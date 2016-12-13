@@ -264,7 +264,7 @@ public class FlexoAutoSaveThread extends Thread {
 				boolean saveActionSuccess = true;
 				File nextSaveDirectory = getNextSaveDirectory();
 				try {
-					project.saveAs(nextSaveDirectory);
+					project.copyTo(nextSaveDirectory);
 				} catch (SaveResourceException e) {
 					saveActionSuccess = false;
 					e.printStackTrace();
