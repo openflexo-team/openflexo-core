@@ -39,17 +39,9 @@
 
 package org.openflexo.view.controller.model;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-import java.util.Stack;
-import java.util.Vector;
-import java.util.logging.Level;
-
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import org.apache.commons.collections15.ListUtils;
 import org.openflexo.ApplicationContext;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject;
@@ -64,8 +56,16 @@ import org.openflexo.toolbox.ExtendedSet;
 import org.openflexo.toolbox.PropertyChangeListenerRegistrationManager;
 import org.openflexo.view.controller.FlexoController;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+import java.util.Stack;
+import java.util.Vector;
+import java.util.logging.Level;
 
 public class ControllerModel extends ControllerModelObject implements PropertyChangeListener {
 
@@ -422,33 +422,30 @@ public class ControllerModel extends ControllerModelObject implements PropertyCh
 	}
 
 	private Location getLastLocationForEditor(FlexoEditor editor, FlexoPerspective perspective) {
+		List<Location> allLocations = ListUtils.union(previousHistory, nextHistory);
 		if (perspective != null) {
-			for (int i = previousHistory.size() - 1; i > -1; i--) {
-				Location location = previousHistory.get(i);
-				if ((editor == null || location.getEditor() == editor) && location.getPerspective() == perspective
-						&& locations.contains(location)) {
+			// avoid empty perspective if there is one to select
+			for (Location location : allLocations) {
+				if (filterEditor(editor, location) && location.getPerspective() == perspective && isLocationAvailable(location)) {
 					return location;
 				}
 			}
-			for (Location location : nextHistory) {
-				if ((editor == null || location.getEditor() == editor) && location.getPerspective() == perspective
-						&& locations.contains(location)) {
+		} else {
+			for (Location location : allLocations) {
+				if (filterEditor(editor, location) && isLocationAvailable(location)) {
 					return location;
 				}
-			}
-		}
-		for (int i = previousHistory.size() - 1; i > -1; i--) {
-			Location location = previousHistory.get(i);
-			if (editor == null || location.getEditor() == editor && locations.contains(location)) {
-				return location;
-			}
-		}
-		for (Location location : nextHistory) {
-			if (editor == null || location.getEditor() == editor && locations.contains(location)) {
-				return location;
 			}
 		}
 		return NO_LOCATION;
+	}
+
+	private boolean filterEditor(FlexoEditor editor, Location location) {
+		return editor == null || location.getEditor() == editor;
+	}
+
+	private boolean isLocationAvailable(Location location) {
+		return locations.contains(location);
 	}
 
 	private FlexoObject getParent(FlexoObject object) {
