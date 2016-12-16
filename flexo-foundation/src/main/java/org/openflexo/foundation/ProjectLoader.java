@@ -311,105 +311,11 @@ public class ProjectLoader extends FlexoServiceImpl implements HasPropertyChange
 		getServiceManager().notify(this, new ProjectClosed(project));
 	}
 
-	public void saveProjectForServer(FlexoProject project) {
-		/*final String zipFilename = project.getProjectDirectory().getName()
-				.substring(0, project.getProjectDirectory().getName().length() - 4);
-		String zipFileNameProposal = zipFilename + FOR_FLEXO_SERVER + new FlexoVersion(1, 0, 0, -1, false, false);
-		File[] zips = project.getProjectDirectory().getParentFile().listFiles(new FileFilter() {
-			@Override
-			public boolean accept(File pathname) {
-				return pathname.getName().toLowerCase().endsWith(".zip") && pathname.getName().startsWith(zipFilename);
-			}
-		});
-		File previousVersion = null;
-		if (zips != null) {
-			for (File file : zips) {
-				if (previousVersion == null || previousVersion.lastModified() < file.lastModified()) {
-					previousVersion = file;
-				}
-			}
-		}
-		if (previousVersion != null && previousVersion.getName().indexOf(FOR_FLEXO_SERVER) > -1) {
-			String version = previousVersion.getName()
-					.substring(previousVersion.getName().indexOf(FOR_FLEXO_SERVER) + FOR_FLEXO_SERVER.length(),
-							previousVersion.getName().length() - 4);
-			if (FlexoVersion.isValidVersionString(version)) {
-				FlexoVersion v = new FlexoVersion(version);
-				v.minor++;
-				zipFileNameProposal = zipFilename + FOR_FLEXO_SERVER + v;
-			}
-		}
-		final FileParameter targetZippedProject = new FileParameter("targetZippedProject", "new_zip_file", new File(project
-				.getProjectDirectory().getParentFile(), zipFileNameProposal + ".zip")) {
-			@Override
-			public void setValue(File value) {
-				if (!value.getName().endsWith(".zip")) {
-					value = new File(value.getParentFile(), value.getName() + ".zip");
-				}
-				super.setValue(value);
-			}
-		};
-		targetZippedProject.setDepends("targetZippedProject");
-		targetZippedProject.addParameter(FileEditWidget.TITLE, "select_a_zip_file");
-		targetZippedProject.addParameter(FileEditWidget.FILTER, "*.zip");
-		targetZippedProject.addParameter(FileEditWidget.MODE, FileEditWidget.SAVE);
-		CheckboxParameter removeScreenshotsAndLibraries = new CheckboxParameter("lighten", "remove_screenshots_and_libs", true);
-		
-		AskParametersDialog dialog = AskParametersDialog.createAskParametersDialog(project, null,
-				FlexoLocalization.localizedForKey("save_project_as"), FlexoLocalization.localizedForKey("select_a_zip_file_for_project"),
-				new AskParametersDialog.ValidationCondition() {
-					@Override
-					public boolean isValid(ParametersModel model) {
-						if (targetZippedProject.getValue() == null) {
-							errorMessage = FlexoLocalization.localizedForKey("please_submit_a_zip");
-							return false;
-						}
-						return true;
-					}
-				}, targetZippedProject, removeScreenshotsAndLibraries);
-		
-		System.setProperty("apple.awt.fileDialogForDirectories", "false");
-		if (dialog.getStatus() == AskParametersDialog.VALIDATE) {
-			File zipFile = targetZippedProject.getValue();
-			if (zipFile == null) {
-				return;
-			}
-			if (!zipFile.exists()) {
-				try {
-					FileUtils.createNewFile(zipFile);
-				} catch (IOException e1) {
-					e1.printStackTrace();
-					FlexoController.notify(FlexoLocalization.localizedForKey("could_not_save_permission_denied"));
-					return;
-				}
-			} else {
-				if (!FlexoController.confirm(FlexoLocalization.localizedForKey("file_already_exists.replace_it?"))) {
-					return;
-				}
-			}
-			if (!zipFile.canWrite()) {
-				FlexoController.notify(FlexoLocalization.localizedForKey("could_not_save_permission_denied"));
-				return;
-			}
-			try {
-				ProgressWindow.showProgressWindow(FlexoLocalization.localizedForKey("saving"), removeScreenshotsAndLibraries.getValue() ? 5
-						: 2);
-				project.saveAsZipFile(zipFile, ProgressWindow.instance(), removeScreenshotsAndLibraries.getValue(), true);
-				ProgressWindow.hideProgressWindow();
-			} catch (SaveResourceException e) {
-				e.printStackTrace();
-				ProgressWindow.hideProgressWindow();
-				FlexoController.notify(FlexoLocalization.localizedForKey("save_as_operation_failed"));
-			}
-		}*/
-	}
-
 	public void saveAsProject(File projectDirectory, FlexoProject project) throws Exception {
 		// closes the selected project
-		String oldProjectUriPrefix = FlexoProjectUtil.uriPrefix(project.getProjectURI());
 		closeProject(project);
 
-		// prepare
+		// prepare target if exists
 		if (projectDirectory.exists()) {
 			// We should have already asked the user if the new project has to override the old one
 			// so we really delete the old project
@@ -421,14 +327,11 @@ public class ProjectLoader extends FlexoServiceImpl implements HasPropertyChange
 			FileUtils.rename(projectDirectory, backupProject);
 		}
 
+		// copy project files
 		project.copyTo(projectDirectory);
 
-		FlexoEditor editor = internalLoadProject(projectDirectory, false);
-		FlexoProject reloaded = editor.getProject();
-		reloaded.setURI(null);
-		reloaded.setProjectName(FlexoProject.nameFromDirectory(projectDirectory));
-		//FlexoProjectUtil.updateProjectPrefixRecursively(reloaded, oldProjectUriPrefix);
-		reloaded.save();
+		// reload project
+		loadProject(projectDirectory);
 	}
 
 
