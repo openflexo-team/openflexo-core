@@ -38,14 +38,6 @@
 
 package org.openflexo.fml.controller.action;
 
-import java.awt.Dimension;
-import java.awt.Image;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.lang.reflect.Type;
-import java.util.List;
-import java.util.logging.Logger;
-
 import org.openflexo.ApplicationContext;
 import org.openflexo.components.wizard.WizardStep;
 import org.openflexo.connie.type.TypeUtils;
@@ -63,6 +55,14 @@ import org.openflexo.icon.IconFactory;
 import org.openflexo.icon.IconLibrary;
 import org.openflexo.toolbox.StringUtils;
 import org.openflexo.view.controller.FlexoController;
+
+import java.awt.*;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.lang.reflect.Type;
+import java.util.List;
+import java.util.Objects;
+import java.util.logging.Logger;
 
 public class CreateInspectorEntryWizard extends AbstractCreateFMLElementWizard<CreateInspectorEntry, FlexoConceptInspector, FMLObject> {
 
@@ -122,7 +122,7 @@ public class CreateInspectorEntryWizard extends AbstractCreateFMLElementWizard<C
 
 		@Override
 		public void propertyChange(PropertyChangeEvent evt) {
-			if (evt.getPropertyName().equals("data")) {
+			if (Objects.equals(evt.getPropertyName(),"data")) {
 				getPropertyChangeSupport().firePropertyChange("entryType", null, getEntryType());
 				checkValidity();
 			}
