@@ -1,28 +1,29 @@
 dependencies {
   // openflexo dep
-  compile relativeProject(':flexo-foundation')
+  compile project(':flexo-foundation')
   // external dep
 
   // testing dep
-  testCompile relativeProject(':flexo-foundation-test')
-  testCompile relativeProject(':flexo-test-resources')
+  testCompile project(':flexo-foundation-test')
+  //  testCompile group: "org.openflexo", name: "gina-test", version: "1.+"
+  testCompile project(':flexo-test-resources')
 }
 
 apply plugin: 'sablecc'
 
 sablecc {
   inputDir = "src/main/resources/grammar"
-  intermediateDir = "target/generated-sources/grammar"
-  outputDir = "target/generated-sources/sablecc"  //  outputDir = "src/main/java"
+  intermediateDir = "build/generated-sources/grammar"
+  outputDir = "build/generated-sources/sablecc"  //  outputDir = "src/main/java"
 }
 
 sourceSets {
  main {
    java {
-     srcDir 'target/generated-sources/sablecc'
+     srcDir 'build/generated-sources/sablecc'
    }
    resources {
-     srcDir 'target/generated-sources/sablecc'
+     srcDir 'build/generated-sources/sablecc'
      includes = [ "**/*.dat" ]
    }
  }

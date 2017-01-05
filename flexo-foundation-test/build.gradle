@@ -1,10 +1,10 @@
 dependencies {
   // openflexo dep
-  compile relativeProject(':flexo-foundation')
+  compile project(':flexo-foundation')
   // external dep
 
   // testing dep
-  testCompile group: "org.openflexo", name: "testutils", version: "1.+"
-  testCompile relativeProject(':flexo-test-resources')
+  testCompile group: "org.openflexo", name: "testutils", version: "1.4-SNAPSHOT"
+  testCompile project(':flexo-test-resources')
   testRuntime group: "org.openflexo", name: "testViewpoint2", version: "1.0"
 }

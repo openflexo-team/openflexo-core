@@ -1,14 +1,14 @@
 dependencies {
   // openflexo dep
-  compile relativeProject(':flexo-foundation')
-  compile relativeProject(':flexodocresourcemanager')
-  compile group: "org.openflexo", name: "connie-core", version: "1.+"
-  compile group: "org.openflexo", name: "gina-swing", version: "1.+"
-  compile group: "org.openflexo", name: "gina-swing-editor", version: "1.+"
-  compile group: "org.openflexo", name: "diana-swing", version: "1.+"
-  compile group: "org.openflexo", name: "flexohelp", version: "1.+"
+  compile project(':flexo-foundation')
+  compile project(':flexodocresourcemanager')
+  compile group: "org.openflexo", name: "connie-core", version: "1.4-SNAPSHOT"
+  compile group: "org.openflexo", name: "gina-swing", version: "2.1-SNAPSHOT"
+  compile group: "org.openflexo", name: "gina-swing-editor", version: "2.1-SNAPSHOT"
+  compile group: "org.openflexo", name: "diana-swing", version: "1.4-SNAPSHOT"
+  compile group: "org.openflexo", name: "flexohelp", version: "1.4-SNAPSHOT"
   // external dep
-  compile group: "org.openflexo.utils", name: "macos_ui_simulation", version: "1.+"
+  compile group: "org.openflexo.utils", name: "macos_ui_simulation", version: "1.1"
 }
 
 // To be able to use private apple api

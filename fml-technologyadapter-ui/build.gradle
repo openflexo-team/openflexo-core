@@ -1,14 +1,14 @@
 dependencies {
   // openflexo dep
-  compile relativeProject(':flexo-foundation')
-  compile relativeProject(':flexo-ui')
-  compile relativeProject(':flexo-ontology')
+  compile project(':flexo-foundation')
+  compile project(':flexo-ui')
+  compile project(':flexo-ontology')
   // external dep
 
   // testing dep
-  testCompile group: "org.openflexo", name: "testutils", version: "1.+"
-  testCompile group: "org.openflexo", name: "gina-test", version: "1.+"
-  testCompile relativeProject(':flexo-ui-test')
-  testCompile relativeProject(':flexo-ontology-ui')
-  testCompile relativeProject(':flexo-test-resources')
+  testCompile group: "org.openflexo", name: "testutils", version: "1.4-SNAPSHOT"
+  testCompile group: "org.openflexo", name: "gina-test", version: "2.1-SNAPSHOT"
+  testCompile project(':flexo-ui-test')
+  testCompile project(':flexo-ontology-ui')
+  testCompile project(':flexo-test-resources')
 }
