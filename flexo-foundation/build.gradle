@@ -1,6 +1,5 @@
 dependencies {
   // openflexo dep
-  compile group: "org.openflexo", name: "pamela-core", version: "1.4-SNAPSHOT"
   compile group: "org.openflexo", name: "flexolocalization", version: "1.4-SNAPSHOT"
   compile group: "org.openflexo", name: "gina-api", version: "2.1-SNAPSHOT"
   compile group: "org.openflexo", name: "diana-api", version: "1.4-SNAPSHOT"
