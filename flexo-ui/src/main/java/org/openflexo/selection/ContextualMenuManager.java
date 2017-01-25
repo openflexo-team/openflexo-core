@@ -495,7 +495,12 @@ public class ContextualMenuManager {
 			}
 			EditionAction<A, T1, T2> action = new EditionAction<A, T1, T2>(actionType, (T1) focusedObject, globalSelection, getEditor());
 			JMenuItem item = menu.add(action);
-			item.setText(actionType.getLocalizedName());
+			if (controller != null && controller.getModuleLocales() != null) {
+				item.setText(controller.getModuleLocales().localizedForKey(actionType.getActionName()));
+			}
+			else {
+				item.setText(actionType.getLocalizedName());
+			}
 			if (getEditor().getKeyStrokeFor(actionType) != null) {
 				item.setAccelerator(getEditor().getKeyStrokeFor(actionType));
 			}
@@ -520,7 +525,12 @@ public class ContextualMenuManager {
 					_selectionManager != null ? (Vector<T2>) _selectionManager.getSelection() : null, getEditor());
 			JMenuItem item = menu.add(action);
 
-			item.setText(actionType.getLocalizedName());
+			if (controller != null && controller.getModuleLocales() != null) {
+				item.setText(controller.getModuleLocales().localizedForKey(actionType.getActionName()));
+			}
+			else {
+				item.setText(actionType.getLocalizedName());
+			}
 			if (getEditor().getKeyStrokeFor(actionType) != null) {
 				item.setAccelerator(getEditor().getKeyStrokeFor(actionType));
 			}
