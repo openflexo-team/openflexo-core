@@ -60,4 +60,7 @@ public interface LocalizationService extends FlexoService {
 
 	public void setGeneralLocalizerRelativePath(String relativePath);
 
+	public boolean getAutomaticSaving();
+
+	public void setAutomaticSaving(boolean automaticSaving);
 }

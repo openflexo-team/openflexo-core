@@ -102,6 +102,8 @@ public class TestApplicationContext extends ApplicationContext {
 		super(null, true);
 		this.generateCompoundTestResourceCenter = generateCompoundTestResourceCenter;
 
+		getLocalizationService().setAutomaticSaving(false);
+
 		// Activate both FML and FML@RT technology adapters
 		TechnologyAdapterService taService = getTechnologyAdapterService();
 		taService.activateTechnologyAdapter(taService.getTechnologyAdapter(FMLTechnologyAdapter.class));

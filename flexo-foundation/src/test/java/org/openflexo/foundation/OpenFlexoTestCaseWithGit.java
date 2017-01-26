@@ -10,6 +10,7 @@ import java.util.List;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
+import org.openflexo.foundation.localization.LocalizationService;
 import org.openflexo.foundation.resource.DefaultResourceCenterService;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
 import org.openflexo.foundation.resource.GitResourceCenter;
@@ -42,6 +43,7 @@ public class OpenFlexoTestCaseWithGit extends OpenflexoProjectAtRunTimeTestCase 
 	protected static FlexoServiceManager instanciateTestServiceManager(final boolean generateCompoundTestResourceCenter,
 			Class<? extends TechnologyAdapter>... taClasses) {
 		serviceManager = instanciateTestServiceManager(generateCompoundTestResourceCenter);
+
 		for (Class<? extends TechnologyAdapter> technologyAdapterClass : taClasses) {
 			serviceManager
 					.activateTechnologyAdapter(serviceManager.getTechnologyAdapterService().getTechnologyAdapter(technologyAdapterClass));
@@ -55,6 +57,13 @@ public class OpenFlexoTestCaseWithGit extends OpenflexoProjectAtRunTimeTestCase 
 			previousResourceCenterDirectoryToRemove = testResourceCenterDirectory;
 		}
 		serviceManager = new DefaultFlexoServiceManager(null, true) {
+
+			@Override
+			protected LocalizationService createLocalizationService(String relativePath) {
+				LocalizationService returned = super.createLocalizationService(relativePath);
+				returned.setAutomaticSaving(false);
+				return returned;
+			}
 
 			@Override
 			protected FlexoEditingContext createEditingContext() {
@@ -129,6 +138,8 @@ public class OpenFlexoTestCaseWithGit extends OpenflexoProjectAtRunTimeTestCase 
 			}
 
 		};
+
+		serviceManager.getLocalizationService().setAutomaticSaving(false);
 
 		if (previousResourceCenterDirectoryToRemove != null) {
 			if (testResourceCenterDirectoriesToRemove == null) {

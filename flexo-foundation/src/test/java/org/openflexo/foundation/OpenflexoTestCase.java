@@ -59,6 +59,7 @@ import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
+import org.openflexo.foundation.localization.LocalizationService;
 import org.openflexo.foundation.resource.DefaultResourceCenterService;
 import org.openflexo.foundation.resource.DirectoryResourceCenter;
 import org.openflexo.foundation.resource.FileSystemBasedResourceCenter.FSBasedResourceCenterEntry;
@@ -220,6 +221,13 @@ public abstract class OpenflexoTestCase {
 		serviceManager = new DefaultFlexoServiceManager(null, true) {
 
 			@Override
+			protected LocalizationService createLocalizationService(String relativePath) {
+				LocalizationService returned = super.createLocalizationService(relativePath);
+				returned.setAutomaticSaving(false);
+				return returned;
+			}
+
+			@Override
 			protected FlexoEditingContext createEditingContext() {
 				// In unit tests, we do NOT want to be warned against unexpected edits
 				return FlexoEditingContext.createInstance(false);
@@ -231,6 +239,8 @@ public abstract class OpenflexoTestCase {
 			}
 
 		};
+
+		serviceManager.getLocalizationService().setAutomaticSaving(false);
 
 		// Activate both FML and FML@RT technology adapters
 		TechnologyAdapterService taService = serviceManager.getTechnologyAdapterService();
@@ -253,6 +263,13 @@ public abstract class OpenflexoTestCase {
 			previousResourceCenterDirectoryToRemove = testResourceCenterDirectory;
 		}
 		serviceManager = new DefaultFlexoServiceManager(null, true) {
+
+			@Override
+			protected LocalizationService createLocalizationService(String relativePath) {
+				LocalizationService returned = super.createLocalizationService(relativePath);
+				returned.setAutomaticSaving(false);
+				return returned;
+			}
 
 			@Override
 			protected FlexoEditingContext createEditingContext() {
@@ -296,6 +313,8 @@ public abstract class OpenflexoTestCase {
 			}
 
 		};
+
+		serviceManager.getLocalizationService().setAutomaticSaving(false);
 
 		// Activate both FML and FML@RT technology adapters
 		TechnologyAdapterService taService = serviceManager.getTechnologyAdapterService();

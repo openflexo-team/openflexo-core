@@ -62,6 +62,8 @@ public class DefaultLocalizationService extends FlexoServiceImpl implements Loca
 	private LocalizedDelegate flexoLocalizer = null;
 	private String generalLocalizerRelativePath = null;
 
+	private boolean automaticSaving = true;
+
 	/*@Override
 	public void receiveNotification(FlexoService caller, ServiceNotification notification) {
 		super.receiveNotification(caller, notification);
@@ -79,7 +81,7 @@ public class DefaultLocalizationService extends FlexoServiceImpl implements Loca
 
 		if (StringUtils.isNotEmpty(getGeneralLocalizerRelativePath())) {
 			flexoLocalizer = new LocalizedDelegateImpl(ResourceLocator.locateResource(getGeneralLocalizerRelativePath()), mainLocalizer,
-					true, true);
+					getAutomaticSaving(), true);
 		}
 		else {
 			flexoLocalizer = mainLocalizer;
@@ -106,6 +108,16 @@ public class DefaultLocalizationService extends FlexoServiceImpl implements Loca
 	@Override
 	public LocalizedDelegate getFlexoLocalizer() {
 		return flexoLocalizer;
+	}
+
+	@Override
+	public boolean getAutomaticSaving() {
+		return automaticSaving;
+	}
+
+	@Override
+	public void setAutomaticSaving(boolean automaticSaving) {
+		this.automaticSaving = automaticSaving;
 	}
 
 }

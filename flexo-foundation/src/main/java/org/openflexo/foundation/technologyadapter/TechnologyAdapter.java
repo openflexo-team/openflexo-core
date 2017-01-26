@@ -181,7 +181,8 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 			initResourceFactories();
 			initTechnologySpecificTypes(getTechnologyAdapterService());
 			locales = new LocalizedDelegateImpl(ResourceLocator.locateResource(getLocalizationDirectory()),
-					getTechnologyAdapterService().getServiceManager().getLocalizationService().getFlexoLocalizer(), true, true);
+					getTechnologyAdapterService().getServiceManager().getLocalizationService().getFlexoLocalizer(),
+					getTechnologyAdapterService().getServiceManager().getLocalizationService().getAutomaticSaving(), true);
 			loadPrivateResourceCenters();
 			isActivated = true;
 			getPropertyChangeSupport().firePropertyChange("activated", false, true);
