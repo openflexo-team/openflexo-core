@@ -37,7 +37,7 @@ import org.openflexo.model.annotations.Setter;
  *            {@link TechnologyAdapter} of current implementation
  */
 @ModelEntity(isAbstract = true)
-public interface FlexoDocStyle<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends InnerFlexoDocument<D, TA> {
+public interface FlexoDocStyle<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends FlexoDocObject<D, TA> {
 
 	@PropertyIdentifier(type = String.class)
 	public static final String NAME_KEY = "name";
@@ -90,7 +90,7 @@ public interface FlexoDocStyle<D extends FlexoDocument<D, TA>, TA extends Techno
 	public boolean isLevelled();
 
 	public static abstract class FlexoStyleImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
-			extends InnerFlexoDocumentImpl<D, TA>implements FlexoDocStyle<D, TA> {
+			extends FlexoDocObjectImpl<D, TA> implements FlexoDocStyle<D, TA> {
 
 		@Override
 		public boolean isLevelled() {

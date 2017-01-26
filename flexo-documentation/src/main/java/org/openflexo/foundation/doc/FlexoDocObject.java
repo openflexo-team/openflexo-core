@@ -24,8 +24,11 @@ import org.openflexo.foundation.InnerResourceData;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.localization.LocalizedDelegate;
+import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
+import org.openflexo.model.annotations.PropertyIdentifier;
+import org.openflexo.model.annotations.Setter;
 
 /**
  * This concept provides abstraction for an object involved in generic FlexoDocumentation A.P.I
@@ -43,7 +46,14 @@ import org.openflexo.model.annotations.ModelEntity;
 public interface FlexoDocObject<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
 		extends TechnologyObject<TA>, InnerResourceData<D> {
 
+	@PropertyIdentifier(type = FlexoDocument.class)
+	public static final String DOCUMENT_KEY = "document";
+
+	@Getter(value = DOCUMENT_KEY)
 	public D getFlexoDocument();
+
+	@Setter(DOCUMENT_KEY)
+	public void setFlexoDocument(D flexoDocument);
 
 	public static abstract class FlexoDocObjectImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends FlexoObjectImpl
 			implements FlexoDocObject<D, TA> {

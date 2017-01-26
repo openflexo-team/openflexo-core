@@ -48,7 +48,7 @@ import org.openflexo.model.annotations.XMLElement;
  */
 @ModelEntity(isAbstract = true)
 public interface FlexoDocTableCell<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
-		extends InnerFlexoDocument<D, TA>, FlexoDocElementContainer<D, TA> {
+		extends FlexoDocObject<D, TA>, FlexoDocElementContainer<D, TA> {
 
 	@PropertyIdentifier(type = FlexoDocTableRow.class)
 	public static final String ROW_KEY = "row";
@@ -98,7 +98,8 @@ public interface FlexoDocTableCell<D extends FlexoDocument<D, TA>, TA extends Te
 
 	/**
 	 * Moved paragraph to this {@link FlexoDocTableCell} at supplied index (public API).<br>
-	 * Paragraph will be moved inside underlying technology-specific document model and {@link FlexoDocTableCell} will be updated accordingly
+	 * Paragraph will be moved inside underlying technology-specific document model and {@link FlexoDocTableCell} will be updated
+	 * accordingly
 	 */
 	public void moveParagraphToIndex(FlexoDocParagraph<D, TA> anParagraph, int index);
 
@@ -144,7 +145,7 @@ public interface FlexoDocTableCell<D extends FlexoDocument<D, TA>, TA extends Te
 	public FlexoDocElement<D, TA> getElementWithIdentifier(String identifier);
 
 	public static abstract class FlexoTableCellImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
-			extends InnerFlexoDocumentImpl<D, TA>implements FlexoDocTableCell<D, TA> {
+			extends FlexoDocObjectImpl<D, TA> implements FlexoDocTableCell<D, TA> {
 
 		@Override
 		public int getIndex() {

@@ -36,8 +36,7 @@ import org.openflexo.model.annotations.ModelEntity;
  *            {@link TechnologyAdapter} of current implementation
  */
 @ModelEntity(isAbstract = true)
-public interface FlexoDocElementContainer<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends
-		InnerFlexoDocument<D, TA> {
+public interface FlexoDocElementContainer<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends FlexoDocObject<D, TA> {
 
 	public List<? extends FlexoDocElement<D, TA>> getElements();
 

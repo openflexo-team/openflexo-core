@@ -37,7 +37,7 @@ import org.openflexo.model.annotations.Setter;
  *            {@link TechnologyAdapter} of current implementation
  */
 @ModelEntity(isAbstract = true)
-public interface FlexoDocRun<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends InnerFlexoDocument<D, TA> {
+public interface FlexoDocRun<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends FlexoDocObject<D, TA> {
 
 	@PropertyIdentifier(type = FlexoDocParagraph.class)
 	public static final String PARAGRAPH_KEY = "paragraph";
@@ -57,7 +57,7 @@ public interface FlexoDocRun<D extends FlexoDocument<D, TA>, TA extends Technolo
 	public int getIndex();
 
 	public static abstract class FlexoRunImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
-			extends InnerFlexoDocumentImpl<D, TA>implements FlexoDocRun<D, TA> {
+			extends FlexoDocObjectImpl<D, TA> implements FlexoDocRun<D, TA> {
 
 		@Override
 		public int getIndex() {
