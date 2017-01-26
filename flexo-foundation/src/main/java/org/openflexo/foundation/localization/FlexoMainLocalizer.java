@@ -66,8 +66,8 @@ public class FlexoMainLocalizer extends LocalizedDelegateImpl {
 		return new LocalizedDelegateImpl(ResourceLocator.locateResource(DEPRECATED_LOCALIZATION_DIRNAME), null, false, false);
 	}
 
-	public FlexoMainLocalizer(boolean isDev) {
-		super(ResourceLocator.locateResource(FLEXO_LOCALIZATION_DIRNAME), makeDeprecatedLocalizer(), isDev, isDev);
+	public FlexoMainLocalizer(boolean isDev, boolean automaticSaving) {
+		super(ResourceLocator.locateResource(FLEXO_LOCALIZATION_DIRNAME), makeDeprecatedLocalizer(), automaticSaving, isDev);
 		// If we want to update locales, we have to retrieve source code dictionaries
 		if (isDev) {
 			// Get Localized from flexolocalization here because we need main Localized support to come from gina project
