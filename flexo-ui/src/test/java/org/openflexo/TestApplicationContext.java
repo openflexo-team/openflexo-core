@@ -54,6 +54,7 @@ import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.ViewPointLibrary;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
+import org.openflexo.foundation.localization.LocalizationService;
 import org.openflexo.foundation.resource.DefaultResourceCenterService;
 import org.openflexo.foundation.resource.DirectoryResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
@@ -109,6 +110,13 @@ public class TestApplicationContext extends ApplicationContext {
 		taService.activateTechnologyAdapter(taService.getTechnologyAdapter(FMLTechnologyAdapter.class));
 		taService.activateTechnologyAdapter(taService.getTechnologyAdapter(FMLRTTechnologyAdapter.class));
 
+	}
+
+	@Override
+	protected LocalizationService createLocalizationService(String relativePath) {
+		LocalizationService returned = super.createLocalizationService(relativePath);
+		returned.setAutomaticSaving(false);
+		return returned;
 	}
 
 	@Override
