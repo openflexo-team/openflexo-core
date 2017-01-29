@@ -993,7 +993,7 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 
 			if (getVirtualModel() != null && ms != null) {
 				if (value instanceof TechnologyAdapterResource) {
-					ModelSlotInstance msi = (getModelSlotInstance(ms));
+					ModelSlotInstance msi = getModelSlotInstance(ms.getModelSlotName());
 					if (msi == null) {
 						AbstractVirtualModelInstance<?, ?> flexoConceptInstance = (AbstractVirtualModelInstance<?, ?>) getFlexoConceptInstance();
 						ModelSlotInstanceConfiguration<?, ?> msiConfiguration = ms.createConfiguration(flexoConceptInstance,
@@ -1006,7 +1006,7 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 					msi.setResource((TechnologyAdapterResource) value);
 				}
 				if (value instanceof ResourceData) {
-					ModelSlotInstance msi = (getModelSlotInstance(ms));
+					ModelSlotInstance msi = getModelSlotInstance(ms.getModelSlotName());
 					if (msi == null) {
 						AbstractVirtualModelInstance<?, ?> flexoConceptInstance = (AbstractVirtualModelInstance<?, ?>) getFlexoConceptInstance();
 						ModelSlotInstanceConfiguration<?, ?> msiConfiguration = ms.createConfiguration(flexoConceptInstance,
