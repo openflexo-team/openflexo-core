@@ -1025,7 +1025,7 @@ public abstract interface FlexoObject extends AccessibleProxyObject, DeletablePr
 				resourceData = (ResourceData<?>) this;
 			}
 			else if (this instanceof InnerResourceData) {
-				resourceData = ((InnerResourceData<ResourceData>) this).getResourceData();
+				resourceData = ((InnerResourceData<ResourceData<?>>) this).getResourceData();
 			}
 			if (resourceData != null && resourceData.getResource() instanceof PamelaResource) {
 				List<?> embeddedObjects = ((PamelaResource) resourceData.getResource()).getFactory().getEmbeddedObjects(this,

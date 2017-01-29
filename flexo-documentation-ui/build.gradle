@@ -1,0 +1,10 @@
+dependencies {
+  // openflexo dep
+  compile project(':flexo-foundation')
+  compile project(':flexo-ui')
+  compile project(':flexo-documentation')
+  compile group: "org.openflexo", name: "gina-swing", version: "2.1-SNAPSHOT"
+  // external dep
+
+  // testing dep
+}

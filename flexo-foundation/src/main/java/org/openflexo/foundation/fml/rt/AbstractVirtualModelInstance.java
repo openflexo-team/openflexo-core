@@ -736,7 +736,7 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 				return super.getFlexoActor(flexoRole);
 			}
 			if (flexoRole instanceof ModelSlot) {
-				ModelSlotInstance<?, ?> modelSlotInstance = getModelSlotInstance((ModelSlot<?>) flexoRole);
+				ModelSlotInstance<?, ?> modelSlotInstance = getModelSlotInstance((ModelSlot) flexoRole);
 				if (modelSlotInstance != null) {
 					return (T) modelSlotInstance.getAccessedResourceData();
 				}
@@ -886,7 +886,7 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 
 			if (variable instanceof ModelSlotBindingVariable && getVirtualModel() != null
 					&& ((ModelSlotBindingVariable) variable).getFlexoProperty().getFlexoConcept() == getVirtualModel()) {
-				ModelSlot<?> ms = getVirtualModel().getModelSlot(variable.getVariableName());
+				ModelSlot ms = getVirtualModel().getModelSlot(variable.getVariableName());
 				if (ms != null) {
 					ModelSlotInstance<?, ?> modelSlotInstance = getModelSlotInstance(ms);
 					if (modelSlotInstance != null) {
@@ -933,8 +933,41 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 		@Override
 		public void setValue(Object value, BindingVariable variable) {
 			if (variable instanceof ModelSlotBindingVariable && getVirtualModel() != null) {
-				ModelSlot<?> ms = getVirtualModel().getModelSlot(variable.getVariableName());
-				setModelSlotValue(ms, value);
+				ModelSlot ms = getVirtualModel().getModelSlot(variable.getVariableName());
+				if (ms != null) {
+					if (value instanceof TechnologyAdapterResource) {
+						ModelSlotInstance msi = (getModelSlotInstance(ms));
+						if (msi == null) {
+							AbstractVirtualModelInstance<?, ?> flexoConceptInstance = (AbstractVirtualModelInstance<?, ?>) getFlexoConceptInstance();
+							ModelSlotInstanceConfiguration<?, ?> msiConfiguration = ms.createConfiguration(flexoConceptInstance,
+									getResourceCenter());
+							msiConfiguration.setOption(DefaultModelSlotInstanceConfigurationOption.SelectExistingResource);
+							msi = msiConfiguration.createModelSlotInstance(flexoConceptInstance, getView());
+							msi.setVirtualModelInstance(flexoConceptInstance);
+							flexoConceptInstance.addToModelSlotInstances(msi);
+						}
+						msi.setResource((TechnologyAdapterResource) value);
+					}
+					if (value instanceof ResourceData) {
+						ModelSlotInstance msi = (getModelSlotInstance(ms));
+						if (msi == null) {
+							AbstractVirtualModelInstance<?, ?> flexoConceptInstance = (AbstractVirtualModelInstance<?, ?>) getFlexoConceptInstance();
+							ModelSlotInstanceConfiguration<?, ?> msiConfiguration = ms.createConfiguration(flexoConceptInstance,
+									getResourceCenter());
+							msiConfiguration.setOption(DefaultModelSlotInstanceConfigurationOption.SelectExistingResource);
+							msi = msiConfiguration.createModelSlotInstance(flexoConceptInstance, getView());
+							msi.setVirtualModelInstance(flexoConceptInstance);
+							flexoConceptInstance.addToModelSlotInstances(msi);
+						}
+						msi.setAccessedResourceData((ResourceData) value);
+					}
+					else {
+						logger.warning("Unexpected resource data " + value + " for model slot " + ms);
+					}
+				}
+				else {
+					logger.warning("Unexpected property " + variable);
+				}
 				return;
 			}
 			else if (variable.getVariableName().equals(VirtualModelBindingModel.REFLEXIVE_ACCESS_PROPERTY)) {

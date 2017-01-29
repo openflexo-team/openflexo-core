@@ -96,7 +96,7 @@ public abstract interface TechnologySpecificAction<MS extends ModelSlot<?>, T> e
 
 	public List<FMLRTModelSlot> getAvailableVirtualModelModelSlots();
 
-	public ModelSlotInstance<MS, ?> getModelSlotInstance(RunTimeEvaluationContext evaluationContext);
+	public ModelSlotInstance getModelSlotInstance(RunTimeEvaluationContext evaluationContext);
 
 	public TechnologyAdapter getModelSlotTechnologyAdapter();
 
@@ -150,7 +150,7 @@ public abstract interface TechnologySpecificAction<MS extends ModelSlot<?>, T> e
 		}
 
 		@Override
-		public ModelSlotInstance<MS, ?> getModelSlotInstance(RunTimeEvaluationContext action) {
+		public ModelSlotInstance getModelSlotInstance(RunTimeEvaluationContext action) {
 			FlexoConceptInstance fci = action.getFlexoConceptInstance();
 			AbstractVirtualModelInstance<?, ?> vmi = null;
 			if (fci != null && fci instanceof AbstractVirtualModelInstance<?, ?>) {
@@ -162,7 +162,8 @@ public abstract interface TechnologySpecificAction<MS extends ModelSlot<?>, T> e
 			if (vmi != null) {
 				// Following line does not compile with Java7 (don't understand why)
 				// That's the reason i tried to fix that compile issue with getGenericModelSlot() method (see below)
-				return vmi.getModelSlotInstance(getModelSlot());
+				// FD, in Java 8 return vmi.getModelSlotInstance(getModelSlot()); does not compile hence the cast
+				return vmi.getModelSlotInstance((ModelSlot) getModelSlot());
 				// return (ModelSlotInstance<MS, ?>) vmi.getModelSlotInstance(getGenericModelSlot
 			}
 			else {

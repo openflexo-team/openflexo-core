@@ -164,7 +164,7 @@ public abstract class ViewPointResourceImpl extends AbstractVirtualModelResource
 			getViewPoint().addToVirtualModels(((VirtualModelResource) resource).getVirtualModel());
 		}*/
 	}
-
+	
 	@Override
 	public void removeFromContents(FlexoResource<?> resource) {
 		performSuperRemover(CONTENTS, resource);

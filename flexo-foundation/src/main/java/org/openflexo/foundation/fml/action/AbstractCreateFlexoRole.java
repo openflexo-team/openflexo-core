@@ -74,7 +74,7 @@ import org.openflexo.foundation.technologyadapter.TypeAwareModelSlot;
  * <li>may declare a valid description</li>
  * </ul>
  */
-public abstract class AbstractCreateFlexoRole<A extends AbstractCreateFlexoRole<A, MS>, MS extends ModelSlot<?>>
+public abstract class AbstractCreateFlexoRole<A extends AbstractCreateFlexoRole<A, MS>, MS extends ModelSlot>
 		extends AbstractCreateFlexoProperty<A> {
 
 	private static final Logger logger = Logger.getLogger(AbstractCreateFlexoRole.class.getPackage().getName());

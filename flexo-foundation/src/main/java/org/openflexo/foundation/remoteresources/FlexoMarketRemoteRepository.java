@@ -38,8 +38,8 @@
 
 package org.openflexo.foundation.remoteresources;
 
+import org.openflexo.icon.ImageIconResource;
 import org.openflexo.rm.ResourceLocator;
-import org.openflexo.toolbox.ImageIconResource;
 
 public class FlexoMarketRemoteRepository extends FlexoRemoteRepositoryImpl {
 

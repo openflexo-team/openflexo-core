@@ -56,7 +56,6 @@ import org.openflexo.model.validation.ValidationIssue;
 import org.openflexo.model.validation.ValidationWarning;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.swing.AnimatedIcon;
-import org.openflexo.toolbox.ImageIconResource;
 import org.openflexo.view.controller.TechnologyAdapterController;
 import org.openflexo.view.controller.TechnologyAdapterControllerService;
 

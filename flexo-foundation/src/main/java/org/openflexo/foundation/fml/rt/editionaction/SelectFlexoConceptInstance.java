@@ -91,7 +91,7 @@ import org.openflexo.model.validation.ValidationRule;
 @ImplementationClass(SelectFlexoConceptInstance.SelectFlexoConceptInstanceImpl.class)
 @XMLElement
 @FML("SelectFlexoConceptInstance")
-public interface SelectFlexoConceptInstance extends FetchRequest<FMLRTModelSlot, FlexoConceptInstance> {
+public interface SelectFlexoConceptInstance extends FetchRequest<FMLRTModelSlot<?, ?>, FlexoConceptInstance> {
 
 	@PropertyIdentifier(type = String.class)
 	public static final String FLEXO_CONCEPT_TYPE_URI_KEY = "flexoConceptTypeURI";
@@ -124,8 +124,8 @@ public interface SelectFlexoConceptInstance extends FetchRequest<FMLRTModelSlot,
 	 */
 	public AbstractVirtualModel<?> getAddressedVirtualModel();
 
-	public static abstract class SelectFlexoConceptInstanceImpl extends FetchRequestImpl<FMLRTModelSlot, FlexoConceptInstance> implements
-			SelectFlexoConceptInstance {
+	public static abstract class SelectFlexoConceptInstanceImpl extends FetchRequestImpl<FMLRTModelSlot<?, ?>, FlexoConceptInstance>
+			implements SelectFlexoConceptInstance {
 
 		protected static final Logger logger = FlexoLogger.getLogger(SelectFlexoConceptInstance.class.getPackage().getName());
 
@@ -292,7 +292,7 @@ public interface SelectFlexoConceptInstance extends FetchRequest<FMLRTModelSlot,
 				}
 			}
 			if (getModelSlot() instanceof FMLRTModelSlot && evaluationContext instanceof FlexoBehaviourAction) {
-				ModelSlotInstance modelSlotInstance = ((FlexoBehaviourAction<?, ?, ?>) evaluationContext).getVirtualModelInstance()
+				ModelSlotInstance modelSlotInstance = ((FlexoBehaviourAction) evaluationContext).getVirtualModelInstance()
 						.getModelSlotInstance(getModelSlot());
 				if (modelSlotInstance != null) {
 					// System.out.println("modelSlotInstance=" + modelSlotInstance + " model=" + modelSlotInstance.getModel());
@@ -315,8 +315,8 @@ public interface SelectFlexoConceptInstance extends FetchRequest<FMLRTModelSlot,
 				return filterWithConditions(vmi.getFlexoConceptInstances(getFlexoConceptType()), evaluationContext);
 			}
 			else {
-				logger.warning(getStringRepresentation()
-						+ " : Cannot find virtual model instance on which to apply SelectFlexoConceptInstance");
+				logger.warning(
+						getStringRepresentation() + " : Cannot find virtual model instance on which to apply SelectFlexoConceptInstance");
 				logger.warning("getVirtualModelInstance()=" + getVirtualModelInstance());
 				/*logger.warning("evaluationContext=" + evaluationContext);
 				logger.warning("isSet=" + getVirtualModelInstance().isSet());
@@ -342,8 +342,8 @@ public interface SelectFlexoConceptInstance extends FetchRequest<FMLRTModelSlot,
 	}
 
 	@DefineValidationRule
-	public static class SelectFlexoConceptInstanceMustAddressAFlexoConceptType extends
-			ValidationRule<SelectFlexoConceptInstanceMustAddressAFlexoConceptType, SelectFlexoConceptInstance> {
+	public static class SelectFlexoConceptInstanceMustAddressAFlexoConceptType
+			extends ValidationRule<SelectFlexoConceptInstanceMustAddressAFlexoConceptType, SelectFlexoConceptInstance> {
 		public SelectFlexoConceptInstanceMustAddressAFlexoConceptType() {
 			super(SelectFlexoConceptInstance.class, "select_flexo_concept_instance_action_must_address_a_valid_flexo_concept_type");
 		}
@@ -352,16 +352,16 @@ public interface SelectFlexoConceptInstance extends FetchRequest<FMLRTModelSlot,
 		public ValidationIssue<SelectFlexoConceptInstanceMustAddressAFlexoConceptType, SelectFlexoConceptInstance> applyValidation(
 				SelectFlexoConceptInstance action) {
 			if (action.getFlexoConceptType() == null) {
-				return new ValidationError<SelectFlexoConceptInstanceMustAddressAFlexoConceptType, SelectFlexoConceptInstance>(this,
-						action, "select_flexo_concept_instance_action_doesn't_define_any_flexo_concept_type");
+				return new ValidationError<SelectFlexoConceptInstanceMustAddressAFlexoConceptType, SelectFlexoConceptInstance>(this, action,
+						"select_flexo_concept_instance_action_doesn't_define_any_flexo_concept_type");
 			}
 			return null;
 		}
 	}
 
 	@DefineValidationRule
-	public static class VirtualModelInstanceBindingIsRequiredAndMustBeValid extends
-			BindingIsRequiredAndMustBeValid<SelectFlexoConceptInstance> {
+	public static class VirtualModelInstanceBindingIsRequiredAndMustBeValid
+			extends BindingIsRequiredAndMustBeValid<SelectFlexoConceptInstance> {
 		public VirtualModelInstanceBindingIsRequiredAndMustBeValid() {
 			super("'virtual_model_instance'_binding_is_not_valid", SelectFlexoConceptInstance.class);
 		}
@@ -374,8 +374,8 @@ public interface SelectFlexoConceptInstance extends FetchRequest<FMLRTModelSlot,
 		@Override
 		public ValidationIssue<BindingIsRequiredAndMustBeValid<SelectFlexoConceptInstance>, SelectFlexoConceptInstance> applyValidation(
 				SelectFlexoConceptInstance object) {
-			ValidationIssue<BindingIsRequiredAndMustBeValid<SelectFlexoConceptInstance>, SelectFlexoConceptInstance> returned = super
-					.applyValidation(object);
+			ValidationIssue<BindingIsRequiredAndMustBeValid<SelectFlexoConceptInstance>, SelectFlexoConceptInstance> returned = super.applyValidation(
+					object);
 			if (returned instanceof UndefinedRequiredBindingIssue) {
 				((UndefinedRequiredBindingIssue) returned).addToFixProposals(new UseLocalVirtualModelInstance());
 			}
@@ -416,8 +416,8 @@ public interface SelectFlexoConceptInstance extends FetchRequest<FMLRTModelSlot,
 			return returned;
 		}
 
-		protected static class UseLocalVirtualModelInstance extends
-				FixProposal<BindingIsRequiredAndMustBeValid<SelectFlexoConceptInstance>, SelectFlexoConceptInstance> {
+		protected static class UseLocalVirtualModelInstance
+				extends FixProposal<BindingIsRequiredAndMustBeValid<SelectFlexoConceptInstance>, SelectFlexoConceptInstance> {
 
 			public UseLocalVirtualModelInstance() {
 				super("sets_virtual_model_instance_to_'virtualModelInstance'_(local_virtual_model_instance)");
@@ -430,8 +430,8 @@ public interface SelectFlexoConceptInstance extends FetchRequest<FMLRTModelSlot,
 			}
 		}
 
-		protected static class UseFMLRTModelSlot extends
-				FixProposal<BindingIsRequiredAndMustBeValid<SelectFlexoConceptInstance>, SelectFlexoConceptInstance> {
+		protected static class UseFMLRTModelSlot
+				extends FixProposal<BindingIsRequiredAndMustBeValid<SelectFlexoConceptInstance>, SelectFlexoConceptInstance> {
 
 			private final FMLRTModelSlot modelSlot;
 

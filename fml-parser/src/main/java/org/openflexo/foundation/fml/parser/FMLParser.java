@@ -38,7 +38,6 @@
 
 package org.openflexo.foundation.fml.parser;
 
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -76,7 +75,7 @@ public class FMLParser {
 	public static FMLCompilationUnit parse(File inputFile, FlexoServiceManager serviceManager) throws ParseException {
 		try {
 			FileReader in = new FileReader(inputFile);
-			// System.out.println("Parsing: " + anExpression);
+			System.out.println("Parsing: " + inputFile);
 
 			// Create a Parser instance.
 			Parser p = new Parser(new Lexer(new PushbackReader(new BufferedReader(in), 1024)));

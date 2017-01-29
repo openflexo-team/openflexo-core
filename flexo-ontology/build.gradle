@@ -1,0 +1,8 @@
+dependencies {
+  // openflexo dep
+  compile project(':flexo-foundation')
+  compile group: "org.openflexo", name: "connie-core", version: "1.4-SNAPSHOT"
+  // external dep
+
+  // testing dep
+}

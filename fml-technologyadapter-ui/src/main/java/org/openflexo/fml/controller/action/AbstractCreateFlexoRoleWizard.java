@@ -51,7 +51,7 @@ import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.view.controller.FlexoController;
 
-public abstract class AbstractCreateFlexoRoleWizard<A extends AbstractCreateFlexoRole<A, MS>, MS extends ModelSlot<?>>
+public abstract class AbstractCreateFlexoRoleWizard<A extends AbstractCreateFlexoRole<A, MS>, MS extends ModelSlot>
 		extends AbstractCreateFlexoPropertyWizard<A> {
 
 	@SuppressWarnings("unused")

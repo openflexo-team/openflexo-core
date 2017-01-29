@@ -112,7 +112,7 @@ public interface TypeAwareModelSlot<M extends FlexoModel<M, MM> & TechnologyObje
 	 */
 	public String generateUniqueURIName(TypeAwareModelSlotInstance msInstance, String proposedName);
 
-	public String generateUniqueURIName(TypeAwareModelSlotInstance msInstance, String proposedName, String uriPrefix);
+	public String generateUniqueURIName(TypeAwareModelSlotInstance<?, ?, ?> msInstance, String proposedName, String uriPrefix);
 
 	public static abstract class TypeAwareModelSlotImpl<M extends FlexoModel<M, MM> & TechnologyObject<?>, MM extends FlexoMetaModel<MM> & TechnologyObject<?>>
 			extends ModelSlotImpl<M>implements TypeAwareModelSlot<M, MM> {
@@ -162,7 +162,7 @@ public interface TypeAwareModelSlot<M extends FlexoModel<M, MM> & TechnologyObje
 		}
 
 		@Override
-		public String generateUniqueURIName(TypeAwareModelSlotInstance msInstance, String proposedName, String uriPrefix) {
+		public String generateUniqueURIName(TypeAwareModelSlotInstance<?, ?, ?> msInstance, String proposedName, String uriPrefix) {
 			if (msInstance == null || msInstance.getResourceData() == null) {
 				return proposedName;
 			}

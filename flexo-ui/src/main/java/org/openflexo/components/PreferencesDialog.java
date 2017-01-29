@@ -52,6 +52,7 @@ import org.openflexo.gina.swing.utils.JFIBDialog;
 import org.openflexo.gina.swing.view.SwingViewFactory;
 import org.openflexo.gina.view.GinaViewFactory;
 import org.openflexo.icon.IconLibrary;
+import org.openflexo.icon.ImageIconResource;
 import org.openflexo.module.Module;
 import org.openflexo.prefs.FlexoPreferences;
 import org.openflexo.prefs.ModulePreferences;
@@ -60,7 +61,6 @@ import org.openflexo.prefs.PreferencesContainer;
 import org.openflexo.prefs.PreferencesService;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
-import org.openflexo.toolbox.ImageIconResource;
 import org.openflexo.view.controller.FlexoFIBController;
 
 /**

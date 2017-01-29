@@ -1,4 +1,5 @@
 **/target
+**/build
 *.ipr
 *.idea
 *.iws
@@ -9,3 +10,4 @@
 .DS_Store
 /pom.xml~
 /target
+/.gradle/

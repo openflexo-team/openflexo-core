@@ -1,0 +1,12 @@
+dependencies {
+  // openflexo dep
+  compile project(':flexo-ui')
+  compile group: "org.openflexo", name: "testutils", version: "1.4-SNAPSHOT"
+  compile project(':flexo-foundation-test')
+  // external dep
+
+  // testing dep
+  testCompile group: "org.openflexo", name: "gina-test", version: "2.1-SNAPSHOT"
+  testCompile group: "org.openflexo", name: "gina-swing-editor-test", version: "2.1-SNAPSHOT"
+  testCompile project(':flexo-test-resources')
+}

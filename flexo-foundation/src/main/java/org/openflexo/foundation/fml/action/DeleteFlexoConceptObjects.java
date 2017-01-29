@@ -141,7 +141,7 @@ public class DeleteFlexoConceptObjects extends FlexoAction<DeleteFlexoConceptObj
 		for (FlexoConceptObject o : allObjects) {
 			if (isDeletable(o)) {
 				List<Object> embeddedObjects = modelFactory.getEmbeddedObjects(o, EmbeddingType.DELETION,
-						allObjects.toArray(new FlexoConceptObject[allObjects.size()]));
+						(Object[]) allObjects.toArray(new FlexoConceptObject[allObjects.size()]));
 				allDerived.put(o, embeddedObjects);
 			}
 		}

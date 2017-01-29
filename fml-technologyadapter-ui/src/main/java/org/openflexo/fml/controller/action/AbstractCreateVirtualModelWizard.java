@@ -363,7 +363,7 @@ public abstract class AbstractCreateVirtualModelWizard<A extends AbstractCreateV
 	 *
 	 */
 	@FIBPanel("Fib/Wizard/CreateFMLElement/ConfigureVirtualModelModelSlot.fib")
-	public class ConfigureVirtualModelModelSlot extends ConfigureModelSlot<FMLRTModelSlot> {
+	public class ConfigureVirtualModelModelSlot extends ConfigureModelSlot<FMLRTModelSlot<?, ?>> {
 
 		public ConfigureVirtualModelModelSlot(ModelSlotEntry entry) {
 			super(entry);

@@ -320,7 +320,7 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>>
 			// constructorParams[0] = VirtualModel.VirtualModelBuilder.class;
 			try {
 				Constructor<A> c = actionClass.getConstructor(constructorParams);
-				return c.newInstance(null);
+				return c.newInstance();
 			} catch (SecurityException e) {
 				logger.warning("Unexpected SecurityException " + e);
 				e.printStackTrace();

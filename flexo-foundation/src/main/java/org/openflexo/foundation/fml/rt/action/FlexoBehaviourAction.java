@@ -246,7 +246,7 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 	public abstract FB getFlexoBehaviour();
 
 	@Override
-	public AbstractVirtualModelInstance<?, ?> getVirtualModelInstance() {
+	public AbstractVirtualModelInstance getVirtualModelInstance() {
 		return retrieveVirtualModelInstance();
 	}
 
@@ -318,7 +318,8 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 	 */
 	public FlexoConceptInstance matchFlexoConceptInstance(FlexoConcept flexoConceptType, Hashtable<FlexoProperty, Object> criterias) {
 		// System.out.println("MATCH epi on " + getVirtualModelInstance() + " for " + flexoConceptType + " with " + criterias);
-		for (FlexoConceptInstance epi : getVirtualModelInstance().getFlexoConceptInstances(flexoConceptType)) {
+		AbstractVirtualModelInstance<?, ?> inst = getVirtualModelInstance();
+		for (FlexoConceptInstance epi : inst.getFlexoConceptInstances(flexoConceptType)) {
 			boolean allCriteriasMatching = true;
 			for (FlexoProperty pr : criterias.keySet()) {
 				if (!FlexoObjectImpl.areSameValue(epi.getFlexoPropertyValue(pr), criterias.get(pr))) {

@@ -39,14 +39,15 @@
 package org.openflexo.ontology.fib;
 
 import org.junit.Test;
-import org.openflexo.gina.utils.GenericFIBInspectorTestCase;
+import org.openflexo.gina.test.GenericFIBInspectorTestCase;
 import org.openflexo.rm.FileResourceImpl;
 import org.openflexo.rm.ResourceLocator;
 
 public class TestIFlexoOntologyInspectors extends GenericFIBInspectorTestCase {
 
 	public static void main(String[] args) {
-		System.out.println(generateInspectorTestCaseClass(((FileResourceImpl ) ResourceLocator.locateResource("Inspectors/IFlexoOntology")).getFile(), "Inspectors/IFlexoOntology/"));
+		System.out.println(generateInspectorTestCaseClass(
+				((FileResourceImpl) ResourceLocator.locateResource("Inspectors/IFlexoOntology")).getFile(), "Inspectors/IFlexoOntology/"));
 	}
 
 	@Test

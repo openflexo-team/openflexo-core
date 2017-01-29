@@ -84,7 +84,7 @@ public interface AddFlexoConceptInstance<VMI extends AbstractVirtualModelInstanc
 
 		@Override
 		public Class<VMI> getVirtualModelInstanceClass() {
-			return (Class<VMI>) AbstractVirtualModelInstance.class;
+			return (Class<VMI>) (Class) AbstractVirtualModelInstance.class;
 		}
 
 		@Override

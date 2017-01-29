@@ -386,7 +386,7 @@ public interface DeleteFlexoConceptInstance
 		}
 
 		@Override
-		public ModelSlotInstance<FMLRTModelSlot<?, ?>, ?> getModelSlotInstance(RunTimeEvaluationContext evaluationContext) {
+		public ModelSlotInstance getModelSlotInstance(RunTimeEvaluationContext evaluationContext) {
 			// TODO Auto-generated method stub
 			return null;
 		}

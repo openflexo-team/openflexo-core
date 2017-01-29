@@ -47,9 +47,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.openflexo.OpenflexoTestCaseWithGUI;
 import org.openflexo.connie.type.PrimitiveType;
-import org.openflexo.fib.swing.utils.SwingGraphicalContextDelegate;
 import org.openflexo.foundation.DefaultFlexoEditor;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.fml.FlexoConcept;
@@ -62,6 +60,8 @@ import org.openflexo.foundation.fml.action.CreateVirtualModel;
 import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.gina.swing.utils.TypeSelector;
 import org.openflexo.gina.swing.utils.TypeSelector.TypeSelectorDetailsPanel;
+import org.openflexo.gina.test.OpenflexoTestCaseWithGUI;
+import org.openflexo.gina.test.SwingGraphicalContextDelegate;
 import org.openflexo.test.OrderedRunner;
 import org.openflexo.test.TestOrder;
 
