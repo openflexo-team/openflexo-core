@@ -4,7 +4,7 @@ dependencies {
   // external dep
 
   // testing dep
-  testCompile group: "org.openflexo", name: "testutils", version: "1.4-SNAPSHOT"
+  testCompile testUtils()
   testCompile project(':flexo-test-resources')
   testRuntime group: "org.openflexo", name: "testViewpoint2", version: "1.0"
 }

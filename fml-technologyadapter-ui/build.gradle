@@ -6,8 +6,8 @@ dependencies {
   // external dep
 
   // testing dep
-  testCompile group: "org.openflexo", name: "testutils", version: "1.4-SNAPSHOT"
-  testCompile group: "org.openflexo", name: "gina-test", version: "2.1-SNAPSHOT"
+  testCompile testUtils()
+  testCompile ginaTest()
   testCompile project(':flexo-ui-test')
   testCompile project(':flexo-ontology-ui')
   testCompile project(':flexo-test-resources')

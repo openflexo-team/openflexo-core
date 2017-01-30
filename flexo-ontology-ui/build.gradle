@@ -3,10 +3,10 @@ dependencies {
   compile project(':flexo-foundation')
   compile project(':flexo-ui')
   compile project(':flexo-ontology')
-  compile group: "org.openflexo", name: "flexoutils", version: "1.4-SNAPSHOT"
+  compile flexoUtils()
   // external dep
 
   // testing dep
   testCompile project(':flexo-ui-test')
-  testCompile group: "org.openflexo", name: "gina-test", version: "2.1-SNAPSHOT"
+  testCompile ginaTest()
 }
