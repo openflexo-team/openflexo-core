@@ -5,7 +5,6 @@ dependencies {
 
   // testing dep
   testCompile project(':flexo-foundation-test')
-  //  testCompile group: "org.openflexo", name: "gina-test", version: "1.+"
   testCompile project(':flexo-test-resources')
 }
 
