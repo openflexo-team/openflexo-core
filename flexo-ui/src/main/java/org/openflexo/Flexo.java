@@ -39,35 +39,6 @@
 
 package org.openflexo;
 
-import java.awt.Frame;
-import java.awt.Window;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.PrintStream;
-import java.lang.management.ManagementFactory;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.net.Authenticator;
-import java.net.PasswordAuthentication;
-import java.net.Proxy;
-import java.net.ProxySelector;
-import java.net.SocketAddress;
-import java.net.URI;
-import java.net.URL;
-import java.nio.channels.FileLock;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.LogManager;
-import java.util.logging.Logger;
-
-import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
-
 import org.openflexo.application.FlexoApplication;
 import org.openflexo.components.RequestLoginDialog;
 import org.openflexo.components.SplashWindow;
@@ -94,9 +65,33 @@ import org.openflexo.utils.CancelException;
 import org.openflexo.utils.TooManyFailedAttemptException;
 import org.openflexo.view.FlexoFrame;
 import org.openflexo.view.controller.FlexoController;
-
 import sun.misc.Signal;
 import sun.misc.SignalHandler;
+
+import javax.swing.*;
+import java.awt.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintStream;
+import java.lang.management.ManagementFactory;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.net.Authenticator;
+import java.net.PasswordAuthentication;
+import java.net.Proxy;
+import java.net.ProxySelector;
+import java.net.SocketAddress;
+import java.net.URI;
+import java.net.URL;
+import java.nio.channels.FileLock;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.LogManager;
+import java.util.logging.Logger;
 
 /**
  * Main class of the Flexo Application Suite
@@ -310,26 +305,15 @@ public class Flexo {
 		try {
 			DenaliSecurityProvider.insertSecurityProvider();
 		} catch (Exception e) {
-			if (logger.isLoggable(Level.WARNING)) {
-				logger.log(Level.WARNING, "Could not insert security provider", e);
-			}
+			logger.log(Level.WARNING, "Could not insert security provider", e);
 		}
 		initProxyManagement(applicationContext);
-		if (logger.isLoggable(Level.INFO)) {
-			logger.info("Starting on " + ToolBox.getPLATFORM() + "... JVM version is " + System.getProperty("java.version"));
-		}
-		if (logger.isLoggable(Level.INFO)) {
-			logger.info("Working directory is " + new File(".").getAbsolutePath());
-		}
-		if (logger.isLoggable(Level.INFO)) {
-			logger.info(
-					"Heap memory is about: " + ManagementFactory.getMemoryMXBean().getHeapMemoryUsage().getMax() / (1024 * 1024) + "Mb");
-		}
+		logger.info("Starting on " + ToolBox.getPLATFORM() + "... JVM version is " + System.getProperty("java.version"));
+		logger.info("Working directory is " + new File(".").getAbsolutePath());
+		logger.info("Heap memory is about: " + ManagementFactory.getMemoryMXBean().getHeapMemoryUsage().getMax() / (1024 * 1024) + "Mb");
 		applicationContext.getModuleLoader()
 				.setAllowsDocSubmission(isDev || applicationContext.getAdvancedPrefs().getAllowsDocSubmission());
-		if (logger.isLoggable(Level.INFO)) {
-			logger.info("Launching FLEXO Application Suite version " + FlexoCst.BUSINESS_APPLICATION_VERSION_NAME + "...");
-		}
+		logger.info("Launching FLEXO Application Suite version " + FlexoCst.BUSINESS_APPLICATION_VERSION_NAME + "...");
 		if (!isDev) {
 			registerShutdownHook();
 		}
