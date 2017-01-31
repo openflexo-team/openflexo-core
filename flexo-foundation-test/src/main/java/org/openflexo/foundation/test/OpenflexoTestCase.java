@@ -38,21 +38,7 @@
 
 package org.openflexo.foundation.test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
+import junit.framework.AssertionFailedError;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.openflexo.foundation.DefaultFlexoEditor;
@@ -86,7 +72,17 @@ import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.toolbox.FileUtils;
 
-import junit.framework.AssertionFailedError;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import static org.junit.Assert.*;
 
 /**
  * Provides a JUnit 4 generic environment of Openflexo-core for testing purposes
@@ -289,24 +285,28 @@ public abstract class OpenflexoTestCase {
 			@Override
 			protected FlexoResourceCenterService createResourceCenterService() {
 				try {
-					File tempFile = File.createTempFile("Temp", "");
-					testResourceCenterDirectory = new File(tempFile.getParentFile(), tempFile.getName() + "TestResourceCenter");
-					tempFile.delete();
-					testResourceCenterDirectory.mkdirs();
-
-					System.out.println("Creating TestResourceCenter " + testResourceCenterDirectory);
+					FlexoResourceCenterService rcService = DefaultResourceCenterService.getNewInstance();
 
 					Resource tstRC = ResourceLocator.locateResource("TestResourceCenter");
-					System.out.println("Copied from " + tstRC);
-					FileUtils.copyResourceToDir(tstRC, testResourceCenterDirectory);
+					if (tstRC != null) {
+						File tempFile = File.createTempFile("Temp", "");
+						testResourceCenterDirectory = new File(tempFile.getParentFile(), tempFile.getName() + "TestResourceCenter");
+						tempFile.delete();
+						testResourceCenterDirectory.mkdirs();
 
-					FlexoResourceCenterService rcService = DefaultResourceCenterService.getNewInstance();
-					rcService.addToResourceCenters(
-							resourceCenter = new DirectoryResourceCenter(testResourceCenterDirectory, TEST_RESOURCE_CENTER_URI, rcService));
-					System.out.println("Copied TestResourceCenter to " + testResourceCenterDirectory);
+						System.out.println("Creating TestResourceCenter " + testResourceCenterDirectory);
 
-					// ici il y a des truc a voir
+						System.out.println("Copied from " + tstRC);
+						FileUtils.copyResourceToDir(tstRC, testResourceCenterDirectory);
 
+						resourceCenter = new DirectoryResourceCenter(testResourceCenterDirectory, TEST_RESOURCE_CENTER_URI, rcService);
+						rcService.addToResourceCenters(resourceCenter);
+						System.out.println("Copied TestResourceCenter to " + testResourceCenterDirectory);
+
+						// ici il y a des truc a voir
+					} else {
+						logger.warning("Can't find any TestResourceCenter");
+					}
 					return rcService;
 				} catch (IOException e) {
 					e.printStackTrace();
