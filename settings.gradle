@@ -1,3 +1,14 @@
-rootProject.name = 'openflexo-core'
-
-include 'flexo-test-resources', 'flexo-foundation', 'flexo-foundation-test', 'flexodocresourcemanager', 'flexo-ui', 'flexo-ui-test', 'flexo-documentation', 'flexo-documentation-ui', 'flexo-ontology', 'flexo-ontology-ui', 'flexodocresourcecenter', 'fml-parser', 'fml-technologyadapter-ui', 'fml-rt-technologyadapter-ui'  
+include 'flexo-test-resources',
+        'flexo-foundation',
+        'flexo-foundation-test', 
+        'flexodocresourcemanager',
+        'flexo-ui',
+        'flexo-ui-test',
+        'flexo-documentation',
+        'flexo-documentation-ui',
+        'flexo-ontology',
+        'flexo-ontology-ui',
+        'flexodocresourcecenter',
+        'fml-parser',
+        'fml-technologyadapter-ui',
+        'fml-rt-technologyadapter-ui'
