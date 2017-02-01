@@ -58,7 +58,6 @@ import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.nature.ProjectNature;
 import org.openflexo.foundation.resource.DefaultResourceCenterService;
-import org.openflexo.foundation.resource.FileSystemBasedResourceCenter;
 import org.openflexo.foundation.resource.FileSystemBasedResourceCenter.FSBasedResourceCenterEntry;
 import org.openflexo.foundation.resource.FlexoResourceCenter.ResourceCenterEntry;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
@@ -69,22 +68,25 @@ import org.openflexo.logging.FlexoLogger;
 import org.openflexo.logging.FlexoLoggingManager;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.model.factory.ModelFactory;
-import org.openflexo.rm.FileResourceImpl;
-import org.openflexo.rm.Resource;
 import org.openflexo.toolbox.FileUtils;
 
 /**
- * Provides a JUnit 4 generic environment with a {@link FlexoProject} for testing purposes<br>
+ * Provides a JUnit 4 generic environment with a {@link FlexoProject} for
+ * testing purposes<br>
+ * 
+ * @see OpenflexoTestCase
  */
 public abstract class OpenflexoProjectAtRunTimeTestCase extends OpenflexoTestCase {
 
 	/**
 	 * !!!!! IMPORTANT !!!!!<br>
-	 * Do not forget to set back this flag to true when committing into a production environment
+	 * Do not forget to set back this flag to true when committing into a
+	 * production environment
 	 */
 	public static final boolean DELETE_PROJECT_AFTER_TEST_EXECUTION = false;
 
-	private static final Logger logger = FlexoLogger.getLogger(OpenflexoProjectAtRunTimeTestCase.class.getPackage().getName());
+	private static final Logger logger = FlexoLogger
+			.getLogger(OpenflexoProjectAtRunTimeTestCase.class.getPackage().getName());
 
 	protected static FlexoEditor _editor;
 	protected static FlexoProject _project;
@@ -143,44 +145,11 @@ public abstract class OpenflexoProjectAtRunTimeTestCase extends OpenflexoTestCas
 		retval = new File("tmp/tests/FlexoResources/", resourceRelativeName);
 		if (retval.exists()) {
 			return retval;
-		}
-		else if (logger.isLoggable(Level.WARNING)) {
+		} else if (logger.isLoggable(Level.WARNING)) {
 			logger.warning("Could not find resource " + resourceRelativeName);
 		}
 		return null;
 	}
-
-	// TODO: create a project where all those tests don't need a manual import of projects
-	// TODO: copy all test VP in tmp dir and work with those VP instead of polling GIT workspace
-	/*protected static FlexoServiceManager instanciateTestServiceManager() {
-		serviceManager = new DefaultFlexoServiceManager() {
-	
-			@Override
-			protected FlexoEditor createApplicationEditor() {
-				return new FlexoTestEditor(null, this);
-			}
-	
-			@Override
-			protected FlexoResourceCenterService createResourceCenterService() {
-				File tempFile;
-				try {
-					tempFile = File.createTempFile("TestResourceCenter", "");
-					File testResourceCenterDirectory = new File(tempFile.getParentFile(), "TestResourceCenter");
-					testResourceCenterDirectory.mkdirs();
-					FileUtils.copyContentDirToDir(new FileResource("src/test/resources/TestResourceCenter"), testResourceCenterDirectory);
-					FlexoResourceCenterService rcService = DefaultResourceCenterService.getNewInstance();
-					rcService.addToResourceCenters(resourceCenter = new DirectoryResourceCenter(testResourceCenterDirectory));
-					return rcService;
-				} catch (IOException e) {
-					e.printStackTrace();
-					fail();
-					return null;
-				}
-	
-			}
-		};
-		return serviceManager;
-	}*/
 
 	protected FlexoEditor createProject(String projectName) {
 		return createProject(projectName, null);
@@ -237,7 +206,7 @@ public abstract class OpenflexoProjectAtRunTimeTestCase extends OpenflexoTestCas
 		}
 		logger.info("Project has been SUCCESSFULLY created");
 		try {
-			reply.getProject().setProjectName(_projectIdentifier/*projectName*/);
+			reply.getProject().setProjectName(_projectIdentifier/* projectName */);
 			reply.getProject().saveModifiedResources(null);
 		} catch (InvalidNameException e) {
 			e.printStackTrace();
@@ -263,32 +232,20 @@ public abstract class OpenflexoProjectAtRunTimeTestCase extends OpenflexoTestCas
 		}
 	}
 
-	protected void reloadResourceCenter(Resource oldRCDirectory) {
-		if (oldRCDirectory instanceof FileResourceImpl) {
-			File directory = ((FileResourceImpl) oldRCDirectory).getFile();
-			File newDirectory = new File(((FileSystemBasedResourceCenter) resourceCenter).getDirectory(), directory.getName());
-			newDirectory.mkdirs();
-			try {
-				FileUtils.copyContentDirToDir(directory, newDirectory);
-				// We wait here for the thread monitoring ResourceCenters to detect new files
-				((FileSystemBasedResourceCenter) resourceCenter).performDirectoryWatchingNow();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-	}
-
 	protected FlexoEditor reloadProject(File prjDir) {
 		try {
 			FlexoEditor anEditor = null;
-			assertNotNull(anEditor = FlexoProject.openProject(prjDir, EDITOR_FACTORY, /*new DefaultProjectLoadingHandler(),*/
+			assertNotNull(anEditor = FlexoProject.openProject(prjDir,
+					EDITOR_FACTORY, /* new DefaultProjectLoadingHandler(), */
 					serviceManager, null));
-			// The next line is really a trouble maker and eventually causes more problems than solutions. FlexoProject can't be renamed on
+			// The next line is really a trouble maker and eventually causes
+			// more problems than solutions. FlexoProject can't be renamed on
 			// the fly
-			// without having a severe impact on many resources and importer projects. I therefore now comment this line which made me lost
+			// without having a severe impact on many resources and importer
+			// projects. I therefore now comment this line which made me lost
 			// hundreds of hours
-			// _editor.getProject().setProjectName(_editor.getProject().getProjectName() + new Random().nextInt());
+			// _editor.getProject().setProjectName(_editor.getProject().getProjectName()
+			// + new Random().nextInt());
 			_project = anEditor.getProject();
 			return anEditor;
 		} catch (ProjectInitializerException e) {

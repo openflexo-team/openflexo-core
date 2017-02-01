@@ -39,11 +39,7 @@
 
 package org.openflexo.gina.test;
 
-import static org.junit.Assert.fail;
-
 import java.io.File;
-import java.io.IOException;
-import java.util.List;
 
 import org.openflexo.ApplicationContext;
 import org.openflexo.br.BugReportService;
@@ -56,8 +52,6 @@ import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.ViewPointLibrary;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.localization.LocalizationService;
-import org.openflexo.foundation.resource.DefaultResourceCenterService;
-import org.openflexo.foundation.resource.DirectoryResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
 import org.openflexo.foundation.technologyadapter.DefaultTechnologyAdapterService;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
@@ -66,24 +60,20 @@ import org.openflexo.foundation.utils.ProjectLoadingHandler;
 import org.openflexo.prefs.PreferencesService;
 import org.openflexo.rm.ActivateTechnologyAdapterTask;
 import org.openflexo.rm.DisactivateTechnologyAdapterTask;
-import org.openflexo.rm.FileSystemResourceLocatorImpl;
-import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceConsistencyService;
-import org.openflexo.rm.ResourceLocator;
-import org.openflexo.toolbox.FileUtils;
 import org.openflexo.view.controller.DefaultTechnologyAdapterControllerService;
 import org.openflexo.view.controller.FlexoServerInstanceManager;
 import org.openflexo.view.controller.TechnologyAdapterControllerService;
 
 /**
- * Test purposes: implements an ApplicationContext with a unique ResourceCenter
+ * Test purposes: implements an ApplicationContext
  * 
  * @author sylvain
  * 
  */
 public class TestApplicationContext extends ApplicationContext {
 
-	protected static DirectoryResourceCenter resourceCenter;
+	// protected static DirectoryResourceCenter resourceCenter;
 
 	private static final String TEST_RESOURCE_CENTER_URI = "http://openflexo.org/test/TestResourceCenter";
 
@@ -94,15 +84,8 @@ public class TestApplicationContext extends ApplicationContext {
 
 	}
 
-	private boolean generateCompoundTestResourceCenter = false;
-
 	public TestApplicationContext() {
-		this(false);
-	}
-
-	public TestApplicationContext(boolean generateCompoundTestResourceCenter) {
 		super(null, true);
-		this.generateCompoundTestResourceCenter = generateCompoundTestResourceCenter;
 
 		getLocalizationService().setAutomaticSaving(false);
 
@@ -131,58 +114,19 @@ public class TestApplicationContext extends ApplicationContext {
 	}
 
 	@Override
-	protected FlexoResourceCenterService createResourceCenterService() {
-		try {
-			File tempFile = File.createTempFile("Temp", "");
-			File testResourceCenterDirectory = new File(tempFile.getParentFile(), tempFile.getName() + "TestResourceCenter");
-			testResourceCenterDirectory.mkdirs();
-
-			System.out.println("Creating TestResourceCenter " + testResourceCenterDirectory);
-
-			if (generateCompoundTestResourceCenter) {
-				System.out.println("Generating CompoundTestResourceCenter");
-				// TODO : FIX this, it does not work & , this is crappy!
-				List<File> testRCList = ((FileSystemResourceLocatorImpl) ResourceLocator
-						.getInstanceForLocatorClass(FileSystemResourceLocatorImpl.class)).locateAllFiles("TestResourceCenter");
-				for (File f : testRCList) {
-					System.out.println("Found TestResourceCenter " + f);
-					FileUtils.copyContentDirToDir(f, testResourceCenterDirectory);
-				}
-			}
-			else {
-				Resource sourceTestResourceCenter = ResourceLocator.locateResource("TestResourceCenter");
-				System.out.println("Found TestResourceCenter " + sourceTestResourceCenter);
-				FileUtils.copyResourceToDir(sourceTestResourceCenter, testResourceCenterDirectory);
-			}
-
-			FlexoResourceCenterService rcService = DefaultResourceCenterService.getNewInstance();
-			rcService.addToResourceCenters(
-					resourceCenter = new DirectoryResourceCenter(testResourceCenterDirectory, TEST_RESOURCE_CENTER_URI, rcService));
-			System.out.println("Copied TestResourceCenter to " + testResourceCenterDirectory);
-
-			// ici il y a des truc a voir
-
-			return rcService;
-		} catch (IOException e) {
-			e.printStackTrace();
-			fail();
-			return null;
-		}
-
-	}
-
-	@Override
 	public ProjectLoadingHandler getProjectLoadingHandler(File projectDirectory) {
-		/*if (UserType.isCustomerRelease() || UserType.isAnalystRelease()) {
-			return new BasicInteractiveProjectLoadingHandler(projectDirectory);
-		} else {
-			return new FullInteractiveProjectLoadingHandler(projectDirectory);
-		}*/
+		/*
+		 * if (UserType.isCustomerRelease() || UserType.isAnalystRelease()) {
+		 * return new BasicInteractiveProjectLoadingHandler(projectDirectory); }
+		 * else { return new
+		 * FullInteractiveProjectLoadingHandler(projectDirectory); }
+		 */
 		return null;
 	}
 
 	@Override
-	protected TechnologyAdapterService createTechnologyAdapterService(FlexoResourceCenterService resourceCenterService) {
+	protected TechnologyAdapterService createTechnologyAdapterService(
+			FlexoResourceCenterService resourceCenterService) {
 		return DefaultTechnologyAdapterService.getNewInstance(resourceCenterService);
 	}
 
@@ -233,7 +177,8 @@ public class TestApplicationContext extends ApplicationContext {
 
 	/**
 	 * Enable a {@link TechnologyAdapter}<br>
-	 * All resources centers are notified to scan the resources that they may interpret
+	 * All resources centers are notified to scan the resources that they may
+	 * interpret
 	 * 
 	 * @param technologyAdapter
 	 */
@@ -253,7 +198,8 @@ public class TestApplicationContext extends ApplicationContext {
 
 	/**
 	 * Disable a {@link TechnologyAdapter}<br>
-	 * All resources centers are notified to free the resources that they are managing, if possible
+	 * All resources centers are notified to free the resources that they are
+	 * managing, if possible
 	 * 
 	 * @param technologyAdapter
 	 */

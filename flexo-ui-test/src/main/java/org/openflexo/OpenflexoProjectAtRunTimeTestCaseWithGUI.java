@@ -45,8 +45,6 @@ import java.util.logging.Logger;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.nature.ProjectNature;
-import org.openflexo.foundation.resource.DirectoryResourceCenter;
-import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.test.OpenflexoProjectAtRunTimeTestCase;
 import org.openflexo.gina.test.TestApplicationContext;
@@ -54,15 +52,14 @@ import org.openflexo.logging.FlexoLogger;
 import org.openflexo.logging.FlexoLoggingManager;
 
 /**
- * Provides a JUnit 4 generic environment of Openflexo-core with a project at run-time for testing purposes in graphics environment
+ * Provides a JUnit 4 generic environment of Openflexo-core with a project at
+ * run-time for testing purposes in graphics environment
  * 
  */
 public abstract class OpenflexoProjectAtRunTimeTestCaseWithGUI extends OpenflexoProjectAtRunTimeTestCase {
 
-	private static final Logger logger = FlexoLogger.getLogger(OpenflexoProjectAtRunTimeTestCaseWithGUI.class.getPackage().getName());
-
-	// protected static DirectoryResourceCenter resourceCenter;
-	// protected static ApplicationContext serviceManager;
+	private static final Logger logger = FlexoLogger
+			.getLogger(OpenflexoProjectAtRunTimeTestCaseWithGUI.class.getPackage().getName());
 
 	static {
 		try {
@@ -74,28 +71,11 @@ public abstract class OpenflexoProjectAtRunTimeTestCaseWithGUI extends Openflexo
 		}
 	}
 
-	protected static ApplicationContext instanciateTestServiceManager() {
-		return instanciateTestServiceManager(false);
-	}
-
-	protected static ApplicationContext instanciateTestServiceManager(final boolean generateCompoundTestResourceCenter) {
-		serviceManager = new TestApplicationContext(generateCompoundTestResourceCenter);
-		for (FlexoResourceCenter rc : serviceManager.getResourceCenterService().getResourceCenters()) {
-			// Select the first directory ResourceCenter
-			if (rc instanceof DirectoryResourceCenter && !rc.getResourceCenterEntry().isSystemEntry()) {
-				resourceCenter = (DirectoryResourceCenter) rc;
-				break;
-			}
-		}
-		return (ApplicationContext) serviceManager;
-	}
-
-	protected static ApplicationContext instanciateTestServiceManager(final boolean generateCompoundTestResourceCenter,
-			Class<? extends TechnologyAdapter>... taClasses) {
-		serviceManager = instanciateTestServiceManager(generateCompoundTestResourceCenter);
+	protected static ApplicationContext instanciateTestServiceManager(Class<? extends TechnologyAdapter>... taClasses) {
+		serviceManager = new TestApplicationContext();
 		for (Class<? extends TechnologyAdapter> technologyAdapterClass : taClasses) {
-			serviceManager
-					.activateTechnologyAdapter(serviceManager.getTechnologyAdapterService().getTechnologyAdapter(technologyAdapterClass));
+			serviceManager.activateTechnologyAdapter(
+					serviceManager.getTechnologyAdapterService().getTechnologyAdapter(technologyAdapterClass));
 		}
 		return (ApplicationContext) serviceManager;
 	}

@@ -47,7 +47,6 @@ import java.util.logging.Logger;
 import org.junit.AfterClass;
 import org.openflexo.ApplicationContext;
 import org.openflexo.Flexo;
-import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.resource.DirectoryResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
@@ -57,7 +56,8 @@ import org.openflexo.logging.FlexoLogger;
 import org.openflexo.logging.FlexoLoggingManager;
 
 /**
- * Provides a JUnit 4 generic environment of Openflexo-core for testing purposes in graphics environment
+ * Provides a JUnit 4 generic environment of Openflexo-core for testing purposes
+ * in graphics environment
  * 
  */
 public abstract class OpenflexoTestCaseWithGUI extends OpenflexoTestCase {
@@ -65,7 +65,7 @@ public abstract class OpenflexoTestCaseWithGUI extends OpenflexoTestCase {
 	@SuppressWarnings("unused")
 	private static final Logger logger = FlexoLogger.getLogger(OpenflexoTestCaseWithGUI.class.getPackage().getName());
 
-	protected static DirectoryResourceCenter resourceCenter;
+	// protected static DirectoryResourceCenter resourceCenter;
 	protected static ApplicationContext serviceManager;
 
 	static {
@@ -94,53 +94,12 @@ public abstract class OpenflexoTestCaseWithGUI extends OpenflexoTestCase {
 		unloadServiceManager();
 	}
 
-	/**
-	 * Instantiate a default {@link TestApplicationContext} well suited for test purpose<br>
-	 * FML and FML@RT technology adapters are activated in returned {@link FlexoServiceManager}, as well as technology adapters whose
-	 * classes are supplied as varargs arguments
-	 * 
-	 * @param taClasses
-	 * @return a newly created {@link FlexoServiceManager}
-	 */
 	protected static ApplicationContext instanciateTestServiceManager(Class<? extends TechnologyAdapter>... taClasses) {
-		serviceManager = instanciateTestServiceManager();
-		for (Class<? extends TechnologyAdapter> technologyAdapterClass : taClasses) {
-			serviceManager
-					.activateTechnologyAdapter(serviceManager.getTechnologyAdapterService().getTechnologyAdapter(technologyAdapterClass));
-		}
-		return serviceManager;
-	}
-
-	protected static ApplicationContext instanciateTestServiceManager() {
 		Flexo.isDev = true;
-		return instanciateTestServiceManager(false);
-	}
-
-	protected static ApplicationContext instanciateTestServiceManager(final boolean generateCompoundTestResourceCenter) {
-		serviceManager = new TestApplicationContext(generateCompoundTestResourceCenter);
-		for (FlexoResourceCenter<?> rc : serviceManager.getResourceCenterService().getResourceCenters()) {
-			// Select the first directory ResourceCenter
-			if (rc instanceof DirectoryResourceCenter && !rc.getResourceCenterEntry().isSystemEntry()) {
-				resourceCenter = (DirectoryResourceCenter) rc;
-				break;
-			}
-		}
-		return serviceManager;
-	}
-
-	protected static ApplicationContext instanciateTestServiceManager(final boolean generateCompoundTestResourceCenter,
-			Class<? extends TechnologyAdapter>... taClasses) {
-		serviceManager = new TestApplicationContext(generateCompoundTestResourceCenter);
+		serviceManager = new TestApplicationContext(/* generateCompoundTestResourceCenter */);
 		for (Class<? extends TechnologyAdapter> technologyAdapterClass : taClasses) {
-			serviceManager
-					.activateTechnologyAdapter(serviceManager.getTechnologyAdapterService().getTechnologyAdapter(technologyAdapterClass));
-		}
-		for (FlexoResourceCenter<?> rc : serviceManager.getResourceCenterService().getResourceCenters()) {
-			// Select the first directory ResourceCenter
-			if (rc instanceof DirectoryResourceCenter) {
-				resourceCenter = (DirectoryResourceCenter) rc;
-				break;
-			}
+			serviceManager.activateTechnologyAdapter(
+					serviceManager.getTechnologyAdapterService().getTechnologyAdapter(technologyAdapterClass));
 		}
 		return serviceManager;
 	}
