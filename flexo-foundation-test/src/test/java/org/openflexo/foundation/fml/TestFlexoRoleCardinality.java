@@ -46,6 +46,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.List;
 
 import org.junit.Test;
@@ -78,6 +79,7 @@ import org.openflexo.foundation.fml.rt.action.CreateBasicVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.CreateViewInFolder;
 import org.openflexo.foundation.fml.rt.action.CreationSchemeAction;
 import org.openflexo.foundation.fml.rt.rm.ViewResource;
+import org.openflexo.foundation.resource.DirectoryResourceCenter;
 import org.openflexo.foundation.resource.PamelaResource;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.resource.SaveResourceException;
@@ -118,17 +120,23 @@ public class TestFlexoRoleCardinality extends OpenflexoProjectAtRunTimeTestCase 
 	static FlexoConceptInstance fci;
 	public static FlexoConceptInstance[] fci2;
 
+	private static DirectoryResourceCenter resourceCenter;
+
 	/**
 	 * Init
+	 * 
+	 * @throws IOException
 	 */
 	@Test
 	@TestOrder(1)
-	public void init() {
+	public void init() throws IOException {
 		instanciateTestServiceManager();
 
 		editor = new DefaultFlexoEditor(null, serviceManager);
 		assertNotNull(editor);
 
+		resourceCenter = makeNewDirectoryResourceCenter();
+		assertNotNull(resourceCenter);
 		System.out.println("ResourceCenter= " + resourceCenter);
 	}
 
@@ -151,17 +159,22 @@ public class TestFlexoRoleCardinality extends OpenflexoProjectAtRunTimeTestCase 
 				fmlTechnologyAdapter.getTechnologyContextManager(), true);
 		viewPoint = newViewPointResource.getLoadedResourceData();
 
-		// viewPoint = ViewPointImpl.newViewPoint("TestViewPoint", "http://openflexo.org/test/TestViewPoint", resourceCenter.getDirectory(),
+		// viewPoint = ViewPointImpl.newViewPoint("TestViewPoint",
+		// "http://openflexo.org/test/TestViewPoint",
+		// resourceCenter.getDirectory(),
 		// serviceManager.getViewPointLibrary(), resourceCenter);
-		// assertTrue(((ViewPointResource) viewPoint.getResource()).getDirectory().exists());
-		// assertTrue(((ViewPointResource) viewPoint.getResource()).getFile().exists());
+		// assertTrue(((ViewPointResource)
+		// viewPoint.getResource()).getDirectory().exists());
+		// assertTrue(((ViewPointResource)
+		// viewPoint.getResource()).getFile().exists());
 		assertTrue(((ViewPointResource) viewPoint.getResource()).getDirectory() != null);
 		assertTrue(((ViewPointResource) viewPoint.getResource()).getFlexoIODelegate().exists());
 
 		System.out.println("ViewPoint BindingModel = " + viewPoint.getBindingModel());
 		assertNotNull(viewPoint.getBindingModel());
 		assertEquals(4, viewPoint.getBindingModel().getBindingVariablesCount());
-		assertNotNull(viewPoint.getBindingModel().bindingVariableNamed(ViewPointBindingModel.REFLEXIVE_ACCESS_PROPERTY));
+		assertNotNull(
+				viewPoint.getBindingModel().bindingVariableNamed(ViewPointBindingModel.REFLEXIVE_ACCESS_PROPERTY));
 		assertNotNull(viewPoint.getBindingModel().bindingVariableNamed(ViewPointBindingModel.PROJECT_PROPERTY));
 		assertNotNull(viewPoint.getBindingModel().bindingVariableNamed(ViewPointBindingModel.RC_PROPERTY));
 		assertNotNull(viewPoint.getBindingModel().bindingVariableNamed(ViewPointBindingModel.VIEW_PROPERTY));
@@ -179,51 +192,63 @@ public class TestFlexoRoleCardinality extends OpenflexoProjectAtRunTimeTestCase 
 
 		FMLTechnologyAdapter fmlTechnologyAdapter = serviceManager.getTechnologyAdapterService()
 				.getTechnologyAdapter(FMLTechnologyAdapter.class);
-		VirtualModelResourceFactory factory = fmlTechnologyAdapter.getViewPointResourceFactory().getVirtualModelResourceFactory();
+		VirtualModelResourceFactory factory = fmlTechnologyAdapter.getViewPointResourceFactory()
+				.getVirtualModelResourceFactory();
 		VirtualModelResource newVMResource = factory.makeVirtualModelResource("VM1", viewPoint.getViewPointResource(),
 				fmlTechnologyAdapter.getTechnologyContextManager(), true);
 		virtualModel = newVMResource.getLoadedResourceData();
 
 		// virtualModel = VirtualModelImpl.newVirtualModel("VM1", viewPoint);
-		assertTrue(ResourceLocator.retrieveResourceAsFile(((VirtualModelResource) virtualModel.getResource()).getDirectory()).exists());
+		assertTrue(ResourceLocator
+				.retrieveResourceAsFile(((VirtualModelResource) virtualModel.getResource()).getDirectory()).exists());
 		assertTrue(((VirtualModelResource) virtualModel.getResource()).getFlexoIODelegate().exists());
 
 		assertNotNull(virtualModel.getBindingModel());
 		assertEquals(6, virtualModel.getBindingModel().getBindingVariablesCount());
-		assertNotNull(virtualModel.getBindingModel().bindingVariableNamed(ViewPointBindingModel.REFLEXIVE_ACCESS_PROPERTY));
-		assertNotNull(virtualModel.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.REFLEXIVE_ACCESS_PROPERTY));
+		assertNotNull(
+				virtualModel.getBindingModel().bindingVariableNamed(ViewPointBindingModel.REFLEXIVE_ACCESS_PROPERTY));
+		assertNotNull(virtualModel.getBindingModel()
+				.bindingVariableNamed(VirtualModelBindingModel.REFLEXIVE_ACCESS_PROPERTY));
 		assertNotNull(virtualModel.getBindingModel().bindingVariableNamed(ViewPointBindingModel.PROJECT_PROPERTY));
 		assertNotNull(virtualModel.getBindingModel().bindingVariableNamed(ViewPointBindingModel.RC_PROPERTY));
 		assertNotNull(virtualModel.getBindingModel().bindingVariableNamed(ViewPointBindingModel.VIEW_PROPERTY));
 		assertEquals(ViewType.getViewType(viewPoint),
 				virtualModel.getBindingModel().bindingVariableNamed(ViewPointBindingModel.VIEW_PROPERTY).getType());
-		assertNotNull(virtualModel.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.VIRTUAL_MODEL_INSTANCE_PROPERTY));
-		assertEquals(VirtualModelInstanceType.getVirtualModelInstanceType(virtualModel),
-				virtualModel.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.VIRTUAL_MODEL_INSTANCE_PROPERTY).getType());
+		assertNotNull(virtualModel.getBindingModel()
+				.bindingVariableNamed(VirtualModelBindingModel.VIRTUAL_MODEL_INSTANCE_PROPERTY));
+		assertEquals(VirtualModelInstanceType.getVirtualModelInstanceType(virtualModel), virtualModel.getBindingModel()
+				.bindingVariableNamed(VirtualModelBindingModel.VIRTUAL_MODEL_INSTANCE_PROPERTY).getType());
 
-		// We disconnect VirtualModel from ViewPoint, and we check BindingModel evolution
+		// We disconnect VirtualModel from ViewPoint, and we check BindingModel
+		// evolution
 		viewPoint.removeFromVirtualModels(virtualModel);
 		System.out.println("VirtualModel BindingModel = " + virtualModel.getBindingModel());
 		assertNotNull(virtualModel.getBindingModel());
 		assertEquals(2, virtualModel.getBindingModel().getBindingVariablesCount());
-		assertNotNull(virtualModel.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.REFLEXIVE_ACCESS_PROPERTY));
-		assertNotNull(virtualModel.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.VIRTUAL_MODEL_INSTANCE_PROPERTY));
-		// assertEquals(VirtualModelInstanceType.getVirtualModelInstanceType(virtualModel1), virtualModel1.getBindingModel()
+		assertNotNull(virtualModel.getBindingModel()
+				.bindingVariableNamed(VirtualModelBindingModel.REFLEXIVE_ACCESS_PROPERTY));
+		assertNotNull(virtualModel.getBindingModel()
+				.bindingVariableNamed(VirtualModelBindingModel.VIRTUAL_MODEL_INSTANCE_PROPERTY));
+		// assertEquals(VirtualModelInstanceType.getVirtualModelInstanceType(virtualModel1),
+		// virtualModel1.getBindingModel()
 		// .bindingVariableNamed(VirtualModelBindingModel.VIRTUAL_MODEL_INSTANCE_PROPERTY).getType());
 
 		// We reconnect VirtualModel again, and we check BindingModel evolution
 		viewPoint.addToVirtualModels(virtualModel);
 		System.out.println("VirtualModel BindingModel = " + virtualModel.getBindingModel());
 		assertEquals(6, virtualModel.getBindingModel().getBindingVariablesCount());
-		assertNotNull(virtualModel.getBindingModel().bindingVariableNamed(ViewPointBindingModel.REFLEXIVE_ACCESS_PROPERTY));
-		assertNotNull(virtualModel.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.REFLEXIVE_ACCESS_PROPERTY));
+		assertNotNull(
+				virtualModel.getBindingModel().bindingVariableNamed(ViewPointBindingModel.REFLEXIVE_ACCESS_PROPERTY));
+		assertNotNull(virtualModel.getBindingModel()
+				.bindingVariableNamed(VirtualModelBindingModel.REFLEXIVE_ACCESS_PROPERTY));
 		assertNotNull(virtualModel.getBindingModel().bindingVariableNamed(ViewPointBindingModel.PROJECT_PROPERTY));
 		assertNotNull(virtualModel.getBindingModel().bindingVariableNamed(ViewPointBindingModel.VIEW_PROPERTY));
 		assertEquals(ViewType.getViewType(viewPoint),
 				virtualModel.getBindingModel().bindingVariableNamed(ViewPointBindingModel.VIEW_PROPERTY).getType());
-		assertNotNull(virtualModel.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.VIRTUAL_MODEL_INSTANCE_PROPERTY));
-		assertEquals(VirtualModelInstanceType.getVirtualModelInstanceType(virtualModel),
-				virtualModel.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.VIRTUAL_MODEL_INSTANCE_PROPERTY).getType());
+		assertNotNull(virtualModel.getBindingModel()
+				.bindingVariableNamed(VirtualModelBindingModel.VIRTUAL_MODEL_INSTANCE_PROPERTY));
+		assertEquals(VirtualModelInstanceType.getVirtualModelInstanceType(virtualModel), virtualModel.getBindingModel()
+				.bindingVariableNamed(VirtualModelBindingModel.VIRTUAL_MODEL_INSTANCE_PROPERTY).getType());
 
 	}
 
@@ -272,7 +297,8 @@ public class TestFlexoRoleCardinality extends OpenflexoProjectAtRunTimeTestCase 
 		createPR3.setCardinality(PropertyCardinality.OneMany);
 		createPR3.doAction();
 
-		CreateFlexoConceptInstanceRole createPR4 = CreateFlexoConceptInstanceRole.actionType.makeNewAction(flexoConcept1, null, editor);
+		CreateFlexoConceptInstanceRole createPR4 = CreateFlexoConceptInstanceRole.actionType
+				.makeNewAction(flexoConcept1, null, editor);
 		createPR4.setRoleName("someFlexoConcept2");
 		createPR4.setFlexoConceptInstanceType(flexoConcept2);
 		createPR4.setCardinality(PropertyCardinality.ZeroMany);
@@ -300,18 +326,22 @@ public class TestFlexoRoleCardinality extends OpenflexoProjectAtRunTimeTestCase 
 		assertNotNull(someFlexoConcept2);
 
 		assertEquals(FlexoConceptInstanceType.getFlexoConceptInstanceType(flexoConcept2), someFlexoConcept2.getType());
-		assertEquals(new ParameterizedTypeImpl(List.class, FlexoConceptInstanceType.getFlexoConceptInstanceType(flexoConcept2)),
+		assertEquals(
+				new ParameterizedTypeImpl(List.class,
+						FlexoConceptInstanceType.getFlexoConceptInstanceType(flexoConcept2)),
 				someFlexoConcept2.getResultingType());
 
-		CreateFlexoBehaviour createCreationScheme = CreateFlexoBehaviour.actionType.makeNewAction(flexoConcept1, null, editor);
+		CreateFlexoBehaviour createCreationScheme = CreateFlexoBehaviour.actionType.makeNewAction(flexoConcept1, null,
+				editor);
 		createCreationScheme.setFlexoBehaviourClass(CreationScheme.class);
 		createCreationScheme.setFlexoBehaviourName("creationScheme");
 		createCreationScheme.doAction();
 		CreationScheme creationScheme = (CreationScheme) createCreationScheme.getNewFlexoBehaviour();
 
-		CreateEditionAction createEditionAction1 = CreateEditionAction.actionType.makeNewAction(creationScheme.getControlGraph(), null,
-				editor);
-		// createEditionAction1.actionChoice = CreateEditionActionChoice.BuiltInAction;
+		CreateEditionAction createEditionAction1 = CreateEditionAction.actionType
+				.makeNewAction(creationScheme.getControlGraph(), null, editor);
+		// createEditionAction1.actionChoice =
+		// CreateEditionActionChoice.BuiltInAction;
 		createEditionAction1.setEditionActionClass(ExpressionAction.class);
 		createEditionAction1.setAssignation(new DataBinding<Object>("aStringInA"));
 		createEditionAction1.doAction();
@@ -326,7 +356,8 @@ public class TestFlexoRoleCardinality extends OpenflexoProjectAtRunTimeTestCase 
 		assertTrue(flexoConcept1.getCreationSchemes().contains(creationScheme));
 
 		// We create now an empty creation scheme for FlexoConcept 2
-		CreateFlexoBehaviour createCreationScheme2 = CreateFlexoBehaviour.actionType.makeNewAction(flexoConcept2, null, editor);
+		CreateFlexoBehaviour createCreationScheme2 = CreateFlexoBehaviour.actionType.makeNewAction(flexoConcept2, null,
+				editor);
 		createCreationScheme2.setFlexoBehaviourClass(CreationScheme.class);
 		createCreationScheme2.setFlexoBehaviourName("creationScheme");
 		createCreationScheme2.doAction();
@@ -358,7 +389,8 @@ public class TestFlexoRoleCardinality extends OpenflexoProjectAtRunTimeTestCase 
 		assertTrue(project.getProjectDirectory().exists());
 		assertTrue(project.getProjectDataResource().getFlexoIODelegate().exists());
 
-		CreateViewInFolder action = CreateViewInFolder.actionType.makeNewAction(project.getViewLibrary().getRootFolder(), null, editor);
+		CreateViewInFolder action = CreateViewInFolder.actionType
+				.makeNewAction(project.getViewLibrary().getRootFolder(), null, editor);
 		action.setNewViewName("MyView");
 		action.setNewViewTitle("Test creation of a new view");
 		action.setViewpointResource((ViewPointResource) viewPoint.getResource());
@@ -373,15 +405,18 @@ public class TestFlexoRoleCardinality extends OpenflexoProjectAtRunTimeTestCase 
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		// assertTrue(((ViewResource) newView.getResource()).getDirectory().exists());
-		// assertTrue(((ViewResource) newView.getResource()).getFile().exists());
+		// assertTrue(((ViewResource)
+		// newView.getResource()).getDirectory().exists());
+		// assertTrue(((ViewResource)
+		// newView.getResource()).getFile().exists());
 		assertTrue(((ViewResource) newView.getResource()).getDirectory() != null);
 		assertTrue(((ViewResource) newView.getResource()).getFlexoIODelegate().exists());
 
 		assertNotNull(project.getResource(newView.getURI()));
 		assertNotNull(project.getViewLibrary().getResource(newView.getURI()));
 
-		CreateBasicVirtualModelInstance createVMI = CreateBasicVirtualModelInstance.actionType.makeNewAction(newView, null, editor);
+		CreateBasicVirtualModelInstance createVMI = CreateBasicVirtualModelInstance.actionType.makeNewAction(newView,
+				null, editor);
 		createVMI.setNewVirtualModelInstanceName("MyVirtualModelInstance");
 		createVMI.setNewVirtualModelInstanceTitle("Test creation of a new VirtualModelInstance");
 		createVMI.setVirtualModel(virtualModel);
@@ -390,8 +425,10 @@ public class TestFlexoRoleCardinality extends OpenflexoProjectAtRunTimeTestCase 
 		vmi = createVMI.getNewVirtualModelInstance();
 		assertNotNull(vmi);
 		assertNotNull(vmi.getResource());
-		// assertTrue(((ViewResource) newView.getResource()).getDirectory().exists());
-		// assertTrue(((ViewResource) newView.getResource()).getFile().exists());
+		// assertTrue(((ViewResource)
+		// newView.getResource()).getDirectory().exists());
+		// assertTrue(((ViewResource)
+		// newView.getResource()).getFile().exists());
 		assertTrue(((ViewResource) newView.getResource()).getDirectory() != null);
 		assertTrue(((ViewResource) newView.getResource()).getFlexoIODelegate().exists());
 		assertEquals(virtualModel, vmi.getFlexoConcept());
@@ -408,7 +445,8 @@ public class TestFlexoRoleCardinality extends OpenflexoProjectAtRunTimeTestCase 
 		CreationScheme creationScheme = flexoConcept1.getFlexoBehaviours(CreationScheme.class).get(0);
 		assertNotNull(creationScheme);
 
-		CreationSchemeAction creationSchemeCreationAction = CreationSchemeAction.actionType.makeNewAction(vmi, null, editor);
+		CreationSchemeAction creationSchemeCreationAction = CreationSchemeAction.actionType.makeNewAction(vmi, null,
+				editor);
 		creationSchemeCreationAction.setCreationScheme(creationScheme);
 		assertNotNull(creationSchemeCreationAction);
 		creationSchemeCreationAction.doAction();
@@ -424,7 +462,8 @@ public class TestFlexoRoleCardinality extends OpenflexoProjectAtRunTimeTestCase 
 
 		fci2 = new FlexoConceptInstance[3];
 		for (int i = 0; i < 3; i++) {
-			CreationSchemeAction creationSchemeCreation2Action = CreationSchemeAction.actionType.makeNewAction(vmi, null, editor);
+			CreationSchemeAction creationSchemeCreation2Action = CreationSchemeAction.actionType.makeNewAction(vmi,
+					null, editor);
 			creationSchemeCreation2Action.setCreationScheme(creationScheme2);
 			assertNotNull(creationSchemeCreation2Action);
 			creationSchemeCreation2Action.doAction();
@@ -615,10 +654,12 @@ public class TestFlexoRoleCardinality extends OpenflexoProjectAtRunTimeTestCase 
 		System.out.println("All resources=" + project.getAllResources());
 		assertNotNull(project.getResource(newView.getURI()));
 
-		VirtualModelInstance reloadedVMI = (VirtualModelInstance) newView.getVirtualModelInstance("MyVirtualModelInstance");
+		VirtualModelInstance reloadedVMI = (VirtualModelInstance) newView
+				.getVirtualModelInstance("MyVirtualModelInstance");
 		assertNotNull(reloadedVMI);
 
-		System.out.println(((PamelaResource<?, ?>) reloadedVMI.getResource()).getFactory().stringRepresentation(reloadedVMI));
+		System.out.println(
+				((PamelaResource<?, ?>) reloadedVMI.getResource()).getFactory().stringRepresentation(reloadedVMI));
 
 		FlexoConceptInstance reloadedFCI = reloadedVMI.getFlexoConceptInstances(flexoConcept1).get(0);
 		assertNotNull(reloadedFCI);

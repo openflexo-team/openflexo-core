@@ -49,6 +49,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openflexo.foundation.fml.rm.ViewPointResource;
 import org.openflexo.foundation.fml.rm.ViewPointResourceFactory;
+import org.openflexo.foundation.resource.DirectoryResourceCenter;
 import org.openflexo.foundation.resource.FileSystemBasedResourceCenter;
 import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.test.OpenflexoTestCase;
@@ -73,16 +74,21 @@ public class TestCreateViewPoint extends OpenflexoTestCase {
 	static ViewPoint newViewPoint;
 	static ViewPointResource newViewPointResource;
 
+	private static DirectoryResourceCenter resourceCenter;
+
 	/**
 	 * Test the creation
 	 * 
 	 * @throws ModelDefinitionException
 	 * @throws SaveResourceException
+	 * @throws IOException
 	 */
 	@Test
 	@TestOrder(1)
-	public void testCreateViewPoint() throws SaveResourceException, ModelDefinitionException {
+	public void testCreateViewPoint() throws SaveResourceException, ModelDefinitionException, IOException {
 		instanciateTestServiceManager();
+		resourceCenter = makeNewDirectoryResourceCenter();
+		assertNotNull(resourceCenter);
 		System.out.println("ResourceCenter= " + resourceCenter);
 
 		FMLTechnologyAdapter fmlTechnologyAdapter = serviceManager.getTechnologyAdapterService()
@@ -94,13 +100,16 @@ public class TestCreateViewPoint extends OpenflexoTestCase {
 				fmlTechnologyAdapter.getTechnologyContextManager(), true);
 		newViewPoint = newViewPointResource.getLoadedResourceData();
 
-		// newViewPoint = ViewPointImpl.newViewPoint(VIEWPOINT_NAME, VIEWPOINT_URI, resourceCenter.getDirectory(),
+		// newViewPoint = ViewPointImpl.newViewPoint(VIEWPOINT_NAME,
+		// VIEWPOINT_URI, resourceCenter.getDirectory(),
 		// serviceManager.getViewPointLibrary(), resourceCenter);
 		assertNotNull(newViewPoint);
 		newViewPointResource = (ViewPointResource) newViewPoint.getResource();
 		assertNotNull(newViewPointResource);
-		// assertTrue(((ViewPointResource) newViewPoint.getResource()).getDirectory().exists());
-		// assertTrue(((ViewPointResource) newViewPoint.getResource()).getFile().exists());
+		// assertTrue(((ViewPointResource)
+		// newViewPoint.getResource()).getDirectory().exists());
+		// assertTrue(((ViewPointResource)
+		// newViewPoint.getResource()).getFile().exists());
 		assertTrue(((ViewPointResource) newViewPoint.getResource()).getDirectory() != null);
 		assertTrue(((ViewPointResource) newViewPoint.getResource()).getFlexoIODelegate().exists());
 
@@ -121,30 +130,39 @@ public class TestCreateViewPoint extends OpenflexoTestCase {
 
 	/**
 	 * Reload the ViewPoint<br>
-	 * We first re-init a full ServiceManager, and copy the just created ViewPoint<br>
-	 * The goal is to let the FileSystem monitoring system detects the new directory and instantiate ViewPoint
+	 * We first re-init a full ServiceManager, and copy the just created
+	 * ViewPoint<br>
+	 * The goal is to let the FileSystem monitoring system detects the new
+	 * directory and instantiate ViewPoint
+	 * 
+	 * @throws IOException
 	 */
 	@Test
 	@TestOrder(2)
-	public void testReloadViewPoint() {
+	public void testReloadViewPoint() throws IOException {
 
 		log("testReloadViewPoint()");
 
 		instanciateTestServiceManager();
+		resourceCenter = makeNewDirectoryResourceCenter();
+
 		File directory = ResourceLocator.retrieveResourceAsFile(newViewPointResource.getDirectory());
-		File newDirectory = new File(((FileSystemBasedResourceCenter) resourceCenter).getDirectory(), directory.getName());
+		File newDirectory = new File(((FileSystemBasedResourceCenter) resourceCenter).getDirectory(),
+				directory.getName());
 		newDirectory.mkdirs();
 
 		try {
 			FileUtils.copyContentDirToDir(directory, newDirectory);
-			// We wait here for the thread monitoring ResourceCenters to detect new files
+			// We wait here for the thread monitoring ResourceCenters to detect
+			// new files
 			((FileSystemBasedResourceCenter) resourceCenter).performDirectoryWatchingNow();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
-		ViewPointResource retrievedVPResource = serviceManager.getViewPointLibrary().getViewPointResource(VIEWPOINT_URI);
+		ViewPointResource retrievedVPResource = serviceManager.getViewPointLibrary()
+				.getViewPointResource(VIEWPOINT_URI);
 		assertNotNull(retrievedVPResource);
 
 		ViewPoint reloadedViewPoint = retrievedVPResource.getViewPoint();

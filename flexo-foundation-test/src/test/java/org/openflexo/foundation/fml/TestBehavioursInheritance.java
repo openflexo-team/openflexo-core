@@ -61,7 +61,7 @@ import org.openflexo.foundation.fml.rm.ViewPointResource;
 import org.openflexo.foundation.fml.rm.ViewPointResourceFactory;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.fml.rm.VirtualModelResourceFactory;
-import org.openflexo.foundation.resource.FileSystemBasedResourceCenter;
+import org.openflexo.foundation.resource.DirectoryResourceCenter;
 import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.test.OpenflexoProjectAtRunTimeTestCase;
 import org.openflexo.model.exceptions.ModelDefinitionException;
@@ -71,8 +71,9 @@ import org.openflexo.test.TestOrder;
 import org.openflexo.toolbox.FileUtils;
 
 /**
- * This unit test is intented to test {@link FlexoConcept} inheritance features, as well as "isAbstract" management and
- * {@link FlexoProperty} inheritance and shadowing
+ * This unit test is intented to test {@link FlexoConcept} inheritance features,
+ * as well as "isAbstract" management and {@link FlexoProperty} inheritance and
+ * shadowing
  * 
  * @author sylvain
  * 
@@ -111,17 +112,23 @@ public class TestBehavioursInheritance extends OpenflexoProjectAtRunTimeTestCase
 	// static VirtualModelInstance vmi;
 	// static FlexoConceptInstance a;
 
+	private static DirectoryResourceCenter resourceCenter;
+
 	/**
 	 * Init
+	 * 
+	 * @throws IOException
 	 */
 	@Test
 	@TestOrder(1)
-	public void init() {
+	public void init() throws IOException {
 		instanciateTestServiceManager();
 
 		editor = new DefaultFlexoEditor(null, serviceManager);
 		assertNotNull(editor);
 
+		resourceCenter = makeNewDirectoryResourceCenter();
+		assertNotNull(resourceCenter);
 		System.out.println("ResourceCenter= " + resourceCenter);
 	}
 
@@ -144,17 +151,21 @@ public class TestBehavioursInheritance extends OpenflexoProjectAtRunTimeTestCase
 				fmlTechnologyAdapter.getTechnologyContextManager(), true);
 		viewPoint = newViewPointResource.getLoadedResourceData();
 
-		// viewPoint = ViewPointImpl.newViewPoint(VIEWPOINT_NAME, VIEWPOINT_URI, resourceCenter.getDirectory(),
+		// viewPoint = ViewPointImpl.newViewPoint(VIEWPOINT_NAME, VIEWPOINT_URI,
+		// resourceCenter.getDirectory(),
 		// serviceManager.getViewPointLibrary(), resourceCenter);
-		// assertTrue(((ViewPointResource) viewPoint.getResource()).getDirectory().exists());
-		// assertTrue(((ViewPointResource) viewPoint.getResource()).getFile().exists());
+		// assertTrue(((ViewPointResource)
+		// viewPoint.getResource()).getDirectory().exists());
+		// assertTrue(((ViewPointResource)
+		// viewPoint.getResource()).getFile().exists());
 		assertTrue(((ViewPointResource) viewPoint.getResource()).getDirectory() != null);
 		assertTrue(((ViewPointResource) viewPoint.getResource()).getFlexoIODelegate().exists());
 
 		System.out.println("ViewPoint BindingModel = " + viewPoint.getBindingModel());
 		assertNotNull(viewPoint.getBindingModel());
 		assertEquals(4, viewPoint.getBindingModel().getBindingVariablesCount());
-		assertNotNull(viewPoint.getBindingModel().bindingVariableNamed(ViewPointBindingModel.REFLEXIVE_ACCESS_PROPERTY));
+		assertNotNull(
+				viewPoint.getBindingModel().bindingVariableNamed(ViewPointBindingModel.REFLEXIVE_ACCESS_PROPERTY));
 		assertNotNull(viewPoint.getBindingModel().bindingVariableNamed(ViewPointBindingModel.PROJECT_PROPERTY));
 		assertNotNull(viewPoint.getBindingModel().bindingVariableNamed(ViewPointBindingModel.RC_PROPERTY));
 		assertNotNull(viewPoint.getBindingModel().bindingVariableNamed(ViewPointBindingModel.VIEW_PROPERTY));
@@ -172,52 +183,65 @@ public class TestBehavioursInheritance extends OpenflexoProjectAtRunTimeTestCase
 
 		FMLTechnologyAdapter fmlTechnologyAdapter = serviceManager.getTechnologyAdapterService()
 				.getTechnologyAdapter(FMLTechnologyAdapter.class);
-		VirtualModelResourceFactory factory = fmlTechnologyAdapter.getViewPointResourceFactory().getVirtualModelResourceFactory();
-		VirtualModelResource newVMResource = factory.makeVirtualModelResource(VIRTUAL_MODEL_NAME, viewPoint.getViewPointResource(),
-				fmlTechnologyAdapter.getTechnologyContextManager(), true);
+		VirtualModelResourceFactory factory = fmlTechnologyAdapter.getViewPointResourceFactory()
+				.getVirtualModelResourceFactory();
+		VirtualModelResource newVMResource = factory.makeVirtualModelResource(VIRTUAL_MODEL_NAME,
+				viewPoint.getViewPointResource(), fmlTechnologyAdapter.getTechnologyContextManager(), true);
 		virtualModel = newVMResource.getLoadedResourceData();
 
-		// virtualModel = VirtualModelImpl.newVirtualModel(VIRTUAL_MODEL_NAME, viewPoint);
-		assertTrue(ResourceLocator.retrieveResourceAsFile(((VirtualModelResource) virtualModel.getResource()).getDirectory()).exists());
+		// virtualModel = VirtualModelImpl.newVirtualModel(VIRTUAL_MODEL_NAME,
+		// viewPoint);
+		assertTrue(ResourceLocator
+				.retrieveResourceAsFile(((VirtualModelResource) virtualModel.getResource()).getDirectory()).exists());
 		assertTrue(((VirtualModelResource) virtualModel.getResource()).getFlexoIODelegate().exists());
 
 		assertNotNull(virtualModel.getBindingModel());
 		assertEquals(6, virtualModel.getBindingModel().getBindingVariablesCount());
-		assertNotNull(virtualModel.getBindingModel().bindingVariableNamed(ViewPointBindingModel.REFLEXIVE_ACCESS_PROPERTY));
-		assertNotNull(virtualModel.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.REFLEXIVE_ACCESS_PROPERTY));
+		assertNotNull(
+				virtualModel.getBindingModel().bindingVariableNamed(ViewPointBindingModel.REFLEXIVE_ACCESS_PROPERTY));
+		assertNotNull(virtualModel.getBindingModel()
+				.bindingVariableNamed(VirtualModelBindingModel.REFLEXIVE_ACCESS_PROPERTY));
 		assertNotNull(virtualModel.getBindingModel().bindingVariableNamed(ViewPointBindingModel.PROJECT_PROPERTY));
 		assertNotNull(virtualModel.getBindingModel().bindingVariableNamed(ViewPointBindingModel.RC_PROPERTY));
 		assertNotNull(virtualModel.getBindingModel().bindingVariableNamed(ViewPointBindingModel.VIEW_PROPERTY));
 		assertEquals(ViewType.getViewType(viewPoint),
 				virtualModel.getBindingModel().bindingVariableNamed(ViewPointBindingModel.VIEW_PROPERTY).getType());
-		assertNotNull(virtualModel.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.VIRTUAL_MODEL_INSTANCE_PROPERTY));
-		assertEquals(VirtualModelInstanceType.getVirtualModelInstanceType(virtualModel),
-				virtualModel.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.VIRTUAL_MODEL_INSTANCE_PROPERTY).getType());
+		assertNotNull(virtualModel.getBindingModel()
+				.bindingVariableNamed(VirtualModelBindingModel.VIRTUAL_MODEL_INSTANCE_PROPERTY));
+		assertEquals(VirtualModelInstanceType.getVirtualModelInstanceType(virtualModel), virtualModel.getBindingModel()
+				.bindingVariableNamed(VirtualModelBindingModel.VIRTUAL_MODEL_INSTANCE_PROPERTY).getType());
 
-		// We disconnect VirtualModel from ViewPoint, and we check BindingModel evolution
+		// We disconnect VirtualModel from ViewPoint, and we check BindingModel
+		// evolution
 		viewPoint.removeFromVirtualModels(virtualModel);
 		System.out.println("VirtualModel BindingModel = " + virtualModel.getBindingModel());
 		assertNotNull(virtualModel.getBindingModel());
 		assertEquals(2, virtualModel.getBindingModel().getBindingVariablesCount());
-		assertNotNull(virtualModel.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.REFLEXIVE_ACCESS_PROPERTY));
-		assertNotNull(virtualModel.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.VIRTUAL_MODEL_INSTANCE_PROPERTY));
-		// assertEquals(VirtualModelInstanceType.getVirtualModelInstanceType(virtualModel1), virtualModel1.getBindingModel()
+		assertNotNull(virtualModel.getBindingModel()
+				.bindingVariableNamed(VirtualModelBindingModel.REFLEXIVE_ACCESS_PROPERTY));
+		assertNotNull(virtualModel.getBindingModel()
+				.bindingVariableNamed(VirtualModelBindingModel.VIRTUAL_MODEL_INSTANCE_PROPERTY));
+		// assertEquals(VirtualModelInstanceType.getVirtualModelInstanceType(virtualModel1),
+		// virtualModel1.getBindingModel()
 		// .bindingVariableNamed(VirtualModelBindingModel.VIRTUAL_MODEL_INSTANCE_PROPERTY).getType());
 
 		// We reconnect VirtualModel again, and we check BindingModel evolution
 		viewPoint.addToVirtualModels(virtualModel);
 		System.out.println("VirtualModel BindingModel = " + virtualModel.getBindingModel());
 		assertEquals(6, virtualModel.getBindingModel().getBindingVariablesCount());
-		assertNotNull(virtualModel.getBindingModel().bindingVariableNamed(ViewPointBindingModel.REFLEXIVE_ACCESS_PROPERTY));
-		assertNotNull(virtualModel.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.REFLEXIVE_ACCESS_PROPERTY));
+		assertNotNull(
+				virtualModel.getBindingModel().bindingVariableNamed(ViewPointBindingModel.REFLEXIVE_ACCESS_PROPERTY));
+		assertNotNull(virtualModel.getBindingModel()
+				.bindingVariableNamed(VirtualModelBindingModel.REFLEXIVE_ACCESS_PROPERTY));
 		assertNotNull(virtualModel.getBindingModel().bindingVariableNamed(ViewPointBindingModel.PROJECT_PROPERTY));
 		assertNotNull(virtualModel.getBindingModel().bindingVariableNamed(ViewPointBindingModel.RC_PROPERTY));
 		assertNotNull(virtualModel.getBindingModel().bindingVariableNamed(ViewPointBindingModel.VIEW_PROPERTY));
 		assertEquals(ViewType.getViewType(viewPoint),
 				virtualModel.getBindingModel().bindingVariableNamed(ViewPointBindingModel.VIEW_PROPERTY).getType());
-		assertNotNull(virtualModel.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.VIRTUAL_MODEL_INSTANCE_PROPERTY));
-		assertEquals(VirtualModelInstanceType.getVirtualModelInstanceType(virtualModel),
-				virtualModel.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.VIRTUAL_MODEL_INSTANCE_PROPERTY).getType());
+		assertNotNull(virtualModel.getBindingModel()
+				.bindingVariableNamed(VirtualModelBindingModel.VIRTUAL_MODEL_INSTANCE_PROPERTY));
+		assertEquals(VirtualModelInstanceType.getVirtualModelInstanceType(virtualModel), virtualModel.getBindingModel()
+				.bindingVariableNamed(VirtualModelBindingModel.VIRTUAL_MODEL_INSTANCE_PROPERTY).getType());
 
 	}
 
@@ -419,33 +443,40 @@ public class TestBehavioursInheritance extends OpenflexoProjectAtRunTimeTestCase
 
 	/**
 	 * Reload the ViewPoint<br>
-	 * We first re-init a full ServiceManager, and copy the just created ViewPoint<br>
-	 * The goal is to let the FileSystem monitoring system detects the new directory and instantiate ViewPoint
+	 * We first re-init a full ServiceManager, and copy the just created
+	 * ViewPoint<br>
+	 * The goal is to let the FileSystem monitoring system detects the new
+	 * directory and instantiate ViewPoint
+	 * 
+	 * @throws IOException
 	 */
 	@Test
 	@TestOrder(20)
-	public void testReloadViewPoint() {
+	public void testReloadViewPoint() throws IOException {
 
 		log("testReloadViewPoint()");
 
 		ViewPointResource viewPointResource = (ViewPointResource) viewPoint.getResource();
 
 		instanciateTestServiceManager();
+		resourceCenter = makeNewDirectoryResourceCenter();
 
 		File directory = ResourceLocator.retrieveResourceAsFile(viewPointResource.getDirectory());
-		File newDirectory = new File(((FileSystemBasedResourceCenter) resourceCenter).getDirectory(), directory.getName());
+		File newDirectory = new File(resourceCenter.getDirectory(), directory.getName());
 		newDirectory.mkdirs();
 
 		try {
 			FileUtils.copyContentDirToDir(directory, newDirectory);
-			// We wait here for the thread monitoring ResourceCenters to detect new files
-			((FileSystemBasedResourceCenter) resourceCenter).performDirectoryWatchingNow();
+			// We wait here for the thread monitoring ResourceCenters to detect
+			// new files
+			resourceCenter.performDirectoryWatchingNow();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
-		ViewPointResource retrievedVPResource = serviceManager.getViewPointLibrary().getViewPointResource(VIEWPOINT_URI);
+		ViewPointResource retrievedVPResource = serviceManager.getViewPointLibrary()
+				.getViewPointResource(VIEWPOINT_URI);
 		assertNotNull(retrievedVPResource);
 
 		ViewPoint reloadedViewPoint = retrievedVPResource.getViewPoint();

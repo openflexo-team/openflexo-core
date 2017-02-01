@@ -42,6 +42,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.IOException;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openflexo.foundation.FlexoEditor;
@@ -54,6 +56,7 @@ import org.openflexo.foundation.fml.rm.ViewPointResource;
 import org.openflexo.foundation.fml.rm.ViewPointResourceFactory;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.fml.rm.VirtualModelResourceFactory;
+import org.openflexo.foundation.resource.DirectoryResourceCenter;
 import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.test.OpenflexoProjectAtRunTimeTestCase;
 import org.openflexo.model.exceptions.ModelDefinitionException;
@@ -75,10 +78,14 @@ public class TestDeleteAction extends OpenflexoProjectAtRunTimeTestCase {
 	static VirtualModel virtualModel;
 	static FlexoConcept flexoConcept;
 
+	private static DirectoryResourceCenter resourceCenter;
+
 	@Test
 	@TestOrder(1)
-	public void testInstanciateServiceManagerAndProject() {
+	public void testInstanciateServiceManagerAndProject() throws IOException {
 		instanciateTestServiceManager();
+		resourceCenter = makeNewDirectoryResourceCenter();
+		assertNotNull(resourceCenter);
 		System.out.println("ResourceCenter= " + resourceCenter);
 		editor = createProject("TestProject");
 		project = editor.getProject();
@@ -109,12 +116,14 @@ public class TestDeleteAction extends OpenflexoProjectAtRunTimeTestCase {
 		assertNotNull(viewPoint);
 		assertNotNull(viewPoint.getResource());
 
-		VirtualModelResourceFactory vmFactory = fmlTechnologyAdapter.getViewPointResourceFactory().getVirtualModelResourceFactory();
-		VirtualModelResource newVMResource = vmFactory.makeVirtualModelResource(VIRTUAL_MODEL_NAME, newViewPointResource,
-				fmlTechnologyAdapter.getTechnologyContextManager(), true);
+		VirtualModelResourceFactory vmFactory = fmlTechnologyAdapter.getViewPointResourceFactory()
+				.getVirtualModelResourceFactory();
+		VirtualModelResource newVMResource = vmFactory.makeVirtualModelResource(VIRTUAL_MODEL_NAME,
+				newViewPointResource, fmlTechnologyAdapter.getTechnologyContextManager(), true);
 		virtualModel = newVMResource.getLoadedResourceData();
 
-		assertTrue(ResourceLocator.retrieveResourceAsFile(((VirtualModelResource) virtualModel.getResource()).getDirectory()).exists());
+		assertTrue(ResourceLocator
+				.retrieveResourceAsFile(((VirtualModelResource) virtualModel.getResource()).getDirectory()).exists());
 		assertTrue(((VirtualModelResource) virtualModel.getResource()).getFlexoIODelegate().exists());
 
 		assertEquals(viewPoint, virtualModel.getViewPoint());
@@ -150,7 +159,8 @@ public class TestDeleteAction extends OpenflexoProjectAtRunTimeTestCase {
 	@Test
 	@TestOrder(3)
 	public void testDeleteFlexoConcept() {
-		DeleteFlexoConceptObjects action1 = DeleteFlexoConceptObjects.actionType.makeNewAction(flexoConcept, null, editor);
+		DeleteFlexoConceptObjects action1 = DeleteFlexoConceptObjects.actionType.makeNewAction(flexoConcept, null,
+				editor);
 		assertTrue(action1.isValid());
 		action1.doAction();
 		assertTrue(action1.hasActionExecutionSucceeded());

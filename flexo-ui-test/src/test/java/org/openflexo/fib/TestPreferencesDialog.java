@@ -44,8 +44,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openflexo.ApplicationContext;
 import org.openflexo.components.PreferencesDialog;
-import org.openflexo.foundation.resource.DirectoryResourceCenter;
-import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.gina.swing.test.FIBDialogGraphicalContextDelegate;
 import org.openflexo.gina.test.OpenflexoTestCaseWithGUI;
 import org.openflexo.gina.test.TestApplicationContext;
@@ -71,13 +69,13 @@ public class TestPreferencesDialog extends OpenflexoTestCaseWithGUI {
 				return new PreferencesService();
 			}
 		};
-		for (FlexoResourceCenter rc : serviceManager.getResourceCenterService().getResourceCenters()) {
-			// Select the first directory ResourceCenter
-			if (rc instanceof DirectoryResourceCenter) {
-				resourceCenter = (DirectoryResourceCenter) rc;
-				break;
-			}
-		}
+		/*
+		 * for (FlexoResourceCenter rc :
+		 * serviceManager.getResourceCenterService().getResourceCenters()) { //
+		 * Select the first directory ResourceCenter if (rc instanceof
+		 * DirectoryResourceCenter) { resourceCenter = (DirectoryResourceCenter)
+		 * rc; break; } }
+		 */
 		return serviceManager;
 	}
 

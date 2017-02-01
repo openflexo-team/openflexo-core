@@ -71,6 +71,7 @@ import org.openflexo.foundation.fml.rm.VirtualModelResourceFactory;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.View;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
+import org.openflexo.foundation.resource.DirectoryResourceCenter;
 import org.openflexo.foundation.resource.FileSystemBasedResourceCenter;
 import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.test.OpenflexoProjectAtRunTimeTestCase;
@@ -82,8 +83,9 @@ import org.openflexo.test.TestOrder;
 import org.openflexo.toolbox.FileUtils;
 
 /**
- * This unit test is intented to test {@link FlexoConcept} inheritance features, as well as "isAbstract" management and
- * {@link FlexoProperty} inheritance and shadowing
+ * This unit test is intented to test {@link FlexoConcept} inheritance features,
+ * as well as "isAbstract" management and {@link FlexoProperty} inheritance and
+ * shadowing
  * 
  * @author sylvain
  * 
@@ -128,17 +130,23 @@ public class TestFlexoConceptInheritance extends OpenflexoProjectAtRunTimeTestCa
 	static VirtualModelInstance vmi;
 	static FlexoConceptInstance a;
 
+	private static DirectoryResourceCenter resourceCenter;
+
 	/**
 	 * Init
+	 * 
+	 * @throws IOException
 	 */
 	@Test
 	@TestOrder(1)
-	public void init() {
+	public void init() throws IOException {
 		instanciateTestServiceManager();
 
 		editor = new DefaultFlexoEditor(null, serviceManager);
 		assertNotNull(editor);
 
+		resourceCenter = makeNewDirectoryResourceCenter();
+		assertNotNull(resourceCenter);
 		System.out.println("ResourceCenter= " + resourceCenter);
 	}
 
@@ -161,17 +169,21 @@ public class TestFlexoConceptInheritance extends OpenflexoProjectAtRunTimeTestCa
 				fmlTechnologyAdapter.getTechnologyContextManager(), true);
 		viewPoint = newViewPointResource.getLoadedResourceData();
 
-		// viewPoint = ViewPointImpl.newViewPoint(VIEWPOINT_NAME, VIEWPOINT_URI, resourceCenter.getDirectory(),
+		// viewPoint = ViewPointImpl.newViewPoint(VIEWPOINT_NAME, VIEWPOINT_URI,
+		// resourceCenter.getDirectory(),
 		// serviceManager.getViewPointLibrary(), resourceCenter);
-		// assertTrue(((ViewPointResource) viewPoint.getResource()).getDirectory().exists());
-		// assertTrue(((ViewPointResource) viewPoint.getResource()).getFile().exists());
+		// assertTrue(((ViewPointResource)
+		// viewPoint.getResource()).getDirectory().exists());
+		// assertTrue(((ViewPointResource)
+		// viewPoint.getResource()).getFile().exists());
 		assertTrue(((ViewPointResource) viewPoint.getResource()).getDirectory() != null);
 		assertTrue(((ViewPointResource) viewPoint.getResource()).getFlexoIODelegate().exists());
 
 		System.out.println("ViewPoint BindingModel = " + viewPoint.getBindingModel());
 		assertNotNull(viewPoint.getBindingModel());
 		assertEquals(4, viewPoint.getBindingModel().getBindingVariablesCount());
-		assertNotNull(viewPoint.getBindingModel().bindingVariableNamed(ViewPointBindingModel.REFLEXIVE_ACCESS_PROPERTY));
+		assertNotNull(
+				viewPoint.getBindingModel().bindingVariableNamed(ViewPointBindingModel.REFLEXIVE_ACCESS_PROPERTY));
 		assertNotNull(viewPoint.getBindingModel().bindingVariableNamed(ViewPointBindingModel.PROJECT_PROPERTY));
 		assertNotNull(viewPoint.getBindingModel().bindingVariableNamed(ViewPointBindingModel.RC_PROPERTY));
 		assertNotNull(viewPoint.getBindingModel().bindingVariableNamed(ViewPointBindingModel.VIEW_PROPERTY));
@@ -189,52 +201,65 @@ public class TestFlexoConceptInheritance extends OpenflexoProjectAtRunTimeTestCa
 
 		FMLTechnologyAdapter fmlTechnologyAdapter = serviceManager.getTechnologyAdapterService()
 				.getTechnologyAdapter(FMLTechnologyAdapter.class);
-		VirtualModelResourceFactory factory = fmlTechnologyAdapter.getViewPointResourceFactory().getVirtualModelResourceFactory();
-		VirtualModelResource newVMResource = factory.makeVirtualModelResource(VIRTUAL_MODEL_NAME, viewPoint.getViewPointResource(),
-				fmlTechnologyAdapter.getTechnologyContextManager(), true);
+		VirtualModelResourceFactory factory = fmlTechnologyAdapter.getViewPointResourceFactory()
+				.getVirtualModelResourceFactory();
+		VirtualModelResource newVMResource = factory.makeVirtualModelResource(VIRTUAL_MODEL_NAME,
+				viewPoint.getViewPointResource(), fmlTechnologyAdapter.getTechnologyContextManager(), true);
 		virtualModel = newVMResource.getLoadedResourceData();
 
-		// virtualModel = VirtualModelImpl.newVirtualModel(VIRTUAL_MODEL_NAME, viewPoint);
-		assertTrue(ResourceLocator.retrieveResourceAsFile(((VirtualModelResource) virtualModel.getResource()).getDirectory()).exists());
+		// virtualModel = VirtualModelImpl.newVirtualModel(VIRTUAL_MODEL_NAME,
+		// viewPoint);
+		assertTrue(ResourceLocator
+				.retrieveResourceAsFile(((VirtualModelResource) virtualModel.getResource()).getDirectory()).exists());
 		assertTrue(((VirtualModelResource) virtualModel.getResource()).getFlexoIODelegate().exists());
 
 		assertNotNull(virtualModel.getBindingModel());
 		assertEquals(6, virtualModel.getBindingModel().getBindingVariablesCount());
-		assertNotNull(virtualModel.getBindingModel().bindingVariableNamed(ViewPointBindingModel.REFLEXIVE_ACCESS_PROPERTY));
-		assertNotNull(virtualModel.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.REFLEXIVE_ACCESS_PROPERTY));
+		assertNotNull(
+				virtualModel.getBindingModel().bindingVariableNamed(ViewPointBindingModel.REFLEXIVE_ACCESS_PROPERTY));
+		assertNotNull(virtualModel.getBindingModel()
+				.bindingVariableNamed(VirtualModelBindingModel.REFLEXIVE_ACCESS_PROPERTY));
 		assertNotNull(virtualModel.getBindingModel().bindingVariableNamed(ViewPointBindingModel.PROJECT_PROPERTY));
 		assertNotNull(virtualModel.getBindingModel().bindingVariableNamed(ViewPointBindingModel.RC_PROPERTY));
 		assertNotNull(virtualModel.getBindingModel().bindingVariableNamed(ViewPointBindingModel.VIEW_PROPERTY));
 		assertEquals(ViewType.getViewType(viewPoint),
 				virtualModel.getBindingModel().bindingVariableNamed(ViewPointBindingModel.VIEW_PROPERTY).getType());
-		assertNotNull(virtualModel.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.VIRTUAL_MODEL_INSTANCE_PROPERTY));
-		assertEquals(VirtualModelInstanceType.getVirtualModelInstanceType(virtualModel),
-				virtualModel.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.VIRTUAL_MODEL_INSTANCE_PROPERTY).getType());
+		assertNotNull(virtualModel.getBindingModel()
+				.bindingVariableNamed(VirtualModelBindingModel.VIRTUAL_MODEL_INSTANCE_PROPERTY));
+		assertEquals(VirtualModelInstanceType.getVirtualModelInstanceType(virtualModel), virtualModel.getBindingModel()
+				.bindingVariableNamed(VirtualModelBindingModel.VIRTUAL_MODEL_INSTANCE_PROPERTY).getType());
 
-		// We disconnect VirtualModel from ViewPoint, and we check BindingModel evolution
+		// We disconnect VirtualModel from ViewPoint, and we check BindingModel
+		// evolution
 		viewPoint.removeFromVirtualModels(virtualModel);
 		System.out.println("VirtualModel BindingModel = " + virtualModel.getBindingModel());
 		assertNotNull(virtualModel.getBindingModel());
 		assertEquals(2, virtualModel.getBindingModel().getBindingVariablesCount());
-		assertNotNull(virtualModel.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.REFLEXIVE_ACCESS_PROPERTY));
-		assertNotNull(virtualModel.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.VIRTUAL_MODEL_INSTANCE_PROPERTY));
-		// assertEquals(VirtualModelInstanceType.getVirtualModelInstanceType(virtualModel1), virtualModel1.getBindingModel()
+		assertNotNull(virtualModel.getBindingModel()
+				.bindingVariableNamed(VirtualModelBindingModel.REFLEXIVE_ACCESS_PROPERTY));
+		assertNotNull(virtualModel.getBindingModel()
+				.bindingVariableNamed(VirtualModelBindingModel.VIRTUAL_MODEL_INSTANCE_PROPERTY));
+		// assertEquals(VirtualModelInstanceType.getVirtualModelInstanceType(virtualModel1),
+		// virtualModel1.getBindingModel()
 		// .bindingVariableNamed(VirtualModelBindingModel.VIRTUAL_MODEL_INSTANCE_PROPERTY).getType());
 
 		// We reconnect VirtualModel again, and we check BindingModel evolution
 		viewPoint.addToVirtualModels(virtualModel);
 		System.out.println("VirtualModel BindingModel = " + virtualModel.getBindingModel());
 		assertEquals(6, virtualModel.getBindingModel().getBindingVariablesCount());
-		assertNotNull(virtualModel.getBindingModel().bindingVariableNamed(ViewPointBindingModel.REFLEXIVE_ACCESS_PROPERTY));
-		assertNotNull(virtualModel.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.REFLEXIVE_ACCESS_PROPERTY));
+		assertNotNull(
+				virtualModel.getBindingModel().bindingVariableNamed(ViewPointBindingModel.REFLEXIVE_ACCESS_PROPERTY));
+		assertNotNull(virtualModel.getBindingModel()
+				.bindingVariableNamed(VirtualModelBindingModel.REFLEXIVE_ACCESS_PROPERTY));
 		assertNotNull(virtualModel.getBindingModel().bindingVariableNamed(ViewPointBindingModel.PROJECT_PROPERTY));
 		assertNotNull(virtualModel.getBindingModel().bindingVariableNamed(ViewPointBindingModel.RC_PROPERTY));
 		assertNotNull(virtualModel.getBindingModel().bindingVariableNamed(ViewPointBindingModel.VIEW_PROPERTY));
 		assertEquals(ViewType.getViewType(viewPoint),
 				virtualModel.getBindingModel().bindingVariableNamed(ViewPointBindingModel.VIEW_PROPERTY).getType());
-		assertNotNull(virtualModel.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.VIRTUAL_MODEL_INSTANCE_PROPERTY));
-		assertEquals(VirtualModelInstanceType.getVirtualModelInstanceType(virtualModel),
-				virtualModel.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.VIRTUAL_MODEL_INSTANCE_PROPERTY).getType());
+		assertNotNull(virtualModel.getBindingModel()
+				.bindingVariableNamed(VirtualModelBindingModel.VIRTUAL_MODEL_INSTANCE_PROPERTY));
+		assertEquals(VirtualModelInstanceType.getVirtualModelInstanceType(virtualModel), virtualModel.getBindingModel()
+				.bindingVariableNamed(VirtualModelBindingModel.VIRTUAL_MODEL_INSTANCE_PROPERTY).getType());
 
 	}
 
@@ -256,42 +281,49 @@ public class TestFlexoConceptInheritance extends OpenflexoProjectAtRunTimeTestCa
 		System.out.println("flexoConceptA = " + flexoConceptA);
 		assertNotNull(flexoConceptA);
 
-		CreateAbstractProperty createProperty1inA = CreateAbstractProperty.actionType.makeNewAction(flexoConceptA, null, editor);
+		CreateAbstractProperty createProperty1inA = CreateAbstractProperty.actionType.makeNewAction(flexoConceptA, null,
+				editor);
 		createProperty1inA.setPropertyName("property1");
 		createProperty1inA.setPropertyType(String.class);
 		createProperty1inA.doAction();
 		assertTrue(createProperty1inA.hasActionExecutionSucceeded());
 		assertNotNull(property1InA = (AbstractProperty<String>) createProperty1inA.getNewFlexoProperty());
 
-		CreateAbstractProperty createProperty2inA = CreateAbstractProperty.actionType.makeNewAction(flexoConceptA, null, editor);
+		CreateAbstractProperty createProperty2inA = CreateAbstractProperty.actionType.makeNewAction(flexoConceptA, null,
+				editor);
 		createProperty2inA.setPropertyName("property2");
 		createProperty2inA.setPropertyType(Boolean.class);
 		createProperty2inA.doAction();
 		assertTrue(createProperty2inA.hasActionExecutionSucceeded());
 		assertNotNull(property2InA = (AbstractProperty<Boolean>) createProperty2inA.getNewFlexoProperty());
 
-		CreateAbstractProperty createProperty3inA = CreateAbstractProperty.actionType.makeNewAction(flexoConceptA, null, editor);
+		CreateAbstractProperty createProperty3inA = CreateAbstractProperty.actionType.makeNewAction(flexoConceptA, null,
+				editor);
 		createProperty3inA.setPropertyName("property3");
 		createProperty3inA.setPropertyType(Number.class);
 		createProperty3inA.doAction();
 		assertTrue(createProperty3inA.hasActionExecutionSucceeded());
 		assertNotNull(property3InA = (AbstractProperty<Number>) createProperty3inA.getNewFlexoProperty());
 
-		CreateAbstractProperty createProperty4inA = CreateAbstractProperty.actionType.makeNewAction(flexoConceptA, null, editor);
+		CreateAbstractProperty createProperty4inA = CreateAbstractProperty.actionType.makeNewAction(flexoConceptA, null,
+				editor);
 		createProperty4inA.setPropertyName("property4");
 		createProperty4inA.setPropertyType(FlexoConceptInstanceType.UNDEFINED_FLEXO_CONCEPT_INSTANCE_TYPE);
 		createProperty4inA.doAction();
 		assertTrue(createProperty4inA.hasActionExecutionSucceeded());
-		assertNotNull(property4InA = (AbstractProperty<FlexoConceptInstanceType>) createProperty4inA.getNewFlexoProperty());
+		assertNotNull(
+				property4InA = (AbstractProperty<FlexoConceptInstanceType>) createProperty4inA.getNewFlexoProperty());
 
-		CreateAbstractProperty createProperty5inA = CreateAbstractProperty.actionType.makeNewAction(flexoConceptA, null, editor);
+		CreateAbstractProperty createProperty5inA = CreateAbstractProperty.actionType.makeNewAction(flexoConceptA, null,
+				editor);
 		createProperty5inA.setPropertyName("property5");
 		createProperty5inA.setPropertyType(String.class);
 		createProperty5inA.doAction();
 		assertTrue(createProperty5inA.hasActionExecutionSucceeded());
 		assertNotNull(property5InA = (AbstractProperty<String>) createProperty5inA.getNewFlexoProperty());
 
-		CreatePrimitiveRole createProperty6inA = CreatePrimitiveRole.actionType.makeNewAction(flexoConceptA, null, editor);
+		CreatePrimitiveRole createProperty6inA = CreatePrimitiveRole.actionType.makeNewAction(flexoConceptA, null,
+				editor);
 		createProperty6inA.setRoleName("property6");
 		createProperty6inA.setPrimitiveType(PrimitiveType.String);
 		createProperty6inA.setCardinality(PropertyCardinality.One);
@@ -337,7 +369,8 @@ public class TestFlexoConceptInheritance extends OpenflexoProjectAtRunTimeTestCa
 		// Because concept define some abstract properties, it is abstract
 		assertTrue(flexoConceptA.isAbstract());
 
-		// We try to force to make it non abstract, and check that it is still abstract
+		// We try to force to make it non abstract, and check that it is still
+		// abstract
 		flexoConceptA.setAbstract(false);
 		assertTrue(flexoConceptA.isAbstract());
 
@@ -369,7 +402,8 @@ public class TestFlexoConceptInheritance extends OpenflexoProjectAtRunTimeTestCa
 		System.out.println("flexoConceptB = " + flexoConceptB);
 		assertNotNull(flexoConceptB);
 
-		CreatePrimitiveRole createProperty2inB = CreatePrimitiveRole.actionType.makeNewAction(flexoConceptB, null, editor);
+		CreatePrimitiveRole createProperty2inB = CreatePrimitiveRole.actionType.makeNewAction(flexoConceptB, null,
+				editor);
 		createProperty2inB.setRoleName("property2");
 		createProperty2inB.setPrimitiveType(PrimitiveType.Boolean);
 		createProperty2inB.setCardinality(PropertyCardinality.One);
@@ -377,15 +411,18 @@ public class TestFlexoConceptInheritance extends OpenflexoProjectAtRunTimeTestCa
 		assertTrue(createProperty2inB.hasActionExecutionSucceeded());
 		assertNotNull(property2InB = (PrimitiveRole<Boolean>) createProperty2inB.getNewFlexoRole());
 
-		// Property3 is overriden by an AbstractProperty with a more specialized type
-		CreateAbstractProperty createProperty3inB = CreateAbstractProperty.actionType.makeNewAction(flexoConceptB, null, editor);
+		// Property3 is overriden by an AbstractProperty with a more specialized
+		// type
+		CreateAbstractProperty createProperty3inB = CreateAbstractProperty.actionType.makeNewAction(flexoConceptB, null,
+				editor);
 		createProperty3inB.setPropertyName("property3");
 		createProperty3inB.setPropertyType(Integer.class);
 		createProperty3inB.doAction();
 		assertTrue(createProperty3inB.hasActionExecutionSucceeded());
 		assertNotNull(property3InB = (AbstractProperty<Integer>) createProperty3inB.getNewFlexoProperty());
 
-		CreatePrimitiveRole createProperty7inB = CreatePrimitiveRole.actionType.makeNewAction(flexoConceptB, null, editor);
+		CreatePrimitiveRole createProperty7inB = CreatePrimitiveRole.actionType.makeNewAction(flexoConceptB, null,
+				editor);
 		createProperty7inB.setRoleName("property7");
 		createProperty7inB.setPrimitiveType(PrimitiveType.String);
 		createProperty7inB.setCardinality(PropertyCardinality.One);
@@ -422,7 +459,8 @@ public class TestFlexoConceptInheritance extends OpenflexoProjectAtRunTimeTestCa
 		// Because concept define some abstract properties, it is abstract
 		assertTrue(flexoConceptB.isAbstract());
 
-		// We try to force to make it non abstract, and check that it is still abstract
+		// We try to force to make it non abstract, and check that it is still
+		// abstract
 		flexoConceptB.setAbstract(false);
 		assertTrue(flexoConceptB.isAbstract());
 
@@ -452,8 +490,8 @@ public class TestFlexoConceptInheritance extends OpenflexoProjectAtRunTimeTestCa
 		System.out.println("flexoConceptC = " + flexoConceptC);
 		assertNotNull(flexoConceptC);
 
-		CreateFlexoConceptInstanceRole createProperty4InC = CreateFlexoConceptInstanceRole.actionType.makeNewAction(flexoConceptC, null,
-				editor);
+		CreateFlexoConceptInstanceRole createProperty4InC = CreateFlexoConceptInstanceRole.actionType
+				.makeNewAction(flexoConceptC, null, editor);
 		createProperty4InC.setRoleName("property4");
 		createProperty4InC.setFlexoConceptInstanceType(flexoConceptA);
 		createProperty4InC.setCardinality(PropertyCardinality.ZeroOne);
@@ -461,7 +499,8 @@ public class TestFlexoConceptInheritance extends OpenflexoProjectAtRunTimeTestCa
 		assertTrue(createProperty4InC.hasActionExecutionSucceeded());
 		assertNotNull(property4InC = createProperty4InC.getNewFlexoRole());
 
-		CreatePrimitiveRole createProperty8InC = CreatePrimitiveRole.actionType.makeNewAction(flexoConceptC, null, editor);
+		CreatePrimitiveRole createProperty8InC = CreatePrimitiveRole.actionType.makeNewAction(flexoConceptC, null,
+				editor);
 		createProperty8InC.setRoleName("property8");
 		createProperty8InC.setPrimitiveType(PrimitiveType.String);
 		createProperty8InC.setCardinality(PropertyCardinality.One);
@@ -478,7 +517,8 @@ public class TestFlexoConceptInheritance extends OpenflexoProjectAtRunTimeTestCa
 
 		assertSame(property4InC, flexoConceptC.getAccessibleProperty("property4"));
 		assertEquals(FlexoConceptInstanceType.getFlexoConceptInstanceType(flexoConceptA), property4InC.getType());
-		assertEquals(FlexoConceptInstanceType.getFlexoConceptInstanceType(flexoConceptA), property4InC.getResultingType());
+		assertEquals(FlexoConceptInstanceType.getFlexoConceptInstanceType(flexoConceptA),
+				property4InC.getResultingType());
 		assertSameList(property4InC.getSuperProperties(), property4InA);
 		assertSameList(property4InC.getAllSuperProperties(), property4InA);
 
@@ -491,7 +531,8 @@ public class TestFlexoConceptInheritance extends OpenflexoProjectAtRunTimeTestCa
 		// Because concept define some abstract properties, it is abstract
 		assertTrue(flexoConceptC.isAbstract());
 
-		// We try to force to make it non abstract, and check that it is still abstract
+		// We try to force to make it non abstract, and check that it is still
+		// abstract
 		flexoConceptC.setAbstract(false);
 		assertTrue(flexoConceptC.isAbstract());
 
@@ -502,7 +543,8 @@ public class TestFlexoConceptInheritance extends OpenflexoProjectAtRunTimeTestCa
 	}
 
 	/**
-	 * Test FlexoConceptC creation, inheriting from both B and C, and define some overriden properties
+	 * Test FlexoConceptC creation, inheriting from both B and C, and define
+	 * some overriden properties
 	 */
 	@Test
 	@TestOrder(7)
@@ -522,7 +564,8 @@ public class TestFlexoConceptInheritance extends OpenflexoProjectAtRunTimeTestCa
 		System.out.println("flexoConceptD = " + flexoConceptD);
 		assertNotNull(flexoConceptD);
 
-		CreatePrimitiveRole createProperty1InD = CreatePrimitiveRole.actionType.makeNewAction(flexoConceptD, null, editor);
+		CreatePrimitiveRole createProperty1InD = CreatePrimitiveRole.actionType.makeNewAction(flexoConceptD, null,
+				editor);
 		createProperty1InD.setRoleName("property1");
 		createProperty1InD.setPrimitiveType(PrimitiveType.String);
 		createProperty1InD.setCardinality(PropertyCardinality.One);
@@ -530,14 +573,16 @@ public class TestFlexoConceptInheritance extends OpenflexoProjectAtRunTimeTestCa
 		assertTrue(createProperty1InD.hasActionExecutionSucceeded());
 		assertNotNull(property1InD = (PrimitiveRole<String>) createProperty1InD.getNewFlexoRole());
 
-		CreateExpressionProperty createProperty3InD = CreateExpressionProperty.actionType.makeNewAction(flexoConceptD, null, editor);
+		CreateExpressionProperty createProperty3InD = CreateExpressionProperty.actionType.makeNewAction(flexoConceptD,
+				null, editor);
 		createProperty3InD.setPropertyName("property3");
 		createProperty3InD.setExpression(new DataBinding<Integer>("property1.length"));
 		createProperty3InD.doAction();
 		assertTrue(createProperty3InD.hasActionExecutionSucceeded());
 		assertNotNull(property3InD = (ExpressionProperty<Integer>) createProperty3InD.getNewFlexoProperty());
 
-		CreatePrimitiveRole createProperty5InD = CreatePrimitiveRole.actionType.makeNewAction(flexoConceptD, null, editor);
+		CreatePrimitiveRole createProperty5InD = CreatePrimitiveRole.actionType.makeNewAction(flexoConceptD, null,
+				editor);
 		createProperty5InD.setRoleName("property5");
 		createProperty5InD.setPrimitiveType(PrimitiveType.String);
 		createProperty5InD.setCardinality(PropertyCardinality.One);
@@ -545,7 +590,8 @@ public class TestFlexoConceptInheritance extends OpenflexoProjectAtRunTimeTestCa
 		assertTrue(createProperty5InD.hasActionExecutionSucceeded());
 		assertNotNull(property5InD = (PrimitiveRole<String>) createProperty5InD.getNewFlexoRole());
 
-		CreatePrimitiveRole createProperty9InD = CreatePrimitiveRole.actionType.makeNewAction(flexoConceptD, null, editor);
+		CreatePrimitiveRole createProperty9InD = CreatePrimitiveRole.actionType.makeNewAction(flexoConceptD, null,
+				editor);
 		createProperty9InD.setRoleName("property9");
 		createProperty9InD.setPrimitiveType(PrimitiveType.String);
 		createProperty9InD.setCardinality(PropertyCardinality.One);
@@ -617,7 +663,8 @@ public class TestFlexoConceptInheritance extends OpenflexoProjectAtRunTimeTestCa
 
 		assertViewPointIsValid(viewPoint);
 
-		// We change the type of property3 in B with incompatible type and we check that an error occurs
+		// We change the type of property3 in B with incompatible type and we
+		// check that an error occurs
 		property3InB.setType(String.class);
 
 		ValidationReport report = validate(virtualModel);
@@ -650,33 +697,41 @@ public class TestFlexoConceptInheritance extends OpenflexoProjectAtRunTimeTestCa
 
 	/**
 	 * Reload the ViewPoint<br>
-	 * We first re-init a full ServiceManager, and copy the just created ViewPoint<br>
-	 * The goal is to let the FileSystem monitoring system detects the new directory and instantiate ViewPoint
+	 * We first re-init a full ServiceManager, and copy the just created
+	 * ViewPoint<br>
+	 * The goal is to let the FileSystem monitoring system detects the new
+	 * directory and instantiate ViewPoint
+	 * 
+	 * @throws IOException
 	 */
 	@Test
 	@TestOrder(20)
-	public void testReloadViewPoint() {
+	public void testReloadViewPoint() throws IOException {
 
 		log("testReloadViewPoint()");
 
 		ViewPointResource viewPointResource = (ViewPointResource) viewPoint.getResource();
 
 		instanciateTestServiceManager();
+		resourceCenter = makeNewDirectoryResourceCenter();
 
 		File directory = ResourceLocator.retrieveResourceAsFile(viewPointResource.getDirectory());
-		File newDirectory = new File(((FileSystemBasedResourceCenter) resourceCenter).getDirectory(), directory.getName());
+		File newDirectory = new File(((FileSystemBasedResourceCenter) resourceCenter).getDirectory(),
+				directory.getName());
 		newDirectory.mkdirs();
 
 		try {
 			FileUtils.copyContentDirToDir(directory, newDirectory);
-			// We wait here for the thread monitoring ResourceCenters to detect new files
+			// We wait here for the thread monitoring ResourceCenters to detect
+			// new files
 			((FileSystemBasedResourceCenter) resourceCenter).performDirectoryWatchingNow();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
-		ViewPointResource retrievedVPResource = serviceManager.getViewPointLibrary().getViewPointResource(VIEWPOINT_URI);
+		ViewPointResource retrievedVPResource = serviceManager.getViewPointLibrary()
+				.getViewPointResource(VIEWPOINT_URI);
 		assertNotNull(retrievedVPResource);
 
 		ViewPoint reloadedViewPoint = retrievedVPResource.getViewPoint();
@@ -707,7 +762,8 @@ public class TestFlexoConceptInheritance extends OpenflexoProjectAtRunTimeTestCa
 		assertEquals(Number.class, property3InA.getType());
 		assertEquals(Number.class, property3InA.getResultingType());
 
-		assertNotNull(property4InA = (AbstractProperty<FlexoConceptInstanceType>) flexoConceptA.getAccessibleProperty("property4"));
+		assertNotNull(property4InA = (AbstractProperty<FlexoConceptInstanceType>) flexoConceptA
+				.getAccessibleProperty("property4"));
 		assertEquals(FlexoConceptInstanceType.UNDEFINED_FLEXO_CONCEPT_INSTANCE_TYPE, property4InA.getType());
 		assertEquals(FlexoConceptInstanceType.UNDEFINED_FLEXO_CONCEPT_INSTANCE_TYPE, property4InA.getResultingType());
 
@@ -730,7 +786,8 @@ public class TestFlexoConceptInheritance extends OpenflexoProjectAtRunTimeTestCa
 		// Because concept define some abstract properties, it is abstract
 		assertTrue(flexoConceptA.isAbstract());
 
-		// We try to force to make it non abstract, and check that it is still abstract
+		// We try to force to make it non abstract, and check that it is still
+		// abstract
 		flexoConceptA.setAbstract(false);
 		assertTrue(flexoConceptA.isAbstract());
 

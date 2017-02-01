@@ -43,6 +43,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
+import java.io.IOException;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openflexo.connie.DataBinding;
@@ -61,6 +63,7 @@ import org.openflexo.foundation.fml.rm.ViewPointResource;
 import org.openflexo.foundation.fml.rm.ViewPointResourceFactory;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.fml.rm.VirtualModelResourceFactory;
+import org.openflexo.foundation.resource.DirectoryResourceCenter;
 import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.test.OpenflexoTestCase;
 import org.openflexo.model.exceptions.ModelDefinitionException;
@@ -91,16 +94,22 @@ public class TestCreateFlexoConcept extends OpenflexoTestCase {
 	public static final String VIEWPOINT_URI = "http://openflexo.org/test/TestViewPoint";
 	public static final String VIRTUAL_MODEL_NAME = "TestVirtualModel";
 
+	private static DirectoryResourceCenter resourceCenter;
+
 	/**
 	 * Test the VP creation
 	 * 
 	 * @throws ModelDefinitionException
 	 * @throws SaveResourceException
+	 * @throws IOException
 	 */
 	@Test
 	@TestOrder(1)
-	public void testCreateViewPoint() throws SaveResourceException, ModelDefinitionException {
+	public void testCreateViewPoint() throws SaveResourceException, ModelDefinitionException, IOException {
 		instanciateTestServiceManager();
+
+		resourceCenter = makeNewDirectoryResourceCenter();
+		assertNotNull(resourceCenter);
 		System.out.println("ResourceCenter= " + resourceCenter);
 
 		FMLTechnologyAdapter fmlTechnologyAdapter = serviceManager.getTechnologyAdapterService()
@@ -112,8 +121,10 @@ public class TestCreateFlexoConcept extends OpenflexoTestCase {
 				fmlTechnologyAdapter.getTechnologyContextManager(), true);
 		newViewPoint = newViewPointResource.getLoadedResourceData();
 
-		// assertTrue(((ViewPointResource) newViewPoint.getResource()).getDirectory().exists());
-		// assertTrue(((ViewPointResource) newViewPoint.getResource()).getFile().exists());
+		// assertTrue(((ViewPointResource)
+		// newViewPoint.getResource()).getDirectory().exists());
+		// assertTrue(((ViewPointResource)
+		// newViewPoint.getResource()).getFile().exists());
 		assertTrue(((ViewPointResource) newViewPoint.getResource()).getDirectory() != null);
 		assertTrue(((ViewPointResource) newViewPoint.getResource()).getFlexoIODelegate().exists());
 
@@ -134,12 +145,15 @@ public class TestCreateFlexoConcept extends OpenflexoTestCase {
 
 		FMLTechnologyAdapter fmlTechnologyAdapter = serviceManager.getTechnologyAdapterService()
 				.getTechnologyAdapter(FMLTechnologyAdapter.class);
-		VirtualModelResourceFactory factory = fmlTechnologyAdapter.getViewPointResourceFactory().getVirtualModelResourceFactory();
-		VirtualModelResource newVMResource = factory.makeVirtualModelResource(VIRTUAL_MODEL_NAME, newViewPoint.getViewPointResource(),
-				fmlTechnologyAdapter.getTechnologyContextManager(), true);
+		VirtualModelResourceFactory factory = fmlTechnologyAdapter.getViewPointResourceFactory()
+				.getVirtualModelResourceFactory();
+		VirtualModelResource newVMResource = factory.makeVirtualModelResource(VIRTUAL_MODEL_NAME,
+				newViewPoint.getViewPointResource(), fmlTechnologyAdapter.getTechnologyContextManager(), true);
 		newVirtualModel = newVMResource.getLoadedResourceData();
 
-		assertTrue(ResourceLocator.retrieveResourceAsFile(((VirtualModelResource) newVirtualModel.getResource()).getDirectory()).exists());
+		assertTrue(ResourceLocator
+				.retrieveResourceAsFile(((VirtualModelResource) newVirtualModel.getResource()).getDirectory())
+				.exists());
 		assertTrue(((VirtualModelResource) newVirtualModel.getResource()).getFlexoIODelegate().exists());
 
 		assertEquals(newViewPoint, newVirtualModel.getViewPoint());
@@ -185,8 +199,10 @@ public class TestCreateFlexoConcept extends OpenflexoTestCase {
 
 		((VirtualModelResource) newVirtualModel.getResource()).save(null);
 
-		// System.out.println("Saved: " + ((VirtualModelResource) newVirtualModel.getResource()).getFile());
-		System.out.println("Saved: " + ((VirtualModelResource) newVirtualModel.getResource()).getFlexoIODelegate().toString());
+		// System.out.println("Saved: " + ((VirtualModelResource)
+		// newVirtualModel.getResource()).getFile());
+		System.out.println(
+				"Saved: " + ((VirtualModelResource) newVirtualModel.getResource()).getFlexoIODelegate().toString());
 
 	}
 
@@ -208,7 +224,8 @@ public class TestCreateFlexoConcept extends OpenflexoTestCase {
 
 		((VirtualModelResource) newVirtualModel.getResource()).save(null);
 
-		System.out.println("Saved: " + ((VirtualModelResource) newVirtualModel.getResource()).getFlexoIODelegate().toString());
+		System.out.println(
+				"Saved: " + ((VirtualModelResource) newVirtualModel.getResource()).getFlexoIODelegate().toString());
 
 	}
 
@@ -236,7 +253,8 @@ public class TestCreateFlexoConcept extends OpenflexoTestCase {
 
 		((VirtualModelResource) newVirtualModel.getResource()).save(null);
 
-		System.out.println("Saved: " + ((VirtualModelResource) newVirtualModel.getResource()).getFlexoIODelegate().toString());
+		System.out.println(
+				"Saved: " + ((VirtualModelResource) newVirtualModel.getResource()).getFlexoIODelegate().toString());
 
 	}
 
@@ -265,7 +283,8 @@ public class TestCreateFlexoConcept extends OpenflexoTestCase {
 
 		((VirtualModelResource) newVirtualModel.getResource()).save(null);
 
-		System.out.println("Saved: " + ((VirtualModelResource) newVirtualModel.getResource()).getFlexoIODelegate().toString());
+		System.out.println(
+				"Saved: " + ((VirtualModelResource) newVirtualModel.getResource()).getFlexoIODelegate().toString());
 
 	}
 
@@ -303,7 +322,8 @@ public class TestCreateFlexoConcept extends OpenflexoTestCase {
 
 		((VirtualModelResource) newVirtualModel.getResource()).save(null);
 
-		System.out.println("Saved: " + ((VirtualModelResource) newVirtualModel.getResource()).getFlexoIODelegate().toString());
+		System.out.println(
+				"Saved: " + ((VirtualModelResource) newVirtualModel.getResource()).getFlexoIODelegate().toString());
 
 	}
 
@@ -358,14 +378,16 @@ public class TestCreateFlexoConcept extends OpenflexoTestCase {
 	@TestOrder(10)
 	public void testCreateACreationSchemeInConceptA() throws SaveResourceException {
 
-		CreateFlexoBehaviour createCreationScheme = CreateFlexoBehaviour.actionType.makeNewAction(flexoConceptA, null, editor);
+		CreateFlexoBehaviour createCreationScheme = CreateFlexoBehaviour.actionType.makeNewAction(flexoConceptA, null,
+				editor);
 		createCreationScheme.setFlexoBehaviourClass(CreationScheme.class);
 		createCreationScheme.doAction();
 		CreationScheme creationScheme = (CreationScheme) createCreationScheme.getNewFlexoBehaviour();
 
-		CreateEditionAction createEditionAction1 = CreateEditionAction.actionType.makeNewAction(creationScheme.getControlGraph(), null,
-				editor);
-		// createEditionAction1.actionChoice = CreateEditionActionChoice.BuiltInAction;
+		CreateEditionAction createEditionAction1 = CreateEditionAction.actionType
+				.makeNewAction(creationScheme.getControlGraph(), null, editor);
+		// createEditionAction1.actionChoice =
+		// CreateEditionActionChoice.BuiltInAction;
 		createEditionAction1.setEditionActionClass(ExpressionAction.class);
 		createEditionAction1.setAssignation(new DataBinding<Object>("aString"));
 		createEditionAction1.doAction();
@@ -373,9 +395,10 @@ public class TestCreateFlexoConcept extends OpenflexoTestCase {
 		((ExpressionAction) action1.getAssignableAction()).setExpression(new DataBinding<Object>("'foo'"));
 		action1.setName("action1");
 
-		CreateEditionAction createEditionAction2 = CreateEditionAction.actionType.makeNewAction(creationScheme.getControlGraph(), null,
-				editor);
-		// createEditionAction2.actionChoice = CreateEditionActionChoice.BuiltInAction;
+		CreateEditionAction createEditionAction2 = CreateEditionAction.actionType
+				.makeNewAction(creationScheme.getControlGraph(), null, editor);
+		// createEditionAction2.actionChoice =
+		// CreateEditionActionChoice.BuiltInAction;
 		createEditionAction2.setEditionActionClass(ExpressionAction.class);
 		createEditionAction2.setAssignation(new DataBinding<Object>("aBoolean"));
 		createEditionAction2.doAction();
@@ -383,9 +406,10 @@ public class TestCreateFlexoConcept extends OpenflexoTestCase {
 		((ExpressionAction) action2.getAssignableAction()).setExpression(new DataBinding<Object>("true"));
 		action2.setName("action2");
 
-		CreateEditionAction createEditionAction3 = CreateEditionAction.actionType.makeNewAction(creationScheme.getControlGraph(), null,
-				editor);
-		// createEditionAction3.actionChoice = CreateEditionActionChoice.BuiltInAction;
+		CreateEditionAction createEditionAction3 = CreateEditionAction.actionType
+				.makeNewAction(creationScheme.getControlGraph(), null, editor);
+		// createEditionAction3.actionChoice =
+		// CreateEditionActionChoice.BuiltInAction;
 		createEditionAction3.setEditionActionClass(ExpressionAction.class);
 		createEditionAction3.setAssignation(new DataBinding<Object>("anInteger"));
 		createEditionAction3.doAction();
@@ -410,13 +434,15 @@ public class TestCreateFlexoConcept extends OpenflexoTestCase {
 	@TestOrder(11)
 	public void testCreateAnActionSchemeInConceptA() throws SaveResourceException {
 
-		CreateFlexoBehaviour createActionScheme = CreateFlexoBehaviour.actionType.makeNewAction(flexoConceptA, null, editor);
+		CreateFlexoBehaviour createActionScheme = CreateFlexoBehaviour.actionType.makeNewAction(flexoConceptA, null,
+				editor);
 		createActionScheme.setFlexoBehaviourClass(ActionScheme.class);
 		createActionScheme.doAction();
 		ActionScheme actionScheme = (ActionScheme) createActionScheme.getNewFlexoBehaviour();
 		assertNotNull(actionScheme);
 
-		CreateFlexoBehaviourParameter createParameter = CreateFlexoBehaviourParameter.actionType.makeNewAction(actionScheme, null, editor);
+		CreateFlexoBehaviourParameter createParameter = CreateFlexoBehaviourParameter.actionType
+				.makeNewAction(actionScheme, null, editor);
 		createParameter.setFlexoBehaviourParameterClass(CheckboxParameter.class);
 		createParameter.setParameterName("aFlag");
 		createParameter.doAction();
@@ -424,9 +450,10 @@ public class TestCreateFlexoConcept extends OpenflexoTestCase {
 		assertNotNull(param);
 		assertTrue(actionScheme.getParameters().contains(param));
 
-		CreateEditionAction createConditionAction1 = CreateEditionAction.actionType.makeNewAction(actionScheme.getControlGraph(), null,
-				editor);
-		// createConditionAction1.actionChoice = CreateEditionActionChoice.ControlAction;
+		CreateEditionAction createConditionAction1 = CreateEditionAction.actionType
+				.makeNewAction(actionScheme.getControlGraph(), null, editor);
+		// createConditionAction1.actionChoice =
+		// CreateEditionActionChoice.ControlAction;
 		createConditionAction1.setEditionActionClass(ConditionalAction.class);
 		createConditionAction1.doAction();
 		ConditionalAction conditional1 = (ConditionalAction) createConditionAction1.getNewEditionAction();
@@ -437,17 +464,20 @@ public class TestCreateFlexoConcept extends OpenflexoTestCase {
 
 		CreateEditionAction createDeclarePatternRoleInCondition1 = CreateEditionAction.actionType
 				.makeNewAction(conditional1.getThenControlGraph(), null, editor);
-		// createDeclarePatternRoleInCondition1.actionChoice = CreateEditionActionChoice.BuiltInAction;
+		// createDeclarePatternRoleInCondition1.actionChoice =
+		// CreateEditionActionChoice.BuiltInAction;
 		createDeclarePatternRoleInCondition1.setEditionActionClass(ExpressionAction.class);
 		createDeclarePatternRoleInCondition1.setAssignation(new DataBinding<Object>("anInteger"));
 		createDeclarePatternRoleInCondition1.doAction();
 		AssignationAction<?> declarePatternRoleInCondition1 = (AssignationAction<?>) createDeclarePatternRoleInCondition1
 				.getNewEditionAction();
-		((ExpressionAction) declarePatternRoleInCondition1.getAssignableAction()).setExpression(new DataBinding<Object>("8"));
+		((ExpressionAction) declarePatternRoleInCondition1.getAssignableAction())
+				.setExpression(new DataBinding<Object>("8"));
 
-		CreateEditionAction createConditionAction2 = CreateEditionAction.actionType.makeNewAction(actionScheme.getControlGraph(), null,
-				editor);
-		// createConditionAction2.actionChoice = CreateEditionActionChoice.ControlAction;
+		CreateEditionAction createConditionAction2 = CreateEditionAction.actionType
+				.makeNewAction(actionScheme.getControlGraph(), null, editor);
+		// createConditionAction2.actionChoice =
+		// CreateEditionActionChoice.ControlAction;
 		createConditionAction2.setEditionActionClass(ConditionalAction.class);
 		createConditionAction2.doAction();
 		ConditionalAction conditional2 = (ConditionalAction) createConditionAction2.getNewEditionAction();
@@ -458,13 +488,15 @@ public class TestCreateFlexoConcept extends OpenflexoTestCase {
 
 		CreateEditionAction createDeclarePatternRoleInCondition2 = CreateEditionAction.actionType
 				.makeNewAction(conditional2.getThenControlGraph(), null, editor);
-		// createDeclarePatternRoleInCondition2.actionChoice = CreateEditionActionChoice.BuiltInAction;
+		// createDeclarePatternRoleInCondition2.actionChoice =
+		// CreateEditionActionChoice.BuiltInAction;
 		createDeclarePatternRoleInCondition2.setEditionActionClass(ExpressionAction.class);
 		createDeclarePatternRoleInCondition2.setAssignation(new DataBinding<Object>("anInteger"));
 		createDeclarePatternRoleInCondition2.doAction();
 		AssignationAction<?> declarePatternRoleInCondition2 = (AssignationAction<?>) createDeclarePatternRoleInCondition2
 				.getNewEditionAction();
-		((ExpressionAction) declarePatternRoleInCondition2.getAssignableAction()).setExpression(new DataBinding<Object>("12"));
+		((ExpressionAction) declarePatternRoleInCondition2.getAssignableAction())
+				.setExpression(new DataBinding<Object>("12"));
 
 	}
 }

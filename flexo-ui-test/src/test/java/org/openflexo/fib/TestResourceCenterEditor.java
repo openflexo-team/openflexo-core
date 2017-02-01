@@ -38,7 +38,9 @@
 
 package org.openflexo.fib;
 
-import java.io.File;
+import static org.junit.Assert.assertNotNull;
+
+import java.io.IOException;
 
 import org.junit.After;
 import org.junit.Before;
@@ -62,25 +64,27 @@ public class TestResourceCenterEditor extends OpenflexoTestCaseWithGUI {
 
 	private static FIBDialogGraphicalContextDelegate gcDelegate;
 
+	protected static DirectoryResourceCenter resourceCenter;
+
 	@Test
 	@TestOrder(1)
-	public void testInstanciateTestServiceManager() {
-		instanciateTestServiceManager(true);
-		File newEmptyRC = new File(resourceCenter.getDirectory().getParent(), resourceCenter.getDirectory().getName() + "New");
-		newEmptyRC.mkdirs();
-		serviceManager.getResourceCenterService()
-				.addToResourceCenters(resourceCenter = new DirectoryResourceCenter(newEmptyRC, serviceManager.getResourceCenterService()));
-
+	public void testInstanciateTestServiceManager() throws IOException {
+		instanciateTestServiceManager();
+		resourceCenter = makeNewDirectoryResourceCenter(serviceManager);
+		assertNotNull(resourceCenter);
+		System.out.println("ResourceCenter= " + resourceCenter);
 	}
 
 	@Test
 	@TestOrder(2)
 	public void testInstanciateWidget() {
-		ResourceCenterEditorDialog dialog = ResourceCenterEditorDialog.getResourceCenterEditorDialog(serviceManager, null, true);
+		ResourceCenterEditorDialog dialog = ResourceCenterEditorDialog.getResourceCenterEditorDialog(serviceManager,
+				null, true);
 
 		log("instanciated " + dialog);
 		System.out.println("rcs= " + serviceManager.getResourceCenterService().getResourceCenters());
-		gcDelegate = new FIBDialogGraphicalContextDelegate(dialog, ResourceCenterEditorDialog.RESOURCE_CENTER_EDITOR_FIB);
+		gcDelegate = new FIBDialogGraphicalContextDelegate(dialog,
+				ResourceCenterEditorDialog.RESOURCE_CENTER_EDITOR_FIB);
 	}
 
 	@Before

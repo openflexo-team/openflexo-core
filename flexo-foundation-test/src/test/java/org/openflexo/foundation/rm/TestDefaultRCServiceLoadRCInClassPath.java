@@ -42,6 +42,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.IOException;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openflexo.foundation.FlexoProject;
@@ -73,19 +75,22 @@ public class TestDefaultRCServiceLoadRCInClassPath extends OpenflexoTestCase {
 
 	/**
 	 * Instantiate test resource center
+	 * 
+	 * @throws IOException
 	 */
 	@SuppressWarnings({ "unchecked" })
 	@Test
 	@TestOrder(1)
-	public void instantiateResourceCenter() {
+	public void instantiateResourceCenter() throws IOException {
 
 		log("test0InstantiateResourceCenter()");
 
 		instanciateTestServiceManager(FMLTechnologyAdapter.class, FMLRTTechnologyAdapter.class);
 
 		rcService = (DefaultResourceCenterService) serviceManager.getResourceCenterService();
-
 		assertNotNull(rcService);
+
+		testRC = makeNewDirectoryResourceCenter();
 
 		for (FlexoResourceCenter rc : rcService.getResourceCenters()) {
 			log("FOUND: RC name " + rc.getName() + "  [" + rc.getDefaultBaseURI() + "]");
@@ -129,7 +134,8 @@ public class TestDefaultRCServiceLoadRCInClassPath extends OpenflexoTestCase {
 		log("testViewPoint");
 
 		assertNotNull(testVP);
-		System.out.println("Found view point in " + ((ViewPointResource) testVP.getResource()).getFlexoIODelegate().toString());
+		System.out.println(
+				"Found view point in " + ((ViewPointResource) testVP.getResource()).getFlexoIODelegate().toString());
 		assertViewPointIsValid(testVP);
 
 	}

@@ -52,6 +52,7 @@ import org.openflexo.foundation.fml.rm.ViewPointResource;
 import org.openflexo.foundation.fml.rm.ViewPointResourceFactory;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.fml.rm.VirtualModelResourceFactory;
+import org.openflexo.foundation.resource.DirectoryResourceCenter;
 import org.openflexo.foundation.resource.FileSystemBasedResourceCenter;
 import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.test.OpenflexoTestCase;
@@ -79,16 +80,21 @@ public class TestCreateVirtualModel extends OpenflexoTestCase {
 	static ViewPoint newViewPoint;
 	static ViewPointResource newViewPointResource;
 
+	private static DirectoryResourceCenter resourceCenter;
+
 	/**
 	 * Test the VP creation
 	 * 
 	 * @throws ModelDefinitionException
 	 * @throws SaveResourceException
+	 * @throws IOException
 	 */
 	@Test
 	@TestOrder(1)
-	public void testCreateViewPoint() throws SaveResourceException, ModelDefinitionException {
+	public void testCreateViewPoint() throws SaveResourceException, ModelDefinitionException, IOException {
 		instanciateTestServiceManager();
+		resourceCenter = makeNewDirectoryResourceCenter();
+		assertNotNull(resourceCenter);
 		System.out.println("ResourceCenter= " + resourceCenter);
 
 		FMLTechnologyAdapter fmlTechnologyAdapter = serviceManager.getTechnologyAdapterService()
@@ -124,13 +130,17 @@ public class TestCreateVirtualModel extends OpenflexoTestCase {
 
 		FMLTechnologyAdapter fmlTechnologyAdapter = serviceManager.getTechnologyAdapterService()
 				.getTechnologyAdapter(FMLTechnologyAdapter.class);
-		VirtualModelResourceFactory factory = fmlTechnologyAdapter.getViewPointResourceFactory().getVirtualModelResourceFactory();
-		VirtualModelResource newVMResource = factory.makeVirtualModelResource(VIRTUAL_MODEL_NAME, newViewPoint.getViewPointResource(),
-				fmlTechnologyAdapter.getTechnologyContextManager(), true);
+		VirtualModelResourceFactory factory = fmlTechnologyAdapter.getViewPointResourceFactory()
+				.getVirtualModelResourceFactory();
+		VirtualModelResource newVMResource = factory.makeVirtualModelResource(VIRTUAL_MODEL_NAME,
+				newViewPoint.getViewPointResource(), fmlTechnologyAdapter.getTechnologyContextManager(), true);
 		VirtualModel newVirtualModel = newVMResource.getLoadedResourceData();
 
-		// AbstractVirtualModel<?> newVirtualModel = VirtualModelImpl.newVirtualModel(VIRTUAL_MODEL_NAME, newViewPoint);
-		assertTrue(ResourceLocator.retrieveResourceAsFile(((VirtualModelResource) newVirtualModel.getResource()).getDirectory()).exists());
+		// AbstractVirtualModel<?> newVirtualModel =
+		// VirtualModelImpl.newVirtualModel(VIRTUAL_MODEL_NAME, newViewPoint);
+		assertTrue(ResourceLocator
+				.retrieveResourceAsFile(((VirtualModelResource) newVirtualModel.getResource()).getDirectory())
+				.exists());
 		assertTrue(((VirtualModelResource) newVirtualModel.getResource()).getFlexoIODelegate().exists());
 
 		assertEquals(newViewPoint, newVirtualModel.getViewPoint());
@@ -145,30 +155,39 @@ public class TestCreateVirtualModel extends OpenflexoTestCase {
 
 	/**
 	 * Reload the ViewPoint<br>
-	 * We first re-init a full ServiceManager, and copy the just created ViewPoint<br>
-	 * The goal is to let the FileSystem monitoring system detects the new directory and instantiate ViewPoint
+	 * We first re-init a full ServiceManager, and copy the just created
+	 * ViewPoint<br>
+	 * The goal is to let the FileSystem monitoring system detects the new
+	 * directory and instantiate ViewPoint
+	 * 
+	 * @throws IOException
 	 */
 	@Test
 	@TestOrder(3)
-	public void testReloadViewPoint() {
+	public void testReloadViewPoint() throws IOException {
 
 		log("testReloadViewPoint()");
 
 		instanciateTestServiceManager();
+		resourceCenter = makeNewDirectoryResourceCenter();
+
 		File directory = ResourceLocator.retrieveResourceAsFile(newViewPointResource.getDirectory());
-		File newDirectory = new File(((FileSystemBasedResourceCenter) resourceCenter).getDirectory(), directory.getName());
+		File newDirectory = new File(((FileSystemBasedResourceCenter) resourceCenter).getDirectory(),
+				directory.getName());
 		newDirectory.mkdirs();
 
 		try {
 			FileUtils.copyContentDirToDir(directory, newDirectory);
-			// We wait here for the thread monitoring ResourceCenters to detect new files
+			// We wait here for the thread monitoring ResourceCenters to detect
+			// new files
 			((FileSystemBasedResourceCenter) resourceCenter).performDirectoryWatchingNow();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
-		ViewPointResource retrievedVPResource = serviceManager.getViewPointLibrary().getViewPointResource(VIEWPOINT_URI);
+		ViewPointResource retrievedVPResource = serviceManager.getViewPointLibrary()
+				.getViewPointResource(VIEWPOINT_URI);
 		assertNotNull(retrievedVPResource);
 
 		ViewPoint reloadedViewPoint = retrievedVPResource.getViewPoint();
@@ -186,8 +205,7 @@ public class TestCreateVirtualModel extends OpenflexoTestCase {
 
 		if (reloadedVirtualModel instanceof ViewPoint) {
 			assertEquals(null, reloadedVirtualModel.getOwningVirtualModel());
-		}
-		else {
+		} else {
 			assertNotNull(reloadedVirtualModel.getOwningVirtualModel());
 		}
 

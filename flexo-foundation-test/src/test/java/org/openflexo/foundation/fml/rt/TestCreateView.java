@@ -41,6 +41,8 @@ package org.openflexo.foundation.fml.rt;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.IOException;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openflexo.foundation.FlexoEditor;
@@ -51,6 +53,7 @@ import org.openflexo.foundation.fml.rm.ViewPointResource;
 import org.openflexo.foundation.fml.rm.ViewPointResourceFactory;
 import org.openflexo.foundation.fml.rt.action.CreateViewInFolder;
 import org.openflexo.foundation.fml.rt.rm.ViewResource;
+import org.openflexo.foundation.resource.DirectoryResourceCenter;
 import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.test.OpenflexoProjectAtRunTimeTestCase;
 import org.openflexo.model.exceptions.ModelDefinitionException;
@@ -58,7 +61,8 @@ import org.openflexo.test.OrderedRunner;
 import org.openflexo.test.TestOrder;
 
 /**
- * This unit test is intented to test View creation facilities with a ViewPoint created on the fly
+ * This unit test is intented to test View creation facilities with a ViewPoint
+ * created on the fly
  * 
  * @author sylvain
  * 
@@ -74,16 +78,21 @@ public class TestCreateView extends OpenflexoProjectAtRunTimeTestCase {
 	private static FlexoProject project;
 	private static View newView;
 
+	private static DirectoryResourceCenter resourceCenter;
+
 	/**
 	 * Instantiate a ViewPoint
 	 * 
 	 * @throws ModelDefinitionException
 	 * @throws SaveResourceException
+	 * @throws IOException
 	 */
 	@Test
 	@TestOrder(1)
-	public void testCreateViewPoint() throws SaveResourceException, ModelDefinitionException {
+	public void testCreateViewPoint() throws SaveResourceException, ModelDefinitionException, IOException {
 		instanciateTestServiceManager();
+		resourceCenter = makeNewDirectoryResourceCenter();
+		assertNotNull(resourceCenter);
 		System.out.println("ResourceCenter= " + resourceCenter);
 
 		FMLTechnologyAdapter fmlTechnologyAdapter = serviceManager.getTechnologyAdapterService()
@@ -95,14 +104,17 @@ public class TestCreateView extends OpenflexoProjectAtRunTimeTestCase {
 				fmlTechnologyAdapter.getTechnologyContextManager(), true);
 		newViewPoint = newViewPointResource.getLoadedResourceData();
 
-		// newViewPoint = ViewPointImpl.newViewPoint("TestViewPoint", "http://openflexo.org/test/TestViewPoint",
+		// newViewPoint = ViewPointImpl.newViewPoint("TestViewPoint",
+		// "http://openflexo.org/test/TestViewPoint",
 		// resourceCenter.getDirectory(),
 		// serviceManager.getViewPointLibrary(), resourceCenter);
 		assertNotNull(newViewPoint);
 		assertNotNull(newViewPoint.getResource());
 		ViewPointResource resource = ((ViewPointResource) newViewPoint.getResource());
-		// assertTrue(((ViewPointResource) newViewPoint.getResource()).getDirectory().exists());
-		// assertTrue(((ViewPointResource) newViewPoint.getResource()).getFile().exists());
+		// assertTrue(((ViewPointResource)
+		// newViewPoint.getResource()).getDirectory().exists());
+		// assertTrue(((ViewPointResource)
+		// newViewPoint.getResource()).getFile().exists());
 		assertTrue(((ViewPointResource) newViewPoint.getResource()).getDirectory() != null);
 		assertTrue(((ViewPointResource) newViewPoint.getResource()).getFlexoIODelegate().exists());
 	}
@@ -123,7 +135,8 @@ public class TestCreateView extends OpenflexoProjectAtRunTimeTestCase {
 	@Test
 	@TestOrder(3)
 	public void testCreateView() {
-		CreateViewInFolder action = CreateViewInFolder.actionType.makeNewAction(project.getViewLibrary().getRootFolder(), null, editor);
+		CreateViewInFolder action = CreateViewInFolder.actionType
+				.makeNewAction(project.getViewLibrary().getRootFolder(), null, editor);
 		action.setNewViewName("MyView");
 		action.setNewViewTitle("Test creation of a new view");
 		action.setViewpointResource((ViewPointResource) newViewPoint.getResource());
@@ -132,8 +145,10 @@ public class TestCreateView extends OpenflexoProjectAtRunTimeTestCase {
 		newView = action.getNewView();
 		assertNotNull(newView);
 		assertNotNull(newView.getResource());
-		// assertTrue(((ViewResource) newView.getResource()).getDirectory().exists());
-		// assertTrue(((ViewResource) newView.getResource()).getFile().exists());
+		// assertTrue(((ViewResource)
+		// newView.getResource()).getDirectory().exists());
+		// assertTrue(((ViewResource)
+		// newView.getResource()).getFile().exists());
 		assertTrue(((ViewResource) newView.getResource()).getDirectory() != null);
 		assertTrue(((ViewResource) newView.getResource()).getFlexoIODelegate().exists());
 	}
