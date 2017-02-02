@@ -68,8 +68,8 @@ import org.openflexo.model.factory.ModelFactory;
 import org.openflexo.toolbox.FileUtils;
 
 /**
- * Default implementation for the {@link FlexoResourceCenterService} Manage the {@link UserResourceCenter} and the default
- * {@link DirectoryResourceCenter}
+ * Default implementation for the {@link FlexoResourceCenterService} Manage the
+ * {@link UserResourceCenter} and the default {@link DirectoryResourceCenter}
  * 
  * @author sylvain
  * 
@@ -79,15 +79,18 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 	private static final ClassLoader cl = ClassLoader.getSystemClassLoader();
 
 	/**
-	 * Instantiate a new DefaultResourceCenterService with only the UserResourceCenter
+	 * Instantiate a new DefaultResourceCenterService with only the
+	 * UserResourceCenter
 	 * 
 	 * @return
 	 */
 	public static FlexoResourceCenterService getNewInstance() {
 		try {
 			ModelFactory factory = new ModelFactory(FlexoResourceCenterService.class);
-			factory.setImplementingClassForInterface(DefaultResourceCenterService.class, FlexoResourceCenterService.class);
-			DefaultResourceCenterService returned = (DefaultResourceCenterService) factory.newInstance(FlexoResourceCenterService.class);
+			factory.setImplementingClassForInterface(DefaultResourceCenterService.class,
+					FlexoResourceCenterService.class);
+			DefaultResourceCenterService returned = (DefaultResourceCenterService) factory
+					.newInstance(FlexoResourceCenterService.class);
 			returned.loadAvailableRCFromClassPath();
 			return returned;
 		} catch (ModelDefinitionException e) {
@@ -97,7 +100,8 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 	}
 
 	/**
-	 * Instantiate a new DefaultResourceCenterService by instantiating all {@link FlexoResourceCenter} as it is declared in supplied
+	 * Instantiate a new DefaultResourceCenterService by instantiating all
+	 * {@link FlexoResourceCenter} as it is declared in supplied
 	 * {@link ResourceCenterEntry} list
 	 * 
 	 * @return
@@ -117,7 +121,8 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 	}
 
 	/**
-	 * Add all the RCs that contain an identification of a FlexoResourceCenter in META-INF
+	 * Add all the RCs that contain an identification of a FlexoResourceCenter
+	 * in META-INF
 	 * 
 	 * WARNING: should only be called once
 	 * 
@@ -150,32 +155,34 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 					}
 					if (!rcExists) {
 						if (url.getProtocol().equals("file")) {
-							// When it is a file and it is contained in target/classes directory then we
-							// replace with directory from source code (development mode)
-							String dirPath = URLDecoder.decode(url.getPath().substring(0, url.getPath().indexOf("META-INF")), "UTF-8")
+							// When it is a file and it is contained in
+							// target/classes directory then we
+							// replace with directory from source code
+							// (development mode)
+							String dirPath = URLDecoder
+									.decode(url.getPath().substring(0, url.getPath().indexOf("META-INF")), "UTF-8")
 									.replace("target/classes", "src/main/resources");
 							File rcDir = new File(dirPath);
 							if (rcDir.exists()) {
 								rc = new DirectoryResourceCenter(rcDir, this);
 							}
-						}
-						else if (url.getProtocol().equals("jar")) {
+						} else if (url.getProtocol().equals("jar")) {
 
-							String jarPath = URLDecoder.decode(url.getPath().substring(0, url.getPath().indexOf("!")).replace("+", "%2B"),
+							String jarPath = URLDecoder.decode(
+									url.getPath().substring(0, url.getPath().indexOf("!")).replace("+", "%2B"),
 									"UTF-8");
 
 							URL jarURL = new URL(jarPath);
-							URI jarURI = new URI(jarURL.getProtocol(), jarURL.getUserInfo(), jarURL.getHost(), jarURL.getPort(),
-									jarURL.getPath(), jarURL.getQuery(), jarURL.getRef());
+							URI jarURI = new URI(jarURL.getProtocol(), jarURL.getUserInfo(), jarURL.getHost(),
+									jarURL.getPort(), jarURL.getPath(), jarURL.getQuery(), jarURL.getRef());
 
 							rc = JarResourceCenter.addJarFile(new JarFile(new File(jarURI)), this);
 
+						} else {
+							logger.warning("INVESTIGATE: don't know how to deal with RC accessed through "
+									+ url.getProtocol());
 						}
-						else {
-							logger.warning("INVESTIGATE: don't know how to deal with RC accessed through " + url.getProtocol());
-						}
-					}
-					else {
+					} else {
 						logger.warning("an RC already exists with DefaultBaseURI: " + rcBaseUri);
 					}
 
@@ -201,7 +208,8 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 	@Override
 	public void addToResourceCenters(FlexoResourceCenter<?> resourceCenter) {
 		if (!getResourceCenters().contains(resourceCenter)) {
-			// logger.info("################################### addToResourceCenters() " + resourceCenter);
+			// logger.info("###################################
+			// addToResourceCenters() " + resourceCenter);
 			performSuperAdder(RESOURCE_CENTERS, resourceCenter);
 			if (getServiceManager() != null) {
 				getServiceManager().notify(this, new ResourceCenterAdded(resourceCenter));
@@ -223,8 +231,19 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 		getPropertyChangeSupport().firePropertyChange(RESOURCE_CENTERS, resourceCenter, null);
 	}
 
+	@Override
+	public FlexoResourceCenter<?> getFlexoResourceCenter(String baseURI) {
+		for (FlexoResourceCenter<?> rc : getResourceCenters()) {
+			if (baseURI.equals(rc.getDefaultBaseURI())) {
+				return rc;
+			}
+		}
+		return null;
+	}
+
 	/**
-	 * Notification of a new ResourceCenter added to the list of referenced resource centers
+	 * Notification of a new ResourceCenter added to the list of referenced
+	 * resource centers
 	 * 
 	 * @author sylvain
 	 * 
@@ -242,7 +261,8 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 	}
 
 	/**
-	 * Notification of a new ResourceCenter removed from the list of referenced resource centers
+	 * Notification of a new ResourceCenter removed from the list of referenced
+	 * resource centers
 	 * 
 	 * @author sylvain
 	 * 
@@ -271,7 +291,8 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 	}
 
 	/**
-	 * Notification of a new ResourceCenter added to the list of referenced resource centers
+	 * Notification of a new ResourceCenter added to the list of referenced
+	 * resource centers
 	 * 
 	 * @author sylvain
 	 * 
@@ -291,7 +312,8 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 	}
 
 	/**
-	 * Notification of a new ResourceCenter added to the list of referenced resource centers
+	 * Notification of a new ResourceCenter added to the list of referenced
+	 * resource centers
 	 * 
 	 * @author sylvain
 	 * 
@@ -348,23 +370,24 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 		}
 		if (caller instanceof TechnologyAdapterService) {
 			if (notification instanceof ServiceRegistered) {
-				/*for (FlexoResourceCenter rc : getResourceCenters()) {
-					rc.initialize((TechnologyAdapterService) caller);
-				}*/
-			}
-			else if (notification instanceof TechnologyAdapterHasBeenActivated) {
+				/*
+				 * for (FlexoResourceCenter rc : getResourceCenters()) {
+				 * rc.initialize((TechnologyAdapterService) caller); }
+				 */
+			} else if (notification instanceof TechnologyAdapterHasBeenActivated) {
 				// Avoid Concurrent Modification Exception issues
 				ArrayList<FlexoResourceCenter<?>> listRC = new ArrayList<FlexoResourceCenter<?>>(getResourceCenters());
 				for (FlexoResourceCenter<?> rc : listRC) {
 					if (rc != null) {
-						rc.activateTechnology(((TechnologyAdapterHasBeenActivated) notification).getTechnologyAdapter());
+						rc.activateTechnology(
+								((TechnologyAdapterHasBeenActivated) notification).getTechnologyAdapter());
 					}
 				}
-			}
-			else if (notification instanceof TechnologyAdapterHasBeenDisactivated) {
+			} else if (notification instanceof TechnologyAdapterHasBeenDisactivated) {
 				for (FlexoResourceCenter<?> rc : getResourceCenters()) {
 					if (rc != null) {
-						rc.disactivateTechnology(((TechnologyAdapterHasBeenDisactivated) notification).getTechnologyAdapter());
+						rc.disactivateTechnology(
+								((TechnologyAdapterHasBeenDisactivated) notification).getTechnologyAdapter());
 					}
 				}
 			}

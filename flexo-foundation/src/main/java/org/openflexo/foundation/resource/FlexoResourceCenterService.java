@@ -52,8 +52,9 @@ import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.factory.AccessibleProxyObject;
 
 /**
- * This service implements access policy to resource centers in the context of a {@link FlexoServiceManager} (which, in interactive mode, is
- * an ApplicationContext)
+ * This service implements access policy to resource centers in the context of a
+ * {@link FlexoServiceManager} (which, in interactive mode, is an
+ * ApplicationContext)
  * 
  * One {@link UserResourceCenter} is declared to be the user resource center
  * 
@@ -63,6 +64,8 @@ import org.openflexo.model.factory.AccessibleProxyObject;
 @ModelEntity
 public interface FlexoResourceCenterService extends FlexoService, AccessibleProxyObject {
 	public static final String RESOURCE_CENTERS = "resourceCenters";
+
+	public FlexoResourceCenter<?> getFlexoResourceCenter(String baseURI);
 
 	@Getter(value = RESOURCE_CENTERS, cardinality = Cardinality.LIST, ignoreType = true)
 	public List<FlexoResourceCenter<?>> getResourceCenters();
