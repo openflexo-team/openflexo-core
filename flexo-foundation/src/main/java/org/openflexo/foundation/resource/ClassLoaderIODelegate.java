@@ -124,8 +124,9 @@ public interface ClassLoaderIODelegate extends FlexoIODelegate<ClassLoader> {
 		}
 
 		@Override
-		public RepositoryFolder<?, ClassLoader> getRepositoryFolder(ResourceRepository<?, ClassLoader> resourceRepository,
-				boolean createWhenNonExistent) throws IOException {
+		public RepositoryFolder<?, ClassLoader> getRepositoryFolder(
+				ResourceRepository<?, ClassLoader> resourceRepository, boolean createWhenNonExistent)
+				throws IOException {
 			return null;
 		}
 
@@ -139,6 +140,14 @@ public interface ClassLoaderIODelegate extends FlexoIODelegate<ClassLoader> {
 			return null;
 		}
 
+		@Override
+		public String getSerializationArtefactName() {
+			if (getFlexoResource() != null && getFlexoResource().getResourceCenter() != null) {
+				return ((FlexoResourceCenter) getFlexoResource().getResourceCenter())
+						.retrieveName(getSerializationArtefact());
+			}
+			return null;
+		}
 	}
 
 }

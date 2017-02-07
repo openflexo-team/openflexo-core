@@ -38,14 +38,26 @@
 
 package org.openflexo.foundation.resource;
 
-import com.google.common.base.Throwables;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import javax.swing.undo.UndoableEdit;
+
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
 import org.jdom2.filter.ElementFilter;
 import org.jdom2.input.SAXBuilder;
 import org.openflexo.foundation.FlexoObject;
-import org.openflexo.foundation.FlexoService.ServiceNotification;
 import org.openflexo.foundation.IOFlexoException;
 import org.openflexo.foundation.InconsistentDataException;
 import org.openflexo.foundation.InvalidModelDefinitionException;
@@ -65,21 +77,11 @@ import org.openflexo.toolbox.FileUtils;
 import org.openflexo.toolbox.FlexoVersion;
 import org.openflexo.toolbox.IProgress;
 
-import javax.swing.undo.UndoableEdit;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import com.google.common.base.Throwables;
 
 /**
- * Default implementation for {@link PamelaResource} (a resource where underlying model is managed by PAMELA framework)
+ * Default implementation for {@link PamelaResource} (a resource where
+ * underlying model is managed by PAMELA framework)
  * 
  * @param <RD>
  *            the type of the resource data reference by this resource
@@ -87,7 +89,7 @@ import java.util.logging.Logger;
  * 
  */
 public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends ModelFactory & PamelaResourceModelFactory>
-		extends FlexoResourceImpl<RD>implements PamelaResource<RD, F> {
+		extends FlexoResourceImpl<RD> implements PamelaResource<RD, F> {
 
 	private static final Logger logger = Logger.getLogger(PamelaResourceImpl.class.getPackage().getName());
 
@@ -119,8 +121,10 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends 
 	private boolean isDeserializing = false;
 
 	/**
-	 * Internally used to notify factory that a deserialization process has started<br>
-	 * This hook allows to handle FlexoID and ignore of edits raised during deserialization process
+	 * Internally used to notify factory that a deserialization process has
+	 * started<br>
+	 * This hook allows to handle FlexoID and ignore of edits raised during
+	 * deserialization process
 	 */
 	@Override
 	public void startDeserializing() {
@@ -133,15 +137,15 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends 
 		F factory = getFactory();
 		if (factory != null) {
 			factory.startDeserializing();
-		}
-		else {
+		} else {
 			logger.warning("Trying to deserialize with a NULL factory!!!");
 			System.err.println(Throwables.getStackTraceAsString(new Throwable()));
 		}
 	}
 
 	/**
-	 * Internally used to notify factory that a deserialization process has finished<br>
+	 * Internally used to notify factory that a deserialization process has
+	 * finished<br>
 	 */
 	@Override
 	public void stopDeserializing() {
@@ -152,8 +156,7 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends 
 		getFactory().stopDeserializing();
 		if (getLoadedResourceData() != null) {
 			getLoadedResourceData().clearIsModified();
-		}
-		else {
+		} else {
 			logger.warning("Could not access loaded resource data");
 		}
 	}
@@ -164,8 +167,10 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends 
 	}
 
 	/**
-	 * Load resource data by applying a special scheme handling XML versionning, ie to find right XML version of current resource file.<br>
-	 * If version of stored file is not conform to latest declared version, convert resource file and update it to latest version.
+	 * Load resource data by applying a special scheme handling XML versionning,
+	 * ie to find right XML version of current resource file.<br>
+	 * If version of stored file is not conform to latest declared version,
+	 * convert resource file and update it to latest version.
 	 * 
 	 * @throws ProjectLoadingCancelledException
 	 * @throws MalformedXMLException
@@ -173,8 +178,8 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends 
 	 * @see org.openflexo.foundation.rm.FlexoResource#loadResourceData()
 	 */
 	@Override
-	public RD loadResourceData(IProgress progress) throws FlexoFileNotFoundException, IOFlexoException, InvalidXMLException,
-			InconsistentDataException, InvalidModelDefinitionException {
+	public RD loadResourceData(IProgress progress) throws FlexoFileNotFoundException, IOFlexoException,
+			InvalidXMLException, InconsistentDataException, InvalidModelDefinitionException {
 		if (resourceData != null) {
 			// already loaded
 			return resourceData;
@@ -194,26 +199,27 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends 
 		if (logger.isLoggable(Level.FINE)) {
 			logger.fine("Load resource data for " + this);
 		}
-		/*TODO
-		 * if (!getFile().exists()) {
-			recoverFile();
-			if (!getFile().exists()) {
-				if (logger.isLoggable(Level.SEVERE)) {
-					logger.severe("File " + getFile().getAbsolutePath() + " does not exist, throwing exception now!");
-				}
-				throw new FlexoFileNotFoundException(this);
-			}
-		}*/
+		/*
+		 * TODO if (!getFile().exists()) { recoverFile(); if
+		 * (!getFile().exists()) { if (logger.isLoggable(Level.SEVERE)) {
+		 * logger.severe("File " + getFile().getAbsolutePath() +
+		 * " does not exist, throwing exception now!"); } throw new
+		 * FlexoFileNotFoundException(this); } }
+		 */
 
-		/*EditingContext editingContext = getServiceManager().getEditingContext();
-		IgnoreLoadingEdits ignoreHandler = null;
-		FlexoUndoManager undoManager = null;
-		
-		if (editingContext != null && editingContext.getUndoManager() instanceof FlexoUndoManager) {
-			undoManager = (FlexoUndoManager) editingContext.getUndoManager();
-			undoManager.addToIgnoreHandlers(ignoreHandler = new IgnoreLoadingEdits(this));
-			// System.out.println("@@@@@@@@@@@@@@@@ START LOADING RESOURCE " + getURI());
-		}*/
+		/*
+		 * EditingContext editingContext =
+		 * getServiceManager().getEditingContext(); IgnoreLoadingEdits
+		 * ignoreHandler = null; FlexoUndoManager undoManager = null;
+		 * 
+		 * if (editingContext != null && editingContext.getUndoManager()
+		 * instanceof FlexoUndoManager) { undoManager = (FlexoUndoManager)
+		 * editingContext.getUndoManager();
+		 * undoManager.addToIgnoreHandlers(ignoreHandler = new
+		 * IgnoreLoadingEdits(this)); //
+		 * System.out.println("@@@@@@@@@@@@@@@@ START LOADING RESOURCE " +
+		 * getURI()); }
+		 */
 
 		try {
 
@@ -240,10 +246,12 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends 
 			logger.warning("Unhandled Exception");
 		} finally {
 			isLoading = false;
-			/*if (ignoreHandler != null) {
-				undoManager.removeFromIgnoreHandlers(ignoreHandler);
-				// System.out.println("@@@@@@@@@@@@@@@@ END LOADING RESOURCE " + getURI());
-			}*/
+			/*
+			 * if (ignoreHandler != null) {
+			 * undoManager.removeFromIgnoreHandlers(ignoreHandler); //
+			 * System.out.println("@@@@@@@@@@@@@@@@ END LOADING RESOURCE " +
+			 * getURI()); }
+			 */
 			stopDeserializing();
 
 		}
@@ -252,7 +260,8 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends 
 	}
 
 	protected RD performLoad() throws IOException, Exception {
-		// Retrieve the data from an input stream given by the FlexoIOStream delegate of the resource
+		// Retrieve the data from an input stream given by the FlexoIOStream
+		// delegate of the resource
 		return (RD) getFactory().deserialize(getFlexoIOStreamDelegate().getInputStream());
 	}
 
@@ -265,7 +274,7 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends 
 		if (isLoaded()) {
 			if (deleteResourceData) {
 
-				EditingContext editingContext =getServiceManager().getEditingContext();
+				EditingContext editingContext = getServiceManager().getEditingContext();
 				FlexoUndoManager undoManager = null;
 				IgnoreHandler ignoreHandler = new IgnoreLoadingEdits(this);
 
@@ -279,7 +288,8 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends 
 				}
 			}
 			resourceData = null;
-			// That's fine, resource is loaded, now let's notify the loading of the resources
+			// That's fine, resource is loaded, now let's notify the loading of
+			// the resources
 			notifyResourceUnloaded();
 		}
 	}
@@ -295,7 +305,10 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends 
 	 * @return
 	 */
 	public FlexoIOStreamDelegate<?> getFlexoIOStreamDelegate() {
-		return (FlexoIOStreamDelegate<?>) getFlexoIODelegate();
+		if (getFlexoIODelegate() instanceof FlexoIOStreamDelegate) {
+			return (FlexoIOStreamDelegate<?>) getFlexoIODelegate();
+		}
+		return null;
 	}
 
 	/**
@@ -304,7 +317,8 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends 
 	 * 
 	 * @return
 	 */
-	protected final void saveResourceData(boolean clearIsModified) throws SaveResourceException, SaveResourcePermissionDeniedException {
+	protected final void saveResourceData(boolean clearIsModified)
+			throws SaveResourceException, SaveResourcePermissionDeniedException {
 		// System.out.println("PamelaResourceImpl Saving " + getFile());
 		if (!getFlexoIODelegate().hasWritePermission()) {
 			if (logger.isLoggable(Level.WARNING)) {
@@ -315,8 +329,8 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends 
 		if (resourceData != null) {
 			_saveResourceData(clearIsModified);
 			if (logger.isLoggable(Level.FINE)) {
-				logger.fine("Succeeding to save Resource " + this + " : " + getFile().getName() + " version=" + getModelVersion()
-						+ " with date " + FileUtils.getDiskLastModifiedDate(getFile()));
+				logger.fine("Succeeding to save Resource " + this + " : " + getFile().getName() + " version="
+						+ getModelVersion() + " with date " + FileUtils.getDiskLastModifiedDate(getFile()));
 			}
 		}
 		if (clearIsModified) {
@@ -330,60 +344,6 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends 
 		}
 	}
 
-	public static class WillWriteFileOnDiskNotification implements ServiceNotification {
-		private final File file;
-
-		public WillWriteFileOnDiskNotification(File file) {
-			this.file = file;
-		}
-
-		public File getFile() {
-			return file;
-		}
-	}
-
-	public static class FileHasBeenWrittenOnDiskNotification implements ServiceNotification {
-		private final File file;
-
-		public FileHasBeenWrittenOnDiskNotification(File file) {
-			this.file = file;
-		}
-
-		public File getFile() {
-			return file;
-		}
-	}
-
-	public static class WillRenameFileOnDiskNotification implements ServiceNotification {
-		private final File fromFile;
-		private final File toFile;
-
-		public WillRenameFileOnDiskNotification(File fromFile, File toFile) {
-			this.fromFile = fromFile;
-			this.toFile = toFile;
-		}
-
-		public File getFromFile() {
-			return fromFile;
-		}
-
-		public File getToFile() {
-			return toFile;
-		}
-	}
-
-	public static class WillDeleteFileOnDiskNotification implements ServiceNotification {
-		private final File file;
-
-		public WillDeleteFileOnDiskNotification(File file) {
-			this.file = file;
-		}
-
-		public File getFile() {
-			return file;
-		}
-	}
-
 	protected void _saveResourceData(boolean clearIsModified) throws SaveResourceException {
 		File temporaryFile = null;
 		FileWritingLock lock = getFlexoIOStreamDelegate().willWriteOnDisk();
@@ -393,22 +353,21 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends 
 		}
 
 		try {
-			File dir = getFile().getParentFile();
-			willWrite(dir);
-			if (!dir.exists()) {
-				dir.mkdirs();
-			}
-			willWrite(getFile());
+			/*
+			 * File dir = getFile().getParentFile(); willWrite(dir); if
+			 * (!dir.exists()) { dir.mkdirs(); } willWrite(getFile());
+			 */
 			// Make local copy
 			makeLocalCopy();
 			// Using temporary file
-			temporaryFile = File.createTempFile("temp", ".xml", dir);
+			temporaryFile = File.createTempFile("temp", ".xml", getFile().getParentFile());
 			if (logger.isLoggable(Level.FINE)) {
 				logger.finer("Creating temp file " + temporaryFile.getAbsolutePath());
 			}
-			performXMLSerialization(/*handler,*/temporaryFile);
+			performXMLSerialization(/* handler, */temporaryFile);
 			if (logger.isLoggable(Level.FINE)) {
-				logger.finer("Renaming temp file " + temporaryFile.getAbsolutePath() + " to " + getFile().getAbsolutePath());
+				logger.finer(
+						"Renaming temp file " + temporaryFile.getAbsolutePath() + " to " + getFile().getAbsolutePath());
 			}
 			// Renaming temporary file is done in post serialization
 			postXMLSerialization(temporaryFile, lock, clearIsModified);
@@ -422,10 +381,10 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends 
 			}
 			getFlexoIOStreamDelegate().hasWrittenOnDisk(lock);
 			throw new SaveResourceException(getFlexoIODelegate(), e);
-		} finally {
-			hasWritten(getFile());
-			hasWritten(getFile().getParentFile());
-		}
+		} /*
+			 * finally { hasWritten(getFile());
+			 * hasWritten(getFile().getParentFile()); }
+			 */
 	}
 
 	/**
@@ -435,7 +394,8 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends 
 	 * @param clearIsModified
 	 * @throws IOException
 	 */
-	private void postXMLSerialization(File temporaryFile, FileWritingLock lock, boolean clearIsModified) throws IOException {
+	private void postXMLSerialization(File temporaryFile, FileWritingLock lock, boolean clearIsModified)
+			throws IOException {
 		FileUtils.rename(temporaryFile, getFile());
 		getFlexoIOStreamDelegate().hasWrittenOnDisk(lock);
 		if (clearIsModified) {
@@ -453,7 +413,7 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends 
 	 * @throws DuplicateSerializationIdentifierException
 	 * @throws IOException
 	 */
-	private void performXMLSerialization(/*SerializationHandler handler,*/File temporaryFile) throws IOException {
+	private void performXMLSerialization(/* SerializationHandler handler, */File temporaryFile) throws IOException {
 		FileOutputStream out = null;
 		try {
 			out = new FileOutputStream(temporaryFile);
@@ -472,20 +432,15 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends 
 		}
 	}
 
-	/*private StringEncoder STRING_ENCODER = null;
-	
-	@Override
-	public StringEncoder getStringEncoder() {
-		if (STRING_ENCODER == null) {
-			if (this instanceof FlexoProjectResource) {
-				STRING_ENCODER = new StringEncoder(super.getStringEncoder(), ((FlexoProjectResource) this).getProject()
-						.getObjectReferenceConverter());
-			} else {
-				STRING_ENCODER = super.getStringEncoder();
-			}
-		}
-		return STRING_ENCODER;
-	}*/
+	/*
+	 * private StringEncoder STRING_ENCODER = null;
+	 * 
+	 * @Override public StringEncoder getStringEncoder() { if (STRING_ENCODER ==
+	 * null) { if (this instanceof FlexoProjectResource) { STRING_ENCODER = new
+	 * StringEncoder(super.getStringEncoder(), ((FlexoProjectResource)
+	 * this).getProject() .getObjectReferenceConverter()); } else {
+	 * STRING_ENCODER = super.getStringEncoder(); } } return STRING_ENCODER; }
+	 */
 
 	public void recoverFile() {
 		if (getFile() == null) {
@@ -500,7 +455,8 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends 
 				File file = files[i];
 				if (file.getName().equalsIgnoreCase(getFile().getName())) {
 					if (logger.isLoggable(Level.WARNING)) {
-						logger.warning("Found file " + file.getAbsolutePath() + ". Using it and repairing project as well!");
+						logger.warning(
+								"Found file " + file.getAbsolutePath() + ". Using it and repairing project as well!");
 					}
 					((FileFlexoIODelegate) getFlexoIODelegate()).setSerializationArtefact(file);
 					break;
@@ -510,8 +466,9 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends 
 	}
 
 	/**
-	 * Manually converts resource file from version v1 to version v2. This methods only warns and does nothing, and must be overriden in
-	 * subclasses !
+	 * Manually converts resource file from version v1 to version v2. This
+	 * methods only warns and does nothing, and must be overriden in subclasses
+	 * !
 	 * 
 	 * @param v1
 	 * @param v2
@@ -519,7 +476,8 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends 
 	 */
 	protected boolean convertResourceFileFromVersionToVersion(FlexoVersion v1, FlexoVersion v2) {
 		if (logger.isLoggable(Level.WARNING)) {
-			logger.warning("Unable to find converter for resource " + this + " from version " + v1 + " to version " + v2);
+			logger.warning(
+					"Unable to find converter for resource " + this + " from version " + v1 + " to version " + v2);
 		}
 		return false;
 	}
@@ -529,7 +487,6 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends 
 			String localCopyName = getFile().getName() + "~";
 			File localCopy = new File(getFile().getParentFile(), localCopyName);
 			FileUtils.copyFileToFile(getFile(), localCopy);
-
 		}
 	}
 
@@ -663,8 +620,7 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends 
 		Iterator it = document.getDescendants(new ElementFilter(name));
 		if (it.hasNext()) {
 			return (Element) it.next();
-		}
-		else {
+		} else {
 			return null;
 		}
 	}
@@ -673,8 +629,7 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends 
 		Iterator it = from.getDescendants(new ElementFilter(name));
 		if (it.hasNext()) {
 			return (Element) it.next();
-		}
-		else {
+		} else {
 			return null;
 		}
 	}
@@ -698,7 +653,8 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends 
 			if (edit instanceof AtomicEdit) {
 				Object o = ((AtomicEdit) edit).getObject();
 				if (((AtomicEdit) edit).getModelFactory() == resource.getFactory()) {
-					// System.out.println("PAMELA RESOURCE LOADING : Ignore edit "
+					// System.out.println("PAMELA RESOURCE LOADING : Ignore edit
+					// "
 					// + edit);
 					return true;
 				}

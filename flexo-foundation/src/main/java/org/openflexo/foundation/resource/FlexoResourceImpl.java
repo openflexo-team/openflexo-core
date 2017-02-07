@@ -39,7 +39,6 @@
 
 package org.openflexo.foundation.resource;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -53,10 +52,6 @@ import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.FlexoServiceManager;
-import org.openflexo.foundation.resource.PamelaResourceImpl.FileHasBeenWrittenOnDiskNotification;
-import org.openflexo.foundation.resource.PamelaResourceImpl.WillDeleteFileOnDiskNotification;
-import org.openflexo.foundation.resource.PamelaResourceImpl.WillRenameFileOnDiskNotification;
-import org.openflexo.foundation.resource.PamelaResourceImpl.WillWriteFileOnDiskNotification;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterResource;
 import org.openflexo.foundation.utils.FlexoObjectReference;
 import org.openflexo.localization.LocalizedDelegate;
@@ -68,7 +63,8 @@ import org.openflexo.toolbox.StringUtils;
 
 /**
  * Default implementation for {@link FlexoResource}<br>
- * Note that this default implementation extends {@link FlexoObject}: all resources in Openflexo model are instances of {@link FlexoObject}
+ * Note that this default implementation extends {@link FlexoObject}: all
+ * resources in Openflexo model are instances of {@link FlexoObject}
  * 
  * Very first draft for implementation, only implements get/load scheme
  * 
@@ -77,7 +73,8 @@ import org.openflexo.toolbox.StringUtils;
  * @author Sylvain
  * 
  */
-public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends FlexoObjectImpl implements FlexoResource<RD> {
+public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends FlexoObjectImpl
+		implements FlexoResource<RD> {
 
 	static final Logger logger = Logger.getLogger(FlexoResourceImpl.class.getPackage().getName());
 
@@ -97,30 +94,35 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 
 	/**
 	 * Return flag indicating if this resource is loadable<br>
-	 * By default, a resource is always loadable, then this method always returns true if IO delegate exists
+	 * By default, a resource is always loadable, then this method always
+	 * returns true if IO delegate exists
 	 * 
 	 * @return
 	 */
 	@Override
 	public boolean isLoadable() {
-		// By default, a resource is always loadable, then this method always returns true if IO delegate exists
+		// By default, a resource is always loadable, then this method always
+		// returns true if IO delegate exists
 		return getFlexoIODelegate() != null && getFlexoIODelegate().exists();
 	}
 
 	/**
-	 * Returns the &quot;real&quot; resource data of this resource. This may cause the loading of the resource data.
+	 * Returns the &quot;real&quot; resource data of this resource. This may
+	 * cause the loading of the resource data.
 	 * 
 	 * @param progress
-	 *            a progress monitor in case the resource data is not immediately available.
+	 *            a progress monitor in case the resource data is not
+	 *            immediately available.
 	 * @return the resource data.
 	 * @throws ResourceLoadingCancelledException
 	 */
 	@Override
-	public synchronized RD getResourceData(IProgress progress)
-			throws ResourceLoadingCancelledException, ResourceLoadingCancelledException, FileNotFoundException, FlexoException {
+	public synchronized RD getResourceData(IProgress progress) throws ResourceLoadingCancelledException,
+			ResourceLoadingCancelledException, FileNotFoundException, FlexoException {
 
 		if (isLoading()) {
-			// logger.warning("trying to load a resource data from itself, please investigate");
+			// logger.warning("trying to load a resource data from itself,
+			// please investigate");
 			return resourceData;
 		}
 		if (resourceData == null && isLoadable()) {
@@ -128,7 +130,8 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 			setLoading(true);
 			resourceData = loadResourceData(progress);
 			setLoading(false);
-			// That's fine, resource is loaded, now let's notify the loading of the resources
+			// That's fine, resource is loaded, now let's notify the loading of
+			// the resources
 			notifyResourceLoaded();
 		}
 		return resourceData;
@@ -153,8 +156,9 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 	}
 
 	/**
-	 * Returns the &quot;real&quot; resource data of this resource, asserting resource data is already loaded. If the resource is not
-	 * loaded, do not load the data, and return null
+	 * Returns the &quot;real&quot; resource data of this resource, asserting
+	 * resource data is already loaded. If the resource is not loaded, do not
+	 * load the data, and return null
 	 * 
 	 * @return the resource data.
 	 */
@@ -191,8 +195,7 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 			if (getFlexoIODelegate() != null) {
 				getFlexoIODelegate().rename();
 			}
-		}
-		else if (!isDeleting()) {
+		} else if (!isDeleting()) {
 			System.out.println("Trying to rename " + this + " from " + getName() + " to " + aName);
 			System.out.println("IOdelegate=" + getFlexoIODelegate());
 			if (getFlexoIODelegate() != null) {
@@ -204,7 +207,8 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 
 	/**
 	 * Called to init name of the resource<br>
-	 * No renaming is performed here: use this method at the very beginning of life-cyle of FlexoResource
+	 * No renaming is performed here: use this method at the very beginning of
+	 * life-cyle of FlexoResource
 	 * 
 	 * @param aName
 	 */
@@ -228,8 +232,7 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 		notifyObservers(new DataModification("contents", null, getContents()));
 		if (getServiceManager() != null) {
 			getServiceManager().notify(getServiceManager().getResourceManager(), notification);
-		}
-		else {
+		} else {
 			logger.warning("Resource " + this + " does not refer to any ServiceManager. Please investigate...");
 		}
 	}
@@ -249,8 +252,7 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 		notifyObservers(new DataModification("contents", null, null));
 		if (getServiceManager() != null) {
 			getServiceManager().notify(getServiceManager().getResourceManager(), notification);
-		}
-		else {
+		} else {
 			logger.warning("Resource " + this + " does not refer to any ServiceManager. Please investigate...");
 		}
 	}
@@ -284,7 +286,8 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 
 	/**
 	 * Called to notify that a resource has been added to contents<br>
-	 * TODO: integrate this in setContents() when this interface will extends {@link AccessibleProxyObject}
+	 * TODO: integrate this in setContents() when this interface will extends
+	 * {@link AccessibleProxyObject}
 	 * 
 	 * @param resource
 	 *            : resource being added
@@ -301,7 +304,8 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 
 	/**
 	 * Called to notify that a resource has been remove to contents<br>
-	 * TODO: integrate this in setContents() when this interface will extends {@link AccessibleProxyObject}
+	 * TODO: integrate this in setContents() when this interface will extends
+	 * {@link AccessibleProxyObject}
 	 * 
 	 * @param resource
 	 *            : resource being removed
@@ -348,7 +352,8 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 	}
 
 	/**
-	 * Returns the resource identified in supplied URI, asserting that is resource is of supplied type
+	 * Returns the resource identified in supplied URI, asserting that is
+	 * resource is of supplied type
 	 * 
 	 * @return
 	 */
@@ -369,7 +374,8 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 
 	/**
 	 * Sets and register the service manager<br>
-	 * Also (VERY IMPORTANT) register the resource in the FlexoEditingContext !!!
+	 * Also (VERY IMPORTANT) register the resource in the FlexoEditingContext
+	 * !!!
 	 */
 	@Override
 	public void setServiceManager(FlexoServiceManager serviceManager) {
@@ -380,11 +386,13 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 	}
 
 	/**
-	 * Indicates whether this resource can be edited or not. Returns <code>true</code> if the resource cannot be edited, else returns
+	 * Indicates whether this resource can be edited or not. Returns
+	 * <code>true</code> if the resource cannot be edited, else returns
 	 * <code>false</code>.<br>
 	 * This is here the default implementation, always returned false;
 	 * 
-	 * @return <code>true</code> if the resource cannot be edited, else returns <code>false</code>.
+	 * @return <code>true</code> if the resource cannot be edited, else returns
+	 *         <code>false</code>.
 	 */
 	@Override
 	public boolean isReadOnly() {
@@ -407,8 +415,7 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 		if (isReadOnly()) {
 			logger.warning("Delete requested for READ-ONLY resource " + this);
 			return false;
-		}
-		else {
+		} else {
 			isDeleting = true;
 			logger.info("Deleting resource " + this);
 			if (getContainer() != null) {
@@ -447,7 +454,8 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 				resourceData.delete();
 			}
 			resourceData = null;
-			// That's fine, resource is loaded, now let's notify the loading of the resources
+			// That's fine, resource is loaded, now let's notify the loading of
+			// the resources
 			notifyResourceUnloaded();
 		}
 	}
@@ -543,8 +551,8 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 
 	/**
 	 * Return URI of this resource<br>
-	 * If URI was set for this resource, return that URI, otherwise delegate default URI computation to resource center in which this
-	 * resource exists
+	 * If URI was set for this resource, return that URI, otherwise delegate
+	 * default URI computation to resource center in which this resource exists
 	 */
 	@Override
 	public final String getURI() {
@@ -575,20 +583,19 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 		return super.getLocales();
 	}
 
-	public void willWrite(File file) {
-		getServiceManager().notify(null, new WillWriteFileOnDiskNotification(file));
-	}
-
-	public void hasWritten(File file) {
-		getServiceManager().notify(null, new FileHasBeenWrittenOnDiskNotification(file));
-	}
-
-	public void willRename(File fromFile, File toFile) {
-		getServiceManager().notify(null, new WillRenameFileOnDiskNotification(fromFile, toFile));
-	}
-
-	public void willDelete(File file) {
-		getServiceManager().notify(null, new WillDeleteFileOnDiskNotification(file));
-	}
+	/*
+	 * public void willWrite(File file) { getServiceManager().notify(null, new
+	 * WillWriteFileOnDiskNotification(file)); }
+	 * 
+	 * public void hasWritten(File file) { getServiceManager().notify(null, new
+	 * FileHasBeenWrittenOnDiskNotification(file)); }
+	 * 
+	 * public void willRename(File fromFile, File toFile) {
+	 * getServiceManager().notify(null, new
+	 * WillRenameFileOnDiskNotification(fromFile, toFile)); }
+	 * 
+	 * public void willDelete(File file) { getServiceManager().notify(null, new
+	 * WillDeleteFileOnDiskNotification(file)); }
+	 */
 
 }

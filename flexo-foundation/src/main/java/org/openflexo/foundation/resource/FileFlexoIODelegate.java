@@ -48,6 +48,7 @@ import java.io.OutputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.openflexo.foundation.FlexoService.ServiceNotification;
 import org.openflexo.foundation.action.NotImplementedException;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.Implementation;
@@ -64,7 +65,8 @@ import org.openflexo.toolbox.FileUtils;
 
 /**
  * Represents an I/O delegate based on a File<br>
- * To be used when associated {@link FlexoResource} is serialized into a simple {@link File}
+ * To be used when associated {@link FlexoResource} is serialized into a simple
+ * {@link File}
  * 
  * 
  * @author vincent,sylvain
@@ -84,14 +86,18 @@ public interface FileFlexoIODelegate extends FlexoIOStreamDelegate<File> {
 	@Setter(FILE)
 	public void setFile(File file);
 
-	// public boolean renameFileTo(String name) throws InvalidFileNameException, IOException;
+	// public boolean renameFileTo(String name) throws InvalidFileNameException,
+	// IOException;
 
 	public boolean delete(boolean deleteFile);
 
 	public String getFileName();
 
+	public File createTemporaryArtefact(String fileExtension) throws IOException;
+
 	@Implementation
-	public abstract class FileFlexoIODelegateImpl extends FlexoIOStreamDelegateImpl<File> implements FileFlexoIODelegate {
+	public abstract class FileFlexoIODelegateImpl extends FlexoIOStreamDelegateImpl<File>
+			implements FileFlexoIODelegate {
 
 		private final Logger logger = Logger.getLogger(FileFlexoIODelegateImpl.class.getPackage().getName());
 
@@ -114,15 +120,16 @@ public interface FileFlexoIODelegate extends FlexoIOStreamDelegate<File> {
 		}
 
 		@Override
-		public RepositoryFolder<?, File> getRepositoryFolder(ResourceRepository<?, File> resourceRepository, boolean createWhenNonExistent)
-				throws IOException {
+		public RepositoryFolder<?, File> getRepositoryFolder(ResourceRepository<?, File> resourceRepository,
+				boolean createWhenNonExistent) throws IOException {
 			return resourceRepository.getParentRepositoryFolder(getFile(), true);
 		}
 
 		@Override
 		public synchronized boolean hasWritePermission() {
-			return getFile() == null || (!getFile().exists() || getFile().canWrite()) && getFile().getParentFile() != null
-					&& (!getFile().getParentFile().exists() || getFile().getParentFile().canWrite());
+			return getFile() == null
+					|| (!getFile().exists() || getFile().canWrite()) && getFile().getParentFile() != null
+							&& (!getFile().getParentFile().exists() || getFile().getParentFile().canWrite());
 		}
 
 		private boolean renameFileTo(String name) throws InvalidFileNameException, IOException {
@@ -137,8 +144,7 @@ public interface FileFlexoIODelegate extends FlexoIOStreamDelegate<File> {
 					resetDiskLastModifiedDate();
 				}
 				return true;
-			}
-			else
+			} else
 				return false;
 		}
 
@@ -149,8 +155,7 @@ public interface FileFlexoIODelegate extends FlexoIOStreamDelegate<File> {
 		public boolean delete() {
 			if (hasWritePermission()) {
 				return delete(true);
-			}
-			else {
+			} else {
 				logger.warning("Delete requested for READ-ONLY file resource " + this);
 				return false;
 			}
@@ -162,6 +167,15 @@ public interface FileFlexoIODelegate extends FlexoIOStreamDelegate<File> {
 				logger.fine("willWriteOnDisk()");
 			}
 			_isSaving = true;
+
+			if (!getFile().getParentFile().exists()) {
+				getFile().getParentFile().mkdirs();
+			}
+
+			getFlexoResource().getServiceManager().notify(null,
+					new WillWriteFileOnDiskNotification(getFile().getParentFile()));
+			getFlexoResource().getServiceManager().notify(null, new WillWriteFileOnDiskNotification(getFile()));
+
 			// This locking scheme was an attempt which seems to be unnecessary
 			// Disactivated it. But kept for future needing if required
 			// return new FileWritingLock();
@@ -173,10 +187,14 @@ public interface FileFlexoIODelegate extends FlexoIOStreamDelegate<File> {
 			if (logger.isLoggable(Level.FINE)) {
 				logger.fine("hasWrittenOnDisk()");
 			}
+
+			getFlexoResource().getServiceManager().notify(null,
+					new FileHasBeenWrittenOnDiskNotification(getFile().getParentFile()));
+			getFlexoResource().getServiceManager().notify(null, new FileHasBeenWrittenOnDiskNotification(getFile()));
+
 			if (lock != null) {
 				lock.start();
-			}
-			else {
+			} else {
 				notifyHasBeenWrittenOnDisk();
 			}
 		}
@@ -194,8 +212,7 @@ public interface FileFlexoIODelegate extends FlexoIOStreamDelegate<File> {
 					}
 				}
 				return true;
-			}
-			else {
+			} else {
 				logger.warning("Delete requested for READ-ONLY file resource " + this);
 				return false;
 			}
@@ -244,8 +261,7 @@ public interface FileFlexoIODelegate extends FlexoIOStreamDelegate<File> {
 		public String getParentPath() {
 			if (getFile().isDirectory()) {
 				return getFile().getAbsolutePath();
-			}
-			else {
+			} else {
 				return getFile().getParent();
 			}
 		}
@@ -287,15 +303,73 @@ public interface FileFlexoIODelegate extends FlexoIOStreamDelegate<File> {
 			// TODO Auto-generated method stub
 		}
 
-		/*@Override
-		public FileResourceImpl locateResourceRelativeToParentPath(String relativePathName) {
-			File currentFile = new File(getSerializationArtefact().getParentFile(), relativePathName);
-			if (currentFile.exists()) {
-				return FS_RESOURCE_LOCATOR.retrieveResource(currentFile);
-			}
-			return null;
-		}*/
+		/*
+		 * @Override public FileResourceImpl
+		 * locateResourceRelativeToParentPath(String relativePathName) { File
+		 * currentFile = new File(getSerializationArtefact().getParentFile(),
+		 * relativePathName); if (currentFile.exists()) { return
+		 * FS_RESOURCE_LOCATOR.retrieveResource(currentFile); } return null; }
+		 */
 
+		@Override
+		public File createTemporaryArtefact(String fileExtension) throws IOException {
+			return File.createTempFile("temp", fileExtension, getSerializationArtefact().getParentFile());
+		}
+
+	}
+
+	public static class WillWriteFileOnDiskNotification implements ServiceNotification {
+		private final File file;
+
+		public WillWriteFileOnDiskNotification(File file) {
+			this.file = file;
+		}
+
+		public File getFile() {
+			return file;
+		}
+	}
+
+	public static class FileHasBeenWrittenOnDiskNotification implements ServiceNotification {
+		private final File file;
+
+		public FileHasBeenWrittenOnDiskNotification(File file) {
+			this.file = file;
+		}
+
+		public File getFile() {
+			return file;
+		}
+	}
+
+	public static class WillRenameFileOnDiskNotification implements ServiceNotification {
+		private final File fromFile;
+		private final File toFile;
+
+		public WillRenameFileOnDiskNotification(File fromFile, File toFile) {
+			this.fromFile = fromFile;
+			this.toFile = toFile;
+		}
+
+		public File getFromFile() {
+			return fromFile;
+		}
+
+		public File getToFile() {
+			return toFile;
+		}
+	}
+
+	public static class WillDeleteFileOnDiskNotification implements ServiceNotification {
+		private final File file;
+
+		public WillDeleteFileOnDiskNotification(File file) {
+			this.file = file;
+		}
+
+		public File getFile() {
+			return file;
+		}
 	}
 
 }
