@@ -396,6 +396,9 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 	 */
 	@Override
 	public boolean isReadOnly() {
+		if (getFlexoIODelegate() != null && !getFlexoIODelegate().hasWritePermission()) {
+			return true;
+		}
 		return false;
 	}
 
