@@ -39,6 +39,7 @@
 
 package org.openflexo.foundation;
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.openflexo.localization.LocalizedDelegate;
@@ -57,7 +58,10 @@ public abstract class FlexoServiceImpl extends FlexoObservable implements FlexoS
 
 	@Override
 	public void receiveNotification(FlexoService caller, ServiceNotification notification) {
-		logger.fine(getClass().getSimpleName() + " service received notification " + notification + " from " + caller);
+		if (logger.isLoggable(Level.FINE)) {
+			logger.fine(
+					getClass().getSimpleName() + " service received notification " + notification + " from " + caller);
+		}
 	}
 
 	@Override
@@ -85,7 +89,8 @@ public abstract class FlexoServiceImpl extends FlexoObservable implements FlexoS
 	 */
 	@Override
 	public void stop() {
-		logger.warning("STOP Method for service should be overriden in each service [" + this.getClass().getCanonicalName() + "]");
+		logger.warning("STOP Method for service should be overriden in each service ["
+				+ this.getClass().getCanonicalName() + "]");
 	}
 
 }
