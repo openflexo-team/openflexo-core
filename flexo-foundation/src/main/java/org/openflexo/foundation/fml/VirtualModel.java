@@ -51,11 +51,14 @@ import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLElement;
 
 /**
- * A {@link VirtualModel} is the specification of a model which will be instantied in a {@link View} as a set of federated models.
+ * A {@link VirtualModel} is the specification of a model which will be
+ * instantied in a {@link View} as a set of federated models.
  * 
- * The base modelling element of a {@link VirtualModel} is provided by {@link FlexoConcept} concept.
+ * The base modelling element of a {@link VirtualModel} is provided by
+ * {@link FlexoConcept} concept.
  * 
- * A {@link VirtualModel} instance contains a set of {@link FlexoConceptInstance}.
+ * A {@link VirtualModel} instance contains a set of
+ * {@link FlexoConceptInstance}.
  * 
  * A {@link VirtualModel} is itself an {@link FlexoConcept}
  * 
@@ -71,13 +74,16 @@ public interface VirtualModel extends AbstractVirtualModel<VirtualModel> {
 	public static final String VIEW_POINT_KEY = "viewPoint";
 
 	@Override
-	@Getter(value = VIEW_POINT_KEY /*, inverse = ViewPoint.VIRTUAL_MODELS_KEY*/)
+	@Getter(value = VIEW_POINT_KEY /*
+									 * , inverse = ViewPoint.VIRTUAL_MODELS_KEY
+									 */)
 	public ViewPoint getViewPoint();
 
 	@Setter(VIEW_POINT_KEY)
 	public void setViewPoint(ViewPoint aViewPoint);
 
-	public static abstract class VirtualModelImpl extends AbstractVirtualModelImpl<VirtualModel>implements VirtualModel {
+	public static abstract class VirtualModelImpl extends AbstractVirtualModelImpl<VirtualModel>
+			implements VirtualModel {
 
 		private static final Logger logger = Logger.getLogger(VirtualModel.class.getPackage().getName());
 
@@ -94,44 +100,52 @@ public interface VirtualModel extends AbstractVirtualModel<VirtualModel> {
 		 * @return
 		 * @throws SaveResourceException
 		 */
-		/*public static VirtualModel newVirtualModel(String baseName, ViewPoint viewPoint) throws SaveResourceException {
-		
-			Progress.progress(viewPoint.getLocales().localizedForKey("create_virtual_model_resource"));
-			File viewPointDirectory = ResourceLocator.retrieveResourceAsFile(((ViewPointResource) viewPoint.getResource()).getDirectory());
-			// File virtualModelDirectory = new File(ResourceLocator.retrieveResourceAsFile(((ViewPointResource) viewPoint.getResource())
-			// .getDirectory()), baseName);
-			// if (!virtualModelDirectory.exists()) {
-			// virtualModelDirectory.mkdirs();
-			// }
-			// File diagramSpecificationXMLFile = new File(virtualModelDirectory, baseName + ".xml");
-			ViewPointLibrary viewPointLibrary = viewPoint.getViewPointLibrary();
-			VirtualModelResource vmRes = VirtualModelResourceImpl.makeVirtualModelResource(baseName, viewPointDirectory,
-					(ViewPointResource) viewPoint.getResource(), viewPointLibrary.getServiceManager());
-			Progress.progress(viewPoint.getLocales().localizedForKey("create_virtual_model_resource_data"));
-			VirtualModel virtualModel = vmRes.getFactory().newVirtualModel();
-			virtualModel.setViewPoint(viewPoint);
-			vmRes.setResourceData(virtualModel);
-			virtualModel.setResource(vmRes);
-			viewPoint.addToVirtualModels(virtualModel);
-			Progress.progress(viewPoint.getLocales().localizedForKey("save_virtual_model_resource"));
-			virtualModel.getResource().save(null);
-		
-			return virtualModel;
-		}*/
+		/*
+		 * public static VirtualModel newVirtualModel(String baseName, ViewPoint
+		 * viewPoint) throws SaveResourceException {
+		 * 
+		 * Progress.progress(viewPoint.getLocales().localizedForKey(
+		 * "create_virtual_model_resource")); File viewPointDirectory =
+		 * ResourceLocator.retrieveResourceAsFile(((ViewPointResource)
+		 * viewPoint.getResource()).getDirectory()); // File
+		 * virtualModelDirectory = new
+		 * File(ResourceLocator.retrieveResourceAsFile(((ViewPointResource)
+		 * viewPoint.getResource()) // .getDirectory()), baseName); // if
+		 * (!virtualModelDirectory.exists()) { //
+		 * virtualModelDirectory.mkdirs(); // } // File
+		 * diagramSpecificationXMLFile = new File(virtualModelDirectory,
+		 * baseName + ".xml"); ViewPointLibrary viewPointLibrary =
+		 * viewPoint.getViewPointLibrary(); VirtualModelResource vmRes =
+		 * VirtualModelResourceImpl.makeVirtualModelResource(baseName,
+		 * viewPointDirectory, (ViewPointResource) viewPoint.getResource(),
+		 * viewPointLibrary.getServiceManager());
+		 * Progress.progress(viewPoint.getLocales().localizedForKey(
+		 * "create_virtual_model_resource_data")); VirtualModel virtualModel =
+		 * vmRes.getFactory().newVirtualModel();
+		 * virtualModel.setViewPoint(viewPoint);
+		 * vmRes.setResourceData(virtualModel); virtualModel.setResource(vmRes);
+		 * viewPoint.addToVirtualModels(virtualModel);
+		 * Progress.progress(viewPoint.getLocales().localizedForKey(
+		 * "save_virtual_model_resource"));
+		 * virtualModel.getResource().save(null);
+		 * 
+		 * return virtualModel; }
+		 */
 
 		// Used during deserialization, do not use it
-		/*public VirtualModelImpl() {
-			super();
-		}*/
+		/*
+		 * public VirtualModelImpl() { super(); }
+		 */
 
 		/**
 		 * Creates a new VirtualModel in supplied viewpoint
 		 * 
 		 * @param viewPoint
 		 */
-		/*public VirtualModelImpl(ViewPoint viewPoint) {
-			setViewPoint(viewPoint);
-		}*/
+		/*
+		 * public VirtualModelImpl(ViewPoint viewPoint) {
+		 * setViewPoint(viewPoint); }
+		 */
 
 		@Override
 		public ViewPoint getViewPoint() {
@@ -174,11 +188,15 @@ public interface VirtualModel extends AbstractVirtualModel<VirtualModel> {
 		/**
 		 * Hook called when scope of a FMLObject changed.<br>
 		 * 
-		 * It happens for example when a {@link VirtualModel} is declared to be contained in a {@link ViewPoint}<br>
-		 * On that example {@link #getBindingFactory()} rely on {@link ViewPoint} enclosing, we must provide this hook to give a chance to
-		 * objects that rely on ViewPoint instanciation context to update their bindings (some bindings might becomes valid)<br>
+		 * It happens for example when a {@link VirtualModel} is declared to be
+		 * contained in a {@link ViewPoint}<br>
+		 * On that example {@link #getBindingFactory()} rely on
+		 * {@link ViewPoint} enclosing, we must provide this hook to give a
+		 * chance to objects that rely on ViewPoint instanciation context to
+		 * update their bindings (some bindings might becomes valid)<br>
 		 * 
-		 * It may also happen if an EditionAction is moved from a control graph to another control graph, etc...<br>
+		 * It may also happen if an EditionAction is moved from a control graph
+		 * to another control graph, etc...<br>
 		 * 
 		 */
 		@Override
@@ -188,6 +206,14 @@ public interface VirtualModel extends AbstractVirtualModel<VirtualModel> {
 				concept.notifiedScopeChanged();
 			}
 		}
+
+		@Override
+		public synchronized void setIsModified() {
+			System.out.println("Tiens, c'est bizarre !!! pour " + this);
+			Thread.dumpStack();
+			super.setIsModified();
+		}
+
 	}
 
 }
