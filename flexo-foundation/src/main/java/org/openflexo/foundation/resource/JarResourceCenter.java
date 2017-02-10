@@ -52,14 +52,12 @@ import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.jar.JarFile;
 import java.util.logging.Logger;
-
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.converter.FlexoObjectReferenceConverter;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.ViewPointRepository;
 import org.openflexo.foundation.resource.DirectoryBasedJarIODelegate.DirectoryBasedJarIODelegateImpl;
 import org.openflexo.foundation.resource.InJarFlexoIODelegate.InJarFlexoIODelegateImpl;
-import org.openflexo.foundation.task.Progress;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.utils.FlexoObjectReference;
 import org.openflexo.model.annotations.Getter;
@@ -87,7 +85,6 @@ import org.openflexo.xml.XMLRootElementReader;
  * 
  * @author Vincent, xtof
  *
- * @param <R>
  */
 public class JarResourceCenter extends ResourceRepository<FlexoResource<?>, InJarResourceImpl>
 		implements FlexoResourceCenter<InJarResourceImpl> {
@@ -175,26 +172,6 @@ public class JarResourceCenter extends ResourceRepository<FlexoResource<?>, InJa
 
 	public FlexoResourceCenterService getFlexoResourceCenterService() {
 		return rcService;
-	}
-
-	@Override
-	public void activateTechnology(TechnologyAdapter technologyAdapter) {
-
-		logger.info("Activating resource center " + this + " with adapter " + technologyAdapter.getName());
-		Progress.progress(technologyAdapter.getLocales().localizedForKey("initializing_adapter") + " " + technologyAdapter.getName());
-		technologyAdapter.initializeResourceCenter(this);
-	}
-
-	/**
-	 * Finalize the FlexoResourceCenter<br>
-	 * 
-	 * @param technologyAdapterService
-	 */
-	@Override
-	public void disactivateTechnology(TechnologyAdapter technologyAdapter) {
-
-		logger.info("Disactivating resource center " + this + " with adapter " + technologyAdapter.getName());
-		// TODO
 	}
 
 	/**
