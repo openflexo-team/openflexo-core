@@ -44,8 +44,8 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ServiceLoader;
@@ -137,7 +137,7 @@ public class ModuleLoader extends FlexoServiceImpl implements FlexoService, HasP
 	 */
 	private void loadAvailableModules() {
 		if (knownModules == null) {
-			knownModules = new HashMap<Class<? extends Module>, Module<?>>();
+			knownModules = new LinkedHashMap<Class<? extends Module>, Module<?>>();
 			logger.info("Loading available modules...");
 			ServiceLoader<Module> loader = ServiceLoader.load(Module.class);
 			Iterator<Module> iterator = loader.iterator();
