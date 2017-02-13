@@ -51,14 +51,11 @@ import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLElement;
 
 /**
- * A {@link VirtualModel} is the specification of a model which will be
- * instantied in a {@link View} as a set of federated models.
+ * A {@link VirtualModel} is the specification of a model which will be instantied in a {@link View} as a set of federated models.
  * 
- * The base modelling element of a {@link VirtualModel} is provided by
- * {@link FlexoConcept} concept.
+ * The base modelling element of a {@link VirtualModel} is provided by {@link FlexoConcept} concept.
  * 
- * A {@link VirtualModel} instance contains a set of
- * {@link FlexoConceptInstance}.
+ * A {@link VirtualModel} instance contains a set of {@link FlexoConceptInstance}.
  * 
  * A {@link VirtualModel} is itself an {@link FlexoConcept}
  * 
@@ -82,8 +79,7 @@ public interface VirtualModel extends AbstractVirtualModel<VirtualModel> {
 	@Setter(VIEW_POINT_KEY)
 	public void setViewPoint(ViewPoint aViewPoint);
 
-	public static abstract class VirtualModelImpl extends AbstractVirtualModelImpl<VirtualModel>
-			implements VirtualModel {
+	public static abstract class VirtualModelImpl extends AbstractVirtualModelImpl<VirtualModel> implements VirtualModel {
 
 		private static final Logger logger = Logger.getLogger(VirtualModel.class.getPackage().getName());
 
@@ -188,15 +184,11 @@ public interface VirtualModel extends AbstractVirtualModel<VirtualModel> {
 		/**
 		 * Hook called when scope of a FMLObject changed.<br>
 		 * 
-		 * It happens for example when a {@link VirtualModel} is declared to be
-		 * contained in a {@link ViewPoint}<br>
-		 * On that example {@link #getBindingFactory()} rely on
-		 * {@link ViewPoint} enclosing, we must provide this hook to give a
-		 * chance to objects that rely on ViewPoint instanciation context to
-		 * update their bindings (some bindings might becomes valid)<br>
+		 * It happens for example when a {@link VirtualModel} is declared to be contained in a {@link ViewPoint}<br>
+		 * On that example {@link #getBindingFactory()} rely on {@link ViewPoint} enclosing, we must provide this hook to give a chance to
+		 * objects that rely on ViewPoint instanciation context to update their bindings (some bindings might becomes valid)<br>
 		 * 
-		 * It may also happen if an EditionAction is moved from a control graph
-		 * to another control graph, etc...<br>
+		 * It may also happen if an EditionAction is moved from a control graph to another control graph, etc...<br>
 		 * 
 		 */
 		@Override
@@ -207,12 +199,12 @@ public interface VirtualModel extends AbstractVirtualModel<VirtualModel> {
 			}
 		}
 
-		@Override
+		/*@Override
 		public synchronized void setIsModified() {
 			System.out.println("Tiens, c'est bizarre !!! pour " + this);
 			Thread.dumpStack();
 			super.setIsModified();
-		}
+		}*/
 
 	}
 
