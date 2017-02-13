@@ -55,7 +55,6 @@ import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.Remover;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
-import org.openflexo.rm.Resource;
 import org.openflexo.toolbox.FlexoVersion;
 import org.openflexo.toolbox.IProgress;
 
@@ -69,7 +68,7 @@ import org.openflexo.toolbox.IProgress;
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(FlexoResourceImpl.class)
-public interface FlexoResource<RD extends ResourceData<RD>> extends FlexoObject, ReferenceOwner, Resource {
+public interface FlexoResource<RD extends ResourceData<RD>> extends FlexoObject, ReferenceOwner {
 
 	public static final String NAME = "name";
 	public static final String URI = "URI";
@@ -116,7 +115,6 @@ public interface FlexoResource<RD extends ResourceData<RD>> extends FlexoObject,
 	 * 
 	 * @return the unique resource identifier of this resource
 	 */
-	@Override
 	@Getter(URI)
 	@XMLAttribute()
 	public String getURI();
@@ -127,7 +125,6 @@ public interface FlexoResource<RD extends ResourceData<RD>> extends FlexoObject,
 	 * 
 	 * @param anURI
 	 */
-	@Override
 	@Setter(URI)
 	public void setURI(String anURI);
 
@@ -156,7 +153,6 @@ public interface FlexoResource<RD extends ResourceData<RD>> extends FlexoObject,
 	 * 
 	 * @return date
 	 */
-	@Override
 	@Getter(value = LAST_UPDATE, isStringConvertable = true)
 	@XMLAttribute
 	public Date getLastUpdate();
@@ -226,7 +222,6 @@ public interface FlexoResource<RD extends ResourceData<RD>> extends FlexoObject,
 	 * 
 	 * @return <code>true</code> if the resource cannot be edited, else returns <code>false</code>.
 	 */
-	@Override
 	public boolean isReadOnly();
 
 	/**
@@ -234,7 +229,6 @@ public interface FlexoResource<RD extends ResourceData<RD>> extends FlexoObject,
 	 * 
 	 * @return the container of this resource.
 	 */
-	@Override
 	@Getter(value = CONTAINER, inverse = CONTENTS)
 	public FlexoResource<?> getContainer();
 
@@ -252,7 +246,6 @@ public interface FlexoResource<RD extends ResourceData<RD>> extends FlexoObject,
 	 * 
 	 * @return the list of contained resources.
 	 */
-	@Override
 	@Getter(value = CONTENTS, cardinality = Cardinality.LIST, inverse = CONTAINER)
 	public List<FlexoResource<?>> getContents();
 

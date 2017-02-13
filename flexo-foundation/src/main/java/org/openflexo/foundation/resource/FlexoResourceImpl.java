@@ -40,12 +40,9 @@
 package org.openflexo.foundation.resource;
 
 import java.io.FileNotFoundException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
-import java.util.regex.Pattern;
 
 import org.openflexo.foundation.DataModification;
 import org.openflexo.foundation.FlexoException;
@@ -56,15 +53,12 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapterResource;
 import org.openflexo.foundation.utils.FlexoObjectReference;
 import org.openflexo.localization.LocalizedDelegate;
 import org.openflexo.model.factory.AccessibleProxyObject;
-import org.openflexo.rm.Resource;
-import org.openflexo.rm.ResourceLocatorDelegate;
 import org.openflexo.toolbox.IProgress;
 import org.openflexo.toolbox.StringUtils;
 
 /**
  * Default implementation for {@link FlexoResource}<br>
- * Note that this default implementation extends {@link FlexoObject}: all
- * resources in Openflexo model are instances of {@link FlexoObject}
+ * Note that this default implementation extends {@link FlexoObject}: all resources in Openflexo model are instances of {@link FlexoObject}
  * 
  * Very first draft for implementation, only implements get/load scheme
  * 
@@ -73,8 +67,7 @@ import org.openflexo.toolbox.StringUtils;
  * @author Sylvain
  * 
  */
-public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends FlexoObjectImpl
-		implements FlexoResource<RD> {
+public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends FlexoObjectImpl implements FlexoResource<RD> {
 
 	static final Logger logger = Logger.getLogger(FlexoResourceImpl.class.getPackage().getName());
 
@@ -94,8 +87,7 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 
 	/**
 	 * Return flag indicating if this resource is loadable<br>
-	 * By default, a resource is always loadable, then this method always
-	 * returns true if IO delegate exists
+	 * By default, a resource is always loadable, then this method always returns true if IO delegate exists
 	 * 
 	 * @return
 	 */
@@ -107,18 +99,16 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 	}
 
 	/**
-	 * Returns the &quot;real&quot; resource data of this resource. This may
-	 * cause the loading of the resource data.
+	 * Returns the &quot;real&quot; resource data of this resource. This may cause the loading of the resource data.
 	 * 
 	 * @param progress
-	 *            a progress monitor in case the resource data is not
-	 *            immediately available.
+	 *            a progress monitor in case the resource data is not immediately available.
 	 * @return the resource data.
 	 * @throws ResourceLoadingCancelledException
 	 */
 	@Override
-	public synchronized RD getResourceData(IProgress progress) throws ResourceLoadingCancelledException,
-			ResourceLoadingCancelledException, FileNotFoundException, FlexoException {
+	public synchronized RD getResourceData(IProgress progress)
+			throws ResourceLoadingCancelledException, ResourceLoadingCancelledException, FileNotFoundException, FlexoException {
 
 		if (isLoading()) {
 			// logger.warning("trying to load a resource data from itself,
@@ -156,9 +146,8 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 	}
 
 	/**
-	 * Returns the &quot;real&quot; resource data of this resource, asserting
-	 * resource data is already loaded. If the resource is not loaded, do not
-	 * load the data, and return null
+	 * Returns the &quot;real&quot; resource data of this resource, asserting resource data is already loaded. If the resource is not
+	 * loaded, do not load the data, and return null
 	 * 
 	 * @return the resource data.
 	 */
@@ -195,7 +184,8 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 			if (getFlexoIODelegate() != null) {
 				getFlexoIODelegate().rename();
 			}
-		} else if (!isDeleting()) {
+		}
+		else if (!isDeleting()) {
 			System.out.println("Trying to rename " + this + " from " + getName() + " to " + aName);
 			System.out.println("IOdelegate=" + getFlexoIODelegate());
 			if (getFlexoIODelegate() != null) {
@@ -207,8 +197,7 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 
 	/**
 	 * Called to init name of the resource<br>
-	 * No renaming is performed here: use this method at the very beginning of
-	 * life-cyle of FlexoResource
+	 * No renaming is performed here: use this method at the very beginning of life-cyle of FlexoResource
 	 * 
 	 * @param aName
 	 */
@@ -232,7 +221,8 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 		notifyObservers(new DataModification("contents", null, getContents()));
 		if (getServiceManager() != null) {
 			getServiceManager().notify(getServiceManager().getResourceManager(), notification);
-		} else {
+		}
+		else {
 			logger.warning("Resource " + this + " does not refer to any ServiceManager. Please investigate...");
 		}
 	}
@@ -252,7 +242,8 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 		notifyObservers(new DataModification("contents", null, null));
 		if (getServiceManager() != null) {
 			getServiceManager().notify(getServiceManager().getResourceManager(), notification);
-		} else {
+		}
+		else {
 			logger.warning("Resource " + this + " does not refer to any ServiceManager. Please investigate...");
 		}
 	}
@@ -286,8 +277,7 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 
 	/**
 	 * Called to notify that a resource has been added to contents<br>
-	 * TODO: integrate this in setContents() when this interface will extends
-	 * {@link AccessibleProxyObject}
+	 * TODO: integrate this in setContents() when this interface will extends {@link AccessibleProxyObject}
 	 * 
 	 * @param resource
 	 *            : resource being added
@@ -304,8 +294,7 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 
 	/**
 	 * Called to notify that a resource has been remove to contents<br>
-	 * TODO: integrate this in setContents() when this interface will extends
-	 * {@link AccessibleProxyObject}
+	 * TODO: integrate this in setContents() when this interface will extends {@link AccessibleProxyObject}
 	 * 
 	 * @param resource
 	 *            : resource being removed
@@ -329,11 +318,16 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 		return getClass().getSimpleName() + "." + getURI() + "." + getVersion() + "." + getRevision();
 	}
 
-	@Override
-	public List<? extends Resource> getContents(boolean deep) {
+	/*public List<? extends Resource> getContents(boolean deep) {
 		// TODO: manage depth
 		return getContents();
-	}
+	}*/
+
+	/*@Override
+	public List<FlexoResource<?>> getContents() {
+		// TODO Auto-generated method stub
+		return null;
+	}*/
 
 	/**
 	 * Returns a list of resources of supplied type contained by this resource.
@@ -352,8 +346,7 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 	}
 
 	/**
-	 * Returns the resource identified in supplied URI, asserting that is
-	 * resource is of supplied type
+	 * Returns the resource identified in supplied URI, asserting that is resource is of supplied type
 	 * 
 	 * @return
 	 */
@@ -374,8 +367,7 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 
 	/**
 	 * Sets and register the service manager<br>
-	 * Also (VERY IMPORTANT) register the resource in the FlexoEditingContext
-	 * !!!
+	 * Also (VERY IMPORTANT) register the resource in the FlexoEditingContext !!!
 	 */
 	@Override
 	public void setServiceManager(FlexoServiceManager serviceManager) {
@@ -386,13 +378,11 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 	}
 
 	/**
-	 * Indicates whether this resource can be edited or not. Returns
-	 * <code>true</code> if the resource cannot be edited, else returns
+	 * Indicates whether this resource can be edited or not. Returns <code>true</code> if the resource cannot be edited, else returns
 	 * <code>false</code>.<br>
 	 * This is here the default implementation, always returned false;
 	 * 
-	 * @return <code>true</code> if the resource cannot be edited, else returns
-	 *         <code>false</code>.
+	 * @return <code>true</code> if the resource cannot be edited, else returns <code>false</code>.
 	 */
 	@Override
 	public boolean isReadOnly() {
@@ -418,7 +408,8 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 		if (isReadOnly()) {
 			logger.warning("Delete requested for READ-ONLY resource " + this);
 			return false;
-		} else {
+		}
+		else {
 			isDeleting = true;
 			logger.info("Deleting resource " + this);
 			if (getContainer() != null) {
@@ -489,73 +480,72 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 	}
 
 	// TODO: check this
-	@Override
-	public void setContainer(Resource resource) {
+	/*public void setContainer(Resource resource) {
 		if (resource instanceof FlexoResource) {
 			setContainer((FlexoResource<?>) resource);
 		}
-	}
+	}*/
 
 	// TODO: check this
-	@Override
+	/*@Override
 	public List<? extends Resource> getContents(Pattern pattern, boolean deep) {
 		// TODO Auto-generated method stub
 		return null;
-	}
+	}*/
 
 	// TODO: check this
-	@Override
+	/*@Override
 	public ResourceLocatorDelegate getLocator() {
 		// TODO Auto-generated method stub
 		return null;
-	}
+	}*/
 
 	// TODO: check this
-	@Override
+	/*@Override
 	public InputStream openInputStream() {
 		if (getFlexoIODelegate() instanceof FlexoIOStreamDelegate) {
 			return ((FlexoIOStreamDelegate) getFlexoIODelegate()).getInputStream();
 		}
 		return null;
-	}
+	}*/
 
 	// TODO: check this
-	@Override
+	/*@Override
 	public OutputStream openOutputStream() {
 		if (getFlexoIODelegate() instanceof FlexoIOStreamDelegate) {
 			return ((FlexoIOStreamDelegate) getFlexoIODelegate()).getOutputStream();
 		}
 		return null;
-	}
+	}*/
 
 	// TODO: check this
-	@Override
+	/*@Override
 	public final String getRelativePath() {
 		return null;
-	}
+	}*/
 
-	@Override
+	/*@Override
 	public String computeRelativePath(Resource resource) {
 		// TODO Auto-generated method stub
 		return null;
-	}
+	}*/
 
-	@Override
+	/*@Override
 	public Resource locateResource(String relativePathName) {
 		// TODO Auto-generated method stub
 		return null;
-	}
+	}*/
 
 	// TODO: check this
-	@Override
+	/*@Override
 	public boolean isContainer() {
 		return true;
-	}
+	}*/
 
 	/**
 	 * Return URI of this resource<br>
-	 * If URI was set for this resource, return that URI, otherwise delegate
-	 * default URI computation to resource center in which this resource exists
+	 * If URI was set for this resource, return that URI, otherwise delegate default URI computation to resource center in which this
+	 * resource exists
 	 */
 	@Override
 	public final String getURI() {
