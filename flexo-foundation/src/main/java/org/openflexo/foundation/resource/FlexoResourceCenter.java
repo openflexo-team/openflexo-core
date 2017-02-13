@@ -44,16 +44,15 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
-
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.converter.FlexoObjectReferenceConverter;
 import org.openflexo.foundation.fml.ViewPointRepository;
 import org.openflexo.foundation.resource.FileSystemBasedResourceCenter.FSBasedResourceCenterEntry;
 import org.openflexo.foundation.resource.JarResourceCenter.JarResourceCenterEntry;
 import org.openflexo.foundation.resource.RemoteResourceCenter.RemoteResourceCenterEntry;
+import org.openflexo.foundation.task.Progress;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.utils.FlexoObjectReference.ReferenceOwner;
 import org.openflexo.model.annotations.Import;
@@ -76,7 +75,7 @@ import org.openflexo.xml.XMLRootElementInfo;
 @ModelEntity
 public interface FlexoResourceCenter<I> extends Iterable<I>, FlexoObject, ReferenceOwner {
 
-	public static final String DEFAULT_BASE_URI = "defaultBaseURI";
+	String DEFAULT_BASE_URI = "defaultBaseURI";
 
 	/**
 	 * Provides a persistent entry allowing to instantiate a FlexoResourceCenter
@@ -87,23 +86,23 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, FlexoObject, Refere
 	@ModelEntity
 	@XMLElement
 	@Imports({ @Import(FSBasedResourceCenterEntry.class), @Import(RemoteResourceCenterEntry.class), @Import(JarResourceCenterEntry.class) })
-	public static interface ResourceCenterEntry<RC extends FlexoResourceCenter<?>> {
+	interface ResourceCenterEntry<RC extends FlexoResourceCenter<?>> {
 
-		public RC makeResourceCenter(FlexoResourceCenterService rcService);
+		RC makeResourceCenter(FlexoResourceCenterService rcService);
 
 		/**
 		 * Tells if the ResourceCenterEntry has been declared at user ou system level
 		 * 
 		 * @return boolean
 		 */
-		public boolean isSystemEntry();
+		boolean isSystemEntry();
 
 		/**
 		 * Sets ResourceCenterEntry has being declared at user ou system level
 		 * 
 		 * @return boolean
 		 */
-		public void setIsSystemEntry(boolean isSystem);
+		void setIsSystemEntry(boolean isSystem);
 
 	}
 
@@ -112,14 +111,14 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, FlexoObject, Refere
 	 * 
 	 * @return
 	 */
-	public String getName();
+	String getName();
 
 	/**
 	 * Return a user-friendly named identifier for this resource center
 	 * 
 	 * @return
 	 */
-	public String getDisplayableName();
+	String getDisplayableName();
 
 	/**
 	 * Return the default base URI associated with this {@link FlexoResourceCenter}.<br>
@@ -129,7 +128,7 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, FlexoObject, Refere
 	 * 
 	 * @return
 	 */
-	public abstract String getDefaultBaseURI();
+	String getDefaultBaseURI();
 
 	/**
 	 * Sets the default base URI associated with the {@link ResourceRepository}.<br>
@@ -138,7 +137,7 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, FlexoObject, Refere
 	 * resource. Resulting URI will be given by concatenation of this base URI with base name for related resource
 	 * 
 	 */
-	public abstract void setDefaultBaseURI(String defaultBaseURI);
+	void setDefaultBaseURI(String defaultBaseURI);
 
 	/**
 	 * Enable a {@link TechnologyAdapter}<br>
@@ -146,7 +145,10 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, FlexoObject, Refere
 	 * 
 	 * @param technologyAdapter
 	 */
-	public void activateTechnology(TechnologyAdapter technologyAdapter);
+	default void activateTechnology(TechnologyAdapter technologyAdapter) {
+		Progress.progress(getLocales().localizedForKey("initializing_adapter") + " " + technologyAdapter.getName());
+		technologyAdapter.initializeResourceCenter(this);
+	}
 
 	/**
 	 * Disable a {@link TechnologyAdapter}<br>
@@ -154,7 +156,9 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, FlexoObject, Refere
 	 * 
 	 * @param technologyAdapter
 	 */
-	public void disactivateTechnology(TechnologyAdapter technologyAdapter);
+	default void disactivateTechnology(TechnologyAdapter technologyAdapter) {
+
+	}
 
 	/**
 	 * Returns all resources available in this resource center
@@ -163,7 +167,7 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, FlexoObject, Refere
 	 *            a progress monitor that will be notified of the progress of this task. This parameter can be <code>null</code>
 	 * @return a list of all resources available in this resource center.
 	 */
-	public @Nonnull Collection<? extends FlexoResource<?>> getAllResources(@Nullable IProgress progress);
+	@Nonnull Collection<? extends FlexoResource<?>> getAllResources(@Nullable IProgress progress);
 
 	/**
 	 * Return resource matching supplied artefact
@@ -171,7 +175,7 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, FlexoObject, Refere
 	 * @param resourceArtefact
 	 * @return
 	 */
-	public <R extends FlexoResource<?>> R getResource(I resourceArtefact, Class<R> resourceClass);
+	<R extends FlexoResource<?>> R getResource(I resourceArtefact, Class<R> resourceClass);
 
 	/**
 	 * Returns the resource identified by the given <code>uri</code> and the provided <code>version</code>.
@@ -187,7 +191,7 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, FlexoObject, Refere
 	 *            a progress monitor that will be notified of the progress of this task. This parameter can be <code>null</code>
 	 * @return the resource with the given <code>uri</code> and the provided <code>version</code>, or null if it cannot be found.
 	 */
-	public @Nullable <T extends ResourceData<T>> FlexoResource<T> retrieveResource(@Nonnull String uri, @Nonnull FlexoVersion version,
+	@Nullable <T extends ResourceData<T>> FlexoResource<T> retrieveResource(@Nonnull String uri, @Nonnull FlexoVersion version,
 			@Nonnull Class<T> type, @Nullable IProgress progress);
 
 	/**
@@ -200,7 +204,7 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, FlexoObject, Refere
 	 *            a progress monitor that will be notified of the progress of this task. This parameter can be <code>null</code>
 	 * @return the resource with the given <code>uri</code>, or null if it cannot be found.
 	 */
-	public @Nullable FlexoResource<?> retrieveResource(@Nonnull String uri, @Nullable IProgress progress);
+	@Nullable FlexoResource<?> retrieveResource(@Nonnull String uri, @Nullable IProgress progress);
 
 	/**
 	 * Returns all available versions of the resource identified by the given <code>uri</code>
@@ -215,7 +219,7 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, FlexoObject, Refere
 	 * @return all available versions of the resource identified by the given <code>uri</code>. An empty list is returned if no match were
 	 *         found
 	 */
-	public @Nonnull <T extends ResourceData<T>> List<FlexoResource<T>> retrieveResource(@Nonnull String uri, @Nonnull Class<T> type,
+	@Nonnull <T extends ResourceData<T>> List<FlexoResource<T>> retrieveResource(@Nonnull String uri, @Nonnull Class<T> type,
 			@Nullable IProgress progress);
 
 	/**
@@ -231,20 +235,20 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, FlexoObject, Refere
 	 * @throws Exception
 	 *             in case the publication of this resource failed.
 	 */
-	public void publishResource(@Nonnull FlexoResource<?> resource, @Nullable FlexoVersion newVersion, @Nullable IProgress progress)
+	void publishResource(@Nonnull FlexoResource<?> resource, @Nullable FlexoVersion newVersion, @Nullable IProgress progress)
 			throws Exception;
 
 	/**
 	 * Refreshes this resource center. This can be particularly useful for caching implementations.
 	 */
-	public void update() throws IOException;
+	void update() throws IOException;
 
 	/**
 	 * Retrieve ViewPoint repository (containing all resources storing a ViewPoint) for this {@link FlexoResourceCenter}
 	 * 
 	 * @return
 	 */
-	public ViewPointRepository getViewPointRepository();
+	ViewPointRepository getViewPointRepository();
 
 	/**
 	 * Returns an iterator over a set of elements of type I, which are iterables artefacts this resource center stores
@@ -252,7 +256,7 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, FlexoObject, Refere
 	 * @return an Iterator.
 	 */
 	@Override
-	public Iterator<I> iterator();
+	Iterator<I> iterator();
 
 	/**
 	 * Return flag indicating whether supplied artefact might be ignored
@@ -260,7 +264,7 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, FlexoObject, Refere
 	 * @param artefact
 	 * @return
 	 */
-	public boolean isIgnorable(I artefact, TechnologyAdapter technologyAdapter);
+	boolean isIgnorable(I artefact, TechnologyAdapter technologyAdapter);
 
 	/**
 	 * Retrieve repository matching supplied type and technology
@@ -270,7 +274,7 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, FlexoObject, Refere
 	 * @return the registered repository
 	 */
 	// TODO: change to retrieveRepository(Class<? extends R> repositoryType, Class <? extends TechnologyAdapter technologyAdapterClass)
-	public <R extends ResourceRepository<?, I>> R retrieveRepository(Class<? extends R> repositoryType,
+	<R extends ResourceRepository<?, I>> R retrieveRepository(Class<? extends R> repositoryType,
 			TechnologyAdapter technologyAdapter);
 
 	/**
@@ -281,7 +285,7 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, FlexoObject, Refere
 	 * @param repositoryType
 	 * @param technologyAdapter
 	 */
-	public <R extends ResourceRepository<?, I>> void registerRepository(R repository, Class<? extends R> repositoryType,
+	<R extends ResourceRepository<?, I>> void registerRepository(R repository, Class<? extends R> repositoryType,
 			TechnologyAdapter technologyAdapter);
 
 	/**
@@ -290,15 +294,15 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, FlexoObject, Refere
 	 * @param technologyAdapter
 	 * @return
 	 */
-	public Collection<? extends ResourceRepository<?, I>> getRegistedRepositories(TechnologyAdapter technologyAdapter,
+	Collection<? extends ResourceRepository<?, I>> getRegistedRepositories(TechnologyAdapter technologyAdapter,
 			boolean considerEmptyRepositories);
 
-	public ResourceCenterEntry<?> getResourceCenterEntry();
+	ResourceCenterEntry<?> getResourceCenterEntry();
 
 	/**
 	 * Stops the Resource Center (When needed)
 	 */
-	public void stop();
+	void stop();
 
 	/**
 	 * Compute and return a default URI for supplied resource<br>
@@ -307,14 +311,14 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, FlexoObject, Refere
 	 * @param resource
 	 * @return
 	 */
-	public <R extends FlexoResource<?>> String getDefaultResourceURI(R resource);
+	<R extends FlexoResource<?>> String getDefaultResourceURI(R resource);
 
 	/**
 	 * Return base serialization artefact (top-level container)
 	 * 
 	 * @return
 	 */
-	public I getBaseArtefact();
+	I getBaseArtefact();
 
 	/**
 	 * Retrieve name of supplied serialization artefact
@@ -322,7 +326,7 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, FlexoObject, Refere
 	 * @param serializationArtefact
 	 * @return
 	 */
-	public String retrieveName(I serializationArtefact);
+	String retrieveName(I serializationArtefact);
 
 	/**
 	 * Rename supplied serialization artefact<br>
@@ -331,7 +335,7 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, FlexoObject, Refere
 	 * @param serializationArtefact
 	 * @return
 	 */
-	public I rename(I serializationArtefact, String newName);
+	I rename(I serializationArtefact, String newName);
 
 	/**
 	 * Delete supplied serialization artefact<br>
@@ -340,7 +344,7 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, FlexoObject, Refere
 	 * @param serializationArtefact
 	 * @return
 	 */
-	public I delete(I serializationArtefact);
+	I delete(I serializationArtefact);
 
 	/**
 	 * Return serialization artefact containing supplied serialization artefact (parent directory)
@@ -348,7 +352,7 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, FlexoObject, Refere
 	 * @param serializationArtefact
 	 * @return
 	 */
-	public I getContainer(I serializationArtefact);
+	I getContainer(I serializationArtefact);
 
 	/**
 	 * Return list of serialization actefacts contained in supplied serialization actifact<br>
@@ -357,7 +361,7 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, FlexoObject, Refere
 	 * @param serializationArtefact
 	 * @return
 	 */
-	public List<I> getContents(I serializationArtefact);
+	List<I> getContents(I serializationArtefact);
 
 	/**
 	 * Build a new {@link FlexoIODelegate} for a given serialization artefact
@@ -365,7 +369,7 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, FlexoObject, Refere
 	 * @param serializationArtefact
 	 * @return
 	 */
-	public FlexoIODelegate<I> makeFlexoIODelegate(I serializationArtefact, FlexoResourceFactory<?, ?, ?> resourceFactory)
+	FlexoIODelegate<I> makeFlexoIODelegate(I serializationArtefact, FlexoResourceFactory<?, ?, ?> resourceFactory)
 			throws IOException;
 
 	/**
@@ -374,7 +378,7 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, FlexoObject, Refere
 	 * @param serializationArtefact
 	 * @return
 	 */
-	public FlexoIODelegate<I> makeDirectoryBasedFlexoIODelegate(I serializationArtefact, String directoryExtension, String fileExtension,
+	FlexoIODelegate<I> makeDirectoryBasedFlexoIODelegate(I serializationArtefact, String directoryExtension, String fileExtension,
 			FlexoResourceFactory<?, ?, ?> resourceFactory);
 
 	/**
@@ -384,7 +388,7 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, FlexoObject, Refere
 	 * @param resourceRepository
 	 * @return
 	 */
-	public <R extends FlexoResource<?>> RepositoryFolder<R, I> getRepositoryFolder(FlexoIODelegate<I> ioDelegate,
+	<R extends FlexoResource<?>> RepositoryFolder<R, I> getRepositoryFolder(FlexoIODelegate<I> ioDelegate,
 			ResourceRepository<R, I> resourceRepository);
 
 	/**
@@ -394,7 +398,7 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, FlexoObject, Refere
 	 * @param parentDirectory
 	 * @return
 	 */
-	public I createDirectory(String name, I parentDirectory);
+	I createDirectory(String name, I parentDirectory);
 
 	/**
 	 * Get container serialization artefact, with supplied name and parent serialization artefact
@@ -403,7 +407,7 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, FlexoObject, Refere
 	 * @param parentDirectory
 	 * @return
 	 */
-	public I getDirectory(String name, I parentDirectory);
+	I getDirectory(String name, I parentDirectory);
 
 	/**
 	 * Create simple serialization artefact, with supplied name and parent serialization artefact<br>
@@ -413,7 +417,7 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, FlexoObject, Refere
 	 * @param parentDirectory
 	 * @return
 	 */
-	public I createEntry(String name, I parentDirectory);
+	I createEntry(String name, I parentDirectory);
 
 	/**
 	 * Return boolean indicating if supplied serialization artefact already exists (is under its serialized form)
@@ -421,7 +425,7 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, FlexoObject, Refere
 	 * @param serializationArtefact
 	 * @return
 	 */
-	public boolean exists(I serializationArtefact);
+	boolean exists(I serializationArtefact);
 
 	/**
 	 * Return boolean indicating if supplied serialization artefact is readable (read access enabled)
@@ -429,7 +433,7 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, FlexoObject, Refere
 	 * @param serializationArtefact
 	 * @return
 	 */
-	public boolean canRead(I serializationArtefact);
+	boolean canRead(I serializationArtefact);
 
 	/**
 	 * Return boolean indicating if supplied serialization artefact is a container artefact (a directory in the FS for example)
@@ -437,7 +441,7 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, FlexoObject, Refere
 	 * @param serializationArtefact
 	 * @return
 	 */
-	public boolean isDirectory(I serializationArtefact);
+	boolean isDirectory(I serializationArtefact);
 
 	/**
 	 * Return XMLRootElementInfo asserting serialization artefact encodes a XML contents
@@ -445,7 +449,7 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, FlexoObject, Refere
 	 * @param serializationArtefact
 	 * @return
 	 */
-	public XMLRootElementInfo getXMLRootElementInfo(I serializationArtefact);
+	XMLRootElementInfo getXMLRootElementInfo(I serializationArtefact);
 
 	/**
 	 * Return properties stored in supplied directory<br>
@@ -453,9 +457,9 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, FlexoObject, Refere
 	 * 
 	 * @return
 	 */
-	public Properties getProperties(I directory) throws IOException;
+	Properties getProperties(I directory) throws IOException;
 
-	public List<String> getPathTo(I serializationArtefact) throws IOException;
+	List<String> getPathTo(I serializationArtefact) throws IOException;
 
 	// TODO: must be refactored because it is from the responsability of the servicemanager
 	/**
@@ -464,7 +468,7 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, FlexoObject, Refere
 	 * 
 	 * @return
 	 */
-	public FlexoObjectReferenceConverter getObjectReferenceConverter();
+	FlexoObjectReferenceConverter getObjectReferenceConverter();
 
 	/**
 	 * the ObjectReferenceConverter is used when de-serializing resources that contains a reference to another FlexoObject (URI) Typically
@@ -473,5 +477,5 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, FlexoObject, Refere
 	 * @param objectReferenceConverter
 	 * @return
 	 */
-	public void setObjectReferenceConverter(FlexoObjectReferenceConverter objectReferenceConverter);
+	void setObjectReferenceConverter(FlexoObjectReferenceConverter objectReferenceConverter);
 }

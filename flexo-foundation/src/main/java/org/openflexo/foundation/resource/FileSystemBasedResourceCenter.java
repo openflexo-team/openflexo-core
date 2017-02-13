@@ -57,14 +57,12 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
-
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.converter.FlexoObjectReferenceConverter;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.ViewPointRepository;
 import org.openflexo.foundation.resource.DirectoryBasedFlexoIODelegate.DirectoryBasedFlexoIODelegateImpl;
 import org.openflexo.foundation.resource.FileFlexoIODelegate.FileFlexoIODelegateImpl;
-import org.openflexo.foundation.task.Progress;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.utils.FlexoObjectReference;
 import org.openflexo.model.annotations.Getter;
@@ -109,7 +107,6 @@ public abstract class FileSystemBasedResourceCenter extends ResourceRepository<F
 	private final FileSystemMetaDataManager fsMetaDataManager = new FileSystemMetaDataManager();
 
 	private final Map<TechnologyAdapter, HashMap<Class<? extends ResourceRepository<?, File>>, ResourceRepository<?, File>>> repositories = new HashMap<>();
-	// private final Map<TechnologyAdapter, ResourceRepository<?>> globalRepositories = new HashMap<>();
 
 	public FileSystemBasedResourceCenter(File rootDirectory, FlexoResourceCenterService rcService) {
 		super(null, rootDirectory);
@@ -211,82 +208,6 @@ public abstract class FileSystemBasedResourceCenter extends ResourceRepository<F
 			e.printStackTrace();
 			return repository.getRootFolder();
 		}
-	}
-
-	/**
-	 * 
-	 * @param directory
-	 * @param folder
-	 * @param viewPointLibrary
-	 * @return a flag indicating if some ViewPoints were found
-	 */
-	/*private boolean exploreDirectoryLookingForViewPoints(File directory, ViewPointLibrary viewPointLibrary) {
-		boolean returned = false;
-		logger.fine("Exploring " + directory);
-		if (directory.exists() && directory.isDirectory() && directory.canRead()) {
-			for (File f : directory.listFiles()) {
-				ViewPointResource vpRes = analyseAsViewPoint(f);
-				if (f.isDirectory() && !f.getName().equals("CVS")) {
-					if (exploreDirectoryLookingForViewPoints(f, viewPointLibrary)) {
-						returned = true;
-					}
-				}
-			}
-		}
-		return returned;
-	}*/
-
-	/**
-	 * 
-	 * @param directory
-	 * @param folder
-	 * @param viewPointLibrary
-	 * @return a flag indicating if some ViewPoints were found
-	 */
-	/*private ViewPointResource analyseAsViewPoint(File candidateFile) {
-		if (candidateFile.exists() && candidateFile.isDirectory() && candidateFile.canRead()
-				&& candidateFile.getName().endsWith(".viewpoint")) {
-			ViewPointResource vpRes = ViewPointResourceImpl.retrieveViewPointResource(candidateFile,
-					viewPointRepository.getViewPointLibrary());
-			if (vpRes != null) {
-				logger.info("Found and register viewpoint " + vpRes.getURI()
-						+ (vpRes instanceof FlexoFileResource ? " file=" + ((FlexoFileResource) vpRes).getFile().getAbsolutePath() : ""));
-				RepositoryFolder<ViewPointResource> folder = retrieveRepositoryFolder(viewPointRepository, candidateFile);
-				viewPointRepository.registerResource(vpRes, folder);
-				// Also register the resource in the ResourceCenter seen as a ResourceRepository
-				try {
-					registerResource(vpRes, getRepositoryFolder(candidateFile, true));
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-				return vpRes;
-			} else {
-				logger.warning("While exploring resource center looking for viewpoints : cannot retrieve resource for file "
-						+ candidateFile.getAbsolutePath());
-			}
-		}
-	
-		return null;
-	}*/
-
-	@Override
-	public void activateTechnology(TechnologyAdapter technologyAdapter) {
-
-		logger.info("Activating resource center " + this + " with adapter " + technologyAdapter.getName());
-		Progress.progress(getLocales().localizedForKey("initializing_adapter") + " " + technologyAdapter.getName());
-		technologyAdapter.initializeResourceCenter(this);
-	}
-
-	/**
-	 * Finalize the FlexoResourceCenter<br>
-	 * 
-	 * @param technologyAdapterService
-	 */
-	@Override
-	public void disactivateTechnology(TechnologyAdapter technologyAdapter) {
-
-		logger.info("Disactivating resource center " + this + " with adapter " + technologyAdapter.getName());
-		// TODO
 	}
 
 	@Override
