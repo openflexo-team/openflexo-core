@@ -49,11 +49,12 @@ import java.util.logging.Logger;
 import org.openflexo.model.annotations.Import;
 import org.openflexo.model.annotations.Imports;
 import org.openflexo.model.annotations.ModelEntity;
+import org.openflexo.rm.FileResourceImpl;
+import org.openflexo.rm.ResourceLocator;
 import org.openflexo.toolbox.FileUtils;
 
 /**
- * FlexoIOStreamDelegate is a FlexoIODelegate for which the serialization
- * artefact is based on Stream
+ * FlexoIOStreamDelegate is a FlexoIODelegate for which the serialization artefact is based on Stream
  * 
  * @author Vincent
  *
@@ -71,17 +72,20 @@ public interface FlexoIOStreamDelegate<I> extends FlexoIODelegate<I> {
 
 	public abstract void setOutputStream(OutputStream outsputStream);
 
+	public boolean getSaveToSourceResource();
+
+	public void setSaveToSourceResource(boolean saveToSourceResource);
+
+	public FileResourceImpl getSourceResource();
+
 	public abstract class FlexoIOStreamDelegateImpl<I> implements FlexoIOStreamDelegate<I> {
 
 		private final Logger logger = Logger.getLogger(FlexoIOStreamDelegate.class.getPackage().getName());
 
 		/**
-		 * This constant traduces the delay accepted for the File System to
-		 * effectively write a file on disk after the date it was requested. If
-		 * file is written after this delay, the FlexoEditingContext will
-		 * interprete it as a concurrent file modification requiring to be
-		 * handled properly. In fact, this is not a big problem but resource
-		 * management may be affected.
+		 * This constant traduces the delay accepted for the File System to effectively write a file on disk after the date it was
+		 * requested. If file is written after this delay, the FlexoEditingContext will interprete it as a concurrent file modification
+		 * requiring to be handled properly. In fact, this is not a big problem but resource management may be affected.
 		 */
 		public static final long ACCEPTABLE_FS_DELAY = 4000;
 
@@ -96,10 +100,11 @@ public interface FlexoIOStreamDelegate<I> extends FlexoIODelegate<I> {
 		public boolean _isSaving = false;
 
 		/**
-		 * This is the date known by Flexo (with milliseconds precision) at
-		 * which we have written on the disk.
+		 * This is the date known by Flexo (with milliseconds precision) at which we have written on the disk.
 		 */
 		private Date _lastWrittenOnDisk;
+
+		private boolean saveToSourceResource = false;
 
 		@Override
 		public void notifyHasBeenWrittenOnDisk() {
@@ -121,17 +126,17 @@ public interface FlexoIOStreamDelegate<I> extends FlexoIODelegate<I> {
 		}
 
 		/**
-		 * Returns the last modified date of the underlying file that Flexo has
-		 * computed (or remembered) so that we get milliseconds precision
+		 * Returns the last modified date of the underlying file that Flexo has computed (or remembered) so that we get milliseconds
+		 * precision
 		 * 
-		 * @return the last modified date known by Flexo with milliseconds
-		 *         precision.
+		 * @return the last modified date known by Flexo with milliseconds precision.
 		 */
 		public synchronized Date getDiskLastModifiedDate() {
 			if ((_diskLastModifiedDate == null || _diskLastModifiedDate.getTime() == 0 || !exists()) && !_isSaving) {
 				if (getSerializationArtefact() != null && exists()) {
 					_diskLastModifiedDate = FileUtils.getDiskLastModifiedDate((File) getSerializationArtefact());
-				} else {
+				}
+				else {
 					// logger.warning("File "+getFile().getAbsolutePath()+"
 					// doesn't exist");
 					_diskLastModifiedDate = new Date(0); // means never
@@ -149,14 +154,11 @@ public interface FlexoIOStreamDelegate<I> extends FlexoIODelegate<I> {
 						// This can happen sometimes if it takes too long to
 						// write on disk
 						if (logger.isLoggable(Level.INFO)) {
-							logger.info(
-									"Resource " + this
-											+ " : declared lastWrittenOnDisk date is anterior to current effective last modified date: which means that file on disk in newer than expected"
-											+ "_diskLastModifiedDate[" + simpleDateFormat.format(_diskLastModifiedDate)
-											+ "]" + " > lastWrittenOnDisk["
-											+ simpleDateFormat.format(
-													new Date(_lastWrittenOnDisk.getTime() + ACCEPTABLE_FS_DELAY))
-											+ "]");
+							logger.info("Resource " + this
+									+ " : declared lastWrittenOnDisk date is anterior to current effective last modified date: which means that file on disk in newer than expected"
+									+ "_diskLastModifiedDate[" + simpleDateFormat.format(_diskLastModifiedDate) + "]"
+									+ " > lastWrittenOnDisk["
+									+ simpleDateFormat.format(new Date(_lastWrittenOnDisk.getTime() + ACCEPTABLE_FS_DELAY)) + "]");
 						}
 					}
 					// Since we are in this block (diskLastModified was null see
@@ -168,13 +170,14 @@ public interface FlexoIOStreamDelegate<I> extends FlexoIODelegate<I> {
 					// another
 					// application
 					_lastWrittenOnDisk = _diskLastModifiedDate;
-				} else if (_lastWrittenOnDisk.getTime() - _diskLastModifiedDate.getTime() > ACCEPTABLE_FS_DELAY) {
+				}
+				else if (_lastWrittenOnDisk.getTime() - _diskLastModifiedDate.getTime() > ACCEPTABLE_FS_DELAY) {
 					if (exists()) { // Warn it only if file exists:
 						// otherwise it's normal
 						logger.warning("Resource " + this
 								+ " : declared lastWrittenOnDisk date is posterior to current effective last modified date (with a delay, due to FS date implementation): which means that something strange happened"
-								+ "_diskLastModifiedDate[" + simpleDateFormat.format(_diskLastModifiedDate) + "]"
-								+ " < lastWrittenOnDisk[" + simpleDateFormat.format(_lastWrittenOnDisk) + "]");
+								+ "_diskLastModifiedDate[" + simpleDateFormat.format(_diskLastModifiedDate) + "]" + " < lastWrittenOnDisk["
+								+ simpleDateFormat.format(_lastWrittenOnDisk) + "]");
 						// We should rather go back in time and consider that
 						// the information we stored is no longer correct.
 						_lastWrittenOnDisk = _diskLastModifiedDate;
@@ -185,21 +188,21 @@ public interface FlexoIOStreamDelegate<I> extends FlexoIODelegate<I> {
 		}
 
 		/**
-		 * This method should be used parsimoniously since RM will not detect
-		 * disk updates. It should only be used in few cases, eg when converting
-		 * resources so that RM don't complain about updates in files, or when
-		 * managing disk update accepting
+		 * This method should be used parsimoniously since RM will not detect disk updates. It should only be used in few cases, eg when
+		 * converting resources so that RM don't complain about updates in files, or when managing disk update accepting
 		 * 
 		 */
 		protected synchronized void resetDiskLastModifiedDate() {
 			if (getSerializationArtefact() == null || !exists()) {
 				if (getSerializationArtefact() != null) {
 					logger.warning("resetDiskLastModifiedDate() called for non existant file: " + toString());
-				} else {
+				}
+				else {
 					logger.warning("resetDiskLastModifiedDate() called for null file on resource " + this);
 				}
 				_setLastWrittenOnDisk(null);
-			} else {
+			}
+			else {
 				_setLastWrittenOnDisk(new Date());
 			}
 		}
@@ -231,10 +234,24 @@ public interface FlexoIOStreamDelegate<I> extends FlexoIODelegate<I> {
 		@Override
 		public String getSerializationArtefactName() {
 			if (getFlexoResource() != null && getFlexoResource().getResourceCenter() != null) {
-				return ((FlexoResourceCenter) getFlexoResource().getResourceCenter())
-						.retrieveName(getSerializationArtefact());
+				return ((FlexoResourceCenter) getFlexoResource().getResourceCenter()).retrieveName(getSerializationArtefact());
 			}
 			return null;
+		}
+
+		@Override
+		public boolean getSaveToSourceResource() {
+			return saveToSourceResource;
+		}
+
+		@Override
+		public void setSaveToSourceResource(boolean saveToSourceResource) {
+			this.saveToSourceResource = saveToSourceResource;
+		}
+
+		@Override
+		public FileResourceImpl getSourceResource() {
+			return (FileResourceImpl) ResourceLocator.locateSourceCodeResource(getSerializationArtefactAsResource());
 		}
 
 	}

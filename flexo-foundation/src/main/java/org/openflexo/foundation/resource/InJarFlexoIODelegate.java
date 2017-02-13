@@ -38,6 +38,8 @@
 
 package org.openflexo.foundation.resource;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -108,8 +110,21 @@ public interface InJarFlexoIODelegate extends FlexoIOStreamDelegate<InJarResourc
 
 		@Override
 		public OutputStream getOutputStream() {
-			// TODO Auto-generated method stub
-			return null;
+			if (getSaveToSourceResource() && getSourceResource() != null) {
+				System.out.println("Saving as source resource instead of file resource");
+				System.out.println("Was in jar");
+				System.out.println("Using " + getSourceResource());
+				try {
+					return new FileOutputStream(getSourceResource().getFile());
+				} catch (FileNotFoundException e) {
+					e.printStackTrace();
+					return null;
+				}
+			}
+			else {
+				// TODO Auto-generated method stub
+				return null;
+			}
 		}
 
 		@Override

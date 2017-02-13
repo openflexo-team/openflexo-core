@@ -343,10 +343,16 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends 
 		File temporaryFile = null;
 		FileWritingLock lock = getFlexoIOStreamDelegate().willWriteOnDisk();
 
-		if (logger.isLoggable(Level.INFO)) {
-			logger.info("Saving resource " + this + " : " + getFile() + " version=" + getModelVersion());
+		if (getFlexoIOStreamDelegate() != null && getFlexoIOStreamDelegate().getSaveToSourceResource()
+				&& getFlexoIOStreamDelegate().getSourceResource() != null) {
+			logger.info("Saving SOURCE resource " + this + " : " + getFlexoIOStreamDelegate().getSourceResource().getFile() + " version="
+					+ getModelVersion());
 		}
-
+		else {
+			if (logger.isLoggable(Level.INFO)) {
+				logger.info("Saving resource " + this + " : " + getFile() + " version=" + getModelVersion());
+			}
+		}
 		try {
 			/*
 			 * File dir = getFile().getParentFile(); willWrite(dir); if
@@ -376,9 +382,9 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends 
 			getFlexoIOStreamDelegate().hasWrittenOnDisk(lock);
 			throw new SaveResourceException(getFlexoIODelegate(), e);
 		} /*
-			 * finally { hasWritten(getFile());
-			 * hasWritten(getFile().getParentFile()); }
-			 */
+			* finally { hasWritten(getFile());
+			* hasWritten(getFile().getParentFile()); }
+			*/
 	}
 
 	/**
@@ -389,7 +395,13 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends 
 	 * @throws IOException
 	 */
 	private void postXMLSerialization(File temporaryFile, FileWritingLock lock, boolean clearIsModified) throws IOException {
-		FileUtils.rename(temporaryFile, getFile());
+		if (getFlexoIOStreamDelegate() != null && getFlexoIOStreamDelegate().getSaveToSourceResource()
+				&& getFlexoIOStreamDelegate().getSourceResource() != null) {
+			FileUtils.rename(temporaryFile, getFlexoIOStreamDelegate().getSourceResource().getFile());
+		}
+		else {
+			FileUtils.rename(temporaryFile, getFile());
+		}
 		getFlexoIOStreamDelegate().hasWrittenOnDisk(lock);
 		if (clearIsModified) {
 			notifyResourceStatusChanged();
@@ -473,10 +485,17 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends 
 	}
 
 	private void makeLocalCopy() throws IOException {
-		if (getFile() != null && getFile().exists()) {
-			String localCopyName = getFile().getName() + "~";
-			File localCopy = new File(getFile().getParentFile(), localCopyName);
-			FileUtils.copyFileToFile(getFile(), localCopy);
+
+		File fileToSave = getFile();
+		if (getFlexoIOStreamDelegate() != null && getFlexoIOStreamDelegate().getSaveToSourceResource()
+				&& getFlexoIOStreamDelegate().getSourceResource() != null) {
+			fileToSave = getFlexoIOStreamDelegate().getSourceResource().getFile();
+		}
+
+		if (fileToSave != null && fileToSave.exists()) {
+			String localCopyName = fileToSave.getName() + "~";
+			File localCopy = new File(fileToSave.getParentFile(), localCopyName);
+			FileUtils.copyFileToFile(fileToSave, localCopy);
 		}
 	}
 
