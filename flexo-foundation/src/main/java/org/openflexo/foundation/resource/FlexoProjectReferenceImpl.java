@@ -179,7 +179,7 @@ public abstract class FlexoProjectReferenceImpl implements FlexoProjectReference
 		if (getReferredProject() != null) {
 			return getReferredProject().getProjectDirectory();
 		} else {
-			return ((FileFlexoIODelegate) getFlexoIODelegate()).getFile();
+			return ((FileIODelegate) getIODelegate()).getFile();
 		}
 
 		// return (File) performSuperGetter(FILE);

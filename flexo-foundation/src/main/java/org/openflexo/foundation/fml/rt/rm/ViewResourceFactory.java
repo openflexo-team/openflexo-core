@@ -96,7 +96,7 @@ public class ViewResourceFactory extends AbstractVirtualModelInstanceResourceFac
 					throws SaveResourceException, ModelDefinitionException {
 
 		FlexoResourceCenter<I> resourceCenter = (FlexoResourceCenter<I>) parentViewResource.getResourceCenter();
-		I parentDir = resourceCenter.getContainer((I) parentViewResource.getFlexoIODelegate().getSerializationArtefact());
+		I parentDir = resourceCenter.getContainer((I) parentViewResource.getIODelegate().getSerializationArtefact());
 		I serializationArtefact = resourceCenter.createDirectory((baseName.endsWith(VIEW_SUFFIX) ? baseName : (baseName + VIEW_SUFFIX)),
 				parentDir);
 
@@ -284,7 +284,7 @@ public class ViewResourceFactory extends AbstractVirtualModelInstanceResourceFac
 
 	private void exploreViewContents(ViewResource viewResource, TechnologyContextManager<FMLRTTechnologyAdapter> technologyContextManager) {
 
-		exploreResource(viewResource.getFlexoIODelegate().getSerializationArtefact(), viewResource, technologyContextManager);
+		exploreResource(viewResource.getIODelegate().getSerializationArtefact(), viewResource, technologyContextManager);
 	}
 
 	private <I> void exploreResource(I serializationArtefact, ViewResource viewResource,
@@ -339,7 +339,7 @@ public class ViewResourceFactory extends AbstractVirtualModelInstanceResourceFac
 
 		ViewInfo returned = new ViewInfo();
 		XMLRootElementInfo xmlRootElementInfo = resourceCenter
-				.getXMLRootElementInfo((I) resource.getFlexoIODelegate().getSerializationArtefact());
+				.getXMLRootElementInfo((I) resource.getIODelegate().getSerializationArtefact());
 		if (xmlRootElementInfo == null) {
 			return null;
 		}

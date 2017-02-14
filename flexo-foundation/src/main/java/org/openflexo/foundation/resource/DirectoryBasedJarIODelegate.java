@@ -65,7 +65,7 @@ import org.openflexo.toolbox.JarClassLoader;
 @ModelEntity
 @XMLElement
 @ImplementationClass(DirectoryBasedJarIODelegate.DirectoryBasedJarIODelegateImpl.class)
-public interface DirectoryBasedJarIODelegate extends InJarFlexoIODelegate {
+public interface DirectoryBasedJarIODelegate extends InJarIODelegate {
 
 	public static final String FILE_EXTENSION = "fileExtension";
 	public static final String DIRECTORY_EXTENSION = "directoryExtension";
@@ -107,7 +107,7 @@ public interface DirectoryBasedJarIODelegate extends InJarFlexoIODelegate {
 	public void setDirectoryExtension(String extension);
 
 	@Implementation
-	public abstract class DirectoryBasedJarIODelegateImpl extends InJarFlexoIODelegateImpl implements DirectoryBasedJarIODelegate {
+	public abstract class DirectoryBasedJarIODelegateImpl extends InJarIODelegateImpl implements DirectoryBasedJarIODelegate {
 
 		private final Logger logger = Logger.getLogger(DirectoryBasedJarIODelegateImpl.class.getPackage().getName());
 

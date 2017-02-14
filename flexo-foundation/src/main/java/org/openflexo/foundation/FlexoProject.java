@@ -405,7 +405,7 @@ public class FlexoProject extends FileSystemBasedResourceCenter
 				FileUtils.copyContentDirToDir(current, newProjectDirectory, CopyStrategy.REPLACE, FileFilterUtils.notFileFilter(FileFilterUtils.suffixFileFilter("~")));
 
 			} catch (IOException e) {
-				throw new SaveResourceException(getResource().getFlexoIODelegate(), e);
+				throw new SaveResourceException(getResource().getIODelegate(), e);
 			}
 		}
 

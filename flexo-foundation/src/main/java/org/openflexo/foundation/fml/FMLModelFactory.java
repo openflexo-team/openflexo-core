@@ -153,10 +153,10 @@ public class FMLModelFactory extends FGEModelFactoryImpl implements PamelaResour
 		addConverter(FGEUtils.STEPPED_DIMENSION_CONVERTER);
 		addConverter(relativePathResourceConverter = new RelativePathResourceConverter(null));
 		this.abstractVirtualModelResource = abstractVirtualModelResource;
-		if (abstractVirtualModelResource != null && abstractVirtualModelResource.getFlexoIODelegate() != null
-				&& abstractVirtualModelResource.getFlexoIODelegate().getSerializationArtefactAsResource() != null) {
+		if (abstractVirtualModelResource != null && abstractVirtualModelResource.getIODelegate() != null
+				&& abstractVirtualModelResource.getIODelegate().getSerializationArtefactAsResource() != null) {
 			relativePathResourceConverter.setContainerResource(
-					abstractVirtualModelResource.getFlexoIODelegate().getSerializationArtefactAsResource().getContainer());
+					abstractVirtualModelResource.getIODelegate().getSerializationArtefactAsResource().getContainer());
 		}
 		for (TechnologyAdapter ta : taService.getTechnologyAdapters()) {
 			ta.initFMLModelFactory(this);

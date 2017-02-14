@@ -42,7 +42,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 
 import org.openflexo.foundation.ProjectDirectoryResource.ProjectDirectoryResourceImpl;
-import org.openflexo.foundation.resource.FileFlexoIODelegate;
+import org.openflexo.foundation.resource.FileIODelegate;
 import org.openflexo.foundation.resource.FlexoProjectResource;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.FlexoResourceImpl;
@@ -79,12 +79,12 @@ public interface ProjectDirectoryResource extends FlexoProjectResource<FlexoProj
 		public static ProjectDirectoryResource makeProjectDirectoryResource(FlexoProject project) {
 			try {
 				ModelFactory resourceFactory = new ModelFactory(
-						ModelContextLibrary.getCompoundModelContext(FileFlexoIODelegate.class, ProjectDirectoryResource.class));
+						ModelContextLibrary.getCompoundModelContext(FileIODelegate.class, ProjectDirectoryResource.class));
 				ProjectDirectoryResource returned = resourceFactory.newInstance(ProjectDirectoryResource.class);
 				returned.setProject(project);
 				returned.initName(project.getProjectName());
-				FileFlexoIODelegate fileIODelegate = resourceFactory.newInstance(FileFlexoIODelegate.class);
-				returned.setFlexoIODelegate(fileIODelegate);
+				FileIODelegate fileIODelegate = resourceFactory.newInstance(FileIODelegate.class);
+				returned.setIODelegate(fileIODelegate);
 				fileIODelegate.setFile(project.getProjectDirectory());
 				returned.setURI(project.getURI());
 				returned.setResourceCenter(project);
@@ -138,8 +138,8 @@ public interface ProjectDirectoryResource extends FlexoProjectResource<FlexoProj
 			return getFileFlexoIODelegate().getFile();
 		}
 
-		private FileFlexoIODelegate getFileFlexoIODelegate() {
-			return (FileFlexoIODelegate) getFlexoIODelegate();
+		private FileIODelegate getFileFlexoIODelegate() {
+			return (FileIODelegate) getIODelegate();
 		}
 	}
 

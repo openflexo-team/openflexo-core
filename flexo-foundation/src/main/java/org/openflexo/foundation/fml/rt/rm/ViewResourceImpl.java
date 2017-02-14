@@ -48,7 +48,7 @@ import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.rm.AbstractVirtualModelResource;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.fml.rt.View;
-import org.openflexo.foundation.resource.FileFlexoIODelegate;
+import org.openflexo.foundation.resource.FileIODelegate;
 import org.openflexo.foundation.resource.FlexoFileNotFoundException;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.rm.FileSystemResourceLocatorImpl;
@@ -160,8 +160,8 @@ public abstract class ViewResourceImpl extends AbstractVirtualModelInstanceResou
 	}
 
 	public String getDirectoryPath() {
-		if (getFlexoIODelegate() instanceof FileFlexoIODelegate) {
-			FileFlexoIODelegate ioDelegate = (FileFlexoIODelegate) getFlexoIODelegate();
+		if (getIODelegate() instanceof FileIODelegate) {
+			FileIODelegate ioDelegate = (FileIODelegate) getIODelegate();
 			return ioDelegate.getFile().getParentFile().getAbsolutePath();
 		}
 		return "";

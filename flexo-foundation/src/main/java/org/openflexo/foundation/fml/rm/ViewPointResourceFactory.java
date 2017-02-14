@@ -192,7 +192,7 @@ public class ViewPointResourceFactory extends AbstractVirtualModelResourceFactor
 			TechnologyContextManager<FMLTechnologyAdapter> technologyContextManager) {
 
 		FlexoResourceCenter<I> resourceCenter = (FlexoResourceCenter<I>) viewPointResource.getResourceCenter();
-		I directory = resourceCenter.getContainer((I) viewPointResource.getFlexoIODelegate().getSerializationArtefact());
+		I directory = resourceCenter.getContainer((I) viewPointResource.getIODelegate().getSerializationArtefact());
 
 		exploreResource(directory, viewPointResource, technologyContextManager);
 	}
@@ -264,7 +264,7 @@ public class ViewPointResourceFactory extends AbstractVirtualModelResourceFactor
 
 		ViewPointInfo returned = new ViewPointInfo();
 		XMLRootElementInfo xmlRootElementInfo = resourceCenter
-				.getXMLRootElementInfo((I) resource.getFlexoIODelegate().getSerializationArtefact());
+				.getXMLRootElementInfo((I) resource.getIODelegate().getSerializationArtefact());
 		if (xmlRootElementInfo == null) {
 			return null;
 		}

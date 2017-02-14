@@ -107,7 +107,7 @@ public class TestCreateVirtualModelInstanceFromExistingViewPoint extends Openfle
 		project = editor.getProject();
 		System.out.println("Created project " + project.getProjectDirectory());
 		assertTrue(project.getProjectDirectory().exists());
-		assertTrue(project.getProjectDataResource().getFlexoIODelegate().exists());
+		assertTrue(project.getProjectDataResource().getIODelegate().exists());
 	}
 
 	/**
@@ -137,7 +137,7 @@ public class TestCreateVirtualModelInstanceFromExistingViewPoint extends Openfle
 		// assertTrue(((ViewResource) newView.getResource()).getDirectory().exists());
 		// assertTrue(((ViewResource) newView.getResource()).getFile().exists());
 		assertTrue(((ViewResource) newView.getResource()).getDirectory() != null);
-		assertTrue(((ViewResource) newView.getResource()).getFlexoIODelegate().exists());
+		assertTrue(((ViewResource) newView.getResource()).getIODelegate().exists());
 
 		assertNotNull(project.getResource(newView.getURI()));
 		assertNotNull(project.getViewLibrary().getResource(newView.getURI()));
@@ -166,7 +166,7 @@ public class TestCreateVirtualModelInstanceFromExistingViewPoint extends Openfle
 		// assertTrue(((ViewResource) newView.getResource()).getDirectory().exists());
 		// assertTrue(((ViewResource) newView.getResource()).getFile().exists());
 		assertTrue(((ViewResource) newView.getResource()).getDirectory() != null);
-		assertTrue(((ViewResource) newView.getResource()).getFlexoIODelegate().exists());
+		assertTrue(((ViewResource) newView.getResource()).getIODelegate().exists());
 
 		// Not relevant anymore since reflexive model slot has disappeared from 1.7.0-beta to 1.7.0 version
 		// assertEquals(1, newVirtualModelInstance.getModelSlotInstances().size());

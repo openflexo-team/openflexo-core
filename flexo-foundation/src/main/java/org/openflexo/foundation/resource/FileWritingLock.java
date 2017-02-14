@@ -50,11 +50,11 @@ public class FileWritingLock extends Thread {
 
 	private Date _previousLastModified;
 
-	private final FileFlexoIODelegate delegate;
+	private final FileIODelegate delegate;
 
 	public static final long ACCEPTABLE_FS_DELAY = 4000;
 
-	private FileWritingLock(FileFlexoIODelegate fileDelegate) {
+	private FileWritingLock(FileIODelegate fileDelegate) {
 		super("FileWritingLock:" + fileDelegate.getFile().getAbsolutePath());
 		this.delegate = fileDelegate;
 		if (getFile().exists()) {

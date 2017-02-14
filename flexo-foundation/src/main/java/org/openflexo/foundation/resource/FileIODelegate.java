@@ -73,9 +73,9 @@ import org.openflexo.toolbox.FileUtils;
  */
 @ModelEntity
 @XMLElement
-@Imports({ @Import(DirectoryBasedFlexoIODelegate.class), @Import(FlexoIOGitDelegate.class) })
-@ImplementationClass(FileFlexoIODelegate.FileFlexoIODelegateImpl.class)
-public interface FileFlexoIODelegate extends FlexoIOStreamDelegate<File> {
+@Imports({ @Import(DirectoryBasedIODelegate.class), @Import(GitIODelegate.class) })
+@ImplementationClass(FileIODelegate.FileIODelegateImpl.class)
+public interface FileIODelegate extends StreamIODelegate<File> {
 
 	public static final String FILE = "file";
 
@@ -95,14 +95,14 @@ public interface FileFlexoIODelegate extends FlexoIOStreamDelegate<File> {
 
 	public File createTemporaryArtefact(String fileExtension) throws IOException;
 
-	public abstract class FileFlexoIODelegateImpl extends FlexoIOStreamDelegateImpl<File> implements FileFlexoIODelegate {
+	public abstract class FileIODelegateImpl extends StreamIODelegateImpl<File> implements FileIODelegate {
 
-		private final Logger logger = Logger.getLogger(FileFlexoIODelegateImpl.class.getPackage().getName());
+		private final Logger logger = Logger.getLogger(FileIODelegateImpl.class.getPackage().getName());
 
 		private static final FileSystemResourceLocatorImpl FS_RESOURCE_LOCATOR = new FileSystemResourceLocatorImpl();
 
-		public static FileFlexoIODelegate makeFileFlexoIODelegate(File file, ModelFactory factory) {
-			FileFlexoIODelegate fileIODelegate = factory.newInstance(FileFlexoIODelegate.class);
+		public static FileIODelegate makeFileFlexoIODelegate(File file, ModelFactory factory) {
+			FileIODelegate fileIODelegate = factory.newInstance(FileIODelegate.class);
 			fileIODelegate.setFile(file);
 			return fileIODelegate;
 		}

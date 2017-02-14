@@ -89,7 +89,7 @@ public class TestCreateViewPointInProject extends OpenflexoProjectAtRunTimeTestC
 		project = editor.getProject();
 		System.out.println("Created project " + project.getProjectDirectory());
 		assertTrue(project.getProjectDirectory().exists());
-		assertTrue(project.getProjectDataResource().getFlexoIODelegate().exists());
+		assertTrue(project.getProjectDataResource().getIODelegate().exists());
 	}
 
 	/**
@@ -115,7 +115,7 @@ public class TestCreateViewPointInProject extends OpenflexoProjectAtRunTimeTestC
 		assertNotNull(newViewPoint.getResource());
 
 		System.out.println("Created viewpoint in project at: "
-				+ newViewPoint.getResource().getFlexoIODelegate().getSerializationArtefact());
+				+ newViewPoint.getResource().getIODelegate().getSerializationArtefact());
 	}
 
 }

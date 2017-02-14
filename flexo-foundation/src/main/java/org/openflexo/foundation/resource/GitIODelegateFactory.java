@@ -11,10 +11,10 @@ public class GitIODelegateFactory implements IODelegateFactory<File> {
 	@Override
 	public FlexoIODelegate<File> makeNewInstance(FlexoResource<?> resource) {
 		ModelFactory factory;
-		FlexoIOGitDelegate gitIODelegate = null;
+		GitIODelegate gitIODelegate = null;
 		try {
-			factory = new ModelFactory(ModelContextLibrary.getCompoundModelContext(FlexoIOGitDelegate.class));
-			gitIODelegate = factory.newInstance(FlexoIOGitDelegate.class);
+			factory = new ModelFactory(ModelContextLibrary.getCompoundModelContext(GitIODelegate.class));
+			gitIODelegate = factory.newInstance(GitIODelegate.class);
 		} catch (ModelDefinitionException e) {
 			e.printStackTrace();
 		}

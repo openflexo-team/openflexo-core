@@ -74,10 +74,10 @@ public abstract class AbstractVirtualModelInstanceModelFactory<R extends Abstrac
 		addConverter(new FlexoVersionConverter());
 
 		addConverter(relativePathResourceConverter = new RelativePathResourceConverter(null));
-		if (virtualModelInstanceResource != null && virtualModelInstanceResource.getFlexoIODelegate() != null
-				&& virtualModelInstanceResource.getFlexoIODelegate().getSerializationArtefactAsResource() != null) {
+		if (virtualModelInstanceResource != null && virtualModelInstanceResource.getIODelegate() != null
+				&& virtualModelInstanceResource.getIODelegate().getSerializationArtefactAsResource() != null) {
 			relativePathResourceConverter.setContainerResource(
-					virtualModelInstanceResource.getFlexoIODelegate().getSerializationArtefactAsResource().getContainer());
+					virtualModelInstanceResource.getIODelegate().getSerializationArtefactAsResource().getContainer());
 		}
 
 		if (virtualModelInstanceResource != null) {

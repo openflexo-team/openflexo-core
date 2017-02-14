@@ -97,14 +97,14 @@ public class ResourceSavingEntryInfo {
 	}
 
 	public void reviewModifiedResource() {
-		saveThisResource = isModified() && resource.getFlexoIODelegate().hasWritePermission();
+		saveThisResource = isModified() && resource.getIODelegate().hasWritePermission();
 	}
 
 	public void saveModified(IProgress progress) throws SaveResourceException {
 		if (progress != null) {
 			progress.setProgress(FlexoLocalization.getMainLocalizer().localizedForKey("saving") + " " + resource.getName());
 		}
-		if (saveThisResource && resource.getFlexoIODelegate().hasWritePermission()) {
+		if (saveThisResource && resource.getIODelegate().hasWritePermission()) {
 			resource.save(progress);
 		}
 	}

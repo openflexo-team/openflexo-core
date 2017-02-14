@@ -163,7 +163,7 @@ public abstract class FlexoResourceFactory<R extends TechnologyAdapterResource<R
 		returned.setResourceCenter(resourceCenter);
 		returned.initName(name);
 		returned.setURI(uri);
-		returned.setFlexoIODelegate(makeFlexoIODelegate(serializationArtefact, resourceCenter));
+		returned.setIODelegate(makeFlexoIODelegate(serializationArtefact, resourceCenter));
 		return returned;
 	}
 
@@ -188,7 +188,7 @@ public abstract class FlexoResourceFactory<R extends TechnologyAdapterResource<R
 		returned.setResourceCenter(resourceCenter);
 		returned.initName(resourceCenter.retrieveName(serializationArtefact));
 
-		returned.setFlexoIODelegate(makeFlexoIODelegate(serializationArtefact, resourceCenter));
+		returned.setIODelegate(makeFlexoIODelegate(serializationArtefact, resourceCenter));
 
 		return returned;
 	}
@@ -258,7 +258,7 @@ public abstract class FlexoResourceFactory<R extends TechnologyAdapterResource<R
 	 */
 	protected <I> void registerResourceInResourceRepository(R resource, ResourceRepository<R, I> resourceRepository) {
 		FlexoResourceCenter<I> resourceCenter = resourceRepository.getResourceCenter();
-		FlexoIODelegate<I> ioDelegate = (FlexoIODelegate<I>) resource.getFlexoIODelegate();
+		FlexoIODelegate<I> ioDelegate = (FlexoIODelegate<I>) resource.getIODelegate();
 		RepositoryFolder<R, I> folder = resourceCenter.getRepositoryFolder(ioDelegate, resourceRepository);
 		if (folder != null) {
 			resourceRepository.registerResource(resource, folder);

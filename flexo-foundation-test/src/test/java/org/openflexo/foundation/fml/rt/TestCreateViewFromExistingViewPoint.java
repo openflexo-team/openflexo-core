@@ -88,7 +88,7 @@ public class TestCreateViewFromExistingViewPoint extends OpenflexoProjectAtRunTi
 		project = editor.getProject();
 		System.out.println("Created project " + project.getProjectDirectory());
 		assertTrue(project.getProjectDirectory().exists());
-		assertTrue(project.getProjectDataResource().getFlexoIODelegate().exists());
+		assertTrue(project.getProjectDataResource().getIODelegate().exists());
 	}
 
 	/**
@@ -109,6 +109,6 @@ public class TestCreateViewFromExistingViewPoint extends OpenflexoProjectAtRunTi
 		// assertTrue(((ViewResource) newView.getResource()).getDirectory().exists());
 		// assertTrue(((ViewResource) newView.getResource()).getFile().exists());
 		assertTrue(((ViewResource) newView.getResource()).getDirectory() != null);
-		assertTrue(((ViewResource) newView.getResource()).getFlexoIODelegate().exists());
+		assertTrue(((ViewResource) newView.getResource()).getIODelegate().exists());
 	}
 }

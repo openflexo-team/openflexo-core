@@ -95,7 +95,7 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 	public boolean isLoadable() {
 		// By default, a resource is always loadable, then this method always
 		// returns true if IO delegate exists
-		return getFlexoIODelegate() != null && getFlexoIODelegate().exists();
+		return getIODelegate() != null && getIODelegate().exists();
 	}
 
 	/**
@@ -179,17 +179,17 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 			logger.warning("Trying to rename a FlexoResource with a null or empty name. Please investigate.");
 			return;
 		}
-		if (getFlexoIODelegate() != null && getFlexoIODelegate().hasWritePermission()) {
+		if (getIODelegate() != null && getIODelegate().hasWritePermission()) {
 			performSuperSetter(NAME, aName);
-			if (getFlexoIODelegate() != null) {
-				getFlexoIODelegate().rename();
+			if (getIODelegate() != null) {
+				getIODelegate().rename();
 			}
 		}
 		else if (!isDeleting()) {
 			System.out.println("Trying to rename " + this + " from " + getName() + " to " + aName);
-			System.out.println("IOdelegate=" + getFlexoIODelegate());
-			if (getFlexoIODelegate() != null) {
-				System.out.println("Write permission: " + getFlexoIODelegate().hasWritePermission());
+			System.out.println("IOdelegate=" + getIODelegate());
+			if (getIODelegate() != null) {
+				System.out.println("Write permission: " + getIODelegate().hasWritePermission());
 			}
 			throw new CannotRenameException(this);
 		}
@@ -386,7 +386,7 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 	 */
 	@Override
 	public boolean isReadOnly() {
-		if (getFlexoIODelegate() != null && !getFlexoIODelegate().hasWritePermission()) {
+		if (getIODelegate() != null && !getIODelegate().hasWritePermission()) {
 			return true;
 		}
 		return false;
@@ -427,7 +427,7 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 			}
 
 			// Handle Flexo IO delegate deletion
-			getFlexoIODelegate().delete();
+			getIODelegate().delete();
 
 			performSuperDelete(context);
 
@@ -555,10 +555,10 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 			returned = computeDefaultURI();
 		}
 
-		if (returned == null && (getFlexoIODelegate() instanceof FileFlexoIODelegate)
-				&& (((FileFlexoIODelegate) getFlexoIODelegate()).getFile() != null)) {
-			if (((FileFlexoIODelegate) getFlexoIODelegate()).getFile() != null) {
-				return ((FileFlexoIODelegate) getFlexoIODelegate()).getFile().toURI().toString();
+		if (returned == null && (getIODelegate() instanceof FileIODelegate)
+				&& (((FileIODelegate) getIODelegate()).getFile() != null)) {
+			if (((FileIODelegate) getIODelegate()).getFile() != null) {
+				return ((FileIODelegate) getIODelegate()).getFile().toURI().toString();
 			}
 		}
 		return returned;

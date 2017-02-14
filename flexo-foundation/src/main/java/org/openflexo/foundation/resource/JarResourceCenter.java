@@ -52,12 +52,13 @@ import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.jar.JarFile;
 import java.util.logging.Logger;
+
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.converter.FlexoObjectReferenceConverter;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.ViewPointRepository;
 import org.openflexo.foundation.resource.DirectoryBasedJarIODelegate.DirectoryBasedJarIODelegateImpl;
-import org.openflexo.foundation.resource.InJarFlexoIODelegate.InJarFlexoIODelegateImpl;
+import org.openflexo.foundation.resource.InJarIODelegate.InJarIODelegateImpl;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.utils.FlexoObjectReference;
 import org.openflexo.model.annotations.Getter;
@@ -462,8 +463,8 @@ public class JarResourceCenter extends ResourceRepository<FlexoResource<?>, InJa
 		}
 		String lastPath = resource.getName();
 		String relativePath = "";
-		if (resource.getFlexoIODelegate() != null) {
-			InJarResourceImpl serializationArtefact = (InJarResourceImpl) resource.getFlexoIODelegate().getSerializationArtefact();
+		if (resource.getIODelegate() != null) {
+			InJarResourceImpl serializationArtefact = (InJarResourceImpl) resource.getIODelegate().getSerializationArtefact();
 			if (serializationArtefact != null) {
 				InJarResourceImpl f = serializationArtefact.getContainer();
 				while (f != null && !(f.equals(getRootFolder().getSerializationArtefact()))) {
@@ -577,9 +578,8 @@ public class JarResourceCenter extends ResourceRepository<FlexoResource<?>, InJa
 	}
 
 	@Override
-	public InJarFlexoIODelegate makeFlexoIODelegate(InJarResourceImpl serializationArtefact,
-			FlexoResourceFactory<?, ?, ?> resourceFactory) {
-		return InJarFlexoIODelegateImpl.makeInJarFlexoIODelegate(serializationArtefact, resourceFactory);
+	public InJarIODelegate makeFlexoIODelegate(InJarResourceImpl serializationArtefact, FlexoResourceFactory<?, ?, ?> resourceFactory) {
+		return InJarIODelegateImpl.makeInJarFlexoIODelegate(serializationArtefact, resourceFactory);
 	}
 
 	@Override
@@ -645,8 +645,8 @@ public class JarResourceCenter extends ResourceRepository<FlexoResource<?>, InJa
 		if (ioDelegate instanceof DirectoryBasedJarIODelegate) {
 			candidateFile = ((DirectoryBasedJarIODelegate) ioDelegate).getDirectory();
 		}
-		else if (ioDelegate instanceof InJarFlexoIODelegate) {
-			candidateFile = ((InJarFlexoIODelegate) ioDelegate).getInJarResource();
+		else if (ioDelegate instanceof InJarIODelegate) {
+			candidateFile = ((InJarIODelegate) ioDelegate).getInJarResource();
 		}
 		try {
 

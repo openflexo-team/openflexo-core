@@ -162,7 +162,7 @@ public class TestFMLBindingModelManagement2 extends OpenflexoProjectAtRunTimeTes
 		// assertTrue(((ViewPointResource)
 		// viewPoint.getResource()).getFile().exists());
 		assertTrue(((ViewPointResource) viewPoint.getResource()).getDirectory() != null);
-		assertTrue(((ViewPointResource) viewPoint.getResource()).getFlexoIODelegate().exists());
+		assertTrue(((ViewPointResource) viewPoint.getResource()).getIODelegate().exists());
 
 		System.out.println("ViewPoint BindingModel = " + viewPoint.getBindingModel());
 		assertNotNull(viewPoint.getBindingModel());
@@ -194,7 +194,7 @@ public class TestFMLBindingModelManagement2 extends OpenflexoProjectAtRunTimeTes
 
 		assertTrue(ResourceLocator
 				.retrieveResourceAsFile(((VirtualModelResource) virtualModel.getResource()).getDirectory()).exists());
-		assertTrue(((VirtualModelResource) virtualModel.getResource()).getFlexoIODelegate().exists());
+		assertTrue(((VirtualModelResource) virtualModel.getResource()).getIODelegate().exists());
 
 		assertNotNull(virtualModel.getBindingModel());
 		assertEquals(6, virtualModel.getBindingModel().getBindingVariablesCount());
@@ -264,7 +264,7 @@ public class TestFMLBindingModelManagement2 extends OpenflexoProjectAtRunTimeTes
 
 		((VirtualModelResource) virtualModel.getResource()).save(null);
 
-		System.out.println("Saved: " + ((VirtualModelResource) virtualModel.getResource()).getFlexoIODelegate());
+		System.out.println("Saved: " + ((VirtualModelResource) virtualModel.getResource()).getIODelegate());
 
 		System.out.println("FlexoConcept BindingModel = " + flexoConcept.getBindingModel());
 

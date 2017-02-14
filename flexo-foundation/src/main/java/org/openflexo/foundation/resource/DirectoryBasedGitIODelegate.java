@@ -43,7 +43,7 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.resource.DirectoryBasedFlexoIOGitDelegate.DirectoryBasedFlexoIOGitDelegateImpl;
+import org.openflexo.foundation.resource.DirectoryBasedGitIODelegate.DirectoryBasedGitIODelegateImpl;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
@@ -62,8 +62,8 @@ import org.openflexo.toolbox.FileUtils;
  */
 @ModelEntity
 @XMLElement
-@ImplementationClass(DirectoryBasedFlexoIOGitDelegateImpl.class)
-public interface DirectoryBasedFlexoIOGitDelegate extends FlexoIOGitDelegate {
+@ImplementationClass(DirectoryBasedGitIODelegateImpl.class)
+public interface DirectoryBasedGitIODelegate extends GitIODelegate {
 
 	public static final String FILE_EXTENSION = "fileExtension";
 	public static final String DIRECTORY_EXTENSION = "directoryExtension";
@@ -104,15 +104,15 @@ public interface DirectoryBasedFlexoIOGitDelegate extends FlexoIOGitDelegate {
 	@Setter(DIRECTORY_EXTENSION)
 	public void setDirectoryExtension(String extension);
 
-	public abstract class DirectoryBasedFlexoIOGitDelegateImpl extends FlexoIOGitDelegateImpl implements DirectoryBasedFlexoIOGitDelegate {
+	public abstract class DirectoryBasedGitIODelegateImpl extends GitIODelegateImpl implements DirectoryBasedGitIODelegate {
 
-		private final Logger logger = Logger.getLogger(DirectoryBasedFlexoIOGitDelegateImpl.class.getPackage().getName());
+		private final Logger logger = Logger.getLogger(DirectoryBasedGitIODelegateImpl.class.getPackage().getName());
 
 		private File directory;
 
-		public static DirectoryBasedFlexoIOGitDelegate makeDirectoryBasedFlexoIOGitDelegate(File containerDir, String baseName,
+		public static DirectoryBasedGitIODelegate makeDirectoryBasedFlexoIOGitDelegate(File containerDir, String baseName,
 				String directoryExtension, String fileExtension, ModelFactory factory) {
-			DirectoryBasedFlexoIOGitDelegate fileIODelegate = factory.newInstance(DirectoryBasedFlexoIOGitDelegate.class);
+			DirectoryBasedGitIODelegate fileIODelegate = factory.newInstance(DirectoryBasedGitIODelegate.class);
 			fileIODelegate.setDirectoryExtension(directoryExtension);
 			fileIODelegate.setFileExtension(fileExtension);
 			File directory = new File(containerDir, baseName + directoryExtension);

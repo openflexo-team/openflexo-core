@@ -75,7 +75,7 @@ public class VirtualModelInstanceResourceFactory
 		FlexoResourceCenter<I> resourceCenter = (FlexoResourceCenter<I>) viewResource.getResourceCenter();
 		I serializationArtefact = resourceCenter.createEntry(
 				(name.endsWith(VIRTUAL_MODEL_INSTANCE_SUFFIX) ? name : (name + VIRTUAL_MODEL_INSTANCE_SUFFIX)),
-				resourceCenter.getContainer((I) viewResource.getFlexoIODelegate().getSerializationArtefact()));
+				resourceCenter.getContainer((I) viewResource.getIODelegate().getSerializationArtefact()));
 
 		VirtualModelInstanceResource returned = initResourceForCreation(serializationArtefact, resourceCenter, technologyContextManager,
 				name, viewResource.getURI() + "/"
@@ -194,7 +194,7 @@ public class VirtualModelInstanceResourceFactory
 
 		VirtualModelInstanceInfo returned = new VirtualModelInstanceInfo();
 		XMLRootElementInfo xmlRootElementInfo = resourceCenter
-				.getXMLRootElementInfo((I) resource.getFlexoIODelegate().getSerializationArtefact());
+				.getXMLRootElementInfo((I) resource.getIODelegate().getSerializationArtefact());
 		if (xmlRootElementInfo == null) {
 			return null;
 		}

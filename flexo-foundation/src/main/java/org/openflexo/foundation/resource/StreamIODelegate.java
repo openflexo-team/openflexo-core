@@ -61,8 +61,8 @@ import org.openflexo.toolbox.FileUtils;
  * @param <I>
  */
 @ModelEntity(isAbstract = true)
-@Imports({ @Import(FileFlexoIODelegate.class), @Import(InJarFlexoIODelegate.class) })
-public interface FlexoIOStreamDelegate<I> extends FlexoIODelegate<I> {
+@Imports({ @Import(FileIODelegate.class), @Import(InJarIODelegate.class) })
+public interface StreamIODelegate<I> extends FlexoIODelegate<I> {
 
 	public abstract InputStream getInputStream();
 
@@ -78,9 +78,9 @@ public interface FlexoIOStreamDelegate<I> extends FlexoIODelegate<I> {
 
 	public FileResourceImpl getSourceResource();
 
-	public abstract class FlexoIOStreamDelegateImpl<I> implements FlexoIOStreamDelegate<I> {
+	public abstract class StreamIODelegateImpl<I> implements StreamIODelegate<I> {
 
-		private final Logger logger = Logger.getLogger(FlexoIOStreamDelegate.class.getPackage().getName());
+		private final Logger logger = Logger.getLogger(StreamIODelegate.class.getPackage().getName());
 
 		/**
 		 * This constant traduces the delay accepted for the File System to effectively write a file on disk after the date it was

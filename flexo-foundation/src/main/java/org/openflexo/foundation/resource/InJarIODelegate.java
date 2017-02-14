@@ -59,10 +59,10 @@ import org.openflexo.rm.InJarResourceImpl;
 import org.openflexo.rm.Resource;
 
 @ModelEntity
-@ImplementationClass(InJarFlexoIODelegate.InJarFlexoIODelegateImpl.class)
+@ImplementationClass(InJarIODelegate.InJarIODelegateImpl.class)
 @XMLElement
 @Imports({ @Import(DirectoryBasedJarIODelegate.class) })
-public interface InJarFlexoIODelegate extends FlexoIOStreamDelegate<InJarResourceImpl> {
+public interface InJarIODelegate extends StreamIODelegate<InJarResourceImpl> {
 
 	@PropertyIdentifier(type = InJarResourceImpl.class)
 	public static final String IN_JAR_RESOURCE = "inJarResource";
@@ -73,12 +73,12 @@ public interface InJarFlexoIODelegate extends FlexoIOStreamDelegate<InJarResourc
 	@Setter(IN_JAR_RESOURCE)
 	public void setInJarResource(InJarResourceImpl inJarResource);
 
-	public abstract class InJarFlexoIODelegateImpl extends FlexoIOStreamDelegateImpl<InJarResourceImpl> implements InJarFlexoIODelegate {
+	public abstract class InJarIODelegateImpl extends StreamIODelegateImpl<InJarResourceImpl> implements InJarIODelegate {
 
-		protected static final Logger logger = Logger.getLogger(InJarFlexoIODelegateImpl.class.getPackage().getName());
+		protected static final Logger logger = Logger.getLogger(InJarIODelegateImpl.class.getPackage().getName());
 
-		public static InJarFlexoIODelegate makeInJarFlexoIODelegate(InJarResourceImpl inJarResource, ModelFactory factory) {
-			InJarFlexoIODelegate delegate = factory.newInstance(InJarFlexoIODelegate.class);
+		public static InJarIODelegate makeInJarFlexoIODelegate(InJarResourceImpl inJarResource, ModelFactory factory) {
+			InJarIODelegate delegate = factory.newInstance(InJarIODelegate.class);
 			delegate.setInJarResource(inJarResource);
 			return delegate;
 		}

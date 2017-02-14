@@ -142,7 +142,7 @@ public abstract class AbstractCreateVirtualModelInstance<A extends AbstractCreat
 
 		// System.out.println("OK, we have created the file " + newVirtualModelInstanceResource.getFile().getAbsolutePath());
 		System.out.println("OK, we have created the VirtualModelInstanceResource " + newVirtualModelInstanceResource.getURI() + " delegate="
-				+ newVirtualModelInstanceResource.getFlexoIODelegate().stringRepresentation());
+				+ newVirtualModelInstanceResource.getIODelegate().stringRepresentation());
 
 		System.out.println("creationSchemeAction=" + creationSchemeAction);
 		System.out.println("escapeModelSlotConfiguration=" + escapeModelSlotConfiguration());

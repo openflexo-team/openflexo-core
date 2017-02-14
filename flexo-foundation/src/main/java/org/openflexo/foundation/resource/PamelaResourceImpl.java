@@ -292,7 +292,7 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends 
 
 	// This should be removed from Pamela Resource class
 	private File getFile() {
-		return (File) getFlexoIODelegate().getSerializationArtefact();
+		return (File) getIODelegate().getSerializationArtefact();
 	}
 
 	/**
@@ -300,9 +300,9 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends 
 	 * 
 	 * @return
 	 */
-	public FlexoIOStreamDelegate<?> getFlexoIOStreamDelegate() {
-		if (getFlexoIODelegate() instanceof FlexoIOStreamDelegate) {
-			return (FlexoIOStreamDelegate<?>) getFlexoIODelegate();
+	public StreamIODelegate<?> getFlexoIOStreamDelegate() {
+		if (getIODelegate() instanceof StreamIODelegate) {
+			return (StreamIODelegate<?>) getIODelegate();
 		}
 		return null;
 	}
@@ -315,11 +315,11 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends 
 	 */
 	protected final void saveResourceData(boolean clearIsModified) throws SaveResourceException, SaveResourcePermissionDeniedException {
 		// System.out.println("PamelaResourceImpl Saving " + getFile());
-		if (!getFlexoIODelegate().hasWritePermission()) {
+		if (!getIODelegate().hasWritePermission()) {
 			if (logger.isLoggable(Level.WARNING)) {
-				logger.warning("Permission denied : " + getFlexoIODelegate().toString());
+				logger.warning("Permission denied : " + getIODelegate().toString());
 			}
-			throw new SaveResourcePermissionDeniedException(getFlexoIODelegate());
+			throw new SaveResourcePermissionDeniedException(getIODelegate());
 		}
 		if (resourceData != null) {
 			_saveResourceData(clearIsModified);
@@ -380,7 +380,7 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends 
 				logger.warning("Failed to save resource " + this + " with model version " + getModelVersion());
 			}
 			getFlexoIOStreamDelegate().hasWrittenOnDisk(lock);
-			throw new SaveResourceException(getFlexoIODelegate(), e);
+			throw new SaveResourceException(getIODelegate(), e);
 		} /*
 			* finally { hasWritten(getFile());
 			* hasWritten(getFile().getParentFile()); }
@@ -462,7 +462,7 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends 
 					if (logger.isLoggable(Level.WARNING)) {
 						logger.warning("Found file " + file.getAbsolutePath() + ". Using it and repairing project as well!");
 					}
-					((FileFlexoIODelegate) getFlexoIODelegate()).setSerializationArtefact(file);
+					((FileIODelegate) getIODelegate()).setSerializationArtefact(file);
 					break;
 				}
 			}

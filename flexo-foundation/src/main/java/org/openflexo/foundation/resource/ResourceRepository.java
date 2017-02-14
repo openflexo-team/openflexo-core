@@ -291,12 +291,12 @@ public abstract class ResourceRepository<R extends FlexoResource<?>, I> extends 
 			fromFolder.removeFromResources(resource);
 			toFolder.addToResources(resource);
 			// TODO: reimplement this with more genericity (delegate to RC)
-			if (resource.getFlexoIODelegate() instanceof FileFlexoIODelegate) {
-				File fromFile = ((FileFlexoIODelegate) resource.getFlexoIODelegate()).getFile();
+			if (resource.getIODelegate() instanceof FileIODelegate) {
+				File fromFile = ((FileIODelegate) resource.getIODelegate()).getFile();
 				File toFile = new File((File) toFolder.getSerializationArtefact(), fromFile.getName());
 				try {
 					FileUtils.rename(fromFile, toFile);
-					((FileFlexoIODelegate) resource.getFlexoIODelegate()).setFile(toFile);
+					((FileIODelegate) resource.getIODelegate()).setFile(toFile);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}

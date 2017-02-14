@@ -124,7 +124,7 @@ public class TestControlGraph extends OpenflexoTestCase {
 		// assertTrue(((ViewPointResource)
 		// newViewPoint.getResource()).getFile().exists());
 		assertTrue(((ViewPointResource) newViewPoint.getResource()).getDirectory() != null);
-		assertTrue(((ViewPointResource) newViewPoint.getResource()).getFlexoIODelegate().exists());
+		assertTrue(((ViewPointResource) newViewPoint.getResource()).getIODelegate().exists());
 	}
 
 	/**
@@ -147,7 +147,7 @@ public class TestControlGraph extends OpenflexoTestCase {
 		assertTrue(ResourceLocator
 				.retrieveResourceAsFile(((VirtualModelResource) newVirtualModel.getResource()).getDirectory())
 				.exists());
-		assertTrue(((VirtualModelResource) newVirtualModel.getResource()).getFlexoIODelegate().exists());
+		assertTrue(((VirtualModelResource) newVirtualModel.getResource()).getIODelegate().exists());
 	}
 
 	/**
@@ -181,7 +181,7 @@ public class TestControlGraph extends OpenflexoTestCase {
 		// System.out.println("Saved: " + ((VirtualModelResource)
 		// newVirtualModel.getResource()).getFile());
 		System.out.println(
-				"Saved: " + ((VirtualModelResource) newVirtualModel.getResource()).getFlexoIODelegate().toString());
+				"Saved: " + ((VirtualModelResource) newVirtualModel.getResource()).getIODelegate().toString());
 	}
 
 	@Test

@@ -47,7 +47,7 @@ import org.openflexo.foundation.FlexoService;
 import org.openflexo.foundation.FlexoServiceImpl;
 import org.openflexo.foundation.fml.rt.rm.ViewResource;
 import org.openflexo.foundation.fml.rt.rm.ViewResourceImpl;
-import org.openflexo.foundation.resource.FileFlexoIODelegate;
+import org.openflexo.foundation.resource.FileIODelegate;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.MissingFlexoResource;
 import org.openflexo.foundation.resource.ResourceManager;
@@ -226,11 +226,11 @@ public class ResourceConsistencyService extends FlexoServiceImpl {
 		conflictsInformation.append("<p> <font color=\"red\"> URI : " + conflict.getCommonUri() + " is owned by </font><br/>");
 		for (FlexoResource<?> fr : conflict.getConflictedResources()) {
 
-			if (fr.getFlexoIODelegate() instanceof FileFlexoIODelegate) {
-				conflictsInformation.append(((FileFlexoIODelegate) fr.getFlexoIODelegate()).getFile());
+			if (fr.getIODelegate() instanceof FileIODelegate) {
+				conflictsInformation.append(((FileIODelegate) fr.getIODelegate()).getFile());
 			}
 			else {
-				conflictsInformation.append(fr.getFlexoIODelegate().getSerializationArtefact().toString());
+				conflictsInformation.append(fr.getIODelegate().getSerializationArtefact().toString());
 			}
 			conflictsInformation.append("<br/>");
 		}

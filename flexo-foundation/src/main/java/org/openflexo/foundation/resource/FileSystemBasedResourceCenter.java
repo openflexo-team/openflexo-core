@@ -57,12 +57,13 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
+
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.converter.FlexoObjectReferenceConverter;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.ViewPointRepository;
-import org.openflexo.foundation.resource.DirectoryBasedFlexoIODelegate.DirectoryBasedFlexoIODelegateImpl;
-import org.openflexo.foundation.resource.FileFlexoIODelegate.FileFlexoIODelegateImpl;
+import org.openflexo.foundation.resource.DirectoryBasedIODelegate.DirectoryBasedIODelegateImpl;
+import org.openflexo.foundation.resource.FileIODelegate.FileIODelegateImpl;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.utils.FlexoObjectReference;
 import org.openflexo.model.annotations.Getter;
@@ -151,8 +152,7 @@ public abstract class FileSystemBasedResourceCenter extends ResourceRepository<F
 		}
 
 		for (FlexoResource<?> r : folder.getResources()) {
-			if ((r.getFlexoIODelegate() instanceof FileFlexoIODelegate)
-					&& ((FileFlexoIODelegate) r.getFlexoIODelegate()).getFile().equals(aFile)) {
+			if ((r.getIODelegate() instanceof FileIODelegate) && ((FileIODelegate) r.getIODelegate()).getFile().equals(aFile)) {
 				if (resourceClass.isAssignableFrom(r.getClass())) {
 					return (R) r;
 				}
@@ -663,8 +663,8 @@ public abstract class FileSystemBasedResourceCenter extends ResourceRepository<F
 		String lastPath = resource.getName();
 		String relativePath = "";
 
-		if (resource.getFlexoIODelegate() != null) {
-			File serializationArtefact = (File) resource.getFlexoIODelegate().getSerializationArtefact();
+		if (resource.getIODelegate() != null) {
+			File serializationArtefact = (File) resource.getIODelegate().getSerializationArtefact();
 			if (serializationArtefact != null) {
 				File f = serializationArtefact.getParentFile();
 				while (f != null && !(f.equals(getRootFolder().getSerializationArtefact()))) {
@@ -874,9 +874,9 @@ public abstract class FileSystemBasedResourceCenter extends ResourceRepository<F
 	}
 
 	@Override
-	public FileFlexoIODelegate makeFlexoIODelegate(File serializationArtefact, FlexoResourceFactory<?, ?, ?> resourceFactory)
+	public FileIODelegate makeFlexoIODelegate(File serializationArtefact, FlexoResourceFactory<?, ?, ?> resourceFactory)
 			throws IOException {
-		return FileFlexoIODelegateImpl.makeFileFlexoIODelegate(serializationArtefact, resourceFactory);
+		return FileIODelegateImpl.makeFileFlexoIODelegate(serializationArtefact, resourceFactory);
 	}
 
 	@Override
@@ -884,7 +884,7 @@ public abstract class FileSystemBasedResourceCenter extends ResourceRepository<F
 			String fileExtension, FlexoResourceFactory<?, ?, ?> resourceFactory) {
 		String baseName = serializationArtefact.getName().substring(0,
 				serializationArtefact.getName().length() - directoryExtension.length());
-		return DirectoryBasedFlexoIODelegateImpl.makeDirectoryBasedFlexoIODelegate(serializationArtefact.getParentFile(), baseName,
+		return DirectoryBasedIODelegateImpl.makeDirectoryBasedFlexoIODelegate(serializationArtefact.getParentFile(), baseName,
 				directoryExtension, fileExtension, resourceFactory);
 	}
 
@@ -934,11 +934,11 @@ public abstract class FileSystemBasedResourceCenter extends ResourceRepository<F
 			ResourceRepository<R, File> resourceRepository) {
 
 		File candidateFile = null;
-		if (ioDelegate instanceof DirectoryBasedFlexoIODelegate) {
-			candidateFile = ((DirectoryBasedFlexoIODelegate) ioDelegate).getDirectory();
+		if (ioDelegate instanceof DirectoryBasedIODelegate) {
+			candidateFile = ((DirectoryBasedIODelegate) ioDelegate).getDirectory();
 		}
-		else if (ioDelegate instanceof FileFlexoIODelegate) {
-			candidateFile = ((FileFlexoIODelegate) ioDelegate).getFile();
+		else if (ioDelegate instanceof FileIODelegate) {
+			candidateFile = ((FileIODelegate) ioDelegate).getFile();
 		}
 		try {
 			RepositoryFolder<R, File> returned = resourceRepository.getParentRepositoryFolder(candidateFile, true);

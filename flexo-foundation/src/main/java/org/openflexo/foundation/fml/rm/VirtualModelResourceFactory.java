@@ -66,7 +66,7 @@ public class VirtualModelResourceFactory extends AbstractVirtualModelResourceFac
 
 		FlexoResourceCenter<I> resourceCenter = (FlexoResourceCenter<I>) viewPointResource.getResourceCenter();
 		I serializationArtefact = resourceCenter.createDirectory(baseName,
-				resourceCenter.getContainer((I) viewPointResource.getFlexoIODelegate().getSerializationArtefact()));
+				resourceCenter.getContainer((I) viewPointResource.getIODelegate().getSerializationArtefact()));
 
 		VirtualModelResource returned = initResourceForCreation(serializationArtefact, resourceCenter, technologyContextManager, baseName,
 				viewPointResource.getURI() + "/" + baseName);
@@ -156,7 +156,7 @@ public class VirtualModelResourceFactory extends AbstractVirtualModelResourceFac
 
 		VirtualModelInfo returned = new VirtualModelInfo();
 		XMLRootElementInfo xmlRootElementInfo = resourceCenter
-				.getXMLRootElementInfo((I) resource.getFlexoIODelegate().getSerializationArtefact());
+				.getXMLRootElementInfo((I) resource.getIODelegate().getSerializationArtefact());
 		if (xmlRootElementInfo == null) {
 			return null;
 		}

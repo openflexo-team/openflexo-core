@@ -45,8 +45,8 @@ import org.openflexo.foundation.IOFlexoException;
 import org.openflexo.foundation.InconsistentDataException;
 import org.openflexo.foundation.InvalidModelDefinitionException;
 import org.openflexo.foundation.InvalidXMLException;
-import org.openflexo.foundation.resource.FileFlexoIODelegate;
-import org.openflexo.foundation.resource.FileFlexoIODelegate.FileFlexoIODelegateImpl;
+import org.openflexo.foundation.resource.FileIODelegate;
+import org.openflexo.foundation.resource.FileIODelegate.FileIODelegateImpl;
 import org.openflexo.foundation.resource.FlexoFileNotFoundException;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.PamelaResource;
@@ -89,7 +89,7 @@ public interface FlexoPreferencesResource extends PamelaResource<FlexoPreference
 		public static FlexoPreferencesResource makePreferencesResource(ApplicationContext applicationContext) {
 			try {
 				ModelFactory resourceFactory = new ModelFactory(
-						ModelContextLibrary.getCompoundModelContext(FileFlexoIODelegate.class, FlexoPreferencesResource.class));
+						ModelContextLibrary.getCompoundModelContext(FileIODelegate.class, FlexoPreferencesResource.class));
 				FlexoPreferencesResourceImpl returned = (FlexoPreferencesResourceImpl) resourceFactory
 						.newInstance(FlexoPreferencesResource.class);
 
@@ -97,7 +97,7 @@ public interface FlexoPreferencesResource extends PamelaResource<FlexoPreference
 				returned.initName("OpenflexoPreferences");
 				returned.setURI("http://www.openflexo.org/OpenflexoPreferences");
 
-				returned.setFlexoIODelegate(FileFlexoIODelegateImpl.makeFileFlexoIODelegate(preferencesFile, resourceFactory));
+				returned.setIODelegate(FileIODelegateImpl.makeFileFlexoIODelegate(preferencesFile, resourceFactory));
 				// returned.setFile(preferencesFile);
 
 				returned.setFactory(applicationContext.getPreferencesService().makePreferencesFactory(returned, applicationContext));

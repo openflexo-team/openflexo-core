@@ -696,7 +696,7 @@ public interface AbstractVirtualModel<VM extends AbstractVirtualModel<VM>>
 
 		@Override
 		public void save() {
-			logger.info("Saving ViewPoint to " + getResource().getFlexoIODelegate().toString() + "...");
+			logger.info("Saving ViewPoint to " + getResource().getIODelegate().toString() + "...");
 
 			try {
 				getResource().save(null);

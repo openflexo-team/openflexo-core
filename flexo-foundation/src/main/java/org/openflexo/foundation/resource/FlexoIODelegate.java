@@ -59,7 +59,7 @@ import org.openflexo.rm.Resource;
  * @param <I>
  */
 @ModelEntity(isAbstract = true)
-@Imports({ @Import(FlexoIOStreamDelegate.class), @Import(ClassLoaderIODelegate.class) })
+@Imports({ @Import(StreamIODelegate.class), @Import(ClassLoaderIODelegate.class) })
 public interface FlexoIODelegate<I> extends AccessibleProxyObject {
 
 	@PropertyIdentifier(type = String.class)

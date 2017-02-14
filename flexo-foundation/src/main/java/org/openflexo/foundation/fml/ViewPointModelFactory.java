@@ -65,7 +65,7 @@ public class ViewPointModelFactory extends DefaultPamelaResourceModelFactory<Vie
 		addConverter(new FlexoVersionConverter());
 		if (viewPointResource != null) {
 			addConverter(new RelativePathResourceConverter(
-					viewPointResource.getFlexoIODelegate().getSerializationArtefactAsResource().getContainer()));
+					viewPointResource.getIODelegate().getSerializationArtefactAsResource().getContainer()));
 		}
 	}
 

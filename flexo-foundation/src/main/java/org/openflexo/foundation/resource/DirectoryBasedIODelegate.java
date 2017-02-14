@@ -66,8 +66,8 @@ import org.openflexo.toolbox.JarInDirClassLoader;
  */
 @ModelEntity
 @XMLElement
-@ImplementationClass(DirectoryBasedFlexoIODelegate.DirectoryBasedFlexoIODelegateImpl.class)
-public interface DirectoryBasedFlexoIODelegate extends FileFlexoIODelegate {
+@ImplementationClass(DirectoryBasedIODelegate.DirectoryBasedIODelegateImpl.class)
+public interface DirectoryBasedIODelegate extends FileIODelegate {
 
 	public static final String FILE_EXTENSION = "fileExtension";
 	public static final String DIRECTORY_EXTENSION = "directoryExtension";
@@ -108,15 +108,15 @@ public interface DirectoryBasedFlexoIODelegate extends FileFlexoIODelegate {
 	@Setter(DIRECTORY_EXTENSION)
 	public void setDirectoryExtension(String extension);
 
-	public abstract class DirectoryBasedFlexoIODelegateImpl extends FileFlexoIODelegateImpl implements DirectoryBasedFlexoIODelegate {
+	public abstract class DirectoryBasedIODelegateImpl extends FileIODelegateImpl implements DirectoryBasedIODelegate {
 
-		private final Logger logger = Logger.getLogger(DirectoryBasedFlexoIODelegateImpl.class.getPackage().getName());
+		private final Logger logger = Logger.getLogger(DirectoryBasedIODelegateImpl.class.getPackage().getName());
 
 		private File directory;
 
-		public static DirectoryBasedFlexoIODelegate makeDirectoryBasedFlexoIODelegate(File containerDir, String baseName,
+		public static DirectoryBasedIODelegate makeDirectoryBasedFlexoIODelegate(File containerDir, String baseName,
 				String directoryExtension, String fileExtension, ModelFactory factory) {
-			DirectoryBasedFlexoIODelegate fileIODelegate = factory.newInstance(DirectoryBasedFlexoIODelegate.class);
+			DirectoryBasedIODelegate fileIODelegate = factory.newInstance(DirectoryBasedIODelegate.class);
 			fileIODelegate.setDirectoryExtension(directoryExtension);
 			fileIODelegate.setFileExtension(fileExtension);
 			File directory = new File(containerDir, baseName + directoryExtension);

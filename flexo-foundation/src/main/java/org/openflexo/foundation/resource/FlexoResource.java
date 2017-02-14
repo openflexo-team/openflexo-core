@@ -308,10 +308,10 @@ public interface FlexoResource<RD extends ResourceData<RD>> extends FlexoObject,
 	public void removeFromDependencies(FlexoResource<?> resource);
 
 	@Getter(value = FLEXO_IO_DELEGATE, inverse = FlexoIODelegate.FLEXO_RESOURCE)
-	public FlexoIODelegate<?> getFlexoIODelegate();
+	public FlexoIODelegate<?> getIODelegate();
 
 	@Setter(FLEXO_IO_DELEGATE)
-	public void setFlexoIODelegate(FlexoIODelegate<?> delegate);
+	public void setIODelegate(FlexoIODelegate<?> delegate);
 
 	/**
 	 * Return flag indicating if this resource is loaded

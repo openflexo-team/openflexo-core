@@ -109,7 +109,7 @@ public class TestCreateVirtualModel extends OpenflexoTestCase {
 		// assertTrue(newViewPointResource.getDirectory().exists());
 		// assertTrue(newViewPointResource.getFile().exists());
 		assertTrue(newViewPointResource.getDirectory() != null);
-		assertTrue(newViewPointResource.getFlexoIODelegate().exists());
+		assertTrue(newViewPointResource.getIODelegate().exists());
 
 		assertEquals(newViewPoint, newViewPoint.getViewPoint());
 		assertEquals(newViewPoint, newViewPoint.getVirtualModel());
@@ -141,7 +141,7 @@ public class TestCreateVirtualModel extends OpenflexoTestCase {
 		assertTrue(ResourceLocator
 				.retrieveResourceAsFile(((VirtualModelResource) newVirtualModel.getResource()).getDirectory())
 				.exists());
-		assertTrue(((VirtualModelResource) newVirtualModel.getResource()).getFlexoIODelegate().exists());
+		assertTrue(((VirtualModelResource) newVirtualModel.getResource()).getIODelegate().exists());
 
 		assertEquals(newViewPoint, newVirtualModel.getViewPoint());
 		assertEquals(newVirtualModel, newVirtualModel.getVirtualModel());

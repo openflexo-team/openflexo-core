@@ -10,7 +10,7 @@ import org.eclipse.jgit.dircache.DirCacheEntry;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevCommit;
-import org.openflexo.foundation.resource.FlexoIOGitDelegate.FlexoIOGitDelegateImpl;
+import org.openflexo.foundation.resource.GitIODelegate.GitIODelegateImpl;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.Import;
 import org.openflexo.model.annotations.Imports;
@@ -18,9 +18,9 @@ import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.factory.ModelFactory;
 
 @ModelEntity
-@Imports({ @Import(DirectoryBasedFlexoIOGitDelegate.class) })
-@ImplementationClass(FlexoIOGitDelegateImpl.class)
-public interface FlexoIOGitDelegate extends FileFlexoIODelegate {
+@Imports({ @Import(DirectoryBasedGitIODelegate.class) })
+@ImplementationClass(GitIODelegateImpl.class)
+public interface GitIODelegate extends FileIODelegate {
 
 	public void setRepository(Repository repository);
 
@@ -34,7 +34,7 @@ public interface FlexoIOGitDelegate extends FileFlexoIODelegate {
 
 	public Git getGit();
 
-	public abstract class FlexoIOGitDelegateImpl extends FileFlexoIODelegateImpl implements FlexoIOGitDelegate {
+	public abstract class GitIODelegateImpl extends FileIODelegateImpl implements GitIODelegate {
 
 		// private static final FileSystemResourceLocatorImpl FS_RESOURCE_LOCATOR = new FileSystemResourceLocatorImpl();
 
@@ -44,9 +44,9 @@ public interface FlexoIOGitDelegate extends FileFlexoIODelegate {
 		private Repository repository;
 		// private Git git;
 
-		public static FlexoIOGitDelegate makeFlexoIOGitDelegate(File file, ModelFactory factory, /*File workTree, */ Repository repository)
+		public static GitIODelegate makeFlexoIOGitDelegate(File file, ModelFactory factory, /*File workTree, */ Repository repository)
 				throws IOException {
-			FlexoIOGitDelegate fileIODelegate = factory.newInstance(FlexoIOGitDelegate.class);
+			GitIODelegate fileIODelegate = factory.newInstance(GitIODelegate.class);
 			// Set the gitRepository linked to this file
 			fileIODelegate.setRepository(repository);
 			fileIODelegate.setFile(file/*new File(repository.getWorkTree(), name)*/);

@@ -42,7 +42,7 @@ import java.awt.Image;
 import java.awt.Window;
 import java.beans.PropertyChangeSupport;
 
-import org.openflexo.foundation.resource.FileFlexoIODelegate;
+import org.openflexo.foundation.resource.FileIODelegate;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.icon.ImageIconResource;
 import org.openflexo.toolbox.HasPropertyChangeSupport;
@@ -106,8 +106,8 @@ public class ConflictedResourceEditor implements HasPropertyChangeSupport {
 	}
 
 	public String getLocation(FlexoResource<?> resource) {
-		if (resource != null && resource.getFlexoIODelegate() instanceof FileFlexoIODelegate) {
-			FileFlexoIODelegate delegate = (FileFlexoIODelegate) (resource.getFlexoIODelegate());
+		if (resource != null && resource.getIODelegate() instanceof FileIODelegate) {
+			FileIODelegate delegate = (FileIODelegate) (resource.getIODelegate());
 			return delegate.getFile().getAbsolutePath();
 		}
 		return "";

@@ -48,8 +48,8 @@ import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.resource.CannotRenameException;
-import org.openflexo.foundation.resource.DirectoryBasedFlexoIODelegate;
-import org.openflexo.foundation.resource.FileFlexoIODelegate;
+import org.openflexo.foundation.resource.DirectoryBasedIODelegate;
+import org.openflexo.foundation.resource.FileIODelegate;
 import org.openflexo.foundation.resource.PamelaResourceImpl;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
@@ -126,8 +126,8 @@ public abstract class AbstractVirtualModelResourceImpl<VM extends AbstractVirtua
 
 	@Override
 	public Resource getDirectory() {
-		if (getFlexoIODelegate() != null && getFlexoIODelegate().getSerializationArtefactAsResource() != null) {
-			return getFlexoIODelegate().getSerializationArtefactAsResource().getContainer();
+		if (getIODelegate() != null && getIODelegate().getSerializationArtefactAsResource() != null) {
+			return getIODelegate().getSerializationArtefactAsResource().getContainer();
 		}
 		return null;
 
@@ -148,11 +148,11 @@ public abstract class AbstractVirtualModelResourceImpl<VM extends AbstractVirtua
 	}
 
 	public String getDirectoryPath() {
-		if (getFlexoIODelegate() instanceof DirectoryBasedFlexoIODelegate) {
-			return ((DirectoryBasedFlexoIODelegate) getFlexoIODelegate()).getDirectory().getAbsolutePath();
+		if (getIODelegate() instanceof DirectoryBasedIODelegate) {
+			return ((DirectoryBasedIODelegate) getIODelegate()).getDirectory().getAbsolutePath();
 		}
-		else if (getFlexoIODelegate() instanceof FileFlexoIODelegate) {
-			return ((FileFlexoIODelegate) getFlexoIODelegate()).getFile().getParentFile().getAbsolutePath();
+		else if (getIODelegate() instanceof FileIODelegate) {
+			return ((FileIODelegate) getIODelegate()).getFile().getParentFile().getAbsolutePath();
 		}
 		return null;
 	}

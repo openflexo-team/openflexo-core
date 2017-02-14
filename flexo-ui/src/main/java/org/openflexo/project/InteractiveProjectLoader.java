@@ -53,7 +53,7 @@ import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.ProjectLoader;
 import org.openflexo.foundation.nature.ProjectNature;
-import org.openflexo.foundation.resource.FileFlexoIODelegate;
+import org.openflexo.foundation.resource.FileIODelegate;
 import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.resource.SaveResourceExceptionList;
 import org.openflexo.foundation.resource.SaveResourcePermissionDeniedException;
@@ -210,12 +210,12 @@ public class InteractiveProjectLoader extends ProjectLoader {
 	}
 
 	private static void informUserAboutPermissionDeniedException(SaveResourcePermissionDeniedException e) {
-		if (e instanceof FileFlexoIODelegate && ((FileFlexoIODelegate) e).getFile().isDirectory()) {
+		if (e instanceof FileIODelegate && ((FileIODelegate) e).getFile().isDirectory()) {
 			FlexoController.showError(FlexoLocalization.getMainLocalizer().localizedForKey("permission_denied"),
 					FlexoLocalization.getMainLocalizer().localizedForKey("project_was_not_properly_saved_permission_denied_directory")
 							+ "\n" + e.toString());
 		}
-		else if (e instanceof FileFlexoIODelegate) {
+		else if (e instanceof FileIODelegate) {
 			FlexoController.showError(FlexoLocalization.getMainLocalizer().localizedForKey("permission_denied"),
 					FlexoLocalization.getMainLocalizer().localizedForKey("project_was_not_properly_saved_permission_denied_file") + "\n"
 							+ e.toString());

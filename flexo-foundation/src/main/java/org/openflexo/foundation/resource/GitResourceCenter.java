@@ -46,8 +46,8 @@ import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
-import org.openflexo.foundation.resource.DirectoryBasedFlexoIOGitDelegate.DirectoryBasedFlexoIOGitDelegateImpl;
-import org.openflexo.foundation.resource.FlexoIOGitDelegate.FlexoIOGitDelegateImpl;
+import org.openflexo.foundation.resource.DirectoryBasedGitIODelegate.DirectoryBasedGitIODelegateImpl;
+import org.openflexo.foundation.resource.GitIODelegate.GitIODelegateImpl;
 import org.openflexo.toolbox.FileUtils;
 import org.openflexo.toolbox.FlexoVersion;
 import org.openflexo.toolbox.IProgress;
@@ -139,9 +139,8 @@ public class GitResourceCenter extends FileSystemBasedResourceCenter {
 	}
 
 	@Override
-	public FlexoIOGitDelegate makeFlexoIODelegate(File serializationArtefact, FlexoResourceFactory<?, ?, ?> resourceFactory)
-			throws IOException {
-		return FlexoIOGitDelegateImpl.makeFlexoIOGitDelegate(serializationArtefact, resourceFactory, getGitRepository());
+	public GitIODelegate makeFlexoIODelegate(File serializationArtefact, FlexoResourceFactory<?, ?, ?> resourceFactory) throws IOException {
+		return GitIODelegateImpl.makeFlexoIOGitDelegate(serializationArtefact, resourceFactory, getGitRepository());
 	}
 
 	@Override
@@ -149,7 +148,7 @@ public class GitResourceCenter extends FileSystemBasedResourceCenter {
 			String fileExtension, FlexoResourceFactory<?, ?, ?> resourceFactory) {
 		String baseName = serializationArtefact.getName().substring(0,
 				serializationArtefact.getName().length() - directoryExtension.length());
-		return DirectoryBasedFlexoIOGitDelegateImpl.makeDirectoryBasedFlexoIOGitDelegate(serializationArtefact.getParentFile(), baseName,
+		return DirectoryBasedGitIODelegateImpl.makeDirectoryBasedFlexoIOGitDelegate(serializationArtefact.getParentFile(), baseName,
 				directoryExtension, fileExtension, resourceFactory);
 	}
 
@@ -158,11 +157,11 @@ public class GitResourceCenter extends FileSystemBasedResourceCenter {
 			ResourceRepository<R, File> resourceRepository) {
 
 		File candidateFile = null;
-		if (ioDelegate instanceof DirectoryBasedFlexoIOGitDelegate) {
-			candidateFile = ((DirectoryBasedFlexoIOGitDelegate) ioDelegate).getDirectory();
+		if (ioDelegate instanceof DirectoryBasedGitIODelegate) {
+			candidateFile = ((DirectoryBasedGitIODelegate) ioDelegate).getDirectory();
 		}
-		else if (ioDelegate instanceof FlexoIOGitDelegate) {
-			candidateFile = ((FlexoIOGitDelegate) ioDelegate).getFile();
+		else if (ioDelegate instanceof GitIODelegate) {
+			candidateFile = ((GitIODelegate) ioDelegate).getFile();
 		}
 
 		if (candidateFile != null) {
