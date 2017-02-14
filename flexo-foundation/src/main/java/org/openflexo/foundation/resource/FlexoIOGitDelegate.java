@@ -34,9 +34,7 @@ public interface FlexoIOGitDelegate extends FileFlexoIODelegate {
 
 	public Git getGit();
 
-	// @Implementation
-	// TODO: why this does not extends FileFlexoIODelegateImpl ????
-	public abstract class FlexoIOGitDelegateImpl extends FlexoIOStreamDelegateImpl<File> implements FlexoIOGitDelegate {
+	public abstract class FlexoIOGitDelegateImpl extends FileFlexoIODelegateImpl implements FlexoIOGitDelegate {
 
 		// private static final FileSystemResourceLocatorImpl FS_RESOURCE_LOCATOR = new FileSystemResourceLocatorImpl();
 
