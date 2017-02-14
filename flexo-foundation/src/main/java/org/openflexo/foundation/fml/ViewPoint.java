@@ -46,7 +46,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.logging.Logger;
-
 import org.jdom2.Attribute;
 import org.jdom2.Document;
 import org.jdom2.Element;
@@ -113,52 +112,52 @@ import org.openflexo.toolbox.StringUtils;
 public interface ViewPoint extends AbstractVirtualModel<ViewPoint> {
 
 	@PropertyIdentifier(type = String.class)
-	public static final String VIEW_POINT_URI_KEY = "viewPointURI";
+	String VIEW_POINT_URI_KEY = "viewPointURI";
 	@PropertyIdentifier(type = FlexoVersion.class)
-	public static final String VERSION_KEY = "version";
+	String VERSION_KEY = "version";
 	@PropertyIdentifier(type = FlexoVersion.class)
-	public static final String MODEL_VERSION_KEY = "modelVersion";
+	String MODEL_VERSION_KEY = "modelVersion";
 	@PropertyIdentifier(type = ViewPointLocalizedDictionary.class)
-	public static final String LOCALIZED_DICTIONARY_KEY = "localizedDictionary";
+	String LOCALIZED_DICTIONARY_KEY = "localizedDictionary";
 	@PropertyIdentifier(type = VirtualModel.class, cardinality = Cardinality.LIST)
-	public static final String VIRTUAL_MODELS_KEY = "virtualModels";
+	String VIRTUAL_MODELS_KEY = "virtualModels";
 
 	@Getter(value = VIEW_POINT_URI_KEY)
 	@XMLAttribute(xmlTag = "uri")
-	public String getViewPointURI();
+	String getViewPointURI();
 
 	@Setter(VIEW_POINT_URI_KEY)
-	public void setViewPointURI(String viewPointURI);
+	void setViewPointURI(String viewPointURI);
 
 	@Override
 	@Getter(value = VERSION_KEY, isStringConvertable = true)
 	@XMLAttribute
-	public FlexoVersion getVersion();
+	FlexoVersion getVersion();
 
 	@Override
 	@Setter(VERSION_KEY)
-	public void setVersion(FlexoVersion version);
+	void setVersion(FlexoVersion version);
 
 	@Override
 	@Getter(value = MODEL_VERSION_KEY, isStringConvertable = true)
 	@XMLAttribute
-	public FlexoVersion getModelVersion();
+	FlexoVersion getModelVersion();
 
 	@Override
 	@Setter(MODEL_VERSION_KEY)
-	public void setModelVersion(FlexoVersion modelVersion);
+	void setModelVersion(FlexoVersion modelVersion);
 
 	@Override
 	@Getter(value = LOCALIZED_DICTIONARY_KEY, inverse = ViewPointLocalizedDictionary.OWNER_KEY)
-	public ViewPointLocalizedDictionary getLocalizedDictionary();
+	ViewPointLocalizedDictionary getLocalizedDictionary();
 
 	@Setter(LOCALIZED_DICTIONARY_KEY)
-	public void setLocalizedDictionary(ViewPointLocalizedDictionary localizedDictionary);
+	void setLocalizedDictionary(ViewPointLocalizedDictionary localizedDictionary);
 
 	/**
 	 * Retrieves the type of a View conform to this ViewPoint
 	 */
-	public ViewType getViewType();
+	ViewType getViewType();
 
 	/**
 	 * Return FlexoConcept matching supplied id represented as a string, which could be either the name of FlexoConcept, or its URI
@@ -167,7 +166,7 @@ public interface ViewPoint extends AbstractVirtualModel<ViewPoint> {
 	 * @return
 	 */
 	@Override
-	public FlexoConcept getFlexoConcept(String flexoConceptId);
+	FlexoConcept getFlexoConcept(String flexoConceptId);
 
 	/**
 	 * Return all loaded {@link VirtualModel} defined in this {@link ViewPoint}<br>
@@ -177,7 +176,7 @@ public interface ViewPoint extends AbstractVirtualModel<ViewPoint> {
 	 * @return
 	 */
 	@Getter(value = VIRTUAL_MODELS_KEY, cardinality = Cardinality.LIST, inverse = VirtualModel.VIEW_POINT_KEY, ignoreType = true)
-	public List<VirtualModel> getVirtualModels();
+	List<VirtualModel> getVirtualModels();
 
 	/**
 	 * Return all {@link VirtualModel} defined in this {@link ViewPoint}<br>
@@ -185,29 +184,29 @@ public interface ViewPoint extends AbstractVirtualModel<ViewPoint> {
 	 * 
 	 * @return
 	 */
-	public List<VirtualModel> getVirtualModels(boolean forceLoad);
+	List<VirtualModel> getVirtualModels(boolean forceLoad);
 
 	@Setter(VIRTUAL_MODELS_KEY)
-	public void setVirtualModels(List<VirtualModel> virtualModels);
+	void setVirtualModels(List<VirtualModel> virtualModels);
 
 	@Adder(VIRTUAL_MODELS_KEY)
-	public void addToVirtualModels(VirtualModel virtualModel);
+	void addToVirtualModels(VirtualModel virtualModel);
 
 	@Remover(VIRTUAL_MODELS_KEY)
-	public void removeFromVirtualModels(VirtualModel virtualModel);
+	void removeFromVirtualModels(VirtualModel virtualModel);
 
-	public VirtualModel getVirtualModelNamed(String virtualModelNameOrURI);
+	VirtualModel getVirtualModelNamed(String virtualModelNameOrURI);
 
-	public boolean hasNature(ViewPointNature nature);
+	boolean hasNature(ViewPointNature nature);
 
 	@Override
-	public ViewPointBindingModel getBindingModel();
+	ViewPointBindingModel getBindingModel();
 
 	/**
 	 * Load eventually unloaded VirtualModels<br>
 	 * After this call return, we can safely assert that all {@link VirtualModel} are loaded.
 	 */
-	public void loadVirtualModelsWhenUnloaded();
+	void loadVirtualModelsWhenUnloaded();
 
 	/**
 	 * Default implementation for {@link ViewPoint}
@@ -215,7 +214,7 @@ public interface ViewPoint extends AbstractVirtualModel<ViewPoint> {
 	 * @author sylvain
 	 * 
 	 */
-	public static abstract class ViewPointImpl extends AbstractVirtualModelImpl<ViewPoint>implements ViewPoint {
+	abstract class ViewPointImpl extends AbstractVirtualModelImpl<ViewPoint>implements ViewPoint {
 
 		private static final Logger logger = Logger.getLogger(ViewPoint.class.getPackage().getName());
 
@@ -234,42 +233,6 @@ public interface ViewPoint extends AbstractVirtualModel<ViewPoint> {
 			super();
 			virtualModels = new ArrayList<VirtualModel>();
 		}
-
-		/*public static ViewPoint newViewPoint(String baseName, String viewpointURI, File containerDir, ViewPointLibrary library,
-				FlexoResourceCenter<?> resourceCenter) {
-			ViewPointResource vpRes = ViewPointResourceImpl.makeViewPointResource(baseName, viewpointURI, containerDir, resourceCenter,
-					library.getServiceManager());
-			ViewPointImpl viewpoint = (ViewPointImpl) vpRes.getFactory().newInstance(ViewPoint.class);
-			vpRes.setResourceData(viewpoint);
-			viewpoint.setResource(vpRes);
-			// And register it to the library
-			library.registerViewPoint(vpRes);
-			viewpoint.init(baseName, library);
-			try {
-				vpRes.save(null);
-			} catch (SaveResourceException e) {
-				e.printStackTrace();
-			}
-			return viewpoint;
-		}*/
-
-		/*
-		 * TODO Implements a method to handle gitResourceCenter
-		 */
-
-		/*public static ViewPoint newGitViewPoint(String baseName, String viewpointURI, File workTree, Repository gitRepository,
-				ViewPointLibrary library, FlexoResourceCenter<?> resourceCenter) throws IOException {
-			ViewPointResource vpRes = ViewPointResourceImpl.makeGitViewPointResource(baseName, viewpointURI, workTree, resourceCenter,
-					library.getServiceManager());
-			ViewPointImpl viewpoint = (ViewPointImpl) vpRes.getFactory().newInstance(ViewPoint.class);
-			vpRes.setResourceData(viewpoint);
-			viewpoint.setResource(vpRes);
-			// And register it to the library
-			library.registerViewPoint(vpRes);
-			viewpoint.init(baseName, library);
-		
-			return viewpoint;
-		}*/
 
 		public void init(String baseName, /* File viewpointDir, File xmlFile,*/ViewPointLibrary library/*, ViewPointFolder folder*/) {
 			logger.info("Registering viewpoint " + baseName + " URI=" + getViewPointURI());
@@ -687,7 +650,7 @@ public interface ViewPoint extends AbstractVirtualModel<ViewPoint> {
 	}
 
 	@DefineValidationRule
-	public static class ViewPointMustHaveAName extends ValidationRule<ViewPointMustHaveAName, ViewPoint> {
+	class ViewPointMustHaveAName extends ValidationRule<ViewPointMustHaveAName, ViewPoint> {
 		public ViewPointMustHaveAName() {
 			super(ViewPoint.class, "viewpoint_must_have_a_name");
 		}
@@ -702,7 +665,7 @@ public interface ViewPoint extends AbstractVirtualModel<ViewPoint> {
 	}
 
 	@DefineValidationRule
-	public static class ViewPointURIMustBeValid extends ValidationRule<ViewPointURIMustBeValid, ViewPoint> {
+	class ViewPointURIMustBeValid extends ValidationRule<ViewPointURIMustBeValid, ViewPoint> {
 		public ViewPointURIMustBeValid() {
 			super(ViewPoint.class, "viewpoint_uri_must_be_valid");
 		}
