@@ -45,7 +45,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.openflexo.model.annotations.Getter;
-import org.openflexo.model.annotations.Implementation;
+import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
@@ -66,6 +66,7 @@ import org.openflexo.toolbox.JarInDirClassLoader;
  */
 @ModelEntity
 @XMLElement
+@ImplementationClass(DirectoryBasedFlexoIODelegate.DirectoryBasedFlexoIODelegateImpl.class)
 public interface DirectoryBasedFlexoIODelegate extends FileFlexoIODelegate {
 
 	public static final String FILE_EXTENSION = "fileExtension";
@@ -107,7 +108,6 @@ public interface DirectoryBasedFlexoIODelegate extends FileFlexoIODelegate {
 	@Setter(DIRECTORY_EXTENSION)
 	public void setDirectoryExtension(String extension);
 
-	@Implementation
 	public abstract class DirectoryBasedFlexoIODelegateImpl extends FileFlexoIODelegateImpl implements DirectoryBasedFlexoIODelegate {
 
 		private final Logger logger = Logger.getLogger(DirectoryBasedFlexoIODelegateImpl.class.getPackage().getName());
@@ -126,11 +126,6 @@ public interface DirectoryBasedFlexoIODelegate extends FileFlexoIODelegate {
 			return fileIODelegate;
 		}
 
-		/*@Override
-		public File getSerializationArtefact() {
-			return getDirectory();
-		}*/
-
 		@Override
 		public File getDirectory() {
 			return directory;
@@ -141,9 +136,6 @@ public interface DirectoryBasedFlexoIODelegate extends FileFlexoIODelegate {
 			if ((directory == null && this.directory != null) || (directory != null && !directory.equals(this.directory))) {
 				File oldValue = this.directory;
 				this.directory = directory;
-				/*if (!this.directory.exists()) {
-					this.directory.mkdirs();
-				}*/
 				getPropertyChangeSupport().firePropertyChange("directory", oldValue, directory);
 			}
 		}
