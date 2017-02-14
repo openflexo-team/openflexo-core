@@ -296,8 +296,9 @@ public abstract class ApplicationContext extends DefaultFlexoServiceManager impl
 	@Override
 	protected FlexoResourceCenterService createResourceCenterService() {
 		registerPreferencesService();
-		return DefaultResourceCenterService
-				.getNewInstance(getPreferencesService().getResourceCenterPreferences().getResourceCenterEntries());
+		FlexoResourceCenterService returned = DefaultResourceCenterService
+				.getNewInstance(getPreferencesService().getResourceCenterPreferences().getResourceCenterEntries(), Flexo.isDev);
+		return returned;
 	}
 
 	@Override

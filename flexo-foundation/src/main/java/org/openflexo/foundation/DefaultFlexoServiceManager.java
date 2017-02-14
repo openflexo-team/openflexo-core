@@ -131,7 +131,7 @@ public class DefaultFlexoServiceManager extends FlexoServiceManager {
 
 	@Override
 	protected FlexoResourceCenterService createResourceCenterService() {
-		return DefaultResourceCenterService.getNewInstance();
+		return DefaultResourceCenterService.getNewInstance(false);
 	}
 
 	@Override

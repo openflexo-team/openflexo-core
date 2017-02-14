@@ -53,18 +53,14 @@ public class TestVirtualModelTechnologyAdapter {
 
 	@Test
 	public void test() {
-		FlexoResourceCenterService rcService = DefaultResourceCenterService
-				.getNewInstance();
-		TechnologyAdapterService taService = DefaultTechnologyAdapterService
-				.getNewInstance(rcService);
-		((DefaultTechnologyAdapterService) taService)
-				.loadAvailableTechnologyAdapters();
+		FlexoResourceCenterService rcService = DefaultResourceCenterService.getNewInstance(true);
+		TechnologyAdapterService taService = DefaultTechnologyAdapterService.getNewInstance(rcService);
+		((DefaultTechnologyAdapterService) taService).loadAvailableTechnologyAdapters();
 		for (TechnologyAdapter ta : taService.getTechnologyAdapters()) {
 			System.out.println("> " + ta);
 		}
 		assertTrue(taService.getTechnologyAdapters().size() > 0);
-		assertNotNull(taService
-				.getTechnologyAdapter(FMLTechnologyAdapter.class));
+		assertNotNull(taService.getTechnologyAdapter(FMLTechnologyAdapter.class));
 
 	}
 }

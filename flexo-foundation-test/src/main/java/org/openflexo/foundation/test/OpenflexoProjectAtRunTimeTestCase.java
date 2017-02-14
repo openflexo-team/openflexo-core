@@ -71,8 +71,7 @@ import org.openflexo.model.factory.ModelFactory;
 import org.openflexo.toolbox.FileUtils;
 
 /**
- * Provides a JUnit 4 generic environment with a {@link FlexoProject} for
- * testing purposes<br>
+ * Provides a JUnit 4 generic environment with a {@link FlexoProject} for testing purposes<br>
  * 
  * @see OpenflexoTestCase
  */
@@ -80,13 +79,11 @@ public abstract class OpenflexoProjectAtRunTimeTestCase extends OpenflexoTestCas
 
 	/**
 	 * !!!!! IMPORTANT !!!!!<br>
-	 * Do not forget to set back this flag to true when committing into a
-	 * production environment
+	 * Do not forget to set back this flag to true when committing into a production environment
 	 */
 	public static final boolean DELETE_PROJECT_AFTER_TEST_EXECUTION = false;
 
-	private static final Logger logger = FlexoLogger
-			.getLogger(OpenflexoProjectAtRunTimeTestCase.class.getPackage().getName());
+	private static final Logger logger = FlexoLogger.getLogger(OpenflexoProjectAtRunTimeTestCase.class.getPackage().getName());
 
 	protected static FlexoEditor _editor;
 	protected static FlexoProject _project;
@@ -145,7 +142,8 @@ public abstract class OpenflexoProjectAtRunTimeTestCase extends OpenflexoTestCas
 		retval = new File("tmp/tests/FlexoResources/", resourceRelativeName);
 		if (retval.exists()) {
 			return retval;
-		} else if (logger.isLoggable(Level.WARNING)) {
+		}
+		else if (logger.isLoggable(Level.WARNING)) {
 			logger.warning("Could not find resource " + resourceRelativeName);
 		}
 		return null;
@@ -169,7 +167,7 @@ public abstract class OpenflexoProjectAtRunTimeTestCase extends OpenflexoTestCas
 			entry.setDirectory(FileUtils.createTempDirectory(name, "ResourceCenter"));
 			List<ResourceCenterEntry<?>> rcList = new ArrayList<ResourceCenterEntry<?>>();
 			rcList.add(entry);
-			return DefaultResourceCenterService.getNewInstance(rcList);
+			return DefaultResourceCenterService.getNewInstance(rcList, true);
 		} catch (IOException e) {
 			e.printStackTrace();
 			fail();
@@ -235,8 +233,7 @@ public abstract class OpenflexoProjectAtRunTimeTestCase extends OpenflexoTestCas
 	protected FlexoEditor reloadProject(File prjDir) {
 		try {
 			FlexoEditor anEditor = null;
-			assertNotNull(anEditor = FlexoProject.openProject(prjDir,
-					EDITOR_FACTORY, /* new DefaultProjectLoadingHandler(), */
+			assertNotNull(anEditor = FlexoProject.openProject(prjDir, EDITOR_FACTORY, /* new DefaultProjectLoadingHandler(), */
 					serviceManager, null));
 			// The next line is really a trouble maker and eventually causes
 			// more problems than solutions. FlexoProject can't be renamed on

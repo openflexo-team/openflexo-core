@@ -52,9 +52,8 @@ import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.factory.AccessibleProxyObject;
 
 /**
- * This service implements access policy to resource centers in the context of a
- * {@link FlexoServiceManager} (which, in interactive mode, is an
- * ApplicationContext)
+ * This service implements access policy to resource centers in the context of a {@link FlexoServiceManager} (which, in interactive mode, is
+ * an ApplicationContext)
  * 
  * One {@link UserResourceCenter} is declared to be the user resource center
  * 
@@ -83,4 +82,9 @@ public interface FlexoResourceCenterService extends FlexoService, AccessibleProx
 	 * Save all locations for registered resource centers on disk
 	 */
 	public void storeDirectoryResourceCenterLocations();
+
+	public boolean isDevMode();
+
+	public void setDevMode(boolean devMode);
+
 }

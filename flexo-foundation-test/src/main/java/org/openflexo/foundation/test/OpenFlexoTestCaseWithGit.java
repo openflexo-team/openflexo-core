@@ -36,17 +36,14 @@ public class OpenFlexoTestCaseWithGit extends OpenflexoProjectAtRunTimeTestCase 
 	protected static final String TEST_RESOURCE_CENTER_URI = "http://openflexo.org/test/TestGitResourceCenter";
 
 	/**
-	 * Instantiate a default {@link FlexoServiceManager} well suited for test
-	 * purpose<br>
-	 * FML and FML@RT technology adapters are activated in returned
-	 * {@link FlexoServiceManager}, as well as technology adapters whose classes
-	 * are supplied as varargs arguments
+	 * Instantiate a default {@link FlexoServiceManager} well suited for test purpose<br>
+	 * FML and FML@RT technology adapters are activated in returned {@link FlexoServiceManager}, as well as technology adapters whose
+	 * classes are supplied as varargs arguments
 	 * 
 	 * @param taClasses
 	 * @return a newly created {@link FlexoServiceManager}
 	 */
-	protected static FlexoServiceManager instanciateTestServiceManager(
-			Class<? extends TechnologyAdapter>... taClasses) {
+	protected static FlexoServiceManager instanciateTestServiceManager(Class<? extends TechnologyAdapter>... taClasses) {
 		File previousResourceCenterDirectoryToRemove = null;
 		if (testResourceCenterDirectory != null && testResourceCenterDirectory.exists()) {
 			previousResourceCenterDirectoryToRemove = testResourceCenterDirectory;
@@ -76,8 +73,7 @@ public class OpenFlexoTestCaseWithGit extends OpenflexoProjectAtRunTimeTestCase 
 			protected FlexoResourceCenterService createResourceCenterService() {
 				try {
 					File tempFile = File.createTempFile("Temp", "");
-					testResourceCenterDirectory = new File(tempFile.getParentFile(),
-							tempFile.getName() + "TestResourceCenter");
+					testResourceCenterDirectory = new File(tempFile.getParentFile(), tempFile.getName() + "TestResourceCenter");
 					tempFile.delete();
 					testResourceCenterDirectory.mkdirs();
 
@@ -110,7 +106,7 @@ public class OpenFlexoTestCaseWithGit extends OpenflexoProjectAtRunTimeTestCase 
 					 * testResourceCenterDirectory); }
 					 */
 
-					FlexoResourceCenterService rcService = DefaultResourceCenterService.getNewInstance(); //
+					FlexoResourceCenterService rcService = DefaultResourceCenterService.getNewInstance(true); //
 					// rcService.addToResourceCenters(resourceCenter = new
 					// DirectoryResourceCenter(
 					// testResourceCenterDirectory, TEST_RESOURCE_CENTER_URI,
@@ -122,8 +118,8 @@ public class OpenFlexoTestCaseWithGit extends OpenflexoProjectAtRunTimeTestCase 
 					System.out.println("testResourceCenterDirectory=" + testResourceCenterDirectory);
 
 					try {
-						rcService.addToResourceCenters(gitResourceCenter = new GitResourceCenter(
-								testResourceCenterDirectory, testResourceCenterDirectory, rcService));
+						rcService.addToResourceCenters(gitResourceCenter = new GitResourceCenter(testResourceCenterDirectory,
+								testResourceCenterDirectory, rcService));
 						gitResourceCenter.setDefaultBaseURI(TEST_RESOURCE_CENTER_URI);
 					} catch (IllegalStateException | GitAPIException e) {
 						e.printStackTrace();
@@ -151,8 +147,8 @@ public class OpenFlexoTestCaseWithGit extends OpenflexoProjectAtRunTimeTestCase 
 		taService.activateTechnologyAdapter(taService.getTechnologyAdapter(FMLRTTechnologyAdapter.class));
 
 		for (Class<? extends TechnologyAdapter> technologyAdapterClass : taClasses) {
-			serviceManager.activateTechnologyAdapter(
-					serviceManager.getTechnologyAdapterService().getTechnologyAdapter(technologyAdapterClass));
+			serviceManager
+					.activateTechnologyAdapter(serviceManager.getTechnologyAdapterService().getTechnologyAdapter(technologyAdapterClass));
 		}
 
 		if (previousResourceCenterDirectoryToRemove != null) {

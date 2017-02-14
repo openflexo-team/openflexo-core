@@ -90,22 +90,19 @@ import org.openflexo.toolbox.FileUtils;
 import junit.framework.AssertionFailedError;
 
 /**
- * Provides a JUnit 4 generic environment of Openflexo-core for testing
- * purposes<br>
+ * Provides a JUnit 4 generic environment of Openflexo-core for testing purposes<br>
  * 
- * Note that there is a static variable called {@link #serviceManager} which is
- * set while using {@link #instanciateTestServiceManager(Class...)}.<br>
- * The purpose of that variable is to share the same {@link FlexoServiceManager}
- * while chaining some tests using @TestOrder annotation For same reasons, a
- * static {@link #resourceCenter} variable is also managed in this class
+ * Note that there is a static variable called {@link #serviceManager} which is set while using
+ * {@link #instanciateTestServiceManager(Class...)}.<br>
+ * The purpose of that variable is to share the same {@link FlexoServiceManager} while chaining some tests using @TestOrder annotation For
+ * same reasons, a static {@link #resourceCenter} variable is also managed in this class
  * 
  */
 public abstract class OpenflexoTestCase {
 
 	/**
 	 * !!!!! IMPORTANT !!!!!<br>
-	 * Do not forget to set back this flag to true when committing into a
-	 * production environment
+	 * Do not forget to set back this flag to true when committing into a production environment
 	 */
 	public static final boolean DELETE_TEST_RESOURCE_CENTER_AFTER_TEST_EXECUTION = true;
 
@@ -114,8 +111,7 @@ public abstract class OpenflexoTestCase {
 	protected static final String RESOURCE_CENTER_URI = "http://openflexo.org/test/TestResourceCenter";
 
 	/**
-	 * ResourceCenter beeing statically referenced while using
-	 * makeNewDirectoryResourceCenter() methods
+	 * ResourceCenter beeing statically referenced while using makeNewDirectoryResourceCenter() methods
 	 */
 	private static DirectoryResourceCenter resourceCenter;
 
@@ -205,23 +201,21 @@ public abstract class OpenflexoTestCase {
 		retval = new File("tmp/tests/FlexoResources/", resourceRelativeName);
 		if (retval.exists()) {
 			return retval;
-		} else if (logger.isLoggable(Level.WARNING)) {
+		}
+		else if (logger.isLoggable(Level.WARNING)) {
 			logger.warning("Could not find resource " + resourceRelativeName);
 		}
 		return null;
 	}
 
 	/**
-	 * Instantiate a default {@link FlexoServiceManager} well suited for test
-	 * purpose<br>
-	 * FML and FML@RT technology adapters are activated in returned
-	 * {@link FlexoServiceManager}<br>
+	 * Instantiate a default {@link FlexoServiceManager} well suited for test purpose<br>
+	 * FML and FML@RT technology adapters are activated in returned {@link FlexoServiceManager}<br>
 	 * Supplied technology adapters are also activated
 	 * 
 	 * @return a newly created {@link FlexoServiceManager}
 	 */
-	protected static FlexoServiceManager instanciateTestServiceManager(
-			Class<? extends TechnologyAdapter>... taClasses) {
+	protected static FlexoServiceManager instanciateTestServiceManager(Class<? extends TechnologyAdapter>... taClasses) {
 		File previousResourceCenterDirectoryToRemove = null;
 		if (testResourceCenterDirectory != null && testResourceCenterDirectory.exists()) {
 			previousResourceCenterDirectoryToRemove = testResourceCenterDirectory;
@@ -264,8 +258,8 @@ public abstract class OpenflexoTestCase {
 		}
 
 		for (Class<? extends TechnologyAdapter> technologyAdapterClass : taClasses) {
-			serviceManager.activateTechnologyAdapter(
-					serviceManager.getTechnologyAdapterService().getTechnologyAdapter(technologyAdapterClass));
+			serviceManager
+					.activateTechnologyAdapter(serviceManager.getTechnologyAdapterService().getTechnologyAdapter(technologyAdapterClass));
 		}
 
 		return serviceManager;
@@ -278,7 +272,7 @@ public abstract class OpenflexoTestCase {
 			entry.setDirectory(FileUtils.createTempDirectory(name, "ResourceCenter"));
 			List<ResourceCenterEntry<?>> rcList = new ArrayList<ResourceCenterEntry<?>>();
 			rcList.add(entry);
-			return DefaultResourceCenterService.getNewInstance(rcList);
+			return DefaultResourceCenterService.getNewInstance(rcList, true);
 		} catch (IOException e) {
 			e.printStackTrace();
 			fail();
@@ -290,8 +284,7 @@ public abstract class OpenflexoTestCase {
 	}
 
 	/**
-	 * Create a new empty DirectoryResourceCenter for service manager referenced
-	 * in static variable
+	 * Create a new empty DirectoryResourceCenter for service manager referenced in static variable
 	 * 
 	 * @return
 	 * @throws IOException
@@ -301,14 +294,12 @@ public abstract class OpenflexoTestCase {
 	}
 
 	/**
-	 * Create a new empty {@link DirectoryResourceCenter} for supplied
-	 * {@link FlexoServiceManager}
+	 * Create a new empty {@link DirectoryResourceCenter} for supplied {@link FlexoServiceManager}
 	 * 
 	 * @return
 	 * @throws IOException
 	 */
-	public static DirectoryResourceCenter makeNewDirectoryResourceCenter(FlexoServiceManager serviceManager)
-			throws IOException {
+	public static DirectoryResourceCenter makeNewDirectoryResourceCenter(FlexoServiceManager serviceManager) throws IOException {
 		File tempFile = File.createTempFile("Temp", "");
 		testResourceCenterDirectory = new File(tempFile.getParentFile(), tempFile.getName() + "TestResourceCenter");
 		tempFile.delete();
@@ -322,8 +313,7 @@ public abstract class OpenflexoTestCase {
 	protected void reloadResourceCenter(Resource oldRCDirectory) {
 		if (oldRCDirectory instanceof FileResourceImpl) {
 			File directory = ((FileResourceImpl) oldRCDirectory).getFile();
-			File newDirectory = new File(((FileSystemBasedResourceCenter) resourceCenter).getDirectory(),
-					directory.getName());
+			File newDirectory = new File(((FileSystemBasedResourceCenter) resourceCenter).getDirectory(), directory.getName());
 			newDirectory.mkdirs();
 			try {
 				FileUtils.copyContentDirToDir(directory, newDirectory);
@@ -344,9 +334,9 @@ public abstract class OpenflexoTestCase {
 	protected void assertNotModified(FlexoResource resource) {
 		try {
 			if (resource.isLoaded()) {
-				assertFalse("Resource " + resource.getURI() + " should not be modfied",
-						resource.getLoadedResourceData().isModified());
-			} else {
+				assertFalse("Resource " + resource.getURI() + " should not be modfied", resource.getLoadedResourceData().isModified());
+			}
+			else {
 				fail("Resource " + resource.getURI() + " should not be modified but is not even loaded");
 			}
 		} catch (AssertionFailedError e) {
@@ -358,9 +348,9 @@ public abstract class OpenflexoTestCase {
 	protected void assertModified(FlexoResource resource) {
 		try {
 			if (resource.isLoaded()) {
-				assertTrue("Resource " + resource.getURI() + " should be modified",
-						resource.getLoadedResourceData().isModified());
-			} else {
+				assertTrue("Resource " + resource.getURI() + " should be modified", resource.getLoadedResourceData().isModified());
+			}
+			else {
 				fail("Resource " + resource.getURI() + " should be modified but is not even loaded");
 			}
 		} catch (AssertionFailedError e) {
@@ -440,8 +430,8 @@ public abstract class OpenflexoTestCase {
 					message.append(" Missing: " + o);
 				}
 			}
-			throw new AssertionFailedError("AssertionFailedError when comparing lists, expected: " + set1 + " but was "
-					+ set2 + " Details = " + message);
+			throw new AssertionFailedError(
+					"AssertionFailedError when comparing lists, expected: " + set1 + " but was " + set2 + " Details = " + message);
 		}
 	}
 
