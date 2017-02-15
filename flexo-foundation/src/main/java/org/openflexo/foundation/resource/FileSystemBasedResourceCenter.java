@@ -51,13 +51,14 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.converter.FlexoObjectReferenceConverter;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
@@ -134,37 +135,33 @@ public abstract class FileSystemBasedResourceCenter extends ResourceRepository<F
 	 * Return (first when many) resource matching supplied File
 	 */
 	@Override
-	public <R extends FlexoResource<?>> R getResource(File aFile, Class<R> resourceClass) {
-		if (!FileUtils.directoryContainsFile(getRootDirectory(), aFile, true)) {
+	public <R extends FlexoResource<?>> R getResource(File resourceArtifact, Class<R> resourceClass) {
+		if (!FileUtils.directoryContainsFile(getRootDirectory(), resourceArtifact, true)) {
 			return null;
 		}
 
-		RepositoryFolder<?, File> folder = null;
 		try {
-			folder = getParentRepositoryFolder(aFile, false);
-		} catch (IOException e) {
-			e.printStackTrace();
-			return null;
-		}
+			// searches for parent folder.
+			RepositoryFolder<?, File> folder = getParentRepositoryFolder(resourceArtifact, false);
+			if (folder == null) { return null; }
 
-		if (folder == null) {
-			return null;
-		}
-
-		for (FlexoResource<?> r : folder.getResources()) {
-			if ((r.getIODelegate() instanceof FileIODelegate) && ((FileIODelegate) r.getIODelegate()).getFile().equals(aFile)) {
-				if (resourceClass.isAssignableFrom(r.getClass())) {
-					return (R) r;
+			for (FlexoResource<?> r : folder.getResources()) {
+				if (Objects.equals(r.getIODelegate().getSerializationArtefact(), resourceArtifact)) {
+					if (resourceClass.isInstance(r)) {
+						return resourceClass.cast(r);
+					}
+					logger.warning("Found resource matching file " + resourceArtifact + " but not of desired type: " + r.getClass() + " instead of " + resourceClass);
+					return null;
 				}
-				logger.warning("Found resource matching file " + aFile + " but not of desired type: " + r.getClass() + " instead of "
-						+ resourceClass);
-				return null;
 			}
+
+			// Cannot find the resource
+			return null;
+
+		} catch (IOException e) {
+			logger.log(Level.WARNING, "Error while getting parent folder for " + resourceArtifact, e);
+			return null;
 		}
-
-		// Cannot find the resource
-		return null;
-
 	}
 
 	@Override
