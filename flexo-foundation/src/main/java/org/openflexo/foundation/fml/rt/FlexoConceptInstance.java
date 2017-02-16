@@ -80,6 +80,8 @@ import org.openflexo.logging.FlexoLogger;
 import org.openflexo.model.annotations.Adder;
 import org.openflexo.model.annotations.CloningStrategy;
 import org.openflexo.model.annotations.CloningStrategy.StrategyType;
+import org.openflexo.model.annotations.DeserializationFinalizer;
+import org.openflexo.model.annotations.DeserializationInitializer;
 import org.openflexo.model.annotations.Embedded;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.Getter.Cardinality;
@@ -287,6 +289,12 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 	public String getStringRepresentation();
 
 	public boolean hasValidRenderer();
+
+	@DeserializationInitializer
+	public void initializeDeserialization(AbstractVirtualModelInstanceModelFactory<?> factory);
+
+	@DeserializationFinalizer
+	public void finalizeDeserialization();
 
 	public static abstract class FlexoConceptInstanceImpl extends VirtualModelInstanceObjectImpl implements FlexoConceptInstance {
 
@@ -1350,6 +1358,22 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 		@Override
 		public FlexoConceptInstance getFlexoConceptInstance() {
 			return this;
+		}
+
+		private AbstractVirtualModelInstanceModelFactory<?> deserializationFactory;
+
+		@Override
+		public void initializeDeserialization(AbstractVirtualModelInstanceModelFactory<?> factory) {
+			deserializationFactory = factory;
+		}
+
+		@Override
+		public void finalizeDeserialization() {
+			deserializationFactory = null;
+		}
+
+		public AbstractVirtualModelInstanceModelFactory<?> getDeserializationFactory() {
+			return deserializationFactory;
 		}
 
 	}
