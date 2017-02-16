@@ -83,21 +83,28 @@ public abstract interface TechnologySpecificAction<MS extends ModelSlot<?>, T> e
 	@PropertyIdentifier(type = ModelSlot.class)
 	public static final String MODEL_SLOT_KEY = "modelSlot";
 
+	@Deprecated
 	@Getter(value = MODEL_SLOT_KEY)
 	@XMLElement(primary = false)
 	public MS getModelSlot();
 
+	@Deprecated
 	@Setter(MODEL_SLOT_KEY)
 	public void setModelSlot(MS modelSlot);
 
+	@Deprecated
 	public <MS2 extends ModelSlot<?>> List<MS2> getAvailableModelSlots(Class<MS2> msType);
 
+	@Deprecated
 	public <MS2 extends ModelSlot<?>> List<MS2> getAvailableModelSlots();
 
+	@Deprecated
 	public List<FMLRTModelSlot> getAvailableVirtualModelModelSlots();
 
+	@Deprecated
 	public ModelSlotInstance getModelSlotInstance(RunTimeEvaluationContext evaluationContext);
 
+	@Deprecated
 	public TechnologyAdapter getModelSlotTechnologyAdapter();
 
 	public static abstract class TechnologySpecificActionImpl<MS extends ModelSlot<?>, T> extends AssignableActionImpl<T>
@@ -105,8 +112,7 @@ public abstract interface TechnologySpecificAction<MS extends ModelSlot<?>, T> e
 
 		private static final Logger logger = Logger.getLogger(TechnologySpecificAction.class.getPackage().getName());
 
-		// private MS modelSlot;
-
+		@Deprecated
 		@Override
 		public TechnologyAdapter getModelSlotTechnologyAdapter() {
 			if (getModelSlot() != null) {
@@ -123,6 +129,7 @@ public abstract interface TechnologySpecificAction<MS extends ModelSlot<?>, T> e
 			return super.getLocales();
 		}
 
+		@Deprecated
 		@Override
 		public <MS2 extends ModelSlot<?>> List<MS2> getAvailableModelSlots(Class<MS2> msType) {
 			if (getFlexoConcept() instanceof VirtualModel) {
@@ -134,6 +141,7 @@ public abstract interface TechnologySpecificAction<MS extends ModelSlot<?>, T> e
 			return null;
 		}
 
+		@Deprecated
 		@SuppressWarnings("unchecked")
 		@Override
 		public <MS2 extends ModelSlot<?>> List<MS2> getAvailableModelSlots() {
@@ -144,11 +152,13 @@ public abstract interface TechnologySpecificAction<MS extends ModelSlot<?>, T> e
 			return Collections.emptyList();
 		}
 
+		@Deprecated
 		@Override
 		public List<FMLRTModelSlot> getAvailableVirtualModelModelSlots() {
 			return getAvailableModelSlots(FMLRTModelSlot.class);
 		}
 
+		@Deprecated
 		@Override
 		public ModelSlotInstance getModelSlotInstance(RunTimeEvaluationContext action) {
 			FlexoConceptInstance fci = action.getFlexoConceptInstance();
@@ -172,6 +182,7 @@ public abstract interface TechnologySpecificAction<MS extends ModelSlot<?>, T> e
 			}
 		}
 
+		@Deprecated
 		@SuppressWarnings("unchecked")
 		private <MS2 extends ModelSlot<?>> List<MS2> getAllAvailableModelSlots() {
 			FlexoConcept concept = getFlexoConcept();
@@ -189,6 +200,7 @@ public abstract interface TechnologySpecificAction<MS extends ModelSlot<?>, T> e
 			return null;
 		}
 
+		@Deprecated
 		private List<ModelSlot<?>> findAvailableModelSlots(List<ModelSlot<?>> msList) {
 			List<ModelSlot<?>> returned = new ArrayList<ModelSlot<?>>();
 			if (msList == null) {
@@ -211,6 +223,7 @@ public abstract interface TechnologySpecificAction<MS extends ModelSlot<?>, T> e
 			return returned;
 		}
 
+		@Deprecated
 		@Override
 		public MS getModelSlot() {
 			MS ms = (MS) performSuperGetter(MODEL_SLOT_KEY);
