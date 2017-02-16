@@ -113,6 +113,8 @@ public abstract class AbstractVirtualModelInstanceResourceImpl<VMI extends Abstr
 			}
 		}
 
+		returned.reindexAllConceptInstances();
+
 		/*if (!getContainer().isDeserializing()) {
 			if (getLoadedResourceData() != null && getLoadedResourceData().isSynchronizable()) {
 				getLoadedResourceData().synchronize(null);

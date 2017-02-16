@@ -40,7 +40,6 @@ package org.openflexo.foundation.fml.rt;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
@@ -282,6 +281,12 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 	 */
 	public ObjectLookupResult lookup(Object object);
 
+	/**
+	 * Force re-index all FCI relatively to their {@link FlexoConcept}<br>
+	 * Use this method with caution, since it is really time costly
+	 */
+	public void reindexAllConceptInstances();
+
 	public static abstract class AbstractVirtualModelInstanceImpl<VMI extends AbstractVirtualModelInstance<VMI, VM>, VM extends AbstractVirtualModel<VM>>
 			extends FlexoConceptInstanceImpl implements AbstractVirtualModelInstance<VMI, VM> {
 
@@ -290,9 +295,7 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 		private AbstractVirtualModelInstanceResource<VMI, VM> resource;
 		private String title;
 
-		private final Hashtable<String, List<FlexoConceptInstance>> flexoConceptInstances;
-
-		// private final List<FlexoConceptInstance> orderedFlexoConceptInstances;
+		private final Hashtable<FlexoConcept, List<FlexoConceptInstance>> flexoConceptInstances;
 
 		/**
 		 * Default constructor with
@@ -300,8 +303,7 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 		public AbstractVirtualModelInstanceImpl() {
 			super();
 			// modelSlotInstances = new ArrayList<ModelSlotInstance<?, ?>>();
-			flexoConceptInstances = new Hashtable<String, List<FlexoConceptInstance>>();
-			// orderedFlexoConceptInstances = new ArrayList<FlexoConceptInstance>();
+			flexoConceptInstances = new Hashtable<FlexoConcept, List<FlexoConceptInstance>>();
 		}
 
 		@Override
@@ -310,6 +312,16 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 				return getResource().getFactory();
 			}
 			return null;
+		}
+
+		@Override
+		public void initializeDeserialization(AbstractVirtualModelInstanceModelFactory<?> factory) {
+			super.initializeDeserialization(factory);
+		}
+
+		@Override
+		public void finalizeDeserialization() {
+			super.finalizeDeserialization();
 		}
 
 		@Override
@@ -442,16 +454,16 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 			List<FlexoConceptInstance> list = null;
 
 			if (oldFlexoConcept != null) {
-				list = flexoConceptInstances.get(oldFlexoConcept.getURI());
+				list = flexoConceptInstances.get(oldFlexoConcept);
 				if (list != null) {
 					list.remove(fci);
 				}
 			}
 			if (newFlexoConcept != null) {
-				list = flexoConceptInstances.get(newFlexoConcept.getURI());
+				list = flexoConceptInstances.get(newFlexoConcept);
 				if (list == null) {
 					list = new ArrayList<FlexoConceptInstance>();
-					flexoConceptInstances.put(newFlexoConcept.getURI(), list);
+					flexoConceptInstances.put(newFlexoConcept, list);
 				}
 				list.add(fci);
 			}
@@ -466,36 +478,68 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 		@Override
 		public void addToFlexoConceptInstances(FlexoConceptInstance fci) {
 
-			/*System.out.println("Already storing: ");
-			for (FlexoConceptInstance i : getFlexoConceptInstances()) {
-				System.out.println("> " + i);
-			}*/
-
-			// System.out.println("Adding " + fci);
-			// System.out.println("fci.getFlexoConcept() = " + fci.getFlexoConcept());
-			// System.out.println("fci.getActors() = " + fci.getActors());
-
-			if (fci.getFlexoConceptURI() == null) {
-				logger.warning("Could not register FlexoConceptInstance with null FlexoConceptURI: " + fci);
-				// logger.warning("EPI: " + fci.debug());
+			if (fci.getFlexoConcept() == null) {
+				if (!isDeserializing()) {
+					logger.warning("Could not register FlexoConceptInstance with null FlexoConcept: " + fci);
+				}
 			}
 			else {
-				List<FlexoConceptInstance> list = flexoConceptInstances.get(fci.getFlexoConceptURI());
-				if (list == null) {
-					list = new ArrayList<FlexoConceptInstance>();
-					flexoConceptInstances.put(fci.getFlexoConceptURI(), list);
-				}
 				// We store here the FCI twice:
 				// - first in list hash map
 				// - then in an ordered list (internally performed by PAMELA)
 				// We rely on PAMELA schemes to handle notifications
+
+				ensureRegisterFCIInConcept(fci, fci.getFlexoConcept());
+
+			}
+
+			performSuperAdder(FLEXO_CONCEPT_INSTANCES_KEY, fci);
+
+		}
+
+		/**
+		 * Force re-index all FCI relatively to their {@link FlexoConcept}<br>
+		 * Use this method with caution, since it is really time costly
+		 */
+		@Override
+		public void reindexAllConceptInstances() {
+			for (FlexoConcept concept : flexoConceptInstances.keySet()) {
+				List<FlexoConceptInstance> l = flexoConceptInstances.get(concept);
+				if (l != null) {
+					l.clear();
+				}
+			}
+			flexoConceptInstances.clear();
+			for (FlexoConceptInstance fci : getFlexoConceptInstances()) {
+				ensureRegisterFCIInConcept(fci, fci.getFlexoConcept());
+			}
+		}
+
+		private void ensureRegisterFCIInConcept(FlexoConceptInstance fci, FlexoConcept concept) {
+			List<FlexoConceptInstance> list = flexoConceptInstances.get(concept);
+			if (list == null) {
+				list = new ArrayList<FlexoConceptInstance>();
+				flexoConceptInstances.put(concept, list);
+			}
+			if (!list.contains(fci)) {
 				list.add(fci);
+			}
+			for (FlexoConcept parentConcept : concept.getParentFlexoConcepts()) {
+				if (parentConcept != concept) { // In case of loops
+					ensureRegisterFCIInConcept(fci, parentConcept);
+				}
+			}
+		}
 
-				performSuperAdder(FLEXO_CONCEPT_INSTANCES_KEY, fci);
-				// orderedFlexoConceptInstances.add(fci);
-				// System.out.println("Registered EPI " + epi + " in " + epi.getFlexoConcept());
-				// System.out.println("Registered: " + getEPInstances(epi.getFlexoConcept()));
-
+		private void ensureUnregisterFCIFromConcept(FlexoConceptInstance fci, FlexoConcept concept) {
+			List<FlexoConceptInstance> list = flexoConceptInstances.get(concept);
+			if (list != null && list.contains(fci)) {
+				list.remove(fci);
+			}
+			for (FlexoConcept parentConcept : concept.getParentFlexoConcepts()) {
+				if (parentConcept != concept) { // In case of loops
+					ensureUnregisterFCIFromConcept(fci, parentConcept);
+				}
 			}
 		}
 
@@ -507,62 +551,51 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 		 */
 		@Override
 		public void removeFromFlexoConceptInstances(FlexoConceptInstance fci) {
-			// System.out.println("<<<<<<<<<<<<<< removeFromFlexoConceptInstances " + fci);
-			// Thread.dumpStack();
 
-			List<FlexoConceptInstance> list = flexoConceptInstances.get(fci.getFlexoConceptURI());
-			if (list == null) {
-				list = new ArrayList<FlexoConceptInstance>();
-				flexoConceptInstances.put(fci.getFlexoConceptURI(), list);
+			if (fci.getFlexoConcept() == null) {
+				logger.warning("Could not remove FlexoConceptInstance with null FlexoConcept: " + fci);
 			}
-			list.remove(fci);
-			performSuperRemover(FLEXO_CONCEPT_INSTANCES_KEY, fci);
-			// orderedFlexoConceptInstances.remove(fci);
-			// getPropertyChangeSupport().firePropertyChange(FLEXO_CONCEPT_INSTANCES_KEY, fci, null);
-		}
+			else {
+				ensureUnregisterFCIFromConcept(fci, fci.getFlexoConcept());
+			}
 
-		// Not required !!!
-		/*@Override
-		public List<FlexoConceptInstance> getFlexoConceptInstances() {
-			return (List<FlexoConceptInstance>)performSuperGetter(FLEXO_CONCEPT_INSTANCES_KEY);
-		}*/
+			performSuperRemover(FLEXO_CONCEPT_INSTANCES_KEY, fci);
+		}
 
 		@Override
 		public List<FlexoConceptInstance> getFlexoConceptInstances(String flexoConceptNameOrURI) {
 			if (getVirtualModel() == null) {
 				return Collections.emptyList();
 			}
-			FlexoConcept ep = getVirtualModel().getFlexoConcept(flexoConceptNameOrURI);
-			return getFlexoConceptInstances(ep);
+			FlexoConcept flexoConcept = getVirtualModel().getFlexoConcept(flexoConceptNameOrURI);
+			return getFlexoConceptInstances(flexoConcept);
 		}
 
 		@Override
 		public List<FlexoConceptInstance> getFlexoConceptInstances(FlexoConcept flexoConcept) {
+
 			if (flexoConcept == null) {
 				// logger.warning("Unexpected null FlexoConcept");
 				return Collections.emptyList();
 			}
+
 			if (flexoConcept == getVirtualModel()) {
 				return Collections.singletonList((FlexoConceptInstance) this);
 			}
-			List<FlexoConceptInstance> list = flexoConceptInstances.get(flexoConcept.getURI());
-			if (list == null) {
-				list = new ArrayList<FlexoConceptInstance>();
-				flexoConceptInstances.put(flexoConcept.getURI(), list);
-			}
-			// TODO: performance issue here
-			List<FlexoConceptInstance> returned = new ArrayList<FlexoConceptInstance>(list);
-			for (FlexoConcept childEP : flexoConcept.getChildFlexoConcepts()) {
-				returned.addAll(getFlexoConceptInstances(childEP));
-			}
-			// TODO: performance issue here
-			// We attempt to return the FCI in the order they are registered in the VMI
-			Collections.sort(returned, new Comparator<FlexoConceptInstance>() {
-				@Override
-				public int compare(FlexoConceptInstance o1, FlexoConceptInstance o2) {
-					return getFlexoConceptInstances().indexOf(o1) - getFlexoConceptInstances().indexOf(o2);
+
+
+			List<FlexoConceptInstance> returned = flexoConceptInstances.get(flexoConcept);
+
+			if (returned == null) {
+				System.out.println("Bizarre, pourtant j'ai ca: ");
+				for (FlexoConceptInstance fci : getFlexoConceptInstances()) {
+					System.out.println(" > " + fci);
 				}
-			});
+				for (FlexoConcept concept : flexoConceptInstances.keySet()) {
+					System.out.println("Key: " + concept + " list: " + flexoConceptInstances.get(concept));
+				}
+				return Collections.emptyList();
+			}
 			return returned;
 		}
 
@@ -574,9 +607,8 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 		@Override
 		public List<FlexoConcept> getUsedFlexoConcepts() {
 			List<FlexoConcept> returned = new ArrayList<FlexoConcept>();
-			for (String s : flexoConceptInstances.keySet()) {
-				FlexoConcept c = getVirtualModel().getFlexoConcept(s);
-				returned.add(c);
+			for (FlexoConcept concept : flexoConceptInstances.keySet()) {
+				returned.add(concept);
 			}
 			return returned;
 		}
