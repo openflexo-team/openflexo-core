@@ -625,9 +625,18 @@ public class ModuleInspectorController extends Observable implements Observer {
 	 * @param newTab
 	 */
 	private void appendInspectorEntries(FlexoConcept flexoConcept, FIBTab newTab) {
+		if (flexoConcept == null) {
+			logger.warning("Unexpected null concept");
+			return;
+		}
 		for (FlexoConcept parentEP : flexoConcept.getParentFlexoConcepts()) {
 			appendInspectorEntries(parentEP, newTab);
 		}
+		if (flexoConcept.getViewPoint() == null) {
+			logger.warning("Unexpected null viewpoint for concept " + flexoConcept);
+			return;
+		}
+
 		ViewPointLocalizedDictionary localizedDictionary = flexoConcept.getViewPoint().getLocalizedDictionary();
 		for (final InspectorEntry entry : flexoConcept.getInspector().getEntries()) {
 			FIBLabel label = getFactory().newFIBLabel();
