@@ -48,11 +48,12 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.jar.JarFile;
+import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.converter.FlexoObjectReferenceConverter;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
@@ -291,9 +292,29 @@ public class JarResourceCenter extends ResourceRepository<FlexoResource<?>, InJa
 	}
 
 	@Override
-	public <R2 extends FlexoResource<?>> R2 getResource(InJarResourceImpl resourceArtefact, Class<R2> resourceClass) {
-		// TODO
-		return null;
+	public <R extends FlexoResource<?>> R getResource(InJarResourceImpl resourceArtifact, Class<R> resourceClass) {
+		try {
+			// searches for parent folder.
+			RepositoryFolder<?, InJarResourceImpl> folder = getParentRepositoryFolder(resourceArtifact, false);
+			if (folder == null) { return null; }
+
+			for (FlexoResource<?> r : folder.getResources()) {
+				if (Objects.equals(r.getIODelegate().getSerializationArtefact(), resourceArtifact)) {
+					if (resourceClass.isInstance(r)) {
+						return resourceClass.cast(r);
+					}
+					logger.warning("Found resource matching file " + resourceArtifact + " but not of desired type: " + r.getClass() + " instead of " + resourceClass);
+					return null;
+				}
+			}
+
+			// Cannot find the resource
+			return null;
+
+		} catch (IOException e) {
+			logger.log(Level.WARNING, "Error while getting parent folder for " + resourceArtifact, e);
+			return null;
+		}
 	}
 
 	/**

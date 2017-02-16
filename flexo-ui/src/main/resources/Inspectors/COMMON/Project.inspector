@@ -33,7 +33,7 @@
       <Table iteratorClassName="org.openflexo.foundation.resource.FlexoProjectReference" visibleRowCount="5" rowHeight="18" autoSelectFirstRow="false" createNewRowOnClick="false" boundToSelectionManager="false" showFooter="true" selectionMode="MultipleIntervalSelection" localize="true" manageDynamicModel="true" name="ImportedProject" data="data.projectData.importedProjects" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=center)">
         <IconColumn data="controller.flexoController.iconForObject(iterator)" title="" columnWidth="20" resizable="false" displayTitle="true" name="icon" />
         <LabelColumn data="iterator.name" title="name" columnWidth="100" resizable="true" displayTitle="true" tooltip="iterator.name" name="label" />
-        <LabelColumn data="iterator.flexoIODelegate.toString()" title="location" columnWidth="100" resizable="true" displayTitle="true" tooltip="iterator.flexoIODelegate.toString()" name="label" />
+        <LabelColumn data="iterator.iODelegate.toString()" title="location" columnWidth="100" resizable="true" displayTitle="true" tooltip="iterator.iODelegate.toString()" name="label" />
         <LabelColumn data="iterator.version" title="version" columnWidth="50" resizable="true" displayTitle="true" name="label" />
         <LabelColumn data="iterator.revision" title="revision" columnWidth="40" resizable="true" displayTitle="true" name="label" />
         <LabelColumn data="iterator.uRI" title="URI" columnWidth="100" resizable="true" displayTitle="true" tooltip="iterator.uRI" name="label" />
