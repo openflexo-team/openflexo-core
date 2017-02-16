@@ -14,7 +14,7 @@
 			<DropDown index="17" data="data.creationScheme"  
 				constraints="twocols(anchor=west;expandHorizontally=false;expandVertically=false;fill=none;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=11;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right;padX=0;padY=0;weightX=0.0;weightY=0.0)"
 				name="CreationSchemeDropDown" format="object.signature"
-				icon="controller.iconForObject(object)" localize="true"
+				icon="controller.iconForObject(object)" localize="false"
 				list="data.availableCreationSchemes"
 				showIcon="true" iteratorClassName="org.openflexo.foundation.fml.CreationScheme"
 				autoSelectFirstRow="true">
