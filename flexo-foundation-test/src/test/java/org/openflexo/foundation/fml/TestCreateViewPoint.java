@@ -42,7 +42,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.io.File;
 import java.io.IOException;
 
 import org.junit.Test;
@@ -50,14 +49,11 @@ import org.junit.runner.RunWith;
 import org.openflexo.foundation.fml.rm.ViewPointResource;
 import org.openflexo.foundation.fml.rm.ViewPointResourceFactory;
 import org.openflexo.foundation.resource.DirectoryResourceCenter;
-import org.openflexo.foundation.resource.FileSystemBasedResourceCenter;
 import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.test.OpenflexoTestCase;
 import org.openflexo.model.exceptions.ModelDefinitionException;
-import org.openflexo.rm.ResourceLocator;
 import org.openflexo.test.OrderedRunner;
 import org.openflexo.test.TestOrder;
-import org.openflexo.toolbox.FileUtils;
 
 /**
  * This unit test is intented to test ViewPoint creation facilities
@@ -130,10 +126,8 @@ public class TestCreateViewPoint extends OpenflexoTestCase {
 
 	/**
 	 * Reload the ViewPoint<br>
-	 * We first re-init a full ServiceManager, and copy the just created
-	 * ViewPoint<br>
-	 * The goal is to let the FileSystem monitoring system detects the new
-	 * directory and instantiate ViewPoint
+	 * We first re-init a full ServiceManager, and copy the just created ViewPoint<br>
+	 * The goal is to let the FileSystem monitoring system detects the new directory and instantiate ViewPoint
 	 * 
 	 * @throws IOException
 	 */
@@ -144,25 +138,11 @@ public class TestCreateViewPoint extends OpenflexoTestCase {
 		log("testReloadViewPoint()");
 
 		instanciateTestServiceManager();
-		resourceCenter = makeNewDirectoryResourceCenter();
 
-		File directory = ResourceLocator.retrieveResourceAsFile(newViewPointResource.getDirectory());
-		File newDirectory = new File(((FileSystemBasedResourceCenter) resourceCenter).getDirectory(),
-				directory.getName());
-		newDirectory.mkdirs();
+		serviceManager.getResourceCenterService().addToResourceCenters(
+				resourceCenter = new DirectoryResourceCenter(resourceCenter.getDirectory(), serviceManager.getResourceCenterService()));
 
-		try {
-			FileUtils.copyContentDirToDir(directory, newDirectory);
-			// We wait here for the thread monitoring ResourceCenters to detect
-			// new files
-			((FileSystemBasedResourceCenter) resourceCenter).performDirectoryWatchingNow();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		ViewPointResource retrievedVPResource = serviceManager.getViewPointLibrary()
-				.getViewPointResource(VIEWPOINT_URI);
+		ViewPointResource retrievedVPResource = serviceManager.getViewPointLibrary().getViewPointResource(VIEWPOINT_URI);
 		assertNotNull(retrievedVPResource);
 
 		ViewPoint reloadedViewPoint = retrievedVPResource.getViewPoint();
