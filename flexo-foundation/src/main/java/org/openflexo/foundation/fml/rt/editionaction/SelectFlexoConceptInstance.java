@@ -311,8 +311,9 @@ public interface SelectFlexoConceptInstance extends FetchRequest<FMLRTModelSlot<
 		public List<FlexoConceptInstance> execute(RunTimeEvaluationContext evaluationContext) {
 			AbstractVirtualModelInstance<?, ?> vmi = getVirtualModelInstance(evaluationContext);
 			if (vmi != null) {
-				// System.out.println("Returning " + vmi.getFlexoConceptInstances(getFlexoConceptType()));
-				return filterWithConditions(vmi.getFlexoConceptInstances(getFlexoConceptType()), evaluationContext);
+				List<FlexoConceptInstance> fciList = vmi.getFlexoConceptInstances(getFlexoConceptType());
+				// System.out.println("Unfiltered FCI list for " + getFlexoConceptType() + " : " + fciList);
+				return filterWithConditions(fciList, evaluationContext);
 			}
 			else {
 				logger.warning(
