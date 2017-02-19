@@ -196,7 +196,16 @@ public abstract interface FetchRequest<MS extends ModelSlot<?>, T> extends Techn
 				return fetchResult;
 			}
 			else {
-				// System.out.println("Filtering with " + getConditions() + " fetchResult=" + fetchResult);
+				// System.out
+				// .println("Filtering with " + getConditions() + " fetchResult=" + fetchResult + " evalContext=" + evaluationContext);
+
+				/*if (getConditions().size() > 0) {
+					System.out.println("condition " + getConditions().get(0).getCondition());
+					System.out.println("evalContext=" + evaluationContext + " hash=" + Integer.toHexString(evaluationContext.hashCode()));
+					System.out.println("Je dois evaluer ");
+				}*/
+				// if (true)
+				// return fetchResult;
 				List<T> returned = new ArrayList<T>();
 				for (final T proposedFetchResult : fetchResult) {
 					boolean takeIt = true;

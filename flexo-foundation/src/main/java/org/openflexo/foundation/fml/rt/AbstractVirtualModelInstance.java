@@ -38,18 +38,30 @@
 
 package org.openflexo.foundation.fml.rt;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.WeakHashMap;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.openflexo.connie.BindingEvaluationContext;
 import org.openflexo.connie.BindingVariable;
+import org.openflexo.connie.DataBinding;
+import org.openflexo.connie.binding.BindingValueChangeListener;
+import org.openflexo.connie.exception.NullReferenceException;
+import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.FlexoEditor;
+import org.openflexo.foundation.IndexableContainer;
 import org.openflexo.foundation.fml.AbstractVirtualModel;
 import org.openflexo.foundation.fml.FlexoConcept;
+import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.SynchronizationScheme;
@@ -57,6 +69,7 @@ import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.binding.ModelSlotBindingVariable;
 import org.openflexo.foundation.fml.binding.ViewPointBindingModel;
 import org.openflexo.foundation.fml.binding.VirtualModelBindingModel;
+import org.openflexo.foundation.fml.editionaction.FetchRequestCondition;
 import org.openflexo.foundation.fml.rt.action.ModelSlotInstanceConfiguration;
 import org.openflexo.foundation.fml.rt.action.ModelSlotInstanceConfiguration.DefaultModelSlotInstanceConfigurationOption;
 import org.openflexo.foundation.fml.rt.action.SynchronizationSchemeAction;
@@ -109,7 +122,8 @@ import org.openflexo.toolbox.StringUtils;
 @ImplementationClass(AbstractVirtualModelInstance.AbstractVirtualModelInstanceImpl.class)
 @Imports({ @Import(VirtualModelInstance.class), @Import(View.class) })
 public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelInstance<VMI, VM>, VM extends AbstractVirtualModel<VM>>
-		extends FlexoConceptInstance, ResourceData<VMI>, FlexoModel<VMI, VM>, TechnologyObject<FMLRTTechnologyAdapter> {
+		extends FlexoConceptInstance, ResourceData<VMI>, FlexoModel<VMI, VM>, TechnologyObject<FMLRTTechnologyAdapter>,
+		IndexableContainer<FlexoConceptInstance> {
 
 	@PropertyIdentifier(type = String.class)
 	public static final String NAME_KEY = "name";
@@ -529,6 +543,9 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 					ensureRegisterFCIInConcept(fci, parentConcept);
 				}
 			}
+
+			// Update indexes when relevant
+			contentsAdded(fci);
 		}
 
 		private void ensureUnregisterFCIFromConcept(FlexoConceptInstance fci, FlexoConcept concept) {
@@ -541,6 +558,10 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 					ensureUnregisterFCIFromConcept(fci, parentConcept);
 				}
 			}
+
+			// Update indexes when relevant
+			contentsRemoved(fci);
+
 		}
 
 		/**
@@ -582,7 +603,6 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 			if (flexoConcept == getVirtualModel()) {
 				return Collections.singletonList((FlexoConceptInstance) this);
 			}
-
 
 			List<FlexoConceptInstance> returned = flexoConceptInstances.get(flexoConcept);
 
@@ -1081,6 +1101,182 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 
 		}
 
+		private Map<Type, Map<String, FlexoConceptInstanceIndex>> indexes = new WeakHashMap<>();
+
+		public class FlexoConceptInstanceIndex<T> extends WeakHashMap<T, List<FlexoConceptInstance>> {
+
+			public class IndexedValueListener extends BindingValueChangeListener<T> {
+
+				private FlexoConceptInstance fci;
+				private T currentValue;
+
+				public IndexedValueListener(FlexoConceptInstance fci) {
+					super(indexableTerm, new BindingEvaluationContext() {
+						@Override
+						public Object getValue(BindingVariable variable) {
+							if (variable.getVariableName().equals(FetchRequestCondition.SELECTED)) {
+								return fci;
+							}
+							return fci.getValue(variable);
+						}
+					});
+					this.fci = fci;
+					try {
+						currentValue = indexableTerm.getBindingValue(getContext());
+					} catch (TypeMismatchException e) {
+						e.printStackTrace();
+					} catch (NullReferenceException e) {
+						e.printStackTrace();
+					} catch (InvocationTargetException e) {
+						e.printStackTrace();
+					}
+
+					if (logger.isLoggable(Level.FINE)) {
+						logger.fine("For " + fci + " value=" + currentValue);
+					}
+				}
+
+				public T getCurrentValue() {
+					return currentValue;
+				}
+
+				@Override
+				public void bindingValueChanged(Object source, T newValue) {
+					if (logger.isLoggable(Level.FINE)) {
+						logger.fine("******** For FCI " + fci + " evaluated value of " + indexableTerm + " changed from " + currentValue
+								+ " to " + newValue);
+					}
+					List<FlexoConceptInstance> oldList = FlexoConceptInstanceIndex.this.get(currentValue);
+					if (oldList != null) {
+						oldList.remove(fci);
+					}
+					List<FlexoConceptInstance> newList = FlexoConceptInstanceIndex.this.get(newValue);
+					if (newList == null) {
+						newList = new ArrayList<>();
+						FlexoConceptInstanceIndex.this.put(newValue, newList);
+					}
+
+					newList.add(fci);
+				}
+
+			}
+
+			private FlexoConceptInstanceType type;
+			private DataBinding<T> indexableTerm;
+
+			private boolean needsReindex = true;
+
+			private WeakHashMap<FlexoConceptInstance, IndexedValueListener> listeners = new WeakHashMap<>();
+
+			public FlexoConceptInstanceIndex(FlexoConceptInstanceType type, DataBinding<T> indexableTerm) {
+				this.type = type;
+				this.indexableTerm = indexableTerm;
+			}
+
+			public void updateWhenRequired() {
+				if (needsReindex) {
+					updateIndex();
+				}
+			}
+
+			private void updateIndex() {
+				if (logger.isLoggable(Level.FINE)) {
+					logger.fine("Computing index for " + this + " type=" + type + " with indexable term " + indexableTerm);
+				}
+				for (BindingValueChangeListener<T> l : listeners.values()) {
+					l.stopObserving();
+					l.delete();
+				}
+				listeners.clear();
+				clear();
+				for (FlexoConceptInstance fci : getFlexoConceptInstances(type.getFlexoConcept())) {
+					indexFlexoConceptInstance(fci);
+				}
+				needsReindex = false;
+			}
+
+			private void indexFlexoConceptInstance(FlexoConceptInstance fci) {
+
+				IndexedValueListener l = new IndexedValueListener(fci);
+				listeners.put(fci, l);
+
+				List<FlexoConceptInstance> fciList = get(l.getCurrentValue());
+				if (fciList == null) {
+					fciList = new ArrayList<>();
+					put(l.getCurrentValue(), fciList);
+				}
+
+				fciList.add(fci);
+			}
+
+			public void contentsAdded(FlexoConceptInstance objectBeeingAdded) {
+				if (logger.isLoggable(Level.FINE)) {
+					logger.fine("contentsAdded() for " + objectBeeingAdded + " indexableTerm=" + indexableTerm);
+				}
+				needsReindex = true;
+			}
+
+			public void contentsRemoved(FlexoConceptInstance objectBeeingRemoved) {
+				if (logger.isLoggable(Level.FINE)) {
+					logger.fine("contentsRemoved() for " + objectBeeingRemoved + " indexableTerm=" + indexableTerm);
+				}
+				needsReindex = true;
+				/*for (List<FlexoConceptInstance> l : values()) {
+					l.remove(objectBeeingRemoved);
+				}*/
+			}
+		}
+
+		@Override
+		public FlexoConceptInstanceIndex getIndex(Type type, DataBinding<?> indexableTerm) {
+
+			if (logger.isLoggable(Level.FINE)) {
+				logger.fine("Retrieving index for " + type + " and " + indexableTerm);
+			}
+
+			if (type instanceof FlexoConceptInstanceType) {
+				Map<String, FlexoConceptInstanceIndex> mapForType = indexes.get(type);
+				if (mapForType == null) {
+					mapForType = new WeakHashMap<>();
+					indexes.put(type, mapForType);
+				}
+				FlexoConceptInstanceIndex returned = mapForType.get(indexableTerm.toString());
+				if (returned == null) {
+					returned = makeIndex((FlexoConceptInstanceType) type, indexableTerm);
+					mapForType.put(indexableTerm.toString(), returned);
+				}
+				// Now compute index when required
+				returned.updateWhenRequired();
+				return returned;
+			}
+			return null;
+		}
+
+		public <T> FlexoConceptInstanceIndex<T> makeIndex(FlexoConceptInstanceType type, DataBinding<T> indexableTerm) {
+			return new FlexoConceptInstanceIndex<T>(type, indexableTerm);
+		}
+
+		@Override
+		public void contentsAdded(FlexoConceptInstance objectBeeingAdded) {
+			FlexoConceptInstanceType type = objectBeeingAdded.getFlexoConcept().getInstanceType();
+			Map<String, FlexoConceptInstanceIndex> mapForType = indexes.get(type);
+			if (mapForType != null) {
+				for (FlexoConceptInstanceIndex index : mapForType.values()) {
+					index.contentsAdded(objectBeeingAdded);
+				}
+			}
+		}
+
+		@Override
+		public void contentsRemoved(FlexoConceptInstance objectBeeingRemoved) {
+			FlexoConceptInstanceType type = objectBeeingRemoved.getFlexoConcept().getInstanceType();
+			Map<String, FlexoConceptInstanceIndex> mapForType = indexes.get(type);
+			if (mapForType != null) {
+				for (FlexoConceptInstanceIndex index : mapForType.values()) {
+					index.contentsRemoved(objectBeeingRemoved);
+				}
+			}
+		}
 	}
 
 	public class ObjectLookupResult {
