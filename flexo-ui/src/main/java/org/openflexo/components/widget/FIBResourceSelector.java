@@ -168,7 +168,8 @@ public class FIBResourceSelector extends FIBFlexoObjectSelector<TechnologyAdapte
 	}
 
 	public Class<? extends ResourceData<?>> getResourceDataClass() {
-		if (resourceDataClass == null && getExpectedType() instanceof FlexoResourceType) {
+		if (resourceDataClass == null && getExpectedType() instanceof FlexoResourceType
+				&& ((FlexoResourceType) getExpectedType()).getResourceFactory() != null) {
 			return ((FlexoResourceType) getExpectedType()).getResourceFactory().getResourceDataClass();
 		}
 		return resourceDataClass;
