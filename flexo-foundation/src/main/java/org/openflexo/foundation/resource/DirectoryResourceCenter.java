@@ -99,6 +99,6 @@ public class DirectoryResourceCenter extends FileSystemBasedResourceCenter {
 
 	@Override
 	public String getDisplayableName() {
-		return getRootDirectory().getName();
+		return getDefaultBaseURI();// getRootDirectory().getName();
 	}
 }
