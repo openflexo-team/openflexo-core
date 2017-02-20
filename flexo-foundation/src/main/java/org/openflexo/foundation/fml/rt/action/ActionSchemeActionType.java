@@ -42,17 +42,17 @@ import java.util.Vector;
 
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.action.FlexoActionType;
-import org.openflexo.foundation.fml.ActionScheme;
+import org.openflexo.foundation.fml.AbstractActionScheme;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstanceObject;
 import org.openflexo.localization.LocalizedDelegate;
 
 public class ActionSchemeActionType extends FlexoActionType<ActionSchemeAction, FlexoConceptInstance, VirtualModelInstanceObject> {
 
-	private final ActionScheme actionScheme;
+	private final AbstractActionScheme actionScheme;
 	private final FlexoConceptInstance flexoConceptInstance;
 
-	public ActionSchemeActionType(ActionScheme actionScheme, FlexoConceptInstance flexoConceptInstance) {
+	public ActionSchemeActionType(AbstractActionScheme actionScheme, FlexoConceptInstance flexoConceptInstance) {
 		super(actionScheme.getLabel(), FlexoActionType.defaultGroup, FlexoActionType.NORMAL_ACTION_TYPE);
 		this.actionScheme = actionScheme;
 		this.flexoConceptInstance = flexoConceptInstance;
@@ -84,7 +84,7 @@ public class ActionSchemeActionType extends FlexoActionType<ActionSchemeAction, 
 		return new ActionSchemeAction(this, focusedObject, globalSelection, editor);
 	}
 
-	public ActionScheme getActionScheme() {
+	public AbstractActionScheme getActionScheme() {
 		return actionScheme;
 	}
 

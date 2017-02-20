@@ -54,7 +54,7 @@ import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoProject;
-import org.openflexo.foundation.fml.ActionScheme;
+import org.openflexo.foundation.fml.AbstractActionScheme;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
@@ -143,7 +143,7 @@ public class FlexoBehaviourPathElement extends FunctionPathElement {
 
 				// FlexoBehaviourAction action = (FlexoBehaviourAction) context;
 				FlexoConceptInstance fci = (FlexoConceptInstance) target;
-				ActionSchemeActionType actionType = new ActionSchemeActionType((ActionScheme) getFlexoBehaviour(), fci);
+				ActionSchemeActionType actionType = new ActionSchemeActionType((AbstractActionScheme) getFlexoBehaviour(), fci);
 				ActionSchemeAction actionSchemeAction = null;
 
 				if (context instanceof FlexoBehaviourAction) {
