@@ -94,8 +94,7 @@ public interface VirtualModelInstance extends AbstractVirtualModelInstance<Virtu
 
 		@Override
 		public String toString() {
-			return "VirtualModelInstance[name=" + getName() + "/virtualModel=" + getVirtualModel() + "/hash="
-					+ Integer.toHexString(hashCode()) + "]";
+			return "VirtualModelInstance[name=" + getName() + "/hash=" + Integer.toHexString(hashCode()) + "]";
 		}
 	}
 
