@@ -43,6 +43,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.type.TypeUtils;
@@ -134,7 +135,9 @@ public class FlexoEditingContext extends EditingContextImpl implements FlexoServ
 
 	@Override
 	public void receiveNotification(FlexoService caller, ServiceNotification notification) {
-		logger.fine(getClass().getSimpleName() + " service received notification " + notification + " from " + caller);
+		if (logger.isLoggable(Level.FINE)) {
+			logger.fine(getClass().getSimpleName() + " service received notification " + notification + " from " + caller);
+		}
 	}
 
 	@Override
