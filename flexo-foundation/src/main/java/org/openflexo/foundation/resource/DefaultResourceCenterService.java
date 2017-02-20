@@ -50,7 +50,6 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.jar.JarFile;
-
 import org.apache.commons.io.IOUtils;
 import org.openflexo.foundation.FlexoService;
 import org.openflexo.foundation.FlexoServiceImpl;
@@ -162,6 +161,7 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 								dirPath = dirPath.replace("target/classes", "src/main/resources");
 								// Is now like this with 1.8.1+ infrastructure with Gradle
 								dirPath = dirPath.replace("/bin/", "/src/main/resources/");
+								dirPath = dirPath.replace("build/resources/main", "/src/main/resources/");
 							}
 
 							File rcDir = new File(dirPath);
