@@ -150,9 +150,9 @@ public class ViewPointLibrary extends DefaultFlexoObject implements FlexoService
 		if (returned != null) {
 			return returned.getResourceData(null);
 		}
-		if (returned == null) {
+		/*if (returned == null) {
 			logger.warning("Cannot find virtual model:" + virtualModelURI);
-		}
+		}*/
 		return null;
 	}
 
@@ -283,10 +283,10 @@ public class ViewPointLibrary extends DefaultFlexoObject implements FlexoService
 					// Concept will be looked up later
 				}
 			}
-			logger.warning("Cannot find virtual model " + virtualModelURI + " while searching flexo concept:" + flexoConceptURI + " ("
-					+ flexoConceptName + ")");
+			// logger.warning("Cannot find virtual model " + virtualModelURI + " while searching flexo concept:" + flexoConceptURI + " ("
+			// + flexoConceptName + ")");
 		}
-		logger.warning("Cannot find flexo concept:" + flexoConceptURI);
+		// logger.warning("Cannot find flexo concept:" + flexoConceptURI);
 		/*String viewPointURI = flexoConceptURI.substring(0, flexoConceptURI.lastIndexOf("/"));
 		for (VirtualModelResource r : getViewPointResource(viewPointURI).getVirtualModelResources()) {
 			System.out.println("> VM " + r.getURI());
@@ -294,15 +294,15 @@ public class ViewPointLibrary extends DefaultFlexoObject implements FlexoService
 		return null;
 	}
 
-	public FlexoBehaviour getFlexoBehaviour(String editionSchemeURI) {
-		if (editionSchemeURI.lastIndexOf(".") > -1) {
-			String flexoConceptURI = editionSchemeURI.substring(0, editionSchemeURI.lastIndexOf("."));
+	public FlexoBehaviour getFlexoBehaviour(String behaviourURI) {
+		if (behaviourURI.lastIndexOf(".") > -1) {
+			String flexoConceptURI = behaviourURI.substring(0, behaviourURI.lastIndexOf("."));
 			FlexoConcept ep = getFlexoConcept(flexoConceptURI);
 			if (ep != null) {
-				return ep.getFlexoBehaviour(editionSchemeURI.substring(editionSchemeURI.lastIndexOf(".") + 1));
+				return ep.getFlexoBehaviour(behaviourURI.substring(behaviourURI.lastIndexOf(".") + 1));
 			}
 		}
-		logger.warning("Cannot find edition scheme:" + editionSchemeURI);
+		logger.warning("Cannot find edition scheme:" + behaviourURI);
 		return null;
 	}
 
