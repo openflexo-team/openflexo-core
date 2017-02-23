@@ -43,7 +43,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 import java.util.logging.Logger;
-
 import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.binding.Function;
 import org.openflexo.connie.type.TypeUtils;
@@ -54,7 +53,6 @@ import org.openflexo.foundation.fml.binding.FlexoBehaviourBindingModel;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraphConverter;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraphOwner;
-import org.openflexo.foundation.fml.controlgraph.FMLControlGraphVisitor;
 import org.openflexo.foundation.fml.editionaction.AssignableAction;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.fml.editionaction.TechnologySpecificAction;
@@ -907,13 +905,9 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 		@Override
 		public void notifiedScopeChanged() {
 			super.notifiedScopeChanged();
-			FMLControlGraphVisitor cgVisitor = new FMLControlGraphVisitor() {
-				@Override
-				public void visit(FMLControlGraph controlGraph) {
-					controlGraph.notifiedScopeChanged();
-				}
-			};
-			getControlGraph().accept(cgVisitor);
+			if (getControlGraph() != null) {
+				getControlGraph().accept(controlGraph -> controlGraph.notifiedScopeChanged());
+			}
 		}
 
 	}
