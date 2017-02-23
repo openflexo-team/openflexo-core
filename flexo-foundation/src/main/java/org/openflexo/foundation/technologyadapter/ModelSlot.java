@@ -45,7 +45,6 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
-
 import org.openflexo.foundation.fml.AbstractVirtualModel;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
@@ -64,7 +63,6 @@ import org.openflexo.foundation.fml.annotations.DeclareFlexoBehaviourParameters;
 import org.openflexo.foundation.fml.annotations.DeclareFlexoBehaviours;
 import org.openflexo.foundation.fml.annotations.DeclareFlexoRoles;
 import org.openflexo.foundation.fml.annotations.DeclareInspectorEntries;
-import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraphVisitor;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.fml.editionaction.FetchRequest;
@@ -737,15 +735,12 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>>
 				}
 			}
 
-			FMLControlGraphVisitor cgVisitor = new FMLControlGraphVisitor() {
-				@Override
-				public void visit(FMLControlGraph controlGraph) {
-					if (controlGraph instanceof TechnologySpecificAction
-							&& ((TechnologySpecificAction<?, ?>) controlGraph).getModelSlot() == ModelSlotImpl.this) {
-						TechnologySpecificAction action = (TechnologySpecificAction<?, ?>) controlGraph;
-						// nullify model slot for action
-						action.setModelSlot(null);
-					}
+			FMLControlGraphVisitor cgVisitor = controlGraph -> {
+				if (controlGraph instanceof TechnologySpecificAction
+						&& ((TechnologySpecificAction<?, ?>) controlGraph).getModelSlot() == ModelSlotImpl.this) {
+					TechnologySpecificAction action = (TechnologySpecificAction<?, ?>) controlGraph;
+					// nullify model slot for action
+					action.setModelSlot(null);
 				}
 			};
 

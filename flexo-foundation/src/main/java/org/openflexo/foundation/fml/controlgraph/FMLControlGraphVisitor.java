@@ -46,5 +46,5 @@ package org.openflexo.foundation.fml.controlgraph;
  */
 public interface FMLControlGraphVisitor {
 
-	public void visit(FMLControlGraph controlGraph);
+	void visit(FMLControlGraph controlGraph);
 }
