@@ -130,6 +130,11 @@ public class CreateViewWizard extends AbstractCreateVirtualModelInstanceWizard<C
 				return false;
 			}
 
+			if (getViewPoint().getCreationSchemes().size() > 0 && getCreationScheme() == null) {
+				setIssueMessage(action.getLocales().localizedForKey("no_creation_scheme_selected"), IssueMessageType.ERROR);
+				return false;
+			}
+
 			if (!getNewVirtualModelInstanceName().equals(JavaUtils.getClassName(getNewVirtualModelInstanceName()))
 					&& !getNewVirtualModelInstanceName().equals(JavaUtils.getVariableName(getNewVirtualModelInstanceName()))) {
 				setIssueMessage(action.getLocales().localizedForKey("discouraged_name_for_new_view"), IssueMessageType.WARNING);
