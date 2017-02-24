@@ -9,7 +9,7 @@
     </BrowserElement>
     <BrowserElement dataClassName="org.openflexo.foundation.technologyadapter.ModelSlot" label="(((modelSlot.name + &quot; - [&quot;) + modelSlot.technologyAdapter.name) + &quot;]&quot;)" icon="controller.iconForObject(modelSlot)" tooltip="" enabled="" visible="" isEditable="false" editableLabel="" filtered="false" defaultVisible="true" dynamicFont="" name="modelSlot" />
     <BrowserElement dataClassName="org.openflexo.foundation.fml.FlexoConcept" label="flexoConcept.name" icon="controller.iconForObject(flexoConcept)" tooltip="" enabled="" visible="" isEditable="false" editableLabel="" filtered="false" defaultVisible="true" dynamicFont="" name="flexoConcept">
-      <Children data="flexoConcept.childFlexoConcepts" visible="" cast="" name="children" />
+      <Children data="flexoConcept.embeddedFlexoConcepts" visible="" cast="" name="children" />
       <Children data="flexoConcept.inspector" visible="" cast="" name="inspector" />
       <Children data="flexoConcept.structuralFacet" visible="" cast="" name="structural" />
       <Children data="flexoConcept.behaviouralFacet" visible="" cast="" name="behavioural" />

@@ -68,7 +68,7 @@
 			label="flexoConcept.name" editableLabel="flexoConcept.name"
 			icon="controller.iconForObject(flexoConcept)" isEditable="true"
 			filtered="false" defaultVisible="true" name="flexoConcept">
-			<Children data="flexoConcept.childFlexoConcepts" cast=""
+			<Children data="flexoConcept.embeddedFlexoConcepts" cast=""
 				name="children" />
 			<BrowserRemoveAction method="controller.deleteFlexoConcept(selected)"
 				name="delete_flexo_concept" />
