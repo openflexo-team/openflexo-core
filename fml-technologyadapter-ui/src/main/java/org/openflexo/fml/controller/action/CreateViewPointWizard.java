@@ -164,6 +164,7 @@ public class CreateViewPointWizard extends AbstractCreateVirtualModelWizard<Crea
 				String oldValue = getNewViewPointName();
 				getAction().setNewViewPointName(newViewPointName);
 				getPropertyChangeSupport().firePropertyChange("newViewPointName", oldValue, newViewPointName);
+				getPropertyChangeSupport().firePropertyChange("newViewPointURI", null, getNewViewPointURI());
 				checkValidity();
 			}
 		}
