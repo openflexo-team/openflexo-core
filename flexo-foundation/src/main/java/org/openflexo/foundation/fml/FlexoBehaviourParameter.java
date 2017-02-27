@@ -43,7 +43,6 @@ import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
-
 import org.openflexo.connie.BindingEvaluationContext;
 import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.DataBinding;
@@ -66,7 +65,6 @@ import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.PropertyIdentifier;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
-import org.openflexo.model.annotations.XMLElement;
 import org.openflexo.toolbox.StringUtils;
 
 /**
@@ -145,15 +143,6 @@ public interface FlexoBehaviourParameter extends FlexoBehaviourObject, FunctionA
 
 	@Setter(DEFAULT_VALUE_KEY)
 	public void setDefaultValue(DataBinding<?> defaultValue);
-
-	@Override
-	@Getter(value = DESCRIPTION_KEY)
-	@XMLElement
-	public String getDescription();
-
-	@Override
-	@Setter(DESCRIPTION_KEY)
-	public void setDescription(String description);
 
 	@Getter(value = IS_REQUIRED_KEY, defaultValue = "false")
 	@XMLAttribute

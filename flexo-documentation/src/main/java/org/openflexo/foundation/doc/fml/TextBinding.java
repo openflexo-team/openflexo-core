@@ -208,7 +208,7 @@ public interface TextBinding<D extends FlexoDocument<D, TA>, TA extends Technolo
 		@Override
 		public DataBinding<String> getValue() {
 			if (value == null) {
-				value = new DataBinding<String>(this, String.class, DataBinding.BindingDefinitionType.GET);
+				value = new DataBinding<>(this, String.class, DataBinding.BindingDefinitionType.GET);
 				value.setBindingName("TextSelection" + getIndex());
 				value.setMandatory(true);
 			}
@@ -255,6 +255,9 @@ public interface TextBinding<D extends FlexoDocument<D, TA>, TA extends Technolo
 		@Override
 		public void applyToFragment(FlexoConceptInstance fci) {
 
+			// System.out.println("Applying text binding " + getName() + " with selection " + getTextSelection() + " and value " +
+			// getValue());
+
 			try {
 				FragmentActorReference<?> actorReference = (FragmentActorReference<?>) fci.getActorReference(getFragmentRole());
 				// FlexoDocFragment<?, ?> templateFragment = getFragmentRole().getFragment();
@@ -262,8 +265,13 @@ public interface TextBinding<D extends FlexoDocument<D, TA>, TA extends Technolo
 
 				String value = getValue().getBindingValue(fci);
 
+				if (value == null) {
+					// In this case, we purely escape: original text will be kept
+					return;
+				}
+
 				if (isMultiline()) {
-					List<String> newStructure = new ArrayList<String>();
+					List<String> newStructure = new ArrayList<>();
 					StringTokenizer st = new StringTokenizer(value, StringUtils.LINE_SEPARATOR);
 					while (st.hasMoreTokens()) {
 						newStructure.add(st.nextToken());
@@ -275,12 +283,13 @@ public interface TextBinding<D extends FlexoDocument<D, TA>, TA extends Technolo
 
 					TextSelection<D, TA> txtSelection = getTextSelection();
 					if (txtSelection.isSingleParagraph()) {
+
 						FlexoDocRun<?, ?> templateStartRun = txtSelection.getStartRun();
 						FlexoDocRun<?, ?> templateEndRun = txtSelection.getEndRun();
 						if (templateStartRun == templateEndRun) {
 							logger.warning("debut et fin sont identiques?");
 						}
-						List<String> newStructure = new ArrayList<String>();
+						List<String> newStructure = new ArrayList<>();
 						if (txtSelection.getStartCharacterIndex() > -1) {
 							if (templateStartRun instanceof FlexoTextRun) {
 								newStructure.add(((FlexoTextRun<?, ?>) templateStartRun).getText().substring(0,
@@ -333,15 +342,11 @@ public interface TextBinding<D extends FlexoDocument<D, TA>, TA extends Technolo
 
 			FlexoDocRun<D, TA> templateStartRun = getTextSelection().getStartRun();
 			FlexoDocRun<D, TA> templateEndRun = getTextSelection().getEndRun();
+
 			FlexoDocParagraph<D, TA> templateParagraph = (FlexoDocParagraph<D, TA>) getTextSelection().getStartElement();
 
 			List<FlexoDocElement<?, ?>> matchingElements = actorReference
 					.getElementsMatchingTemplateElement(getTextSelection().getStartElement());
-
-			/*if (matchingElements.size() == 0) {
-				System.out.println(
-						"Bizarre ca, je n'arrive pas a trouver les elements qui correspondent a " + getTextSelection().getStartElement());
-			}*/
 
 			if (matchingElements.size() > 0) {
 
@@ -381,7 +386,8 @@ public interface TextBinding<D extends FlexoDocument<D, TA>, TA extends Technolo
 						int currentIndex = endTargetRun.getIndex() + 1;
 						for (int i = 0; i < newStructure.size() - targetRunsNb; i++) {
 							FlexoDocRun<D, TA> clonedRun = (FlexoDocRun<D, TA>) startTargetRun.cloneObject();
-							targetParagraph.insertRunAtIndex(clonedRun, currentIndex++);
+							targetParagraph.insertRunAtIndex(clonedRun, currentIndex);
+							currentIndex++;
 							endTargetRun = clonedRun;
 						}
 					}

@@ -43,7 +43,7 @@
 			<BrowserElement dataClassName="org.openflexo.foundation.fml.FlexoConcept"
 				label="flexoConcept.name" icon="controller.iconForObject(flexoConcept)"
 				isEditable="false" filtered="false" defaultVisible="true" name="flexoConcept">
-				<Children data="flexoConcept.childFlexoConcepts" name="children" />
+				<Children data="flexoConcept.embeddedFlexoConcepts" name="children" />
 			</BrowserElement>
 		</Browser>
 		<Table iteratorClassName="org.openflexo.foundation.fml.rt.FlexoConceptInstance"

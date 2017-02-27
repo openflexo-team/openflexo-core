@@ -40,7 +40,7 @@
 				label="flexoConcept.name" icon="controller.iconForObject(flexoConcept)"
 				tooltip="" enabled="" visible="" isEditable="false" editableLabel=""
 				filtered="false" defaultVisible="true" dynamicFont="" name="flexoConcept">
-				<Children data="flexoConcept.childFlexoConcepts" visible=""
+				<Children data="flexoConcept.embeddedFlexoConcepts" visible=""
 					cast="" name="children" />
 				<BrowserAddAction method="controller.createFlexoConcept(selected)"
 					isAvailable="" name="add_flexo_concept" />

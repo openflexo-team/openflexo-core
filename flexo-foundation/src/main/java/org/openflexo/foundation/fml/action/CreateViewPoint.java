@@ -175,9 +175,18 @@ public class CreateViewPoint extends AbstractCreateVirtualModel<CreateViewPoint,
 	public void setNewViewPointName(String newViewPointName) {
 		this.newViewPointName = newViewPointName;
 		getPropertyChangeSupport().firePropertyChange("newViewPointName", null, newViewPointName);
+		getPropertyChangeSupport().firePropertyChange("newViewPointURI", null, getNewViewPointURI());
 	}
 
 	public String getNewViewPointURI() {
+		if (newViewPointURI == null) {
+			String baseURI = getFocusedObject().getDefaultBaseURI();
+			if (!baseURI.endsWith("/")) {
+				baseURI = baseURI + "/";
+			}
+			return baseURI + getBaseName() + ".viewpoint";
+		}
+
 		return newViewPointURI;
 	}
 

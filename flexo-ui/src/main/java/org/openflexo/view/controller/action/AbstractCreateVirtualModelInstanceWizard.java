@@ -40,8 +40,6 @@ package org.openflexo.view.controller.action;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Logger;
 
 import javax.swing.ImageIcon;
@@ -88,13 +86,13 @@ public abstract class AbstractCreateVirtualModelInstanceWizard<A extends Abstrac
 	protected final A action;
 
 	private final AbstractChooseVirtualModel<?> chooseVirtualModel;
-	private final List<ConfigureModelSlot<?, ?>> modelSlotConfigurationSteps;
+	// private final List<ConfigureModelSlot<?, ?>> modelSlotConfigurationSteps;
 	private AbstractChooseAndConfigureCreationScheme<?> chooseAndConfigureCreationScheme = null;
 
 	public AbstractCreateVirtualModelInstanceWizard(A action, FlexoController controller) {
 		super(controller);
 		this.action = action;
-		modelSlotConfigurationSteps = new ArrayList<ConfigureModelSlot<?, ?>>();
+		// modelSlotConfigurationSteps = new ArrayList<>();
 		addStep(chooseVirtualModel = makeChooseVirtualModel());
 	}
 
@@ -161,7 +159,7 @@ public abstract class AbstractCreateVirtualModelInstanceWizard<A extends Abstrac
 				return false;
 			}
 
-			if (chooseCreationScheme() && getCreationScheme() == null) {
+			if (getVirtualModel().getCreationSchemes().size() > 0 && getCreationScheme() == null) {
 				setIssueMessage(getAction().getLocales().localizedForKey("no_creation_scheme_selected"), IssueMessageType.ERROR);
 				return false;
 			}
@@ -261,12 +259,10 @@ public abstract class AbstractCreateVirtualModelInstanceWizard<A extends Abstrac
 			if (getVirtualModel() == null) {
 				return false;
 			}
-			if (chooseCreationScheme()) {
+			if (getCreationScheme() != null && getCreationScheme().getParameters().size() > 0) {
 				return true;
 			}
-			else {
-				return getVirtualModel().getModelSlots().size() > 0;
-			}
+			return false;
 		}
 
 		@Override
@@ -275,27 +271,18 @@ public abstract class AbstractCreateVirtualModelInstanceWizard<A extends Abstrac
 			// Two possibilities:
 			// - either chosen VirtualModel defines some CreationScheme, and we use it
 			// - otherwise, we configurate all model slots
-			if (chooseCreationScheme()) {
+			if (getCreationScheme() != null && getCreationScheme().getParameters().size() > 0) {
 				chooseAndConfigureCreationScheme = makeChooseAndConfigureCreationScheme();
 				addStep(chooseAndConfigureCreationScheme);
-			}
-			else {
-				for (ModelSlot<?> ms : chooseVirtualModel.getVirtualModel().getModelSlots()) {
-					ConfigureModelSlot<?, ?> step = makeConfigureModelSlotStep(ms);
-					if (step != null) {
-						modelSlotConfigurationSteps.add(step);
-						addStep(step);
-					}
-				}
 			}
 		}
 
 		@Override
 		public void discardTransition() {
-			for (ConfigureModelSlot<?, ?> step : modelSlotConfigurationSteps) {
+			/*for (ConfigureModelSlot<?, ?> step : modelSlotConfigurationSteps) {
 				removeStep(step);
 			}
-			modelSlotConfigurationSteps.clear();
+			modelSlotConfigurationSteps.clear();*/
 			if (chooseAndConfigureCreationScheme != null) {
 				removeStep(chooseAndConfigureCreationScheme);
 				chooseAndConfigureCreationScheme = null;
@@ -306,12 +293,12 @@ public abstract class AbstractCreateVirtualModelInstanceWizard<A extends Abstrac
 			return CreationScheme.class;
 		}
 
-		private String initializationOption;
+		// private String initializationOption;
 
-		public String getInitializationOption() {
+		/*public String getInitializationOption() {
 			return initializationOption;
 		}
-
+		
 		public void setInitializationOption(String initializationOption) {
 			if ((initializationOption == null && this.initializationOption != null)
 					|| (initializationOption != null && !initializationOption.equals(this.initializationOption))) {
@@ -321,10 +308,10 @@ public abstract class AbstractCreateVirtualModelInstanceWizard<A extends Abstrac
 				checkValidity();
 			}
 		}
-
+		
 		public boolean chooseCreationScheme() {
 			return getInitializationOption() != null && getInitializationOption().equals("choose_a_creation_scheme");
-		}
+		}*/
 
 	}
 

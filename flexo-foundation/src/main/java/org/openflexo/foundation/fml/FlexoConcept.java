@@ -104,6 +104,10 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 	public static final String OWNER_KEY = "owner";
 	@PropertyIdentifier(type = String.class)
 	public static final String NAME_KEY = "name";
+	@PropertyIdentifier(type = FlexoConcept.class)
+	public static final String CONTAINER_FLEXO_CONCEPT_KEY = "containerFlexoConcept";
+	@PropertyIdentifier(type = List.class)
+	public static final String EMBEDDED_FLEXO_CONCEPT_KEY = "embeddedFlexoConcepts";
 	@PropertyIdentifier(type = List.class)
 	public static final String FLEXO_BEHAVIOURS_KEY = "flexoBehaviours";
 	@PropertyIdentifier(type = List.class)
@@ -135,6 +139,34 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 	@Override
 	@Setter(NAME_KEY)
 	public void setName(String name);
+
+	@Getter(value = CONTAINER_FLEXO_CONCEPT_KEY, inverse = EMBEDDED_FLEXO_CONCEPT_KEY)
+	@CloningStrategy(StrategyType.IGNORE)
+	public FlexoConcept getContainerFlexoConcept();
+
+	@Setter(CONTAINER_FLEXO_CONCEPT_KEY)
+	public void setContainerFlexoConcept(FlexoConcept name);
+
+	/**
+	 * Return all {@link FlexoConcept} contained in this {@link FlexoConcept}
+	 * 
+	 * @return
+	 */
+	@Getter(value = EMBEDDED_FLEXO_CONCEPT_KEY, cardinality = Cardinality.LIST, inverse = CONTAINER_FLEXO_CONCEPT_KEY)
+	@XMLElement(context = "Embedded", primary = true)
+	@Embedded
+	@CloningStrategy(StrategyType.CLONE)
+	public List<FlexoConcept> getEmbeddedFlexoConcepts();
+
+	@Setter(EMBEDDED_FLEXO_CONCEPT_KEY)
+	public void setEmbeddedFlexoConcepts(List<FlexoConcept> flexoConcepts);
+
+	@Adder(EMBEDDED_FLEXO_CONCEPT_KEY)
+	@PastingPoint
+	public void addToEmbeddedFlexoConcepts(FlexoConcept aFlexoConcept);
+
+	@Remover(EMBEDDED_FLEXO_CONCEPT_KEY)
+	public void removeFromEmbeddedFlexoConcepts(FlexoConcept aFlexoConcept);
 
 	public List<FlexoBehaviour> getDeclaredFlexoBehaviours();
 
@@ -349,7 +381,19 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 	@Remover(FLEXO_CONCEPT_CONSTRAINTS_KEY)
 	public void removeFromFlexoConceptConstraints(FlexoConceptConstraint aFlexoConceptConstraint);
 
+	/**
+	 * Return boolean indicating whether this concept has a FlexoConcept for container (containment semantics)<br>
+	 * 
+	 * @return
+	 */
 	public boolean isRoot();
+
+	/**
+	 * Return boolean indicating whether this concept has no parent in this VirtualModel (inheritance semantics)
+	 * 
+	 * @return
+	 */
+	public boolean isSuperConcept();
 
 	public <ES extends FlexoBehaviour> List<ES> getFlexoBehaviours(Class<ES> editionSchemeClass);
 
@@ -499,9 +543,9 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 
 		@Override
 		public boolean delete(Object... context) {
-			Map<FlexoConcept, List<FlexoConcept>> oldParents = new HashMap<FlexoConcept, List<FlexoConcept>>();
+			Map<FlexoConcept, List<FlexoConcept>> oldParents = new HashMap<>();
 			for (FlexoConcept parentConcept : getParentFlexoConcepts()) {
-				oldParents.put(parentConcept, new ArrayList<FlexoConcept>(parentConcept.getChildFlexoConcepts()));
+				oldParents.put(parentConcept, new ArrayList<>(parentConcept.getChildFlexoConcepts()));
 			}
 			if (bindingModel != null) {
 				bindingModel.delete();
@@ -596,8 +640,8 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 				return getDeclaredProperties();
 			}
 
-			List<FlexoProperty<?>> returned = new ArrayList<FlexoProperty<?>>();
-			List<FlexoProperty<?>> inheritedProperties = new ArrayList<FlexoProperty<?>>();
+			List<FlexoProperty<?>> returned = new ArrayList<>();
+			List<FlexoProperty<?>> inheritedProperties = new ArrayList<>();
 			returned.addAll(getDeclaredProperties());
 			for (FlexoConcept parentConcept : getParentFlexoConcepts()) {
 				for (FlexoProperty<?> p : parentConcept.getAccessibleProperties()) {
@@ -611,7 +655,7 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 				}
 			}
 			// Now, we have to suppress all extra references
-			List<FlexoProperty<?>> unnecessaryProperty = new ArrayList<FlexoProperty<?>>();
+			List<FlexoProperty<?>> unnecessaryProperty = new ArrayList<>();
 			for (FlexoProperty<?> p : inheritedProperties) {
 				for (FlexoProperty<?> superP : p.getAllSuperProperties()) {
 					if (inheritedProperties.contains(superP)) {
@@ -659,7 +703,7 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 
 		@Override
 		public <R> List<R> getDeclaredProperties(Class<R> type) {
-			List<R> returned = new ArrayList<R>();
+			List<R> returned = new ArrayList<>();
 			for (FlexoProperty<?> r : getDeclaredProperties()) {
 				if (TypeUtils.isTypeAssignableFrom(type, r.getClass())) {
 					returned.add((R) r);
@@ -670,7 +714,7 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 
 		@Override
 		public <R> List<R> getAccessibleProperties(Class<R> type) {
-			List<R> returned = new ArrayList<R>();
+			List<R> returned = new ArrayList<>();
 			for (FlexoProperty<?> r : getAccessibleProperties()) {
 				if (TypeUtils.isTypeAssignableFrom(type, r.getClass())) {
 					returned.add((R) r);
@@ -756,7 +800,7 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 
 		public Vector<String> getAvailablePropertyNames() {
 			if (availablePropertiesNames == null) {
-				availablePropertiesNames = new Vector<String>();
+				availablePropertiesNames = new Vector<>();
 				for (FlexoProperty<?> r : getAccessibleProperties()) {
 					availablePropertiesNames.add(r.getName());
 				}
@@ -843,7 +887,7 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 		@Override
 		@SuppressWarnings("unchecked")
 		public <ES extends FlexoBehaviour> List<ES> getFlexoBehaviours(Class<ES> editionSchemeClass) {
-			List<ES> returned = new ArrayList<ES>();
+			List<ES> returned = new ArrayList<>();
 			for (FlexoBehaviour es : getFlexoBehaviours()) {
 				if (editionSchemeClass.isAssignableFrom(es.getClass())) {
 					returned.add((ES) es);
@@ -872,7 +916,7 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 				return getDeclaredFlexoBehaviours();
 			}
 
-			List<FlexoBehaviour> returned = new ArrayList<FlexoBehaviour>();
+			List<FlexoBehaviour> returned = new ArrayList<>();
 			// List<FlexoBehaviour> inheritedBehaviours = new ArrayList<FlexoBehaviour>();
 			returned.addAll(getDeclaredFlexoBehaviours());
 			for (FlexoConcept parentConcept : getParentFlexoConcepts()) {
@@ -923,7 +967,7 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 		@Override
 		@SuppressWarnings("unchecked")
 		public <ES extends FlexoBehaviour> List<ES> getAccessibleFlexoBehaviours(Class<ES> editionSchemeClass) {
-			List<ES> returned = new ArrayList<ES>();
+			List<ES> returned = new ArrayList<>();
 			for (FlexoBehaviour es : getAccessibleFlexoBehaviours()) {
 				if (editionSchemeClass.isAssignableFrom(es.getClass())) {
 					returned.add((ES) es);
@@ -1088,7 +1132,7 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 			newDeletionScheme.setControlGraph(getFMLModelFactory().newEmptyControlGraph());
 			addToFlexoBehaviours(newDeletionScheme);
 
-			List<FlexoProperty<?>> propertiesToDelete = new ArrayList<FlexoProperty<?>>();
+			List<FlexoProperty<?>> propertiesToDelete = new ArrayList<>();
 			for (FlexoProperty<?> pr : getDeclaredProperties()) {
 				if (pr.defaultBehaviourIsToBeDeleted()) {
 					propertiesToDelete.add(pr);
@@ -1096,7 +1140,7 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 			}
 			for (FlexoProperty<?> pr : propertiesToDelete) {
 				DeleteAction deleteAction = getFMLModelFactory().newDeleteAction();
-				deleteAction.setObject(new DataBinding<Object>(pr.getPropertyName()));
+				deleteAction.setObject(new DataBinding<>(pr.getPropertyName()));
 				newDeletionScheme.getControlGraph().sequentiallyAppend(deleteAction);
 			}
 			return newDeletionScheme;
@@ -1174,8 +1218,43 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 		}
 
 		@Override
-		public boolean isRoot() {
+		public boolean isSuperConcept() {
 			return getParentFlexoConcepts().size() == 0;
+		}
+
+		@Override
+		public boolean isRoot() {
+			return getContainerFlexoConcept() == null;
+		}
+
+		@Override
+		public void setContainerFlexoConcept(FlexoConcept aConcept) {
+			performSuperSetter(CONTAINER_FLEXO_CONCEPT_KEY, aConcept);
+			if (getOwningVirtualModel() != null) {
+				getOwningVirtualModel().getInnerConceptsFacet().notifiedConceptsChanged();
+				getOwningVirtualModel().getPropertyChangeSupport().firePropertyChange("allRootFlexoConcepts", null,
+						getOwningVirtualModel().getAllRootFlexoConcepts());
+			}
+		}
+
+		@Override
+		public void addToEmbeddedFlexoConcepts(FlexoConcept aFlexoConcept) {
+			performSuperAdder(EMBEDDED_FLEXO_CONCEPT_KEY, aFlexoConcept);
+			if (getOwningVirtualModel() != null) {
+				getOwningVirtualModel().getInnerConceptsFacet().notifiedConceptsChanged();
+				getOwningVirtualModel().getPropertyChangeSupport().firePropertyChange("allRootFlexoConcepts", null,
+						getOwningVirtualModel().getAllRootFlexoConcepts());
+			}
+		}
+
+		@Override
+		public void removeFromEmbeddedFlexoConcepts(FlexoConcept aFlexoConcept) {
+			performSuperRemover(EMBEDDED_FLEXO_CONCEPT_KEY, aFlexoConcept);
+			if (getOwningVirtualModel() != null) {
+				getOwningVirtualModel().getInnerConceptsFacet().notifiedConceptsChanged();
+				getOwningVirtualModel().getPropertyChangeSupport().firePropertyChange("allRootFlexoConcepts", null,
+						getOwningVirtualModel().getAllRootFlexoConcepts());
+			}
 		}
 
 		@Override
@@ -1189,8 +1268,8 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 				performSuperAdder(PARENT_FLEXO_CONCEPTS_KEY, parentFlexoConcept);
 				if (getOwningVirtualModel() != null) {
 					getOwningVirtualModel().getInnerConceptsFacet().notifiedConceptsChanged();
-					getOwningVirtualModel().getPropertyChangeSupport().firePropertyChange("allRootFlexoConcepts", null,
-							getOwningVirtualModel().getAllRootFlexoConcepts());
+					getOwningVirtualModel().getPropertyChangeSupport().firePropertyChange("allSuperFlexoConcepts", null,
+							getOwningVirtualModel().getAllSuperFlexoConcepts());
 				}
 			}
 			else {
@@ -1204,8 +1283,8 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 			performSuperRemover(PARENT_FLEXO_CONCEPTS_KEY, parentFlexoConcept);
 			if (getOwningVirtualModel() != null) {
 				getOwningVirtualModel().getInnerConceptsFacet().notifiedConceptsChanged();
-				getOwningVirtualModel().getPropertyChangeSupport().firePropertyChange("allRootFlexoConcepts", null,
-						getOwningVirtualModel().getAllRootFlexoConcepts());
+				getOwningVirtualModel().getPropertyChangeSupport().firePropertyChange("allSuperFlexoConcepts", null,
+						getOwningVirtualModel().getAllSuperFlexoConcepts());
 			}
 		}
 
@@ -1235,7 +1314,7 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 				return getDeclaredParentFlexoConcepts();
 			}
 
-			List<FlexoConcept> returned = new ArrayList<FlexoConcept>();
+			List<FlexoConcept> returned = new ArrayList<>();
 			returned.addAll(getDeclaredParentFlexoConcepts());
 			for (FlexoConcept concept : getParentFlexoConcepts()) {
 				returned.addAll(concept.getAllParentFlexoConcepts());
@@ -1330,8 +1409,7 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 		@Override
 		public ValidationIssue<NonAbstractFlexoConceptShouldHaveProperties, FlexoConcept> applyValidation(FlexoConcept flexoConcept) {
 			if (!(flexoConcept instanceof AbstractVirtualModel) && flexoConcept.getDeclaredProperties().size() == 0) {
-				return new ValidationWarning<NonAbstractFlexoConceptShouldHaveProperties, FlexoConcept>(this, flexoConcept,
-						"non_abstract_flexo_concept_role_does_not_define_any_property");
+				return new ValidationWarning<>(this, flexoConcept, "non_abstract_flexo_concept_role_does_not_define_any_property");
 			}
 			return null;
 		}
@@ -1346,8 +1424,7 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 		@Override
 		public ValidationIssue<FlexoConceptShouldHaveFlexoBehaviours, FlexoConcept> applyValidation(FlexoConcept flexoConcept) {
 			if (flexoConcept.getFlexoBehaviours().size() == 0) {
-				return new ValidationWarning<FlexoConceptShouldHaveFlexoBehaviours, FlexoConcept>(this, flexoConcept,
-						"flexo_concept_has_no_edition_scheme");
+				return new ValidationWarning<>(this, flexoConcept, "flexo_concept_has_no_edition_scheme");
 			}
 			return null;
 		}
@@ -1363,8 +1440,7 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 		public ValidationIssue<FlexoConceptShouldHaveDeletionScheme, FlexoConcept> applyValidation(FlexoConcept flexoConcept) {
 			if (flexoConcept.getDeletionSchemes().size() == 0) {
 				CreateDefaultDeletionScheme fixProposal = new CreateDefaultDeletionScheme(flexoConcept);
-				return new ValidationWarning<FlexoConceptShouldHaveDeletionScheme, FlexoConcept>(this, flexoConcept,
-						"flexo_concept_has_no_deletion_scheme", fixProposal);
+				return new ValidationWarning<>(this, flexoConcept, "flexo_concept_has_no_deletion_scheme", fixProposal);
 			}
 			return null;
 		}

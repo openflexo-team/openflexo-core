@@ -318,9 +318,9 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 		 */
 		public FlexoConceptInstanceImpl(/*VirtualModelInstance virtualModelInstance*/) {
 			super();
-			actors = new HashMap<String, List<ActorReference<?>>>();
-			actorLists = new HashMap<FlexoRole<?>, List<?>>();
-			variables = new HashMap<String, Object>();
+			actors = new HashMap<>();
+			actorLists = new HashMap<>();
+			variables = new HashMap<>();
 		}
 
 		@Override
@@ -364,7 +364,7 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 		public class LocalRunTimeEvaluationContext implements RunTimeEvaluationContext {
 
 			// Stores internal variables used during execution of this isolated RunTimeEvaluationContext
-			protected HashMap<String, Object> localVariables = new HashMap<String, Object>();
+			protected HashMap<String, Object> localVariables = new HashMap<>();
 
 			@Override
 			public FlexoConceptInstance getFlexoConceptInstance() {
@@ -599,7 +599,7 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 
 			List<T> returned = (List) actorLists.get(flexoRole);
 			if (returned == null) {
-				List<T> existingList = new ArrayList<T>();
+				List<T> existingList = new ArrayList<>();
 				if (actorReferences != null) {
 					for (ActorReference<T> ref : actorReferences) {
 						existingList.add(ref.getModellingElement());
@@ -735,7 +735,7 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 					}
 					else if (references.size() > 0) {
 						// Remove all existing references
-						for (ActorReference<T> actorReference : new ArrayList<ActorReference<T>>(references)) {
+						for (ActorReference<T> actorReference : new ArrayList<>(references)) {
 							removeFromActors(actorReference);
 						}
 					}
@@ -800,7 +800,7 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 					return;
 				}
 
-				for (ActorReference<T> actorReference : new ArrayList<ActorReference<T>>(references)) {
+				for (ActorReference<T> actorReference : new ArrayList<>(references)) {
 					if (areSameValue(actorReference.getModellingElement(), object)) {
 						removeFromActors(actorReference);
 					}
@@ -893,7 +893,7 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 		private <T> List<ActorReference<T>> getReferences(String roleName) {
 			List<ActorReference<T>> references = (List) actors.get(roleName);
 			if (references == null) {
-				references = new ArrayList<ActorReference<T>>();
+				references = new ArrayList<>();
 				actors.put(roleName, (List) references);
 			}
 			return references;
@@ -956,7 +956,7 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 		}
 
 		public Object evaluate(String expression) {
-			DataBinding<Object> vpdb = new DataBinding<Object>(expression);
+			DataBinding<Object> vpdb = new DataBinding<>(expression);
 			vpdb.setOwner(getFlexoConcept());
 			vpdb.setDeclaredType(Object.class);
 			vpdb.setBindingDefinitionType(BindingDefinitionType.GET);
@@ -973,7 +973,7 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 		}
 
 		public boolean setBindingValue(String expression, Object value) {
-			DataBinding<Object> vpdb = new DataBinding<Object>(expression);
+			DataBinding<Object> vpdb = new DataBinding<>(expression);
 			vpdb.setOwner(getFlexoConcept());
 			vpdb.setDeclaredType(Object.class);
 			vpdb.setBindingDefinitionType(BindingDefinitionType.SET);
@@ -1187,7 +1187,7 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 		 * Return the list of objects that will be deleted if default DeletionScheme is used
 		 */
 		public List<FlexoObject> objectsThatWillBeDeleted() {
-			Vector<FlexoObject> returned = new Vector<FlexoObject>();
+			Vector<FlexoObject> returned = new Vector<>();
 			for (FlexoRole<?> pr : getFlexoConcept().getDeclaredProperties(FlexoRole.class)) {
 				if (pr.defaultBehaviourIsToBeDeleted() && getFlexoActor(pr) instanceof FlexoObject) {
 					returned.add((FlexoObject) getFlexoActor(pr));
@@ -1200,7 +1200,7 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 		 * Return list of objects that will be deleted when using supplied DeletionScheme
 		 */
 		public List<FlexoObject> objectsThatWillBeDeleted(DeletionScheme deletionScheme) {
-			Vector<FlexoObject> returned = new Vector<FlexoObject>();
+			Vector<FlexoObject> returned = new Vector<>();
 			for (EditionAction editionAction : deletionScheme.getActions()) {
 				if (editionAction instanceof DeleteAction) {
 					DeleteAction deleteAction = (DeleteAction) editionAction;

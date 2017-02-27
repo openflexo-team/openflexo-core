@@ -28,7 +28,7 @@
       </BrowserElement>
       <BrowserElement id="24" icon="controller.iconForObject(inspector)" label="&quot;Locales&quot;" dataClassName="org.openflexo.foundation.fml.ViewPointLocalizedDictionary" name="inspector" isEditable="false" />
       <BrowserElement id="25" editableLabel="flexoConcept.name" icon="controller.iconForObject(flexoConcept)" label="flexoConcept.name" dataClassName="org.openflexo.foundation.fml.FlexoConcept" name="flexoConcept">
-        <Children id="26" name="children" data="flexoConcept.childFlexoConcepts" />
+        <Children id="26" name="children" data="flexoConcept.embeddedFlexoConcepts" />
         <BrowserAddAction id="27" name="add_flexo_concept" method="controller.createFlexoConcept(selected)" />
         <BrowserRemoveAction id="28" name="remove_flexo_concept" method="controller.deleteFlexoConcept(selected)" />
       </BrowserElement>

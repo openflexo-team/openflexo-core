@@ -40,7 +40,6 @@ package org.openflexo.foundation.fml.controlgraph;
 
 import java.lang.reflect.Type;
 import java.util.List;
-
 import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.BindingVariable;
 import org.openflexo.connie.DataBinding;
@@ -323,20 +322,8 @@ public abstract interface FMLControlGraph extends FlexoConceptObject {
 		@Override
 		public void setOwner(FMLControlGraphOwner owner) {
 			performSuperSetter(OWNER_KEY, owner);
-
-			// System.out.println("BEGIN change owner for " + getFMLRepresentation());
-
 			// We should recursively call #notifiedScopeChanged() on all contained control graphs
-			FMLControlGraphVisitor cgVisitor = new FMLControlGraphVisitor() {
-				@Override
-				public void visit(FMLControlGraph controlGraph) {
-					controlGraph.notifiedScopeChanged();
-				}
-			};
-			accept(cgVisitor);
-
-			// System.out.println("END change owner for " + getFMLRepresentation());
-
+			accept(controlGraph -> controlGraph.notifiedScopeChanged());
 		}
 
 	}

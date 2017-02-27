@@ -287,30 +287,19 @@ public interface AbstractVirtualModel<VM extends AbstractVirtualModel<VM>>
 	public FlexoMetaModel<?> getMetaModel(String metaModelURI);
 
 	/**
-	 * Return reflexive model slot<br>
-	 * The reflexive model slot is an abstraction which allow to consider the virtual model as a model which can be accessed from itself
-	 * (Reentrance implementation)
-	 * 
-	 * @return
-	 */
-	// Not used anymore, but supported implicitely
-	// public FMLRTModelSlot getReflexiveModelSlot();
-
-	/**
-	 * Return flag indicating if supplied BindingVariable is set at runtime
-	 * 
-	 * @param variable
-	 * @return
-	 * @see VirtualModelInstance#getValueForVariable(BindingVariable)
-	 */
-	// public boolean handleVariable(BindingVariable variable);
-
-	/**
-	 * Return all {@link FlexoConcept} defined in this {@link AbstractVirtualModel} which have no parent
+	 * Return all {@link FlexoConcept} defined in this {@link AbstractVirtualModel} which have no container (contaiment semantics)<br>
+	 * (where container is the virtual model itself)
 	 * 
 	 * @return
 	 */
 	public List<FlexoConcept> getAllRootFlexoConcepts();
+
+	/**
+	 * Return all {@link FlexoConcept} defined in this {@link AbstractVirtualModel} which have no parent (inheritance semantics)
+	 * 
+	 * @return
+	 */
+	public List<FlexoConcept> getAllSuperFlexoConcepts();
 
 	public boolean hasNature(VirtualModelNature nature);
 
@@ -455,16 +444,34 @@ public interface AbstractVirtualModel<VM extends AbstractVirtualModel<VM>>
 		}
 
 		/**
-		 * Return all {@link FlexoConcept} defined in this {@link AbstractVirtualModel} which have no parent
+		 * Return all {@link FlexoConcept} defined in this {@link AbstractVirtualModel} which have no container (containment semantics)<br>
+		 * (where container is the virtual model itself)
 		 * 
 		 * @return
 		 */
 		@Override
 		public List<FlexoConcept> getAllRootFlexoConcepts() {
-			Vector<FlexoConcept> returned = new Vector<FlexoConcept>();
+
+			Vector<FlexoConcept> returned = new Vector<>();
 			for (FlexoConcept ep : getFlexoConcepts()) {
 				if (ep.isRoot()) {
 					returned.add(ep);
+				}
+			}
+			return returned;
+		}
+
+		/**
+		 * Return all {@link FlexoConcept} defined in this {@link AbstractVirtualModel} which have no parent (inheritance semantics)
+		 * 
+		 * @return
+		 */
+		@Override
+		public List<FlexoConcept> getAllSuperFlexoConcepts() {
+			ArrayList<FlexoConcept> returned = new ArrayList<>();
+			for (FlexoConcept fc : getFlexoConcepts()) {
+				if (fc.isSuperConcept()) {
+					returned.add(fc);
 				}
 			}
 			return returned;
@@ -475,6 +482,7 @@ public interface AbstractVirtualModel<VM extends AbstractVirtualModel<VM>>
 		public void addToFlexoConcepts(FlexoConcept aFlexoConcept) {
 			performSuperAdder(FLEXO_CONCEPTS_KEY, aFlexoConcept);
 			getPropertyChangeSupport().firePropertyChange("allRootFlexoConcepts", null, aFlexoConcept);
+			getPropertyChangeSupport().firePropertyChange("allSuperFlexoConcepts", null, aFlexoConcept);
 			if (aFlexoConcept.getParentFlexoConcepts() != null) {
 				for (FlexoConcept parent : aFlexoConcept.getParentFlexoConcepts()) {
 					parent.getPropertyChangeSupport().firePropertyChange(FlexoConcept.CHILD_FLEXO_CONCEPTS_KEY, null, aFlexoConcept);
@@ -488,6 +496,7 @@ public interface AbstractVirtualModel<VM extends AbstractVirtualModel<VM>>
 		public void removeFromFlexoConcepts(FlexoConcept aFlexoConcept) {
 			performSuperRemover(FLEXO_CONCEPTS_KEY, aFlexoConcept);
 			getPropertyChangeSupport().firePropertyChange("allRootFlexoConcepts", aFlexoConcept, null);
+			getPropertyChangeSupport().firePropertyChange("allSuperFlexoConcepts", aFlexoConcept, null);
 			if (aFlexoConcept.getParentFlexoConcepts() != null) {
 				for (FlexoConcept parent : aFlexoConcept.getParentFlexoConcepts()) {
 					parent.getPropertyChangeSupport().firePropertyChange(FlexoConcept.CHILD_FLEXO_CONCEPTS_KEY, aFlexoConcept, null);
@@ -538,7 +547,7 @@ public interface AbstractVirtualModel<VM extends AbstractVirtualModel<VM>>
 
 		@Override
 		public <MS extends ModelSlot<?>> List<MS> getModelSlots(Class<MS> msType) {
-			List<MS> returned = new ArrayList<MS>();
+			List<MS> returned = new ArrayList<>();
 			for (ModelSlot<?> ms : getModelSlots()) {
 				if (TypeUtils.isTypeAssignableFrom(msType, ms.getClass())) {
 					returned.add((MS) ms);
@@ -560,7 +569,7 @@ public interface AbstractVirtualModel<VM extends AbstractVirtualModel<VM>>
 		}
 
 		public List<ModelSlot<?>> getRequiredModelSlots() {
-			List<ModelSlot<?>> requiredModelSlots = new ArrayList<ModelSlot<?>>();
+			List<ModelSlot<?>> requiredModelSlots = new ArrayList<>();
 			for (ModelSlot<?> modelSlot : getModelSlots()) {
 				if (modelSlot.getIsRequired()) {
 					requiredModelSlots.add(modelSlot);
@@ -645,7 +654,7 @@ public interface AbstractVirtualModel<VM extends AbstractVirtualModel<VM>>
 		 */
 		@Deprecated
 		public Set<FlexoMetaModel<?>> getAllReferencedMetaModels() {
-			HashSet<FlexoMetaModel<?>> returned = new HashSet<FlexoMetaModel<?>>();
+			HashSet<FlexoMetaModel<?>> returned = new HashSet<>();
 			for (ModelSlot<?> modelSlot : getModelSlots()) {
 				if (modelSlot instanceof TypeAwareModelSlot) {
 					TypeAwareModelSlot<?, ?> tsModelSlot = (TypeAwareModelSlot<?, ?>) modelSlot;
@@ -842,7 +851,7 @@ public interface AbstractVirtualModel<VM extends AbstractVirtualModel<VM>>
 		 */
 		@Override
 		public List<TechnologyAdapter> getRequiredTechnologyAdapters() {
-			List<TechnologyAdapter> returned = new ArrayList<TechnologyAdapter>();
+			List<TechnologyAdapter> returned = new ArrayList<>();
 			returned.add(getTechnologyAdapter());
 			for (ModelSlot<?> ms : getModelSlots()) {
 				if (!returned.contains(ms.getModelSlotTechnologyAdapter())) {
@@ -892,8 +901,7 @@ public interface AbstractVirtualModel<VM extends AbstractVirtualModel<VM>>
 			for (ModelSlot<?> ms : ((AbstractVirtualModel<?>) vm).getModelSlots()) {
 				if (ms instanceof FMLRTModelSlot && "virtualModelInstance".equals(ms.getName())) {
 					RemoveReflexiveVirtualModelModelSlot fixProposal = new RemoveReflexiveVirtualModelModelSlot(vm);
-					return new ValidationWarning<ShouldNotHaveReflexiveVirtualModelModelSlot, AbstractVirtualModel>(this, vm,
-							"virtual_model_should_not_have_reflexive_model_slot_no_more", fixProposal);
+					return new ValidationWarning<>(this, vm, "virtual_model_should_not_have_reflexive_model_slot_no_more", fixProposal);
 
 				}
 			}
