@@ -39,8 +39,6 @@
 
 package org.openflexo.view.controller;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.List;
 import java.util.Vector;
 import java.util.logging.Logger;
@@ -364,22 +362,19 @@ public class FlexoFIBController extends FIBController implements GraphicalFlexoO
 	private boolean preferencesRegistered = false;
 
 	protected void listenToPresentationPreferences() {
-		ApplicationContext applicationContext = getFlexoController().getApplicationContext();
-		if (!preferencesRegistered && applicationContext != null) {
-			applicationContext.getPresentationPreferences().getPropertyChangeSupport()
-					.addPropertyChangeListener(new PropertyChangeListener() {
-
-						@Override
-						public void propertyChange(PropertyChangeEvent evt) {
+		if (getFlexoController() != null && getFlexoController().getApplicationContext() != null) {
+			if (!preferencesRegistered) {
+				getFlexoController().getApplicationContext().getPresentationPreferences().getPropertyChangeSupport().addPropertyChangeListener(
+						evt -> {
 							if (evt.getPropertyName().equals(PresentationPreferences.HIDE_EMPTY_FOLDERS)) {
 								// FlexoFIBController.this.getPropertyChangeSupport().firePropertyChange("shouldBeDisplayed(RepositoryFolder)",
 								// false, true);
 								FlexoFIBController.this.getPropertyChangeSupport()
 										.firePropertyChange("shouldBeDisplayed(RepositoryFolder<?,?>)", false, true);
 							}
-						}
-					});
-			preferencesRegistered = true;
+						});
+				preferencesRegistered = true;
+			}
 		}
 	}
 
