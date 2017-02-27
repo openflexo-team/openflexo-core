@@ -43,7 +43,6 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
-
 import org.openflexo.foundation.DataModification;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoObject;
@@ -412,13 +411,17 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 		else {
 			isDeleting = true;
 			logger.info("Deleting resource " + this);
+
+			if (getResourceCenter() instanceof ResourceRepository) {
+				((ResourceRepository) getResourceCenter()).unregisterResource(this);
+			}
+
 			if (getContainer() != null) {
 				FlexoResource<?> container = getContainer();
 				container.removeFromContents(this);
 				container.notifyContentsRemoved(this);
 			}
-			for (org.openflexo.foundation.resource.FlexoResource<?> r : new ArrayList<org.openflexo.foundation.resource.FlexoResource<?>>(
-					getContents())) {
+			for (org.openflexo.foundation.resource.FlexoResource<?> r : new ArrayList<>(getContents())) {
 				r.delete();
 			}
 
@@ -430,6 +433,8 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 			getIODelegate().delete();
 
 			performSuperDelete(context);
+
+
 
 			isDeleting = false;
 
