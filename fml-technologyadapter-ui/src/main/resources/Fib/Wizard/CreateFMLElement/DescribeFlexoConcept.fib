@@ -10,7 +10,7 @@
     <Assignment id="8" variable="component.serviceManager" mandatory="true" />
     <Assignment id="9" variable="component.selectableCondition" mandatory="true" />
     <Assignment id="10" variable="component.flexoController" mandatory="true" />
-    <Assignment id="11" variable="component.virtualModel" value="data.owner" mandatory="true" />
+    <Assignment id="11" variable="component.virtualModel" value="data.action.focusedObject" mandatory="true" />
   </Custom>
   <Label id="12" label="parent_concepts" align="left" localize="true" index="5" constraints="twocols(anchor=center;expandHorizontally=false;expandVertically=false;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=2;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left;padX=0;padY=0;weightX=0.0;weightY=0.0)" name="ParentConceptsLabel" />
   <Table id="13" boundToSelectionManager="true" backgroundNonSelectionColor="255,255,255" backgroundSecondarySelectionColor="178,215,255" iteratorClassName="org.openflexo.foundation.fml.action.AbstractCreateFlexoConcept$ParentFlexoConceptEntry" showFooter="true" selectionMode="MultipleIntervalSelection" localize="true" manageDynamicModel="true" data="data.parentFlexoConceptEntries" index="6" constraints="twocols(anchor=center;expandHorizontally=true;expandVertically=true;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=3;insetsBottom=10;insetsLeft=0;insetsRight=20;insetsTop=5;location=right;padX=0;padY=0;weightX=0.0;weightY=0.0)" name="ParentFlexoConceptTable">
