@@ -91,7 +91,8 @@ public class FlexoConceptInstanceType implements TechnologySpecificType<FMLTechn
 
 			if (configuration != null) {
 				concept = getTechnologyAdapter().getTechnologyAdapterService().getServiceManager().getViewPointLibrary()
-						.getFlexoConcept(configuration);
+						.getFlexoConcept(configuration, false);
+				// Do not load virtual models for that reason, resolving will be performed later
 			}
 			else {
 				concept = getFlexoConceptType();
