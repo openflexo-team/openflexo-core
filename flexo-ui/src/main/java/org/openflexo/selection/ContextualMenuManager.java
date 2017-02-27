@@ -177,7 +177,7 @@ public class ContextualMenuManager {
 	@SuppressWarnings("unchecked")
 	public <A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> List<FlexoActionType<A, T1, T2>> getActionTypesWithAddType(
 			FlexoObject focusedObject, Vector<? extends FlexoObject> globalSelection) {
-		List<FlexoActionType<A, T1, T2>> returned = new ArrayList<FlexoActionType<A, T1, T2>>();
+		List<FlexoActionType<A, T1, T2>> returned = new ArrayList<>();
 		if (getEditor() == null) {
 			return returned;
 		}
@@ -200,7 +200,7 @@ public class ContextualMenuManager {
 	@SuppressWarnings("unchecked")
 	public <A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> List<FlexoActionType<A, T1, T2>> getActionTypesWithDeleteType(
 			FlexoObject focusedObject, Vector<? extends FlexoObject> globalSelection) {
-		List<FlexoActionType<A, T1, T2>> returned = new ArrayList<FlexoActionType<A, T1, T2>>();
+		List<FlexoActionType<A, T1, T2>> returned = new ArrayList<>();
 		if (getEditor() == null) {
 			return returned;
 		}
@@ -271,6 +271,11 @@ public class ContextualMenuManager {
 							contextualMenu.putAction(new DeletionSchemeActionType(ds, fci));
 						}
 					}
+					/*if (commonConcept instanceof AbstractVirtualModel) {
+						for (FlexoConcept rootConcept : ((AbstractVirtualModel<?>) commonConcept).getAllRootFlexoConcepts()) {
+							AddFlexoConceptInstance<AbstractVirtualModelInstance<VMI,?>>
+						}
+					}*/
 				}
 			}
 			_popupMenu = contextualMenu.makePopupMenu(focusedObject);
@@ -300,10 +305,10 @@ public class ContextualMenuManager {
 	}
 
 	protected class ContextualMenu extends Hashtable<ActionGroup, ContextualMenuGroup> {
-		final Hashtable<ActionMenu, ContextualSubMenu> _subMenus = new Hashtable<ActionMenu, ContextualSubMenu>();
+		final Hashtable<ActionMenu, ContextualSubMenu> _subMenus = new Hashtable<>();
 
 		public Enumeration<ContextualMenuGroup> orderedGroups() {
-			Vector<ContextualMenuGroup> orderedGroups = new Vector<ContextualMenuGroup>(values());
+			Vector<ContextualMenuGroup> orderedGroups = new Vector<>(values());
 			Collections.sort(orderedGroups, new Comparator<ContextualMenuGroup>() {
 				@Override
 				public int compare(ContextualMenuGroup o1, ContextualMenuGroup o2) {
@@ -482,7 +487,7 @@ public class ContextualMenuManager {
 	private <A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> JMenuItem makeMenuItem(
 			FlexoActionType<A, T1, T2> actionType, FlexoObject focusedObject, JPopupMenu menu) {
 		try {
-			Vector<T2> globalSelection = new Vector<T2>();
+			Vector<T2> globalSelection = new Vector<>();
 			if (_selectionManager != null) {
 				for (FlexoObject o : _selectionManager.getSelection()) {
 					try {
@@ -493,7 +498,7 @@ public class ContextualMenuManager {
 					}
 				}
 			}
-			EditionAction<A, T1, T2> action = new EditionAction<A, T1, T2>(actionType, (T1) focusedObject, globalSelection, getEditor());
+			EditionAction<A, T1, T2> action = new EditionAction<>(actionType, (T1) focusedObject, globalSelection, getEditor());
 			JMenuItem item = menu.add(action);
 			if (controller != null && controller.getModuleLocales() != null) {
 				item.setText(controller.getModuleLocales().localizedForKey(actionType.getActionName()));
@@ -521,7 +526,7 @@ public class ContextualMenuManager {
 	<A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> JMenuItem makeMenuItem(
 			FlexoActionType<A, T1, T2> actionType, T1 focusedObject, JMenu menu) {
 		try {
-			EditionAction<A, T1, T2> action = new EditionAction<A, T1, T2>(actionType, focusedObject,
+			EditionAction<A, T1, T2> action = new EditionAction<>(actionType, focusedObject,
 					_selectionManager != null ? (Vector<T2>) _selectionManager.getSelection() : null, getEditor());
 			JMenuItem item = menu.add(action);
 

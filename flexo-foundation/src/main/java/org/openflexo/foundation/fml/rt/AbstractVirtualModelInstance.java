@@ -172,6 +172,15 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 	@Setter(VIRTUAL_MODEL_URI_KEY)
 	public void setVirtualModelURI(String virtualModelURI);
 
+	/**
+	 * Return all {@link FlexoConceptInstance} defined in this {@link AbstractVirtualModelInstance} which have no container (contaiment
+	 * semantics)<br>
+	 * (where container is the virtual model instance itself)
+	 * 
+	 * @return
+	 */
+	public List<FlexoConceptInstance> getAllRootFlexoConceptInstances();
+
 	@Getter(value = MODEL_SLOT_INSTANCES_KEY, cardinality = Cardinality.LIST, inverse = ModelSlotInstance.VIRTUAL_MODEL_INSTANCE_KEY)
 	@XMLElement
 	@Embedded
@@ -317,7 +326,12 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 		public AbstractVirtualModelInstanceImpl() {
 			super();
 			// modelSlotInstances = new ArrayList<ModelSlotInstance<?, ?>>();
-			flexoConceptInstances = new Hashtable<FlexoConcept, List<FlexoConceptInstance>>();
+			flexoConceptInstances = new Hashtable<>();
+		}
+
+		@Override
+		public String getStringRepresentation() {
+			return getName();
 		}
 
 		@Override
@@ -441,6 +455,25 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 		}
 
 		/**
+		 * Return all {@link FlexoConceptInstance} defined in this {@link AbstractVirtualModelInstance} which have no container (containment
+		 * semantics)<br>
+		 * (where container is the virtual model instance itself)
+		 * 
+		 * @return
+		 */
+		@Override
+		public List<FlexoConceptInstance> getAllRootFlexoConceptInstances() {
+
+			ArrayList<FlexoConceptInstance> returned = new ArrayList<>();
+			for (FlexoConceptInstance fci : getFlexoConceptInstances()) {
+				if (fci.isRoot()) {
+					returned.add(fci);
+				}
+			}
+			return returned;
+		}
+
+		/**
 		 * Instanciate and register a new {@link FlexoConceptInstance}
 		 * 
 		 * @param pattern
@@ -476,7 +509,7 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 			if (newFlexoConcept != null) {
 				list = flexoConceptInstances.get(newFlexoConcept);
 				if (list == null) {
-					list = new ArrayList<FlexoConceptInstance>();
+					list = new ArrayList<>();
 					flexoConceptInstances.put(newFlexoConcept, list);
 				}
 				list.add(fci);
@@ -508,7 +541,7 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 			}
 
 			performSuperAdder(FLEXO_CONCEPT_INSTANCES_KEY, fci);
-
+			getPropertyChangeSupport().firePropertyChange("allRootFlexoConceptInstances", false, true);
 		}
 
 		/**
@@ -532,7 +565,7 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 		private void ensureRegisterFCIInConcept(FlexoConceptInstance fci, FlexoConcept concept) {
 			List<FlexoConceptInstance> list = flexoConceptInstances.get(concept);
 			if (list == null) {
-				list = new ArrayList<FlexoConceptInstance>();
+				list = new ArrayList<>();
 				flexoConceptInstances.put(concept, list);
 			}
 			if (!list.contains(fci)) {
@@ -581,6 +614,8 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 			}
 
 			performSuperRemover(FLEXO_CONCEPT_INSTANCES_KEY, fci);
+
+			getPropertyChangeSupport().firePropertyChange("allRootFlexoConceptInstances", false, true);
 		}
 
 		@Override
@@ -626,7 +661,7 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 		 */
 		@Override
 		public List<FlexoConcept> getUsedFlexoConcepts() {
-			List<FlexoConcept> returned = new ArrayList<FlexoConcept>();
+			List<FlexoConcept> returned = new ArrayList<>();
 			for (FlexoConcept concept : flexoConceptInstances.keySet()) {
 				returned.add(concept);
 			}
@@ -803,7 +838,7 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 		 */
 		@Deprecated
 		public Set<FlexoMetaModel> getAllMetaModels() {
-			Set<FlexoMetaModel> allMetaModels = new HashSet<FlexoMetaModel>();
+			Set<FlexoMetaModel> allMetaModels = new HashSet<>();
 			for (ModelSlotInstance<?, ?> instance : getModelSlotInstances()) {
 				if (instance.getModelSlot() instanceof TypeAwareModelSlot
 						&& ((TypeAwareModelSlot) instance.getModelSlot()).getMetaModelResource() != null) {
@@ -820,7 +855,7 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 		 */
 		@Deprecated
 		public Set<FlexoModel<?, ?>> getAllModels() {
-			Set<FlexoModel<?, ?>> allModels = new HashSet<FlexoModel<?, ?>>();
+			Set<FlexoModel<?, ?>> allModels = new HashSet<>();
 			for (ModelSlotInstance<?, ?> instance : getModelSlotInstances()) {
 				if (instance.getResourceData() instanceof FlexoModel) {
 					allModels.add(instance.getResourceData());
@@ -1253,7 +1288,7 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 		}
 
 		public <T> FlexoConceptInstanceIndex<T> makeIndex(FlexoConceptInstanceType type, DataBinding<T> indexableTerm) {
-			return new FlexoConceptInstanceIndex<T>(type, indexableTerm);
+			return new FlexoConceptInstanceIndex<>(type, indexableTerm);
 		}
 
 		@Override

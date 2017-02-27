@@ -38,9 +38,12 @@
 
 package org.openflexo.fml.rt.controller;
 
+import javax.swing.ImageIcon;
+
 import org.openflexo.components.widget.FIBTechnologyBrowser;
 import org.openflexo.fml.rt.controller.action.ActionSchemeActionInitializer;
 import org.openflexo.fml.rt.controller.action.CreateBasicVirtualModelInstanceInitializer;
+import org.openflexo.fml.rt.controller.action.CreateFlexoConceptInstanceInitializer;
 import org.openflexo.fml.rt.controller.action.CreateViewInitializer;
 import org.openflexo.fml.rt.controller.action.DeleteViewInitializer;
 import org.openflexo.fml.rt.controller.action.DeleteVirtualModelInstanceInitializer;
@@ -86,8 +89,6 @@ import org.openflexo.view.controller.FlexoController;
 import org.openflexo.view.controller.TechnologyAdapterController;
 import org.openflexo.view.controller.model.FlexoPerspective;
 
-import javax.swing.*;
-
 public class FMLRTTechnologyAdapterController extends TechnologyAdapterController<FMLRTTechnologyAdapter> {
 
 	@Override
@@ -131,6 +132,8 @@ public class FMLRTTechnologyAdapterController extends TechnologyAdapterControlle
 		new DeleteViewInitializer(actionInitializer);
 		new CreateBasicVirtualModelInstanceInitializer(actionInitializer);
 		new DeleteVirtualModelInstanceInitializer(actionInitializer);
+
+		new CreateFlexoConceptInstanceInitializer(actionInitializer);
 
 		new ActionSchemeActionInitializer(actionInitializer);
 		new SynchronizationSchemeActionInitializer(actionInitializer);
@@ -312,7 +315,7 @@ public class FMLRTTechnologyAdapterController extends TechnologyAdapterControlle
 			// NO module view yet
 		}
 
-		return new EmptyPanel<TechnologyObject<FMLRTTechnologyAdapter>>(controller, perspective, object);
+		return new EmptyPanel<>(controller, perspective, object);
 	}
 
 	@Override

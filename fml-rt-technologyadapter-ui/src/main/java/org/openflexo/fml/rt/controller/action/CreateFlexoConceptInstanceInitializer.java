@@ -2,7 +2,7 @@
  * 
  * Copyright (c) 2014, Openflexo
  * 
- * This file is part of Openflexo-technology-adapters-ui, a component of the software infrastructure 
+ * This file is part of Fml-technologyadapter-ui, a component of the software infrastructure 
  * developed at Openflexo.
  * 
  * 
@@ -43,47 +43,51 @@ import java.util.logging.Logger;
 
 import javax.swing.Icon;
 
+import org.openflexo.components.wizard.Wizard;
+import org.openflexo.components.wizard.WizardDialog;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.action.FlexoActionFinalizer;
 import org.openflexo.foundation.action.FlexoActionInitializer;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
-import org.openflexo.foundation.fml.rt.action.OpenVirtualModelInstance;
+import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
+import org.openflexo.foundation.fml.rt.action.CreateFlexoConceptInstance;
+import org.openflexo.gina.controller.FIBController.Status;
 import org.openflexo.icon.FMLRTIconLibrary;
 import org.openflexo.icon.IconFactory;
 import org.openflexo.icon.IconLibrary;
 import org.openflexo.view.controller.ActionInitializer;
 import org.openflexo.view.controller.ControllerActionInitializer;
-import org.openflexo.view.controller.TechnologyPerspective;
 
-public class OpenVirtualModelInstanceInitializer extends ActionInitializer<OpenVirtualModelInstance, VirtualModelInstance, FlexoObject> {
+public class CreateFlexoConceptInstanceInitializer
+		extends ActionInitializer<CreateFlexoConceptInstance, FlexoConceptInstance, FlexoObject> {
 
-	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(ControllerActionInitializer.class.getPackage().getName());
 
-	public OpenVirtualModelInstanceInitializer(ControllerActionInitializer actionInitializer) {
-		super(OpenVirtualModelInstance.actionType, actionInitializer);
+	public CreateFlexoConceptInstanceInitializer(ControllerActionInitializer actionInitializer) {
+		super(CreateFlexoConceptInstance.actionType, actionInitializer);
 	}
 
 	@Override
-	protected FlexoActionInitializer<OpenVirtualModelInstance> getDefaultInitializer() {
-		return new FlexoActionInitializer<OpenVirtualModelInstance>() {
+	protected FlexoActionInitializer<CreateFlexoConceptInstance> getDefaultInitializer() {
+		return new FlexoActionInitializer<CreateFlexoConceptInstance>() {
 			@Override
-			public boolean run(EventObject e, OpenVirtualModelInstance action) {
+			public boolean run(EventObject e, CreateFlexoConceptInstance action) {
+				Wizard wizard = new CreateFlexoConceptInstanceWizard(action, getController());
+				WizardDialog dialog = new WizardDialog(wizard, getController());
+				dialog.showDialog();
+				if (dialog.getStatus() != Status.VALIDATED) {
+					// Operation cancelled
+					return false;
+				}
 				return true;
 			}
-
 		};
 	}
 
 	@Override
-	protected FlexoActionFinalizer<OpenVirtualModelInstance> getDefaultFinalizer() {
-		return new FlexoActionFinalizer<OpenVirtualModelInstance>() {
+	protected FlexoActionFinalizer<CreateFlexoConceptInstance> getDefaultFinalizer() {
+		return new FlexoActionFinalizer<CreateFlexoConceptInstance>() {
 			@Override
-			public boolean run(EventObject e, OpenVirtualModelInstance action) {
-
-				TechnologyPerspective<?> perspective = getController().getFMLRTTechnologyAdapterController()
-						.getTechnologyPerspective(getController());
-				getController().setCurrentEditedObjectAsModuleView(action.getFocusedObject(), perspective);
+			public boolean run(EventObject e, CreateFlexoConceptInstance action) {
 				return true;
 			}
 		};
@@ -91,7 +95,7 @@ public class OpenVirtualModelInstanceInitializer extends ActionInitializer<OpenV
 
 	@Override
 	protected Icon getEnabledIcon() {
-		return IconFactory.getImageIcon(FMLRTIconLibrary.VIRTUAL_MODEL_INSTANCE_ICON, IconLibrary.IMPORT);
+		return IconFactory.getImageIcon(FMLRTIconLibrary.FLEXO_CONCEPT_INSTANCE_ICON, IconLibrary.NEW_MARKER);
 	}
 
 }

@@ -39,6 +39,16 @@
 
 package org.openflexo.view.controller;
 
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Logger;
+
+import javax.swing.ImageIcon;
+
 import org.openflexo.ApplicationContext;
 import org.openflexo.components.widget.FIBTechnologyBrowser;
 import org.openflexo.connie.DataBinding;
@@ -100,7 +110,6 @@ import org.openflexo.gina.model.FIBComponent.VerticalScrollBarPolicy;
 import org.openflexo.gina.model.FIBModelFactory;
 import org.openflexo.gina.model.FIBWidget;
 import org.openflexo.gina.model.container.FIBPanel;
-import org.openflexo.gina.model.container.FIBTab;
 import org.openflexo.gina.model.container.layout.TwoColsLayoutConstraints;
 import org.openflexo.gina.model.container.layout.TwoColsLayoutConstraints.TwoColsLayoutLocation;
 import org.openflexo.gina.model.widget.FIBCheckBox;
@@ -124,15 +133,6 @@ import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.view.ModuleView;
 import org.openflexo.view.controller.model.FlexoPerspective;
-
-import javax.swing.*;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.logging.Logger;
 
 /**
  * This class represents a technology-specific controller provided by a {@link TechnologyAdapter}<br>
@@ -505,7 +505,7 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 		return null;
 	}
 
-	private final Map<FlexoController, TechnologyPerspective<TA>> technologyPerspectives = new HashMap<FlexoController, TechnologyPerspective<TA>>();
+	private final Map<FlexoController, TechnologyPerspective<TA>> technologyPerspectives = new HashMap<>();
 
 	public Map<FlexoController, TechnologyPerspective<TA>> getTechnologyPerspectives() {
 		return technologyPerspectives;
@@ -514,7 +514,7 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 	public TechnologyPerspective<TA> getTechnologyPerspective(FlexoController controller) {
 		TechnologyPerspective<TA> returned = technologyPerspectives.get(controller);
 		if (returned == null) {
-			returned = new TechnologyPerspective<TA>(getTechnologyAdapter(), controller);
+			returned = new TechnologyPerspective<>(getTechnologyAdapter(), controller);
 			technologyPerspectives.put(controller, returned);
 		}
 		return returned;
@@ -545,7 +545,7 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 	/**
 	 * Internally stores all technology browsers that have been built by this {@link TechnologyAdapterController}
 	 */
-	private final List<FIBTechnologyBrowser<TA>> technologyBrowsers = new ArrayList<FIBTechnologyBrowser<TA>>();
+	private final List<FIBTechnologyBrowser<TA>> technologyBrowsers = new ArrayList<>();
 
 	/**
 	 * Make technology browser
@@ -566,7 +566,7 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 	 * @return
 	 */
 	protected FIBTechnologyBrowser<TA> buildTechnologyBrowser(FlexoController controller) {
-		return new FIBTechnologyBrowser<TA>(getTechnologyAdapter(), controller, getTechnologyAdapter().getLocales());
+		return new FIBTechnologyBrowser<>(getTechnologyAdapter(), controller, getTechnologyAdapter().getLocales());
 	}
 
 	/**
@@ -579,7 +579,7 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 	 * @return
 	 */
 	// TODO: factorize code with makeWidget(FlexoBehaviourParameter)
-	public FIBWidget makeWidget(final InspectorEntry entry, FIBTab newTab, FIBModelFactory fibModelFactory) {
+	public FIBWidget makeWidget(final InspectorEntry entry, FIBPanel newTab, FIBModelFactory fibModelFactory) {
 		if (entry instanceof GenericInspectorEntry) {
 			switch (entry.getWidget()) {
 				case TEXT_FIELD:
@@ -695,13 +695,13 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 			e.printStackTrace();
 		}
 		resourceSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(resourceSelector,
-				new DataBinding<Object>("component.project"), new DataBinding<Object>("controller.editor.project"), true));
+				new DataBinding<>("component.project"), new DataBinding<>("controller.editor.project"), true));
 		resourceSelector.addToAssignments(
-				fibModelFactory.newFIBCustomAssignment(resourceSelector, new DataBinding<Object>("component.serviceManager"),
-						new DataBinding<Object>("controller.flexoController.applicationContext"), true));
+				fibModelFactory.newFIBCustomAssignment(resourceSelector, new DataBinding<>("component.serviceManager"),
+						new DataBinding<>("controller.flexoController.applicationContext"), true));
 		resourceSelector.addToAssignments(
-				fibModelFactory.newFIBCustomAssignment(resourceSelector, new DataBinding<Object>("component.expectedType"),
-						new DataBinding<Object>("data.parametersDefinitions." + parameter.getName() + ".type"), true));
+				fibModelFactory.newFIBCustomAssignment(resourceSelector, new DataBinding<>("component.expectedType"),
+						new DataBinding<>("data.parametersDefinitions." + parameter.getName() + ".type"), true));
 		return registerWidget(resourceSelector, parameter, panel, index);
 
 	}
@@ -718,8 +718,8 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		fciSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(fciSelector, new DataBinding<Object>("component.project"),
-				new DataBinding<Object>("controller.editor.project"), true));
+		fciSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(fciSelector, new DataBinding<>("component.project"),
+				new DataBinding<>("controller.editor.project"), true));
 
 		String containerBinding = "";
 		if (parameter.getFlexoBehaviour() instanceof CreationScheme) {
@@ -736,28 +736,28 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 			Type containerType = container.getAnalyzedType();
 
 			if (containerType instanceof ViewType) {
-				fciSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(fciSelector, new DataBinding<Object>("component.view"),
-						new DataBinding<Object>(containerBinding), true));
+				fciSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(fciSelector, new DataBinding<>("component.view"),
+						new DataBinding<>(containerBinding), true));
 			}
 			else if (containerType instanceof VirtualModelInstanceType) {
 				fciSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(fciSelector,
-						new DataBinding<Object>("component.virtualModelInstance"), new DataBinding<Object>(containerBinding), true));
+						new DataBinding<>("component.virtualModelInstance"), new DataBinding<>(containerBinding), true));
 			}
 			else if (TypeUtils.isTypeAssignableFrom(FlexoResourceCenter.class, containerType)) {
 				fciSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(fciSelector,
-						new DataBinding<Object>("component.resourceCenter"), new DataBinding<Object>(containerBinding), true));
+						new DataBinding<>("component.resourceCenter"), new DataBinding<>(containerBinding), true));
 			}
 		}
 		else {
 
 			// No container defined, set service manager
 			fciSelector.addToAssignments(
-					fibModelFactory.newFIBCustomAssignment(fciSelector, new DataBinding<Object>("component.serviceManager"),
-							new DataBinding<Object>("controller.flexoController.applicationContext"), true));
+					fibModelFactory.newFIBCustomAssignment(fciSelector, new DataBinding<>("component.serviceManager"),
+							new DataBinding<>("controller.flexoController.applicationContext"), true));
 		}
 
-		fciSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(fciSelector, new DataBinding<Object>("component.expectedType"),
-				new DataBinding<Object>("data.parametersDefinitions." + parameter.getName() + ".type"), true));
+		fciSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(fciSelector, new DataBinding<>("component.expectedType"),
+				new DataBinding<>("data.parametersDefinitions." + parameter.getName() + ".type"), true));
 		return registerWidget(fciSelector, parameter, panel, index);
 
 	}
@@ -774,8 +774,8 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		vmiSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(vmiSelector, new DataBinding<Object>("component.project"),
-				new DataBinding<Object>("controller.editor.project"), true));
+		vmiSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(vmiSelector, new DataBinding<>("component.project"),
+				new DataBinding<>("controller.editor.project"), true));
 		String containerBinding = "";
 		if (parameter.getFlexoBehaviour() instanceof CreationScheme) {
 			containerBinding = "data." + FlexoConceptBindingFactory.VIRTUAL_MODEL_INSTANCE + "." + parameter.getContainer().toString();
@@ -789,26 +789,26 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 			Type containerType = parameter.getContainer().getAnalyzedType();
 
 			if (containerType instanceof ViewType) {
-				vmiSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(vmiSelector, new DataBinding<Object>("component.view"),
-						new DataBinding<Object>(containerBinding), true));
+				vmiSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(vmiSelector, new DataBinding<>("component.view"),
+						new DataBinding<>(containerBinding), true));
 			}
 			else if (TypeUtils.isTypeAssignableFrom(FlexoResourceCenter.class, containerType)) {
 				vmiSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(vmiSelector,
-						new DataBinding<Object>("component.resourceCenter"), new DataBinding<Object>(containerBinding), true));
+						new DataBinding<>("component.resourceCenter"), new DataBinding<>(containerBinding), true));
 			}
 		}
 		else {
 			// No container defined, set service manager
 			vmiSelector.addToAssignments(
-					fibModelFactory.newFIBCustomAssignment(vmiSelector, new DataBinding<Object>("component.serviceManager"),
-							new DataBinding<Object>("controller.flexoController.applicationContext"), true));
+					fibModelFactory.newFIBCustomAssignment(vmiSelector, new DataBinding<>("component.serviceManager"),
+							new DataBinding<>("controller.flexoController.applicationContext"), true));
 		}
 
 		// vmiSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(vmiSelector, new DataBinding<Object>("component.view"),
 		// new DataBinding<Object>(containerBinding), true));
 
-		vmiSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(vmiSelector, new DataBinding<Object>("component.expectedType"),
-				new DataBinding<Object>("data.parametersDefinitions." + parameter.getName() + ".type"), true));
+		vmiSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(vmiSelector, new DataBinding<>("component.expectedType"),
+				new DataBinding<>("data.parametersDefinitions." + parameter.getName() + ".type"), true));
 		return registerWidget(vmiSelector, parameter, panel, index);
 	}
 
@@ -824,8 +824,8 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		viewSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(viewSelector, new DataBinding<Object>("component.project"),
-				new DataBinding<Object>("controller.editor.project"), true));
+		viewSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(viewSelector, new DataBinding<>("component.project"),
+				new DataBinding<>("controller.editor.project"), true));
 
 		String containerBinding = "";
 		if (parameter.getFlexoBehaviour() instanceof CreationScheme) {
@@ -841,23 +841,23 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 
 			if (TypeUtils.isTypeAssignableFrom(FlexoResourceCenter.class, containerType)) {
 				viewSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(viewSelector,
-						new DataBinding<Object>("component.resourceCenter"), new DataBinding<Object>(containerBinding), true));
+						new DataBinding<>("component.resourceCenter"), new DataBinding<>(containerBinding), true));
 			}
 		}
 		else {
 			// No container defined, set service manager
 			// No container defined, set service manager
 			viewSelector.addToAssignments(
-					fibModelFactory.newFIBCustomAssignment(viewSelector, new DataBinding<Object>("component.serviceManager"),
-							new DataBinding<Object>("controller.flexoController.applicationContext"), true));
+					fibModelFactory.newFIBCustomAssignment(viewSelector, new DataBinding<>("component.serviceManager"),
+							new DataBinding<>("controller.flexoController.applicationContext"), true));
 		}
 
 		// viewSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(viewSelector, new DataBinding<Object>("component.view"),
 		// new DataBinding<Object>(containerBinding), true));
 
 		viewSelector
-				.addToAssignments(fibModelFactory.newFIBCustomAssignment(viewSelector, new DataBinding<Object>("component.expectedType"),
-						new DataBinding<Object>("data.parametersDefinitions." + parameter.getName() + ".type"), true));
+				.addToAssignments(fibModelFactory.newFIBCustomAssignment(viewSelector, new DataBinding<>("component.expectedType"),
+						new DataBinding<>("data.parametersDefinitions." + parameter.getName() + ".type"), true));
 		return registerWidget(viewSelector, parameter, panel, index);
 	}
 
@@ -1025,29 +1025,27 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			epiSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(epiSelector, new DataBinding<Object>("component.project"),
-					new DataBinding<Object>("data.editor.project"), true));
-			epiSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(epiSelector, new DataBinding<Object>("component.view"),
-					new DataBinding<Object>("data.virtualModelInstance.view"), true));
+			epiSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(epiSelector, new DataBinding<>("component.project"),
+					new DataBinding<>("data.editor.project"), true));
+			epiSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(epiSelector, new DataBinding<>("component.view"),
+					new DataBinding<>("data.virtualModelInstance.view"), true));
 
-			epiSelector
-					.addToAssignments(
-							fibModelFactory.newFIBCustomAssignment(epiSelector, new DataBinding<Object>("component.virtualModelInstance"),
-									new DataBinding<Object>(
-											"data." + ((FlexoConceptInstanceParameter) parameter).getVirtualModelInstance().toString()),
-									true));
+			epiSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(epiSelector,
+					new DataBinding<>("component.virtualModelInstance"),
+					new DataBinding<>("data." + ((FlexoConceptInstanceParameter) parameter).getVirtualModelInstance().toString()),
+					true));
 
 			// TODO: check but it seems that component.flexoConcept do not exist anymore
 			epiSelector
-					.addToAssignments(fibModelFactory.newFIBCustomAssignment(epiSelector, new DataBinding<Object>("component.flexoConcept"),
-							new DataBinding<Object>("data.parametersDefinitions." + parameter.getName() + ".flexoConceptType"), true));
+					.addToAssignments(fibModelFactory.newFIBCustomAssignment(epiSelector, new DataBinding<>("component.flexoConcept"),
+							new DataBinding<>("data.parametersDefinitions." + parameter.getName() + ".flexoConceptType"), true));
 			// extra informations.
 			epiSelector
-					.addToAssignments(fibModelFactory.newFIBCustomAssignment(epiSelector, new DataBinding<Object>("component.virtualModel"),
-							new DataBinding<Object>("data.parametersDefinitions." + parameter.getName() + ".modelSlotVirtualModel"), true));
+					.addToAssignments(fibModelFactory.newFIBCustomAssignment(epiSelector, new DataBinding<>("component.virtualModel"),
+							new DataBinding<>("data.parametersDefinitions." + parameter.getName() + ".modelSlotVirtualModel"), true));
 			epiSelector.addToAssignments(
-					fibModelFactory.newFIBCustomAssignment(epiSelector, new DataBinding<Object>("component.viewPointLibrary"),
-							new DataBinding<Object>("data.serviceManager.viewPointLibrary"), true));
+					fibModelFactory.newFIBCustomAssignment(epiSelector, new DataBinding<>("component.viewPointLibrary"),
+							new DataBinding<>("data.serviceManager.viewPointLibrary"), true));
 
 			return registerWidget(epiSelector, parameter, panel, index);
 		}
@@ -1063,14 +1061,14 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 				e.printStackTrace();
 			}
 			resourceSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(resourceSelector,
-					new DataBinding<Object>("component.technologyAdapter"),
-					new DataBinding<Object>("data.parametersDefinitions." + parameter.getName() + ".resourceTechnologyAdapter"), true));
+					new DataBinding<>("component.technologyAdapter"),
+					new DataBinding<>("data.parametersDefinitions." + parameter.getName() + ".resourceTechnologyAdapter"), true));
 			resourceSelector.addToAssignments(
-					fibModelFactory.newFIBCustomAssignment(resourceSelector, new DataBinding<Object>("component.resourceDataClass"),
-							new DataBinding<Object>("data.parametersDefinitions." + parameter.getName() + ".resourceDataType"), true));
+					fibModelFactory.newFIBCustomAssignment(resourceSelector, new DataBinding<>("component.resourceDataClass"),
+							new DataBinding<>("data.parametersDefinitions." + parameter.getName() + ".resourceDataType"), true));
 			resourceSelector.addToAssignments(
-					fibModelFactory.newFIBCustomAssignment(resourceSelector, new DataBinding<Object>("component.resourceManager"),
-							new DataBinding<Object>("data.serviceManager.resourceManager"), true));
+					fibModelFactory.newFIBCustomAssignment(resourceSelector, new DataBinding<>("component.resourceManager"),
+							new DataBinding<>("data.serviceManager.resourceManager"), true));
 
 			return registerWidget(resourceSelector, parameter, panel, index);
 		}
@@ -1084,9 +1082,9 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 
 	protected FIBComponent registerWidget(FIBComponent widget, FlexoBehaviourParameter parameter, FIBPanel panel, int index,
 			boolean expandHorizontally, boolean expandVertically) {
-		((FIBWidget) widget).setData(new DataBinding<Object>("data.parameters." + parameter.getName()));
+		((FIBWidget) widget).setData(new DataBinding<>("data.parameters." + parameter.getName()));
 		if (widget instanceof FIBWidget) {
-			((FIBWidget) widget).setValueChangedAction(new DataBinding<Object>("controller.parameterValueChanged(data)"));
+			((FIBWidget) widget).setValueChangedAction(new DataBinding<>("controller.parameterValueChanged(data)"));
 		}
 		panel.addToSubComponents(widget, new TwoColsLayoutConstraints(TwoColsLayoutLocation.right, expandHorizontally, expandVertically),
 				index);

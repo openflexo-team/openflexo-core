@@ -42,6 +42,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.SynchronizationScheme;
 import org.openflexo.foundation.fml.VirtualModel;
+import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.SynchronizationSchemeAction;
 import org.openflexo.foundation.fml.rt.action.SynchronizationSchemeActionType;
@@ -52,21 +53,21 @@ import org.openflexo.view.controller.FlexoController;
 import org.openflexo.view.controller.FlexoFIBController;
 
 /**
- * Represents the controller used in VE (ViewEditor)<br>
- * Extends FlexoFIBController by supporting features relative to VE module
+ * Represents the controller used in FML@runtime technology adapter <br>
+ * Extends FlexoFIBController by supporting features relative to FML@runtime technology adapter
  * 
  * 
  * @author sylvain
  */
-public class VEFIBController extends FlexoFIBController {
+public class FMLRTFIBController extends FlexoFIBController {
 
-	protected static final Logger logger = FlexoLogger.getLogger(VEFIBController.class.getPackage().getName());
+	protected static final Logger logger = FlexoLogger.getLogger(FMLRTFIBController.class.getPackage().getName());
 
-	public VEFIBController(FIBComponent component, GinaViewFactory<?> viewFactory) {
+	public FMLRTFIBController(FIBComponent component, GinaViewFactory<?> viewFactory) {
 		super(component, viewFactory);
 	}
 
-	public VEFIBController(FIBComponent component, GinaViewFactory<?> viewFactory, FlexoController controller) {
+	public FMLRTFIBController(FIBComponent component, GinaViewFactory<?> viewFactory, FlexoController controller) {
 		super(component, viewFactory, controller);
 	}
 
@@ -81,6 +82,33 @@ public class VEFIBController extends FlexoFIBController {
 		}
 		logger.warning("No synchronization scheme defined for " + virtualModelInstance.getVirtualModel());
 		return null;
+	}
+
+	public FIBComponent inspectorForFlexoConceptInstance(FlexoConceptInstance fci) {
+		/*if (action == null) {
+			return null;
+		}
+		if (action instanceof TechnologySpecificAction && ((TechnologySpecificAction<?, ?>) action).getModelSlot() != null) {
+			TechnologyAdapter technologyAdapter = ((TechnologySpecificAction<?, ?>) action).getModelSlot().getModelSlotTechnologyAdapter();
+			if (technologyAdapter != null) {
+				TechnologyAdapterController<?> taController = getFlexoController().getTechnologyAdapterController(technologyAdapter);
+				return taController.getFIBPanelForObject(action);
+			}
+			else
+				// No specific TechnologyAdapter, lookup in generic libraries
+				return getFIBPanelForObject(action);
+		}
+		else {
+			// No specific TechnologyAdapter, lookup in generic libraries
+			return getFIBPanelForObject(action);
+		}*/
+		System.out.println("Tiens faudrait trouver l'inspecteur de " + fci);
+		if (getFlexoController() != null && getFlexoController().getModuleInspectorController() != null && fci != null) {
+			System.out.println("moduleInspectorController=" + getFlexoController().getModuleInspectorController());
+			return getFlexoController().getModuleInspectorController().getFIBInspectorPanel(fci.getFlexoConcept());
+		}
+		return null;
+
 	}
 
 }

@@ -82,7 +82,7 @@ public abstract class FIBAbstractFMLRTObjectSelector<T extends FlexoConceptInsta
 	private FlexoServiceManager serviceManager;
 	private FlexoResourceCenter<?> resourceCenter;
 	private View view;
-	private VirtualModelInstance virtualModelInstance;
+	private AbstractVirtualModelInstance<?, ?> virtualModelInstance;
 	private Type expectedType;
 	private FlexoConceptInstanceType defaultExpectedType;
 
@@ -210,14 +210,15 @@ public abstract class FIBAbstractFMLRTObjectSelector<T extends FlexoConceptInsta
 		}
 	}
 
-	public VirtualModelInstance getVirtualModelInstance() {
+	public AbstractVirtualModelInstance<?, ?> getVirtualModelInstance() {
 		return virtualModelInstance;
 	}
 
-	public void setVirtualModelInstance(VirtualModelInstance virtualModelInstance) {
+	public void setVirtualModelInstance(AbstractVirtualModelInstance<?, ?> virtualModelInstance) {
+
 		if ((virtualModelInstance == null && this.virtualModelInstance != null)
 				|| (virtualModelInstance != null && !virtualModelInstance.equals(this.virtualModelInstance))) {
-			VirtualModelInstance oldValue = this.virtualModelInstance;
+			AbstractVirtualModelInstance<?, ?> oldValue = this.virtualModelInstance;
 			this.virtualModelInstance = virtualModelInstance;
 			getPropertyChangeSupport().firePropertyChange("virtualModelInstance", oldValue, virtualModelInstance);
 			getPropertyChangeSupport().firePropertyChange("rootObject", null, getRootObject());

@@ -66,6 +66,7 @@ import org.openflexo.gina.model.FIBContainer;
 import org.openflexo.gina.model.FIBModelFactory;
 import org.openflexo.gina.model.FIBVariable;
 import org.openflexo.gina.model.FIBWidget;
+import org.openflexo.gina.model.container.FIBPanel;
 import org.openflexo.gina.model.container.FIBPanel.Layout;
 import org.openflexo.gina.model.container.FIBTab;
 import org.openflexo.gina.model.container.layout.TwoColsLayoutConstraints;
@@ -109,12 +110,12 @@ public class ModuleInspectorController extends Observable implements Observer {
 	public ModuleInspectorController(final FlexoController flexoController) {
 		this.flexoController = flexoController;
 
-		inspectorGroups = new ArrayList<InspectorGroup>();
+		inspectorGroups = new ArrayList<>();
 		coreInspectorGroup = new InspectorGroup(ResourceLocator.locateResource("Inspectors/COMMON"), getInspectorsFIBLibrary(),
 				flexoController.getFlexoLocales());
 		inspectorGroups.add(coreInspectorGroup);
 
-		flexoConceptInspectors = new Hashtable<FlexoConcept, FIBInspector>();
+		flexoConceptInspectors = new Hashtable<>();
 		inspectorDialog = new FIBInspectorDialog(this);
 		Boolean visible = null;
 		if (flexoController.getApplicationContext().getGeneralPreferences() != null) {
@@ -284,7 +285,7 @@ public class ModuleInspectorController extends Observable implements Observer {
 			return null;
 		}
 
-		Map<Class<?>, FIBInspector> potentialInspectors = new HashMap<Class<?>, FIBInspector>();
+		Map<Class<?>, FIBInspector> potentialInspectors = new HashMap<>();
 		for (InspectorGroup inspectorGroup : new ArrayList<>(inspectorGroups)) {
 			FIBInspector inspector = inspectorGroup.inspectorForClass(objectClass);
 			if (inspector != null) {
@@ -319,7 +320,7 @@ public class ModuleInspectorController extends Observable implements Observer {
 			return null;
 		}
 
-		List<FIBInspector> returned = new ArrayList<FIBInspector>();
+		List<FIBInspector> returned = new ArrayList<>();
 
 		for (InspectorGroup inspectorGroup : inspectorGroups) {
 			for (FIBInspector inspector : inspectorGroup.inspectorsForClass(objectClass)) {
@@ -581,6 +582,38 @@ public class ModuleInspectorController extends Observable implements Observer {
 		}*/
 	}
 
+	private Map<FlexoConcept, FIBPanel> flexoConceptInspectorPanels = new HashMap<>();
+
+	public FIBPanel getFIBInspectorPanel(FlexoConcept flexoConcept) {
+		FIBPanel returned = flexoConceptInspectorPanels.get(flexoConcept);
+		if (returned == null) {
+			returned = makeFIBInspectorPanel(flexoConcept);
+			flexoConceptInspectorPanels.put(flexoConcept, returned);
+		}
+		return returned;
+
+	}
+
+	private FIBPanel makeFIBInspectorPanel(FlexoConcept flexoConcept) {
+		FIBPanel inspector = getFactory().newFIBPanel();
+		inspector.setLayout(Layout.twocols);
+		inspector.setUseScrollBar(true);
+
+		// We create a variable for inspector data
+		// This variable is called fci, with type FlexoConceptInstanceType<FlexoConcept>, and value 'data' (which is the
+		// FlexoConceptInstance)
+		// The goal of that variable definition is to provide type for inspected FlexoConceptInstance
+		FIBVariable<?> dataVariable = getFactory().newFIBVariable(inspector, "fci", flexoConcept.getInstanceType());
+		dataVariable.setValue(new DataBinding("data"));
+		inspector.addToVariables(dataVariable);
+		inspector.setName(flexoConcept.getName() + "Panel");
+
+		appendInspectorEntries(flexoConcept, inspector);
+		inspector.finalizeDeserialization();
+
+		return inspector;
+	}
+
 	/**
 	 * Internally called to create {@link FIBTab} matching inspector of supplied {@link FlexoConcept}
 	 * 
@@ -624,7 +657,7 @@ public class ModuleInspectorController extends Observable implements Observer {
 	 * @param flexoConcept
 	 * @param newTab
 	 */
-	private void appendInspectorEntries(FlexoConcept flexoConcept, FIBTab newTab) {
+	private void appendInspectorEntries(FlexoConcept flexoConcept, FIBPanel newTab) {
 		if (flexoConcept == null) {
 			logger.warning("Unexpected null concept ");
 			return;
@@ -648,7 +681,7 @@ public class ModuleInspectorController extends Observable implements Observer {
 			FIBWidget widget = makeWidget(entry, newTab);
 			if (widget != null) {
 				widget.setBindingFactory(entry.getBindingFactory());
-				widget.setData(new DataBinding<Object>("fci." + entry.getData().toString()));
+				widget.setData(new DataBinding<>("fci." + entry.getData().toString()));
 				widget.setReadOnly(entry.getIsReadOnly());
 			}
 			/*System.out.println("Widget " + widget + " data=" + entry.getData());
@@ -669,7 +702,7 @@ public class ModuleInspectorController extends Observable implements Observer {
 	 * @param factory
 	 * @return
 	 */
-	private FIBWidget makeWidget(final InspectorEntry entry, FIBTab newTab) {
+	private FIBWidget makeWidget(final InspectorEntry entry, FIBPanel newTab) {
 		for (TechnologyAdapter ta : flexoController.getApplicationContext().getTechnologyAdapterService().getTechnologyAdapters()) {
 			TechnologyAdapterController<?> tac = flexoController.getTechnologyAdapterController(ta);
 			FIBWidget returned = tac.makeWidget(entry, newTab, getFactory());

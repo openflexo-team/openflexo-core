@@ -55,6 +55,8 @@ import org.openflexo.foundation.fml.rt.View;
 import org.openflexo.foundation.fml.rt.action.CreateBasicVirtualModelInstance;
 import org.openflexo.gina.controller.FIBController.Status;
 import org.openflexo.icon.FMLRTIconLibrary;
+import org.openflexo.icon.IconFactory;
+import org.openflexo.icon.IconLibrary;
 import org.openflexo.view.controller.ActionInitializer;
 import org.openflexo.view.controller.ControllerActionInitializer;
 import org.openflexo.view.controller.FlexoController;
@@ -126,7 +128,7 @@ public class CreateBasicVirtualModelInstanceInitializer extends ActionInitialize
 
 	@Override
 	protected Icon getEnabledIcon() {
-		return FMLRTIconLibrary.VIRTUAL_MODEL_INSTANCE_ICON;
+		return IconFactory.getImageIcon(FMLRTIconLibrary.VIRTUAL_MODEL_INSTANCE_ICON, IconLibrary.NEW_MARKER);
 	}
 
 	/**

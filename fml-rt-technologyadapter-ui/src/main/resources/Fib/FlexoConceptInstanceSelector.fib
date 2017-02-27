@@ -61,7 +61,7 @@
 			<Children data="view.virtualModelInstances" name="VMIInView"/>
 		</BrowserElement>
 		<BrowserElement dataClassName="org.openflexo.foundation.fml.rt.VirtualModelInstance"
-			label="virtualModelInstance.name" icon="controller.iconForObject(virtualModelInstance)"
+			label="virtualModelInstance.stringRepresentation" icon="controller.iconForObject(virtualModelInstance)"
 			isEditable="false" visible="data.isVirtualModelInstanceVisible(virtualModelInstance)"
 			filtered="false" defaultVisible="true"
 			name="virtualModelInstance">

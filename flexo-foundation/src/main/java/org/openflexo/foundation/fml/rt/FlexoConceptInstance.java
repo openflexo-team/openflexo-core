@@ -87,6 +87,7 @@ import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.Getter.Cardinality;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
+import org.openflexo.model.annotations.PastingPoint;
 import org.openflexo.model.annotations.PropertyIdentifier;
 import org.openflexo.model.annotations.Remover;
 import org.openflexo.model.annotations.Setter;
@@ -113,6 +114,12 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 
 	@PropertyIdentifier(type = String.class)
 	public static final String FLEXO_CONCEPT_URI_KEY = "flexoConceptURI";
+
+	@PropertyIdentifier(type = FlexoConceptInstance.class)
+	public static final String CONTAINER_FLEXO_CONCEPT_INSTANCE_KEY = "containerFlexoConceptInstance";
+	@PropertyIdentifier(type = List.class)
+	public static final String EMBEDDED_FLEXO_CONCEPT_INSTANCE_KEY = "embeddedFlexoConceptInstances";
+
 	@PropertyIdentifier(type = ActorReference.class, cardinality = Cardinality.LIST)
 	public static final String ACTORS_KEY = "actors";
 
@@ -141,6 +148,41 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 
 	@Setter(FLEXO_CONCEPT_URI_KEY)
 	public void setFlexoConceptURI(String flexoConceptURI);
+
+	@Getter(value = CONTAINER_FLEXO_CONCEPT_INSTANCE_KEY, inverse = EMBEDDED_FLEXO_CONCEPT_INSTANCE_KEY)
+	@CloningStrategy(StrategyType.IGNORE)
+	public FlexoConceptInstance getContainerFlexoConceptInstance();
+
+	@Setter(CONTAINER_FLEXO_CONCEPT_INSTANCE_KEY)
+	public void setContainerFlexoConceptInstance(FlexoConceptInstance container);
+
+	/**
+	 * Return all {@link FlexoConcept} contained in this {@link FlexoConcept}
+	 * 
+	 * @return
+	 */
+	@Getter(value = EMBEDDED_FLEXO_CONCEPT_INSTANCE_KEY, cardinality = Cardinality.LIST, inverse = CONTAINER_FLEXO_CONCEPT_INSTANCE_KEY)
+	@XMLElement(context = "Embedded", primary = true)
+	@Embedded
+	@CloningStrategy(StrategyType.CLONE)
+	public List<FlexoConceptInstance> getEmbeddedFlexoConceptInstances();
+
+	@Setter(EMBEDDED_FLEXO_CONCEPT_INSTANCE_KEY)
+	public void setEmbeddedFlexoConceptInstances(List<FlexoConceptInstance> flexoConcepts);
+
+	@Adder(EMBEDDED_FLEXO_CONCEPT_INSTANCE_KEY)
+	@PastingPoint
+	public void addToEmbeddedFlexoConceptInstances(FlexoConceptInstance aFlexoConcept);
+
+	@Remover(EMBEDDED_FLEXO_CONCEPT_INSTANCE_KEY)
+	public void removeFromEmbeddedFlexoConceptInstances(FlexoConceptInstance aFlexoConcept);
+
+	/**
+	 * Return boolean indicating whether this concept instance has a FlexoConceptInstance for container (containment semantics)<br>
+	 * 
+	 * @return
+	 */
+	public boolean isRoot();
 
 	@Getter(value = ACTORS_KEY, cardinality = Cardinality.LIST, inverse = ActorReference.FLEXO_CONCEPT_INSTANCE_KEY)
 	@XMLElement
@@ -352,6 +394,36 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 				// return getServiceManager().getProjectLoaderService().getEditorForProject(getResourceCenter());
 			}
 			return null;
+		}
+
+		@Override
+		public boolean isRoot() {
+			return getContainerFlexoConceptInstance() == null;
+		}
+
+		@Override
+		public void setContainerFlexoConceptInstance(FlexoConceptInstance aConceptInstance) {
+			performSuperSetter(CONTAINER_FLEXO_CONCEPT_INSTANCE_KEY, aConceptInstance);
+			if (getOwningVirtualModelInstance() != null) {
+				getOwningVirtualModelInstance().getPropertyChangeSupport().firePropertyChange("allRootFlexoConceptInstances", false, true);
+			}
+		}
+
+		@Override
+		public void addToEmbeddedFlexoConceptInstances(FlexoConceptInstance aConceptInstance) {
+			System.out.println("Bon donc on met " + aConceptInstance + " dans " + this);
+			performSuperAdder(EMBEDDED_FLEXO_CONCEPT_INSTANCE_KEY, aConceptInstance);
+			if (getOwningVirtualModelInstance() != null) {
+				getOwningVirtualModelInstance().getPropertyChangeSupport().firePropertyChange("allRootFlexoConceptInstances", false, true);
+			}
+		}
+
+		@Override
+		public void removeFromEmbeddedFlexoConceptInstances(FlexoConceptInstance aConceptInstance) {
+			performSuperRemover(EMBEDDED_FLEXO_CONCEPT_INSTANCE_KEY, aConceptInstance);
+			if (getOwningVirtualModelInstance() != null) {
+				getOwningVirtualModelInstance().getPropertyChangeSupport().firePropertyChange("allRootFlexoConceptInstances", false, true);
+			}
 		}
 
 		/**
@@ -1299,15 +1371,15 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 
 		public String extendedStringRepresentation() {
 			StringBuffer sb = new StringBuffer();
-			sb.append((getFlexoConcept() != null ? getFlexoConcept().getName() : "null") + ": ");
+			sb.append((getFlexoConcept() != null ? getFlexoConcept().getName() : "null"));
 			boolean isFirst = true;
 			for (List<ActorReference<?>> refList : actors.values()) {
 				for (ActorReference<?> ref : refList) {
 					if (ref.getModellingElement() != null) {
-						sb.append((isFirst ? "" : ", ") + ref.getRoleName() + "=" + ref.getModellingElement().toString());
+						sb.append((isFirst ? ": " : ", ") + ref.getRoleName() + "=" + ref.getModellingElement().toString());
 					}
 					else {
-						sb.append((isFirst ? "" : ", ") + ref.getRoleName() + "=" + "No object found");
+						sb.append((isFirst ? ": " : ", ") + ref.getRoleName() + "=" + "No object found");
 					}
 					isFirst = false;
 				}
