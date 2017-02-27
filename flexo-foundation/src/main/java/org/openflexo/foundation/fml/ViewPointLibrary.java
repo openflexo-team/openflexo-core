@@ -109,34 +109,40 @@ public class ViewPointLibrary extends DefaultFlexoObject implements FlexoService
 	}
 
 	/**
-	 * Retrieve, load and return ViewPoint identified by supplied URI
+	 * Retrieve and return ViewPoint identified by supplied URI<br>
+	 * If the flag loadWhenRequired is set to true, load required viewpoint when unloaded
 	 * 
 	 * @param viewpointURI
 	 * @return
 	 */
 	public ViewPoint getViewPoint(String viewpointURI) {
-		// System.out.println("viewpointURI=" + viewpointURI);
-		// System.out.println("res=" + getViewPointResource(viewpointURI));
-		/*try {
-			getViewPointResource(viewpointURI).loadResourceData(null);
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ResourceLoadingCancelledException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (FlexoException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}*/
+		return getViewPoint(viewpointURI, true);
+	}
+
+	/**
+	 * Retrieve and return ViewPoint identified by supplied URI<br>
+	 * If the flag loadWhenRequired is set to true, load required viewpoint when unloaded<br>
+	 * Use of this method triggers required virtual models to be loaded
+	 * 
+	 * @param viewpointURI
+	 * @return
+	 */
+	public ViewPoint getViewPoint(String viewpointURI, boolean loadWhenRequired) {
 		if (getViewPointResource(viewpointURI) != null) {
-			return getViewPointResource(viewpointURI).getViewPoint();
+			if (loadWhenRequired) {
+				return getViewPointResource(viewpointURI).getViewPoint();
+			}
+			else {
+				return getViewPointResource(viewpointURI).getLoadedResourceData();
+			}
 		}
 		return null;
 	}
 
 	/**
-	 * Retrieve, load and return ViewPoint/VirtualModel identified by supplied URI
+	 * Retrieve, load and return ViewPoint/VirtualModel identified by supplied URI<br>
+	 * If the flag loadWhenRequired is set to true, load required viewpoint when unloaded<br>
+	 * Use of this method triggers required virtual models to be loaded
 	 * 
 	 * @param viewpointURI
 	 * @return
@@ -146,9 +152,29 @@ public class ViewPointLibrary extends DefaultFlexoObject implements FlexoService
 	 */
 	public VirtualModel getVirtualModel(String virtualModelURI)
 			throws FileNotFoundException, ResourceLoadingCancelledException, FlexoException {
+		return getVirtualModel(virtualModelURI, true);
+	}
+
+	/**
+	 * Retrieve, load and return ViewPoint/VirtualModel identified by supplied URI<br>
+	 * If the flag loadWhenRequired is set to true, load required viewpoint when unloaded
+	 * 
+	 * @param viewpointURI
+	 * @return
+	 * @throws FlexoException
+	 * @throws ResourceLoadingCancelledException
+	 * @throws FileNotFoundException
+	 */
+	public VirtualModel getVirtualModel(String virtualModelURI, boolean loadWhenRequired)
+			throws FileNotFoundException, ResourceLoadingCancelledException, FlexoException {
 		VirtualModelResource returned = getVirtualModelResource(virtualModelURI);
 		if (returned != null) {
-			return returned.getResourceData(null);
+			if (loadWhenRequired) {
+				return returned.getResourceData(null);
+			}
+			else {
+				return returned.getLoadedResourceData();
+			}
 		}
 		/*if (returned == null) {
 			logger.warning("Cannot find virtual model:" + virtualModelURI);
@@ -247,16 +273,29 @@ public class ViewPointLibrary extends DefaultFlexoObject implements FlexoService
 
 	/**
 	 * Lookup and return {@link FlexoConcept} identified by supplied flexoConceptURI<br>
-	 * Return concept might be a {@link ViewPoint}, a {@link VirtualModel} or a simple {@link FlexoConcept}
+	 * Return concept might be a {@link ViewPoint}, a {@link VirtualModel} or a simple {@link FlexoConcept}<br>
+	 * Use of this method triggers required virtual models to be loaded
 	 * 
 	 * @param flexoConceptURI
 	 * @return
 	 */
 	public FlexoConcept getFlexoConcept(String flexoConceptURI) {
+		return getFlexoConcept(flexoConceptURI, true);
+	}
+
+	/**
+	 * Lookup and return {@link FlexoConcept} identified by supplied flexoConceptURI<br>
+	 * Return concept might be a {@link ViewPoint}, a {@link VirtualModel} or a simple {@link FlexoConcept}<br>
+	 * If the flag loadWhenRequired is set to true, load required virtual models
+	 * 
+	 * @param flexoConceptURI
+	 * @return
+	 */
+	public FlexoConcept getFlexoConcept(String flexoConceptURI, boolean loadWhenRequired) {
 		FlexoConcept returned = null;
 
 		// Is that a viewpoint ?
-		returned = getViewPoint(flexoConceptURI);
+		returned = getViewPoint(flexoConceptURI, loadWhenRequired);
 		if (returned != null) {
 			return returned;
 		}
@@ -264,7 +303,12 @@ public class ViewPointLibrary extends DefaultFlexoObject implements FlexoService
 		// Is that a virtual model ?
 		VirtualModelResource vmRes = getVirtualModelResource(flexoConceptURI);
 		if (vmRes != null) {
-			return vmRes.getVirtualModel();
+			if (loadWhenRequired) {
+				return vmRes.getVirtualModel();
+			}
+			else {
+				return vmRes.getLoadedResourceData();
+			}
 		}
 
 		// May be a simple concept ?
@@ -273,7 +317,13 @@ public class ViewPointLibrary extends DefaultFlexoObject implements FlexoService
 			String flexoConceptName = flexoConceptURI.substring(flexoConceptURI.indexOf("#") + 1);
 			vmRes = getVirtualModelResource(virtualModelURI);
 			if (vmRes != null) {
-				VirtualModel vm = vmRes.getVirtualModel();
+				VirtualModel vm;
+				if (loadWhenRequired) {
+					vm = vmRes.getVirtualModel();
+				}
+				else {
+					vm = vmRes.getLoadedResourceData();
+				}
 				if (vm != null) {
 					return vm.getFlexoConcept(flexoConceptName);
 				}
