@@ -40,7 +40,6 @@ package org.openflexo.foundation.fml.rt.rm;
 
 import java.io.File;
 import java.util.logging.Logger;
-
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
@@ -90,11 +89,12 @@ public abstract class VirtualModelInstanceResourceImpl extends AbstractVirtualMo
 	public boolean delete(Object... context) {
 		// gets service manager before deleting otherwise the service manager is null
 		FlexoServiceManager serviceManager = getServiceManager();
+		Object serializationArtefact = getIODelegate().getSerializationArtefact();
 		if (super.delete(context)) {
-			if (getIODelegate().getSerializationArtefact() instanceof File) {
-				serviceManager.getResourceManager().addToFilesToDelete((File) getIODelegate().getSerializationArtefact());
-				return true;
+			if (serializationArtefact instanceof File) {
+				serviceManager.getResourceManager().addToFilesToDelete((File) serializationArtefact);
 			}
+			return true;
 		}
 		return false;
 	}
