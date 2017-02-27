@@ -140,7 +140,7 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 
 					StringWriter writer = new StringWriter();
 					IOUtils.copy(url.openStream(), writer, "UTF-8");
-					String rcBaseUri = writer.toString();
+					String rcBaseUri = writer.toString().trim();
 
 					System.out.println("Attempt to loading RC " + rcBaseUri);
 
@@ -226,7 +226,7 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 		if (getResourceCenters().contains(resourceCenter)) {
 			performSuperRemover(RESOURCE_CENTERS, resourceCenter);
 		}
-		// TODO: dereference all resources registerd in this ResourceCenter
+		// TODO: dereference all resources registered in this ResourceCenter
 
 		if (getServiceManager() != null) {
 			getServiceManager().notify(this, new ResourceCenterRemoved(resourceCenter));

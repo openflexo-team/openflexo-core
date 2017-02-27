@@ -39,6 +39,11 @@
 
 package org.openflexo.view.controller;
 
+import java.util.List;
+import java.util.Vector;
+import java.util.logging.Logger;
+import javax.naming.InvalidNameException;
+import javax.swing.*;
 import org.openflexo.ApplicationContext;
 import org.openflexo.connie.annotations.NotificationUnsafe;
 import org.openflexo.foundation.DataModification;
@@ -71,14 +76,6 @@ import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.prefs.PresentationPreferences;
 import org.openflexo.selection.SelectionManager;
 import org.openflexo.view.FIBBrowserActionAdapter;
-
-import javax.naming.InvalidNameException;
-import javax.swing.*;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.util.List;
-import java.util.Vector;
-import java.util.logging.Logger;
 
 /**
  * Represents the controller of a FIBComponent in Openflexo graphical context (at this time, Swing)<br>
@@ -215,24 +212,18 @@ public class FlexoFIBController extends FIBController implements GraphicalFlexoO
 	}
 
 	public void singleClick(Object object) {
-		// System.out.println("singleClick with " + object);
-		// System.out.println("getFlexoController()=" + getFlexoController());
 		if (getFlexoController() != null) {
 			getFlexoController().objectWasClicked(object);
 		}
 	}
 
 	public void doubleClick(Object object) {
-		System.out.println("doubleClick with " + object);
-		System.out.println("getFlexoController()=" + getFlexoController());
 		if (getFlexoController() != null) {
 			getFlexoController().objectWasDoubleClicked(object);
 		}
 	}
 
 	public void rightClick(Object object, FIBMouseEvent e) {
-		System.out.println("rightClick with " + object);
-		System.out.println("getFlexoController()=" + getFlexoController());
 		if (getFlexoController() != null) {
 			getFlexoController().objectWasRightClicked(object, e);
 		}
@@ -371,21 +362,19 @@ public class FlexoFIBController extends FIBController implements GraphicalFlexoO
 	private boolean preferencesRegistered = false;
 
 	protected void listenToPresentationPreferences() {
-		if (!preferencesRegistered) {
-			getFlexoController().getApplicationContext().getPresentationPreferences().getPropertyChangeSupport()
-					.addPropertyChangeListener(new PropertyChangeListener() {
-
-						@Override
-						public void propertyChange(PropertyChangeEvent evt) {
+		if (getFlexoController() != null && getFlexoController().getApplicationContext() != null) {
+			if (!preferencesRegistered) {
+				getFlexoController().getApplicationContext().getPresentationPreferences().getPropertyChangeSupport().addPropertyChangeListener(
+						evt -> {
 							if (evt.getPropertyName().equals(PresentationPreferences.HIDE_EMPTY_FOLDERS)) {
 								// FlexoFIBController.this.getPropertyChangeSupport().firePropertyChange("shouldBeDisplayed(RepositoryFolder)",
 								// false, true);
 								FlexoFIBController.this.getPropertyChangeSupport()
 										.firePropertyChange("shouldBeDisplayed(RepositoryFolder<?,?>)", false, true);
 							}
-						}
-					});
-			preferencesRegistered = true;
+						});
+				preferencesRegistered = true;
+			}
 		}
 	}
 
