@@ -87,6 +87,12 @@ public class FlexoBehaviourType implements CustomType {
 	}
 
 	@Override
+	public boolean isOfType(Object object, boolean permissive) {
+		// TODO please implement me
+		return true;
+	}
+
+	@Override
 	public String simpleRepresentation() {
 		return "FlexoBehaviourType" + ":" + getFlexoBehaviour();
 	}

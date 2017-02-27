@@ -173,6 +173,14 @@ public class FlexoConceptInstanceType implements TechnologySpecificType<FMLTechn
 	}
 
 	@Override
+	public boolean isOfType(Object object, boolean permissive) {
+		if (!(object instanceof FlexoConceptInstance)) {
+			return false;
+		}
+		return ((FlexoConceptInstance) object).getFlexoConcept() == getFlexoConcept();
+	}
+
+	@Override
 	public String simpleRepresentation() {
 		return getClass().getSimpleName() + "<" + (flexoConcept != null ? flexoConcept.getName() : "NotFound:" + conceptURI) + ">";
 	}

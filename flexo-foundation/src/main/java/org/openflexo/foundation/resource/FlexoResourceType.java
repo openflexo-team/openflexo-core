@@ -195,6 +195,11 @@ public class FlexoResourceType implements JavaCustomType {
 	}
 
 	@Override
+	public boolean isOfType(Object object, boolean permissive) {
+		return (object instanceof FlexoResource && getBaseClass().isAssignableFrom(object.getClass()));
+	}
+
+	@Override
 	public String simpleRepresentation() {
 		return TypeUtils.simpleRepresentation(getJavaType());
 		/*return "FlexoResource" + "<"

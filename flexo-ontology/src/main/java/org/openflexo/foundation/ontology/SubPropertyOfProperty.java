@@ -141,6 +141,15 @@ public class SubPropertyOfProperty<TA extends TechnologyAdapter> implements Tech
 	}
 
 	@Override
+	public boolean isOfType(Object object, boolean permissive) {
+		if (!(object instanceof IFlexoOntologyStructuralProperty)) {
+			return false;
+		}
+		// TODO please implement me
+		return true;
+	}
+
+	@Override
 	public String simpleRepresentation() {
 		return getClass().getSimpleName() + "(" + (ontologyProperty != null ? ontologyProperty.getName() : "") + ")";
 	}

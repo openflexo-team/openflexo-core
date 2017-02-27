@@ -58,7 +58,7 @@ public class SubClassOfClass<TA extends TechnologyAdapter> implements Technology
 	 * @author sylvain
 	 * 
 	 */
-	public static class SubClassOfClassTypeFactory extends TechnologyAdapterTypeFactory<SubClassOfClass<?>>implements ReferenceOwner {
+	public static class SubClassOfClassTypeFactory extends TechnologyAdapterTypeFactory<SubClassOfClass<?>> implements ReferenceOwner {
 
 		public SubClassOfClassTypeFactory(FMLRTTechnologyAdapter technologyAdapter) {
 			super(technologyAdapter);
@@ -138,6 +138,15 @@ public class SubClassOfClass<TA extends TechnologyAdapter> implements Technology
 			return ontologyClass.isSuperConceptOf(((SubClassOfClass<TA>) aType).getOntologyClass());
 		}
 		return false;
+	}
+
+	@Override
+	public boolean isOfType(Object object, boolean permissive) {
+		if (!(object instanceof IFlexoOntologyClass)) {
+			return false;
+		}
+		// TODO please implement me
+		return true;
 	}
 
 	@Override

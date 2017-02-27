@@ -58,7 +58,7 @@ public class IndividualOfClass<TA extends TechnologyAdapter> implements Technolo
 	 * @author sylvain
 	 * 
 	 */
-	public static class IndividualOfClassTypeFactory extends TechnologyAdapterTypeFactory<IndividualOfClass<?>>implements ReferenceOwner {
+	public static class IndividualOfClassTypeFactory extends TechnologyAdapterTypeFactory<IndividualOfClass<?>> implements ReferenceOwner {
 
 		public IndividualOfClassTypeFactory(FMLRTTechnologyAdapter technologyAdapter) {
 			super(technologyAdapter);
@@ -138,6 +138,15 @@ public class IndividualOfClass<TA extends TechnologyAdapter> implements Technolo
 			return ontologyClass.isSuperConceptOf(((IndividualOfClass<TA>) aType).getOntologyClass());
 		}
 		return false;
+	}
+
+	@Override
+	public boolean isOfType(Object object, boolean permissive) {
+		if (!(object instanceof IFlexoOntologyIndividual)) {
+			return false;
+		}
+		// TODO please implement me
+		return true;
 	}
 
 	@Override
