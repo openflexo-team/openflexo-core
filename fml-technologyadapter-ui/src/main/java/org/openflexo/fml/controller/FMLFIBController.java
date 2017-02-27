@@ -419,12 +419,9 @@ public class FMLFIBController extends FlexoFIBController {
 		else if (flexoConcept != null) {
 			CreateFlexoConcept createFlexoConcept = CreateFlexoConcept.actionType.makeNewAction(flexoConcept.getOwningVirtualModel(), null,
 					getEditor());
-			createFlexoConcept.addToParentConcepts(flexoConcept);
+			createFlexoConcept.setContainerFlexoConcept(flexoConcept);
 			createFlexoConcept.switchNewlyCreatedFlexoConcept = false;
 			createFlexoConcept.doAction();
-			/*if (addFlexoConcept.getNewFlexoConcept() != null) {
-				addFlexoConcept.getNewFlexoConcept().addToParentFlexoConcepts(flexoConcept);
-			}*/
 			return createFlexoConcept.getNewFlexoConcept();
 		}
 		logger.warning("Unexpected null flexo concept");

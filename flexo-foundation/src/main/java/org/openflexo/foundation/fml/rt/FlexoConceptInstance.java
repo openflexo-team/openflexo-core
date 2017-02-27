@@ -411,7 +411,6 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 
 		@Override
 		public void addToEmbeddedFlexoConceptInstances(FlexoConceptInstance aConceptInstance) {
-			System.out.println("Bon donc on met " + aConceptInstance + " dans " + this);
 			performSuperAdder(EMBEDDED_FLEXO_CONCEPT_INSTANCE_KEY, aConceptInstance);
 			if (getOwningVirtualModelInstance() != null) {
 				getOwningVirtualModelInstance().getPropertyChangeSupport().firePropertyChange("allRootFlexoConceptInstances", false, true);

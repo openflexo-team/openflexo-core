@@ -45,6 +45,7 @@ import java.util.logging.Logger;
 import org.openflexo.ApplicationContext;
 import org.openflexo.components.wizard.WizardStep;
 import org.openflexo.foundation.fml.AbstractVirtualModel;
+import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.action.AbstractCreateFlexoConcept.ParentFlexoConceptEntry;
 import org.openflexo.foundation.fml.action.CreateFlexoConcept;
@@ -176,6 +177,18 @@ public class CreateFlexoConceptWizard extends AbstractCreateFlexoConceptWizard<C
 				getAction().setNewFlexoConceptDescription(newFlexoConceptDescription);
 				getPropertyChangeSupport().firePropertyChange("newFlexoConceptDescription", oldValue, newFlexoConceptDescription);
 				checkValidity();
+			}
+		}
+
+		public FlexoConcept getContainerFlexoConcept() {
+			return getAction().getContainerFlexoConcept();
+		}
+
+		public void setContainerFlexoConcept(FlexoConcept containerFlexoConcept) {
+			if (containerFlexoConcept != getContainerFlexoConcept()) {
+				FlexoConcept oldValue = getContainerFlexoConcept();
+				getAction().setContainerFlexoConcept(containerFlexoConcept);
+				getPropertyChangeSupport().firePropertyChange("containerFlexoConcept", oldValue, containerFlexoConcept);
 			}
 		}
 

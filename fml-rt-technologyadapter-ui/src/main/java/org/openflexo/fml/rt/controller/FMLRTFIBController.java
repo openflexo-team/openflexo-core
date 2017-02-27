@@ -40,10 +40,12 @@ package org.openflexo.fml.rt.controller;
 
 import java.util.logging.Logger;
 
+import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.SynchronizationScheme;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
+import org.openflexo.foundation.fml.rt.action.CreateFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.action.SynchronizationSchemeAction;
 import org.openflexo.foundation.fml.rt.action.SynchronizationSchemeActionType;
 import org.openflexo.gina.model.FIBComponent;
@@ -85,30 +87,22 @@ public class FMLRTFIBController extends FlexoFIBController {
 	}
 
 	public FIBComponent inspectorForFlexoConceptInstance(FlexoConceptInstance fci) {
-		/*if (action == null) {
-			return null;
-		}
-		if (action instanceof TechnologySpecificAction && ((TechnologySpecificAction<?, ?>) action).getModelSlot() != null) {
-			TechnologyAdapter technologyAdapter = ((TechnologySpecificAction<?, ?>) action).getModelSlot().getModelSlotTechnologyAdapter();
-			if (technologyAdapter != null) {
-				TechnologyAdapterController<?> taController = getFlexoController().getTechnologyAdapterController(technologyAdapter);
-				return taController.getFIBPanelForObject(action);
-			}
-			else
-				// No specific TechnologyAdapter, lookup in generic libraries
-				return getFIBPanelForObject(action);
-		}
-		else {
-			// No specific TechnologyAdapter, lookup in generic libraries
-			return getFIBPanelForObject(action);
-		}*/
-		System.out.println("Tiens faudrait trouver l'inspecteur de " + fci);
 		if (getFlexoController() != null && getFlexoController().getModuleInspectorController() != null && fci != null) {
-			System.out.println("moduleInspectorController=" + getFlexoController().getModuleInspectorController());
 			return getFlexoController().getModuleInspectorController().getFIBInspectorPanel(fci.getFlexoConcept());
 		}
 		return null;
+	}
 
+	public FlexoConceptInstance createFlexoConceptInstance(FlexoConceptInstance container) throws FlexoException {
+		System.out.println("create FCI, container=" + container);
+		CreateFlexoConceptInstance createFCI = CreateFlexoConceptInstance.actionType.makeNewAction(container, null, getEditor());
+		createFCI.doAction();
+		return createFCI.getNewFlexoConceptInstance();
+	}
+
+	public void deleteFlexoConceptInstance(FlexoConceptInstance conceptInstance) throws FlexoException {
+		System.out.println("delete FCI, container=" + conceptInstance);
+		conceptInstance.delete();
 	}
 
 }

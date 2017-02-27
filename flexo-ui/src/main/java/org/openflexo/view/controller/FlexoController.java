@@ -1625,12 +1625,9 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 			if (e.getMessage().indexOf("Location") > -1) {
 				location = e.getMessage().substring(e.getMessage().indexOf("Location") + 9).trim();
 			}
-			FlexoController
-					.notify(FlexoLocalization.getMainLocalizer().localizedForKey("could_not_connect_to_web_sevice") + ": "
-							+ FlexoLocalization.getMainLocalizer().localizedForKey("the_url_seems_incorrect")
-							+ (location != null
-									? "\n" + FlexoLocalization.getMainLocalizer().localizedForKey("try_with_this_one") + " " + location
-									: ""));
+			FlexoController.notify(FlexoLocalization.getMainLocalizer().localizedForKey("could_not_connect_to_web_sevice") + ": "
+					+ FlexoLocalization.getMainLocalizer().localizedForKey("the_url_seems_incorrect") + (location != null
+							? "\n" + FlexoLocalization.getMainLocalizer().localizedForKey("try_with_this_one") + " " + location : ""));
 			return false;
 		} /*
 			if (e instanceof WebApplicationException) {
@@ -1999,6 +1996,10 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 	// ================================================
 
 	public ImageIcon iconForObject(Object object) {
+
+		if (object instanceof String) {
+			return null;
+		}
 
 		if (object instanceof FlexoResourceFactory) {
 			Class<? extends TechnologyAdapter> taClass = ((FlexoResourceFactory) object).getTechnologyAdapterClass();

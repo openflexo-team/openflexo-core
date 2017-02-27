@@ -79,6 +79,7 @@ import org.openflexo.localization.LocalizedDelegate;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.view.controller.FlexoController;
+import org.openflexo.view.controller.FlexoFIBController;
 import org.openflexo.view.controller.TechnologyAdapterController;
 
 /**
@@ -598,6 +599,8 @@ public class ModuleInspectorController extends Observable implements Observer {
 		FIBPanel inspector = getFactory().newFIBPanel();
 		inspector.setLayout(Layout.twocols);
 		inspector.setUseScrollBar(true);
+
+		inspector.setControllerClass(FlexoFIBController.class);
 
 		// We create a variable for inspector data
 		// This variable is called fci, with type FlexoConceptInstanceType<FlexoConcept>, and value 'data' (which is the

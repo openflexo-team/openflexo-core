@@ -107,6 +107,10 @@ public class CreateFlexoConcept extends AbstractCreateFlexoConcept<CreateFlexoCo
 
 		getFocusedObject().addToFlexoConcepts(newFlexoConcept);
 
+		if (getContainerFlexoConcept() != null) {
+			newFlexoConcept.setContainerFlexoConcept(getContainerFlexoConcept());
+		}
+
 		performSetParentConcepts();
 		performCreateProperties();
 		performCreateBehaviours();
@@ -155,6 +159,20 @@ public class CreateFlexoConcept extends AbstractCreateFlexoConcept<CreateFlexoCo
 			return false;
 		}
 		return true;
+	}
+
+	private FlexoConcept containerFlexoConcept;
+
+	public FlexoConcept getContainerFlexoConcept() {
+		return containerFlexoConcept;
+	}
+
+	public void setContainerFlexoConcept(FlexoConcept containerFlexoConcept) {
+		if (containerFlexoConcept != this.containerFlexoConcept) {
+			FlexoConcept oldValue = this.containerFlexoConcept;
+			this.containerFlexoConcept = containerFlexoConcept;
+			getPropertyChangeSupport().firePropertyChange("containerFlexoConcept", oldValue, containerFlexoConcept);
+		}
 	}
 
 	@Override
