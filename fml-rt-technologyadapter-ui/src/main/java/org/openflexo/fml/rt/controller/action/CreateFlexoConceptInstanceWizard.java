@@ -201,10 +201,11 @@ public class CreateFlexoConceptInstanceWizard extends FlexoWizard {
 					setIssueMessage(getAction().getLocales().localizedForKey(SELECT_A_CREATION_SCHEME), IssueMessageType.ERROR);
 					return false;
 				}
-				if (!getAction().getCreationSchemeAction().areRequiredParametersSetAndValid()) {
+				// Fixed issue with 'next' button not available when selecting a creation scheme with parameters
+				/*if (!getAction().getCreationSchemeAction().areRequiredParametersSetAndValid()) {
 					setIssueMessage(getAction().getLocales().localizedForKey(INVALID_PARAMETERS), IssueMessageType.ERROR);
 					return false;
-				}
+				}*/
 			}
 			return true;
 
