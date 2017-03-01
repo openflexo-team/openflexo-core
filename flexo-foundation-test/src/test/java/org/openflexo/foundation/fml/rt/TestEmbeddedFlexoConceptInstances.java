@@ -46,16 +46,21 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoProject;
+import org.openflexo.foundation.fml.ActionScheme;
 import org.openflexo.foundation.fml.CreationScheme;
+import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.ViewPointLibrary;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.rm.ViewPointResource;
+import org.openflexo.foundation.fml.rt.action.ActionSchemeAction;
+import org.openflexo.foundation.fml.rt.action.ActionSchemeActionType;
 import org.openflexo.foundation.fml.rt.action.CreateBasicVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.CreateFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.action.CreateViewInFolder;
+import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.test.OpenflexoProjectAtRunTimeTestCase;
 import org.openflexo.test.OrderedRunner;
 import org.openflexo.test.TestOrder;
@@ -79,6 +84,7 @@ public class TestEmbeddedFlexoConceptInstances extends OpenflexoProjectAtRunTime
 	private static FlexoProject project;
 	private static View newView;
 	private static VirtualModelInstance vmi1;
+	private static VirtualModelInstance vmi2;
 
 	/**
 	 * Retrieve the ViewPoint
@@ -131,8 +137,8 @@ public class TestEmbeddedFlexoConceptInstances extends OpenflexoProjectAtRunTime
 	public void testCreateVirtualModelInstance() {
 		CreateBasicVirtualModelInstance action = CreateBasicVirtualModelInstance.actionType.makeNewAction(newView, null, editor);
 		action.setNewVirtualModelInstanceName("MyVMI1");
-		action.setNewVirtualModelInstanceTitle("Test creation of a new virtual model instance");
-		action.setVirtualModel(viewPoint.getVirtualModelNamed("VM1"));
+		action.setNewVirtualModelInstanceTitle("MyVMI1");
+		action.setVirtualModel(vm1);
 		action.doAction();
 		assertTrue(action.hasActionExecutionSucceeded());
 		vmi1 = action.getNewVirtualModelInstance();
@@ -191,10 +197,12 @@ public class TestEmbeddedFlexoConceptInstances extends OpenflexoProjectAtRunTime
 
 	/**
 	 * Populate virtual model instance
+	 * 
+	 * @throws SaveResourceException
 	 */
 	@Test
 	@TestOrder(6)
-	public void testPropertiesSettings() {
+	public void testPropertiesSettings() throws SaveResourceException {
 
 		conceptInstanceA1.setFlexoPropertyValue((FlexoProperty<String>) conceptA.getAccessibleProperty("a1"),
 				"NewNameForConceptInstanceA1");
@@ -213,6 +221,9 @@ public class TestEmbeddedFlexoConceptInstances extends OpenflexoProjectAtRunTime
 		assertEquals("ConceptInstanceB1", conceptInstanceC1.getFlexoActor("b1"));
 		assertEquals("NewNameForConceptInstanceA1", conceptInstanceC1.getFlexoPropertyValue("a1"));
 		assertEquals("NewNameForConceptInstanceA1", conceptInstanceC1.getFlexoActor("a1"));
+
+		vmi1.getResource().save(null);
+
 	}
 
 	private FlexoConceptInstance createInstance(FlexoConcept concept, FlexoConceptInstance container, String name) {
@@ -227,6 +238,54 @@ public class TestEmbeddedFlexoConceptInstances extends OpenflexoProjectAtRunTime
 		action.doAction();
 		assertTrue(action.hasActionExecutionSucceeded());
 		return action.getNewFlexoConceptInstance();
+	}
+
+	/**
+	 * Populate virtual model instance
+	 * 
+	 * @throws SaveResourceException
+	 */
+	@Test
+	@TestOrder(7)
+	public void testCreateAndPopulateVMI2() throws SaveResourceException {
+		CreateBasicVirtualModelInstance action = CreateBasicVirtualModelInstance.actionType.makeNewAction(newView, null, editor);
+		action.setNewVirtualModelInstanceName("MyVMI2");
+		action.setNewVirtualModelInstanceTitle("MyVMI2");
+		action.setVirtualModel(vm1);
+		action.doAction();
+		assertTrue(action.hasActionExecutionSucceeded());
+		vmi2 = action.getNewVirtualModelInstance();
+		assertNotNull(vmi2);
+
+		ActionScheme actionScheme = vm1.getActionSchemes().get(0);
+
+		ActionSchemeActionType actionType = new ActionSchemeActionType(actionScheme, vmi2);
+
+		ActionSchemeAction actionSchemeCreationAction = actionType.makeNewAction(vmi2, null, editor);
+		assertNotNull(actionSchemeCreationAction);
+		FlexoBehaviourParameter p = actionScheme.getParameter("instanceName");
+		actionSchemeCreationAction.setParameterValue(p, "TestInstance");
+		actionSchemeCreationAction.doAction();
+
+		assertTrue(actionSchemeCreationAction.hasActionExecutionSucceeded());
+
+		vmi2.getResource().save(null);
+
+		FlexoConceptInstance a, b1, b2, c1, c2;
+
+		assertEquals(1, vmi2.getAllRootFlexoConceptInstances().size());
+		assertNotNull(a = vmi2.getAllRootFlexoConceptInstances().get(0));
+
+		assertEquals(2, a.getEmbeddedFlexoConceptInstances().size());
+		assertNotNull(b1 = a.getEmbeddedFlexoConceptInstances().get(0));
+		assertNotNull(b2 = a.getEmbeddedFlexoConceptInstances().get(1));
+
+		assertEquals(1, b1.getEmbeddedFlexoConceptInstances().size());
+		assertNotNull(c1 = b1.getEmbeddedFlexoConceptInstances().get(0));
+
+		assertEquals(1, b2.getEmbeddedFlexoConceptInstances().size());
+		assertNotNull(c2 = b2.getEmbeddedFlexoConceptInstances().get(0));
+
 	}
 
 }
