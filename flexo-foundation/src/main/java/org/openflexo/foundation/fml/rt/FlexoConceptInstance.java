@@ -1164,8 +1164,19 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 				// return null;
 			}*/
 			else if (variable instanceof FlexoPropertyBindingVariable && getFlexoConcept() != null) {
-				// FlexoProperty<?> flexoProperty = ((FlexoPropertyBindingVariable) variable).getFlexoProperty();
-				return ((FlexoPropertyBindingVariable) variable).getValue(this);
+				FlexoProperty<?> flexoProperty = ((FlexoPropertyBindingVariable) variable).getFlexoProperty();
+				if (!flexoProperty.getFlexoConcept().isAssignableFrom(getFlexoConcept())) {
+					FlexoConceptInstance container = getContainerFlexoConceptInstance();
+					while (container != null) {
+						if (flexoProperty.getFlexoConcept().isAssignableFrom(container.getFlexoConcept())) {
+							return ((FlexoPropertyBindingVariable) variable).getValue(container);
+						}
+						container = container.getContainerFlexoConceptInstance();
+					}
+				}
+				else {
+					return ((FlexoPropertyBindingVariable) variable).getValue(this);
+				}
 			}
 			else if (variable.getVariableName().equals(FlexoConceptBindingModel.REFLEXIVE_ACCESS_PROPERTY)) {
 				return getFlexoConcept();
