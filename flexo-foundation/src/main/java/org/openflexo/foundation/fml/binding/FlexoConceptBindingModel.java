@@ -77,6 +77,7 @@ public class FlexoConceptBindingModel extends BindingModel implements PropertyCh
 	private BindingVariable reflexiveAccessBindingVariable;
 	private final Map<FlexoProperty<?>, FlexoPropertyBindingVariable> propertyVariablesMap;
 	private final List<FlexoConcept> knownParentConcepts = new ArrayList<FlexoConcept>();
+	private FlexoConcept lastKnownContainer = null;
 
 	private BindingVariable flexoConceptInstanceBindingVariable;
 
@@ -115,6 +116,7 @@ public class FlexoConceptBindingModel extends BindingModel implements PropertyCh
 
 		propertyVariablesMap = new HashMap<FlexoProperty<?>, FlexoPropertyBindingVariable>();
 		updatePropertyVariables();
+		updateContainerFlexoConceptListener();
 		updateParentFlexoConceptListeners();
 	}
 
@@ -155,14 +157,22 @@ public class FlexoConceptBindingModel extends BindingModel implements PropertyCh
 				updateParentFlexoConceptListeners();
 				updatePropertyVariables();
 			}
+			else if (evt.getPropertyName().equals(FlexoConcept.CONTAINER_FLEXO_CONCEPT_KEY)) {
+				updateContainerFlexoConceptListener();
+				updatePropertyVariables();
+			}
 		}
-		else if (knownParentConcepts.contains(evt.getSource())) {
+		else if (knownParentConcepts.contains(evt.getSource()) || lastKnownContainer == evt.getSource()) {
 			if (evt.getPropertyName().equals(FlexoConcept.FLEXO_PROPERTIES_KEY)) {
-				// Roles were modified in any of parent FlexoConcept
+				// Roles were modified in any of parent or container FlexoConcept
 				updatePropertyVariables();
 			}
 			else if (evt.getPropertyName().equals(FlexoConcept.PARENT_FLEXO_CONCEPTS_KEY)) {
 				updateParentFlexoConceptListeners();
+				updatePropertyVariables();
+			}
+			else if (evt.getPropertyName().equals(FlexoConcept.CONTAINER_FLEXO_CONCEPT_KEY)) {
+				updateContainerFlexoConceptListener();
 				updatePropertyVariables();
 			}
 		}
@@ -226,6 +236,24 @@ public class FlexoConceptBindingModel extends BindingModel implements PropertyCh
 		}
 	}
 
+	private void updateContainerFlexoConceptListener() {
+
+		if (lastKnownContainer != flexoConcept.getContainerFlexoConcept()) {
+			if (lastKnownContainer != null) {
+				if (lastKnownContainer.getPropertyChangeSupport() != null) {
+					lastKnownContainer.getPropertyChangeSupport().removePropertyChangeListener(this);
+				}
+			}
+			if (flexoConcept.getContainerFlexoConcept() != null) {
+				if (flexoConcept.getContainerFlexoConcept().getPropertyChangeSupport() != null) {
+					flexoConcept.getContainerFlexoConcept().getPropertyChangeSupport().addPropertyChangeListener(this);
+				}
+			}
+			lastKnownContainer = flexoConcept.getContainerFlexoConcept();
+		}
+
+	}
+
 	/**
 	 * Delete this {@link BindingModel}
 	 */
@@ -238,6 +266,11 @@ public class FlexoConceptBindingModel extends BindingModel implements PropertyCh
 			if (p.getPropertyChangeSupport() != null) {
 				p.getPropertyChangeSupport().removePropertyChangeListener(this);
 				knownParentConcepts.remove(p);
+			}
+		}
+		if (lastKnownContainer != null) {
+			if (lastKnownContainer.getPropertyChangeSupport() != null) {
+				lastKnownContainer.getPropertyChangeSupport().removePropertyChangeListener(this);
 			}
 		}
 		super.delete();

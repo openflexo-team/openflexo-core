@@ -501,37 +501,49 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 
 		@Override
 		public <T> T getFlexoPropertyValue(FlexoProperty<T> flexoProperty) {
-			if (flexoProperty instanceof FlexoRole) {
-				// Take care that we don't manage here the multiple cardinality !!!
-				// This is performed in both classes: FlexoConceptFlexoPropertyPathElement and FlexoPropertyBindingVariable
-				return getFlexoActor((FlexoRole<T>) flexoProperty);
-			}
-			else if (flexoProperty instanceof ExpressionProperty) {
-				try {
-					T returned = (T) ((ExpressionProperty<T>) flexoProperty).getExpression().getBindingValue(this);
-					return returned;
-				} catch (TypeMismatchException e) {
-					e.printStackTrace();
-				} catch (NullReferenceException e) {
-					e.printStackTrace();
-				} catch (InvocationTargetException e) {
-					e.printStackTrace();
+
+			if (!flexoProperty.getFlexoConcept().isAssignableFrom(getFlexoConcept())) {
+				FlexoConceptInstance container = getContainerFlexoConceptInstance();
+				while (container != null) {
+					if (flexoProperty.getFlexoConcept().isAssignableFrom(container.getFlexoConcept())) {
+						return container.getFlexoPropertyValue(flexoProperty);
+					}
+					container = container.getContainerFlexoConceptInstance();
 				}
 			}
-			else if (flexoProperty instanceof GetProperty) {
-				FMLControlGraph getControlGraph = ((GetProperty<T>) flexoProperty).getGetControlGraph();
-				if (getControlGraph != null) {
+			else {
+				if (flexoProperty instanceof FlexoRole) {
+					// Take care that we don't manage here the multiple cardinality !!!
+					// This is performed in both classes: FlexoConceptFlexoPropertyPathElement and FlexoPropertyBindingVariable
+					return getFlexoActor((FlexoRole<T>) flexoProperty);
+				}
+				else if (flexoProperty instanceof ExpressionProperty) {
 					try {
-						RunTimeEvaluationContext localEvaluationContext = new LocalRunTimeEvaluationContext();
-						T returnedValue = null;
-						try {
-							getControlGraph.execute(localEvaluationContext);
-						} catch (ReturnException e) {
-							returnedValue = (T) e.getReturnedValue();
-						}
-						return returnedValue;
-					} catch (FlexoException e) {
+						T returned = (T) ((ExpressionProperty<T>) flexoProperty).getExpression().getBindingValue(this);
+						return returned;
+					} catch (TypeMismatchException e) {
 						e.printStackTrace();
+					} catch (NullReferenceException e) {
+						e.printStackTrace();
+					} catch (InvocationTargetException e) {
+						e.printStackTrace();
+					}
+				}
+				else if (flexoProperty instanceof GetProperty) {
+					FMLControlGraph getControlGraph = ((GetProperty<T>) flexoProperty).getGetControlGraph();
+					if (getControlGraph != null) {
+						try {
+							RunTimeEvaluationContext localEvaluationContext = new LocalRunTimeEvaluationContext();
+							T returnedValue = null;
+							try {
+								getControlGraph.execute(localEvaluationContext);
+							} catch (ReturnException e) {
+								returnedValue = (T) e.getReturnedValue();
+							}
+							return returnedValue;
+						} catch (FlexoException e) {
+							e.printStackTrace();
+						}
 					}
 				}
 			}
@@ -549,43 +561,57 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 		 */
 		@Override
 		public <T> void setFlexoPropertyValue(FlexoProperty<T> flexoProperty, T value) {
-			T oldValue = getFlexoPropertyValue(flexoProperty);
-			if ((value == null && oldValue != null) || (value != null && !value.equals(oldValue))) {
-				if (flexoProperty instanceof FlexoRole) {
-					setFlexoActor(value, (FlexoRole) flexoProperty);
-				}
-				else if (flexoProperty instanceof ExpressionProperty) {
-					try {
-						((ExpressionProperty<T>) flexoProperty).getExpression().setBindingValue(value, this);
-					} catch (TypeMismatchException e) {
-						e.printStackTrace();
-					} catch (NullReferenceException e) {
-						e.printStackTrace();
-					} catch (InvocationTargetException e) {
-						e.printStackTrace();
-					} catch (NotSettableContextException e) {
-						e.printStackTrace();
+
+			if (!flexoProperty.getFlexoConcept().isAssignableFrom(getFlexoConcept())) {
+				FlexoConceptInstance container = getContainerFlexoConceptInstance();
+				while (container != null) {
+					if (flexoProperty.getFlexoConcept().isAssignableFrom(container.getFlexoConcept())) {
+						container.setFlexoPropertyValue(flexoProperty, value);
+						return;
 					}
+					container = container.getContainerFlexoConceptInstance();
 				}
-				else if (flexoProperty instanceof GetSetProperty) {
-					FMLControlGraph setControlGraph = ((GetSetProperty<T>) flexoProperty).getSetControlGraph();
-					try {
-						// TODO: handle value beeing set, both in BindingModel AND he in LocalRunTimeEvaluationContext
-						RunTimeEvaluationContext localEvaluationContext = new LocalRunTimeEvaluationContext();
-						// FD unused T returnedValue = null;
+			}
+			else {
+
+				T oldValue = getFlexoPropertyValue(flexoProperty);
+				if ((value == null && oldValue != null) || (value != null && !value.equals(oldValue))) {
+					if (flexoProperty instanceof FlexoRole) {
+						setFlexoActor(value, (FlexoRole) flexoProperty);
+					}
+					else if (flexoProperty instanceof ExpressionProperty) {
 						try {
-							setControlGraph.execute(localEvaluationContext);
-						} catch (ReturnException e) {
-							// Ignore
+							((ExpressionProperty<T>) flexoProperty).getExpression().setBindingValue(value, this);
+						} catch (TypeMismatchException e) {
+							e.printStackTrace();
+						} catch (NullReferenceException e) {
+							e.printStackTrace();
+						} catch (InvocationTargetException e) {
+							e.printStackTrace();
+						} catch (NotSettableContextException e) {
+							e.printStackTrace();
 						}
-					} catch (FlexoException e) {
-						e.printStackTrace();
 					}
+					else if (flexoProperty instanceof GetSetProperty) {
+						FMLControlGraph setControlGraph = ((GetSetProperty<T>) flexoProperty).getSetControlGraph();
+						try {
+							// TODO: handle value beeing set, both in BindingModel AND he in LocalRunTimeEvaluationContext
+							RunTimeEvaluationContext localEvaluationContext = new LocalRunTimeEvaluationContext();
+							// FD unused T returnedValue = null;
+							try {
+								setControlGraph.execute(localEvaluationContext);
+							} catch (ReturnException e) {
+								// Ignore
+							}
+						} catch (FlexoException e) {
+							e.printStackTrace();
+						}
+					}
+
+					setIsModified();
+
+					getPropertyChangeSupport().firePropertyChange(flexoProperty.getPropertyName(), oldValue, value);
 				}
-
-				setIsModified();
-
-				getPropertyChangeSupport().firePropertyChange(flexoProperty.getPropertyName(), oldValue, value);
 			}
 		}
 
@@ -619,16 +645,27 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 				return null;
 			}
 
-			if (flexoRole.getFlexoConcept() == getFlexoConcept().getOwningVirtualModel()) {
-				// logger.warning("Should not we delegate this to owning VM ???");
-				return getOwningVirtualModelInstance().getFlexoActor(flexoRole);
+			if (!flexoRole.getFlexoConcept().isAssignableFrom(getFlexoConcept())) {
+				FlexoConceptInstance container = getContainerFlexoConceptInstance();
+				while (container != null) {
+					if (flexoRole.getFlexoConcept().isAssignableFrom(container.getFlexoConcept())) {
+						return container.getFlexoActor(flexoRole);
+					}
+					container = container.getContainerFlexoConceptInstance();
+				}
 			}
-			List<ActorReference<T>> actorReferences = (List) actors.get(flexoRole.getRoleName());
+			else {
 
-			if (actorReferences != null && actorReferences.size() > 0) {
-				return actorReferences.get(0).getModellingElement();
+				if (flexoRole.getFlexoConcept() == getFlexoConcept().getOwningVirtualModel()) {
+					// logger.warning("Should not we delegate this to owning VM ???");
+					return getOwningVirtualModelInstance().getFlexoActor(flexoRole);
+				}
+				List<ActorReference<T>> actorReferences = (List) actors.get(flexoRole.getRoleName());
+
+				if (actorReferences != null && actorReferences.size() > 0) {
+					return actorReferences.get(0).getModellingElement();
+				}
 			}
-
 			return null;
 		}
 
@@ -666,36 +703,51 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 				return null;
 			}
 
-			List<ActorReference<T>> actorReferences = (List) actors.get(flexoRole.getRoleName());
-
-			List<T> returned = (List) actorLists.get(flexoRole);
-			if (returned == null) {
-				List<T> existingList = new ArrayList<>();
-				if (actorReferences != null) {
-					for (ActorReference<T> ref : actorReferences) {
-						existingList.add(ref.getModellingElement());
+			if (!flexoRole.getFlexoConcept().isAssignableFrom(getFlexoConcept())) {
+				FlexoConceptInstance container = getContainerFlexoConceptInstance();
+				while (container != null) {
+					if (flexoRole.getFlexoConcept().isAssignableFrom(container.getFlexoConcept())) {
+						return container.getFlexoActorList(flexoRole);
 					}
+					container = container.getContainerFlexoConceptInstance();
 				}
-				// CAUTION: tricky area
-				// To be able to generically handle adding and removing in a list of roles, we should override add and remove methods here
-				returned = new ArrayList<T>(existingList) {
-					@Override
-					public boolean add(T e) {
-						// System.out.println("Adding element "+e+" to list for actor " + flexoRole);
-						addToFlexoActors(e, flexoRole);
-						return super.add(e);
-					}
-
-					@Override
-					public boolean remove(Object o) {
-						// System.out.println("Removing element "+o+" from list for actor " + flexoRole);
-						removeFromFlexoActors((T) o, flexoRole);
-						return super.remove(o);
-					}
-				};
-				actorLists.put(flexoRole, returned);
 			}
-			return returned;
+			else {
+
+				List<ActorReference<T>> actorReferences = (List) actors.get(flexoRole.getRoleName());
+
+				List<T> returned = (List) actorLists.get(flexoRole);
+				if (returned == null) {
+					List<T> existingList = new ArrayList<>();
+					if (actorReferences != null) {
+						for (ActorReference<T> ref : actorReferences) {
+							existingList.add(ref.getModellingElement());
+						}
+					}
+					// CAUTION: tricky area
+					// To be able to generically handle adding and removing in a list of roles, we should override add and remove methods
+					// here
+					returned = new ArrayList<T>(existingList) {
+						@Override
+						public boolean add(T e) {
+							// System.out.println("Adding element "+e+" to list for actor " + flexoRole);
+							addToFlexoActors(e, flexoRole);
+							return super.add(e);
+						}
+
+						@Override
+						public boolean remove(Object o) {
+							// System.out.println("Removing element "+o+" from list for actor " + flexoRole);
+							removeFromFlexoActors((T) o, flexoRole);
+							return super.remove(o);
+						}
+					};
+					actorLists.put(flexoRole, returned);
+				}
+				return returned;
+			}
+
+			return null;
 		}
 
 		/**
@@ -780,8 +832,8 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 		 * 
 		 * @param object
 		 *            the object to be registered as actor for supplied property
-		 * @param flexoProperty
-		 *            the property to be considered
+		 * @param flexoRole
+		 *            the role to be considered
 		 */
 		@Override
 		public <T> void setFlexoActor(T object, FlexoRole<T> flexoRole) {
@@ -789,44 +841,58 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 				logger.fine(
 						">>>>>>>>> setObjectForFlexoRole flexoRole: " + flexoRole + " set " + object + " was " + getFlexoActor(flexoRole));
 			}
-			T oldObject = getFlexoActor(flexoRole);
-			if (object != oldObject) {
 
-				boolean done = false;
-
-				if (oldObject != null) {
-
-					List<ActorReference<T>> references = getReferences(flexoRole.getRoleName());
-
-					if ((references.size() == 1) && (object != null)) {
-						// Replace existing reference with new value
-						ActorReference<T> ref = references.get(0);
-						ref.setModellingElement(object);
-						done = true;
+			if (!flexoRole.getFlexoConcept().isAssignableFrom(getFlexoConcept())) {
+				FlexoConceptInstance container = getContainerFlexoConceptInstance();
+				while (container != null) {
+					if (flexoRole.getFlexoConcept().isAssignableFrom(container.getFlexoConcept())) {
+						container.setFlexoActor(object, flexoRole);
+						return;
 					}
-					else if (references.size() > 0) {
-						// Remove all existing references
-						for (ActorReference<T> actorReference : new ArrayList<>(references)) {
-							removeFromActors(actorReference);
+					container = container.getContainerFlexoConceptInstance();
+				}
+			}
+			else {
+
+				T oldObject = getFlexoActor(flexoRole);
+				if (object != oldObject) {
+
+					boolean done = false;
+
+					if (oldObject != null) {
+
+						List<ActorReference<T>> references = getReferences(flexoRole.getRoleName());
+
+						if ((references.size() == 1) && (object != null)) {
+							// Replace existing reference with new value
+							ActorReference<T> ref = references.get(0);
+							ref.setModellingElement(object);
+							done = true;
+						}
+						else if (references.size() > 0) {
+							// Remove all existing references
+							for (ActorReference<T> actorReference : new ArrayList<>(references)) {
+								removeFromActors(actorReference);
+							}
 						}
 					}
+
+					if (object != null && !done) {
+						ActorReference<T> actorReference = flexoRole.makeActorReference(object, this);
+						addToActors(actorReference);
+					}
+
+					getResourceData().setIsModified();
+					setIsModified();
+
+					setChanged();
+					notifyObservers(new FlexoActorChanged(this, flexoRole, oldObject, object));
+					// System.out.println("FlexoConceptInstance "+Integer.toHexString(hashCode())+" setObjectForPatternProperty()
+					// actors="+actors);
+
+					getPropertyChangeSupport().firePropertyChange(flexoRole.getRoleName(), oldObject, object);
+
 				}
-
-				if (object != null && !done) {
-					ActorReference<T> actorReference = flexoRole.makeActorReference(object, this);
-					addToActors(actorReference);
-				}
-
-				getResourceData().setIsModified();
-				setIsModified();
-
-				setChanged();
-				notifyObservers(new FlexoActorChanged(this, flexoRole, oldObject, object));
-				// System.out.println("FlexoConceptInstance "+Integer.toHexString(hashCode())+" setObjectForPatternProperty()
-				// actors="+actors);
-
-				getPropertyChangeSupport().firePropertyChange(flexoRole.getRoleName(), oldObject, object);
-
 			}
 		}
 
@@ -1080,6 +1146,8 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 		@Override
 		public Object getValue(BindingVariable variable) {
 
+			System.out.println("On cherche la valeur de " + variable + " of " + variable.getClass());
+
 			if (variable.getVariableName().equals(FlexoConceptInspector.FORMATTER_INSTANCE_PROPERTY)) {
 				return this;
 			}
@@ -1095,9 +1163,8 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 				logger.warning("Unexpected " + variable);
 				// return null;
 			}*/
-			else if (variable instanceof FlexoPropertyBindingVariable && getFlexoConcept() != null
-			// && ((FlexoPropertyBindingVariable) variable).getFlexoProperty().getFlexoConcept() == getFlexoConcept()) {
-					&& ((FlexoPropertyBindingVariable) variable).getFlexoProperty().getFlexoConcept().isAssignableFrom(getFlexoConcept())) {
+			else if (variable instanceof FlexoPropertyBindingVariable && getFlexoConcept() != null) {
+				// FlexoProperty<?> flexoProperty = ((FlexoPropertyBindingVariable) variable).getFlexoProperty();
 				return ((FlexoPropertyBindingVariable) variable).getValue(this);
 			}
 			else if (variable.getVariableName().equals(FlexoConceptBindingModel.REFLEXIVE_ACCESS_PROPERTY)) {

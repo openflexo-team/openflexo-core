@@ -636,13 +636,22 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 		 */
 		@Override
 		public List<FlexoProperty<?>> getAccessibleProperties() {
-			if (getParentFlexoConcepts().size() == 0) {
+			if (getParentFlexoConcepts().size() == 0 && getContainerFlexoConcept() == null) {
 				return getDeclaredProperties();
 			}
 
 			List<FlexoProperty<?>> returned = new ArrayList<>();
 			List<FlexoProperty<?>> inheritedProperties = new ArrayList<>();
+
+			// First take declared properties
 			returned.addAll(getDeclaredProperties());
+
+			// Take properties obtained by containment
+			if (getContainerFlexoConcept() != null) {
+				returned.addAll(getContainerFlexoConcept().getAccessibleProperties());
+			}
+
+			// Take inherited properties
 			for (FlexoConcept parentConcept : getParentFlexoConcepts()) {
 				for (FlexoProperty<?> p : parentConcept.getAccessibleProperties()) {
 					if (getDeclaredProperty(p.getPropertyName()) == null) {
@@ -654,6 +663,7 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 					}
 				}
 			}
+
 			// Now, we have to suppress all extra references
 			List<FlexoProperty<?>> unnecessaryProperty = new ArrayList<>();
 			for (FlexoProperty<?> p : inheritedProperties) {
@@ -669,6 +679,7 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 			}
 
 			returned.addAll(inheritedProperties);
+
 			return returned;
 		}
 
@@ -918,7 +929,14 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 
 			List<FlexoBehaviour> returned = new ArrayList<>();
 			// List<FlexoBehaviour> inheritedBehaviours = new ArrayList<FlexoBehaviour>();
+
 			returned.addAll(getDeclaredFlexoBehaviours());
+
+			// Take behaviours obtained by containment
+			if (getContainerFlexoConcept() != null) {
+				returned.addAll(getContainerFlexoConcept().getAccessibleFlexoBehaviours());
+			}
+
 			for (FlexoConcept parentConcept : getParentFlexoConcepts()) {
 				for (FlexoBehaviour behaviour : parentConcept.getAccessibleFlexoBehaviours()) {
 
