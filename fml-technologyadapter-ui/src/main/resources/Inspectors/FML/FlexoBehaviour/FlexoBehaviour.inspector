@@ -230,7 +230,7 @@
 				label="description" />
 			<TextArea id="54" verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED"
 				useScrollBar="true" columns="8" name="TextArea" data="data.description"
-				text="TextArea" index="10001" localize="true"
+				text="TextArea" index="10001" localize="false"
 				constraints="twocols(expandHorizontally=true;expandVertically=true;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)"
 				rows="3" validateOnReturn="true" horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED" />
 		</Tab>

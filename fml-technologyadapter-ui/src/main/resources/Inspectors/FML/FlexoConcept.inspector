@@ -99,7 +99,7 @@
 				label="description" readOnly="false" />
 			<TextArea verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED"
 				manageDynamicModel="false" useScrollBar="true" columns="8"
-				data="data.description" localize="true" index="10001"
+				data="data.description" localize="false" index="10001"
 				constraints="twocols(expandHorizontally=true;expandVertically=true;location=right)"
 				rows="3" readOnly="false" validateOnReturn="true"
 				horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED" />
