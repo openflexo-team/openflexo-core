@@ -47,7 +47,6 @@ import java.util.Iterator;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import org.openflexo.toolbox.HasPropertyChangeSupport;
 
 /**
@@ -391,10 +390,17 @@ public abstract class FlexoObservable extends KVCFlexoObject implements HasPrope
 	}
 
 	public static boolean areSameValue(Object o1, Object o2) {
-		if (o1 == null) {
-			return o2 == null;
+		if (o1 == null) return o2 == null;
+		if (o1.equals(o2)) return true;
+		if (o1 instanceof Number && o2 instanceof Number) {
+			Number n1 = (Number) o1;
+			Number n2 = (Number) o2;
+			long l1 = n1.longValue();
+			long l2 = n2.longValue();
+			if (l1 != l2) return false;
+			return n1.doubleValue() == n2.doubleValue();
 		}
-		return o1.equals(o2);
+		return false;
 	}
 
 	public boolean isObservedBy(FlexoObserver observer) {
