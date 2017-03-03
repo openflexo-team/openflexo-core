@@ -64,8 +64,7 @@ public class TestLoadViewPoint extends OpenflexoTestCase {
 	@TestOrder(1)
 	public void testinstanciateTestServiceManager() {
 		instanciateTestServiceManager();
-		JarResourceCenter.addNamedJarFromClassPath(getFlexoServiceManager().getResourceCenterService(),
-				"testViewpoint2-1.0");
+		JarResourceCenter.addNamedJarFromClassPath(getFlexoServiceManager().getResourceCenterService(), "testViewpoint2-1.0");
 
 		System.out.println("ServiceManager= " + serviceManager);
 		assertNotNull(serviceManager);
@@ -88,7 +87,7 @@ public class TestLoadViewPoint extends OpenflexoTestCase {
 
 		assertEquals(0, vpLib.getLoadedViewPoints().size());
 
-		ViewPoint viewPoint = vpLib.getViewPoint("http://openflexo.org/test/TestViewPoint1");
+		ViewPoint viewPoint = vpLib.getViewPoint("http://openflexo.org/test/TestViewPointA");
 
 		System.out.println("ViewPoint=" + viewPoint);
 

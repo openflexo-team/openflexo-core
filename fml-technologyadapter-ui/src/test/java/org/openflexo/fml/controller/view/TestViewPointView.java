@@ -104,7 +104,7 @@ public class TestViewPointView extends OpenflexoFIBTestCase {
 
 		ViewPointLibrary vpLib = serviceManager.getViewPointLibrary();
 		assertNotNull(vpLib);
-		viewPoint = vpLib.getViewPoint("http://openflexo.org/test/TestViewPoint1");
+		viewPoint = vpLib.getViewPoint("http://openflexo.org/test/TestViewPointA");
 		assertNotNull(viewPoint);
 		VirtualModel virtualModel = viewPoint.getVirtualModelNamed("TestVirtualModel");
 		assertNotNull(virtualModel);
@@ -117,7 +117,7 @@ public class TestViewPointView extends OpenflexoFIBTestCase {
 
 		FIBJPanel<ViewPoint> widget = instanciateFIB(ResourceLocator.locateResource(fibFileName), viewPoint, ViewPoint.class);
 
-		gcDelegate.addTab("TestViewPoint1", widget.getController());
+		gcDelegate.addTab("TestViewPointA", widget.getController());
 	}
 
 	public static void initGUI() {

@@ -95,7 +95,7 @@ public class TestEmbeddedFlexoConceptInstances extends OpenflexoProjectAtRunTime
 		instanciateTestServiceManager();
 		ViewPointLibrary vpLib = serviceManager.getViewPointLibrary();
 		assertNotNull(vpLib);
-		viewPoint = vpLib.getViewPoint("http://openflexo.org/test/TestViewPoint2");
+		viewPoint = vpLib.getViewPoint("http://openflexo.org/test/TestViewPointB");
 		assertNotNull(viewPoint);
 		assertNotNull(vm1 = viewPoint.getVirtualModelNamed("VM1"));
 		assertNotNull(conceptA = vm1.getFlexoConcept("ConceptA"));
