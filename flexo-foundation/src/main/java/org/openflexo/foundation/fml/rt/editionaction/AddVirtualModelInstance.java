@@ -85,7 +85,6 @@ public interface AddVirtualModelInstance extends AddAbstractVirtualModelInstance
 
 		@Override
 		protected VirtualModelInstance makeNewFlexoConceptInstance(RunTimeEvaluationContext evaluationContext) {
-
 			View view = getVirtualModelInstance(evaluationContext);
 			logger.info("view: " + view);
 			if (view == null) {

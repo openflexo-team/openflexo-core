@@ -17,7 +17,7 @@
 				icon="controller.iconForObject(object)" localize="false"
 				list="data.availableCreationSchemes"
 				showIcon="true" iteratorClassName="org.openflexo.foundation.fml.CreationScheme"
-				autoSelectFirstRow="true">
+				autoSelectFirstRow="false">
 				<!--  <Dependancy componentName="AddFlexoConceptActionPanel" />
 				<Dependancy componentName="AddFlexoConceptPatternRoleDropDown" />-->
 			</DropDown>
