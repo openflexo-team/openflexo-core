@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ViewPoint id="0" modelVersion="1.0" uri="http://openflexo.org/test/TestMatchFlexoConceptInstance" version="0.1" name="TestMatchFlexoConceptInstance" userID="FLX" description="" flexoID="3">
+  <CreationScheme id="1" name="create" width="800" label="create" height="600" userID="FLX" flexoID="7">
+    <BehaviourControlGraph_Sequence id="2" ownerContext="controlGraph1" userID="FLX" flexoID="28">
+      <ControlGraph2_DeclarationAction id="3" variable="matchingModel" ownerContext="controlGraph2" userID="FLX" flexoID="27">
+        <AssignableAction_AddVirtualModelInstance id="4" virtualModelInstanceTitle="&quot;matchingModel&quot;" virtualModelInstanceName="&quot;matchingModel&quot;" creationSchemeURI="http://openflexo.org/test/TestMatchFlexoConceptInstance/MatchingVM.create" virtualModelInstance="view" userID="FLX" flexoID="26">
+          <AddFlexoConceptInstanceParameter id="5" paramName="model" value="model" userID="FLX" flexoID="86" />
+        </AssignableAction_AddVirtualModelInstance>
+      </ControlGraph2_DeclarationAction>
+      <ControlGraph1_DeclarationAction id="6" variable="model" ownerContext="controlGraph1" userID="FLX" flexoID="11">
+        <AssignableAction_AddVirtualModelInstance id="7" virtualModelInstanceTitle="&quot;model&quot;" virtualModelInstanceName="&quot;model&quot;" creationSchemeURI="http://openflexo.org/test/TestMatchFlexoConceptInstance/VM.create" virtualModelInstance="view" userID="FLX" flexoID="10" />
+      </ControlGraph1_DeclarationAction>
+    </BehaviourControlGraph_Sequence>
+  </CreationScheme>
+  <Inspector id="8" inspectorTitle="TestMatchFlexoConceptInstance" userID="FLX" flexoID="2" />
+</ViewPoint>
