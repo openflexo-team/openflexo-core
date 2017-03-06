@@ -50,6 +50,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.DataBinding;
+import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.fml.AbstractVirtualModel;
@@ -68,6 +69,7 @@ import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.CreationSchemeAction;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
+import org.openflexo.foundation.fml.rt.action.MatchingSet;
 import org.openflexo.gina.annotation.FIBPanel;
 import org.openflexo.model.annotations.Adder;
 import org.openflexo.model.annotations.CloningStrategy;
@@ -115,15 +117,15 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 	@PropertyIdentifier(type = Vector.class)
 	public static final String PARAMETERS_KEY = "parameters";
 
-	/*@Override
-	@Getter(value = VIRTUAL_MODEL_INSTANCE_KEY)
+	@PropertyIdentifier(type = DataBinding.class)
+	public static final String MATCHING_SET_KEY = "matchingSet";
+
+	@Getter(value = MATCHING_SET_KEY)
 	@XMLAttribute
-	public DataBinding<VirtualModelInstance> getVirtualModelInstance();
-	
-	@Override
-	@Setter(VIRTUAL_MODEL_INSTANCE_KEY)
-	public void setVirtualModelInstance(DataBinding<VirtualModelInstance> virtualModelInstance);
-	*/
+	public DataBinding<MatchingSet> getMatchingSet();
+
+	@Setter(MATCHING_SET_KEY)
+	public void setMatchingSet(DataBinding<MatchingSet> matchingSet);
 
 	@Getter(value = CREATION_SCHEME_URI_KEY)
 	@XMLAttribute
@@ -180,6 +182,27 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 		private FlexoConcept flexoConceptType;
 		private CreationScheme creationScheme;
 		private String _creationSchemeURI;
+		private DataBinding<MatchingSet> matchingSet;
+
+		@Override
+		public DataBinding<MatchingSet> getMatchingSet() {
+			if (matchingSet == null) {
+				matchingSet = new DataBinding<MatchingSet>(this, MatchingSet.class, BindingDefinitionType.GET);
+				matchingSet.setBindingName("matchingSet");
+			}
+			return matchingSet;
+		}
+
+		@Override
+		public void setMatchingSet(DataBinding<MatchingSet> matchingSet) {
+			if (matchingSet != null) {
+				matchingSet.setOwner(this);
+				matchingSet.setBindingName("matchingSet");
+				matchingSet.setDeclaredType(MatchingSet.class);
+				matchingSet.setBindingDefinitionType(BindingDefinitionType.GET);
+			}
+			this.matchingSet = matchingSet;
+		}
 
 		@Override
 		public String getParametersStringRepresentation() {
@@ -257,30 +280,18 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 			return null;
 		}
 
-		/*	private DataBinding<VirtualModelInstance> virtualModelInstance;
-		
-			@Override
-			public DataBinding<VirtualModelInstance> getVirtualModelInstance() {
-				if (virtualModelInstance == null) {
-					virtualModelInstance = new DataBinding<VirtualModelInstance>(this, VirtualModelInstance.class,
-							DataBinding.BindingDefinitionType.GET);
-					virtualModelInstance.setBindingName("virtualModelInstance");
-					virtualModelInstance.setMandatory(true);
-				}
-				return virtualModelInstance;
+		public MatchingSet getMatchingSet(RunTimeEvaluationContext evaluationContext) {
+			try {
+				return getMatchingSet().getBindingValue(evaluationContext);
+			} catch (TypeMismatchException e) {
+				e.printStackTrace();
+			} catch (NullReferenceException e) {
+				e.printStackTrace();
+			} catch (InvocationTargetException e) {
+				e.printStackTrace();
 			}
-		
-			@Override
-			public void setVirtualModelInstance(DataBinding<VirtualModelInstance> aVirtualModelInstance) {
-				if (aVirtualModelInstance != null) {
-					aVirtualModelInstance.setOwner(this);
-					aVirtualModelInstance.setBindingName("virtualModelInstance");
-					aVirtualModelInstance.setDeclaredType(VirtualModelInstance.class);
-					aVirtualModelInstance.setBindingDefinitionType(DataBinding.BindingDefinitionType.GET);
-					aVirtualModelInstance.setMandatory(true);
-				}
-				this.virtualModelInstance = aVirtualModelInstance;
-			}*/
+			return null;
+		}
 
 		@Override
 		public FlexoConcept getFlexoConceptType() {
@@ -577,6 +588,17 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 
 			if (evaluationContext instanceof FlexoBehaviourAction) {
 
+				MatchingSet matchingSet = null;
+
+				if (getMatchingSet().isValid()) {
+					matchingSet = getMatchingSet(evaluationContext);
+				}
+
+				if (matchingSet == null) {
+					matchingSet = ((FlexoBehaviourAction<?, ?, ?>) evaluationContext).initiateDefaultMatchingSet(this);
+					System.out.println("Je gere un matching set par defaut: " + matchingSet);
+				}
+
 				VirtualModelInstance vmInstance = getVirtualModelInstance(evaluationContext);
 				Hashtable<FlexoProperty<?>, Object> criterias = new Hashtable<FlexoProperty<?>, Object>();
 				for (MatchingCriteria mc : getMatchingCriterias()) {
@@ -595,8 +617,10 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 					}
 				}
 
-				FlexoConceptInstance matchingFlexoConceptInstance = ((FlexoBehaviourAction) evaluationContext)
-						.matchFlexoConceptInstance(getFlexoConceptType(), criterias);
+				FlexoConceptInstance matchingFlexoConceptInstance = matchingSet.matchFlexoConceptInstance(criterias);
+
+				// FlexoConceptInstance matchingFlexoConceptInstance = ((FlexoBehaviourAction) evaluationContext)
+				// .matchFlexoConceptInstance(getFlexoConceptType(), criterias);
 
 				if (matchingFlexoConceptInstance != null) {
 					// A matching FlexoConceptInstance was found
@@ -604,7 +628,10 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 					if (logger.isLoggable(Level.FINE)) {
 						logger.fine("Found " + matchingFlexoConceptInstance);
 					}
-					((FlexoBehaviourAction<?, ?, ?>) evaluationContext).foundMatchingFlexoConceptInstance(matchingFlexoConceptInstance);
+					// ((FlexoBehaviourAction<?, ?, ?>) evaluationContext).foundMatchingFlexoConceptInstance(matchingFlexoConceptInstance);
+
+					matchingSet.foundMatchingFlexoConceptInstance(matchingFlexoConceptInstance);
+
 				}
 				else {
 
@@ -621,7 +648,7 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 					// System.out.println("Creation scheme: " + getCreationScheme());
 					// System.out.println("FML=" + getCreationScheme().getFMLRepresentation());
 					for (CreateFlexoConceptInstanceParameter p : getParameters()) {
-						FlexoBehaviourParameter param = p.getParam();
+						// FlexoBehaviourParameter param = p.getParam();
 						Object value = p.evaluateParameterValue(evaluationContext);
 						if (value != null) {
 							// System.out.println("Param " + p.getParam() + " = " + value);
@@ -631,7 +658,8 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 					creationSchemeAction.doAction();
 					if (creationSchemeAction.hasActionExecutionSucceeded()) {
 						matchingFlexoConceptInstance = creationSchemeAction.getFlexoConceptInstance();
-						((FlexoBehaviourAction<?, ?, ?>) evaluationContext).newFlexoConceptInstance(matchingFlexoConceptInstance);
+						// ((FlexoBehaviourAction<?, ?, ?>) evaluationContext).newFlexoConceptInstance(matchingFlexoConceptInstance);
+						matchingSet.newFlexoConceptInstance(matchingFlexoConceptInstance);
 					}
 					else {
 						logger.warning("Could not create FlexoConceptInstance for " + evaluationContext);
@@ -728,6 +756,19 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 			}
 			return null;
 		}
+	}
+
+	@DefineValidationRule
+	public static class MatchingSetBindingIsRequiredAndMustBeValid extends BindingIsRequiredAndMustBeValid<MatchFlexoConceptInstance> {
+		public MatchingSetBindingIsRequiredAndMustBeValid() {
+			super("'matching_set'_binding_is_not_valid", MatchFlexoConceptInstance.class);
+		}
+
+		@Override
+		public DataBinding<MatchingSet> getBinding(MatchFlexoConceptInstance object) {
+			return object.getMatchingSet();
+		}
+
 	}
 
 	@DefineValidationRule

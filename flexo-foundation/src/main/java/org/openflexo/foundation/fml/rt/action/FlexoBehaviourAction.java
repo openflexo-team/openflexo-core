@@ -39,6 +39,7 @@
 package org.openflexo.foundation.fml.rt.action;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Vector;
@@ -50,13 +51,11 @@ import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.DataModification;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoException;
-import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.FlexoConcept;
-import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.ListParameter;
 import org.openflexo.foundation.fml.URIParameter;
 import org.openflexo.foundation.fml.binding.FlexoBehaviourBindingModel;
@@ -67,6 +66,7 @@ import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.TypeAwareModelSlotInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstanceObject;
+import org.openflexo.foundation.fml.rt.editionaction.MatchFlexoConceptInstance;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.technologyadapter.TypeAwareModelSlot;
 import org.openflexo.foundation.utils.OperationCancelledException;
@@ -280,6 +280,9 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 				e.printStackTrace();
 				throw new FlexoException(e);
 			}
+			if (defaultMatchingSet != null) {
+				finalizeDefaultMatchingSet();
+			}
 		}
 
 	}
@@ -296,9 +299,9 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 	 * 
 	 * @param matchingFlexoConceptInstance
 	 */
-	public void foundMatchingFlexoConceptInstance(FlexoConceptInstance matchingFlexoConceptInstance) {
+	/*public void foundMatchingFlexoConceptInstance(FlexoConceptInstance matchingFlexoConceptInstance) {
 		return;
-	}
+	}*/
 
 	/**
 	 * This has been moved from SynchronizationSchemeAction to this super-class so that MatchFlexoConceptInstance can be used in other
@@ -306,9 +309,9 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 	 * 
 	 * @param newFlexoConceptInstance
 	 */
-	public void newFlexoConceptInstance(FlexoConceptInstance newFlexoConceptInstance) {
+	/*public void newFlexoConceptInstance(FlexoConceptInstance newFlexoConceptInstance) {
 		// System.out.println("NEW EPI : " + newFlexoConceptInstance);
-	}
+	}*/
 
 	/**
 	 * This has been moved from SynchronizationSchemeAction to this super-class so that MatchFlexoConceptInstance can be used in other
@@ -316,7 +319,7 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 	 * 
 	 * @param matchingFlexoConceptInstance
 	 */
-	public FlexoConceptInstance matchFlexoConceptInstance(FlexoConcept flexoConceptType, Hashtable<FlexoProperty, Object> criterias) {
+	/*public FlexoConceptInstance matchFlexoConceptInstance(FlexoConcept flexoConceptType, Hashtable<FlexoProperty, Object> criterias) {
 		// System.out.println("MATCH epi on " + getVirtualModelInstance() + " for " + flexoConceptType + " with " + criterias);
 		AbstractVirtualModelInstance<?, ?> inst = getVirtualModelInstance();
 		for (FlexoConceptInstance epi : inst.getFlexoConceptInstances(flexoConceptType)) {
@@ -331,6 +334,23 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 			}
 		}
 		return null;
+	}*/
+
+	private MatchingSet defaultMatchingSet = null;
+
+	public MatchingSet initiateDefaultMatchingSet(MatchFlexoConceptInstance action) {
+		if (defaultMatchingSet == null) {
+			defaultMatchingSet = new MatchingSet(action, this);
+		}
+		return defaultMatchingSet;
+	}
+
+	public void finalizeDefaultMatchingSet() {
+		if (defaultMatchingSet != null) {
+			for (FlexoConceptInstance fci : new ArrayList<>(defaultMatchingSet.getUnmatchedInstances())) {
+				fci.delete();
+			}
+		}
 	}
 
 	/**

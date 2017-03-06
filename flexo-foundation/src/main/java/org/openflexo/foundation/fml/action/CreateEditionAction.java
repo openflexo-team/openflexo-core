@@ -38,6 +38,16 @@
 
 package org.openflexo.foundation.fml.action;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.lang.reflect.Type;
+import java.security.InvalidParameterException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Vector;
+import java.util.logging.Logger;
+
 import org.openflexo.connie.Bindable;
 import org.openflexo.connie.BindingFactory;
 import org.openflexo.connie.BindingModel;
@@ -78,21 +88,13 @@ import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.AddSubView;
 import org.openflexo.foundation.fml.rt.editionaction.AddVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.editionaction.DeleteFlexoConceptInstance;
+import org.openflexo.foundation.fml.rt.editionaction.FinalizeMatching;
+import org.openflexo.foundation.fml.rt.editionaction.InitiateMatching;
 import org.openflexo.foundation.fml.rt.editionaction.MatchFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.SelectFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.SelectVirtualModelInstance;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
-
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.lang.reflect.Type;
-import java.security.InvalidParameterException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Vector;
-import java.util.logging.Logger;
 
 public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLControlGraph, FMLObject>
 		implements Bindable, PropertyChangeListener {
@@ -177,7 +179,9 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 		addToAvailableActions(AddFlexoConceptInstance.class, fmlTA);
 		addToAvailableActions(AddVirtualModelInstance.class, fmlTA);
 		addToAvailableActions(AddSubView.class, fmlTA);
+		addToAvailableActions(InitiateMatching.class, fmlTA);
 		addToAvailableActions(MatchFlexoConceptInstance.class, fmlTA);
+		addToAvailableActions(FinalizeMatching.class, fmlTA);
 		addToAvailableActions(SelectFlexoConceptInstance.class, fmlTA);
 		addToAvailableActions(SelectVirtualModelInstance.class, fmlTA);
 		addToAvailableActions(DeleteAction.class, fmlTA);
@@ -465,8 +469,14 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 		else if (AddSubView.class.isAssignableFrom(editionActionClass)) {
 			returned = factory.newAddSubView();
 		}
+		else if (InitiateMatching.class.isAssignableFrom(editionActionClass)) {
+			returned = factory.newInitiateMatching();
+		}
 		else if (MatchFlexoConceptInstance.class.isAssignableFrom(editionActionClass)) {
 			returned = factory.newMatchFlexoConceptInstance();
+		}
+		else if (FinalizeMatching.class.isAssignableFrom(editionActionClass)) {
+			returned = factory.newFinalizeMatching();
 		}
 		else if (SelectFlexoConceptInstance.class.isAssignableFrom(editionActionClass)) {
 			returned = factory.newSelectFlexoConceptInstance();

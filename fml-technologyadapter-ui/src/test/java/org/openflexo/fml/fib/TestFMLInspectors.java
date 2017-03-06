@@ -81,6 +81,11 @@ public class TestFMLInspectors extends GenericFIBInspectorTestCase {
 	}
 
 	@Test
+	public void testAddClassInstanceInspector() {
+		validateFIB("Inspectors/FML/EditionAction/AddClassInstance.inspector");
+	}
+
+	@Test
 	public void testAddFlexoConceptInstanceInspector() {
 		validateFIB("Inspectors/FML/EditionAction/AddFlexoConceptInstance.inspector");
 	}
@@ -146,8 +151,18 @@ public class TestFMLInspectors extends GenericFIBInspectorTestCase {
 	}
 
 	@Test
+	public void testFinalizeMatchingInspector() {
+		validateFIB("Inspectors/FML/EditionAction/FinalizeMatching.inspector");
+	}
+
+	@Test
 	public void testIncrementalIterationActionInspector() {
 		validateFIB("Inspectors/FML/EditionAction/IncrementalIterationAction.inspector");
+	}
+
+	@Test
+	public void testInitiateMatchingInspector() {
+		validateFIB("Inspectors/FML/EditionAction/InitiateMatching.inspector");
 	}
 
 	@Test
@@ -163,6 +178,11 @@ public class TestFMLInspectors extends GenericFIBInspectorTestCase {
 	@Test
 	public void testMatchFlexoConceptInstanceInspector() {
 		validateFIB("Inspectors/FML/EditionAction/MatchFlexoConceptInstance.inspector");
+	}
+
+	@Test
+	public void testNotifyPropertyChangedActionInspector() {
+		validateFIB("Inspectors/FML/EditionAction/NotifyPropertyChangedAction.inspector");
 	}
 
 	@Test
@@ -288,6 +308,11 @@ public class TestFMLInspectors extends GenericFIBInspectorTestCase {
 	@Test
 	public void testFlexoResourceParameterInspector() {
 		validateFIB("Inspectors/FML/FlexoBehaviourParameter/FlexoResourceParameter.inspector");
+	}
+
+	@Test
+	public void testFlexoVMIResourceParameterInspector() {
+		validateFIB("Inspectors/FML/FlexoBehaviourParameter/FlexoVMIResourceParameter.inspector");
 	}
 
 	@Test

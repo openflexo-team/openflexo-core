@@ -38,8 +38,6 @@
 
 package org.openflexo.foundation.fml.rt.action;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -131,26 +129,26 @@ public class SynchronizationSchemeAction
 		return null;
 	}
 
-	private List<FlexoConceptInstance> episToBeRemoved;
+	// private List<FlexoConceptInstance> episToBeRemoved;
 
 	public void beginSynchronization() {
 		// System.out.println("BEGIN synchronization on " + getVirtualModelInstance());
-		episToBeRemoved = new ArrayList<FlexoConceptInstance>();
-		episToBeRemoved.addAll(getFocusedObject().getFlexoConceptInstances());
+		// episToBeRemoved = new ArrayList<FlexoConceptInstance>();
+		// episToBeRemoved.addAll(getFocusedObject().getFlexoConceptInstances());
 	}
 
 	public void endSynchronization() {
 		// System.out.println("END synchronization on " + getVirtualModelInstance());
-		for (FlexoConceptInstance epi : episToBeRemoved) {
+		/*for (FlexoConceptInstance epi : episToBeRemoved) {
 			epi.delete();
 			getVirtualModelInstance().removeFromFlexoConceptInstances(epi);
-		}
+		}*/
 	}
 
-	@Override
+	/*@Override
 	public void foundMatchingFlexoConceptInstance(FlexoConceptInstance matchingFlexoConceptInstance) {
 		episToBeRemoved.remove(matchingFlexoConceptInstance);
-	}
+	}*/
 
 	@Override
 	public Object getValue(BindingVariable variable) {

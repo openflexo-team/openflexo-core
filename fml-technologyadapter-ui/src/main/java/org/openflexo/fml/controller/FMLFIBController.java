@@ -409,6 +409,7 @@ public class FMLFIBController extends FlexoFIBController {
 	}
 
 	public FlexoConcept createFlexoConcept(FlexoConcept flexoConcept) {
+		System.out.println("Nouveau concept " + flexoConcept);
 		if (flexoConcept instanceof VirtualModel) {
 			CreateFlexoConcept createFlexoConcept = CreateFlexoConcept.actionType.makeNewAction((VirtualModel) flexoConcept, null,
 					getEditor());

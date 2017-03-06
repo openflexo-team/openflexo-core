@@ -41,13 +41,10 @@ package org.openflexo.foundation.fml.rt.editionaction;
 import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Logger;
 
-import org.openflexo.connie.binding.BindingPathElement;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
-import org.openflexo.connie.expr.BindingValue;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.annotations.FML;
-import org.openflexo.foundation.fml.binding.FlexoBehaviourParameterValuePathElement;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.View;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
@@ -108,22 +105,22 @@ public interface AddVirtualModelInstance extends AddAbstractVirtualModelInstance
 					e.printStackTrace();
 				}
 
-				System.out.println("name=" + name);
+				/*System.out.println("name=" + name);
 				System.out.println("title=" + title);
 				System.out.println("name=" + getVirtualModelInstanceName());
 				System.out.println("name=" + getVirtualModelInstanceName());
 				System.out.println("title=" + getVirtualModelInstanceTitle());
-				System.out.println("evaluationContext=" + evaluationContext);
-				if (getVirtualModelInstanceName().isBindingValue()) {
+				System.out.println("evaluationContext=" + evaluationContext);*/
+				/*if (getVirtualModelInstanceName().isBindingValue()) {
 					BindingValue bv = (BindingValue) getVirtualModelInstanceName().getExpression();
 					BindingPathElement e = bv.getLastBindingPathElement();
-					System.out.println("last path = " + e + " of " + e.getClass());
+					//System.out.println("last path = " + e + " of " + e.getClass());
 					if (e instanceof FlexoBehaviourParameterValuePathElement) {
 						FlexoBehaviourParameterValuePathElement e1 = (FlexoBehaviourParameterValuePathElement) e;
-						System.out.println("parameter=" + e1.getParameter() + " of " + e1.getParameter().getBehaviour());
-						System.out.println("behaviour=" + e1.getParameter().getBehaviour().getFMLRepresentation());
+						//System.out.println("parameter=" + e1.getParameter() + " of " + e1.getParameter().getBehaviour());
+						//System.out.println("behaviour=" + e1.getParameter().getBehaviour().getFMLRepresentation());
 					}
-				}
+				}*/
 				if (evaluationContext instanceof CreationSchemeAction) {
 
 					// System.out.println(((CreationSchemeAction)evaluationContext).getParameterValue(parameter);
