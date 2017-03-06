@@ -310,6 +310,11 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 	 */
 	public void reindexAllConceptInstances();
 
+	/**
+	 * Delete all instances of this {@link AbstractVirtualModelInstance}
+	 */
+	public void clear();
+
 	public static abstract class AbstractVirtualModelInstanceImpl<VMI extends AbstractVirtualModelInstance<VMI, VM>, VM extends AbstractVirtualModel<VM>>
 			extends FlexoConceptInstanceImpl implements AbstractVirtualModelInstance<VMI, VM> {
 
@@ -1312,6 +1317,17 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 				}
 			}
 		}
+
+		/**
+		 * Delete all instances of this {@link AbstractVirtualModelInstance}
+		 */
+		@Override
+		public void clear() {
+			for (FlexoConceptInstance fci : new ArrayList<>(getFlexoConceptInstances())) {
+				fci.delete();
+			}
+		}
+
 	}
 
 	public class ObjectLookupResult {
