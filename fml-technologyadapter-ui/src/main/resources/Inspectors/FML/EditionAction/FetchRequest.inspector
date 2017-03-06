@@ -9,7 +9,7 @@
 			darkLevel="0" index="0" font="SansSerif,0,11" useScrollBar="true"
 			horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED"
 			verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED" name="BasicTab">
-			<Label label="conditions" index="10"
+			<Label label="conditions" index="12"
 				constraints="twocols(expandHorizontally=false;expandVertically=false;index=10;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)"
 				localize="true" />
 			<Table
@@ -21,7 +21,7 @@
 				backgroundSelectionColor="26,96,206"
 				backgroundSecondarySelectionColor="173,215,255"
 				backgroundNonSelectionColor="255,255,255" localize="true"
-				manageDynamicModel="true" name="ConditionsTable" index="11"
+				manageDynamicModel="true" name="ConditionsTable" index="13"
 				data="data.conditions"
 				constraints="twocols(expandHorizontally=true;expandVertically=true;index=11;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
 				opaque="false">

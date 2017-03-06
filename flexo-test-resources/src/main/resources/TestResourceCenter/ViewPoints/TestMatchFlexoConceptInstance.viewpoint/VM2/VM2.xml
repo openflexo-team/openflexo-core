@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VirtualModel id="0" modelVersion="1.0" version="0.1" name="VM2" userID="FLX" flexoID="2">
+  <FlexoConcept id="1" name="ConceptA" userID="FLX" flexoID="8">
+    <EmbeddedFlexoConcept id="2" name="ConceptB" userID="FLX" flexoID="15">
+      <PrimitiveRole id="3" primitiveType="String" cloningStrategy="Clone" cardinality="ZeroOne" name="nameB" userID="FLX" flexoID="23" />
+      <CreationScheme id="4" name="create" width="800" label="create" height="600" userID="FLX" flexoID="19">
+        <BehaviourControlGraph_AssignationAction id="5" assign="nameB" userID="FLX" flexoID="21">
+          <AssignableAction_ExpressionAction id="6" expression="parameters.aNameB" userID="FLX" flexoID="24" />
+        </BehaviourControlGraph_AssignationAction>
+        <GenericBehaviourParameter id="7" isRequired="true" widget="TEXT_FIELD" name="aNameB" type="java.lang.String" userID="FLX" flexoID="25" />
+      </CreationScheme>
+      <DeletionScheme id="8" name="delete" width="800" label="delete" height="600" userID="FLX" flexoID="20">
+        <BehaviourControlGraph_DeleteAction id="9" object="nameB" userID="FLX" flexoID="22" />
+      </DeletionScheme>
+      <Inspector id="10" inspectorTitle="ConceptB" userID="FLX" flexoID="16" />
+    </EmbeddedFlexoConcept>
+    <PrimitiveRole id="11" primitiveType="String" cloningStrategy="Clone" cardinality="ZeroOne" name="nameA" userID="FLX" flexoID="26" />
+    <CreationScheme id="12" name="create" width="800" label="create" height="600" userID="FLX" flexoID="11">
+      <BehaviourControlGraph_AssignationAction id="13" assign="nameA" userID="FLX" flexoID="13">
+        <AssignableAction_ExpressionAction id="14" expression="parameters.aNameA" userID="FLX" flexoID="27" />
+      </BehaviourControlGraph_AssignationAction>
+      <GenericBehaviourParameter id="15" isRequired="true" widget="TEXT_FIELD" name="aNameA" type="java.lang.String" userID="FLX" flexoID="28" />
+    </CreationScheme>
+    <DeletionScheme id="16" name="delete" width="800" label="delete" height="600" userID="FLX" flexoID="12">
+      <BehaviourControlGraph_DeleteAction id="17" object="nameA" userID="FLX" flexoID="14" />
+    </DeletionScheme>
+    <Inspector id="18" inspectorTitle="ConceptA" userID="FLX" flexoID="7">
+      <GenericInspectorEntry id="19" widget="TEXT_FIELD" data="nameA" name="nameA" label="nameA" type="java.lang.String" userID="FLX" flexoID="29" />
+    </Inspector>
+  </FlexoConcept>
+  <FlexoConcept idref="2" />
+  <CreationScheme id="20" name="create" width="800" label="create" height="600" userID="FLX" flexoID="6">
+    <BehaviourControlGraph_EmptyControlGraph id="21" userID="FLX" flexoID="30" />
+  </CreationScheme>
+  <Inspector id="22" inspectorTitle="VM2" userID="FLX" flexoID="1" />
+</VirtualModel>

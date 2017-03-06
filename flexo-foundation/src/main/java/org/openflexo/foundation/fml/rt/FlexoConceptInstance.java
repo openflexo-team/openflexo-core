@@ -40,11 +40,13 @@ package org.openflexo.foundation.fml.rt;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import org.openflexo.connie.Bindable;
 import org.openflexo.connie.BindingFactory;
 import org.openflexo.connie.BindingModel;
@@ -154,6 +156,14 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 
 	@Setter(CONTAINER_FLEXO_CONCEPT_INSTANCE_KEY)
 	public void setContainerFlexoConceptInstance(FlexoConceptInstance container);
+
+	/**
+	 * Return a newly created list of all embedded {@link FlexoConceptInstance} conform to the supplied FlexoConcept
+	 * 
+	 * @param flexoConcept
+	 * @return
+	 */
+	public List<FlexoConceptInstance> getEmbeddedFlexoConceptInstances(FlexoConcept flexoConcept);
 
 	/**
 	 * Return all {@link FlexoConcept} contained in this {@link FlexoConcept}
@@ -1036,6 +1046,25 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 		}
 
 		@Override
+		public List<FlexoConceptInstance> getEmbeddedFlexoConceptInstances(FlexoConcept flexoConcept) {
+
+			if (flexoConcept == null) {
+				// logger.warning("Unexpected null FlexoConcept");
+				return Collections.emptyList();
+			}
+
+			List<FlexoConceptInstance> returned = new ArrayList<>();
+
+			for (FlexoConceptInstance fci : getEmbeddedFlexoConceptInstances()) {
+				if (flexoConcept.isAssignableFrom(fci.getFlexoConcept())) {
+					returned.add(fci);
+				}
+			}
+
+			return returned;
+		}
+
+		@Override
 		public void addToActors(ActorReference<?> actorReference) {
 
 			// System.out.println("***** addToActors " + actorReference);
@@ -1259,6 +1288,8 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 				return false;
 			}
 
+			FlexoConceptInstance container = getContainerFlexoConceptInstance();
+
 			if (deletionScheme != null && deletionScheme.getControlGraph() != null) {
 				try {
 					deletionScheme.getControlGraph().execute(this);
@@ -1270,9 +1301,13 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 				}
 			}
 
-			AbstractVirtualModelInstance<?, ?> container = getOwningVirtualModelInstance();
 			if (container != null) {
-				container.removeFromFlexoConceptInstances(this);
+				container.removeFromEmbeddedFlexoConceptInstances(this);
+			}
+
+			AbstractVirtualModelInstance<?, ?> vmi = getOwningVirtualModelInstance();
+			if (vmi != null) {
+				vmi.removeFromFlexoConceptInstances(this);
 			}
 			// logger.warning("FlexoConceptInstance deletion !");
 			// deleted = true;

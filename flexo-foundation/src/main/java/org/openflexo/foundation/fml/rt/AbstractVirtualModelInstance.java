@@ -647,13 +647,13 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 			List<FlexoConceptInstance> returned = flexoConceptInstances.get(flexoConcept);
 
 			if (returned == null) {
-				System.out.println("Bizarre, pourtant j'ai ca: ");
+				/*System.out.println("Bizarre, pourtant j'ai ca: ");
 				for (FlexoConceptInstance fci : getFlexoConceptInstances()) {
 					System.out.println(" > " + fci);
 				}
 				for (FlexoConcept concept : flexoConceptInstances.keySet()) {
 					System.out.println("Key: " + concept + " list: " + flexoConceptInstances.get(concept));
-				}
+				}*/
 				return Collections.emptyList();
 			}
 			return returned;

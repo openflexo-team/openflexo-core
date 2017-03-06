@@ -120,6 +120,9 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 	@PropertyIdentifier(type = DataBinding.class)
 	public static final String MATCHING_SET_KEY = "matchingSet";
 
+	@PropertyIdentifier(type = DataBinding.class)
+	public static final String CONTAINER_KEY = "container";
+
 	@Getter(value = MATCHING_SET_KEY)
 	@XMLAttribute
 	public DataBinding<MatchingSet> getMatchingSet();
@@ -169,6 +172,13 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 	public CreationScheme getCreationScheme();
 
 	public void setCreationScheme(CreationScheme creationScheme);
+
+	@Getter(value = CONTAINER_KEY)
+	@XMLAttribute
+	public DataBinding<FlexoConceptInstance> getContainer();
+
+	@Setter(CONTAINER_KEY)
+	public void setContainer(DataBinding<FlexoConceptInstance> container);
 
 	public FlexoConcept getFlexoConceptType();
 
@@ -283,6 +293,19 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 		public MatchingSet getMatchingSet(RunTimeEvaluationContext evaluationContext) {
 			try {
 				return getMatchingSet().getBindingValue(evaluationContext);
+			} catch (TypeMismatchException e) {
+				e.printStackTrace();
+			} catch (NullReferenceException e) {
+				e.printStackTrace();
+			} catch (InvocationTargetException e) {
+				e.printStackTrace();
+			}
+			return null;
+		}
+
+		public FlexoConceptInstance getContainer(RunTimeEvaluationContext evaluationContext) {
+			try {
+				return getContainer().getBindingValue(evaluationContext);
 			} catch (TypeMismatchException e) {
 				e.printStackTrace();
 			} catch (NullReferenceException e) {
@@ -644,6 +667,14 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 					CreationSchemeAction creationSchemeAction = CreationSchemeAction.actionType.makeNewEmbeddedAction(vmInstance, null,
 							((FlexoBehaviourAction<?, ?, ?>) evaluationContext));
 					creationSchemeAction.setVirtualModelInstance(vmInstance);
+
+					FlexoConceptInstance container = getContainer(evaluationContext);
+					if (container != null) {
+						creationSchemeAction.setContainer(container);
+					}
+
+					System.out.println("OK on cherche a creer un " + getFlexoConceptType() + " dans " + container);
+
 					creationSchemeAction.setCreationScheme(getCreationScheme());
 					// System.out.println("Creation scheme: " + getCreationScheme());
 					// System.out.println("FML=" + getCreationScheme().getFMLRepresentation());
@@ -684,6 +715,32 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 		public Class<VirtualModelInstance> getVirtualModelInstanceClass() {
 			return VirtualModelInstance.class;
 		}
+
+		private DataBinding<FlexoConceptInstance> container;
+
+		@Override
+		public DataBinding<FlexoConceptInstance> getContainer() {
+			if (container == null) {
+				container = new DataBinding<FlexoConceptInstance>(this, FlexoConceptInstance.class, DataBinding.BindingDefinitionType.GET);
+				container.setBindingName("container");
+				container.setDeclaredType(getFlexoConceptType() != null && getFlexoConceptType().getContainerFlexoConcept() != null
+						? getFlexoConceptType().getContainerFlexoConcept().getInstanceType() : FlexoConceptInstance.class);
+			}
+			return container;
+		}
+
+		@Override
+		public void setContainer(DataBinding<FlexoConceptInstance> aContainer) {
+			if (aContainer != null) {
+				aContainer.setOwner(this);
+				aContainer.setBindingName("container");
+				aContainer.setDeclaredType(getFlexoConceptType() != null && getFlexoConceptType().getContainerFlexoConcept() != null
+						? getFlexoConceptType().getContainerFlexoConcept().getInstanceType() : FlexoConceptInstance.class);
+				aContainer.setBindingDefinitionType(DataBinding.BindingDefinitionType.GET);
+			}
+			this.container = aContainer;
+		}
+
 	}
 
 	@DefineValidationRule

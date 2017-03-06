@@ -268,9 +268,10 @@ public interface InitiateMatching extends AssignableAction<MatchingSet> {
 
 		@Override
 		public MatchingSet execute(RunTimeEvaluationContext evaluationContext) {
-			System.out.println("Computing MatchingSet for " + getFlexoConceptType() + " on " + getContainer());
-
-			return new MatchingSet(this, evaluationContext);
+			// System.out.println("Computing MatchingSet for " + getFlexoConceptType() + " on " + getContainer());
+			MatchingSet returned = new MatchingSet(this, evaluationContext);
+			// System.out.println("Matching set with " + returned.getAllInstances());
+			return returned;
 		}
 
 	}

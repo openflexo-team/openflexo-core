@@ -76,12 +76,23 @@ public class TestMatchFlexoConceptInstances extends OpenflexoProjectAtRunTimeTes
 	private static VirtualModel matchingVM;
 	private static FlexoConcept concept;
 	private static FlexoConcept matchedConcept;
+	private static VirtualModel vm2;
+	private static VirtualModel matchingVM2;
+	private static FlexoConcept conceptA;
+	private static FlexoConcept conceptB;
+	private static FlexoConcept matchedConceptA;
+	private static FlexoConcept matchedConceptB;
 
 	private static FlexoEditor editor;
 	private static FlexoProject project;
 	private static View newView;
 	private static VirtualModelInstance model;
 	private static VirtualModelInstance matchingModel;
+	private static VirtualModelInstance model2;
+	private static VirtualModelInstance matchingModel2;
+
+	private static FlexoConceptInstance c1, c2, c3, c4;
+	private static FlexoConceptInstance a1, a2, a3, b1, b2, b3, b4, b5, b6, b7;
 
 	/**
 	 * Retrieve the ViewPoint
@@ -97,10 +108,13 @@ public class TestMatchFlexoConceptInstances extends OpenflexoProjectAtRunTimeTes
 		assertNotNull(vm = viewPoint.getVirtualModelNamed("VM"));
 		assertNotNull(concept = vm.getFlexoConcept("Concept"));
 		assertNotNull(matchingVM = viewPoint.getVirtualModelNamed("MatchingVM"));
-
-		System.out.println("" + matchingVM.getFMLRepresentation());
-
 		assertNotNull(matchedConcept = matchingVM.getFlexoConcept("MatchedConcept"));
+		assertNotNull(vm2 = viewPoint.getVirtualModelNamed("VM2"));
+		assertNotNull(conceptA = vm2.getFlexoConcept("ConceptA"));
+		assertNotNull(conceptB = vm2.getFlexoConcept("ConceptB"));
+		assertNotNull(matchingVM2 = viewPoint.getVirtualModelNamed("MatchingVM2"));
+		assertNotNull(matchedConceptA = matchingVM2.getFlexoConcept("MatchedConceptA"));
+		assertNotNull(matchedConceptB = matchingVM2.getFlexoConcept("MatchedConceptB"));
 	}
 
 	@Test
@@ -130,13 +144,11 @@ public class TestMatchFlexoConceptInstances extends OpenflexoProjectAtRunTimeTes
 		assertNotNull(model = (VirtualModelInstance) newView.getVirtualModelInstance("model"));
 		assertNotNull(matchingModel = (VirtualModelInstance) newView.getVirtualModelInstance("matchingModel"));
 		assertEquals(model, matchingModel.getFlexoPropertyValue("model"));
+		assertNotNull(model2 = (VirtualModelInstance) newView.getVirtualModelInstance("model2"));
+		assertNotNull(matchingModel2 = (VirtualModelInstance) newView.getVirtualModelInstance("matchingModel2"));
+		assertEquals(model2, matchingModel2.getFlexoPropertyValue("model"));
 
 	}
-
-	private static FlexoConceptInstance c1;
-	private static FlexoConceptInstance c2;
-	private static FlexoConceptInstance c3;
-	private static FlexoConceptInstance c4;
 
 	/**
 	 * Populate virtual model instance
@@ -237,7 +249,7 @@ public class TestMatchFlexoConceptInstances extends OpenflexoProjectAtRunTimeTes
 	 * @throws SaveResourceException
 	 */
 	@Test
-	@TestOrder(6)
+	@TestOrder(7)
 	public void testSynchronizeMatchingModelUsingDefaultScheme() throws SaveResourceException {
 
 		matchingModel.clear();
@@ -307,6 +319,109 @@ public class TestMatchFlexoConceptInstances extends OpenflexoProjectAtRunTimeTes
 		assertTrue(matchedC4.isDeleted());
 	}
 
+	/**
+	 * Populate virtual model instance
+	 */
+	@Test
+	@TestOrder(8)
+	public void testPopulateModel2() {
+		assertNotNull(a1 = createInstance(conceptA, model2, "a1"));
+		assertNotNull(b1 = createInstance(conceptB, a1, "b1"));
+		assertNotNull(b2 = createInstance(conceptB, a1, "b2"));
+		assertNotNull(a2 = createInstance(conceptA, model2, "a2"));
+		assertNotNull(b3 = createInstance(conceptB, a2, "b3"));
+		assertNotNull(b4 = createInstance(conceptB, a2, "b4"));
+		assertNotNull(b5 = createInstance(conceptB, a2, "b5"));
+
+		System.out.println("a1=" + a1.getStringRepresentation());
+		System.out.println("b1=" + b1.getStringRepresentation());
+		System.out.println("b2=" + b2.getStringRepresentation());
+		System.out.println("a2=" + a2.getStringRepresentation());
+		System.out.println("b3=" + b3.getStringRepresentation());
+		System.out.println("b4=" + b4.getStringRepresentation());
+		System.out.println("b5=" + b5.getStringRepresentation());
+
+		/*for (FlexoConceptInstance fci : matchingModel.getFlexoConceptInstances()) {
+		System.out.println(" > " + fci.getStringRepresentation());
+		}*/
+
+	}
+
+	/**
+	 * Test synchronization using MatchingSet schemes
+	 * 
+	 * @throws SaveResourceException
+	 */
+	@Test
+	@TestOrder(9)
+	public void testSynchronizeMatchingModelEmbeddingContext() throws SaveResourceException {
+
+		assertEquals(0, matchingModel2.getFlexoConceptInstances().size());
+
+		synchronizeMatchingModel2UsingMatchingSet();
+
+		assertEquals(2, matchingModel2.getFlexoConceptInstances(matchedConceptA).size());
+		FlexoConceptInstance matchedA1 = matchingModel2.getFlexoConceptInstances(matchedConceptA).get(0);
+		FlexoConceptInstance matchedA2 = matchingModel2.getFlexoConceptInstances(matchedConceptA).get(1);
+
+		assertEquals(2, matchedA1.getEmbeddedFlexoConceptInstances(matchedConceptB).size());
+		FlexoConceptInstance matchedB1 = matchedA1.getEmbeddedFlexoConceptInstances(matchedConceptB).get(0);
+		FlexoConceptInstance matchedB2 = matchedA1.getEmbeddedFlexoConceptInstances(matchedConceptB).get(1);
+
+		assertEquals(3, matchedA2.getEmbeddedFlexoConceptInstances(matchedConceptB).size());
+		FlexoConceptInstance matchedB3 = matchedA2.getEmbeddedFlexoConceptInstances(matchedConceptB).get(0);
+		FlexoConceptInstance matchedB4 = matchedA2.getEmbeddedFlexoConceptInstances(matchedConceptB).get(1);
+		FlexoConceptInstance matchedB5 = matchedA2.getEmbeddedFlexoConceptInstances(matchedConceptB).get(2);
+
+		assertEquals(a1, matchedA1.getFlexoPropertyValue("conceptA"));
+		assertEquals(a2, matchedA2.getFlexoPropertyValue("conceptA"));
+		assertEquals("a1-matched", matchedA1.getFlexoPropertyValue("name"));
+		assertEquals("a2-matched", matchedA2.getFlexoPropertyValue("name"));
+
+		assertEquals(b1, matchedB1.getFlexoPropertyValue("conceptB"));
+		assertEquals(b2, matchedB2.getFlexoPropertyValue("conceptB"));
+		assertEquals("b1-matched", matchedB1.getFlexoPropertyValue("name"));
+		assertEquals("b2-matched", matchedB2.getFlexoPropertyValue("name"));
+
+		assertEquals(b3, matchedB3.getFlexoPropertyValue("conceptB"));
+		assertEquals(b4, matchedB4.getFlexoPropertyValue("conceptB"));
+		assertEquals(b5, matchedB5.getFlexoPropertyValue("conceptB"));
+		assertEquals("b3-matched", matchedB3.getFlexoPropertyValue("name"));
+		assertEquals("b4-matched", matchedB4.getFlexoPropertyValue("name"));
+		assertEquals("b5-matched", matchedB5.getFlexoPropertyValue("name"));
+
+		// We perform now some modifications on model
+		assertNotNull(a3 = createInstance(conceptA, model2, "a3"));
+		assertNotNull(b6 = createInstance(conceptB, a1, "b6"));
+		b5.delete();
+		assertNotNull(b7 = createInstance(conceptB, a3, "b7"));
+
+		// Now synchronize !
+		synchronizeMatchingModel2UsingMatchingSet();
+
+		assertEquals(3, matchingModel2.getFlexoConceptInstances(matchedConceptA).size());
+		FlexoConceptInstance matchedA3 = matchingModel2.getFlexoConceptInstances(matchedConceptA).get(2);
+
+		assertEquals(1, matchedA3.getEmbeddedFlexoConceptInstances(matchedConceptB).size());
+		FlexoConceptInstance matchedB7 = matchedA3.getEmbeddedFlexoConceptInstances(matchedConceptB).get(0);
+
+		assertEquals(3, matchedA1.getEmbeddedFlexoConceptInstances(matchedConceptB).size());
+		FlexoConceptInstance matchedB6 = matchedA1.getEmbeddedFlexoConceptInstances(matchedConceptB).get(2);
+
+		assertEquals(2, matchedA2.getEmbeddedFlexoConceptInstances().size());
+		assertEquals(2, matchedA2.getEmbeddedFlexoConceptInstances(matchedConceptB).size());
+
+		assertEquals(a3, matchedA3.getFlexoPropertyValue("conceptA"));
+		assertEquals("a3-matched", matchedA3.getFlexoPropertyValue("name"));
+
+		assertEquals(b6, matchedB6.getFlexoPropertyValue("conceptB"));
+		assertEquals("b6-matched", matchedB6.getFlexoPropertyValue("name"));
+
+		assertEquals(b7, matchedB7.getFlexoPropertyValue("conceptB"));
+		assertEquals("b7-matched", matchedB7.getFlexoPropertyValue("name"));
+
+	}
+
 	private FlexoConceptInstance createInstance(FlexoConcept concept, FlexoConceptInstance container, Object... parameters) {
 
 		CreateFlexoConceptInstance action = CreateFlexoConceptInstance.actionType.makeNewAction(container, null, editor);
@@ -342,6 +457,19 @@ public class TestMatchFlexoConceptInstances extends OpenflexoProjectAtRunTimeTes
 
 		ActionSchemeActionType actionType = new ActionSchemeActionType(actionScheme, matchingModel);
 		ActionSchemeAction actionSchemeCreationAction = actionType.makeNewAction(matchingModel, null, editor);
+		assertNotNull(actionSchemeCreationAction);
+		actionSchemeCreationAction.doAction();
+
+		assertTrue(actionSchemeCreationAction.hasActionExecutionSucceeded());
+
+	}
+
+	private void synchronizeMatchingModel2UsingMatchingSet() {
+
+		ActionScheme actionScheme = matchingVM2.getActionSchemes().get(0);
+
+		ActionSchemeActionType actionType = new ActionSchemeActionType(actionScheme, matchingModel2);
+		ActionSchemeAction actionSchemeCreationAction = actionType.makeNewAction(matchingModel2, null, editor);
 		assertNotNull(actionSchemeCreationAction);
 		actionSchemeCreationAction.doAction();
 

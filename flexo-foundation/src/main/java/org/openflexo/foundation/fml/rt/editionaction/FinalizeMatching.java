@@ -417,7 +417,21 @@ public interface FinalizeMatching extends EditionAction {
 
 		@Override
 		public MatchingSet execute(RunTimeEvaluationContext evaluationContext) {
-			System.out.println("Et hop, on finalise le MatchingSet " + getMatchingSet());
+			/*try {
+				System.out.println("Finalizing MatchingSet " + getMatchingSet() + " pour " + getFlexoConceptType() + " dans "
+						+ getContainer().getBindingValue(evaluationContext));
+			} catch (TypeMismatchException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (NullReferenceException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InvocationTargetException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}*/
+
+			// System.out.println("evaluationContext=" + evaluationContext);
 
 			if (evaluationContext instanceof FlexoBehaviourAction) {
 
@@ -444,12 +458,14 @@ public interface FinalizeMatching extends EditionAction {
 								behaviourAction.setParameterValue(p.getParam(), value/*p.evaluateParameterValue(action)*/);
 							}
 						}
+						// System.out.println("executing " + behaviourAction.getFlexoBehaviour().getSignature() + " for " + fci);
 						behaviourAction.doAction();
 						if (behaviourAction.hasActionExecutionSucceeded()) {
 							matchingSet.finalizeFlexoConceptInstance(fci);
 						}
 						else {
-							logger.warning("Could not create FlexoConceptInstance for " + evaluationContext);
+							logger.warning("Could not execute " + behaviourAction.getFlexoBehaviour().getSignature() + " for "
+									+ evaluationContext);
 						}
 
 					}
