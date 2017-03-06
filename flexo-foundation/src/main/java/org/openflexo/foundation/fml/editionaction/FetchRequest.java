@@ -154,31 +154,6 @@ public abstract interface FetchRequest<MS extends ModelSlot<?>, T> extends Techn
 			return new ParameterizedTypeImpl(List.class, getFetchedType());
 		}
 
-		/*@Override
-		public Vector<FetchRequestCondition> getConditions() {
-			return conditions;
-		}
-		
-		public void setConditions(Vector<FetchRequestCondition> conditions) {
-			this.conditions = conditions;
-		}
-		
-		@Override
-		public void addToConditions(FetchRequestCondition condition) {
-			condition.setFetchRequest(this);
-			conditions.add(condition);
-			setChanged();
-			notifyObservers(new DataModification("conditions", null, condition));
-		}
-		
-		@Override
-		public void removeFromConditions(FetchRequestCondition condition) {
-			condition.setFetchRequest(null);
-			conditions.remove(condition);
-			setChanged();
-			notifyObservers(new DataModification("conditions", condition, null));
-		}*/
-
 		@Override
 		public FetchRequestCondition createCondition() {
 			FetchRequestCondition newCondition = getFMLModelFactory().newFetchRequestCondition();
@@ -243,16 +218,6 @@ public abstract interface FetchRequest<MS extends ModelSlot<?>, T> extends Techn
 				getPropertyChangeSupport().firePropertyChange("embeddingIteration", oldValue, embeddingIteration);
 			}
 		}
-
-		/*private FetchRequestBindingModel inferedBindingModel = null;
-		
-		@Override
-		public FetchRequestBindingModel getInferedBindingModel() {
-			if (inferedBindingModel == null) {
-				inferedBindingModel = new FetchRequestBindingModel(this);
-			}
-			return inferedBindingModel;
-		}*/
 
 		@Override
 		public String getParametersStringRepresentation() {
