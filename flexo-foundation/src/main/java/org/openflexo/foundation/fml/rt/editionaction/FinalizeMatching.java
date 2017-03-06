@@ -484,6 +484,11 @@ public interface FinalizeMatching extends EditionAction {
 			return null;
 		}
 
+		@Override
+		public Type getInferedType() {
+			return Void.class;
+		}
+
 	}
 
 	@DefineValidationRule

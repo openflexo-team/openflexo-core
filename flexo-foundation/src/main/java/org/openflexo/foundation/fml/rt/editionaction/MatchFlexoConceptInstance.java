@@ -758,18 +758,18 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 		}
 	}
 
-	@DefineValidationRule
+	/*@DefineValidationRule
 	public static class MatchingSetBindingIsRequiredAndMustBeValid extends BindingIsRequiredAndMustBeValid<MatchFlexoConceptInstance> {
 		public MatchingSetBindingIsRequiredAndMustBeValid() {
 			super("'matching_set'_binding_is_not_valid", MatchFlexoConceptInstance.class);
 		}
-
+	
 		@Override
 		public DataBinding<MatchingSet> getBinding(MatchFlexoConceptInstance object) {
 			return object.getMatchingSet();
 		}
-
-	}
+	
+	}*/
 
 	@DefineValidationRule
 	public static class VirtualModelInstanceBindingIsRequiredAndMustBeValid

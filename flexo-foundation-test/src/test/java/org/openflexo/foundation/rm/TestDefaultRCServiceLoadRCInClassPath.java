@@ -97,7 +97,7 @@ public class TestDefaultRCServiceLoadRCInClassPath extends OpenflexoTestCase {
 			if (rc.getDefaultBaseURI().equals("http://openflexo.org/test/TestResourceCenter")) {
 				testRC = rc;
 			}
-			if (rc.getDefaultBaseURI().equals("http://openflexo.org/testingRCsOnCP")) {
+			if (rc.getDefaultBaseURI().equals("http://openflexo.org/test/flexo-test-resources")) {
 				testRCfromCP = rc;
 			}
 		}
