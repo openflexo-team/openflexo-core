@@ -49,7 +49,6 @@ import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.View;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.CreateBasicVirtualModelInstance;
-import org.openflexo.foundation.fml.rt.action.CreationSchemeAction;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.gina.annotation.FIBPanel;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -103,27 +102,6 @@ public interface AddVirtualModelInstance extends AddAbstractVirtualModelInstance
 				} catch (InvocationTargetException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
-				}
-
-				/*System.out.println("name=" + name);
-				System.out.println("title=" + title);
-				System.out.println("name=" + getVirtualModelInstanceName());
-				System.out.println("name=" + getVirtualModelInstanceName());
-				System.out.println("title=" + getVirtualModelInstanceTitle());
-				System.out.println("evaluationContext=" + evaluationContext);*/
-				/*if (getVirtualModelInstanceName().isBindingValue()) {
-					BindingValue bv = (BindingValue) getVirtualModelInstanceName().getExpression();
-					BindingPathElement e = bv.getLastBindingPathElement();
-					//System.out.println("last path = " + e + " of " + e.getClass());
-					if (e instanceof FlexoBehaviourParameterValuePathElement) {
-						FlexoBehaviourParameterValuePathElement e1 = (FlexoBehaviourParameterValuePathElement) e;
-						//System.out.println("parameter=" + e1.getParameter() + " of " + e1.getParameter().getBehaviour());
-						//System.out.println("behaviour=" + e1.getParameter().getBehaviour().getFMLRepresentation());
-					}
-				}*/
-				if (evaluationContext instanceof CreationSchemeAction) {
-
-					// System.out.println(((CreationSchemeAction)evaluationContext).getParameterValue(parameter);
 				}
 
 				CreateBasicVirtualModelInstance createVMIAction = CreateBasicVirtualModelInstance.actionType.makeNewEmbeddedAction(view,

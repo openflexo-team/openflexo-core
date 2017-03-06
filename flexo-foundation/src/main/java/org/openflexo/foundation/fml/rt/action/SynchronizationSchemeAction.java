@@ -105,50 +105,16 @@ public class SynchronizationSchemeAction
 		}
 	}
 
-	@Override
-	protected void executeControlGraph() throws FlexoException {
-		beginSynchronization();
-		super.executeControlGraph();
-		endSynchronization();
-	}
-
 	/**
 	 * Return {@link VirtualModelInstance} in which synchronized {@link VirtualModelInstance} does exist
 	 */
 	@Override
 	public AbstractVirtualModelInstance<?, ?> retrieveVirtualModelInstance() {
-		/*if (getFlexoConceptInstance() instanceof VirtualModelInstance) {
-			return (VirtualModelInstance) getFlexoConceptInstance();
-		}*/
 		if (getFlexoConceptInstance() != null) {
 			return getFlexoConceptInstance().getVirtualModelInstance();
 		}
-		/*if (getFocusedObject() instanceof DiagramElement<?>) {
-			return ((DiagramElement<?>) getFocusedObject()).getDiagram();
-		}*/
 		return null;
 	}
-
-	// private List<FlexoConceptInstance> episToBeRemoved;
-
-	public void beginSynchronization() {
-		// System.out.println("BEGIN synchronization on " + getVirtualModelInstance());
-		// episToBeRemoved = new ArrayList<FlexoConceptInstance>();
-		// episToBeRemoved.addAll(getFocusedObject().getFlexoConceptInstances());
-	}
-
-	public void endSynchronization() {
-		// System.out.println("END synchronization on " + getVirtualModelInstance());
-		/*for (FlexoConceptInstance epi : episToBeRemoved) {
-			epi.delete();
-			getVirtualModelInstance().removeFromFlexoConceptInstances(epi);
-		}*/
-	}
-
-	/*@Override
-	public void foundMatchingFlexoConceptInstance(FlexoConceptInstance matchingFlexoConceptInstance) {
-		episToBeRemoved.remove(matchingFlexoConceptInstance);
-	}*/
 
 	@Override
 	public Object getValue(BindingVariable variable) {

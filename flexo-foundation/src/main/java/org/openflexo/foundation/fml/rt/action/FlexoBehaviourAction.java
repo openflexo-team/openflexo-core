@@ -92,6 +92,8 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 	protected ParameterValues parameterValues;
 	protected Hashtable<ListParameter, List> parameterListValues;
 
+	private MatchingSet defaultMatchingSet = null;
+
 	public boolean escapeParameterRetrievingWhenValid = true;
 
 	public FlexoBehaviourAction(FlexoActionType<A, O, VirtualModelInstanceObject> actionType, O focusedObject,
@@ -201,20 +203,6 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 		variables.remove(variableName);
 	}
 
-	/*public String getStringParameter(String parameterName) {
-		System.out.println("OK, on me demande le parametre " + parameterName + ", je retourne " + parameterValues.get(parameterName));
-		return (String) parameterValues.get(parameterName);
-	}
-	
-	public String getURIParameter(String parameterName) {
-		System.out.println("OK, on me demande l'uri " + parameterName + ", je retourned " + parameterValues.get(parameterName));
-		return (String) parameterValues.get(parameterName);
-	}*/
-
-	/*public Hashtable<FlexoBehaviourParameter, Object> getParameterValues() {
-		return parameterValues;
-	}*/
-
 	public Object getParameterValue(FlexoBehaviourParameter parameter) {
 		/*System.out.println("On me demande la valeur du parametre " + parameter.getName() + " a priori c'est "
 				+ parameterValues.get(parameter));*/
@@ -293,51 +281,6 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 		return returnedValue;
 	}
 
-	/**
-	 * This has been moved from SynchronizationSchemeAction to this super-class so that MatchFlexoConceptInstance can be used in other
-	 * schemes than only synchronization.
-	 * 
-	 * @param matchingFlexoConceptInstance
-	 */
-	/*public void foundMatchingFlexoConceptInstance(FlexoConceptInstance matchingFlexoConceptInstance) {
-		return;
-	}*/
-
-	/**
-	 * This has been moved from SynchronizationSchemeAction to this super-class so that MatchFlexoConceptInstance can be used in other
-	 * schemes than only synchronization.
-	 * 
-	 * @param newFlexoConceptInstance
-	 */
-	/*public void newFlexoConceptInstance(FlexoConceptInstance newFlexoConceptInstance) {
-		// System.out.println("NEW EPI : " + newFlexoConceptInstance);
-	}*/
-
-	/**
-	 * This has been moved from SynchronizationSchemeAction to this super-class so that MatchFlexoConceptInstance can be used in other
-	 * schemes than only synchronization.
-	 * 
-	 * @param matchingFlexoConceptInstance
-	 */
-	/*public FlexoConceptInstance matchFlexoConceptInstance(FlexoConcept flexoConceptType, Hashtable<FlexoProperty, Object> criterias) {
-		// System.out.println("MATCH epi on " + getVirtualModelInstance() + " for " + flexoConceptType + " with " + criterias);
-		AbstractVirtualModelInstance<?, ?> inst = getVirtualModelInstance();
-		for (FlexoConceptInstance epi : inst.getFlexoConceptInstances(flexoConceptType)) {
-			boolean allCriteriasMatching = true;
-			for (FlexoProperty pr : criterias.keySet()) {
-				if (!FlexoObjectImpl.areSameValue(epi.getFlexoPropertyValue(pr), criterias.get(pr))) {
-					allCriteriasMatching = false;
-				}
-			}
-			if (allCriteriasMatching) {
-				return epi;
-			}
-		}
-		return null;
-	}*/
-
-	private MatchingSet defaultMatchingSet = null;
-
 	public MatchingSet initiateDefaultMatchingSet(MatchFlexoConceptInstance action) {
 		if (defaultMatchingSet == null) {
 			defaultMatchingSet = new MatchingSet(action, this);
@@ -360,42 +303,6 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 	 */
 	public <T> void hasPerformedAction(EditionAction action, T object) {
 	}
-
-	/**
-	 * This is the internal code performing execution of a single {@link EditionAction} defined to be part of the execution control graph of
-	 * related {@link FlexoBehaviour}<br>
-	 * 
-	 * @throws FlexoException
-	 */
-	/*protected Object performAction(EditionAction action, Hashtable<EditionAction, Object> performedActions) throws FlexoException {
-	
-		Object assignedObject = action.execute(this);
-	
-		if (assignedObject != null) {
-			performedActions.put(action, assignedObject);
-		}*/
-
-	/*if (assignedObject != null && action instanceof AssignableAction) {
-		AssignableAction assignableAction = (AssignableAction) action;
-		if (assignableAction.getIsVariableDeclaration()) {
-			System.out.println("Setting variable " + assignableAction.getVariableName() + " with value " + assignedObject + " of "
-					+ (assignedObject != null ? assignedObject.getClass() : "null"));
-			declareVariable(assignableAction.getVariableName(), assignedObject);
-		}
-		if (assignableAction.getAssignation().isSet() && assignableAction.getAssignation().isValid()) {
-			try {
-				assignableAction.getAssignation().setBindingValue(assignedObject, this);
-			} catch (Exception e) {
-				logger.warning("Unexpected assignation issue, " + assignableAction.getAssignation() + " object=" + assignedObject
-						+ " exception: " + e);
-				e.printStackTrace();
-				throw new FlexoException(e);
-			}
-		}
-	}*/
-
-	/*	return assignedObject;
-	}*/
 
 	@Override
 	public Object getValue(BindingVariable variable) {
@@ -420,14 +327,6 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 			return getVirtualModelInstance();
 		}
 
-		// Not found at this level, delegate it to the VirtualModelInstance
-		/*if (getVirtualModelInstance() != null) {
-			Object returned = getVirtualModelInstance().getValue(variable);
-			if (returned != null) {
-				return returned;
-			}
-		}*/
-
 		// Not found at this level, delegate it to the FlexoConceptInstance
 		if (getFlexoConceptInstance() != null) {
 			return getFlexoConceptInstance().getValue(variable);
@@ -436,43 +335,10 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 		logger.warning("Unexpected variable requested in FlexoBehaviourAction: " + variable + " of " + variable.getClass());
 		return null;
 
-		/*else if (variable.getVariableName().equals(VirtualModelBindingModel.VIRTUAL_MODEL_INSTANCE_PROPERTY)) {
-			return getVirtualModelInstance();
-		} else if (variable.getVariableName().equals(FlexoConceptBindingModel.FLEXO_CONCEPT_INSTANCE_PROPERTY)) {
-			return getFlexoConceptInstance();
-		} else if (variable instanceof FlexoPropertyBindingVariable) {
-			return getFlexoConceptInstance().getFlexoActor(((FlexoPropertyBindingVariable) variable).getFlexoRole());
-		}
-		
-		if (getEditionScheme().getVirtualModel().handleVariable(variable)) {
-			return getVirtualModelInstance().getValueForVariable(variable);
-		}
-		
-		if (variables.get(variable.getVariableName()) != null) {
-			return variables.get(variable.getVariableName());
-		}
-		
-		logger.warning("Unexpected variable requested in FlexoBehaviourAction: " + variable + " of " + variable.getClass());
-		return null;*/
 	}
 
 	@Override
 	public void setValue(Object value, BindingVariable variable) {
-
-		/*if (variable instanceof ModelSlotBindingVariable && getFlexoConceptInstance() instanceof AbstractVirtualModelInstance) {
-			ModelSlotBindingVariable msVariable = (ModelSlotBindingVariable) variable;
-			ModelSlotInstanceConfiguration<?, ?> msiConfiguration = ((ModelSlot) msVariable.getModelSlot()).createConfiguration(
-					(AbstractVirtualModelInstance) getFlexoConceptInstance(), getProject());
-		
-			logger.warning("Not implemented setValue() with " + variable + " of " + variable.getClass());
-			return;
-		} else if (variable instanceof FlexoRoleBindingVariable) {
-			getFlexoConceptInstance().setFlexoActor(value, (FlexoRole) ((FlexoRoleBindingVariable) variable).getFlexoRole());
-			return;
-		} else if (variable instanceof FlexoPropertyBindingVariable) {
-			logger.warning("Not implemented setValue() with " + variable + " of " + variable.getClass());
-			return;
-		}*/
 
 		if (variables.get(variable.getVariableName()) != null) {
 			variables.put(variable.getVariableName(), value);
@@ -497,12 +363,6 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 		logger.warning(
 				"Unexpected variable requested in settable context in FlexoBehaviourAction: " + variable + " of " + variable.getClass());
 	}
-
-	/*	public GraphicalRepresentation getOverridingGraphicalRepresentation(GraphicalElementPatternRole patternRole) {
-			// return overridenGraphicalRepresentations.get(patternRole);
-			// TODO temporary desactivate overriden GR
-			return null;
-		}*/
 
 	public ParameterValues getParametersValues() {
 		return parameterValues;

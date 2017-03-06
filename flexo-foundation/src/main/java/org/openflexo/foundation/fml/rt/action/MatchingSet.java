@@ -59,6 +59,10 @@ import org.openflexo.foundation.fml.rt.editionaction.MatchFlexoConceptInstance;
 /**
  * At run-time, an instance of matching set is used to manage a set of {@link FlexoConceptInstance} beeing matched<br>
  * 
+ * This object is the one we work with when using {@link InitiateMatching}, {@link MatchFlexoConceptInstance} and
+ * {@link FinalizeMatching}<br>
+ * 
+ * We maintain first an initial list of {@link FlexoConceptInstance} where matching will be performed (see {@link #getAllInstances()}).
  * 
  * @author sylvain
  * 
@@ -74,6 +78,12 @@ public class MatchingSet {
 	private List<FlexoConceptInstance> allInstances;
 	private List<FlexoConceptInstance> unmatchedInstances;
 
+	/**
+	 * Constructor used during InitiateMatching
+	 * 
+	 * @param initiateMatchingRequest
+	 * @param evaluationContext
+	 */
 	public MatchingSet(InitiateMatching initiateMatchingRequest, RunTimeEvaluationContext evaluationContext) {
 
 		flexoConceptType = initiateMatchingRequest.getFlexoConceptType();
@@ -145,8 +155,12 @@ public class MatchingSet {
 		unmatchedInstances = new ArrayList<>(allInstances);
 	}
 
-	// Better not to use this, as it is implicit
-	@Deprecated
+	/**
+	 * Constructor for implicit MatchingSet computation
+	 * 
+	 * @param matchRequest
+	 * @param evaluationContext
+	 */
 	public MatchingSet(MatchFlexoConceptInstance matchRequest, RunTimeEvaluationContext evaluationContext) {
 
 		flexoConceptType = matchRequest.getFlexoConceptType();
@@ -175,6 +189,12 @@ public class MatchingSet {
 		unmatchedInstances = new ArrayList<>(allInstances);
 	}
 
+	/**
+	 * Called by {@link MatchFlexoConceptInstance} when a FCI has been matched
+	 * 
+	 * @param criterias
+	 * @return
+	 */
 	public FlexoConceptInstance matchFlexoConceptInstance(Hashtable<FlexoProperty<?>, Object> criterias) {
 		// System.out.println("MATCH fci on " + allInstances + " for " + flexoConceptType + " with " + criterias);
 		for (FlexoConceptInstance fci : unmatchedInstances) {
@@ -191,23 +211,53 @@ public class MatchingSet {
 		return null;
 	}
 
+	/**
+	 * Return initial list of {@link FlexoConceptInstance} where matching will be performed
+	 * 
+	 * @return
+	 */
 	public List<FlexoConceptInstance> getAllInstances() {
 		return allInstances;
 	}
 
+	/**
+	 * Return initial list of {@link FlexoConceptInstance} which have not been matched
+	 * 
+	 * @return
+	 */
 	public List<FlexoConceptInstance> getUnmatchedInstances() {
 		return unmatchedInstances;
 	}
 
+	/**
+	 * Called by {@link MatchFlexoConceptInstance} when a FCI has been found<br>
+	 * Instance is removed from unmatched instances
+	 * 
+	 * @param matchingFlexoConceptInstance
+	 *            isntance beeing found
+	 * @return
+	 */
 	public void foundMatchingFlexoConceptInstance(FlexoConceptInstance matchingFlexoConceptInstance) {
 		unmatchedInstances.remove(matchingFlexoConceptInstance);
 		return;
 	}
 
+	/**
+	 * Called by {@link MatchFlexoConceptInstance} when a FCI has been created
+	 * 
+	 * @param matchingFlexoConceptInstance
+	 *            instance beeing found
+	 */
 	public void newFlexoConceptInstance(FlexoConceptInstance newFlexoConceptInstance) {
 		// System.out.println("NEW FCI : " + newFlexoConceptInstance);
 	}
 
+	/**
+	 * Called by {@link MatchFlexoConceptInstance} when a FCI has been finalized (generally deleted)
+	 * 
+	 * @param flexoConceptInstance
+	 *            instance beeing finalized (generally deleted)
+	 */
 	public void finalizeFlexoConceptInstance(FlexoConceptInstance flexoConceptInstance) {
 		// System.out.println("Finalize FCI : " + newFlexoConceptInstance);
 		unmatchedInstances.remove(flexoConceptInstance);
