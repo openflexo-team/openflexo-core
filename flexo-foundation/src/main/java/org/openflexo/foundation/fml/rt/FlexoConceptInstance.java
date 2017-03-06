@@ -45,7 +45,6 @@ import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import org.openflexo.connie.Bindable;
 import org.openflexo.connie.BindingFactory;
 import org.openflexo.connie.BindingModel;
@@ -1145,8 +1144,6 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 
 		@Override
 		public Object getValue(BindingVariable variable) {
-
-			System.out.println("On cherche la valeur de " + variable + " of " + variable.getClass());
 
 			if (variable.getVariableName().equals(FlexoConceptInspector.FORMATTER_INSTANCE_PROPERTY)) {
 				return this;
