@@ -76,7 +76,6 @@ import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.toolbox.FlexoVersion;
 import org.openflexo.toolbox.IProgress;
-import org.openflexo.view.FlexoFrame;
 import org.openflexo.view.FlexoMainPane;
 import org.openflexo.view.ModuleView;
 
@@ -120,13 +119,10 @@ public class DocResourceManager extends FlexoServiceImpl {
 		try {
 			drcResource.loadResourceData(progress);
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (ResourceLoadingCancelledException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (FlexoException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -136,7 +132,6 @@ public class DocResourceManager extends FlexoServiceImpl {
 		try {
 			drcResource.save(null);
 		} catch (SaveResourceException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		docResourceCenter.setChanged();
@@ -527,15 +522,15 @@ public class DocResourceManager extends FlexoServiceImpl {
 	// ============ Import facilities ===========
 	// ================================================
 
-	public void importDocSubmissionReport(DocSubmissionReport docSubmissionReport, Vector actionsToImport) {
-		Vector actions;
+	public void importDocSubmissionReport(DocSubmissionReport docSubmissionReport, Vector<?> actionsToImport) {
+		Vector<?> actions;
 		if (actionsToImport == null) {
 			actions = docSubmissionReport.getSubmissionActions();
 		}
 		else {
 			actions = actionsToImport;
 		}
-		for (Enumeration en = actions.elements(); en.hasMoreElements();) {
+		for (Enumeration<?> en = actions.elements(); en.hasMoreElements();) {
 			DocItemAction action = (DocItemAction) en.nextElement();
 			importDocSubmissionAction(action);
 		}
@@ -553,7 +548,7 @@ public class DocResourceManager extends FlexoServiceImpl {
 			logger.info("Using version " + newVersion);
 			action.getVersion().setVersion(newVersion);
 			// }
-			for (Enumeration en = getDocResourceCenter().getLanguages().elements(); en.hasMoreElements();) {
+			for (Enumeration<?> en = getDocResourceCenter().getLanguages().elements(); en.hasMoreElements();) {
 				Language lang = (Language) en.nextElement();
 				if (parsedItem.getTitle(lang) != null) {
 					existingItem.setTitle(parsedItem.getTitle(lang), lang);
@@ -593,7 +588,6 @@ public class DocResourceManager extends FlexoServiceImpl {
 		try {
 			drmModelFactory = new DRMModelFactory();
 		} catch (ModelDefinitionException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		drcResource = DocResourceCenterResourceImpl.retrieveDocResourceCenterResource(this, null);
@@ -604,9 +598,9 @@ public class DocResourceManager extends FlexoServiceImpl {
 		return drmModelFactory;
 	}
 
-	private final WeakHashMap<JComponent, DocItem> _docForComponent = new WeakHashMap<JComponent, DocItem>();
+	private final WeakHashMap<JComponent, DocItem> _docForComponent = new WeakHashMap<>();
 
-	private final WeakHashMap<JComponent, String> _pendingComponents = new WeakHashMap<JComponent, String>();
+	private final WeakHashMap<JComponent, String> _pendingComponents = new WeakHashMap<>();
 
 	private synchronized Window getWindowForComponent(JComponent component) {
 		JComponent current = component;
@@ -632,7 +626,7 @@ public class DocResourceManager extends FlexoServiceImpl {
 
 		protected SortComponents(List<JComponent> sortingSet, Window window) {
 			initialVector = sortingSet;
-			sortedVector = new ArrayList<Component>();
+			sortedVector = new ArrayList<>();
 			populateFrom(window);
 		}
 
@@ -659,7 +653,7 @@ public class DocResourceManager extends FlexoServiceImpl {
 
 	public synchronized void validateWindow(Window window) {
 		// logger.info("Validate window");
-		List<JComponent> concernedComponents = new ArrayList<JComponent>();
+		List<JComponent> concernedComponents = new ArrayList<>();
 		for (Entry<JComponent, String> e : _pendingComponents.entrySet()) {
 			JComponent next = e.getKey();
 			if (next != null && getWindowForComponent(next) == window) {
@@ -772,13 +766,19 @@ public class DocResourceManager extends FlexoServiceImpl {
 	}
 
 	public void ensureHelpEntryForModuleHaveBeenCreated(FlexoModule module) {
-		DocItem newModuleItem = getDocItemFor(module);
-		DocItem mainPaneItem = getMainPaneItemFor(module);
-		DocItem controlPanelItem = getControlPanelItemFor(module);
-		DocItem leftViewItem = getLeftViewItemFor(module);
-		DocItem rightViewItem = getRightViewItemFor(module);
+		// Unused DocItem newModuleItem =
+		getDocItemFor(module);
+		// Unused DocItem mainPaneItem =
+		getMainPaneItemFor(module);
+		// Unused DocItem controlPanelItem =
+		getControlPanelItemFor(module);
+		// Unused DocItem leftViewItem =
+		getLeftViewItemFor(module);
+		// Unused DocItem rightViewItem =
+		getRightViewItemFor(module);
 
-		FlexoFrame frame = module.getFlexoFrame();
+		// Unused FlexoFrame frame =
+		module.getFlexoFrame();
 		FlexoMainPane mainPane = module.getFlexoController().getMainPane();
 		if (mainPane != null) {
 			// TODO: restore help on main pane top bar

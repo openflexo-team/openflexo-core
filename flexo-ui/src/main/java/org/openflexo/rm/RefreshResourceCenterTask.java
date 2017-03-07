@@ -73,7 +73,6 @@ public class RefreshResourceCenterTask extends FlexoApplicationTask {
 		try {
 			resourceCenter.update();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

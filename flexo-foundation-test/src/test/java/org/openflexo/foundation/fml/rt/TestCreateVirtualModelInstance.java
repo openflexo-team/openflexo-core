@@ -71,8 +71,7 @@ import org.openflexo.test.OrderedRunner;
 import org.openflexo.test.TestOrder;
 
 /**
- * This unit test is intented to test View creation facilities with a ViewPoint
- * created on the fly
+ * This unit test is intented to test View creation facilities with a ViewPoint created on the fly
  * 
  * @author sylvain
  * 
@@ -140,9 +139,7 @@ public class TestCreateVirtualModelInstance extends OpenflexoProjectAtRunTimeTes
 		newVirtualModel = action.getNewVirtualModel();
 		// newVirtualModel =
 		// VirtualModelImpl.newVirtualModel("TestVirtualModel", newViewPoint);
-		assertTrue(ResourceLocator
-				.retrieveResourceAsFile(((VirtualModelResource) newVirtualModel.getResource()).getDirectory())
-				.exists());
+		assertTrue(ResourceLocator.retrieveResourceAsFile(((VirtualModelResource) newVirtualModel.getResource()).getDirectory()).exists());
 		assertTrue(((VirtualModelResource) newVirtualModel.getResource()).getIODelegate().exists());
 
 		newViewPoint.getResource().save(null);
@@ -171,8 +168,7 @@ public class TestCreateVirtualModelInstance extends OpenflexoProjectAtRunTimeTes
 
 		log("testCreateView()");
 
-		CreateViewInFolder action = CreateViewInFolder.actionType
-				.makeNewAction(project.getViewLibrary().getRootFolder(), null, editor);
+		CreateViewInFolder action = CreateViewInFolder.actionType.makeNewAction(project.getViewLibrary().getRootFolder(), null, editor);
 		action.setNewViewName("MyView");
 		action.setNewViewTitle("Test creation of a new view");
 		action.setViewpointResource((ViewPointResource) newViewPoint.getResource());
@@ -184,7 +180,6 @@ public class TestCreateVirtualModelInstance extends OpenflexoProjectAtRunTimeTes
 		try {
 			newView.getResource().save(null);
 		} catch (SaveResourceException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		// assertTrue(((ViewResource)
@@ -209,8 +204,7 @@ public class TestCreateVirtualModelInstance extends OpenflexoProjectAtRunTimeTes
 		log("testCreateVirtualModelInstance()");
 
 		System.out.println("newView=" + newView);
-		CreateBasicVirtualModelInstance action = CreateBasicVirtualModelInstance.actionType.makeNewAction(newView, null,
-				editor);
+		CreateBasicVirtualModelInstance action = CreateBasicVirtualModelInstance.actionType.makeNewAction(newView, null, editor);
 		action.setNewVirtualModelInstanceName("MyVirtualModelInstance");
 		action.setNewVirtualModelInstanceTitle("Test creation of a new VirtualModelInstance");
 		action.setVirtualModel(newVirtualModel);

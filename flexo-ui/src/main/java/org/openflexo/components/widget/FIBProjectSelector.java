@@ -119,7 +119,6 @@ public class FIBProjectSelector extends FIBFlexoObjectSelector<FlexoProject> {
 					ref1.init(subProject2);
 					Mockito.when(projectData.getImportedProjects()).thenReturn(Arrays.asList(ref1, ref2));
 				} catch (ModelDefinitionException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 	

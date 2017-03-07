@@ -401,13 +401,10 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 							super.put(uriParam, newURI);
 						}
 					} catch (TypeMismatchException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					} catch (NullReferenceException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					} catch (InvocationTargetException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 				}

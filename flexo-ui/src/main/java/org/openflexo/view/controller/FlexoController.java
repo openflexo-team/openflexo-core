@@ -1542,7 +1542,7 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 		if (mainInspectorController != null) {
 			mainInspectorController.delete();
 		}
-		for (ModuleView<?> view : new ArrayList<ModuleView<?>>(getViews())) {
+		for (ModuleView<?> view : new ArrayList<>(getViews())) {
 			try {
 				view.deleteModuleView();
 			} catch (Exception e) {
@@ -2256,10 +2256,8 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 			try {
 				dialog.saveSelection(getEditor().getFlexoProgressFactory());
 			} catch (SaveResourcePermissionDeniedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (SaveResourceExceptionList e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			return true;

@@ -129,13 +129,10 @@ public abstract class TypeAwareModelSlotInstanceConfiguration<M extends FlexoMod
 			try {
 				modelResource.loadResourceData(null);
 			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (ResourceLoadingCancelledException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (FlexoException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			// System.out.println("***** model = " + modelResource.getModel());

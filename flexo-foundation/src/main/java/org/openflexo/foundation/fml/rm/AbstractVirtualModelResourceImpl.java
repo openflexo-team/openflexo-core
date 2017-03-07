@@ -170,9 +170,9 @@ public abstract class AbstractVirtualModelResourceImpl<VM extends AbstractVirtua
 			}*/
 			for (ModelSlot<?> ms : getLoadedResourceData().getModelSlots()) {
 				FlexoTask activateTA = taService.activateTechnologyAdapter(ms.getModelSlotTechnologyAdapter());
-				if (activateTA != null) {
+				/*if (activateTA != null) {
 					getServiceManager().getTaskManager().waitTask(activateTA);
-				}
+				}*/
 			}
 		}
 	}

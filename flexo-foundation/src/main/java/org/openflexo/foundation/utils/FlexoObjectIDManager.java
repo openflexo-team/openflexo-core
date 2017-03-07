@@ -80,21 +80,18 @@ public class FlexoObjectIDManager {
 			try {
 				r.getResourceData(null);
 			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (ResourceLoadingCancelledException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (FlexoException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
 
 		// Iterate on all objects to validate
-		used = new Hashtable<Long, FlexoProjectObject>();
-		badObjects = new Vector<FlexoProjectObject>();
-		Vector<FlexoProjectObject> objectsToUnregister = new Vector<FlexoProjectObject>();
+		used = new Hashtable<>();
+		badObjects = new Vector<>();
+		Vector<FlexoProjectObject> objectsToUnregister = new Vector<>();
 
 		// TODO: implement this
 		logger.warning("Not implemented yet");
@@ -117,7 +114,7 @@ public class FlexoObjectIDManager {
 				}
 			}
 		}
-
+		
 		for (FlexoProjectObject obj : objectsToUnregister) {
 			project.unregister(obj);
 		}*/

@@ -908,7 +908,6 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 		}
 
 		@Override
-		@SuppressWarnings("unchecked")
 		public List<FlexoBehaviour> getDeclaredFlexoBehaviours() {
 			return getFlexoBehaviours();
 		}
@@ -920,7 +919,6 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 		 * @return
 		 */
 		@Override
-		@SuppressWarnings("unchecked")
 		public List<FlexoBehaviour> getAccessibleFlexoBehaviours() {
 
 			if (getParentFlexoConcepts().size() == 0) {
@@ -1221,7 +1219,6 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 			try {
 				getOwningVirtualModel().getResource().save(null);
 			} catch (SaveResourceException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}

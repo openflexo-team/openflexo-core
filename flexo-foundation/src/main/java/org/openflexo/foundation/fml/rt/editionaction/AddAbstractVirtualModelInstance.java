@@ -180,13 +180,10 @@ public interface AddAbstractVirtualModelInstance<FCI extends AbstractVirtualMode
 				setCreationScheme(null);
 				setFlexoConceptType(resource.getResourceData(null));
 			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (ResourceLoadingCancelledException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (FlexoException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			getPropertyChangeSupport().firePropertyChange("virtualModelType", oldVMType, getVirtualModelType());

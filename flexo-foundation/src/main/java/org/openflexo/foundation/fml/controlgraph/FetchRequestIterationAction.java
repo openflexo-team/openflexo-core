@@ -191,7 +191,6 @@ public interface FetchRequestIterationAction extends ControlStructureAction, FML
 				try {
 					return getFetchRequest().execute(evaluationContext);
 				} catch (ReturnException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}

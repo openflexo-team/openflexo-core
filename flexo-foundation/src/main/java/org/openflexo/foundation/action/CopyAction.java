@@ -104,7 +104,6 @@ public class CopyAction extends AbstractCopyAction<CopyAction> {
 			// System.out.println(clipboard.debug());
 
 		} catch (CopyException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

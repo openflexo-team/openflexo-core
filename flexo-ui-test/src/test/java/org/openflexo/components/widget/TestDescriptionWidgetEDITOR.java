@@ -62,7 +62,6 @@ public class TestDescriptionWidgetEDITOR extends OpenflexoGinaSwingEditorTestCas
 		try {
 			factory = new ViewPointModelFactory(null, null);
 		} catch (ModelDefinitionException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		final ViewPoint object2 = factory.newInstance(ViewPoint.class);
@@ -116,7 +115,6 @@ public class TestDescriptionWidgetEDITOR extends OpenflexoGinaSwingEditorTestCas
 		try {
 			factory = new ViewPointModelFactory(null, null);
 		} catch (ModelDefinitionException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		final ViewPoint object1 = factory.newInstance(ViewPoint.class);

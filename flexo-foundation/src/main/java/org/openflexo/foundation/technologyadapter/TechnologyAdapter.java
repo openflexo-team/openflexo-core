@@ -267,7 +267,6 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 					try {
 						foundFolder(resourceCenter, serializationArtefact);
 					} catch (IOException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 				}
@@ -350,10 +349,8 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 			try {
 				return resourceFactory.retrieveResource(serializationArtefact, resourceCenter, technologyContextManager);
 			} catch (ModelDefinitionException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -385,7 +382,6 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 					try {
 						foundFolder(resourceCenter, serializationArtefact);
 					} catch (IOException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 				}
@@ -815,8 +811,7 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 
 		FlexoServiceManager serviceManager = getTechnologyAdapterService().getServiceManager();
 		Enumeration<URL> urlList;
-		ArrayList<FlexoResourceCenter> rcList = new ArrayList<FlexoResourceCenter>(
-				serviceManager.getResourceCenterService().getResourceCenters());
+		ArrayList<FlexoResourceCenter> rcList = new ArrayList<>(serviceManager.getResourceCenterService().getResourceCenters());
 
 		try {
 			urlList = ClassLoader.getSystemClassLoader()
@@ -880,10 +875,8 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 
 			}
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (URISyntaxException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

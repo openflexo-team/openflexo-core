@@ -89,7 +89,6 @@ public class FlexoOntologyUtility {
 				builder.append(toString(subContainer));
 			}
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return builder.toString();
@@ -128,7 +127,8 @@ public class FlexoOntologyUtility {
 	 * @param container
 	 * @return
 	 */
-	public static <TA extends TechnologyAdapter> List<IFlexoOntologyConcept<TA>> getAllConcepts(IFlexoOntologyConceptContainer<TA> container) {
+	public static <TA extends TechnologyAdapter> List<IFlexoOntologyConcept<TA>> getAllConcepts(
+			IFlexoOntologyConceptContainer<TA> container) {
 		List<IFlexoOntologyConcept<TA>> result = new ArrayList<IFlexoOntologyConcept<TA>>();
 		result.addAll(container.getConcepts());
 		for (IFlexoOntologyConceptContainer<TA> subContainer : container.getSubContainers()) {

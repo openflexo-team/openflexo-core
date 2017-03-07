@@ -92,7 +92,6 @@ public class CutAction extends AbstractCopyAction<CutAction> {
 			clipboard = cut();
 			editingContext.setClipboard(clipboard);
 		} catch (CopyException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
