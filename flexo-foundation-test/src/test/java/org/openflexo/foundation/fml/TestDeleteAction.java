@@ -116,14 +116,12 @@ public class TestDeleteAction extends OpenflexoProjectAtRunTimeTestCase {
 		assertNotNull(viewPoint);
 		assertNotNull(viewPoint.getResource());
 
-		VirtualModelResourceFactory vmFactory = fmlTechnologyAdapter.getViewPointResourceFactory()
-				.getVirtualModelResourceFactory();
-		VirtualModelResource newVMResource = vmFactory.makeVirtualModelResource(VIRTUAL_MODEL_NAME,
-				newViewPointResource, fmlTechnologyAdapter.getTechnologyContextManager(), true);
+		VirtualModelResourceFactory vmFactory = fmlTechnologyAdapter.getViewPointResourceFactory().getVirtualModelResourceFactory();
+		VirtualModelResource newVMResource = vmFactory.makeVirtualModelResource(VIRTUAL_MODEL_NAME, newViewPointResource,
+				fmlTechnologyAdapter.getTechnologyContextManager(), true);
 		virtualModel = newVMResource.getLoadedResourceData();
 
-		assertTrue(ResourceLocator
-				.retrieveResourceAsFile(((VirtualModelResource) virtualModel.getResource()).getDirectory()).exists());
+		assertTrue(ResourceLocator.retrieveResourceAsFile(((VirtualModelResource) virtualModel.getResource()).getDirectory()).exists());
 		assertTrue(((VirtualModelResource) virtualModel.getResource()).getIODelegate().exists());
 
 		assertEquals(viewPoint, virtualModel.getViewPoint());
@@ -147,7 +145,6 @@ public class TestDeleteAction extends OpenflexoProjectAtRunTimeTestCase {
 		try {
 			((VirtualModelResource) virtualModel.getResource()).save(null);
 		} catch (SaveResourceException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -159,8 +156,7 @@ public class TestDeleteAction extends OpenflexoProjectAtRunTimeTestCase {
 	@Test
 	@TestOrder(3)
 	public void testDeleteFlexoConcept() {
-		DeleteFlexoConceptObjects action1 = DeleteFlexoConceptObjects.actionType.makeNewAction(flexoConcept, null,
-				editor);
+		DeleteFlexoConceptObjects action1 = DeleteFlexoConceptObjects.actionType.makeNewAction(flexoConcept, null, editor);
 		assertTrue(action1.isValid());
 		action1.doAction();
 		assertTrue(action1.hasActionExecutionSucceeded());

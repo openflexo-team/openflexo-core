@@ -99,13 +99,10 @@ public class FlexoUpdateService extends FlexoServiceImpl {
 			try {
 				addURL.invoke(loader, new Object[] { urls[i] });
 			} catch (IllegalAccessException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (IllegalArgumentException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (InvocationTargetException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -144,7 +141,6 @@ public class FlexoUpdateService extends FlexoServiceImpl {
 					JarResourceCenter.addJarFile(file, getServiceManager().getResourceCenterService());
 				}
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -188,10 +184,8 @@ public class FlexoUpdateService extends FlexoServiceImpl {
 			addURL = URLClassLoader.class.getDeclaredMethod("addURL", new Class<?>[] { URL.class });
 			addURL.setAccessible(true);
 		} catch (NoSuchMethodException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (SecurityException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 

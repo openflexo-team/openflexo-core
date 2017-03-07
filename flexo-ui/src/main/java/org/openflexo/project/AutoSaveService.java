@@ -269,10 +269,8 @@ public class AutoSaveService implements PropertyChangeListener {
 		// try {
 		projectLoader.loadProject(projectDirectory);
 		/*} catch (ProjectLoadingCancelledException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (ProjectInitializerException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}*/
 	}

@@ -232,13 +232,10 @@ public abstract interface ModelSlotInstance<MS extends ModelSlot<? extends RD>, 
 				try {
 					accessedResourceData = getResource().getResourceData(null);
 				} catch (FileNotFoundException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} catch (ResourceLoadingCancelledException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} catch (FlexoException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
@@ -260,7 +257,7 @@ public abstract interface ModelSlotInstance<MS extends ModelSlot<? extends RD>, 
 			// }
 
 			// NPE Protection when deleting VMI
-			if (accessedResourceData != null){
+			if (accessedResourceData != null) {
 				logger.warning("resourceData will be set to null for ModelSlot: " + this.modelSlotName);
 				setResource((TechnologyAdapterResource<RD, ?>) accessedResourceData.getResource());
 			}

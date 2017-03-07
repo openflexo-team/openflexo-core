@@ -178,21 +178,20 @@ public interface RemoveFromListAction<T> extends AssignableAction<T> {
 					List<T> listObj = list.getBindingValue(evaluationContext);
 					if (objToRemove != null) {
 						listObj.remove(objToRemove);
-					} else {
+					}
+					else {
 						logger.warning("Won't add null object to list");
 
 					}
-				} else {
+				}
+				else {
 					logger.warning("Cannot perform Assignation as assignation is null");
 				}
 			} catch (TypeMismatchException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (NullReferenceException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (InvocationTargetException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 

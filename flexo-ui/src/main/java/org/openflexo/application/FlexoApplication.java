@@ -291,34 +291,27 @@ public class FlexoApplication {
 		 * ComponentEvent.COMPONENT_SHOWN)) { logger.info("postEvent: "+e); } }
 		 */
 
-		private void printFocusedComponent() {
+		private static void printFocusedComponent() {
 			try {
-				Class c = Class.forName("org.openflexo.wkf.view.WKFFrame");
+				Class<?> c = Class.forName("org.openflexo.wkf.view.WKFFrame");
 				Field f = c.getField("frame");
 				Object o = f.get(null);
 				c = o.getClass();
 				Method m = c.getMethod("printFocusedComponent", new Class[] {});
 				m.invoke(o, new Object[] {});
 			} catch (SecurityException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (IllegalArgumentException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (ClassNotFoundException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (NoSuchFieldException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (NoSuchMethodException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (IllegalAccessException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (InvocationTargetException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}

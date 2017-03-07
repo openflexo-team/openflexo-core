@@ -158,7 +158,7 @@ public interface TableActorReference<T extends FlexoDocTable<?, ?>> extends Acto
 	public void reinjectDataFromDocument();
 
 	public abstract static class TableActorReferenceImpl<T extends FlexoDocTable<?, ?>> extends ActorReferenceImpl<T>
-	implements TableActorReference<T> {
+			implements TableActorReference<T> {
 
 		private static final Logger logger = FlexoLogger.getLogger(TableActorReference.class.getPackage().toString());
 
@@ -248,8 +248,8 @@ public interface TableActorReference<T extends FlexoDocTable<?, ?>> extends Acto
 										srr.setRowId(generatedRow.getIdentifier());
 										srr.setTemplateRowId(templateRow.getIdentifier());
 										addToStaticRowReferences(srr);
-										System.out
-										.println("OK j'associe " + generatedRow.getIdentifier() + " a " + templateRow.getIdentifier());
+										System.out.println(
+												"OK j'associe " + generatedRow.getIdentifier() + " a " + templateRow.getIdentifier());
 									}
 								}
 							}
@@ -257,7 +257,8 @@ public interface TableActorReference<T extends FlexoDocTable<?, ?>> extends Acto
 					}
 				}
 				else {
-					logger.warning("INVESTIGATE: Setting a tableActorReference ("+ this.getRoleName() +") to NULL in Concept" + this.getFlexoConceptInstance());
+					logger.warning("INVESTIGATE: Setting a tableActorReference (" + this.getRoleName() + ") to NULL in Concept"
+							+ this.getFlexoConceptInstance());
 				}
 				table = aTable;
 			}
@@ -280,13 +281,10 @@ public interface TableActorReference<T extends FlexoDocTable<?, ?>> extends Acto
 			try {
 				rowObjects = tableRole.getIteration().getBindingValue(getFlexoConceptInstance());
 			} catch (TypeMismatchException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (NullReferenceException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (InvocationTargetException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 
@@ -354,13 +352,10 @@ public interface TableActorReference<T extends FlexoDocTable<?, ?>> extends Acto
 						cell.setRawText((String) value);
 
 					} catch (TypeMismatchException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					} catch (NullReferenceException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					} catch (InvocationTargetException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 				}
@@ -422,13 +417,10 @@ public interface TableActorReference<T extends FlexoDocTable<?, ?>> extends Acto
 			try {
 				rowObjects = tableRole.getIteration().getBindingValue(getFlexoConceptInstance());
 			} catch (TypeMismatchException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (NullReferenceException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (InvocationTargetException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 
@@ -439,7 +431,7 @@ public interface TableActorReference<T extends FlexoDocTable<?, ?>> extends Acto
 
 			System.out.println("Du coup, on reinjecte entre " + lookup.startIterationRowIndex + " et " + lookup.endIterationRowIndex);
 
-			List<Object> objectsToCallFromDeletion = new ArrayList<Object>(rowObjects);
+			List<Object> objectsToCallFromDeletion = new ArrayList<>(rowObjects);
 
 			for (int rowIndex = lookup.startIterationRowIndex; rowIndex <= lookup.endIterationRowIndex; rowIndex++) {
 				System.out.println("Row " + rowIndex);
@@ -470,16 +462,12 @@ public interface TableActorReference<T extends FlexoDocTable<?, ?>> extends Acto
 							});
 
 						} catch (TypeMismatchException e) {
-							// TODO Auto-generated catch block
 							e.printStackTrace();
 						} catch (NullReferenceException e) {
-							// TODO Auto-generated catch block
 							e.printStackTrace();
 						} catch (InvocationTargetException e) {
-							// TODO Auto-generated catch block
 							e.printStackTrace();
 						} catch (NotSettableContextException e) {
-							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
 					}

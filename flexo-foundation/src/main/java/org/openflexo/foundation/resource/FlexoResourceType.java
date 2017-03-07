@@ -100,7 +100,6 @@ public class FlexoResourceType implements JavaCustomType {
 					Class resourceClass = Class.forName(configuration);
 					resourceFactory = getFlexoResourceFactoryForClass(resourceClass, getTechnologyAdapter().getTechnologyAdapterService());
 				} catch (ClassNotFoundException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
@@ -242,7 +241,6 @@ public class FlexoResourceType implements JavaCustomType {
 					this.customTypeFactory = factory;
 				}
 			} catch (ClassNotFoundException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}

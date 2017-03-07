@@ -168,7 +168,7 @@ public class PasteAction extends FlexoAction<PasteAction, FlexoObject, FlexoObje
 		try {
 			System.out.println("--------- START PASTE");
 			Object pasted = paste();
-			pastedObjects = new ArrayList<FlexoObject>();
+			pastedObjects = new ArrayList<>();
 			if (pasted instanceof List) {
 				pastedObjects.addAll((List) pasted);
 			}
@@ -181,16 +181,12 @@ public class PasteAction extends FlexoAction<PasteAction, FlexoObject, FlexoObje
 			System.out.println("--------- END PASTE");
 
 		} catch (PasteException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (ModelExecutionException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (ModelDefinitionException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (CloneNotSupportedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

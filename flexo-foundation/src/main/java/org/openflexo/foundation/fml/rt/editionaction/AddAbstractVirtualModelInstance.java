@@ -105,7 +105,7 @@ public interface AddAbstractVirtualModelInstance<FCI extends AbstractVirtualMode
 	public ViewPointResource getOwnerViewPointTypeResource();
 
 	public static abstract class AddAbstractVirtualModelInstanceImpl<FCI extends AbstractVirtualModelInstance<FCI, ?>>
-			extends AbstractAddFlexoConceptInstanceImpl<FCI, View>implements AddAbstractVirtualModelInstance<FCI> {
+			extends AbstractAddFlexoConceptInstanceImpl<FCI, View> implements AddAbstractVirtualModelInstance<FCI> {
 
 		static final Logger logger = Logger.getLogger(AddAbstractVirtualModelInstance.class.getPackage().getName());
 
@@ -177,13 +177,10 @@ public interface AddAbstractVirtualModelInstance<FCI extends AbstractVirtualMode
 			try {
 				setFlexoConceptType(resource.getResourceData(null));
 			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (ResourceLoadingCancelledException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (FlexoException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			getPropertyChangeSupport().firePropertyChange("virtualModelType", oldVMType, getVirtualModelType());

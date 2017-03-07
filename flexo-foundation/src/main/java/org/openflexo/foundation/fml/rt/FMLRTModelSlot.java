@@ -38,6 +38,10 @@
 
 package org.openflexo.foundation.fml.rt;
 
+import java.io.FileNotFoundException;
+import java.lang.reflect.Type;
+import java.util.logging.Logger;
+
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.AbstractVirtualModel;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
@@ -72,10 +76,6 @@ import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.model.annotations.XMLElement;
 import org.openflexo.toolbox.StringUtils;
 
-import java.io.FileNotFoundException;
-import java.lang.reflect.Type;
-import java.util.logging.Logger;
-
 /**
  * Implementation of the ModelSlot for a FML {@link AbstractVirtualModelInstance} (a {@link VirtualModelInstance} or a {@link View})
  * 
@@ -83,7 +83,8 @@ import java.util.logging.Logger;
  * 
  */
 @DeclareFlexoRoles({ FlexoConceptInstanceRole.class, PrimitiveRole.class })
-@DeclareEditionActions({ AddFlexoConceptInstance.class, DeleteFlexoConceptInstance.class, AddVirtualModelInstance.class, AddClassInstance.class, AddSubView.class })
+@DeclareEditionActions({ AddFlexoConceptInstance.class, DeleteFlexoConceptInstance.class, AddVirtualModelInstance.class,
+		AddClassInstance.class, AddSubView.class })
 @DeclareFetchRequests({ SelectFlexoConceptInstance.class, SelectVirtualModelInstance.class })
 @ModelEntity(isAbstract = true)
 @ImplementationClass(FMLRTModelSlot.FMLRTModelSlotImpl.class)
@@ -91,8 +92,8 @@ import java.util.logging.Logger;
 // Following annotation is used to disambiguate deserialization when old ViewPoint are loaded (when FMLRTModelSlot was not abstract)
 // TODO: This might be removed when all viewpoints will be converted into 1.8.0 infrastructure
 @XMLElement(xmlTag = "AbstractFMLRTModelSlot")
-public interface FMLRTModelSlot<VMI extends AbstractVirtualModelInstance<VMI, VM>, VM extends AbstractVirtualModel<VM>> extends
-		ModelSlot<VMI> {
+public interface FMLRTModelSlot<VMI extends AbstractVirtualModelInstance<VMI, VM>, VM extends AbstractVirtualModel<VM>>
+		extends ModelSlot<VMI> {
 
 	@PropertyIdentifier(type = String.class)
 	public static final String VIRTUAL_MODEL_URI_KEY = "virtualModelURI";
@@ -141,7 +142,8 @@ public interface FMLRTModelSlot<VMI extends AbstractVirtualModelInstance<VMI, VM
 		public <PR extends FlexoRole<?>> String defaultFlexoRoleName(Class<PR> patternRoleClass) {
 			if (FlexoConceptInstanceRole.class.isAssignableFrom(patternRoleClass)) {
 				return "flexoConceptInstance";
-			} else if (PrimitiveRole.class.isAssignableFrom(patternRoleClass)) {
+			}
+			else if (PrimitiveRole.class.isAssignableFrom(patternRoleClass)) {
 				return "primitive";
 			}
 			logger.warning("Unexpected pattern property: " + patternRoleClass.getName());
@@ -208,13 +210,10 @@ public interface FMLRTModelSlot<VMI extends AbstractVirtualModelInstance<VMI, VM
 				try {
 					return getAccessedVirtualModelResource().getResourceData(null);
 				} catch (FileNotFoundException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} catch (ResourceLoadingCancelledException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} catch (FlexoException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}

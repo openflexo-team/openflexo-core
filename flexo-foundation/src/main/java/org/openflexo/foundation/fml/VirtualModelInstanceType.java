@@ -87,13 +87,10 @@ public class VirtualModelInstanceType extends FlexoConceptInstanceType {
 					this.customTypeFactory = null;
 				}
 			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (ResourceLoadingCancelledException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (FlexoException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}

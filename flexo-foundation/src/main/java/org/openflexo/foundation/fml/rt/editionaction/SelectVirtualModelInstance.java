@@ -198,13 +198,10 @@ public interface SelectVirtualModelInstance extends FetchRequest<FMLRTModelSlot<
 				return VirtualModelInstanceType
 						.getVirtualModelInstanceType(getVirtualModelType() != null ? getVirtualModelType().getResourceData(null) : null);
 			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (ResourceLoadingCancelledException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (FlexoException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			return null;
@@ -264,13 +261,10 @@ public interface SelectVirtualModelInstance extends FetchRequest<FMLRTModelSlot<
 					return filterWithConditions(view.getVirtualModelInstancesForVirtualModel(getVirtualModelType().getResourceData(null)),
 							evaluationContext);
 				} catch (FileNotFoundException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} catch (ResourceLoadingCancelledException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} catch (FlexoException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				return null;

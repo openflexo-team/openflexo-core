@@ -336,13 +336,10 @@ public class FlexoObjectReference<O extends FlexoObject> extends KVCFlexoObject 
 				}*/
 			}
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (ResourceLoadingCancelledException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (FlexoException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		logger.warning("Cannot find object " + userIdentifier + "_" + flexoID + " in resource " + resource);

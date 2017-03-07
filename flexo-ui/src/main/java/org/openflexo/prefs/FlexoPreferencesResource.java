@@ -158,7 +158,6 @@ public interface FlexoPreferencesResource extends PamelaResource<FlexoPreference
 				try {
 					save(null);
 				} catch (SaveResourceException e2) {
-					// TODO Auto-generated catch block
 					e2.printStackTrace();
 				}
 

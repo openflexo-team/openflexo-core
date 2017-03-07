@@ -569,16 +569,12 @@ public class ModuleInspectorController extends Observable implements Observer {
 			logger.info("Getting this "
 					+ XMLCoder.encodeObjectWithMapping(this, FIBLibrary.getFIBMapping(), StringEncoder.getDefaultInstance()));
 		} catch (InvalidObjectSpecificationException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (InvalidModelException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (AccessorInvocationException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (DuplicateSerializationIdentifierException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}*/
 	}
@@ -607,7 +603,7 @@ public class ModuleInspectorController extends Observable implements Observer {
 		// FlexoConceptInstance)
 		// The goal of that variable definition is to provide type for inspected FlexoConceptInstance
 		FIBVariable<?> dataVariable = getFactory().newFIBVariable(inspector, "fci", flexoConcept.getInstanceType());
-		dataVariable.setValue(new DataBinding("data"));
+		dataVariable.setValue(new DataBinding<>("data"));
 		inspector.addToVariables(dataVariable);
 		inspector.setName(flexoConcept.getName() + "Panel");
 
@@ -635,7 +631,7 @@ public class ModuleInspectorController extends Observable implements Observer {
 		// FlexoConceptInstance)
 		// The goal of that variable definition is to provide type for inspected FlexoConceptInstance
 		FIBVariable<?> dataVariable = getFactory().newFIBVariable(newTab, "fci", flexoConcept.getInstanceType());
-		dataVariable.setValue(new DataBinding("data"));
+		dataVariable.setValue(new DataBinding<>("data"));
 		newTab.addToVariables(dataVariable);
 		newTab.setName(flexoConcept.getName() + "Panel");
 

@@ -63,7 +63,6 @@ public class FlexoMarketRemoteRepository extends FlexoRemoteRepositoryImpl {
 			String result = HTTPFileUtils.getURL(url, "",true);
 			System.out.println(result);
 		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}*/
 

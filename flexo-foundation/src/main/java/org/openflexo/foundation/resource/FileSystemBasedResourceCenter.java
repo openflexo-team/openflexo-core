@@ -59,6 +59,7 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.converter.FlexoObjectReferenceConverter;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
@@ -143,14 +144,17 @@ public abstract class FileSystemBasedResourceCenter extends ResourceRepository<F
 		try {
 			// searches for parent folder.
 			RepositoryFolder<?, File> folder = getParentRepositoryFolder(resourceArtifact, false);
-			if (folder == null) { return null; }
+			if (folder == null) {
+				return null;
+			}
 
 			for (FlexoResource<?> r : folder.getResources()) {
 				if (Objects.equals(r.getIODelegate().getSerializationArtefact(), resourceArtifact)) {
 					if (resourceClass.isInstance(r)) {
 						return resourceClass.cast(r);
 					}
-					logger.warning("Found resource matching file " + resourceArtifact + " but not of desired type: " + r.getClass() + " instead of " + resourceClass);
+					logger.warning("Found resource matching file " + resourceArtifact + " but not of desired type: " + r.getClass()
+							+ " instead of " + resourceClass);
 					return null;
 				}
 			}
@@ -949,7 +953,6 @@ public abstract class FileSystemBasedResourceCenter extends ResourceRepository<F
 			}*/
 			return returned;
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return resourceRepository.getRootFolder();
 		}

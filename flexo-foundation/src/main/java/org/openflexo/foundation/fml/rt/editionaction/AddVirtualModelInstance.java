@@ -99,13 +99,10 @@ public interface AddVirtualModelInstance extends AddAbstractVirtualModelInstance
 					name = getVirtualModelInstanceName().getBindingValue(evaluationContext);
 					title = getVirtualModelInstanceTitle().getBindingValue(evaluationContext);
 				} catch (TypeMismatchException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} catch (NullReferenceException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} catch (InvocationTargetException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 

@@ -100,7 +100,7 @@ public interface AddToListAction<T> extends AssignableAction<T>, FMLControlGraph
 	@Setter(ASSIGNABLE_ACTION_KEY)
 	public void setAssignableAction(AssignableAction<T> assignableAction);
 
-	public static abstract class AddToListActionImpl<T> extends AssignableActionImpl<T>implements AddToListAction<T> {
+	public static abstract class AddToListActionImpl<T> extends AssignableActionImpl<T> implements AddToListAction<T> {
 
 		private static final Logger logger = Logger.getLogger(AddToListAction.class.getPackage().getName());
 
@@ -214,13 +214,10 @@ public interface AddToListAction<T> extends AssignableAction<T>, FMLControlGraph
 					logger.warning("Cannot perform Assignation as assignation is null");
 				}
 			} catch (TypeMismatchException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (NullReferenceException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (InvocationTargetException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 

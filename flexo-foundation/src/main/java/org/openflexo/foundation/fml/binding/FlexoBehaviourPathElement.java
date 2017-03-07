@@ -186,9 +186,7 @@ public class FlexoBehaviourPathElement extends FunctionPathElement {
 				warningMessage.append(", arg[" + i + "] = " + args[i]);
 			}
 			logger.warning(warningMessage.toString());
-			// e.printStackTrace();
 		} catch (InvocationTargetException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return null;

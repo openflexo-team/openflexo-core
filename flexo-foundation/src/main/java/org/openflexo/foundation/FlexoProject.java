@@ -38,6 +38,25 @@
 
 package org.openflexo.foundation;
 
+import java.io.File;
+import java.io.FilenameFilter;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.regex.Pattern;
+import java.util.zip.Deflater;
+
+import javax.naming.InvalidNameException;
+
 import org.apache.commons.io.filefilter.FileFilterUtils;
 import org.openflexo.foundation.FlexoEditor.FlexoEditorFactory;
 import org.openflexo.foundation.ProjectDataResource.ProjectDataResourceImpl;
@@ -84,24 +103,6 @@ import org.openflexo.toolbox.FlexoVersion;
 import org.openflexo.toolbox.IProgress;
 import org.openflexo.toolbox.ToolBox;
 import org.openflexo.toolbox.ZipUtils;
-
-import javax.naming.InvalidNameException;
-import java.io.File;
-import java.io.FilenameFilter;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.Hashtable;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.regex.Pattern;
-import java.util.zip.Deflater;
 
 /**
  * This class represents an Openflexo project.<br>
@@ -392,24 +393,26 @@ public class FlexoProject extends FileSystemBasedResourceCenter
 	}
 
 	public void copyTo(File newProjectDirectory) throws SaveResourceException, InvalidNameException {
-		logger.info("Copy project to... (" + newProjectDirectory +")" );
+		logger.info("Copy project to... (" + newProjectDirectory + ")");
 
 		if (Objects.equals(getProjectDirectory(), newProjectDirectory)) {
 			save();
-		} else {
+		}
+		else {
 			try {
 				// sets project directory
 				setProjectDirectory(newProjectDirectory);
 
 				File current = getRootDirectory();
-				FileUtils.copyContentDirToDir(current, newProjectDirectory, CopyStrategy.REPLACE, FileFilterUtils.notFileFilter(FileFilterUtils.suffixFileFilter("~")));
+				FileUtils.copyContentDirToDir(current, newProjectDirectory, CopyStrategy.REPLACE,
+						FileFilterUtils.notFileFilter(FileFilterUtils.suffixFileFilter("~")));
 
 			} catch (IOException e) {
 				throw new SaveResourceException(getResource().getIODelegate(), e);
 			}
 		}
 
-		logger.info("Copy project to... (" + newProjectDirectory +") DONE");
+		logger.info("Copy project to... (" + newProjectDirectory + ") DONE");
 	}
 
 	/**
@@ -505,7 +508,6 @@ public class FlexoProject extends FileSystemBasedResourceCenter
 		try {
 			return getProjectValidationModel().validate(this);
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return null;
 		}
@@ -761,7 +763,6 @@ public class FlexoProject extends FileSystemBasedResourceCenter
 			try {
 				projectValidationModel = new FlexoProjectValidationModel();
 			} catch (ModelDefinitionException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}

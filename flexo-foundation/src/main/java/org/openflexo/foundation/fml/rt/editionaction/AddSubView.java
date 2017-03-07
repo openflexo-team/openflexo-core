@@ -75,7 +75,7 @@ public interface AddSubView extends AddAbstractVirtualModelInstance<View> {
 
 	public void setViewPointType(ViewPointResource resource);
 
-	public static abstract class AddSubViewImpl extends AddAbstractVirtualModelInstanceImpl<View>implements AddSubView {
+	public static abstract class AddSubViewImpl extends AddAbstractVirtualModelInstanceImpl<View> implements AddSubView {
 
 		static final Logger logger = Logger.getLogger(AddSubView.class.getPackage().getName());
 
@@ -112,13 +112,10 @@ public interface AddSubView extends AddAbstractVirtualModelInstance<View> {
 					name = getVirtualModelInstanceName().getBindingValue(evaluationContext);
 					title = getVirtualModelInstanceTitle().getBindingValue(evaluationContext);
 				} catch (TypeMismatchException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} catch (NullReferenceException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} catch (InvocationTargetException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				CreateSubViewInView createSubViewAction = CreateSubViewInView.actionType

@@ -69,7 +69,7 @@ public class ViewPointResourceFactory extends AbstractVirtualModelResourceFactor
 
 	public <I> ViewPointResource makeViewPointResource(String baseName, String viewpointURI, RepositoryFolder<ViewPointResource, I> folder,
 			TechnologyContextManager<FMLTechnologyAdapter> technologyContextManager, boolean createEmptyContents)
-					throws SaveResourceException, ModelDefinitionException {
+			throws SaveResourceException, ModelDefinitionException {
 
 		FlexoResourceCenter<I> resourceCenter = folder.getResourceRepository().getResourceCenter();
 		I serializationArtefact = resourceCenter.createDirectory(baseName + VIEWPOINT_SUFFIX, folder.getSerializationArtefact());
@@ -101,7 +101,7 @@ public class ViewPointResourceFactory extends AbstractVirtualModelResourceFactor
 		if (resourceCenter.exists(serializationArtefact) && resourceCenter.isDirectory(serializationArtefact)
 				&& resourceCenter.canRead(serializationArtefact)
 				&& (resourceCenter.retrieveName(serializationArtefact).endsWith(VIEWPOINT_SUFFIX)
-		/*|| resourceCenter.retrieveName(serializationArtefact).endsWith(VIEWPOINT_SUFFIX + "/")*/)) {
+				/*|| resourceCenter.retrieveName(serializationArtefact).endsWith(VIEWPOINT_SUFFIX + "/")*/)) {
 			/*final String baseName = candidateFile.getName().substring(0,
 					candidateFile.getName().length() - ViewPointResource.VIEWPOINT_SUFFIX.length());
 			final File xmlFile = new File(candidateFile, baseName + ".xml");
@@ -137,7 +137,7 @@ public class ViewPointResourceFactory extends AbstractVirtualModelResourceFactor
 	@Override
 	protected <I> ViewPointResource initResourceForCreation(I serializationArtefact, FlexoResourceCenter<I> resourceCenter,
 			TechnologyContextManager<FMLTechnologyAdapter> technologyContextManager, String name, String uri)
-					throws ModelDefinitionException {
+			throws ModelDefinitionException {
 		ViewPointResource returned = super.initResourceForCreation(serializationArtefact, resourceCenter, technologyContextManager, name,
 				uri);
 
@@ -216,10 +216,8 @@ public class ViewPointResourceFactory extends AbstractVirtualModelResourceFactor
 						virtualModelResource = getVirtualModelResourceFactory().retrieveVirtualModelResource(serializationArtefact,
 								technologyContextManager, viewPointResource);
 					} catch (ModelDefinitionException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					} catch (IOException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 				}
@@ -238,7 +236,6 @@ public class ViewPointResourceFactory extends AbstractVirtualModelResourceFactor
 							virtualModelResource = getVirtualModelResourceFactory().retrieveVirtualModelResource(serializationArtefact,
 									technologyContextManager, viewPointResource);
 						} catch (ModelDefinitionException e) {
-							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
 					}
@@ -492,7 +489,6 @@ public class ViewPointResourceFactory extends AbstractVirtualModelResourceFactor
 			try {
 				vpi = findViewPointInfo(new FileInputStream(xmlFile));
 			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			if (vpi == null) {

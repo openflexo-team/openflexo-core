@@ -321,7 +321,6 @@ public abstract class OpenflexoTestCase {
 				// detect new files
 				((FileSystemBasedResourceCenter) resourceCenter).performDirectoryWatchingNow();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -413,8 +412,8 @@ public abstract class OpenflexoTestCase {
 	 * @throws AssertionFailedError
 	 */
 	public static <T> void assertSameList(Collection<? extends T> aList, T... objects) throws AssertionFailedError {
-		Set<T> set1 = new HashSet<T>(aList);
-		Set<T> set2 = new HashSet<T>();
+		Set<T> set1 = new HashSet<>(aList);
+		Set<T> set2 = new HashSet<>();
 		for (T o : objects) {
 			set2.add(o);
 		}

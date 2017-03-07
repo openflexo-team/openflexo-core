@@ -62,7 +62,7 @@ public class VirtualModelResourceFactory extends AbstractVirtualModelResourceFac
 
 	public <I> VirtualModelResource makeVirtualModelResource(String baseName, ViewPointResource viewPointResource,
 			TechnologyContextManager<FMLTechnologyAdapter> technologyContextManager, boolean createEmptyContents)
-					throws SaveResourceException, ModelDefinitionException {
+			throws SaveResourceException, ModelDefinitionException {
 
 		FlexoResourceCenter<I> resourceCenter = (FlexoResourceCenter<I>) viewPointResource.getResourceCenter();
 		I serializationArtefact = resourceCenter.createDirectory(baseName,
@@ -85,7 +85,7 @@ public class VirtualModelResourceFactory extends AbstractVirtualModelResourceFac
 
 	public <I> VirtualModelResource retrieveVirtualModelResource(I serializationArtefact,
 			TechnologyContextManager<FMLTechnologyAdapter> technologyContextManager, ViewPointResource viewPointResource)
-					throws ModelDefinitionException, IOException {
+			throws ModelDefinitionException, IOException {
 
 		FlexoResourceCenter<I> resourceCenter = (FlexoResourceCenter<I>) viewPointResource.getResourceCenter();
 		String name = resourceCenter.retrieveName(serializationArtefact);
@@ -104,7 +104,7 @@ public class VirtualModelResourceFactory extends AbstractVirtualModelResourceFac
 	@Override
 	protected <I> VirtualModelResource initResourceForCreation(I serializationArtefact, FlexoResourceCenter<I> resourceCenter,
 			TechnologyContextManager<FMLTechnologyAdapter> technologyContextManager, String name, String uri)
-					throws ModelDefinitionException {
+			throws ModelDefinitionException {
 		VirtualModelResource returned = super.initResourceForCreation(serializationArtefact, resourceCenter, technologyContextManager, name,
 				uri);
 		returned.setVersion(INITIAL_REVISION);
@@ -266,7 +266,6 @@ public class VirtualModelResourceFactory extends AbstractVirtualModelResourceFac
 			try {
 				vpi = findVirtualModelInfo(new FileInputStream(xmlFile));
 			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			if (vpi == null) {

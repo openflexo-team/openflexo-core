@@ -131,7 +131,6 @@ public class TestCreateVirtualModelInstanceFromExistingViewPoint extends Openfle
 		try {
 			newView.getResource().save(null);
 		} catch (SaveResourceException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		// assertTrue(((ViewResource) newView.getResource()).getDirectory().exists());

@@ -113,10 +113,10 @@ public interface FreeModelSlotInstance<RD extends ResourceData<RD> & TechnologyO
 			TechnologyAdapterResource<RD, ?> returned = super.getResource();
 			if (returned == null && StringUtils.isNotEmpty(resourceURI) && getServiceManager() != null
 					&& getServiceManager().getResourceManager() != null) {
-				//System.out.println("------------> OK, je cherche la resource " + resourceURI);
+				// System.out.println("------------> OK, je cherche la resource " + resourceURI);
 				returned = (TechnologyAdapterResource<RD, ?>) getServiceManager().getResourceManager().getResource(resourceURI,
 						getVersion());
-				//System.out.println("Je trouve " + returned);
+				// System.out.println("Je trouve " + returned);
 				setResource(returned, false);
 			}
 			return returned;
@@ -138,13 +138,10 @@ public interface FreeModelSlotInstance<RD extends ResourceData<RD> & TechnologyO
 					try {
 						accessedResourceData = resource.getResourceData(null);
 					} catch (FileNotFoundException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					} catch (ResourceLoadingCancelledException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					} catch (FlexoException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 				}
