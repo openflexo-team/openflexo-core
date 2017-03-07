@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ViewPoint id="0" modelVersion="1.0"
+	uri="http://openflexo.org/test/TestViewPointB" version="0.1" name="TestViewPointB"
+	userID="FLX" description="A viewpoint designed for test purposes"
+	flexoID="3">
+	<Inspector id="1" inspectorTitle="TestViewPointB" userID="FLX"
+		flexoID="2" />
+</ViewPoint>

@@ -45,6 +45,7 @@ import java.util.logging.Logger;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.AbstractVirtualModel;
+import org.openflexo.foundation.fml.CreationScheme;
 import org.openflexo.foundation.fml.ViewType;
 import org.openflexo.foundation.fml.rm.AbstractVirtualModelResource;
 import org.openflexo.foundation.fml.rm.ViewPointResource;
@@ -173,8 +174,10 @@ public interface AddAbstractVirtualModelInstance<FCI extends AbstractVirtualMode
 
 		@Override
 		public void setVirtualModelType(AbstractVirtualModelResource<?> resource) {
+			CreationScheme oldCreationScheme = getCreationScheme();
 			AbstractVirtualModelResource<?> oldVMType = getVirtualModelType();
 			try {
+				setCreationScheme(null);
 				setFlexoConceptType(resource.getResourceData(null));
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
@@ -184,6 +187,13 @@ public interface AddAbstractVirtualModelInstance<FCI extends AbstractVirtualMode
 				e.printStackTrace();
 			}
 			getPropertyChangeSupport().firePropertyChange("virtualModelType", oldVMType, getVirtualModelType());
+			getPropertyChangeSupport().firePropertyChange("creationScheme", oldCreationScheme, getCreationScheme());
+			getPropertyChangeSupport().firePropertyChange("availableCreationSchemes", null, getAvailableCreationSchemes());
+
+			// select first one when none selected
+			if (getCreationScheme() != null && getAvailableCreationSchemes().size() > 0) {
+				setCreationScheme(getAvailableCreationSchemes().get(0));
+			}
 		}
 
 		@Override

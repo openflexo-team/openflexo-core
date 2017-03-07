@@ -97,7 +97,7 @@ public class TestDefaultRCServiceLoadRCInClassPath extends OpenflexoTestCase {
 			if (rc.getDefaultBaseURI().equals("http://openflexo.org/test/TestResourceCenter")) {
 				testRC = rc;
 			}
-			if (rc.getDefaultBaseURI().equals("http://openflexo.org/testingRCsOnCP")) {
+			if (rc.getDefaultBaseURI().equals("http://openflexo.org/test/flexo-test-resources")) {
 				testRCfromCP = rc;
 			}
 		}
@@ -114,7 +114,7 @@ public class TestDefaultRCServiceLoadRCInClassPath extends OpenflexoTestCase {
 
 		log("loadViewPoint");
 
-		String viewPointURI = "http://openflexo.org/test/TestViewPoint1";
+		String viewPointURI = "http://openflexo.org/test/TestViewPointA";
 		log("Testing ViewPoint loading: " + viewPointURI);
 
 		ViewPointResource vpRes = serviceManager.getViewPointLibrary().getViewPointResource(viewPointURI);
@@ -134,8 +134,7 @@ public class TestDefaultRCServiceLoadRCInClassPath extends OpenflexoTestCase {
 		log("testViewPoint");
 
 		assertNotNull(testVP);
-		System.out.println(
-				"Found view point in " + ((ViewPointResource) testVP.getResource()).getIODelegate().toString());
+		System.out.println("Found view point in " + ((ViewPointResource) testVP.getResource()).getIODelegate().toString());
 		assertViewPointIsValid(testVP);
 
 	}

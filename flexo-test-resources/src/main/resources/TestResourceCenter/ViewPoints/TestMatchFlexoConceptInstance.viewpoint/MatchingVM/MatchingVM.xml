@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VirtualModel id="0" modelVersion="1.0" version="0.1" name="MatchingVM" userID="FLX" flexoID="2">
+  <FlexoConcept id="1" name="MatchedConcept" userID="FLX" flexoID="27">
+    <FlexoConceptInstanceRole id="2" flexoConceptTypeURI="http://openflexo.org/test/TestMatchFlexoConceptInstance/VM#Concept" cloningStrategy="Reference" cardinality="ZeroOne" name="concept" userID="FLX" flexoID="46">
+      <VirtualModelInstanceModelSlot idref="3" />
+    </FlexoConceptInstanceRole>
+    <PrimitiveRole id="4" primitiveType="String" cloningStrategy="Clone" cardinality="ZeroOne" name="p2" userID="FLX" flexoID="47" />
+    <CreationScheme id="5" name="create" width="800" label="create" height="600" userID="FLX" flexoID="25">
+      <BehaviourControlGraph_Sequence id="6" userID="FLX" flexoID="50">
+        <ControlGraph2_AssignationAction id="7" assign="p2" ownerContext="controlGraph2" userID="FLX" flexoID="29">
+          <AssignableAction_ExpressionAction id="8" expression="parameters.aP2" userID="FLX" flexoID="48" />
+        </ControlGraph2_AssignationAction>
+        <ControlGraph1_AssignationAction id="9" assign="concept" ownerContext="controlGraph1" userID="FLX" flexoID="28">
+          <AssignableAction_ExpressionAction id="10" expression="parameters.aConcept" userID="FLX" flexoID="49" />
+        </ControlGraph1_AssignationAction>
+      </BehaviourControlGraph_Sequence>
+      <GenericBehaviourParameter id="11" isRequired="true" widget="CUSTOM_WIDGET" name="aConcept" type="org.openflexo.foundation.fml.FlexoConceptInstanceType&lt;http://openflexo.org/test/TestMatchFlexoConceptInstance/VM#Concept&gt;" userID="FLX" flexoID="51" />
+      <GenericBehaviourParameter id="12" isRequired="true" widget="TEXT_FIELD" name="aP2" type="java.lang.String" userID="FLX" flexoID="52" />
+    </CreationScheme>
+    <DeletionScheme id="13" name="delete" width="800" label="delete" height="600" userID="FLX" flexoID="26">
+      <BehaviourControlGraph_DeleteAction id="14" object="p2" userID="FLX" flexoID="30" />
+    </DeletionScheme>
+    <Inspector id="15" inspectorTitle="MatchedConcept" userID="FLX" flexoID="22">
+      <GenericInspectorEntry id="16" widget="CUSTOM_WIDGET" data="concept" name="concept" label="concept" type="org.openflexo.foundation.fml.FlexoConceptInstanceType&lt;http://openflexo.org/test/TestMatchFlexoConceptInstance/VM#Concept&gt;" userID="FLX" flexoID="53" />
+      <GenericInspectorEntry id="17" widget="TEXT_FIELD" data="p2" name="p2" label="p2" type="java.lang.String" userID="FLX" flexoID="54" />
+    </Inspector>
+  </FlexoConcept>
+  <ModelSlot_VirtualModelInstanceModelSlot id="3" virtualModelURI="http://openflexo.org/test/TestMatchFlexoConceptInstance/VM" isRequired="true" cloningStrategy="Reference" cardinality="ZeroOne" name="model" userID="FLX" flexoID="6">
+    <VirtualModelInstanceModelSlot idref="3" />
+  </ModelSlot_VirtualModelInstanceModelSlot>
+  <CreationScheme id="18" name="create" width="800" label="create" height="600" userID="FLX" flexoID="7">
+    <BehaviourControlGraph_Sequence id="19" userID="FLX" flexoID="85">
+      <ControlGraph2_LogAction id="20" logLevel="INFO" logString="(&quot;&gt;&gt;&gt;&gt; Parametre model : &quot; + parameters.model)" ownerContext="controlGraph2" userID="FLX" flexoID="84" />
+      <ControlGraph1_AssignationAction id="21" assign="model" ownerContext="controlGraph1" userID="FLX" flexoID="10">
+        <AssignableAction_ExpressionAction id="22" expression="parameters.model" userID="FLX" flexoID="9" />
+      </ControlGraph1_AssignationAction>
+    </BehaviourControlGraph_Sequence>
+    <GenericBehaviourParameter id="23" isRequired="true" widget="CUSTOM_WIDGET" name="model" type="org.openflexo.foundation.fml.VirtualModelInstanceType&lt;http://openflexo.org/test/TestMatchFlexoConceptInstance/VM&gt;" userID="FLX" flexoID="13" />
+  </CreationScheme>
+  <ActionScheme id="24" name="synchronizeUsingMatchingSet" width="800" label="synchronize" height="600" userID="FLX" flexoID="18">
+    <BehaviourControlGraph_Sequence id="25" userID="FLX" flexoID="55">
+      <ControlGraph2_Sequence id="26" ownerContext="controlGraph2" userID="FLX" flexoID="77">
+        <ControlGraph2_FinalizeMatching id="27" container="virtualModelInstance" flexoBehaviourURI="http://openflexo.org/test/TestMatchFlexoConceptInstance/MatchingVM#MatchedConcept.delete" matchingSet="matchingSet" flexoConceptTypeURI="http://openflexo.org/test/TestMatchFlexoConceptInstance/MatchingVM#MatchedConcept" ownerContext="controlGraph2" userID="FLX" flexoID="76" />
+        <ControlGraph1_IterationAction id="28" iteratorName="concept" ownerContext="controlGraph1" userID="FLX" flexoID="32">
+          <Iteration_SelectFlexoConceptInstance id="29" virtualModelInstance="model" flexoConceptTypeURI="http://openflexo.org/test/TestMatchFlexoConceptInstance/VM#Concept" ownerContext="iterationControlGraph" userID="FLX" flexoID="36">
+            <VirtualModelInstanceModelSlot idref="3" />
+          </Iteration_SelectFlexoConceptInstance>
+          <ControlGraph_MatchFlexoConceptInstance id="30" creationSchemeURI="http://openflexo.org/test/TestMatchFlexoConceptInstance/MatchingVM#MatchedConcept.create" matchingSet="matchingSet" virtualModelInstance="virtualModelInstance" ownerContext="controlGraph" userID="FLX" flexoID="41">
+            <MatchingCriteria id="31" patternRoleName="concept" value="concept" userID="FLX" flexoID="44" />
+            <MatchingCriteria id="32" patternRoleName="p2" userID="FLX" flexoID="45" />
+            <CreateFlexoConceptInstanceParameter id="33" paramName="aConcept" value="concept" userID="FLX" flexoID="42" />
+            <CreateFlexoConceptInstanceParameter id="34" paramName="aP2" value="(concept.p + &quot;-matched&quot;)" userID="FLX" flexoID="43" />
+          </ControlGraph_MatchFlexoConceptInstance>
+        </ControlGraph1_IterationAction>
+      </ControlGraph2_Sequence>
+      <ControlGraph1_DeclarationAction id="35" variable="matchingSet" ownerContext="controlGraph1" userID="FLX" flexoID="39">
+        <AssignableAction_InitiateMatching id="36" container="virtualModelInstance" flexoConceptTypeURI="http://openflexo.org/test/TestMatchFlexoConceptInstance/MatchingVM#MatchedConcept" userID="FLX" flexoID="38" />
+      </ControlGraph1_DeclarationAction>
+    </BehaviourControlGraph_Sequence>
+  </ActionScheme>
+  <ActionScheme id="37" name="defaultSynchronize" width="800" label="defaultSynchronize" height="600" userID="FLX" flexoID="60">
+    <BehaviourControlGraph_IterationAction id="38" iteratorName="concept" userID="FLX" flexoID="63">
+      <Iteration_SelectFlexoConceptInstance id="39" virtualModelInstance="model" flexoConceptTypeURI="http://openflexo.org/test/TestMatchFlexoConceptInstance/VM#Concept" ownerContext="iterationControlGraph" userID="FLX" flexoID="65">
+        <VirtualModelInstanceModelSlot idref="3" />
+      </Iteration_SelectFlexoConceptInstance>
+      <ControlGraph_MatchFlexoConceptInstance id="40" creationSchemeURI="http://openflexo.org/test/TestMatchFlexoConceptInstance/MatchingVM#MatchedConcept.create" virtualModelInstance="virtualModelInstance" ownerContext="controlGraph" userID="FLX" flexoID="67">
+        <MatchingCriteria id="41" patternRoleName="concept" value="concept" userID="FLX" flexoID="70" />
+        <MatchingCriteria id="42" patternRoleName="p2" userID="FLX" flexoID="71" />
+        <CreateFlexoConceptInstanceParameter id="43" paramName="aConcept" value="concept" userID="FLX" flexoID="68" />
+        <CreateFlexoConceptInstanceParameter id="44" paramName="aP2" value="(concept.p + &quot;-default&quot;)" userID="FLX" flexoID="69" />
+      </ControlGraph_MatchFlexoConceptInstance>
+    </BehaviourControlGraph_IterationAction>
+  </ActionScheme>
+  <Inspector id="45" inspectorTitle="MatchingVM" userID="FLX" flexoID="1" />
+</VirtualModel>

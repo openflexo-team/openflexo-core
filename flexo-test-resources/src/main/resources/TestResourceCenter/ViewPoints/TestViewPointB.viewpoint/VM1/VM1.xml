@@ -89,34 +89,34 @@
         <ControlGraph2_Sequence id="60" ownerContext="controlGraph2" userID="FLX" flexoID="122">
           <ControlGraph2_Sequence id="61" ownerContext="controlGraph2" userID="FLX" flexoID="121">
             <ControlGraph2_DeclarationAction id="62" variable="instanceC2" ownerContext="controlGraph2" userID="FLX" flexoID="120">
-              <AssignableAction_AddFlexoConceptInstance id="63" container="instanceB2" creationSchemeURI="http://openflexo.org/test/TestViewPoint2/VM1#ConceptC.create" virtualModelInstance="virtualModelInstance" userID="FLX" flexoID="117">
+              <AssignableAction_AddFlexoConceptInstance id="63" container="instanceB2" creationSchemeURI="http://openflexo.org/test/TestViewPointB/VM1#ConceptC.create" virtualModelInstance="virtualModelInstance" userID="FLX" flexoID="117">
                 <AddFlexoConceptInstanceParameter id="64" paramName="aC1" value="&quot;c2&quot;" userID="FLX" flexoID="118" />
                 <AddFlexoConceptInstanceParameter id="65" paramName="aC2" value="false" userID="FLX" flexoID="119" />
               </AssignableAction_AddFlexoConceptInstance>
             </ControlGraph2_DeclarationAction>
             <ControlGraph1_DeclarationAction id="66" variable="instanceC1" ownerContext="controlGraph1" userID="FLX" flexoID="115">
-              <AssignableAction_AddFlexoConceptInstance id="67" container="instanceB1" creationSchemeURI="http://openflexo.org/test/TestViewPoint2/VM1#ConceptC.create" virtualModelInstance="virtualModelInstance" userID="FLX" flexoID="112">
+              <AssignableAction_AddFlexoConceptInstance id="67" container="instanceB1" creationSchemeURI="http://openflexo.org/test/TestViewPointB/VM1#ConceptC.create" virtualModelInstance="virtualModelInstance" userID="FLX" flexoID="112">
                 <AddFlexoConceptInstanceParameter id="68" paramName="aC1" value="&quot;c1&quot;" userID="FLX" flexoID="113" />
                 <AddFlexoConceptInstanceParameter id="69" paramName="aC2" value="true" userID="FLX" flexoID="114" />
               </AssignableAction_AddFlexoConceptInstance>
             </ControlGraph1_DeclarationAction>
           </ControlGraph2_Sequence>
           <ControlGraph1_DeclarationAction id="70" variable="instanceB2" ownerContext="controlGraph1" userID="FLX" flexoID="110">
-            <AssignableAction_AddFlexoConceptInstance id="71" container="instanceA" creationSchemeURI="http://openflexo.org/test/TestViewPoint2/VM1#ConceptB.create" virtualModelInstance="virtualModelInstance" userID="FLX" flexoID="107">
+            <AssignableAction_AddFlexoConceptInstance id="71" container="instanceA" creationSchemeURI="http://openflexo.org/test/TestViewPointB/VM1#ConceptB.create" virtualModelInstance="virtualModelInstance" userID="FLX" flexoID="107">
               <AddFlexoConceptInstanceParameter id="72" paramName="aB1" value="&quot;b2&quot;" userID="FLX" flexoID="108" />
               <AddFlexoConceptInstanceParameter id="73" paramName="aB2" value="1.2" userID="FLX" flexoID="109" />
             </AssignableAction_AddFlexoConceptInstance>
           </ControlGraph1_DeclarationAction>
         </ControlGraph2_Sequence>
         <ControlGraph1_DeclarationAction id="74" variable="instanceB1" ownerContext="controlGraph1" userID="FLX" flexoID="100">
-          <AssignableAction_AddFlexoConceptInstance id="75" container="instanceA" creationSchemeURI="http://openflexo.org/test/TestViewPoint2/VM1#ConceptB.create" virtualModelInstance="virtualModelInstance" userID="FLX" flexoID="97">
+          <AssignableAction_AddFlexoConceptInstance id="75" container="instanceA" creationSchemeURI="http://openflexo.org/test/TestViewPointB/VM1#ConceptB.create" virtualModelInstance="virtualModelInstance" userID="FLX" flexoID="97">
             <AddFlexoConceptInstanceParameter id="76" paramName="aB1" value="&quot;b1&quot;" userID="FLX" flexoID="98" />
             <AddFlexoConceptInstanceParameter id="77" paramName="aB2" value="1.1" userID="FLX" flexoID="99" />
           </AssignableAction_AddFlexoConceptInstance>
         </ControlGraph1_DeclarationAction>
       </ControlGraph2_Sequence>
       <ControlGraph1_DeclarationAction id="78" variable="instanceA" ownerContext="controlGraph1" userID="FLX" flexoID="95">
-        <AssignableAction_AddFlexoConceptInstance id="79" creationSchemeURI="http://openflexo.org/test/TestViewPoint2/VM1#ConceptA.create" virtualModelInstance="virtualModelInstance" userID="FLX" flexoID="92">
+        <AssignableAction_AddFlexoConceptInstance id="79" creationSchemeURI="http://openflexo.org/test/TestViewPointB/VM1#ConceptA.create" virtualModelInstance="virtualModelInstance" userID="FLX" flexoID="92">
           <AddFlexoConceptInstanceParameter id="80" paramName="anA1" value="parameters.instanceName" userID="FLX" flexoID="93" />
           <AddFlexoConceptInstanceParameter id="81" paramName="anA2" value="8" userID="FLX" flexoID="94" />
         </AssignableAction_AddFlexoConceptInstance>

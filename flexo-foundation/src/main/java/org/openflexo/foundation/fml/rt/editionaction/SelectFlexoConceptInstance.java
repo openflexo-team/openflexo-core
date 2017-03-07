@@ -104,7 +104,8 @@ public interface SelectFlexoConceptInstance extends FetchRequest<FMLRTModelSlot<
 
 	@PropertyIdentifier(type = String.class)
 	public static final String FLEXO_CONCEPT_TYPE_URI_KEY = "flexoConceptTypeURI";
-
+	@PropertyIdentifier(type = DataBinding.class)
+	public static final String CONTAINER_KEY = "container";
 	@PropertyIdentifier(type = DataBinding.class)
 	public static final String VIRTUAL_MODEL_INSTANCE_KEY = "virtualModelInstance";
 
@@ -114,6 +115,13 @@ public interface SelectFlexoConceptInstance extends FetchRequest<FMLRTModelSlot<
 
 	@Setter(VIRTUAL_MODEL_INSTANCE_KEY)
 	public void setVirtualModelInstance(DataBinding<AbstractVirtualModelInstance<?, ?>> virtualModelInstance);
+
+	@Getter(value = CONTAINER_KEY)
+	@XMLAttribute
+	public DataBinding<FlexoConceptInstance> getContainer();
+
+	@Setter(CONTAINER_KEY)
+	public void setContainer(DataBinding<FlexoConceptInstance> container);
 
 	@Getter(value = FLEXO_CONCEPT_TYPE_URI_KEY)
 	@XMLAttribute
@@ -160,6 +168,7 @@ public interface SelectFlexoConceptInstance extends FetchRequest<FMLRTModelSlot<
 		}
 
 		private DataBinding<AbstractVirtualModelInstance<?, ?>> virtualModelInstance;
+		private DataBinding<FlexoConceptInstance> container;
 
 		@Override
 		public DataBinding<AbstractVirtualModelInstance<?, ?>> getVirtualModelInstance() {
@@ -182,6 +191,26 @@ public interface SelectFlexoConceptInstance extends FetchRequest<FMLRTModelSlot<
 			this.virtualModelInstance = aVirtualModelInstance;
 			notifiedBindingChanged(virtualModelInstance);
 			getPropertyChangeSupport().firePropertyChange("addressedVirtualModel", getAddressedVirtualModel(), null);
+		}
+
+		@Override
+		public DataBinding<FlexoConceptInstance> getContainer() {
+			if (container == null) {
+				container = new DataBinding<FlexoConceptInstance>(this, FlexoConceptInstance.class, BindingDefinitionType.GET);
+				container.setBindingName("container");
+			}
+			return container;
+		}
+
+		@Override
+		public void setContainer(DataBinding<FlexoConceptInstance> container) {
+			if (container != null) {
+				container.setOwner(this);
+				container.setBindingName("container");
+				container.setDeclaredType(FlexoConceptInstance.class);
+				container.setBindingDefinitionType(BindingDefinitionType.GET);
+			}
+			this.container = container;
 		}
 
 		@Override
@@ -290,6 +319,21 @@ public interface SelectFlexoConceptInstance extends FetchRequest<FMLRTModelSlot<
 
 		}
 
+		public FlexoConceptInstance getContainer(RunTimeEvaluationContext evaluationContext) {
+			if (getContainer() != null && getContainer().isSet() && getContainer().isValid()) {
+				try {
+					return getContainer().getBindingValue(evaluationContext);
+				} catch (TypeMismatchException e) {
+					e.printStackTrace();
+				} catch (NullReferenceException e) {
+					e.printStackTrace();
+				} catch (InvocationTargetException e) {
+					e.printStackTrace();
+				}
+			}
+			return null;
+		}
+
 		private List<FlexoConceptInstance> getIndexedMatchingList(FetchRequestCondition indexableCondition,
 				AbstractVirtualModelInstance<?, ?> vmi, RunTimeEvaluationContext evaluationContext)
 				throws TypeMismatchException, NullReferenceException, InvocationTargetException {
@@ -322,10 +366,16 @@ public interface SelectFlexoConceptInstance extends FetchRequest<FMLRTModelSlot<
 		@Override
 		public List<FlexoConceptInstance> execute(RunTimeEvaluationContext evaluationContext) {
 			AbstractVirtualModelInstance<?, ?> vmi = getVirtualModelInstance(evaluationContext);
+			FlexoConceptInstance container = getContainer(evaluationContext);
+			if (container == null) {
+				container = vmi;
+			}
+
 			if (vmi != null) {
 
-				if (isIndexable()) {
+				// System.out.println("SELECT FCI " + getFlexoConceptType().getName() + " from " + vmi + " container=" + container);
 
+				if (isIndexable(container)) {
 					List<FlexoConceptInstance> returned;
 					try {
 						// Compute returned as result of filter for first condition to apply
@@ -355,7 +405,14 @@ public interface SelectFlexoConceptInstance extends FetchRequest<FMLRTModelSlot<
 				}
 
 				// Otherwise, we do it brute force !!!
-				List<FlexoConceptInstance> fciList = vmi.getFlexoConceptInstances(getFlexoConceptType());
+
+				List<FlexoConceptInstance> fciList = null;
+				if (container instanceof AbstractVirtualModelInstance) {
+					fciList = ((AbstractVirtualModelInstance<?, ?>) container).getFlexoConceptInstances(getFlexoConceptType());
+				}
+				else {
+					fciList = container.getEmbeddedFlexoConceptInstances(getFlexoConceptType());
+				}
 				// System.out.println("Unfiltered FCI list for " + getFlexoConceptType() + " : " + fciList);
 				return filterWithConditions(fciList, evaluationContext);
 			}
@@ -382,8 +439,8 @@ public interface SelectFlexoConceptInstance extends FetchRequest<FMLRTModelSlot<
 			}
 		}
 
-		public boolean isIndexable() {
-			if (getConditions().size() > 0) {
+		public boolean isIndexable(FlexoConceptInstance container) {
+			if (container instanceof AbstractVirtualModelInstance && getConditions().size() > 0) {
 				for (FetchRequestCondition condition : getConditions()) {
 					if (!isIndexableCondition(condition)) {
 						return false;

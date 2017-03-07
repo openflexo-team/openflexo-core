@@ -92,6 +92,7 @@ public class CreationSchemeAction extends FlexoBehaviourAction<CreationSchemeAct
 	}
 
 	private AbstractVirtualModelInstance<?, ?> vmInstance;
+	private FlexoConceptInstance container;
 	private CreationScheme _creationScheme;
 
 	CreationSchemeAction(AbstractVirtualModelInstance<?, ?> focusedObject, Vector<VirtualModelInstanceObject> globalSelection,
@@ -134,6 +135,10 @@ public class CreationSchemeAction extends FlexoBehaviourAction<CreationSchemeAct
 			}
 			else if (getCreationScheme().getFlexoConcept() != null) {
 				flexoConceptInstance = getVirtualModelInstance().makeNewFlexoConceptInstance(getFlexoConcept());
+				if (getContainer() != null) {
+					// System.out.println(">>>>>> On ajoute " + flexoConceptInstance + " dans " + getContainer());
+					getContainer().addToEmbeddedFlexoConceptInstances(flexoConceptInstance);
+				}
 			}
 			else {
 				logger.warning("Could not create new FlexoConceptInstance because creation scheme refers to null FlexoConcept");
@@ -199,6 +204,18 @@ public class CreationSchemeAction extends FlexoBehaviourAction<CreationSchemeAct
 
 	public void setCreationScheme(CreationScheme creationScheme) {
 		_creationScheme = creationScheme;
+	}
+
+	public FlexoConceptInstance getContainer() {
+		return container;
+	}
+
+	public void setContainer(FlexoConceptInstance container) {
+		if ((container == null && this.container != null) || (container != null && !container.equals(this.container))) {
+			FlexoConceptInstance oldValue = this.container;
+			this.container = container;
+			getPropertyChangeSupport().firePropertyChange("container", oldValue, container);
+		}
 	}
 
 	@Override

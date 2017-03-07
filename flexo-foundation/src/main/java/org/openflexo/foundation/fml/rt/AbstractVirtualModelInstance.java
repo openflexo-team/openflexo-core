@@ -310,6 +310,11 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 	 */
 	public void reindexAllConceptInstances();
 
+	/**
+	 * Delete all instances of this {@link AbstractVirtualModelInstance}
+	 */
+	public void clear();
+
 	public static abstract class AbstractVirtualModelInstanceImpl<VMI extends AbstractVirtualModelInstance<VMI, VM>, VM extends AbstractVirtualModel<VM>>
 			extends FlexoConceptInstanceImpl implements AbstractVirtualModelInstance<VMI, VM> {
 
@@ -642,13 +647,13 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 			List<FlexoConceptInstance> returned = flexoConceptInstances.get(flexoConcept);
 
 			if (returned == null) {
-				System.out.println("Bizarre, pourtant j'ai ca: ");
+				/*System.out.println("Bizarre, pourtant j'ai ca: ");
 				for (FlexoConceptInstance fci : getFlexoConceptInstances()) {
 					System.out.println(" > " + fci);
 				}
 				for (FlexoConcept concept : flexoConceptInstances.keySet()) {
 					System.out.println("Key: " + concept + " list: " + flexoConceptInstances.get(concept));
-				}
+				}*/
 				return Collections.emptyList();
 			}
 			return returned;
@@ -1312,6 +1317,17 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 				}
 			}
 		}
+
+		/**
+		 * Delete all instances of this {@link AbstractVirtualModelInstance}
+		 */
+		@Override
+		public void clear() {
+			for (FlexoConceptInstance fci : new ArrayList<>(getFlexoConceptInstances())) {
+				fci.delete();
+			}
+		}
+
 	}
 
 	public class ObjectLookupResult {

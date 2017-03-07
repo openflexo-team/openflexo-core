@@ -108,7 +108,12 @@ public class CreateFlexoConcept extends AbstractCreateFlexoConcept<CreateFlexoCo
 		getFocusedObject().addToFlexoConcepts(newFlexoConcept);
 
 		if (getContainerFlexoConcept() != null) {
-			newFlexoConcept.setContainerFlexoConcept(getContainerFlexoConcept());
+			if (getContainerFlexoConcept() instanceof AbstractVirtualModel) {
+				// nothing to do
+			}
+			else {
+				newFlexoConcept.setContainerFlexoConcept(getContainerFlexoConcept());
+			}
 		}
 
 		performSetParentConcepts();
