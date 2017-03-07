@@ -294,6 +294,7 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 				fci.delete();
 			}
 		}
+		defaultMatchingSet = null;
 	}
 
 	/**

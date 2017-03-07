@@ -156,24 +156,28 @@ public class MatchingSet {
 	}
 
 	/**
-	 * Constructor for implicit MatchingSet computation
+	 * Constructor for implicit MatchingSet computation<br>
+	 * Type is not known and all types belonging to this virtual model will be returned
 	 * 
 	 * @param matchRequest
 	 * @param evaluationContext
 	 */
 	public MatchingSet(MatchFlexoConceptInstance matchRequest, RunTimeEvaluationContext evaluationContext) {
-
-		flexoConceptType = matchRequest.getFlexoConceptType();
+		// In this case, we don't know the type, otherwise some instances might be missed
+		this.flexoConceptType = null;
 
 		try {
 			container = matchRequest.getVirtualModelInstance().getBindingValue(evaluationContext);
+			// System.out.println("container=" + container);
 			if (container != null) {
-				if (flexoConceptType != null) {
+				/*if (flexoConceptType != null) {
 					allInstances = ((AbstractVirtualModelInstance<?, ?>) container).getFlexoConceptInstances(flexoConceptType);
 				}
-				else {
-					allInstances = ((AbstractVirtualModelInstance<?, ?>) container).getAllRootFlexoConceptInstances();
-				}
+				else {*/
+				// allInstances = ((AbstractVirtualModelInstance<?, ?>) container).getAllRootFlexoConceptInstances();
+				allInstances = ((AbstractVirtualModelInstance<?, ?>) container).getFlexoConceptInstances();
+				// }
+				// System.out.println("Toutes les instances: " + allInstances);
 			}
 		} catch (TypeMismatchException e) {
 			// TODO Auto-generated catch block
@@ -187,6 +191,7 @@ public class MatchingSet {
 		}
 
 		unmatchedInstances = new ArrayList<>(allInstances);
+		// System.out.println("Et unmatched=" + unmatchedInstances);
 	}
 
 	/**

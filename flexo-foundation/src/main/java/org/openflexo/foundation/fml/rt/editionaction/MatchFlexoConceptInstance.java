@@ -619,7 +619,6 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 
 				if (matchingSet == null) {
 					matchingSet = ((FlexoBehaviourAction<?, ?, ?>) evaluationContext).initiateDefaultMatchingSet(this);
-					System.out.println("Je gere un matching set par defaut: " + matchingSet);
 				}
 
 				VirtualModelInstance vmInstance = getVirtualModelInstance(evaluationContext);
@@ -672,8 +671,6 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 					if (container != null) {
 						creationSchemeAction.setContainer(container);
 					}
-
-					System.out.println("OK on cherche a creer un " + getFlexoConceptType() + " dans " + container);
 
 					creationSchemeAction.setCreationScheme(getCreationScheme());
 					// System.out.println("Creation scheme: " + getCreationScheme());
