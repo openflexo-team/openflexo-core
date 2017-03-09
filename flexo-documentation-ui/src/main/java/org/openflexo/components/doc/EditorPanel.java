@@ -21,14 +21,10 @@ public class EditorPanel<D extends FlexoDocument<D, TA>, TA extends TechnologyAd
 
 	private Editor<D, TA> editor;
 	private JPanel toolBar;
-	private Translator<D, TA> translator;
-
-	private FlexoDocument<D, TA> document;
 
 	public EditorPanel(DocumentFactory<D, TA> documentFactory) {
 		this.editor = new Editor<>(documentFactory);
 		this.toolBar = new JPanel();
-		this.translator = new Translator<>();
 		// Let's create the buttons
 		EditorButton boldButton = new EditorButton(new Property("font-weight", "bold", new HashSet<String>()));
 		boldButton.setText("B");
@@ -48,34 +44,16 @@ public class EditorPanel<D extends FlexoDocument<D, TA>, TA extends TechnologyAd
 		setDocument(document);
 	}
 
-	public Editor getEditor() {
+	public Editor<D, TA> getEditor() {
 		return this.editor;
 	}
 
-	public Translator getTranslator() {
-		return this.translator;
-	}
-
 	public FlexoDocument<D, TA> getDocument() {
-		return document;
+		return getEditor().getDocumentModel();
 	}
 
 	public void setDocument(FlexoDocument<D, TA> document) {
-		this.document = document;
-
-		String content = translator.generateHTML(document);
-
-		// Monitoring
-		// document.addListener(new DocumentMonitor(document, monitorEditor));
-
-		// Display
-		System.out.println(content);
-		editor.setText(content);
+		getEditor().setDocumentModel(document);
 	}
 
-	public void updateDocument() {
-		String content = translator.generateHTML(document);
-		System.out.println(content);
-		editor.setText(content);
-	}
 }

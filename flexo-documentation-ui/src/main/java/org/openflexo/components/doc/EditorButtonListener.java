@@ -5,16 +5,6 @@ package org.openflexo.components.doc;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ListIterator;
-
-import org.openflexo.foundation.doc.FlexoDocElement;
-import org.openflexo.foundation.doc.FlexoDocParagraph;
-import org.openflexo.foundation.doc.FlexoDocRun;
-import org.openflexo.foundation.doc.FlexoDocument;
-import org.openflexo.foundation.doc.FlexoTextRun;
-import org.openflexo.foundation.doc.InlineStyle;
-import org.openflexo.foundation.doc.Property;
-import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 
 /**
  * @author Bruno Quercia
@@ -33,20 +23,16 @@ public class EditorButtonListener implements ActionListener {
 		this.button = button;
 	}
 
-	/* (non-Javadoc)
-	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		Editor editor = panel.getEditor();
 		int start = editor.getSelectionStart() - 1;
 		int end = editor.getSelectionEnd() - 1;
-		setProperty(editor.getDocumentModel(), button.getProperty(), start, end);
+		editor.setProperty(button.getProperty(), start, end);
+		editor.updateContents();
+		System.out.println("On selectionne de 10 a 20");
+		editor.highlight(10, 20);
 
-		String newText = panel.getTranslator().generateHTML(editor.getDocumentModel());
-		System.out.println("newText=" + newText);
-
-		// editor.setText(newText);
 	}
 
 	/**
@@ -59,11 +45,11 @@ public class EditorButtonListener implements ActionListener {
 	 * @param end
 	 *            the end of the portion
 	 */
-	public <D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> void setProperty(FlexoDocument<D, TA> document, Property property,
+	/*public <D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> void setProperty(FlexoDocument<D, TA> document, Property property,
 			int start, int end) {
-
+	
 		System.out.println("On fait un setProperty pour " + property + " start=" + start + " end=" + end);
-
+	
 		int currentPosition = 0;
 		// Let's go through the arborescence to find the runs that we want to change
 		for (FlexoDocElement<D, TA> e : document.getElements()) {
@@ -72,9 +58,7 @@ public class EditorButtonListener implements ActionListener {
 			if (e instanceof FlexoDocParagraph) {
 				System.out.println("L'element est un paragraphe");
 				FlexoDocParagraph<D, TA> p = (FlexoDocParagraph<D, TA>) e;
-				ListIterator<FlexoDocRun<D, TA>> i = (ListIterator) p.getRuns().iterator();
-				while (i.hasNext()) {
-					FlexoDocRun<D, TA> r = i.next();
+				for (FlexoDocRun<D, TA> r : new ArrayList<>(p.getRuns())) {
 					// TextRuns - ImgRuns will be handled later
 					System.out.println("Examen d'un run");
 					if (r instanceof FlexoTextRun) {
@@ -107,7 +91,7 @@ public class EditorButtonListener implements ActionListener {
 								// All the rest of the text goes into our new run
 								newRun.setText(textEnd);
 								// And we insert it after tr
-								i.add(newRun);
+								p.addToRuns(newRun);
 								// The exploration of the arborescence will go on.
 								// The next run to be explored will be newRun.
 								// We don't want to change it, so let's change our start position
@@ -152,16 +136,16 @@ public class EditorButtonListener implements ActionListener {
 				currentPosition++;
 			}
 		}
-
+	
 		// panel.updateDocument();
-
+	
 		// panel.getEditor().fire
-
+	
 		// panel.getEditor().getDocument().
-
-		/*for (DocumentListener l : listeners) {
-			l.contentUpdate();
-		}*/
-	}
+	
+		//for (DocumentListener l : listeners) {
+		//	l.contentUpdate();
+		//}
+	}*/
 
 }

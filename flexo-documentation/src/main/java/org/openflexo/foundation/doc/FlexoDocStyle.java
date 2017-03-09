@@ -20,6 +20,9 @@
 
 package org.openflexo.foundation.doc;
 
+import java.awt.Color;
+import java.awt.Font;
+
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ModelEntity;
@@ -27,7 +30,7 @@ import org.openflexo.model.annotations.PropertyIdentifier;
 import org.openflexo.model.annotations.Setter;
 
 /**
- * Generic abstract concept representing a style of a text-based document (eg .docx, .odt, etc...)
+ * Generic abstract concept representing style information of a portion of a text-based document (eg .docx, .odt, etc...)
  * 
  * @author sylvain
  *
@@ -39,79 +42,82 @@ import org.openflexo.model.annotations.Setter;
 @ModelEntity(isAbstract = true)
 public interface FlexoDocStyle<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends FlexoDocObject<D, TA> {
 
-	@PropertyIdentifier(type = String.class)
-	public static final String NAME_KEY = "name";
-	@PropertyIdentifier(type = String.class)
-	public static final String STYLE_ID_KEY = "styleId";
+	@PropertyIdentifier(type = FlexoDocStyle.class)
+	public static final String BASED_ON_KEY = "basedOn";
+
+	@PropertyIdentifier(type = Font.class)
+	public static final String FONT_KEY = "font";
 	@PropertyIdentifier(type = Integer.class)
-	public static final String LEVEL_KEY = "level";
+	public static final String FONT_SIZE_KEY = "fontSize";
+	@PropertyIdentifier(type = Color.class)
+	public static final String FONT_COLOR_KEY = "fontColor";
+	@PropertyIdentifier(type = Boolean.class)
+	public static final String BOLD_KEY = "bold";
+	@PropertyIdentifier(type = Boolean.class)
+	public static final String ITALIC_KEY = "italic";
+	@PropertyIdentifier(type = Boolean.class)
+	public static final String UNDERLINE_KEY = "underline";
 
-	/**
-	 * Return name of the {@link FlexoDocStyle} in the {@link FlexoDocument}<br>
-	 * 
-	 * @return
-	 */
-	@Getter(value = NAME_KEY)
-	public String getName();
+	@Getter(BASED_ON_KEY)
+	public FlexoDocStyle<D, TA> getBasedOn();
 
-	@Setter(NAME_KEY)
-	public void setName(String name);
+	@Setter(BASED_ON_KEY)
+	public void setBasedOn(FlexoDocStyle<D, TA> style);
 
-	/**
-	 * Return identifier of the {@link FlexoDocStyle} in the {@link FlexoDocument}<br>
-	 * 
-	 * @return
-	 */
-	@Getter(value = STYLE_ID_KEY)
-	public String getStyleId();
+	@Getter(FONT_KEY)
+	public Font getFont();
 
-	@Setter(STYLE_ID_KEY)
-	public void setStyleId(String styleId);
+	@Setter(FONT_KEY)
+	public void setFont(Font aFont);
 
-	/**
-	 * Return level of this style, when trying to interpret the owner document as a structured document.<br>
-	 * This level is computed from the list of structuring styles as defined in {@link FlexoDocument} (see #
-	 * 
-	 * If this style is not structuring (not present in document's structuring style), return null
-	 * 
-	 * @return
-	 */
-	@Getter(value = LEVEL_KEY)
-	public Integer getLevel();
+	@Getter(FONT_SIZE_KEY)
+	public Integer getFontSize();
 
-	@Setter(LEVEL_KEY)
-	public void setLevel(Integer level);
+	@Setter(FONT_SIZE_KEY)
+	public void setFontSize(Integer aFontSize);
 
-	/**
-	 * Return flag indicating if this style is levelled or not
-	 * 
-	 * @return
-	 */
-	public boolean isLevelled();
+	@Getter(FONT_COLOR_KEY)
+	public Color getFontColor();
 
-	public static abstract class FlexoStyleImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
+	@Setter(FONT_COLOR_KEY)
+	public void setFontColor(Color aColor);
+
+	@Getter(BOLD_KEY)
+	public Boolean getBold();
+
+	@Setter(BOLD_KEY)
+	public void setBold(Boolean bold);
+
+	@Getter(ITALIC_KEY)
+	public Boolean getItalic();
+
+	@Setter(ITALIC_KEY)
+	public void setItalic(Boolean italic);
+
+	@Getter(UNDERLINE_KEY)
+	public Boolean getUnderline();
+
+	@Setter(UNDERLINE_KEY)
+	public void setUnderline(Boolean underline);
+
+	public String getStringRepresentation();
+
+	public static abstract class FlexoDocStyleImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
 			extends FlexoDocObjectImpl<D, TA> implements FlexoDocStyle<D, TA> {
 
 		@Override
-		public boolean isLevelled() {
-			if (getFlexoDocument() != null) {
-				return getFlexoDocument().getStructuringStyles().contains(this);
-			}
-			return false;
+		public String getStringRepresentation() {
+			StringBuffer sb = new StringBuffer();
+			sb.append(getFont() != null ? getFont().getFontName() + "," : "");
+			sb.append(getFontSize() != null ? getFontSize() + "pt," : "");
+			sb.append(getFontColor() != null ? getFontColor() : "");
+			sb.append(getBold() != null ? (getBold() ? "bold," : "") : "");
+			sb.append(getItalic() != null ? (getItalic() ? "italic," : "") : "");
+			sb.append(getUnderline() != null ? (getUnderline() ? "underline," : "") : "");
+			sb.deleteCharAt(sb.length() - 1);
+			return sb.toString();
 		}
 
-		@Override
-		public Integer getLevel() {
-			if (getFlexoDocument() != null) {
-				return getFlexoDocument().getStructuringStyles().indexOf(this);
-			}
-			return null;
-		}
-
-		@Override
-		public void setLevel(Integer level) {
-			// TODO Auto-generated method stub
-		}
 	}
 
 }

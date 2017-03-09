@@ -122,6 +122,13 @@ public abstract class DocumentFactory<D extends FlexoDocument<D, TA>, TA extends
 	protected abstract FlexoDocParagraph<D, TA> makeParagraph();
 
 	/**
+	 * Build new empty style
+	 * 
+	 * @return
+	 */
+	public abstract FlexoDocStyle<D, TA> makeStyle();
+
+	/**
 	 * Build new empty run
 	 * 
 	 * @return
@@ -198,7 +205,7 @@ public abstract class DocumentFactory<D extends FlexoDocument<D, TA>, TA extends
 	 * 
 	 * @return
 	 */
-	protected abstract FlexoDocStyle<D, TA> makeStyle();
+	protected abstract NamedDocStyle<D, TA> makeNamedStyle();
 
 	/**
 	 * Build new empty fragment
