@@ -40,7 +40,6 @@ package org.openflexo.components.validation;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-
 import org.openflexo.foundation.task.Progress;
 import org.openflexo.foundation.validation.FlexoValidationModel;
 import org.openflexo.localization.FlexoLocalization;
@@ -108,7 +107,7 @@ public class ValidationTask extends FlexoApplicationTask implements PropertyChan
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		if (evt.getPropertyName().equals(ValidationReport.VALIDATION_START)) {
-			Progress.setExpectedProgressSteps((Integer) evt.getNewValue());
+			Progress.setExpectedProgressSteps(((Number) evt.getNewValue()).intValue());
 			// ProgressWindow.showProgressWindow(FlexoLocalization.localizedForKey("validating") + " " + evt.getOldValue().toString(),
 			// (Integer) evt.getNewValue());
 		}
