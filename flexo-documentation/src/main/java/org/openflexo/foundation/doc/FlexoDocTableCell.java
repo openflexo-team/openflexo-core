@@ -54,6 +54,10 @@ public interface FlexoDocTableCell<D extends FlexoDocument<D, TA>, TA extends Te
 	public static final String ROW_KEY = "row";
 	@PropertyIdentifier(type = FlexoDocParagraph.class, cardinality = Cardinality.LIST)
 	public static final String PARAGRAPHS_KEY = "paragraphs";
+	@PropertyIdentifier(type = Integer.class)
+	public static final String COL_SPAN_KEY = "colSpan";
+	@PropertyIdentifier(type = Integer.class)
+	public static final String ROW_SPAN_KEY = "rowSpan";
 
 	@Getter(ROW_KEY)
 	public FlexoDocTableRow<D, TA> getRow();
@@ -122,6 +126,18 @@ public interface FlexoDocTableCell<D extends FlexoDocument<D, TA>, TA extends Te
 	 * @return
 	 */
 	public String getIdentifier();
+
+	@Getter(value = COL_SPAN_KEY, defaultValue = "1")
+	public int getColSpan();
+
+	@Setter(COL_SPAN_KEY)
+	public void setColSpan(int colSpan);
+
+	@Getter(value = ROW_SPAN_KEY, defaultValue = "1")
+	public int getRowSpan();
+
+	@Setter(ROW_SPAN_KEY)
+	public void setRowSpan(int rowSpan);
 
 	/**
 	 * Return a string representation (plain text) of contents of the cell

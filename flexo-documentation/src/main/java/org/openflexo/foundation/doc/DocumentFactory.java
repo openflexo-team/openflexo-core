@@ -89,8 +89,7 @@ public abstract class DocumentFactory<D extends FlexoDocument<D, TA>, TA extends
 		this.resource = resource;
 		setEditingContext(editingContext);
 		addConverter(relativePathResourceConverter = new RelativePathResourceConverter(null));
-		if (resource != null && resource.getIODelegate() != null
-				&& resource.getIODelegate().getSerializationArtefactAsResource() != null) {
+		if (resource != null && resource.getIODelegate() != null && resource.getIODelegate().getSerializationArtefactAsResource() != null) {
 			relativePathResourceConverter
 					.setContainerResource(resource.getIODelegate().getSerializationArtefactAsResource().getContainer());
 		}
@@ -106,7 +105,7 @@ public abstract class DocumentFactory<D extends FlexoDocument<D, TA>, TA extends
 	 * 
 	 * @return
 	 */
-	protected abstract D makeDocument();
+	public abstract D makeDocument();
 
 	/**
 	 * Generate a new unique id
@@ -232,7 +231,7 @@ public abstract class DocumentFactory<D extends FlexoDocument<D, TA>, TA extends
 		return returned;
 	}
 
-	private final Map<FlexoDocElement<D, TA>, Map<FlexoDocElement<D, TA>, FlexoDocFragment<D, TA>>> fragments = new HashMap<FlexoDocElement<D, TA>, Map<FlexoDocElement<D, TA>, FlexoDocFragment<D, TA>>>();
+	private final Map<FlexoDocElement<D, TA>, Map<FlexoDocElement<D, TA>, FlexoDocFragment<D, TA>>> fragments = new HashMap<>();
 
 	/**
 	 * Retrieve fragment identified by start and end element<br>
@@ -248,7 +247,7 @@ public abstract class DocumentFactory<D extends FlexoDocument<D, TA>, TA extends
 
 		Map<FlexoDocElement<D, TA>, FlexoDocFragment<D, TA>> map = fragments.get(startElement);
 		if (map == null) {
-			map = new HashMap<FlexoDocElement<D, TA>, FlexoDocFragment<D, TA>>();
+			map = new HashMap<>();
 			fragments.put(startElement, map);
 		}
 		FlexoDocFragment<D, TA> returned = map.get(endElement);
