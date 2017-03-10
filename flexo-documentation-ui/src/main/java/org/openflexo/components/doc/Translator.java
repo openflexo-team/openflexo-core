@@ -3,6 +3,7 @@
  */
 package org.openflexo.components.doc;
 
+import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -54,36 +55,20 @@ public class Translator<D extends FlexoDocument<D, TA>, TA extends TechnologyAda
 			propertiesValues.put("font-family", style.getFont().getFontName());
 		}
 		if (style.getFontSize() != null) {
-			if (style.getFontSize() < 9) {
-				propertiesValues.put("font-size", ".6em");
-			}
-			else if (style.getFontSize() == 9) {
-				propertiesValues.put("font-size", ".7em");
-			}
-			else if (style.getFontSize() == 10) {
-				propertiesValues.put("font-size", ".8em");
-			}
-			else if (style.getFontSize() == 11) {
-				propertiesValues.put("font-size", ".9em");
-			}
-			else if (style.getFontSize() == 12) {
-				propertiesValues.put("font-size", "1em");
-			}
-			else if (style.getFontSize() == 13) {
-				propertiesValues.put("font-size", "1.1em");
-			}
-			else if (style.getFontSize() == 14) {
-				propertiesValues.put("font-size", "1.2em");
-			}
-			else if (style.getFontSize() <= 16) {
-				propertiesValues.put("font-size", "1.5em");
-			}
-			else {
-				propertiesValues.put("font-size", "2em");
-			}
+			double em = style.getFontSize() / 24.0;
+
+			DecimalFormat df = new DecimalFormat("#.##em");
+			String value = df.format(em);
+			propertiesValues.put("font-size", value);
 		}
 		if (style.getFontColor() != null) {
-			propertiesValues.put("color", "#d9cc00");
+			int r = style.getFontColor().getRed();
+			int g = style.getFontColor().getGreen();
+			int b = style.getFontColor().getBlue();
+			String rH = (r < 16 ? "0" : "") + Integer.toHexString(r);
+			String gH = (g < 16 ? "0" : "") + Integer.toHexString(g);
+			String bH = (b < 16 ? "0" : "") + Integer.toHexString(b);
+			propertiesValues.put("color", "#" + rH + gH + bH);
 		}
 		if (style.getBold() != null && style.getBold()) {
 			propertiesValues.put("font-weight", "bold");
@@ -116,7 +101,7 @@ public class Translator<D extends FlexoDocument<D, TA>, TA extends TechnologyAda
 		String result = "";
 		System.out.println("Je genere le HTML de " + document);
 		for (FlexoDocElement<D, TA> e : document.getElements()) {
-			System.out.println("element: " + e);
+			// System.out.println("element: " + e);
 			if (e instanceof FlexoDocParagraph) {
 				Spans spans = null;
 				if (((FlexoDocParagraph) e).getNamedStyle() != null) {
@@ -159,6 +144,9 @@ public class Translator<D extends FlexoDocument<D, TA>, TA extends TechnologyAda
 		Spans spans = null;
 		if (r.getStyle() != null) {
 			spans = generateSpan(r.getStyle());
+			/*if (r instanceof FlexoTextRun) {
+				System.out.println("Run " + ((FlexoTextRun) r).getText() + " font-size=" + r.getStyle().getFontSize());
+			}*/
 		}
 		String content = null;
 		if (r instanceof FlexoTextRun) {
