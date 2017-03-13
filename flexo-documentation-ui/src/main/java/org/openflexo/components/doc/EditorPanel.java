@@ -3,10 +3,11 @@
  */
 package org.openflexo.components.doc;
 
+import java.awt.BorderLayout;
 import java.util.HashSet;
 
-import javax.swing.BoxLayout;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 
 import org.openflexo.foundation.doc.DocumentFactory;
 import org.openflexo.foundation.doc.FlexoDocument;
@@ -34,9 +35,9 @@ public class EditorPanel<D extends FlexoDocument<D, TA>, TA extends TechnologyAd
 		toolBar.add(italicButton);
 		boldButton.addActionListener(new EditorButtonListener(this, boldButton));
 		italicButton.addActionListener(new EditorButtonListener(this, italicButton));
-		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-		this.add(toolBar);
-		this.add(editor);
+		this.setLayout(new BorderLayout());
+		this.add(toolBar, BorderLayout.NORTH);
+		this.add(new JScrollPane(editor), BorderLayout.CENTER);
 	}
 
 	public EditorPanel(FlexoDocument<D, TA> document) {

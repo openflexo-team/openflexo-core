@@ -141,6 +141,9 @@ public class Translator<D extends FlexoDocument<D, TA>, TA extends TechnologyAda
 
 	private String generateHTML(FlexoDocRun<D, TA> r) {
 
+		if (r == null) {
+			return "";
+		}
 		Spans spans = null;
 		if (r.getStyle() != null) {
 			spans = generateSpan(r.getStyle());
@@ -153,7 +156,7 @@ public class Translator<D extends FlexoDocument<D, TA>, TA extends TechnologyAda
 			content = ((FlexoTextRun<D, TA>) r).getText();
 		}
 		if (r instanceof FlexoDrawingRun) {
-			content = "<img src='" + ((FlexoDrawingRun) r).getImageName() + "'/>";
+			content = "<img src='file://" + ((FlexoDrawingRun) r).getImageFile() + "'/>";
 		}
 		return (spans != null ? spans.before : "") + content + (spans != null ? spans.after : "");
 

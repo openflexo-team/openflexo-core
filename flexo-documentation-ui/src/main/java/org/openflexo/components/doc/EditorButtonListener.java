@@ -6,6 +6,10 @@ package org.openflexo.components.doc;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.text.Element;
+
+import org.openflexo.toolbox.StringUtils;
+
 /**
  * @author Bruno Quercia
  *
@@ -33,6 +37,16 @@ public class EditorButtonListener implements ActionListener {
 		System.out.println("On selectionne de 10 a 20");
 		editor.highlight(10, 20);
 
+		displayElement(editor.getDocument().getDefaultRootElement(), 0);
+
+	}
+
+	private void displayElement(Element element, int indent) {
+		System.out.println(StringUtils.buildString(' ', indent) + "> " + element);
+		for (int i = 0; i < element.getElementCount(); i++) {
+			Element child = element.getElement(i);
+			displayElement(child, indent + 2);
+		}
 	}
 
 	/**

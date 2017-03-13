@@ -448,6 +448,11 @@ public interface TextBinding<D extends FlexoDocument<D, TA>, TA extends Technolo
 			System.out.println("start=" + getTextSelection().getStartElement());
 			System.out.println("end=" + getTextSelection().getEndElement());
 
+			if (getTextSelection().getStartElement() == null || getTextSelection().getEndElement() == null) {
+				logger.warning("Unexpected start and/or end element found/ Aborting text replacement");
+				return;
+			}
+
 			for (FlexoDocElement e : actorReference.getElementsMatchingTemplateElement(getTextSelection().getStartElement())) {
 				if (container == null) {
 					container = e.getContainer();

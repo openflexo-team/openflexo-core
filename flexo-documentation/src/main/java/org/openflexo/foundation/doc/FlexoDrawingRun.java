@@ -20,6 +20,9 @@
 
 package org.openflexo.foundation.doc;
 
+import java.awt.Image;
+import java.io.File;
+
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.model.annotations.ModelEntity;
 
@@ -37,5 +40,9 @@ import org.openflexo.model.annotations.ModelEntity;
 public interface FlexoDrawingRun<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends FlexoDocRun<D, TA> {
 
 	public String getImageName();
+
+	public Image getImage();
+
+	public File getImageFile();
 
 }
