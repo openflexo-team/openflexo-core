@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VirtualModel id="0" modelVersion="1.0" version="0.1" name="VM" userID="FLX" flexoID="4">
+  <ActionScheme id="1" name="testBehaviour" width="800" label="testBehaviour" height="600" userID="FLX" flexoID="6">
+    <BehaviourControlGraph_DeclarationAction id="2" variable="variable1" userID="FLX" flexoID="9">
+      <AssignableAction_ExpressionAction id="3" expression="1" userID="FLX" flexoID="8" />
+    </BehaviourControlGraph_DeclarationAction>
+  </ActionScheme>
+  <Inspector id="4" inspectorTitle="VM" userID="FLX" flexoID="1" />
+</VirtualModel>
