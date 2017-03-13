@@ -40,7 +40,6 @@ package org.openflexo.foundation.fml;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
-
 import org.openflexo.connie.BindingEvaluationContext;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
@@ -59,6 +58,7 @@ import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.localization.LocalizedDelegate;
 import org.openflexo.model.annotations.DefineValidationRule;
+import org.openflexo.model.annotations.Embedded;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.Import;
@@ -89,36 +89,36 @@ import org.openflexo.toolbox.StringUtils;
 @ModelEntity(isAbstract = true)
 @ImplementationClass(FlexoRole.FlexoRoleImpl.class)
 @Imports({ @Import(FlexoConceptInstanceRole.class), @Import(PrimitiveRole.class) })
-public abstract interface FlexoRole<T> extends FlexoProperty<T> {
+public interface FlexoRole<T> extends FlexoProperty<T> {
 
 	@PropertyIdentifier(type = String.class)
-	public static final String ROLE_NAME_KEY = "roleName";
+	String ROLE_NAME_KEY = "roleName";
 	@PropertyIdentifier(type = ModelSlot.class)
-	public static final String MODEL_SLOT_KEY = "modelSlot";
+	String MODEL_SLOT_KEY = "modelSlot";
 	@PropertyIdentifier(type = RoleCloningStrategy.class)
-	public static final String CLONING_STRATEGY_KEY = "cloningStrategy";
+	String CLONING_STRATEGY_KEY = "cloningStrategy";
 	@PropertyIdentifier(type = PropertyCardinality.class)
-	public static final String CARDINALITY_KEY = "cardinality";
+	String CARDINALITY_KEY = "cardinality";
 
 	@PropertyIdentifier(type = DataBinding.class)
-	public static final String DEFAULT_VALUE_KEY = "defaultValue";
+	String DEFAULT_VALUE_KEY = "defaultValue";
 	@PropertyIdentifier(type = DataBinding.class)
-	public static final String CONTAINER_KEY = "container";
+	String CONTAINER_KEY = "container";
 	@PropertyIdentifier(type = boolean.class)
-	public static final String IS_REQUIRED_KEY = "isRequired";
+	String IS_REQUIRED_KEY = "isRequired";
 
 	@Getter(value = ROLE_NAME_KEY)
-	public String getRoleName();
+	String getRoleName();
 
 	@Setter(ROLE_NAME_KEY)
-	public void setRoleName(String patternRoleName);
+	void setRoleName(String patternRoleName);
 
 	@Getter(value = MODEL_SLOT_KEY)
-	@XMLElement
-	public ModelSlot<?> getModelSlot();
+	@XMLElement @Embedded
+	ModelSlot<?> getModelSlot();
 
 	@Setter(MODEL_SLOT_KEY)
-	public void setModelSlot(ModelSlot<?> modelSlot);
+	void setModelSlot(ModelSlot<?> modelSlot);
 
 	/**
 	 * Return cardinality of this property
@@ -128,7 +128,7 @@ public abstract interface FlexoRole<T> extends FlexoProperty<T> {
 	@Override
 	@Getter(CARDINALITY_KEY)
 	@XMLAttribute
-	public PropertyCardinality getCardinality();
+	PropertyCardinality getCardinality();
 
 	/**
 	 * Sets cardinality of this property
@@ -136,32 +136,32 @@ public abstract interface FlexoRole<T> extends FlexoProperty<T> {
 	 * @return
 	 */
 	@Setter(CARDINALITY_KEY)
-	public void setCardinality(PropertyCardinality cardinality);
+	void setCardinality(PropertyCardinality cardinality);
 
 	@Getter(value = DEFAULT_VALUE_KEY)
 	@XMLAttribute
-	public DataBinding<?> getDefaultValue();
+	DataBinding<?> getDefaultValue();
 
 	@Setter(DEFAULT_VALUE_KEY)
-	public void setDefaultValue(DataBinding<?> defaultValue);
+	void setDefaultValue(DataBinding<?> defaultValue);
 
 	@Getter(value = IS_REQUIRED_KEY, defaultValue = "false")
 	@XMLAttribute
-	public boolean getIsRequired();
+	boolean getIsRequired();
 
 	@Setter(IS_REQUIRED_KEY)
-	public void setIsRequired(boolean isRequired);
+	void setIsRequired(boolean isRequired);
 
-	public Object getDefaultValue(BindingEvaluationContext evaluationContext);
+	Object getDefaultValue(BindingEvaluationContext evaluationContext);
 
 	@Getter(value = CONTAINER_KEY)
 	@XMLAttribute
-	public DataBinding<?> getContainer();
+	DataBinding<?> getContainer();
 
 	@Setter(CONTAINER_KEY)
-	public void setContainer(DataBinding<?> container);
+	void setContainer(DataBinding<?> container);
 
-	public Object getContainer(BindingEvaluationContext evaluationContext);
+	Object getContainer(BindingEvaluationContext evaluationContext);
 
 	/**
 	 * Return the type of any instance of modelling element handled by this property.<br>
@@ -172,17 +172,17 @@ public abstract interface FlexoRole<T> extends FlexoProperty<T> {
 	 * @return
 	 */
 	@Override
-	public Type getType();
+	Type getType();
 
 	/**
 	 * Return the {@link TechnologyAdapter} managing this kind of role
 	 */
-	public TechnologyAdapter getRoleTechnologyAdapter();
+	TechnologyAdapter getRoleTechnologyAdapter();
 
 	/**
 	 * Return the class of {@link TechnologyAdapter} managing this kind of role
 	 */
-	public Class<? extends TechnologyAdapter> getRoleTechnologyAdapterClass();
+	Class<? extends TechnologyAdapter> getRoleTechnologyAdapterClass();
 
 	/**
 	 * Return cloning strategy to be applied for this property
@@ -191,7 +191,7 @@ public abstract interface FlexoRole<T> extends FlexoProperty<T> {
 	 */
 	@Getter(CLONING_STRATEGY_KEY)
 	@XMLAttribute
-	public RoleCloningStrategy getCloningStrategy();
+	RoleCloningStrategy getCloningStrategy();
 
 	/**
 	 * Sets cloning strategy to be applied for this property
@@ -199,14 +199,14 @@ public abstract interface FlexoRole<T> extends FlexoProperty<T> {
 	 * @return
 	 */
 	@Setter(CLONING_STRATEGY_KEY)
-	public void setCloningStrategy(RoleCloningStrategy cloningStrategy);
+	void setCloningStrategy(RoleCloningStrategy cloningStrategy);
 
 	/**
 	 * Encodes the default cloning strategy
 	 * 
 	 * @return
 	 */
-	public abstract RoleCloningStrategy defaultCloningStrategy();
+	RoleCloningStrategy defaultCloningStrategy();
 
 	/**
 	 * Instanciate run-time-level object encoding reference to object (see {@link ActorReference})
@@ -215,9 +215,9 @@ public abstract interface FlexoRole<T> extends FlexoProperty<T> {
 	 * @param fci
 	 * @return
 	 */
-	public abstract ActorReference<T> makeActorReference(T object, FlexoConceptInstance fci);
+	ActorReference<T> makeActorReference(T object, FlexoConceptInstance fci);
 
-	public static abstract class FlexoRoleImpl<T> extends FlexoPropertyImpl<T>implements FlexoRole<T> {
+	abstract class FlexoRoleImpl<T> extends FlexoPropertyImpl<T>implements FlexoRole<T> {
 
 		// private static final Logger logger = Logger.getLogger(FlexoRole.class.getPackage().getName());
 
