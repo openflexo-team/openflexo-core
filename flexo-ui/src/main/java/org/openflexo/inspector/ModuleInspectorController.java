@@ -49,7 +49,6 @@ import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.logging.Logger;
-
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.fml.FlexoConcept;
@@ -704,7 +703,9 @@ public class ModuleInspectorController extends Observable implements Observer {
 	private FIBWidget makeWidget(final InspectorEntry entry, FIBPanel newTab) {
 		for (TechnologyAdapter ta : flexoController.getApplicationContext().getTechnologyAdapterService().getTechnologyAdapters()) {
 			TechnologyAdapterController<?> tac = flexoController.getTechnologyAdapterController(ta);
-			FIBWidget returned = tac.makeWidget(entry, newTab, getFactory());
+			boolean[] expand = { true, false };
+			FIBWidget returned = tac.makeWidget(entry, null, getFactory(), expand);
+			newTab.addToSubComponents(returned, new TwoColsLayoutConstraints(TwoColsLayoutLocation.right, expand[0], expand[1]));
 			if (returned != null) {
 				return returned;
 			}

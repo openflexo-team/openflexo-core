@@ -38,11 +38,10 @@
 
 package org.openflexo.view.controller;
 
-import java.awt.Dimension;
+import java.awt.*;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.logging.Logger;
-
 import org.openflexo.ApplicationContext;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.foundation.fml.FlexoBehaviour;
@@ -56,6 +55,7 @@ import org.openflexo.gina.controller.FIBController.Status;
 import org.openflexo.gina.model.FIBComponent;
 import org.openflexo.gina.model.FIBModelFactory;
 import org.openflexo.gina.model.FIBVariable;
+import org.openflexo.gina.model.FIBWidget;
 import org.openflexo.gina.model.container.FIBPanel;
 import org.openflexo.gina.model.container.FIBPanel.Border;
 import org.openflexo.gina.model.container.FIBPanel.FlowLayoutAlignment;
@@ -126,14 +126,18 @@ public class ParametersRetriever<ES extends FlexoBehaviour> {
 	}
 
 	private FIBComponent makeWidget(final FlexoBehaviourParameter parameter, FIBPanel panel, int index) {
-
-		// System.out.println("makeWidget for " + parameter + " applicationContext=" + applicationContext);
-
 		if (applicationContext != null) {
 			for (TechnologyAdapter ta : applicationContext.getTechnologyAdapterService().getTechnologyAdapters()) {
 				TechnologyAdapterController<?> tac = applicationContext.getTechnologyAdapterControllerService()
 						.getTechnologyAdapterController(ta);
-				FIBComponent returned = tac.makeWidget(parameter, panel, index, action, fibModelFactory);
+				boolean[] expand = { true, false };
+				FIBComponent returned = tac.makeWidget(parameter, action, fibModelFactory, expand);
+
+				((FIBWidget) returned).setData(new DataBinding<>("data.parameters." + parameter.getName()));
+				if (returned instanceof FIBWidget) {
+					((FIBWidget) returned).setValueChangedAction(new DataBinding<>("controller.parameterValueChanged(data)"));
+				}
+				panel.addToSubComponents(returned, new TwoColsLayoutConstraints(TwoColsLayoutLocation.right, expand[0], expand[1]), index);
 				if (returned != null) {
 					return returned;
 				}

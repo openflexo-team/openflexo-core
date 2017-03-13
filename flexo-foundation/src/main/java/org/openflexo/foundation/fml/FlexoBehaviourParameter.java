@@ -79,7 +79,7 @@ import org.openflexo.toolbox.StringUtils;
 		@Import(IntegerParameter.class), @Import(ListParameter.class), @Import(TextAreaParameter.class), @Import(TextFieldParameter.class),
 		@Import(FlexoConceptInstanceParameter.class), @Import(URIParameter.class), @Import(TechnologyObjectParameter.class),
 		@Import(FlexoResourceParameter.class), @Import(FlexoVMIResourceParameter.class), @Import(GenericBehaviourParameter.class) })
-public interface FlexoBehaviourParameter extends FlexoBehaviourObject, FunctionArgument {
+public interface FlexoBehaviourParameter extends FlexoBehaviourObject, FunctionArgument, WidgetContext {
 
 	public static enum WidgetType {
 		TEXT_FIELD, TEXT_AREA, URI, LOCALIZED_TEXT_FIELD, INTEGER, FLOAT, CHECKBOX, DROPDOWN, RADIO_BUTTON, CUSTOM_WIDGET;

@@ -39,39 +39,26 @@
 
 package org.openflexo.view.controller;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
-
-import javax.swing.ImageIcon;
-
+import javax.swing.*;
 import org.openflexo.ApplicationContext;
 import org.openflexo.components.widget.FIBTechnologyBrowser;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.type.CustomType;
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.FlexoProject;
-import org.openflexo.foundation.fml.CheckboxParameter;
-import org.openflexo.foundation.fml.CreationScheme;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.FlexoConceptInstanceParameter;
-import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.FlexoResourceParameter;
 import org.openflexo.foundation.fml.FlexoRole;
-import org.openflexo.foundation.fml.GenericBehaviourParameter;
-import org.openflexo.foundation.fml.IntegerParameter;
-import org.openflexo.foundation.fml.ListParameter;
-import org.openflexo.foundation.fml.TextAreaParameter;
-import org.openflexo.foundation.fml.TextFieldParameter;
-import org.openflexo.foundation.fml.ViewType;
-import org.openflexo.foundation.fml.VirtualModelInstanceType;
-import org.openflexo.foundation.fml.binding.FlexoConceptBindingFactory;
+import org.openflexo.foundation.fml.WidgetContext;
 import org.openflexo.foundation.fml.controlgraph.ConditionalAction;
 import org.openflexo.foundation.fml.controlgraph.IncrementalIterationAction;
 import org.openflexo.foundation.fml.controlgraph.IterationAction;
@@ -83,12 +70,6 @@ import org.openflexo.foundation.fml.editionaction.ExpressionAction;
 import org.openflexo.foundation.fml.editionaction.LogAction;
 import org.openflexo.foundation.fml.editionaction.NotifyPropertyChangedAction;
 import org.openflexo.foundation.fml.editionaction.RemoveFromListAction;
-import org.openflexo.foundation.fml.inspector.CheckboxInspectorEntry;
-import org.openflexo.foundation.fml.inspector.GenericInspectorEntry;
-import org.openflexo.foundation.fml.inspector.InspectorEntry;
-import org.openflexo.foundation.fml.inspector.IntegerInspectorEntry;
-import org.openflexo.foundation.fml.inspector.TextAreaInspectorEntry;
-import org.openflexo.foundation.fml.inspector.TextFieldInspectorEntry;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.foundation.fml.rt.editionaction.AddClassInstance;
 import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstance;
@@ -100,20 +81,14 @@ import org.openflexo.foundation.fml.rt.editionaction.MatchFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.SelectFlexoConceptInstance;
 import org.openflexo.foundation.nature.ProjectNature;
 import org.openflexo.foundation.nature.ProjectNatureService;
-import org.openflexo.foundation.resource.FlexoResourceCenter;
-import org.openflexo.foundation.resource.FlexoResourceType;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
-import org.openflexo.gina.model.FIBComponent;
 import org.openflexo.gina.model.FIBComponent.HorizontalScrollBarPolicy;
 import org.openflexo.gina.model.FIBComponent.VerticalScrollBarPolicy;
 import org.openflexo.gina.model.FIBModelFactory;
 import org.openflexo.gina.model.FIBWidget;
-import org.openflexo.gina.model.container.FIBPanel;
-import org.openflexo.gina.model.container.layout.TwoColsLayoutConstraints;
-import org.openflexo.gina.model.container.layout.TwoColsLayoutConstraints.TwoColsLayoutLocation;
 import org.openflexo.gina.model.widget.FIBCheckBox;
 import org.openflexo.gina.model.widget.FIBCheckboxList;
 import org.openflexo.gina.model.widget.FIBCustom;
@@ -578,455 +553,77 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 	}
 
 	/**
-	 * Factory method used to instanciate a technology-specific FIBWidget for a given {@link InspectorEntry}<br>
+	 * Factory method used to instantiate a technology-specific FIBWidget for a given {@link FlexoBehaviourParameter}<br>
 	 * Provides a hook to specialize this method in a given technology
 	 * 
-	 * @param entry
-	 * @param newTab
-	 * @param fibModelFactory
+	 * @param object
 	 * @return
 	 */
-	// TODO: factorize code with makeWidget(FlexoBehaviourParameter)
-	public FIBWidget makeWidget(final InspectorEntry entry, FIBPanel newTab, FIBModelFactory fibModelFactory) {
-		if (entry instanceof GenericInspectorEntry) {
-			switch (entry.getWidget()) {
+	public FIBWidget makeWidget(final WidgetContext object, FlexoBehaviourAction<?, ?, ?> action, FIBModelFactory fibModelFactory, boolean[] expand) {
+		if (object.getWidget() != null) {
+			switch (object.getWidget()) {
 				case TEXT_FIELD:
 				case URI:
 				case LOCALIZED_TEXT_FIELD:
 					FIBTextField tf = fibModelFactory.newFIBTextField();
-					tf.setName(entry.getName() + "TextField");
-					newTab.addToSubComponents(tf, new TwoColsLayoutConstraints(TwoColsLayoutLocation.right, true, false));
+					tf.setName(object.getName() + "TextField");
 					return tf;
 				case TEXT_AREA:
 					FIBTextArea ta = fibModelFactory.newFIBTextArea();
-					ta.setName(entry.getName() + "TextArea");
+					ta.setName(object.getName() + "TextArea");
 					ta.setValidateOnReturn(true); // Avoid too many ontologies manipulations
 					ta.setUseScrollBar(true);
 					ta.setHorizontalScrollbarPolicy(HorizontalScrollBarPolicy.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 					ta.setVerticalScrollbarPolicy(VerticalScrollBarPolicy.VERTICAL_SCROLLBAR_AS_NEEDED);
-					newTab.addToSubComponents(ta, new TwoColsLayoutConstraints(TwoColsLayoutLocation.right, true, true));
+					expand[1] = true;
 					return ta;
 				case CHECKBOX:
 					FIBCheckBox cb = fibModelFactory.newFIBCheckBox();
-					cb.setName(entry.getName() + "CheckBox");
-					newTab.addToSubComponents(cb, new TwoColsLayoutConstraints(TwoColsLayoutLocation.right, true, false));
+					cb.setName(object.getName() + "CheckBox");
 					return cb;
 				case INTEGER:
 					FIBNumber number = fibModelFactory.newFIBNumber();
-					number.setName(entry.getName() + "Number");
+					number.setName(object.getName() + "Number");
 					number.setNumberType(NumberType.IntegerType);
-					newTab.addToSubComponents(number, new TwoColsLayoutConstraints(TwoColsLayoutLocation.right, false, false));
+					expand[0] = false;
 					return number;
 				case FLOAT:
 					FIBNumber numberF = fibModelFactory.newFIBNumber();
-					numberF.setName(entry.getName() + "Number");
+					numberF.setName(object.getName() + "Number");
 					numberF.setNumberType(NumberType.DoubleType);
-					newTab.addToSubComponents(numberF, new TwoColsLayoutConstraints(TwoColsLayoutLocation.right, false, false));
+					expand[0] = false;
 					return numberF;
 				case DROPDOWN:
 				case RADIO_BUTTON:
 					// ListParameter listParameter = (ListParameter) parameter;
 					FIBCheckboxList cbList = fibModelFactory.newFIBCheckboxList();
-					cbList.setName(entry.getName() + "CheckboxList");
+					cbList.setName(object.getName() + "CheckboxList");
 					// TODO: repair this !!!
 					logger.warning("This feature is no more implemented, please repair this !!!");
-					cbList.setList(new DataBinding<List<?>>("data.parameters." + entry.getName() + "TODO"));
+					cbList.setList(new DataBinding<List<?>>("data.parameters." + object.getName() + "TODO"));
 					cbList.setUseScrollBar(true);
 					cbList.setHorizontalScrollbarPolicy(HorizontalScrollBarPolicy.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 					cbList.setVerticalScrollbarPolicy(VerticalScrollBarPolicy.VERTICAL_SCROLLBAR_AS_NEEDED);
-					newTab.addToSubComponents(cbList, new TwoColsLayoutConstraints(TwoColsLayoutLocation.right, true, false));
+					expand[1] = true;
 					return cbList;
 				case CUSTOM_WIDGET:
-
-					/*if (entry.getType() instanceof ViewType) {
-						return makeViewSelector(parameter, panel, index, action, fibModelFactory);
-					}
-					else if (entry.getType() instanceof VirtualModelInstanceType) {
-						return makeVirtualModelInstanceSelector(parameter, panel, index, action, fibModelFactory);
-					}
-					else if (entry.getType() instanceof FlexoConceptInstanceType) {
-						return makeFlexoConceptInstanceSelector(parameter, panel, index, action, fibModelFactory);
-					}
-					else if (entry.getType() instanceof FlexoResourceType) {
-						return makeFlexoResourceSelector(parameter, panel, index, action, fibModelFactory);
-					}*/
-
-					FIBLabel notFound = fibModelFactory.newFIBLabel("<not_implemented>");
-					notFound.setName(entry.getName() + "NotImplemented");
-					newTab.addToSubComponents(notFound, new TwoColsLayoutConstraints(TwoColsLayoutLocation.right, true, false));
+					FIBLabel notFound = fibModelFactory.newFIBLabel("<not_found>");
+					notFound.setName(object.getName() + "NotFound");
 					return notFound;
 				default:
 					break;
 			}
 		}
 
-		if (entry instanceof TextFieldInspectorEntry) {
-			FIBTextField tf = fibModelFactory.newFIBTextField();
-			tf.setValidateOnReturn(true); // Avoid too many ontologies manipulations
-			newTab.addToSubComponents(tf, new TwoColsLayoutConstraints(TwoColsLayoutLocation.right, true, false));
-			return tf;
-		}
-		else if (entry instanceof TextAreaInspectorEntry) {
-			FIBTextArea ta = fibModelFactory.newFIBTextArea();
-			ta.setValidateOnReturn(true); // Avoid to many ontologies manipulations
-			ta.setUseScrollBar(true);
-			ta.setHorizontalScrollbarPolicy(HorizontalScrollBarPolicy.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-			ta.setVerticalScrollbarPolicy(VerticalScrollBarPolicy.VERTICAL_SCROLLBAR_AS_NEEDED);
-			newTab.addToSubComponents(ta, new TwoColsLayoutConstraints(TwoColsLayoutLocation.right, true, true));
-			return ta;
-		}
-		else if (entry instanceof CheckboxInspectorEntry) {
-			FIBCheckBox cb = fibModelFactory.newFIBCheckBox();
-			newTab.addToSubComponents(cb, new TwoColsLayoutConstraints(TwoColsLayoutLocation.right, true, false));
-			return cb;
-		}
-		else if (entry instanceof IntegerInspectorEntry) {
-			FIBNumber number = fibModelFactory.newFIBNumber();
-			number.setNumberType(NumberType.IntegerType);
-			newTab.addToSubComponents(number, new TwoColsLayoutConstraints(TwoColsLayoutLocation.right, true, false));
-			return number;
-		}
-
-		return null;
-	}
-
-	private FIBComponent makeFlexoResourceSelector(final FlexoBehaviourParameter parameter, FIBPanel panel, int index,
-			FlexoBehaviourAction<?, ?, ?> action, FIBModelFactory fibModelFactory) {
-		FIBCustom resourceSelector = fibModelFactory.newFIBCustom();
-		resourceSelector.setBindingFactory(parameter.getBindingFactory());
-		Class resourceSelectorClass;
-		try {
-			resourceSelectorClass = Class.forName("org.openflexo.components.widget.FIBResourceSelector");
-			resourceSelector.setComponentClass(resourceSelectorClass);
-		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		resourceSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(resourceSelector, new DataBinding<>("component.project"),
-				new DataBinding<>("controller.editor.project"), true));
-		resourceSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(resourceSelector,
-				new DataBinding<>("component.serviceManager"), new DataBinding<>("controller.flexoController.applicationContext"), true));
-		resourceSelector
-				.addToAssignments(fibModelFactory.newFIBCustomAssignment(resourceSelector, new DataBinding<>("component.expectedType"),
-						new DataBinding<>("data.parametersDefinitions." + parameter.getName() + ".type"), true));
-		return registerWidget(resourceSelector, parameter, panel, index);
-
-	}
-
-	private FIBComponent makeFlexoConceptInstanceSelector(final FlexoBehaviourParameter parameter, FIBPanel panel, int index,
-			FlexoBehaviourAction<?, ?, ?> action, FIBModelFactory fibModelFactory) {
-		FIBCustom fciSelector = fibModelFactory.newFIBCustom();
-		fciSelector.setBindingFactory(parameter.getBindingFactory());
-		Class fciSelectorClass;
-		try {
-			fciSelectorClass = Class.forName("org.openflexo.fml.rt.controller.widget.FIBFlexoConceptInstanceSelector");
-			fciSelector.setComponentClass(fciSelectorClass);
-		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		fciSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(fciSelector, new DataBinding<>("component.project"),
-				new DataBinding<>("controller.editor.project"), true));
-
-		String containerBinding = "";
-		if (parameter.getFlexoBehaviour() instanceof CreationScheme) {
-			containerBinding = "data." + FlexoConceptBindingFactory.VIRTUAL_MODEL_INSTANCE + "." + parameter.getContainer().toString();
-		}
-		else {
-			containerBinding = "data." + FlexoConceptBindingFactory.FLEXO_CONCEPT_INSTANCE + "." + parameter.getContainer().toString();
-		}
-
-		DataBinding<?> container = parameter.getContainer();
-
-		if (container.isSet() && container.isValid()) {
-
-			Type containerType = container.getAnalyzedType();
-
-			if (containerType instanceof ViewType) {
-				fciSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(fciSelector, new DataBinding<>("component.view"),
-						new DataBinding<>(containerBinding), true));
-			}
-			else if (containerType instanceof VirtualModelInstanceType) {
-				fciSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(fciSelector,
-						new DataBinding<>("component.virtualModelInstance"), new DataBinding<>(containerBinding), true));
-			}
-			else if (TypeUtils.isTypeAssignableFrom(FlexoResourceCenter.class, containerType)) {
-				fciSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(fciSelector,
-						new DataBinding<>("component.resourceCenter"), new DataBinding<>(containerBinding), true));
-			}
-		}
-		else {
-
-			// No container defined, set service manager
-			fciSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(fciSelector, new DataBinding<>("component.serviceManager"),
-					new DataBinding<>("controller.flexoController.applicationContext"), true));
-		}
-
-		fciSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(fciSelector, new DataBinding<>("component.expectedType"),
-				new DataBinding<>("data.parametersDefinitions." + parameter.getName() + ".type"), true));
-		return registerWidget(fciSelector, parameter, panel, index);
-
-	}
-
-	private FIBComponent makeVirtualModelInstanceSelector(final FlexoBehaviourParameter parameter, FIBPanel panel, int index,
-			FlexoBehaviourAction<?, ?, ?> action, FIBModelFactory fibModelFactory) {
-		FIBCustom vmiSelector = fibModelFactory.newFIBCustom();
-		vmiSelector.setBindingFactory(parameter.getBindingFactory());
-		Class fciSelectorClass;
-		try {
-			fciSelectorClass = Class.forName("org.openflexo.fml.rt.controller.widget.FIBVirtualModelInstanceSelector");
-			vmiSelector.setComponentClass(fciSelectorClass);
-		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		vmiSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(vmiSelector, new DataBinding<>("component.project"),
-				new DataBinding<>("controller.editor.project"), true));
-		String containerBinding = "";
-		if (parameter.getFlexoBehaviour() instanceof CreationScheme) {
-			containerBinding = "data." + FlexoConceptBindingFactory.VIRTUAL_MODEL_INSTANCE + "." + parameter.getContainer().toString();
-		}
-		else {
-			containerBinding = "data." + FlexoConceptBindingFactory.FLEXO_CONCEPT_INSTANCE + "." + parameter.getContainer().toString();
-		}
-
-		if (parameter.getContainer().isSet() && parameter.getContainer().isValid()) {
-
-			Type containerType = parameter.getContainer().getAnalyzedType();
-
-			if (containerType instanceof ViewType) {
-				vmiSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(vmiSelector, new DataBinding<>("component.view"),
-						new DataBinding<>(containerBinding), true));
-			}
-			else if (TypeUtils.isTypeAssignableFrom(FlexoResourceCenter.class, containerType)) {
-				vmiSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(vmiSelector,
-						new DataBinding<>("component.resourceCenter"), new DataBinding<>(containerBinding), true));
-			}
-		}
-		else {
-			// No container defined, set service manager
-			vmiSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(vmiSelector, new DataBinding<>("component.serviceManager"),
-					new DataBinding<>("controller.flexoController.applicationContext"), true));
-		}
-
-		// vmiSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(vmiSelector, new DataBinding<Object>("component.view"),
-		// new DataBinding<Object>(containerBinding), true));
-
-		vmiSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(vmiSelector, new DataBinding<>("component.expectedType"),
-				new DataBinding<>("data.parametersDefinitions." + parameter.getName() + ".type"), true));
-		return registerWidget(vmiSelector, parameter, panel, index);
-	}
-
-	private FIBComponent makeViewSelector(final FlexoBehaviourParameter parameter, FIBPanel panel, int index,
-			FlexoBehaviourAction<?, ?, ?> action, FIBModelFactory fibModelFactory) {
-		FIBCustom viewSelector = fibModelFactory.newFIBCustom();
-		viewSelector.setBindingFactory(parameter.getBindingFactory());
-		Class fciSelectorClass;
-		try {
-			fciSelectorClass = Class.forName("org.openflexo.fml.rt.controller.widget.FIBViewSelector");
-			viewSelector.setComponentClass(fciSelectorClass);
-		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		viewSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(viewSelector, new DataBinding<>("component.project"),
-				new DataBinding<>("controller.editor.project"), true));
-
-		String containerBinding = "";
-		if (parameter.getFlexoBehaviour() instanceof CreationScheme) {
-			containerBinding = "data." + FlexoConceptBindingFactory.VIRTUAL_MODEL_INSTANCE + "." + parameter.getContainer().toString();
-		}
-		else {
-			containerBinding = "data." + FlexoConceptBindingFactory.FLEXO_CONCEPT_INSTANCE + "." + parameter.getContainer().toString();
-		}
-
-		if (parameter.getContainer().isSet() && parameter.getContainer().isValid()) {
-
-			Type containerType = parameter.getContainer().getAnalyzedType();
-
-			if (TypeUtils.isTypeAssignableFrom(FlexoResourceCenter.class, containerType)) {
-				viewSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(viewSelector,
-						new DataBinding<>("component.resourceCenter"), new DataBinding<>(containerBinding), true));
-			}
-		}
-		else {
-			// No container defined, set service manager
-			// No container defined, set service manager
-			viewSelector
-					.addToAssignments(fibModelFactory.newFIBCustomAssignment(viewSelector, new DataBinding<>("component.serviceManager"),
-							new DataBinding<>("controller.flexoController.applicationContext"), true));
-		}
-
-		// viewSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(viewSelector, new DataBinding<Object>("component.view"),
-		// new DataBinding<Object>(containerBinding), true));
-
-		viewSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(viewSelector, new DataBinding<>("component.expectedType"),
-				new DataBinding<>("data.parametersDefinitions." + parameter.getName() + ".type"), true));
-		return registerWidget(viewSelector, parameter, panel, index);
-	}
-
-	/**
-	 * Factory method used to instanciate a technology-specific FIBWidget for a given {@link FlexoBehaviourParameter}<br>
-	 * Provides a hook to specialize this method in a given technology
-	 * 
-	 * @param parameter
-	 * @param panel
-	 * @param index
-	 * @return
-	 */
-	public FIBComponent makeWidget(final FlexoBehaviourParameter parameter, FIBPanel panel, int index, FlexoBehaviourAction<?, ?, ?> action,
-			FIBModelFactory fibModelFactory) {
-		if (parameter instanceof GenericBehaviourParameter) {
-			switch (parameter.getWidget()) {
-				case TEXT_FIELD:
-				case URI:
-				case LOCALIZED_TEXT_FIELD:
-					FIBTextField tf = fibModelFactory.newFIBTextField();
-					tf.setName(parameter.getName() + "TextField");
-					return registerWidget(tf, parameter, panel, index);
-				case TEXT_AREA:
-					FIBTextArea ta = fibModelFactory.newFIBTextArea();
-					ta.setName(parameter.getName() + "TextArea");
-					ta.setValidateOnReturn(true); // Avoid too many ontologies manipulations
-					ta.setUseScrollBar(true);
-					ta.setHorizontalScrollbarPolicy(HorizontalScrollBarPolicy.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-					ta.setVerticalScrollbarPolicy(VerticalScrollBarPolicy.VERTICAL_SCROLLBAR_AS_NEEDED);
-					return registerWidget(ta, parameter, panel, index, true, true);
-				case CHECKBOX:
-					FIBCheckBox cb = fibModelFactory.newFIBCheckBox();
-					cb.setName(parameter.getName() + "CheckBox");
-					return registerWidget(cb, parameter, panel, index);
-				case INTEGER:
-					FIBNumber number = fibModelFactory.newFIBNumber();
-					number.setName(parameter.getName() + "Number");
-					number.setNumberType(NumberType.IntegerType);
-					return registerWidget(number, parameter, panel, index, false, false);
-				case FLOAT:
-					FIBNumber numberF = fibModelFactory.newFIBNumber();
-					numberF.setName(parameter.getName() + "Number");
-					numberF.setNumberType(NumberType.DoubleType);
-					return registerWidget(numberF, parameter, panel, index, false, false);
-				case DROPDOWN:
-				case RADIO_BUTTON:
-					// ListParameter listParameter = (ListParameter) parameter;
-					FIBCheckboxList cbList = fibModelFactory.newFIBCheckboxList();
-					cbList.setName(parameter.getName() + "CheckboxList");
-					// TODO: repair this !!!
-					logger.warning("This feature is no more implemented, please repair this !!!");
-					cbList.setList(new DataBinding<List<?>>("data.parameters." + parameter.getName() + "TODO"));
-					/*if (listParameter.getListType() == ListType.ObjectProperty) {
-						cbList.setIteratorClass(IFlexoOntologyObjectProperty.class);
-						cbList.setFormat(new DataBinding<String>("object.name + \" (\"+object.domain.name+\")\""));
-						cbList.setShowIcon(true);
-						cbList.setIcon(new DataBinding<Icon>("controller.iconForObject(object)"));
-						cbList.setVGap(-2);
-					} else if (listParameter.getListType() == ListType.DataProperty) {
-						cbList.setIteratorClass(IFlexoOntologyDataProperty.class);
-						cbList.setFormat(new DataBinding<String>("object.name + \" (\"+object.domain.name+\")\""));
-						cbList.setShowIcon(true);
-						cbList.setIcon(new DataBinding<Icon>("controller.iconForObject(object)"));
-						cbList.setVGap(-2);
-					} else if (listParameter.getListType() == ListType.Property) {
-						cbList.setIteratorClass(IFlexoOntologyStructuralProperty.class);
-						cbList.setFormat(new DataBinding<String>("object.name + \" (\"+object.domain.name+\")\""));
-						cbList.setShowIcon(true);
-						cbList.setIcon(new DataBinding<Icon>("controller.iconForObject(object)"));
-						cbList.setVGap(-2);
-					}*/
-					cbList.setUseScrollBar(true);
-					cbList.setHorizontalScrollbarPolicy(HorizontalScrollBarPolicy.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-					cbList.setVerticalScrollbarPolicy(VerticalScrollBarPolicy.VERTICAL_SCROLLBAR_AS_NEEDED);
-
-					return registerWidget(cbList, parameter, panel, index, true, true);
-				case CUSTOM_WIDGET:
-
-					if (parameter.getType() instanceof ViewType) {
-						return makeViewSelector(parameter, panel, index, action, fibModelFactory);
-					}
-					else if (parameter.getType() instanceof VirtualModelInstanceType) {
-						return makeVirtualModelInstanceSelector(parameter, panel, index, action, fibModelFactory);
-					}
-					else if (parameter.getType() instanceof FlexoConceptInstanceType) {
-						return makeFlexoConceptInstanceSelector(parameter, panel, index, action, fibModelFactory);
-					}
-					else if (parameter.getType() instanceof FlexoResourceType) {
-						return makeFlexoResourceSelector(parameter, panel, index, action, fibModelFactory);
-					}
-
-					FIBLabel notFound = fibModelFactory.newFIBLabel("<not_found>");
-					notFound.setName(parameter.getName() + "NotFound");
-					return registerWidget(notFound, parameter, panel, index);
-				default:
-					break;
-			}
-		}
-
-		if (parameter instanceof TextFieldParameter) {
-			FIBTextField tf = fibModelFactory.newFIBTextField();
-			tf.setName(parameter.getName() + "TextField");
-			return registerWidget(tf, parameter, panel, index);
-		}
-		else if (parameter instanceof TextAreaParameter) {
-			FIBTextArea ta = fibModelFactory.newFIBTextArea();
-			ta.setName(parameter.getName() + "TextArea");
-			ta.setValidateOnReturn(true); // Avoid too many ontologies manipulations
-			ta.setUseScrollBar(true);
-			ta.setHorizontalScrollbarPolicy(HorizontalScrollBarPolicy.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-			ta.setVerticalScrollbarPolicy(VerticalScrollBarPolicy.VERTICAL_SCROLLBAR_AS_NEEDED);
-			return registerWidget(ta, parameter, panel, index, true, true);
-		}
-		else if (parameter instanceof CheckboxParameter) {
-			FIBCheckBox cb = fibModelFactory.newFIBCheckBox();
-			cb.setName(parameter.getName() + "CheckBox");
-			return registerWidget(cb, parameter, panel, index);
-		}
-		else if (parameter instanceof IntegerParameter) {
-			FIBNumber number = fibModelFactory.newFIBNumber();
-			number.setName(parameter.getName() + "Number");
-			number.setNumberType(NumberType.IntegerType);
-			return registerWidget(number, parameter, panel, index);
-		}
-		else if (parameter instanceof ListParameter) {
-			ListParameter listParameter = (ListParameter) parameter;
-			FIBCheckboxList cbList = fibModelFactory.newFIBCheckboxList();
-			cbList.setName(parameter.getName() + "CheckboxList");
-			// TODO: repair this !!!
-			logger.warning("This feature is no more implemented, please repair this !!!");
-			cbList.setList(new DataBinding<List<?>>("data.parameters." + parameter.getName() + "TODO"));
-			/*if (listParameter.getListType() == ListType.ObjectProperty) {
-				cbList.setIteratorClass(IFlexoOntologyObjectProperty.class);
-				cbList.setFormat(new DataBinding<String>("object.name + \" (\"+object.domain.name+\")\""));
-				cbList.setShowIcon(true);
-				cbList.setIcon(new DataBinding<Icon>("controller.iconForObject(object)"));
-				cbList.setVGap(-2);
-			} else if (listParameter.getListType() == ListType.DataProperty) {
-				cbList.setIteratorClass(IFlexoOntologyDataProperty.class);
-				cbList.setFormat(new DataBinding<String>("object.name + \" (\"+object.domain.name+\")\""));
-				cbList.setShowIcon(true);
-				cbList.setIcon(new DataBinding<Icon>("controller.iconForObject(object)"));
-				cbList.setVGap(-2);
-			} else if (listParameter.getListType() == ListType.Property) {
-				cbList.setIteratorClass(IFlexoOntologyStructuralProperty.class);
-				cbList.setFormat(new DataBinding<String>("object.name + \" (\"+object.domain.name+\")\""));
-				cbList.setShowIcon(true);
-				cbList.setIcon(new DataBinding<Icon>("controller.iconForObject(object)"));
-				cbList.setVGap(-2);
-			}*/
-			cbList.setUseScrollBar(true);
-			cbList.setHorizontalScrollbarPolicy(HorizontalScrollBarPolicy.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-			cbList.setVerticalScrollbarPolicy(VerticalScrollBarPolicy.VERTICAL_SCROLLBAR_AS_NEEDED);
-
-			return registerWidget(cbList, parameter, panel, index, true, true);
-		}
-		else if (parameter instanceof FlexoConceptInstanceParameter) {
+		// TODO check if needed
+		if (object instanceof FlexoConceptInstanceParameter) {
 			FIBCustom epiSelector = fibModelFactory.newFIBCustom();
-			epiSelector.setBindingFactory(parameter.getBindingFactory());
+			epiSelector.setBindingFactory(object.getBindingFactory());
 			Class fciSelectorClass;
 			try {
 				fciSelectorClass = Class.forName("org.openflexo.fml.rt.controller.widget.FIBFlexoConceptInstanceSelector");
 				epiSelector.setComponentClass(fciSelectorClass);
 			} catch (ClassNotFoundException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			epiSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(epiSelector, new DataBinding<>("component.project"),
@@ -1036,22 +633,22 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 
 			epiSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(epiSelector,
 					new DataBinding<>("component.virtualModelInstance"),
-					new DataBinding<>("data." + ((FlexoConceptInstanceParameter) parameter).getVirtualModelInstance().toString()), true));
+					new DataBinding<>("data." + ((FlexoConceptInstanceParameter) object).getVirtualModelInstance().toString()), true));
 
 			// TODO: check but it seems that component.flexoConcept do not exist anymore
 			epiSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(epiSelector, new DataBinding<>("component.flexoConcept"),
-					new DataBinding<>("data.parametersDefinitions." + parameter.getName() + ".flexoConceptType"), true));
+					new DataBinding<>("data.parametersDefinitions." + object.getName() + ".flexoConceptType"), true));
 			// extra informations.
 			epiSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(epiSelector, new DataBinding<>("component.virtualModel"),
-					new DataBinding<>("data.parametersDefinitions." + parameter.getName() + ".modelSlotVirtualModel"), true));
+					new DataBinding<>("data.parametersDefinitions." + object.getName() + ".modelSlotVirtualModel"), true));
 			epiSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(epiSelector,
 					new DataBinding<>("component.viewPointLibrary"), new DataBinding<>("data.serviceManager.viewPointLibrary"), true));
 
-			return registerWidget(epiSelector, parameter, panel, index);
+			return epiSelector;
 		}
-		else if (parameter instanceof FlexoResourceParameter) {
+		else if (object instanceof FlexoResourceParameter) {
 			FIBCustom resourceSelector = fibModelFactory.newFIBCustom();
-			resourceSelector.setBindingFactory(parameter.getBindingFactory());
+			resourceSelector.setBindingFactory(object.getBindingFactory());
 			Class resourceSelectorClass;
 			try {
 				resourceSelectorClass = Class.forName("org.openflexo.components.widget.FIBResourceSelector");
@@ -1062,33 +659,19 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 			}
 			resourceSelector.addToAssignments(
 					fibModelFactory.newFIBCustomAssignment(resourceSelector, new DataBinding<>("component.technologyAdapter"),
-							new DataBinding<>("data.parametersDefinitions." + parameter.getName() + ".resourceTechnologyAdapter"), true));
+							new DataBinding<>("data.parametersDefinitions." + object.getName() + ".resourceTechnologyAdapter"), true));
 			resourceSelector.addToAssignments(
 					fibModelFactory.newFIBCustomAssignment(resourceSelector, new DataBinding<>("component.resourceDataClass"),
-							new DataBinding<>("data.parametersDefinitions." + parameter.getName() + ".resourceDataType"), true));
+							new DataBinding<>("data.parametersDefinitions." + object.getName() + ".resourceDataType"), true));
 			resourceSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(resourceSelector,
 					new DataBinding<>("component.resourceManager"), new DataBinding<>("data.serviceManager.resourceManager"), true));
 
-			return registerWidget(resourceSelector, parameter, panel, index);
+			return resourceSelector;
 		}
 
 		return null;
 	}
 
-	protected FIBComponent registerWidget(FIBComponent widget, FlexoBehaviourParameter parameter, FIBPanel panel, int index) {
-		return registerWidget(widget, parameter, panel, index, true, false);
-	}
-
-	protected FIBComponent registerWidget(FIBComponent widget, FlexoBehaviourParameter parameter, FIBPanel panel, int index,
-			boolean expandHorizontally, boolean expandVertically) {
-		((FIBWidget) widget).setData(new DataBinding<>("data.parameters." + parameter.getName()));
-		if (widget instanceof FIBWidget) {
-			((FIBWidget) widget).setValueChangedAction(new DataBinding<>("controller.parameterValueChanged(data)"));
-		}
-		panel.addToSubComponents(widget, new TwoColsLayoutConstraints(TwoColsLayoutLocation.right, expandHorizontally, expandVertically),
-				index);
-		return widget;
-	}
 
 	/**
 	 * Provides a hook to handle specific {@link FlexoBehaviourParameter} for a given technology
@@ -1101,7 +684,6 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 	/**
 	 * Hook allowing to register technology-specific types
 	 * 
-	 * @param converter
 	 */
 	/*public void initTechnologySpecificTypeEditors(TechnologyAdapterService taService) {
 		for (Class<? extends CustomType> typeClass : taService.getCustomTypeFactories().keySet()) {

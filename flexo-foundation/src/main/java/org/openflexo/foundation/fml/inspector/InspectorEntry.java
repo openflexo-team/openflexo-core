@@ -42,7 +42,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.logging.Logger;
-
 import org.openflexo.connie.Bindable;
 import org.openflexo.connie.BindingEvaluationContext;
 import org.openflexo.connie.DataBinding;
@@ -55,6 +54,7 @@ import org.openflexo.foundation.fml.FlexoBehaviourParameter.FlexoBehaviourParame
 import org.openflexo.foundation.fml.FlexoBehaviourParameter.WidgetType;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptObject;
+import org.openflexo.foundation.fml.WidgetContext;
 import org.openflexo.foundation.fml.binding.InspectorEntryBindingModel;
 import org.openflexo.model.annotations.DefineValidationRule;
 import org.openflexo.model.annotations.Getter;
@@ -77,7 +77,7 @@ import org.openflexo.toolbox.StringUtils;
 @ImplementationClass(InspectorEntry.InspectorEntryImpl.class)
 @Imports({ @Import(CheckboxInspectorEntry.class), @Import(FloatInspectorEntry.class), @Import(IntegerInspectorEntry.class),
 		@Import(TextAreaInspectorEntry.class), @Import(TextFieldInspectorEntry.class), @Import(GenericInspectorEntry.class) })
-public abstract interface InspectorEntry extends FlexoConceptObject, Bindable {
+public interface InspectorEntry extends FlexoConceptObject, Bindable, WidgetContext {
 
 	@PropertyIdentifier(type = FlexoConceptInspector.class)
 	public static final String INSPECTOR_KEY = "inspector";

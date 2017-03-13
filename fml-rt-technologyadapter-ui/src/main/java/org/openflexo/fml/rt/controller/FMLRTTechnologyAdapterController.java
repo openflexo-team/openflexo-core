@@ -38,8 +38,7 @@
 
 package org.openflexo.fml.rt.controller;
 
-import javax.swing.ImageIcon;
-
+import javax.swing.*;
 import org.openflexo.components.widget.FIBTechnologyBrowser;
 import org.openflexo.fml.rt.controller.action.ActionSchemeActionInitializer;
 import org.openflexo.fml.rt.controller.action.CreateBasicVirtualModelInstanceInitializer;
@@ -322,5 +321,4 @@ public class FMLRTTechnologyAdapterController extends TechnologyAdapterControlle
 	protected FIBTechnologyBrowser<FMLRTTechnologyAdapter> buildTechnologyBrowser(FlexoController controller) {
 		return new FIBViewLibraryBrowser(getTechnologyAdapter(), controller);
 	}
-
 }
