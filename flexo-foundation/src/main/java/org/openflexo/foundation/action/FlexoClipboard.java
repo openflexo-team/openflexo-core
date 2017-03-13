@@ -42,7 +42,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.openflexo.fge.control.exceptions.CopyException;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.InnerResourceData;
@@ -230,7 +229,8 @@ public class FlexoClipboard {
 
 				// System.out.println("--------- START CUT");
 
-				clipboard = modelFactory.cut(extendedObjectsToBeCut.get(pamelaResource).toArray(new Object[extendedObjectsToBeCut.size()]));
+				List<FlexoObject> objects = extendedObjectsToBeCut.get(pamelaResource);
+				clipboard = modelFactory.cut(objects.toArray(new Object[objects.size()]));
 				clipboard.setCopyContext(copyContext);
 				// System.out.println(clipboard.debug());
 				// System.out.println("copyContext=" + copyContext);

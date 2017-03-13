@@ -41,10 +41,7 @@ package org.openflexo.action;
 import java.awt.event.KeyEvent;
 import java.util.EventObject;
 import java.util.logging.Logger;
-
-import javax.swing.Icon;
-import javax.swing.KeyStroke;
-
+import javax.swing.*;
 import org.openflexo.FlexoCst;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.action.CutAction;
@@ -80,8 +77,6 @@ public class CutActionInitializer extends ActionInitializer<CutAction, FlexoObje
 		return new FlexoActionFinalizer<CutAction>() {
 			@Override
 			public boolean run(EventObject e, CutAction action) {
-				getControllerActionInitializer().getController().setInfoMessage(
-						"Cut " + action.getClipboard().getLeaderClipboard().getOriginalContents().length + " objects", true);
 				return true;
 			}
 		};

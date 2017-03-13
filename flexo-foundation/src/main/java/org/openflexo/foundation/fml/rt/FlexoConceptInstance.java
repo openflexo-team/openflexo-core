@@ -46,7 +46,6 @@ import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import org.openflexo.connie.Bindable;
 import org.openflexo.connie.BindingFactory;
 import org.openflexo.connie.BindingModel;
@@ -1220,6 +1219,8 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 
 		@Override
 		public void setValue(Object value, BindingVariable variable) {
+			// TODO here the code relies on switches, a dispatching approach will be safer (charlie)
+
 			if (variable instanceof FlexoRoleBindingVariable && getFlexoConcept() != null) {
 				FlexoRole role = ((FlexoRoleBindingVariable) variable).getFlexoRole();
 				if (role != null) {
@@ -1231,9 +1232,13 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 				return;
 			}
 			else if (variable instanceof FlexoPropertyBindingVariable && getFlexoConcept() != null) {
-				// FD unused FlexoProperty property =
-				getFlexoConcept().getAccessibleProperty(variable.getVariableName());
-				logger.warning("Not implemented: setValue() for " + variable);
+				FlexoPropertyBindingVariable bindingVariable = (FlexoPropertyBindingVariable) variable;
+				if (!bindingVariable.isSettable()) {
+					logger.warning("Can't set value " + value + " for read-only variable " + variable);
+					return;
+				}
+				FlexoProperty<Object> property = (FlexoProperty<Object>) bindingVariable.getFlexoProperty();
+				setFlexoPropertyValue(property, value);
 				return;
 			}
 			else if (variable.getVariableName().equals(FlexoConceptBindingModel.REFLEXIVE_ACCESS_PROPERTY)) {

@@ -45,7 +45,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoProject;
@@ -189,7 +188,10 @@ public class FlexoObjectReference<O extends FlexoObject> extends KVCFlexoObject 
 			setOwner(((FlexoProjectObject) object).getProject());
 		}
 		else if (object instanceof InnerResourceData) {
-			setOwner(((InnerResourceData) object).getResourceData().getResource());
+			ResourceData resourceData = ((InnerResourceData) object).getResourceData();
+			if (resourceData != null) {
+				setOwner(resourceData.getResource());
+			}
 		}
 		else {
 			logger.warning("Could not find any Reference owner for " + object);
