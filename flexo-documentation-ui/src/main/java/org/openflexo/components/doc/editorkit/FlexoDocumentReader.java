@@ -15,6 +15,7 @@ import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.doc.FlexoDocObject;
 import org.openflexo.foundation.doc.FlexoDocParagraph;
 import org.openflexo.foundation.doc.FlexoDocTable;
+import org.openflexo.foundation.doc.FlexoDocTableCell;
 import org.openflexo.foundation.doc.FlexoDocTableRow;
 import org.openflexo.foundation.doc.FlexoDocument;
 import org.openflexo.foundation.doc.FlexoDrawingRun;
@@ -280,72 +281,31 @@ public class FlexoDocumentReader<D extends FlexoDocument<D, TA>, TA extends Tech
 	}
 
 	protected void processTable(FlexoDocTable<D, TA> table) throws BadLocationException {
-		/*TblPr tblPr = table.getTblPr();
-		TblGrid tblGrid = table.getTblGrid();
+
 		SimpleAttributeSet tableAttrs = new SimpleAttributeSet();
 		int cellCount = 0;
 		int rowCount = 0;
-		for (Object tblObj : table.getContent()) {
-			if (tblObj instanceof Tr) {
-				rowCount++;
-				Tr row = (Tr) tblObj;
-				cellCount = Math.max(cellCount, processRow(row));
-			}
+		for (FlexoDocTableRow<D, TA> row : table.getTableRows()) {
+			rowCount++;
+			cellCount = Math.max(cellCount, row.getTableCells().size());
 		}
-		
+
 		int[] rowHeights = new int[rowCount];
 		for (int i = 0; i < rowHeights.length; i++) {
 			rowHeights[i] = 1;
 		}
 		int[] colWidths = new int[cellCount];
-		int i = 0;
-		for (TblGridCol col : tblGrid.getGridCol()) {
-			colWidths[i] = col.getW().intValue() / INDENTS_MULTIPLIER;
-			i++;
+		for (int i = 0; i < colWidths.length; i++) {
+			colWidths[i] = table.getColumnWidth(i);
 		}
-		
-		document.insertTable(currentOffset, rowCount, cellCount, tableAttrs, colWidths, rowHeights);
-		for (Object tblObj : table.getContent()) {
-			if (tblObj instanceof Tr) {
-				Tr row = (Tr) tblObj;
-				for (Object rowObj : row.getContent()) {
-					if (rowObj instanceof Tc) {
-						Tc cell = (Tc) rowObj;
-						iteratePart(cell.getContent());
-						currentOffset++;
-					}
-					else if (rowObj instanceof JAXBElement) {
-						JAXBElement el = (JAXBElement) rowObj;
-						if (el.getDeclaredType().equals(Tc.class)) {
-							Tc cell = (Tc) el.getValue();
-							iteratePart(cell.getContent());
-							currentOffset++;
-						}
-					}
-				}
-			}
-		}*/
-	}
 
-	/**
-	 *
-	 * @param row
-	 *            docx row
-	 * @return cell count
-	 * @throws BadLocationException
-	 */
-	protected int processRow(FlexoDocTableRow<D, TA> row) throws BadLocationException {
-		/*int res = 0;
-		for (Object rowObj : row.getContent()) {
-			res++;
-			if (rowObj instanceof Tc) {
-				Tc cell = (Tc) rowObj;
-				TcPr tcPr = cell.getTcPr();
-				// iteratePart(cell.getContent());
+		document.insertTable(currentOffset, rowCount, cellCount, tableAttrs, colWidths, rowHeights);
+		for (FlexoDocTableRow<D, TA> row : table.getTableRows()) {
+			for (FlexoDocTableCell<D, TA> cell : row.getTableCells()) {
+				iteratePart(cell.getElements());
+				currentOffset++;
 			}
 		}
-		return res;*/
-		return -1;
 	}
 
 	protected void processDrawingRun(FlexoDrawingRun<D, TA> drawingRun) throws BadLocationException {

@@ -39,7 +39,8 @@ public class FlexoDocumentEditor<D extends FlexoDocument<D, TA>, TA extends Tech
 	private Highlighter highlighter;
 	private DefaultHighlightPainter highlighterPainter;
 
-	private JEditorPane editorPane;
+	private JEditorPane jEditorPane;
+	private FlexoDocumentEditorPanel editorPanel;
 
 	private PropertyChangeSupport pcSupport;
 
@@ -48,11 +49,12 @@ public class FlexoDocumentEditor<D extends FlexoDocument<D, TA>, TA extends Tech
 	 */
 	public FlexoDocumentEditor(DocumentFactory<D, TA> documentFactory) {
 		super();
-		editorPane = new JEditorPane("text/rtf", "");
-		editorPane.setEditorKit(new FlexoDocumentEditorKit());
+		jEditorPane = new JEditorPane("text/rtf", "");
+		jEditorPane.setEditorKit(new FlexoDocumentEditorKit());
+		editorPanel = new FlexoDocumentEditorPanel();
 		pcSupport = new PropertyChangeSupport(this);
 		this.documentFactory = documentFactory;
-		highlighter = editorPane.getHighlighter();
+		highlighter = jEditorPane.getHighlighter();
 		highlighterPainter = new DefaultHighlightPainter(Color.GREEN);
 	}
 
@@ -98,8 +100,8 @@ public class FlexoDocumentEditor<D extends FlexoDocument<D, TA>, TA extends Tech
 			FlexoDocumentReader<D, TA> reader;
 			try {
 				reader = new FlexoDocumentReader<>(flexoDocument);
-				editorPane.setDocument(reader.getDocument());
-				editorPane.getDocument().addDocumentListener(this);
+				jEditorPane.setDocument(reader.getDocument());
+				jEditorPane.getDocument().addDocumentListener(this);
 			} catch (BadLocationException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -112,8 +114,12 @@ public class FlexoDocumentEditor<D extends FlexoDocument<D, TA>, TA extends Tech
 		return documentFactory;
 	}
 
-	public JEditorPane getEditorPane() {
-		return editorPane;
+	public JEditorPane getJEditorPane() {
+		return jEditorPane;
+	}
+
+	public FlexoDocumentEditorPanel getEditorPanel() {
+		return editorPanel;
 	}
 
 	@Override
@@ -126,12 +132,12 @@ public class FlexoDocumentEditor<D extends FlexoDocument<D, TA>, TA extends Tech
 		int offset = arg0.getOffset();
 		int length = arg0.getLength();
 		System.out.println("Une insertion de " + length + "caracteres a ete effectuee en position " + offset);
-		Element body = editorPane.getDocument().getDefaultRootElement().getElement(1);
+		Element body = jEditorPane.getDocument().getDefaultRootElement().getElement(1);
 		Element paragraph = body.getElement(0);
 		if (offset != 0) {
 			String insertedText;
 			try {
-				insertedText = editorPane.getText(offset, length);
+				insertedText = jEditorPane.getText(offset, length);
 				// e.document.insert(insertedText, offset - length);
 				System.out.println("On doit inserer " + insertedText + " offset=" + offset + " length=" + length);
 			} catch (BadLocationException e1) {
@@ -156,7 +162,7 @@ public class FlexoDocumentEditor<D extends FlexoDocument<D, TA>, TA extends Tech
 			toolBar.add(new JLabel("Prout"));
 			this.setLayout(new BorderLayout());
 			this.add(toolBar, BorderLayout.NORTH);
-			this.add(new JScrollPane(editorPane), BorderLayout.CENTER);
+			this.add(new JScrollPane(jEditorPane), BorderLayout.CENTER);
 		}
 
 		public Element getElement(Object docObject) {

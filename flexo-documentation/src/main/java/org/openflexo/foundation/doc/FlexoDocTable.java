@@ -113,8 +113,10 @@ public interface FlexoDocTable<D extends FlexoDocument<D, TA>, TA extends Techno
 	 */
 	public FlexoDocTableCell<D, TA> getCell(int row, int col);
 
+	public int getColumnWidth(int colIndex);
+
 	public static abstract class FlexoTableImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
-			extends FlexoDocumentElementImpl<D, TA>implements FlexoDocTable<D, TA> {
+			extends FlexoDocumentElementImpl<D, TA> implements FlexoDocTable<D, TA> {
 
 		/**
 		 * Return cell at supplied row and column, if that position is valid. Otherwise null is returned.
