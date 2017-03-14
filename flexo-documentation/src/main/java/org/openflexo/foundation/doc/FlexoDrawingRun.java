@@ -43,6 +43,7 @@ public interface FlexoDrawingRun<D extends FlexoDocument<D, TA>, TA extends Tech
 
 	public Image getImage();
 
+	@Deprecated
 	public File getImageFile();
 
 }

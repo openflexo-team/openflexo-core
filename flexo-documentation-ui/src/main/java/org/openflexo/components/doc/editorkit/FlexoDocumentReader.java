@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.swing.ImageIcon;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
@@ -348,30 +349,11 @@ public class FlexoDocumentReader<D extends FlexoDocument<D, TA>, TA extends Tech
 	}
 
 	protected void processDrawingRun(FlexoDrawingRun<D, TA> drawingRun) throws BadLocationException {
-		/*for (Object obj : drawing.getAnchorOrInline()) {
-			if (obj instanceof Inline) {
-				Inline inline = (Inline) obj;
-				String id = inline.getGraphic().getGraphicData().getPic().getBlipFill().getBlip().getEmbed();
-				insertImageFromId(id);
-			}
-			else if (obj instanceof Anchor) {
-				Anchor anchor = (Anchor) obj;
-				String id = anchor.getGraphic().getGraphicData().getPic().getBlipFill().getBlip().getEmbed();
-				insertImageFromId(id);
-			}
-		}*/
-	}
 
-	/*private void insertImageFromId(String id) {
-		Relationship rel = flexoDocument.getMainDocumentPart().getRelationshipsPart().getRelationshipByID(id);
-	
-		Part p = flexoDocument.getMainDocumentPart().getRelationshipsPart().getPart(rel);
-		ByteBuffer bb = ((BinaryPartAbstractImage) p).getBuffer();
-		byte[] bytes = new byte[bb.remaining()];
-		bb.get(bytes);
-		ImageIcon ii = new ImageIcon(bytes);
+		ImageIcon ii = new ImageIcon(drawingRun.getImage());
 		document.insertPicture(ii, currentOffset);
 		currentOffset++;
-	}*/
+
+	}
 
 }
