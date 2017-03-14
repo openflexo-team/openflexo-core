@@ -1,13 +1,15 @@
 /**
  * 
  */
-package org.openflexo.components.doc;
+package org.openflexo.components.doc.deprecated;
 
 import java.awt.BorderLayout;
 import java.util.HashSet;
+import java.util.List;
 
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.text.Element;
 
 import org.openflexo.foundation.doc.DocumentFactory;
 import org.openflexo.foundation.doc.FlexoDocument;
@@ -57,4 +59,17 @@ public class EditorPanel<D extends FlexoDocument<D, TA>, TA extends TechnologyAd
 		getEditor().setDocumentModel(document);
 	}
 
+	public Element getElement(Object docObject) {
+		// TODO : implement this
+		return null;
+	}
+
+	public void setSelectedElements(List<? extends Element> elements) {
+		// TODO : implement this
+	}
+
+	public boolean scrollToElement(Element element) {
+		// TODO : implement this
+		return false;
+	}
 }

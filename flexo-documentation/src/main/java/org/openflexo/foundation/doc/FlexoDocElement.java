@@ -55,8 +55,8 @@ public interface FlexoDocElement<D extends FlexoDocument<D, TA>, TA extends Tech
 	public static final String BASE_IDENTIFIER_KEY = "baseIdentifier";
 	@PropertyIdentifier(type = NamedDocStyle.class)
 	public static final String NAMED_STYLE_KEY = "namedStyle";
-	@PropertyIdentifier(type = FlexoDocStyle.class)
-	public static final String STYLE_KEY = "style";
+	@PropertyIdentifier(type = FlexoParagraphStyle.class)
+	public static final String PARAGRAPH_STYLE_KEY = "paragraphStyle";
 	@PropertyIdentifier(type = FlexoDocElementContainer.class)
 	public static final String CONTAINER_KEY = "container";
 
@@ -94,11 +94,11 @@ public interface FlexoDocElement<D extends FlexoDocument<D, TA>, TA extends Tech
 	@Setter(NAMED_STYLE_KEY)
 	public void setNamedStyle(NamedDocStyle<D, TA> style);
 
-	@Getter(value = STYLE_KEY)
-	public FlexoDocStyle<D, TA> getStyle();
+	@Getter(value = PARAGRAPH_STYLE_KEY, ignoreType = true)
+	public FlexoParagraphStyle<D, TA> getParagraphStyle();
 
-	@Setter(STYLE_KEY)
-	public void getStyle(FlexoDocStyle<D, TA> style);
+	@Setter(PARAGRAPH_STYLE_KEY)
+	public void setParagraphStyle(FlexoParagraphStyle<D, TA> style);
 
 	/**
 	 * Return the list of children elements for this element, which are infered to be children of current element while interpreting the

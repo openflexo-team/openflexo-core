@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.openflexo.components.doc;
+package org.openflexo.components.doc.deprecated;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;

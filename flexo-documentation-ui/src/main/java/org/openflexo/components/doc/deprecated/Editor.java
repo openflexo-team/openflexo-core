@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.openflexo.components.doc;
+package org.openflexo.components.doc.deprecated;
 
 import java.awt.Color;
 import java.util.ArrayList;
@@ -18,12 +18,12 @@ import org.openflexo.foundation.doc.DocumentFactory;
 import org.openflexo.foundation.doc.FlexoDocElement;
 import org.openflexo.foundation.doc.FlexoDocParagraph;
 import org.openflexo.foundation.doc.FlexoDocRun;
-import org.openflexo.foundation.doc.FlexoDocStyle;
 import org.openflexo.foundation.doc.FlexoDocTable;
 import org.openflexo.foundation.doc.FlexoDocTableCell;
 import org.openflexo.foundation.doc.FlexoDocTableRow;
 import org.openflexo.foundation.doc.FlexoDocument;
 import org.openflexo.foundation.doc.FlexoDrawingRun;
+import org.openflexo.foundation.doc.FlexoRunStyle;
 import org.openflexo.foundation.doc.FlexoTextRun;
 import org.openflexo.foundation.doc.Property;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
@@ -41,7 +41,7 @@ public class Editor<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter
 	private DefaultHighlightPainter highlighterPainter;
 
 	/**
-	 * Creates an empty Editor.
+	 * Creates an empty FlexoDocumentEditor.
 	 */
 	public Editor(DocumentFactory<D, TA> documentFactory) {
 		super("text/html", "");
@@ -52,7 +52,7 @@ public class Editor<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter
 	}
 
 	/**
-	 * Creates an Editor with a Document to be displayed and edited.
+	 * Creates an FlexoDocumentEditor with a Document to be displayed and edited.
 	 * 
 	 * @param flexoDocument
 	 *            the flexoDocument.
@@ -269,10 +269,10 @@ public class Editor<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter
 					// The current run will only keep the beginning of the text.
 					tr.setText(textStart);
 					// Ok, now let's create a run that has our new property, plus the properties of tr.
-					FlexoDocStyle<D, TA> s = documentFactory.makeStyle();
-					s.setBasedOn(tr.getStyle());
+					FlexoRunStyle<D, TA> s = documentFactory.makeRunStyle();
+					s.setBasedOn(tr.getRunStyle());
 					FlexoTextRun<D, TA> newRun = getDocumentFactory().makeTextRun("");// new TextRun(s, "");
-					newRun.setStyle(s);
+					newRun.setRunStyle(s);
 					// newRun.getStyle().addProperty(property);
 					// Is the rest less, more, or exactly what we want?
 					// If less
@@ -311,7 +311,7 @@ public class Editor<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter
 						p.insertRunAtIndex(newRun, tr.getIndex() + 1);
 						// The rest goes into a run similar to tr
 						FlexoTextRun<D, TA> lastRun = getDocumentFactory().makeTextRun(textEnd);// new TextRun(tr.getStyle(), textEnd);
-						newRun.setStyle(tr.getStyle());
+						newRun.setRunStyle(tr.getRunStyle());
 						p.insertRunAtIndex(lastRun, newRun.getIndex() + 1);
 						// We're done!
 						return -1;
@@ -429,10 +429,10 @@ public class Editor<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter
 						// The current run will only keep the beginning of the text.
 						tr.setText(textStart);
 						// Ok, now let's create a run that has our new property, plus the properties of tr.
-						FlexoDocStyle<D, TA> s = documentFactory.makeStyle();
-						s.setBasedOn(tr.getStyle());
+						FlexoRunStyle<D, TA> s = documentFactory.makeRunStyle();
+						s.setBasedOn(tr.getRunStyle());
 						FlexoTextRun<D, TA> newRun = getDocumentFactory().makeTextRun(textEnd);
-						newRun.setStyle(s);
+						newRun.setRunStyle(s);
 						newParagraph.addToRuns(newRun);
 						System.out.println("Dans le nouveau paragraphe, j'ajoute " + textEnd);
 						// We're done! No other run is needed.

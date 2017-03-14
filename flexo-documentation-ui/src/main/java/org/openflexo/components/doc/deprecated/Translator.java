@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.openflexo.components.doc;
+package org.openflexo.components.doc.deprecated;
 
 import java.text.DecimalFormat;
 import java.util.HashMap;
@@ -10,12 +10,12 @@ import java.util.Map;
 import org.openflexo.foundation.doc.FlexoDocElement;
 import org.openflexo.foundation.doc.FlexoDocParagraph;
 import org.openflexo.foundation.doc.FlexoDocRun;
-import org.openflexo.foundation.doc.FlexoDocStyle;
 import org.openflexo.foundation.doc.FlexoDocTable;
 import org.openflexo.foundation.doc.FlexoDocTableCell;
 import org.openflexo.foundation.doc.FlexoDocTableRow;
 import org.openflexo.foundation.doc.FlexoDocument;
 import org.openflexo.foundation.doc.FlexoDrawingRun;
+import org.openflexo.foundation.doc.FlexoRunStyle;
 import org.openflexo.foundation.doc.FlexoTextRun;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 
@@ -49,7 +49,7 @@ public class Translator<D extends FlexoDocument<D, TA>, TA extends TechnologyAda
 		String after;
 	}
 
-	private Spans generateSpan(FlexoDocStyle<D, TA> style) {
+	private Spans generateSpan(FlexoRunStyle<D, TA> style) {
 		Map<String, String> propertiesValues = new HashMap<>();
 		if (style.getFont() != null) {
 			propertiesValues.put("font-family", style.getFont().getFontName());
@@ -105,7 +105,7 @@ public class Translator<D extends FlexoDocument<D, TA>, TA extends TechnologyAda
 			if (e instanceof FlexoDocParagraph) {
 				Spans spans = null;
 				if (((FlexoDocParagraph) e).getNamedStyle() != null) {
-					spans = generateSpan(((FlexoDocParagraph) e).getNamedStyle());
+					spans = generateSpan(((FlexoDocParagraph) e).getNamedStyle().getRunStyle());
 				}
 				result += "<p>";
 				result += (spans != null ? spans.before : "");
@@ -145,8 +145,8 @@ public class Translator<D extends FlexoDocument<D, TA>, TA extends TechnologyAda
 			return "";
 		}
 		Spans spans = null;
-		if (r.getStyle() != null) {
-			spans = generateSpan(r.getStyle());
+		if (r.getRunStyle() != null) {
+			spans = generateSpan(r.getRunStyle());
 			/*if (r instanceof FlexoTextRun) {
 				System.out.println("Run " + ((FlexoTextRun) r).getText() + " font-size=" + r.getStyle().getFontSize());
 			}*/

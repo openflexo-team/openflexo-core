@@ -41,8 +41,8 @@ public interface FlexoDocRun<D extends FlexoDocument<D, TA>, TA extends Technolo
 
 	@PropertyIdentifier(type = FlexoDocParagraph.class)
 	public static final String PARAGRAPH_KEY = "paragraph";
-	@PropertyIdentifier(type = FlexoDocStyle.class)
-	public static final String STYLE_KEY = "style";
+	@PropertyIdentifier(type = FlexoRunStyle.class)
+	public static final String RUN_STYLE_KEY = "runStyle";
 
 	@Getter(PARAGRAPH_KEY)
 	public FlexoDocParagraph<D, TA> getParagraph();
@@ -50,11 +50,11 @@ public interface FlexoDocRun<D extends FlexoDocument<D, TA>, TA extends Technolo
 	@Setter(PARAGRAPH_KEY)
 	public void setParagraph(FlexoDocParagraph<D, TA> paragraph);
 
-	@Getter(value = STYLE_KEY, ignoreType = true)
-	public FlexoDocStyle<D, TA> getStyle();
+	@Getter(value = RUN_STYLE_KEY, ignoreType = true)
+	public FlexoRunStyle<D, TA> getRunStyle();
 
-	@Setter(STYLE_KEY)
-	public void setStyle(FlexoDocStyle<D, TA> style);
+	@Setter(RUN_STYLE_KEY)
+	public void setRunStyle(FlexoRunStyle<D, TA> style);
 
 	/**
 	 * Return index of the run<br>

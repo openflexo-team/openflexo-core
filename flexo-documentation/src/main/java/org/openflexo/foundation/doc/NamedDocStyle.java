@@ -27,7 +27,9 @@ import org.openflexo.model.annotations.PropertyIdentifier;
 import org.openflexo.model.annotations.Setter;
 
 /**
- * Named style of a text-based document (eg .docx, .odt, etc...)
+ * Named style of a text-based document (eg .docx, .odt, etc...)<br>
+ * 
+ * References a {@link FlexoParagraphStyle} and a {@link FlexoRunStyle}
  * 
  * @author sylvain
  *
@@ -45,6 +47,10 @@ public interface NamedDocStyle<D extends FlexoDocument<D, TA>, TA extends Techno
 	public static final String STYLE_ID_KEY = "styleId";
 	@PropertyIdentifier(type = Integer.class)
 	public static final String LEVEL_KEY = "level";
+	@PropertyIdentifier(type = FlexoParagraphStyle.class)
+	public static final String PARAGRAPH_STYLE_KEY = "paragraphStyle";
+	@PropertyIdentifier(type = FlexoRunStyle.class)
+	public static final String RUN_STYLE_KEY = "runStyle";
 
 	/**
 	 * Return name of the {@link FlexoDocStyle} in the {@link FlexoDocument}<br>
@@ -88,6 +94,18 @@ public interface NamedDocStyle<D extends FlexoDocument<D, TA>, TA extends Techno
 	 * @return
 	 */
 	public boolean isLevelled();
+
+	@Getter(PARAGRAPH_STYLE_KEY)
+	public FlexoParagraphStyle<D, TA> getParagraphStyle();
+
+	@Setter(PARAGRAPH_STYLE_KEY)
+	public void setParagraphStyle(FlexoParagraphStyle<D, TA> paragraph);
+
+	@Getter(RUN_STYLE_KEY)
+	public FlexoRunStyle<D, TA> getRunStyle();
+
+	@Setter(RUN_STYLE_KEY)
+	public void setRunStyle(FlexoRunStyle<D, TA> run);
 
 	public static abstract class NamedDocStyleImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
 			extends FlexoDocStyleImpl<D, TA> implements NamedDocStyle<D, TA> {

@@ -128,7 +128,7 @@ public interface FlexoDocParagraph<D extends FlexoDocument<D, TA>, TA extends Te
 		public String toString() {
 			return "Paragraph(" + getIdentifier() + ") " /* + getRawText() + " "*/
 					+ (getNamedStyle() != null ? "[" + getNamedStyle().getName() + "]" : "")
-					+ (getStyle() != null ? "[" + getStyle().getStringRepresentation() + "]" : "");
+					+ (getParagraphStyle() != null ? "[" + getParagraphStyle().getStringRepresentation() + "]" : "");
 		}
 
 		@Override
