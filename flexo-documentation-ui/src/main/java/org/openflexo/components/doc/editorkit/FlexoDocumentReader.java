@@ -153,12 +153,12 @@ public class FlexoDocumentReader<D extends FlexoDocument<D, TA>, TA extends Tech
 
 		parAttrs = new SimpleAttributeSet();
 
-		if (p.getParagraphStyle() != null) {
-			applyParagraphStyle(p.getParagraphStyle());
-		}
-		else if (p.getNamedStyle() != null) {
+		if (p.getNamedStyle() != null) {
 			applyParagraphStyle(p.getNamedStyle().getParagraphStyle());
 			// applyRunStyle(p.getNamedStyle().getRunStyle());
+		}
+		if (p.getParagraphStyle() != null) {
+			applyParagraphStyle(p.getParagraphStyle());
 		}
 		iteratePart(p.getRuns());
 	}
@@ -194,6 +194,12 @@ public class FlexoDocumentReader<D extends FlexoDocument<D, TA>, TA extends Tech
 			}
 
 			if (style.getParagraphSpacing() != null) {
+
+				System.out.println("Pour le paragraphe: ");
+				System.out.println("style.getParagraphSpacing().getLineSpacingRule()=" + style.getParagraphSpacing().getLineSpacingRule());
+				System.out.println("style.getParagraphSpacing().getBefore()=" + style.getParagraphSpacing().getBefore());
+				System.out.println("style.getParagraphSpacing().getAfter()=" + style.getParagraphSpacing().getAfter());
+
 				if (style.getParagraphSpacing().getLineSpacingRule() == LineSpacingRule.AT_LEAST) {
 					float ls = style.getParagraphSpacing().getLine() / 240;
 					StyleConstants.setLineSpacing(parAttrs, ls);
@@ -229,11 +235,11 @@ public class FlexoDocumentReader<D extends FlexoDocument<D, TA>, TA extends Tech
 
 		charAttrs = new SimpleAttributeSet();
 
+		if (run.getParagraph() != null && run.getParagraph().getNamedStyle() != null) {
+			applyRunStyle(run.getParagraph().getNamedStyle().getRunStyle());
+		}
 		if (run.getRunStyle() != null) {
 			applyRunStyle(run.getRunStyle());
-		}
-		else if (run.getParagraph() != null && run.getParagraph().getNamedStyle() != null) {
-			applyRunStyle(run.getParagraph().getNamedStyle().getRunStyle());
 		}
 		processText(run.getText());
 	}
