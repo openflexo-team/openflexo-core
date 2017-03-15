@@ -38,11 +38,11 @@
 
 package org.openflexo.fml.rt.controller.action;
 
-import java.awt.Dimension;
-import java.awt.Image;
+import java.awt.*;
 import java.util.List;
 import java.util.logging.Logger;
-
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.openflexo.ApplicationContext;
 import org.openflexo.components.wizard.FlexoWizard;
 import org.openflexo.components.wizard.WizardStep;
@@ -154,12 +154,14 @@ public class CreateFlexoConceptInstanceWizard extends FlexoWizard {
 		}
 
 		public List<FlexoConcept> getAvailableFlexoConcepts() {
+			Stream<FlexoConcept> concepts;
 			if (getContainer() instanceof AbstractVirtualModelInstance) {
-				return ((AbstractVirtualModelInstance) getContainer()).getVirtualModel().getAllRootFlexoConcepts();
+				concepts = ((AbstractVirtualModelInstance) getContainer()).getVirtualModel().getAllRootFlexoConcepts().stream();
 			}
 			else {
-				return getContainer().getFlexoConcept().getEmbeddedFlexoConcepts();
+				concepts = getContainer().getFlexoConcept().getEmbeddedFlexoConcepts().stream();
 			}
+			return concepts.filter((flexoConcept) -> !flexoConcept.isAbstract()).collect(Collectors.toList());
 		}
 
 		public CreationScheme getCreationScheme() {
