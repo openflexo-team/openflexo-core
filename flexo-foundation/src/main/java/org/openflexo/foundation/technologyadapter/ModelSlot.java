@@ -728,13 +728,6 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>>
 
 		@Override
 		public boolean delete(Object... context) {
-			for (FlexoRole<?> role : getVirtualModel().getAccessibleRoles()) {
-				if (role.getModelSlot() == this) {
-					// nullify model slot for role
-					role.setModelSlot(null);
-				}
-			}
-
 			FMLControlGraphVisitor cgVisitor = controlGraph -> {
 				if (controlGraph instanceof TechnologySpecificAction
 						&& ((TechnologySpecificAction<?, ?>) controlGraph).getModelSlot() == ModelSlotImpl.this) {
@@ -744,28 +737,38 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>>
 				}
 			};
 
-			// Also iterate on all behaviours, and find EditionAction that are declared with this model slot
-			for (FlexoBehaviour behaviour : getVirtualModel().getFlexoBehaviours()) {
-				if (behaviour.getControlGraph() != null) {
-					behaviour.getControlGraph().accept(cgVisitor);
+			AbstractVirtualModel<?> virtualModel = getVirtualModel();
+			if (virtualModel != null) {
+				for (FlexoRole<?> role : virtualModel.getAccessibleRoles()) {
+					if (role.getModelSlot() == this) {
+						// nullify model slot for role
+						role.setModelSlot(null);
+					}
 				}
-			}
-			// Also iterate on all behaviours of all inner FlexoConcept, and find EditionAction that are declared with this model slot
-			for (FlexoConcept concept : getVirtualModel().getFlexoConcepts()) {
-				for (FlexoBehaviour behaviour : concept.getFlexoBehaviours()) {
+
+				// Also iterate on all behaviours, and find EditionAction that are declared with this model slot
+				for (FlexoBehaviour behaviour : virtualModel.getFlexoBehaviours()) {
 					if (behaviour.getControlGraph() != null) {
 						behaviour.getControlGraph().accept(cgVisitor);
 					}
 				}
-			}
-			// Also iterate on GetProperty
-			for (GetProperty<?> property : getVirtualModel().getAccessibleProperties(GetProperty.class)) {
-				if (property.getGetControlGraph() != null) {
-					property.getGetControlGraph().accept(cgVisitor);
+				// Also iterate on all behaviours of all inner FlexoConcept, and find EditionAction that are declared with this model slot
+				for (FlexoConcept concept : virtualModel.getFlexoConcepts()) {
+					for (FlexoBehaviour behaviour : concept.getFlexoBehaviours()) {
+						if (behaviour.getControlGraph() != null) {
+							behaviour.getControlGraph().accept(cgVisitor);
+						}
+					}
 				}
-				if (property instanceof GetSetProperty) {
-					if (((GetSetProperty<?>) property).getSetControlGraph() != null) {
-						((GetSetProperty<?>) property).getSetControlGraph().accept(cgVisitor);
+				// Also iterate on GetProperty
+				for (GetProperty<?> property : virtualModel.getAccessibleProperties(GetProperty.class)) {
+					if (property.getGetControlGraph() != null) {
+						property.getGetControlGraph().accept(cgVisitor);
+					}
+					if (property instanceof GetSetProperty) {
+						if (((GetSetProperty<?>) property).getSetControlGraph() != null) {
+							((GetSetProperty<?>) property).getSetControlGraph().accept(cgVisitor);
+						}
 					}
 				}
 			}

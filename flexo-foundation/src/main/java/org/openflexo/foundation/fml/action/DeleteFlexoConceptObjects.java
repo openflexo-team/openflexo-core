@@ -44,7 +44,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 import java.util.logging.Logger;
-
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.AbstractCopyAction.InvalidSelectionException;
@@ -142,6 +141,8 @@ public class DeleteFlexoConceptObjects extends FlexoAction<DeleteFlexoConceptObj
 			if (isDeletable(o)) {
 				List<Object> embeddedObjects = modelFactory.getEmbeddedObjects(o, EmbeddingType.DELETION,
 						(Object[]) allObjects.toArray(new FlexoConceptObject[allObjects.size()]));
+				// removes origin object from dependencies
+				embeddedObjects.remove(o);
 				allDerived.put(o, embeddedObjects);
 			}
 		}
