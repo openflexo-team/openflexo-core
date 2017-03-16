@@ -169,7 +169,7 @@ public class FlexoDocumentEditorKit extends StyledEditorKit {
 	 */
 	@Override
 	public Document createDefaultDocument() {
-		FlexoStyledDocument doc = new FlexoStyledDocument();
+		FlexoStyledDocument doc = new FlexoStyledDocument(null);
 		return doc;
 	}
 

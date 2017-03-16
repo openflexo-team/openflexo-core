@@ -9,7 +9,6 @@ import java.beans.PropertyChangeSupport;
 import java.util.List;
 
 import javax.swing.JEditorPane;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.event.DocumentEvent;
@@ -49,10 +48,10 @@ public class FlexoDocumentEditor<D extends FlexoDocument<D, TA>, TA extends Tech
 	 */
 	public FlexoDocumentEditor(DocumentFactory<D, TA> documentFactory) {
 		super();
+		pcSupport = new PropertyChangeSupport(this);
 		jEditorPane = new JEditorPane("text/rtf", "");
 		jEditorPane.setEditorKit(new FlexoDocumentEditorKit());
 		editorPanel = new FlexoDocumentEditorPanel();
-		pcSupport = new PropertyChangeSupport(this);
 		this.documentFactory = documentFactory;
 		highlighter = jEditorPane.getHighlighter();
 		highlighterPainter = new DefaultHighlightPainter(Color.GREEN);
@@ -106,7 +105,7 @@ public class FlexoDocumentEditor<D extends FlexoDocument<D, TA>, TA extends Tech
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			getPropertyChangeSupport().firePropertyChange("documentModel", oldValue, flexoDocument);
+			getPropertyChangeSupport().firePropertyChange("flexoDocument", oldValue, flexoDocument);
 		}
 	}
 
@@ -120,6 +119,10 @@ public class FlexoDocumentEditor<D extends FlexoDocument<D, TA>, TA extends Tech
 
 	public FlexoDocumentEditorPanel getEditorPanel() {
 		return editorPanel;
+	}
+
+	public FlexoStyledDocument getStyledDocument() {
+		return (FlexoStyledDocument) jEditorPane.getDocument();
 	}
 
 	@Override
@@ -154,12 +157,11 @@ public class FlexoDocumentEditor<D extends FlexoDocument<D, TA>, TA extends Tech
 
 	public class FlexoDocumentEditorPanel extends JPanel {
 
-		private JPanel toolBar;
+		private FlexoDocumentToolbar toolBar;
 
 		private FlexoDocumentEditorPanel() {
-			this.toolBar = new JPanel();
+			this.toolBar = new FlexoDocumentToolbar(FlexoDocumentEditor.this, null);
 			// Let's create the buttons
-			toolBar.add(new JLabel("Prout"));
 			this.setLayout(new BorderLayout());
 			this.add(toolBar, BorderLayout.NORTH);
 			this.add(new JScrollPane(jEditorPane), BorderLayout.CENTER);

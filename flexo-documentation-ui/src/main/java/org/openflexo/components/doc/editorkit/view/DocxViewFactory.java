@@ -40,6 +40,7 @@ public class DocxViewFactory implements ViewFactory {
 				return new LabelView(elem);
 			}
 			else if (kind.equals(AbstractDocument.ParagraphElementName)) {
+				// return new NumberedParagraphView(elem);
 				return new ParagraphView(elem);
 			}
 			else if (kind.equals(AbstractDocument.SectionElementName)) {

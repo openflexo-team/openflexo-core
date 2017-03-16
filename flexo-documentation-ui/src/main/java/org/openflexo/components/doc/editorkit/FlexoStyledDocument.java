@@ -18,6 +18,11 @@ import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
 import javax.swing.undo.UndoableEdit;
 
+import org.openflexo.foundation.doc.FlexoDocElement;
+import org.openflexo.foundation.doc.FlexoDocParagraph;
+import org.openflexo.foundation.doc.FlexoDocument;
+import org.openflexo.foundation.doc.FlexoTextRun;
+
 public class FlexoStyledDocument extends DefaultStyledDocument {
 
 	public int DOCUMENT_WIDTH = -1;
@@ -25,6 +30,8 @@ public class FlexoStyledDocument extends DefaultStyledDocument {
 	 * Represents document margins
 	 */
 	private Insets margins = new Insets(0, 0, 0, 0);
+
+	private FlexoDocument<?, ?> flexoDocument;
 
 	/**
 	 * Constructs a styled document.
@@ -34,8 +41,9 @@ public class FlexoStyledDocument extends DefaultStyledDocument {
 	 * @param styles
 	 *            Resources and style definitions which may be shared across documents.
 	 */
-	public FlexoStyledDocument(Content c, StyleContext styles) {
+	public FlexoStyledDocument(FlexoDocument<?, ?> flexoDocument, Content c, StyleContext styles) {
 		super(c, styles);
+		this.flexoDocument = flexoDocument;
 	}
 
 	/**
@@ -44,16 +52,16 @@ public class FlexoStyledDocument extends DefaultStyledDocument {
 	 * @param styles
 	 *            The styles.
 	 */
-	public FlexoStyledDocument(StyleContext styles) {
-		this(new GapContent(BUFFER_SIZE_DEFAULT), styles);
+	public FlexoStyledDocument(FlexoDocument<?, ?> flexoDocument, StyleContext styles) {
+		this(flexoDocument, new GapContent(BUFFER_SIZE_DEFAULT), styles);
 	}
 
 	/**
 	 * Constructs a default styled document. This buffers input content by a size of BUFFER_SIZE_DEFAULT and has a style context that is
 	 * scoped by the lifetime of the document and is not shared with other documents.
 	 */
-	public FlexoStyledDocument() {
-		this(new GapContent(BUFFER_SIZE_DEFAULT), new StyleContext());
+	public FlexoStyledDocument(FlexoDocument<?, ?> flexoDocument) {
+		this(flexoDocument, new GapContent(BUFFER_SIZE_DEFAULT), new StyleContext());
 	}
 
 	/**
@@ -780,21 +788,150 @@ public class FlexoStyledDocument extends DefaultStyledDocument {
 		fireChangedUpdate(e);
 	}
 
+	/**
+	 * Creates the root element to be used to represent the default document structure.
+	 *
+	 * @return the element base
+	 */
+	@Override
+	protected AbstractElement createDefaultRoot() {
+		// grabs a write-lock for this initialization and
+		// abandon it during initialization so in normal
+		// operation we can detect an illegitimate attempt
+		// to mutate attributes.
+		writeLock();
+		DocumentElement rootElement = new DocumentElement();
+		ParagraphElement paragraph = new ParagraphElement(rootElement, null);
+
+		RunElement brk = new RunElement(paragraph, null, 0, 1, null);
+		Element[] buff = new Element[1];
+		buff[0] = brk;
+		paragraph.replace(0, 0, buff);
+
+		buff[0] = paragraph;
+		rootElement.replace(0, 0, buff);
+		writeUnlock();
+		return rootElement;
+	}
+
+	@Override
+	protected void insertUpdate(DefaultDocumentEvent chng, AttributeSet attr) {
+		System.out.println("START UPDATE with " + chng + " attr=" + attr);
+		super.insertUpdate(chng, attr);
+		System.out.println("END UPDATE with " + chng + " attr=" + attr);
+	}
+
+	@Override
+	protected void fireInsertUpdate(DocumentEvent e) {
+		System.out.println("Hop, on fait un insert de offset=" + e.getOffset() + " length=" + e.getLength());
+		super.fireInsertUpdate(e);
+		System.out.println("Done, on a fait un insert de offset=" + e.getOffset() + " length=" + e.getLength());
+	}
+
 	@Override
 	protected Element createBranchElement(Element parent, AttributeSet a) {
-		// TODO Auto-generated method stub
+		System.out.println("On cree un BranchElement avec " + a + " parent=" + parent);
+		if (parent instanceof DocumentElement) {
+			// Thread.dumpStack();
+			return new ParagraphElement((DocumentElement) parent, a);
+
+		}
 		return super.createBranchElement(parent, a);
 	}
 
 	@Override
 	protected Element createLeafElement(Element parent, AttributeSet a, int p0, int p1) {
-		// System.out.println("On cree un LeafElement avec " + a);
+		System.out.println("On cree un LeafElement avec " + a + " parent=" + parent.getName());
 		// Thread.dumpStack();
+		if (parent instanceof ParagraphElement) {
+			return new RunElement(parent, a, p0, p1, null);
+
+		}
 		return super.createLeafElement(parent, a, p0, p1);
 	}
 
 	// --- INNER CLASSES-------------------------------------------------------------
 	// --- TABLE --------------------------------------------------------------------
+
+	public class DocumentElement extends SectionElement {
+
+		public DocumentElement() {
+			// TODO Auto-generated constructor stub
+		}
+
+		@Override
+		public String toString() {
+			return "DocumentElement(" + getName() + ") " + getStartOffset() + "," + getEndOffset() + "\n";
+		}
+	}
+
+	public class ParagraphElement extends BranchElement {
+
+		private FlexoDocParagraph<?, ?> paragraph = null;
+
+		public ParagraphElement(DocumentElement documentElement, AttributeSet a) {
+			super(documentElement, a);
+		}
+
+		@Override
+		public DocumentElement getParent() {
+			return (DocumentElement) super.getParent();
+		}
+
+		public FlexoDocParagraph<?, ?> getParagraph() {
+			if (paragraph == null) {
+				int index = getParent().getIndex(this);
+				int paragraphIndex = 0;
+				for (FlexoDocElement<?, ?> e : flexoDocument.getElements()) {
+					if (e instanceof FlexoDocParagraph) {
+						if (paragraphIndex == index) {
+							paragraph = (FlexoDocParagraph<?, ?>) e;
+							break;
+						}
+						paragraphIndex++;
+					}
+				}
+			}
+			return paragraph;
+		}
+
+		@Override
+		public void replace(int offset, int length, Element[] elems) {
+			// TODO Auto-generated method stub
+			super.replace(offset, length, elems);
+			paragraph = null;
+		}
+
+		@Override
+		public String toString() {
+			return "ParagraphElement(" + getName() + ") " + getStartOffset() + "," + getEndOffset() + ":"
+					+ (getParagraph() != null ? getParagraph().getRawTextPreview() : "null") + "\n";
+		}
+	}
+
+	public class RunElement extends LeafElement {
+
+		private FlexoTextRun<?, ?> run;
+
+		public RunElement(Element parent, AttributeSet a, int offs0, int offs1, FlexoTextRun<?, ?> run) {
+			super(parent, a, offs0, offs1);
+			this.run = run;
+		}
+
+		@Override
+		public String toString() {
+			String text = "???";
+			try {
+				text = getText(getStartOffset(), getEndOffset() - getStartOffset());
+				if (text.length() > 20) {
+					text = text.substring(0, 20);
+				}
+			} catch (BadLocationException e) {
+				e.printStackTrace();
+			}
+			return "RunElement(" + getName() + ") " + getStartOffset() + "," + getEndOffset() + ":" + /*run.getText()*/text + "\n";
+		}
+	}
 
 	/**
 	 * Represents table element.

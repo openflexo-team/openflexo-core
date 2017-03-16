@@ -59,27 +59,13 @@ public class FlexoDocumentReader<D extends FlexoDocument<D, TA>, TA extends Tech
 	 */
 	public FlexoDocumentReader(FlexoDocument<D, TA> flexoDocument) throws BadLocationException {
 		this.flexoDocument = flexoDocument;
-		document = new FlexoStyledDocument();
+		document = new FlexoStyledDocument(flexoDocument);
 		read(flexoDocument, 0);
 	}
 
 	public FlexoStyledDocument getDocument() {
 		return document;
 	}
-
-	/**
-	 * Reads content of specified file to the document.
-	 *
-	 * @param fileName
-	 *            path to the file.
-	 * @param offset
-	 *            offset to read the content.
-	 */
-	/*public void read(String fileName, int offset) throws IOException, BadLocationException {
-		FileInputStream in = new FileInputStream(fileName);
-		read(in, offset);
-		in.close();
-	}*/
 
 	/**
 	 * Reads content of specified stream to the document.
@@ -196,11 +182,6 @@ public class FlexoDocumentReader<D extends FlexoDocument<D, TA>, TA extends Tech
 			}
 
 			if (style.getParagraphSpacing() != null) {
-
-				System.out.println("Pour le paragraphe: ");
-				System.out.println("style.getParagraphSpacing().getLineSpacingRule()=" + style.getParagraphSpacing().getLineSpacingRule());
-				System.out.println("style.getParagraphSpacing().getBefore()=" + style.getParagraphSpacing().getBefore());
-				System.out.println("style.getParagraphSpacing().getAfter()=" + style.getParagraphSpacing().getAfter());
 
 				if (style.getParagraphSpacing().getLineSpacingRule() == LineSpacingRule.AT_LEAST) {
 					float ls = style.getParagraphSpacing().getLine() / 240;
