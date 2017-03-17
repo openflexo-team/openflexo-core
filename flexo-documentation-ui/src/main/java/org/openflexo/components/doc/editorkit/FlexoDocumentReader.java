@@ -1,6 +1,7 @@
 package org.openflexo.components.doc.editorkit;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -46,6 +47,13 @@ public class FlexoDocumentReader<D extends FlexoDocument<D, TA>, TA extends Tech
 
 	SimpleAttributeSet parAttrs;
 	SimpleAttributeSet charAttrs;
+
+	private boolean numberNextParagraph = false;
+	// private Integer numId;
+	// private Integer ilvl;
+	private String numberingString;
+
+	private List<Integer> numbering = new ArrayList<>();
 
 	/**
 	 * Builds new instance of reader.
@@ -210,7 +218,34 @@ public class FlexoDocumentReader<D extends FlexoDocument<D, TA>, TA extends Tech
 					StyleConstants.setLeftIndent(parAttrs, style.getParagraphIndent().getFirst());
 				}
 			}
+
+			if (style.getParagraphNumbering() != null) {
+				numberNextParagraph = true;
+				Integer numId = style.getParagraphNumbering().getNumId();
+				Integer ilvl = style.getParagraphNumbering().getIlvl();
+				numberingString = handleNumbering(ilvl == null ? 0 : ilvl);
+			}
 		}
+	}
+
+	private String handleNumbering(int level) {
+		if (numbering.size() <= level) {
+			numbering.add(1);
+		}
+		else {
+			numbering.set(level, numbering.get(level) + 1);
+			int oldSize = numbering.size();
+			for (int i = level + 1; i < oldSize; i++) {
+				numbering.remove(numbering.get(numbering.size() - 1));
+			}
+		}
+		StringBuffer sb = new StringBuffer();
+		boolean isFirst = true;
+		for (int i = 0; i <= level; i++) {
+			sb.append((isFirst ? "" : ".") + numbering.get(i));
+			isFirst = false;
+		}
+		return sb.toString();
 	}
 
 	protected void processTextRun(FlexoTextRun<D, TA> run) throws BadLocationException {
@@ -256,6 +291,14 @@ public class FlexoDocumentReader<D extends FlexoDocument<D, TA>, TA extends Tech
 
 	protected void processText(String text) throws BadLocationException {
 		// System.out.println("Et hop, du texte: " + text);
+
+		if (numberNextParagraph) {
+			// System.out.println("Tiens faudrait numeroter " + text);
+			// System.out.println("numId:" + numId + " ilvl:" + ilvl);
+			text = numberingString + " " + text;
+			numberNextParagraph = false;
+		}
+
 		document.insertString(currentOffset, text, charAttrs);
 		currentOffset += text.length();
 

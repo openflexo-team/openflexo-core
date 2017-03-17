@@ -147,6 +147,27 @@ public interface FlexoParagraphStyle<D extends FlexoDocument<D, TA>, TA extends 
 
 	}
 
+	@ModelEntity
+	public static interface ParagraphNumbering {
+		@PropertyIdentifier(type = Integer.class)
+		public static final String NUM_ID_KEY = "numId";
+		@PropertyIdentifier(type = Integer.class)
+		public static final String ILVL_KEY = "ilvl";
+
+		@Getter(NUM_ID_KEY)
+		public Integer getNumId();
+
+		@Setter(NUM_ID_KEY)
+		public void setNumId(Integer left);
+
+		@Getter(ILVL_KEY)
+		public Integer getIlvl();
+
+		@Setter(ILVL_KEY)
+		public void setIlvl(Integer right);
+
+	}
+
 	@PropertyIdentifier(type = ParagraphAlignment.class)
 	public static final String PARAGRAPH_ALIGNMENT_KEY = "paragraphAlignment";
 	@PropertyIdentifier(type = ParagraphTab.class, cardinality = Cardinality.LIST)
@@ -155,6 +176,8 @@ public interface FlexoParagraphStyle<D extends FlexoDocument<D, TA>, TA extends 
 	public static final String PARAGRAPH_SPACING_KEY = "paragraphSpacing";
 	@PropertyIdentifier(type = ParagraphIndent.class)
 	public static final String PARAGRAPH_INDENT_KEY = "paragraphIndent";
+	@PropertyIdentifier(type = ParagraphNumbering.class)
+	public static final String PARAGRAPH_NUMBERING_KEY = "paragraphNumbering";
 
 	@Getter(PARAGRAPH_ALIGNMENT_KEY)
 	public ParagraphAlignment getParagraphAlignment();
@@ -186,6 +209,12 @@ public interface FlexoParagraphStyle<D extends FlexoDocument<D, TA>, TA extends 
 
 	@Setter(PARAGRAPH_INDENT_KEY)
 	public void setParagraphIndent(ParagraphIndent indent);
+
+	@Getter(PARAGRAPH_NUMBERING_KEY)
+	public ParagraphNumbering getParagraphNumbering();
+
+	@Setter(PARAGRAPH_NUMBERING_KEY)
+	public void setParagraphNumbering(ParagraphNumbering numbering);
 
 	@Override
 	public String getStringRepresentation();
