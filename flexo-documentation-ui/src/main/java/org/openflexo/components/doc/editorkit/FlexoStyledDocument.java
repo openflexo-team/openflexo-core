@@ -1,11 +1,16 @@
 package org.openflexo.components.doc.editorkit;
 
 import java.awt.Insets;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.List;
 import java.util.Vector;
+import java.util.logging.Logger;
 
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.event.UndoableEditEvent;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
@@ -18,12 +23,19 @@ import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
 import javax.swing.undo.UndoableEdit;
 
+import org.openflexo.components.doc.editorkit.FlexoStyledDocument.StructuralModification.FragmentStructure.RetainedParagraphElement;
+import org.openflexo.components.doc.editorkit.FlexoStyledDocument.StructuralModification.FragmentStructure.RetainedParagraphElement.RetainedRunElement;
 import org.openflexo.foundation.doc.FlexoDocElement;
+import org.openflexo.foundation.doc.FlexoDocElementContainer;
+import org.openflexo.foundation.doc.FlexoDocObject;
 import org.openflexo.foundation.doc.FlexoDocParagraph;
+import org.openflexo.foundation.doc.FlexoDocRun;
 import org.openflexo.foundation.doc.FlexoDocument;
 import org.openflexo.foundation.doc.FlexoTextRun;
 
-public class FlexoStyledDocument extends DefaultStyledDocument {
+public class FlexoStyledDocument extends DefaultStyledDocument /*implements HasPropertyChangeSupport*/ {
+
+	static final Logger logger = Logger.getLogger(FlexoStyledDocument.class.getPackage().getName());
 
 	public int DOCUMENT_WIDTH = -1;
 	/**
@@ -32,6 +44,10 @@ public class FlexoStyledDocument extends DefaultStyledDocument {
 	private Insets margins = new Insets(0, 0, 0, 0);
 
 	private FlexoDocument<?, ?> flexoDocument;
+
+	private boolean isReadingDocument = false;
+
+	// private PropertyChangeSupport pcSupport;
 
 	/**
 	 * Constructs a styled document.
@@ -43,7 +59,9 @@ public class FlexoStyledDocument extends DefaultStyledDocument {
 	 */
 	public FlexoStyledDocument(FlexoDocument<?, ?> flexoDocument, Content c, StyleContext styles) {
 		super(c, styles);
+		// pcSupport = new PropertyChangeSupport(this);
 		this.flexoDocument = flexoDocument;
+		addDocumentListener(new StructuredContentListener());
 	}
 
 	/**
@@ -63,6 +81,17 @@ public class FlexoStyledDocument extends DefaultStyledDocument {
 	public FlexoStyledDocument(FlexoDocument<?, ?> flexoDocument) {
 		this(flexoDocument, new GapContent(BUFFER_SIZE_DEFAULT), new StyleContext());
 	}
+
+	/*@Override
+	public PropertyChangeSupport getPropertyChangeSupport() {
+		return pcSupport;
+	}
+	
+	@Override
+	public String getDeletedProperty() {
+		// TODO Auto-generated method stub
+		return null;
+	}*/
 
 	/**
 	 * Inserts a new table in the document.
@@ -559,6 +588,9 @@ public class FlexoStyledDocument extends DefaultStyledDocument {
 	 */
 	@Override
 	public void remove(int offset, int length) throws BadLocationException {
+
+		initiateStructuralModification(offset, length);
+
 		// --- checking delete table element ---
 		Element startCell = getCell(offset);
 		Element endCell = getCell(offset + length);
@@ -814,23 +846,71 @@ public class FlexoStyledDocument extends DefaultStyledDocument {
 		return rootElement;
 	}
 
-	@Override
+	public DocumentElement getRootElement() {
+		return (DocumentElement) getRootElements()[0];
+	}
+
+	private StructuralModification currentModification = null;
+
+	/*@Override
 	protected void insertUpdate(DefaultDocumentEvent chng, AttributeSet attr) {
-		System.out.println("START UPDATE with " + chng + " attr=" + attr);
+		if (!isReadingDocument) {
+			currentModification = new StructuralModification(chng);
+			System.out.println("START UPDATE with " + chng + " attr=" + attr);
+			System.out.println("offset=" + chng.getOffset() + " length=" + chng.getLength());
+			System.out.println("start char element = " + getCharacterElement(chng.getOffset()));
+			System.out.println("start par element = " + getParagraphElement(chng.getOffset()));
+		}
 		super.insertUpdate(chng, attr);
-		System.out.println("END UPDATE with " + chng + " attr=" + attr);
+		if (!isReadingDocument) {
+			System.out.println("END UPDATE with " + chng + " attr=" + attr);
+		}
+	}*/
+
+	@Override
+	public void setCharacterAttributes(int offset, int length, AttributeSet s, boolean replace) {
+		initiateStructuralModification(offset, length);
+		super.setCharacterAttributes(offset, length, s, replace);
 	}
 
 	@Override
-	protected void fireInsertUpdate(DocumentEvent e) {
-		System.out.println("Hop, on fait un insert de offset=" + e.getOffset() + " length=" + e.getLength());
-		super.fireInsertUpdate(e);
-		System.out.println("Done, on a fait un insert de offset=" + e.getOffset() + " length=" + e.getLength());
+	public void insertString(int offs, String str, AttributeSet a) throws BadLocationException {
+		initiateStructuralModification(offs, 0);
+		super.insertString(offs, str, a);
 	}
+
+	private void initiateStructuralModification(int offset, int length) {
+		if (!isReadingDocument && currentModification == null) {
+			currentModification = new StructuralModification(offset, length);
+		}
+	}
+
+	/*@Override
+	protected void fireInsertUpdate(DocumentEvent e) {
+		if (!isReadingDocument) {
+			System.out.println("Hop, on fait un insert de offset=" + e.getOffset() + " length=" + e.getLength());
+		}
+		super.fireInsertUpdate(e);
+		if (!isReadingDocument) {
+			System.out.println("Done, on a fait un insert de offset=" + e.getOffset() + " length=" + e.getLength());
+		}
+		// documentChanged();
+	}*/
+
+	/*private void documentChanged() {
+		getPropertyChangeSupport().firePropertyChange("documentChanged", false, true);
+	}*/
 
 	@Override
 	protected Element createBranchElement(Element parent, AttributeSet a) {
-		System.out.println("On cree un BranchElement avec " + a + " parent=" + parent);
+		if (!isReadingDocument) {
+			System.out.println("On cree un BranchElement pour parent=" + parent);
+			Enumeration<?> en = a.getAttributeNames();
+			while (en.hasMoreElements()) {
+				Object next = en.nextElement();
+				System.out.println(next + "=" + a.getAttribute(next));
+			}
+		}
 		if (parent instanceof DocumentElement) {
 			// Thread.dumpStack();
 			return new ParagraphElement((DocumentElement) parent, a);
@@ -841,8 +921,15 @@ public class FlexoStyledDocument extends DefaultStyledDocument {
 
 	@Override
 	protected Element createLeafElement(Element parent, AttributeSet a, int p0, int p1) {
-		System.out.println("On cree un LeafElement avec " + a + " parent=" + parent.getName());
-		// Thread.dumpStack();
+		if (!isReadingDocument) {
+			System.out.println("On cree un LeafElement pour parent=" + parent);
+			// Thread.dumpStack();
+			Enumeration<?> en = a.getAttributeNames();
+			while (en.hasMoreElements()) {
+				Object next = en.nextElement();
+				System.out.println(next + "=" + a.getAttribute(next));
+			}
+		}
 		if (parent instanceof ParagraphElement) {
 			return new RunElement(parent, a, p0, p1, null);
 
@@ -850,13 +937,46 @@ public class FlexoStyledDocument extends DefaultStyledDocument {
 		return super.createLeafElement(parent, a, p0, p1);
 	}
 
+	protected void setIsReadingDocument(boolean isReadingDocument) {
+		this.isReadingDocument = isReadingDocument;
+	}
+
 	// --- INNER CLASSES-------------------------------------------------------------
-	// --- TABLE --------------------------------------------------------------------
 
-	public class DocumentElement extends SectionElement {
+	public interface FlexoDocumentElement<E extends FlexoDocObject<?, ?>> {
 
-		public DocumentElement() {
-			// TODO Auto-generated constructor stub
+		/**
+		 * Return {@link FlexoDocObject} this element represents
+		 * 
+		 * @return
+		 */
+		public E getDocObject();
+
+		/**
+		 * Recursive call to doc object looking up
+		 * 
+		 * @return
+		 */
+		public E lookupDocObject();
+	}
+
+	public class DocumentElement extends SectionElement implements FlexoDocumentElement<FlexoDocument<?, ?>> {
+
+		@Override
+		public FlexoDocument<?, ?> getDocObject() {
+			return flexoDocument;
+		}
+
+		@Override
+		public FlexoDocument<?, ?> lookupDocObject() {
+			for (int i = 0; i < getElementCount(); i++) {
+				Element e = getElement(i);
+				if (e instanceof FlexoDocumentElement) {
+					((FlexoDocumentElement) e).lookupDocObject();
+				}
+			}
+
+			return flexoDocument;
 		}
 
 		@Override
@@ -865,7 +985,7 @@ public class FlexoStyledDocument extends DefaultStyledDocument {
 		}
 	}
 
-	public class ParagraphElement extends BranchElement {
+	public class ParagraphElement extends BranchElement implements FlexoDocumentElement<FlexoDocParagraph<?, ?>> {
 
 		private FlexoDocParagraph<?, ?> paragraph = null;
 
@@ -879,9 +999,34 @@ public class FlexoStyledDocument extends DefaultStyledDocument {
 		}
 
 		public FlexoDocParagraph<?, ?> getParagraph() {
-			if (paragraph == null) {
+			return getDocObject();
+		}
+
+		@Override
+		public FlexoDocParagraph<?, ?> getDocObject() {
+			/*if (paragraph == null && currentModification != null) {
 				int index = getParent().getIndex(this);
 				int paragraphIndex = 0;
+				if (flexoDocument != null) {
+					for (FlexoDocElement<?, ?> e : flexoDocument.getElements()) {
+						if (e instanceof FlexoDocParagraph) {
+							if (paragraphIndex == index) {
+								paragraph = (FlexoDocParagraph<?, ?>) e;
+								break;
+							}
+							paragraphIndex++;
+						}
+					}
+				}
+			}*/
+			return paragraph;
+		}
+
+		@Override
+		public FlexoDocParagraph<?, ?> lookupDocObject() {
+			int index = getParent().getIndex(this);
+			int paragraphIndex = 0;
+			if (flexoDocument != null) {
 				for (FlexoDocElement<?, ?> e : flexoDocument.getElements()) {
 					if (e instanceof FlexoDocParagraph) {
 						if (paragraphIndex == index) {
@@ -892,30 +1037,98 @@ public class FlexoStyledDocument extends DefaultStyledDocument {
 					}
 				}
 			}
+			for (int i = 0; i < getElementCount(); i++) {
+				Element e = getElement(i);
+				if (e instanceof FlexoDocumentElement) {
+					((FlexoDocumentElement) e).lookupDocObject();
+				}
+			}
 			return paragraph;
 		}
 
-		@Override
+		/*@Override
 		public void replace(int offset, int length, Element[] elems) {
-			// TODO Auto-generated method stub
+			StringBuffer sb = new StringBuffer();
+			for (Element el : elems) {
+				sb.append(el.toString() + " ");
+			}
+			System.out.println("On remplace dans " + this + " avec " + sb.toString());
 			super.replace(offset, length, elems);
 			paragraph = null;
+		}*/
+
+		@Override
+		public int getStartOffset() {
+			if (getElementCount() > 0) {
+				return super.getStartOffset();
+			}
+			return -1;
+		}
+
+		@Override
+		public int getEndOffset() {
+			if (getElementCount() > 0) {
+				return super.getEndOffset();
+			}
+			return -1;
 		}
 
 		@Override
 		public String toString() {
-			return "ParagraphElement(" + getName() + ") " + getStartOffset() + "," + getEndOffset() + ":"
-					+ (getParagraph() != null ? getParagraph().getRawTextPreview() : "null") + "\n";
+			return "ParagraphElement(" + Integer.toHexString(hashCode()) + ") " + getStartOffset() + "," + getEndOffset() + ":"
+					+ (getParagraph() != null ? getParagraph().getRawTextPreview() : "null");
 		}
 	}
 
-	public class RunElement extends LeafElement {
+	public class RunElement extends LeafElement implements FlexoDocumentElement<FlexoTextRun<?, ?>> {
 
 		private FlexoTextRun<?, ?> run;
 
 		public RunElement(Element parent, AttributeSet a, int offs0, int offs1, FlexoTextRun<?, ?> run) {
 			super(parent, a, offs0, offs1);
 			this.run = run;
+		}
+
+		public FlexoTextRun<?, ?> getRun() {
+			return getDocObject();
+		}
+
+		@Override
+		public FlexoTextRun<?, ?> getDocObject() {
+			/*if (run == null && getParentElement() instanceof ParagraphElement && currentModification != null) {
+				int index = getParent().getIndex(this);
+				int runIndex = 0;
+				if (flexoDocument != null) {
+					for (FlexoDocRun<?, ?> r : ((ParagraphElement) getParentElement()).getParagraph().getRuns()) {
+						if (r instanceof FlexoTextRun) {
+							if (runIndex == index) {
+								run = (FlexoTextRun<?, ?>) r;
+								break;
+							}
+							runIndex++;
+						}
+					}
+				}
+			}*/
+			return run;
+		}
+
+		@Override
+		public FlexoTextRun<?, ?> lookupDocObject() {
+			int index = getParent().getIndex(this);
+			int runIndex = 0;
+			if (flexoDocument != null && ((ParagraphElement) getParentElement()).getParagraph() != null) {
+				for (FlexoDocRun<?, ?> r : ((ParagraphElement) getParentElement()).getParagraph().getRuns()) {
+					if (r instanceof FlexoTextRun) {
+						if (runIndex == index) {
+							run = (FlexoTextRun<?, ?>) r;
+							break;
+						}
+						runIndex++;
+					}
+				}
+			}
+			return run;
 		}
 
 		@Override
@@ -929,8 +1142,10 @@ public class FlexoStyledDocument extends DefaultStyledDocument {
 			} catch (BadLocationException e) {
 				e.printStackTrace();
 			}
-			return "RunElement(" + getName() + ") " + getStartOffset() + "," + getEndOffset() + ":" + /*run.getText()*/text + "\n";
+			return "RunElement(" + Integer.toHexString(hashCode()) + ") " + getStartOffset() + "," + getEndOffset() + ":"
+					+ /*run.getText()*/text;
 		}
+
 	}
 
 	/**
@@ -1457,4 +1672,292 @@ public class FlexoStyledDocument extends DefaultStyledDocument {
 		}
 	}
 	// --- end CELL -----------------------------------------------------------------
+
+	class StructuredContentListener implements DocumentListener {
+
+		@Override
+		public void insertUpdate(DocumentEvent e) {
+			updateDocumentStructure(e);
+		}
+
+		@Override
+		public void removeUpdate(DocumentEvent e) {
+			updateDocumentStructure(e);
+		}
+
+		@Override
+		public void changedUpdate(DocumentEvent e) {
+			updateDocumentStructure(e);
+		}
+
+		private void updateDocumentStructure(DocumentEvent e) {
+			/*System.out.println("Je detecte une modification structurelle pour offset=" + e.getOffset() + " length=" + e.getLength());
+			Element pElStart = getParagraphElement(e.getOffset());
+			Element cElStart = getCharacterElement(e.getOffset());
+			Element pElEnd = getParagraphElement(e.getOffset() + e.getLength());
+			Element cElEnd = getCharacterElement(e.getOffset() + e.getLength());
+			System.out.println("From: pElStart=" + pElStart + " cElStart=" + cElStart);
+			System.out.println("To: pElEnd=" + pElEnd + " cElEnd=" + cElEnd);*/
+			if (currentModification != null) {
+				currentModification.fireDocumentChanged(e);
+				currentModification = null;
+			}
+		}
+
+	}
+
+	class StructuralModification {
+
+		FragmentStructure previous;
+		FragmentStructure now;
+
+		public StructuralModification(int startOffet, int length) {
+			// System.out.println("On va changer la structure du document");
+			previous = new FragmentStructure(startOffet, length);
+			// System.out.println("WAS:");
+			// System.out.println(previous.toString());
+			// Thread.dumpStack();
+		}
+
+		void fireDocumentChanged(DocumentEvent e) {
+			now = new FragmentStructure(e.getOffset(), e.getLength());
+
+			System.out.println("OK, on a change des trucs");
+			System.out.println("WAS:");
+			System.out.println(previous.toString());
+			System.out.println("NOW:");
+			System.out.println(now.toString());
+			// Thread.dumpStack();
+
+			RetainedParagraphElement currentP = null;
+
+			if (previous.paragraphElements.size() <= now.paragraphElements.size()) {
+				for (int i = 0; i < previous.paragraphElements.size(); i++) {
+					RetainedParagraphElement oldP = previous.paragraphElements.get(i);
+					RetainedParagraphElement newP = now.paragraphElements.get(i);
+					fireUpdateParagraph(oldP, newP);
+					currentP = newP;
+				}
+				// Now handle new paragraphs
+				for (int i = previous.paragraphElements.size(); i < now.paragraphElements.size(); i++) {
+					RetainedParagraphElement newP = now.paragraphElements.get(i);
+					fireNewParagraph(newP, currentP);
+					currentP = newP;
+				}
+			}
+			else {
+				// Some paragraphs have been removed
+				for (int i = now.paragraphElements.size(); i < previous.paragraphElements.size(); i++) {
+					RetainedParagraphElement oldPToRemove = previous.paragraphElements.get(i);
+					if (oldPToRemove.paragraph != null) {
+						((FlexoDocElementContainer) oldPToRemove.paragraph.getContainer()).removeFromElements(oldPToRemove.paragraph);
+					}
+				}
+				for (int i = 0; i < now.paragraphElements.size(); i++) {
+					RetainedParagraphElement oldP = previous.paragraphElements.get(i);
+					RetainedParagraphElement newP = now.paragraphElements.get(i);
+					fireUpdateParagraph(oldP, newP);
+					currentP = newP;
+				}
+			}
+
+		}
+
+		private void fireUpdateParagraph(RetainedParagraphElement oldP, RetainedParagraphElement newP) {
+
+			if (newP.paragraph == null) {
+				newP.paragraph = newP.parElement.lookupDocObject();
+				if (newP.paragraph != null) {
+					System.out.println("Tiens j'ai quand meme trouve le paragraph: " + newP.paragraph);
+				}
+			}
+
+			RetainedRunElement currentR = null;
+
+			if (oldP.runElements.size() <= newP.runElements.size()) {
+				for (int i = 0; i < oldP.runElements.size(); i++) {
+					RetainedRunElement oldR = oldP.runElements.get(i);
+					RetainedRunElement newR = newP.runElements.get(i);
+					fireUpdateRun(oldR, newR);
+				}
+				// Now handle new runs
+				for (int i = oldP.runElements.size(); i < newP.runElements.size(); i++) {
+					RetainedRunElement newR = newP.runElements.get(i);
+					fireNewRun(newP.paragraph, newR, newR.getText(), currentR);
+					currentR = newR;
+				}
+
+			}
+		}
+
+		private void fireNewParagraph(RetainedParagraphElement newP, RetainedParagraphElement previousP) {
+			System.out.println("Creating new paragraph just after " + previousP.paragraph);
+
+			FlexoDocElementContainer container = previousP.paragraph.getContainer();
+			int index = previousP.paragraph.getIndex();
+			FlexoDocParagraph newParagraph = flexoDocument.getFactory().makeParagraph();
+			container.insertElementAtIndex(newParagraph, index + 1);
+			newP.parElement.paragraph = newParagraph;
+			newP.paragraph = newParagraph;
+
+			for (RetainedRunElement rre : newP.runElements) {
+				String newText = rre.getText();
+				if (newText.endsWith("\n")) {
+					newText = newText.substring(0, newText.length() - 1);
+				}
+				System.out.println("Creating new run with [" + newText + "]");
+				FlexoTextRun newRun = flexoDocument.getFactory().makeTextRun(newText);
+				newParagraph.addToRuns(newRun);
+			}
+
+		}
+
+		private void fireUpdateRun(RetainedRunElement oldR, RetainedRunElement newR) {
+			if (oldR.run == null) {
+				logger.warning("Unexpected null run");
+				return;
+			}
+			else {
+				if (newR.run == null) {
+					newR.run = newR.runElement.lookupDocObject();
+					if (newR.run != null) {
+						System.out.println("Tiens j'ai quand meme trouve le run: " + newR.run);
+					}
+				}
+				if (newR.run == null) {
+					System.out.println("Tiens faut creer un nouveau run pour " + oldR.run.getParagraph());
+				}
+				else if (newR.run == oldR.run) {
+					String newText = newR.getText();
+					if (newText.endsWith("\n")) {
+						newText = newText.substring(0, newText.length() - 1);
+					}
+					System.out.println("Mise a jour du run " + newR.run + " avec " + newText);
+					newR.run.setText(newText);
+				}
+			}
+		}
+
+		private void fireNewRun(FlexoDocParagraph<?, ?> container, RetainedRunElement newR, String text, RetainedRunElement previousR) {
+			System.out.println("Creating new run just after " + previousR);
+
+			int index = -1;
+			if (previousR != null && previousR.run != null) {
+				index = previousR.run.getIndex();
+			}
+			FlexoTextRun newRun = container.getFlexoDocument().getFactory().makeTextRun(text);
+			if (index == -1) {
+				container.addToRuns(newRun);
+			}
+			else {
+				container.insertRunAtIndex(newRun, index + 1);
+			}
+			newR.runElement.run = newRun;
+			newR.run = newRun;
+		}
+
+		class FragmentStructure {
+
+			List<RetainedParagraphElement> paragraphElements;
+
+			public FragmentStructure(int offset, int length) {
+				ParagraphElement pElStart = (ParagraphElement) getParagraphElement(offset);
+				ParagraphElement pElEnd = (ParagraphElement) getParagraphElement(offset + length);
+				DocumentElement docElement = pElStart.getParent();
+				int startId = -1;
+				int endId = -1;
+				for (int i = 0; i < docElement.getElementCount(); i++) {
+					Element e = docElement.getElement(i);
+					if (e == pElStart) {
+						startId = i;
+					}
+					if (e == pElEnd) {
+						endId = i;
+					}
+				}
+				paragraphElements = new ArrayList<>();
+				for (int i = startId; i <= endId; i++) {
+					Element e = docElement.getElement(i);
+					if (e instanceof ParagraphElement) {
+						paragraphElements.add(new RetainedParagraphElement((ParagraphElement) e));
+					}
+				}
+			}
+
+			@Override
+			public String toString() {
+				StringBuffer sb = new StringBuffer();
+				sb.append("Document structure:\n");
+				for (RetainedParagraphElement rpe : paragraphElements) {
+					sb.append(rpe);
+				}
+				return sb.toString();
+			}
+
+			class RetainedParagraphElement {
+				ParagraphElement parElement;
+				FlexoDocParagraph<?, ?> paragraph;
+				List<RetainedRunElement> runElements;
+				int startIndex;
+				int endIndex;
+
+				public RetainedParagraphElement(ParagraphElement pEl) {
+					this.parElement = pEl;
+					startIndex = pEl.getStartOffset();
+					endIndex = pEl.getEndOffset();
+					paragraph = pEl.getParagraph();
+					runElements = new ArrayList<>();
+					for (int i = 0; i < pEl.getElementCount(); i++) {
+						Element child = pEl.getElement(i);
+						if (child instanceof RunElement) {
+							RetainedRunElement rEl = new RetainedRunElement((RunElement) child);
+							runElements.add(rEl);
+						}
+					}
+				}
+
+				@Override
+				public String toString() {
+					StringBuffer sb = new StringBuffer();
+					sb.append("  > " + "[ParagraphElement:" + Integer.toHexString(parElement.hashCode()) + "] start=" + startIndex + " end="
+							+ endIndex + " [" + (paragraph != null ? Integer.toHexString(paragraph.hashCode()) : "null") + "]\n");
+					for (RetainedRunElement rre : runElements) {
+						sb.append(rre + "\n");
+					}
+					return sb.toString();
+				}
+
+				class RetainedRunElement {
+					RunElement runElement;
+					FlexoTextRun<?, ?> run;
+					int startIndex;
+					int endIndex;
+
+					public RetainedRunElement(RunElement rEl) {
+						this.runElement = rEl;
+						startIndex = rEl.getStartOffset();
+						endIndex = rEl.getEndOffset();
+						run = rEl.getRun();
+					}
+
+					public String getText() {
+						try {
+							return FlexoStyledDocument.this.getText(startIndex, endIndex - startIndex);
+						} catch (BadLocationException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						return null;
+					}
+
+					@Override
+					public String toString() {
+						return "    > " + "[RunElement:" + Integer.toHexString(runElement.hashCode()) + "] start=" + startIndex + " end="
+								+ endIndex + " [" + (run != null ? Integer.toHexString(run.hashCode()) : "null") + "]";
+					}
+				}
+			}
+		}
+	}
+
 }

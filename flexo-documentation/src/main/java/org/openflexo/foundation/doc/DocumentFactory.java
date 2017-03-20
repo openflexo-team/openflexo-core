@@ -119,7 +119,7 @@ public abstract class DocumentFactory<D extends FlexoDocument<D, TA>, TA extends
 	 * 
 	 * @return
 	 */
-	protected abstract FlexoDocParagraph<D, TA> makeParagraph();
+	public abstract FlexoDocParagraph<D, TA> makeParagraph();
 
 	/**
 	 * Build new empty paragraph style

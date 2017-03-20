@@ -3,6 +3,9 @@
   <DropDown id="1" autoSelectFirstRow="true" showText="true" iteratorClassName="org.openflexo.foundation.doc.NamedDocStyle" list="data.flexoDocument.styles" showIcon="false" format="object.name" constraints="flow()" name="dropdown" />
   <Font id="2" allowsNullText="define_color" sampleText="sample_for_this_font" constraints="flow()" name="FontSelector" />
   <Color id="3" allowsNullText="define_color" constraints="flow()" name="ColorSelector" />
-  <FIBVariable id="4" type="org.openflexo.components.doc.editorkit.FlexoDocumentEditor" name="data" />
-  <LocalizedDictionary id="5" />
+  <Button id="4" buttonType="Toggle" action="controller.toogleBold()" label="B" constraints="flow()" width="20" height="20" font="SansSerif,1,12" name="Button" />
+  <Button id="5" buttonType="Toggle" action="controller.toogleItalic()" label="I" constraints="flow()" width="20" height="20" font="SansSerif,2,12" name="Button" />
+  <Button id="6" buttonType="Toggle" action="controller.toogleUnderline()" label="U" constraints="flow()" width="20" height="20" name="Button" />
+  <FIBVariable id="7" type="org.openflexo.components.doc.editorkit.FlexoDocumentEditor" name="data" />
+  <LocalizedDictionary id="8" />
 </Panel>

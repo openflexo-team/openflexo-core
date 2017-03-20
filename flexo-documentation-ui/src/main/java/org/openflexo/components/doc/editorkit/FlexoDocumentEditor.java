@@ -18,7 +18,9 @@ import javax.swing.text.DefaultHighlighter.DefaultHighlightPainter;
 import javax.swing.text.Element;
 import javax.swing.text.Highlighter;
 
+import org.openflexo.components.doc.editorkit.FlexoStyledDocument.DocumentElement;
 import org.openflexo.foundation.doc.DocumentFactory;
+import org.openflexo.foundation.doc.FlexoDocElement;
 import org.openflexo.foundation.doc.FlexoDocument;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.toolbox.HasPropertyChangeSupport;
@@ -167,19 +169,21 @@ public class FlexoDocumentEditor<D extends FlexoDocument<D, TA>, TA extends Tech
 			this.add(new JScrollPane(jEditorPane), BorderLayout.CENTER);
 		}
 
-		public Element getElement(Object docObject) {
-			// TODO : implement this
-			return null;
-		}
+	}
 
-		public void setSelectedElements(List<? extends Element> elements) {
-			// TODO : implement this
-		}
+	public DocumentElement getElement(FlexoDocElement<D, TA> docElement) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
-		public boolean scrollToElement(Element element) {
-			// TODO : implement this
-			return false;
-		}
+	public void setSelectedElements(List<DocumentElement> elts) {
+		// TODO Auto-generated method stub
+
+	}
+
+	public boolean scrollToElement(Element element) {
+		// TODO : implement this
+		return false;
 	}
 
 }

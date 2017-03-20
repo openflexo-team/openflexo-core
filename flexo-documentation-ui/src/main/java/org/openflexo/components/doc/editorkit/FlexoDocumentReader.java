@@ -7,11 +7,13 @@ import java.util.List;
 
 import javax.swing.ImageIcon;
 import javax.swing.text.BadLocationException;
+import javax.swing.text.Element;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.TabSet;
 import javax.swing.text.TabStop;
 
+import org.openflexo.components.doc.editorkit.FlexoStyledDocument.DocumentElement;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.doc.FlexoDocObject;
 import org.openflexo.foundation.doc.FlexoDocParagraph;
@@ -85,7 +87,15 @@ public class FlexoDocumentReader<D extends FlexoDocument<D, TA>, TA extends Tech
 	private void read(FlexoDocument<D, TA> flexoDocument, int offset) throws BadLocationException {
 		System.out.println("Starting reading " + flexoDocument);
 
+		document.setIsReadingDocument(true);
 		iteratePart(flexoDocument.getElements());
+
+		for (Element e : document.getRootElements()) {
+			if (e instanceof DocumentElement) {
+				((DocumentElement) e).lookupDocObject();
+			}
+		}
+		document.setIsReadingDocument(false);
 
 		this.currentOffset = offset;
 

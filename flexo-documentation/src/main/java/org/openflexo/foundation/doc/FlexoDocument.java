@@ -65,9 +65,6 @@ import org.openflexo.model.annotations.XMLElement;
 public interface FlexoDocument<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
 		extends FlexoDocObject<D, TA>, ResourceData<D>, FlexoDocElementContainer<D, TA> {
 
-	@PropertyIdentifier(type = FlexoDocElement.class, cardinality = Cardinality.LIST)
-	public static final String ELEMENTS_KEY = "elements";
-
 	public static final String ROOT_ELEMENTS_KEY = "rootElements";
 
 	@PropertyIdentifier(type = NamedDocStyle.class, cardinality = Cardinality.LIST)
@@ -87,48 +84,6 @@ public interface FlexoDocument<D extends FlexoDocument<D, TA>, TA extends Techno
 	public void setName(String name);
 
 	public String getURI();
-
-	/**
-	 * Return the list of top-level elements of this document (elements like paragraphs or tables, sequentially composing the document)
-	 * 
-	 * @return
-	 */
-	@Override
-	@Getter(value = ELEMENTS_KEY, cardinality = Cardinality.LIST, inverse = FlexoDocElement.CONTAINER_KEY)
-	@XMLElement(primary = true)
-	@CloningStrategy(StrategyType.CLONE)
-	@Embedded
-	public List<FlexoDocElement<D, TA>> getElements();
-
-	@Setter(ELEMENTS_KEY)
-	public void setElements(List<FlexoDocElement<D, TA>> someElements);
-
-	/**
-	 * Add element to this {@link FlexoDocument} (public API).<br>
-	 * Element will be added to underlying technology-specific document model and {@link FlexoDocument} will be updated accordingly
-	 */
-	@Adder(ELEMENTS_KEY)
-	@PastingPoint
-	public void addToElements(FlexoDocElement<D, TA> anElement);
-
-	/**
-	 * Remove element from this {@link FlexoDocument} (public API).<br>
-	 * Element will be removed to underlying technology-specific document model and {@link FlexoDocument} will be updated accordingly
-	 */
-	@Remover(ELEMENTS_KEY)
-	public void removeFromElements(FlexoDocElement<D, TA> anElement);
-
-	/**
-	 * Insert element to this {@link FlexoDocument} at supplied index (public API).<br>
-	 * Element will be inserted to underlying technology-specific document model and {@link FlexoDocument} will be updated accordingly
-	 */
-	public void insertElementAtIndex(FlexoDocElement<D, TA> anElement, int index);
-
-	/**
-	 * Moved element to this {@link FlexoDocument} at supplied index (public API).<br>
-	 * Element will be moved inside underlying technology-specific document model and {@link FlexoDocument} will be updated accordingly
-	 */
-	public void moveElementToIndex(FlexoDocElement<D, TA> anElement, int index);
 
 	/**
 	 * Return element identified by identifier, or null if no such element exists

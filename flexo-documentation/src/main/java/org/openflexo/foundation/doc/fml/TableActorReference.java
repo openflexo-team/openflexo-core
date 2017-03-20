@@ -49,7 +49,6 @@ import org.openflexo.connie.exception.NotSettableContextException;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.doc.FlexoDocElement;
-import org.openflexo.foundation.doc.FlexoDocParagraph;
 import org.openflexo.foundation.doc.FlexoDocTable;
 import org.openflexo.foundation.doc.FlexoDocTableCell;
 import org.openflexo.foundation.doc.FlexoDocTableRow;
@@ -231,11 +230,11 @@ public interface TableActorReference<T extends FlexoDocTable<?, ?>> extends Acto
 				if (aTable != null) {
 					for (int i = 0; i < aTable.getTableRows().size(); i++) {
 						FlexoDocTableRow<?, ?> generatedRow = aTable.getTableRows().get(i);
-						if (generatedRow.getTableCells().size() > 0 && generatedRow.getTableCells().get(0).getParagraphs().size() > 0) {
-							FlexoDocParagraph<?, ?> generatedParagraph = generatedRow.getTableCells().get(0).getParagraphs().get(0);
-							if (StringUtils.isNotEmpty(generatedParagraph.getBaseIdentifier())) {
+						if (generatedRow.getTableCells().size() > 0 && generatedRow.getTableCells().get(0).getElements().size() > 0) {
+							FlexoDocElement<?, ?> generatedElement = generatedRow.getTableCells().get(0).getElements().get(0);
+							if (StringUtils.isNotEmpty(generatedElement.getBaseIdentifier())) {
 								FlexoDocElement<?, ?> templateParagraph = templateTable
-										.getElementWithIdentifier(generatedParagraph.getBaseIdentifier());
+										.getElementWithIdentifier(generatedElement.getBaseIdentifier());
 								FlexoDocTableCell<?, ?> templateCell = (FlexoDocTableCell<?, ?>) templateParagraph.getContainer();
 								FlexoDocTableRow<?, ?> templateRow = templateCell.getRow();
 								if (templateRow != null) {
@@ -303,9 +302,9 @@ public interface TableActorReference<T extends FlexoDocTable<?, ?>> extends Acto
 					FlexoDocTableRow<?, ?> clonedRow = (FlexoDocTableRow<?, ?>) rowToClone.cloneObject();
 					for (int j = 0; j < clonedRow.getTableCells().size(); j++) {
 						FlexoDocTableCell<?, ?> cell = clonedRow.getTableCells().get(j);
-						for (int k = 0; k < cell.getParagraphs().size(); k++) {
-							FlexoDocParagraph<?, ?> paragraph = cell.getParagraphs().get(k);
-							paragraph.setIdentifier(paragraph.getFlexoDocument().getFactory().generateId());
+						for (int k = 0; k < cell.getElements().size(); k++) {
+							FlexoDocElement<?, ?> element = cell.getElements().get(k);
+							element.setIdentifier(element.getFlexoDocument().getFactory().generateId());
 						}
 					}
 

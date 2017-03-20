@@ -41,6 +41,10 @@ package org.openflexo.components.doc.editorkit;
 
 import java.util.logging.Logger;
 
+import javax.swing.text.BadLocationException;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyleConstants;
+
 import org.openflexo.foundation.doc.FlexoDocObject;
 import org.openflexo.gina.model.FIBComponent;
 import org.openflexo.gina.view.GinaViewFactory;
@@ -63,11 +67,14 @@ public class FlexoDocumentToolbar extends SelectionSynchronizedFIBView {
 
 	public static final Resource FIB_FILE = ResourceLocator.locateResource("Fib/Widget/FlexoDocumentToolbar.fib");
 
+	private FlexoDocumentEditor<?, ?> documentEditor;
+
 	public FlexoDocumentToolbar(FlexoDocumentEditor<?, ?> documentEditor, FlexoController controller) {
 		super(documentEditor, controller, FIB_FILE,
 				documentEditor != null && documentEditor.getFlexoDocument() != null
 						? documentEditor.getFlexoDocument().getTechnologyAdapter().getLocales()
 						: (controller != null ? controller.getFlexoLocales() : FlexoLocalization.getMainLocalizer()));
+		this.documentEditor = documentEditor;
 		if (getFIBController() instanceof ToolbarFIBController) {
 			((ToolbarFIBController) getFIBController()).setToolbar(this);
 		}
@@ -114,6 +121,60 @@ public class FlexoDocumentToolbar extends SelectionSynchronizedFIBView {
 			if (toolbar != null) {
 				toolbar.setSelectedDocObject(selected);
 			}
+		}
+
+		public void toogleBold() {
+
+			int selectionStart = toolbar.documentEditor.getJEditorPane().getSelectionStart();
+			int selectionEnd = toolbar.documentEditor.getJEditorPane().getSelectionEnd();
+			String text = null;
+			try {
+				text = toolbar.documentEditor.getStyledDocument().getText(selectionStart, selectionEnd - selectionStart);
+			} catch (BadLocationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			System.out.println("OK on met en bold la selection " + selectionStart + "-" + selectionEnd + " soit: " + text);
+
+			SimpleAttributeSet sas = new SimpleAttributeSet();
+			StyleConstants.setBold(sas, true);
+			toolbar.documentEditor.getStyledDocument().setCharacterAttributes(selectionStart, selectionEnd - selectionStart, sas, false);
+		}
+
+		public void toogleItalic() {
+
+			int selectionStart = toolbar.documentEditor.getJEditorPane().getSelectionStart();
+			int selectionEnd = toolbar.documentEditor.getJEditorPane().getSelectionEnd();
+			String text = null;
+			try {
+				text = toolbar.documentEditor.getStyledDocument().getText(selectionStart, selectionEnd - selectionStart);
+			} catch (BadLocationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			System.out.println("OK on met en italic la selection " + selectionStart + "-" + selectionEnd + " soit: " + text);
+
+			SimpleAttributeSet sas = new SimpleAttributeSet();
+			StyleConstants.setItalic(sas, true);
+			toolbar.documentEditor.getStyledDocument().setCharacterAttributes(selectionStart, selectionEnd - selectionStart, sas, false);
+		}
+
+		public void toogleUnderline() {
+
+			int selectionStart = toolbar.documentEditor.getJEditorPane().getSelectionStart();
+			int selectionEnd = toolbar.documentEditor.getJEditorPane().getSelectionEnd();
+			String text = null;
+			try {
+				text = toolbar.documentEditor.getStyledDocument().getText(selectionStart, selectionEnd - selectionStart);
+			} catch (BadLocationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			System.out.println("OK on met en underline la selection " + selectionStart + "-" + selectionEnd + " soit: " + text);
+
+			SimpleAttributeSet sas = new SimpleAttributeSet();
+			StyleConstants.setUnderline(sas, true);
+			toolbar.documentEditor.getStyledDocument().setCharacterAttributes(selectionStart, selectionEnd - selectionStart, sas, false);
 		}
 
 		@Override
