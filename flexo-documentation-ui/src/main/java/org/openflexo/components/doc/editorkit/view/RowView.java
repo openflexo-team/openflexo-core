@@ -8,7 +8,7 @@ import javax.swing.text.BoxView;
 import javax.swing.text.Element;
 import javax.swing.text.View;
 
-import org.openflexo.components.doc.editorkit.FlexoStyledDocument.RowElement;
+import org.openflexo.components.doc.editorkit.element.RowElement;
 
 /**
  * Represens view for table's row.

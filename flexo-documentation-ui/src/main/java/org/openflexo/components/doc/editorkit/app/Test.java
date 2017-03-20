@@ -39,7 +39,7 @@ import javax.swing.tree.TreeNode;
 import org.openflexo.components.doc.editorkit.BorderAttributes;
 import org.openflexo.components.doc.editorkit.FlexoDocumentEditorKit;
 import org.openflexo.components.doc.editorkit.FlexoStyledDocument;
-import org.openflexo.components.doc.editorkit.FlexoStyledDocument.CellElement;
+import org.openflexo.components.doc.editorkit.element.CellElement;
 
 /**
  * This class represent test application for showing all FlexoDocumentEditorKit features.

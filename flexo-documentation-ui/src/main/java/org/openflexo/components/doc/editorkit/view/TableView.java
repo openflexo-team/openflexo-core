@@ -6,7 +6,7 @@ import javax.swing.text.Element;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.View;
 
-import org.openflexo.components.doc.editorkit.FlexoStyledDocument.TableElement;
+import org.openflexo.components.doc.editorkit.element.TableElement;
 
 /**
  * Represents view for a table element.

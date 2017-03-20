@@ -1,9 +1,7 @@
 package org.openflexo.components.doc.editorkit;
 
 import java.awt.Insets;
-import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.List;
 import java.util.Vector;
 import java.util.logging.Logger;
 
@@ -23,17 +21,29 @@ import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
 import javax.swing.undo.UndoableEdit;
 
-import org.openflexo.components.doc.editorkit.FlexoStyledDocument.StructuralModification.FragmentStructure.RetainedParagraphElement;
-import org.openflexo.components.doc.editorkit.FlexoStyledDocument.StructuralModification.FragmentStructure.RetainedParagraphElement.RetainedRunElement;
-import org.openflexo.foundation.doc.FlexoDocElement;
-import org.openflexo.foundation.doc.FlexoDocElementContainer;
-import org.openflexo.foundation.doc.FlexoDocObject;
-import org.openflexo.foundation.doc.FlexoDocParagraph;
-import org.openflexo.foundation.doc.FlexoDocRun;
+import org.openflexo.components.doc.editorkit.element.CellElement;
+import org.openflexo.components.doc.editorkit.element.DocumentElement;
+import org.openflexo.components.doc.editorkit.element.ParagraphElement;
+import org.openflexo.components.doc.editorkit.element.RowElement;
+import org.openflexo.components.doc.editorkit.element.RunElement;
+import org.openflexo.components.doc.editorkit.element.TableElement;
 import org.openflexo.foundation.doc.FlexoDocument;
-import org.openflexo.foundation.doc.FlexoTextRun;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 
+/**
+ * Internal representation of a {@link FlexoDocument} (a document conform to FlexoDocumentation API)<br
+ * 
+ * Represent the logical structure of underlying document while providing character and paragraph styles in a manner similar to the Rich
+ * Text Format. The element structure for this document represents style crossings for style runs. These style runs are mapped into a
+ * paragraph element structure (which may reside in some other structure). The style runs break at paragraph boundaries since logical styles
+ * are assigned to paragraph boundaries.
+ * 
+ * Note that this class was originally inspired from Stanislav Lapitsky code (see http://java-sl.com/docx_editor_kit.html)
+ * 
+ * @author Stanislav Lapitsky
+ * @author Sylvain Guerin
+ * @see DefaultStyledDocument
+ */
 @SuppressWarnings("serial")
 public class FlexoStyledDocument<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends DefaultStyledDocument {
 
@@ -45,7 +55,7 @@ public class FlexoStyledDocument<D extends FlexoDocument<D, TA>, TA extends Tech
 	 */
 	private Insets margins = new Insets(0, 0, 0, 0);
 
-	private FlexoDocument<D, TA> flexoDocument;
+	D flexoDocument;
 
 	private boolean isReadingDocument = false;
 
@@ -57,7 +67,7 @@ public class FlexoStyledDocument<D extends FlexoDocument<D, TA>, TA extends Tech
 	 * @param styles
 	 *            Resources and style definitions which may be shared across documents.
 	 */
-	public FlexoStyledDocument(FlexoDocument<D, TA> flexoDocument, Content c, StyleContext styles) {
+	public FlexoStyledDocument(D flexoDocument, Content c, StyleContext styles) {
 		super(c, styles);
 		this.flexoDocument = flexoDocument;
 		addDocumentListener(new StructuredContentListener());
@@ -69,7 +79,7 @@ public class FlexoStyledDocument<D extends FlexoDocument<D, TA>, TA extends Tech
 	 * @param styles
 	 *            The styles.
 	 */
-	public FlexoStyledDocument(FlexoDocument<D, TA> flexoDocument, StyleContext styles) {
+	public FlexoStyledDocument(D flexoDocument, StyleContext styles) {
 		this(flexoDocument, new GapContent(BUFFER_SIZE_DEFAULT), styles);
 	}
 
@@ -77,8 +87,17 @@ public class FlexoStyledDocument<D extends FlexoDocument<D, TA>, TA extends Tech
 	 * Constructs a default styled document. This buffers input content by a size of BUFFER_SIZE_DEFAULT and has a style context that is
 	 * scoped by the lifetime of the document and is not shared with other documents.
 	 */
-	public FlexoStyledDocument(FlexoDocument<D, TA> flexoDocument) {
+	public FlexoStyledDocument(D flexoDocument) {
 		this(flexoDocument, new GapContent(BUFFER_SIZE_DEFAULT), new StyleContext());
+	}
+
+	/**
+	 * Return conceptual document beeing represented by this {@link FlexoStyledDocument}
+	 * 
+	 * @return
+	 */
+	public D getFlexoDocument() {
+		return flexoDocument;
 	}
 
 	/**
@@ -146,7 +165,7 @@ public class FlexoStyledDocument<D extends FlexoDocument<D, TA>, TA extends Tech
 			}
 
 			// create table element
-			table = new TableElement(rowOffsets, rowLenghts, root, attr, rowCount, colCount, colWidths, rowHeights);
+			table = new TableElement<D, TA>(this, rowOffsets, rowLenghts, root, attr, rowCount, colCount, colWidths, rowHeights);
 			Element[] el = new Element[1];
 			el[0] = table;
 			Element[] repl = new Element[rowCount * colCount];
@@ -389,7 +408,7 @@ public class FlexoStyledDocument<D extends FlexoDocument<D, TA>, TA extends Tech
 			int[] offsets = new int[cellCount];
 			int[] lengths = new int[cellCount];
 			for (int i = 0; i < cellCount; i++) {
-				widths[i] = ((FlexoStyledDocument<D, TA>.RowElement) row).getCellWidth(i);
+				widths[i] = ((RowElement<D, TA>) row).getCellWidth(i);
 				offsets[i] = insertOffset + i;
 				lengths[i] = 1;
 			}
@@ -401,11 +420,11 @@ public class FlexoStyledDocument<D extends FlexoDocument<D, TA>, TA extends Tech
 			attr.addAttribute("BorderAttributes", ba);
 
 			Element[] rows = new Element[1];
-			rows[0] = new RowElement(table, attr, cellCount, offsets, lengths, widths, 1);
+			rows[0] = new RowElement<D, TA>(this, table, attr, cellCount, offsets, lengths, widths, 1);
 
 			Element[] removed = new Element[cellCount];
 			if (insertIndex < table.getElementCount()) {
-				CellElement cell = (CellElement) row.getElement(0);
+				CellElement<D, TA> cell = (CellElement<D, TA>) row.getElement(0);
 				for (int k = 0; k < cellCount; k++) {
 					removed[k] = cell.getElement(k);
 				}
@@ -462,7 +481,7 @@ public class FlexoStyledDocument<D extends FlexoDocument<D, TA>, TA extends Tech
 			// for each row
 			Element[] addedCells = new Element[table.getElementCount()];
 			for (int i = 0; i < table.getElementCount(); i++) {
-				RowElement editableRow = (RowElement) table.getElement(i);
+				RowElement<D, TA> editableRow = (RowElement<D, TA>) table.getElement(i);
 				int insertOffset;
 				if (colNum < editableRow.getElementCount()) {
 					insertOffset = editableRow.getElement(colNum).getStartOffset();
@@ -486,12 +505,12 @@ public class FlexoStyledDocument<D extends FlexoDocument<D, TA>, TA extends Tech
 
 				DefaultDocumentEvent e = new DefaultDocumentEvent(insertOffset, 1, DocumentEvent.EventType.INSERT);
 
-				CellElement cell;
+				CellElement<D, TA> cell;
 				if (colNum < editableRow.getElementCount()) {
-					cell = (CellElement) editableRow.getElement(colNum);
+					cell = (CellElement<D, TA>) editableRow.getElement(colNum);
 				}
 				else {
-					cell = (CellElement) editableRow.getElement(editableRow.getElementCount() - 1); // last cell
+					cell = (CellElement<D, TA>) editableRow.getElement(editableRow.getElementCount() - 1); // last cell
 				}
 				BranchElement remove;
 				BranchElement paragraph;
@@ -531,7 +550,7 @@ public class FlexoStyledDocument<D extends FlexoDocument<D, TA>, TA extends Tech
 				attr.addAttribute("BorderAttributes", ba);
 
 				Element[] rows = new Element[1];
-				rows[0] = new CellElement(editableRow, attr, insertOffset, 1, colWidth, 1);
+				rows[0] = new CellElement<D, TA>(this, editableRow, attr, insertOffset, 1, colWidth, 1);
 				addedCells[i] = rows[0];
 				editableRow.replace(colNum, 0, rows);
 				e.addEdit(new ElementEdit(editableRow, colNum, new Element[0], rows));
@@ -593,7 +612,7 @@ public class FlexoStyledDocument<D extends FlexoDocument<D, TA>, TA extends Tech
 						return;
 					}
 					if ((s.charAt(s.length() - 1) == '\n') && (text.equals("\n"))) {
-						deleteLastParagraph((CellElement) startCell);
+						deleteLastParagraph((CellElement<D, TA>) startCell);
 					}
 				}
 				startCellTable = startCell.getParentElement().getParentElement();
@@ -711,7 +730,7 @@ public class FlexoStyledDocument<D extends FlexoDocument<D, TA>, TA extends Tech
 	 *
 	 * @param cell
 	 */
-	public void deleteLastParagraph(CellElement cell) {
+	public void deleteLastParagraph(CellElement<D, TA> cell) {
 		int cnt = cell.getElementCount();
 		if (cnt <= 1) {
 			return;
@@ -820,10 +839,10 @@ public class FlexoStyledDocument<D extends FlexoDocument<D, TA>, TA extends Tech
 		// operation we can detect an illegitimate attempt
 		// to mutate attributes.
 		writeLock();
-		DocumentElement rootElement = new DocumentElement();
-		ParagraphElement paragraph = new ParagraphElement(rootElement, null);
+		DocumentElement<D, TA> rootElement = new DocumentElement<D, TA>(this);
+		ParagraphElement<D, TA> paragraph = new ParagraphElement<D, TA>(this, rootElement, null);
 
-		RunElement brk = new RunElement(paragraph, null, 0, 1, null);
+		RunElement<D, TA> brk = new RunElement<D, TA>(this, paragraph, null, 0, 1, null);
 		Element[] buff = new Element[1];
 		buff[0] = brk;
 		paragraph.replace(0, 0, buff);
@@ -834,11 +853,11 @@ public class FlexoStyledDocument<D extends FlexoDocument<D, TA>, TA extends Tech
 		return rootElement;
 	}
 
-	public DocumentElement getRootElement() {
-		return (DocumentElement) getRootElements()[0];
+	public DocumentElement<D, TA> getRootElement() {
+		return (DocumentElement<D, TA>) getRootElements()[0];
 	}
 
-	private StructuralModification currentModification = null;
+	private StructuralModification<D, TA> currentModification = null;
 
 	/*@Override
 	protected void insertUpdate(DefaultDocumentEvent chng, AttributeSet attr) {
@@ -869,7 +888,7 @@ public class FlexoStyledDocument<D extends FlexoDocument<D, TA>, TA extends Tech
 
 	private void initiateStructuralModification(int offset, int length) {
 		if (!isReadingDocument && currentModification == null) {
-			currentModification = new StructuralModification(offset, length);
+			currentModification = new StructuralModification<D, TA>(this, offset, length);
 		}
 	}
 
@@ -899,9 +918,9 @@ public class FlexoStyledDocument<D extends FlexoDocument<D, TA>, TA extends Tech
 				System.out.println(next + "=" + a.getAttribute(next));
 			}
 		}
-		if (parent instanceof FlexoStyledDocument.DocumentElement) {
+		if (parent instanceof DocumentElement) {
 			// Thread.dumpStack();
-			return new ParagraphElement((DocumentElement) parent, a);
+			return new ParagraphElement<D, TA>(this, (DocumentElement<D, TA>) parent, a);
 
 		}
 		return super.createBranchElement(parent, a);
@@ -918,8 +937,8 @@ public class FlexoStyledDocument<D extends FlexoDocument<D, TA>, TA extends Tech
 				System.out.println(next + "=" + a.getAttribute(next));
 			}
 		}
-		if (parent instanceof FlexoStyledDocument.ParagraphElement) {
-			return new RunElement(parent, a, p0, p1, null);
+		if (parent instanceof ParagraphElement) {
+			return new RunElement<D, TA>(this, parent, a, p0, p1, null);
 
 		}
 		return super.createLeafElement(parent, a, p0, p1);
@@ -929,739 +948,20 @@ public class FlexoStyledDocument<D extends FlexoDocument<D, TA>, TA extends Tech
 		this.isReadingDocument = isReadingDocument;
 	}
 
+	public void fireWriteLock() {
+		writeLock();
+	}
+
+	public void fireWriteUnlock() {
+		writeUnlock();
+	}
+
+	@Override
+	public void fireChangedUpdate(DocumentEvent e) {
+		super.fireChangedUpdate(e);
+	}
+
 	// --- INNER CLASSES-------------------------------------------------------------
-
-	public interface FlexoDocumentElement<E extends FlexoDocObject<?, ?>> {
-
-		/**
-		 * Return {@link FlexoDocObject} this element represents
-		 * 
-		 * @return
-		 */
-		public E getDocObject();
-
-		/**
-		 * Recursive call to doc object looking up
-		 * 
-		 * @return
-		 */
-		public E lookupDocObject();
-
-		// public <O extends FlexoDocObject<D,TA>> FlexoDocumentElement<O> getElement(O docObject);
-	}
-
-	public class DocumentElement extends SectionElement implements FlexoDocumentElement<FlexoDocument<D, TA>> {
-
-		@Override
-		public FlexoDocument<D, TA> getDocObject() {
-			return flexoDocument;
-		}
-
-		@Override
-		public FlexoDocument<D, TA> lookupDocObject() {
-			for (int i = 0; i < getElementCount(); i++) {
-				Element e = getElement(i);
-				if (e instanceof FlexoDocumentElement) {
-					((FlexoDocumentElement) e).lookupDocObject();
-				}
-			}
-
-			return flexoDocument;
-		}
-
-		@Override
-		public String toString() {
-			return "DocumentElement(" + getName() + ") " + getStartOffset() + "," + getEndOffset() + "\n";
-		}
-	}
-
-	public class ParagraphElement extends BranchElement implements FlexoDocumentElement<FlexoDocParagraph<D, TA>> {
-
-		private FlexoDocParagraph<D, TA> paragraph = null;
-
-		public ParagraphElement(DocumentElement documentElement, AttributeSet a) {
-			super(documentElement, a);
-		}
-
-		@Override
-		public DocumentElement getParent() {
-			return (DocumentElement) super.getParent();
-		}
-
-		public FlexoDocParagraph<D, TA> getParagraph() {
-			return getDocObject();
-		}
-
-		@Override
-		public FlexoDocParagraph<D, TA> getDocObject() {
-			/*if (paragraph == null && currentModification != null) {
-				int index = getParent().getIndex(this);
-				int paragraphIndex = 0;
-				if (flexoDocument != null) {
-					for (FlexoDocElement<D,TA> e : flexoDocument.getElements()) {
-						if (e instanceof FlexoDocParagraph) {
-							if (paragraphIndex == index) {
-								paragraph = (FlexoDocParagraph<D,TA>) e;
-								break;
-							}
-							paragraphIndex++;
-						}
-					}
-				}
-			}*/
-			return paragraph;
-		}
-
-		@Override
-		public FlexoDocParagraph<D, TA> lookupDocObject() {
-			int index = getParent().getIndex(this);
-			int paragraphIndex = 0;
-			if (flexoDocument != null) {
-				for (FlexoDocElement<D, TA> e : flexoDocument.getElements()) {
-					if (e instanceof FlexoDocParagraph) {
-						if (paragraphIndex == index) {
-							paragraph = (FlexoDocParagraph<D, TA>) e;
-							break;
-						}
-						paragraphIndex++;
-					}
-				}
-			}
-			for (int i = 0; i < getElementCount(); i++) {
-				Element e = getElement(i);
-				if (e instanceof FlexoDocumentElement) {
-					((FlexoDocumentElement) e).lookupDocObject();
-				}
-			}
-			return paragraph;
-		}
-
-		/*@Override
-		public void replace(int offset, int length, Element[] elems) {
-			StringBuffer sb = new StringBuffer();
-			for (Element el : elems) {
-				sb.append(el.toString() + " ");
-			}
-			System.out.println("On remplace dans " + this + " avec " + sb.toString());
-			super.replace(offset, length, elems);
-			paragraph = null;
-		}*/
-
-		@Override
-		public int getStartOffset() {
-			if (getElementCount() > 0) {
-				return super.getStartOffset();
-			}
-			return -1;
-		}
-
-		@Override
-		public int getEndOffset() {
-			if (getElementCount() > 0) {
-				return super.getEndOffset();
-			}
-			return -1;
-		}
-
-		@Override
-		public String toString() {
-			return "ParagraphElement(" + Integer.toHexString(hashCode()) + ") " + getStartOffset() + "," + getEndOffset() + ":"
-					+ (getParagraph() != null ? getParagraph().getRawTextPreview() : "null");
-		}
-	}
-
-	public class RunElement extends LeafElement implements FlexoDocumentElement<FlexoTextRun<D, TA>> {
-
-		private FlexoTextRun<D, TA> run;
-
-		public RunElement(Element parent, AttributeSet a, int offs0, int offs1, FlexoTextRun<D, TA> run) {
-			super(parent, a, offs0, offs1);
-			this.run = run;
-		}
-
-		public FlexoTextRun<D, TA> getRun() {
-			return getDocObject();
-		}
-
-		@Override
-		public FlexoTextRun<D, TA> getDocObject() {
-			/*if (run == null && getParentElement() instanceof ParagraphElement && currentModification != null) {
-				int index = getParent().getIndex(this);
-				int runIndex = 0;
-				if (flexoDocument != null) {
-					for (FlexoDocRun<D,TA> r : ((ParagraphElement) getParentElement()).getParagraph().getRuns()) {
-						if (r instanceof FlexoTextRun) {
-							if (runIndex == index) {
-								run = (FlexoTextRun<D,TA>) r;
-								break;
-							}
-							runIndex++;
-						}
-					}
-				}
-			}*/
-			return run;
-		}
-
-		@Override
-		public FlexoTextRun<D, TA> lookupDocObject() {
-			int index = getParent().getIndex(this);
-			int runIndex = 0;
-			if (flexoDocument != null && ((ParagraphElement) getParentElement()).getParagraph() != null) {
-				for (FlexoDocRun<D, TA> r : ((ParagraphElement) getParentElement()).getParagraph().getRuns()) {
-					if (r instanceof FlexoTextRun) {
-						if (runIndex == index) {
-							run = (FlexoTextRun<D, TA>) r;
-							break;
-						}
-						runIndex++;
-					}
-				}
-			}
-			return run;
-		}
-
-		@Override
-		public String toString() {
-			String text = "???";
-			try {
-				text = getText(getStartOffset(), getEndOffset() - getStartOffset());
-				if (text.length() > 20) {
-					text = text.substring(0, 20);
-				}
-			} catch (BadLocationException e) {
-				e.printStackTrace();
-			}
-			return "RunElement(" + Integer.toHexString(hashCode()) + ") " + getStartOffset() + "," + getEndOffset() + ":"
-					+ /*run.getText()*/text;
-		}
-
-	}
-
-	/**
-	 * Represents table element.
-	 */
-	public class TableElement extends BranchElement {
-		/**
-		 * Conscructs a new table element in the document.
-		 *
-		 * @param rowOffsets
-		 *            The start offsets for each table row.
-		 * @param rowLengths
-		 *            Lengths (char length) for each row.
-		 * @param parent
-		 *            The parent element.
-		 * @param attr
-		 *            The attributes for the table.
-		 * @param rowCount
-		 *            The number of rows.
-		 * @param colCount
-		 *            The number of columns.
-		 * @param widths
-		 *            The list of column's widths.
-		 * @param heights
-		 *            The list of rows' heights.
-		 */
-		public TableElement(int[] rowOffsets, int[] rowLengths, Element parent, AttributeSet attr, int rowCount, int colCount, int[] widths,
-				int[] heights) {
-			super(parent, attr);
-			BorderAttributes ba = (BorderAttributes) attr.getAttribute("BorderAttributes");
-			if (ba == null) {
-				ba = new BorderAttributes();
-				ba.setBorders(1 + 2 + 4 + 8 + 16 + 32);
-			}
-
-			Element[] rows = new Element[rowCount];
-			for (int i = 0; i < rowCount; i++) {
-				MutableAttributeSet rowAttr = new SimpleAttributeSet(attr);
-				BorderAttributes rowBorders = new BorderAttributes();
-				rowBorders.lineColor = ba.lineColor;
-				rowBorders.borderLeft = ba.borderLeft;
-				rowBorders.borderRight = ba.borderRight;
-				rowBorders.borderVertical = ba.borderVertical;
-				if (i == 0) {
-					rowBorders.borderTop = ba.borderTop;
-				}
-				else {
-					rowBorders.borderTop = ba.borderHorizontal;
-				}
-
-				if (i == (rowCount - 1)) {
-					rowBorders.borderBottom = ba.borderBottom;
-				}
-
-				rowAttr.addAttribute("BorderAttributes", rowBorders);
-				int[] cellOffsets = new int[colCount];
-				int[] cellLengths = new int[colCount];
-				for (int j = 0; j < colCount; j++) {
-					cellOffsets[j] = rowOffsets[i] + j; // offset+i*colCount+j;
-					cellLengths[j] = 1;
-				}
-				rows[i] = new RowElement(this, rowAttr, colCount, cellOffsets, cellLengths, widths, heights[i]);
-			}
-			this.replace(0, 0, rows);
-		}
-
-		/**
-		 * Gets the element name.
-		 *
-		 * @return The element name.
-		 */
-		@Override
-		public String getName() {
-			return "table";
-		}
-
-		/**
-		 * Gets the table width (sum of column widths).
-		 */
-		public int getWidth() {
-			RowElement row = (RowElement) getElement(0);
-			return row.getWidth();
-		}
-
-		/**
-		 * Gets the table height (sum of row heights).
-		 */
-		public int getHeight() {
-			int cnt = getElementCount();
-			int height = 1;
-			for (int i = 0; i < cnt; i++) {
-				RowElement row = (RowElement) getElement(i);
-				height += row.getHeight();
-			}
-			return height;
-		}
-
-		/**
-		 * Checks whether the element is a leaf.
-		 *
-		 * @return True if a leaf.
-		 */
-		@Override
-		public boolean isLeaf() {
-			return false;
-		}
-
-		/**
-		 * Sets table borders.
-		 *
-		 * @param ba
-		 *            The new border attributes.
-		 */
-		public void setBorders(BorderAttributes ba) {
-			writeLock();
-			this.addAttribute("BorderAttributes", ba);
-			for (int i = 0; i < getElementCount(); i++) {
-				RowElement row = (RowElement) getElement(i);
-				BorderAttributes rowBorders = (BorderAttributes) row.getAttribute("BorderAttributes");
-				rowBorders.lineColor = ba.lineColor;
-				rowBorders.borderLeft = ba.borderLeft;
-				rowBorders.borderRight = ba.borderRight;
-				rowBorders.borderVertical = ba.borderVertical;
-				if (i == 0) {
-					rowBorders.borderTop = ba.borderTop;
-				}
-				else {
-					rowBorders.borderTop = ba.borderHorizontal;
-				}
-
-				if (i == (getElementCount() - 1)) {
-					rowBorders.borderBottom = ba.borderBottom;
-				}
-				row.setBorders(rowBorders);
-			}
-			writeUnlock();
-		}
-
-		public BorderAttributes getBorders() {
-			return (BorderAttributes) getAttribute("BorderAttributes");
-		}
-
-		/**
-		 * Sets table margins. (For each cell)
-		 *
-		 * @param ba
-		 *            The new margins.
-		 */
-		public void setMargins(Insets margins) {
-			writeLock();
-			int cnt = getElementCount();
-			for (int i = 0; i < cnt; i++) {
-				RowElement row = (RowElement) getElement(i);
-				int cnt2 = row.getElementCount();
-				for (int j = 0; j < cnt2; j++) {
-					CellElement cell = (CellElement) row.getElement(j);
-					cell.setMargins(margins);
-				}
-			}
-			writeUnlock();
-		}
-
-		/**
-		 * Sets table alignment.
-		 *
-		 * @param ba
-		 *            The new margins.
-		 */
-		public void setAlignment(int align) {
-			writeLock();
-			StyleConstants.setAlignment((MutableAttributeSet) this.getAttributes(), align);
-			writeUnlock();
-		}
-
-		@Override
-		public String toString() {
-			return "TableElement(" + getName() + ") " + getStartOffset() + "," + getEndOffset() + "\n";
-		}
-	}
-	// ----- end TABLE --------------------------------------------------------------
-	// --- ROW ----------------------------------------------------------------------
-
-	/**
-	 * Represents table's row element.
-	 */
-	public class RowElement extends BranchElement {
-
-		/**
-		 * Conscructs a new row element in the table.
-		 *
-		 * @param parent
-		 *            The parent table element.
-		 * @param attr
-		 *            The row attributes.
-		 * @param cellCount
-		 *            The number of cells.
-		 * @param cellOffsets
-		 *            Offsets for each cell.
-		 * @param cellLengths
-		 *            Lengths (char length) for each cell.
-		 * @param widths
-		 *            Widths (in pixels) for each cell.
-		 * @param height
-		 *            row height.
-		 */
-		public RowElement(Element parent, AttributeSet attr, int cellCount, int[] cellOffsets, int[] cellLengths, int[] widths,
-				int height) {
-			super(parent, attr);
-
-			BorderAttributes ba = (BorderAttributes) attr.getAttribute("BorderAttributes");
-			Element[] cells = new Element[cellCount];
-			for (int i = 0; i < cellCount; i++) {
-				MutableAttributeSet cellAttr = new SimpleAttributeSet(attr);
-				BorderAttributes cellBorders = new BorderAttributes();
-				cellBorders.lineColor = ba.lineColor;
-				cellBorders.borderTop = ba.borderTop;
-				cellBorders.borderBottom = ba.borderBottom;
-				if (i == 0) {
-					cellBorders.borderLeft = ba.borderLeft;
-				}
-				else {
-					cellBorders.borderLeft = ba.borderVertical;
-				}
-
-				if (i == (cellCount - 1)) {
-					cellBorders.borderRight = ba.borderRight;
-				}
-				cellAttr.addAttribute("BorderAttributes", cellBorders);
-				cells[i] = new CellElement(this, cellAttr, cellOffsets[i], cellLengths[i], widths[i], height);
-			}
-			this.replace(0, 0, cells);
-		}
-
-		/**
-		 * Gets element name.
-		 */
-		@Override
-		public String getName() {
-			return "row";
-		}
-
-		/**
-		 * Checks whether the element is a leaf.
-		 *
-		 * @return true if a leaf.
-		 */
-		@Override
-		public boolean isLeaf() {
-			return false;
-		}
-
-		/**
-		 * Gets row width (in pixels)
-		 */
-		public int getWidth() {
-			int width = 0;
-			for (int i = 0; i < getElementCount(); i++) {
-				CellElement cell = (CellElement) getElement(i);
-				width += cell.getWidth();
-			}
-			return width;
-		}
-
-		/**
-		 * Gets row height (in pixels)
-		 */
-		public int getHeight() {
-			int height = 0;
-			for (int i = 0; i < getElementCount(); i++) {
-				CellElement cell = (CellElement) getElement(i);
-				height = Math.max(cell.getHeight(), height);
-			}
-			return height;
-		}
-
-		/**
-		 * Gets widths of the cell.
-		 *
-		 * @param index
-		 *            The number of cell.
-		 */
-		public int getCellWidth(int index) {
-			CellElement cell = (CellElement) getElement(index);
-			return cell.getWidth();
-		}
-
-		/**
-		 * Sets row borders attributes.
-		 *
-		 * @param ba
-		 *            The border attributes.
-		 */
-		public void setBorders(BorderAttributes ba) {
-			BorderAttributes currentBorders = (BorderAttributes) getAttribute("BorderAttributes");
-			currentBorders.setBorders(ba.getBorders());
-			currentBorders.lineColor = ba.lineColor;
-
-			for (int i = 0; i < getElementCount(); i++) {
-				CellElement cell = (CellElement) getElement(i);
-				BorderAttributes cellBorders = new BorderAttributes();
-				cellBorders.lineColor = ba.lineColor;
-				cellBorders.borderTop = ba.borderTop;
-				cellBorders.borderBottom = ba.borderBottom;
-				if (i == 0) {
-					cellBorders.borderLeft = ba.borderLeft;
-				}
-				else {
-					cellBorders.borderLeft = ba.borderVertical;
-				}
-
-				if (i == (getElementCount() - 1)) {
-					cellBorders.borderRight = ba.borderRight;
-				}
-				cell.setBorders(cellBorders);
-			} // for
-		}
-
-		/**
-		 * Sets row margins.
-		 *
-		 * @param margins
-		 *            new margins
-		 */
-		public void setMargins(Insets margins) {
-			writeLock();
-			int cnt = getElementCount();
-			for (int i = 0; i < cnt; i++) {
-				CellElement cell = (CellElement) getElement(i);
-				cell.setMargins(margins);
-			}
-			writeUnlock();
-		}
-
-		/**
-		 * Sets row height (height for each cell).
-		 *
-		 * @param height
-		 *            height value.
-		 */
-		public void setHeight(int height) {
-			writeLock();
-			int cnt = getElementCount();
-			for (int i = 0; i < cnt; i++) {
-				CellElement cell = (CellElement) getElement(i);
-				cell.height = height;
-			}
-			writeUnlock();
-		}
-	}
-	// --- CELL ---------------------------------------------------------------------
-
-	/**
-	 * Represents table's cell element.
-	 */
-	public class CellElement extends BranchElement {
-		/**
-		 * Cell width (in pixels).
-		 */
-		private int width = 1;
-
-		/**
-		 * Cell height (in pixels).
-		 */
-		private int height = 1;
-
-		/**
-		 * Initial margin value.
-		 */
-		public static final int MARGIN_MIN = 2;
-		/**
-		 * Stores the cell's margins: top, left, bottom, right.
-		 */
-		private Insets m_margins = new Insets(MARGIN_MIN, MARGIN_MIN, MARGIN_MIN, MARGIN_MIN);
-
-		/**
-		 * Constructs new empty cell element (cell without content) in the row.
-		 *
-		 * @param parent
-		 *            The parent row element.
-		 * @param attr
-		 *            The cell's attributes.
-		 * @param startOffset
-		 *            The start offset in the document content.
-		 * @param length
-		 *            The length of cell (in chars).
-		 * @param width
-		 *            The cell width (in pixels).
-		 */
-		public CellElement(Element parent, AttributeSet attr, int startOffset, int length, int width, int height) {
-			super(parent, attr);
-			this.width = width;
-			this.height = height;
-			BranchElement paragraph = new BranchElement(this, null);
-
-			LeafElement brk = new LeafElement(paragraph, null, startOffset, startOffset + length);
-			Element[] buff = new Element[1];
-			buff[0] = brk;
-			paragraph.replace(0, 0, buff);
-
-			buff[0] = paragraph;
-			this.replace(0, 0, buff);
-		}
-
-		/**
-		 * Constructs cell element with definite content.
-		 *
-		 * @param parent
-		 *            The parent row.
-		 * @param attr
-		 *            The row attributes.
-		 * @param paragraphOffsets
-		 *            Offsets of inner elements.
-		 * @param paragraphLenghts
-		 *            Lengths of inner elements.
-		 * @param width
-		 *            The cell width.
-		 */
-		public CellElement(Element parent, AttributeSet attr, int[] paragraphOffsets, int[] paragraphLenghts, int width) {
-			super(parent, attr);
-			this.width = width;
-		}
-
-		/**
-		 * Gets element name.
-		 */
-		@Override
-		public String getName() {
-			return "cell";
-		}
-
-		/**
-		 * Gets cell width (in pixels).
-		 */
-		public int getWidth() {
-			return width;
-		}
-
-		/**
-		 * Sets cell width (in pixels).
-		 *
-		 * @param w
-		 *            New cell widths.
-		 */
-		public void setWidth(int w) {
-			width = w;
-		}
-
-		/**
-		 * Gets cell height (in pixels).
-		 */
-		public int getHeight() {
-			return height;
-		}
-
-		/**
-		 * Sets cell height (in pixels).
-		 *
-		 * @param h
-		 *            New cell widths.
-		 */
-		public void setHeight(int h) {
-			height = h;
-		}
-
-		/**
-		 * Gets the cell's margins.
-		 *
-		 * @return the page's margins.
-		 */
-		public Insets getMargins() {
-			return m_margins;
-		}
-
-		/**
-		 * Sets the cell's margins.
-		 *
-		 * @param margins
-		 *            - the page's margins.
-		 */
-		public void setMargins(Insets margins) {
-			this.m_margins = margins;
-		}
-
-		/**
-		 * Sets the cell's margins. Limits is between 5 and 300.
-		 *
-		 * @param top
-		 *            - the top margin.
-		 * @param left
-		 *            - the left margin.
-		 * @param bottom
-		 *            - the bottom margin.
-		 * @param right
-		 *            - the right margin.
-		 */
-		public void setMargins(int top, int left, int bottom, int right) {
-			this.m_margins.top = top;
-			this.m_margins.left = left;
-			this.m_margins.bottom = bottom;
-			this.m_margins.right = right;
-		}
-
-		/**
-		 * Sets row borders attributes.
-		 *
-		 * @param ba
-		 *            The border attributes.
-		 */
-		public void setBorders(BorderAttributes ba) {
-			BorderAttributes cellBorders = (BorderAttributes) this.getAttribute("BorderAttributes");
-			cellBorders.lineColor = ba.lineColor;
-			cellBorders.borderTop = ba.borderTop;
-			cellBorders.borderBottom = ba.borderBottom;
-			cellBorders.borderLeft = ba.borderLeft;
-			cellBorders.borderRight = ba.borderRight;
-			DefaultDocumentEvent dde = new DefaultDocumentEvent(Math.max(getStartOffset() - 1, 0), getEndOffset(),
-					DocumentEvent.EventType.CHANGE);
-			dde.end();
-			fireChangedUpdate(dde);
-		}
-
-		public BorderAttributes getBorders() {
-			return (BorderAttributes) this.getAttribute("BorderAttributes");
-		}
-	}
-	// --- end CELL -----------------------------------------------------------------
 
 	class StructuredContentListener implements DocumentListener {
 
@@ -1696,259 +996,23 @@ public class FlexoStyledDocument<D extends FlexoDocument<D, TA>, TA extends Tech
 
 	}
 
-	class StructuralModification {
+	public class DocumentRootElement extends BranchElement {
 
-		FragmentStructure previous;
-		FragmentStructure now;
-
-		public StructuralModification(int startOffet, int length) {
-			// System.out.println("On va changer la structure du document");
-			previous = new FragmentStructure(startOffet, length);
-			// System.out.println("WAS:");
-			// System.out.println(previous.toString());
-			// Thread.dumpStack();
+		/**
+		 * Creates a new SectionElement.
+		 */
+		public DocumentRootElement() {
+			super(null, null);
 		}
 
-		void fireDocumentChanged(DocumentEvent e) {
-			now = new FragmentStructure(e.getOffset(), e.getLength());
-
-			System.out.println("OK, on a change des trucs");
-			System.out.println("WAS:");
-			System.out.println(previous.toString());
-			System.out.println("NOW:");
-			System.out.println(now.toString());
-			// Thread.dumpStack();
-
-			RetainedParagraphElement currentP = null;
-
-			if (previous.paragraphElements.size() <= now.paragraphElements.size()) {
-				for (int i = 0; i < previous.paragraphElements.size(); i++) {
-					RetainedParagraphElement oldP = previous.paragraphElements.get(i);
-					RetainedParagraphElement newP = now.paragraphElements.get(i);
-					fireUpdateParagraph(oldP, newP);
-					currentP = newP;
-				}
-				// Now handle new paragraphs
-				for (int i = previous.paragraphElements.size(); i < now.paragraphElements.size(); i++) {
-					RetainedParagraphElement newP = now.paragraphElements.get(i);
-					fireNewParagraph(newP, currentP);
-					currentP = newP;
-				}
-			}
-			else {
-				// Some paragraphs have been removed
-				for (int i = now.paragraphElements.size(); i < previous.paragraphElements.size(); i++) {
-					RetainedParagraphElement oldPToRemove = previous.paragraphElements.get(i);
-					if (oldPToRemove.paragraph != null) {
-						oldPToRemove.paragraph.getContainer().removeFromElements(oldPToRemove.paragraph);
-					}
-				}
-				for (int i = 0; i < now.paragraphElements.size(); i++) {
-					RetainedParagraphElement oldP = previous.paragraphElements.get(i);
-					RetainedParagraphElement newP = now.paragraphElements.get(i);
-					fireUpdateParagraph(oldP, newP);
-					currentP = newP;
-				}
-			}
-
-		}
-
-		private void fireUpdateParagraph(FlexoStyledDocument<D, TA>.StructuralModification.FragmentStructure.RetainedParagraphElement oldP,
-				FlexoStyledDocument<D, TA>.StructuralModification.FragmentStructure.RetainedParagraphElement newP) {
-
-			if (newP.paragraph == null) {
-				newP.paragraph = newP.parElement.lookupDocObject();
-				if (newP.paragraph != null) {
-					System.out.println("Tiens j'ai quand meme trouve le paragraph: " + newP.paragraph);
-				}
-			}
-
-			RetainedRunElement currentR = null;
-
-			if (oldP.runElements.size() <= newP.runElements.size()) {
-				for (int i = 0; i < oldP.runElements.size(); i++) {
-					RetainedRunElement oldR = oldP.runElements.get(i);
-					RetainedRunElement newR = newP.runElements.get(i);
-					fireUpdateRun(oldR, newR);
-				}
-				// Now handle new runs
-				for (int i = oldP.runElements.size(); i < newP.runElements.size(); i++) {
-					RetainedRunElement newR = newP.runElements.get(i);
-					fireNewRun(newP.paragraph, newR, newR.getText(), currentR);
-					currentR = newR;
-				}
-
-			}
-		}
-
-		private void fireNewParagraph(FlexoStyledDocument<D, TA>.StructuralModification.FragmentStructure.RetainedParagraphElement newP,
-				FlexoStyledDocument<D, TA>.StructuralModification.FragmentStructure.RetainedParagraphElement previousP) {
-			System.out.println("Creating new paragraph just after " + previousP.paragraph);
-
-			FlexoDocElementContainer<D, TA> container = previousP.paragraph.getContainer();
-			int index = previousP.paragraph.getIndex();
-			FlexoDocParagraph<D, TA> newParagraph = flexoDocument.getFactory().makeParagraph();
-			container.insertElementAtIndex(newParagraph, index + 1);
-			newP.parElement.paragraph = newParagraph;
-			newP.paragraph = newParagraph;
-
-			for (RetainedRunElement rre : newP.runElements) {
-				String newText = rre.getText();
-				if (newText.endsWith("\n")) {
-					newText = newText.substring(0, newText.length() - 1);
-				}
-				System.out.println("Creating new run with [" + newText + "]");
-				FlexoTextRun newRun = flexoDocument.getFactory().makeTextRun(newText);
-				newParagraph.addToRuns(newRun);
-			}
-
-		}
-
-		private void fireUpdateRun(RetainedRunElement oldR, RetainedRunElement newR) {
-			if (oldR.run == null) {
-				logger.warning("Unexpected null run");
-				return;
-			}
-			else {
-				if (newR.run == null) {
-					newR.run = newR.runElement.lookupDocObject();
-					if (newR.run != null) {
-						System.out.println("Tiens j'ai quand meme trouve le run: " + newR.run);
-					}
-				}
-				if (newR.run == null) {
-					System.out.println("Tiens faut creer un nouveau run pour " + oldR.run.getParagraph());
-				}
-				else if (newR.run == oldR.run) {
-					String newText = newR.getText();
-					if (newText.endsWith("\n")) {
-						newText = newText.substring(0, newText.length() - 1);
-					}
-					System.out.println("Mise a jour du run " + newR.run + " avec " + newText);
-					newR.run.setText(newText);
-				}
-			}
-		}
-
-		private void fireNewRun(FlexoDocParagraph<D, TA> container, RetainedRunElement newR, String text, RetainedRunElement previousR) {
-			System.out.println("Creating new run just after " + previousR);
-
-			int index = -1;
-			if (previousR != null && previousR.run != null) {
-				index = previousR.run.getIndex();
-			}
-			FlexoTextRun newRun = container.getFlexoDocument().getFactory().makeTextRun(text);
-			if (index == -1) {
-				container.addToRuns(newRun);
-			}
-			else {
-				container.insertRunAtIndex(newRun, index + 1);
-			}
-			newR.runElement.run = newRun;
-			newR.run = newRun;
-		}
-
-		class FragmentStructure {
-
-			List<RetainedParagraphElement> paragraphElements;
-
-			public FragmentStructure(int offset, int length) {
-				ParagraphElement pElStart = (ParagraphElement) getParagraphElement(offset);
-				ParagraphElement pElEnd = (ParagraphElement) getParagraphElement(offset + length);
-				DocumentElement docElement = pElStart.getParent();
-				int startId = -1;
-				int endId = -1;
-				for (int i = 0; i < docElement.getElementCount(); i++) {
-					Element e = docElement.getElement(i);
-					if (e == pElStart) {
-						startId = i;
-					}
-					if (e == pElEnd) {
-						endId = i;
-					}
-				}
-				paragraphElements = new ArrayList<>();
-				for (int i = startId; i <= endId; i++) {
-					Element e = docElement.getElement(i);
-					if (e instanceof FlexoStyledDocument.ParagraphElement) {
-						paragraphElements.add(new RetainedParagraphElement((ParagraphElement) e));
-					}
-				}
-			}
-
-			@Override
-			public String toString() {
-				StringBuffer sb = new StringBuffer();
-				sb.append("Document structure:\n");
-				for (RetainedParagraphElement rpe : paragraphElements) {
-					sb.append(rpe);
-				}
-				return sb.toString();
-			}
-
-			class RetainedParagraphElement {
-				ParagraphElement parElement;
-				FlexoDocParagraph<D, TA> paragraph;
-				List<RetainedRunElement> runElements;
-				int startIndex;
-				int endIndex;
-
-				public RetainedParagraphElement(ParagraphElement pEl) {
-					this.parElement = pEl;
-					startIndex = pEl.getStartOffset();
-					endIndex = pEl.getEndOffset();
-					paragraph = pEl.getParagraph();
-					runElements = new ArrayList<>();
-					for (int i = 0; i < pEl.getElementCount(); i++) {
-						Element child = pEl.getElement(i);
-						if (child instanceof FlexoStyledDocument.RunElement) {
-							RetainedRunElement rEl = new RetainedRunElement((RunElement) child);
-							runElements.add(rEl);
-						}
-					}
-				}
-
-				@Override
-				public String toString() {
-					StringBuffer sb = new StringBuffer();
-					sb.append("  > " + "[ParagraphElement:" + Integer.toHexString(parElement.hashCode()) + "] start=" + startIndex + " end="
-							+ endIndex + " [" + (paragraph != null ? Integer.toHexString(paragraph.hashCode()) : "null") + "]\n");
-					for (RetainedRunElement rre : runElements) {
-						sb.append(rre + "\n");
-					}
-					return sb.toString();
-				}
-
-				class RetainedRunElement {
-					RunElement runElement;
-					FlexoTextRun<D, TA> run;
-					int startIndex;
-					int endIndex;
-
-					public RetainedRunElement(RunElement rEl) {
-						this.runElement = rEl;
-						startIndex = rEl.getStartOffset();
-						endIndex = rEl.getEndOffset();
-						run = rEl.getRun();
-					}
-
-					public String getText() {
-						try {
-							return FlexoStyledDocument.this.getText(startIndex, endIndex - startIndex);
-						} catch (BadLocationException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-						return null;
-					}
-
-					@Override
-					public String toString() {
-						return "    > " + "[RunElement:" + Integer.toHexString(runElement.hashCode()) + "] start=" + startIndex + " end="
-								+ endIndex + " [" + (run != null ? Integer.toHexString(run.hashCode()) : "null") + "]";
-					}
-				}
-			}
+		/**
+		 * Gets the name of the element.
+		 *
+		 * @return the name
+		 */
+		@Override
+		public String getName() {
+			return SectionElementName;
 		}
 	}
 

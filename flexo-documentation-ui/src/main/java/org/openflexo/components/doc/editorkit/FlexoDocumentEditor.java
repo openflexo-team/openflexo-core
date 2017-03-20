@@ -18,7 +18,7 @@ import javax.swing.text.DefaultHighlighter.DefaultHighlightPainter;
 import javax.swing.text.Element;
 import javax.swing.text.Highlighter;
 
-import org.openflexo.components.doc.editorkit.FlexoStyledDocument.DocumentElement;
+import org.openflexo.components.doc.editorkit.element.DocumentElement;
 import org.openflexo.foundation.doc.DocumentFactory;
 import org.openflexo.foundation.doc.FlexoDocObject;
 import org.openflexo.foundation.doc.FlexoDocument;

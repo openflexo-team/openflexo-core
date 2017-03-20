@@ -19,9 +19,9 @@ import javax.swing.text.Element;
 import javax.swing.text.StyleConstants;
 
 import org.openflexo.components.doc.editorkit.BorderAttributes;
-import org.openflexo.components.doc.editorkit.FlexoStyledDocument.CellElement;
-import org.openflexo.components.doc.editorkit.FlexoStyledDocument.RowElement;
-import org.openflexo.components.doc.editorkit.FlexoStyledDocument.TableElement;
+import org.openflexo.components.doc.editorkit.element.CellElement;
+import org.openflexo.components.doc.editorkit.element.RowElement;
+import org.openflexo.components.doc.editorkit.element.TableElement;
 
 /**
  * Represents dialog of table and table's elements properties. User can set table to reflect table's attributes. Row to reflect row's

@@ -18,7 +18,10 @@ import org.openflexo.components.doc.editorkit.view.DocxViewFactory;
 /**
  * This is the implementation of editing functionality.
  *
+ * Note that this class was originally inspired from Stanislav Lapitsky code (see http://java-sl.com/docx_editor_kit.html)
+ * 
  * @author Stanislav Lapitsky
+ * @author Sylvain Guerin
  */
 public class FlexoDocumentEditorKit extends StyledEditorKit {
 

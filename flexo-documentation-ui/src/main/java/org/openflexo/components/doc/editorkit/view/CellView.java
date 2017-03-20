@@ -12,7 +12,7 @@ import javax.swing.text.Element;
 import javax.swing.text.View;
 
 import org.openflexo.components.doc.editorkit.BorderAttributes;
-import org.openflexo.components.doc.editorkit.FlexoStyledDocument.CellElement;
+import org.openflexo.components.doc.editorkit.element.CellElement;
 
 /**
  * Represents view for a table cell element.

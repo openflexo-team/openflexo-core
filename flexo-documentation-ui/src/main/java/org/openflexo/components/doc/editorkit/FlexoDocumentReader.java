@@ -13,7 +13,7 @@ import javax.swing.text.StyleConstants;
 import javax.swing.text.TabSet;
 import javax.swing.text.TabStop;
 
-import org.openflexo.components.doc.editorkit.FlexoStyledDocument.DocumentElement;
+import org.openflexo.components.doc.editorkit.element.DocumentElement;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.doc.FlexoDocObject;
 import org.openflexo.foundation.doc.FlexoDocParagraph;
