@@ -402,6 +402,7 @@ public class FlexoStyledDocument<D extends FlexoDocument<D, TA>, TA extends Tech
 	 * @param insertAbove
 	 *            if true inserts row above current row
 	 */
+	@SuppressWarnings("unchecked")
 	public void insertRow(int offset, boolean insertAbove) {
 		Element elem = getDefaultRootElement();
 
@@ -501,6 +502,7 @@ public class FlexoStyledDocument<D extends FlexoDocument<D, TA>, TA extends Tech
 	 * @param insertBefore
 	 *            if true inserts column before current column
 	 */
+	@SuppressWarnings("unchecked")
 	public void insertColumn(int offset, int colWidth, boolean insertBefore) {
 		Element elem = getDefaultRootElement();
 
@@ -633,6 +635,7 @@ public class FlexoStyledDocument<D extends FlexoDocument<D, TA>, TA extends Tech
 	 * @param length
 	 *            the number of characters to remove >= 0
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public void remove(int offset, int length) throws BadLocationException {
 
@@ -670,15 +673,15 @@ public class FlexoStyledDocument<D extends FlexoDocument<D, TA>, TA extends Tech
 			// return;
 		}
 
-		Vector tableList = getInnerTableList(offset, offset + length);
+		Vector<Element> tableList = getInnerTableList(offset, offset + length);
 		if (tableList.size() == 0) {
 			super.remove(offset, length);
 		}
 		else {
-			int currentLength = length;
+			// int currentLength = length;
 			boolean flag = true;
 			for (int i = 0; i < tableList.size(); i++) {
-				Element table = (Element) tableList.get(i);
+				Element table = tableList.get(i);
 				if ((offset > table.getStartOffset()) && (offset + length < table.getEndOffset())) {
 					flag = false;
 					break;
@@ -752,8 +755,8 @@ public class FlexoStyledDocument<D extends FlexoDocument<D, TA>, TA extends Tech
 	 * @param endOffset
 	 *            The end interval offset.
 	 */
-	public Vector getInnerTableList(int startOffset, int endOffset) {
-		Vector result = new Vector();
+	public Vector<Element> getInnerTableList(int startOffset, int endOffset) {
+		Vector<Element> result = new Vector<>();
 		Element root = getDefaultRootElement();
 		for (int i = 0; i < root.getElementCount(); i++) {
 			Element elem = root.getElement(i);
@@ -893,6 +896,7 @@ public class FlexoStyledDocument<D extends FlexoDocument<D, TA>, TA extends Tech
 		return rootElement;
 	}
 
+	@SuppressWarnings("unchecked")
 	public DocumentElement<D, TA> getRootElement() {
 		return (DocumentElement<D, TA>) getRootElements()[0];
 	}
@@ -948,6 +952,7 @@ public class FlexoStyledDocument<D extends FlexoDocument<D, TA>, TA extends Tech
 		getPropertyChangeSupport().firePropertyChange("documentChanged", false, true);
 	}*/
 
+	@SuppressWarnings("unchecked")
 	@Override
 	protected Element createBranchElement(Element parent, AttributeSet a) {
 		if (!isReadingDocument) {

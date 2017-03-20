@@ -63,6 +63,7 @@ import org.openflexo.components.doc.editorkit.view.DocxViewFactory;
  * @author Stanislav Lapitsky
  * @author Sylvain Guerin
  */
+@SuppressWarnings("serial")
 public class FlexoDocumentEditorKit extends StyledEditorKit {
 
 	/**
@@ -110,7 +111,7 @@ public class FlexoDocumentEditorKit extends StyledEditorKit {
 	 */
 	@Override
 	public void read(InputStream in, Document doc, int pos) throws IOException, BadLocationException {
-		// FlexoDocumentReader db = new FlexoDocumentReader(doc);
+		// FlexoDocumentEditorFactory db = new FlexoDocumentEditorFactory(doc);
 		System.out.println("Hop un nouveau reader");
 		// db.read(in, pos);
 	}
@@ -210,9 +211,11 @@ public class FlexoDocumentEditorKit extends StyledEditorKit {
 	 *
 	 * @return the model
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public Document createDefaultDocument() {
-		FlexoStyledDocument doc = new FlexoStyledDocument(null);
+		@SuppressWarnings("rawtypes")
+		FlexoStyledDocument<?, ?> doc = new FlexoStyledDocument(null);
 		return doc;
 	}
 

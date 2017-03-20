@@ -71,15 +71,18 @@ import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 
 /**
- * Implements reader of document.
+ * A factory used to build {@link FlexoStyledDocument} from a given {@link FlexoDocument}
  *
+ * Note that this class was originally inspired from Stanislav Lapitsky code (see http://java-sl.com/docx_editor_kit.html)
+ * 
  * @author Stanislav Lapitsky
+ * @author sylvain
  */
-public class FlexoDocumentReader<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> {
+public class FlexoDocumentEditorFactory<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> {
 	/**
 	 * document instance to the building.
 	 */
-	protected FlexoStyledDocument document;
+	protected FlexoStyledDocument<D, TA> document;
 	private FlexoDocument<D, TA> flexoDocument;
 
 	/**
@@ -91,8 +94,6 @@ public class FlexoDocumentReader<D extends FlexoDocument<D, TA>, TA extends Tech
 	SimpleAttributeSet charAttrs;
 
 	private boolean numberNextParagraph = false;
-	// private Integer numId;
-	// private Integer ilvl;
 	private String numberingString;
 
 	private List<Integer> numbering = new ArrayList<>();
@@ -107,14 +108,28 @@ public class FlexoDocumentReader<D extends FlexoDocument<D, TA>, TA extends Tech
 	 * @throws BadLocationException
 	 * @throws IOException
 	 */
-	public FlexoDocumentReader(FlexoDocument<D, TA> flexoDocument) throws BadLocationException {
+	public FlexoDocumentEditorFactory(D flexoDocument) throws BadLocationException {
 		this.flexoDocument = flexoDocument;
-		document = new FlexoStyledDocument(flexoDocument);
+		document = new FlexoStyledDocument<D, TA>(flexoDocument);
 		read(flexoDocument, 0);
 	}
 
-	public FlexoStyledDocument getDocument() {
+	/**
+	 * Return the {@link FlexoStyledDocument} beeing built by this reader
+	 * 
+	 * @return
+	 */
+	public FlexoStyledDocument<D, TA> getDocument() {
 		return document;
+	}
+
+	/**
+	 * Return {@link FlexoDocument} beeing read by this reader
+	 * 
+	 * @return
+	 */
+	public FlexoDocument<D, TA> getFlexoDocument() {
+		return flexoDocument;
 	}
 
 	/**
@@ -124,6 +139,7 @@ public class FlexoDocumentReader<D extends FlexoDocument<D, TA>, TA extends Tech
 	 *            stream.
 	 * @throws BadLocationException
 	 */
+	@SuppressWarnings("unchecked")
 	private void read(FlexoDocument<D, TA> flexoDocument, int offset) throws BadLocationException {
 		System.out.println("Starting reading " + flexoDocument);
 
@@ -132,7 +148,7 @@ public class FlexoDocumentReader<D extends FlexoDocument<D, TA>, TA extends Tech
 
 		for (Element e : document.getRootElements()) {
 			if (e instanceof DocumentElement) {
-				((DocumentElement) e).lookupDocObject();
+				((DocumentElement<D, TA>) e).lookupDocObject();
 			}
 		}
 		document.setIsReadingDocument(false);
@@ -145,6 +161,7 @@ public class FlexoDocumentReader<D extends FlexoDocument<D, TA>, TA extends Tech
 		iteratePart(Arrays.asList(content));
 	}
 
+	@SuppressWarnings("unchecked")
 	public void iteratePart(List<? extends FlexoDocObject<D, TA>> content) throws BadLocationException {
 		for (Object obj : content) {
 			// System.out.println(" * handling " + obj + " of " + obj.getClass());
@@ -271,7 +288,7 @@ public class FlexoDocumentReader<D extends FlexoDocument<D, TA>, TA extends Tech
 
 			if (style.getParagraphNumbering() != null) {
 				numberNextParagraph = true;
-				Integer numId = style.getParagraphNumbering().getNumId();
+				// Integer numId = style.getParagraphNumbering().getNumId();
 				Integer ilvl = style.getParagraphNumbering().getIlvl();
 				numberingString = handleNumbering(ilvl == null ? 0 : ilvl);
 			}

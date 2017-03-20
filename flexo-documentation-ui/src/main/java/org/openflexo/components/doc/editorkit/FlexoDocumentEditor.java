@@ -71,7 +71,7 @@ import org.openflexo.toolbox.HasPropertyChangeSupport;
 public class FlexoDocumentEditor<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
 		implements HasPropertyChangeSupport, DocumentListener {
 
-	private FlexoDocument<D, TA> flexoDocument;
+	private D flexoDocument;
 	private DocumentFactory<D, TA> documentFactory;
 	private Highlighter highlighter;
 	private DefaultHighlightPainter highlighterPainter;
@@ -101,7 +101,7 @@ public class FlexoDocumentEditor<D extends FlexoDocument<D, TA>, TA extends Tech
 	 * @param flexoDocument
 	 *            the flexoDocument.
 	 */
-	public FlexoDocumentEditor(FlexoDocument<D, TA> flexoDocument) {
+	public FlexoDocumentEditor(D flexoDocument) {
 		this(flexoDocument.getFactory());
 		setFlexoDocument(flexoDocument);
 	}
@@ -126,17 +126,17 @@ public class FlexoDocumentEditor<D extends FlexoDocument<D, TA>, TA extends Tech
 		}
 	}
 
-	public FlexoDocument<D, TA> getFlexoDocument() {
+	public D getFlexoDocument() {
 		return flexoDocument;
 	}
 
-	public void setFlexoDocument(FlexoDocument<D, TA> flexoDocument) {
+	public void setFlexoDocument(D flexoDocument) {
 		if (flexoDocument != this.flexoDocument) {
 			FlexoDocument<D, TA> oldValue = this.flexoDocument;
 			this.flexoDocument = flexoDocument;
-			FlexoDocumentReader<D, TA> reader;
+			FlexoDocumentEditorFactory<D, TA> reader;
 			try {
-				reader = new FlexoDocumentReader<>(flexoDocument);
+				reader = new FlexoDocumentEditorFactory<>(flexoDocument);
 				jEditorPane.setDocument(reader.getDocument());
 				jEditorPane.getDocument().addDocumentListener(this);
 			} catch (BadLocationException e) {
@@ -159,8 +159,9 @@ public class FlexoDocumentEditor<D extends FlexoDocument<D, TA>, TA extends Tech
 		return editorPanel;
 	}
 
-	public FlexoStyledDocument getStyledDocument() {
-		return (FlexoStyledDocument) jEditorPane.getDocument();
+	@SuppressWarnings("unchecked")
+	public FlexoStyledDocument<D, TA> getStyledDocument() {
+		return (FlexoStyledDocument<D, TA>) jEditorPane.getDocument();
 	}
 
 	@Override
@@ -173,8 +174,8 @@ public class FlexoDocumentEditor<D extends FlexoDocument<D, TA>, TA extends Tech
 		int offset = arg0.getOffset();
 		int length = arg0.getLength();
 		System.out.println("Une insertion de " + length + "caracteres a ete effectuee en position " + offset);
-		Element body = jEditorPane.getDocument().getDefaultRootElement().getElement(1);
-		Element paragraph = body.getElement(0);
+		// Element body = jEditorPane.getDocument().getDefaultRootElement().getElement(1);
+		// Element paragraph = body.getElement(0);
 		if (offset != 0) {
 			String insertedText;
 			try {
@@ -207,12 +208,12 @@ public class FlexoDocumentEditor<D extends FlexoDocument<D, TA>, TA extends Tech
 
 	}
 
-	public DocumentElement getElement(FlexoDocObject<D, TA> docObject) {
+	public DocumentElement<D, TA> getElement(FlexoDocObject<D, TA> docObject) {
 		System.out.println("On cherche " + docObject);
 		return null;
 	}
 
-	public void setSelectedElements(List<DocumentElement> elts) {
+	public void setSelectedElements(List<DocumentElement<D, TA>> elts) {
 		// TODO Auto-generated method stub
 
 	}
@@ -223,7 +224,7 @@ public class FlexoDocumentEditor<D extends FlexoDocument<D, TA>, TA extends Tech
 	}
 
 	public void highlight(FlexoDocObject<D, TA> docObject) {
-		DocumentElement docElement = getElement(docObject);
+		DocumentElement<D, TA> docElement = getElement(docObject);
 		if (docElement != null) {
 			try {
 				highlighter.addHighlight(docElement.getStartOffset(), docElement.getEndOffset(), highlighterPainter);

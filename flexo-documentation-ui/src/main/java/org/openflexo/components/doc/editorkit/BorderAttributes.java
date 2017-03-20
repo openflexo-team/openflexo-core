@@ -48,6 +48,7 @@ import java.io.Serializable;
  *
  * @author Stanislav Lapitsky
  */
+@SuppressWarnings("serial")
 public class BorderAttributes implements Serializable {
 	/**
 	 * top border value
