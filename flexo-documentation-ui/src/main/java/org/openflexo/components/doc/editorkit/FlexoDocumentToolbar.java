@@ -1,11 +1,12 @@
 /**
  * 
- * Copyright (c) 2013-2014, Openflexo
- * Copyright (c) 2012-2012, AgileBirds
+ * Copyright (c) 2014-2017, Openflexo
  * 
- * This file is part of Openflexo-technology-adapters-ui, a component of the software infrastructure 
+ * This file is part of Flexo-Documentation-UI, a component of the software infrastructure 
  * developed at Openflexo.
  * 
+ * Please not that some parts of that component are freely inspired from
+ * Stanislav Lapitsky code (see http://java-sl.com/docx_editor_kit.html)
  * 
  * Openflexo is dual-licensed under the European Union Public License (EUPL, either 
  * version 1.1 of the License, or any later version ), which is available at 
