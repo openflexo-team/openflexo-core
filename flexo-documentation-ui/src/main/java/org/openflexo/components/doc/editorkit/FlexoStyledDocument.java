@@ -32,8 +32,10 @@ import org.openflexo.foundation.doc.FlexoDocParagraph;
 import org.openflexo.foundation.doc.FlexoDocRun;
 import org.openflexo.foundation.doc.FlexoDocument;
 import org.openflexo.foundation.doc.FlexoTextRun;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 
-public class FlexoStyledDocument extends DefaultStyledDocument /*implements HasPropertyChangeSupport*/ {
+@SuppressWarnings("serial")
+public class FlexoStyledDocument<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends DefaultStyledDocument {
 
 	static final Logger logger = Logger.getLogger(FlexoStyledDocument.class.getPackage().getName());
 
@@ -43,11 +45,9 @@ public class FlexoStyledDocument extends DefaultStyledDocument /*implements HasP
 	 */
 	private Insets margins = new Insets(0, 0, 0, 0);
 
-	private FlexoDocument<?, ?> flexoDocument;
+	private FlexoDocument<D, TA> flexoDocument;
 
 	private boolean isReadingDocument = false;
-
-	// private PropertyChangeSupport pcSupport;
 
 	/**
 	 * Constructs a styled document.
@@ -57,9 +57,8 @@ public class FlexoStyledDocument extends DefaultStyledDocument /*implements HasP
 	 * @param styles
 	 *            Resources and style definitions which may be shared across documents.
 	 */
-	public FlexoStyledDocument(FlexoDocument<?, ?> flexoDocument, Content c, StyleContext styles) {
+	public FlexoStyledDocument(FlexoDocument<D, TA> flexoDocument, Content c, StyleContext styles) {
 		super(c, styles);
-		// pcSupport = new PropertyChangeSupport(this);
 		this.flexoDocument = flexoDocument;
 		addDocumentListener(new StructuredContentListener());
 	}
@@ -70,7 +69,7 @@ public class FlexoStyledDocument extends DefaultStyledDocument /*implements HasP
 	 * @param styles
 	 *            The styles.
 	 */
-	public FlexoStyledDocument(FlexoDocument<?, ?> flexoDocument, StyleContext styles) {
+	public FlexoStyledDocument(FlexoDocument<D, TA> flexoDocument, StyleContext styles) {
 		this(flexoDocument, new GapContent(BUFFER_SIZE_DEFAULT), styles);
 	}
 
@@ -78,20 +77,9 @@ public class FlexoStyledDocument extends DefaultStyledDocument /*implements HasP
 	 * Constructs a default styled document. This buffers input content by a size of BUFFER_SIZE_DEFAULT and has a style context that is
 	 * scoped by the lifetime of the document and is not shared with other documents.
 	 */
-	public FlexoStyledDocument(FlexoDocument<?, ?> flexoDocument) {
+	public FlexoStyledDocument(FlexoDocument<D, TA> flexoDocument) {
 		this(flexoDocument, new GapContent(BUFFER_SIZE_DEFAULT), new StyleContext());
 	}
-
-	/*@Override
-	public PropertyChangeSupport getPropertyChangeSupport() {
-		return pcSupport;
-	}
-	
-	@Override
-	public String getDeletedProperty() {
-		// TODO Auto-generated method stub
-		return null;
-	}*/
 
 	/**
 	 * Inserts a new table in the document.
@@ -401,7 +389,7 @@ public class FlexoStyledDocument extends DefaultStyledDocument /*implements HasP
 			int[] offsets = new int[cellCount];
 			int[] lengths = new int[cellCount];
 			for (int i = 0; i < cellCount; i++) {
-				widths[i] = ((RowElement) row).getCellWidth(i);
+				widths[i] = ((FlexoStyledDocument<D, TA>.RowElement) row).getCellWidth(i);
 				offsets[i] = insertOffset + i;
 				lengths[i] = 1;
 			}
@@ -911,7 +899,7 @@ public class FlexoStyledDocument extends DefaultStyledDocument /*implements HasP
 				System.out.println(next + "=" + a.getAttribute(next));
 			}
 		}
-		if (parent instanceof DocumentElement) {
+		if (parent instanceof FlexoStyledDocument.DocumentElement) {
 			// Thread.dumpStack();
 			return new ParagraphElement((DocumentElement) parent, a);
 
@@ -930,7 +918,7 @@ public class FlexoStyledDocument extends DefaultStyledDocument /*implements HasP
 				System.out.println(next + "=" + a.getAttribute(next));
 			}
 		}
-		if (parent instanceof ParagraphElement) {
+		if (parent instanceof FlexoStyledDocument.ParagraphElement) {
 			return new RunElement(parent, a, p0, p1, null);
 
 		}
@@ -958,17 +946,19 @@ public class FlexoStyledDocument extends DefaultStyledDocument /*implements HasP
 		 * @return
 		 */
 		public E lookupDocObject();
+
+		// public <O extends FlexoDocObject<D,TA>> FlexoDocumentElement<O> getElement(O docObject);
 	}
 
-	public class DocumentElement extends SectionElement implements FlexoDocumentElement<FlexoDocument<?, ?>> {
+	public class DocumentElement extends SectionElement implements FlexoDocumentElement<FlexoDocument<D, TA>> {
 
 		@Override
-		public FlexoDocument<?, ?> getDocObject() {
+		public FlexoDocument<D, TA> getDocObject() {
 			return flexoDocument;
 		}
 
 		@Override
-		public FlexoDocument<?, ?> lookupDocObject() {
+		public FlexoDocument<D, TA> lookupDocObject() {
 			for (int i = 0; i < getElementCount(); i++) {
 				Element e = getElement(i);
 				if (e instanceof FlexoDocumentElement) {
@@ -985,9 +975,9 @@ public class FlexoStyledDocument extends DefaultStyledDocument /*implements HasP
 		}
 	}
 
-	public class ParagraphElement extends BranchElement implements FlexoDocumentElement<FlexoDocParagraph<?, ?>> {
+	public class ParagraphElement extends BranchElement implements FlexoDocumentElement<FlexoDocParagraph<D, TA>> {
 
-		private FlexoDocParagraph<?, ?> paragraph = null;
+		private FlexoDocParagraph<D, TA> paragraph = null;
 
 		public ParagraphElement(DocumentElement documentElement, AttributeSet a) {
 			super(documentElement, a);
@@ -998,20 +988,20 @@ public class FlexoStyledDocument extends DefaultStyledDocument /*implements HasP
 			return (DocumentElement) super.getParent();
 		}
 
-		public FlexoDocParagraph<?, ?> getParagraph() {
+		public FlexoDocParagraph<D, TA> getParagraph() {
 			return getDocObject();
 		}
 
 		@Override
-		public FlexoDocParagraph<?, ?> getDocObject() {
+		public FlexoDocParagraph<D, TA> getDocObject() {
 			/*if (paragraph == null && currentModification != null) {
 				int index = getParent().getIndex(this);
 				int paragraphIndex = 0;
 				if (flexoDocument != null) {
-					for (FlexoDocElement<?, ?> e : flexoDocument.getElements()) {
+					for (FlexoDocElement<D,TA> e : flexoDocument.getElements()) {
 						if (e instanceof FlexoDocParagraph) {
 							if (paragraphIndex == index) {
-								paragraph = (FlexoDocParagraph<?, ?>) e;
+								paragraph = (FlexoDocParagraph<D,TA>) e;
 								break;
 							}
 							paragraphIndex++;
@@ -1023,14 +1013,14 @@ public class FlexoStyledDocument extends DefaultStyledDocument /*implements HasP
 		}
 
 		@Override
-		public FlexoDocParagraph<?, ?> lookupDocObject() {
+		public FlexoDocParagraph<D, TA> lookupDocObject() {
 			int index = getParent().getIndex(this);
 			int paragraphIndex = 0;
 			if (flexoDocument != null) {
-				for (FlexoDocElement<?, ?> e : flexoDocument.getElements()) {
+				for (FlexoDocElement<D, TA> e : flexoDocument.getElements()) {
 					if (e instanceof FlexoDocParagraph) {
 						if (paragraphIndex == index) {
-							paragraph = (FlexoDocParagraph<?, ?>) e;
+							paragraph = (FlexoDocParagraph<D, TA>) e;
 							break;
 						}
 						paragraphIndex++;
@@ -1080,29 +1070,29 @@ public class FlexoStyledDocument extends DefaultStyledDocument /*implements HasP
 		}
 	}
 
-	public class RunElement extends LeafElement implements FlexoDocumentElement<FlexoTextRun<?, ?>> {
+	public class RunElement extends LeafElement implements FlexoDocumentElement<FlexoTextRun<D, TA>> {
 
-		private FlexoTextRun<?, ?> run;
+		private FlexoTextRun<D, TA> run;
 
-		public RunElement(Element parent, AttributeSet a, int offs0, int offs1, FlexoTextRun<?, ?> run) {
+		public RunElement(Element parent, AttributeSet a, int offs0, int offs1, FlexoTextRun<D, TA> run) {
 			super(parent, a, offs0, offs1);
 			this.run = run;
 		}
 
-		public FlexoTextRun<?, ?> getRun() {
+		public FlexoTextRun<D, TA> getRun() {
 			return getDocObject();
 		}
 
 		@Override
-		public FlexoTextRun<?, ?> getDocObject() {
+		public FlexoTextRun<D, TA> getDocObject() {
 			/*if (run == null && getParentElement() instanceof ParagraphElement && currentModification != null) {
 				int index = getParent().getIndex(this);
 				int runIndex = 0;
 				if (flexoDocument != null) {
-					for (FlexoDocRun<?, ?> r : ((ParagraphElement) getParentElement()).getParagraph().getRuns()) {
+					for (FlexoDocRun<D,TA> r : ((ParagraphElement) getParentElement()).getParagraph().getRuns()) {
 						if (r instanceof FlexoTextRun) {
 							if (runIndex == index) {
-								run = (FlexoTextRun<?, ?>) r;
+								run = (FlexoTextRun<D,TA>) r;
 								break;
 							}
 							runIndex++;
@@ -1114,14 +1104,14 @@ public class FlexoStyledDocument extends DefaultStyledDocument /*implements HasP
 		}
 
 		@Override
-		public FlexoTextRun<?, ?> lookupDocObject() {
+		public FlexoTextRun<D, TA> lookupDocObject() {
 			int index = getParent().getIndex(this);
 			int runIndex = 0;
 			if (flexoDocument != null && ((ParagraphElement) getParentElement()).getParagraph() != null) {
-				for (FlexoDocRun<?, ?> r : ((ParagraphElement) getParentElement()).getParagraph().getRuns()) {
+				for (FlexoDocRun<D, TA> r : ((ParagraphElement) getParentElement()).getParagraph().getRuns()) {
 					if (r instanceof FlexoTextRun) {
 						if (runIndex == index) {
-							run = (FlexoTextRun<?, ?>) r;
+							run = (FlexoTextRun<D, TA>) r;
 							break;
 						}
 						runIndex++;
@@ -1750,7 +1740,7 @@ public class FlexoStyledDocument extends DefaultStyledDocument /*implements HasP
 				for (int i = now.paragraphElements.size(); i < previous.paragraphElements.size(); i++) {
 					RetainedParagraphElement oldPToRemove = previous.paragraphElements.get(i);
 					if (oldPToRemove.paragraph != null) {
-						((FlexoDocElementContainer) oldPToRemove.paragraph.getContainer()).removeFromElements(oldPToRemove.paragraph);
+						oldPToRemove.paragraph.getContainer().removeFromElements(oldPToRemove.paragraph);
 					}
 				}
 				for (int i = 0; i < now.paragraphElements.size(); i++) {
@@ -1763,7 +1753,8 @@ public class FlexoStyledDocument extends DefaultStyledDocument /*implements HasP
 
 		}
 
-		private void fireUpdateParagraph(RetainedParagraphElement oldP, RetainedParagraphElement newP) {
+		private void fireUpdateParagraph(FlexoStyledDocument<D, TA>.StructuralModification.FragmentStructure.RetainedParagraphElement oldP,
+				FlexoStyledDocument<D, TA>.StructuralModification.FragmentStructure.RetainedParagraphElement newP) {
 
 			if (newP.paragraph == null) {
 				newP.paragraph = newP.parElement.lookupDocObject();
@@ -1790,12 +1781,13 @@ public class FlexoStyledDocument extends DefaultStyledDocument /*implements HasP
 			}
 		}
 
-		private void fireNewParagraph(RetainedParagraphElement newP, RetainedParagraphElement previousP) {
+		private void fireNewParagraph(FlexoStyledDocument<D, TA>.StructuralModification.FragmentStructure.RetainedParagraphElement newP,
+				FlexoStyledDocument<D, TA>.StructuralModification.FragmentStructure.RetainedParagraphElement previousP) {
 			System.out.println("Creating new paragraph just after " + previousP.paragraph);
 
-			FlexoDocElementContainer container = previousP.paragraph.getContainer();
+			FlexoDocElementContainer<D, TA> container = previousP.paragraph.getContainer();
 			int index = previousP.paragraph.getIndex();
-			FlexoDocParagraph newParagraph = flexoDocument.getFactory().makeParagraph();
+			FlexoDocParagraph<D, TA> newParagraph = flexoDocument.getFactory().makeParagraph();
 			container.insertElementAtIndex(newParagraph, index + 1);
 			newP.parElement.paragraph = newParagraph;
 			newP.paragraph = newParagraph;
@@ -1838,7 +1830,7 @@ public class FlexoStyledDocument extends DefaultStyledDocument /*implements HasP
 			}
 		}
 
-		private void fireNewRun(FlexoDocParagraph<?, ?> container, RetainedRunElement newR, String text, RetainedRunElement previousR) {
+		private void fireNewRun(FlexoDocParagraph<D, TA> container, RetainedRunElement newR, String text, RetainedRunElement previousR) {
 			System.out.println("Creating new run just after " + previousR);
 
 			int index = -1;
@@ -1878,7 +1870,7 @@ public class FlexoStyledDocument extends DefaultStyledDocument /*implements HasP
 				paragraphElements = new ArrayList<>();
 				for (int i = startId; i <= endId; i++) {
 					Element e = docElement.getElement(i);
-					if (e instanceof ParagraphElement) {
+					if (e instanceof FlexoStyledDocument.ParagraphElement) {
 						paragraphElements.add(new RetainedParagraphElement((ParagraphElement) e));
 					}
 				}
@@ -1896,7 +1888,7 @@ public class FlexoStyledDocument extends DefaultStyledDocument /*implements HasP
 
 			class RetainedParagraphElement {
 				ParagraphElement parElement;
-				FlexoDocParagraph<?, ?> paragraph;
+				FlexoDocParagraph<D, TA> paragraph;
 				List<RetainedRunElement> runElements;
 				int startIndex;
 				int endIndex;
@@ -1909,7 +1901,7 @@ public class FlexoStyledDocument extends DefaultStyledDocument /*implements HasP
 					runElements = new ArrayList<>();
 					for (int i = 0; i < pEl.getElementCount(); i++) {
 						Element child = pEl.getElement(i);
-						if (child instanceof RunElement) {
+						if (child instanceof FlexoStyledDocument.RunElement) {
 							RetainedRunElement rEl = new RetainedRunElement((RunElement) child);
 							runElements.add(rEl);
 						}
@@ -1929,7 +1921,7 @@ public class FlexoStyledDocument extends DefaultStyledDocument /*implements HasP
 
 				class RetainedRunElement {
 					RunElement runElement;
-					FlexoTextRun<?, ?> run;
+					FlexoTextRun<D, TA> run;
 					int startIndex;
 					int endIndex;
 

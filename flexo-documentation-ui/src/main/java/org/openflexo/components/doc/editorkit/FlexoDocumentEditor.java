@@ -20,7 +20,7 @@ import javax.swing.text.Highlighter;
 
 import org.openflexo.components.doc.editorkit.FlexoStyledDocument.DocumentElement;
 import org.openflexo.foundation.doc.DocumentFactory;
-import org.openflexo.foundation.doc.FlexoDocElement;
+import org.openflexo.foundation.doc.FlexoDocObject;
 import org.openflexo.foundation.doc.FlexoDocument;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.toolbox.HasPropertyChangeSupport;
@@ -171,8 +171,8 @@ public class FlexoDocumentEditor<D extends FlexoDocument<D, TA>, TA extends Tech
 
 	}
 
-	public DocumentElement getElement(FlexoDocElement<D, TA> docElement) {
-		// TODO Auto-generated method stub
+	public DocumentElement getElement(FlexoDocObject<D, TA> docObject) {
+		System.out.println("On cherche " + docObject);
 		return null;
 	}
 
@@ -184,6 +184,18 @@ public class FlexoDocumentEditor<D extends FlexoDocument<D, TA>, TA extends Tech
 	public boolean scrollToElement(Element element) {
 		// TODO : implement this
 		return false;
+	}
+
+	public void highlight(FlexoDocObject<D, TA> docObject) {
+		DocumentElement docElement = getElement(docObject);
+		if (docElement != null) {
+			try {
+				highlighter.addHighlight(docElement.getStartOffset(), docElement.getEndOffset(), highlighterPainter);
+			} catch (BadLocationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 	}
 
 }
