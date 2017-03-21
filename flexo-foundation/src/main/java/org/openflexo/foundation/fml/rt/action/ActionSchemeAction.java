@@ -39,7 +39,6 @@
 package org.openflexo.foundation.fml.rt.action;
 
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoException;
@@ -89,9 +88,7 @@ public class ActionSchemeAction extends FlexoBehaviourAction<ActionSchemeAction,
 
 	@Override
 	protected void doAction(Object context) throws FlexoException {
-		if (logger.isLoggable(Level.FINE)) {
-			logger.fine("Perform action " + actionType);
-		}
+		logger.fine("Perform action " + actionType);
 
 		if (getActionScheme() != null && getActionScheme().evaluateCondition(actionType.getFlexoConceptInstance())) {
 			executeControlGraph();
