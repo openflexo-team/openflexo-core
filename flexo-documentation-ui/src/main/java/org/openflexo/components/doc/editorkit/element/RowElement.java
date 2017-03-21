@@ -262,6 +262,11 @@ public class RowElement<D extends FlexoDocument<D, TA>, TA extends TechnologyAda
 		return null;
 	}
 
+	@Override
+	public String toString() {
+		return "RowElement(" + getName() + ") " + getStartOffset() + "," + getEndOffset() + "\n";
+	}
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public <O extends FlexoDocObject<D, TA>> AbstractDocumentElement<O, D, TA> getElement(O docObject) {

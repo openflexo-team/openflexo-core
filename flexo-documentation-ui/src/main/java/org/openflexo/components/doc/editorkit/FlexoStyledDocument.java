@@ -1041,13 +1041,13 @@ public class FlexoStyledDocument<D extends FlexoDocument<D, TA>, TA extends Tech
 
 	}
 
-	public class DocumentRootElement extends BranchElement {
+	public class DocumentRootElement extends SectionElement {
 
 		/**
 		 * Creates a new SectionElement.
 		 */
 		public DocumentRootElement() {
-			super(null, null);
+			super(/*null, null*/);
 		}
 
 		/**
@@ -1055,10 +1055,10 @@ public class FlexoStyledDocument<D extends FlexoDocument<D, TA>, TA extends Tech
 		 *
 		 * @return the name
 		 */
-		@Override
+		/*@Override
 		public String getName() {
 			return SectionElementName;
-		}
+		}*/
 	}
 
 }
