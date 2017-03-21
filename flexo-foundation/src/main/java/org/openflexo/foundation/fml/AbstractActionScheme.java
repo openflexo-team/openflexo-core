@@ -39,11 +39,11 @@
 package org.openflexo.foundation.fml;
 
 import java.lang.reflect.InvocationTargetException;
-
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
+import org.openflexo.foundation.fml.rt.action.ActionSchemeActionType;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
@@ -66,6 +66,8 @@ public abstract interface AbstractActionScheme extends FlexoBehaviour {
 	public void setConditional(DataBinding<Boolean> conditional);
 
 	public boolean evaluateCondition(FlexoConceptInstance flexoConceptInstance);
+
+	ActionSchemeActionType getActionType(FlexoConceptInstance fci);
 
 	public static abstract class AbstractActionSchemeImpl extends FlexoBehaviourImpl implements AbstractActionScheme {
 
@@ -110,6 +112,11 @@ public abstract interface AbstractActionScheme extends FlexoBehaviour {
 				}
 			}
 			return true;
+		}
+
+		@Override
+		public ActionSchemeActionType getActionType(FlexoConceptInstance fci) {
+			return new ActionSchemeActionType(this, fci);
 		}
 
 		/*@Override

@@ -42,7 +42,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.logging.Logger;
-
 import org.openflexo.connie.BindingEvaluationContext;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.binding.BindingPathElement;
@@ -143,7 +142,7 @@ public class FlexoBehaviourPathElement extends FunctionPathElement {
 
 				// FlexoBehaviourAction action = (FlexoBehaviourAction) context;
 				FlexoConceptInstance fci = (FlexoConceptInstance) target;
-				ActionSchemeActionType actionType = new ActionSchemeActionType((AbstractActionScheme) getFlexoBehaviour(), fci);
+				ActionSchemeActionType actionType = ((AbstractActionScheme) getFlexoBehaviour()).getActionType(fci);
 				ActionSchemeAction actionSchemeAction = null;
 
 				if (context instanceof FlexoBehaviourAction) {

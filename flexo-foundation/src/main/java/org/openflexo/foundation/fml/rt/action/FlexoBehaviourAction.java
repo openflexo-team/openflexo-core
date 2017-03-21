@@ -42,9 +42,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
-import java.util.Vector;
 import java.util.logging.Logger;
-
 import org.openflexo.connie.BindingVariable;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
@@ -97,7 +95,7 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 	public boolean escapeParameterRetrievingWhenValid = true;
 
 	public FlexoBehaviourAction(FlexoActionType<A, O, VirtualModelInstanceObject> actionType, O focusedObject,
-			Vector<VirtualModelInstanceObject> globalSelection, FlexoEditor editor) {
+			List<VirtualModelInstanceObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 		variables = new Hashtable<String, Object>();
 		parameterValues = new ParameterValues();

@@ -43,7 +43,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 import java.util.logging.Logger;
-
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoObject;
@@ -139,7 +138,7 @@ public abstract class FlexoAction<A extends FlexoAction<A, T1, T2>, T1 extends F
 	protected ExecutionStatus executionStatus = ExecutionStatus.NEVER_EXECUTED;
 	private FlexoException thrownException = null;
 
-	public FlexoAction(FlexoActionType<A, T1, T2> actionType, T1 focusedObject, Vector<T2> globalSelection, FlexoEditor editor) {
+	public FlexoAction(FlexoActionType<A, T1, T2> actionType, T1 focusedObject, List<T2> globalSelection, FlexoEditor editor) {
 		super();
 		_editor = editor;
 		_actionType = actionType;

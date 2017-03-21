@@ -38,10 +38,9 @@
 
 package org.openflexo.foundation.fml.rt.action;
 
-import java.util.Vector;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.AbstractActionScheme;
@@ -58,7 +57,7 @@ public class ActionSchemeAction extends FlexoBehaviourAction<ActionSchemeAction,
 	private final ActionSchemeActionType actionType;
 
 	public ActionSchemeAction(ActionSchemeActionType actionType, FlexoConceptInstance focusedObject,
-			Vector<VirtualModelInstanceObject> globalSelection, FlexoEditor editor) {
+			List<VirtualModelInstanceObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 		this.actionType = actionType;
 	}
