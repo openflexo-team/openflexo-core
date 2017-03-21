@@ -57,6 +57,7 @@ import org.openflexo.foundation.doc.FlexoDocParagraph;
 import org.openflexo.foundation.doc.FlexoDocument;
 import org.openflexo.foundation.doc.FlexoTextRun;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
+import org.openflexo.toolbox.StringUtils;
 
 class StructuralModification<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> {
 
@@ -137,8 +138,14 @@ class StructuralModification<D extends FlexoDocument<D, TA>, TA extends Technolo
 			// Now handle new runs
 			for (int i = oldP.runElements.size(); i < newP.runElements.size(); i++) {
 				RetainedRunElement newR = newP.runElements.get(i);
-				fireNewRun(newP.paragraph, newR, newR.getText(), currentR);
-				currentR = newR;
+				String newText = newR.getText();
+				if (newText.endsWith("\n")) {
+					newText = newText.substring(0, newText.length() - 1);
+				}
+				if (StringUtils.isNotEmpty(newText)) {
+					fireNewRun(newP.paragraph, newR, newR.getText(), currentR);
+					currentR = newR;
+				}
 			}
 
 		}

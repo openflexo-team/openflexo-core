@@ -44,13 +44,17 @@ import java.awt.Color;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.beans.PropertyChangeSupport;
+import java.util.Enumeration;
 import java.util.List;
 
 import javax.swing.JEditorPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.event.CaretEvent;
+import javax.swing.event.CaretListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultHighlighter.DefaultHighlightPainter;
 import javax.swing.text.Highlighter;
@@ -70,7 +74,7 @@ import org.openflexo.toolbox.HasPropertyChangeSupport;
  */
 @SuppressWarnings("serial")
 public class FlexoDocumentEditor<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
-		implements HasPropertyChangeSupport, DocumentListener {
+		implements HasPropertyChangeSupport, DocumentListener, CaretListener {
 
 	private D flexoDocument;
 	private DocumentFactory<D, TA> documentFactory;
@@ -91,8 +95,8 @@ public class FlexoDocumentEditor<D extends FlexoDocument<D, TA>, TA extends Tech
 		super();
 		pcSupport = new PropertyChangeSupport(this);
 		jEditorPane = new JEditorPane("text/rtf", "");
-		FlexoDocumentEditorKit.install(jEditorPane);
-		// jEditorPane.setEditorKit(new FlexoDocumentEditorKit());
+		// FlexoDocumentEditorKit.install(jEditorPane);
+		jEditorPane.setEditorKit(new FlexoDocumentEditorKit());
 		editorPanel = new FlexoDocumentEditorPanel();
 		this.documentFactory = documentFactory;
 		highlighter = jEditorPane.getHighlighter();
@@ -143,6 +147,7 @@ public class FlexoDocumentEditor<D extends FlexoDocument<D, TA>, TA extends Tech
 				reader = new FlexoDocumentEditorFactory<>(flexoDocument);
 				jEditorPane.setDocument(reader.getDocument());
 				jEditorPane.getDocument().addDocumentListener(this);
+				jEditorPane.addCaretListener(this);
 			} catch (BadLocationException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -274,4 +279,21 @@ public class FlexoDocumentEditor<D extends FlexoDocument<D, TA>, TA extends Tech
 		}
 	}
 
+	@Override
+	public void caretUpdate(CaretEvent evt) {
+		System.out.println("Caret changed with " + evt);
+		int start = Math.min(evt.getDot(), evt.getMark());
+		int end = Math.max(evt.getDot(), evt.getMark());
+		System.out.println("Selection: " + start + ":" + end);
+		System.out.println("CharacterElement: " + getStyledDocument().getCharacterElement(start));
+		System.out.println("ParagraphElement: " + getStyledDocument().getParagraphElement(start));
+
+		AttributeSet as = getStyledDocument().getCharacterElement(start).getAttributes();
+		System.out.println("Les attributs: " + as);
+		Enumeration en = as.getAttributeNames();
+		while (en.hasMoreElements()) {
+			Object attribute = en.nextElement();
+			System.out.println(" > " + attribute + "=" + as.getAttribute(attribute));
+		}
+	}
 }
