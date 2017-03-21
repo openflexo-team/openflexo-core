@@ -40,6 +40,8 @@
 
 package org.openflexo.components.doc.editorkit.element;
 
+import javax.swing.text.Element;
+
 import org.openflexo.components.doc.editorkit.FlexoStyledDocument;
 import org.openflexo.foundation.doc.FlexoDocObject;
 import org.openflexo.foundation.doc.FlexoDocument;
@@ -75,6 +77,64 @@ public interface AbstractDocumentElement<E extends FlexoDocObject<D, TA>, D exte
 	 */
 	E lookupDocObject();
 
-	// public <O extends FlexoDocObject<D,TA>> AbstractDocumentElement<O> getElement(O docObject);
+	/**
+	 * Retrieve {@link AbstractDocumentElement} encoding supplied docObject
+	 * 
+	 * @param docObject
+	 * @return
+	 */
+	public <O extends FlexoDocObject<D, TA>> AbstractDocumentElement<O, D, TA> getElement(O docObject);
+
+	/**
+	 * Gets a child element.
+	 *
+	 * @param index
+	 *            the child index, &gt;= 0 &amp;&amp; &lt; getElementCount()
+	 * @return the child element, null if none
+	 */
+	public Element getElement(int index);
+
+	/**
+	 * Gets the number of children for the element.
+	 *
+	 * @return the number of children &gt;= 0
+	 */
+	public int getElementCount();
+
+	public int getStartOffset();
+
+	public int getEndOffset();
+
+	@SuppressWarnings("unchecked")
+	public static <O extends FlexoDocObject<D, TA>, D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> AbstractDocumentElement<O, D, TA> retrieveElement(
+			AbstractDocumentElement<O, D, TA> element, O docObject) {
+
+		if (element.getDocObject() == null) {
+			element.lookupDocObject();
+		}
+		if (docObject == element.getDocObject()) {
+			return element;
+		}
+
+		System.out.println("> On cherche " + docObject + " dans " + element);
+
+		for (int i = 0; i < element.getElementCount(); i++) {
+			Element e = element.getElement(i);
+			System.out.println("On cherche dans " + e);
+			if (e instanceof AbstractDocumentElement) {
+				AbstractDocumentElement<O, D, TA> docElement = (AbstractDocumentElement<O, D, TA>) e;
+				if (docElement.getDocObject() == null) {
+					System.out.println("Lookup necessaire");
+					docElement.lookupDocObject();
+				}
+				AbstractDocumentElement<O, D, TA> potentialResult = docElement.getElement(docObject);
+				System.out.println("En cherchant dans " + element + " je trouve: " + potentialResult);
+				if (potentialResult != null) {
+					return potentialResult;
+				}
+			}
+		}
+		return null;
+	}
 
 }

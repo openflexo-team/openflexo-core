@@ -51,6 +51,7 @@ import javax.swing.text.Element;
 
 import org.openflexo.components.doc.editorkit.BorderAttributes;
 import org.openflexo.components.doc.editorkit.FlexoStyledDocument;
+import org.openflexo.foundation.doc.FlexoDocObject;
 import org.openflexo.foundation.doc.FlexoDocTableCell;
 import org.openflexo.foundation.doc.FlexoDocument;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
@@ -267,6 +268,13 @@ public class CellElement<D extends FlexoDocument<D, TA>, TA extends TechnologyAd
 	public FlexoDocTableCell<D, TA> lookupDocObject() {
 		// TODO
 		return null;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public <O extends FlexoDocObject<D, TA>> AbstractDocumentElement<O, D, TA> getElement(O docObject) {
+
+		return AbstractDocumentElement.retrieveElement((AbstractDocumentElement<O, D, TA>) this, docObject);
 	}
 
 }

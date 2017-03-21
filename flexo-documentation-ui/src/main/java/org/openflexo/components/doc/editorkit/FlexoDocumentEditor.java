@@ -41,6 +41,8 @@ package org.openflexo.components.doc.editorkit;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Point;
+import java.awt.Rectangle;
 import java.beans.PropertyChangeSupport;
 import java.util.List;
 
@@ -51,10 +53,9 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultHighlighter.DefaultHighlightPainter;
-import javax.swing.text.Element;
 import javax.swing.text.Highlighter;
 
-import org.openflexo.components.doc.editorkit.element.DocumentElement;
+import org.openflexo.components.doc.editorkit.element.AbstractDocumentElement;
 import org.openflexo.foundation.doc.DocumentFactory;
 import org.openflexo.foundation.doc.FlexoDocObject;
 import org.openflexo.foundation.doc.FlexoDocument;
@@ -81,6 +82,8 @@ public class FlexoDocumentEditor<D extends FlexoDocument<D, TA>, TA extends Tech
 
 	private PropertyChangeSupport pcSupport;
 
+	public static final FlexoDocumentEditorKit FlexoDocumentEditorKit = new FlexoDocumentEditorKit();
+
 	/**
 	 * Creates an empty FlexoDocumentEditor.
 	 */
@@ -88,7 +91,8 @@ public class FlexoDocumentEditor<D extends FlexoDocument<D, TA>, TA extends Tech
 		super();
 		pcSupport = new PropertyChangeSupport(this);
 		jEditorPane = new JEditorPane("text/rtf", "");
-		jEditorPane.setEditorKit(new FlexoDocumentEditorKit());
+		FlexoDocumentEditorKit.install(jEditorPane);
+		// jEditorPane.setEditorKit(new FlexoDocumentEditorKit());
 		editorPanel = new FlexoDocumentEditorPanel();
 		this.documentFactory = documentFactory;
 		highlighter = jEditorPane.getHighlighter();
@@ -208,26 +212,61 @@ public class FlexoDocumentEditor<D extends FlexoDocument<D, TA>, TA extends Tech
 
 	}
 
-	public DocumentElement<D, TA> getElement(FlexoDocObject<D, TA> docObject) {
+	public <O extends FlexoDocObject<D, TA>> AbstractDocumentElement<O, D, TA> getElement(O docObject) {
 		System.out.println("On cherche " + docObject);
-		return null;
+		AbstractDocumentElement<O, D, TA> returned = getStyledDocument().getRootElement().getElement(docObject);
+		System.out.println("On trouve " + returned);
+		return returned;
 	}
 
-	public void setSelectedElements(List<DocumentElement<D, TA>> elts) {
+	public void setSelectedElements(List<AbstractDocumentElement<?, D, TA>> elts) {
 		// TODO Auto-generated method stub
-
 	}
 
-	public boolean scrollToElement(Element element) {
-		// TODO : implement this
-		return false;
+	public boolean scrollToElement(AbstractDocumentElement<?, ?, ?> element) {
+		return scrollToElement(element, true);
+	}
+
+	public boolean scrollToElement(AbstractDocumentElement<?, ?, ?> element, boolean setCaretPosition) {
+		try {
+			int pos = element.getStartOffset();
+			Rectangle r = jEditorPane.modelToView(pos);
+			if (r != null) {
+				// the view is visible, scroll it to the
+				// center of the current visible area.
+				Rectangle vis = jEditorPane.getVisibleRect();
+				// r.y -= (vis.height / 2);
+				r.height = vis.height;
+
+				if (vis.contains(new Point(r.x, r.y))) {
+					// We are already inside
+				}
+				else {
+					jEditorPane.scrollRectToVisible(r);
+					if (setCaretPosition) {
+						jEditorPane.setCaretPosition(pos);
+					}
+				}
+				return true;
+			}
+			return false;
+		} catch (BadLocationException ble) {
+			ble.printStackTrace();
+			return true;
+		}
+	}
+
+	public void clearHighligths() {
+		highlighter.removeAllHighlights();
 	}
 
 	public void highlight(FlexoDocObject<D, TA> docObject) {
-		DocumentElement<D, TA> docElement = getElement(docObject);
+		clearHighligths();
+		AbstractDocumentElement<?, D, TA> docElement = getElement(docObject);
 		if (docElement != null) {
 			try {
 				highlighter.addHighlight(docElement.getStartOffset(), docElement.getEndOffset(), highlighterPainter);
+				scrollToElement(docElement);
 			} catch (BadLocationException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

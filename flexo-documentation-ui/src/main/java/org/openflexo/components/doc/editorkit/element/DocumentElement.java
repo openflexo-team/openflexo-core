@@ -43,6 +43,7 @@ package org.openflexo.components.doc.editorkit.element;
 import javax.swing.text.Element;
 
 import org.openflexo.components.doc.editorkit.FlexoStyledDocument;
+import org.openflexo.foundation.doc.FlexoDocObject;
 import org.openflexo.foundation.doc.FlexoDocument;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 
@@ -98,6 +99,13 @@ public class DocumentElement<D extends FlexoDocument<D, TA>, TA extends Technolo
 	@Override
 	public D getFlexoDocument() {
 		return getFlexoStyledDocument().getFlexoDocument();
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public <O extends FlexoDocObject<D, TA>> AbstractDocumentElement<O, D, TA> getElement(O docObject) {
+
+		return AbstractDocumentElement.retrieveElement((AbstractDocumentElement<O, D, TA>) this, docObject);
 	}
 
 	@Override
