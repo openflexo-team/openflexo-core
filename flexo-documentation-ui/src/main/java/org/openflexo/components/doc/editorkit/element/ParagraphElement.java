@@ -94,16 +94,16 @@ public class ParagraphElement<D extends FlexoDocument<D, TA>, TA extends Technol
 	@Override
 	public FlexoDocParagraph<D, TA> lookupDocObject() {
 		int index = getParent().getIndex(this);
-		int paragraphIndex = 0;
+		int elementIndex = 0;
 		if (getFlexoDocument() != null) {
 			for (FlexoDocElement<D, TA> e : getFlexoDocument().getElements()) {
 				if (e instanceof FlexoDocParagraph) {
-					if (paragraphIndex == index) {
+					if (elementIndex == index) {
 						paragraph = (FlexoDocParagraph<D, TA>) e;
 						break;
 					}
-					paragraphIndex++;
 				}
+				elementIndex++;
 			}
 		}
 		for (int i = 0; i < getElementCount(); i++) {

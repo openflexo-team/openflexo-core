@@ -38,75 +38,61 @@
  * 
  */
 
-package org.openflexo.components.doc.editorkit.element;
+package org.openflexo.components.doc.editorkit;
 
+import javax.swing.text.BadLocationException;
 import javax.swing.text.Element;
 
-import org.openflexo.components.doc.editorkit.FlexoStyledDocument;
-import org.openflexo.foundation.doc.FlexoDocObject;
+import org.openflexo.components.doc.editorkit.element.DocumentElement;
+import org.openflexo.foundation.doc.FlexoDocFragment;
 import org.openflexo.foundation.doc.FlexoDocument;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 
 /**
- * Element (a {@link AbstractDocumentElement}) representing the whole document
- * 
- * @author sylvain
+ * A factory used to build {@link FlexoStyledDocument} from a given {@link FlexoDocument}
  *
- * @param <D>
- *            type of {@link FlexoDocument} involving this concept
- * @param <TA>
- *            {@link TechnologyAdapter} of current implementation
+ * Note that this class was originally inspired from Stanislav Lapitsky code (see http://java-sl.com/docx_editor_kit.html)
+ * 
+ * @author Stanislav Lapitsky
+ * @author sylvain
  */
-@SuppressWarnings("serial")
-public class DocumentElement<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
-		extends FlexoStyledDocument<D, TA>.DocumentRootElement implements AbstractDocumentElement<FlexoDocument<D, TA>, D, TA> {
+public class FlexoDocFragmentEditorFactory<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
+		extends FlexoDocumentEditorFactory<D, TA> {
 
-	private final FlexoStyledDocument<D, TA> flexoStyledDocument;
+	public FlexoDocFragmentEditorFactory(FlexoDocFragment<D, TA> fragment) throws BadLocationException {
+		super(fragment.getFlexoDocument());
+		read(fragment, 0);
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	protected void read(FlexoDocument<D, TA> flexoDocument, int offset) throws BadLocationException {
+		// Do not read the full document here
+	}
 
 	/**
-	 * @param flexoStyledDocument
+	 * Reads content of specified fragment to the document.
+	 *
+	 * @param in
+	 *            stream.
+	 * @throws BadLocationException
 	 */
-	public DocumentElement(FlexoStyledDocument<D, TA> flexoStyledDocument) {
-		flexoStyledDocument.super();
-		this.flexoStyledDocument = flexoStyledDocument;
-	}
+	@SuppressWarnings("unchecked")
+	protected void read(FlexoDocFragment<D, TA> flexoFragment, int offset) throws BadLocationException {
+		System.out.println("Starting reading fragment " + flexoFragment);
 
-	@Override
-	public FlexoDocument<D, TA> getDocObject() {
-		return getFlexoDocument();
-	}
+		document.setIsReadingDocument(true);
+		iteratePart(flexoFragment.getElements());
 
-	@Override
-	public FlexoDocument<D, TA> lookupDocObject() {
-		for (int i = 0; i < getElementCount(); i++) {
-			Element e = getElement(i);
-			if (e instanceof AbstractDocumentElement) {
-				((AbstractDocumentElement<?, ?, ?>) e).lookupDocObject();
+		for (Element e : document.getRootElements()) {
+			if (e instanceof DocumentElement) {
+				((DocumentElement<D, TA>) e).lookupDocObject();
 			}
 		}
+		document.setIsReadingDocument(false);
 
-		return this.flexoStyledDocument.getFlexoDocument();
+		this.currentOffset = offset;
+
 	}
 
-	@Override
-	public FlexoStyledDocument<D, TA> getFlexoStyledDocument() {
-		return flexoStyledDocument;
-	}
-
-	@Override
-	public D getFlexoDocument() {
-		return getFlexoStyledDocument().getFlexoDocument();
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public <O extends FlexoDocObject<D, TA>> AbstractDocumentElement<O, D, TA> getElement(O docObject) {
-
-		return AbstractDocumentElement.retrieveElement((AbstractDocumentElement<O, D, TA>) this, docObject);
-	}
-
-	@Override
-	public String toString() {
-		return "DocumentElement(" + getName() + ") " + getStartOffset() + "," + getEndOffset() + "\n";
-	}
 }

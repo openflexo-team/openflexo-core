@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Panel layout="border" darkLevel="0"
+	dataClassName="org.openflexo.technologyadapter.docx.gui.widget.FIBDocXFragmentSelector"
+	controllerClassName="org.openflexo.components.widget.FIBDocFragmentSelector$FragmentSelectorFIBController"
+	opaque="false" width="270" height="300">
+	<Browser root="data.document"
+		iteratorClassName="org.openflexo.technologyadapter.docx.model.DocXObject"
+		visibleRowCount="5" rowHeight="18" boundToSelectionManager="true"
+		selectionMode="ContiguousTreeSelection" showFooter="true"
+		rootVisible="true" showRootsHandle="true" localize="true"
+		manageDynamicModel="true" clickAction="controller.singleClick(DocumentBrowser.selected)"
+		doubleClickAction="controller.doubleClick(DocumentBrowser.selected)"
+		rightClickAction="controller.rightClick(DocumentBrowser.selected,event)"
+		name="DocumentBrowser" index="0" constraints="border(location=west)"
+		selection="data.selectedDocumentElements" deepExploration="true">
+		<BrowserElement
+			dataClassName="org.openflexo.technologyadapter.docx.model.DocXDocument"
+			label="document.name" icon="controller.iconForObject(document)"
+			tooltip="" enabled="" visible="" isEditable="false" editableLabel=""
+			filtered="false" defaultVisible="true" dynamicFont="" name="document">
+			<Children data="document.rootElements" name="rootElements" />
+		</BrowserElement>
+		<BrowserElement
+			dataClassName="org.openflexo.technologyadapter.docx.model.DocXParagraph"
+			label="paragraph.rawTextPreview" icon="controller.iconForObject(paragraph)"
+			tooltip="" enabled="" visible="" isEditable="false" editableLabel=""
+			filtered="false" defaultVisible="true" dynamicFont="" name="paragraph">
+			<Children data="paragraph.childrenElements" name="childrenElements" />
+		</BrowserElement>
+		<BrowserElement dataClassName="org.openflexo.technologyadapter.docx.model.DocXTable"
+			label="'TABLE'" icon="controller.iconForObject(table)" tooltip=""
+			enabled="" visible="" isEditable="false" editableLabel="" filtered="false"
+			defaultVisible="true" dynamicFont="" name="table">
+		</BrowserElement>
+	</Browser>
+	<Custom componentClassName="org.openflexo.components.doc.editorkit.FlexoDocumentEditorWidget"
+		dataClassForComponent="org.openflexo.technologyadapter.docx.model.DocXDocument"
+		localize="true" manageDynamicModel="true" name="DocXEditor" index="13"
+		data="($org.openflexo.technologyadapter.docx.model.DocXDocument)data.document"
+		constraints="border(location=center)">
+		<!-- <Assignment variable="component.resourceManager" value="data.serviceManager.resourceManager" 
+			/> <Assignment variable="component.technologyAdapter" value="data.modelSlotTechnologyAdapter" 
+			/> <Assignment variable="component.resourceDataClass" value="data.type" /> -->
+	</Custom>
+
+
+	<Panel layout="flow" hGap="5" vGap="0" flowAlignment="CENTER"
+		borderTitle="Panel" darkLevel="0" index="3" constraints="border(location=south)"
+		opaque="false">
+		<Button action="controller.apply()" buttonType="Trigger" label="apply"
+			localize="true" enable="(data.selectedValue != null)" index="0"
+			constraints="flow(index=0)" />
+		<Button action="controller.cancel()" buttonType="Trigger"
+			label="cancel" localize="true" index="1" constraints="flow(index=1)" />
+		<Button action="controller.reset()" buttonType="Trigger" label="reset"
+			localize="true" index="2" constraints="flow(index=2)" />
+	</Panel>
+	<LocalizedDictionary />
+</Panel>

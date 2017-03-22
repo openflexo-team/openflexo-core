@@ -6,6 +6,6 @@
   <Button id="4" buttonType="Toggle" action="controller.toogleBold()" label="B" constraints="flow()" width="20" height="20" font="SansSerif,1,12" name="Button" />
   <Button id="5" buttonType="Toggle" action="controller.toogleItalic()" label="I" constraints="flow()" width="20" height="20" font="SansSerif,2,12" name="Button" />
   <Button id="6" buttonType="Toggle" action="controller.toogleUnderline()" label="U" constraints="flow()" width="20" height="20" name="Button" />
-  <FIBVariable id="7" type="org.openflexo.components.doc.editorkit.FlexoDocumentEditor" name="data" />
+  <FIBVariable id="7" type="org.openflexo.components.doc.editorkit.FlexoDocumentEditorWidget" name="data" />
   <LocalizedDictionary id="8" />
 </Panel>

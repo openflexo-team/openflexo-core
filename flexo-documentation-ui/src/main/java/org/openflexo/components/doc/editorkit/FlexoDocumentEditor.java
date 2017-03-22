@@ -46,6 +46,7 @@ import java.awt.Rectangle;
 import java.beans.PropertyChangeSupport;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.swing.JEditorPane;
 import javax.swing.JPanel;
@@ -76,13 +77,15 @@ import org.openflexo.toolbox.HasPropertyChangeSupport;
 public class FlexoDocumentEditor<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
 		implements HasPropertyChangeSupport, DocumentListener, CaretListener {
 
-	private D flexoDocument;
+	private static final Logger logger = Logger.getLogger(FlexoDocumentEditor.class.getPackage().getName());
+
+	protected D flexoDocument;
 	private DocumentFactory<D, TA> documentFactory;
 	private Highlighter highlighter;
 	private DefaultHighlightPainter highlighterPainter;
 
-	private JEditorPane jEditorPane;
-	private FlexoDocumentEditorPanel editorPanel;
+	protected JEditorPane jEditorPane;
+	protected FlexoDocumentEditorPanel editorPanel;
 
 	private PropertyChangeSupport pcSupport;
 
@@ -100,6 +103,9 @@ public class FlexoDocumentEditor<D extends FlexoDocument<D, TA>, TA extends Tech
 		editorPanel = new FlexoDocumentEditorPanel();
 		this.documentFactory = documentFactory;
 		highlighter = jEditorPane.getHighlighter();
+
+		System.out.println("highlighter=" + highlighter);
+
 		highlighterPainter = new DefaultHighlightPainter(Color.GREEN);
 	}
 
@@ -110,7 +116,7 @@ public class FlexoDocumentEditor<D extends FlexoDocument<D, TA>, TA extends Tech
 	 *            the flexoDocument.
 	 */
 	public FlexoDocumentEditor(D flexoDocument) {
-		this(flexoDocument.getFactory());
+		this(flexoDocument != null ? flexoDocument.getFactory() : null);
 		setFlexoDocument(flexoDocument);
 	}
 
@@ -218,14 +224,15 @@ public class FlexoDocumentEditor<D extends FlexoDocument<D, TA>, TA extends Tech
 	}
 
 	public <O extends FlexoDocObject<D, TA>> AbstractDocumentElement<O, D, TA> getElement(O docObject) {
-		System.out.println("On cherche " + docObject);
+		// System.out.println("On cherche " + docObject);
 		AbstractDocumentElement<O, D, TA> returned = getStyledDocument().getRootElement().getElement(docObject);
-		System.out.println("On trouve " + returned);
+		// System.out.println("On trouve " + returned);
 		return returned;
 	}
 
-	public void setSelectedElements(List<AbstractDocumentElement<?, D, TA>> elts) {
-		// TODO Auto-generated method stub
+	public <O extends FlexoDocObject<D, TA>> boolean scrollTo(O docObject, boolean setCaretPosition) {
+		AbstractDocumentElement<O, D, TA> element = getStyledDocument().getRootElement().getElement(docObject);
+		return scrollToElement(element, setCaretPosition);
 	}
 
 	public boolean scrollToElement(AbstractDocumentElement<?, ?, ?> element) {
@@ -233,6 +240,9 @@ public class FlexoDocumentEditor<D extends FlexoDocument<D, TA>, TA extends Tech
 	}
 
 	public boolean scrollToElement(AbstractDocumentElement<?, ?, ?> element, boolean setCaretPosition) {
+		if (element == null) {
+			return false;
+		}
 		try {
 			int pos = element.getStartOffset();
 			Rectangle r = jEditorPane.modelToView(pos);
@@ -266,10 +276,13 @@ public class FlexoDocumentEditor<D extends FlexoDocument<D, TA>, TA extends Tech
 	}
 
 	public void highlight(FlexoDocObject<D, TA> docObject) {
+		System.out.println("Ici avec " + docObject);
 		clearHighligths();
 		AbstractDocumentElement<?, D, TA> docElement = getElement(docObject);
+		System.out.println("docElement=" + docElement);
 		if (docElement != null) {
 			try {
+				System.out.println("Highlight de " + docElement.getStartOffset() + " a " + docElement.getEndOffset());
 				highlighter.addHighlight(docElement.getStartOffset(), docElement.getEndOffset(), highlighterPainter);
 				scrollToElement(docElement);
 			} catch (BadLocationException e) {
@@ -277,6 +290,29 @@ public class FlexoDocumentEditor<D extends FlexoDocument<D, TA>, TA extends Tech
 				e.printStackTrace();
 			}
 		}
+		else {
+			logger.warning("Could not find AbstractDocumentElement for " + docObject);
+		}
+	}
+
+	// private List<FlexoDocObject<D, TA>> selection = new ArrayList<>();
+
+	public void highlightObjects(List<FlexoDocObject<D, TA>> objects) {
+		System.out.println("On highlighte " + objects);
+		clearHighligths();
+		for (FlexoDocObject<D, TA> o : objects) {
+			AbstractDocumentElement<?, D, TA> docElement = getElement(o);
+			if (docElement != null) {
+				try {
+					highlighter.addHighlight(docElement.getStartOffset(), docElement.getEndOffset(), highlighterPainter);
+					scrollToElement(docElement);
+				} catch (BadLocationException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+
 	}
 
 	@Override

@@ -116,19 +116,19 @@ public interface AbstractDocumentElement<E extends FlexoDocObject<D, TA>, D exte
 			return element;
 		}
 
-		System.out.println("> On cherche " + docObject + " dans " + element);
+		// System.out.println("> On cherche " + docObject + " dans " + element);
 
 		for (int i = 0; i < element.getElementCount(); i++) {
 			Element e = element.getElement(i);
-			System.out.println("On cherche dans " + e);
+			// System.out.println("On cherche dans " + e);
 			if (e instanceof AbstractDocumentElement) {
 				AbstractDocumentElement<O, D, TA> docElement = (AbstractDocumentElement<O, D, TA>) e;
 				if (docElement.getDocObject() == null) {
-					System.out.println("Lookup necessaire");
+					// System.out.println("Lookup necessaire");
 					docElement.lookupDocObject();
 				}
 				AbstractDocumentElement<O, D, TA> potentialResult = docElement.getElement(docObject);
-				System.out.println("En cherchant dans " + element + " je trouve: " + potentialResult);
+				// System.out.println("En cherchant dans " + element + " je trouve: " + potentialResult);
 				if (potentialResult != null) {
 					return potentialResult;
 				}

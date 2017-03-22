@@ -88,7 +88,7 @@ public class FlexoDocumentEditorFactory<D extends FlexoDocument<D, TA>, TA exten
 	/**
 	 * Current offset in the document for insert action.
 	 */
-	private int currentOffset = 0;
+	protected int currentOffset = 0;
 
 	SimpleAttributeSet parAttrs;
 	SimpleAttributeSet charAttrs;
@@ -140,7 +140,7 @@ public class FlexoDocumentEditorFactory<D extends FlexoDocument<D, TA>, TA exten
 	 * @throws BadLocationException
 	 */
 	@SuppressWarnings("unchecked")
-	private void read(FlexoDocument<D, TA> flexoDocument, int offset) throws BadLocationException {
+	protected void read(FlexoDocument<D, TA> flexoDocument, int offset) throws BadLocationException {
 		System.out.println("Starting reading " + flexoDocument);
 
 		document.setIsReadingDocument(true);

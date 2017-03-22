@@ -54,6 +54,7 @@ import org.openflexo.components.doc.editorkit.element.ParagraphElement;
 import org.openflexo.components.doc.editorkit.element.RunElement;
 import org.openflexo.foundation.doc.FlexoDocElementContainer;
 import org.openflexo.foundation.doc.FlexoDocParagraph;
+import org.openflexo.foundation.doc.FlexoDocRun;
 import org.openflexo.foundation.doc.FlexoDocument;
 import org.openflexo.foundation.doc.FlexoTextRun;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
@@ -193,8 +194,10 @@ class StructuralModification<D extends FlexoDocument<D, TA>, TA extends Technolo
 				if (newText.endsWith("\n")) {
 					newText = newText.substring(0, newText.length() - 1);
 				}
-				System.out.println("Mise a jour du run " + newR.run + " avec " + newText);
-				newR.run.setText(newText);
+				if (newR.run instanceof FlexoTextRun) {
+					System.out.println("Mise a jour du run " + newR.run + " avec " + newText);
+					((FlexoTextRun<?, ?>) newR.run).setText(newText);
+				}
 			}
 		}
 	}
@@ -293,7 +296,7 @@ class StructuralModification<D extends FlexoDocument<D, TA>, TA extends Technolo
 
 			class RetainedRunElement {
 				RunElement<D, TA> runElement;
-				FlexoTextRun<D, TA> run;
+				FlexoDocRun<D, TA> run;
 				int startIndex;
 				int endIndex;
 

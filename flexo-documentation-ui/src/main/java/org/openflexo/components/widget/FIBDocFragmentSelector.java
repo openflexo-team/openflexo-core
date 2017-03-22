@@ -219,7 +219,7 @@ public abstract class FIBDocFragmentSelector<F extends FlexoDocFragment<D, TA>, 
 		}
 
 		// Called whenever the FragmentSelectorDetailsPanel should reflect a fragment selection
-		// The browser must reflect the selection and DocXEditor should highlight selected fragment
+		// The browser must reflect the selection and FlexoDocumentEditorWidget should highlight selected fragment
 		@Override
 		protected void selectValue(F value) {
 
