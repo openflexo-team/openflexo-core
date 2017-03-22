@@ -86,11 +86,15 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 
 	private static final Logger logger = Logger.getLogger(FlexoBehaviourAction.class.getPackage().getName());
 
+	public static final String PARAMETER_VALUE_CHANGED = "parameterValueChanged";
+
 	protected Hashtable<String, Object> variables;
 	protected ParameterValues parameterValues;
 	protected Hashtable<ListParameter, List> parameterListValues;
 
 	private MatchingSet defaultMatchingSet = null;
+
+	protected Object returnedValue = null;
 
 	public boolean escapeParameterRetrievingWhenValid = true;
 
@@ -273,8 +277,6 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 
 	}
 
-	private Object returnedValue = null;
-
 	public Object getReturnedValue() {
 		return returnedValue;
 	}
@@ -372,8 +374,6 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 		notifyObservers(new DataModification(PARAMETER_VALUE_CHANGED, null, getParametersValues()));
 		return true;
 	}
-
-	public static final String PARAMETER_VALUE_CHANGED = "parameterValueChanged";
 
 	public class ParameterValues extends Hashtable<FlexoBehaviourParameter, Object> {
 
