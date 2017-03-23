@@ -55,6 +55,11 @@ public class TestDocEditorKitWidgetFibs extends GenericFIBTestCase {
 	}
 
 	@Test
+	public void testFIBDocImageSelector() {
+		validateFIB("Fib/Widget/FIBDocImageSelector.fib");
+	}
+
+	@Test
 	public void testFIBDocTableSelector() {
 		validateFIB("Fib/Widget/FIBDocTableSelector.fib");
 	}
@@ -73,5 +78,4 @@ public class TestDocEditorKitWidgetFibs extends GenericFIBTestCase {
 	public void testFlexoDocumentToolbar() {
 		validateFIB("Fib/Widget/FlexoDocumentToolbar.fib");
 	}
-
 }
