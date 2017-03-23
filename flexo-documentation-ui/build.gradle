@@ -5,6 +5,7 @@ dependencies {
   compile project(':flexo-documentation')
   compile ginaSwing()
   // external dep
+  testCompile flexoUiTest()
 
   // testing dep
 }

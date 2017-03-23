@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Panel layout="twocols" darkLevel="0" data=""
+	dataClassName="org.openflexo.foundation.doc.FlexoDocument"
+	controllerClassName="org.openflexo.components.doc.editorkit.widget.FIBFlexoDocumentBrowser$FlexoDocumentBrowserFIBController"
+	visible="">
+	<Browser root="data"
+		iteratorClassName="org.openflexo.foundation.doc.FlexoDocObject"
+		visibleRowCount="5" rowHeight="18" boundToSelectionManager="true"
+		selectionMode="ContiguousTreeSelection" showFooter="true"
+		rootVisible="true" showRootsHandle="true" 
+		localize="true" manageDynamicModel="true"
+		clickAction="controller.singleClick(DocumentBrowser.selected)"
+		doubleClickAction="controller.doubleClick(DocumentBrowser.selected)"
+		rightClickAction="controller.rightClick(DocumentBrowser.selected,event)"
+		name="DocumentBrowser" index="0"
+		constraints="twocols(expandHorizontally=true;expandVertically=true;index=0;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=center)"
+		selected="controller.selectedDocumentElement">
+		<BrowserElement
+			dataClassName="org.openflexo.foundation.doc.FlexoDocument"
+			label="document.name" icon="controller.iconForObject(document)"
+			isEditable="false" 
+			filtered="false" defaultVisible="true" name="document">
+			<Children data="document.rootElements" name="rootElements" />
+		</BrowserElement>
+		<BrowserElement
+			dataClassName="org.openflexo.foundation.doc.FlexoDocParagraph"
+			label="paragraph.rawTextPreview" icon="controller.iconForObject(paragraph)"
+			isEditable="false" 
+			filtered="false" defaultVisible="true" name="paragraph">
+			<Children data="paragraph.runs" name="runs" />
+			<Children data="paragraph.childrenElements" name="childrenElements" />
+		</BrowserElement>
+		<BrowserElement
+			dataClassName="org.openflexo.foundation.doc.FlexoTextRun"
+			label="run.text" icon="controller.iconForObject(run)"
+			isEditable="false" visible="" 
+			filtered="false" defaultVisible="true" name="run">
+		</BrowserElement>
+		<BrowserElement dataClassName="org.openflexo.foundation.doc.FlexoDrawingRun"
+			label="drawingRunElement.imageName" icon="controller.iconForObject(drawingRunElement)" 
+			isEditable="false" name="drawingRunElement">
+		</BrowserElement>
+		<BrowserElement dataClassName="org.openflexo.foundation.doc.FlexoDocTable"
+			label="'TABLE'" icon="controller.iconForObject(table)"
+			isEditable="false" filtered="false"
+			defaultVisible="true" name="table">
+		</BrowserElement>
+	</Browser>
+	<LocalizedDictionary />
+</Panel>
