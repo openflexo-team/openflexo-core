@@ -55,6 +55,11 @@ public class TestDocEditorKitWidgetFibs extends GenericFIBTestCase {
 	}
 
 	@Test
+	public void testFIBDocTableSelector() {
+		validateFIB("Fib/Widget/FIBDocTableSelector.fib");
+	}
+
+	@Test
 	public void testFIBFlexoDocumentBrowser() {
 		validateFIB("Fib/Widget/FIBFlexoDocumentBrowser.fib");
 	}
