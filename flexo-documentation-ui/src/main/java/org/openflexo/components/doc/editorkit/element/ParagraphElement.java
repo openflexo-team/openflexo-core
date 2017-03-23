@@ -106,7 +106,6 @@ public class ParagraphElement<D extends FlexoDocument<D, TA>, TA extends Technol
 
 	@Override
 	public FlexoDocParagraph<D, TA> lookupDocObject() {
-		System.out.println("Je cherche le paragraphe pour " + this);
 		int index = getParent().getIndex(this);
 		if (getParent() instanceof DocumentElement) {
 			if (getFlexoDocument() != null) {
@@ -126,8 +125,6 @@ public class ParagraphElement<D extends FlexoDocument<D, TA>, TA extends Technol
 		}
 		else if (getParent() instanceof DocFragmentElement) {
 			FlexoDocFragment<D, TA> fragment = ((DocFragmentElement) getParent()).getDocObject();
-			// System.out.println("******** je cherche mon paragraphe pour " + fragment);
-			// System.out.println("index=" + index);
 			int elementIndex = 0;
 			for (FlexoDocElement<D, TA> e : fragment.getElements()) {
 				if (e instanceof FlexoDocParagraph) {

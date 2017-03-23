@@ -269,19 +269,13 @@ public class TableElement<D extends FlexoDocument<D, TA>, TA extends TechnologyA
 	@Override
 	public FlexoDocTable<D, TA> lookupDocObject() {
 
-		System.out.println("On cherche le docObject de " + this);
-		Thread.dumpStack();
-
 		int index = getParent().getIndex(this);
-
-		System.out.println("Index=" + index);
 
 		int elementIndex = 0;
 		if (getFlexoDocument() != null) {
 			for (FlexoDocElement<D, TA> e : getFlexoDocument().getElements()) {
 				if (e instanceof FlexoDocTable) {
 					if (elementIndex == index) {
-						System.out.println("Yes on a trouve");
 						table = (FlexoDocTable<D, TA>) e;
 						break;
 					}
