@@ -65,6 +65,14 @@ public class FlexoDocumentFragmentEditor<D extends FlexoDocument<D, TA>, TA exte
 		setFragment(fragment);
 	}
 
+	@Override
+	public D getFlexoDocument() {
+		if (fragment != null) {
+			return fragment.getFlexoDocument();
+		}
+		return super.getFlexoDocument();
+	}
+
 	// Override setFlexoDocument by preventing reading the whole document
 	// > will be done in setFragment()
 	@Override

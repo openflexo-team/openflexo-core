@@ -165,6 +165,9 @@ public class FlexoDocumentEditor<D extends FlexoDocument<D, TA>, TA extends Tech
 	}
 
 	public DocumentFactory<D, TA> getDocumentFactory() {
+		if (getFlexoDocument() != null) {
+			return getFlexoDocument().getFactory();
+		}
 		return documentFactory;
 	}
 
@@ -440,6 +443,9 @@ public class FlexoDocumentEditor<D extends FlexoDocument<D, TA>, TA extends Tech
 				TextMarker endMarker = retrieveTextMarker(end);
 				System.out.println("startMarker=" + startMarker);
 				System.out.println("endMarker=" + endMarker);
+				System.out.println("docFactory=" + getDocumentFactory());
+				System.out.println("je suis " + this);
+				System.out.println("getFlexoDocument()=" + getFlexoDocument());
 				textSelection = getDocumentFactory().makeTextSelection(startMarker, endMarker);
 
 				System.out.println("TextSelection=" + textSelection);
@@ -468,7 +474,7 @@ public class FlexoDocumentEditor<D extends FlexoDocument<D, TA>, TA extends Tech
 
 		TextMarker returned = new TextMarker();
 
-		System.out.println("RetrieveTextMarker");
+		System.out.println("RetrieveTextMarker for pos=" + pos);
 		System.out.println("paragraphElement=" + paragraphElement);
 		System.out.println("charElement=" + charElement);
 
@@ -483,7 +489,7 @@ public class FlexoDocumentEditor<D extends FlexoDocument<D, TA>, TA extends Tech
 					returned.documentElement = run.getParagraph();
 				}
 				int runIndex = run.getIndex();
-				int characterIndex = pos - paragraphElement.getStartOffset();
+				int characterIndex = pos - charElement.getStartOffset();
 				returned.runIndex = runIndex;
 				returned.characterIndex = characterIndex;
 				if (characterIndex == 0) {

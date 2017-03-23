@@ -43,8 +43,7 @@ package org.openflexo.components.doc.editorkit;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Element;
 
-import org.openflexo.components.doc.editorkit.element.AbstractDocumentElement;
-import org.openflexo.components.doc.editorkit.element.DocumentElement;
+import org.openflexo.components.doc.editorkit.FlexoStyledDocument.DocumentRootElement;
 import org.openflexo.foundation.doc.FlexoDocFragment;
 import org.openflexo.foundation.doc.FlexoDocument;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
@@ -102,17 +101,17 @@ public class FlexoDocFragmentEditorFactory<D extends FlexoDocument<D, TA>, TA ex
 		document.setIsReadingDocument(true);
 		iteratePart(flexoFragment.getElements());
 
-		System.out.println("Avant le lookup: ");
-		System.out.println(AbstractDocumentElement.debugElement(document.getRootElement()));
+		// System.out.println("Before lookup: ");
+		// System.out.println(AbstractDocumentElement.debugElement(document.getRootElement()));
 
 		for (Element e : document.getRootElements()) {
-			if (e instanceof DocumentElement) {
-				((DocumentElement<D, TA>) e).lookupDocObject();
+			if (e instanceof DocumentRootElement) {
+				((FlexoStyledDocument<D, TA>.DocumentRootElement<?>) e).lookupDocObject();
 			}
 		}
 
-		System.out.println("Apres le lookup: ");
-		System.out.println(AbstractDocumentElement.debugElement(document.getRootElement()));
+		// System.out.println("After lookup: ");
+		// System.out.println(AbstractDocumentElement.debugElement(document.getRootElement()));
 
 		document.setIsReadingDocument(false);
 
