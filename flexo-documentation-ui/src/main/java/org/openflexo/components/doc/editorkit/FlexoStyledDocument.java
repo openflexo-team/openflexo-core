@@ -61,12 +61,14 @@ import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
 import javax.swing.undo.UndoableEdit;
 
+import org.openflexo.components.doc.editorkit.element.AbstractDocumentElement;
 import org.openflexo.components.doc.editorkit.element.CellElement;
 import org.openflexo.components.doc.editorkit.element.DocumentElement;
 import org.openflexo.components.doc.editorkit.element.ParagraphElement;
 import org.openflexo.components.doc.editorkit.element.RowElement;
 import org.openflexo.components.doc.editorkit.element.RunElement;
 import org.openflexo.components.doc.editorkit.element.TableElement;
+import org.openflexo.foundation.doc.FlexoDocObject;
 import org.openflexo.foundation.doc.FlexoDocument;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 
@@ -897,8 +899,8 @@ public class FlexoStyledDocument<D extends FlexoDocument<D, TA>, TA extends Tech
 	}
 
 	@SuppressWarnings("unchecked")
-	public DocumentElement<D, TA> getRootElement() {
-		return (DocumentElement<D, TA>) getRootElements()[0];
+	public DocumentRootElement getRootElement() {
+		return (DocumentRootElement) getRootElements()[0];
 	}
 
 	private StructuralModification<D, TA> currentModification = null;
@@ -955,16 +957,15 @@ public class FlexoStyledDocument<D extends FlexoDocument<D, TA>, TA extends Tech
 	@SuppressWarnings("unchecked")
 	@Override
 	protected Element createBranchElement(Element parent, AttributeSet a) {
-		if (!isReadingDocument) {
-			System.out.println("On cree un BranchElement pour parent=" + parent);
+		/*if (!isReadingDocument) {
+			System.out.println("Creating BranchElement for parent=" + parent);
 			Enumeration<?> en = a.getAttributeNames();
 			while (en.hasMoreElements()) {
 				Object next = en.nextElement();
 				System.out.println(next + "=" + a.getAttribute(next));
 			}
-		}
+		}*/
 		if (parent instanceof DocumentElement) {
-			// Thread.dumpStack();
 			return new ParagraphElement<D, TA>(this, (DocumentElement<D, TA>) parent, a);
 
 		}
@@ -1041,7 +1042,8 @@ public class FlexoStyledDocument<D extends FlexoDocument<D, TA>, TA extends Tech
 
 	}
 
-	public class DocumentRootElement extends SectionElement {
+	public abstract class DocumentRootElement<E extends FlexoDocObject<D, TA>> extends SectionElement
+			implements AbstractDocumentElement<E, D, TA> {
 
 		/**
 		 * Creates a new SectionElement.

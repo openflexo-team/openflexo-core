@@ -84,15 +84,17 @@ public class FlexoDocumentFragmentEditor<D extends FlexoDocument<D, TA>, TA exte
 		if ((fragment == null && this.fragment != null) || (fragment != null && !fragment.equals(this.fragment))) {
 			FlexoDocFragment<D, TA> oldValue = this.fragment;
 			this.fragment = fragment;
-			FlexoDocFragmentEditorFactory<D, TA> reader;
-			try {
-				reader = new FlexoDocFragmentEditorFactory<>(fragment);
-				jEditorPane.setDocument(reader.getDocument());
-				jEditorPane.getDocument().addDocumentListener(this);
-				jEditorPane.addCaretListener(this);
-			} catch (BadLocationException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			if (fragment != null) {
+				FlexoDocFragmentEditorFactory<D, TA> reader;
+				try {
+					reader = new FlexoDocFragmentEditorFactory<>(fragment);
+					jEditorPane.setDocument(reader.getDocument());
+					jEditorPane.getDocument().addDocumentListener(this);
+					jEditorPane.addCaretListener(this);
+				} catch (BadLocationException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 			getPropertyChangeSupport().firePropertyChange("fragment", oldValue, fragment);
 		}

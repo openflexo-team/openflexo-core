@@ -42,13 +42,15 @@ package org.openflexo.components.doc.editorkit.element;
 
 import javax.swing.text.Element;
 
+import org.openflexo.components.doc.editorkit.FlexoFragmentStyledDocument;
 import org.openflexo.components.doc.editorkit.FlexoStyledDocument;
+import org.openflexo.foundation.doc.FlexoDocFragment;
 import org.openflexo.foundation.doc.FlexoDocObject;
 import org.openflexo.foundation.doc.FlexoDocument;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 
 /**
- * Element (a {@link AbstractDocumentElement}) representing the whole document
+ * Element (a {@link AbstractDocumentElement}) representing a fragment of a document
  * 
  * @author sylvain
  *
@@ -58,26 +60,27 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
  *            {@link TechnologyAdapter} of current implementation
  */
 @SuppressWarnings("serial")
-public class DocumentElement<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
-		extends FlexoStyledDocument<D, TA>.DocumentRootElement<D> implements AbstractDocumentElement<D, D, TA> {
+public class DocFragmentElement<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
+		extends FlexoStyledDocument<D, TA>.DocumentRootElement<FlexoDocFragment<D, TA>>
+		implements AbstractDocumentElement<FlexoDocFragment<D, TA>, D, TA> {
 
-	private final FlexoStyledDocument<D, TA> flexoStyledDocument;
+	private final FlexoFragmentStyledDocument<D, TA> flexoFragmentStyledDocument;
 
 	/**
-	 * @param flexoStyledDocument
+	 * @param flexoFragmentStyledDocument
 	 */
-	public DocumentElement(FlexoStyledDocument<D, TA> flexoStyledDocument) {
-		flexoStyledDocument.super();
-		this.flexoStyledDocument = flexoStyledDocument;
+	public DocFragmentElement(FlexoFragmentStyledDocument<D, TA> flexoFragmentStyledDocument) {
+		flexoFragmentStyledDocument.super();
+		this.flexoFragmentStyledDocument = flexoFragmentStyledDocument;
 	}
 
 	@Override
-	public D getDocObject() {
-		return getFlexoDocument();
+	public FlexoDocFragment<D, TA> getDocObject() {
+		return flexoFragmentStyledDocument.getFragment();
 	}
 
 	@Override
-	public D lookupDocObject() {
+	public FlexoDocFragment<D, TA> lookupDocObject() {
 		for (int i = 0; i < getElementCount(); i++) {
 			Element e = getElement(i);
 			if (e instanceof AbstractDocumentElement) {
@@ -85,12 +88,12 @@ public class DocumentElement<D extends FlexoDocument<D, TA>, TA extends Technolo
 			}
 		}
 
-		return this.flexoStyledDocument.getFlexoDocument();
+		return this.flexoFragmentStyledDocument.getFragment();
 	}
 
 	@Override
-	public FlexoStyledDocument<D, TA> getFlexoStyledDocument() {
-		return flexoStyledDocument;
+	public FlexoFragmentStyledDocument<D, TA> getFlexoStyledDocument() {
+		return flexoFragmentStyledDocument;
 	}
 
 	@Override
@@ -107,7 +110,7 @@ public class DocumentElement<D extends FlexoDocument<D, TA>, TA extends Technolo
 
 	@Override
 	public String toString() {
-		return "DocumentElement(" + getName() + ") " + getStartOffset() + "," + getEndOffset();
+		return "DocFragmentElement(" + getName() + ") " + getStartOffset() + "," + getEndOffset();
 	}
 
 }

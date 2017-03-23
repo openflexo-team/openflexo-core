@@ -40,84 +40,78 @@
 
 package org.openflexo.components.doc.editorkit;
 
-import javax.swing.text.BadLocationException;
+import java.util.logging.Logger;
+
+import javax.swing.text.AttributeSet;
+import javax.swing.text.DefaultStyledDocument;
 import javax.swing.text.Element;
 
-import org.openflexo.components.doc.editorkit.element.AbstractDocumentElement;
-import org.openflexo.components.doc.editorkit.element.DocumentElement;
+import org.openflexo.components.doc.editorkit.element.DocFragmentElement;
+import org.openflexo.components.doc.editorkit.element.ParagraphElement;
+import org.openflexo.components.doc.editorkit.element.RunElement;
 import org.openflexo.foundation.doc.FlexoDocFragment;
 import org.openflexo.foundation.doc.FlexoDocument;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 
 /**
- * A factory used to build {@link FlexoStyledDocument} from a given {@link FlexoDocument}
- *
- * Note that this class was originally inspired from Stanislav Lapitsky code (see http://java-sl.com/docx_editor_kit.html)
+ * Internal representation of a fragment of a {@link FlexoDocument}
  * 
- * @author Stanislav Lapitsky
- * @author sylvain
+ * @author Sylvain Guerin
+ * @see DefaultStyledDocument
  */
-public class FlexoDocFragmentEditorFactory<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
-		extends FlexoDocumentEditorFactory<D, TA> {
+@SuppressWarnings("serial")
+public class FlexoFragmentStyledDocument<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends FlexoStyledDocument<D, TA> {
+
+	static final Logger logger = Logger.getLogger(FlexoFragmentStyledDocument.class.getPackage().getName());
 
 	private FlexoDocFragment<D, TA> fragment;
 
-	public FlexoDocFragmentEditorFactory(FlexoDocFragment<D, TA> fragment) throws BadLocationException {
-		super();
+	public FlexoFragmentStyledDocument(FlexoDocFragment<D, TA> fragment) {
+		super(fragment != null ? fragment.getFlexoDocument() : null);
 		this.fragment = fragment;
-		document = new FlexoFragmentStyledDocument<D, TA>(fragment);
-		read(fragment, 0);
 	}
 
 	public FlexoDocFragment<D, TA> getFragment() {
 		return fragment;
 	}
 
-	@Override
-	public FlexoDocument<D, TA> getFlexoDocument() {
-		return getFragment().getFlexoDocument();
-	}
-
-	@Override
-	@SuppressWarnings("unchecked")
-	protected void read(FlexoDocument<D, TA> flexoDocument, int offset) throws BadLocationException {
-		// Do not read the full document here
-	}
-
-	protected FlexoFragmentStyledDocument<D, TA> makeStyledDocument(D flexoDocument) {
-		return new FlexoFragmentStyledDocument<D, TA>(null);
-	}
-
-	/**
-	 * Reads content of specified fragment to the document.
-	 *
-	 * @param in
-	 *            stream.
-	 * @throws BadLocationException
-	 */
-	@SuppressWarnings("unchecked")
-	protected void read(FlexoDocFragment<D, TA> flexoFragment, int offset) throws BadLocationException {
-		System.out.println("Starting reading fragment " + flexoFragment);
-
-		document.setIsReadingDocument(true);
-		iteratePart(flexoFragment.getElements());
-
-		System.out.println("Avant le lookup: ");
-		System.out.println(AbstractDocumentElement.debugElement(document.getRootElement()));
-
-		for (Element e : document.getRootElements()) {
-			if (e instanceof DocumentElement) {
-				((DocumentElement<D, TA>) e).lookupDocObject();
-			}
+	public void setFragment(FlexoDocFragment<D, TA> fragment) {
+		if ((fragment == null && this.fragment != null) || (fragment != null && !fragment.equals(this.fragment))) {
+			// FlexoDocFragment<D, TA> oldValue = this.fragment;
+			this.fragment = fragment;
+			// getPropertyChangeSupport().firePropertyChange("fragment", oldValue, fragment);
 		}
+	}
 
-		System.out.println("Apres le lookup: ");
-		System.out.println(AbstractDocumentElement.debugElement(document.getRootElement()));
+	@Override
+	protected AbstractElement createDefaultRoot() {
+		// grabs a write-lock for this initialization and
+		// abandon it during initialization so in normal
+		// operation we can detect an illegitimate attempt
+		// to mutate attributes.
+		writeLock();
+		DocFragmentElement<D, TA> rootElement = new DocFragmentElement<D, TA>(this);
+		ParagraphElement<D, TA> paragraph = new ParagraphElement<D, TA>(this, rootElement, null);
 
-		document.setIsReadingDocument(false);
+		RunElement<D, TA> brk = new RunElement<D, TA>(this, paragraph, null, 0, 1, null);
+		Element[] buff = new Element[1];
+		buff[0] = brk;
+		paragraph.replace(0, 0, buff);
 
-		this.currentOffset = offset;
+		buff[0] = paragraph;
+		rootElement.replace(0, 0, buff);
+		writeUnlock();
+		return rootElement;
+	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	protected Element createBranchElement(Element parent, AttributeSet a) {
+		if (parent instanceof DocFragmentElement) {
+			return new ParagraphElement<D, TA>(this, (DocFragmentElement<D, TA>) parent, a);
+
+		}
+		return super.createBranchElement(parent, a);
 	}
 
 }

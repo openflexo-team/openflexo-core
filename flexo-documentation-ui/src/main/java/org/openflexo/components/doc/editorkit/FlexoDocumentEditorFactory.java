@@ -98,6 +98,9 @@ public class FlexoDocumentEditorFactory<D extends FlexoDocument<D, TA>, TA exten
 
 	private List<Integer> numbering = new ArrayList<>();
 
+	protected FlexoDocumentEditorFactory() {
+	}
+
 	/**
 	 * Builds new instance of reader.
 	 *
@@ -309,6 +312,9 @@ public class FlexoDocumentEditorFactory<D extends FlexoDocument<D, TA>, TA exten
 		StringBuffer sb = new StringBuffer();
 		boolean isFirst = true;
 		for (int i = 0; i <= level; i++) {
+			while (i >= numbering.size()) {
+				numbering.add(1);
+			}
 			sb.append((isFirst ? "" : ".") + numbering.get(i));
 			isFirst = false;
 		}
@@ -319,6 +325,11 @@ public class FlexoDocumentEditorFactory<D extends FlexoDocument<D, TA>, TA exten
 		System.out.println("---------> un run: " + run.getText() + " avec " + run.getRunStyle());
 
 		charAttrs = new SimpleAttributeSet();
+
+		// IMPORTANT:
+		// We add here a runId attribute, so that AbstractElement structure reflect
+		// the structure of the underlying FlexoDocument
+		charAttrs.addAttribute("runId", run.getParagraph().getIdentifier() + "." + run.getIndex());
 
 		if (run.getParagraph() != null && run.getParagraph().getNamedStyle() != null) {
 			applyRunStyle(run.getParagraph().getNamedStyle().getRunStyle());

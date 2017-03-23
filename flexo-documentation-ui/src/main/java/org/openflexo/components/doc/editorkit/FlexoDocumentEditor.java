@@ -41,6 +41,7 @@ package org.openflexo.components.doc.editorkit;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.FlowLayout;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.beans.PropertyChangeSupport;
@@ -49,8 +50,10 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import javax.swing.JEditorPane;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.SwingUtilities;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 import javax.swing.event.DocumentEvent;
@@ -58,12 +61,20 @@ import javax.swing.event.DocumentListener;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultHighlighter.DefaultHighlightPainter;
+import javax.swing.text.Element;
 import javax.swing.text.Highlighter;
 
+import org.openflexo.FlexoCst;
 import org.openflexo.components.doc.editorkit.element.AbstractDocumentElement;
+import org.openflexo.components.doc.editorkit.element.ParagraphElement;
+import org.openflexo.components.doc.editorkit.element.RunElement;
 import org.openflexo.foundation.doc.DocumentFactory;
+import org.openflexo.foundation.doc.FlexoDocFragment.FragmentConsistencyException;
 import org.openflexo.foundation.doc.FlexoDocObject;
+import org.openflexo.foundation.doc.FlexoDocRun;
 import org.openflexo.foundation.doc.FlexoDocument;
+import org.openflexo.foundation.doc.TextSelection;
+import org.openflexo.foundation.doc.TextSelection.TextMarker;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.toolbox.HasPropertyChangeSupport;
 
@@ -129,15 +140,6 @@ public class FlexoDocumentEditor<D extends FlexoDocument<D, TA>, TA extends Tech
 	public String getDeletedProperty() {
 		// TODO Auto-generated method stub
 		return null;
-	}
-
-	public void highlight(int startIndex, int endIndex) {
-		try {
-			highlighter.addHighlight(startIndex, endIndex, highlighterPainter);
-		} catch (BadLocationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 	}
 
 	public D getFlexoDocument() {
@@ -212,6 +214,11 @@ public class FlexoDocumentEditor<D extends FlexoDocument<D, TA>, TA extends Tech
 	public class FlexoDocumentEditorPanel extends JPanel {
 
 		private FlexoDocumentToolbar toolBar;
+		private JPanel infoBar;
+		private JLabel writableLabel;
+		private JLabel modeLabel;
+		private JLabel textSelectionLabel;
+		private JLabel textPositionLabel;
 
 		private FlexoDocumentEditorPanel() {
 			this.toolBar = new FlexoDocumentToolbar(FlexoDocumentEditor.this, null);
@@ -219,6 +226,24 @@ public class FlexoDocumentEditor<D extends FlexoDocument<D, TA>, TA extends Tech
 			this.setLayout(new BorderLayout());
 			this.add(toolBar, BorderLayout.NORTH);
 			this.add(new JScrollPane(jEditorPane), BorderLayout.CENTER);
+			infoBar = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+			writableLabel = new JLabel("Writable");
+			writableLabel.setFont(FlexoCst.SMALL_FONT);
+			modeLabel = new JLabel("Smart Insert");
+			modeLabel.setFont(FlexoCst.SMALL_FONT);
+			textSelectionLabel = new JLabel();
+			textSelectionLabel.setFont(FlexoCst.SMALL_FONT);
+			textPositionLabel = new JLabel();
+			textPositionLabel.setFont(FlexoCst.SMALL_FONT);
+			infoBar.add(writableLabel);
+			infoBar.add(new JLabel("|"));
+			infoBar.add(modeLabel);
+			infoBar.add(new JLabel("|"));
+			infoBar.add(textPositionLabel);
+			infoBar.add(textSelectionLabel);
+			this.add(infoBar, BorderLayout.SOUTH);
+			infoBar.setOpaque(false);
+
 		}
 
 	}
@@ -271,6 +296,15 @@ public class FlexoDocumentEditor<D extends FlexoDocument<D, TA>, TA extends Tech
 		}
 	}
 
+	public void highlight(int startIndex, int endIndex) {
+		try {
+			highlighter.addHighlight(startIndex, endIndex, highlighterPainter);
+		} catch (BadLocationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
 	public void clearHighligths() {
 		highlighter.removeAllHighlights();
 	}
@@ -315,8 +349,74 @@ public class FlexoDocumentEditor<D extends FlexoDocument<D, TA>, TA extends Tech
 
 	}
 
+	public void highlight(TextSelection<D, TA> highlightedTextSelection) {
+		int startIndex = -1;
+		int endIndex = -1;
+
+		// System.out.println("Highlighting " + highlightedTextSelection);
+		// System.out.println("startRun=" + highlightedTextSelection.getStartRun());
+		// System.out.println("startElement=" + highlightedTextSelection.getStartElement());
+
+		if (highlightedTextSelection.getStartRun() != null) {
+			AbstractDocumentElement<?, D, TA> startRunElement = getElement(highlightedTextSelection.getStartRun());
+			// System.out.println("startRunElement=" + startRunElement);
+			// System.out.println("endCharIndex=" + highlightedTextSelection.getStartCharacterIndex());
+			if (startRunElement != null) {
+				if (highlightedTextSelection.getStartCharacterIndex() > -1) {
+					startIndex = startRunElement.getStartOffset() + highlightedTextSelection.getStartCharacterIndex();
+				}
+				else {
+					startIndex = startRunElement.getStartOffset();
+				}
+			}
+		}
+		else if (highlightedTextSelection.getStartElement() != null) {
+			AbstractDocumentElement<?, D, TA> startElement = getElement(highlightedTextSelection.getStartElement());
+			// System.out.println("startElement=" + startElement);
+			if (startElement != null) {
+				startIndex = startElement.getStartOffset();
+			}
+		}
+		if (highlightedTextSelection.getEndRun() != null) {
+			AbstractDocumentElement<?, D, TA> endRunElement = getElement(highlightedTextSelection.getEndRun());
+			// System.out.println("endRunElement=" + endRunElement);
+			// System.out.println("endCharIndex=" + highlightedTextSelection.getEndCharacterIndex());
+			if (endRunElement != null) {
+				if (highlightedTextSelection.getEndCharacterIndex() > -1) {
+					endIndex = endRunElement.getStartOffset() + highlightedTextSelection.getEndCharacterIndex();
+				}
+				else {
+					endIndex = endRunElement.getEndOffset();
+				}
+			}
+		}
+		else if (highlightedTextSelection.getEndElement() != null) {
+			AbstractDocumentElement<?, D, TA> endElement = getElement(highlightedTextSelection.getEndElement());
+			if (endElement != null) {
+				endIndex = endElement.getEndOffset();
+			}
+		}
+
+		// System.out.println("start=" + startIndex);
+		// System.out.println("end=" + endIndex);
+		if (startIndex > -1 && endIndex > -1) {
+			highlight(startIndex, endIndex);
+		}
+	}
+
 	@Override
 	public void caretUpdate(CaretEvent evt) {
+
+		if (!SwingUtilities.isEventDispatchThread()) {
+			SwingUtilities.invokeLater(new Runnable() {
+				@Override
+				public void run() {
+					caretUpdate(evt);
+				}
+			});
+			return;
+		}
+
 		System.out.println("Caret changed with " + evt);
 		int start = Math.min(evt.getDot(), evt.getMark());
 		int end = Math.max(evt.getDot(), evt.getMark());
@@ -331,5 +431,171 @@ public class FlexoDocumentEditor<D extends FlexoDocument<D, TA>, TA extends Tech
 			Object attribute = en.nextElement();
 			System.out.println(" > " + attribute + "=" + as.getAttribute(attribute));
 		}
+
+		getEditorPanel().textPositionLabel.setText("" + start);
+
+		if (start < end) {
+			try {
+				TextMarker startMarker = retrieveTextMarker(start);
+				TextMarker endMarker = retrieveTextMarker(end);
+				System.out.println("startMarker=" + startMarker);
+				System.out.println("endMarker=" + endMarker);
+				textSelection = getDocumentFactory().makeTextSelection(startMarker, endMarker);
+
+				System.out.println("TextSelection=" + textSelection);
+				getEditorPanel().textSelectionLabel.setText(textSelection.toString());
+
+			} catch (FragmentConsistencyException e1) {
+				e1.printStackTrace();
+			}
+		}
+		else {
+			textSelection = null;
+			getEditorPanel().textSelectionLabel.setText("");
+		}
 	}
+
+	private TextSelection<D, TA> textSelection;
+
+	public TextSelection<D, TA> getTextSelection() {
+		return textSelection;
+	}
+
+	protected TextMarker retrieveTextMarker(int pos) {
+
+		Element paragraphElement = getStyledDocument().getParagraphElement(pos);
+		Element charElement = getStyledDocument().getCharacterElement(pos);
+
+		TextMarker returned = new TextMarker();
+
+		System.out.println("RetrieveTextMarker");
+		System.out.println("paragraphElement=" + paragraphElement);
+		System.out.println("charElement=" + charElement);
+
+		if (paragraphElement instanceof ParagraphElement) {
+			returned.documentElement = ((ParagraphElement) paragraphElement).getParagraph();
+		}
+
+		if (charElement instanceof RunElement) {
+			FlexoDocRun<D, TA> run = ((RunElement) charElement).getRun();
+			if (run != null) {
+				if (returned.documentElement == null) {
+					returned.documentElement = run.getParagraph();
+				}
+				int runIndex = run.getIndex();
+				int characterIndex = pos - paragraphElement.getStartOffset();
+				returned.runIndex = runIndex;
+				returned.characterIndex = characterIndex;
+				if (characterIndex == 0) {
+					returned.firstChar = true;
+				}
+				if (pos == paragraphElement.getEndOffset() - 1) {
+					returned.lastChar = true;
+				}
+				if (runIndex == 0) {
+					returned.firstRun = true;
+				}
+				if (runIndex == run.getParagraph().getRuns().size() - 1) {
+					returned.lastRun = true;
+				}
+			}
+		}
+
+		System.out.println("Returning " + returned);
+
+		/*WordMLDocument doc = editorView.getDocument();
+		
+		TextMarker returned = new TextMarker();
+		
+		// System.out.println("pos=" + pos);
+		Element characterElement = doc.getCharacterElement(pos);
+		Element paragraphElement = doc.getParagraphElement(pos);
+		// System.out.println("characterElement=" + characterElement);
+		// System.out.println("paragraphElement=" + paragraphElement);
+		if (characterElement instanceof DocumentElement) {
+			ElementML elementML = ((DocumentElement) characterElement).getElementML();
+			// System.out.println("elementML=" + elementML);
+			Object docXObject = elementML.getDocxObject();
+			// System.out.println("docXObject=" + docXObject);
+			if (docXObject instanceof JAXBElement) {
+				docXObject = ((JAXBElement) docXObject).getValue();
+			}
+			// System.out.println("startDocXObject=" + docXObject);
+			if (docXObject instanceof P) {
+				returned.documentElement = getDocXDocument().getParagraph((P) docXObject);
+			}
+			else if (docXObject instanceof R) {
+				Object parent = ((R) docXObject).getParent();
+				if (parent instanceof P) {
+					returned.documentElement = getDocXDocument().getParagraph((P) parent);
+				}
+		
+				if (returned.documentElement != null) {
+					DocXRun docXRun = ((DocXParagraph) returned.documentElement).getRun((R) docXObject);
+					int runIndex = docXRun.getIndex();
+					int characterIndex = pos - paragraphElement.getStartOffset();
+					returned.runIndex = runIndex;
+					returned.characterIndex = characterIndex;
+					if (characterIndex == 0) {
+						returned.firstChar = true;
+					}
+					if (pos == paragraphElement.getEndOffset() - 1) {
+						returned.lastChar = true;
+					}
+					if (runIndex == 0) {
+						returned.firstRun = true;
+					}
+					if (runIndex == ((DocXParagraph) returned.documentElement).getRuns().size() - 1) {
+						returned.lastRun = true;
+					}
+				}
+		
+			}
+			else if (docXObject instanceof Tbl) {
+				returned.documentElement = getDocXDocument().getTable((Tbl) docXObject);
+			}
+			else if (docXObject != null) { // Whatever it is go that way...
+				R run = (R) ((Child) docXObject).getParent();
+				// System.out.println("run=" + run);
+				if (run.getParent() instanceof P) {
+					P p = (P) run.getParent();
+					returned.documentElement = getDocXDocument().getParagraph(p);
+				}
+		
+				// XTOF: NPE protection
+				if (returned.documentElement != null) {
+					DocXRun docXRun = ((DocXParagraph) returned.documentElement).getRun(run);
+					if (docXRun != null) {
+						int runIndex = docXRun.getIndex();
+						// System.out.println("runIndex=" + runIndex);
+						int characterIndex = pos - paragraphElement.getStartOffset();
+						// System.out.println("characterIndex=" + characterIndex);
+		
+						returned.runIndex = runIndex;
+						returned.characterIndex = characterIndex;
+						if (characterIndex == 0) {
+							returned.firstChar = true;
+						}
+						if (pos == paragraphElement.getEndOffset() - 1) {
+							returned.lastChar = true;
+						}
+						if (runIndex == 0) {
+							returned.firstRun = true;
+						}
+						if (runIndex == ((DocXParagraph) returned.documentElement).getRuns().size() - 1) {
+							returned.lastRun = true;
+						}
+					}
+					else {
+						logger.warning("Could not Retreive TextMarker @" + pos + " NO RUN FOUND");
+					}
+				}
+			}
+			// System.out.println("returned.documentElement=" + returned.documentElement);
+		}*/
+
+		return returned;
+
+	}
+
 }

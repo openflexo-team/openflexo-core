@@ -49,7 +49,6 @@ import javax.swing.text.Element;
 
 import org.openflexo.components.doc.editorkit.StructuralModification.FragmentStructure.RetainedParagraphElement;
 import org.openflexo.components.doc.editorkit.StructuralModification.FragmentStructure.RetainedParagraphElement.RetainedRunElement;
-import org.openflexo.components.doc.editorkit.element.DocumentElement;
 import org.openflexo.components.doc.editorkit.element.ParagraphElement;
 import org.openflexo.components.doc.editorkit.element.RunElement;
 import org.openflexo.foundation.doc.FlexoDocElementContainer;
@@ -230,7 +229,7 @@ class StructuralModification<D extends FlexoDocument<D, TA>, TA extends Technolo
 					.getParagraphElement(offset);
 			ParagraphElement<D, TA> pElEnd = (ParagraphElement<D, TA>) StructuralModification.this.flexoStyledDocument
 					.getParagraphElement(offset + length);
-			DocumentElement<D, TA> docElement = pElStart.getParent();
+			FlexoStyledDocument<D, TA>.DocumentRootElement<?> docElement = pElStart.getParent();
 			int startId = -1;
 			int endId = -1;
 			for (int i = 0; i < docElement.getElementCount(); i++) {

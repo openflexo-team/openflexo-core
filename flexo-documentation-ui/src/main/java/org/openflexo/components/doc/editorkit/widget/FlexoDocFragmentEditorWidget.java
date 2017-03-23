@@ -36,9 +36,10 @@
  * 
  */
 
-package org.openflexo.components.doc.editorkit;
+package org.openflexo.components.doc.editorkit.widget;
 
 import java.awt.BorderLayout;
+import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -49,13 +50,16 @@ import javax.swing.JPanel;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 
+import org.openflexo.components.doc.editorkit.FlexoDocumentFragmentEditor;
 import org.openflexo.foundation.doc.FlexoDocFragment;
 import org.openflexo.foundation.doc.FlexoDocument;
+import org.openflexo.foundation.doc.TextSelection;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.gina.controller.FIBController;
 import org.openflexo.gina.model.widget.FIBCustom;
 import org.openflexo.gina.model.widget.FIBCustom.FIBCustomComponent;
 import org.openflexo.swing.CustomPopup.ApplyCancelListener;
+import org.openflexo.toolbox.HasPropertyChangeSupport;
 
 /**
  * A widget presenting base editing features for FlexoDocumentation API
@@ -64,10 +68,10 @@ import org.openflexo.swing.CustomPopup.ApplyCancelListener;
  *
  */
 @SuppressWarnings("serial")
-public class FlexoFragmentEditorWidget<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends JPanel
-		implements FIBCustomComponent<FlexoDocFragment<D, TA>> {
+public class FlexoDocFragmentEditorWidget<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends JPanel
+		implements FIBCustomComponent<FlexoDocFragment<D, TA>>, HasPropertyChangeSupport {
 
-	private static final Logger logger = Logger.getLogger(FlexoFragmentEditorWidget.class.getPackage().getName());
+	private static final Logger logger = Logger.getLogger(FlexoDocFragmentEditorWidget.class.getPackage().getName());
 
 	private FlexoDocumentFragmentEditor<D, TA> editor;
 	protected FIBCustom component;
@@ -76,10 +80,23 @@ public class FlexoFragmentEditorWidget<D extends FlexoDocument<D, TA>, TA extend
 
 	private final List<ApplyCancelListener> applyCancelListener = new ArrayList<ApplyCancelListener>();
 
-	public FlexoFragmentEditorWidget(FlexoDocFragment<D, TA> fragment) {
+	private PropertyChangeSupport pcSupport;
+
+	public FlexoDocFragmentEditorWidget(FlexoDocFragment<D, TA> fragment) {
 		super(new BorderLayout());
+		pcSupport = new PropertyChangeSupport(this);
 		editor = new FlexoDocumentFragmentEditor<>(fragment);
 		add(editor.getEditorPanel(), BorderLayout.CENTER);
+	}
+
+	@Override
+	public PropertyChangeSupport getPropertyChangeSupport() {
+		return pcSupport;
+	}
+
+	@Override
+	public String getDeletedProperty() {
+		return null;
 	}
 
 	public D getFlexoDocument() {
@@ -100,6 +117,9 @@ public class FlexoFragmentEditorWidget<D extends FlexoDocument<D, TA>, TA extend
 		if ((fragment == null && this.fragment != null) || (fragment != null && !fragment.equals(this.fragment))) {
 			this.fragment = fragment;
 			System.out.println("OK, on sette le fragment " + fragment);
+			if (fragment == null) {
+				Thread.dumpStack();
+			}
 			editor.setFragment(fragment);
 
 			// editor.getStyledDocument().getRootElement().setFilteredFragment(fragment);
@@ -135,7 +155,7 @@ public class FlexoFragmentEditorWidget<D extends FlexoDocument<D, TA>, TA extend
 		return (Class) FlexoDocFragment.class;
 	}
 
-	public FlexoDocumentEditor<D, TA> getEditor() {
+	public FlexoDocumentFragmentEditor<D, TA> getEditor() {
 		return editor;
 	}
 
@@ -184,15 +204,43 @@ public class FlexoFragmentEditorWidget<D extends FlexoDocument<D, TA>, TA extend
 
 	}
 
+	public TextSelection<D, TA> getTextSelection() {
+		return getEditor().getTextSelection();
+	}
+
+	private TextSelection<D, TA> highlightedTextSelection = null;
+
+	public TextSelection<D, TA> getHighlightedTextSelection() {
+		return highlightedTextSelection;
+	}
+
+	public void setHighlightedTextSelection(TextSelection<D, TA> highlightedTextSelection) {
+
+		// System.out.println("Highligth " + highlightedTextSelection);
+
+		if ((highlightedTextSelection == null && this.highlightedTextSelection != null)
+				|| (highlightedTextSelection != null && !highlightedTextSelection.equals(this.highlightedTextSelection))) {
+
+			getEditor().clearHighligths();
+
+			// TextSelection<D, TA> oldValue = this.highlightedTextSelection;
+			this.highlightedTextSelection = highlightedTextSelection;
+			// getPropertyChangeSupport().firePropertyChange("highlightedTextSelection", oldValue, highlightedTextSelection);
+			if (highlightedTextSelection != null) {
+				getEditor().highlight(highlightedTextSelection);
+			}
+		}
+	}
+
 	public static class FlexoDocumentSelectionListener implements CaretListener {
 
-		private final FlexoFragmentEditorWidget<?, ?> editor;
+		private final FlexoDocFragmentEditorWidget<?, ?> editor;
 
-		public FlexoDocumentSelectionListener(FlexoFragmentEditorWidget<?, ?> editor) {
+		public FlexoDocumentSelectionListener(FlexoDocFragmentEditorWidget<?, ?> editor) {
 			this.editor = editor;
 		}
 
-		public FlexoFragmentEditorWidget<?, ?> getEditor() {
+		public FlexoDocFragmentEditorWidget<?, ?> getEditor() {
 			return editor;
 		}
 

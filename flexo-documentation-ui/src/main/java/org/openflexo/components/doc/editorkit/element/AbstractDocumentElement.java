@@ -46,6 +46,7 @@ import org.openflexo.components.doc.editorkit.FlexoStyledDocument;
 import org.openflexo.foundation.doc.FlexoDocObject;
 import org.openflexo.foundation.doc.FlexoDocument;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
+import org.openflexo.toolbox.StringUtils;
 
 public interface AbstractDocumentElement<E extends FlexoDocObject<D, TA>, D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> {
 
@@ -135,6 +136,28 @@ public interface AbstractDocumentElement<E extends FlexoDocObject<D, TA>, D exte
 			}
 		}
 		return null;
+	}
+
+	// @SuppressWarnings("unchecked")
+	public static String debugElement(AbstractDocumentElement<?, ?, ?> element) {
+		return debugElement(element, 0);
+	}
+
+	// @SuppressWarnings("unchecked")
+	public static String debugElement(AbstractDocumentElement<?, ?, ?> element, int indentLevel) {
+
+		String indent = StringUtils.buildWhiteSpaceIndentation(indentLevel);
+		StringBuffer sb = new StringBuffer();
+		sb.append(indent + element.toString() + "\n");
+		for (int i = 0; i < element.getElementCount(); i++) {
+			Element e = element.getElement(i);
+			// System.out.println("On cherche dans " + e);
+			if (e instanceof AbstractDocumentElement) {
+				AbstractDocumentElement<?, ?, ?> docElement = (AbstractDocumentElement<?, ?, ?>) e;
+				sb.append(debugElement(docElement, indentLevel + 2));
+			}
+		}
+		return sb.toString();
 	}
 
 }

@@ -43,8 +43,10 @@ import javax.swing.text.AbstractDocument.BranchElement;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.Element;
 
+import org.openflexo.components.doc.editorkit.FlexoFragmentStyledDocument;
 import org.openflexo.components.doc.editorkit.FlexoStyledDocument;
 import org.openflexo.foundation.doc.FlexoDocElement;
+import org.openflexo.foundation.doc.FlexoDocFragment;
 import org.openflexo.foundation.doc.FlexoDocObject;
 import org.openflexo.foundation.doc.FlexoDocParagraph;
 import org.openflexo.foundation.doc.FlexoDocument;
@@ -72,10 +74,16 @@ public class ParagraphElement<D extends FlexoDocument<D, TA>, TA extends Technol
 		this.flexoStyledDocument = flexoStyledDocument;
 	}
 
+	public ParagraphElement(FlexoFragmentStyledDocument<D, TA> flexoStyledDocument, DocFragmentElement<D, TA> docFragmentElement,
+			AttributeSet a) {
+		flexoStyledDocument.super(docFragmentElement, a);
+		this.flexoStyledDocument = flexoStyledDocument;
+	}
+
 	@SuppressWarnings("unchecked")
 	@Override
-	public DocumentElement<D, TA> getParent() {
-		return (DocumentElement<D, TA>) super.getParent();
+	public FlexoStyledDocument<D, TA>.DocumentRootElement<?> getParent() {
+		return (FlexoStyledDocument<D, TA>.DocumentRootElement<?>) super.getParent();
 	}
 
 	public FlexoDocParagraph<D, TA> getParagraph() {
@@ -95,8 +103,22 @@ public class ParagraphElement<D extends FlexoDocument<D, TA>, TA extends Technol
 	public FlexoDocParagraph<D, TA> lookupDocObject() {
 		int index = getParent().getIndex(this);
 		int elementIndex = 0;
-		if (getFlexoDocument() != null) {
-			for (FlexoDocElement<D, TA> e : getFlexoDocument().getElements()) {
+		if (getParent() instanceof DocumentElement) {
+			if (getFlexoDocument() != null) {
+				for (FlexoDocElement<D, TA> e : getFlexoDocument().getElements()) {
+					if (e instanceof FlexoDocParagraph) {
+						if (elementIndex == index) {
+							paragraph = (FlexoDocParagraph<D, TA>) e;
+							break;
+						}
+					}
+					elementIndex++;
+				}
+			}
+		}
+		else if (getParent() instanceof DocFragmentElement) {
+			FlexoDocFragment<D, TA> fragment = ((DocFragmentElement) getParent()).getDocObject();
+			for (FlexoDocElement<D, TA> e : fragment.getElements()) {
 				if (e instanceof FlexoDocParagraph) {
 					if (elementIndex == index) {
 						paragraph = (FlexoDocParagraph<D, TA>) e;

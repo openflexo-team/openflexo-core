@@ -79,6 +79,7 @@ public class FlexoDocumentToolbar extends SelectionSynchronizedFIBView {
 		if (getFIBController() instanceof ToolbarFIBController) {
 			((ToolbarFIBController) getFIBController()).setToolbar(this);
 		}
+		setOpaque(false);
 	}
 
 	@Override
