@@ -39,6 +39,8 @@
  */
 package org.openflexo.components.doc.editorkit.element;
 
+import java.util.logging.Logger;
+
 import javax.swing.text.AbstractDocument.BranchElement;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.Element;
@@ -49,6 +51,7 @@ import org.openflexo.foundation.doc.FlexoDocElement;
 import org.openflexo.foundation.doc.FlexoDocFragment;
 import org.openflexo.foundation.doc.FlexoDocObject;
 import org.openflexo.foundation.doc.FlexoDocParagraph;
+import org.openflexo.foundation.doc.FlexoDocTable;
 import org.openflexo.foundation.doc.FlexoDocument;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 
@@ -65,6 +68,8 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 @SuppressWarnings("serial")
 public class ParagraphElement<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends BranchElement
 		implements AbstractDocumentElement<FlexoDocParagraph<D, TA>, D, TA> {
+
+	static final Logger logger = Logger.getLogger(ParagraphElement.class.getPackage().getName());
 
 	private final FlexoStyledDocument<D, TA> flexoStyledDocument;
 	private FlexoDocParagraph<D, TA> paragraph = null;
@@ -113,14 +118,16 @@ public class ParagraphElement<D extends FlexoDocument<D, TA>, TA extends Technol
 							break;
 						}
 					}
-					elementIndex++;
+					if (e instanceof FlexoDocParagraph || e instanceof FlexoDocTable) {
+						elementIndex++;
+					}
 				}
 			}
 		}
 		else if (getParent() instanceof DocFragmentElement) {
 			FlexoDocFragment<D, TA> fragment = ((DocFragmentElement) getParent()).getDocObject();
-			System.out.println("******** je cherche mon paragraphe pour " + fragment);
-			System.out.println("index=" + index);
+			// System.out.println("******** je cherche mon paragraphe pour " + fragment);
+			// System.out.println("index=" + index);
 			int elementIndex = 0;
 			for (FlexoDocElement<D, TA> e : fragment.getElements()) {
 				if (e instanceof FlexoDocParagraph) {
@@ -129,7 +136,13 @@ public class ParagraphElement<D extends FlexoDocument<D, TA>, TA extends Technol
 						break;
 					}
 				}
-				elementIndex++;
+				if (elementIndex > index) {
+					logger.warning("Could not find FlexoDocParagraph for " + this);
+					return null;
+				}
+				if (e instanceof FlexoDocParagraph || e instanceof FlexoDocTable) {
+					elementIndex++;
+				}
 			}
 		}
 		for (int i = 0; i < getElementCount(); i++) {

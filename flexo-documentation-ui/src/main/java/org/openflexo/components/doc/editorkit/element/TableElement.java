@@ -40,6 +40,7 @@
 package org.openflexo.components.doc.editorkit.element;
 
 import java.awt.Insets;
+import java.util.logging.Logger;
 
 import javax.swing.text.AbstractDocument.BranchElement;
 import javax.swing.text.AttributeSet;
@@ -52,6 +53,7 @@ import org.openflexo.components.doc.editorkit.BorderAttributes;
 import org.openflexo.components.doc.editorkit.FlexoStyledDocument;
 import org.openflexo.foundation.doc.FlexoDocElement;
 import org.openflexo.foundation.doc.FlexoDocObject;
+import org.openflexo.foundation.doc.FlexoDocParagraph;
 import org.openflexo.foundation.doc.FlexoDocTable;
 import org.openflexo.foundation.doc.FlexoDocument;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
@@ -67,6 +69,8 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 @SuppressWarnings("serial")
 public class TableElement<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends BranchElement
 		implements AbstractDocumentElement<FlexoDocTable<D, TA>, D, TA> {
+
+	static final Logger logger = Logger.getLogger(TableElement.class.getPackage().getName());
 
 	private final FlexoStyledDocument<D, TA> flexoStyledDocument;
 	private FlexoDocTable<D, TA> table = null;
@@ -266,6 +270,7 @@ public class TableElement<D extends FlexoDocument<D, TA>, TA extends TechnologyA
 	public FlexoDocTable<D, TA> lookupDocObject() {
 
 		System.out.println("On cherche le docObject de " + this);
+		Thread.dumpStack();
 
 		int index = getParent().getIndex(this);
 
@@ -280,8 +285,14 @@ public class TableElement<D extends FlexoDocument<D, TA>, TA extends TechnologyA
 						table = (FlexoDocTable<D, TA>) e;
 						break;
 					}
+					if (elementIndex > index) {
+						logger.warning("Could not find FlexoDocTable for " + this);
+						return null;
+					}
 				}
-				elementIndex++;
+				if (e instanceof FlexoDocParagraph || e instanceof FlexoDocTable) {
+					elementIndex++;
+				}
 			}
 		}
 		for (int i = 0; i < getElementCount(); i++) {
