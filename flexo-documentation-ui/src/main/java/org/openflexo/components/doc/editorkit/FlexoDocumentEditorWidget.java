@@ -50,6 +50,7 @@ import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 
 import org.openflexo.foundation.doc.FlexoDocument;
+import org.openflexo.foundation.doc.TextSelection;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.gina.controller.FIBController;
 import org.openflexo.gina.model.widget.FIBCustom;
@@ -152,6 +153,10 @@ public class FlexoDocumentEditorWidget<D extends FlexoDocument<D, TA>, TA extend
 	public void delete() {
 		// TODO Auto-generated method stub
 
+	}
+
+	public TextSelection<D, TA> getTextSelection() {
+		return editor.getTextSelection();
 	}
 
 	public static class FlexoDocumentSelectionListener implements CaretListener {

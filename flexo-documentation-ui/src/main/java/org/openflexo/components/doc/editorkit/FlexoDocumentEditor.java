@@ -313,13 +313,11 @@ public class FlexoDocumentEditor<D extends FlexoDocument<D, TA>, TA extends Tech
 	}
 
 	public void highlight(FlexoDocObject<D, TA> docObject) {
-		System.out.println("Ici avec " + docObject);
 		clearHighligths();
 		AbstractDocumentElement<?, D, TA> docElement = getElement(docObject);
-		System.out.println("docElement=" + docElement);
 		if (docElement != null) {
 			try {
-				System.out.println("Highlight de " + docElement.getStartOffset() + " a " + docElement.getEndOffset());
+				// System.out.println("Highlight " + docElement.getStartOffset() + " : " + docElement.getEndOffset());
 				highlighter.addHighlight(docElement.getStartOffset(), docElement.getEndOffset(), highlighterPainter);
 				scrollToElement(docElement);
 			} catch (BadLocationException e) {
@@ -332,10 +330,8 @@ public class FlexoDocumentEditor<D extends FlexoDocument<D, TA>, TA extends Tech
 		}
 	}
 
-	// private List<FlexoDocObject<D, TA>> selection = new ArrayList<>();
-
-	public void highlightObjects(List<FlexoDocObject<D, TA>> objects) {
-		System.out.println("On highlighte " + objects);
+	public void highlightObjects(List<? extends FlexoDocObject<D, TA>> objects) {
+		// System.out.println("Highlighting " + objects);
 		clearHighligths();
 		for (FlexoDocObject<D, TA> o : objects) {
 			AbstractDocumentElement<?, D, TA> docElement = getElement(o);
