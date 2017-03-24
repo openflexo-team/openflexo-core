@@ -55,9 +55,6 @@ public interface FlexoDocParagraph<D extends FlexoDocument<D, TA>, TA extends Te
 	@PropertyIdentifier(type = FlexoDocRun.class, cardinality = Cardinality.LIST)
 	public static final String RUNS_KEY = "runs";
 
-	@PropertyIdentifier(type = FlexoDocStyle.class)
-	public static final String STYLE_KEY = "style";
-
 	/**
 	 * Return the list of runs of this paragraph
 	 * 
@@ -99,12 +96,6 @@ public interface FlexoDocParagraph<D extends FlexoDocument<D, TA>, TA extends Te
 	 */
 	public void moveRunToIndex(FlexoDocRun<D, TA> anElement, int index);
 
-	@Getter(value = STYLE_KEY)
-	public FlexoDocStyle<D, TA> getStyle();
-
-	@Setter(STYLE_KEY)
-	public void setStyle(FlexoDocStyle<D, TA> style);
-
 	/**
 	 * Return a string representation (plain text) of contents of the paragraph (styles associated to runs are not reflected)
 	 * 
@@ -131,12 +122,13 @@ public interface FlexoDocParagraph<D extends FlexoDocument<D, TA>, TA extends Te
 	public List<FlexoDrawingRun<D, TA>> getDrawingRuns();
 
 	public static abstract class FlexoDocParagraphImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
-			extends FlexoDocumentElementImpl<D, TA>implements FlexoDocParagraph<D, TA> {
+			extends FlexoDocumentElementImpl<D, TA> implements FlexoDocParagraph<D, TA> {
 
 		@Override
 		public String toString() {
 			return "Paragraph(" + getIdentifier() + ") " /* + getRawText() + " "*/
-					+ (getStyle() != null ? "[" + getStyle().getName() + "]" : "");
+					+ (getNamedStyle() != null ? "[" + getNamedStyle().getName() + "]" : "")
+					+ (getParagraphStyle() != null ? "[" + getParagraphStyle().getStringRepresentation() + "]" : "");
 		}
 
 		@Override
@@ -144,11 +136,11 @@ public interface FlexoDocParagraph<D extends FlexoDocument<D, TA>, TA extends Te
 			if (getFlexoDocument() == null) {
 				return null;
 			}
-			if (getStyle() == null || !getStyle().isLevelled()) {
+			if (getNamedStyle() == null || !getNamedStyle().isLevelled()) {
 				return Collections.emptyList();
 			}
 
-			Integer parentLevel = getStyle().getLevel();
+			Integer parentLevel = getNamedStyle().getLevel();
 			Integer childLevel = null;
 			int start = getFlexoDocument().getElements().indexOf(this) + 1;
 
@@ -160,8 +152,9 @@ public interface FlexoDocParagraph<D extends FlexoDocument<D, TA>, TA extends Te
 				FlexoDocElement<D, TA> e = getFlexoDocument().getElements().get(i);
 
 				if (e instanceof FlexoDocParagraph) {
-					if (((FlexoDocParagraph<D, TA>) e).getStyle() != null && ((FlexoDocParagraph<D, TA>) e).getStyle().isLevelled()) {
-						if (((FlexoDocParagraph<D, TA>) e).getStyle().getLevel() <= parentLevel) {
+					if (((FlexoDocParagraph<D, TA>) e).getNamedStyle() != null
+							&& ((FlexoDocParagraph<D, TA>) e).getNamedStyle().isLevelled()) {
+						if (((FlexoDocParagraph<D, TA>) e).getNamedStyle().getLevel() <= parentLevel) {
 							return returned;
 						}
 					}
@@ -170,15 +163,16 @@ public interface FlexoDocParagraph<D extends FlexoDocument<D, TA>, TA extends Te
 				if (childLevel == null) {
 					returned.add(e);
 					if (e instanceof FlexoDocParagraph) {
-						if (((FlexoDocParagraph<D, TA>) e).getStyle() != null && ((FlexoDocParagraph<D, TA>) e).getStyle().isLevelled()) {
-							childLevel = ((FlexoDocParagraph<D, TA>) e).getStyle().getLevel();
+						if (((FlexoDocParagraph<D, TA>) e).getNamedStyle() != null
+								&& ((FlexoDocParagraph<D, TA>) e).getNamedStyle().isLevelled()) {
+							childLevel = ((FlexoDocParagraph<D, TA>) e).getNamedStyle().getLevel();
 						}
 					}
 				}
 				else {
 					if (e instanceof FlexoDocParagraph) {
-						if (((FlexoDocParagraph<D, TA>) e).getStyle() != null) {
-							if (((FlexoDocParagraph<D, TA>) e).getStyle().getLevel().equals(childLevel)) {
+						if (((FlexoDocParagraph<D, TA>) e).getNamedStyle() != null) {
+							if (((FlexoDocParagraph<D, TA>) e).getNamedStyle().getLevel().equals(childLevel)) {
 								returned.add(e);
 							}
 						}

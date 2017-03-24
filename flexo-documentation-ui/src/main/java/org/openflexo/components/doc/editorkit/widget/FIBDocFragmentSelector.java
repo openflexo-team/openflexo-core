@@ -1,11 +1,12 @@
 /**
  * 
- * Copyright (c) 2013-2014, Openflexo
- * Copyright (c) 2012-2012, AgileBirds
+ * Copyright (c) 2014-2017, Openflexo
  * 
- * This file is part of Flexo-ui, a component of the software infrastructure 
+ * This file is part of Flexo-Documentation-UI, a component of the software infrastructure 
  * developed at Openflexo.
  * 
+ * Please not that some parts of that component are freely inspired from
+ * Stanislav Lapitsky code (see http://java-sl.com/docx_editor_kit.html)
  * 
  * Openflexo is dual-licensed under the European Union Public License (EUPL, either 
  * version 1.1 of the License, or any later version ), which is available at 
@@ -37,7 +38,7 @@
  * 
  */
 
-package org.openflexo.components.widget;
+package org.openflexo.components.doc.editorkit.widget;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -45,16 +46,28 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.logging.Logger;
 
+import javax.swing.SwingUtilities;
+import javax.swing.event.CaretEvent;
+import javax.swing.text.Element;
+
+import org.openflexo.components.doc.editorkit.FlexoDocumentEditorWidget;
+import org.openflexo.components.doc.editorkit.FlexoStyledDocument;
+import org.openflexo.components.doc.editorkit.element.AbstractDocumentElement;
+import org.openflexo.components.widget.FIBFlexoObjectSelector;
 import org.openflexo.foundation.doc.FlexoDocElement;
 import org.openflexo.foundation.doc.FlexoDocFragment;
 import org.openflexo.foundation.doc.FlexoDocFragment.FragmentConsistencyException;
+import org.openflexo.foundation.doc.FlexoDocObject;
 import org.openflexo.foundation.doc.FlexoDocument;
+import org.openflexo.foundation.task.FlexoTask;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.gina.model.FIBComponent;
 import org.openflexo.gina.model.listener.FIBSelectionListener;
 import org.openflexo.gina.model.widget.FIBCustom;
 import org.openflexo.gina.view.widget.FIBCustomWidget;
+import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.rm.Resource;
+import org.openflexo.rm.ResourceLocator;
 
 /**
  * Widget allowing to select an {@link FlexoDocFragment} inside a {@link FlexoDocument}<br>
@@ -63,9 +76,12 @@ import org.openflexo.rm.Resource;
  * 
  */
 @SuppressWarnings("serial")
-public abstract class FIBDocFragmentSelector<F extends FlexoDocFragment<D, TA>, D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
+public class FIBDocFragmentSelector<F extends FlexoDocFragment<D, TA>, D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
 		extends FIBFlexoObjectSelector<F> {
+
 	static final Logger logger = Logger.getLogger(FIBDocFragmentSelector.class.getPackage().getName());
+
+	public static final Resource FIB_FILE = ResourceLocator.locateResource("Fib/Widget/FIBFragmentSelector.fib");
 
 	private D document;
 
@@ -74,10 +90,14 @@ public abstract class FIBDocFragmentSelector<F extends FlexoDocFragment<D, TA>, 
 	}
 
 	@Override
-	public abstract Resource getFIBResource();
+	public Resource getFIBResource() {
+		return FIB_FILE;
+	}
 
 	@Override
-	public abstract Class<F> getRepresentedType();
+	public Class<F> getRepresentedType() {
+		return (Class) FlexoDocFragment.class;
+	}
 
 	public D getDocument() {
 		return document;
@@ -133,9 +153,101 @@ public abstract class FIBDocFragmentSelector<F extends FlexoDocFragment<D, TA>, 
 		setEditedObject(newFragment);
 	}
 
+	private boolean isSelecting = false;
+
 	@Override
 	protected FragmentSelectorDetailsPanel makeCustomPanel(F editedObject) {
-		return new FragmentSelectorDetailsPanel(editedObject);
+
+		FragmentSelectorDetailsPanel returned = null;
+
+		if (getServiceManager() != null && getServiceManager().getTaskManager() != null) {
+			LoadEditor task = new LoadEditor(editedObject);
+			getServiceManager().getTaskManager().scheduleExecution(task);
+			getServiceManager().getTaskManager().waitTask(task);
+			returned = task.getPanel();
+		}
+		else {
+			returned = new FragmentSelectorDetailsPanel(editedObject);
+		}
+
+		FIBCustomWidget<?, ?, ?> documentEditorWidget = returned.getDocEditorWidget();
+		FlexoDocumentEditorWidget<?, ?> docXEditor = (FlexoDocumentEditorWidget<?, ?>) documentEditorWidget.getCustomComponent();
+		docXEditor.getJEditorPane().addCaretListener(new FlexoDocumentEditorWidget.FlexoDocumentSelectionListener(docXEditor) {
+			@Override
+			public void caretUpdate(CaretEvent evt) {
+
+				if (isSelecting) {
+					return;
+				}
+
+				super.caretUpdate(evt);
+
+				System.out.println("Caret changed with " + evt);
+				int start = Math.min(evt.getDot(), evt.getMark());
+				int end = Math.max(evt.getDot(), evt.getMark());
+				System.out.println("Selection: " + start + ":" + end);
+
+				// Better ???
+				// int startLocation = getEditor().getJEditorPane().getSelectionStart();
+				// int endLocation = getEditor().getJEditorPane().getSelectionEnd();
+
+				// If selection is not empty, reduce the selection to be sure to be in a not implied run
+				if (start > end) {
+					end = end - 1;
+				}
+
+				FlexoStyledDocument<?, ?> styledDocument = docXEditor.getEditor().getStyledDocument();
+
+				Element startCharElement = styledDocument.getCharacterElement(start);
+				Element startParElement = styledDocument.getParagraphElement(start);
+				System.out.println("startCharElement: " + startCharElement);
+				System.out.println("startParElement: " + startParElement);
+
+				Element endCharElement = styledDocument.getCharacterElement(end);
+				Element endParElement = styledDocument.getParagraphElement(end);
+				System.out.println("endCharElement: " + endCharElement);
+				System.out.println("endParElement: " + endParElement);
+
+				FlexoDocElement startElement = null;
+				FlexoDocElement endElement = null;
+
+				if (startParElement instanceof AbstractDocumentElement
+						&& ((AbstractDocumentElement<?, ?, ?>) startParElement).getDocObject() instanceof FlexoDocElement) {
+					startElement = (FlexoDocElement<?, ?>) ((AbstractDocumentElement<?, ?, ?>) startParElement).getDocObject();
+				}
+
+				if (endParElement instanceof AbstractDocumentElement
+						&& ((AbstractDocumentElement<?, ?, ?>) endParElement).getDocObject() instanceof FlexoDocElement) {
+					endElement = (FlexoDocElement<?, ?>) ((AbstractDocumentElement<?, ?, ?>) endParElement).getDocObject();
+				}
+
+				F newFragment = null;
+
+				if (startElement != null && endElement != null) {
+
+					try {
+						newFragment = (F) getDocument().getFragment(startElement, endElement);
+					} catch (FragmentConsistencyException exception) {
+						System.out.println("This fragment is not valid: start=" + startElement + " end=" + endElement);
+						newFragment = null;
+					}
+
+				}
+
+				System.out.println("fragment=" + newFragment);
+
+				isSelecting = true;
+				setEditedObject(newFragment);
+				isSelecting = false;
+
+			}
+		});
+
+		if (editedObject != null) {
+			selectFragmentInDocumentEditor(editedObject, documentEditorWidget);
+		}
+
+		return returned;
 	}
 
 	@Override
@@ -218,7 +330,7 @@ public abstract class FIBDocFragmentSelector<F extends FlexoDocFragment<D, TA>, 
 		}
 
 		// Called whenever the FragmentSelectorDetailsPanel should reflect a fragment selection
-		// The browser must reflect the selection and DocXEditor should highlight selected fragment
+		// The browser must reflect the selection and FlexoDocumentEditorWidget should highlight selected fragment
 		@Override
 		protected void selectValue(F value) {
 
@@ -250,6 +362,60 @@ public abstract class FIBDocFragmentSelector<F extends FlexoDocFragment<D, TA>, 
 
 	protected void selectFragmentInDocumentEditor(F fragment, FIBCustomWidget<?, ?, ?> documentEditorWidget) {
 
+		System.out.println("****************** selectFragmentInDocumentEditor with " + fragment + " and " + documentEditorWidget);
+
+		// System.out.println("customPanel" + getCustomPanel());
+		// System.out.println("docEditorWidget=" + getCustomPanel().getDocEditorWidget());
+
+		final FlexoDocumentEditorWidget docXEditor = (FlexoDocumentEditorWidget) documentEditorWidget.getCustomComponent();
+
+		try {
+
+			if (fragment != null) {
+				docXEditor.getEditor().highlightObjects(fragment.getElements());
+				scrollTo(fragment.getStartElement(), docXEditor);
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		docXEditor.getJEditorPane().revalidate();
+		docXEditor.getJEditorPane().repaint();
+
+	}
+
+	private void scrollTo(FlexoDocObject object, FlexoDocumentEditorWidget docXEditor) {
+		if (!docXEditor.getEditor().scrollTo(object, false)) {
+			SwingUtilities.invokeLater(new Runnable() {
+				@Override
+				public void run() {
+					scrollTo(object, docXEditor);
+				}
+			});
+		}
+	}
+
+	public class LoadEditor extends FlexoTask {
+
+		private final F fragment;
+		private FragmentSelectorDetailsPanel panel;
+
+		public LoadEditor(F fragment) {
+			super(FlexoLocalization.getMainLocalizer().localizedForKey("opening_document_editor"));
+			this.fragment = fragment;
+		}
+
+		@Override
+		public void performTask() throws InterruptedException {
+			setExpectedProgressSteps(10);
+			// panel = makeCustomPanel(fragment);
+			panel = new FragmentSelectorDetailsPanel(fragment);
+		}
+
+		public FragmentSelectorDetailsPanel getPanel() {
+			return panel;
+		}
 	}
 
 	@Override

@@ -20,21 +20,11 @@
 
 package org.openflexo.foundation.doc;
 
-import java.util.List;
-
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
-import org.openflexo.model.annotations.Adder;
-import org.openflexo.model.annotations.CloningStrategy;
-import org.openflexo.model.annotations.CloningStrategy.StrategyType;
-import org.openflexo.model.annotations.Embedded;
 import org.openflexo.model.annotations.Getter;
-import org.openflexo.model.annotations.Getter.Cardinality;
 import org.openflexo.model.annotations.ModelEntity;
-import org.openflexo.model.annotations.PastingPoint;
 import org.openflexo.model.annotations.PropertyIdentifier;
-import org.openflexo.model.annotations.Remover;
 import org.openflexo.model.annotations.Setter;
-import org.openflexo.model.annotations.XMLElement;
 
 /**
  * Generic abstract concept representing a table cell in a table of a text-based document (eg .docx, .odt, etc...)
@@ -52,8 +42,12 @@ public interface FlexoDocTableCell<D extends FlexoDocument<D, TA>, TA extends Te
 
 	@PropertyIdentifier(type = FlexoDocTableRow.class)
 	public static final String ROW_KEY = "row";
-	@PropertyIdentifier(type = FlexoDocParagraph.class, cardinality = Cardinality.LIST)
-	public static final String PARAGRAPHS_KEY = "paragraphs";
+	// @PropertyIdentifier(type = FlexoDocParagraph.class, cardinality = Cardinality.LIST)
+	// public static final String PARAGRAPHS_KEY = "paragraphs";
+	@PropertyIdentifier(type = Integer.class)
+	public static final String COL_SPAN_KEY = "colSpan";
+	@PropertyIdentifier(type = Integer.class)
+	public static final String ROW_SPAN_KEY = "rowSpan";
 
 	@Getter(ROW_KEY)
 	public FlexoDocTableRow<D, TA> getRow();
@@ -66,47 +60,48 @@ public interface FlexoDocTableCell<D extends FlexoDocument<D, TA>, TA extends Te
 	 * 
 	 * @return
 	 */
-	@Getter(value = PARAGRAPHS_KEY, cardinality = Cardinality.LIST, inverse = FlexoDocParagraph.CONTAINER_KEY)
+	/*@Getter(value = PARAGRAPHS_KEY, cardinality = Cardinality.LIST, inverse = FlexoDocParagraph.CONTAINER_KEY)
 	@XMLElement(primary = true)
 	@CloningStrategy(StrategyType.CLONE)
 	@Embedded
-	public List<FlexoDocParagraph<D, TA>> getParagraphs();
+	public List<FlexoDocParagraph<D, TA>> getParagraphs();*/
 
-	@Setter(PARAGRAPHS_KEY)
-	public void setParagraphs(List<FlexoDocParagraph<D, TA>> someParagraphs);
+	// @Setter(PARAGRAPHS_KEY)
+	// public void setParagraphs(List<FlexoDocParagraph<D, TA>> someParagraphs);
 
 	/**
 	 * Add paragraph to this {@link FlexoDocTableCell} (public API).<br>
 	 * Paragraph will be added to underlying technology-specific document model and {@link FlexoDocTableCell} will be updated accordingly
 	 */
-	@Adder(PARAGRAPHS_KEY)
+	/*@Adder(PARAGRAPHS_KEY)
 	@PastingPoint
 	public void addToParagraphs(FlexoDocParagraph<D, TA> anParagraph);
+	*/
 
 	/**
 	 * Remove paragraph from this {@link FlexoDocTableCell} (public API).<br>
 	 * Paragraph will be removed to underlying technology-specific document model and {@link FlexoDocTableCell} will be updated accordingly
 	 */
-	@Remover(PARAGRAPHS_KEY)
-	public void removeFromParagraphs(FlexoDocParagraph<D, TA> anParagraph);
+	// @Remover(PARAGRAPHS_KEY)
+	// public void removeFromParagraphs(FlexoDocParagraph<D, TA> anParagraph);
 
 	/**
 	 * Insert paragraph to this {@link FlexoDocTableCell} at supplied index (public API).<br>
 	 * Paragraph will be inserted to underlying technology-specific document model and {@link FlexoDocTableCell} will be updated accordingly
 	 */
-	public void insertParagraphAtIndex(FlexoDocParagraph<D, TA> anParagraph, int index);
+	// public void insertParagraphAtIndex(FlexoDocParagraph<D, TA> anParagraph, int index);
 
 	/**
 	 * Moved paragraph to this {@link FlexoDocTableCell} at supplied index (public API).<br>
 	 * Paragraph will be moved inside underlying technology-specific document model and {@link FlexoDocTableCell} will be updated
 	 * accordingly
 	 */
-	public void moveParagraphToIndex(FlexoDocParagraph<D, TA> anParagraph, int index);
+	// public void moveParagraphToIndex(FlexoDocParagraph<D, TA> anParagraph, int index);
 
 	/**
 	 * Return paragraph identified by identifier, or null if no such paragraph exists
 	 */
-	public FlexoDocParagraph<D, TA> getParagraphWithIdentifier(String identifier);
+	// public FlexoDocParagraph<D, TA> getParagraphWithIdentifier(String identifier);
 
 	/**
 	 * Return index of the cell<br>
@@ -122,6 +117,18 @@ public interface FlexoDocTableCell<D extends FlexoDocument<D, TA>, TA extends Te
 	 * @return
 	 */
 	public String getIdentifier();
+
+	@Getter(value = COL_SPAN_KEY, defaultValue = "1")
+	public int getColSpan();
+
+	@Setter(COL_SPAN_KEY)
+	public void setColSpan(int colSpan);
+
+	@Getter(value = ROW_SPAN_KEY, defaultValue = "1")
+	public int getRowSpan();
+
+	@Setter(ROW_SPAN_KEY)
+	public void setRowSpan(int rowSpan);
 
 	/**
 	 * Return a string representation (plain text) of contents of the cell

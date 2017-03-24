@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Panel layout="border" darkLevel="0"
+	dataClassName="org.openflexo.components.doc.editorkit.widget.FIBDocFragmentSelector"
+	controllerClassName="org.openflexo.components.doc.editorkit.widget.FIBDocFragmentSelector$FragmentSelectorFIBController"
+	opaque="false" width="270" height="300">
+	<Browser root="data.document"
+		iteratorClassName="org.openflexo.foundation.doc.FlexoDocObject"
+		visibleRowCount="5" rowHeight="18" boundToSelectionManager="true"
+		selectionMode="ContiguousTreeSelection" showFooter="true"
+		rootVisible="true" showRootsHandle="true" localize="true"
+		manageDynamicModel="true" clickAction="controller.singleClick(DocumentBrowser.selected)"
+		doubleClickAction="controller.doubleClick(DocumentBrowser.selected)"
+		rightClickAction="controller.rightClick(DocumentBrowser.selected,event)"
+		name="DocumentBrowser" index="0" constraints="border(location=west)"
+		selection="data.selectedDocumentElements" deepExploration="true">
+		<BrowserElement
+			dataClassName="org.openflexo.foundation.doc.FlexoDocument"
+			label="document.name" icon="controller.iconForObject(document)"
+			isEditable="false" 
+			filtered="false" defaultVisible="true" name="document">
+			<Children data="document.rootElements" name="rootElements" />
+		</BrowserElement>
+		<BrowserElement
+			dataClassName="org.openflexo.foundation.doc.FlexoDocParagraph"
+			label="paragraph.rawTextPreview" icon="controller.iconForObject(paragraph)"
+			isEditable="false" 
+			filtered="false" defaultVisible="true" name="paragraph">
+			<Children data="paragraph.runs" name="runs" />
+			<Children data="paragraph.childrenElements" name="childrenElements" />
+		</BrowserElement>
+		<BrowserElement dataClassName="org.openflexo.foundation.doc.FlexoDocTable"
+			label="'TABLE'" icon="controller.iconForObject(table)"
+			isEditable="false" filtered="false"
+			defaultVisible="true" name="table">
+		</BrowserElement>
+	</Browser>
+	<Custom componentClassName="org.openflexo.components.doc.editorkit.FlexoDocumentEditorWidget"
+		dataClassForComponent="org.openflexo.foundation.doc.FlexoDocument"
+		localize="true" manageDynamicModel="true" name="DocXEditor" index="13"
+		data="data.document"
+		constraints="border(location=center)">
+	</Custom>
+
+
+	<Panel layout="flow" hGap="5" vGap="0" flowAlignment="CENTER"
+		borderTitle="Panel" darkLevel="0" index="3" constraints="border(location=south)"
+		opaque="false">
+		<Button action="controller.apply()" buttonType="Trigger" label="apply"
+			localize="true" enable="(data.selectedValue != null)" index="0"
+			constraints="flow(index=0)" />
+		<Button action="controller.cancel()" buttonType="Trigger"
+			label="cancel" localize="true" index="1" constraints="flow(index=1)" />
+		<Button action="controller.reset()" buttonType="Trigger" label="reset"
+			localize="true" index="2" constraints="flow(index=2)" />
+	</Panel>
+	<LocalizedDictionary />
+</Panel>

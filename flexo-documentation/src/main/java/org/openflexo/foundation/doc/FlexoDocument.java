@@ -50,8 +50,8 @@ import org.openflexo.model.annotations.XMLElement;
 /**
  * Generic abstract concept representing a text-based document (eg .docx, .odt, etc...)<br>
  * 
- * Such a document is not structured, as it contains only a list of {@link FlexoDocElement}, but a structuration can be dynamically
- * infered from the styles. See {@link #getStructuringStyles()}
+ * Such a document is not structured, as it contains only a list of {@link FlexoDocElement}, but a structuration can be dynamically infered
+ * from the styles. See {@link #getStructuringStyles()}
  * 
  * @author sylvain
  *
@@ -62,18 +62,15 @@ import org.openflexo.model.annotations.XMLElement;
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(FlexoDocument.FlexoDocumentImpl.class)
-public interface FlexoDocument<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends FlexoDocObject<D, TA>,
-		ResourceData<D>, FlexoDocElementContainer<D, TA> {
-
-	@PropertyIdentifier(type = FlexoDocElement.class, cardinality = Cardinality.LIST)
-	public static final String ELEMENTS_KEY = "elements";
+public interface FlexoDocument<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
+		extends FlexoDocObject<D, TA>, ResourceData<D>, FlexoDocElementContainer<D, TA> {
 
 	public static final String ROOT_ELEMENTS_KEY = "rootElements";
 
-	@PropertyIdentifier(type = FlexoDocStyle.class, cardinality = Cardinality.LIST)
+	@PropertyIdentifier(type = NamedDocStyle.class, cardinality = Cardinality.LIST)
 	public static final String STYLES_KEY = "styles";
 
-	@PropertyIdentifier(type = FlexoDocStyle.class, cardinality = Cardinality.LIST)
+	@PropertyIdentifier(type = NamedDocStyle.class, cardinality = Cardinality.LIST)
 	public static final String STRUCTURING_STYLES_KEY = "structuringStyles";
 
 	@PropertyIdentifier(type = String.class)
@@ -87,48 +84,6 @@ public interface FlexoDocument<D extends FlexoDocument<D, TA>, TA extends Techno
 	public void setName(String name);
 
 	public String getURI();
-
-	/**
-	 * Return the list of top-level elements of this document (elements like paragraphs or tables, sequentially composing the document)
-	 * 
-	 * @return
-	 */
-	@Override
-	@Getter(value = ELEMENTS_KEY, cardinality = Cardinality.LIST, inverse = FlexoDocElement.CONTAINER_KEY)
-	@XMLElement(primary = true)
-	@CloningStrategy(StrategyType.CLONE)
-	@Embedded
-	public List<FlexoDocElement<D, TA>> getElements();
-
-	@Setter(ELEMENTS_KEY)
-	public void setElements(List<FlexoDocElement<D, TA>> someElements);
-
-	/**
-	 * Add element to this {@link FlexoDocument} (public API).<br>
-	 * Element will be added to underlying technology-specific document model and {@link FlexoDocument} will be updated accordingly
-	 */
-	@Adder(ELEMENTS_KEY)
-	@PastingPoint
-	public void addToElements(FlexoDocElement<D, TA> anElement);
-
-	/**
-	 * Remove element from this {@link FlexoDocument} (public API).<br>
-	 * Element will be removed to underlying technology-specific document model and {@link FlexoDocument} will be updated accordingly
-	 */
-	@Remover(ELEMENTS_KEY)
-	public void removeFromElements(FlexoDocElement<D, TA> anElement);
-
-	/**
-	 * Insert element to this {@link FlexoDocument} at supplied index (public API).<br>
-	 * Element will be inserted to underlying technology-specific document model and {@link FlexoDocument} will be updated accordingly
-	 */
-	public void insertElementAtIndex(FlexoDocElement<D, TA> anElement, int index);
-
-	/**
-	 * Moved element to this {@link FlexoDocument} at supplied index (public API).<br>
-	 * Element will be moved inside underlying technology-specific document model and {@link FlexoDocument} will be updated accordingly
-	 */
-	public void moveElementToIndex(FlexoDocElement<D, TA> anElement, int index);
 
 	/**
 	 * Return element identified by identifier, or null if no such element exists
@@ -166,21 +121,21 @@ public interface FlexoDocument<D extends FlexoDocument<D, TA>, TA extends Techno
 	 * 
 	 * @return
 	 */
-	@Getter(value = STYLES_KEY, cardinality = Cardinality.LIST, inverse = FlexoDocStyle.DOCUMENT_KEY)
+	@Getter(value = STYLES_KEY, cardinality = Cardinality.LIST, inverse = NamedDocStyle.DOCUMENT_KEY)
 	@XMLElement(primary = true)
 	@CloningStrategy(StrategyType.CLONE)
 	@Embedded
-	public List<FlexoDocStyle<D, TA>> getStyles();
+	public List<NamedDocStyle<D, TA>> getStyles();
 
 	@Setter(STYLES_KEY)
-	public void setStyles(List<FlexoDocStyle<D, TA>> someStyles);
+	public void setStyles(List<NamedDocStyle<D, TA>> someStyles);
 
 	@Adder(STYLES_KEY)
 	@PastingPoint
-	public void addToStyles(FlexoDocStyle<D, TA> aStyle);
+	public void addToStyles(NamedDocStyle<D, TA> aStyle);
 
 	@Remover(STYLES_KEY)
-	public void removeFromStyles(FlexoDocStyle<D, TA> aStyle);
+	public void removeFromStyles(NamedDocStyle<D, TA> aStyle);
 
 	/**
 	 * Return an ordered list of styles to be used to present a structured document<br>
@@ -188,22 +143,22 @@ public interface FlexoDocument<D extends FlexoDocument<D, TA>, TA extends Techno
 	 * @return
 	 */
 	@Getter(value = STRUCTURING_STYLES_KEY, cardinality = Cardinality.LIST)
-	public List<FlexoDocStyle<D, TA>> getStructuringStyles();
+	public List<NamedDocStyle<D, TA>> getStructuringStyles();
 
 	@Setter(STRUCTURING_STYLES_KEY)
-	public void setStructuringStyles(List<FlexoDocStyle<D, TA>> someStyles);
+	public void setStructuringStyles(List<NamedDocStyle<D, TA>> someStyles);
 
 	@Adder(STRUCTURING_STYLES_KEY)
-	public void addToStructuringStyles(FlexoDocStyle<D, TA> aStyle);
+	public void addToStructuringStyles(NamedDocStyle<D, TA> aStyle);
 
 	@Remover(STRUCTURING_STYLES_KEY)
-	public void removeFromStructuringStyles(FlexoDocStyle<D, TA> aStyle);
+	public void removeFromStructuringStyles(NamedDocStyle<D, TA> aStyle);
 
-	@Finder(collection = STYLES_KEY, attribute = FlexoDocStyle.NAME_KEY)
-	public FlexoDocStyle<D, TA> getStyleByName(String styleName);
+	@Finder(collection = STYLES_KEY, attribute = NamedDocStyle.NAME_KEY)
+	public NamedDocStyle<D, TA> getStyleByName(String styleName);
 
-	@Finder(collection = STYLES_KEY, attribute = FlexoDocStyle.STYLE_ID_KEY)
-	public FlexoDocStyle<D, TA> getStyleByIdentifier(String styleId);
+	@Finder(collection = STYLES_KEY, attribute = NamedDocStyle.STYLE_ID_KEY)
+	public NamedDocStyle<D, TA> getStyleByIdentifier(String styleId);
 
 	/**
 	 * Activate style identified by styleId
@@ -211,7 +166,7 @@ public interface FlexoDocument<D extends FlexoDocument<D, TA>, TA extends Techno
 	 * @param styleId
 	 * @return
 	 */
-	public FlexoDocStyle<D, TA> activateStyle(String styleId);
+	public NamedDocStyle<D, TA> activateStyle(String styleId);
 
 	/**
 	 * Return a collection of all identifiers of styles that can be activated for this document
@@ -227,7 +182,7 @@ public interface FlexoDocument<D extends FlexoDocument<D, TA>, TA extends Techno
 	 * @param text
 	 * @return
 	 */
-	public FlexoDocParagraph<D, TA> addStyledParagraphOfText(FlexoDocStyle<D, TA> style, String text);
+	public FlexoDocParagraph<D, TA> addStyledParagraphOfText(NamedDocStyle<D, TA> style, String text);
 
 	/**
 	 * Insert a specified index in the document a paragraph with a single run containing supplied text. The paragraph is set to supplied
@@ -238,7 +193,7 @@ public interface FlexoDocument<D extends FlexoDocument<D, TA>, TA extends Techno
 	 * @param index
 	 * @return
 	 */
-	public FlexoDocParagraph<D, TA> insertStyledParagraphOfTextAtIndex(FlexoDocStyle<D, TA> style, String text, int index);
+	public FlexoDocParagraph<D, TA> insertStyledParagraphOfTextAtIndex(NamedDocStyle<D, TA> style, String text, int index);
 
 	/**
 	 * Add at the end of the document a table presets with supplied number of rows and columns, with empty paragraphs inside each cell
@@ -284,8 +239,8 @@ public interface FlexoDocument<D extends FlexoDocument<D, TA>, TA extends Techno
 
 	public String debugStructuredContents();
 
-	public static abstract class FlexoDocumentImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends
-			FlexoDocObjectImpl<D, TA> implements FlexoDocument<D, TA> {
+	public static abstract class FlexoDocumentImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
+			extends FlexoDocObjectImpl<D, TA> implements FlexoDocument<D, TA> {
 
 		@Override
 		public <E> List<E> getElements(Class<E> elementType) {
@@ -341,7 +296,8 @@ public interface FlexoDocument<D extends FlexoDocument<D, TA>, TA extends Techno
 					} catch (CannotRenameException e) {
 						e.printStackTrace();
 					}
-				} else {
+				}
+				else {
 					performSuperSetter(NAME_KEY, name);
 				}
 			}
@@ -389,14 +345,16 @@ public interface FlexoDocument<D extends FlexoDocument<D, TA>, TA extends Techno
 				if (l == null) {
 					returned.add(e);
 					if (e instanceof FlexoDocParagraph) {
-						if (((FlexoDocParagraph<D, TA>) e).getStyle() != null && ((FlexoDocParagraph<D, TA>) e).getStyle().isLevelled()) {
-							l = ((FlexoDocParagraph<D, TA>) e).getStyle().getLevel();
+						if (((FlexoDocParagraph<D, TA>) e).getNamedStyle() != null
+								&& ((FlexoDocParagraph<D, TA>) e).getNamedStyle().isLevelled()) {
+							l = ((FlexoDocParagraph<D, TA>) e).getNamedStyle().getLevel();
 						}
 					}
-				} else {
+				}
+				else {
 					if (e instanceof FlexoDocParagraph) {
-						if (((FlexoDocParagraph<D, TA>) e).getStyle() != null) {
-							if (((FlexoDocParagraph<D, TA>) e).getStyle().getLevel().equals(l)) {
+						if (((FlexoDocParagraph<D, TA>) e).getNamedStyle() != null) {
+							if (((FlexoDocParagraph<D, TA>) e).getNamedStyle().getLevel().equals(l)) {
 								returned.add(e);
 							}
 						}
