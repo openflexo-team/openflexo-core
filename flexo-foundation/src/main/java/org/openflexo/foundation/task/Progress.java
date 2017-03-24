@@ -76,6 +76,7 @@ public class Progress {
 	}
 
 	public static void hideTaskBar() {
+		System.out.println("hideTaskBar called for thead " + Thread.currentThread());
 		Thread currentThread = Thread.currentThread();
 		if (currentThread instanceof FlexoTaskThread) {
 			((FlexoTaskThread) currentThread).getTask().hideTaskBar();
@@ -86,6 +87,22 @@ public class Progress {
 		Thread currentThread = Thread.currentThread();
 		if (currentThread instanceof FlexoTaskThread) {
 			((FlexoTaskThread) currentThread).getTask().showTaskBar();
+		}
+	}
+
+	public static void forceHideTaskBar() {
+		// System.out.println("forceHideTaskBar called for thead " + Thread.currentThread());
+		Thread currentThread = Thread.currentThread();
+		if (currentThread instanceof FlexoTaskThread) {
+			((FlexoTaskThread) currentThread).getTask().forceHideTaskBar();
+		}
+	}
+
+	public static void stopForceHideTaskBar() {
+		// System.out.println("stopForceHideTaskBar called for thead " + Thread.currentThread());
+		Thread currentThread = Thread.currentThread();
+		if (currentThread instanceof FlexoTaskThread) {
+			((FlexoTaskThread) currentThread).getTask().stopForceHideTaskBar();
 		}
 	}
 

@@ -38,13 +38,13 @@
 
 package org.openflexo.foundation.task;
 
-import org.openflexo.localization.FlexoLocalization;
-import org.openflexo.toolbox.HasPropertyChangeSupport;
-
 import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
+
+import org.openflexo.localization.FlexoLocalization;
+import org.openflexo.toolbox.HasPropertyChangeSupport;
 
 /**
  * Represents a long-running task launch-able in OpenFlexo infrastructure<br>
@@ -74,6 +74,7 @@ public abstract class FlexoTask implements Runnable, HasPropertyChangeSupport {
 	public static final String CURRENT_STEP_NAME_PROPERTY = "currentStepName";
 	public static final String TASK_BAR_SHOW = "showTaskBar";
 	public static final String TASK_BAR_HIDE = "hideTaskBar";
+	public static final String TASK_BAR_FORCE_HIDE = "forceHideTaskBar";
 
 	private final String taskTitle;
 	private TaskStatus status;
@@ -292,6 +293,14 @@ public abstract class FlexoTask implements Runnable, HasPropertyChangeSupport {
 
 	public void showTaskBar() {
 		getPropertyChangeSupport().firePropertyChange(TASK_BAR_SHOW, false, true);
+	}
+
+	public void forceHideTaskBar() {
+		getPropertyChangeSupport().firePropertyChange(TASK_BAR_FORCE_HIDE, false, true);
+	}
+
+	public void stopForceHideTaskBar() {
+		getPropertyChangeSupport().firePropertyChange(TASK_BAR_FORCE_HIDE, true, false);
 	}
 
 	public void addToDependantTasks(FlexoTask task) {
