@@ -41,8 +41,8 @@ package org.openflexo.foundation.resource;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import org.openflexo.foundation.DefaultFlexoObject;
 import org.openflexo.toolbox.StringUtils;
 
@@ -84,7 +84,12 @@ public class RepositoryFolder<R extends FlexoResource<?>, I> extends DefaultFlex
 		children = new ArrayList<RepositoryFolder<R, I>>();
 		resources = new ArrayList<R>();
 		if (parentFolder != null) {
-			parentFolder.addToChildren(this);
+			// FIXME: Adding try catch here to avoid failure in case of concurrent modifications
+			try {
+				parentFolder.addToChildren(this);
+			} catch (Throwable e) {
+				logger.log(Level.SEVERE, "Can't add " + this.getName() + " to " + parentFolder.getName(), e);
+			}
 		}
 	}
 
