@@ -10,7 +10,7 @@
 			horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED"
 			verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED" name="BasicTab">
 
-			<Label name="ModelSlotLabel">
+			<!--  <Label name="ModelSlotLabel">
 				<Parameter name="hidden" value="true" />
 			</Label>
 			<DropDown name="ModelSlotDD">
@@ -18,7 +18,7 @@
 			</DropDown>
 			<TextField name="ModelSlotTextField">
 				<Parameter name="hidden" value="true" />
-			</TextField>
+			</TextField>-->
 
 			<Label label="view" align="right" index="6" data=""
 				constraints="twocols(expandHorizontally=true;expandVertically=false;index=6;insetsBottom=0;insetsLeft=2;insetsRight=4;insetsTop=5;location=left)"
