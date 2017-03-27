@@ -5,7 +5,7 @@
 	vGap="5" borderRight="0" hGap="5"
 	controllerClassName="org.openflexo.components.doc.editorkit.FlexoDocumentToolbar$ToolbarFIBController">
 	<DropDown id="1" autoSelectFirstRow="true" showText="true"
-		iteratorClassName="org.openflexo.foundation.doc.NamedDocStyle" list="data.editor.flexoDocument.styles"
+		iteratorClassName="org.openflexo.foundation.doc.NamedDocStyle" list="data.flexoDocument.styles"
 		showIcon="false" format="object.name" constraints="flow()" name="dropdown" />
 	<Font id="2" allowsNullText="define_color" sampleText="sample_for_this_font"
 		constraints="flow()" name="FontSelector" />
@@ -20,7 +20,7 @@
 	<Button id="6" buttonType="Toggle" action="controller.toogleUnderline()"
 		label="U" constraints="flow()" width="20" height="20" name="Button" />
 	<FIBVariable id="7"
-		type="org.openflexo.components.doc.editorkit.FlexoDocumentEditorWidget"
+		type="org.openflexo.components.doc.editorkit.FlexoDocumentEditor"
 		name="data" />
 	<LocalizedDictionary id="8" />
 </Panel>

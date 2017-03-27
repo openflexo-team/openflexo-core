@@ -69,6 +69,7 @@ import org.openflexo.foundation.doc.FlexoRunStyle;
 import org.openflexo.foundation.doc.FlexoTextRun;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
+import org.openflexo.toolbox.StringUtils;
 
 /**
  * A factory used to build {@link FlexoStyledDocument} from a given {@link FlexoDocument}
@@ -370,15 +371,18 @@ public class FlexoDocumentEditorFactory<D extends FlexoDocument<D, TA>, TA exten
 	protected void processText(String text) throws BadLocationException {
 		// System.out.println("Et hop, du texte: " + text);
 
-		if (numberNextParagraph) {
-			// System.out.println("Tiens faudrait numeroter " + text);
-			// System.out.println("numId:" + numId + " ilvl:" + ilvl);
-			text = numberingString + " " + text;
-			numberNextParagraph = false;
-		}
+		if (StringUtils.isNotEmpty(text)) {
 
-		document.insertString(currentOffset, text, charAttrs);
-		currentOffset += text.length();
+			if (numberNextParagraph) {
+				// System.out.println("Tiens faudrait numeroter " + text);
+				// System.out.println("numId:" + numId + " ilvl:" + ilvl);
+				text = numberingString + " " + text;
+				numberNextParagraph = false;
+			}
+
+			document.insertString(currentOffset, text, charAttrs);
+			currentOffset += text.length();
+		}
 
 	}
 
