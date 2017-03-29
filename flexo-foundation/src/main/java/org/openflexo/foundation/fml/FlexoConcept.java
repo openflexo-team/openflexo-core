@@ -43,6 +43,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.StringTokenizer;
 import java.util.Vector;
 import java.util.logging.Logger;
 
@@ -114,6 +115,8 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 	public static final String FLEXO_PROPERTIES_KEY = "flexoProperties";
 	@PropertyIdentifier(type = FlexoConceptInspector.class)
 	public static final String INSPECTOR_KEY = "inspector";
+	@PropertyIdentifier(type = String.class)
+	public static final String PARENT_FLEXO_CONCEPTS_LIST_KEY = "parentFlexoConceptsList";
 	@PropertyIdentifier(type = List.class)
 	public static final String PARENT_FLEXO_CONCEPTS_KEY = "parentFlexoConcepts";
 	@PropertyIdentifier(type = List.class)
@@ -339,8 +342,16 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 	@Setter(INSPECTOR_KEY)
 	public void setInspector(FlexoConceptInspector inspector);
 
+	// Used for serialization, do not use as API
+	@Getter(PARENT_FLEXO_CONCEPTS_LIST_KEY)
+	@XMLAttribute
+	public String _getParentFlexoConceptsList();
+
+	// Used for serialization, do not use as API
+	@Setter(PARENT_FLEXO_CONCEPTS_LIST_KEY)
+	public void _setParentFlexoConceptsList(String conceptsList);
+
 	@Getter(value = PARENT_FLEXO_CONCEPTS_KEY, cardinality = Cardinality.LIST, inverse = CHILD_FLEXO_CONCEPTS_KEY)
-	@XMLElement(context = "Parent")
 	public List<FlexoConcept> getParentFlexoConcepts();
 
 	@Setter(PARENT_FLEXO_CONCEPTS_KEY)
@@ -352,7 +363,7 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 	@Remover(PARENT_FLEXO_CONCEPTS_KEY)
 	public void removeFromParentFlexoConcepts(FlexoConcept parentFlexoConcept);
 
-	@Getter(value = CHILD_FLEXO_CONCEPTS_KEY, cardinality = Cardinality.LIST, inverse = PARENT_FLEXO_CONCEPTS_KEY)
+	@Getter(value = CHILD_FLEXO_CONCEPTS_KEY, cardinality = Cardinality.LIST/*, inverse = PARENT_FLEXO_CONCEPTS_KEY*/)
 	// @XMLElement(context = "Child")
 	public List<FlexoConcept> getChildFlexoConcepts();
 
@@ -488,6 +499,8 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 		private final FlexoConceptInstanceType instanceType = new FlexoConceptInstanceType(this);
 
 		private FlexoConceptBindingModel bindingModel;
+
+		private String parentFlexoConceptList;
 
 		@Override
 		public AbstractVirtualModel<?> getVirtualModel() {
@@ -1208,6 +1221,7 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 			for (FlexoProperty<?> pr : getDeclaredProperties()) {
 				pr.finalizeDeserialization();
 			}
+			decodeParentFlexoConceptList();
 		}
 
 		public void debug() {
@@ -1272,15 +1286,96 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 			}
 		}
 
+		// Used for serialization, do not use as API
+		@Override
+		public String _getParentFlexoConceptsList() {
+			if (parentFlexoConceptList == null && getParentFlexoConcepts().size() > 0) {
+				parentFlexoConceptList = computeParentFlexoConceptList();
+			}
+			return parentFlexoConceptList;
+		}
+
+		// Used for serialization, do not use as API
+		@Override
+		public void _setParentFlexoConceptsList(String parentFlexoConceptList) {
+			this.parentFlexoConceptList = parentFlexoConceptList;
+		}
+
+		private String computeParentFlexoConceptList() {
+
+			StringBuffer sb = new StringBuffer();
+			boolean isFirst = true;
+			for (FlexoConcept parent : getParentFlexoConcepts()) {
+				sb.append((isFirst ? "" : ",") + parent.getURI());
+				isFirst = false;
+			}
+			return sb.toString();
+		}
+
+		private boolean isDecodingParentFlexoConceptList = false;
+
+		private void decodeParentFlexoConceptList() {
+			if (parentFlexoConceptList != null && getViewPointLibrary() != null && !isDecodingParentFlexoConceptList) {
+				isDecodingParentFlexoConceptList = true;
+				StringTokenizer st = new StringTokenizer(parentFlexoConceptList, ",");
+				List<FlexoConcept> parentConcepts = new ArrayList<>();
+				boolean someConceptsWereNotDecoded = false;
+				while (st.hasMoreTokens()) {
+					String conceptURI = st.nextToken();
+					FlexoConcept concept = getViewPointLibrary().getFlexoConcept(conceptURI, false);
+					if (concept != null) {
+						parentConcepts.add(concept);
+					}
+					else {
+						someConceptsWereNotDecoded = true;
+					}
+				}
+				if (!someConceptsWereNotDecoded) {
+					// OK, all concepts were decoded, fill in parent concepts
+					parentFlexoConcepts.clear();
+					for (FlexoConcept parent : parentConcepts) {
+						try {
+							addToParentFlexoConcepts(parent);
+						} catch (InconsistentFlexoConceptHierarchyException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+					parentFlexoConceptList = null;
+				}
+				else {
+					// Some concepts are not decoded yet, we don't do anything
+				}
+				isDecodingParentFlexoConceptList = false;
+			}
+		}
+
+		private List<FlexoConcept> parentFlexoConcepts = new ArrayList<>();
+
+		@Override
+		public List<FlexoConcept> getParentFlexoConcepts() {
+			if (parentFlexoConceptList != null && getViewPointLibrary() != null) {
+				decodeParentFlexoConceptList();
+			}
+			return parentFlexoConcepts;
+		}
+
 		@Override
 		public void setParentFlexoConcepts(List<FlexoConcept> parentFlexoConcepts) throws InconsistentFlexoConceptHierarchyException {
-			performSuperSetter(PARENT_FLEXO_CONCEPTS_KEY, parentFlexoConcepts);
+			this.parentFlexoConcepts.clear();
+			if (parentFlexoConcepts != null) {
+				this.parentFlexoConcepts.addAll(parentFlexoConcepts);
+				getPropertyChangeSupport().firePropertyChange("parentFlexoConcepts", null, parentFlexoConcepts);
+			}
 		}
 
 		@Override
 		public void addToParentFlexoConcepts(FlexoConcept parentFlexoConcept) throws InconsistentFlexoConceptHierarchyException {
 			if (!isSuperConceptOf(parentFlexoConcept)) {
-				performSuperAdder(PARENT_FLEXO_CONCEPTS_KEY, parentFlexoConcept);
+				parentFlexoConcepts.add(parentFlexoConcept);
+				parentFlexoConcept.addToChildFlexoConcepts(this);
+				getPropertyChangeSupport().firePropertyChange("parentFlexoConcepts", null, parentFlexoConcept);
+				parentFlexoConceptList = null;
 				if (getOwningVirtualModel() != null) {
 					getOwningVirtualModel().getInnerConceptsFacet().notifiedConceptsChanged();
 					getOwningVirtualModel().getPropertyChangeSupport().firePropertyChange("allSuperFlexoConcepts", null,
@@ -1295,7 +1390,10 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 
 		@Override
 		public void removeFromParentFlexoConcepts(FlexoConcept parentFlexoConcept) {
-			performSuperRemover(PARENT_FLEXO_CONCEPTS_KEY, parentFlexoConcept);
+			parentFlexoConcepts.remove(parentFlexoConcept);
+			parentFlexoConcept.removeFromChildFlexoConcepts(this);
+			getPropertyChangeSupport().firePropertyChange("parentFlexoConcepts", parentFlexoConcept, null);
+			parentFlexoConceptList = null;
 			if (getOwningVirtualModel() != null) {
 				getOwningVirtualModel().getInnerConceptsFacet().notifiedConceptsChanged();
 				getOwningVirtualModel().getPropertyChangeSupport().firePropertyChange("allSuperFlexoConcepts", null,

@@ -1,24 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<VirtualModel id="0" useSpecificDescriptions="false" userID="FLX" flexoID="4" name="TestVirtualModel">
-  <Inspector id="1" flexoID="2" userID="FLX" useSpecificDescriptions="false" inspectorTitle="TestVirtualModel" />
-  <FlexoConcept id="3" useSpecificDescriptions="false" userID="FLX" flexoID="6" name="FlexoConceptA">
-    <Inspector id="4" flexoID="5" userID="FLX" useSpecificDescriptions="false" inspectorTitle="FlexoConceptA" />
+<VirtualModel id="0" modelVersion="1.0" version="0.1" name="TestVirtualModel" userID="FLX" flexoID="4">
+  <FlexoConcept id="1" name="FlexoConceptA" userID="FLX" flexoID="6">
+    <Inspector id="2" inspectorTitle="FlexoConceptA" userID="FLX" flexoID="5" />
   </FlexoConcept>
-  <FlexoConcept id="5" useSpecificDescriptions="false" userID="FLX" flexoID="8" name="FlexoConceptB">
-    <Inspector id="6" flexoID="7" userID="FLX" useSpecificDescriptions="false" inspectorTitle="FlexoConceptB" />
+  <FlexoConcept id="3" name="FlexoConceptB" userID="FLX" flexoID="8">
+    <Inspector id="4" inspectorTitle="FlexoConceptB" userID="FLX" flexoID="7" />
   </FlexoConcept>
-  <FlexoConcept id="7" useSpecificDescriptions="false" userID="FLX" flexoID="10" name="FlexoConceptC">
-    <Inspector id="8" flexoID="9" userID="FLX" useSpecificDescriptions="false" inspectorTitle="FlexoConceptC" />
-    <ParentFlexoConcept idref="5" />
+  <FlexoConcept id="5" parentFlexoConceptsList="http://openflexo.org/test/TestViewPointA/TestVirtualModel#FlexoConceptB" name="FlexoConceptC" userID="FLX" flexoID="10">
+    <Inspector id="6" inspectorTitle="FlexoConceptC" userID="FLX" flexoID="9" />
   </FlexoConcept>
-  <FlexoConcept id="9" useSpecificDescriptions="false" userID="FLX" flexoID="12" name="FlexoConceptD">
-    <Inspector id="10" flexoID="11" userID="FLX" useSpecificDescriptions="false" inspectorTitle="FlexoConceptD" />
-    <ParentFlexoConcept idref="5" />
+  <FlexoConcept id="7" parentFlexoConceptsList="http://openflexo.org/test/TestViewPointA/TestVirtualModel#FlexoConceptB" name="FlexoConceptD" userID="FLX" flexoID="12">
+    <Inspector id="8" inspectorTitle="FlexoConceptD" userID="FLX" flexoID="11" />
   </FlexoConcept>
-  <FlexoConcept id="11" useSpecificDescriptions="false" userID="FLX" flexoID="14" name="FlexoConceptE">
-    <Inspector id="12" flexoID="13" userID="FLX" useSpecificDescriptions="false" inspectorTitle="FlexoConceptE" />
-    <ParentFlexoConcept idref="3" />
-    <ParentFlexoConcept idref="5" />
-    <ParentFlexoConcept idref="7" />
+  <FlexoConcept id="9" parentFlexoConceptsList="http://openflexo.org/test/TestViewPointA/TestVirtualModel#FlexoConceptA,http://openflexo.org/test/TestViewPointA/TestVirtualModel#FlexoConceptB,http://openflexo.org/test/TestViewPointA/TestVirtualModel#FlexoConceptC" name="FlexoConceptE" userID="FLX" flexoID="14">
+    <Inspector id="10" inspectorTitle="FlexoConceptE" userID="FLX" flexoID="13" />
   </FlexoConcept>
+  <Inspector id="11" inspectorTitle="TestVirtualModel" userID="FLX" flexoID="2" />
 </VirtualModel>
