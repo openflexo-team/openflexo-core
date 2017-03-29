@@ -142,7 +142,7 @@ public class FlexoBehaviourPathElement extends FunctionPathElement {
 
 				// FlexoBehaviourAction action = (FlexoBehaviourAction) context;
 				FlexoConceptInstance fci = (FlexoConceptInstance) target;
-				ActionSchemeActionType actionType = ((AbstractActionScheme) getFlexoBehaviour()).getActionType(fci);
+				ActionSchemeActionType actionType = ((AbstractActionScheme) getFlexoBehaviour()).getActionFactory(fci);
 				ActionSchemeAction actionSchemeAction = null;
 
 				if (context instanceof FlexoBehaviourAction) {

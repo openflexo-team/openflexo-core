@@ -67,7 +67,7 @@ public abstract interface AbstractActionScheme extends FlexoBehaviour {
 
 	public boolean evaluateCondition(FlexoConceptInstance flexoConceptInstance);
 
-	ActionSchemeActionType getActionType(FlexoConceptInstance fci);
+	ActionSchemeActionType getActionFactory(FlexoConceptInstance fci);
 
 	public static abstract class AbstractActionSchemeImpl extends FlexoBehaviourImpl implements AbstractActionScheme {
 
@@ -115,7 +115,7 @@ public abstract interface AbstractActionScheme extends FlexoBehaviour {
 		}
 
 		@Override
-		public ActionSchemeActionType getActionType(FlexoConceptInstance fci) {
+		public ActionSchemeActionType getActionFactory(FlexoConceptInstance fci) {
 			return new ActionSchemeActionType(this, fci);
 		}
 
