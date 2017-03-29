@@ -21,7 +21,7 @@
       <ColumnAssignment id="18" variable="component.serviceManager" mandatory="true" />
       <ColumnAssignment id="19" variable="component.flexoController" mandatory="true" />
       <ColumnAssignment id="20" variable="component.selectableCondition" mandatory="true" />
-      <ColumnAssignment id="21" variable="component.virtualModel" value="data.virtualModel" mandatory="true" />
+      <ColumnAssignment id="21" variable="component.inheritingContext" value="data.virtualModel" mandatory="true" />
     </CustomColumn>
     <RemoveAction id="22" method="data.action.deleteParentFlexoConceptEntry(selected)" name="delete" />
     <AddAction id="23" method="data.action.newParentFlexoConceptEntry()" name="addParentFlexoConcept" />

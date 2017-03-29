@@ -38,6 +38,8 @@
 
 package org.openflexo.fml.controller.widget;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 
 import org.openflexo.components.widget.FIBFlexoObjectSelector;
@@ -132,7 +134,30 @@ public class FIBFlexoConceptSelector extends FIBFlexoObjectSelector<FlexoConcept
 		}
 	}
 
+	private AbstractVirtualModel<?> inheritingContext;
+
+	public AbstractVirtualModel<?> getInheritingContext() {
+		return inheritingContext;
+	}
+
+	public void setInheritingContext(AbstractVirtualModel<?> inheritingContext) {
+		if (this.inheritingContext != inheritingContext) {
+			AbstractVirtualModel<?> oldValue = this.inheritingContext;
+			this.inheritingContext = inheritingContext;
+			getPropertyChangeSupport().firePropertyChange("inheritingContext", oldValue, inheritingContext);
+		}
+	}
+
+	@Override
+	protected boolean isAcceptableValue(Object o) {
+		System.out.println("Est ce acceptable ? " + o);
+		return super.isAcceptableValue(o);
+	}
+
 	public FlexoObject getRootObject() {
+		if (getInheritingContext() != null) {
+			return getInheritingContextRoot();
+		}
 		if (getVirtualModel() != null) {
 			return getVirtualModel();
 		}
@@ -141,6 +166,46 @@ public class FIBFlexoConceptSelector extends FIBFlexoObjectSelector<FlexoConcept
 		}
 		else {
 			return getViewPointLibrary();
+		}
+	}
+
+	private FlexoObject getInheritingContextRoot() {
+		List<AbstractVirtualModel<?>> vmList = new ArrayList<>();
+		appendInheritingVirtualModels(getInheritingContext(), vmList);
+		AbstractVirtualModel<?> returned = getInheritingContext();
+		for (AbstractVirtualModel<?> vm : vmList) {
+			returned = getMostSpecializedContainer(returned, vm);
+		}
+		if (returned == null) {
+			return getInheritingContext().getViewPointLibrary();
+		}
+		else {
+			return returned;
+		}
+	}
+
+	private AbstractVirtualModel<?> getMostSpecializedContainer(AbstractVirtualModel<?> vm1, AbstractVirtualModel<?> vm2) {
+		if (vm1 == null || vm2 == null) {
+			return null;
+		}
+		if (vm1 == vm2) {
+			return vm1;
+		}
+		if (vm1.getViewPoint() == vm2.getViewPoint()) {
+			return vm1.getViewPoint();
+		}
+
+		return null;
+	}
+
+	private void appendInheritingVirtualModels(AbstractVirtualModel<?> vm, List<AbstractVirtualModel<?>> vmList) {
+		if (vm != null) {
+			vmList.add(vm);
+			for (FlexoConcept parent : vm.getParentFlexoConcepts()) {
+				if (parent instanceof AbstractVirtualModel) {
+					appendInheritingVirtualModels((AbstractVirtualModel<?>) parent, vmList);
+				}
+			}
 		}
 	}
 
