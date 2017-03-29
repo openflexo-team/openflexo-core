@@ -194,17 +194,16 @@ public interface SelectVirtualModelInstance extends FetchRequest<FMLRTModelSlot<
 
 		@Override
 		public VirtualModelInstanceType getFetchedType() {
-			try {
-				return VirtualModelInstanceType
-						.getVirtualModelInstanceType(getVirtualModelType() != null ? getVirtualModelType().getResourceData(null) : null);
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
-			} catch (ResourceLoadingCancelledException e) {
-				e.printStackTrace();
-			} catch (FlexoException e) {
-				e.printStackTrace();
+			if (getVirtualModelType() != null) {
+				if (getVirtualModelType().isLoaded()) {
+					return VirtualModelInstanceType.getVirtualModelInstanceType(
+							getVirtualModelType() != null ? getVirtualModelType().getLoadedResourceData() : null);
+				}
+				else {
+					return new VirtualModelInstanceType(_getVirtualModelTypeURI());
+				}
 			}
-			return null;
+			return VirtualModelInstanceType.UNDEFINED_VIRTUAL_MODEL_INSTANCE_TYPE;
 		}
 
 		@Override

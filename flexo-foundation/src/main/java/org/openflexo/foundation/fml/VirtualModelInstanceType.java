@@ -62,7 +62,7 @@ public class VirtualModelInstanceType extends FlexoConceptInstanceType {
 		super(aVirtualModel);
 	}
 
-	protected VirtualModelInstanceType(String virtualModelURI) {
+	public VirtualModelInstanceType(String virtualModelURI) {
 		super(virtualModelURI);
 	}
 
