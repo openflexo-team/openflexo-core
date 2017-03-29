@@ -127,14 +127,18 @@ public abstract class FIBModuleView<O extends FlexoObject> extends SelectionSync
 
 	@Override
 	public void willHide() {
-		//System.out.println("************ ModuleView willHide() " + this + " devient INVISIBLE");
+		// System.out.println("************ ModuleView willHide() " + this + " devient INVISIBLE");
 		setVisible(false);
 	}
 
 	@Override
 	public void willShow() {
-		//System.out.println("************ ModuleView willShow()" + this + " devient VISIBLE");
+		// System.out.println("************ ModuleView willShow()" + this + " devient VISIBLE");
 		setVisible(true);
+		if (getSelectionManager() != null && getSelectionManager().getSelection().size() == 1
+				&& getSelectionManager().getSelection().get(0) == getRepresentedObject()) {
+			fireObjectSelected(getSelectionManager().getSelection().get(0));
+		}
 	}
 
 	@Override

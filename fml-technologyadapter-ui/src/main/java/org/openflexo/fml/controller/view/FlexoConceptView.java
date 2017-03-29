@@ -98,7 +98,6 @@ public abstract class FlexoConceptView<EP extends FlexoConcept> extends FIBModul
 
 	@Override
 	public void fireObjectSelected(FlexoObject object) {
-		// System.out.println("Object selected: " + object);
 		if (object instanceof FetchRequestCondition) {
 			object = ((FetchRequestCondition) object).getAction();
 		}
