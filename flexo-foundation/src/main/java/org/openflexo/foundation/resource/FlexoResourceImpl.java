@@ -43,6 +43,7 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
+
 import org.openflexo.foundation.DataModification;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoObject;
@@ -114,7 +115,7 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 			// please investigate");
 			return resourceData;
 		}
-		if (resourceData == null && isLoadable()) {
+		if (resourceData == null && isLoadable() && !isLoading()) {
 			// The resourceData is null, we try to load it
 			setLoading(true);
 			resourceData = loadResourceData(progress);
@@ -434,8 +435,6 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 
 			performSuperDelete(context);
 
-
-
 			isDeleting = false;
 
 			return true;
@@ -560,8 +559,7 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 			returned = computeDefaultURI();
 		}
 
-		if (returned == null && (getIODelegate() instanceof FileIODelegate)
-				&& (((FileIODelegate) getIODelegate()).getFile() != null)) {
+		if (returned == null && (getIODelegate() instanceof FileIODelegate) && (((FileIODelegate) getIODelegate()).getFile() != null)) {
 			if (((FileIODelegate) getIODelegate()).getFile() != null) {
 				return ((FileIODelegate) getIODelegate()).getFile().toURI().toString();
 			}
