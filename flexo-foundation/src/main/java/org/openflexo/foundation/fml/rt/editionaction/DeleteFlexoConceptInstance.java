@@ -251,7 +251,7 @@ public interface DeleteFlexoConceptInstance
 					deletionScheme = (DeletionScheme) getFlexoConceptType().getFlexoBehaviourForURI(_deletionSchemeURI);
 				}
 				else if (getViewPointLibrary() != null) {
-					deletionScheme = (DeletionScheme) getViewPointLibrary().getFlexoBehaviour(_deletionSchemeURI);
+					deletionScheme = (DeletionScheme) getViewPointLibrary().getFlexoBehaviour(_deletionSchemeURI, false);
 				}
 			}
 			else if (deletionScheme == null && getFlexoConceptType() != null) {

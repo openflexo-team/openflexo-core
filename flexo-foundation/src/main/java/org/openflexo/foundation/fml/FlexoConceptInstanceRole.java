@@ -46,7 +46,6 @@ import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOu
 import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstanceModelFactory;
-import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.ModelObjectActorReference;
@@ -185,7 +184,7 @@ public interface FlexoConceptInstanceRole extends FlexoRole<FlexoConceptInstance
 				return getCreationScheme().getFlexoConcept();
 			}
 			if (flexoConceptType == null && _flexoConceptTypeURI != null && getViewPoint() != null) {
-				flexoConceptType = getViewPoint().getFlexoConcept(_flexoConceptTypeURI);
+				flexoConceptType = getViewPointLibrary().getFlexoConcept(_flexoConceptTypeURI, false);
 			}
 			return flexoConceptType;
 		}
@@ -210,7 +209,7 @@ public interface FlexoConceptInstanceRole extends FlexoRole<FlexoConceptInstance
 		public void finalizeDeserialization() {
 			super.finalizeDeserialization();
 			if (flexoConceptType == null && _flexoConceptTypeURI != null && getViewPoint() != null) {
-				flexoConceptType = getViewPoint().getFlexoConcept(_flexoConceptTypeURI);
+				flexoConceptType = getViewPointLibrary().getFlexoConcept(_flexoConceptTypeURI, false);
 				getPropertyChangeSupport().firePropertyChange(FLEXO_CONCEPT_TYPE_KEY, null, flexoConceptType);
 			}
 		}
@@ -226,7 +225,7 @@ public interface FlexoConceptInstanceRole extends FlexoRole<FlexoConceptInstance
 		@Override
 		public void _setCreationSchemeURI(String uri) {
 			if (getViewPointLibrary() != null) {
-				creationScheme = (CreationScheme) getViewPointLibrary().getFlexoBehaviour(uri);
+				creationScheme = (CreationScheme) getViewPointLibrary().getFlexoBehaviour(uri, false);
 				/*for (FlexoBehaviour s : getFlexoConcept().getFlexoBehaviours()) {
 					s.updateBindingModels();
 				}*/
@@ -253,7 +252,7 @@ public interface FlexoConceptInstanceRole extends FlexoRole<FlexoConceptInstance
 		@Override
 		public CreationScheme getCreationScheme() {
 			if (creationScheme == null && _creationSchemeURI != null && getViewPointLibrary() != null) {
-				creationScheme = (CreationScheme) getViewPointLibrary().getFlexoBehaviour(_creationSchemeURI);
+				creationScheme = (CreationScheme) getViewPointLibrary().getFlexoBehaviour(_creationSchemeURI, false);
 			}
 			return creationScheme;
 		}
@@ -365,15 +364,17 @@ public interface FlexoConceptInstanceRole extends FlexoRole<FlexoConceptInstance
 				}
 			}
 
-			if (getModelSlot() instanceof FMLRTModelSlot) {
+			/*if (getModelSlot() instanceof FMLRTModelSlot) {
 				return ((FMLRTModelSlot) getModelSlot()).getAccessedVirtualModel();
-			}
+			}*/
 
-			if (getFlexoConcept() != null) {
+			/*if (getFlexoConcept() != null) {
 				return getFlexoConcept().getOwningVirtualModel();
-			}
+			}*/
 
-			return getViewPoint();
+			return null;
+
+			// return getViewPoint();
 		}
 
 		@Override

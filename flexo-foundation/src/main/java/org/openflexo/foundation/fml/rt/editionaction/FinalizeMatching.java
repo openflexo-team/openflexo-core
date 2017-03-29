@@ -315,7 +315,7 @@ public interface FinalizeMatching extends EditionAction {
 				FlexoBehaviour oldCS = getFlexoBehaviour();
 				flexoBehaviourURI = uri;
 				if (getViewPointLibrary() != null) {
-					flexoBehaviour = getViewPointLibrary().getFlexoBehaviour(uri);
+					flexoBehaviour = getViewPointLibrary().getFlexoBehaviour(uri, false);
 				}
 				fireBehaviourChanged(oldCS, getFlexoBehaviour());
 				getPropertyChangeSupport().firePropertyChange(FLEXO_BEHAVIOUR_URI_KEY, oldURI, uri);
@@ -335,7 +335,7 @@ public interface FinalizeMatching extends EditionAction {
 		@Override
 		public FlexoBehaviour getFlexoBehaviour() {
 			if (flexoBehaviour == null && flexoBehaviourURI != null && getViewPointLibrary() != null) {
-				flexoBehaviour = getViewPointLibrary().getFlexoBehaviour(flexoBehaviourURI);
+				flexoBehaviour = getViewPointLibrary().getFlexoBehaviour(flexoBehaviourURI, false);
 			}
 			if (flexoBehaviour == null && getFlexoConceptType() != null && getAvailableFlexoBehaviours() != null
 					&& getAvailableFlexoBehaviours().size() > 0) {

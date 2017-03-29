@@ -351,7 +351,7 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 				CreationScheme oldCS = getCreationScheme();
 				_creationSchemeURI = uri;
 				if (getViewPointLibrary() != null) {
-					creationScheme = (CreationScheme) getViewPointLibrary().getFlexoBehaviour(uri);
+					creationScheme = (CreationScheme) getViewPointLibrary().getFlexoBehaviour(uri, false);
 				}
 				fireCreationSchemeChange(oldCS, getCreationScheme());
 				getPropertyChangeSupport().firePropertyChange(CREATION_SCHEME_URI_KEY, oldURI, uri);
@@ -398,7 +398,7 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 			 */
 
 			if (creationScheme == null && _creationSchemeURI != null && getViewPointLibrary() != null) {
-				creationScheme = (CreationScheme) getViewPointLibrary().getFlexoBehaviour(_creationSchemeURI);
+				creationScheme = (CreationScheme) getViewPointLibrary().getFlexoBehaviour(_creationSchemeURI, false);
 			}
 			return creationScheme;
 		}

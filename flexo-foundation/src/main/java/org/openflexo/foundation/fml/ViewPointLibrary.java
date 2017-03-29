@@ -46,6 +46,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 import java.util.logging.Logger;
+
 import org.openflexo.foundation.DefaultFlexoObject;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoService;
@@ -343,11 +344,12 @@ public class ViewPointLibrary extends DefaultFlexoObject implements FlexoService
 		return null;
 	}
 
-	public FlexoBehaviour getFlexoBehaviour(String behaviourURI) {
-		if (behaviourURI == null) return null;
+	public FlexoBehaviour getFlexoBehaviour(String behaviourURI, boolean loadWhenRequired) {
+		if (behaviourURI == null)
+			return null;
 		if (behaviourURI.lastIndexOf(".") > -1) {
 			String flexoConceptURI = behaviourURI.substring(0, behaviourURI.lastIndexOf("."));
-			FlexoConcept ep = getFlexoConcept(flexoConceptURI);
+			FlexoConcept ep = getFlexoConcept(flexoConceptURI, loadWhenRequired);
 			if (ep != null) {
 				return ep.getFlexoBehaviour(behaviourURI.substring(behaviourURI.lastIndexOf(".") + 1));
 			}
