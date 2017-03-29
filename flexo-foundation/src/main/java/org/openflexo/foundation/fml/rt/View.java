@@ -47,8 +47,8 @@ import org.openflexo.connie.BindingVariable;
 import org.openflexo.foundation.fml.AbstractVirtualModel;
 import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.binding.ViewPointBindingModel;
+import org.openflexo.foundation.fml.rt.rm.AbstractVirtualModelInstanceResource;
 import org.openflexo.foundation.fml.rt.rm.ViewResource;
-import org.openflexo.foundation.fml.rt.rm.VirtualModelInstanceResource;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.RepositoryFolder;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
@@ -155,7 +155,7 @@ public interface View extends AbstractVirtualModelInstance<View, ViewPoint> {
 	 */
 	public List<TechnologyAdapter> getRequiredTechnologyAdapters();
 
-	public static abstract class ViewImpl extends AbstractVirtualModelInstanceImpl<View, ViewPoint>implements View {
+	public static abstract class ViewImpl extends AbstractVirtualModelInstanceImpl<View, ViewPoint> implements View {
 
 		private static final Logger logger = Logger.getLogger(View.class.getPackage().getName());
 
@@ -335,8 +335,8 @@ public interface View extends AbstractVirtualModelInstance<View, ViewPoint> {
 		 */
 		private void loadVirtualModelInstancesWhenUnloaded() {
 			for (org.openflexo.foundation.resource.FlexoResource<?> r : getResource().getContents()) {
-				if (r instanceof VirtualModelInstanceResource) {
-					((VirtualModelInstanceResource) r).getVirtualModelInstance();
+				if (r instanceof AbstractVirtualModelInstanceResource) {
+					((AbstractVirtualModelInstanceResource) r).getVirtualModelInstance();
 				}
 			}
 		}
