@@ -40,6 +40,7 @@ package org.openflexo.foundation.fml;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
+
 import org.openflexo.connie.BindingEvaluationContext;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
@@ -114,7 +115,8 @@ public interface FlexoRole<T> extends FlexoProperty<T> {
 	void setRoleName(String patternRoleName);
 
 	@Getter(value = MODEL_SLOT_KEY)
-	@XMLElement @Embedded
+	@XMLElement
+	@Embedded
 	ModelSlot<?> getModelSlot();
 
 	@Setter(MODEL_SLOT_KEY)
@@ -217,7 +219,7 @@ public interface FlexoRole<T> extends FlexoProperty<T> {
 	 */
 	ActorReference<T> makeActorReference(T object, FlexoConceptInstance fci);
 
-	abstract class FlexoRoleImpl<T> extends FlexoPropertyImpl<T>implements FlexoRole<T> {
+	abstract class FlexoRoleImpl<T> extends FlexoPropertyImpl<T> implements FlexoRole<T> {
 
 		// private static final Logger logger = Logger.getLogger(FlexoRole.class.getPackage().getName());
 
@@ -405,8 +407,9 @@ public interface FlexoRole<T> extends FlexoProperty<T> {
 		public String getFMLRepresentation(FMLRepresentationContext context) {
 			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
 			out.append("FlexoRole " + getName() + " as "
-					+ (getModelSlot() != null ? getModelSlot().getModelSlotTechnologyAdapter().getIdentifier() : "???") + "::"
-					+ getImplementedInterface().getSimpleName() + " conformTo " + getTypeDescription() + ";", context);
+					+ (getModelSlot() != null && getModelSlot().getModelSlotTechnologyAdapter() != null
+							? getModelSlot().getModelSlotTechnologyAdapter().getIdentifier() : "???")
+					+ "::" + getImplementedInterface().getSimpleName() + " conformTo " + getTypeDescription() + ";", context);
 			return out.toString();
 		}
 
