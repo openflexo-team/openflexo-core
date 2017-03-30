@@ -62,7 +62,7 @@ import org.openflexo.toolbox.PropertyChangedSupportDefaultImplementation;
 import org.openflexo.toolbox.StringUtils;
 
 /**
- * Abstract action creating a {@link FlexoConcept} or any of its subclass
+ * Abstract action creating a {@link VirtualModel} or any of its subclass
  * 
  * @author sylvain
  * 
