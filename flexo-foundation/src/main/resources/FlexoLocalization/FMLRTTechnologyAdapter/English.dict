@@ -3,5 +3,6 @@ Capteur\ [ID\=7]=Capteur [ID\=7]
 Culture\ [ID\=1]=Culture [ID\=1]
 Type\ [ID\=1]=Type [ID\=1]
 TypeSouche\ [ID\=10]=TypeSouche [ID\=10]
+discouraged_name_for_new_virtual_model_instance=Discouraged name for new virtual model instance
 initializing_adapter=Initializing adapter
 saving=Saving
