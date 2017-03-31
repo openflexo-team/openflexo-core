@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ViewPoint id="0" modelVersion="1.0" uri="http://openflexo.org/test/flexo-test-resources/TestResourceCenter/ViewPoints/TestSequence.viewpoint" version="0.1" name="TestSequence" userID="FLX" flexoID="3">
+<ViewPoint id="0" modelVersion="1.0" uri="http://openflexo.org/test/TestSequence" version="0.1" name="TestSequence" userID="FLX" flexoID="3">
   <Inspector id="1" inspectorTitle="TestSequence" userID="FLX" flexoID="2" />
 </ViewPoint>
