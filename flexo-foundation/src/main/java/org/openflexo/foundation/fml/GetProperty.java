@@ -76,7 +76,7 @@ public abstract interface GetProperty<T> extends FlexoProperty<T>, FMLControlGra
 	public static final String GET_CONTROL_GRAPH_KEY = "getControlGraph";
 
 	@Getter(value = GET_CONTROL_GRAPH_KEY, inverse = FMLControlGraph.OWNER_KEY)
-	@CloningStrategy(StrategyType.IGNORE)
+	@CloningStrategy(StrategyType.CLONE)
 	@XMLElement(context = "GetControlGraph_")
 	@Embedded
 	public FMLControlGraph getGetControlGraph();
@@ -92,7 +92,7 @@ public abstract interface GetProperty<T> extends FlexoProperty<T>, FMLControlGra
 	@Setter(TYPE_KEY)
 	public void setType(Type type);*/
 
-	public static abstract class GetPropertyImpl<T> extends FlexoPropertyImpl<T>implements GetProperty<T> {
+	public static abstract class GetPropertyImpl<T> extends FlexoPropertyImpl<T> implements GetProperty<T> {
 
 		// private static final Logger logger = Logger.getLogger(FlexoRole.class.getPackage().getName());
 

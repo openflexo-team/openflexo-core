@@ -43,6 +43,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 import java.util.logging.Logger;
+
 import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.binding.Function;
 import org.openflexo.connie.type.TypeUtils;
@@ -116,7 +117,7 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 	public static final String CONTROL_GRAPH_KEY = "controlGraph";
 
 	@Getter(value = CONTROL_GRAPH_KEY, inverse = FMLControlGraph.OWNER_KEY)
-	@CloningStrategy(StrategyType.IGNORE)
+	@CloningStrategy(StrategyType.CLONE)
 	@XMLElement(context = "BehaviourControlGraph_")
 	@Embedded
 	public FMLControlGraph getControlGraph();

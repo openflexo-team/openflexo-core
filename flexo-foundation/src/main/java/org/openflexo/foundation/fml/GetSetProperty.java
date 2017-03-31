@@ -72,7 +72,7 @@ public abstract interface GetSetProperty<T> extends GetProperty<T> {
 	public static final String SET_CONTROL_GRAPH_KEY = "setControlGraph";
 
 	@Getter(value = SET_CONTROL_GRAPH_KEY, inverse = FMLControlGraph.OWNER_KEY)
-	@CloningStrategy(StrategyType.IGNORE)
+	@CloningStrategy(StrategyType.CLONE)
 	@XMLElement(context = "SetControlGraph_")
 	@Embedded
 	public FMLControlGraph getSetControlGraph();
@@ -80,7 +80,7 @@ public abstract interface GetSetProperty<T> extends GetProperty<T> {
 	@Setter(SET_CONTROL_GRAPH_KEY)
 	public void setSetControlGraph(FMLControlGraph aControlGraph);
 
-	public static abstract class GetSetPropertyImpl<T> extends GetPropertyImpl<T>implements GetSetProperty<T> {
+	public static abstract class GetSetPropertyImpl<T> extends GetPropertyImpl<T> implements GetSetProperty<T> {
 
 		// private static final Logger logger = Logger.getLogger(FlexoRole.class.getPackage().getName());
 

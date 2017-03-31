@@ -78,7 +78,7 @@ public interface AbstractIterationAction extends ControlStructureAction, FMLCont
 	 * @return
 	 */
 	@Getter(value = CONTROL_GRAPH_KEY, inverse = FMLControlGraph.OWNER_KEY)
-	@CloningStrategy(StrategyType.IGNORE)
+	@CloningStrategy(StrategyType.CLONE)
 	@XMLElement(context = "ControlGraph_")
 	@Embedded
 	public FMLControlGraph getControlGraph();
