@@ -287,7 +287,7 @@ public final class FlexoConceptBindingFactory extends JavaBindingFactory {
 	 *
 	 */
 	@SuppressWarnings("serial")
-	class BehavioursForConcepts extends HashMap<FlexoConcept, List<FlexoBehaviourPathElement>>implements PropertyChangeListener {
+	class BehavioursForConcepts extends HashMap<FlexoConcept, List<FlexoBehaviourPathElement>> implements PropertyChangeListener {
 
 		@Override
 		public List<FlexoBehaviourPathElement> put(FlexoConcept concept, List<FlexoBehaviourPathElement> value) {
@@ -405,32 +405,34 @@ public final class FlexoConceptBindingFactory extends JavaBindingFactory {
 	public Function retrieveFunction(Type parentType, String functionName, List<DataBinding<?>> args) {
 		if (parentType instanceof FlexoConceptInstanceType) {
 			FlexoConcept conceptType = ((FlexoConceptInstanceType) parentType).getFlexoConcept();
-			//System.out.println("Looking for behaviour " + functionName + " avec " + args);
-			//System.out.println("conceptType=" + conceptType);
-			Type[] paramsTypes = new Type[args.size()];
-			for (int i = 0; i < args.size(); i++) {
-				if (args.get(i).getExpression() instanceof ObjectConstant) {
-					Object value = ((ObjectConstant) args.get(i).getExpression()).getValue();
-					if (value instanceof View) {
-						paramsTypes[i] = ((View) value).getViewPoint().getInstanceType();
-					}
-					else if (value instanceof VirtualModelInstance) {
-						paramsTypes[i] = ((VirtualModelInstance) value).getVirtualModel().getInstanceType();
-					}
-					else if (value instanceof FlexoConceptInstance) {
-						paramsTypes[i] = ((FlexoConceptInstance) value).getFlexoConcept().getInstanceType();
+			// System.out.println("Looking for behaviour " + functionName + " avec " + args);
+			// System.out.println("conceptType=" + conceptType);
+			if (conceptType != null) {
+				Type[] paramsTypes = new Type[args.size()];
+				for (int i = 0; i < args.size(); i++) {
+					if (args.get(i).getExpression() instanceof ObjectConstant) {
+						Object value = ((ObjectConstant) args.get(i).getExpression()).getValue();
+						if (value instanceof View) {
+							paramsTypes[i] = ((View) value).getViewPoint().getInstanceType();
+						}
+						else if (value instanceof VirtualModelInstance) {
+							paramsTypes[i] = ((VirtualModelInstance) value).getVirtualModel().getInstanceType();
+						}
+						else if (value instanceof FlexoConceptInstance) {
+							paramsTypes[i] = ((FlexoConceptInstance) value).getFlexoConcept().getInstanceType();
+						}
+						else {
+							paramsTypes[i] = value.getClass();
+						}
 					}
 					else {
-						paramsTypes[i] = value.getClass();
+						paramsTypes[i] = args.get(i).getAnalyzedType();
 					}
+					// System.out.println("> " + args.get(i) + " of " + paramsTypes[i]);
 				}
-				else {
-					paramsTypes[i] = args.get(i).getAnalyzedType();
-				}
-				//System.out.println("> " + args.get(i) + " of " + paramsTypes[i]);
+				// System.out.println("Returned: " + conceptType.getFlexoBehaviour(functionName, paramsTypes));
+				return conceptType.getFlexoBehaviour(functionName, paramsTypes);
 			}
-			//System.out.println("Returned: " + conceptType.getFlexoBehaviour(functionName, paramsTypes));
-			return conceptType.getFlexoBehaviour(functionName, paramsTypes);
 		}
 		return super.retrieveFunction(parentType, functionName, args);
 	}

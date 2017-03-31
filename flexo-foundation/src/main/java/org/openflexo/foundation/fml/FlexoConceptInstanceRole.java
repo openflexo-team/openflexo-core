@@ -183,7 +183,7 @@ public interface FlexoConceptInstanceRole extends FlexoRole<FlexoConceptInstance
 			if (getCreationScheme() != null) {
 				return getCreationScheme().getFlexoConcept();
 			}
-			if (flexoConceptType == null && _flexoConceptTypeURI != null && getViewPoint() != null) {
+			if (flexoConceptType == null && _flexoConceptTypeURI != null && getViewPointLibrary() != null) {
 				flexoConceptType = getViewPointLibrary().getFlexoConcept(_flexoConceptTypeURI, false);
 			}
 			return flexoConceptType;
@@ -209,7 +209,7 @@ public interface FlexoConceptInstanceRole extends FlexoRole<FlexoConceptInstance
 		public void finalizeDeserialization() {
 			super.finalizeDeserialization();
 			if (flexoConceptType == null && _flexoConceptTypeURI != null && getViewPoint() != null) {
-				flexoConceptType = getViewPointLibrary().getFlexoConcept(_flexoConceptTypeURI, false);
+				flexoConceptType = getViewPoint().getFlexoConcept(_flexoConceptTypeURI);
 				getPropertyChangeSupport().firePropertyChange(FLEXO_CONCEPT_TYPE_KEY, null, flexoConceptType);
 			}
 		}
