@@ -40,6 +40,7 @@ package org.openflexo.foundation.fml.controlgraph;
 
 import java.lang.reflect.Type;
 import java.util.List;
+
 import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.BindingVariable;
 import org.openflexo.connie.DataBinding;
@@ -220,15 +221,29 @@ public abstract interface FMLControlGraph extends FlexoConceptObject {
 			FMLControlGraphOwner owner = getOwner();
 			String ownerContext = getOwnerContext();
 
-			// Following statement is really important, we need first to "disconnect" actual control graph
-			// Before to build the new sequence !!!
-			owner.setControlGraph(null, ownerContext);
+			if (owner instanceof Sequence && getOwnerContext().equals(Sequence.CONTROL_GRAPH1_KEY)) {
+				// Special case for sequence when we append between CG1 and CG2
+				// We first consider right argument of sequence
+				FMLControlGraph previousCG2 = ((Sequence) owner).getControlGraph2();
+				// Then we nulllify right argument of sequence
+				((Sequence) owner).setControlGraph2(null);
+				// We create a new sequence with the new CG and the former right argument
+				Sequence sequence = factory.newSequence(controlGraph, previousCG2);
+				// And set it as right argument of sequence
+				((Sequence) owner).setControlGraph2(sequence);
+				owner.controlGraphChanged(sequence);
+			}
 
-			Sequence sequence = factory.newSequence(this, controlGraph);
-			replaceWith(sequence, owner, ownerContext);
+			else {
+				// Following statement is really important, we need first to "disconnect" actual control graph
+				// Before to build the new sequence !!!
+				owner.setControlGraph(null, ownerContext);
 
-			owner.controlGraphChanged(sequence);
+				Sequence sequence = factory.newSequence(this, controlGraph);
+				replaceWith(sequence, owner, ownerContext);
 
+				owner.controlGraphChanged(sequence);
+			}
 		}
 
 		/**

@@ -182,11 +182,33 @@ public class TestSequence extends OpenflexoTestCase {
 		// CreateEditionActionChoice.BuiltInAction;
 		createDeclaration4.setEditionActionClass(ExpressionAction.class);
 		createDeclaration4.setDeclarationVariableName("variable4");
+
+		System.out.println("--------------> OK, je rajoute la declaration");
 		createDeclaration4.doAction();
+		System.out.println("<-------------- C'est fait");
+
 		declaration4 = (DeclarationAction) createDeclaration4.getNewEditionAction();
 		((ExpressionAction) declaration4.getAssignableAction()).setExpression(new DataBinding<Object>("4"));
 
 		System.out.println("FML=" + behaviour.getFMLRepresentation());
+
+		assertTrue(behaviour.getControlGraph() instanceof Sequence);
+		Sequence sequence1 = (Sequence) behaviour.getControlGraph();
+		assertSame(declaration1, sequence1.getControlGraph1());
+
+		assertTrue(sequence1.getControlGraph2() instanceof Sequence);
+		Sequence sequence2 = (Sequence) sequence1.getControlGraph2();
+		assertSame(declaration4, sequence2.getControlGraph1());
+
+		assertTrue(sequence2.getControlGraph2() instanceof Sequence);
+		Sequence sequence3 = (Sequence) sequence2.getControlGraph2();
+		assertSame(declaration2, sequence3.getControlGraph1());
+		assertSame(declaration3, sequence3.getControlGraph2());
+
+		System.out.println("declaration1.BM=" + declaration1.getBindingModel());
+		System.out.println("declaration4.BM=" + declaration2.getBindingModel());
+		System.out.println("declaration2.BM=" + declaration2.getBindingModel());
+		System.out.println("declaration3.BM=" + declaration3.getBindingModel());
 
 		assertEquals(8, declaration1.getBindingModel().getBindingVariablesCount());
 		assertNotNull(declaration1.getBindingModel().bindingVariableNamed(ViewPointBindingModel.REFLEXIVE_ACCESS_PROPERTY));
@@ -233,24 +255,6 @@ public class TestSequence extends OpenflexoTestCase {
 		assertNotNull(declaration3.getBindingModel().bindingVariableNamed("variable1"));
 		assertNotNull(declaration3.getBindingModel().bindingVariableNamed("variable4"));
 		assertNotNull(declaration3.getBindingModel().bindingVariableNamed("variable2"));
-
-		assertTrue(behaviour.getControlGraph() instanceof Sequence);
-		Sequence sequence1 = (Sequence) behaviour.getControlGraph();
-		assertSame(declaration1, sequence1.getControlGraph1());
-
-		assertTrue(sequence1.getControlGraph2() instanceof Sequence);
-		Sequence sequence2 = (Sequence) sequence1.getControlGraph2();
-		assertSame(declaration4, sequence2.getControlGraph1());
-
-		assertTrue(sequence2.getControlGraph2() instanceof Sequence);
-		Sequence sequence3 = (Sequence) sequence2.getControlGraph2();
-		assertSame(declaration2, sequence3.getControlGraph1());
-		assertSame(declaration3, sequence3.getControlGraph2());
-
-		System.out.println("declaration1.BM=" + declaration1.getBindingModel());
-		System.out.println("declaration4.BM=" + declaration2.getBindingModel());
-		System.out.println("declaration2.BM=" + declaration2.getBindingModel());
-		System.out.println("declaration3.BM=" + declaration3.getBindingModel());
 
 	}
 
