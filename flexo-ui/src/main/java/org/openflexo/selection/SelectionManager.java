@@ -63,7 +63,7 @@ import org.openflexo.view.controller.FlexoController;
  * <LI>Synchonization of all components synchronized with itself objects, as FlexoObject instances</LI>
  * <LI>Focused and last selected objects management</LI>
  * <LI>Inspection management</LI>
- * <LI>Copy/Cut/Paste/SelectAll management by storing and managing a {@link org.openflexo.selection.FlexoClipboard}</LI>
+ * <LI>Copy/Cut/Paste/SelectAll management by storing and managing a {@link org.openflexo.foundation.action.copypaste.FlexoClipboard}</LI>
  * </UL>
  * 
  * @author bmangez, sguerin

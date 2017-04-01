@@ -54,7 +54,7 @@ import org.openflexo.connie.type.ParameterizedTypeImpl;
 import org.openflexo.connie.type.PrimitiveType;
 import org.openflexo.foundation.DefaultFlexoEditor;
 import org.openflexo.foundation.FlexoEditor;
-import org.openflexo.foundation.action.AbstractCopyAction.InvalidSelectionException;
+import org.openflexo.foundation.action.copypaste.AbstractCopyAction.InvalidSelectionException;
 import org.openflexo.foundation.fml.action.CreateEditionAction;
 import org.openflexo.foundation.fml.action.CreateFlexoBehaviour;
 import org.openflexo.foundation.fml.action.CreateFlexoConcept;

@@ -36,7 +36,7 @@
  * 
  */
 
-package org.openflexo.foundation.action;
+package org.openflexo.foundation.action.copypaste;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -46,7 +46,6 @@ import java.util.Map;
 import org.openflexo.fge.control.exceptions.CopyException;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.InnerResourceData;
-import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoRole.RoleCloningStrategy;
 import org.openflexo.foundation.fml.PrimitiveRole;
 import org.openflexo.foundation.fml.rt.ActorReference;
@@ -54,7 +53,6 @@ import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.rm.VirtualModelInstanceResource;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.PamelaResource;
-import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.model.factory.Clipboard;
 import org.openflexo.model.factory.ModelFactory;
 
@@ -68,6 +66,7 @@ import org.openflexo.model.factory.ModelFactory;
  * From a technical point of view, a {@link FlexoClipboard} is an aggregation of {@link Clipboard} instances, associated to a
  * {@link PamelaResource}.<br>
  * A particular {@link Clipboard} plays leader role, and should be the only one driving the whole clipboard operation
+ * 
  * 
  * @author sylvain
  * 
@@ -175,15 +174,15 @@ public class FlexoClipboard {
 
 				// System.out.println("--------- START COPY");
 
-				System.out.println("########## For resource " + pamelaResource);
-				System.out.println("We had: " + objectsToBeCopied.get(pamelaResource));
+				// System.out.println("########## For resource " + pamelaResource);
+				// System.out.println("We had: " + objectsToBeCopied.get(pamelaResource));
 
-				for (FlexoObject o : objectsToBeCopied.get(pamelaResource)) {
+				/*for (FlexoObject o : objectsToBeCopied.get(pamelaResource)) {
 					if (o instanceof FlexoBehaviour) {
 						System.out.println("J'avais ca: ");
 						System.out.println(((FlexoBehaviour) o).getFMLRepresentation());
 					}
-				}
+				}*/
 
 				List<FlexoObject> objectsToCopyInThisResource = extendedObjectsToBeCopied.get(pamelaResource);
 

@@ -47,9 +47,9 @@ import javax.swing.KeyStroke;
 
 import org.openflexo.FlexoCst;
 import org.openflexo.foundation.FlexoObject;
-import org.openflexo.foundation.action.CopyAction;
 import org.openflexo.foundation.action.FlexoActionFinalizer;
 import org.openflexo.foundation.action.FlexoActionInitializer;
+import org.openflexo.foundation.action.copypaste.CopyAction;
 import org.openflexo.icon.IconLibrary;
 import org.openflexo.view.controller.ActionInitializer;
 import org.openflexo.view.controller.ControllerActionInitializer;

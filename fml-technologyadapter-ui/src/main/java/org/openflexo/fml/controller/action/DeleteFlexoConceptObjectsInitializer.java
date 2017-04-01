@@ -46,8 +46,8 @@ import java.util.logging.Logger;
 import javax.swing.Icon;
 import javax.swing.KeyStroke;
 
-import org.openflexo.foundation.action.AbstractCopyAction.InvalidSelectionException;
 import org.openflexo.foundation.action.FlexoActionInitializer;
+import org.openflexo.foundation.action.copypaste.AbstractCopyAction.InvalidSelectionException;
 import org.openflexo.foundation.fml.FlexoConceptObject;
 import org.openflexo.foundation.fml.action.DeleteFlexoConceptObjects;
 import org.openflexo.icon.IconLibrary;

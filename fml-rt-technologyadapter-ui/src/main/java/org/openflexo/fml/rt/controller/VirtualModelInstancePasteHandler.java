@@ -46,10 +46,10 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoObject;
-import org.openflexo.foundation.action.FlexoClipboard;
-import org.openflexo.foundation.action.PasteAction.DefaultPastingContext;
-import org.openflexo.foundation.action.PasteAction.FlexoPasteHandler;
-import org.openflexo.foundation.action.PasteAction.PastingContext;
+import org.openflexo.foundation.action.copypaste.DefaultPastingContext;
+import org.openflexo.foundation.action.copypaste.FlexoClipboard;
+import org.openflexo.foundation.action.copypaste.FlexoPasteHandler;
+import org.openflexo.foundation.action.copypaste.PastingContext;
 import org.openflexo.foundation.fml.FlexoRole.RoleCloningStrategy;
 import org.openflexo.foundation.fml.PrimitiveRole;
 import org.openflexo.foundation.fml.VirtualModel;
