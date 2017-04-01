@@ -38,15 +38,14 @@
 
 package org.openflexo.fml.controller;
 
-import java.util.List;
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.action.copypaste.FlexoClipboard;
 import org.openflexo.foundation.action.copypaste.FlexoPasteHandler;
 import org.openflexo.foundation.action.copypaste.PastingContext;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
-import org.openflexo.model.factory.Clipboard;
+import org.openflexo.model.exceptions.ModelDefinitionException;
+import org.openflexo.model.exceptions.ModelExecutionException;
 
 /**
  * Paste Handler suitable for pasting a FMLControlGraph
@@ -66,13 +65,13 @@ public class FMLControlGraphPasteHandler extends FlexoPasteHandler<FMLControlGra
 	}
 
 	@Override
-	public boolean isPastable(Clipboard clipboard, FlexoObject focusedObject, List<FlexoObject> globalSelection) {
+	public boolean isPastable(FlexoClipboard clipboard, PastingContext<FMLControlGraph> pastingContext) {
 
 		// System.out.println("Je me demande si c'est pastable dans " + focusedObject);
 		// System.out.println("Moi j'ai ca:" + clipboard.debug());
 
-		if (clipboard.isSingleObject() && clipboard.getSingleContents() instanceof FMLControlGraph
-				&& focusedObject instanceof FMLControlGraph) {
+		if (clipboard.getLeaderClipboard().isSingleObject() && clipboard.getLeaderClipboard().getSingleContents() instanceof FMLControlGraph
+				&& pastingContext.getPastingPointHolder() != null) {
 			System.out.println("YES, on peut copier le graphe de controle !");
 			return true;
 		}
@@ -83,9 +82,28 @@ public class FMLControlGraphPasteHandler extends FlexoPasteHandler<FMLControlGra
 	@Override
 	public Object paste(FlexoClipboard clipboard, PastingContext<FMLControlGraph> pastingContext) {
 
-		System.out.println("Et hop, on vient faire un paste de: ");
-		System.out.println(((FMLControlGraph) clipboard.getLeaderClipboard().getSingleContents()).getFMLRepresentation());
-		System.out.println("Dans " + pastingContext.getPastingPointHolder().getFMLRepresentation());
+		FMLControlGraph cgBeeingPasted = (FMLControlGraph) clipboard.getLeaderClipboard().getSingleContents();
+		FMLControlGraph cgWhereToPaste = pastingContext.getPastingPointHolder();
+
+		// System.out.println("Et hop, on vient faire un paste de: ");
+		// System.out.println(cgBeeingPasted.getFMLRepresentation());
+		// System.out.println("Dans " + cgWhereToPaste.getFMLRepresentation());
+
+		cgWhereToPaste.sequentiallyAppend(cgBeeingPasted);
+
+		try {
+			clipboard.getLeaderClipboard().consume();
+		} catch (ModelExecutionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ModelDefinitionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (CloneNotSupportedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 		// return super.paste(clipboard, pastingContext);
 		return null;
 	}

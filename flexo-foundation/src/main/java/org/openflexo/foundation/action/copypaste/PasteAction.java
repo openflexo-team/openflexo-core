@@ -53,7 +53,6 @@ import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.model.exceptions.ModelExecutionException;
 import org.openflexo.model.factory.Clipboard;
-import org.openflexo.model.factory.ClipboardOperationException;
 import org.openflexo.model.factory.ModelFactory;
 
 public class PasteAction extends FlexoAction<PasteAction, FlexoObject, FlexoObject> {
@@ -124,22 +123,24 @@ public class PasteAction extends FlexoAction<PasteAction, FlexoObject, FlexoObje
 
 			// The checks are performed ONLY on leader clipboard (others clipboards are ignored)
 
-			PastingContext<?> pastingContext = handler.retrievePastingContext(focusedObject, globalSelection, editingContext.getClipboard(),
+			PastingContext pastingContext = handler.retrievePastingContext(focusedObject, globalSelection, editingContext.getClipboard(),
 					null);
 
 			if (pastingContext == null) {
 				return false;
 			}
 
-			ModelFactory factory = editingContext.getClipboard().getLeaderClipboard().getModelFactory();
+			return handler.isPastable(editingContext.getClipboard(), pastingContext);
 
+			/*ModelFactory factory = editingContext.getClipboard().getLeaderClipboard().getModelFactory();
+			
 			// System.out.println("returning: " + factory.isPastable(editingContext.getClipboard(), pastingContext));
-
+			
 			try {
 				return factory.isPastable(editingContext.getClipboard().getLeaderClipboard(), pastingContext.getPastingPointHolder());
 			} catch (ClipboardOperationException e) {
 				return false;
-			}
+			}*/
 		}
 
 		/*public FlexoObject retrievePastingContext(FlexoObject focusedObject, Vector<FlexoObject> globalSelection) {

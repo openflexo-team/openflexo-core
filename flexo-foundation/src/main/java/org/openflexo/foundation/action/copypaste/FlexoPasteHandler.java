@@ -8,7 +8,6 @@ import org.openflexo.model.ModelEntity;
 import org.openflexo.model.annotations.PastingPoint;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.model.exceptions.ModelExecutionException;
-import org.openflexo.model.factory.Clipboard;
 import org.openflexo.model.factory.ProxyMethodHandler;
 
 /**
@@ -31,8 +30,10 @@ public abstract class FlexoPasteHandler<T extends FlexoObject> implements PasteH
 	 * @see {@link PastingPoint}
 	 */
 	@Override
-	public boolean isPastable(Clipboard clipboard, FlexoObject focusedObject, List<FlexoObject> globalSelection) {
-		ModelEntity<?> pastingPointHolderEntity = clipboard.getModelFactory().getModelContext().getModelEntity(getPastingPointHolderType());
+	public boolean isPastable(FlexoClipboard clipboard, PastingContext<T> pastingContext) {
+
+		ModelEntity<?> pastingPointHolderEntity = clipboard.getLeaderClipboard().getModelFactory().getModelContext()
+				.getModelEntity(getPastingPointHolderType());
 
 		// System.out.println("factory=" + clipboard.getModelFactory());
 		// System.out.println("pastingPointHolderEntity=" + pastingPointHolderEntity);
@@ -42,7 +43,7 @@ public abstract class FlexoPasteHandler<T extends FlexoObject> implements PasteH
 
 			// System.out.println("Found entity " + pastingPointHolderEntity);
 
-			return (ProxyMethodHandler.isPastable(clipboard, pastingPointHolderEntity));
+			return (ProxyMethodHandler.isPastable(clipboard.getLeaderClipboard(), pastingPointHolderEntity));
 		}
 		return false;
 	}

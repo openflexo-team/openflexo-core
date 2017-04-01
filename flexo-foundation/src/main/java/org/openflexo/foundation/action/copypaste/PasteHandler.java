@@ -31,15 +31,15 @@ public interface PasteHandler<T extends FlexoObject> {
 	public Class<T> getPastingPointHolderType();
 
 	/**
-	 * Return boolean indicating if supplied clipboard may be pasted in supplied context identified by a focused object and a global
-	 * selection
+	 * Return boolean indicating if supplied clipboard may be pasted in supplied context
 	 * 
 	 * @param clipboard
-	 * @param focusedObject
-	 * @param globalSelection
+	 *            Clipboard to paste
+	 * @param pasteContext
+	 *            Context where to paste clipboard (an object receiving the paste operation)
 	 * @return
 	 */
-	public boolean isPastable(Clipboard clipboard, FlexoObject focusedObject, List<FlexoObject> globalSelection);
+	public boolean isPastable(FlexoClipboard clipboard, PastingContext<T> pastingContext);
 
 	/**
 	 * Return a {@link PastingContext} if current selection and clipboard allows it.<br>

@@ -56,6 +56,7 @@ import org.openflexo.foundation.action.copypaste.DefaultPasteHandler;
 import org.openflexo.foundation.action.copypaste.FlexoClipboard;
 import org.openflexo.foundation.action.copypaste.PasteAction.PasteActionType;
 import org.openflexo.foundation.action.copypaste.PasteHandler;
+import org.openflexo.foundation.action.copypaste.PastingContext;
 import org.openflexo.model.ModelEntity;
 import org.openflexo.model.factory.Clipboard;
 import org.openflexo.model.factory.EditingContext;
@@ -236,10 +237,10 @@ public class FlexoEditingContext extends EditingContextImpl implements FlexoServ
 
 				// System.out.println("Examining Paste handler: " + h + " pastingPointHolderType=" + h.getPastingPointHolderType());
 
-				if (h.isPastable(masterClipboard, focusedObject, globalSelection)) {
-					// System.out.println("OK, this is pastable...");
+				PastingContext potentialPastingContext = h.retrievePastingContext(focusedObject, globalSelection, getClipboard(), event);
 
-					Object potentialPastingContext = h.retrievePastingContext(focusedObject, globalSelection, getClipboard(), event);
+				if (h.isPastable(clipboard, potentialPastingContext)) {
+					// System.out.println("OK, this is pastable...");
 
 					// System.out.println("potentialPastingContext=" + potentialPastingContext);
 
