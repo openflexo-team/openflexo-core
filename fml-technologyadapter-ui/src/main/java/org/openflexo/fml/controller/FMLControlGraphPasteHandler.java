@@ -1,6 +1,6 @@
 /**
  * 
- * Copyright (c) 2014, Openflexo
+ * Copyright (c) 2014-2015, Openflexo
  * 
  * This file is part of Fml-technologyadapter-ui, a component of the software infrastructure 
  * developed at Openflexo.
@@ -44,68 +44,72 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.action.FlexoClipboard;
-import org.openflexo.foundation.action.PasteAction.DefaultPastingContext;
 import org.openflexo.foundation.action.PasteAction.FlexoPasteHandler;
 import org.openflexo.foundation.action.PasteAction.PastingContext;
-import org.openflexo.foundation.fml.FlexoConcept;
-import org.openflexo.foundation.fml.FlexoConceptObject;
+import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
 import org.openflexo.model.factory.Clipboard;
-import org.openflexo.toolbox.StringUtils;
 
 /**
- * Paste Handler suitable for pasting something into a FlexoConcept
+ * Paste Handler suitable for pasting a FMLControlGraph
  * 
  * @author sylvain
  * 
  */
-public class FlexoConceptPasteHandler extends FlexoPasteHandler<FlexoConcept> {
+public class FMLControlGraphPasteHandler extends FlexoPasteHandler<FMLControlGraph> {
 
-	private static final Logger logger = Logger.getLogger(FlexoConceptPasteHandler.class.getPackage().getName());
+	private static final Logger logger = Logger.getLogger(FMLControlGraphPasteHandler.class.getPackage().getName());
 
-	public static final String COPY_SUFFIX = "-copy";
+	// public static final String COPY_SUFFIX = "-copy";
 
 	@Override
-	public Class<FlexoConcept> getPastingPointHolderType() {
-		return FlexoConcept.class;
+	public Class<FMLControlGraph> getPastingPointHolderType() {
+		return FMLControlGraph.class;
 	}
 
 	@Override
-	public PastingContext<FlexoConcept> retrievePastingContext(FlexoObject focusedObject, List<FlexoObject> globalSelection,
+	public PastingContext<FMLControlGraph> retrievePastingContext(FlexoObject focusedObject, List<FlexoObject> globalSelection,
 			FlexoClipboard clipboard, Event event) {
 
-		if (!(focusedObject instanceof FlexoConceptObject)) {
+		System.out.println("Je retourne le PastingContext pour focused=" + focusedObject);
+		System.out.println("Clipboard=" + clipboard.debug());
+
+		// Wrong focused type
+		/*if (!(focusedObject instanceof FlexoBehaviourObject)) {
 			return null;
 		}
+		// Paste a Flexo Action in a Flexo Action Container
+		if ((focusedObject instanceof ActionContainer)) {
+			return new DefaultPastingContext<FlexoBehaviourObject>((FlexoBehaviourObject) focusedObject, event);
+		}
+		// Paste a Flexo Action from a Flexo Action
+		if ((focusedObject instanceof EditionAction)) {
+			return new DefaultPastingContext<FlexoBehaviourObject>(((EditionAction) focusedObject).getActionContainer(), event);
+		}*/
 
-		return new DefaultPastingContext<FlexoConcept>(((FlexoConceptObject) focusedObject).getFlexoConcept(), event);
+		return null;
 	}
 
 	@Override
-	public void prepareClipboardForPasting(FlexoClipboard clipboard, PastingContext<FlexoConcept> pastingContext) {
+	public void prepareClipboardForPasting(FlexoClipboard clipboard, PastingContext<FMLControlGraph> pastingContext) {
 
 		Clipboard leaderClipboard = clipboard.getLeaderClipboard();
 
 		// Translating names
-		if (leaderClipboard.isSingleObject()) {
-			if (leaderClipboard.getSingleContents() instanceof FlexoConceptObject) {
-				translateName((FlexoConceptObject) leaderClipboard.getSingleContents());
+		/*if (leaderClipboard.isSingleObject()) {
+			if (leaderClipboard.getSingleContents() instanceof FlexoBehaviourObject) {
+				translateName((FlexoBehaviourObject) leaderClipboard.getSingleContents());
 			}
 		}
 		else {
 			for (Object o : leaderClipboard.getMultipleContents()) {
-				if (o instanceof FlexoConceptObject) {
-					translateName((FlexoConceptObject) o);
+				if (o instanceof FlexoBehaviour) {
+					translateName((FlexoBehaviourObject) o);
 				}
 			}
-		}
+		}*/
 	}
 
-	@Override
-	public void finalizePasting(FlexoClipboard clipboard, PastingContext<FlexoConcept> pastingContext) {
-		// Nothing to do
-	}
-
-	private String translateName(FlexoConceptObject object) {
+	/*private String translateName(FlexoBehaviourObject object) {
 		String oldName = object.getName();
 		if (StringUtils.isEmpty(oldName)) {
 			return null;
@@ -129,6 +133,22 @@ public class FlexoConceptPasteHandler extends FlexoPasteHandler<FlexoConcept> {
 		System.out.println("translating name from " + oldName + " to " + newName);
 		object.setName(newName);
 		return newName;
+	}*/
+
+	@Override
+	public void finalizePasting(FlexoClipboard clipboard, PastingContext<FMLControlGraph> pastingContext) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public boolean isPastable(Clipboard clipboard, FlexoObject focusedObject, List<FlexoObject> globalSelection) {
+
+		System.out.println("Je me demande si c'est pastable dans " + focusedObject);
+		System.out.println("Moi j'ai ca:" + clipboard.debug());
+
+		return false;
+
 	}
 
 }
