@@ -70,9 +70,9 @@ public abstract class FlexoPasteHandler<T extends FlexoObject> implements PasteH
 	 */
 	@Override
 	public Object paste(FlexoClipboard clipboard, PastingContext<T> pastingContext) {
-		System.out.println("===========================>>>>>>>>>>>>> OK, we perform paste now with clipboard: ");
-		System.out.println(clipboard.debug());
-		System.out.println("Perform paste in pastingContext=" + pastingContext);
+		// System.out.println("===========================>>>>>>>>>>>>> OK, we perform paste now with clipboard: ");
+		// System.out.println(clipboard.debug());
+		// System.out.println("Perform paste in pastingContext=" + pastingContext);
 
 		try {
 			return clipboard.getLeaderClipboard().getModelFactory().paste(clipboard.getLeaderClipboard(),
