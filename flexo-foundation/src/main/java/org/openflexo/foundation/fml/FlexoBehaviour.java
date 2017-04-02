@@ -43,7 +43,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 import java.util.logging.Logger;
-
 import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.binding.Function;
 import org.openflexo.connie.type.TypeUtils;
@@ -190,8 +189,7 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 	public void setDescription(String description);*/
 
 	@Getter(value = PARAMETERS_KEY, cardinality = Cardinality.LIST, inverse = FlexoBehaviourParameter.FLEXO_BEHAVIOUR_KEY)
-	@Embedded
-	@XMLElement
+	@Embedded @XMLElement @CloningStrategy(StrategyType.CLONE)
 	public List<FlexoBehaviourParameter> getParameters();
 
 	@Setter(PARAMETERS_KEY)
