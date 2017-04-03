@@ -716,4 +716,49 @@ public class FMLFIBController extends FlexoFIBController {
 		this.defaultInspectorGroup = defaultInspectorGroup;
 	}
 
+	public void moveControlGraph(FMLControlGraph controlGraph, FMLControlGraph receiver) {
+		System.out.println("On veut bouger le graphe de controle");
+		System.out.println(controlGraph.getFMLRepresentation());
+		System.out.println("Juste apres:");
+		System.out.println(receiver.getFMLRepresentation());
+
+		controlGraph.moveWhileSequentiallyAppendingTo(receiver);
+		/*
+		// We first store actual owning context
+		FMLControlGraphOwner owner = controlGraph.getOwner();
+		String ownerContext = controlGraph.getOwnerContext();
+		FMLModelFactory factory = controlGraph.getFMLModelFactory();
+		
+		Sequence parentFlattenedSequence = controlGraph.getParentFlattenedSequence();
+		
+		// We firt disconnect the control graph from its owner
+		if (owner != null) {
+			owner.setControlGraph(null, ownerContext);
+		
+			// Now we instanciate new EmptyControlGraph, and perform the replacement
+			controlGraph.replaceWith(factory.newEmptyControlGraph(), owner, ownerContext);
+		
+			// We reduce owner
+			owner.reduce();
+		}
+		
+		receiver.sequentiallyAppend(controlGraph);
+		
+		// Now this control graph should be dereferenced
+		// We finally call super delete, and this control graph will be really deleted
+		// boolean returned = performSuperDelete(context);
+		
+		// Then we must notify the parent flattenedSequence where this control graph was presented as a sequence
+		// This fixes issue TA-81
+		if (parentFlattenedSequence != null) {
+			parentFlattenedSequence.controlGraphChanged(controlGraph);
+		}
+		
+		// return returned;
+		*/
+	}
+
+	public boolean canMoveControlGraph(FMLControlGraph controlGraph, FMLControlGraph receiver) {
+		return controlGraph != null && controlGraph.getOwner() != receiver;
+	}
 }

@@ -115,6 +115,9 @@
 							<BrowserAddAction
 								method="controller.createEditionActionInIteration(selected)"
 								name="add_action_inside_iteration" />
+							<DragOperation isAvailable="controller.canMoveControlGraph(dragged,target)"
+								targetElementName="editionAction" action="controller.moveControlGraph(dragged,target)"
+								name="drag_operation" />
 						</BrowserElement>
 						<BrowserElement
 							dataClassName="org.openflexo.foundation.fml.controlgraph.WhileAction"
@@ -129,6 +132,9 @@
 							<BrowserAddAction
 								method="controller.createEditionActionInWhileAction(selected)"
 								name="add_action_inside_iteration" />
+							<DragOperation isAvailable="controller.canMoveControlGraph(dragged,target)"
+								targetElementName="editionAction" action="controller.moveControlGraph(dragged,target)"
+								name="drag_operation" />
 						</BrowserElement>
 						<BrowserElement
 							dataClassName="org.openflexo.foundation.fml.controlgraph.IncrementalIterationAction"
@@ -145,6 +151,9 @@
 							<BrowserAddAction
 								method="controller.createEditionActionInIncrementalIterationAction(selected)"
 								name="add_action_inside_iteration" />
+							<DragOperation isAvailable="controller.canMoveControlGraph(dragged,target)"
+								targetElementName="editionAction" action="controller.moveControlGraph(dragged,target)"
+								name="drag_operation" />
 						</BrowserElement>
 						<BrowserElement
 							dataClassName="org.openflexo.foundation.fml.controlgraph.ConditionalAction"
@@ -165,6 +174,9 @@
 							<BrowserAddAction
 								method="controller.createEditionActionInElseControlGraph(selected)"
 								name="add_action_in_else_control_graph" />
+							<DragOperation isAvailable="controller.canMoveControlGraph(dragged,target)"
+								targetElementName="editionAction" action="controller.moveControlGraph(dragged,target)"
+								name="drag_operation" />
 						</BrowserElement>
 						<BrowserElement
 							dataClassName="org.openflexo.foundation.fml.editionaction.EditionAction"
@@ -175,6 +187,9 @@
 								name="add_action" />
 							<BrowserRemoveAction
 								method="controller.deleteFlexoConceptObject(selected)" name="delete_action" />
+							<DragOperation isAvailable="controller.canMoveControlGraph(dragged,target)"
+								targetElementName="editionAction" action="controller.moveControlGraph(dragged,target)"
+								name="drag_operation" />
 						</BrowserElement>
 					</Browser>
 				</Panel>
