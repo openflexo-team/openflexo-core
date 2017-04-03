@@ -1,78 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <VirtualModel id="0" modelVersion="1.0" version="0.1" name="VM" userID="FLX" flexoID="4">
-  <PrimitiveRole id="1" primitiveType="String" cloningStrategy="Clone" cardinality="ZeroOne" name="role" userID="FLX" flexoID="40" />
-  <PrimitiveRole id="2" primitiveType="String" cloningStrategy="Clone" cardinality="ZeroOne" name="role-copy" userID="FLX" flexoID="60" />
-  <PrimitiveRole id="3" primitiveType="String" cloningStrategy="Clone" cardinality="ZeroOne" name="role-copy2" userID="FLX" flexoID="61" />
-  <ExpressionProperty id="4" expression="&quot;prout&quot;" name="property" userID="FLX" flexoID="62" />
-  <ExpressionProperty id="5" expression="&quot;prout&quot;" name="property-copy7" userID="FLX" flexoID="78" />
-  <ExpressionProperty id="6" expression="&quot;prout&quot;" name="property-copy8" userID="FLX" flexoID="79" />
-  <ActionScheme id="7" name="testBehaviour" width="800" label="testBehaviour" height="600" userID="FLX" flexoID="6">
-    <BehaviourControlGraph_Sequence id="8" userID="FLX" flexoID="18">
-      <ControlGraph2_Sequence id="9" ownerContext="controlGraph2" userID="FLX" flexoID="17">
-        <ControlGraph2_DeclarationAction id="10" variable="variable3" ownerContext="controlGraph2" userID="FLX" flexoID="16">
-          <AssignableAction_ExpressionAction id="11" expression="3" userID="FLX" flexoID="15" />
+  <ActionScheme id="1" name="testBehaviour" width="800" label="testBehaviour" height="600" userID="FLX" flexoID="6">
+    <BehaviourControlGraph_Sequence id="2" userID="FLX" flexoID="18">
+      <ControlGraph2_Sequence id="3" ownerContext="controlGraph2" userID="FLX" flexoID="17">
+        <ControlGraph2_DeclarationAction id="4" variable="variable3" ownerContext="controlGraph2" userID="FLX" flexoID="16">
+          <AssignableAction_ExpressionAction id="5" expression="3" userID="FLX" flexoID="15" />
         </ControlGraph2_DeclarationAction>
-        <ControlGraph1_DeclarationAction id="12" variable="variable2" ownerContext="controlGraph1" userID="FLX" flexoID="14">
-          <AssignableAction_ExpressionAction id="13" expression="2" userID="FLX" flexoID="13" />
+        <ControlGraph1_DeclarationAction id="6" variable="variable2" ownerContext="controlGraph1" userID="FLX" flexoID="14">
+          <AssignableAction_ExpressionAction id="7" expression="2" userID="FLX" flexoID="13" />
         </ControlGraph1_DeclarationAction>
       </ControlGraph2_Sequence>
-      <ControlGraph1_DeclarationAction id="14" variable="variable1" ownerContext="controlGraph1" userID="FLX" flexoID="9">
-        <AssignableAction_ExpressionAction id="15" expression="1" userID="FLX" flexoID="8" />
+      <ControlGraph1_DeclarationAction id="8" variable="variable1" ownerContext="controlGraph1" userID="FLX" flexoID="9">
+        <AssignableAction_ExpressionAction id="9" expression="1" userID="FLX" flexoID="8" />
       </ControlGraph1_DeclarationAction>
     </BehaviourControlGraph_Sequence>
   </ActionScheme>
-  <ActionScheme id="16" name="testBehaviour-copy2" width="800" label="testBehaviour" height="600" userID="FLX" flexoID="41">
-    <BehaviourControlGraph_Sequence id="17" userID="FLX" flexoID="49">
-      <ControlGraph2_Sequence id="18" ownerContext="controlGraph2" userID="FLX" flexoID="46">
-        <ControlGraph2_Sequence id="19" ownerContext="controlGraph2" userID="FLX" flexoID="56">
-          <ControlGraph2_IterationAction id="20" iteratorName="item" ownerContext="controlGraph2" userID="FLX" flexoID="51">
-            <Iteration_ExpressionAction id="21" expression="parametersDefinitions" ownerContext="iterationControlGraph" userID="FLX" flexoID="53" />
-            <ControlGraph_DeclarationAction id="22" variable="toto" ownerContext="controlGraph" userID="FLX" flexoID="55">
-              <AssignableAction_ExpressionAction id="23" expression="&quot;toto&quot;" userID="FLX" flexoID="54" />
-            </ControlGraph_DeclarationAction>
-          </ControlGraph2_IterationAction>
-          <ControlGraph1_DeclarationAction id="24" variable="variable3" ownerContext="controlGraph1" userID="FLX" flexoID="43">
-            <AssignableAction_ExpressionAction id="25" expression="3" userID="FLX" flexoID="42" />
-          </ControlGraph1_DeclarationAction>
-        </ControlGraph2_Sequence>
-        <ControlGraph1_DeclarationAction id="26" variable="variable2" ownerContext="controlGraph1" userID="FLX" flexoID="45">
-          <AssignableAction_ExpressionAction id="27" expression="2" userID="FLX" flexoID="44" />
-        </ControlGraph1_DeclarationAction>
-      </ControlGraph2_Sequence>
-      <ControlGraph1_DeclarationAction id="28" variable="variable4" ownerContext="controlGraph1" userID="FLX" flexoID="48">
-        <AssignableAction_ExpressionAction id="29" expression="4" userID="FLX" flexoID="47" />
-      </ControlGraph1_DeclarationAction>
-    </BehaviourControlGraph_Sequence>
-  </ActionScheme>
-  <ActionScheme id="30" name="testBehaviour-copy" width="800" label="testBehaviour" height="600" userID="FLX" flexoID="63">
-    <BehaviourControlGraph_Sequence id="31" userID="FLX" flexoID="71">
-      <ControlGraph2_Sequence id="32" ownerContext="controlGraph2" userID="FLX" flexoID="68">
-        <ControlGraph2_DeclarationAction id="33" variable="variable3" ownerContext="controlGraph2" userID="FLX" flexoID="65">
-          <AssignableAction_ExpressionAction id="34" expression="3" userID="FLX" flexoID="64" />
-        </ControlGraph2_DeclarationAction>
-        <ControlGraph1_DeclarationAction id="35" variable="variable2" ownerContext="controlGraph1" userID="FLX" flexoID="67">
-          <AssignableAction_ExpressionAction id="36" expression="2" userID="FLX" flexoID="66" />
-        </ControlGraph1_DeclarationAction>
-      </ControlGraph2_Sequence>
-      <ControlGraph1_DeclarationAction id="37" variable="variable1" ownerContext="controlGraph1" userID="FLX" flexoID="70">
-        <AssignableAction_ExpressionAction id="38" expression="1" userID="FLX" flexoID="69" />
-      </ControlGraph1_DeclarationAction>
-    </BehaviourControlGraph_Sequence>
-  </ActionScheme>
-  <ActionScheme id="39" name="testBehaviour-copy" width="800" label="testBehaviour" height="600" userID="FLX" flexoID="80">
-    <BehaviourControlGraph_Sequence id="40" userID="FLX" flexoID="88">
-      <ControlGraph2_Sequence id="41" ownerContext="controlGraph2" userID="FLX" flexoID="85">
-        <ControlGraph2_DeclarationAction id="42" variable="variable3" ownerContext="controlGraph2" userID="FLX" flexoID="82">
-          <AssignableAction_ExpressionAction id="43" expression="3" userID="FLX" flexoID="81" />
-        </ControlGraph2_DeclarationAction>
-        <ControlGraph1_DeclarationAction id="44" variable="variable2" ownerContext="controlGraph1" userID="FLX" flexoID="84">
-          <AssignableAction_ExpressionAction id="45" expression="2" userID="FLX" flexoID="83" />
-        </ControlGraph1_DeclarationAction>
-      </ControlGraph2_Sequence>
-      <ControlGraph1_DeclarationAction id="46" variable="variable1" ownerContext="controlGraph1" userID="FLX" flexoID="87">
-        <AssignableAction_ExpressionAction id="47" expression="1" userID="FLX" flexoID="86" />
-      </ControlGraph1_DeclarationAction>
-    </BehaviourControlGraph_Sequence>
-  </ActionScheme>
-  <Inspector id="48" inspectorTitle="VM" userID="FLX" flexoID="1" />
+  <Inspector id="10" inspectorTitle="VM" userID="FLX" flexoID="1" />
 </VirtualModel>
