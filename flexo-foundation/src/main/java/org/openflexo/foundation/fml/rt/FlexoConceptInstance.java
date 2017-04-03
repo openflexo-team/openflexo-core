@@ -46,6 +46,7 @@ import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import org.openflexo.connie.Bindable;
 import org.openflexo.connie.BindingFactory;
 import org.openflexo.connie.BindingModel;
@@ -59,6 +60,7 @@ import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoObject;
+import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.fml.CloningScheme;
 import org.openflexo.foundation.fml.DeletionScheme;
 import org.openflexo.foundation.fml.ExpressionProperty;
@@ -71,6 +73,7 @@ import org.openflexo.foundation.fml.GetSetProperty;
 import org.openflexo.foundation.fml.binding.FlexoConceptBindingModel;
 import org.openflexo.foundation.fml.binding.FlexoPropertyBindingVariable;
 import org.openflexo.foundation.fml.binding.FlexoRoleBindingVariable;
+import org.openflexo.foundation.fml.binding.SetValueBindingVariable;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
 import org.openflexo.foundation.fml.editionaction.DeleteAction;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
@@ -397,9 +400,8 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 		}
 
 		private FlexoEditor getFlexoEditor() {
-			if (getResourceCenter() != null && getServiceManager() != null) {
-				// XTOF To be checked Later
-				// return getServiceManager().getProjectLoaderService().getEditorForProject(getResourceCenter());
+			if (getResourceCenter() instanceof FlexoProject && getServiceManager() != null) {
+				return getServiceManager().getProjectLoaderService().getEditorForProject((FlexoProject) getResourceCenter());
 			}
 			return null;
 		}
@@ -601,10 +603,22 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 						}
 					}
 					else if (flexoProperty instanceof GetSetProperty) {
+
+						System.out.println("On veut executer un SET sur la GetSetProperty " + flexoProperty + " avec la valeur " + value);
+
 						FMLControlGraph setControlGraph = ((GetSetProperty<T>) flexoProperty).getSetControlGraph();
 						try {
 							// TODO: handle value beeing set, both in BindingModel AND he in LocalRunTimeEvaluationContext
-							RunTimeEvaluationContext localEvaluationContext = new LocalRunTimeEvaluationContext();
+							RunTimeEvaluationContext localEvaluationContext = new LocalRunTimeEvaluationContext() {
+								@Override
+								public Object getValue(BindingVariable variable) {
+									if (variable instanceof SetValueBindingVariable
+											&& ((SetValueBindingVariable) variable).getProperty() == flexoProperty) {
+										return value;
+									}
+									return super.getValue(variable);
+								}
+							};
 							// FD unused T returnedValue = null;
 							try {
 								setControlGraph.execute(localEvaluationContext);
