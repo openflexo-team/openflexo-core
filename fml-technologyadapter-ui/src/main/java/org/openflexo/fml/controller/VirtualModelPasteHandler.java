@@ -47,42 +47,55 @@ import org.openflexo.foundation.action.copypaste.DefaultPastingContext;
 import org.openflexo.foundation.action.copypaste.FlexoClipboard;
 import org.openflexo.foundation.action.copypaste.FlexoPasteHandler;
 import org.openflexo.foundation.action.copypaste.PastingContext;
+import org.openflexo.foundation.fml.AbstractVirtualModel;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptObject;
+import org.openflexo.foundation.fml.VirtualModelObject;
+import org.openflexo.foundation.fml.rm.AbstractVirtualModelResource;
+import org.openflexo.model.ModelEntity;
+import org.openflexo.model.ModelProperty;
+import org.openflexo.model.exceptions.ModelDefinitionException;
+import org.openflexo.model.exceptions.ModelExecutionException;
 import org.openflexo.model.factory.Clipboard;
 import org.openflexo.toolbox.StringUtils;
 
 /**
- * Paste Handler suitable for pasting something into a {@link FlexoConcept}
+ * Paste Handler suitable for pasting something into a AbstractVirtualModel
  * 
  * @author sylvain
  * 
  */
-public class FlexoConceptPasteHandler extends FlexoPasteHandler<FlexoConcept> {
+public class VirtualModelPasteHandler extends FlexoPasteHandler<AbstractVirtualModel> {
 
-	private static final Logger logger = Logger.getLogger(FlexoConceptPasteHandler.class.getPackage().getName());
+	private static final Logger logger = Logger.getLogger(VirtualModelPasteHandler.class.getPackage().getName());
 
 	public static final String COPY_SUFFIX = "-copy";
 
 	@Override
-	public Class<FlexoConcept> getPastingPointHolderType() {
-		return FlexoConcept.class;
+	public Class<AbstractVirtualModel> getPastingPointHolderType() {
+		return AbstractVirtualModel.class;
 	}
 
 	@Override
-	public PastingContext<FlexoConcept> retrievePastingContext(FlexoObject focusedObject, List<FlexoObject> globalSelection,
+	public PastingContext<AbstractVirtualModel> retrievePastingContext(FlexoObject focusedObject, List<FlexoObject> globalSelection,
 			FlexoClipboard clipboard, Event event) {
 
-		if (focusedObject instanceof FlexoConceptObject) {
-			// In this case, FlexoConcept will be contained in another FlexoConcept
-			return new DefaultPastingContext<FlexoConcept>(((FlexoConceptObject) focusedObject).getFlexoConcept(), event);
+		if (focusedObject instanceof AbstractVirtualModelResource) {
+			// In this case, FlexoConcept will be pasted as a FlexoConcept in a VirtualModel
+			return new DefaultPastingContext<AbstractVirtualModel>(((AbstractVirtualModelResource<?>) focusedObject).getVirtualModel(),
+					event);
+		}
+
+		if (focusedObject instanceof VirtualModelObject) {
+			// In this case, FlexoConcept will be pasted as a FlexoConcept in a VirtualModel
+			return new DefaultPastingContext<AbstractVirtualModel>(((VirtualModelObject) focusedObject).getVirtualModel(), event);
 		}
 
 		return null;
 	}
 
 	@Override
-	public void prepareClipboardForPasting(FlexoClipboard clipboard, PastingContext<FlexoConcept> pastingContext) {
+	public void prepareClipboardForPasting(FlexoClipboard clipboard, PastingContext<AbstractVirtualModel> pastingContext) {
 
 		Clipboard leaderClipboard = clipboard.getLeaderClipboard();
 
@@ -101,26 +114,49 @@ public class FlexoConceptPasteHandler extends FlexoPasteHandler<FlexoConcept> {
 		}
 	}
 
-	/*@Override
-	public Object paste(FlexoClipboard clipboard, PastingContext<FlexoConcept> pastingContext) {
-	
-		if (pastingContext.getPastingPointHolder() instanceof AbstractVirtualModel<?>) {
-			// In this case, FlexoConcept will be pasted as a FlexoConcept in a VirtualModel
-	
+	@Override
+	public boolean isPastable(FlexoClipboard clipboard, PastingContext<AbstractVirtualModel> pastingContext) {
+
+		// System.out.println("Je me demande si c'est pastable dans " + focusedObject);
+		// System.out.println("Moi j'ai ca:" + clipboard.debug());
+
+		if (clipboard.getLeaderClipboard().isSingleObject() && clipboard.getLeaderClipboard().getSingleContents() instanceof FlexoConcept
+				&& pastingContext.getPastingPointHolder() != null) {
+			return true;
+		}
+
+		return super.isPastable(clipboard, pastingContext);
+	}
+
+	@Override
+	public Object paste(FlexoClipboard clipboard, PastingContext<AbstractVirtualModel> pastingContext) {
+
+		if (clipboard.getLeaderClipboard().isSingleObject()
+				&& clipboard.getLeaderClipboard().getSingleContents() instanceof AbstractVirtualModel
+				&& pastingContext.getPastingPointHolder() != null) {
+			System.out.println("OK on paste un VM dans un autre VM");
+			return null;
+		}
+
+		else if (clipboard.getLeaderClipboard().isSingleObject()
+				&& clipboard.getLeaderClipboard().getSingleContents() instanceof FlexoConcept
+				&& pastingContext.getPastingPointHolder() != null) {
+			System.out.println("OK on paste un FlexoConcept dans un VM");
+
 			try {
-	
+
 				ModelEntity<AbstractVirtualModel> vmEntity = clipboard.getLeaderClipboard().getModelFactory().getModelContext()
 						.getModelEntity(AbstractVirtualModel.class);
 				ModelProperty<? super AbstractVirtualModel> conceptProperty = vmEntity
 						.getModelProperty(AbstractVirtualModel.FLEXO_CONCEPTS_KEY);
-	
+
 				System.out.println("OK, je copie le concept dans le VM " + pastingContext.getPastingPointHolder());
-	
+
 				System.out.println("vmEntity=" + vmEntity);
 				System.out.println("conceptProperty=" + conceptProperty);
-	
+
 				System.out.println(((FlexoConcept) clipboard.getLeaderClipboard().getSingleContents()).getFMLRepresentation());
-	
+
 				return clipboard.getLeaderClipboard().getModelFactory().paste(clipboard.getLeaderClipboard(), conceptProperty,
 						pastingContext.getPastingPointHolder());
 			} catch (ModelExecutionException e) {
@@ -133,14 +169,54 @@ public class FlexoConceptPasteHandler extends FlexoPasteHandler<FlexoConcept> {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-	
+
+			return null;
+
 		}
-	
-		return super.paste(clipboard, pastingContext);
-	}*/
+
+		else {
+			System.out.println("OK on paste dans un VM");
+			return super.paste(clipboard, pastingContext);
+		}
+
+		/*if (pastingContext.getPastingPointHolder() instanceof AbstractVirtualModel<?>) {
+			// In this case, FlexoConcept will be pasted as a FlexoConcept in a VirtualModel
+		
+			try {
+		
+				ModelEntity<AbstractVirtualModel> vmEntity = clipboard.getLeaderClipboard().getModelFactory().getModelContext()
+						.getModelEntity(AbstractVirtualModel.class);
+				ModelProperty<? super AbstractVirtualModel> conceptProperty = vmEntity
+						.getModelProperty(AbstractVirtualModel.FLEXO_CONCEPTS_KEY);
+		
+				System.out.println("OK, je copie le concept dans le VM " + pastingContext.getPastingPointHolder());
+		
+				System.out.println("vmEntity=" + vmEntity);
+				System.out.println("conceptProperty=" + conceptProperty);
+		
+				System.out.println(((FlexoConcept) clipboard.getLeaderClipboard().getSingleContents()).getFMLRepresentation());
+		
+				return clipboard.getLeaderClipboard().getModelFactory().paste(clipboard.getLeaderClipboard(), conceptProperty,
+						pastingContext.getPastingPointHolder());
+			} catch (ModelExecutionException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ModelDefinitionException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (CloneNotSupportedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		
+		}
+		
+		return super.paste(clipboard, pastingContext);*/
+
+	}
 
 	@Override
-	public void finalizePasting(FlexoClipboard clipboard, PastingContext<FlexoConcept> pastingContext) {
+	public void finalizePasting(FlexoClipboard clipboard, PastingContext<AbstractVirtualModel> pastingContext) {
 		// Nothing to do
 	}
 

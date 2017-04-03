@@ -72,7 +72,6 @@ public class FMLControlGraphPasteHandler extends FlexoPasteHandler<FMLControlGra
 
 		if (clipboard.getLeaderClipboard().isSingleObject() && clipboard.getLeaderClipboard().getSingleContents() instanceof FMLControlGraph
 				&& pastingContext.getPastingPointHolder() != null) {
-			System.out.println("YES, on peut copier le graphe de controle !");
 			return true;
 		}
 

@@ -203,8 +203,8 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 		new AddParentFlexoConceptInitializer(actionInitializer);
 
 		// Add paste handlers
+		actionInitializer.getEditingContext().registerPasteHandler(new VirtualModelPasteHandler());
 		actionInitializer.getEditingContext().registerPasteHandler(new FlexoConceptPasteHandler());
-		// actionInitializer.getEditingContext().registerPasteHandler(new ActionContainerPasteHandler());
 		actionInitializer.getEditingContext().registerPasteHandler(new FlexoPropertyPasteHandler());
 		actionInitializer.getEditingContext().registerPasteHandler(new FlexoBehaviourPasteHandler());
 		actionInitializer.getEditingContext().registerPasteHandler(new FMLControlGraphPasteHandler());

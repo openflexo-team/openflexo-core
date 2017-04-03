@@ -145,7 +145,9 @@ public class FlexoConceptBindingModel extends BindingModel implements PropertyCh
 			if (evt.getPropertyName().equals(FlexoConcept.OWNER_KEY)) {
 				// The FlexoConcept changes it's VirtualModel
 				setBaseBindingModel(flexoConcept.getOwner() != null ? flexoConcept.getOwner().getBindingModel() : null);
-				flexoConceptInstanceBindingVariable.setType(FlexoConceptInstanceType.getFlexoConceptInstanceType(flexoConcept));
+				if (flexoConceptInstanceBindingVariable != null) {
+					flexoConceptInstanceBindingVariable.setType(FlexoConceptInstanceType.getFlexoConceptInstanceType(flexoConcept));
+				}
 				// virtualModelInstanceBindingVariable.setType(flexoConcept.getVirtualModel() != null ? VirtualModelInstanceType
 				// .getFlexoConceptInstanceType(flexoConcept.getVirtualModel()) : VirtualModelInstance.class);
 			}

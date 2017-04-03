@@ -43,6 +43,7 @@ import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
+
 import org.openflexo.connie.BindingEvaluationContext;
 import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.DataBinding;
@@ -123,6 +124,7 @@ public interface FlexoBehaviourParameter extends FlexoBehaviourObject, FunctionA
 	@Setter(NAME_KEY)
 	public void setName(String name);
 
+	@Override
 	@Getter(value = TYPE_KEY, isStringConvertable = true)
 	@XMLAttribute
 	public abstract Type getType();
@@ -130,6 +132,7 @@ public interface FlexoBehaviourParameter extends FlexoBehaviourObject, FunctionA
 	@Setter(TYPE_KEY)
 	public void setType(Type aType);
 
+	@Override
 	@Getter(value = WIDGET_KEY)
 	@XMLAttribute
 	public WidgetType getWidget();
@@ -155,6 +158,7 @@ public interface FlexoBehaviourParameter extends FlexoBehaviourObject, FunctionA
 
 	public Object getDefaultValue(BindingEvaluationContext evaluationContext);
 
+	@Override
 	@Getter(value = CONTAINER_KEY)
 	@XMLAttribute
 	public DataBinding<?> getContainer();
@@ -175,7 +179,7 @@ public interface FlexoBehaviourParameter extends FlexoBehaviourObject, FunctionA
 
 	public int getIndex();
 
-	@Getter(value = FLEXO_BEHAVIOUR_KEY, inverse = FlexoBehaviour.PARAMETERS_KEY)
+	@Getter(value = FLEXO_BEHAVIOUR_KEY /*, inverse = FlexoBehaviour.PARAMETERS_KEY*/)
 	@CloningStrategy(StrategyType.IGNORE)
 	public FlexoBehaviour getBehaviour();
 
