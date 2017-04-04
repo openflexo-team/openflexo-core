@@ -14,7 +14,7 @@
 			<Leaf id="5" name="right" weight="0.699999988079071" />
 		</RowSplit>
 		<Browser id="6" backgroundSelectionColor="9,80,208"
-			visibleRowCount="5" boundToSelectionManager="true"
+			visibleRowCount="5" boundToSelectionManager="true" allowsDragAndDrop="true" 
 			backgroundNonSelectionColor="255,255,255" textSelectionColor="255,255,255"
 			backgroundSecondarySelectionColor="178,215,255" iteratorClassName="java.lang.Object"
 			showRootsHandle="true" showFooter="true" textNonSelectionColor="0,0,0"
