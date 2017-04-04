@@ -41,6 +41,8 @@ package org.openflexo.fml.controller.widget;
 import java.util.logging.Logger;
 
 import org.openflexo.components.widget.FIBTechnologyBrowser;
+import org.openflexo.foundation.FlexoObject;
+import org.openflexo.foundation.fml.AbstractVirtualModel;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
@@ -60,6 +62,17 @@ public class FIBViewPointLibraryBrowser extends FIBTechnologyBrowser<FMLTechnolo
 
 	public FIBViewPointLibraryBrowser(FMLTechnologyAdapter technologyAdapter, FlexoController controller) {
 		super(technologyAdapter, controller, FIB_FILE, controller.getTechnologyAdapter(FMLTechnologyAdapter.class).getLocales());
+	}
+
+	@Override
+	public void fireObjectSelected(FlexoObject object) {
+		//System.out.println("FIBViewPointLibraryBrowser / fireObjectSelected: " + object);
+		if (object instanceof AbstractVirtualModel) {
+			getFIBView().getController().objectAddedToSelection(((AbstractVirtualModel) object).getResource());
+		}
+		else {
+			super.fireObjectSelected(object);
+		}
 	}
 
 	// Please uncomment this for a live test

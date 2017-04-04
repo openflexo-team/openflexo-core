@@ -55,4 +55,9 @@ public class DefaultPastingContext<T extends FlexoObject> implements PastingCont
 		pasteProperties.put(key, value);
 	}
 
+	@Override
+	public String toString() {
+		return "DefaultPastingContext/" + getPastingPointHolder() + "/" + pasteProperties;
+	}
+
 }

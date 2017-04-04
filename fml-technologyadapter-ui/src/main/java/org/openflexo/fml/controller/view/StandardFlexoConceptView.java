@@ -44,8 +44,7 @@ import org.openflexo.view.controller.FlexoController;
 import org.openflexo.view.controller.model.FlexoPerspective;
 
 /**
- * This is the module view representing a standard FlexoConcept (an FlexoConcept which is not a VirtualModel, nor part of a
- * DiagramSpecification)<br>
+ * This is the module view representing a standard FlexoConcept
  * 
  * @author sguerin
  * 
@@ -55,5 +54,16 @@ public class StandardFlexoConceptView extends FlexoConceptView<FlexoConcept> {
 	public StandardFlexoConceptView(FlexoConcept flexoConcept, FlexoController controller, FlexoPerspective perspective) {
 		super(flexoConcept, CommonFIB.STANDARD_FLEXO_CONCEPT_VIEW_FIB, controller, perspective);
 	}
+
+	/*@Override
+	public void fireObjectSelected(FlexoObject object) {
+		// System.out.println("StandardFlexoConceptView / fireObjectSelected: " + object);
+		if (object == getRepresentedObject()) {
+			getFIBView().getController().objectAddedToSelection(object);
+		}
+		else {
+			super.fireObjectSelected(object);
+		}
+	}*/
 
 }

@@ -98,21 +98,28 @@ public abstract class FlexoConceptView<EP extends FlexoConcept> extends FIBModul
 
 	@Override
 	public void fireObjectSelected(FlexoObject object) {
-		if (object instanceof FetchRequestCondition) {
-			object = ((FetchRequestCondition) object).getAction();
-		}
-		if (object instanceof FMLControlGraph && ((FMLControlGraph) object).getOwner() instanceof AbstractAssignationAction
-				&& ((AbstractAssignationAction<?>) ((FMLControlGraph) object).getOwner()).getAssignableAction() == object) {
-			// Special case for actions that are beeing represented by a single BrowserCell
-			super.fireObjectSelected(((FMLControlGraph) object).getOwner());
-		}
-		else if (object instanceof FMLControlGraph && ((FMLControlGraph) object).getOwner() instanceof IterationAction
-				&& ((IterationAction) ((FMLControlGraph) object).getOwner()).getIterationAction() == object) {
-			// Special case for actions that are beeing represented by a single BrowserCell
-			super.fireObjectSelected(((FMLControlGraph) object).getOwner());
+
+		if (object == getRepresentedObject()) {
+			getFIBView().getController().objectAddedToSelection(object);
 		}
 		else {
-			super.fireObjectSelected(object);
+
+			if (object instanceof FetchRequestCondition) {
+				object = ((FetchRequestCondition) object).getAction();
+			}
+			if (object instanceof FMLControlGraph && ((FMLControlGraph) object).getOwner() instanceof AbstractAssignationAction
+					&& ((AbstractAssignationAction<?>) ((FMLControlGraph) object).getOwner()).getAssignableAction() == object) {
+				// Special case for actions that are beeing represented by a single BrowserCell
+				super.fireObjectSelected(((FMLControlGraph) object).getOwner());
+			}
+			else if (object instanceof FMLControlGraph && ((FMLControlGraph) object).getOwner() instanceof IterationAction
+					&& ((IterationAction) ((FMLControlGraph) object).getOwner()).getIterationAction() == object) {
+				// Special case for actions that are beeing represented by a single BrowserCell
+				super.fireObjectSelected(((FMLControlGraph) object).getOwner());
+			}
+			else {
+				super.fireObjectSelected(object);
+			}
 		}
 	}
 

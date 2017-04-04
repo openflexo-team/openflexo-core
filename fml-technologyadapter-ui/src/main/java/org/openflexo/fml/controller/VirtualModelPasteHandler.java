@@ -60,7 +60,16 @@ import org.openflexo.model.factory.Clipboard;
 import org.openflexo.toolbox.StringUtils;
 
 /**
- * Paste Handler suitable for pasting something into a AbstractVirtualModel
+ * Paste Handler suitable for pasting something into a {@link AbstractVirtualModel}<br>
+ * 
+ * Handled objects are those:
+ * <ul>
+ * <li>Pasting of a {@link FlexoConcept} as a concept of VirtualModel</li>
+ * <li>Pasting of a {@link AbstractVirtualModel} as a child virtual model of this virtual model</li>
+ * </ul>
+ * 
+ * Other kind of objects not specific for {@link AbstractVirtualModel} will be handled in {@link FlexoConceptPasteHandler}
+ * 
  * 
  * @author sylvain
  * 
@@ -80,15 +89,19 @@ public class VirtualModelPasteHandler extends FlexoPasteHandler<AbstractVirtualM
 	public PastingContext<AbstractVirtualModel> retrievePastingContext(FlexoObject focusedObject, List<FlexoObject> globalSelection,
 			FlexoClipboard clipboard, Event event) {
 
-		if (focusedObject instanceof AbstractVirtualModelResource) {
-			// In this case, FlexoConcept will be pasted as a FlexoConcept in a VirtualModel
-			return new DefaultPastingContext<AbstractVirtualModel>(((AbstractVirtualModelResource<?>) focusedObject).getVirtualModel(),
-					event);
-		}
+		if (clipboard.getLeaderClipboard().isSingleObject()
+				&& (clipboard.getLeaderClipboard().getSingleContents() instanceof FlexoConcept)) {
 
-		if (focusedObject instanceof VirtualModelObject) {
-			// In this case, FlexoConcept will be pasted as a FlexoConcept in a VirtualModel
-			return new DefaultPastingContext<AbstractVirtualModel>(((VirtualModelObject) focusedObject).getVirtualModel(), event);
+			if (focusedObject instanceof AbstractVirtualModelResource) {
+				// In this case, FlexoConcept will be pasted as a FlexoConcept in a VirtualModel
+				return new DefaultPastingContext<AbstractVirtualModel>(((AbstractVirtualModelResource<?>) focusedObject).getVirtualModel(),
+						event);
+			}
+
+			if (focusedObject instanceof VirtualModelObject) {
+				// In this case, FlexoConcept will be pasted as a FlexoConcept in a VirtualModel
+				return new DefaultPastingContext<AbstractVirtualModel>(((VirtualModelObject) focusedObject).getVirtualModel(), event);
+			}
 		}
 
 		return null;
