@@ -178,7 +178,7 @@ public class FlexoServerInstanceManager extends FlexoServiceImpl {
 	}
 
 	private void filterAddressBook(FlexoServerAddressBook book) {
-		for (FlexoServerInstance instance : new ArrayList<FlexoServerInstance>(book.getInstances())) {
+		for (FlexoServerInstance instance : new ArrayList<>(book.getInstances())) {
 			/*if (instance.getUserTypes().size() > 0) {
 				boolean keepIt = false;
 				for (String userType : instance.getUserTypes()) {

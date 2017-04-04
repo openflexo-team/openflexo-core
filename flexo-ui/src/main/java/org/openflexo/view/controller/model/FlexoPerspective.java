@@ -142,16 +142,16 @@ public abstract class FlexoPerspective extends ControllerModelObject {
 			FlexoProject project = (FlexoProject) object;
 			List<ProjectNature> availableNatures = getSpecificNaturesForProject(project);
 			if (availableNatures.size() > 0) {
-				ProjectNature nature = availableNatures.get(0);
+				ProjectNature<?, ?> nature = availableNatures.get(0);
 				return getModuleViewForProject(project, nature);
 			}
 			// No default view for a FlexoProject !
-			return new EmptyPanel<FlexoObject>(controller, this, object);
+			return new EmptyPanel<>(controller, this, object);
 		}
 		if (object instanceof TechnologyObject) {
 			return getModuleViewForTechnologyObject((TechnologyObject<?>) object);
 		}
-		return new EmptyPanel<FlexoObject>(controller, this, object);
+		return new EmptyPanel<>(controller, this, object);
 	}
 
 	/**
@@ -338,22 +338,22 @@ public abstract class FlexoPerspective extends ControllerModelObject {
 	// Handle natures for FlexoProject
 
 	public List<ProjectNature> getSpecificNaturesForProject(FlexoProject project) {
-		List<ProjectNature> returned = new ArrayList<ProjectNature>();
+		List<ProjectNature> returned = new ArrayList<>();
 		TechnologyAdapterControllerService tacService = controller.getApplicationContext().getTechnologyAdapterControllerService();
 		TechnologyAdapterService taService = controller.getApplicationContext().getTechnologyAdapterService();
 		for (TechnologyAdapter ta : taService.getTechnologyAdapters()) {
 			TechnologyAdapterController<?> tac = tacService.getTechnologyAdapterController(ta);
-			if (tac != null){
+			if (tac != null) {
 				returned.addAll(tac.getSpecificProjectNatures(project));
 			}
 			else {
-				logger.warning("INVESTIGATE: there is a enabled TA with no TAC enabled (not yet): "+ ta.getClass().getCanonicalName() );
+				logger.warning("INVESTIGATE: there is a enabled TA with no TAC enabled (not yet): " + ta.getClass().getCanonicalName());
 			}
 		}
 		return returned;
 	}
 
-	public ModuleView<FlexoProject> getModuleViewForProject(FlexoProject project, ProjectNature nature) {
+	public ModuleView<FlexoProject> getModuleViewForProject(FlexoProject project, ProjectNature<?, ?> nature) {
 		TechnologyAdapterControllerService tacService = controller.getApplicationContext().getTechnologyAdapterControllerService();
 		TechnologyAdapterService taService = controller.getApplicationContext().getTechnologyAdapterService();
 		for (TechnologyAdapter ta : taService.getTechnologyAdapters()) {

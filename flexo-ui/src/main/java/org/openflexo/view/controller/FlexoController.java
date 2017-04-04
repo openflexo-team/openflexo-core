@@ -232,7 +232,7 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 	protected FlexoFrame flexoFrame;
 	private FlexoMainPane mainPane;
 	private final ControllerModel controllerModel;
-	private final List<FlexoMenuBar> registeredMenuBar = new ArrayList<FlexoMenuBar>();
+	private final List<FlexoMenuBar> registeredMenuBar = new ArrayList<>();
 	private ModuleInspectorController mainInspectorController;
 	protected PropertyChangeListenerRegistrationManager manager = new PropertyChangeListenerRegistrationManager();
 
@@ -242,7 +242,7 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 	/**
 	 * Constructor
 	 */
-	protected FlexoController(FlexoModule module) {
+	protected FlexoController(FlexoModule<?> module) {
 		super();
 		// ProgressWindow.setProgressInstance(FlexoLocalization.localizedForKey("init_module_controller"));
 
@@ -250,7 +250,7 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 
 		this.module = module;
 		locationsForView = ArrayListMultimap.create();
-		viewsForLocation = new HashMap<Location, ModuleView<?>>();
+		viewsForLocation = new HashMap<>();
 		controllerModel = new ControllerModel(module.getApplicationContext(), module);
 		propertyChangeSupport = new PropertyChangeSupport(this);
 		manager.new PropertyChangeListenerRegistration(this, controllerModel);
@@ -610,7 +610,7 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 		return flexoFrame;
 	}
 
-	public FlexoModule getModule() {
+	public FlexoModule<?> getModule() {
 		return module;
 	}
 
@@ -813,7 +813,7 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 		if (action2 != null) {
 			class CompoundAction extends AbstractAction {
 
-				private final List<Action> actions = new ArrayList<Action>();
+				private final List<Action> actions = new ArrayList<>();
 
 				void addToAction(Action action) {
 					actions.add(action);
@@ -1324,7 +1324,8 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 	 *            TODO
 	 * @return a newly created and initialized ModuleView instance
 	 */
-	private ModuleView<?> createModuleViewForObjectAndPerspective(FlexoObject object, FlexoPerspective perspective, boolean editable) {
+	private static ModuleView<?> createModuleViewForObjectAndPerspective(FlexoObject object, FlexoPerspective perspective,
+			boolean editable) {
 		if (perspective == null) {
 			return null;
 		}
@@ -1492,7 +1493,7 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 	 * 
 	 * @return
 	 */
-	public final JComponent getCustomActionPanel() {
+	public static final JComponent getCustomActionPanel() {
 		return null;
 	}
 
@@ -1590,7 +1591,7 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 
 	public boolean handleWSException(final Exception e) throws InterruptedException {
 		if (!SwingUtilities.isEventDispatchThread()) {
-			final Holder<Boolean> returned = new Holder<Boolean>();
+			final Holder<Boolean> returned = new Holder<>();
 			try {
 				SwingUtilities.invokeAndWait(new Runnable() {
 					@Override
@@ -1607,7 +1608,7 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 		return _handleWSException(e);
 	}
 
-	private boolean _handleWSException(Throwable e) {
+	private static boolean _handleWSException(Throwable e) {
 		if (e instanceof RuntimeException && e.getCause() != null) {
 			e = e.getCause();
 		}
@@ -1700,7 +1701,7 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 	 * @param object
 	 * @return
 	 */
-	private FlexoObject getRelevantObject(FlexoObject object) {
+	private static FlexoObject getRelevantObject(FlexoObject object) {
 		/*if (object instanceof FlexoResource<?>) {
 			logger.info("Resource " + object + " loaded=" + ((FlexoResource<?>) object).isLoaded());
 		}*/
@@ -1853,7 +1854,7 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 		}
 		else if (evt.getSource() instanceof FlexoProject && evt.getPropertyName().equals(ProjectClosedNotification.CLOSE)) {
 			FlexoProject project = (FlexoProject) evt.getSource();
-			for (ModuleView<?> view : new ArrayList<ModuleView>(getViews())) {
+			for (ModuleView<?> view : new ArrayList<>(getViews())) {
 				if (view.getRepresentedObject() instanceof FlexoProjectObject) {
 					if (project.equals(((FlexoProjectObject) view.getRepresentedObject()).getProject())) {
 						view.deleteModuleView();
@@ -1896,7 +1897,7 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 	}
 
 	// Stores currently loading/selecting tasks
-	private final Map<FlexoObject, SelectAndFocusObjectTask> selectAndFocusObjectTasks = new Hashtable<FlexoObject, SelectAndFocusObjectTask>();
+	private final Map<FlexoObject, SelectAndFocusObjectTask> selectAndFocusObjectTasks = new Hashtable<>();
 
 	/**
 	 * Select the supplied object in a dedicated task
@@ -2002,9 +2003,9 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 		}
 
 		if (object instanceof FlexoResourceFactory) {
-			Class<? extends TechnologyAdapter> taClass = ((FlexoResourceFactory) object).getTechnologyAdapterClass();
+			Class<? extends TechnologyAdapter> taClass = ((FlexoResourceFactory<?, ?, ?>) object).getTechnologyAdapterClass();
 			TechnologyAdapterController<?> tac = getTechnologyAdapterController(taClass);
-			return tac.getIconForTechnologyObject(((FlexoResourceFactory) object).getResourceDataClass());
+			return tac.getIconForTechnologyObject(((FlexoResourceFactory<?, ?, ?>) object).getResourceDataClass());
 		}
 
 		ImageIcon iconForObject = statelessIconForObject(object);
@@ -2062,7 +2063,7 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 		}
 
 		if (object instanceof Module) {
-			return ((Module) object).getSmallIcon();
+			return ((Module<?>) object).getSmallIcon();
 		}
 
 		if (object instanceof FlexoActionCompoundEdit) {
@@ -2075,8 +2076,9 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 
 		else if (object instanceof AtomicEdit) {
 			ImageIcon baseIcon = IconLibrary.QUESTION_ICON;
-			if (((AtomicEdit) object).getModelFactory() instanceof PamelaResourceModelFactory) {
-				baseIcon = statelessIconForObject(((PamelaResourceModelFactory) ((AtomicEdit) object).getModelFactory()).getResource());
+			if (((AtomicEdit<?>) object).getModelFactory() instanceof PamelaResourceModelFactory) {
+				baseIcon = statelessIconForObject(
+						((PamelaResourceModelFactory<?>) ((AtomicEdit<?>) object).getModelFactory()).getResource());
 			}
 			if (object instanceof CreateCommand) {
 				return IconFactory.getImageIcon(baseIcon, IconLibrary.DUPLICATE);
@@ -2168,8 +2170,8 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 			return FMLRTIconLibrary.iconForObject((ViewObject) object);
 		}
 		else if (object instanceof RepositoryFolder) {
-			if (((RepositoryFolder) object).isRootFolder()) {
-				return statelessIconForObject(((RepositoryFolder) object).getResourceRepository().getResourceCenter());
+			if (((RepositoryFolder<?, ?>) object).isRootFolder()) {
+				return statelessIconForObject(((RepositoryFolder<?, ?>) object).getResourceRepository().getResourceCenter());
 			}
 			return IconLibrary.FOLDER_ICON;
 		}
@@ -2268,7 +2270,7 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 	private String infoMessage;
 	private String tempInfoMessage;
 	private int temporaryThreadCount = 0;
-	private final List<JLabel> infoLabels = new ArrayList<JLabel>();
+	private final List<JLabel> infoLabels = new ArrayList<>();
 
 	public JLabel makeInfoLabel() {
 		JLabel returned = new JLabel(getInfoMessage());
@@ -2300,7 +2302,7 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 				final Thread t = new Thread(new Runnable() {
 					@Override
 					public void run() {
-						String localTempInfoMessage = infoMessage;
+						// Unused String localTempInfoMessage = infoMessage;
 						// System.out.println("START " + localTempInfoMessage + " temporaryThreadCount=" + temporaryThreadCount);
 						try {
 							Thread.sleep(FlexoCst.TEMPORARY_MESSAGE_PERSISTENCY);

@@ -41,7 +41,6 @@ package org.openflexo.view.controller;
 
 import java.util.Collection;
 import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.logging.Logger;
@@ -76,7 +75,7 @@ public abstract class DefaultTechnologyAdapterControllerService extends FlexoSer
 
 	private static final Logger logger = Logger.getLogger(DefaultTechnologyAdapterControllerService.class.getPackage().getName());
 
-	private Map<Class, TechnologyAdapterController<?>> loadedAdapters;
+	private Map<Class<?>, TechnologyAdapterController<?>> loadedAdapters;
 
 	public static TechnologyAdapterControllerService getNewInstance() {
 		try {
@@ -99,15 +98,11 @@ public abstract class DefaultTechnologyAdapterControllerService extends FlexoSer
 	 */
 	private void loadAvailableTechnologyAdapterControllers() {
 		if (loadedAdapters == null) {
-			loadedAdapters = new Hashtable<Class, TechnologyAdapterController<?>>();
+			loadedAdapters = new Hashtable<>();
 			logger.info("Loading available technology adapter controllers...");
-			ServiceLoader<TechnologyAdapterController> loader = ServiceLoader.load(TechnologyAdapterController.class);
-			Iterator<TechnologyAdapterController> iterator = loader.iterator();
 			System.getProperty("java.class.path");
-			while (iterator.hasNext()) {
-				TechnologyAdapterController technologyAdapterController = iterator.next();
+			for (TechnologyAdapterController<?> technologyAdapterController : ServiceLoader.load(TechnologyAdapterController.class))
 				registerTechnologyAdapterController(technologyAdapterController);
-			}
 			logger.info("Loading available technology adapters. Done.");
 		}
 
@@ -164,7 +159,7 @@ public abstract class DefaultTechnologyAdapterControllerService extends FlexoSer
 				registerTechnologyAdapterController(technologyAdapterController);
 				return (TAC) technologyAdapterController;
 			}
-
+		
 		}*/
 
 		return null;
@@ -202,7 +197,6 @@ public abstract class DefaultTechnologyAdapterControllerService extends FlexoSer
 					adapterController.activate(((ModuleLoaded) notification).getLoadedModule());
 				}
 			}
-
 
 			for (TechnologyAdapterController<?> adapterController : getLoadedAdapterControllers()) {
 				ta = adapterController.getTechnologyAdapter();
@@ -256,7 +250,7 @@ public abstract class DefaultTechnologyAdapterControllerService extends FlexoSer
 	@Override
 	public void activateTechnology(TechnologyAdapter technologyAdapter) {
 
-		TechnologyAdapterController tac = getTechnologyAdapterController(technologyAdapter);
+		TechnologyAdapterController<?> tac = getTechnologyAdapterController(technologyAdapter);
 
 		if (tac != null) {
 			tac.activate();

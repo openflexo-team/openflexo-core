@@ -207,7 +207,6 @@ public class ContextualMenuManager {
 		for (FlexoActionType<?, ?, ?> actionType : focusedObject.getActionList()) {
 			if (TypeUtils.isAssignableTo(focusedObject, actionType.getFocusedObjectType())
 					&& (globalSelection == null || TypeUtils.isAssignableTo(globalSelection, actionType.getGlobalSelectionType()))) {
-				@SuppressWarnings("unchecked")
 				FlexoActionType<A, T1, T2> cast = (FlexoActionType<A, T1, T2>) actionType;
 				if (cast.getActionCategory() == FlexoActionType.DELETE_ACTION_TYPE) {
 					if (getEditor().isActionVisible(cast, (T1) focusedObject, (Vector<T2>) globalSelection)) {
@@ -318,7 +317,7 @@ public class ContextualMenuManager {
 			return orderedGroups.elements();
 		}
 
-		public void putAction(FlexoActionType actionType) {
+		public void putAction(FlexoActionType<?, ?, ?> actionType) {
 			if (acceptAction(actionType)) {
 				if (actionType.getActionMenu() != null) {
 					ContextualSubMenu subMenu = ensureSubMenuCreated(actionType.getActionMenu());
@@ -359,7 +358,7 @@ public class ContextualMenuManager {
 			}
 		}
 
-		public void addAction(FlexoActionType actionType) {
+		public void addAction(FlexoActionType<?, ?, ?> actionType) {
 			if (acceptAction(actionType)) {
 				ContextualMenuGroup contextualMenuGroup = get(actionType.getActionGroup());
 				if (contextualMenuGroup == null) {
@@ -392,7 +391,7 @@ public class ContextualMenuManager {
 				addSeparator = true;
 				// System.out.println("============= Groupe
 				// "+menuGroup._actionGroup.getLocalizedName());
-				for (Enumeration en2 = menuGroup.elements(); en2.hasMoreElements();) {
+				for (Enumeration<?> en2 = menuGroup.elements(); en2.hasMoreElements();) {
 					Object nextElement = en2.nextElement();
 
 					if (nextElement instanceof FlexoActionType) {
@@ -411,14 +410,14 @@ public class ContextualMenuManager {
 
 	}
 
-	protected class ContextualMenuGroup extends Vector {
+	protected class ContextualMenuGroup extends Vector<Object> {
 		private final ActionGroup _actionGroup;
 
 		public ContextualMenuGroup(ActionGroup actionGroup) {
 			_actionGroup = actionGroup;
 		}
 
-		public void addAction(FlexoActionType actionType) {
+		public void addAction(FlexoActionType<?, ?, ?> actionType) {
 			// should have already been checked, but it's more secure.
 			if (acceptAction(actionType)) {
 				add(actionType);
@@ -458,13 +457,13 @@ public class ContextualMenuManager {
 			if (getActionMenu().getSmallIcon() != null) {
 				returned.setIcon(getActionMenu().getSmallIcon());
 			}
-			for (Enumeration en = orderedGroups(); en.hasMoreElements();) {
+			for (Enumeration<?> en = orderedGroups(); en.hasMoreElements();) {
 				ContextualMenuGroup menuGroup = (ContextualMenuGroup) en.nextElement();
 				if (addSeparator) {
 					returned.addSeparator();
 				}
 				addSeparator = true;
-				for (Enumeration en2 = menuGroup.elements(); en2.hasMoreElements();) {
+				for (Enumeration<?> en2 = menuGroup.elements(); en2.hasMoreElements();) {
 					Object nextElement = en2.nextElement();
 					if (nextElement instanceof FlexoActionType) {
 						makeMenuItem((FlexoActionType) nextElement, focusedObject, returned);

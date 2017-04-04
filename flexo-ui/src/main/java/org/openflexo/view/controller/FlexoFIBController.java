@@ -42,8 +42,11 @@ package org.openflexo.view.controller;
 import java.util.List;
 import java.util.Vector;
 import java.util.logging.Logger;
+
 import javax.naming.InvalidNameException;
-import javax.swing.*;
+import javax.swing.ImageIcon;
+import javax.swing.SwingUtilities;
+
 import org.openflexo.ApplicationContext;
 import org.openflexo.connie.annotations.NotificationUnsafe;
 import org.openflexo.foundation.DataModification;
@@ -180,7 +183,7 @@ public class FlexoFIBController extends FIBController implements GraphicalFlexoO
 			return;
 		}
 
-		FIBView rv = getRootView();
+		FIBView<?, ?> rv = getRootView();
 		if (rv != null) {
 			// rv.updateDataObject(getDataObject());
 			rv.update();
@@ -295,7 +298,7 @@ public class FlexoFIBController extends FIBController implements GraphicalFlexoO
 		if (focused instanceof FlexoObject) {
 			focusedObject = (FlexoObject) focused;
 		}
-		Vector<FlexoObject> globalSelection = new Vector<FlexoObject>();
+		Vector<FlexoObject> globalSelection = new Vector<>();
 		for (Object o : selection) {
 			if (o instanceof FlexoObject) {
 				globalSelection.add((FlexoObject) o);
@@ -317,7 +320,7 @@ public class FlexoFIBController extends FIBController implements GraphicalFlexoO
 		if (focused instanceof FlexoObject) {
 			focusedObject = (FlexoObject) focused;
 		}
-		Vector<FlexoObject> globalSelection = new Vector<FlexoObject>();
+		Vector<FlexoObject> globalSelection = new Vector<>();
 		for (Object o : selection) {
 			if (o instanceof FlexoObject) {
 				globalSelection.add((FlexoObject) o);
@@ -339,7 +342,7 @@ public class FlexoFIBController extends FIBController implements GraphicalFlexoO
 		if (focused instanceof FlexoObject) {
 			focusedObject = (FlexoObject) focused;
 		}
-		Vector<FlexoObject> globalSelection = new Vector<FlexoObject>();
+		Vector<FlexoObject> globalSelection = new Vector<>();
 		for (Object o : selection) {
 			if (o instanceof FlexoObject) {
 				globalSelection.add((FlexoObject) o);
@@ -364,8 +367,8 @@ public class FlexoFIBController extends FIBController implements GraphicalFlexoO
 	protected void listenToPresentationPreferences() {
 		if (getFlexoController() != null && getFlexoController().getApplicationContext() != null) {
 			if (!preferencesRegistered) {
-				getFlexoController().getApplicationContext().getPresentationPreferences().getPropertyChangeSupport().addPropertyChangeListener(
-						evt -> {
+				getFlexoController().getApplicationContext().getPresentationPreferences().getPropertyChangeSupport()
+						.addPropertyChangeListener(evt -> {
 							if (evt.getPropertyName().equals(PresentationPreferences.HIDE_EMPTY_FOLDERS)) {
 								// FlexoFIBController.this.getPropertyChangeSupport().firePropertyChange("shouldBeDisplayed(RepositoryFolder)",
 								// false, true);
@@ -385,10 +388,12 @@ public class FlexoFIBController extends FIBController implements GraphicalFlexoO
 			return false;
 		}
 		ApplicationContext applicationContext = ctrl.getApplicationContext();
-		if (applicationContext == null) return false;
+		if (applicationContext == null)
+			return false;
 
 		PresentationPreferences presPref = applicationContext.getPresentationPreferences();
-		if (presPref == null) return false;
+		if (presPref == null)
+			return false;
 
 		return presPref.hideEmptyFolders();
 	}

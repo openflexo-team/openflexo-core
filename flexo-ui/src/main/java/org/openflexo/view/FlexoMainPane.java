@@ -150,7 +150,7 @@ public class FlexoMainPane extends JPanel implements PropertyChangeListener {
 		registrationManager.new PropertyChangeListenerRegistration(ControllerModel.RIGHT_VIEW_VISIBLE, this,
 				controller.getControllerModel());
 		perspective = controller.getCurrentPerspective();
-		tabbedPane = new TabbedPane<Location>(new TabHeaderRenderer<Location>() {
+		tabbedPane = new TabbedPane<>(new TabHeaderRenderer<Location>() {
 
 			@Override
 			public Icon getTabHeaderIcon(Location tab) {
@@ -442,8 +442,8 @@ public class FlexoMainPane extends JPanel implements PropertyChangeListener {
 			// boolean wasVisible = centerLayout.getNodeForName(position.name()).isVisible();
 			boolean visible = next != null;
 			centerLayout.displayNode(position.name(), visible, isExistingPreferenceForCurrentPerspective());
-			Node node = centerLayout.getNodeForName(position.name());
-			Split parent = node.getParent();
+			Node<?> node = centerLayout.getNodeForName(position.name());
+			Split<?> parent = node.getParent();
 			if (parent != centerLayout.getNodeForName(LayoutColumns.CENTER.name())) {
 				fixWeightForNodeChildren(parent);
 			}
@@ -471,13 +471,13 @@ public class FlexoMainPane extends JPanel implements PropertyChangeListener {
 	protected void fixWeightForNodeChildren(Split<?> split) {
 		int visibleChildren = 0;
 		// double weight = 0.0;
-		for (Node child : split.getChildren()) {
+		for (Node<?> child : split.getChildren()) {
 			if (!(child instanceof Divider) && child.isVisible()) {
 				visibleChildren++;
 				// weight+=child.getWeight();
 			}
 		}
-		for (Node child : split.getChildren()) {
+		for (Node<?> child : split.getChildren()) {
 			if (!(child instanceof Divider) && child.isVisible()) {
 				child.setWeight(1.0 / visibleChildren);
 			}
@@ -494,7 +494,7 @@ public class FlexoMainPane extends JPanel implements PropertyChangeListener {
 		if (perspective == null) {
 			return;
 		}
-		Node layoutModel = getController().getControllerModel().getLayoutForPerspective(perspective);
+		Node<?> layoutModel = getController().getControllerModel().getLayoutForPerspective(perspective);
 		if (layoutModel == null) {
 			layoutModel = getDefaultLayout();
 			perspective.setupDefaultLayout(layoutModel);
@@ -503,50 +503,50 @@ public class FlexoMainPane extends JPanel implements PropertyChangeListener {
 		centerPanel.revalidate();
 	}
 
-	private Split getDefaultLayout() {
+	private Split<?> getDefaultLayout() {
 		Split root = MSL_FACTORY.makeSplit();
 		root.setName("ROOT");
-		Split left = getVerticalSplit(LayoutPosition.TOP_LEFT, LayoutPosition.MIDDLE_LEFT, LayoutPosition.BOTTOM_LEFT);
+		Split<?> left = getVerticalSplit(LayoutPosition.TOP_LEFT, LayoutPosition.MIDDLE_LEFT, LayoutPosition.BOTTOM_LEFT);
 		left.setWeight(0.2);
 		left.setName(LayoutColumns.LEFT.name());
-		Split center = getVerticalSplit(LayoutPosition.TOP_CENTER, LayoutPosition.MIDDLE_CENTER, LayoutPosition.BOTTOM_CENTER);
+		Split<?> center = getVerticalSplit(LayoutPosition.TOP_CENTER, LayoutPosition.MIDDLE_CENTER, LayoutPosition.BOTTOM_CENTER);
 		center.setWeight(0.6);
 		center.setName(LayoutColumns.CENTER.name());
-		Split right = getVerticalSplit(LayoutPosition.TOP_RIGHT, LayoutPosition.MIDDLE_RIGHT, LayoutPosition.BOTTOM_RIGHT);
+		Split<?> right = getVerticalSplit(LayoutPosition.TOP_RIGHT, LayoutPosition.MIDDLE_RIGHT, LayoutPosition.BOTTOM_RIGHT);
 		right.setWeight(0.2);
 		right.setName(LayoutColumns.RIGHT.name());
 		root.setChildren(left, MSL_FACTORY.makeDivider(), center, MSL_FACTORY.makeDivider(), right);
 		return root;
 	}
 
-	private Split getVerticalSplit(LayoutPosition position1, LayoutPosition position2, LayoutPosition position3) {
+	private Split<?> getVerticalSplit(LayoutPosition position1, LayoutPosition position2, LayoutPosition position3) {
 		Split split = MSL_FACTORY.makeSplit();
 		split.setRowLayout(false);
-		Leaf l1 = MSL_FACTORY.makeLeaf(position1.name());
+		Leaf<?> l1 = MSL_FACTORY.makeLeaf(position1.name());
 		l1.setWeight(0.2);
-		Leaf l2 = MSL_FACTORY.makeLeaf(position2.name());
+		Leaf<?> l2 = MSL_FACTORY.makeLeaf(position2.name());
 		l2.setWeight(0.6);
-		Leaf l3 = MSL_FACTORY.makeLeaf(position3.name());
+		Leaf<?> l3 = MSL_FACTORY.makeLeaf(position3.name());
 		l3.setWeight(0.2);
 		split.setChildren(l1, MSL_FACTORY.makeDivider(), l2, MSL_FACTORY.makeDivider(), l3);
 		return split;
 	}
 
-	private Node getNodeForName(Node root, String name) {
+	private Node<?> getNodeForName(Node<?> root, String name) {
 		if (root instanceof Split) {
-			Split<?> split = (Split) root;
+			Split<?> split = (Split<?>) root;
 			if (name.equals(split.getName())) {
 				return split;
 			}
-			for (Node child : split.getChildren()) {
-				Node n = getNodeForName(child, name);
+			for (Node<?> child : split.getChildren()) {
+				Node<?> n = getNodeForName(child, name);
 				if (n != null) {
 					return n;
 				}
 			}
 		}
 		else if (root instanceof Leaf) {
-			Leaf leaf = (Leaf) root;
+			Leaf<?> leaf = (Leaf<?>) root;
 			if (name.equals(leaf.getName())) {
 				return leaf;
 			}
@@ -555,7 +555,7 @@ public class FlexoMainPane extends JPanel implements PropertyChangeListener {
 	}
 
 	private JComponent getComponentForPosition(LayoutPosition position) {
-		Node node = centerLayout.getNodeForName(position.name());
+		Node<?> node = centerLayout.getNodeForName(position.name());
 		if (node != null) {
 			return (JComponent) centerLayout.getComponentForNode(node);
 		}
@@ -577,33 +577,33 @@ public class FlexoMainPane extends JPanel implements PropertyChangeListener {
 	}
 
 	private void updateLeftViewVisibility() {
-		Node left = getNodeForName(centerLayout.getModel(), LayoutColumns.LEFT.name());
+		Node<?> left = getNodeForName(centerLayout.getModel(), LayoutColumns.LEFT.name());
 		updateVisibility(left, controller.getControllerModel().isLeftViewVisible());
 		centerPanel.revalidate();
 		centerPanel.repaint();
 	}
 
 	private void updateRightViewVisibility() {
-		Node right = getNodeForName(centerLayout.getModel(), LayoutColumns.RIGHT.name());
+		Node<?> right = getNodeForName(centerLayout.getModel(), LayoutColumns.RIGHT.name());
 		updateVisibility(right, controller.getControllerModel().isRightViewVisible());
 		centerPanel.revalidate();
 		centerPanel.repaint();
 	}
 
-	private void updateVisibility(Node root, boolean visible) {
+	private void updateVisibility(Node<?> root, boolean visible) {
 		if (root instanceof Leaf) {
 			Component componentForNode = centerLayout.getComponentForNode(root);
 			if (componentForNode instanceof EmptyPanel) {
 				// EmptyPanel means that there is nothing to display/hide here
 			}
 			else {
-				centerLayout.displayNode(((Leaf) root).getName(), visible, isExistingPreferenceForCurrentPerspective());
+				centerLayout.displayNode(((Leaf<?>) root).getName(), visible, isExistingPreferenceForCurrentPerspective());
 			}
 		}
 		else if (root instanceof Split) {
-			Split<?> split = (Split) root;
+			Split<?> split = (Split<?>) root;
 			centerLayout.displayNode(split.getName(), visible, isExistingPreferenceForCurrentPerspective());
-			for (Node child : split.getChildren()) {
+			for (Node<?> child : split.getChildren()) {
 				updateVisibility(child, visible);
 			}
 			fixWeightForNodeChildren(split);

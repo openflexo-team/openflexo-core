@@ -135,7 +135,6 @@ public abstract class FMLRTNaturePerspective extends TechnologyPerspective<FMLRT
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
 	public boolean hasModuleViewForObject(FlexoObject object) {
 		if (object instanceof View && viewNature != null && viewNature.hasNature((View) object)) {
 			return true;

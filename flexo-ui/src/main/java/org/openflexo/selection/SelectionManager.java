@@ -106,10 +106,10 @@ public abstract class SelectionManager extends Observable {
 	public SelectionManager(FlexoController controller) {
 		super();
 		_controller = controller;
-		_selection = new Vector<FlexoObject>();
-		_selectionListeners = new Vector<SelectionListener>();
+		_selection = new Vector<>();
+		_selectionListeners = new Vector<>();
 
-		inspectionContext = new Hashtable<String, Object>();
+		inspectionContext = new Hashtable<>();
 		if (getController() != null) {
 			inspectionContext.put(MODULE_KEY, getController().getModule().getClass().getName());
 		}

@@ -80,7 +80,6 @@ import org.openflexo.view.controller.FlexoController;
 public abstract class AbstractCreateVirtualModelInstanceWizard<A extends AbstractCreateVirtualModelInstance<?, ?, ?, ?>>
 		extends FlexoWizard {
 
-	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(AbstractCreateVirtualModelInstanceWizard.class.getPackage().getName());
 
 	protected final A action;
@@ -430,7 +429,7 @@ public abstract class AbstractCreateVirtualModelInstanceWizard<A extends Abstrac
 	public class ConfigureVirtualModelModelSlot<VMI extends AbstractVirtualModelInstance<VMI, VM>, VM extends AbstractVirtualModel<VM>>
 			extends ConfigureModelSlot<FMLRTModelSlot<VMI, VM>, VMI> {
 
-		public ConfigureVirtualModelModelSlot(FMLRTModelSlot modelSlot) {
+		public ConfigureVirtualModelModelSlot(FMLRTModelSlot<VMI, VM> modelSlot) {
 			super(modelSlot);
 		}
 

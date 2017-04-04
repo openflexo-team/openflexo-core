@@ -76,7 +76,7 @@ public abstract class InteractiveProjectLoadingHandler implements ProjectLoading
 	}
 
 	protected Vector<ResourceToConvert> searchResourcesToConvert(FlexoProject project) {
-		Vector<ResourceToConvert> resourcesToConvert = new Vector<ResourceToConvert>();
+		Vector<ResourceToConvert> resourcesToConvert = new Vector<>();
 
 		for (FlexoResource<?> resource : project.getAllResources()) {
 			if (resource instanceof PamelaResource) {
@@ -93,7 +93,7 @@ public abstract class InteractiveProjectLoadingHandler implements ProjectLoading
 	}
 
 	protected void performConversion(FlexoProject project, Vector<ResourceToConvert> resourcesToConvert, FlexoProgress progress) {
-		List<PamelaResource<?, ?>> resources = new ArrayList<PamelaResource<?, ?>>();
+		List<PamelaResource<?, ?>> resources = new ArrayList<>();
 		for (ResourceToConvert resourceToConvert : resourcesToConvert) {
 			resources.add(resourceToConvert.getResource());
 		}
@@ -112,13 +112,10 @@ public abstract class InteractiveProjectLoadingHandler implements ProjectLoading
 				try {
 					res.getResourceData(null);
 				} catch (FileNotFoundException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} catch (ResourceLoadingCancelledException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} catch (FlexoException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} // Converts the resource by loading it.
 			}
@@ -186,13 +183,10 @@ public abstract class InteractiveProjectLoadingHandler implements ProjectLoading
 			try {
 				resource.getResourceData(null);
 			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (ResourceLoadingCancelledException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (FlexoException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}

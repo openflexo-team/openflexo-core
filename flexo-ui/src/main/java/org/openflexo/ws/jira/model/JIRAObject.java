@@ -117,14 +117,17 @@ public class JIRAObject<J extends JIRAObject<J>> extends HashMap<String, Object>
 		J j = getTypedClass().newInstance();
 		if (id != null) {
 			j.setId(id);
-		} else if (key != null) {
+		}
+		else if (key != null) {
 			j.setKey(key);
-		} else {
+		}
+		else {
 			j.setSelf(self);
 		}
 		if (originalObject != null) {
 			j.originalObject = originalObject;
-		} else {
+		}
+		else {
 			j.originalObject = (J) this;
 		}
 		return j;
@@ -139,11 +142,14 @@ public class JIRAObject<J extends JIRAObject<J>> extends HashMap<String, Object>
 	public int hashCode() {
 		if (getId() != null) {
 			return getId().hashCode();
-		} else if (getKey() != null) {
+		}
+		else if (getKey() != null) {
 			return getKey().hashCode();
-		} else if (getSelf() != null) {
+		}
+		else if (getSelf() != null) {
 			return getSelf().hashCode();
-		} else {
+		}
+		else {
 			return super.hashCode();
 		}
 	}
@@ -202,20 +208,23 @@ public class JIRAObject<J extends JIRAObject<J>> extends HashMap<String, Object>
 				if (value instanceof JIRAObject && JIRAObject.class.isAssignableFrom(field.getType())) {
 					JIRAObject jiraObject = (JIRAObject) value;
 					field.set(o, jiraObject.mutate(field.getType()));
-				} else if (value instanceof List && List.class.isAssignableFrom(field.getGenericType().getClass()) && JIRAObject.class
+				}
+				else if (value instanceof List && List.class.isAssignableFrom(field.getGenericType().getClass()) && JIRAObject.class
 						.isAssignableFrom(((ParameterizedType) field.getGenericType()).getActualTypeArguments()[0].getClass())) {
 					List<? extends JIRAObject> list = (List<? extends JIRAObject>) value;
-					List<JIRAObject> values = new ArrayList<JIRAObject>();
+					List<JIRAObject> values = new ArrayList<>();
 					for (JIRAObject jiraObject : list) {
 						values.add(jiraObject.mutate(
 								(Class<? extends JIRAObject>) ((ParameterizedType) field.getGenericType()).getActualTypeArguments()[0]));
 
 					}
 					field.set(o, values);
-				} else {
+				}
+				else {
 					field.set(o, value);
 				}
-			} else {
+			}
+			else {
 				o.put(fieldName, value);
 			}
 		}

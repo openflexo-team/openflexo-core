@@ -309,7 +309,7 @@ public class DocSubmissionReportDialog extends FlexoDialog {
 		public DocSubmissionReportModel(DocSubmissionReport report) {
 			super();
 			_report = report;
-			_shouldImport = new Vector<Boolean>();
+			_shouldImport = new Vector<>();
 			for (int i = 0; i < _report.size(); i++) {
 				_shouldImport.add(new Boolean(true));
 			}
@@ -433,7 +433,7 @@ public class DocSubmissionReportDialog extends FlexoDialog {
 		}
 
 		public Vector<DocItemAction> getSelectedActions() {
-			Vector<DocItemAction> returned = new Vector<DocItemAction>();
+			Vector<DocItemAction> returned = new Vector<>();
 
 			for (int i = 0; i < _shouldImport.size(); i++) {
 				if (_shouldImport.elementAt(i).booleanValue()) {
@@ -444,7 +444,7 @@ public class DocSubmissionReportDialog extends FlexoDialog {
 		}
 	}
 
-	public Vector getSelectedActions() {
+	public Vector<?> getSelectedActions() {
 		return _docSubmissionReportModel.getSelectedActions();
 	}
 }

@@ -307,7 +307,7 @@ public abstract class ApplicationContext extends DefaultFlexoServiceManager impl
 		// Little hack to handle rc location saving
 		// TODO: Should be removed when preferences will be a service see OPENFLEXO-651
 		if (notification instanceof ResourceCenterListShouldBeStored && caller instanceof FlexoResourceCenterService) {
-			List<File> rcList = new ArrayList<File>();
+			List<File> rcList = new ArrayList<>();
 			for (FlexoResourceCenter<?> rc : ((FlexoResourceCenterService) caller).getResourceCenters()) {
 				if (rc instanceof DirectoryResourceCenter) {
 					rcList.add(((DirectoryResourceCenter) rc).getDirectory());
@@ -428,7 +428,8 @@ public abstract class ApplicationContext extends DefaultFlexoServiceManager impl
 	@Override
 	protected FlexoTaskManager createTaskManager() {
 		FlexoTaskManager returned = super.createTaskManager();
-		TaskManagerPanel taskManagerPanel = new TaskManagerPanel(returned);
+		// Unused TaskManagerPanel taskManagerPanel =
+		new TaskManagerPanel(returned);
 		return returned;
 	}
 }

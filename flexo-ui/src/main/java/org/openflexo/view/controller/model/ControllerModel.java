@@ -39,8 +39,17 @@
 
 package org.openflexo.view.controller.model;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+import java.util.Stack;
+import java.util.Vector;
+import java.util.logging.Level;
+
 import org.apache.commons.collections15.ListUtils;
 import org.openflexo.ApplicationContext;
 import org.openflexo.foundation.FlexoEditor;
@@ -56,16 +65,8 @@ import org.openflexo.toolbox.ExtendedSet;
 import org.openflexo.toolbox.PropertyChangeListenerRegistrationManager;
 import org.openflexo.view.controller.FlexoController;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-import java.util.Stack;
-import java.util.Vector;
-import java.util.logging.Level;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 public class ControllerModel extends ControllerModelObject implements PropertyChangeListener {
 
@@ -125,12 +126,12 @@ public class ControllerModel extends ControllerModelObject implements PropertyCh
 	private final ApplicationContext context;
 
 	/** The module in which this controller model was created (mainly used to save module specific preferences) */
-	private final FlexoModule module;
+	private final FlexoModule<?> module;
 
 	/** A property change listener registration manager that keeps track of all the registered {@link PropertyChangeListener} */
 	private final PropertyChangeListenerRegistrationManager registrationManager;
 
-	public ControllerModel(ApplicationContext context, FlexoModule module) {
+	public ControllerModel(ApplicationContext context, FlexoModule<?> module) {
 		this.context = context;
 		this.module = module;
 		registrationManager = new PropertyChangeListenerRegistrationManager();
@@ -143,11 +144,11 @@ public class ControllerModel extends ControllerModelObject implements PropertyCh
 				context.getProjectLoader());
 		registrationManager.new PropertyChangeListenerRegistration(InteractiveProjectLoader.PROJECT_CLOSED, this,
 				context.getProjectLoader());
-		objects = new ArrayList<FlexoObject>();
-		locations = new ExtendedSet<Location>();
-		perspectives = new Vector<FlexoPerspective>();
-		previousHistory = new Stack<Location>();
-		nextHistory = new Stack<Location>();
+		objects = new ArrayList<>();
+		locations = new ExtendedSet<>();
+		perspectives = new Vector<>();
+		previousHistory = new Stack<>();
+		nextHistory = new Stack<>();
 	}
 
 	public ModuleLoader getModuleLoader() {
@@ -158,7 +159,7 @@ public class ControllerModel extends ControllerModelObject implements PropertyCh
 		return context.getProjectLoader();
 	}
 
-	public FlexoModule getModule() {
+	public FlexoModule<?> getModule() {
 		return module;
 	}
 
@@ -430,7 +431,8 @@ public class ControllerModel extends ControllerModelObject implements PropertyCh
 					return location;
 				}
 			}
-		} else {
+		}
+		else {
 			for (Location location : allLocations) {
 				if (filterEditor(editor, location) && isLocationAvailable(location)) {
 					return location;
@@ -440,7 +442,7 @@ public class ControllerModel extends ControllerModelObject implements PropertyCh
 		return NO_LOCATION;
 	}
 
-	private boolean filterEditor(FlexoEditor editor, Location location) {
+	private static boolean filterEditor(FlexoEditor editor, Location location) {
 		return editor == null || location.getEditor() == editor;
 	}
 
@@ -448,7 +450,7 @@ public class ControllerModel extends ControllerModelObject implements PropertyCh
 		return locations.contains(location);
 	}
 
-	private FlexoObject getParent(FlexoObject object) {
+	private static FlexoObject getParent(FlexoObject object) {
 		logger.warning("Please reimplement this (getParent(FlexoObject)");
 		return null;
 	}
@@ -518,14 +520,14 @@ public class ControllerModel extends ControllerModelObject implements PropertyCh
 	private void handleProjectRemoval(FlexoProject removedProject) {
 		updateHistoryForProjectRemoval(previousHistory, removedProject);
 		updateHistoryForProjectRemoval(nextHistory, removedProject);
-		for (Location location : new ArrayList<Location>(locations)) {
+		for (Location location : new ArrayList<>(locations)) {
 			if (location.getEditor() != null && location.getEditor().getProject() == removedProject) {
 				removeFromLocations(location);
 			}
 		}
 	}
 
-	private void updateHistoryForProjectRemoval(Stack<Location> history, FlexoProject removedProject) {
+	private static void updateHistoryForProjectRemoval(Stack<Location> history, FlexoProject removedProject) {
 		Iterator<Location> i = history.iterator();
 		while (i.hasNext()) {
 			Location hl = i.next();
@@ -541,7 +543,7 @@ public class ControllerModel extends ControllerModelObject implements PropertyCh
 		}
 		updateHistoryForDeletedObject(previousHistory, deletedObject);
 		updateHistoryForDeletedObject(nextHistory, deletedObject);
-		for (Location location : new ArrayList<Location>(locations)) {
+		for (Location location : new ArrayList<>(locations)) {
 			if (location.getObject() == deletedObject) {
 				removeFromLocations(location);
 			}
@@ -557,7 +559,7 @@ public class ControllerModel extends ControllerModelObject implements PropertyCh
 		registrationManager.removeListener(deletedObject.getDeletedProperty(), this, deletedObject);
 	}
 
-	private void updateHistoryForDeletedObject(Stack<Location> history, FlexoObject deletedObject) {
+	private static void updateHistoryForDeletedObject(Stack<Location> history, FlexoObject deletedObject) {
 		Iterator<Location> i = history.iterator();
 		while (i.hasNext()) {
 			Location hl = i.next();
@@ -571,7 +573,7 @@ public class ControllerModel extends ControllerModelObject implements PropertyCh
 	 * LAYOUT *
 	 **********/
 
-	public Node getLayoutForPerspective(FlexoPerspective perspective) {
+	public Node<?> getLayoutForPerspective(FlexoPerspective perspective) {
 
 		String layout = null;
 		if (context.getGeneralPreferences() != null) {
@@ -586,11 +588,11 @@ public class ControllerModel extends ControllerModelObject implements PropertyCh
 		}
 	}
 
-	private Node getLayoutFromString(String layout) {
+	private Node<?> getLayoutFromString(String layout) {
 		return getGsonLayout().fromJson(layout, Node.class);
 	}
 
-	public void setLayoutForPerspective(FlexoPerspective perspective, Node layout) {
+	public void setLayoutForPerspective(FlexoPerspective perspective, Node<?> layout) {
 		context.getPresentationPreferences().setLayoutFor(getGsonLayout().toJson(layout),
 				getModule().getShortName() + perspective.getName());
 		context.getPreferencesService().savePreferences();

@@ -44,7 +44,6 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -89,9 +88,9 @@ public class ModuleLoader extends FlexoServiceImpl implements FlexoService, HasP
 
 	private boolean allowsDocSubmission;
 
-	private FlexoModule activeModule = null;
+	private FlexoModule<?> activeModule = null;
 
-	private Module activatingModule;
+	private Module<?> activatingModule;
 
 	private WeakReference<FlexoEditor> lastActiveEditor;
 
@@ -102,7 +101,7 @@ public class ModuleLoader extends FlexoServiceImpl implements FlexoService, HasP
 			if (evt.getPropertyName().equals(ControllerModel.CURRENT_EDITOR)) {
 				FlexoEditor newEditor = (FlexoEditor) evt.getNewValue();
 				if (newEditor != null) {
-					lastActiveEditor = new WeakReference<FlexoEditor>(newEditor);
+					lastActiveEditor = new WeakReference<>(newEditor);
 				}
 			}
 		}
@@ -137,14 +136,10 @@ public class ModuleLoader extends FlexoServiceImpl implements FlexoService, HasP
 	 */
 	private void loadAvailableModules() {
 		if (knownModules == null) {
-			knownModules = new LinkedHashMap<Class<? extends Module>, Module<?>>();
+			knownModules = new LinkedHashMap<>();
 			logger.info("Loading available modules...");
-			ServiceLoader<Module> loader = ServiceLoader.load(Module.class);
-			Iterator<Module> iterator = loader.iterator();
-			while (iterator.hasNext()) {
-				Module module = iterator.next();
+			for (Module<?> module : ServiceLoader.load(Module.class))
 				registerModule(module);
-			}
 			logger.info("Loading available modules. Done.");
 		}
 
@@ -191,7 +186,7 @@ public class ModuleLoader extends FlexoServiceImpl implements FlexoService, HasP
 		return null;
 	}
 
-	public FlexoModule getActiveModule() {
+	public FlexoModule<?> getActiveModule() {
 		return activeModule;
 	}
 
@@ -201,7 +196,7 @@ public class ModuleLoader extends FlexoServiceImpl implements FlexoService, HasP
 	 * @return
 	 */
 	public List<Module<?>> getKnownModules() {
-		return new ArrayList<Module<?>>(knownModules.values());
+		return new ArrayList<>(knownModules.values());
 	}
 
 	/**
@@ -238,7 +233,7 @@ public class ModuleLoader extends FlexoServiceImpl implements FlexoService, HasP
 	 * @return
 	 */
 	public List<Module<?>> getLoadedModules() {
-		List<Module<?>> returned = new ArrayList<Module<?>>();
+		List<Module<?>> returned = new ArrayList<>();
 		for (Module<?> module : getKnownModules()) {
 			if (module.isLoaded()) {
 				returned.add(module);
@@ -253,7 +248,7 @@ public class ModuleLoader extends FlexoServiceImpl implements FlexoService, HasP
 	 * @return
 	 */
 	public List<FlexoModule<?>> getLoadedModuleInstances() {
-		List<FlexoModule<?>> returned = new ArrayList<FlexoModule<?>>();
+		List<FlexoModule<?>> returned = new ArrayList<>();
 		for (Module<?> module : getKnownModules()) {
 			if (module.isLoaded()) {
 				returned.add(module.getLoadedModuleInstance());
@@ -272,7 +267,7 @@ public class ModuleLoader extends FlexoServiceImpl implements FlexoService, HasP
 	 * @return Vector
 	 */
 	public List<Module<?>> getUnloadedModules() {
-		List<Module<?>> returned = new ArrayList<Module<?>>();
+		List<Module<?>> returned = new ArrayList<>();
 		for (Module<?> module : getKnownModules()) {
 			if (!module.isLoaded()) {
 				returned.add(module);
@@ -348,14 +343,14 @@ public class ModuleLoader extends FlexoServiceImpl implements FlexoService, HasP
 	 * @author sylvain
 	 * 
 	 */
-	public class ModuleActivated implements ServiceNotification {
-		private final FlexoModule loadedModule;
+	public class ModuleActivated<M extends FlexoModule<M>> implements ServiceNotification {
+		private final FlexoModule<M> loadedModule;
 
-		public ModuleActivated(FlexoModule loadedModule) {
+		public ModuleActivated(FlexoModule<M> loadedModule) {
 			this.loadedModule = loadedModule;
 		}
 
-		public FlexoModule getLoadedModule() {
+		public FlexoModule<M> getLoadedModule() {
 			return loadedModule;
 		}
 	}
@@ -368,7 +363,7 @@ public class ModuleLoader extends FlexoServiceImpl implements FlexoService, HasP
 		return getActiveModule() != null && getActiveModule().getModule() == module;
 	}
 
-	public boolean isActive(FlexoModule module) {
+	public boolean isActive(FlexoModule<?> module) {
 		return getActiveModule() == module;
 	}
 
@@ -403,7 +398,7 @@ public class ModuleLoader extends FlexoServiceImpl implements FlexoService, HasP
 
 	private boolean ignoreSwitch = false;
 
-	public LoadModuleTask switchToModule(final Module module) throws ModuleLoadingException {
+	public LoadModuleTask switchToModule(final Module<?> module) throws ModuleLoadingException {
 		if (!SwingUtilities.isEventDispatchThread()) {
 			SwingUtilities.invokeLater(new Runnable() {
 				@Override
@@ -432,7 +427,7 @@ public class ModuleLoader extends FlexoServiceImpl implements FlexoService, HasP
 		}
 	}
 
-	FlexoModule performSwitchToModule(final Module module) throws ModuleLoadingException {
+	FlexoModule<?> performSwitchToModule(final Module<?> module) throws ModuleLoadingException {
 
 		ignoreSwitch = true;
 		activatingModule = module;
@@ -440,10 +435,10 @@ public class ModuleLoader extends FlexoServiceImpl implements FlexoService, HasP
 			if (logger.isLoggable(Level.INFO)) {
 				logger.info("Switch to module " + module.getName());
 			}
-			FlexoModule moduleInstance = getModuleInstance(module);
+			FlexoModule<?> moduleInstance = getModuleInstance(module);
 			if (moduleInstance != null) {
 				Progress.progress("activate_module");
-				FlexoModule old = activeModule;
+				FlexoModule<?> old = activeModule;
 				if (activeModule != null) {
 					if (activeModule.getController() != null && activeModule.getController().getControllerModel() != null) {
 						activeModule.getController().getControllerModel().getPropertyChangeSupport()
@@ -458,7 +453,7 @@ public class ModuleLoader extends FlexoServiceImpl implements FlexoService, HasP
 						.addPropertyChangeListener(ControllerModel.CURRENT_EDITOR, activeEditorListener);
 				// }
 				getPropertyChangeSupport().firePropertyChange(ACTIVE_MODULE, old, activeModule);
-				getServiceManager().notify(this, new ModuleActivated(activeModule));
+				getServiceManager().notify(this, new ModuleActivated<>(activeModule));
 				return moduleInstance;
 			}
 			throw new ModuleLoadingException(module);
@@ -569,7 +564,7 @@ public class ModuleLoader extends FlexoServiceImpl implements FlexoService, HasP
 		}
 	}
 
-	public void closeModule(FlexoModule module) {
+	public void closeModule(FlexoModule<?> module) {
 		module.close();
 	}
 
@@ -588,7 +583,7 @@ public class ModuleLoader extends FlexoServiceImpl implements FlexoService, HasP
 	@Override
 	public void initialize() {
 		loadAvailableModules();
-		for (Module module : getKnownModules()) {
+		for (Module<?> module : getKnownModules()) {
 			module.initialize();
 		}
 	}

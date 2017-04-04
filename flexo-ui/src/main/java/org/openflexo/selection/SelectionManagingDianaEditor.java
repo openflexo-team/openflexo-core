@@ -152,7 +152,7 @@ public class SelectionManagingDianaEditor<M extends FlexoObject> extends JDianaI
 		// logger.info("_selectionManager="+_selectionManager);
 		// logger.info("anObject.getDrawable()="+anObject.getDrawable());
 		if (_selectionManager != null) {
-			for (FlexoObject o : new ArrayList<FlexoObject>(_selectionManager.getSelection())) {
+			for (FlexoObject o : new ArrayList<>(_selectionManager.getSelection())) {
 				if (!mayRepresent(o)) {
 					_selectionManager.removeFromSelected(o);
 				}
@@ -170,7 +170,7 @@ public class SelectionManagingDianaEditor<M extends FlexoObject> extends JDianaI
 	@Override
 	public void removeFromSelectedObjects(DrawingTreeNode<?, ?> anObject) {
 		if (_selectionManager != null) {
-			for (FlexoObject o : new ArrayList<FlexoObject>(_selectionManager.getSelection())) {
+			for (FlexoObject o : new ArrayList<>(_selectionManager.getSelection())) {
 				if (!mayRepresent(o)) {
 					_selectionManager.removeFromSelected(o);
 				}
@@ -232,22 +232,25 @@ public class SelectionManagingDianaEditor<M extends FlexoObject> extends JDianaI
 					}
 					FlexoObject o = controller.getDrawableForDrawingTreeNode(node);
 
-					SelectionManager selectionManager = ((SelectionManagingDianaEditor) controller).getSelectionManager();
+					SelectionManager selectionManager = ((SelectionManagingDianaEditor<?>) controller).getSelectionManager();
 					if (ToolBox.getPLATFORM() == ToolBox.MACOS) {
 						if (!selectionManager.selectionContains(o)) {
 							if (selectionManager.getSelectionSize() < 2) {
 								selectionManager.setSelectedObject(o);
-							} else {
+							}
+							else {
 								selectionManager.addToSelected(o);
 							}
 						}
-					} else {
+					}
+					else {
 						boolean isControlDown = context.isControlDown();
 						if (isControlDown) {
 							if (!selectionManager.selectionContains(o)) {
 								selectionManager.addToSelected(o);
 							}
-						} else {
+						}
+						else {
 							if (!selectionManager.selectionContains(o)) {
 								selectionManager.setSelectedObject(o);
 							}
@@ -303,8 +306,8 @@ public class SelectionManagingDianaEditor<M extends FlexoObject> extends JDianaI
 		super.setLastClickedPoint(lastClickedPoint, node);
 		FGEPoint unnormalizedPoint = FGEUtils.convertNormalizedPoint(node, lastClickedPoint, getDrawing().getRoot());
 		if (_selectionManager instanceof MouseSelectionManager) {
-			((MouseSelectionManager) _selectionManager).setLastClickedPoint(new Point((int) unnormalizedPoint.getX(),
-					(int) unnormalizedPoint.getY()));
+			((MouseSelectionManager) _selectionManager)
+					.setLastClickedPoint(new Point((int) unnormalizedPoint.getX(), (int) unnormalizedPoint.getY()));
 			if (getDrawableForDrawingTreeNode(node) != null) {
 				((MouseSelectionManager) _selectionManager).setLastSelectedObject(getDrawableForDrawingTreeNode(node));
 			}

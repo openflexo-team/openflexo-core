@@ -108,7 +108,7 @@ public class FullInteractiveProjectLoadingHandler extends InteractiveProjectLoad
 	@Override
 	public boolean useOlderMappingWhenLoadingFailure(FlexoResource<?> resource) throws ProjectLoadingCancelledException {
 		if (useOlderMappingHashtable == null) {
-			useOlderMappingHashtable = new Hashtable<FlexoResource<?>, Boolean>();
+			useOlderMappingHashtable = new Hashtable<>();
 		}
 
 		if (useOlderMappingHashtable.get(resource) != null) {
@@ -117,15 +117,12 @@ public class FullInteractiveProjectLoadingHandler extends InteractiveProjectLoad
 
 		String TRY_TO_RECOVER = FlexoLocalization.getMainLocalizer().localizedForKey("try_to_recover_resource");
 		String CANCEL = FlexoLocalization.getMainLocalizer().localizedForKey("cancel");
-		int choice = FlexoController.selectOption(
-				"<html><center>" + IconLibrary.UNFIXABLE_WARNING_ICON.getHTMLImg() + "<b>&nbsp;"
-						+ FlexoLocalization.getMainLocalizer().localizedForKey("warning") + "</b></center><br>"
-						+ FlexoLocalization.getMainLocalizer().localizedForKey("resource") + " <b>" + resource.getURI() + "</b><br>"
-						+ FlexoLocalization.getMainLocalizer()
-								.localizedForKey("this_resource_could_not_be_deserialized_with_declared_version")
-						+ "<br>" + FlexoLocalization.getMainLocalizer().localizedForKey("should_i_try_to_recover_by_using_older_versions")
-						+ "<br>" + "<i>" + FlexoLocalization.getMainLocalizer().localizedForKey("you_may_loose_some_informations")
-						+ "</i><br></html>",
+		int choice = FlexoController.selectOption("<html><center>" + IconLibrary.UNFIXABLE_WARNING_ICON.getHTMLImg() + "<b>&nbsp;"
+				+ FlexoLocalization.getMainLocalizer().localizedForKey("warning") + "</b></center><br>"
+				+ FlexoLocalization.getMainLocalizer().localizedForKey("resource") + " <b>" + resource.getURI() + "</b><br>"
+				+ FlexoLocalization.getMainLocalizer().localizedForKey("this_resource_could_not_be_deserialized_with_declared_version")
+				+ "<br>" + FlexoLocalization.getMainLocalizer().localizedForKey("should_i_try_to_recover_by_using_older_versions") + "<br>"
+				+ "<i>" + FlexoLocalization.getMainLocalizer().localizedForKey("you_may_loose_some_informations") + "</i><br></html>",
 				TRY_TO_RECOVER, TRY_TO_RECOVER, CANCEL);
 
 		if (choice == 0) {

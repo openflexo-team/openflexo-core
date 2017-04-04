@@ -196,13 +196,10 @@ public class JIRAIssue extends JIRAObject<JIRAIssue> {
 							field.set(this, object.getAsIdentityObject());
 						}
 					} catch (IllegalArgumentException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					} catch (IllegalAccessException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					} catch (InstantiationException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 				}
@@ -213,20 +210,17 @@ public class JIRAIssue extends JIRAObject<JIRAIssue> {
 					try {
 						List<J> list = (List<J>) field.get(this);
 						if (list != null) {
-							List<J> newList = new ArrayList<J>();
+							List<J> newList = new ArrayList<>();
 							for (J j : list) {
 								newList.add(j.getAsIdentityObject());
 							}
 							field.set(this, newList);
 						}
 					} catch (IllegalArgumentException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					} catch (IllegalAccessException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					} catch (InstantiationException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 				}
@@ -252,10 +246,8 @@ public class JIRAIssue extends JIRAObject<JIRAIssue> {
 							field.set(this, object.restoreObject());
 						}
 					} catch (IllegalArgumentException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					} catch (IllegalAccessException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 				}
@@ -266,17 +258,15 @@ public class JIRAIssue extends JIRAObject<JIRAIssue> {
 					try {
 						List<J> list = (List<J>) field.get(this);
 						if (list != null) {
-							List<J> newList = new ArrayList<J>();
+							List<J> newList = new ArrayList<>();
 							for (J j : list) {
 								newList.add(j.restoreObject());
 							}
 							field.set(this, newList);
 						}
 					} catch (IllegalArgumentException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					} catch (IllegalAccessException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 				}
@@ -300,17 +290,15 @@ public class JIRAIssue extends JIRAObject<JIRAIssue> {
 						try {
 							field.set(this, null);
 						} catch (IllegalArgumentException e) {
-							// TODO Auto-generated catch block
 							e.printStackTrace();
 						} catch (IllegalAccessException e) {
-							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
 					}
 				}
 				klass = klass.getSuperclass();
 			}
-			for (Map.Entry<String, Object> e : new HashMap<String, Object>(this).entrySet()) {
+			for (Map.Entry<String, Object> e : new HashMap<>(this).entrySet()) {
 				if (!getIssuetype().getFields().containsKey(e.getKey())) {
 					this.remove(e.getKey());
 				}
