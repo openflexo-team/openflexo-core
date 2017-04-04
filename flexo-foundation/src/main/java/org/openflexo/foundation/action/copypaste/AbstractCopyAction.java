@@ -36,7 +36,7 @@
  * 
  */
 
-package org.openflexo.foundation.action;
+package org.openflexo.foundation.action.copypaste;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -50,6 +50,8 @@ import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.InnerResourceData;
+import org.openflexo.foundation.action.FlexoAction;
+import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.PamelaResource;
 

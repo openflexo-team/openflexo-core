@@ -43,10 +43,10 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoObject;
-import org.openflexo.foundation.action.FlexoClipboard;
-import org.openflexo.foundation.action.PasteAction.DefaultPastingContext;
-import org.openflexo.foundation.action.PasteAction.PasteHandler;
-import org.openflexo.foundation.action.PasteAction.PastingContext;
+import org.openflexo.foundation.action.copypaste.DefaultPastingContext;
+import org.openflexo.foundation.action.copypaste.FlexoClipboard;
+import org.openflexo.foundation.action.copypaste.FlexoPasteHandler;
+import org.openflexo.foundation.action.copypaste.PastingContext;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoBehaviourObject;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
@@ -59,7 +59,7 @@ import org.openflexo.toolbox.StringUtils;
  * @author sylvain
  * 
  */
-public class FlexoBehaviourPasteHandler implements PasteHandler<FlexoBehaviour> {
+public class FlexoBehaviourPasteHandler extends FlexoPasteHandler<FlexoBehaviour> {
 
 	private static final Logger logger = Logger.getLogger(FlexoBehaviourPasteHandler.class.getPackage().getName());
 
@@ -96,7 +96,8 @@ public class FlexoBehaviourPasteHandler implements PasteHandler<FlexoBehaviour> 
 			if (leaderClipboard.getSingleContents() instanceof FlexoBehaviour) {
 				translateName((FlexoBehaviour) leaderClipboard.getSingleContents());
 			}
-		} else {
+		}
+		else {
 			for (Object o : leaderClipboard.getMultipleContents()) {
 				if (o instanceof FlexoBehaviour) {
 					translateName((FlexoBehaviour) o);
@@ -118,7 +119,8 @@ public class FlexoBehaviourPasteHandler implements PasteHandler<FlexoBehaviour> 
 		String newName;
 		if (oldName.endsWith(COPY_SUFFIX)) {
 			newName = oldName + "2";
-		} else if (oldName.contains(COPY_SUFFIX)) {
+		}
+		else if (oldName.contains(COPY_SUFFIX)) {
 			try {
 				int currentIndex = Integer.parseInt(oldName.substring(oldName.lastIndexOf(COPY_SUFFIX) + COPY_SUFFIX.length()));
 				newName = oldName.substring(0, oldName.lastIndexOf(COPY_SUFFIX)) + COPY_SUFFIX + (currentIndex + 1);
@@ -126,7 +128,8 @@ public class FlexoBehaviourPasteHandler implements PasteHandler<FlexoBehaviour> 
 				logger.warning("Could not parse as int " + oldName.substring(oldName.lastIndexOf(COPY_SUFFIX)));
 				newName = oldName + COPY_SUFFIX;
 			}
-		} else {
+		}
+		else {
 			newName = oldName + COPY_SUFFIX;
 		}
 		System.out.println("translating name from " + oldName + " to " + newName);

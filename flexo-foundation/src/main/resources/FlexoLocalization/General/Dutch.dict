@@ -53,6 +53,7 @@ GET_PROPERTY=GET PROPERTY
 GET_SET_PROPERTY=GET SET PROPERTY
 GINA\ Technology\ Adapter=GINA Technology Adapter
 GINA_FIB_editor=GINA_FIB_editor
+HTTP\ Technology\ Adapter=HTTP Technology Adapter
 INTEGER=INTEGER
 IncrementalIterationAction=IncrementalIterationAction
 Integer=Integer

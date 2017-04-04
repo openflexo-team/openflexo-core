@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VirtualModel id="0" modelVersion="1.0" version="0.1" name="VM" userID="FLX" flexoID="4">
+  <GetSetProperty id="1" name="getSetProperty" userID="FLX" flexoID="6">
+    <SetControlGraph_Sequence id="2" ownerContext="setControlGraph" userID="FLX" flexoID="27">
+      <ControlGraph2_AssignationAction id="3" assign="myValue" ownerContext="controlGraph2" userID="FLX" flexoID="20">
+        <AssignableAction_ExpressionAction id="4" expression="value" userID="FLX" flexoID="19" />
+      </ControlGraph2_AssignationAction>
+      <ControlGraph1_LogAction id="5" logLevel="INFO" logString="(&quot;want to set &quot; + value)" ownerContext="controlGraph1" userID="FLX" flexoID="11" />
+    </SetControlGraph_Sequence>
+    <GetControlGraph_ReturnStatement id="6" ownerContext="getControlGraph" userID="FLX" flexoID="9">
+      <AssignableAction_ExpressionAction id="7" expression="myValue" userID="FLX" flexoID="8" />
+    </GetControlGraph_ReturnStatement>
+  </GetSetProperty>
+  <PrimitiveRole id="8" primitiveType="String" cloningStrategy="Clone" cardinality="ZeroOne" name="myValue" userID="FLX" flexoID="18" />
+  <CreationScheme id="9" name="create" width="800" label="create" height="600" userID="FLX" flexoID="23">
+    <BehaviourControlGraph_AssignationAction id="10" assign="myValue" userID="FLX" flexoID="26">
+      <AssignableAction_ExpressionAction id="11" expression="&quot;Hello world !&quot;" userID="FLX" flexoID="25" />
+    </BehaviourControlGraph_AssignationAction>
+  </CreationScheme>
+  <Inspector id="12" inspectorTitle="VM" userID="FLX" flexoID="1">
+    <GenericInspectorEntry id="13" widget="TEXT_FIELD" data="myValue" name="myValue" label="myValue" type="java.lang.String" userID="FLX" flexoID="21" />
+    <GenericInspectorEntry id="14" widget="TEXT_FIELD" data="getSetProperty" name="getSetProperty" label="getSetProperty" type="java.lang.String" userID="FLX" flexoID="22" />
+  </Inspector>
+</VirtualModel>

@@ -36,12 +36,13 @@
  * 
  */
 
-package org.openflexo.foundation.action;
+package org.openflexo.foundation.action.copypaste;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.openflexo.fge.control.exceptions.CopyException;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.InnerResourceData;
@@ -64,7 +65,8 @@ import org.openflexo.model.factory.ModelFactory;
  * 
  * From a technical point of view, a {@link FlexoClipboard} is an aggregation of {@link Clipboard} instances, associated to a
  * {@link PamelaResource}.<br>
- * A particular {@link Clipboard} plays leader property, and should be the only one driving the whole clipboard operation
+ * A particular {@link Clipboard} plays leader role, and should be the only one driving the whole clipboard operation
+ * 
  * 
  * @author sylvain
  * 
@@ -172,20 +174,29 @@ public class FlexoClipboard {
 
 				// System.out.println("--------- START COPY");
 
-				System.out.println("########## For resource " + pamelaResource);
-				System.out.println("We had: " + objectsToBeCopied.get(pamelaResource));
-				System.out.println("We have now: " + extendedObjectsToBeCopied.get(pamelaResource));
+				// System.out.println("########## For resource " + pamelaResource);
+				// System.out.println("We had: " + objectsToBeCopied.get(pamelaResource));
+
+				/*for (FlexoObject o : objectsToBeCopied.get(pamelaResource)) {
+					if (o instanceof FlexoBehaviour) {
+						System.out.println("J'avais ca: ");
+						System.out.println(((FlexoBehaviour) o).getFMLRepresentation());
+					}
+				}*/
 
 				List<FlexoObject> objectsToCopyInThisResource = extendedObjectsToBeCopied.get(pamelaResource);
 
+				/*for (FlexoObject o : objectsToCopyInThisResource) {
+					if (o instanceof ResourceData) {
+						// TODO: handle resource copy
+					}
+					else if (o instanceof InnerResourceData) {
+						// TODO: handle resource copy
+					}
+				}*/
+
 				clipboard = modelFactory.copy(objectsToCopyInThisResource.toArray(new Object[objectsToCopyInThisResource.size()]));
 				clipboard.setCopyContext(copyContext);
-				// System.out.println(clipboard.debug());
-				// System.out.println("copyContext=" + copyContext);
-				// TODO ?
-				// notifyObservers(new SelectionCopied(clipboard));
-
-				// System.out.println("--------- END COPY");
 
 				returned.clipboards.put(pamelaResource, clipboard);
 

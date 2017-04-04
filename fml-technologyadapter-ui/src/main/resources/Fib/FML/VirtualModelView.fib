@@ -14,14 +14,13 @@
 
 		<Browser root="data" iteratorClassName="java.lang.Object"
 			visibleRowCount="5" rowHeight="18" boundToSelectionManager="true"
-			selectionMode="DiscontiguousTreeSelection" selected="" showFooter="true"
-			rootVisible="true" showRootsHandle="true" format="" icon="" tooltip=""
+			selectionMode="DiscontiguousTreeSelection" allowsDragAndDrop="true" showFooter="true"
+			rootVisible="true" showRootsHandle="true"
 			localize="true" deepExploration="true" manageDynamicModel="true"
 			clickAction="controller.singleClick(FlexoConceptBrowser.selected)"
 			doubleClickAction="controller.doubleClick(FlexoConceptBrowser.selected)"
 			rightClickAction="controller.rightClick(FlexoConceptBrowser.selected,event)"
-			enterPressedAction="" valueChangedAction="" valueTransform=""
-			valueValidator="" name="FlexoConceptBrowser" index="0" 
+			name="FlexoConceptBrowser" index="0" 
 			constraints="split(index=0;location=north;splitIdentifier=left)">
 
 			<BrowserElement dataClassName="org.openflexo.foundation.fml.VirtualModel"
@@ -110,6 +109,10 @@
 					name="add_action" />
 				<BrowserAddAction
 					method="controller.createEditionActionInIteration(selected)" name="add_action_inside_iteration" />
+				<DragOperation
+					isAvailable="controller.canMoveControlGraph(dragged,target)"
+					targetElementName="editionAction" action="controller.moveControlGraph(dragged,target)"
+					name="drag_operation" />
 			</BrowserElement>
 			<BrowserElement
 				dataClassName="org.openflexo.foundation.fml.controlgraph.WhileAction"
@@ -124,6 +127,10 @@
 				<BrowserAddAction
 					method="controller.createEditionActionInWhileAction(selected)"
 					name="add_action_inside_iteration" />
+				<DragOperation
+					isAvailable="controller.canMoveControlGraph(dragged,target)"
+					targetElementName="editionAction" action="controller.moveControlGraph(dragged,target)"
+					name="drag_operation" />
 			</BrowserElement>
 			<BrowserElement
 				dataClassName="org.openflexo.foundation.fml.controlgraph.IncrementalIterationAction"
@@ -140,6 +147,10 @@
 				<BrowserAddAction
 					method="controller.createEditionActionInIncrementalIterationAction(selected)"
 					name="add_action_inside_iteration" />
+				<DragOperation
+					isAvailable="controller.canMoveControlGraph(dragged,target)"
+					targetElementName="editionAction" action="controller.moveControlGraph(dragged,target)"
+					name="drag_operation" />
 			</BrowserElement>
 			<BrowserElement
 				dataClassName="org.openflexo.foundation.fml.controlgraph.ConditionalAction"
@@ -160,6 +171,10 @@
 				<BrowserAddAction
 					method="controller.createEditionActionInElseControlGraph(selected)"
 					name="add_action_in_else_control_graph" />
+				<DragOperation
+					isAvailable="controller.canMoveControlGraph(dragged,target)"
+					targetElementName="editionAction" action="controller.moveControlGraph(dragged,target)"
+					name="drag_operation" />
 			</BrowserElement>
 			<BrowserElement
 				dataClassName="org.openflexo.foundation.fml.editionaction.EditionAction"
@@ -169,6 +184,10 @@
 					name="add_action" />
 				<BrowserRemoveAction method="controller.deleteFlexoConceptObject(selected)"
 					name="delete_action" />
+				<DragOperation
+					isAvailable="controller.canMoveControlGraph(dragged,target)"
+					targetElementName="editionAction" action="controller.moveControlGraph(dragged,target)"
+					name="drag_operation" />
 			</BrowserElement>
 			<BrowserElement
 				dataClassName="org.openflexo.foundation.fml.inspector.FlexoConceptInspector"

@@ -183,6 +183,13 @@ public abstract interface FMLControlGraph extends FlexoConceptObject {
 	 */
 	public void accept(FMLControlGraphVisitor visitor);
 
+	/**
+	 * Called to "disconnect" this control graph from its actual owner, and to append it sequentially on the supplied receiver
+	 * 
+	 * @param receiver
+	 */
+	public void moveWhileSequentiallyAppendingTo(FMLControlGraph receiver);
+
 	public static abstract class FMLControlGraphImpl extends FlexoConceptObjectImpl implements FMLControlGraph {
 
 		private ControlGraphBindingModel<?> bindingModel;
@@ -247,19 +254,56 @@ public abstract interface FMLControlGraph extends FlexoConceptObject {
 		}
 
 		/**
-		 * Internally used to replace in owner's context this control graph by supplied control graph
+		 * Used to replace in owner's context this control graph by supplied control graph
 		 * 
 		 * @param cg
 		 */
 		protected void replaceWith(FMLControlGraph cg, FMLControlGraphOwner owner, String ownerContext) {
 
 			// Following statement is really important, we need first to "disconnect" actual control graph
-			// Before to build the new sequence !!!
 			// owner.setControlGraph(null, ownerContext);
 
 			// We connect control graph
 			cg.setOwnerContext(ownerContext);
 			owner.setControlGraph(cg, ownerContext);
+		}
+
+		/**
+		 * Called to "disconnect" this control graph from its actual owner, and to append it sequentially on the supplied receiver, at given
+		 * ownerContext
+		 * 
+		 * @param receiver
+		 * @param ownerContext
+		 */
+		@Override
+		public void moveWhileSequentiallyAppendingTo(FMLControlGraph receiver) {
+			// We first store actual owning context
+			FMLModelFactory factory = getFMLModelFactory();
+
+			FMLControlGraphOwner owner = getOwner();
+			String ownerContext = getOwnerContext();
+			Sequence parentFlattenedSequence = getParentFlattenedSequence();
+
+			// We first disconnect the control graph from its owner
+			if (owner != null) {
+				owner.setControlGraph(null, ownerContext);
+
+				// Now we instantiate new EmptyControlGraph, and perform the replacement
+				replaceWith(factory.newEmptyControlGraph(), owner, ownerContext);
+
+				// We reduce owner
+				owner.reduce();
+			}
+
+			// And then sequentially append
+			receiver.sequentiallyAppend(this);
+
+			// Then we must notify the parent flattenedSequence where this control graph was presented as a sequence
+			// This fixes issue TA-81
+			if (parentFlattenedSequence != null) {
+				parentFlattenedSequence.controlGraphChanged(this);
+			}
+
 		}
 
 		@Override

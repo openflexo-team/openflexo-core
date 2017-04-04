@@ -116,7 +116,7 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 	public static final String CONTROL_GRAPH_KEY = "controlGraph";
 
 	@Getter(value = CONTROL_GRAPH_KEY, inverse = FMLControlGraph.OWNER_KEY)
-	@CloningStrategy(StrategyType.IGNORE)
+	@CloningStrategy(StrategyType.CLONE)
 	@XMLElement(context = "BehaviourControlGraph_")
 	@Embedded
 	public FMLControlGraph getControlGraph();
@@ -189,8 +189,7 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 	public void setDescription(String description);*/
 
 	@Getter(value = PARAMETERS_KEY, cardinality = Cardinality.LIST, inverse = FlexoBehaviourParameter.FLEXO_BEHAVIOUR_KEY)
-	@Embedded
-	@XMLElement
+	@Embedded @XMLElement @CloningStrategy(StrategyType.CLONE)
 	public List<FlexoBehaviourParameter> getParameters();
 
 	@Setter(PARAMETERS_KEY)

@@ -50,6 +50,7 @@ import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.PropertyIdentifier;
 import org.openflexo.model.annotations.Setter;
+import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.model.annotations.XMLElement;
 import org.openflexo.toolbox.StringUtils;
 
@@ -68,11 +69,21 @@ import org.openflexo.toolbox.StringUtils;
 @XMLElement
 public abstract interface GetSetProperty<T> extends GetProperty<T> {
 
+	@PropertyIdentifier(type = String.class)
+	public static final String VALUE_VARIABLE_NAME_KEY = "valueVariableName";
+
 	@PropertyIdentifier(type = FMLControlGraph.class)
 	public static final String SET_CONTROL_GRAPH_KEY = "setControlGraph";
 
+	@Getter(value = VALUE_VARIABLE_NAME_KEY, defaultValue = "value")
+	@XMLAttribute
+	public String getValueVariableName();
+
+	@Setter(VALUE_VARIABLE_NAME_KEY)
+	public void setValueVariableName(String valueVariableName);
+
 	@Getter(value = SET_CONTROL_GRAPH_KEY, inverse = FMLControlGraph.OWNER_KEY)
-	@CloningStrategy(StrategyType.IGNORE)
+	@CloningStrategy(StrategyType.CLONE)
 	@XMLElement(context = "SetControlGraph_")
 	@Embedded
 	public FMLControlGraph getSetControlGraph();
@@ -80,7 +91,7 @@ public abstract interface GetSetProperty<T> extends GetProperty<T> {
 	@Setter(SET_CONTROL_GRAPH_KEY)
 	public void setSetControlGraph(FMLControlGraph aControlGraph);
 
-	public static abstract class GetSetPropertyImpl<T> extends GetPropertyImpl<T>implements GetSetProperty<T> {
+	public static abstract class GetSetPropertyImpl<T> extends GetPropertyImpl<T> implements GetSetProperty<T> {
 
 		// private static final Logger logger = Logger.getLogger(FlexoRole.class.getPackage().getName());
 

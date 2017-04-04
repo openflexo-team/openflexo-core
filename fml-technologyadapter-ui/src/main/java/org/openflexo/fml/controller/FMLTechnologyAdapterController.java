@@ -39,7 +39,9 @@
 package org.openflexo.fml.controller;
 
 import java.lang.reflect.Type;
-import javax.swing.*;
+
+import javax.swing.ImageIcon;
+
 import org.openflexo.components.widget.FIBTechnologyBrowser;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.type.CustomType;
@@ -201,9 +203,11 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 		new AddParentFlexoConceptInitializer(actionInitializer);
 
 		// Add paste handlers
+		actionInitializer.getEditingContext().registerPasteHandler(new VirtualModelPasteHandler());
 		actionInitializer.getEditingContext().registerPasteHandler(new FlexoConceptPasteHandler());
-		actionInitializer.getEditingContext().registerPasteHandler(new ActionContainerPasteHandler());
+		actionInitializer.getEditingContext().registerPasteHandler(new FlexoPropertyPasteHandler());
 		actionInitializer.getEditingContext().registerPasteHandler(new FlexoBehaviourPasteHandler());
+		actionInitializer.getEditingContext().registerPasteHandler(new FMLControlGraphPasteHandler());
 
 		FlexoActionType.newVirtualModelMenu.setSmallIcon(FMLIconLibrary.VIRTUAL_MODEL_ICON);
 		FlexoActionType.newPropertyMenu.setSmallIcon(FMLIconLibrary.FLEXO_ROLE_ICON);
@@ -444,7 +448,8 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 	}
 
 	@Override
-	public FIBWidget makeWidget(WidgetContext parameter, FlexoBehaviourAction<?, ?, ?> action, FIBModelFactory fibModelFactory, boolean[] expand) {
+	public FIBWidget makeWidget(WidgetContext parameter, FlexoBehaviourAction<?, ?, ?> action, FIBModelFactory fibModelFactory,
+			boolean[] expand) {
 		if (parameter.getWidget() == WidgetType.CUSTOM_WIDGET) {
 			if (parameter.getType() instanceof ViewType) {
 				return makeViewSelector(parameter, fibModelFactory);
@@ -464,14 +469,16 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 	}
 
 	private boolean needsVirtualModelInstanceContext(WidgetContext object) {
-		return object instanceof FlexoBehaviourParameter && ((FlexoBehaviourParameter) object).getFlexoBehaviour() instanceof CreationScheme;
+		return object instanceof FlexoBehaviourParameter
+				&& ((FlexoBehaviourParameter) object).getFlexoBehaviour() instanceof CreationScheme;
 	}
 
 	private String getContainerBinding(WidgetContext object) {
 		StringBuilder result = new StringBuilder("data.");
 		if (needsVirtualModelInstanceContext(object)) {
 			result.append(FlexoConceptBindingFactory.VIRTUAL_MODEL_INSTANCE);
-		} else {
+		}
+		else {
 			result.append(FlexoConceptBindingFactory.FLEXO_CONCEPT_INSTANCE);
 		}
 		result.append(object.getContainer().toString());
@@ -489,20 +496,13 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		resourceSelector.addToAssignments(
-				fibModelFactory.newFIBCustomAssignment(resourceSelector, new DataBinding<>("component.project"),
-						new DataBinding<>("controller.editor.project"), true)
-		);
-		resourceSelector.addToAssignments(
-				fibModelFactory.newFIBCustomAssignment(resourceSelector,
-						new DataBinding<>("component.serviceManager"),
-						new DataBinding<>("controller.flexoController.applicationContext"),
-						true)
-		);
-		resourceSelector.addToAssignments(
-				fibModelFactory.newFIBCustomAssignment(resourceSelector, new DataBinding<>("component.expectedType"),
-						new DataBinding<>("data.parametersDefinitions." + object.getName() + ".type"), true)
-		);
+		resourceSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(resourceSelector, new DataBinding<>("component.project"),
+				new DataBinding<>("controller.editor.project"), true));
+		resourceSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(resourceSelector,
+				new DataBinding<>("component.serviceManager"), new DataBinding<>("controller.flexoController.applicationContext"), true));
+		resourceSelector
+				.addToAssignments(fibModelFactory.newFIBCustomAssignment(resourceSelector, new DataBinding<>("component.expectedType"),
+						new DataBinding<>("data.parametersDefinitions." + object.getName() + ".type"), true));
 		return resourceSelector;
 
 	}
@@ -613,25 +613,15 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 			Type containerType = container.getAnalyzedType();
 
 			if (TypeUtils.isTypeAssignableFrom(FlexoResourceCenter.class, containerType)) {
-				viewSelector.addToAssignments(
-						fibModelFactory.newFIBCustomAssignment(
-								viewSelector,
-								new DataBinding<>("component.resourceCenter"),
-								new DataBinding<>(containerBinding),
-								true
-						)
-				);
+				viewSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(viewSelector,
+						new DataBinding<>("component.resourceCenter"), new DataBinding<>(containerBinding), true));
 			}
 		}
 		else {
 			// No container defined, set service manager
-			viewSelector.addToAssignments(
-					fibModelFactory.newFIBCustomAssignment(
-							viewSelector,
-							new DataBinding<>("component.serviceManager"),
-							new DataBinding<>("controller.flexoController.applicationContext"),
-							true)
-			);
+			viewSelector
+					.addToAssignments(fibModelFactory.newFIBCustomAssignment(viewSelector, new DataBinding<>("component.serviceManager"),
+							new DataBinding<>("controller.flexoController.applicationContext"), true));
 		}
 
 		// viewSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(viewSelector, new DataBinding<Object>("component.view"),

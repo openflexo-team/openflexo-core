@@ -36,7 +36,7 @@
  * 
  */
 
-package org.openflexo.foundation.action;
+package org.openflexo.foundation.action.copypaste;
 
 import java.util.List;
 import java.util.Map;
@@ -50,39 +50,38 @@ import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.resource.PamelaResource;
 
 /**
- * Represents a Copy action (clipboard operation)<br>
+ * Represents a Cut action (clipboard operation)<br>
  * 
  * Note that clipboard operations are managed at very low level using PAMELA framework
  * 
  * @author sylvain
  * 
  */
-public class CopyAction extends AbstractCopyAction<CopyAction> {
+public class CutAction extends AbstractCopyAction<CutAction> {
 
-	private static final Logger logger = Logger.getLogger(CopyAction.class.getPackage().getName());
+	private static final Logger logger = Logger.getLogger(CutAction.class.getPackage().getName());
 
-	public static class CopyActionType extends AbstractCopyActionType<CopyAction> {
+	public static class CutActionType extends AbstractCopyActionType<CutAction> {
 
-		public CopyActionType(FlexoEditingContext editingContext) {
-			super("copy", editingContext);
+		public CutActionType(FlexoEditingContext editingContext) {
+			super("cut", editingContext);
 		}
 
 		/**
 		 * Factory method
 		 */
 		@Override
-		public CopyAction makeNewAction(FlexoObject focusedObject, Vector<FlexoObject> globalSelection, FlexoEditor editor) {
+		public CutAction makeNewAction(FlexoObject focusedObject, Vector<FlexoObject> globalSelection, FlexoEditor editor) {
 			try {
 				prepareCopy(getGlobalSelectionAndFocusedObject(focusedObject, globalSelection));
 			} catch (InvalidSelectionException e) {
 				return null;
 			}
-			CopyAction returned = new CopyAction(this, focusedObject, globalSelection, editor);
+			CutAction returned = new CutAction(this, focusedObject, globalSelection, editor);
 			returned.editingContext = editingContext;
 			returned.objectsToBeCopied = objectsToBeCopied;
 			return returned;
 		}
-
 	};
 
 	private FlexoEditingContext editingContext;
@@ -90,33 +89,30 @@ public class CopyAction extends AbstractCopyAction<CopyAction> {
 
 	private FlexoClipboard clipboard;
 
-	CopyAction(CopyActionType actionType, FlexoObject focusedObject, Vector<FlexoObject> globalSelection, FlexoEditor editor) {
+	CutAction(CutActionType actionType, FlexoObject focusedObject, Vector<FlexoObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 	}
 
 	@Override
 	protected void doAction(Object context) throws InvalidSelectionException {
-		logger.info("COPY");
+		logger.info("CUT");
 		try {
-			clipboard = copy();
+			clipboard = cut();
 			editingContext.setClipboard(clipboard);
-
-			// System.out.println(clipboard.debug());
-
 		} catch (CopyException e) {
 			e.printStackTrace();
 		}
 	}
 
 	/**
-	 * Copy current selection in the clipboard
+	 * Cut current selection in the clipboard
 	 * 
 	 * @throws CopyException
 	 * @throws InvalidSelectionException
 	 */
-	private FlexoClipboard copy() throws CopyException, InvalidSelectionException {
+	private FlexoClipboard cut() throws CopyException, InvalidSelectionException {
 
-		clipboard = FlexoClipboard.copy(objectsToBeCopied, getFocusedObject(), null);
+		clipboard = FlexoClipboard.cut(objectsToBeCopied, getFocusedObject(), null);
 		return clipboard;
 	}
 
