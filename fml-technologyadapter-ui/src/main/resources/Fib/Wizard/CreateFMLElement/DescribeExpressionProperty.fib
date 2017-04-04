@@ -18,7 +18,7 @@
 		localize="true" manageDynamicModel="true" index="7" data="data.expression"
 		constraints="gridbag(anchor=west;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=0;insetsBottom=0;insetsLeft=0;insetsRight=20;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)"
 		visible="">
-		<Assignment variable="component.bindable" value="data" />
+	<!--  <Assignment variable="component.bindable" value="data" />-->
 	</Custom>
 	<Label label="description" align="right" index="10"
 		constraints="gridbag(anchor=north_east;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=7;insetsBottom=0;insetsLeft=20;insetsRight=10;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)"
