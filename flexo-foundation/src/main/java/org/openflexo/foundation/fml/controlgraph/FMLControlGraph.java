@@ -184,6 +184,13 @@ public abstract interface FMLControlGraph extends FlexoConceptObject {
 	public void accept(FMLControlGraphVisitor visitor);
 
 	/**
+	 * Used to replace in owner's context this control graph by supplied control graph
+	 * 
+	 * @param cg
+	 */
+	public void replaceWith(FMLControlGraph cg);
+
+	/**
 	 * Called to "disconnect" this control graph from its actual owner, and to append it sequentially on the supplied receiver
 	 * 
 	 * @param receiver
@@ -255,6 +262,32 @@ public abstract interface FMLControlGraph extends FlexoConceptObject {
 
 		/**
 		 * Used to replace in owner's context this control graph by supplied control graph
+		 * 
+		 * @param cg
+		 */
+		@Override
+		public void replaceWith(FMLControlGraph cg) {
+
+			FMLControlGraphOwner owner = getOwner();
+			String ownerContext = getOwnerContext();
+			Sequence parentFlattenedSequence = getParentFlattenedSequence();
+
+			owner.setControlGraph(null, ownerContext);
+
+			// We connect control graph
+			setOwnerContext(ownerContext);
+			owner.setControlGraph(cg, ownerContext);
+
+			// Then we must notify the parent flattenedSequence where this control graph was presented as a sequence
+			// This fixes issue TA-81
+			if (parentFlattenedSequence != null) {
+				parentFlattenedSequence.controlGraphChanged(this);
+			}
+
+		}
+
+		/**
+		 * Internally used to replace in owner's context this control graph by supplied control graph
 		 * 
 		 * @param cg
 		 */

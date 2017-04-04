@@ -62,6 +62,7 @@ import org.openflexo.fml.controller.action.CreatePrimitiveRoleInitializer;
 import org.openflexo.fml.controller.action.CreateTechnologyRoleInitializer;
 import org.openflexo.fml.controller.action.CreateViewPointInitializer;
 import org.openflexo.fml.controller.action.CreateVirtualModelInitializer;
+import org.openflexo.fml.controller.action.DeclareNewVariableActionInitializer;
 import org.openflexo.fml.controller.action.DeleteFlexoConceptObjectsInitializer;
 import org.openflexo.fml.controller.action.DeleteViewPointInitializer;
 import org.openflexo.fml.controller.action.DeleteVirtualModelInitializer;
@@ -192,6 +193,8 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 		// new DeleteFlexoConceptInitializer(actionInitializer);
 		// new DuplicateFlexoConceptInitializer(actionInitializer);
 		new ShowFMLRepresentationInitializer(actionInitializer);
+
+		new DeclareNewVariableActionInitializer(actionInitializer);
 
 		if (actionInitializer.getActionInitializer(DeleteFlexoConceptObjects.actionType) == null) {
 			new DeleteFlexoConceptObjectsInitializer(actionInitializer);

@@ -46,7 +46,10 @@ import java.util.logging.Logger;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.FlexoProperty;
+import org.openflexo.foundation.fml.controlgraph.FMLControlGraphOwner;
+import org.openflexo.foundation.fml.controlgraph.Sequence;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext.ReturnException;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
@@ -133,6 +136,13 @@ public abstract interface AssignableAction<T> extends EditionAction {
 	 */
 	public Type getIteratorType();
 
+	/**
+	 * Used to declare a new variable and assigning assignableAction to it
+	 * 
+	 * @param cg
+	 */
+	public DeclarationAction<T> declaresNewVariable(String variableName);
+
 	public static abstract class AssignableActionImpl<T> extends EditionActionImpl implements AssignableAction<T> {
 
 		private static final Logger logger = Logger.getLogger(AssignableAction.class.getPackage().getName());
@@ -185,6 +195,37 @@ public abstract interface AssignableAction<T> extends EditionAction {
 		 */
 		@Override
 		public abstract T execute(RunTimeEvaluationContext evaluationContext) throws ReturnException, FlexoException;
+
+		/**
+		 * Used to declare a new variable and assigning assignableAction to it
+		 * 
+		 * @param cg
+		 */
+		@Override
+		public DeclarationAction<T> declaresNewVariable(String variableName) {
+			FMLModelFactory factory = getFMLModelFactory();
+
+			FMLControlGraphOwner owner = getOwner();
+			String ownerContext = getOwnerContext();
+			Sequence parentFlattenedSequence = getParentFlattenedSequence();
+
+			owner.setControlGraph(null, ownerContext);
+
+			DeclarationAction<T> declarationAction = factory.newDeclarationAction(variableName, this);
+
+			// We connect control graph
+			setOwnerContext(ownerContext);
+			owner.setControlGraph(declarationAction, ownerContext);
+
+			// Then we must notify the parent flattenedSequence where this control graph was presented as a sequence
+			// This fixes issue TA-81
+			if (parentFlattenedSequence != null) {
+				parentFlattenedSequence.controlGraphChanged(this);
+			}
+
+			return declarationAction;
+
+		}
 
 	}
 
