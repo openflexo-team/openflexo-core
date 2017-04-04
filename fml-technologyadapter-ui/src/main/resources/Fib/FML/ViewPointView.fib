@@ -33,7 +33,7 @@
 	<SplitPanel id="7" name="FIBSplitPanel" index="0"
 		constraints="gridbag(anchor=center;fill=both;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=0;insetsBottom=10;insetsLeft=13;insetsRight=10;insetsTop=0;padX=0;padY=0;weightX=1.0;weightY=1.0)">
 		<Browser id="8" showFooter="true" showRootsHandle="true" root="data"
-			manageDynamicModel="true"
+			manageDynamicModel="true" allowsDragAndDrop="true" 
 			doubleClickAction="controller.doubleClick(FlexoConceptBrowser.selected)"
 			selectionMode="DiscontiguousTreeSelection"
 			rightClickAction="controller.rightClick(FlexoConceptBrowser.selected,event)"

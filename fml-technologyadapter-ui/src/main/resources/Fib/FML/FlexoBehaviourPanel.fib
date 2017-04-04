@@ -89,7 +89,7 @@
 						selectionMode="DiscontiguousTreeSelection" showFooter="true"
 						rootVisible="true" showRootsHandle="false" localize="true"
 						manageDynamicModel="true" name="EditionActionBrowser" constraints="border(location=center)"
-						opaque="false"
+						opaque="false" allowsDragAndDrop="true" 
 						rightClickAction="controller.rightClick(EditionActionBrowser.selected,event)">
 						<BrowserElement dataClassName="org.openflexo.foundation.fml.FlexoBehaviour"
 							label="flexoBehaviour.signature" icon="controller.iconForObject(flexoBehaviour)"
