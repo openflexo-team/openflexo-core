@@ -55,7 +55,6 @@ import org.openflexo.foundation.KVCFlexoObject;
 import org.openflexo.foundation.fml.rt.rm.ViewResourceFactory;
 import org.openflexo.foundation.fml.rt.rm.VirtualModelInstanceResourceFactory;
 import org.openflexo.foundation.resource.FlexoResource;
-import org.openflexo.foundation.resource.PamelaResource;
 import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.resource.ResourceLoadingListener;
@@ -107,28 +106,10 @@ public class FlexoObjectReference<O extends FlexoObject> extends KVCFlexoObject 
 		RESOLVED, UNRESOLVED, NOT_FOUND, RESOURCE_NOT_FOUND, DELETED
 	}
 
-	public static String constructSerializationRepresentation(String projectURI, String resourceURI, String userIdentifier, String objectId, String className) {
-		StringBuilder result = new StringBuilder();
-		if (projectURI != null) {
-			result.append(projectURI);
-			result.append(PROJECT_SEPARATOR);
-		}
-		result.append(resourceURI);
-		result.append(SEPARATOR);
-		result.append(userIdentifier);
-		result.append(ID_SEPARATOR);
-		result.append(objectId);
-		if (className != null) {
-			result.append(SEPARATOR);
-			result.append(className);
-		}
-		return result.toString();
-	}
-
 	private String resourceIdentifier;
 	private String userIdentifier;
 	private String className;
-	private long flexoID;
+	private String objectIdentifier;
 
 	// private String enclosingProjectIdentifier;
 
@@ -171,7 +152,7 @@ public class FlexoObjectReference<O extends FlexoObject> extends KVCFlexoObject 
 		}
 		if (modelObject != null) {
 			this.userIdentifier = modelObject.getUserIdentifier();
-			this.flexoID = modelObject.getFlexoID();
+			this.objectIdentifier = Long.toString(modelObject.getFlexoID());
 			this.className = modelObject.getClass().getName();
 		}
 
@@ -192,7 +173,7 @@ public class FlexoObjectReference<O extends FlexoObject> extends KVCFlexoObject 
 	@Override
 	public String toString() {
 		return "FlexoModelObjectReference resource=" + resourceIdentifier + " modelObject=" + modelObject + " status=" + status + " owner="
-				+ owner + " userIdentifier=" + userIdentifier + " className=" + className + " flexoID=" + flexoID;
+				+ owner + " userIdentifier=" + userIdentifier + " className=" + className + " flexoID=" + objectIdentifier;
 	}
 
 	public FlexoObjectReference(String identifier, ReferenceOwner owner) {
@@ -206,7 +187,7 @@ public class FlexoObjectReference<O extends FlexoObject> extends KVCFlexoObject 
 			String[] s = modelObjectIdentifier.split(SEPARATOR);
 			this.resourceIdentifier = s[0];
 			this.userIdentifier = s[1].substring(0, s[1].lastIndexOf(ID_SEPARATOR));
-			this.flexoID = Long.valueOf(s[1].substring(s[1].lastIndexOf(ID_SEPARATOR) + ID_SEPARATOR.length()));
+			this.objectIdentifier = s[1].substring(s[1].lastIndexOf(ID_SEPARATOR) + ID_SEPARATOR.length());
 			if (s.length == 3) {
 				this.className = s[2];
 				serializeClassName = true;
@@ -273,14 +254,12 @@ public class FlexoObjectReference<O extends FlexoObject> extends KVCFlexoObject 
 	private O findObjectInResource(FlexoResource<?> resource) {
 		try {
 			// Ensure the resource is loaded
-			ResourceData<?> resourceData = resource.getResourceData(null);
-			if (resource instanceof PamelaResource) {
-				return (O) ((PamelaResource<?, ?>) resource).getFlexoObject(flexoID, userIdentifier);
-			}
-		} catch (FileNotFoundException | ResourceLoadingCancelledException | FlexoException e) {
+			resource.getResourceData(null);
+			return (O) resource.findObject(objectIdentifier, userIdentifier, className);
+		} catch (RuntimeException | FileNotFoundException | ResourceLoadingCancelledException | FlexoException e) {
 			logger.log(Level.SEVERE, "Error while finding object in resource '"+ resource.getURI() +"'", e);
 		}
-		logger.warning("Cannot find object " + userIdentifier + "_" + flexoID + " in resource " + resource);
+		logger.warning("Cannot find object " + userIdentifier + "_" + objectIdentifier + " in resource " + resource);
 		return null;
 	}
 
@@ -353,8 +332,8 @@ public class FlexoObjectReference<O extends FlexoObject> extends KVCFlexoObject 
 		}
 	}
 
-	public long getFlexoID() {
-		return flexoID;
+	public String getObjectIdentifier() {
+		return objectIdentifier;
 	}
 
 	public FlexoProject getReferringProject(boolean force) {
@@ -400,10 +379,7 @@ public class FlexoObjectReference<O extends FlexoObject> extends KVCFlexoObject 
 			return modelObject.getReferenceForSerialization(serializeClassName);
 		}
 		else {
-			return constructSerializationRepresentation(
-				null, resourceIdentifier, userIdentifier,
-				Long.toString(flexoID), serializeClassName ? SEPARATOR + className : null
-			);
+			return constructSerializationRepresentation();
 		}
 	}
 
@@ -471,12 +447,37 @@ public class FlexoObjectReference<O extends FlexoObject> extends KVCFlexoObject 
 		}
 	}
 
-	/*public void _setEnclosingProjectIdentifier(String uri) {
-		if (enclosingProjectIdentifier == null) {
-			enclosingProjectIdentifier = uri;
-			if (getOwner() != null) {
-				getOwner().objectSerializationIdChanged(this);
-			}
+	public String constructSerializationRepresentation() {
+		StringBuilder result = new StringBuilder();
+		result.append(resourceIdentifier);
+		result.append(SEPARATOR);
+		result.append(userIdentifier);
+		result.append(ID_SEPARATOR);
+		result.append(objectIdentifier);
+		if (serializeClassName) {
+			result.append(SEPARATOR);
+			result.append(className);
 		}
-	}*/
+		return result.toString();
+	}
+
+
+	public static String constructSerializationRepresentation(String projectURI, String resourceURI, String userIdentifier, String objectId, String className) {
+		StringBuilder result = new StringBuilder();
+		if (projectURI != null) {
+			result.append(projectURI);
+			result.append(PROJECT_SEPARATOR);
+		}
+		result.append(resourceURI);
+		result.append(SEPARATOR);
+		result.append(userIdentifier);
+		result.append(ID_SEPARATOR);
+		result.append(objectId);
+		if (className != null) {
+			result.append(SEPARATOR);
+			result.append(className);
+		}
+		return result.toString();
+	}
+
 }
