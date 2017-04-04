@@ -53,40 +53,40 @@ import org.openflexo.model.annotations.Setter;
 @ModelEntity(isAbstract = true)
 public interface ResourceData<RD extends ResourceData<RD>> {
 
-	public static final String FLEXO_RESOURCE = "flexoResource";
+	String FLEXO_RESOURCE = "flexoResource";
 
 	@Getter(value = FLEXO_RESOURCE, ignoreType = true)
-	public FlexoResource<RD> getResource();
+	FlexoResource<RD> getResource();
 
 	@Setter(FLEXO_RESOURCE)
-	public void setResource(FlexoResource<RD> resource);
+	void setResource(FlexoResource<RD> resource);
 
 	/**
 	 * Return flag indicating if this resource data is modified
 	 * 
 	 * @return
 	 */
-	public boolean isModified();
+	boolean isModified();
 
 	/**
 	 * Sets "modify" status of this resource data to be true
 	 */
-	public void setIsModified();
+	void setIsModified();
 
 	/**
 	 * Sets "modify" status of this resource data to be false
 	 */
-	public void clearIsModified();
+	void clearIsModified();
 
 	/**
 	 * Sets "modify" status of this resource data to be false<br>
 	 * Also resets last memory update if required (default the passed value should be false)
 	 */
-	public void clearIsModified(boolean clearLastMemoryUpdate);
+	void clearIsModified(boolean clearLastMemoryUpdate);
 
 	/**
 	 * Delete object
 	 */
-	public boolean delete(Object... context);
+	boolean delete(Object... context);
 
 }

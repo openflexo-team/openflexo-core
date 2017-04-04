@@ -57,6 +57,7 @@ public interface InnerResourceData<RD extends ResourceData<?>> {
 	 * 
 	 * @return
 	 */
-	public abstract RD getResourceData();
+	RD getResourceData();
+
 
 }
