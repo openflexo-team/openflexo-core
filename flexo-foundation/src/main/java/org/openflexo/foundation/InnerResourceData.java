@@ -59,5 +59,4 @@ public interface InnerResourceData<RD extends ResourceData<?>> {
 	 */
 	RD getResourceData();
 
-
 }

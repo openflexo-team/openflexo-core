@@ -96,19 +96,20 @@ import org.openflexo.toolbox.HTMLUtils;
 @ModelEntity(isAbstract = true)
 @ImplementationClass(FlexoObject.FlexoObjectImpl.class)
 // TODO: remove ReferenceOwner declaration and create a new class
-public abstract interface FlexoObject extends AccessibleProxyObject, DeletableProxyObject, CloneableProxyObject, KeyValueCoding, Validable {
+public interface FlexoObject extends AccessibleProxyObject, DeletableProxyObject, CloneableProxyObject, KeyValueCoding, Validable {
+
 	@PropertyIdentifier(type = String.class)
-	public static final String USER_IDENTIFIER_KEY = "userIdentifier";
+	String USER_IDENTIFIER_KEY = "userIdentifier";
 	@PropertyIdentifier(type = long.class)
-	public static final String FLEXO_ID_KEY = "flexoID";
+	String FLEXO_ID_KEY = "flexoID";
 	@PropertyIdentifier(type = String.class)
-	public static final String DESCRIPTION_KEY = "description";
+	String DESCRIPTION_KEY = "description";
 	@PropertyIdentifier(type = boolean.class)
-	public static final String HAS_SPECIFIC_DESCRIPTIONS_KEY = "hasSpecificDescriptions";
+	String HAS_SPECIFIC_DESCRIPTIONS_KEY = "hasSpecificDescriptions";
 	@PropertyIdentifier(type = Map.class)
-	public static final String SPECIFIC_DESCRIPTIONS_KEY = "specificDescriptions";
+	String SPECIFIC_DESCRIPTIONS_KEY = "specificDescriptions";
 	@PropertyIdentifier(type = Vector.class)
-	public static final String CUSTOM_PROPERTIES_KEY = "customProperties";
+	String CUSTOM_PROPERTIES_KEY = "customProperties";
 
 	@Getter(value = USER_IDENTIFIER_KEY)
 	@XMLAttribute(xmlTag = "userID")
@@ -283,6 +284,22 @@ public abstract interface FlexoObject extends AccessibleProxyObject, DeletablePr
 	 * @return
 	 */
 	public LocalizedDelegate getLocales();
+
+	default String getReferenceForSerialization(boolean serializeClassName) {
+		if (this instanceof InnerResourceData) {
+			ResourceData resourceData = ((InnerResourceData) this).getResourceData();
+			if (resourceData != null && resourceData.getResource() != null) {
+				FlexoResource resource = resourceData.getResource();
+				return FlexoObjectReference.constructSerializationRepresentation(
+					this instanceof FlexoProjectObject ? ((FlexoProjectObject) this).getProject().getURI() : null,
+					resource.getURI(),
+					getUserIdentifier(),
+					Long.toString(getFlexoID()),
+					serializeClassName ? getClass().getName() : null);
+			}
+		}
+		return null;
+	}
 
 	public static abstract class FlexoObjectImpl extends FlexoObservable implements FlexoObject {
 

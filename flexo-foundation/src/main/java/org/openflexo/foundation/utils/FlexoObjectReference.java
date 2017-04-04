@@ -76,6 +76,11 @@ import org.openflexo.logging.FlexoLogger;
  */
 public class FlexoObjectReference<O extends FlexoObject> extends KVCFlexoObject implements ResourceLoadingListener, PropertyChangeListener {
 
+
+	private final static String SEPARATOR = "#";
+	private final static String PROJECT_SEPARATOR = "|";
+	private final static String ID_SEPARATOR = "_";
+
 	private static final Logger logger = FlexoLogger.getLogger(FlexoObjectReference.class.getPackage().getName());
 
 	/**
@@ -86,15 +91,15 @@ public class FlexoObjectReference<O extends FlexoObject> extends KVCFlexoObject 
 	 */
 	public interface ReferenceOwner {
 
-		public void notifyObjectLoaded(FlexoObjectReference<?> reference);
+		void notifyObjectLoaded(FlexoObjectReference<?> reference);
 
-		public void objectCantBeFound(FlexoObjectReference<?> reference);
+		void objectCantBeFound(FlexoObjectReference<?> reference);
 
-		public void objectDeleted(FlexoObjectReference<?> reference);
+		void objectDeleted(FlexoObjectReference<?> reference);
 
-		public void objectSerializationIdChanged(FlexoObjectReference<?> reference);
+		void objectSerializationIdChanged(FlexoObjectReference<?> reference);
 
-		public FlexoServiceManager getServiceManager();
+		FlexoServiceManager getServiceManager();
 
 	}
 
@@ -102,34 +107,22 @@ public class FlexoObjectReference<O extends FlexoObject> extends KVCFlexoObject 
 		RESOLVED, UNRESOLVED, NOT_FOUND, RESOURCE_NOT_FOUND, DELETED
 	}
 
-	private static final String SEPARATOR = "#";
-	private static final String PROJECT_SEPARATOR = "|";
-	private static final String ID_SEPARATOR = "_";
-
-	/**
-	 * @return
-	 */
-	public static String getSerializationRepresentationForObject(FlexoObject modelObject, boolean serializeClassName) {
-
-		if (modelObject instanceof InnerResourceData) {
-
-			if (((InnerResourceData) modelObject).getResourceData() != null
-					&& ((InnerResourceData) modelObject).getResourceData().getResource() != null) {
-				if (modelObject instanceof FlexoProjectObject) {
-					return ((FlexoProjectObject) modelObject).getProject().getURI() + PROJECT_SEPARATOR
-							+ ((InnerResourceData) modelObject).getResourceData().getResource().getURI() + SEPARATOR
-							+ modelObject.getUserIdentifier() + ID_SEPARATOR + String.valueOf(modelObject.getFlexoID())
-							+ (serializeClassName ? SEPARATOR + modelObject.getClass().getName() : "");
-				}
-				else {
-					return ((InnerResourceData) modelObject).getResourceData().getResource().getURI() + SEPARATOR
-							+ modelObject.getUserIdentifier() + ID_SEPARATOR + String.valueOf(modelObject.getFlexoID())
-							+ (serializeClassName ? SEPARATOR + modelObject.getClass().getName() : "");
-				}
-			}
+	public static String constructSerializationRepresentation(String projectURI, String resourceURI, String userIdentifier, String objectId, String className) {
+		StringBuilder result = new StringBuilder();
+		if (projectURI != null) {
+			result.append(projectURI);
+			result.append(PROJECT_SEPARATOR);
 		}
-
-		return null;
+		result.append(resourceURI);
+		result.append(SEPARATOR);
+		result.append(userIdentifier);
+		result.append(ID_SEPARATOR);
+		result.append(objectId);
+		if (className != null) {
+			result.append(SEPARATOR);
+			result.append(className);
+		}
+		return result.toString();
 	}
 
 	private String resourceIdentifier;
@@ -404,11 +397,13 @@ public class FlexoObjectReference<O extends FlexoObject> extends KVCFlexoObject 
 
 	public String getStringRepresentation() {
 		if (modelObject != null) {
-			return getSerializationRepresentationForObject(modelObject, serializeClassName);
+			return modelObject.getReferenceForSerialization(serializeClassName);
 		}
 		else {
-			return resourceIdentifier + SEPARATOR + userIdentifier + ID_SEPARATOR + flexoID
-					+ (serializeClassName ? SEPARATOR + className : "");
+			return constructSerializationRepresentation(
+				null, resourceIdentifier, userIdentifier,
+				Long.toString(flexoID), serializeClassName ? SEPARATOR + className : null
+			);
 		}
 	}
 
