@@ -101,6 +101,11 @@ public class TestFMLWizardFibs extends GenericFIBTestCase {
 	}
 
 	@Test
+	public void testDescribeAssignation() {
+		validateFIB("Fib/Wizard/CreateFMLElement/DescribeAssignation.fib");
+	}
+
+	@Test
 	public void testDescribeExpressionProperty() {
 		validateFIB("Fib/Wizard/CreateFMLElement/DescribeExpressionProperty.fib");
 	}
@@ -148,6 +153,11 @@ public class TestFMLWizardFibs extends GenericFIBTestCase {
 	@Test
 	public void testDescribeModelSlot() {
 		validateFIB("Fib/Wizard/CreateFMLElement/DescribeModelSlot.fib");
+	}
+
+	@Test
+	public void testDescribeNewVariable() {
+		validateFIB("Fib/Wizard/CreateFMLElement/DescribeNewVariable.fib");
 	}
 
 	@Test

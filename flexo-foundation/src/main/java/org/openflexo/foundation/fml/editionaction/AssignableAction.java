@@ -143,6 +143,13 @@ public abstract interface AssignableAction<T> extends EditionAction {
 	 */
 	public DeclarationAction<T> declaresNewVariable(String variableName);
 
+	/**
+	 * Used to instantiate AssignationAction while value set to this action
+	 * 
+	 * @param cg
+	 */
+	public AssignationAction<T> assignTo(DataBinding<?> assignation);
+
 	public static abstract class AssignableActionImpl<T> extends EditionActionImpl implements AssignableAction<T> {
 
 		private static final Logger logger = Logger.getLogger(AssignableAction.class.getPackage().getName());
@@ -197,6 +204,38 @@ public abstract interface AssignableAction<T> extends EditionAction {
 		public abstract T execute(RunTimeEvaluationContext evaluationContext) throws ReturnException, FlexoException;
 
 		/**
+		 * Used to instantiate AssignationAction while value set to this action
+		 * 
+		 * @param cg
+		 */
+		@Override
+		public AssignationAction<T> assignTo(DataBinding<?> assignation) {
+			FMLModelFactory factory = getFMLModelFactory();
+
+			FMLControlGraphOwner owner = getOwner();
+			String ownerContext = getOwnerContext();
+			Sequence parentFlattenedSequence = getParentFlattenedSequence();
+
+			owner.setControlGraph(null, ownerContext);
+
+			AssignationAction<T> assignationAction = factory.newAssignationAction(this);
+			assignationAction.setAssignation((DataBinding) assignation);
+
+			// We connect control graph
+			setOwnerContext(ownerContext);
+			owner.setControlGraph(assignationAction, ownerContext);
+
+			// Then we must notify the parent flattenedSequence where this control graph was presented as a sequence
+			// This fixes issue TA-81
+			if (parentFlattenedSequence != null) {
+				parentFlattenedSequence.controlGraphChanged(this);
+			}
+
+			return assignationAction;
+
+		}
+
+		/**
 		 * Used to declare a new variable and assigning assignableAction to it
 		 * 
 		 * @param cg
@@ -226,6 +265,7 @@ public abstract interface AssignableAction<T> extends EditionAction {
 			return declarationAction;
 
 		}
+
 
 	}
 

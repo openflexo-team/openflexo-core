@@ -41,6 +41,10 @@ package org.openflexo.foundation.fml.action;
 import java.util.Vector;
 import java.util.logging.Logger;
 
+import org.openflexo.connie.Bindable;
+import org.openflexo.connie.BindingFactory;
+import org.openflexo.connie.BindingModel;
+import org.openflexo.connie.DataBinding;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
@@ -52,29 +56,27 @@ import org.openflexo.foundation.fml.editionaction.AssignableAction;
 import org.openflexo.foundation.fml.editionaction.AssignationAction;
 import org.openflexo.foundation.fml.editionaction.DeclarationAction;
 import org.openflexo.foundation.fml.editionaction.ReturnStatement;
-import org.openflexo.toolbox.StringUtils;
 
 /**
- * Instantiate a new DeclarationAction while embedding focused {@link AssignableAction} in a variable declaration
+ * Instantiate a new {@link AssignationAction} while embedding focused {@link AssignableAction} the value beeing assigned
  * 
  * @author sylvain
  *
  */
-public class DeclareNewVariableAction extends FlexoAction<DeclareNewVariableAction, AssignableAction<?>, FMLObject> {
+public class AssignAction extends FlexoAction<AssignAction, AssignableAction<?>, FMLObject> implements Bindable {
 
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(DeclareNewVariableAction.class.getPackage().getName());
+	private static final Logger logger = Logger.getLogger(AssignAction.class.getPackage().getName());
 
-	public static FlexoActionType<DeclareNewVariableAction, AssignableAction<?>, FMLObject> actionType = new FlexoActionType<DeclareNewVariableAction, AssignableAction<?>, FMLObject>(
-			"declares_new_variable", FlexoActionType.defaultGroup, FlexoActionType.NORMAL_ACTION_TYPE) {
+	public static FlexoActionType<AssignAction, AssignableAction<?>, FMLObject> actionType = new FlexoActionType<AssignAction, AssignableAction<?>, FMLObject>(
+			"assign_to", FlexoActionType.defaultGroup, FlexoActionType.NORMAL_ACTION_TYPE) {
 
 		/**
 		 * Factory method
 		 */
 		@Override
-		public DeclareNewVariableAction makeNewAction(AssignableAction<?> focusedObject, Vector<FMLObject> globalSelection,
-				FlexoEditor editor) {
-			return new DeclareNewVariableAction(focusedObject, globalSelection, editor);
+		public AssignAction makeNewAction(AssignableAction<?> focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
+			return new AssignAction(focusedObject, globalSelection, editor);
 		}
 
 		@Override
@@ -91,49 +93,70 @@ public class DeclareNewVariableAction extends FlexoAction<DeclareNewVariableActi
 	};
 
 	static {
-		FlexoObjectImpl.addActionForClass(DeclareNewVariableAction.actionType, AssignableAction.class);
+		FlexoObjectImpl.addActionForClass(AssignAction.actionType, AssignableAction.class);
 	}
 
-	private DeclarationAction<?> declarationAction;
-	private String newVariableName;
+	private AssignationAction<?> assignationAction;
+	private DataBinding<?> assignation;
 
-	DeclareNewVariableAction(AssignableAction<?> focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
+	AssignAction(AssignableAction<?> focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 	}
 
 	@Override
 	protected void doAction(Object context) throws FlexoException {
 
-		declarationAction = getFocusedObject().declaresNewVariable(getNewVariableName());
+		assignationAction = getFocusedObject().assignTo(getAssignation());
 
 	}
 
 	@Override
 	public boolean isValid() {
-		if (StringUtils.isEmpty(getNewVariableName())) {
-			return false;
-		}
-		if (getFocusedObject().getBindingModel().bindingVariableNamed(getNewVariableName()) != null) {
+		if (!getAssignation().isValid()) {
 			return false;
 		}
 		return true;
 	}
 
-	public String getNewVariableName() {
-		return newVariableName;
-	}
+	public DataBinding<?> getAssignation() {
+		if (assignation == null) {
+			assignation = new DataBinding<Object>(this, Object.class, DataBinding.BindingDefinitionType.GET_SET);
+			assignation.setBindingName("assignation");
+			assignation.setMandatory(true);
 
-	public void setNewVariableName(String newVariableName) {
-		if ((newVariableName == null && this.newVariableName != null)
-				|| (newVariableName != null && !newVariableName.equals(this.newVariableName))) {
-			String oldValue = this.newVariableName;
-			this.newVariableName = newVariableName;
-			getPropertyChangeSupport().firePropertyChange("newVariableName", oldValue, newVariableName);
 		}
+		return assignation;
 	}
 
-	public DeclarationAction<?> getDeclarationAction() {
-		return declarationAction;
+	public AssignationAction<?> getDeclarationAction() {
+		return assignationAction;
+	}
+
+	@Override
+	public BindingModel getBindingModel() {
+		return getFocusedObject().getBindingModel();
+	}
+
+	@Override
+	public BindingFactory getBindingFactory() {
+		return getFocusedObject().getBindingFactory();
+	}
+
+	private boolean isNotifying = false;
+
+	@Override
+	public void notifiedBindingChanged(DataBinding<?> dataBinding) {
+		if (isNotifying) {
+			return;
+		}
+		isNotifying = true;
+		System.out.println("Hop je change pour " + getAssignation());
+		getPropertyChangeSupport().firePropertyChange("assignation", null, getAssignation());
+		isNotifying = false;
+	}
+
+	@Override
+	public void notifiedBindingDecoded(DataBinding<?> dataBinding) {
 	}
 
 }
