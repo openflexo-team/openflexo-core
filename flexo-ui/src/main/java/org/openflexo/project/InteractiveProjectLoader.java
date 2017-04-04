@@ -79,7 +79,7 @@ public class InteractiveProjectLoader extends ProjectLoader {
 
 	public InteractiveProjectLoader() {
 		super();
-		autoSaveServices = new HashMap<FlexoProject, AutoSaveService>();
+		autoSaveServices = new HashMap<>();
 	}
 
 	@Override
@@ -164,7 +164,7 @@ public class InteractiveProjectLoader extends ProjectLoader {
 
 	@Override
 	public void saveProjects(List<FlexoProject> projects) throws SaveResourceExceptionList {
-		List<SaveResourceException> exceptions = new ArrayList<SaveResourceException>();
+		List<SaveResourceException> exceptions = new ArrayList<>();
 		Collections.sort(projects, new Comparator<FlexoProject>() {
 			@Override
 			public int compare(FlexoProject o1, FlexoProject o2) {

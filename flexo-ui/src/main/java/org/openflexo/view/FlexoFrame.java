@@ -225,8 +225,8 @@ public final class FlexoFrame extends JFrame implements GraphicalFlexoObserver, 
 	public FlexoFrame(FlexoController controller) {
 		super();
 		_controller = controller;
-		_relativeWindows = new Vector<FlexoRelativeWindow>();
-		_displayedRelativeWindows = new Vector<FlexoRelativeWindow>();
+		_relativeWindows = new Vector<>();
+		_displayedRelativeWindows = new Vector<>();
 		Rectangle bounds = null;
 		if (getController().getApplicationContext().getGeneralPreferences() != null) {
 			bounds = getController().getApplicationContext().getPresentationPreferences()
@@ -293,7 +293,7 @@ public final class FlexoFrame extends JFrame implements GraphicalFlexoObserver, 
 		});
 	}
 
-	public FlexoModule getModule() {
+	public FlexoModule<?> getModule() {
 		if (getController() != null) {
 			return getController().getModule();
 		}
@@ -341,7 +341,7 @@ public final class FlexoFrame extends JFrame implements GraphicalFlexoObserver, 
 	}
 
 	public void disposeAll() {
-		for (FlexoRelativeWindow next : new ArrayList<FlexoRelativeWindow>(_relativeWindows)) {
+		for (FlexoRelativeWindow next : new ArrayList<>(_relativeWindows)) {
 			next.dispose();
 		}
 		_relativeWindows.clear();

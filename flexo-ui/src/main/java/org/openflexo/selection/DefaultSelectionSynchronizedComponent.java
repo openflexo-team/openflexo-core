@@ -64,7 +64,7 @@ public abstract class DefaultSelectionSynchronizedComponent implements Selection
 	}
 
 	@Override
-	public Vector getSelection() {
+	public Vector<FlexoObject> getSelection() {
 		if (getSelectionManager() != null) {
 			return getSelectionManager().getSelection();
 		}
@@ -75,7 +75,8 @@ public abstract class DefaultSelectionSynchronizedComponent implements Selection
 	public void resetSelection() {
 		if (getSelectionManager() != null) {
 			getSelectionManager().resetSelection();
-		} else {
+		}
+		else {
 			fireResetSelection();
 		}
 	}
@@ -85,7 +86,8 @@ public abstract class DefaultSelectionSynchronizedComponent implements Selection
 		if (mayRepresents(object)) {
 			if (getSelectionManager() != null) {
 				getSelectionManager().addToSelected(object);
-			} else {
+			}
+			else {
 				fireObjectSelected(object);
 			}
 		}
@@ -96,7 +98,8 @@ public abstract class DefaultSelectionSynchronizedComponent implements Selection
 		if (mayRepresents(object)) {
 			if (getSelectionManager() != null) {
 				getSelectionManager().removeFromSelected(object);
-			} else {
+			}
+			else {
 				fireObjectDeselected(object);
 			}
 		}
@@ -106,9 +109,10 @@ public abstract class DefaultSelectionSynchronizedComponent implements Selection
 	public void addToSelected(Vector<? extends FlexoObject> objects) {
 		if (getSelectionManager() != null) {
 			getSelectionManager().addToSelected(objects);
-		} else {
+		}
+		else {
 			fireBeginMultipleSelection();
-			for (Enumeration en = objects.elements(); en.hasMoreElements();) {
+			for (Enumeration<?> en = objects.elements(); en.hasMoreElements();) {
 				FlexoObject next = (FlexoObject) en.nextElement();
 				fireObjectSelected(next);
 			}
@@ -120,9 +124,10 @@ public abstract class DefaultSelectionSynchronizedComponent implements Selection
 	public void removeFromSelected(Vector<? extends FlexoObject> objects) {
 		if (getSelectionManager() != null) {
 			getSelectionManager().removeFromSelected(objects);
-		} else {
+		}
+		else {
 			fireBeginMultipleSelection();
-			for (Enumeration en = objects.elements(); en.hasMoreElements();) {
+			for (Enumeration<?> en = objects.elements(); en.hasMoreElements();) {
 				FlexoObject next = (FlexoObject) en.nextElement();
 				fireObjectDeselected(next);
 			}
@@ -134,7 +139,8 @@ public abstract class DefaultSelectionSynchronizedComponent implements Selection
 	public void setSelectedObjects(Vector<? extends FlexoObject> objects) {
 		if (getSelectionManager() != null) {
 			getSelectionManager().setSelectedObjects(objects);
-		} else {
+		}
+		else {
 			resetSelection();
 			addToSelected(objects);
 		}

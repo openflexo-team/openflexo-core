@@ -106,8 +106,8 @@ public class JIRAIssueReportDialog extends PropertyChangedSupportDefaultImplemen
 		private final List<String> warnings;
 
 		public SubmitIssueReport() {
-			errors = new ArrayList<String>();
-			warnings = new ArrayList<String>();
+			errors = new ArrayList<>();
+			warnings = new ArrayList<>();
 		}
 
 		public boolean hasErrors() {
@@ -177,7 +177,7 @@ public class JIRAIssueReportDialog extends PropertyChangedSupportDefaultImplemen
 
 	public static final Resource FIB_FILE = ResourceLocator.locateResource("Fib/JIRAIssueReportDialog.fib");
 	public static final Resource REPORT_FIB_FILE = ResourceLocator.locateResource("Fib/JIRASubmitIssueReportDialog.fib");
-	private static final List<JIRAComponent> EMPTY_LIST = new ArrayList<JIRAComponent>(0);
+	private static final List<JIRAComponent> EMPTY_LIST = new ArrayList<>(0);
 
 	private JIRAIssue issue;
 	private JIRAProject project;
@@ -312,7 +312,7 @@ public class JIRAIssueReportDialog extends PropertyChangedSupportDefaultImplemen
 				serviceManager.getBugReportPreferences().getBugReportPassword());
 		final SubmitIssueReport report = new SubmitIssueReport();
 		SubmitIssueToJIRA target = new SubmitIssueToJIRA(client, report);
-		int steps = target.getNumberOfSteps();
+		// Unused int steps = target.getNumberOfSteps();
 		boolean submit = true;
 		while (submit) {
 			target.run();
@@ -566,7 +566,7 @@ public class JIRAIssueReportDialog extends PropertyChangedSupportDefaultImplemen
 		if (getIssue().getIssuetype() == null) {
 			return EMPTY_LIST;
 		}
-		List<JIRAComponent> availableComponents = new ArrayList<JIRAComponent>();
+		List<JIRAComponent> availableComponents = new ArrayList<>();
 
 		for (JIRAComponent component : getIssue().getIssuetype().getComponentField().getAllowedValues()) {
 			// if (module.getJiraComponentID().equals(component.getId())) {
@@ -643,7 +643,7 @@ public class JIRAIssueReportDialog extends PropertyChangedSupportDefaultImplemen
 		JIRAVersion closedJiraVersion = null;
 
 		// Prepare allowed versions from jira
-		List<FlexoVersion> flexoVersions = new ArrayList<FlexoVersion>();
+		List<FlexoVersion> flexoVersions = new ArrayList<>();
 		for (JIRAVersion value : allowedValues) {
 			flexoVersions.add(new FlexoVersion(value.getName()));
 		}
@@ -662,7 +662,7 @@ public class JIRAIssueReportDialog extends PropertyChangedSupportDefaultImplemen
 		return closedJiraVersion;
 	}
 
-	private JIRAVersion retrieveJiraVersion(List<JIRAVersion> allowedValues, FlexoVersion version, boolean withPatch) {
+	private static JIRAVersion retrieveJiraVersion(List<JIRAVersion> allowedValues, FlexoVersion version, boolean withPatch) {
 		for (JIRAVersion jiraVersion : allowedValues) {
 			if (jiraVersion.getName().equals(version.toString(withPatch))) {
 				return jiraVersion;

@@ -89,7 +89,7 @@ public class ImportDocSubmissionReport extends FlexoAction<ImportDocSubmissionRe
 	}
 
 	private File _docSubmissionReportFile;
-	private Vector _actionsToImport; // null if all actions must be imported
+	private Vector<?> _actionsToImport; // null if all actions must be imported
 
 	@Override
 	protected void doAction(Object context) {
@@ -126,7 +126,7 @@ public class ImportDocSubmissionReport extends FlexoAction<ImportDocSubmissionRe
 		return _actionsToImport;
 	}
 
-	public void setActionsToImport(Vector actionsToImport) {
+	public void setActionsToImport(Vector<?> actionsToImport) {
 		_actionsToImport = actionsToImport;
 	}
 

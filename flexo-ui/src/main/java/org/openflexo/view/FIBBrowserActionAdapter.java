@@ -96,13 +96,13 @@ public interface FIBBrowserActionAdapter<T extends FlexoObject> extends FIBBrows
 		private void initWithActionType(FlexoActionType<?, T, ?> actionType, FIBBrowserView<?> browserView) {
 			this.actionType = actionType;
 			this.browserView = browserView;
-			setMethod(new DataBinding<Object>("action.performAction(selected)"));
-			setIsAvailable(new DataBinding<Boolean>("action.isAvailable(selected)"));
+			setMethod(new DataBinding<>("action.performAction(selected)"));
+			setIsAvailable(new DataBinding<>("action.isAvailable(selected)"));
 		}
 
 		@Override
 		public Object performAction(T selected) {
-			FlexoAction action = actionType.makeNewAction(selected, null, browserView.getFIBController().getEditor());
+			FlexoAction<?, ?, ?> action = actionType.makeNewAction(selected, null, browserView.getFIBController().getEditor());
 			action.doAction();
 			return action;
 		}

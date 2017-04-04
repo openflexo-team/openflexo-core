@@ -36,7 +36,6 @@
  * 
  */
 
-
 package org.openflexo.rm;
 
 import java.util.ArrayList;
@@ -47,7 +46,7 @@ import org.openflexo.foundation.resource.FlexoResource;
 public class ConflictedResourceSet {
 
 	private List<FlexoResource<?>> conflictedResources;
-	
+
 	private String commonUri;
 
 	public List<FlexoResource<?>> getConflictedResources() {
@@ -62,19 +61,19 @@ public class ConflictedResourceSet {
 		this.conflictedResources = conflictedResources;
 		commonUri = conflictedResources.get(0).getURI();
 	}
-	
+
 	public ConflictedResourceSet(FlexoResource<?> firstResource) {
-		conflictedResources = new ArrayList<FlexoResource<?>>();
+		conflictedResources = new ArrayList<>();
 		conflictedResources.add(firstResource);
 		commonUri = firstResource.getURI();
 	}
-	
+
 	public ConflictedResourceSet() {
-		conflictedResources = new ArrayList<FlexoResource<?>>();
+		conflictedResources = new ArrayList<>();
 	}
 
 	public String getCommonUri() {
 		return commonUri;
 	}
-	
+
 }

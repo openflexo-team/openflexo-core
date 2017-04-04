@@ -76,7 +76,7 @@ public class FMLConsoleViewer extends PropertyChangedSupportDefaultImplementatio
 
 	private FMLConsole console;
 
-	public Vector<FMLLoggingFilter> filters = new Vector<FMLLoggingFilter>();
+	public Vector<FMLLoggingFilter> filters = new Vector<>();
 	public String searchedText;
 
 	public boolean displayLogLevel = false;

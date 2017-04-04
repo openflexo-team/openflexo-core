@@ -103,8 +103,8 @@ public class DocResourceManager extends FlexoServiceImpl {
 
 	public DocResourceManager() {
 		super();
-		_editedDocItems = new Hashtable<DocItem, DocItemVersion>();
-		_versionsToEventuallySave = new Vector<DocItemVersion>();
+		_editedDocItems = new Hashtable<>();
+		_versionsToEventuallySave = new Vector<>();
 	}
 
 	@Override
@@ -602,7 +602,7 @@ public class DocResourceManager extends FlexoServiceImpl {
 
 	private final WeakHashMap<JComponent, String> _pendingComponents = new WeakHashMap<>();
 
-	private synchronized Window getWindowForComponent(JComponent component) {
+	private static synchronized Window getWindowForComponent(JComponent component) {
 		JComponent current = component;
 		Container parent;
 		while (current.getParent() != null) {
@@ -765,7 +765,7 @@ public class DocResourceManager extends FlexoServiceImpl {
 		return _docForComponent.get(component);
 	}
 
-	public void ensureHelpEntryForModuleHaveBeenCreated(FlexoModule module) {
+	public void ensureHelpEntryForModuleHaveBeenCreated(FlexoModule<?> module) {
 		// Unused DocItem newModuleItem =
 		getDocItemFor(module);
 		// Unused DocItem mainPaneItem =
@@ -786,7 +786,7 @@ public class DocResourceManager extends FlexoServiceImpl {
 		}
 	}
 
-	public DocItem getDocItemFor(FlexoModule module) {
+	public DocItem getDocItemFor(FlexoModule<?> module) {
 		DocResourceCenter drc = getDocResourceCenter();
 		if (drc == null) {
 			return null;
@@ -799,7 +799,7 @@ public class DocResourceManager extends FlexoServiceImpl {
 		return getDocItem(identifier);
 	}
 
-	public DocItem getMainPaneItemFor(FlexoModule module) {
+	public DocItem getMainPaneItemFor(FlexoModule<?> module) {
 		DocResourceCenter drc = getDocResourceCenter();
 		if (drc == null) {
 			return null;
@@ -816,7 +816,7 @@ public class DocResourceManager extends FlexoServiceImpl {
 
 	}
 
-	public DocItem getModuleViewItemFor(FlexoModule module, ModuleView view) {
+	public DocItem getModuleViewItemFor(FlexoModule<?> module, ModuleView<?> view) {
 		DocResourceCenter drc = getDocResourceCenter();
 		if (drc == null) {
 			return null;
@@ -851,7 +851,7 @@ public class DocResourceManager extends FlexoServiceImpl {
 
 	}
 
-	public DocItem getControlPanelItemFor(FlexoModule module) {
+	public DocItem getControlPanelItemFor(FlexoModule<?> module) {
 		DocResourceCenter drc = getDocResourceCenter();
 		if (drc == null) {
 			return null;
@@ -867,7 +867,7 @@ public class DocResourceManager extends FlexoServiceImpl {
 		return getDocItem(controlPanelId);
 	}
 
-	public DocItem getLeftViewItemFor(FlexoModule module) {
+	public DocItem getLeftViewItemFor(FlexoModule<?> module) {
 		DocResourceCenter drc = getDocResourceCenter();
 		if (drc == null) {
 			return null;
@@ -883,7 +883,7 @@ public class DocResourceManager extends FlexoServiceImpl {
 		return getDocItem(leftViewId);
 	}
 
-	public DocItem getRightViewItemFor(FlexoModule module) {
+	public DocItem getRightViewItemFor(FlexoModule<?> module) {
 		DocResourceCenter drc = getDocResourceCenter();
 		if (drc == null) {
 			return null;

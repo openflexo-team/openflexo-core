@@ -114,7 +114,7 @@ public abstract class AbstractDocItemView extends JPanel {
 
 	protected JPanel topPanel;
 	protected JTextField titleTF;
-	protected JComboBox languageCB;
+	protected JComboBox<Language> languageCB;
 	protected JTextArea descriptionTA;
 
 	protected EditorPanel editorPanel;
@@ -153,7 +153,7 @@ public abstract class AbstractDocItemView extends JPanel {
 
 		topPanel = new JPanel(new BorderLayout());
 
-		languageCB = new JComboBox(docItem.getDocResourceCenter().getLanguages());
+		languageCB = new JComboBox<>(docItem.getDocResourceCenter().getLanguages());
 		languageCB.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -307,7 +307,7 @@ public abstract class AbstractDocItemView extends JPanel {
 
 			@Override
 			public void itemRemoved(DocItem anItem) {
-				Vector<FlexoObject> globalSelection = new Vector<FlexoObject>();
+				Vector<FlexoObject> globalSelection = new Vector<>();
 				globalSelection.add(_docItem);
 				RemoveRelatedToItem.actionType.makeNewAction(anItem, globalSelection, _editor).doAction();
 				updateViewFromModel();
@@ -668,7 +668,7 @@ public abstract class AbstractDocItemView extends JPanel {
 	}
 
 	protected class HistoryPanel extends JPanel implements ListSelectionListener {
-		protected JList actionList;
+		protected JList<DocItemAction> actionList;
 		protected JButton editButton;
 		protected JButton submitReviewButton;
 		protected JButton approveButton;
@@ -683,14 +683,14 @@ public abstract class AbstractDocItemView extends JPanel {
 		protected JTextField languageTF;
 		protected JTextArea noteTA;
 
-		class HistoryPanelListModel extends AbstractListModel {
+		class HistoryPanelListModel extends AbstractListModel<DocItemAction> {
 			@Override
 			public int getSize() {
 				return _docItem.getActions().size();
 			}
 
 			@Override
-			public Object getElementAt(int index) {
+			public DocItemAction getElementAt(int index) {
 				if (index < _docItem.getActions().size()) {
 					return _docItem.getActions().elementAt(index);
 				}
@@ -717,7 +717,7 @@ public abstract class AbstractDocItemView extends JPanel {
 			historyLabel.setText(_controller.getFlexoLocales().localizedForKey("history", historyLabel));
 			historyLabel.setHorizontalAlignment(SwingConstants.CENTER);
 			historyLabel.setBorder(BorderFactory.createEmptyBorder(3, 3, 3, 3));
-			actionList = new JList(new HistoryPanelListModel()/*_docItem.getActions()*/);
+			actionList = new JList<>(new HistoryPanelListModel()/*_docItem.getActions()*/);
 			actionList.setCellRenderer(new HistoryPanelCellRenderer());
 			actionList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 			actionList.addListSelectionListener(HistoryPanel.this);
@@ -849,7 +849,8 @@ public abstract class AbstractDocItemView extends JPanel {
 			private final Color GREEN = new Color(20, 120, 20);
 
 			@Override
-			public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+			public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected,
+					boolean cellHasFocus) {
 				JLabel returned = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
 				DocItemAction docItemAction = (DocItemAction) value;
 				returned.setText(docItemAction.getLocalizedName());

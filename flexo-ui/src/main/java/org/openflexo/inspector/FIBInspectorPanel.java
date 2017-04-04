@@ -96,7 +96,7 @@ public class FIBInspectorPanel extends JPanel implements Observer, ChangeListene
 
 		inspectorController.addObserver(this);
 
-		inspectorViews = new Hashtable<FIBInspector, FIBView<?, ?>>();
+		inspectorViews = new Hashtable<>();
 
 		resetViews();
 

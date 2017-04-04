@@ -56,7 +56,6 @@ import org.openflexo.foundation.FlexoEditingContext;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
-import org.openflexo.foundation.FlexoProperty;
 import org.openflexo.foundation.action.AddFlexoProperty;
 import org.openflexo.foundation.action.DeleteFlexoProperty;
 import org.openflexo.foundation.action.FlexoAction;
@@ -94,8 +93,8 @@ public class ControllerActionInitializer implements EditorProvider {
 
 	protected ControllerActionInitializer(FlexoController controller) {
 		super();
-		initializers = new Hashtable<FlexoActionType<?, ?, ?>, ActionInitializer<?, ?, ?>>();
-		initializersByActionClass = new Hashtable<Class<?>, ActionInitializer<?, ?, ?>>();
+		initializers = new Hashtable<>();
+		initializersByActionClass = new Hashtable<>();
 		_controller = controller;
 		initializeActions();
 	}
@@ -104,7 +103,7 @@ public class ControllerActionInitializer implements EditorProvider {
 		return initializers;
 	}
 
-	public FlexoModule getFlexoModule() {
+	public FlexoModule<?> getFlexoModule() {
 		return getController().getModule();
 	}
 
@@ -152,7 +151,7 @@ public class ControllerActionInitializer implements EditorProvider {
 		return null;
 	}
 
-	public FlexoModule getModule() {
+	public FlexoModule<?> getModule() {
 		return getController().getModule();
 	}
 
@@ -191,16 +190,13 @@ public class ControllerActionInitializer implements EditorProvider {
 		new DeleteFlexoPropertyActionizer(this);
 		new SortFlexoPropertiesActionizer(this);
 		if (FlexoObjectImpl.addFlexoPropertyActionizer == null) {
-			FlexoObjectImpl.addFlexoPropertyActionizer = new FlexoActionizer<AddFlexoProperty, FlexoObject, FlexoObject>(
-					AddFlexoProperty.actionType, this);
+			FlexoObjectImpl.addFlexoPropertyActionizer = new FlexoActionizer<>(AddFlexoProperty.actionType, this);
 		}
 		if (FlexoObjectImpl.sortFlexoPropertiesActionizer == null) {
-			FlexoObjectImpl.sortFlexoPropertiesActionizer = new FlexoActionizer<SortFlexoProperties, FlexoObject, FlexoObject>(
-					SortFlexoProperties.actionType, this);
+			FlexoObjectImpl.sortFlexoPropertiesActionizer = new FlexoActionizer<>(SortFlexoProperties.actionType, this);
 		}
 		if (FlexoObjectImpl.deleteFlexoPropertyActionizer == null) {
-			FlexoObjectImpl.deleteFlexoPropertyActionizer = new FlexoActionizer<DeleteFlexoProperty, FlexoProperty, FlexoProperty>(
-					DeleteFlexoProperty.actionType, this);
+			FlexoObjectImpl.deleteFlexoPropertyActionizer = new FlexoActionizer<>(DeleteFlexoProperty.actionType, this);
 		}
 	}
 

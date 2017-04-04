@@ -52,19 +52,20 @@ public class ScenarioRecorder {
 
 	public static boolean ENABLE = false;
 
-	private Vector<FlexoAction> _actionHistory;
+	private Vector<FlexoAction<?, ?, ?>> _actionHistory;
 
 	public ScenarioRecorder() {
-		_actionHistory = new Vector<FlexoAction>();
+		_actionHistory = new Vector<>();
 	}
 
-	public void registerDoneAction(FlexoAction action) {
+	public void registerDoneAction(FlexoAction<?, ?, ?> action) {
 		if (logger.isLoggable(Level.FINE)) {
 			logger.info("registerDoneAction " + action);
 		}
 		if (action instanceof FlexoGUIAction) {
 			// Ignore
-		} else {
+		}
+		else {
 			_actionHistory.add(action);
 		}
 		if (logger.isLoggable(Level.FINE)) {
@@ -75,7 +76,7 @@ public class ScenarioRecorder {
 	private void debug() {
 		logger.info("ScenarioRecorder: ");
 		int i = 0;
-		for (FlexoAction a : _actionHistory) {
+		for (FlexoAction<?, ?, ?> a : _actionHistory) {
 			logger.info("" + i + " : " + a);
 			i++;
 		}

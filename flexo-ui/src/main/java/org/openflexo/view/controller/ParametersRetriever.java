@@ -38,10 +38,11 @@
 
 package org.openflexo.view.controller;
 
-import java.awt.*;
+import java.awt.Dimension;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.logging.Logger;
+
 import org.openflexo.ApplicationContext;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.foundation.fml.FlexoBehaviour;
@@ -113,7 +114,7 @@ public class ParametersRetriever<ES extends FlexoBehaviour> {
 	public boolean retrieveParameters() {
 
 		FIBComponent component = makeFIB(true, true);
-		JFIBDialog dialog = JFIBDialog.instanciateDialog(component, action,
+		JFIBDialog<?> dialog = JFIBDialog.instanciateDialog(component, action,
 				applicationContext.getModuleLoader().getActiveModule().getFlexoFrame(), true, new ParametersRetrieverController(component,
 						SwingViewFactory.INSTANCE, applicationContext.getModuleLoader().getActiveModule().getController()));
 		dialog.setTitle(action.getLocalizedName());
@@ -210,7 +211,7 @@ public class ParametersRetriever<ES extends FlexoBehaviour> {
 			}
 		}
 
-		Hashtable<FlexoBehaviourParameter, FIBComponent> widgets = new Hashtable<FlexoBehaviourParameter, FIBComponent>();
+		Hashtable<FlexoBehaviourParameter, FIBComponent> widgets = new Hashtable<>();
 		for (final FlexoBehaviourParameter parameter : flexoBehaviour.getParameters()) {
 			FIBLabel label = fibModelFactory.newFIBLabel();
 			label.setLabel(parameter.getName());
@@ -249,8 +250,8 @@ public class ParametersRetriever<ES extends FlexoBehaviour> {
 			FIBButton validateButton = fibModelFactory.newFIBButton();
 			validateButton.setLabel("validate");
 			validateButton.setLocalize(true);
-			validateButton.setAction(new DataBinding("controller.validateAndDispose()"));
-			validateButton.setEnable(new DataBinding<Boolean>("controller.isValidable(data)"));
+			validateButton.setAction(new DataBinding<>("controller.validateAndDispose()"));
+			validateButton.setEnable(new DataBinding<>("controller.isValidable(data)"));
 			for (FIBComponent widget : widgets.values()) {
 				validateButton.addToExplicitDependancies(fibModelFactory.newFIBDependancy(widget));
 			}
@@ -258,7 +259,7 @@ public class ParametersRetriever<ES extends FlexoBehaviour> {
 			FIBButton cancelButton = fibModelFactory.newFIBButton();
 			cancelButton.setLabel("cancel");
 			cancelButton.setLocalize(true);
-			cancelButton.setAction(new DataBinding("controller.cancelAndDispose()"));
+			cancelButton.setAction(new DataBinding<>("controller.cancelAndDispose()"));
 			buttonsPanel.addToSubComponents(cancelButton);
 
 			returned.addToSubComponents(buttonsPanel, new TwoColsLayoutConstraints(TwoColsLayoutLocation.center, true, false), index++);
@@ -266,7 +267,7 @@ public class ParametersRetriever<ES extends FlexoBehaviour> {
 		ValidationReport validationReport;
 		try {
 			validationReport = returned.validate();
-			for (ValidationError error : validationReport.getErrors()) {
+			for (ValidationError<?, ?> error : validationReport.getErrors()) {
 				logger.warning("Parameters retriever FIBComponent validation error: Object: " + error.getValidable() + " message: "
 						+ validationReport.getValidationModel().localizedIssueMessage(error) + " detais="
 						+ validationReport.getValidationModel().localizedIssueDetailedInformations(error));

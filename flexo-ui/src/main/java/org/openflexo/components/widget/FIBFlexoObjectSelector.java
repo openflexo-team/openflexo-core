@@ -140,7 +140,7 @@ public abstract class FIBFlexoObjectSelector<T extends FlexoObject> extends Text
 		pcSupport = new PropertyChangeSupport(this);
 		setRevertValue(editedObject);
 		setFocusable(true);
-		matchingValues = new ArrayList<T>();
+		matchingValues = new ArrayList<>();
 		getTextField().setEditable(true);
 		getTextField().getDocument().addDocumentListener(new DocumentListener() {
 			@Override
@@ -334,7 +334,7 @@ public abstract class FIBFlexoObjectSelector<T extends FlexoObject> extends Text
 	}
 
 	private void updateMatchingValues() {
-		final List<T> oldMatchingValues = new ArrayList<T>(getMatchingValues());
+		final List<T> oldMatchingValues = new ArrayList<>(getMatchingValues());
 		// System.out.println("updateMatchingValues() with " + getFilteredName());
 		matchingValues.clear();
 		if (getAllSelectableValues() != null && getFilteredName() != null) {
@@ -366,7 +366,7 @@ public abstract class FIBFlexoObjectSelector<T extends FlexoObject> extends Text
 
 	private void clearMatchingValues() {
 		isFiltered = false;
-		List<T> oldMatchingValues = new ArrayList<T>(getMatchingValues());
+		List<T> oldMatchingValues = new ArrayList<>(getMatchingValues());
 		matchingValues.clear();
 		pcSupport.firePropertyChange("matchingValues", oldMatchingValues, null);
 	}
@@ -506,7 +506,7 @@ public abstract class FIBFlexoObjectSelector<T extends FlexoObject> extends Text
 		}
 
 		protected void selectValue(T value) {
-			JFIBBrowserWidget browserWidget = retrieveFIBBrowserWidget();
+			JFIBBrowserWidget<T> browserWidget = retrieveFIBBrowserWidget();
 			if (browserWidget != null) {
 				// Force reselect value because tree may have been recomputed
 				browserWidget.setSelected(value);
@@ -528,8 +528,8 @@ public abstract class FIBFlexoObjectSelector<T extends FlexoObject> extends Text
 		}
 
 		protected Set<T> getAllSelectableValues() {
-			Set<T> returned = new HashSet<T>();
-			JFIBBrowserWidget browserWidget = retrieveFIBBrowserWidget();
+			Set<T> returned = new HashSet<>();
+			JFIBBrowserWidget<T> browserWidget = retrieveFIBBrowserWidget();
 			if (browserWidget == null) {
 				return null;
 			}
@@ -557,7 +557,7 @@ public abstract class FIBFlexoObjectSelector<T extends FlexoObject> extends Text
 			return listWidget;
 		}
 
-		private JFIBBrowserWidget<?> retrieveFIBBrowserWidget() {
+		private JFIBBrowserWidget<T> retrieveFIBBrowserWidget() {
 			List<FIBComponent> listComponent = fibComponent.getAllSubComponents();
 			for (FIBComponent c : listComponent) {
 				if (c instanceof FIBBrowser) {
@@ -585,13 +585,13 @@ public abstract class FIBFlexoObjectSelector<T extends FlexoObject> extends Text
 			return controller;
 		}
 
-		public FIBView getFIBView() {
+		public FIBView<?, ?> getFIBView() {
 			return fibView;
 		}
 	}
 
 	public static class SelectorFIBController extends FlexoFIBController {
-		private FIBFlexoObjectSelector selector;
+		private FIBFlexoObjectSelector<RepositoryFolder<?, ?>> selector;
 
 		public SelectorFIBController(FIBComponent component, GinaViewFactory<?> viewFactory) {
 			super(component, viewFactory);
@@ -794,7 +794,7 @@ public abstract class FIBFlexoObjectSelector<T extends FlexoObject> extends Text
 		if (_selectableConditionAsString == null || StringUtils.isEmpty(_selectableConditionAsString)) {
 			return null;
 		}
-		_selectableCondition = new DataBinding<Boolean>(_selectableConditionAsString);
+		_selectableCondition = new DataBinding<>(_selectableConditionAsString);
 		_selectableCondition.setOwner(component);
 		_selectableCondition.setDeclaredType(Boolean.class);
 		_selectableCondition.setBindingDefinitionType(BindingDefinitionType.GET);

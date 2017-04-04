@@ -112,7 +112,7 @@ public class TaskManagerPanel extends JDialog implements PropertyChangeListener 
 
 		getContentPane().add(scrollPane);
 
-		taskPanels = new HashMap<FlexoTask, TaskPanel>();
+		taskPanels = new HashMap<>();
 
 		contentPane.setPreferredSize(new Dimension(PREFERRED_WIDTH, PREFERRED_HEIGHT));
 		validate();
@@ -150,7 +150,7 @@ public class TaskManagerPanel extends JDialog implements PropertyChangeListener 
 			});
 			return;
 		}
-		for (FlexoTask task : new ArrayList<FlexoTask>(taskManager.getScheduledTasks())) {
+		for (FlexoTask task : new ArrayList<>(taskManager.getScheduledTasks())) {
 			TaskPanel p = taskPanels.get(task);
 			if (p == null) {
 				p = new TaskPanel(task);

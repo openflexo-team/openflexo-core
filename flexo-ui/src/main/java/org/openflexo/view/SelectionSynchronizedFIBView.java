@@ -183,7 +183,7 @@ public class SelectionSynchronizedFIBView extends FlexoFIBView implements Select
 		if (selection == null) {
 			return;
 		}
-		Vector<FlexoObject> newSelection = new Vector<FlexoObject>();
+		Vector<FlexoObject> newSelection = new Vector<>();
 		for (Object o : selection) {
 			if (o instanceof FlexoObject) {
 				newSelection.add(getRelevantObject((FlexoObject) o));
@@ -207,7 +207,7 @@ public class SelectionSynchronizedFIBView extends FlexoFIBView implements Select
 	 * @param object
 	 * @return
 	 */
-	private FlexoObject getRelevantObject(FlexoObject object) {
+	private static FlexoObject getRelevantObject(FlexoObject object) {
 		if (object instanceof FlexoResource<?> && ((FlexoResource<?>) object).isLoaded()) {
 			try {
 				return (FlexoObject) ((FlexoResource<?>) object).getResourceData(null);

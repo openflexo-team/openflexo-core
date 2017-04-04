@@ -84,11 +84,11 @@ public class ResourceConsistencyService extends FlexoServiceImpl {
 		// Inform the user of conflicts
 		informOfConflictedResourceSets(conflictedResourceSets);
 
-		viewsWithoutViewpoint = new ArrayList<ViewResource>();
+		viewsWithoutViewpoint = new ArrayList<>();
 	}
 
 	/**
-	 * Receive a ntification that a new resource has changed. It send a message if a conflict exists or resource not complete
+	 * Receive a notification that a new resource has changed. It send a message if a conflict exists or resource not complete
 	 */
 	@Override
 	public void receiveNotification(FlexoService caller, ServiceNotification notification) {
@@ -156,7 +156,7 @@ public class ResourceConsistencyService extends FlexoServiceImpl {
 	 */
 	public List<ConflictedResourceSet> getConflictedResourceSets() {
 		if (conflictedResourceSets == null) {
-			conflictedResourceSets = new ArrayList<ConflictedResourceSet>();
+			conflictedResourceSets = new ArrayList<>();
 		}
 		// Browse all resources
 		for (FlexoResource<?> resource : getResourceManager().getRegisteredResources()) {
@@ -185,7 +185,7 @@ public class ResourceConsistencyService extends FlexoServiceImpl {
 	 * 
 	 * @param resource
 	 */
-	private void informOfViewPointMissing(ViewResourceImpl resource) {
+	private static void informOfViewPointMissing(ViewResourceImpl resource) {
 		if (resource != null) {
 			Thread.dumpStack();
 			FlexoController.notify("<html> " + "<h3>Viewpoint resources is missing!</h3>" + "<p>View <font color=\"red\">"
@@ -220,7 +220,7 @@ public class ResourceConsistencyService extends FlexoServiceImpl {
 		}
 	}
 
-	private String informationMessageForConflictSet(ConflictedResourceSet conflict) {
+	private static String informationMessageForConflictSet(ConflictedResourceSet conflict) {
 		Thread.dumpStack();
 		StringBuilder conflictsInformation = new StringBuilder();
 		conflictsInformation.append("<p> <font color=\"red\"> URI : " + conflict.getCommonUri() + " is owned by </font><br/>");
@@ -245,11 +245,11 @@ public class ResourceConsistencyService extends FlexoServiceImpl {
 	 * @return
 	 */
 	private List<FlexoResource<?>> getResources(String resourceURI) {
-		List<FlexoResource<?>> flexoResources = new ArrayList<FlexoResource<?>>();
+		List<FlexoResource<?>> flexoResources = new ArrayList<>();
 		if (StringUtils.isEmpty(resourceURI)) {
 			return null;
 		}
-		for (FlexoResource<?> r : new ArrayList<FlexoResource<?>>(getResourceManager().getRegisteredResources())) {
+		for (FlexoResource<?> r : new ArrayList<>(getResourceManager().getRegisteredResources())) {
 			if (resourceURI.equals(r.getURI())) {
 				flexoResources.add(r);
 			}

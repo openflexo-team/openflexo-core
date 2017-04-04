@@ -102,7 +102,7 @@ public class InteractiveFlexoEditor extends DefaultFlexoEditor {
 	public InteractiveFlexoEditor(ApplicationContext applicationContext, FlexoProject project) {
 		super(project, applicationContext);
 		this.applicationContext = applicationContext;
-		actionInitializers = new Hashtable<FlexoModule, ControllerActionInitializer>();
+		actionInitializers = new Hashtable<>();
 		if (ScenarioRecorder.ENABLE) {
 			_scenarioRecorder = new ScenarioRecorder();
 		}

@@ -89,13 +89,13 @@ public class FlexoMarketEditor implements HasPropertyChangeSupport {
 
 	public FlexoMarketEditor(FlexoUpdateService service, ApplicationContext applicationContext) {
 		_pcSupport = new PropertyChangeSupport(this);
-		repositories = new ArrayList<FlexoRemoteRepository>();
+		repositories = new ArrayList<>();
 		this.service = service;
 		this.applicationContext = applicationContext;
 		FlexoMarketRemoteRepository flexoRepository = new FlexoMarketRemoteRepository("OPENFLEXO MARKET", null);
 		repositories.add(flexoRepository);
 		repository = repositories.get(0);
-		selectedBundles = new ArrayList<FlexoBundle>();
+		selectedBundles = new ArrayList<>();
 	}
 
 	@Override
@@ -177,7 +177,7 @@ public class FlexoMarketEditor implements HasPropertyChangeSupport {
 		try {
 
 			FIBComponent fibComponent = applicationContext.getApplicationFIBLibraryService().retrieveFIBComponent(FLEXO_CREATE_URL_FIB);
-			JFIBDialog dialog = JFIBDialog.instanciateAndShowDialog(fibComponent, this, FlexoFrame.getActiveFrame(), true,
+			JFIBDialog<?> dialog = JFIBDialog.instanciateAndShowDialog(fibComponent, this, FlexoFrame.getActiveFrame(), true,
 					new FlexoFIBController(fibComponent, null));
 			if (dialog.getStatus().equals(Status.VALIDATED)) {
 				bundle.addToURLs(new URL(newURL));
