@@ -148,7 +148,14 @@ public abstract interface AssignableAction<T> extends EditionAction {
 	 * 
 	 * @param cg
 	 */
-	public AssignationAction<T> assignTo(DataBinding<?> assignation);
+	public AssignationAction<T> assignTo(DataBinding<? super T> assignation);
+
+	/**
+	 * Used to instantiate {@link AddToListAction} while added value set to this action
+	 * 
+	 * @param cg
+	 */
+	public AddToListAction<T> addToList(DataBinding<? extends List<T>> assignation);
 
 	public static abstract class AssignableActionImpl<T> extends EditionActionImpl implements AssignableAction<T> {
 
@@ -209,7 +216,7 @@ public abstract interface AssignableAction<T> extends EditionAction {
 		 * @param cg
 		 */
 		@Override
-		public AssignationAction<T> assignTo(DataBinding<?> assignation) {
+		public AssignationAction<T> assignTo(DataBinding<? super T> assignation) {
 			FMLModelFactory factory = getFMLModelFactory();
 
 			FMLControlGraphOwner owner = getOwner();
@@ -219,7 +226,7 @@ public abstract interface AssignableAction<T> extends EditionAction {
 			owner.setControlGraph(null, ownerContext);
 
 			AssignationAction<T> assignationAction = factory.newAssignationAction(this);
-			assignationAction.setAssignation((DataBinding) assignation);
+			assignationAction.setAssignation(assignation);
 
 			// We connect control graph
 			setOwnerContext(ownerContext);
@@ -266,6 +273,38 @@ public abstract interface AssignableAction<T> extends EditionAction {
 
 		}
 
+		/**
+		 * Used to instantiate {@link AddToListAction} while added value set to this action
+		 * 
+		 * @param cg
+		 */
+		@Override
+		public AddToListAction<T> addToList(DataBinding<? extends List<T>> list) {
+			FMLModelFactory factory = getFMLModelFactory();
+
+			FMLControlGraphOwner owner = getOwner();
+			String ownerContext = getOwnerContext();
+			Sequence parentFlattenedSequence = getParentFlattenedSequence();
+
+			owner.setControlGraph(null, ownerContext);
+
+			AddToListAction<T> addToListAction = factory.newAddToListAction();
+			addToListAction.setAssignableAction(this);
+			addToListAction.setList(list);
+
+			// We connect control graph
+			setOwnerContext(ownerContext);
+			owner.setControlGraph(addToListAction, ownerContext);
+
+			// Then we must notify the parent flattenedSequence where this control graph was presented as a sequence
+			// This fixes issue TA-81
+			if (parentFlattenedSequence != null) {
+				parentFlattenedSequence.controlGraphChanged(this);
+			}
+
+			return addToListAction;
+
+		}
 
 	}
 

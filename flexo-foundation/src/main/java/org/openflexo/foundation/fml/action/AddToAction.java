@@ -38,6 +38,7 @@
 
 package org.openflexo.foundation.fml.action;
 
+import java.util.List;
 import java.util.Vector;
 import java.util.logging.Logger;
 
@@ -58,25 +59,25 @@ import org.openflexo.foundation.fml.editionaction.DeclarationAction;
 import org.openflexo.foundation.fml.editionaction.ReturnStatement;
 
 /**
- * Instantiate a new {@link AssignationAction} while embedding focused {@link AssignableAction} the value beeing assigned
+ * Instantiate a new {@link AddToListAction} while embedding focused {@link AssignableAction} as value beeing added to list
  * 
  * @author sylvain
  *
  */
-public class AssignAction extends FlexoAction<AssignAction, AssignableAction<?>, FMLObject> implements Bindable {
+public class AddToAction extends FlexoAction<AddToAction, AssignableAction<?>, FMLObject> implements Bindable {
 
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(AssignAction.class.getPackage().getName());
+	private static final Logger logger = Logger.getLogger(AddToAction.class.getPackage().getName());
 
-	public static FlexoActionType<AssignAction, AssignableAction<?>, FMLObject> actionType = new FlexoActionType<AssignAction, AssignableAction<?>, FMLObject>(
-			"assign_to", FlexoActionType.defaultGroup, FlexoActionType.NORMAL_ACTION_TYPE) {
+	public static FlexoActionType<AddToAction, AssignableAction<?>, FMLObject> actionType = new FlexoActionType<AddToAction, AssignableAction<?>, FMLObject>(
+			"add_to_list", FlexoActionType.defaultGroup, FlexoActionType.NORMAL_ACTION_TYPE) {
 
 		/**
 		 * Factory method
 		 */
 		@Override
-		public AssignAction makeNewAction(AssignableAction<?> focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
-			return new AssignAction(focusedObject, globalSelection, editor);
+		public AddToAction makeNewAction(AssignableAction<?> focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
+			return new AddToAction(focusedObject, globalSelection, editor);
 		}
 
 		@Override
@@ -93,43 +94,43 @@ public class AssignAction extends FlexoAction<AssignAction, AssignableAction<?>,
 	};
 
 	static {
-		FlexoObjectImpl.addActionForClass(AssignAction.actionType, AssignableAction.class);
+		FlexoObjectImpl.addActionForClass(AddToAction.actionType, AssignableAction.class);
 	}
 
-	private AssignationAction<?> assignationAction;
-	private DataBinding<?> assignation;
+	private AddToListAction<?> addToListAction;
+	private DataBinding<List<?>> list;
 
-	AssignAction(AssignableAction<?> focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
+	AddToAction(AssignableAction<?> focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 	}
 
 	@Override
 	protected void doAction(Object context) throws FlexoException {
 
-		assignationAction = getFocusedObject().assignTo((DataBinding) getAssignation());
+		addToListAction = getFocusedObject().addToList((DataBinding) getList());
 
 	}
 
 	@Override
 	public boolean isValid() {
-		if (!getAssignation().isValid()) {
+		if (!getList().isValid()) {
 			return false;
 		}
 		return true;
 	}
 
-	public DataBinding<?> getAssignation() {
-		if (assignation == null) {
-			assignation = new DataBinding<Object>(this, Object.class, DataBinding.BindingDefinitionType.GET_SET);
-			assignation.setBindingName("assignation");
-			assignation.setMandatory(true);
+	public DataBinding<?> getList() {
+		if (list == null) {
+			list = new DataBinding<List<?>>(this, List.class, DataBinding.BindingDefinitionType.GET);
+			list.setBindingName("list");
+			list.setMandatory(true);
 
 		}
-		return assignation;
+		return list;
 	}
 
-	public AssignationAction<?> getDeclarationAction() {
-		return assignationAction;
+	public AddToListAction<?> getAddToListAction() {
+		return addToListAction;
 	}
 
 	@Override
@@ -150,7 +151,7 @@ public class AssignAction extends FlexoAction<AssignAction, AssignableAction<?>,
 			return;
 		}
 		isNotifying = true;
-		getPropertyChangeSupport().firePropertyChange("assignation", null, getAssignation());
+		getPropertyChangeSupport().firePropertyChange("list", null, getList());
 		isNotifying = false;
 	}
 

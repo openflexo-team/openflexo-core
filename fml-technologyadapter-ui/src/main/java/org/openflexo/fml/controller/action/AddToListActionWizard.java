@@ -47,34 +47,34 @@ import org.openflexo.ApplicationContext;
 import org.openflexo.components.wizard.FlexoWizard;
 import org.openflexo.components.wizard.WizardStep;
 import org.openflexo.connie.DataBinding;
-import org.openflexo.foundation.fml.action.AssignAction;
+import org.openflexo.foundation.fml.action.AddToAction;
 import org.openflexo.gina.annotation.FIBPanel;
 import org.openflexo.icon.FMLIconLibrary;
 import org.openflexo.icon.IconFactory;
 import org.openflexo.icon.IconLibrary;
 import org.openflexo.view.controller.FlexoController;
 
-public class AssignActionWizard extends FlexoWizard {
+public class AddToListActionWizard extends FlexoWizard {
 
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(AssignActionWizard.class.getPackage().getName());
+	private static final Logger logger = Logger.getLogger(AddToListActionWizard.class.getPackage().getName());
 
-	private final DescribeAssignation describeAssignation;
-	private final AssignAction action;
+	private final DescribeListWhereToAdd describeListWhereToAdd;
+	private final AddToAction action;
 
-	public AssignActionWizard(AssignAction action, FlexoController controller) {
+	public AddToListActionWizard(AddToAction action, FlexoController controller) {
 		super(controller);
 		this.action = action;
-		addStep(describeAssignation = new DescribeAssignation());
+		addStep(describeListWhereToAdd = new DescribeListWhereToAdd());
 	}
 
-	public AssignAction getAction() {
+	public AddToAction getAction() {
 		return action;
 	}
 
 	@Override
 	public String getWizardTitle() {
-		return getAction().getLocales().localizedForKey("assign_to");
+		return getAction().getLocales().localizedForKey("add_to_list");
 	}
 
 	@Override
@@ -82,14 +82,14 @@ public class AssignActionWizard extends FlexoWizard {
 		return IconFactory.getImageIcon(FMLIconLibrary.FLEXO_BEHAVIOUR_BIG_ICON, IconLibrary.NEW_32_32).getImage();
 	}
 
-	public DescribeAssignation getDescribeAssignation() {
-		return describeAssignation;
+	public DescribeListWhereToAdd getDescribeListWhereToAdd() {
+		return describeListWhereToAdd;
 	}
 
-	@FIBPanel("Fib/Wizard/CreateFMLElement/DescribeAssignation.fib")
-	public class DescribeAssignation extends WizardStep implements PropertyChangeListener {
+	@FIBPanel("Fib/Wizard/CreateFMLElement/DescribeListWhereToAdd.fib")
+	public class DescribeListWhereToAdd extends WizardStep implements PropertyChangeListener {
 
-		public DescribeAssignation() {
+		public DescribeListWhereToAdd() {
 			getAction().getPropertyChangeSupport().addPropertyChangeListener(this);
 		}
 
@@ -97,34 +97,33 @@ public class AssignActionWizard extends FlexoWizard {
 			return getController().getApplicationContext();
 		}
 
-		public AssignAction getAction() {
-			return AssignActionWizard.this.getAction();
+		public AddToAction getAction() {
+			return AddToListActionWizard.this.getAction();
 		}
 
 		@Override
 		public String getTitle() {
-			return getAction().getLocales().localizedForKey("describe_assignation");
+			return getAction().getLocales().localizedForKey("describe_list_where_to_add");
 		}
 
 		@Override
 		public boolean isValid() {
 
-			if (!getAssignation().isValid()) {
-				setIssueMessage(getAction().getLocales().localizedForKey("assignation_is_not_valid"), IssueMessageType.ERROR);
+			if (!getList().isValid()) {
+				setIssueMessage(getAction().getLocales().localizedForKey("list_is_not_valid"), IssueMessageType.ERROR);
 				return false;
 			}
 			return true;
 		}
 
-		public DataBinding<?> getAssignation() {
-			return getAction().getAssignation();
+		public DataBinding<?> getList() {
+			return getAction().getList();
 		}
 
 		@Override
 		public void propertyChange(PropertyChangeEvent evt) {
-			System.out.println("Je recois " + evt + " de " + evt.getSource());
 			if (evt.getSource() == getAction()) {
-				if (evt.getPropertyName().equals("assignation")) {
+				if (evt.getPropertyName().equals("list")) {
 					checkValidity();
 				}
 			}

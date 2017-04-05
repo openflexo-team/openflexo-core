@@ -47,6 +47,7 @@ import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.type.CustomType;
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.fml.controller.action.AddParentFlexoConceptInitializer;
+import org.openflexo.fml.controller.action.AddToListActionInitializer;
 import org.openflexo.fml.controller.action.AssignActionInitializer;
 import org.openflexo.fml.controller.action.CreateAbstractPropertyInitializer;
 import org.openflexo.fml.controller.action.CreateEditionActionInitializer;
@@ -197,6 +198,7 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 
 		new DeclareNewVariableActionInitializer(actionInitializer);
 		new AssignActionInitializer(actionInitializer);
+		new AddToListActionInitializer(actionInitializer);
 
 		if (actionInitializer.getActionInitializer(DeleteFlexoConceptObjects.actionType) == null) {
 			new DeleteFlexoConceptObjectsInitializer(actionInitializer);
