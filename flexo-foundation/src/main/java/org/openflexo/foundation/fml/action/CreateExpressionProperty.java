@@ -42,6 +42,7 @@ import java.security.InvalidParameterException;
 import java.util.Vector;
 import java.util.logging.Logger;
 
+import org.openflexo.connie.Bindable;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
@@ -65,7 +66,7 @@ import org.openflexo.foundation.fml.FlexoConceptStructuralFacet;
  * <li>may declare a valid description</li>
  * </ul>
  */
-public class CreateExpressionProperty extends AbstractCreateFlexoProperty<CreateExpressionProperty> {
+public class CreateExpressionProperty extends AbstractCreateFlexoProperty<CreateExpressionProperty> implements Bindable {
 
 	private static final Logger logger = Logger.getLogger(CreateExpressionProperty.class.getPackage().getName());
 
@@ -108,7 +109,7 @@ public class CreateExpressionProperty extends AbstractCreateFlexoProperty<Create
 
 	public DataBinding<?> getExpression() {
 		if (expression == null) {
-			expression = new DataBinding<Object>(getFlexoConcept(), Object.class, DataBinding.BindingDefinitionType.GET);
+			expression = new DataBinding<Object>(this, Object.class, DataBinding.BindingDefinitionType.GET);
 			expression.setBindingName("expression");
 			expression.setMandatory(true);
 
@@ -118,8 +119,7 @@ public class CreateExpressionProperty extends AbstractCreateFlexoProperty<Create
 
 	public void setExpression(DataBinding<?> expression) {
 		if (expression != null) {
-			this.expression = new DataBinding<Object>(expression.toString(), getFlexoConcept(), Object.class,
-					DataBinding.BindingDefinitionType.GET);
+			this.expression = new DataBinding<Object>(expression.toString(), this, Object.class, DataBinding.BindingDefinitionType.GET);
 			expression.setBindingName("expression");
 			expression.setMandatory(true);
 		}
@@ -156,6 +156,18 @@ public class CreateExpressionProperty extends AbstractCreateFlexoProperty<Create
 			throw new InvalidParameterException("No expression or invalid expression defined");
 		}
 
+	}
+
+	private boolean isNotifying = false;
+
+	@Override
+	public void notifiedBindingChanged(DataBinding<?> dataBinding) {
+		if (isNotifying) {
+			return;
+		}
+		isNotifying = true;
+		getPropertyChangeSupport().firePropertyChange("expression", null, getExpression());
+		isNotifying = false;
 	}
 
 }
