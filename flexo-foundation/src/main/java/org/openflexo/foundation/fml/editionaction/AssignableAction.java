@@ -157,6 +157,13 @@ public abstract interface AssignableAction<T> extends EditionAction {
 	 */
 	public AddToListAction<T> addToList(DataBinding<? extends List<T>> assignation);
 
+	/**
+	 * Used to instantiate {@link ReturnStatement} while returning current assignable action
+	 * 
+	 * @param cg
+	 */
+	public ReturnStatement<T> addReturnStatement();
+
 	public static abstract class AssignableActionImpl<T> extends EditionActionImpl implements AssignableAction<T> {
 
 		private static final Logger logger = Logger.getLogger(AssignableAction.class.getPackage().getName());
@@ -303,6 +310,37 @@ public abstract interface AssignableAction<T> extends EditionAction {
 			}
 
 			return addToListAction;
+
+		}
+
+		/**
+		 * Used to instantiate {@link ReturnStatement} while returning current assignable action
+		 * 
+		 * @param cg
+		 */
+		@Override
+		public ReturnStatement<T> addReturnStatement() {
+			FMLModelFactory factory = getFMLModelFactory();
+
+			FMLControlGraphOwner owner = getOwner();
+			String ownerContext = getOwnerContext();
+			Sequence parentFlattenedSequence = getParentFlattenedSequence();
+
+			owner.setControlGraph(null, ownerContext);
+
+			ReturnStatement<T> returnStatement = factory.newReturnStatement(this);
+
+			// We connect control graph
+			setOwnerContext(ownerContext);
+			owner.setControlGraph(returnStatement, ownerContext);
+
+			// Then we must notify the parent flattenedSequence where this control graph was presented as a sequence
+			// This fixes issue TA-81
+			if (parentFlattenedSequence != null) {
+				parentFlattenedSequence.controlGraphChanged(this);
+			}
+
+			return returnStatement;
 
 		}
 
