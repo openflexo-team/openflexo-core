@@ -44,7 +44,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.logging.Logger;
-
 import org.openflexo.foundation.action.NotImplementedException;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -122,14 +121,14 @@ public interface InJarIODelegate extends StreamIODelegate<InJarResourceImpl> {
 				}
 			}
 			else {
-				// TODO Auto-generated method stub
+				// can't save if not in sources
 				return null;
 			}
 		}
 
 		@Override
 		public void setOutputStream(OutputStream outsputStream) {
-			// TODO Auto-generated method stub
+			// can't write
 		}
 
 		@Override
@@ -144,7 +143,7 @@ public interface InJarIODelegate extends StreamIODelegate<InJarResourceImpl> {
 
 		@Override
 		public boolean delete() {
-			// TODO Auto-generated method stub
+			// can't delete
 			return false;
 		}
 
