@@ -146,7 +146,7 @@ public interface DeleteFlexoConceptInstance
 
 	public FlexoConcept getFlexoConceptType();
 
-	public static abstract class DeleteFlexoConceptInstanceImpl extends DeleteActionImpl<FlexoConceptInstance>
+	public static abstract class DeleteFlexoConceptInstanceImpl extends AssignableActionImpl<FlexoConceptInstance>
 			implements DeleteFlexoConceptInstance {
 
 		private static final Logger logger = Logger.getLogger(DeleteFlexoConceptInstance.class.getPackage().getName());
