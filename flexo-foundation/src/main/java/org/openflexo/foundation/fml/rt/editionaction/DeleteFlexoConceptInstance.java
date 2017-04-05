@@ -205,7 +205,7 @@ public interface DeleteFlexoConceptInstance
 		@Override
 		public FlexoConcept getFlexoConceptType() {
 
-			if (getObject().isSet() && getObject().isValid()) {
+			if (getObject() != null && getObject().isSet() && getObject().isValid()) {
 				Type type = getObject().getAnalyzedType();
 				if (type instanceof FlexoConceptInstanceType) {
 					return ((FlexoConceptInstanceType) type).getFlexoConcept();
@@ -251,7 +251,7 @@ public interface DeleteFlexoConceptInstance
 					deletionScheme = (DeletionScheme) getFlexoConceptType().getFlexoBehaviourForURI(_deletionSchemeURI);
 				}
 				else if (getViewPointLibrary() != null) {
-					deletionScheme = (DeletionScheme) getViewPointLibrary().getFlexoBehaviour(_deletionSchemeURI, false);
+					deletionScheme = (DeletionScheme) getViewPointLibrary().getFlexoBehaviour(_deletionSchemeURI, true);
 				}
 			}
 			else if (deletionScheme == null && getFlexoConceptType() != null) {

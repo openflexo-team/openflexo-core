@@ -225,7 +225,7 @@ public interface FlexoConceptInstanceRole extends FlexoRole<FlexoConceptInstance
 		@Override
 		public void _setCreationSchemeURI(String uri) {
 			if (getViewPointLibrary() != null) {
-				creationScheme = (CreationScheme) getViewPointLibrary().getFlexoBehaviour(uri, false);
+				creationScheme = (CreationScheme) getViewPointLibrary().getFlexoBehaviour(uri, true);
 				/*for (FlexoBehaviour s : getFlexoConcept().getFlexoBehaviours()) {
 					s.updateBindingModels();
 				}*/
@@ -252,7 +252,7 @@ public interface FlexoConceptInstanceRole extends FlexoRole<FlexoConceptInstance
 		@Override
 		public CreationScheme getCreationScheme() {
 			if (creationScheme == null && _creationSchemeURI != null && getViewPointLibrary() != null) {
-				creationScheme = (CreationScheme) getViewPointLibrary().getFlexoBehaviour(_creationSchemeURI, false);
+				creationScheme = (CreationScheme) getViewPointLibrary().getFlexoBehaviour(_creationSchemeURI, true);
 			}
 			return creationScheme;
 		}

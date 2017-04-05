@@ -265,7 +265,7 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 		@Override
 		public void _setCreationSchemeURI(String uri) {
 			if (getViewPointLibrary() != null) {
-				creationScheme = (CreationScheme) getViewPointLibrary().getFlexoBehaviour(uri, false);
+				creationScheme = (CreationScheme) getViewPointLibrary().getFlexoBehaviour(uri, true);
 			}
 			_creationSchemeURI = uri;
 		}
@@ -274,7 +274,7 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 		public CreationScheme getCreationScheme() {
 
 			if (creationScheme == null && _creationSchemeURI != null && getViewPointLibrary() != null) {
-				creationScheme = (CreationScheme) getViewPointLibrary().getFlexoBehaviour(_creationSchemeURI, false);
+				creationScheme = (CreationScheme) getViewPointLibrary().getFlexoBehaviour(_creationSchemeURI, true);
 				updateParameters();
 			}
 			if (creationScheme == null && getAssignedFlexoProperty() instanceof FlexoConceptInstanceRole) {
@@ -297,6 +297,7 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 				}
 				updateParameters();
 				getPropertyChangeSupport().firePropertyChange(CREATION_SCHEME_KEY, oldValue, creationScheme);
+				getPropertyChangeSupport().firePropertyChange(FLEXO_CONCEPT_TYPE_KEY, null, getFlexoConceptType());
 			}
 		}
 
