@@ -49,6 +49,7 @@ import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.logging.Logger;
+
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.fml.FlexoConcept;
@@ -439,7 +440,7 @@ public class ModuleInspectorController extends Observable implements Observer {
 	}
 
 	private void switchToInspector(FIBInspector newInspector/*, boolean updateEPTabs*/) {
-		System.out.println("switchToInspector " + newInspector);
+		// System.out.println("switchToInspector " + newInspector);
 		currentInspector = newInspector;
 		setChanged();
 		notifyObservers(new InspectorSwitching(newInspector/*, updateEPTabs*/));
