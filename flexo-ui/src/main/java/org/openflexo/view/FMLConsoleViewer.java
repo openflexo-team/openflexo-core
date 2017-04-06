@@ -38,16 +38,12 @@
 
 package org.openflexo.view;
 
-import java.awt.Color;
-import java.awt.Window;
+import java.awt.*;
 import java.util.List;
 import java.util.StringTokenizer;
 import java.util.Vector;
 import java.util.logging.Logger;
-
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
-
+import javax.swing.*;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext.LogLevel;
 import org.openflexo.foundation.fml.rt.logging.FMLConsole;
 import org.openflexo.foundation.fml.rt.logging.FMLLogRecord;
@@ -174,6 +170,10 @@ public class FMLConsoleViewer extends PropertyChangedSupportDefaultImplementatio
 			console.setMaxLogCount(500);
 		}
 		getPropertyChangeSupport().firePropertyChange("isInfiniteNumberOfLogs", !isInfinite, isInfinite);
+	}
+
+	public void clear() {
+		console.clearRecords();
 	}
 
 	public void refresh() {

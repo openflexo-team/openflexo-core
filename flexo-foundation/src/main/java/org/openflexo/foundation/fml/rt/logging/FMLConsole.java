@@ -213,6 +213,18 @@ public class FMLConsole extends PropertyChangedSupportDefaultImplementation {
 		records.remove(record);
 	}
 
+	public void clearRecords() {
+		logCount = 0;
+		warningCount = 0;
+		severeCount = 0;
+		totalLogs = 0;
+		totalWarningLogs = 0;
+		totalSevereLogs = 0;
+		allRecords.clear();
+		dismissFilters();
+		notifyFilteringChange();
+	}
+
 	public int getTotalLogs() {
 		return totalLogs;
 	}
