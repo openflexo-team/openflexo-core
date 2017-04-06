@@ -1381,6 +1381,7 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 					getOwningVirtualModel().getPropertyChangeSupport().firePropertyChange("allSuperFlexoConcepts", null,
 							getOwningVirtualModel().getAllSuperFlexoConcepts());
 				}
+				setIsModified();
 			}
 			else {
 				throw new InconsistentFlexoConceptHierarchyException(
