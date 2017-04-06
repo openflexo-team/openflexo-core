@@ -113,7 +113,7 @@ import org.openflexo.toolbox.StringUtils;
 public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceObject, Bindable, RunTimeEvaluationContext {
 
 	public static final String DELETED_PROPERTY = "deleted";
-	public static final String EMPTY_STRING = "<emtpy>";
+	public static final String EMPTY_STRING = "<empty>";
 
 	@PropertyIdentifier(type = String.class)
 	public static final String FLEXO_CONCEPT_URI_KEY = "flexoConceptURI";
