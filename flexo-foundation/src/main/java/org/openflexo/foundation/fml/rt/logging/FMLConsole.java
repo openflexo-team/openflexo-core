@@ -41,7 +41,6 @@ package org.openflexo.foundation.fml.rt.logging;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
@@ -109,7 +108,7 @@ public class FMLConsole extends PropertyChangedSupportDefaultImplementation {
 	 */
 	public void log(String aLogString, LogLevel logLevel, FlexoConceptInstance fci, FlexoBehaviour behaviour) {
 
-		if (getMonitoredLogLevel().ordinal() <= logLevel.ordinal()) {
+		if (getMonitoredLogLevel().ordinal() >= logLevel.ordinal()) {
 			FMLLogRecord logRecord = new FMLLogRecord(aLogString, logLevel, fci, behaviour, this);
 			add(logRecord);
 			System.out.println(formatter.format(logRecord));
