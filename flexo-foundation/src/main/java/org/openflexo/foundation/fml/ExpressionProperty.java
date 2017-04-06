@@ -74,7 +74,7 @@ public abstract interface ExpressionProperty<T> extends FlexoProperty<T> {
 	@Setter(EXPRESSION_KEY)
 	public void setExpression(DataBinding<? super T> expression);
 
-	public static abstract class ExpressionPropertyImpl<T> extends FlexoPropertyImpl<T>implements ExpressionProperty<T> {
+	public static abstract class ExpressionPropertyImpl<T> extends FlexoPropertyImpl<T> implements ExpressionProperty<T> {
 
 		// private static final Logger logger = Logger.getLogger(FlexoRole.class.getPackage().getName());
 
@@ -115,8 +115,8 @@ public abstract interface ExpressionProperty<T> extends FlexoProperty<T> {
 		public void setExpression(DataBinding<? super T> expression) {
 			if (expression != null) {
 				this.expression = new DataBinding<Object>(expression.toString(), this, Object.class, DataBinding.BindingDefinitionType.GET);
-				expression.setBindingName("expression");
-				expression.setMandatory(true);
+				this.expression.setBindingName("expression");
+				this.expression.setMandatory(true);
 			}
 			notifiedBindingChanged(expression);
 		}
