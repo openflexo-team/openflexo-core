@@ -50,6 +50,7 @@ import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.FlexoProperty;
+import org.openflexo.foundation.fml.editionaction.AssignableAction.AssignableActionImpl;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.model.annotations.DefineValidationRule;
@@ -78,7 +79,7 @@ public interface DeleteAction<T extends FlexoObject> extends EditionAction {
 
 	public FlexoProperty<?> getAssignedFlexoProperty();
 
-	public static abstract class DeleteActionImpl<T extends FlexoObject> extends EditionActionImpl implements DeleteAction<T> {
+	public static abstract class DeleteActionImpl<T extends FlexoObject> extends AssignableActionImpl<T> implements DeleteAction<T> {
 
 		private static final Logger logger = Logger.getLogger(DeleteAction.class.getPackage().getName());
 
@@ -126,11 +127,11 @@ public interface DeleteAction<T extends FlexoObject> extends EditionAction {
 		}
 
 		@Override
-		public FlexoProperty<?> getAssignedFlexoProperty() {
+		public FlexoProperty<T> getAssignedFlexoProperty() {
 			if (getFlexoConcept() == null) {
 				return null;
 			}
-			return getFlexoConcept().getAccessibleProperty(getObject().toString());
+			return (FlexoProperty) getFlexoConcept().getAccessibleProperty(getObject().toString());
 		}
 
 		@Override
