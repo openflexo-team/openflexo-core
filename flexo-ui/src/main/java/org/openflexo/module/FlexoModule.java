@@ -53,8 +53,8 @@ import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoObservable;
 import org.openflexo.foundation.FlexoService;
-import org.openflexo.foundation.FlexoService.ServiceNotification;
 import org.openflexo.foundation.ProjectLoader;
+import org.openflexo.foundation.FlexoService.ServiceNotification;
 import org.openflexo.foundation.resource.ProjectClosed;
 import org.openflexo.foundation.resource.ResourceModified;
 import org.openflexo.foundation.resource.ResourceRegistered;
@@ -200,7 +200,10 @@ public abstract class FlexoModule<M extends FlexoModule<M>> implements DataFlexo
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
-				if (getEditor() != null && getController().getCurrentDisplayedObjectAsModuleView() == null) {
+
+				if (getEditor() != null && getEditor().getProject() != null
+						&& getController().getCurrentDisplayedObjectAsModuleView() == null) {
+
 					boolean selectDefaultObject = false;
 					FlexoObject defaultObjectToSelect = getController().getDefaultObjectToSelect(getEditor().getProject());
 					if (defaultObjectToSelect != null && (getFlexoController().getCurrentDisplayedObjectAsModuleView() == null
