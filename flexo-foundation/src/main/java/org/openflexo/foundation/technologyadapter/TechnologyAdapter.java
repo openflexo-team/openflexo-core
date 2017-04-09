@@ -70,7 +70,7 @@ import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.annotations.DeclareModelSlots;
 import org.openflexo.foundation.fml.annotations.DeclareResourceTypes;
 import org.openflexo.foundation.fml.annotations.DeclareVirtualModelInstanceNatures;
-import org.openflexo.foundation.fml.rt.VirtualModelInstanceNature;
+import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstanceNature;
 import org.openflexo.foundation.nature.ProjectNatureService;
 import org.openflexo.foundation.resource.DirectoryResourceCenter;
 import org.openflexo.foundation.resource.FlexoResource;
@@ -109,7 +109,7 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 	private final List<FlexoResourceFactory<?, ?, ?>> resourceFactories;
 
 	private List<Class<? extends ModelSlot<?>>> availableModelSlotTypes;
-	private List<Class<? extends VirtualModelInstanceNature>> availableVirtualModelInstanceNatures;
+	private List<Class<? extends AbstractVirtualModelInstanceNature>> availableVirtualModelInstanceNatures;
 	private final List<Class<? extends TechnologyAdapterResource<?, ?>>> availableResourceTypes;
 
 	public TechnologyAdapter() {
@@ -484,19 +484,19 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 		return availableModelSlotTypes;
 	}
 
-	public List<Class<? extends VirtualModelInstanceNature>> getAvailableVirtualModelInstanceNatures() {
+	public List<Class<? extends AbstractVirtualModelInstanceNature>> getAvailableVirtualModelInstanceNatures() {
 		if (availableVirtualModelInstanceNatures == null) {
 			availableVirtualModelInstanceNatures = computeAvailableVirtualModelInstanceNatures();
 		}
 		return availableVirtualModelInstanceNatures;
 	}
 
-	private List<Class<? extends VirtualModelInstanceNature>> computeAvailableVirtualModelInstanceNatures() {
-		availableVirtualModelInstanceNatures = new ArrayList<Class<? extends VirtualModelInstanceNature>>();
+	private List<Class<? extends AbstractVirtualModelInstanceNature>> computeAvailableVirtualModelInstanceNatures() {
+		availableVirtualModelInstanceNatures = new ArrayList<Class<? extends AbstractVirtualModelInstanceNature>>();
 		Class<?> cl = getClass();
 		if (cl.isAnnotationPresent(DeclareVirtualModelInstanceNatures.class)) {
 			DeclareVirtualModelInstanceNatures allVirtualModelInstanceNatures = cl.getAnnotation(DeclareVirtualModelInstanceNatures.class);
-			for (Class<? extends VirtualModelInstanceNature> natureClass : allVirtualModelInstanceNatures.value()) {
+			for (Class<? extends AbstractVirtualModelInstanceNature> natureClass : allVirtualModelInstanceNatures.value()) {
 				availableVirtualModelInstanceNatures.add(natureClass);
 			}
 		}

@@ -44,6 +44,7 @@ import javax.swing.ImageIcon;
 
 import org.openflexo.components.widget.FIBTechnologyBrowser;
 import org.openflexo.foundation.FlexoObject;
+import org.openflexo.foundation.fml.AbstractVirtualModel;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptNature;
@@ -151,11 +152,8 @@ public abstract class FMLNaturePerspective extends TechnologyPerspective<FMLTech
 	@Override
 	public final ModuleView<?> createModuleViewForObject(FlexoObject object) {
 
-		if (object instanceof ViewPoint) {
-			return createModuleViewForViewPoint((ViewPoint) object);
-		}
-		if (object instanceof VirtualModel) {
-			return createModuleViewForVirtualModel((VirtualModel) object);
+		if (object instanceof AbstractVirtualModel) {
+			return createModuleViewForVirtualModel((AbstractVirtualModel<?>) object);
 		}
 		if (object instanceof FlexoConcept) {
 			return createModuleViewForFlexoConcept((FlexoConcept) object);
@@ -163,9 +161,7 @@ public abstract class FMLNaturePerspective extends TechnologyPerspective<FMLTech
 		return super.createModuleViewForObject(object);
 	}
 
-	protected abstract ModuleView<ViewPoint> createModuleViewForViewPoint(ViewPoint viewpoint);
-
-	protected abstract ModuleView<VirtualModel> createModuleViewForVirtualModel(VirtualModel virtualModel);
+	protected abstract ModuleView<AbstractVirtualModel<?>> createModuleViewForVirtualModel(AbstractVirtualModel<?> virtualModel);
 
 	protected abstract ModuleView<FlexoConcept> createModuleViewForFlexoConcept(FlexoConcept flexoConcept);
 
