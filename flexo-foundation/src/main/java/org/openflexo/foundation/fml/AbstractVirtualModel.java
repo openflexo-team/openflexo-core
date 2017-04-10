@@ -108,8 +108,6 @@ import org.openflexo.toolbox.ToolBox;
 public interface AbstractVirtualModel<VM extends AbstractVirtualModel<VM>>
 		extends FlexoConcept, VirtualModelObject, FlexoMetaModel<VM>, ResourceData<VM>, TechnologyObject<FMLTechnologyAdapter> {
 
-	// public static final String REFLEXIVE_MODEL_SLOT_NAME = "virtualModelInstance";
-
 	public static final String RESOURCE = "resource";
 
 	@PropertyIdentifier(type = FlexoVersion.class)
@@ -118,8 +116,6 @@ public interface AbstractVirtualModel<VM extends AbstractVirtualModel<VM>>
 	public static final String MODEL_VERSION_KEY = "modelVersion";
 	@PropertyIdentifier(type = Vector.class)
 	public static final String FLEXO_CONCEPTS_KEY = "flexoConcepts";
-	// @PropertyIdentifier(type = List.class)
-	// public static final String MODEL_SLOTS_KEY = "modelSlots";
 
 	@Override
 	public FMLModelFactory getFMLModelFactory();
@@ -184,81 +180,6 @@ public interface AbstractVirtualModel<VM extends AbstractVirtualModel<VM>>
 	 * @return
 	 */
 	public FlexoConcept getFlexoConcept(String flexoConceptNameOrURI);
-
-	/*@Getter(value = MODEL_SLOTS_KEY, cardinality = Cardinality.LIST, inverse = ModelSlot.OWNER_KEY)
-	@XMLElement(context = "ModelSlot_", primary = true)
-	// Since ModelSlot are also FlexoRole instances, we need to distinguish both during serialization/deserialization process
-	// To do it, we append ModelSlot_ as context
-	public List<ModelSlot<?>> getModelSlots();
-	
-	@Setter(MODEL_SLOTS_KEY)
-	public void setModelSlots(List<ModelSlot<?>> modelSlots);
-	
-	@Adder(MODEL_SLOTS_KEY)
-	public void addToModelSlots(ModelSlot<?> aModelSlot);
-	
-	@Remover(MODEL_SLOTS_KEY)
-	public void removeFromModelSlots(ModelSlot<?> aModelSlot);
-	
-	@Finder(collection = MODEL_SLOTS_KEY, attribute = ModelSlot.NAME_KEY)
-	public ModelSlot<?> getModelSlot(String modelSlotName);
-	
-	public <MS extends ModelSlot<?>> List<MS> getModelSlots(Class<MS> msType);
-	*/
-
-	/**
-	 * Retrieve ontology object from its URI.<br>
-	 * Note that search is performed in the scope of current project only
-	 * 
-	 * @param uri
-	 * @return
-	 */
-	// public IFlexoOntologyObject getOntologyObject(String uri);
-
-	/**
-	 * Retrieve ontology class from its URI.<br>
-	 * Note that search is performed in the scope of current project only
-	 * 
-	 * @param uri
-	 * @return
-	 */
-	// public IFlexoOntologyClass getOntologyClass(String uri);
-
-	/**
-	 * Retrieve ontology individual from its URI.<br>
-	 * Note that search is performed in the scope of current project only
-	 * 
-	 * @param uri
-	 * @return
-	 */
-	// public IFlexoOntologyIndividual getOntologyIndividual(String uri);
-
-	/**
-	 * Retrieve ontology property from its URI.<br>
-	 * Note that search is performed in the scope of current project only
-	 * 
-	 * @param uri
-	 * @return
-	 */
-	// public IFlexoOntologyStructuralProperty getOntologyProperty(String uri);
-
-	/**
-	 * Retrieve ontology object property from its URI.<br>
-	 * Note that search is performed in the scope of current project only
-	 * 
-	 * @param uri
-	 * @return
-	 */
-	// public IFlexoOntologyObjectProperty getOntologyObjectProperty(String uri);
-
-	/**
-	 * Retrieve ontology object property from its URI.<br>
-	 * Note that search is performed in the scope of current project only
-	 * 
-	 * @param uri
-	 * @return
-	 */
-	// public IFlexoOntologyDataProperty getOntologyDataProperty(String uri);
 
 	/**
 	 * Return true if URI is well formed and valid regarding its unicity (no one other object has same URI)
@@ -540,53 +461,6 @@ public interface AbstractVirtualModel<VM extends AbstractVirtualModel<VM>>
 			return newSynchronizationScheme;
 		}
 
-		// ==============================================================
-		// ========================= Model Slots =======================
-		// ==============================================================
-
-		/*@Override
-		public <MS extends ModelSlot<?>> List<MS> getModelSlots(Class<MS> msType) {
-			List<MS> returned = new ArrayList<>();
-			for (ModelSlot<?> ms : getModelSlots()) {
-				if (TypeUtils.isTypeAssignableFrom(msType, ms.getClass())) {
-					returned.add((MS) ms);
-				}
-			}
-			return returned;
-		}*/
-
-		/*@Override
-		public void addToModelSlots(ModelSlot<?> aModelSlot) {
-			performSuperAdder(MODEL_SLOTS_KEY, aModelSlot);
-			notifiedPropertiesChanged(null, aModelSlot);
-		}
-		
-		@Override
-		public void removeFromModelSlots(ModelSlot<?> aModelSlot) {
-			performSuperRemover(MODEL_SLOTS_KEY, aModelSlot);
-			notifiedPropertiesChanged(aModelSlot, null);
-		}*/
-
-		/**
-		 * Retrieve object referenced by its URI.<br>
-		 * Note that search is performed in the scope of current project only
-		 * 
-		 * @param uri
-		 * @return
-		 */
-		/*@Override
-		public Object getObject(String uri) {
-			for (FlexoMetaModel<?> mm : getAllReferencedMetaModels()) {
-				if (mm != null) {
-					Object o = mm.getObject(uri);
-					if (o != null) {
-						return o;
-					}
-				}
-			}
-			return null;
-		}*/
-
 		/**
 		 * Return true if URI is well formed and valid regarding its unicity (no one other object has same URI)
 		 * 
@@ -710,45 +584,6 @@ public interface AbstractVirtualModel<VM extends AbstractVirtualModel<VM>>
 			}
 			return null;
 		}
-
-		/**
-		 * This is the builder used to deserialize {@link AbstractVirtualModel} objects.
-		 * 
-		 * @author sylvain
-		 * 
-		 */
-		/*
-		 * public static class VirtualModelBuilder { private VirtualModel
-		 * virtualModel; private FlexoVersion modelVersion; private final
-		 * ViewPointLibrary viewPointLibrary; private final ViewPoint viewPoint;
-		 * VirtualModelResource resource;
-		 * 
-		 * public VirtualModelImplBuilder(ViewPointLibrary vpLibrary, ViewPoint
-		 * viewPoint, VirtualModelResource resource) { this.viewPointLibrary =
-		 * vpLibrary; this.viewPoint = viewPoint; this.resource = resource; }
-		 * 
-		 * public VirtualModelImplBuilder(ViewPointLibrary vpLibrary, ViewPoint
-		 * viewPoint, VirtualModel virtualModel) { this.virtualModel =
-		 * virtualModel; this.viewPointLibrary = vpLibrary; this.viewPoint =
-		 * viewPoint; this.resource = virtualModel.getResource(); }
-		 * 
-		 * public VirtualModelImplBuilder(ViewPointLibrary vpLibrary, ViewPoint
-		 * viewPoint, VirtualModelResource resource, FlexoVersion modelVersion)
-		 * { this.modelVersion = modelVersion; this.viewPointLibrary =
-		 * vpLibrary; this.viewPoint = viewPoint; this.resource = resource; }
-		 * 
-		 * public ViewPointLibrary getViewPointLibrary() { return
-		 * viewPointLibrary; }
-		 * 
-		 * public FlexoVersion getModelVersion() { return modelVersion; }
-		 * 
-		 * public VirtualModelImpl getVirtualModel() { return virtualModel; }
-		 * 
-		 * public void setVirtualModel(VirtualModel virtualModel) {
-		 * this.virtualModel = virtualModel; }
-		 * 
-		 * public ViewPoint getViewPoint() { return viewPoint; } }
-		 */
 
 		@Override
 		public String getFMLRepresentation(FMLRepresentationContext context) {

@@ -1002,41 +1002,9 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 						returned.add(behaviour);
 					}
 
-					/*FlexoBehaviour mostSpecializedBehaviour = behaviour.getMostSpecializedBehaviour(this);
-					if (mostSpecializedBehaviour == behaviour) {
-						// This behaviour is inherited but not overriden
-						// We check that we don't have this behaviour yet
-						if (!inheritedBehaviours.contains(behaviour)) {
-							inheritedBehaviours.add(behaviour);
-						}
-					}*/
-
-					/*if (!mostSpecializedBehaviour.overrides(behaviour)) {
-						if (!inheritedBehaviours.contains(behaviour)) {
-							inheritedBehaviours.add(behaviour);
-						}
-					}*/
-					// TODO: manage override
 				}
 			}
-			// Now, we have to suppress all extra references
-			/*List<FlexoBehaviour> unnecessaryProperty = new ArrayList<FlexoBehaviour>();
-			for (FlexoBehaviour p : inheritedBehaviours) {
-				for (FlexoConcept parent : getParentFlexoConcepts()) {
-					for (FlexoBehaviour superP : parent.getAccessibleFlexoBehaviours()) {
-						if (inheritedBehaviours.contains(superP)) {
-							unnecessaryProperty.add(superP);
-						}
-					}
-				}
-			
-			}
-			
-			for (FlexoBehaviour removeThis : unnecessaryProperty) {
-				inheritedProperties.remove(removeThis);
-			}*/
 
-			// returned.addAll(inheritedBehaviours);
 			return returned;
 		}
 
@@ -1238,20 +1206,6 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 			}
 			this.inspector = inspector;
 		}
-
-		/*@Override
-		public AbstractVirtualModel<?> getParentVirtualModel() {
-			return virtualModel;
-		}
-		
-		@Override
-		public void setParentVirtualModel(AbstractVirtualModel<?> virtualModel) {
-			if (this.virtualModel != virtualModel) {
-				AbstractVirtualModel<?> oldVirtualModel = this.virtualModel;
-				this.virtualModel = virtualModel;
-				getPropertyChangeSupport().firePropertyChange(PARENT_VIRTUAL_MODEL_KEY, oldVirtualModel, virtualModel);
-			}
-		}*/
 
 		@Override
 		public String toString() {

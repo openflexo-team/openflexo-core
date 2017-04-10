@@ -77,7 +77,6 @@ public class FlexoConceptBindingModel extends BindingModel implements PropertyCh
 
 	private BindingVariable reflexiveAccessBindingVariable;
 	private final Map<FlexoProperty<?>, FlexoPropertyBindingVariable> propertyVariablesMap;
-	// private final Map<ModelSlot<?>, ModelSlotBindingVariable> modelSlotVariablesMap;
 	private final List<FlexoConcept> knownParentConcepts = new ArrayList<FlexoConcept>();
 	private FlexoConcept lastKnownContainer = null;
 
@@ -217,34 +216,6 @@ public class FlexoConceptBindingModel extends BindingModel implements PropertyCh
 		}
 
 	}
-
-	/*private void updateModelSlotVariables() {
-	
-		List<ModelSlot<?>> modelSlotToBeDeleted = new ArrayList<ModelSlot<?>>(modelSlotVariablesMap.keySet());
-	
-		for (ModelSlot<?> ms : virtualModel.getModelSlots()) {
-			// if (ms != virtualModel.getReflexiveModelSlot()) {
-			if (modelSlotToBeDeleted.contains(ms)) {
-				modelSlotToBeDeleted.remove(ms);
-			}
-			else if (modelSlotVariablesMap.get(ms) == null) {
-				ModelSlotBindingVariable bv = new ModelSlotBindingVariable(ms);
-				addToBindingVariables(bv);
-				modelSlotVariablesMap.put(ms, bv);
-			}
-			// }
-		}
-	
-		for (ModelSlot<?> ms : modelSlotToBeDeleted) {
-			// if (ms != virtualModel.getReflexiveModelSlot()) {
-			ModelSlotBindingVariable bvToRemove = modelSlotVariablesMap.get(ms);
-			removeFromBindingVariables(bvToRemove);
-			modelSlotVariablesMap.remove(ms);
-			bvToRemove.delete();
-			// }
-		}
-	
-	}*/
 
 	private void updateParentFlexoConceptListeners() {
 

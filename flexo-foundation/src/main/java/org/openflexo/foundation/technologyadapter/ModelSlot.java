@@ -118,16 +118,6 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>>
 	@Override
 	public FMLModelFactory getFMLModelFactory();
 
-	/**
-	 * Return the VirtualModel in which this ModelSlot is declared
-	 */
-	/*@Getter(value = OWNER_KEY, inverse = VirtualModel.MODEL_SLOTS_KEY)
-	@CloningStrategy(StrategyType.IGNORE)
-	public AbstractVirtualModel<?> getOwner();
-	
-	@Setter(OWNER_KEY)
-	public void setOwner(AbstractVirtualModel<?> virtualModel);*/
-
 	@Override
 	@Getter(value = IS_REQUIRED_KEY, defaultValue = "false")
 	@XMLAttribute
@@ -162,8 +152,6 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>>
 	public Type getType();
 
 	public List<Class<? extends FlexoRole<?>>> getAvailableFlexoRoleTypes();
-
-	// public <R extends FlexoRole<?>> List<Class<? extends R>> getAvailableFlexoRoleTypes(Class<R> roleType);
 
 	public List<Class<? extends TechnologySpecificAction<?, ?>>> getAvailableEditionActionTypes();
 
@@ -268,11 +256,6 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>>
 			}
 			return null;
 		}
-
-		/*@Override
-		public final FlexoConcept getFlexoConcept() {
-			return getOwner();
-		}*/
 
 		@Override
 		public ModelSlot<RD> getModelSlot() {
@@ -399,17 +382,6 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>>
 		}
 
 		public abstract Class<? extends TechnologyAdapter> getTechnologyAdapterClass();
-
-		/*@Override
-		public <R extends FlexoRole<?>> List<Class<? extends R>> getAvailableFlexoRoleTypes(Class<R> roleType) {
-			List<Class<? extends R>> returned = new ArrayList<Class<? extends R>>();
-			for (Class<? extends FlexoRole<?>> roleClass : getAvailableFlexoRoleTypes()) {
-				if (roleType.isAssignableFrom(roleClass)) {
-					returned.add((Class<? extends R>) roleClass);
-				}
-			}
-			return returned;
-		}*/
 
 		@Override
 		public List<Class<? extends FlexoRole<?>>> getAvailableFlexoRoleTypes() {

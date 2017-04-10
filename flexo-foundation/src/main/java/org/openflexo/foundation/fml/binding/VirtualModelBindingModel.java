@@ -82,11 +82,6 @@ public class VirtualModelBindingModel extends FlexoConceptBindingModel implement
 		super(virtualModel.getViewPoint() != null && virtualModel != virtualModel.getViewPoint()
 				? virtualModel.getViewPoint().getBindingModel() : null, virtualModel);
 		this.virtualModel = virtualModel;
-		/*if (virtualModel != null && virtualModel.getPropertyChangeSupport() != null) {
-			virtualModel.getPropertyChangeSupport().addPropertyChangeListener(this);
-		}*/
-		// modelSlotVariablesMap = new HashMap<ModelSlot<?>, ModelSlotBindingVariable>();
-		// updateModelSlotVariables();
 	}
 
 	public VirtualModelBindingModel(VirtualModel virtualModel) {
@@ -129,10 +124,6 @@ public class VirtualModelBindingModel extends FlexoConceptBindingModel implement
 				// : View.class);
 				virtualModelInstanceBindingVariable.setType(getVirtualModelInstanceType());
 			}
-			/*else if (evt.getPropertyName().equals(FlexoConcept.FLEXO_PROPERTIES_KEY)) {
-				// Model Slot were modified in related flexoConcept
-				updateModelSlotVariables();
-			}*/
 		}
 	}
 
@@ -140,14 +131,4 @@ public class VirtualModelBindingModel extends FlexoConceptBindingModel implement
 		return VirtualModelInstanceType.getVirtualModelInstanceType(virtualModel);
 	}
 
-	/**
-	 * Delete this {@link BindingModel}
-	 */
-	/*@Override
-	public void delete() {
-		super.delete();
-		if (virtualModel != null && virtualModel.getPropertyChangeSupport() != null) {
-			virtualModel.getPropertyChangeSupport().removePropertyChangeListener(this);
-		}
-	}*/
 }
