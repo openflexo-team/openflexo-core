@@ -47,9 +47,9 @@ import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.action.NotImplementedException;
-import org.openflexo.foundation.fml.AbstractVirtualModel;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
+import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptObject;
 import org.openflexo.foundation.fml.FlexoConceptStructuralFacet;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
@@ -74,17 +74,12 @@ public class CreateModelSlot extends AbstractCreateFlexoProperty<CreateModelSlot
 		 */
 		@Override
 		public CreateModelSlot makeNewAction(FlexoConceptObject focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
-			if (focusedObject.getFlexoConcept() instanceof AbstractVirtualModel) {
-				return new CreateModelSlot((AbstractVirtualModel<?>) focusedObject.getFlexoConcept(), globalSelection, editor);
-			}
-			else {
-				return new CreateModelSlot(focusedObject.getOwningVirtualModel(), globalSelection, editor);
-			}
+			return new CreateModelSlot(focusedObject.getFlexoConcept(), globalSelection, editor);
 		}
 
 		@Override
 		public boolean isVisibleForSelection(FlexoConceptObject object, Vector<FMLObject> globalSelection) {
-			return object.getFlexoConcept() instanceof AbstractVirtualModel;
+			return object.getFlexoConcept() != null;
 		}
 
 		@Override
@@ -95,8 +90,7 @@ public class CreateModelSlot extends AbstractCreateFlexoProperty<CreateModelSlot
 	};
 
 	static {
-		// FlexoModelObject.addActionForClass(CreateModelSlot.actionType, ViewPoint.class);
-		FlexoObjectImpl.addActionForClass(CreateModelSlot.actionType, AbstractVirtualModel.class);
+		FlexoObjectImpl.addActionForClass(CreateModelSlot.actionType, FlexoConcept.class);
 		FlexoObjectImpl.addActionForClass(CreateModelSlot.actionType, FlexoConceptStructuralFacet.class);
 	}
 
@@ -111,7 +105,7 @@ public class CreateModelSlot extends AbstractCreateFlexoProperty<CreateModelSlot
 
 	private ModelSlot<?> newModelSlot;
 
-	CreateModelSlot(AbstractVirtualModel<?> focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
+	CreateModelSlot(FlexoConcept focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 	}
 
@@ -124,7 +118,7 @@ public class CreateModelSlot extends AbstractCreateFlexoProperty<CreateModelSlot
 		}
 
 		if (technologyAdapter != null && getModelSlotClass() != null) {
-			newModelSlot = technologyAdapter.makeModelSlot(getModelSlotClass(), getVirtualModel());
+			newModelSlot = technologyAdapter.makeModelSlot(getModelSlotClass(), getFlexoConcept());
 			newModelSlot.setName(modelSlotName);
 			if (newModelSlot instanceof FMLRTModelSlot) {
 				((FMLRTModelSlot) newModelSlot).setAccessedVirtualModelResource(vmRes);
@@ -136,19 +130,10 @@ public class CreateModelSlot extends AbstractCreateFlexoProperty<CreateModelSlot
 			newModelSlot.setIsRequired(required);
 			newModelSlot.setIsReadOnly(readOnly);
 			newModelSlot.setDescription(description);
-			getVirtualModel().addToModelSlots(newModelSlot);
+			getFlexoConcept().addToModelSlots(newModelSlot);
 
 		}
 
-	}
-
-	public AbstractVirtualModel<?> getVirtualModel() {
-		if (getFocusedObject().getFlexoConcept() instanceof AbstractVirtualModel) {
-			return (AbstractVirtualModel<?>) getFocusedObject().getFlexoConcept();
-		}
-		else {
-			return getFocusedObject().getOwningVirtualModel();
-		}
 	}
 
 	public ModelSlot<?> getNewModelSlot() {
@@ -163,7 +148,7 @@ public class CreateModelSlot extends AbstractCreateFlexoProperty<CreateModelSlot
 		if (StringUtils.isEmpty(modelSlotName)) {
 			return false;
 		}
-		else if (getVirtualModel().getModelSlot(modelSlotName) != null) {
+		else if (getFlexoConcept().getModelSlot(modelSlotName) != null) {
 			return false;
 		}
 		else if (technologyAdapter == null) {

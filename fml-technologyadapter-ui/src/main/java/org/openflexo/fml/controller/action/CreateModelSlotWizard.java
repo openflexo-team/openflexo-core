@@ -137,7 +137,7 @@ public class CreateModelSlotWizard extends AbstractCreateFMLElementWizard<Create
 				setIssueMessage(getAction().getLocales().localizedForKey(EMPTY_NAME), IssueMessageType.ERROR);
 				return false;
 			}
-			else if (getAction().getVirtualModel().getModelSlot(getModelSlotName()) != null) {
+			else if (getAction().getFlexoConcept().getModelSlot(getModelSlotName()) != null) {
 				setIssueMessage(getAction().getLocales().localizedForKey(DUPLICATED_NAME), IssueMessageType.ERROR);
 				return false;
 			}

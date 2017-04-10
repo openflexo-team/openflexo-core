@@ -65,8 +65,8 @@ import org.apache.commons.io.IOUtils;
 import org.openflexo.foundation.DataModification;
 import org.openflexo.foundation.FlexoObservable;
 import org.openflexo.foundation.FlexoServiceManager;
-import org.openflexo.foundation.fml.AbstractVirtualModel;
 import org.openflexo.foundation.fml.FMLModelFactory;
+import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.annotations.DeclareModelSlots;
 import org.openflexo.foundation.fml.annotations.DeclareResourceTypes;
 import org.openflexo.foundation.fml.annotations.DeclareVirtualModelInstanceNatures;
@@ -556,21 +556,21 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 	 * This responsability is delegated to the {@link TechnologyAdapter} which manages with introspection its own {@link ModelSlot} types
 	 * 
 	 * @param modelSlotClass
-	 * @param containerVirtualModel
+	 * @param containerFlexoConcept
 	 *            the virtual model in which model slot should be created
 	 * @return
 	 */
-	public final <MS extends ModelSlot<?>> MS makeModelSlot(Class<MS> modelSlotClass, AbstractVirtualModel<?> containerVirtualModel) {
+	public final <MS extends ModelSlot<?>> MS makeModelSlot(Class<MS> modelSlotClass, FlexoConcept containerFlexoConcept) {
 		// NPE Protection
-		if (containerVirtualModel != null) {
-			FMLModelFactory factory = containerVirtualModel.getFMLModelFactory();
+		if (containerFlexoConcept != null) {
+			FMLModelFactory factory = containerFlexoConcept.getFMLModelFactory();
 			MS returned = factory.newInstance(modelSlotClass);
 			// containerVirtualModel.addToModelSlots(returned);
 			returned.setModelSlotTechnologyAdapter(this);
 			return returned;
 		}
 		else {
-			logger.warning("INVESTIGATE: VirtualModel is null, unable to create a new ModelSlot!");
+			logger.warning("INVESTIGATE: container FlexoConcept is null, unable to create a new ModelSlot!");
 			return null;
 		}
 
