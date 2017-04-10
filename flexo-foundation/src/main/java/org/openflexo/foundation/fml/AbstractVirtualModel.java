@@ -45,7 +45,6 @@ import java.util.Set;
 import java.util.Vector;
 import java.util.logging.Logger;
 
-import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.binding.VirtualModelBindingModel;
 import org.openflexo.foundation.fml.rm.AbstractVirtualModelResource;
@@ -68,7 +67,6 @@ import org.openflexo.model.annotations.CloningStrategy;
 import org.openflexo.model.annotations.CloningStrategy.StrategyType;
 import org.openflexo.model.annotations.DefineValidationRule;
 import org.openflexo.model.annotations.Embedded;
-import org.openflexo.model.annotations.Finder;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.Getter.Cardinality;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -120,8 +118,8 @@ public interface AbstractVirtualModel<VM extends AbstractVirtualModel<VM>>
 	public static final String MODEL_VERSION_KEY = "modelVersion";
 	@PropertyIdentifier(type = Vector.class)
 	public static final String FLEXO_CONCEPTS_KEY = "flexoConcepts";
-	@PropertyIdentifier(type = List.class)
-	public static final String MODEL_SLOTS_KEY = "modelSlots";
+	// @PropertyIdentifier(type = List.class)
+	// public static final String MODEL_SLOTS_KEY = "modelSlots";
 
 	@Override
 	public FMLModelFactory getFMLModelFactory();
@@ -187,25 +185,26 @@ public interface AbstractVirtualModel<VM extends AbstractVirtualModel<VM>>
 	 */
 	public FlexoConcept getFlexoConcept(String flexoConceptNameOrURI);
 
-	@Getter(value = MODEL_SLOTS_KEY, cardinality = Cardinality.LIST, inverse = ModelSlot.OWNER_KEY)
+	/*@Getter(value = MODEL_SLOTS_KEY, cardinality = Cardinality.LIST, inverse = ModelSlot.OWNER_KEY)
 	@XMLElement(context = "ModelSlot_", primary = true)
 	// Since ModelSlot are also FlexoRole instances, we need to distinguish both during serialization/deserialization process
 	// To do it, we append ModelSlot_ as context
 	public List<ModelSlot<?>> getModelSlots();
-
+	
 	@Setter(MODEL_SLOTS_KEY)
 	public void setModelSlots(List<ModelSlot<?>> modelSlots);
-
+	
 	@Adder(MODEL_SLOTS_KEY)
 	public void addToModelSlots(ModelSlot<?> aModelSlot);
-
+	
 	@Remover(MODEL_SLOTS_KEY)
 	public void removeFromModelSlots(ModelSlot<?> aModelSlot);
-
+	
 	@Finder(collection = MODEL_SLOTS_KEY, attribute = ModelSlot.NAME_KEY)
 	public ModelSlot<?> getModelSlot(String modelSlotName);
-
+	
 	public <MS extends ModelSlot<?>> List<MS> getModelSlots(Class<MS> msType);
+	*/
 
 	/**
 	 * Retrieve ontology object from its URI.<br>
@@ -545,7 +544,7 @@ public interface AbstractVirtualModel<VM extends AbstractVirtualModel<VM>>
 		// ========================= Model Slots =======================
 		// ==============================================================
 
-		@Override
+		/*@Override
 		public <MS extends ModelSlot<?>> List<MS> getModelSlots(Class<MS> msType) {
 			List<MS> returned = new ArrayList<>();
 			for (ModelSlot<?> ms : getModelSlots()) {
@@ -554,29 +553,19 @@ public interface AbstractVirtualModel<VM extends AbstractVirtualModel<VM>>
 				}
 			}
 			return returned;
-		}
+		}*/
 
-		@Override
+		/*@Override
 		public void addToModelSlots(ModelSlot<?> aModelSlot) {
 			performSuperAdder(MODEL_SLOTS_KEY, aModelSlot);
 			notifiedPropertiesChanged(null, aModelSlot);
 		}
-
+		
 		@Override
 		public void removeFromModelSlots(ModelSlot<?> aModelSlot) {
 			performSuperRemover(MODEL_SLOTS_KEY, aModelSlot);
 			notifiedPropertiesChanged(aModelSlot, null);
-		}
-
-		public List<ModelSlot<?>> getRequiredModelSlots() {
-			List<ModelSlot<?>> requiredModelSlots = new ArrayList<>();
-			for (ModelSlot<?> modelSlot : getModelSlots()) {
-				if (modelSlot.getIsRequired()) {
-					requiredModelSlots.add(modelSlot);
-				}
-			}
-			return requiredModelSlots;
-		}
+		}*/
 
 		/**
 		 * Retrieve object referenced by its URI.<br>

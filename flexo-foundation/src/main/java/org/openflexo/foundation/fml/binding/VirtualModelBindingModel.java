@@ -40,10 +40,6 @@ package org.openflexo.foundation.fml.binding;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.BindingVariable;
@@ -53,7 +49,6 @@ import org.openflexo.foundation.fml.VirtualModelInstanceType;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.View;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
-import org.openflexo.foundation.technologyadapter.ModelSlot;
 
 /**
  * This is the {@link BindingModel} exposed by a {@link VirtualModel}<br>
@@ -75,8 +70,6 @@ public class VirtualModelBindingModel extends FlexoConceptBindingModel implement
 	private BindingVariable reflexiveAccessBindingVariable;
 	private BindingVariable virtualModelInstanceBindingVariable;
 
-	private final Map<ModelSlot<?>, ModelSlotBindingVariable> modelSlotVariablesMap;
-
 	public static final String REFLEXIVE_ACCESS_PROPERTY = "virtualModelDefinition";
 	public static final String VIRTUAL_MODEL_INSTANCE_PROPERTY = "virtualModelInstance";
 
@@ -92,8 +85,8 @@ public class VirtualModelBindingModel extends FlexoConceptBindingModel implement
 		/*if (virtualModel != null && virtualModel.getPropertyChangeSupport() != null) {
 			virtualModel.getPropertyChangeSupport().addPropertyChangeListener(this);
 		}*/
-		modelSlotVariablesMap = new HashMap<ModelSlot<?>, ModelSlotBindingVariable>();
-		updateModelSlotVariables();
+		// modelSlotVariablesMap = new HashMap<ModelSlot<?>, ModelSlotBindingVariable>();
+		// updateModelSlotVariables();
 	}
 
 	public VirtualModelBindingModel(VirtualModel virtualModel) {
@@ -136,43 +129,15 @@ public class VirtualModelBindingModel extends FlexoConceptBindingModel implement
 				// : View.class);
 				virtualModelInstanceBindingVariable.setType(getVirtualModelInstanceType());
 			}
-			else if (evt.getPropertyName().equals(VirtualModel.MODEL_SLOTS_KEY)) {
+			/*else if (evt.getPropertyName().equals(FlexoConcept.FLEXO_PROPERTIES_KEY)) {
 				// Model Slot were modified in related flexoConcept
 				updateModelSlotVariables();
-			}
+			}*/
 		}
 	}
 
 	protected VirtualModelInstanceType getVirtualModelInstanceType() {
 		return VirtualModelInstanceType.getVirtualModelInstanceType(virtualModel);
-	}
-
-	private void updateModelSlotVariables() {
-
-		List<ModelSlot<?>> modelSlotToBeDeleted = new ArrayList<ModelSlot<?>>(modelSlotVariablesMap.keySet());
-
-		for (ModelSlot<?> ms : virtualModel.getModelSlots()) {
-			// if (ms != virtualModel.getReflexiveModelSlot()) {
-			if (modelSlotToBeDeleted.contains(ms)) {
-				modelSlotToBeDeleted.remove(ms);
-			}
-			else if (modelSlotVariablesMap.get(ms) == null) {
-				ModelSlotBindingVariable bv = new ModelSlotBindingVariable(ms);
-				addToBindingVariables(bv);
-				modelSlotVariablesMap.put(ms, bv);
-			}
-			// }
-		}
-
-		for (ModelSlot<?> ms : modelSlotToBeDeleted) {
-			// if (ms != virtualModel.getReflexiveModelSlot()) {
-			ModelSlotBindingVariable bvToRemove = modelSlotVariablesMap.get(ms);
-			removeFromBindingVariables(bvToRemove);
-			modelSlotVariablesMap.remove(ms);
-			bvToRemove.delete();
-			// }
-		}
-
 	}
 
 	/**

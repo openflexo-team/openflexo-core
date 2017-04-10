@@ -45,6 +45,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
+
 import org.openflexo.foundation.fml.AbstractVirtualModel;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
@@ -55,7 +56,6 @@ import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.GetProperty;
 import org.openflexo.foundation.fml.GetSetProperty;
-import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelObject;
 import org.openflexo.foundation.fml.annotations.DeclareEditionActions;
 import org.openflexo.foundation.fml.annotations.DeclareFetchRequests;
@@ -76,8 +76,6 @@ import org.openflexo.foundation.fml.rt.ModelSlotInstance;
 import org.openflexo.foundation.fml.rt.action.ModelSlotInstanceConfiguration;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.ResourceData;
-import org.openflexo.model.annotations.CloningStrategy;
-import org.openflexo.model.annotations.CloningStrategy.StrategyType;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.Import;
@@ -123,12 +121,12 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>>
 	/**
 	 * Return the VirtualModel in which this ModelSlot is declared
 	 */
-	@Getter(value = OWNER_KEY, inverse = VirtualModel.MODEL_SLOTS_KEY)
+	/*@Getter(value = OWNER_KEY, inverse = VirtualModel.MODEL_SLOTS_KEY)
 	@CloningStrategy(StrategyType.IGNORE)
 	public AbstractVirtualModel<?> getOwner();
-
+	
 	@Setter(OWNER_KEY)
-	public void setOwner(AbstractVirtualModel<?> virtualModel);
+	public void setOwner(AbstractVirtualModel<?> virtualModel);*/
 
 	@Override
 	@Getter(value = IS_REQUIRED_KEY, defaultValue = "false")
@@ -262,13 +260,19 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>>
 
 		@Override
 		public AbstractVirtualModel<?> getVirtualModel() {
-			return getOwner();
+			if (getFlexoConcept() instanceof AbstractVirtualModel) {
+				return (AbstractVirtualModel<?>) getFlexoConcept();
+			}
+			if (getFlexoConcept() != null) {
+				return getFlexoConcept().getOwner();
+			}
+			return null;
 		}
 
-		@Override
+		/*@Override
 		public final FlexoConcept getFlexoConcept() {
 			return getOwner();
-		}
+		}*/
 
 		@Override
 		public ModelSlot<RD> getModelSlot() {

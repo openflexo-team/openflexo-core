@@ -58,6 +58,7 @@ import org.openflexo.foundation.fml.editionaction.DeleteAction;
 import org.openflexo.foundation.fml.inspector.FlexoConceptInspector;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.resource.SaveResourceException;
+import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.model.annotations.Adder;
 import org.openflexo.model.annotations.CloningStrategy;
@@ -225,7 +226,7 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 	public FlexoBehaviour getFlexoBehaviourForURI(String uri);
 
 	@Getter(value = FLEXO_PROPERTIES_KEY, cardinality = Cardinality.LIST, inverse = FlexoProperty.FLEXO_CONCEPT_KEY)
-	@XMLElement
+	@XMLElement(deprecatedContext = "ModelSlot_", primary = true)
 	@CloningStrategy(StrategyType.CLONE)
 	@Embedded
 	public List<FlexoProperty<?>> getFlexoProperties();
@@ -332,6 +333,17 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 	 * @see #getAccessibleRoles()
 	 */
 	public FlexoRole<?> getAccessibleRole(String roleName);
+
+	// ModelSlot are also FlexoRole instances, but it's usefull to be able to access them
+	public List<ModelSlot<?>> getModelSlots();
+
+	public void addToModelSlots(ModelSlot<?> aModelSlot);
+
+	public void removeFromModelSlots(ModelSlot<?> aModelSlot);
+
+	public ModelSlot<?> getModelSlot(String modelSlotName);
+
+	public <MS extends ModelSlot<?>> List<MS> getModelSlots(Class<MS> msType);
 
 	@Getter(value = INSPECTOR_KEY, inverse = FlexoConceptInspector.FLEXO_CONCEPT_KEY)
 	@XMLElement(xmlTag = "Inspector")
@@ -841,6 +853,41 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 				index++;
 			}
 			return testName;
+		}
+
+		@Override
+		public List<ModelSlot<?>> getModelSlots() {
+			return (List) getAccessibleProperties(ModelSlot.class);
+		}
+
+		@Override
+		public void addToModelSlots(ModelSlot<?> aModelSlot) {
+			addToFlexoProperties(aModelSlot);
+		}
+
+		@Override
+		public void removeFromModelSlots(ModelSlot<?> aModelSlot) {
+			removeFromFlexoProperties(aModelSlot);
+		}
+
+		@Override
+		public ModelSlot<?> getModelSlot(String modelSlotName) {
+			return (ModelSlot<?>) getAccessibleProperty(modelSlotName);
+		}
+
+		@Override
+		public <MS extends ModelSlot<?>> List<MS> getModelSlots(Class<MS> msType) {
+			return getAccessibleProperties(msType);
+		}
+
+		public List<ModelSlot<?>> getRequiredModelSlots() {
+			List<ModelSlot<?>> requiredModelSlots = new ArrayList<>();
+			for (ModelSlot<?> modelSlot : getModelSlots()) {
+				if (modelSlot.getIsRequired()) {
+					requiredModelSlots.add(modelSlot);
+				}
+			}
+			return requiredModelSlots;
 		}
 
 		@Override
