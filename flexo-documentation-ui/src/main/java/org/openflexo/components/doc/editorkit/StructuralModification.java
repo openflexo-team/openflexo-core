@@ -173,7 +173,7 @@ class StructuralModification<D extends FlexoDocument<D, TA>, TA extends Technolo
 
 	}
 
-	private void fireUpdateRun(RetainedRunElement oldR, RetainedRunElement newR) {
+	private static void fireUpdateRun(RetainedRunElement oldR, RetainedRunElement newR) {
 		if (oldR.run == null) {
 			FlexoStyledDocument.logger.warning("Unexpected null run");
 			return;

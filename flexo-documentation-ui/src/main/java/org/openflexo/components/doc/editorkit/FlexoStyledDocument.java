@@ -207,7 +207,7 @@ public class FlexoStyledDocument<D extends FlexoDocument<D, TA>, TA extends Tech
 			}
 
 			// create table element
-			table = new TableElement<D, TA>(this, rowOffsets, rowLenghts, root, attr, rowCount, colCount, colWidths, rowHeights);
+			table = new TableElement<>(this, rowOffsets, rowLenghts, root, attr, rowCount, colCount, colWidths, rowHeights);
 			Element[] el = new Element[1];
 			el[0] = table;
 			Element[] repl = new Element[rowCount * colCount];
@@ -463,7 +463,7 @@ public class FlexoStyledDocument<D extends FlexoDocument<D, TA>, TA extends Tech
 			attr.addAttribute("BorderAttributes", ba);
 
 			Element[] rows = new Element[1];
-			rows[0] = new RowElement<D, TA>(this, table, attr, cellCount, offsets, lengths, widths, 1);
+			rows[0] = new RowElement<>(this, table, attr, cellCount, offsets, lengths, widths, 1);
 
 			Element[] removed = new Element[cellCount];
 			if (insertIndex < table.getElementCount()) {
@@ -594,7 +594,7 @@ public class FlexoStyledDocument<D extends FlexoDocument<D, TA>, TA extends Tech
 				attr.addAttribute("BorderAttributes", ba);
 
 				Element[] rows = new Element[1];
-				rows[0] = new CellElement<D, TA>(this, editableRow, attr, insertOffset, 1, colWidth, 1);
+				rows[0] = new CellElement<>(this, editableRow, attr, insertOffset, 1, colWidth, 1);
 				addedCells[i] = rows[0];
 				editableRow.replace(colNum, 0, rows);
 				e.addEdit(new ElementEdit(editableRow, colNum, new Element[0], rows));
@@ -884,10 +884,10 @@ public class FlexoStyledDocument<D extends FlexoDocument<D, TA>, TA extends Tech
 		// operation we can detect an illegitimate attempt
 		// to mutate attributes.
 		writeLock();
-		DocumentElement<D, TA> rootElement = new DocumentElement<D, TA>(this);
-		ParagraphElement<D, TA> paragraph = new ParagraphElement<D, TA>(this, rootElement, null);
+		DocumentElement<D, TA> rootElement = new DocumentElement<>(this);
+		ParagraphElement<D, TA> paragraph = new ParagraphElement<>(this, rootElement, null);
 
-		RunElement<D, TA> brk = new RunElement<D, TA>(this, paragraph, null, 0, 1, null);
+		RunElement<D, TA> brk = new RunElement<>(this, paragraph, null, 0, 1, null);
 		Element[] buff = new Element[1];
 		buff[0] = brk;
 		paragraph.replace(0, 0, buff);
@@ -934,7 +934,7 @@ public class FlexoStyledDocument<D extends FlexoDocument<D, TA>, TA extends Tech
 
 	private void initiateStructuralModification(int offset, int length) {
 		if (!isReadingDocument && currentModification == null) {
-			currentModification = new StructuralModification<D, TA>(this, offset, length);
+			currentModification = new StructuralModification<>(this, offset, length);
 		}
 	}
 
@@ -966,7 +966,7 @@ public class FlexoStyledDocument<D extends FlexoDocument<D, TA>, TA extends Tech
 			}
 		}*/
 		if (parent instanceof DocumentElement) {
-			return new ParagraphElement<D, TA>(this, (DocumentElement<D, TA>) parent, a);
+			return new ParagraphElement<>(this, (DocumentElement<D, TA>) parent, a);
 
 		}
 		return super.createBranchElement(parent, a);
@@ -984,7 +984,7 @@ public class FlexoStyledDocument<D extends FlexoDocument<D, TA>, TA extends Tech
 			}
 		}
 		if (parent instanceof ParagraphElement) {
-			return new RunElement<D, TA>(this, parent, a, p0, p1, null);
+			return new RunElement<>(this, parent, a, p0, p1, null);
 
 		}
 		return super.createLeafElement(parent, a, p0, p1);

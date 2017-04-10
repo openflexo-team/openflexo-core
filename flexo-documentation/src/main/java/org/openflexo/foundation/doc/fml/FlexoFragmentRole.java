@@ -48,8 +48,8 @@ import org.openflexo.model.validation.ValidationRule;
 
 @ModelEntity(isAbstract = true)
 @ImplementationClass(FlexoFragmentRole.FlexoDocumentFragmentRoleImpl.class)
-public interface FlexoFragmentRole<F extends FlexoDocFragment<D, TA>, D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends
-		FlexoRole<F> {
+public interface FlexoFragmentRole<F extends FlexoDocFragment<D, TA>, D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
+		extends FlexoRole<F> {
 
 	@PropertyIdentifier(type = TextBinding.class, cardinality = Cardinality.LIST)
 	public static final String TEXT_BINDINGS_KEY = "textBindings";
@@ -135,8 +135,8 @@ public interface FlexoFragmentRole<F extends FlexoDocFragment<D, TA>, D extends 
 	}
 
 	@DefineValidationRule
-	public static class FragmentRoleMustAddressATemplateFragment extends
-			ValidationRule<FragmentRoleMustAddressATemplateFragment, FlexoFragmentRole> {
+	public static class FragmentRoleMustAddressATemplateFragment
+			extends ValidationRule<FragmentRoleMustAddressATemplateFragment, FlexoFragmentRole> {
 		public FragmentRoleMustAddressATemplateFragment() {
 			super(FlexoFragmentRole.class, "fragment_role_must_reference_a_template_fragment");
 		}
@@ -146,8 +146,7 @@ public interface FlexoFragmentRole<F extends FlexoDocFragment<D, TA>, D extends 
 			if (role.getModelSlot() instanceof FlexoDocumentModelSlot
 					&& ((FlexoDocumentModelSlot) role.getModelSlot()).getTemplateResource() != null) {
 				if (role.getFragment() == null) {
-					return new ValidationError<FragmentRoleMustAddressATemplateFragment, FlexoFragmentRole>(this, role,
-							"fragment_role_doesn't_reference_any_template_fragment");
+					return new ValidationError<>(this, role, "fragment_role_doesn't_reference_any_template_fragment");
 				}
 			}
 			return null;

@@ -163,7 +163,7 @@ public interface TextBinding<D extends FlexoDocument<D, TA>, TA extends Technolo
 		@Override
 		public ModelSlot<D> getModelSlot() {
 			if (getFragmentRole() != null) {
-				return (ModelSlot) getFragmentRole().getModelSlot();
+				return (ModelSlot<D>) getFragmentRole().getModelSlot();
 			}
 			return null;
 		}

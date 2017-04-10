@@ -114,7 +114,7 @@ public class FlexoDocumentEditorFactory<D extends FlexoDocument<D, TA>, TA exten
 	 */
 	public FlexoDocumentEditorFactory(D flexoDocument) throws BadLocationException {
 		this.flexoDocument = flexoDocument;
-		document = new FlexoStyledDocument<D, TA>(flexoDocument);
+		document = new FlexoStyledDocument<>(flexoDocument);
 		read(flexoDocument, 0);
 	}
 

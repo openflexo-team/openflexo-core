@@ -167,7 +167,7 @@ public interface FragmentActorReference<F extends FlexoDocFragment<?, ?>> extend
 						FlexoDocElement startElement = null, endElement = null;
 						int index = 0;
 						for (ElementReference er : getElementReferences()) {
-							FlexoDocElement element = document.getElementWithIdentifier(er.getElementId());
+							FlexoDocElement<?, ?> element = document.getElementWithIdentifier(er.getElementId());
 							if (element != null) {
 								element.setBaseIdentifier(er.getTemplateElementId());
 								if (index == 0) {
@@ -205,7 +205,7 @@ public interface FragmentActorReference<F extends FlexoDocFragment<?, ?>> extend
 
 				// First remove all existing ElementReference occurences when it exists
 				if (fragment != null) {
-					for (ElementReference er : new ArrayList<ElementReference>(getElementReferences())) {
+					for (ElementReference er : new ArrayList<>(getElementReferences())) {
 						removeFromElementReferences(er);
 					}
 				}
@@ -247,7 +247,7 @@ public interface FragmentActorReference<F extends FlexoDocFragment<?, ?>> extend
 		 */
 		@Override
 		public void applyDataToDocument() {
-			for (TextBinding tb : ((FlexoFragmentRole<?, ?, ?>) getFlexoRole()).getTextBindings()) {
+			for (TextBinding<?, ?> tb : ((FlexoFragmentRole<?, ?, ?>) getFlexoRole()).getTextBindings()) {
 				tb.applyToFragment(getFlexoConceptInstance());
 			}
 		}
@@ -259,7 +259,7 @@ public interface FragmentActorReference<F extends FlexoDocFragment<?, ?>> extend
 		 */
 		@Override
 		public void reinjectDataFromDocument() {
-			for (TextBinding tb : ((FlexoFragmentRole<?, ?, ?>) getFlexoRole()).getTextBindings()) {
+			for (TextBinding<?, ?> tb : ((FlexoFragmentRole<?, ?, ?>) getFlexoRole()).getTextBindings()) {
 				tb.extractFromFragment(getFlexoConceptInstance());
 			}
 		}
@@ -273,7 +273,7 @@ public interface FragmentActorReference<F extends FlexoDocFragment<?, ?>> extend
 		 */
 		@Override
 		public List<FlexoDocElement<?, ?>> getElementsMatchingTemplateElementId(String templateElementId) {
-			List<FlexoDocElement<?, ?>> returned = new ArrayList<FlexoDocElement<?, ?>>();
+			List<FlexoDocElement<?, ?>> returned = new ArrayList<>();
 			for (ElementReference er : getElementReferences()) {
 				if (er.getTemplateElementId().equals(templateElementId)) {
 					returned.add(getFlexoDocument().getElementWithIdentifier(er.getElementId()));
@@ -295,7 +295,7 @@ public interface FragmentActorReference<F extends FlexoDocFragment<?, ?>> extend
 
 		@Override
 		public void removeReferencesTo(FlexoDocElement<?, ?> element) {
-			List<ElementReference> referencesToRemove = new ArrayList<ElementReference>();
+			List<ElementReference> referencesToRemove = new ArrayList<>();
 			for (ElementReference er : getElementReferences()) {
 				if (er.getElementId().equals(element.getIdentifier())) {
 					referencesToRemove.add(er);

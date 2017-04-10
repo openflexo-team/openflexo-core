@@ -244,7 +244,7 @@ public interface FlexoDocument<D extends FlexoDocument<D, TA>, TA extends Techno
 
 		@Override
 		public <E> List<E> getElements(Class<E> elementType) {
-			List<E> returned = new ArrayList<E>();
+			List<E> returned = new ArrayList<>();
 			for (FlexoDocElement<D, TA> e : getElements()) {
 				if (elementType.isAssignableFrom(e.getImplementedInterface())) {
 					returned.add((E) e);
@@ -339,7 +339,7 @@ public interface FlexoDocument<D extends FlexoDocument<D, TA>, TA extends Techno
 		}
 
 		private List<FlexoDocElement<D, TA>> computeRootElements() {
-			List<FlexoDocElement<D, TA>> returned = new ArrayList<FlexoDocElement<D, TA>>();
+			List<FlexoDocElement<D, TA>> returned = new ArrayList<>();
 			Integer l = null;
 			for (FlexoDocElement<D, TA> e : getElements()) {
 				if (l == null) {

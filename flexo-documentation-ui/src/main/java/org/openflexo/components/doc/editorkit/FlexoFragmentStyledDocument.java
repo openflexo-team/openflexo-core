@@ -90,10 +90,10 @@ public class FlexoFragmentStyledDocument<D extends FlexoDocument<D, TA>, TA exte
 		// operation we can detect an illegitimate attempt
 		// to mutate attributes.
 		writeLock();
-		DocFragmentElement<D, TA> rootElement = new DocFragmentElement<D, TA>(this);
-		ParagraphElement<D, TA> paragraph = new ParagraphElement<D, TA>(this, rootElement, null);
+		DocFragmentElement<D, TA> rootElement = new DocFragmentElement<>(this);
+		ParagraphElement<D, TA> paragraph = new ParagraphElement<>(this, rootElement, null);
 
-		RunElement<D, TA> brk = new RunElement<D, TA>(this, paragraph, null, 0, 1, null);
+		RunElement<D, TA> brk = new RunElement<>(this, paragraph, null, 0, 1, null);
 		Element[] buff = new Element[1];
 		buff[0] = brk;
 		paragraph.replace(0, 0, buff);
@@ -108,7 +108,7 @@ public class FlexoFragmentStyledDocument<D extends FlexoDocument<D, TA>, TA exte
 	@Override
 	protected Element createBranchElement(Element parent, AttributeSet a) {
 		if (parent instanceof DocFragmentElement) {
-			return new ParagraphElement<D, TA>(this, (DocFragmentElement<D, TA>) parent, a);
+			return new ParagraphElement<>(this, (DocFragmentElement<D, TA>) parent, a);
 
 		}
 		return super.createBranchElement(parent, a);

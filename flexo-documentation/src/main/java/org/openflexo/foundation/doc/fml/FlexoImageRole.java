@@ -46,8 +46,8 @@ import org.openflexo.toolbox.StringUtils;
 
 @ModelEntity(isAbstract = true)
 @ImplementationClass(FlexoImageRole.FlexoImageRoleImpl.class)
-public interface FlexoImageRole<R extends FlexoDrawingRun<D, TA>, D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends
-		FlexoRole<R> {
+public interface FlexoImageRole<R extends FlexoDrawingRun<D, TA>, D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
+		extends FlexoRole<R> {
 
 	@PropertyIdentifier(type = FlexoDrawingRun.class)
 	public static final String DRAWING_RUN_KEY = "drawingRun";
@@ -240,7 +240,7 @@ public interface FlexoImageRole<R extends FlexoDrawingRun<D, TA>, D extends Flex
 		@Override
 		public DataBinding<FlexoObject> getRepresentedObject() {
 			if (representedObject == null) {
-				representedObject = new DataBinding<FlexoObject>(this, FlexoObject.class, DataBinding.BindingDefinitionType.GET);
+				representedObject = new DataBinding<>(this, FlexoObject.class, DataBinding.BindingDefinitionType.GET);
 				representedObject.setBindingName("representedObject");
 				representedObject.setMandatory(false);
 			}

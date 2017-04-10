@@ -64,7 +64,7 @@ public class RowView extends BoxView {
 	 * @param axis
 	 *            either View.X_AXIS or View.Y_AXIS
 	 */
-	public RowView(Element elem, int axis) {
+	public RowView(RowElement<?, ?> elem, int axis) {
 		super(elem, axis);
 	}
 
@@ -90,7 +90,7 @@ public class RowView extends BoxView {
 	public void paint(Graphics g, Shape a) {
 		Rectangle alloc = (a instanceof Rectangle) ? (Rectangle) a : a.getBounds();
 		int n = getViewCount();
-		RowElement row = (RowElement) this.getElement();
+		RowElement<?, ?> row = (RowElement<?, ?>) this.getElement();
 		int cellWidth = (row.getWidth() / row.getChildCount());
 		int shift = 0;
 		for (int i = 0; i < n; i++) {
@@ -112,7 +112,7 @@ public class RowView extends BoxView {
 	public float getPreferredSpan(int axis) {
 		float span = 0;
 		if (axis == View.X_AXIS) {
-			RowElement row = (RowElement) getElement();
+			RowElement<?, ?> row = (RowElement<?, ?>) getElement();
 			span = row.getWidth();
 		}
 		else {
@@ -136,7 +136,7 @@ public class RowView extends BoxView {
 	public float getMinimumSpan(int axis) {
 		float span = 0;
 		if (axis == View.X_AXIS) {
-			RowElement row = (RowElement) getElement();
+			RowElement<?, ?> row = (RowElement<?, ?>) getElement();
 			span = row.getWidth();
 		}
 		else {
@@ -160,7 +160,7 @@ public class RowView extends BoxView {
 	public float getMaximumSpan(int axis) {
 		float span = 0;
 		if (axis == View.X_AXIS) {
-			RowElement row = (RowElement) getElement();
+			RowElement<?, ?> row = (RowElement<?, ?>) getElement();
 			span = row.getWidth();
 		}
 		else {

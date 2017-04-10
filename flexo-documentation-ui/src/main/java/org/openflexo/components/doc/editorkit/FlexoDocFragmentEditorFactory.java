@@ -64,7 +64,7 @@ public class FlexoDocFragmentEditorFactory<D extends FlexoDocument<D, TA>, TA ex
 	public FlexoDocFragmentEditorFactory(FlexoDocFragment<D, TA> fragment) throws BadLocationException {
 		super();
 		this.fragment = fragment;
-		document = new FlexoFragmentStyledDocument<D, TA>(fragment);
+		document = new FlexoFragmentStyledDocument<>(fragment);
 		read(fragment, 0);
 	}
 
@@ -84,7 +84,7 @@ public class FlexoDocFragmentEditorFactory<D extends FlexoDocument<D, TA>, TA ex
 	}
 
 	protected FlexoFragmentStyledDocument<D, TA> makeStyledDocument(D flexoDocument) {
-		return new FlexoFragmentStyledDocument<D, TA>(null);
+		return new FlexoFragmentStyledDocument<>(null);
 	}
 
 	/**

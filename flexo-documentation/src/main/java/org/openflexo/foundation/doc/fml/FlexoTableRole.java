@@ -49,8 +49,8 @@ import org.openflexo.toolbox.StringUtils;
 
 @ModelEntity(isAbstract = true)
 @ImplementationClass(FlexoTableRole.FlexoTableRoleImpl.class)
-public interface FlexoTableRole<T extends FlexoDocTable<D, TA>, D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends
-		FlexoRole<T> {
+public interface FlexoTableRole<T extends FlexoDocTable<D, TA>, D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
+		extends FlexoRole<T> {
 
 	@PropertyIdentifier(type = FlexoDocFragment.class)
 	public static final String TABLE_KEY = "table";
@@ -228,7 +228,7 @@ public interface FlexoTableRole<T extends FlexoDocTable<D, TA>, D extends FlexoD
 		@Override
 		public DataBinding<List> getIteration() {
 			if (iteration == null) {
-				iteration = new DataBinding<List>(this, List.class, DataBinding.BindingDefinitionType.GET);
+				iteration = new DataBinding<>(this, List.class, DataBinding.BindingDefinitionType.GET);
 				iteration.setBindingName("Iteration");
 				iteration.setMandatory(false);
 			}

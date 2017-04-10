@@ -133,8 +133,7 @@ public class TableElement<D extends FlexoDocument<D, TA>, TA extends TechnologyA
 				cellOffsets[j] = rowOffsets[i] + j; // offset+i*colCount+j;
 				cellLengths[j] = 1;
 			}
-			rows[i] = new RowElement<D, TA>(this.flexoStyledDocument, this, rowAttr, colCount, cellOffsets, cellLengths, widths,
-					heights[i]);
+			rows[i] = new RowElement<>(this.flexoStyledDocument, this, rowAttr, colCount, cellOffsets, cellLengths, widths, heights[i]);
 		}
 		this.replace(0, 0, rows);
 	}

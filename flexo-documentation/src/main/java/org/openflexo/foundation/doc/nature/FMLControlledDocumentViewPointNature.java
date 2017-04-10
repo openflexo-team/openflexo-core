@@ -73,7 +73,7 @@ public abstract class FMLControlledDocumentViewPointNature<MS extends FlexoDocum
 
 	protected List<VirtualModel> _getControlledDocumentVirtualModels(ViewPoint viewPoint,
 			FMLControlledDocumentVirtualModelNature<MS> vmNature) {
-		List<VirtualModel> returned = new ArrayList<VirtualModel>();
+		List<VirtualModel> returned = new ArrayList<>();
 		for (VirtualModel vm : viewPoint.getVirtualModels(true)) {
 			if (vm.hasNature(vmNature)) {
 				returned.add(vm);

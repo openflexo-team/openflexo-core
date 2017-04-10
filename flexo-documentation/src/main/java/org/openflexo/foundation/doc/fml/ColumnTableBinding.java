@@ -131,7 +131,7 @@ public interface ColumnTableBinding<D extends FlexoDocument<D, TA>, TA extends T
 		@Override
 		public DataBinding<String> getValue() {
 			if (value == null) {
-				value = new DataBinding<String>(this, String.class, DataBinding.BindingDefinitionType.GET);
+				value = new DataBinding<>(this, String.class, DataBinding.BindingDefinitionType.GET);
 				value.setBindingName("ColumnValue" + getColumnIndex());
 				value.setMandatory(true);
 			}
@@ -172,7 +172,7 @@ public interface ColumnTableBinding<D extends FlexoDocument<D, TA>, TA extends T
 		@Override
 		public ModelSlot<D> getModelSlot() {
 			if (getTableRole() != null) {
-				return (ModelSlot) getTableRole().getModelSlot();
+				return (ModelSlot<D>) getTableRole().getModelSlot();
 			}
 			return null;
 		}
