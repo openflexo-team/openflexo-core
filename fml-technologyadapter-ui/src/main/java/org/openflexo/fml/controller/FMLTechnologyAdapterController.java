@@ -39,9 +39,7 @@
 package org.openflexo.fml.controller;
 
 import java.lang.reflect.Type;
-
-import javax.swing.ImageIcon;
-
+import javax.swing.*;
 import org.openflexo.components.widget.FIBTechnologyBrowser;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.type.CustomType;
@@ -217,6 +215,7 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 		actionInitializer.getEditingContext().registerPasteHandler(new FlexoPropertyPasteHandler());
 		actionInitializer.getEditingContext().registerPasteHandler(new FlexoBehaviourPasteHandler());
 		actionInitializer.getEditingContext().registerPasteHandler(new FMLControlGraphPasteHandler());
+		actionInitializer.getEditingContext().registerPasteHandler(new BehaviorPasteHandler());
 
 		FlexoActionType.newVirtualModelMenu.setSmallIcon(FMLIconLibrary.VIRTUAL_MODEL_ICON);
 		FlexoActionType.newPropertyMenu.setSmallIcon(FMLIconLibrary.FLEXO_ROLE_ICON);

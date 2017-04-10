@@ -487,7 +487,7 @@ public abstract class FIBFlexoObjectSelector<T extends FlexoObject> extends Text
 		private final JFIBView<?, ?> fibView;
 		private final SelectorFIBController controller;
 
-		private JFIBBrowserWidget<?> browserWidget = null;
+		private JFIBBrowserWidget<T> browserWidget = null;
 		private FIBListWidget<?, ?> listWidget = null;
 
 		protected SelectorDetailsPanel(T anObject) {
@@ -543,7 +543,7 @@ public abstract class FIBFlexoObjectSelector<T extends FlexoObject> extends Text
 			return returned;
 		}
 
-		public JFIBBrowserWidget<?> getFIBBrowserWidget() {
+		public JFIBBrowserWidget<T> getFIBBrowserWidget() {
 			if (browserWidget == null) {
 				browserWidget = retrieveFIBBrowserWidget();
 			}

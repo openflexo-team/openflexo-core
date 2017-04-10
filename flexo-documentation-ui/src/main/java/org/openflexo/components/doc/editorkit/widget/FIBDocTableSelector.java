@@ -51,8 +51,6 @@ import org.openflexo.components.doc.editorkit.FlexoDocumentEditorWidget;
 import org.openflexo.components.doc.editorkit.FlexoStyledDocument;
 import org.openflexo.components.doc.editorkit.element.AbstractDocumentElement;
 import org.openflexo.components.widget.FIBFlexoObjectSelector;
-import org.openflexo.components.widget.FIBFlexoObjectSelector.SelectorDetailsPanel;
-import org.openflexo.components.widget.FIBFlexoObjectSelector.SelectorFIBController;
 import org.openflexo.foundation.doc.FlexoDocElement;
 import org.openflexo.foundation.doc.FlexoDocObject;
 import org.openflexo.foundation.doc.FlexoDocTable;

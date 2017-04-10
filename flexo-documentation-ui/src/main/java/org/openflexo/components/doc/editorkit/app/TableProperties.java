@@ -36,9 +36,9 @@ public class TableProperties extends JDialog {
 
 	DoubleSpinEdit widthSpin = new DoubleSpinEdit(10, 500);
 	DoubleSpinEdit heightSpin = new DoubleSpinEdit(10, 500);
-	TableElement table = null;
-	RowElement row = null;
-	CellElement cell = null;
+	TableElement<?, ?> table = null;
+	RowElement<?, ?> row = null;
+	CellElement<?, ?> cell = null;
 
 	JToggleButton alignLeft = new JToggleButton("Left");
 	JToggleButton alignCenter = new JToggleButton("Center");
@@ -124,7 +124,7 @@ public class TableProperties extends JDialog {
 	 */
 	public void setTable(Element el) {
 		setTitle("Table properties");
-		table = (TableElement) el;
+		table = (TableElement<?, ?>) el;
 		widthSpin.setValue(table.getWidth());
 		widthSpin.setEnabled(false);
 		heightSpin.setValue(table.getHeight());
@@ -161,7 +161,7 @@ public class TableProperties extends JDialog {
 	 */
 	public void setRow(Element el) {
 		setTitle("Row properties");
-		row = (RowElement) el;
+		row = (RowElement<?, ?>) el;
 		widthSpin.setValue(row.getWidth());
 		widthSpin.setEnabled(false);
 		heightSpin.setValue(row.getHeight());
@@ -183,7 +183,7 @@ public class TableProperties extends JDialog {
 	 */
 	public void setCell(Element el) {
 		setTitle("Cell properties");
-		cell = (CellElement) el;
+		cell = (CellElement<?, ?>) el;
 		widthSpin.setValue(cell.getWidth());
 		widthSpin.setEnabled(true);
 		heightSpin.setValue(cell.getHeight());

@@ -114,7 +114,7 @@ public class RowElement<D extends FlexoDocument<D, TA>, TA extends TechnologyAda
 				cellBorders.borderRight = ba.borderRight;
 			}
 			cellAttr.addAttribute("BorderAttributes", cellBorders);
-			cells[i] = new CellElement<D, TA>(this.flexoStyledDocument, this, cellAttr, cellOffsets[i], cellLengths[i], widths[i], height);
+			cells[i] = new CellElement<>(this.flexoStyledDocument, this, cellAttr, cellOffsets[i], cellLengths[i], widths[i], height);
 		}
 		this.replace(0, 0, cells);
 	}

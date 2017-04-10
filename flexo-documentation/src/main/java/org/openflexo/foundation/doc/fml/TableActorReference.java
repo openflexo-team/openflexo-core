@@ -216,7 +216,7 @@ public interface TableActorReference<T extends FlexoDocTable<?, ?>> extends Acto
 
 				// First remove all existing static references
 				if (table != null) {
-					for (StaticRowReference r : new ArrayList<StaticRowReference>(getStaticRowReferences())) {
+					for (StaticRowReference r : new ArrayList<>(getStaticRowReferences())) {
 						removeFromStaticRowReferences(r);
 					}
 					/*for (DynamicRowReference r : new ArrayList<DynamicRowReference>(getDynamicRowReferences())) {
@@ -325,7 +325,7 @@ public interface TableActorReference<T extends FlexoDocTable<?, ?>> extends Acto
 			currentRowNumbers = rowObjects.size();
 
 			if (getModellingElement() != null) {
-				for (DynamicRowReference drr : new ArrayList<DynamicRowReference>(getDynamicRowReferences())) {
+				for (DynamicRowReference drr : new ArrayList<>(getDynamicRowReferences())) {
 					removeFromDynamicRowReferences(drr);
 				}
 			}
@@ -378,7 +378,7 @@ public interface TableActorReference<T extends FlexoDocTable<?, ?>> extends Acto
 		 * @return
 		 */
 		public List<FlexoDocTableRow<?, ?>> getRowsMatchingTemplateRowId(String templateRowId) {
-			List<FlexoDocTableRow<?, ?>> returned = new ArrayList<FlexoDocTableRow<?, ?>>();
+			List<FlexoDocTableRow<?, ?>> returned = new ArrayList<>();
 			for (StaticRowReference srr : getStaticRowReferences()) {
 				if (srr.getTemplateRowId().equals(templateRowId)) {
 					FlexoDocTableRow<?, ?> matchingRow = getModellingElement().getRowWithIdentifier(srr.getRowId());

@@ -146,7 +146,7 @@ public interface FlexoDocParagraph<D extends FlexoDocument<D, TA>, TA extends Te
 
 			int i = start;
 
-			List<FlexoDocElement<D, TA>> returned = new ArrayList<FlexoDocElement<D, TA>>();
+			List<FlexoDocElement<D, TA>> returned = new ArrayList<>();
 
 			while (i < getFlexoDocument().getElements().size()) {
 				FlexoDocElement<D, TA> e = getFlexoDocument().getElements().get(i);

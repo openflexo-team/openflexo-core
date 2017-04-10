@@ -62,7 +62,7 @@ public class TableView extends BoxView {
 	 * @param axis
 	 *            either View.X_AXIS or View.Y_AXIS
 	 */
-	public TableView(Element elem, int axis) {
+	public TableView(TableElement<?, ?> elem, int axis) {
 		super(elem, axis);
 	}
 
@@ -87,7 +87,7 @@ public class TableView extends BoxView {
 	@Override
 	protected SizeRequirements baselineRequirements(int axis, SizeRequirements r) {
 		SizeRequirements sr = super.baselineRequirements(axis, r);
-		TableElement table = (TableElement) getElement();
+		TableElement<?, ?> table = (TableElement<?, ?>) getElement();
 		if (axis == View.X_AXIS) {
 			int align = StyleConstants.getAlignment(table.getAttributes());
 			switch (align) {
@@ -115,7 +115,7 @@ public class TableView extends BoxView {
 	@Override
 	protected SizeRequirements calculateMajorAxisRequirements(int axis, SizeRequirements r) {
 		SizeRequirements sr = super.calculateMajorAxisRequirements(axis, r);
-		TableElement table = (TableElement) getElement();
+		TableElement<?, ?> table = (TableElement<?, ?>) getElement();
 		if (axis == View.X_AXIS) {
 			int align = StyleConstants.getAlignment(table.getAttributes());
 			switch (align) {
@@ -143,7 +143,7 @@ public class TableView extends BoxView {
 	@Override
 	protected SizeRequirements calculateMinorAxisRequirements(int axis, SizeRequirements r) {
 		SizeRequirements sr = super.calculateMinorAxisRequirements(axis, r);
-		TableElement table = (TableElement) getElement();
+		TableElement<?, ?> table = (TableElement<?, ?>) getElement();
 		if (axis == View.X_AXIS) {
 			int align = StyleConstants.getAlignment(table.getAttributes());
 			switch (align) {
@@ -172,7 +172,7 @@ public class TableView extends BoxView {
 	public float getPreferredSpan(int axis) {
 		float span = 0;
 		span = super.getPreferredSpan(axis);
-		TableElement table = (TableElement) getElement();
+		TableElement<?, ?> table = (TableElement<?, ?>) getElement();
 		if (axis == View.X_AXIS) {
 			span = table.getWidth();
 		}
@@ -191,7 +191,7 @@ public class TableView extends BoxView {
 	public float getMinimumSpan(int axis) {
 		float span = 0;
 		span = super.getMinimumSpan(axis);
-		TableElement table = (TableElement) getElement();
+		TableElement<?, ?> table = (TableElement<?, ?>) getElement();
 		if (axis == View.X_AXIS) {
 			span = table.getWidth();
 		}
@@ -210,7 +210,7 @@ public class TableView extends BoxView {
 	public float getMaximumSpan(int axis) {
 		float span = 0;
 		span = super.getMaximumSpan(axis);
-		TableElement table = (TableElement) getElement();
+		TableElement<?, ?> table = (TableElement<?, ?>) getElement();
 		if (axis == View.X_AXIS) {
 			span = table.getWidth();
 		}
