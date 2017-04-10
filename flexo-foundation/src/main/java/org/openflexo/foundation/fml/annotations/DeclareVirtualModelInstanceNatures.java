@@ -44,6 +44,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstanceNature;
 import org.openflexo.foundation.fml.rt.VirtualModelInstanceNature;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 
@@ -58,6 +59,6 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 @Target(value = ElementType.TYPE)
 public @interface DeclareVirtualModelInstanceNatures {
 
-	public Class<? extends VirtualModelInstanceNature>[]value();
+	public Class<? extends AbstractVirtualModelInstanceNature>[] value();
 
 }

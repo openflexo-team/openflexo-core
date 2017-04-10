@@ -39,10 +39,10 @@
 package org.openflexo.fml.controller;
 
 import java.util.logging.Logger;
-
 import org.openflexo.foundation.action.copypaste.FlexoClipboard;
 import org.openflexo.foundation.action.copypaste.FlexoPasteHandler;
 import org.openflexo.foundation.action.copypaste.PastingContext;
+import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.model.exceptions.ModelExecutionException;
@@ -57,8 +57,6 @@ public class FMLControlGraphPasteHandler extends FlexoPasteHandler<FMLControlGra
 
 	private static final Logger logger = Logger.getLogger(FMLControlGraphPasteHandler.class.getPackage().getName());
 
-	// public static final String COPY_SUFFIX = "-copy";
-
 	@Override
 	public Class<FMLControlGraph> getPastingPointHolderType() {
 		return FMLControlGraph.class;
@@ -66,30 +64,22 @@ public class FMLControlGraphPasteHandler extends FlexoPasteHandler<FMLControlGra
 
 	@Override
 	public boolean isPastable(FlexoClipboard clipboard, PastingContext<FMLControlGraph> pastingContext) {
-
-		// System.out.println("Je me demande si c'est pastable dans " + focusedObject);
-		// System.out.println("Moi j'ai ca:" + clipboard.debug());
-
-		if (clipboard.getLeaderClipboard().isSingleObject() && clipboard.getLeaderClipboard().getSingleContents() instanceof FMLControlGraph
-				&& pastingContext.getPastingPointHolder() != null) {
-			return true;
-		}
-
-		return false;
+		return	clipboard.getLeaderClipboard().isSingleObject() &&
+				clipboard.getLeaderClipboard().getSingleContents() instanceof FMLControlGraph
+				&& pastingContext.getPastingPointHolder() != null;
 	}
 
 	@Override
 	public Object paste(FlexoClipboard clipboard, PastingContext<FMLControlGraph> pastingContext) {
 
 		FMLControlGraph cgBeeingPasted = (FMLControlGraph) clipboard.getLeaderClipboard().getSingleContents();
-		FMLControlGraph cgWhereToPaste = pastingContext.getPastingPointHolder();
+		Object cgWhereToPaste = pastingContext.getPastingPointHolder();
 
-		// System.out.println("Et hop, on vient faire un paste de: ");
-		// System.out.println(cgBeeingPasted.getFMLRepresentation());
-		// System.out.println("Dans " + cgWhereToPaste.getFMLRepresentation());
-
-		cgWhereToPaste.sequentiallyAppend(cgBeeingPasted);
-
+		if (cgWhereToPaste instanceof FMLControlGraph) {
+			((FMLControlGraph)cgWhereToPaste).sequentiallyAppend(cgBeeingPasted);
+		} else if (cgWhereToPaste instanceof FlexoBehaviour) {
+			((FlexoBehaviour) cgWhereToPaste).getControlGraph().sequentiallyAppend(cgBeeingPasted);
+		}
 		try {
 			clipboard.getLeaderClipboard().consume();
 		} catch (ModelExecutionException e) {

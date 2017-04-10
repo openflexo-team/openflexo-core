@@ -255,7 +255,7 @@ public class FlexoUndoManager extends UndoManager {
 
 	@Override
 	public boolean isIgnorable(UndoableEdit edit) {
-		for (IgnoreHandler ih : ignoreHandlers) {
+		for (IgnoreHandler ih : new ArrayList<>(ignoreHandlers)) {
 			if (ih.isIgnorable(edit)) {
 				return true;
 			}

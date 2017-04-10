@@ -32,8 +32,8 @@ import org.openflexo.foundation.doc.FlexoDocument;
 import org.openflexo.foundation.doc.FlexoDrawingRun;
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstanceModelFactory;
+import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstanceNature;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
-import org.openflexo.foundation.fml.rt.VirtualModelInstanceNature;
 import org.openflexo.foundation.nature.ScreenshotableNature;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.model.annotations.Getter;
@@ -281,7 +281,7 @@ public interface FlexoImageRole<R extends FlexoDrawingRun<D, TA>, D extends Flex
 			if (availableNatures == null && getServiceManager() != null) {
 				availableNatures = new ArrayList<>();
 				for (TechnologyAdapter ta : getServiceManager().getTechnologyAdapterService().getTechnologyAdapters()) {
-					for (Class<? extends VirtualModelInstanceNature> natureClass : ta.getAvailableVirtualModelInstanceNatures()) {
+					for (Class<? extends AbstractVirtualModelInstanceNature> natureClass : ta.getAvailableVirtualModelInstanceNatures()) {
 						if (ScreenshotableNature.class.isAssignableFrom(natureClass)) {
 							availableNatures.add((Class<? extends ScreenshotableNature<?>>) natureClass);
 						}

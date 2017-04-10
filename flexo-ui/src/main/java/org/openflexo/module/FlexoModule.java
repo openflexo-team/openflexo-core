@@ -44,6 +44,8 @@ import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.swing.SwingUtilities;
+
 import org.openflexo.ApplicationContext;
 import org.openflexo.foundation.DataFlexoObserver;
 import org.openflexo.foundation.DataModification;
@@ -51,8 +53,8 @@ import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoObservable;
 import org.openflexo.foundation.FlexoService;
-import org.openflexo.foundation.FlexoService.ServiceNotification;
 import org.openflexo.foundation.ProjectLoader;
+import org.openflexo.foundation.FlexoService.ServiceNotification;
 import org.openflexo.foundation.resource.ProjectClosed;
 import org.openflexo.foundation.resource.ResourceModified;
 import org.openflexo.foundation.resource.ResourceRegistered;
@@ -194,44 +196,43 @@ public abstract class FlexoModule<M extends FlexoModule<M>> implements DataFlexo
 		state &= ~Frame.ICONIFIED;
 		getFlexoFrame().setExtendedState(state);
 		getFlexoFrame().setVisible(true);
-		/*
-		 SwingUtilities.invokeLater(new Runnable() {
+
+		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
-				if (controller != null) {
-					getFlexoFrame().toFront();
+
+				if (getEditor() != null && getEditor().getProject() != null
+						&& getController().getCurrentDisplayedObjectAsModuleView() == null) {
+
+					boolean selectDefaultObject = false;
+					FlexoObject defaultObjectToSelect = getController().getDefaultObjectToSelect(getEditor().getProject());
+					if (defaultObjectToSelect != null && (getFlexoController().getCurrentDisplayedObjectAsModuleView() == null
+							|| getFlexoController().getCurrentDisplayedObjectAsModuleView() == defaultObjectToSelect)) {
+						if (getFlexoController().getSelectionManager().getFocusedObject() == null) {
+							selectDefaultObject = true;
+						}
+					}
+					else {
+						selectDefaultObject = true;
+					}
+					if (selectDefaultObject) {
+						getFlexoController().setCurrentEditedObjectAsModuleView(defaultObjectToSelect);
+					}
+					else {
+						if (getFlexoController().getSelectionManager().getFocusedObject() == null) {
+							getFlexoController().setCurrentEditedObjectAsModuleView(null);
+						}
+					}
+					getFlexoController().getSelectionManager().fireUpdateSelection();
+
 				}
+
+				if (getFlexoController().getCurrentModuleView() != null) {
+					getFlexoController().getCurrentModuleView().willShow();
+				}
+
 			}
 		});
-		 */
-		if (getEditor() != null && getController().getCurrentDisplayedObjectAsModuleView() == null) {
-			boolean selectDefaultObject = false;
-			FlexoObject defaultObjectToSelect = getController().getDefaultObjectToSelect(getEditor().getProject());
-			if (defaultObjectToSelect != null && (getFlexoController().getCurrentDisplayedObjectAsModuleView() == null
-					|| getFlexoController().getCurrentDisplayedObjectAsModuleView() == defaultObjectToSelect)) {
-				if (getFlexoController().getSelectionManager().getFocusedObject() == null) {
-					selectDefaultObject = true;
-				}
-			}
-			else {
-				selectDefaultObject = true;
-			}
-			if (selectDefaultObject) {
-				getFlexoController().setCurrentEditedObjectAsModuleView(defaultObjectToSelect);
-			}
-			else {
-				if (getFlexoController().getSelectionManager().getFocusedObject() == null) {
-					getFlexoController().setCurrentEditedObjectAsModuleView(null);
-				}
-			}
-			getFlexoController().getSelectionManager().fireUpdateSelection();
-
-		}
-
-		if (getFlexoController().getCurrentModuleView() != null) {
-			getFlexoController().getCurrentModuleView().willShow();
-		}
-
 	}
 
 	/**

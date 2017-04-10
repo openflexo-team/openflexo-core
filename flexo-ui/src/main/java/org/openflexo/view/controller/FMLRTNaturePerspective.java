@@ -44,13 +44,14 @@ import javax.swing.ImageIcon;
 
 import org.openflexo.components.widget.FIBTechnologyBrowser;
 import org.openflexo.foundation.FlexoObject;
+import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
+import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstanceNature;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstanceNature;
 import org.openflexo.foundation.fml.rt.View;
 import org.openflexo.foundation.fml.rt.ViewNature;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
-import org.openflexo.foundation.fml.rt.VirtualModelInstanceNature;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.view.ModuleView;
 
@@ -68,10 +69,10 @@ public abstract class FMLRTNaturePerspective extends TechnologyPerspective<FMLRT
 
 	private final TechnologyAdapter handlingTechnologyAdapter;
 	private final ViewNature viewNature;
-	private final VirtualModelInstanceNature virtualModelInstanceNature;
+	private final AbstractVirtualModelInstanceNature virtualModelInstanceNature;
 	private final FlexoConceptInstanceNature flexoConceptInstanceNature;
 
-	public FMLRTNaturePerspective(ViewNature viewNature, VirtualModelInstanceNature virtualModelInstanceNature,
+	public FMLRTNaturePerspective(ViewNature viewNature, AbstractVirtualModelInstanceNature virtualModelInstanceNature,
 			FlexoConceptInstanceNature flexoConceptInstanceNature, FMLRTTechnologyAdapter fmlRTtechnologyAdapter,
 			TechnologyAdapter handlingTechnologyAdapter, FlexoController controller) {
 		super(fmlRTtechnologyAdapter, controller);
@@ -116,7 +117,7 @@ public abstract class FMLRTNaturePerspective extends TechnologyPerspective<FMLRT
 		return viewNature;
 	}
 
-	public VirtualModelInstanceNature getVirtualModelInstanceNature() {
+	public AbstractVirtualModelInstanceNature getVirtualModelInstanceNature() {
 		return virtualModelInstanceNature;
 	}
 
@@ -139,8 +140,7 @@ public abstract class FMLRTNaturePerspective extends TechnologyPerspective<FMLRT
 		if (object instanceof View && viewNature != null && viewNature.hasNature((View) object)) {
 			return true;
 		}
-		if (object instanceof VirtualModelInstance && virtualModelInstanceNature != null
-				&& virtualModelInstanceNature.hasNature((VirtualModelInstance) object)) {
+		if (object instanceof VirtualModelInstance && virtualModelInstanceNature != null && virtualModelInstanceNature.hasNature(object)) {
 			return true;
 		}
 		if (object instanceof FlexoConceptInstance && flexoConceptInstanceNature != null
@@ -153,14 +153,8 @@ public abstract class FMLRTNaturePerspective extends TechnologyPerspective<FMLRT
 	@Override
 	public final ModuleView<?> createModuleViewForObject(FlexoObject object) {
 
-		if (object instanceof View) {
-			return createModuleViewForView((View) object);
-
-			// return getHandlingTechnologyAdapterController().createViewModuleViewForSpecificNature(view, getViewNature(), getController(),
-			// this);
-		}
-		if (object instanceof VirtualModelInstance) {
-			return createModuleViewForVirtualModelInstance((VirtualModelInstance) object);
+		if (object instanceof AbstractVirtualModelInstance) {
+			return createModuleViewForVirtualModelInstance((AbstractVirtualModelInstance<?, ?>) object);
 
 			/*VirtualModelInstance vmInstance = (VirtualModelInstance) object;
 			return getHandlingTechnologyAdapterController().createVirtualModelInstanceModuleViewForSpecificNature(vmInstance,
@@ -176,9 +170,8 @@ public abstract class FMLRTNaturePerspective extends TechnologyPerspective<FMLRT
 		return super.createModuleViewForObject(object);
 	}
 
-	protected abstract ModuleView<View> createModuleViewForView(View view);
-
-	protected abstract ModuleView<VirtualModelInstance> createModuleViewForVirtualModelInstance(VirtualModelInstance vmInstance);
+	protected abstract ModuleView<? extends AbstractVirtualModelInstance<?, ?>> createModuleViewForVirtualModelInstance(
+			AbstractVirtualModelInstance<?, ?> view);
 
 	protected abstract ModuleView<FlexoConceptInstance> createModuleViewForFlexoConceptInstance(FlexoConceptInstance flexoConceptInstance);
 
