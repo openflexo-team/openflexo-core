@@ -38,14 +38,13 @@
 
 package org.openflexo.foundation;
 
-import java.awt.Event;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.FlexoUndoManager;
@@ -239,7 +238,9 @@ public class FlexoEditingContext extends EditingContextImpl implements FlexoServ
 
 				PastingContext potentialPastingContext = h.retrievePastingContext(focusedObject, globalSelection, getClipboard(), event);
 
-				if (h.isPastable(clipboard, potentialPastingContext)) {
+				boolean correctlyTyped = potentialPastingContext == null ||
+						h.getPastingPointHolderType().isInstance(potentialPastingContext.getPastingPointHolder());
+				if (correctlyTyped && h.isPastable(clipboard, potentialPastingContext)) {
 					// System.out.println("OK, this is pastable...");
 
 					// System.out.println("potentialPastingContext=" + potentialPastingContext);
