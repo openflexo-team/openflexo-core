@@ -67,6 +67,7 @@ import org.openflexo.foundation.fml.SynchronizationScheme;
 import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.action.AddParentFlexoConcept;
+import org.openflexo.foundation.fml.action.AddUseDeclaration;
 import org.openflexo.foundation.fml.action.CreateAbstractProperty;
 import org.openflexo.foundation.fml.action.CreateEditionAction;
 import org.openflexo.foundation.fml.action.CreateExpressionProperty;
@@ -101,6 +102,7 @@ import org.openflexo.foundation.resource.RepositoryFolder;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
+import org.openflexo.foundation.technologyadapter.UseModelSlotDeclaration;
 import org.openflexo.gina.model.FIBComponent;
 import org.openflexo.gina.model.container.FIBTab;
 import org.openflexo.gina.utils.FIBInspector;
@@ -172,6 +174,12 @@ public class FMLFIBController extends FlexoFIBController {
 	public void deleteModelSlot(VirtualModel virtualModel, ModelSlot<?> modelSlot) {
 		virtualModel.removeFromModelSlots(modelSlot);
 		modelSlot.delete();
+	}
+
+	public UseModelSlotDeclaration addToUseDeclarations(AbstractVirtualModel<?> virtualModel) {
+		AddUseDeclaration addToUseDeclarations = AddUseDeclaration.actionType.makeNewAction(virtualModel, null, getEditor());
+		addToUseDeclarations.doAction();
+		return addToUseDeclarations.getNewUseDeclaration();
 	}
 
 	/**

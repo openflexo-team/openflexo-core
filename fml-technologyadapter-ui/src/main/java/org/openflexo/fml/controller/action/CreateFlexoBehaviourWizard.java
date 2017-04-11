@@ -48,7 +48,6 @@ import java.util.logging.Logger;
 
 import org.openflexo.ApplicationContext;
 import org.openflexo.components.wizard.WizardStep;
-import org.openflexo.foundation.fml.AbstractVirtualModel;
 import org.openflexo.foundation.fml.CheckboxParameter;
 import org.openflexo.foundation.fml.DropDownParameter;
 import org.openflexo.foundation.fml.FMLObject;
@@ -69,7 +68,6 @@ import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.action.CreateFlexoBehaviour;
 import org.openflexo.foundation.fml.action.CreateFlexoBehaviour.BehaviourParameterEntry;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
-import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.gina.annotation.FIBPanel;
 import org.openflexo.icon.FMLIconLibrary;
 import org.openflexo.icon.IconFactory;
@@ -255,7 +253,7 @@ public class CreateFlexoBehaviourWizard extends AbstractCreateFMLElementWizard<C
 				availableParameterTypes.add(FlexoConceptInstanceParameter.class);
 				availableParameterTypes.add(FlexoVMIResourceParameter.class);
 
-				if (getFocusedObject() != null && getFocusedObject().getOwningVirtualModel() != null
+				/*if (getFocusedObject() != null && getFocusedObject().getOwningVirtualModel() != null
 						&& getFocusedObject().getOwningVirtualModel().getModelSlots() != null) {
 					for (ModelSlot<?> ms : getFocusedObject().getOwningVirtualModel().getModelSlots()) {
 						for (Class<? extends FlexoBehaviourParameter> paramType : ms.getAvailableFlexoBehaviourParameterTypes()) {
@@ -273,7 +271,7 @@ public class CreateFlexoBehaviourWizard extends AbstractCreateFMLElementWizard<C
 							}
 						}
 					}
-				}
+				}*/
 
 			}
 

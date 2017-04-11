@@ -62,6 +62,7 @@ import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.foundation.technologyadapter.TypeAwareModelSlot;
+import org.openflexo.foundation.technologyadapter.UseModelSlotDeclaration;
 import org.openflexo.model.annotations.Adder;
 import org.openflexo.model.annotations.CloningStrategy;
 import org.openflexo.model.annotations.CloningStrategy.StrategyType;
@@ -114,8 +115,10 @@ public interface AbstractVirtualModel<VM extends AbstractVirtualModel<VM>>
 	public static final String VERSION_KEY = "version";
 	@PropertyIdentifier(type = FlexoVersion.class)
 	public static final String MODEL_VERSION_KEY = "modelVersion";
-	@PropertyIdentifier(type = Vector.class)
+	@PropertyIdentifier(type = FlexoConcept.class, cardinality = Cardinality.LIST)
 	public static final String FLEXO_CONCEPTS_KEY = "flexoConcepts";
+	@PropertyIdentifier(type = UseModelSlotDeclaration.class, cardinality = Cardinality.LIST)
+	public static final String USE_DECLARATIONS_KEY = "useDeclarations";
 
 	@Override
 	public FMLModelFactory getFMLModelFactory();
@@ -151,6 +154,51 @@ public interface AbstractVirtualModel<VM extends AbstractVirtualModel<VM>>
 
 	@Setter(MODEL_VERSION_KEY)
 	public void setModelVersion(FlexoVersion modelVersion);
+
+	/**
+	 * Return list of {@link UseModelSlotDeclaration} accessible from this {@link AbstractVirtualModel}<br>
+	 * It includes the list of uses declarations accessible from parent and container
+	 * 
+	 * @return
+	 */
+	public List<UseModelSlotDeclaration> getAccessibleUseDeclarations();
+
+	/**
+	 * Return list of {@link UseModelSlotDeclaration} explicitely declared in this {@link AbstractVirtualModel}
+	 * 
+	 * @return
+	 */
+	@Getter(value = USE_DECLARATIONS_KEY, cardinality = Cardinality.LIST, inverse = UseModelSlotDeclaration.VIRTUAL_MODEL_KEY)
+	@XMLElement
+	@Embedded
+	@CloningStrategy(StrategyType.CLONE)
+	public List<UseModelSlotDeclaration> getUseDeclarations();
+
+	@Setter(USE_DECLARATIONS_KEY)
+	public void setUseDeclarations(List<UseModelSlotDeclaration> flexoConcepts);
+
+	@Adder(USE_DECLARATIONS_KEY)
+	@PastingPoint
+	public void addToUseDeclarations(UseModelSlotDeclaration aFlexoConcept);
+
+	@Remover(USE_DECLARATIONS_KEY)
+	public void removeFromUseDeclarations(UseModelSlotDeclaration aFlexoConcept);
+
+	/**
+	 * Return boolean indicating if this VirtualModel uses supplied modelSlotClass
+	 * 
+	 * @param modelSlotClass
+	 * @return
+	 */
+	public <MS extends ModelSlot<?>> boolean uses(Class<MS> modelSlotClass);
+
+	/**
+	 * Declare use of supplied modelSlotClass
+	 * 
+	 * @param modelSlotClass
+	 * @return
+	 */
+	public <MS extends ModelSlot<?>> UseModelSlotDeclaration declareUse(Class<MS> modelSlotClass);
 
 	/**
 	 * Return all {@link FlexoConcept} defined in this {@link AbstractVirtualModel}
@@ -266,7 +314,7 @@ public interface AbstractVirtualModel<VM extends AbstractVirtualModel<VM>>
 
 		@Override
 		public FMLModelFactory getFMLModelFactory() {
-			if (isDeserializing()) {
+			if (deserializationFactory != null /*isDeserializing()*/) {
 				return deserializationFactory;
 			}
 			if (getResource() != null) {
@@ -286,12 +334,10 @@ public interface AbstractVirtualModel<VM extends AbstractVirtualModel<VM>>
 
 		@Override
 		public void finalizeDeserialization() {
-			super.finalizeDeserialization();
 			for (FlexoConcept ep : getFlexoConcepts()) {
 				ep.finalizeDeserialization();
 			}
-			// Ensure access to reflexive model slot
-			// getReflexiveModelSlot();
+			super.finalizeDeserialization();
 		}
 
 		@Override
@@ -708,6 +754,52 @@ public interface AbstractVirtualModel<VM extends AbstractVirtualModel<VM>>
 				}
 			}
 			return null;
+		}
+
+		/**
+		 * Return boolean indicating if this VirtualModel uses supplied modelSlotClass
+		 * 
+		 * @param modelSlotClass
+		 * @return
+		 */
+		@Override
+		public <MS extends ModelSlot<?>> boolean uses(Class<MS> modelSlotClass) {
+			if (modelSlotClass == null) {
+				return false;
+			}
+			for (UseModelSlotDeclaration useDecl : getUseDeclarations()) {
+				if (modelSlotClass.equals(useDecl.getModelSlotClass())) {
+					return true;
+				}
+			}
+			return false;
+		}
+
+		/**
+		 * Declare use of supplied modelSlotClass
+		 * 
+		 * @param modelSlotClass
+		 * @return
+		 */
+		@Override
+		public <MS extends ModelSlot<?>> UseModelSlotDeclaration declareUse(Class<MS> modelSlotClass) {
+			if (modelSlotClass == null) {
+				return null;
+			}
+			UseModelSlotDeclaration useDeclaration = getFMLModelFactory().newUseModelSlotDeclaration(modelSlotClass);
+			addToUseDeclarations(useDeclaration);
+			return useDeclaration;
+		}
+
+		/**
+		 * Return list of {@link UseModelSlotDeclaration} accessible from this {@link AbstractVirtualModel}<br>
+		 * It includes the list of uses declarations accessible from parent and container
+		 * 
+		 * @return
+		 */
+		@Override
+		public List<UseModelSlotDeclaration> getAccessibleUseDeclarations() {
+			return getUseDeclarations();
 		}
 
 	}

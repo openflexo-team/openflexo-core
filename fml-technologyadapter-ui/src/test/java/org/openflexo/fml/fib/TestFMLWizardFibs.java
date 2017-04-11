@@ -157,7 +157,7 @@ public class TestFMLWizardFibs extends GenericFIBTestCase {
 
 	@Test
 	public void testDescribeModelSlot() {
-		validateFIB("Fib/Wizard/CreateFMLElement/DescribeModelSlot.fib");
+		validateFIB("Fib/Wizard/CreateFMLElement/DescribeUseDeclaration.fib");
 	}
 
 	@Test

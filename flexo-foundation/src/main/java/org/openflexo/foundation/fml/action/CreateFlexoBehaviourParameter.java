@@ -49,7 +49,6 @@ import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.action.NotImplementedException;
-import org.openflexo.foundation.fml.AbstractVirtualModel;
 import org.openflexo.foundation.fml.CheckboxParameter;
 import org.openflexo.foundation.fml.DropDownParameter;
 import org.openflexo.foundation.fml.FMLModelFactory;
@@ -66,7 +65,6 @@ import org.openflexo.foundation.fml.ListParameter;
 import org.openflexo.foundation.fml.TextAreaParameter;
 import org.openflexo.foundation.fml.TextFieldParameter;
 import org.openflexo.foundation.fml.URIParameter;
-import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.toolbox.StringUtils;
 
 @Deprecated
@@ -206,7 +204,7 @@ public class CreateFlexoBehaviourParameter extends FlexoAction<CreateFlexoBehavi
 		availableParameterTypes.add(FlexoResourceParameter.class);
 		availableParameterTypes.add(FlexoConceptInstanceParameter.class);
 		availableParameterTypes.add(FlexoVMIResourceParameter.class);
-		if (getFocusedObject() != null && getFocusedObject().getOwningVirtualModel() != null
+		/*if (getFocusedObject() != null && getFocusedObject().getOwningVirtualModel() != null
 				&& getFocusedObject().getOwningVirtualModel().getModelSlots() != null) {
 			for (ModelSlot<?> ms : getFocusedObject().getOwningVirtualModel().getModelSlots()) {
 				for (Class<? extends FlexoBehaviourParameter> paramType : ms.getAvailableFlexoBehaviourParameterTypes()) {
@@ -224,7 +222,7 @@ public class CreateFlexoBehaviourParameter extends FlexoAction<CreateFlexoBehavi
 					}
 				}
 			}
-		}
+		}*/
 		return availableParameterTypes;
 	}
 

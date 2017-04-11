@@ -38,11 +38,15 @@
 
 package org.openflexo.foundation.fml;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.binding.VirtualModelBindingModel;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.View;
+import org.openflexo.foundation.technologyadapter.ModelSlot;
+import org.openflexo.foundation.technologyadapter.UseModelSlotDeclaration;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
@@ -199,12 +203,30 @@ public interface VirtualModel extends AbstractVirtualModel<VirtualModel> {
 			}
 		}
 
-		/*@Override
-		public synchronized void setIsModified() {
-			System.out.println("Tiens, c'est bizarre !!! pour " + this);
-			Thread.dumpStack();
-			super.setIsModified();
-		}*/
+		@Override
+		public <MS extends ModelSlot<?>> boolean uses(Class<MS> modelSlotClass) {
+			if (getViewPoint() != null && getViewPoint().uses(modelSlotClass)) {
+				return true;
+			}
+			return super.uses(modelSlotClass);
+		}
+
+		/**
+		 * Return list of {@link UseModelSlotDeclaration} accessible from this {@link AbstractVirtualModel}<br>
+		 * It includes the list of uses declarations accessible from parent and container
+		 * 
+		 * @return
+		 */
+		@Override
+		public List<UseModelSlotDeclaration> getAccessibleUseDeclarations() {
+			List<UseModelSlotDeclaration> returned = new ArrayList<>(getViewPoint().getAccessibleUseDeclarations());
+			for (UseModelSlotDeclaration useDecl : getUseDeclarations()) {
+				if (!returned.contains(useDecl)) {
+					returned.add(useDecl);
+				}
+			}
+			return returned;
+		}
 
 	}
 

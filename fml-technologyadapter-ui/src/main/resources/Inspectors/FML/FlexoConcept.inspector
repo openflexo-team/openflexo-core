@@ -68,7 +68,7 @@
 				constraints="twocols(expandHorizontally=false;expandVertically=false;index=4;location=left)"
 				localize="true" />
 			<Table iteratorClassName="org.openflexo.foundation.fml.FlexoConceptConstraint"
-				visibleRowCount="4" rowHeight="18" autoSelectFirstRow="false"
+				rowHeight="18" autoSelectFirstRow="false"
 				createNewRowOnClick="false" boundToSelectionManager="false"
 				showFooter="true" selectionMode="MultipleIntervalSelection"
 				textSelectionColor="255,255,255" textNonSelectionColor="0,0,0"

@@ -47,6 +47,10 @@ import org.openflexo.connie.type.CustomTypeFactory;
 import org.openflexo.connie.type.CustomTypeManager;
 import org.openflexo.foundation.FlexoService;
 import org.openflexo.foundation.FlexoServiceManager;
+import org.openflexo.foundation.fml.FlexoBehaviour;
+import org.openflexo.foundation.fml.FlexoRole;
+import org.openflexo.foundation.fml.editionaction.FetchRequest;
+import org.openflexo.foundation.fml.editionaction.TechnologySpecificAction;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
@@ -194,4 +198,47 @@ public interface TechnologyAdapterService extends FlexoService, CustomTypeManage
 	 * @param technologyAdapter
 	 */
 	public FlexoTask disactivateTechnologyAdapter(TechnologyAdapter technologyAdapter);
+
+	/**
+	 * Return {@link TechnologyAdapter} where supplied modelSlotClass has been declared
+	 * 
+	 * @param modelSlotClass
+	 * @return
+	 */
+	public <MS extends ModelSlot<?>> TechnologyAdapter getTechnologyAdapterForModelSlot(Class<MS> modelSlotClass);
+
+	/**
+	 * Return the list of {@link FlexoRole} class available for supplied modelSlotClass
+	 * 
+	 * @param modelSlotClass
+	 * @return
+	 */
+	public <MS extends ModelSlot<?>> List<Class<? extends FlexoRole<?>>> getAvailableFlexoRoleTypes(Class<MS> modelSlotClass);
+
+	/**
+	 * Return the list of {@link TechnologySpecificAction} class available for supplied modelSlotClass
+	 * 
+	 * @param modelSlotClass
+	 * @return
+	 */
+	public <MS extends ModelSlot<?>> List<Class<? extends TechnologySpecificAction<?, ?>>> getAvailableEditionActionTypes(
+			Class<MS> modelSlotClass);
+
+	/**
+	 * Return the list of {@link FetchRequest} class available for supplied modelSlotClass
+	 * 
+	 * @param modelSlotClass
+	 * @return
+	 */
+	public <MS extends ModelSlot<?>> List<Class<? extends FetchRequest<?, ?>>> getAvailableFetchRequestActionTypes(
+			Class<MS> modelSlotClass);
+
+	/**
+	 * Return the list of {@link FlexoBehaviour} class available for supplied modelSlotClass
+	 * 
+	 * @param modelSlotClass
+	 * @return
+	 */
+	public <MS extends ModelSlot<?>> List<Class<? extends FlexoBehaviour>> getAvailableFlexoBehaviourTypes(Class<MS> modelSlotClass);
+
 }

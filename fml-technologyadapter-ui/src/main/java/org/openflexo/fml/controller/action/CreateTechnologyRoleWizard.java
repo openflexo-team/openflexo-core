@@ -49,7 +49,6 @@ import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.action.CreateTechnologyRole;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
-import org.openflexo.foundation.technologyadapter.ModelSlot.ModelSlotImpl;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.gina.annotation.FIBPanel;
 import org.openflexo.view.controller.FlexoController;
@@ -219,7 +218,8 @@ public class CreateTechnologyRoleWizard extends AbstractCreateFlexoRoleWizard<Cr
 		private List<Class<? extends FlexoRole<?>>> buildAvailableFlexoRoleTypes(TechnologyAdapter ta) {
 			List<Class<? extends FlexoRole<?>>> returned = new ArrayList<>();
 			for (Class<? extends ModelSlot<?>> modelSlotClass : ta.getAvailableModelSlotTypes()) {
-				for (Class<? extends FlexoRole<?>> flexoRoleClass : ModelSlotImpl.getAvailableFlexoRoleTypes(modelSlotClass)) {
+				for (Class<? extends FlexoRole<?>> flexoRoleClass : ta.getTechnologyAdapterService()
+						.getAvailableFlexoRoleTypes(modelSlotClass)) {
 					if (!returned.contains(flexoRoleClass)) {
 						returned.add(flexoRoleClass);
 					}

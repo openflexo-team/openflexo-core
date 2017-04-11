@@ -104,8 +104,10 @@ import org.openflexo.foundation.fml.rt.editionaction.MatchingCriteria;
 import org.openflexo.foundation.fml.rt.editionaction.SelectFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.SelectVirtualModelInstance;
 import org.openflexo.foundation.resource.PamelaResourceImpl.IgnoreLoadingEdits;
+import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
+import org.openflexo.foundation.technologyadapter.UseModelSlotDeclaration;
 import org.openflexo.model.ModelContext;
 import org.openflexo.model.ModelContextLibrary;
 import org.openflexo.model.converter.DataBindingConverter;
@@ -274,6 +276,12 @@ public class FMLModelFactory extends FGEModelFactoryImpl implements PamelaResour
 
 	public VirtualModel newVirtualModel() {
 		return newInstance(VirtualModel.class);
+	}
+
+	public <MS extends ModelSlot<?>> UseModelSlotDeclaration newUseModelSlotDeclaration(Class<MS> modelSlotClass) {
+		UseModelSlotDeclaration returned = newInstance(UseModelSlotDeclaration.class);
+		returned.setModelSlotClass(modelSlotClass);
+		return returned;
 	}
 
 	public SynchronizationScheme newSynchronizationScheme() {

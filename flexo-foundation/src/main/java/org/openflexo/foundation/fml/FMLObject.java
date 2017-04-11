@@ -49,6 +49,7 @@ import org.openflexo.foundation.InnerResourceData;
 import org.openflexo.foundation.NameChanged;
 import org.openflexo.foundation.fml.rm.ViewPointResource;
 import org.openflexo.foundation.resource.ResourceData;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.model.annotations.DeserializationFinalizer;
 import org.openflexo.model.annotations.DeserializationInitializer;
@@ -173,6 +174,8 @@ public interface FMLObject
 	 */
 	public void notifiedScopeChanged();
 
+	public TechnologyAdapterService getTechnologyAdapterService();
+
 	public static abstract class FMLObjectImpl extends FlexoObjectImpl implements FMLObject {
 
 		private static final Logger logger = Logger.getLogger(FMLObject.class.getPackage().getName());
@@ -210,6 +213,14 @@ public interface FMLObject
 		public FlexoServiceManager getServiceManager() {
 			if (getViewPointLibrary() != null) {
 				return getViewPoint().getViewPointLibrary().getServiceManager();
+			}
+			return null;
+		}
+
+		@Override
+		public TechnologyAdapterService getTechnologyAdapterService() {
+			if (getServiceManager() != null) {
+				return getServiceManager().getTechnologyAdapterService();
 			}
 			return null;
 		}

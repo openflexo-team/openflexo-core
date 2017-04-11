@@ -76,7 +76,6 @@ import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
 import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.task.Progress;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
-import org.openflexo.foundation.technologyadapter.ModelSlot.ModelSlotImpl;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.localization.LocalizedDelegate;
@@ -741,7 +740,8 @@ public abstract class AbstractCreateFlexoConcept<A extends FlexoAction<A, T1, T2
 		public Class<? extends FlexoRole<?>> getFlexoRoleClass() {
 			if (getTechnologyAdapter() != null) {
 				for (Class<? extends ModelSlot<?>> msClass : getTechnologyAdapter().getAvailableModelSlotTypes()) {
-					for (Class<? extends FlexoRole<?>> roleClass : ModelSlotImpl.getAvailableFlexoRoleTypes(msClass)) {
+					for (Class<? extends FlexoRole<?>> roleClass : getTechnologyAdapter().getTechnologyAdapterService()
+							.getAvailableFlexoRoleTypes(msClass)) {
 						Type rdType = TypeUtils.getTypeArgument(roleClass, FlexoRole.class, 0);
 						if (TypeUtils.isTypeAssignableFrom(getType(), rdType)) {
 							return roleClass;

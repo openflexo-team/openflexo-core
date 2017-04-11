@@ -95,6 +95,7 @@ import org.openflexo.foundation.fml.rt.editionaction.SelectFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.SelectVirtualModelInstance;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
+import org.openflexo.foundation.technologyadapter.UseModelSlotDeclaration;
 
 public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLControlGraph, FMLObject>
 		implements Bindable, PropertyChangeListener {
@@ -188,12 +189,17 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 		addToAvailableActions(DeleteFlexoConceptInstance.class, fmlTA);
 		addToAvailableActions(NotifyPropertyChangedAction.class, fmlTA);
 
-		for (ModelSlot<?> ms : getModelSlotsAccessibleFromFocusedObject()) {
-			for (Class<? extends TechnologySpecificAction<?, ?>> eaClass : ms.getAvailableEditionActionTypes()) {
-				addToAvailableActions(eaClass, ms.getModelSlotTechnologyAdapter());
+		for (UseModelSlotDeclaration useDecl : getVirtualModel().getAccessibleUseDeclarations()) {
+			Class<? extends ModelSlot<?>> modelSlotClass = useDecl.getModelSlotClass();
+			TechnologyAdapter modelSlotTA = getServiceManager().getTechnologyAdapterService()
+					.getTechnologyAdapterForModelSlot(modelSlotClass);
+			for (Class<? extends TechnologySpecificAction<?, ?>> eaClass : getServiceManager().getTechnologyAdapterService()
+					.getAvailableEditionActionTypes(modelSlotClass)) {
+				addToAvailableActions(eaClass, modelSlotTA);
 			}
-			for (Class<? extends FetchRequest<?, ?>> frClass : ms.getAvailableFetchRequestActionTypes()) {
-				addToAvailableActions(frClass, ms.getModelSlotTechnologyAdapter());
+			for (Class<? extends FetchRequest<?, ?>> frClass : getServiceManager().getTechnologyAdapterService()
+					.getAvailableFetchRequestActionTypes(modelSlotClass)) {
+				addToAvailableActions(frClass, modelSlotTA);
 			}
 		}
 
@@ -510,6 +516,11 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 			returned = getModelSlot().makeEditionAction((Class<TechnologySpecificAction<?, ?>>) editionActionClass);
 		}
 
+		// Special case for technoly specific action whose model slot cannot be looked-up
+		if (returned == null && getModelSlot() == null) {
+			returned = factory.newInstance(editionActionClass);
+		}
+
 		// System.out.println("editionActionClass=" + editionActionClass);
 		// System.out.println("getFlexoRole()=" + getFlexoRole());
 		// System.out.println("getModelSlot()=" + getModelSlot());
@@ -633,22 +644,30 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 	private String declarationVariableName = null;
 
 	/**
+	 * Return VirtualModel encoding EditionAction to be created
+	 * 
+	 * @return
+	 */
+	public AbstractVirtualModel<?> getVirtualModel() {
+		if (getFocusedObject().getOwner().getFlexoConcept() instanceof AbstractVirtualModel) {
+			return (AbstractVirtualModel<?>) getFocusedObject().getOwner().getFlexoConcept();
+		}
+		else if (getFocusedObject().getOwner().getOwningVirtualModel() != null) {
+			return getFocusedObject().getOwner().getOwningVirtualModel();
+		}
+		return null;
+	}
+
+	/**
 	 * Return a list of accessible model slots from this focused object. If this object is part of a virtual model(an action in a behavior
-	 * of a VirtualModel or Viewpoint) then return virtual model model slots Otherwise (if it is part of a FlexoConcept for instance) then
-	 * return the models slots of its owned virtual model.
+	 * of a VirtualModel or Viewpoint) then return virtual model model slots<br>
+	 * Otherwise (if it is part of a FlexoConcept for instance) then return the models slots of its owned virtual model.
 	 * 
 	 * @return
 	 */
 	private List<ModelSlot<?>> getModelSlotsAccessibleFromFocusedObject() {
-		AbstractVirtualModel<?> abstractVirtualModel = null;
-		if (getFocusedObject().getOwner().getFlexoConcept() instanceof AbstractVirtualModel) {
-			abstractVirtualModel = (AbstractVirtualModel<?>) getFocusedObject().getOwner().getFlexoConcept();
-		}
-		else if (getFocusedObject().getOwner().getOwningVirtualModel() != null) {
-			abstractVirtualModel = getFocusedObject().getOwner().getOwningVirtualModel();
-		}
-		if (abstractVirtualModel != null) {
-			return abstractVirtualModel.getModelSlots();
+		if (getVirtualModel() != null) {
+			return getVirtualModel().getModelSlots();
 		}
 		else {
 			return null;

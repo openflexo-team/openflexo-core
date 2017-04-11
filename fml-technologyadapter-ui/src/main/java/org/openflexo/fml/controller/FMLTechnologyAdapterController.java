@@ -39,7 +39,9 @@
 package org.openflexo.fml.controller;
 
 import java.lang.reflect.Type;
-import javax.swing.*;
+
+import javax.swing.ImageIcon;
+
 import org.openflexo.components.widget.FIBTechnologyBrowser;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.type.CustomType;
@@ -47,6 +49,7 @@ import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.fml.controller.action.AddParentFlexoConceptInitializer;
 import org.openflexo.fml.controller.action.AddReturnStatementActionInitializer;
 import org.openflexo.fml.controller.action.AddToListActionInitializer;
+import org.openflexo.fml.controller.action.AddUseDeclarationInitializer;
 import org.openflexo.fml.controller.action.AssignActionInitializer;
 import org.openflexo.fml.controller.action.CreateAbstractPropertyInitializer;
 import org.openflexo.fml.controller.action.CreateEditionActionInitializer;
@@ -115,6 +118,7 @@ import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceType;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
+import org.openflexo.foundation.technologyadapter.UseModelSlotDeclaration;
 import org.openflexo.gina.model.FIBModelFactory;
 import org.openflexo.gina.model.FIBWidget;
 import org.openflexo.gina.model.widget.FIBCustom;
@@ -170,12 +174,13 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 	@Override
 	protected void initializeActions(ControllerActionInitializer actionInitializer) {
 
-		// ViewPoint perspective
 		new CreateViewPointInitializer(actionInitializer);
 		new DeleteViewPointInitializer(actionInitializer);
 		new CreateModelSlotInitializer(actionInitializer);
 		new CreateVirtualModelInitializer(actionInitializer);
 		new DeleteVirtualModelInitializer(actionInitializer);
+
+		new AddUseDeclarationInitializer(actionInitializer);
 
 		new CreateTechnologyRoleInitializer(actionInitializer);
 		new CreatePrimitiveRoleInitializer(actionInitializer);
@@ -275,6 +280,9 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 		}
 		else if (FlexoConcept.class.isAssignableFrom(objectClass)) {
 			return FMLIconLibrary.FLEXO_CONCEPT_ICON;
+		}
+		else if (UseModelSlotDeclaration.class.isAssignableFrom(objectClass)) {
+			return FMLIconLibrary.IMPORT_ICON;
 		}
 		else if (VirtualModelInstance.class.isAssignableFrom(objectClass)) {
 			return FMLRTIconLibrary.VIRTUAL_MODEL_INSTANCE_ICON;
