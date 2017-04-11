@@ -46,7 +46,6 @@ import java.util.logging.Logger;
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.FlexoConcept;
-import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
@@ -185,19 +184,15 @@ public abstract interface TechnologySpecificAction<MS extends ModelSlot<?>, T> e
 		@Deprecated
 		@SuppressWarnings("unchecked")
 		private <MS2 extends ModelSlot<?>> List<MS2> getAllAvailableModelSlots() {
+			List returned = new ArrayList<>();
 			FlexoConcept concept = getFlexoConcept();
 			if (concept != null) {
-				if (concept instanceof VirtualModel) {
-					return (List<MS2>) ((VirtualModel) getFlexoConcept()).getModelSlots();
-				}
-				else if (concept instanceof ViewPoint) {
-					return (List<MS2>) ((ViewPoint) getFlexoConcept()).getModelSlots();
+				returned.addAll(concept.getModelSlots());
+				if (concept.getOwningVirtualModel() != null) {
+					returned.addAll(getFlexoConcept().getOwningVirtualModel().getModelSlots());
 				}
 			}
-			else if (concept != null && concept.getOwningVirtualModel() != null) {
-				return (List<MS2>) getFlexoConcept().getOwningVirtualModel().getModelSlots();
-			}
-			return null;
+			return returned;
 		}
 
 		@Deprecated

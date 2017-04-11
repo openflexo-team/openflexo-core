@@ -349,6 +349,8 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 	@DeserializationFinalizer
 	public void finalizeDeserialization();
 
+	public boolean hasNature(FlexoConceptInstanceNature nature);
+
 	public static abstract class FlexoConceptInstanceImpl extends VirtualModelInstanceObjectImpl implements FlexoConceptInstance {
 
 		private static final Logger logger = FlexoLogger.getLogger(FlexoConceptInstance.class.getPackage().toString());
@@ -1574,6 +1576,11 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 
 		public AbstractVirtualModelInstanceModelFactory<?> getDeserializationFactory() {
 			return deserializationFactory;
+		}
+
+		@Override
+		public final boolean hasNature(FlexoConceptInstanceNature nature) {
+			return nature.hasNature(this);
 		}
 
 	}
