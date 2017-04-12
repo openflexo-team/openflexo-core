@@ -39,8 +39,8 @@
 package org.openflexo.foundation.technologyadapter;
 
 import org.openflexo.connie.type.PrimitiveType;
+import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.fml.AbstractVirtualModel;
-import org.openflexo.foundation.fml.VirtualModelObject;
 import org.openflexo.model.annotations.CloningStrategy;
 import org.openflexo.model.annotations.CloningStrategy.StrategyType;
 import org.openflexo.model.annotations.Getter;
@@ -60,7 +60,7 @@ import org.openflexo.model.annotations.XMLElement;
 @ModelEntity
 @ImplementationClass(UseModelSlotDeclaration.UseModelSlotDeclarationImpl.class)
 @XMLElement
-public interface UseModelSlotDeclaration extends VirtualModelObject {
+public interface UseModelSlotDeclaration extends FlexoObject {
 
 	@PropertyIdentifier(type = AbstractVirtualModel.class)
 	public static final String VIRTUAL_MODEL_KEY = "virtualModel";
@@ -74,7 +74,6 @@ public interface UseModelSlotDeclaration extends VirtualModelObject {
 	@Setter(MODEL_SLOT_CLASS_KEY)
 	public void setModelSlotClass(Class<? extends ModelSlot<?>> modelSlotClass);
 
-	@Override
 	@Getter(value = VIRTUAL_MODEL_KEY, inverse = AbstractVirtualModel.USE_DECLARATIONS_KEY)
 	@CloningStrategy(StrategyType.IGNORE)
 	public AbstractVirtualModel<?> getVirtualModel();
@@ -82,7 +81,7 @@ public interface UseModelSlotDeclaration extends VirtualModelObject {
 	@Setter(VIRTUAL_MODEL_KEY)
 	public void setVirtualModel(AbstractVirtualModel<?> virtualModel);
 
-	public abstract class UseModelSlotDeclarationImpl extends FlexoConceptObjectImpl implements UseModelSlotDeclaration {
+	public abstract class UseModelSlotDeclarationImpl extends FlexoObjectImpl implements UseModelSlotDeclaration {
 
 	}
 }
