@@ -38,11 +38,17 @@
 
 package org.openflexo.foundation.fml.editionaction;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.openflexo.connie.BindingEvaluationContext;
+import org.openflexo.connie.DataBinding;
+import org.openflexo.connie.DataBinding.BindingDefinitionType;
+import org.openflexo.connie.exception.NullReferenceException;
+import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.FlexoConcept;
@@ -55,17 +61,12 @@ import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.localization.LocalizedDelegate;
-import org.openflexo.model.annotations.DefineValidationRule;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.PropertyIdentifier;
 import org.openflexo.model.annotations.Setter;
-import org.openflexo.model.annotations.XMLElement;
-import org.openflexo.model.validation.FixProposal;
-import org.openflexo.model.validation.ValidationIssue;
-import org.openflexo.model.validation.ValidationRule;
-import org.openflexo.model.validation.ValidationWarning;
+import org.openflexo.model.annotations.XMLAttribute;
 
 /**
  * Represents an {@link EditionAction} which address a specific technology through the reference to a {@link ModelSlot}
@@ -79,12 +80,23 @@ import org.openflexo.model.validation.ValidationWarning;
 @ImplementationClass(TechnologySpecificAction.TechnologySpecificActionImpl.class)
 public abstract interface TechnologySpecificAction<MS extends ModelSlot<?>, T> extends AssignableAction<T> {
 
+	@PropertyIdentifier(type = DataBinding.class)
+	String RECEIVER_KEY = "receiver";
 	@PropertyIdentifier(type = ModelSlot.class)
 	public static final String MODEL_SLOT_KEY = "modelSlot";
 
+	@Getter(value = RECEIVER_KEY)
+	@XMLAttribute
+	DataBinding<?> getReceiver();
+
+	@Setter(RECEIVER_KEY)
+	void setReceiver(DataBinding<?> receiver);
+
+	public Object getReceiver(BindingEvaluationContext evaluationContext);
+
 	@Deprecated
 	@Getter(value = MODEL_SLOT_KEY)
-	@XMLElement(primary = false)
+	// @XMLElement(primary = false)
 	public MS getModelSlot();
 
 	@Deprecated
@@ -110,6 +122,8 @@ public abstract interface TechnologySpecificAction<MS extends ModelSlot<?>, T> e
 			implements TechnologySpecificAction<MS, T> {
 
 		private static final Logger logger = Logger.getLogger(TechnologySpecificAction.class.getPackage().getName());
+
+		private DataBinding<?> receiver;
 
 		@Deprecated
 		@Override
@@ -254,63 +268,47 @@ public abstract interface TechnologySpecificAction<MS extends ModelSlot<?>, T> e
 			return "FML";
 		}
 
-	}
+		@Override
+		public DataBinding<?> getReceiver() {
+			if (receiver == null) {
+				receiver = new DataBinding<Object>(this, Object.class, BindingDefinitionType.GET);
+				receiver.setBindingName("receiver");
+			}
 
-	@DefineValidationRule
-	public static class ShouldNotHaveReflexiveVirtualModelModelSlot
-			extends ValidationRule<ShouldNotHaveReflexiveVirtualModelModelSlot, TechnologySpecificAction<?, ?>> {
+			if (!receiver.isSet() && getModelSlot() != null) {
+				receiver.setUnparsedBinding(getModelSlot().getName());
+			}
 
-		public ShouldNotHaveReflexiveVirtualModelModelSlot() {
-			super(TechnologySpecificAction.class, "EditionAction_should_not_have_reflexive_model_slot_no_more");
+			return receiver;
 		}
 
 		@Override
-		public ValidationIssue<ShouldNotHaveReflexiveVirtualModelModelSlot, TechnologySpecificAction<?, ?>> applyValidation(
-				TechnologySpecificAction<?, ?> anAction) {
-			ModelSlot ms = anAction.getModelSlot();
-			if (ms instanceof FMLRTModelSlot && "virtualModelInstance".equals(ms.getName())) {
-				RemoveReflexiveVirtualModelModelSlot fixProposal = new RemoveReflexiveVirtualModelModelSlot(anAction);
-				return new ValidationWarning<ShouldNotHaveReflexiveVirtualModelModelSlot, TechnologySpecificAction<?, ?>>(this, anAction,
-						"EditionAction_should_not_have_reflexive_model_slot_no_more", fixProposal);
+		public void setReceiver(DataBinding<?> receiver) {
+			if (receiver != null) {
+				receiver.setOwner(this);
+				receiver.setBindingName("receiver");
+				receiver.setDeclaredType(Object.class);
+				receiver.setBindingDefinitionType(BindingDefinitionType.GET);
+			}
+			this.receiver = receiver;
+		}
 
+		@Override
+		public Object getReceiver(BindingEvaluationContext evaluationContext) {
+			if (getReceiver().isValid()) {
+				try {
+					return getReceiver().getBindingValue(evaluationContext);
+				} catch (TypeMismatchException e) {
+					e.printStackTrace();
+				} catch (NullReferenceException e) {
+					e.printStackTrace();
+				} catch (InvocationTargetException e) {
+					e.printStackTrace();
+				}
 			}
 			return null;
 		}
 
-		protected static class RemoveReflexiveVirtualModelModelSlot
-				extends FixProposal<ShouldNotHaveReflexiveVirtualModelModelSlot, TechnologySpecificAction<?, ?>> {
-
-			private final TechnologySpecificAction<?, ?> action;
-
-			public RemoveReflexiveVirtualModelModelSlot(TechnologySpecificAction<?, ?> anAction) {
-				super("remove_reflexive_modelslot");
-				this.action = anAction;
-			}
-
-			@Override
-			protected void fixAction() {
-				action.setModelSlot(null);
-			}
-		}
-
 	}
-
-	/*@DefineValidationRule
-	public static class TechnologypecificActionMustReferenceAModelSlot extends
-			ValidationRule<TechnologypecificActionMustReferenceAModelSlot, TechnologySpecificAction> {
-		public TechnologypecificActionMustReferenceAModelSlot() {
-			super(TechnologySpecificAction.class, "technology_specific_action_must_adress_a_valid_model_slot");
-		}
-	
-		@Override
-		public ValidationIssue<TechnologypecificActionMustReferenceAModelSlot, TechnologySpecificAction> applyValidation(
-				TechnologySpecificAction action) {
-			if (action.getModelSlot() == null) {
-				return new ValidationError<TechnologypecificActionMustReferenceAModelSlot, TechnologySpecificAction>(this, action,
-						"action_does_not_define_any_model_slot");
-			}
-			return null;
-		}
-	}*/
 
 }

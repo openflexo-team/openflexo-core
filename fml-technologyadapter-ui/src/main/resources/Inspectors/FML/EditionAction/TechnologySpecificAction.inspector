@@ -9,6 +9,17 @@
 			darkLevel="0" index="0" font="SansSerif,0,11" useScrollBar="true"
 			horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED"
 			verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED" name="BasicTab">
+
+			<Label name="ReceiverLabel" index="2" localize="true" align="left"
+				constraints="twocols(expandHorizontally=false;expandVertically=false;index=2;location=left)"
+				label="receiver" />
+			<Custom manageDynamicModel="true" index="3"
+				dataClassForComponent="org.openflexo.connie.DataBinding"
+				componentClassName="org.openflexo.gina.swing.utils.BindingSelector"
+				name="ReceiverSelector" data="data.receiver"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;index=3;location=right)">
+			</Custom>
+
 			<!--  <Label label="model_slot" align="right" index="2"
 				constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)"
 				localize="true" name="ModelSlotLabel"/>

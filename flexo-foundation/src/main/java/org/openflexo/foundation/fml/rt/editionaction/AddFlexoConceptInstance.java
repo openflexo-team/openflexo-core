@@ -73,7 +73,7 @@ public interface AddFlexoConceptInstance<VMI extends AbstractVirtualModelInstanc
 		extends AbstractAddFlexoConceptInstance<FlexoConceptInstance, VMI> {
 
 	public static abstract class AddFlexoConceptInstanceImpl<VMI extends AbstractVirtualModelInstance<VMI, ?>>
-			extends AbstractAddFlexoConceptInstanceImpl<FlexoConceptInstance, VMI>implements AddFlexoConceptInstance<VMI> {
+			extends AbstractAddFlexoConceptInstanceImpl<FlexoConceptInstance, VMI> implements AddFlexoConceptInstance<VMI> {
 
 		static final Logger logger = Logger.getLogger(AddFlexoConceptInstance.class.getPackage().getName());
 
@@ -84,7 +84,7 @@ public interface AddFlexoConceptInstance<VMI extends AbstractVirtualModelInstanc
 
 		@Override
 		public Class<VMI> getVirtualModelInstanceClass() {
-			return (Class<VMI>) (Class) AbstractVirtualModelInstance.class;
+			return (Class) AbstractVirtualModelInstance.class;
 		}
 
 		@Override
