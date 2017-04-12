@@ -40,7 +40,7 @@ package org.openflexo.foundation.technologyadapter;
 
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
+import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.FreeModelSlotInstance;
 import org.openflexo.foundation.fml.rt.ModelSlotInstance;
 import org.openflexo.foundation.fml.rt.View;
@@ -64,8 +64,8 @@ public abstract interface FreeModelSlot<RD extends ResourceData<RD> & Technology
 	public TechnologyAdapterResource<RD, ?> createSharedEmptyResource(FlexoResourceCenter<?> resourceCenter, String relativePath,
 			String filename, String modelUri);
 
-	public static abstract class FreeModelSlotImpl<RD extends ResourceData<RD> & TechnologyObject<?>> extends ModelSlotImpl<RD> implements
-			FreeModelSlot<RD> {
+	public static abstract class FreeModelSlotImpl<RD extends ResourceData<RD> & TechnologyObject<?>> extends ModelSlotImpl<RD>
+			implements FreeModelSlot<RD> {
 
 		private static final Logger logger = Logger.getLogger(FreeModelSlot.class.getPackage().getName());
 
@@ -73,8 +73,8 @@ public abstract interface FreeModelSlot<RD extends ResourceData<RD> & Technology
 		 * Instanciate a new model slot instance configuration for this model slot
 		 */
 		@Override
-		public abstract ModelSlotInstanceConfiguration<? extends FreeModelSlot<RD>, RD> createConfiguration(
-				AbstractVirtualModelInstance<?, ?> virtualModelInstance, FlexoResourceCenter<?> rc);
+		public abstract ModelSlotInstanceConfiguration<? extends FreeModelSlot<RD>, RD> createConfiguration(FlexoConceptInstance fci,
+				FlexoResourceCenter<?> rc);
 
 		/**
 		 * Instantiate a new IndividualRole

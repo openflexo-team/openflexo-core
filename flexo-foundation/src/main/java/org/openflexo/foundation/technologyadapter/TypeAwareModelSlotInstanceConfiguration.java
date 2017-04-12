@@ -46,8 +46,8 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoException;
-import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstanceModelFactory;
+import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.TypeAwareModelSlotInstance;
 import org.openflexo.foundation.fml.rt.View;
 import org.openflexo.foundation.fml.rt.action.ModelSlotInstanceConfiguration;
@@ -76,9 +76,8 @@ public abstract class TypeAwareModelSlotInstanceConfiguration<M extends FlexoMod
 	protected String relativePath;
 	protected String filename;
 
-	protected TypeAwareModelSlotInstanceConfiguration(MS ms, AbstractVirtualModelInstance<?, ?> virtualModelInstance,
-			FlexoResourceCenter<?> rc) {
-		super(ms, virtualModelInstance, rc);
+	protected TypeAwareModelSlotInstanceConfiguration(MS ms, FlexoConceptInstance fci, FlexoResourceCenter<?> rc) {
+		super(ms, fci, rc);
 		FlexoResourceCenterService rcService = rc.getServiceManager().getResourceCenterService();
 		if (rcService.getResourceCenters().size() > 0) {
 			targetResourceCenter = rcService.getResourceCenters().get(0);
@@ -99,11 +98,11 @@ public abstract class TypeAwareModelSlotInstanceConfiguration<M extends FlexoMod
 	}
 
 	@Override
-	public TypeAwareModelSlotInstance<M, MM, MS> createModelSlotInstance(AbstractVirtualModelInstance<?, ?> vmInstance, View view) {
-		AbstractVirtualModelInstanceModelFactory<?> factory = vmInstance.getFactory();
+	public TypeAwareModelSlotInstance<M, MM, MS> createModelSlotInstance(FlexoConceptInstance fci, View view) {
+		AbstractVirtualModelInstanceModelFactory<?> factory = fci.getFactory();
 		TypeAwareModelSlotInstance<M, MM, MS> returned = factory.newInstance(TypeAwareModelSlotInstance.class);
 		returned.setModelSlot(getModelSlot());
-		returned.setVirtualModelInstance(vmInstance);
+		returned.setFlexoConceptInstance(fci);
 		configureModelSlotInstance(returned, view);
 		return returned;
 	}

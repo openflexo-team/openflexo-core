@@ -43,7 +43,7 @@ import java.util.logging.Logger;
 import org.apache.commons.lang3.reflect.TypeUtils;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
-import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
+import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.ModelSlotInstance;
 import org.openflexo.foundation.fml.rt.TypeAwareModelSlotInstance;
 import org.openflexo.foundation.fml.rt.action.ModelSlotInstanceConfiguration;
@@ -115,7 +115,7 @@ public interface TypeAwareModelSlot<M extends FlexoModel<M, MM> & TechnologyObje
 	public String generateUniqueURIName(TypeAwareModelSlotInstance<?, ?, ?> msInstance, String proposedName, String uriPrefix);
 
 	public static abstract class TypeAwareModelSlotImpl<M extends FlexoModel<M, MM> & TechnologyObject<?>, MM extends FlexoMetaModel<MM> & TechnologyObject<?>>
-			extends ModelSlotImpl<M>implements TypeAwareModelSlot<M, MM> {
+			extends ModelSlotImpl<M> implements TypeAwareModelSlot<M, MM> {
 
 		private static final Logger logger = Logger.getLogger(TypeAwareModelSlot.class.getPackage().getName());
 
@@ -126,8 +126,8 @@ public interface TypeAwareModelSlot<M extends FlexoModel<M, MM> & TechnologyObje
 		 * Instanciate a new model slot instance configuration for this model slot
 		 */
 		@Override
-		public abstract ModelSlotInstanceConfiguration<? extends TypeAwareModelSlot<M, MM>, M> createConfiguration(
-				AbstractVirtualModelInstance<?, ?> virtualModelInstance, FlexoResourceCenter<?> rc);
+		public abstract ModelSlotInstanceConfiguration<? extends TypeAwareModelSlot<M, MM>, M> createConfiguration(FlexoConceptInstance fci,
+				FlexoResourceCenter<?> rc);
 
 		/**
 		 * Return a new String (full URI) uniquely identifying a new object in related technology, according to the conventions of related

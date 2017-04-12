@@ -78,7 +78,13 @@ import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
 import org.openflexo.foundation.fml.editionaction.DeleteAction;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.fml.inspector.FlexoConceptInspector;
+import org.openflexo.foundation.fml.rt.action.ModelSlotInstanceConfiguration;
+import org.openflexo.foundation.fml.rt.action.ModelSlotInstanceConfiguration.DefaultModelSlotInstanceConfigurationOption;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
+import org.openflexo.foundation.resource.ResourceData;
+import org.openflexo.foundation.technologyadapter.ModelSlot;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapterResource;
+import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.model.annotations.Adder;
 import org.openflexo.model.annotations.CloningStrategy;
@@ -125,6 +131,9 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 
 	@PropertyIdentifier(type = ActorReference.class, cardinality = Cardinality.LIST)
 	public static final String ACTORS_KEY = "actors";
+
+	// @PropertyIdentifier(type = List.class)
+	// public static final String MODEL_SLOT_INSTANCES_KEY = "modelSlotInstances";
 
 	@PropertyIdentifier(type = AbstractVirtualModelInstance.class)
 	public static final String OWNING_VIRTUAL_MODEL_INSTANCE_KEY = "owningVirtualModelInstance";
@@ -209,6 +218,23 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 
 	@Remover(ACTORS_KEY)
 	public void removeFromActors(ActorReference<?> anActorReference);
+
+	public List<ModelSlotInstance<?, ?>> getModelSlotInstances();
+
+	/*@Getter(value = MODEL_SLOT_INSTANCES_KEY, cardinality = Cardinality.LIST, inverse = ModelSlotInstance.VIRTUAL_MODEL_INSTANCE_KEY)
+	@XMLElement
+	@Embedded
+	@CloningStrategy(StrategyType.CLONE)*/
+	// public List<ModelSlotInstance<?, ?>> getModelSlotInstances();
+
+	/*@Setter(MODEL_SLOT_INSTANCES_KEY)
+	public void setModelSlotInstances(List<ModelSlotInstance<?, ?>> modelSlotInstances);
+	
+	@Adder(MODEL_SLOT_INSTANCES_KEY)
+	public void addToModelSlotInstances(ModelSlotInstance<?, ?> aModelSlotInstance);
+	
+	@Remover(MODEL_SLOT_INSTANCES_KEY)
+	public void removeFromModelSlotInstance(ModelSlotInstance<?, ?> aModelSlotInstance);*/
 
 	// Debug method
 	public String debug();
@@ -350,6 +376,23 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 	public void finalizeDeserialization();
 
 	public boolean hasNature(FlexoConceptInstanceNature nature);
+
+	/**
+	 * Return {@link ModelSlotInstance} concretizing supplied modelSlot
+	 * 
+	 * @param modelSlot
+	 * @return
+	 */
+	public <RD extends ResourceData<RD> & TechnologyObject<?>, MS extends ModelSlot<? extends RD>> ModelSlotInstance<MS, RD> getModelSlotInstance(
+			MS modelSlot);
+
+	/**
+	 * Return {@link ModelSlotInstance} concretizing modelSlot identified by supplied name
+	 * 
+	 * @param modelSlot
+	 * @return
+	 */
+	public <RD extends ResourceData<RD> & TechnologyObject<?>> ModelSlotInstance<?, RD> getModelSlotInstance(String modelSlotName);
 
 	public static abstract class FlexoConceptInstanceImpl extends VirtualModelInstanceObjectImpl implements FlexoConceptInstance {
 
@@ -524,7 +567,19 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 				}
 			}
 			else {
-				if (flexoProperty instanceof FlexoRole) {
+				if (flexoProperty instanceof ModelSlot) {
+					ModelSlot ms = getFlexoConcept().getModelSlot(((ModelSlot) flexoProperty).getName());
+					if (ms != null) {
+						ModelSlotInstance<?, ?> modelSlotInstance = getModelSlotInstance(ms);
+						if (modelSlotInstance != null) {
+							return (T) modelSlotInstance.getAccessedResourceData();
+						}
+						else {
+							logger.warning("Unexpected null model slot instance for " + ms + " in " + this);
+						}
+					}
+				}
+				else if (flexoProperty instanceof FlexoRole) {
 					// Take care that we don't manage here the multiple cardinality !!!
 					// This is performed in both classes: FlexoConceptFlexoPropertyPathElement and FlexoPropertyBindingVariable
 					return getFlexoActor((FlexoRole<T>) flexoProperty);
@@ -588,7 +643,12 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 
 				T oldValue = getFlexoPropertyValue(flexoProperty);
 				if ((value == null && oldValue != null) || (value != null && !value.equals(oldValue))) {
-					if (flexoProperty instanceof FlexoRole) {
+					if (flexoProperty instanceof ModelSlot) {
+						setModelSlotValue((ModelSlot<?>) flexoProperty, value);
+						setIsModified();
+						getPropertyChangeSupport().firePropertyChange(flexoProperty.getPropertyName(), oldValue, value);
+					}
+					else if (flexoProperty instanceof FlexoRole) {
 						setFlexoActor(value, (FlexoRole) flexoProperty);
 					}
 					else if (flexoProperty instanceof ExpressionProperty) {
@@ -991,6 +1051,117 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 				}
 			}
 			return null;
+		}
+
+		/**
+		 * Return {@link ModelSlotInstance} concretizing supplied modelSlot
+		 * 
+		 * @param modelSlot
+		 * @return
+		 */
+		@Override
+		public <RD extends ResourceData<RD> & TechnologyObject<?>, MS extends ModelSlot<? extends RD>> ModelSlotInstance<MS, RD> getModelSlotInstance(
+				MS modelSlot) {
+
+			System.out.println("On cherche ModelSlotInstance de " + modelSlot + " dans " + this);
+
+			for (ActorReference<?> actorReference : getActors()) {
+				System.out.println("> " + actorReference);
+				if (actorReference instanceof ModelSlotInstance && ((ModelSlotInstance<?, ?>) actorReference).getModelSlot() == modelSlot) {
+					return (ModelSlotInstance<MS, RD>) actorReference;
+				}
+			}
+			logger.warning("Cannot find ModelSlotInstance for ModelSlot " + modelSlot);
+			if (getFlexoConcept() != null && !getFlexoConcept().getModelSlots().contains(modelSlot)) {
+				logger.warning("Worse than that, supplied ModelSlot is not part of concept " + getFlexoConcept());
+			}
+			return null;
+		}
+
+		/**
+		 * Return {@link ModelSlotInstance} concretizing modelSlot identified by supplied name
+		 * 
+		 * @param modelSlot
+		 * @return
+		 */
+		@Override
+		public <RD extends ResourceData<RD> & TechnologyObject<?>> ModelSlotInstance<?, RD> getModelSlotInstance(String modelSlotName) {
+
+			for (ActorReference<?> actorReference : getActors()) {
+				if (actorReference instanceof ModelSlotInstance
+						&& ((ModelSlotInstance<?, ?>) actorReference).getModelSlot().getName() == modelSlotName) {
+					return (ModelSlotInstance<?, RD>) actorReference;
+				}
+			}
+			logger.warning("Cannot find ModelSlotInstance named " + modelSlotName);
+			return null;
+		}
+
+		@Override
+		public List<ModelSlotInstance<?, ?>> getModelSlotInstances() {
+			List<ModelSlotInstance<?, ?>> returned = new ArrayList<>();
+			for (ActorReference<?> actorReference : getActors()) {
+				if (actorReference instanceof ModelSlotInstance) {
+					returned.add((ModelSlotInstance) actorReference);
+				}
+			}
+			return returned;
+		}
+
+		/*	@Override
+			public void setModelSlotInstances(List<ModelSlotInstance<?, ?>> instances) {
+				this.modelSlotInstances = instances;
+			}
+		
+			@Override
+			public void addToModelSlotInstances(ModelSlotInstance<?, ?> instance) {
+				if (!modelSlotInstances.contains(instance)) {
+					instance.setVirtualModelInstance(this);
+					modelSlotInstances.add(instance);
+					setChanged();
+					notifyObservers(new VEDataModification("modelSlotInstances", null, instance));
+				}
+			}
+		
+			@Override
+			public void removeFromModelSlotInstance(ModelSlotInstance<?, ?> instance) {
+				if (modelSlotInstances.contains(instance)) {
+					instance.setVirtualModelInstance(null);
+					modelSlotInstances.remove(instance);
+					setChanged();
+					notifyObservers(new VEDataModification("modelSlotInstances", instance, null));
+				}
+			}*/
+
+		private void setModelSlotValue(ModelSlot<?> ms, Object value) {
+
+			if (getFlexoConcept() != null && ms != null) {
+				if (value instanceof TechnologyAdapterResource) {
+					ModelSlotInstance msi = getModelSlotInstance(ms.getModelSlotName());
+					if (msi == null) {
+						ModelSlotInstanceConfiguration<?, ?> msiConfiguration = ms.createConfiguration(this, getResourceCenter());
+						msiConfiguration.setOption(DefaultModelSlotInstanceConfigurationOption.SelectExistingResource);
+						msi = msiConfiguration.createModelSlotInstance(this, getView());
+						msi.setFlexoConceptInstance(this);
+						addToActors(msi);
+					}
+					msi.setResource((TechnologyAdapterResource) value);
+				}
+				if (value instanceof ResourceData) {
+					ModelSlotInstance msi = getModelSlotInstance(ms.getModelSlotName());
+					if (msi == null) {
+						ModelSlotInstanceConfiguration<?, ?> msiConfiguration = ms.createConfiguration(this, getResourceCenter());
+						msiConfiguration.setOption(DefaultModelSlotInstanceConfigurationOption.SelectExistingResource);
+						msi = msiConfiguration.createModelSlotInstance(this, getView());
+						msi.setFlexoConceptInstance(this);
+						addToActors(msi);
+					}
+					msi.setAccessedResourceData((ResourceData) value);
+				}
+				else {
+					logger.warning("Unexpected resource data " + value + " for model slot " + ms);
+				}
+			}
 		}
 
 		@Override

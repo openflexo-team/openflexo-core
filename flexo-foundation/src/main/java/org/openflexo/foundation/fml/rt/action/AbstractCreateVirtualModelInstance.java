@@ -80,7 +80,7 @@ import org.openflexo.toolbox.StringUtils;
  *            type of container of newly created AbstractVirtualModelInstance
  */
 public abstract class AbstractCreateVirtualModelInstance<A extends AbstractCreateVirtualModelInstance<A, T, VMI, VM>, T extends FlexoObject, VMI extends AbstractVirtualModelInstance<VMI, VM>, VM extends AbstractVirtualModel<VM>>
-		extends FlexoAction<A, T, FlexoObject>implements FlexoObserver {
+		extends FlexoAction<A, T, FlexoObject> implements FlexoObserver {
 
 	private static final Logger logger = Logger.getLogger(AbstractCreateVirtualModelInstance.class.getPackage().getName());
 
@@ -154,8 +154,8 @@ public abstract class AbstractCreateVirtualModelInstance<A extends AbstractCreat
 				ModelSlotInstanceConfiguration<?, ?> configuration = getModelSlotInstanceConfiguration(ms);
 				if (configuration.isValidConfiguration()) {
 					ModelSlotInstance<?, ?> msi = configuration.createModelSlotInstance(newVirtualModelInstance, getContainerView());
-					msi.setVirtualModelInstance(newVirtualModelInstance);
-					newVirtualModelInstance.addToModelSlotInstances(msi);
+					msi.setFlexoConceptInstance(newVirtualModelInstance);
+					newVirtualModelInstance.addToActors(msi);
 				}
 				else {
 					logger.warning("Wrong configuration for model slot: " + configuration.getModelSlot() + " error: "

@@ -42,7 +42,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.fml.AbstractVirtualModel;
 import org.openflexo.foundation.fml.rt.action.ModelSlotInstanceConfiguration;
 import org.openflexo.foundation.fml.rt.rm.AbstractVirtualModelInstanceResource;
@@ -63,9 +62,8 @@ public class FMLRTModelSlotInstanceConfiguration<VMI extends AbstractVirtualMode
 	private final List<ModelSlotInstanceConfigurationOption> options;
 	private AbstractVirtualModelInstanceResource<VMI, VM> addressedVirtualModelInstanceResource;
 
-	protected FMLRTModelSlotInstanceConfiguration(FMLRTModelSlot<VMI, VM> ms, AbstractVirtualModelInstance<VMI, VM> virtualModelInstance,
-			FlexoResourceCenter<?> rc) {
-		super(ms, virtualModelInstance, rc);
+	protected FMLRTModelSlotInstanceConfiguration(FMLRTModelSlot<VMI, VM> ms, FlexoConceptInstance fci, FlexoResourceCenter<?> rc) {
+		super(ms, fci, rc);
 		options = new ArrayList<ModelSlotInstanceConfiguration.ModelSlotInstanceConfigurationOption>();
 		/*if (ms.isReflexiveModelSlot()) {
 			options.add(DefaultModelSlotInstanceConfigurationOption.Autoconfigure);
@@ -85,12 +83,11 @@ public class FMLRTModelSlotInstanceConfiguration<VMI extends AbstractVirtualMode
 	}
 
 	@Override
-	public ModelSlotInstance<FMLRTModelSlot<VMI, VM>, VMI> createModelSlotInstance(AbstractVirtualModelInstance<?, ?> vmInstance,
-			View view) {
-		AbstractVirtualModelInstanceModelFactory<?> factory = vmInstance.getFactory();
+	public ModelSlotInstance<FMLRTModelSlot<VMI, VM>, VMI> createModelSlotInstance(FlexoConceptInstance fci, View view) {
+		AbstractVirtualModelInstanceModelFactory<?> factory = fci.getFactory();
 		VirtualModelModelSlotInstance returned = factory.newInstance(VirtualModelModelSlotInstance.class);
 		returned.setModelSlot(getModelSlot());
-		returned.setVirtualModelInstance(vmInstance);
+		returned.setFlexoConceptInstance(fci);
 		if (getAddressedVirtualModelInstanceResource() != null) {
 			returned.setVirtualModelInstanceURI(getAddressedVirtualModelInstanceResource().getURI());
 		}

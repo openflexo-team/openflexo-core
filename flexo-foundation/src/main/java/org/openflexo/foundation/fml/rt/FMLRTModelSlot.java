@@ -151,9 +151,9 @@ public interface FMLRTModelSlot<VMI extends AbstractVirtualModelInstance<VMI, VM
 		}
 
 		@Override
-		public ModelSlotInstanceConfiguration<? extends FMLRTModelSlot<VMI, VM>, VMI> createConfiguration(
-				AbstractVirtualModelInstance<?, ?> virtualModelInstance, FlexoResourceCenter<?> rc) {
-			return new FMLRTModelSlotInstanceConfiguration(this, virtualModelInstance, rc);
+		public ModelSlotInstanceConfiguration<? extends FMLRTModelSlot<VMI, VM>, VMI> createConfiguration(FlexoConceptInstance fci,
+				FlexoResourceCenter<?> rc) {
+			return new FMLRTModelSlotInstanceConfiguration(this, fci, rc);
 		}
 
 		protected AbstractVirtualModelResource<VM> virtualModelResource;

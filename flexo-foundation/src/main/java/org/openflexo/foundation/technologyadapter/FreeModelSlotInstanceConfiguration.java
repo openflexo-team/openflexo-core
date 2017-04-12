@@ -46,8 +46,8 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoException;
-import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstanceModelFactory;
+import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.FreeModelSlotInstance;
 import org.openflexo.foundation.fml.rt.View;
 import org.openflexo.foundation.fml.rt.action.ModelSlotInstanceConfiguration;
@@ -77,9 +77,8 @@ public class FreeModelSlotInstanceConfiguration<RD extends ResourceData<RD> & Te
 	private String relativePath;
 	private String filename;
 
-	protected FreeModelSlotInstanceConfiguration(MS ms, AbstractVirtualModelInstance<?, ?> virtualModelInstance,
-			FlexoResourceCenter<?> rc) {
-		super(ms, virtualModelInstance, rc);
+	protected FreeModelSlotInstanceConfiguration(MS ms, FlexoConceptInstance fci, FlexoResourceCenter<?> rc) {
+		super(ms, fci, rc);
 		FlexoResourceCenterService rcService = ms.getServiceManager().getResourceCenterService();
 		if (rcService.getResourceCenters().size() > 0) {
 			targetResourceCenter = rcService.getResourceCenters().get(0);
@@ -114,12 +113,17 @@ public class FreeModelSlotInstanceConfiguration<RD extends ResourceData<RD> & Te
 	}
 
 	@Override
-	public FreeModelSlotInstance<RD, MS> createModelSlotInstance(AbstractVirtualModelInstance<?, ?> vmInstance, View view) {
+	public FreeModelSlotInstance<RD, MS> createModelSlotInstance(FlexoConceptInstance flexoConceptInstance, View view) {
 
-		AbstractVirtualModelInstanceModelFactory<?> factory = vmInstance.getFactory();
+		AbstractVirtualModelInstanceModelFactory<?> factory = flexoConceptInstance.getFactory();
 		FreeModelSlotInstance<RD, MS> returned = factory.newInstance(FreeModelSlotInstance.class);
 		returned.setModelSlot(getModelSlot());
-		returned.setVirtualModelInstance(vmInstance);
+		/*if (flexoConceptInstance instanceof AbstractVirtualModelInstance) {
+			returned.setVirtualModelInstance((AbstractVirtualModelInstance) flexoConceptInstance);
+		}
+		else {*/
+		returned.setFlexoConceptInstance(flexoConceptInstance);
+		// }
 		configureModelSlotInstance(returned);
 		return returned;
 	}

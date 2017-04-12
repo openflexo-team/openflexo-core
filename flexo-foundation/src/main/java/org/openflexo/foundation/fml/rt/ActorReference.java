@@ -40,7 +40,6 @@ package org.openflexo.foundation.fml.rt;
 
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.fml.FlexoRole;
-import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.model.annotations.CloningStrategy;
 import org.openflexo.model.annotations.CloningStrategy.StrategyType;
 import org.openflexo.model.annotations.Getter;
@@ -64,7 +63,7 @@ import org.openflexo.toolbox.StringUtils;
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(ActorReference.ActorReferenceImpl.class)
-@Imports({ @Import(ModelObjectActorReference.class), @Import(PrimitiveActorReference.class) })
+@Imports({ @Import(ModelObjectActorReference.class), @Import(PrimitiveActorReference.class), @Import(ModelSlotInstance.class) })
 public abstract interface ActorReference<T> extends VirtualModelInstanceObject {
 
 	@PropertyIdentifier(type = FlexoConceptInstance.class)
@@ -122,16 +121,16 @@ public abstract interface ActorReference<T> extends VirtualModelInstanceObject {
 	public static abstract class ActorReferenceImpl<T> extends VirtualModelInstanceObjectImpl implements ActorReference<T> {
 		private FlexoRole<T> flexoRole;
 		private String flexoRoleName;
-		private ModelSlot modelSlot;
+		// private ModelSlot modelSlot;
 		private FlexoConceptInstance flexoConceptInstance;
 
-		public ModelSlot getModelSlot() {
+		/*public ModelSlot getModelSlot() {
 			return modelSlot;
 		}
-
+		
 		public void setModelSlot(ModelSlot modelSlot) {
 			this.modelSlot = modelSlot;
-		}
+		}*/
 
 		@Override
 		public AbstractVirtualModelInstance<?, ?> getResourceData() {
@@ -188,7 +187,7 @@ public abstract interface ActorReference<T> extends VirtualModelInstanceObject {
 		}
 
 		@Override
-		public AbstractVirtualModelInstance getVirtualModelInstance() {
+		public AbstractVirtualModelInstance<?, ?> getVirtualModelInstance() {
 			if (getFlexoConceptInstance() instanceof VirtualModelInstance) {
 				return (VirtualModelInstance) getFlexoConceptInstance();
 			}

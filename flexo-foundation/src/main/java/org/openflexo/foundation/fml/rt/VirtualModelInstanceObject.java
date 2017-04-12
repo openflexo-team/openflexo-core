@@ -38,6 +38,8 @@
 
 package org.openflexo.foundation.fml.rt;
 
+import java.util.logging.Logger;
+
 import org.openflexo.foundation.InnerResourceData;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.rt.rm.AbstractVirtualModelInstanceResource;
@@ -48,9 +50,6 @@ import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.PropertyIdentifier;
-import org.openflexo.model.annotations.Setter;
-
-import java.util.logging.Logger;
 
 /**
  * A {@link VirtualModelInstanceObject} is an abstract run-time concept (instance) for an object "living" in a {@link VirtualModelInstance}
@@ -74,12 +73,11 @@ public interface VirtualModelInstanceObject extends ViewObject, InnerResourceDat
 	@Getter(value = VIRTUAL_MODEL_INSTANCE_KEY)
 	public abstract AbstractVirtualModelInstance<?, ?> getVirtualModelInstance();
 
-	@Setter(VIRTUAL_MODEL_INSTANCE_KEY)
-	public void setVirtualModelInstance(AbstractVirtualModelInstance<?, ?> virtualModelInstance);
+	// @Setter(VIRTUAL_MODEL_INSTANCE_KEY)
+	// public void setVirtualModelInstance(AbstractVirtualModelInstance<?, ?> virtualModelInstance);
 
 	public AbstractVirtualModelInstanceModelFactory<?> getFactory();
 
-	
 	public abstract class VirtualModelInstanceObjectImpl extends ViewObjectImpl implements VirtualModelInstanceObject {
 
 		private static final Logger logger = Logger.getLogger(VirtualModelInstanceObject.class.getPackage().getName());
@@ -105,8 +103,7 @@ public interface VirtualModelInstanceObject extends ViewObject, InnerResourceDat
 			return null;
 		}
 
-
-		/** 
+		/**
 		 * Returns FlexoResourceCenter that contains the ViewResource containing this ViewObject
 		 * 
 		 * @return
@@ -114,9 +111,11 @@ public interface VirtualModelInstanceObject extends ViewObject, InnerResourceDat
 		@Override
 		public FlexoResourceCenter<?> getResourceCenter() {
 			AbstractVirtualModelInstance<?, ?> virtualModelInstance = getVirtualModelInstance();
-			if (virtualModelInstance == null) return null;
+			if (virtualModelInstance == null)
+				return null;
 			FlexoResource<?> resource = virtualModelInstance.getResource();
-			if (resource == null) return null;
+			if (resource == null)
+				return null;
 			return resource.getResourceCenter();
 		}
 

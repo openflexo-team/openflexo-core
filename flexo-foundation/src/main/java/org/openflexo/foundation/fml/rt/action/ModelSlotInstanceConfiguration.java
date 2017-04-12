@@ -42,7 +42,7 @@ import java.util.List;
 
 import org.openflexo.foundation.DefaultFlexoObject;
 import org.openflexo.foundation.FlexoProject;
-import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
+import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.ModelSlotInstance;
 import org.openflexo.foundation.fml.rt.View;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
@@ -63,7 +63,7 @@ import org.openflexo.foundation.technologyadapter.TypeAwareModelSlot;
 public abstract class ModelSlotInstanceConfiguration<MS extends ModelSlot<RD>, RD extends ResourceData<RD> & TechnologyObject<?>>
 		extends DefaultFlexoObject {
 
-	private final AbstractVirtualModelInstance<?, ?> virtualModelInstance;
+	private final FlexoConceptInstance flexoConceptInstance;
 	private final FlexoResourceCenter<?> rc;
 	private final MS modelSlot;
 	private ModelSlotInstanceConfigurationOption option;
@@ -127,14 +127,14 @@ public abstract class ModelSlotInstanceConfiguration<MS extends ModelSlot<RD>, R
 		}
 	}
 
-	protected ModelSlotInstanceConfiguration(MS ms, AbstractVirtualModelInstance<?, ?> virtualModelInstance, FlexoResourceCenter<?> rc) {
-		this.virtualModelInstance = virtualModelInstance;
+	protected ModelSlotInstanceConfiguration(MS ms, FlexoConceptInstance fci, FlexoResourceCenter<?> rc) {
+		this.flexoConceptInstance = fci;
 		this.rc = rc;
 		modelSlot = ms;
 	}
 
-	public AbstractVirtualModelInstance<?, ?> getVirtualModelInstance() {
-		return virtualModelInstance;
+	public FlexoConceptInstance getFlexoConceptInstance() {
+		return flexoConceptInstance;
 	}
 
 	public FlexoResourceCenter<?> getResourceCenter() {
@@ -191,7 +191,7 @@ public abstract class ModelSlotInstanceConfiguration<MS extends ModelSlot<RD>, R
 	 *            the view in which the VirtualModelInstance will be added
 	 * @return
 	 */
-	public abstract ModelSlotInstance<MS, RD> createModelSlotInstance(AbstractVirtualModelInstance<?, ?> vmInstance, View view);
+	public abstract ModelSlotInstance<MS, RD> createModelSlotInstance(FlexoConceptInstance flexoConceptInstance, View view);
 
 	private String errorMessage;
 

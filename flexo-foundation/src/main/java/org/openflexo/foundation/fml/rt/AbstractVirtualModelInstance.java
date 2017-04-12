@@ -42,11 +42,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.WeakHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -66,25 +64,19 @@ import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.SynchronizationScheme;
 import org.openflexo.foundation.fml.ViewPoint;
-import org.openflexo.foundation.fml.binding.ModelSlotBindingVariable;
 import org.openflexo.foundation.fml.binding.ViewPointBindingModel;
 import org.openflexo.foundation.fml.binding.VirtualModelBindingModel;
 import org.openflexo.foundation.fml.editionaction.FetchRequestCondition;
-import org.openflexo.foundation.fml.rt.action.ModelSlotInstanceConfiguration;
-import org.openflexo.foundation.fml.rt.action.ModelSlotInstanceConfiguration.DefaultModelSlotInstanceConfigurationOption;
 import org.openflexo.foundation.fml.rt.action.SynchronizationSchemeAction;
 import org.openflexo.foundation.fml.rt.action.SynchronizationSchemeActionType;
 import org.openflexo.foundation.fml.rt.rm.AbstractVirtualModelInstanceResource;
 import org.openflexo.foundation.resource.CannotRenameException;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.ResourceData;
-import org.openflexo.foundation.technologyadapter.FlexoMetaModel;
 import org.openflexo.foundation.technologyadapter.FlexoModel;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
-import org.openflexo.foundation.technologyadapter.TechnologyAdapterResource;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
-import org.openflexo.foundation.technologyadapter.TypeAwareModelSlot;
 import org.openflexo.model.annotations.Adder;
 import org.openflexo.model.annotations.CloningStrategy;
 import org.openflexo.model.annotations.CloningStrategy.StrategyType;
@@ -135,8 +127,6 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 	public static final String MODEL_VERSION_KEY = "modelVersion";
 	@PropertyIdentifier(type = String.class)
 	public static final String VIRTUAL_MODEL_URI_KEY = "virtualModelURI";
-	@PropertyIdentifier(type = List.class)
-	public static final String MODEL_SLOT_INSTANCES_KEY = "modelSlotInstances";
 	@PropertyIdentifier(type = FlexoConceptInstance.class, cardinality = Cardinality.LIST)
 	public static final String FLEXO_CONCEPT_INSTANCES_KEY = "flexoConceptInstances";
 
@@ -181,21 +171,6 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 	 */
 	public List<FlexoConceptInstance> getAllRootFlexoConceptInstances();
 
-	@Getter(value = MODEL_SLOT_INSTANCES_KEY, cardinality = Cardinality.LIST, inverse = ModelSlotInstance.VIRTUAL_MODEL_INSTANCE_KEY)
-	@XMLElement
-	@Embedded
-	@CloningStrategy(StrategyType.CLONE)
-	public List<ModelSlotInstance<?, ?>> getModelSlotInstances();
-
-	@Setter(MODEL_SLOT_INSTANCES_KEY)
-	public void setModelSlotInstances(List<ModelSlotInstance<?, ?>> modelSlotInstances);
-
-	@Adder(MODEL_SLOT_INSTANCES_KEY)
-	public void addToModelSlotInstances(ModelSlotInstance<?, ?> aModelSlotInstance);
-
-	@Remover(MODEL_SLOT_INSTANCES_KEY)
-	public void removeFromModelSlotInstance(ModelSlotInstance<?, ?> aModelSlotInstance);
-
 	@Getter(
 			value = FLEXO_CONCEPT_INSTANCES_KEY,
 			cardinality = Cardinality.LIST,
@@ -228,23 +203,6 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 	public void synchronize(FlexoEditor editor);
 
 	public boolean isSynchronizable();
-
-	/**
-	 * Return {@link ModelSlotInstance} concretizing supplied modelSlot
-	 * 
-	 * @param modelSlot
-	 * @return
-	 */
-	public <RD extends ResourceData<RD> & TechnologyObject<?>, MS extends ModelSlot<? extends RD>> ModelSlotInstance<MS, RD> getModelSlotInstance(
-			MS modelSlot);
-
-	/**
-	 * Return {@link ModelSlotInstance} concretizing modelSlot identified by supplied name
-	 * 
-	 * @param modelSlot
-	 * @return
-	 */
-	public <RD extends ResourceData<RD> & TechnologyObject<?>> ModelSlotInstance<?, RD> getModelSlotInstance(String modelSlotName);
 
 	@Getter(NAME_KEY)
 	public String getName();
@@ -742,86 +700,6 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 					+ Integer.toHexString(hashCode()) + "]";
 		}
 
-		// ==========================================================================
-		// ============================== Model Slots ===============================
-		// ==========================================================================
-
-		/**
-		 * Return {@link ModelSlotInstance} concretizing supplied modelSlot
-		 * 
-		 * @param modelSlot
-		 * @return
-		 */
-		@Override
-		public <RD extends ResourceData<RD> & TechnologyObject<?>, MS extends ModelSlot<? extends RD>> ModelSlotInstance<MS, RD> getModelSlotInstance(
-				MS modelSlot) {
-			for (ModelSlotInstance<?, ?> msInstance : getModelSlotInstances()) {
-				if (msInstance.getModelSlot() == modelSlot) {
-					return (ModelSlotInstance<MS, RD>) msInstance;
-				}
-			}
-			/*if (modelSlot instanceof FMLRTModelSlot && ((FMLRTModelSlot) modelSlot).isReflexiveModelSlot()) {
-				VirtualModelModelSlotInstance reflexiveModelSlotInstance = getResource().getFactory().newInstance(
-						VirtualModelModelSlotInstance.class);
-				reflexiveModelSlotInstance.setModelSlot((FMLRTModelSlot) modelSlot);
-				reflexiveModelSlotInstance.setAccessedResourceData(this);
-				addToModelSlotInstances(reflexiveModelSlotInstance);
-				return (ModelSlotInstance<MS, RD>) reflexiveModelSlotInstance;
-			}*/
-			logger.warning("Cannot find ModelSlotInstance for ModelSlot " + modelSlot);
-			if (getVirtualModel() != null && !getVirtualModel().getModelSlots().contains(modelSlot)) {
-				logger.warning("Worse than that, supplied ModelSlot is not part of virtual model " + getVirtualModel());
-			}
-			return null;
-		}
-
-		/**
-		 * Return {@link ModelSlotInstance} concretizing modelSlot identified by supplied name
-		 * 
-		 * @param modelSlot
-		 * @return
-		 */
-		@Override
-		public <RD extends ResourceData<RD> & TechnologyObject<?>> ModelSlotInstance<?, RD> getModelSlotInstance(String modelSlotName) {
-			for (ModelSlotInstance<?, ?> msInstance : getModelSlotInstances()) {
-				if (msInstance.getModelSlot().getName().equals(modelSlotName)) {
-					return (ModelSlotInstance<?, RD>) msInstance;
-				}
-			}
-			logger.warning("Cannot find ModelSlotInstance named " + modelSlotName);
-			return null;
-		}
-
-		/*	@Override
-			public List<ModelSlotInstance<?, ?>> getModelSlotInstances() {
-				return modelSlotInstances;
-			}
-		
-			@Override
-			public void setModelSlotInstances(List<ModelSlotInstance<?, ?>> instances) {
-				this.modelSlotInstances = instances;
-			}
-		
-			@Override
-			public void addToModelSlotInstances(ModelSlotInstance<?, ?> instance) {
-				if (!modelSlotInstances.contains(instance)) {
-					instance.setVirtualModelInstance(this);
-					modelSlotInstances.add(instance);
-					setChanged();
-					notifyObservers(new VEDataModification("modelSlotInstances", null, instance));
-				}
-			}
-		
-			@Override
-			public void removeFromModelSlotInstance(ModelSlotInstance<?, ?> instance) {
-				if (modelSlotInstances.contains(instance)) {
-					instance.setVirtualModelInstance(null);
-					modelSlotInstances.remove(instance);
-					setChanged();
-					notifyObservers(new VEDataModification("modelSlotInstances", instance, null));
-				}
-			}*/
-
 		@Override
 		public <T> T getFlexoActor(FlexoRole<T> flexoRole) {
 			if (super.getFlexoActor(flexoRole) != null) {
@@ -841,7 +719,7 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 		 * 
 		 * @return
 		 */
-		@Deprecated
+		/*@Deprecated
 		public Set<FlexoMetaModel> getAllMetaModels() {
 			Set<FlexoMetaModel> allMetaModels = new HashSet<>();
 			for (ModelSlotInstance<?, ?> instance : getModelSlotInstances()) {
@@ -851,14 +729,14 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 				}
 			}
 			return allMetaModels;
-		}
+		}*/
 
 		/**
 		 * Return a set of all models (load them when unloaded) used in this {@link AbstractVirtualModelInstance}
 		 * 
 		 * @return
 		 */
-		@Deprecated
+		/*@Deprecated
 		public Set<FlexoModel<?, ?>> getAllModels() {
 			Set<FlexoModel<?, ?>> allModels = new HashSet<>();
 			for (ModelSlotInstance<?, ?> instance : getModelSlotInstances()) {
@@ -867,7 +745,7 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 				}
 			}
 			return allModels;
-		}
+		}*/
 
 		// ==========================================================================
 		// ================================= Delete ===============================
@@ -975,8 +853,7 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 
 		@Override
 		public Object getValue(BindingVariable variable) {
-
-			if (variable instanceof ModelSlotBindingVariable && getVirtualModel() != null
+			/*if (variable instanceof ModelSlotBindingVariable && getVirtualModel() != null
 					&& ((ModelSlotBindingVariable) variable).getFlexoProperty().getFlexoConcept() == getVirtualModel()) {
 				ModelSlot ms = getVirtualModel().getModelSlot(variable.getVariableName());
 				if (ms != null) {
@@ -991,7 +868,9 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 				logger.warning("Unexpected model slot " + variable);
 				return null;
 			}
-			else if (variable.getVariableName().equals(VirtualModelBindingModel.REFLEXIVE_ACCESS_PROPERTY)) {
+			else*/
+
+			if (variable.getVariableName().equals(VirtualModelBindingModel.REFLEXIVE_ACCESS_PROPERTY)) {
 				return getVirtualModel();
 			}
 			else if (variable.getVariableName().equals(ViewPointBindingModel.VIEW_PROPERTY)) {
@@ -1024,7 +903,7 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 
 		@Override
 		public void setValue(Object value, BindingVariable variable) {
-			if (variable instanceof ModelSlotBindingVariable && getVirtualModel() != null) {
+			/*if (variable instanceof ModelSlotBindingVariable && getVirtualModel() != null) {
 				ModelSlot ms = getVirtualModel().getModelSlot(variable.getVariableName());
 				if (ms != null) {
 					if (value instanceof TechnologyAdapterResource) {
@@ -1036,7 +915,7 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 							msiConfiguration.setOption(DefaultModelSlotInstanceConfigurationOption.SelectExistingResource);
 							msi = msiConfiguration.createModelSlotInstance(flexoConceptInstance, getView());
 							msi.setVirtualModelInstance(flexoConceptInstance);
-							flexoConceptInstance.addToModelSlotInstances(msi);
+							flexoConceptInstance.addToActors(msi);
 						}
 						msi.setResource((TechnologyAdapterResource) value);
 					}
@@ -1049,7 +928,7 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 							msiConfiguration.setOption(DefaultModelSlotInstanceConfigurationOption.SelectExistingResource);
 							msi = msiConfiguration.createModelSlotInstance(flexoConceptInstance, getView());
 							msi.setVirtualModelInstance(flexoConceptInstance);
-							flexoConceptInstance.addToModelSlotInstances(msi);
+							flexoConceptInstance.addToActors(msi);
 						}
 						msi.setAccessedResourceData((ResourceData) value);
 					}
@@ -1062,7 +941,7 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 				}
 				return;
 			}
-			else if (variable.getVariableName().equals(VirtualModelBindingModel.REFLEXIVE_ACCESS_PROPERTY)) {
+			else*/ if (variable.getVariableName().equals(VirtualModelBindingModel.REFLEXIVE_ACCESS_PROPERTY)) {
 				logger.warning("Forbidden write access " + VirtualModelBindingModel.REFLEXIVE_ACCESS_PROPERTY + " in " + this + " of "
 						+ getClass());
 				return;
@@ -1078,66 +957,6 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 			}
 
 			super.setValue(value, variable);
-
-		}
-
-		private void setModelSlotValue(ModelSlot<?> ms, Object value) {
-
-			if (getVirtualModel() != null && ms != null) {
-				if (value instanceof TechnologyAdapterResource) {
-					ModelSlotInstance msi = getModelSlotInstance(ms.getModelSlotName());
-					if (msi == null) {
-						AbstractVirtualModelInstance<?, ?> flexoConceptInstance = (AbstractVirtualModelInstance<?, ?>) getFlexoConceptInstance();
-						ModelSlotInstanceConfiguration<?, ?> msiConfiguration = ms.createConfiguration(flexoConceptInstance,
-								getResourceCenter());
-						msiConfiguration.setOption(DefaultModelSlotInstanceConfigurationOption.SelectExistingResource);
-						msi = msiConfiguration.createModelSlotInstance(flexoConceptInstance, getView());
-						msi.setVirtualModelInstance(flexoConceptInstance);
-						flexoConceptInstance.addToModelSlotInstances(msi);
-					}
-					msi.setResource((TechnologyAdapterResource) value);
-				}
-				if (value instanceof ResourceData) {
-					ModelSlotInstance msi = getModelSlotInstance(ms.getModelSlotName());
-					if (msi == null) {
-						AbstractVirtualModelInstance<?, ?> flexoConceptInstance = (AbstractVirtualModelInstance<?, ?>) getFlexoConceptInstance();
-						ModelSlotInstanceConfiguration<?, ?> msiConfiguration = ms.createConfiguration(flexoConceptInstance,
-								getResourceCenter());
-						msiConfiguration.setOption(DefaultModelSlotInstanceConfigurationOption.SelectExistingResource);
-						msi = msiConfiguration.createModelSlotInstance(flexoConceptInstance, getView());
-						msi.setVirtualModelInstance(flexoConceptInstance);
-						flexoConceptInstance.addToModelSlotInstances(msi);
-					}
-					msi.setAccessedResourceData((ResourceData) value);
-				}
-				else {
-					logger.warning("Unexpected resource data " + value + " for model slot " + ms);
-				}
-			}
-		}
-
-		/**
-		 * Sets value associated with supplied property, if supplied value is not equals (java semantics) to actual value
-		 * 
-		 * @param flexoProperty
-		 *            the property to lookup
-		 * @param value
-		 *            the new value to set
-		 */
-		@Override
-		public <T> void setFlexoPropertyValue(FlexoProperty<T> flexoProperty, T value) {
-
-			if (flexoProperty instanceof ModelSlot) {
-				T oldValue = getFlexoPropertyValue(flexoProperty);
-				if ((value == null && oldValue != null) || (value != null && !value.equals(oldValue))) {
-					setModelSlotValue((ModelSlot<?>) flexoProperty, value);
-					setIsModified();
-					getPropertyChangeSupport().firePropertyChange(flexoProperty.getPropertyName(), oldValue, value);
-				}
-			}
-			else {
-				super.setFlexoPropertyValue(flexoProperty, value);
-			}
 
 		}
 
