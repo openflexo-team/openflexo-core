@@ -131,7 +131,7 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>>
 	 *            class of EditionAction to be instantiated
 	 * @return
 	 */
-	public <A extends TechnologySpecificAction<?, ?>> A createAction(Class<A> actionClass);
+	public <A extends TechnologySpecificAction<?, ?, ?>> A createAction(Class<A> actionClass);
 
 	@Override
 	public TechnologyAdapter getModelSlotTechnologyAdapter();
@@ -143,9 +143,9 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>>
 
 	public List<Class<? extends FlexoRole<?>>> getAvailableFlexoRoleTypes();
 
-	public List<Class<? extends TechnologySpecificAction<?, ?>>> getAvailableEditionActionTypes();
+	public List<Class<? extends TechnologySpecificAction<?, ?, ?>>> getAvailableEditionActionTypes();
 
-	public List<Class<? extends FetchRequest<?, ?>>> getAvailableFetchRequestActionTypes();
+	public List<Class<? extends FetchRequest<?, ?, ?>>> getAvailableFetchRequestActionTypes();
 
 	public List<Class<? extends FlexoBehaviour>> getAvailableFlexoBehaviourTypes();
 
@@ -167,7 +167,7 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>>
 	 * @param editionActionClass
 	 * @return
 	 */
-	public abstract <EA extends TechnologySpecificAction<?, ?>> EA makeEditionAction(Class<EA> editionActionClass);
+	public abstract <EA extends TechnologySpecificAction<?, ?, ?>> EA makeEditionAction(Class<EA> editionActionClass);
 
 	/**
 	 * Creates and return a new {@link FetchRequest} of supplied class.<br>
@@ -177,7 +177,7 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>>
 	 * @param fetchRequestClass
 	 * @return
 	 */
-	public abstract <FR extends FetchRequest<?, ?>> FR makeFetchRequest(Class<FR> fetchRequestClass);
+	public abstract <FR extends FetchRequest<?, ?, ?>> FR makeFetchRequest(Class<FR> fetchRequestClass);
 
 	/**
 	 * Return default name for supplied pattern property class
@@ -225,8 +225,8 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>>
 
 		/*private List<Class<? extends FlexoRole<?>>> availableFlexoRoleTypes;
 		private List<Class<? extends FlexoBehaviour>> availableFlexoBehaviourTypes;
-		private List<Class<? extends TechnologySpecificAction<?, ?>>> availableEditionActionTypes;
-		private List<Class<? extends FetchRequest<?, ?>>> availableFetchRequestActionTypes;
+		private List<Class<? extends TechnologySpecificAction<?, ?, ?>>> availableEditionActionTypes;
+		private List<Class<? extends FetchRequest<?, ?, ?>>> availableFetchRequestActionTypes;
 		private List<Class<? extends FlexoBehaviourParameter>> availableFlexoBehaviourParameterTypes;
 		private List<Class<? extends InspectorEntry>> availableInspectorEntryTypes;*/
 
@@ -284,7 +284,7 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>>
 		 * @return
 		 */
 		@Override
-		public <A extends TechnologySpecificAction<?, ?>> A createAction(Class<A> actionClass) {
+		public <A extends TechnologySpecificAction<?, ?, ?>> A createAction(Class<A> actionClass) {
 			Class[] constructorParams = new Class[0];
 			// constructorParams[0] = VirtualModel.VirtualModelBuilder.class;
 			try {
@@ -376,7 +376,7 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>>
 		}
 
 		@Override
-		public List<Class<? extends TechnologySpecificAction<?, ?>>> getAvailableEditionActionTypes() {
+		public List<Class<? extends TechnologySpecificAction<?, ?, ?>>> getAvailableEditionActionTypes() {
 			if (getTechnologyAdapterService() != null) {
 				return getTechnologyAdapterService().getAvailableEditionActionTypes(getClass());
 			}
@@ -392,7 +392,7 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>>
 		}
 
 		@Override
-		public List<Class<? extends FetchRequest<?, ?>>> getAvailableFetchRequestActionTypes() {
+		public List<Class<? extends FetchRequest<?, ?, ?>>> getAvailableFetchRequestActionTypes() {
 			if (getTechnologyAdapterService() != null) {
 				return getTechnologyAdapterService().getAvailableFetchRequestActionTypes(getClass());
 			}
@@ -408,7 +408,7 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>>
 		 * @return
 		 */
 		@Override
-		public final <EA extends TechnologySpecificAction<?, ?>> EA makeEditionAction(Class<EA> editionActionClass) {
+		public final <EA extends TechnologySpecificAction<?, ?, ?>> EA makeEditionAction(Class<EA> editionActionClass) {
 			FMLModelFactory factory = getFMLModelFactory();
 			return factory.newInstance(editionActionClass);
 		}
@@ -422,7 +422,7 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>>
 		 * @return
 		 */
 		@Override
-		public final <FR extends FetchRequest<?, ?>> FR makeFetchRequest(Class<FR> fetchRequestClass) {
+		public final <FR extends FetchRequest<?, ?, ?>> FR makeFetchRequest(Class<FR> fetchRequestClass) {
 			FMLModelFactory factory = getFMLModelFactory();
 			return factory.newInstance(fetchRequestClass);
 		}
@@ -534,8 +534,8 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>>
 		public boolean delete(Object... context) {
 			FMLControlGraphVisitor cgVisitor = controlGraph -> {
 				if (controlGraph instanceof TechnologySpecificAction
-						&& ((TechnologySpecificAction<?, ?>) controlGraph).getModelSlot() == ModelSlotImpl.this) {
-					TechnologySpecificAction action = (TechnologySpecificAction<?, ?>) controlGraph;
+						&& ((TechnologySpecificAction<?, ?, ?>) controlGraph).getModelSlot() == ModelSlotImpl.this) {
+					TechnologySpecificAction action = (TechnologySpecificAction<?, ?, ?>) controlGraph;
 					// nullify model slot for action
 					action.setModelSlot(null);
 				}

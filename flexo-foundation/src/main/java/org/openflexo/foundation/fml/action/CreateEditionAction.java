@@ -69,6 +69,7 @@ import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
 import org.openflexo.foundation.fml.controlgraph.IncrementalIterationAction;
 import org.openflexo.foundation.fml.controlgraph.IterationAction;
 import org.openflexo.foundation.fml.controlgraph.WhileAction;
+import org.openflexo.foundation.fml.editionaction.AddClassInstance;
 import org.openflexo.foundation.fml.editionaction.AddToListAction;
 import org.openflexo.foundation.fml.editionaction.AssignableAction;
 import org.openflexo.foundation.fml.editionaction.AssignationAction;
@@ -83,7 +84,6 @@ import org.openflexo.foundation.fml.editionaction.RemoveFromListAction;
 import org.openflexo.foundation.fml.editionaction.ReturnStatement;
 import org.openflexo.foundation.fml.editionaction.RoleSpecificAction;
 import org.openflexo.foundation.fml.editionaction.TechnologySpecificAction;
-import org.openflexo.foundation.fml.rt.editionaction.AddClassInstance;
 import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.AddSubView;
 import org.openflexo.foundation.fml.rt.editionaction.AddVirtualModelInstance;
@@ -132,12 +132,12 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 	private ModelSlot<?> modelSlot;
 	private FlexoRole<?> flexoRole;
 	private Class<? extends EditionAction> editionActionClass;
-	private Class<? extends FetchRequest<?, ?>> fetchRequestClass;
+	private Class<? extends FetchRequest<?, ?, ?>> fetchRequestClass;
 
 	private EditionAction newEditionAction;
 
 	private final List<Class<? extends EditionAction>> availableActions;
-	private final List<Class<? extends FetchRequest<?, ?>>> availableFetchRequests;
+	private final List<Class<? extends FetchRequest<?, ?, ?>>> availableFetchRequests;
 
 	private final HashMap<Class<? extends EditionAction>, TechnologyAdapter> editionActionForTechnologyAdapterMap;
 	private final HashMap<Class<? extends EditionAction>, EditionAction> editionActionMap;
@@ -153,7 +153,7 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 			availableActions.add(availableActionClass);
 			editionActionForTechnologyAdapterMap.put(availableActionClass, ta);
 			if (FetchRequest.class.isAssignableFrom(availableActionClass)) {
-				availableFetchRequests.add((Class<FetchRequest<?, ?>>) availableActionClass);
+				availableFetchRequests.add((Class<FetchRequest<?, ?, ?>>) availableActionClass);
 			}
 		}
 	}
@@ -162,7 +162,7 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 		super(actionType, focusedObject, globalSelection, editor);
 
 		availableActions = new ArrayList<Class<? extends EditionAction>>();
-		availableFetchRequests = new ArrayList<Class<? extends FetchRequest<?, ?>>>();
+		availableFetchRequests = new ArrayList<Class<? extends FetchRequest<?, ?, ?>>>();
 		editionActionForTechnologyAdapterMap = new HashMap<Class<? extends EditionAction>, TechnologyAdapter>();
 		editionActionMap = new HashMap<Class<? extends EditionAction>, EditionAction>();
 
@@ -171,6 +171,7 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 
 		FMLTechnologyAdapter fmlTA = getServiceManager().getTechnologyAdapterService().getTechnologyAdapter(FMLTechnologyAdapter.class);
 		addToAvailableActions(ExpressionAction.class, fmlTA);
+		addToAvailableActions(AddClassInstance.class, fmlTA);
 		addToAvailableActions(LogAction.class, fmlTA);
 		addToAvailableActions(ConditionalAction.class, fmlTA);
 		addToAvailableActions(IterationAction.class, fmlTA);
@@ -193,11 +194,11 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 			Class<? extends ModelSlot<?>> modelSlotClass = useDecl.getModelSlotClass();
 			TechnologyAdapter modelSlotTA = getServiceManager().getTechnologyAdapterService()
 					.getTechnologyAdapterForModelSlot(modelSlotClass);
-			for (Class<? extends TechnologySpecificAction<?, ?>> eaClass : getServiceManager().getTechnologyAdapterService()
+			for (Class<? extends TechnologySpecificAction<?, ?, ?>> eaClass : getServiceManager().getTechnologyAdapterService()
 					.getAvailableEditionActionTypes(modelSlotClass)) {
 				addToAvailableActions(eaClass, modelSlotTA);
 			}
-			for (Class<? extends FetchRequest<?, ?>> frClass : getServiceManager().getTechnologyAdapterService()
+			for (Class<? extends FetchRequest<?, ?, ?>> frClass : getServiceManager().getTechnologyAdapterService()
 					.getAvailableFetchRequestActionTypes(modelSlotClass)) {
 				addToAvailableActions(frClass, modelSlotTA);
 			}
@@ -209,7 +210,7 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 		return availableActions;
 	}
 
-	public List<Class<? extends FetchRequest<?, ?>>> getAvailableFetchRequestClasses() {
+	public List<Class<? extends FetchRequest<?, ?, ?>>> getAvailableFetchRequestClasses() {
 		return availableFetchRequests;
 	}
 
@@ -291,17 +292,17 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 		}
 	}
 
-	public Class<? extends FetchRequest<?, ?>> getFetchRequestClass() {
+	public Class<? extends FetchRequest<?, ?, ?>> getFetchRequestClass() {
 		if (fetchRequestClass == null && availableFetchRequests != null && !availableFetchRequests.isEmpty()) {
 			setFetchRequestClass(availableFetchRequests.get(0));
 		}
 		return fetchRequestClass;
 	}
 
-	public void setFetchRequestClass(Class<? extends FetchRequest<?, ?>> fetchRequestClass) {
+	public void setFetchRequestClass(Class<? extends FetchRequest<?, ?, ?>> fetchRequestClass) {
 		if ((fetchRequestClass == null && this.fetchRequestClass != null)
 				|| (fetchRequestClass != null && !fetchRequestClass.equals(this.fetchRequestClass))) {
-			Class<? extends FetchRequest<?, ?>> oldValue = this.fetchRequestClass;
+			Class<? extends FetchRequest<?, ?, ?>> oldValue = this.fetchRequestClass;
 			this.fetchRequestClass = fetchRequestClass;
 			updateIteration();
 			getPropertyChangeSupport().firePropertyChange("fetchRequestClass", oldValue, fetchRequestClass);
@@ -322,11 +323,11 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 		return returned;
 	}
 
-	public FetchRequest<?, ?> getFetchRequestAction() {
+	public FetchRequest<?, ?, ?> getFetchRequestAction() {
 		if (isIterationAction()) {
 			if (getIterationType() == IterationType.FetchRequest
 					&& ((IterationAction) getBaseEditionAction()).getIterationAction() instanceof FetchRequest) {
-				return (FetchRequest<?, ?>) ((IterationAction) getBaseEditionAction()).getIterationAction();
+				return (FetchRequest<?, ?, ?>) ((IterationAction) getBaseEditionAction()).getIterationAction();
 			}
 		}
 		return null;
@@ -510,10 +511,10 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 			updateIteration((IterationAction) returned);
 		}
 		else if (FetchRequest.class.isAssignableFrom(editionActionClass) && getModelSlot() != null) {
-			returned = getModelSlot().makeFetchRequest((Class<FetchRequest<?, ?>>) editionActionClass);
+			returned = getModelSlot().makeFetchRequest((Class<FetchRequest<?, ?, ?>>) editionActionClass);
 		}
 		else if (TechnologySpecificAction.class.isAssignableFrom(editionActionClass) && getModelSlot() != null) {
-			returned = getModelSlot().makeEditionAction((Class<TechnologySpecificAction<?, ?>>) editionActionClass);
+			returned = getModelSlot().makeEditionAction((Class<TechnologySpecificAction<?, ?, ?>>) editionActionClass);
 		}
 
 		// Special case for technoly specific action whose model slot cannot be looked-up
@@ -626,15 +627,15 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 		return modelSlotSpecificActionClass;
 	}
 	
-	public void setModelSlotSpecificActionClass(Class<? extends TechnologySpecificAction<?, ?>> modelSlotSpecificActionClass) {
+	public void setModelSlotSpecificActionClass(Class<? extends TechnologySpecificAction<?, ?, ?>> modelSlotSpecificActionClass) {
 		this.modelSlotSpecificActionClass = modelSlotSpecificActionClass;
 	}
 	
-	public Class<? extends FetchRequest<?, ?>> getRequestActionClass() {
+	public Class<? extends FetchRequest<?, ?, ?>> getRequestActionClass() {
 		return requestActionClass;
 	}
 	
-	public void setRequestActionClass(Class<? extends FetchRequest<?, ?>> requestActionClass) {
+	public void setRequestActionClass(Class<? extends FetchRequest<?, ?, ?>> requestActionClass) {
 		this.requestActionClass = requestActionClass;
 	}*/
 
@@ -828,7 +829,7 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 					iterationAction.setIterationAction(exp);
 					break;
 				case FetchRequest:
-					FetchRequest<?, ?> fetchRequest = factory.newInstance(getFetchRequestClass());
+					FetchRequest<?, ?, ?> fetchRequest = factory.newInstance(getFetchRequestClass());
 					iterationAction.setIterationAction(fetchRequest);
 					List<ModelSlot<?>> availableMS = getAvailableModelSlotsForAction(getFetchRequestClass());
 					break;

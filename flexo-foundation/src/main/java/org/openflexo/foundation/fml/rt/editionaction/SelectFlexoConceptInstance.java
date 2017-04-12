@@ -100,7 +100,8 @@ import org.openflexo.model.validation.ValidationRule;
 @ImplementationClass(SelectFlexoConceptInstance.SelectFlexoConceptInstanceImpl.class)
 @XMLElement
 @FML("SelectFlexoConceptInstance")
-public interface SelectFlexoConceptInstance extends FetchRequest<FMLRTModelSlot<?, ?>, FlexoConceptInstance> {
+public interface SelectFlexoConceptInstance<VMI extends AbstractVirtualModelInstance<VMI, ?>>
+		extends FetchRequest<FMLRTModelSlot<VMI, ?>, VMI, FlexoConceptInstance> {
 
 	@PropertyIdentifier(type = String.class)
 	public static final String FLEXO_CONCEPT_TYPE_URI_KEY = "flexoConceptTypeURI";
@@ -141,8 +142,8 @@ public interface SelectFlexoConceptInstance extends FetchRequest<FMLRTModelSlot<
 	 */
 	public AbstractVirtualModel<?> getAddressedVirtualModel();
 
-	public static abstract class SelectFlexoConceptInstanceImpl extends FetchRequestImpl<FMLRTModelSlot<?, ?>, FlexoConceptInstance>
-			implements SelectFlexoConceptInstance {
+	public static abstract class SelectFlexoConceptInstanceImpl<VMI extends AbstractVirtualModelInstance<VMI, ?>>
+			extends FetchRequestImpl<FMLRTModelSlot<VMI, ?>, VMI, FlexoConceptInstance> implements SelectFlexoConceptInstance<VMI> {
 
 		protected static final Logger logger = FlexoLogger.getLogger(SelectFlexoConceptInstance.class.getPackage().getName());
 

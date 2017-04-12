@@ -58,5 +58,5 @@ import org.openflexo.foundation.technologyadapter.ModelSlot;
 @Target(value = ElementType.TYPE)
 public @interface DeclareFetchRequests {
 
-	public Class<? extends FetchRequest<?, ?>>[] value();
+	public Class<? extends FetchRequest>[] value();
 }

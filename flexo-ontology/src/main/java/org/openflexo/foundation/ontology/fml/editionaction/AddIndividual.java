@@ -51,6 +51,8 @@ import org.openflexo.foundation.ontology.IFlexoOntologyIndividual;
 import org.openflexo.foundation.ontology.IndividualOfClass;
 import org.openflexo.foundation.ontology.fml.IndividualRole;
 import org.openflexo.foundation.ontology.nature.FlexoOntologyVirtualModelNature;
+import org.openflexo.foundation.technologyadapter.FlexoModel;
+import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.foundation.technologyadapter.TypeAwareModelSlot;
 import org.openflexo.gina.annotation.FIBPanel;
 import org.openflexo.logging.FlexoLogger;
@@ -77,8 +79,8 @@ import org.openflexo.toolbox.StringUtils;
 @FIBPanel("Fib/FML/AddIndividualPanel.fib")
 @ModelEntity(isAbstract = true)
 @ImplementationClass(AddIndividual.AddIndividualImpl.class)
-public abstract interface AddIndividual<MS extends TypeAwareModelSlot<?, ?>, T extends IFlexoOntologyIndividual<?>>
-		extends AddConcept<MS, T> {
+public abstract interface AddIndividual<MS extends TypeAwareModelSlot<M, ?>, M extends FlexoModel<M, ?> & TechnologyObject<?>, T extends IFlexoOntologyIndividual<?>>
+		extends AddConcept<MS, M, T> {
 
 	@PropertyIdentifier(type = DataBinding.class)
 	public static final String INDIVIDUAL_NAME_KEY = "individualName";
@@ -156,8 +158,8 @@ public abstract interface AddIndividual<MS extends TypeAwareModelSlot<?, ?>, T e
 
 	public DataPropertyAssertion deleteDataPropertyAssertion(DataPropertyAssertion assertion);
 
-	public static abstract class AddIndividualImpl<MS extends TypeAwareModelSlot<?, ?>, T extends IFlexoOntologyIndividual<?>>
-			extends AddConceptImpl<MS, T> implements AddIndividual<MS, T> {
+	public static abstract class AddIndividualImpl<MS extends TypeAwareModelSlot<M, ?>, M extends FlexoModel<M, ?> & TechnologyObject<?>, T extends IFlexoOntologyIndividual<?>>
+			extends AddConceptImpl<MS, M, T> implements AddIndividual<MS, M, T> {
 
 		protected static final Logger logger = FlexoLogger.getLogger(AddIndividual.class.getPackage().getName());
 
@@ -363,7 +365,7 @@ public abstract interface AddIndividual<MS extends TypeAwareModelSlot<?, ?>, T e
 
 			@Override
 			protected void fixAction() {
-				AddIndividual<?, ?> action = getValidable();
+				AddIndividual<?, ?, ?> action = getValidable();
 				((AssignationAction) action.getOwner()).setAssignation(new DataBinding<Object>(flexoRole.getRoleName()));
 			}
 

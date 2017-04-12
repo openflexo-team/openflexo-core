@@ -52,7 +52,7 @@ import org.openflexo.foundation.fml.editionaction.FetchRequest;
  */
 public class FetchRequestBindingModel extends EditionActionBindingModel {
 
-	public FetchRequestBindingModel(FetchRequest<?, ?> fetchRequest) {
+	public FetchRequestBindingModel(FetchRequest<?, ?, ?> fetchRequest) {
 		super(fetchRequest);
 		if (fetchRequest.getEmbeddingIteration() != null) {
 			setBaseBindingModel(fetchRequest.getEmbeddingIteration().getBindingModel());
@@ -76,8 +76,8 @@ public class FetchRequestBindingModel extends EditionActionBindingModel {
 	}
 
 	@Override
-	public FetchRequest<?, ?> getEditionAction() {
-		return (FetchRequest<?, ?>) super.getEditionAction();
+	public FetchRequest<?, ?, ?> getEditionAction() {
+		return (FetchRequest<?, ?, ?>) super.getEditionAction();
 	}
 
 }

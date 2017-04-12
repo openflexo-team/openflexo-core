@@ -39,6 +39,7 @@
 package org.openflexo.foundation.fml.editionaction;
 
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -58,8 +59,10 @@ import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.ModelSlotInstance;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
+import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
+import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.localization.LocalizedDelegate;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -67,18 +70,19 @@ import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.PropertyIdentifier;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
+import org.openflexo.model.annotations.XMLElement;
 
 /**
- * Represents an {@link EditionAction} which address a specific technology through the reference to a {@link ModelSlot}
- * 
- * Such action must reference a {@link ModelSlot}
+ * Represents an {@link EditionAction} which address a specific technology through the reference to a container object (which is generally a
+ * pointer to a ModelSlot)
  * 
  * @author sylvain
  * 
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(TechnologySpecificAction.TechnologySpecificActionImpl.class)
-public abstract interface TechnologySpecificAction<MS extends ModelSlot<?>, T> extends AssignableAction<T> {
+public abstract interface TechnologySpecificAction<MS extends ModelSlot<RD>, RD extends ResourceData<RD> & TechnologyObject<?>, T>
+		extends AssignableAction<T> {
 
 	@PropertyIdentifier(type = DataBinding.class)
 	String RECEIVER_KEY = "receiver";
@@ -87,18 +91,25 @@ public abstract interface TechnologySpecificAction<MS extends ModelSlot<?>, T> e
 
 	@Getter(value = RECEIVER_KEY)
 	@XMLAttribute
-	DataBinding<?> getReceiver();
+	DataBinding<RD> getReceiver();
 
 	@Setter(RECEIVER_KEY)
-	void setReceiver(DataBinding<?> receiver);
+	void setReceiver(DataBinding<RD> receiver);
 
 	public Object getReceiver(BindingEvaluationContext evaluationContext);
 
+	public Class<? extends RD> getReceiverClass();
+
+	public Type getReceiverType();
+
+	// Should not be used anymore, will be removed from future releases after 1.8.1
 	@Deprecated
 	@Getter(value = MODEL_SLOT_KEY)
-	// @XMLElement(primary = false)
+	// TODO: should not be serialized anymore in future releases
+	@XMLElement(primary = false)
 	public MS getModelSlot();
 
+	// Should not be used anymore, will be removed from future releases after 1.8.1
 	@Deprecated
 	@Setter(MODEL_SLOT_KEY)
 	public void setModelSlot(MS modelSlot);
@@ -118,12 +129,12 @@ public abstract interface TechnologySpecificAction<MS extends ModelSlot<?>, T> e
 	@Deprecated
 	public TechnologyAdapter getModelSlotTechnologyAdapter();
 
-	public static abstract class TechnologySpecificActionImpl<MS extends ModelSlot<?>, T> extends AssignableActionImpl<T>
-			implements TechnologySpecificAction<MS, T> {
+	public static abstract class TechnologySpecificActionImpl<MS extends ModelSlot<RD>, RD extends ResourceData<RD> & TechnologyObject<?>, T>
+			extends AssignableActionImpl<T> implements TechnologySpecificAction<MS, RD, T> {
 
 		private static final Logger logger = Logger.getLogger(TechnologySpecificAction.class.getPackage().getName());
 
-		private DataBinding<?> receiver;
+		private DataBinding<RD> receiver;
 
 		@Deprecated
 		@Override
@@ -232,6 +243,7 @@ public abstract interface TechnologySpecificAction<MS extends ModelSlot<?>, T> e
 			return returned;
 		}
 
+		// Should not be used anymore, will be removed from future releases after 1.8.1
 		@Deprecated
 		@Override
 		public MS getModelSlot() {
@@ -243,6 +255,22 @@ public abstract interface TechnologySpecificAction<MS extends ModelSlot<?>, T> e
 				}
 			}
 			return ms;
+		}
+
+		// Should not be used anymore, will be removed from future releases after 1.8.1
+		@Deprecated
+		@Override
+		public void setModelSlot(MS modelSlot) {
+			// performSuperSetter(MODEL_SLOT_KEY, modelSlot);
+			if (modelSlot != null) {
+				getReceiver().setUnparsedBinding(modelSlot.getName());
+				if (getReceiver().isValid()) {
+					// Nothing to do
+				}
+				else {
+					getReceiver().reset();
+				}
+			}
 		}
 
 		/**
@@ -269,25 +297,26 @@ public abstract interface TechnologySpecificAction<MS extends ModelSlot<?>, T> e
 		}
 
 		@Override
-		public DataBinding<?> getReceiver() {
+		public DataBinding<RD> getReceiver() {
 			if (receiver == null) {
-				receiver = new DataBinding<Object>(this, Object.class, BindingDefinitionType.GET);
+				receiver = new DataBinding<>(this, getReceiverClass(), BindingDefinitionType.GET);
 				receiver.setBindingName("receiver");
 			}
 
 			if (!receiver.isSet() && getModelSlot() != null) {
 				receiver.setUnparsedBinding(getModelSlot().getName());
+				receiver.isValid();
 			}
 
 			return receiver;
 		}
 
 		@Override
-		public void setReceiver(DataBinding<?> receiver) {
+		public void setReceiver(DataBinding<RD> receiver) {
 			if (receiver != null) {
 				receiver.setOwner(this);
 				receiver.setBindingName("receiver");
-				receiver.setDeclaredType(Object.class);
+				receiver.setDeclaredType(getReceiverClass());
 				receiver.setBindingDefinitionType(BindingDefinitionType.GET);
 			}
 			this.receiver = receiver;
@@ -307,6 +336,16 @@ public abstract interface TechnologySpecificAction<MS extends ModelSlot<?>, T> e
 				}
 			}
 			return null;
+		}
+
+		@Override
+		public final Class<? extends RD> getReceiverClass() {
+			return (Class<? extends RD>) TypeUtils.getBaseClass(getReceiverType());
+		}
+
+		@Override
+		public final Type getReceiverType() {
+			return TypeUtils.getTypeArgument(getClass(), TechnologySpecificAction.class, 1);
 		}
 
 	}

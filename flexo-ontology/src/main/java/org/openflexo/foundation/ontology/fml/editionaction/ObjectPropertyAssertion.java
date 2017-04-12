@@ -80,11 +80,11 @@ public interface ObjectPropertyAssertion extends AbstractAssertion {
 
 	@Override
 	@Getter(value = ACTION_KEY, inverse = AddIndividual.OBJECT_ASSERTIONS_KEY)
-	public AddIndividual<?, ?> getAction();
+	public AddIndividual<?, ?, ?> getAction();
 
 	@Override
 	@Setter(ACTION_KEY)
-	public void setAction(AddIndividual<?, ?> action);
+	public void setAction(AddIndividual<?, ?, ?> action);
 
 	@Getter(value = OBJECT_PROPERTY_URI_KEY)
 	@XMLAttribute
@@ -146,8 +146,8 @@ public interface ObjectPropertyAssertion extends AbstractAssertion {
 		public Type getObjectType() {
 			if (getOntologyProperty() instanceof IFlexoOntologyObjectProperty
 					&& ((IFlexoOntologyObjectProperty) getOntologyProperty()).getRange() instanceof IFlexoOntologyClass) {
-				return IndividualOfClass.getIndividualOfClass((IFlexoOntologyClass) ((IFlexoOntologyObjectProperty) getOntologyProperty())
-						.getRange());
+				return IndividualOfClass
+						.getIndividualOfClass((IFlexoOntologyClass) ((IFlexoOntologyObjectProperty) getOntologyProperty()).getRange());
 			}
 			return IFlexoOntologyConcept.class;
 		}
@@ -207,8 +207,8 @@ public interface ObjectPropertyAssertion extends AbstractAssertion {
 	}
 
 	@DefineValidationRule
-	public static class ObjectPropertyAssertionMustDefineAnOntologyProperty extends
-			ValidationRule<ObjectPropertyAssertionMustDefineAnOntologyProperty, ObjectPropertyAssertion> {
+	public static class ObjectPropertyAssertionMustDefineAnOntologyProperty
+			extends ValidationRule<ObjectPropertyAssertionMustDefineAnOntologyProperty, ObjectPropertyAssertion> {
 		public ObjectPropertyAssertionMustDefineAnOntologyProperty() {
 			super(ObjectPropertyAssertion.class, "object_property_assertion_must_define_an_ontology_property");
 		}

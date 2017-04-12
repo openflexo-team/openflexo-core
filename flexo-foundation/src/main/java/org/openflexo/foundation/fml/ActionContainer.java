@@ -106,7 +106,7 @@ public interface ActionContainer extends FlexoBehaviourObject {
 
 	public void actionLast(EditionAction a);
 
-	public <A extends TechnologySpecificAction<?, ?>> A createAction(Class<A> actionClass, ModelSlot<?> modelSlot);
+	public <A extends TechnologySpecificAction<?, ?, ?>> A createAction(Class<A> actionClass, ModelSlot<?> modelSlot);
 
 	public EditionAction deleteAction(EditionAction anAction);
 
@@ -133,14 +133,14 @@ public interface ActionContainer extends FlexoBehaviourObject {
 			getActions().add(index, action);
 			getPropertyChangeSupport().firePropertyChange(ACTIONS_KEY, null, getActions());
 		}
-
+		
 		@Override
 		public void actionFirst(EditionAction a) {
 			getActions().remove(a);
 			getActions().add(0, a);
 			getPropertyChangeSupport().firePropertyChange(ACTIONS_KEY, null, getActions());
 		}
-
+		
 		@Override
 		public void actionUp(EditionAction a) {
 			int index = getActions().indexOf(a);
@@ -150,7 +150,7 @@ public interface ActionContainer extends FlexoBehaviourObject {
 				getPropertyChangeSupport().firePropertyChange(ACTIONS_KEY, null, getActions());
 			}
 		}
-
+		
 		@Override
 		public void actionDown(EditionAction a) {
 			int index = getActions().indexOf(a);
@@ -160,7 +160,7 @@ public interface ActionContainer extends FlexoBehaviourObject {
 				getPropertyChangeSupport().firePropertyChange(ACTIONS_KEY, null, getActions());
 			}
 		}
-
+		
 		@Override
 		public void actionLast(EditionAction a) {
 			getActions().remove(a);
@@ -178,7 +178,8 @@ public interface ActionContainer extends FlexoBehaviourObject {
 							isLast = ((ActionContainer) ea).isALastAction(a);
 						}
 					}
-				} else if (getActions().size() < getIndex(a)) {
+				}
+				else if (getActions().size() < getIndex(a)) {
 					isLast = false;
 				}
 			}
@@ -195,7 +196,8 @@ public interface ActionContainer extends FlexoBehaviourObject {
 							isFirst = ((ActionContainer) ea).isAFirstAction(a);
 						}
 					}
-				} else if (getIndex(a) == 0) {
+				}
+				else if (getIndex(a) == 0) {
 					isFirst = true;
 				}
 			}

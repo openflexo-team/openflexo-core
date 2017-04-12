@@ -91,8 +91,8 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 
 	private Map<Class<? extends ModelSlot<?>>, List<Class<? extends FlexoRole<?>>>> availableFlexoRoleTypes;
 	private Map<Class<? extends ModelSlot<?>>, List<Class<? extends FlexoBehaviour>>> availableFlexoBehaviourTypes;
-	private Map<Class<? extends ModelSlot<?>>, List<Class<? extends TechnologySpecificAction<?, ?>>>> availableEditionActionTypes;
-	private Map<Class<? extends ModelSlot<?>>, List<Class<? extends FetchRequest<?, ?>>>> availableFetchRequestActionTypes;
+	private Map<Class<? extends ModelSlot<?>>, List<Class<? extends TechnologySpecificAction<?, ?, ?>>>> availableEditionActionTypes;
+	private Map<Class<? extends ModelSlot<?>>, List<Class<? extends FetchRequest<?, ?, ?>>>> availableFetchRequestActionTypes;
 
 	// private Map<Class<? extends ModelSlot<?>>, List<Class<? extends FlexoBehaviourParameter>>> availableFlexoBehaviourParameterTypes;
 	// private Map<Class<? extends ModelSlot<?>>, List<Class<? extends InspectorEntry>>> availableInspectorEntryTypes;
@@ -441,9 +441,9 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 	 * @return
 	 */
 	@Override
-	public <MS extends ModelSlot<?>> List<Class<? extends TechnologySpecificAction<?, ?>>> getAvailableEditionActionTypes(
+	public <MS extends ModelSlot<?>> List<Class<? extends TechnologySpecificAction<?, ?, ?>>> getAvailableEditionActionTypes(
 			Class<MS> modelSlotClass) {
-		List<Class<? extends TechnologySpecificAction<?, ?>>> returned = availableEditionActionTypes.get(modelSlotClass);
+		List<Class<? extends TechnologySpecificAction<?, ?, ?>>> returned = availableEditionActionTypes.get(modelSlotClass);
 		if (returned == null) {
 			returned = new ArrayList<>();
 			appendEditionActionTypes(returned, modelSlotClass);
@@ -460,9 +460,9 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 	 * @return
 	 */
 	@Override
-	public <MS extends ModelSlot<?>> List<Class<? extends FetchRequest<?, ?>>> getAvailableFetchRequestActionTypes(
+	public <MS extends ModelSlot<?>> List<Class<? extends FetchRequest<?, ?, ?>>> getAvailableFetchRequestActionTypes(
 			Class<MS> modelSlotClass) {
-		List<Class<? extends FetchRequest<?, ?>>> returned = availableFetchRequestActionTypes.get(modelSlotClass);
+		List<Class<? extends FetchRequest<?, ?, ?>>> returned = availableFetchRequestActionTypes.get(modelSlotClass);
 		if (returned == null) {
 			returned = new ArrayList<>();
 			appendFetchRequestActionTypes(returned, modelSlotClass);
@@ -506,12 +506,12 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 		}
 	}
 
-	private static void appendEditionActionTypes(List<Class<? extends TechnologySpecificAction<?, ?>>> aList, Class<?> cl) {
+	private static void appendEditionActionTypes(List<Class<? extends TechnologySpecificAction<?, ?, ?>>> aList, Class<?> cl) {
 		if (cl.isAnnotationPresent(DeclareEditionActions.class)) {
 			DeclareEditionActions allEditionActions = cl.getAnnotation(DeclareEditionActions.class);
 			for (Class<? extends TechnologySpecificAction> editionActionClass : allEditionActions.value()) {
 				if (!aList.contains(editionActionClass)) {
-					aList.add((Class<? extends TechnologySpecificAction<?, ?>>) editionActionClass);
+					aList.add((Class<? extends TechnologySpecificAction<?, ?, ?>>) editionActionClass);
 				}
 			}
 		}
@@ -523,12 +523,12 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 		}
 	}
 
-	private static void appendFetchRequestActionTypes(List<Class<? extends FetchRequest<?, ?>>> aList, Class<?> cl) {
+	private static void appendFetchRequestActionTypes(List<Class<? extends FetchRequest<?, ?, ?>>> aList, Class<?> cl) {
 		if (cl.isAnnotationPresent(DeclareFetchRequests.class)) {
 			DeclareFetchRequests allFetchRequestActions = cl.getAnnotation(DeclareFetchRequests.class);
-			for (Class<? extends FetchRequest<?, ?>> fetchRequestClass : allFetchRequestActions.value()) {
+			for (Class<? extends FetchRequest> fetchRequestClass : allFetchRequestActions.value()) {
 				if (!aList.contains(fetchRequestClass)) {
-					aList.add(fetchRequestClass);
+					aList.add((Class) fetchRequestClass);
 				}
 			}
 		}

@@ -55,7 +55,6 @@ import org.openflexo.foundation.fml.annotations.DeclareFetchRequests;
 import org.openflexo.foundation.fml.annotations.DeclareFlexoRoles;
 import org.openflexo.foundation.fml.rm.AbstractVirtualModelResource;
 import org.openflexo.foundation.fml.rt.action.ModelSlotInstanceConfiguration;
-import org.openflexo.foundation.fml.rt.editionaction.AddClassInstance;
 import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.AddSubView;
 import org.openflexo.foundation.fml.rt.editionaction.AddVirtualModelInstance;
@@ -83,8 +82,7 @@ import org.openflexo.toolbox.StringUtils;
  * 
  */
 @DeclareFlexoRoles({ FlexoConceptInstanceRole.class, PrimitiveRole.class })
-@DeclareEditionActions({ AddFlexoConceptInstance.class, DeleteFlexoConceptInstance.class, AddVirtualModelInstance.class,
-		AddClassInstance.class, AddSubView.class })
+@DeclareEditionActions({ AddFlexoConceptInstance.class, DeleteFlexoConceptInstance.class, AddVirtualModelInstance.class, AddSubView.class })
 @DeclareFetchRequests({ SelectFlexoConceptInstance.class, SelectVirtualModelInstance.class })
 @ModelEntity(isAbstract = true)
 @ImplementationClass(FMLRTModelSlot.FMLRTModelSlotImpl.class)

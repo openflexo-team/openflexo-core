@@ -36,17 +36,22 @@
  * 
  */
 
-package org.openflexo.foundation.fml.rt.editionaction;
+package org.openflexo.foundation.fml.editionaction;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Type;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.fml.annotations.FML;
-import org.openflexo.foundation.fml.editionaction.TechnologySpecificAction;
-import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
+import org.openflexo.foundation.fml.editionaction.AddClassInstance.AddClassInstanceImpl;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
-import org.openflexo.foundation.fml.rt.editionaction.AddClassInstance.AddClassInstanceImpl;
 import org.openflexo.model.annotations.Adder;
 import org.openflexo.model.annotations.CloningStrategy;
 import org.openflexo.model.annotations.CloningStrategy.StrategyType;
@@ -64,16 +69,8 @@ import org.openflexo.model.validation.ValidationError;
 import org.openflexo.model.validation.ValidationIssue;
 import org.openflexo.model.validation.ValidationRule;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Type;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 /**
- * This action is used to instantiate a new type with some
- * parameters
+ * This action is used to instantiate a new type with some parameters
  * 
  * @author jean-charles roger
  */
@@ -82,7 +79,7 @@ import java.util.logging.Logger;
 @ImplementationClass(AddClassInstanceImpl.class)
 @XMLElement
 @FML("AddClassInstance")
-public interface AddClassInstance extends TechnologySpecificAction<FMLRTModelSlot<?, ?>, Object> {
+public interface AddClassInstance extends AssignableAction<Object> {
 
 	String TYPE = "type";
 	String PARAMETERS = "parameters";
@@ -111,7 +108,7 @@ public interface AddClassInstance extends TechnologySpecificAction<FMLRTModelSlo
 	@Remover(PARAMETERS)
 	void removeFromParameters(DataBinding<Object> aParameter);
 
-	abstract class AddClassInstanceImpl extends TechnologySpecificActionImpl<FMLRTModelSlot<?, ?>, Object> implements AddClassInstance   {
+	abstract class AddClassInstanceImpl extends AssignableActionImpl<Object> implements AddClassInstance {
 
 		static final Logger logger = Logger.getLogger(AddClassInstance.class.getPackage().getName());
 
@@ -133,9 +130,8 @@ public interface AddClassInstance extends TechnologySpecificAction<FMLRTModelSlo
 				Constructor<?> constructor = getType().getConstructor(parameterTypes);
 				return constructor.newInstance(parameters);
 
-			} catch (InstantiationException | IllegalAccessException | InvocationTargetException |
-					 NoSuchMethodException | TypeMismatchException | NullReferenceException e)
-			{
+			} catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException
+					| TypeMismatchException | NullReferenceException e) {
 				logger.log(Level.SEVERE, "Can't create instance " + getType().getCanonicalName(), e);
 				return null;
 			}
@@ -162,7 +158,7 @@ public interface AddClassInstance extends TechnologySpecificAction<FMLRTModelSlo
 		@Override
 		public ValidationIssue<AddClassMustAddressAType, AddClassInstance> applyValidation(AddClassInstance action) {
 			if (action.getType() == null) {
-				return new ValidationError(this, action,"add_class_instance_action_doesn't_define_any_type");
+				return new ValidationError(this, action, "add_class_instance_action_doesn't_define_any_type");
 			}
 			return null;
 		}

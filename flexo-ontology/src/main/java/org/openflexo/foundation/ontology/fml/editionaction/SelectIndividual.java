@@ -48,6 +48,8 @@ import org.openflexo.foundation.ontology.IFlexoOntologyClass;
 import org.openflexo.foundation.ontology.IFlexoOntologyIndividual;
 import org.openflexo.foundation.ontology.IndividualOfClass;
 import org.openflexo.foundation.technologyadapter.FlexoMetaModel;
+import org.openflexo.foundation.technologyadapter.FlexoModel;
+import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.foundation.technologyadapter.TypeAwareModelSlot;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.model.annotations.Getter;
@@ -70,8 +72,8 @@ import org.openflexo.toolbox.StringUtils;
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(SelectIndividual.SelectIndividualImpl.class)
-public abstract interface SelectIndividual<MS extends TypeAwareModelSlot<?, ?>, T extends IFlexoOntologyIndividual>
-		extends FetchRequest<MS, T> {
+public abstract interface SelectIndividual<MS extends TypeAwareModelSlot<M, ?>, M extends FlexoModel<M, ?> & TechnologyObject<?>, T extends IFlexoOntologyIndividual>
+		extends FetchRequest<MS, M, T> {
 
 	@PropertyIdentifier(type = String.class)
 	public static final String ONTOLOGY_CLASS_URI_KEY = "ontologyClassURI";
@@ -91,8 +93,8 @@ public abstract interface SelectIndividual<MS extends TypeAwareModelSlot<?, ?>, 
 
 	public IFlexoOntology<?> getMetaModelAsOntology();
 
-	public static abstract class SelectIndividualImpl<MS extends TypeAwareModelSlot<?, ?>, T extends IFlexoOntologyIndividual>
-			extends FetchRequestImpl<MS, T>implements SelectIndividual<MS, T> {
+	public static abstract class SelectIndividualImpl<MS extends TypeAwareModelSlot<M, ?>, M extends FlexoModel<M, ?> & TechnologyObject<?>, T extends IFlexoOntologyIndividual>
+			extends FetchRequestImpl<MS, M, T> implements SelectIndividual<MS, M, T> {
 
 		protected static final Logger logger = FlexoLogger.getLogger(SelectIndividual.class.getPackage().getName());
 

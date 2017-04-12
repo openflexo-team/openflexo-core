@@ -46,6 +46,8 @@ import org.openflexo.foundation.fml.editionaction.TechnologySpecificAction;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.TypeAwareModelSlotInstance;
 import org.openflexo.foundation.ontology.IFlexoOntologyClass;
+import org.openflexo.foundation.technologyadapter.FlexoModel;
+import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.foundation.technologyadapter.TypeAwareModelSlot;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -53,10 +55,11 @@ import org.openflexo.model.annotations.ModelEntity;
 
 @ModelEntity(isAbstract = true)
 @ImplementationClass(AddConcept.AddConceptImpl.class)
-public abstract interface AddConcept<MS extends TypeAwareModelSlot<?, ?>, T> extends TechnologySpecificAction<MS, T> {
+public abstract interface AddConcept<MS extends TypeAwareModelSlot<M, ?>, M extends FlexoModel<M, ?> & TechnologyObject<?>, T>
+		extends TechnologySpecificAction<MS, M, T> {
 
-	public static abstract class AddConceptImpl<MS extends TypeAwareModelSlot<?, ?>, T> extends TechnologySpecificActionImpl<MS, T>
-			implements AddConcept<MS, T> {
+	public static abstract class AddConceptImpl<MS extends TypeAwareModelSlot<M, ?>, M extends FlexoModel<M, ?> & TechnologyObject<?>, T>
+			extends TechnologySpecificActionImpl<MS, M, T> implements AddConcept<MS, M, T> {
 
 		protected static final Logger logger = FlexoLogger.getLogger(AddConcept.class.getPackage().getName());
 

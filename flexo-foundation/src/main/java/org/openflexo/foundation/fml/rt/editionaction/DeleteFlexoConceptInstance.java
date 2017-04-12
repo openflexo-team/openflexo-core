@@ -101,8 +101,8 @@ import org.openflexo.model.validation.ValidationRule;
 @ImplementationClass(DeleteFlexoConceptInstance.DeleteFlexoConceptInstanceImpl.class)
 @XMLElement
 @FML("DeleteFlexoConceptInstance")
-public interface DeleteFlexoConceptInstance
-		extends DeleteAction<FlexoConceptInstance>, TechnologySpecificAction<FMLRTModelSlot<?, ?>, FlexoConceptInstance> {
+public interface DeleteFlexoConceptInstance<VMI extends AbstractVirtualModelInstance<VMI, ?>>
+		extends DeleteAction<FlexoConceptInstance>, TechnologySpecificAction<FMLRTModelSlot<VMI, ?>, VMI, FlexoConceptInstance> {
 
 	// @PropertyIdentifier(type = DataBinding.class)
 	// public static final String VIRTUAL_MODEL_INSTANCE_KEY = "virtualModelInstance";
@@ -146,8 +146,8 @@ public interface DeleteFlexoConceptInstance
 
 	public FlexoConcept getFlexoConceptType();
 
-	public static abstract class DeleteFlexoConceptInstanceImpl extends DeleteActionImpl<FlexoConceptInstance>
-			implements DeleteFlexoConceptInstance {
+	public static abstract class DeleteFlexoConceptInstanceImpl<VMI extends AbstractVirtualModelInstance<VMI, ?>>
+			extends DeleteActionImpl<FlexoConceptInstance> implements DeleteFlexoConceptInstance<VMI> {
 
 		private static final Logger logger = Logger.getLogger(DeleteFlexoConceptInstance.class.getPackage().getName());
 
@@ -455,17 +455,17 @@ public interface DeleteFlexoConceptInstance
 
 	@DefineValidationRule
 	public static class DeleteFlexoConceptInstanceParametersMustBeValid
-			extends ValidationRule<DeleteFlexoConceptInstanceParametersMustBeValid, DeleteFlexoConceptInstance> {
+			extends ValidationRule<DeleteFlexoConceptInstanceParametersMustBeValid, DeleteFlexoConceptInstance<?>> {
 
 		public DeleteFlexoConceptInstanceParametersMustBeValid() {
 			super(DeleteFlexoConceptInstance.class, "delete_flexo_concept_parameters_must_be_valid");
 		}
 
 		@Override
-		public ValidationIssue<DeleteFlexoConceptInstanceParametersMustBeValid, DeleteFlexoConceptInstance> applyValidation(
-				DeleteFlexoConceptInstance action) {
+		public ValidationIssue<DeleteFlexoConceptInstanceParametersMustBeValid, DeleteFlexoConceptInstance<?>> applyValidation(
+				DeleteFlexoConceptInstance<?> action) {
 			if (action.getDeletionScheme() != null) {
-				Vector<ValidationIssue<DeleteFlexoConceptInstanceParametersMustBeValid, DeleteFlexoConceptInstance>> issues = new Vector<ValidationIssue<DeleteFlexoConceptInstanceParametersMustBeValid, DeleteFlexoConceptInstance>>();
+				Vector<ValidationIssue<DeleteFlexoConceptInstanceParametersMustBeValid, DeleteFlexoConceptInstance<?>>> issues = new Vector<>();
 				for (DeleteFlexoConceptInstanceParameter p : action.getParameters()) {
 
 					FlexoBehaviourParameter param = p.getParam();
@@ -476,15 +476,16 @@ public interface DeleteFlexoConceptInstance
 								// Special case, we will find a way to manage this
 							}
 							else {
-								issues.add(new ValidationError<DeleteFlexoConceptInstanceParametersMustBeValid, DeleteFlexoConceptInstance>(
-										this, action, "parameter_s_value_is_not_defined: " + param.getName()));
+								issues.add(
+										new ValidationError<DeleteFlexoConceptInstanceParametersMustBeValid, DeleteFlexoConceptInstance<?>>(
+												this, action, "parameter_s_value_is_not_defined: " + param.getName()));
 							}
 						}
 						else if (!p.getValue().isValid()) {
 							DeleteFlexoConceptInstanceImpl.logger
 									.info("Binding NOT valid: " + p.getValue() + " for " + p.getParam().getName() + " object="
 											+ p.getAction() + ". Reason: " + p.getValue().invalidBindingReason());
-							issues.add(new ValidationError<DeleteFlexoConceptInstanceParametersMustBeValid, DeleteFlexoConceptInstance>(
+							issues.add(new ValidationError<DeleteFlexoConceptInstanceParametersMustBeValid, DeleteFlexoConceptInstance<?>>(
 									this, action, "parameter_s_value_is_not_valid: " + param.getName()));
 						}
 					}
@@ -496,8 +497,7 @@ public interface DeleteFlexoConceptInstance
 					return issues.firstElement();
 				}
 				else {
-					return new CompoundIssue<DeleteFlexoConceptInstance.DeleteFlexoConceptInstanceParametersMustBeValid, DeleteFlexoConceptInstance>(
-							action, issues);
+					return new CompoundIssue<>(action, issues);
 				}
 			}
 			return null;

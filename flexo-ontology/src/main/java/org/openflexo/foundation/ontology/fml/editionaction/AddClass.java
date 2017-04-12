@@ -49,6 +49,8 @@ import org.openflexo.foundation.ontology.IFlexoOntologyClass;
 import org.openflexo.foundation.ontology.SubClassOfClass;
 import org.openflexo.foundation.ontology.fml.ClassRole;
 import org.openflexo.foundation.ontology.nature.FlexoOntologyVirtualModelNature;
+import org.openflexo.foundation.technologyadapter.FlexoModel;
+import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.foundation.technologyadapter.TypeAwareModelSlot;
 import org.openflexo.model.annotations.DefineValidationRule;
 import org.openflexo.model.annotations.Getter;
@@ -64,7 +66,8 @@ import org.openflexo.model.validation.ValidationRule;
 
 @ModelEntity(isAbstract = true)
 @ImplementationClass(AddClass.AddClassImpl.class)
-public abstract interface AddClass<MS extends TypeAwareModelSlot<?, ?>, T extends IFlexoOntologyClass> extends AddConcept<MS, T> {
+public abstract interface AddClass<MS extends TypeAwareModelSlot<M, ?>, M extends FlexoModel<M, ?> & TechnologyObject<?>, T extends IFlexoOntologyClass>
+		extends AddConcept<MS, M, T> {
 
 	@PropertyIdentifier(type = DataBinding.class)
 	public static final String CLASS_NAME_KEY = "className";
@@ -100,8 +103,8 @@ public abstract interface AddClass<MS extends TypeAwareModelSlot<?, ?>, T extend
 	@Setter(MODEL_SLOT_KEY)
 	public void setModelSlot(MS modelSlot);
 
-	public static abstract class AddClassImpl<MS extends TypeAwareModelSlot<?, ?>, T extends IFlexoOntologyClass> extends
-			AddConceptImpl<MS, T> implements AddClass<MS, T> {
+	public static abstract class AddClassImpl<MS extends TypeAwareModelSlot<M, ?>, M extends FlexoModel<M, ?> & TechnologyObject<?>, T extends IFlexoOntologyClass>
+			extends AddConceptImpl<MS, M, T> implements AddClass<MS, M, T> {
 
 		private static final Logger logger = Logger.getLogger(AddClass.class.getPackage().getName());
 
@@ -118,7 +121,8 @@ public abstract interface AddClass<MS extends TypeAwareModelSlot<?, ?>, T extend
 			FlexoProperty<?> superFlexoRole = super.getAssignedFlexoProperty();
 			if (superFlexoRole instanceof ClassRole) {
 				return (ClassRole) superFlexoRole;
-			} else if (superFlexoRole != null) {
+			}
+			else if (superFlexoRole != null) {
 				// logger.warning("Unexpected pattern property of type " +
 				// superPatternRole.getClass().getSimpleName());
 				return null;
@@ -130,7 +134,8 @@ public abstract interface AddClass<MS extends TypeAwareModelSlot<?, ?>, T extend
 		public IFlexoOntologyClass<?> getOntologyClass() {
 			if (FlexoOntologyVirtualModelNature.INSTANCE.hasNature(getOwningVirtualModel())) {
 				return FlexoOntologyVirtualModelNature.getOntologyClass(ontologyClassURI, getOwningVirtualModel());
-			} else {
+			}
+			else {
 				if (getAssignedFlexoProperty() instanceof ClassRole) {
 					return getAssignedFlexoProperty().getOntologicType();
 				}
@@ -146,13 +151,16 @@ public abstract interface AddClass<MS extends TypeAwareModelSlot<?, ?>, T extend
 				if (getAssignedFlexoProperty() instanceof ClassRole) {
 					if (getAssignedFlexoProperty().getOntologicType().isSuperConceptOf(ontologyClass)) {
 						ontologyClassURI = ontologyClass.getURI();
-					} else {
+					}
+					else {
 						getAssignedFlexoProperty().setOntologicType(ontologyClass);
 					}
-				} else {
+				}
+				else {
 					ontologyClassURI = ontologyClass.getURI();
 				}
-			} else {
+			}
+			else {
 				ontologyClassURI = null;
 			}
 		}
@@ -160,7 +168,8 @@ public abstract interface AddClass<MS extends TypeAwareModelSlot<?, ?>, T extend
 		@Override
 		public String _getOntologyClassURI() {
 			if (getOntologyClass() != null) {
-				if (getAssignedFlexoProperty() instanceof ClassRole && getAssignedFlexoProperty().getOntologicType() == getOntologyClass()) {
+				if (getAssignedFlexoProperty() instanceof ClassRole
+						&& getAssignedFlexoProperty().getOntologicType() == getOntologyClass()) {
 					// No need to store an overriding type, just use default
 					// provided by pattern property
 					return null;
@@ -239,7 +248,7 @@ public abstract interface AddClass<MS extends TypeAwareModelSlot<?, ?>, T extend
 
 			@Override
 			protected void fixAction() {
-				AddClass<?, ?> action = getValidable();
+				AddClass<?, ?, ?> action = getValidable();
 				((AssignationAction) action.getOwner()).setAssignation(new DataBinding<Object>(flexoRole.getRoleName()));
 			}
 

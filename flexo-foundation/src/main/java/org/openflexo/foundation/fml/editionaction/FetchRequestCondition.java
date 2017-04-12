@@ -81,10 +81,10 @@ public interface FetchRequestCondition extends FlexoConceptObject {
 	public static final String CONDITION_KEY = "condition";
 
 	@Getter(value = ACTION_KEY /*, inverse = FetchRequest.CONDITIONS_KEY*/)
-	public FetchRequest<?, ?> getAction();
+	public FetchRequest<?, ?, ?> getAction();
 
 	@Setter(ACTION_KEY)
-	public void setAction(FetchRequest<?, ?> action);
+	public void setAction(FetchRequest<?, ?, ?> action);
 
 	@Getter(value = CONDITION_KEY)
 	@XMLAttribute

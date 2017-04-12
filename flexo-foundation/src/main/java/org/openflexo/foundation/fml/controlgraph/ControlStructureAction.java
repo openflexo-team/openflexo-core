@@ -348,7 +348,7 @@ public abstract interface ControlStructureAction extends EditionAction, FMLContr
 		 * @return newly created {@link EditionAction}
 		 */
 		@Override
-		public <A extends TechnologySpecificAction<?, ?>> A createAction(Class<A> actionClass, ModelSlot<?> modelSlot) {
+		public <A extends TechnologySpecificAction<?, ?, ?>> A createAction(Class<A> actionClass, ModelSlot<?> modelSlot) {
 			A newAction = modelSlot.createAction(actionClass);
 			addToActions(newAction);
 			return newAction;

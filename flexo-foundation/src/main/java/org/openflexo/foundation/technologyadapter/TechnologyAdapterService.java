@@ -221,7 +221,7 @@ public interface TechnologyAdapterService extends FlexoService, CustomTypeManage
 	 * @param modelSlotClass
 	 * @return
 	 */
-	public <MS extends ModelSlot<?>> List<Class<? extends TechnologySpecificAction<?, ?>>> getAvailableEditionActionTypes(
+	public <MS extends ModelSlot<?>> List<Class<? extends TechnologySpecificAction<?, ?, ?>>> getAvailableEditionActionTypes(
 			Class<MS> modelSlotClass);
 
 	/**
@@ -230,7 +230,7 @@ public interface TechnologyAdapterService extends FlexoService, CustomTypeManage
 	 * @param modelSlotClass
 	 * @return
 	 */
-	public <MS extends ModelSlot<?>> List<Class<? extends FetchRequest<?, ?>>> getAvailableFetchRequestActionTypes(
+	public <MS extends ModelSlot<?>> List<Class<? extends FetchRequest<?, ?, ?>>> getAvailableFetchRequestActionTypes(
 			Class<MS> modelSlotClass);
 
 	/**

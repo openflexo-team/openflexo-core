@@ -70,7 +70,7 @@ import org.openflexo.model.annotations.XMLAttribute;
 @ModelEntity(isAbstract = true)
 @ImplementationClass(FMLRTAction.FMLRTActionImpl.class)
 public interface FMLRTAction<T extends ViewObject, VMI extends AbstractVirtualModelInstance<VMI, ?>>
-		extends TechnologySpecificAction<FMLRTModelSlot<VMI, ?>, T> {
+		extends TechnologySpecificAction<FMLRTModelSlot<VMI, ?>, VMI, T> {
 
 	@PropertyIdentifier(type = DataBinding.class)
 	public static final String VIRTUAL_MODEL_INSTANCE_KEY = "virtualModelInstance";
@@ -92,7 +92,7 @@ public interface FMLRTAction<T extends ViewObject, VMI extends AbstractVirtualMo
 	public AbstractVirtualModel<?> getOwnerVirtualModelType();
 
 	public static abstract class FMLRTActionImpl<T extends ViewObject, VMI extends AbstractVirtualModelInstance<VMI, ?>>
-			extends TechnologySpecificActionImpl<FMLRTModelSlot<VMI, ?>, T>implements FMLRTAction<T, VMI> {
+			extends TechnologySpecificActionImpl<FMLRTModelSlot<VMI, ?>, VMI, T> implements FMLRTAction<T, VMI> {
 
 		static final Logger logger = Logger.getLogger(FMLRTAction.class.getPackage().getName());
 

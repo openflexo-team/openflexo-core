@@ -63,6 +63,7 @@ import org.openflexo.foundation.fml.controlgraph.IncrementalIterationAction;
 import org.openflexo.foundation.fml.controlgraph.IterationAction;
 import org.openflexo.foundation.fml.controlgraph.Sequence;
 import org.openflexo.foundation.fml.controlgraph.WhileAction;
+import org.openflexo.foundation.fml.editionaction.AddClassInstance;
 import org.openflexo.foundation.fml.editionaction.AddToListAction;
 import org.openflexo.foundation.fml.editionaction.AssignableAction;
 import org.openflexo.foundation.fml.editionaction.AssignationAction;
@@ -87,7 +88,6 @@ import org.openflexo.foundation.fml.inspector.TextAreaInspectorEntry;
 import org.openflexo.foundation.fml.inspector.TextFieldInspectorEntry;
 import org.openflexo.foundation.fml.rm.AbstractVirtualModelResource;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
-import org.openflexo.foundation.fml.rt.editionaction.AddClassInstance;
 import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstanceParameter;
 import org.openflexo.foundation.fml.rt.editionaction.AddSubView;
@@ -245,7 +245,7 @@ public class FMLModelFactory extends FGEModelFactoryImpl implements PamelaResour
 				}
 				DeclareFetchRequests frDeclarations = modelSlotClass.getAnnotation(DeclareFetchRequests.class);
 				if (frDeclarations != null) {
-					for (Class<? extends FetchRequest<?, ?>> fetchRequestClass : frDeclarations.value()) {
+					for (Class<? extends FetchRequest> fetchRequestClass : frDeclarations.value()) {
 						classes.add(fetchRequestClass);
 					}
 				}

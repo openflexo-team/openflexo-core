@@ -49,7 +49,9 @@ import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.controlgraph.FetchRequestIterationAction;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
+import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
+import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.model.annotations.Adder;
 import org.openflexo.model.annotations.CloningStrategy;
 import org.openflexo.model.annotations.CloningStrategy.StrategyType;
@@ -71,7 +73,8 @@ import org.openflexo.model.annotations.XMLElement;
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(FetchRequest.FetchRequestImpl.class)
-public abstract interface FetchRequest<MS extends ModelSlot<?>, T> extends TechnologySpecificAction<MS, List<T>> {
+public abstract interface FetchRequest<MS extends ModelSlot<RD>, RD extends ResourceData<RD> & TechnologyObject<?>, T>
+		extends TechnologySpecificAction<MS, RD, List<T>> {
 
 	@PropertyIdentifier(type = Vector.class)
 	public static final String CONDITIONS_KEY = "conditions";
@@ -103,8 +106,8 @@ public abstract interface FetchRequest<MS extends ModelSlot<?>, T> extends Techn
 
 	public Type getFetchedType();
 
-	public static abstract class FetchRequestImpl<MS extends ModelSlot<?>, T> extends TechnologySpecificActionImpl<MS, List<T>>
-			implements FetchRequest<MS, T> {
+	public static abstract class FetchRequestImpl<MS extends ModelSlot<RD>, RD extends ResourceData<RD> & TechnologyObject<?>, T>
+			extends TechnologySpecificActionImpl<MS, RD, List<T>> implements FetchRequest<MS, RD, T> {
 
 		private static final Logger logger = Logger.getLogger(FetchRequest.class.getPackage().getName());
 

@@ -153,7 +153,7 @@ public class FMLControlGraphConverter {
 		if (anAction instanceof FetchRequestIterationAction) {
 
 			FetchRequestIterationAction fetchRequestIteration = (FetchRequestIterationAction) anAction;
-			FetchRequest<?, ?> fetchRequest = fetchRequestIteration.getFetchRequest();
+			FetchRequest<?, ?, ?> fetchRequest = fetchRequestIteration.getFetchRequest();
 			IterationAction action = owner.getFMLModelFactory().newIterationAction();
 			action.initializeDeserialization(owner.getFMLModelFactory());
 			action.setIteratorName(fetchRequestIteration.getIteratorName());

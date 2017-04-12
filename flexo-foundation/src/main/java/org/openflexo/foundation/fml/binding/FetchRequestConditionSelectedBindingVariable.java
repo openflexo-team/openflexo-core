@@ -67,7 +67,7 @@ public class FetchRequestConditionSelectedBindingVariable extends BindingVariabl
 			if (condition.getPropertyChangeSupport() != null) {
 				condition.getPropertyChangeSupport().addPropertyChangeListener(this);
 			}
-			FetchRequest<?, ?> action = condition.getAction();
+			FetchRequest<?, ?, ?> action = condition.getAction();
 			lastKnownType = action != null ? condition.getAction().getFetchedType() : Object.class;
 			if (action != null && action.getPropertyChangeSupport() != null) {
 				action.getPropertyChangeSupport().addPropertyChangeListener(this);
@@ -81,7 +81,7 @@ public class FetchRequestConditionSelectedBindingVariable extends BindingVariabl
 			if (condition.getPropertyChangeSupport() != null) {
 				condition.getPropertyChangeSupport().addPropertyChangeListener(this);
 			}
-			FetchRequest<?, ?> action = condition.getAction();
+			FetchRequest<?, ?, ?> action = condition.getAction();
 			if (action != null && action.getPropertyChangeSupport() != null) {
 				action.getPropertyChangeSupport().addPropertyChangeListener(this);
 			}

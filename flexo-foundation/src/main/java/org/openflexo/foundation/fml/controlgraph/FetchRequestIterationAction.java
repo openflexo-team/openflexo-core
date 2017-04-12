@@ -90,10 +90,10 @@ public interface FetchRequestIterationAction extends ControlStructureAction, FML
 	@XMLElement(context = "FetchRequest_")
 	@Embedded
 	@CloningStrategy(StrategyType.CLONE)
-	public FetchRequest<?, ?> getFetchRequest();
+	public FetchRequest<?, ?, ?> getFetchRequest();
 
 	@Setter(FETCH_REQUEST_KEY)
-	public void setFetchRequest(FetchRequest<?, ?> fetchRequest);
+	public void setFetchRequest(FetchRequest<?, ?, ?> fetchRequest);
 
 	public Type getItemType();
 
@@ -149,7 +149,7 @@ public interface FetchRequestIterationAction extends ControlStructureAction, FML
 		}
 
 		@Override
-		public void setFetchRequest(FetchRequest<?, ?> fetchRequest) {
+		public void setFetchRequest(FetchRequest<?, ?, ?> fetchRequest) {
 			performSuperSetter(FETCH_REQUEST_KEY, fetchRequest);
 			if (fetchRequest != null) {
 				fetchRequest.setActionContainer(this);

@@ -83,7 +83,7 @@ public interface FlexoOntologyModelSlot<M extends FlexoModel<M, MM> & IFlexoOnto
 	 */
 	public IndividualRole<?> makeIndividualRole(IFlexoOntologyClass<?> type);
 
-	public AddIndividual<? extends FlexoOntologyModelSlot<M, MM, TA>, ?> makeAddIndividualAction(IndividualRole<?> individualRole,
+	public AddIndividual<? extends FlexoOntologyModelSlot<M, MM, TA>, M, ?> makeAddIndividualAction(IndividualRole<?> individualRole,
 			AbstractCreationScheme creationScheme);
 
 	public abstract Class<? extends IndividualRole<?>> getIndividualRoleClass();
@@ -123,9 +123,9 @@ public interface FlexoOntologyModelSlot<M extends FlexoModel<M, MM> & IFlexoOnto
 		}
 
 		@Override
-		public AddIndividual<? extends FlexoOntologyModelSlot<M, MM, TA>, ?> makeAddIndividualAction(IndividualRole<?> flexoRole,
+		public AddIndividual<? extends FlexoOntologyModelSlot<M, MM, TA>, M, ?> makeAddIndividualAction(IndividualRole<?> flexoRole,
 				AbstractCreationScheme creationScheme) {
-			Class<? extends AddIndividual<? extends FlexoOntologyModelSlot<M, MM, TA>, ?>> addIndividualClass = (Class<? extends AddIndividual<? extends FlexoOntologyModelSlot<M, MM, TA>, ?>>) getEditionActionClass(
+			Class<? extends AddIndividual<? extends FlexoOntologyModelSlot<M, MM, TA>, M, ?>> addIndividualClass = (Class<? extends AddIndividual<? extends FlexoOntologyModelSlot<M, MM, TA>, M, ?>>) getEditionActionClass(
 					AddIndividual.class);
 			AddIndividual returned = makeEditionAction(addIndividualClass);
 			returned.setModelSlot(this);

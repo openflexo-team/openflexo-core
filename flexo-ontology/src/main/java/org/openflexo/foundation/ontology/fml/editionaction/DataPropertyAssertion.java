@@ -72,11 +72,11 @@ public interface DataPropertyAssertion extends AbstractAssertion {
 
 	@Override
 	@Getter(value = ACTION_KEY, inverse = AddIndividual.DATA_ASSERTIONS_KEY)
-	public AddIndividual<?, ?> getAction();
+	public AddIndividual<?, ?, ?> getAction();
 
 	@Override
 	@Setter(ACTION_KEY)
-	public void setAction(AddIndividual<?, ?> action);
+	public void setAction(AddIndividual<?, ?, ?> action);
 
 	@Getter(value = DATA_PROPERTY_URI_KEY)
 	@XMLAttribute
@@ -179,8 +179,8 @@ public interface DataPropertyAssertion extends AbstractAssertion {
 	}
 
 	@DefineValidationRule
-	public static class DataPropertyAssertionMustDefineAnOntologyProperty extends
-			ValidationRule<DataPropertyAssertionMustDefineAnOntologyProperty, DataPropertyAssertion> {
+	public static class DataPropertyAssertionMustDefineAnOntologyProperty
+			extends ValidationRule<DataPropertyAssertionMustDefineAnOntologyProperty, DataPropertyAssertion> {
 		public DataPropertyAssertionMustDefineAnOntologyProperty() {
 			super(DataPropertyAssertion.class, "data_property_assertion_must_define_an_ontology_property");
 		}

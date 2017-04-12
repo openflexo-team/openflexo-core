@@ -44,7 +44,9 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.FlexoRole;
+import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
+import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.model.annotations.DefineValidationRule;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -66,7 +68,8 @@ import org.openflexo.model.validation.ValidationRule;
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(RoleSpecificAction.RoleSpecificActionImpl.class)
-public abstract interface RoleSpecificAction<R extends FlexoRole<T>, MS extends ModelSlot<?>, T> extends TechnologySpecificAction<MS, T> {
+public abstract interface RoleSpecificAction<R extends FlexoRole<T>, MS extends ModelSlot<RD>, RD extends ResourceData<RD> & TechnologyObject<?>, T>
+		extends TechnologySpecificAction<MS, RD, T> {
 
 	@PropertyIdentifier(type = FlexoRole.class)
 	public static final String FLEXO_ROLE_KEY = "flexoRole";
@@ -82,8 +85,8 @@ public abstract interface RoleSpecificAction<R extends FlexoRole<T>, MS extends 
 
 	public List<R> getAvailableRoles();
 
-	public static abstract class RoleSpecificActionImpl<R extends FlexoRole<T>, MS extends ModelSlot<?>, T>
-			extends TechnologySpecificActionImpl<MS, T> implements RoleSpecificAction<R, MS, T> {
+	public static abstract class RoleSpecificActionImpl<R extends FlexoRole<T>, MS extends ModelSlot<RD>, RD extends ResourceData<RD> & TechnologyObject<?>, T>
+			extends TechnologySpecificActionImpl<MS, RD, T> implements RoleSpecificAction<R, MS, RD, T> {
 
 		private static final Logger logger = Logger.getLogger(RoleSpecificAction.class.getPackage().getName());
 

@@ -206,13 +206,13 @@ public class CreateEditionActionWizard extends AbstractCreateFMLElementWizard<Cr
 			}
 		}
 
-		public Class<? extends FetchRequest<?, ?>> getFetchRequestClass() {
+		public Class<? extends FetchRequest<?, ?, ?>> getFetchRequestClass() {
 			return getAction().getFetchRequestClass();
 		}
 
-		public void setFetchRequestClass(Class<? extends FetchRequest<?, ?>> fetchRequestClass) {
+		public void setFetchRequestClass(Class<? extends FetchRequest<?, ?, ?>> fetchRequestClass) {
 			if (getFetchRequestClass() != fetchRequestClass) {
-				Class<? extends FetchRequest<?, ?>> oldValue = getFetchRequestClass();
+				Class<? extends FetchRequest<?, ?, ?>> oldValue = getFetchRequestClass();
 				getAction().setFetchRequestClass(fetchRequestClass);
 				getPropertyChangeSupport().firePropertyChange("fetchRequestClass", oldValue, fetchRequestClass);
 				checkValidity();

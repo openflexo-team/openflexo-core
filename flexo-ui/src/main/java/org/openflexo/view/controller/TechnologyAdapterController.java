@@ -45,7 +45,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
-import javax.swing.*;
+
+import javax.swing.ImageIcon;
+
 import org.openflexo.ApplicationContext;
 import org.openflexo.components.widget.FIBTechnologyBrowser;
 import org.openflexo.connie.DataBinding;
@@ -63,6 +65,7 @@ import org.openflexo.foundation.fml.controlgraph.ConditionalAction;
 import org.openflexo.foundation.fml.controlgraph.IncrementalIterationAction;
 import org.openflexo.foundation.fml.controlgraph.IterationAction;
 import org.openflexo.foundation.fml.controlgraph.WhileAction;
+import org.openflexo.foundation.fml.editionaction.AddClassInstance;
 import org.openflexo.foundation.fml.editionaction.AddToListAction;
 import org.openflexo.foundation.fml.editionaction.DeleteAction;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
@@ -71,7 +74,6 @@ import org.openflexo.foundation.fml.editionaction.LogAction;
 import org.openflexo.foundation.fml.editionaction.NotifyPropertyChangedAction;
 import org.openflexo.foundation.fml.editionaction.RemoveFromListAction;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
-import org.openflexo.foundation.fml.rt.editionaction.AddClassInstance;
 import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.AddSubView;
 import org.openflexo.foundation.fml.rt.editionaction.AddVirtualModelInstance;
@@ -559,7 +561,8 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 	 * @param object
 	 * @return
 	 */
-	public FIBWidget makeWidget(final WidgetContext object, FlexoBehaviourAction<?, ?, ?> action, FIBModelFactory fibModelFactory, boolean[] expand) {
+	public FIBWidget makeWidget(final WidgetContext object, FlexoBehaviourAction<?, ?, ?> action, FIBModelFactory fibModelFactory,
+			boolean[] expand) {
 		if (object.getWidget() != null) {
 			switch (object.getWidget()) {
 				case TEXT_FIELD:
@@ -671,7 +674,6 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 
 		return null;
 	}
-
 
 	/**
 	 * Provides a hook to handle specific {@link FlexoBehaviourParameter} for a given technology

@@ -41,6 +41,8 @@ package org.openflexo.foundation.ontology.fml.editionaction;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.ontology.IFlexoOntologyIndividual;
+import org.openflexo.foundation.technologyadapter.FlexoModel;
+import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.foundation.technologyadapter.TypeAwareModelSlot;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
@@ -53,11 +55,11 @@ import org.openflexo.model.annotations.ModelEntity;
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(CloneIndividual.CloneIndividualImpl.class)
-public abstract interface CloneIndividual<MS extends TypeAwareModelSlot<?, ?>, T extends IFlexoOntologyIndividual<?>> extends
-		AddIndividual<MS, T> {
+public abstract interface CloneIndividual<MS extends TypeAwareModelSlot<M, ?>, M extends FlexoModel<M, ?> & TechnologyObject<?>, T extends IFlexoOntologyIndividual<?>>
+		extends AddIndividual<MS, M, T> {
 
-	public static abstract class CloneIndividualImpl<MS extends TypeAwareModelSlot<?, ?>, T extends IFlexoOntologyIndividual<?>> extends
-			AddIndividualImpl<MS, T> implements CloneIndividual<MS, T> {
+	public static abstract class CloneIndividualImpl<MS extends TypeAwareModelSlot<M, ?>, M extends FlexoModel<M, ?> & TechnologyObject<?>, T extends IFlexoOntologyIndividual<?>>
+			extends AddIndividualImpl<MS, M, T> implements CloneIndividual<MS, M, T> {
 
 		private static final Logger logger = Logger.getLogger(CloneIndividual.class.getPackage().getName());
 

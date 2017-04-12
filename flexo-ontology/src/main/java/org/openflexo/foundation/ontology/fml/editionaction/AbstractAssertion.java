@@ -64,9 +64,9 @@ public abstract interface AbstractAssertion extends FlexoConceptObject {
 	@PropertyIdentifier(type = DataBinding.class)
 	public static final String CONDITIONAL_KEY = "conditional";
 
-	public AddIndividual<?, ?> getAction();
+	public AddIndividual<?, ?, ?> getAction();
 
-	public void setAction(AddIndividual<?, ?> action);
+	public void setAction(AddIndividual<?, ?, ?> action);
 
 	@Getter(value = CONDITIONAL_KEY)
 	@XMLAttribute
@@ -99,7 +99,7 @@ public abstract interface AbstractAssertion extends FlexoConceptObject {
 		public void setAction(AddIndividual<?, ?> action) {
 			_action = action;
 		}
-
+		
 		@Override
 		public AddIndividual<?, ?> getAction() {
 			return _action;

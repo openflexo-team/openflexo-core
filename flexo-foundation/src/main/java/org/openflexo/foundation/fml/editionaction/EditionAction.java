@@ -67,7 +67,6 @@ import org.openflexo.foundation.fml.controlgraph.WhileAction;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext.ReturnException;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
-import org.openflexo.foundation.fml.rt.editionaction.AddClassInstance;
 import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.AddSubView;
 import org.openflexo.foundation.fml.rt.editionaction.AddVirtualModelInstance;
@@ -452,7 +451,7 @@ public abstract interface EditionAction extends FMLControlGraph {
 		 * 
 		 * @return newly created {@link EditionAction}
 		 */
-		public <A extends TechnologySpecificAction<?, ?>> A createActionAtCurrentIndex(Class<A> actionClass, ModelSlot<?> modelSlot) {
+		public <A extends TechnologySpecificAction<?, ?, ?>> A createActionAtCurrentIndex(Class<A> actionClass, ModelSlot<?> modelSlot) {
 			A newAction = modelSlot.createAction(actionClass);
 			insertActionAtCurrentIndex(newAction);
 			return null;
