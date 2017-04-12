@@ -68,7 +68,6 @@ import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.PropertyIdentifier;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
-import org.openflexo.model.annotations.XMLElement;
 import org.openflexo.model.validation.FixProposal;
 import org.openflexo.model.validation.ValidationError;
 import org.openflexo.model.validation.ValidationIssue;
@@ -115,7 +114,6 @@ public interface FlexoRole<T> extends FlexoProperty<T> {
 	void setRoleName(String patternRoleName);
 
 	@Getter(value = MODEL_SLOT_KEY)
-	@XMLElement
 	@Embedded
 	ModelSlot<?> getModelSlot();
 
