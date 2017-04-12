@@ -42,6 +42,7 @@ import java.io.FileNotFoundException;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
@@ -206,13 +207,13 @@ public abstract interface ModelSlotInstance<MS extends ModelSlot<? extends RD>, 
 
 		@Override
 		public MS getModelSlot() {
+
 			if (getFlexoConceptInstance() != null && getFlexoConceptInstance().getFlexoConcept() != null && modelSlot == null
 					&& StringUtils.isNotEmpty(modelSlotName)) {
-				modelSlot = (MS) getFlexoConceptInstance().getFlexoConcept().getModelSlot(modelSlotName);
-			}
-			if (getVirtualModelInstance() != null && getVirtualModelInstance().getVirtualModel() != null && modelSlot == null
-					&& StringUtils.isNotEmpty(modelSlotName)) {
-				modelSlot = (MS) getVirtualModelInstance().getVirtualModel().getModelSlot(modelSlotName);
+				FlexoProperty<?> foundModelSlot = getFlexoConceptInstance().getFlexoConcept().getAccessibleProperty(modelSlotName);
+				if (foundModelSlot instanceof ModelSlot) {
+					modelSlot = (MS) foundModelSlot;
+				}
 			}
 			return modelSlot;
 		}

@@ -1063,14 +1063,26 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 		public <RD extends ResourceData<RD> & TechnologyObject<?>, MS extends ModelSlot<? extends RD>> ModelSlotInstance<MS, RD> getModelSlotInstance(
 				MS modelSlot) {
 
-			System.out.println("On cherche ModelSlotInstance de " + modelSlot + " dans " + this);
-
 			for (ActorReference<?> actorReference : getActors()) {
-				System.out.println("> " + actorReference);
 				if (actorReference instanceof ModelSlotInstance && ((ModelSlotInstance<?, ?>) actorReference).getModelSlot() == modelSlot) {
 					return (ModelSlotInstance<MS, RD>) actorReference;
 				}
 			}
+
+			if (getOwningVirtualModelInstance() != null) {
+				ModelSlotInstance<MS, RD> returned = getOwningVirtualModelInstance().getModelSlotInstance(modelSlot);
+				if (returned != null) {
+					return returned;
+				}
+			}
+
+			if (this instanceof VirtualModelInstance) {
+				ModelSlotInstance<MS, RD> returned = ((VirtualModelInstance) this).getView().getModelSlotInstance(modelSlot);
+				if (returned != null) {
+					return returned;
+				}
+			}
+
 			logger.warning("Cannot find ModelSlotInstance for ModelSlot " + modelSlot);
 			if (getFlexoConcept() != null && !getFlexoConcept().getModelSlots().contains(modelSlot)) {
 				logger.warning("Worse than that, supplied ModelSlot is not part of concept " + getFlexoConcept());
