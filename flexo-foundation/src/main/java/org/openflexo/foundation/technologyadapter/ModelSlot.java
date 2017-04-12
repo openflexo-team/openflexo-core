@@ -42,6 +42,7 @@ package org.openflexo.foundation.technologyadapter;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -372,7 +373,7 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>>
 			if (getTechnologyAdapterService() != null) {
 				return getTechnologyAdapterService().getAvailableFlexoRoleTypes(getClass());
 			}
-			return null;
+			return Collections.emptyList();
 		}
 
 		@Override
@@ -380,7 +381,7 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>>
 			if (getTechnologyAdapterService() != null) {
 				return getTechnologyAdapterService().getAvailableEditionActionTypes(getClass());
 			}
-			return null;
+			return Collections.emptyList();
 		}
 
 		@Override
@@ -388,7 +389,7 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>>
 			if (getTechnologyAdapterService() != null) {
 				return getTechnologyAdapterService().getAvailableFlexoBehaviourTypes(getClass());
 			}
-			return null;
+			return Collections.emptyList();
 		}
 
 		@Override
@@ -396,7 +397,7 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>>
 			if (getTechnologyAdapterService() != null) {
 				return getTechnologyAdapterService().getAvailableFetchRequestActionTypes(getClass());
 			}
-			return null;
+			return Collections.emptyList();
 		}
 
 		/**
