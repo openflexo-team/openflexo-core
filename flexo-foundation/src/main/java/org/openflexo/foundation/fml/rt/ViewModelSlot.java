@@ -52,7 +52,6 @@ import org.openflexo.foundation.fml.rm.ViewPointResource;
 import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.AddSubView;
 import org.openflexo.foundation.fml.rt.editionaction.AddVirtualModelInstance;
-import org.openflexo.foundation.fml.rt.editionaction.DeleteFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.SelectFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.SelectVirtualModelInstance;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -67,7 +66,7 @@ import org.openflexo.toolbox.StringUtils;
  * 
  */
 @DeclareFlexoRoles({ FlexoConceptInstanceRole.class, PrimitiveRole.class })
-@DeclareEditionActions({ AddFlexoConceptInstance.class, DeleteFlexoConceptInstance.class, AddVirtualModelInstance.class, AddSubView.class })
+@DeclareEditionActions({ AddFlexoConceptInstance.class, AddVirtualModelInstance.class, AddSubView.class })
 @DeclareFetchRequests({ SelectFlexoConceptInstance.class, SelectVirtualModelInstance.class })
 @ModelEntity
 @ImplementationClass(ViewModelSlot.ViewModelSlotImpl.class)
@@ -79,7 +78,7 @@ public interface ViewModelSlot extends FMLRTModelSlot<View, ViewPoint> {
 
 	public void setAccessedViewPointResource(ViewPointResource viewPointResource);
 
-	public static abstract class ViewModelSlotImpl extends FMLRTModelSlotImpl<View, ViewPoint>implements ViewModelSlot {
+	public static abstract class ViewModelSlotImpl extends FMLRTModelSlotImpl<View, ViewPoint> implements ViewModelSlot {
 
 		private static final Logger logger = Logger.getLogger(ViewModelSlot.class.getPackage().getName());
 

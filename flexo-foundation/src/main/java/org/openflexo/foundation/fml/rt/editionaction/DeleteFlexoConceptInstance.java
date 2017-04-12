@@ -55,17 +55,12 @@ import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.URIParameter;
 import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.foundation.fml.editionaction.DeleteAction;
-import org.openflexo.foundation.fml.editionaction.TechnologySpecificAction;
 import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
-import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
-import org.openflexo.foundation.fml.rt.ModelSlotInstance;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.action.DeletionSchemeAction;
 import org.openflexo.foundation.fml.rt.action.DeletionSchemeActionType;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
-import org.openflexo.foundation.technologyadapter.ModelSlot;
-import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.gina.annotation.FIBPanel;
 import org.openflexo.model.annotations.Adder;
 import org.openflexo.model.annotations.CloningStrategy;
@@ -101,8 +96,7 @@ import org.openflexo.model.validation.ValidationRule;
 @ImplementationClass(DeleteFlexoConceptInstance.DeleteFlexoConceptInstanceImpl.class)
 @XMLElement
 @FML("DeleteFlexoConceptInstance")
-public interface DeleteFlexoConceptInstance<VMI extends AbstractVirtualModelInstance<VMI, ?>>
-		extends DeleteAction<FlexoConceptInstance>, TechnologySpecificAction<FMLRTModelSlot<VMI, ?>, VMI, FlexoConceptInstance> {
+public interface DeleteFlexoConceptInstance<VMI extends AbstractVirtualModelInstance<VMI, ?>> extends DeleteAction<FlexoConceptInstance> {
 
 	// @PropertyIdentifier(type = DataBinding.class)
 	// public static final String VIRTUAL_MODEL_INSTANCE_KEY = "virtualModelInstance";
@@ -381,50 +375,8 @@ public interface DeleteFlexoConceptInstance<VMI extends AbstractVirtualModelInst
 		}
 
 		@Override
-		public TechnologyAdapter getModelSlotTechnologyAdapter() {
-			return null;
-		}
-
-		@Override
-		public ModelSlotInstance getModelSlotInstance(RunTimeEvaluationContext evaluationContext) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public List<FMLRTModelSlot> getAvailableVirtualModelModelSlots() {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public <MS2 extends ModelSlot<?>> List<MS2> getAvailableModelSlots(Class<MS2> msType) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
 		public Type getAssignableType() {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public boolean isIterable() {
-			// TODO Auto-generated method stub
-			return false;
-		}
-
-		@Override
-		public Type getIteratorType() {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public <MS2 extends ModelSlot<?>> List<MS2> getAvailableModelSlots() {
-			// TODO Auto-generated method stub
-			return null;
+			return FlexoConceptInstance.class;
 		}
 
 	}

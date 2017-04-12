@@ -96,8 +96,6 @@ public abstract interface TechnologySpecificAction<MS extends ModelSlot<RD>, RD 
 	@Setter(RECEIVER_KEY)
 	void setReceiver(DataBinding<RD> receiver);
 
-	public Object getReceiver(BindingEvaluationContext evaluationContext);
-
 	public Class<? extends RD> getReceiverClass();
 
 	public Type getReceiverType();
@@ -322,7 +320,6 @@ public abstract interface TechnologySpecificAction<MS extends ModelSlot<RD>, RD 
 			this.receiver = receiver;
 		}
 
-		@Override
 		public Object getReceiver(BindingEvaluationContext evaluationContext) {
 			if (getReceiver().isValid()) {
 				try {
