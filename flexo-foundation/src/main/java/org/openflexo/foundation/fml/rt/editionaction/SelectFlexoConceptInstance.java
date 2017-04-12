@@ -305,7 +305,7 @@ public interface SelectFlexoConceptInstance extends FetchRequest<FMLRTModelSlot<
 			}
 			if (getModelSlot() instanceof FMLRTModelSlot && evaluationContext instanceof FlexoBehaviourAction) {
 				ModelSlotInstance modelSlotInstance = ((FlexoBehaviourAction) evaluationContext).getVirtualModelInstance()
-						.getModelSlotInstance(getModelSlot());
+						.getModelSlotInstance((FMLRTModelSlot) getModelSlot());
 				if (modelSlotInstance != null) {
 					// System.out.println("modelSlotInstance=" + modelSlotInstance + " model=" + modelSlotInstance.getModel());
 					return (VirtualModelInstance) modelSlotInstance.getAccessedResourceData();

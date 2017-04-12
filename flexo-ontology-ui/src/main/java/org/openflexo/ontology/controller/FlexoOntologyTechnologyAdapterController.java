@@ -41,6 +41,7 @@ package org.openflexo.ontology.controller;
 
 import java.util.List;
 import java.util.logging.Logger;
+
 import org.openflexo.connie.DataBinding;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.URIParameter;
@@ -56,6 +57,7 @@ import org.openflexo.foundation.ontology.fml.DataPropertyParameter;
 import org.openflexo.foundation.ontology.fml.IndividualParameter;
 import org.openflexo.foundation.ontology.fml.ObjectPropertyParameter;
 import org.openflexo.foundation.ontology.fml.PropertyParameter;
+import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.gina.model.FIBModelFactory;
@@ -96,9 +98,10 @@ public abstract class FlexoOntologyTechnologyAdapterController<TA extends Techno
 	 * @return
 	 */
 	@Override
-	public FIBWidget makeWidget(final WidgetContext parameter, FlexoBehaviourAction<?, ?, ?> action, FIBModelFactory fibModelFactory, boolean[] expand) {
+	public FIBWidget makeWidget(final WidgetContext parameter, FlexoBehaviourAction<?, ?, ?> action, FIBModelFactory fibModelFactory,
+			boolean[] expand) {
 		if (parameter instanceof URIParameter) {
-			return  makeURIPanel((URIParameter) parameter, fibModelFactory);
+			return makeURIPanel((URIParameter) parameter, fibModelFactory);
 		}
 		else if (parameter instanceof IndividualParameter) {
 			FIBCustom individualSelector = fibModelFactory.newFIBCustom();
@@ -120,11 +123,11 @@ public abstract class FlexoOntologyTechnologyAdapterController<TA extends Techno
 					new DataBinding<>("component.informationSpace"), new DataBinding<>("data.project.informationSpace"), true));
 			if (action.getVirtualModelInstance() != null) {
 				ModelSlotInstance msInstance = action.getVirtualModelInstance()
-						.getModelSlotInstance(((IndividualParameter) parameter).getModelSlot());
+						.getModelSlotInstance((ModelSlot) ((IndividualParameter) parameter).getModelSlot());
 				if (msInstance instanceof TypeAwareModelSlotInstance && ((TypeAwareModelSlotInstance) msInstance).getModel() != null) {
-					individualSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(individualSelector,
-							new DataBinding("component.contextOntologyURI"),
-							new DataBinding<>('"' + ((TypeAwareModelSlotInstance) msInstance).getModel().getURI() + '"'), true));
+					individualSelector.addToAssignments(
+							fibModelFactory.newFIBCustomAssignment(individualSelector, new DataBinding("component.contextOntologyURI"),
+									new DataBinding<>('"' + ((TypeAwareModelSlotInstance) msInstance).getModel().getURI() + '"'), true));
 				}
 				else {
 					logger.warning("No model defined for model slot " + ((IndividualParameter) parameter).getModelSlot());
@@ -134,8 +137,8 @@ public abstract class FlexoOntologyTechnologyAdapterController<TA extends Techno
 				logger.warning("Inconsistent data: no VirtualModelInstance for action " + action);
 			}
 			// Quick and dirty hack to configure IndividualSelector: refactor this when new binding model will be in use
-			individualSelector.addToAssignments(
-					fibModelFactory.newFIBCustomAssignment(individualSelector, new DataBinding<>("component.typeURI"),
+			individualSelector
+					.addToAssignments(fibModelFactory.newFIBCustomAssignment(individualSelector, new DataBinding<>("component.typeURI"),
 							new DataBinding<>('"' + ((IndividualParameter) parameter)._getConceptURI() + '"'), true));
 			if (StringUtils.isNotEmpty(((IndividualParameter) parameter).getRenderer())) {
 				individualSelector.addToAssignments(
@@ -163,11 +166,11 @@ public abstract class FlexoOntologyTechnologyAdapterController<TA extends Techno
 					new DataBinding<>("component.informationSpace"), new DataBinding<>("data.project.informationSpace"), true));
 			if (action.getVirtualModelInstance() != null) {
 				ModelSlotInstance msInstance = action.getVirtualModelInstance()
-						.getModelSlotInstance(((IndividualParameter) parameter).getModelSlot());
+						.getModelSlotInstance((ModelSlot) ((IndividualParameter) parameter).getModelSlot());
 				if (msInstance instanceof TypeAwareModelSlotInstance && ((TypeAwareModelSlotInstance) msInstance).getModel() != null) {
-					classSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(classSelector,
-							new DataBinding("component.contextOntologyURI"),
-							new DataBinding<>('"' + ((TypeAwareModelSlotInstance) msInstance).getModel().getURI() + '"'), true));
+					classSelector.addToAssignments(
+							fibModelFactory.newFIBCustomAssignment(classSelector, new DataBinding("component.contextOntologyURI"),
+									new DataBinding<>('"' + ((TypeAwareModelSlotInstance) msInstance).getModel().getURI() + '"'), true));
 				}
 				else {
 					logger.warning("No model defined for model slot " + ((IndividualParameter) parameter).getModelSlot());
@@ -185,9 +188,8 @@ public abstract class FlexoOntologyTechnologyAdapterController<TA extends Techno
 				conceptClass = classParameter.getConcept();
 			}
 			if (conceptClass != null) {
-				classSelector.addToAssignments(
-						fibModelFactory.newFIBCustomAssignment(classSelector, new DataBinding<>("component.rootClassURI"),
-								new DataBinding<>('"' + conceptClass.getURI() + '"'), true));
+				classSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(classSelector,
+						new DataBinding<>("component.rootClassURI"), new DataBinding<>('"' + conceptClass.getURI() + '"'), true));
 			}
 			return classSelector;
 		}
@@ -210,11 +212,11 @@ public abstract class FlexoOntologyTechnologyAdapterController<TA extends Techno
 					new DataBinding<>("component.informationSpace"), new DataBinding<>("data.project.informationSpace"), true));
 			if (action.getVirtualModelInstance() != null) {
 				ModelSlotInstance msInstance = action.getVirtualModelInstance()
-						.getModelSlotInstance(((IndividualParameter) parameter).getModelSlot());
+						.getModelSlotInstance((ModelSlot) ((IndividualParameter) parameter).getModelSlot());
 				if (msInstance instanceof TypeAwareModelSlotInstance && ((TypeAwareModelSlotInstance) msInstance).getModel() != null) {
-					propertySelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(propertySelector,
-							new DataBinding("component.contextOntologyURI"),
-							new DataBinding<>('"' + ((TypeAwareModelSlotInstance) msInstance).getModel().getURI() + '"'), true));
+					propertySelector.addToAssignments(
+							fibModelFactory.newFIBCustomAssignment(propertySelector, new DataBinding("component.contextOntologyURI"),
+									new DataBinding<>('"' + ((TypeAwareModelSlotInstance) msInstance).getModel().getURI() + '"'), true));
 				}
 				else {
 					logger.warning("No model defined for model slot " + ((IndividualParameter) parameter).getModelSlot());
@@ -234,9 +236,8 @@ public abstract class FlexoOntologyTechnologyAdapterController<TA extends Techno
 			}
 			// System.out.println("domain class = " + domainClass + " uri=" + domainClass.getURI());
 			if (domainClass != null) {
-				propertySelector.addToAssignments(
-						fibModelFactory.newFIBCustomAssignment(propertySelector, new DataBinding<>("component.domainClassURI"),
-								new DataBinding<>('"' + domainClass.getURI() + '"'), true));
+				propertySelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(propertySelector,
+						new DataBinding<>("component.domainClassURI"), new DataBinding<>('"' + domainClass.getURI() + '"'), true));
 			}
 
 			if (propertyParameter instanceof ObjectPropertyParameter) {
@@ -249,9 +250,8 @@ public abstract class FlexoOntologyTechnologyAdapterController<TA extends Techno
 				}
 				// System.out.println("range class = " + rangeClass + " uri=" + rangeClass.getURI());
 				if (rangeClass != null) {
-					propertySelector.addToAssignments(
-							fibModelFactory.newFIBCustomAssignment(propertySelector, new DataBinding<>("component.rangeClassURI"),
-									new DataBinding<>('"' + rangeClass.getURI() + '"'), true));
+					propertySelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(propertySelector,
+							new DataBinding<>("component.rangeClassURI"), new DataBinding<>('"' + rangeClass.getURI() + '"'), true));
 				}
 			}
 

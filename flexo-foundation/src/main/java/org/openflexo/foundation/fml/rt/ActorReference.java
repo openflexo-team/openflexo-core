@@ -40,6 +40,7 @@ package org.openflexo.foundation.fml.rt;
 
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.fml.FlexoRole;
+import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.model.annotations.CloningStrategy;
 import org.openflexo.model.annotations.CloningStrategy.StrategyType;
 import org.openflexo.model.annotations.Getter;
@@ -200,7 +201,7 @@ public abstract interface ActorReference<T> extends VirtualModelInstanceObject {
 		@Override
 		public ModelSlotInstance<?, ?> getModelSlotInstance() {
 			if (getVirtualModelInstance() != null) {
-				return getVirtualModelInstance().getModelSlotInstance(getFlexoRole().getModelSlot());
+				return getVirtualModelInstance().getModelSlotInstance((ModelSlot) getFlexoRole().getModelSlot());
 			}
 			return null;
 		}
