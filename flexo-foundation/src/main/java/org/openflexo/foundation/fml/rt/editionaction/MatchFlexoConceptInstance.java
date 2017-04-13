@@ -279,7 +279,7 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 
 		public VirtualModelInstance getVirtualModelInstance(RunTimeEvaluationContext evaluationContext) {
 			try {
-				return getVirtualModelInstance().getBindingValue(evaluationContext);
+				return getReceiver().getBindingValue(evaluationContext);
 			} catch (TypeMismatchException e) {
 				e.printStackTrace();
 			} catch (NullReferenceException e) {
@@ -834,7 +834,7 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 
 		@Override
 		public DataBinding<VirtualModelInstance> getBinding(MatchFlexoConceptInstance object) {
-			return object.getVirtualModelInstance();
+			return object.getReceiver();
 		}
 
 		@Override
@@ -850,11 +850,11 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 				if (binding.getAnalyzedType() instanceof VirtualModelInstanceType && object.getFlexoConceptType() != null) {
 					if (object.getFlexoConceptType().getVirtualModel() != ((VirtualModelInstanceType) binding.getAnalyzedType())
 							.getVirtualModel()) {
-						System.out.println("VM1=" + object.getFlexoConceptType().getVirtualModel());
-						System.out.println("VM1=" + Integer.toHexString(object.getFlexoConceptType().getVirtualModel().hashCode()));
-						System.out.println("VM2=" + ((VirtualModelInstanceType) binding.getAnalyzedType()).getVirtualModel());
-						System.out.println("VM2="
-								+ Integer.toHexString(((VirtualModelInstanceType) binding.getAnalyzedType()).getVirtualModel().hashCode()));
+						// System.out.println("VM1=" + object.getFlexoConceptType().getVirtualModel());
+						// System.out.println("VM1=" + Integer.toHexString(object.getFlexoConceptType().getVirtualModel().hashCode()));
+						// System.out.println("VM2=" + ((VirtualModelInstanceType) binding.getAnalyzedType()).getVirtualModel());
+						// System.out.println("VM2="
+						// + Integer.toHexString(((VirtualModelInstanceType) binding.getAnalyzedType()).getVirtualModel().hashCode()));
 						returned = new ValidationError(this, object, "incompatible_virtual_model_type avec " + object.getFlexoConceptType()
 								+ " et " + binding.getAnalyzedType());
 
@@ -898,7 +898,7 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 			@Override
 			protected void fixAction() {
 				MatchFlexoConceptInstance action = getValidable();
-				action.setVirtualModelInstance(new DataBinding<VirtualModelInstance>("virtualModelInstance"));
+				action.setReceiver(new DataBinding<VirtualModelInstance>("virtualModelInstance"));
 			}
 		}
 
@@ -915,7 +915,7 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 			@Override
 			protected void fixAction() {
 				MatchFlexoConceptInstance action = getValidable();
-				action.setVirtualModelInstance(new DataBinding<VirtualModelInstance>(modelSlot.getName()));
+				action.setReceiver(new DataBinding<VirtualModelInstance>(modelSlot.getName()));
 			}
 		}
 

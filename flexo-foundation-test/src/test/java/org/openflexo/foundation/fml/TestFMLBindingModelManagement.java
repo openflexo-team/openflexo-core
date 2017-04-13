@@ -1451,7 +1451,7 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		MatchFlexoConceptInstance matchFlexoConceptInstance = (MatchFlexoConceptInstance) createMatchFlexoConceptInstanceAction
 				.getNewEditionAction();
 		matchFlexoConceptInstance.setFlexoConceptType(flexoConceptA);
-		matchFlexoConceptInstance.setVirtualModelInstance(new DataBinding<>("virtualModelInstance"));
+		matchFlexoConceptInstance.setReceiver(new DataBinding<>("virtualModelInstance"));
 
 		CreateFlexoBehaviour createCreationScheme = CreateFlexoBehaviour.actionType.makeNewAction(flexoConceptA, null, editor);
 		createCreationScheme.setFlexoBehaviourClass(CreationScheme.class);

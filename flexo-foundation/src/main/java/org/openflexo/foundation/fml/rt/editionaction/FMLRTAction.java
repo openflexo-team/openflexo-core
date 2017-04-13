@@ -53,7 +53,6 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
-import org.openflexo.model.annotations.PropertyIdentifier;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
 
@@ -72,15 +71,24 @@ import org.openflexo.model.annotations.XMLAttribute;
 public interface FMLRTAction<T extends ViewObject, VMI extends AbstractVirtualModelInstance<VMI, ?>>
 		extends TechnologySpecificAction<FMLRTModelSlot<VMI, ?>, VMI, T> {
 
-	@PropertyIdentifier(type = DataBinding.class)
+	/*@PropertyIdentifier(type = DataBinding.class)
 	public static final String VIRTUAL_MODEL_INSTANCE_KEY = "virtualModelInstance";
-
+	
 	@Getter(value = VIRTUAL_MODEL_INSTANCE_KEY)
 	@XMLAttribute
 	public DataBinding<VMI> getVirtualModelInstance();
-
+	
 	@Setter(VIRTUAL_MODEL_INSTANCE_KEY)
-	public void setVirtualModelInstance(DataBinding<VMI> virtualModelInstance);
+	public void setVirtualModelInstance(DataBinding<VMI> virtualModelInstance);*/
+
+	public static final String DEPRECATED_VIRTUAL_MODEL_INSTANCE_KEY = "virtualModelInstance";
+
+	@Getter(value = DEPRECATED_VIRTUAL_MODEL_INSTANCE_KEY)
+	@XMLAttribute(xmlTag = "virtualModelInstance")
+	public String getDeprecatedVirtualModelInstance();
+
+	@Setter(DEPRECATED_VIRTUAL_MODEL_INSTANCE_KEY)
+	public void setDeprecatedVirtualModelInstance(String virtualModelInstanceAsString);
 
 	public abstract Class<VMI> getVirtualModelInstanceClass();
 
@@ -96,8 +104,8 @@ public interface FMLRTAction<T extends ViewObject, VMI extends AbstractVirtualMo
 
 		static final Logger logger = Logger.getLogger(FMLRTAction.class.getPackage().getName());
 
-		private DataBinding<VMI> virtualModelInstance;
-
+		/*private DataBinding<VMI> virtualModelInstance;
+		
 		@Override
 		public DataBinding<VMI> getVirtualModelInstance() {
 			if (virtualModelInstance == null) {
@@ -106,7 +114,7 @@ public interface FMLRTAction<T extends ViewObject, VMI extends AbstractVirtualMo
 			}
 			return virtualModelInstance;
 		}
-
+		
 		@Override
 		public void setVirtualModelInstance(DataBinding<VMI> aVirtualModelInstance) {
 			if (aVirtualModelInstance != null) {
@@ -116,6 +124,17 @@ public interface FMLRTAction<T extends ViewObject, VMI extends AbstractVirtualMo
 				aVirtualModelInstance.setBindingDefinitionType(DataBinding.BindingDefinitionType.GET);
 			}
 			this.virtualModelInstance = aVirtualModelInstance;
+		}*/
+
+		@Override
+		public void setDeprecatedVirtualModelInstance(String virtualModelInstanceAsString) {
+
+			if (virtualModelInstanceAsString != null) {
+				System.out.println("Hop, on met le receiver a " + virtualModelInstanceAsString);
+
+				getReceiver().setUnparsedBinding(virtualModelInstanceAsString);
+				notifiedBindingChanged(getReceiver());
+			}
 		}
 
 		@Override
@@ -128,8 +147,8 @@ public interface FMLRTAction<T extends ViewObject, VMI extends AbstractVirtualMo
 
 		@Override
 		public AbstractVirtualModel<?> getOwnerVirtualModelType() {
-			if (getVirtualModelInstance().isSet() && getVirtualModelInstance().isValid()) {
-				Type type = getVirtualModelInstance().getAnalyzedType();
+			if (getReceiver().isSet() && getReceiver().isValid()) {
+				Type type = getReceiver().getAnalyzedType();
 				if (type instanceof VirtualModelInstanceType) {
 					return ((VirtualModelInstanceType) type).getVirtualModel();
 				}
@@ -140,7 +159,7 @@ public interface FMLRTAction<T extends ViewObject, VMI extends AbstractVirtualMo
 		@Override
 		public void notifiedBindingChanged(DataBinding<?> dataBinding) {
 			super.notifiedBindingChanged(dataBinding);
-			if (dataBinding == getVirtualModelInstance()) {
+			if (dataBinding == getReceiver()) {
 				getPropertyChangeSupport().firePropertyChange("ownerVirtualModelType", null, getOwnerVirtualModelType());
 			}
 		}

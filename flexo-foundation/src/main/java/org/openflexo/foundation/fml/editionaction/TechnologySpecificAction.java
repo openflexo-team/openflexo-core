@@ -64,6 +64,7 @@ import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.localization.LocalizedDelegate;
+import org.openflexo.model.annotations.DefineValidationRule;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
@@ -71,6 +72,7 @@ import org.openflexo.model.annotations.PropertyIdentifier;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.model.annotations.XMLElement;
+import org.openflexo.model.validation.ValidationIssue;
 
 /**
  * Represents an {@link EditionAction} which address a specific technology through the reference to a container object (which is generally a
@@ -99,6 +101,8 @@ public abstract interface TechnologySpecificAction<MS extends ModelSlot<RD>, RD 
 	public Class<? extends RD> getReceiverClass();
 
 	public Type getReceiverType();
+
+	public boolean isReceiverMandatory();
 
 	// Should not be used anymore, will be removed from future releases after 1.8.1
 	@Deprecated
@@ -299,6 +303,7 @@ public abstract interface TechnologySpecificAction<MS extends ModelSlot<RD>, RD 
 			if (receiver == null) {
 				receiver = new DataBinding<>(this, getReceiverClass(), BindingDefinitionType.GET);
 				receiver.setBindingName("receiver");
+				receiver.setMandatory(isReceiverMandatory());
 			}
 
 			if (!receiver.isSet() && getModelSlot() != null) {
@@ -316,6 +321,7 @@ public abstract interface TechnologySpecificAction<MS extends ModelSlot<RD>, RD 
 				receiver.setBindingName("receiver");
 				receiver.setDeclaredType(getReceiverClass());
 				receiver.setBindingDefinitionType(BindingDefinitionType.GET);
+				receiver.setMandatory(isReceiverMandatory());
 			}
 			this.receiver = receiver;
 		}
@@ -343,6 +349,35 @@ public abstract interface TechnologySpecificAction<MS extends ModelSlot<RD>, RD 
 		@Override
 		public final Type getReceiverType() {
 			return TypeUtils.getTypeArgument(getClass(), TechnologySpecificAction.class, 1);
+		}
+
+		@Override
+		public boolean isReceiverMandatory() {
+			return true;
+		}
+
+	}
+
+	@DefineValidationRule
+	public static class ReceiverBindingIsRequiredAndMustBeValid extends BindingIsRequiredAndMustBeValid<TechnologySpecificAction> {
+		public ReceiverBindingIsRequiredAndMustBeValid() {
+			super("'receiver'_binding_is_required_and_must_be_valid", TechnologySpecificAction.class);
+		}
+
+		@Override
+		public DataBinding<Object> getBinding(TechnologySpecificAction object) {
+			return object.getReceiver();
+		}
+
+		@Override
+		public ValidationIssue<BindingIsRequiredAndMustBeValid<TechnologySpecificAction>, TechnologySpecificAction> applyValidation(
+				TechnologySpecificAction action) {
+
+			System.out.println("On valide l'action " + action);
+			if (action.isReceiverMandatory()) {
+				return super.applyValidation(action);
+			}
+			return null;
 		}
 
 	}

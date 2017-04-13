@@ -18,15 +18,6 @@
 				constraints="twocols(expandHorizontally=true;expandVertically=false;index=7;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)">
 				<Assignment variable="component.bindable" value="data" />
 			</Custom>
-			<Label label="virtual_model_instance" align="right" index="10"
-				constraints="twocols(expandHorizontally=true;expandVertically=false;index=6;insetsBottom=0;insetsLeft=2;insetsRight=4;insetsTop=5;location=left)"
-				localize="true" />
-			<Custom componentClassName="org.openflexo.gina.swing.utils.BindingSelector"
-				localize="true" manageDynamicModel="true" opaque="false" index="11"
-				data="data.virtualModelInstance"
-				constraints="twocols(expandHorizontally=true;expandVertically=false;index=7;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)">
-				<Assignment variable="component.bindable" value="data" />
-			</Custom>
 			<Label label="flexo_concept" index="12" data=""
 				constraints="twocols(anchor=east;expandHorizontally=false;expandVertically=false;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=8;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left;padX=0;padY=0;weightX=0.0;weightY=0.0)"
 				localize="true" />

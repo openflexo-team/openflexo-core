@@ -198,7 +198,7 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 				// getVirtualModelInstance().invalidBindingReason());
 				// System.out.println("returned: " + getVirtualModelInstance().getBindingValue(evaluationContext));
 				// System.out.println("evaluationContext=" + evaluationContext);
-				return getVirtualModelInstance().getBindingValue(evaluationContext);
+				return getReceiver().getBindingValue(evaluationContext);
 			} catch (TypeMismatchException e) {
 				e.printStackTrace();
 			} catch (NullReferenceException e) {
@@ -529,7 +529,7 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 
 		@Override
 		public DataBinding<VirtualModelInstance> getBinding(AbstractAddFlexoConceptInstance object) {
-			return object.getVirtualModelInstance();
+			return object.getReceiver();
 		}
 
 		@Override
@@ -594,7 +594,7 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 			@Override
 			protected void fixAction() {
 				AbstractAddFlexoConceptInstance action = getValidable();
-				action.setVirtualModelInstance(new DataBinding<VirtualModelInstance>("virtualModelInstance"));
+				action.setReceiver(new DataBinding<VirtualModelInstance>("virtualModelInstance"));
 			}
 		}
 
@@ -604,14 +604,14 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 			private final FMLRTModelSlot modelSlot;
 
 			public UseFMLRTModelSlot(FMLRTModelSlot modelSlot) {
-				super("sets_virtual_model_instance_to_'" + modelSlot.getName() + "'");
+				super("sets_receiver_to_'" + modelSlot.getName() + "'");
 				this.modelSlot = modelSlot;
 			}
 
 			@Override
 			protected void fixAction() {
 				AbstractAddFlexoConceptInstance action = getValidable();
-				action.setVirtualModelInstance(new DataBinding<VirtualModelInstance>(modelSlot.getName()));
+				action.setReceiver(new DataBinding<VirtualModelInstance>(modelSlot.getName()));
 			}
 		}
 

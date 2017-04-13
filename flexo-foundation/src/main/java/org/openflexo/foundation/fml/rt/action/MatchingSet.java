@@ -167,7 +167,7 @@ public class MatchingSet {
 		this.flexoConceptType = null;
 
 		try {
-			container = matchRequest.getVirtualModelInstance().getBindingValue(evaluationContext);
+			container = matchRequest.getReceiver().getBindingValue(evaluationContext);
 			// System.out.println("container=" + container);
 			if (container != null) {
 				/*if (flexoConceptType != null) {

@@ -626,7 +626,10 @@ public interface ViewPoint extends AbstractVirtualModel<ViewPoint> {
 
 		@Override
 		public Collection<? extends Validable> getEmbeddedValidableObjects() {
-			return getVirtualModels();
+
+			Collection returned = super.getEmbeddedValidableObjects();
+			returned.addAll(getVirtualModels());
+			return returned;
 		}
 
 		/**

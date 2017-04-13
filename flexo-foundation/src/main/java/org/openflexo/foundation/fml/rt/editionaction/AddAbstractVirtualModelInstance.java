@@ -198,8 +198,8 @@ public interface AddAbstractVirtualModelInstance<FCI extends AbstractVirtualMode
 
 		@Override
 		public ViewPointResource getOwnerViewPointTypeResource() {
-			if (getVirtualModelInstance().isSet() && getVirtualModelInstance().isValid()) {
-				Type type = getVirtualModelInstance().getAnalyzedType();
+			if (getReceiver().isSet() && getReceiver().isValid()) {
+				Type type = getReceiver().getAnalyzedType();
 				if (type instanceof ViewType) {
 					return ((ViewType) type).getViewPoint().getViewPointResource();
 				}
@@ -210,7 +210,7 @@ public interface AddAbstractVirtualModelInstance<FCI extends AbstractVirtualMode
 		@Override
 		public void notifiedBindingChanged(DataBinding<?> dataBinding) {
 			super.notifiedBindingChanged(dataBinding);
-			if (dataBinding == getVirtualModelInstance()) {
+			if (dataBinding == getReceiver()) {
 				getPropertyChangeSupport().firePropertyChange("ownerViewPointTypeResource", null, getOwnerViewPointTypeResource());
 			}
 		}

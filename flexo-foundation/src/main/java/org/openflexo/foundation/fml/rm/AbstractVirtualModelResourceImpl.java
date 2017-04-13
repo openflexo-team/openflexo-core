@@ -40,6 +40,7 @@ package org.openflexo.foundation.fml.rm;
 
 import java.io.FileNotFoundException;
 import java.util.logging.Logger;
+
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.AbstractVirtualModel;
 import org.openflexo.foundation.fml.FMLModelFactory;
@@ -168,7 +169,11 @@ public abstract class AbstractVirtualModelResourceImpl<VM extends AbstractVirtua
 			/*if (activateFMLRT != null) {
 				getServiceManager().getTaskManager().waitTask(activateFMLRT);
 			}*/
+
+			System.out.println("On active les technologies pour " + getLoadedResourceData());
+
 			for (ModelSlot<?> ms : getLoadedResourceData().getModelSlots()) {
+				System.out.println("On active " + ms.getModelSlotTechnologyAdapter());
 				FlexoTask activateTA = taService.activateTechnologyAdapter(ms.getModelSlotTechnologyAdapter());
 				/*if (activateTA != null) {
 					getServiceManager().getTaskManager().waitTask(activateTA);
