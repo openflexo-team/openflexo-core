@@ -216,7 +216,7 @@ public class FlexoDocumentEditorFactory<D extends FlexoDocument<D, TA>, TA exten
 	}
 
 	protected void processParagraph(FlexoDocParagraph<D, TA> p) throws BadLocationException {
-		System.out.println("---------> un paragraphe: " + p + " avec " + p.getParagraphStyle());
+		// System.out.println("---------> un paragraphe: " + p + " avec " + p.getParagraphStyle());
 
 		parAttrs = new SimpleAttributeSet();
 
@@ -323,7 +323,7 @@ public class FlexoDocumentEditorFactory<D extends FlexoDocument<D, TA>, TA exten
 	}
 
 	protected void processTextRun(FlexoTextRun<D, TA> run) throws BadLocationException {
-		System.out.println("---------> un run: " + run.getText() + " avec " + run.getRunStyle());
+		// System.out.println("---------> un run: " + run.getText() + " avec " + run.getRunStyle());
 
 		charAttrs = new SimpleAttributeSet();
 
