@@ -149,6 +149,7 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterResource;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
+import org.openflexo.foundation.technologyadapter.UseModelSlotDeclaration;
 import org.openflexo.foundation.utils.FlexoProgress;
 import org.openflexo.foundation.validation.FlexoValidationModel;
 import org.openflexo.gina.controller.FIBController.Status;
@@ -2150,6 +2151,20 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 		}
 		else if (object instanceof FMLObject) {
 			return FMLIconLibrary.iconForObject((FMLObject) object);
+		}
+		else if (object instanceof UseModelSlotDeclaration) {
+			UseModelSlotDeclaration useDeclaration = (UseModelSlotDeclaration) object;
+			if (useDeclaration.getVirtualModel() != null) {
+				TechnologyAdapter modelSlotTA = useDeclaration.getVirtualModel().getTechnologyAdapterService()
+						.getTechnologyAdapterForModelSlot(useDeclaration.getModelSlotClass());
+				TechnologyAdapterController<?> tac = getTechnologyAdapterController(modelSlotTA);
+				if (tac != null) {
+					return IconFactory.getImageIcon(tac.getIconForModelSlot(useDeclaration.getModelSlotClass()), IconLibrary.IMPORT);
+				}
+				else {
+					logger.warning("Could not find TechnologyAdapterController for technology " + object);
+				}
+			}
 		}
 		else if (object instanceof ViewPointResource) {
 			return FMLIconLibrary.iconForObject((ViewPointResource) object);
