@@ -87,7 +87,7 @@ public abstract interface RoleSpecificAction<R extends FlexoRole<T>, MS extends 
 	 */
 	public R getInferedFlexoRole();
 
-	public static abstract class RoleSpecificActionImpl<R extends FlexoRole<T>, MS extends ModelSlot<?>, T extends TechnologyObject>
+	public static abstract class RoleSpecificActionImpl<R extends FlexoRole<T>, MS extends ModelSlot<?>, T extends TechnologyObject<?>>
 			extends TechnologySpecificActionImpl<MS, T, T> implements RoleSpecificAction<R, MS, T> {
 
 		private static final Logger logger = Logger.getLogger(RoleSpecificAction.class.getPackage().getName());
