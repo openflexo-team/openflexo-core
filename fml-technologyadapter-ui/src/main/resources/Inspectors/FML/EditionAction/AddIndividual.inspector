@@ -24,7 +24,7 @@
 				constraints="twocols(expandHorizontally=true;expandVertically=false;index=7;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
 				visible="">
 				<Assignment variable="component.context"
-					value="data.modelSlot.metaModelResource.metaModelData" />
+					value="data.inferedModelSlot.metaModelResource.metaModelData" />
 				<Dependancy componentName="AddIndividualAssignationCC" />
 			</Custom>
 			<Label label="individual_name_(uri)" align="right" index="8"
@@ -76,7 +76,7 @@
 					columnWidth="80" resizable="true" displayTitle="true" color=""
 					bgColor="" tooltip="" valueChangedAction="">
 					<ColumnAssignment variable="component.context"
-						value="data.modelSlot.metaModelResource.metaModelData" />
+						value="data.inferedModelSlot.metaModelResource.metaModelData" />
 					<ColumnAssignment variable="component.selectObjectProperties"
 						value="true" />
 					<ColumnAssignment variable="component.selectDataProperties"
@@ -139,7 +139,7 @@
 					columnWidth="80" resizable="true" displayTitle="true" color=""
 					bgColor="" tooltip="" valueChangedAction="">
 					<ColumnAssignment variable="component.context"
-						value="data.modelSlot.metaModelResource.metaModelData" />
+						value="data.inferedModelSlot.metaModelResource.metaModelData" />
 					<ColumnAssignment variable="component.selectObjectProperties"
 						value="false" />
 					<ColumnAssignment variable="component.selectDataProperties"
