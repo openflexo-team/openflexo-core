@@ -1084,6 +1084,7 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 			}
 
 			logger.warning("Cannot find ModelSlotInstance for ModelSlot " + modelSlot);
+			Thread.dumpStack();
 			if (getFlexoConcept() != null && !getFlexoConcept().getModelSlots().contains(modelSlot)) {
 				logger.warning("Worse than that, supplied ModelSlot is not part of concept " + getFlexoConcept());
 			}

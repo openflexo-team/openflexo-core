@@ -264,7 +264,7 @@ public abstract interface ModelSlotInstance<MS extends ModelSlot<? extends RD>, 
 
 			// NPE Protection when deleting VMI
 			if (accessedResourceData != null) {
-				logger.warning("resourceData will be set to null for ModelSlot: " + this.modelSlotName);
+				logger.info("resourceData will be set to " + accessedResourceData + " for ModelSlot: " + this.getModelSlotName());
 				setResource((TechnologyAdapterResource<RD, ?>) accessedResourceData.getResource());
 			}
 			this.accessedResourceData = accessedResourceData;

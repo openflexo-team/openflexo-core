@@ -38,64 +38,79 @@
 
 package org.openflexo.foundation.fml.editionaction;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.fml.FMLRepresentationContext;
+import org.openflexo.connie.binding.BindingPathElement;
+import org.openflexo.connie.expr.BindingValue;
 import org.openflexo.foundation.fml.FlexoRole;
-import org.openflexo.foundation.resource.ResourceData;
+import org.openflexo.foundation.fml.binding.FlexoConceptFlexoPropertyPathElement;
+import org.openflexo.foundation.fml.binding.FlexoRoleBindingVariable;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
-import org.openflexo.model.annotations.DefineValidationRule;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.PropertyIdentifier;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLElement;
-import org.openflexo.model.validation.ValidationError;
-import org.openflexo.model.validation.ValidationIssue;
-import org.openflexo.model.validation.ValidationRule;
 
 /**
- * Represents an {@link TechnologySpecificAction} which address a specific technology through the reference to a {@link FlexoRole}
+ * Represents an {@link TechnologySpecificAction} which address a specific technology object accessible as a {@link FlexoRole}
  * 
- * Such action must reference a {@link FlexoRole}
+ * Such action must access via the getReceiver§) property to an object whose type match type declared by the {@link FlexoRole}
  * 
  * @author sylvain
  * 
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(RoleSpecificAction.RoleSpecificActionImpl.class)
-public abstract interface RoleSpecificAction<R extends FlexoRole<T>, MS extends ModelSlot<RD>, RD extends ResourceData<RD> & TechnologyObject<?>, T>
-		extends TechnologySpecificAction<MS, RD, T> {
+public abstract interface RoleSpecificAction<R extends FlexoRole<T>, MS extends ModelSlot<?>, T extends TechnologyObject<?>>
+		extends TechnologySpecificAction<MS, T, T> {
 
 	@PropertyIdentifier(type = FlexoRole.class)
 	public static final String FLEXO_ROLE_KEY = "flexoRole";
 
+	@Deprecated
 	@Getter(value = FLEXO_ROLE_KEY)
 	@XMLElement(primary = false, context = "Accessed")
 	public R getFlexoRole();
 
+	@Deprecated
 	@Setter(FLEXO_ROLE_KEY)
 	public void setFlexoRole(R role);
 
-	public Class<R> getRoleClass();
+	/**
+	 * Compute and return infered {@link FlexoRole} from getReceiver() binding<br>
+	 * Please not that infered role might be null if receiver value is not given through a {@link FlexoRole}
+	 * 
+	 * @return role beeing addressed
+	 */
+	public R getInferedFlexoRole();
 
-	public List<R> getAvailableRoles();
-
-	public static abstract class RoleSpecificActionImpl<R extends FlexoRole<T>, MS extends ModelSlot<RD>, RD extends ResourceData<RD> & TechnologyObject<?>, T>
-			extends TechnologySpecificActionImpl<MS, RD, T> implements RoleSpecificAction<R, MS, RD, T> {
+	public static abstract class RoleSpecificActionImpl<R extends FlexoRole<T>, MS extends ModelSlot<?>, T extends TechnologyObject>
+			extends TechnologySpecificActionImpl<MS, T, T> implements RoleSpecificAction<R, MS, T> {
 
 		private static final Logger logger = Logger.getLogger(RoleSpecificAction.class.getPackage().getName());
 
+		@Deprecated
 		@Override
-		public MS getModelSlot() {
-			if (getFlexoRole() != null) {
-				return (MS) getFlexoRole().getModelSlot();
+		public void setFlexoRole(R role) {
+
+			if (role != null) {
+				getReceiver().setUnparsedBinding(role.getName());
 			}
-			return (MS) performSuperGetter(TechnologySpecificAction.MODEL_SLOT_KEY);
+		}
+
+		@Deprecated
+		@Override
+		public MS getDeprecatedModelSlot() {
+			return null;
+		}
+
+		@Deprecated
+		@Override
+		public void setDeprecatedModelSlot(MS modelSlot) {
+			// Do nothing, this will be handled by setFlexoRole()
 		}
 
 		/**
@@ -107,50 +122,28 @@ public abstract interface RoleSpecificAction<R extends FlexoRole<T>, MS extends 
 			return (getFlexoRole() != null ? getFlexoRole().getName() + "." : "") + super.getStringRepresentation();
 		}
 
+		/**
+		 * Compute and return infered {@link FlexoRole} from getReceiver() binding<br>
+		 * Please not that infered role might be null if receiver value is not given through a {@link FlexoRole}
+		 * 
+		 * @return role beeing addressed
+		 */
 		@Override
-		public String getFMLRepresentation(FMLRepresentationContext context) {
-			return (getFlexoRole() != null ? getFlexoRole().getName() : (getModelSlot() != null ? getModelSlot().getName() : "???")) + "."
-					+ getTechnologyAdapterIdentifier() + "::" + getImplementedInterface().getSimpleName() + "()";
-		}
-
-		@Override
-		public List<R> getAvailableRoles() {
-			List<R> conceptRoles = getFlexoConcept().getAccessibleProperties(getRoleClass());
-			List<R> vmRoles = null;
-			if (getFlexoConcept() != null && getFlexoConcept().getOwningVirtualModel() != null) {
-				vmRoles = getFlexoConcept().getOwningVirtualModel().getAccessibleProperties(getRoleClass());
-			}
-			if (conceptRoles.size() > 0) {
-				if (vmRoles != null && vmRoles.size() > 0) {
-					List<R> returned = new ArrayList<R>(vmRoles);
-					returned.addAll(conceptRoles);
-					return returned;
+		public R getInferedFlexoRole() {
+			if (getReceiver().isSet() && getReceiver().isValid() && getReceiver().isBindingValue()) {
+				BindingValue bindingValue = ((BindingValue) getReceiver().getExpression());
+				BindingPathElement lastPathElement = bindingValue.getLastBindingPathElement();
+				if (lastPathElement instanceof FlexoRoleBindingVariable) {
+					return (R) ((FlexoRoleBindingVariable) lastPathElement).getFlexoRole();
 				}
-				return conceptRoles;
-			}
-			if (vmRoles != null && vmRoles.size() > 0) {
-				return vmRoles;
-			}
-			return conceptRoles;
-		}
-
-	}
-
-	@DefineValidationRule
-	public static class RoleSpecificActionMustReferenceARole
-			extends ValidationRule<RoleSpecificActionMustReferenceARole, RoleSpecificAction> {
-		public RoleSpecificActionMustReferenceARole() {
-			super(RoleSpecificAction.class, "role_specific_action_must_adress_a_valid_role");
-		}
-
-		@Override
-		public ValidationIssue<RoleSpecificActionMustReferenceARole, RoleSpecificAction> applyValidation(RoleSpecificAction action) {
-			if (action.getFlexoRole() == null) {
-				return new ValidationError<RoleSpecificActionMustReferenceARole, RoleSpecificAction>(this, action,
-						"action_does_not_define_any_role");
+				else if (lastPathElement instanceof FlexoConceptFlexoPropertyPathElement
+						&& ((FlexoConceptFlexoPropertyPathElement) lastPathElement).getFlexoProperty() instanceof FlexoRole) {
+					return (R) ((FlexoConceptFlexoPropertyPathElement) lastPathElement).getFlexoProperty();
+				}
 			}
 			return null;
 		}
+
 	}
 
 }

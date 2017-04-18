@@ -147,11 +147,12 @@ public class CreateTechnologyRole extends AbstractCreateFlexoRole<CreateTechnolo
 				newFlexoRole.setCardinality(getCardinality());
 				newFlexoRole.setModelSlot(getModelSlot());
 
-				System.out.println("FlexoRoleClass= " + getFlexoRoleClass());
-				System.out.println("container= " + getContainer());
-				System.out.println("defaultValue= " + getDefaultValue());
-
 				newFlexoRole.setContainer(new DataBinding<Object>(getContainer().toString()));
+
+				if (!getContainer().isSet() && getModelSlot() != null) {
+					newFlexoRole.getContainer().setUnparsedBinding(getModelSlot().getName());
+				}
+
 				newFlexoRole.setDefaultValue(new DataBinding<Object>(getDefaultValue().toString()));
 				newFlexoRole.setIsRequired(getIsRequired());
 				finalizeDoAction(context);

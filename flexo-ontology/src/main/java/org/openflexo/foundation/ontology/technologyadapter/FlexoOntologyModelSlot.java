@@ -128,7 +128,8 @@ public interface FlexoOntologyModelSlot<M extends FlexoModel<M, MM> & IFlexoOnto
 			Class<? extends AddIndividual<? extends FlexoOntologyModelSlot<M, MM, TA>, M, ?>> addIndividualClass = (Class<? extends AddIndividual<? extends FlexoOntologyModelSlot<M, MM, TA>, M, ?>>) getEditionActionClass(
 					AddIndividual.class);
 			AddIndividual returned = makeEditionAction(addIndividualClass);
-			returned.setModelSlot(this);
+			returned.getReceiver().setUnparsedBinding(getName());
+			// returned.setModelSlot(this);
 
 			if (creationScheme.getParameter("uri") != null) {
 				returned.setIndividualName(new DataBinding("parameters.uri"));

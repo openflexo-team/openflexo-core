@@ -230,8 +230,9 @@ public abstract interface FetchRequest<MS extends ModelSlot<RD>, RD extends Reso
 		@Override
 		public String getFMLRepresentation(FMLRepresentationContext context) {
 			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
-			out.append(getImplementedInterface().getSimpleName() + (getModelSlot() != null ? " from " + getModelSlot().getName() : " ")
-					+ (getConditions().size() > 0 ? " " + getWhereClausesFMLRepresentation(context) : ""), context);
+			out.append((getReceiver().isValid() ? getReceiver().toString() + "." : "") + getTechnologyAdapterIdentifier() + "::"
+					+ getImplementedInterface().getSimpleName()
+					+ (getConditions().size() > 0 ? " " + getWhereClausesFMLRepresentation(context) : "()"), context);
 			return out.toString();
 		}
 

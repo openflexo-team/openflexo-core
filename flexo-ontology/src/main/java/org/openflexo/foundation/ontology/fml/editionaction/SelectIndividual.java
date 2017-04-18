@@ -126,9 +126,10 @@ public abstract interface SelectIndividual<MS extends TypeAwareModelSlot<M, ?>, 
 
 		@Override
 		public IFlexoOntologyClass getType() {
-			if (StringUtils.isNotEmpty(typeURI) && getModelSlot() != null && getModelSlot().getMetaModelResource() != null
-					&& getModelSlot().getMetaModelResource().getMetaModelData() != null) {
-				return (IFlexoOntologyClass) getModelSlot().getMetaModelResource().getMetaModelData().getObject(typeURI);
+
+			if (StringUtils.isNotEmpty(typeURI) && getInferedModelSlot() != null && getInferedModelSlot().getMetaModelResource() != null
+					&& getInferedModelSlot().getMetaModelResource().getMetaModelData() != null) {
+				return (IFlexoOntologyClass) getInferedModelSlot().getMetaModelResource().getMetaModelData().getObject(typeURI);
 			}
 			/*System.out.println("Pas trouve, getModelSlot()=" + getModelSlot());
 			if (getModelSlot() != null) {
@@ -156,9 +157,9 @@ public abstract interface SelectIndividual<MS extends TypeAwareModelSlot<M, ?>, 
 					&& getModelSlot().getMetaModelResource().getMetaModelData() != null) {
 				return getModelSlot().getMetaModelResource().getMetaModelData();
 			}*/
-			if (getModelSlot() != null && getModelSlot().getMetaModelResource() != null
-					&& getModelSlot().getMetaModelResource().getMetaModelData() != null) {
-				return getModelSlot().getMetaModelResource().getMetaModelData();
+			if (getInferedModelSlot() != null && getInferedModelSlot().getMetaModelResource() != null
+					&& getInferedModelSlot().getMetaModelResource().getMetaModelData() != null) {
+				return getInferedModelSlot().getMetaModelResource().getMetaModelData();
 			}
 			return null;
 		}
@@ -199,7 +200,7 @@ public abstract interface SelectIndividual<MS extends TypeAwareModelSlot<M, ?>, 
 		@Override
 		public String getFMLRepresentation(FMLRepresentationContext context) {
 			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
-			out.append(getImplementedInterface().getSimpleName() + (getModelSlot() != null ? " from " + getModelSlot().getName() : " ")
+			out.append(getImplementedInterface().getSimpleName() + (getReceiver().isValid() ? " from " + getReceiver().toString() : " ")
 					+ " as " + (getType() != null ? getType().getName() : "No Type Specified")
 					+ (getConditions().size() > 0 ? " " + getWhereClausesFMLRepresentation(context) : ""), context);
 			return out.toString();

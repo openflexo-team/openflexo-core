@@ -200,10 +200,13 @@ public abstract interface ActorReference<T> extends VirtualModelInstanceObject {
 
 		@Override
 		public ModelSlotInstance<?, ?> getModelSlotInstance() {
-			if (getVirtualModelInstance() != null) {
-				return getVirtualModelInstance().getModelSlotInstance((ModelSlot) getFlexoRole().getModelSlot());
+			ModelSlotInstance<?, ?> returned = null;
+			if (getFlexoRole() != null && getFlexoRole().getModelSlot() != null) {
+				if (getVirtualModelInstance() != null) {
+					returned = getVirtualModelInstance().getModelSlotInstance((ModelSlot) getFlexoRole().getModelSlot());
+				}
 			}
-			return null;
+			return returned;
 		}
 
 		@Override

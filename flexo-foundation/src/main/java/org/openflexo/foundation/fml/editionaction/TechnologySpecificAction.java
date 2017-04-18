@@ -48,18 +48,21 @@ import java.util.logging.Logger;
 import org.openflexo.connie.BindingEvaluationContext;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
+import org.openflexo.connie.binding.BindingPathElement;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
+import org.openflexo.connie.expr.BindingValue;
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.VirtualModel;
+import org.openflexo.foundation.fml.binding.FlexoConceptFlexoPropertyPathElement;
+import org.openflexo.foundation.fml.binding.ModelSlotBindingVariable;
 import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.ModelSlotInstance;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
-import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
@@ -75,30 +78,36 @@ import org.openflexo.model.annotations.XMLElement;
 import org.openflexo.model.validation.ValidationIssue;
 
 /**
+ * 
  * Represents an {@link EditionAction} which address a specific technology through the reference to a container object (which is generally a
  * pointer to a ModelSlot)
  * 
  * @author sylvain
- * 
+ *
+ * @param <MS>
+ *            Type of model slot which contractualize access to a given technology resource on which this action applies
+ * @param <R>
+ *            Type of receiver on this action (the precise technology object on which this action apply)
+ * @param <T>
+ *            Type of assigned value
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(TechnologySpecificAction.TechnologySpecificActionImpl.class)
-public abstract interface TechnologySpecificAction<MS extends ModelSlot<RD>, RD extends ResourceData<RD> & TechnologyObject<?>, T>
-		extends AssignableAction<T> {
+public abstract interface TechnologySpecificAction<MS extends ModelSlot<?>, R extends TechnologyObject<?>, T> extends AssignableAction<T> {
 
 	@PropertyIdentifier(type = DataBinding.class)
 	String RECEIVER_KEY = "receiver";
 	@PropertyIdentifier(type = ModelSlot.class)
-	public static final String MODEL_SLOT_KEY = "modelSlot";
+	public static final String DEPRECATED_MODEL_SLOT_KEY = "modelSlot";
 
 	@Getter(value = RECEIVER_KEY)
 	@XMLAttribute
-	DataBinding<RD> getReceiver();
+	DataBinding<R> getReceiver();
 
 	@Setter(RECEIVER_KEY)
-	void setReceiver(DataBinding<RD> receiver);
+	void setReceiver(DataBinding<R> receiver);
 
-	public Class<? extends RD> getReceiverClass();
+	public Class<? extends R> getReceiverClass();
 
 	public Type getReceiverType();
 
@@ -106,15 +115,15 @@ public abstract interface TechnologySpecificAction<MS extends ModelSlot<RD>, RD 
 
 	// Should not be used anymore, will be removed from future releases after 1.8.1
 	@Deprecated
-	@Getter(value = MODEL_SLOT_KEY)
+	@Getter(value = DEPRECATED_MODEL_SLOT_KEY)
 	// TODO: should not be serialized anymore in future releases
 	@XMLElement(primary = false)
-	public MS getModelSlot();
+	public MS getDeprecatedModelSlot();
 
 	// Should not be used anymore, will be removed from future releases after 1.8.1
 	@Deprecated
-	@Setter(MODEL_SLOT_KEY)
-	public void setModelSlot(MS modelSlot);
+	@Setter(DEPRECATED_MODEL_SLOT_KEY)
+	public void setDeprecatedModelSlot(MS modelSlot);
 
 	@Deprecated
 	public <MS2 extends ModelSlot<?>> List<MS2> getAvailableModelSlots(Class<MS2> msType);
@@ -125,32 +134,34 @@ public abstract interface TechnologySpecificAction<MS extends ModelSlot<RD>, RD 
 	@Deprecated
 	public List<FMLRTModelSlot> getAvailableVirtualModelModelSlots();
 
+	// TODO: remove this method
 	@Deprecated
 	public ModelSlotInstance getModelSlotInstance(RunTimeEvaluationContext evaluationContext);
 
 	@Deprecated
 	public TechnologyAdapter getModelSlotTechnologyAdapter();
 
-	public static abstract class TechnologySpecificActionImpl<MS extends ModelSlot<RD>, RD extends ResourceData<RD> & TechnologyObject<?>, T>
-			extends AssignableActionImpl<T> implements TechnologySpecificAction<MS, RD, T> {
+	/**
+	 * Compute and return infered model slot from getReceiver() binding<br>
+	 * Please not that infered model slot might be null if receiver value is not given through a ModelSlot
+	 * 
+	 * @return
+	 */
+	public MS getInferedModelSlot();
+
+	public Class<? extends MS> getModelSlotClass();
+
+	public static abstract class TechnologySpecificActionImpl<MS extends ModelSlot<?>, R extends TechnologyObject<?>, T>
+			extends AssignableActionImpl<T> implements TechnologySpecificAction<MS, R, T> {
 
 		private static final Logger logger = Logger.getLogger(TechnologySpecificAction.class.getPackage().getName());
 
-		private DataBinding<RD> receiver;
-
-		@Deprecated
-		@Override
-		public TechnologyAdapter getModelSlotTechnologyAdapter() {
-			if (getModelSlot() != null) {
-				return getModelSlot().getModelSlotTechnologyAdapter();
-			}
-			return null;
-		}
+		private DataBinding<R> receiver;
 
 		@Override
 		public LocalizedDelegate getLocales() {
-			if (getModelSlot() != null && getModelSlot().getModelSlotTechnologyAdapter() != null) {
-				return getModelSlot().getModelSlotTechnologyAdapter().getLocales();
+			if (getInferedModelSlot() != null && getInferedModelSlot().getModelSlotTechnologyAdapter() != null) {
+				return getInferedModelSlot().getModelSlotTechnologyAdapter().getLocales();
 			}
 			return super.getLocales();
 		}
@@ -199,7 +210,7 @@ public abstract interface TechnologySpecificAction<MS extends ModelSlot<RD>, RD 
 				// Following line does not compile with Java7 (don't understand why)
 				// That's the reason i tried to fix that compile issue with getGenericModelSlot() method (see below)
 				// FD, in Java 8 return vmi.getModelSlotInstance(getModelSlot()); does not compile hence the cast
-				return vmi.getModelSlotInstance((ModelSlot) getModelSlot());
+				return vmi.getModelSlotInstance((ModelSlot) getInferedModelSlot());
 				// return (ModelSlotInstance<MS, ?>) vmi.getModelSlotInstance(getGenericModelSlot
 			}
 			else {
@@ -246,7 +257,7 @@ public abstract interface TechnologySpecificAction<MS extends ModelSlot<RD>, RD 
 		}
 
 		// Should not be used anymore, will be removed from future releases after 1.8.1
-		@Deprecated
+		/*@Deprecated
 		@Override
 		public MS getModelSlot() {
 			MS ms = (MS) performSuperGetter(MODEL_SLOT_KEY);
@@ -257,21 +268,57 @@ public abstract interface TechnologySpecificAction<MS extends ModelSlot<RD>, RD 
 				}
 			}
 			return ms;
+		}*/
+
+		/**
+		 * Compute and return infered model slot from getReceiver() binding<br>
+		 * Please not that infered model slot might be null if receiver value is not given through a ModelSlot
+		 * 
+		 * @return
+		 */
+		@Override
+		public MS getInferedModelSlot() {
+			if (getReceiver().isSet() && getReceiver().isValid() && getReceiver().isBindingValue()) {
+				BindingValue bindingValue = ((BindingValue) getReceiver().getExpression());
+				BindingPathElement lastPathElement = bindingValue.getLastBindingPathElement();
+				if (lastPathElement instanceof ModelSlotBindingVariable) {
+					return (MS) ((ModelSlotBindingVariable) lastPathElement).getModelSlot();
+				}
+				else if (lastPathElement instanceof FlexoConceptFlexoPropertyPathElement
+						&& ((FlexoConceptFlexoPropertyPathElement) lastPathElement).getFlexoProperty() instanceof ModelSlot) {
+					return (MS) ((FlexoConceptFlexoPropertyPathElement) lastPathElement).getFlexoProperty();
+				}
+			}
+			return null;
+		}
+
+		// @Deprecated
+		// private MS modelSlot;
+
+		// Should not be used anymore, will be removed from future releases after 1.8.1
+		@Deprecated
+		@Override
+		public MS getDeprecatedModelSlot() {
+			/*if (modelSlot == null && receiver != null && receiver.isValid()) {
+				return getInferedModelSlot();
+			}
+			return modelSlot;*/
+			return null;
 		}
 
 		// Should not be used anymore, will be removed from future releases after 1.8.1
 		@Deprecated
 		@Override
-		public void setModelSlot(MS modelSlot) {
+		public void setDeprecatedModelSlot(MS modelSlot) {
 			// performSuperSetter(MODEL_SLOT_KEY, modelSlot);
 			if (modelSlot != null) {
 				getReceiver().setUnparsedBinding(modelSlot.getName());
-				if (getReceiver().isValid()) {
+				/*if (getReceiver().isValid()) {
 					// Nothing to do
 				}
 				else {
 					getReceiver().reset();
-				}
+				}*/
 			}
 		}
 
@@ -287,8 +334,8 @@ public abstract interface TechnologySpecificAction<MS extends ModelSlot<RD>, RD 
 
 		@Override
 		public String getFMLRepresentation(FMLRepresentationContext context) {
-			return (getModelSlot() != null ? getModelSlot().getName() + "." : "") + getTechnologyAdapterIdentifier() + "::"
-					+ getImplementedInterface().getSimpleName() + "()";
+			return (getReceiver().isValid() ? getReceiver().toString() + "." : "<???" + getReceiver() + ">")
+					+ getTechnologyAdapterIdentifier() + "::" + getImplementedInterface().getSimpleName() + "()";
 		}
 
 		protected final String getTechnologyAdapterIdentifier() {
@@ -299,23 +346,24 @@ public abstract interface TechnologySpecificAction<MS extends ModelSlot<RD>, RD 
 		}
 
 		@Override
-		public DataBinding<RD> getReceiver() {
+		public DataBinding<R> getReceiver() {
 			if (receiver == null) {
 				receiver = new DataBinding<>(this, getReceiverClass(), BindingDefinitionType.GET);
 				receiver.setBindingName("receiver");
 				receiver.setMandatory(isReceiverMandatory());
 			}
 
-			if (!receiver.isSet() && getModelSlot() != null) {
+			// TODO: this code should be removed from future release (after 1.8.1)
+			/*if (!receiver.isSet() && getModelSlot() != null) {
 				receiver.setUnparsedBinding(getModelSlot().getName());
 				receiver.isValid();
-			}
+			}*/
 
 			return receiver;
 		}
 
 		@Override
-		public void setReceiver(DataBinding<RD> receiver) {
+		public void setReceiver(DataBinding<R> receiver) {
 			if (receiver != null) {
 				receiver.setOwner(this);
 				receiver.setBindingName("receiver");
@@ -326,7 +374,7 @@ public abstract interface TechnologySpecificAction<MS extends ModelSlot<RD>, RD 
 			this.receiver = receiver;
 		}
 
-		public Object getReceiver(BindingEvaluationContext evaluationContext) {
+		public R getReceiver(BindingEvaluationContext evaluationContext) {
 			if (getReceiver().isValid()) {
 				try {
 					return getReceiver().getBindingValue(evaluationContext);
@@ -342,8 +390,8 @@ public abstract interface TechnologySpecificAction<MS extends ModelSlot<RD>, RD 
 		}
 
 		@Override
-		public final Class<? extends RD> getReceiverClass() {
-			return (Class<? extends RD>) TypeUtils.getBaseClass(getReceiverType());
+		public final Class<? extends R> getReceiverClass() {
+			return (Class<? extends R>) TypeUtils.getBaseClass(getReceiverType());
 		}
 
 		@Override
@@ -356,6 +404,27 @@ public abstract interface TechnologySpecificAction<MS extends ModelSlot<RD>, RD 
 			return true;
 		}
 
+		@Override
+		public final Class<? extends MS> getModelSlotClass() {
+			return (Class<? extends MS>) TypeUtils.getTypeArgument(getClass(), TechnologySpecificAction.class, 0);
+		}
+
+		/*@Deprecated
+		@Override
+		public TechnologyAdapter getModelSlotTechnologyAdapter() {
+			if (getInferedModelSlot() != null) {
+				return getInferedModelSlot().getModelSlotTechnologyAdapter();
+			}
+			return null;
+		}*/
+
+		@Override
+		public TechnologyAdapter getModelSlotTechnologyAdapter() {
+			if (getServiceManager() != null) {
+				return getServiceManager().getTechnologyAdapterService().getTechnologyAdapterForModelSlot(getModelSlotClass());
+			}
+			return null;
+		}
 	}
 
 	@DefineValidationRule

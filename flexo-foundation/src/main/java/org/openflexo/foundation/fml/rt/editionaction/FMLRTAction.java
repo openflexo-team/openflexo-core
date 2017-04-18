@@ -83,10 +83,13 @@ public interface FMLRTAction<T extends ViewObject, VMI extends AbstractVirtualMo
 
 	public static final String DEPRECATED_VIRTUAL_MODEL_INSTANCE_KEY = "virtualModelInstance";
 
+	// TODO: remove from new releases after 1.8.1
+	@Deprecated
 	@Getter(value = DEPRECATED_VIRTUAL_MODEL_INSTANCE_KEY)
 	@XMLAttribute(xmlTag = "virtualModelInstance")
 	public String getDeprecatedVirtualModelInstance();
 
+	// TODO: remove from new releases after 1.8.1
 	@Setter(DEPRECATED_VIRTUAL_MODEL_INSTANCE_KEY)
 	public void setDeprecatedVirtualModelInstance(String virtualModelInstanceAsString);
 
@@ -104,34 +107,10 @@ public interface FMLRTAction<T extends ViewObject, VMI extends AbstractVirtualMo
 
 		static final Logger logger = Logger.getLogger(FMLRTAction.class.getPackage().getName());
 
-		/*private DataBinding<VMI> virtualModelInstance;
-		
-		@Override
-		public DataBinding<VMI> getVirtualModelInstance() {
-			if (virtualModelInstance == null) {
-				virtualModelInstance = new DataBinding<VMI>(this, getVirtualModelInstanceClass(), DataBinding.BindingDefinitionType.GET);
-				virtualModelInstance.setBindingName("virtualModelInstance");
-			}
-			return virtualModelInstance;
-		}
-		
-		@Override
-		public void setVirtualModelInstance(DataBinding<VMI> aVirtualModelInstance) {
-			if (aVirtualModelInstance != null) {
-				aVirtualModelInstance.setOwner(this);
-				aVirtualModelInstance.setBindingName("virtualModelInstance");
-				aVirtualModelInstance.setDeclaredType(getVirtualModelInstanceClass());
-				aVirtualModelInstance.setBindingDefinitionType(DataBinding.BindingDefinitionType.GET);
-			}
-			this.virtualModelInstance = aVirtualModelInstance;
-		}*/
-
 		@Override
 		public void setDeprecatedVirtualModelInstance(String virtualModelInstanceAsString) {
 
 			if (virtualModelInstanceAsString != null) {
-				System.out.println("Hop, on met le receiver a " + virtualModelInstanceAsString);
-
 				getReceiver().setUnparsedBinding(virtualModelInstanceAsString);
 				notifiedBindingChanged(getReceiver());
 			}

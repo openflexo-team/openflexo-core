@@ -10,7 +10,7 @@
 			horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED"
 			verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED" name="BasicTab">
 
-			<Label label="flexo_role" align="right" index="6"
+			<!--  <Label label="flexo_role" align="right" index="6"
 				constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)"
 				localize="true" name="FlexoRoleLabel" />
 			<DropDown data="data.flexoRole" index="7"
@@ -19,7 +19,7 @@
 				icon="controller.iconForObject(object)"
 				localize="false" list="data.getAvailableRoles()" showIcon="true"
 				iteratorClassName="org.openflexo.foundation.fml.FlexoRole"
-				autoSelectFirstRow="true" showReset="false" />
+				autoSelectFirstRow="true" showReset="false" />-->
 				
 		</Tab>
 	</TabPanel>

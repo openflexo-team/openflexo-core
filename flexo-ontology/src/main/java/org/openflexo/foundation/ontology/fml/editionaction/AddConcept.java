@@ -39,7 +39,6 @@
 package org.openflexo.foundation.ontology.fml.editionaction;
 
 import java.lang.reflect.Type;
-import java.util.List;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.editionaction.TechnologySpecificAction;
@@ -102,7 +101,7 @@ public abstract interface AddConcept<MS extends TypeAwareModelSlot<M, ?>, M exte
 		/**
 		 * Overrides parent method by returning default model slot if model slot is not defined for this action
 		 */
-		@Override
+		/*@Override
 		public MS getModelSlot() {
 			MS returned = (MS) performSuperGetter(MODEL_SLOT_KEY);
 			if (returned == null && getOwningVirtualModel() != null) {
@@ -114,11 +113,11 @@ public abstract interface AddConcept<MS extends TypeAwareModelSlot<M, ?>, M exte
 			}
 			return returned;
 		}
-
+		
 		@Override
 		public void setModelSlot(MS modelSlot) {
 			performSuperSetter(MODEL_SLOT_KEY, modelSlot);
-		}
+		}*/
 
 		@Override
 		public TypeAwareModelSlotInstance<?, ?, MS> getModelSlotInstance(RunTimeEvaluationContext evaluationContext) {

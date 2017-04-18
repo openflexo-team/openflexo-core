@@ -535,10 +535,10 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>>
 		public boolean delete(Object... context) {
 			FMLControlGraphVisitor cgVisitor = controlGraph -> {
 				if (controlGraph instanceof TechnologySpecificAction
-						&& ((TechnologySpecificAction<?, ?, ?>) controlGraph).getModelSlot() == ModelSlotImpl.this) {
-					TechnologySpecificAction action = (TechnologySpecificAction<?, ?, ?>) controlGraph;
+						&& ((TechnologySpecificAction<?, ?, ?>) controlGraph).getInferedModelSlot() == ModelSlotImpl.this) {
+					TechnologySpecificAction<?, ?, ?> action = (TechnologySpecificAction<?, ?, ?>) controlGraph;
 					// nullify model slot for action
-					action.setModelSlot(null);
+					// action.setModelSlot(null);
 				}
 			};
 

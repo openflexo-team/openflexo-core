@@ -530,9 +530,8 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 			((RoleSpecificAction) returned).setFlexoRole(getFlexoRole());
 		}
 		else if (TechnologySpecificAction.class.isAssignableFrom(editionActionClass) && getModelSlot() != null) {
-			System.out.println("editionActionClass=" + editionActionClass);
-			System.out.println("returned=" + returned);
-			((TechnologySpecificAction) returned).setModelSlot(getModelSlot());
+			// ((TechnologySpecificAction) returned).setModelSlot(getModelSlot());
+			((TechnologySpecificAction) returned).getReceiver().setUnparsedBinding(getModelSlot().getName());
 		}
 
 		if (returned != null) {

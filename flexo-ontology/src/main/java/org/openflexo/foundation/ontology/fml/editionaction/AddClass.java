@@ -73,8 +73,8 @@ public abstract interface AddClass<MS extends TypeAwareModelSlot<M, ?>, M extend
 	public static final String CLASS_NAME_KEY = "className";
 	@PropertyIdentifier(type = String.class)
 	public static final String ONTOLOGY_CLASS_URI_KEY = "ontologyClassURI";
-	@PropertyIdentifier(type = TypeAwareModelSlot.class)
-	public static final String MODEL_SLOT_KEY = "modelSlot";
+	// @PropertyIdentifier(type = TypeAwareModelSlot.class)
+	// public static final String MODEL_SLOT_KEY = "modelSlot";
 
 	@Getter(value = CLASS_NAME_KEY)
 	@XMLAttribute(xmlTag = "newClassName")
@@ -94,14 +94,14 @@ public abstract interface AddClass<MS extends TypeAwareModelSlot<M, ?>, M extend
 
 	public void setOntologyClass(IFlexoOntologyClass ontologyClass);
 
-	@Override
+	/*@Override
 	@Getter(value = MODEL_SLOT_KEY)
 	@XMLAttribute
 	public MS getModelSlot();
-
+	
 	@Override
 	@Setter(MODEL_SLOT_KEY)
-	public void setModelSlot(MS modelSlot);
+	public void setModelSlot(MS modelSlot);*/
 
 	public static abstract class AddClassImpl<MS extends TypeAwareModelSlot<M, ?>, M extends FlexoModel<M, ?> & TechnologyObject<?>, T extends IFlexoOntologyClass>
 			extends AddConceptImpl<MS, M, T> implements AddClass<MS, M, T> {

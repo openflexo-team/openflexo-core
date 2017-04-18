@@ -1172,7 +1172,7 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		SelectFlexoConceptInstance selectFlexoConceptInstance = (SelectFlexoConceptInstance) createSelectFlexoConceptInstanceAction
 				.getNewEditionAction();
 		selectFlexoConceptInstance.setFlexoConceptType(flexoConceptA);
-		selectFlexoConceptInstance.setVirtualModelInstance(new DataBinding<>("virtualModelInstance"));
+		selectFlexoConceptInstance.setReceiver(new DataBinding<>("virtualModelInstance"));
 
 		FetchRequestCondition condition1 = selectFlexoConceptInstance.createCondition();
 		condition1.setCondition(new DataBinding<>("selected.aBooleanInA = parameters.aBoolean"));
@@ -1270,7 +1270,7 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 
 		SelectFlexoConceptInstance selectFlexoConceptInstance = fetchRequestIteration.getFMLModelFactory().newSelectFlexoConceptInstance();
 		selectFlexoConceptInstance.setFlexoConceptType(flexoConceptA);
-		selectFlexoConceptInstance.setVirtualModelInstance(new DataBinding<>("virtualModelInstance"));
+		selectFlexoConceptInstance.setReceiver(new DataBinding<>("virtualModelInstance"));
 		fetchRequestIteration.setIterationAction(selectFlexoConceptInstance);
 
 		/*
@@ -1433,7 +1433,7 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 
 		SelectFlexoConceptInstance selectFlexoConceptInstance = fetchRequestIteration.getFMLModelFactory().newSelectFlexoConceptInstance();
 		selectFlexoConceptInstance.setFlexoConceptType(flexoConceptA);
-		selectFlexoConceptInstance.setVirtualModelInstance(new DataBinding<>("virtualModelInstance"));
+		selectFlexoConceptInstance.setReceiver(new DataBinding<>("virtualModelInstance"));
 		fetchRequestIteration.setIterationAction(selectFlexoConceptInstance);
 
 		FetchRequestCondition condition1 = selectFlexoConceptInstance.createCondition();
