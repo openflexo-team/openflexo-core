@@ -213,6 +213,8 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>>
 
 	public String getModelSlotDescription();
 
+	// Use with caution, this is not the name of model slot, but a displayable name
+	@Deprecated
 	public String getModelSlotName();
 
 	public static abstract class ModelSlotImpl<RD extends ResourceData<RD> & TechnologyObject<?>> extends FlexoRoleImpl<RD>
