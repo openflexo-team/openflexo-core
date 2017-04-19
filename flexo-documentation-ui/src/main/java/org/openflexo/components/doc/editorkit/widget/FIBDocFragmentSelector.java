@@ -363,8 +363,6 @@ public class FIBDocFragmentSelector<F extends FlexoDocFragment<D, TA>, D extends
 
 	protected void selectFragmentInDocumentEditor(F fragment, FIBCustomWidget<?, ?, ?> documentEditorWidget) {
 
-		System.out.println("****************** selectFragmentInDocumentEditor with " + fragment + " and " + documentEditorWidget);
-		Thread.dumpStack();
 
 		// System.out.println("customPanel" + getCustomPanel());
 		// System.out.println("docEditorWidget=" + getCustomPanel().getDocEditorWidget());
