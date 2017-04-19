@@ -63,7 +63,7 @@ public interface SetPropertyValueAction<T> {
 
 	public void setProperty(IFlexoOntologyStructuralProperty aProperty);
 
-	public ModelSlot getModelSlot();
+	public ModelSlot getInferedModelSlot();
 
 	// public DataBinding<? super T> getAssignation();
 
