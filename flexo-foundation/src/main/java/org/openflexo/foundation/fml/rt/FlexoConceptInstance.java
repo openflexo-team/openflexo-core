@@ -1087,9 +1087,9 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 			// System.out.println("Je suis: " + getFlexoConcept().getFMLRepresentation());
 			// System.out.println("Le model slot: " + modelSlot.getFlexoConcept().getFMLRepresentation());
 			// Thread.dumpStack();
-			if (getFlexoConcept() != null && !getFlexoConcept().getModelSlots().contains(modelSlot)) {
+			/*if (getFlexoConcept() != null && !getFlexoConcept().getModelSlots().contains(modelSlot)) {
 				logger.warning("Worse than that, supplied ModelSlot is not part of concept " + getFlexoConcept());
-			}
+			}*/
 			return null;
 		}
 
