@@ -50,7 +50,6 @@ import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.FlexoProperty;
-import org.openflexo.foundation.fml.editionaction.AssignableAction.AssignableActionImpl;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.model.annotations.DefineValidationRule;
@@ -65,7 +64,7 @@ import org.openflexo.model.annotations.XMLElement;
 @ModelEntity
 @ImplementationClass(DeleteAction.DeleteActionImpl.class)
 @XMLElement
-public interface DeleteAction<T extends FlexoObject> extends EditionAction {
+public interface DeleteAction<T extends FlexoObject> extends EditionAction, AssignableAction<T> {
 
 	@PropertyIdentifier(type = DataBinding.class)
 	public static final String OBJECT_KEY = "object";
@@ -77,7 +76,8 @@ public interface DeleteAction<T extends FlexoObject> extends EditionAction {
 	@Setter(OBJECT_KEY)
 	public void setObject(DataBinding<T> object);
 
-	public FlexoProperty<?> getAssignedFlexoProperty();
+	@Override
+	public FlexoProperty<T> getAssignedFlexoProperty();
 
 	public static abstract class DeleteActionImpl<T extends FlexoObject> extends AssignableActionImpl<T> implements DeleteAction<T> {
 
@@ -166,6 +166,10 @@ public interface DeleteAction<T extends FlexoObject> extends EditionAction {
 			return Void.class;
 		}
 
+		@Override
+		public Type getAssignableType() {
+			return Object.class;
+		}
 	}
 
 	@DefineValidationRule
