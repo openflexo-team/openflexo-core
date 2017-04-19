@@ -638,7 +638,7 @@ public interface AbstractVirtualModel<VM extends AbstractVirtualModel<VM>>
 					context);
 			out.append(" {" + StringUtils.LINE_SEPARATOR, context);
 
-			if (getModelSlots().size() > 0) {
+			/*if (getModelSlots().size() > 0) {
 				out.append(StringUtils.LINE_SEPARATOR, context);
 				for (ModelSlot<?> modelSlot : getModelSlots()) {
 					// if (modelSlot.getMetaModelResource() != null) {
@@ -646,7 +646,7 @@ public interface AbstractVirtualModel<VM extends AbstractVirtualModel<VM>>
 					out.append(StringUtils.LINE_SEPARATOR, context, 1);
 					// }
 				}
-			}
+			}*/
 
 			if (getDeclaredProperties().size() > 0) {
 				out.append(StringUtils.LINE_SEPARATOR, context);

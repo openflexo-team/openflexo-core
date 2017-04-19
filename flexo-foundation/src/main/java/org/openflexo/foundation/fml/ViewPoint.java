@@ -57,7 +57,6 @@ import org.openflexo.foundation.fml.binding.ViewPointBindingModel;
 import org.openflexo.foundation.fml.rm.ViewPointResource;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.fml.rt.View;
-import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.utils.XMLUtils;
 import org.openflexo.model.annotations.Adder;
@@ -529,7 +528,7 @@ public interface ViewPoint extends AbstractVirtualModel<ViewPoint> {
 			out.append("ViewPoint " + getName() + " uri=\"" + getURI() + "\"", context);
 			out.append(" {" + StringUtils.LINE_SEPARATOR, context);
 
-			if (getModelSlots().size() > 0) {
+			/*if (getModelSlots().size() > 0) {
 				out.append(StringUtils.LINE_SEPARATOR, context);
 				for (ModelSlot<?> modelSlot : getModelSlots()) {
 					// if (modelSlot.getMetaModelResource() != null) {
@@ -537,7 +536,7 @@ public interface ViewPoint extends AbstractVirtualModel<ViewPoint> {
 					out.append(StringUtils.LINE_SEPARATOR, context, 1);
 					// }
 				}
-			}
+			}*/
 
 			if (getDeclaredProperties().size() > 0) {
 				out.append(StringUtils.LINE_SEPARATOR, context);
