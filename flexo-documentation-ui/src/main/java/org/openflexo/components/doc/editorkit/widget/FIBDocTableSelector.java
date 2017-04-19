@@ -210,7 +210,7 @@ public class FIBDocTableSelector<T extends FlexoDocTable<D, TA>, D extends Flexo
 		// TODO Auto-generated method stub
 		super.setSelectedObject(selectedObject);
 		TableSelectorDetailsPanel customPanel = (TableSelectorDetailsPanel) getCustomPanel(false);
-		if (customPanel != null) {
+		if (customPanel != null && selectedObject instanceof FlexoDocTable) {
 			selectTableInDocumentEditor((T) selectedObject, customPanel.getDocEditorWidget());
 		}
 	}
