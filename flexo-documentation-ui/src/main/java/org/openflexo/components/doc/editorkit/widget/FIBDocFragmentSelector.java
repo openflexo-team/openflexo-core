@@ -103,6 +103,7 @@ public class FIBDocFragmentSelector<F extends FlexoDocFragment<D, TA>, D extends
 		return document;
 	}
 
+	@CustomComponentParameter(name = "document", type = CustomComponentParameter.Type.MANDATORY)
 	public void setDocument(D document) {
 		if ((document == null && this.document != null) || (document != null && !document.equals(this.document))) {
 			D oldValue = this.document;
@@ -363,6 +364,7 @@ public class FIBDocFragmentSelector<F extends FlexoDocFragment<D, TA>, D extends
 	protected void selectFragmentInDocumentEditor(F fragment, FIBCustomWidget<?, ?, ?> documentEditorWidget) {
 
 		System.out.println("****************** selectFragmentInDocumentEditor with " + fragment + " and " + documentEditorWidget);
+		Thread.dumpStack();
 
 		// System.out.println("customPanel" + getCustomPanel());
 		// System.out.println("docEditorWidget=" + getCustomPanel().getDocEditorWidget());
@@ -372,6 +374,7 @@ public class FIBDocFragmentSelector<F extends FlexoDocFragment<D, TA>, D extends
 		try {
 
 			if (fragment != null) {
+				isSelecting = true;
 				docXEditor.getEditor().highlightObjects(fragment.getElements());
 				scrollTo(fragment.getStartElement(), docXEditor);
 			}
@@ -393,7 +396,10 @@ public class FIBDocFragmentSelector<F extends FlexoDocFragment<D, TA>, D extends
 					scrollTo(object, docXEditor);
 				}
 			});
+			isSelecting = true;
+			return;
 		}
+		isSelecting = false;
 	}
 
 	public class LoadEditor extends FlexoTask {
