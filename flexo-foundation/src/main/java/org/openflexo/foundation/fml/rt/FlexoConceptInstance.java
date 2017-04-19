@@ -1083,8 +1083,10 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 				}
 			}
 
-			logger.warning("Cannot find ModelSlotInstance for ModelSlot " + modelSlot);
-			Thread.dumpStack();
+			// logger.warning("Cannot find ModelSlotInstance for ModelSlot " + modelSlot);
+			// System.out.println("Je suis: " + getFlexoConcept().getFMLRepresentation());
+			// System.out.println("Le model slot: " + modelSlot.getFlexoConcept().getFMLRepresentation());
+			// Thread.dumpStack();
 			if (getFlexoConcept() != null && !getFlexoConcept().getModelSlots().contains(modelSlot)) {
 				logger.warning("Worse than that, supplied ModelSlot is not part of concept " + getFlexoConcept());
 			}
@@ -1150,7 +1152,7 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 
 			if (getFlexoConcept() != null && ms != null) {
 				if (value instanceof TechnologyAdapterResource) {
-					ModelSlotInstance msi = getModelSlotInstance(ms.getModelSlotName());
+					ModelSlotInstance msi = getModelSlotInstance(ms.getName());
 					if (msi == null) {
 						ModelSlotInstanceConfiguration<?, ?> msiConfiguration = ms.createConfiguration(this, getResourceCenter());
 						msiConfiguration.setOption(DefaultModelSlotInstanceConfigurationOption.SelectExistingResource);
@@ -1161,7 +1163,7 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 					msi.setResource((TechnologyAdapterResource) value);
 				}
 				if (value instanceof ResourceData) {
-					ModelSlotInstance msi = getModelSlotInstance(ms.getModelSlotName());
+					ModelSlotInstance msi = getModelSlotInstance(ms.getName());
 					if (msi == null) {
 						ModelSlotInstanceConfiguration<?, ?> msiConfiguration = ms.createConfiguration(this, getResourceCenter());
 						msiConfiguration.setOption(DefaultModelSlotInstanceConfigurationOption.SelectExistingResource);
