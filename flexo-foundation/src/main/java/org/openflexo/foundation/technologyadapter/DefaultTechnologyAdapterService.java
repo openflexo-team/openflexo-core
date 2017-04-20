@@ -409,7 +409,7 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 		}
 		for (TechnologyAdapter ta : getTechnologyAdapters()) {
 			for (Class<? extends ModelSlot<?>> msType : ta.getAvailableModelSlotTypes()) {
-				if (modelSlotClass.equals(msType)) {
+				if (modelSlotClass.isAssignableFrom(msType)) {
 					return ta;
 				}
 			}
