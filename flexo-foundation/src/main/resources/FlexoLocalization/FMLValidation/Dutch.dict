@@ -30,6 +30,7 @@ binding_'($binding.bindingName)'_is_required_but_was_not_set=Binding '($binding.
 create_default_deletion_scheme=Create default deletion scheme
 data_property_assertion_does_not_define_an_ontology_property=Data property assertion does not define an ontology property
 data_property_assertion_must_define_an_ontology_property_description=Data property assertion must define an ontology property description
+delete_flexo_concept_action_doesn't_define_any_deletion_scheme=Delete flexo concept action doesn't define any deletion scheme
 delete_this_binding=Delete this binding
 displaying_validation_report=Displaying validation report
 flexo_concept_has_no_deletion_scheme=Flexo concept has no deletion scheme
