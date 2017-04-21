@@ -39,7 +39,7 @@
 package org.openflexo.components.widget;
 
 import org.openflexo.connie.type.CustomType;
-import org.openflexo.gina.swing.utils.CustomTypeEditor;
+import org.openflexo.gina.controller.CustomTypeEditor;
 import org.openflexo.gina.swing.utils.TypeSelector;
 import org.openflexo.view.controller.FlexoFIBController;
 

@@ -43,6 +43,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.DataBinding;
+import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.FlexoAction;
@@ -132,10 +133,10 @@ public abstract class FIBBrowserView<O> extends SelectionSynchronizedFIBView imp
 		}
 
 		for (FIBBrowserElement el : browser.getElements()) {
-			if (el.getDataClass() != null) {
-				if (FlexoObject.class.isAssignableFrom(el.getDataClass())) {
+			if (el.getDataType() != null) {
+				if (TypeUtils.isTypeAssignableFrom(FlexoObject.class, el.getDataType())) {
 					List<FlexoActionType<?, ?, ?>> actionList = FlexoObjectImpl
-							.getActionList((Class<? extends FlexoObject>) el.getDataClass());
+							.getActionList((Class<? extends FlexoObject>) TypeUtils.getBaseClass(el.getDataType()));
 					for (FlexoActionType<?, ?, ?> actionType : actionList) {
 						boolean foundAction = false;
 						for (FIBBrowserAction action : el.getActions()) {
