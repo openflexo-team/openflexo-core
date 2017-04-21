@@ -322,7 +322,7 @@ public interface View extends AbstractVirtualModelInstance<View, ViewPoint> {
 				final AbstractVirtualModel<?> virtualModel) {
 			List<AbstractVirtualModelInstance<?, ?>> returned = new ArrayList<AbstractVirtualModelInstance<?, ?>>();
 			for (AbstractVirtualModelInstance<?, ?> vmi : getVirtualModelInstances()) {
-				if (vmi.getVirtualModel() == virtualModel) {
+				if (virtualModel.isAssignableFrom(vmi.getVirtualModel())) {
 					returned.add(vmi);
 				}
 			}
