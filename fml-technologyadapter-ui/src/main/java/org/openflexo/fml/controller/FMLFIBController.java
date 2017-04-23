@@ -701,8 +701,7 @@ public class FMLFIBController extends FlexoFIBController {
 					// that we don't want to be displayed. So we clone the component, and define a clean API on it using setDataClass()
 					returned = (FIBTab) originalBasicTab.cloneObject();
 					returned.setControllerClass(FMLFIBInspectorController.class);
-					returned.setDataClass(
-							originalBasicTab.getRootComponent().getVariable(FIBComponent.DEFAULT_DATA_VARIABLE).getTypeClass());
+					returned.setDataType(originalBasicTab.getRootComponent().getVariable(FIBComponent.DEFAULT_DATA_VARIABLE).getType());
 					basicInspectorTabs.put(inspector, returned);
 				}
 			}
