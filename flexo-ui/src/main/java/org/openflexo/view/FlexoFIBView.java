@@ -117,9 +117,11 @@ public class FlexoFIBView extends JPanel implements GraphicalFlexoObserver, HasP
 
 		initializeFIBComponent();
 
-		getFIBComponent().setCustomTypeManager(getFlexoController().getApplicationContext().getTechnologyAdapterService());
-		getFIBComponent().setCustomTypeEditorProvider(getFlexoController().getApplicationContext().getTechnologyAdapterControllerService());
-
+		if (getFlexoController() != null) {
+			getFIBComponent().setCustomTypeManager(getFlexoController().getApplicationContext().getTechnologyAdapterService());
+			getFIBComponent()
+					.setCustomTypeEditorProvider(getFlexoController().getApplicationContext().getTechnologyAdapterControllerService());
+		}
 		fibController = createFibController(fibComponent, controller, locales);
 
 		Progress.progress("builing_view");

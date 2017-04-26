@@ -87,7 +87,8 @@ public interface FIBBrowserActionAdapter<T extends FlexoObject> extends FIBBrows
 		public static <T extends FlexoObject> FIBBrowserActionAdapter<T> makeFIBBrowserActionAdapter(FlexoActionType<?, T, ?> actionType,
 				FIBBrowserView<?> browserView, FlexoController controller) throws ModelDefinitionException {
 
-			FIBModelFactory fibModelFactory = new FIBModelFactory(controller.getApplicationContext().getTechnologyAdapterService(),
+			FIBModelFactory fibModelFactory = new FIBModelFactory(
+					controller != null ? controller.getApplicationContext().getTechnologyAdapterService() : null,
 					FIBBrowserActionAdapter.class);
 			FIBBrowserActionAdapterImpl<T> returned = (FIBBrowserActionAdapterImpl<T>) fibModelFactory
 					.newInstance(FIBBrowserActionAdapter.class);
