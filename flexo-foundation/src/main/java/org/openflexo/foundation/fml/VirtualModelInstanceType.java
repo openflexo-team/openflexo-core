@@ -62,8 +62,8 @@ public class VirtualModelInstanceType extends FlexoConceptInstanceType {
 		super(aVirtualModel);
 	}
 
-	public VirtualModelInstanceType(String virtualModelURI) {
-		super(virtualModelURI);
+	public VirtualModelInstanceType(String virtualModelURI, CustomTypeFactory<?> factory) {
+		super(virtualModelURI, factory);
 	}
 
 	@Override
@@ -149,7 +149,7 @@ public class VirtualModelInstanceType extends FlexoConceptInstanceType {
 			else {
 				// We don't return UNDEFINED_FLEXO_CONCEPT_INSTANCE_TYPE because we want here a mutable type
 				// if FlexoConcept might be resolved later
-				return new VirtualModelInstanceType(configuration);
+				return new VirtualModelInstanceType(configuration, this);
 			}
 		}
 

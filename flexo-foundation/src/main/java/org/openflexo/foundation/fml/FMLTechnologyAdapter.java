@@ -121,28 +121,28 @@ public class FMLTechnologyAdapter extends TechnologyAdapter {
 		taService.registerTypeClass(ViewType.class, getViewTypeFactory());
 	}
 
-	protected FlexoResourceTypeFactory getFlexoResourceTypeFactory() {
+	public FlexoResourceTypeFactory getFlexoResourceTypeFactory() {
 		if (resourceTypeFactory == null) {
 			resourceTypeFactory = new FlexoResourceTypeFactory(this);
 		}
 		return resourceTypeFactory;
 	}
 
-	protected FlexoConceptInstanceTypeFactory getFlexoConceptInstanceTypeFactory() {
+	public FlexoConceptInstanceTypeFactory getFlexoConceptInstanceTypeFactory() {
 		if (fciFactory == null) {
 			fciFactory = new FlexoConceptInstanceTypeFactory(this);
 		}
 		return fciFactory;
 	}
 
-	protected VirtualModelInstanceTypeFactory getVirtualModelInstanceTypeFactory() {
+	public VirtualModelInstanceTypeFactory getVirtualModelInstanceTypeFactory() {
 		if (vmiFactory == null) {
 			vmiFactory = new VirtualModelInstanceTypeFactory(this);
 		}
 		return vmiFactory;
 	}
 
-	protected ViewTypeFactory getViewTypeFactory() {
+	public ViewTypeFactory getViewTypeFactory() {
 		if (viewFactory == null) {
 			viewFactory = new ViewTypeFactory(this);
 		}

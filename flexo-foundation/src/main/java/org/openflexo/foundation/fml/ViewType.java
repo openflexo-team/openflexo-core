@@ -56,8 +56,8 @@ public class ViewType extends VirtualModelInstanceType {
 		super(aViewPoint);
 	}
 
-	protected ViewType(String viewpointURI) {
-		super(viewpointURI);
+	protected ViewType(String viewpointURI, CustomTypeFactory<?> factory) {
+		super(viewpointURI, factory);
 	}
 
 	public ViewPoint getViewPoint() {
@@ -131,7 +131,7 @@ public class ViewType extends VirtualModelInstanceType {
 			else {
 				// We don't return UNDEFINED_FLEXO_CONCEPT_INSTANCE_TYPE because we want here a mutable type
 				// if FlexoConcept might be resolved later
-				return new ViewType(configuration);
+				return new ViewType(configuration, this);
 			}
 		}
 

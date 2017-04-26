@@ -201,7 +201,8 @@ public interface SelectVirtualModelInstance<VMI extends AbstractVirtualModelInst
 							getVirtualModelType() != null ? getVirtualModelType().getLoadedResourceData() : null);
 				}
 				else {
-					return new VirtualModelInstanceType(_getVirtualModelTypeURI());
+					return new VirtualModelInstanceType(_getVirtualModelTypeURI(),
+							getTechnologyAdapter().getVirtualModelInstanceTypeFactory());
 				}
 			}
 			return VirtualModelInstanceType.UNDEFINED_VIRTUAL_MODEL_INSTANCE_TYPE;

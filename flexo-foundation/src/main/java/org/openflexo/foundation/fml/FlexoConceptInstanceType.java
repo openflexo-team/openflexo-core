@@ -104,7 +104,7 @@ public class FlexoConceptInstanceType implements TechnologySpecificType<FMLTechn
 			else {
 				// We don't return UNDEFINED_FLEXO_CONCEPT_INSTANCE_TYPE because we want here a mutable type
 				// if FlexoConcept might be resolved later
-				return new FlexoConceptInstanceType(configuration);
+				return new FlexoConceptInstanceType(configuration, this);
 			}
 		}
 
@@ -139,8 +139,9 @@ public class FlexoConceptInstanceType implements TechnologySpecificType<FMLTechn
 		this.flexoConcept = anFlexoConcept;
 	}
 
-	protected FlexoConceptInstanceType(String flexoConceptURI) {
+	protected FlexoConceptInstanceType(String flexoConceptURI, CustomTypeFactory<?> customTypeFactory) {
 		this.conceptURI = flexoConceptURI;
+		this.customTypeFactory = customTypeFactory;
 	}
 
 	public FlexoConcept getFlexoConcept() {
@@ -208,6 +209,7 @@ public class FlexoConceptInstanceType implements TechnologySpecificType<FMLTechn
 
 	@Override
 	public void resolve(CustomTypeFactory<?> factory) {
+		// System.out.println("******* resolve " + getSerializationRepresentation() + " with " + factory);
 		if (factory instanceof FlexoConceptInstanceTypeFactory) {
 			FlexoConcept concept = ((FlexoConceptInstanceTypeFactory) factory).getTechnologyAdapter().getTechnologyAdapterService()
 					.getServiceManager().getViewPointLibrary().getFlexoConcept(conceptURI);
