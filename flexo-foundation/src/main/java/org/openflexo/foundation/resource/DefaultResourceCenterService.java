@@ -50,7 +50,6 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.jar.JarFile;
-
 import org.apache.commons.io.IOUtils;
 import org.openflexo.foundation.FlexoService;
 import org.openflexo.foundation.FlexoServiceImpl;
@@ -224,6 +223,13 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 	public void removeFromResourceCenters(FlexoResourceCenter<?> resourceCenter) {
 		if (getResourceCenters().contains(resourceCenter)) {
 			performSuperRemover(RESOURCE_CENTERS, resourceCenter);
+		}
+
+		// unload resources from resource center
+		for (FlexoResource<?> resource : resourceCenter.getAllResources(null)) {
+			if (resource.isLoaded()) {
+				resource.unloadResourceData(true);
+			}
 		}
 		// TODO: dereference all resources registered in this ResourceCenter
 
