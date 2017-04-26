@@ -53,8 +53,8 @@ import org.openflexo.foundation.resource.FileIODelegate;
 import org.openflexo.foundation.resource.PamelaResourceImpl;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.task.FlexoTask;
-import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
+import org.openflexo.foundation.technologyadapter.UseModelSlotDeclaration;
 import org.openflexo.model.factory.AccessibleProxyObject;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
@@ -170,15 +170,23 @@ public abstract class AbstractVirtualModelResourceImpl<VM extends AbstractVirtua
 				getServiceManager().getTaskManager().waitTask(activateFMLRT);
 			}*/
 
-			System.out.println("On active les technologies pour " + getLoadedResourceData());
+			// System.out.println("Activate technologies for " + getLoadedResourceData());
 
-			for (ModelSlot<?> ms : getLoadedResourceData().getModelSlots()) {
-				System.out.println("On active " + ms.getModelSlotTechnologyAdapter());
-				FlexoTask activateTA = taService.activateTechnologyAdapter(ms.getModelSlotTechnologyAdapter());
+			for (UseModelSlotDeclaration useDeclaration : getLoadedResourceData().getUseDeclarations()) {
+				FlexoTask activateTA = taService
+						.activateTechnologyAdapter(taService.getTechnologyAdapterForModelSlot(useDeclaration.getModelSlotClass()));
 				/*if (activateTA != null) {
-					getServiceManager().getTaskManager().waitTask(activateTA);
+				getServiceManager().getTaskManager().waitTask(activateTA);
 				}*/
 			}
+
+			/*for (ModelSlot<?> ms : getLoadedResourceData().getModelSlots()) {
+				// System.out.println("Activate " + ms.getModelSlotTechnologyAdapter());
+				FlexoTask activateTA = taService.activateTechnologyAdapter(ms.getModelSlotTechnologyAdapter());
+				if (activateTA != null) {
+					getServiceManager().getTaskManager().waitTask(activateTA);
+				}
+			}*/
 		}
 	}
 
