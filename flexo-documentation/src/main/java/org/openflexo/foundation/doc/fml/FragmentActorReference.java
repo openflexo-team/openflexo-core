@@ -41,7 +41,6 @@ package org.openflexo.foundation.doc.fml;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
-
 import org.openflexo.foundation.doc.FlexoDocElement;
 import org.openflexo.foundation.doc.FlexoDocFragment;
 import org.openflexo.foundation.doc.FlexoDocFragment.FragmentConsistencyException;
@@ -213,30 +212,31 @@ public interface FragmentActorReference<F extends FlexoDocFragment<?, ?>> extend
 				// Retrieve template fragment
 				F templateFragment = (F) ((FlexoFragmentRole) getFlexoRole()).getFragment();
 
-				for (FlexoDocElement<?, ?> element : aFragment.getElements()) {
-					ElementReference er = getFactory().newInstance(ElementReference.class);
-					er.setElementId(element.getIdentifier());
-					if (element.getBaseIdentifier() != null) {
-						er.setTemplateElementId(element.getBaseIdentifier());
-					}
-					addToElementReferences(er);
-					if (element instanceof FlexoDocTable) {
-						FlexoDocTable<?, ?> table = (FlexoDocTable<?, ?>) element;
-						for (FlexoDocTableRow<?, ?> row : table.getTableRows()) {
-							for (FlexoDocTableCell<?, ?> cell : row.getTableCells()) {
-								for (FlexoDocElement<?, ?> e2 : cell.getElements()) {
-									if (e2.getBaseIdentifier() != null) {
-										ElementReference er2 = getFactory().newInstance(ElementReference.class);
-										er2.setElementId(e2.getIdentifier());
-										er2.setTemplateElementId(e2.getBaseIdentifier());
-										addToElementReferences(er2);
+				if (aFragment != null) {
+					for (FlexoDocElement<?, ?> element : aFragment.getElements()) {
+						ElementReference er = getFactory().newInstance(ElementReference.class);
+						er.setElementId(element.getIdentifier());
+						if (element.getBaseIdentifier() != null) {
+							er.setTemplateElementId(element.getBaseIdentifier());
+						}
+						addToElementReferences(er);
+						if (element instanceof FlexoDocTable) {
+							FlexoDocTable<?, ?> table = (FlexoDocTable<?, ?>) element;
+							for (FlexoDocTableRow<?, ?> row : table.getTableRows()) {
+								for (FlexoDocTableCell<?, ?> cell : row.getTableCells()) {
+									for (FlexoDocElement<?, ?> e2 : cell.getElements()) {
+										if (e2.getBaseIdentifier() != null) {
+											ElementReference er2 = getFactory().newInstance(ElementReference.class);
+											er2.setElementId(e2.getIdentifier());
+											er2.setTemplateElementId(e2.getBaseIdentifier());
+											addToElementReferences(er2);
+										}
 									}
 								}
 							}
 						}
 					}
 				}
-
 				fragment = aFragment;
 			}
 		}
