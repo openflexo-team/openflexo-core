@@ -71,7 +71,7 @@ public abstract class OpenflexoFIBInspectorTestCase extends OpenflexoTestCaseWit
 
 	static {
 		try {
-			INSPECTOR_FACTORY = new FIBModelFactory(FIBInspector.class);
+			INSPECTOR_FACTORY = new FIBModelFactory(null, FIBInspector.class);
 		} catch (ModelDefinitionException e1) {
 			e1.printStackTrace();
 		}

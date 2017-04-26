@@ -73,7 +73,7 @@ public class ApplicationFIBLibraryService extends FlexoServiceImpl implements Fl
 
 	@Override
 	public void initialize() {
-		applicationFIBLibrary = ApplicationFIBLibraryImpl.instance();
+		applicationFIBLibrary = ApplicationFIBLibraryImpl.createInstance(getServiceManager().getTechnologyAdapterService());
 		applicationFIBEditor = new JFIBEditor(applicationFIBLibrary);
 		SwingViewFactory.INSTANCE.installInteractiveFIBEditor(applicationFIBEditor);
 	}

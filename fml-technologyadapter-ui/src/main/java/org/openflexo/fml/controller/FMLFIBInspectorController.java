@@ -49,11 +49,8 @@ import org.openflexo.foundation.InnerResourceData;
 import org.openflexo.foundation.action.AddFlexoProperty;
 import org.openflexo.foundation.resource.ResourceLoaded;
 import org.openflexo.gina.model.FIBComponent;
-import org.openflexo.gina.model.FIBModelFactory;
-import org.openflexo.gina.utils.FIBInspector;
 import org.openflexo.gina.view.GinaViewFactory;
 import org.openflexo.logging.FlexoLogger;
-import org.openflexo.model.exceptions.ModelDefinitionException;
 
 /**
  * Represents the controller of a FIBInspector (FIBComponent) in the context of FML
@@ -65,8 +62,8 @@ public class FMLFIBInspectorController extends FMLFIBController {
 
 	private static final Logger logger = FlexoLogger.getLogger(FMLFIBInspectorController.class.getPackage().getName());
 
-	private static FIBModelFactory INSPECTOR_FACTORY;
-
+	/*private static FIBModelFactory INSPECTOR_FACTORY;
+	
 	static {
 		try {
 			INSPECTOR_FACTORY = new FIBModelFactory(FIBInspector.class);
@@ -74,7 +71,7 @@ public class FMLFIBInspectorController extends FMLFIBController {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	}
+	}*/
 
 	public FMLFIBInspectorController(FIBComponent component, GinaViewFactory<?> viewFactory) {
 		super(component, viewFactory);

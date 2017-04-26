@@ -55,6 +55,7 @@ import org.openflexo.gina.model.widget.FIBBrowser;
 import org.openflexo.gina.model.widget.FIBBrowserAction;
 import org.openflexo.gina.model.widget.FIBBrowserElement;
 import org.openflexo.localization.LocalizedDelegate;
+import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.prefs.ApplicationFIBLibraryService;
 import org.openflexo.rm.Resource;
 import org.openflexo.view.FIBBrowserActionAdapter.FIBBrowserActionAdapterImpl;
@@ -149,7 +150,13 @@ public abstract class FIBBrowserView<O> extends SelectionSynchronizedFIBView imp
 							}
 						}
 						if (!foundAction) {
-							el.addToActions(FIBBrowserActionAdapterImpl.makeFIBBrowserActionAdapter(actionType, this));
+							try {
+								el.addToActions(
+										FIBBrowserActionAdapterImpl.makeFIBBrowserActionAdapter(actionType, this, getFlexoController()));
+							} catch (ModelDefinitionException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
 						}
 					}
 				}

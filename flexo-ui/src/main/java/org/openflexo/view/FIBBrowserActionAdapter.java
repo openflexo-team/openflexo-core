@@ -42,11 +42,13 @@ import org.openflexo.connie.DataBinding;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionType;
+import org.openflexo.gina.model.FIBModelFactory;
 import org.openflexo.gina.model.widget.FIBBrowserAction;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.XMLElement;
-import org.openflexo.view.controller.FlexoFIBController;
+import org.openflexo.model.exceptions.ModelDefinitionException;
+import org.openflexo.view.controller.FlexoController;
 
 /**
  * A built-in adapter in openflexo ui layer which allows to automatically map FlexoAction environment to FIBBrowser behaviour
@@ -83,8 +85,11 @@ public interface FIBBrowserActionAdapter<T extends FlexoObject> extends FIBBrows
 			implements FIBBrowserActionAdapter<T> {
 
 		public static <T extends FlexoObject> FIBBrowserActionAdapter<T> makeFIBBrowserActionAdapter(FlexoActionType<?, T, ?> actionType,
-				FIBBrowserView<?> browserView) {
-			FIBBrowserActionAdapterImpl<T> returned = (FIBBrowserActionAdapterImpl<T>) FlexoFIBController.FLEXO_FIB_FACTORY
+				FIBBrowserView<?> browserView, FlexoController controller) throws ModelDefinitionException {
+
+			FIBModelFactory fibModelFactory = new FIBModelFactory(controller.getApplicationContext().getTechnologyAdapterService(),
+					FIBBrowserActionAdapter.class);
+			FIBBrowserActionAdapterImpl<T> returned = (FIBBrowserActionAdapterImpl<T>) fibModelFactory
 					.newInstance(FIBBrowserActionAdapter.class);
 			returned.initWithActionType(actionType, browserView);
 			return returned;

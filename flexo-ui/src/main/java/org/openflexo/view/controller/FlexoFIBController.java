@@ -55,30 +55,27 @@ import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoObservable;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.GraphicalFlexoObserver;
-import org.openflexo.foundation.action.copypaste.CopyAction;
-import org.openflexo.foundation.action.copypaste.CutAction;
-import org.openflexo.foundation.action.copypaste.PasteAction;
-import org.openflexo.foundation.action.copypaste.CopyAction.CopyActionType;
-import org.openflexo.foundation.action.copypaste.CutAction.CutActionType;
-import org.openflexo.foundation.action.copypaste.PasteAction.PasteActionType;
 import org.openflexo.foundation.action.ImportProject;
 import org.openflexo.foundation.action.RemoveImportedProject;
+import org.openflexo.foundation.action.copypaste.CopyAction;
+import org.openflexo.foundation.action.copypaste.CopyAction.CopyActionType;
+import org.openflexo.foundation.action.copypaste.CutAction;
+import org.openflexo.foundation.action.copypaste.CutAction.CutActionType;
+import org.openflexo.foundation.action.copypaste.PasteAction;
+import org.openflexo.foundation.action.copypaste.PasteAction.PasteActionType;
 import org.openflexo.foundation.resource.FlexoProjectReference;
 import org.openflexo.foundation.resource.RepositoryFolder;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.gina.controller.FIBController;
 import org.openflexo.gina.controller.FIBSelectable;
 import org.openflexo.gina.model.FIBComponent;
-import org.openflexo.gina.model.FIBModelFactory;
 import org.openflexo.gina.model.FIBMouseEvent;
 import org.openflexo.gina.view.FIBView;
 import org.openflexo.gina.view.GinaViewFactory;
 import org.openflexo.icon.UtilsIconLibrary;
 import org.openflexo.localization.FlexoLocalization;
-import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.prefs.PresentationPreferences;
 import org.openflexo.selection.SelectionManager;
-import org.openflexo.view.FIBBrowserActionAdapter;
 
 /**
  * Represents the controller of a FIBComponent in Openflexo graphical context (at this time, Swing)<br>
@@ -100,19 +97,6 @@ public class FlexoFIBController extends FIBController implements GraphicalFlexoO
 	public static final ImageIcon ARROW_BOTTOM = UtilsIconLibrary.ARROW_BOTTOM_2;
 	public static final ImageIcon ARROW_TOP = UtilsIconLibrary.ARROW_TOP_2;
 
-	/**
-	 * This factory is augmented with model entities defined in flexo layer
-	 */
-	public static FIBModelFactory FLEXO_FIB_FACTORY;
-
-	static {
-		try {
-			FLEXO_FIB_FACTORY = new FIBModelFactory(FIBBrowserActionAdapter.class);
-		} catch (ModelDefinitionException e1) {
-			e1.printStackTrace();
-		}
-	}
-
 	public FlexoFIBController(FIBComponent component, GinaViewFactory<?> viewFactory) {
 		super(component, viewFactory);
 		// Default parent localizer is the main localizer
@@ -121,7 +105,7 @@ public class FlexoFIBController extends FIBController implements GraphicalFlexoO
 
 	public FlexoFIBController(FIBComponent component, GinaViewFactory<?> viewFactory, FlexoController controller) {
 		super(component, viewFactory);
-		this.controller = controller;
+		setFlexoController(controller);
 	}
 
 	@Override

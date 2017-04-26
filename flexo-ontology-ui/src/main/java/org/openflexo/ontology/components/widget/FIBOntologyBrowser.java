@@ -87,7 +87,7 @@ import org.openflexo.view.controller.TechnologyAdapterControllerService;
  * 
  */
 @SuppressWarnings("serial")
-public abstract class FIBOntologyBrowser extends FIBJPanel<FIBOntologyBrowser>implements PropertyChangeListener {
+public abstract class FIBOntologyBrowser extends FIBJPanel<FIBOntologyBrowser> implements PropertyChangeListener {
 
 	static final Logger logger = Logger.getLogger(FIBOntologyBrowser.class.getPackage().getName());
 

@@ -83,19 +83,16 @@ public class ParametersRetriever<ES extends FlexoBehaviour> {
 	private final FlexoBehaviourAction<?, ES, ?> action;
 	private final ApplicationContext applicationContext;
 
-	private static FIBModelFactory fibModelFactory;
-
-	static {
-		try {
-			fibModelFactory = new FIBModelFactory();
-		} catch (ModelDefinitionException e) {
-			e.printStackTrace();
-		}
-	}
+	private FIBModelFactory fibModelFactory;
 
 	public ParametersRetriever(FlexoBehaviourAction<?, ES, ?> action, ApplicationContext applicationContext) {
 		this.action = action;
 		this.applicationContext = applicationContext;
+		try {
+			fibModelFactory = new FIBModelFactory(applicationContext.getTechnologyAdapterService());
+		} catch (ModelDefinitionException e) {
+			e.printStackTrace();
+		}
 		if (action != null) {
 			action.retrieveDefaultParameters();
 		}

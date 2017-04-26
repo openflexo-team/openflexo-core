@@ -117,7 +117,7 @@ public class OpenflexoGinaSwingEditorTestCase extends OpenflexoTestCase {
 	public FIBEditor instanciateFIBEdition(String title, Resource fibResource, Object data)
 			throws ClassNotFoundException, InstantiationException, IllegalAccessException, UnsupportedLookAndFeelException {
 
-		final FIBEditor editor = new FIBEditor(FIBLibraryImpl.createInstance()) {
+		final FIBEditor editor = new FIBEditor(FIBLibraryImpl.createInstance(null)) {
 			@Override
 			public boolean activate(FIBEditorController editorController) {
 				if (super.activate(editorController)) {
