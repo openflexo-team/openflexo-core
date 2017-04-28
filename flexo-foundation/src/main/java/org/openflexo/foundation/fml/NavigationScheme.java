@@ -39,14 +39,12 @@
 package org.openflexo.foundation.fml;
 
 import java.lang.reflect.InvocationTargetException;
-
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
-import org.openflexo.gina.annotation.FIBPanel;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
@@ -55,7 +53,6 @@ import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.model.annotations.XMLElement;
 
-@FIBPanel("Fib/FML/NavigationSchemePanel.fib")
 @ModelEntity
 @ImplementationClass(NavigationScheme.NavigationSchemeImpl.class)
 @XMLElement

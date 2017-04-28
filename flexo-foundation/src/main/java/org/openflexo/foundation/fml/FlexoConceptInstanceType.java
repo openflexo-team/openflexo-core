@@ -40,10 +40,8 @@ package org.openflexo.foundation.fml;
 
 import java.lang.reflect.Type;
 import java.util.logging.Logger;
-
 import org.openflexo.connie.type.CustomTypeFactory;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
-import org.openflexo.gina.annotation.FIBPanel;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.toolbox.StringUtils;
 
@@ -72,7 +70,6 @@ public class FlexoConceptInstanceType implements TechnologySpecificType<FMLTechn
 	 * @author sylvain
 	 * 
 	 */
-	@FIBPanel("Fib/CustomType/FlexoConceptInstanceTypeFactory.fib")
 	public static class FlexoConceptInstanceTypeFactory extends TechnologyAdapterTypeFactory<FlexoConceptInstanceType> {
 
 		@Override

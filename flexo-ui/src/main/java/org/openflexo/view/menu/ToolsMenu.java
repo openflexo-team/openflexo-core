@@ -46,14 +46,8 @@ import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import javax.swing.AbstractAction;
-import javax.swing.JFileChooser;
-import javax.swing.JMenuItem;
-import javax.swing.KeyStroke;
-import javax.swing.SwingUtilities;
+import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
-
 import org.openflexo.Flexo;
 import org.openflexo.FlexoCst;
 import org.openflexo.br.SendBugReportServiceTask;
@@ -66,12 +60,10 @@ import org.openflexo.foundation.GraphicalFlexoObserver;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.gina.swing.utils.localization.LocalizedEditor;
 import org.openflexo.gina.swing.utils.logging.FlexoLoggingViewer;
-import org.openflexo.icon.IconLibrary;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.localization.LocalizedDelegate;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.logging.FlexoLoggingManager;
-import org.openflexo.market.FlexoMarketEditorDialog;
 import org.openflexo.module.Module;
 import org.openflexo.project.AutoSaveService;
 import org.openflexo.project.InteractiveProjectLoader;
@@ -137,12 +129,6 @@ public class ToolsMenu extends FlexoMenu {
 		addSeparator();
 		add(repairProject = new ValidateProjectItem());
 		add(timeTraveler = new TimeTraveler());
-
-		// A market...
-		if (Flexo.isDev) {
-			addSeparator();
-			add(market = new OpenflexoMarketItem());
-		}
 	}
 
 	public void addSpecificItems() {
@@ -689,30 +675,6 @@ public class ToolsMenu extends FlexoMenu {
 					getAutoSaveService().showTimeTravelerDialog();
 				}
 			}
-		}
-	}
-
-	/**
-	 * Openflexo market menu - enable in DEV mode for now
-	 */
-	public class OpenflexoMarketItem extends FlexoMenuItem {
-		public OpenflexoMarketItem() {
-			super(new OpenflexoMarketAction(), "Market", null, getController(), true);
-			setIcon(IconLibrary.MARKET16x16_ICON);
-		}
-	}
-
-	public class OpenflexoMarketAction extends AbstractAction {
-		public OpenflexoMarketAction() {
-			super();
-		}
-
-		@Override
-		public void actionPerformed(ActionEvent event) {
-
-			FlexoMarketEditorDialog.showFlexoMarketEditorDialog(getController().getApplicationContext().getFlexoUpdateService(),
-					getController().getApplicationContext(), getController().getFlexoFrame());
-
 		}
 	}
 }

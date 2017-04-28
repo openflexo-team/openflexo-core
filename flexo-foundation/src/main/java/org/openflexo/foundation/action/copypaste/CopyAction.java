@@ -42,8 +42,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 import java.util.logging.Logger;
-
-import org.openflexo.fge.control.exceptions.CopyException;
+import org.openflexo.exceptions.CopyException;
 import org.openflexo.foundation.FlexoEditingContext;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject;

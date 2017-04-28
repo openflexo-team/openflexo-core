@@ -39,13 +39,11 @@
 package org.openflexo.foundation.fml.rt.editionaction;
 
 import java.util.logging.Logger;
-
 import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
-import org.openflexo.gina.annotation.FIBPanel;
 import org.openflexo.model.annotations.DefineValidationRule;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
@@ -64,7 +62,6 @@ import org.openflexo.model.validation.ValidationRule;
  * @param <MM>
  */
 
-@FIBPanel("Fib/FML/AddFlexoConceptInstancePanel.fib")
 @ModelEntity
 @ImplementationClass(AddFlexoConceptInstance.AddFlexoConceptInstanceImpl.class)
 @XMLElement

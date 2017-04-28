@@ -39,13 +39,11 @@
 package org.openflexo.foundation.fml;
 
 import java.io.FileNotFoundException;
-
 import org.openflexo.connie.type.CustomTypeFactory;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
-import org.openflexo.gina.annotation.FIBPanel;
 
 /**
  * Represent the type of a DiagramInstance of a given Diagram
@@ -115,7 +113,6 @@ public class VirtualModelInstanceType extends FlexoConceptInstanceType {
 	 * @author sylvain
 	 * 
 	 */
-	@FIBPanel("Fib/CustomType/VirtualModelInstanceTypeFactory.fib")
 	public static class VirtualModelInstanceTypeFactory extends TechnologyAdapterTypeFactory<VirtualModelInstanceType> {
 
 		public VirtualModelInstanceTypeFactory(FMLTechnologyAdapter technologyAdapter) {

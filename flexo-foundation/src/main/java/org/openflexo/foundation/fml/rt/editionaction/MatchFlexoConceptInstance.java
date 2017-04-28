@@ -48,7 +48,6 @@ import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.connie.exception.NullReferenceException;
@@ -70,7 +69,6 @@ import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.CreationSchemeAction;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.foundation.fml.rt.action.MatchingSet;
-import org.openflexo.gina.annotation.FIBPanel;
 import org.openflexo.model.annotations.Adder;
 import org.openflexo.model.annotations.CloningStrategy;
 import org.openflexo.model.annotations.CloningStrategy.StrategyType;
@@ -102,7 +100,6 @@ import org.openflexo.model.validation.ValidationRule;
  * @param <M>
  * @param <MM>
  */
-@FIBPanel("Fib/FML/MatchFlexoConceptInstancePanel.fib")
 @ModelEntity
 @ImplementationClass(MatchFlexoConceptInstance.MatchFlexoConceptInstanceImpl.class)
 @XMLElement

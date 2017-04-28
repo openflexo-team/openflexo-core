@@ -39,10 +39,6 @@
 package org.openflexo.foundation.action.transformation;
 
 import java.beans.PropertyChangeSupport;
-
-import javax.swing.ImageIcon;
-
-import org.openflexo.icon.UtilsIconLibrary;
 import org.openflexo.localization.LocalizedDelegate;
 import org.openflexo.toolbox.HasPropertyChangeSupport;
 import org.openflexo.toolbox.StringUtils;
@@ -124,7 +120,7 @@ public abstract class TransformationStrategy<A extends TransformationAction<A, ?
 					messageTypeIsToBeDisplayed());
 			getPropertyChangeSupport().firePropertyChange("issueMessage", null, getIssueMessage());
 			getPropertyChangeSupport().firePropertyChange("issueMessageType", null, getIssueMessageType());
-			getPropertyChangeSupport().firePropertyChange("issueMessageIcon", null, getIssueMessageIcon());
+			//getPropertyChangeSupport().firePropertyChange("issueMessageIcon", null, getIssueMessageIcon());
 		}
 		else {
 			// Nothing to do
@@ -165,7 +161,7 @@ public abstract class TransformationStrategy<A extends TransformationAction<A, ?
 			IssueMessageType oldValue = this.issueMessageType;
 			this.issueMessageType = issueMessageType;
 			getPropertyChangeSupport().firePropertyChange("issueMessageType", oldValue, issueMessageType);
-			getPropertyChangeSupport().firePropertyChange("issueMessageIcon", null, getIssueMessageIcon());
+			//getPropertyChangeSupport().firePropertyChange("issueMessageIcon", null, getIssueMessageIcon());
 		}
 	}
 
@@ -177,24 +173,4 @@ public abstract class TransformationStrategy<A extends TransformationAction<A, ?
 				|| (lastValidityStatus && StringUtils.isNotEmpty(getIssueMessage()) && getIssueMessageType() == IssueMessageType.INFO)
 				|| (lastValidityStatus && StringUtils.isNotEmpty(getIssueMessage()) && getIssueMessageType() == IssueMessageType.WARNING);
 	}
-
-	public ImageIcon getIssueMessageIcon() {
-		if (StringUtils.isEmpty(getIssueMessage())) {
-			return null;
-		}
-		if (getIssueMessageType() == null) {
-			return null;
-		}
-		switch (getIssueMessageType()) {
-			case ERROR:
-				return UtilsIconLibrary.ERROR_ICON;
-			case WARNING:
-				return UtilsIconLibrary.WARNING_ICON;
-			case INFO:
-				return UtilsIconLibrary.OK_ICON;
-			default:
-				return null;
-		}
-	}
-
 }

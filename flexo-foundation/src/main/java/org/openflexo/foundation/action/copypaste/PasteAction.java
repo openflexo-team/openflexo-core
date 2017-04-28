@@ -38,13 +38,12 @@
 
 package org.openflexo.foundation.action.copypaste;
 
-import java.awt.Event;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 import java.util.logging.Logger;
-
-import org.openflexo.fge.control.exceptions.PasteException;
+import org.openflexo.exceptions.PasteException;
 import org.openflexo.foundation.FlexoEditingContext;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject;
@@ -232,7 +231,7 @@ public class PasteAction extends FlexoAction<PasteAction, FlexoObject, FlexoObje
 		}
 
 		if (getFocusedObject() == null) {
-			throw new PasteException("Unexpected null focused object in PASTE", factory);
+			throw new PasteException("Unexpected null focused object in PASTE");
 		}
 
 		PasteHandler<FlexoObject> handler = (PasteHandler<FlexoObject>) editingContext.getPasteHandler(getFocusedObject(),
@@ -246,7 +245,7 @@ public class PasteAction extends FlexoAction<PasteAction, FlexoObject, FlexoObje
 		System.out.println("PastingContext=" + pastingContext);
 
 		if (pastingContext == null) {
-			throw new PasteException("Unexpected null pasting context in PASTE while using handler " + handler, factory);
+			throw new PasteException("Unexpected null pasting context in PASTE while using handler " + handler);
 		}
 
 		handler.prepareClipboardForPasting(editingContext.getClipboard(), pastingContext);

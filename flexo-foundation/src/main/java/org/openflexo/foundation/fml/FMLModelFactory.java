@@ -42,7 +42,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 import org.openflexo.connie.DataBinding;
-import org.openflexo.fge.FGEUtils;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.PamelaResourceModelFactory;
@@ -154,8 +153,6 @@ public class FMLModelFactory extends ModelFactory implements PamelaResourceModel
 		addConverter(typeConverter = new TypeConverter(taService.getCustomTypeFactories()));
 		addConverter(new DataBindingConverter());
 		addConverter(new FlexoVersionConverter());
-		addConverter(FGEUtils.POINT_CONVERTER);
-		addConverter(FGEUtils.STEPPED_DIMENSION_CONVERTER);
 		addConverter(relativePathResourceConverter = new RelativePathResourceConverter(null));
 		this.abstractVirtualModelResource = abstractVirtualModelResource;
 		if (abstractVirtualModelResource != null && abstractVirtualModelResource.getIODelegate() != null

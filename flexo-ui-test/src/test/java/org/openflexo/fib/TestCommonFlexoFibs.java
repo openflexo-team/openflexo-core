@@ -80,16 +80,6 @@ public class TestCommonFlexoFibs extends GenericFIBTestCase {
 	}
 
 	@Test
-	public void testFlexoCreateURL() {
-		validateFIB("Fib/FlexoCreateURL.fib");
-	}
-
-	@Test
-	public void testFlexoMarketEditor() {
-		validateFIB("Fib/FlexoMarketEditor.fib");
-	}
-
-	@Test
 	public void testFMLConsoleViewer() {
 		validateFIB("Fib/FMLConsoleViewer.fib");
 	}
