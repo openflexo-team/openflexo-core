@@ -43,6 +43,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 import java.util.logging.Logger;
+
 import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.binding.Function;
 import org.openflexo.connie.type.TypeUtils;
@@ -93,12 +94,40 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 	// public static final String FLEXO_BEHAVIOUR_INSTANCE = "flexoBehaviourInstance";
 	// public static final String VIRTUAL_MODEL_INSTANCE = "virtualModelInstance";
 
+	/**
+	 * Visibility for a behaviour
+	 * 
+	 * @author sylvain
+	 *
+	 */
+	public enum Visibility {
+		/**
+		 * Default visibility: limited to FML scope, not available from public API
+		 */
+		Default,
+		/**
+		 * Public visibility: behaviours are accessible from everywhere. In the whole tooling, it means that for example behaviours are
+		 * available through right-clicking on instances
+		 */
+		Public,
+		/**
+		 * Visibility restricted to current FlexoConcept hierarchy and current ViewPoint
+		 */
+		Protected,
+		/**
+		 * Visibility restricted to current FlexoConcept
+		 */
+		Private
+	}
+
 	@PropertyIdentifier(type = FlexoConcept.class)
 	public static final String FLEXO_CONCEPT_KEY = "flexoConcept";
 	@PropertyIdentifier(type = String.class)
 	public static final String NAME_KEY = "name";
 	@PropertyIdentifier(type = String.class)
 	public static final String LABEL_KEY = "label";
+	@PropertyIdentifier(type = Visibility.class)
+	public static final String VISIBILITY_KEY = "visibility";
 	@PropertyIdentifier(type = boolean.class)
 	public static final String SKIP_CONFIRMATION_PANEL_KEY = "skipConfirmationPanel";
 	@PropertyIdentifier(type = boolean.class)
@@ -151,6 +180,13 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 	@Setter(LABEL_KEY)
 	public void setLabel(String label);
 
+	@Getter(value = VISIBILITY_KEY, defaultValue = "Default")
+	@XMLAttribute
+	public Visibility getVisibility();
+
+	@Setter(VISIBILITY_KEY)
+	public void setVisibility(Visibility visibility);
+
 	@Getter(value = SKIP_CONFIRMATION_PANEL_KEY, defaultValue = "true")
 	@XMLAttribute
 	public boolean getSkipConfirmationPanel();
@@ -189,7 +225,9 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 	public void setDescription(String description);*/
 
 	@Getter(value = PARAMETERS_KEY, cardinality = Cardinality.LIST, inverse = FlexoBehaviourParameter.FLEXO_BEHAVIOUR_KEY)
-	@Embedded @XMLElement @CloningStrategy(StrategyType.CLONE)
+	@Embedded
+	@XMLElement
+	@CloningStrategy(StrategyType.CLONE)
 	public List<FlexoBehaviourParameter> getParameters();
 
 	@Setter(PARAMETERS_KEY)

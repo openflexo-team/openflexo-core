@@ -68,6 +68,7 @@ import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.fml.ActionScheme;
 import org.openflexo.foundation.fml.DeletionScheme;
+import org.openflexo.foundation.fml.FlexoBehaviour.Visibility;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.NavigationScheme;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
@@ -257,17 +258,23 @@ public class ContextualMenuManager {
 					}
 					if (commonConcept.hasActionScheme()) {
 						for (ActionScheme as : commonConcept.getAccessibleActionSchemes()) {
-							contextualMenu.putAction(new ActionSchemeActionType(as, fci));
+							if (as.getVisibility() == Visibility.Public) {
+								contextualMenu.putAction(new ActionSchemeActionType(as, fci));
+							}
 						}
 					}
 					if (commonConcept.hasNavigationScheme()) {
-						for (NavigationScheme as : commonConcept.getNavigationSchemes()) {
-							contextualMenu.putAction(new NavigationSchemeActionType(as, fci));
+						for (NavigationScheme ns : commonConcept.getNavigationSchemes()) {
+							if (ns.getVisibility() == Visibility.Public) {
+								contextualMenu.putAction(new NavigationSchemeActionType(ns, fci));
+							}
 						}
 					}
 					if (commonConcept.hasDeletionScheme()) {
 						for (DeletionScheme ds : commonConcept.getAccessibleDeletionSchemes()) {
-							contextualMenu.putAction(new DeletionSchemeActionType(ds, fci));
+							if (ds.getVisibility() == Visibility.Public) {
+								contextualMenu.putAction(new DeletionSchemeActionType(ds, fci));
+							}
 						}
 					}
 					/*if (commonConcept instanceof AbstractVirtualModel) {

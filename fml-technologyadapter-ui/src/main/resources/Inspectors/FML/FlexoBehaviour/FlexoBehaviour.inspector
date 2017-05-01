@@ -26,13 +26,20 @@
 			<TextField id="7" columns="10" name="LabelTF" data="data.label"
 				index="3" localize="true"
 				constraints="twocols(expandHorizontally=true;expandVertically=false;index=3;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)" />
-			<Label id="8" name="ParametersLabel" index="4" localize="true"
+			<Label index="4" name="VisibilityLabel" localize="true" align="left"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)"
+				label="visibility" />
+			<DropDown index="5" data="data.visibility" localize="true"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)"
+				showText="true" iteratorClassName="org.openflexo.foundation.fml.FlexoBehaviour$Visibility"
+				showIcon="false" autoSelectFirstRow="true" name="visibilityDropdown" />
+			<Label id="8" name="ParametersLabel" index="6" localize="true"
 				align="left"
 				constraints="twocols(expandHorizontally=false;expandVertically=false;index=2;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)"
 				label="parameters" />
 			<Panel id="9" darkLevel="1" borderLeft="0" sizeAdjustment="OriginalSize"
 				opaque="false" border="empty" borderRight="2" trackViewPortWidth="true"
-				index="5" align="left"
+				index="7" align="left"
 				constraints="twocols(expandHorizontally=true;expandVertically=true;index=5;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)"
 				borderBottom="2" titleFont="SansSerif,0,11" borderTop="2"
 				trackViewPortHeight="true" layout="gridbag" name="ParametersPanel">
@@ -120,8 +127,10 @@
 						componentClassName="org.openflexo.gina.swing.utils.TypeSelector"
 						name="TypeSelector" data="ParametersTable.selected.type" localize="true"
 						constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)">
-		<Assignment variable="component.customTypeManager" value="controller.serviceManager.technologyAdapterService" />
-		<Assignment variable="component.customTypeEditorProvider" value="controller.serviceManager.technologyAdapterControllerService" />
+						<Assignment variable="component.customTypeManager"
+							value="controller.serviceManager.technologyAdapterService" />
+						<Assignment variable="component.customTypeEditorProvider"
+							value="controller.serviceManager.technologyAdapterControllerService" />
 					</Custom>
 					<Label id="30" name="Label3" localize="true" align="left"
 						constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)"
@@ -140,9 +149,7 @@
 						label="container" />
 					<Custom id="33"
 						visible="(ParametersTable.selected.widget = &quot;CUSTOM_WIDGET&quot;)"
-						manageDynamicModel="true"
-						
-						dataClassForComponent="org.openflexo.connie.DataBinding"
+						manageDynamicModel="true" dataClassForComponent="org.openflexo.connie.DataBinding"
 						componentClassName="org.openflexo.gina.swing.utils.BindingSelector"
 						name="CustomSelector" data="ParametersTable.selected.container"
 						constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)">
@@ -152,7 +159,7 @@
 						constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)"
 						label="default_value" />
 					<Custom id="36" manageDynamicModel="true"
-						
+
 						dataClassForComponent="org.openflexo.connie.DataBinding"
 						componentClassName="org.openflexo.gina.swing.utils.BindingSelector"
 						name="CustomSelector2" data="ParametersTable.selected.defaultValue"
@@ -164,8 +171,7 @@
 						constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)"
 						label="list_of_values" />
 					<Custom id="39" visible="ParametersTable.selected.isListType"
-						manageDynamicModel="true"
-						dataClassForComponent="org.openflexo.connie.DataBinding"
+						manageDynamicModel="true" dataClassForComponent="org.openflexo.connie.DataBinding"
 						componentClassName="org.openflexo.gina.swing.utils.BindingSelector"
 						name="CustomSelector3" data="ParametersTable.selected.list"
 						constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)">
@@ -209,18 +215,16 @@
 					constraints="flow(anchor=center;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=0;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=-5;padX=0;padY=0;weightX=0.0;weightY=0.0)"
 					label="define_popup_size" />
 				<Number id="50" minValue="-2147483648" columns="3"
-					enable="data.definePopupDefaultSize" name="Integer"
-					data="data.width" maxValue="2147483647" increment="1" index="1"
-					localize="true"
+					enable="data.definePopupDefaultSize" name="Integer" data="data.width"
+					maxValue="2147483647" increment="1" index="1" localize="true"
 					constraints="flow(anchor=center;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=-5;padX=0;padY=0;weightX=0.0;weightY=0.0)"
 					numberType="IntegerType" />
 				<Label id="51" name="XLabel" index="2" align="left"
 					constraints="flow(anchor=center;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=2;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=-5;padX=0;padY=0;weightX=0.0;weightY=0.0)"
 					label="x" />
 				<Number id="52" minValue="-2147483648" columns="3"
-					enable="data.definePopupDefaultSize" name="Integer"
-					data="data.height" maxValue="2147483647" increment="1" index="3"
-					localize="true"
+					enable="data.definePopupDefaultSize" name="Integer" data="data.height"
+					maxValue="2147483647" increment="1" index="3" localize="true"
 					constraints="flow(anchor=west;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=3;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=-5;padX=0;padY=0;weightX=0.0;weightY=0.0)"
 					numberType="IntegerType" />
 			</Panel>
