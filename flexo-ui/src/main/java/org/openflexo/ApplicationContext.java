@@ -44,7 +44,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.openflexo.br.ActivateBugReportServiceTask;
 import org.openflexo.br.BugReportService;
 import org.openflexo.drm.DocResourceManager;
@@ -55,7 +54,6 @@ import org.openflexo.foundation.FlexoService;
 import org.openflexo.foundation.FlexoService.ServiceNotification;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.ProjectLoader;
-import org.openflexo.foundation.remoteresources.FlexoUpdateService;
 import org.openflexo.foundation.resource.DefaultResourceCenterService;
 import org.openflexo.foundation.resource.DefaultResourceCenterService.DefaultPackageResourceCenterIsNotInstalled;
 import org.openflexo.foundation.resource.DefaultResourceCenterService.ResourceCenterListShouldBeStored;
@@ -237,10 +235,6 @@ public abstract class ApplicationContext extends DefaultFlexoServiceManager impl
 
 	public FlexoServerInstanceManager getFlexoServerInstanceManager() {
 		return getService(FlexoServerInstanceManager.class);
-	}
-
-	public FlexoUpdateService getFlexoUpdateService() {
-		return getService(FlexoUpdateService.class);
 	}
 
 	public ResourceConsistencyService getResourceConsistencyService() {

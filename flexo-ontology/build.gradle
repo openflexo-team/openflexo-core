@@ -1,7 +1,8 @@
 dependencies {
   // openflexo dep
-  compile project(':flexo-foundation')
-  compile connie()
+  compile flexoFoundation()
+  compile ginaApi()
+
   // external dep
 
   // testing dep

@@ -42,8 +42,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.openflexo.fge.control.exceptions.CopyException;
+import org.openflexo.exceptions.CopyException;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.InnerResourceData;
 import org.openflexo.foundation.fml.FlexoRole.RoleCloningStrategy;
@@ -201,7 +200,7 @@ public class FlexoClipboard {
 				returned.clipboards.put(pamelaResource, clipboard);
 
 			} catch (Throwable e) {
-				throw new CopyException(e, modelFactory);
+				throw new CopyException(e);
 			}
 		}
 
@@ -253,7 +252,7 @@ public class FlexoClipboard {
 				returned.clipboards.put(pamelaResource, clipboard);
 
 			} catch (Throwable e) {
-				throw new CopyException(e, modelFactory);
+				throw new CopyException(e);
 			}
 		}
 

@@ -42,7 +42,6 @@ import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
-
 import org.openflexo.connie.BindingModel;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
@@ -52,7 +51,6 @@ import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.fml.editionaction.FetchRequest;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext.ReturnException;
-import org.openflexo.gina.annotation.FIBPanel;
 import org.openflexo.model.annotations.CloningStrategy;
 import org.openflexo.model.annotations.CloningStrategy.StrategyType;
 import org.openflexo.model.annotations.Embedded;
@@ -65,7 +63,6 @@ import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.model.annotations.XMLElement;
 import org.openflexo.toolbox.StringUtils;
 
-@FIBPanel("Fib/FML/FetchRequestIterationActionPanel.fib")
 @ModelEntity
 @ImplementationClass(FetchRequestIterationAction.FetchRequestIterationActionImpl.class)
 @XMLElement

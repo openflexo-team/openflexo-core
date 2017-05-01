@@ -43,7 +43,6 @@ import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Vector;
 import java.util.logging.Logger;
-
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
@@ -61,7 +60,6 @@ import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.action.DeletionSchemeAction;
 import org.openflexo.foundation.fml.rt.action.DeletionSchemeActionType;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
-import org.openflexo.gina.annotation.FIBPanel;
 import org.openflexo.model.annotations.Adder;
 import org.openflexo.model.annotations.CloningStrategy;
 import org.openflexo.model.annotations.CloningStrategy.StrategyType;
@@ -91,7 +89,6 @@ import org.openflexo.model.validation.ValidationRule;
  * @param <MM>
  */
 
-@FIBPanel("Fib/FML/DeleteFlexoConceptInstancePanel.fib")
 @ModelEntity
 @ImplementationClass(DeleteFlexoConceptInstance.DeleteFlexoConceptInstanceImpl.class)
 @XMLElement

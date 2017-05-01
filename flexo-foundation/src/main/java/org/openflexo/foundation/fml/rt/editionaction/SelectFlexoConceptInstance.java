@@ -44,7 +44,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
-
 import org.openflexo.connie.BindingVariable;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
@@ -69,7 +68,6 @@ import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
-import org.openflexo.gina.annotation.FIBPanel;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.model.annotations.DefineValidationRule;
 import org.openflexo.model.annotations.Getter;
@@ -91,7 +89,6 @@ import org.openflexo.model.validation.ValidationRule;
  * @author sylvain
  * 
  */
-@FIBPanel("Fib/FML/SelectFlexoConceptInstancePanel.fib")
 @ModelEntity
 @ImplementationClass(SelectFlexoConceptInstance.SelectFlexoConceptInstanceImpl.class)
 @XMLElement

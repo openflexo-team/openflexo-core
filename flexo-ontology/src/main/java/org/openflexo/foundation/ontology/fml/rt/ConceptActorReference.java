@@ -39,7 +39,6 @@
 package org.openflexo.foundation.ontology.fml.rt;
 
 import java.util.logging.Logger;
-
 import org.openflexo.foundation.fml.rt.ActorReference;
 import org.openflexo.foundation.fml.rt.ModelSlotInstance;
 import org.openflexo.foundation.ontology.IFlexoOntologyObject;
@@ -139,8 +138,8 @@ public interface ConceptActorReference<T extends IFlexoOntologyObject> extends A
 
 		@Override
 		public String getConceptURI() {
-			if (concept != null) {
-				ModelSlotInstance msInstance = getModelSlotInstance();
+			ModelSlotInstance msInstance = getModelSlotInstance();
+			if (concept != null && msInstance != null) {
 				conceptURI = msInstance.getModelSlot().getURIForObject(msInstance, concept);
 			}
 			return conceptURI;

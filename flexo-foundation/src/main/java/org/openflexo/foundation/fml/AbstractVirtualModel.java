@@ -44,7 +44,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.Vector;
 import java.util.logging.Logger;
-
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.binding.VirtualModelBindingModel;
 import org.openflexo.foundation.fml.rm.AbstractVirtualModelResource;
@@ -468,7 +467,8 @@ public interface AbstractVirtualModel<VM extends AbstractVirtualModel<VM>>
 					parent.getPropertyChangeSupport().firePropertyChange(FlexoConcept.CHILD_FLEXO_CONCEPTS_KEY, aFlexoConcept, null);
 				}
 			}
-			getInnerConceptsFacet().notifiedConceptsChanged();
+			InnerConceptsFacet innerConceptsFacet = getInnerConceptsFacet();
+			if (innerConceptsFacet != null) innerConceptsFacet.notifiedConceptsChanged();
 		}
 
 		/**

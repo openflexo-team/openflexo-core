@@ -41,7 +41,6 @@ package org.openflexo.foundation.fml.controlgraph;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
 import java.util.logging.Logger;
-
 import org.openflexo.connie.BindingEvaluationContext;
 import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.DataBinding;
@@ -56,7 +55,6 @@ import org.openflexo.foundation.fml.binding.ControlGraphBindingModel;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext.ReturnException;
-import org.openflexo.gina.annotation.FIBPanel;
 import org.openflexo.model.annotations.CloningStrategy;
 import org.openflexo.model.annotations.CloningStrategy.StrategyType;
 import org.openflexo.model.annotations.DefineValidationRule;
@@ -73,7 +71,6 @@ import org.openflexo.model.validation.ValidationIssue;
 import org.openflexo.model.validation.ValidationRule;
 import org.openflexo.toolbox.StringUtils;
 
-@FIBPanel("Fib/FML/ConditionalActionPanel.fib")
 @ModelEntity
 @ImplementationClass(ConditionalAction.ConditionalActionImpl.class)
 @XMLElement

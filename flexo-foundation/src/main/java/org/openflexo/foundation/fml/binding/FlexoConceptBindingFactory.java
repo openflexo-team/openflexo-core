@@ -47,7 +47,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
-
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.binding.BindingPathElement;
 import org.openflexo.connie.binding.Function;
@@ -79,10 +78,6 @@ import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterBindingFactory;
-import org.openflexo.gina.model.FIBComponent;
-import org.openflexo.gina.model.FIBVariable;
-import org.openflexo.gina.model.FIBViewType;
-import org.openflexo.gina.model.bindings.FIBVariablePathElement;
 
 /**
  * This is the FML binding factory, which allow to define how to browse inside FML model
@@ -126,9 +121,6 @@ public final class FlexoConceptBindingFactory extends JavaBindingFactory {
 	}
 
 	protected SimplePathElement makeSimplePathElement(Object object, BindingPathElement parent) {
-		if (object instanceof FIBVariable) {
-			return new FIBVariablePathElement(parent, (FIBVariable) object);
-		}
 		if (object instanceof ModelSlot) {
 			return new VirtualModelModelSlotPathElement<ModelSlot<?>>(parent, (ModelSlot<?>) object);
 		}
@@ -152,22 +144,6 @@ public final class FlexoConceptBindingFactory extends JavaBindingFactory {
 
 		if (parent != null) {
 			Type pType = parent.getType();
-
-			if (pType instanceof FIBViewType) {
-				List<SimplePathElement> returned = new ArrayList<SimplePathElement>();
-				FIBComponent concept = ((FIBViewType) pType).getFIBComponent();
-
-				if (concept != null) {
-					for (FIBVariable<?> variable : concept.getVariables()) {
-						returned.add(getSimplePathElement(variable, parent));
-					}
-				}
-
-				returned.addAll(((FIBViewType) pType).getAccessibleSimplePathElements(parent));
-
-				return returned;
-			}
-
 			if (pType instanceof TechnologySpecificType) {
 				TechnologySpecificType parentType = (TechnologySpecificType) pType;
 				TechnologyAdapter ta = parentType.getSpecificTechnologyAdapter();

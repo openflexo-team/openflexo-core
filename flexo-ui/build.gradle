@@ -3,10 +3,15 @@ dependencies {
   compile project(':flexo-foundation')
   compile project(':flexodocresourcemanager')
   compile connie()
+  compile dianaApi()
+  compile diana()
+
+  compile ginaApi()
   compile ginaSwing()
   compile ginaSwingEditor()
   compile dianaSwing()
   compile flexoHelp()
+
   // external dep
   compile group: "org.openflexo.utils", name: "macos_ui_simulation", version: "1.1"
 }

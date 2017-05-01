@@ -40,7 +40,6 @@ package org.openflexo.foundation.fml;
 
 import org.openflexo.connie.type.CustomTypeFactory;
 import org.openflexo.foundation.fml.rt.View;
-import org.openflexo.gina.annotation.FIBPanel;
 
 /**
  * Represent the type of a View conform to a given ViewPoint
@@ -100,7 +99,6 @@ public class ViewType extends VirtualModelInstanceType {
 	 * @author sylvain
 	 * 
 	 */
-	@FIBPanel("Fib/CustomType/ViewTypeFactory.fib")
 	public static class ViewTypeFactory extends TechnologyAdapterTypeFactory<ViewType> {
 
 		public ViewTypeFactory(FMLTechnologyAdapter technologyAdapter) {

@@ -43,7 +43,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.logging.Logger;
-
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
@@ -66,7 +65,6 @@ import org.openflexo.foundation.fml.rt.View;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
-import org.openflexo.gina.annotation.FIBPanel;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.model.annotations.DefineValidationRule;
 import org.openflexo.model.annotations.Getter;
@@ -88,7 +86,6 @@ import org.openflexo.model.validation.ValidationRule;
  * @author sylvain
  * 
  */
-@FIBPanel("Fib/FML/SelectVirtualModelInstancePanel.fib")
 @ModelEntity
 @ImplementationClass(SelectVirtualModelInstance.SelectVirtualModelInstanceImpl.class)
 @XMLElement

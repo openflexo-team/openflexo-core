@@ -40,11 +40,11 @@ package org.openflexo.foundation.fml.rm;
 
 import java.io.FileNotFoundException;
 import java.util.logging.Logger;
-
 import org.openflexo.foundation.IOFlexoException;
 import org.openflexo.foundation.InconsistentDataException;
 import org.openflexo.foundation.InvalidModelDefinitionException;
 import org.openflexo.foundation.InvalidXMLException;
+import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.resource.FlexoFileNotFoundException;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
@@ -94,7 +94,8 @@ public abstract class VirtualModelResourceImpl extends AbstractVirtualModelResou
 			getContainer().startDeserializing();
 		}
 		startDeserializing();
-		getContainer().getViewPoint().addToVirtualModels(returned);
+		ViewPoint viewPoint = getContainer().getViewPoint();
+		if (viewPoint != null) viewPoint.addToVirtualModels(returned);
 		returned.clearIsModified();
 		// And, we notify a deserialization stop
 		stopDeserializing();

@@ -39,32 +39,18 @@
 
 package org.openflexo.print;
 
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import javax.imageio.ImageIO;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComponent;
-import javax.swing.JFileChooser;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JSlider;
-import javax.swing.JTextField;
-import javax.swing.SwingConstants;
+import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-
+import org.openflexo.fge.ScreenshotBuilder;
 import org.openflexo.foundation.FlexoObject;
-import org.openflexo.foundation.resource.ScreenshotBuilder;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.toolbox.FileUtils;
 import org.openflexo.view.FlexoDialog;

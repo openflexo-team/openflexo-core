@@ -47,7 +47,6 @@ import org.openflexo.foundation.nature.DefaultProjectNatureService;
 import org.openflexo.foundation.nature.DefaultScreenshotService;
 import org.openflexo.foundation.nature.ProjectNatureService;
 import org.openflexo.foundation.nature.ScreenshotService;
-import org.openflexo.foundation.remoteresources.FlexoUpdateService;
 import org.openflexo.foundation.resource.DefaultResourceCenterService;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
@@ -95,9 +94,6 @@ public class DefaultFlexoServiceManager extends FlexoServiceManager {
 		if (projectReferenceLoader != null) {
 			registerService(projectReferenceLoader);
 		}
-
-		FlexoUpdateService flexoUpdateService = new FlexoUpdateService();
-		registerService(flexoUpdateService);
 
 		FlexoResourceCenterService resourceCenterService = createResourceCenterService();
 		registerService(resourceCenterService);

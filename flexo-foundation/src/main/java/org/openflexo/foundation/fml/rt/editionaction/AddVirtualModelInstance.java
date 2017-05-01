@@ -40,7 +40,6 @@ package org.openflexo.foundation.fml.rt.editionaction;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Logger;
-
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.fml.VirtualModel;
@@ -50,7 +49,6 @@ import org.openflexo.foundation.fml.rt.View;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.CreateBasicVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
-import org.openflexo.gina.annotation.FIBPanel;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.XMLElement;
@@ -62,7 +60,6 @@ import org.openflexo.model.annotations.XMLElement;
  * 
  */
 
-@FIBPanel("Fib/FML/AddVirtualModelInstancePanel.fib")
 @ModelEntity
 @ImplementationClass(AddVirtualModelInstance.AddVirtualModelInstanceImpl.class)
 @XMLElement
