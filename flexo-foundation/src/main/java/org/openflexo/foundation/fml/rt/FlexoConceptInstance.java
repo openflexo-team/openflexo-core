@@ -556,7 +556,10 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 
 		@Override
 		public <T> T getFlexoPropertyValue(FlexoProperty<T> flexoProperty) {
-
+			if (flexoProperty == null || flexoProperty.getFlexoConcept() == null) {
+				logger.warning("Unexpected null value: " + flexoProperty);
+				return null;
+			}
 			if (!flexoProperty.getFlexoConcept().isAssignableFrom(getFlexoConcept())) {
 				FlexoConceptInstance container = getContainerFlexoConceptInstance();
 				while (container != null) {
@@ -628,6 +631,11 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 		 */
 		@Override
 		public <T> void setFlexoPropertyValue(FlexoProperty<T> flexoProperty, T value) {
+
+			if (flexoProperty == null || flexoProperty.getFlexoConcept() == null) {
+				logger.warning("Unexpected null value: " + flexoProperty);
+				return;
+			}
 
 			if (!flexoProperty.getFlexoConcept().isAssignableFrom(getFlexoConcept())) {
 				FlexoConceptInstance container = getContainerFlexoConceptInstance();
