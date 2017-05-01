@@ -41,7 +41,9 @@ package org.openflexo.foundation.fml;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
+
 import org.openflexo.connie.DataBinding;
+import org.openflexo.fge.FGEModelFactoryImpl;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.PamelaResourceModelFactory;
@@ -126,7 +128,7 @@ import org.openflexo.model.factory.ModelFactory;
 // because this is required for the FlexoConceptPreviewComponent to retrieve a FMLModelFactory
 // which extends FGEModelFactory interface (required by DIANA).
 // A better solution would be to implements composition in ModelFactory, instead of classic java inheritance
-public class FMLModelFactory extends ModelFactory implements PamelaResourceModelFactory<AbstractVirtualModelResource<?>> {
+public class FMLModelFactory extends FGEModelFactoryImpl implements PamelaResourceModelFactory<AbstractVirtualModelResource<?>> {
 
 	protected static final Logger logger = Logger.getLogger(FMLModelFactory.class.getPackage().getName());
 
@@ -146,7 +148,8 @@ public class FMLModelFactory extends ModelFactory implements PamelaResourceModel
 	public FMLModelFactory(AbstractVirtualModelResource<?> abstractVirtualModelResource, FlexoServiceManager serviceManager)
 			throws ModelDefinitionException {
 
-		super(ModelContextLibrary.getCompoundModelContext(retrieveTechnologySpecificClasses(serviceManager.getTechnologyAdapterService())));
+		// super(ModelContextLibrary.getCompoundModelContext(retrieveTechnologySpecificClasses(serviceManager.getTechnologyAdapterService())));
+		super(retrieveTechnologySpecificClasses(serviceManager.getTechnologyAdapterService()));
 		this.serviceManager = serviceManager;
 		TechnologyAdapterService taService = serviceManager.getTechnologyAdapterService();
 		setEditingContext(serviceManager.getEditingContext());
