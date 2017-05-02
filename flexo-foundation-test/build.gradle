@@ -1,6 +1,8 @@
 dependencies {
   // openflexo dep
-  compile flexoFoundation()
+  compile project(':flexo-foundation')
+  // TODO: replaced following line: seems not work ?
+  // compile flexoFoundation()
   // external dep
 
   // testing dep
