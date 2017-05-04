@@ -39,6 +39,7 @@
 
 package org.openflexo.view.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 import java.util.logging.Logger;
@@ -393,7 +394,7 @@ public class FlexoFIBController extends FIBController implements GraphicalFlexoO
 			if (folder.getChildren().size() == 0) {
 				return false;
 			}
-			for (RepositoryFolder<?, ?> childFolder : folder.getChildren()) {
+			for (RepositoryFolder<?, ?> childFolder : new ArrayList<>(folder.getChildren())) {
 				if (shouldBeDisplayed(childFolder)) {
 					return true;
 				}
