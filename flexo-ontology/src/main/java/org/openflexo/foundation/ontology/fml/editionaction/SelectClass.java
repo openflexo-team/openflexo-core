@@ -46,8 +46,7 @@ import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOu
 import org.openflexo.foundation.fml.editionaction.FetchRequest;
 import org.openflexo.foundation.ontology.IFlexoOntology;
 import org.openflexo.foundation.ontology.IFlexoOntologyClass;
-import org.openflexo.foundation.ontology.IFlexoOntologyIndividual;
-import org.openflexo.foundation.ontology.IndividualOfClass;
+import org.openflexo.foundation.ontology.SubClassOfClass;
 import org.openflexo.foundation.technologyadapter.FlexoMetaModel;
 import org.openflexo.foundation.technologyadapter.FlexoModel;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
@@ -72,89 +71,64 @@ import org.openflexo.toolbox.StringUtils;
  * @param <T>
  */
 @ModelEntity(isAbstract = true)
-@ImplementationClass(SelectIndividual.SelectIndividualImpl.class)
-public abstract interface SelectIndividual<MS extends TypeAwareModelSlot<M, ?>, M extends FlexoModel<M, ?> & TechnologyObject<?>, T extends IFlexoOntologyIndividual>
+@ImplementationClass(SelectClass.SelectClassImpl.class)
+public abstract interface SelectClass<MS extends TypeAwareModelSlot<M, ?>, M extends FlexoModel<M, ?> & TechnologyObject<?>, T extends IFlexoOntologyClass>
 		extends FetchRequest<MS, M, T> {
 
 	@PropertyIdentifier(type = String.class)
-	public static final String ONTOLOGY_CLASS_URI_KEY = "ontologyClassURI";
+	public static final String PARENT_CLASS_URI_KEY = "parentClassURI";
 
-	@Getter(value = ONTOLOGY_CLASS_URI_KEY)
+	@Getter(value = PARENT_CLASS_URI_KEY)
 	@XMLAttribute
-	public String _getOntologyClassURI();
+	public String _getParentClassURI();
 
-	@Setter(ONTOLOGY_CLASS_URI_KEY)
-	public void _setOntologyClassURI(String ontologyClassURI);
+	@Setter(PARENT_CLASS_URI_KEY)
+	public void _setParentClassURI(String parentClassURI);
 
-	public IFlexoOntologyClass getType();
+	public IFlexoOntologyClass getParentClass();
 
-	public void setType(IFlexoOntologyClass ontologyClass);
+	public void setParentClass(IFlexoOntologyClass ontologyClass);
 
 	public FlexoMetaModel getMetaModelData();
 
 	public IFlexoOntology<?> getMetaModelAsOntology();
 
-	public static abstract class SelectIndividualImpl<MS extends TypeAwareModelSlot<M, ?>, M extends FlexoModel<M, ?> & TechnologyObject<?>, T extends IFlexoOntologyIndividual>
-			extends FetchRequestImpl<MS, M, T> implements SelectIndividual<MS, M, T> {
+	public static abstract class SelectClassImpl<MS extends TypeAwareModelSlot<M, ?>, M extends FlexoModel<M, ?> & TechnologyObject<?>, T extends IFlexoOntologyClass>
+			extends FetchRequestImpl<MS, M, T> implements SelectClass<MS, M, T> {
 
-		protected static final Logger logger = FlexoLogger.getLogger(SelectIndividual.class.getPackage().getName());
+		protected static final Logger logger = FlexoLogger.getLogger(SelectClass.class.getPackage().getName());
 
-		private String typeURI = null;
-
-		public SelectIndividualImpl() {
-			super();
-		}
-
-		/*@Override
-		public String getFMLRepresentation(FMLRepresentationContext context) {
-			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
-			if (getAssignation().isSet()) {
-				out.append(getAssignation().toString() + " = (", context);
-			}
-			out.append(getImplementedInterface().getSimpleName() + (getModelSlot() != null ? " from " + getModelSlot().getName() : " ")
-					+ (getType() != null ? " as " + getType().getName() : "")
-					+ (getConditions().size() > 0 ? " " + getWhereClausesFMLRepresentation(context) : ""), context);
-			if (getAssignation().isSet()) {
-				out.append(")", context);
-			}
-			return out.toString();
-		}*/
+		private String parentTypeURI = null;
 
 		@Override
 		public Type getFetchedType() {
-			return IndividualOfClass.getIndividualOfClass(getType());
+			return SubClassOfClass.getSubClassOfClass(getParentClass());
 		}
 
 		@Override
-		public IFlexoOntologyClass getType() {
+		public IFlexoOntologyClass getParentClass() {
 
-			if (StringUtils.isNotEmpty(typeURI) && getInferedModelSlot() != null && getInferedModelSlot().getMetaModelResource() != null
+			if (StringUtils.isNotEmpty(parentTypeURI) && getInferedModelSlot() != null
+					&& getInferedModelSlot().getMetaModelResource() != null
 					&& getInferedModelSlot().getMetaModelResource().getMetaModelData() != null) {
-				return (IFlexoOntologyClass) getInferedModelSlot().getMetaModelResource().getMetaModelData().getObject(typeURI);
+				return (IFlexoOntologyClass) getInferedModelSlot().getMetaModelResource().getMetaModelData().getObject(parentTypeURI);
 			}
-			/*System.out.println("Pas trouve, getModelSlot()=" + getModelSlot());
-			if (getModelSlot() != null) {
-				System.out.println("Pas trouve, getModelSlot().getMetaModelResource()=" + getModelSlot().getMetaModelResource());
-				if (getModelSlot().getMetaModelResource() != null) {
-					System.out.println("Pas trouve, mmData=" + getModelSlot().getMetaModelResource().getMetaModelData());
-				}
-			}*/
 			return null;
 		}
 
 		@Override
-		public void setType(IFlexoOntologyClass ontologyClass) {
+		public void setParentClass(IFlexoOntologyClass ontologyClass) {
 			if (ontologyClass != null) {
-				typeURI = ontologyClass.getURI();
+				parentTypeURI = ontologyClass.getURI();
 			}
 			else {
-				typeURI = null;
+				parentTypeURI = null;
 			}
 		}
 
 		@Override
 		public FlexoMetaModel getMetaModelData() {
-			/*if (StringUtils.isNotEmpty(typeURI) && getModelSlot() != null && getModelSlot().getMetaModelResource() != null
+			/*if (StringUtils.isNotEmpty(parentTypeURI) && getModelSlot() != null && getModelSlot().getMetaModelResource() != null
 					&& getModelSlot().getMetaModelResource().getMetaModelData() != null) {
 				return getModelSlot().getMetaModelResource().getMetaModelData();
 			}*/
@@ -174,16 +148,16 @@ public abstract interface SelectIndividual<MS extends TypeAwareModelSlot<M, ?>, 
 		}
 
 		@Override
-		public String _getOntologyClassURI() {
-			if (getType() != null) {
-				return getType().getURI();
+		public String _getParentClassURI() {
+			if (getParentClass() != null) {
+				return getParentClass().getURI();
 			}
-			return typeURI;
+			return parentTypeURI;
 		}
 
 		@Override
-		public void _setOntologyClassURI(String ontologyClassURI) {
-			this.typeURI = ontologyClassURI;
+		public void _setParentClassURI(String ontologyClassURI) {
+			this.parentTypeURI = ontologyClassURI;
 		}
 
 		/*@Override
@@ -202,7 +176,7 @@ public abstract interface SelectIndividual<MS extends TypeAwareModelSlot<M, ?>, 
 		public String getFMLRepresentation(FMLRepresentationContext context) {
 			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
 			out.append(getImplementedInterface().getSimpleName() + (getReceiver().isValid() ? " from " + getReceiver().toString() : " ")
-					+ " as " + (getType() != null ? getType().getName() : "No Type Specified")
+					+ " as " + (getParentClass() != null ? getParentClass().getName() : "No Type Specified")
 					+ (getConditions().size() > 0 ? " " + getWhereClausesFMLRepresentation(context) : ""), context);
 			return out.toString();
 		}
