@@ -52,6 +52,7 @@ import org.openflexo.foundation.DataModification;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.binding.FlexoConceptFlexoPropertyPathElement;
 import org.openflexo.foundation.fml.binding.ModelSlotBindingVariable;
+import org.openflexo.foundation.fml.binding.VirtualModelModelSlotPathElement;
 import org.openflexo.foundation.fml.rt.ActorReference;
 import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
@@ -249,13 +250,19 @@ public interface FlexoRole<T> extends FlexoProperty<T> {
 			if (getContainer().isSet() && getContainer().isValid() && getContainer().isBindingValue()) {
 				BindingValue bindingValue = ((BindingValue) getContainer().getExpression());
 				BindingPathElement lastPathElement = bindingValue.getLastBindingPathElement();
+				// System.out.println(
+				// "lastPathElement=" + lastPathElement + " of " + (lastPathElement != null ? lastPathElement.getClass() : "null"));
 				if (lastPathElement instanceof ModelSlotBindingVariable) {
 					return ((ModelSlotBindingVariable) lastPathElement).getModelSlot();
 				}
 				else if (lastPathElement instanceof FlexoConceptFlexoPropertyPathElement
-						&& ((FlexoConceptFlexoPropertyPathElement) lastPathElement).getFlexoProperty() instanceof ModelSlot) {
-					return (ModelSlot<?>) ((FlexoConceptFlexoPropertyPathElement) lastPathElement).getFlexoProperty();
+						&& ((FlexoConceptFlexoPropertyPathElement<?>) lastPathElement).getFlexoProperty() instanceof ModelSlot) {
+					return (ModelSlot<?>) ((FlexoConceptFlexoPropertyPathElement<?>) lastPathElement).getFlexoProperty();
 				}
+				else if (lastPathElement instanceof VirtualModelModelSlotPathElement) {
+					return ((VirtualModelModelSlotPathElement<?>) lastPathElement).getModelSlot();
+				}
+
 			}
 			return null;
 		}
