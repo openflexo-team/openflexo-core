@@ -389,8 +389,8 @@ public abstract class FIBFlexoObjectSelector<T extends FlexoObject> extends Text
 		return o != null && StringUtils.isNotEmpty(renderedString(o))
 				&& (renderedString(o)).toUpperCase().indexOf(filteredName.toUpperCase()) > -1;
 		/*if (o instanceof FlexoObject) {
-			return ((FlexoObject) o).getName() != null
-					&& ((FlexoObject) o).getName().toUpperCase().indexOf(filteredName.toUpperCase()) > -1;
+		return ((FlexoObject) o).getName() != null
+		&& ((FlexoObject) o).getName().toUpperCase().indexOf(filteredName.toUpperCase()) > -1;
 		}*/
 		// return false;
 	}
@@ -431,6 +431,12 @@ public abstract class FIBFlexoObjectSelector<T extends FlexoObject> extends Text
 		if (_selectorPanel != null) {
 			_selectorPanel.getController().setFlexoController(flexoController);
 		}
+
+		if (flexoController != null && getFIBComponent() != null) {
+			getFIBComponent().setCustomTypeManager(flexoController.getApplicationContext().getTechnologyAdapterService());
+			getFIBComponent().setCustomTypeEditorProvider(flexoController.getApplicationContext().getTechnologyAdapterControllerService());
+		}
+
 	}
 
 	@Override
@@ -456,6 +462,8 @@ public abstract class FIBFlexoObjectSelector<T extends FlexoObject> extends Text
 		_selectorPanel = makeCustomPanel(editedObject);
 		if (flexoController != null) {
 			_selectorPanel.getController().setFlexoController(flexoController);
+			getFIBComponent().setCustomTypeManager(flexoController.getApplicationContext().getTechnologyAdapterService());
+			getFIBComponent().setCustomTypeEditorProvider(flexoController.getApplicationContext().getTechnologyAdapterControllerService());
 		}
 		return _selectorPanel;
 	}
@@ -482,6 +490,10 @@ public abstract class FIBFlexoObjectSelector<T extends FlexoObject> extends Text
 		return new SelectorFIBController(fibComponent, FIBFlexoObjectSelector.this);
 	}
 
+	protected void initFIBComponent(FIBComponent component) {
+
+	}
+
 	public class SelectorDetailsPanel extends ResizablePanel {
 		private final FIBContainer fibComponent;
 		private final JFIBView<?, ?> fibView;
@@ -494,6 +506,7 @@ public abstract class FIBFlexoObjectSelector<T extends FlexoObject> extends Text
 			super();
 
 			fibComponent = (FIBContainer) ApplicationFIBLibraryImpl.instance().retrieveFIBComponent(getFIBResource());
+			initFIBComponent(fibComponent);
 			controller = makeCustomFIBController(fibComponent);
 			fibView = (JFIBView<?, ?>) controller.buildView(fibComponent, true);
 
@@ -603,7 +616,9 @@ public abstract class FIBFlexoObjectSelector<T extends FlexoObject> extends Text
 		}
 
 		public void selectedObjectChanged() {
-			selector.setEditedObject(selector.selectedValue);
+			if (selector != null) {
+				selector.setEditedObject(selector.selectedValue);
+			}
 		}
 
 		public void apply() {
