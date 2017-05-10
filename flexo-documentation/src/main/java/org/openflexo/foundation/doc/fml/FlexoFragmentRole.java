@@ -46,6 +46,18 @@ import org.openflexo.model.validation.ValidationError;
 import org.openflexo.model.validation.ValidationIssue;
 import org.openflexo.model.validation.ValidationRule;
 
+/**
+ * A role that allows to point on a given {@link FlexoDocFragment} in a {@link FlexoDocument}
+ * 
+ * @author sylvain
+ *
+ * @param <F>
+ *            type of fragment
+ * @param <D>
+ *            type of document in which the fragment resides
+ * @param <TA>
+ *            type of technology adapter
+ */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(FlexoFragmentRole.FlexoDocumentFragmentRoleImpl.class)
 public interface FlexoFragmentRole<F extends FlexoDocFragment<D, TA>, D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
