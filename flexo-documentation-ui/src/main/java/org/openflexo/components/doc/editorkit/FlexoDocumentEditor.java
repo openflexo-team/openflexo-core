@@ -100,6 +100,8 @@ public class FlexoDocumentEditor<D extends FlexoDocument<D, TA>, TA extends Tech
 
 	private PropertyChangeSupport pcSupport;
 
+	private boolean showToolbar = true;
+
 	public static final FlexoDocumentEditorKit FlexoDocumentEditorKit = new FlexoDocumentEditorKit();
 
 	/**
@@ -214,6 +216,18 @@ public class FlexoDocumentEditor<D extends FlexoDocument<D, TA>, TA extends Tech
 
 	}
 
+	public boolean getShowToolbar() {
+		return showToolbar;
+	}
+
+	public void setShowToolbar(boolean showToolbar) {
+		if (showToolbar != getShowToolbar()) {
+			this.showToolbar = showToolbar;
+			// getPropertyChangeSupport().firePropertyChange("showHeader", !showHeader, showHeader);
+			getEditorPanel().toolBar.setVisible(showToolbar);
+		}
+	}
+
 	public class FlexoDocumentEditorPanel extends JPanel {
 
 		private FlexoDocumentToolbar toolBar;
@@ -247,6 +261,7 @@ public class FlexoDocumentEditor<D extends FlexoDocument<D, TA>, TA extends Tech
 			this.add(infoBar, BorderLayout.SOUTH);
 			infoBar.setOpaque(false);
 
+			toolBar.setVisible(getShowToolbar());
 		}
 
 	}

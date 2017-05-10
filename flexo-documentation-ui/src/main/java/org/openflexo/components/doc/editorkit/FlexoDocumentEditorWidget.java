@@ -73,11 +73,14 @@ public class FlexoDocumentEditorWidget<D extends FlexoDocument<D, TA>, TA extend
 	protected FIBCustom component;
 	protected FIBController controller;
 
+	private boolean showToolbar = true;
+
 	private final List<ApplyCancelListener> applyCancelListener = new ArrayList<ApplyCancelListener>();
 
 	public FlexoDocumentEditorWidget(D document) {
 		super(new BorderLayout());
 		editor = new FlexoDocumentEditor<>(document);
+		editor.setShowToolbar(getShowToolbar());
 		add(editor.getEditorPanel(), BorderLayout.CENTER);
 	}
 
@@ -157,6 +160,19 @@ public class FlexoDocumentEditorWidget<D extends FlexoDocument<D, TA>, TA extend
 
 	public TextSelection<D, TA> getTextSelection() {
 		return editor.getTextSelection();
+	}
+
+	public boolean getShowToolbar() {
+		return showToolbar;
+	}
+
+	@CustomComponentParameter(name = "showToolbar", type = CustomComponentParameter.Type.OPTIONAL)
+	public void setShowToolbar(boolean showToolbar) {
+		if (showToolbar != getShowToolbar()) {
+			this.showToolbar = showToolbar;
+			// getPropertyChangeSupport().firePropertyChange("showHeader", !showHeader, showHeader);
+			getEditor().setShowToolbar(showToolbar);
+		}
 	}
 
 	public static class FlexoDocumentSelectionListener implements CaretListener {
