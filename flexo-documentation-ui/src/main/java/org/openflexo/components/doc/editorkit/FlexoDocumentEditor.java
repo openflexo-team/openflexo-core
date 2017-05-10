@@ -364,6 +364,8 @@ public class FlexoDocumentEditor<D extends FlexoDocument<D, TA>, TA extends Tech
 	}
 
 	public void highlight(TextSelection<D, TA> highlightedTextSelection) {
+		clearHighligths();
+
 		int startIndex = -1;
 		int endIndex = -1;
 
@@ -415,6 +417,7 @@ public class FlexoDocumentEditor<D extends FlexoDocument<D, TA>, TA extends Tech
 		// System.out.println("end=" + endIndex);
 		if (startIndex > -1 && endIndex > -1) {
 			highlight(startIndex, endIndex);
+			scrollToElement(getElement(highlightedTextSelection.getStartElement()));
 		}
 	}
 
