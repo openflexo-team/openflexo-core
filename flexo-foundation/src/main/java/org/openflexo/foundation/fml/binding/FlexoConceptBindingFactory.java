@@ -47,6 +47,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
+
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.binding.BindingPathElement;
 import org.openflexo.connie.binding.Function;
@@ -202,6 +203,9 @@ public final class FlexoConceptBindingFactory extends JavaBindingFactory {
 					}
 					else {
 						returned.add(new FlexoConceptTypePathElement(parent));
+					}
+					if (concept.getContainerFlexoConcept() != null) {
+						returned.add(new ContainerPathElement(parent, concept.getContainerFlexoConcept()));
 					}
 					returned.add(new VirtualModelInstancePathElement(parent, concept.getOwningVirtualModel()));
 					returned.add(new ViewPathElement(parent, concept.getViewPoint()));

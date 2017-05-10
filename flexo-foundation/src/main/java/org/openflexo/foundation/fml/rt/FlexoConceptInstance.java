@@ -1419,6 +1419,9 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 			else if (variable.getVariableName().equals(FlexoConceptBindingModel.FLEXO_CONCEPT_INSTANCE_PROPERTY)) {
 				return this;
 			}
+			else if (variable.getVariableName().equals(FlexoConceptBindingModel.CONTAINER_PROPERTY)) {
+				return getContainerFlexoConceptInstance();
+			}
 
 			if (getOwningVirtualModelInstance() != null) {
 				return getOwningVirtualModelInstance().getValue(variable);

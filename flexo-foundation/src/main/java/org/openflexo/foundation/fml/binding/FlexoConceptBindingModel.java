@@ -81,10 +81,11 @@ public class FlexoConceptBindingModel extends BindingModel implements PropertyCh
 	private FlexoConcept lastKnownContainer = null;
 
 	private BindingVariable flexoConceptInstanceBindingVariable;
+	private BindingVariable containerBindingVariable;
 
 	public static final String REFLEXIVE_ACCESS_PROPERTY = "conceptDefinition";
-
 	public static final String FLEXO_CONCEPT_INSTANCE_PROPERTY = "flexoConceptInstance";
+	public static final String CONTAINER_PROPERTY = "container";
 
 	/**
 	 * Build a new {@link BindingModel} dedicated to a FlexoConcept<br>
@@ -100,6 +101,10 @@ public class FlexoConceptBindingModel extends BindingModel implements PropertyCh
 		// TODO : Dirty, this should be fix when we have a clean type management system for the VM
 		flexoConceptInstanceBindingVariable = new FlexoConceptBindingVariable(FLEXO_CONCEPT_INSTANCE_PROPERTY, flexoConcept);
 		addToBindingVariables(flexoConceptInstanceBindingVariable);
+		if (flexoConcept.getContainerFlexoConcept() != null) {
+			containerBindingVariable = new BindingVariable(CONTAINER_PROPERTY, flexoConcept.getContainerFlexoConcept().getInstanceType());
+			addToBindingVariables(containerBindingVariable);
+		}
 	}
 
 	/**
@@ -162,6 +167,7 @@ public class FlexoConceptBindingModel extends BindingModel implements PropertyCh
 			}
 			else if (evt.getPropertyName().equals(FlexoConcept.CONTAINER_FLEXO_CONCEPT_KEY)) {
 				updateContainerFlexoConceptListener();
+				updateContainerBindingVariable();
 				updatePropertyVariables();
 			}
 		}
@@ -177,6 +183,23 @@ public class FlexoConceptBindingModel extends BindingModel implements PropertyCh
 			else if (evt.getPropertyName().equals(FlexoConcept.CONTAINER_FLEXO_CONCEPT_KEY)) {
 				updateContainerFlexoConceptListener();
 				updatePropertyVariables();
+			}
+		}
+	}
+
+	private void updateContainerBindingVariable() {
+		if (flexoConcept.getContainerFlexoConcept() != null) {
+			if (containerBindingVariable == null) {
+				containerBindingVariable = new BindingVariable(CONTAINER_PROPERTY,
+						flexoConcept.getContainerFlexoConcept().getInstanceType());
+				addToBindingVariables(containerBindingVariable);
+			}
+			containerBindingVariable.setType(flexoConcept.getContainerFlexoConcept().getInstanceType());
+		}
+		else {
+			if (containerBindingVariable != null) {
+				removeFromBindingVariables(containerBindingVariable);
+				containerBindingVariable = null;
 			}
 		}
 	}
