@@ -316,7 +316,8 @@ public class FlexoDocumentEditorFactory<D extends FlexoDocument<D, TA>, TA exten
 			while (i >= numbering.size()) {
 				numbering.add(1);
 			}
-			sb.append((isFirst ? "" : ".") + numbering.get(i));
+			// Disactivate numbering
+			// sb.append((isFirst ? "" : ".") + numbering.get(i));
 			isFirst = false;
 		}
 		return sb.toString();
