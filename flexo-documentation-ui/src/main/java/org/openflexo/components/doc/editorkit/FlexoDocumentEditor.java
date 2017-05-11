@@ -455,16 +455,16 @@ public class FlexoDocumentEditor<D extends FlexoDocument<D, TA>, TA extends Tech
 			try {
 				TextMarker startMarker = retrieveTextMarker(start);
 				TextMarker endMarker = retrieveTextMarker(end);
-				System.out.println("startMarker=" + startMarker);
+				/*System.out.println("startMarker=" + startMarker);
 				System.out.println("endMarker=" + endMarker);
 				System.out.println("docFactory=" + getDocumentFactory());
 				System.out.println("je suis " + this);
-				System.out.println("getFlexoDocument()=" + getFlexoDocument());
+				System.out.println("getFlexoDocument()=" + getFlexoDocument());*/
 				textSelection = getDocumentFactory().makeTextSelection(startMarker, endMarker);
 
-				System.out.println("TextSelection=" + textSelection);
+				// System.out.println("TextSelection=" + textSelection);
 				getEditorPanel().textSelectionLabel.setText(textSelection.toString());
-
+				getPropertyChangeSupport().firePropertyChange("textSelection", null, textSelection);
 			} catch (FragmentConsistencyException e1) {
 				e1.printStackTrace();
 			}
@@ -472,6 +472,7 @@ public class FlexoDocumentEditor<D extends FlexoDocument<D, TA>, TA extends Tech
 		else {
 			textSelection = null;
 			getEditorPanel().textSelectionLabel.setText("");
+			getPropertyChangeSupport().firePropertyChange("textSelection", true, false);
 		}
 	}
 
