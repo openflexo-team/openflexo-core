@@ -62,7 +62,7 @@ public class VirtualModelInstancePathElement extends AbstractVirtualModelInstanc
 	private static final Logger logger = Logger.getLogger(VirtualModelInstancePathElement.class.getPackage().getName());
 
 	public VirtualModelInstancePathElement(BindingPathElement parent, AbstractVirtualModel<?> virtualModel) {
-		super(parent, FlexoConceptBindingFactory.VIRTUAL_MODEL_INSTANCE, virtualModel);
+		super(parent, FMLBindingFactory.VIRTUAL_MODEL_INSTANCE, virtualModel);
 	}
 
 	@Override

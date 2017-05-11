@@ -52,7 +52,7 @@ import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
-import org.openflexo.foundation.fml.binding.FlexoConceptBindingFactory;
+import org.openflexo.foundation.fml.binding.FMLBindingFactory;
 import org.openflexo.foundation.fml.binding.ViewPointBindingModel;
 import org.openflexo.foundation.fml.rm.ViewPointResource;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
@@ -224,7 +224,7 @@ public interface ViewPoint extends AbstractVirtualModel<ViewPoint> {
 		private List<VirtualModel> virtualModels;
 		private ViewPointResource resource;
 		private ViewPointBindingModel bindingModel;
-		private final FlexoConceptBindingFactory bindingFactory = new FlexoConceptBindingFactory(this);
+		private final FMLBindingFactory bindingFactory = new FMLBindingFactory(this);
 
 		private final ViewType viewType = new ViewType(this);
 
@@ -518,7 +518,7 @@ public interface ViewPoint extends AbstractVirtualModel<ViewPoint> {
 		}
 
 		@Override
-		public FlexoConceptBindingFactory getBindingFactory() {
+		public FMLBindingFactory getBindingFactory() {
 			return bindingFactory;
 		}
 

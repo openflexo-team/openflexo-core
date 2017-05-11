@@ -58,7 +58,7 @@ import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.ListParameter;
 import org.openflexo.foundation.fml.URIParameter;
 import org.openflexo.foundation.fml.binding.FlexoBehaviourBindingModel;
-import org.openflexo.foundation.fml.binding.FlexoConceptBindingFactory;
+import org.openflexo.foundation.fml.binding.FMLBindingFactory;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
@@ -319,10 +319,10 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 		else if (variable.getVariableName().equals(FlexoBehaviourBindingModel.PARAMETERS_DEFINITION_PROPERTY)) {
 			return getFlexoBehaviour().getParameters();
 		}
-		else if (variable.getVariableName().equals(FlexoConceptBindingFactory.FLEXO_CONCEPT_INSTANCE)) {
+		else if (variable.getVariableName().equals(FMLBindingFactory.FLEXO_CONCEPT_INSTANCE)) {
 			return getFlexoConceptInstance();
 		}
-		else if (variable.getVariableName().equals(FlexoConceptBindingFactory.VIRTUAL_MODEL_INSTANCE)) {
+		else if (variable.getVariableName().equals(FMLBindingFactory.VIRTUAL_MODEL_INSTANCE)) {
 			if (getFlexoConceptInstance() instanceof AbstractVirtualModelInstance) {
 				return getFlexoConceptInstance();
 			}

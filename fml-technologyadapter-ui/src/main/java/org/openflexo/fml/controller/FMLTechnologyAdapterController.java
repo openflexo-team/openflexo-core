@@ -102,7 +102,7 @@ import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelInstanceType;
 import org.openflexo.foundation.fml.WidgetContext;
 import org.openflexo.foundation.fml.action.DeleteFlexoConceptObjects;
-import org.openflexo.foundation.fml.binding.FlexoConceptBindingFactory;
+import org.openflexo.foundation.fml.binding.FMLBindingFactory;
 import org.openflexo.foundation.fml.editionaction.DeleteAction;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
@@ -492,10 +492,10 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 	private String getContainerBinding(WidgetContext object) {
 		StringBuilder result = new StringBuilder("data.");
 		if (needsVirtualModelInstanceContext(object)) {
-			result.append(FlexoConceptBindingFactory.VIRTUAL_MODEL_INSTANCE);
+			result.append(FMLBindingFactory.VIRTUAL_MODEL_INSTANCE);
 		}
 		else {
-			result.append(FlexoConceptBindingFactory.FLEXO_CONCEPT_INSTANCE);
+			result.append(FMLBindingFactory.FLEXO_CONCEPT_INSTANCE);
 		}
 		result.append(object.getContainer().toString());
 		return result.toString();

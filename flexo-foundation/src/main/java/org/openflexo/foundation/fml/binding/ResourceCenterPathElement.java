@@ -61,7 +61,7 @@ public class ResourceCenterPathElement extends SimplePathElement {
 	private static final Logger logger = Logger.getLogger(ResourceCenterPathElement.class.getPackage().getName());
 
 	public ResourceCenterPathElement(BindingPathElement parent) {
-		super(parent, FlexoConceptBindingFactory.RESOURCE_CENTER, FlexoResourceCenter.class);
+		super(parent, FMLBindingFactory.RESOURCE_CENTER, FlexoResourceCenter.class);
 	}
 
 	@Override

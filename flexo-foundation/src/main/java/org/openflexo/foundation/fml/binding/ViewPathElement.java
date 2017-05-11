@@ -62,7 +62,7 @@ public class ViewPathElement extends AbstractVirtualModelInstancePathElement<Vie
 	private static final Logger logger = Logger.getLogger(ViewPathElement.class.getPackage().getName());
 
 	public ViewPathElement(BindingPathElement parent, ViewPoint viewPoint) {
-		super(parent, FlexoConceptBindingFactory.VIEW, viewPoint);
+		super(parent, FMLBindingFactory.VIEW, viewPoint);
 	}
 
 	@Override

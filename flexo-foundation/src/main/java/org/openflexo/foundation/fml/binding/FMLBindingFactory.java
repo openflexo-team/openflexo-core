@@ -86,10 +86,9 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapterBindingFactor
  * @author sylvain
  *
  */
-// TODO: rename to FMLBindingFactory
 // TODO: manage a map for strutural properties (same as for behaviours)
-public final class FlexoConceptBindingFactory extends JavaBindingFactory {
-	static final Logger logger = Logger.getLogger(FlexoConceptBindingFactory.class.getPackage().getName());
+public class FMLBindingFactory extends JavaBindingFactory {
+	static final Logger logger = Logger.getLogger(FMLBindingFactory.class.getPackage().getName());
 
 	public static final String FLEXO_CONCEPT_INSTANCE = "flexoConceptInstance";
 	public static final String VIRTUAL_MODEL_INSTANCE = "virtualModelInstance";
@@ -101,7 +100,7 @@ public final class FlexoConceptBindingFactory extends JavaBindingFactory {
 
 	private final Map<BindingPathElement, BehavioursForConcepts> flexoBehaviourPathElements;
 
-	public FlexoConceptBindingFactory(ViewPoint viewPoint) {
+	public FMLBindingFactory(ViewPoint viewPoint) {
 		storedBindingPathElements = new HashMap<BindingPathElement, Map<Object, SimplePathElement>>();
 		flexoBehaviourPathElements = new HashMap<BindingPathElement, BehavioursForConcepts>();
 		this.viewPoint = viewPoint;
