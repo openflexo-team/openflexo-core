@@ -64,9 +64,7 @@ public class FIBParametersRetrieverWidget extends FIBJPanel<FlexoBehaviourAction
 	private ApplicationContext applicationContext;
 
 	public FIBParametersRetrieverWidget(FlexoBehaviourAction action) {
-		super((new ParametersRetriever(action, /*flexoController*/null)).makeFIB(false, false), action,
-				FlexoLocalization.getMainLocalizer());
-		// this.flexoController = flexoController;
+		super((new ParametersRetriever(action, null)).makeFIB(false, false), action, FlexoLocalization.getMainLocalizer());
 	}
 
 	public ApplicationContext getApplicationContext() {

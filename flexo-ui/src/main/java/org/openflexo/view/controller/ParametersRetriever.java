@@ -89,7 +89,7 @@ public class ParametersRetriever<ES extends FlexoBehaviour> {
 		this.action = action;
 		this.applicationContext = applicationContext;
 		try {
-			fibModelFactory = new FIBModelFactory(applicationContext.getTechnologyAdapterService());
+			fibModelFactory = new FIBModelFactory(applicationContext != null ? applicationContext.getTechnologyAdapterService() : null);
 		} catch (ModelDefinitionException e) {
 			e.printStackTrace();
 		}
