@@ -57,8 +57,8 @@ import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.ListParameter;
 import org.openflexo.foundation.fml.URIParameter;
-import org.openflexo.foundation.fml.binding.FlexoBehaviourBindingModel;
 import org.openflexo.foundation.fml.binding.FMLBindingFactory;
+import org.openflexo.foundation.fml.binding.FlexoBehaviourBindingModel;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
@@ -128,10 +128,10 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 	public boolean retrieveDefaultParameters() {
 		boolean returned = true;
 		FlexoBehaviour flexoBehaviour = getFlexoBehaviour();
-		logger.info("BEGIN retrieveDefaultParameters() for " + flexoBehaviour);
+		// logger.info("BEGIN retrieveDefaultParameters() for " + flexoBehaviour);
 		for (final FlexoBehaviourParameter parameter : flexoBehaviour.getParameters()) {
 			Object defaultValue = parameter.getDefaultValue(this);
-			logger.info("Parameter " + parameter.getName() + " default value = " + defaultValue);
+			// logger.info("Parameter " + parameter.getName() + " default value = " + defaultValue);
 			if (defaultValue != null) {
 				parameterValues.put(parameter, defaultValue);
 			}
@@ -139,13 +139,13 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 				List list = (List) ((ListParameter) parameter).getList(this);
 				parameterListValues.put((ListParameter) parameter, list);
 			}
-			logger.info("Parameter " + parameter.getName() + " valid=" + parameter.isValid(this, defaultValue));
+			// logger.info("Parameter " + parameter.getName() + " valid=" + parameter.isValid(this, defaultValue));
 			if (!parameter.isValid(this, defaultValue)) {
-				logger.info("Parameter " + parameter + " is not valid for value " + defaultValue);
+				// logger.info("Parameter " + parameter + " is not valid for value " + defaultValue);
 				returned = false;
 			}
 		}
-		logger.info("END retrieveDefaultParameters() for " + flexoBehaviour);
+		// logger.info("END retrieveDefaultParameters() for " + flexoBehaviour);
 		return returned;
 	}
 
