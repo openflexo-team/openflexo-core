@@ -42,10 +42,11 @@ import java.lang.reflect.Type;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.Vector;
 import java.util.logging.Logger;
-
 import org.openflexo.connie.Bindable;
 import org.openflexo.connie.BindingFactory;
 import org.openflexo.connie.BindingModel;
@@ -76,6 +77,7 @@ import org.openflexo.foundation.fml.SynchronizationScheme;
 import org.openflexo.foundation.task.Progress;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.localization.LocalizedDelegate;
 import org.openflexo.toolbox.PropertyChangedSupportDefaultImplementation;
 import org.openflexo.toolbox.StringUtils;
@@ -130,7 +132,7 @@ public class CreateFlexoBehaviour extends FlexoAction<CreateFlexoBehaviour, Flex
 	CreateFlexoBehaviour(FlexoConceptObject focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 
-		behaviourClassMap = new HashMap<Class<? extends FlexoBehaviour>, TechnologyAdapter>();
+		behaviourClassMap = new HashMap<>();
 
 		if (focusedObject instanceof AbstractVirtualModel<?>) {
 			addVirtualModelFlexoBehaviours((AbstractVirtualModel<?>) focusedObject);
@@ -139,7 +141,7 @@ public class CreateFlexoBehaviour extends FlexoAction<CreateFlexoBehaviour, Flex
 			addFlexoConceptFlexoBehaviours((FlexoConcept) focusedObject);
 		}
 		else if (focusedObject instanceof FlexoConceptBehaviouralFacet) {
-			FlexoConcept facetConcept = ((FlexoConceptBehaviouralFacet) focusedObject).getFlexoConcept();
+			FlexoConcept facetConcept = focusedObject.getFlexoConcept();
 			if (facetConcept instanceof AbstractVirtualModel<?>) {
 				addVirtualModelFlexoBehaviours((AbstractVirtualModel<?>) facetConcept);
 			}
@@ -148,7 +150,7 @@ public class CreateFlexoBehaviour extends FlexoAction<CreateFlexoBehaviour, Flex
 			}
 		}
 
-		parameterEntries = new ArrayList<CreateFlexoBehaviour.BehaviourParameterEntry>();
+		parameterEntries = new ArrayList<>();
 	}
 
 	public List<BehaviourParameterEntry> getParameterEntries() {
@@ -222,11 +224,17 @@ public class CreateFlexoBehaviour extends FlexoAction<CreateFlexoBehaviour, Flex
 		behaviourClassMap.put(CreationScheme.class, virtualModel.getTechnologyAdapter());
 		behaviourClassMap.put(DeletionScheme.class, virtualModel.getTechnologyAdapter());
 		behaviourClassMap.put(SynchronizationScheme.class, virtualModel.getTechnologyAdapter());
-		for (ModelSlot<?> ms : virtualModel.getModelSlots()) {
-			List<Class<? extends FlexoBehaviour>> msBehaviours = ms.getAvailableFlexoBehaviourTypes();
+
+		Set<Class<? extends ModelSlot<?>>> slotClasses = new LinkedHashSet<>();
+		virtualModel.getUseDeclarations().stream().forEach((use) -> slotClasses.add(use.getModelSlotClass()));
+		virtualModel.getModelSlots().stream().forEach((slot) -> slotClasses.add((Class<? extends ModelSlot<?>>) slot.getClass()));
+
+		TechnologyAdapterService service = getServiceManager().getTechnologyAdapterService();
+		for (Class<? extends ModelSlot<?>> slotClass : slotClasses) {
+			List<Class<? extends FlexoBehaviour>> msBehaviours = service.getAvailableFlexoBehaviourTypes(slotClass);
 			for (Class<? extends FlexoBehaviour> behaviour : msBehaviours) {
 				if (!behaviourClassMap.containsKey(behaviour)) {
-					behaviourClassMap.put(behaviour, ms.getModelSlotTechnologyAdapter());
+					behaviourClassMap.put(behaviour, service.getTechnologyAdapterForModelSlot(slotClass));
 				}
 			}
 		}
@@ -255,7 +263,7 @@ public class CreateFlexoBehaviour extends FlexoAction<CreateFlexoBehaviour, Flex
 
 	public List<Class<? extends FlexoBehaviour>> getBehaviours() {
 		if (behaviours == null) {
-			behaviours = new ArrayList<Class<? extends FlexoBehaviour>>();
+			behaviours = new ArrayList<>();
 			for (Class<? extends FlexoBehaviour> mapKey : behaviourClassMap.keySet()) {
 				behaviours.add(mapKey);
 			}
