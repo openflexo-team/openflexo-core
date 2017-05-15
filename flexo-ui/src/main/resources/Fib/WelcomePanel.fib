@@ -102,9 +102,9 @@
 					action="controller.newProject(data.favoriteModule)" localize="true"
 					constraints="grid(x=0;y=0)" label="new_project" />
 				<Button id="20"
-					enable="((data.favoriteModule != null) &amp; (RecentProjectTable.selected != null))"
+					enable="((data.favoriteModule != null)"
 					buttonType="Trigger" name="OpenProjectButton"
-					action="controller.openProject(RecentProjectTable.selected,data.favoriteModule)"
+					action="controller.openProject(data.favoriteModule)"
 					localize="true" constraints="grid(x=1;y=0)" label="open_project" />
 				<Button id="21" enable="(data.favoriteModule != null)"
 					buttonType="Trigger" name="OpenModuleButton"
