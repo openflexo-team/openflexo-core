@@ -39,8 +39,11 @@
 package org.openflexo.br;
 
 import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.UnknownHostException;
@@ -51,16 +54,18 @@ import java.util.Map;
 
 import org.apache.commons.codec.binary.Base64;
 import org.openflexo.ApplicationContext;
+import org.openflexo.br.view.JIRAURLCredentialsDialog;
 import org.openflexo.foundation.FlexoServiceImpl;
 import org.openflexo.foundation.task.Progress;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.module.FlexoModule;
+import org.openflexo.toolbox.StringUtils;
 import org.openflexo.view.controller.FlexoController;
+import org.openflexo.ws.jira.JIRAClient;
 import org.openflexo.ws.jira.JIRAGson;
 import org.openflexo.ws.jira.model.JIRAComponent;
 import org.openflexo.ws.jira.model.JIRAProject;
 import org.openflexo.ws.jira.model.JIRAProjectList;
-import org.openflexo.ws.jira.model.JIRAVersion;
 
 public class BugReportService extends FlexoServiceImpl {
 
@@ -181,6 +186,56 @@ public class BugReportService extends FlexoServiceImpl {
 		}
 	}*/
 
+	private boolean testJIRAConnection() {
+		if (StringUtils.isNotEmpty(getServiceManager().getBugReportPreferences().getBugReportUser())
+				&& StringUtils.isNotEmpty(getServiceManager().getBugReportPreferences().getBugReportPassword())) {
+			URL url;
+			try {
+				url = new URL(JIRA_URL);
+				HttpURLConnection urlc = (HttpURLConnection) url.openConnection();
+				urlc.addRequestProperty(JIRAClient.BASIC_AUTH_HEADER, "Basic " + getBase64EncodedAuthentication());
+				InputStream is = urlc.getInputStream();
+				is.close();
+				return true;
+			} catch (IOException e) {
+				logger.warning("IOException: " + e.getMessage());
+				return false;
+			}
+		}
+		return false;
+
+	}
+
+	private String askCredentialsWhenRequired() throws UnsupportedEncodingException {
+
+		boolean validCredentials = testJIRAConnection();
+
+		while (getServiceManager().getBugReportPreferences().getBugReportUser() == null
+				|| getServiceManager().getBugReportPreferences().getBugReportUser().trim().length() == 0
+				|| getServiceManager().getBugReportPreferences().getBugReportPassword() == null
+				|| getServiceManager().getBugReportPreferences().getBugReportPassword().trim().length() == 0 || !validCredentials) {
+			Progress.forceHideTaskBar();
+			if (!JIRAURLCredentialsDialog.askLoginPassword(getServiceManager())) {
+				Progress.stopForceHideTaskBar();
+				return null;
+			}
+
+			validCredentials = testJIRAConnection();
+
+		}
+
+		Progress.stopForceHideTaskBar();
+		return getBase64EncodedAuthentication();
+	}
+
+	private String getBase64EncodedAuthentication() throws UnsupportedEncodingException {
+
+		String username = getServiceManager().getBugReportPreferences().getBugReportUser().trim();
+		String password = getServiceManager().getBugReportPreferences().getBugReportPassword().trim();
+		// Ok, it took me a while to find out but ISO-8859-1 is the one used by JIRA
+		return Base64.encodeBase64String((username + ":" + password).getBytes("ISO-8859-1"));
+	}
+
 	@Override
 	public void initialize() {
 		logger.info("Initialized BugReportService");
@@ -194,7 +249,9 @@ public class BugReportService extends FlexoServiceImpl {
 			}
 
 			URL url = new URL(JIRA_URL);
-			URLConnection urlc = url.openConnection();
+			HttpURLConnection urlc = (HttpURLConnection) url.openConnection();
+			urlc.addRequestProperty(JIRAClient.BASIC_AUTH_HEADER, "Basic " + askCredentialsWhenRequired());
+
 			BufferedReader bfr = null;
 			try {
 				bfr = new BufferedReader(new InputStreamReader(urlc.getInputStream()));
@@ -205,10 +262,12 @@ public class BugReportService extends FlexoServiceImpl {
 				return;
 			}
 			JIRAProjectList projects = JIRAGson.getInstance().fromJson(bfr, JIRAProjectList.class);
+			// System.out.println("projects=" + projects);
+
 			for (JIRAProject p : projects) {
 				JIRAProject detailedProject = parseProject(p);
 				this.projects.add(detailedProject);
-				System.out.println("******** Project " + detailedProject);
+				/*System.out.println("******** Project " + detailedProject);
 				System.out.println("Id=" + detailedProject.getId());
 				System.out.println("Lead=" + detailedProject.getLead());
 				for (JIRAComponent component : detailedProject.getComponents()) {
@@ -220,7 +279,7 @@ public class BugReportService extends FlexoServiceImpl {
 				System.out.println("IssueTypes=" + detailedProject.getIssueTypes());
 				System.out.println("Last released version: "
 						+ (detailedProject.getLastReleasedVersion() != null ? detailedProject.getLastReleasedVersion().getName() : "none"));
-
+				 */
 			}
 		} catch (Exception e) {
 			System.out.println("exception: " + e);
@@ -275,7 +334,7 @@ public class BugReportService extends FlexoServiceImpl {
 		return isInitialized;
 	}
 
-	private static JIRAProject parseProject(JIRAProject p) {
+	private JIRAProject parseProject(JIRAProject p) {
 
 		if (FlexoLocalization.getMainLocalizer() != null) {
 			Progress.progress(FlexoLocalization.getMainLocalizer().localizedForKey("getting_informations_for") + " " + p.getSelf());
@@ -283,6 +342,7 @@ public class BugReportService extends FlexoServiceImpl {
 		try {
 			URL url = new URL(p.getSelf());
 			URLConnection urlc = url.openConnection();
+			urlc.addRequestProperty(JIRAClient.BASIC_AUTH_HEADER, "Basic " + askCredentialsWhenRequired());
 			BufferedReader bfr = new BufferedReader(new InputStreamReader(urlc.getInputStream()));
 			return JIRAGson.getInstance().fromJson(bfr, JIRAProject.class);
 		} catch (Exception e) {

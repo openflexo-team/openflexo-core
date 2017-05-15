@@ -71,7 +71,7 @@ public class JIRAClient {
 
 	private static final String SET_COOKIE_HEADER = "Set-Cookie"; // list of name=value;
 	private static final String COOKIE_HEADER = "Cookie"; // list of name=value;
-	private static final String BASIC_AUTH_HEADER = "Authorization";
+	public static final String BASIC_AUTH_HEADER = "Authorization";
 	private static final String CONTENT_TYPE_HEADER = "Content-Type";
 	private static final String X_ATLASSIAN_TOKEN_HEADER = "X-Atlassian-Token";
 
