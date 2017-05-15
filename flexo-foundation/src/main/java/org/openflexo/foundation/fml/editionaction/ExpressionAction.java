@@ -79,21 +79,24 @@ public interface ExpressionAction<T> extends AssignableAction<T> {
 	@Override
 	public Type getAssignableType();
 
-	public static abstract class ExpressionActionImpl<T> extends AssignableActionImpl<T>implements ExpressionAction<T> {
+	public static abstract class ExpressionActionImpl<T> extends AssignableActionImpl<T> implements ExpressionAction<T> {
 
 		private static final Logger logger = Logger.getLogger(ExpressionAction.class.getPackage().getName());
 
 		private DataBinding<T> expression;
 
 		private Type assignableType = null;
+		private boolean isComputingAssignableType = false;
 
 		@Override
 		public Type getAssignableType() {
 
-			if (assignableType == null) {
+			if (assignableType == null && !isComputingAssignableType) {
+				isComputingAssignableType = true;
 				if (getExpression() != null && getExpression().isSet() && getExpression().isValid()) {
 					assignableType = getExpression().getAnalyzedType();
 				}
+				isComputingAssignableType = false;
 				/*else {
 					// Expression is not valid
 					// We wont try to decode it again unless explicit call to #notifyTypeMightHaveChanged()
