@@ -383,7 +383,7 @@ public interface TextSelection<D extends FlexoDocument<D, TA>, TA extends Techno
 								sb.append(StringUtils.LINE_SEPARATOR);
 							}
 							if (isUnique) { // Unique paragraph
-								if (getStartRunIndex() == getEndRunIndex()) {
+								if (getStartRun() != null && getStartRun().getText() != null && getStartRunIndex() == getEndRunIndex()) {
 									if (getStartCharacterIndex() > -1 && getEndCharacterIndex() > -1
 											&& getStartCharacterIndex() <= getEndCharacterIndex()
 											&& getEndCharacterIndex() <= getStartRun().getText().length()) {
