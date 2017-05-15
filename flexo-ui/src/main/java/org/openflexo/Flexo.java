@@ -39,6 +39,30 @@
 
 package org.openflexo;
 
+import java.awt.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintStream;
+import java.lang.management.ManagementFactory;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.net.Authenticator;
+import java.net.PasswordAuthentication;
+import java.net.Proxy;
+import java.net.ProxySelector;
+import java.net.SocketAddress;
+import java.net.URI;
+import java.net.URL;
+import java.nio.channels.FileLock;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.LogManager;
+import java.util.logging.Logger;
+import javax.swing.*;
 import org.openflexo.application.FlexoApplication;
 import org.openflexo.components.RequestLoginDialog;
 import org.openflexo.components.SplashWindow;
@@ -67,31 +91,6 @@ import org.openflexo.view.FlexoFrame;
 import org.openflexo.view.controller.FlexoController;
 import sun.misc.Signal;
 import sun.misc.SignalHandler;
-
-import javax.swing.*;
-import java.awt.*;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.PrintStream;
-import java.lang.management.ManagementFactory;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.net.Authenticator;
-import java.net.PasswordAuthentication;
-import java.net.Proxy;
-import java.net.ProxySelector;
-import java.net.SocketAddress;
-import java.net.URI;
-import java.net.URL;
-import java.nio.channels.FileLock;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.LogManager;
-import java.util.logging.Logger;
 
 /**
  * Main class of the Flexo Application Suite
@@ -341,7 +340,7 @@ public class Flexo {
 		}*/
 
 		if (fileNameToOpen == null) {
-			showWelcomDialog(applicationContext, splashWindow);
+			showWelcomeDialog(applicationContext, splashWindow);
 		}
 		else {
 			try {
@@ -365,13 +364,13 @@ public class Flexo {
 				if (loadProject.getTaskStatus() == TaskStatus.EXCEPTION_THROWN) {
 					if (loadProject.getThrownException() instanceof ProjectLoadingCancelledException) {
 						// project need a conversion, but user cancelled the conversion.
-						showWelcomDialog(applicationContext, null);
+						showWelcomeDialog(applicationContext, null);
 					}
 					else if (loadProject.getThrownException() instanceof ProjectInitializerException) {
 						loadProject.getThrownException().printStackTrace();
 						FlexoController.notify(applicationContext.getLocalizationService().getFlexoLocalizer()
 								.localizedForKey("could_not_open_project_located_at") + projectDirectory.getAbsolutePath());
-						showWelcomDialog(applicationContext, null);
+						showWelcomeDialog(applicationContext, null);
 					}
 				}
 
@@ -380,12 +379,12 @@ public class Flexo {
 				FlexoController
 						.notify(applicationContext.getLocalizationService().getFlexoLocalizer().localizedForKey("could_not_load_module")
 								+ " " + e.getModule());
-				showWelcomDialog(applicationContext, null);
+				showWelcomeDialog(applicationContext, null);
 			}
 		}
 	}
 
-	public static void showWelcomDialog(final ApplicationContext applicationContext, final SplashWindow splashWindow) {
+	public static void showWelcomeDialog(final ApplicationContext applicationContext, final SplashWindow splashWindow) {
 		WelcomeDialog welcomeDialog = new WelcomeDialog(applicationContext);
 		welcomeDialog.pack();
 		welcomeDialog.center();

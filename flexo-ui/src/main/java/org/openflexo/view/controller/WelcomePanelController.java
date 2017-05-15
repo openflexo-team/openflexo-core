@@ -41,7 +41,6 @@ package org.openflexo.view.controller;
 
 import java.io.File;
 import java.io.IOException;
-
 import org.openflexo.ApplicationData;
 import org.openflexo.components.NewProjectComponent;
 import org.openflexo.components.OpenProjectComponent;
@@ -107,14 +106,17 @@ public class WelcomePanelController extends FlexoFIBController {
 		}
 	}
 
-	public void openProject(File projectDirectory, Module module) throws ProjectLoadingCancelledException, ProjectInitializerException {
 
-		if (projectDirectory == null) {
-			projectDirectory = OpenProjectComponent.getProjectDirectory(getDataObject().getApplicationContext());
-			if (projectDirectory == null) {
-				return;
-			}
+	public void openProject(Module module) throws ProjectLoadingCancelledException, ProjectInitializerException {
+		File projectDirectory = OpenProjectComponent.getProjectDirectory(getDataObject().getApplicationContext());
+		if (projectDirectory != null) {
+			openProject(projectDirectory, module);
 		}
+	}
+
+	public void openProject(File projectDirectory, Module module) throws ProjectLoadingCancelledException, ProjectInitializerException {
+		if (projectDirectory == null) return;
+
 		hide();
 		LoadModuleTask loadModuleTask = null;
 		try {
