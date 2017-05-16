@@ -56,7 +56,10 @@ import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraphOwner;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext.ReturnException;
+import org.openflexo.model.annotations.CloningStrategy;
+import org.openflexo.model.annotations.CloningStrategy.StrategyType;
 import org.openflexo.model.annotations.DefineValidationRule;
+import org.openflexo.model.annotations.Embedded;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
@@ -94,6 +97,8 @@ public interface AddToListAction<T> extends AssignableAction<T>, FMLControlGraph
 	public void setList(DataBinding<? extends List<T>> list);
 
 	@Getter(value = ASSIGNABLE_ACTION_KEY, inverse = FMLControlGraph.OWNER_KEY)
+	@Embedded
+	@CloningStrategy(StrategyType.CLONE)
 	@XMLElement(context = "AssignableAction_")
 	public AssignableAction<T> getAssignableAction();
 
