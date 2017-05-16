@@ -1222,7 +1222,7 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 			for (FlexoProperty<?> pr : getDeclaredProperties()) {
 				pr.finalizeDeserialization();
 			}
-			decodeParentFlexoConceptList();
+			decodeParentFlexoConceptList(true);
 		}
 
 		public void debug() {
@@ -1315,7 +1315,7 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 
 		private boolean isDecodingParentFlexoConceptList = false;
 
-		private void decodeParentFlexoConceptList() {
+		private void decodeParentFlexoConceptList(boolean loadWhenRequired) {
 			if (parentFlexoConceptList != null && getViewPointLibrary() != null && !isDecodingParentFlexoConceptList) {
 				isDecodingParentFlexoConceptList = true;
 				StringTokenizer st = new StringTokenizer(parentFlexoConceptList, ",");
@@ -1323,7 +1323,7 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 				boolean someConceptsWereNotDecoded = false;
 				while (st.hasMoreTokens()) {
 					String conceptURI = st.nextToken();
-					FlexoConcept concept = getViewPointLibrary().getFlexoConcept(conceptURI, false);
+					FlexoConcept concept = getViewPointLibrary().getFlexoConcept(conceptURI, loadWhenRequired);
 					if (concept != null) {
 						parentConcepts.add(concept);
 					}
@@ -1356,7 +1356,7 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 		@Override
 		public List<FlexoConcept> getParentFlexoConcepts() {
 			if (parentFlexoConceptList != null && getViewPointLibrary() != null) {
-				decodeParentFlexoConceptList();
+				decodeParentFlexoConceptList(!isDeserializing());
 			}
 			return parentFlexoConcepts;
 		}

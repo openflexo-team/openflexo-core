@@ -103,6 +103,8 @@ public abstract class AbstractVirtualModelResourceImpl<VM extends AbstractVirtua
 	public void stopDeserializing() {
 		// NPE Protection and warning
 		VM data = getLoadedResourceData();
+		data.finalizeDeserialization();
+
 		if (data == null) {
 			logger.warning("INVESTIGATE: NO DATA has been derserialized from VirtualModelResource - " + this.getURI());
 		}
