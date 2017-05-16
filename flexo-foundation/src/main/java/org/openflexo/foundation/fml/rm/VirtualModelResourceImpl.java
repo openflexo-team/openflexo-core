@@ -40,6 +40,7 @@ package org.openflexo.foundation.fml.rm;
 
 import java.io.FileNotFoundException;
 import java.util.logging.Logger;
+
 import org.openflexo.foundation.IOFlexoException;
 import org.openflexo.foundation.InconsistentDataException;
 import org.openflexo.foundation.InvalidModelDefinitionException;
@@ -86,6 +87,9 @@ public abstract class VirtualModelResourceImpl extends AbstractVirtualModelResou
 	@Override
 	public VirtualModel loadResourceData(IProgress progress) throws FlexoFileNotFoundException, IOFlexoException, InvalidXMLException,
 			InconsistentDataException, InvalidModelDefinitionException {
+
+		logger.info("*************** Loading " + this);
+
 		VirtualModel returned = super.loadResourceData(progress);
 		// We notify a deserialization start on ViewPoint AND VirtualModel, to avoid addToVirtualModel() and setViewPoint() to notify
 		// UndoManager
@@ -95,7 +99,8 @@ public abstract class VirtualModelResourceImpl extends AbstractVirtualModelResou
 		}
 		startDeserializing();
 		ViewPoint viewPoint = getContainer().getViewPoint();
-		if (viewPoint != null) viewPoint.addToVirtualModels(returned);
+		if (viewPoint != null)
+			viewPoint.addToVirtualModels(returned);
 		returned.clearIsModified();
 		// And, we notify a deserialization stop
 		stopDeserializing();

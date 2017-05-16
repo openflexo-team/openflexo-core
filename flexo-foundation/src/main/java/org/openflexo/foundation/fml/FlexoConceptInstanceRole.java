@@ -209,7 +209,7 @@ public interface FlexoConceptInstanceRole extends FlexoRole<FlexoConceptInstance
 		public void finalizeDeserialization() {
 			super.finalizeDeserialization();
 			if (flexoConceptType == null && _flexoConceptTypeURI != null && getViewPointLibrary() != null) {
-				flexoConceptType = getViewPointLibrary().getFlexoConcept(_flexoConceptTypeURI, false);
+				flexoConceptType = getViewPointLibrary().getFlexoConcept(_flexoConceptTypeURI, true);
 			}
 		}
 
