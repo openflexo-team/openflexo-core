@@ -110,16 +110,18 @@ public class NewProjectTask extends FlexoApplicationTask {
 		} catch (ProjectInitializerException e) {
 			throwException(e);
 		}
-		projectLoader.newEditor(flexoEditor);
-		projectLoader.addToRootProjects(flexoEditor.getProject());
 
-		// Notify project just loaded
-		projectLoader.getServiceManager().notify(projectLoader, new ProjectLoaded(flexoEditor.getProject()));
+		projectLoader.newEditor(flexoEditor);
+
+		projectLoader.addToRootProjects(flexoEditor.getProject());
 
 		// Now, if a nature has been supplied, gives this nature to the project
 		if (projectNature != null) {
 			projectNature.givesNature(flexoEditor.getProject(), flexoEditor);
 		}
+
+		// Notify project just loaded
+		projectLoader.getServiceManager().notify(projectLoader, new ProjectLoaded(flexoEditor.getProject()));
 
 	}
 

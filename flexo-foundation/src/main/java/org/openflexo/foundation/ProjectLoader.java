@@ -38,6 +38,18 @@
 
 package org.openflexo.foundation;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.openflexo.foundation.nature.ProjectNature;
 import org.openflexo.foundation.resource.FlexoProjectReference;
 import org.openflexo.foundation.resource.ProjectClosed;
@@ -55,18 +67,6 @@ import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.model.factory.ModelFactory;
 import org.openflexo.toolbox.FileUtils;
 import org.openflexo.toolbox.HasPropertyChangeSupport;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * This {@link FlexoService} allows to instanciate {@link FlexoProject} through a {@link FlexoEditor} for a given
@@ -153,8 +153,7 @@ public class ProjectLoader extends FlexoServiceImpl implements HasPropertyChange
 	 * @throws ProjectInitializerException
 	 */
 	public FlexoTask loadProject(File projectDirectory, boolean asImportedProject, FlexoTask... tasksToBeExecutedBefore)
-			throws ProjectInitializerException, ProjectLoadingCancelledException
-	{
+			throws ProjectInitializerException, ProjectLoadingCancelledException {
 
 		internalLoadProject(projectDirectory, asImportedProject);
 		return null;
@@ -333,8 +332,6 @@ public class ProjectLoader extends FlexoServiceImpl implements HasPropertyChange
 		// reload project
 		loadProject(projectDirectory);
 	}
-
-
 
 	public List<FlexoProject> getModifiedProjects() {
 		List<FlexoProject> projects = new ArrayList<FlexoProject>(editors.size());
