@@ -470,6 +470,14 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 			}*/
 		}
 
+		@Override
+		public void finalizeDeserialization() {
+			super.finalizeDeserialization();
+			// System.out.println("creationScheme=" + creationScheme + " uri=" + _getCreationSchemeURI());
+			getCreationScheme();
+			// System.out.println("creationScheme=" + creationScheme);
+		}
+
 	}
 
 	@DefineValidationRule
