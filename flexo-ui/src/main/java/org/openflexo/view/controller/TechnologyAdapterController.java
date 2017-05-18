@@ -78,6 +78,7 @@ import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.AddSubView;
 import org.openflexo.foundation.fml.rt.editionaction.AddVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.editionaction.FinalizeMatching;
+import org.openflexo.foundation.fml.rt.editionaction.FireEventAction;
 import org.openflexo.foundation.fml.rt.editionaction.InitiateMatching;
 import org.openflexo.foundation.fml.rt.editionaction.MatchFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.SelectFlexoConceptInstance;
@@ -87,9 +88,9 @@ import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
+import org.openflexo.gina.controller.CustomTypeEditor;
 import org.openflexo.gina.model.FIBComponent.HorizontalScrollBarPolicy;
 import org.openflexo.gina.model.FIBComponent.VerticalScrollBarPolicy;
-import org.openflexo.gina.controller.CustomTypeEditor;
 import org.openflexo.gina.model.FIBModelFactory;
 import org.openflexo.gina.model.FIBWidget;
 import org.openflexo.gina.model.widget.FIBCheckBox;
@@ -398,6 +399,9 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 		}
 		else if (NotifyPropertyChangedAction.class.isAssignableFrom(editionActionClass)) {
 			return FMLIconLibrary.NOTIFY_PROPERTY_CHANGED_ACTION_ICON;
+		}
+		else if (FireEventAction.class.isAssignableFrom(editionActionClass)) {
+			return IconFactory.getImageIcon(FMLIconLibrary.FLEXO_EVENT_ICON, IconLibrary.NEW_MARKER);
 		}
 		return null;
 

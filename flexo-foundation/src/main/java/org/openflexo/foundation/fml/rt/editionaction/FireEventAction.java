@@ -36,34 +36,59 @@
  * 
  */
 
-package org.openflexo.foundation.fml;
+package org.openflexo.foundation.fml.rt.editionaction;
 
 import java.util.logging.Logger;
 
-import org.openflexo.logging.FlexoLogger;
+import org.openflexo.foundation.fml.FMLRepresentationContext;
+import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
+import org.openflexo.foundation.fml.FlexoConcept;
+import org.openflexo.foundation.fml.FlexoEvent;
+import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
+import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.XMLElement;
 
 /**
- * An {@link FlexoEvent} represent an event beeing emitted by an instance of {@link VirtualModel}, and might be listened by an other
- * instance of {@link FlexoConcept}<br>
- * 
+ * Primitive used to fire a new {@link FlexoEvent}.<br>
  * Life-cycle of event is somewhat different from {@link FlexoConcept} instance, since it's life is restricted to the propagation of the
  * event
  * 
  * @author sylvain
- * 
  */
 @ModelEntity
-@ImplementationClass(FlexoEvent.FlexoEventImpl.class)
+@ImplementationClass(FireEventAction.FireEventActionImpl.class)
 @XMLElement
-public interface FlexoEvent extends FlexoConcept {
+public interface FireEventAction<VMI extends AbstractVirtualModelInstance<VMI, ?>>
+		extends AbstractAddFlexoConceptInstance<FlexoConceptInstance, VMI> {
 
-	public static abstract class FlexoEventImpl extends FlexoConceptImpl implements FlexoEvent {
+	public FlexoEvent getEventType();
 
-		protected static final Logger logger = FlexoLogger.getLogger(FlexoEvent.class.getPackage().getName());
+	public static abstract class FireEventActionImpl<VMI extends AbstractVirtualModelInstance<VMI, ?>>
+			extends AbstractAddFlexoConceptInstanceImpl<FlexoConceptInstance, VMI> implements FireEventAction<VMI> {
 
+		private static final Logger logger = Logger.getLogger(FireEventAction.class.getPackage().getName());
+
+		@Override
+		public String getStringRepresentation() {
+			return "fireEvent " + (getEventType() != null ? getEventType().getName() : "null");
+		}
+
+		@Override
+		public String getFMLRepresentation(FMLRepresentationContext context) {
+			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
+			out.append(getStringRepresentation(), context);
+			return out.toString();
+		}
+
+		@Override
+		public FlexoEvent getEventType() {
+			if (getFlexoConceptType() instanceof FlexoEvent) {
+				return (FlexoEvent) getFlexoConceptType();
+			}
+			return null;
+		}
 	}
 
 }

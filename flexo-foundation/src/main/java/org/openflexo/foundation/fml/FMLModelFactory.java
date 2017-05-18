@@ -96,6 +96,7 @@ import org.openflexo.foundation.fml.rt.editionaction.DeleteFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.DeleteFlexoConceptInstanceParameter;
 import org.openflexo.foundation.fml.rt.editionaction.ExecuteBehaviourParameter;
 import org.openflexo.foundation.fml.rt.editionaction.FinalizeMatching;
+import org.openflexo.foundation.fml.rt.editionaction.FireEventAction;
 import org.openflexo.foundation.fml.rt.editionaction.InitiateMatching;
 import org.openflexo.foundation.fml.rt.editionaction.MatchCondition;
 import org.openflexo.foundation.fml.rt.editionaction.MatchFlexoConceptInstance;
@@ -612,6 +613,10 @@ public class FMLModelFactory extends FGEModelFactoryImpl implements PamelaResour
 
 	public NotifyPropertyChangedAction newNotifyPropertyChangedAction() {
 		return newInstance(NotifyPropertyChangedAction.class);
+	}
+
+	public FireEventAction newFireEventAction() {
+		return newInstance(FireEventAction.class);
 	}
 
 	public <T> ExpressionAction<T> newExpressionAction() {

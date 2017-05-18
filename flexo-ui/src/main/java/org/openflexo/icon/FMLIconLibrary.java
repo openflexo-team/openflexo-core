@@ -87,6 +87,7 @@ import org.openflexo.foundation.fml.rm.ViewPointResource;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.FinalizeMatching;
+import org.openflexo.foundation.fml.rt.editionaction.FireEventAction;
 import org.openflexo.foundation.fml.rt.editionaction.InitiateMatching;
 import org.openflexo.foundation.fml.rt.editionaction.MatchFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.MatchingCriteria;
@@ -353,6 +354,9 @@ public class FMLIconLibrary extends IconLibrary {
 			}
 			else if (object instanceof NotifyPropertyChangedAction) {
 				return NOTIFY_PROPERTY_CHANGED_ACTION_ICON;
+			}
+			else if (object instanceof FireEventAction) {
+				return IconFactory.getImageIcon(FLEXO_EVENT_ICON, IconLibrary.NEW_MARKER);
 			}
 			else if (object instanceof AbstractAssignationAction) {
 				return iconForObject(((AbstractAssignationAction) object).getAssignableAction());

@@ -71,6 +71,7 @@ import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.AddSubView;
 import org.openflexo.foundation.fml.rt.editionaction.AddVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.editionaction.FinalizeMatching;
+import org.openflexo.foundation.fml.rt.editionaction.FireEventAction;
 import org.openflexo.foundation.fml.rt.editionaction.InitiateMatching;
 import org.openflexo.foundation.fml.rt.editionaction.MatchFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.SelectFlexoConceptInstance;
@@ -104,7 +105,8 @@ import org.openflexo.toolbox.StringUtils;
 		@Import(MatchFlexoConceptInstance.class), @Import(RemoveFromListAction.class), @Import(DeleteAction.class),
 		@Import(ConditionalAction.class), @Import(IterationAction.class), @Import(WhileAction.class),
 		@Import(IncrementalIterationAction.class), @Import(FetchRequestIterationAction.class), @Import(ExecutionAction.class),
-		@Import(DeclareFlexoRole.class), @Import(NotifyPropertyChangedAction.class), @Import(AddClassInstance.class) })
+		@Import(DeclareFlexoRole.class), @Import(FireEventAction.class), @Import(NotifyPropertyChangedAction.class),
+		@Import(AddClassInstance.class) })
 public abstract interface EditionAction extends FMLControlGraph {
 
 	@PropertyIdentifier(type = ActionContainer.class)
