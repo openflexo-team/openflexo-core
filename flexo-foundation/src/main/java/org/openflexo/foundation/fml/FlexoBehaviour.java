@@ -89,7 +89,7 @@ import org.openflexo.toolbox.StringUtils;
 @ModelEntity(isAbstract = true)
 @ImplementationClass(FlexoBehaviour.FlexoBehaviourImpl.class)
 @Imports({ @Import(ActionScheme.class), @Import(DeletionScheme.class), @Import(NavigationScheme.class),
-		@Import(SynchronizationScheme.class), @Import(CreationScheme.class), @Import(CloningScheme.class) })
+		@Import(SynchronizationScheme.class), @Import(CreationScheme.class), @Import(CloningScheme.class), @Import(EventListener.class) })
 public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, Function, FMLControlGraphOwner {
 
 	// public static final String FLEXO_BEHAVIOUR_INSTANCE = "flexoBehaviourInstance";

@@ -47,6 +47,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.Vector;
 import java.util.logging.Logger;
+
 import org.openflexo.connie.Bindable;
 import org.openflexo.connie.BindingFactory;
 import org.openflexo.connie.BindingModel;
@@ -64,6 +65,7 @@ import org.openflexo.foundation.fml.ActionScheme;
 import org.openflexo.foundation.fml.CloningScheme;
 import org.openflexo.foundation.fml.CreationScheme;
 import org.openflexo.foundation.fml.DeletionScheme;
+import org.openflexo.foundation.fml.EventListener;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FlexoBehaviour;
@@ -224,6 +226,7 @@ public class CreateFlexoBehaviour extends FlexoAction<CreateFlexoBehaviour, Flex
 		behaviourClassMap.put(CreationScheme.class, virtualModel.getTechnologyAdapter());
 		behaviourClassMap.put(DeletionScheme.class, virtualModel.getTechnologyAdapter());
 		behaviourClassMap.put(SynchronizationScheme.class, virtualModel.getTechnologyAdapter());
+		behaviourClassMap.put(EventListener.class, virtualModel.getTechnologyAdapter());
 
 		Set<Class<? extends ModelSlot<?>>> slotClasses = new LinkedHashSet<>();
 		virtualModel.getUseDeclarations().stream().forEach((use) -> slotClasses.add(use.getModelSlotClass()));

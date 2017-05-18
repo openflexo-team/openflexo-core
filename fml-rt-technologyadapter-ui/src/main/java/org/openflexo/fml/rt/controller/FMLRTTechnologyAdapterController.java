@@ -38,7 +38,8 @@
 
 package org.openflexo.fml.rt.controller;
 
-import javax.swing.*;
+import javax.swing.ImageIcon;
+
 import org.openflexo.components.widget.FIBTechnologyBrowser;
 import org.openflexo.fml.rt.controller.action.ActionSchemeActionInitializer;
 import org.openflexo.fml.rt.controller.action.CreateBasicVirtualModelInstanceInitializer;
@@ -57,6 +58,7 @@ import org.openflexo.foundation.fml.ActionScheme;
 import org.openflexo.foundation.fml.CloningScheme;
 import org.openflexo.foundation.fml.CreationScheme;
 import org.openflexo.foundation.fml.DeletionScheme;
+import org.openflexo.foundation.fml.EventListener;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoConceptInstanceRole;
 import org.openflexo.foundation.fml.FlexoRole;
@@ -243,22 +245,25 @@ public class FMLRTTechnologyAdapterController extends TechnologyAdapterControlle
 	@Override
 	public ImageIcon getIconForFlexoBehaviour(Class<? extends FlexoBehaviour> flexoBehaviourClass) {
 		if (ActionScheme.class.isAssignableFrom(flexoBehaviourClass)) {
-			return IconFactory.getImageIcon(FMLIconLibrary.ACTION_SCHEME_ICON);
+			return FMLIconLibrary.ACTION_SCHEME_ICON;
 		}
 		else if (DeletionScheme.class.isAssignableFrom(flexoBehaviourClass)) {
-			return IconFactory.getImageIcon(FMLIconLibrary.DELETE_ICON);
+			return FMLIconLibrary.DELETE_ICON;
 		}
 		else if (CreationScheme.class.isAssignableFrom(flexoBehaviourClass)) {
-			return IconFactory.getImageIcon(FMLIconLibrary.CREATION_SCHEME_ICON);
+			return FMLIconLibrary.CREATION_SCHEME_ICON;
 		}
 		else if (NavigationScheme.class.isAssignableFrom(flexoBehaviourClass)) {
-			return IconFactory.getImageIcon(FMLIconLibrary.NAVIGATION_SCHEME_ICON);
+			return FMLIconLibrary.NAVIGATION_SCHEME_ICON;
 		}
 		else if (SynchronizationScheme.class.isAssignableFrom(flexoBehaviourClass)) {
-			return IconFactory.getImageIcon(FMLIconLibrary.SYNCHRONIZATION_SCHEME_ICON);
+			return FMLIconLibrary.SYNCHRONIZATION_SCHEME_ICON;
 		}
 		else if (CloningScheme.class.isAssignableFrom(flexoBehaviourClass)) {
-			return IconFactory.getImageIcon(FMLIconLibrary.CLONING_SCHEME_ICON);
+			return FMLIconLibrary.CLONING_SCHEME_ICON;
+		}
+		else if (EventListener.class.isAssignableFrom(flexoBehaviourClass)) {
+			return FMLIconLibrary.EVENT_LISTENER_ICON;
 		}
 		return super.getIconForFlexoBehaviour(flexoBehaviourClass);
 	}

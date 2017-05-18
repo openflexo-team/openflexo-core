@@ -48,6 +48,7 @@ import org.openflexo.foundation.fml.ActionScheme;
 import org.openflexo.foundation.fml.CloningScheme;
 import org.openflexo.foundation.fml.CreationScheme;
 import org.openflexo.foundation.fml.DeletionScheme;
+import org.openflexo.foundation.fml.EventListener;
 import org.openflexo.foundation.fml.ExpressionProperty;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FlexoBehaviour;
@@ -184,6 +185,8 @@ public class FMLIconLibrary extends IconLibrary {
 			ResourceLocator.locateResource("Icons/Model/VPM/DeletionSchemeIcon.png"));
 	public static final ImageIconResource NAVIGATION_SCHEME_ICON = new ImageIconResource(
 			ResourceLocator.locateResource("Icons/Model/VPM/NavigationSchemeIcon.png"));
+	public static final ImageIcon EVENT_LISTENER_ICON = IconFactory.getImageIcon(ACTION_SCHEME_ICON, IconLibrary.NOTIFY_MARKER);
+
 	public static final ImageIconResource FLEXO_CONCEPT_PARAMETER_BIG_ICON = new ImageIconResource(
 			ResourceLocator.locateResource("Icons/Model/VPM/ParameterIcon_64x64.png"));
 	public static final ImageIconResource FLEXO_CONCEPT_PARAMETER_ICON = new ImageIconResource(
@@ -403,6 +406,9 @@ public class FMLIconLibrary extends IconLibrary {
 			}
 			else if (object instanceof DeletionScheme) {
 				return DELETION_SCHEME_ICON;
+			}
+			else if (object instanceof EventListener) {
+				return FMLIconLibrary.EVENT_LISTENER_ICON;
 			}
 			else if (object instanceof TechnologySpecificFlexoBehaviour) {
 				TechnologyAdapterController<?> tac = getTechnologyAdapterController(

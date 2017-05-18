@@ -39,6 +39,7 @@
 package org.openflexo.foundation.fml.rt.editionaction;
 
 import java.util.logging.Logger;
+
 import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
