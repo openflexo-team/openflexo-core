@@ -55,6 +55,7 @@ import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptConstraint;
 import org.openflexo.foundation.fml.FlexoConceptInstanceRole;
+import org.openflexo.foundation.fml.FlexoEvent;
 import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.GetSetProperty;
@@ -149,6 +150,13 @@ public class FMLIconLibrary extends IconLibrary {
 			ResourceLocator.locateResource("Icons/Model/VPM/FlexoConcept_32x32.png"));
 	public static final ImageIconResource FLEXO_CONCEPT_BIG_ICON = new ImageIconResource(
 			ResourceLocator.locateResource("Icons/Model/VPM/FlexoConcept_64x64.png"));
+
+	public static final ImageIconResource FLEXO_EVENT_ICON = new ImageIconResource(
+			ResourceLocator.locateResource("Icons/Model/VPM/EventIcon.png"));
+	public static final ImageIconResource FLEXO_EVENT_MEDIUM_ICON = new ImageIconResource(
+			ResourceLocator.locateResource("Icons/Model/VPM/EventIcon_32x32.png"));
+	public static final ImageIconResource FLEXO_EVENT_BIG_ICON = new ImageIconResource(
+			ResourceLocator.locateResource("Icons/Model/VPM/EventIcon_64x64.png"));
 
 	public static final ImageIconResource FLEXO_ROLE_ICON = new ImageIconResource(
 			ResourceLocator.locateResource("Icons/Model/VPM/FlexoRole.png"));
@@ -297,7 +305,8 @@ public class FMLIconLibrary extends IconLibrary {
 				TechnologyAdapterController<?> tac = getTechnologyAdapterController(
 						((TechnologySpecificAction<?, ?, ?>) object).getModelSlotTechnologyAdapter());
 				if (tac != null) {
-					ImageIcon returned = tac.getIconForEditionAction((Class<? extends TechnologySpecificAction<?, ?, ?>>) object.getClass());
+					ImageIcon returned = tac
+							.getIconForEditionAction((Class<? extends TechnologySpecificAction<?, ?, ?>>) object.getClass());
 					if (returned != null) {
 						return returned;
 					}
@@ -366,6 +375,9 @@ public class FMLIconLibrary extends IconLibrary {
 				return DELETE_ICON;
 			}
 			return UNKNOWN_ICON;
+		}
+		else if (object instanceof FlexoEvent) {
+			return FLEXO_EVENT_ICON;
 		}
 		else if (object instanceof FlexoConcept) {
 			return FLEXO_CONCEPT_ICON;

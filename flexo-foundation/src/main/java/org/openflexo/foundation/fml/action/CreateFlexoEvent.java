@@ -49,25 +49,25 @@ import org.openflexo.foundation.action.NotImplementedException;
 import org.openflexo.foundation.fml.AbstractVirtualModel;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.FMLObject;
-import org.openflexo.foundation.fml.FlexoConcept;
+import org.openflexo.foundation.fml.FlexoEvent;
 import org.openflexo.foundation.fml.InconsistentFlexoConceptHierarchyException;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.toolbox.StringUtils;
 
-public class CreateFlexoConcept extends AbstractCreateFlexoConcept<CreateFlexoConcept, AbstractVirtualModel<?>, FMLObject> {
+public class CreateFlexoEvent extends AbstractCreateFlexoConcept<CreateFlexoEvent, AbstractVirtualModel<?>, FMLObject> {
 
-	private static final Logger logger = Logger.getLogger(CreateFlexoConcept.class.getPackage().getName());
+	private static final Logger logger = Logger.getLogger(CreateFlexoEvent.class.getPackage().getName());
 
-	public static FlexoActionType<CreateFlexoConcept, AbstractVirtualModel<?>, FMLObject> actionType = new FlexoActionType<CreateFlexoConcept, AbstractVirtualModel<?>, FMLObject>(
-			"flexo_concept", FlexoActionType.newMenu, FlexoActionType.defaultGroup, FlexoActionType.ADD_ACTION_TYPE) {
+	public static FlexoActionType<CreateFlexoEvent, AbstractVirtualModel<?>, FMLObject> actionType = new FlexoActionType<CreateFlexoEvent, AbstractVirtualModel<?>, FMLObject>(
+			"flexo_event", FlexoActionType.newMenu, FlexoActionType.defaultGroup, FlexoActionType.ADD_ACTION_TYPE) {
 
 		/**
 		 * Factory method
 		 */
 		@Override
-		public CreateFlexoConcept makeNewAction(AbstractVirtualModel<?> focusedObject, Vector<FMLObject> globalSelection,
+		public CreateFlexoEvent makeNewAction(AbstractVirtualModel<?> focusedObject, Vector<FMLObject> globalSelection,
 				FlexoEditor editor) {
-			return new CreateFlexoConcept(focusedObject, globalSelection, editor);
+			return new CreateFlexoEvent(focusedObject, globalSelection, editor);
 		}
 
 		@Override
@@ -83,16 +83,16 @@ public class CreateFlexoConcept extends AbstractCreateFlexoConcept<CreateFlexoCo
 	};
 
 	static {
-		FlexoObjectImpl.addActionForClass(CreateFlexoConcept.actionType, AbstractVirtualModel.class);
+		FlexoObjectImpl.addActionForClass(CreateFlexoEvent.actionType, AbstractVirtualModel.class);
 	}
 
-	private String newFlexoConceptName;
-	private String newFlexoConceptDescription;
-	private FlexoConcept newFlexoConcept;
+	private String newFlexoEventName;
+	private String newFlexoEventDescription;
+	private FlexoEvent newFlexoEvent;
 
 	public boolean switchNewlyCreatedFlexoConcept = true;
 
-	CreateFlexoConcept(AbstractVirtualModel<?> focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
+	CreateFlexoEvent(AbstractVirtualModel<?> focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 	}
 
@@ -102,19 +102,10 @@ public class CreateFlexoConcept extends AbstractCreateFlexoConcept<CreateFlexoCo
 
 		FMLModelFactory factory = getFocusedObject().getFMLModelFactory();
 
-		newFlexoConcept = factory.newFlexoConcept();
-		newFlexoConcept.setName(getNewFlexoConceptName());
+		newFlexoEvent = factory.newFlexoEvent();
+		newFlexoEvent.setName(getNewFlexoEventName());
 
-		getFocusedObject().addToFlexoConcepts(newFlexoConcept);
-
-		if (getContainerFlexoConcept() != null) {
-			if (getContainerFlexoConcept() instanceof AbstractVirtualModel) {
-				// nothing to do
-			}
-			else {
-				newFlexoConcept.setContainerFlexoConcept(getContainerFlexoConcept());
-			}
-		}
+		getFocusedObject().addToFlexoConcepts(newFlexoEvent);
 
 		performSetParentConcepts();
 		performCreateProperties();
@@ -125,59 +116,45 @@ public class CreateFlexoConcept extends AbstractCreateFlexoConcept<CreateFlexoCo
 	}
 
 	@Override
-	public FlexoConcept getNewFlexoConcept() {
-		return newFlexoConcept;
+	public FlexoEvent getNewFlexoConcept() {
+		return newFlexoEvent;
 	}
 
-	public String getNewFlexoConceptName() {
-		return newFlexoConceptName;
+	public String getNewFlexoEventName() {
+		return newFlexoEventName;
 	}
 
-	public void setNewFlexoConceptName(String newFlexoConceptName) {
-		if ((newFlexoConceptName == null && this.newFlexoConceptName != null)
-				|| (newFlexoConceptName != null && !newFlexoConceptName.equals(this.newFlexoConceptName))) {
-			String oldValue = this.newFlexoConceptName;
-			this.newFlexoConceptName = newFlexoConceptName;
-			getPropertyChangeSupport().firePropertyChange("newFlexoConceptName", oldValue, newFlexoConceptName);
+	public void setNewFlexoEventName(String newFlexoEventName) {
+		if ((newFlexoEventName == null && this.newFlexoEventName != null)
+				|| (newFlexoEventName != null && !newFlexoEventName.equals(this.newFlexoEventName))) {
+			String oldValue = this.newFlexoEventName;
+			this.newFlexoEventName = newFlexoEventName;
+			getPropertyChangeSupport().firePropertyChange("newFlexoEventName", oldValue, newFlexoEventName);
 		}
 	}
 
-	public String getNewFlexoConceptDescription() {
-		return newFlexoConceptDescription;
+	public String getNewFlexoEventDescription() {
+		return newFlexoEventDescription;
 	}
 
-	public void setNewFlexoConceptDescription(String newFlexoConceptDescription) {
-		if ((newFlexoConceptDescription == null && this.newFlexoConceptDescription != null)
-				|| (newFlexoConceptDescription != null && !newFlexoConceptDescription.equals(this.newFlexoConceptDescription))) {
-			String oldValue = this.newFlexoConceptDescription;
-			this.newFlexoConceptDescription = newFlexoConceptDescription;
-			getPropertyChangeSupport().firePropertyChange("newFlexoConceptDescription", oldValue, newFlexoConceptDescription);
+	public void setNewFlexoEventDescription(String newFlexoEventDescription) {
+		if ((newFlexoEventDescription == null && this.newFlexoEventDescription != null)
+				|| (newFlexoEventDescription != null && !newFlexoEventDescription.equals(this.newFlexoEventDescription))) {
+			String oldValue = this.newFlexoEventDescription;
+			this.newFlexoEventDescription = newFlexoEventDescription;
+			getPropertyChangeSupport().firePropertyChange("newFlexoEventDescription", oldValue, newFlexoEventDescription);
 		}
 	}
 
 	@Override
 	public boolean isValid() {
-		if (StringUtils.isEmpty(newFlexoConceptName)) {
+		if (StringUtils.isEmpty(newFlexoEventName)) {
 			return false;
 		}
-		else if (getFocusedObject() instanceof VirtualModel && getFocusedObject().getFlexoConcept(newFlexoConceptName) != null) {
+		else if (getFocusedObject() instanceof VirtualModel && getFocusedObject().getFlexoConcept(newFlexoEventName) != null) {
 			return false;
 		}
 		return true;
-	}
-
-	private FlexoConcept containerFlexoConcept;
-
-	public FlexoConcept getContainerFlexoConcept() {
-		return containerFlexoConcept;
-	}
-
-	public void setContainerFlexoConcept(FlexoConcept containerFlexoConcept) {
-		if (containerFlexoConcept != this.containerFlexoConcept) {
-			FlexoConcept oldValue = this.containerFlexoConcept;
-			this.containerFlexoConcept = containerFlexoConcept;
-			getPropertyChangeSupport().firePropertyChange("containerFlexoConcept", oldValue, containerFlexoConcept);
-		}
 	}
 
 	@Override

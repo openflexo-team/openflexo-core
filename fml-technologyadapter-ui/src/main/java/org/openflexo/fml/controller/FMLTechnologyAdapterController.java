@@ -57,6 +57,7 @@ import org.openflexo.fml.controller.action.CreateExpressionPropertyInitializer;
 import org.openflexo.fml.controller.action.CreateFlexoBehaviourInitializer;
 import org.openflexo.fml.controller.action.CreateFlexoConceptInitializer;
 import org.openflexo.fml.controller.action.CreateFlexoConceptInstanceRoleInitializer;
+import org.openflexo.fml.controller.action.CreateFlexoEventInitializer;
 import org.openflexo.fml.controller.action.CreateGenericBehaviourParameterInitializer;
 import org.openflexo.fml.controller.action.CreateGetSetPropertyInitializer;
 import org.openflexo.fml.controller.action.CreateIndividualRoleInitializer;
@@ -92,6 +93,7 @@ import org.openflexo.foundation.fml.FlexoBehaviourParameter.WidgetType;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceRole;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
+import org.openflexo.foundation.fml.FlexoEvent;
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.NavigationScheme;
 import org.openflexo.foundation.fml.SynchronizationScheme;
@@ -193,6 +195,7 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 		new CreateEditionActionInitializer(actionInitializer);
 		new CreateFlexoBehaviourInitializer(actionInitializer);
 		new CreateFlexoConceptInitializer(actionInitializer);
+		new CreateFlexoEventInitializer(actionInitializer);
 		// new CreateFlexoBehaviourParameterInitializer(actionInitializer);
 		new CreateGenericBehaviourParameterInitializer(actionInitializer);
 		new CreateInspectorEntryInitializer(actionInitializer);
@@ -277,6 +280,9 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 		}
 		else if (VirtualModel.class.isAssignableFrom(objectClass)) {
 			return FMLIconLibrary.VIRTUAL_MODEL_ICON;
+		}
+		else if (FlexoEvent.class.isAssignableFrom(objectClass)) {
+			return FMLIconLibrary.FLEXO_EVENT_ICON;
 		}
 		else if (FlexoConcept.class.isAssignableFrom(objectClass)) {
 			return FMLIconLibrary.FLEXO_CONCEPT_ICON;

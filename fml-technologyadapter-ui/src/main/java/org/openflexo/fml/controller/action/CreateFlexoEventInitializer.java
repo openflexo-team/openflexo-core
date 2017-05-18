@@ -47,7 +47,7 @@ import org.openflexo.components.wizard.Wizard;
 import org.openflexo.components.wizard.WizardDialog;
 import org.openflexo.foundation.action.FlexoActionFinalizer;
 import org.openflexo.foundation.action.FlexoActionInitializer;
-import org.openflexo.foundation.fml.action.CreateFlexoConcept;
+import org.openflexo.foundation.fml.action.CreateFlexoEvent;
 import org.openflexo.gina.controller.FIBController.Status;
 import org.openflexo.icon.FMLIconLibrary;
 import org.openflexo.icon.IconFactory;
@@ -55,21 +55,21 @@ import org.openflexo.icon.IconLibrary;
 import org.openflexo.view.controller.ActionInitializer;
 import org.openflexo.view.controller.ControllerActionInitializer;
 
-public class CreateFlexoConceptInitializer extends ActionInitializer {
+public class CreateFlexoEventInitializer extends ActionInitializer {
 
 	private static final Logger logger = Logger.getLogger(ControllerActionInitializer.class.getPackage().getName());
 
-	public CreateFlexoConceptInitializer(ControllerActionInitializer actionInitializer) {
-		super(CreateFlexoConcept.actionType, actionInitializer);
+	public CreateFlexoEventInitializer(ControllerActionInitializer actionInitializer) {
+		super(CreateFlexoEvent.actionType, actionInitializer);
 	}
 
 	@Override
-	protected FlexoActionInitializer<CreateFlexoConcept> getDefaultInitializer() {
-		return new FlexoActionInitializer<CreateFlexoConcept>() {
+	protected FlexoActionInitializer<CreateFlexoEvent> getDefaultInitializer() {
+		return new FlexoActionInitializer<CreateFlexoEvent>() {
 			@Override
-			public boolean run(EventObject e, CreateFlexoConcept action) {
+			public boolean run(EventObject e, CreateFlexoEvent action) {
 				action.setDefineSomeBehaviours(true);
-				Wizard wizard = new CreateFlexoConceptWizard(action, getController());
+				Wizard wizard = new CreateFlexoEventWizard(action, getController());
 				WizardDialog dialog = new WizardDialog(wizard, getController());
 				dialog.showDialog();
 				if (dialog.getStatus() != Status.VALIDATED) {
@@ -83,10 +83,10 @@ public class CreateFlexoConceptInitializer extends ActionInitializer {
 	}
 
 	@Override
-	protected FlexoActionFinalizer<CreateFlexoConcept> getDefaultFinalizer() {
-		return new FlexoActionFinalizer<CreateFlexoConcept>() {
+	protected FlexoActionFinalizer<CreateFlexoEvent> getDefaultFinalizer() {
+		return new FlexoActionFinalizer<CreateFlexoEvent>() {
 			@Override
-			public boolean run(EventObject e, CreateFlexoConcept action) {
+			public boolean run(EventObject e, CreateFlexoEvent action) {
 				if (action.switchNewlyCreatedFlexoConcept) {
 					getController().setCurrentEditedObjectAsModuleView(action.getNewFlexoConcept());
 				}
@@ -97,7 +97,7 @@ public class CreateFlexoConceptInitializer extends ActionInitializer {
 
 	@Override
 	protected Icon getEnabledIcon() {
-		return IconFactory.getImageIcon(FMLIconLibrary.FLEXO_CONCEPT_ICON, IconLibrary.NEW_MARKER);
+		return IconFactory.getImageIcon(FMLIconLibrary.FLEXO_EVENT_ICON, IconLibrary.NEW_MARKER);
 	}
 
 }

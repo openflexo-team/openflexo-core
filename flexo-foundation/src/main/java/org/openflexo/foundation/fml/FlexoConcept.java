@@ -69,6 +69,8 @@ import org.openflexo.model.annotations.Finder;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.Getter.Cardinality;
 import org.openflexo.model.annotations.ImplementationClass;
+import org.openflexo.model.annotations.Import;
+import org.openflexo.model.annotations.Imports;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.PastingPoint;
 import org.openflexo.model.annotations.PropertyIdentifier;
@@ -100,6 +102,7 @@ import org.openflexo.toolbox.StringUtils;
 @ModelEntity
 @ImplementationClass(FlexoConcept.FlexoConceptImpl.class)
 @XMLElement
+@Imports({ @Import(FlexoEvent.class) })
 public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 
 	@PropertyIdentifier(type = AbstractVirtualModel.class)
