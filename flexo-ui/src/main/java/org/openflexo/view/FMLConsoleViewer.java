@@ -44,8 +44,9 @@ import java.util.StringTokenizer;
 import java.util.Vector;
 import java.util.logging.Logger;
 import javax.swing.*;
-import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext.LogLevel;
+
 import org.openflexo.foundation.fml.rt.logging.FMLConsole;
+import org.openflexo.foundation.fml.rt.logging.FMLConsole.LogLevel;
 import org.openflexo.foundation.fml.rt.logging.FMLLogRecord;
 import org.openflexo.foundation.fml.rt.logging.FMLLoggingFilter;
 import org.openflexo.foundation.fml.rt.logging.FMLLoggingFilter.FilterType;
@@ -125,23 +126,23 @@ public class FMLConsoleViewer extends PropertyChangedSupportDefaultImplementatio
 	}
 
 	public Icon getIconForLogRecord(FMLLogRecord record) {
-		if (record.level == LogLevel.WARNING) {
+		if (record.level == FMLConsole.LogLevel.WARNING) {
 			return UtilsIconLibrary.WARNING_ICON;
 		}
-		if (record.level == LogLevel.SEVERE) {
+		if (record.level == FMLConsole.LogLevel.SEVERE) {
 			return UtilsIconLibrary.ERROR_ICON;
 		}
 		return null;
 	}
 
 	public Color getColorForLogRecord(FMLLogRecord record) {
-		if (record.level == LogLevel.INFO) {
+		if (record.level == FMLConsole.LogLevel.INFO) {
 			return Color.BLACK;
 		}
-		else if (record.level == LogLevel.WARNING) {
+		else if (record.level == FMLConsole.LogLevel.WARNING) {
 			return Color.RED;
 		}
-		else if (record.level == LogLevel.SEVERE) {
+		else if (record.level == FMLConsole.LogLevel.SEVERE) {
 			return Color.PINK;
 		}
 		return Color.GRAY;

@@ -61,6 +61,7 @@ import org.openflexo.foundation.fml.binding.FMLBindingFactory;
 import org.openflexo.foundation.fml.binding.FlexoBehaviourBindingModel;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
+import org.openflexo.foundation.fml.rt.FMLRunTimeEngine;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.TypeAwareModelSlotInstance;
@@ -105,6 +106,14 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 		variables = new Hashtable<String, Object>();
 		parameterValues = new ParameterValues();
 		parameterListValues = new Hashtable<ListParameter, List>();
+	}
+
+	@Override
+	public FMLRunTimeEngine getFMLRunTimeEngine() {
+		if (getEditor() != null) {
+			return getEditor().getFMLRunTimeEngine();
+		}
+		return null;
 	}
 
 	@Override
@@ -425,17 +434,17 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 		return "Invalid URI";
 	}
 
-	@Override
+	/*@Override
 	public void debug(String aLogString, FlexoConceptInstance fci, FlexoBehaviour behaviour) {
 		if (getEditor() != null) {
 			getEditor().getFMLConsole().debug(aLogString, fci, behaviour);
 		}
 	}
-
+	
 	@Override
-	public void log(String aLogString, LogLevel logLevel, FlexoConceptInstance fci, FlexoBehaviour behaviour) {
+	public void log(String aLogString, FMLConsole.LogLevel logLevel, FlexoConceptInstance fci, FlexoBehaviour behaviour) {
 		if (getEditor() != null) {
 			getEditor().getFMLConsole().log(aLogString, logLevel, fci, behaviour);
 		}
-	}
+	}*/
 }

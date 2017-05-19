@@ -44,7 +44,7 @@ import java.util.List;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
-import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext.LogLevel;
+import org.openflexo.foundation.fml.rt.logging.FMLConsole.LogLevel;
 import org.openflexo.foundation.fml.rt.logging.FMLLoggingFilter.FilterType;
 import org.openflexo.toolbox.PropertyChangedSupportDefaultImplementation;
 
@@ -56,8 +56,20 @@ import org.openflexo.toolbox.PropertyChangedSupportDefaultImplementation;
  */
 public class FMLConsole extends PropertyChangedSupportDefaultImplementation {
 
+	/**
+	 * Send supplied logString to log console, with supplied log level
+	 * 
+	 * @param aLogString
+	 * @param logLevel
+	 */
+	// public void log(String aLogString, LogLevel logLevel, FlexoConceptInstance fci, FlexoBehaviour behaviour);
+	
+	public static enum LogLevel {
+		SEVERE, WARNING, INFO, FINE, FINER, FINEST, DEBUG
+	}
+
 	private FlexoEditor editor;
-	private LogLevel monitoredLogLevel = LogLevel.INFO;
+	private FMLConsole.LogLevel monitoredLogLevel = FMLConsole.LogLevel.INFO;
 	private boolean keepLogTrace = true;
 	private int maxLogCount = -1; // -1 means infinite
 
@@ -95,7 +107,7 @@ public class FMLConsole extends PropertyChangedSupportDefaultImplementation {
 	 * @param aLogString
 	 */
 	public void debug(String aLogString, FlexoConceptInstance fci, FlexoBehaviour behaviour) {
-		FMLLogRecord logRecord = new FMLLogRecord(aLogString, LogLevel.DEBUG, fci, behaviour, this);
+		FMLLogRecord logRecord = new FMLLogRecord(aLogString, FMLConsole.LogLevel.DEBUG, fci, behaviour, this);
 		add(logRecord);
 		System.out.println(formatter.format(logRecord));
 	}
@@ -106,7 +118,7 @@ public class FMLConsole extends PropertyChangedSupportDefaultImplementation {
 	 * @param aLogString
 	 * @param logLevel
 	 */
-	public void log(String aLogString, LogLevel logLevel, FlexoConceptInstance fci, FlexoBehaviour behaviour) {
+	public void log(String aLogString, FMLConsole.LogLevel logLevel, FlexoConceptInstance fci, FlexoBehaviour behaviour) {
 
 		if (getMonitoredLogLevel().ordinal() >= logLevel.ordinal()) {
 			FMLLogRecord logRecord = new FMLLogRecord(aLogString, logLevel, fci, behaviour, this);
@@ -115,14 +127,14 @@ public class FMLConsole extends PropertyChangedSupportDefaultImplementation {
 		}
 	}
 
-	public LogLevel getMonitoredLogLevel() {
+	public FMLConsole.LogLevel getMonitoredLogLevel() {
 		return monitoredLogLevel;
 	}
 
-	public void setMonitoredLogLevel(LogLevel monitoredLogLevel) {
+	public void setMonitoredLogLevel(FMLConsole.LogLevel monitoredLogLevel) {
 		if ((monitoredLogLevel == null && this.monitoredLogLevel != null)
 				|| (monitoredLogLevel != null && !monitoredLogLevel.equals(this.monitoredLogLevel))) {
-			LogLevel oldValue = this.monitoredLogLevel;
+			FMLConsole.LogLevel oldValue = this.monitoredLogLevel;
 			this.monitoredLogLevel = monitoredLogLevel;
 			getPropertyChangeSupport().firePropertyChange("monitoredLogLevel", oldValue, monitoredLogLevel);
 		}
@@ -174,11 +186,11 @@ public class FMLConsole extends PropertyChangedSupportDefaultImplementation {
 				allRecords.remove(0);
 			}
 			allRecords.add(record);
-			if (record.level == LogLevel.WARNING) {
+			if (record.level == FMLConsole.LogLevel.WARNING) {
 				totalWarningLogs++;
 				getPropertyChangeSupport().firePropertyChange("warningLogs", null, record);
 			}
-			if (record.level == LogLevel.SEVERE) {
+			if (record.level == FMLConsole.LogLevel.SEVERE) {
 				totalSevereLogs++;
 				getPropertyChangeSupport().firePropertyChange("severeLogs", null, record);
 			}
@@ -289,10 +301,10 @@ public class FMLConsole extends PropertyChangedSupportDefaultImplementation {
 			if (keepRecord) {
 				filteredRecords.add(r);
 				logCount++;
-				if (r.level == LogLevel.WARNING) {
+				if (r.level == FMLConsole.LogLevel.WARNING) {
 					warningCount++;
 				}
-				else if (r.level == LogLevel.SEVERE) {
+				else if (r.level == FMLConsole.LogLevel.SEVERE) {
 					severeCount++;
 				}
 			}
@@ -320,10 +332,10 @@ public class FMLConsole extends PropertyChangedSupportDefaultImplementation {
 			if (f.filterDoesApply(r)) {
 				records.add(r);
 				logCount++;
-				if (r.level == LogLevel.WARNING) {
+				if (r.level == FMLConsole.LogLevel.WARNING) {
 					warningCount++;
 				}
-				else if (r.level == LogLevel.SEVERE) {
+				else if (r.level == FMLConsole.LogLevel.SEVERE) {
 					severeCount++;
 				}
 			}

@@ -64,7 +64,6 @@ import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.fml.CloningScheme;
 import org.openflexo.foundation.fml.DeletionScheme;
 import org.openflexo.foundation.fml.ExpressionProperty;
-import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.FlexoRole;
@@ -116,6 +115,8 @@ import org.openflexo.toolbox.StringUtils;
 @ModelEntity
 @ImplementationClass(FlexoConceptInstance.FlexoConceptInstanceImpl.class)
 @XMLElement
+// TODO: design issue, we should separate FlexoConceptInstance from RunTimeEvaluationContext
+// This inheritance should disappear
 public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceObject, Bindable, RunTimeEvaluationContext {
 
 	public static final String DELETED_PROPERTY = "deleted";
@@ -220,21 +221,6 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 	public void removeFromActors(ActorReference<?> anActorReference);
 
 	public List<ModelSlotInstance<?, ?>> getModelSlotInstances();
-
-	/*@Getter(value = MODEL_SLOT_INSTANCES_KEY, cardinality = Cardinality.LIST, inverse = ModelSlotInstance.VIRTUAL_MODEL_INSTANCE_KEY)
-	@XMLElement
-	@Embedded
-	@CloningStrategy(StrategyType.CLONE)*/
-	// public List<ModelSlotInstance<?, ?>> getModelSlotInstances();
-
-	/*@Setter(MODEL_SLOT_INSTANCES_KEY)
-	public void setModelSlotInstances(List<ModelSlotInstance<?, ?>> modelSlotInstances);
-	
-	@Adder(MODEL_SLOT_INSTANCES_KEY)
-	public void addToModelSlotInstances(ModelSlotInstance<?, ?> aModelSlotInstance);
-	
-	@Remover(MODEL_SLOT_INSTANCES_KEY)
-	public void removeFromModelSlotInstance(ModelSlotInstance<?, ?> aModelSlotInstance);*/
 
 	// Debug method
 	public String debug();
@@ -430,23 +416,37 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 			return super.getResourceCenter();
 		}
 
-		@Override
+		/*@Override
 		public void debug(String aLogString, FlexoConceptInstance fci, FlexoBehaviour behaviour) {
 			if (getFlexoEditor() != null) {
 				getFlexoEditor().getFMLConsole().debug(aLogString, fci, behaviour);
 			}
 		}
-
+		
 		@Override
-		public void log(String aLogString, LogLevel logLevel, FlexoConceptInstance fci, FlexoBehaviour behaviour) {
+		public void log(String aLogString, FMLConsole.LogLevel logLevel, FlexoConceptInstance fci, FlexoBehaviour behaviour) {
 			if (getFlexoEditor() != null) {
 				getFlexoEditor().getFMLConsole().log(aLogString, logLevel, fci, behaviour);
 			}
-		}
+		}*/
 
+		// TODO: this is not a good idea, we should separate FlexoConceptInstance from RunTimeEvaluationContext
 		private FlexoEditor getFlexoEditor() {
 			if (getResourceCenter() instanceof FlexoProject && getServiceManager() != null) {
 				return getServiceManager().getProjectLoaderService().getEditorForProject((FlexoProject) getResourceCenter());
+			}
+			return null;
+		}
+
+		@Override
+		public FlexoEditor getEditor() {
+			return getFlexoEditor();
+		}
+
+		@Override
+		public FMLRunTimeEngine getFMLRunTimeEngine() {
+			if (getEditor() != null) {
+				return getEditor().getFMLRunTimeEngine();
 			}
 			return null;
 		}
@@ -491,6 +491,19 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 
 			// Stores internal variables used during execution of this isolated RunTimeEvaluationContext
 			protected HashMap<String, Object> localVariables = new HashMap<>();
+
+			@Override
+			public FlexoEditor getEditor() {
+				return getFlexoEditor();
+			}
+
+			@Override
+			public FMLRunTimeEngine getFMLRunTimeEngine() {
+				if (getEditor() != null) {
+					return getEditor().getFMLRunTimeEngine();
+				}
+				return null;
+			}
 
 			@Override
 			public FlexoConceptInstance getFlexoConceptInstance() {
@@ -543,15 +556,15 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 				}
 			}
 
-			@Override
+			/*@Override
 			public void debug(String aLogString, FlexoConceptInstance fci, FlexoBehaviour behaviour) {
 				getFlexoConceptInstance().debug(aLogString, fci, behaviour);
 			}
-
+			
 			@Override
-			public void log(String aLogString, LogLevel logLevel, FlexoConceptInstance fci, FlexoBehaviour behaviour) {
+			public void log(String aLogString, FMLConsole.LogLevel logLevel, FlexoConceptInstance fci, FlexoBehaviour behaviour) {
 				getFlexoConceptInstance().log(aLogString, logLevel, fci, behaviour);
-			}
+			}*/
 		}
 
 		@Override

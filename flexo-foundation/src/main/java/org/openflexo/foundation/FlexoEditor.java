@@ -48,6 +48,7 @@ import javax.swing.KeyStroke;
 import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.action.FlexoUndoManager;
+import org.openflexo.foundation.fml.rt.FMLRunTimeEngine;
 import org.openflexo.foundation.fml.rt.logging.FMLConsole;
 import org.openflexo.foundation.resource.ResourceUpdateHandler;
 import org.openflexo.foundation.utils.FlexoProgressFactory;
@@ -107,6 +108,13 @@ public interface FlexoEditor {
 	 * @return
 	 */
 	public ResourceUpdateHandler getResourceUpdateHandler();
+
+	/**
+	 * Return execution engine attached to this editor, when any
+	 * 
+	 * @return
+	 */
+	public FMLRunTimeEngine getFMLRunTimeEngine();
 
 	/**
 	 * Return {@link FMLConsole} for this {@link FlexoEditor}<br>

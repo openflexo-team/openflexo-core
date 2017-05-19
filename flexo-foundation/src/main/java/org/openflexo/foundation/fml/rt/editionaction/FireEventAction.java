@@ -46,6 +46,7 @@ import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoEvent;
 import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
+import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.XMLElement;
@@ -89,6 +90,18 @@ public interface FireEventAction<VMI extends AbstractVirtualModelInstance<VMI, ?
 			}
 			return null;
 		}
+
+		@Override
+		public Class<VMI> getVirtualModelInstanceClass() {
+			return (Class) AbstractVirtualModelInstance.class;
+		}
+
+		@Override
+		protected FlexoConceptInstance makeNewFlexoConceptInstance(RunTimeEvaluationContext evaluationContext) {
+			VMI vmi = getVirtualModelInstance(evaluationContext);
+			return vmi.fireNewEvent(getEventType());
+		}
+
 	}
 
 }

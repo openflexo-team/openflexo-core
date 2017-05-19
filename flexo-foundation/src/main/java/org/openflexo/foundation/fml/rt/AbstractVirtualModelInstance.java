@@ -60,6 +60,7 @@ import org.openflexo.foundation.IndexableContainer;
 import org.openflexo.foundation.fml.AbstractVirtualModel;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
+import org.openflexo.foundation.fml.FlexoEvent;
 import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.SynchronizationScheme;
@@ -211,7 +212,7 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 	public void setName(String name);
 
 	/**
-	 * Instanciate and register a new {@link FlexoConceptInstance}
+	 * Instantiate and register a new {@link FlexoConceptInstance}
 	 * 
 	 * @param pattern
 	 * @return
@@ -219,12 +220,12 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 	public FlexoConceptInstance makeNewFlexoConceptInstance(FlexoConcept concept);
 
 	/**
-	 * Return run-time value for {@link BindingVariable} variable
+	 * Instanciate and fire a new {@link FlexoConceptInstance} as a Flexo event
 	 * 
-	 * @param variable
+	 * @param pattern
 	 * @return
 	 */
-	// public Object getValueForVariable(BindingVariable variable);
+	public FlexoConceptInstance fireNewEvent(FlexoEvent event);
 
 	/**
 	 * Return a newly created list of all {@link FlexoConceptInstance} conform to the FlexoConcept identified by supplied String parameter
@@ -448,6 +449,20 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 			FlexoConceptInstance returned = getResource().getFactory().newInstance(FlexoConceptInstance.class);
 			returned.setFlexoConcept(concept);
 			addToFlexoConceptInstances(returned);
+			return returned;
+		}
+
+		/**
+		 * Instanciate and fire a new {@link FlexoConceptInstance} as a Flexo event
+		 * 
+		 * @param pattern
+		 * @return
+		 */
+		@Override
+		public FlexoConceptInstance fireNewEvent(FlexoEvent event) {
+
+			FlexoConceptInstance returned = getResource().getFactory().newInstance(FlexoConceptInstance.class);
+			returned.setFlexoConcept(event);
 			return returned;
 		}
 

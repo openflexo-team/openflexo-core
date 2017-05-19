@@ -41,7 +41,6 @@ package org.openflexo.foundation.fml.rt.logging;
 
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext.LogLevel;
 import org.openflexo.toolbox.PropertyChangedSupportDefaultImplementation;
 import org.openflexo.toolbox.StringUtils;
 
@@ -53,7 +52,7 @@ public class FMLLoggingFilter extends PropertyChangedSupportDefaultImplementatio
 	public FilterType type = FilterType.Highlight;
 	public MessageFilterType messageFilterType = MessageFilterType.Contains;
 	public String filteredContent;
-	public LogLevel filteredLevel = null;
+	public FMLConsole.LogLevel filteredLevel = null;
 	public String filteredSourceContent;
 	public DateFilterType dateFilterType = null;
 	public String filteredDate1;
@@ -99,7 +98,7 @@ public class FMLLoggingFilter extends PropertyChangedSupportDefaultImplementatio
 
 	public void setHasFilteredLevel(boolean aFlag) {
 		if (aFlag) {
-			filteredLevel = LogLevel.INFO;
+			filteredLevel = FMLConsole.LogLevel.INFO;
 		}
 		else {
 			filteredLevel = null;

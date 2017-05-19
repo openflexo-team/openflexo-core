@@ -44,7 +44,7 @@ import java.util.Date;
 
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
-import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext.LogLevel;
+import org.openflexo.foundation.fml.rt.logging.FMLConsole.LogLevel;
 
 /**
  * This class is used to encode a simple log record in Flexo
@@ -60,7 +60,7 @@ public class FMLLogRecord {
 	public FlexoBehaviour behaviour;
 	public long threadId;
 	public String message;
-	public LogLevel level;
+	public FMLConsole.LogLevel level;
 	public StackTraceElement[] stackTrace;
 
 	protected String _dateAsString = null;
@@ -69,7 +69,7 @@ public class FMLLogRecord {
 	protected String _sequenceAsString = null;
 	protected String _threadAsString = null;
 
-	public FMLLogRecord(String message, LogLevel level, FlexoConceptInstance fci, FlexoBehaviour behaviour, FMLConsole console) {
+	public FMLLogRecord(String message, FMLConsole.LogLevel level, FlexoConceptInstance fci, FlexoBehaviour behaviour, FMLConsole console) {
 		super();
 		date = new Date();
 		millis = System.currentTimeMillis();

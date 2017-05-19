@@ -1,419 +1,979 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Panel id="0" align="left" borderTop="5" borderLeft="0" trackViewPortHeight="true" trackViewPortWidth="true" borderBottom="0" border="empty" sizeAdjustment="OriginalSize" titleFont="Lucida Grande,0,13" layout="gridbag" borderRight="0" controllerClassName="org.openflexo.gina.controller.FIBController" width="900" height="600" name="FMLConsoleViewer">
-  <TabPanel id="1" index="0" constraints="gridbag(anchor=center;fill=both;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=0;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=1.0;weightY=1.0)" name="FIBTabPanel">
-    <Tab id="2" title="logs" align="left" borderTop="0" borderLeft="0" trackViewPortHeight="true" trackViewPortWidth="true" borderBottom="0" border="empty" sizeAdjustment="OriginalSize" titleFont="Lucida Grande,0,13" layout="gridbag" borderRight="0" index="1" name="FIBTab">
-      <Panel id="3" align="left" borderTop="2" borderTitle="" borderLeft="2" trackViewPortHeight="true" trackViewPortWidth="true" borderBottom="2" border="empty" sizeAdjustment="OriginalSize" layout="gridbag" borderRight="2" index="0" constraints="gridbag(anchor=center;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=0;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)" name="FIBPanel">
-        <Label id="4" label="search" align="left" localize="true" index="0" constraints="gridbag(anchor=center;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=0;insetsBottom=0;insetsLeft=5;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)" name="SearchLabel" />
-        <TextField id="5" columns="7" validateOnReturn="true" text="TextField" localize="true" valueChangedAction="data.searchText()" data="data.searchedText" index="1" constraints="gridbag(anchor=center;fill=horizontal;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=1.0;weightY=0.0)" name="TextField" />
-        <Button id="6" buttonType="Trigger" action="data.searchText()" label="search" localize="true" index="2" constraints="gridbag(anchor=center;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=2;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)" name="SearchButton" />
-        <Button id="7" buttonType="Trigger" action="data.dismissSearchText()" label="done" localize="true" visible="data.console.textSearchApplied" index="3" constraints="gridbag(anchor=center;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=3;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)" name="DoneButton" />
-      </Panel>
-      <Table id="8" backgroundSelectionColor="41,90,209" visibleRowCount="5" backgroundNonSelectionColor="255,255,255" textSelectionColor="255,255,255" backgroundSecondarySelectionColor="173,215,255" iteratorClassName="org.openflexo.foundation.fml.rt.logging.FMLLogRecord" textNonSelectionColor="0,0,0" selectionMode="MultipleIntervalSelection" rowHeight="16" localize="true" manageDynamicModel="true" data="data.console.records" index="1" constraints="gridbag(anchor=center;fill=both;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=1;insetsBottom=0;insetsLeft=5;insetsRight=5;insetsTop=0;location=center;padX=0;padY=0;weightX=1.0;weightY=4.0;x=0;y=0)" font="Lucida Grande,0,11" name="LogsTable">
-        <IconColumn id="9" data="data.getIconForLogRecord(iterator)" resizable="false" title="icon" displayTitle="false" bgColor="data.getBgColorForLogRecord(iterator)" columnWidth="20" showIcon="false" name="icon" />
-        <LabelColumn id="10" color="data.getColorForLogRecord(iterator)" data="iterator.message" resizable="true" title="message" displayTitle="true" bgColor="data.getBgColorForLogRecord(iterator)" columnWidth="400" showIcon="false" name="label" />
-        <LabelColumn id="11" color="data.getColorForLogRecord(iterator)" data="iterator.flexoConceptInstance.stringRepresentation" resizable="true" title="instance" displayTitle="true" bgColor="data.getBgColorForLogRecord(iterator)" columnWidth="150" showIcon="false" name="label" />
-        <LabelColumn id="12" color="data.getColorForLogRecord(iterator)" data="iterator.behaviour.name" resizable="true" title="behaviour" displayTitle="true" bgColor="data.getBgColorForLogRecord(iterator)" columnWidth="150" showIcon="false" name="label" />
-        <LabelColumn id="13" color="data.getColorForLogRecord(iterator)" data="iterator.sequenceAsString" resizable="true" title="seq" displayTitle="true" bgColor="data.getBgColorForLogRecord(iterator)" columnWidth="30" showIcon="false" name="label" />
-        <LabelColumn id="14" color="data.getColorForLogRecord(iterator)" data="iterator.dateAsString" resizable="true" title="date" displayTitle="true" bgColor="data.getBgColorForLogRecord(iterator)" columnWidth="80" showIcon="false" name="label" />
-        <LabelColumn id="15" color="data.getColorForLogRecord(iterator)" data="iterator.millisAsString" resizable="true" title="millis" displayTitle="true" bgColor="data.getBgColorForLogRecord(iterator)" columnWidth="80" showIcon="false" name="label" />
-        <LabelColumn id="16" color="data.getColorForLogRecord(iterator)" data="iterator.threadAsString" resizable="true" title="thread" displayTitle="true" bgColor="data.getBgColorForLogRecord(iterator)" columnWidth="50" showIcon="false" name="label" />
-        <CustomAction id="17" method="data.refresh()" name="refresh" />
-      </Table>
-      <Panel id="18" align="left" borderTop="2" borderTitle="" borderLeft="2" trackViewPortHeight="true" trackViewPortWidth="true" borderBottom="2" border="empty" sizeAdjustment="OriginalSize" titleFont="LucidaGrande,0,10" layout="gridbag" borderRight="2" index="2" constraints="gridbag(anchor=center;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=2;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)" font="LucidaGrande,0,10" name="FIBPanel2">
-        <Button id="19" buttonType="Trigger" action="data.clear()" label="clear" constraints="gridbag(anchor=center;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)" name="ClearButton" />
-        <Button id="20" buttonType="Trigger" action="data.refresh()" label="refresh" localize="true" index="0" constraints="gridbag(anchor=center;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=0;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)" name="RefreshButton" />
-        <Button id="21" buttonType="Trigger" action="data.applyFilters()" label="apply_filters" localize="true" index="1" constraints="gridbag(anchor=center;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)" name="ApplyFiltersButton" />
-        <Button id="22" buttonType="Trigger" action="data.dismissFilters()" label="dismiss_filters" localize="true" visible="data.console.filtersApplied" index="2" constraints="gridbag(anchor=center;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=2;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)" name="DismissFiltersButton" />
-        <Label id="23" label="" align="right" localize="true" data="data.console.logCount.toString" index="3" constraints="gridbag(anchor=east;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=3;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=east;padX=0;padY=0;weightX=1.0;weightY=0.0)" name="Label" />
-        <Label id="24" label="logs," align="left" localize="true" index="4" constraints="gridbag(anchor=center;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=4;insetsBottom=0;insetsLeft=-5;insetsRight=0;insetsTop=0;location=south;padX=0;padY=0;weightX=0.0;weightY=0.0)" name="LogsLabel" />
-        <Label id="25" label="label" align="left" localize="true" data="data.console.warningCount.toString" index="5" constraints="gridbag(anchor=center;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=5;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)" name="Label2" />
-        <Label id="26" label="warnings," align="left" localize="true" index="6" constraints="gridbag(anchor=center;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=6;insetsBottom=0;insetsLeft=-5;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)" name="WarningsLabel" />
-        <Label id="27" label="label" align="left" localize="true" data="data.console.severeCount.toString" index="7" constraints="gridbag(anchor=center;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=7;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)" name="Label3" />
-        <Label id="28" label="severe" align="left" localize="true" index="8" constraints="gridbag(anchor=center;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=8;insetsBottom=0;insetsLeft=-5;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)" name="SevereLabel" />
-        <Label id="29" label="(filtered)" align="left" localize="true" visible="(data.console.filtersApplied | data.console.textSearchApplied)" index="9" constraints="gridbag(anchor=center;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=9;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)" name="filteredLabel" />
-      </Panel>
-      <Panel id="30" align="left" borderTop="2" borderTitle="" borderLeft="2" trackViewPortHeight="true" trackViewPortWidth="true" borderBottom="2" border="empty" sizeAdjustment="OriginalSize" darkLevel="1" layout="twocols" borderRight="2" index="3" constraints="gridbag(anchor=center;fill=both;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=3;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=1.0;weightY=1.0)" name="FIBPanel3">
-        <Label id="31" label="Sequence" align="left" localize="true" index="0" constraints="twocols(expandHorizontally=true;expandVertically=false;index=0;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)" name="SequenceLabel" />
-        <Panel id="32" align="left" borderTop="0" borderTitle="" flowAlignment="LEADING" borderLeft="0" trackViewPortHeight="true" trackViewPortWidth="true" borderBottom="0" border="empty" sizeAdjustment="OriginalSize" layout="gridbag" vGap="0" borderRight="0" hGap="0" index="1" constraints="twocols(expandHorizontally=true;expandVertically=false;index=1;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)" name="FIBPanel">
-          <TextField id="33" columns="7" text="TextField" localize="true" enable="(LogsTable.selected != null)" data="LogsTable.selected.sequence.toString" index="0" constraints="gridbag(anchor=center;fill=horizontal;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=0;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=1.0;weightY=0.0)" name="TextField" />
-          <Label id="34" label="level" align="left" localize="true" index="1" constraints="gridbag(anchor=center;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)" name="LevelLabel" />
-          <TextField id="35" columns="7" text="TextField" localize="true" enable="(LogsTable.selected != null)" data="LogsTable.selected.level.toString" index="2" constraints="gridbag(anchor=center;fill=horizontal;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=2;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=1.0;weightY=0.0)" name="TextField2" />
-          <Label id="36" label="thread" align="left" localize="true" index="3" constraints="gridbag(anchor=center;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=3;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)" name="ThreadLabel" />
-          <TextField id="37" columns="7" text="TextField" localize="true" enable="(LogsTable.selected != null)" data="LogsTable.selected.threadAsString" index="4" constraints="gridbag(anchor=center;fill=horizontal;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=4;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=1.0;weightY=0.0)" name="TextField3" />
-        </Panel>
-        <Label id="38" label="message" align="left" localize="true" index="2" constraints="twocols(expandHorizontally=true;expandVertically=false;index=2;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)" name="MessageLabel" />
-        <TextArea id="39" rows="3" columns="8" validateOnReturn="true" text="TextArea" localize="true" enable="(LogsTable.selected != null)" data="LogsTable.selected.message" useScrollBar="true" verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED" index="3" constraints="twocols(expandHorizontally=true;expandVertically=true;index=3;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)" horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED" name="TextArea" />
-        <Label id="40" label="conceptInstance" align="left" localize="true" index="4" constraints="twocols(expandHorizontally=true;expandVertically=false;index=4;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)" name="ConceptInstanceLabel" />
-        <TextField id="41" editable="false" columns="7" text="TextField" localize="true" enable="(LogsTable.selected != null)" data="LogsTable.selected.flexoConceptInstance.stringRepresentation" index="5" constraints="twocols(expandHorizontally=true;expandVertically=false;index=5;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)" name="TextField4" />
-        <Label id="42" label="behaviour" align="left" localize="true" index="8" constraints="twocols(expandHorizontally=true;expandVertically=false;index=8;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)" name="BehaviourLabel" />
-        <TextField id="43" editable="false" columns="7" text="TextField" localize="true" enable="(LogsTable.selected != null)" data="LogsTable.selected.behaviour.name" index="9" constraints="twocols(expandHorizontally=true;expandVertically=false;index=9;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)" name="TextField5" />
-        <Label id="44" label="date" align="left" localize="true" index="10" constraints="twocols(expandHorizontally=true;expandVertically=false;index=10;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)" name="DateLabel" />
-        <Panel id="45" align="left" borderTop="2" borderTitle="" flowAlignment="LEADING" borderLeft="2" trackViewPortHeight="true" trackViewPortWidth="true" borderBottom="2" border="empty" sizeAdjustment="OriginalSize" layout="gridbag" vGap="0" borderRight="2" hGap="0" index="11" constraints="twocols(expandHorizontally=true;expandVertically=false;index=11;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)" name="FIBPanel2">
-          <TextField id="46" editable="false" columns="15" text="TextField" localize="true" enable="(LogsTable.selected != null)" data="LogsTable.selected.dateAsString" index="0" constraints="gridbag(anchor=center;fill=horizontal;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=0;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=1.0;weightY=0.0)" name="TextField" />
-          <Label id="47" label="millis" align="left" localize="true" index="1" constraints="gridbag(anchor=center;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)" name="MillisLabel" />
-          <TextField id="48" editable="false" columns="10" text="TextField" localize="true" enable="(LogsTable.selected != null)" data="LogsTable.selected.millisAsString" index="2" constraints="gridbag(anchor=center;fill=horizontal;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=2;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=1.0;weightY=0.0)" name="TextField2" />
-        </Panel>
-      </Panel>
-      <Panel id="49" align="left" borderTop="2" borderTitle="" borderLeft="2" trackViewPortHeight="true" trackViewPortWidth="true" borderBottom="2" border="empty" sizeAdjustment="OriginalSize" titleFont="Lucida Grande,0,13" layout="border" borderRight="2" index="4" constraints="gridbag(anchor=center;fill=both;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=4;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=3.0;weightY=1.0)" name="FIBPanel4">
-        <TextArea id="50" rows="3" columns="10" validateOnReturn="true" text="TextArea" localize="true" enable="(LogsTable.selected != null)" data="LogsTable.selected.stackTraceAsString" useScrollBar="true" verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED" constraints="border(location=center)" horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED" font="Dialog,0,9" name="TextArea" />
-        <Label id="51" label="&lt;html&gt;&lt;a href=&quot;_blank&quot;&gt;print stacktrace in console&lt;/a&gt;&lt;/html&gt;" align="right" clickAction="data.printStackTrace(LogsTable.selected)" constraints="border(location=south)" font="LucidaGrande,0,9" name="htmlaHrefBlankprintStacktraceInConsoleahtmlLabel" />
-      </Panel>
-    </Tab>
-    <Tab id="52" title="options" align="left" borderTop="0" borderLeft="0" trackViewPortHeight="true" trackViewPortWidth="true" borderBottom="0" border="empty" sizeAdjustment="OriginalSize" layout="gridbag" borderRight="0" index="1" name="FIBTab2">
-      <Panel id="53" align="left" borderTop="2" borderTitle="Logging configuration" borderLeft="2" trackViewPortHeight="true" trackViewPortWidth="true" borderBottom="2" border="rounded3d" sizeAdjustment="OriginalSize" darkLevel="1" titleFont="Dialog,1,11" layout="twocols" borderRight="2" index="0" constraints="gridbag(anchor=center;fill=both;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=0;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=1.0;weightY=0.0)" name="LoggingConfigurationPanel">
-        <Label id="54" label="number_of_logs_to_keep" align="left" localize="true" index="0" constraints="twocols(expandHorizontally=true;expandVertically=false;index=0;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)" name="NumberOfLogsToKeepLabel" />
-        <Panel id="55" align="left" borderTop="2" borderTitle="" flowAlignment="LEADING" borderLeft="2" trackViewPortHeight="true" trackViewPortWidth="true" borderBottom="2" border="empty" sizeAdjustment="OriginalSize" layout="flow" vGap="0" borderRight="2" hGap="0" index="1" constraints="twocols(expandHorizontally=true;expandVertically=false;index=1;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)" name="FIBPanel">
-          <Number id="56" minValue="-1" numberType="IntegerType" maxValue="2147483647" columns="5" increment="1" localize="true" enable="(!(data.isInfiniteNumberOfLogs))" data="data.console.maxLogCount" index="0" constraints="flow(index=0)" name="Integer" />
-          <Label id="57" label="infinite" align="left" localize="true" index="1" constraints="flow(index=1)" name="InfiniteLabel" />
-          <CheckBox id="58" selected="true" localize="true" data="data.isInfiniteNumberOfLogs" index="2" constraints="flow(index=2)" name="checkbox" />
-        </Panel>
-        <Label id="59" label="keep_log_trace_in_memory" align="left" localize="true" index="2" constraints="twocols(expandHorizontally=true;expandVertically=false;index=2;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=left)" name="KeepLogTraceInMemoryLabel" />
-        <CheckBox id="60" selected="true" localize="true" data="data.console.keepLogTrace" index="3" constraints="twocols(expandHorizontally=true;expandVertically=false;index=3;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)" name="checkbox" />
-        <Label id="61" label="show_debug" align="left" localize="true" index="4" constraints="twocols(expandHorizontally=true;expandVertically=false;index=2;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=left)" name="ShowDebugLabel" />
-        <CheckBox id="62" selected="true" localize="true" data="data.console.showDebug" index="5" constraints="twocols(expandHorizontally=true;expandVertically=false;index=3;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)" name="checkbox" />
-        <Label id="63" label="log_level" align="left" localize="true" index="10" constraints="twocols(expandHorizontally=true;expandVertically=false;index=10;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=left)" name="LogLevelLabel" />
-        <RadioButtonList id="64" autoSelectFirstRow="true" showText="true" iteratorClassName="org.openflexo.foundation.fml.rt.RunTimeEvaluationContext$LogLevel" showIcon="false" localize="true" format="object.name" data="data.console.monitoredLogLevel" index="11" constraints="twocols(expandHorizontally=true;expandVertically=false;index=11;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)" name="LogLevelButtonList" />
-      </Panel>
-      <Panel id="65" align="left" borderTop="2" borderTitle="Display options" borderLeft="2" trackViewPortHeight="true" trackViewPortWidth="true" borderBottom="2" border="rounded3d" sizeAdjustment="OriginalSize" darkLevel="1" titleFont="LucidaGrande-Bold,1,11" layout="twocols" borderRight="2" index="2" constraints="gridbag(anchor=center;fill=both;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=2;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.5;weightY=0.0)" name="DisplayOptionsPanel">
-        <CheckBox id="66" selected="true" localize="true" data="data.displayLogLevel" index="1" constraints="twocols(expandHorizontally=true;expandVertically=false;index=1;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=left)" name="checkbox" />
-        <Label id="67" label="log_level" align="left" localize="true" index="2" constraints="twocols(expandHorizontally=true;expandVertically=false;index=2;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)" name="LogLevelLabel" />
-        <CheckBox id="68" selected="true" localize="true" data="data.displayFlexoConceptInstance" index="3" constraints="twocols(expandHorizontally=true;expandVertically=false;index=3;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=left)" name="checkbox" />
-        <Label id="69" label="flexo_concept_instance" align="left" localize="true" index="4" constraints="twocols(expandHorizontally=true;expandVertically=false;index=4;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)" name="FlexoConceptInstanceLabel" />
-        <CheckBox id="70" selected="true" localize="true" data="data.displayBehaviour" index="5" constraints="twocols(expandHorizontally=true;expandVertically=false;index=5;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=left)" name="checkbox" />
-        <Label id="71" label="behaviour" align="left" localize="true" index="6" constraints="twocols(expandHorizontally=true;expandVertically=false;index=6;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)" name="BehaviourLabel" />
-        <CheckBox id="72" selected="true" localize="true" data="data.displaySequence" index="9" constraints="twocols(expandHorizontally=true;expandVertically=false;index=9;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=left)" name="checkbox" />
-        <Label id="73" label="sequence" align="left" localize="true" index="10" constraints="twocols(expandHorizontally=true;expandVertically=false;index=10;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)" name="SequenceLabel" />
-        <CheckBox id="74" selected="true" localize="true" data="data.displayDate" index="11" constraints="twocols(expandHorizontally=true;expandVertically=false;index=11;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=left)" name="checkbox" />
-        <Label id="75" label="date" align="left" localize="true" index="12" constraints="twocols(expandHorizontally=true;expandVertically=false;index=12;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)" name="DateLabel" />
-        <CheckBox id="76" selected="true" localize="true" data="data.displayMillis" index="13" constraints="twocols(expandHorizontally=true;expandVertically=false;index=13;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=left)" name="checkbox" />
-        <Label id="77" label="milliseconds" align="left" localize="true" index="14" constraints="twocols(expandHorizontally=true;expandVertically=false;index=14;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)" name="MillisecondsLabel" />
-        <CheckBox id="78" selected="true" localize="true" data="data.displayThread" index="15" constraints="twocols(expandHorizontally=true;expandVertically=false;index=15;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=left)" name="checkbox" />
-        <Label id="79" label="thread" align="left" localize="true" index="16" constraints="twocols(expandHorizontally=true;expandVertically=false;index=16;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)" name="ThreadLabel" />
-        <Label id="80" label="display_option_description" align="left" localize="true" index="0" constraints="twocols(expandHorizontally=false;expandVertically=false;index=0;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=center)" name="DisplayOptionDescriptionLabel" />
-      </Panel>
-      <Panel id="81" align="left" borderTop="2" borderTitle="Filters" borderLeft="2" trackViewPortHeight="true" trackViewPortWidth="true" borderBottom="2" border="rounded3d" sizeAdjustment="OriginalSize" darkLevel="1" titleFont="LucidaGrande-Bold,1,11" layout="gridbag" borderRight="2" index="3" constraints="gridbag(anchor=center;fill=both;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=3;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=1.0;weightY=1.0)" name="FiltersPanel">
-        <Table id="82" backgroundSelectionColor="41,90,209" visibleRowCount="3" backgroundNonSelectionColor="255,255,255" textSelectionColor="255,255,255" backgroundSecondarySelectionColor="173,215,255" iteratorClassName="org.openflexo.foundation.fml.rt.logging.FMLLoggingFilter" showFooter="true" textNonSelectionColor="0,0,0" selectionMode="MultipleIntervalSelection" rowHeight="18" localize="true" manageDynamicModel="true" data="data.filters" index="0" constraints="gridbag(anchor=center;fill=both;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=0;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=center;padX=0;padY=0;weightX=1.0;weightY=1.0)" name="FiltersTable">
-          <IconColumn id="83" data="data.getIconForFilter(iterator)" resizable="false" title="icon" displayTitle="false" columnWidth="20" showIcon="false" name="icon" />
-          <TextFieldColumn id="84" data="iterator.filterName" resizable="true" title="filter_name" displayTitle="true" columnWidth="80" showIcon="false" name="filter_name" />
-          <DropDownColumn id="85" data="iterator.type" resizable="true" title="filter_type" displayTitle="true" columnWidth="70" showIcon="false" name="dropdown" />
-          <LabelColumn id="86" data="iterator.filterDescription" resizable="true" title="description" displayTitle="true" columnWidth="200" showIcon="false" name="label" />
-          <AddAction id="87" method="data.createFilter" name="add_action" />
-          <RemoveAction id="88" method="data.deleteFilter(selected)" name="delete_action" />
-        </Table>
-        <Panel id="89" align="left" borderTop="2" borderTitle="" borderLeft="2" trackViewPortHeight="true" trackViewPortWidth="true" borderBottom="2" border="empty" sizeAdjustment="OriginalSize" layout="gridbag" borderRight="2" index="1" minWidth="350" constraints="gridbag(anchor=center;fill=both;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=east;padX=0;padY=0;weightX=1.0;weightY=1.0)" minHeight="230" width="350" height="230" name="FIBPanel">
-          <Label id="90" label="filter" align="left" localize="true" index="0" constraints="gridbag(anchor=east;expandHorizontally=true;expandVertically=false;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=0;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left;padX=0;padY=0;weightX=0.0;weightY=0.0)" name="FilterLabel" />
-          <TextField id="91" columns="7" text="TextField" localize="true" enable="(FiltersTable.selected != null)" data="FiltersTable.selected.filterName" index="1" constraints="gridbag(anchor=center;expandHorizontally=true;expandVertically=false;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=1;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right;padX=0;padY=0;weightX=1.0;weightY=0.0)" name="TextField" />
-          <Label id="92" label="type" align="left" localize="true" index="2" constraints="gridbag(anchor=center;expandHorizontally=true;expandVertically=false;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=2;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left;padX=0;padY=0;weightX=0.0;weightY=0.0)" name="TypeLabel" />
-          <DropDown id="93" autoSelectFirstRow="true" staticList="" showText="true" iteratorClassName="org.openflexo.foundation.fml.rt.logging.FMLLoggingFilter$FilterType" showIcon="false" localize="true" enable="(FiltersTable.selected != null)" data="FiltersTable.selected.type" index="3" constraints="gridbag(anchor=west;expandHorizontally=true;expandVertically=false;fill=none;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=3;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right;padX=0;padY=0;weightX=0.0;weightY=0.0)" name="dropdown" />
-          <CheckBox id="94" selected="true" localize="true" enable="(FiltersTable.selected != null)" data="FiltersTable.selected.hasFilteredMessage" index="4" constraints="gridbag(anchor=east;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=4;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)" name="FilterMessageCheckbox" />
-          <Label id="95" label="filter_message" align="left" localize="true" index="5" constraints="gridbag(anchor=west;expandHorizontally=true;expandVertically=false;fill=horizontal;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=5;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left;padX=0;padY=0;weightX=0.0;weightY=0.0)" name="FilterMessageLabel" />
-          <DropDown id="96" autoSelectFirstRow="true" staticList="" showText="true" iteratorClassName="org.openflexo.foundation.fml.rt.logging.FMLLoggingFilter$MessageFilterType" showIcon="false" localize="true" enable="FiltersTable.selected.hasFilteredMessage" data="FiltersTable.selected.messageFilterType" index="6" constraints="gridbag(anchor=west;expandHorizontally=true;expandVertically=false;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=6;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right;padX=0;padY=0;weightX=0.0;weightY=0.0)" name="dropdown" />
-          <TextField id="97" columns="7" text="TextField" localize="true" enable="FiltersTable.selected.hasFilteredMessage" data="FiltersTable.selected.filteredContent" index="7" constraints="gridbag(anchor=center;expandHorizontally=true;expandVertically=false;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=7;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=center;padX=0;padY=0;weightX=1.0;weightY=0.0)" name="TextField2" />
-          <CheckBox id="98" selected="true" localize="true" enable="(FiltersTable.selected != null)" data="FiltersTable.selected.hasFilteredLevel" index="8" constraints="gridbag(anchor=east;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=8;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)" name="FilterLevelCheckbox" />
-          <Label id="99" label="filter_log_level" align="left" localize="true" index="9" constraints="gridbag(anchor=west;fill=horizontal;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=9;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)" name="FilterLogLevelLabel" />
-          <DropDown id="100" showText="true" iteratorClassName="org.openflexo.foundation.fml.rt.RunTimeEvaluationContext$LogLevel" showIcon="false" localize="true" enable="FiltersTable.selected.hasFilteredLevel" data="FiltersTable.selected.filteredLevel" index="10" constraints="gridbag(anchor=west;fill=none;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=10;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)" name="dropdown" />
-          <CheckBox id="101" selected="true" localize="true" enable="(FiltersTable.selected != null)" data="FiltersTable.selected.hasFilteredDate" index="15" constraints="gridbag(anchor=east;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=15;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)" name="FilterDateCheckbox" />
-          <Label id="102" label="filter_date" align="left" localize="true" index="16" constraints="gridbag(anchor=west;fill=horizontal;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=16;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)" name="FilterDateLabel" />
-          <DropDown id="103" autoSelectFirstRow="true" staticList="" showText="true" iteratorClassName="org.openflexo.foundation.fml.rt.logging.FMLLoggingFilter$DateFilterType" showIcon="false" localize="true" enable="FiltersTable.selected.hasFilteredDate" data="FiltersTable.selected.dateFilterType" index="17" constraints="gridbag(anchor=west;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=17;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)" name="dropdown" />
-          <TextField id="104" columns="7" text="TextField" localize="true" enable="FiltersTable.selected.hasFilteredDate" data="FiltersTable.selected.filteredDate1" visible="(FiltersTable.selected.dateFilterType.name = &quot;Between&quot;)" index="18" constraints="gridbag(anchor=center;fill=horizontal;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=18;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=1.0;weightY=0.0)" name="TextField3" />
-          <Label id="105" label="and" align="left" localize="true" enable="FiltersTable.selected.hasFilteredDate" visible="(FiltersTable.selected.dateFilterType.name = &quot;Between&quot;)" index="19" constraints="gridbag(anchor=center;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=19;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)" name="AndLabel" />
-          <TextField id="106" columns="7" text="TextField" localize="true" data="FiltersTable.selected.filteredDate2" index="20" constraints="gridbag(anchor=center;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=20;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=1.0;weightY=0.0)" name="TextField4" />
-          <CheckBox id="107" selected="true" localize="true" enable="(FiltersTable.selected != null)" data="FiltersTable.selected.hasFilteredThread" index="21" constraints="gridbag(anchor=east;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=21;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)" name="FilterThreadCheckbox" />
-          <Label id="108" label="filter_thread" align="left" localize="true" index="22" constraints="gridbag(anchor=west;fill=horizontal;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=22;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)" name="FilterThreadLabel" />
-          <TextField id="109" columns="7" text="TextField" localize="true" enable="FiltersTable.selected.hasFilteredThread" data="FiltersTable.selected.filteredThread" index="23" constraints="gridbag(anchor=west;fill=none;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=23;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)" name="TextField5" />
-          <CheckBox id="110" selected="true" localize="true" enable="(FiltersTable.selected != null)" data="FiltersTable.selected.hasFilteredStacktrace" index="24" constraints="gridbag(anchor=east;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=24;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)" name="FilterStacktraceCheckbox" />
-          <Label id="111" label="filter_stacktrace" align="left" localize="true" index="25" constraints="gridbag(anchor=east;fill=horizontal;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=25;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)" name="FilterStacktraceLabel" />
-          <TextField id="112" columns="7" text="TextField" localize="true" enable="FiltersTable.selected.hasFilteredStacktrace" data="FiltersTable.selected.filteredStacktrace" index="26" constraints="gridbag(anchor=center;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=26;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)" name="TextField6" />
-          <CheckBox id="113" selected="true" localize="true" enable="(FiltersTable.selected != null)" data="FiltersTable.selected.hasFilteredSequence" index="27" constraints="gridbag(anchor=east;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=27;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)" name="checkbox" />
-          <Label id="114" label="filter_sequence" align="left" localize="true" index="28" constraints="gridbag(anchor=center;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=28;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)" name="FilterSequenceLabel" />
-          <Number id="115" minValue="-2147483648" numberType="IntegerType" maxValue="2147483647" columns="3" increment="1" localize="true" enable="FiltersTable.selected.hasFilteredSequence" data="FiltersTable.selected.startSequence" index="29" constraints="gridbag(anchor=center;fill=horizontal;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=29;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)" name="Integer" />
-          <Label id="116" label="and" align="left" localize="true" enable="FiltersTable.selected.hasFilteredSequence" index="30" constraints="gridbag(anchor=center;fill=horizontal;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=30;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)" name="AndLabel2" />
-          <Number id="117" minValue="-2147483648" numberType="IntegerType" maxValue="2147483647" columns="6" increment="1" localize="true" enable="FiltersTable.selected.hasFilteredSequence" data="FiltersTable.selected.endSequence" index="31" constraints="gridbag(anchor=west;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=31;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)" name="Integer" />
-          <LocalizedDictionary id="118" />
-        </Panel>
-      </Panel>
-    </Tab>
-  </TabPanel>
-  <FIBVariable id="119" type="org.openflexo.view.FMLConsoleViewer" name="data" />
-  <LocalizedDictionary id="120">
-    <Localized id="121" lang="English" value="Search" key="search" />
-    <Localized id="122" lang="French" value="Rechercher" key="search" />
-    <Localized id="123" lang="Dutch" value="Search" key="search" />
-    <Localized id="124" lang="English" value="Message" key="message" />
-    <Localized id="125" lang="French" value="Message" key="message" />
-    <Localized id="126" lang="Dutch" value="Message" key="message" />
-    <Localized id="127" lang="English" value="Package" key="package" />
-    <Localized id="128" lang="French" value="Paquetage" key="package" />
-    <Localized id="129" lang="Dutch" value="Package" key="package" />
-    <Localized id="130" lang="English" value="Class" key="class" />
-    <Localized id="131" lang="French" value="Classe" key="class" />
-    <Localized id="132" lang="Dutch" value="Class" key="class" />
-    <Localized id="133" lang="English" value="Method" key="method" />
-    <Localized id="134" lang="French" value="Méthode" key="method" />
-    <Localized id="135" lang="Dutch" value="Method" key="method" />
-    <Localized id="136" lang="English" value="seq" key="seq" />
-    <Localized id="137" lang="French" value="seq" key="seq" />
-    <Localized id="138" lang="Dutch" value="seq" key="seq" />
-    <Localized id="139" lang="English" value="Date" key="date" />
-    <Localized id="140" lang="French" value="Date" key="date" />
-    <Localized id="141" lang="Dutch" value="Date" key="date" />
-    <Localized id="142" lang="English" value="millis" key="millis" />
-    <Localized id="143" lang="French" value="millis" key="millis" />
-    <Localized id="144" lang="Dutch" value="millis" key="millis" />
-    <Localized id="145" lang="English" value="thread" key="thread" />
-    <Localized id="146" lang="French" value="thread" key="thread" />
-    <Localized id="147" lang="Dutch" value="thread" key="thread" />
-    <Localized id="148" lang="English" value="Add" key="add" />
-    <Localized id="149" lang="French" value="Ajouter" key="add" />
-    <Localized id="150" lang="Dutch" value="Add" key="add" />
-    <Localized id="151" lang="English" value="Remove" key="remove" />
-    <Localized id="152" lang="French" value="Supprimer" key="remove" />
-    <Localized id="153" lang="Dutch" value="Remove" key="remove" />
-    <Localized id="154" lang="English" value="Refresh" key="refresh" />
-    <Localized id="155" lang="French" value="Rafraichir" key="refresh" />
-    <Localized id="156" lang="Dutch" value="Refresh" key="refresh" />
-    <Localized id="157" lang="English" value="Logs" key="logs" />
-    <Localized id="158" lang="French" value="Logs" key="logs" />
-    <Localized id="159" lang="Dutch" value="Logs" key="logs" />
-    <Localized id="160" lang="English" value="Sequence" key="Sequence" />
-    <Localized id="161" lang="French" value="Sequence" key="Sequence" />
-    <Localized id="162" lang="Dutch" value="Sequence" key="Sequence" />
-    <Localized id="163" lang="English" value="Level" key="level" />
-    <Localized id="164" lang="French" value="Niveau" key="level" />
-    <Localized id="165" lang="Dutch" value="Level" key="level" />
-    <Localized id="166" lang="English" value="Number of logs to keep" key="number_of_logs_to_keep" />
-    <Localized id="167" lang="French" value="nombre de logs à conserver" key="number_of_logs_to_keep" />
-    <Localized id="168" lang="Dutch" value="Number of logs to keep" key="number_of_logs_to_keep" />
-    <Localized id="169" lang="English" value="infinite" key="infinite" />
-    <Localized id="170" lang="French" value="infinite" key="infinite" />
-    <Localized id="171" lang="Dutch" value="infinite" key="infinite" />
-    <Localized id="172" lang="English" value="Keep log trace in memory" key="keep_log_trace_in_memory" />
-    <Localized id="173" lang="French" value="Conserver les traces en mémoire" key="keep_log_trace_in_memory" />
-    <Localized id="174" lang="Dutch" value="Keep log trace in memory" key="keep_log_trace_in_memory" />
-    <Localized id="175" lang="English" value="Configuration" key="configuration" />
-    <Localized id="176" lang="French" value="Configuration" key="configuration" />
-    <Localized id="177" lang="Dutch" value="Configuration" key="configuration" />
-    <Localized id="178" lang="English" value="Configuration file" key="configuration_file" />
-    <Localized id="179" lang="French" value="Configuration file" key="configuration_file" />
-    <Localized id="180" lang="Dutch" value="Configuration file" key="configuration_file" />
-    <Localized id="181" lang="English" value="Log level" key="log_level" />
-    <Localized id="182" lang="French" value="Niveau de log" key="log_level" />
-    <Localized id="183" lang="Dutch" value="Log level" key="log_level" />
-    <Localized id="184" lang="English" value="Logging configuration" key="Logging configuration" />
-    <Localized id="185" lang="French" value="Logging configuration" key="Logging configuration" />
-    <Localized id="186" lang="Dutch" value="Logging configuration" key="Logging configuration" />
-    <Localized id="187" lang="English" value="Please select columns to show in logs table" key="display_option_description" />
-    <Localized id="188" lang="French" value="Sélectionner les colonnes à afficher" key="display_option_description" />
-    <Localized id="189" lang="Dutch" value="Please select columns to show in logs table" key="display_option_description" />
-    <Localized id="190" lang="English" value="sequence" key="sequence" />
-    <Localized id="191" lang="French" value="séquence" key="sequence" />
-    <Localized id="192" lang="Dutch" value="sequence" key="sequence" />
-    <Localized id="193" lang="English" value="milliseconds" key="milliseconds" />
-    <Localized id="194" lang="French" value="millisecondes" key="milliseconds" />
-    <Localized id="195" lang="Dutch" value="milliseconds" key="milliseconds" />
-    <Localized id="196" lang="English" value="Display options" key="Display options" />
-    <Localized id="197" lang="French" value="Display options" key="Display options" />
-    <Localized id="198" lang="Dutch" value="Display options" key="Display options" />
-    <Localized id="199" lang="English" value="col1" key="col1" />
-    <Localized id="200" lang="French" value="col1" key="col1" />
-    <Localized id="201" lang="Dutch" value="col1" key="col1" />
-    <Localized id="202" lang="English" value="col2" key="col2" />
-    <Localized id="203" lang="French" value="col2" key="col2" />
-    <Localized id="204" lang="Dutch" value="col2" key="col2" />
-    <Localized id="205" lang="English" value="Filters" key="Filters" />
-    <Localized id="206" lang="French" value="Filters" key="Filters" />
-    <Localized id="207" lang="Dutch" value="Filters" key="Filters" />
-    <Localized id="208" lang="English" value="Options" key="options" />
-    <Localized id="209" lang="French" value="Options" key="options" />
-    <Localized id="210" lang="Dutch" value="Options" key="options" />
-    <Localized id="211" lang="English" value="Use a default logging configuration" key="use_default_logging_configuration" />
-    <Localized id="212" lang="French" value="Utiliser une configuration de log par défaut" key="use_default_logging_configuration" />
-    <Localized id="213" lang="Dutch" value="Use a default logging configuration" key="use_default_logging_configuration" />
-    <Localized id="214" lang="English" value="Use a custom logging configuration" key="use_a_custom_logging_configuration" />
-    <Localized id="215" lang="French" value="Utiliser une configuration de log personnalisée" key="use_a_custom_logging_configuration" />
-    <Localized id="216" lang="Dutch" value="Use a custom logging configuration" key="use_a_custom_logging_configuration" />
-    <Localized id="217" lang="English" value="Logs severe (memory impact insignifiant; performance impact insignifiant)" key="SEVERE_description" />
-    <Localized id="218" lang="French" value="SEVERE_description" key="SEVERE_description" />
-    <Localized id="219" lang="Dutch" value="Logs severe (memory impact insignifiant; performance impact insignifiant)" key="SEVERE_description" />
-    <Localized id="220" lang="English" value="Logs warning (memory impact reasonnable; performance impact reasonnable)" key="WARNING_description" />
-    <Localized id="221" lang="French" value="WARNING_description" key="WARNING_description" />
-    <Localized id="222" lang="Dutch" value="Logs warning (memory impact reasonnable; performance impact reasonnable)" key="WARNING_description" />
-    <Localized id="223" lang="English" value="Logs info (memory impact medium; performance impact medium)" key="INFO_description" />
-    <Localized id="224" lang="French" value="INFO_description" key="INFO_description" />
-    <Localized id="225" lang="Dutch" value="Logs info (memory impact medium; performance impact medium)" key="INFO_description" />
-    <Localized id="226" lang="English" value="Logs fine (memory impact high; performance impact high)" key="FINE_description" />
-    <Localized id="227" lang="French" value="FINE_description" key="FINE_description" />
-    <Localized id="228" lang="Dutch" value="Logs fine (memory impact high; performance impact high)" key="FINE_description" />
-    <Localized id="229" lang="English" value="Logs finer (memory impact very high; performance impact very high)" key="FINER_description" />
-    <Localized id="230" lang="French" value="FINER_description" key="FINER_description" />
-    <Localized id="231" lang="Dutch" value="Logs finer (memory impact very high; performance impact very high)" key="FINER_description" />
-    <Localized id="232" lang="English" value="Logs finest (memory impact huge; performance impact huge)" key="FINEST_description" />
-    <Localized id="233" lang="French" value="FINEST_description" key="FINEST_description" />
-    <Localized id="234" lang="Dutch" value="Logs finest (memory impact huge; performance impact huge)" key="FINEST_description" />
-    <Localized id="235" lang="English" value="Apply filters" key="apply_filters" />
-    <Localized id="236" lang="French" value="Appliquer les filtres" key="apply_filters" />
-    <Localized id="237" lang="Dutch" value="Apply filters" key="apply_filters" />
-    <Localized id="238" lang="English" value="logs," key="logs," />
-    <Localized id="239" lang="French" value="logs," key="logs," />
-    <Localized id="240" lang="Dutch" value="logs," key="logs," />
-    <Localized id="241" lang="English" value="warnings," key="warnings," />
-    <Localized id="242" lang="French" value="warnings," key="warnings," />
-    <Localized id="243" lang="Dutch" value="warnings," key="warnings," />
-    <Localized id="244" lang="English" value="severe" key="severe" />
-    <Localized id="245" lang="French" value="severe" key="severe" />
-    <Localized id="246" lang="Dutch" value="severe" key="severe" />
-    <Localized id="247" lang="English" value="Use a default logging configuration" key="Use a default logging configuration" />
-    <Localized id="248" lang="French" value="Use a default logging configuration" key="Use a default logging configuration" />
-    <Localized id="249" lang="Dutch" value="Use a default logging configuration" key="Use a default logging configuration" />
-    <Localized id="250" lang="English" value="Use a custom logging configuration" key="Use a custom logging configuration" />
-    <Localized id="251" lang="French" value="Use a custom logging configuration" key="Use a custom logging configuration" />
-    <Localized id="252" lang="Dutch" value="Use a custom logging configuration" key="Use a custom logging configuration" />
-    <Localized id="253" lang="English" value="Logs severe (memory impact insignifiant; performance impact insignifiant)" key="Logs severe (memory impact insignifiant; performance impact insignifiant)" />
-    <Localized id="254" lang="French" value="Logs severe (memory impact insignifiant; performance impact insignifiant)" key="Logs severe (memory impact insignifiant; performance impact insignifiant)" />
-    <Localized id="255" lang="Dutch" value="Logs severe (memory impact insignifiant; performance impact insignifiant)" key="Logs severe (memory impact insignifiant; performance impact insignifiant)" />
-    <Localized id="256" lang="English" value="Logs warning (memory impact reasonnable; performance impact reasonnable)" key="Logs warning (memory impact reasonnable; performance impact reasonnable)" />
-    <Localized id="257" lang="French" value="Logs warning (memory impact reasonnable; performance impact reasonnable)" key="Logs warning (memory impact reasonnable; performance impact reasonnable)" />
-    <Localized id="258" lang="Dutch" value="Logs warning (memory impact reasonnable; performance impact reasonnable)" key="Logs warning (memory impact reasonnable; performance impact reasonnable)" />
-    <Localized id="259" lang="English" value="Logs info (memory impact medium; performance impact medium)" key="Logs info (memory impact medium; performance impact medium)" />
-    <Localized id="260" lang="French" value="Logs info (memory impact medium; performance impact medium)" key="Logs info (memory impact medium; performance impact medium)" />
-    <Localized id="261" lang="Dutch" value="Logs info (memory impact medium; performance impact medium)" key="Logs info (memory impact medium; performance impact medium)" />
-    <Localized id="262" lang="English" value="Logs fine (memory impact high; performance impact high)" key="Logs fine (memory impact high; performance impact high)" />
-    <Localized id="263" lang="French" value="Logs fine (memory impact high; performance impact high)" key="Logs fine (memory impact high; performance impact high)" />
-    <Localized id="264" lang="Dutch" value="Logs fine (memory impact high; performance impact high)" key="Logs fine (memory impact high; performance impact high)" />
-    <Localized id="265" lang="English" value="Logs finer (memory impact very high; performance impact very high)" key="Logs finer (memory impact very high; performance impact very high)" />
-    <Localized id="266" lang="French" value="Logs finer (memory impact very high; performance impact very high)" key="Logs finer (memory impact very high; performance impact very high)" />
-    <Localized id="267" lang="Dutch" value="Logs finer (memory impact very high; performance impact very high)" key="Logs finer (memory impact very high; performance impact very high)" />
-    <Localized id="268" lang="English" value="Logs finest (memory impact huge; performance impact huge)" key="Logs finest (memory impact huge; performance impact huge)" />
-    <Localized id="269" lang="French" value="Logs finest (memory impact huge; performance impact huge)" key="Logs finest (memory impact huge; performance impact huge)" />
-    <Localized id="270" lang="Dutch" value="Logs finest (memory impact huge; performance impact huge)" key="Logs finest (memory impact huge; performance impact huge)" />
-    <Localized id="271" lang="English" value="open_logs_file" key="open_logs_file" />
-    <Localized id="272" lang="French" value="open_logs_file" key="open_logs_file" />
-    <Localized id="273" lang="Dutch" value="open_logs_file" key="open_logs_file" />
-    <Localized id="274" lang="English" value="Open logs file..." key="Open logs file..." />
-    <Localized id="275" lang="French" value="Open logs file..." key="Open logs file..." />
-    <Localized id="276" lang="Dutch" value="Open logs file..." key="Open logs file..." />
-    <Localized id="277" lang="English" value="Filter name" key="filter_name" />
-    <Localized id="278" lang="French" value="filter_name" key="filter_name" />
-    <Localized id="279" lang="Dutch" value="Filter name" key="filter_name" />
-    <Localized id="280" lang="English" value="Dropdown" key="dropdown" />
-    <Localized id="281" lang="French" value="Liste déroulante" key="dropdown" />
-    <Localized id="282" lang="Dutch" value="Dropdown" key="dropdown" />
-    <Localized id="283" lang="English" value="add_action" key="add_action" />
-    <Localized id="284" lang="French" value="add_action" key="add_action" />
-    <Localized id="285" lang="Dutch" value="add_action" key="add_action" />
-    <Localized id="286" lang="English" value="Delete action" key="delete_action" />
-    <Localized id="287" lang="French" value="Supprimer l'action" key="delete_action" />
-    <Localized id="288" lang="Dutch" value="Delete action" key="delete_action" />
-    <Localized id="289" lang="English" value="Filter" key="filter" />
-    <Localized id="290" lang="French" value="filter" key="filter" />
-    <Localized id="291" lang="Dutch" value="Filter" key="filter" />
-    <Localized id="292" lang="English" value="Type" key="type" />
-    <Localized id="293" lang="French" value="Type" key="type" />
-    <Localized id="294" lang="Dutch" value="Type" key="type" />
-    <Localized id="295" lang="English" value="Highlight" key="Highlight" />
-    <Localized id="296" lang="French" value="Highlight" key="Highlight" />
-    <Localized id="297" lang="Dutch" value="Highlight" key="Highlight" />
-    <Localized id="298" lang="English" value="Dismiss" key="Dismiss" />
-    <Localized id="299" lang="French" value="Dismiss" key="Dismiss" />
-    <Localized id="300" lang="Dutch" value="Dismiss" key="Dismiss" />
-    <Localized id="301" lang="English" value="Filter message" key="filter_message" />
-    <Localized id="302" lang="French" value="filter_message" key="filter_message" />
-    <Localized id="303" lang="Dutch" value="Filter message" key="filter_message" />
-    <Localized id="304" lang="English" value="Contains" key="Contains" />
-    <Localized id="305" lang="French" value="Contains" key="Contains" />
-    <Localized id="306" lang="Dutch" value="Contains" key="Contains" />
-    <Localized id="307" lang="English" value="StartsWith" key="StartsWith" />
-    <Localized id="308" lang="French" value="StartsWith" key="StartsWith" />
-    <Localized id="309" lang="Dutch" value="StartsWith" key="StartsWith" />
-    <Localized id="310" lang="English" value="EndsWith" key="EndsWith" />
-    <Localized id="311" lang="French" value="EndsWith" key="EndsWith" />
-    <Localized id="312" lang="Dutch" value="EndsWith" key="EndsWith" />
-    <Localized id="313" lang="English" value="Filter log level" key="filter_log_level" />
-    <Localized id="314" lang="French" value="filter_log_level" key="filter_log_level" />
-    <Localized id="315" lang="Dutch" value="Filter log level" key="filter_log_level" />
-    <Localized id="316" lang="English" value="SEVERE" key="SEVERE" />
-    <Localized id="317" lang="French" value="SEVERE" key="SEVERE" />
-    <Localized id="318" lang="Dutch" value="SEVERE" key="SEVERE" />
-    <Localized id="319" lang="English" value="WARNING" key="WARNING" />
-    <Localized id="320" lang="French" value="WARNING" key="WARNING" />
-    <Localized id="321" lang="Dutch" value="WARNING" key="WARNING" />
-    <Localized id="322" lang="English" value="INFO" key="INFO" />
-    <Localized id="323" lang="French" value="INFO" key="INFO" />
-    <Localized id="324" lang="Dutch" value="INFO" key="INFO" />
-    <Localized id="325" lang="English" value="FINE" key="FINE" />
-    <Localized id="326" lang="French" value="FINE" key="FINE" />
-    <Localized id="327" lang="Dutch" value="FINE" key="FINE" />
-    <Localized id="328" lang="English" value="FINER" key="FINER" />
-    <Localized id="329" lang="French" value="FINER" key="FINER" />
-    <Localized id="330" lang="Dutch" value="FINER" key="FINER" />
-    <Localized id="331" lang="English" value="FINEST" key="FINEST" />
-    <Localized id="332" lang="French" value="FINEST" key="FINEST" />
-    <Localized id="333" lang="Dutch" value="FINEST" key="FINEST" />
-    <Localized id="334" lang="English" value="Filter source" key="filter_source" />
-    <Localized id="335" lang="French" value="filter_source" key="filter_source" />
-    <Localized id="336" lang="Dutch" value="Filter source" key="filter_source" />
-    <Localized id="337" lang="English" value="Package" key="Package" />
-    <Localized id="338" lang="French" value="Paquetage" key="Package" />
-    <Localized id="339" lang="Dutch" value="Package" key="Package" />
-    <Localized id="340" lang="English" value="Class" key="Class" />
-    <Localized id="341" lang="French" value="Class" key="Class" />
-    <Localized id="342" lang="Dutch" value="Class" key="Class" />
-    <Localized id="343" lang="English" value="Method" key="Method" />
-    <Localized id="344" lang="French" value="Méthode" key="Method" />
-    <Localized id="345" lang="Dutch" value="Method" key="Method" />
-    <Localized id="346" lang="English" value="Filter date" key="filter_date" />
-    <Localized id="347" lang="French" value="filter_date" key="filter_date" />
-    <Localized id="348" lang="Dutch" value="Filter date" key="filter_date" />
-    <Localized id="349" lang="English" value="Before" key="Before" />
-    <Localized id="350" lang="French" value="Before" key="Before" />
-    <Localized id="351" lang="Dutch" value="Before" key="Before" />
-    <Localized id="352" lang="English" value="After" key="After" />
-    <Localized id="353" lang="French" value="After" key="After" />
-    <Localized id="354" lang="Dutch" value="After" key="After" />
-    <Localized id="355" lang="English" value="Between" key="Between" />
-    <Localized id="356" lang="French" value="Between" key="Between" />
-    <Localized id="357" lang="Dutch" value="Between" key="Between" />
-    <Localized id="358" lang="English" value="and" key="and" />
-    <Localized id="359" lang="French" value="et" key="and" />
-    <Localized id="360" lang="Dutch" value="and" key="and" />
-    <Localized id="361" lang="English" value="Filter thread" key="filter_thread" />
-    <Localized id="362" lang="French" value="filter_thread" key="filter_thread" />
-    <Localized id="363" lang="Dutch" value="Filter thread" key="filter_thread" />
-    <Localized id="364" lang="English" value="Filter stacktrace" key="filter_stacktrace" />
-    <Localized id="365" lang="French" value="filter_stacktrace" key="filter_stacktrace" />
-    <Localized id="366" lang="Dutch" value="Filter stacktrace" key="filter_stacktrace" />
-    <Localized id="367" lang="English" value="Utiliser une configuration de log par défaut" key="Utiliser une configuration de log par défaut" />
-    <Localized id="368" lang="French" value="Utiliser une configuration de log par défaut" key="Utiliser une configuration de log par défaut" />
-    <Localized id="369" lang="Dutch" value="Utiliser une configuration de log par défaut" key="Utiliser une configuration de log par défaut" />
-    <Localized id="370" lang="English" value="Utiliser une configuration de log personnalisée" key="Utiliser une configuration de log personnalisée" />
-    <Localized id="371" lang="French" value="Utiliser une configuration de log personnalisée" key="Utiliser une configuration de log personnalisée" />
-    <Localized id="372" lang="Dutch" value="Utiliser une configuration de log personnalisée" key="Utiliser une configuration de log personnalisée" />
-    <Localized id="373" lang="English" value="Filter type" key="filter_type" />
-    <Localized id="374" lang="French" value="filter_type" key="filter_type" />
-    <Localized id="375" lang="Dutch" value="Filter type" key="filter_type" />
-    <Localized id="376" lang="English" value="Done" key="done" />
-    <Localized id="377" lang="French" value="Effectué" key="done" />
-    <Localized id="378" lang="Dutch" value="Done" key="done" />
-    <Localized id="379" lang="English" value="Dismiss filters" key="dismiss_filters" />
-    <Localized id="380" lang="French" value="Ne plus filtrer" key="dismiss_filters" />
-    <Localized id="381" lang="Dutch" value="Dismiss filters" key="dismiss_filters" />
-    <Localized id="382" lang="English" value="(filtered)" key="(filtered)" />
-    <Localized id="383" lang="French" value="(filtered)" key="(filtered)" />
-    <Localized id="384" lang="Dutch" value="(filtered)" key="(filtered)" />
-    <Localized id="385" lang="English" value="filter_sequence" key="filter_sequence" />
-    <Localized id="386" lang="French" value="filter_sequence" key="filter_sequence" />
-    <Localized id="387" lang="Dutch" value="filter_sequence" key="filter_sequence" />
-    <Localized id="388" lang="English" value="Default configuration file" key="default_configuration_file" />
-    <Localized id="389" lang="French" value="Fichier de configuration par défaut" key="default_configuration_file" />
-    <Localized id="390" lang="Dutch" value="Default configuration file" key="default_configuration_file" />
-    <Localized id="391" lang="English" value="Reload" key="reload" />
-    <Localized id="392" lang="French" value="Recharger" key="reload" />
-    <Localized id="393" lang="Dutch" value="Reload" key="reload" />
-    <Localized id="394" lang="English" value="Description" key="description" />
-    <Localized id="395" lang="French" value="Description" key="description" />
-    <Localized id="396" lang="Dutch" value="Description" key="description" />
-    <Localized id="397" lang="English" value="OnlyKeep" key="OnlyKeep" />
-    <Localized id="398" lang="French" value="OnlyKeep" key="OnlyKeep" />
-    <Localized id="399" lang="Dutch" value="OnlyKeep" key="OnlyKeep" />
-  </LocalizedDictionary>
+<Panel id="0" align="left" borderTop="5" borderLeft="0"
+	trackViewPortHeight="true" trackViewPortWidth="true" borderBottom="0"
+	border="empty" sizeAdjustment="OriginalSize" titleFont="Lucida Grande,0,13"
+	layout="gridbag" borderRight="0"
+	controllerClassName="org.openflexo.gina.controller.FIBController"
+	width="900" height="600" name="FMLConsoleViewer">
+	<TabPanel id="1" index="0"
+		constraints="gridbag(anchor=center;fill=both;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=0;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=1.0;weightY=1.0)"
+		name="FIBTabPanel">
+		<Tab id="2" title="logs" align="left" borderTop="0" borderLeft="0"
+			trackViewPortHeight="true" trackViewPortWidth="true" borderBottom="0"
+			border="empty" sizeAdjustment="OriginalSize" titleFont="Lucida Grande,0,13"
+			layout="gridbag" borderRight="0" index="1" name="FIBTab">
+			<Panel id="3" align="left" borderTop="2" borderTitle=""
+				borderLeft="2" trackViewPortHeight="true" trackViewPortWidth="true"
+				borderBottom="2" border="empty" sizeAdjustment="OriginalSize"
+				layout="gridbag" borderRight="2" index="0"
+				constraints="gridbag(anchor=center;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=0;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+				name="FIBPanel">
+				<Label id="4" label="search" align="left" localize="true"
+					index="0"
+					constraints="gridbag(anchor=center;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=0;insetsBottom=0;insetsLeft=5;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+					name="SearchLabel" />
+				<TextField id="5" columns="7" validateOnReturn="true"
+					text="TextField" localize="true" valueChangedAction="data.searchText()"
+					data="data.searchedText" index="1"
+					constraints="gridbag(anchor=center;fill=horizontal;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=1.0;weightY=0.0)"
+					name="TextField" />
+				<Button id="6" buttonType="Trigger" action="data.searchText()"
+					label="search" localize="true" index="2"
+					constraints="gridbag(anchor=center;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=2;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+					name="SearchButton" />
+				<Button id="7" buttonType="Trigger" action="data.dismissSearchText()"
+					label="done" localize="true" visible="data.console.textSearchApplied"
+					index="3"
+					constraints="gridbag(anchor=center;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=3;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+					name="DoneButton" />
+			</Panel>
+			<Table id="8" backgroundSelectionColor="41,90,209"
+				visibleRowCount="5" backgroundNonSelectionColor="255,255,255"
+				textSelectionColor="255,255,255" backgroundSecondarySelectionColor="173,215,255"
+				iteratorClassName="org.openflexo.foundation.fml.rt.logging.FMLLogRecord"
+				textNonSelectionColor="0,0,0" selectionMode="MultipleIntervalSelection"
+				rowHeight="16" localize="true" manageDynamicModel="true"
+				data="data.console.records" index="1"
+				constraints="gridbag(anchor=center;fill=both;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=1;insetsBottom=0;insetsLeft=5;insetsRight=5;insetsTop=0;location=center;padX=0;padY=0;weightX=1.0;weightY=4.0;x=0;y=0)"
+				font="Lucida Grande,0,11" name="LogsTable">
+				<IconColumn id="9" data="data.getIconForLogRecord(iterator)"
+					resizable="false" title="icon" displayTitle="false"
+					bgColor="data.getBgColorForLogRecord(iterator)" columnWidth="20"
+					showIcon="false" name="icon" />
+				<LabelColumn id="10" color="data.getColorForLogRecord(iterator)"
+					data="iterator.message" resizable="true" title="message"
+					displayTitle="true" bgColor="data.getBgColorForLogRecord(iterator)"
+					columnWidth="400" showIcon="false" name="label" />
+				<LabelColumn id="11" color="data.getColorForLogRecord(iterator)"
+					data="iterator.flexoConceptInstance.stringRepresentation"
+					resizable="true" title="instance" displayTitle="true"
+					bgColor="data.getBgColorForLogRecord(iterator)" columnWidth="150"
+					showIcon="false" name="label" />
+				<LabelColumn id="12" color="data.getColorForLogRecord(iterator)"
+					data="iterator.behaviour.name" resizable="true" title="behaviour"
+					displayTitle="true" bgColor="data.getBgColorForLogRecord(iterator)"
+					columnWidth="150" showIcon="false" name="label" />
+				<LabelColumn id="13" color="data.getColorForLogRecord(iterator)"
+					data="iterator.sequenceAsString" resizable="true" title="seq"
+					displayTitle="true" bgColor="data.getBgColorForLogRecord(iterator)"
+					columnWidth="30" showIcon="false" name="label" />
+				<LabelColumn id="14" color="data.getColorForLogRecord(iterator)"
+					data="iterator.dateAsString" resizable="true" title="date"
+					displayTitle="true" bgColor="data.getBgColorForLogRecord(iterator)"
+					columnWidth="80" showIcon="false" name="label" />
+				<LabelColumn id="15" color="data.getColorForLogRecord(iterator)"
+					data="iterator.millisAsString" resizable="true" title="millis"
+					displayTitle="true" bgColor="data.getBgColorForLogRecord(iterator)"
+					columnWidth="80" showIcon="false" name="label" />
+				<LabelColumn id="16" color="data.getColorForLogRecord(iterator)"
+					data="iterator.threadAsString" resizable="true" title="thread"
+					displayTitle="true" bgColor="data.getBgColorForLogRecord(iterator)"
+					columnWidth="50" showIcon="false" name="label" />
+				<CustomAction id="17" method="data.refresh()" name="refresh" />
+			</Table>
+			<Panel id="18" align="left" borderTop="2" borderTitle=""
+				borderLeft="2" trackViewPortHeight="true" trackViewPortWidth="true"
+				borderBottom="2" border="empty" sizeAdjustment="OriginalSize"
+				titleFont="LucidaGrande,0,10" layout="gridbag" borderRight="2"
+				index="2"
+				constraints="gridbag(anchor=center;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=2;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+				font="LucidaGrande,0,10" name="FIBPanel2">
+				<Button id="19" buttonType="Trigger" action="data.clear()"
+					label="clear"
+					constraints="gridbag(anchor=center;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+					name="ClearButton" />
+				<Button id="20" buttonType="Trigger" action="data.refresh()"
+					label="refresh" localize="true" index="0"
+					constraints="gridbag(anchor=center;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=0;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+					name="RefreshButton" />
+				<Button id="21" buttonType="Trigger" action="data.applyFilters()"
+					label="apply_filters" localize="true" index="1"
+					constraints="gridbag(anchor=center;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+					name="ApplyFiltersButton" />
+				<Button id="22" buttonType="Trigger" action="data.dismissFilters()"
+					label="dismiss_filters" localize="true" visible="data.console.filtersApplied"
+					index="2"
+					constraints="gridbag(anchor=center;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=2;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+					name="DismissFiltersButton" />
+				<Label id="23" label="" align="right" localize="true"
+					data="data.console.logCount.toString" index="3"
+					constraints="gridbag(anchor=east;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=3;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=east;padX=0;padY=0;weightX=1.0;weightY=0.0)"
+					name="Label" />
+				<Label id="24" label="logs," align="left" localize="true"
+					index="4"
+					constraints="gridbag(anchor=center;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=4;insetsBottom=0;insetsLeft=-5;insetsRight=0;insetsTop=0;location=south;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+					name="LogsLabel" />
+				<Label id="25" label="label" align="left" localize="true"
+					data="data.console.warningCount.toString" index="5"
+					constraints="gridbag(anchor=center;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=5;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+					name="Label2" />
+				<Label id="26" label="warnings," align="left" localize="true"
+					index="6"
+					constraints="gridbag(anchor=center;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=6;insetsBottom=0;insetsLeft=-5;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+					name="WarningsLabel" />
+				<Label id="27" label="label" align="left" localize="true"
+					data="data.console.severeCount.toString" index="7"
+					constraints="gridbag(anchor=center;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=7;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+					name="Label3" />
+				<Label id="28" label="severe" align="left" localize="true"
+					index="8"
+					constraints="gridbag(anchor=center;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=8;insetsBottom=0;insetsLeft=-5;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+					name="SevereLabel" />
+				<Label id="29" label="(filtered)" align="left" localize="true"
+					visible="(data.console.filtersApplied | data.console.textSearchApplied)"
+					index="9"
+					constraints="gridbag(anchor=center;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=9;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+					name="filteredLabel" />
+			</Panel>
+			<Panel id="30" align="left" borderTop="2" borderTitle=""
+				borderLeft="2" trackViewPortHeight="true" trackViewPortWidth="true"
+				borderBottom="2" border="empty" sizeAdjustment="OriginalSize"
+				darkLevel="1" layout="twocols" borderRight="2" index="3"
+				constraints="gridbag(anchor=center;fill=both;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=3;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=1.0;weightY=1.0)"
+				name="FIBPanel3">
+				<Label id="31" label="Sequence" align="left" localize="true"
+					index="0"
+					constraints="twocols(expandHorizontally=true;expandVertically=false;index=0;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)"
+					name="SequenceLabel" />
+				<Panel id="32" align="left" borderTop="0" borderTitle=""
+					flowAlignment="LEADING" borderLeft="0" trackViewPortHeight="true"
+					trackViewPortWidth="true" borderBottom="0" border="empty"
+					sizeAdjustment="OriginalSize" layout="gridbag" vGap="0"
+					borderRight="0" hGap="0" index="1"
+					constraints="twocols(expandHorizontally=true;expandVertically=false;index=1;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
+					name="FIBPanel">
+					<TextField id="33" columns="7" text="TextField" localize="true"
+						enable="(LogsTable.selected != null)" data="LogsTable.selected.sequence.toString"
+						index="0"
+						constraints="gridbag(anchor=center;fill=horizontal;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=0;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=1.0;weightY=0.0)"
+						name="TextField" />
+					<Label id="34" label="level" align="left" localize="true"
+						index="1"
+						constraints="gridbag(anchor=center;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+						name="LevelLabel" />
+					<TextField id="35" columns="7" text="TextField" localize="true"
+						enable="(LogsTable.selected != null)" data="LogsTable.selected.level.toString"
+						index="2"
+						constraints="gridbag(anchor=center;fill=horizontal;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=2;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=1.0;weightY=0.0)"
+						name="TextField2" />
+					<Label id="36" label="thread" align="left" localize="true"
+						index="3"
+						constraints="gridbag(anchor=center;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=3;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+						name="ThreadLabel" />
+					<TextField id="37" columns="7" text="TextField" localize="true"
+						enable="(LogsTable.selected != null)" data="LogsTable.selected.threadAsString"
+						index="4"
+						constraints="gridbag(anchor=center;fill=horizontal;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=4;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=1.0;weightY=0.0)"
+						name="TextField3" />
+				</Panel>
+				<Label id="38" label="message" align="left" localize="true"
+					index="2"
+					constraints="twocols(expandHorizontally=true;expandVertically=false;index=2;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)"
+					name="MessageLabel" />
+				<TextArea id="39" rows="3" columns="8" validateOnReturn="true"
+					text="TextArea" localize="true" enable="(LogsTable.selected != null)"
+					data="LogsTable.selected.message" useScrollBar="true"
+					verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED" index="3"
+					constraints="twocols(expandHorizontally=true;expandVertically=true;index=3;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
+					horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED" name="TextArea" />
+				<Label id="40" label="conceptInstance" align="left" localize="true"
+					index="4"
+					constraints="twocols(expandHorizontally=true;expandVertically=false;index=4;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)"
+					name="ConceptInstanceLabel" />
+				<TextField id="41" editable="false" columns="7" text="TextField"
+					localize="true" enable="(LogsTable.selected != null)"
+					data="LogsTable.selected.flexoConceptInstance.stringRepresentation"
+					index="5"
+					constraints="twocols(expandHorizontally=true;expandVertically=false;index=5;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
+					name="TextField4" />
+				<Label id="42" label="behaviour" align="left" localize="true"
+					index="8"
+					constraints="twocols(expandHorizontally=true;expandVertically=false;index=8;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)"
+					name="BehaviourLabel" />
+				<TextField id="43" editable="false" columns="7" text="TextField"
+					localize="true" enable="(LogsTable.selected != null)" data="LogsTable.selected.behaviour.name"
+					index="9"
+					constraints="twocols(expandHorizontally=true;expandVertically=false;index=9;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
+					name="TextField5" />
+				<Label id="44" label="date" align="left" localize="true"
+					index="10"
+					constraints="twocols(expandHorizontally=true;expandVertically=false;index=10;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)"
+					name="DateLabel" />
+				<Panel id="45" align="left" borderTop="2" borderTitle=""
+					flowAlignment="LEADING" borderLeft="2" trackViewPortHeight="true"
+					trackViewPortWidth="true" borderBottom="2" border="empty"
+					sizeAdjustment="OriginalSize" layout="gridbag" vGap="0"
+					borderRight="2" hGap="0" index="11"
+					constraints="twocols(expandHorizontally=true;expandVertically=false;index=11;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)"
+					name="FIBPanel2">
+					<TextField id="46" editable="false" columns="15" text="TextField"
+						localize="true" enable="(LogsTable.selected != null)" data="LogsTable.selected.dateAsString"
+						index="0"
+						constraints="gridbag(anchor=center;fill=horizontal;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=0;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=1.0;weightY=0.0)"
+						name="TextField" />
+					<Label id="47" label="millis" align="left" localize="true"
+						index="1"
+						constraints="gridbag(anchor=center;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+						name="MillisLabel" />
+					<TextField id="48" editable="false" columns="10" text="TextField"
+						localize="true" enable="(LogsTable.selected != null)" data="LogsTable.selected.millisAsString"
+						index="2"
+						constraints="gridbag(anchor=center;fill=horizontal;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=2;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=1.0;weightY=0.0)"
+						name="TextField2" />
+				</Panel>
+			</Panel>
+			<Panel id="49" align="left" borderTop="2" borderTitle=""
+				borderLeft="2" trackViewPortHeight="true" trackViewPortWidth="true"
+				borderBottom="2" border="empty" sizeAdjustment="OriginalSize"
+				titleFont="Lucida Grande,0,13" layout="border" borderRight="2"
+				index="4"
+				constraints="gridbag(anchor=center;fill=both;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=4;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=3.0;weightY=1.0)"
+				name="FIBPanel4">
+				<TextArea id="50" rows="3" columns="10" validateOnReturn="true"
+					text="TextArea" localize="true" enable="(LogsTable.selected != null)"
+					data="LogsTable.selected.stackTraceAsString" useScrollBar="true"
+					verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED" constraints="border(location=center)"
+					horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED" font="Dialog,0,9"
+					name="TextArea" />
+				<Label id="51"
+					label="&lt;html&gt;&lt;a href=&quot;_blank&quot;&gt;print stacktrace in console&lt;/a&gt;&lt;/html&gt;"
+					align="right" clickAction="data.printStackTrace(LogsTable.selected)"
+					constraints="border(location=south)" font="LucidaGrande,0,9"
+					name="htmlaHrefBlankprintStacktraceInConsoleahtmlLabel" />
+			</Panel>
+		</Tab>
+		<Tab id="52" title="options" align="left" borderTop="0"
+			borderLeft="0" trackViewPortHeight="true" trackViewPortWidth="true"
+			borderBottom="0" border="empty" sizeAdjustment="OriginalSize" layout="gridbag"
+			borderRight="0" index="1" name="FIBTab2">
+			<Panel id="53" align="left" borderTop="2" borderTitle="Logging configuration"
+				borderLeft="2" trackViewPortHeight="true" trackViewPortWidth="true"
+				borderBottom="2" border="rounded3d" sizeAdjustment="OriginalSize"
+				darkLevel="1" titleFont="Dialog,1,11" layout="twocols" borderRight="2"
+				index="0"
+				constraints="gridbag(anchor=center;fill=both;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=0;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=1.0;weightY=0.0)"
+				name="LoggingConfigurationPanel">
+				<Label id="54" label="number_of_logs_to_keep" align="left"
+					localize="true" index="0"
+					constraints="twocols(expandHorizontally=true;expandVertically=false;index=0;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)"
+					name="NumberOfLogsToKeepLabel" />
+				<Panel id="55" align="left" borderTop="2" borderTitle=""
+					flowAlignment="LEADING" borderLeft="2" trackViewPortHeight="true"
+					trackViewPortWidth="true" borderBottom="2" border="empty"
+					sizeAdjustment="OriginalSize" layout="flow" vGap="0" borderRight="2"
+					hGap="0" index="1"
+					constraints="twocols(expandHorizontally=true;expandVertically=false;index=1;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
+					name="FIBPanel">
+					<Number id="56" minValue="-1" numberType="IntegerType"
+						maxValue="2147483647" columns="5" increment="1" localize="true"
+						enable="(!(data.isInfiniteNumberOfLogs))" data="data.console.maxLogCount"
+						index="0" constraints="flow(index=0)" name="Integer" />
+					<Label id="57" label="infinite" align="left" localize="true"
+						index="1" constraints="flow(index=1)" name="InfiniteLabel" />
+					<CheckBox id="58" selected="true" localize="true"
+						data="data.isInfiniteNumberOfLogs" index="2" constraints="flow(index=2)"
+						name="checkbox" />
+				</Panel>
+				<Label id="59" label="keep_log_trace_in_memory" align="left"
+					localize="true" index="2"
+					constraints="twocols(expandHorizontally=true;expandVertically=false;index=2;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=left)"
+					name="KeepLogTraceInMemoryLabel" />
+				<CheckBox id="60" selected="true" localize="true"
+					data="data.console.keepLogTrace" index="3"
+					constraints="twocols(expandHorizontally=true;expandVertically=false;index=3;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
+					name="checkbox" />
+				<Label id="61" label="show_debug" align="left" localize="true"
+					index="4"
+					constraints="twocols(expandHorizontally=true;expandVertically=false;index=2;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=left)"
+					name="ShowDebugLabel" />
+				<CheckBox id="62" selected="true" localize="true"
+					data="data.console.showDebug" index="5"
+					constraints="twocols(expandHorizontally=true;expandVertically=false;index=3;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
+					name="checkbox" />
+				<Label id="63" label="log_level" align="left" localize="true"
+					index="10"
+					constraints="twocols(expandHorizontally=true;expandVertically=false;index=10;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=left)"
+					name="LogLevelLabel" />
+				<RadioButtonList id="64" autoSelectFirstRow="true"
+					showText="true"
+					iteratorClassName="org.openflexo.foundation.fml.rt.logging.FMLConsole$LogLevel"
+					showIcon="false" localize="true" format="object.name"
+					data="data.console.monitoredLogLevel" index="11"
+					constraints="twocols(expandHorizontally=true;expandVertically=false;index=11;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
+					name="LogLevelButtonList" />
+			</Panel>
+			<Panel id="65" align="left" borderTop="2" borderTitle="Display options"
+				borderLeft="2" trackViewPortHeight="true" trackViewPortWidth="true"
+				borderBottom="2" border="rounded3d" sizeAdjustment="OriginalSize"
+				darkLevel="1" titleFont="LucidaGrande-Bold,1,11" layout="twocols"
+				borderRight="2" index="2"
+				constraints="gridbag(anchor=center;fill=both;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=2;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.5;weightY=0.0)"
+				name="DisplayOptionsPanel">
+				<CheckBox id="66" selected="true" localize="true"
+					data="data.displayLogLevel" index="1"
+					constraints="twocols(expandHorizontally=true;expandVertically=false;index=1;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=left)"
+					name="checkbox" />
+				<Label id="67" label="log_level" align="left" localize="true"
+					index="2"
+					constraints="twocols(expandHorizontally=true;expandVertically=false;index=2;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
+					name="LogLevelLabel" />
+				<CheckBox id="68" selected="true" localize="true"
+					data="data.displayFlexoConceptInstance" index="3"
+					constraints="twocols(expandHorizontally=true;expandVertically=false;index=3;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=left)"
+					name="checkbox" />
+				<Label id="69" label="flexo_concept_instance" align="left"
+					localize="true" index="4"
+					constraints="twocols(expandHorizontally=true;expandVertically=false;index=4;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
+					name="FlexoConceptInstanceLabel" />
+				<CheckBox id="70" selected="true" localize="true"
+					data="data.displayBehaviour" index="5"
+					constraints="twocols(expandHorizontally=true;expandVertically=false;index=5;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=left)"
+					name="checkbox" />
+				<Label id="71" label="behaviour" align="left" localize="true"
+					index="6"
+					constraints="twocols(expandHorizontally=true;expandVertically=false;index=6;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
+					name="BehaviourLabel" />
+				<CheckBox id="72" selected="true" localize="true"
+					data="data.displaySequence" index="9"
+					constraints="twocols(expandHorizontally=true;expandVertically=false;index=9;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=left)"
+					name="checkbox" />
+				<Label id="73" label="sequence" align="left" localize="true"
+					index="10"
+					constraints="twocols(expandHorizontally=true;expandVertically=false;index=10;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
+					name="SequenceLabel" />
+				<CheckBox id="74" selected="true" localize="true"
+					data="data.displayDate" index="11"
+					constraints="twocols(expandHorizontally=true;expandVertically=false;index=11;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=left)"
+					name="checkbox" />
+				<Label id="75" label="date" align="left" localize="true"
+					index="12"
+					constraints="twocols(expandHorizontally=true;expandVertically=false;index=12;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
+					name="DateLabel" />
+				<CheckBox id="76" selected="true" localize="true"
+					data="data.displayMillis" index="13"
+					constraints="twocols(expandHorizontally=true;expandVertically=false;index=13;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=left)"
+					name="checkbox" />
+				<Label id="77" label="milliseconds" align="left" localize="true"
+					index="14"
+					constraints="twocols(expandHorizontally=true;expandVertically=false;index=14;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
+					name="MillisecondsLabel" />
+				<CheckBox id="78" selected="true" localize="true"
+					data="data.displayThread" index="15"
+					constraints="twocols(expandHorizontally=true;expandVertically=false;index=15;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=left)"
+					name="checkbox" />
+				<Label id="79" label="thread" align="left" localize="true"
+					index="16"
+					constraints="twocols(expandHorizontally=true;expandVertically=false;index=16;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
+					name="ThreadLabel" />
+				<Label id="80" label="display_option_description" align="left"
+					localize="true" index="0"
+					constraints="twocols(expandHorizontally=false;expandVertically=false;index=0;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=center)"
+					name="DisplayOptionDescriptionLabel" />
+			</Panel>
+			<Panel id="81" align="left" borderTop="2" borderTitle="Filters"
+				borderLeft="2" trackViewPortHeight="true" trackViewPortWidth="true"
+				borderBottom="2" border="rounded3d" sizeAdjustment="OriginalSize"
+				darkLevel="1" titleFont="LucidaGrande-Bold,1,11" layout="gridbag"
+				borderRight="2" index="3"
+				constraints="gridbag(anchor=center;fill=both;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=3;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=1.0;weightY=1.0)"
+				name="FiltersPanel">
+				<Table id="82" backgroundSelectionColor="41,90,209"
+					visibleRowCount="3" backgroundNonSelectionColor="255,255,255"
+					textSelectionColor="255,255,255" backgroundSecondarySelectionColor="173,215,255"
+					iteratorClassName="org.openflexo.foundation.fml.rt.logging.FMLLoggingFilter"
+					showFooter="true" textNonSelectionColor="0,0,0" selectionMode="MultipleIntervalSelection"
+					rowHeight="18" localize="true" manageDynamicModel="true" data="data.filters"
+					index="0"
+					constraints="gridbag(anchor=center;fill=both;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=0;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=center;padX=0;padY=0;weightX=1.0;weightY=1.0)"
+					name="FiltersTable">
+					<IconColumn id="83" data="data.getIconForFilter(iterator)"
+						resizable="false" title="icon" displayTitle="false" columnWidth="20"
+						showIcon="false" name="icon" />
+					<TextFieldColumn id="84" data="iterator.filterName"
+						resizable="true" title="filter_name" displayTitle="true"
+						columnWidth="80" showIcon="false" name="filter_name" />
+					<DropDownColumn id="85" data="iterator.type"
+						resizable="true" title="filter_type" displayTitle="true"
+						columnWidth="70" showIcon="false" name="dropdown" />
+					<LabelColumn id="86" data="iterator.filterDescription"
+						resizable="true" title="description" displayTitle="true"
+						columnWidth="200" showIcon="false" name="label" />
+					<AddAction id="87" method="data.createFilter" name="add_action" />
+					<RemoveAction id="88" method="data.deleteFilter(selected)"
+						name="delete_action" />
+				</Table>
+				<Panel id="89" align="left" borderTop="2" borderTitle=""
+					borderLeft="2" trackViewPortHeight="true" trackViewPortWidth="true"
+					borderBottom="2" border="empty" sizeAdjustment="OriginalSize"
+					layout="gridbag" borderRight="2" index="1" minWidth="350"
+					constraints="gridbag(anchor=center;fill=both;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=east;padX=0;padY=0;weightX=1.0;weightY=1.0)"
+					minHeight="230" width="350" height="230" name="FIBPanel">
+					<Label id="90" label="filter" align="left" localize="true"
+						index="0"
+						constraints="gridbag(anchor=east;expandHorizontally=true;expandVertically=false;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=0;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+						name="FilterLabel" />
+					<TextField id="91" columns="7" text="TextField" localize="true"
+						enable="(FiltersTable.selected != null)" data="FiltersTable.selected.filterName"
+						index="1"
+						constraints="gridbag(anchor=center;expandHorizontally=true;expandVertically=false;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=1;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right;padX=0;padY=0;weightX=1.0;weightY=0.0)"
+						name="TextField" />
+					<Label id="92" label="type" align="left" localize="true"
+						index="2"
+						constraints="gridbag(anchor=center;expandHorizontally=true;expandVertically=false;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=2;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+						name="TypeLabel" />
+					<DropDown id="93" autoSelectFirstRow="true" staticList=""
+						showText="true"
+						iteratorClassName="org.openflexo.foundation.fml.rt.logging.FMLLoggingFilter$FilterType"
+						showIcon="false" localize="true" enable="(FiltersTable.selected != null)"
+						data="FiltersTable.selected.type" index="3"
+						constraints="gridbag(anchor=west;expandHorizontally=true;expandVertically=false;fill=none;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=3;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+						name="dropdown" />
+					<CheckBox id="94" selected="true" localize="true"
+						enable="(FiltersTable.selected != null)" data="FiltersTable.selected.hasFilteredMessage"
+						index="4"
+						constraints="gridbag(anchor=east;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=4;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+						name="FilterMessageCheckbox" />
+					<Label id="95" label="filter_message" align="left" localize="true"
+						index="5"
+						constraints="gridbag(anchor=west;expandHorizontally=true;expandVertically=false;fill=horizontal;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=5;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+						name="FilterMessageLabel" />
+					<DropDown id="96" autoSelectFirstRow="true" staticList=""
+						showText="true"
+						iteratorClassName="org.openflexo.foundation.fml.rt.logging.FMLLoggingFilter$MessageFilterType"
+						showIcon="false" localize="true"
+						enable="FiltersTable.selected.hasFilteredMessage" data="FiltersTable.selected.messageFilterType"
+						index="6"
+						constraints="gridbag(anchor=west;expandHorizontally=true;expandVertically=false;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=6;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+						name="dropdown" />
+					<TextField id="97" columns="7" text="TextField" localize="true"
+						enable="FiltersTable.selected.hasFilteredMessage" data="FiltersTable.selected.filteredContent"
+						index="7"
+						constraints="gridbag(anchor=center;expandHorizontally=true;expandVertically=false;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=7;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=center;padX=0;padY=0;weightX=1.0;weightY=0.0)"
+						name="TextField2" />
+					<CheckBox id="98" selected="true" localize="true"
+						enable="(FiltersTable.selected != null)" data="FiltersTable.selected.hasFilteredLevel"
+						index="8"
+						constraints="gridbag(anchor=east;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=8;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+						name="FilterLevelCheckbox" />
+					<Label id="99" label="filter_log_level" align="left"
+						localize="true" index="9"
+						constraints="gridbag(anchor=west;fill=horizontal;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=9;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+						name="FilterLogLevelLabel" />
+					<DropDown id="100" showText="true"
+						iteratorClassName="org.openflexo.foundation.fml.rt.logging.FMLConsole$LogLevel"
+						showIcon="false" localize="true" enable="FiltersTable.selected.hasFilteredLevel"
+						data="FiltersTable.selected.filteredLevel" index="10"
+						constraints="gridbag(anchor=west;fill=none;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=10;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+						name="dropdown" />
+					<CheckBox id="101" selected="true" localize="true"
+						enable="(FiltersTable.selected != null)" data="FiltersTable.selected.hasFilteredDate"
+						index="15"
+						constraints="gridbag(anchor=east;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=15;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+						name="FilterDateCheckbox" />
+					<Label id="102" label="filter_date" align="left" localize="true"
+						index="16"
+						constraints="gridbag(anchor=west;fill=horizontal;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=16;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+						name="FilterDateLabel" />
+					<DropDown id="103" autoSelectFirstRow="true" staticList=""
+						showText="true"
+						iteratorClassName="org.openflexo.foundation.fml.rt.logging.FMLLoggingFilter$DateFilterType"
+						showIcon="false" localize="true" enable="FiltersTable.selected.hasFilteredDate"
+						data="FiltersTable.selected.dateFilterType" index="17"
+						constraints="gridbag(anchor=west;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=17;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+						name="dropdown" />
+					<TextField id="104" columns="7" text="TextField"
+						localize="true" enable="FiltersTable.selected.hasFilteredDate"
+						data="FiltersTable.selected.filteredDate1"
+						visible="(FiltersTable.selected.dateFilterType.name = &quot;Between&quot;)"
+						index="18"
+						constraints="gridbag(anchor=center;fill=horizontal;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=18;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=1.0;weightY=0.0)"
+						name="TextField3" />
+					<Label id="105" label="and" align="left" localize="true"
+						enable="FiltersTable.selected.hasFilteredDate"
+						visible="(FiltersTable.selected.dateFilterType.name = &quot;Between&quot;)"
+						index="19"
+						constraints="gridbag(anchor=center;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=19;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+						name="AndLabel" />
+					<TextField id="106" columns="7" text="TextField"
+						localize="true" data="FiltersTable.selected.filteredDate2" index="20"
+						constraints="gridbag(anchor=center;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=20;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=1.0;weightY=0.0)"
+						name="TextField4" />
+					<CheckBox id="107" selected="true" localize="true"
+						enable="(FiltersTable.selected != null)" data="FiltersTable.selected.hasFilteredThread"
+						index="21"
+						constraints="gridbag(anchor=east;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=21;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+						name="FilterThreadCheckbox" />
+					<Label id="108" label="filter_thread" align="left" localize="true"
+						index="22"
+						constraints="gridbag(anchor=west;fill=horizontal;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=22;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+						name="FilterThreadLabel" />
+					<TextField id="109" columns="7" text="TextField"
+						localize="true" enable="FiltersTable.selected.hasFilteredThread"
+						data="FiltersTable.selected.filteredThread" index="23"
+						constraints="gridbag(anchor=west;fill=none;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=23;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+						name="TextField5" />
+					<CheckBox id="110" selected="true" localize="true"
+						enable="(FiltersTable.selected != null)" data="FiltersTable.selected.hasFilteredStacktrace"
+						index="24"
+						constraints="gridbag(anchor=east;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=24;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+						name="FilterStacktraceCheckbox" />
+					<Label id="111" label="filter_stacktrace" align="left"
+						localize="true" index="25"
+						constraints="gridbag(anchor=east;fill=horizontal;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=25;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+						name="FilterStacktraceLabel" />
+					<TextField id="112" columns="7" text="TextField"
+						localize="true" enable="FiltersTable.selected.hasFilteredStacktrace"
+						data="FiltersTable.selected.filteredStacktrace" index="26"
+						constraints="gridbag(anchor=center;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=26;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+						name="TextField6" />
+					<CheckBox id="113" selected="true" localize="true"
+						enable="(FiltersTable.selected != null)" data="FiltersTable.selected.hasFilteredSequence"
+						index="27"
+						constraints="gridbag(anchor=east;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=27;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+						name="checkbox" />
+					<Label id="114" label="filter_sequence" align="left"
+						localize="true" index="28"
+						constraints="gridbag(anchor=center;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=28;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+						name="FilterSequenceLabel" />
+					<Number id="115" minValue="-2147483648" numberType="IntegerType"
+						maxValue="2147483647" columns="3" increment="1" localize="true"
+						enable="FiltersTable.selected.hasFilteredSequence" data="FiltersTable.selected.startSequence"
+						index="29"
+						constraints="gridbag(anchor=center;fill=horizontal;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=29;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+						name="Integer" />
+					<Label id="116" label="and" align="left" localize="true"
+						enable="FiltersTable.selected.hasFilteredSequence" index="30"
+						constraints="gridbag(anchor=center;fill=horizontal;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=30;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+						name="AndLabel2" />
+					<Number id="117" minValue="-2147483648" numberType="IntegerType"
+						maxValue="2147483647" columns="6" increment="1" localize="true"
+						enable="FiltersTable.selected.hasFilteredSequence" data="FiltersTable.selected.endSequence"
+						index="31"
+						constraints="gridbag(anchor=west;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=31;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+						name="Integer" />
+					<LocalizedDictionary id="118" />
+				</Panel>
+			</Panel>
+		</Tab>
+	</TabPanel>
+	<FIBVariable id="119" type="org.openflexo.view.FMLConsoleViewer"
+		name="data" />
+	<LocalizedDictionary id="120">
+		<Localized id="121" lang="English" value="Search" key="search" />
+		<Localized id="122" lang="French" value="Rechercher" key="search" />
+		<Localized id="123" lang="Dutch" value="Search" key="search" />
+		<Localized id="124" lang="English" value="Message" key="message" />
+		<Localized id="125" lang="French" value="Message" key="message" />
+		<Localized id="126" lang="Dutch" value="Message" key="message" />
+		<Localized id="127" lang="English" value="Package" key="package" />
+		<Localized id="128" lang="French" value="Paquetage" key="package" />
+		<Localized id="129" lang="Dutch" value="Package" key="package" />
+		<Localized id="130" lang="English" value="Class" key="class" />
+		<Localized id="131" lang="French" value="Classe" key="class" />
+		<Localized id="132" lang="Dutch" value="Class" key="class" />
+		<Localized id="133" lang="English" value="Method" key="method" />
+		<Localized id="134" lang="French" value="Méthode" key="method" />
+		<Localized id="135" lang="Dutch" value="Method" key="method" />
+		<Localized id="136" lang="English" value="seq" key="seq" />
+		<Localized id="137" lang="French" value="seq" key="seq" />
+		<Localized id="138" lang="Dutch" value="seq" key="seq" />
+		<Localized id="139" lang="English" value="Date" key="date" />
+		<Localized id="140" lang="French" value="Date" key="date" />
+		<Localized id="141" lang="Dutch" value="Date" key="date" />
+		<Localized id="142" lang="English" value="millis" key="millis" />
+		<Localized id="143" lang="French" value="millis" key="millis" />
+		<Localized id="144" lang="Dutch" value="millis" key="millis" />
+		<Localized id="145" lang="English" value="thread" key="thread" />
+		<Localized id="146" lang="French" value="thread" key="thread" />
+		<Localized id="147" lang="Dutch" value="thread" key="thread" />
+		<Localized id="148" lang="English" value="Add" key="add" />
+		<Localized id="149" lang="French" value="Ajouter" key="add" />
+		<Localized id="150" lang="Dutch" value="Add" key="add" />
+		<Localized id="151" lang="English" value="Remove" key="remove" />
+		<Localized id="152" lang="French" value="Supprimer" key="remove" />
+		<Localized id="153" lang="Dutch" value="Remove" key="remove" />
+		<Localized id="154" lang="English" value="Refresh" key="refresh" />
+		<Localized id="155" lang="French" value="Rafraichir" key="refresh" />
+		<Localized id="156" lang="Dutch" value="Refresh" key="refresh" />
+		<Localized id="157" lang="English" value="Logs" key="logs" />
+		<Localized id="158" lang="French" value="Logs" key="logs" />
+		<Localized id="159" lang="Dutch" value="Logs" key="logs" />
+		<Localized id="160" lang="English" value="Sequence" key="Sequence" />
+		<Localized id="161" lang="French" value="Sequence" key="Sequence" />
+		<Localized id="162" lang="Dutch" value="Sequence" key="Sequence" />
+		<Localized id="163" lang="English" value="Level" key="level" />
+		<Localized id="164" lang="French" value="Niveau" key="level" />
+		<Localized id="165" lang="Dutch" value="Level" key="level" />
+		<Localized id="166" lang="English" value="Number of logs to keep"
+			key="number_of_logs_to_keep" />
+		<Localized id="167" lang="French" value="nombre de logs à conserver"
+			key="number_of_logs_to_keep" />
+		<Localized id="168" lang="Dutch" value="Number of logs to keep"
+			key="number_of_logs_to_keep" />
+		<Localized id="169" lang="English" value="infinite" key="infinite" />
+		<Localized id="170" lang="French" value="infinite" key="infinite" />
+		<Localized id="171" lang="Dutch" value="infinite" key="infinite" />
+		<Localized id="172" lang="English" value="Keep log trace in memory"
+			key="keep_log_trace_in_memory" />
+		<Localized id="173" lang="French" value="Conserver les traces en mémoire"
+			key="keep_log_trace_in_memory" />
+		<Localized id="174" lang="Dutch" value="Keep log trace in memory"
+			key="keep_log_trace_in_memory" />
+		<Localized id="175" lang="English" value="Configuration"
+			key="configuration" />
+		<Localized id="176" lang="French" value="Configuration" key="configuration" />
+		<Localized id="177" lang="Dutch" value="Configuration" key="configuration" />
+		<Localized id="178" lang="English" value="Configuration file"
+			key="configuration_file" />
+		<Localized id="179" lang="French" value="Configuration file"
+			key="configuration_file" />
+		<Localized id="180" lang="Dutch" value="Configuration file"
+			key="configuration_file" />
+		<Localized id="181" lang="English" value="Log level" key="log_level" />
+		<Localized id="182" lang="French" value="Niveau de log" key="log_level" />
+		<Localized id="183" lang="Dutch" value="Log level" key="log_level" />
+		<Localized id="184" lang="English" value="Logging configuration"
+			key="Logging configuration" />
+		<Localized id="185" lang="French" value="Logging configuration"
+			key="Logging configuration" />
+		<Localized id="186" lang="Dutch" value="Logging configuration"
+			key="Logging configuration" />
+		<Localized id="187" lang="English"
+			value="Please select columns to show in logs table" key="display_option_description" />
+		<Localized id="188" lang="French"
+			value="Sélectionner les colonnes à afficher" key="display_option_description" />
+		<Localized id="189" lang="Dutch"
+			value="Please select columns to show in logs table" key="display_option_description" />
+		<Localized id="190" lang="English" value="sequence" key="sequence" />
+		<Localized id="191" lang="French" value="séquence" key="sequence" />
+		<Localized id="192" lang="Dutch" value="sequence" key="sequence" />
+		<Localized id="193" lang="English" value="milliseconds" key="milliseconds" />
+		<Localized id="194" lang="French" value="millisecondes" key="milliseconds" />
+		<Localized id="195" lang="Dutch" value="milliseconds" key="milliseconds" />
+		<Localized id="196" lang="English" value="Display options"
+			key="Display options" />
+		<Localized id="197" lang="French" value="Display options"
+			key="Display options" />
+		<Localized id="198" lang="Dutch" value="Display options"
+			key="Display options" />
+		<Localized id="199" lang="English" value="col1" key="col1" />
+		<Localized id="200" lang="French" value="col1" key="col1" />
+		<Localized id="201" lang="Dutch" value="col1" key="col1" />
+		<Localized id="202" lang="English" value="col2" key="col2" />
+		<Localized id="203" lang="French" value="col2" key="col2" />
+		<Localized id="204" lang="Dutch" value="col2" key="col2" />
+		<Localized id="205" lang="English" value="Filters" key="Filters" />
+		<Localized id="206" lang="French" value="Filters" key="Filters" />
+		<Localized id="207" lang="Dutch" value="Filters" key="Filters" />
+		<Localized id="208" lang="English" value="Options" key="options" />
+		<Localized id="209" lang="French" value="Options" key="options" />
+		<Localized id="210" lang="Dutch" value="Options" key="options" />
+		<Localized id="211" lang="English"
+			value="Use a default logging configuration" key="use_default_logging_configuration" />
+		<Localized id="212" lang="French"
+			value="Utiliser une configuration de log par défaut" key="use_default_logging_configuration" />
+		<Localized id="213" lang="Dutch"
+			value="Use a default logging configuration" key="use_default_logging_configuration" />
+		<Localized id="214" lang="English"
+			value="Use a custom logging configuration" key="use_a_custom_logging_configuration" />
+		<Localized id="215" lang="French"
+			value="Utiliser une configuration de log personnalisée" key="use_a_custom_logging_configuration" />
+		<Localized id="216" lang="Dutch"
+			value="Use a custom logging configuration" key="use_a_custom_logging_configuration" />
+		<Localized id="217" lang="English"
+			value="Logs severe (memory impact insignifiant; performance impact insignifiant)"
+			key="SEVERE_description" />
+		<Localized id="218" lang="French" value="SEVERE_description"
+			key="SEVERE_description" />
+		<Localized id="219" lang="Dutch"
+			value="Logs severe (memory impact insignifiant; performance impact insignifiant)"
+			key="SEVERE_description" />
+		<Localized id="220" lang="English"
+			value="Logs warning (memory impact reasonnable; performance impact reasonnable)"
+			key="WARNING_description" />
+		<Localized id="221" lang="French" value="WARNING_description"
+			key="WARNING_description" />
+		<Localized id="222" lang="Dutch"
+			value="Logs warning (memory impact reasonnable; performance impact reasonnable)"
+			key="WARNING_description" />
+		<Localized id="223" lang="English"
+			value="Logs info (memory impact medium; performance impact medium)"
+			key="INFO_description" />
+		<Localized id="224" lang="French" value="INFO_description"
+			key="INFO_description" />
+		<Localized id="225" lang="Dutch"
+			value="Logs info (memory impact medium; performance impact medium)"
+			key="INFO_description" />
+		<Localized id="226" lang="English"
+			value="Logs fine (memory impact high; performance impact high)" key="FINE_description" />
+		<Localized id="227" lang="French" value="FINE_description"
+			key="FINE_description" />
+		<Localized id="228" lang="Dutch"
+			value="Logs fine (memory impact high; performance impact high)" key="FINE_description" />
+		<Localized id="229" lang="English"
+			value="Logs finer (memory impact very high; performance impact very high)"
+			key="FINER_description" />
+		<Localized id="230" lang="French" value="FINER_description"
+			key="FINER_description" />
+		<Localized id="231" lang="Dutch"
+			value="Logs finer (memory impact very high; performance impact very high)"
+			key="FINER_description" />
+		<Localized id="232" lang="English"
+			value="Logs finest (memory impact huge; performance impact huge)"
+			key="FINEST_description" />
+		<Localized id="233" lang="French" value="FINEST_description"
+			key="FINEST_description" />
+		<Localized id="234" lang="Dutch"
+			value="Logs finest (memory impact huge; performance impact huge)"
+			key="FINEST_description" />
+		<Localized id="235" lang="English" value="Apply filters"
+			key="apply_filters" />
+		<Localized id="236" lang="French" value="Appliquer les filtres"
+			key="apply_filters" />
+		<Localized id="237" lang="Dutch" value="Apply filters" key="apply_filters" />
+		<Localized id="238" lang="English" value="logs," key="logs," />
+		<Localized id="239" lang="French" value="logs," key="logs," />
+		<Localized id="240" lang="Dutch" value="logs," key="logs," />
+		<Localized id="241" lang="English" value="warnings," key="warnings," />
+		<Localized id="242" lang="French" value="warnings," key="warnings," />
+		<Localized id="243" lang="Dutch" value="warnings," key="warnings," />
+		<Localized id="244" lang="English" value="severe" key="severe" />
+		<Localized id="245" lang="French" value="severe" key="severe" />
+		<Localized id="246" lang="Dutch" value="severe" key="severe" />
+		<Localized id="247" lang="English"
+			value="Use a default logging configuration" key="Use a default logging configuration" />
+		<Localized id="248" lang="French"
+			value="Use a default logging configuration" key="Use a default logging configuration" />
+		<Localized id="249" lang="Dutch"
+			value="Use a default logging configuration" key="Use a default logging configuration" />
+		<Localized id="250" lang="English"
+			value="Use a custom logging configuration" key="Use a custom logging configuration" />
+		<Localized id="251" lang="French"
+			value="Use a custom logging configuration" key="Use a custom logging configuration" />
+		<Localized id="252" lang="Dutch"
+			value="Use a custom logging configuration" key="Use a custom logging configuration" />
+		<Localized id="253" lang="English"
+			value="Logs severe (memory impact insignifiant; performance impact insignifiant)"
+			key="Logs severe (memory impact insignifiant; performance impact insignifiant)" />
+		<Localized id="254" lang="French"
+			value="Logs severe (memory impact insignifiant; performance impact insignifiant)"
+			key="Logs severe (memory impact insignifiant; performance impact insignifiant)" />
+		<Localized id="255" lang="Dutch"
+			value="Logs severe (memory impact insignifiant; performance impact insignifiant)"
+			key="Logs severe (memory impact insignifiant; performance impact insignifiant)" />
+		<Localized id="256" lang="English"
+			value="Logs warning (memory impact reasonnable; performance impact reasonnable)"
+			key="Logs warning (memory impact reasonnable; performance impact reasonnable)" />
+		<Localized id="257" lang="French"
+			value="Logs warning (memory impact reasonnable; performance impact reasonnable)"
+			key="Logs warning (memory impact reasonnable; performance impact reasonnable)" />
+		<Localized id="258" lang="Dutch"
+			value="Logs warning (memory impact reasonnable; performance impact reasonnable)"
+			key="Logs warning (memory impact reasonnable; performance impact reasonnable)" />
+		<Localized id="259" lang="English"
+			value="Logs info (memory impact medium; performance impact medium)"
+			key="Logs info (memory impact medium; performance impact medium)" />
+		<Localized id="260" lang="French"
+			value="Logs info (memory impact medium; performance impact medium)"
+			key="Logs info (memory impact medium; performance impact medium)" />
+		<Localized id="261" lang="Dutch"
+			value="Logs info (memory impact medium; performance impact medium)"
+			key="Logs info (memory impact medium; performance impact medium)" />
+		<Localized id="262" lang="English"
+			value="Logs fine (memory impact high; performance impact high)" key="Logs fine (memory impact high; performance impact high)" />
+		<Localized id="263" lang="French"
+			value="Logs fine (memory impact high; performance impact high)" key="Logs fine (memory impact high; performance impact high)" />
+		<Localized id="264" lang="Dutch"
+			value="Logs fine (memory impact high; performance impact high)" key="Logs fine (memory impact high; performance impact high)" />
+		<Localized id="265" lang="English"
+			value="Logs finer (memory impact very high; performance impact very high)"
+			key="Logs finer (memory impact very high; performance impact very high)" />
+		<Localized id="266" lang="French"
+			value="Logs finer (memory impact very high; performance impact very high)"
+			key="Logs finer (memory impact very high; performance impact very high)" />
+		<Localized id="267" lang="Dutch"
+			value="Logs finer (memory impact very high; performance impact very high)"
+			key="Logs finer (memory impact very high; performance impact very high)" />
+		<Localized id="268" lang="English"
+			value="Logs finest (memory impact huge; performance impact huge)"
+			key="Logs finest (memory impact huge; performance impact huge)" />
+		<Localized id="269" lang="French"
+			value="Logs finest (memory impact huge; performance impact huge)"
+			key="Logs finest (memory impact huge; performance impact huge)" />
+		<Localized id="270" lang="Dutch"
+			value="Logs finest (memory impact huge; performance impact huge)"
+			key="Logs finest (memory impact huge; performance impact huge)" />
+		<Localized id="271" lang="English" value="open_logs_file"
+			key="open_logs_file" />
+		<Localized id="272" lang="French" value="open_logs_file"
+			key="open_logs_file" />
+		<Localized id="273" lang="Dutch" value="open_logs_file" key="open_logs_file" />
+		<Localized id="274" lang="English" value="Open logs file..."
+			key="Open logs file..." />
+		<Localized id="275" lang="French" value="Open logs file..."
+			key="Open logs file..." />
+		<Localized id="276" lang="Dutch" value="Open logs file..."
+			key="Open logs file..." />
+		<Localized id="277" lang="English" value="Filter name" key="filter_name" />
+		<Localized id="278" lang="French" value="filter_name" key="filter_name" />
+		<Localized id="279" lang="Dutch" value="Filter name" key="filter_name" />
+		<Localized id="280" lang="English" value="Dropdown" key="dropdown" />
+		<Localized id="281" lang="French" value="Liste déroulante"
+			key="dropdown" />
+		<Localized id="282" lang="Dutch" value="Dropdown" key="dropdown" />
+		<Localized id="283" lang="English" value="add_action" key="add_action" />
+		<Localized id="284" lang="French" value="add_action" key="add_action" />
+		<Localized id="285" lang="Dutch" value="add_action" key="add_action" />
+		<Localized id="286" lang="English" value="Delete action"
+			key="delete_action" />
+		<Localized id="287" lang="French" value="Supprimer l'action"
+			key="delete_action" />
+		<Localized id="288" lang="Dutch" value="Delete action" key="delete_action" />
+		<Localized id="289" lang="English" value="Filter" key="filter" />
+		<Localized id="290" lang="French" value="filter" key="filter" />
+		<Localized id="291" lang="Dutch" value="Filter" key="filter" />
+		<Localized id="292" lang="English" value="Type" key="type" />
+		<Localized id="293" lang="French" value="Type" key="type" />
+		<Localized id="294" lang="Dutch" value="Type" key="type" />
+		<Localized id="295" lang="English" value="Highlight" key="Highlight" />
+		<Localized id="296" lang="French" value="Highlight" key="Highlight" />
+		<Localized id="297" lang="Dutch" value="Highlight" key="Highlight" />
+		<Localized id="298" lang="English" value="Dismiss" key="Dismiss" />
+		<Localized id="299" lang="French" value="Dismiss" key="Dismiss" />
+		<Localized id="300" lang="Dutch" value="Dismiss" key="Dismiss" />
+		<Localized id="301" lang="English" value="Filter message"
+			key="filter_message" />
+		<Localized id="302" lang="French" value="filter_message"
+			key="filter_message" />
+		<Localized id="303" lang="Dutch" value="Filter message" key="filter_message" />
+		<Localized id="304" lang="English" value="Contains" key="Contains" />
+		<Localized id="305" lang="French" value="Contains" key="Contains" />
+		<Localized id="306" lang="Dutch" value="Contains" key="Contains" />
+		<Localized id="307" lang="English" value="StartsWith" key="StartsWith" />
+		<Localized id="308" lang="French" value="StartsWith" key="StartsWith" />
+		<Localized id="309" lang="Dutch" value="StartsWith" key="StartsWith" />
+		<Localized id="310" lang="English" value="EndsWith" key="EndsWith" />
+		<Localized id="311" lang="French" value="EndsWith" key="EndsWith" />
+		<Localized id="312" lang="Dutch" value="EndsWith" key="EndsWith" />
+		<Localized id="313" lang="English" value="Filter log level"
+			key="filter_log_level" />
+		<Localized id="314" lang="French" value="filter_log_level"
+			key="filter_log_level" />
+		<Localized id="315" lang="Dutch" value="Filter log level"
+			key="filter_log_level" />
+		<Localized id="316" lang="English" value="SEVERE" key="SEVERE" />
+		<Localized id="317" lang="French" value="SEVERE" key="SEVERE" />
+		<Localized id="318" lang="Dutch" value="SEVERE" key="SEVERE" />
+		<Localized id="319" lang="English" value="WARNING" key="WARNING" />
+		<Localized id="320" lang="French" value="WARNING" key="WARNING" />
+		<Localized id="321" lang="Dutch" value="WARNING" key="WARNING" />
+		<Localized id="322" lang="English" value="INFO" key="INFO" />
+		<Localized id="323" lang="French" value="INFO" key="INFO" />
+		<Localized id="324" lang="Dutch" value="INFO" key="INFO" />
+		<Localized id="325" lang="English" value="FINE" key="FINE" />
+		<Localized id="326" lang="French" value="FINE" key="FINE" />
+		<Localized id="327" lang="Dutch" value="FINE" key="FINE" />
+		<Localized id="328" lang="English" value="FINER" key="FINER" />
+		<Localized id="329" lang="French" value="FINER" key="FINER" />
+		<Localized id="330" lang="Dutch" value="FINER" key="FINER" />
+		<Localized id="331" lang="English" value="FINEST" key="FINEST" />
+		<Localized id="332" lang="French" value="FINEST" key="FINEST" />
+		<Localized id="333" lang="Dutch" value="FINEST" key="FINEST" />
+		<Localized id="334" lang="English" value="Filter source"
+			key="filter_source" />
+		<Localized id="335" lang="French" value="filter_source" key="filter_source" />
+		<Localized id="336" lang="Dutch" value="Filter source" key="filter_source" />
+		<Localized id="337" lang="English" value="Package" key="Package" />
+		<Localized id="338" lang="French" value="Paquetage" key="Package" />
+		<Localized id="339" lang="Dutch" value="Package" key="Package" />
+		<Localized id="340" lang="English" value="Class" key="Class" />
+		<Localized id="341" lang="French" value="Class" key="Class" />
+		<Localized id="342" lang="Dutch" value="Class" key="Class" />
+		<Localized id="343" lang="English" value="Method" key="Method" />
+		<Localized id="344" lang="French" value="Méthode" key="Method" />
+		<Localized id="345" lang="Dutch" value="Method" key="Method" />
+		<Localized id="346" lang="English" value="Filter date" key="filter_date" />
+		<Localized id="347" lang="French" value="filter_date" key="filter_date" />
+		<Localized id="348" lang="Dutch" value="Filter date" key="filter_date" />
+		<Localized id="349" lang="English" value="Before" key="Before" />
+		<Localized id="350" lang="French" value="Before" key="Before" />
+		<Localized id="351" lang="Dutch" value="Before" key="Before" />
+		<Localized id="352" lang="English" value="After" key="After" />
+		<Localized id="353" lang="French" value="After" key="After" />
+		<Localized id="354" lang="Dutch" value="After" key="After" />
+		<Localized id="355" lang="English" value="Between" key="Between" />
+		<Localized id="356" lang="French" value="Between" key="Between" />
+		<Localized id="357" lang="Dutch" value="Between" key="Between" />
+		<Localized id="358" lang="English" value="and" key="and" />
+		<Localized id="359" lang="French" value="et" key="and" />
+		<Localized id="360" lang="Dutch" value="and" key="and" />
+		<Localized id="361" lang="English" value="Filter thread"
+			key="filter_thread" />
+		<Localized id="362" lang="French" value="filter_thread" key="filter_thread" />
+		<Localized id="363" lang="Dutch" value="Filter thread" key="filter_thread" />
+		<Localized id="364" lang="English" value="Filter stacktrace"
+			key="filter_stacktrace" />
+		<Localized id="365" lang="French" value="filter_stacktrace"
+			key="filter_stacktrace" />
+		<Localized id="366" lang="Dutch" value="Filter stacktrace"
+			key="filter_stacktrace" />
+		<Localized id="367" lang="English"
+			value="Utiliser une configuration de log par défaut" key="Utiliser une configuration de log par défaut" />
+		<Localized id="368" lang="French"
+			value="Utiliser une configuration de log par défaut" key="Utiliser une configuration de log par défaut" />
+		<Localized id="369" lang="Dutch"
+			value="Utiliser une configuration de log par défaut" key="Utiliser une configuration de log par défaut" />
+		<Localized id="370" lang="English"
+			value="Utiliser une configuration de log personnalisée" key="Utiliser une configuration de log personnalisée" />
+		<Localized id="371" lang="French"
+			value="Utiliser une configuration de log personnalisée" key="Utiliser une configuration de log personnalisée" />
+		<Localized id="372" lang="Dutch"
+			value="Utiliser une configuration de log personnalisée" key="Utiliser une configuration de log personnalisée" />
+		<Localized id="373" lang="English" value="Filter type" key="filter_type" />
+		<Localized id="374" lang="French" value="filter_type" key="filter_type" />
+		<Localized id="375" lang="Dutch" value="Filter type" key="filter_type" />
+		<Localized id="376" lang="English" value="Done" key="done" />
+		<Localized id="377" lang="French" value="Effectué" key="done" />
+		<Localized id="378" lang="Dutch" value="Done" key="done" />
+		<Localized id="379" lang="English" value="Dismiss filters"
+			key="dismiss_filters" />
+		<Localized id="380" lang="French" value="Ne plus filtrer"
+			key="dismiss_filters" />
+		<Localized id="381" lang="Dutch" value="Dismiss filters"
+			key="dismiss_filters" />
+		<Localized id="382" lang="English" value="(filtered)" key="(filtered)" />
+		<Localized id="383" lang="French" value="(filtered)" key="(filtered)" />
+		<Localized id="384" lang="Dutch" value="(filtered)" key="(filtered)" />
+		<Localized id="385" lang="English" value="filter_sequence"
+			key="filter_sequence" />
+		<Localized id="386" lang="French" value="filter_sequence"
+			key="filter_sequence" />
+		<Localized id="387" lang="Dutch" value="filter_sequence"
+			key="filter_sequence" />
+		<Localized id="388" lang="English" value="Default configuration file"
+			key="default_configuration_file" />
+		<Localized id="389" lang="French"
+			value="Fichier de configuration par défaut" key="default_configuration_file" />
+		<Localized id="390" lang="Dutch" value="Default configuration file"
+			key="default_configuration_file" />
+		<Localized id="391" lang="English" value="Reload" key="reload" />
+		<Localized id="392" lang="French" value="Recharger" key="reload" />
+		<Localized id="393" lang="Dutch" value="Reload" key="reload" />
+		<Localized id="394" lang="English" value="Description" key="description" />
+		<Localized id="395" lang="French" value="Description" key="description" />
+		<Localized id="396" lang="Dutch" value="Description" key="description" />
+		<Localized id="397" lang="English" value="OnlyKeep" key="OnlyKeep" />
+		<Localized id="398" lang="French" value="OnlyKeep" key="OnlyKeep" />
+		<Localized id="399" lang="Dutch" value="OnlyKeep" key="OnlyKeep" />
+	</LocalizedDictionary>
 </Panel>
