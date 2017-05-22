@@ -249,6 +249,7 @@ public class CreateFlexoBehaviour extends FlexoAction<CreateFlexoBehaviour, Flex
 			behaviourClassMap.put(CloningScheme.class, flexoConcept.getOwningVirtualModel().getTechnologyAdapter());
 			behaviourClassMap.put(CreationScheme.class, flexoConcept.getOwningVirtualModel().getTechnologyAdapter());
 			behaviourClassMap.put(DeletionScheme.class, flexoConcept.getOwningVirtualModel().getTechnologyAdapter());
+			behaviourClassMap.put(EventListener.class, flexoConcept.getOwningVirtualModel().getTechnologyAdapter());
 			for (ModelSlot<?> ms : flexoConcept.getOwningVirtualModel().getModelSlots()) {
 				List<Class<? extends FlexoBehaviour>> msBehaviours = ms.getAvailableFlexoBehaviourTypes();
 				for (Class<? extends FlexoBehaviour> behaviour : msBehaviours) {
