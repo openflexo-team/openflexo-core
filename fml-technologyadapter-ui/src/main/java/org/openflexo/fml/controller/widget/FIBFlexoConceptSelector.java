@@ -148,11 +148,11 @@ public class FIBFlexoConceptSelector extends FIBFlexoObjectSelector<FlexoConcept
 		}
 	}
 
-	@Override
+	/*@Override
 	protected boolean isAcceptableValue(Object o) {
 		System.out.println("Est ce acceptable ? " + o);
 		return super.isAcceptableValue(o);
-	}
+	}*/
 
 	public FlexoObject getRootObject() {
 		if (getInheritingContext() != null) {
