@@ -417,9 +417,11 @@ public class FlexoDocumentEditorFactory<D extends FlexoDocument<D, TA>, TA exten
 
 	protected void processDrawingRun(FlexoDrawingRun<D, TA> drawingRun) throws BadLocationException {
 
-		ImageIcon ii = new ImageIcon(drawingRun.getImage());
-		document.insertPicture(ii, currentOffset);
-		currentOffset++;
+		if (drawingRun.getImage() != null) {
+			ImageIcon ii = new ImageIcon(drawingRun.getImage());
+			document.insertPicture(ii, currentOffset);
+			currentOffset++;
+		}
 
 	}
 
