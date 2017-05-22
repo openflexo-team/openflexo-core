@@ -123,7 +123,25 @@ public abstract class AbstractVirtualModelInstanceResourceImpl<VMI extends Abstr
 			}
 		}*/
 
+		if (returned.getFMLRunTimeEngine() != null) {
+			// TODO: today AbstractVirtualModelInstance is a RunTimeEvaluationContext
+			// TODO: design issue, we should separate FlexoConceptInstance from RunTimeEvaluationContext
+			// This inheritance should disappear
+			returned.getFMLRunTimeEngine().addToExecutionContext(returned, returned);
+		}
+
 		return returned;
+	}
+
+	@Override
+	public void unloadResourceData(boolean deleteResourceData) {
+		if (getLoadedResourceData().getFMLRunTimeEngine() != null) {
+			// TODO: today AbstractVirtualModelInstance is a RunTimeEvaluationContext
+			// TODO: design issue, we should separate FlexoConceptInstance from RunTimeEvaluationContext
+			// This inheritance should disappear
+			getLoadedResourceData().getFMLRunTimeEngine().removeFromExecutionContext(getLoadedResourceData(), getLoadedResourceData());
+		}
+		super.unloadResourceData(deleteResourceData);
 	}
 
 	@Override

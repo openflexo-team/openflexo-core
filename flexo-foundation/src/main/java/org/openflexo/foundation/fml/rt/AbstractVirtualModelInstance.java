@@ -118,6 +118,8 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 		extends FlexoConceptInstance, ResourceData<VMI>, FlexoModel<VMI, VM>, TechnologyObject<FMLRTTechnologyAdapter>,
 		IndexableContainer<FlexoConceptInstance> {
 
+	public static final String EVENT_FIRED = "EventFired";
+
 	@PropertyIdentifier(type = String.class)
 	public static final String NAME_KEY = "name";
 	@PropertyIdentifier(type = String.class)
@@ -225,7 +227,7 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 	 * @param pattern
 	 * @return
 	 */
-	public FlexoConceptInstance fireNewEvent(FlexoEvent event);
+	public FlexoEventInstance makeNewEvent(FlexoEvent event);
 
 	/**
 	 * Return a newly created list of all {@link FlexoConceptInstance} conform to the FlexoConcept identified by supplied String parameter
@@ -453,16 +455,18 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 		}
 
 		/**
-		 * Instanciate and fire a new {@link FlexoConceptInstance} as a Flexo event
+		 * Instanciate and fire a new {@link FlexoEventInstance} as a Flexo event
 		 * 
 		 * @param pattern
 		 * @return
 		 */
 		@Override
-		public FlexoConceptInstance fireNewEvent(FlexoEvent event) {
+		public FlexoEventInstance makeNewEvent(FlexoEvent event) {
 
-			FlexoConceptInstance returned = getResource().getFactory().newInstance(FlexoConceptInstance.class);
+			FlexoEventInstance returned = getResource().getFactory().newInstance(FlexoEventInstance.class);
 			returned.setFlexoConcept(event);
+			returned.setSourceVirtualModelInstance(this);
+
 			return returned;
 		}
 

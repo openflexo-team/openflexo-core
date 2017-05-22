@@ -94,6 +94,8 @@ import org.openflexo.model.annotations.Embedded;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.Getter.Cardinality;
 import org.openflexo.model.annotations.ImplementationClass;
+import org.openflexo.model.annotations.Import;
+import org.openflexo.model.annotations.Imports;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.PastingPoint;
 import org.openflexo.model.annotations.PropertyIdentifier;
@@ -115,6 +117,7 @@ import org.openflexo.toolbox.StringUtils;
 @ModelEntity
 @ImplementationClass(FlexoConceptInstance.FlexoConceptInstanceImpl.class)
 @XMLElement
+@Imports({ @Import(FlexoEventInstance.class) })
 // TODO: design issue, we should separate FlexoConceptInstance from RunTimeEvaluationContext
 // This inheritance should disappear
 public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceObject, Bindable, RunTimeEvaluationContext {

@@ -53,9 +53,9 @@ import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
  */
 public interface FMLRunTimeEngine {
 
-	public void addToExecutionContext(AbstractVirtualModelInstance<?, ?> vmi);
+	public void addToExecutionContext(AbstractVirtualModelInstance<?, ?> vmi, RunTimeEvaluationContext evaluationContext);
 
-	public void removeFromExecutionContext(AbstractVirtualModelInstance<?, ?> vmi);
+	public void removeFromExecutionContext(AbstractVirtualModelInstance<?, ?> vmi, RunTimeEvaluationContext evaluationContext);
 
 	public void execute(FlexoBehaviourAction<?, ?, ?> behaviourExecution);
 

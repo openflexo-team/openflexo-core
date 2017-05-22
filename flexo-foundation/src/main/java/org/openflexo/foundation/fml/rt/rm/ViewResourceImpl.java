@@ -38,6 +38,11 @@
 
 package org.openflexo.foundation.fml.rt.rm;
 
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Logger;
+
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.IOFlexoException;
 import org.openflexo.foundation.InconsistentDataException;
@@ -55,11 +60,6 @@ import org.openflexo.rm.FileSystemResourceLocatorImpl;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.toolbox.IProgress;
-
-import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Logger;
 
 /**
  * Default implementation for {@link ViewResource}

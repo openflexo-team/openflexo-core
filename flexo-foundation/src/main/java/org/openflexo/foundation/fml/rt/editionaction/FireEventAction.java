@@ -46,6 +46,7 @@ import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoEvent;
 import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
+import org.openflexo.foundation.fml.rt.FlexoEventInstance;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
@@ -97,11 +98,21 @@ public interface FireEventAction<VMI extends AbstractVirtualModelInstance<VMI, ?
 		}
 
 		@Override
-		protected FlexoConceptInstance makeNewFlexoConceptInstance(RunTimeEvaluationContext evaluationContext) {
+		protected FlexoEventInstance makeNewFlexoConceptInstance(RunTimeEvaluationContext evaluationContext) {
 			VMI vmi = getVirtualModelInstance(evaluationContext);
-			return vmi.fireNewEvent(getEventType());
+			return vmi.makeNewEvent(getEventType());
 		}
 
+		@Override
+		public FlexoEventInstance execute(RunTimeEvaluationContext evaluationContext) {
+			VMI vmi = getVirtualModelInstance(evaluationContext);
+			FlexoEventInstance returned = (FlexoEventInstance) super.execute(evaluationContext);
+
+			// And we fire the new event to the listening FMLRunTimeEngine(s)
+			vmi.getPropertyChangeSupport().firePropertyChange(AbstractVirtualModelInstance.EVENT_FIRED, null, returned);
+
+			return returned;
+		}
 	}
 
 }
