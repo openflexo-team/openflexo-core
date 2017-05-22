@@ -40,8 +40,10 @@ package org.openflexo.foundation.fml;
 
 import java.lang.reflect.Type;
 
+import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
+import org.openflexo.foundation.fml.binding.EventListenerBindingModel;
 import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
 import org.openflexo.model.annotations.CloningStrategy;
 import org.openflexo.model.annotations.CloningStrategy.StrategyType;
@@ -113,9 +115,11 @@ public interface EventListener extends AbstractActionScheme {
 		@Override
 		public void setEventType(FlexoEvent eventType) {
 			if ((eventType == null && this.eventType != null) || (eventType != null && !eventType.equals(this.eventType))) {
+				String oldSignature = getSignature();
 				FlexoEvent oldValue = this.eventType;
 				this.eventType = eventType;
 				getPropertyChangeSupport().firePropertyChange("eventType", oldValue, eventType);
+				updateSignature(oldSignature);
 				// notifyResultingTypeChanged();
 			}
 		}
@@ -170,6 +174,23 @@ public interface EventListener extends AbstractActionScheme {
 			if (dataBinding == getListenedVirtualModelInstance()) {
 				getPropertyChangeSupport().firePropertyChange("listenedVirtualModelType", null, getListenedVirtualModelType());
 			}
+		}
+
+		/**
+		 * Return the FlexoBehaviour's specific {@link BindingModel}
+		 */
+		@Override
+		protected EventListenerBindingModel makeBindingModel() {
+			return new EventListenerBindingModel(this);
+		}
+
+		@Override
+		protected String getParameterListAsString(boolean fullyQualified) {
+			/*if (getEventType() != null) {
+				return getEventType().getName();
+			}
+			return "FlexoEvent";*/
+			return "event";
 		}
 
 	}

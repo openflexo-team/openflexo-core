@@ -52,9 +52,8 @@ import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.binding.BindingValueChangeListener;
 import org.openflexo.foundation.fml.EventListener;
 import org.openflexo.foundation.fml.FlexoConcept;
-import org.openflexo.foundation.fml.FlexoEvent;
-import org.openflexo.foundation.fml.rt.action.ActionSchemeAction;
-import org.openflexo.foundation.fml.rt.action.ActionSchemeActionType;
+import org.openflexo.foundation.fml.rt.action.EventListenerAction;
+import org.openflexo.foundation.fml.rt.action.EventListenerActionType;
 
 /**
  * Base implementation for {@link FMLRunTimeEngine}
@@ -74,7 +73,7 @@ public abstract class DefaultFMLRunTimeEngine implements FMLRunTimeEngine, Prope
 	private Set<EventInstanceListener> eventListeners;
 
 	// Stores all EventInstanceListener relatively to listened VirtualModelInstance
-	private Map<AbstractVirtualModelInstance<?, ?>, Set<EventInstanceListener>> listeningInstances;
+	protected Map<AbstractVirtualModelInstance<?, ?>, Set<EventInstanceListener>> listeningInstances;
 
 	public DefaultFMLRunTimeEngine() {
 		virtualModelInstances = new ArrayList<>();
@@ -271,27 +270,12 @@ public abstract class DefaultFMLRunTimeEngine implements FMLRunTimeEngine, Prope
 		return null;
 	}
 
-	private void receivedEvent(FlexoEventInstance event) {
-		if (event.getFlexoConcept() instanceof FlexoEvent) {
-			System.out.println("Bon a qui je distribue cet event ???? " + event);
-			System.out.println("VMI=" + event.getSourceVirtualModelInstance());
-			for (AbstractVirtualModelInstance<?, ?> vmi : listeningInstances.keySet()) {
-				System.out.println(" > " + vmi + " -> " + listeningInstances.get(vmi));
-			}
-
-			Set<EventInstanceListener> listeners = listeningInstances.get(event.getSourceVirtualModelInstance());
-			if (listeners != null) {
-				for (EventInstanceListener l : listeners) {
-					if (l.getListener().getEventType().isAssignableFrom(event.getFlexoEvent())) {
-						System.out.println("Donc ok, je declenche " + l.getListener() + " pour " + l.getInstanceBeeingListening());
-						ActionSchemeActionType actionType = new ActionSchemeActionType(l.getListener(), l.getInstanceBeeingListening());
-						ActionSchemeAction action = actionType.makeNewAction(l.getInstanceBeeingListening(), null,
-								l.getInstanceBeeingListening().getEditor());
-						action.doAction();
-					}
-				}
-			}
-		}
+	protected void fireEventListener(FlexoConceptInstance fci, EventListener eventListener, FlexoEventInstance event) {
+		System.out.println("fireEventListener " + eventListener + " for " + fci);
+		EventListenerActionType actionType = new EventListenerActionType(eventListener, fci);
+		EventListenerAction action = actionType.makeNewAction(fci, null, fci.getEditor());
+		action.setEventInstance(event);
+		action.doAction();
 	}
 
 }

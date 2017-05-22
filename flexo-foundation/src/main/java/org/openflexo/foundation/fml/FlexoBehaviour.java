@@ -815,7 +815,7 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 			return behaviourSignature;
 		}
 
-		private String getParameterListAsString(boolean fullyQualified) {
+		protected String getParameterListAsString(boolean fullyQualified) {
 			StringBuffer returned = new StringBuffer();
 			boolean isFirst = true;
 			for (FlexoBehaviourParameter param : getParameters()) {

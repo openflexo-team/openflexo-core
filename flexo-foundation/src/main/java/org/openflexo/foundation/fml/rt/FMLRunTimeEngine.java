@@ -59,6 +59,6 @@ public interface FMLRunTimeEngine {
 
 	public void execute(FlexoBehaviourAction<?, ?, ?> behaviourExecution);
 
-	public void pushEvent(FlexoConceptInstance event);
+	public void receivedEvent(FlexoEventInstance event);
 
 }

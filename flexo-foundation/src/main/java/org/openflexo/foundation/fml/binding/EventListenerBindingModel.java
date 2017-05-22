@@ -1,9 +1,8 @@
 /**
  * 
- * Copyright (c) 2013-2014, Openflexo
- * Copyright (c) 2012-2012, AgileBirds
+ * Copyright (c) 2014, Openflexo
  * 
- * This file is part of Connie-core, a component of the software infrastructure 
+ * This file is part of Flexodiagram, a component of the software infrastructure 
  * developed at Openflexo.
  * 
  * 
@@ -37,41 +36,34 @@
  * 
  */
 
-package org.openflexo.foundation.fml.rt;
+package org.openflexo.foundation.fml.binding;
 
-import java.util.Set;
-
-import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
+import org.openflexo.connie.BindingModel;
+import org.openflexo.foundation.fml.EventListener;
 
 /**
- * Synchronous implementation for {@link FMLRunTimeEngine}<br>
- * FML is executed synchronously in the calling Thread
+ * This is the {@link BindingModel} exposed by a {@link EventListener} behaviour<br>
  * 
  * @author sylvain
  * 
  */
-public class SynchronousFMLRunTimeEngine extends DefaultFMLRunTimeEngine {
+public class EventListenerBindingModel extends FlexoBehaviourBindingModel {
 
-	public SynchronousFMLRunTimeEngine() {
+	private FiredEventBindingVariable firedEventBindingVariable;
+
+	public EventListenerBindingModel(EventListener eventListener) {
+		super(eventListener);
+
+		firedEventBindingVariable = new FiredEventBindingVariable(eventListener);
+		addToBindingVariables(firedEventBindingVariable);
 	}
 
-	// Synchronous implementation
 	@Override
-	public void execute(FlexoBehaviourAction<?, ?, ?> behaviourExecution) {
-		behaviourExecution.doAction();
+	public EventListener getFlexoBehaviour() {
+		return (EventListener) super.getFlexoBehaviour();
 	}
 
-	// Synchronous implementation
-	@Override
-	public void receivedEvent(FlexoEventInstance event) {
-		Set<EventInstanceListener> listeners = listeningInstances.get(event.getSourceVirtualModelInstance());
-		if (listeners != null) {
-			for (EventInstanceListener l : listeners) {
-				if (l.getListener().getEventType().isAssignableFrom(event.getFlexoEvent())) {
-					fireEventListener(l.getInstanceBeeingListening(), l.getListener(), event);
-				}
-			}
-		}
+	public FiredEventBindingVariable getFiredEventBindingVariable() {
+		return firedEventBindingVariable;
 	}
-
 }
