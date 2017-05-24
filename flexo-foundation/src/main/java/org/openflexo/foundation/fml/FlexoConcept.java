@@ -226,8 +226,6 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 	 */
 	public FlexoBehaviour getDeclaredFlexoBehaviour(String behaviourName, Type... parameters);
 
-	public FlexoBehaviour getFlexoBehaviourForURI(String uri);
-
 	@Getter(value = FLEXO_PROPERTIES_KEY, cardinality = Cardinality.LIST, inverse = FlexoProperty.FLEXO_CONCEPT_KEY)
 	@XMLElement(deprecatedContext = "ModelSlot_", primary = true)
 	@CloningStrategy(StrategyType.CLONE)
@@ -902,24 +900,6 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 				index++;
 			}
 			return testName;
-		}
-
-		@Override
-		public FlexoBehaviour getFlexoBehaviourForURI(String uri) {
-
-			if (uri != null && !uri.isEmpty() && getOwningVirtualModel() != null) {
-				if (uri.contains(getOwningVirtualModel().getURI())) {
-					String behaviourname = uri.replace(getOwningVirtualModel().getURI(), "").substring(1);
-					return getFlexoBehaviour(behaviourname);
-				}
-				else {
-					logger.warning("Trying to retrieve a FlexoBehaviour (" + uri + ") that does not belong to current Concept " + getURI());
-					return null;
-				}
-			}
-
-			return null;
-
 		}
 
 		@Override
