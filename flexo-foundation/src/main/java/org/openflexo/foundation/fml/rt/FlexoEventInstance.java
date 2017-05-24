@@ -94,5 +94,14 @@ public interface FlexoEventInstance extends FlexoConceptInstance {
 		public FlexoEvent getFlexoConcept() {
 			return (FlexoEvent) super.getFlexoConcept();
 		}
+
+		// We override here getOwningVirtualModelInstance() by relying on getSourceVirtualModelInstance() instead of
+		// getVirtualModelInstance() which returns
+		// null value because FlexoEventInstance is not persistent in the VirtualModelInstance
+		@Override
+		public AbstractVirtualModelInstance<?, ?> getOwningVirtualModelInstance() {
+			return getSourceVirtualModelInstance();
+		}
+
 	}
 }
