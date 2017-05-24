@@ -108,8 +108,14 @@ public class ViewResourceFactory extends AbstractVirtualModelInstanceResourceFac
 		registerResource(returned, resourceCenter, technologyContextManager);
 
 		if (createEmptyContents) {
-			createEmptyContents(returned);
+			View resourceData = createEmptyContents(returned);
 			returned.save(null);
+			if (resourceData.getFMLRunTimeEngine() != null) {
+				// TODO: today AbstractVirtualModelInstance is a RunTimeEvaluationContext
+				// TODO: design issue, we should separate FlexoConceptInstance from RunTimeEvaluationContext
+				// This inheritance should disappear
+				resourceData.getFMLRunTimeEngine().addToExecutionContext(resourceData, resourceData);
+			}
 		}
 
 		parentViewResource.addToContents(returned);

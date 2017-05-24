@@ -90,6 +90,12 @@ public class VirtualModelInstanceResourceFactory
 			returned.setResourceData(resourceData);
 			returned.setModified(true);
 			returned.save(null);
+			if (resourceData.getFMLRunTimeEngine() != null) {
+				// TODO: today AbstractVirtualModelInstance is a RunTimeEvaluationContext
+				// TODO: design issue, we should separate FlexoConceptInstance from RunTimeEvaluationContext
+				// This inheritance should disappear
+				resourceData.getFMLRunTimeEngine().addToExecutionContext(resourceData, resourceData);
+			}
 		}
 
 		// Finally add to contents of viewResource
