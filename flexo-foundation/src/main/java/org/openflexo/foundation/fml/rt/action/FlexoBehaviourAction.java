@@ -57,6 +57,7 @@ import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.ListParameter;
 import org.openflexo.foundation.fml.URIParameter;
+import org.openflexo.foundation.fml.binding.DeclarationBindingVariable;
 import org.openflexo.foundation.fml.binding.FMLBindingFactory;
 import org.openflexo.foundation.fml.binding.FlexoBehaviourBindingModel;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
@@ -321,6 +322,10 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 		if (variables.get(variable.getVariableName()) != null) {
 			return variables.get(variable.getVariableName());
 		}
+		// TODO: I think code above should be replaced by that:
+		/*if (variable instanceof DeclarationBindingVariable) {
+			return variables.get(variable.getVariableName());
+		}*/
 
 		if (variable.getVariableName().equals(FlexoBehaviourBindingModel.PARAMETERS_PROPERTY)) {
 			return getParametersValues();
@@ -351,10 +356,15 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 	@Override
 	public void setValue(Object value, BindingVariable variable) {
 
-		if (variables.get(variable.getVariableName()) != null) {
+		if (variable instanceof DeclarationBindingVariable) {
 			variables.put(variable.getVariableName(), value);
 			return;
 		}
+
+		/*if (variables.get(variable.getVariableName()) != null) {
+			variables.put(variable.getVariableName(), value);
+			return;
+		}*/
 		else if (variable.getVariableName().equals(FlexoBehaviourBindingModel.PARAMETERS_PROPERTY)) {
 			logger.warning(
 					"Forbidden write access " + FlexoBehaviourBindingModel.PARAMETERS_PROPERTY + " in " + this + " of " + getClass());
