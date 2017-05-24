@@ -133,6 +133,7 @@ new_model_slot=New model slot
 new_primitive_role=New primitive role
 new_technology_role=New technology role
 no_parameters_defined=no_parameters_defined
+object_to_notify=Object to notify
 object_type=Object type
 ontology_class=Ontologisch klasse
 palette_element=Element van het palet
