@@ -87,8 +87,18 @@ public interface AddFlexoConceptInstance<VMI extends AbstractVirtualModelInstanc
 
 		@Override
 		protected FlexoConceptInstance makeNewFlexoConceptInstance(RunTimeEvaluationContext evaluationContext) {
+			FlexoConceptInstance container = null;
 			VMI vmi = getVirtualModelInstance(evaluationContext);
-			return vmi.makeNewFlexoConceptInstance(getFlexoConceptType());
+
+			if (getFlexoConceptType().getContainerFlexoConcept() != null) {
+				container = getContainer(evaluationContext);
+				if (container == null) {
+					logger.warning("null container while creating new concept " + getFlexoConceptType());
+					return null;
+				}
+			}
+
+			return vmi.makeNewFlexoConceptInstance(getFlexoConceptType(), container);
 		}
 	}
 

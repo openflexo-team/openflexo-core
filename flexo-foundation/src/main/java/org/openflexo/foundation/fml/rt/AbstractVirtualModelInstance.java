@@ -222,6 +222,14 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 	public FlexoConceptInstance makeNewFlexoConceptInstance(FlexoConcept concept);
 
 	/**
+	 * Instantiate and register a new {@link FlexoConceptInstance} in a container FlexoConceptInstance
+	 * 
+	 * @param pattern
+	 * @return
+	 */
+	public FlexoConceptInstance makeNewFlexoConceptInstance(FlexoConcept concept, FlexoConceptInstance container);
+
+	/**
 	 * Instanciate and fire a new {@link FlexoConceptInstance} as a Flexo event
 	 * 
 	 * @param pattern
@@ -448,8 +456,27 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 		@Override
 		public FlexoConceptInstance makeNewFlexoConceptInstance(FlexoConcept concept) {
 
+			/*FlexoConceptInstance returned = getResource().getFactory().newInstance(FlexoConceptInstance.class);
+			returned.setFlexoConcept(concept);
+			addToFlexoConceptInstances(returned);
+			return returned;*/
+			return makeNewFlexoConceptInstance(concept, null);
+		}
+
+		/**
+		 * Instantiate and register a new {@link FlexoConceptInstance} in a container FlexoConceptInstance
+		 * 
+		 * @param pattern
+		 * @return
+		 */
+		@Override
+		public FlexoConceptInstance makeNewFlexoConceptInstance(FlexoConcept concept, FlexoConceptInstance container) {
+
 			FlexoConceptInstance returned = getResource().getFactory().newInstance(FlexoConceptInstance.class);
 			returned.setFlexoConcept(concept);
+			if (container != null) {
+				container.addToEmbeddedFlexoConceptInstances(returned);
+			}
 			addToFlexoConceptInstances(returned);
 			return returned;
 		}
