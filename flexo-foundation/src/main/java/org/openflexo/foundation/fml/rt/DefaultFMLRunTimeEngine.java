@@ -93,7 +93,7 @@ public abstract class DefaultFMLRunTimeEngine implements FMLRunTimeEngine, Prope
 				if (requireEventListening(concept)) {
 					for (FlexoConceptInstance fci : vmi.getFlexoConceptInstances(concept)) {
 						for (EventListener el : concept.getFlexoBehaviours(EventListener.class)) {
-							startEventListening(fci, el, evaluationContext);
+							startEventListening(fci, el, fci);
 						}
 					}
 				}
@@ -127,16 +127,17 @@ public abstract class DefaultFMLRunTimeEngine implements FMLRunTimeEngine, Prope
 	public void propertyChange(PropertyChangeEvent evt) {
 		if (evt.getSource() instanceof AbstractVirtualModelInstance && virtualModelInstances.contains(evt.getSource())) {
 			if (evt.getPropertyName().equals(AbstractVirtualModelInstance.EVENT_FIRED)) {
-				System.out.println("Ouaip je recois l'event " + evt.getNewValue());
+				// System.out.println("Ouaip je recois l'event " + evt.getNewValue());
 				receivedEvent((FlexoEventInstance) evt.getNewValue());
 			}
 			else if (evt.getPropertyName().equals(AbstractVirtualModelInstance.FLEXO_CONCEPT_INSTANCES_KEY)) {
-				System.out.println(">>>>>>>>>> hop, je recois un nouvel event " + evt);
+				// System.out.println(">>>>>>>>>> hop, je recois un nouvel event " + evt);
 				if (evt.getNewValue() instanceof FlexoConceptInstance) {
 					FlexoConceptInstance newValue = (FlexoConceptInstance) evt.getNewValue();
+					// System.out.println("Je detecte bien ici la creation d'un nouveau FlexoConceptInstance " + newValue);
 					if (requireEventListening(newValue.getFlexoConcept())) {
 						for (EventListener el : newValue.getFlexoConcept().getFlexoBehaviours(EventListener.class)) {
-							startEventListening(newValue, el, (AbstractVirtualModelInstance) evt.getSource());
+							startEventListening(newValue, el, /*(AbstractVirtualModelInstance) evt.getSource()*/newValue);
 						}
 					}
 				}
@@ -192,8 +193,8 @@ public abstract class DefaultFMLRunTimeEngine implements FMLRunTimeEngine, Prope
 				bvChangeListener = new BindingValueChangeListener<AbstractVirtualModelInstance<?, ?>>(vmiBinding, evaluationContext, true) {
 					@Override
 					public void bindingValueChanged(Object source, AbstractVirtualModelInstance<?, ?> newValue) {
-						System.out.println(" **** bindingValueChanged() detected for vmi=" + listener.getListenedVirtualModelInstance()
-								+ " with newValue=" + newValue + " source=" + source);
+						// System.out.println(" **** bindingValueChanged() detected for fci=" + instanceBeeingListening + "vmi="
+						// + listener.getListenedVirtualModelInstance() + " with newValue=" + newValue + " source=" + source);
 						listenTo(newValue);
 					}
 				};
@@ -209,6 +210,7 @@ public abstract class DefaultFMLRunTimeEngine implements FMLRunTimeEngine, Prope
 		}
 
 		private void listenTo(AbstractVirtualModelInstance<?, ?> vmi) {
+
 			if (vmi != listenedVMI) {
 				if (listenedVMI != null) {
 					Set<EventInstanceListener> l = listeningInstances.get(listenedVMI);
@@ -225,7 +227,7 @@ public abstract class DefaultFMLRunTimeEngine implements FMLRunTimeEngine, Prope
 					if (!l.contains(this)) {
 						l.add(this);
 					}
-					System.out.println("%%%%% OK j'ai rajoute " + this + " pour " + vmi);
+					// System.out.println("%%%%% Added " + this + " for " + vmi);
 				}
 				listenedVMI = vmi;
 			}
