@@ -43,6 +43,7 @@ import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Vector;
 import java.util.logging.Logger;
+
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
@@ -223,25 +224,13 @@ public interface DeleteFlexoConceptInstance<VMI extends AbstractVirtualModelInst
 
 		@Override
 		public void _setDeletionSchemeURI(String uri) {
-			if (getFlexoConceptType() != null) {
-				deletionScheme = (DeletionScheme) getFlexoConceptType().getFlexoBehaviourForURI(uri);
-				if (deletionScheme == null) {
-					logger.warning("Not able to find deletion Scheme : " + uri);
-					_deletionSchemeURI = null;
-				}
-			}
-			else {
-				_deletionSchemeURI = uri;
-			}
+			_deletionSchemeURI = uri;
 		}
 
 		@Override
 		public DeletionScheme getDeletionScheme() {
 			if (deletionScheme == null && _deletionSchemeURI != null) {
-				if (getFlexoConceptType() != null) {
-					deletionScheme = (DeletionScheme) getFlexoConceptType().getFlexoBehaviourForURI(_deletionSchemeURI);
-				}
-				else if (getViewPointLibrary() != null) {
+				if (getViewPointLibrary() != null) {
 					deletionScheme = (DeletionScheme) getViewPointLibrary().getFlexoBehaviour(_deletionSchemeURI, true);
 				}
 			}
@@ -307,7 +296,7 @@ public interface DeleteFlexoConceptInstance<VMI extends AbstractVirtualModelInst
 
 		@Override
 		public FlexoConceptInstance execute(RunTimeEvaluationContext evaluationContext) {
-			logger.info("Perform performDeleteFlexoConceptInstance " + evaluationContext);
+			//logger.info("Perform performDeleteFlexoConceptInstance " + evaluationContext);
 			AbstractVirtualModelInstance<?, ?> vmInstance = null; // getVirtualModelInstance(evaluationContext);
 
 			// DeletionSchemeAction deletionSchemeAction = DeletionSchemeAction.actionType.makeNewEmbeddedAction(null, null, action);
@@ -318,11 +307,11 @@ public interface DeleteFlexoConceptInstance<VMI extends AbstractVirtualModelInst
 				if (objectToDelete != null) {
 					vmInstance = objectToDelete.getVirtualModelInstance();
 
-					logger.info("FlexoConceptInstance To Delete: " + objectToDelete);
-					logger.info("VirtualModelInstance: " + vmInstance);
-					logger.info("deletionScheme: " + deletionScheme);
+					//logger.info("FlexoConceptInstance To Delete: " + objectToDelete);
+					//logger.info("VirtualModelInstance: " + vmInstance);
+					//logger.info("deletionScheme: " + getDeletionScheme());
 
-					if (deletionScheme == null) {
+					if (getDeletionScheme() == null) {
 						logger.warning("No deletion scheme !");
 						return objectToDelete;
 					}
