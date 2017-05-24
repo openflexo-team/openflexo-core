@@ -40,10 +40,12 @@ package org.openflexo.foundation.fml.rt.editionaction;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
+
 import org.openflexo.connie.BindingVariable;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
@@ -363,10 +365,16 @@ public interface SelectFlexoConceptInstance<VMI extends AbstractVirtualModelInst
 			Map<Object, List<FlexoConceptInstance>> index = vmi.getIndex(getFlexoConceptType().getInstanceType(), indexableTermBinding);
 
 			if (index != null) {
-				return index.get(expectedValue);
+				List<FlexoConceptInstance> returned = index.get(expectedValue);
+				if (returned != null) {
+					return returned;
+				}
+				else {
+					return Collections.emptyList();
+				}
 			}
 
-			return null;
+			return Collections.emptyList();
 		}
 
 		@Override
