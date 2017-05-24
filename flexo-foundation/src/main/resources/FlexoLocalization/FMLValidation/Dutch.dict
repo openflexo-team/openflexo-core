@@ -53,6 +53,7 @@ sets_container_to_($patternRole.patternRoleName)=Sets container to ($patternRole
 sets_container_to_top_level=Sets container to top level
 sets_virtual_model_instance_to_'organigrammebdd'=Sets virtual model instance to 'organigrammebdd'
 sets_virtual_model_instance_to_'virtualModelInstance'_(local_virtual_model_instance)=Sets virtual model instance to 'virtualModelInstance' (local virtual model instance)
+types_are_not_compatible\ (FlexoConceptInstanceType<ElementReference>\ and\ Void)=Types are not compatible (FlexoConceptInstanceType<ElementReference> and Void)
 types_are_not_compatible\ (Void\ and\ VirtualModelInstanceType<DiagrammeOrganigrammePublication>)=Types are not compatible (Void and VirtualModelInstanceType<DiagrammeOrganigrammePublication>)
 validating=Validating
 virtual_model_should_not_have_reflexive_model_slot_no_more=Virtual model should not have reflexive model slot no more
