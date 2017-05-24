@@ -39,6 +39,7 @@
 
 package org.openflexo.foundation.fml.rt;
 
+import java.util.ArrayList;
 import java.util.Set;
 
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
@@ -64,11 +65,13 @@ public class SynchronousFMLRunTimeEngine extends DefaultFMLRunTimeEngine {
 	// Synchronous implementation
 	@Override
 	public void receivedEvent(FlexoEventInstance event) {
-		Set<EventInstanceListener> listeners = listeningInstances.get(event.getSourceVirtualModelInstance());
-		if (listeners != null) {
-			for (EventInstanceListener l : listeners) {
-				if (l.getListener().getEventType().isAssignableFrom(event.getFlexoEvent())) {
-					fireEventListener(l.getInstanceBeeingListening(), l.getListener(), event);
+		if (event != null) {
+			Set<EventInstanceListener> listeners = listeningInstances.get(event.getSourceVirtualModelInstance());
+			if (listeners != null) {
+				for (EventInstanceListener l : new ArrayList<>(listeners)) {
+					if (l.getListener().getEventType().isAssignableFrom(event.getFlexoEvent())) {
+						fireEventListener(l.getInstanceBeeingListening(), l.getListener(), event);
+					}
 				}
 			}
 		}
