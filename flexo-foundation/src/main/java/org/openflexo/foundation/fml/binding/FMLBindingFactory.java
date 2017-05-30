@@ -415,4 +415,12 @@ public class FMLBindingFactory extends JavaBindingFactory {
 		}
 		return super.retrieveFunction(parentType, functionName, args);
 	}
+
+	@Override
+	public Type getTypeForObject(Object object) {
+		if (object instanceof FlexoConceptInstance) {
+			return ((FlexoConceptInstance) object).getFlexoConcept().getInstanceType();
+		}
+		return super.getTypeForObject(object);
+	}
 }

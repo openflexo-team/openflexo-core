@@ -53,6 +53,7 @@ import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.BindingVariable;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
+import org.openflexo.connie.MultipleParametersBindingEvaluator;
 import org.openflexo.connie.binding.BindingValueChangeListener;
 import org.openflexo.connie.exception.NotSettableContextException;
 import org.openflexo.connie.exception.NullReferenceException;
@@ -383,7 +384,53 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 	 */
 	public <RD extends ResourceData<RD> & TechnologyObject<?>> ModelSlotInstance<?, RD> getModelSlotInstance(String modelSlotName);
 
+	/**
+	 * Return boolean indicating if type of this FlexoConceptInstance has the supplied name
+	 * 
+	 * @param conceptName
+	 * @return
+	 */
+	public boolean isOf(String conceptName);
+
+	/**
+	 * Use the current FlexoConceptInstance as the run-time context of an expression supplied<br>
+	 * as a String expressed in FML language, and execute this expression in that run-time context<br>
+	 * Return the value computed from the expression in that run-time context.
+	 * 
+	 * TODO: add FlexoEditor parameter instead of using {@link #getEditor()}
+	 * 
+	 * @param expression
+	 * @return
+	 * @throws TypeMismatchException
+	 * @throws NullReferenceException
+	 * @throws InvocationTargetException
+	 */
 	public <T> T execute(String expression) throws TypeMismatchException, NullReferenceException, InvocationTargetException;
+
+	/**
+	 * Use the current FlexoConceptInstance as the run-time context of an expression supplied<br>
+	 * as a String expressed in FML language, and a set of arguments given in appearing order in the expression<br>
+	 * Execute this expression in that run-time context and return the value computed from the expression in that run-time context.
+	 * 
+	 * Syntax is this:
+	 * 
+	 * <pre>
+	 * {$variable1}+' '+{$variable2}+' !'"
+	 * </pre>
+	 * 
+	 * for an expression with the two variables variable1 and variable2
+	 * 
+	 * TODO: add FlexoEditor parameter instead of using {@link #getEditor()}
+	 * 
+	 * @param expression
+	 * @param parameters
+	 * @return value as computed from expression
+	 * @throws TypeMismatchException
+	 * @throws NullReferenceException
+	 * @throws InvocationTargetException
+	 */
+	public <T> T execute(String expression, Object... parameters)
+			throws TypeMismatchException, NullReferenceException, InvocationTargetException;
 
 	public static abstract class FlexoConceptInstanceImpl extends VirtualModelInstanceObjectImpl implements FlexoConceptInstance {
 
@@ -1802,6 +1849,17 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 		public <T> T execute(String expression) throws TypeMismatchException, NullReferenceException, InvocationTargetException {
 			DataBinding<T> db = new DataBinding<>(expression, this, Object.class, BindingDefinitionType.GET);
 			return db.getBindingValue(this);
+		}
+
+		@Override
+		public <T> T execute(String expression, Object... parameters)
+				throws TypeMismatchException, NullReferenceException, InvocationTargetException {
+			return (T) MultipleParametersBindingEvaluator.evaluateBinding(expression, getBindingFactory(), this, parameters);
+		}
+
+		@Override
+		public boolean isOf(String conceptName) {
+			return getFlexoConcept().getName().equals(conceptName);
 		}
 
 	}
