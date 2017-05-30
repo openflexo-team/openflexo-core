@@ -40,7 +40,6 @@ package org.openflexo.foundation.fml;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
-
 import org.openflexo.connie.BindingEvaluationContext;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
@@ -115,7 +114,7 @@ public interface FlexoRole<T> extends FlexoProperty<T> {
 	void setRoleName(String patternRoleName);
 
 	@Getter(value = MODEL_SLOT_KEY)
-	@Embedded
+	@Embedded // TODO Why this property is embedded ?
 	ModelSlot<?> getModelSlot();
 
 	@Setter(MODEL_SLOT_KEY)
