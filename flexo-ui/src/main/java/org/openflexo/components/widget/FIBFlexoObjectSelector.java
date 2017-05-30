@@ -309,13 +309,15 @@ public abstract class FIBFlexoObjectSelector<T extends FlexoObject> extends Text
 	public void setSelectedObject(Object selectedObject) {
 		// System.out.println("set selected object: "+selectedObject);
 		Object old = getSelectedObject();
-		this.selectedObject = selectedObject;
-		pcSupport.firePropertyChange("selectedObject", old, selectedObject);
-		if (isAcceptableValue(selectedObject)) {
-			setSelectedValue((T) selectedObject);
-		}
-		else {
-			setSelectedValue(null);
+		if (old != selectedObject) {
+			this.selectedObject = selectedObject;
+			pcSupport.firePropertyChange("selectedObject", old, selectedObject);
+			if (isAcceptableValue(selectedObject)) {
+				setSelectedValue((T) selectedObject);
+			}
+			else {
+				setSelectedValue(null);
+			}
 		}
 	}
 
@@ -326,10 +328,12 @@ public abstract class FIBFlexoObjectSelector<T extends FlexoObject> extends Text
 	public void setSelectedValue(T selectedValue) {
 		// System.out.println("set selected value: "+selectedValue);
 		T old = getSelectedValue();
-		this.selectedValue = selectedValue;
-		pcSupport.firePropertyChange("selectedValue", old, selectedValue);
-		if (getSelectedObject() != getSelectedValue()) {
-			setSelectedObject(selectedValue);
+		if (old != selectedValue) {
+			this.selectedValue = selectedValue;
+			pcSupport.firePropertyChange("selectedValue", old, selectedValue);
+			if (getSelectedObject() != getSelectedValue()) {
+				setSelectedObject(selectedValue);
+			}
 		}
 	}
 
