@@ -383,6 +383,8 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 	 */
 	public <RD extends ResourceData<RD> & TechnologyObject<?>> ModelSlotInstance<?, RD> getModelSlotInstance(String modelSlotName);
 
+	public <T> T execute(String expression) throws TypeMismatchException, NullReferenceException, InvocationTargetException;
+
 	public static abstract class FlexoConceptInstanceImpl extends VirtualModelInstanceObjectImpl implements FlexoConceptInstance {
 
 		private static final Logger logger = FlexoLogger.getLogger(FlexoConceptInstance.class.getPackage().toString());
@@ -1794,6 +1796,12 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 		@Override
 		public final boolean hasNature(FlexoConceptInstanceNature nature) {
 			return nature.hasNature(this);
+		}
+
+		@Override
+		public <T> T execute(String expression) throws TypeMismatchException, NullReferenceException, InvocationTargetException {
+			DataBinding<T> db = new DataBinding<>(expression, this, Object.class, BindingDefinitionType.GET);
+			return db.getBindingValue(this);
 		}
 
 	}
