@@ -42,6 +42,7 @@ import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.swing.undo.UndoableEdit;
@@ -139,14 +140,18 @@ public class FlexoUndoManager extends UndoManager {
 
 	@Override
 	public CompoundEdit startRecording(String presentationName) {
-		logger.info("FlexoUndoManager: START RECORDING " + presentationName);
+		if (logger.isLoggable(Level.FINE)) {
+			logger.fine("FlexoUndoManager: START RECORDING " + presentationName);
+		}
 		return super.startRecording(presentationName);
 	}
 
 	@Override
 	public synchronized CompoundEdit stopRecording(CompoundEdit edit) {
 		if (edit != null) {
-			logger.info("FlexoUndoManager: STOP RECORDING " + edit.getPresentationName());
+			if (logger.isLoggable(Level.FINE)) {
+				logger.fine("FlexoUndoManager: STOP RECORDING " + edit.getPresentationName());
+			}
 		}
 		return super.stopRecording(edit);
 	}
@@ -265,8 +270,10 @@ public class FlexoUndoManager extends UndoManager {
 		if (getCurrentEdition() == null || getCurrentEdition().getPresentationName().equals(UNIDENTIFIED_RECORDING)) {
 			// We are on an unidentified recording
 			if (editingContext.warnOnUnexpectedEdits()) {
-				logger.warning("Received edit outside legal UNDO declaration");
-				// Thread.dumpStack();
+				if (logger.isLoggable(Level.FINE)) {
+					logger.warning("Received edit outside legal UNDO declaration");
+					// Thread.dumpStack();
+				}
 			}
 		}
 		return false;
