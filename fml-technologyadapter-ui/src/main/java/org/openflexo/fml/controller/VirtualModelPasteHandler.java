@@ -134,7 +134,7 @@ public class VirtualModelPasteHandler extends FlexoPasteHandler<AbstractVirtualM
 		// System.out.println("Moi j'ai ca:" + clipboard.debug());
 
 		if (clipboard.getLeaderClipboard().isSingleObject() && clipboard.getLeaderClipboard().getSingleContents() instanceof FlexoConcept
-				&& pastingContext.getPastingPointHolder() != null) {
+				&& pastingContext != null && pastingContext.getPastingPointHolder() != null) {
 			return true;
 		}
 
