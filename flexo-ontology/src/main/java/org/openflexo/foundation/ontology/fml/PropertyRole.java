@@ -98,7 +98,9 @@ public interface PropertyRole<T extends IFlexoOntologyStructuralProperty> extend
 		@Override
 		public String getFMLRepresentation(FMLRepresentationContext context) {
 			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
-			out.append("FlexoRole " + getName() + " as Property " + " from " + getModelSlot().getMetaModelURI() + " ;", context);
+			out.append(
+					"FlexoRole " + getName() + " as Property " + " from " + (getModelSlot() != null ? getModelSlot().getName() : "") + " ;",
+					context);
 			return out.toString();
 		}
 
