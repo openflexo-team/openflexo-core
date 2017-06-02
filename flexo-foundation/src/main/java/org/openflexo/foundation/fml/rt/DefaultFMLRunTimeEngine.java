@@ -131,10 +131,10 @@ public abstract class DefaultFMLRunTimeEngine implements FMLRunTimeEngine, Prope
 				receivedEvent((FlexoEventInstance) evt.getNewValue());
 			}
 			else if (evt.getPropertyName().equals(AbstractVirtualModelInstance.FLEXO_CONCEPT_INSTANCES_KEY)) {
-				System.out.println(">>>>>>>>>> hop, je recois un nouvel event " + evt);
+				// System.out.println(">>>>>>>>>> hop, je recois un nouvel event " + evt);
 				if (evt.getNewValue() instanceof FlexoConceptInstance) {
 					FlexoConceptInstance newValue = (FlexoConceptInstance) evt.getNewValue();
-					System.out.println("Je detecte bien ici la creation d'un nouveau FlexoConceptInstance " + newValue);
+					// System.out.println("Je detecte bien ici la creation d'un nouveau FlexoConceptInstance " + newValue);
 					if (requireEventListening(newValue.getFlexoConcept())) {
 						for (EventListener el : newValue.getFlexoConcept().getFlexoBehaviours(EventListener.class)) {
 							startEventListening(newValue, el, /*(AbstractVirtualModelInstance) evt.getSource()*/newValue);
@@ -211,9 +211,9 @@ public abstract class DefaultFMLRunTimeEngine implements FMLRunTimeEngine, Prope
 
 		private void listenTo(AbstractVirtualModelInstance<?, ?> vmi) {
 
-			System.out.println("Je suis " + instanceBeeingListening);
-			System.out.println("J'ecoutais " + listenedVMI);
-			System.out.println("Et maintenant, on me dit d'ecouter " + vmi);
+			// System.out.println("Je suis " + instanceBeeingListening);
+			// System.out.println("J'ecoutais " + listenedVMI);
+			// System.out.println("Et maintenant, on me dit d'ecouter " + vmi);
 
 			if (vmi != listenedVMI) {
 				if (listenedVMI != null) {
@@ -230,7 +230,7 @@ public abstract class DefaultFMLRunTimeEngine implements FMLRunTimeEngine, Prope
 					}
 					if (!l.contains(this)) {
 						l.add(this);
-						System.out.println("%%%%% Added " + this + " for " + vmi);
+						// System.out.println("%%%%% Added " + this + " for " + vmi);
 					}
 				}
 				listenedVMI = vmi;
@@ -250,17 +250,17 @@ public abstract class DefaultFMLRunTimeEngine implements FMLRunTimeEngine, Prope
 	}
 
 	private void startEventListening(FlexoConceptInstance fci, EventListener eventListener, RunTimeEvaluationContext evaluationContext) {
-		System.out.println("START listening " + fci + " for listener " + eventListener);
+		// System.out.println("START listening " + fci + " for listener " + eventListener);
 
 		EventInstanceListener evtListener = new EventInstanceListener(fci, eventListener, evaluationContext);
 		eventListeners.add(evtListener);
 		evtListener.listenVMIValueChange();
 
-		System.out.println("Du coup " + fci + " ecoute " + evtListener.listenedVMI);
+		// System.out.println("Du coup " + fci + " ecoute " + evtListener.listenedVMI);
 	}
 
 	private void stopEventListening(FlexoConceptInstance fci, EventListener eventListener, RunTimeEvaluationContext evaluationContext) {
-		System.out.println("STOP listening " + fci + " for listener " + eventListener);
+		// System.out.println("STOP listening " + fci + " for listener " + eventListener);
 		EventInstanceListener eventInstanceListener = getEventInstanceListener(fci, eventListener);
 		if (eventInstanceListener != null) {
 			eventListeners.remove(eventInstanceListener);
@@ -279,7 +279,7 @@ public abstract class DefaultFMLRunTimeEngine implements FMLRunTimeEngine, Prope
 	}
 
 	protected void fireEventListener(FlexoConceptInstance fci, EventListener eventListener, FlexoEventInstance event) {
-		System.out.println("fireEventListener " + eventListener + " for " + fci);
+		// System.out.println("fireEventListener " + eventListener + " for " + fci);
 		EventListenerActionType actionType = new EventListenerActionType(eventListener, fci);
 		EventListenerAction action = actionType.makeNewAction(fci, null, fci.getEditor());
 		action.setEventInstance(event);
