@@ -740,11 +740,11 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 			return this;
 		}
 
-		@Override
+		/*@Override
 		public String toString() {
 			return "VirtualModelInstance[name=" + getName() + "/virtualModel=" + getVirtualModel() + "/hash="
 					+ Integer.toHexString(hashCode()) + "]";
-		}
+		}*/
 
 		@Override
 		public <T> T getFlexoActor(FlexoRole<T> flexoRole) {
