@@ -67,35 +67,8 @@ public interface VirtualModelInstance extends AbstractVirtualModelInstance<Virtu
 	public static abstract class VirtualModelInstanceImpl extends AbstractVirtualModelInstanceImpl<VirtualModelInstance, VirtualModel>
 			implements VirtualModelInstance {
 
-		/*private static final Logger logger = Logger.getLogger(VirtualModelInstance.class.getPackage().getName());
-		
-		// TODO: move this code to the VirtualModelInstanceResource
-		public static VirtualModelInstanceResource newVirtualModelInstance(String virtualModelName, String virtualModelTitle,
-				VirtualModel virtualModel, View view) throws SaveResourceException {
-		
-			VirtualModelInstanceResource newVirtualModelResource = VirtualModelInstanceResourceImpl
-					.makeVirtualModelInstanceResource(virtualModelName, virtualModel, view);
-		
-			VirtualModelInstanceImpl newVirtualModelInstance = (VirtualModelInstanceImpl) newVirtualModelResource.getFactory()
-					.newInstance(VirtualModelInstance.class);
-			newVirtualModelInstance.setVirtualModel(virtualModel);
-		
-			newVirtualModelResource.setResourceData(newVirtualModelInstance);
-			newVirtualModelInstance.setResource(newVirtualModelResource);
-			newVirtualModelInstance.setTitle(virtualModelTitle);
-		
-			view.getResource().addToContents(newVirtualModelResource);
-			view.getResource().notifyContentsAdded(newVirtualModelResource);
-		
-			newVirtualModelResource.save(null);
-		
-			return newVirtualModelResource;
-		}*/
+		// private static final Logger logger = Logger.getLogger(VirtualModelInstance.class.getPackage().getName());
 
-		@Override
-		public String toString() {
-			return "VirtualModelInstance[name=" + getName() + "/hash=" + Integer.toHexString(hashCode()) + "]";
-		}
 	}
 
 }
