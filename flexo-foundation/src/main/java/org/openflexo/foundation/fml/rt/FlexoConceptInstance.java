@@ -626,6 +626,8 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 				return null;
 			}
 			if (!flexoProperty.getFlexoConcept().isAssignableFrom(getFlexoConcept())) {
+				// May be the property is to find in the embedding hierarchy
+				// Attempt to recursively find it
 				FlexoConceptInstance container = getContainerFlexoConceptInstance();
 				while (container != null) {
 					if (flexoProperty.getFlexoConcept().isAssignableFrom(container.getFlexoConcept())) {
@@ -633,6 +635,10 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 					}
 					container = container.getContainerFlexoConceptInstance();
 				}
+			}
+			else if (flexoProperty.getFlexoConcept().isAssignableFrom(getFlexoConcept().getOwner())) {
+				// In this case the property concerns the owner VirtualModelInstance
+				return getVirtualModelInstance().getFlexoPropertyValue(flexoProperty);
 			}
 			else {
 				if (flexoProperty instanceof ModelSlot) {

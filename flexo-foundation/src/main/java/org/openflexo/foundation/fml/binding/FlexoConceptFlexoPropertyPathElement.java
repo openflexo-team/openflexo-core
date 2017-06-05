@@ -99,6 +99,21 @@ public class FlexoConceptFlexoPropertyPathElement<P extends FlexoProperty<?>> ex
 	 * @return
 	 */
 	public FlexoProperty<?> getEffectiveProperty(FlexoConceptInstance flexoConceptInstance) {
+
+		if (!flexoProperty.getFlexoConcept().isAssignableFrom(flexoConceptInstance.getFlexoConcept())) {
+			FlexoConceptInstance container = flexoConceptInstance.getContainerFlexoConceptInstance();
+			while (container != null) {
+				if (flexoProperty.getFlexoConcept().isAssignableFrom(container.getFlexoConcept())) {
+					return container.getFlexoConcept().getAccessibleProperty(flexoProperty.getName());
+				}
+				container = container.getContainerFlexoConceptInstance();
+			}
+		}
+
+		if (flexoProperty.getFlexoConcept().isAssignableFrom(flexoConceptInstance.getFlexoConcept().getOwner())) {
+			return flexoConceptInstance.getFlexoConcept().getOwner().getAccessibleProperty(flexoProperty.getName());
+		}
+
 		return flexoConceptInstance.getFlexoConcept().getAccessibleProperty(flexoProperty.getName());
 	}
 
@@ -121,11 +136,17 @@ public class FlexoConceptFlexoPropertyPathElement<P extends FlexoProperty<?>> ex
 	public Object getBindingValue(Object target, BindingEvaluationContext context) throws TypeMismatchException, NullReferenceException {
 		if (target instanceof FlexoConceptInstance) {
 			FlexoConceptInstance flexoConceptInstance = (FlexoConceptInstance) target;
+
 			// We have to first lookup the exact property to be executed
 			// This is where the dynamic binding is evaluated
 			// effectiveProperty might not be the property to be executed, if supplied flexoConceptInstance
 			// definition override flexoProperty
 			FlexoProperty<?> effectiveProperty = getEffectiveProperty(flexoConceptInstance);
+
+			if (effectiveProperty.getFlexoConcept().isAssignableFrom(flexoConceptInstance.getFlexoConcept().getOwner())) {
+				return flexoConceptInstance.getVirtualModelInstance().getFlexoPropertyValue(effectiveProperty);
+			}
+
 			if (effectiveProperty instanceof FlexoRole) {
 				if (effectiveProperty.getCardinality().isMultipleCardinality()) {
 					return flexoConceptInstance.getFlexoActorList((FlexoRole<?>) effectiveProperty);

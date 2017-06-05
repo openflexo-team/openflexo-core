@@ -190,6 +190,11 @@ public class FMLBindingFactory extends JavaBindingFactory {
 					for (FlexoProperty<?> pr : concept.getAccessibleProperties()) {
 						returned.add(getSimplePathElement(pr, parent));
 					}
+					if (concept.getOwner() != null) {
+						for (FlexoProperty<?> pr : concept.getOwner().getAccessibleProperties()) {
+							returned.add(getSimplePathElement(pr, parent));
+						}
+					}
 					// TODO: performance issue
 					if (concept.getInspector().getRenderer().isSet() && concept.getInspector().getRenderer().isValid()) {
 						returned.add(new EPIRendererPathElement(parent));
