@@ -41,7 +41,6 @@ package org.openflexo.foundation.fml.action;
 import java.security.InvalidParameterException;
 import java.util.Vector;
 import java.util.logging.Logger;
-
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.FlexoActionType;
@@ -104,6 +103,7 @@ public class CreateFlexoConcept extends AbstractCreateFlexoConcept<CreateFlexoCo
 
 		newFlexoConcept = factory.newFlexoConcept();
 		newFlexoConcept.setName(getNewFlexoConceptName());
+		newFlexoConcept.setDescription(getNewFlexoConceptDescription());
 
 		getFocusedObject().addToFlexoConcepts(newFlexoConcept);
 
