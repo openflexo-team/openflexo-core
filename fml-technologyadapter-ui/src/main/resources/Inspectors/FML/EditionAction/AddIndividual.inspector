@@ -44,6 +44,16 @@
 				name="IndividualNameSelector">
 				<Assignment variable="component.bindable" value="data" />
 			</Custom>
+			<Label label="dynamic_type" align="right" index="10"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;index=8;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)"
+				localize="true" />
+			<Custom componentClassName="org.openflexo.gina.swing.utils.BindingSelector"
+				index="11"
+				data="data.dynamicType"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;index=9;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
+				name="DynamicTypeSelector">
+				<Assignment variable="component.bindable" value="data" />
+			</Custom>
 			<Label label="object_assertions" index="14" data=""
 				constraints="twocols(expandHorizontally=false;expandVertically=false;index=10;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)"
 				visible="" format="" icon="" tooltip="" localize="true" enable=""

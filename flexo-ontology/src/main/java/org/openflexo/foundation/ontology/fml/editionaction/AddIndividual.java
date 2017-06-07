@@ -84,6 +84,8 @@ public abstract interface AddIndividual<MS extends TypeAwareModelSlot<M, ?>, M e
 
 	@PropertyIdentifier(type = DataBinding.class)
 	public static final String INDIVIDUAL_NAME_KEY = "individualName";
+	@PropertyIdentifier(type = DataBinding.class)
+	public static final String DYNAMIC_TYPE_KEY = "dynamicType";
 	@PropertyIdentifier(type = Vector.class)
 	public static final String DATA_ASSERTIONS_KEY = "dataAssertions";
 	@PropertyIdentifier(type = Vector.class)
@@ -99,6 +101,13 @@ public abstract interface AddIndividual<MS extends TypeAwareModelSlot<M, ?>, M e
 
 	@Setter(INDIVIDUAL_NAME_KEY)
 	public void setIndividualName(DataBinding<String> individualName);
+
+	@Getter(value = DYNAMIC_TYPE_KEY)
+	@XMLAttribute
+	public DataBinding<IFlexoOntologyClass<?>> getDynamicType();
+
+	@Setter(DYNAMIC_TYPE_KEY)
+	public void setDynamicType(DataBinding<IFlexoOntologyClass<?>> dynamicType);
 
 	@Getter(value = DATA_ASSERTIONS_KEY, cardinality = Cardinality.LIST, inverse = DataPropertyAssertion.ACTION_KEY)
 	@XMLElement(xmlTag = "DataPropertyAssertion")
@@ -137,9 +146,9 @@ public abstract interface AddIndividual<MS extends TypeAwareModelSlot<M, ?>, M e
 	@Setter(ONTOLOGY_CLASS_URI_KEY)
 	public void _setOntologyClassURI(String ontologyClassURI);
 
-	public IFlexoOntologyClass getOntologyClass();
+	public IFlexoOntologyClass<?> getOntologyClass();
 
-	public void setOntologyClass(IFlexoOntologyClass ontologyClass);
+	public void setOntologyClass(IFlexoOntologyClass<?> ontologyClass);
 
 	/*@Override
 	@Getter(value = MODEL_SLOT_KEY)

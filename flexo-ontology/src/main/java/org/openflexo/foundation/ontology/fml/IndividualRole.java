@@ -115,7 +115,7 @@ public interface IndividualRole<I extends IFlexoOntologyIndividual<?>> extends O
 		public Type getType() {
 			Type returned;
 			if (getOntologicType() == null) {
-				returned = IFlexoOntologyIndividual.class;
+				returned = getOntologyIndividualClass();
 			}
 			else {
 				returned = IndividualOfClass.getIndividualOfClass(getOntologicType());
@@ -127,6 +127,8 @@ public interface IndividualRole<I extends IFlexoOntologyIndividual<?>> extends O
 			}
 			return returned;
 		}
+
+		public abstract Class<I> getOntologyIndividualClass();
 
 		@Override
 		public String getTypeDescription() {
