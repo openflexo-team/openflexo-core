@@ -44,6 +44,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.Vector;
 import java.util.logging.Logger;
+
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.binding.VirtualModelBindingModel;
 import org.openflexo.foundation.fml.rm.AbstractVirtualModelResource;
@@ -468,7 +469,8 @@ public interface AbstractVirtualModel<VM extends AbstractVirtualModel<VM>>
 				}
 			}
 			InnerConceptsFacet innerConceptsFacet = getInnerConceptsFacet();
-			if (innerConceptsFacet != null) innerConceptsFacet.notifiedConceptsChanged();
+			if (innerConceptsFacet != null)
+				innerConceptsFacet.notifiedConceptsChanged();
 		}
 
 		/**
@@ -800,6 +802,14 @@ public interface AbstractVirtualModel<VM extends AbstractVirtualModel<VM>>
 		@Override
 		public List<UseModelSlotDeclaration> getAccessibleUseDeclarations() {
 			return getUseDeclarations();
+		}
+
+		@Override
+		protected void notifiedPropertiesChanged(FlexoProperty<?> oldValue, FlexoProperty<?> newValue) {
+			super.notifiedPropertiesChanged(oldValue, newValue);
+			for (FlexoConcept embedded : getFlexoConcepts()) {
+				((FlexoConceptImpl) embedded).notifiedPropertiesChanged(oldValue, newValue);
+			}
 		}
 
 	}

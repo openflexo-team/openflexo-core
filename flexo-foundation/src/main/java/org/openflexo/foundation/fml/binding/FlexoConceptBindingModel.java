@@ -48,6 +48,7 @@ import java.util.Map;
 import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.BindingVariable;
 import org.openflexo.foundation.fml.FlexoConcept;
+import org.openflexo.foundation.fml.FlexoConcept.FlexoConceptImpl;
 import org.openflexo.foundation.fml.FlexoConceptInstanceRole;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.FlexoProperty;
@@ -207,6 +208,8 @@ public class FlexoConceptBindingModel extends BindingModel implements PropertyCh
 	private void updatePropertyVariables() {
 
 		List<FlexoProperty<?>> propertiesToBeDeleted = new ArrayList<FlexoProperty<?>>(propertyVariablesMap.keySet());
+
+		((FlexoConceptImpl) flexoConcept).clearAccessiblePropertiesCache();
 
 		for (FlexoProperty<?> r : flexoConcept.getAccessibleProperties()) {
 			if (propertiesToBeDeleted.contains(r)) {

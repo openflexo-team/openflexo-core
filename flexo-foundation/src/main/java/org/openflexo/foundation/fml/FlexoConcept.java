@@ -266,6 +266,9 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 
 	/**
 	 * Build and return all end-properties for this {@link FlexoConcept}<br>
+	 * Such properties are those that are available in the most specialized context<br>
+	 * Some properties may be shadowed by a more specialized property and are not retrieved here.
+	 * 
 	 * This returned {@link List} includes all declared properties for this FlexoConcept, augmented with all properties of parent
 	 * {@link FlexoConcept} which are not parent properties of this concept declared properties.<br>
 	 * This means that only leaf nodes of inheritance graph infered by this {@link FlexoConcept} hierarchy will be returned.
@@ -515,6 +518,11 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 
 		private String parentFlexoConceptList;
 
+		/**
+		 * Stores a cache for properties for all end-properties of this {@link FlexoConcept}
+		 */
+		private List<FlexoProperty<?>> accessibleProperties;
+
 		@Override
 		public AbstractVirtualModel<?> getVirtualModel() {
 			return getOwner();
@@ -652,61 +660,80 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 		}
 
 		/**
-		 * Build and return all roles for this {@link FlexoConcept}<br>
-		 * This returned {@link List} includes all declared roles for this FlexoConcept, augmented with all roles of parent
-		 * {@link FlexoConcept}
+		 * Build and return all end-properties for this {@link FlexoConcept}<br>
+		 * Such properties are those that are available in the most specialized context<br>
+		 * Some properties may be shadowed by a more specialized property and are not retrieved here.
 		 * 
-		 * Note that this method is not efficient (perf issue: the list is rebuilt for each call)
+		 * This returned {@link List} includes all declared properties for this FlexoConcept, augmented with all properties of parent
+		 * {@link FlexoConcept} which are not parent properties of this concept declared properties.<br>
+		 * This means that only leaf nodes of inheritance graph infered by this {@link FlexoConcept} hierarchy will be returned.
+		 * 
 		 * 
 		 * @return
 		 */
 		@Override
 		public List<FlexoProperty<?>> getAccessibleProperties() {
-			if (getParentFlexoConcepts().size() == 0 && getContainerFlexoConcept() == null) {
-				return getDeclaredProperties();
-			}
 
-			List<FlexoProperty<?>> returned = new ArrayList<>();
-			List<FlexoProperty<?>> inheritedProperties = new ArrayList<>();
+			// Implements a cache
+			// Do not recompute accessible properties when not required
 
-			// First take declared properties
-			returned.addAll(getDeclaredProperties());
+			if (accessibleProperties == null) {
 
-			// Take properties obtained by containment
-			if (getContainerFlexoConcept() != null) {
-				returned.addAll(getContainerFlexoConcept().getAccessibleProperties());
-			}
+				accessibleProperties = new ArrayList<>();
+				Map<String, FlexoProperty<?>> inheritedProperties = new HashMap<>();
 
-			// Take inherited properties
-			for (FlexoConcept parentConcept : getParentFlexoConcepts()) {
-				for (FlexoProperty<?> p : parentConcept.getAccessibleProperties()) {
-					if (getDeclaredProperty(p.getPropertyName()) == null) {
-						// This property is inherited but not overriden
-						// We check that we don't have this property yet
-						if (!inheritedProperties.contains(p)) {
-							inheritedProperties.add(p);
+				// First take declared properties
+				accessibleProperties.addAll(getDeclaredProperties());
+
+				// Take properties obtained by containment
+				if (getContainerFlexoConcept() != null) {
+					accessibleProperties.addAll(getContainerFlexoConcept().getAccessibleProperties());
+				}
+
+				// Take inherited properties
+				for (FlexoConcept parentConcept : getParentFlexoConcepts()) {
+					for (FlexoProperty<?> p : parentConcept.getAccessibleProperties()) {
+						if (getDeclaredProperty(p.getPropertyName()) == null) {
+							// This property is inherited but not overriden
+							// We check that we don't have this property yet
+							if (inheritedProperties.get(p.getName()) == null) {
+								inheritedProperties.put(p.getName(), p);
+							}
 						}
 					}
 				}
-			}
 
-			// Now, we have to suppress all extra references
-			List<FlexoProperty<?>> unnecessaryProperty = new ArrayList<>();
-			for (FlexoProperty<?> p : inheritedProperties) {
-				for (FlexoProperty<?> superP : p.getAllSuperProperties()) {
-					if (inheritedProperties.contains(superP)) {
-						unnecessaryProperty.add(superP);
+				if (getVirtualModel() != null && getVirtualModel() != this) {
+					for (FlexoProperty<?> p : getVirtualModel().getAccessibleProperties()) {
+						if (getDeclaredProperty(p.getPropertyName()) == null) {
+							// This property is inherited but not overriden
+							// We check that we don't have this property yet
+							if (inheritedProperties.get(p.getName()) == null) {
+								inheritedProperties.put(p.getName(), p);
+							}
+						}
 					}
 				}
+
+				// Now, we have to suppress all extra references
+				List<FlexoProperty<?>> unnecessaryProperty = new ArrayList<>();
+				for (FlexoProperty<?> p : inheritedProperties.values()) {
+					for (FlexoProperty<?> superP : p.getAllSuperProperties()) {
+						if (inheritedProperties.get(superP.getName()) != null) {
+							unnecessaryProperty.add(superP);
+						}
+					}
+				}
+
+				for (FlexoProperty<?> removeThis : unnecessaryProperty) {
+					inheritedProperties.remove(removeThis);
+				}
+
+				accessibleProperties.addAll(inheritedProperties.values());
+
 			}
 
-			for (FlexoProperty<?> removeThis : unnecessaryProperty) {
-				inheritedProperties.remove(removeThis);
-			}
-
-			returned.addAll(inheritedProperties);
-
-			return returned;
+			return accessibleProperties;
 		}
 
 		@Override
@@ -736,6 +763,19 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 			}
 			getPropertyChangeSupport().firePropertyChange("isAbstract", !isAbstract(), isAbstract());
 			getPropertyChangeSupport().firePropertyChange("abstractRequired", !abstractRequired(), abstractRequired());
+			clearAccessiblePropertiesCache();
+		}
+
+		public void clearAccessiblePropertiesCache() {
+			// Reset accessible properties
+			accessibleProperties = null;
+			for (FlexoConcept embedded : getEmbeddedFlexoConcepts()) {
+				((FlexoConceptImpl) embedded).clearAccessiblePropertiesCache();
+			}
+			for (FlexoConcept child : getChildFlexoConcepts()) {
+				((FlexoConceptImpl) child).clearAccessiblePropertiesCache();
+			}
+
 		}
 
 		@Override
@@ -1241,8 +1281,33 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 		}
 
 		@Override
+		public void setOwner(AbstractVirtualModel<?> virtualModel) {
+			performSuperSetter(OWNER_KEY, virtualModel);
+			clearAccessiblePropertiesCache();
+		}
+
+		@Override
+		public void setChildFlexoConcepts(List<FlexoConcept> childFlexoConcepts) {
+			performSuperSetter(CHILD_FLEXO_CONCEPTS_KEY, childFlexoConcepts);
+			clearAccessiblePropertiesCache();
+		}
+
+		@Override
+		public void addToChildFlexoConcepts(FlexoConcept childFlexoConcept) {
+			performSuperAdder(CHILD_FLEXO_CONCEPTS_KEY, childFlexoConcept);
+			clearAccessiblePropertiesCache();
+		}
+
+		@Override
+		public void removeFromChildFlexoConcepts(FlexoConcept childFlexoConcept) {
+			performSuperRemover(CHILD_FLEXO_CONCEPTS_KEY, childFlexoConcept);
+			clearAccessiblePropertiesCache();
+		}
+
+		@Override
 		public void setContainerFlexoConcept(FlexoConcept aConcept) {
 			performSuperSetter(CONTAINER_FLEXO_CONCEPT_KEY, aConcept);
+			clearAccessiblePropertiesCache();
 			if (getOwningVirtualModel() != null) {
 				getOwningVirtualModel().getInnerConceptsFacet().notifiedConceptsChanged();
 				getOwningVirtualModel().getPropertyChangeSupport().firePropertyChange("allRootFlexoConcepts", null,

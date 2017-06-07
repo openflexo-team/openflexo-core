@@ -58,7 +58,6 @@ import org.openflexo.connie.expr.Constant.StringConstant;
 import org.openflexo.connie.java.JavaBindingFactory;
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.fml.AbstractActionScheme;
-import org.openflexo.foundation.fml.AbstractVirtualModel;
 import org.openflexo.foundation.fml.CreationScheme;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoBehaviourActionType;
@@ -181,20 +180,26 @@ public class FMLBindingFactory extends JavaBindingFactory {
 				FlexoConcept concept = ((FlexoConceptInstanceType) pType).getFlexoConcept();
 
 				if (concept != null) {
-					if (concept instanceof AbstractVirtualModel) {
+					/*if (concept instanceof AbstractVirtualModel) {
 						AbstractVirtualModel<?> vm = (AbstractVirtualModel<?>) concept;
 						for (ModelSlot<?> ms : vm.getModelSlots()) {
 							returned.add(getSimplePathElement(ms, parent));
 						}
-					}
+					}*/
 					for (FlexoProperty<?> pr : concept.getAccessibleProperties()) {
 						returned.add(getSimplePathElement(pr, parent));
 					}
-					if (concept.getOwner() != null) {
+					/*if (concept.getOwner() != null) {
 						for (FlexoProperty<?> pr : concept.getOwner().getAccessibleProperties()) {
-							returned.add(getSimplePathElement(pr, parent));
+							if (concept.getAccessibleProperty(pr.getPropertyName()) == null) {
+								returned.add(getSimplePathElement(pr, parent));
+							}
+							else {
+								logger.warning("Property " + pr.getName() + " is shadowed by property "
+										+ concept.getAccessibleProperty(pr.getPropertyName()));
+							}
 						}
-					}
+					}*/
 					// TODO: performance issue
 					if (concept.getInspector().getRenderer().isSet() && concept.getInspector().getRenderer().isValid()) {
 						returned.add(new EPIRendererPathElement(parent));

@@ -62,6 +62,7 @@ import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.validation.ValidationError;
 import org.openflexo.model.validation.ValidationIssue;
 import org.openflexo.model.validation.ValidationRule;
+import org.openflexo.model.validation.ValidationWarning;
 import org.openflexo.toolbox.StringUtils;
 
 /**
@@ -426,6 +427,31 @@ public abstract interface FlexoProperty<T> extends FlexoConceptObject {
 				if (!TypeUtils.isTypeAssignableFrom(superProperty.getResultingType(), property.getResultingType())) {
 					return new ValidationError<OverridenPropertiesMustBeTypeCompatible, FlexoProperty<?>>(this, property,
 							"overriding_property_($object.propertyName)_does_not_define_compatible_type");
+				}
+			}
+			return null;
+		}
+	}
+
+	@DefineValidationRule
+	public static class PropertyShadowingAnOtherOne extends ValidationRule<PropertyShadowingAnOtherOne, FlexoProperty<?>> {
+		public PropertyShadowingAnOtherOne() {
+			super(FlexoProperty.class, "controlling_property_shadowing");
+		}
+
+		@Override
+		public ValidationIssue<PropertyShadowingAnOtherOne, FlexoProperty<?>> applyValidation(FlexoProperty<?> property) {
+			if (property.getFlexoConcept().getContainerFlexoConcept() != null) {
+				if (property.getFlexoConcept().getContainerFlexoConcept().getAccessibleProperty(property.getName()) != null) {
+					return new ValidationWarning<PropertyShadowingAnOtherOne, FlexoProperty<?>>(this, property,
+							"property_(object.propertyName)_shadows_an_other_property");
+				}
+			}
+			if (property.getFlexoConcept().getVirtualModel() != null
+					&& property.getFlexoConcept().getVirtualModel() != property.getFlexoConcept()) {
+				if (property.getFlexoConcept().getVirtualModel().getAccessibleProperty(property.getName()) != null) {
+					return new ValidationWarning<PropertyShadowingAnOtherOne, FlexoProperty<?>>(this, property,
+							"property_(object.propertyName)_shadows_an_other_property");
 				}
 			}
 			return null;

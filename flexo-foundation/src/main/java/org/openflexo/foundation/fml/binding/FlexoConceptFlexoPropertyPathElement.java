@@ -100,7 +100,7 @@ public class FlexoConceptFlexoPropertyPathElement<P extends FlexoProperty<?>> ex
 	 */
 	public FlexoProperty<?> getEffectiveProperty(FlexoConceptInstance flexoConceptInstance) {
 
-		if (!flexoProperty.getFlexoConcept().isAssignableFrom(flexoConceptInstance.getFlexoConcept())) {
+		/*if (!flexoProperty.getFlexoConcept().isAssignableFrom(flexoConceptInstance.getFlexoConcept())) {
 			FlexoConceptInstance container = flexoConceptInstance.getContainerFlexoConceptInstance();
 			while (container != null) {
 				if (flexoProperty.getFlexoConcept().isAssignableFrom(container.getFlexoConcept())) {
@@ -109,10 +109,10 @@ public class FlexoConceptFlexoPropertyPathElement<P extends FlexoProperty<?>> ex
 				container = container.getContainerFlexoConceptInstance();
 			}
 		}
-
+		
 		if (flexoProperty.getFlexoConcept().isAssignableFrom(flexoConceptInstance.getFlexoConcept().getOwner())) {
 			return flexoConceptInstance.getFlexoConcept().getOwner().getAccessibleProperty(flexoProperty.getName());
-		}
+		}*/
 
 		return flexoConceptInstance.getFlexoConcept().getAccessibleProperty(flexoProperty.getName());
 	}
@@ -143,7 +143,8 @@ public class FlexoConceptFlexoPropertyPathElement<P extends FlexoProperty<?>> ex
 			// definition override flexoProperty
 			FlexoProperty<?> effectiveProperty = getEffectiveProperty(flexoConceptInstance);
 
-			if (effectiveProperty.getFlexoConcept().isAssignableFrom(flexoConceptInstance.getFlexoConcept().getOwner())) {
+			if (effectiveProperty != null
+					&& effectiveProperty.getFlexoConcept().isAssignableFrom(flexoConceptInstance.getFlexoConcept().getOwner())) {
 				return flexoConceptInstance.getVirtualModelInstance().getFlexoPropertyValue(effectiveProperty);
 			}
 
