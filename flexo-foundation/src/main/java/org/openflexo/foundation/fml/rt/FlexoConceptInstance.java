@@ -46,7 +46,6 @@ import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import org.openflexo.connie.Bindable;
 import org.openflexo.connie.BindingFactory;
 import org.openflexo.connie.BindingModel;
@@ -129,6 +128,8 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 	@PropertyIdentifier(type = String.class)
 	public static final String FLEXO_CONCEPT_URI_KEY = "flexoConceptURI";
 
+	String FLEXO_CONCEPT_KEY = "flexoConcept";
+
 	@PropertyIdentifier(type = FlexoConceptInstance.class)
 	public static final String CONTAINER_FLEXO_CONCEPT_INSTANCE_KEY = "containerFlexoConceptInstance";
 	@PropertyIdentifier(type = List.class)
@@ -155,8 +156,10 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 	@Setter(OWNING_VIRTUAL_MODEL_INSTANCE_KEY)
 	public void setOwningVirtualModelInstance(AbstractVirtualModelInstance<?, ?> virtualModelInstance);
 
+	@Getter(FLEXO_CONCEPT_KEY)
 	public FlexoConcept getFlexoConcept();
 
+	@Setter(FLEXO_CONCEPT_KEY)
 	public void setFlexoConcept(FlexoConcept flexoConcept);
 
 	@Getter(value = FLEXO_CONCEPT_URI_KEY)
