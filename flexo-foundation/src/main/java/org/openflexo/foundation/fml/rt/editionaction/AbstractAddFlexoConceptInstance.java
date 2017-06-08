@@ -56,6 +56,7 @@ import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceRole;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.URIParameter;
+import org.openflexo.foundation.fml.ViewType;
 import org.openflexo.foundation.fml.VirtualModelInstanceType;
 import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
@@ -551,7 +552,10 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 			else {
 				DataBinding<VirtualModelInstance> binding = getBinding(object);
 
-				if (binding.getAnalyzedType() instanceof VirtualModelInstanceType && object.getFlexoConceptType() != null) {
+				// Special case when instantiating a subview (AddSubView edition action)
+				// Any View might be instantiated in another View
+				if (!(binding.getAnalyzedType() instanceof ViewType) && binding.getAnalyzedType() instanceof VirtualModelInstanceType
+						&& object.getFlexoConceptType() != null) {
 					if (object.getFlexoConceptType().getOwningVirtualModel() != ((VirtualModelInstanceType) binding.getAnalyzedType())
 							.getVirtualModel()) {
 						returned = new ValidationError(this, object, "incompatible_virtual_model_type");
