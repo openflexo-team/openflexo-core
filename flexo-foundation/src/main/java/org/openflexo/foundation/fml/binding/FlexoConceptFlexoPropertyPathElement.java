@@ -114,6 +114,9 @@ public class FlexoConceptFlexoPropertyPathElement<P extends FlexoProperty<?>> ex
 			return flexoConceptInstance.getFlexoConcept().getOwner().getAccessibleProperty(flexoProperty.getName());
 		}*/
 
+		if (flexoProperty == null || flexoConceptInstance == null || flexoConceptInstance.getFlexoConcept() == null) {
+			return null;
+		}
 		return flexoConceptInstance.getFlexoConcept().getAccessibleProperty(flexoProperty.getName());
 	}
 
