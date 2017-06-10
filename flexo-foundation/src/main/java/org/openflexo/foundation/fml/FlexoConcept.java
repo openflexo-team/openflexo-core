@@ -729,8 +729,13 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 					inheritedProperties.remove(removeThis);
 				}
 
-				accessibleProperties.addAll(inheritedProperties.values());
-
+				try {
+					if (accessibleProperties != null) {
+						accessibleProperties.addAll(inheritedProperties.values());
+					}
+				} catch (NullPointerException e) {
+					logger.warning("Something wrong in getAccessibleProperty() evaluation for " + this);
+				}
 			}
 
 			return accessibleProperties;
