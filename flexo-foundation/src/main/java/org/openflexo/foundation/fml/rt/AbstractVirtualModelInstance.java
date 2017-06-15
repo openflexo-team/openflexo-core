@@ -943,7 +943,8 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 				return getView().getValue(variable);
 			}
 
-			logger.warning("Unexpected variable requested in VirtualModelInstance: " + variable + " of " + variable.getClass());
+			// Warning is not required, since it will will warn each time a value is null !
+			// logger.warning("Unexpected variable requested in VirtualModelInstance: " + variable + " of " + variable.getClass());
 			return null;
 		}
 

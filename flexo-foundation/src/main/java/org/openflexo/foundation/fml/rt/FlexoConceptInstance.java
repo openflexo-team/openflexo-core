@@ -653,7 +653,9 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 							return (T) modelSlotInstance.getAccessedResourceData();
 						}
 						else {
-							logger.warning("Unexpected null model slot instance for " + ms + " in " + this);
+							// Do not warn: the model slot may be null here
+							// logger.warning("Unexpected null model slot instance for " + ms + " in " + this);
+							return null;
 						}
 					}
 				}
@@ -1191,7 +1193,8 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 					return (ModelSlotInstance<?, RD>) actorReference;
 				}
 			}
-			logger.warning("Cannot find ModelSlotInstance named " + modelSlotName);
+			// Do not warn: the model slot may be null here
+			// logger.warning("Cannot find ModelSlotInstance named " + modelSlotName);
 			return null;
 		}
 

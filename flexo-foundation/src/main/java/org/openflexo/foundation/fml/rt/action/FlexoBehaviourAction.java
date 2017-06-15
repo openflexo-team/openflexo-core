@@ -350,6 +350,11 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 			return getFlexoConceptInstance().getValue(variable);
 		}
 
+		// Maybe to the VirtualModelInstance ?
+		if (getVirtualModelInstance() != null) {
+			return getVirtualModelInstance().getValue(variable);
+		}
+
 		logger.warning("Unexpected variable requested in FlexoBehaviourAction: " + variable + " of " + variable.getClass());
 		return null;
 
@@ -383,8 +388,20 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 			return;
 		}
 
+		if (getVirtualModelInstance() != null) {
+			getVirtualModelInstance().setValue(value, variable);
+			return;
+		}
+
 		logger.warning(
 				"Unexpected variable requested in settable context in FlexoBehaviourAction: " + variable + " of " + variable.getClass());
+		/*logger.warning("getFlexoConceptInstance()=" + getFlexoConceptInstance());
+		logger.warning("getVirtualModelInstance()=" + getVirtualModelInstance());
+		
+		if (variable instanceof FlexoPropertyBindingVariable) {
+			logger.warning("coucou la property " + ((FlexoPropertyBindingVariable) variable).getFlexoProperty() + " dans "
+					+ ((FlexoPropertyBindingVariable) variable).getFlexoProperty().getFlexoConcept());
+		}*/
 	}
 
 	public ParameterValues getParametersValues() {

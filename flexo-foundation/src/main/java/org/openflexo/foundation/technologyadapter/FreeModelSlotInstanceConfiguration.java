@@ -116,6 +116,11 @@ public class FreeModelSlotInstanceConfiguration<RD extends ResourceData<RD> & Te
 	public FreeModelSlotInstance<RD, MS> createModelSlotInstance(FlexoConceptInstance flexoConceptInstance, View view) {
 
 		AbstractVirtualModelInstanceModelFactory<?> factory = flexoConceptInstance.getFactory();
+
+		if (factory == null) {
+			System.out.println("Zut alors la factory est null pour " + flexoConceptInstance);
+		}
+
 		FreeModelSlotInstance<RD, MS> returned = factory.newInstance(FreeModelSlotInstance.class);
 		returned.setModelSlot(getModelSlot());
 		/*if (flexoConceptInstance instanceof AbstractVirtualModelInstance) {
