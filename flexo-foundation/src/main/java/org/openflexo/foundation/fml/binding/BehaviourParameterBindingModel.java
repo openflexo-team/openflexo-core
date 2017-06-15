@@ -41,22 +41,20 @@ package org.openflexo.foundation.fml.binding;
 import java.beans.PropertyChangeEvent;
 
 import org.openflexo.connie.BindingModel;
-import org.openflexo.foundation.fml.rt.editionaction.DeleteFlexoConceptInstanceParameter;
+import org.openflexo.foundation.fml.rt.editionaction.BehaviourParameter;
 
 /**
- * This is the {@link BindingModel} exposed by a {@link DeleteFlexoConceptInstanceParameter}<br>
+ * This is the {@link BindingModel} exposed by a {@link BehaviourParameter}<br>
  * 
  * @author sylvain
  * 
  */
-@Deprecated
-// TODO: merge and use BehaviourParameterBindingModel instead
-public class DeleteFlexoConceptInstanceParameterBindingModel extends BindingModel {
+public class BehaviourParameterBindingModel extends BindingModel {
 
-	private final DeleteFlexoConceptInstanceParameter parameter;
+	private final BehaviourParameter<?> parameter;
 
-	public DeleteFlexoConceptInstanceParameterBindingModel(DeleteFlexoConceptInstanceParameter parameter) {
-		super(parameter.getAction() != null ? parameter.getAction().getBindingModel() : null);
+	public BehaviourParameterBindingModel(BehaviourParameter<?> parameter) {
+		super(parameter.getOwner() != null ? parameter.getOwner().getBindingModel() : null);
 		this.parameter = parameter;
 		if (parameter != null && parameter.getPropertyChangeSupport() != null) {
 			parameter.getPropertyChangeSupport().addPropertyChangeListener(this);
@@ -78,13 +76,13 @@ public class DeleteFlexoConceptInstanceParameterBindingModel extends BindingMode
 	public void propertyChange(PropertyChangeEvent evt) {
 		super.propertyChange(evt);
 		if (evt.getSource() == parameter) {
-			if (evt.getPropertyName().equals(DeleteFlexoConceptInstanceParameter.ACTION_KEY)) {
-				setBaseBindingModel(parameter.getAction() != null ? parameter.getAction().getBindingModel() : null);
+			if (evt.getPropertyName().equals(BehaviourParameter.OWNER_KEY)) {
+				setBaseBindingModel(parameter.getOwner() != null ? parameter.getOwner().getBindingModel() : null);
 			}
 		}
 	}
 
-	public DeleteFlexoConceptInstanceParameter getParameter() {
+	public BehaviourParameter<?> getParameter() {
 		return parameter;
 	}
 }

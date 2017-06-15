@@ -60,6 +60,7 @@ import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.model.annotations.XMLElement;
 
+//TODO: merge and use BehaviourParameter instead
 @ModelEntity
 @ImplementationClass(CreateFlexoConceptInstanceParameter.CreateFlexoConceptInstanceParameterImpl.class)
 @XMLElement
@@ -102,8 +103,8 @@ public interface CreateFlexoConceptInstanceParameter extends FlexoBehaviourObjec
 	@Override
 	public CreateFlexoConceptInstanceParameterBindingModel getBindingModel();
 
-	public static abstract class CreateFlexoConceptInstanceParameterImpl extends FlexoBehaviourObjectImpl implements
-			CreateFlexoConceptInstanceParameter {
+	public static abstract class CreateFlexoConceptInstanceParameterImpl extends FlexoBehaviourObjectImpl
+			implements CreateFlexoConceptInstanceParameter {
 
 		private static final Logger logger = Logger.getLogger(CreateFlexoConceptInstanceParameter.class.getPackage().getName());
 
@@ -146,7 +147,8 @@ public interface CreateFlexoConceptInstanceParameter extends FlexoBehaviourObjec
 		@Override
 		public DataBinding<?> getValue() {
 			if (value == null) {
-				value = new DataBinding<Object>(this, param != null ? param.getType() : Object.class, DataBinding.BindingDefinitionType.GET);
+				value = new DataBinding<Object>(this, param != null ? param.getType() : Object.class,
+						DataBinding.BindingDefinitionType.GET);
 				value.setBindingName(param != null ? param.getName() : "param");
 			}
 			return value;
@@ -178,7 +180,8 @@ public interface CreateFlexoConceptInstanceParameter extends FlexoBehaviourObjec
 					logger.warning("Required parameter missing: " + param + ", some strange behaviour may happen from now...");
 				}*/
 				return null;
-			} else if (getValue().isValid()) {
+			}
+			else if (getValue().isValid()) {
 				try {
 					return getValue().getBindingValue(evaluationContext);
 				} catch (TypeMismatchException e) {
@@ -189,7 +192,8 @@ public interface CreateFlexoConceptInstanceParameter extends FlexoBehaviourObjec
 					e.printStackTrace();
 				}
 				return null;
-			} else {
+			}
+			else {
 				logger.warning("Invalid binding: " + getValue() + " Reason: " + getValue().invalidBindingReason());
 			}
 			return null;

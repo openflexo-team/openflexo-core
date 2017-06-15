@@ -344,6 +344,20 @@ public class ViewPointLibrary extends DefaultFlexoObject implements FlexoService
 		return null;
 	}
 
+	public FlexoProperty<?> getFlexoProperty(String propertyURI, boolean loadWhenRequired) {
+		if (propertyURI == null)
+			return null;
+		if (propertyURI.lastIndexOf(".") > -1) {
+			String flexoConceptURI = propertyURI.substring(0, propertyURI.lastIndexOf("."));
+			FlexoConcept ep = getFlexoConcept(flexoConceptURI, loadWhenRequired);
+			if (ep != null) {
+				return ep.getAccessibleProperty(propertyURI.substring(propertyURI.lastIndexOf(".") + 1));
+			}
+		}
+		logger.warning("Cannot find property:" + propertyURI);
+		return null;
+	}
+
 	public FlexoBehaviour getFlexoBehaviour(String behaviourURI, boolean loadWhenRequired) {
 		if (behaviourURI == null)
 			return null;
@@ -354,7 +368,7 @@ public class ViewPointLibrary extends DefaultFlexoObject implements FlexoService
 				return ep.getFlexoBehaviour(behaviourURI.substring(behaviourURI.lastIndexOf(".") + 1));
 			}
 		}
-		logger.warning("Cannot find edition scheme:" + behaviourURI);
+		logger.warning("Cannot find behaviour:" + behaviourURI);
 		return null;
 	}
 

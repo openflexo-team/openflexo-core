@@ -46,6 +46,7 @@ import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import org.openflexo.connie.Bindable;
 import org.openflexo.connie.BindingFactory;
 import org.openflexo.connie.BindingModel;
@@ -1158,7 +1159,7 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 				}
 			}
 
-			if (this instanceof VirtualModelInstance) {
+			if (this instanceof VirtualModelInstance && ((VirtualModelInstance) this).getView() != null) {
 				ModelSlotInstance<MS, RD> returned = ((VirtualModelInstance) this).getView().getModelSlotInstance(modelSlot);
 				if (returned != null) {
 					return returned;

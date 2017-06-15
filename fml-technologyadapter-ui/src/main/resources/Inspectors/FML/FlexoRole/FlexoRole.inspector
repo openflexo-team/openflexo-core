@@ -31,39 +31,39 @@
 				showIcon="true" name="TechnologyAdapterDD"
 				icon="controller.getTechnologyAdapterController(object).technologyIcon"
 				list="data.serviceManager.technologyAdapterService.technologyAdapters" />
-			<Label label="cardinality" index="26"
+			<Label label="cardinality" index="36"
 				constraints="twocols(expandHorizontally=false;expandVertically=false;index=2;location=left)"
 				localize="true" />
-			<DropDown index="27" data="data.cardinality"
+			<DropDown index="37" data="data.cardinality"
 				constraints="twocols(expandHorizontally=false;expandVertically=false;index=3;location=right)"
 				name="CardinalityDD" format="object.stringRepresentation" localize="false"
 				iteratorClassName="org.openflexo.foundation.fml.PropertyCardinality"
 				autoSelectFirstRow="false" showReset="false" />
 
-			<Label name="Label4" index="28" localize="true" align="left"
+			<Label name="Label4" index="38" localize="true" align="left"
 				constraints="twocols(expandHorizontally=false;expandVertically=false;index=2;location=left)"
 				label="container" />
-			<Custom manageDynamicModel="true" index="29"
+			<Custom manageDynamicModel="true" index="39"
 				dataClassForComponent="org.openflexo.connie.DataBinding"
 				componentClassName="org.openflexo.gina.swing.utils.BindingSelector"
 				name="ContainerSelector" data="data.container"
 				constraints="twocols(expandHorizontally=true;expandVertically=false;index=3;location=right)">
 				<Assignment mandatory="true" variable="component.bindable" />
 			</Custom>
-			<Label name="Label5" index="30" localize="true" align="left"
+			<Label name="Label5" index="40" localize="true" align="left"
 				constraints="twocols(expandHorizontally=false;expandVertically=false;index=2;location=left)"
 				label="default_value" />
 			<Custom manageDynamicModel="true" dataClassForComponent="org.openflexo.connie.DataBinding"
 				componentClassName="org.openflexo.gina.swing.utils.BindingSelector"
-				name="DefaultValueSelector" data="data.defaultValue" index="31"
+				name="DefaultValueSelector" data="data.defaultValue" index="41"
 				constraints="twocols(expandHorizontally=true;expandVertically=false;index=3;location=right)">
 				<Assignment mandatory="true" variable="component.bindable" />
 			</Custom>
-			<Label name="Label7" index="32" localize="true" align="left"
+			<Label name="Label7" index="42" localize="true" align="left"
 				constraints="twocols(expandHorizontally=false;expandVertically=false;index=2;location=left)"
 				label="required" />
 			<CheckBox selected="true" name="checkbox" data="data.isRequired"
-				index="33"
+				index="43"
 				constraints="twocols(expandHorizontally=false;expandVertically=false;index=3;location=right)" />
 
 		</Tab>

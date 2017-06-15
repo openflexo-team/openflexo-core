@@ -49,8 +49,10 @@ import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoBehaviourObject;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.FlexoConcept;
-import org.openflexo.foundation.fml.binding.ExecuteBehaviourParameterBindingModel;
-import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
+import org.openflexo.foundation.fml.FlexoConceptObject;
+import org.openflexo.foundation.fml.binding.BehaviourParameterBindingModel;
+import org.openflexo.foundation.fml.editionaction.EditionAction;
+import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.model.annotations.DefineValidationRule;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -58,27 +60,25 @@ import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.PropertyIdentifier;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
-import org.openflexo.model.annotations.XMLElement;
+import org.openflexo.model.validation.ValidationIssue;
 
-//TODO: merge and use BehaviourParameter instead
-@ModelEntity
-@ImplementationClass(ExecuteBehaviourParameter.CreateFlexoConceptInstanceParameterImpl.class)
-@XMLElement
-public interface ExecuteBehaviourParameter extends FlexoBehaviourObject, Bindable {
+/**
+ * A parameter used to parameterize a FML behaviour call
+ * 
+ * @author sylvain
+ *
+ */
+@ModelEntity(isAbstract = true)
+@ImplementationClass(BehaviourParameter.BehaviourParameterImpl.class)
+public interface BehaviourParameter<T extends FlexoConceptObject> extends FlexoBehaviourObject, Bindable {
 
-	@PropertyIdentifier(type = FinalizeMatching.class)
-	public static final String ACTION_KEY = "action";
+	@PropertyIdentifier(type = EditionAction.class)
+	public static final String OWNER_KEY = "owner";
 
 	@PropertyIdentifier(type = String.class)
 	public static final String PARAM_NAME_KEY = "paramName";
 	@PropertyIdentifier(type = DataBinding.class)
 	public static final String VALUE_KEY = "value";
-
-	@Getter(value = ACTION_KEY/*, inverse = MatchFlexoConceptInstance.PARAMETERS_KEY*/)
-	public FinalizeMatching getAction();
-
-	@Setter(ACTION_KEY)
-	public void setAction(FinalizeMatching action);
 
 	@Getter(value = PARAM_NAME_KEY)
 	@XMLAttribute
@@ -89,40 +89,42 @@ public interface ExecuteBehaviourParameter extends FlexoBehaviourObject, Bindabl
 
 	@Getter(value = VALUE_KEY)
 	@XMLAttribute
-	public DataBinding<?> getValue();
+	public DataBinding<Object> getValue();
 
 	@Setter(VALUE_KEY)
-	public void setValue(DataBinding<?> value);
+	public void setValue(DataBinding<Object> value);
 
+	@Getter(value = OWNER_KEY /*, inverse = AddFlexoConceptInstance.PARAMETERS_KEY*/)
+	public T getOwner();
+
+	@Setter(OWNER_KEY)
+	public void setOwner(T owner);
+
+	public FlexoBehaviour getAccessedBehaviour();
+
+	// TODO: PAMELA
 	public FlexoBehaviourParameter getParam();
 
+	// TODO: PAMELA
 	public void setParam(FlexoBehaviourParameter param);
 
-	public Object evaluateParameterValue(RunTimeEvaluationContext evaluationContext);
+	public Object evaluateParameterValue(FlexoBehaviourAction action);
 
 	@Override
-	public ExecuteBehaviourParameterBindingModel getBindingModel();
+	public BehaviourParameterBindingModel getBindingModel();
 
-	public static abstract class CreateFlexoConceptInstanceParameterImpl extends FlexoBehaviourObjectImpl
-			implements ExecuteBehaviourParameter {
+	public static abstract class BehaviourParameterImpl<T extends FlexoConceptObject> extends FlexoBehaviourObjectImpl
+			implements BehaviourParameter<T> {
 
-		private static final Logger logger = Logger.getLogger(ExecuteBehaviourParameter.class.getPackage().getName());
+		static final Logger logger = Logger.getLogger(BehaviourParameter.class.getPackage().getName());
 
-		// MatchFlexoConceptInstance action;
+		// AddFlexoConceptInstance action;
 
 		private FlexoBehaviourParameter param;
 		String paramName;
-		private DataBinding<?> value;
+		private DataBinding<Object> value;
 
-		// Use it only for deserialization
-		public CreateFlexoConceptInstanceParameterImpl() {
-			super();
-		}
-
-		public CreateFlexoConceptInstanceParameterImpl(FlexoBehaviourParameter param) {
-			super();
-			this.param = param;
-		}
+		private BehaviourParameterBindingModel bindingModel;
 
 		public FlexoBehaviourParameter getParameter() {
 			return param;
@@ -130,8 +132,8 @@ public interface ExecuteBehaviourParameter extends FlexoBehaviourObject, Bindabl
 
 		@Override
 		public FlexoConcept getFlexoConcept() {
-			if (getParam() != null) {
-				return getParam().getFlexoConcept();
+			if (param != null) {
+				return param.getFlexoConcept();
 			}
 			return null;
 		}
@@ -141,11 +143,11 @@ public interface ExecuteBehaviourParameter extends FlexoBehaviourObject, Bindabl
 			if (param != null) {
 				return param.getFlexoBehaviour();
 			}
-			return null;
+			return getAccessedBehaviour();
 		}
 
 		@Override
-		public DataBinding<?> getValue() {
+		public DataBinding<Object> getValue() {
 			if (value == null) {
 				value = new DataBinding<Object>(this, param != null ? param.getType() : Object.class,
 						DataBinding.BindingDefinitionType.GET);
@@ -155,7 +157,7 @@ public interface ExecuteBehaviourParameter extends FlexoBehaviourObject, Bindabl
 		}
 
 		@Override
-		public void setValue(DataBinding<?> value) {
+		public void setValue(DataBinding<Object> value) {
 			if (value != null) {
 				value.setOwner(this);
 				value.setBindingName(param != null ? param.getName() : "param");
@@ -166,7 +168,7 @@ public interface ExecuteBehaviourParameter extends FlexoBehaviourObject, Bindabl
 		}
 
 		@Override
-		public Object evaluateParameterValue(RunTimeEvaluationContext evaluationContext) {
+		public Object evaluateParameterValue(FlexoBehaviourAction action) {
 			if (getValue() == null || getValue().isUnset()) {
 				/*logger.info("Binding for " + param.getName() + " is not set");
 				if (param instanceof URIParameter) {
@@ -183,7 +185,7 @@ public interface ExecuteBehaviourParameter extends FlexoBehaviourObject, Bindabl
 			}
 			else if (getValue().isValid()) {
 				try {
-					return getValue().getBindingValue(evaluationContext);
+					return getValue().getBindingValue(action);
 				} catch (TypeMismatchException e) {
 					e.printStackTrace();
 				} catch (NullReferenceException e) {
@@ -199,20 +201,18 @@ public interface ExecuteBehaviourParameter extends FlexoBehaviourObject, Bindabl
 			return null;
 		}
 
-		private ExecuteBehaviourParameterBindingModel bindingModel;
-
 		@Override
-		public ExecuteBehaviourParameterBindingModel getBindingModel() {
+		public BehaviourParameterBindingModel getBindingModel() {
 			if (bindingModel == null) {
-				bindingModel = new ExecuteBehaviourParameterBindingModel(this);
+				bindingModel = new BehaviourParameterBindingModel(this);
 			}
 			return bindingModel;
 		}
 
 		@Override
 		public FlexoBehaviourParameter getParam() {
-			if (param == null && paramName != null && getAction() != null && getAction().getFlexoBehaviour() != null) {
-				param = getAction().getFlexoBehaviour().getParameter(paramName);
+			if (param == null && paramName != null && getAccessedBehaviour() != null) {
+				param = getAccessedBehaviour().getParameter(paramName);
 			}
 			return param;
 		}
@@ -243,14 +243,25 @@ public interface ExecuteBehaviourParameter extends FlexoBehaviourObject, Bindabl
 	}
 
 	@DefineValidationRule
-	public static class ValueBindingMustBeValid extends BindingIsRequiredAndMustBeValid<ExecuteBehaviourParameter> {
+	public static class ValueBindingMustBeValid extends BindingIsRequiredAndMustBeValid<BehaviourParameter> {
 		public ValueBindingMustBeValid() {
-			super("'value'_binding_is_required_and_must_be_valid", ExecuteBehaviourParameter.class);
+			super("'value'_binding_is_required_and_must_be_valid", BehaviourParameter.class);
 		}
 
 		@Override
-		public DataBinding<?> getBinding(ExecuteBehaviourParameter object) {
+		public DataBinding<?> getBinding(BehaviourParameter object) {
 			return object.getValue();
+		}
+
+		@Override
+		public ValidationIssue<BindingIsRequiredAndMustBeValid<BehaviourParameter>, BehaviourParameter> applyValidation(
+				BehaviourParameter object) {
+			// Should return an issue only if parameter is required
+			if (object.getParam().getIsRequired()) {
+				return super.applyValidation(object);
+			}
+			else
+				return null;
 		}
 
 	}

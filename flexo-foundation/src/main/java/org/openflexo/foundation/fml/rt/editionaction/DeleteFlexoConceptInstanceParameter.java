@@ -60,6 +60,7 @@ import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.model.annotations.XMLElement;
 
+//TODO: merge and use BehaviourParameter instead
 @ModelEntity
 @ImplementationClass(DeleteFlexoConceptInstanceParameter.DeleteFlexoConceptInstanceParameterImpl.class)
 @XMLElement
@@ -104,8 +105,8 @@ public interface DeleteFlexoConceptInstanceParameter extends FlexoBehaviourObjec
 	@Override
 	public DeleteFlexoConceptInstanceParameterBindingModel getBindingModel();
 
-	public static abstract class DeleteFlexoConceptInstanceParameterImpl extends FlexoBehaviourObjectImpl implements
-			DeleteFlexoConceptInstanceParameter {
+	public static abstract class DeleteFlexoConceptInstanceParameterImpl extends FlexoBehaviourObjectImpl
+			implements DeleteFlexoConceptInstanceParameter {
 
 		static final Logger logger = Logger.getLogger(DeleteFlexoConceptInstanceParameter.class.getPackage().getName());
 
@@ -182,7 +183,8 @@ public interface DeleteFlexoConceptInstanceParameter extends FlexoBehaviourObjec
 					logger.warning("Required parameter missing: " + param + ", some strange behaviour may happen from now...");
 				}*/
 				return null;
-			} else if (getValue().isValid()) {
+			}
+			else if (getValue().isValid()) {
 				try {
 					return getValue().getBindingValue(action);
 				} catch (TypeMismatchException e) {
@@ -193,7 +195,8 @@ public interface DeleteFlexoConceptInstanceParameter extends FlexoBehaviourObjec
 					e.printStackTrace();
 				}
 				return null;
-			} else {
+			}
+			else {
 				logger.warning("Invalid binding: " + getValue() + " Reason: " + getValue().invalidBindingReason());
 			}
 			return null;

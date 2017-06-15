@@ -50,6 +50,7 @@ import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.DataModification;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.fml.FlexoBehaviour;
@@ -66,6 +67,7 @@ import org.openflexo.foundation.fml.rt.FMLRunTimeEngine;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.TypeAwareModelSlotInstance;
+import org.openflexo.foundation.fml.rt.ViewObject;
 import org.openflexo.foundation.fml.rt.VirtualModelInstanceObject;
 import org.openflexo.foundation.fml.rt.editionaction.MatchFlexoConceptInstance;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
@@ -84,7 +86,7 @@ import org.openflexo.toolbox.StringUtils;
  * 
  * @param <A>
  */
-public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB, O>, FB extends FlexoBehaviour, O extends VirtualModelInstanceObject>
+public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB, O>, FB extends FlexoBehaviour, O extends FlexoObject>
 		extends FlexoAction<A, O, VirtualModelInstanceObject> implements RunTimeEvaluationContext {
 
 	private static final Logger logger = Logger.getLogger(FlexoBehaviourAction.class.getPackage().getName());
@@ -175,8 +177,8 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 	}
 
 	public FlexoResourceCenter<?> getResourceCenter() {
-		if (getFocusedObject() != null) {
-			return getFocusedObject().getResourceCenter();
+		if (getFocusedObject() instanceof ViewObject) {
+			return ((ViewObject) getFocusedObject()).getResourceCenter();
 		}
 		return null;
 	}

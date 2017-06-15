@@ -49,6 +49,8 @@ import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstancePara
  * @author sylvain
  * 
  */
+@Deprecated
+// TODO: merge and use BehaviourParameterBindingModel instead
 public class AddFlexoConceptInstanceParameterBindingModel extends BindingModel {
 
 	private final AddFlexoConceptInstanceParameter parameter;

@@ -61,6 +61,8 @@ import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.model.annotations.XMLElement;
 import org.openflexo.model.validation.ValidationIssue;
 
+@Deprecated
+// TODO: merge and use BehaviourParameter instead
 @ModelEntity
 @ImplementationClass(AddFlexoConceptInstanceParameter.AddFlexoConceptInstanceParameterImpl.class)
 @XMLElement
@@ -105,8 +107,8 @@ public interface AddFlexoConceptInstanceParameter extends FlexoBehaviourObject, 
 	@Override
 	public AddFlexoConceptInstanceParameterBindingModel getBindingModel();
 
-	public static abstract class AddFlexoConceptInstanceParameterImpl extends FlexoBehaviourObjectImpl implements
-			AddFlexoConceptInstanceParameter {
+	public static abstract class AddFlexoConceptInstanceParameterImpl extends FlexoBehaviourObjectImpl
+			implements AddFlexoConceptInstanceParameter {
 
 		static final Logger logger = Logger.getLogger(AddFlexoConceptInstanceParameter.class.getPackage().getName());
 
@@ -151,7 +153,8 @@ public interface AddFlexoConceptInstanceParameter extends FlexoBehaviourObject, 
 		@Override
 		public DataBinding<Object> getValue() {
 			if (value == null) {
-				value = new DataBinding<Object>(this, param != null ? param.getType() : Object.class, DataBinding.BindingDefinitionType.GET);
+				value = new DataBinding<Object>(this, param != null ? param.getType() : Object.class,
+						DataBinding.BindingDefinitionType.GET);
 				value.setBindingName(param != null ? param.getName() : "param");
 			}
 			return value;
@@ -183,7 +186,8 @@ public interface AddFlexoConceptInstanceParameter extends FlexoBehaviourObject, 
 					logger.warning("Required parameter missing: " + param + ", some strange behaviour may happen from now...");
 				}*/
 				return null;
-			} else if (getValue().isValid()) {
+			}
+			else if (getValue().isValid()) {
 				try {
 					return getValue().getBindingValue(action);
 				} catch (TypeMismatchException e) {
@@ -194,7 +198,8 @@ public interface AddFlexoConceptInstanceParameter extends FlexoBehaviourObject, 
 					e.printStackTrace();
 				}
 				return null;
-			} else {
+			}
+			else {
 				logger.warning("Invalid binding: " + getValue() + " Reason: " + getValue().invalidBindingReason());
 			}
 			return null;
@@ -258,7 +263,8 @@ public interface AddFlexoConceptInstanceParameter extends FlexoBehaviourObject, 
 			// Should return an issue only if parameter is required
 			if (object.getParam().getIsRequired()) {
 				return super.applyValidation(object);
-			} else
+			}
+			else
 				return null;
 		}
 

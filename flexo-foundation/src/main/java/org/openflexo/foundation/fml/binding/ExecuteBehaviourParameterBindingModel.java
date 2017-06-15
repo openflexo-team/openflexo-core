@@ -50,6 +50,8 @@ import org.openflexo.foundation.fml.rt.editionaction.ExecuteBehaviourParameter;
  * @author sylvain
  * 
  */
+@Deprecated
+// TODO: merge and use BehaviourParameterBindingModel instead
 public class ExecuteBehaviourParameterBindingModel extends BindingModel {
 
 	private final ExecuteBehaviourParameter parameter;
