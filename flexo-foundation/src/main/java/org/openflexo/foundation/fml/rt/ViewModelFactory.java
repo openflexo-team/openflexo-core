@@ -55,7 +55,7 @@ public class ViewModelFactory extends AbstractVirtualModelInstanceModelFactory<V
 
 	public ViewModelFactory(ViewResource viewResource, EditingContext editingContext, TechnologyAdapterService taService)
 			throws ModelDefinitionException {
-		super(viewResource, editingContext, taService);
+		super(viewResource, View.class, editingContext, taService);
 	}
 
 }

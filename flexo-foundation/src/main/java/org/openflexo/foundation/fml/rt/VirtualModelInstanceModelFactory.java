@@ -55,7 +55,7 @@ public class VirtualModelInstanceModelFactory extends AbstractVirtualModelInstan
 
 	public VirtualModelInstanceModelFactory(VirtualModelInstanceResource virtualModelInstanceResource, EditingContext editingContext,
 			TechnologyAdapterService taService) throws ModelDefinitionException {
-		super(virtualModelInstanceResource, editingContext, taService);
+		super(virtualModelInstanceResource, VirtualModelInstance.class, editingContext, taService);
 	}
 
 }

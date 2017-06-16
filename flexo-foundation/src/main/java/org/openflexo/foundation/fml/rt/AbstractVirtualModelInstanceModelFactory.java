@@ -65,10 +65,11 @@ public abstract class AbstractVirtualModelInstanceModelFactory<R extends Abstrac
 
 	private RelativePathResourceConverter relativePathResourceConverter;
 
-	public AbstractVirtualModelInstanceModelFactory(R virtualModelInstanceResource, EditingContext editingContext,
+	public AbstractVirtualModelInstanceModelFactory(R virtualModelInstanceResource,
+			Class<? extends AbstractVirtualModelInstance<?, ?>> baseVMIClass, EditingContext editingContext,
 			TechnologyAdapterService taService) throws ModelDefinitionException {
 
-		super(virtualModelInstanceResource, allClassesForModelContext(taService));
+		super(virtualModelInstanceResource, allClassesForModelContext(baseVMIClass, taService));
 		setEditingContext(editingContext);
 		addConverter(new DataBindingConverter());
 		addConverter(new FlexoVersionConverter());
@@ -76,8 +77,8 @@ public abstract class AbstractVirtualModelInstanceModelFactory<R extends Abstrac
 		addConverter(relativePathResourceConverter = new RelativePathResourceConverter(null));
 		if (virtualModelInstanceResource != null && virtualModelInstanceResource.getIODelegate() != null
 				&& virtualModelInstanceResource.getIODelegate().getSerializationArtefactAsResource() != null) {
-			relativePathResourceConverter.setContainerResource(
-					virtualModelInstanceResource.getIODelegate().getSerializationArtefactAsResource().getContainer());
+			relativePathResourceConverter
+					.setContainerResource(virtualModelInstanceResource.getIODelegate().getSerializationArtefactAsResource().getContainer());
 		}
 
 		if (virtualModelInstanceResource != null) {
@@ -94,9 +95,10 @@ public abstract class AbstractVirtualModelInstanceModelFactory<R extends Abstrac
 	 * @return
 	 * @throws ModelDefinitionException
 	 */
-	private static List<Class<?>> allClassesForModelContext(TechnologyAdapterService taService) throws ModelDefinitionException {
+	private static List<Class<?>> allClassesForModelContext(Class<? extends AbstractVirtualModelInstance<?, ?>> baseVMIClass,
+			TechnologyAdapterService taService) throws ModelDefinitionException {
 		List<Class<?>> classes = new ArrayList<Class<?>>();
-		classes.add(VirtualModelInstance.class);
+		classes.add(baseVMIClass);
 		if (taService != null) {
 			for (TechnologyAdapter ta : taService.getTechnologyAdapters()) {
 				for (Class<?> modelSlotClass : ta.getAvailableModelSlotTypes()) {
