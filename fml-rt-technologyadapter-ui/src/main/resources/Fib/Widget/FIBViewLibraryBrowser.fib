@@ -1,63 +1,86 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Panel layout="twocols" darkLevel="0"
-	dataClassName="org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter"
-	controllerClassName="org.openflexo.view.controller.FlexoFIBController"
-	visible="">
-	<Browser root="data" iteratorClassName="java.lang.Object"
-		visibleRowCount="5" rowHeight="18" boundToSelectionManager="true"
-		selectionMode="DiscontiguousTreeSelection" selected="" showFooter="true"
-		rootVisible="true" showRootsHandle="true" format="" icon="" tooltip=""
-		localize="true" enable="" manageDynamicModel="true"
-		clickAction="controller.singleClick(ViewLibraryBrowser.selected)"
-		doubleClickAction="controller.doubleClick(ViewLibraryBrowser.selected)"
-		rightClickAction="controller.rightClick(ViewLibraryBrowser.selected,event)"
-		enterPressedAction="" valueChangedAction="" valueTransform=""
-		valueValidator="" name="ViewLibraryBrowser" index="0" data=""
-		constraints="twocols(expandHorizontally=true;expandVertically=true;index=0;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=center)"
-		visible="">
-		<BrowserElement
-			dataClassName="org.openflexo.foundation.technologyadapter.TechnologyAdapter"
-			label="technologyAdapter.name" icon="controller.iconForObject(technologyAdapter)"
-			tooltip="" enabled="" visible="" isEditable="false" editableLabel=""
-			filtered="false" defaultVisible="true" dynamicFont=""
-			name="technologyAdapter">
-			<Children data="data.getViewLibraries()" visible=""
-				cast="child.rootFolder" name="repositories" />
-		</BrowserElement>
-		<BrowserElement dataClassName="org.openflexo.foundation.resource.RepositoryFolder"
-			label="folder.displayableName" icon="controller.iconForObject(folder)"
-			visible="controller.shouldBeDisplayed(folder)" isEditable="false"
-			filtered="false" defaultVisible="true" dynamicFont="" name="folder">
-			<Children data="folder.children" name="subFolders" />
-			<Children data="folder.resources" name="resource" />
-		</BrowserElement>
-		<BrowserElement dataClassName="org.openflexo.foundation.fml.rt.rm.ViewResource"
-			label="viewResource.name" icon="controller.iconForObject(viewResource)"
-			tooltip="" enabled="viewResource.isLoaded" visible="" isEditable="false"
-			editableLabel="" filtered="false" defaultVisible="true" dynamicFont=""
-			name="viewResource">
-			<Children data="viewResource.contents" visible="viewResource.isLoaded"
-				cast="" name="children" />
-		</BrowserElement>
-		<BrowserElement
-			dataClassName="org.openflexo.foundation.fml.rt.rm.VirtualModelInstanceResource"
-			label="virtualModelInstanceResource.name" icon="controller.iconForObject(virtualModelInstanceResource)"
-			tooltip="" enabled="virtualModelInstanceResource.isLoaded" visible=""
-			isEditable="false" editableLabel="" filtered="false" defaultVisible="true"
-			dynamicFont="" name="virtualModelInstanceResource">
-			<!--  <Children
-				data="virtualModelInstanceResource.getVirtualModelInstance().allRootFlexoConceptInstances"
-				visible="virtualModelInstanceResource.isLoaded" name="children" />-->
-		</BrowserElement>
-		<BrowserElement dataClassName="org.openflexo.foundation.fml.rt.FlexoConceptInstance"
-			label="flexoConceptInstance.stringRepresentation" icon="controller.iconForObject(flexoConceptInstance)"
-			tooltip="" visible="" isEditable="false" editableLabel="" filtered="false"
-			defaultVisible="true" dynamicFont="" name="flexoConceptInstance">
-						<Children
-				data="flexoConceptInstance.embeddedFlexoConceptInstances" name="children" />
-			
-			</BrowserElement>
-
-	</Browser>
-	<LocalizedDictionary />
+<Panel id="0" align="left" borderTop="0" borderLeft="0" trackViewPortHeight="true" trackViewPortWidth="true" borderBottom="0" border="empty" sizeAdjustment="OriginalSize" layout="twocols" borderRight="0" controllerClassName="org.openflexo.view.controller.FlexoFIBController">
+  <Browser id="1" backgroundSelectionColor="9,80,208" visibleRowCount="5" boundToSelectionManager="true" backgroundNonSelectionColor="255,255,255" iteratorClassName="java.lang.Object" textSelectionColor="255,255,255" backgroundSecondarySelectionColor="178,215,255" showRootsHandle="true" showFooter="true" textNonSelectionColor="0,0,0" root="data" selectionMode="DiscontiguousTreeSelection" rootVisible="true" rowHeight="18" localize="true" manageDynamicModel="true" rightClickAction="controller.rightClick(ViewLibraryBrowser.selected,event)" doubleClickAction="controller.doubleClick(ViewLibraryBrowser.selected)" clickAction="controller.singleClick(ViewLibraryBrowser.selected)" index="0" constraints="twocols(expandHorizontally=true;expandVertically=true;index=0;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=center)" name="ViewLibraryBrowser">
+    <BrowserElement id="2" dataClassName="org.openflexo.foundation.technologyadapter.TechnologyAdapter" icon="controller.iconForObject(technologyAdapter)" label="technologyAdapter.name" isEditable="false" name="technologyAdapter">
+      <Children id="3" cast="child.rootFolder" data="data.getViewLibraries()" name="repositories" />
+    </BrowserElement>
+    <BrowserElement id="4" visible="controller.shouldBeDisplayed(folder)" dataClassName="org.openflexo.foundation.resource.RepositoryFolder" icon="controller.iconForObject(folder)" label="folder.displayableName" isEditable="false" name="folder">
+      <Children id="5" data="folder.children" name="subFolders" />
+      <Children id="6" data="folder.resources" name="resource" />
+      <FIBBrowserActionAdapter xmlns:p="http://www.openflexo.org/pamela/" id="7" p:modelEntity="org.openflexo.view.FIBBrowserActionAdapter" isAvailable="action.isAvailable(selected)" method="action.performAction(selected)" name="copy" />
+      <FIBBrowserActionAdapter xmlns:p="http://www.openflexo.org/pamela/" id="8" p:modelEntity="org.openflexo.view.FIBBrowserActionAdapter" isAvailable="action.isAvailable(selected)" method="action.performAction(selected)" name="cut" />
+      <FIBBrowserActionAdapter xmlns:p="http://www.openflexo.org/pamela/" id="9" p:modelEntity="org.openflexo.view.FIBBrowserActionAdapter" isAvailable="action.isAvailable(selected)" method="action.performAction(selected)" name="paste" />
+      <FIBBrowserActionAdapter xmlns:p="http://www.openflexo.org/pamela/" id="10" p:modelEntity="org.openflexo.view.FIBBrowserActionAdapter" isAvailable="action.isAvailable(selected)" method="action.performAction(selected)" name="select_all" />
+      <FIBBrowserActionAdapter xmlns:p="http://www.openflexo.org/pamela/" id="11" p:modelEntity="org.openflexo.view.FIBBrowserActionAdapter" isAvailable="action.isAvailable(selected)" method="action.performAction(selected)" name="submit_documentation" />
+      <FIBBrowserActionAdapter xmlns:p="http://www.openflexo.org/pamela/" id="12" p:modelEntity="org.openflexo.view.FIBBrowserActionAdapter" isAvailable="action.isAvailable(selected)" method="action.performAction(selected)" name="inspect" />
+      <FIBBrowserActionAdapter xmlns:p="http://www.openflexo.org/pamela/" id="13" p:modelEntity="org.openflexo.view.FIBBrowserActionAdapter" isAvailable="action.isAvailable(selected)" method="action.performAction(selected)" name="load_resource" />
+      <FIBBrowserActionAdapter xmlns:p="http://www.openflexo.org/pamela/" id="14" p:modelEntity="org.openflexo.view.FIBBrowserActionAdapter" isAvailable="action.isAvailable(selected)" method="action.performAction(selected)" name="help" />
+      <FIBBrowserActionAdapter xmlns:p="http://www.openflexo.org/pamela/" id="15" p:modelEntity="org.openflexo.view.FIBBrowserActionAdapter" isAvailable="action.isAvailable(selected)" method="action.performAction(selected)" name="add_flexo_property" />
+      <FIBBrowserActionAdapter xmlns:p="http://www.openflexo.org/pamela/" id="16" p:modelEntity="org.openflexo.view.FIBBrowserActionAdapter" isAvailable="action.isAvailable(selected)" method="action.performAction(selected)" name="sort_flexo_properties" />
+      <FIBBrowserActionAdapter xmlns:p="http://www.openflexo.org/pamela/" id="17" p:modelEntity="org.openflexo.view.FIBBrowserActionAdapter" isAvailable="action.isAvailable(selected)" method="action.performAction(selected)" name="set_property" />
+      <FIBBrowserActionAdapter xmlns:p="http://www.openflexo.org/pamela/" id="18" p:modelEntity="org.openflexo.view.FIBBrowserActionAdapter" isAvailable="action.isAvailable(selected)" method="action.performAction(selected)" name="create_folder" />
+      <FIBBrowserActionAdapter xmlns:p="http://www.openflexo.org/pamela/" id="19" p:modelEntity="org.openflexo.view.FIBBrowserActionAdapter" isAvailable="action.isAvailable(selected)" method="action.performAction(selected)" name="delete_folder" />
+      <FIBBrowserActionAdapter xmlns:p="http://www.openflexo.org/pamela/" id="20" p:modelEntity="org.openflexo.view.FIBBrowserActionAdapter" isAvailable="action.isAvailable(selected)" method="action.performAction(selected)" name="create_view" />
+      <FIBBrowserActionAdapter xmlns:p="http://www.openflexo.org/pamela/" id="21" p:modelEntity="org.openflexo.view.FIBBrowserActionAdapter" isAvailable="action.isAvailable(selected)" method="action.performAction(selected)" name="create_viewpoint" />
+      <FIBBrowserActionAdapter xmlns:p="http://www.openflexo.org/pamela/" id="22" p:modelEntity="org.openflexo.view.FIBBrowserActionAdapter" isAvailable="action.isAvailable(selected)" method="action.performAction(selected)" name="create_component" />
+    </BrowserElement>
+    <BrowserElement id="23" dataClassName="org.openflexo.foundation.fml.rt.rm.ViewResource" icon="controller.iconForObject(viewResource)" label="viewResource.name" enabled="viewResource.isLoaded" isEditable="false" name="viewResource">
+      <Children id="24" visible="viewResource.isLoaded" data="viewResource.contents" name="children" />
+      <FIBBrowserActionAdapter xmlns:p="http://www.openflexo.org/pamela/" id="25" p:modelEntity="org.openflexo.view.FIBBrowserActionAdapter" isAvailable="action.isAvailable(selected)" method="action.performAction(selected)" name="copy" />
+      <FIBBrowserActionAdapter xmlns:p="http://www.openflexo.org/pamela/" id="26" p:modelEntity="org.openflexo.view.FIBBrowserActionAdapter" isAvailable="action.isAvailable(selected)" method="action.performAction(selected)" name="cut" />
+      <FIBBrowserActionAdapter xmlns:p="http://www.openflexo.org/pamela/" id="27" p:modelEntity="org.openflexo.view.FIBBrowserActionAdapter" isAvailable="action.isAvailable(selected)" method="action.performAction(selected)" name="paste" />
+      <FIBBrowserActionAdapter xmlns:p="http://www.openflexo.org/pamela/" id="28" p:modelEntity="org.openflexo.view.FIBBrowserActionAdapter" isAvailable="action.isAvailable(selected)" method="action.performAction(selected)" name="select_all" />
+      <FIBBrowserActionAdapter xmlns:p="http://www.openflexo.org/pamela/" id="29" p:modelEntity="org.openflexo.view.FIBBrowserActionAdapter" isAvailable="action.isAvailable(selected)" method="action.performAction(selected)" name="submit_documentation" />
+      <FIBBrowserActionAdapter xmlns:p="http://www.openflexo.org/pamela/" id="30" p:modelEntity="org.openflexo.view.FIBBrowserActionAdapter" isAvailable="action.isAvailable(selected)" method="action.performAction(selected)" name="inspect" />
+      <FIBBrowserActionAdapter xmlns:p="http://www.openflexo.org/pamela/" id="31" p:modelEntity="org.openflexo.view.FIBBrowserActionAdapter" isAvailable="action.isAvailable(selected)" method="action.performAction(selected)" name="load_resource" />
+      <FIBBrowserActionAdapter xmlns:p="http://www.openflexo.org/pamela/" id="32" p:modelEntity="org.openflexo.view.FIBBrowserActionAdapter" isAvailable="action.isAvailable(selected)" method="action.performAction(selected)" name="help" />
+      <FIBBrowserActionAdapter xmlns:p="http://www.openflexo.org/pamela/" id="33" p:modelEntity="org.openflexo.view.FIBBrowserActionAdapter" isAvailable="action.isAvailable(selected)" method="action.performAction(selected)" name="add_flexo_property" />
+      <FIBBrowserActionAdapter xmlns:p="http://www.openflexo.org/pamela/" id="34" p:modelEntity="org.openflexo.view.FIBBrowserActionAdapter" isAvailable="action.isAvailable(selected)" method="action.performAction(selected)" name="sort_flexo_properties" />
+      <FIBBrowserActionAdapter xmlns:p="http://www.openflexo.org/pamela/" id="35" p:modelEntity="org.openflexo.view.FIBBrowserActionAdapter" isAvailable="action.isAvailable(selected)" method="action.performAction(selected)" name="set_property" />
+    </BrowserElement>
+    <BrowserElement id="36" dataClassName="org.openflexo.foundation.fml.rt.rm.VirtualModelInstanceResource" icon="controller.iconForObject(virtualModelInstanceResource)" label="virtualModelInstanceResource.name" enabled="virtualModelInstanceResource.isLoaded" isEditable="false" name="virtualModelInstanceResource">
+      <!--  <Children id="37" visible="virtualModelInstanceResource.isLoaded" data="virtualModelInstanceResource.loadedResourceData.modelSlotInstances" name="children" /> -->
+      <FIBBrowserActionAdapter xmlns:p="http://www.openflexo.org/pamela/" id="38" p:modelEntity="org.openflexo.view.FIBBrowserActionAdapter" isAvailable="action.isAvailable(selected)" method="action.performAction(selected)" name="copy" />
+      <FIBBrowserActionAdapter xmlns:p="http://www.openflexo.org/pamela/" id="39" p:modelEntity="org.openflexo.view.FIBBrowserActionAdapter" isAvailable="action.isAvailable(selected)" method="action.performAction(selected)" name="cut" />
+      <FIBBrowserActionAdapter xmlns:p="http://www.openflexo.org/pamela/" id="40" p:modelEntity="org.openflexo.view.FIBBrowserActionAdapter" isAvailable="action.isAvailable(selected)" method="action.performAction(selected)" name="paste" />
+      <FIBBrowserActionAdapter xmlns:p="http://www.openflexo.org/pamela/" id="41" p:modelEntity="org.openflexo.view.FIBBrowserActionAdapter" isAvailable="action.isAvailable(selected)" method="action.performAction(selected)" name="select_all" />
+      <FIBBrowserActionAdapter xmlns:p="http://www.openflexo.org/pamela/" id="42" p:modelEntity="org.openflexo.view.FIBBrowserActionAdapter" isAvailable="action.isAvailable(selected)" method="action.performAction(selected)" name="submit_documentation" />
+      <FIBBrowserActionAdapter xmlns:p="http://www.openflexo.org/pamela/" id="43" p:modelEntity="org.openflexo.view.FIBBrowserActionAdapter" isAvailable="action.isAvailable(selected)" method="action.performAction(selected)" name="inspect" />
+      <FIBBrowserActionAdapter xmlns:p="http://www.openflexo.org/pamela/" id="44" p:modelEntity="org.openflexo.view.FIBBrowserActionAdapter" isAvailable="action.isAvailable(selected)" method="action.performAction(selected)" name="load_resource" />
+      <FIBBrowserActionAdapter xmlns:p="http://www.openflexo.org/pamela/" id="45" p:modelEntity="org.openflexo.view.FIBBrowserActionAdapter" isAvailable="action.isAvailable(selected)" method="action.performAction(selected)" name="help" />
+      <FIBBrowserActionAdapter xmlns:p="http://www.openflexo.org/pamela/" id="46" p:modelEntity="org.openflexo.view.FIBBrowserActionAdapter" isAvailable="action.isAvailable(selected)" method="action.performAction(selected)" name="add_flexo_property" />
+      <FIBBrowserActionAdapter xmlns:p="http://www.openflexo.org/pamela/" id="47" p:modelEntity="org.openflexo.view.FIBBrowserActionAdapter" isAvailable="action.isAvailable(selected)" method="action.performAction(selected)" name="sort_flexo_properties" />
+      <FIBBrowserActionAdapter xmlns:p="http://www.openflexo.org/pamela/" id="48" p:modelEntity="org.openflexo.view.FIBBrowserActionAdapter" isAvailable="action.isAvailable(selected)" method="action.performAction(selected)" name="set_property" />
+    </BrowserElement>
+    <BrowserElement id="49" dataClassName="org.openflexo.foundation.fml.rt.FlexoConceptInstance" icon="controller.iconForObject(flexoConceptInstance)" label="flexoConceptInstance.stringRepresentation" isEditable="false" name="flexoConceptInstance">
+      <Children id="50" data="flexoConceptInstance.embeddedFlexoConceptInstances" name="children" />
+      <FIBBrowserActionAdapter xmlns:p="http://www.openflexo.org/pamela/" id="51" p:modelEntity="org.openflexo.view.FIBBrowserActionAdapter" isAvailable="action.isAvailable(selected)" method="action.performAction(selected)" name="copy" />
+      <FIBBrowserActionAdapter xmlns:p="http://www.openflexo.org/pamela/" id="52" p:modelEntity="org.openflexo.view.FIBBrowserActionAdapter" isAvailable="action.isAvailable(selected)" method="action.performAction(selected)" name="cut" />
+      <FIBBrowserActionAdapter xmlns:p="http://www.openflexo.org/pamela/" id="53" p:modelEntity="org.openflexo.view.FIBBrowserActionAdapter" isAvailable="action.isAvailable(selected)" method="action.performAction(selected)" name="paste" />
+      <FIBBrowserActionAdapter xmlns:p="http://www.openflexo.org/pamela/" id="54" p:modelEntity="org.openflexo.view.FIBBrowserActionAdapter" isAvailable="action.isAvailable(selected)" method="action.performAction(selected)" name="select_all" />
+      <FIBBrowserActionAdapter xmlns:p="http://www.openflexo.org/pamela/" id="55" p:modelEntity="org.openflexo.view.FIBBrowserActionAdapter" isAvailable="action.isAvailable(selected)" method="action.performAction(selected)" name="submit_documentation" />
+      <FIBBrowserActionAdapter xmlns:p="http://www.openflexo.org/pamela/" id="56" p:modelEntity="org.openflexo.view.FIBBrowserActionAdapter" isAvailable="action.isAvailable(selected)" method="action.performAction(selected)" name="inspect" />
+      <FIBBrowserActionAdapter xmlns:p="http://www.openflexo.org/pamela/" id="57" p:modelEntity="org.openflexo.view.FIBBrowserActionAdapter" isAvailable="action.isAvailable(selected)" method="action.performAction(selected)" name="load_resource" />
+      <FIBBrowserActionAdapter xmlns:p="http://www.openflexo.org/pamela/" id="58" p:modelEntity="org.openflexo.view.FIBBrowserActionAdapter" isAvailable="action.isAvailable(selected)" method="action.performAction(selected)" name="help" />
+      <FIBBrowserActionAdapter xmlns:p="http://www.openflexo.org/pamela/" id="59" p:modelEntity="org.openflexo.view.FIBBrowserActionAdapter" isAvailable="action.isAvailable(selected)" method="action.performAction(selected)" name="add_flexo_property" />
+      <FIBBrowserActionAdapter xmlns:p="http://www.openflexo.org/pamela/" id="60" p:modelEntity="org.openflexo.view.FIBBrowserActionAdapter" isAvailable="action.isAvailable(selected)" method="action.performAction(selected)" name="sort_flexo_properties" />
+      <FIBBrowserActionAdapter xmlns:p="http://www.openflexo.org/pamela/" id="61" p:modelEntity="org.openflexo.view.FIBBrowserActionAdapter" isAvailable="action.isAvailable(selected)" method="action.performAction(selected)" name="set_property" />
+      <FIBBrowserActionAdapter xmlns:p="http://www.openflexo.org/pamela/" id="62" p:modelEntity="org.openflexo.view.FIBBrowserActionAdapter" isAvailable="action.isAvailable(selected)" method="action.performAction(selected)" name="instantiate_flexo_concept" />
+    </BrowserElement>
+    <!--  <BrowserElement id="63" visible="modelSlotInstance.accessedResourceData.class.simpleName" dataClassName="org.openflexo.foundation.fml.rt.ModelSlotInstance&lt;org.openflexo.foundation.technologyadapter.ModelSlot&lt;?&gt;,org.openflexo.foundation.resource.ResourceData&lt;?&gt;&gt;" label="modelSlotInstance.modelSlot.name" isEditable="false" name="modelSlotInstance">
+      <FIBBrowserActionAdapter xmlns:p="http://www.openflexo.org/pamela/" id="64" p:modelEntity="org.openflexo.view.FIBBrowserActionAdapter" isAvailable="action.isAvailable(selected)" method="action.performAction(selected)" name="copy" />
+      <FIBBrowserActionAdapter xmlns:p="http://www.openflexo.org/pamela/" id="65" p:modelEntity="org.openflexo.view.FIBBrowserActionAdapter" isAvailable="action.isAvailable(selected)" method="action.performAction(selected)" name="cut" />
+      <FIBBrowserActionAdapter xmlns:p="http://www.openflexo.org/pamela/" id="66" p:modelEntity="org.openflexo.view.FIBBrowserActionAdapter" isAvailable="action.isAvailable(selected)" method="action.performAction(selected)" name="paste" />
+      <FIBBrowserActionAdapter xmlns:p="http://www.openflexo.org/pamela/" id="67" p:modelEntity="org.openflexo.view.FIBBrowserActionAdapter" isAvailable="action.isAvailable(selected)" method="action.performAction(selected)" name="select_all" />
+      <FIBBrowserActionAdapter xmlns:p="http://www.openflexo.org/pamela/" id="68" p:modelEntity="org.openflexo.view.FIBBrowserActionAdapter" isAvailable="action.isAvailable(selected)" method="action.performAction(selected)" name="submit_documentation" />
+      <FIBBrowserActionAdapter xmlns:p="http://www.openflexo.org/pamela/" id="69" p:modelEntity="org.openflexo.view.FIBBrowserActionAdapter" isAvailable="action.isAvailable(selected)" method="action.performAction(selected)" name="inspect" />
+      <FIBBrowserActionAdapter xmlns:p="http://www.openflexo.org/pamela/" id="70" p:modelEntity="org.openflexo.view.FIBBrowserActionAdapter" isAvailable="action.isAvailable(selected)" method="action.performAction(selected)" name="load_resource" />
+      <FIBBrowserActionAdapter xmlns:p="http://www.openflexo.org/pamela/" id="71" p:modelEntity="org.openflexo.view.FIBBrowserActionAdapter" isAvailable="action.isAvailable(selected)" method="action.performAction(selected)" name="help" />
+      <FIBBrowserActionAdapter xmlns:p="http://www.openflexo.org/pamela/" id="72" p:modelEntity="org.openflexo.view.FIBBrowserActionAdapter" isAvailable="action.isAvailable(selected)" method="action.performAction(selected)" name="add_flexo_property" />
+      <FIBBrowserActionAdapter xmlns:p="http://www.openflexo.org/pamela/" id="73" p:modelEntity="org.openflexo.view.FIBBrowserActionAdapter" isAvailable="action.isAvailable(selected)" method="action.performAction(selected)" name="sort_flexo_properties" />
+      <FIBBrowserActionAdapter xmlns:p="http://www.openflexo.org/pamela/" id="74" p:modelEntity="org.openflexo.view.FIBBrowserActionAdapter" isAvailable="action.isAvailable(selected)" method="action.performAction(selected)" name="set_property" />
+    </BrowserElement>-->
+  </Browser>
+  <FIBVariable id="75" type="org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter" name="data" />
+  <LocalizedDictionary id="76" />
 </Panel>
