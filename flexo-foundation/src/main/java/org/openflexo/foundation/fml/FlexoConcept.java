@@ -640,9 +640,11 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 
 		@Override
 		public boolean abstractRequired() {
-			for (FlexoProperty<?> p : getAccessibleProperties()) {
-				if (p.isAbstract()) {
-					return true;
+			if (getAccessibleProperties() != null) {
+				for (FlexoProperty<?> p : getAccessibleProperties()) {
+					if (p.isAbstract()) {
+						return true;
+					}
 				}
 			}
 			return false;
