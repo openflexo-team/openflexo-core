@@ -49,6 +49,7 @@ import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
+import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.foundation.fml.editionaction.AddClassInstance.AddClassInstanceImpl;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
@@ -86,10 +87,10 @@ public interface AddClassInstance extends AssignableAction<Object> {
 
 	@Getter(value = TYPE, isStringConvertable = true)
 	@XMLAttribute
-	Class<?> getType();
+	Type getType();
 
 	@Setter(TYPE)
-	void setType(Class<?> type);
+	void setType(Type type);
 
 	@Getter(value = PARAMETERS, cardinality = Cardinality.LIST)
 	@XMLElement(xmlTag = "parameter")
@@ -127,12 +128,14 @@ public interface AddClassInstance extends AssignableAction<Object> {
 					n += 1;
 				}
 
-				Constructor<?> constructor = getType().getConstructor(parameterTypes);
+				Class<?> typeClass = TypeUtils.getBaseClass(getType());
+
+				Constructor<?> constructor = typeClass.getConstructor(parameterTypes);
 				return constructor.newInstance(parameters);
 
 			} catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException
 					| TypeMismatchException | NullReferenceException e) {
-				logger.log(Level.SEVERE, "Can't create instance " + getType().getCanonicalName(), e);
+				logger.log(Level.SEVERE, "Can't create instance " + getType(), e);
 				return null;
 			}
 		}
