@@ -41,7 +41,6 @@ package org.openflexo.foundation.fml.rt;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
-
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.rt.rm.AbstractVirtualModelInstanceResource;
@@ -174,9 +173,9 @@ public class ViewLibrary<I> extends ViewRepository<I> {
 			}
 		}
 		else {
-			logger.warning("Cannot find View " + viewURI);
+			logger.info("Cannot find View '" + viewURI + "' in '" + getDefaultBaseURI() + "'");
 		}
-		logger.warning("Cannot find VirtualModelInstance " + virtualModelInstanceURI);
+		logger.info("Cannot find VirtualModelInstance '" + virtualModelInstanceURI + "' in '" + getDefaultBaseURI() + "'");
 		return null;
 	}
 
