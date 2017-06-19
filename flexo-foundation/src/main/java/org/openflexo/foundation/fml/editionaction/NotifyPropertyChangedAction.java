@@ -140,6 +140,8 @@ public interface NotifyPropertyChangedAction extends EditionAction {
 				e1.printStackTrace();
 			}
 
+			// System.out.println("FirePropertyChangeSupport for " + hasPCSupport + " propertyName=" + getPropertyName());
+
 			if (hasPCSupport != null) {
 				hasPCSupport.getPropertyChangeSupport().firePropertyChange(getPropertyName(), false, true);
 			}
