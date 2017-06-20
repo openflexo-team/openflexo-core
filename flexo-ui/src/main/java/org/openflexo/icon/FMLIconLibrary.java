@@ -72,6 +72,7 @@ import org.openflexo.foundation.fml.controlgraph.IncrementalIterationAction;
 import org.openflexo.foundation.fml.controlgraph.IterationAction;
 import org.openflexo.foundation.fml.controlgraph.WhileAction;
 import org.openflexo.foundation.fml.editionaction.AbstractAssignationAction;
+import org.openflexo.foundation.fml.editionaction.AddClassInstance;
 import org.openflexo.foundation.fml.editionaction.AddToListAction;
 import org.openflexo.foundation.fml.editionaction.DeleteAction;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
@@ -348,6 +349,9 @@ public class FMLIconLibrary extends IconLibrary {
 			}
 			else if (object instanceof ExpressionAction) {
 				return EXPRESSION_ACTION_ICON;
+			}
+			else if (object instanceof AddClassInstance) {
+				return IconFactory.getImageIcon(FMLRTIconLibrary.FLEXO_CLASS_INSTANCE_ICON, IconLibrary.DUPLICATE);
 			}
 			else if (object instanceof LogAction) {
 				return LOG_ACTION_ICON;

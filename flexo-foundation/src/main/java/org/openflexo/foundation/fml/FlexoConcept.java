@@ -315,6 +315,13 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 	public <R> List<R> getAccessibleProperties(Class<R> type);
 
 	/**
+	 * Build and return the list of all accessible {@link AbstractProperty} from this {@link FlexoConcept}
+	 * 
+	 * @return
+	 */
+	public List<AbstractProperty> getAccessibleAbstractProperties();
+
+	/**
 	 * Build and return the list of all accessible roles from this {@link FlexoConcept}
 	 * 
 	 * @return
@@ -805,6 +812,16 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 				}
 			}
 			return returned;
+		}
+
+		/**
+		 * Build and return the list of all accessible roles from this {@link FlexoConcept}
+		 * 
+		 * @return
+		 */
+		@Override
+		public List<AbstractProperty> getAccessibleAbstractProperties() {
+			return getAccessibleProperties(AbstractProperty.class);
 		}
 
 		/**
