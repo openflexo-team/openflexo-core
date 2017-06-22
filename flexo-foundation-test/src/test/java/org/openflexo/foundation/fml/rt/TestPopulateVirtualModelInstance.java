@@ -301,12 +301,22 @@ public class TestPopulateVirtualModelInstance extends OpenflexoProjectAtRunTimeT
 		DeletionScheme deletionScheme = (DeletionScheme) createDeletionScheme.getNewFlexoBehaviour();
 		assertTrue(deletionScheme.getControlGraph() instanceof EmptyControlGraph);
 
-		((VirtualModelResource) virtualModel.getResource()).save(null);
-
 		System.out.println("Saved: " + ((VirtualModelResource) virtualModel.getResource()).getIODelegate().toString());
 
 		System.out.println("FML=\n" + virtualModel.getFMLRepresentation());
 
+		((VirtualModelResource) virtualModel.getResource()).save(null);
+
+		// System.out.println("les unsaved: " + serviceManager.getResourceManager().getUnsavedResources());
+		/*virtualModel.getPropertyChangeSupport().addPropertyChangeListener(new PropertyChangeListener() {
+		
+			@Override
+			public void propertyChange(PropertyChangeEvent evt) {
+				System.out.println("event " + evt.getPropertyName() + " from " + evt.getOldValue() + " to " + evt.getNewValue());
+			}
+		});*/
+		// System.out.println("Tiens on ecoute les modifs de " + virtualModel);
+		// ((VirtualModelImpl) virtualModel).notifyModified = true;
 	}
 
 	@Test
@@ -340,10 +350,12 @@ public class TestPopulateVirtualModelInstance extends OpenflexoProjectAtRunTimeT
 
 	/**
 	 * Instantiate in project a VirtualModelInstance conform to the VirtualModel
+	 * 
+	 * @throws SaveResourceException
 	 */
 	@Test
 	@TestOrder(8)
-	public void testCreateVirtualModelInstance() {
+	public void testCreateVirtualModelInstance() throws SaveResourceException {
 
 		log("testCreateVirtualModelInstance()");
 
@@ -366,6 +378,7 @@ public class TestPopulateVirtualModelInstance extends OpenflexoProjectAtRunTimeT
 
 		assertFalse(newVirtualModelInstance.isModified());
 
+		// virtualModel.getResource().save(null);
 	}
 
 	/**
