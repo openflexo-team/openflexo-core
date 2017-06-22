@@ -284,6 +284,10 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 	 */
 	public void clear();
 
+	public void contentsAdded(FlexoConceptInstance objectBeeingAdded, FlexoConcept concept);
+
+	public void contentsRemoved(FlexoConceptInstance objectBeeingRemoved, FlexoConcept concept);
+
 	public static abstract class AbstractVirtualModelInstanceImpl<VMI extends AbstractVirtualModelInstance<VMI, VM>, VM extends AbstractVirtualModel<VM>>
 			extends FlexoConceptInstanceImpl implements AbstractVirtualModelInstance<VMI, VM> {
 
@@ -292,7 +296,13 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 		private AbstractVirtualModelInstanceResource<VMI, VM> resource;
 		private String title;
 
-		private final Hashtable<FlexoConcept, List<FlexoConceptInstance>> flexoConceptInstances;
+		/**
+		 * This map stores the concept instances as they are declared relatively to their final type (the unique FlexoConcept whose
+		 * FlexoConceptInstance is instance)
+		 */
+		private final Map<FlexoConcept, List<FlexoConceptInstance>> flexoConceptInstances;
+
+		private Map<Type, Map<String, FlexoConceptInstanceIndex>> indexes = new WeakHashMap<>();
 
 		/**
 		 * Default constructor with
@@ -572,6 +582,9 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 		}
 
 		private void ensureRegisterFCIInConcept(FlexoConceptInstance fci, FlexoConcept concept) {
+
+			//System.out.println("**** ensure register FCI " + fci + " in " + concept);
+
 			List<FlexoConceptInstance> list = flexoConceptInstances.get(concept);
 			if (list == null) {
 				list = new ArrayList<>();
@@ -587,7 +600,7 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 			}
 
 			// Update indexes when relevant
-			contentsAdded(fci);
+			contentsAdded(fci, concept);
 		}
 
 		private void ensureUnregisterFCIFromConcept(FlexoConceptInstance fci, FlexoConcept concept) {
@@ -602,7 +615,7 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 			}
 
 			// Update indexes when relevant
-			contentsRemoved(fci);
+			contentsRemoved(fci, concept);
 
 		}
 
@@ -1007,8 +1020,6 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 
 		}
 
-		private Map<Type, Map<String, FlexoConceptInstanceIndex>> indexes = new WeakHashMap<>();
-
 		public class FlexoConceptInstanceIndex<T> extends WeakHashMap<T, List<FlexoConceptInstance>> {
 
 			public class IndexedValueListener extends BindingValueChangeListener<T> {
@@ -1140,6 +1151,26 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 				logger.fine("Retrieving index for " + type + " and " + indexableTerm);
 			}
 
+			/*System.out.println("Retrieving index for " + type + " and " + indexableTerm);
+
+			System.out.println("Les FCI par type:");
+
+			for (FlexoConcept c : flexoConceptInstances.keySet()) {
+				System.out.println("Concept " + c);
+				for (FlexoConceptInstance fci : flexoConceptInstances.get(c)) {
+					System.out.println(" > " + fci);
+				}
+			}
+
+			System.out.println("Les indexes:");
+			for (Type t : indexes.keySet()) {
+				System.out.println("Index for " + t);
+				Map<String, FlexoConceptInstanceIndex> map = indexes.get(t);
+				for (String s : map.keySet()) {
+					System.out.println(" > " + s + " : " + map.get(s));
+				}
+			}*/
+
 			if (type instanceof FlexoConceptInstanceType) {
 				Map<String, FlexoConceptInstanceIndex> mapForType = indexes.get(type);
 				if (mapForType == null) {
@@ -1153,6 +1184,9 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 				}
 				// Now compute index when required
 				returned.updateWhenRequired();
+
+				//System.out.println("return " + returned);
+
 				return returned;
 			}
 			return null;
@@ -1164,7 +1198,17 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 
 		@Override
 		public void contentsAdded(FlexoConceptInstance objectBeeingAdded) {
-			FlexoConceptInstanceType type = objectBeeingAdded.getFlexoConcept().getInstanceType();
+			contentsAdded(objectBeeingAdded, objectBeeingAdded.getFlexoConcept());
+		}
+
+		@Override
+		public void contentsRemoved(FlexoConceptInstance objectBeeingAdded) {
+			contentsRemoved(objectBeeingAdded, objectBeeingAdded.getFlexoConcept());
+		}
+
+		@Override
+		public void contentsAdded(FlexoConceptInstance objectBeeingAdded, FlexoConcept concept) {
+			FlexoConceptInstanceType type = concept.getInstanceType();
 			Map<String, FlexoConceptInstanceIndex> mapForType = indexes.get(type);
 			if (mapForType != null) {
 				for (FlexoConceptInstanceIndex index : mapForType.values()) {
@@ -1174,8 +1218,8 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 		}
 
 		@Override
-		public void contentsRemoved(FlexoConceptInstance objectBeeingRemoved) {
-			FlexoConceptInstanceType type = objectBeeingRemoved.getFlexoConcept().getInstanceType();
+		public void contentsRemoved(FlexoConceptInstance objectBeeingRemoved, FlexoConcept concept) {
+			FlexoConceptInstanceType type = concept.getInstanceType();
 			Map<String, FlexoConceptInstanceIndex> mapForType = indexes.get(type);
 			if (mapForType != null) {
 				for (FlexoConceptInstanceIndex index : mapForType.values()) {
