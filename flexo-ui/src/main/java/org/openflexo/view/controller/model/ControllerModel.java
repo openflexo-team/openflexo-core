@@ -317,7 +317,16 @@ public class ControllerModel extends ControllerModelObject implements PropertyCh
 			return;
 		}
 		else if (location != null) {
-			setCurrentLocation(location.getEditor(), location.getObject(), location.getPerspective());
+			if (location == NO_LOCATION) {
+				Location old = currentLocation;
+				currentLocation = NO_LOCATION;
+				notifyLocationChange(old, currentLocation);
+
+				return;
+			}
+			else {
+				setCurrentLocation(location.getEditor(), location.getObject(), location.getPerspective());
+			}
 		}
 	}
 
