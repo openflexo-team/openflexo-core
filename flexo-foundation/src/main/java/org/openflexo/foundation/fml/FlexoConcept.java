@@ -708,6 +708,9 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 							if (inheritedProperties.get(p.getName()) == null) {
 								inheritedProperties.put(p.getName(), p);
 							}
+							else if (inheritedProperties.get(p.getName()).isSuperPropertyOf(p)) {
+								inheritedProperties.put(p.getName(), p);
+							}
 						}
 					}
 				}
@@ -872,12 +875,22 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 		 */
 		@Override
 		public FlexoProperty<?> getAccessibleProperty(String propertyName) {
+			List<FlexoProperty<?>> pList = new ArrayList<>();
 			for (FlexoProperty<?> p : getAccessibleProperties()) {
 				if (p.getName().equals(propertyName)) {
-					return p;
+					pList.add(p);
 				}
 			}
-			return null;
+			if (pList.size() == 0) {
+				return null;
+			}
+			else if (pList.size() == 1) {
+				return pList.get(0);
+			}
+			else {
+				logger.warning("More thant one matching property: " + pList);
+				return pList.get(0);
+			}
 		}
 
 		/**
@@ -1449,6 +1462,7 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 				parentFlexoConcept.addToChildFlexoConcepts(this);
 				getPropertyChangeSupport().firePropertyChange("parentFlexoConcepts", null, parentFlexoConcept);
 				parentFlexoConceptList = null;
+				accessibleProperties = null;
 				if (getOwningVirtualModel() != null) {
 					getOwningVirtualModel().getInnerConceptsFacet().notifiedConceptsChanged();
 					getOwningVirtualModel().getPropertyChangeSupport().firePropertyChange("allSuperFlexoConcepts", null,
@@ -1468,6 +1482,7 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 			parentFlexoConcept.removeFromChildFlexoConcepts(this);
 			getPropertyChangeSupport().firePropertyChange("parentFlexoConcepts", parentFlexoConcept, null);
 			parentFlexoConceptList = null;
+			accessibleProperties = null;
 			if (getOwningVirtualModel() != null) {
 				getOwningVirtualModel().getInnerConceptsFacet().notifiedConceptsChanged();
 				getOwningVirtualModel().getPropertyChangeSupport().firePropertyChange("allSuperFlexoConcepts", null,

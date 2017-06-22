@@ -170,6 +170,8 @@ public abstract interface FlexoProperty<T> extends FlexoConceptObject {
 	 */
 	public boolean isAbstract();
 
+	public boolean isSuperPropertyOf(FlexoProperty<?> property);
+
 	public static abstract class FlexoPropertyImpl<T> extends FlexoConceptObjectImpl implements FlexoProperty<T> {
 
 		// private static final Logger logger = Logger.getLogger(FlexoRole.class.getPackage().getName());
@@ -377,6 +379,7 @@ public abstract interface FlexoProperty<T> extends FlexoConceptObject {
 			}
 		}
 
+		@Override
 		public boolean isSuperPropertyOf(FlexoProperty<?> property) {
 			if (property == this) {
 				return true;
