@@ -1802,11 +1802,17 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 						+ "[ID=" + getFlexoID() + "]";
 			}
 			toStringIsBuilding = true;
-			String returned = getImplementedInterface().getSimpleName() + ":"
-					+ (getFlexoConcept() != null ? getFlexoConcept().getName() : "null") + "[ID=" + getFlexoID() + "]"
-					+ (hasValidRenderer() ? " [" + getStringRepresentation() + "]" : "");
-			toStringIsBuilding = false;
-			return returned;
+			if (hasValidRenderer()) {
+				String returned = getStringRepresentation();
+				toStringIsBuilding = false;
+				return returned;
+			}
+			else {
+				String returned = getImplementedInterface().getSimpleName() + ":"
+						+ (getFlexoConcept() != null ? getFlexoConcept().getName() : "null") + "[ID=" + getFlexoID() + "]";
+				toStringIsBuilding = false;
+				return returned;
+			}
 		}
 
 		/**
