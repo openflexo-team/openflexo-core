@@ -688,15 +688,15 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 
 			if (accessibleProperties == null) {
 
-				accessibleProperties = new ArrayList<>();
+				List<FlexoProperty<?>> computedAccessibleProperties = new ArrayList<>();
 				Map<String, FlexoProperty<?>> inheritedProperties = new HashMap<>();
 
 				// First take declared properties
-				accessibleProperties.addAll(getDeclaredProperties());
+				computedAccessibleProperties.addAll(getDeclaredProperties());
 
 				// Take properties obtained by containment
 				if (getContainerFlexoConcept() != null) {
-					accessibleProperties.addAll(getContainerFlexoConcept().getAccessibleProperties());
+					computedAccessibleProperties.addAll(getContainerFlexoConcept().getAccessibleProperties());
 				}
 
 				// Take inherited properties
@@ -742,12 +742,14 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 				}
 
 				try {
-					if (accessibleProperties != null) {
-						accessibleProperties.addAll(inheritedProperties.values());
+					if (computedAccessibleProperties != null) {
+						computedAccessibleProperties.addAll(inheritedProperties.values());
 					}
 				} catch (NullPointerException e) {
 					logger.warning("Something wrong in getAccessibleProperty() evaluation for " + this);
 				}
+
+				accessibleProperties = computedAccessibleProperties;
 			}
 
 			return accessibleProperties;
