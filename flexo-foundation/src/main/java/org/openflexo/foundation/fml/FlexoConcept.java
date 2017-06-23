@@ -1233,6 +1233,9 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 
 		@Override
 		public DeletionScheme generateDefaultDeletionScheme() {
+			if (getFMLModelFactory() == null) {
+				return null;
+			}
 			DeletionScheme newDeletionScheme = getFMLModelFactory().newDeletionScheme();
 			newDeletionScheme.setName("delete");
 			newDeletionScheme.setControlGraph(getFMLModelFactory().newEmptyControlGraph());
