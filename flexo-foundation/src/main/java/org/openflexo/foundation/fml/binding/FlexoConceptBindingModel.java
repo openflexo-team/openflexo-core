@@ -148,6 +148,9 @@ public class FlexoConceptBindingModel extends BindingModel implements PropertyCh
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		super.propertyChange(evt);
+		if (evt.getSource() == getBaseBindingModel()) {
+			updatePropertyVariables();
+		}
 		if (evt.getSource() == flexoConcept) {
 			if (evt.getPropertyName().equals(FlexoConcept.OWNER_KEY)) {
 				// The FlexoConcept changes it's VirtualModel
@@ -215,7 +218,8 @@ public class FlexoConceptBindingModel extends BindingModel implements PropertyCh
 			if (propertiesToBeDeleted.contains(r)) {
 				propertiesToBeDeleted.remove(r);
 			}
-			else if (propertyVariablesMap.get(r) == null) {
+			else if (propertyVariablesMap.get(r) == null
+					&& (getBaseBindingModel() == null || getBaseBindingModel().bindingVariableNamed(r.getName()) == null)) {
 				FlexoPropertyBindingVariable bv;
 				if (r instanceof FlexoConceptInstanceRole) {
 					bv = new FlexoConceptInstanceRoleBindingVariable((FlexoConceptInstanceRole) r);
