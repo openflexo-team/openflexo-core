@@ -130,6 +130,8 @@ public interface AbstractVirtualModel<VM extends AbstractVirtualModel<VM>>
 	 */
 	@Override
 	@Getter(value = RESOURCE, ignoreType = true)
+	// @CloningStrategy(value = StrategyType.FACTORY, factory = "cloneResource()")
+	@CloningStrategy(StrategyType.IGNORE)
 	public FlexoResource<VM> getResource();
 
 	/**
@@ -140,6 +142,13 @@ public interface AbstractVirtualModel<VM extends AbstractVirtualModel<VM>>
 	@Override
 	@Setter(value = RESOURCE)
 	public void setResource(FlexoResource<VM> aVirtualModelResource);
+
+	/**
+	 * Called to clone the resource of this {@link AbstractVirtualModel}
+	 * 
+	 * @return
+	 */
+	// public FlexoResource<VM> cloneResource();
 
 	@Getter(value = VERSION_KEY, isStringConvertable = true)
 	@XMLAttribute
@@ -288,19 +297,11 @@ public interface AbstractVirtualModel<VM extends AbstractVirtualModel<VM>>
 
 		private static final Logger logger = Logger.getLogger(AbstractVirtualModel.class.getPackage().getName());
 
-		// private Vector<FlexoConcept> flexoConcepts;
-		// private List<ModelSlot<?>> modelSlots;
 		private AbstractVirtualModelResource<VM> resource;
-		// private ViewPointLocalizedDictionary localizedDictionary;
 
 		private boolean readOnly = false;
 
 		private final VirtualModelInstanceType vmInstanceType = new VirtualModelInstanceType(this);
-
-		/**
-		 * Stores a chained collections of objects which are involved in validation
-		 */
-		// private final ChainedCollection<FMLObject> validableObjects = null;
 
 		// Used during deserialization, do not use it
 		public AbstractVirtualModelImpl() {

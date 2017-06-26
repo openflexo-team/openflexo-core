@@ -50,8 +50,13 @@ import org.openflexo.foundation.action.copypaste.PastingContext;
 import org.openflexo.foundation.fml.AbstractVirtualModel;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptObject;
+import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelObject;
 import org.openflexo.foundation.fml.rm.AbstractVirtualModelResource;
+import org.openflexo.foundation.fml.rm.VirtualModelResource;
+import org.openflexo.foundation.fml.rm.VirtualModelResourceFactory;
+import org.openflexo.foundation.resource.FlexoResource;
+import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.model.ModelEntity;
 import org.openflexo.model.ModelProperty;
 import org.openflexo.model.exceptions.ModelDefinitionException;
@@ -114,7 +119,41 @@ public class VirtualModelPasteHandler extends FlexoPasteHandler<AbstractVirtualM
 
 		// Translating names
 		if (leaderClipboard.isSingleObject()) {
-			if (leaderClipboard.getSingleContents() instanceof FlexoConceptObject) {
+
+			if (clipboard.getLeaderClipboard().getSingleContents() instanceof AbstractVirtualModel
+					&& pastingContext.getPastingPointHolder() != null) {
+				System.out.println("OK on paste un VM dans un autre VM");
+				System.out.println("Copying " + clipboard.getLeaderClipboard().getSingleContents());
+				System.out.println("In " + pastingContext);
+				System.out.println("Holder " + pastingContext.getPastingPointHolder());
+
+				AbstractVirtualModel<?> originalVM = (AbstractVirtualModel<?>) clipboard.getLeaderClipboard().getOriginalContents()[0];
+				AbstractVirtualModel<?> copy = (AbstractVirtualModel<?>) clipboard.getLeaderClipboard().getSingleContents();
+
+				VirtualModelResourceFactory vmResFactory = originalVM.getTechnologyAdapter().getViewPointResourceFactory()
+						.getVirtualModelResourceFactory();
+
+				System.out.println("On doit cloner la resource " + originalVM.getResource());
+				System.out.println("vmResFactory=" + vmResFactory);
+
+				VirtualModelResource newResource;
+				try {
+					newResource = vmResFactory.makeVirtualModelResource(originalVM.getResource().getName() + "-Copy",
+							originalVM.getViewPointResource(), originalVM.getTechnologyAdapter().getTechnologyContextManager(), false);
+					System.out.println("On vient de creer " + newResource);
+					copy.setResource((FlexoResource) newResource);
+					newResource.setResourceData((VirtualModel) copy);
+					newResource.save(null);
+				} catch (SaveResourceException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (ModelDefinitionException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+
+			else if (leaderClipboard.getSingleContents() instanceof FlexoConceptObject) {
 				translateName((FlexoConceptObject) leaderClipboard.getSingleContents());
 			}
 		}
@@ -148,6 +187,9 @@ public class VirtualModelPasteHandler extends FlexoPasteHandler<AbstractVirtualM
 				&& clipboard.getLeaderClipboard().getSingleContents() instanceof AbstractVirtualModel
 				&& pastingContext.getPastingPointHolder() != null) {
 			System.out.println("OK on paste un VM dans un autre VM");
+			System.out.println("Copying " + clipboard.getLeaderClipboard().getSingleContents());
+			System.out.println("In " + pastingContext);
+			System.out.println("Holder " + pastingContext.getPastingPointHolder());
 			return null;
 		}
 

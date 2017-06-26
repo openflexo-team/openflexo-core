@@ -228,6 +228,37 @@ public interface VirtualModel extends AbstractVirtualModel<VirtualModel> {
 			return returned;
 		}
 
+		/**
+		 * Called to clone the resource of this {@link AbstractVirtualModel}
+		 * 
+		 * @return
+		 */
+		/*@Override
+		public FlexoResource<VirtualModel> cloneResource() {
+			VirtualModelResourceFactory vmResFactory = getTechnologyAdapter().getViewPointResourceFactory()
+					.getVirtualModelResourceFactory();
+		
+			System.out.println("On doit cloner la resource " + getResource());
+			System.out.println("vmResFactory=" + vmResFactory);
+		
+			VirtualModelResource newResource;
+			try {
+				newResource = vmResFactory.makeVirtualModelResource(getResource().getName() + "-Copy", getViewPointResource(),
+						getTechnologyAdapter().getTechnologyContextManager(), false);
+				System.out.println("On vient de creer " + newResource);
+				return newResource;
+			} catch (SaveResourceException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ModelDefinitionException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		
+			return null;
+		
+		}*/
+
 	}
 
 }
