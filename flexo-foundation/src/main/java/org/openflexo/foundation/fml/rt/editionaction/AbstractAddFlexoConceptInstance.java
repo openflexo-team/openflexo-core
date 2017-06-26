@@ -51,6 +51,7 @@ import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.fml.AbstractVirtualModel;
 import org.openflexo.foundation.fml.CreationScheme;
+import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceRole;
@@ -477,6 +478,32 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 			// System.out.println("creationScheme=" + creationScheme + " uri=" + _getCreationSchemeURI());
 			getCreationScheme();
 			// System.out.println("creationScheme=" + creationScheme);
+		}
+
+		@Override
+		public String getStringRepresentation() {
+			if (getFlexoConceptType() != null && getCreationScheme() != null) {
+				return getFlexoConceptType().getName() + "." + getCreationScheme().getName() + "(" + getParameterValuesAsString() + ")";
+			}
+			return super.getStringRepresentation();
+		}
+
+		@Override
+		public String getFMLRepresentation(FMLRepresentationContext context) {
+			if (getFlexoConceptType() != null && getCreationScheme() != null) {
+				return getFlexoConceptType().getName() + "." + getCreationScheme().getName() + "(" + getParameterValuesAsString() + ")";
+			}
+			return super.getFMLRepresentation(context);
+		}
+
+		protected String getParameterValuesAsString() {
+			StringBuffer returned = new StringBuffer();
+			boolean isFirst = true;
+			for (AddFlexoConceptInstanceParameter param : getParameters()) {
+				returned.append((isFirst ? "" : ",") + param.getValue());
+				isFirst = false;
+			}
+			return returned.toString();
 		}
 
 	}
