@@ -1037,15 +1037,9 @@ public interface FlexoObject extends AccessibleProxyObject, DeletableProxyObject
 		@Override
 		public Collection<? extends Validable> getEmbeddedValidableObjects() {
 			// System.out.println("> Compute getEmbeddedValidableObjects() for " + this.getClass() + " : " + this);
-			ResourceData<?> resourceData = null;
-			if (this instanceof ResourceData) {
-				resourceData = (ResourceData<?>) this;
-			}
-			else if (this instanceof InnerResourceData) {
-				resourceData = ((InnerResourceData<ResourceData<?>>) this).getResourceData();
-			}
-			if (resourceData != null && resourceData.getResource() instanceof PamelaResource) {
-				List<?> embeddedObjects = ((PamelaResource) resourceData.getResource()).getFactory().getEmbeddedObjects(this,
+			PamelaResource resource = getPamelaResource();
+			if (resource != null) {
+				List<?> embeddedObjects = resource.getFactory().getEmbeddedObjects(this,
 						EmbeddingType.CLOSURE);
 				List<Validable> returned = new ArrayList<Validable>();
 				for (Object e : embeddedObjects) {
@@ -1053,12 +1047,25 @@ public interface FlexoObject extends AccessibleProxyObject, DeletableProxyObject
 						returned.add((Validable) e);
 					}
 				}
-				// System.out.println("Return " + returned);
 				return returned;
 
 			}
+			return null;
+		}
 
-			// System.out.println("< return null;");
+		private PamelaResource getPamelaResource() {
+			ResourceData data = null;
+			if (this instanceof InnerResourceData) {
+				data = ((InnerResourceData) this).getResourceData();
+			}
+			if (this instanceof ResourceData) {
+				data = (ResourceData) this;
+			}
+
+			if (data != null && data.getResource() instanceof PamelaResource) {
+				return (PamelaResource) data.getResource();
+			}
+
 			return null;
 		}
 
@@ -1156,9 +1163,10 @@ public interface FlexoObject extends AccessibleProxyObject, DeletableProxyObject
 		 */
 		@Override
 		public long obtainNewFlexoID() {
-			if (this instanceof InnerResourceData && ((InnerResourceData<?>) this).getResourceData() != null
-					&& ((InnerResourceData<?>) this).getResourceData().getResource() instanceof PamelaResource) {
-				flexoID = ((PamelaResource<?, ?>) ((InnerResourceData<?>) this).getResourceData().getResource()).getNewFlexoID();
+			PamelaResource resource = getPamelaResource();
+			if (resource != null) {
+				flexoID = resource.getNewFlexoID();
+				resource.register(this);
 			}
 			else {
 				flexoID = -1;
@@ -1178,8 +1186,8 @@ public interface FlexoObject extends AccessibleProxyObject, DeletableProxyObject
 				// FD : seems unused
 				// long oldId = this.flexoID;
 				this.flexoID = flexoID;
-				if (this instanceof InnerResourceData && ((InnerResourceData<?>) this).getResourceData() != null
-						&& ((InnerResourceData<?>) this).getResourceData().getResource() instanceof PamelaResource) {
+				PamelaResource resource = getPamelaResource();
+				if (resource != null) {
 					// TODO sets last id of resource ?
 				}
 			}
