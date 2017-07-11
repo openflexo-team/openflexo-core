@@ -120,7 +120,7 @@ public interface IndividualRole<I extends IFlexoOntologyIndividual<?>> extends O
 			else {
 				returned = IndividualOfClass.getIndividualOfClass(getOntologicType());
 			}
-			if (lastKnownType == null || !lastKnownType.equals(returned)) {
+			if (lastKnownType == null || (returned != null & !lastKnownType.equals(returned))) {
 				Type oldType = lastKnownType;
 				lastKnownType = returned;
 				getPropertyChangeSupport().firePropertyChange(BindingVariable.TYPE_PROPERTY, oldType, returned);
