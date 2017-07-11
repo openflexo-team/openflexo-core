@@ -38,6 +38,7 @@
 
 package org.openflexo.foundation.resource;
 
+import com.google.common.base.Throwables;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -49,9 +50,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import javax.swing.undo.UndoableEdit;
-
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
@@ -76,8 +75,6 @@ import org.openflexo.model.undo.AtomicEdit;
 import org.openflexo.toolbox.FileUtils;
 import org.openflexo.toolbox.FlexoVersion;
 import org.openflexo.toolbox.IProgress;
-
-import com.google.common.base.Throwables;
 
 /**
  * Default implementation for {@link PamelaResource} (a resource where underlying model is managed by PAMELA framework)
@@ -544,12 +541,23 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends 
 		}
 	}
 
-	private Map<String, Map<Long, FlexoObject>> objects;
+	private Map<String, Map<Long, FlexoObject>> objects = new HashMap<>();
+	private boolean indexed = false;
 	private boolean isIndexing = false;
 
 	@Override
 	public boolean isIndexing() {
 		return isIndexing;
+	}
+
+	@Override
+	public void register(FlexoObject object) {
+		Map<Long, FlexoObject> objectsForUserIdentifier = objects.get(object.getUserIdentifier());
+		if (objectsForUserIdentifier == null) {
+			objectsForUserIdentifier = new HashMap<>();
+			objects.put(object.getUserIdentifier(), objectsForUserIdentifier);
+		}
+		objectsForUserIdentifier.put(object.getFlexoID(), object);
 	}
 
 	/**
@@ -560,18 +568,12 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends 
 
 		isIndexing = true;
 		// System.out.println("Indexing PamelaResource " + this);
-		objects = new HashMap<>();
+		//objects = new HashMap<>();
 		List<Object> allObjects = getFactory().getEmbeddedObjects(getLoadedResourceData(), EmbeddingType.CLOSURE);
 		allObjects.add(getLoadedResourceData());
 		for (Object temp : allObjects) {
 			if (temp instanceof FlexoObject) {
-				FlexoObject o = (FlexoObject) temp;
-				Map<Long, FlexoObject> objectsForUserIdentifier = objects.get(o.getUserIdentifier());
-				if (objectsForUserIdentifier == null) {
-					objectsForUserIdentifier = new HashMap<>();
-					objects.put(o.getUserIdentifier(), objectsForUserIdentifier);
-				}
-				objectsForUserIdentifier.put(o.getFlexoID(), o);
+				register((FlexoObject) temp);
 			}
 		}
 		// System.out.println("Done indexing PamelaResource " + this);
@@ -596,8 +598,9 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends 
 			return null;
 		}
 
-		if (objects == null) {
+		if (!indexed) {
 			indexResource();
+			indexed = true;
 		}
 
 		Map<Long, FlexoObject> objectsForUserIdentifier = objects.get(userIdentifier);
