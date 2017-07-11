@@ -49,7 +49,7 @@ import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
-import org.openflexo.foundation.fml.ViewPointLibrary;
+import org.openflexo.foundation.fml.VirtualModelLibrary;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.localization.LocalizationService;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
@@ -136,8 +136,8 @@ public class TestApplicationContext extends ApplicationContext {
 	}
 
 	@Override
-	protected ViewPointLibrary createViewPointLibraryService() {
-		return new ViewPointLibrary();
+	protected VirtualModelLibrary createViewPointLibraryService() {
+		return new VirtualModelLibrary();
 	}
 
 	@Override

@@ -53,10 +53,10 @@ import org.openflexo.model.annotations.ModelEntity;
 public interface VirtualModelObject extends FlexoConceptObject {
 
 	/**
-	 * Return the {@link AbstractVirtualModel} in which this {@link FMLObject} is defined
+	 * Return the {@link VirtualModel} in which this {@link FMLObject} is defined
 	 * 
 	 * @return
 	 */
-	public AbstractVirtualModel<?> getVirtualModel();
+	public VirtualModel getVirtualModel();
 
 }

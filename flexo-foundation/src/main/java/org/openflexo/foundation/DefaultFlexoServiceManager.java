@@ -40,7 +40,7 @@
 package org.openflexo.foundation;
 
 import org.openflexo.foundation.FlexoProject.FlexoProjectReferenceLoader;
-import org.openflexo.foundation.fml.ViewPointLibrary;
+import org.openflexo.foundation.fml.VirtualModelLibrary;
 import org.openflexo.foundation.localization.DefaultLocalizationService;
 import org.openflexo.foundation.localization.LocalizationService;
 import org.openflexo.foundation.nature.DefaultProjectNatureService;
@@ -104,8 +104,8 @@ public class DefaultFlexoServiceManager extends FlexoServiceManager {
 		ProjectNatureService projectNatureService = createProjectNatureService();
 		registerService(projectNatureService);
 
-		ViewPointLibrary viewPointLibrary = createViewPointLibraryService();
-		registerService(viewPointLibrary);
+		VirtualModelLibrary virtualModelLibrary = createViewPointLibraryService();
+		registerService(virtualModelLibrary);
 
 		ScreenshotService screenshotService = createScreenshotService();
 		registerService(screenshotService);
@@ -141,8 +141,8 @@ public class DefaultFlexoServiceManager extends FlexoServiceManager {
 	}
 
 	@Override
-	protected ViewPointLibrary createViewPointLibraryService() {
-		return new ViewPointLibrary();
+	protected VirtualModelLibrary createViewPointLibraryService() {
+		return new VirtualModelLibrary();
 	}
 
 	@Override

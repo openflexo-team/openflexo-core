@@ -25,7 +25,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.openflexo.foundation.doc.FlexoDocFragment.FragmentConsistencyException;
-import org.openflexo.foundation.fml.AbstractVirtualModel;
+import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.resource.CannotRenameException;
 import org.openflexo.foundation.resource.PamelaResource;
 import org.openflexo.foundation.resource.ResourceData;
@@ -262,7 +262,7 @@ public interface FlexoDocument<D extends FlexoDocument<D, TA>, TA extends Techno
 		}
 
 		/**
-		 * Return the URI of the {@link AbstractVirtualModel}<br>
+		 * Return the URI of the {@link VirtualModel}<br>
 		 * The convention for URI are following: <viewpoint_uri>/<virtual_model_name >#<flexo_concept_name>.<edition_scheme_name> <br>
 		 * eg<br>
 		 * http://www.mydomain.org/MyViewPoint/MyVirtualModel#MyFlexoConcept. MyEditionScheme

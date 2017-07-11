@@ -44,12 +44,12 @@ import java.util.logging.Logger;
 
 import org.openflexo.connie.DataBinding;
 import org.openflexo.foundation.FlexoException;
-import org.openflexo.foundation.fml.AbstractVirtualModel;
+import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.CreationScheme;
 import org.openflexo.foundation.fml.ViewType;
-import org.openflexo.foundation.fml.rm.AbstractVirtualModelResource;
+import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.fml.rm.ViewPointResource;
-import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.View;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
@@ -61,18 +61,18 @@ import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
 
 /**
- * This action is used to explicitely instanciate a new {@link AbstractVirtualModelInstance} in an other
- * {@link AbstractVirtualModelInstance} with some parameters
+ * This action is used to explicitely instanciate a new {@link VirtualModelInstance} in an other
+ * {@link VirtualModelInstance} with some parameters
  * 
  * @author sylvain
  * 
  * @param <FCI>
- *            type of {@link AbstractVirtualModelInstance} beeing created by this action
+ *            type of {@link VirtualModelInstance} beeing created by this action
  */
 
 @ModelEntity
-@ImplementationClass(AddAbstractVirtualModelInstance.AddAbstractVirtualModelInstanceImpl.class)
-public interface AddAbstractVirtualModelInstance<FCI extends AbstractVirtualModelInstance<FCI, ?>>
+@ImplementationClass(AddVirtualModelInstance.AddVirtualModelInstanceImpl.class)
+public interface AddVirtualModelInstance<FCI extends VirtualModelInstance<FCI, ?>>
 		extends AbstractAddFlexoConceptInstance<FCI, View> {
 
 	@PropertyIdentifier(type = DataBinding.class)
@@ -94,9 +94,9 @@ public interface AddAbstractVirtualModelInstance<FCI extends AbstractVirtualMode
 	@Setter(VIRTUAL_MODEL_INSTANCE_TITLE_KEY)
 	public void setVirtualModelInstanceTitle(DataBinding<String> virtualModelInstanceTitle);
 
-	public AbstractVirtualModelResource<?> getVirtualModelType();
+	public VirtualModelResource<?> getVirtualModelType();
 
-	public void setVirtualModelType(AbstractVirtualModelResource<?> resource);
+	public void setVirtualModelType(VirtualModelResource<?> resource);
 
 	/**
 	 * Return type of View, when {@link #getVirtualModelInstance()} is set and valid
@@ -105,10 +105,10 @@ public interface AddAbstractVirtualModelInstance<FCI extends AbstractVirtualMode
 	 */
 	public ViewPointResource getOwnerViewPointTypeResource();
 
-	public static abstract class AddAbstractVirtualModelInstanceImpl<FCI extends AbstractVirtualModelInstance<FCI, ?>>
-			extends AbstractAddFlexoConceptInstanceImpl<FCI, View> implements AddAbstractVirtualModelInstance<FCI> {
+	public static abstract class AddVirtualModelInstanceImpl<FCI extends VirtualModelInstance<FCI, ?>>
+			extends AbstractAddFlexoConceptInstanceImpl<FCI, View> implements AddVirtualModelInstance<FCI> {
 
-		static final Logger logger = Logger.getLogger(AddAbstractVirtualModelInstance.class.getPackage().getName());
+		static final Logger logger = Logger.getLogger(AddVirtualModelInstance.class.getPackage().getName());
 
 		private DataBinding<String> virtualModelInstanceName;
 		private DataBinding<String> virtualModelInstanceTitle;
@@ -160,22 +160,22 @@ public interface AddAbstractVirtualModelInstance<FCI extends AbstractVirtualMode
 
 		@Override
 		public FCI execute(RunTimeEvaluationContext evaluationContext) {
-			System.out.println("Now create a AbstractVirtualModelInstance");
+			System.out.println("Now create a VirtualModelInstance");
 			return super.execute(evaluationContext);
 		}
 
 		@Override
-		public AbstractVirtualModelResource<?> getVirtualModelType() {
-			if (getFlexoConceptType() instanceof AbstractVirtualModel) {
-				return (AbstractVirtualModelResource<?>) ((AbstractVirtualModel<?>) getFlexoConceptType()).getResource();
+		public VirtualModelResource<?> getVirtualModelType() {
+			if (getFlexoConceptType() instanceof VirtualModel) {
+				return (VirtualModelResource<?>) ((VirtualModel) getFlexoConceptType()).getResource();
 			}
 			return null;
 		}
 
 		@Override
-		public void setVirtualModelType(AbstractVirtualModelResource<?> resource) {
+		public void setVirtualModelType(VirtualModelResource<?> resource) {
 			CreationScheme oldCreationScheme = getCreationScheme();
-			AbstractVirtualModelResource<?> oldVMType = getVirtualModelType();
+			VirtualModelResource<?> oldVMType = getVirtualModelType();
 			try {
 				setCreationScheme(null);
 				setFlexoConceptType(resource.getResourceData(null));

@@ -91,8 +91,8 @@ public interface FlexoConceptStructuralFacet extends FlexoConceptObject, FlexoFa
 		@Override
 		public List<FlexoProperty<?>> getProperties() {
 			if (properties == null) {
-				if (getFlexoConcept() instanceof AbstractVirtualModel) {
-					properties = new ConcatenedList<FlexoProperty<?>>(((AbstractVirtualModel) getFlexoConcept()).getModelSlots(),
+				if (getFlexoConcept() instanceof VirtualModel) {
+					properties = new ConcatenedList<FlexoProperty<?>>(((VirtualModel) getFlexoConcept()).getModelSlots(),
 							getFlexoConcept().getFlexoProperties());
 				} else if (getFlexoConcept() != null) {
 					properties = getFlexoConcept().getFlexoProperties();

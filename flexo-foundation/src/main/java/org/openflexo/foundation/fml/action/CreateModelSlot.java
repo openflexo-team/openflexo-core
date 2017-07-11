@@ -47,7 +47,7 @@ import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.action.NotImplementedException;
-import org.openflexo.foundation.fml.AbstractVirtualModel;
+import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.FlexoConcept;
@@ -140,9 +140,9 @@ public class CreateModelSlot extends AbstractCreateFlexoProperty<CreateModelSlot
 
 	}
 
-	public AbstractVirtualModel<?> getVirtualModel() {
-		if (getFlexoConcept() instanceof AbstractVirtualModel) {
-			return (AbstractVirtualModel<?>) getFlexoConcept();
+	public VirtualModel getVirtualModel() {
+		if (getFlexoConcept() instanceof VirtualModel) {
+			return (VirtualModel) getFlexoConcept();
 		}
 		else if (getFlexoConcept() != null) {
 			return getFlexoConcept().getOwningVirtualModel();

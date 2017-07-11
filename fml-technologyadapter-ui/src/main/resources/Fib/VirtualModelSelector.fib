@@ -25,10 +25,10 @@
 		clickAction="controller.selectedObjectChanged()" doubleClickAction="controller.apply()"
 		enterPressedAction="controller.apply()"
 		list="data.matchingValues" showIcon="true"
-		iteratorClassName="org.openflexo.foundation.fml.rm.AbstractVirtualModelResource"
+		iteratorClassName="org.openflexo.foundation.fml.rm.VirtualModelResource"
 		autoSelectFirstRow="true" />
 	<Browser root="data.rootObject" deepExploration="true"
-		iteratorClassName="org.openflexo.foundation.fml.rm.AbstractVirtualModelResource"
+		iteratorClassName="org.openflexo.foundation.fml.rm.VirtualModelResource"
 		visibleRowCount="5" rowHeight="18" boundToSelectionManager="false"
 		selectionMode="DiscontiguousTreeSelection" selected="data.selectedValue"
 		showFooter="true" rootVisible="true" showRootsHandle="true" format=""
@@ -39,7 +39,7 @@
 		name="ViewPointBrowser" index="2" data=""
 		constraints="twocols(expandHorizontally=true;expandVertically=true;index=2;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=center)"
 		visible="">
-		<BrowserElement dataClassName="org.openflexo.foundation.fml.ViewPointLibrary"
+		<BrowserElement dataClassName="org.openflexo.foundation.fml.VirtualModelLibrary"
 			label="&quot;Viewpoint Library&quot;" icon="controller.iconForObject(viewPointLibrary)"
 			tooltip="" enabled="" visible="" isEditable="false" editableLabel=""
 			filtered="false" defaultVisible="true" dynamicFont="" name="viewPointLibrary">

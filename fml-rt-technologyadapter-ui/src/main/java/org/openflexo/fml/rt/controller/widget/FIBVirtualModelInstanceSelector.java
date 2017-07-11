@@ -41,7 +41,7 @@ package org.openflexo.fml.rt.controller.widget;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.VirtualModelInstanceType;
-import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
@@ -53,7 +53,7 @@ import org.openflexo.rm.ResourceLocator;
  * 
  */
 @SuppressWarnings("serial")
-public class FIBVirtualModelInstanceSelector extends FIBAbstractFMLRTObjectSelector<AbstractVirtualModelInstance> {
+public class FIBVirtualModelInstanceSelector extends FIBAbstractFMLRTObjectSelector<VirtualModelInstance> {
 
 	static final Logger logger = Logger.getLogger(FIBVirtualModelInstanceSelector.class.getPackage().getName());
 
@@ -65,7 +65,7 @@ public class FIBVirtualModelInstanceSelector extends FIBAbstractFMLRTObjectSelec
 	private Type expectedType;
 	private VirtualModelInstanceType defaultExpectedType;*/
 
-	public FIBVirtualModelInstanceSelector(AbstractVirtualModelInstance editedObject) {
+	public FIBVirtualModelInstanceSelector(VirtualModelInstance editedObject) {
 		super(editedObject);
 		// defaultExpectedType = editedObject != null ? VirtualModelInstanceType.getVirtualModelInstanceType(editedObject.getVirtualModel())
 		// : VirtualModelInstanceType.UNDEFINED_VIRTUAL_MODEL_INSTANCE_TYPE;
@@ -85,12 +85,12 @@ public class FIBVirtualModelInstanceSelector extends FIBAbstractFMLRTObjectSelec
 	}
 
 	@Override
-	public Class<AbstractVirtualModelInstance> getRepresentedType() {
-		return AbstractVirtualModelInstance.class;
+	public Class<VirtualModelInstance> getRepresentedType() {
+		return VirtualModelInstance.class;
 	}
 
 	/*@Override
-	public String renderedString(AbstractVirtualModelInstance editedObject) {
+	public String renderedString(VirtualModelInstance editedObject) {
 		if (editedObject != null) {
 			return editedObject.getName();
 		}

@@ -46,7 +46,7 @@ import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.action.NotImplementedException;
-import org.openflexo.foundation.fml.AbstractVirtualModel;
+import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FlexoEvent;
@@ -54,36 +54,36 @@ import org.openflexo.foundation.fml.InconsistentFlexoConceptHierarchyException;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.toolbox.StringUtils;
 
-public class CreateFlexoEvent extends AbstractCreateFlexoConcept<CreateFlexoEvent, AbstractVirtualModel<?>, FMLObject> {
+public class CreateFlexoEvent extends AbstractCreateFlexoConcept<CreateFlexoEvent, VirtualModel, FMLObject> {
 
 	private static final Logger logger = Logger.getLogger(CreateFlexoEvent.class.getPackage().getName());
 
-	public static FlexoActionType<CreateFlexoEvent, AbstractVirtualModel<?>, FMLObject> actionType = new FlexoActionType<CreateFlexoEvent, AbstractVirtualModel<?>, FMLObject>(
+	public static FlexoActionType<CreateFlexoEvent, VirtualModel, FMLObject> actionType = new FlexoActionType<CreateFlexoEvent, VirtualModel, FMLObject>(
 			"flexo_event", FlexoActionType.newMenu, FlexoActionType.defaultGroup, FlexoActionType.ADD_ACTION_TYPE) {
 
 		/**
 		 * Factory method
 		 */
 		@Override
-		public CreateFlexoEvent makeNewAction(AbstractVirtualModel<?> focusedObject, Vector<FMLObject> globalSelection,
+		public CreateFlexoEvent makeNewAction(VirtualModel focusedObject, Vector<FMLObject> globalSelection,
 				FlexoEditor editor) {
 			return new CreateFlexoEvent(focusedObject, globalSelection, editor);
 		}
 
 		@Override
-		public boolean isVisibleForSelection(AbstractVirtualModel<?> object, Vector<FMLObject> globalSelection) {
+		public boolean isVisibleForSelection(VirtualModel object, Vector<FMLObject> globalSelection) {
 			return object != null;
 		}
 
 		@Override
-		public boolean isEnabledForSelection(AbstractVirtualModel<?> object, Vector<FMLObject> globalSelection) {
+		public boolean isEnabledForSelection(VirtualModel object, Vector<FMLObject> globalSelection) {
 			return object != null;
 		}
 
 	};
 
 	static {
-		FlexoObjectImpl.addActionForClass(CreateFlexoEvent.actionType, AbstractVirtualModel.class);
+		FlexoObjectImpl.addActionForClass(CreateFlexoEvent.actionType, VirtualModel.class);
 	}
 
 	private String newFlexoEventName;
@@ -92,7 +92,7 @@ public class CreateFlexoEvent extends AbstractCreateFlexoConcept<CreateFlexoEven
 
 	public boolean switchNewlyCreatedFlexoConcept = true;
 
-	CreateFlexoEvent(AbstractVirtualModel<?> focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
+	CreateFlexoEvent(VirtualModel focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 	}
 

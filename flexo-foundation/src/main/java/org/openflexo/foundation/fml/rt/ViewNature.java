@@ -49,6 +49,6 @@ import org.openflexo.foundation.fml.ViewPointNature;
  * @author sylvain
  * 
  */
-public interface ViewNature extends AbstractVirtualModelInstanceNature<View, ViewPoint> {
+public interface ViewNature extends VirtualModelInstanceNature<View, ViewPoint> {
 
 }

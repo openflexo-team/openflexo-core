@@ -44,7 +44,7 @@ import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoEvent;
-import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.FlexoEventInstance;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
@@ -62,12 +62,12 @@ import org.openflexo.model.annotations.XMLElement;
 @ModelEntity
 @ImplementationClass(FireEventAction.FireEventActionImpl.class)
 @XMLElement
-public interface FireEventAction<VMI extends AbstractVirtualModelInstance<VMI, ?>>
+public interface FireEventAction<VMI extends VirtualModelInstance<VMI, ?>>
 		extends AbstractAddFlexoConceptInstance<FlexoConceptInstance, VMI> {
 
 	public FlexoEvent getEventType();
 
-	public static abstract class FireEventActionImpl<VMI extends AbstractVirtualModelInstance<VMI, ?>>
+	public static abstract class FireEventActionImpl<VMI extends VirtualModelInstance<VMI, ?>>
 			extends AbstractAddFlexoConceptInstanceImpl<FlexoConceptInstance, VMI> implements FireEventAction<VMI> {
 
 		private static final Logger logger = Logger.getLogger(FireEventAction.class.getPackage().getName());
@@ -94,7 +94,7 @@ public interface FireEventAction<VMI extends AbstractVirtualModelInstance<VMI, ?
 
 		@Override
 		public Class<VMI> getVirtualModelInstanceClass() {
-			return (Class) AbstractVirtualModelInstance.class;
+			return (Class) VirtualModelInstance.class;
 		}
 
 		@Override
@@ -109,7 +109,7 @@ public interface FireEventAction<VMI extends AbstractVirtualModelInstance<VMI, ?
 			FlexoEventInstance returned = (FlexoEventInstance) super.execute(evaluationContext);
 
 			// And we fire the new event to the listening FMLRunTimeEngine(s)
-			vmi.getPropertyChangeSupport().firePropertyChange(AbstractVirtualModelInstance.EVENT_FIRED, null, returned);
+			vmi.getPropertyChangeSupport().firePropertyChange(VirtualModelInstance.EVENT_FIRED, null, returned);
 
 			return returned;
 		}

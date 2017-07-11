@@ -277,9 +277,9 @@ public class ContextualMenuManager {
 							}
 						}
 					}
-					/*if (commonConcept instanceof AbstractVirtualModel) {
-						for (FlexoConcept rootConcept : ((AbstractVirtualModel<?>) commonConcept).getAllRootFlexoConcepts()) {
-							AddFlexoConceptInstance<AbstractVirtualModelInstance<VMI,?>>
+					/*if (commonConcept instanceof VirtualModel) {
+						for (FlexoConcept rootConcept : ((VirtualModel) commonConcept).getAllRootFlexoConcepts()) {
+							AddFlexoConceptInstance<VirtualModelInstance<VMI,?>>
 						}
 					}*/
 				}

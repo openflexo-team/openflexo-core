@@ -77,7 +77,7 @@ public interface FlexoConceptInstanceParameter extends InnerModelSlotParameter<F
 
 	public void setFlexoConceptType(FlexoConcept flexoConceptType);
 
-	public AbstractVirtualModel<?> getModelSlotVirtualModel();
+	public VirtualModel getModelSlotVirtualModel();
 
 	@Getter(value = VIRTUAL_MODEL_INSTANCE_KEY)
 	@XMLAttribute
@@ -170,7 +170,7 @@ public interface FlexoConceptInstanceParameter extends InnerModelSlotParameter<F
 		}
 
 		@Override
-		public AbstractVirtualModel<?> getModelSlotVirtualModel() {
+		public VirtualModel getModelSlotVirtualModel() {
 			if (getModelSlot() != null && getModelSlot().getAccessedVirtualModelResource() != null) {
 				return getModelSlot().getAccessedVirtualModelResource().getVirtualModel();
 			}

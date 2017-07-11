@@ -82,7 +82,7 @@ public class TestCreateFlexoConcept extends OpenflexoTestCase {
 
 	static FlexoEditor editor;
 	static ViewPoint newViewPoint;
-	static AbstractVirtualModel<?> newVirtualModel;
+	static VirtualModel newVirtualModel;
 
 	static FlexoConcept flexoConceptA;
 	static FlexoConcept flexoConceptB;

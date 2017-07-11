@@ -46,7 +46,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.fml.AbstractVirtualModel;
+import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
@@ -98,7 +98,7 @@ import org.openflexo.model.annotations.XMLAttribute;
 public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>>
 		extends FlexoRole<RD>, ModelSlotObject<RD>, VirtualModelObject {
 
-	@PropertyIdentifier(type = AbstractVirtualModel.class)
+	@PropertyIdentifier(type = VirtualModel.class)
 	public static final String OWNER_KEY = "owner";
 
 	@PropertyIdentifier(type = boolean.class)
@@ -234,9 +234,9 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>>
 		private List<Class<? extends InspectorEntry>> availableInspectorEntryTypes;*/
 
 		@Override
-		public AbstractVirtualModel<?> getVirtualModel() {
-			if (getFlexoConcept() instanceof AbstractVirtualModel) {
-				return (AbstractVirtualModel<?>) getFlexoConcept();
+		public VirtualModel getVirtualModel() {
+			if (getFlexoConcept() instanceof VirtualModel) {
+				return (VirtualModel) getFlexoConcept();
 			}
 			if (getFlexoConcept() != null) {
 				return getFlexoConcept().getOwner();
@@ -272,7 +272,7 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>>
 		}
 
 		@Override
-		public AbstractVirtualModel<?> getOwningVirtualModel() {
+		public VirtualModel getOwningVirtualModel() {
 			return getVirtualModel();
 		}
 
@@ -544,7 +544,7 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>>
 				}
 			};
 
-			AbstractVirtualModel<?> virtualModel = getVirtualModel();
+			VirtualModel virtualModel = getVirtualModel();
 			if (virtualModel != null) {
 				for (FlexoRole<?> role : virtualModel.getAccessibleRoles()) {
 					if (role.getModelSlot() == this) {

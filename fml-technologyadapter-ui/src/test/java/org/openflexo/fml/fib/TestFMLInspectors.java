@@ -61,8 +61,8 @@ public class TestFMLInspectors extends GenericFIBInspectorTestCase {
 	}
 
 	@Test
-	public void testAbstractVirtualModelInspector() {
-		validateFIB("Inspectors/FML/AbstractVirtualModel.inspector");
+	public void testVirtualModelInspector() {
+		validateFIB("Inspectors/FML/VirtualModel.inspector");
 	}
 
 	@Test
@@ -532,7 +532,7 @@ public class TestFMLInspectors extends GenericFIBInspectorTestCase {
 
 	@Test
 	public void testViewPointLibraryInspector() {
-		validateFIB("Inspectors/FML/ViewPointLibrary.inspector");
+		validateFIB("Inspectors/FML/VirtualModelLibrary.inspector");
 	}
 
 	@Test

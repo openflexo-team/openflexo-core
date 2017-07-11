@@ -42,7 +42,7 @@ import java.util.Collection;
 import java.util.logging.Logger;
 
 import org.openflexo.components.widget.FIBFlexoObjectSelector;
-import org.openflexo.foundation.fml.ViewPointLibrary;
+import org.openflexo.foundation.fml.VirtualModelLibrary;
 import org.openflexo.foundation.fml.rm.ViewPointResource;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
@@ -67,7 +67,7 @@ public class FIBViewPointSelector extends FIBFlexoObjectSelector<ViewPointResour
 	@Override
 	public void delete() {
 		super.delete();
-		viewPointLibrary = null;
+		virtualModelLibrary = null;
 	}
 
 	@Override
@@ -88,15 +88,15 @@ public class FIBViewPointSelector extends FIBFlexoObjectSelector<ViewPointResour
 		return "";
 	}
 
-	private ViewPointLibrary viewPointLibrary;
+	private VirtualModelLibrary virtualModelLibrary;
 
-	public ViewPointLibrary getViewPointLibrary() {
-		return viewPointLibrary;
+	public VirtualModelLibrary getViewPointLibrary() {
+		return virtualModelLibrary;
 	}
 
-	@CustomComponentParameter(name = "viewPointLibrary", type = CustomComponentParameter.Type.MANDATORY)
-	public void setViewPointLibrary(ViewPointLibrary viewPointLibrary) {
-		this.viewPointLibrary = viewPointLibrary;
+	@CustomComponentParameter(name = "virtualModelLibrary", type = CustomComponentParameter.Type.MANDATORY)
+	public void setViewPointLibrary(VirtualModelLibrary virtualModelLibrary) {
+		this.virtualModelLibrary = virtualModelLibrary;
 	}
 
 	/**
@@ -127,7 +127,7 @@ public class FIBViewPointSelector extends FIBFlexoObjectSelector<ViewPointResour
 			e.printStackTrace();
 		}
 	
-		final ViewPointLibrary viewPointLibrary;
+		final VirtualModelLibrary virtualModelLibrary;
 	
 		final FlexoServiceManager serviceManager = new DefaultFlexoServiceManager() {
 			@Override
@@ -140,13 +140,13 @@ public class FIBViewPointSelector extends FIBFlexoObjectSelector<ViewPointResour
 				return null;
 			}
 		};
-		viewPointLibrary = serviceManager.getViewPointLibrary();
+		virtualModelLibrary = serviceManager.getViewPointLibrary();
 	
 		FIBAbstractEditor editor = new FIBAbstractEditor() {
 			@Override
 			public Object[] getData() {
 				FIBViewPointSelector selector = new FIBViewPointSelector(null);
-				selector.setViewPointLibrary(viewPointLibrary);
+				selector.setViewPointLibrary(virtualModelLibrary);
 				return makeArray(selector);
 			}
 	

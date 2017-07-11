@@ -49,10 +49,10 @@ import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.action.copypaste.AbstractCopyAction.InvalidSelectionException;
-import org.openflexo.foundation.fml.AbstractVirtualModel;
+import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.FlexoConceptObject;
-import org.openflexo.foundation.fml.rm.AbstractVirtualModelResource;
+import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.model.factory.EmbeddingType;
 
 public class DeleteFlexoConceptObjects extends FlexoAction<DeleteFlexoConceptObjects, FlexoConceptObject, FlexoConceptObject> {
@@ -116,17 +116,17 @@ public class DeleteFlexoConceptObjects extends FlexoAction<DeleteFlexoConceptObj
 
 		List<FlexoConceptObject> allObjects = new ArrayList<FlexoConceptObject>();
 
-		AbstractVirtualModelResource<?> resource = null;
+		VirtualModelResource<?> resource = null;
 		FMLModelFactory modelFactory = null;
 
 		for (FlexoConceptObject o : globalSelection) {
 			if (o.getResourceData() != null) {
 				if (resource == null) {
-					resource = (AbstractVirtualModelResource<?>) o.getResourceData().getResource();
+					resource = (VirtualModelResource<?>) o.getResourceData().getResource();
 					modelFactory = resource.getFactory();
 				}
 				else {
-					if ((AbstractVirtualModelResource<?>) o.getResourceData().getResource() != resource) {
+					if ((VirtualModelResource<?>) o.getResourceData().getResource() != resource) {
 						throw new InvalidSelectionException("Multiple virtual model impacted");
 					}
 				}
@@ -168,7 +168,7 @@ public class DeleteFlexoConceptObjects extends FlexoAction<DeleteFlexoConceptObj
 
 	protected static boolean isDeletable(FlexoConceptObject o) {
 		// VirtualModel and ViewPoint are deleted using specific actions: DeleteViewpoint and DeleteVirtualModel
-		if (o instanceof AbstractVirtualModel) {
+		if (o instanceof VirtualModel) {
 			return false;
 		}
 		return true;

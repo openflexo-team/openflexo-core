@@ -390,7 +390,7 @@ public class TestFlexoConceptInstanceType extends OpenflexoProjectAtRunTimeTestC
 		assertEquals(reloadedViewPoint, reloadedViewPoint.getFlexoConcept());
 		assertEquals(reloadedViewPoint, reloadedViewPoint.getResourceData());
 
-		AbstractVirtualModel<?> reloadedVirtualModel = reloadedViewPoint.getVirtualModelNamed(VIRTUAL_MODEL_NAME);
+		VirtualModel reloadedVirtualModel = reloadedViewPoint.getVirtualModelNamed(VIRTUAL_MODEL_NAME);
 		assertNotNull(reloadedVirtualModel);
 
 		assertNotNull(flexoConceptA = reloadedVirtualModel.getFlexoConcept("FlexoConceptA"));

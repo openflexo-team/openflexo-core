@@ -54,9 +54,9 @@ import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 public class VirtualModelInstanceType extends FlexoConceptInstanceType {
 
 	public static VirtualModelInstanceType UNDEFINED_VIRTUAL_MODEL_INSTANCE_TYPE = new VirtualModelInstanceType(
-			(AbstractVirtualModel<?>) null);
+			(VirtualModel) null);
 
-	public VirtualModelInstanceType(AbstractVirtualModel<?> aVirtualModel) {
+	public VirtualModelInstanceType(VirtualModel aVirtualModel) {
 		super(aVirtualModel);
 	}
 
@@ -69,8 +69,8 @@ public class VirtualModelInstanceType extends FlexoConceptInstanceType {
 		return VirtualModelInstance.class;
 	}
 
-	public AbstractVirtualModel<?> getVirtualModel() {
-		return (AbstractVirtualModel<?>) getFlexoConcept();
+	public VirtualModel getVirtualModel() {
+		return (VirtualModel) getFlexoConcept();
 	}
 
 	@Override
@@ -97,7 +97,7 @@ public class VirtualModelInstanceType extends FlexoConceptInstanceType {
 		}
 	}
 
-	public static VirtualModelInstanceType getVirtualModelInstanceType(AbstractVirtualModel<?> aVirtualModel) {
+	public static VirtualModelInstanceType getVirtualModelInstanceType(VirtualModel aVirtualModel) {
 		if (aVirtualModel != null) {
 			return (VirtualModelInstanceType) aVirtualModel.getInstanceType();
 		}
@@ -127,7 +127,7 @@ public class VirtualModelInstanceType extends FlexoConceptInstanceType {
 		@Override
 		public VirtualModelInstanceType makeCustomType(String configuration) {
 
-			AbstractVirtualModel<?> virtualModel = null;
+			VirtualModel virtualModel = null;
 
 			if (configuration != null) {
 				VirtualModelResource virtualModelResource = getTechnologyAdapter().getTechnologyAdapterService().getServiceManager()
@@ -150,15 +150,15 @@ public class VirtualModelInstanceType extends FlexoConceptInstanceType {
 			}
 		}
 
-		private AbstractVirtualModel<?> virtualModelType;
+		private VirtualModel virtualModelType;
 
-		public AbstractVirtualModel<?> getVirtualModelType() {
+		public VirtualModel getVirtualModelType() {
 			return virtualModelType;
 		}
 
-		public void setVirtualModelType(AbstractVirtualModel<?> virtualModelType) {
+		public void setVirtualModelType(VirtualModel virtualModelType) {
 			if (virtualModelType != this.virtualModelType) {
-				AbstractVirtualModel<?> oldVirtualModelType = this.virtualModelType;
+				VirtualModel oldVirtualModelType = this.virtualModelType;
 				this.virtualModelType = virtualModelType;
 				getPropertyChangeSupport().firePropertyChange("virtualModelType", oldVirtualModelType, virtualModelType);
 			}

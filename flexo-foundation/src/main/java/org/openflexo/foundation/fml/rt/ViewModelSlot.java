@@ -47,7 +47,7 @@ import org.openflexo.foundation.fml.annotations.DeclareEditionActions;
 import org.openflexo.foundation.fml.annotations.DeclareFetchRequests;
 import org.openflexo.foundation.fml.annotations.DeclareFlexoRoles;
 import org.openflexo.foundation.fml.annotations.FML;
-import org.openflexo.foundation.fml.rm.AbstractVirtualModelResource;
+import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.fml.rm.ViewPointResource;
 import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.AddSubView;
@@ -60,7 +60,7 @@ import org.openflexo.model.annotations.XMLElement;
 import org.openflexo.toolbox.StringUtils;
 
 /**
- * Implementation of the ModelSlot for a FML {@link AbstractVirtualModelInstance} (a {@link VirtualModelInstance} or a {@link View})
+ * Implementation of the ModelSlot for a FML {@link VirtualModelInstance} (a {@link VirtualModelInstance} or a {@link View})
  * 
  * @author sylvain
  * 
@@ -83,10 +83,10 @@ public interface ViewModelSlot extends FMLRTModelSlot<View, ViewPoint> {
 		private static final Logger logger = Logger.getLogger(ViewModelSlot.class.getPackage().getName());
 
 		@Override
-		public AbstractVirtualModelResource<ViewPoint> getAccessedVirtualModelResource() {
+		public VirtualModelResource<ViewPoint> getAccessedVirtualModelResource() {
 			if (virtualModelResource == null && StringUtils.isNotEmpty(getAccessedVirtualModelURI()) && getViewPoint() != null
-					&& getViewPoint().getViewPointLibrary() != null) {
-				ViewPoint lookedUpVP = getViewPoint().getViewPointLibrary().getViewPoint(getAccessedVirtualModelURI());
+					&& getViewPoint().getVirtualModelLibrary() != null) {
+				ViewPoint lookedUpVP = getViewPoint().getVirtualModelLibrary().getViewPoint(getAccessedVirtualModelURI());
 				if (lookedUpVP != null) {
 					virtualModelResource = (ViewPointResource) lookedUpVP.getResource();
 					logger.info("Looked-up " + virtualModelResource);

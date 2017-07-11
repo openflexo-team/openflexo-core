@@ -44,7 +44,7 @@ import org.openflexo.connie.BindingEvaluationContext;
 import org.openflexo.connie.binding.BindingPathElement;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
-import org.openflexo.foundation.fml.AbstractVirtualModel;
+import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelInstanceType;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
@@ -57,11 +57,11 @@ import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
  * @author sylvain
  *
  */
-public class VirtualModelInstancePathElement extends AbstractVirtualModelInstancePathElement<AbstractVirtualModel<?>> {
+public class VirtualModelInstancePathElement extends VirtualModelInstancePathElement<VirtualModel> {
 
 	private static final Logger logger = Logger.getLogger(VirtualModelInstancePathElement.class.getPackage().getName());
 
-	public VirtualModelInstancePathElement(BindingPathElement parent, AbstractVirtualModel<?> virtualModel) {
+	public VirtualModelInstancePathElement(BindingPathElement parent, VirtualModel virtualModel) {
 		super(parent, FMLBindingFactory.VIRTUAL_MODEL_INSTANCE, virtualModel);
 	}
 

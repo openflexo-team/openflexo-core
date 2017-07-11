@@ -49,7 +49,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.fml.ViewPoint;
-import org.openflexo.foundation.fml.ViewPointLibrary;
+import org.openflexo.foundation.fml.VirtualModelLibrary;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.gina.swing.utils.FIBJPanel;
 import org.openflexo.gina.test.OpenflexoFIBTestCase;
@@ -102,7 +102,7 @@ public class TestViewPointView extends OpenflexoFIBTestCase {
 
 		// instanciateTestServiceManager();
 
-		ViewPointLibrary vpLib = serviceManager.getViewPointLibrary();
+		VirtualModelLibrary vpLib = serviceManager.getViewPointLibrary();
 		assertNotNull(vpLib);
 		viewPoint = vpLib.getViewPoint("http://openflexo.org/test/TestViewPointA");
 		assertNotNull(viewPoint);

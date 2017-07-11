@@ -237,7 +237,7 @@ public class FIBResourceSelector extends FIBFlexoObjectSelector<TechnologyAdapte
 			e.printStackTrace();
 		}
 	
-		// final ViewPointLibrary viewPointLibrary;
+		// final VirtualModelLibrary viewPointLibrary;
 	
 		final FlexoServiceManager serviceManager = new TestFlexoServiceManager(new FileResource(
 				"C:/Users/Vincent/git/openflexo/packaging/technologyadaptersintegration/src/test/resources/TestResourceCenter"));

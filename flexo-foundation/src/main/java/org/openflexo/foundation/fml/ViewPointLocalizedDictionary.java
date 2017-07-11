@@ -86,9 +86,10 @@ import org.openflexo.toolbox.StringUtils;
 @ModelEntity
 @ImplementationClass(ViewPointLocalizedDictionary.ViewPointLocalizedDictionaryImpl.class)
 @XMLElement(xmlTag = "ViewPointLocalizedDictionary")
+// TODO: rename as FMLLocalizedDictionary
 public interface ViewPointLocalizedDictionary extends FMLObject, org.openflexo.localization.LocalizedDelegate {
 
-	@PropertyIdentifier(type = ViewPoint.class)
+	@PropertyIdentifier(type = VirtualModel.class)
 	public static final String OWNER_KEY = "owner";
 	@PropertyIdentifier(type = List.class)
 	public static final String LOCALIZED_ENTRIES_KEY = "localizedEntries";
@@ -108,10 +109,10 @@ public interface ViewPointLocalizedDictionary extends FMLObject, org.openflexo.l
 	public void removeFromLocalizedEntries(ViewPointLocalizedEntry aEntrie);
 
 	@Getter(value = OWNER_KEY, inverse = ViewPoint.LOCALIZED_DICTIONARY_KEY)
-	public ViewPoint getOwner();
+	public VirtualModel getOwner();
 
 	@Setter(OWNER_KEY)
-	public void setOwner(ViewPoint owner);
+	public void setOwner(VirtualModel owner);
 
 	@Override
 	public List<DynamicEntry> getEntries();
@@ -152,7 +153,7 @@ public interface ViewPointLocalizedDictionary extends FMLObject, org.openflexo.l
 		}
 
 		@Override
-		public ViewPoint getResourceData() {
+		public VirtualModel getResourceData() {
 			return getOwner();
 		}
 
@@ -399,7 +400,7 @@ public interface ViewPointLocalizedDictionary extends FMLObject, org.openflexo.l
 			getDictForLang(language).put(key, value);
 			ViewPointLocalizedEntry entry = getLocalizedEntry(language, key);
 			if (entry == null) {
-				ViewPointLocalizedEntry newEntry = getViewPoint().getFMLModelFactory().newInstance(ViewPointLocalizedEntry.class);
+				ViewPointLocalizedEntry newEntry = getOwner().getFMLModelFactory().newInstance(ViewPointLocalizedEntry.class);
 				newEntry.setLanguage(language.getName());
 				newEntry.setKey(key);
 				newEntry.setValue(value);
@@ -479,7 +480,7 @@ public interface ViewPointLocalizedDictionary extends FMLObject, org.openflexo.l
 			}
 			else {
 				for (Language l : FlexoLocalization.getAvailableLanguages()) {
-					ViewPointLocalizedEntry newEntry = getViewPoint().getFMLModelFactory().newInstance(ViewPointLocalizedEntry.class);
+					ViewPointLocalizedEntry newEntry = getOwner().getFMLModelFactory().newInstance(ViewPointLocalizedEntry.class);
 					newEntry.setLanguage(l.getName());
 					newEntry.setKey(aKey);
 					newEntry.setValue(aKey);
@@ -505,8 +506,8 @@ public interface ViewPointLocalizedDictionary extends FMLObject, org.openflexo.l
 			CompoundEdit ce = null;
 			FMLModelFactory factory = null;
 
-			if (getViewPoint() != null) {
-				factory = getViewPoint().getFMLModelFactory();
+			if (getOwner() != null) {
+				factory = getOwner().getFMLModelFactory();
 				if (factory != null) {
 					if (!factory.getEditingContext().getUndoManager().isBeeingRecording()) {
 						ce = factory.getEditingContext().getUndoManager().startRecording("add_localized_entry");
@@ -556,13 +557,13 @@ public interface ViewPointLocalizedDictionary extends FMLObject, org.openflexo.l
 
 		@Override
 		public void searchNewEntries() {
-			logger.info("Search new entries for " + getViewPoint());
+			logger.info("Search new entries for " + getOwner());
 
 			CompoundEdit ce = null;
 			FMLModelFactory factory = null;
 
-			if (getViewPoint() != null) {
-				factory = getViewPoint().getFMLModelFactory();
+			if (getOwner() != null) {
+				factory = getOwner().getFMLModelFactory();
 				if (factory != null) {
 					if (!factory.getEditingContext().getUndoManager().isBeeingRecording()) {
 						ce = factory.getEditingContext().getUndoManager().startRecording("localize_viewpoint");
@@ -571,8 +572,8 @@ public interface ViewPointLocalizedDictionary extends FMLObject, org.openflexo.l
 			}
 
 			handleNewEntry = true;
-			getViewPoint().loadVirtualModelsWhenUnloaded();
-			for (VirtualModel vm : getViewPoint().getVirtualModels()) {
+			getOwner().loadContainedVirtualModelsWhenUnloaded();
+			for (VirtualModel vm : getOwner().getVirtualModels()) {
 				for (FlexoConcept concept : vm.getFlexoConcepts()) {
 					checkAndRegisterLocalized(concept.getName());
 					for (FlexoBehaviour es : concept.getFlexoBehaviours()) {
@@ -620,7 +621,7 @@ public interface ViewPointLocalizedDictionary extends FMLObject, org.openflexo.l
 
 		@Override
 		public BindingModel getBindingModel() {
-			return getViewPoint().getBindingModel();
+			return getOwner().getBindingModel();
 		}
 
 		@Override

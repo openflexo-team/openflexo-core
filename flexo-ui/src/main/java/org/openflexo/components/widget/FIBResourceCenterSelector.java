@@ -110,7 +110,7 @@ public class FIBResourceCenterSelector extends FIBFlexoObjectSelector<FlexoResou
 			e.printStackTrace();
 		}
 	
-		final ViewPointLibrary viewPointLibrary;
+		final VirtualModelLibrary viewPointLibrary;
 	
 		final FlexoServiceManager serviceManager = new DefaultFlexoServiceManager() {
 			@Override

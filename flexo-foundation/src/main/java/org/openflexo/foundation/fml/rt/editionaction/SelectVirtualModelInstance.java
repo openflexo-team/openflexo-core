@@ -57,7 +57,7 @@ import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.foundation.fml.editionaction.FetchRequest;
 import org.openflexo.foundation.fml.rm.ViewPointResource;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
-import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
@@ -90,8 +90,8 @@ import org.openflexo.model.validation.ValidationRule;
 @ImplementationClass(SelectVirtualModelInstance.SelectVirtualModelInstanceImpl.class)
 @XMLElement
 @FML("SelectVirtualModelInstance")
-public interface SelectVirtualModelInstance<VMI extends AbstractVirtualModelInstance<VMI, ?>>
-		extends FetchRequest<FMLRTModelSlot<VMI, ?>, VMI, AbstractVirtualModelInstance<?, ?>> {
+public interface SelectVirtualModelInstance<VMI extends VirtualModelInstance<VMI, ?>>
+		extends FetchRequest<FMLRTModelSlot<VMI, ?>, VMI, VirtualModelInstance<?, ?>> {
 
 	@PropertyIdentifier(type = String.class)
 	public static final String VIRTUAL_MODEL_TYPE_URI_KEY = "virtualModelTypeURI";
@@ -119,8 +119,8 @@ public interface SelectVirtualModelInstance<VMI extends AbstractVirtualModelInst
 
 	public ViewPoint getAddressedViewPoint();
 
-	public static abstract class SelectVirtualModelInstanceImpl<VMI extends AbstractVirtualModelInstance<VMI, ?>> extends
-			FetchRequestImpl<FMLRTModelSlot<VMI, ?>, VMI, AbstractVirtualModelInstance<?, ?>> implements SelectVirtualModelInstance<VMI> {
+	public static abstract class SelectVirtualModelInstanceImpl<VMI extends VirtualModelInstance<VMI, ?>> extends
+			FetchRequestImpl<FMLRTModelSlot<VMI, ?>, VMI, VirtualModelInstance<?, ?>> implements SelectVirtualModelInstance<VMI> {
 
 		protected static final Logger logger = FlexoLogger.getLogger(SelectVirtualModelInstance.class.getPackage().getName());
 
@@ -252,7 +252,7 @@ public interface SelectVirtualModelInstance<VMI extends AbstractVirtualModelInst
 		}
 
 		@Override
-		public List<AbstractVirtualModelInstance<?, ?>> execute(RunTimeEvaluationContext evaluationContext) {
+		public List<VirtualModelInstance<?, ?>> execute(RunTimeEvaluationContext evaluationContext) {
 			View view = getView(evaluationContext);
 			if (view != null) {
 				try {

@@ -52,16 +52,16 @@ import org.openflexo.foundation.FlexoObserver;
 import org.openflexo.foundation.InvalidArgumentException;
 import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionType;
-import org.openflexo.foundation.fml.AbstractVirtualModel;
+import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.CreationScheme;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.rm.ViewPointResource;
-import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.ModelSlotInstance;
 import org.openflexo.foundation.fml.rt.View;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
-import org.openflexo.foundation.fml.rt.rm.AbstractVirtualModelInstanceResource;
+import org.openflexo.foundation.fml.rt.rm.VirtualModelInstanceResource;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
@@ -69,7 +69,7 @@ import org.openflexo.toolbox.JavaUtils;
 import org.openflexo.toolbox.StringUtils;
 
 /**
- * Abstract base implementation for an action which aims at creating a new AbstractVirtualModelInstance (a View or a VirtualModelInstance)
+ * Abstract base implementation for an action which aims at creating a new VirtualModelInstance (a View or a VirtualModelInstance)
  * This action is called to create a new {@link VirtualModelInstance} in a {@link View}
  * 
  * @author sylvain
@@ -77,9 +77,9 @@ import org.openflexo.toolbox.StringUtils;
  * @param <A>
  *            type of action, required to manage introspection for inheritance
  * @param <T>
- *            type of container of newly created AbstractVirtualModelInstance
+ *            type of container of newly created VirtualModelInstance
  */
-public abstract class AbstractCreateVirtualModelInstance<A extends AbstractCreateVirtualModelInstance<A, T, VMI, VM>, T extends FlexoObject, VMI extends AbstractVirtualModelInstance<VMI, VM>, VM extends AbstractVirtualModel<VM>>
+public abstract class AbstractCreateVirtualModelInstance<A extends AbstractCreateVirtualModelInstance<A, T, VMI, VM>, T extends FlexoObject, VMI extends VirtualModelInstance<VMI, VM>, VM extends VirtualModel<VM>>
 		extends FlexoAction<A, T, FlexoObject> implements FlexoObserver {
 
 	private static final Logger logger = Logger.getLogger(AbstractCreateVirtualModelInstance.class.getPackage().getName());
@@ -101,10 +101,10 @@ public abstract class AbstractCreateVirtualModelInstance<A extends AbstractCreat
 		modelSlotConfigurations = new Hashtable<ModelSlot<?>, ModelSlotInstanceConfiguration<?, ?>>();
 	}
 
-	public abstract AbstractVirtualModelInstanceResource<VMI, VM> makeVirtualModelInstanceResource() throws SaveResourceException;
+	public abstract VirtualModelInstanceResource<VMI, VM> makeVirtualModelInstanceResource() throws SaveResourceException;
 
 	/**
-	 * Return boolean indicating if proposed name is a valid as name for the new AbstractVirtualModelInstance
+	 * Return boolean indicating if proposed name is a valid as name for the new VirtualModelInstance
 	 * 
 	 * @param proposedName
 	 * @return
@@ -134,7 +134,7 @@ public abstract class AbstractCreateVirtualModelInstance<A extends AbstractCreat
 			index++;
 		}*/
 
-		AbstractVirtualModelInstanceResource<VMI, VM> newVirtualModelInstanceResource = makeVirtualModelInstanceResource();
+		VirtualModelInstanceResource<VMI, VM> newVirtualModelInstanceResource = makeVirtualModelInstanceResource();
 
 		newVirtualModelInstance = newVirtualModelInstanceResource.getVirtualModelInstance();
 
@@ -378,8 +378,8 @@ public abstract class AbstractCreateVirtualModelInstance<A extends AbstractCreat
 		this.creationScheme = creationScheme;
 		if (creationScheme != null) {
 			creationSchemeAction = CreationSchemeAction.actionType
-					.makeNewEmbeddedAction(getFocusedObject() instanceof AbstractVirtualModelInstance
-							? (AbstractVirtualModelInstance<?, ?>) getFocusedObject() : null, null, this);
+					.makeNewEmbeddedAction(getFocusedObject() instanceof VirtualModelInstance
+							? (VirtualModelInstance<?, ?>) getFocusedObject() : null, null, this);
 			creationSchemeAction.setCreationScheme(creationScheme);
 			creationSchemeAction.addObserver(this);
 			getPropertyChangeSupport().firePropertyChange("creationSchemeAction", null, creationSchemeAction);
@@ -412,7 +412,7 @@ public abstract class AbstractCreateVirtualModelInstance<A extends AbstractCreat
 	}
 
 	/**
-	 * Return the ViewPoint of the View acting as container of currently created {@link AbstractVirtualModelInstance}.<br>
+	 * Return the ViewPoint of the View acting as container of currently created {@link VirtualModelInstance}.<br>
 	 * Note that if we are creating a plain View, container might be null, and this method will return null
 	 * 
 	 * @return
@@ -425,7 +425,7 @@ public abstract class AbstractCreateVirtualModelInstance<A extends AbstractCreat
 	}
 
 	/**
-	 * Return the resource of the ViewPoint of the View acting as container of currently created {@link AbstractVirtualModelInstance}.<br>
+	 * Return the resource of the ViewPoint of the View acting as container of currently created {@link VirtualModelInstance}.<br>
 	 * Note that if we are creating a plain View, container might be null, and this method wil return null
 	 * 
 	 * @return
@@ -438,7 +438,7 @@ public abstract class AbstractCreateVirtualModelInstance<A extends AbstractCreat
 	}
 
 	/**
-	 * Return the View acting as container of currently created {@link AbstractVirtualModelInstance}.<br>
+	 * Return the View acting as container of currently created {@link VirtualModelInstance}.<br>
 	 * Note that if we are creating a plain View, container might be null
 	 * 
 	 * @return

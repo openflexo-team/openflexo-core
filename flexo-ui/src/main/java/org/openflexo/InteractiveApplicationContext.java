@@ -47,7 +47,7 @@ import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.ProjectLoader;
-import org.openflexo.foundation.fml.ViewPointLibrary;
+import org.openflexo.foundation.fml.VirtualModelLibrary;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
 import org.openflexo.foundation.technologyadapter.DefaultTechnologyAdapterService;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
@@ -136,8 +136,8 @@ public class InteractiveApplicationContext extends ApplicationContext {
 	}
 
 	@Override
-	protected ViewPointLibrary createViewPointLibraryService() {
-		return new ViewPointLibrary();
+	protected VirtualModelLibrary createViewPointLibraryService() {
+		return new VirtualModelLibrary();
 	}
 
 	@Override

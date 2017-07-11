@@ -42,7 +42,7 @@ import org.openflexo.foundation.DataModification;
 import org.openflexo.foundation.fml.rm.ViewPointResource;
 
 /**
- * Notify that a new viewpoint has been registered in ViewPointLibrary
+ * Notify that a new viewpoint has been registered in VirtualModelLibrary
  * 
  * @author sylvain
  * 

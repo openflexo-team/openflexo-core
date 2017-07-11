@@ -46,7 +46,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoException;
-import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstanceModelFactory;
+import org.openflexo.foundation.fml.rt.VirtualModelInstanceModelFactory;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.FreeModelSlotInstance;
 import org.openflexo.foundation.fml.rt.View;
@@ -115,7 +115,7 @@ public class FreeModelSlotInstanceConfiguration<RD extends ResourceData<RD> & Te
 	@Override
 	public FreeModelSlotInstance<RD, MS> createModelSlotInstance(FlexoConceptInstance flexoConceptInstance, View view) {
 
-		AbstractVirtualModelInstanceModelFactory<?> factory = flexoConceptInstance.getFactory();
+		VirtualModelInstanceModelFactory<?> factory = flexoConceptInstance.getFactory();
 
 		if (factory == null) {
 			System.out.println("Zut alors la factory est null pour " + flexoConceptInstance);
@@ -123,8 +123,8 @@ public class FreeModelSlotInstanceConfiguration<RD extends ResourceData<RD> & Te
 
 		FreeModelSlotInstance<RD, MS> returned = factory.newInstance(FreeModelSlotInstance.class);
 		returned.setModelSlot(getModelSlot());
-		/*if (flexoConceptInstance instanceof AbstractVirtualModelInstance) {
-			returned.setVirtualModelInstance((AbstractVirtualModelInstance) flexoConceptInstance);
+		/*if (flexoConceptInstance instanceof VirtualModelInstance) {
+			returned.setVirtualModelInstance((VirtualModelInstance) flexoConceptInstance);
 		}
 		else {*/
 		returned.setFlexoConceptInstance(flexoConceptInstance);

@@ -23,7 +23,7 @@ package org.openflexo.foundation.doc.fml;
 import org.openflexo.foundation.doc.FlexoDocument;
 import org.openflexo.foundation.doc.TextSelection;
 import org.openflexo.foundation.fml.FlexoRole;
-import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstanceModelFactory;
+import org.openflexo.foundation.fml.rt.VirtualModelInstanceModelFactory;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -58,7 +58,7 @@ public interface TextSelectionRole<D extends FlexoDocument<D, TA>, TA extends Te
 
 		@Override
 		public TextSelectionActorReference<D, TA> makeActorReference(TextSelection<D, TA> textSelection, FlexoConceptInstance fci) {
-			AbstractVirtualModelInstanceModelFactory<?> factory = fci.getFactory();
+			VirtualModelInstanceModelFactory<?> factory = fci.getFactory();
 			TextSelectionActorReference<D, TA> returned = factory.newInstance(TextSelectionActorReference.class);
 			returned.setFlexoRole(this);
 			returned.setFlexoConceptInstance(fci);

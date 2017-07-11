@@ -32,7 +32,7 @@ import org.openflexo.foundation.doc.FlexoDocFragment;
 import org.openflexo.foundation.doc.FlexoDocTable;
 import org.openflexo.foundation.doc.FlexoDocument;
 import org.openflexo.foundation.fml.FlexoRole;
-import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstanceModelFactory;
+import org.openflexo.foundation.fml.rt.VirtualModelInstanceModelFactory;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.model.annotations.Adder;
@@ -290,7 +290,7 @@ public interface FlexoTableRole<T extends FlexoDocTable<D, TA>, D extends FlexoD
 		@Override
 		public TableActorReference<T> makeActorReference(T table, FlexoConceptInstance fci) {
 
-			AbstractVirtualModelInstanceModelFactory<?> factory = fci.getFactory();
+			VirtualModelInstanceModelFactory<?> factory = fci.getFactory();
 			TableActorReference<T> returned = factory.newInstance(TableActorReference.class);
 			returned.setFlexoRole(this);
 			returned.setFlexoConceptInstance(fci);

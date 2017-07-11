@@ -53,7 +53,7 @@ import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.fml.CreationScheme;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.FlexoConcept;
-import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 
 /**
@@ -81,8 +81,8 @@ public class CreateFlexoConceptInstance extends FlexoAction<CreateFlexoConceptIn
 
 		@Override
 		public boolean isVisibleForSelection(FlexoConceptInstance object, Vector<FlexoObject> globalSelection) {
-			if (object instanceof AbstractVirtualModelInstance) {
-				return ((AbstractVirtualModelInstance) object).getVirtualModel().getAllRootFlexoConcepts().size() > 0;
+			if (object instanceof VirtualModelInstance) {
+				return ((VirtualModelInstance) object).getVirtualModel().getAllRootFlexoConcepts().size() > 0;
 			}
 			else {
 				return object.getFlexoConcept().getEmbeddedFlexoConcepts().size() > 0;
@@ -132,7 +132,7 @@ public class CreateFlexoConceptInstance extends FlexoAction<CreateFlexoConceptIn
 		}
 
 		// We add the FlexoConceptInstance to the container
-		if (getContainer() instanceof AbstractVirtualModelInstance) {
+		if (getContainer() instanceof VirtualModelInstance) {
 			// Nothing to do
 		}
 		else {

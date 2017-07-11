@@ -79,7 +79,7 @@ public interface RunTimeEvaluationContext extends SettableBindingEvaluationConte
 	 * 
 	 * @return
 	 */
-	public AbstractVirtualModelInstance getVirtualModelInstance();
+	public VirtualModelInstance getVirtualModelInstance();
 
 	/**
 	 * Calling this method will register a new variable in the run-time context provided by this {@link FlexoBehaviourAction} instance in

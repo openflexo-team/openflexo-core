@@ -42,10 +42,10 @@ import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.DataBinding;
-import org.openflexo.foundation.fml.AbstractVirtualModel;
+import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelInstanceType;
 import org.openflexo.foundation.fml.editionaction.TechnologySpecificAction;
-import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.fml.rt.ViewObject;
@@ -57,7 +57,7 @@ import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
 
 /**
- * This action is used to handle data inside a {@link AbstractVirtualModelInstance}
+ * This action is used to handle data inside a {@link VirtualModelInstance}
  * 
  * @author sylvain
  * 
@@ -68,7 +68,7 @@ import org.openflexo.model.annotations.XMLAttribute;
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(FMLRTAction.FMLRTActionImpl.class)
-public interface FMLRTAction<T extends ViewObject, VMI extends AbstractVirtualModelInstance<VMI, ?>>
+public interface FMLRTAction<T extends ViewObject, VMI extends VirtualModelInstance<VMI, ?>>
 		extends TechnologySpecificAction<FMLRTModelSlot<VMI, ?>, VMI, T> {
 
 	/*@PropertyIdentifier(type = DataBinding.class)
@@ -96,13 +96,13 @@ public interface FMLRTAction<T extends ViewObject, VMI extends AbstractVirtualMo
 	public abstract Class<VMI> getVirtualModelInstanceClass();
 
 	/**
-	 * Return type of AbstractVirtualModelInstance, when {@link #getVirtualModelInstance()} is set and valid
+	 * Return type of VirtualModelInstance, when {@link #getVirtualModelInstance()} is set and valid
 	 * 
 	 * @return
 	 */
-	public AbstractVirtualModel<?> getOwnerVirtualModelType();
+	public VirtualModel getOwnerVirtualModelType();
 
-	public static abstract class FMLRTActionImpl<T extends ViewObject, VMI extends AbstractVirtualModelInstance<VMI, ?>>
+	public static abstract class FMLRTActionImpl<T extends ViewObject, VMI extends VirtualModelInstance<VMI, ?>>
 			extends TechnologySpecificActionImpl<FMLRTModelSlot<VMI, ?>, VMI, T> implements FMLRTAction<T, VMI> {
 
 		static final Logger logger = Logger.getLogger(FMLRTAction.class.getPackage().getName());
@@ -125,7 +125,7 @@ public interface FMLRTAction<T extends ViewObject, VMI extends AbstractVirtualMo
 		}
 
 		@Override
-		public AbstractVirtualModel<?> getOwnerVirtualModelType() {
+		public VirtualModel getOwnerVirtualModelType() {
 			if (getReceiver().isSet() && getReceiver().isValid()) {
 				Type type = getReceiver().getAnalyzedType();
 				if (type instanceof VirtualModelInstanceType) {

@@ -40,9 +40,9 @@ package org.openflexo.foundation.fml.rt;
 
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.fml.AbstractVirtualModel;
 import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.rt.rm.AbstractVirtualModelInstanceResource;
+import org.openflexo.foundation.fml.VirtualModel;
+import org.openflexo.foundation.fml.rt.rm.VirtualModelInstanceResource;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
@@ -63,7 +63,7 @@ import org.openflexo.toolbox.StringUtils;
 @ModelEntity
 @ImplementationClass(VirtualModelModelSlotInstance.VirtualModelModelSlotInstanceImpl.class)
 @XMLElement
-public interface VirtualModelModelSlotInstance<VMI extends AbstractVirtualModelInstance<VMI, VM>, VM extends AbstractVirtualModel<VM>>
+public interface VirtualModelModelSlotInstance<VMI extends VirtualModelInstance<VMI, VM>, VM extends VirtualModel<VM>>
 		extends ModelSlotInstance<FMLRTModelSlot<VMI, VM>, VMI> {
 
 	@PropertyIdentifier(type = String.class)
@@ -76,7 +76,7 @@ public interface VirtualModelModelSlotInstance<VMI extends AbstractVirtualModelI
 	@Setter(VIRTUAL_MODEL_INSTANCE_URI_KEY)
 	public void setVirtualModelInstanceURI(String virtualModelInstanceURI);
 
-	public static abstract class VirtualModelModelSlotInstanceImpl<VMI extends AbstractVirtualModelInstance<VMI, VM>, VM extends AbstractVirtualModel<VM>>
+	public static abstract class VirtualModelModelSlotInstanceImpl<VMI extends VirtualModelInstance<VMI, VM>, VM extends VirtualModel<VM>>
 			extends ModelSlotInstanceImpl<FMLRTModelSlot<VMI, VM>, VMI>implements VirtualModelModelSlotInstance<VMI, VM> {
 
 		private static final Logger logger = Logger.getLogger(VirtualModelModelSlotInstance.class.getPackage().getName());
@@ -100,7 +100,7 @@ public interface VirtualModelModelSlotInstance<VMI extends AbstractVirtualModelI
 		}
 
 		@Override
-		public AbstractVirtualModelInstanceResource<VMI, VM> getResource() {
+		public VirtualModelInstanceResource<VMI, VM> getResource() {
 			if (getVirtualModelInstance() != null && resource == null && StringUtils.isNotEmpty(virtualModelInstanceURI)) {
 
 				FMLRTTechnologyAdapter fmlRTTA = getServiceManager().getTechnologyAdapterService()
@@ -113,14 +113,14 @@ public interface VirtualModelModelSlotInstance<VMI extends AbstractVirtualModelI
 				else {
 					viewRepository = (ViewLibrary<?>) fmlRTTA.getViewRepository(getVirtualModelInstance().getView().getResourceCenter());
 				}
-				resource = (AbstractVirtualModelInstanceResource<VMI, VM>) viewRepository.getVirtualModelInstance(virtualModelInstanceURI);
+				resource = (VirtualModelInstanceResource<VMI, VM>) viewRepository.getVirtualModelInstance(virtualModelInstanceURI);
 
 			}
 
 			if (resource == null && StringUtils.isNotEmpty(virtualModelInstanceURI)) {
 				logger.warning("Cannot find virtual model instance " + virtualModelInstanceURI);
 			}
-			return (AbstractVirtualModelInstanceResource<VMI, VM>) resource;
+			return (VirtualModelInstanceResource<VMI, VM>) resource;
 		}
 
 		/*@Override

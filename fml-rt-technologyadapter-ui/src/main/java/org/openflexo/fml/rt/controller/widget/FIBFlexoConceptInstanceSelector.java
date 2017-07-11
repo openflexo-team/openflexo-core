@@ -67,7 +67,7 @@ public class FIBFlexoConceptInstanceSelector extends FIBAbstractFMLRTObjectSelec
 
 	public static Resource FIB_FILE = ResourceLocator.locateResource("Fib/FlexoConceptInstanceSelector.fib");
 
-	/*private ViewPointLibrary viewPointLibrary;
+	/*private VirtualModelLibrary viewPointLibrary;
 	private ViewPoint viewPoint;
 	private VirtualModel virtualModel;
 	private FlexoConcept flexoConcept;
@@ -111,12 +111,12 @@ public class FIBFlexoConceptInstanceSelector extends FIBAbstractFMLRTObjectSelec
 		return "";
 	}*/
 
-	/*public ViewPointLibrary getViewPointLibrary() {
+	/*public VirtualModelLibrary getViewPointLibrary() {
 		return viewPointLibrary;
 	}
 	
 	@CustomComponentParameter(name = "viewPointLibrary", type = CustomComponentParameter.Type.MANDATORY)
-	public void setViewPointLibrary(ViewPointLibrary viewPointLibrary) {
+	public void setViewPointLibrary(VirtualModelLibrary viewPointLibrary) {
 		this.viewPointLibrary = viewPointLibrary;
 	}
 	
@@ -183,7 +183,7 @@ public class FIBFlexoConceptInstanceSelector extends FIBAbstractFMLRTObjectSelec
 		}
 		else if (getView() != null) {
 			List<FlexoConceptInstance> returned = new ArrayList<FlexoConceptInstance>();
-			for (AbstractVirtualModelInstance<?, ?> vmi : getView().getVirtualModelInstances()) {
+			for (VirtualModelInstance<?, ?> vmi : getView().getVirtualModelInstances()) {
 				returned.addAll(vmi.getFlexoConceptInstances(ep));
 			}
 			return returned;
@@ -191,7 +191,7 @@ public class FIBFlexoConceptInstanceSelector extends FIBAbstractFMLRTObjectSelec
 		else if (getProject() != null) {
 			List<FlexoConceptInstance> returned = new ArrayList<FlexoConceptInstance>();
 			for (ViewResource vr : getProject().getViewLibrary().getAllResources()) {
-				for (AbstractVirtualModelInstance<?, ?> vmi : vr.getView().getVirtualModelInstances()) {
+				for (VirtualModelInstance<?, ?> vmi : vr.getView().getVirtualModelInstances()) {
 					returned.addAll(vmi.getFlexoConceptInstances(ep));
 				}
 			}

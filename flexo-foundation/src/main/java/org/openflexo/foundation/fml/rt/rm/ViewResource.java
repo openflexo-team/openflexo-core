@@ -40,7 +40,7 @@ package org.openflexo.foundation.fml.rt.rm;
 
 import java.util.List;
 
-import org.openflexo.foundation.fml.AbstractVirtualModel;
+import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.rm.ViewPointResource;
@@ -65,7 +65,7 @@ import org.openflexo.model.annotations.XMLElement;
 @ModelEntity
 @ImplementationClass(ViewResourceImpl.class)
 @XMLElement
-public interface ViewResource extends AbstractVirtualModelInstanceResource<View, ViewPoint>, DirectoryContainerResource<View>,
+public interface ViewResource extends VirtualModelInstanceResource<View, ViewPoint>, DirectoryContainerResource<View>,
 		FlexoModelResource<View, ViewPoint, FMLRTTechnologyAdapter, FMLTechnologyAdapter> {
 
 	public static final String CORE_FILE_SUFFIX = ".xml";
@@ -117,10 +117,10 @@ public interface ViewResource extends AbstractVirtualModelInstanceResource<View,
 
 	/**
 	 * Return the list of all {@link VirtualModelInstanceResource} defined in this {@link ViewResource} conform to supplied
-	 * {@link AbstractVirtualModel}
+	 * {@link VirtualModel}
 	 * 
 	 * @return
 	 */
-	public List<VirtualModelInstanceResource> getVirtualModelInstanceResources(AbstractVirtualModel<?> virtualModel);
+	public List<VirtualModelInstanceResource> getVirtualModelInstanceResources(VirtualModel virtualModel);
 
 }

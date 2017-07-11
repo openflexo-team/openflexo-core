@@ -52,7 +52,7 @@ import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
-import org.openflexo.foundation.fml.AbstractVirtualModel;
+import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.ActionScheme;
 import org.openflexo.foundation.fml.DeletionScheme;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
@@ -241,16 +241,16 @@ public interface FinalizeMatching extends EditionAction {
 
 		@Override
 		public void _setFlexoConceptTypeURI(String uri) {
-			if (getViewPointLibrary() != null) {
-				flexoConceptType = getViewPointLibrary().getFlexoConcept(uri);
+			if (getVirtualModelLibrary() != null) {
+				flexoConceptType = getVirtualModelLibrary().getFlexoConcept(uri);
 			}
 			flexoConceptTypeURI = uri;
 		}
 
 		@Override
 		public FlexoConcept getFlexoConceptType() {
-			if (flexoConceptType == null && StringUtils.isNotEmpty(flexoConceptTypeURI) && getViewPointLibrary() != null) {
-				flexoConceptType = getViewPointLibrary().getFlexoConcept(flexoConceptTypeURI, false);
+			if (flexoConceptType == null && StringUtils.isNotEmpty(flexoConceptTypeURI) && getVirtualModelLibrary() != null) {
+				flexoConceptType = getVirtualModelLibrary().getFlexoConcept(flexoConceptTypeURI, false);
 			}
 			return flexoConceptType;
 		}
@@ -270,8 +270,8 @@ public interface FinalizeMatching extends EditionAction {
 		public List<FlexoConcept> getAvailableFlexoConceptTypes() {
 			FlexoConcept containerConcept = getOwnerConcept();
 			if (containerConcept != null) {
-				if (containerConcept instanceof AbstractVirtualModel) {
-					return ((AbstractVirtualModel) containerConcept).getAllRootFlexoConcepts();
+				if (containerConcept instanceof VirtualModel) {
+					return ((VirtualModel) containerConcept).getAllRootFlexoConcepts();
 				}
 				else {
 					return containerConcept.getEmbeddedFlexoConcepts();
@@ -314,8 +314,8 @@ public interface FinalizeMatching extends EditionAction {
 				String oldURI = getFlexoBehaviourURI();
 				FlexoBehaviour oldCS = getFlexoBehaviour();
 				flexoBehaviourURI = uri;
-				if (getViewPointLibrary() != null) {
-					flexoBehaviour = getViewPointLibrary().getFlexoBehaviour(uri, true);
+				if (getVirtualModelLibrary() != null) {
+					flexoBehaviour = getVirtualModelLibrary().getFlexoBehaviour(uri, true);
 				}
 				fireBehaviourChanged(oldCS, getFlexoBehaviour());
 				getPropertyChangeSupport().firePropertyChange(FLEXO_BEHAVIOUR_URI_KEY, oldURI, uri);
@@ -334,8 +334,8 @@ public interface FinalizeMatching extends EditionAction {
 
 		@Override
 		public FlexoBehaviour getFlexoBehaviour() {
-			if (flexoBehaviour == null && flexoBehaviourURI != null && getViewPointLibrary() != null) {
-				flexoBehaviour = getViewPointLibrary().getFlexoBehaviour(flexoBehaviourURI, true);
+			if (flexoBehaviour == null && flexoBehaviourURI != null && getVirtualModelLibrary() != null) {
+				flexoBehaviour = getVirtualModelLibrary().getFlexoBehaviour(flexoBehaviourURI, true);
 			}
 			if (flexoBehaviour == null && getFlexoConceptType() != null && getAvailableFlexoBehaviours() != null
 					&& getAvailableFlexoBehaviours().size() > 0) {

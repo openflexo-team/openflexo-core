@@ -44,7 +44,7 @@ import java.util.List;
 import org.openflexo.foundation.DefaultPamelaResourceModelFactory;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.annotations.DeclareActorReferences;
-import org.openflexo.foundation.fml.rt.rm.AbstractVirtualModelInstanceResource;
+import org.openflexo.foundation.fml.rt.rm.VirtualModelInstanceResource;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.model.converter.DataBindingConverter;
@@ -55,18 +55,18 @@ import org.openflexo.model.factory.EditingContext;
 import org.openflexo.model.factory.ModelFactory;
 
 /**
- * {@link ModelFactory} used to handle {@link AbstractVirtualModelInstance} models<br>
+ * {@link ModelFactory} used to handle {@link VirtualModelInstance} models<br>
  * 
  * @author sylvain
  * 
  */
-public abstract class AbstractVirtualModelInstanceModelFactory<R extends AbstractVirtualModelInstanceResource<?, ?>>
+public abstract class VirtualModelInstanceModelFactory<R extends VirtualModelInstanceResource<?, ?>>
 		extends DefaultPamelaResourceModelFactory<R> {
 
 	private RelativePathResourceConverter relativePathResourceConverter;
 
-	public AbstractVirtualModelInstanceModelFactory(R virtualModelInstanceResource,
-			Class<? extends AbstractVirtualModelInstance<?, ?>> baseVMIClass, EditingContext editingContext,
+	public VirtualModelInstanceModelFactory(R virtualModelInstanceResource,
+			Class<? extends VirtualModelInstance<?, ?>> baseVMIClass, EditingContext editingContext,
 			TechnologyAdapterService taService) throws ModelDefinitionException {
 
 		super(virtualModelInstanceResource, allClassesForModelContext(baseVMIClass, taService));
@@ -95,7 +95,7 @@ public abstract class AbstractVirtualModelInstanceModelFactory<R extends Abstrac
 	 * @return
 	 * @throws ModelDefinitionException
 	 */
-	private static List<Class<?>> allClassesForModelContext(Class<? extends AbstractVirtualModelInstance<?, ?>> baseVMIClass,
+	private static List<Class<?>> allClassesForModelContext(Class<? extends VirtualModelInstance<?, ?>> baseVMIClass,
 			TechnologyAdapterService taService) throws ModelDefinitionException {
 		List<Class<?>> classes = new ArrayList<Class<?>>();
 		classes.add(baseVMIClass);

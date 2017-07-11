@@ -52,7 +52,7 @@ import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.ViewPoint;
-import org.openflexo.foundation.fml.ViewPointLibrary;
+import org.openflexo.foundation.fml.VirtualModelLibrary;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.rm.ViewPointResource;
 import org.openflexo.foundation.fml.rt.action.ActionSchemeAction;
@@ -93,7 +93,7 @@ public class TestEmbeddedFlexoConceptInstances extends OpenflexoProjectAtRunTime
 	@TestOrder(1)
 	public void testLoadViewPoint() {
 		instanciateTestServiceManager();
-		ViewPointLibrary vpLib = serviceManager.getViewPointLibrary();
+		VirtualModelLibrary vpLib = serviceManager.getViewPointLibrary();
 		assertNotNull(vpLib);
 		viewPoint = vpLib.getViewPoint("http://openflexo.org/test/TestViewPointB");
 		assertNotNull(viewPoint);

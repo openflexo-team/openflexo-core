@@ -44,7 +44,7 @@ import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.annotations.FML;
-import org.openflexo.foundation.fml.rm.AbstractVirtualModelResource;
+import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.fml.rm.ViewPointResource;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.View;
@@ -66,13 +66,13 @@ import org.openflexo.model.annotations.XMLElement;
 @ImplementationClass(AddSubView.AddSubViewImpl.class)
 @XMLElement
 @FML("AddSubView")
-public interface AddSubView extends AddAbstractVirtualModelInstance<View> {
+public interface AddSubView extends AddVirtualModelInstance<View> {
 
 	public ViewPointResource getViewPointType();
 
 	public void setViewPointType(ViewPointResource resource);
 
-	public static abstract class AddSubViewImpl extends AddAbstractVirtualModelInstanceImpl<View> implements AddSubView {
+	public static abstract class AddSubViewImpl extends AddVirtualModelInstanceImpl<View> implements AddSubView {
 
 		static final Logger logger = Logger.getLogger(AddSubView.class.getPackage().getName());
 
@@ -88,7 +88,7 @@ public interface AddSubView extends AddAbstractVirtualModelInstance<View> {
 
 		@Override
 		public void setViewPointType(ViewPointResource resource) {
-			AbstractVirtualModelResource<?> oldVPType = getViewPointType();
+			VirtualModelResource<?> oldVPType = getViewPointType();
 			setVirtualModelType(resource);
 			getPropertyChangeSupport().firePropertyChange("viewPointType", oldVPType, getViewPointType());
 		}

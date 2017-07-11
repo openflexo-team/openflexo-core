@@ -188,8 +188,8 @@ public abstract class FileSystemBasedResourceCenter extends ResourceRepository<F
 	}
 
 	/*@Override
-	public void initialize(ViewPointLibrary viewPointLibrary) {
-		logger.info("Initializing ViewPointLibrary for " + this);
+	public void initialize(VirtualModelLibrary viewPointLibrary) {
+		logger.info("Initializing VirtualModelLibrary for " + this);
 		viewPointRepository = new ViewPointRepository(this, viewPointLibrary);
 		exploreDirectoryLookingForViewPoints(getRootDirectory(), viewPointLibrary);
 	}*/

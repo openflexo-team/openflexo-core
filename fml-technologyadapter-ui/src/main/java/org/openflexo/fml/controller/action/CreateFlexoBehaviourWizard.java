@@ -263,8 +263,8 @@ public class CreateFlexoBehaviourWizard extends AbstractCreateFMLElementWizard<C
 						}
 					}
 				}
-				if (getFocusedObject().getFlexoConcept() instanceof AbstractVirtualModel) {
-					for (ModelSlot<?> ms : ((AbstractVirtualModel<?>) getFocusedObject().getFlexoConcept()).getModelSlots()) {
+				if (getFocusedObject().getFlexoConcept() instanceof VirtualModel) {
+					for (ModelSlot<?> ms : ((VirtualModel) getFocusedObject().getFlexoConcept()).getModelSlots()) {
 						for (Class<? extends FlexoBehaviourParameter> paramType : ms.getAvailableFlexoBehaviourParameterTypes()) {
 							if (!availableParameterTypes.contains(paramType)) {
 								availableParameterTypes.add(paramType);

@@ -46,7 +46,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
-import org.openflexo.foundation.fml.AbstractVirtualModel;
+import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.FlexoConcept;
@@ -152,16 +152,16 @@ public interface InitiateMatching extends AssignableAction<MatchingSet> {
 
 		@Override
 		public void _setFlexoConceptTypeURI(String uri) {
-			if (getViewPointLibrary() != null) {
-				flexoConceptType = getViewPointLibrary().getFlexoConcept(uri);
+			if (getVirtualModelLibrary() != null) {
+				flexoConceptType = getVirtualModelLibrary().getFlexoConcept(uri);
 			}
 			flexoConceptTypeURI = uri;
 		}
 
 		@Override
 		public FlexoConcept getFlexoConceptType() {
-			if (flexoConceptType == null && StringUtils.isNotEmpty(flexoConceptTypeURI) && getViewPointLibrary() != null) {
-				flexoConceptType = getViewPointLibrary().getFlexoConcept(flexoConceptTypeURI, false);
+			if (flexoConceptType == null && StringUtils.isNotEmpty(flexoConceptTypeURI) && getVirtualModelLibrary() != null) {
+				flexoConceptType = getVirtualModelLibrary().getFlexoConcept(flexoConceptTypeURI, false);
 			}
 			return flexoConceptType;
 		}
@@ -179,8 +179,8 @@ public interface InitiateMatching extends AssignableAction<MatchingSet> {
 		public List<FlexoConcept> getAvailableFlexoConceptTypes() {
 			FlexoConcept containerConcept = getOwnerConcept();
 			if (containerConcept != null) {
-				if (containerConcept instanceof AbstractVirtualModel) {
-					return ((AbstractVirtualModel) containerConcept).getAllRootFlexoConcepts();
+				if (containerConcept instanceof VirtualModel) {
+					return ((VirtualModel) containerConcept).getAllRootFlexoConcepts();
 				}
 				else {
 					return containerConcept.getEmbeddedFlexoConcepts();

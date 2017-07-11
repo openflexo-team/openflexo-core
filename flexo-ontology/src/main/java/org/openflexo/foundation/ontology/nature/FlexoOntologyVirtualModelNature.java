@@ -42,7 +42,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.openflexo.foundation.fml.AbstractVirtualModel;
+import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelNature;
 import org.openflexo.foundation.ontology.IFlexoOntology;
@@ -75,7 +75,7 @@ public class FlexoOntologyVirtualModelNature implements VirtualModelNature {
 	 * Return boolean indicating if supplied {@link VirtualModel} has at least a {@link FlexoOntologyModelSlot}
 	 */
 	@Override
-	public boolean hasNature(AbstractVirtualModel<?> virtualModel) {
+	public boolean hasNature(VirtualModel virtualModel) {
 
 		if (virtualModel == null) {
 			return false;
@@ -89,11 +89,11 @@ public class FlexoOntologyVirtualModelNature implements VirtualModelNature {
 		return false;
 	}
 
-	public static List<? extends FlexoOntologyModelSlot<?, ?, ?>> getFlexoOntologyModelSlots(AbstractVirtualModel<?> virtualModel) {
+	public static List<? extends FlexoOntologyModelSlot<?, ?, ?>> getFlexoOntologyModelSlots(VirtualModel virtualModel) {
 		return INSTANCE._getFlexoOntologyModelSlots(virtualModel);
 	}
 
-	private List<? extends FlexoOntologyModelSlot<?, ?, ?>> _getFlexoOntologyModelSlots(AbstractVirtualModel<?> virtualModel) {
+	private List<? extends FlexoOntologyModelSlot<?, ?, ?>> _getFlexoOntologyModelSlots(VirtualModel virtualModel) {
 		if (virtualModel != null && virtualModel.getModelSlots(FlexoOntologyModelSlot.class).size() > 0) {
 			return (List) virtualModel.getModelSlots(FlexoOntologyModelSlot.class);
 		}
@@ -105,7 +105,7 @@ public class FlexoOntologyVirtualModelNature implements VirtualModelNature {
 	 * 
 	 * @return a {@link Set} of {@link IFlexoOntology}
 	 */
-	public static Set<IFlexoOntology<?>> getAllReferencedMetaModels(AbstractVirtualModel<?> virtualModel) {
+	public static Set<IFlexoOntology<?>> getAllReferencedMetaModels(VirtualModel virtualModel) {
 		HashSet<IFlexoOntology<?>> returned = new HashSet<IFlexoOntology<?>>();
 		for (FlexoOntologyModelSlot<?, ?, ?> modelSlot : getFlexoOntologyModelSlots(virtualModel)) {
 			if (modelSlot.getMetaModelResource() != null) {
@@ -116,15 +116,15 @@ public class FlexoOntologyVirtualModelNature implements VirtualModelNature {
 	}
 
 	/**
-	 * Retrieve object referenced by its URI, asserting that supplied {@link AbstractVirtualModel} has the
+	 * Retrieve object referenced by its URI, asserting that supplied {@link VirtualModel} has the
 	 * {@link FlexoOntologyVirtualModelNature}<br>
 	 * 
 	 * @param uri
 	 * @param virtualModel
-	 *            the {@link AbstractVirtualModel} used to define search scope
+	 *            the {@link VirtualModel} used to define search scope
 	 * @return
 	 */
-	public static Object getObject(String uri, AbstractVirtualModel<?> virtualModel) {
+	public static Object getObject(String uri, VirtualModel virtualModel) {
 		for (IFlexoOntology<?> mm : getAllReferencedMetaModels(virtualModel)) {
 			if (mm instanceof FlexoMetaModel) {
 				Object o = ((FlexoMetaModel) mm).getObject(uri);
@@ -137,15 +137,15 @@ public class FlexoOntologyVirtualModelNature implements VirtualModelNature {
 	}
 
 	/**
-	 * Retrieve {@link IFlexoOntologyObject} referenced by its URI, asserting that supplied {@link AbstractVirtualModel} has the
+	 * Retrieve {@link IFlexoOntologyObject} referenced by its URI, asserting that supplied {@link VirtualModel} has the
 	 * {@link FlexoOntologyVirtualModelNature}<br>
 	 * 
 	 * @param uri
 	 * @param virtualModel
-	 *            the {@link AbstractVirtualModel} used to define search scope
+	 *            the {@link VirtualModel} used to define search scope
 	 * @return
 	 */
-	public static IFlexoOntologyObject<?> getOntologyObject(String uri, AbstractVirtualModel<?> virtualModel) {
+	public static IFlexoOntologyObject<?> getOntologyObject(String uri, VirtualModel virtualModel) {
 		Object returned = getObject(uri, virtualModel);
 		if (returned instanceof IFlexoOntologyObject) {
 			return (IFlexoOntologyObject) returned;
@@ -154,15 +154,15 @@ public class FlexoOntologyVirtualModelNature implements VirtualModelNature {
 	}
 
 	/**
-	 * Retrieve {@link IFlexoOntologyClass} referenced by its URI, asserting that supplied {@link AbstractVirtualModel} has the
+	 * Retrieve {@link IFlexoOntologyClass} referenced by its URI, asserting that supplied {@link VirtualModel} has the
 	 * {@link FlexoOntologyVirtualModelNature}<br>
 	 * 
 	 * @param uri
 	 * @param virtualModel
-	 *            the {@link AbstractVirtualModel} used to define search scope
+	 *            the {@link VirtualModel} used to define search scope
 	 * @return
 	 */
-	public static IFlexoOntologyClass<?> getOntologyClass(String uri, AbstractVirtualModel<?> virtualModel) {
+	public static IFlexoOntologyClass<?> getOntologyClass(String uri, VirtualModel virtualModel) {
 		Object returned = getOntologyObject(uri, virtualModel);
 		if (returned instanceof IFlexoOntologyClass) {
 			return (IFlexoOntologyClass<?>) returned;
@@ -171,15 +171,15 @@ public class FlexoOntologyVirtualModelNature implements VirtualModelNature {
 	}
 
 	/**
-	 * Retrieve {@link IFlexoOntologyIndividual} referenced by its URI, asserting that supplied {@link AbstractVirtualModel} has the
+	 * Retrieve {@link IFlexoOntologyIndividual} referenced by its URI, asserting that supplied {@link VirtualModel} has the
 	 * {@link FlexoOntologyVirtualModelNature}<br>
 	 * 
 	 * @param uri
 	 * @param virtualModel
-	 *            the {@link AbstractVirtualModel} used to define search scope
+	 *            the {@link VirtualModel} used to define search scope
 	 * @return
 	 */
-	public static IFlexoOntologyIndividual<?> getOntologyIndividual(String uri, AbstractVirtualModel<?> virtualModel) {
+	public static IFlexoOntologyIndividual<?> getOntologyIndividual(String uri, VirtualModel virtualModel) {
 		Object returned = getOntologyObject(uri, virtualModel);
 		if (returned instanceof IFlexoOntologyIndividual) {
 			return (IFlexoOntologyIndividual<?>) returned;
@@ -188,15 +188,15 @@ public class FlexoOntologyVirtualModelNature implements VirtualModelNature {
 	}
 
 	/**
-	 * Retrieve {@link IFlexoOntologyStructuralProperty} referenced by its URI, asserting that supplied {@link AbstractVirtualModel} has the
+	 * Retrieve {@link IFlexoOntologyStructuralProperty} referenced by its URI, asserting that supplied {@link VirtualModel} has the
 	 * {@link FlexoOntologyVirtualModelNature}<br>
 	 * 
 	 * @param uri
 	 * @param virtualModel
-	 *            the {@link AbstractVirtualModel} used to define search scope
+	 *            the {@link VirtualModel} used to define search scope
 	 * @return
 	 */
-	public static IFlexoOntologyStructuralProperty<?> getOntologyProperty(String uri, AbstractVirtualModel<?> virtualModel) {
+	public static IFlexoOntologyStructuralProperty<?> getOntologyProperty(String uri, VirtualModel virtualModel) {
 		Object returned = getOntologyObject(uri, virtualModel);
 		if (returned instanceof IFlexoOntologyStructuralProperty) {
 			return (IFlexoOntologyStructuralProperty<?>) returned;
@@ -205,15 +205,15 @@ public class FlexoOntologyVirtualModelNature implements VirtualModelNature {
 	}
 
 	/**
-	 * Retrieve {@link IFlexoOntologyObjectProperty} referenced by its URI, asserting that supplied {@link AbstractVirtualModel} has the
+	 * Retrieve {@link IFlexoOntologyObjectProperty} referenced by its URI, asserting that supplied {@link VirtualModel} has the
 	 * {@link FlexoOntologyVirtualModelNature}<br>
 	 * 
 	 * @param uri
 	 * @param virtualModel
-	 *            the {@link AbstractVirtualModel} used to define search scope
+	 *            the {@link VirtualModel} used to define search scope
 	 * @return
 	 */
-	public static IFlexoOntologyObjectProperty<?> getOntologyObjectProperty(String uri, AbstractVirtualModel<?> virtualModel) {
+	public static IFlexoOntologyObjectProperty<?> getOntologyObjectProperty(String uri, VirtualModel virtualModel) {
 		Object returned = getOntologyObject(uri, virtualModel);
 		if (returned instanceof IFlexoOntologyObjectProperty) {
 			return (IFlexoOntologyObjectProperty<?>) returned;
@@ -222,15 +222,15 @@ public class FlexoOntologyVirtualModelNature implements VirtualModelNature {
 	}
 
 	/**
-	 * Retrieve {@link IFlexoOntologyDataProperty} referenced by its URI, asserting that supplied {@link AbstractVirtualModel} has the
+	 * Retrieve {@link IFlexoOntologyDataProperty} referenced by its URI, asserting that supplied {@link VirtualModel} has the
 	 * {@link FlexoOntologyVirtualModelNature}<br>
 	 * 
 	 * @param uri
 	 * @param virtualModel
-	 *            the {@link AbstractVirtualModel} used to define search scope
+	 *            the {@link VirtualModel} used to define search scope
 	 * @return
 	 */
-	public static IFlexoOntologyDataProperty<?> getOntologyDataProperty(String uri, AbstractVirtualModel<?> virtualModel) {
+	public static IFlexoOntologyDataProperty<?> getOntologyDataProperty(String uri, VirtualModel virtualModel) {
 		Object returned = getOntologyObject(uri, virtualModel);
 		if (returned instanceof IFlexoOntologyDataProperty) {
 			return (IFlexoOntologyDataProperty<?>) returned;

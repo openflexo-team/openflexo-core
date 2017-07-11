@@ -43,7 +43,6 @@ import java.beans.PropertyChangeListener;
 
 import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.BindingVariable;
-import org.openflexo.foundation.fml.AbstractVirtualModel;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelInstanceType;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
@@ -65,7 +64,7 @@ import org.openflexo.foundation.fml.rt.VirtualModelInstance;
  */
 public class VirtualModelBindingModel extends FlexoConceptBindingModel implements PropertyChangeListener {
 
-	private final AbstractVirtualModel<?> virtualModel;
+	private final VirtualModel virtualModel;
 
 	private BindingVariable reflexiveAccessBindingVariable;
 	private BindingVariable virtualModelInstanceBindingVariable;
@@ -78,14 +77,10 @@ public class VirtualModelBindingModel extends FlexoConceptBindingModel implement
 	 * 
 	 * @param viewPoint
 	 */
-	protected VirtualModelBindingModel(AbstractVirtualModel<?> virtualModel) {
-		super(virtualModel.getViewPoint() != null && virtualModel != virtualModel.getViewPoint()
-				? virtualModel.getViewPoint().getBindingModel() : null, virtualModel);
-		this.virtualModel = virtualModel;
-	}
-
 	public VirtualModelBindingModel(VirtualModel virtualModel) {
-		this((AbstractVirtualModel<?>) virtualModel);
+		super(virtualModel.getContainerVirtualModel() != null && virtualModel != virtualModel.getContainerVirtualModel()
+				? virtualModel.getContainerVirtualModel().getBindingModel() : null, virtualModel);
+		this.virtualModel = virtualModel;
 		virtualModelInstanceBindingVariable = new BindingVariable(VIRTUAL_MODEL_INSTANCE_PROPERTY,
 				VirtualModelInstanceType.getVirtualModelInstanceType(virtualModel));
 		addToBindingVariables(virtualModelInstanceBindingVariable);
@@ -93,7 +88,7 @@ public class VirtualModelBindingModel extends FlexoConceptBindingModel implement
 		addToBindingVariables(reflexiveAccessBindingVariable);
 	}
 
-	public AbstractVirtualModel<?> getVirtualModel() {
+	public VirtualModel getVirtualModel() {
 		return virtualModel;
 	}
 
@@ -117,11 +112,10 @@ public class VirtualModelBindingModel extends FlexoConceptBindingModel implement
 		// System.out.println("Hop, je recois " + evt.getPropertyName() + " source =" + evt.getSource() + " evt=" + evt);
 		super.propertyChange(evt);
 		if (evt.getSource() == virtualModel) {
-			if (evt.getPropertyName().equals(VirtualModel.VIEW_POINT_KEY)) {
-				// The VirtualModel changes it's ViewPoint
-				setBaseBindingModel(virtualModel.getViewPoint() != null ? virtualModel.getViewPoint().getBindingModel() : null);
-				// viewBindingVariable.setType(virtualModel.getViewPoint() != null ? ViewType.getViewType(virtualModel.getViewPoint())
-				// : View.class);
+			if (evt.getPropertyName().equals(VirtualModel.CONTAINER_VIRTUAL_MODEL_KEY)) {
+				// The VirtualModel changes it's container virtual model
+				setBaseBindingModel(
+						virtualModel.getContainerVirtualModel() != null ? virtualModel.getContainerVirtualModel().getBindingModel() : null);
 				virtualModelInstanceBindingVariable.setType(getVirtualModelInstanceType());
 			}
 		}

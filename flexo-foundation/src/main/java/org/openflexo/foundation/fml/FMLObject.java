@@ -47,7 +47,7 @@ import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.InnerResourceData;
 import org.openflexo.foundation.NameChanged;
-import org.openflexo.foundation.fml.rm.ViewPointResource;
+import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
@@ -65,14 +65,14 @@ import org.openflexo.model.validation.ValidationIssue;
 import org.openflexo.model.validation.ValidationRule;
 
 /**
- * This is the root class for all objects involved in an FMLModel.<br>
+ * This is the root class for all objects involved in an {@link VirtualModel} (a FML "program").<br>
  * A {@link FMLObject} has a name, a description and can be identified by an URI
  * 
  * It represents an object which is part of a FML model.<br>
- * As such, you securely access to the {@link AbstractVirtualModel} in which this object "lives" using {@link #getResourceData()}<br>
+ * As such, you securely access to the {@link VirtualModel} in which this object "lives" using {@link #getResourceData()}<br>
  * 
  * A {@link FMLObject} is a {@link Bindable} as conforming to CONNIE binding scheme<br>
- * A {@link FMLObject} is a {@link InnerResourceData} (in a ViewPoint or in a VirtualModel)<br>
+ * A {@link FMLObject} is a {@link InnerResourceData} (in a VirtualModel)<br>
  * A {@link FMLObject} is a {@link TechnologyObject} (powered with {@link FMLTechnologyAdapter})
  * 
  * 
@@ -81,8 +81,7 @@ import org.openflexo.model.validation.ValidationRule;
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(FMLObject.FMLObjectImpl.class)
-public interface FMLObject
-		extends FlexoObject, Bindable, InnerResourceData/*<AbstractVirtualModel>*/, TechnologyObject<FMLTechnologyAdapter> {
+public interface FMLObject extends FlexoObject, Bindable, InnerResourceData/*<VirtualModel>*/, TechnologyObject<FMLTechnologyAdapter> {
 
 	@PropertyIdentifier(type = String.class)
 	public static final String NAME_KEY = "name";
@@ -108,16 +107,18 @@ public interface FMLObject
 	public FlexoServiceManager getServiceManager();
 
 	/**
-	 * Return the ViewPoint in which this {@link FMLObject} is defined<br>
-	 * If container of this object is a {@link ViewPoint}, return this ViewPoint<br>
-	 * Otherwise, container of this object is a {@link VirtualModel}, return ViewPoint of VirtualModel
+	 * Return the {@link VirtualModel} in which this {@link FMLObject} is declared<br>
 	 * 
 	 */
-	public ViewPoint getViewPoint();
+	public VirtualModel getDeclaringVirtualModel();
 
-	public ViewPointResource getViewPointResource();
+	/**
+	 * Return the {@link VirtualModelResource} in which this {@link FMLObject} is declared<br>
+	 * 
+	 */
+	public VirtualModelResource getDeclaringVirtualModelResource();
 
-	public ViewPointLibrary getViewPointLibrary();
+	public VirtualModelLibrary getVirtualModelLibrary();
 
 	public FMLModelFactory getFMLModelFactory();
 
@@ -155,12 +156,12 @@ public interface FMLObject
 	/**
 	 * Return the {@link ResourceData} (the "container") of this {@link FMLObject}.<br>
 	 * The container is the {@link ResourceData} of this object.<br>
-	 * It is an instance of {@link AbstractVirtualModel} (a {@link VirtualModel} or a {@link ViewPoint})
+	 * It is an instance of {@link VirtualModel} (a {@link VirtualModel} or a {@link ViewPoint})
 	 * 
 	 * @return
 	 */
 	@Override
-	public AbstractVirtualModel<?> getResourceData();
+	public VirtualModel getResourceData();
 
 	/**
 	 * Hook called when scope of a FMLObject changed.<br>
@@ -184,9 +185,10 @@ public interface FMLObject
 
 		/**
 		 * Return the URI of the {@link NamedFMLObject}<br>
-		 * The convention for URI are following: <viewpoint_uri>/<virtual_model_name>#<flexo_concept_name>.<behaviour_name> <br>
+		 * The convention for URI are following: <container_virtual_model_uri>/<virtual_model_name >#<flexo_concept_name>.<behaviour_name>
 		 * eg<br>
-		 * http://www.mydomain.org/MyViewPoint/MyVirtualModel#MyFlexoConcept.MyBehaviour
+		 * http://www.mydomain.org/MyVirtuaModel1/MyVirtualModel2#MyFlexoConcept.MyProperty
+		 * http://www.mydomain.org/MyVirtuaModel1/MyVirtualModel2#MyFlexoConcept.MyBehaviour
 		 * 
 		 * @return String representing unique URI of this object
 		 */
@@ -211,8 +213,8 @@ public interface FMLObject
 
 		@Override
 		public FlexoServiceManager getServiceManager() {
-			if (getViewPointLibrary() != null) {
-				return getViewPoint().getViewPointLibrary().getServiceManager();
+			if (getVirtualModelLibrary() != null) {
+				return getDeclaringVirtualModel().getVirtualModelLibrary().getServiceManager();
 			}
 			return null;
 		}
@@ -234,9 +236,9 @@ public interface FMLObject
 		}
 
 		@Override
-		public ViewPointLibrary getViewPointLibrary() {
-			if (getViewPoint() != null) {
-				return getViewPoint().getViewPointLibrary();
+		public VirtualModelLibrary getVirtualModelLibrary() {
+			if (getDeclaringVirtualModel() != null) {
+				return getDeclaringVirtualModel().getVirtualModelLibrary();
 			}
 			return null;
 		}
@@ -244,12 +246,12 @@ public interface FMLObject
 		/**
 		 * Return the {@link ResourceData} (the "container") of this {@link FMLObject}.<br>
 		 * The container is the {@link ResourceData} of this object.<br>
-		 * It is an instance of {@link AbstractVirtualModel} (a {@link VirtualModel} or a {@link ViewPoint})
+		 * It is an instance of {@link VirtualModel} (a {@link VirtualModel} or a {@link ViewPoint})
 		 * 
 		 * @return
 		 */
 		@Override
-		public abstract AbstractVirtualModel<?> getResourceData();
+		public abstract VirtualModel getResourceData();
 
 		/**
 		 * Return the ViewPoint in which this {@link FMLObject} is defined<br>
@@ -258,22 +260,24 @@ public interface FMLObject
 		 * 
 		 */
 		@Override
-		public ViewPoint getViewPoint() {
-			if (getResourceData() instanceof ViewPoint) {
+		public VirtualModel getDeclaringVirtualModel() {
+			return getResourceData();
+
+			/*if (getResourceData() instanceof ViewPoint) {
 				return (ViewPoint) getResourceData();
 			}
 			if (getResourceData() instanceof VirtualModel) {
 				return ((VirtualModel) getResourceData()).getViewPoint();
-			}
+			}*/
 			// Do not warn as it might be called during deserialization
 			// logger.warning("Found FMLObject " + getClass() + " with resource data =" + getResourceData());
-			return null;
+			// return null;
 		}
 
 		@Override
-		public ViewPointResource getViewPointResource() {
-			if (getViewPoint() != null) {
-				return (ViewPointResource) getViewPoint().getResource();
+		public VirtualModelResource getDeclaringVirtualModelResource() {
+			if (getDeclaringVirtualModel() != null) {
+				return (VirtualModelResource) getDeclaringVirtualModel().getResource();
 			}
 			return null;
 		}
@@ -320,8 +324,8 @@ public interface FMLObject
 
 		@Override
 		public BindingFactory getBindingFactory() {
-			if (getViewPoint() != null) {
-				return getViewPoint().getBindingFactory();
+			if (getDeclaringVirtualModel() != null) {
+				return getDeclaringVirtualModel().getBindingFactory();
 			}
 			return null;
 		}
@@ -348,7 +352,7 @@ public interface FMLObject
 
 		@Override
 		public ViewPointLocalizedDictionary getLocalizedDictionary() {
-			return getViewPoint().getLocalizedDictionary();
+			return getDeclaringVirtualModel().getLocalizedDictionary();
 		}
 
 		// Voir du cote de GeneratorFormatter pour formatter tout ca
@@ -367,7 +371,7 @@ public interface FMLObject
 
 		@Override
 		public FMLModelFactory getFMLModelFactory() {
-			return ((ViewPointResource) getResourceData().getResource()).getFactory();
+			return ((VirtualModelResource) getResourceData().getResource()).getFactory();
 		}
 
 		@Override

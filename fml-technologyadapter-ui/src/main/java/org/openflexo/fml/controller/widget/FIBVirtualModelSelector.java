@@ -42,8 +42,8 @@ import java.util.logging.Logger;
 
 import org.openflexo.components.widget.FIBFlexoObjectSelector;
 import org.openflexo.foundation.FlexoObject;
-import org.openflexo.foundation.fml.ViewPointLibrary;
-import org.openflexo.foundation.fml.rm.AbstractVirtualModelResource;
+import org.openflexo.foundation.fml.VirtualModelLibrary;
+import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.fml.rm.ViewPointResource;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.rm.Resource;
@@ -56,7 +56,7 @@ import org.openflexo.rm.ResourceLocator;
  * 
  */
 @SuppressWarnings("serial")
-public class FIBVirtualModelSelector extends FIBFlexoObjectSelector<AbstractVirtualModelResource> {
+public class FIBVirtualModelSelector extends FIBFlexoObjectSelector<VirtualModelResource> {
 
 	static final Logger logger = Logger.getLogger(FIBVirtualModelSelector.class.getPackage().getName());
 
@@ -69,7 +69,7 @@ public class FIBVirtualModelSelector extends FIBFlexoObjectSelector<AbstractVirt
 	@Override
 	public void delete() {
 		super.delete();
-		viewPointLibrary = null;
+		virtualModelLibrary = null;
 	}
 
 	@Override
@@ -78,27 +78,27 @@ public class FIBVirtualModelSelector extends FIBFlexoObjectSelector<AbstractVirt
 	}
 
 	@Override
-	public Class<AbstractVirtualModelResource> getRepresentedType() {
-		return AbstractVirtualModelResource.class;
+	public Class<VirtualModelResource> getRepresentedType() {
+		return VirtualModelResource.class;
 	}
 
 	@Override
-	public String renderedString(AbstractVirtualModelResource editedObject) {
+	public String renderedString(VirtualModelResource editedObject) {
 		if (editedObject != null) {
 			return editedObject.getName();
 		}
 		return "";
 	}
 
-	private ViewPointLibrary viewPointLibrary;
+	private VirtualModelLibrary virtualModelLibrary;
 
-	public ViewPointLibrary getViewPointLibrary() {
-		return viewPointLibrary;
+	public VirtualModelLibrary getViewPointLibrary() {
+		return virtualModelLibrary;
 	}
 
-	@CustomComponentParameter(name = "viewPointLibrary", type = CustomComponentParameter.Type.MANDATORY)
-	public void setViewPointLibrary(ViewPointLibrary viewPointLibrary) {
-		this.viewPointLibrary = viewPointLibrary;
+	@CustomComponentParameter(name = "virtualModelLibrary", type = CustomComponentParameter.Type.MANDATORY)
+	public void setViewPointLibrary(VirtualModelLibrary virtualModelLibrary) {
+		this.virtualModelLibrary = virtualModelLibrary;
 	}
 
 	private ViewPointResource viewPoint;

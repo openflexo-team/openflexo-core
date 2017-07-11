@@ -149,7 +149,7 @@ public class FMLTechnologyAdapter extends TechnologyAdapter {
 		return viewFactory;
 	}
 
-	public ViewPointLibrary getViewPointLibrary() {
+	public VirtualModelLibrary getViewPointLibrary() {
 		return this.getServiceManager().getViewPointLibrary();
 	}
 

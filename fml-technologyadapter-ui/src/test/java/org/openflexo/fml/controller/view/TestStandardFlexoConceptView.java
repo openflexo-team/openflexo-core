@@ -60,7 +60,7 @@ import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.NavigationScheme;
 import org.openflexo.foundation.fml.ViewPoint;
-import org.openflexo.foundation.fml.ViewPointLibrary;
+import org.openflexo.foundation.fml.VirtualModelLibrary;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.action.CreateEditionAction;
 import org.openflexo.foundation.fml.action.CreateFlexoBehaviour;
@@ -128,7 +128,7 @@ public class TestStandardFlexoConceptView extends OpenflexoFIBTestCase {
 	@TestOrder(3)
 	public void loadConcepts() {
 
-		ViewPointLibrary vpLib = serviceManager.getViewPointLibrary();
+		VirtualModelLibrary vpLib = serviceManager.getViewPointLibrary();
 		assertNotNull(vpLib);
 		ViewPoint viewPoint = vpLib.getViewPoint("http://openflexo.org/test/TestViewPointA");
 		assertNotNull(viewPoint);

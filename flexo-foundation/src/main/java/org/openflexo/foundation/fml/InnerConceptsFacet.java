@@ -45,7 +45,7 @@ import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 
 /**
- * A structural facet defined for {@link AbstractVirtualModel}<br>
+ * A structural facet defined for {@link VirtualModel}<br>
  * Presents concepts defined in related virtual model
  * 
  * @author sylvain
@@ -53,29 +53,29 @@ import org.openflexo.model.annotations.ModelEntity;
  */
 @ModelEntity
 @ImplementationClass(InnerConceptsFacet.InnerConceptsFacetImpl.class)
-public interface InnerConceptsFacet extends FlexoConceptObject, FlexoFacet<AbstractVirtualModel<?>> {
+public interface InnerConceptsFacet extends FlexoConceptObject, FlexoFacet<VirtualModel> {
 
-	public AbstractVirtualModel<?> getVirtualModel();
+	public VirtualModel getVirtualModel();
 
-	public void setVirtualModel(AbstractVirtualModel<?> virtualModel);
+	public void setVirtualModel(VirtualModel virtualModel);
 
 	/**
-	 * Return all {@link FlexoConcept} that are declared in related {@link AbstractVirtualModel}
+	 * Return all {@link FlexoConcept} that are declared in related {@link VirtualModel}
 	 * 
 	 * @return
 	 */
 	public List<FlexoConcept> getFlexoConcepts();
 
 	/**
-	 * Return all {@link FlexoConcept} that are at the top of inheritance hierarchy for related {@link AbstractVirtualModel} (Return all
-	 * {@link FlexoConcept} defined in this {@link AbstractVirtualModel} which have no parent)
+	 * Return all {@link FlexoConcept} that are at the top of inheritance hierarchy for related {@link VirtualModel} (Return all
+	 * {@link FlexoConcept} defined in this {@link VirtualModel} which have no parent)
 	 *
 	 * @return
 	 */
 	public List<FlexoConcept> getInheritanceRootFlexoConcepts();
 
 	/**
-	 * Return all {@link FlexoConcept} that are at the top of embedding hierarchy for related {@link AbstractVirtualModel}
+	 * Return all {@link FlexoConcept} that are at the top of embedding hierarchy for related {@link VirtualModel}
 	 *
 	 * @return
 	 */
@@ -85,17 +85,17 @@ public interface InnerConceptsFacet extends FlexoConceptObject, FlexoFacet<Abstr
 
 	public abstract class InnerConceptsFacetImpl extends FlexoConceptObjectImpl implements InnerConceptsFacet {
 
-		private AbstractVirtualModel<?> virtualModel;
+		private VirtualModel virtualModel;
 
 		@Override
-		public AbstractVirtualModel<?> getVirtualModel() {
+		public VirtualModel getVirtualModel() {
 			return virtualModel;
 		}
 
 		@Override
-		public void setVirtualModel(AbstractVirtualModel<?> virtualModel) {
+		public void setVirtualModel(VirtualModel virtualModel) {
 			if ((virtualModel == null && this.virtualModel != null) || (virtualModel != null && !virtualModel.equals(this.virtualModel))) {
-				AbstractVirtualModel<?> oldValue = this.virtualModel;
+				VirtualModel oldValue = this.virtualModel;
 				this.virtualModel = virtualModel;
 				getPropertyChangeSupport().firePropertyChange("virtualModel", oldValue, virtualModel);
 			}
@@ -112,7 +112,7 @@ public interface InnerConceptsFacet extends FlexoConceptObject, FlexoFacet<Abstr
 		}
 
 		@Override
-		public AbstractVirtualModel<?> getObject() {
+		public VirtualModel getObject() {
 			return getVirtualModel();
 		}
 

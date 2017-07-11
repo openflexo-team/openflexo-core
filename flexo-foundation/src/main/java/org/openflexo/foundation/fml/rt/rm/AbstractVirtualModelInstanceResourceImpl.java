@@ -46,9 +46,9 @@ import org.openflexo.foundation.IOFlexoException;
 import org.openflexo.foundation.InconsistentDataException;
 import org.openflexo.foundation.InvalidModelDefinitionException;
 import org.openflexo.foundation.InvalidXMLException;
-import org.openflexo.foundation.fml.AbstractVirtualModel;
-import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
-import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstanceModelFactory;
+import org.openflexo.foundation.fml.VirtualModel;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
+import org.openflexo.foundation.fml.rt.VirtualModelInstanceModelFactory;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.resource.FlexoFileNotFoundException;
 import org.openflexo.foundation.resource.PamelaResourceImpl;
@@ -56,17 +56,17 @@ import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.toolbox.IProgress;
 
 /**
- * Default implementation for {@link AbstractVirtualModelInstanceResource}
+ * Default implementation for {@link VirtualModelInstanceResource}
  * 
  * 
  * @author Sylvain
  * 
  */
-public abstract class AbstractVirtualModelInstanceResourceImpl<VMI extends AbstractVirtualModelInstance<VMI, VM>, VM extends AbstractVirtualModel<VM>>
-		extends PamelaResourceImpl<VMI, AbstractVirtualModelInstanceModelFactory<?>>
-		implements AbstractVirtualModelInstanceResource<VMI, VM> {
+public abstract class VirtualModelInstanceResourceImpl<VMI extends VirtualModelInstance<VMI, VM>, VM extends VirtualModel<VM>>
+		extends PamelaResourceImpl<VMI, VirtualModelInstanceModelFactory<?>>
+		implements VirtualModelInstanceResource<VMI, VM> {
 
-	static final Logger logger = Logger.getLogger(AbstractVirtualModelInstanceResourceImpl.class.getPackage().getName());
+	static final Logger logger = Logger.getLogger(VirtualModelInstanceResourceImpl.class.getPackage().getName());
 
 	@Override
 	public VMI getVirtualModelInstance() {
@@ -124,7 +124,7 @@ public abstract class AbstractVirtualModelInstanceResourceImpl<VMI extends Abstr
 		}*/
 
 		if (returned.getFMLRunTimeEngine() != null) {
-			// TODO: today AbstractVirtualModelInstance is a RunTimeEvaluationContext
+			// TODO: today VirtualModelInstance is a RunTimeEvaluationContext
 			// TODO: design issue, we should separate FlexoConceptInstance from RunTimeEvaluationContext
 			// This inheritance should disappear
 			returned.getFMLRunTimeEngine().addToExecutionContext(returned, returned);
@@ -136,7 +136,7 @@ public abstract class AbstractVirtualModelInstanceResourceImpl<VMI extends Abstr
 	@Override
 	public void unloadResourceData(boolean deleteResourceData) {
 		if (getLoadedResourceData().getFMLRunTimeEngine() != null) {
-			// TODO: today AbstractVirtualModelInstance is a RunTimeEvaluationContext
+			// TODO: today VirtualModelInstance is a RunTimeEvaluationContext
 			// TODO: design issue, we should separate FlexoConceptInstance from RunTimeEvaluationContext
 			// This inheritance should disappear
 			getLoadedResourceData().getFMLRunTimeEngine().removeFromExecutionContext(getLoadedResourceData(), getLoadedResourceData());

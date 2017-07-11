@@ -49,7 +49,7 @@ import java.util.logging.Logger;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
-import org.openflexo.foundation.fml.AbstractVirtualModel;
+import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.CreationScheme;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
@@ -59,7 +59,7 @@ import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.URIParameter;
 import org.openflexo.foundation.fml.ViewType;
 import org.openflexo.foundation.fml.VirtualModelInstanceType;
-import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
@@ -89,7 +89,7 @@ import org.openflexo.model.validation.ValidationIssue;
 import org.openflexo.model.validation.ValidationRule;
 
 /**
- * Generic base action used to instanciate a {@link FlexoConceptInstance} in a given {@link AbstractVirtualModelInstance}.
+ * Generic base action used to instanciate a {@link FlexoConceptInstance} in a given {@link VirtualModelInstance}.
  * 
  * Note that this is also the base implementation for adding of a {@link VirtualModelInstance} in a {@link View}, or a {@link View} in its
  * parent {@link View}
@@ -105,7 +105,7 @@ import org.openflexo.model.validation.ValidationRule;
 
 @ModelEntity(isAbstract = true)
 @ImplementationClass(AbstractAddFlexoConceptInstance.AbstractAddFlexoConceptInstanceImpl.class)
-public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstance, VMI extends AbstractVirtualModelInstance<VMI, ?>>
+public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstance, VMI extends VirtualModelInstance<VMI, ?>>
 		extends FMLRTAction<FCI, VMI> {
 
 	@PropertyIdentifier(type = String.class)
@@ -158,7 +158,7 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 
 	public List<CreationScheme> getAvailableCreationSchemes();
 
-	public static abstract class AbstractAddFlexoConceptInstanceImpl<FCI extends FlexoConceptInstance, VMI extends AbstractVirtualModelInstance<VMI, ?>>
+	public static abstract class AbstractAddFlexoConceptInstanceImpl<FCI extends FlexoConceptInstance, VMI extends VirtualModelInstance<VMI, ?>>
 			extends FMLRTActionImpl<FCI, VMI> implements AbstractAddFlexoConceptInstance<FCI, VMI> {
 
 		static final Logger logger = Logger.getLogger(AbstractAddFlexoConceptInstance.class.getPackage().getName());
@@ -266,8 +266,8 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 
 		@Override
 		public void _setCreationSchemeURI(String uri) {
-			if (getViewPointLibrary() != null) {
-				creationScheme = (CreationScheme) getViewPointLibrary().getFlexoBehaviour(uri, true);
+			if (getVirtualModelLibrary() != null) {
+				creationScheme = (CreationScheme) getVirtualModelLibrary().getFlexoBehaviour(uri, true);
 			}
 			_creationSchemeURI = uri;
 		}
@@ -275,8 +275,8 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 		@Override
 		public CreationScheme getCreationScheme() {
 
-			if (creationScheme == null && _creationSchemeURI != null && getViewPointLibrary() != null) {
-				creationScheme = (CreationScheme) getViewPointLibrary().getFlexoBehaviour(_creationSchemeURI, true);
+			if (creationScheme == null && _creationSchemeURI != null && getVirtualModelLibrary() != null) {
+				creationScheme = (CreationScheme) getVirtualModelLibrary().getFlexoBehaviour(_creationSchemeURI, true);
 				updateParameters();
 			}
 			if (creationScheme == null && getAssignedFlexoProperty() instanceof FlexoConceptInstanceRole) {
@@ -607,8 +607,8 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 							}
 						}
 
-						if (object.getRootOwner().getFlexoConcept() instanceof AbstractVirtualModel) {
-							for (FMLRTModelSlot ms : ((AbstractVirtualModel<?>) object.getRootOwner().getFlexoConcept())
+						if (object.getRootOwner().getFlexoConcept() instanceof VirtualModel) {
+							for (FMLRTModelSlot ms : ((VirtualModel) object.getRootOwner().getFlexoConcept())
 									.getModelSlots(FMLRTModelSlot.class)) {
 								// System.out.println("modelSlot " + ms + " vm=" + ms.getAddressedVirtualModel());
 								if (object.getFlexoConceptType().getVirtualModel().isAssignableFrom(ms.getAccessedVirtualModel())) {
