@@ -51,7 +51,6 @@ import org.openflexo.foundation.DefaultFlexoObject;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoService;
 import org.openflexo.foundation.FlexoServiceManager;
-import org.openflexo.foundation.fml.rm.ViewPointResource;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.resource.DefaultResourceCenterService.ResourceCenterAdded;
 import org.openflexo.foundation.resource.DefaultResourceCenterService.ResourceCenterRemoved;
@@ -78,62 +77,14 @@ public class VirtualModelLibrary extends DefaultFlexoObject implements FlexoServ
 
 	public FMLValidationModel viewPointValidationModel;
 
-	private final Map<String, ViewPointResource> map;
+	private final Map<String, VirtualModelResource> map;
 
 	private FlexoServiceManager serviceManager;
 
 	public VirtualModelLibrary() {
 		super();
+		map = new Hashtable<>();
 
-		map = new Hashtable<String, ViewPointResource>();
-
-	}
-
-	/**
-	 * Retrieve, and return ViewPointResource identified by supplied URI
-	 * 
-	 * @param viewpointURI
-	 * @return
-	 */
-	public ViewPointResource getViewPointResource(String viewpointURI) {
-		/*System.out.println("On recherche " + viewpointURI);
-		System.out.println("On retourne " + map.get(viewpointURI));
-		System.out.println("Mais: " + getServiceManager().getResourceManager().getResource(viewpointURI, ViewPoint.class));
-		for (FlexoResource<?> r : getServiceManager().getResourceManager().getRegisteredResources()) {
-			System.out.println("   - " + r.getURI() + " " + r);
-		}*/
-		return map.get(viewpointURI);
-	}
-
-	/**
-	 * Retrieve and return ViewPoint identified by supplied URI<br>
-	 * If the flag loadWhenRequired is set to true, load required viewpoint when unloaded
-	 * 
-	 * @param viewpointURI
-	 * @return
-	 */
-	public ViewPoint getViewPoint(String viewpointURI) {
-		return getViewPoint(viewpointURI, true);
-	}
-
-	/**
-	 * Retrieve and return ViewPoint identified by supplied URI<br>
-	 * If the flag loadWhenRequired is set to true, load required viewpoint when unloaded<br>
-	 * Use of this method triggers required virtual models to be loaded
-	 * 
-	 * @param viewpointURI
-	 * @return
-	 */
-	public ViewPoint getViewPoint(String viewpointURI, boolean loadWhenRequired) {
-		if (getViewPointResource(viewpointURI) != null) {
-			if (loadWhenRequired) {
-				return getViewPointResource(viewpointURI).getViewPoint();
-			}
-			else {
-				return getViewPointResource(viewpointURI).getLoadedResourceData();
-			}
-		}
-		return null;
 	}
 
 	/**
@@ -187,8 +138,8 @@ public class VirtualModelLibrary extends DefaultFlexoObject implements FlexoServ
 	 */
 	public VirtualModelResource getVirtualModelResource(String virtualModelURI) {
 		if (virtualModelURI.contains("/")) {
-			String viewPointURI = virtualModelURI.substring(0, virtualModelURI.lastIndexOf("/"));
-			ViewPointResource vpres = getViewPointResource(viewPointURI);
+			String containerVirtualModelURI = virtualModelURI.substring(0, virtualModelURI.lastIndexOf("/"));
+			VirtualModelResource vpres = getVirtualModelResource(containerVirtualModelURI);
 			if (vpres != null) {
 				VirtualModelResource returned = vpres.getVirtualModelResource(virtualModelURI);
 				if (returned != null) {
@@ -196,7 +147,7 @@ public class VirtualModelLibrary extends DefaultFlexoObject implements FlexoServ
 				}
 			}
 		}
-		return null;
+		return map.get(virtualModelURI);
 	}
 
 	/**
@@ -205,18 +156,18 @@ public class VirtualModelLibrary extends DefaultFlexoObject implements FlexoServ
 	 * 
 	 * @return
 	 */
-	public Collection<ViewPointResource> getViewPoints() {
+	public Collection<VirtualModelResource> getVirtualModels() {
 		return map.values();
 	}
 
 	/**
-	 * Return all loaded viewpoint in the current library
+	 * Return all loaded virtual models in the current library
 	 */
-	public Collection<ViewPoint> getLoadedViewPoints() {
-		Vector<ViewPoint> returned = new Vector<ViewPoint>();
-		for (ViewPointResource vpRes : getViewPoints()) {
+	public Collection<VirtualModel> getLoadedVirtualModels() {
+		Vector<VirtualModel> returned = new Vector<>();
+		for (VirtualModelResource vpRes : getVirtualModels()) {
 			if (vpRes.isLoaded()) {
-				returned.add(vpRes.getViewPoint());
+				returned.add(vpRes.getVirtualModel());
 			}
 		}
 		return returned;
@@ -228,12 +179,12 @@ public class VirtualModelLibrary extends DefaultFlexoObject implements FlexoServ
 	 * @param vpRes
 	 * @return
 	 */
-	public ViewPointResource registerViewPoint(ViewPointResource vpRes) {
+	public VirtualModelResource registerVirtualModel(VirtualModelResource vpRes) {
 		String uri = vpRes.getURI();
 		if (StringUtils.isNotEmpty(uri)) {
 			map.put(uri, vpRes);
 			setChanged();
-			notifyObservers(new ViewPointRegistered(vpRes));
+			notifyObservers(new VirtualModelRegistered(vpRes));
 			return vpRes;
 		}
 		return null;
@@ -245,11 +196,11 @@ public class VirtualModelLibrary extends DefaultFlexoObject implements FlexoServ
 	 * @param vpRes
 	 * @return
 	 */
-	public ViewPointResource unregisterViewPoint(ViewPointResource vpRes) {
+	public VirtualModelResource unregisterVirtualModel(VirtualModelResource vpRes) {
 
 		// Unregister the viewpoint resource from the viewpoint library
-		for (Iterator<Map.Entry<String, ViewPointResource>> i = map.entrySet().iterator(); i.hasNext();) {
-			Map.Entry<String, ViewPointResource> entry = i.next();
+		for (Iterator<Map.Entry<String, VirtualModelResource>> i = map.entrySet().iterator(); i.hasNext();) {
+			Map.Entry<String, VirtualModelResource> entry = i.next();
 			if ((entry.getValue().equals(vpRes))) {
 				i.remove();
 			}
@@ -292,13 +243,24 @@ public class VirtualModelLibrary extends DefaultFlexoObject implements FlexoServ
 		FlexoConcept returned = null;
 
 		// Is that a viewpoint ?
-		returned = getViewPoint(flexoConceptURI, loadWhenRequired);
+		try {
+			returned = getVirtualModel(flexoConceptURI, loadWhenRequired);
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ResourceLoadingCancelledException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (FlexoException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		if (returned != null) {
 			return returned;
 		}
 
 		// Is that a virtual model ?
-		VirtualModelResource vmRes = getVirtualModelResource(flexoConceptURI);
+		/*VirtualModelResource vmRes = getVirtualModelResource(flexoConceptURI);
 		if (vmRes != null) {
 			if (loadWhenRequired) {
 				return vmRes.getVirtualModel();
@@ -306,13 +268,13 @@ public class VirtualModelLibrary extends DefaultFlexoObject implements FlexoServ
 			else {
 				return vmRes.getLoadedResourceData();
 			}
-		}
+		}*/
 
 		// May be a simple concept ?
 		if (flexoConceptURI.indexOf("#") > -1) {
 			String virtualModelURI = flexoConceptURI.substring(0, flexoConceptURI.indexOf("#"));
 			String flexoConceptName = flexoConceptURI.substring(flexoConceptURI.indexOf("#") + 1);
-			vmRes = getVirtualModelResource(virtualModelURI);
+			VirtualModelResource vmRes = getVirtualModelResource(virtualModelURI);
 			if (vmRes != null) {
 				VirtualModel vm;
 				if (loadWhenRequired) {
@@ -370,8 +332,8 @@ public class VirtualModelLibrary extends DefaultFlexoObject implements FlexoServ
 	}
 
 	@Override
-	public Collection<ViewPoint> getEmbeddedValidableObjects() {
-		return getLoadedViewPoints();
+	public Collection<VirtualModel> getEmbeddedValidableObjects() {
+		return getLoadedVirtualModels();
 	}
 
 	@Override

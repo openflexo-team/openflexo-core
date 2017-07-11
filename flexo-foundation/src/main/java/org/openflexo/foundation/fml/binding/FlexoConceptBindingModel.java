@@ -76,16 +76,16 @@ public class FlexoConceptBindingModel extends BindingModel implements PropertyCh
 
 	private final FlexoConcept flexoConcept;
 
-	private BindingVariable reflexiveAccessBindingVariable;
+	// private BindingVariable reflexiveAccessBindingVariable;
 	private final Map<FlexoProperty<?>, FlexoPropertyBindingVariable> propertyVariablesMap;
 	private final List<FlexoConcept> knownParentConcepts = new ArrayList<FlexoConcept>();
 	private FlexoConcept lastKnownContainer = null;
 
 	private BindingVariable flexoConceptInstanceBindingVariable;
-	private BindingVariable containerBindingVariable;
+	protected BindingVariable containerBindingVariable;
 
-	public static final String REFLEXIVE_ACCESS_PROPERTY = "conceptDefinition";
-	public static final String FLEXO_CONCEPT_INSTANCE_PROPERTY = "flexoConceptInstance";
+	// public static final String REFLEXIVE_ACCESS_PROPERTY = "conceptDefinition";
+	public static final String THIS_PROPERTY = "this";
 	public static final String CONTAINER_PROPERTY = "container";
 
 	/**
@@ -96,11 +96,11 @@ public class FlexoConceptBindingModel extends BindingModel implements PropertyCh
 	 * @param flexoConcept
 	 */
 	public FlexoConceptBindingModel(final FlexoConcept flexoConcept) {
-		this(flexoConcept.getOwner() != null ? flexoConcept.getOwningVirtualModel().getBindingModel() : null, flexoConcept);
-		reflexiveAccessBindingVariable = new BindingVariable(REFLEXIVE_ACCESS_PROPERTY, FlexoConcept.class);
-		addToBindingVariables(reflexiveAccessBindingVariable);
+		this(flexoConcept.getOwningVirtualModel() != null ? flexoConcept.getOwningVirtualModel().getBindingModel() : null, flexoConcept);
+		// reflexiveAccessBindingVariable = new BindingVariable(REFLEXIVE_ACCESS_PROPERTY, FlexoConcept.class);
+		// addToBindingVariables(reflexiveAccessBindingVariable);
 		// TODO : Dirty, this should be fix when we have a clean type management system for the VM
-		flexoConceptInstanceBindingVariable = new FlexoConceptBindingVariable(FLEXO_CONCEPT_INSTANCE_PROPERTY, flexoConcept);
+		flexoConceptInstanceBindingVariable = new FlexoConceptBindingVariable(THIS_PROPERTY, flexoConcept);
 		addToBindingVariables(flexoConceptInstanceBindingVariable);
 		if (flexoConcept.getContainerFlexoConcept() != null) {
 			containerBindingVariable = new BindingVariable(CONTAINER_PROPERTY, flexoConcept.getContainerFlexoConcept().getInstanceType());
@@ -133,9 +133,9 @@ public class FlexoConceptBindingModel extends BindingModel implements PropertyCh
 	 * 
 	 * @return
 	 */
-	public BindingVariable getReflexiveAccessBindingVariable() {
+	/*public BindingVariable getReflexiveAccessBindingVariable() {
 		return reflexiveAccessBindingVariable;
-	}
+	}*/
 
 	public BindingVariable getFlexoConceptInstanceBindingVariable() {
 		return flexoConceptInstanceBindingVariable;
@@ -191,7 +191,7 @@ public class FlexoConceptBindingModel extends BindingModel implements PropertyCh
 		}
 	}
 
-	private void updateContainerBindingVariable() {
+	protected void updateContainerBindingVariable() {
 		if (flexoConcept.getContainerFlexoConcept() != null) {
 			if (containerBindingVariable == null) {
 				containerBindingVariable = new BindingVariable(CONTAINER_PROPERTY,
@@ -208,7 +208,7 @@ public class FlexoConceptBindingModel extends BindingModel implements PropertyCh
 		}
 	}
 
-	private void updatePropertyVariables() {
+	protected void updatePropertyVariables() {
 
 		List<FlexoProperty<?>> propertiesToBeDeleted = new ArrayList<FlexoProperty<?>>(propertyVariablesMap.keySet());
 

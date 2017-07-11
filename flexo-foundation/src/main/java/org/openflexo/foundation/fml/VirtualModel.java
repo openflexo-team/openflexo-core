@@ -38,7 +38,10 @@
 
 package org.openflexo.foundation.fml;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -67,6 +70,7 @@ import org.openflexo.foundation.technologyadapter.UseModelSlotDeclaration;
 import org.openflexo.model.annotations.Adder;
 import org.openflexo.model.annotations.CloningStrategy;
 import org.openflexo.model.annotations.CloningStrategy.StrategyType;
+import org.openflexo.model.annotations.DefineValidationRule;
 import org.openflexo.model.annotations.Embedded;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.Getter.Cardinality;
@@ -81,6 +85,10 @@ import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.model.annotations.XMLElement;
 import org.openflexo.model.undo.CompoundEdit;
+import org.openflexo.model.validation.Validable;
+import org.openflexo.model.validation.ValidationError;
+import org.openflexo.model.validation.ValidationIssue;
+import org.openflexo.model.validation.ValidationRule;
 import org.openflexo.toolbox.FlexoVersion;
 import org.openflexo.toolbox.StringUtils;
 import org.openflexo.toolbox.ToolBox;
@@ -396,10 +404,14 @@ public interface VirtualModel extends FlexoConcept, VirtualModelObject, FlexoMet
 		private static final Logger logger = Logger.getLogger(VirtualModel.class.getPackage().getName());
 
 		private VirtualModelResource resource;
-
 		private boolean readOnly = false;
-
 		private final VirtualModelInstanceType vmInstanceType = new VirtualModelInstanceType(this);
+
+		// Used during deserialization, do not use it
+		public VirtualModelImpl() {
+			super();
+			virtualModels = new ArrayList<VirtualModel>();
+		}
 
 		@Override
 		public VirtualModelInstanceType getInstanceType() {
@@ -597,11 +609,15 @@ public interface VirtualModel extends FlexoConcept, VirtualModelObject, FlexoMet
 		/**
 		 * Return FlexoConcept matching supplied id represented as a string, which could be either the name of FlexoConcept, or its URI
 		 * 
-		 * @param flexoConceptId
+		 * @param flexoConceptNameOrURI
 		 * @return
 		 */
 		@Override
 		public FlexoConcept getFlexoConcept(String flexoConceptNameOrURI) {
+			if (StringUtils.isEmpty(flexoConceptNameOrURI)) {
+				return null;
+			}
+
 			for (FlexoConcept flexoConcept : getFlexoConcepts()) {
 				if (flexoConcept.getName() != null && flexoConcept.getName().equals(flexoConceptNameOrURI)) {
 					return flexoConcept;
@@ -610,8 +626,34 @@ public interface VirtualModel extends FlexoConcept, VirtualModelObject, FlexoMet
 					return flexoConcept;
 				}
 			}
+
+			VirtualModel virtualModel = getVirtualModelNamed(flexoConceptNameOrURI);
+			if (virtualModel != null) {
+				return virtualModel;
+			}
+
+			// Implemented lazy loading for VirtualModel while searching FlexoConcept from URI
+
+			if (flexoConceptNameOrURI.indexOf("#") > -1 && getResource() != null) {
+				String virtualModelURI = flexoConceptNameOrURI.substring(0, flexoConceptNameOrURI.indexOf("#"));
+				VirtualModelResource vmRes = getResource().getContentWithURI(VirtualModelResource.class, virtualModelURI);
+				if (vmRes != null) {
+					return vmRes.getVirtualModel().getFlexoConcept(flexoConceptNameOrURI);
+				}
+			}
+
+			// Is that a concept outside of scope of current ViewPoint ?
+			// NPE Protection when de-serializing
+			if (getVirtualModelLibrary() == null) {
+				return null;
+			}
+			else {
+				// Delegate this to the VirtualModelLibrary
+				return getVirtualModelLibrary().getFlexoConcept(flexoConceptNameOrURI);
+			}
+
 			// logger.warning("Not found FlexoConcept:" + flexoConceptId);
-			return null;
+			// return null;
 		}
 
 		public SynchronizationScheme createSynchronizationScheme() {
@@ -749,8 +791,7 @@ public interface VirtualModel extends FlexoConcept, VirtualModelObject, FlexoMet
 		@Override
 		public String getFMLRepresentation(FMLRepresentationContext context) {
 			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
-			out.append("VirtualModel " + getName() + " type=" + getImplementedInterface().getSimpleName() + " uri=\"" + getURI() + "\"",
-					context);
+			out.append("VirtualModel " + getName(), context);
 			out.append(" {" + StringUtils.LINE_SEPARATOR, context);
 
 			/*if (getModelSlots().size() > 0) {
@@ -840,6 +881,14 @@ public interface VirtualModel extends FlexoConcept, VirtualModelObject, FlexoMet
 					returned.add(ms.getModelSlotTechnologyAdapter());
 				}
 			}
+			loadContainedVirtualModelsWhenUnloaded();
+			for (VirtualModel vm : getVirtualModels()) {
+				for (TechnologyAdapter ta : vm.getRequiredTechnologyAdapters()) {
+					if (!returned.contains(ta)) {
+						returned.add(ta);
+					}
+				}
+			}
 			return returned;
 		}
 
@@ -924,10 +973,22 @@ public interface VirtualModel extends FlexoConcept, VirtualModelObject, FlexoMet
 
 		@Override
 		public boolean delete(Object... context) {
+
+			// Unregister the resource from the virtual model library
+			if (getResource() != null && getVirtualModelLibrary() != null) {
+				getVirtualModelLibrary().unregisterVirtualModel(getResource());
+			}
+
 			if (bindingModel != null) {
 				bindingModel.delete();
 			}
-			return super.delete();
+
+			boolean returned = super.delete();
+
+			// Delete observers
+			deleteObservers();
+
+			return returned;
 		}
 
 		@Override
@@ -1002,8 +1063,192 @@ public interface VirtualModel extends FlexoConcept, VirtualModelObject, FlexoMet
 			return null;
 		}
 
+		@Override
+		public VirtualModelLibrary getVirtualModelLibrary() {
+			if (getResource() != null) {
+				return getResource().getVirtualModelLibrary();
+			}
+			return null;
+		}
+
+		private boolean isLoading = false;
+
+		/**
+		 * Load eventually unloaded VirtualModels<br>
+		 * After this call return, we can safely assert that all {@link VirtualModel} are loaded.
+		 */
+		@Override
+		public void loadContainedVirtualModelsWhenUnloaded() {
+			if (isLoading) {
+				return;
+			}
+			if (!isLoading) {
+				isLoading = true;
+				if (getResource() != null) {
+					for (org.openflexo.foundation.resource.FlexoResource<?> r : getResource().getContents()) {
+						if (r instanceof VirtualModelResource) {
+							((VirtualModelResource) r).getVirtualModel();
+						}
+					}
+				}
+			}
+
+			isLoading = false;
+		}
+
+		private List<VirtualModel> virtualModels;
+
+		/**
+		 * Return all VirtualModel of a given class.<br>
+		 * If onlyFinalInstances is set to true, only instances of supplied class (and not specialized classes) are retrieved
+		 * 
+		 * @return
+		 */
+		public <VM extends VirtualModel> List<VM> getVirtualModels(Class<VM> virtualModelClass, boolean onlyFinalInstances) {
+			List<VM> returned = new ArrayList<VM>();
+			for (VirtualModel vm : getVirtualModels()) {
+				if (onlyFinalInstances) {
+					if (virtualModelClass.equals(vm.getClass())) {
+						returned.add((VM) vm);
+					}
+				}
+				else {
+					if (virtualModelClass.isAssignableFrom(vm.getClass())) {
+						returned.add((VM) vm);
+					}
+				}
+			}
+			return returned;
+		}
+
+		/**
+		 * Return all loaded {@link VirtualModel} defined in this {@link ViewPoint}<br>
+		 * Warning: if a VirtualModel was not loaded, it wont be added to the returned list<br>
+		 * See {@link #getVirtualModels(boolean)} to force the loading of unloaded virtual models
+		 * 
+		 * @return
+		 */
+		@Override
+		public List<VirtualModel> getVirtualModels() {
+			return getVirtualModels(false);
+		}
+
+		/**
+		 * Return all {@link VirtualModel} defined in this {@link ViewPoint}<br>
+		 * When forceLoad set to true, force the loading of all virtual models
+		 * 
+		 * @return
+		 */
+		@Override
+		public List<VirtualModel> getVirtualModels(boolean forceLoad) {
+			if (forceLoad) {
+				loadContainedVirtualModelsWhenUnloaded();
+			}
+			return virtualModels;
+		}
+
+		@Override
+		public void setVirtualModels(List<VirtualModel> virtualModels) {
+			loadContainedVirtualModelsWhenUnloaded();
+			this.virtualModels = virtualModels;
+		}
+
+		@Override
+		public void addToVirtualModels(VirtualModel virtualModel) {
+			virtualModel.setContainerVirtualModel(this);
+			virtualModels.add(virtualModel);
+			getPropertyChangeSupport().firePropertyChange(VIRTUAL_MODELS_KEY, null, virtualModel);
+		}
+
+		@Override
+		public void removeFromVirtualModels(VirtualModel virtualModel) {
+			virtualModel.setContainerVirtualModel(null);
+			virtualModels.remove(virtualModel);
+			getPropertyChangeSupport().firePropertyChange(VIRTUAL_MODELS_KEY, virtualModel, null);
+		}
+
+		/**
+		 * Return {@link VirtualModel} with supplied name or URI
+		 * 
+		 * @return
+		 */
+		@Override
+		public VirtualModel getVirtualModelNamed(String virtualModelNameOrURI) {
+
+			if (getResource() != null) {
+				for (VirtualModelResource vmRes : getResource().getContents(VirtualModelResource.class)) {
+					if (vmRes.getName().equals(virtualModelNameOrURI)) {
+						return vmRes.getVirtualModel();
+					}
+					if (vmRes.getURI().equals(virtualModelNameOrURI)) {
+						return vmRes.getVirtualModel();
+					}
+				}
+			}
+
+			return null;
+		}
+
+		@Deprecated
+		// TODO: is this still used ?
+		public void init(String baseName, VirtualModelLibrary library) {
+			logger.info("Registering virtual model " + baseName + " URI=" + getURI());
+
+			setName(baseName);
+		}
+
+		@Override
+		public String getStringRepresentation() {
+			return getURI();
+		}
+
+		@Override
+		public Collection<? extends Validable> getEmbeddedValidableObjects() {
+
+			Collection returned = super.getEmbeddedValidableObjects();
+			returned.addAll(getVirtualModels());
+			return returned;
+		}
+
 	}
 
 	// FIN: provient de VirtualModel
+
+	@DefineValidationRule
+	class VirtualModelMustHaveAName extends ValidationRule<VirtualModelMustHaveAName, VirtualModel> {
+		public VirtualModelMustHaveAName() {
+			super(VirtualModel.class, "virtual_model_must_have_a_name");
+		}
+
+		@Override
+		public ValidationIssue<VirtualModelMustHaveAName, VirtualModel> applyValidation(VirtualModel vp) {
+			if (StringUtils.isEmpty(vp.getName())) {
+				return new ValidationError<>(this, vp, "virtual_model_has_no_name");
+			}
+			return null;
+		}
+	}
+
+	@DefineValidationRule
+	class VirtualModelURIMustBeValid extends ValidationRule<VirtualModelURIMustBeValid, VirtualModel> {
+		public VirtualModelURIMustBeValid() {
+			super(VirtualModel.class, "virtual_model_uri_must_be_valid");
+		}
+
+		@Override
+		public ValidationIssue<VirtualModelURIMustBeValid, VirtualModel> applyValidation(VirtualModel vm) {
+			if (StringUtils.isEmpty(vm.getURI())) {
+				return new ValidationError<>(this, vm, "virtual_model_has_no_uri");
+			}
+			else {
+				try {
+					new URL(vm.getURI());
+				} catch (MalformedURLException e) {
+					return new ValidationError(this, vm, "virtual_model_uri_is_not_valid");
+				}
+			}
+			return null;
+		}
+	}
 
 }
