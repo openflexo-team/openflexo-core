@@ -40,7 +40,7 @@ package org.openflexo.foundation.ontology.fml;
 
 import java.lang.reflect.Type;
 
-import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstanceModelFactory;
+import org.openflexo.foundation.fml.rt.VirtualModelInstanceModelFactory;
 import org.openflexo.foundation.fml.rt.ActorReference;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.ontology.BuiltInDataType;
@@ -113,7 +113,7 @@ public abstract interface DataPropertyRole<P extends IFlexoOntologyDataProperty>
 
 		@Override
 		public ActorReference<P> makeActorReference(P object, FlexoConceptInstance fci) {
-			AbstractVirtualModelInstanceModelFactory<?> factory = fci.getFactory();
+			VirtualModelInstanceModelFactory<?> factory = fci.getFactory();
 			ConceptActorReference<P> returned = factory.newInstance(ConceptActorReference.class);
 			returned.setFlexoRole(this);
 			returned.setFlexoConceptInstance(fci);

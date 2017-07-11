@@ -62,7 +62,7 @@ import org.openflexo.model.annotations.XMLElement;
 @XMLElement
 public interface FlexoEventInstance extends FlexoConceptInstance {
 
-	@PropertyIdentifier(type = AbstractVirtualModelInstance.class)
+	@PropertyIdentifier(type = VirtualModelInstance.class)
 	public static final String SOURCE_VIRTUAL_MODEL_INSTANCE_KEY = "sourceVirtualModelInstance";
 
 	/**
@@ -71,10 +71,10 @@ public interface FlexoEventInstance extends FlexoConceptInstance {
 	 * @return
 	 */
 	@Getter(value = SOURCE_VIRTUAL_MODEL_INSTANCE_KEY)
-	public abstract AbstractVirtualModelInstance<?, ?> getSourceVirtualModelInstance();
+	public abstract VirtualModelInstance<?, ?> getSourceVirtualModelInstance();
 
 	@Setter(SOURCE_VIRTUAL_MODEL_INSTANCE_KEY)
-	public void setSourceVirtualModelInstance(AbstractVirtualModelInstance<?, ?> virtualModelInstance);
+	public void setSourceVirtualModelInstance(VirtualModelInstance<?, ?> virtualModelInstance);
 
 	@Override
 	public FlexoEvent getFlexoConcept();
@@ -99,7 +99,7 @@ public interface FlexoEventInstance extends FlexoConceptInstance {
 		// getVirtualModelInstance() which returns
 		// null value because FlexoEventInstance is not persistent in the VirtualModelInstance
 		@Override
-		public AbstractVirtualModelInstance<?, ?> getOwningVirtualModelInstance() {
+		public VirtualModelInstance<?, ?> getOwningVirtualModelInstance() {
 			return getSourceVirtualModelInstance();
 		}
 

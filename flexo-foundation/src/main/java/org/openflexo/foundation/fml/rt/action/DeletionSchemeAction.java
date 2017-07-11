@@ -48,7 +48,7 @@ import org.openflexo.foundation.action.InvalidParametersException;
 import org.openflexo.foundation.action.NotImplementedException;
 import org.openflexo.foundation.fml.DeletionScheme;
 import org.openflexo.foundation.fml.FlexoBehaviour;
-import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstanceObject;
 
@@ -96,7 +96,7 @@ public class DeletionSchemeAction extends FlexoBehaviourAction<DeletionSchemeAct
 		return null;
 	}
 
-	private AbstractVirtualModelInstance<?, ?> vmInstance;
+	private VirtualModelInstance<?, ?> vmInstance;
 	// private DeletionScheme deletionScheme;
 	private FlexoConceptInstance flexoConceptInstanceToDelete;
 
@@ -132,11 +132,11 @@ public class DeletionSchemeAction extends FlexoBehaviourAction<DeletionSchemeAct
 	}
 
 	@Override
-	public AbstractVirtualModelInstance<?, ?> getVirtualModelInstance() {
+	public VirtualModelInstance<?, ?> getVirtualModelInstance() {
 		if (vmInstance == null) {
 			FlexoConceptInstance vObject = getFocusedObject();
-			if (vObject instanceof AbstractVirtualModelInstance) {
-				vmInstance = (AbstractVirtualModelInstance<?, ?>) getFocusedObject();
+			if (vObject instanceof VirtualModelInstance) {
+				vmInstance = (VirtualModelInstance<?, ?>) getFocusedObject();
 			}
 			else if (vObject instanceof FlexoConceptInstance) {
 				vmInstance = vObject.getVirtualModelInstance();
@@ -145,7 +145,7 @@ public class DeletionSchemeAction extends FlexoBehaviourAction<DeletionSchemeAct
 		return vmInstance;
 	}
 
-	public void setVirtualModelInstance(AbstractVirtualModelInstance<?, ?> vmInstance) {
+	public void setVirtualModelInstance(VirtualModelInstance<?, ?> vmInstance) {
 		this.vmInstance = vmInstance;
 	}
 
@@ -179,7 +179,7 @@ public class DeletionSchemeAction extends FlexoBehaviourAction<DeletionSchemeAct
 	}*/
 
 	@Override
-	public AbstractVirtualModelInstance<?, ?> retrieveVirtualModelInstance() {
+	public VirtualModelInstance<?, ?> retrieveVirtualModelInstance() {
 		return getVirtualModelInstance();
 	}
 

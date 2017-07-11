@@ -48,9 +48,9 @@ import org.openflexo.foundation.IOFlexoException;
 import org.openflexo.foundation.InconsistentDataException;
 import org.openflexo.foundation.InvalidModelDefinitionException;
 import org.openflexo.foundation.InvalidXMLException;
-import org.openflexo.foundation.fml.AbstractVirtualModel;
+import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.ViewPoint;
-import org.openflexo.foundation.fml.rm.AbstractVirtualModelResource;
+import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.fml.rt.View;
 import org.openflexo.foundation.resource.FileIODelegate;
@@ -68,7 +68,7 @@ import org.openflexo.toolbox.IProgress;
  * @author Sylvain
  * 
  */
-public abstract class ViewResourceImpl extends AbstractVirtualModelInstanceResourceImpl<View, ViewPoint> implements ViewResource {
+public abstract class ViewResourceImpl extends VirtualModelInstanceResourceImpl<View, ViewPoint> implements ViewResource {
 
 	static final Logger logger = Logger.getLogger(ViewResourceImpl.class.getPackage().getName());
 
@@ -124,12 +124,12 @@ public abstract class ViewResourceImpl extends AbstractVirtualModelInstanceResou
 
 	/**
 	 * Return the list of all {@link VirtualModelInstanceResource} defined in this {@link ViewResource} conform to supplied
-	 * {@link AbstractVirtualModel}
+	 * {@link VirtualModel}
 	 * 
 	 * @return
 	 */
 	@Override
-	public List<VirtualModelInstanceResource> getVirtualModelInstanceResources(AbstractVirtualModel<?> virtualModel) {
+	public List<VirtualModelInstanceResource> getVirtualModelInstanceResources(VirtualModel virtualModel) {
 		List<VirtualModelInstanceResource> returned = new ArrayList<VirtualModelInstanceResource>();
 		for (VirtualModelInstanceResource vmiRes : getVirtualModelInstanceResources()) {
 			if (virtualModel.isAssignableFrom(vmiRes.getVirtualModelResource().getVirtualModel())) {
@@ -191,7 +191,7 @@ public abstract class ViewResourceImpl extends AbstractVirtualModelInstanceResou
 	}
 
 	@Override
-	public AbstractVirtualModelResource<ViewPoint> getVirtualModelResource() {
+	public VirtualModelResource<ViewPoint> getVirtualModelResource() {
 		return getViewPointResource();
 	}
 

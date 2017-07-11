@@ -46,7 +46,7 @@ import org.openflexo.xml.XMLRootElementInfo;
  * @author sylvain
  *
  */
-public class ViewResourceFactory extends AbstractVirtualModelInstanceResourceFactory<View, ViewPoint, ViewResource> {
+public class ViewResourceFactory extends VirtualModelInstanceResourceFactory<View, ViewPoint, ViewResource> {
 
 	private static final Logger logger = Logger.getLogger(ViewResourceFactory.class.getPackage().getName());
 
@@ -111,7 +111,7 @@ public class ViewResourceFactory extends AbstractVirtualModelInstanceResourceFac
 			View resourceData = createEmptyContents(returned);
 			returned.save(null);
 			if (resourceData.getFMLRunTimeEngine() != null) {
-				// TODO: today AbstractVirtualModelInstance is a RunTimeEvaluationContext
+				// TODO: today VirtualModelInstance is a RunTimeEvaluationContext
 				// TODO: design issue, we should separate FlexoConceptInstance from RunTimeEvaluationContext
 				// This inheritance should disappear
 				resourceData.getFMLRunTimeEngine().addToExecutionContext(resourceData, resourceData);
@@ -206,8 +206,8 @@ public class ViewResourceFactory extends AbstractVirtualModelInstanceResourceFac
 		registerResourceInResourceRepository(resource,
 				technologyContextManager.getTechnologyAdapter().getViewPointRepository(resourceCenter));
 	
-		// If ViewPointLibrary not initialized yet, we will do it later in
-		// ViewPointLibrary.initialize() method
+		// If VirtualModelLibrary not initialized yet, we will do it later in
+		// VirtualModelLibrary.initialize() method
 		if (technologyContextManager.getServiceManager().getViewPointLibrary() != null) {
 			resource.setViewPointLibrary(technologyContextManager.getServiceManager().getViewPointLibrary());
 			technologyContextManager.getServiceManager().getViewPointLibrary().registerViewPoint(resource);

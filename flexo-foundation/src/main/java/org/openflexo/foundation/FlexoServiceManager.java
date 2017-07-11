@@ -45,7 +45,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoProject.FlexoProjectReferenceLoader;
 import org.openflexo.foundation.FlexoService.ServiceNotification;
-import org.openflexo.foundation.fml.ViewPointLibrary;
+import org.openflexo.foundation.fml.VirtualModelLibrary;
 import org.openflexo.foundation.localization.LocalizationService;
 import org.openflexo.foundation.nature.ProjectNatureService;
 import org.openflexo.foundation.nature.ScreenshotService;
@@ -221,8 +221,8 @@ public abstract class FlexoServiceManager {
 		return getService(ProjectNatureService.class);
 	}
 
-	public ViewPointLibrary getViewPointLibrary() {
-		return getService(ViewPointLibrary.class);
+	public VirtualModelLibrary getViewPointLibrary() {
+		return getService(VirtualModelLibrary.class);
 	}
 
 	public FlexoProjectReferenceLoader getProjectReferenceLoader() {
@@ -296,7 +296,7 @@ public abstract class FlexoServiceManager {
 
 	protected abstract ProjectNatureService createProjectNatureService();
 
-	protected abstract ViewPointLibrary createViewPointLibraryService();
+	protected abstract VirtualModelLibrary createViewPointLibraryService();
 
 	protected abstract LocalizationService createLocalizationService(String relativePath);
 

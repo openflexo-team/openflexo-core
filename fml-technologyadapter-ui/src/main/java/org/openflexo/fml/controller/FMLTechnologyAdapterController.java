@@ -387,7 +387,7 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 
 	@Override
 	public String getWindowTitleforObject(TechnologyObject<FMLTechnologyAdapter> object, FlexoController controller) {
-		/*if (object instanceof ViewPointLibrary) {
+		/*if (object instanceof VirtualModelLibrary) {
 			return FlexoLocalization.localizedForKey("view_point_library");
 		}*/
 		if (object instanceof ViewPoint) {

@@ -52,29 +52,20 @@ import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
-import org.openflexo.foundation.fml.binding.FMLBindingFactory;
 import org.openflexo.foundation.fml.binding.ViewPointBindingModel;
 import org.openflexo.foundation.fml.rm.ViewPointResource;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.fml.rt.View;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.utils.XMLUtils;
-import org.openflexo.model.annotations.Adder;
 import org.openflexo.model.annotations.DefineValidationRule;
-import org.openflexo.model.annotations.Getter;
-import org.openflexo.model.annotations.Getter.Cardinality;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
-import org.openflexo.model.annotations.PropertyIdentifier;
-import org.openflexo.model.annotations.Remover;
-import org.openflexo.model.annotations.Setter;
-import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.model.annotations.XMLElement;
 import org.openflexo.model.validation.Validable;
 import org.openflexo.model.validation.ValidationError;
 import org.openflexo.model.validation.ValidationIssue;
 import org.openflexo.model.validation.ValidationRule;
-import org.openflexo.toolbox.FlexoVersion;
 import org.openflexo.toolbox.StringUtils;
 
 /**
@@ -109,104 +100,7 @@ import org.openflexo.toolbox.StringUtils;
 @ModelEntity
 @ImplementationClass(ViewPoint.ViewPointImpl.class)
 @XMLElement(xmlTag = "ViewPoint")
-public interface ViewPoint extends AbstractVirtualModel<ViewPoint> {
-
-	@PropertyIdentifier(type = String.class)
-	String VIEW_POINT_URI_KEY = "viewPointURI";
-	@PropertyIdentifier(type = FlexoVersion.class)
-	String VERSION_KEY = "version";
-	@PropertyIdentifier(type = FlexoVersion.class)
-	String MODEL_VERSION_KEY = "modelVersion";
-	@PropertyIdentifier(type = ViewPointLocalizedDictionary.class)
-	String LOCALIZED_DICTIONARY_KEY = "localizedDictionary";
-	@PropertyIdentifier(type = VirtualModel.class, cardinality = Cardinality.LIST)
-	String VIRTUAL_MODELS_KEY = "virtualModels";
-
-	@Getter(value = VIEW_POINT_URI_KEY)
-	@XMLAttribute(xmlTag = "uri")
-	String getViewPointURI();
-
-	@Setter(VIEW_POINT_URI_KEY)
-	void setViewPointURI(String viewPointURI);
-
-	@Override
-	@Getter(value = VERSION_KEY, isStringConvertable = true)
-	@XMLAttribute
-	FlexoVersion getVersion();
-
-	@Override
-	@Setter(VERSION_KEY)
-	void setVersion(FlexoVersion version);
-
-	@Override
-	@Getter(value = MODEL_VERSION_KEY, isStringConvertable = true)
-	@XMLAttribute
-	FlexoVersion getModelVersion();
-
-	@Override
-	@Setter(MODEL_VERSION_KEY)
-	void setModelVersion(FlexoVersion modelVersion);
-
-	@Override
-	@Getter(value = LOCALIZED_DICTIONARY_KEY, inverse = ViewPointLocalizedDictionary.OWNER_KEY)
-	ViewPointLocalizedDictionary getLocalizedDictionary();
-
-	@Setter(LOCALIZED_DICTIONARY_KEY)
-	void setLocalizedDictionary(ViewPointLocalizedDictionary localizedDictionary);
-
-	/**
-	 * Retrieves the type of a View conform to this ViewPoint
-	 */
-	ViewType getViewType();
-
-	/**
-	 * Return FlexoConcept matching supplied id represented as a string, which could be either the name of FlexoConcept, or its URI
-	 * 
-	 * @param flexoConceptId
-	 * @return
-	 */
-	@Override
-	FlexoConcept getFlexoConcept(String flexoConceptId);
-
-	/**
-	 * Return all loaded {@link VirtualModel} defined in this {@link ViewPoint}<br>
-	 * Warning: if a VirtualModel was not loaded, it wont be added to the returned list<br>
-	 * See {@link #getVirtualModels(boolean)} to force the loading of unloaded virtual models
-	 * 
-	 * @return
-	 */
-	@Getter(value = VIRTUAL_MODELS_KEY, cardinality = Cardinality.LIST, inverse = VirtualModel.VIEW_POINT_KEY, ignoreType = true)
-	List<VirtualModel> getVirtualModels();
-
-	/**
-	 * Return all {@link VirtualModel} defined in this {@link ViewPoint}<br>
-	 * When forceLoad set to true, force the loading of all virtual models
-	 * 
-	 * @return
-	 */
-	List<VirtualModel> getVirtualModels(boolean forceLoad);
-
-	@Setter(VIRTUAL_MODELS_KEY)
-	void setVirtualModels(List<VirtualModel> virtualModels);
-
-	@Adder(VIRTUAL_MODELS_KEY)
-	void addToVirtualModels(VirtualModel virtualModel);
-
-	@Remover(VIRTUAL_MODELS_KEY)
-	void removeFromVirtualModels(VirtualModel virtualModel);
-
-	VirtualModel getVirtualModelNamed(String virtualModelNameOrURI);
-
-	boolean hasNature(ViewPointNature nature);
-
-	@Override
-	ViewPointBindingModel getBindingModel();
-
-	/**
-	 * Load eventually unloaded VirtualModels<br>
-	 * After this call return, we can safely assert that all {@link VirtualModel} are loaded.
-	 */
-	void loadVirtualModelsWhenUnloaded();
+public interface ViewPoint extends VirtualModel {
 
 	/**
 	 * Default implementation for {@link ViewPoint}
@@ -214,17 +108,13 @@ public interface ViewPoint extends AbstractVirtualModel<ViewPoint> {
 	 * @author sylvain
 	 * 
 	 */
-	abstract class ViewPointImpl extends AbstractVirtualModelImpl<ViewPoint> implements ViewPoint {
+	abstract class ViewPointImpl extends VirtualModelImpl implements ViewPoint {
 
 		private static final Logger logger = Logger.getLogger(ViewPoint.class.getPackage().getName());
 
-		private ViewPointLocalizedDictionary localizedDictionary;
-		// private ViewPointLibrary _library;
-		// private List<ModelSlot> modelSlots;
 		private List<VirtualModel> virtualModels;
 		private ViewPointResource resource;
 		private ViewPointBindingModel bindingModel;
-		private final FMLBindingFactory bindingFactory = new FMLBindingFactory(this);
 
 		private final ViewType viewType = new ViewType(this);
 
@@ -234,7 +124,7 @@ public interface ViewPoint extends AbstractVirtualModel<ViewPoint> {
 			virtualModels = new ArrayList<VirtualModel>();
 		}
 
-		public void init(String baseName, /* File viewpointDir, File xmlFile,*/ViewPointLibrary library/*, ViewPointFolder folder*/) {
+		public void init(String baseName, /* File viewpointDir, File xmlFile,*/VirtualModelLibrary library/*, ViewPointFolder folder*/) {
 			logger.info("Registering viewpoint " + baseName + " URI=" + getViewPointURI());
 
 			setName(baseName);
@@ -288,9 +178,9 @@ public interface ViewPoint extends AbstractVirtualModel<ViewPoint> {
 		}
 
 		@Override
-		public ViewPointLibrary getViewPointLibrary() {
+		public VirtualModelLibrary getVirtualModelLibrary() {
 			if (getResource() != null) {
-				return getResource().getViewPointLibrary();
+				return getResource().getVirtualModelLibrary();
 			}
 			return null;
 		}
@@ -457,26 +347,13 @@ public interface ViewPoint extends AbstractVirtualModel<ViewPoint> {
 
 			// Is that a concept outside of scope of current ViewPoint ?
 			// NPE Protection when de-serializing
-			if (getViewPointLibrary() == null) {
+			if (getVirtualModelLibrary() == null) {
 				return null;
 			}
 			else {
-				return getViewPointLibrary().getFlexoConcept(flexoConceptId);
+				return getVirtualModelLibrary().getFlexoConcept(flexoConceptId);
 			}
 
-		}
-
-		@Override
-		public ViewPointLocalizedDictionary getLocalizedDictionary() {
-			return localizedDictionary;
-		}
-
-		@Override
-		public void setLocalizedDictionary(ViewPointLocalizedDictionary localizedDictionary) {
-			if (localizedDictionary != null) {
-				localizedDictionary.setOwner(this);
-			}
-			this.localizedDictionary = localizedDictionary;
 		}
 
 		@Deprecated
@@ -515,11 +392,6 @@ public interface ViewPoint extends AbstractVirtualModel<ViewPoint> {
 				bindingModel = new ViewPointBindingModel(this);
 			}
 			return bindingModel;
-		}
-
-		@Override
-		public FMLBindingFactory getBindingFactory() {
-			return bindingFactory;
 		}
 
 		@Override
@@ -590,8 +462,8 @@ public interface ViewPoint extends AbstractVirtualModel<ViewPoint> {
 			logger.info("Deleting ViewPoint " + this);
 
 			// Unregister the viewpoint resource from the viewpoint library
-			if (getResource() != null && getViewPointLibrary() != null) {
-				getViewPointLibrary().unregisterViewPoint(getResource());
+			if (getResource() != null && getVirtualModelLibrary() != null) {
+				getVirtualModelLibrary().unregisterViewPoint(getResource());
 			}
 
 			if (bindingModel != null) {

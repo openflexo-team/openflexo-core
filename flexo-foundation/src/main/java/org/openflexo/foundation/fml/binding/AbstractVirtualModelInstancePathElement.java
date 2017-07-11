@@ -43,7 +43,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.connie.binding.BindingPathElement;
 import org.openflexo.connie.binding.SimplePathElement;
-import org.openflexo.foundation.fml.AbstractVirtualModel;
+import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.VirtualModelInstanceType;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
@@ -55,13 +55,13 @@ import org.openflexo.foundation.fml.rt.VirtualModelInstance;
  * @author sylvain
  *
  */
-public abstract class AbstractVirtualModelInstancePathElement<VM extends AbstractVirtualModel<?>> extends SimplePathElement {
+public abstract class VirtualModelInstancePathElement<VM extends VirtualModel> extends SimplePathElement {
 
-	private static final Logger logger = Logger.getLogger(AbstractVirtualModelInstancePathElement.class.getPackage().getName());
+	private static final Logger logger = Logger.getLogger(VirtualModelInstancePathElement.class.getPackage().getName());
 
 	private final VM virtualModel;
 
-	public AbstractVirtualModelInstancePathElement(BindingPathElement parent, String pathElementName, VM virtualModel) {
+	public VirtualModelInstancePathElement(BindingPathElement parent, String pathElementName, VM virtualModel) {
 		super(parent, pathElementName, FlexoConceptInstanceType.getFlexoConceptInstanceType(virtualModel));
 		this.virtualModel = virtualModel;
 	}

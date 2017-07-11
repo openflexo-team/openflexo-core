@@ -80,12 +80,14 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterBindingFactory;
 
 /**
- * This is the FML binding factory, which allow to define how to browse inside FML model
+ * This is the FML binding factory, which allow to define how to browse inside FML model<br>
+ * A {@link FMLBindingFactory} should be build using a {@link VirtualModel} which defines the scope of types beeing managed in this
+ * BindingFactory (generally defined for the top-level {@link VirtualModel})
  * 
  * @author sylvain
  *
  */
-// TODO: manage a map for strutural properties (same as for behaviours)
+// TODO: manage a map for structural properties (same as for behaviors)
 public class FMLBindingFactory extends JavaBindingFactory {
 	static final Logger logger = Logger.getLogger(FMLBindingFactory.class.getPackage().getName());
 
@@ -95,14 +97,14 @@ public class FMLBindingFactory extends JavaBindingFactory {
 	public static final String RESOURCE_CENTER = "resourceCenter";
 
 	private final Map<BindingPathElement, Map<Object, SimplePathElement>> storedBindingPathElements;
-	private final ViewPoint viewPoint;
+	private final VirtualModel virtualModel;
 
 	private final Map<BindingPathElement, BehavioursForConcepts> flexoBehaviourPathElements;
 
-	public FMLBindingFactory(ViewPoint viewPoint) {
+	public FMLBindingFactory(VirtualModel virtualModel) {
 		storedBindingPathElements = new HashMap<BindingPathElement, Map<Object, SimplePathElement>>();
 		flexoBehaviourPathElements = new HashMap<BindingPathElement, BehavioursForConcepts>();
-		this.viewPoint = viewPoint;
+		this.virtualModel = virtualModel;
 	}
 
 	protected SimplePathElement getSimplePathElement(Object object, BindingPathElement parent) {
@@ -180,8 +182,8 @@ public class FMLBindingFactory extends JavaBindingFactory {
 				FlexoConcept concept = ((FlexoConceptInstanceType) pType).getFlexoConcept();
 
 				if (concept != null) {
-					/*if (concept instanceof AbstractVirtualModel) {
-						AbstractVirtualModel<?> vm = (AbstractVirtualModel<?>) concept;
+					/*if (concept instanceof VirtualModel) {
+						VirtualModel vm = (VirtualModel) concept;
 						for (ModelSlot<?> ms : vm.getModelSlots()) {
 							returned.add(getSimplePathElement(ms, parent));
 						}
@@ -383,7 +385,7 @@ public class FMLBindingFactory extends JavaBindingFactory {
 		if (function.getName().equals("getFlexoConceptInstance")) {
 			if (TypeUtils.isTypeAssignableFrom(ViewObject.class, parent.getType()) && args.size() == 1 && args.get(0).isStringConstant()) {
 				String flexoConceptId = ((StringConstant) args.get(0).getExpression()).getValue();
-				FlexoConcept ep = viewPoint.getFlexoConcept(flexoConceptId);
+				FlexoConcept ep = virtualModel.getFlexoConcept(flexoConceptId);
 				returned.setType(FlexoConceptInstanceType.getFlexoConceptInstanceType(ep));
 			}
 		}

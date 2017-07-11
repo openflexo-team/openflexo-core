@@ -64,9 +64,9 @@ import org.openflexo.model.annotations.XMLElement;
 @ImplementationClass(AddVirtualModelInstance.AddVirtualModelInstanceImpl.class)
 @XMLElement
 @FML("AddVirtualModelInstance")
-public interface AddVirtualModelInstance extends AddAbstractVirtualModelInstance<VirtualModelInstance> {
+public interface AddVirtualModelInstance extends AddVirtualModelInstance<VirtualModelInstance> {
 
-	public static abstract class AddVirtualModelInstanceImpl extends AddAbstractVirtualModelInstanceImpl<VirtualModelInstance>
+	public static abstract class AddVirtualModelInstanceImpl extends AddVirtualModelInstanceImpl<VirtualModelInstance>
 			implements AddVirtualModelInstance {
 
 		static final Logger logger = Logger.getLogger(AddVirtualModelInstance.class.getPackage().getName());

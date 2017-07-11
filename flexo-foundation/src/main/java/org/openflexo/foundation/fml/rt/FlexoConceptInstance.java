@@ -142,7 +142,7 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 	// @PropertyIdentifier(type = List.class)
 	// public static final String MODEL_SLOT_INSTANCES_KEY = "modelSlotInstances";
 
-	@PropertyIdentifier(type = AbstractVirtualModelInstance.class)
+	@PropertyIdentifier(type = VirtualModelInstance.class)
 	public static final String OWNING_VIRTUAL_MODEL_INSTANCE_KEY = "owningVirtualModelInstance";
 
 	/**
@@ -152,10 +152,10 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 	 * @return
 	 */
 	@Getter(value = OWNING_VIRTUAL_MODEL_INSTANCE_KEY)
-	public abstract AbstractVirtualModelInstance<?, ?> getOwningVirtualModelInstance();
+	public abstract VirtualModelInstance<?, ?> getOwningVirtualModelInstance();
 
 	@Setter(OWNING_VIRTUAL_MODEL_INSTANCE_KEY)
-	public void setOwningVirtualModelInstance(AbstractVirtualModelInstance<?, ?> virtualModelInstance);
+	public void setOwningVirtualModelInstance(VirtualModelInstance<?, ?> virtualModelInstance);
 
 	@Getter(FLEXO_CONCEPT_KEY)
 	public FlexoConcept getFlexoConcept();
@@ -364,7 +364,7 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 	public boolean hasValidRenderer();
 
 	@DeserializationInitializer
-	public void initializeDeserialization(AbstractVirtualModelInstanceModelFactory<?> factory);
+	public void initializeDeserialization(VirtualModelInstanceModelFactory<?> factory);
 
 	@DeserializationFinalizer
 	public void finalizeDeserialization();
@@ -567,7 +567,7 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 			}
 
 			@Override
-			public AbstractVirtualModelInstance<?, ?> getVirtualModelInstance() {
+			public VirtualModelInstance<?, ?> getVirtualModelInstance() {
 				return getFlexoConceptInstance().getOwningVirtualModelInstance();
 			}
 
@@ -1279,7 +1279,7 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 		}
 
 		@Override
-		public AbstractVirtualModelInstance<?, ?> getVirtualModelInstance() {
+		public VirtualModelInstance<?, ?> getVirtualModelInstance() {
 			return getOwningVirtualModelInstance();
 		}
 
@@ -1601,7 +1601,7 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 				container.removeFromEmbeddedFlexoConceptInstances(this);
 			}
 
-			AbstractVirtualModelInstance<?, ?> vmi = getOwningVirtualModelInstance();
+			VirtualModelInstance<?, ?> vmi = getOwningVirtualModelInstance();
 			if (vmi != null) {
 				vmi.removeFromFlexoConceptInstances(this);
 			}
@@ -1698,7 +1698,7 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 		}
 
 		@Override
-		public AbstractVirtualModelInstance<?, ?> getResourceData() {
+		public VirtualModelInstance<?, ?> getResourceData() {
 			return getOwningVirtualModelInstance();
 		}
 
@@ -1843,10 +1843,10 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 			return this;
 		}
 
-		private AbstractVirtualModelInstanceModelFactory<?> deserializationFactory;
+		private VirtualModelInstanceModelFactory<?> deserializationFactory;
 
 		@Override
-		public void initializeDeserialization(AbstractVirtualModelInstanceModelFactory<?> factory) {
+		public void initializeDeserialization(VirtualModelInstanceModelFactory<?> factory) {
 			deserializationFactory = factory;
 		}
 
@@ -1855,7 +1855,7 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 			deserializationFactory = null;
 		}
 
-		public AbstractVirtualModelInstanceModelFactory<?> getDeserializationFactory() {
+		public VirtualModelInstanceModelFactory<?> getDeserializationFactory() {
 			return deserializationFactory;
 		}
 

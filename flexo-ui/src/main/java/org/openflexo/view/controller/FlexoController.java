@@ -115,7 +115,7 @@ import org.openflexo.foundation.action.LoadResourceAction;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.FlexoFacet;
-import org.openflexo.foundation.fml.ViewPointLibrary;
+import org.openflexo.foundation.fml.VirtualModelLibrary;
 import org.openflexo.foundation.fml.action.AbstractCreateFlexoConcept.ParentFlexoConceptEntry;
 import org.openflexo.foundation.fml.action.AbstractCreateVirtualModel.ModelSlotEntry;
 import org.openflexo.foundation.fml.action.CreateFlexoBehaviour.BehaviourParameterEntry;
@@ -2146,7 +2146,7 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 		else if (object instanceof TechnologyAdapterService) {
 			return FMLIconLibrary.TECHNOLOGY_ADAPTER_ICON;
 		}
-		else if (object instanceof ViewPointLibrary) {
+		else if (object instanceof VirtualModelLibrary) {
 			return FMLIconLibrary.VIEWPOINT_LIBRARY_ICON;
 		}
 		else if (object instanceof FMLObject) {

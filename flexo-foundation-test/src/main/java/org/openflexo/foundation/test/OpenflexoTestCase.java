@@ -450,7 +450,7 @@ public abstract class OpenflexoTestCase {
 	protected ValidationReport validate(FMLObject object) {
 
 		try {
-			ValidationReport report = object.getViewPointLibrary().getViewPointValidationModel().validate(object);
+			ValidationReport report = object.getVirtualModelLibrary().getViewPointValidationModel().validate(object);
 
 			for (ValidationError error : report.getErrors()) {
 				System.out.println("Found error: " + error + " details=" + error.getDetailedInformations());

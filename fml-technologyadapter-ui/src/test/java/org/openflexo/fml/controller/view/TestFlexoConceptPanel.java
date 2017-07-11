@@ -52,7 +52,7 @@ import org.openflexo.foundation.DefaultFlexoEditor;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.ViewPoint;
-import org.openflexo.foundation.fml.ViewPointLibrary;
+import org.openflexo.foundation.fml.VirtualModelLibrary;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.action.CreatePrimitiveRole;
 import org.openflexo.gina.swing.utils.FIBJPanel;
@@ -109,7 +109,7 @@ public class TestFlexoConceptPanel extends OpenflexoFIBTestCase {
 	@TestOrder(3)
 	public void loadConcepts() {
 
-		ViewPointLibrary vpLib = serviceManager.getViewPointLibrary();
+		VirtualModelLibrary vpLib = serviceManager.getViewPointLibrary();
 		assertNotNull(vpLib);
 		ViewPoint viewPoint = vpLib.getViewPoint("http://openflexo.org/test/TestViewPointA");
 		assertNotNull(viewPoint);

@@ -44,7 +44,7 @@ import java.util.logging.Logger;
 import org.openflexo.connie.type.PrimitiveType;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.annotations.FML;
-import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstanceModelFactory;
+import org.openflexo.foundation.fml.rt.VirtualModelInstanceModelFactory;
 import org.openflexo.foundation.fml.rt.ActorReference;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
@@ -142,7 +142,7 @@ public interface PrimitiveRole<T> extends FlexoRole<T> {
 
 		@Override
 		public ActorReference<T> makeActorReference(T object, FlexoConceptInstance fci) {
-			AbstractVirtualModelInstanceModelFactory<?> factory = fci.getFactory();
+			VirtualModelInstanceModelFactory<?> factory = fci.getFactory();
 			PrimitiveActorReference<T> returned = factory.newInstance(PrimitiveActorReference.class);
 			returned.setFlexoRole(this);
 			returned.setModellingElement(object);

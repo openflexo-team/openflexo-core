@@ -45,7 +45,7 @@ import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionType;
-import org.openflexo.foundation.fml.AbstractVirtualModel;
+import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.InconsistentFlexoConceptHierarchyException;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
@@ -59,39 +59,39 @@ import org.openflexo.foundation.technologyadapter.UseModelSlotDeclaration;
  *
  */
 @SuppressWarnings("serial")
-public class AddUseDeclaration extends FlexoAction<AddUseDeclaration, AbstractVirtualModel<?>, FMLObject> {
+public class AddUseDeclaration extends FlexoAction<AddUseDeclaration, VirtualModel, FMLObject> {
 
 	private static final Logger logger = Logger.getLogger(AddUseDeclaration.class.getPackage().getName());
 
-	public static FlexoActionType<AddUseDeclaration, AbstractVirtualModel<?>, FMLObject> actionType = new FlexoActionType<AddUseDeclaration, AbstractVirtualModel<?>, FMLObject>(
+	public static FlexoActionType<AddUseDeclaration, VirtualModel, FMLObject> actionType = new FlexoActionType<AddUseDeclaration, VirtualModel, FMLObject>(
 			"declare_use_of_model_slot", FlexoActionType.defaultGroup, FlexoActionType.NORMAL_ACTION_TYPE) {
 
 		/**
 		 * Factory method
 		 */
 		@Override
-		public AddUseDeclaration makeNewAction(AbstractVirtualModel<?> focusedObject, Vector<FMLObject> globalSelection,
+		public AddUseDeclaration makeNewAction(VirtualModel focusedObject, Vector<FMLObject> globalSelection,
 				FlexoEditor editor) {
 			return new AddUseDeclaration(focusedObject, globalSelection, editor);
 		}
 
 		@Override
-		public boolean isVisibleForSelection(AbstractVirtualModel<?> object, Vector<FMLObject> globalSelection) {
+		public boolean isVisibleForSelection(VirtualModel object, Vector<FMLObject> globalSelection) {
 			return object != null;
 		}
 
 		@Override
-		public boolean isEnabledForSelection(AbstractVirtualModel<?> object, Vector<FMLObject> globalSelection) {
+		public boolean isEnabledForSelection(VirtualModel object, Vector<FMLObject> globalSelection) {
 			return isVisibleForSelection(object, globalSelection);
 		}
 
 	};
 
 	static {
-		FlexoObjectImpl.addActionForClass(AddUseDeclaration.actionType, AbstractVirtualModel.class);
+		FlexoObjectImpl.addActionForClass(AddUseDeclaration.actionType, VirtualModel.class);
 	}
 
-	AddUseDeclaration(AbstractVirtualModel<?> focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
+	AddUseDeclaration(VirtualModel focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 	}
 

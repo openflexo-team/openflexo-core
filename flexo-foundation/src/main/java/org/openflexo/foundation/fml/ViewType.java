@@ -141,7 +141,7 @@ public class ViewType extends VirtualModelInstanceType {
 
 		public void setViewPointType(ViewPoint viewPointType) {
 			if (viewPointType != this.viewPointType) {
-				AbstractVirtualModel<?> oldVirtualModelType = this.viewPointType;
+				VirtualModel oldVirtualModelType = this.viewPointType;
 				this.viewPointType = viewPointType;
 				getPropertyChangeSupport().firePropertyChange("viewPointType", oldVirtualModelType, viewPointType);
 			}

@@ -60,7 +60,7 @@ import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.action.NotImplementedException;
-import org.openflexo.foundation.fml.AbstractVirtualModel;
+import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.ActionScheme;
 import org.openflexo.foundation.fml.CloningScheme;
 import org.openflexo.foundation.fml.CreationScheme;
@@ -136,16 +136,16 @@ public class CreateFlexoBehaviour extends FlexoAction<CreateFlexoBehaviour, Flex
 
 		behaviourClassMap = new HashMap<>();
 
-		if (focusedObject instanceof AbstractVirtualModel<?>) {
-			addVirtualModelFlexoBehaviours((AbstractVirtualModel<?>) focusedObject);
+		if (focusedObject instanceof VirtualModel) {
+			addVirtualModelFlexoBehaviours((VirtualModel) focusedObject);
 		}
 		else if (focusedObject instanceof FlexoConcept) {
 			addFlexoConceptFlexoBehaviours((FlexoConcept) focusedObject);
 		}
 		else if (focusedObject instanceof FlexoConceptBehaviouralFacet) {
 			FlexoConcept facetConcept = focusedObject.getFlexoConcept();
-			if (facetConcept instanceof AbstractVirtualModel<?>) {
-				addVirtualModelFlexoBehaviours((AbstractVirtualModel<?>) facetConcept);
+			if (facetConcept instanceof VirtualModel) {
+				addVirtualModelFlexoBehaviours((VirtualModel) facetConcept);
 			}
 			else {
 				addFlexoConceptFlexoBehaviours(facetConcept);
@@ -220,7 +220,7 @@ public class CreateFlexoBehaviour extends FlexoAction<CreateFlexoBehaviour, Flex
 		getPropertyChangeSupport().firePropertyChange("parameterEntries", null, getParameterEntries());
 	}
 
-	private void addVirtualModelFlexoBehaviours(AbstractVirtualModel<?> virtualModel) {
+	private void addVirtualModelFlexoBehaviours(VirtualModel virtualModel) {
 		behaviourClassMap.put(ActionScheme.class, virtualModel.getTechnologyAdapter());
 		behaviourClassMap.put(CloningScheme.class, virtualModel.getTechnologyAdapter());
 		behaviourClassMap.put(CreationScheme.class, virtualModel.getTechnologyAdapter());

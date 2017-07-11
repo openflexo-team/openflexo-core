@@ -48,7 +48,7 @@ import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.fml.rt.View;
 import org.openflexo.foundation.fml.rt.ViewLibrary;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
-import org.openflexo.foundation.fml.rt.rm.AbstractVirtualModelInstanceResource;
+import org.openflexo.foundation.fml.rt.rm.VirtualModelInstanceResource;
 import org.openflexo.foundation.fml.rt.rm.VirtualModelInstanceResource;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
@@ -60,7 +60,7 @@ import org.openflexo.rm.ResourceLocator;
  * 
  */
 @SuppressWarnings("serial")
-public class FIBVirtualModelInstanceResourceSelector extends FIBProjectObjectSelector<AbstractVirtualModelInstanceResource> {
+public class FIBVirtualModelInstanceResourceSelector extends FIBProjectObjectSelector<VirtualModelInstanceResource> {
 
 	static final Logger logger = Logger.getLogger(FIBVirtualModelInstanceResourceSelector.class.getPackage().getName());
 
@@ -93,12 +93,12 @@ public class FIBVirtualModelInstanceResourceSelector extends FIBProjectObjectSel
 	}
 
 	@Override
-	public Class<AbstractVirtualModelInstanceResource> getRepresentedType() {
-		return AbstractVirtualModelInstanceResource.class;
+	public Class<VirtualModelInstanceResource> getRepresentedType() {
+		return VirtualModelInstanceResource.class;
 	}
 
 	@Override
-	public String renderedString(AbstractVirtualModelInstanceResource editedObject) {
+	public String renderedString(VirtualModelInstanceResource editedObject) {
 		if (editedObject != null) {
 			return editedObject.getName();
 		}

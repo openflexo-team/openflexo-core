@@ -42,9 +42,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.fml.AbstractVirtualModel;
+import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.rt.action.ModelSlotInstanceConfiguration;
-import org.openflexo.foundation.fml.rt.rm.AbstractVirtualModelInstanceResource;
+import org.openflexo.foundation.fml.rt.rm.VirtualModelInstanceResource;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 
 /**
@@ -54,13 +54,13 @@ import org.openflexo.foundation.resource.FlexoResourceCenter;
  * @author sylvain
  * 
  */
-public class FMLRTModelSlotInstanceConfiguration<VMI extends AbstractVirtualModelInstance<VMI, VM>, VM extends AbstractVirtualModel<VM>>
+public class FMLRTModelSlotInstanceConfiguration<VMI extends VirtualModelInstance<VMI, VM>, VM extends VirtualModel<VM>>
 		extends ModelSlotInstanceConfiguration<FMLRTModelSlot<VMI, VM>, VMI> {
 
 	private static final Logger logger = Logger.getLogger(FMLRTModelSlotInstanceConfiguration.class.getPackage().getName());
 
 	private final List<ModelSlotInstanceConfigurationOption> options;
-	private AbstractVirtualModelInstanceResource<VMI, VM> addressedVirtualModelInstanceResource;
+	private VirtualModelInstanceResource<VMI, VM> addressedVirtualModelInstanceResource;
 
 	protected FMLRTModelSlotInstanceConfiguration(FMLRTModelSlot<VMI, VM> ms, FlexoConceptInstance fci, FlexoResourceCenter<?> rc) {
 		super(ms, fci, rc);
@@ -84,7 +84,7 @@ public class FMLRTModelSlotInstanceConfiguration<VMI extends AbstractVirtualMode
 
 	@Override
 	public ModelSlotInstance<FMLRTModelSlot<VMI, VM>, VMI> createModelSlotInstance(FlexoConceptInstance fci, View view) {
-		AbstractVirtualModelInstanceModelFactory<?> factory = fci.getFactory();
+		VirtualModelInstanceModelFactory<?> factory = fci.getFactory();
 		VirtualModelModelSlotInstance returned = factory.newInstance(VirtualModelModelSlotInstance.class);
 		returned.setModelSlot(getModelSlot());
 		returned.setFlexoConceptInstance(fci);
@@ -97,14 +97,14 @@ public class FMLRTModelSlotInstanceConfiguration<VMI extends AbstractVirtualMode
 		return returned;
 	}
 
-	public AbstractVirtualModelInstanceResource<VMI, VM> getAddressedVirtualModelInstanceResource() {
+	public VirtualModelInstanceResource<VMI, VM> getAddressedVirtualModelInstanceResource() {
 		return addressedVirtualModelInstanceResource;
 	}
 
 	public void setAddressedVirtualModelInstanceResource(
-			AbstractVirtualModelInstanceResource<VMI, VM> addressedVirtualModelInstanceResource) {
+			VirtualModelInstanceResource<VMI, VM> addressedVirtualModelInstanceResource) {
 		if (this.addressedVirtualModelInstanceResource != addressedVirtualModelInstanceResource) {
-			AbstractVirtualModelInstanceResource<VMI, VM> oldValue = this.addressedVirtualModelInstanceResource;
+			VirtualModelInstanceResource<VMI, VM> oldValue = this.addressedVirtualModelInstanceResource;
 			this.addressedVirtualModelInstanceResource = addressedVirtualModelInstanceResource;
 			getPropertyChangeSupport().firePropertyChange("addressedVirtualModelInstanceResource", oldValue,
 					addressedVirtualModelInstanceResource);
@@ -141,7 +141,7 @@ public class FMLRTModelSlotInstanceConfiguration<VMI extends AbstractVirtualMode
 	}
 
 	@Override
-	public AbstractVirtualModelInstanceResource<VMI, VM> getResource() {
+	public VirtualModelInstanceResource<VMI, VM> getResource() {
 		return getAddressedVirtualModelInstanceResource();
 	}
 

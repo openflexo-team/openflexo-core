@@ -65,12 +65,12 @@ public interface FlexoConceptObject extends FMLObject {
 	public FlexoConcept getFlexoConcept();
 
 	/**
-	 * Return the {@link AbstractVirtualModel} in which {@link FlexoConcept} of this {@link FMLObject} is defined
+	 * Return the {@link VirtualModel} in which {@link FlexoConcept} of this {@link FMLObject} is defined
 	 * 
 	 * @return
 	 */
 	// TODO harmonize with Get Owner from FlexoConcept
-	public AbstractVirtualModel<?> getOwningVirtualModel();
+	public VirtualModel getOwningVirtualModel();
 
 	/**
 	 * Build and return a String encoding this {@link FMLObject} in FML textual language
@@ -88,7 +88,7 @@ public interface FlexoConceptObject extends FMLObject {
 			if (getOwningVirtualModel() != null) {
 				return getOwningVirtualModel().getFMLModelFactory();
 			}
-			if (getFlexoConcept() instanceof AbstractVirtualModel) {
+			if (getFlexoConcept() instanceof VirtualModel) {
 				return getFlexoConcept().getFMLModelFactory();
 			}
 			return getDeserializationFactory();
@@ -103,12 +103,9 @@ public interface FlexoConceptObject extends FMLObject {
 		public abstract FlexoConcept getFlexoConcept();
 
 		@Override
-		public AbstractVirtualModel<?> getResourceData() {
+		public VirtualModel getResourceData() {
 			if (this instanceof VirtualModelObject) {
 				return ((VirtualModelObject) this).getVirtualModel();
-			}
-			if (getFlexoConcept() instanceof AbstractVirtualModel) {
-				return (AbstractVirtualModel<?>) getFlexoConcept();
 			}
 			if (getFlexoConcept() != null && getFlexoConcept().getOwner() != null) {
 				return getFlexoConcept().getOwner();
@@ -117,7 +114,7 @@ public interface FlexoConceptObject extends FMLObject {
 		}
 
 		@Override
-		public AbstractVirtualModel<?> getOwningVirtualModel() {
+		public VirtualModel getOwningVirtualModel() {
 			if (getFlexoConcept() != null) {
 				return getFlexoConcept().getOwner();
 			}

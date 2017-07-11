@@ -52,7 +52,7 @@ import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
-import org.openflexo.foundation.fml.AbstractVirtualModel;
+import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.CreationScheme;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
@@ -347,8 +347,8 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 				String oldURI = _getCreationSchemeURI();
 				CreationScheme oldCS = getCreationScheme();
 				_creationSchemeURI = uri;
-				if (getViewPointLibrary() != null) {
-					creationScheme = (CreationScheme) getViewPointLibrary().getFlexoBehaviour(uri, true);
+				if (getVirtualModelLibrary() != null) {
+					creationScheme = (CreationScheme) getVirtualModelLibrary().getFlexoBehaviour(uri, true);
 				}
 				fireCreationSchemeChange(oldCS, getCreationScheme());
 				getPropertyChangeSupport().firePropertyChange(CREATION_SCHEME_URI_KEY, oldURI, uri);
@@ -394,8 +394,8 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 			}
 			 */
 
-			if (creationScheme == null && _creationSchemeURI != null && getViewPointLibrary() != null) {
-				creationScheme = (CreationScheme) getViewPointLibrary().getFlexoBehaviour(_creationSchemeURI, true);
+			if (creationScheme == null && _creationSchemeURI != null && getVirtualModelLibrary() != null) {
+				creationScheme = (CreationScheme) getVirtualModelLibrary().getFlexoBehaviour(_creationSchemeURI, true);
 			}
 			return creationScheme;
 		}
@@ -869,8 +869,8 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 							}
 						}
 
-						if (object.getRootOwner().getFlexoConcept() instanceof AbstractVirtualModel) {
-							for (FMLRTModelSlot ms : ((AbstractVirtualModel<?>) object.getRootOwner().getFlexoConcept())
+						if (object.getRootOwner().getFlexoConcept() instanceof VirtualModel) {
+							for (FMLRTModelSlot ms : ((VirtualModel) object.getRootOwner().getFlexoConcept())
 									.getModelSlots(FMLRTModelSlot.class)) {
 								// System.out.println("modelSlot " + ms + " vm=" + ms.getAddressedVirtualModel());
 								if (object.getFlexoConceptType().getVirtualModel().isAssignableFrom(ms.getAccessedVirtualModel())) {

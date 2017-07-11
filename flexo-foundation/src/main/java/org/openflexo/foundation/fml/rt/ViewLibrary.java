@@ -43,7 +43,7 @@ import java.util.List;
 import java.util.logging.Logger;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.FlexoServiceManager;
-import org.openflexo.foundation.fml.rt.rm.AbstractVirtualModelInstanceResource;
+import org.openflexo.foundation.fml.rt.rm.VirtualModelInstanceResource;
 import org.openflexo.foundation.fml.rt.rm.ViewResource;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 
@@ -150,7 +150,7 @@ public class ViewLibrary<I> extends ViewRepository<I> {
 		return getResource(viewURI);
 	}
 
-	public AbstractVirtualModelInstanceResource<?, ?> getVirtualModelInstance(String virtualModelInstanceURI) {
+	public VirtualModelInstanceResource<?, ?> getVirtualModelInstance(String virtualModelInstanceURI) {
 		if (virtualModelInstanceURI == null) {
 			return null;
 		}
@@ -162,7 +162,7 @@ public class ViewLibrary<I> extends ViewRepository<I> {
 		// System.out.println("lookup view " + viewURI);
 		ViewResource vr = getView(viewURI);
 		if (vr != null) {
-			for (AbstractVirtualModelInstanceResource<?, ?> vmir : vr.getContents(AbstractVirtualModelInstanceResource.class)) {
+			for (VirtualModelInstanceResource<?, ?> vmir : vr.getContents(VirtualModelInstanceResource.class)) {
 				if (vmir.getURI().equals(virtualModelInstanceURI)) {
 					// System.out.println("Found " + vmir.getURI());
 					return vmir;

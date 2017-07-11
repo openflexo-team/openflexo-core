@@ -393,7 +393,7 @@ public class TestVirtualModelInstanceIndexes extends OpenflexoProjectAtRunTimeTe
 		SelectFlexoConceptInstance selectFlexoConceptInstance = (SelectFlexoConceptInstance) createSelectFlexoConceptInstanceAction
 				.getBaseEditionAction();
 		selectFlexoConceptInstance.setFlexoConceptType(flexoConcept);
-		selectFlexoConceptInstance.setReceiver(new DataBinding<AbstractVirtualModelInstance<?, ?>>("virtualModelInstance"));
+		selectFlexoConceptInstance.setReceiver(new DataBinding<VirtualModelInstance<?, ?>>("virtualModelInstance"));
 
 		for (String conditionExpression : conditionExpressions) {
 			FetchRequestCondition condition = selectFlexoConceptInstance.createCondition();

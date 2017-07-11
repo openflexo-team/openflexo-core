@@ -45,7 +45,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.action.FlexoActionType;
-import org.openflexo.foundation.fml.AbstractVirtualModel;
+import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoRole;
@@ -338,7 +338,7 @@ public abstract class AbstractDeclareInFlexoConcept<A extends AbstractDeclareInF
 	 * 
 	 * @return
 	 */
-	public AbstractVirtualModel<?> getAdressedVirtualModel() {
+	public VirtualModel getAdressedVirtualModel() {
 		if (isVirtualModelModelSlot()) {
 			FMLRTModelSlot<?, ?> virtualModelModelSlot = (FMLRTModelSlot<?, ?>) getInformationSourceModelSlot();
 			return virtualModelModelSlot.getAccessedVirtualModel();

@@ -42,7 +42,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.components.widget.FIBTechnologyBrowser;
 import org.openflexo.foundation.FlexoObject;
-import org.openflexo.foundation.fml.AbstractVirtualModel;
+import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
@@ -67,8 +67,8 @@ public class FIBViewPointLibraryBrowser extends FIBTechnologyBrowser<FMLTechnolo
 	@Override
 	public void fireObjectSelected(FlexoObject object) {
 		//System.out.println("FIBViewPointLibraryBrowser / fireObjectSelected: " + object);
-		if (object instanceof AbstractVirtualModel) {
-			getFIBView().getController().objectAddedToSelection(((AbstractVirtualModel) object).getResource());
+		if (object instanceof VirtualModel) {
+			getFIBView().getController().objectAddedToSelection(((VirtualModel) object).getResource());
 		}
 		else {
 			super.fireObjectSelected(object);
@@ -101,7 +101,7 @@ public class FIBViewPointLibraryBrowser extends FIBTechnologyBrowser<FMLTechnolo
 				return null;
 			}
 		};
-		final ViewPointLibrary viewPointLibrary = serviceManager.getViewPointLibrary();
+		final VirtualModelLibrary viewPointLibrary = serviceManager.getViewPointLibrary();
 	
 		// System.out.println("Resource centers=" + viewPointLibrary.getResourceCenterService().getResourceCenters());
 		// System.exit(-1);

@@ -44,8 +44,8 @@ import java.util.logging.Logger;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.annotations.FML;
-import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
-import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstanceModelFactory;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
+import org.openflexo.foundation.fml.rt.VirtualModelInstanceModelFactory;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.ModelObjectActorReference;
@@ -98,16 +98,16 @@ public interface FlexoConceptInstanceRole extends FlexoRole<FlexoConceptInstance
 	public void setFlexoConceptType(FlexoConcept flexoConceptType);
 
 	/**
-	 * This binding define the {@link AbstractVirtualModelInstance} where addressed {@link FlexoConceptInstance} "lives"
+	 * This binding define the {@link VirtualModelInstance} where addressed {@link FlexoConceptInstance} "lives"
 	 * 
 	 * @return
 	 */
 	@Getter(value = VIRTUAL_MODEL_INSTANCE_KEY)
 	@XMLAttribute
-	public DataBinding<AbstractVirtualModelInstance<?, ?>> getVirtualModelInstance();
+	public DataBinding<VirtualModelInstance<?, ?>> getVirtualModelInstance();
 
 	@Setter(VIRTUAL_MODEL_INSTANCE_KEY)
-	public void setVirtualModelInstance(DataBinding<AbstractVirtualModelInstance<?, ?>> virtualModelInstance);
+	public void setVirtualModelInstance(DataBinding<VirtualModelInstance<?, ?>> virtualModelInstance);
 
 	/**
 	 * Return type of VirtualModel where this role may access to a FlexoConceptInstance<br>
@@ -115,7 +115,7 @@ public interface FlexoConceptInstanceRole extends FlexoRole<FlexoConceptInstance
 	 * 
 	 * @return
 	 */
-	public AbstractVirtualModel<?> getVirtualModelType();
+	public VirtualModel getVirtualModelType();
 
 	/*public FMLRTModelSlot<?, ?> getVirtualModelModelSlot();
 	
@@ -183,8 +183,8 @@ public interface FlexoConceptInstanceRole extends FlexoRole<FlexoConceptInstance
 			if (getCreationScheme() != null) {
 				return getCreationScheme().getFlexoConcept();
 			}
-			if (flexoConceptType == null && _flexoConceptTypeURI != null && getViewPointLibrary() != null) {
-				flexoConceptType = getViewPointLibrary().getFlexoConcept(_flexoConceptTypeURI, false);
+			if (flexoConceptType == null && _flexoConceptTypeURI != null && getVirtualModelLibrary() != null) {
+				flexoConceptType = getVirtualModelLibrary().getFlexoConcept(_flexoConceptTypeURI, false);
 			}
 			return flexoConceptType;
 		}
@@ -208,8 +208,8 @@ public interface FlexoConceptInstanceRole extends FlexoRole<FlexoConceptInstance
 		@Override
 		public void finalizeDeserialization() {
 			super.finalizeDeserialization();
-			if (flexoConceptType == null && _flexoConceptTypeURI != null && getViewPointLibrary() != null) {
-				flexoConceptType = getViewPointLibrary().getFlexoConcept(_flexoConceptTypeURI, true);
+			if (flexoConceptType == null && _flexoConceptTypeURI != null && getVirtualModelLibrary() != null) {
+				flexoConceptType = getVirtualModelLibrary().getFlexoConcept(_flexoConceptTypeURI, true);
 			}
 		}
 
@@ -223,8 +223,8 @@ public interface FlexoConceptInstanceRole extends FlexoRole<FlexoConceptInstance
 
 		@Override
 		public void _setCreationSchemeURI(String uri) {
-			if (getViewPointLibrary() != null) {
-				creationScheme = (CreationScheme) getViewPointLibrary().getFlexoBehaviour(uri, true);
+			if (getVirtualModelLibrary() != null) {
+				creationScheme = (CreationScheme) getVirtualModelLibrary().getFlexoBehaviour(uri, true);
 				/*for (FlexoBehaviour s : getFlexoConcept().getFlexoBehaviours()) {
 					s.updateBindingModels();
 				}*/
@@ -250,8 +250,8 @@ public interface FlexoConceptInstanceRole extends FlexoRole<FlexoConceptInstance
 
 		@Override
 		public CreationScheme getCreationScheme() {
-			if (creationScheme == null && _creationSchemeURI != null && getViewPointLibrary() != null) {
-				creationScheme = (CreationScheme) getViewPointLibrary().getFlexoBehaviour(_creationSchemeURI, true);
+			if (creationScheme == null && _creationSchemeURI != null && getVirtualModelLibrary() != null) {
+				creationScheme = (CreationScheme) getVirtualModelLibrary().getFlexoBehaviour(_creationSchemeURI, true);
 			}
 			return creationScheme;
 		}
@@ -280,7 +280,7 @@ public interface FlexoConceptInstanceRole extends FlexoRole<FlexoConceptInstance
 
 		@Override
 		public ModelObjectActorReference<FlexoConceptInstance> makeActorReference(FlexoConceptInstance object, FlexoConceptInstance epi) {
-			AbstractVirtualModelInstanceModelFactory<?> factory = epi.getFactory();
+			VirtualModelInstanceModelFactory<?> factory = epi.getFactory();
 			ModelObjectActorReference<FlexoConceptInstance> returned = factory.newInstance(ModelObjectActorReference.class);
 			returned.setFlexoRole(this);
 			returned.setFlexoConceptInstance(epi);
@@ -304,23 +304,23 @@ public interface FlexoConceptInstanceRole extends FlexoRole<FlexoConceptInstance
 			setModelSlot(modelSlot);
 		}*/
 
-		private DataBinding<AbstractVirtualModelInstance<?, ?>> virtualModelInstance;
+		private DataBinding<VirtualModelInstance<?, ?>> virtualModelInstance;
 
 		@Override
-		public DataBinding<AbstractVirtualModelInstance<?, ?>> getVirtualModelInstance() {
+		public DataBinding<VirtualModelInstance<?, ?>> getVirtualModelInstance() {
 			if (virtualModelInstance == null) {
-				virtualModelInstance = new DataBinding<AbstractVirtualModelInstance<?, ?>>(this, AbstractVirtualModelInstance.class,
+				virtualModelInstance = new DataBinding<VirtualModelInstance<?, ?>>(this, VirtualModelInstance.class,
 						DataBinding.BindingDefinitionType.GET);
 			}
 			return virtualModelInstance;
 		}
 
 		@Override
-		public void setVirtualModelInstance(DataBinding<AbstractVirtualModelInstance<?, ?>> aVirtualModelInstance) {
+		public void setVirtualModelInstance(DataBinding<VirtualModelInstance<?, ?>> aVirtualModelInstance) {
 			if (aVirtualModelInstance != null) {
 				aVirtualModelInstance.setOwner(this);
 				aVirtualModelInstance.setBindingName("virtualModelInstance");
-				aVirtualModelInstance.setDeclaredType(AbstractVirtualModelInstance.class);
+				aVirtualModelInstance.setDeclaredType(VirtualModelInstance.class);
 				aVirtualModelInstance.setBindingDefinitionType(DataBinding.BindingDefinitionType.GET);
 			}
 			if (this.virtualModelInstance != aVirtualModelInstance) {
@@ -355,7 +355,7 @@ public interface FlexoConceptInstanceRole extends FlexoRole<FlexoConceptInstance
 		 * @return
 		 */
 		@Override
-		public AbstractVirtualModel<?> getVirtualModelType() {
+		public VirtualModel getVirtualModelType() {
 			if (getVirtualModelInstance() != null && getVirtualModelInstance().isSet() && getVirtualModelInstance().isValid()) {
 				Type type = getVirtualModelInstance().getAnalyzedType();
 				if (type instanceof VirtualModelInstanceType) {

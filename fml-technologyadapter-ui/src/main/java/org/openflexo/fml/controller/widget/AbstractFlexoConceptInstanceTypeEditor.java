@@ -44,11 +44,11 @@ import java.util.List;
 import org.openflexo.components.widget.DefaultCustomTypeEditorImpl;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoServiceManager;
-import org.openflexo.foundation.fml.AbstractVirtualModel;
+import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.ViewPoint;
-import org.openflexo.foundation.fml.ViewPointLibrary;
+import org.openflexo.foundation.fml.VirtualModelLibrary;
 import org.openflexo.gina.model.widget.FIBCustom.FIBCustomComponent.CustomComponentParameter;
 
 /**
@@ -73,7 +73,7 @@ public abstract class AbstractFlexoConceptInstanceTypeEditor<T extends FlexoConc
 		return false;
 	}
 
-	public ViewPointLibrary getViewPointLibrary() {
+	public VirtualModelLibrary getViewPointLibrary() {
 		if (getServiceManager() != null) {
 			return getServiceManager().getViewPointLibrary();
 		}
@@ -95,14 +95,14 @@ public abstract class AbstractFlexoConceptInstanceTypeEditor<T extends FlexoConc
 		}
 	}
 
-	private AbstractVirtualModel<?> virtualModel;
+	private VirtualModel virtualModel;
 
-	public AbstractVirtualModel<?> getVirtualModel() {
+	public VirtualModel getVirtualModel() {
 		return virtualModel;
 	}
 
 	@CustomComponentParameter(name = "virtualModel", type = CustomComponentParameter.Type.OPTIONAL)
-	public void setVirtualModel(AbstractVirtualModel<?> virtualModel) {
+	public void setVirtualModel(VirtualModel virtualModel) {
 
 		if (this.virtualModel != virtualModel) {
 			FlexoObject oldRoot = getRootObject();

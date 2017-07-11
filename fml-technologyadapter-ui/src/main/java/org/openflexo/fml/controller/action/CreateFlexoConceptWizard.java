@@ -44,7 +44,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.ApplicationContext;
 import org.openflexo.components.wizard.WizardStep;
-import org.openflexo.foundation.fml.AbstractVirtualModel;
+import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.action.AbstractCreateFlexoConcept.ParentFlexoConceptEntry;
@@ -121,7 +121,7 @@ public class CreateFlexoConceptWizard extends AbstractCreateFlexoConceptWizard<C
 			return CreateFlexoConceptWizard.this.getAction();
 		}
 
-		public AbstractVirtualModel<?> getVirtualModel() {
+		public VirtualModel getVirtualModel() {
 			return getAction().getFocusedObject();
 		}
 

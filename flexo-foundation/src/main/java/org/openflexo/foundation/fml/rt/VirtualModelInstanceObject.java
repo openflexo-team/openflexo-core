@@ -42,7 +42,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.InnerResourceData;
 import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.rt.rm.AbstractVirtualModelInstanceResource;
+import org.openflexo.foundation.fml.rt.rm.VirtualModelInstanceResource;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.ResourceData;
@@ -60,7 +60,7 @@ import org.openflexo.model.annotations.PropertyIdentifier;
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(VirtualModelInstanceObject.VirtualModelInstanceObjectImpl.class)
-public interface VirtualModelInstanceObject extends ViewObject, InnerResourceData<AbstractVirtualModelInstance<?, ?>> {
+public interface VirtualModelInstanceObject extends ViewObject, InnerResourceData<VirtualModelInstance<?, ?>> {
 
 	@PropertyIdentifier(type = VirtualModelInstance.class)
 	public static final String VIRTUAL_MODEL_INSTANCE_KEY = "virtualModelInstance";
@@ -71,12 +71,12 @@ public interface VirtualModelInstanceObject extends ViewObject, InnerResourceDat
 	 * @return
 	 */
 	@Getter(value = VIRTUAL_MODEL_INSTANCE_KEY)
-	public abstract AbstractVirtualModelInstance<?, ?> getVirtualModelInstance();
+	public abstract VirtualModelInstance<?, ?> getVirtualModelInstance();
 
 	// @Setter(VIRTUAL_MODEL_INSTANCE_KEY)
-	// public void setVirtualModelInstance(AbstractVirtualModelInstance<?, ?> virtualModelInstance);
+	// public void setVirtualModelInstance(VirtualModelInstance<?, ?> virtualModelInstance);
 
-	public AbstractVirtualModelInstanceModelFactory<?> getFactory();
+	public VirtualModelInstanceModelFactory<?> getFactory();
 
 	public abstract class VirtualModelInstanceObjectImpl extends ViewObjectImpl implements VirtualModelInstanceObject {
 
@@ -88,7 +88,7 @@ public interface VirtualModelInstanceObject extends ViewObject, InnerResourceDat
 		 * @return
 		 */
 		@Override
-		public abstract AbstractVirtualModelInstance<?, ?> getVirtualModelInstance();
+		public abstract VirtualModelInstance<?, ?> getVirtualModelInstance();
 
 		/**
 		 * Return the {@link View} where this object is declared and living
@@ -110,7 +110,7 @@ public interface VirtualModelInstanceObject extends ViewObject, InnerResourceDat
 		 */
 		@Override
 		public FlexoResourceCenter<?> getResourceCenter() {
-			AbstractVirtualModelInstance<?, ?> virtualModelInstance = getVirtualModelInstance();
+			VirtualModelInstance<?, ?> virtualModelInstance = getVirtualModelInstance();
 			if (virtualModelInstance == null)
 				return null;
 			FlexoResource<?> resource = virtualModelInstance.getResource();
@@ -126,14 +126,14 @@ public interface VirtualModelInstanceObject extends ViewObject, InnerResourceDat
 		 * @return
 		 */
 		@Override
-		public AbstractVirtualModelInstance<?, ?> getResourceData() {
+		public VirtualModelInstance<?, ?> getResourceData() {
 			return getVirtualModelInstance();
 		}
 
 		@Override
-		public AbstractVirtualModelInstanceModelFactory<?> getFactory() {
+		public VirtualModelInstanceModelFactory<?> getFactory() {
 			if (getVirtualModelInstance() != null && getVirtualModelInstance().getResource() != null) {
-				return ((AbstractVirtualModelInstanceResource<?, ?>) getVirtualModelInstance().getResource()).getFactory();
+				return ((VirtualModelInstanceResource<?, ?>) getVirtualModelInstance().getResource()).getFactory();
 			}
 			return null;
 		}

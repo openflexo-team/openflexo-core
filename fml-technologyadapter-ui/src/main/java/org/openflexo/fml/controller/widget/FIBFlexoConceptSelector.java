@@ -44,10 +44,10 @@ import java.util.logging.Logger;
 
 import org.openflexo.components.widget.FIBFlexoObjectSelector;
 import org.openflexo.foundation.FlexoObject;
-import org.openflexo.foundation.fml.AbstractVirtualModel;
+import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.ViewPoint;
-import org.openflexo.foundation.fml.ViewPointLibrary;
+import org.openflexo.foundation.fml.VirtualModelLibrary;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
 
@@ -71,7 +71,7 @@ public class FIBFlexoConceptSelector extends FIBFlexoObjectSelector<FlexoConcept
 	@Override
 	public void delete() {
 		super.delete();
-		viewPointLibrary = null;
+		virtualModelLibrary = null;
 	}
 
 	@Override
@@ -92,15 +92,15 @@ public class FIBFlexoConceptSelector extends FIBFlexoObjectSelector<FlexoConcept
 		return "";
 	}
 
-	private ViewPointLibrary viewPointLibrary;
+	private VirtualModelLibrary virtualModelLibrary;
 
-	public ViewPointLibrary getViewPointLibrary() {
-		return viewPointLibrary;
+	public VirtualModelLibrary getViewPointLibrary() {
+		return virtualModelLibrary;
 	}
 
-	@CustomComponentParameter(name = "viewPointLibrary", type = CustomComponentParameter.Type.MANDATORY)
-	public void setViewPointLibrary(ViewPointLibrary viewPointLibrary) {
-		this.viewPointLibrary = viewPointLibrary;
+	@CustomComponentParameter(name = "virtualModelLibrary", type = CustomComponentParameter.Type.MANDATORY)
+	public void setViewPointLibrary(VirtualModelLibrary virtualModelLibrary) {
+		this.virtualModelLibrary = virtualModelLibrary;
 	}
 
 	private ViewPoint viewPoint;
@@ -118,14 +118,14 @@ public class FIBFlexoConceptSelector extends FIBFlexoObjectSelector<FlexoConcept
 		}
 	}
 
-	private AbstractVirtualModel<?> virtualModel;
+	private VirtualModel virtualModel;
 
-	public AbstractVirtualModel<?> getVirtualModel() {
+	public VirtualModel getVirtualModel() {
 		return virtualModel;
 	}
 
 	@CustomComponentParameter(name = "virtualModel", type = CustomComponentParameter.Type.OPTIONAL)
-	public void setVirtualModel(AbstractVirtualModel<?> virtualModel) {
+	public void setVirtualModel(VirtualModel virtualModel) {
 
 		if (this.virtualModel != virtualModel) {
 			FlexoObject oldRoot = getRootObject();
@@ -134,15 +134,15 @@ public class FIBFlexoConceptSelector extends FIBFlexoObjectSelector<FlexoConcept
 		}
 	}
 
-	private AbstractVirtualModel<?> inheritingContext;
+	private VirtualModel inheritingContext;
 
-	public AbstractVirtualModel<?> getInheritingContext() {
+	public VirtualModel getInheritingContext() {
 		return inheritingContext;
 	}
 
-	public void setInheritingContext(AbstractVirtualModel<?> inheritingContext) {
+	public void setInheritingContext(VirtualModel inheritingContext) {
 		if (this.inheritingContext != inheritingContext) {
-			AbstractVirtualModel<?> oldValue = this.inheritingContext;
+			VirtualModel oldValue = this.inheritingContext;
 			this.inheritingContext = inheritingContext;
 			getPropertyChangeSupport().firePropertyChange("inheritingContext", oldValue, inheritingContext);
 		}
@@ -170,21 +170,21 @@ public class FIBFlexoConceptSelector extends FIBFlexoObjectSelector<FlexoConcept
 	}
 
 	private FlexoObject getInheritingContextRoot() {
-		List<AbstractVirtualModel<?>> vmList = new ArrayList<>();
+		List<VirtualModel> vmList = new ArrayList<>();
 		appendInheritingVirtualModels(getInheritingContext(), vmList);
-		AbstractVirtualModel<?> returned = getInheritingContext();
-		for (AbstractVirtualModel<?> vm : vmList) {
+		VirtualModel returned = getInheritingContext();
+		for (VirtualModel vm : vmList) {
 			returned = getMostSpecializedContainer(returned, vm);
 		}
 		if (returned == null) {
-			return getInheritingContext().getViewPointLibrary();
+			return getInheritingContext().getVirtualModelLibrary();
 		}
 		else {
 			return returned;
 		}
 	}
 
-	private AbstractVirtualModel<?> getMostSpecializedContainer(AbstractVirtualModel<?> vm1, AbstractVirtualModel<?> vm2) {
+	private VirtualModel getMostSpecializedContainer(VirtualModel vm1, VirtualModel vm2) {
 		if (vm1 == null || vm2 == null) {
 			return null;
 		}
@@ -198,12 +198,12 @@ public class FIBFlexoConceptSelector extends FIBFlexoObjectSelector<FlexoConcept
 		return null;
 	}
 
-	private void appendInheritingVirtualModels(AbstractVirtualModel<?> vm, List<AbstractVirtualModel<?>> vmList) {
+	private void appendInheritingVirtualModels(VirtualModel vm, List<VirtualModel> vmList) {
 		if (vm != null) {
 			vmList.add(vm);
 			for (FlexoConcept parent : vm.getParentFlexoConcepts()) {
-				if (parent instanceof AbstractVirtualModel) {
-					appendInheritingVirtualModels((AbstractVirtualModel<?>) parent, vmList);
+				if (parent instanceof VirtualModel) {
+					appendInheritingVirtualModels((VirtualModel) parent, vmList);
 				}
 			}
 		}

@@ -105,7 +105,7 @@ import org.openflexo.toolbox.StringUtils;
 @Imports({ @Import(FlexoEvent.class) })
 public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 
-	@PropertyIdentifier(type = AbstractVirtualModel.class)
+	@PropertyIdentifier(type = VirtualModel.class)
 	public static final String OWNER_KEY = "owner";
 	@PropertyIdentifier(type = String.class)
 	public static final String NAME_KEY = "name";
@@ -133,10 +133,10 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 	// TODO: (SGU) i think we have to remove inverse property here
 	@Getter(value = OWNER_KEY, inverse = VirtualModel.FLEXO_CONCEPTS_KEY)
 	@CloningStrategy(StrategyType.IGNORE)
-	public AbstractVirtualModel<?> getOwner();
+	public VirtualModel getOwner();
 
 	@Setter(OWNER_KEY)
-	public void setOwner(AbstractVirtualModel<?> virtualModel);
+	public void setOwner(VirtualModel virtualModel);
 
 	@Override
 	@Getter(value = NAME_KEY)
@@ -531,7 +531,7 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 		private List<FlexoProperty<?>> accessibleProperties;
 
 		@Override
-		public AbstractVirtualModel<?> getVirtualModel() {
+		public VirtualModel getVirtualModel() {
 			return getOwner();
 		}
 
@@ -613,9 +613,10 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 
 		/**
 		 * Return the URI of the {@link FlexoConcept}<br>
-		 * The convention for URI are following: <viewpoint_uri>/<virtual_model_name >#<flexo_concept_name>.<edition_scheme_name> <br>
+		 * The convention for URI are following: <container_virtual_model_uri>/<virtual_model_name >#<flexo_concept_name>.<behaviour_name>
 		 * eg<br>
-		 * http://www.mydomain.org/MyViewPoint/MyVirtualModel#MyFlexoConcept. MyEditionScheme
+		 * http://www.mydomain.org/MyVirtuaModel1/MyVirtualModel2#MyFlexoConcept.MyProperty
+		 * http://www.mydomain.org/MyVirtuaModel1/MyVirtualModel2#MyFlexoConcept.MyBehaviour
 		 * 
 		 * @return String representing unique URI of this object
 		 */
@@ -1323,7 +1324,7 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 		}
 
 		@Override
-		public void setOwner(AbstractVirtualModel<?> virtualModel) {
+		public void setOwner(VirtualModel virtualModel) {
 			performSuperSetter(OWNER_KEY, virtualModel);
 			clearAccessiblePropertiesCache();
 		}
@@ -1406,14 +1407,14 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 		private boolean isDecodingParentFlexoConceptList = false;
 
 		private void decodeParentFlexoConceptList(boolean loadWhenRequired) {
-			if (parentFlexoConceptList != null && getViewPointLibrary() != null && !isDecodingParentFlexoConceptList) {
+			if (parentFlexoConceptList != null && getVirtualModelLibrary() != null && !isDecodingParentFlexoConceptList) {
 				isDecodingParentFlexoConceptList = true;
 				StringTokenizer st = new StringTokenizer(parentFlexoConceptList, ",");
 				List<FlexoConcept> parentConcepts = new ArrayList<>();
 				boolean someConceptsWereNotDecoded = false;
 				while (st.hasMoreTokens()) {
 					String conceptURI = st.nextToken();
-					FlexoConcept concept = getViewPointLibrary().getFlexoConcept(conceptURI, loadWhenRequired);
+					FlexoConcept concept = getVirtualModelLibrary().getFlexoConcept(conceptURI, loadWhenRequired);
 					if (concept != null) {
 						parentConcepts.add(concept);
 					}
@@ -1445,7 +1446,7 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 
 		@Override
 		public List<FlexoConcept> getParentFlexoConcepts() {
-			if (parentFlexoConceptList != null && getViewPointLibrary() != null) {
+			if (parentFlexoConceptList != null && getVirtualModelLibrary() != null) {
 				decodeParentFlexoConceptList(!isDeserializing());
 			}
 			return parentFlexoConcepts;
@@ -1615,7 +1616,7 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 
 		@Override
 		public ValidationIssue<NonAbstractFlexoConceptShouldHaveProperties, FlexoConcept> applyValidation(FlexoConcept flexoConcept) {
-			if (!(flexoConcept instanceof AbstractVirtualModel) && flexoConcept.getDeclaredProperties().size() == 0) {
+			if (!(flexoConcept instanceof VirtualModel) && flexoConcept.getDeclaredProperties().size() == 0) {
 				return new ValidationWarning<>(this, flexoConcept, "non_abstract_flexo_concept_role_does_not_define_any_property");
 			}
 			return null;

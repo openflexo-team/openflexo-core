@@ -38,18 +38,18 @@
 
 package org.openflexo.foundation.fml.rt;
 
-import org.openflexo.foundation.fml.AbstractVirtualModel;
+import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.nature.FlexoNature;
 
 /**
  * Interface defining the nature of a {@link VirtualModelInstance}<br>
  * 
- * A {@link AbstractVirtualModelInstanceNature} might be seen as an interpretation of a given {@link VirtualModelInstance}
+ * A {@link VirtualModelInstanceNature} might be seen as an interpretation of a given {@link VirtualModelInstance}
  * 
  * @author sylvain
  * 
  */
-public interface AbstractVirtualModelInstanceNature<VMI extends AbstractVirtualModelInstance<VMI, VM>, VM extends AbstractVirtualModel<VM>>
+public interface VirtualModelInstanceNature<VMI extends VirtualModelInstance<VMI, VM>, VM extends VirtualModel<VM>>
 		extends FlexoNature<VMI> {
 
 }

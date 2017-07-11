@@ -46,7 +46,7 @@ import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.NavigationScheme;
-import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstanceObject;
 
@@ -128,7 +128,7 @@ public class NavigationSchemeAction extends FlexoBehaviourAction<NavigationSchem
 	}
 
 	@Override
-	public AbstractVirtualModelInstance<?, ?> retrieveVirtualModelInstance() {
+	public VirtualModelInstance<?, ?> retrieveVirtualModelInstance() {
 		/*if (getFocusedObject() instanceof DiagramElement<?>) {
 			return ((DiagramElement<?>) getFocusedObject()).getDiagram();
 		}*/

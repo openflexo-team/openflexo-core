@@ -51,7 +51,7 @@ import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.ViewPoint;
-import org.openflexo.foundation.fml.ViewPointLibrary;
+import org.openflexo.foundation.fml.VirtualModelLibrary;
 import org.openflexo.foundation.fml.ViewPointRepository;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.rm.ViewPointResource;
@@ -110,7 +110,7 @@ public class CreateViewPoint extends AbstractCreateVirtualModel<CreateViewPoint,
 		super(actionType, focusedObject, globalSelection, editor);
 	}
 
-	public ViewPointLibrary getViewPointLibrary() {
+	public VirtualModelLibrary getViewPointLibrary() {
 		if (!(getFocusedObject().getResourceRepository() instanceof ViewPointRepository)) {
 			return null;
 		}
@@ -126,7 +126,7 @@ public class CreateViewPoint extends AbstractCreateVirtualModel<CreateViewPoint,
 
 		logger.info("Create new viewpoint");
 
-		// ViewPointLibrary viewPointLibrary = getViewPointLibrary();
+		// VirtualModelLibrary viewPointLibrary = getViewPointLibrary();
 		// ViewPointRepository vpRepository = (ViewPointRepository) getFocusedObject().getResourceRepository();
 
 		File newViewPointDir = getDirectoryWhereToCreateTheViewPoint();

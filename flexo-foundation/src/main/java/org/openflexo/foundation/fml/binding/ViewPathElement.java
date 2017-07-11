@@ -57,7 +57,7 @@ import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
  * @author sylvain
  *
  */
-public class ViewPathElement extends AbstractVirtualModelInstancePathElement<ViewPoint> {
+public class ViewPathElement extends VirtualModelInstancePathElement<ViewPoint> {
 
 	private static final Logger logger = Logger.getLogger(ViewPathElement.class.getPackage().getName());
 

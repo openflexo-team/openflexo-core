@@ -45,7 +45,7 @@ import org.openflexo.xml.XMLRootElementInfo;
  *
  */
 public class VirtualModelInstanceResourceFactory
-		extends AbstractVirtualModelInstanceResourceFactory<VirtualModelInstance, VirtualModel, VirtualModelInstanceResource> {
+		extends VirtualModelInstanceResourceFactory<VirtualModelInstance, VirtualModel, VirtualModelInstanceResource> {
 
 	private static final Logger logger = Logger.getLogger(VirtualModelInstanceResourceFactory.class.getPackage().getName());
 
@@ -91,7 +91,7 @@ public class VirtualModelInstanceResourceFactory
 			returned.setModified(true);
 			returned.save(null);
 			if (resourceData.getFMLRunTimeEngine() != null) {
-				// TODO: today AbstractVirtualModelInstance is a RunTimeEvaluationContext
+				// TODO: today VirtualModelInstance is a RunTimeEvaluationContext
 				// TODO: design issue, we should separate FlexoConceptInstance from RunTimeEvaluationContext
 				// This inheritance should disappear
 				resourceData.getFMLRunTimeEngine().addToExecutionContext(resourceData, resourceData);

@@ -64,7 +64,7 @@ public class ViewPointRepository<I> extends TechnologyAdapterResourceRepository<
 		this.serviceManager = adapter.getServiceManager();
 	}
 
-	public ViewPointLibrary getViewPointLibrary() {
+	public VirtualModelLibrary getViewPointLibrary() {
 		return serviceManager.getViewPointLibrary();
 	}
 

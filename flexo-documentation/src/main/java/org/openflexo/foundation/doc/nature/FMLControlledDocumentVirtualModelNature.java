@@ -39,7 +39,7 @@
 package org.openflexo.foundation.doc.nature;
 
 import org.openflexo.foundation.doc.fml.FlexoDocumentModelSlot;
-import org.openflexo.foundation.fml.AbstractVirtualModel;
+import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelNature;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
@@ -64,7 +64,7 @@ public abstract class FMLControlledDocumentVirtualModelNature<MS extends FlexoDo
 	 * Return boolean indicating if supplied {@link VirtualModel} might be interpreted as a FML-Controlled document
 	 */
 	@Override
-	public boolean hasNature(AbstractVirtualModel<?> virtualModel) {
+	public boolean hasNature(VirtualModel virtualModel) {
 
 		// VirtualModel should have one and only one TypedDocumentModelSlot
 		if (virtualModel.getModelSlots(getModelSlotClass()).size() != 1) {
@@ -81,7 +81,7 @@ public abstract class FMLControlledDocumentVirtualModelNature<MS extends FlexoDo
 		return true;
 	}
 
-	protected MS _getDocumentModelSlot(AbstractVirtualModel<?> virtualModel) {
+	protected MS _getDocumentModelSlot(VirtualModel virtualModel) {
 		if (virtualModel != null && virtualModel.getModelSlots(getModelSlotClass()).size() == 1) {
 			return virtualModel.getModelSlots(getModelSlotClass()).get(0);
 		}

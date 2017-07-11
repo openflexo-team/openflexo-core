@@ -51,7 +51,7 @@ import org.openflexo.foundation.fml.rt.VirtualModelInstance;
  * @author Sylvain
  * 
  */
-public abstract class VirtualModelInstanceResourceImpl extends AbstractVirtualModelInstanceResourceImpl<VirtualModelInstance, VirtualModel>
+public abstract class VirtualModelInstanceResourceImpl extends VirtualModelInstanceResourceImpl<VirtualModelInstance, VirtualModel>
 		implements VirtualModelInstanceResource {
 
 	static final Logger logger = Logger.getLogger(VirtualModelInstanceResourceImpl.class.getPackage().getName());

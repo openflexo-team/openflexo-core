@@ -46,7 +46,7 @@ import java.util.logging.Logger;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.action.DeleteRepositoryFolder;
 import org.openflexo.foundation.fml.AbstractProperty;
-import org.openflexo.foundation.fml.AbstractVirtualModel;
+import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.ActionScheme;
 import org.openflexo.foundation.fml.CloningScheme;
 import org.openflexo.foundation.fml.CreationScheme;
@@ -165,7 +165,7 @@ public class FMLFIBController extends FlexoFIBController {
 		deleteVirtualModel.doAction();
 	}
 
-	public ModelSlot<?> createModelSlot(AbstractVirtualModel<?> virtualModel) {
+	public ModelSlot<?> createModelSlot(VirtualModel virtualModel) {
 		CreateModelSlot createModelSlot = CreateModelSlot.actionType.makeNewAction(virtualModel, null, getEditor());
 		createModelSlot.doAction();
 		return createModelSlot.getNewModelSlot();
@@ -176,7 +176,7 @@ public class FMLFIBController extends FlexoFIBController {
 		modelSlot.delete();
 	}
 
-	public UseModelSlotDeclaration addToUseDeclarations(AbstractVirtualModel<?> virtualModel) {
+	public UseModelSlotDeclaration addToUseDeclarations(VirtualModel virtualModel) {
 		AddUseDeclaration addToUseDeclarations = AddUseDeclaration.actionType.makeNewAction(virtualModel, null, getEditor());
 		addToUseDeclarations.doAction();
 		return addToUseDeclarations.getNewUseDeclaration();

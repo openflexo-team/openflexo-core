@@ -1,6 +1,6 @@
 /**
  * 
- * Copyright (c) 2014-2015, Openflexo
+ * Copyright (c) 2015, Openflexo
  * 
  * This file is part of Flexo-foundation, a component of the software infrastructure 
  * developed at Openflexo.
@@ -38,25 +38,37 @@
 
 package org.openflexo.foundation.fml.rm;
 
+import java.util.List;
+
+import org.openflexo.foundation.fml.FMLModelFactory;
+import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.VirtualModel;
+import org.openflexo.foundation.fml.VirtualModelLibrary;
+import org.openflexo.foundation.resource.DirectoryContainerResource;
+import org.openflexo.foundation.resource.PamelaResource;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapterResource;
+import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
-import org.openflexo.model.annotations.XMLElement;
+import org.openflexo.model.annotations.Setter;
 
+/**
+ * The resource storing a {@link VirtualModel}
+ * 
+ * @author sylvain
+ *
+ */
 @ModelEntity
 @ImplementationClass(VirtualModelResourceImpl.class)
-@XMLElement
-public interface VirtualModelResource extends AbstractVirtualModelResource<VirtualModel> {
+public interface VirtualModelResource extends PamelaResource<VirtualModel, FMLModelFactory>, DirectoryContainerResource<VirtualModel>,
+		TechnologyAdapterResource<VirtualModel, FMLTechnologyAdapter> {
 
-	public static final String VIEW_POINT_LIBRARY = "viewPointLibrary";
-
-	// public static final String DIRECTORY = "directory";
+	public static final String VIRTUAL_MODEL_LIBRARY = "virtualModelLibrary";
 
 	/**
-	 * Return virtual model stored by this resource<br>
-	 * Load the resource data when unloaded
+	 * Return virtual model stored by this resource when loaded<br>
+	 * Force the resource data to be loaded when unloaded
 	 */
-	@Override
 	public VirtualModel getVirtualModel();
 
 	/**
@@ -65,20 +77,14 @@ public interface VirtualModelResource extends AbstractVirtualModelResource<Virtu
 	 */
 	public VirtualModel getLoadedVirtualModel();
 
-	/*@Getter(value = VIEW_POINT_LIBRARY, ignoreType = true)
-	public ViewPointLibrary getViewPointLibrary();
+	public List<VirtualModelResource> getContainedVirtualModelResources();
 
-	@Setter(VIEW_POINT_LIBRARY)
-	public void setViewPointLibrary(ViewPointLibrary viewPointLibrary);*/
+	public VirtualModelResource getVirtualModelResource(String virtualModelNameOrURI);
 
-	/*@Getter(DIRECTORY)
-	@XmlAttribute
-	public File getDirectory();
+	@Getter(value = VIRTUAL_MODEL_LIBRARY, ignoreType = true)
+	public VirtualModelLibrary getVirtualModelLibrary();
 
-	@Setter(DIRECTORY)
-	public void setDirectory(File file);*/
-
-	@Override
-	public ViewPointResource getContainer();
+	@Setter(VIRTUAL_MODEL_LIBRARY)
+	public void setVirtualModelLibrary(VirtualModelLibrary virtualModelLibrary);
 
 }

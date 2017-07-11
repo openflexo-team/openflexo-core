@@ -48,6 +48,6 @@ import org.openflexo.foundation.fml.VirtualModel;
  * @author sylvain
  * 
  */
-public interface VirtualModelInstanceNature extends AbstractVirtualModelInstanceNature<VirtualModelInstance, VirtualModel> {
+public interface VirtualModelInstanceNature extends VirtualModelInstanceNature<VirtualModelInstance, VirtualModel> {
 
 }

@@ -52,7 +52,7 @@ import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.action.NotImplementedException;
-import org.openflexo.foundation.fml.AbstractVirtualModel;
+import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FlexoConcept;
@@ -62,7 +62,7 @@ import org.openflexo.foundation.fml.FlexoConceptStructuralFacet;
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelInstanceType;
-import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
@@ -158,7 +158,7 @@ public class CreateFlexoConceptInstanceRole extends AbstractCreateFlexoRole<Crea
 		return true;
 	}
 
-	public AbstractVirtualModel<?> getModelSlotVirtualModel() {
+	public VirtualModel getModelSlotVirtualModel() {
 		if (getModelSlot() == null || !useModelSlot) {
 			return getFlexoConcept().getVirtualModel();
 		}
@@ -262,21 +262,21 @@ public class CreateFlexoConceptInstanceRole extends AbstractCreateFlexoRole<Crea
 		return (FlexoConceptInstanceRole) super.getNewFlexoRole();
 	}
 
-	private DataBinding<AbstractVirtualModelInstance<?, ?>> virtualModelInstance;
+	private DataBinding<VirtualModelInstance<?, ?>> virtualModelInstance;
 
-	public DataBinding<AbstractVirtualModelInstance<?, ?>> getVirtualModelInstance() {
+	public DataBinding<VirtualModelInstance<?, ?>> getVirtualModelInstance() {
 		if (virtualModelInstance == null) {
-			virtualModelInstance = new DataBinding<AbstractVirtualModelInstance<?, ?>>(this, AbstractVirtualModelInstance.class,
+			virtualModelInstance = new DataBinding<VirtualModelInstance<?, ?>>(this, VirtualModelInstance.class,
 					DataBinding.BindingDefinitionType.GET);
 		}
 		return virtualModelInstance;
 	}
 
-	public void setVirtualModelInstance(DataBinding<AbstractVirtualModelInstance<?, ?>> aVirtualModelInstance) {
+	public void setVirtualModelInstance(DataBinding<VirtualModelInstance<?, ?>> aVirtualModelInstance) {
 		if (aVirtualModelInstance != null) {
 			aVirtualModelInstance.setOwner(this);
 			aVirtualModelInstance.setBindingName("virtualModelInstance");
-			aVirtualModelInstance.setDeclaredType(AbstractVirtualModelInstance.class);
+			aVirtualModelInstance.setDeclaredType(VirtualModelInstance.class);
 			aVirtualModelInstance.setBindingDefinitionType(DataBinding.BindingDefinitionType.GET);
 		}
 		if (this.virtualModelInstance != aVirtualModelInstance) {
@@ -286,7 +286,7 @@ public class CreateFlexoConceptInstanceRole extends AbstractCreateFlexoRole<Crea
 		this.getPropertyChangeSupport().firePropertyChange("virtualModelType", null, getVirtualModelType());
 	}
 
-	public AbstractVirtualModel<?> getVirtualModelType() {
+	public VirtualModel getVirtualModelType() {
 		if (getVirtualModelInstance() != null && getVirtualModelInstance().isSet() && getVirtualModelInstance().isValid()) {
 			Type type = getVirtualModelInstance().getAnalyzedType();
 			if (type instanceof VirtualModelInstanceType) {

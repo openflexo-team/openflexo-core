@@ -40,7 +40,7 @@ import org.openflexo.xml.XMLRootElementInfo;
  * @author sylvain
  *
  */
-public class VirtualModelResourceFactory extends AbstractVirtualModelResourceFactory<VirtualModel, VirtualModelResource> {
+public class VirtualModelResourceFactory extends VirtualModelResourceFactory<VirtualModel, VirtualModelResource> {
 
 	private static final Logger logger = Logger.getLogger(VirtualModelResourceFactory.class.getPackage().getName());
 
@@ -323,7 +323,7 @@ public class VirtualModelResourceFactory extends AbstractVirtualModelResourceFac
 			}
 			returned.setModelVersion(new FlexoVersion(StringUtils.isNotEmpty(vpi.modelVersion) ? vpi.modelVersion : "0.1"));
 	
-			// If ViewPointLibrary not initialized yet, we will do it later in ViewPointLibrary.initialize() method
+			// If VirtualModelLibrary not initialized yet, we will do it later in VirtualModelLibrary.initialize() method
 			//if (serviceManager.getViewPointLibrary() != null) {
 			//	returned.setViewPointLibrary(serviceManager.getViewPointLibrary());
 			//}

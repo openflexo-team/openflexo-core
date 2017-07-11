@@ -41,10 +41,10 @@ package org.openflexo.fml.controller.action;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.DataBinding;
-import org.openflexo.foundation.fml.AbstractVirtualModel;
+import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.action.CreateFlexoConceptInstanceRole;
-import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.gina.annotation.FIBPanel;
@@ -99,7 +99,7 @@ public class CreateFlexoConceptInstanceRoleWizard extends AbstractCreateFlexoRol
 			return true;
 		}
 
-		public AbstractVirtualModel<?> getModelSlotVirtualModel() {
+		public VirtualModel getModelSlotVirtualModel() {
 			return getAction().getModelSlotVirtualModel();
 		}
 
@@ -143,11 +143,11 @@ public class CreateFlexoConceptInstanceRoleWizard extends AbstractCreateFlexoRol
 			}
 		}
 
-		public DataBinding<AbstractVirtualModelInstance<?, ?>> getVirtualModelInstance() {
+		public DataBinding<VirtualModelInstance<?, ?>> getVirtualModelInstance() {
 			return getAction().getVirtualModelInstance();
 		}
 
-		public void setVirtualModelInstance(DataBinding<AbstractVirtualModelInstance<?, ?>> virtualModelInstance) {
+		public void setVirtualModelInstance(DataBinding<VirtualModelInstance<?, ?>> virtualModelInstance) {
 			getAction().setVirtualModelInstance(virtualModelInstance);
 			getPropertyChangeSupport().firePropertyChange("virtualModelInstance", null, virtualModelInstance);
 			getPropertyChangeSupport().firePropertyChange("virtualModelType", null, getVirtualModelType());
@@ -158,7 +158,7 @@ public class CreateFlexoConceptInstanceRoleWizard extends AbstractCreateFlexoRol
 			return super.getAction();
 		}
 
-		public AbstractVirtualModel<?> getVirtualModelType() {
+		public VirtualModel getVirtualModelType() {
 			return getAction().getVirtualModelType();
 		}
 	}

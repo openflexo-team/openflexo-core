@@ -77,7 +77,7 @@ public class ViewPointResourceFactory extends AbstractVirtualModelResourceFactor
 		return makeResource(serializationArtefact, resourceCenter, technologyContextManager, baseName, viewpointURI, createEmptyContents);
 	}
 
-	/*public static ViewPoint newViewPoint(String baseName, String viewpointURI, File containerDir, ViewPointLibrary library,
+	/*public static ViewPoint newViewPoint(String baseName, String viewpointURI, File containerDir, VirtualModelLibrary library,
 			FlexoResourceCenter<?> resourceCenter) {
 		ViewPointResource vpRes = ViewPointResourceImpl.makeViewPointResource(baseName, viewpointURI, containerDir, resourceCenter,
 				library.getServiceManager());
@@ -120,8 +120,8 @@ public class ViewPointResourceFactory extends AbstractVirtualModelResourceFactor
 		registerResourceInResourceRepository(resource,
 				technologyContextManager.getTechnologyAdapter().getViewPointRepository(resourceCenter));
 
-		// If ViewPointLibrary not initialized yet, we will do it later in
-		// ViewPointLibrary.initialize() method
+		// If VirtualModelLibrary not initialized yet, we will do it later in
+		// VirtualModelLibrary.initialize() method
 		if (technologyContextManager.getServiceManager().getViewPointLibrary() != null) {
 			resource.setViewPointLibrary(technologyContextManager.getServiceManager().getViewPointLibrary());
 			technologyContextManager.getServiceManager().getViewPointLibrary().registerViewPoint(resource);
@@ -363,8 +363,8 @@ public class ViewPointResourceFactory extends AbstractVirtualModelResourceFactor
 			returned.setFlexoIODelegate(DirectoryBasedFlexoIODelegateImpl.makeDirectoryBasedFlexoIODelegate(containerDir, VIEWPOINT_SUFFIX,
 					CORE_FILE_SUFFIX, returned, factory));
 	
-			// If ViewPointLibrary not initialized yet, we will do it later in
-			// ViewPointLibrary.initialize() method
+			// If VirtualModelLibrary not initialized yet, we will do it later in
+			// VirtualModelLibrary.initialize() method
 			if (serviceManager.getViewPointLibrary() != null) {
 				returned.setViewPointLibrary(serviceManager.getViewPointLibrary());
 				serviceManager.getViewPointLibrary().registerViewPoint(returned);
@@ -402,8 +402,8 @@ public class ViewPointResourceFactory extends AbstractVirtualModelResourceFactor
 			returned.setResourceCenter(resourceCenter);
 	
 			returned.getFlexoIODelegate().save(returned);
-			// If ViewPointLibrary not initialized yet, we will do it later in
-			// ViewPointLibrary.initialize() method
+			// If VirtualModelLibrary not initialized yet, we will do it later in
+			// VirtualModelLibrary.initialize() method
 			if (serviceManager.getViewPointLibrary() != null) {
 				returned.setViewPointLibrary(serviceManager.getViewPointLibrary());
 				serviceManager.getViewPointLibrary().registerViewPoint(returned);
@@ -457,8 +457,8 @@ public class ViewPointResourceFactory extends AbstractVirtualModelResourceFactor
 	
 			returned.setFactory(new FMLModelFactory(returned, serviceManager));
 	
-			// If ViewPointLibrary not initialized yet, we will do it later in
-			// ViewPointLibrary.initialize() method
+			// If VirtualModelLibrary not initialized yet, we will do it later in
+			// VirtualModelLibrary.initialize() method
 			if (serviceManager.getViewPointLibrary() != null) {
 				returned.setViewPointLibrary(serviceManager.getViewPointLibrary());
 				serviceManager.getViewPointLibrary().registerViewPoint(returned);
@@ -514,8 +514,8 @@ public class ViewPointResourceFactory extends AbstractVirtualModelResourceFactor
 	
 			returned.setFactory(new FMLModelFactory(returned, serviceManager));
 	
-			// If ViewPointLibrary not initialized yet, we will do it later in
-			// ViewPointLibrary.initialize() method
+			// If VirtualModelLibrary not initialized yet, we will do it later in
+			// VirtualModelLibrary.initialize() method
 			if (serviceManager.getViewPointLibrary() != null) {
 				returned.setViewPointLibrary(serviceManager.getViewPointLibrary());
 				serviceManager.getViewPointLibrary().registerViewPoint(returned);

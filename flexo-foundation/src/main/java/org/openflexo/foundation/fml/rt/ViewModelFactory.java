@@ -51,7 +51,7 @@ import org.openflexo.model.factory.ModelFactory;
  * @author sylvain
  * 
  */
-public class ViewModelFactory extends AbstractVirtualModelInstanceModelFactory<ViewResource> {
+public class ViewModelFactory extends VirtualModelInstanceModelFactory<ViewResource> {
 
 	public ViewModelFactory(ViewResource viewResource, EditingContext editingContext, TechnologyAdapterService taService)
 			throws ModelDefinitionException {

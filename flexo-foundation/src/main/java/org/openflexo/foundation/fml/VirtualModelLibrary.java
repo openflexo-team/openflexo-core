@@ -65,16 +65,16 @@ import org.openflexo.model.validation.Validable;
 import org.openflexo.toolbox.StringUtils;
 
 /**
- * The {@link ViewPointLibrary} manages all references to all {@link ViewPoint} known in a JVM instance.<br>
- * The {@link ViewPointLibrary} is a {@link FlexoService} working in conjunction with a {@link FlexoResourceCenterService}, with
+ * The {@link VirtualModelLibrary} manages all references to all {@link VirtualModel} known in a deployed Openflexo infrastructure.<br>
+ * The {@link VirtualModelLibrary} is a {@link FlexoService} working in conjunction with a {@link FlexoResourceCenterService}, with
  * synchronization performed through a {@link FlexoServiceManager} (generally this is the ApplicationContext)
  * 
  * @author sylvain
  * 
  */
-public class ViewPointLibrary extends DefaultFlexoObject implements FlexoService, Validable {
+public class VirtualModelLibrary extends DefaultFlexoObject implements FlexoService, Validable {
 
-	private static final Logger logger = Logger.getLogger(ViewPointLibrary.class.getPackage().getName());
+	private static final Logger logger = Logger.getLogger(VirtualModelLibrary.class.getPackage().getName());
 
 	public FMLValidationModel viewPointValidationModel;
 
@@ -82,10 +82,7 @@ public class ViewPointLibrary extends DefaultFlexoObject implements FlexoService
 
 	private FlexoServiceManager serviceManager;
 
-	// private XMLMapping viewPointModel_0_1;
-	// private XMLMapping viewPointModel_1_0;
-
-	public ViewPointLibrary() {
+	public VirtualModelLibrary() {
 		super();
 
 		map = new Hashtable<String, ViewPointResource>();

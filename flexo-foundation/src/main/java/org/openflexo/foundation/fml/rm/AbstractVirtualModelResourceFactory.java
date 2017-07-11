@@ -22,7 +22,7 @@ package org.openflexo.foundation.fml.rm;
 
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.fml.AbstractVirtualModel;
+import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.resource.PamelaResourceFactory;
@@ -31,21 +31,21 @@ import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.toolbox.FlexoVersion;
 
 /**
- * Generic implementation of PamelaResourceFactory for {@link AbstractVirtualModelResource}
+ * Generic implementation of PamelaResourceFactory for {@link VirtualModelResource}
  * 
  * @author sylvain
  *
  */
-public abstract class AbstractVirtualModelResourceFactory<VM extends AbstractVirtualModel<VM>, VMR extends AbstractVirtualModelResource<VM>>
+public abstract class VirtualModelResourceFactory<VM extends VirtualModel<VM>, VMR extends VirtualModelResource<VM>>
 		extends PamelaResourceFactory<VMR, VM, FMLTechnologyAdapter, FMLModelFactory> {
 
 	public static final FlexoVersion INITIAL_REVISION = new FlexoVersion("0.1");
 	public static final FlexoVersion CURRENT_FML_VERSION = new FlexoVersion("1.0");
 	public static final String CORE_FILE_SUFFIX = ".xml";
 
-	private static final Logger logger = Logger.getLogger(AbstractVirtualModelResourceFactory.class.getPackage().getName());
+	private static final Logger logger = Logger.getLogger(VirtualModelResourceFactory.class.getPackage().getName());
 
-	public AbstractVirtualModelResourceFactory(Class<VMR> resourceClass) throws ModelDefinitionException {
+	public VirtualModelResourceFactory(Class<VMR> resourceClass) throws ModelDefinitionException {
 		super(resourceClass);
 	}
 

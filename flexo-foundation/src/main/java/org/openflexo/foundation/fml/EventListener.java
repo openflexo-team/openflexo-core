@@ -44,7 +44,7 @@ import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.foundation.fml.binding.EventListenerBindingModel;
-import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.model.annotations.CloningStrategy;
 import org.openflexo.model.annotations.CloningStrategy.StrategyType;
 import org.openflexo.model.annotations.Getter;
@@ -83,31 +83,31 @@ public interface EventListener extends AbstractActionScheme {
 
 	@Getter(value = LISTENED_VIRTUAL_MODEL_INSTANCE_KEY)
 	@XMLAttribute
-	public DataBinding<AbstractVirtualModelInstance<?, ?>> getListenedVirtualModelInstance();
+	public DataBinding<VirtualModelInstance<?, ?>> getListenedVirtualModelInstance();
 
 	@Setter(LISTENED_VIRTUAL_MODEL_INSTANCE_KEY)
-	public void setListenedVirtualModelInstance(DataBinding<AbstractVirtualModelInstance<?, ?>> vmi);
+	public void setListenedVirtualModelInstance(DataBinding<VirtualModelInstance<?, ?>> vmi);
 
-	public AbstractVirtualModel<?> getListenedVirtualModelType();
+	public VirtualModel getListenedVirtualModelType();
 
 	public static abstract class EventListenerImpl extends AbstractActionSchemeImpl implements EventListener {
 
 		private String _eventTypeURI;
 		private FlexoEvent eventType;
-		private DataBinding<AbstractVirtualModelInstance<?, ?>> listenedVirtualModelInstance;
+		private DataBinding<VirtualModelInstance<?, ?>> listenedVirtualModelInstance;
 
 		@Override
 		public void finalizeDeserialization() {
 			super.finalizeDeserialization();
-			if (eventType == null && _eventTypeURI != null && getViewPointLibrary() != null) {
-				eventType = (FlexoEvent) getViewPointLibrary().getFlexoConcept(_eventTypeURI, true);
+			if (eventType == null && _eventTypeURI != null && getVirtualModelLibrary() != null) {
+				eventType = (FlexoEvent) getVirtualModelLibrary().getFlexoConcept(_eventTypeURI, true);
 			}
 		}
 
 		@Override
 		public FlexoEvent getEventType() {
-			if (eventType == null && _eventTypeURI != null && getViewPointLibrary() != null) {
-				eventType = (FlexoEvent) getViewPointLibrary().getFlexoConcept(_eventTypeURI, false);
+			if (eventType == null && _eventTypeURI != null && getVirtualModelLibrary() != null) {
+				eventType = (FlexoEvent) getVirtualModelLibrary().getFlexoConcept(_eventTypeURI, false);
 			}
 			return eventType;
 		}
@@ -138,27 +138,27 @@ public interface EventListener extends AbstractActionScheme {
 		}
 
 		@Override
-		public DataBinding<AbstractVirtualModelInstance<?, ?>> getListenedVirtualModelInstance() {
+		public DataBinding<VirtualModelInstance<?, ?>> getListenedVirtualModelInstance() {
 			if (listenedVirtualModelInstance == null) {
-				listenedVirtualModelInstance = new DataBinding<>(this, AbstractVirtualModelInstance.class, BindingDefinitionType.GET);
+				listenedVirtualModelInstance = new DataBinding<>(this, VirtualModelInstance.class, BindingDefinitionType.GET);
 				listenedVirtualModelInstance.setBindingName("listenedVirtualModelInstance");
 			}
 			return listenedVirtualModelInstance;
 		}
 
 		@Override
-		public void setListenedVirtualModelInstance(DataBinding<AbstractVirtualModelInstance<?, ?>> constraint) {
+		public void setListenedVirtualModelInstance(DataBinding<VirtualModelInstance<?, ?>> constraint) {
 			if (constraint != null) {
 				constraint.setOwner(this);
 				constraint.setBindingName("listenedVirtualModelInstance");
-				constraint.setDeclaredType(AbstractVirtualModelInstance.class);
+				constraint.setDeclaredType(VirtualModelInstance.class);
 				constraint.setBindingDefinitionType(BindingDefinitionType.GET);
 			}
 			this.listenedVirtualModelInstance = constraint;
 		}
 
 		@Override
-		public AbstractVirtualModel<?> getListenedVirtualModelType() {
+		public VirtualModel getListenedVirtualModelType() {
 			if (getListenedVirtualModelInstance().isSet() && getListenedVirtualModelInstance().isValid()) {
 				Type type = getListenedVirtualModelInstance().getAnalyzedType();
 				if (type instanceof VirtualModelInstanceType) {

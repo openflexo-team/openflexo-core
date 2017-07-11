@@ -54,7 +54,7 @@ import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.connie.expr.BinaryOperatorExpression;
 import org.openflexo.connie.expr.BooleanBinaryOperator;
 import org.openflexo.connie.expr.Expression;
-import org.openflexo.foundation.fml.AbstractVirtualModel;
+import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.FlexoConcept;
@@ -64,7 +64,7 @@ import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.foundation.fml.binding.FetchRequestConditionSelectedBindingVariable;
 import org.openflexo.foundation.fml.editionaction.FetchRequest;
 import org.openflexo.foundation.fml.editionaction.FetchRequestCondition;
-import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
@@ -95,7 +95,7 @@ import org.openflexo.model.validation.ValidationRule;
 @ImplementationClass(SelectFlexoConceptInstance.SelectFlexoConceptInstanceImpl.class)
 @XMLElement
 @FML("SelectFlexoConceptInstance")
-public interface SelectFlexoConceptInstance<VMI extends AbstractVirtualModelInstance<VMI, ?>>
+public interface SelectFlexoConceptInstance<VMI extends VirtualModelInstance<VMI, ?>>
 		extends FetchRequest<FMLRTModelSlot<VMI, ?>, VMI, FlexoConceptInstance> {
 
 	@PropertyIdentifier(type = String.class)
@@ -134,13 +134,13 @@ public interface SelectFlexoConceptInstance<VMI extends AbstractVirtualModelInst
 	public void setFlexoConceptType(FlexoConcept flexoConceptType);
 
 	/**
-	 * Return the {@link AbstractVirtualModel} beeing addressed by this action, according to the {@link #getVirtualModelInstance()} binding
+	 * Return the {@link VirtualModel} beeing addressed by this action, according to the {@link #getVirtualModelInstance()} binding
 	 * 
 	 * @return
 	 */
-	public AbstractVirtualModel<?> getAddressedVirtualModel();
+	public VirtualModel getAddressedVirtualModel();
 
-	public static abstract class SelectFlexoConceptInstanceImpl<VMI extends AbstractVirtualModelInstance<VMI, ?>>
+	public static abstract class SelectFlexoConceptInstanceImpl<VMI extends VirtualModelInstance<VMI, ?>>
 			extends FetchRequestImpl<FMLRTModelSlot<VMI, ?>, VMI, FlexoConceptInstance> implements SelectFlexoConceptInstance<VMI> {
 
 		protected static final Logger logger = FlexoLogger.getLogger(SelectFlexoConceptInstance.class.getPackage().getName());
@@ -166,13 +166,13 @@ public interface SelectFlexoConceptInstance<VMI extends AbstractVirtualModelInst
 			return super.getModelSlotTechnologyAdapter();
 		}
 
-		// private DataBinding<AbstractVirtualModelInstance<?, ?>> virtualModelInstance;
+		// private DataBinding<VirtualModelInstance<?, ?>> virtualModelInstance;
 		private DataBinding<FlexoConceptInstance> container;
 
 		/*@Override
-		public DataBinding<AbstractVirtualModelInstance<?, ?>> getVirtualModelInstance() {
+		public DataBinding<VirtualModelInstance<?, ?>> getVirtualModelInstance() {
 			if (virtualModelInstance == null) {
-				virtualModelInstance = new DataBinding<AbstractVirtualModelInstance<?, ?>>(this, AbstractVirtualModelInstance.class,
+				virtualModelInstance = new DataBinding<VirtualModelInstance<?, ?>>(this, VirtualModelInstance.class,
 						DataBinding.BindingDefinitionType.GET);
 				virtualModelInstance.setBindingName("virtualModelInstance");
 			}
@@ -180,11 +180,11 @@ public interface SelectFlexoConceptInstance<VMI extends AbstractVirtualModelInst
 		}
 		
 		@Override
-		public void setVirtualModelInstance(DataBinding<AbstractVirtualModelInstance<?, ?>> aVirtualModelInstance) {
+		public void setVirtualModelInstance(DataBinding<VirtualModelInstance<?, ?>> aVirtualModelInstance) {
 			if (aVirtualModelInstance != null) {
 				aVirtualModelInstance.setOwner(this);
 				aVirtualModelInstance.setBindingName("virtualModelInstance");
-				aVirtualModelInstance.setDeclaredType(AbstractVirtualModelInstance.class);
+				aVirtualModelInstance.setDeclaredType(VirtualModelInstance.class);
 				aVirtualModelInstance.setBindingDefinitionType(DataBinding.BindingDefinitionType.GET);
 			}
 			this.virtualModelInstance = aVirtualModelInstance;
@@ -267,13 +267,13 @@ public interface SelectFlexoConceptInstance<VMI extends AbstractVirtualModelInst
 		}
 
 		/**
-		 * Return the {@link AbstractVirtualModel} beeing addressed by this action, according to the {@link #getVirtualModelInstance()}
+		 * Return the {@link VirtualModel} beeing addressed by this action, according to the {@link #getVirtualModelInstance()}
 		 * binding
 		 * 
 		 * @return
 		 */
 		@Override
-		public AbstractVirtualModel<?> getAddressedVirtualModel() {
+		public VirtualModel getAddressedVirtualModel() {
 			if (getReceiver() != null && getReceiver().isSet() && getReceiver().isValid()) {
 				Type vmiType = getReceiver().getAnalyzedType();
 				if (vmiType instanceof VirtualModelInstanceType) {
@@ -281,8 +281,8 @@ public interface SelectFlexoConceptInstance<VMI extends AbstractVirtualModelInst
 				}
 			}
 			// I could not find VM, trying to "guess" (TODO: remove this hask ?)
-			if (getFlexoConcept() instanceof AbstractVirtualModel) {
-				return (AbstractVirtualModel<?>) getFlexoConcept();
+			if (getFlexoConcept() instanceof VirtualModel) {
+				return (VirtualModel) getFlexoConcept();
 			}
 			if (getInferedModelSlot() instanceof FMLRTModelSlot) {
 				return getInferedModelSlot().getAccessedVirtualModel();
@@ -343,7 +343,7 @@ public interface SelectFlexoConceptInstance<VMI extends AbstractVirtualModelInst
 		}
 
 		private List<FlexoConceptInstance> getIndexedMatchingList(FetchRequestCondition indexableCondition,
-				AbstractVirtualModelInstance<?, ?> vmi, RunTimeEvaluationContext evaluationContext)
+				VirtualModelInstance<?, ?> vmi, RunTimeEvaluationContext evaluationContext)
 				throws TypeMismatchException, NullReferenceException, InvocationTargetException {
 			Expression indexableTerm = getIndexableTerm(indexableCondition);
 			Expression oppositeTerm = getOppositeTerm(indexableCondition);
@@ -379,7 +379,7 @@ public interface SelectFlexoConceptInstance<VMI extends AbstractVirtualModelInst
 
 		@Override
 		public List<FlexoConceptInstance> execute(RunTimeEvaluationContext evaluationContext) {
-			AbstractVirtualModelInstance<?, ?> vmi = getVirtualModelInstance(evaluationContext);
+			VirtualModelInstance<?, ?> vmi = getVirtualModelInstance(evaluationContext);
 			FlexoConceptInstance container = getContainer(evaluationContext);
 			if (container == null) {
 				container = vmi;
@@ -421,8 +421,8 @@ public interface SelectFlexoConceptInstance<VMI extends AbstractVirtualModelInst
 				// Otherwise, we do it brute force !!!
 
 				List<FlexoConceptInstance> fciList = null;
-				if (container instanceof AbstractVirtualModelInstance) {
-					fciList = ((AbstractVirtualModelInstance<?, ?>) container).getFlexoConceptInstances(getFlexoConceptType());
+				if (container instanceof VirtualModelInstance) {
+					fciList = ((VirtualModelInstance<?, ?>) container).getFlexoConceptInstances(getFlexoConceptType());
 				}
 				else {
 					fciList = container.getEmbeddedFlexoConceptInstances(getFlexoConceptType());
@@ -454,7 +454,7 @@ public interface SelectFlexoConceptInstance<VMI extends AbstractVirtualModelInst
 		}
 
 		public boolean isIndexable(FlexoConceptInstance container) {
-			if (container instanceof AbstractVirtualModelInstance && getConditions().size() > 0) {
+			if (container instanceof VirtualModelInstance && getConditions().size() > 0) {
 				for (FetchRequestCondition condition : getConditions()) {
 					if (!isIndexableCondition(condition)) {
 						return false;
@@ -575,7 +575,7 @@ public interface SelectFlexoConceptInstance<VMI extends AbstractVirtualModelInst
 		}
 
 		@Override
-		public DataBinding<AbstractVirtualModelInstance<?, ?>> getBinding(SelectFlexoConceptInstance object) {
+		public DataBinding<VirtualModelInstance<?, ?>> getBinding(SelectFlexoConceptInstance object) {
 			return object.getReceiver();
 		}
 
@@ -588,7 +588,7 @@ public interface SelectFlexoConceptInstance<VMI extends AbstractVirtualModelInst
 				((UndefinedRequiredBindingIssue) returned).addToFixProposals(new UseLocalVirtualModelInstance());
 			}
 			else {
-				DataBinding<AbstractVirtualModelInstance<?, ?>> binding = getBinding(object);
+				DataBinding<VirtualModelInstance<?, ?>> binding = getBinding(object);
 				if (binding.getAnalyzedType() instanceof VirtualModelInstanceType && object.getFlexoConceptType() != null) {
 					if (object.getFlexoConceptType().getVirtualModel() != ((VirtualModelInstanceType) binding.getAnalyzedType())
 							.getVirtualModel()) {
@@ -608,8 +608,8 @@ public interface SelectFlexoConceptInstance<VMI extends AbstractVirtualModelInst
 							}
 						}
 
-						if (object.getRootOwner().getFlexoConcept() instanceof AbstractVirtualModel) {
-							for (FMLRTModelSlot ms : ((AbstractVirtualModel<?>) object.getRootOwner().getFlexoConcept())
+						if (object.getRootOwner().getFlexoConcept() instanceof VirtualModel) {
+							for (FMLRTModelSlot ms : ((VirtualModel) object.getRootOwner().getFlexoConcept())
 									.getModelSlots(FMLRTModelSlot.class)) {
 								// System.out.println("modelSlot " + ms + " vm=" + ms.getAddressedVirtualModel());
 								if (object.getFlexoConceptType().getVirtualModel().isAssignableFrom(ms.getAccessedVirtualModel())) {

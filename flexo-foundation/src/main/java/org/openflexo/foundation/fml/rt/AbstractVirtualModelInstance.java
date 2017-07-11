@@ -57,7 +57,7 @@ import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.IndexableContainer;
-import org.openflexo.foundation.fml.AbstractVirtualModel;
+import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.FlexoEvent;
@@ -70,7 +70,7 @@ import org.openflexo.foundation.fml.binding.VirtualModelBindingModel;
 import org.openflexo.foundation.fml.editionaction.FetchRequestCondition;
 import org.openflexo.foundation.fml.rt.action.SynchronizationSchemeAction;
 import org.openflexo.foundation.fml.rt.action.SynchronizationSchemeActionType;
-import org.openflexo.foundation.fml.rt.rm.AbstractVirtualModelInstanceResource;
+import org.openflexo.foundation.fml.rt.rm.VirtualModelInstanceResource;
 import org.openflexo.foundation.resource.CannotRenameException;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.ResourceData;
@@ -98,23 +98,23 @@ import org.openflexo.toolbox.FlexoVersion;
 import org.openflexo.toolbox.StringUtils;
 
 /**
- * A {@link AbstractVirtualModelInstance} is the run-time concept (instance) of a {@link AbstractVirtualModel}.<br>
+ * A {@link VirtualModelInstance} is the run-time concept (instance) of a {@link VirtualModel}.<br>
  * 
- * As such, a {@link AbstractVirtualModelInstance} is instantiated inside a {@link View}, and all model slot defined for the corresponding
+ * As such, a {@link VirtualModelInstance} is instantiated inside a {@link View}, and all model slot defined for the corresponding
  * {@link ViewPoint} are instantiated (reified) with existing or build-in managed {@link FlexoModel}.<br>
  * 
- * A {@link AbstractVirtualModelInstance} mostly manages a collection of {@link FlexoConceptInstance} and is itself an
+ * A {@link VirtualModelInstance} mostly manages a collection of {@link FlexoConceptInstance} and is itself an
  * {@link FlexoConceptInstance}. <br>
  * 
- * A {@link AbstractVirtualModelInstance} is the common abstraction of {@link VirtualModelInstance} and {@link View}
+ * A {@link VirtualModelInstance} is the common abstraction of {@link VirtualModelInstance} and {@link View}
  * 
  * @author sylvain
  * 
  */
 @ModelEntity(isAbstract = true)
-@ImplementationClass(AbstractVirtualModelInstance.AbstractVirtualModelInstanceImpl.class)
+@ImplementationClass(VirtualModelInstance.VirtualModelInstanceImpl.class)
 @Imports({ @Import(VirtualModelInstance.class), @Import(View.class) })
-public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelInstance<VMI, VM>, VM extends AbstractVirtualModel<VM>>
+public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, VM>, VM extends VirtualModel<VM>>
 		extends FlexoConceptInstance, ResourceData<VMI>, FlexoModel<VMI, VM>, TechnologyObject<FMLRTTechnologyAdapter>,
 		IndexableContainer<FlexoConceptInstance> {
 
@@ -166,7 +166,7 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 	public void setVirtualModelURI(String virtualModelURI);
 
 	/**
-	 * Return all {@link FlexoConceptInstance} defined in this {@link AbstractVirtualModelInstance} which have no container (contaiment
+	 * Return all {@link FlexoConceptInstance} defined in this {@link VirtualModelInstance} which have no container (contaiment
 	 * semantics)<br>
 	 * (where container is the virtual model instance itself)
 	 * 
@@ -261,7 +261,7 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 	 */
 	public List<FlexoConceptInstance> getFlexoConceptInstances(FlexoConcept flexoConcept);
 
-	public boolean hasNature(AbstractVirtualModelInstanceNature<VMI, VM> nature);
+	public boolean hasNature(VirtualModelInstanceNature<VMI, VM> nature);
 
 	/**
 	 * Try to lookup supplied object in the whole VirtualModelInstance.<br>
@@ -280,7 +280,7 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 	public void reindexAllConceptInstances();
 
 	/**
-	 * Delete all instances of this {@link AbstractVirtualModelInstance}
+	 * Delete all instances of this {@link VirtualModelInstance}
 	 */
 	public void clear();
 
@@ -288,12 +288,12 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 
 	public void contentsRemoved(FlexoConceptInstance objectBeeingRemoved, FlexoConcept concept);
 
-	public static abstract class AbstractVirtualModelInstanceImpl<VMI extends AbstractVirtualModelInstance<VMI, VM>, VM extends AbstractVirtualModel<VM>>
-			extends FlexoConceptInstanceImpl implements AbstractVirtualModelInstance<VMI, VM> {
+	public static abstract class VirtualModelInstanceImpl<VMI extends VirtualModelInstance<VMI, VM>, VM extends VirtualModel<VM>>
+			extends FlexoConceptInstanceImpl implements VirtualModelInstance<VMI, VM> {
 
-		private static final Logger logger = Logger.getLogger(AbstractVirtualModelInstance.class.getPackage().getName());
+		private static final Logger logger = Logger.getLogger(VirtualModelInstance.class.getPackage().getName());
 
-		private AbstractVirtualModelInstanceResource<VMI, VM> resource;
+		private VirtualModelInstanceResource<VMI, VM> resource;
 		private String title;
 
 		/**
@@ -307,7 +307,7 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 		/**
 		 * Default constructor with
 		 */
-		public AbstractVirtualModelInstanceImpl() {
+		public VirtualModelInstanceImpl() {
 			super();
 			// modelSlotInstances = new ArrayList<ModelSlotInstance<?, ?>>();
 			flexoConceptInstances = new Hashtable<>();
@@ -319,7 +319,7 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 		}
 
 		@Override
-		public AbstractVirtualModelInstanceModelFactory<?> getFactory() {
+		public VirtualModelInstanceModelFactory<?> getFactory() {
 			if (getResource() != null) {
 				return getResource().getFactory();
 			}
@@ -327,7 +327,7 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 		}
 
 		@Override
-		public void initializeDeserialization(AbstractVirtualModelInstanceModelFactory<?> factory) {
+		public void initializeDeserialization(VirtualModelInstanceModelFactory<?> factory) {
 			super.initializeDeserialization(factory);
 		}
 
@@ -337,7 +337,7 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 		}
 
 		@Override
-		public final boolean hasNature(AbstractVirtualModelInstanceNature<VMI, VM> nature) {
+		public final boolean hasNature(VirtualModelInstanceNature<VMI, VM> nature) {
 			return nature.hasNature((VMI) this);
 		}
 
@@ -439,7 +439,7 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 		}
 
 		/**
-		 * Return all {@link FlexoConceptInstance} defined in this {@link AbstractVirtualModelInstance} which have no container (containment
+		 * Return all {@link FlexoConceptInstance} defined in this {@link VirtualModelInstance} which have no container (containment
 		 * semantics)<br>
 		 * (where container is the virtual model instance itself)
 		 * 
@@ -705,13 +705,13 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 		}*/
 
 		@Override
-		public AbstractVirtualModelInstanceResource<VMI, VM> getResource() {
+		public VirtualModelInstanceResource<VMI, VM> getResource() {
 			return resource;
 		}
 
 		@Override
 		public void setResource(FlexoResource<VMI> resource) {
-			this.resource = (AbstractVirtualModelInstanceResource<VMI, VM>) resource;
+			this.resource = (VirtualModelInstanceResource<VMI, VM>) resource;
 		}
 
 		@Override
@@ -749,7 +749,7 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 		}
 
 		@Override
-		public AbstractVirtualModelInstance<VMI, VM> getResourceData() {
+		public VirtualModelInstance<VMI, VM> getResourceData() {
 			return this;
 		}
 
@@ -774,7 +774,7 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 		}
 
 		/**
-		 * Return a set of all meta models (load them when unloaded) used in this {@link AbstractVirtualModelInstance}
+		 * Return a set of all meta models (load them when unloaded) used in this {@link VirtualModelInstance}
 		 * 
 		 * @return
 		 */
@@ -791,7 +791,7 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 		}*/
 
 		/**
-		 * Return a set of all models (load them when unloaded) used in this {@link AbstractVirtualModelInstance}
+		 * Return a set of all models (load them when unloaded) used in this {@link VirtualModelInstance}
 		 * 
 		 * @return
 		 */
@@ -877,7 +877,7 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 		}
 
 		@Override
-		public AbstractVirtualModelInstance<?, ?> getVirtualModelInstance() {
+		public VirtualModelInstance<?, ?> getVirtualModelInstance() {
 			return this;
 		}
 
@@ -969,7 +969,7 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 					if (value instanceof TechnologyAdapterResource) {
 						ModelSlotInstance msi = (getModelSlotInstance(ms));
 						if (msi == null) {
-							AbstractVirtualModelInstance<?, ?> flexoConceptInstance = (AbstractVirtualModelInstance<?, ?>) getFlexoConceptInstance();
+							VirtualModelInstance<?, ?> flexoConceptInstance = (VirtualModelInstance<?, ?>) getFlexoConceptInstance();
 							ModelSlotInstanceConfiguration<?, ?> msiConfiguration = ms.createConfiguration(flexoConceptInstance,
 									getResourceCenter());
 							msiConfiguration.setOption(DefaultModelSlotInstanceConfigurationOption.SelectExistingResource);
@@ -982,7 +982,7 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 					if (value instanceof ResourceData) {
 						ModelSlotInstance msi = (getModelSlotInstance(ms));
 						if (msi == null) {
-							AbstractVirtualModelInstance<?, ?> flexoConceptInstance = (AbstractVirtualModelInstance<?, ?>) getFlexoConceptInstance();
+							VirtualModelInstance<?, ?> flexoConceptInstance = (VirtualModelInstance<?, ?>) getFlexoConceptInstance();
 							ModelSlotInstanceConfiguration<?, ?> msiConfiguration = ms.createConfiguration(flexoConceptInstance,
 									getResourceCenter());
 							msiConfiguration.setOption(DefaultModelSlotInstanceConfigurationOption.SelectExistingResource);
@@ -1229,7 +1229,7 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 		}
 
 		/**
-		 * Delete all instances of this {@link AbstractVirtualModelInstance}
+		 * Delete all instances of this {@link VirtualModelInstance}
 		 */
 		@Override
 		public void clear() {

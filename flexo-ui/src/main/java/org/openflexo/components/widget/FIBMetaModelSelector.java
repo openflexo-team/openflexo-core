@@ -138,7 +138,7 @@ public class FIBMetaModelSelector extends FIBFlexoObjectSelector<FlexoMetaModelR
 			e.printStackTrace();
 		}
 	
-		final ViewPointLibrary viewPointLibrary;
+		final VirtualModelLibrary viewPointLibrary;
 	
 		final FlexoServiceManager serviceManager = new DefaultFlexoServiceManager() {
 			@Override

@@ -85,7 +85,7 @@ import org.openflexo.foundation.fml.inspector.InspectorEntry;
 import org.openflexo.foundation.fml.inspector.IntegerInspectorEntry;
 import org.openflexo.foundation.fml.inspector.TextAreaInspectorEntry;
 import org.openflexo.foundation.fml.inspector.TextFieldInspectorEntry;
-import org.openflexo.foundation.fml.rm.AbstractVirtualModelResource;
+import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstanceParameter;
@@ -129,11 +129,11 @@ import org.openflexo.model.factory.ModelFactory;
 // because this is required for the FlexoConceptPreviewComponent to retrieve a FMLModelFactory
 // which extends FGEModelFactory interface (required by DIANA).
 // A better solution would be to implements composition in ModelFactory, instead of classic java inheritance
-public class FMLModelFactory extends FGEModelFactoryImpl implements PamelaResourceModelFactory<AbstractVirtualModelResource<?>> {
+public class FMLModelFactory extends FGEModelFactoryImpl implements PamelaResourceModelFactory<VirtualModelResource> {
 
 	protected static final Logger logger = Logger.getLogger(FMLModelFactory.class.getPackage().getName());
 
-	private final AbstractVirtualModelResource<?> abstractVirtualModelResource;
+	private final VirtualModelResource virtualModelResource;
 	private final FlexoServiceManager serviceManager;
 
 	private IgnoreLoadingEdits ignoreHandler = null;
@@ -146,7 +146,7 @@ public class FMLModelFactory extends FGEModelFactoryImpl implements PamelaResour
 
 	private RelativePathResourceConverter relativePathResourceConverter;
 
-	public FMLModelFactory(AbstractVirtualModelResource<?> abstractVirtualModelResource, FlexoServiceManager serviceManager)
+	public FMLModelFactory(VirtualModelResource<?> abstractVirtualModelResource, FlexoServiceManager serviceManager)
 			throws ModelDefinitionException {
 
 		// super(ModelContextLibrary.getCompoundModelContext(retrieveTechnologySpecificClasses(serviceManager.getTechnologyAdapterService())));
@@ -158,7 +158,7 @@ public class FMLModelFactory extends FGEModelFactoryImpl implements PamelaResour
 		addConverter(new DataBindingConverter());
 		addConverter(new FlexoVersionConverter());
 		addConverter(relativePathResourceConverter = new RelativePathResourceConverter(null));
-		this.abstractVirtualModelResource = abstractVirtualModelResource;
+		this.virtualModelResource = abstractVirtualModelResource;
 		if (abstractVirtualModelResource != null && abstractVirtualModelResource.getIODelegate() != null
 				&& abstractVirtualModelResource.getIODelegate().getSerializationArtefactAsResource() != null) {
 			relativePathResourceConverter
@@ -182,7 +182,7 @@ public class FMLModelFactory extends FGEModelFactoryImpl implements PamelaResour
 				allTypesToConsider.add(typeClass);
 			}
 		}
-		System.out.println("les types pour " + abstractVirtualModelResource);
+		System.out.println("les types pour " + virtualModelResource);
 		for (Class<? extends TechnologySpecificType<?>> typeClass : allTypesToConsider) {
 			typeConverter.registerTypeClass(typeClass);
 		}*/
@@ -193,12 +193,12 @@ public class FMLModelFactory extends FGEModelFactoryImpl implements PamelaResour
 	}
 
 	@Override
-	public AbstractVirtualModelResource<?> getResource() {
+	public VirtualModelResource<?> getResource() {
 		return getVirtualModelResource();
 	}
 
-	public AbstractVirtualModelResource<?> getVirtualModelResource() {
-		return abstractVirtualModelResource;
+	public VirtualModelResource<?> getVirtualModelResource() {
+		return virtualModelResource;
 	}
 
 	/**
@@ -368,7 +368,7 @@ public class FMLModelFactory extends FGEModelFactoryImpl implements PamelaResour
 		return returned;
 	}
 
-	public InnerConceptsFacet newInnerConceptsFacet(AbstractVirtualModel<?> virtualModel) {
+	public InnerConceptsFacet newInnerConceptsFacet(VirtualModel virtualModel) {
 		InnerConceptsFacet returned = newInstance(InnerConceptsFacet.class);
 		returned.setVirtualModel(virtualModel);
 		return returned;

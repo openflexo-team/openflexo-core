@@ -52,7 +52,7 @@ import org.openflexo.foundation.FlexoObserver;
 import org.openflexo.foundation.fml.CreationScheme;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.FlexoConcept;
-import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.action.CreateFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.action.CreationSchemeAction;
@@ -155,8 +155,8 @@ public class CreateFlexoConceptInstanceWizard extends FlexoWizard {
 
 		public List<FlexoConcept> getAvailableFlexoConcepts() {
 			Stream<FlexoConcept> concepts;
-			if (getContainer() instanceof AbstractVirtualModelInstance) {
-				concepts = ((AbstractVirtualModelInstance) getContainer()).getVirtualModel().getAllRootFlexoConcepts().stream();
+			if (getContainer() instanceof VirtualModelInstance) {
+				concepts = ((VirtualModelInstance) getContainer()).getVirtualModel().getAllRootFlexoConcepts().stream();
 			}
 			else {
 				concepts = getContainer().getFlexoConcept().getEmbeddedFlexoConcepts().stream();

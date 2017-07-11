@@ -175,7 +175,7 @@ public class FIBModelSelector extends FIBFlexoObjectSelector<FlexoModelResource>
 			e.printStackTrace();
 		}
 	
-		final ViewPointLibrary viewPointLibrary;
+		final VirtualModelLibrary viewPointLibrary;
 	
 		final FlexoServiceManager serviceManager = new DefaultFlexoServiceManager() {
 			@Override

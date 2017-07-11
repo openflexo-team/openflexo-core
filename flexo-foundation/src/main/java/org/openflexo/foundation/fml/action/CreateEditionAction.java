@@ -58,7 +58,7 @@ import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.action.NotImplementedException;
-import org.openflexo.foundation.fml.AbstractVirtualModel;
+import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
@@ -653,9 +653,9 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 	 * 
 	 * @return
 	 */
-	public AbstractVirtualModel<?> getVirtualModel() {
-		if (getFocusedObject().getOwner().getFlexoConcept() instanceof AbstractVirtualModel) {
-			return (AbstractVirtualModel<?>) getFocusedObject().getOwner().getFlexoConcept();
+	public VirtualModel getVirtualModel() {
+		if (getFocusedObject().getOwner().getFlexoConcept() instanceof VirtualModel) {
+			return (VirtualModel) getFocusedObject().getOwner().getFlexoConcept();
 		}
 		else if (getFocusedObject().getOwner().getOwningVirtualModel() != null) {
 			return getFocusedObject().getOwner().getOwningVirtualModel();
