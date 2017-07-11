@@ -39,18 +39,18 @@
 package org.openflexo.foundation.fml;
 
 import org.openflexo.foundation.DataModification;
-import org.openflexo.foundation.fml.rm.ViewPointResource;
+import org.openflexo.foundation.fml.rm.VirtualModelResource;
 
 /**
- * Notify that a new viewpoint has been registered in VirtualModelLibrary
+ * Notify that a new {@link VirtualModel} has been registered in VirtualModelLibrary
  * 
  * @author sylvain
  * 
  */
-public class ViewPointRegistered extends DataModification {
+public class VirtualModelRegistered extends DataModification {
 
-	public ViewPointRegistered(ViewPointResource newViewPointResource) {
-		super(null, newViewPointResource);
+	public VirtualModelRegistered(VirtualModelResource newVirtualModelResource) {
+		super(null, newVirtualModelResource);
 	}
 
 }
