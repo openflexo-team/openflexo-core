@@ -146,6 +146,10 @@ public class FlexoConceptFlexoPropertyPathElement<P extends FlexoProperty<?>> ex
 			// definition override flexoProperty
 			FlexoProperty<?> effectiveProperty = getEffectiveProperty(flexoConceptInstance);
 
+			if (effectiveProperty == null) {
+				logger.warning("Cannot find property " + flexoProperty + " in " + flexoConceptInstance);
+			}
+
 			if (effectiveProperty != null
 					&& effectiveProperty.getFlexoConcept().isAssignableFrom(flexoConceptInstance.getFlexoConcept().getOwner())) {
 				return flexoConceptInstance.getVirtualModelInstance().getFlexoPropertyValue(effectiveProperty);
