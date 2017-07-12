@@ -47,14 +47,16 @@ import org.openflexo.connie.binding.SimplePathElement;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.fml.FlexoConcept;
+import org.openflexo.foundation.fml.VirtualModel;
+import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.localization.FlexoLocalization;
 
 public class FlexoConceptTypePathElement extends SimplePathElement {
 
 	private static final Logger logger = Logger.getLogger(FlexoConceptTypePathElement.class.getPackage().getName());
 
-	public FlexoConceptTypePathElement(BindingPathElement parent) {
-		super(parent, FlexoConceptBindingModel.REFLEXIVE_ACCESS_PROPERTY, FlexoConcept.class);
+	public FlexoConceptTypePathElement(BindingPathElement parent, FlexoConcept concept) {
+		super(parent, "concept", concept instanceof VirtualModel ? VirtualModel.class : FlexoConcept.class);
 	}
 
 	@Override
@@ -64,7 +66,7 @@ public class FlexoConceptTypePathElement extends SimplePathElement {
 
 	@Override
 	public String getTooltipText(Type resultingType) {
-		return FlexoLocalization.getMainLocalizer().localizedForKey("flexo_concept_as_type_of_flexo_concept_instance");
+		return FlexoLocalization.getMainLocalizer().localizedForKey("type_of_flexo_concept_instance");
 	}
 
 	@Override
@@ -74,6 +76,9 @@ public class FlexoConceptTypePathElement extends SimplePathElement {
 
 	@Override
 	public Object getBindingValue(Object target, BindingEvaluationContext context) throws TypeMismatchException, NullReferenceException {
+		if (target instanceof FlexoConceptInstance) {
+			return ((FlexoConceptInstance) target).getFlexoConcept();
+		}
 		logger.warning("Please implement me, target=" + target + " context=" + context);
 		return null;
 	}

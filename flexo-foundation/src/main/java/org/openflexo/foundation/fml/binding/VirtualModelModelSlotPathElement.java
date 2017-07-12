@@ -46,8 +46,9 @@ import org.openflexo.connie.binding.BindingPathElement;
 import org.openflexo.connie.binding.SimplePathElement;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
+import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.ModelSlotInstance;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 
 public class VirtualModelModelSlotPathElement<MS extends ModelSlot> extends SimplePathElement {
@@ -78,7 +79,7 @@ public class VirtualModelModelSlotPathElement<MS extends ModelSlot> extends Simp
 	@Override
 	public Object getBindingValue(Object target, BindingEvaluationContext context) throws TypeMismatchException, NullReferenceException {
 		if (target instanceof VirtualModelInstance) {
-			AbstractVirtualModelInstance<?, ?> vmi = (VirtualModelInstance) target;
+			AbstractVirtualModelInstance<?, ?> vmi = (AbstractVirtualModelInstance<?, ?>) target;
 			ModelSlotInstance<?, ?> msi = vmi.getModelSlotInstance(modelSlot);
 			if (msi != null) {
 				return msi.getAccessedResourceData();
