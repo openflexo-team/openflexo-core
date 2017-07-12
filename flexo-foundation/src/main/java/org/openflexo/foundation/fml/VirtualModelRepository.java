@@ -36,19 +36,36 @@
  * 
  */
 
-package org.openflexo.foundation.fml.rt;
+package org.openflexo.foundation.fml;
 
-import org.openflexo.foundation.fml.ViewPoint;
-import org.openflexo.foundation.fml.ViewPointNature;
+import java.util.logging.Logger;
+
+import org.openflexo.foundation.FlexoServiceManager;
+import org.openflexo.foundation.fml.rm.VirtualModelResource;
+import org.openflexo.foundation.resource.FlexoResourceCenter;
+import org.openflexo.foundation.technologyadapter.ModelRepository;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapterResourceRepository;
 
 /**
- * Interface defining the nature of a {@link View}<br>
- * 
- * A {@link ViewPointNature} might be seen as an interpretation of a given {@link View}
+ * A {@link VirtualModelRepository} references {@link VirtualModelResource} stored in a given {@link FlexoResourceCenter}
  * 
  * @author sylvain
  * 
  */
-public interface ViewNature extends VirtualModelInstanceNature<View, ViewPoint> {
+public class VirtualModelRepository<I>
+		extends TechnologyAdapterResourceRepository<VirtualModelResource, FMLTechnologyAdapter, VirtualModel, I> {
+
+	private static final Logger logger = Logger.getLogger(ModelRepository.class.getPackage().getName());
+
+	private final FlexoServiceManager serviceManager;
+
+	public VirtualModelRepository(FMLTechnologyAdapter adapter, FlexoResourceCenter<I> resourceCenter) {
+		super(adapter, resourceCenter);
+		this.serviceManager = adapter.getServiceManager();
+	}
+
+	public VirtualModelLibrary getViewPointLibrary() {
+		return serviceManager.getVirtualModelLibrary();
+	}
 
 }

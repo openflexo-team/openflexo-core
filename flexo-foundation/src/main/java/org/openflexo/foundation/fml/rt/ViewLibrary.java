@@ -41,10 +41,11 @@ package org.openflexo.foundation.fml.rt;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
+
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.FlexoServiceManager;
-import org.openflexo.foundation.fml.rt.rm.VirtualModelInstanceResource;
 import org.openflexo.foundation.fml.rt.rm.ViewResource;
+import org.openflexo.foundation.fml.rt.rm.VirtualModelInstanceResource;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 
 /**
@@ -56,7 +57,7 @@ import org.openflexo.foundation.resource.FlexoResourceCenter;
  */
 
 // TODO : Merge ViewRepository / ViewLibrary
-
+@Deprecated
 public class ViewLibrary<I> extends ViewRepository<I> {
 
 	private static final Logger logger = Logger.getLogger(ViewLibrary.class.getPackage().getName());

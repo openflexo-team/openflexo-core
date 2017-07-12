@@ -210,7 +210,7 @@ public class VirtualModelLibrary extends DefaultFlexoObject implements FlexoServ
 		FMLTechnologyAdapter vmTA = getTechnologyAdapterService().getTechnologyAdapter(FMLTechnologyAdapter.class);
 		List<FlexoResourceCenter<?>> resourceCenters = getResourceCenterService().getResourceCenters();
 		for (FlexoResourceCenter<?> rc : resourceCenters) {
-			ViewPointRepository<?> vprfb = vmTA.getViewPointRepository(rc);
+			VirtualModelRepository<?> vprfb = vmTA.getVirtualModelRepository(rc);
 			if ((vprfb != null) && (vprfb.getAllResources().contains(vpRes))) {
 				vprfb.unregisterResource(vpRes);
 			}
@@ -358,7 +358,7 @@ public class VirtualModelLibrary extends DefaultFlexoObject implements FlexoServ
 						.getRemovedResourceCenter();
 			
 				// A resource center must be been dereferenced
-				ViewPointRepository vpr = newRC.getViewPointRepository();
+				VirtualModelRepository vpr = newRC.getViewPointRepository();
 				for (ViewPointResource vpR : vpr.getAllResources()) {
 					if (((FileSystemBasedResourceCenter) vpr.getResourceCenter()).getResource(vpR.getURI()) != null) {
 						vpR.unloadResourceData();
@@ -408,15 +408,15 @@ public class VirtualModelLibrary extends DefaultFlexoObject implements FlexoServ
 
 			for (FlexoResourceCenter<?> rc : getResourceCenters()) {
 				// Register Viewpoint viewpoint resources
-				ViewPointRepository<?> vprfb = fmlTA.getViewPointRepository(rc);
+				VirtualModelRepository<?> vprfb = fmlTA.getVirtualModelRepository(rc);
 				// System.out.println("vprfb=" + vprfb);
 				if (vprfb == null) {
-					logger.warning("Could not retrieve ViewPointRepository from RC: " + rc);
+					logger.warning("Could not retrieve VirtualModelRepository from RC: " + rc);
 				}
 				else {
-					for (ViewPointResource vpRes : vprfb.getAllResources()) {
-						vpRes.setViewPointLibrary(this);
-						registerViewPoint(vpRes);
+					for (VirtualModelResource vpRes : vprfb.getAllResources()) {
+						vpRes.setVirtualModelLibrary(this);
+						registerVirtualModel(vpRes);
 					}
 				}
 			}

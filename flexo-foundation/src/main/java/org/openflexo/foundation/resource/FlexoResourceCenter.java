@@ -48,7 +48,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.converter.FlexoObjectReferenceConverter;
-import org.openflexo.foundation.fml.ViewPointRepository;
+import org.openflexo.foundation.fml.VirtualModelRepository;
 import org.openflexo.foundation.resource.FileSystemBasedResourceCenter.FSBasedResourceCenterEntry;
 import org.openflexo.foundation.resource.JarResourceCenter.JarResourceCenterEntry;
 import org.openflexo.foundation.resource.RemoteResourceCenter.RemoteResourceCenterEntry;
@@ -248,7 +248,7 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, FlexoObject, Refere
 	 * 
 	 * @return
 	 */
-	ViewPointRepository getViewPointRepository();
+	VirtualModelRepository getViewPointRepository();
 
 	/**
 	 * Returns an iterator over a set of elements of type I, which are iterables artefacts this resource center stores

@@ -117,7 +117,7 @@ public class TestDefaultRCServiceLoadRCInClassPath extends OpenflexoTestCase {
 		String viewPointURI = "http://openflexo.org/test/TestViewPointA";
 		log("Testing ViewPoint loading: " + viewPointURI);
 
-		ViewPointResource vpRes = serviceManager.getViewPointLibrary().getViewPointResource(viewPointURI);
+		ViewPointResource vpRes = serviceManager.getVirtualModelLibrary().getViewPointResource(viewPointURI);
 
 		assertNotNull(vpRes);
 		assertFalse(vpRes.isLoaded());

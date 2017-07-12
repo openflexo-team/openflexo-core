@@ -75,7 +75,7 @@ public abstract class AbstractFlexoConceptInstanceTypeEditor<T extends FlexoConc
 
 	public VirtualModelLibrary getViewPointLibrary() {
 		if (getServiceManager() != null) {
-			return getServiceManager().getViewPointLibrary();
+			return getServiceManager().getVirtualModelLibrary();
 		}
 		return null;
 	}

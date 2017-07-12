@@ -48,9 +48,7 @@ import org.openflexo.foundation.IOFlexoException;
 import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
-import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.rm.ViewPointResource;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.fml.rm.VirtualModelResourceFactory;
 import org.openflexo.foundation.resource.SaveResourceException;
@@ -58,12 +56,19 @@ import org.openflexo.foundation.task.Progress;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.toolbox.StringUtils;
 
-public class CreateVirtualModel extends AbstractCreateVirtualModel<CreateVirtualModel, ViewPoint, FMLObject> {
+/**
+ * This action allows to create a {@link VirtualModel} in a container {@link VirtualModel}<br>
+ * (this {@link VirtualModel} is declared as top-level)
+ * 
+ * @author sylvain
+ * 
+ */
+public class CreateContainedVirtualModel extends AbstractCreateVirtualModel<CreateContainedVirtualModel, VirtualModel, FMLObject> {
 
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(CreateVirtualModel.class.getPackage().getName());
+	private static final Logger logger = Logger.getLogger(CreateContainedVirtualModel.class.getPackage().getName());
 
-	public static FlexoActionType<CreateVirtualModel, ViewPoint, FMLObject> actionType = new FlexoActionType<CreateVirtualModel, ViewPoint, FMLObject>(
+	public static FlexoActionType<CreateContainedVirtualModel, VirtualModel, FMLObject> actionType = new FlexoActionType<CreateContainedVirtualModel, VirtualModel, FMLObject>(
 			"create_basic_virtual_model", FlexoActionType.newVirtualModelMenu, FlexoActionType.defaultGroup,
 			FlexoActionType.ADD_ACTION_TYPE) {
 
@@ -71,24 +76,25 @@ public class CreateVirtualModel extends AbstractCreateVirtualModel<CreateVirtual
 		 * Factory method
 		 */
 		@Override
-		public CreateVirtualModel makeNewAction(ViewPoint focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
-			return new CreateVirtualModel(focusedObject, globalSelection, editor);
+		public CreateContainedVirtualModel makeNewAction(VirtualModel focusedObject, Vector<FMLObject> globalSelection,
+				FlexoEditor editor) {
+			return new CreateContainedVirtualModel(focusedObject, globalSelection, editor);
 		}
 
 		@Override
-		public boolean isVisibleForSelection(ViewPoint object, Vector<FMLObject> globalSelection) {
+		public boolean isVisibleForSelection(VirtualModel object, Vector<FMLObject> globalSelection) {
 			return true;
 		}
 
 		@Override
-		public boolean isEnabledForSelection(ViewPoint object, Vector<FMLObject> globalSelection) {
+		public boolean isEnabledForSelection(VirtualModel object, Vector<FMLObject> globalSelection) {
 			return object != null;
 		}
 
 	};
 
 	static {
-		FlexoObjectImpl.addActionForClass(CreateVirtualModel.actionType, ViewPoint.class);
+		FlexoObjectImpl.addActionForClass(CreateContainedVirtualModel.actionType, VirtualModel.class);
 	}
 
 	private String newVirtualModelName;
@@ -99,7 +105,7 @@ public class CreateVirtualModel extends AbstractCreateVirtualModel<CreateVirtual
 
 	// private boolean createsOntology = false;
 
-	CreateVirtualModel(ViewPoint focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
+	CreateContainedVirtualModel(VirtualModel focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 	}
 
@@ -110,11 +116,11 @@ public class CreateVirtualModel extends AbstractCreateVirtualModel<CreateVirtual
 
 		FMLTechnologyAdapter fmlTechnologyAdapter = getServiceManager().getTechnologyAdapterService()
 				.getTechnologyAdapter(FMLTechnologyAdapter.class);
-		VirtualModelResourceFactory factory = fmlTechnologyAdapter.getViewPointResourceFactory().getVirtualModelResourceFactory();
+		VirtualModelResourceFactory factory = fmlTechnologyAdapter.getVirtualModelResourceFactory();
 
 		try {
-			VirtualModelResource vmResource = factory.makeVirtualModelResource(getNewVirtualModelName(),
-					(ViewPointResource) getFocusedObject().getResource(), fmlTechnologyAdapter.getTechnologyContextManager(), true);
+			VirtualModelResource vmResource = factory.makeContainedVirtualModelResource(getNewVirtualModelName(),
+					(VirtualModelResource) getFocusedObject().getResource(), fmlTechnologyAdapter.getTechnologyContextManager(), true);
 			newVirtualModel = vmResource.getLoadedResourceData();
 			newVirtualModel.setDescription(newVirtualModelDescription);
 		} catch (SaveResourceException e) {

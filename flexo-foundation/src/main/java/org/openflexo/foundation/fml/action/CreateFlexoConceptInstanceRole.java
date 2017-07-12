@@ -52,7 +52,6 @@ import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.action.NotImplementedException;
-import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FlexoConcept;
@@ -62,9 +61,10 @@ import org.openflexo.foundation.fml.FlexoConceptStructuralFacet;
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelInstanceType;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
+import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 
 /**
@@ -209,7 +209,7 @@ public class CreateFlexoConceptInstanceRole extends AbstractCreateFlexoRole<Crea
 			}
 			// Trying to find the most adapted model slot
 			for (FMLRTModelSlot ms : flexoConcept.getOwningVirtualModel().getModelSlots(FMLRTModelSlot.class)) {
-				if(ms.getAccessedVirtualModel()!=null){
+				if (ms.getAccessedVirtualModel() != null) {
 					if (ms.getAccessedVirtualModel().getFlexoConcepts().contains(getFlexoConceptInstanceType())) {
 						return ms;
 					}
@@ -293,7 +293,7 @@ public class CreateFlexoConceptInstanceRole extends AbstractCreateFlexoRole<Crea
 				return ((VirtualModelInstanceType) type).getVirtualModel();
 			}
 		}
-		return getFocusedObject().getViewPoint();
+		return getFocusedObject().getDeclaringVirtualModel();
 	}
 
 	@Override

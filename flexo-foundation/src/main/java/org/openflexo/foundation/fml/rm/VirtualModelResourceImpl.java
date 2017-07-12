@@ -296,7 +296,7 @@ public abstract class VirtualModelResourceImpl extends PamelaResourceImpl<Virtua
 	public VirtualModelLibrary getVirtualModelLibrary() {
 		VirtualModelLibrary returned = (VirtualModelLibrary) performSuperGetter(VIRTUAL_MODEL_LIBRARY);
 		if (returned == null && getServiceManager() != null) {
-			return getServiceManager().getViewPointLibrary();
+			return getServiceManager().getVirtualModelLibrary();
 		}
 		return returned;
 	}

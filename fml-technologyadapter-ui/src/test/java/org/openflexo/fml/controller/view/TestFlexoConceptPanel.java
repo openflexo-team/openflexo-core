@@ -109,7 +109,7 @@ public class TestFlexoConceptPanel extends OpenflexoFIBTestCase {
 	@TestOrder(3)
 	public void loadConcepts() {
 
-		VirtualModelLibrary vpLib = serviceManager.getViewPointLibrary();
+		VirtualModelLibrary vpLib = serviceManager.getVirtualModelLibrary();
 		assertNotNull(vpLib);
 		ViewPoint viewPoint = vpLib.getViewPoint("http://openflexo.org/test/TestViewPointA");
 		assertNotNull(viewPoint);

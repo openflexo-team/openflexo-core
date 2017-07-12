@@ -221,7 +221,7 @@ public abstract class FlexoServiceManager {
 		return getService(ProjectNatureService.class);
 	}
 
-	public VirtualModelLibrary getViewPointLibrary() {
+	public VirtualModelLibrary getVirtualModelLibrary() {
 		return getService(VirtualModelLibrary.class);
 	}
 

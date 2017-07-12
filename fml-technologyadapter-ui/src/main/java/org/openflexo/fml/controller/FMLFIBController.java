@@ -80,8 +80,8 @@ import org.openflexo.foundation.fml.action.CreateInspectorEntry;
 import org.openflexo.foundation.fml.action.CreateModelSlot;
 import org.openflexo.foundation.fml.action.CreatePrimitiveRole;
 import org.openflexo.foundation.fml.action.CreateTechnologyRole;
-import org.openflexo.foundation.fml.action.CreateViewPoint;
-import org.openflexo.foundation.fml.action.CreateVirtualModel;
+import org.openflexo.foundation.fml.action.CreateTopLevelVirtualModel;
+import org.openflexo.foundation.fml.action.CreateContainedVirtualModel;
 import org.openflexo.foundation.fml.action.DeleteFlexoConceptObjects;
 import org.openflexo.foundation.fml.action.DeleteViewpoint;
 import org.openflexo.foundation.fml.action.DeleteVirtualModel;
@@ -138,9 +138,9 @@ public class FMLFIBController extends FlexoFIBController {
 	}
 
 	public ViewPoint createViewPoint(RepositoryFolder<ViewPointResource, ?> folder) {
-		CreateViewPoint createViewPoint = CreateViewPoint.actionType.makeNewAction(folder, null, getEditor());
-		createViewPoint.doAction();
-		return createViewPoint.getNewViewPoint();
+		CreateTopLevelVirtualModel createTopLevelVirtualModel = CreateTopLevelVirtualModel.actionType.makeNewAction(folder, null, getEditor());
+		createTopLevelVirtualModel.doAction();
+		return createTopLevelVirtualModel.getNewViewPoint();
 	}
 
 	public void deleteViewPoint(FlexoResource<ViewPoint> viewPointResource)
@@ -152,10 +152,10 @@ public class FMLFIBController extends FlexoFIBController {
 
 	public VirtualModel createVirtualModel(FlexoResource<ViewPoint> viewPointResource)
 			throws FileNotFoundException, ResourceLoadingCancelledException, FlexoException {
-		CreateVirtualModel createVirtualModel = CreateVirtualModel.actionType.makeNewAction(viewPointResource.getResourceData(null), null,
+		CreateContainedVirtualModel createContainedVirtualModel = CreateContainedVirtualModel.actionType.makeNewAction(viewPointResource.getResourceData(null), null,
 				getEditor());
-		createVirtualModel.doAction();
-		return createVirtualModel.getNewVirtualModel();
+		createContainedVirtualModel.doAction();
+		return createContainedVirtualModel.getNewVirtualModel();
 	}
 
 	public void deleteVirtualModel(FlexoResource<VirtualModel> virtualModelResource)

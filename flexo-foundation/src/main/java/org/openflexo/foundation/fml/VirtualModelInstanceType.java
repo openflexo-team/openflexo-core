@@ -79,7 +79,7 @@ public class VirtualModelInstanceType extends FlexoConceptInstanceType {
 			VirtualModel virtualModel;
 			try {
 				virtualModel = ((VirtualModelInstanceTypeFactory) factory).getTechnologyAdapter().getTechnologyAdapterService()
-						.getServiceManager().getViewPointLibrary().getVirtualModel(conceptURI);
+						.getServiceManager().getVirtualModelLibrary().getVirtualModel(conceptURI);
 				if (virtualModel != null) {
 					flexoConcept = virtualModel;
 					this.customTypeFactory = null;
@@ -131,7 +131,7 @@ public class VirtualModelInstanceType extends FlexoConceptInstanceType {
 
 			if (configuration != null) {
 				VirtualModelResource virtualModelResource = getTechnologyAdapter().getTechnologyAdapterService().getServiceManager()
-						.getViewPointLibrary().getVirtualModelResource(configuration);
+						.getVirtualModelLibrary().getVirtualModelResource(configuration);
 				if (virtualModelResource != null && virtualModelResource.isLoaded()) {
 					virtualModel = virtualModelResource.getLoadedResourceData();
 				}

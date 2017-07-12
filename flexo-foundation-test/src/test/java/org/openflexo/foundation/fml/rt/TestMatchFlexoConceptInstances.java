@@ -101,7 +101,7 @@ public class TestMatchFlexoConceptInstances extends OpenflexoProjectAtRunTimeTes
 	@TestOrder(1)
 	public void testLoadViewPoint() {
 		instanciateTestServiceManager();
-		VirtualModelLibrary vpLib = serviceManager.getViewPointLibrary();
+		VirtualModelLibrary vpLib = serviceManager.getVirtualModelLibrary();
 		assertNotNull(vpLib);
 		viewPoint = vpLib.getViewPoint("http://openflexo.org/test/TestMatchFlexoConceptInstance");
 		assertNotNull(viewPoint);

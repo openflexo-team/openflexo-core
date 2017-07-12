@@ -166,7 +166,7 @@ public class VirtualModelInstanceResourceFactory
 			if (StringUtils.isNotEmpty(vmiInfo.virtualModelURI)) {
 				VirtualModelResource vmrsc = null;
 				FlexoServiceManager sm = technologyContextManager.getServiceManager();
-				vmrsc = sm.getViewPointLibrary().getVirtualModelResource(vmiInfo.virtualModelURI);
+				vmrsc = sm.getVirtualModelLibrary().getVirtualModelResource(vmiInfo.virtualModelURI);
 				if (vmrsc == null) {
 					// In this case, serialize URI of virtualmodel, to give a chance to find it later
 					returned.setVirtualModelURI(vmiInfo.virtualModelURI);

@@ -377,59 +377,6 @@ public class FMLModelFactory extends FGEModelFactoryImpl implements PamelaResour
 		return returned;
 	}
 
-	@Deprecated
-	public URIParameter newURIParameter() {
-		return newInstance(URIParameter.class);
-	}
-
-	public TextFieldParameter newTextFieldParameter() {
-		return newInstance(TextFieldParameter.class);
-	}
-
-	public TextAreaParameter newTextAreaParameter() {
-		return newInstance(TextAreaParameter.class);
-	}
-
-	public IntegerParameter newIntegerParameter() {
-		return newInstance(IntegerParameter.class);
-	}
-
-	public CheckboxParameter newCheckboxParameter() {
-		return newInstance(CheckboxParameter.class);
-	}
-
-	public DropDownParameter newDropDownParameter() {
-		return newInstance(DropDownParameter.class);
-	}
-
-	/*public IndividualParameter newIndividualParameter() {
-		return newInstance(IndividualParameter.class);
-	}
-	
-	public ClassParameter newClassParameter() {
-		return newInstance(ClassParameter.class);
-	}
-	
-	public PropertyParameter newPropertyParameter() {
-		return newInstance(PropertyParameter.class);
-	}
-	
-	public ObjectPropertyParameter newObjectPropertyParameter() {
-		return newInstance(ObjectPropertyParameter.class);
-	}
-	
-	public DataPropertyParameter newDataPropertyParameter() {
-		return newInstance(DataPropertyParameter.class);
-	}*/
-
-	public TechnologyObjectParameter newTechnologyObjectParameter() {
-		return newInstance(TechnologyObjectParameter.class);
-	}
-
-	public ListParameter newListParameter() {
-		return newInstance(ListParameter.class);
-	}
-
 	public FetchRequestCondition newFetchRequestCondition() {
 		return newInstance(FetchRequestCondition.class);
 	}

@@ -53,8 +53,8 @@ import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.action.AbstractCreateVirtualModel;
 import org.openflexo.foundation.fml.action.AbstractCreateVirtualModel.ModelSlotEntry;
 import org.openflexo.foundation.fml.action.CreateFlexoConcept;
-import org.openflexo.foundation.fml.action.CreateViewPoint;
-import org.openflexo.foundation.fml.action.CreateVirtualModel;
+import org.openflexo.foundation.fml.action.CreateTopLevelVirtualModel;
+import org.openflexo.foundation.fml.action.CreateContainedVirtualModel;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
@@ -76,8 +76,8 @@ import org.openflexo.view.controller.FlexoController;
  *
  * @param <A>
  * @see CreateFlexoConcept
- * @see CreateVirtualModel
- * @see CreateViewPoint
+ * @see CreateContainedVirtualModel
+ * @see CreateTopLevelVirtualModel
  */
 public abstract class AbstractCreateVirtualModelWizard<A extends AbstractCreateVirtualModel<?, ?, ?>>
 		extends AbstractCreateFlexoConceptWizard<A> {

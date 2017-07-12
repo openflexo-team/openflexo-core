@@ -124,10 +124,11 @@ public interface ViewPointLocalizedEntry extends FMLObject {
 		}
 
 		@Override
-		public ViewPoint getResourceData() {
+		public VirtualModel getResourceData() {
 			if (getLocalizedDictionary() != null) {
-				return getLocalizedDictionary().getViewPoint();
-			} else {
+				return getLocalizedDictionary().getOwner();
+			}
+			else {
 				return null;
 			}
 		}
@@ -179,7 +180,7 @@ public interface ViewPointLocalizedEntry extends FMLObject {
 
 		@Override
 		public BindingModel getBindingModel() {
-			return getViewPoint().getBindingModel();
+			return getDeclaringVirtualModel().getBindingModel();
 		}
 
 		@Override
@@ -190,8 +191,8 @@ public interface ViewPointLocalizedEntry extends FMLObject {
 	}
 
 	@DefineValidationRule
-	public static class LocalizedEntryShouldNotBeRegisteredTwice extends
-			ValidationRule<LocalizedEntryShouldNotBeRegisteredTwice, ViewPointLocalizedEntry> {
+	public static class LocalizedEntryShouldNotBeRegisteredTwice
+			extends ValidationRule<LocalizedEntryShouldNotBeRegisteredTwice, ViewPointLocalizedEntry> {
 		public LocalizedEntryShouldNotBeRegisteredTwice() {
 			super(ViewPointLocalizedEntry.class, "localized_entry_should_not_be_registered_twice");
 		}
@@ -211,7 +212,8 @@ public interface ViewPointLocalizedEntry extends FMLObject {
 			return null;
 		}
 
-		protected static class RemoveExtraReferences extends FixProposal<LocalizedEntryShouldNotBeRegisteredTwice, ViewPointLocalizedEntry> {
+		protected static class RemoveExtraReferences
+				extends FixProposal<LocalizedEntryShouldNotBeRegisteredTwice, ViewPointLocalizedEntry> {
 
 			private final ViewPointLocalizedEntry entry;
 

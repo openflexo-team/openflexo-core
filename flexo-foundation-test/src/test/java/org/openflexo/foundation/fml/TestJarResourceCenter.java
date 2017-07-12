@@ -118,7 +118,7 @@ public class TestJarResourceCenter extends OpenflexoTestCase {
 		System.out.println("viewPointFromRM=" + viewPointFromRM);
 		assertNotNull(viewPointFromRM);
 
-		ViewPoint viewPoint = serviceManager.getViewPointLibrary().getViewPoint("http://openflexo.org/test/TestViewPoint2");
+		ViewPoint viewPoint = serviceManager.getVirtualModelLibrary().getViewPoint("http://openflexo.org/test/TestViewPoint2");
 		System.out.println("ViewPoint=" + viewPoint);
 		assertNotNull(viewPoint);
 

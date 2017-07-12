@@ -97,7 +97,7 @@ public class TestSequence extends OpenflexoTestCase {
 	@TestOrder(2)
 	public void testLoadViewPoint() {
 
-		VirtualModelLibrary vpLib = serviceManager.getViewPointLibrary();
+		VirtualModelLibrary vpLib = serviceManager.getVirtualModelLibrary();
 
 		System.out.println("VPLibrary=" + vpLib);
 		assertNotNull(vpLib);

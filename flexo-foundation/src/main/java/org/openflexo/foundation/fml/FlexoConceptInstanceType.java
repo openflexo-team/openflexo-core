@@ -88,7 +88,7 @@ public class FlexoConceptInstanceType implements TechnologySpecificType<FMLTechn
 			FlexoConcept concept = null;
 
 			if (configuration != null) {
-				concept = getTechnologyAdapter().getTechnologyAdapterService().getServiceManager().getViewPointLibrary()
+				concept = getTechnologyAdapter().getTechnologyAdapterService().getServiceManager().getVirtualModelLibrary()
 						.getFlexoConcept(configuration, false);
 				// Do not load virtual models for that reason, resolving will be performed later
 			}
@@ -210,7 +210,7 @@ public class FlexoConceptInstanceType implements TechnologySpecificType<FMLTechn
 		// System.out.println("******* resolve " + getSerializationRepresentation() + " with " + factory);
 		if (factory instanceof FlexoConceptInstanceTypeFactory) {
 			FlexoConcept concept = ((FlexoConceptInstanceTypeFactory) factory).getTechnologyAdapter().getTechnologyAdapterService()
-					.getServiceManager().getViewPointLibrary().getFlexoConcept(conceptURI);
+					.getServiceManager().getVirtualModelLibrary().getFlexoConcept(conceptURI);
 			if (concept != null) {
 				flexoConcept = concept;
 				this.customTypeFactory = null;
