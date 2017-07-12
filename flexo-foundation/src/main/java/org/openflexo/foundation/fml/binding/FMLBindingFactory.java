@@ -54,9 +54,7 @@ import org.openflexo.connie.binding.Function;
 import org.openflexo.connie.binding.FunctionPathElement;
 import org.openflexo.connie.binding.SimplePathElement;
 import org.openflexo.connie.expr.Constant.ObjectConstant;
-import org.openflexo.connie.expr.Constant.StringConstant;
 import org.openflexo.connie.java.JavaBindingFactory;
-import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.fml.AbstractActionScheme;
 import org.openflexo.foundation.fml.CreationScheme;
 import org.openflexo.foundation.fml.FlexoBehaviour;
@@ -69,12 +67,9 @@ import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.TechnologySpecificType;
-import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.VirtualModel;
+import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
-import org.openflexo.foundation.fml.rt.View;
-import org.openflexo.foundation.fml.rt.ViewObject;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterBindingFactory;
@@ -182,44 +177,21 @@ public class FMLBindingFactory extends JavaBindingFactory {
 				FlexoConcept concept = ((FlexoConceptInstanceType) pType).getFlexoConcept();
 
 				if (concept != null) {
-					/*if (concept instanceof VirtualModel) {
-						VirtualModel vm = (VirtualModel) concept;
-						for (ModelSlot<?> ms : vm.getModelSlots()) {
-							returned.add(getSimplePathElement(ms, parent));
-						}
-					}*/
 					for (FlexoProperty<?> pr : concept.getAccessibleProperties()) {
 						returned.add(getSimplePathElement(pr, parent));
 					}
-					/*if (concept.getOwner() != null) {
-						for (FlexoProperty<?> pr : concept.getOwner().getAccessibleProperties()) {
-							if (concept.getAccessibleProperty(pr.getPropertyName()) == null) {
-								returned.add(getSimplePathElement(pr, parent));
-							}
-							else {
-								logger.warning("Property " + pr.getName() + " is shadowed by property "
-										+ concept.getAccessibleProperty(pr.getPropertyName()));
-							}
-						}
-					}*/
-					// TODO: performance issue
 					if (concept.getInspector().getRenderer().isSet() && concept.getInspector().getRenderer().isValid()) {
 						returned.add(new EPIRendererPathElement(parent));
 					}
-					if (concept instanceof ViewPoint) {
-						returned.add(new ViewPointTypePathElement(parent));
-					}
-					else if (concept instanceof VirtualModel) {
-						returned.add(new VirtualModelTypePathElement(parent));
+					returned.add(new FlexoConceptTypePathElement(parent, concept));
+
+					if (concept instanceof VirtualModel && ((VirtualModel) concept).getContainerVirtualModel() == null) {
+						// Special case where there is no container
 					}
 					else {
-						returned.add(new FlexoConceptTypePathElement(parent));
+						returned.add(new ContainerPathElement(parent, concept));
 					}
-					if (concept.getContainerFlexoConcept() != null) {
-						returned.add(new ContainerPathElement(parent, concept.getContainerFlexoConcept()));
-					}
-					returned.add(new VirtualModelInstancePathElement(parent, concept.getOwningVirtualModel()));
-					returned.add(new ViewPathElement(parent, concept.getViewPoint()));
+
 					returned.add(new ResourceCenterPathElement(parent));
 				}
 				return returned;
@@ -245,8 +217,7 @@ public class FMLBindingFactory extends JavaBindingFactory {
 				if (!(flexoBehaviour instanceof CreationScheme)) {
 					returned.add(new FlexoConceptInstancePathElement(parent, FLEXO_CONCEPT_INSTANCE, flexoBehaviour.getFlexoConcept()));
 				}
-				returned.add(new VirtualModelInstancePathElement(parent, flexoBehaviour.getFlexoConcept().getOwningVirtualModel()));
-				returned.add(new ViewPathElement(parent, flexoBehaviour.getFlexoConcept().getViewPoint()));
+				returned.add(new ContainerPathElement(parent, flexoBehaviour.getFlexoConcept().getOwningVirtualModel()));
 				returned.add(new ResourceCenterPathElement(parent));
 				return returned;
 			}
@@ -382,13 +353,13 @@ public class FMLBindingFactory extends JavaBindingFactory {
 		FunctionPathElement returned = super.makeFunctionPathElement(parent, function, args);
 		// Hook to specialize type returned by getFlexoConceptInstance(String)
 		// This method is used while executing DiagramElement inspectors
-		if (function.getName().equals("getFlexoConceptInstance")) {
+		/*if (function.getName().equals("getFlexoConceptInstance")) {
 			if (TypeUtils.isTypeAssignableFrom(ViewObject.class, parent.getType()) && args.size() == 1 && args.get(0).isStringConstant()) {
 				String flexoConceptId = ((StringConstant) args.get(0).getExpression()).getValue();
 				FlexoConcept ep = virtualModel.getFlexoConcept(flexoConceptId);
 				returned.setType(FlexoConceptInstanceType.getFlexoConceptInstanceType(ep));
 			}
-		}
+		}*/
 		return returned;
 	}
 
@@ -403,11 +374,8 @@ public class FMLBindingFactory extends JavaBindingFactory {
 				for (int i = 0; i < args.size(); i++) {
 					if (args.get(i).getExpression() instanceof ObjectConstant) {
 						Object value = ((ObjectConstant) args.get(i).getExpression()).getValue();
-						if (value instanceof View) {
-							paramsTypes[i] = ((View) value).getViewPoint().getInstanceType();
-						}
-						else if (value instanceof VirtualModelInstance) {
-							paramsTypes[i] = ((VirtualModelInstance) value).getVirtualModel().getInstanceType();
+						if (value instanceof AbstractVirtualModelInstance) {
+							paramsTypes[i] = ((AbstractVirtualModelInstance<?, ?>) value).getVirtualModel().getInstanceType();
 						}
 						else if (value instanceof FlexoConceptInstance) {
 							paramsTypes[i] = ((FlexoConceptInstance) value).getFlexoConcept().getInstanceType();

@@ -48,10 +48,25 @@ import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
+import org.openflexo.foundation.fml.VirtualModel;
+import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
+import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 
 /**
- * A path element which represents access to container {@link FlexoConceptInstance} accessible at run-time<br>
+ * This is the "container" path element, applicable to a {@link FlexoConceptInstance} with allow to access to it's
+ * {@link VirtualModelInstance} container
+ * 
+ * There are three cases:
+ * <ul>
+ * <li>either the path element applies to a {@link VirtualModel}: in this case the container is bound to container VirtualModel
+ * instance</li>
+ * <li>either the path element applied to a basic {@link FlexoConcept} which is not embedded in another concept: in this case, the container
+ * is bound to VirtualModel instance in which the FCI is defined</li>
+ * <li>either the path element applied to a basic {@link FlexoConcept} which is embedded in another concept: in this case, the container is
+ * bound to instance of FlexoConcept in which the FCI is defined</li>
+ * </ul>
  * 
  * @author sylvain
  *
@@ -60,16 +75,44 @@ public class ContainerPathElement extends SimplePathElement {
 
 	private static final Logger logger = Logger.getLogger(ContainerPathElement.class.getPackage().getName());
 
-	private FlexoConcept containerConcept;
+	private FlexoConcept applicableFlexoConcept;
+	private FlexoConcept containerType;
 
-	public ContainerPathElement(BindingPathElement parent, FlexoConcept containerConcept) {
-		super(parent, FlexoConceptBindingModel.CONTAINER_PROPERTY, containerConcept.getInstanceType());
-		this.containerConcept = containerConcept;
+	public ContainerPathElement(BindingPathElement parent, FlexoConcept applicableFlexoConcept) {
+		super(parent, FlexoConceptBindingModel.CONTAINER_PROPERTY, Object.class);
+		this.applicableFlexoConcept = applicableFlexoConcept;
+		if (applicableFlexoConcept instanceof VirtualModel) {
+			containerType = ((VirtualModel) applicableFlexoConcept).getContainerVirtualModel();
+		}
+		else if (applicableFlexoConcept.getContainerFlexoConcept() != null) {
+			containerType = applicableFlexoConcept.getContainerFlexoConcept();
+		}
+		else {
+			containerType = applicableFlexoConcept.getDeclaringVirtualModel();
+		}
+	}
+
+	/**
+	 * Return {@link FlexoConcept} on which this path element applies
+	 * 
+	 * @return
+	 */
+	public FlexoConcept getApplicableFlexoConcept() {
+		return applicableFlexoConcept;
+	}
+
+	/**
+	 * Return type of accessed container
+	 * 
+	 * @return
+	 */
+	public FlexoConcept getContainerType() {
+		return containerType;
 	}
 
 	@Override
 	public Type getType() {
-		return FlexoConceptInstanceType.getFlexoConceptInstanceType(containerConcept);
+		return FlexoConceptInstanceType.getFlexoConceptInstanceType(containerType);
 	}
 
 	@Override
@@ -79,8 +122,8 @@ public class ContainerPathElement extends SimplePathElement {
 
 	@Override
 	public String getTooltipText(Type resultingType) {
-		if (containerConcept != null) {
-			return containerConcept.getDescription();
+		if (containerType != null) {
+			return containerType.getDescription();
 		}
 		return null;
 	}
@@ -92,8 +135,19 @@ public class ContainerPathElement extends SimplePathElement {
 
 	@Override
 	public Object getBindingValue(Object target, BindingEvaluationContext context) throws TypeMismatchException, NullReferenceException {
-		if (target instanceof FlexoConceptInstance) {
-			return ((FlexoConceptInstance) target).getContainerFlexoConceptInstance();
+		if (target instanceof FlexoBehaviourAction) {
+			return ((FlexoBehaviourAction) target).getVirtualModelInstance();
+		}
+		if (target instanceof AbstractVirtualModelInstance) {
+			return ((AbstractVirtualModelInstance) target).getContainerVirtualModelInstance();
+		}
+		else if (target instanceof FlexoConceptInstance) {
+			if (applicableFlexoConcept.getContainerFlexoConcept() != null) {
+				return ((FlexoConceptInstance) target).getContainerFlexoConceptInstance();
+			}
+			else {
+				return ((FlexoConceptInstance) target).getVirtualModelInstance();
+			}
 		}
 		logger.warning("Please implement me, target=" + target + " context=" + context);
 		return null;
