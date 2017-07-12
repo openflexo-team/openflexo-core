@@ -58,7 +58,7 @@ import java.util.logging.Logger;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.converter.FlexoObjectReferenceConverter;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
-import org.openflexo.foundation.fml.ViewPointRepository;
+import org.openflexo.foundation.fml.VirtualModelRepository;
 import org.openflexo.foundation.resource.DirectoryBasedJarIODelegate.DirectoryBasedJarIODelegateImpl;
 import org.openflexo.foundation.resource.InJarIODelegate.InJarIODelegateImpl;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
@@ -441,10 +441,10 @@ public class JarResourceCenter extends ResourceRepository<FlexoResource<?>, InJa
 
 	// TODO Remove this
 	@Override
-	public ViewPointRepository<?> getViewPointRepository() {
+	public VirtualModelRepository<?> getViewPointRepository() {
 		if (getServiceManager() != null) {
 			FMLTechnologyAdapter vmTA = getServiceManager().getTechnologyAdapterService().getTechnologyAdapter(FMLTechnologyAdapter.class);
-			return vmTA.getViewPointRepository(this);
+			return vmTA.getVirtualModelRepository(this);
 		}
 		return null;
 	}

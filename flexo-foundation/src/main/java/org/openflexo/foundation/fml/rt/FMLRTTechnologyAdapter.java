@@ -143,7 +143,7 @@ public class FMLRTTechnologyAdapter extends TechnologyAdapter {
 			resourceCenter.registerRepository(returned, ViewLibrary.class, this);
 			// resourceCenter.registerRepository(returned, ViewRepository.class, this);
 			// returned = new ViewRepository<I>(this, resourceCenter);
-			// resourceCenter.registerRepository(returned, ViewPointRepository.class, this);
+			// resourceCenter.registerRepository(returned, VirtualModelRepository.class, this);
 		}
 		return returned;
 	}

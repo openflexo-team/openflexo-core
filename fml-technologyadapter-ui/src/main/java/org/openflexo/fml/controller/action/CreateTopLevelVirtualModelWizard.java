@@ -47,7 +47,7 @@ import org.openflexo.ApplicationContext;
 import org.openflexo.components.wizard.WizardStep;
 import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.action.CreateViewPoint;
+import org.openflexo.foundation.fml.action.CreateTopLevelVirtualModel;
 import org.openflexo.foundation.fml.rm.ViewPointResource;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.resource.RepositoryFolder;
@@ -58,14 +58,14 @@ import org.openflexo.icon.IconLibrary;
 import org.openflexo.toolbox.StringUtils;
 import org.openflexo.view.controller.FlexoController;
 
-public class CreateViewPointWizard extends AbstractCreateVirtualModelWizard<CreateViewPoint> {
+public class CreateTopLevelVirtualModelWizard extends AbstractCreateVirtualModelWizard<CreateTopLevelVirtualModel> {
 
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(CreateViewPointWizard.class.getPackage().getName());
+	private static final Logger logger = Logger.getLogger(CreateTopLevelVirtualModelWizard.class.getPackage().getName());
 
 	private final DescribeViewPoint describeViewPoint;
 
-	public CreateViewPointWizard(CreateViewPoint action, FlexoController controller) {
+	public CreateTopLevelVirtualModelWizard(CreateTopLevelVirtualModel action, FlexoController controller) {
 		super(action, controller);
 		addStep(describeViewPoint = new DescribeViewPoint());
 	}
@@ -102,8 +102,8 @@ public class CreateViewPointWizard extends AbstractCreateVirtualModelWizard<Crea
 			return getController().getApplicationContext();
 		}
 
-		public CreateViewPoint getAction() {
-			return CreateViewPointWizard.this.getAction();
+		public CreateTopLevelVirtualModel getAction() {
+			return CreateTopLevelVirtualModelWizard.this.getAction();
 		}
 
 		@Override

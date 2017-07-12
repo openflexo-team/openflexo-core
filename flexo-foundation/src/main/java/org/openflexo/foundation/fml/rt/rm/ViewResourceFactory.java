@@ -202,7 +202,7 @@ public class ViewResourceFactory extends VirtualModelInstanceResourceFactory<Vie
 			TechnologyContextManager<FMLTechnologyAdapter> technologyContextManager) {
 		super.registerResource(resource, resourceCenter, technologyContextManager);
 	
-		// Register the resource in the ViewPointRepository of supplied resource center
+		// Register the resource in the VirtualModelRepository of supplied resource center
 		registerResourceInResourceRepository(resource,
 				technologyContextManager.getTechnologyAdapter().getViewPointRepository(resourceCenter));
 	
@@ -261,7 +261,7 @@ public class ViewResourceFactory extends VirtualModelInstanceResourceFactory<Vie
 				returned.setModelVersion(CURRENT_FML_RT_VERSION);
 			}
 			if (StringUtils.isNotEmpty(vpi.viewPointURI)) {
-				ViewPointResource vpResource = resourceCenter.getServiceManager().getViewPointLibrary()
+				ViewPointResource vpResource = resourceCenter.getServiceManager().getVirtualModelLibrary()
 						.getViewPointResource(vpi.viewPointURI);
 				returned.setViewPointResource(vpResource);
 				returned.setVirtualModelResource(vpResource);

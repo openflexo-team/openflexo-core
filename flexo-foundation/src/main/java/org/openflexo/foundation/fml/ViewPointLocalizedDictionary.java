@@ -108,7 +108,7 @@ public interface ViewPointLocalizedDictionary extends FMLObject, org.openflexo.l
 	@Remover(LOCALIZED_ENTRIES_KEY)
 	public void removeFromLocalizedEntries(ViewPointLocalizedEntry aEntrie);
 
-	@Getter(value = OWNER_KEY, inverse = ViewPoint.LOCALIZED_DICTIONARY_KEY)
+	@Getter(value = OWNER_KEY, inverse = VirtualModel.LOCALIZED_DICTIONARY_KEY)
 	public VirtualModel getOwner();
 
 	@Setter(OWNER_KEY)

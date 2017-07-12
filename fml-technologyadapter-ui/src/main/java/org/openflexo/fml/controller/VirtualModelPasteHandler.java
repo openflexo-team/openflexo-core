@@ -125,7 +125,7 @@ public class VirtualModelPasteHandler extends FlexoPasteHandler<VirtualModel> {
 				VirtualModel originalVM = (VirtualModel) clipboard.getLeaderClipboard().getOriginalContents()[0];
 				VirtualModel copy = (VirtualModel) clipboard.getLeaderClipboard().getSingleContents();
 
-				VirtualModelResourceFactory vmResFactory = originalVM.getTechnologyAdapter().getViewPointResourceFactory()
+				VirtualModelResourceFactory vmResFactory = originalVM.getTechnologyAdapter().getVirtualModelResourceFactory()
 						.getVirtualModelResourceFactory();
 
 				System.out.println("On doit cloner la resource " + originalVM.getResource());

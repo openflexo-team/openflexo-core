@@ -45,7 +45,7 @@ import org.openflexo.ApplicationContext;
 import org.openflexo.components.wizard.WizardStep;
 import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.action.CreateVirtualModel;
+import org.openflexo.foundation.fml.action.CreateContainedVirtualModel;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.gina.annotation.FIBPanel;
 import org.openflexo.icon.FMLIconLibrary;
@@ -54,14 +54,14 @@ import org.openflexo.icon.IconLibrary;
 import org.openflexo.toolbox.StringUtils;
 import org.openflexo.view.controller.FlexoController;
 
-public class CreateVirtualModelWizard extends AbstractCreateVirtualModelWizard<CreateVirtualModel> {
+public class CreateContainedVirtualModelWizard extends AbstractCreateVirtualModelWizard<CreateContainedVirtualModel> {
 
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(CreateVirtualModelWizard.class.getPackage().getName());
+	private static final Logger logger = Logger.getLogger(CreateContainedVirtualModelWizard.class.getPackage().getName());
 
 	private final DescribeVirtualModel describeVirtualModel;
 
-	public CreateVirtualModelWizard(CreateVirtualModel action, FlexoController controller) {
+	public CreateContainedVirtualModelWizard(CreateContainedVirtualModel action, FlexoController controller) {
 		super(action, controller);
 		addStep(describeVirtualModel = new DescribeVirtualModel());
 		appendConfigureModelSlots();
@@ -99,8 +99,8 @@ public class CreateVirtualModelWizard extends AbstractCreateVirtualModelWizard<C
 			return getController().getApplicationContext();
 		}
 
-		public CreateVirtualModel getAction() {
-			return CreateVirtualModelWizard.this.getAction();
+		public CreateContainedVirtualModel getAction() {
+			return CreateContainedVirtualModelWizard.this.getAction();
 		}
 
 		@Override

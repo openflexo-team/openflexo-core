@@ -58,8 +58,8 @@ import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.action.CreateFlexoConcept;
-import org.openflexo.foundation.fml.action.CreateViewPoint;
-import org.openflexo.foundation.fml.action.CreateVirtualModel;
+import org.openflexo.foundation.fml.action.CreateTopLevelVirtualModel;
+import org.openflexo.foundation.fml.action.CreateContainedVirtualModel;
 import org.openflexo.foundation.resource.DirectoryResourceCenter;
 import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.gina.swing.utils.TypeSelector;
@@ -111,7 +111,7 @@ public class TestTypeSelector extends OpenflexoTestCaseWithGUI {
 	@TestOrder(1)
 	public void testSomeConcepts() throws SaveResourceException {
 
-		CreateViewPoint addViewPointAction = CreateViewPoint.actionType
+		CreateTopLevelVirtualModel addViewPointAction = CreateTopLevelVirtualModel.actionType
 				.makeNewAction(resourceCenter.getViewPointRepository().getRootFolder(), null, editor);
 		addViewPointAction.setNewViewPointName(VIEWPOINT_NAME);
 		addViewPointAction.setNewViewPointURI(VIEWPOINT_URI);
@@ -125,7 +125,7 @@ public class TestTypeSelector extends OpenflexoTestCaseWithGUI {
 		// newViewPointResource = (ViewPointResource)
 		// newViewPoint.getResource();
 
-		CreateVirtualModel addVirtualModelAction = CreateVirtualModel.actionType.makeNewAction(newViewPoint, null,
+		CreateContainedVirtualModel addVirtualModelAction = CreateContainedVirtualModel.actionType.makeNewAction(newViewPoint, null,
 				editor);
 		addVirtualModelAction.setNewVirtualModelName("TestVirtualModel");
 		addVirtualModelAction.doAction();

@@ -69,8 +69,12 @@ import org.openflexo.foundation.fml.editionaction.FetchRequestCondition;
 import org.openflexo.foundation.fml.rt.action.SynchronizationSchemeAction;
 import org.openflexo.foundation.fml.rt.action.SynchronizationSchemeActionType;
 import org.openflexo.foundation.fml.rt.rm.AbstractVirtualModelInstanceResource;
+import org.openflexo.foundation.fml.rt.rm.ViewResource;
+import org.openflexo.foundation.fml.rt.rm.VirtualModelInstanceResource;
 import org.openflexo.foundation.resource.CannotRenameException;
 import org.openflexo.foundation.resource.FlexoResource;
+import org.openflexo.foundation.resource.FlexoResourceCenter;
+import org.openflexo.foundation.resource.RepositoryFolder;
 import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.technologyadapter.FlexoModel;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
@@ -83,8 +87,6 @@ import org.openflexo.model.annotations.Embedded;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.Getter.Cardinality;
 import org.openflexo.model.annotations.ImplementationClass;
-import org.openflexo.model.annotations.Import;
-import org.openflexo.model.annotations.Imports;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.PastingPoint;
 import org.openflexo.model.annotations.PropertyIdentifier;
@@ -106,12 +108,13 @@ import org.openflexo.toolbox.StringUtils;
  * @author sylvain
  * 
  * @param <VMI>
+ *            Type of reflected {@link AbstractVirtualModelInstance}
  * @param <TA>
+ *            TechnologyAdapter managing this {@link AbstractVirtualModelInstance}
  * 
  */
 @ModelEntity(isAbstract = true)
-@ImplementationClass(VirtualModelInstance.VirtualModelInstanceImpl.class)
-@Imports({ @Import(VirtualModelInstance.class), @Import(View.class) })
+@ImplementationClass(AbstractVirtualModelInstance.AbstractVirtualModelInstanceImpl.class)
 public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelInstance<VMI, TA>, TA extends TechnologyAdapter>
 		extends FlexoConceptInstance, ResourceData<VMI>, FlexoModel<VMI, VirtualModel>, TechnologyObject<TA>,
 		IndexableContainer<FlexoConceptInstance> {
@@ -130,6 +133,35 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 	public static final String VIRTUAL_MODEL_URI_KEY = "virtualModelURI";
 	@PropertyIdentifier(type = FlexoConceptInstance.class, cardinality = Cardinality.LIST)
 	public static final String FLEXO_CONCEPT_INSTANCES_KEY = "flexoConceptInstances";
+
+	@PropertyIdentifier(type = AbstractVirtualModelInstance.class)
+	public static final String CONTAINER_VIRTUAL_MODEL_INSTANCE_KEY = "containerVirtualModelInstance";
+	@PropertyIdentifier(type = VirtualModelInstance.class, cardinality = Cardinality.LIST)
+	public static final String VIRTUAL_MODEL_INSTANCES_KEY = "virtualModelInstances";
+
+	/**
+	 * Returns URI for this {@link AbstractVirtualModelInstance}.<br>
+	 * Note that if this {@link AbstractVirtualModelInstance} is contained in another {@link AbstractVirtualModelInstance}, URI is computed
+	 * from URI of container VirtualModel
+	 * 
+	 * The convention for URI are following:
+	 * <container_virtual_model_instance_uri>/<virtual_model_instance_name >#<flexo_concept_instance_id> <br>
+	 * eg<br>
+	 * http://www.mydomain.org/MyVirtuaModelInstance1/MyVirtualModelInstance2#ID
+	 * 
+	 * @return String representing unique URI of this object
+	 */
+	@Override
+	public String getURI();
+
+	/**
+	 * Sets URI for this {@link AbstractVirtualModelInstance}<br>
+	 * Note that if this {@link AbstractVirtualModelInstance} is contained in another {@link AbstractVirtualModelInstance}, this method will
+	 * be unefficient
+	 * 
+	 * @param anURI
+	 */
+	public void setURI(String anURI);
 
 	@Getter(value = TITLE_KEY)
 	@XMLAttribute
@@ -291,7 +323,63 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 	 * 
 	 * @return
 	 */
+	@Getter(value = CONTAINER_VIRTUAL_MODEL_INSTANCE_KEY, ignoreType = true)
 	public AbstractVirtualModelInstance<?, ?> getContainerVirtualModelInstance();
+
+	/**
+	 * Sets (eventually null) container {@link AbstractVirtualModelInstance}
+	 * 
+	 * @return
+	 */
+	@Setter(CONTAINER_VIRTUAL_MODEL_INSTANCE_KEY)
+	public void setContainerVirtualModelInstance(AbstractVirtualModelInstance<?, ?> containerVMI);
+
+	/**
+	 * Return all {@link VirtualModelInstance} defined in this {@link View}
+	 * 
+	 * @return
+	 */
+	@Getter(
+			value = VIRTUAL_MODEL_INSTANCES_KEY,
+			cardinality = Cardinality.LIST,
+			inverse = AbstractVirtualModelInstance.CONTAINER_VIRTUAL_MODEL_INSTANCE_KEY,
+			ignoreType = true)
+	public List<AbstractVirtualModelInstance<?, ?>> getVirtualModelInstances();
+
+	/**
+	 * Allow to retrieve VMIs given a virtual model.
+	 * 
+	 * @param virtualModel
+	 *            key to find correct VMI
+	 * @return the list
+	 */
+	public List<AbstractVirtualModelInstance<?, ?>> getVirtualModelInstancesForVirtualModel(VirtualModel virtualModel);
+
+	@Setter(VIRTUAL_MODEL_INSTANCES_KEY)
+	public void setVirtualModelInstances(List<AbstractVirtualModelInstance<?, ?>> virtualModelInstances);
+
+	@Adder(VIRTUAL_MODEL_INSTANCES_KEY)
+	public void addToVirtualModelInstances(AbstractVirtualModelInstance<?, ?> virtualModelInstance);
+
+	@Remover(VIRTUAL_MODEL_INSTANCES_KEY)
+	public void removeFromVirtualModelInstances(AbstractVirtualModelInstance<?, ?> virtualModelInstance);
+
+	public AbstractVirtualModelInstance<?, ?> getVirtualModelInstance(String name);
+
+	public boolean isValidVirtualModelInstanceName(String virtualModelName);
+
+	@Deprecated
+	public RepositoryFolder<ViewResource, ?> getFolder();
+
+	@Deprecated
+	public ViewLibrary getViewLibrary();
+
+	/**
+	 * Return the list of {@link TechnologyAdapter} used in the context of this {@link View}
+	 * 
+	 * @return
+	 */
+	public List<TechnologyAdapter> getRequiredTechnologyAdapters();
 
 	/**
 	 * Base implementation for AbstractVirtualModelInstance
@@ -354,12 +442,47 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 			return nature.hasNature((VMI) this);
 		}
 
+		/**
+		 * Returns URI for this {@link AbstractVirtualModelInstance}.<br>
+		 * Note that if this {@link AbstractVirtualModelInstance} is contained in another {@link AbstractVirtualModelInstance}, URI is
+		 * computed from URI of container VirtualModel
+		 * 
+		 * The convention for URI are following:
+		 * <container_virtual_model_instance_uri>/<virtual_model_instance_name >#<flexo_concept_instance_id> <br>
+		 * eg<br>
+		 * http://www.mydomain.org/MyVirtuaModelInstance1/MyVirtualModelInstance2#ID
+		 * 
+		 * @return String representing unique URI of this object
+		 */
 		@Override
 		public String getURI() {
+			if (getContainerVirtualModelInstance() != null) {
+				return getContainerVirtualModelInstance().getURI() + "/" + getName();
+			}
 			if (getResource() != null) {
 				return getResource().getURI();
 			}
 			return null;
+		}
+
+		/**
+		 * Sets URI for this {@link AbstractVirtualModelInstance}<br>
+		 * Note that if this {@link AbstractVirtualModelInstance} is contained in another {@link AbstractVirtualModelInstance}, this method
+		 * will be unefficient
+		 * 
+		 * @param anURI
+		 */
+		@Override
+		public void setURI(String anURI) {
+			if (getContainerVirtualModelInstance() == null) {
+				if (anURI != null) {
+					// We prevent ',' so that we can use it as a delimiter in tags.
+					anURI = anURI.replace(",", "");
+				}
+				if (getResource() != null) {
+					getResource().setURI(anURI);
+				}
+			}
 		}
 
 		@Override
@@ -1217,6 +1340,94 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 			for (FlexoConceptInstance fci : new ArrayList<>(getFlexoConceptInstances())) {
 				fci.delete();
 			}
+		}
+
+		@Override
+		public List<AbstractVirtualModelInstance<?, ?>> getVirtualModelInstances() {
+			if (getResource() != null && !getResource().isDeserializing()) {
+				loadVirtualModelInstancesWhenUnloaded();
+			}
+			return (List<AbstractVirtualModelInstance<?, ?>>) performSuperGetter(VIRTUAL_MODEL_INSTANCES_KEY);
+		}
+
+		@Override
+		public List<AbstractVirtualModelInstance<?, ?>> getVirtualModelInstancesForVirtualModel(final VirtualModel virtualModel) {
+			List<AbstractVirtualModelInstance<?, ?>> returned = new ArrayList<AbstractVirtualModelInstance<?, ?>>();
+			for (AbstractVirtualModelInstance<?, ?> vmi : getVirtualModelInstances()) {
+				if (virtualModel.isAssignableFrom(vmi.getVirtualModel())) {
+					returned.add(vmi);
+				}
+			}
+			return returned;
+		}
+
+		/**
+		 * Load eventually unloaded VirtualModelInstances<br>
+		 * After this call return, we can assert that all {@link VirtualModelInstance} are loaded.
+		 */
+		private void loadVirtualModelInstancesWhenUnloaded() {
+			for (org.openflexo.foundation.resource.FlexoResource<?> r : getResource().getContents()) {
+				if (r instanceof VirtualModelInstanceResource) {
+					((VirtualModelInstanceResource) r).getVirtualModelInstance();
+				}
+			}
+		}
+
+		@Override
+		public AbstractVirtualModelInstance<?, ?> getVirtualModelInstance(String name) {
+			for (AbstractVirtualModelInstance<?, ?> vmi : getVirtualModelInstances()) {
+				String lName = vmi.getName();
+				if (lName != null) {
+					if (vmi.getName().equals(name)) {
+						return vmi;
+					}
+				}
+				else {
+					logger.warning("Name of VirtualModel is null: " + this.toString());
+				}
+			}
+			return null;
+		}
+
+		@Override
+		public boolean isValidVirtualModelInstanceName(String virtualModelName) {
+			return getVirtualModelInstance(virtualModelName) == null;
+		}
+
+		@Deprecated
+		@Override
+		public ViewLibrary<?> getViewLibrary() {
+
+			FlexoResourceCenter<?> rc = getResourceCenter();
+			FMLRTTechnologyAdapter rtTA = rc.getServiceManager().getTechnologyAdapterService()
+					.getTechnologyAdapter(FMLRTTechnologyAdapter.class);
+			return rtTA.getViewRepository(rc);
+		}
+
+		@Deprecated
+		@Override
+		public RepositoryFolder<ViewResource, ?> getFolder() {
+			if (getResource() != null) {
+				return ((ViewLibrary) getViewLibrary()).getParentFolder(getResource());
+			}
+			return null;
+		}
+
+		/**
+		 * Return the list of {@link TechnologyAdapter} used in the context of this {@link View}
+		 * 
+		 * @return
+		 */
+		@Override
+		public List<TechnologyAdapter> getRequiredTechnologyAdapters() {
+			if (getVirtualModel() != null) {
+				List<TechnologyAdapter> returned = getVirtualModel().getRequiredTechnologyAdapters();
+				if (!returned.contains(getTechnologyAdapter())) {
+					returned.add(getTechnologyAdapter());
+				}
+				return returned;
+			}
+			return Collections.singletonList((TechnologyAdapter) getTechnologyAdapter());
 		}
 
 	}

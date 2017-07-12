@@ -50,12 +50,11 @@ import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
-import org.openflexo.foundation.fml.ViewPoint;
-import org.openflexo.foundation.fml.VirtualModelLibrary;
-import org.openflexo.foundation.fml.ViewPointRepository;
 import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.rm.ViewPointResource;
-import org.openflexo.foundation.fml.rm.ViewPointResourceFactory;
+import org.openflexo.foundation.fml.VirtualModelLibrary;
+import org.openflexo.foundation.fml.VirtualModelRepository;
+import org.openflexo.foundation.fml.rm.VirtualModelResource;
+import org.openflexo.foundation.fml.rm.VirtualModelResourceFactory;
 import org.openflexo.foundation.resource.RepositoryFolder;
 import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.task.Progress;
@@ -64,70 +63,72 @@ import org.openflexo.toolbox.JavaUtils;
 import org.openflexo.toolbox.StringUtils;
 
 /**
- * This action allows to create a {@link ViewPoint} in a {@link RepositoryFolder}
+ * This action allows to create a {@link VirtualModel} in a {@link RepositoryFolder}<br>
+ * (this {@link VirtualModel} is declared as top-level)
  * 
  * @author sylvain
  * 
  */
-public class CreateViewPoint extends AbstractCreateVirtualModel<CreateViewPoint, RepositoryFolder<ViewPointResource, ?>, FMLObject> {
+public class CreateTopLevelVirtualModel
+		extends AbstractCreateVirtualModel<CreateTopLevelVirtualModel, RepositoryFolder<VirtualModelResource, ?>, FMLObject> {
 
-	private static final Logger logger = Logger.getLogger(CreateViewPoint.class.getPackage().getName());
+	private static final Logger logger = Logger.getLogger(CreateTopLevelVirtualModel.class.getPackage().getName());
 
-	public static FlexoActionType<CreateViewPoint, RepositoryFolder<ViewPointResource, ?>, FMLObject> actionType = new FlexoActionType<CreateViewPoint, RepositoryFolder<ViewPointResource, ?>, FMLObject>(
-			"create_viewpoint", FlexoActionType.newMenu, FlexoActionType.defaultGroup, FlexoActionType.ADD_ACTION_TYPE) {
+	public static FlexoActionType<CreateTopLevelVirtualModel, RepositoryFolder<VirtualModelResource, ?>, FMLObject> actionType = new FlexoActionType<CreateTopLevelVirtualModel, RepositoryFolder<VirtualModelResource, ?>, FMLObject>(
+			"create_virtual_model", FlexoActionType.newMenu, FlexoActionType.defaultGroup, FlexoActionType.ADD_ACTION_TYPE) {
 
 		/**
 		 * Factory method
 		 */
 		@Override
-		public CreateViewPoint makeNewAction(RepositoryFolder<ViewPointResource, ?> focusedObject, Vector<FMLObject> globalSelection,
-				FlexoEditor editor) {
-			return new CreateViewPoint(focusedObject, globalSelection, editor);
+		public CreateTopLevelVirtualModel makeNewAction(RepositoryFolder<VirtualModelResource, ?> focusedObject,
+				Vector<FMLObject> globalSelection, FlexoEditor editor) {
+			return new CreateTopLevelVirtualModel(focusedObject, globalSelection, editor);
 		}
 
 		@Override
-		public boolean isVisibleForSelection(RepositoryFolder<ViewPointResource, ?> object, Vector<FMLObject> globalSelection) {
-			return object.getResourceRepository() instanceof ViewPointRepository;
+		public boolean isVisibleForSelection(RepositoryFolder<VirtualModelResource, ?> object, Vector<FMLObject> globalSelection) {
+			return object.getResourceRepository() instanceof VirtualModelRepository;
 		}
 
 		@Override
-		public boolean isEnabledForSelection(RepositoryFolder<ViewPointResource, ?> object, Vector<FMLObject> globalSelection) {
+		public boolean isEnabledForSelection(RepositoryFolder<VirtualModelResource, ?> object, Vector<FMLObject> globalSelection) {
 			return object != null;
 		}
 
 	};
 
 	static {
-		FlexoObjectImpl.addActionForClass(CreateViewPoint.actionType, RepositoryFolder.class);
+		FlexoObjectImpl.addActionForClass(CreateTopLevelVirtualModel.actionType, RepositoryFolder.class);
 	}
 
 	private String newViewPointName;
 	private String newViewPointURI;
 	private String newViewPointDescription;
-	private ViewPoint newViewPoint;
+	private VirtualModel newVirtualModel;
 
-	CreateViewPoint(RepositoryFolder focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
+	CreateTopLevelVirtualModel(RepositoryFolder focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 	}
 
 	public VirtualModelLibrary getViewPointLibrary() {
-		if (!(getFocusedObject().getResourceRepository() instanceof ViewPointRepository)) {
+		if (!(getFocusedObject().getResourceRepository() instanceof VirtualModelRepository)) {
 			return null;
 		}
-		return ((ViewPointRepository) getFocusedObject().getResourceRepository()).getViewPointLibrary();
+		return ((VirtualModelRepository) getFocusedObject().getResourceRepository()).getViewPointLibrary();
 	}
 
 	@Override
 	protected void doAction(Object context) throws FlexoException {
 
-		if (!(getFocusedObject().getResourceRepository() instanceof ViewPointRepository)) {
+		if (!(getFocusedObject().getResourceRepository() instanceof VirtualModelRepository)) {
 			return;
 		}
 
 		logger.info("Create new viewpoint");
 
 		// VirtualModelLibrary viewPointLibrary = getViewPointLibrary();
-		// ViewPointRepository vpRepository = (ViewPointRepository) getFocusedObject().getResourceRepository();
+		// VirtualModelRepository vpRepository = (VirtualModelRepository) getFocusedObject().getResourceRepository();
 
 		File newViewPointDir = getDirectoryWhereToCreateTheViewPoint();
 
@@ -135,13 +136,13 @@ public class CreateViewPoint extends AbstractCreateVirtualModel<CreateViewPoint,
 
 		FMLTechnologyAdapter fmlTechnologyAdapter = getServiceManager().getTechnologyAdapterService()
 				.getTechnologyAdapter(FMLTechnologyAdapter.class);
-		ViewPointResourceFactory factory = fmlTechnologyAdapter.getViewPointResourceFactory();
+		VirtualModelResourceFactory factory = fmlTechnologyAdapter.getVirtualModelResourceFactory();
 
 		try {
-			ViewPointResource newViewPointResource = factory.makeViewPointResource(getBaseName(), getNewViewPointURI(),
+			VirtualModelResource newVirtualModelResource = factory.makeTopLevelVirtualModelResource(getBaseName(), getNewViewPointURI(),
 					getViewPointFolder(), fmlTechnologyAdapter.getTechnologyContextManager(), true);
-			newViewPoint = newViewPointResource.getLoadedResourceData();
-			newViewPoint.setDescription(getNewViewPointDescription());
+			newVirtualModel = newVirtualModelResource.getLoadedResourceData();
+			newVirtualModel.setDescription(getNewViewPointDescription());
 		} catch (SaveResourceException e) {
 			throw new SaveResourceException(null);
 		} catch (ModelDefinitionException e) {
@@ -228,7 +229,7 @@ public class CreateViewPoint extends AbstractCreateVirtualModel<CreateViewPoint,
 		if (getViewPointLibrary() == null) {
 			return false;
 		}
-		if (getViewPointLibrary().getViewPointResource(getNewViewPointURI()) != null) {
+		if (getViewPointLibrary().getVirtualModelResource(getNewViewPointURI()) != null) {
 			return false;
 		}
 
@@ -248,12 +249,7 @@ public class CreateViewPoint extends AbstractCreateVirtualModel<CreateViewPoint,
 
 	@Override
 	public VirtualModel getNewVirtualModel() {
-		// TODO return getNewViewPoint() when ViewPoint will inherits from VirtualModel
-		return null;
-	}
-
-	public ViewPoint getNewViewPoint() {
-		return newViewPoint;
+		return newVirtualModel;
 	}
 
 	private String getBaseName() {

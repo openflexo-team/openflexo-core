@@ -39,6 +39,7 @@
 package org.openflexo.foundation.fml.action;
 
 import java.security.InvalidParameterException;
+import java.util.ArrayList;
 import java.util.Vector;
 import java.util.logging.Logger;
 
@@ -48,9 +49,8 @@ import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.action.NotImplementedException;
 import org.openflexo.foundation.fml.FMLObject;
-import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.resource.FlexoResource;
+import org.openflexo.foundation.fml.rm.VirtualModelResource;
 
 public class DeleteVirtualModel extends FlexoAction<DeleteVirtualModel, VirtualModel, FMLObject> {
 
@@ -90,22 +90,31 @@ public class DeleteVirtualModel extends FlexoAction<DeleteVirtualModel, VirtualM
 	@Override
 	protected void doAction(Object context) throws NotImplementedException, InvalidParameterException {
 		logger.info("Delete VirtualModel");
-		FlexoResource<ViewPoint> viewPointResource = null;
-		FlexoResource<VirtualModel> virtualModelResource = getFocusedObject().getResource();
-		if (getFocusedObject().getOwningVirtualModel() instanceof ViewPoint) {
-			viewPointResource = ((ViewPoint) getFocusedObject().getOwningVirtualModel()).getResource();
-			((ViewPoint) (getFocusedObject().getOwningVirtualModel())).removeFromVirtualModels(getFocusedObject());
+
+		// First recursively delete contained VirtualModel
+		for (VirtualModel vm : new ArrayList<>(getFocusedObject().getVirtualModels())) {
+			DeleteVirtualModel deleteVM = DeleteVirtualModel.actionType.makeNewEmbeddedAction(vm, null, this);
+			deleteVM.doAction();
 		}
-		System.out.println("On supprime le VM");
+
+		// Then handle the resource
+		VirtualModelResource virtualModelResource = (VirtualModelResource) getFocusedObject().getResource();
+		VirtualModelResource containerResource = virtualModelResource.getContainer();
+		if (containerResource != null) {
+			containerResource.getVirtualModel().removeFromVirtualModels(getFocusedObject());
+		}
+
+		// Delete the VirtualModel itself
 		getFocusedObject().delete();
+
+		// Delete the resource and notify container
 		if (virtualModelResource != null) {
-			System.out.println("on supprime la resource");
 			virtualModelResource.delete();
-			if (viewPointResource != null) {
-				System.out.println("on notifie");
-				viewPointResource.notifyContentsRemoved(virtualModelResource);
+			if (containerResource != null) {
+				containerResource.notifyContentsRemoved(virtualModelResource);
 			}
 		}
+
 	}
 
 }

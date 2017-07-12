@@ -65,8 +65,8 @@ import org.openflexo.fml.controller.action.CreateInspectorEntryInitializer;
 import org.openflexo.fml.controller.action.CreateModelSlotInitializer;
 import org.openflexo.fml.controller.action.CreatePrimitiveRoleInitializer;
 import org.openflexo.fml.controller.action.CreateTechnologyRoleInitializer;
-import org.openflexo.fml.controller.action.CreateViewPointInitializer;
-import org.openflexo.fml.controller.action.CreateVirtualModelInitializer;
+import org.openflexo.fml.controller.action.CreateTopLevelVirtualModelInitializer;
+import org.openflexo.fml.controller.action.CreateContainedVirtualModelInitializer;
 import org.openflexo.fml.controller.action.DeclareNewVariableActionInitializer;
 import org.openflexo.fml.controller.action.DeleteFlexoConceptObjectsInitializer;
 import org.openflexo.fml.controller.action.DeleteViewPointInitializer;
@@ -177,10 +177,10 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 	@Override
 	protected void initializeActions(ControllerActionInitializer actionInitializer) {
 
-		new CreateViewPointInitializer(actionInitializer);
+		new CreateTopLevelVirtualModelInitializer(actionInitializer);
 		new DeleteViewPointInitializer(actionInitializer);
 		new CreateModelSlotInitializer(actionInitializer);
-		new CreateVirtualModelInitializer(actionInitializer);
+		new CreateContainedVirtualModelInitializer(actionInitializer);
 		new DeleteVirtualModelInitializer(actionInitializer);
 
 		new AddUseDeclarationInitializer(actionInitializer);

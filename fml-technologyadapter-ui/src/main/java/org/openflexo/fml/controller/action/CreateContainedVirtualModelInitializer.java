@@ -49,26 +49,26 @@ import org.openflexo.foundation.action.FlexoActionFinalizer;
 import org.openflexo.foundation.action.FlexoActionInitializer;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.ViewPoint;
-import org.openflexo.foundation.fml.action.CreateVirtualModel;
+import org.openflexo.foundation.fml.action.CreateContainedVirtualModel;
 import org.openflexo.gina.controller.FIBController.Status;
 import org.openflexo.icon.FMLIconLibrary;
 import org.openflexo.view.controller.ActionInitializer;
 import org.openflexo.view.controller.ControllerActionInitializer;
 
-public class CreateVirtualModelInitializer extends ActionInitializer<CreateVirtualModel, ViewPoint, FMLObject> {
+public class CreateContainedVirtualModelInitializer extends ActionInitializer<CreateContainedVirtualModel, ViewPoint, FMLObject> {
 
 	private static final Logger logger = Logger.getLogger(ControllerActionInitializer.class.getPackage().getName());
 
-	public CreateVirtualModelInitializer(ControllerActionInitializer actionInitializer) {
-		super(CreateVirtualModel.actionType, actionInitializer);
+	public CreateContainedVirtualModelInitializer(ControllerActionInitializer actionInitializer) {
+		super(CreateContainedVirtualModel.actionType, actionInitializer);
 	}
 
 	@Override
-	protected FlexoActionInitializer<CreateVirtualModel> getDefaultInitializer() {
-		return new FlexoActionInitializer<CreateVirtualModel>() {
+	protected FlexoActionInitializer<CreateContainedVirtualModel> getDefaultInitializer() {
+		return new FlexoActionInitializer<CreateContainedVirtualModel>() {
 			@Override
-			public boolean run(EventObject e, CreateVirtualModel action) {
-				Wizard wizard = new CreateVirtualModelWizard(action, getController());
+			public boolean run(EventObject e, CreateContainedVirtualModel action) {
+				Wizard wizard = new CreateContainedVirtualModelWizard(action, getController());
 				WizardDialog dialog = new WizardDialog(wizard, getController());
 				dialog.showDialog();
 				if (dialog.getStatus() != Status.VALIDATED) {
@@ -82,10 +82,10 @@ public class CreateVirtualModelInitializer extends ActionInitializer<CreateVirtu
 	}
 
 	@Override
-	protected FlexoActionFinalizer<CreateVirtualModel> getDefaultFinalizer() {
-		return new FlexoActionFinalizer<CreateVirtualModel>() {
+	protected FlexoActionFinalizer<CreateContainedVirtualModel> getDefaultFinalizer() {
+		return new FlexoActionFinalizer<CreateContainedVirtualModel>() {
 			@Override
-			public boolean run(EventObject e, CreateVirtualModel action) {
+			public boolean run(EventObject e, CreateContainedVirtualModel action) {
 				getController().selectAndFocusObject(action.getNewVirtualModel());
 				return true;
 			}

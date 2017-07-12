@@ -77,6 +77,9 @@ public interface VirtualModelResource extends PamelaResource<VirtualModel, FMLMo
 	 */
 	public VirtualModel getLoadedVirtualModel();
 
+	@Override
+	public VirtualModelResource getContainer();
+
 	public List<VirtualModelResource> getContainedVirtualModelResources();
 
 	public VirtualModelResource getVirtualModelResource(String virtualModelNameOrURI);

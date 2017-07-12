@@ -63,7 +63,7 @@ import java.util.logging.Logger;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.converter.FlexoObjectReferenceConverter;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
-import org.openflexo.foundation.fml.ViewPointRepository;
+import org.openflexo.foundation.fml.VirtualModelRepository;
 import org.openflexo.foundation.resource.DirectoryBasedIODelegate.DirectoryBasedIODelegateImpl;
 import org.openflexo.foundation.resource.FileIODelegate.FileIODelegateImpl;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
@@ -178,11 +178,11 @@ public abstract class FileSystemBasedResourceCenter extends ResourceRepository<F
 	}
 
 	@Override
-	public ViewPointRepository<File> getViewPointRepository() {
+	public VirtualModelRepository<File> getViewPointRepository() {
 		if (rcService != null) {
 			FMLTechnologyAdapter vmTA = getServiceManager().getTechnologyAdapterService().getTechnologyAdapter(FMLTechnologyAdapter.class);
-			// return getRepository(ViewPointRepository.class, vmTA);
-			return vmTA.getViewPointRepository(this);
+			// return getRepository(VirtualModelRepository.class, vmTA);
+			return vmTA.getVirtualModelRepository(this);
 		}
 		return null;
 	}
@@ -190,7 +190,7 @@ public abstract class FileSystemBasedResourceCenter extends ResourceRepository<F
 	/*@Override
 	public void initialize(VirtualModelLibrary viewPointLibrary) {
 		logger.info("Initializing VirtualModelLibrary for " + this);
-		viewPointRepository = new ViewPointRepository(this, viewPointLibrary);
+		viewPointRepository = new VirtualModelRepository(this, viewPointLibrary);
 		exploreDirectoryLookingForViewPoints(getRootDirectory(), viewPointLibrary);
 	}*/
 

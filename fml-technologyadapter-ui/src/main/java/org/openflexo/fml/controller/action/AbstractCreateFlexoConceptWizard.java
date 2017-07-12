@@ -52,8 +52,8 @@ import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.action.AbstractCreateFlexoConcept;
 import org.openflexo.foundation.fml.action.AbstractCreateFlexoConcept.PropertyEntry;
 import org.openflexo.foundation.fml.action.CreateFlexoConcept;
-import org.openflexo.foundation.fml.action.CreateViewPoint;
-import org.openflexo.foundation.fml.action.CreateVirtualModel;
+import org.openflexo.foundation.fml.action.CreateTopLevelVirtualModel;
+import org.openflexo.foundation.fml.action.CreateContainedVirtualModel;
 import org.openflexo.gina.annotation.FIBPanel;
 import org.openflexo.icon.FMLIconLibrary;
 import org.openflexo.icon.FMLRTIconLibrary;
@@ -66,8 +66,8 @@ import org.openflexo.view.controller.FlexoController;
  *
  * @param <A>
  * @see CreateFlexoConcept
- * @see CreateVirtualModel
- * @see CreateViewPoint
+ * @see CreateContainedVirtualModel
+ * @see CreateTopLevelVirtualModel
  */
 public abstract class AbstractCreateFlexoConceptWizard<A extends AbstractCreateFlexoConcept<?, ?, ?>> extends FlexoWizard {
 

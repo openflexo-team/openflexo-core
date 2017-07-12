@@ -48,7 +48,7 @@ import org.openflexo.components.wizard.WizardDialog;
 import org.openflexo.foundation.action.FlexoActionFinalizer;
 import org.openflexo.foundation.action.FlexoActionInitializer;
 import org.openflexo.foundation.fml.FMLObject;
-import org.openflexo.foundation.fml.action.CreateViewPoint;
+import org.openflexo.foundation.fml.action.CreateTopLevelVirtualModel;
 import org.openflexo.foundation.fml.rm.ViewPointResource;
 import org.openflexo.foundation.resource.RepositoryFolder;
 import org.openflexo.gina.controller.FIBController.Status;
@@ -56,21 +56,21 @@ import org.openflexo.icon.FMLIconLibrary;
 import org.openflexo.view.controller.ActionInitializer;
 import org.openflexo.view.controller.ControllerActionInitializer;
 
-public class CreateViewPointInitializer extends ActionInitializer<CreateViewPoint, RepositoryFolder<ViewPointResource, ?>, FMLObject> {
+public class CreateTopLevelVirtualModelInitializer extends ActionInitializer<CreateTopLevelVirtualModel, RepositoryFolder<ViewPointResource, ?>, FMLObject> {
 
 	private static final Logger logger = Logger.getLogger(ControllerActionInitializer.class.getPackage().getName());
 
-	public CreateViewPointInitializer(ControllerActionInitializer actionInitializer) {
-		super(CreateViewPoint.actionType, actionInitializer);
+	public CreateTopLevelVirtualModelInitializer(ControllerActionInitializer actionInitializer) {
+		super(CreateTopLevelVirtualModel.actionType, actionInitializer);
 	}
 
 	@Override
-	protected FlexoActionInitializer<CreateViewPoint> getDefaultInitializer() {
-		return new FlexoActionInitializer<CreateViewPoint>() {
+	protected FlexoActionInitializer<CreateTopLevelVirtualModel> getDefaultInitializer() {
+		return new FlexoActionInitializer<CreateTopLevelVirtualModel>() {
 			@Override
-			public boolean run(EventObject e, CreateViewPoint action) {
+			public boolean run(EventObject e, CreateTopLevelVirtualModel action) {
 
-				Wizard wizard = new CreateViewPointWizard(action, getController());
+				Wizard wizard = new CreateTopLevelVirtualModelWizard(action, getController());
 				WizardDialog dialog = new WizardDialog(wizard, getController());
 				dialog.showDialog();
 				if (dialog.getStatus() != Status.VALIDATED) {
@@ -84,10 +84,10 @@ public class CreateViewPointInitializer extends ActionInitializer<CreateViewPoin
 	}
 
 	@Override
-	protected FlexoActionFinalizer<CreateViewPoint> getDefaultFinalizer() {
-		return new FlexoActionFinalizer<CreateViewPoint>() {
+	protected FlexoActionFinalizer<CreateTopLevelVirtualModel> getDefaultFinalizer() {
+		return new FlexoActionFinalizer<CreateTopLevelVirtualModel>() {
 			@Override
-			public boolean run(EventObject e, CreateViewPoint action) {
+			public boolean run(EventObject e, CreateTopLevelVirtualModel action) {
 				getController().selectAndFocusObject(action.getNewViewPoint());
 				return true;
 			}

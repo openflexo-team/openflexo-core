@@ -44,11 +44,10 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType.FlexoConceptInstanceTypeFactory;
-import org.openflexo.foundation.fml.ViewType.ViewTypeFactory;
 import org.openflexo.foundation.fml.VirtualModelInstanceType.VirtualModelInstanceTypeFactory;
 import org.openflexo.foundation.fml.annotations.DeclareResourceTypes;
-import org.openflexo.foundation.fml.rm.ViewPointResourceFactory;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
+import org.openflexo.foundation.fml.rm.VirtualModelResourceFactory;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
 import org.openflexo.foundation.resource.FlexoResourceType;
@@ -64,7 +63,7 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
  * @author sylvain
  * 
  */
-@DeclareResourceTypes({ ViewPointResourceFactory.class })
+@DeclareResourceTypes({ VirtualModelResourceFactory.class })
 public class FMLTechnologyAdapter extends TechnologyAdapter {
 
 	private static final Logger logger = Logger.getLogger(FMLTechnologyAdapter.class.getPackage().getName());
@@ -111,14 +110,12 @@ public class FMLTechnologyAdapter extends TechnologyAdapter {
 	private FlexoResourceTypeFactory resourceTypeFactory;
 	private FlexoConceptInstanceTypeFactory fciFactory;
 	private VirtualModelInstanceTypeFactory vmiFactory;
-	private ViewTypeFactory viewFactory;
 
 	@Override
 	public void initTechnologySpecificTypes(TechnologyAdapterService taService) {
 		taService.registerTypeClass(FlexoResourceType.class, getFlexoResourceTypeFactory());
 		taService.registerTypeClass(FlexoConceptInstanceType.class, getFlexoConceptInstanceTypeFactory());
 		taService.registerTypeClass(VirtualModelInstanceType.class, getVirtualModelInstanceTypeFactory());
-		taService.registerTypeClass(ViewType.class, getViewTypeFactory());
 	}
 
 	public FlexoResourceTypeFactory getFlexoResourceTypeFactory() {
@@ -142,22 +139,15 @@ public class FMLTechnologyAdapter extends TechnologyAdapter {
 		return vmiFactory;
 	}
 
-	public ViewTypeFactory getViewTypeFactory() {
-		if (viewFactory == null) {
-			viewFactory = new ViewTypeFactory(this);
-		}
-		return viewFactory;
+	public VirtualModelLibrary getVirtualModelLibrary() {
+		return this.getServiceManager().getVirtualModelLibrary();
 	}
 
-	public VirtualModelLibrary getViewPointLibrary() {
-		return this.getServiceManager().getViewPointLibrary();
-	}
-
-	public <I> ViewPointRepository<I> getViewPointRepository(FlexoResourceCenter<I> resourceCenter) {
-		ViewPointRepository<I> returned = resourceCenter.retrieveRepository(ViewPointRepository.class, this);
+	public <I> VirtualModelRepository<I> getVirtualModelRepository(FlexoResourceCenter<I> resourceCenter) {
+		VirtualModelRepository<I> returned = resourceCenter.retrieveRepository(VirtualModelRepository.class, this);
 		if (returned == null) {
-			returned = new ViewPointRepository<I>(this, resourceCenter);
-			resourceCenter.registerRepository(returned, ViewPointRepository.class, this);
+			returned = new VirtualModelRepository<I>(this, resourceCenter);
+			resourceCenter.registerRepository(returned, VirtualModelRepository.class, this);
 		}
 		return returned;
 	}
@@ -175,14 +165,14 @@ public class FMLTechnologyAdapter extends TechnologyAdapter {
 		return "FML";
 	}
 
-	public ViewPointResourceFactory getViewPointResourceFactory() {
-		return getResourceFactory(ViewPointResourceFactory.class);
+	public VirtualModelResourceFactory getVirtualModelResourceFactory() {
+		return getResourceFactory(VirtualModelResourceFactory.class);
 	}
 
-	public List<ViewPointRepository<?>> getViewPointRepositories() {
-		List<ViewPointRepository<?>> returned = new ArrayList<>();
+	public List<VirtualModelRepository<?>> getVirtualModelRepositories() {
+		List<VirtualModelRepository<?>> returned = new ArrayList<>();
 		for (FlexoResourceCenter<?> rc : getServiceManager().getResourceCenterService().getResourceCenters()) {
-			returned.add(getViewPointRepository(rc));
+			returned.add(getVirtualModelRepository(rc));
 		}
 		return returned;
 	}
@@ -190,32 +180,23 @@ public class FMLTechnologyAdapter extends TechnologyAdapter {
 	@Override
 	public void notifyRepositoryStructureChanged() {
 		super.notifyRepositoryStructureChanged();
-		getPropertyChangeSupport().firePropertyChange("getViewPointRepositories()", null, getViewPointRepositories());
+		getPropertyChangeSupport().firePropertyChange("getVirtualModelRepositories()", null, getVirtualModelRepositories());
 	}
 
 	@Override
 	public void ensureAllRepositoriesAreCreated(FlexoResourceCenter<?> rc) {
 		super.ensureAllRepositoriesAreCreated(rc);
-		getViewPointRepository(rc);
+		getVirtualModelRepository(rc);
 	}
 
 	@Override
 	public <I> boolean isFolderIgnorable(FlexoResourceCenter<I> resourceCenter, I contents) {
 		if (resourceCenter.isDirectory(contents)) {
-			if (isContainedInDirectoryWithSuffix(resourceCenter, contents, ViewPointResourceFactory.VIEWPOINT_SUFFIX)) {
+			if (isContainedInDirectoryWithSuffix(resourceCenter, contents, VirtualModelResourceFactory.FML_SUFFIX)) {
 				return true;
 			}
 		}
 		return false;
 	}
-
-	/*@Override
-	protected <I> void foundFolder(FlexoResourceCenter<I> resourceCenter, I folder) throws IOException {
-		super.foundFolder(resourceCenter, folder);
-		if (resourceCenter.isDirectory(folder)
-				&& !isContainedInDirectoryWithSuffix(resourceCenter, folder, ViewPointResourceFactory.VIEWPOINT_SUFFIX)) {
-			getViewPointRepository(resourceCenter).getRepositoryFolder(folder, true);
-		}
-	}*/
 
 }

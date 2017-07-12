@@ -130,7 +130,7 @@ public class TestVirtualModelView extends OpenflexoFIBTestCase {
 	@TestOrder(3)
 	public void loadConcepts() {
 
-		VirtualModelLibrary vpLib = serviceManager.getViewPointLibrary();
+		VirtualModelLibrary vpLib = serviceManager.getVirtualModelLibrary();
 		assertNotNull(vpLib);
 		viewPoint = vpLib.getViewPoint("http://openflexo.org/test/TestViewPointA");
 		assertNotNull(viewPoint);
