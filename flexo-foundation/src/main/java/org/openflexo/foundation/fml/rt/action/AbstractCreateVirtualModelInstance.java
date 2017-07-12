@@ -379,7 +379,7 @@ public abstract class AbstractCreateVirtualModelInstance<A extends AbstractCreat
 		if (creationScheme != null) {
 			creationSchemeAction = CreationSchemeAction.actionType
 					.makeNewEmbeddedAction(getFocusedObject() instanceof VirtualModelInstance
-							? (VirtualModelInstance<?, ?>) getFocusedObject() : null, null, this);
+							? (AbstractVirtualModelInstance<?, ?>) getFocusedObject() : null, null, this);
 			creationSchemeAction.setCreationScheme(creationScheme);
 			creationSchemeAction.addObserver(this);
 			getPropertyChangeSupport().firePropertyChange("creationSchemeAction", null, creationSchemeAction);

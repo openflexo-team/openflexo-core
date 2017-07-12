@@ -183,7 +183,7 @@ public class FIBFlexoConceptInstanceSelector extends FIBAbstractFMLRTObjectSelec
 		}
 		else if (getView() != null) {
 			List<FlexoConceptInstance> returned = new ArrayList<FlexoConceptInstance>();
-			for (VirtualModelInstance<?, ?> vmi : getView().getVirtualModelInstances()) {
+			for (AbstractVirtualModelInstance<?, ?> vmi : getView().getVirtualModelInstances()) {
 				returned.addAll(vmi.getFlexoConceptInstances(ep));
 			}
 			return returned;
@@ -191,7 +191,7 @@ public class FIBFlexoConceptInstanceSelector extends FIBAbstractFMLRTObjectSelec
 		else if (getProject() != null) {
 			List<FlexoConceptInstance> returned = new ArrayList<FlexoConceptInstance>();
 			for (ViewResource vr : getProject().getViewLibrary().getAllResources()) {
-				for (VirtualModelInstance<?, ?> vmi : vr.getView().getVirtualModelInstances()) {
+				for (AbstractVirtualModelInstance<?, ?> vmi : vr.getView().getVirtualModelInstances()) {
 					returned.addAll(vmi.getFlexoConceptInstances(ep));
 				}
 			}

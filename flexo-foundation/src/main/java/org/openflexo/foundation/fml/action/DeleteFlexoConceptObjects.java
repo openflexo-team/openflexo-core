@@ -116,17 +116,17 @@ public class DeleteFlexoConceptObjects extends FlexoAction<DeleteFlexoConceptObj
 
 		List<FlexoConceptObject> allObjects = new ArrayList<FlexoConceptObject>();
 
-		VirtualModelResource<?> resource = null;
+		VirtualModelResource resource = null;
 		FMLModelFactory modelFactory = null;
 
 		for (FlexoConceptObject o : globalSelection) {
 			if (o.getResourceData() != null) {
 				if (resource == null) {
-					resource = (VirtualModelResource<?>) o.getResourceData().getResource();
+					resource = (VirtualModelResource) o.getResourceData().getResource();
 					modelFactory = resource.getFactory();
 				}
 				else {
-					if ((VirtualModelResource<?>) o.getResourceData().getResource() != resource) {
+					if ((VirtualModelResource) o.getResourceData().getResource() != resource) {
 						throw new InvalidSelectionException("Multiple virtual model impacted");
 					}
 				}

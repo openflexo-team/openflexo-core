@@ -86,7 +86,6 @@ import org.openflexo.foundation.fml.inspector.IntegerInspectorEntry;
 import org.openflexo.foundation.fml.inspector.TextAreaInspectorEntry;
 import org.openflexo.foundation.fml.inspector.TextFieldInspectorEntry;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
-import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstanceParameter;
 import org.openflexo.foundation.fml.rt.editionaction.AddSubView;
@@ -146,8 +145,7 @@ public class FMLModelFactory extends FGEModelFactoryImpl implements PamelaResour
 
 	private RelativePathResourceConverter relativePathResourceConverter;
 
-	public FMLModelFactory(VirtualModelResource<?> abstractVirtualModelResource, FlexoServiceManager serviceManager)
-			throws ModelDefinitionException {
+	public FMLModelFactory(VirtualModelResource virtualModelResource, FlexoServiceManager serviceManager) throws ModelDefinitionException {
 
 		// super(ModelContextLibrary.getCompoundModelContext(retrieveTechnologySpecificClasses(serviceManager.getTechnologyAdapterService())));
 		super(retrieveTechnologySpecificClasses(serviceManager.getTechnologyAdapterService()));
@@ -158,11 +156,11 @@ public class FMLModelFactory extends FGEModelFactoryImpl implements PamelaResour
 		addConverter(new DataBindingConverter());
 		addConverter(new FlexoVersionConverter());
 		addConverter(relativePathResourceConverter = new RelativePathResourceConverter(null));
-		this.virtualModelResource = abstractVirtualModelResource;
-		if (abstractVirtualModelResource != null && abstractVirtualModelResource.getIODelegate() != null
-				&& abstractVirtualModelResource.getIODelegate().getSerializationArtefactAsResource() != null) {
+		this.virtualModelResource = virtualModelResource;
+		if (virtualModelResource != null && virtualModelResource.getIODelegate() != null
+				&& virtualModelResource.getIODelegate().getSerializationArtefactAsResource() != null) {
 			relativePathResourceConverter
-					.setContainerResource(abstractVirtualModelResource.getIODelegate().getSerializationArtefactAsResource().getContainer());
+					.setContainerResource(virtualModelResource.getIODelegate().getSerializationArtefactAsResource().getContainer());
 		}
 		for (TechnologyAdapter ta : taService.getTechnologyAdapters()) {
 			ta.initFMLModelFactory(this);
@@ -193,11 +191,11 @@ public class FMLModelFactory extends FGEModelFactoryImpl implements PamelaResour
 	}
 
 	@Override
-	public VirtualModelResource<?> getResource() {
+	public VirtualModelResource getResource() {
 		return getVirtualModelResource();
 	}
 
-	public VirtualModelResource<?> getVirtualModelResource() {
+	public VirtualModelResource getVirtualModelResource() {
 		return virtualModelResource;
 	}
 
@@ -211,7 +209,6 @@ public class FMLModelFactory extends FGEModelFactoryImpl implements PamelaResour
 	 */
 	public static List<Class<?>> retrieveTechnologySpecificClasses(TechnologyAdapterService taService) throws ModelDefinitionException {
 		List<Class<?>> classes = new ArrayList<Class<?>>();
-		classes.add(ViewPoint.class);
 		classes.add(VirtualModel.class);
 		/*classes.add(FlexoConceptStructuralFacet.class);
 		classes.add(FlexoConceptBehaviouralFacet.class);
@@ -431,10 +428,6 @@ public class FMLModelFactory extends FGEModelFactoryImpl implements PamelaResour
 
 	public ListParameter newListParameter() {
 		return newInstance(ListParameter.class);
-	}
-
-	public FlexoConceptInstanceParameter newFlexoConceptInstanceParameter() {
-		return newInstance(FlexoConceptInstanceParameter.class);
 	}
 
 	public FetchRequestCondition newFetchRequestCondition() {
@@ -701,20 +694,20 @@ public class FMLModelFactory extends FGEModelFactoryImpl implements PamelaResour
 		else {
 			logger.warning("Could not access resource beeing deserialized");
 		}
-		if (newlyCreatedObject instanceof ViewPoint && ((ViewPoint) newlyCreatedObject).getLocalizedDictionary() == null) {
+		if (newlyCreatedObject instanceof VirtualModel && ((VirtualModel) newlyCreatedObject).getLocalizedDictionary() == null) {
 			// Always set a ViewPointLocalizedDictionary for a ViewPoint
 			ViewPointLocalizedDictionary localizedDictionary = newInstance(ViewPointLocalizedDictionary.class);
-			((ViewPoint) newlyCreatedObject).setLocalizedDictionary(localizedDictionary);
+			((VirtualModel) newlyCreatedObject).setLocalizedDictionary(localizedDictionary);
 		}
 	}
 
 	@Override
 	public <I> void objectHasBeenCreated(final I newlyCreatedObject, final Class<I> implementedInterface) {
 		super.objectHasBeenCreated(newlyCreatedObject, implementedInterface);
-		if (newlyCreatedObject instanceof ViewPoint && ((ViewPoint) newlyCreatedObject).getLocalizedDictionary() == null) {
+		if (newlyCreatedObject instanceof VirtualModel && ((VirtualModel) newlyCreatedObject).getLocalizedDictionary() == null) {
 			// Always set a ViewPointLocalizedDictionary for a ViewPoint
 			ViewPointLocalizedDictionary localizedDictionary = newInstance(ViewPointLocalizedDictionary.class);
-			((ViewPoint) newlyCreatedObject).setLocalizedDictionary(localizedDictionary);
+			((VirtualModel) newlyCreatedObject).setLocalizedDictionary(localizedDictionary);
 		}
 	}
 

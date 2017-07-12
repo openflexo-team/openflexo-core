@@ -440,7 +440,7 @@ public class TestFMLBindingModelManagement2 extends OpenflexoProjectAtRunTimeTes
 
 		SelectFlexoConceptInstance selectFlexoConceptInstance = iteration1.getFMLModelFactory().newSelectFlexoConceptInstance();
 		selectFlexoConceptInstance.setFlexoConceptType(flexoConcept);
-		selectFlexoConceptInstance.setReceiver(new DataBinding<VirtualModelInstance<?, ?>>("virtualModelInstance"));
+		selectFlexoConceptInstance.setReceiver(new DataBinding<AbstractVirtualModelInstance<?, ?>>("virtualModelInstance"));
 		iteration1.setIterationAction(selectFlexoConceptInstance);
 
 		/*
@@ -544,7 +544,7 @@ public class TestFMLBindingModelManagement2 extends OpenflexoProjectAtRunTimeTes
 
 		SelectFlexoConceptInstance selectFlexoConceptInstance = iteration2.getFMLModelFactory().newSelectFlexoConceptInstance();
 		selectFlexoConceptInstance.setFlexoConceptType(flexoConcept);
-		selectFlexoConceptInstance.setReceiver(new DataBinding<VirtualModelInstance<?, ?>>("virtualModelInstance"));
+		selectFlexoConceptInstance.setReceiver(new DataBinding<AbstractVirtualModelInstance<?, ?>>("virtualModelInstance"));
 		iteration2.setIterationAction(selectFlexoConceptInstance);
 		iteration2.setIteratorName("item2");
 

@@ -61,7 +61,6 @@ import org.apache.commons.io.filefilter.FileFilterUtils;
 import org.openflexo.foundation.FlexoEditor.FlexoEditorFactory;
 import org.openflexo.foundation.ProjectDataResource.ProjectDataResourceImpl;
 import org.openflexo.foundation.ProjectDirectoryResource.ProjectDirectoryResourceImpl;
-import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.rt.ViewLibrary;
 import org.openflexo.foundation.fml.rt.rm.ViewResource;
 import org.openflexo.foundation.nature.ProjectNature;

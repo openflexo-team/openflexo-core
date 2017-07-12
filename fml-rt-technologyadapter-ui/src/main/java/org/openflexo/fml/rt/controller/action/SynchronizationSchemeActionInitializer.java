@@ -59,7 +59,7 @@ import org.openflexo.view.controller.FlexoController;
 import org.openflexo.view.controller.ParametersRetriever;
 
 public class SynchronizationSchemeActionInitializer
-		extends ActionInitializer<SynchronizationSchemeAction, VirtualModelInstance<?, ?>, VirtualModelInstanceObject> {
+		extends ActionInitializer<SynchronizationSchemeAction, AbstractVirtualModelInstance<?, ?>, VirtualModelInstanceObject> {
 
 	private static final Logger logger = Logger.getLogger(ControllerActionInitializer.class.getPackage().getName());
 

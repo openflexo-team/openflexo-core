@@ -341,7 +341,7 @@ public abstract class AbstractCreateFlexoConcept<A extends FlexoAction<A, T1, T2
 				if (entry.getType() instanceof FlexoConceptInstanceType) {
 					createFCIRole.setFlexoConceptInstanceType(((FlexoConceptInstanceType) entry.getType()).getFlexoConcept());
 				}
-				createFCIRole.setVirtualModelInstance(new DataBinding<VirtualModelInstance<?, ?>>(entry.getContainer().toString()));
+				createFCIRole.setVirtualModelInstance(new DataBinding<AbstractVirtualModelInstance<?, ?>>(entry.getContainer().toString()));
 				break;
 			case MODEL_SLOT:
 				CreateModelSlot createModelSlot = CreateModelSlot.actionType.makeNewEmbeddedAction(getNewFlexoConcept(), null, this);

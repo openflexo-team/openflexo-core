@@ -80,7 +80,6 @@ import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.fml.inspector.FlexoConceptInspector;
 import org.openflexo.foundation.fml.rt.action.ModelSlotInstanceConfiguration;
 import org.openflexo.foundation.fml.rt.action.ModelSlotInstanceConfiguration.DefaultModelSlotInstanceConfigurationOption;
-import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterResource;
@@ -152,10 +151,10 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 	 * @return
 	 */
 	@Getter(value = OWNING_VIRTUAL_MODEL_INSTANCE_KEY)
-	public abstract VirtualModelInstance<?, ?> getOwningVirtualModelInstance();
+	public abstract AbstractVirtualModelInstance<?, ?> getOwningVirtualModelInstance();
 
 	@Setter(OWNING_VIRTUAL_MODEL_INSTANCE_KEY)
-	public void setOwningVirtualModelInstance(VirtualModelInstance<?, ?> virtualModelInstance);
+	public void setOwningVirtualModelInstance(AbstractVirtualModelInstance<?, ?> virtualModelInstance);
 
 	@Getter(FLEXO_CONCEPT_KEY)
 	public FlexoConcept getFlexoConcept();
@@ -364,7 +363,7 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 	public boolean hasValidRenderer();
 
 	@DeserializationInitializer
-	public void initializeDeserialization(VirtualModelInstanceModelFactory<?> factory);
+	public void initializeDeserialization(AbstractVirtualModelInstanceModelFactory<?> factory);
 
 	@DeserializationFinalizer
 	public void finalizeDeserialization();
@@ -463,29 +462,6 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 			variables = new HashMap<>();
 		}
 
-		@Override
-		public FlexoResourceCenter<?> getResourceCenter() {
-			View prout = getView();
-			if (getView() != null && getView() != this) {
-				return getView().getResourceCenter();
-			}
-			return super.getResourceCenter();
-		}
-
-		/*@Override
-		public void debug(String aLogString, FlexoConceptInstance fci, FlexoBehaviour behaviour) {
-			if (getFlexoEditor() != null) {
-				getFlexoEditor().getFMLConsole().debug(aLogString, fci, behaviour);
-			}
-		}
-		
-		@Override
-		public void log(String aLogString, FMLConsole.LogLevel logLevel, FlexoConceptInstance fci, FlexoBehaviour behaviour) {
-			if (getFlexoEditor() != null) {
-				getFlexoEditor().getFMLConsole().log(aLogString, logLevel, fci, behaviour);
-			}
-		}*/
-
 		// TODO: this is not a good idea, we should separate FlexoConceptInstance from RunTimeEvaluationContext
 		private FlexoEditor getFlexoEditor() {
 			if (getResourceCenter() instanceof FlexoProject && getServiceManager() != null) {
@@ -567,7 +543,7 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 			}
 
 			@Override
-			public VirtualModelInstance<?, ?> getVirtualModelInstance() {
+			public AbstractVirtualModelInstance<?, ?> getVirtualModelInstance() {
 				return getFlexoConceptInstance().getOwningVirtualModelInstance();
 			}
 
@@ -1161,8 +1137,10 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 				}
 			}
 
-			if (this instanceof VirtualModelInstance && ((VirtualModelInstance) this).getView() != null) {
-				ModelSlotInstance<MS, RD> returned = ((VirtualModelInstance) this).getView().getModelSlotInstance(modelSlot);
+			if (this instanceof AbstractVirtualModelInstance
+					&& ((AbstractVirtualModelInstance<?, ?>) this).getContainerVirtualModelInstance() != null) {
+				ModelSlotInstance<MS, RD> returned = ((AbstractVirtualModelInstance<?, ?>) this).getContainerVirtualModelInstance()
+						.getModelSlotInstance(modelSlot);
 				if (returned != null) {
 					return returned;
 				}
@@ -1209,31 +1187,6 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 			return returned;
 		}
 
-		/*	@Override
-			public void setModelSlotInstances(List<ModelSlotInstance<?, ?>> instances) {
-				this.modelSlotInstances = instances;
-			}
-		
-			@Override
-			public void addToModelSlotInstances(ModelSlotInstance<?, ?> instance) {
-				if (!modelSlotInstances.contains(instance)) {
-					instance.setVirtualModelInstance(this);
-					modelSlotInstances.add(instance);
-					setChanged();
-					notifyObservers(new VEDataModification("modelSlotInstances", null, instance));
-				}
-			}
-		
-			@Override
-			public void removeFromModelSlotInstance(ModelSlotInstance<?, ?> instance) {
-				if (modelSlotInstances.contains(instance)) {
-					instance.setVirtualModelInstance(null);
-					modelSlotInstances.remove(instance);
-					setChanged();
-					notifyObservers(new VEDataModification("modelSlotInstances", instance, null));
-				}
-			}*/
-
 		private void setModelSlotValue(ModelSlot<?> ms, Object value) {
 
 			if (getFlexoConcept() != null && ms != null) {
@@ -1242,7 +1195,7 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 					if (msi == null) {
 						ModelSlotInstanceConfiguration<?, ?> msiConfiguration = ms.createConfiguration(this, getResourceCenter());
 						msiConfiguration.setOption(DefaultModelSlotInstanceConfigurationOption.SelectExistingResource);
-						msi = msiConfiguration.createModelSlotInstance(this, getView());
+						msi = msiConfiguration.createModelSlotInstance(this, getOwningVirtualModelInstance());
 						msi.setFlexoConceptInstance(this);
 						addToActors(msi);
 					}
@@ -1253,7 +1206,7 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 					if (msi == null) {
 						ModelSlotInstanceConfiguration<?, ?> msiConfiguration = ms.createConfiguration(this, getResourceCenter());
 						msiConfiguration.setOption(DefaultModelSlotInstanceConfigurationOption.SelectExistingResource);
-						msi = msiConfiguration.createModelSlotInstance(this, getView());
+						msi = msiConfiguration.createModelSlotInstance(this, getOwningVirtualModelInstance());
 						msi.setFlexoConceptInstance(this);
 						addToActors(msi);
 					}
@@ -1279,7 +1232,7 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 		}
 
 		@Override
-		public VirtualModelInstance<?, ?> getVirtualModelInstance() {
+		public AbstractVirtualModelInstance<?, ?> getVirtualModelInstance() {
 			return getOwningVirtualModelInstance();
 		}
 
@@ -1491,9 +1444,9 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 					return ((FlexoPropertyBindingVariable) variable).getValue(this);
 				}
 			}
-			else if (variable.getVariableName().equals(FlexoConceptBindingModel.REFLEXIVE_ACCESS_PROPERTY)) {
+			/*else if (variable.getVariableName().equals(FlexoConceptBindingModel.REFLEXIVE_ACCESS_PROPERTY)) {
 				return getFlexoConcept();
-			}
+			}*/
 			else if (variable.getVariableName().equals(FlexoConceptBindingModel.THIS_PROPERTY)) {
 				return this;
 			}
@@ -1532,14 +1485,13 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 				setFlexoPropertyValue(property, value);
 				return;
 			}
-			else if (variable.getVariableName().equals(FlexoConceptBindingModel.REFLEXIVE_ACCESS_PROPERTY)) {
+			/*else if (variable.getVariableName().equals(FlexoConceptBindingModel.REFLEXIVE_ACCESS_PROPERTY)) {
 				logger.warning("Forbidden write access " + FlexoConceptBindingModel.REFLEXIVE_ACCESS_PROPERTY + " in " + this + " of "
 						+ getClass());
 				return;
-			}
+			}*/
 			else if (variable.getVariableName().equals(FlexoConceptBindingModel.THIS_PROPERTY)) {
-				logger.warning("Forbidden write access " + FlexoConceptBindingModel.THIS_PROPERTY + " in " + this + " of "
-						+ getClass());
+				logger.warning("Forbidden write access " + FlexoConceptBindingModel.THIS_PROPERTY + " in " + this + " of " + getClass());
 				return;
 			}
 
@@ -1570,7 +1522,7 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 				}
 			}
 			else {
-				boolean returned = super.delete(context);
+				boolean returned = performSuperDelete(context);
 				getPropertyChangeSupport().firePropertyChange(getDeletedProperty(), false, true);
 				return returned;
 			}
@@ -1601,7 +1553,7 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 				container.removeFromEmbeddedFlexoConceptInstances(this);
 			}
 
-			VirtualModelInstance<?, ?> vmi = getOwningVirtualModelInstance();
+			AbstractVirtualModelInstance<?, ?> vmi = getOwningVirtualModelInstance();
 			if (vmi != null) {
 				vmi.removeFromFlexoConceptInstances(this);
 			}
@@ -1623,7 +1575,7 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 							+ primaryPatternActor);
 				}
 			}*/
-			boolean returned = super.delete();
+			boolean returned = performSuperDelete();
 			getPropertyChangeSupport().firePropertyChange(getDeletedProperty(), false, true);
 			return returned;
 		}
@@ -1631,6 +1583,7 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 		/**
 		 * Clone this FlexoConcept instance using default CloningScheme
 		 */
+		// TODO: not implemented yet
 		public FlexoConceptInstanceImpl cloneFlexoConceptInstance() {
 			/*if (getFlexoConcept().getDefaultDeletionScheme() != null) {
 				delete(getFlexoConcept().getDefaultDeletionScheme());
@@ -1645,6 +1598,7 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 		/**
 		 * Delete this FlexoConcept instance using supplied DeletionScheme
 		 */
+		// TODO: not implemented yet
 		public FlexoConceptInstanceImpl cloneFlexoConceptInstance(CloningScheme cloningScheme) {
 			/*logger.warning("NEW FlexoConceptInstance deletion !");
 			deleted = true;
@@ -1698,7 +1652,7 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 		}
 
 		@Override
-		public VirtualModelInstance<?, ?> getResourceData() {
+		public AbstractVirtualModelInstance<?, ?> getResourceData() {
 			return getOwningVirtualModelInstance();
 		}
 
@@ -1843,10 +1797,10 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 			return this;
 		}
 
-		private VirtualModelInstanceModelFactory<?> deserializationFactory;
+		private AbstractVirtualModelInstanceModelFactory<?> deserializationFactory;
 
 		@Override
-		public void initializeDeserialization(VirtualModelInstanceModelFactory<?> factory) {
+		public void initializeDeserialization(AbstractVirtualModelInstanceModelFactory<?> factory) {
 			deserializationFactory = factory;
 		}
 
@@ -1855,7 +1809,7 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 			deserializationFactory = null;
 		}
 
-		public VirtualModelInstanceModelFactory<?> getDeserializationFactory() {
+		public AbstractVirtualModelInstanceModelFactory<?> getDeserializationFactory() {
 			return deserializationFactory;
 		}
 

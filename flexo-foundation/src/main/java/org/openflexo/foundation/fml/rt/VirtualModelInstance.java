@@ -38,23 +38,15 @@
 
 package org.openflexo.foundation.fml.rt;
 
-import org.openflexo.foundation.fml.ViewPoint;
+import java.util.logging.Logger;
+
 import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.technologyadapter.FlexoModel;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.XMLElement;
 
 /**
- * A {@link VirtualModelInstance} is the run-time concept (instance) of a {@link VirtualModel}.<br>
- * 
- * As such, a {@link VirtualModelInstance} is instantiated inside a {@link View}, and all model slot defined for the corresponding
- * {@link ViewPoint} are instantiated (reified) with existing or build-in managed {@link FlexoModel}.<br>
- * 
- * A {@link VirtualModelInstance} mostly manages a collection of {@link FlexoConceptInstance} and is itself an {@link FlexoConceptInstance}.
- * <br>
- * 
- * A {@link VirtualModelInstance} might be used in the Design Space (for example to encode a Diagram)
+ * Implementation of an instance of a plain {@link VirtualModel} natively managed by the {@link FMLRTTechnologyAdapter}
  * 
  * @author sylvain
  * 
@@ -62,12 +54,20 @@ import org.openflexo.model.annotations.XMLElement;
 @ModelEntity
 @ImplementationClass(VirtualModelInstance.VirtualModelInstanceImpl.class)
 @XMLElement
-public interface VirtualModelInstance extends VirtualModelInstance<VirtualModelInstance, VirtualModel> {
+public interface VirtualModelInstance extends AbstractVirtualModelInstance<VirtualModelInstance, FMLRTTechnologyAdapter> {
 
-	public static abstract class VirtualModelInstanceImpl extends VirtualModelInstanceImpl<VirtualModelInstance, VirtualModel>
-			implements VirtualModelInstance {
+	public static abstract class VirtualModelInstanceImpl
+			extends AbstractVirtualModelInstanceImpl<VirtualModelInstance, FMLRTTechnologyAdapter> implements VirtualModelInstance {
 
-		// private static final Logger logger = Logger.getLogger(VirtualModelInstance.class.getPackage().getName());
+		private static final Logger logger = Logger.getLogger(VirtualModelInstance.class.getPackage().getName());
+
+		@Override
+		public FMLRTTechnologyAdapter getTechnologyAdapter() {
+			if (getResource() != null) {
+				return getResource().getTechnologyAdapter();
+			}
+			return null;
+		}
 
 	}
 

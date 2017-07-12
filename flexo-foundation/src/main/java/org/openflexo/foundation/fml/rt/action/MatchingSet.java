@@ -92,10 +92,10 @@ public class MatchingSet {
 			container = initiateMatchingRequest.getContainer().getBindingValue(evaluationContext);
 			if (container instanceof VirtualModelInstance) {
 				if (flexoConceptType != null) {
-					allInstances = ((VirtualModelInstance<?, ?>) container).getFlexoConceptInstances(flexoConceptType);
+					allInstances = ((AbstractVirtualModelInstance<?, ?>) container).getFlexoConceptInstances(flexoConceptType);
 				}
 				else {
-					allInstances = ((VirtualModelInstance<?, ?>) container).getAllRootFlexoConceptInstances();
+					allInstances = ((AbstractVirtualModelInstance<?, ?>) container).getAllRootFlexoConceptInstances();
 				}
 			}
 			else {
@@ -171,11 +171,11 @@ public class MatchingSet {
 			// System.out.println("container=" + container);
 			if (container != null) {
 				/*if (flexoConceptType != null) {
-					allInstances = ((VirtualModelInstance<?, ?>) container).getFlexoConceptInstances(flexoConceptType);
+					allInstances = ((AbstractVirtualModelInstance<?, ?>) container).getFlexoConceptInstances(flexoConceptType);
 				}
 				else {*/
-				// allInstances = ((VirtualModelInstance<?, ?>) container).getAllRootFlexoConceptInstances();
-				allInstances = ((VirtualModelInstance<?, ?>) container).getFlexoConceptInstances();
+				// allInstances = ((AbstractVirtualModelInstance<?, ?>) container).getAllRootFlexoConceptInstances();
+				allInstances = ((AbstractVirtualModelInstance<?, ?>) container).getFlexoConceptInstances();
 				// }
 				// System.out.println("Toutes les instances: " + allInstances);
 			}

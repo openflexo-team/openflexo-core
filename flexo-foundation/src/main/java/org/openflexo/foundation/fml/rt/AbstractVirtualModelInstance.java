@@ -57,20 +57,18 @@ import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.IndexableContainer;
-import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.FlexoEvent;
 import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.SynchronizationScheme;
-import org.openflexo.foundation.fml.ViewPoint;
-import org.openflexo.foundation.fml.binding.ViewPointBindingModel;
+import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.binding.VirtualModelBindingModel;
 import org.openflexo.foundation.fml.editionaction.FetchRequestCondition;
 import org.openflexo.foundation.fml.rt.action.SynchronizationSchemeAction;
 import org.openflexo.foundation.fml.rt.action.SynchronizationSchemeActionType;
-import org.openflexo.foundation.fml.rt.rm.VirtualModelInstanceResource;
+import org.openflexo.foundation.fml.rt.rm.AbstractVirtualModelInstanceResource;
 import org.openflexo.foundation.resource.CannotRenameException;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.ResourceData;
@@ -98,24 +96,24 @@ import org.openflexo.toolbox.FlexoVersion;
 import org.openflexo.toolbox.StringUtils;
 
 /**
- * A {@link VirtualModelInstance} is the run-time concept (instance) of a {@link VirtualModel}.<br>
+ * A {@link AbstractVirtualModelInstance} is the run-time concept (instance) of a {@link VirtualModel}.<br>
+ * A {@link AbstractVirtualModelInstance} mostly manages a collection of {@link FlexoConceptInstance} and is itself a
+ * {@link FlexoConceptInstance}.<br>
  * 
- * As such, a {@link VirtualModelInstance} is instantiated inside a {@link View}, and all model slot defined for the corresponding
- * {@link ViewPoint} are instantiated (reified) with existing or build-in managed {@link FlexoModel}.<br>
- * 
- * A {@link VirtualModelInstance} mostly manages a collection of {@link FlexoConceptInstance} and is itself an
- * {@link FlexoConceptInstance}. <br>
- * 
- * A {@link VirtualModelInstance} is the common abstraction of {@link VirtualModelInstance} and {@link View}
+ * Note that this is a base implementation, common for FMLRTVirtualModelInstance (native implementation managed by the
+ * {@link FMLRTTechnologyAdapter}) and InferedVirtualModelInstance (managed through a ModelSlot by a {@link TechnologyAdapter})<br>
  * 
  * @author sylvain
+ * 
+ * @param <VMI>
+ * @param <TA>
  * 
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(VirtualModelInstance.VirtualModelInstanceImpl.class)
 @Imports({ @Import(VirtualModelInstance.class), @Import(View.class) })
-public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, VM>, VM extends VirtualModel<VM>>
-		extends FlexoConceptInstance, ResourceData<VMI>, FlexoModel<VMI, VM>, TechnologyObject<FMLRTTechnologyAdapter>,
+public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelInstance<VMI, TA>, TA extends TechnologyAdapter>
+		extends FlexoConceptInstance, ResourceData<VMI>, FlexoModel<VMI, VirtualModel>, TechnologyObject<TA>,
 		IndexableContainer<FlexoConceptInstance> {
 
 	public static final String EVENT_FIRED = "EventFired";
@@ -154,9 +152,9 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, VM>,
 	@Setter(MODEL_VERSION_KEY)
 	public void setModelVersion(FlexoVersion modelVersion);
 
-	public VM getVirtualModel();
+	public VirtualModel getVirtualModel();
 
-	public void setVirtualModel(VM virtualModel);
+	public void setVirtualModel(VirtualModel virtualModel);
 
 	@Getter(value = VIRTUAL_MODEL_URI_KEY)
 	@XMLAttribute
@@ -261,7 +259,7 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, VM>,
 	 */
 	public List<FlexoConceptInstance> getFlexoConceptInstances(FlexoConcept flexoConcept);
 
-	public boolean hasNature(VirtualModelInstanceNature<VMI, VM> nature);
+	public boolean hasNature(AbstractVirtualModelInstanceNature<VMI, TA> nature);
 
 	/**
 	 * Try to lookup supplied object in the whole VirtualModelInstance.<br>
@@ -288,12 +286,27 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, VM>,
 
 	public void contentsRemoved(FlexoConceptInstance objectBeeingRemoved, FlexoConcept concept);
 
-	public static abstract class VirtualModelInstanceImpl<VMI extends VirtualModelInstance<VMI, VM>, VM extends VirtualModel<VM>>
-			extends FlexoConceptInstanceImpl implements VirtualModelInstance<VMI, VM> {
+	/**
+	 * Return (eventually null) container {@link AbstractVirtualModelInstance}
+	 * 
+	 * @return
+	 */
+	public AbstractVirtualModelInstance<?, ?> getContainerVirtualModelInstance();
+
+	/**
+	 * Base implementation for AbstractVirtualModelInstance
+	 * 
+	 * @author sylvain
+	 *
+	 * @param <VMI>
+	 * @param <TA>
+	 */
+	public static abstract class AbstractVirtualModelInstanceImpl<VMI extends AbstractVirtualModelInstance<VMI, TA>, TA extends TechnologyAdapter>
+			extends FlexoConceptInstanceImpl implements AbstractVirtualModelInstance<VMI, TA> {
 
 		private static final Logger logger = Logger.getLogger(VirtualModelInstance.class.getPackage().getName());
 
-		private VirtualModelInstanceResource<VMI, VM> resource;
+		private AbstractVirtualModelInstanceResource<VMI, TA> resource;
 		private String title;
 
 		/**
@@ -307,7 +320,7 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, VM>,
 		/**
 		 * Default constructor with
 		 */
-		public VirtualModelInstanceImpl() {
+		public AbstractVirtualModelInstanceImpl() {
 			super();
 			// modelSlotInstances = new ArrayList<ModelSlotInstance<?, ?>>();
 			flexoConceptInstances = new Hashtable<>();
@@ -319,17 +332,17 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, VM>,
 		}
 
 		@Override
-		public VirtualModelInstanceModelFactory<?> getFactory() {
+		public AbstractVirtualModelInstanceModelFactory<?> getFactory() {
 			if (getResource() != null) {
 				return getResource().getFactory();
 			}
 			return null;
 		}
 
-		@Override
-		public void initializeDeserialization(VirtualModelInstanceModelFactory<?> factory) {
+		/*@Override
+		public void initializeDeserialization(AbstractVirtualModelInstanceModelFactory<?> factory) {
 			super.initializeDeserialization(factory);
-		}
+		}*/
 
 		@Override
 		public void finalizeDeserialization() {
@@ -337,7 +350,7 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, VM>,
 		}
 
 		@Override
-		public final boolean hasNature(VirtualModelInstanceNature<VMI, VM> nature) {
+		public final boolean hasNature(AbstractVirtualModelInstanceNature<VMI, TA> nature) {
 			return nature.hasNature((VMI) this);
 		}
 
@@ -350,36 +363,30 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, VM>,
 		}
 
 		@Override
-		public View getView() {
+		public AbstractVirtualModelInstance<?, ?> getContainerVirtualModelInstance() {
 			if (getResource() != null && getResource().getContainer() != null) {
-				return getResource().getContainer().getView();
+				return getResource().getContainer().getVirtualModelInstance();
 			}
 			return null;
 		}
 
 		@Override
-		public VM getFlexoConcept() {
+		public VirtualModel getFlexoConcept() {
 			// We override here getFlexoConcept() to retrieve matching VirtualModel
-			if (getView() != null && getView().getViewPoint() != null && flexoConcept == null && StringUtils.isNotEmpty(flexoConceptURI)) {
-				flexoConcept = getView().getViewPoint().getVirtualModelNamed(flexoConceptURI);
+			if (getContainerVirtualModelInstance() != null && getContainerVirtualModelInstance().getVirtualModel() != null
+					&& flexoConcept == null && StringUtils.isNotEmpty(flexoConceptURI)) {
+				flexoConcept = getContainerVirtualModelInstance().getVirtualModel().getVirtualModelNamed(flexoConceptURI);
 			}
-			return (VM) flexoConcept;
-		}
-
-		public ViewPoint getViewPoint() {
-			if (getVirtualModel() != null) {
-				return getVirtualModel().getViewPoint();
-			}
-			return null;
+			return (VirtualModel) flexoConcept;
 		}
 
 		@Override
-		public VM getVirtualModel() {
+		public VirtualModel getVirtualModel() {
 			return getFlexoConcept();
 		}
 
 		@Override
-		public void setVirtualModel(VM virtualModel) {
+		public void setVirtualModel(VirtualModel virtualModel) {
 			setFlexoConcept(virtualModel);
 		}
 
@@ -394,7 +401,7 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, VM>,
 		}
 
 		@Override
-		public VM getMetaModel() {
+		public VirtualModel getMetaModel() {
 			return getFlexoConcept();
 		}
 
@@ -411,14 +418,6 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, VM>,
 			if (getResource() != null) {
 				getResource().setModelVersion(aVersion);
 			}
-		}
-
-		@Override
-		public FMLRTTechnologyAdapter getTechnologyAdapter() {
-			if (getResource() != null) {
-				return getResource().getTechnologyAdapter();
-			}
-			return null;
 		}
 
 		@Override
@@ -583,7 +582,7 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, VM>,
 
 		private void ensureRegisterFCIInConcept(FlexoConceptInstance fci, FlexoConcept concept) {
 
-			//System.out.println("**** ensure register FCI " + fci + " in " + concept);
+			// System.out.println("**** ensure register FCI " + fci + " in " + concept);
 
 			List<FlexoConceptInstance> list = flexoConceptInstances.get(concept);
 			if (list == null) {
@@ -705,13 +704,13 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, VM>,
 		}*/
 
 		@Override
-		public VirtualModelInstanceResource<VMI, VM> getResource() {
+		public AbstractVirtualModelInstanceResource<VMI, TA> getResource() {
 			return resource;
 		}
 
 		@Override
 		public void setResource(FlexoResource<VMI> resource) {
-			this.resource = (VirtualModelInstanceResource<VMI, VM>) resource;
+			this.resource = (AbstractVirtualModelInstanceResource<VMI, TA>) resource;
 		}
 
 		@Override
@@ -749,15 +748,9 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, VM>,
 		}
 
 		@Override
-		public VirtualModelInstance<VMI, VM> getResourceData() {
-			return this;
+		public VMI getResourceData() {
+			return (VMI) this;
 		}
-
-		/*@Override
-		public String toString() {
-			return "VirtualModelInstance[name=" + getName() + "/virtualModel=" + getVirtualModel() + "/hash="
-					+ Integer.toHexString(hashCode()) + "]";
-		}*/
 
 		@Override
 		public <T> T getFlexoActor(FlexoRole<T> flexoRole) {
@@ -834,7 +827,7 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, VM>,
 		@Override
 		public void synchronize(FlexoEditor editor) {
 			if (isSynchronizable()) {
-				VM vm = getVirtualModel();
+				VirtualModel vm = getVirtualModel();
 				SynchronizationScheme ss = vm.getSynchronizationScheme();
 				SynchronizationSchemeActionType actionType = new SynchronizationSchemeActionType(ss, this);
 				SynchronizationSchemeAction action = actionType.makeNewAction(this, null, editor);
@@ -848,7 +841,7 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, VM>,
 		@Override
 		public boolean isSynchronizable() {
 			// is synchronizable if virtualModel is not null, it has SynchronizationScheme and all needed TA are activated
-			VM vm = getVirtualModel();
+			VirtualModel vm = getVirtualModel();
 			boolean synchronizable = vm != null && vm.hasSynchronizationScheme();
 			if (synchronizable) {
 				for (TechnologyAdapter neededTA : vm.getRequiredTechnologyAdapters()) {
@@ -858,18 +851,6 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, VM>,
 			return synchronizable;
 		}
 
-		/**
-		 * Return run-time value for {@link BindingVariable} variable
-		 * 
-		 * @param variable
-		 * @return
-		 */
-		/*@Override
-		public Object getValueForVariable(BindingVariable variable) {
-			logger.warning("Not implemented: getValueForVariable() " + variable);
-			return null;
-		}*/
-
 		@Override
 		public Object getObject(String objectURI) {
 			// TODO Auto-generated method stub
@@ -877,7 +858,7 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, VM>,
 		}
 
 		@Override
-		public VirtualModelInstance<?, ?> getVirtualModelInstance() {
+		public AbstractVirtualModelInstance<?, ?> getVirtualModelInstance() {
 			return this;
 		}
 
@@ -929,21 +910,21 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, VM>,
 			}
 			else*/
 
-			if (variable.getVariableName().equals(VirtualModelBindingModel.REFLEXIVE_ACCESS_PROPERTY)) {
+			/*if (variable.getVariableName().equals(VirtualModelBindingModel.REFLEXIVE_ACCESS_PROPERTY)) {
 				return getVirtualModel();
 			}
 			else if (variable.getVariableName().equals(ViewPointBindingModel.VIEW_PROPERTY)) {
 				return getView();
 			}
-			else if (variable.getVariableName().equals(ViewPointBindingModel.PROJECT_PROPERTY)) {
+			else*/ if (variable.getVariableName().equals(VirtualModelBindingModel.PROJECT_PROPERTY)) {
 				return getResourceCenter();
 			}
-			else if (variable.getVariableName().equals(ViewPointBindingModel.RC_PROPERTY)) {
+			else if (variable.getVariableName().equals(VirtualModelBindingModel.RC_PROPERTY)) {
 				return getResourceCenter();
 			}
-			else if (variable.getVariableName().equals(VirtualModelBindingModel.VIRTUAL_MODEL_INSTANCE_PROPERTY)) {
+			/*else if (variable.getVariableName().equals(VirtualModelBindingModel.VIRTUAL_MODEL_INSTANCE_PROPERTY)) {
 				return this;
-			}
+			}*/
 
 			Object returned = super.getValue(variable);
 
@@ -952,8 +933,8 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, VM>,
 			}
 
 			// When not found, delegate it to the view
-			if (returned == null && getView() != null && getView() != this) {
-				return getView().getValue(variable);
+			if (returned == null && getContainerVirtualModelInstance() != null && getContainerVirtualModelInstance() != this) {
+				return getContainerVirtualModelInstance().getValue(variable);
 			}
 
 			// Warning is not required, since it will will warn each time a value is null !
@@ -969,7 +950,7 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, VM>,
 					if (value instanceof TechnologyAdapterResource) {
 						ModelSlotInstance msi = (getModelSlotInstance(ms));
 						if (msi == null) {
-							VirtualModelInstance<?, ?> flexoConceptInstance = (VirtualModelInstance<?, ?>) getFlexoConceptInstance();
+							AbstractVirtualModelInstance<?, ?> flexoConceptInstance = (AbstractVirtualModelInstance<?, ?>) getFlexoConceptInstance();
 							ModelSlotInstanceConfiguration<?, ?> msiConfiguration = ms.createConfiguration(flexoConceptInstance,
 									getResourceCenter());
 							msiConfiguration.setOption(DefaultModelSlotInstanceConfigurationOption.SelectExistingResource);
@@ -982,7 +963,7 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, VM>,
 					if (value instanceof ResourceData) {
 						ModelSlotInstance msi = (getModelSlotInstance(ms));
 						if (msi == null) {
-							VirtualModelInstance<?, ?> flexoConceptInstance = (VirtualModelInstance<?, ?>) getFlexoConceptInstance();
+							AbstractVirtualModelInstance<?, ?> flexoConceptInstance = (AbstractVirtualModelInstance<?, ?>) getFlexoConceptInstance();
 							ModelSlotInstanceConfiguration<?, ?> msiConfiguration = ms.createConfiguration(flexoConceptInstance,
 									getResourceCenter());
 							msiConfiguration.setOption(DefaultModelSlotInstanceConfigurationOption.SelectExistingResource);
@@ -1001,7 +982,7 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, VM>,
 				}
 				return;
 			}
-			else*/ if (variable.getVariableName().equals(VirtualModelBindingModel.REFLEXIVE_ACCESS_PROPERTY)) {
+			else if (variable.getVariableName().equals(VirtualModelBindingModel.REFLEXIVE_ACCESS_PROPERTY)) {
 				logger.warning("Forbidden write access " + VirtualModelBindingModel.REFLEXIVE_ACCESS_PROPERTY + " in " + this + " of "
 						+ getClass());
 				return;
@@ -1014,7 +995,7 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, VM>,
 				logger.warning("Forbidden write access " + VirtualModelBindingModel.VIRTUAL_MODEL_INSTANCE_PROPERTY + " in " + this + " of "
 						+ getClass());
 				return;
-			}
+			}*/
 
 			super.setValue(value, variable);
 
@@ -1152,16 +1133,16 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, VM>,
 			}
 
 			/*System.out.println("Retrieving index for " + type + " and " + indexableTerm);
-
+			
 			System.out.println("Les FCI par type:");
-
+			
 			for (FlexoConcept c : flexoConceptInstances.keySet()) {
 				System.out.println("Concept " + c);
 				for (FlexoConceptInstance fci : flexoConceptInstances.get(c)) {
 					System.out.println(" > " + fci);
 				}
 			}
-
+			
 			System.out.println("Les indexes:");
 			for (Type t : indexes.keySet()) {
 				System.out.println("Index for " + t);
@@ -1185,7 +1166,7 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, VM>,
 				// Now compute index when required
 				returned.updateWhenRequired();
 
-				//System.out.println("return " + returned);
+				// System.out.println("return " + returned);
 
 				return returned;
 			}

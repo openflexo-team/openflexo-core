@@ -46,7 +46,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoException;
-import org.openflexo.foundation.fml.rt.VirtualModelInstanceModelFactory;
+import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstanceModelFactory;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.TypeAwareModelSlotInstance;
 import org.openflexo.foundation.fml.rt.View;
@@ -63,6 +63,7 @@ import org.openflexo.toolbox.StringUtils;
  * @author sylvain
  * 
  */
+@Deprecated
 public abstract class TypeAwareModelSlotInstanceConfiguration<M extends FlexoModel<M, MM> & TechnologyObject<?>, MM extends FlexoMetaModel<MM> & TechnologyObject<?>, MS extends TypeAwareModelSlot<M, MM>>
 		extends ModelSlotInstanceConfiguration<MS, M> {
 
@@ -99,7 +100,7 @@ public abstract class TypeAwareModelSlotInstanceConfiguration<M extends FlexoMod
 
 	@Override
 	public TypeAwareModelSlotInstance<M, MM, MS> createModelSlotInstance(FlexoConceptInstance fci, View view) {
-		VirtualModelInstanceModelFactory<?> factory = fci.getFactory();
+		AbstractVirtualModelInstanceModelFactory<?> factory = fci.getFactory();
 		TypeAwareModelSlotInstance<M, MM, MS> returned = factory.newInstance(TypeAwareModelSlotInstance.class);
 		returned.setModelSlot(getModelSlot());
 		returned.setFlexoConceptInstance(fci);

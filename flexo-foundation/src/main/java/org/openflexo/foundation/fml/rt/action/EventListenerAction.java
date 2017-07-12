@@ -120,7 +120,7 @@ public class EventListenerAction extends FlexoBehaviourAction<EventListenerActio
 	 * Return {@link VirtualModelInstance} in which synchronized {@link VirtualModelInstance} does exist
 	 */
 	@Override
-	public VirtualModelInstance<?, ?> retrieveVirtualModelInstance() {
+	public AbstractVirtualModelInstance<?, ?> retrieveVirtualModelInstance() {
 		if (getFlexoConceptInstance() != null) {
 			return getFlexoConceptInstance().getVirtualModelInstance();
 		}

@@ -46,7 +46,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoException;
-import org.openflexo.foundation.fml.rt.VirtualModelInstanceModelFactory;
+import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstanceModelFactory;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.FreeModelSlotInstance;
 import org.openflexo.foundation.fml.rt.View;
@@ -64,6 +64,7 @@ import org.openflexo.toolbox.StringUtils;
  * @author sylvain, vincent
  * 
  */
+@Deprecated
 public class FreeModelSlotInstanceConfiguration<RD extends ResourceData<RD> & TechnologyObject<?>, MS extends FreeModelSlot<RD>>
 		extends ModelSlotInstanceConfiguration<MS, RD> {
 
@@ -115,7 +116,7 @@ public class FreeModelSlotInstanceConfiguration<RD extends ResourceData<RD> & Te
 	@Override
 	public FreeModelSlotInstance<RD, MS> createModelSlotInstance(FlexoConceptInstance flexoConceptInstance, View view) {
 
-		VirtualModelInstanceModelFactory<?> factory = flexoConceptInstance.getFactory();
+		AbstractVirtualModelInstanceModelFactory<?> factory = flexoConceptInstance.getFactory();
 
 		if (factory == null) {
 			System.out.println("Zut alors la factory est null pour " + flexoConceptInstance);
@@ -177,14 +178,15 @@ public class FreeModelSlotInstanceConfiguration<RD extends ResourceData<RD> & Te
 	}
 
 	private TechnologyAdapterResource<RD, ?> createProjectSpecificEmptyResource(FreeModelSlotInstance<RD, MS> msInstance, MS modelSlot) {
-		return modelSlot.createProjectSpecificEmptyResource(getView(msInstance), getFilename(), getResourceUri());
+		// return modelSlot.createProjectSpecificEmptyResource(getView(msInstance), getFilename(), getResourceUri());
+		return null;
 	}
 
 	private TechnologyAdapterResource<RD, ?> createSharedEmptyResource(FreeModelSlotInstance<RD, MS> msInstance, MS modelSlot) {
 		return modelSlot.createSharedEmptyResource(getResourceCenter(), getRelativePath(), getFilename(), getResourceUri());
 	}
 
-	private View getView(FreeModelSlotInstance<RD, MS> msInstance) {
+	/*private View getView(FreeModelSlotInstance<RD, MS> msInstance) {
 		View view = null;
 		if (msInstance.getView() != null) {
 			view = msInstance.getView();
@@ -193,7 +195,7 @@ public class FreeModelSlotInstanceConfiguration<RD extends ResourceData<RD> & Te
 			view = msInstance.getVirtualModelInstance().getView();
 		}
 		return view;
-	}
+	}*/
 
 	public FlexoResourceCenter<?> getTargetResourceCenter() {
 		return targetResourceCenter;

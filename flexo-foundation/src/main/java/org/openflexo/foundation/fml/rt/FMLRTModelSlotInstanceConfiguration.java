@@ -42,10 +42,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.rt.action.ModelSlotInstanceConfiguration;
-import org.openflexo.foundation.fml.rt.rm.VirtualModelInstanceResource;
+import org.openflexo.foundation.fml.rt.rm.AbstractVirtualModelInstanceResource;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 
 /**
  * This class is used to stored the configuration of a {@link FMLRTModelSlot} which has to be instantiated
@@ -54,15 +54,16 @@ import org.openflexo.foundation.resource.FlexoResourceCenter;
  * @author sylvain
  * 
  */
-public class FMLRTModelSlotInstanceConfiguration<VMI extends VirtualModelInstance<VMI, VM>, VM extends VirtualModel<VM>>
-		extends ModelSlotInstanceConfiguration<FMLRTModelSlot<VMI, VM>, VMI> {
+@Deprecated
+public class FMLRTModelSlotInstanceConfiguration<VMI extends AbstractVirtualModelInstance<VMI, TA>, TA extends TechnologyAdapter>
+		extends ModelSlotInstanceConfiguration<FMLRTModelSlot<VMI, TA>, VMI> {
 
 	private static final Logger logger = Logger.getLogger(FMLRTModelSlotInstanceConfiguration.class.getPackage().getName());
 
 	private final List<ModelSlotInstanceConfigurationOption> options;
-	private VirtualModelInstanceResource<VMI, VM> addressedVirtualModelInstanceResource;
+	private AbstractVirtualModelInstanceResource<VMI, TA> addressedVirtualModelInstanceResource;
 
-	protected FMLRTModelSlotInstanceConfiguration(FMLRTModelSlot<VMI, VM> ms, FlexoConceptInstance fci, FlexoResourceCenter<?> rc) {
+	protected FMLRTModelSlotInstanceConfiguration(FMLRTModelSlot<VMI, TA> ms, FlexoConceptInstance fci, FlexoResourceCenter<?> rc) {
 		super(ms, fci, rc);
 		options = new ArrayList<ModelSlotInstanceConfiguration.ModelSlotInstanceConfigurationOption>();
 		/*if (ms.isReflexiveModelSlot()) {
@@ -83,8 +84,8 @@ public class FMLRTModelSlotInstanceConfiguration<VMI extends VirtualModelInstanc
 	}
 
 	@Override
-	public ModelSlotInstance<FMLRTModelSlot<VMI, VM>, VMI> createModelSlotInstance(FlexoConceptInstance fci, View view) {
-		VirtualModelInstanceModelFactory<?> factory = fci.getFactory();
+	public ModelSlotInstance<FMLRTModelSlot<VMI, TA>, VMI> createModelSlotInstance(FlexoConceptInstance fci, View view) {
+		AbstractVirtualModelInstanceModelFactory<?> factory = fci.getFactory();
 		VirtualModelModelSlotInstance returned = factory.newInstance(VirtualModelModelSlotInstance.class);
 		returned.setModelSlot(getModelSlot());
 		returned.setFlexoConceptInstance(fci);
@@ -97,14 +98,14 @@ public class FMLRTModelSlotInstanceConfiguration<VMI extends VirtualModelInstanc
 		return returned;
 	}
 
-	public VirtualModelInstanceResource<VMI, VM> getAddressedVirtualModelInstanceResource() {
+	public AbstractVirtualModelInstanceResource<VMI, TA> getAddressedVirtualModelInstanceResource() {
 		return addressedVirtualModelInstanceResource;
 	}
 
 	public void setAddressedVirtualModelInstanceResource(
-			VirtualModelInstanceResource<VMI, VM> addressedVirtualModelInstanceResource) {
+			AbstractVirtualModelInstanceResource<VMI, TA> addressedVirtualModelInstanceResource) {
 		if (this.addressedVirtualModelInstanceResource != addressedVirtualModelInstanceResource) {
-			VirtualModelInstanceResource<VMI, VM> oldValue = this.addressedVirtualModelInstanceResource;
+			AbstractVirtualModelInstanceResource<VMI, TA> oldValue = this.addressedVirtualModelInstanceResource;
 			this.addressedVirtualModelInstanceResource = addressedVirtualModelInstanceResource;
 			getPropertyChangeSupport().firePropertyChange("addressedVirtualModelInstanceResource", oldValue,
 					addressedVirtualModelInstanceResource);
@@ -141,7 +142,7 @@ public class FMLRTModelSlotInstanceConfiguration<VMI extends VirtualModelInstanc
 	}
 
 	@Override
-	public VirtualModelInstanceResource<VMI, VM> getResource() {
+	public AbstractVirtualModelInstanceResource<VMI, TA> getResource() {
 		return getAddressedVirtualModelInstanceResource();
 	}
 

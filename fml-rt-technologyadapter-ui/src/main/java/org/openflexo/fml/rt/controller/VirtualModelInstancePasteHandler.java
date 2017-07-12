@@ -71,23 +71,23 @@ import org.openflexo.toolbox.HasPropertyChangeSupport;
  * @author sylvain
  * 
  */
-public class VirtualModelInstancePasteHandler extends FlexoPasteHandler<VirtualModelInstance<?, ?>> {
+public class VirtualModelInstancePasteHandler extends FlexoPasteHandler<AbstractVirtualModelInstance<?, ?>> {
 
 	private static final Logger logger = Logger.getLogger(VirtualModelInstancePasteHandler.class.getPackage().getName());
 
 	public static final String COPY_SUFFIX = "-copy";
 
 	@Override
-	public Class<VirtualModelInstance<?, ?>> getPastingPointHolderType() {
+	public Class<AbstractVirtualModelInstance<?, ?>> getPastingPointHolderType() {
 		return (Class) VirtualModelInstance.class;
 	}
 
 	@Override
-	public PastingContext<VirtualModelInstance<?, ?>> retrievePastingContext(FlexoObject focusedObject,
+	public PastingContext<AbstractVirtualModelInstance<?, ?>> retrievePastingContext(FlexoObject focusedObject,
 			List<FlexoObject> globalSelection, FlexoClipboard clipboard, Event event) {
 
 		if (focusedObject instanceof VirtualModelInstance) {
-			return new HeterogeneousPastingContext((VirtualModelInstance<?, ?>) focusedObject, event);
+			return new HeterogeneousPastingContext((AbstractVirtualModelInstance<?, ?>) focusedObject, event);
 
 		}
 
@@ -100,7 +100,7 @@ public class VirtualModelInstancePasteHandler extends FlexoPasteHandler<VirtualM
 	}
 
 	@Override
-	public void prepareClipboardForPasting(FlexoClipboard clipboard, PastingContext<VirtualModelInstance<?, ?>> pastingContext) {
+	public void prepareClipboardForPasting(FlexoClipboard clipboard, PastingContext<AbstractVirtualModelInstance<?, ?>> pastingContext) {
 
 		System.out.println("********** prepareClipboardForPasting in " + pastingContext);
 
@@ -110,7 +110,7 @@ public class VirtualModelInstancePasteHandler extends FlexoPasteHandler<VirtualM
 	}
 
 	@Override
-	public void finalizePasting(FlexoClipboard clipboard, PastingContext<VirtualModelInstance<?, ?>> pastingContext) {
+	public void finalizePasting(FlexoClipboard clipboard, PastingContext<AbstractVirtualModelInstance<?, ?>> pastingContext) {
 
 		System.out.println("Trying to notify.........");
 
@@ -149,13 +149,13 @@ public class VirtualModelInstancePasteHandler extends FlexoPasteHandler<VirtualM
 	 * @author sylvain
 	 * 
 	 */
-	public class HeterogeneousPastingContext extends DefaultPastingContext<VirtualModelInstance<?, ?>> {
+	public class HeterogeneousPastingContext extends DefaultPastingContext<AbstractVirtualModelInstance<?, ?>> {
 
 		// private final Map<ModelSlotInstance<?, ?>, Clipboard> modelSlotClipboards;
 
 		private FlexoClipboard clipboard;
 
-		public HeterogeneousPastingContext(VirtualModelInstance<?, ?> holder, Event event) {
+		public HeterogeneousPastingContext(AbstractVirtualModelInstance<?, ?> holder, Event event) {
 			super(holder, event);
 			// modelSlotClipboards = new HashMap<ModelSlotInstance<?, ?>, Clipboard>();
 		}

@@ -57,30 +57,30 @@ import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstanceObject;
 
-public class CreationSchemeAction extends FlexoBehaviourAction<CreationSchemeAction, CreationScheme, VirtualModelInstance<?, ?>> {
+public class CreationSchemeAction extends FlexoBehaviourAction<CreationSchemeAction, CreationScheme, AbstractVirtualModelInstance<?, ?>> {
 
 	private static final Logger logger = Logger.getLogger(CreationSchemeAction.class.getPackage().getName());
 
-	public static FlexoActionType<CreationSchemeAction, VirtualModelInstance<?, ?>, VirtualModelInstanceObject> actionType = new FlexoActionType<CreationSchemeAction, VirtualModelInstance<?, ?>, VirtualModelInstanceObject>(
+	public static FlexoActionType<CreationSchemeAction, AbstractVirtualModelInstance<?, ?>, VirtualModelInstanceObject> actionType = new FlexoActionType<CreationSchemeAction, AbstractVirtualModelInstance<?, ?>, VirtualModelInstanceObject>(
 			"create_flexo_concept_instance", FlexoActionType.newMenu, FlexoActionType.defaultGroup, FlexoActionType.ADD_ACTION_TYPE) {
 
 		/**
 		 * Factory method
 		 */
 		@Override
-		public CreationSchemeAction makeNewAction(VirtualModelInstance<?, ?> focusedObject,
+		public CreationSchemeAction makeNewAction(AbstractVirtualModelInstance<?, ?> focusedObject,
 				Vector<VirtualModelInstanceObject> globalSelection, FlexoEditor editor) {
 			return new CreationSchemeAction(focusedObject, globalSelection, editor);
 		}
 
 		@Override
-		public boolean isVisibleForSelection(VirtualModelInstance<?, ?> object,
+		public boolean isVisibleForSelection(AbstractVirtualModelInstance<?, ?> object,
 				Vector<VirtualModelInstanceObject> globalSelection) {
 			return false;
 		}
 
 		@Override
-		public boolean isEnabledForSelection(VirtualModelInstance<?, ?> object,
+		public boolean isEnabledForSelection(AbstractVirtualModelInstance<?, ?> object,
 				Vector<VirtualModelInstanceObject> globalSelection) {
 			return true;
 		}
@@ -91,11 +91,11 @@ public class CreationSchemeAction extends FlexoBehaviourAction<CreationSchemeAct
 		FlexoObjectImpl.addActionForClass(actionType, VirtualModelInstance.class);
 	}
 
-	private VirtualModelInstance<?, ?> vmInstance;
+	private AbstractVirtualModelInstance<?, ?> vmInstance;
 	private FlexoConceptInstance container;
 	private CreationScheme _creationScheme;
 
-	CreationSchemeAction(VirtualModelInstance<?, ?> focusedObject, Vector<VirtualModelInstanceObject> globalSelection,
+	CreationSchemeAction(AbstractVirtualModelInstance<?, ?> focusedObject, Vector<VirtualModelInstanceObject> globalSelection,
 			FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 	}
@@ -187,14 +187,14 @@ public class CreationSchemeAction extends FlexoBehaviourAction<CreationSchemeAct
 	}
 
 	@Override
-	public VirtualModelInstance<?, ?> getVirtualModelInstance() {
+	public AbstractVirtualModelInstance<?, ?> getVirtualModelInstance() {
 		if (vmInstance == null) {
 			vmInstance = getFocusedObject();
 		}
 		return vmInstance;
 	}
 
-	public void setVirtualModelInstance(VirtualModelInstance<?, ?> vmInstance) {
+	public void setVirtualModelInstance(AbstractVirtualModelInstance<?, ?> vmInstance) {
 		this.vmInstance = vmInstance;
 	}
 
@@ -229,7 +229,7 @@ public class CreationSchemeAction extends FlexoBehaviourAction<CreationSchemeAct
 	}
 
 	@Override
-	public VirtualModelInstance<?, ?> retrieveVirtualModelInstance() {
+	public AbstractVirtualModelInstance<?, ?> retrieveVirtualModelInstance() {
 		return getVirtualModelInstance();
 	}
 

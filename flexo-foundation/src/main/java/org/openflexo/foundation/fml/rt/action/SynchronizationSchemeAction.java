@@ -47,19 +47,19 @@ import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.SynchronizationScheme;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
+import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstanceObject;
 
 public class SynchronizationSchemeAction
-		extends FlexoBehaviourAction<SynchronizationSchemeAction, SynchronizationScheme, VirtualModelInstance<?, ?>> {
+		extends FlexoBehaviourAction<SynchronizationSchemeAction, SynchronizationScheme, AbstractVirtualModelInstance<?, ?>> {
 
 	private static final Logger logger = Logger.getLogger(SynchronizationSchemeAction.class.getPackage().getName());
 
 	private final SynchronizationSchemeActionType actionType;
 
-	public SynchronizationSchemeAction(SynchronizationSchemeActionType actionType, VirtualModelInstance<?, ?> focusedObject,
+	public SynchronizationSchemeAction(SynchronizationSchemeActionType actionType, AbstractVirtualModelInstance<?, ?> focusedObject,
 			Vector<VirtualModelInstanceObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 		this.actionType = actionType;
@@ -109,7 +109,7 @@ public class SynchronizationSchemeAction
 	 * Return {@link VirtualModelInstance} in which synchronized {@link VirtualModelInstance} does exist
 	 */
 	@Override
-	public VirtualModelInstance<?, ?> retrieveVirtualModelInstance() {
+	public AbstractVirtualModelInstance<?, ?> retrieveVirtualModelInstance() {
 		if (getFlexoConceptInstance() != null) {
 			return getFlexoConceptInstance().getVirtualModelInstance();
 		}

@@ -94,9 +94,9 @@ public interface AddVirtualModelInstance<FCI extends VirtualModelInstance<FCI, ?
 	@Setter(VIRTUAL_MODEL_INSTANCE_TITLE_KEY)
 	public void setVirtualModelInstanceTitle(DataBinding<String> virtualModelInstanceTitle);
 
-	public VirtualModelResource<?> getVirtualModelType();
+	public VirtualModelResource getVirtualModelType();
 
-	public void setVirtualModelType(VirtualModelResource<?> resource);
+	public void setVirtualModelType(VirtualModelResource resource);
 
 	/**
 	 * Return type of View, when {@link #getVirtualModelInstance()} is set and valid
@@ -165,17 +165,17 @@ public interface AddVirtualModelInstance<FCI extends VirtualModelInstance<FCI, ?
 		}
 
 		@Override
-		public VirtualModelResource<?> getVirtualModelType() {
+		public VirtualModelResource getVirtualModelType() {
 			if (getFlexoConceptType() instanceof VirtualModel) {
-				return (VirtualModelResource<?>) ((VirtualModel) getFlexoConceptType()).getResource();
+				return (VirtualModelResource) ((VirtualModel) getFlexoConceptType()).getResource();
 			}
 			return null;
 		}
 
 		@Override
-		public void setVirtualModelType(VirtualModelResource<?> resource) {
+		public void setVirtualModelType(VirtualModelResource resource) {
 			CreationScheme oldCreationScheme = getCreationScheme();
-			VirtualModelResource<?> oldVMType = getVirtualModelType();
+			VirtualModelResource oldVMType = getVirtualModelType();
 			try {
 				setCreationScheme(null);
 				setFlexoConceptType(resource.getResourceData(null));
