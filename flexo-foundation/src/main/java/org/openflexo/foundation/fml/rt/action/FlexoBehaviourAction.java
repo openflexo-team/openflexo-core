@@ -253,7 +253,7 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 		return retrieveVirtualModelInstance();
 	}
 
-	public abstract VirtualModelInstance<?, ?> retrieveVirtualModelInstance();
+	public abstract AbstractVirtualModelInstance<?, ?> retrieveVirtualModelInstance();
 
 	/**
 	 * Return the {@link FlexoConceptInstance} on which this {@link FlexoBehaviour} is applied.<br>

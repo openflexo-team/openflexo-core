@@ -76,7 +76,6 @@ public class FMLValidationModel extends FlexoValidationModel {
 	private static ModelContext computeModelContext(TechnologyAdapterService taService) throws ModelDefinitionException {
 		List<Class<?>> classes = (taService != null ? FMLModelFactory.retrieveTechnologySpecificClasses(taService)
 				: new ArrayList<Class<?>>());
-		classes.add(ViewPoint.class);
 		classes.add(VirtualModel.class);
 		return ModelContextLibrary.getCompoundModelContext(classes.toArray(new Class<?>[classes.size()]));
 	}

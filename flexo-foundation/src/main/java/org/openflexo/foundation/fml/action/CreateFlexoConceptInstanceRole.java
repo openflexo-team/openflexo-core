@@ -262,17 +262,17 @@ public class CreateFlexoConceptInstanceRole extends AbstractCreateFlexoRole<Crea
 		return (FlexoConceptInstanceRole) super.getNewFlexoRole();
 	}
 
-	private DataBinding<VirtualModelInstance<?, ?>> virtualModelInstance;
+	private DataBinding<AbstractVirtualModelInstance<?, ?>> virtualModelInstance;
 
-	public DataBinding<VirtualModelInstance<?, ?>> getVirtualModelInstance() {
+	public DataBinding<AbstractVirtualModelInstance<?, ?>> getVirtualModelInstance() {
 		if (virtualModelInstance == null) {
-			virtualModelInstance = new DataBinding<VirtualModelInstance<?, ?>>(this, VirtualModelInstance.class,
+			virtualModelInstance = new DataBinding<AbstractVirtualModelInstance<?, ?>>(this, VirtualModelInstance.class,
 					DataBinding.BindingDefinitionType.GET);
 		}
 		return virtualModelInstance;
 	}
 
-	public void setVirtualModelInstance(DataBinding<VirtualModelInstance<?, ?>> aVirtualModelInstance) {
+	public void setVirtualModelInstance(DataBinding<AbstractVirtualModelInstance<?, ?>> aVirtualModelInstance) {
 		if (aVirtualModelInstance != null) {
 			aVirtualModelInstance.setOwner(this);
 			aVirtualModelInstance.setBindingName("virtualModelInstance");

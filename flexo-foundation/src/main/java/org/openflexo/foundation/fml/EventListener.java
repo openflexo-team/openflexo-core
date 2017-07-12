@@ -83,10 +83,10 @@ public interface EventListener extends AbstractActionScheme {
 
 	@Getter(value = LISTENED_VIRTUAL_MODEL_INSTANCE_KEY)
 	@XMLAttribute
-	public DataBinding<VirtualModelInstance<?, ?>> getListenedVirtualModelInstance();
+	public DataBinding<AbstractVirtualModelInstance<?, ?>> getListenedVirtualModelInstance();
 
 	@Setter(LISTENED_VIRTUAL_MODEL_INSTANCE_KEY)
-	public void setListenedVirtualModelInstance(DataBinding<VirtualModelInstance<?, ?>> vmi);
+	public void setListenedVirtualModelInstance(DataBinding<AbstractVirtualModelInstance<?, ?>> vmi);
 
 	public VirtualModel getListenedVirtualModelType();
 
@@ -94,7 +94,7 @@ public interface EventListener extends AbstractActionScheme {
 
 		private String _eventTypeURI;
 		private FlexoEvent eventType;
-		private DataBinding<VirtualModelInstance<?, ?>> listenedVirtualModelInstance;
+		private DataBinding<AbstractVirtualModelInstance<?, ?>> listenedVirtualModelInstance;
 
 		@Override
 		public void finalizeDeserialization() {
@@ -138,7 +138,7 @@ public interface EventListener extends AbstractActionScheme {
 		}
 
 		@Override
-		public DataBinding<VirtualModelInstance<?, ?>> getListenedVirtualModelInstance() {
+		public DataBinding<AbstractVirtualModelInstance<?, ?>> getListenedVirtualModelInstance() {
 			if (listenedVirtualModelInstance == null) {
 				listenedVirtualModelInstance = new DataBinding<>(this, VirtualModelInstance.class, BindingDefinitionType.GET);
 				listenedVirtualModelInstance.setBindingName("listenedVirtualModelInstance");
@@ -147,7 +147,7 @@ public interface EventListener extends AbstractActionScheme {
 		}
 
 		@Override
-		public void setListenedVirtualModelInstance(DataBinding<VirtualModelInstance<?, ?>> constraint) {
+		public void setListenedVirtualModelInstance(DataBinding<AbstractVirtualModelInstance<?, ?>> constraint) {
 			if (constraint != null) {
 				constraint.setOwner(this);
 				constraint.setBindingName("listenedVirtualModelInstance");

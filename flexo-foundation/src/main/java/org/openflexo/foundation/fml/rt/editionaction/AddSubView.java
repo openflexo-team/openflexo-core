@@ -88,7 +88,7 @@ public interface AddSubView extends AddVirtualModelInstance<View> {
 
 		@Override
 		public void setViewPointType(ViewPointResource resource) {
-			VirtualModelResource<?> oldVPType = getViewPointType();
+			VirtualModelResource oldVPType = getViewPointType();
 			setVirtualModelType(resource);
 			getPropertyChangeSupport().firePropertyChange("viewPointType", oldVPType, getViewPointType());
 		}

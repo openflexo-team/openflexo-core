@@ -78,7 +78,7 @@ public class VirtualModelModelSlotPathElement<MS extends ModelSlot> extends Simp
 	@Override
 	public Object getBindingValue(Object target, BindingEvaluationContext context) throws TypeMismatchException, NullReferenceException {
 		if (target instanceof VirtualModelInstance) {
-			VirtualModelInstance<?, ?> vmi = (VirtualModelInstance) target;
+			AbstractVirtualModelInstance<?, ?> vmi = (VirtualModelInstance) target;
 			ModelSlotInstance<?, ?> msi = vmi.getModelSlotInstance(modelSlot);
 			if (msi != null) {
 				return msi.getAccessedResourceData();
@@ -97,7 +97,7 @@ public class VirtualModelModelSlotPathElement<MS extends ModelSlot> extends Simp
 
 			System.out.println("OK, on tente de mettre la valeur suivante a " + modelSlot + " : " + value);
 
-			VirtualModelInstance<?, ?> vmi = (VirtualModelInstance) target;
+			AbstractVirtualModelInstance<?, ?> vmi = (VirtualModelInstance) target;
 			vmi.setFlexoPropertyValue(modelSlot, value);
 			return;
 		}

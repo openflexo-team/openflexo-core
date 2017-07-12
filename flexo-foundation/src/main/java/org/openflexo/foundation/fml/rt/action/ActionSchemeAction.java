@@ -96,7 +96,7 @@ public class ActionSchemeAction extends FlexoBehaviourAction<ActionSchemeAction,
 	}
 
 	@Override
-	public VirtualModelInstance<?, ?> retrieveVirtualModelInstance() {
+	public AbstractVirtualModelInstance<?, ?> retrieveVirtualModelInstance() {
 		if (getFlexoConceptInstance() instanceof VirtualModelInstance) {
 			return (VirtualModelInstance) getFlexoConceptInstance();
 		}

@@ -91,7 +91,7 @@ import org.openflexo.model.validation.ValidationRule;
 @XMLElement
 @FML("SelectVirtualModelInstance")
 public interface SelectVirtualModelInstance<VMI extends VirtualModelInstance<VMI, ?>>
-		extends FetchRequest<FMLRTModelSlot<VMI, ?>, VMI, VirtualModelInstance<?, ?>> {
+		extends FetchRequest<FMLRTModelSlot<VMI, ?>, VMI, AbstractVirtualModelInstance<?, ?>> {
 
 	@PropertyIdentifier(type = String.class)
 	public static final String VIRTUAL_MODEL_TYPE_URI_KEY = "virtualModelTypeURI";
@@ -120,7 +120,7 @@ public interface SelectVirtualModelInstance<VMI extends VirtualModelInstance<VMI
 	public ViewPoint getAddressedViewPoint();
 
 	public static abstract class SelectVirtualModelInstanceImpl<VMI extends VirtualModelInstance<VMI, ?>> extends
-			FetchRequestImpl<FMLRTModelSlot<VMI, ?>, VMI, VirtualModelInstance<?, ?>> implements SelectVirtualModelInstance<VMI> {
+			FetchRequestImpl<FMLRTModelSlot<VMI, ?>, VMI, AbstractVirtualModelInstance<?, ?>> implements SelectVirtualModelInstance<VMI> {
 
 		protected static final Logger logger = FlexoLogger.getLogger(SelectVirtualModelInstance.class.getPackage().getName());
 
@@ -252,7 +252,7 @@ public interface SelectVirtualModelInstance<VMI extends VirtualModelInstance<VMI
 		}
 
 		@Override
-		public List<VirtualModelInstance<?, ?>> execute(RunTimeEvaluationContext evaluationContext) {
+		public List<AbstractVirtualModelInstance<?, ?>> execute(RunTimeEvaluationContext evaluationContext) {
 			View view = getView(evaluationContext);
 			if (view != null) {
 				try {

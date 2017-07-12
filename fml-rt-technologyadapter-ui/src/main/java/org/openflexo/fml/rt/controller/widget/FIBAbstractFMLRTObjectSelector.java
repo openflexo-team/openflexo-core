@@ -82,7 +82,7 @@ public abstract class FIBAbstractFMLRTObjectSelector<T extends FlexoConceptInsta
 	private FlexoServiceManager serviceManager;
 	private FlexoResourceCenter<?> resourceCenter;
 	private View view;
-	private VirtualModelInstance<?, ?> virtualModelInstance;
+	private AbstractVirtualModelInstance<?, ?> virtualModelInstance;
 	private Type expectedType;
 	private FlexoConceptInstanceType defaultExpectedType;
 
@@ -149,7 +149,7 @@ public abstract class FIBAbstractFMLRTObjectSelector<T extends FlexoConceptInsta
 		}
 		else if (getView() != null) {
 			List<FlexoConceptInstance> returned = new ArrayList<FlexoConceptInstance>();
-			for (VirtualModelInstance<?, ?> vmi : getView().getVirtualModelInstances()) {
+			for (AbstractVirtualModelInstance<?, ?> vmi : getView().getVirtualModelInstances()) {
 				returned.addAll(vmi.getFlexoConceptInstances(ep));
 			}
 			return returned;
@@ -157,7 +157,7 @@ public abstract class FIBAbstractFMLRTObjectSelector<T extends FlexoConceptInsta
 		else if (getProject() != null) {
 			List<FlexoConceptInstance> returned = new ArrayList<FlexoConceptInstance>();
 			for (ViewResource vr : getProject().getViewLibrary().getAllResources()) {
-				for (VirtualModelInstance<?, ?> vmi : vr.getView().getVirtualModelInstances()) {
+				for (AbstractVirtualModelInstance<?, ?> vmi : vr.getView().getVirtualModelInstances()) {
 					returned.addAll(vmi.getFlexoConceptInstances(ep));
 				}
 			}
@@ -210,15 +210,15 @@ public abstract class FIBAbstractFMLRTObjectSelector<T extends FlexoConceptInsta
 		}
 	}
 
-	public VirtualModelInstance<?, ?> getVirtualModelInstance() {
+	public AbstractVirtualModelInstance<?, ?> getVirtualModelInstance() {
 		return virtualModelInstance;
 	}
 
-	public void setVirtualModelInstance(VirtualModelInstance<?, ?> virtualModelInstance) {
+	public void setVirtualModelInstance(AbstractVirtualModelInstance<?, ?> virtualModelInstance) {
 
 		if ((virtualModelInstance == null && this.virtualModelInstance != null)
 				|| (virtualModelInstance != null && !virtualModelInstance.equals(this.virtualModelInstance))) {
-			VirtualModelInstance<?, ?> oldValue = this.virtualModelInstance;
+			AbstractVirtualModelInstance<?, ?> oldValue = this.virtualModelInstance;
 			this.virtualModelInstance = virtualModelInstance;
 			getPropertyChangeSupport().firePropertyChange("virtualModelInstance", oldValue, virtualModelInstance);
 			getPropertyChangeSupport().firePropertyChange("rootObject", null, getRootObject());
@@ -272,7 +272,7 @@ public abstract class FIBAbstractFMLRTObjectSelector<T extends FlexoConceptInsta
 
 		}
 		else if ((getExpectedType() instanceof VirtualModelInstanceType) || (getExpectedType() instanceof FlexoConceptInstanceType)) {
-			for (VirtualModelInstance<?, ?> vmi : view.getVirtualModelInstances()) {
+			for (AbstractVirtualModelInstance<?, ?> vmi : view.getVirtualModelInstances()) {
 				if (isVirtualModelInstanceVisible(vmi)) {
 					return true;
 				}
@@ -283,7 +283,7 @@ public abstract class FIBAbstractFMLRTObjectSelector<T extends FlexoConceptInsta
 		return true;
 	}
 
-	public boolean isVirtualModelInstanceVisible(VirtualModelInstance<?, ?> virtualModelInstance) {
+	public boolean isVirtualModelInstanceVisible(AbstractVirtualModelInstance<?, ?> virtualModelInstance) {
 		if (getExpectedType() instanceof VirtualModelInstanceType) {
 			// We are expecting a VMI of following type
 			VirtualModel vmType = ((VirtualModelInstanceType) getExpectedType()).getVirtualModel();

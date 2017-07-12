@@ -60,12 +60,11 @@ import org.openflexo.model.annotations.CloningStrategy;
 import org.openflexo.model.annotations.CloningStrategy.StrategyType;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
-import org.openflexo.model.annotations.Import;
-import org.openflexo.model.annotations.Imports;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.PropertyIdentifier;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
+import org.openflexo.model.annotations.XMLElement;
 import org.openflexo.toolbox.StringUtils;
 
 /**
@@ -74,26 +73,13 @@ import org.openflexo.toolbox.StringUtils;
  * @author sylvain
  * 
  */
-@ModelEntity(isAbstract = true)
+@ModelEntity
 @ImplementationClass(FlexoBehaviourParameter.FlexoBehaviourParameterImpl.class)
-@Imports({ @Import(CheckboxParameter.class), @Import(DropDownParameter.class), @Import(FloatParameter.class),
-		@Import(IntegerParameter.class), @Import(ListParameter.class), @Import(TextAreaParameter.class), @Import(TextFieldParameter.class),
-		@Import(FlexoConceptInstanceParameter.class), @Import(URIParameter.class), @Import(TechnologyObjectParameter.class),
-		@Import(FlexoResourceParameter.class), @Import(FlexoVMIResourceParameter.class), @Import(GenericBehaviourParameter.class) })
+@XMLElement(xmlTag = "GenericBehaviourParameter")
 public interface FlexoBehaviourParameter extends FlexoBehaviourObject, FunctionArgument, WidgetContext {
 
 	public static enum WidgetType {
 		TEXT_FIELD, TEXT_AREA, URI, LOCALIZED_TEXT_FIELD, INTEGER, FLOAT, CHECKBOX, DROPDOWN, RADIO_BUTTON, CUSTOM_WIDGET;
-		/*INDIVIDUAL,
-		CLASS,
-		PROPERTY,
-		OBJECT_PROPERTY,
-		DATA_PROPERTY,
-		FLEXO_OBJECT,
-		FLEXO_CONCEPT,
-		TECHNOLOGY_OBJECT,
-		TECHNOLOGY_RESOURCE,
-		VMI_RESOURCE;*/
 	}
 
 	@PropertyIdentifier(type = String.class)

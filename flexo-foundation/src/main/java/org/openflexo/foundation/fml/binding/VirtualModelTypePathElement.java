@@ -76,7 +76,7 @@ public class VirtualModelTypePathElement extends SimplePathElement {
 	@Override
 	public Object getBindingValue(Object target, BindingEvaluationContext context) throws TypeMismatchException, NullReferenceException {
 		if (target instanceof VirtualModelInstance) {
-			return ((VirtualModelInstance<?, ?>) target).getVirtualModel();
+			return ((AbstractVirtualModelInstance<?, ?>) target).getVirtualModel();
 		}
 
 		logger.warning("Please implement me, target=" + target + " context=" + context);

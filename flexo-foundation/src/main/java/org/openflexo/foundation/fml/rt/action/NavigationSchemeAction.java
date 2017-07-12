@@ -128,7 +128,7 @@ public class NavigationSchemeAction extends FlexoBehaviourAction<NavigationSchem
 	}
 
 	@Override
-	public VirtualModelInstance<?, ?> retrieveVirtualModelInstance() {
+	public AbstractVirtualModelInstance<?, ?> retrieveVirtualModelInstance() {
 		/*if (getFocusedObject() instanceof DiagramElement<?>) {
 			return ((DiagramElement<?>) getFocusedObject()).getDiagram();
 		}*/

@@ -56,7 +56,7 @@ import org.openflexo.model.annotations.XMLElement;
 @ModelEntity
 @ImplementationClass(VirtualModelInstanceResourceImpl.class)
 @XMLElement
-public interface VirtualModelInstanceResource extends VirtualModelInstanceResource<VirtualModelInstance, VirtualModel> {
+public interface VirtualModelInstanceResource extends AbstractVirtualModelInstanceResource<VirtualModelInstance, VirtualModel> {
 
 	public static final String VIRTUAL_MODEL_URI = "virtualModelURI";
 

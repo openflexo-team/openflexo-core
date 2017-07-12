@@ -38,8 +38,6 @@
 
 package org.openflexo.foundation.fml.rt;
 
-import org.openflexo.foundation.fml.VirtualModel;
-
 /**
  * Interface defining the nature of a {@link VirtualModelInstance}<br>
  * 
@@ -48,6 +46,6 @@ import org.openflexo.foundation.fml.VirtualModel;
  * @author sylvain
  * 
  */
-public interface VirtualModelInstanceNature extends VirtualModelInstanceNature<VirtualModelInstance, VirtualModel> {
+public interface VirtualModelInstanceNature extends AbstractVirtualModelInstanceNature<VirtualModelInstance, FMLRTTechnologyAdapter> {
 
 }

@@ -143,11 +143,11 @@ public class CreateFlexoConceptInstanceRoleWizard extends AbstractCreateFlexoRol
 			}
 		}
 
-		public DataBinding<VirtualModelInstance<?, ?>> getVirtualModelInstance() {
+		public DataBinding<AbstractVirtualModelInstance<?, ?>> getVirtualModelInstance() {
 			return getAction().getVirtualModelInstance();
 		}
 
-		public void setVirtualModelInstance(DataBinding<VirtualModelInstance<?, ?>> virtualModelInstance) {
+		public void setVirtualModelInstance(DataBinding<AbstractVirtualModelInstance<?, ?>> virtualModelInstance) {
 			getAction().setVirtualModelInstance(virtualModelInstance);
 			getPropertyChangeSupport().firePropertyChange("virtualModelInstance", null, virtualModelInstance);
 			getPropertyChangeSupport().firePropertyChange("virtualModelType", null, getVirtualModelType());

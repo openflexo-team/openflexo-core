@@ -199,9 +199,9 @@ public abstract interface TechnologySpecificAction<MS extends ModelSlot<?>, R ex
 		@Override
 		public ModelSlotInstance getModelSlotInstance(RunTimeEvaluationContext action) {
 			FlexoConceptInstance fci = action.getFlexoConceptInstance();
-			VirtualModelInstance<?, ?> vmi = null;
-			if (fci != null && fci instanceof VirtualModelInstance<?, ?>) {
-				vmi = (VirtualModelInstance<?, ?>) fci;
+			AbstractVirtualModelInstance<?, ?> vmi = null;
+			if (fci != null && fci instanceof AbstractVirtualModelInstance<?, ?>) {
+				vmi = (AbstractVirtualModelInstance<?, ?>) fci;
 			}
 			else if (action.getVirtualModelInstance() != null) {
 				vmi = action.getVirtualModelInstance();

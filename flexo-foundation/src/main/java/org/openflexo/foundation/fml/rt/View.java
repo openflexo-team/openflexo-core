@@ -44,11 +44,12 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.BindingVariable;
-import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.ViewPoint;
+import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.binding.ViewPointBindingModel;
-import org.openflexo.foundation.fml.rt.rm.VirtualModelInstanceResource;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance.VirtualModelInstanceImpl;
 import org.openflexo.foundation.fml.rt.rm.ViewResource;
+import org.openflexo.foundation.fml.rt.rm.VirtualModelInstanceResource;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.RepositoryFolder;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
@@ -74,7 +75,7 @@ import org.openflexo.toolbox.FlexoVersion;
 @ModelEntity
 @ImplementationClass(View.ViewImpl.class)
 @XMLElement
-public interface View extends VirtualModelInstance<View, ViewPoint> {
+public interface View extends AbstractVirtualModelInstance<View, FMLRTTechnologyAdapter> {
 
 	@PropertyIdentifier(type = String.class)
 	public static final String VIEW_POINT_URI_KEY = "viewPointURI";
@@ -118,7 +119,7 @@ public interface View extends VirtualModelInstance<View, ViewPoint> {
 	 * @return
 	 */
 	@Getter(value = VIRTUAL_MODEL_INSTANCES_KEY, cardinality = Cardinality.LIST, inverse = VirtualModelInstance.VIEW_KEY, ignoreType = true)
-	public List<VirtualModelInstance<?, ?>> getVirtualModelInstances();
+	public List<AbstractVirtualModelInstance<?, ?>> getVirtualModelInstances();
 
 	/**
 	 * Allow to retrieve VMIs given a virtual model.
@@ -127,18 +128,18 @@ public interface View extends VirtualModelInstance<View, ViewPoint> {
 	 *            key to find correct VMI
 	 * @return the list
 	 */
-	public List<VirtualModelInstance<?, ?>> getVirtualModelInstancesForVirtualModel(VirtualModel virtualModel);
+	public List<AbstractVirtualModelInstance<?, ?>> getVirtualModelInstancesForVirtualModel(VirtualModel virtualModel);
 
 	@Setter(VIRTUAL_MODEL_INSTANCES_KEY)
-	public void setVirtualModelInstances(List<VirtualModelInstance<?, ?>> virtualModelInstances);
+	public void setVirtualModelInstances(List<AbstractVirtualModelInstance<?, ?>> virtualModelInstances);
 
 	@Adder(VIRTUAL_MODEL_INSTANCES_KEY)
-	public void addToVirtualModelInstances(VirtualModelInstance<?, ?> virtualModelInstance);
+	public void addToVirtualModelInstances(AbstractVirtualModelInstance<?, ?> virtualModelInstance);
 
 	@Remover(VIRTUAL_MODEL_INSTANCES_KEY)
-	public void removeFromVirtualModelInstances(VirtualModelInstance<?, ?> virtualModelInstance);
+	public void removeFromVirtualModelInstances(AbstractVirtualModelInstance<?, ?> virtualModelInstance);
 
-	public VirtualModelInstance<?, ?> getVirtualModelInstance(String name);
+	public AbstractVirtualModelInstance<?, ?> getVirtualModelInstance(String name);
 
 	public ViewPoint getViewPoint();
 
@@ -310,18 +311,17 @@ public interface View extends VirtualModelInstance<View, ViewPoint> {
 		// ==========================================================================
 
 		@Override
-		public List<VirtualModelInstance<?, ?>> getVirtualModelInstances() {
+		public List<AbstractVirtualModelInstance<?, ?>> getVirtualModelInstances() {
 			if (getResource() != null && !getResource().isDeserializing()) {
 				loadVirtualModelInstancesWhenUnloaded();
 			}
-			return (List<VirtualModelInstance<?, ?>>) performSuperGetter(VIRTUAL_MODEL_INSTANCES_KEY);
+			return (List<AbstractVirtualModelInstance<?, ?>>) performSuperGetter(VIRTUAL_MODEL_INSTANCES_KEY);
 		}
 
 		@Override
-		public List<VirtualModelInstance<?, ?>> getVirtualModelInstancesForVirtualModel(
-				final VirtualModel virtualModel) {
-			List<VirtualModelInstance<?, ?>> returned = new ArrayList<VirtualModelInstance<?, ?>>();
-			for (VirtualModelInstance<?, ?> vmi : getVirtualModelInstances()) {
+		public List<AbstractVirtualModelInstance<?, ?>> getVirtualModelInstancesForVirtualModel(final VirtualModel virtualModel) {
+			List<AbstractVirtualModelInstance<?, ?>> returned = new ArrayList<AbstractVirtualModelInstance<?, ?>>();
+			for (AbstractVirtualModelInstance<?, ?> vmi : getVirtualModelInstances()) {
 				if (virtualModel.isAssignableFrom(vmi.getVirtualModel())) {
 					returned.add(vmi);
 				}
@@ -342,8 +342,8 @@ public interface View extends VirtualModelInstance<View, ViewPoint> {
 		}
 
 		@Override
-		public VirtualModelInstance<?, ?> getVirtualModelInstance(String name) {
-			for (VirtualModelInstance<?, ?> vmi : getVirtualModelInstances()) {
+		public AbstractVirtualModelInstance<?, ?> getVirtualModelInstance(String name) {
+			for (AbstractVirtualModelInstance<?, ?> vmi : getVirtualModelInstances()) {
 				String lName = vmi.getName();
 				if (lName != null) {
 					if (vmi.getName().equals(name)) {
