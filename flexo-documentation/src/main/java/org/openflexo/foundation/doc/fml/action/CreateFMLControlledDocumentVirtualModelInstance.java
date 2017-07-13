@@ -44,41 +44,47 @@ import java.util.logging.Logger;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.action.FlexoActionType;
-import org.openflexo.foundation.doc.nature.FMLControlledDocumentViewNature;
+import org.openflexo.foundation.doc.nature.FMLControlledDocumentContainerNature;
 import org.openflexo.foundation.doc.nature.FMLControlledDocumentVirtualModelNature;
 import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.rt.View;
-import org.openflexo.foundation.fml.rt.action.CreateVirtualModelInstance;
+import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
+import org.openflexo.foundation.fml.rt.action.CreateFMLRTVirtualModelInstance;
 
 public abstract class CreateFMLControlledDocumentVirtualModelInstance<A extends CreateFMLControlledDocumentVirtualModelInstance<A>>
-		extends CreateVirtualModelInstance<A> {
+		extends CreateFMLRTVirtualModelInstance<A> {
 
 	private static final Logger logger = Logger.getLogger(CreateFMLControlledDocumentVirtualModelInstance.class.getPackage().getName());
 
 	public static abstract class CreateFMLControlledDocumentVirtualModelInstanceActionType<A extends CreateFMLControlledDocumentVirtualModelInstance<A>>
-			extends FlexoActionType<A, View, FlexoObject> {
+			extends FlexoActionType<A, FlexoObject, FlexoObject> {
 
-		private final FMLControlledDocumentViewNature<?> nature;
+		private final FMLControlledDocumentContainerNature<?> nature;
 
-		public CreateFMLControlledDocumentVirtualModelInstanceActionType(FMLControlledDocumentViewNature<?> nature) {
+		public CreateFMLControlledDocumentVirtualModelInstanceActionType(FMLControlledDocumentContainerNature<?> nature) {
 			super("create_fml_controlled_document", FlexoActionType.newMenu, FlexoActionType.defaultGroup, FlexoActionType.ADD_ACTION_TYPE);
 			this.nature = nature;
 		}
 
 		@Override
-		public boolean isVisibleForSelection(View view, Vector<FlexoObject> globalSelection) {
-			return view.hasNature(nature);
+		public boolean isVisibleForSelection(FlexoObject container, Vector<FlexoObject> globalSelection) {
+			if (container instanceof AbstractVirtualModelInstance) {
+				VirtualModel containerVirtualModel = ((AbstractVirtualModelInstance<?, ?>) container).getVirtualModel();
+				if (containerVirtualModel.hasNature(nature)) {
+					return true;
+				}
+			}
+			return false;
 		}
 
 		@Override
-		public boolean isEnabledForSelection(View view, Vector<FlexoObject> globalSelection) {
+		public boolean isEnabledForSelection(FlexoObject view, Vector<FlexoObject> globalSelection) {
 			return isVisibleForSelection(view, globalSelection);
 		}
 
 	}
 
 	protected CreateFMLControlledDocumentVirtualModelInstance(CreateFMLControlledDocumentVirtualModelInstanceActionType<A> actionType,
-			View focusedObject, Vector<FlexoObject> globalSelection, FlexoEditor editor) {
+			FlexoObject focusedObject, Vector<FlexoObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 	}
 

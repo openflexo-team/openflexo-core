@@ -246,7 +246,7 @@ public class FMLRTTechnologyAdapter extends TechnologyAdapter {
 		return "FML@RT";
 	}
 
-	public FMLRTVirtualModelInstanceResourceFactory getViewResourceFactory() {
+	public FMLRTVirtualModelInstanceResourceFactory getFMLRTVirtualModelInstanceResourceFactory() {
 		return getResourceFactory(FMLRTVirtualModelInstanceResourceFactory.class);
 	}
 

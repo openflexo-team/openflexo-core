@@ -40,14 +40,14 @@ package org.openflexo.foundation.doc.nature;
 
 import org.openflexo.foundation.doc.fml.FlexoDocumentModelSlot;
 import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelNature;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 
 /**
  * Define the "controlled-document" nature of a {@link VirtualModel}<br>
  * 
- * A {@link FMLControlledDocumentVirtualModelNature} might be seen as an interpretation of a given {@link VirtualModelInstance}
+ * A {@link VirtualModel} has "controlled-document" nature if and only if it defines one {@link FlexoDocumentModelSlot}
+ * 
+ * A {@link FMLControlledDocumentVirtualModelNature} might be seen as an interpretation of a given {@link VirtualModel}
  * 
  * @author sylvain
  * 
