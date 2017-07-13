@@ -135,7 +135,7 @@ public class FIBViewSelector extends FIBAbstractFMLRTObjectSelector<View> {
 	}
 	
 	public List<ViewResource> getViewResources(RepositoryFolder<?, ?> folder) {
-		if (folder.getResourceRepository() instanceof ViewRepository) {
+		if (folder.getResourceRepository() instanceof FMLRTVirtualModelInstanceRepository) {
 			return (List) folder.getResources();
 		}
 		return null;

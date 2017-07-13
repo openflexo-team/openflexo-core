@@ -40,80 +40,36 @@ package org.openflexo.foundation.fml.rt.rm;
 
 import java.util.List;
 
-import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
-import org.openflexo.foundation.fml.ViewPoint;
-import org.openflexo.foundation.fml.rm.ViewPointResource;
+import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
-import org.openflexo.foundation.fml.rt.View;
-import org.openflexo.foundation.fml.rt.ViewLibrary;
-import org.openflexo.foundation.resource.DirectoryContainerResource;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.technologyadapter.FlexoModelResource;
-import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
-import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLElement;
 
 /**
- * This is the {@link FlexoResource} encoding a {@link View}
+ * This is the {@link FlexoResource} encoding a {@link FMLRTVirtualModelInstance}
  * 
  * @author sylvain
  * 
  */
 @ModelEntity
-@ImplementationClass(ViewResourceImpl.class)
+@ImplementationClass(FMLRTVirtualModelInstanceResourceImpl.class)
 @XMLElement
-public interface ViewResource extends VirtualModelInstanceResource<View, ViewPoint>, DirectoryContainerResource<View>,
-		FlexoModelResource<View, ViewPoint, FMLRTTechnologyAdapter, FMLTechnologyAdapter> {
-
-	public static final String CORE_FILE_SUFFIX = ".xml";
-	// public static final String VIEW_SUFFIX = ".view";
-
-	public static final String VIEW_LIBRARY = "viewLibrary";
-	public static final String DIRECTORY = "directory";
-	public static final String VIEWPOINT_RESOURCE = "viewPointResource";
-	public static final String VIEWPOINT_URI = "viewPointURI";
-
-	/**
-	 * Return the {@link ViewPoint} this view is conform to
-	 * 
-	 * @return
-	 */
-	public ViewPoint getViewPoint();
-
-	@Getter(value = VIEW_LIBRARY, ignoreType = true)
-	public ViewLibrary getViewLibrary();
-
-	@Setter(VIEW_LIBRARY)
-	public void setViewLibrary(ViewLibrary viewLibrary);
-
-	@Getter(value = VIEWPOINT_RESOURCE, ignoreType = true)
-	public ViewPointResource getViewPointResource();
-
-	@Setter(VIEWPOINT_RESOURCE)
-	public void setViewPointResource(ViewPointResource viewPointResource);
-
-	@Getter(VIEWPOINT_URI)
-	public String getViewpointURI();
-
-	@Setter(VIEWPOINT_URI)
-	public void setViewpointURI(String viewpointURI);
-
-	/**
-	 * Return the {@link View} this resource gives access to
-	 * 
-	 * @return
-	 */
-	public View getView();
+public interface FMLRTVirtualModelInstanceResource
+		extends AbstractVirtualModelInstanceResource<VirtualModelInstance, FMLRTTechnologyAdapter>,
+		FlexoModelResource<VirtualModelInstance, VirtualModel, FMLRTTechnologyAdapter, FMLTechnologyAdapter> {
 
 	/**
 	 * Return the list of all {@link VirtualModelInstanceResource} defined in this {@link ViewResource}
 	 * 
 	 * @return
 	 */
-	public List<VirtualModelInstanceResource> getVirtualModelInstanceResources();
+	@Override
+	public List<FMLRTVirtualModelInstanceResource> getVirtualModelInstanceResources();
 
 	/**
 	 * Return the list of all {@link VirtualModelInstanceResource} defined in this {@link ViewResource} conform to supplied
@@ -121,6 +77,7 @@ public interface ViewResource extends VirtualModelInstanceResource<View, ViewPoi
 	 * 
 	 * @return
 	 */
-	public List<VirtualModelInstanceResource> getVirtualModelInstanceResources(VirtualModel virtualModel);
+	@Override
+	public List<FMLRTVirtualModelInstanceResource> getVirtualModelInstanceResources(VirtualModel virtualModel);
 
 }

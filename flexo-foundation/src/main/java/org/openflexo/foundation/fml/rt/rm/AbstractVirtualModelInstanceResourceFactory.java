@@ -22,30 +22,27 @@ package org.openflexo.foundation.fml.rt.rm;
 
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
-import org.openflexo.foundation.fml.rt.VirtualModelInstanceModelFactory;
-import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
+import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
+import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstanceModelFactory;
 import org.openflexo.foundation.resource.PamelaResourceFactory;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.toolbox.FlexoVersion;
 
 /**
- * Generic implementation of PamelaResourceFactory for {@link VirtualModelInstanceResource}
+ * Generic implementation of PamelaResourceFactory for {@link AbstractVirtualModelInstanceResource}
  * 
  * @author sylvain
  *
  */
-public abstract class VirtualModelInstanceResourceFactory<VMI extends VirtualModelInstance<VMI, VM>, VM extends VirtualModel<VM>, VMR extends VirtualModelInstanceResource<VMI, VM>>
-		extends PamelaResourceFactory<VMR, VMI, FMLRTTechnologyAdapter, VirtualModelInstanceModelFactory<?>> {
+public abstract class AbstractVirtualModelInstanceResourceFactory<VMI extends AbstractVirtualModelInstance<VMI, TA>, TA extends TechnologyAdapter, VMR extends AbstractVirtualModelInstanceResource<VMI, TA>>
+		extends PamelaResourceFactory<VMR, VMI, TA, AbstractVirtualModelInstanceModelFactory<?>> {
 
 	public static final FlexoVersion INITIAL_REVISION = new FlexoVersion("0.1");
-	public static final FlexoVersion CURRENT_FML_RT_VERSION = new FlexoVersion("1.0");
-	public static final String CORE_FILE_SUFFIX = ".xml";
 
 	private static final Logger logger = Logger.getLogger(VirtualModelInstanceResourceFactory.class.getPackage().getName());
 
-	public VirtualModelInstanceResourceFactory(Class<VMR> resourceClass) throws ModelDefinitionException {
+	public AbstractVirtualModelInstanceResourceFactory(Class<VMR> resourceClass) throws ModelDefinitionException {
 		super(resourceClass);
 	}
 

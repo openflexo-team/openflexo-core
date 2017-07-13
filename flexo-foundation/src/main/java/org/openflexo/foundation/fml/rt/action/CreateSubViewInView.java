@@ -50,7 +50,7 @@ import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.fml.rt.View;
 import org.openflexo.foundation.fml.rt.ViewLibrary;
 import org.openflexo.foundation.fml.rt.rm.ViewResource;
-import org.openflexo.foundation.fml.rt.rm.ViewResourceFactory;
+import org.openflexo.foundation.fml.rt.rm.FMLRTVirtualModelInstanceResourceFactory;
 import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 
@@ -96,7 +96,7 @@ public class CreateSubViewInView extends CreateView<CreateSubViewInView, ViewRes
 	}
 
 	@Override
-	public View getContainerView() {
+	public View getContainerVirtualModelInstance() {
 		return getFocusedObject().getLoadedResourceData();
 	}
 
@@ -116,10 +116,10 @@ public class CreateSubViewInView extends CreateView<CreateSubViewInView, ViewRes
 
 		FMLRTTechnologyAdapter fmlRTTechnologyAdapter = getServiceManager().getTechnologyAdapterService()
 				.getTechnologyAdapter(FMLRTTechnologyAdapter.class);
-		ViewResourceFactory factory = fmlRTTechnologyAdapter.getViewResourceFactory();
+		FMLRTVirtualModelInstanceResourceFactory factory = fmlRTTechnologyAdapter.getViewResourceFactory();
 		ViewResource returned;
 		try {
-			returned = factory.makeViewResource(getNewViewName(), getViewpointResource(), (ViewResource) getContainerView().getResource(),
+			returned = factory.makeViewResource(getNewViewName(), getViewpointResource(), (ViewResource) getContainerVirtualModelInstance().getResource(),
 					fmlRTTechnologyAdapter.getTechnologyContextManager(), true);
 			returned.getLoadedResourceData().setTitle(getNewViewTitle());
 			return returned;

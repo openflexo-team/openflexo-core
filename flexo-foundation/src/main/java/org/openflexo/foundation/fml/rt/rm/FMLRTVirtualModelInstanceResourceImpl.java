@@ -38,74 +38,36 @@
 
 package org.openflexo.foundation.fml.rt.rm;
 
-import java.io.FileNotFoundException;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoServiceManager;
-import org.openflexo.foundation.IOFlexoException;
-import org.openflexo.foundation.InconsistentDataException;
-import org.openflexo.foundation.InvalidModelDefinitionException;
-import org.openflexo.foundation.InvalidXMLException;
 import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.ViewPoint;
-import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
-import org.openflexo.foundation.fml.rt.View;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.resource.FileIODelegate;
-import org.openflexo.foundation.resource.FlexoFileNotFoundException;
-import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.rm.FileSystemResourceLocatorImpl;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
-import org.openflexo.toolbox.IProgress;
 
 /**
- * Default implementation for {@link ViewResource}
+ * Default implementation for {@link FMLRTVirtualModelInstanceResource}
  * 
  * 
  * @author Sylvain
  * 
  */
-public abstract class ViewResourceImpl extends VirtualModelInstanceResourceImpl<View, ViewPoint> implements ViewResource {
+public abstract class FMLRTVirtualModelInstanceResourceImpl
+		extends AbstractVirtualModelInstanceResourceImpl<VirtualModelInstance, FMLRTTechnologyAdapter>
+		implements FMLRTVirtualModelInstanceResource {
 
-	static final Logger logger = Logger.getLogger(ViewResourceImpl.class.getPackage().getName());
-
-	@Override
-	public View getView() {
-		return getVirtualModelInstance();
-	}
+	static final Logger logger = Logger.getLogger(FMLRTVirtualModelInstanceResourceImpl.class.getPackage().getName());
 
 	@Override
-	public ViewPoint getViewPoint() {
-		if (getViewPointResource() != null) {
-			return getViewPointResource().getViewPoint();
-		}
-		return null;
-	}
-
-	/**
-	 * Load the &quot;real&quot; load resource data of this resource.
-	 * 
-	 * @param progress
-	 *            a progress monitor in case the resource data is not immediately available.
-	 * @return the resource data.
-	 * @throws ResourceLoadingCancelledException
-	 * @throws ResourceDependencyLoopException
-	 * @throws FileNotFoundException
-	 */
-	@Override
-	public View loadResourceData(IProgress progress) throws FlexoFileNotFoundException, IOFlexoException, InvalidXMLException,
-			InconsistentDataException, InvalidModelDefinitionException {
-		View returned = super.loadResourceData(progress);
-
-		return returned;
-	}
-
-	@Override
-	public Class<View> getResourceDataClass() {
-		return View.class;
+	public Class<VirtualModelInstance> getResourceDataClass() {
+		return VirtualModelInstance.class;
 	}
 
 	@Override
@@ -117,9 +79,8 @@ public abstract class ViewResourceImpl extends VirtualModelInstanceResourceImpl<
 	}
 
 	@Override
-	public List<VirtualModelInstanceResource> getVirtualModelInstanceResources() {
-		// View view = getView();
-		return getContents(VirtualModelInstanceResource.class);
+	public List<FMLRTVirtualModelInstanceResource> getVirtualModelInstanceResources() {
+		return getContents(FMLRTVirtualModelInstanceResource.class);
 	}
 
 	/**
@@ -129,9 +90,9 @@ public abstract class ViewResourceImpl extends VirtualModelInstanceResourceImpl<
 	 * @return
 	 */
 	@Override
-	public List<VirtualModelInstanceResource> getVirtualModelInstanceResources(VirtualModel virtualModel) {
-		List<VirtualModelInstanceResource> returned = new ArrayList<VirtualModelInstanceResource>();
-		for (VirtualModelInstanceResource vmiRes : getVirtualModelInstanceResources()) {
+	public List<FMLRTVirtualModelInstanceResource> getVirtualModelInstanceResources(VirtualModel virtualModel) {
+		List<FMLRTVirtualModelInstanceResource> returned = new ArrayList<>();
+		for (FMLRTVirtualModelInstanceResource vmiRes : getVirtualModelInstanceResources()) {
 			if (virtualModel.isAssignableFrom(vmiRes.getVirtualModelResource().getVirtualModel())) {
 				returned.add(vmiRes);
 			}
@@ -143,8 +104,11 @@ public abstract class ViewResourceImpl extends VirtualModelInstanceResourceImpl<
 	public boolean delete(Object... context) {
 		// gets service manager before deleting otherwise the service manager is null
 		FlexoServiceManager serviceManager = getServiceManager();
+		Object serializationArtefact = getIODelegate().getSerializationArtefact();
 		if (super.delete(context)) {
-			serviceManager.getResourceManager().addToFilesToDelete(ResourceLocator.retrieveResourceAsFile(getDirectory()));
+			if (serializationArtefact instanceof File) {
+				serviceManager.getResourceManager().addToFilesToDelete((File) serializationArtefact);
+			}
 			return true;
 		}
 		return false;
@@ -168,35 +132,35 @@ public abstract class ViewResourceImpl extends VirtualModelInstanceResourceImpl<
 	}
 
 	@Override
-	public View getModelData() {
-		return getView();
+	public VirtualModelInstance getModelData() {
+		return getVirtualModelInstance();
 	}
 
 	@Override
-	public View getModel() {
-		return getView();
+	public VirtualModelInstance getModel() {
+		return getVirtualModelInstance();
 	}
 
 	@Override
 	public String computeDefaultURI() {
 		if (getContainer() != null) {
 			return getContainer().getURI() + "/"
-					+ (getName().endsWith(ViewResourceFactory.VIEW_SUFFIX) ? getName() : getName() + ViewResourceFactory.VIEW_SUFFIX);
+					+ (getName().endsWith(FMLRTVirtualModelInstanceResourceFactory.VIEW_SUFFIX) ? getName() : getName() + FMLRTVirtualModelInstanceResourceFactory.VIEW_SUFFIX);
 		}
 		if (getResourceCenter() != null) {
 			return getResourceCenter().getDefaultBaseURI() + "/"
-					+ (getName().endsWith(ViewResourceFactory.VIEW_SUFFIX) ? getName() : getName() + ViewResourceFactory.VIEW_SUFFIX);
+					+ (getName().endsWith(FMLRTVirtualModelInstanceResourceFactory.VIEW_SUFFIX) ? getName() : getName() + FMLRTVirtualModelInstanceResourceFactory.VIEW_SUFFIX);
 		}
 		return null;
 	}
 
-	@Override
+	/*@Override
 	public VirtualModelResource<ViewPoint> getVirtualModelResource() {
 		return getViewPointResource();
-	}
+	}*/
 
-	private String viewpointURI;
-
+	/*private String viewpointURI;
+	
 	@Override
 	public String getViewpointURI() {
 		if (getViewPointResource() != null) {
@@ -204,9 +168,9 @@ public abstract class ViewResourceImpl extends VirtualModelInstanceResourceImpl<
 		}
 		return viewpointURI;
 	}
-
+	
 	@Override
 	public void setViewpointURI(String viewpointURI) {
 		this.viewpointURI = viewpointURI;
-	}
+	}*/
 }

@@ -148,7 +148,7 @@ public abstract interface ModelSlotInstance<MS extends ModelSlot<? extends RD>, 
 
 		private static final Logger logger = Logger.getLogger(ModelSlotInstance.class.getPackage().getName());
 
-		private View view;
+		// private View view;
 		// private AbstractVirtualModelInstance<?, ?> vmInstance;
 		private MS modelSlot;
 		protected RD accessedResourceData;
@@ -185,15 +185,15 @@ public abstract interface ModelSlotInstance<MS extends ModelSlot<? extends RD>, 
 			return getVirtualModelInstance();
 		}
 
-		@Override
+		/*@Override
 		public void setView(View view) {
 			this.view = view;
 		}
-
+		
 		@Override
 		public View getView() {
 			return view;
-		}
+		}*/
 
 		/*@Override
 		public AbstractVirtualModelInstance<?, ?> getVirtualModelInstance() {

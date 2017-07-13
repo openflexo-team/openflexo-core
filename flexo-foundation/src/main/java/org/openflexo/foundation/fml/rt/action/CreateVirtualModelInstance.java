@@ -46,7 +46,6 @@ import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
-import org.openflexo.foundation.fml.rt.View;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.rm.ViewResource;
 import org.openflexo.foundation.fml.rt.rm.VirtualModelInstanceResource;
@@ -67,8 +66,6 @@ public abstract class CreateVirtualModelInstance<A extends CreateVirtualModelIns
 		extends AbstractCreateVirtualModelInstance<A, View, VirtualModelInstance, VirtualModel> {
 
 	private static final Logger logger = Logger.getLogger(CreateVirtualModelInstance.class.getPackage().getName());
-
-	private boolean openAfterCreation = true;
 
 	protected CreateVirtualModelInstance(FlexoActionType<A, View, FlexoObject> actionType, View focusedObject,
 			Vector<FlexoObject> globalSelection, FlexoEditor editor) {
@@ -104,7 +101,7 @@ public abstract class CreateVirtualModelInstance<A extends CreateVirtualModelIns
 	}
 
 	@Override
-	public View getContainerView() {
+	public View getContainerVirtualModelInstance() {
 		return getFocusedObject();
 	}
 
@@ -114,17 +111,6 @@ public abstract class CreateVirtualModelInstance<A extends CreateVirtualModelIns
 			return getFocusedObject().getResourceCenter();
 		}
 		return null;
-	}
-
-	public boolean openAfterCreation() {
-		return openAfterCreation;
-	}
-
-	public void setOpenAfterCreation(boolean openAfterCreation) {
-		if (openAfterCreation != this.openAfterCreation) {
-			this.openAfterCreation = openAfterCreation;
-			getPropertyChangeSupport().firePropertyChange("openAfterCreation", !openAfterCreation, openAfterCreation);
-		}
 	}
 
 }

@@ -38,7 +38,6 @@
 
 package org.openflexo.foundation.fml.rt.action;
 
-import java.util.List;
 import java.util.Vector;
 import java.util.logging.Logger;
 
@@ -48,13 +47,13 @@ import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.action.InvalidParametersException;
 import org.openflexo.foundation.action.NotImplementedException;
-import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.CreationScheme;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
-import org.openflexo.foundation.fml.ListParameter;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
+import org.openflexo.foundation.fml.VirtualModel;
+import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstanceObject;
 
 public class CreationSchemeAction extends FlexoBehaviourAction<CreationSchemeAction, CreationScheme, AbstractVirtualModelInstance<?, ?>> {
@@ -178,10 +177,10 @@ public class CreationSchemeAction extends FlexoBehaviourAction<CreationSchemeAct
 					}
 				}
 			}
-			if (parameter instanceof ListParameter) {
+			/*if (parameter instanceof ListParameter) {
 				List<Object> list = (List<Object>) ((ListParameter) parameter).getList(this);
 				parameterListValues.put((ListParameter) parameter, list);
-			}
+			}*/
 		}
 		return returned;
 	}

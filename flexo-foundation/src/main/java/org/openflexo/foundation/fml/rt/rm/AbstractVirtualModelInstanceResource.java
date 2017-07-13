@@ -38,9 +38,13 @@
 
 package org.openflexo.foundation.fml.rt.rm;
 
+import java.util.List;
+
+import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstanceModelFactory;
+import org.openflexo.foundation.resource.DirectoryContainerResource;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.PamelaResource;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
@@ -57,9 +61,10 @@ import org.openflexo.model.annotations.Setter;
  * 
  */
 @ModelEntity(isAbstract = true)
-@ImplementationClass(VirtualModelInstanceResourceImpl.class)
+@ImplementationClass(AbstractVirtualModelInstanceResourceImpl.class)
 public interface AbstractVirtualModelInstanceResource<VMI extends AbstractVirtualModelInstance<VMI, TA>, TA extends TechnologyAdapter>
-		extends PamelaResource<VMI, AbstractVirtualModelInstanceModelFactory<?>>, TechnologyAdapterResource<VMI, TA> {
+		extends PamelaResource<VMI, AbstractVirtualModelInstanceModelFactory<?>>, TechnologyAdapterResource<VMI, TA>,
+		DirectoryContainerResource<VMI> {
 
 	public static final String VIRTUAL_MODEL_RESOURCE = "virtualModelResource";
 
@@ -75,4 +80,40 @@ public interface AbstractVirtualModelInstanceResource<VMI extends AbstractVirtua
 	@Override
 	public AbstractVirtualModelInstanceResource<?, ?> getContainer();
 
+	/**
+	 * Return the {@link VirtualModel} this {@link AbstractVirtualModelInstance} is conform to
+	 * 
+	 * @return
+	 */
+	public VirtualModel getVirtualModel();
+
+	/*public static final String VIEW_LIBRARY = "viewLibrary";
+	
+	@Getter(value = VIEW_LIBRARY, ignoreType = true)
+	public ViewLibrary getViewLibrary();
+	
+	@Setter(VIEW_LIBRARY)
+	public void setViewLibrary(ViewLibrary viewLibrary);*/
+
+	/**
+	 * Return the list of all {@link VirtualModelInstanceResource} defined in this {@link ViewResource}
+	 * 
+	 * @return
+	 */
+	public List<? extends AbstractVirtualModelInstanceResource<?, TA>> getVirtualModelInstanceResources();
+
+	/**
+	 * Return the list of all {@link VirtualModelInstanceResource} defined in this {@link ViewResource} conform to supplied
+	 * {@link VirtualModel}
+	 * 
+	 * @return
+	 */
+	public List<? extends AbstractVirtualModelInstanceResource<?, TA>> getVirtualModelInstanceResources(VirtualModel virtualModel);
+
+	/**
+	 * Return class of {@link TechnologyAdapter} which handles this kind of resource
+	 * 
+	 * @return
+	 */
+	public Class<TA> getTechnologyAdapterClass();
 }

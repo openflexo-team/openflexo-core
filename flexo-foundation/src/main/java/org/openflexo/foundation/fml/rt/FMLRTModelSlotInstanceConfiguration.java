@@ -84,7 +84,8 @@ public class FMLRTModelSlotInstanceConfiguration<VMI extends AbstractVirtualMode
 	}
 
 	@Override
-	public ModelSlotInstance<FMLRTModelSlot<VMI, TA>, VMI> createModelSlotInstance(FlexoConceptInstance fci, View view) {
+	public ModelSlotInstance<FMLRTModelSlot<VMI, TA>, VMI> createModelSlotInstance(FlexoConceptInstance fci,
+			AbstractVirtualModelInstance<?, ?> view) {
 		AbstractVirtualModelInstanceModelFactory<?> factory = fci.getFactory();
 		VirtualModelModelSlotInstance returned = factory.newInstance(VirtualModelModelSlotInstance.class);
 		returned.setModelSlot(getModelSlot());

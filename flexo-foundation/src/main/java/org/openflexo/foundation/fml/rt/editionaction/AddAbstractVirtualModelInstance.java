@@ -39,19 +39,22 @@
 package org.openflexo.foundation.fml.rt.editionaction;
 
 import java.io.FileNotFoundException;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.DataBinding;
+import org.openflexo.connie.exception.NullReferenceException;
+import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.FlexoException;
-import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.CreationScheme;
-import org.openflexo.foundation.fml.ViewType;
+import org.openflexo.foundation.fml.VirtualModel;
+import org.openflexo.foundation.fml.VirtualModelInstanceType;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
-import org.openflexo.foundation.fml.rm.ViewPointResource;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
-import org.openflexo.foundation.fml.rt.View;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
+import org.openflexo.foundation.fml.rt.action.CreateBasicVirtualModelInstance;
+import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -61,8 +64,8 @@ import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
 
 /**
- * This action is used to explicitely instanciate a new {@link VirtualModelInstance} in an other
- * {@link VirtualModelInstance} with some parameters
+ * This action is used to explicitely instanciate a new {@link VirtualModelInstance} in an other {@link VirtualModelInstance} with some
+ * parameters
  * 
  * @author sylvain
  * 
@@ -72,8 +75,7 @@ import org.openflexo.model.annotations.XMLAttribute;
 
 @ModelEntity
 @ImplementationClass(AddVirtualModelInstance.AddVirtualModelInstanceImpl.class)
-public interface AddVirtualModelInstance<FCI extends VirtualModelInstance<FCI, ?>>
-		extends AbstractAddFlexoConceptInstance<FCI, View> {
+public interface AddAbstractVirtualModelInstance extends AbstractAddFlexoConceptInstance<VirtualModelInstance, VirtualModelInstance> {
 
 	@PropertyIdentifier(type = DataBinding.class)
 	public static final String VIRTUAL_MODEL_INSTANCE_NAME_KEY = "virtualModelInstanceName";
@@ -103,10 +105,10 @@ public interface AddVirtualModelInstance<FCI extends VirtualModelInstance<FCI, ?
 	 * 
 	 * @return
 	 */
-	public ViewPointResource getOwnerViewPointTypeResource();
+	public VirtualModelResource getOwnerVirtualModelResource();
 
-	public static abstract class AddVirtualModelInstanceImpl<FCI extends VirtualModelInstance<FCI, ?>>
-			extends AbstractAddFlexoConceptInstanceImpl<FCI, View> implements AddVirtualModelInstance<FCI> {
+	public static abstract class AddAbstractVirtualModelInstanceImpl extends
+			AbstractAddFlexoConceptInstanceImpl<VirtualModelInstance, VirtualModelInstance> implements AddAbstractVirtualModelInstance {
 
 		static final Logger logger = Logger.getLogger(AddVirtualModelInstance.class.getPackage().getName());
 
@@ -114,8 +116,8 @@ public interface AddVirtualModelInstance<FCI extends VirtualModelInstance<FCI, ?
 		private DataBinding<String> virtualModelInstanceTitle;
 
 		@Override
-		public Class<View> getVirtualModelInstanceClass() {
-			return View.class;
+		public Class<VirtualModelInstance> getVirtualModelInstanceClass() {
+			return VirtualModelInstance.class;
 		}
 
 		@Override
@@ -159,7 +161,7 @@ public interface AddVirtualModelInstance<FCI extends VirtualModelInstance<FCI, ?
 		}
 
 		@Override
-		public FCI execute(RunTimeEvaluationContext evaluationContext) {
+		public VirtualModelInstance execute(RunTimeEvaluationContext evaluationContext) {
 			System.out.println("Now create a VirtualModelInstance");
 			return super.execute(evaluationContext);
 		}
@@ -197,11 +199,11 @@ public interface AddVirtualModelInstance<FCI extends VirtualModelInstance<FCI, ?
 		}
 
 		@Override
-		public ViewPointResource getOwnerViewPointTypeResource() {
+		public VirtualModelResource getOwnerVirtualModelResource() {
 			if (getReceiver().isSet() && getReceiver().isValid()) {
 				Type type = getReceiver().getAnalyzedType();
-				if (type instanceof ViewType) {
-					return ((ViewType) type).getViewPoint().getViewPointResource();
+				if (type instanceof VirtualModelInstanceType) {
+					return (VirtualModelResource) ((VirtualModelInstanceType) type).getVirtualModel().getResource();
 				}
 			}
 			return null;
@@ -211,8 +213,52 @@ public interface AddVirtualModelInstance<FCI extends VirtualModelInstance<FCI, ?
 		public void notifiedBindingChanged(DataBinding<?> dataBinding) {
 			super.notifiedBindingChanged(dataBinding);
 			if (dataBinding == getReceiver()) {
-				getPropertyChangeSupport().firePropertyChange("ownerViewPointTypeResource", null, getOwnerViewPointTypeResource());
+				getPropertyChangeSupport().firePropertyChange("ownerViewPointTypeResource", null, getOwnerVirtualModelResource());
 			}
+		}
+
+		@Override
+		protected VirtualModelInstance makeNewFlexoConceptInstance(RunTimeEvaluationContext evaluationContext) {
+			VirtualModelInstance container = getVirtualModelInstance(evaluationContext);
+			logger.info("container: " + container);
+			if (container == null) {
+				logger.warning("null container");
+				return null;
+			}
+			if (evaluationContext instanceof FlexoBehaviourAction) {
+				String name = null;
+				String title = null;
+				try {
+					name = getVirtualModelInstanceName().getBindingValue(evaluationContext);
+					title = getVirtualModelInstanceTitle().getBindingValue(evaluationContext);
+				} catch (TypeMismatchException e) {
+					e.printStackTrace();
+				} catch (NullReferenceException e) {
+					e.printStackTrace();
+				} catch (InvocationTargetException e) {
+					e.printStackTrace();
+				}
+
+				CreateBasicVirtualModelInstance createVMIAction = CreateBasicVirtualModelInstance.actionType
+						.makeNewEmbeddedAction(container, null, (FlexoBehaviourAction<?, ?, ?>) evaluationContext);
+				createVMIAction.setSkipChoosePopup(true);
+				createVMIAction.setEscapeModelSlotConfiguration(true);
+				createVMIAction.setNewVirtualModelInstanceName(name);
+				createVMIAction.setNewVirtualModelInstanceTitle(title);
+				createVMIAction.setVirtualModel((VirtualModel) getFlexoConceptType());
+				// He we just want to create a PLAIN and EMPTY VirtualModelInstance,
+				// eventual CreationScheme will be executed later
+				// DONT UNCOMMENT THIS !!!!
+				/*if (getCreationScheme() != null) {
+					createVMIAction.setCreationScheme(getCreationScheme());
+				}*/
+				createVMIAction.doAction();
+				return createVMIAction.getNewVirtualModelInstance();
+			}
+
+			logger.warning("Unexpected RunTimeEvaluationContext");
+			return null;
+
 		}
 
 	}

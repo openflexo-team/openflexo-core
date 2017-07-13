@@ -64,6 +64,9 @@ public class VirtualModelResourceFactory
 		super(VirtualModelResource.class);
 	}
 
+	/**
+	 * Build and return model factory to use for resource data managing
+	 */
 	@Override
 	public FMLModelFactory makeResourceDataFactory(VirtualModelResource resource,
 			TechnologyContextManager<FMLTechnologyAdapter> technologyContextManager) throws ModelDefinitionException {
@@ -146,6 +149,88 @@ public class VirtualModelResourceFactory
 		}
 
 		return returned;
+	}
+
+	/**
+	 * Used to retrieve a contained VirtualModelResource for supplied containerVirtualModelResource
+	 * 
+	 * @param serializationArtefact
+	 * @param technologyContextManager
+	 * @param containerVirtualModelResource
+	 * @return
+	 * @throws ModelDefinitionException
+	 * @throws IOException
+	 */
+	public <I> VirtualModelResource retrieveContainedVirtualModelResource(I serializationArtefact,
+			TechnologyContextManager<FMLTechnologyAdapter> technologyContextManager, VirtualModelResource containerVirtualModelResource)
+			throws ModelDefinitionException, IOException {
+
+		FlexoResourceCenter<I> resourceCenter = (FlexoResourceCenter<I>) containerVirtualModelResource.getResourceCenter();
+		String name = resourceCenter.retrieveName(serializationArtefact);
+
+		VirtualModelResource returned = initResourceForRetrieving(serializationArtefact, resourceCenter, technologyContextManager);
+		returned.setURI(containerVirtualModelResource.getURI() + "/" + name);
+
+		containerVirtualModelResource.addToContents(returned);
+		containerVirtualModelResource.notifyContentsAdded(returned);
+
+		registerResource(returned, resourceCenter, technologyContextManager);
+
+		return returned;
+	}
+
+	@Override
+	protected <I> VirtualModelResource initResourceForCreation(I serializationArtefact, FlexoResourceCenter<I> resourceCenter,
+			TechnologyContextManager<FMLTechnologyAdapter> technologyContextManager, String name, String uri)
+			throws ModelDefinitionException {
+		VirtualModelResource returned = super.initResourceForCreation(serializationArtefact, resourceCenter, technologyContextManager, name,
+				uri);
+
+		returned.setVersion(INITIAL_REVISION);
+		returned.setModelVersion(CURRENT_FML_VERSION);
+
+		return returned;
+	}
+
+	@Override
+	protected <I> VirtualModelResource initResourceForRetrieving(I serializationArtefact, FlexoResourceCenter<I> resourceCenter,
+			TechnologyContextManager<FMLTechnologyAdapter> technologyContextManager) throws ModelDefinitionException, IOException {
+
+		VirtualModelResource returned = super.initResourceForRetrieving(serializationArtefact, resourceCenter, technologyContextManager);
+
+		String artefactName = resourceCenter.retrieveName(serializationArtefact);
+		String baseName = artefactName.substring(0, artefactName.length() - FML_SUFFIX.length());
+
+		returned.initName(baseName);
+
+		VirtualModelInfo vpi = findViewPointInfo(returned, resourceCenter);
+		if (vpi != null) {
+			returned.setURI(vpi.uri);
+			if (StringUtils.isNotEmpty(vpi.version)) {
+				returned.setVersion(new FlexoVersion(vpi.version));
+			}
+			else {
+				returned.setVersion(INITIAL_REVISION);
+			}
+			if (StringUtils.isNotEmpty(vpi.modelVersion)) {
+				returned.setModelVersion(new FlexoVersion(vpi.modelVersion));
+			}
+			else {
+				returned.setModelVersion(CURRENT_FML_VERSION);
+			}
+		}
+		else {
+			logger.warning("Cannot retrieve info from " + serializationArtefact);
+			returned.setVersion(INITIAL_REVISION);
+			returned.setModelVersion(CURRENT_FML_VERSION);
+		}
+
+		return returned;
+	}
+
+	@Override
+	protected <I> FlexoIODelegate<I> makeFlexoIODelegate(I serializationArtefact, FlexoResourceCenter<I> resourceCenter) {
+		return resourceCenter.makeDirectoryBasedFlexoIODelegate(serializationArtefact, FML_SUFFIX, FML_XML_SUFFIX, this);
 	}
 
 	/**
@@ -266,88 +351,6 @@ public class VirtualModelResourceFactory
 			// recursively call
 			exploreResource(child, virtualModelResource, technologyContextManager);
 		}
-	}
-
-	/**
-	 * Used to retrieve a contained VirtualModelResource for supplied containerVirtualModelResource
-	 * 
-	 * @param serializationArtefact
-	 * @param technologyContextManager
-	 * @param containerVirtualModelResource
-	 * @return
-	 * @throws ModelDefinitionException
-	 * @throws IOException
-	 */
-	public <I> VirtualModelResource retrieveContainedVirtualModelResource(I serializationArtefact,
-			TechnologyContextManager<FMLTechnologyAdapter> technologyContextManager, VirtualModelResource containerVirtualModelResource)
-			throws ModelDefinitionException, IOException {
-
-		FlexoResourceCenter<I> resourceCenter = (FlexoResourceCenter<I>) containerVirtualModelResource.getResourceCenter();
-		String name = resourceCenter.retrieveName(serializationArtefact);
-
-		VirtualModelResource returned = initResourceForRetrieving(serializationArtefact, resourceCenter, technologyContextManager);
-		returned.setURI(containerVirtualModelResource.getURI() + "/" + name);
-
-		containerVirtualModelResource.addToContents(returned);
-		containerVirtualModelResource.notifyContentsAdded(returned);
-
-		registerResource(returned, resourceCenter, technologyContextManager);
-
-		return returned;
-	}
-
-	@Override
-	protected <I> VirtualModelResource initResourceForCreation(I serializationArtefact, FlexoResourceCenter<I> resourceCenter,
-			TechnologyContextManager<FMLTechnologyAdapter> technologyContextManager, String name, String uri)
-			throws ModelDefinitionException {
-		VirtualModelResource returned = super.initResourceForCreation(serializationArtefact, resourceCenter, technologyContextManager, name,
-				uri);
-
-		returned.setVersion(INITIAL_REVISION);
-		returned.setModelVersion(CURRENT_FML_VERSION);
-
-		return returned;
-	}
-
-	@Override
-	protected <I> VirtualModelResource initResourceForRetrieving(I serializationArtefact, FlexoResourceCenter<I> resourceCenter,
-			TechnologyContextManager<FMLTechnologyAdapter> technologyContextManager) throws ModelDefinitionException, IOException {
-
-		VirtualModelResource returned = super.initResourceForRetrieving(serializationArtefact, resourceCenter, technologyContextManager);
-
-		String artefactName = resourceCenter.retrieveName(serializationArtefact);
-		String baseName = artefactName.substring(0, artefactName.length() - FML_SUFFIX.length());
-
-		returned.initName(baseName);
-
-		VirtualModelInfo vpi = findViewPointInfo(returned, resourceCenter);
-		if (vpi != null) {
-			returned.setURI(vpi.uri);
-			if (StringUtils.isNotEmpty(vpi.version)) {
-				returned.setVersion(new FlexoVersion(vpi.version));
-			}
-			else {
-				returned.setVersion(INITIAL_REVISION);
-			}
-			if (StringUtils.isNotEmpty(vpi.modelVersion)) {
-				returned.setModelVersion(new FlexoVersion(vpi.modelVersion));
-			}
-			else {
-				returned.setModelVersion(CURRENT_FML_VERSION);
-			}
-		}
-		else {
-			logger.warning("Cannot retrieve info from " + serializationArtefact);
-			returned.setVersion(INITIAL_REVISION);
-			returned.setModelVersion(CURRENT_FML_VERSION);
-		}
-
-		return returned;
-	}
-
-	@Override
-	protected <I> FlexoIODelegate<I> makeFlexoIODelegate(I serializationArtefact, FlexoResourceCenter<I> resourceCenter) {
-		return resourceCenter.makeDirectoryBasedFlexoIODelegate(serializationArtefact, FML_SUFFIX, FML_XML_SUFFIX, this);
 	}
 
 	private static class VirtualModelInfo {

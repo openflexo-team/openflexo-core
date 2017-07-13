@@ -43,7 +43,6 @@ import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoException;
-import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceRole;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
@@ -66,8 +65,6 @@ import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
-import org.openflexo.model.annotations.Import;
-import org.openflexo.model.annotations.Imports;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.PropertyIdentifier;
 import org.openflexo.model.annotations.Setter;
@@ -75,7 +72,7 @@ import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.toolbox.StringUtils;
 
 /**
- * Implementation of the ModelSlot for a FML {@link VirtualModelInstance} (a {@link VirtualModelInstance} or a {@link View})
+ * Base model slot allowing to access an {@link AbstractVirtualModelInstance}
  * 
  * @author sylvain
  * 
@@ -85,7 +82,6 @@ import org.openflexo.toolbox.StringUtils;
 @DeclareFetchRequests({ SelectFlexoConceptInstance.class, SelectVirtualModelInstance.class })
 @ModelEntity(isAbstract = true)
 @ImplementationClass(FMLRTModelSlot.FMLRTModelSlotImpl.class)
-@Imports({ @Import(VirtualModelInstanceModelSlot.class), @Import(ViewModelSlot.class) })
 public interface FMLRTModelSlot<VMI extends AbstractVirtualModelInstance<VMI, TA>, TA extends TechnologyAdapter> extends ModelSlot<VMI> {
 
 	@PropertyIdentifier(type = String.class)
@@ -108,20 +104,12 @@ public interface FMLRTModelSlot<VMI extends AbstractVirtualModelInstance<VMI, TA
 
 	public FlexoConceptInstanceRole makeFlexoConceptInstanceRole(FlexoConcept flexoConcept);
 
+	public Class<TA> getTechnologyAdapterClass();
+
 	public static abstract class FMLRTModelSlotImpl<VMI extends AbstractVirtualModelInstance<VMI, TA>, TA extends TechnologyAdapter>
 			extends ModelSlotImpl<VMI> implements FMLRTModelSlot<VMI, TA> {
 
 		private static final Logger logger = Logger.getLogger(FMLRTModelSlot.class.getPackage().getName());
-
-		@Override
-		public String getStringRepresentation() {
-			return "FMLRTModelSlot";
-		}
-
-		@Override
-		public Class getTechnologyAdapterClass() {
-			return FMLTechnologyAdapter.class;
-		}
 
 		@Override
 		public FlexoConceptInstanceRole makeFlexoConceptInstanceRole(FlexoConcept flexoConcept) {

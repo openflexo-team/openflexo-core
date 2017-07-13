@@ -64,7 +64,7 @@ public class VirtualModelRepository<I>
 		this.serviceManager = adapter.getServiceManager();
 	}
 
-	public VirtualModelLibrary getViewPointLibrary() {
+	public VirtualModelLibrary getVirtualModelLibrary() {
 		return serviceManager.getVirtualModelLibrary();
 	}
 

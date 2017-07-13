@@ -115,7 +115,7 @@ public class CreateTopLevelVirtualModel
 		if (!(getFocusedObject().getResourceRepository() instanceof VirtualModelRepository)) {
 			return null;
 		}
-		return ((VirtualModelRepository) getFocusedObject().getResourceRepository()).getViewPointLibrary();
+		return ((VirtualModelRepository) getFocusedObject().getResourceRepository()).getVirtualModelLibrary();
 	}
 
 	@Override
