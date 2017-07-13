@@ -99,7 +99,6 @@ public abstract class FMLControlledDocumentVirtualModelInstanceNature<MS extends
 	}
 
 	protected D _getDocument(VirtualModelInstance virtualModelInstance) {
-		System.out.println("msi=" + _getModelSlotInstance(virtualModelInstance));
 		return _getModelSlotInstance(virtualModelInstance).getAccessedResourceData();
 	}
 

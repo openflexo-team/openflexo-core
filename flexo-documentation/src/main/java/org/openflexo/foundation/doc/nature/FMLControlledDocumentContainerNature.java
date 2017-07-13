@@ -38,27 +38,48 @@
 
 package org.openflexo.foundation.doc.nature;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.openflexo.foundation.doc.fml.FlexoDocumentModelSlot;
-import org.openflexo.foundation.fml.rt.View;
-import org.openflexo.foundation.fml.rt.ViewNature;
+import org.openflexo.foundation.fml.VirtualModel;
+import org.openflexo.foundation.fml.VirtualModelNature;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 
 /**
- * Define the "controlled-diagram" nature of a {@link View}<br>
+ * Define the "controlled-document" nature of a {@link VirtualModel} as a container of one or more {@link VirtualModel} that have the
+ * {@link FMLControlledDocumentVirtualModelNature}<br>
  * 
  * @author sylvain
  * 
  */
-public abstract class FMLControlledDocumentViewNature<MS extends FlexoDocumentModelSlot<?>> implements ViewNature {
+public abstract class FMLControlledDocumentContainerNature<MS extends FlexoDocumentModelSlot<?>> implements VirtualModelNature {
 
 	// Prevent external instantiation
-	protected FMLControlledDocumentViewNature() {
+	protected FMLControlledDocumentContainerNature() {
 	}
 
 	/**
-	 * Return boolean indicating if supplied {@link VirtualModelInstance} might be interpreted as a FML-Controlled diagram
+	 * Return boolean indicating if supplied {@link VirtualModelInstance} might be interpreted as a FML-Controlled document
 	 */
-	public boolean hasNature(View view, FMLControlledDocumentViewPointNature<MS> vpNature) {
-		return view.getViewPoint() != null && view.getViewPoint().hasNature(vpNature);
+	public boolean hasNature(VirtualModel container, FMLControlledDocumentVirtualModelNature<MS> vmNature) {
+		for (VirtualModel vm : container.getVirtualModels(true)) {
+			if (vm.hasNature(vmNature)) {
+				return true;
+			}
+		}
+		return false;
 	}
+
+	protected List<VirtualModel> _getControlledDocumentVirtualModels(VirtualModel container,
+			FMLControlledDocumentVirtualModelNature<MS> vmNature) {
+		List<VirtualModel> returned = new ArrayList<>();
+		for (VirtualModel vm : container.getVirtualModels(true)) {
+			if (vm.hasNature(vmNature)) {
+				returned.add(vm);
+			}
+		}
+		return returned;
+	}
+
 }

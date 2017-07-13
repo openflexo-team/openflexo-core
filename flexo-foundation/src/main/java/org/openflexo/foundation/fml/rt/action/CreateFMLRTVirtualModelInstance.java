@@ -45,46 +45,61 @@ import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.fml.VirtualModel;
+import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
-import org.openflexo.foundation.fml.rt.rm.ViewResource;
-import org.openflexo.foundation.fml.rt.rm.VirtualModelInstanceResource;
-import org.openflexo.foundation.fml.rt.rm.VirtualModelInstanceResourceFactory;
-import org.openflexo.foundation.resource.FlexoResourceCenter;
+import org.openflexo.foundation.fml.rt.rm.AbstractVirtualModelInstanceResource;
+import org.openflexo.foundation.fml.rt.rm.FMLRTVirtualModelInstanceResource;
+import org.openflexo.foundation.fml.rt.rm.FMLRTVirtualModelInstanceResourceFactory;
+import org.openflexo.foundation.resource.RepositoryFolder;
 import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 
 /**
- * Abstract base implementation for an action which aims at creating a new {@link VirtualModelInstance} in a {@link View}
+ * This action is called to create a regular {@link VirtualModelInstance} either as top level in a repository folder, or as a contained
+ * {@link VirtualModelInstance} in a container {@link VirtualModelInstance}
  * 
  * @author sylvain
- * 
- * @param <A>
- *            type of action, required to manage introspection for inheritance
+ *
+ * @param <T>
+ *            type of container (a repository folder or a container VirtualModelInstance)
  */
-public abstract class CreateVirtualModelInstance<A extends CreateVirtualModelInstance<A>>
-		extends AbstractCreateVirtualModelInstance<A, View, VirtualModelInstance, VirtualModel> {
+public abstract class CreateFMLRTVirtualModelInstance<A extends CreateFMLRTVirtualModelInstance<A>>
+		extends AbstractCreateVirtualModelInstance<A, FlexoObject, VirtualModelInstance, FMLRTTechnologyAdapter> {
 
-	private static final Logger logger = Logger.getLogger(CreateVirtualModelInstance.class.getPackage().getName());
+	private static final Logger logger = Logger.getLogger(CreateFMLRTVirtualModelInstance.class.getPackage().getName());
 
-	protected CreateVirtualModelInstance(FlexoActionType<A, View, FlexoObject> actionType, View focusedObject,
+	protected CreateFMLRTVirtualModelInstance(FlexoActionType<A, FlexoObject, FlexoObject> actionType, FlexoObject focusedObject,
 			Vector<FlexoObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 	}
 
 	@Override
-	public VirtualModelInstanceResource makeVirtualModelInstanceResource() throws SaveResourceException {
+	public FMLRTVirtualModelInstanceResource makeVirtualModelInstanceResource() throws SaveResourceException {
 
 		FMLRTTechnologyAdapter fmlRTTechnologyAdapter = getServiceManager().getTechnologyAdapterService()
 				.getTechnologyAdapter(FMLRTTechnologyAdapter.class);
-		VirtualModelInstanceResourceFactory factory = fmlRTTechnologyAdapter.getViewResourceFactory()
-				.getVirtualModelInstanceResourceFactory();
+		FMLRTVirtualModelInstanceResourceFactory factory = fmlRTTechnologyAdapter.getFMLRTVirtualModelInstanceResourceFactory();
 
-		VirtualModelInstanceResource returned;
+		FMLRTVirtualModelInstanceResource returned = null;
 		try {
-			returned = factory.makeVirtualModelInstanceResource(getNewVirtualModelInstanceName(), getVirtualModel(),
-					(ViewResource) getFocusedObject().getResource(), fmlRTTechnologyAdapter.getTechnologyContextManager(), true);
-			returned.getLoadedResourceData().setTitle(getNewVirtualModelInstanceTitle());
+			if (getContainerVirtualModelResource() != null) {
+				returned = factory.makeContainedFMLRTVirtualModelInstanceResource(getNewVirtualModelInstanceName(),
+						(VirtualModelResource) getVirtualModel().getResource(),
+						(AbstractVirtualModelInstanceResource<?, ?>) getContainerVirtualModelInstance().getResource(),
+						fmlRTTechnologyAdapter.getTechnologyContextManager(), true);
+			}
+			else if (getFolder() != null) {
+				returned = factory.makeTopLevelFMLRTVirtualModelInstanceResource(getNewVirtualModelInstanceName(), null,
+						// Let URI be automatically computed
+						(VirtualModelResource) getVirtualModel().getResource(), getFolder(),
+						fmlRTTechnologyAdapter.getTechnologyContextManager(), true);
+			}
+
+			if (returned != null) {
+				returned.getLoadedResourceData().setTitle(getNewVirtualModelInstanceTitle());
+			}
+
 			return returned;
 		} catch (ModelDefinitionException e) {
 			e.printStackTrace();
@@ -96,21 +111,12 @@ public abstract class CreateVirtualModelInstance<A extends CreateVirtualModelIns
 	}
 
 	@Override
-	public boolean isValidVirtualModelInstanceName(String proposedName) {
-		return getFocusedObject().isValidVirtualModelInstanceName(proposedName);
+	public <I> RepositoryFolder<FMLRTVirtualModelInstanceResource, I> getFolder() {
+		return (RepositoryFolder<FMLRTVirtualModelInstanceResource, I>) super.getFolder();
 	}
 
-	@Override
-	public View getContainerVirtualModelInstance() {
-		return getFocusedObject();
-	}
-
-	@Override
-	public FlexoResourceCenter<?> getResourceCenter() {
-		if (getFocusedObject() != null) {
-			return getFocusedObject().getResourceCenter();
-		}
-		return null;
+	public boolean isVisible(VirtualModel virtualModel) {
+		return true;
 	}
 
 }
