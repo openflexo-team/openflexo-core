@@ -46,40 +46,45 @@ import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionType;
-import org.openflexo.foundation.fml.rt.View;
-import org.openflexo.foundation.fml.rt.rm.ViewResource;
+import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
+import org.openflexo.foundation.fml.rt.rm.AbstractVirtualModelInstanceResource;
 import org.openflexo.foundation.resource.RepositoryFolder;
 
-public class MoveView extends FlexoAction<MoveView, View, View> {
+public class MoveView extends FlexoAction<MoveView, AbstractVirtualModelInstance<?, ?>, AbstractVirtualModelInstance<?, ?>> {
 
 	private static final Logger logger = Logger.getLogger(MoveView.class.getPackage().getName());
 
-	public static final FlexoActionType<MoveView, View, View> actionType = new FlexoActionType<MoveView, View, View>("move_view") {
+	public static final FlexoActionType<MoveView, AbstractVirtualModelInstance<?, ?>, AbstractVirtualModelInstance<?, ?>> actionType = new FlexoActionType<MoveView, AbstractVirtualModelInstance<?, ?>, AbstractVirtualModelInstance<?, ?>>(
+			"move_view") {
 
 		@Override
-		public boolean isEnabledForSelection(View object, Vector<View> globalSelection) {
+		public boolean isEnabledForSelection(AbstractVirtualModelInstance<?, ?> object,
+				Vector<AbstractVirtualModelInstance<?, ?>> globalSelection) {
 			return true;
 		}
 
 		@Override
-		public boolean isVisibleForSelection(View object, Vector<View> globalSelection) {
+		public boolean isVisibleForSelection(AbstractVirtualModelInstance<?, ?> object,
+				Vector<AbstractVirtualModelInstance<?, ?>> globalSelection) {
 			return false;
 		}
 
 		@Override
-		public MoveView makeNewAction(View focusedObject, Vector<View> globalSelection, FlexoEditor editor) {
+		public MoveView makeNewAction(AbstractVirtualModelInstance<?, ?> focusedObject,
+				Vector<AbstractVirtualModelInstance<?, ?>> globalSelection, FlexoEditor editor) {
 			return new MoveView(focusedObject, globalSelection, editor);
 		}
 
 	};
 
-	private RepositoryFolder<ViewResource, ?> folder;
+	private RepositoryFolder<AbstractVirtualModelInstanceResource<?, ?>, ?> folder;
 
 	static {
-		FlexoObjectImpl.addActionForClass(actionType, View.class);
+		FlexoObjectImpl.addActionForClass(actionType, AbstractVirtualModelInstance.class);
 	}
 
-	protected MoveView(View focusedObject, Vector<View> globalSelection, FlexoEditor editor) {
+	protected MoveView(AbstractVirtualModelInstance<?, ?> focusedObject, Vector<AbstractVirtualModelInstance<?, ?>> globalSelection,
+			FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 	}
 
@@ -89,21 +94,23 @@ public class MoveView extends FlexoAction<MoveView, View, View> {
 			logger.warning("Cannot move: null folder");
 			return;
 		}
-		for (View v : getGlobalSelection()) {
+		for (AbstractVirtualModelInstance<?, ?> v : getGlobalSelection()) {
 			moveToFolder(v, folder);
 		}
 	}
 
-	private void moveToFolder(View v, RepositoryFolder<ViewResource, ?> folder) {
-		RepositoryFolder<ViewResource, ?> oldFolder = v.getFolder();
-		v.getViewLibrary().moveResource((ViewResource) v.getResource(), (RepositoryFolder) oldFolder, (RepositoryFolder) folder);
+	private void moveToFolder(AbstractVirtualModelInstance<?, ?> v,
+			RepositoryFolder<AbstractVirtualModelInstanceResource<?, ?>, ?> folder) {
+		// TODO: reimplement this
+		// RepositoryFolder<AbstractVirtualModelInstanceResource<?,?>, ?> oldFolder = v.getFolder();
+		// v.getViewLibrary().moveResource((ViewResource) v.getResource(), (RepositoryFolder) oldFolder, (RepositoryFolder) folder);
 	}
 
-	public RepositoryFolder<ViewResource, ?> getFolder() {
+	public RepositoryFolder<AbstractVirtualModelInstanceResource<?, ?>, ?> getFolder() {
 		return folder;
-	};
+	}
 
-	public void setFolder(RepositoryFolder<ViewResource, ?> folder) {
+	public void setFolder(RepositoryFolder<AbstractVirtualModelInstanceResource<?, ?>, ?> folder) {
 		this.folder = folder;
 	}
 }

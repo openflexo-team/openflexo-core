@@ -40,7 +40,6 @@ package org.openflexo.foundation.fml.rt.editionaction;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
-import java.security.URIParameter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
@@ -56,7 +55,6 @@ import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceRole;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
-import org.openflexo.foundation.fml.ViewType;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelInstanceType;
 import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
@@ -151,10 +149,25 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 	@Remover(PARAMETERS_KEY)
 	public void removeFromParameters(AddFlexoConceptInstanceParameter aParameter);
 
+	/**
+	 * Get concept as type to be created by this action
+	 * 
+	 * @return
+	 */
 	public FlexoConcept getFlexoConceptType();
 
+	/**
+	 * Sets concept as type to be created by this action
+	 * 
+	 * @param flexoConceptType
+	 */
 	public void setFlexoConceptType(FlexoConcept flexoConceptType);
 
+	/**
+	 * Return the list of available CreationScheme (depends of {@link #getFlexoConceptType()})
+	 * 
+	 * @return
+	 */
 	public List<CreationScheme> getAvailableCreationSchemes();
 
 	public static abstract class AbstractAddFlexoConceptInstanceImpl<FCI extends FlexoConceptInstance, VMI extends AbstractVirtualModelInstance<VMI, ?>>
@@ -448,35 +461,20 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 
 		protected abstract FlexoConceptInstance makeNewFlexoConceptInstance(RunTimeEvaluationContext evaluationContext);
 
-		/*@Override
-		public Type getAssignableType() {
-			return FlexoConceptInstanceType.getFlexoConceptInstanceType(getFlexoConceptType());
-		}*/
-
 		@Override
 		public Type getAssignableType() {
-			if (getViewPoint() != null) {
+			if (getFlexoConcept() != null) {
 				return FlexoConceptInstanceType.getFlexoConceptInstanceType(getFlexoConceptType());
 			}
 			else {
 				return FlexoConceptInstanceType.UNDEFINED_FLEXO_CONCEPT_INSTANCE_TYPE;
 			}
-			// NPE Protection
-			/*ViewPoint vp = this.getViewPoint();
-			if (vp != null) {
-				return vp.getInstanceType(getFlexoConceptType());
-			} else {
-				logger.warning("Adding FlexoConcept Instance in a null ViewPoint !");
-				return null;
-			}*/
 		}
 
 		@Override
 		public void finalizeDeserialization() {
 			super.finalizeDeserialization();
-			// System.out.println("creationScheme=" + creationScheme + " uri=" + _getCreationSchemeURI());
 			getCreationScheme();
-			// System.out.println("creationScheme=" + creationScheme);
 		}
 
 		@Override
@@ -524,13 +522,7 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 					FlexoBehaviourParameter param = p.getParam();
 					if (param.getIsRequired()) {
 						if (p.getValue() == null || !p.getValue().isSet()) {
-							DataBinding<String> uri = ((URIParameter) param).getBaseURI();
-							if (param instanceof URIParameter && uri.isSet() && uri.isValid()) {
-								// Special case, we will find a way to manage this
-							}
-							else {
-								issues.add(new ValidationError(this, action, "parameter_s_value_is_not_defined: " + param.getName()));
-							}
+							issues.add(new ValidationError(this, action, "parameter_s_value_is_not_defined: " + param.getName()));
 						}
 						else if (!p.getValue().isValid()) {
 							AddFlexoConceptInstanceImpl.logger
@@ -578,10 +570,7 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 			else {
 				DataBinding<VirtualModelInstance> binding = getBinding(object);
 
-				// Special case when instantiating a subview (AddSubView edition action)
-				// Any View might be instantiated in another View
-				if (!(binding.getAnalyzedType() instanceof ViewType) && binding.getAnalyzedType() instanceof VirtualModelInstanceType
-						&& object.getFlexoConceptType() != null) {
+				if (binding.getAnalyzedType() instanceof VirtualModelInstanceType && object.getFlexoConceptType() != null) {
 					if (object.getFlexoConceptType().getOwningVirtualModel() != ((VirtualModelInstanceType) binding.getAnalyzedType())
 							.getVirtualModel()) {
 						returned = new ValidationError(this, object, "incompatible_virtual_model_type");

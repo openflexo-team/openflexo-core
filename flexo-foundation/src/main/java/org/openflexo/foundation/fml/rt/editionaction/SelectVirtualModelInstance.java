@@ -43,25 +43,22 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.logging.Logger;
+
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
-import org.openflexo.foundation.fml.ViewPoint;
-import org.openflexo.foundation.fml.ViewType;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelInstanceType;
 import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.foundation.fml.editionaction.FetchRequest;
-import org.openflexo.foundation.fml.rm.ViewPointResource;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
+import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
-import org.openflexo.foundation.fml.rt.View;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
@@ -74,7 +71,6 @@ import org.openflexo.model.annotations.PropertyIdentifier;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.model.annotations.XMLElement;
-import org.openflexo.model.validation.FixProposal;
 import org.openflexo.model.validation.ValidationError;
 import org.openflexo.model.validation.ValidationIssue;
 import org.openflexo.model.validation.ValidationRule;
@@ -90,21 +86,21 @@ import org.openflexo.model.validation.ValidationRule;
 @ImplementationClass(SelectVirtualModelInstance.SelectVirtualModelInstanceImpl.class)
 @XMLElement
 @FML("SelectVirtualModelInstance")
-public interface SelectVirtualModelInstance<VMI extends VirtualModelInstance<VMI, ?>>
+public interface SelectVirtualModelInstance<VMI extends AbstractVirtualModelInstance<VMI, ?>>
 		extends FetchRequest<FMLRTModelSlot<VMI, ?>, VMI, AbstractVirtualModelInstance<?, ?>> {
 
 	@PropertyIdentifier(type = String.class)
 	public static final String VIRTUAL_MODEL_TYPE_URI_KEY = "virtualModelTypeURI";
 
 	@PropertyIdentifier(type = DataBinding.class)
-	public static final String VIEW_KEY = "view";
+	public static final String CONTAINER_KEY = "container";
 
-	@Getter(value = VIEW_KEY)
+	@Getter(value = CONTAINER_KEY)
 	@XMLAttribute
-	public DataBinding<View> getView();
+	public DataBinding<AbstractVirtualModelInstance<?, ?>> getContainer();
 
-	@Setter(VIEW_KEY)
-	public void setView(DataBinding<View> view);
+	@Setter(CONTAINER_KEY)
+	public void setContainer(DataBinding<AbstractVirtualModelInstance<?, ?>> container);
 
 	@Getter(value = VIRTUAL_MODEL_TYPE_URI_KEY)
 	@XMLAttribute
@@ -117,19 +113,15 @@ public interface SelectVirtualModelInstance<VMI extends VirtualModelInstance<VMI
 
 	public void setVirtualModelType(VirtualModelResource virtualModelType);
 
-	public ViewPoint getAddressedViewPoint();
+	public VirtualModel getAddressedVirtualModel();
 
-	public static abstract class SelectVirtualModelInstanceImpl<VMI extends VirtualModelInstance<VMI, ?>> extends
+	public static abstract class SelectVirtualModelInstanceImpl<VMI extends AbstractVirtualModelInstance<VMI, ?>> extends
 			FetchRequestImpl<FMLRTModelSlot<VMI, ?>, VMI, AbstractVirtualModelInstance<?, ?>> implements SelectVirtualModelInstance<VMI> {
 
 		protected static final Logger logger = FlexoLogger.getLogger(SelectVirtualModelInstance.class.getPackage().getName());
 
 		private VirtualModelResource virtualModelType;
 		private String virtualModelTypeURI;
-
-		public SelectVirtualModelInstanceImpl() {
-			super();
-		}
 
 		@Override
 		public TechnologyAdapter getModelSlotTechnologyAdapter() {
@@ -139,27 +131,28 @@ public interface SelectVirtualModelInstance<VMI extends VirtualModelInstance<VMI
 			return super.getModelSlotTechnologyAdapter();
 		}
 
-		private DataBinding<View> view;
+		private DataBinding<AbstractVirtualModelInstance<?, ?>> container;
 
 		@Override
-		public DataBinding<View> getView() {
-			if (view == null) {
-				view = new DataBinding<View>(this, View.class, DataBinding.BindingDefinitionType.GET);
-				view.setBindingName("view");
+		public DataBinding<AbstractVirtualModelInstance<?, ?>> getContainer() {
+			if (container == null) {
+				container = new DataBinding<AbstractVirtualModelInstance<?, ?>>(this, AbstractVirtualModelInstance.class,
+						DataBinding.BindingDefinitionType.GET);
+				container.setBindingName("container");
 			}
-			return view;
+			return container;
 		}
 
 		@Override
-		public void setView(DataBinding<View> aView) {
-			if (aView != null) {
-				aView.setOwner(this);
-				aView.setBindingName("view");
-				aView.setDeclaredType(View.class);
-				aView.setBindingDefinitionType(DataBinding.BindingDefinitionType.GET);
+		public void setContainer(DataBinding<AbstractVirtualModelInstance<?, ?>> aContainer) {
+			if (aContainer != null) {
+				aContainer.setOwner(this);
+				aContainer.setBindingName("container");
+				aContainer.setDeclaredType(AbstractVirtualModelInstance.class);
+				aContainer.setBindingDefinitionType(DataBinding.BindingDefinitionType.GET);
 			}
-			this.view = aView;
-			notifiedBindingChanged(view);
+			this.container = aContainer;
+			notifiedBindingChanged(container);
 		}
 
 		@Override
@@ -173,18 +166,18 @@ public interface SelectVirtualModelInstance<VMI extends VirtualModelInstance<VMI
 		public String getFMLRepresentation(FMLRepresentationContext context) {
 			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
 			out.append(getTechnologyAdapterIdentifier() + "::" + getImplementedInterface().getSimpleName()
-					+ (getView() != null ? " from " + getView() : "") + " as "
+					+ (getContainer() != null ? " from " + getContainer() : "") + " as "
 					+ (getVirtualModelType() != null ? getVirtualModelType().getName() : "No Type Specified")
 					+ (getConditions().size() > 0 ? " " + getWhereClausesFMLRepresentation(context) : ""), context);
 			return out.toString();
 		}
 
 		@Override
-		public ViewPoint getAddressedViewPoint() {
-			if (getView() != null && getView().isSet() && getView().isValid()) {
-				Type viewType = getView().getAnalyzedType();
-				if (viewType instanceof ViewType) {
-					return ((ViewType) viewType).getViewPoint();
+		public VirtualModel getAddressedVirtualModel() {
+			if (getContainer() != null && getContainer().isSet() && getContainer().isValid()) {
+				Type containerType = getContainer().getAnalyzedType();
+				if (containerType instanceof VirtualModelInstanceType) {
+					return ((VirtualModelInstanceType) containerType).getVirtualModel();
 				}
 			}
 			return null;
@@ -220,9 +213,13 @@ public interface SelectVirtualModelInstance<VMI extends VirtualModelInstance<VMI
 
 		@Override
 		public VirtualModelResource getVirtualModelType() {
-			if (virtualModelType == null && virtualModelTypeURI != null && getViewPoint() != null && getViewPoint().getResource() != null) {
-				virtualModelType = ((ViewPointResource) getViewPoint().getResource()).getVirtualModelResource(virtualModelTypeURI);
+			if (virtualModelType == null && virtualModelTypeURI != null && getAddressedVirtualModel() != null) {
+				VirtualModel vm = getAddressedVirtualModel().getVirtualModelNamed(virtualModelTypeURI);
+				if (vm != null) {
+					virtualModelType = (VirtualModelResource) vm.getResource();
+				}
 			}
+
 			return virtualModelType;
 		}
 
@@ -235,10 +232,10 @@ public interface SelectVirtualModelInstance<VMI extends VirtualModelInstance<VMI
 			}
 		}
 
-		public View getView(RunTimeEvaluationContext evaluationContext) {
-			if (getView() != null && getView().isSet() && getView().isValid()) {
+		public AbstractVirtualModelInstance<?, ?> getContainer(RunTimeEvaluationContext evaluationContext) {
+			if (getContainer() != null && getContainer().isSet() && getContainer().isValid()) {
 				try {
-					return getView().getBindingValue(evaluationContext);
+					return getContainer().getBindingValue(evaluationContext);
 				} catch (TypeMismatchException e) {
 					e.printStackTrace();
 				} catch (NullReferenceException e) {
@@ -253,10 +250,11 @@ public interface SelectVirtualModelInstance<VMI extends VirtualModelInstance<VMI
 
 		@Override
 		public List<AbstractVirtualModelInstance<?, ?>> execute(RunTimeEvaluationContext evaluationContext) {
-			View view = getView(evaluationContext);
-			if (view != null) {
+			AbstractVirtualModelInstance<?, ?> container = getContainer(evaluationContext);
+			if (container != null) {
 				try {
-					return filterWithConditions(view.getVirtualModelInstancesForVirtualModel(getVirtualModelType().getResourceData(null)),
+					return filterWithConditions(
+							container.getVirtualModelInstancesForVirtualModel(getVirtualModelType().getResourceData(null)),
 							evaluationContext);
 				} catch (FileNotFoundException e) {
 					e.printStackTrace();
@@ -269,7 +267,7 @@ public interface SelectVirtualModelInstance<VMI extends VirtualModelInstance<VMI
 			}
 			else {
 				logger.warning(getStringRepresentation() + " : Cannot find view on which to apply SelectVirtualModelInstance");
-				logger.warning("Additional info: getView()=" + getView());
+				logger.warning("Additional info: getContainer()=" + getContainer());
 				return null;
 			}
 		}
@@ -294,14 +292,14 @@ public interface SelectVirtualModelInstance<VMI extends VirtualModelInstance<VMI
 	}
 
 	@DefineValidationRule
-	public static class ViewBindingIsRequiredAndMustBeValid extends BindingIsRequiredAndMustBeValid<SelectVirtualModelInstance> {
-		public ViewBindingIsRequiredAndMustBeValid() {
-			super("'view'_binding_is_not_valid", SelectVirtualModelInstance.class);
+	public static class ContainerBindingIsRequiredAndMustBeValid extends BindingIsRequiredAndMustBeValid<SelectVirtualModelInstance> {
+		public ContainerBindingIsRequiredAndMustBeValid() {
+			super("'container'_binding_is_not_valid", SelectVirtualModelInstance.class);
 		}
 
 		@Override
-		public DataBinding<View> getBinding(SelectVirtualModelInstance object) {
-			return object.getView();
+		public DataBinding<AbstractVirtualModelInstance<?, ?>> getBinding(SelectVirtualModelInstance object) {
+			return object.getContainer();
 		}
 
 		@Override
@@ -309,24 +307,7 @@ public interface SelectVirtualModelInstance<VMI extends VirtualModelInstance<VMI
 				SelectVirtualModelInstance object) {
 			ValidationIssue<BindingIsRequiredAndMustBeValid<SelectVirtualModelInstance>, SelectVirtualModelInstance> returned = super.applyValidation(
 					object);
-			if (returned instanceof UndefinedRequiredBindingIssue) {
-				((UndefinedRequiredBindingIssue) returned).addToFixProposals(new UseDefaultView());
-			}
 			return returned;
-		}
-
-		protected static class UseDefaultView
-				extends FixProposal<BindingIsRequiredAndMustBeValid<SelectVirtualModelInstance>, SelectVirtualModelInstance> {
-
-			public UseDefaultView() {
-				super("sets_view_to_'view'");
-			}
-
-			@Override
-			protected void fixAction() {
-				SelectVirtualModelInstance action = getValidable();
-				action.setView(new DataBinding<View>("view"));
-			}
 		}
 
 	}

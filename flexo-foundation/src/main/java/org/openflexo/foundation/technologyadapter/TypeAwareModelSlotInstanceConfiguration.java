@@ -46,10 +46,10 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstanceModelFactory;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.TypeAwareModelSlotInstance;
-import org.openflexo.foundation.fml.rt.View;
 import org.openflexo.foundation.fml.rt.action.ModelSlotInstanceConfiguration;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
@@ -99,7 +99,8 @@ public abstract class TypeAwareModelSlotInstanceConfiguration<M extends FlexoMod
 	}
 
 	@Override
-	public TypeAwareModelSlotInstance<M, MM, MS> createModelSlotInstance(FlexoConceptInstance fci, View view) {
+	public TypeAwareModelSlotInstance<M, MM, MS> createModelSlotInstance(FlexoConceptInstance fci,
+			AbstractVirtualModelInstance<?, ?> view) {
 		AbstractVirtualModelInstanceModelFactory<?> factory = fci.getFactory();
 		TypeAwareModelSlotInstance<M, MM, MS> returned = factory.newInstance(TypeAwareModelSlotInstance.class);
 		returned.setModelSlot(getModelSlot());
@@ -109,13 +110,13 @@ public abstract class TypeAwareModelSlotInstanceConfiguration<M extends FlexoMod
 	}
 
 	protected TypeAwareModelSlotInstance<M, MM, MS> configureModelSlotInstance(TypeAwareModelSlotInstance<M, MM, MS> msInstance,
-			View view) {
+			AbstractVirtualModelInstance<?, ?> view) {
 		if (getOption() == DefaultModelSlotInstanceConfigurationOption.SelectExistingModel) {
 			if (modelResource != null) {
 				System.out.println("Select model with uri " + getModelResource().getURI());
 				msInstance.setAccessedResourceData(getModelResource().getModel());
 				msInstance.setModelURI(getModelResource().getURI());
-				msInstance.setView(view);
+				// msInstance.setView(view);
 			}
 			else {
 				logger.warning("No model for model slot " + getModelSlot());
@@ -140,7 +141,7 @@ public abstract class TypeAwareModelSlotInstanceConfiguration<M extends FlexoMod
 			if (modelResource != null) {
 				msInstance.setAccessedResourceData(getModelResource().getModel());
 				msInstance.setModelURI(getModelResource().getURI());
-				msInstance.setView(view);
+				// msInstance.setView(view);
 				// System.out.println("***** Created model resource " + getModelResource());
 				// System.out.println("***** Created model " + getModelResource().getModel());
 				// System.out.println("***** Created model with uri=" + getModelResource().getModel().getURI());

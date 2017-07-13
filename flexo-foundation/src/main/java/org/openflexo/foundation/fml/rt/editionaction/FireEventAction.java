@@ -44,10 +44,11 @@ import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoEvent;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
+import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.FlexoEventInstance;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.XMLElement;
@@ -62,12 +63,12 @@ import org.openflexo.model.annotations.XMLElement;
 @ModelEntity
 @ImplementationClass(FireEventAction.FireEventActionImpl.class)
 @XMLElement
-public interface FireEventAction<VMI extends VirtualModelInstance<VMI, ?>>
+public interface FireEventAction<VMI extends AbstractVirtualModelInstance<VMI, ?>>
 		extends AbstractAddFlexoConceptInstance<FlexoConceptInstance, VMI> {
 
 	public FlexoEvent getEventType();
 
-	public static abstract class FireEventActionImpl<VMI extends VirtualModelInstance<VMI, ?>>
+	public static abstract class FireEventActionImpl<VMI extends AbstractVirtualModelInstance<VMI, ?>>
 			extends AbstractAddFlexoConceptInstanceImpl<FlexoConceptInstance, VMI> implements FireEventAction<VMI> {
 
 		private static final Logger logger = Logger.getLogger(FireEventAction.class.getPackage().getName());
