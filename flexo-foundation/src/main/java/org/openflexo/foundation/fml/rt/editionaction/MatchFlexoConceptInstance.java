@@ -48,11 +48,11 @@ import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
-import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.CreationScheme;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
@@ -60,7 +60,7 @@ import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.FlexoProperty;
-import org.openflexo.foundation.fml.URIParameter;
+import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelInstanceType;
 import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
@@ -779,14 +779,13 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 				for (CreateFlexoConceptInstanceParameter p : action.getParameters()) {
 					if (p.getParam().getIsRequired()) {
 						if (p.getValue() == null || !p.getValue().isSet()) {
-							if (p.getParam() instanceof URIParameter && ((URIParameter) p.getParam()).getBaseURI().isSet()
+							/*if (p.getParam() instanceof URIParameter && ((URIParameter) p.getParam()).getBaseURI().isSet()
 									&& ((URIParameter) p.getParam()).getBaseURI().isValid()) {
 								// Special case, we will find a way to manage this
 							}
-							else {
-								issues.add(
-										new ValidationError(this, action, "parameter_s_value_is_not_defined: " + p.getParam().getName()));
-							}
+							else {*/
+							issues.add(new ValidationError(this, action, "parameter_s_value_is_not_defined: " + p.getParam().getName()));
+							// }
 						}
 						else if (!p.getValue().isValid()) {
 							logger.info("Binding NOT valid: " + p.getValue() + " for " + p.getName() + " object="

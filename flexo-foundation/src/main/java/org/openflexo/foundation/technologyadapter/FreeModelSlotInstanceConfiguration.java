@@ -46,10 +46,10 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstanceModelFactory;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.FreeModelSlotInstance;
-import org.openflexo.foundation.fml.rt.View;
 import org.openflexo.foundation.fml.rt.action.ModelSlotInstanceConfiguration;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
@@ -114,7 +114,8 @@ public class FreeModelSlotInstanceConfiguration<RD extends ResourceData<RD> & Te
 	}
 
 	@Override
-	public FreeModelSlotInstance<RD, MS> createModelSlotInstance(FlexoConceptInstance flexoConceptInstance, View view) {
+	public FreeModelSlotInstance<RD, MS> createModelSlotInstance(FlexoConceptInstance flexoConceptInstance,
+			AbstractVirtualModelInstance<?, ?> view) {
 
 		AbstractVirtualModelInstanceModelFactory<?> factory = flexoConceptInstance.getFactory();
 

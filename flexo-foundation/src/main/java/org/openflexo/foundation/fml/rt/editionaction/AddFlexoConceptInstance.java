@@ -41,7 +41,7 @@ package org.openflexo.foundation.fml.rt.editionaction;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.annotations.FML;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
+import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
@@ -67,10 +67,10 @@ import org.openflexo.model.validation.ValidationRule;
 @ImplementationClass(AddFlexoConceptInstance.AddFlexoConceptInstanceImpl.class)
 @XMLElement
 @FML("AddFlexoConceptInstance")
-public interface AddFlexoConceptInstance<VMI extends VirtualModelInstance<VMI, ?>>
+public interface AddFlexoConceptInstance<VMI extends AbstractVirtualModelInstance<VMI, ?>>
 		extends AbstractAddFlexoConceptInstance<FlexoConceptInstance, VMI> {
 
-	public static abstract class AddFlexoConceptInstanceImpl<VMI extends VirtualModelInstance<VMI, ?>>
+	public static abstract class AddFlexoConceptInstanceImpl<VMI extends AbstractVirtualModelInstance<VMI, ?>>
 			extends AbstractAddFlexoConceptInstanceImpl<FlexoConceptInstance, VMI> implements AddFlexoConceptInstance<VMI> {
 
 		static final Logger logger = Logger.getLogger(AddFlexoConceptInstance.class.getPackage().getName());

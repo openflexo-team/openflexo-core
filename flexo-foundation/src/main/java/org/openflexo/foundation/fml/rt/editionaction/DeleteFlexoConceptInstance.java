@@ -52,10 +52,9 @@ import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.FlexoProperty;
-import org.openflexo.foundation.fml.URIParameter;
 import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.foundation.fml.editionaction.DeleteAction;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
+import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.action.DeletionSchemeAction;
@@ -94,7 +93,7 @@ import org.openflexo.model.validation.ValidationRule;
 @ImplementationClass(DeleteFlexoConceptInstance.DeleteFlexoConceptInstanceImpl.class)
 @XMLElement
 @FML("DeleteFlexoConceptInstance")
-public interface DeleteFlexoConceptInstance<VMI extends VirtualModelInstance<VMI, ?>> extends DeleteAction<FlexoConceptInstance> {
+public interface DeleteFlexoConceptInstance<VMI extends AbstractVirtualModelInstance<VMI, ?>> extends DeleteAction<FlexoConceptInstance> {
 
 	// @PropertyIdentifier(type = DataBinding.class)
 	// public static final String VIRTUAL_MODEL_INSTANCE_KEY = "virtualModelInstance";
@@ -138,7 +137,7 @@ public interface DeleteFlexoConceptInstance<VMI extends VirtualModelInstance<VMI
 
 	public FlexoConcept getFlexoConceptType();
 
-	public static abstract class DeleteFlexoConceptInstanceImpl<VMI extends VirtualModelInstance<VMI, ?>>
+	public static abstract class DeleteFlexoConceptInstanceImpl<VMI extends AbstractVirtualModelInstance<VMI, ?>>
 			extends DeleteActionImpl<FlexoConceptInstance> implements DeleteFlexoConceptInstance<VMI> {
 
 		private static final Logger logger = Logger.getLogger(DeleteFlexoConceptInstance.class.getPackage().getName());
@@ -296,7 +295,7 @@ public interface DeleteFlexoConceptInstance<VMI extends VirtualModelInstance<VMI
 
 		@Override
 		public FlexoConceptInstance execute(RunTimeEvaluationContext evaluationContext) {
-			//logger.info("Perform performDeleteFlexoConceptInstance " + evaluationContext);
+			// logger.info("Perform performDeleteFlexoConceptInstance " + evaluationContext);
 			AbstractVirtualModelInstance<?, ?> vmInstance = null; // getVirtualModelInstance(evaluationContext);
 
 			// DeletionSchemeAction deletionSchemeAction = DeletionSchemeAction.actionType.makeNewEmbeddedAction(null, null, action);
@@ -307,9 +306,9 @@ public interface DeleteFlexoConceptInstance<VMI extends VirtualModelInstance<VMI
 				if (objectToDelete != null) {
 					vmInstance = objectToDelete.getVirtualModelInstance();
 
-					//logger.info("FlexoConceptInstance To Delete: " + objectToDelete);
-					//logger.info("VirtualModelInstance: " + vmInstance);
-					//logger.info("deletionScheme: " + getDeletionScheme());
+					// logger.info("FlexoConceptInstance To Delete: " + objectToDelete);
+					// logger.info("VirtualModelInstance: " + vmInstance);
+					// logger.info("deletionScheme: " + getDeletionScheme());
 
 					if (getDeletionScheme() == null) {
 						logger.warning("No deletion scheme !");
@@ -409,15 +408,8 @@ public interface DeleteFlexoConceptInstance<VMI extends VirtualModelInstance<VMI
 					FlexoBehaviourParameter param = p.getParam();
 					if (param.getIsRequired()) {
 						if (p.getValue() == null || !p.getValue().isSet()) {
-							DataBinding<String> uri = ((URIParameter) param).getBaseURI();
-							if (param instanceof URIParameter && uri.isSet() && uri.isValid()) {
-								// Special case, we will find a way to manage this
-							}
-							else {
-								issues.add(
-										new ValidationError<DeleteFlexoConceptInstanceParametersMustBeValid, DeleteFlexoConceptInstance<?>>(
-												this, action, "parameter_s_value_is_not_defined: " + param.getName()));
-							}
+							issues.add(new ValidationError<DeleteFlexoConceptInstanceParametersMustBeValid, DeleteFlexoConceptInstance<?>>(
+									this, action, "parameter_s_value_is_not_defined: " + param.getName()));
 						}
 						else if (!p.getValue().isValid()) {
 							DeleteFlexoConceptInstanceImpl.logger

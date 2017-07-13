@@ -54,21 +54,22 @@ import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.connie.expr.BinaryOperatorExpression;
 import org.openflexo.connie.expr.BooleanBinaryOperator;
 import org.openflexo.connie.expr.Expression;
-import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
+import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelInstanceType;
 import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.foundation.fml.binding.FetchRequestConditionSelectedBindingVariable;
 import org.openflexo.foundation.fml.editionaction.FetchRequest;
 import org.openflexo.foundation.fml.editionaction.FetchRequestCondition;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
+import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.model.annotations.DefineValidationRule;
@@ -95,7 +96,7 @@ import org.openflexo.model.validation.ValidationRule;
 @ImplementationClass(SelectFlexoConceptInstance.SelectFlexoConceptInstanceImpl.class)
 @XMLElement
 @FML("SelectFlexoConceptInstance")
-public interface SelectFlexoConceptInstance<VMI extends VirtualModelInstance<VMI, ?>>
+public interface SelectFlexoConceptInstance<VMI extends AbstractVirtualModelInstance<VMI, ?>>
 		extends FetchRequest<FMLRTModelSlot<VMI, ?>, VMI, FlexoConceptInstance> {
 
 	@PropertyIdentifier(type = String.class)
@@ -140,7 +141,7 @@ public interface SelectFlexoConceptInstance<VMI extends VirtualModelInstance<VMI
 	 */
 	public VirtualModel getAddressedVirtualModel();
 
-	public static abstract class SelectFlexoConceptInstanceImpl<VMI extends VirtualModelInstance<VMI, ?>>
+	public static abstract class SelectFlexoConceptInstanceImpl<VMI extends AbstractVirtualModelInstance<VMI, ?>>
 			extends FetchRequestImpl<FMLRTModelSlot<VMI, ?>, VMI, FlexoConceptInstance> implements SelectFlexoConceptInstance<VMI> {
 
 		protected static final Logger logger = FlexoLogger.getLogger(SelectFlexoConceptInstance.class.getPackage().getName());
@@ -267,8 +268,7 @@ public interface SelectFlexoConceptInstance<VMI extends VirtualModelInstance<VMI
 		}
 
 		/**
-		 * Return the {@link VirtualModel} beeing addressed by this action, according to the {@link #getVirtualModelInstance()}
-		 * binding
+		 * Return the {@link VirtualModel} beeing addressed by this action, according to the {@link #getVirtualModelInstance()} binding
 		 * 
 		 * @return
 		 */
