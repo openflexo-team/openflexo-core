@@ -48,7 +48,7 @@ import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.EventListener;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.binding.FiredEventBindingVariable;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
+import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.FlexoEventInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;

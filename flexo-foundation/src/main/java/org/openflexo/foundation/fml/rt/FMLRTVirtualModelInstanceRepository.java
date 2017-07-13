@@ -40,46 +40,26 @@ package org.openflexo.foundation.fml.rt;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 
-import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.FlexoServiceManager;
-import org.openflexo.foundation.fml.rt.rm.ViewResource;
-import org.openflexo.foundation.fml.rt.rm.VirtualModelInstanceResource;
+import org.openflexo.foundation.fml.FMLTechnologyAdapter;
+import org.openflexo.foundation.fml.VirtualModel;
+import org.openflexo.foundation.fml.rt.rm.FMLRTVirtualModelInstanceResource;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
+import org.openflexo.foundation.technologyadapter.ModelRepository;
 
 /**
- * The {@link ViewLibrary} contains all {@link ViewResource} referenced in a {@link FlexoProject}<br>
- * 
- * This is a {@link ViewRepository} associated to a {@link FlexoProject} (the associated ResourceCenter is the project itself)
+ * A repository storing {@link FMLRTVirtualModelInstanceResource} for a resource center
  * 
  * @author sylvain
+ * 
  */
+public class FMLRTVirtualModelInstanceRepository<I> extends
+		ModelRepository<FMLRTVirtualModelInstanceResource, VirtualModelInstance, VirtualModel, FMLRTTechnologyAdapter, FMLTechnologyAdapter, I> {
 
-// TODO : Merge ViewRepository / ViewLibrary
-@Deprecated
-public class ViewLibrary<I> extends ViewRepository<I> {
-
-	private static final Logger logger = Logger.getLogger(ViewLibrary.class.getPackage().getName());
-
-	private static final String VIEWS = "Views";
-
-	/**
-	 * Create a new ViewLibrary.
-	 */
-	public ViewLibrary(FlexoResourceCenter<I> rc) {
-		this(rc.getServiceManager().getTechnologyAdapterService().getTechnologyAdapter(FMLRTTechnologyAdapter.class), rc);
-		// getRootFolder().setName(rc.getName());
-		// getRootFolder().setFullQualifiedPath("/");
-		// exploreDirectoryLookingForViews(getDirectory(), getRootFolder());
-
-	}
-
-	public ViewLibrary(FMLRTTechnologyAdapter ta, FlexoResourceCenter<I> rc) {
-		super(ta, rc);
-		// getRootFolder().setName(rc.getName());
-		// getRootFolder().setFullQualifiedPath("/");
-		// exploreDirectoryLookingForViews(getDirectory(), getRootFolder());
+	public FMLRTVirtualModelInstanceRepository(FMLRTTechnologyAdapter adapter, FlexoResourceCenter<I> resourceCenter) {
+		super(adapter, resourceCenter);
+		getRootFolder().setRepositoryContext(null);
 	}
 
 	@Override
@@ -90,68 +70,38 @@ public class ViewLibrary<I> extends ViewRepository<I> {
 		return null;
 	}
 
-	/*public static File getExpectedViewLibraryDirectory(FlexoProject project) {
-		File returned = new File(project.getProjectDirectory(), "Views");
-		if (!returned.exists()) {
-			returned.mkdir();
-		}
-		return returned;
-	}*/
-
-	/**
-	 * Creates and returns a newly created view library
-	 * 
-	 * @return a newly created view library
-	 */
-	public static ViewLibrary createNewViewLibrary(FlexoProject project) {
-		ViewLibrary returned = new ViewLibrary(project);
-		project.registerRepository(returned, ViewLibrary.class,
-				project.getServiceManager().getTechnologyAdapterService().getTechnologyAdapter(FMLRTTechnologyAdapter.class));
-		return returned;
-	}
-
-	public List<View> getViewsForViewPointWithURI(String vpURI) {
-		List<View> views = new ArrayList<View>();
-		for (ViewResource vr : getAllResources()) {
-			if (vr.getViewPoint() != null && vr.getViewPointResource().getURI().equals(vpURI)) {
-				views.add(vr.getView());
+	public List<VirtualModelInstance> getVirtualModelInstancesConformToVirtualModel(String virtualModelURI) {
+		List<VirtualModelInstance> views = new ArrayList<>();
+		for (FMLRTVirtualModelInstanceResource vmiRes : getAllResources()) {
+			if (vmiRes.getVirtualModelResource() != null && vmiRes.getVirtualModelResource().getURI().equals(virtualModelURI)) {
+				views.add(vmiRes.getVirtualModelInstance());
 			}
 		}
 		return views;
 	}
 
-	/*public void delete(ViewResource vr) {
-		logger.info("Remove view " + vr);
-		unregisterResource(vr);
-		vr.delete();
-	}
-	
-	public void delete(View v) {
-		delete(v.getResource());
-	}*/
-
-	public boolean isValidForANewViewName(String value) {
+	public boolean isValidForANewVirtualModelInstanceName(String value) {
 		if (value == null) {
 			return false;
 		}
 		return getRootFolder().isValidResourceName(value);
 	}
 
-	public ViewResource getViewResourceNamed(String value) {
+	public FMLRTVirtualModelInstanceResource getVirtualModelInstanceResourceNamed(String value) {
 		if (value == null) {
 			return null;
 		}
 		return getRootFolder().getResourceWithName(value);
 	}
 
-	public ViewResource getView(String viewURI) {
-		if (viewURI == null) {
+	public FMLRTVirtualModelInstanceResource getVirtualModelInstance(String virtualModelInstanceURI) {
+		if (virtualModelInstanceURI == null) {
 			return null;
 		}
-		return getResource(viewURI);
+		return getResource(virtualModelInstanceURI);
 	}
 
-	public VirtualModelInstanceResource<?, ?> getVirtualModelInstance(String virtualModelInstanceURI) {
+	/*public VirtualModelInstanceResource<?, ?> getVirtualModelInstance(String virtualModelInstanceURI) {
 		if (virtualModelInstanceURI == null) {
 			return null;
 		}
@@ -168,9 +118,6 @@ public class ViewLibrary<I> extends ViewRepository<I> {
 					// System.out.println("Found " + vmir.getURI());
 					return vmir;
 				}
-				/*else {
-					System.out.println("Examined " + vmir.getURI());
-				}*/
 			}
 		}
 		else {
@@ -178,6 +125,6 @@ public class ViewLibrary<I> extends ViewRepository<I> {
 		}
 		logger.info("Cannot find VirtualModelInstance '" + virtualModelInstanceURI + "' in '" + getDefaultBaseURI() + "'");
 		return null;
-	}
+	}*/
 
 }

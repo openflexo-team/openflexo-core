@@ -69,12 +69,8 @@ import org.openflexo.foundation.fml.editionaction.FetchRequestCondition;
 import org.openflexo.foundation.fml.rt.action.SynchronizationSchemeAction;
 import org.openflexo.foundation.fml.rt.action.SynchronizationSchemeActionType;
 import org.openflexo.foundation.fml.rt.rm.AbstractVirtualModelInstanceResource;
-import org.openflexo.foundation.fml.rt.rm.ViewResource;
-import org.openflexo.foundation.fml.rt.rm.VirtualModelInstanceResource;
 import org.openflexo.foundation.resource.CannotRenameException;
 import org.openflexo.foundation.resource.FlexoResource;
-import org.openflexo.foundation.resource.FlexoResourceCenter;
-import org.openflexo.foundation.resource.RepositoryFolder;
 import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.technologyadapter.FlexoModel;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
@@ -368,11 +364,11 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 
 	public boolean isValidVirtualModelInstanceName(String virtualModelName);
 
-	@Deprecated
-	public RepositoryFolder<ViewResource, ?> getFolder();
+	// @Deprecated
+	// public RepositoryFolder<AbstractVirtualModelInstanceResource<VMI, TA>, ?> getFolder();
 
-	@Deprecated
-	public ViewLibrary getViewLibrary();
+	// @Deprecated
+	// public ViewLibrary getViewLibrary();
 
 	/**
 	 * Return the list of {@link TechnologyAdapter} used in the context of this {@link View}
@@ -1367,8 +1363,8 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 		 */
 		private void loadVirtualModelInstancesWhenUnloaded() {
 			for (org.openflexo.foundation.resource.FlexoResource<?> r : getResource().getContents()) {
-				if (r instanceof VirtualModelInstanceResource) {
-					((VirtualModelInstanceResource) r).getVirtualModelInstance();
+				if (r instanceof AbstractVirtualModelInstanceResource) {
+					((AbstractVirtualModelInstanceResource<?, ?>) r).getVirtualModelInstance();
 				}
 			}
 		}
@@ -1394,24 +1390,24 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 			return getVirtualModelInstance(virtualModelName) == null;
 		}
 
-		@Deprecated
+		/*@Deprecated
 		@Override
 		public ViewLibrary<?> getViewLibrary() {
-
+		
 			FlexoResourceCenter<?> rc = getResourceCenter();
 			FMLRTTechnologyAdapter rtTA = rc.getServiceManager().getTechnologyAdapterService()
 					.getTechnologyAdapter(FMLRTTechnologyAdapter.class);
 			return rtTA.getViewRepository(rc);
-		}
+		}*/
 
-		@Deprecated
+		/*@Deprecated
 		@Override
-		public RepositoryFolder<ViewResource, ?> getFolder() {
+		public RepositoryFolder<AbstractVirtualModelInstanceResource<VMI, TA>, ?> getFolder() {
 			if (getResource() != null) {
 				return ((ViewLibrary) getViewLibrary()).getParentFolder(getResource());
 			}
 			return null;
-		}
+		}*/
 
 		/**
 		 * Return the list of {@link TechnologyAdapter} used in the context of this {@link View}

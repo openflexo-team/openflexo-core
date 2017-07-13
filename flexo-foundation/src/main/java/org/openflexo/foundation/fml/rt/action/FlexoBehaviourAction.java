@@ -38,15 +38,12 @@
 
 package org.openflexo.foundation.fml.rt.action;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.BindingVariable;
-import org.openflexo.connie.exception.NullReferenceException;
-import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.DataModification;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoException;
@@ -56,28 +53,23 @@ import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.FlexoConcept;
-import org.openflexo.foundation.fml.ListParameter;
-import org.openflexo.foundation.fml.URIParameter;
 import org.openflexo.foundation.fml.binding.DeclarationBindingVariable;
 import org.openflexo.foundation.fml.binding.FMLBindingFactory;
 import org.openflexo.foundation.fml.binding.FlexoBehaviourBindingModel;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
+import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FMLRunTimeEngine;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
-import org.openflexo.foundation.fml.rt.TypeAwareModelSlotInstance;
-import org.openflexo.foundation.fml.rt.ViewObject;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstanceObject;
 import org.openflexo.foundation.fml.rt.editionaction.MatchFlexoConceptInstance;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
-import org.openflexo.foundation.technologyadapter.TypeAwareModelSlot;
 import org.openflexo.foundation.utils.OperationCancelledException;
-import org.openflexo.toolbox.StringUtils;
 
 /**
- * This abstract class is the root class for all actions which can be performed at conceptual or design level, generally on a view tool
- * (such as a diagram).<br>
+ * Base implementation for a {@link FlexoAction} which aims at executing a {@link FlexoBehaviour}
+ * 
  * An {@link FlexoBehaviourAction} represents the execution (in the "instances" world) of an {@link FlexoBehaviour}.<br>
  * To be used and executed on Openflexo platform, it is wrapped in a {@link FlexoAction}.<br>
  * 
@@ -95,7 +87,7 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 
 	protected Hashtable<String, Object> variables;
 	protected ParameterValues parameterValues;
-	protected Hashtable<ListParameter, List> parameterListValues;
+	// protected Hashtable<ListParameter, List> parameterListValues;
 
 	private MatchingSet defaultMatchingSet = null;
 
@@ -108,7 +100,7 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 		super(actionType, focusedObject, globalSelection, editor);
 		variables = new Hashtable<String, Object>();
 		parameterValues = new ParameterValues();
-		parameterListValues = new Hashtable<ListParameter, List>();
+		// parameterListValues = new Hashtable<ListParameter, List>();
 	}
 
 	@Override
@@ -147,10 +139,10 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 			if (defaultValue != null) {
 				parameterValues.put(parameter, defaultValue);
 			}
-			if (parameter instanceof ListParameter) {
+			/*if (parameter instanceof ListParameter) {
 				List list = (List) ((ListParameter) parameter).getList(this);
 				parameterListValues.put((ListParameter) parameter, list);
-			}
+			}*/
 			// logger.info("Parameter " + parameter.getName() + " valid=" + parameter.isValid(this, defaultValue));
 			if (!parameter.isValid(this, defaultValue)) {
 				// logger.info("Parameter " + parameter + " is not valid for value " + defaultValue);
@@ -177,8 +169,8 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 	}
 
 	public FlexoResourceCenter<?> getResourceCenter() {
-		if (getFocusedObject() instanceof ViewObject) {
-			return ((ViewObject) getFocusedObject()).getResourceCenter();
+		if (getFocusedObject() instanceof VirtualModelInstanceObject) {
+			return ((VirtualModelInstanceObject) getFocusedObject()).getResourceCenter();
 		}
 		return null;
 	}
@@ -221,12 +213,12 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 	public Object getParameterValue(FlexoBehaviourParameter parameter) {
 		/*System.out.println("On me demande la valeur du parametre " + parameter.getName() + " a priori c'est "
 				+ parameterValues.get(parameter));*/
-		if (parameter instanceof URIParameter) {
+		/*if (parameter instanceof URIParameter) {
 			if (parameterValues.get(parameter) == null
 					|| parameterValues.get(parameter) instanceof String && StringUtils.isEmpty((String) parameterValues.get(parameter))) {
 				return ((URIParameter) parameter).getDefaultValue(this);
 			}
-		}
+		}*/
 		return parameterValues.get(parameter);
 	}
 
@@ -240,16 +232,14 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 		}*/
 	}
 
-	public List getParameterListValue(ListParameter parameter) {
-		/*System.out.println("On me demande la valeur du parametre " + parameter.getName() + " a priori c'est "
-				+ parameterValues.get(parameter));*/
+	/*public List getParameterListValue(ListParameter parameter) {
 		return parameterListValues.get(parameter);
-	}
+	}*/
 
 	public abstract FB getFlexoBehaviour();
 
 	@Override
-	public VirtualModelInstance getVirtualModelInstance() {
+	public AbstractVirtualModelInstance<?, ?> getVirtualModelInstance() {
 		return retrieveVirtualModelInstance();
 	}
 
@@ -422,14 +412,14 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 				return null;
 			}
 			Object returned = super.put(parameter, value);
-			for (FlexoBehaviourParameter p : parameter.getFlexoBehaviour().getParameters()) {
+			/*for (FlexoBehaviourParameter p : parameter.getFlexoBehaviour().getParameters()) {
 				if (p != parameter && p instanceof URIParameter && ((URIParameter) p).getModelSlot() instanceof TypeAwareModelSlot) {
 					URIParameter uriParam = (URIParameter) p;
 					TypeAwareModelSlot modelSlot = uriParam.getModelSlot();
 					String newURI;
 					try {
 						newURI = uriParam.getBaseURI().getBindingValue(FlexoBehaviourAction.this);
-
+			
 						newURI = modelSlot.generateUniqueURIName(
 								(TypeAwareModelSlotInstance) getVirtualModelInstance().getModelSlotInstance(modelSlot), newURI);
 						logger.info("Generated new URI " + newURI + " for " + getVirtualModelInstance().getModelSlotInstance(modelSlot));
@@ -445,13 +435,13 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 						e.printStackTrace();
 					}
 				}
-			}
+			}*/
 			parameterValueChanged();
 			return returned;
 		}
 	}
 
-	public String retrieveFullURI(FlexoBehaviourParameter parameter) {
+	/*public String retrieveFullURI(FlexoBehaviourParameter parameter) {
 		if (parameter instanceof URIParameter) {
 			URIParameter uriParam = (URIParameter) parameter;
 			if (uriParam.getModelSlot() instanceof TypeAwareModelSlot) {
@@ -461,7 +451,7 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 			}
 		}
 		return "Invalid URI";
-	}
+	}*/
 
 	/*@Override
 	public void debug(String aLogString, FlexoConceptInstance fci, FlexoBehaviour behaviour) {

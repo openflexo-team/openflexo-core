@@ -51,7 +51,7 @@ import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.fml.rt.View;
 import org.openflexo.foundation.fml.rt.ViewLibrary;
 import org.openflexo.foundation.fml.rt.rm.ViewResource;
-import org.openflexo.foundation.fml.rt.rm.ViewResourceFactory;
+import org.openflexo.foundation.fml.rt.rm.FMLRTVirtualModelInstanceResourceFactory;
 import org.openflexo.foundation.resource.RepositoryFolder;
 import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.model.exceptions.ModelDefinitionException;
@@ -100,7 +100,7 @@ public class CreateViewInFolder extends CreateView<CreateViewInFolder, Repositor
 
 	// When creating a View in a folder, there is no container view
 	@Override
-	public View getContainerView() {
+	public View getContainerVirtualModelInstance() {
 		return null;
 	}
 
@@ -126,7 +126,7 @@ public class CreateViewInFolder extends CreateView<CreateViewInFolder, Repositor
 
 		FMLRTTechnologyAdapter fmlRTTechnologyAdapter = getServiceManager().getTechnologyAdapterService()
 				.getTechnologyAdapter(FMLRTTechnologyAdapter.class);
-		ViewResourceFactory factory = fmlRTTechnologyAdapter.getViewResourceFactory();
+		FMLRTVirtualModelInstanceResourceFactory factory = fmlRTTechnologyAdapter.getViewResourceFactory();
 		ViewResource returned;
 		try {
 			returned = factory.makeViewResource(getNewViewName(), null, getViewpointResource(), getFolder(),

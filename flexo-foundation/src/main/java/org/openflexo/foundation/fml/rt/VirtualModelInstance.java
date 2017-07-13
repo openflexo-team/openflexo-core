@@ -46,7 +46,9 @@ import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.XMLElement;
 
 /**
- * Implementation of an instance of a plain {@link VirtualModel} natively managed by the {@link FMLRTTechnologyAdapter}
+ * Implementation of an instance of a plain {@link VirtualModel} natively managed by the {@link FMLRTTechnologyAdapter}<br>
+ * 
+ * Such {@link VirtualModel} instance might be serialized using XML
  * 
  * @author sylvain
  * 

@@ -40,6 +40,7 @@ package org.openflexo.foundation.fml.rt;
 
 import java.util.logging.Logger;
 
+import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.InnerResourceData;
 import org.openflexo.foundation.fml.VirtualModel;
@@ -61,7 +62,7 @@ import org.openflexo.model.annotations.PropertyIdentifier;
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(VirtualModelInstanceObject.VirtualModelInstanceObjectImpl.class)
-public interface VirtualModelInstanceObject extends InnerResourceData<AbstractVirtualModelInstance<?, ?>> {
+public interface VirtualModelInstanceObject extends InnerResourceData<AbstractVirtualModelInstance<?, ?>>, FlexoObject {
 
 	@PropertyIdentifier(type = VirtualModelInstance.class)
 	public static final String VIRTUAL_MODEL_INSTANCE_KEY = "virtualModelInstance";

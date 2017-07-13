@@ -52,7 +52,7 @@ import org.openflexo.foundation.FlexoProjectObject;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.InnerResourceData;
 import org.openflexo.foundation.KVCFlexoObject;
-import org.openflexo.foundation.fml.rt.rm.ViewResourceFactory;
+import org.openflexo.foundation.fml.rt.rm.FMLRTVirtualModelInstanceResourceFactory;
 import org.openflexo.foundation.fml.rt.rm.VirtualModelInstanceResourceFactory;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.ResourceData;
@@ -308,8 +308,8 @@ public class FlexoObjectReference<O extends FlexoObject> extends KVCFlexoObject 
 			String s1 = resourceIdentifier.substring(0, resourceIdentifier.lastIndexOf("/"));
 			String s2 = resourceIdentifier.substring(resourceIdentifier.lastIndexOf("/"));
 			alternateURIs
-					.add(s1 + ViewResourceFactory.VIEW_SUFFIX + s2 + VirtualModelInstanceResourceFactory.VIRTUAL_MODEL_INSTANCE_SUFFIX);
-			alternateURIs.add(s1 + ViewResourceFactory.VIEW_SUFFIX + s2);
+					.add(s1 + FMLRTVirtualModelInstanceResourceFactory.VIEW_SUFFIX + s2 + VirtualModelInstanceResourceFactory.VIRTUAL_MODEL_INSTANCE_SUFFIX);
+			alternateURIs.add(s1 + FMLRTVirtualModelInstanceResourceFactory.VIEW_SUFFIX + s2);
 			alternateURIs.add(s1 + s2 + VirtualModelInstanceResourceFactory.VIRTUAL_MODEL_INSTANCE_SUFFIX);
 		}
 		for (String alternateURI : alternateURIs) {

@@ -46,7 +46,7 @@ import org.openflexo.ApplicationContext;
 import org.openflexo.foundation.FlexoService;
 import org.openflexo.foundation.FlexoServiceImpl;
 import org.openflexo.foundation.fml.rt.rm.ViewResource;
-import org.openflexo.foundation.fml.rt.rm.ViewResourceImpl;
+import org.openflexo.foundation.fml.rt.rm.FMLRTVirtualModelInstanceResourceImpl;
 import org.openflexo.foundation.resource.FileIODelegate;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.MissingFlexoResource;
@@ -107,8 +107,8 @@ public class ResourceConsistencyService extends FlexoServiceImpl {
 		if (value instanceof FlexoResource<?>) {
 			informOfURIConflict((FlexoResource<?>) value);
 		}
-		if (value instanceof ViewResourceImpl) {
-			informOfViewpointMissing((ViewResourceImpl) value);
+		if (value instanceof FMLRTVirtualModelInstanceResourceImpl) {
+			informOfViewpointMissing((FMLRTVirtualModelInstanceResourceImpl) value);
 		}
 	}
 
@@ -124,7 +124,7 @@ public class ResourceConsistencyService extends FlexoServiceImpl {
 	 * 
 	 * @param viewResource
 	 */
-	private void informOfViewpointMissing(ViewResourceImpl viewResource) {
+	private void informOfViewpointMissing(FMLRTVirtualModelInstanceResourceImpl viewResource) {
 		if (viewResource.getViewPointResource() == null && !viewsWithoutViewpoint.contains(viewResource)) {
 			informOfViewPointMissing(viewResource);
 			viewsWithoutViewpoint.add(viewResource);
@@ -185,7 +185,7 @@ public class ResourceConsistencyService extends FlexoServiceImpl {
 	 * 
 	 * @param resource
 	 */
-	private static void informOfViewPointMissing(ViewResourceImpl resource) {
+	private static void informOfViewPointMissing(FMLRTVirtualModelInstanceResourceImpl resource) {
 		if (resource != null) {
 			Thread.dumpStack();
 			FlexoController.notify("<html> " + "<h3>Viewpoint resources is missing!</h3>" + "<p>View <font color=\"red\">"

@@ -38,7 +38,7 @@
 
 package org.openflexo.foundation.fml.rt;
 
-import org.openflexo.foundation.fml.rt.rm.ViewResource;
+import org.openflexo.foundation.fml.rt.rm.FMLRTVirtualModelInstanceResource;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.model.factory.EditingContext;
@@ -51,11 +51,11 @@ import org.openflexo.model.factory.ModelFactory;
  * @author sylvain
  * 
  */
-public class ViewModelFactory extends VirtualModelInstanceModelFactory<ViewResource> {
+public class FMLRTVirtualModelInstanceModelFactory extends AbstractVirtualModelInstanceModelFactory<FMLRTVirtualModelInstanceResource> {
 
-	public ViewModelFactory(ViewResource viewResource, EditingContext editingContext, TechnologyAdapterService taService)
-			throws ModelDefinitionException {
-		super(viewResource, View.class, editingContext, taService);
+	public FMLRTVirtualModelInstanceModelFactory(FMLRTVirtualModelInstanceResource resource, EditingContext editingContext,
+			TechnologyAdapterService taService) throws ModelDefinitionException {
+		super(resource, VirtualModelInstance.class, editingContext, taService);
 	}
 
 }

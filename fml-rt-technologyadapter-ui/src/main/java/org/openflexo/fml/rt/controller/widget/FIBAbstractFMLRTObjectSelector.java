@@ -54,7 +54,7 @@ import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.View;
-import org.openflexo.foundation.fml.rt.ViewRepository;
+import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceRepository;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.rm.ViewResource;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
@@ -242,7 +242,7 @@ public abstract class FIBAbstractFMLRTObjectSelector<T extends FlexoConceptInsta
 	}
 
 	public List<ViewResource> getViewResources(RepositoryFolder<?, ?> folder) {
-		if (folder.getResourceRepository() instanceof ViewRepository) {
+		if (folder.getResourceRepository() instanceof FMLRTVirtualModelInstanceRepository) {
 			return (List) folder.getResources();
 		}
 		return null;

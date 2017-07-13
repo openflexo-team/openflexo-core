@@ -41,8 +41,8 @@ package org.openflexo.foundation.fml.rt;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.rt.rm.VirtualModelInstanceResource;
+import org.openflexo.foundation.fml.rt.rm.AbstractVirtualModelInstanceResource;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
@@ -57,14 +57,15 @@ import org.openflexo.toolbox.StringUtils;
  * Concretize the binding of a {@link FMLRTModelSlot} to a concrete {@link VirtualModelInstance} conform to a given {@link VirtualModel}<br>
  * 
  * @author Sylvain Guerin
+ * 
  * @see FMLRTModelSlot
  * 
  */
 @ModelEntity
 @ImplementationClass(VirtualModelModelSlotInstance.VirtualModelModelSlotInstanceImpl.class)
 @XMLElement
-public interface VirtualModelModelSlotInstance<VMI extends VirtualModelInstance<VMI, VM>, VM extends VirtualModel<VM>>
-		extends ModelSlotInstance<FMLRTModelSlot<VMI, VM>, VMI> {
+public interface VirtualModelModelSlotInstance<VMI extends AbstractVirtualModelInstance<VMI, TA>, TA extends TechnologyAdapter>
+		extends ModelSlotInstance<FMLRTModelSlot<VMI, TA>, VMI> {
 
 	@PropertyIdentifier(type = String.class)
 	public static final String VIRTUAL_MODEL_INSTANCE_URI_KEY = "virtualModelInstanceURI";
@@ -76,37 +77,25 @@ public interface VirtualModelModelSlotInstance<VMI extends VirtualModelInstance<
 	@Setter(VIRTUAL_MODEL_INSTANCE_URI_KEY)
 	public void setVirtualModelInstanceURI(String virtualModelInstanceURI);
 
-	public static abstract class VirtualModelModelSlotInstanceImpl<VMI extends VirtualModelInstance<VMI, VM>, VM extends VirtualModel<VM>>
-			extends ModelSlotInstanceImpl<FMLRTModelSlot<VMI, VM>, VMI>implements VirtualModelModelSlotInstance<VMI, VM> {
+	public static abstract class VirtualModelModelSlotInstanceImpl<VMI extends AbstractVirtualModelInstance<VMI, TA>, TA extends TechnologyAdapter>
+			extends ModelSlotInstanceImpl<FMLRTModelSlot<VMI, TA>, VMI> implements VirtualModelModelSlotInstance<VMI, TA> {
 
 		private static final Logger logger = Logger.getLogger(VirtualModelModelSlotInstance.class.getPackage().getName());
 
 		// Serialization/deserialization only, do not use
 		private String virtualModelInstanceURI;
 
-		/*public VirtualModelModelSlotInstanceImpl(View view, FMLRTModelSlot modelSlot) {
-			super(view, modelSlot);
-		}*/
-
-		/*public VirtualModelModelSlotInstanceImpl(VirtualModelInstance vmInstance, FMLRTModelSlot modelSlot) {
-			super(vmInstance, modelSlot);
-		}*/
-
-		/**
-		 * Default constructor
-		 */
-		public VirtualModelModelSlotInstanceImpl() {
-			super();
-		}
-
 		@Override
-		public VirtualModelInstanceResource<VMI, VM> getResource() {
+		public AbstractVirtualModelInstanceResource<VMI, TA> getResource() {
 			if (getVirtualModelInstance() != null && resource == null && StringUtils.isNotEmpty(virtualModelInstanceURI)) {
 
-				FMLRTTechnologyAdapter fmlRTTA = getServiceManager().getTechnologyAdapterService()
+				resource = (AbstractVirtualModelInstanceResource<VMI, TA>) getServiceManager().getResourceManager()
+						.getResource(virtualModelInstanceURI);
+
+				/*FMLRTTechnologyAdapter fmlRTTA = getServiceManager().getTechnologyAdapterService()
 						.getTechnologyAdapter(FMLRTTechnologyAdapter.class);
 				ViewLibrary<?> viewRepository;
-
+				
 				if (getResourceCenter() != null) {
 					viewRepository = (ViewLibrary<?>) fmlRTTA.getViewRepository(getResourceCenter());
 				}
@@ -114,25 +103,14 @@ public interface VirtualModelModelSlotInstance<VMI extends VirtualModelInstance<
 					viewRepository = (ViewLibrary<?>) fmlRTTA.getViewRepository(getVirtualModelInstance().getView().getResourceCenter());
 				}
 				resource = (VirtualModelInstanceResource<VMI, VM>) viewRepository.getVirtualModelInstance(virtualModelInstanceURI);
-
+				*/
 			}
 
 			if (resource == null && StringUtils.isNotEmpty(virtualModelInstanceURI)) {
 				logger.warning("Cannot find virtual model instance " + virtualModelInstanceURI);
 			}
-			return (VirtualModelInstanceResource<VMI, VM>) resource;
+			return (AbstractVirtualModelInstanceResource<VMI, TA>) resource;
 		}
-
-		/*@Override
-		public VMI getAccessedResourceData() {
-			if (getResource() != null) {
-				return getResource().getVirtualModelInstance();
-			}
-			if (accessedResourceData == null && StringUtils.isNotEmpty(getVirtualModelInstanceURI())) {
-				logger.warning("Cannot find virtual model instance " + getVirtualModelInstanceURI());
-			}
-			return accessedResourceData;
-		}*/
 
 		// Serialization/deserialization only, do not use
 		@Override

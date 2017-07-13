@@ -45,7 +45,7 @@ import org.openflexo.xml.XMLRootElementInfo;
  *
  */
 public class VirtualModelInstanceResourceFactory
-		extends VirtualModelInstanceResourceFactory<VirtualModelInstance, VirtualModel, VirtualModelInstanceResource> {
+		extends AbstractVirtualModelInstanceResourceFactory<VirtualModelInstance, FMLRTTechnologyAdapter, VirtualModelInstanceResource> {
 
 	private static final Logger logger = Logger.getLogger(VirtualModelInstanceResourceFactory.class.getPackage().getName());
 

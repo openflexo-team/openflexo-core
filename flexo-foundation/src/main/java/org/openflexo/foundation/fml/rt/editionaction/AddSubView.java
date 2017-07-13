@@ -40,14 +40,14 @@ package org.openflexo.foundation.fml.rt.editionaction;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Logger;
+
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.annotations.FML;
-import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.fml.rm.ViewPointResource;
+import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
-import org.openflexo.foundation.fml.rt.View;
 import org.openflexo.foundation.fml.rt.action.CreateSubViewInView;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.foundation.fml.rt.rm.ViewResource;
@@ -66,7 +66,7 @@ import org.openflexo.model.annotations.XMLElement;
 @ImplementationClass(AddSubView.AddSubViewImpl.class)
 @XMLElement
 @FML("AddSubView")
-public interface AddSubView extends AddVirtualModelInstance<View> {
+public interface AddSubView extends AddAbstractVirtualModelInstance<View> {
 
 	public ViewPointResource getViewPointType();
 

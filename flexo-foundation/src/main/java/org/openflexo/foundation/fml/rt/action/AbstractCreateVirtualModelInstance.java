@@ -52,25 +52,29 @@ import org.openflexo.foundation.FlexoObserver;
 import org.openflexo.foundation.InvalidArgumentException;
 import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionType;
-import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.CreationScheme;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
-import org.openflexo.foundation.fml.ViewPoint;
-import org.openflexo.foundation.fml.rm.ViewPointResource;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
+import org.openflexo.foundation.fml.VirtualModel;
+import org.openflexo.foundation.fml.rm.VirtualModelResource;
+import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
+import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.fml.rt.ModelSlotInstance;
-import org.openflexo.foundation.fml.rt.View;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
+import org.openflexo.foundation.fml.rt.rm.AbstractVirtualModelInstanceResource;
+import org.openflexo.foundation.fml.rt.rm.ViewResource;
 import org.openflexo.foundation.fml.rt.rm.VirtualModelInstanceResource;
+import org.openflexo.foundation.fml.rt.rm.VirtualModelInstanceResourceFactory;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
+import org.openflexo.foundation.resource.RepositoryFolder;
 import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
+import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.toolbox.JavaUtils;
 import org.openflexo.toolbox.StringUtils;
 
 /**
- * Abstract base implementation for an action which aims at creating a new VirtualModelInstance (a View or a VirtualModelInstance)
- * This action is called to create a new {@link VirtualModelInstance} in a {@link View}
+ * Abstract base implementation for an action which aims at creating a new AbstractVirtualModelInstance
  * 
  * @author sylvain
  * 
@@ -79,7 +83,7 @@ import org.openflexo.toolbox.StringUtils;
  * @param <T>
  *            type of container of newly created VirtualModelInstance
  */
-public abstract class AbstractCreateVirtualModelInstance<A extends AbstractCreateVirtualModelInstance<A, T, VMI, VM>, T extends FlexoObject, VMI extends VirtualModelInstance<VMI, VM>, VM extends VirtualModel<VM>>
+public abstract class AbstractCreateVirtualModelInstance<A extends AbstractCreateVirtualModelInstance<A, T, VMI, TA>, T extends FlexoObject, VMI extends AbstractVirtualModelInstance<VMI, TA>, TA extends TechnologyAdapter>
 		extends FlexoAction<A, T, FlexoObject> implements FlexoObserver {
 
 	private static final Logger logger = Logger.getLogger(AbstractCreateVirtualModelInstance.class.getPackage().getName());
@@ -88,20 +92,20 @@ public abstract class AbstractCreateVirtualModelInstance<A extends AbstractCreat
 
 	private String newVirtualModelInstanceName;
 	private String newVirtualModelInstanceTitle;
-	private VM virtualModel;
+	private VirtualModel virtualModel;
 	private CreationScheme creationScheme;
 	private CreationSchemeAction creationSchemeAction;
 
 	private boolean skipChoosePopup = false;
 	private boolean escapeModelSlotConfiguration = false;
 
+	private boolean openAfterCreation = true;
+
 	protected AbstractCreateVirtualModelInstance(FlexoActionType<A, T, FlexoObject> actionType, T focusedObject,
 			Vector<FlexoObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 		modelSlotConfigurations = new Hashtable<ModelSlot<?>, ModelSlotInstanceConfiguration<?, ?>>();
 	}
-
-	public abstract VirtualModelInstanceResource<VMI, VM> makeVirtualModelInstanceResource() throws SaveResourceException;
 
 	/**
 	 * Return boolean indicating if proposed name is a valid as name for the new VirtualModelInstance
@@ -134,7 +138,7 @@ public abstract class AbstractCreateVirtualModelInstance<A extends AbstractCreat
 			index++;
 		}*/
 
-		VirtualModelInstanceResource<VMI, VM> newVirtualModelInstanceResource = makeVirtualModelInstanceResource();
+		AbstractVirtualModelInstanceResource<VMI, TA> newVirtualModelInstanceResource = makeVirtualModelInstanceResource();
 
 		newVirtualModelInstance = newVirtualModelInstanceResource.getVirtualModelInstance();
 
@@ -153,7 +157,8 @@ public abstract class AbstractCreateVirtualModelInstance<A extends AbstractCreat
 				// System.out.println("*** ModelSlot: " + ms);
 				ModelSlotInstanceConfiguration<?, ?> configuration = getModelSlotInstanceConfiguration(ms);
 				if (configuration.isValidConfiguration()) {
-					ModelSlotInstance<?, ?> msi = configuration.createModelSlotInstance(newVirtualModelInstance, getContainerView());
+					ModelSlotInstance<?, ?> msi = configuration.createModelSlotInstance(newVirtualModelInstance,
+							getContainerVirtualModelInstance());
 					msi.setFlexoConceptInstance(newVirtualModelInstance);
 					newVirtualModelInstance.addToActors(msi);
 				}
@@ -182,8 +187,8 @@ public abstract class AbstractCreateVirtualModelInstance<A extends AbstractCreat
 		}
 
 		// We add the VirtualModelInstance to the view
-		if (getContainerView() != null) {
-			getContainerView().addToVirtualModelInstances(newVirtualModelInstance);
+		if (getContainerVirtualModelInstance() != null) {
+			getContainerVirtualModelInstance().addToVirtualModelInstances(newVirtualModelInstance);
 		}
 
 		System.out.println("Now, we try to synchronize the new virtual model instance");
@@ -255,11 +260,11 @@ public abstract class AbstractCreateVirtualModelInstance<A extends AbstractCreat
 
 	private final Hashtable<ModelSlot<?>, ModelSlotInstanceConfiguration<?, ?>> modelSlotConfigurations;
 
-	public VM getVirtualModel() {
+	public VirtualModel getVirtualModel() {
 		return virtualModel;
 	}
 
-	public void setVirtualModel(VM virtualModel) {
+	public void setVirtualModel(VirtualModel virtualModel) {
 		if (virtualModel != this.virtualModel) {
 			this.virtualModel = virtualModel;
 			modelSlotConfigurations.clear();
@@ -377,9 +382,9 @@ public abstract class AbstractCreateVirtualModelInstance<A extends AbstractCreat
 		boolean wasValidable = isActionValidable();
 		this.creationScheme = creationScheme;
 		if (creationScheme != null) {
-			creationSchemeAction = CreationSchemeAction.actionType
-					.makeNewEmbeddedAction(getFocusedObject() instanceof VirtualModelInstance
-							? (AbstractVirtualModelInstance<?, ?>) getFocusedObject() : null, null, this);
+			creationSchemeAction = CreationSchemeAction.actionType.makeNewEmbeddedAction(
+					getFocusedObject() instanceof VirtualModelInstance ? (AbstractVirtualModelInstance<?, ?>) getFocusedObject() : null,
+					null, this);
 			creationSchemeAction.setCreationScheme(creationScheme);
 			creationSchemeAction.addObserver(this);
 			getPropertyChangeSupport().firePropertyChange("creationSchemeAction", null, creationSchemeAction);
@@ -412,27 +417,27 @@ public abstract class AbstractCreateVirtualModelInstance<A extends AbstractCreat
 	}
 
 	/**
-	 * Return the ViewPoint of the View acting as container of currently created {@link VirtualModelInstance}.<br>
-	 * Note that if we are creating a plain View, container might be null, and this method will return null
+	 * Return the VirtualModel of the container of currently created {@link VirtualModelInstance}.<br>
+	 * Note that if we are creating a top-level VirtualModelInstance, container might be null, and this method will return null
 	 * 
 	 * @return
 	 */
-	public ViewPoint getContainerViewpoint() {
-		if (getContainerView() != null) {
-			return getContainerView().getViewPoint();
+	public VirtualModel getContainerVirtualModel() {
+		if (getContainerVirtualModelInstance() != null) {
+			return getContainerVirtualModelInstance().getVirtualModel();
 		}
 		return null;
 	}
 
 	/**
-	 * Return the resource of the ViewPoint of the View acting as container of currently created {@link VirtualModelInstance}.<br>
-	 * Note that if we are creating a plain View, container might be null, and this method wil return null
+	 * Return the VirtualModel resource of the container of currently created {@link VirtualModelInstance}.<br>
+	 * Note that if we are creating a top-level VirtualModelInstance, container might be null, and this method will return null
 	 * 
 	 * @return
 	 */
-	public ViewPointResource getContainerViewpointResource() {
-		if (getContainerViewpoint() != null) {
-			return (ViewPointResource) getContainerViewpoint().getResource();
+	public VirtualModelResource getContainerVirtualModelResource() {
+		if (getContainerVirtualModel() != null) {
+			return (VirtualModelResource) getContainerVirtualModel().getResource();
 		}
 		return null;
 	}
@@ -443,9 +448,9 @@ public abstract class AbstractCreateVirtualModelInstance<A extends AbstractCreat
 	 * 
 	 * @return
 	 */
-	public abstract View getContainerView();
+	public abstract AbstractVirtualModelInstance<?, ?> getContainerVirtualModelInstance();
 
-	public boolean isVisible(VM virtualModel) {
+	public boolean isVisible(VirtualModel virtualModel) {
 		return true;
 	}
 
@@ -471,4 +476,63 @@ public abstract class AbstractCreateVirtualModelInstance<A extends AbstractCreat
 	public void setEscapeModelSlotConfiguration(boolean escapeModelSlotConfiguration) {
 		this.escapeModelSlotConfiguration = escapeModelSlotConfiguration;
 	}
+
+	public boolean openAfterCreation() {
+		return openAfterCreation;
+	}
+
+	public void setOpenAfterCreation(boolean openAfterCreation) {
+		if (openAfterCreation != this.openAfterCreation) {
+			this.openAfterCreation = openAfterCreation;
+			getPropertyChangeSupport().firePropertyChange("openAfterCreation", !openAfterCreation, openAfterCreation);
+		}
+	}
+
+	public VirtualModelInstanceResource makeVirtualModelInstanceResource() throws SaveResourceException {
+
+		FMLRTTechnologyAdapter fmlRTTechnologyAdapter = getServiceManager().getTechnologyAdapterService()
+				.getTechnologyAdapter(FMLRTTechnologyAdapter.class);
+		VirtualModelInstanceResourceFactory factory = fmlRTTechnologyAdapter.getViewResourceFactory()
+				.getVirtualModelInstanceResourceFactory();
+
+		VirtualModelInstanceResource returned;
+		try {
+			if (getFocusedObject() instanceof AbstractVirtualModelInstanceResource) {
+				returned = factory.makeContainedVirtualModelInstanceResource(...);
+			}
+			else if (getFocusedObject() instanceof RepositoryFolder) {
+				returned = factory.makeTopLevelVirtualModelInstanceResource(...);
+			}
+			
+			returned = factory.makeVirtualModelInstanceResource(getNewVirtualModelInstanceName(), getVirtualModel(),
+					(ViewResource) getFocusedObject().getResource(), fmlRTTechnologyAdapter.getTechnologyContextManager(), true);
+			returned.getLoadedResourceData().setTitle(getNewVirtualModelInstanceTitle());
+			return returned;
+		} catch (ModelDefinitionException e) {
+			e.printStackTrace();
+			return null;
+		}
+
+		// return VirtualModelInstanceImpl.newVirtualModelInstance(getNewVirtualModelInstanceName(), getNewVirtualModelInstanceTitle(),
+		// getVirtualModel(), getFocusedObject());
+	}
+
+	@Override
+	public boolean isValidVirtualModelInstanceName(String proposedName) {
+		return getFocusedObject().isValidVirtualModelInstanceName(proposedName);
+	}
+
+	@Override
+	public View getContainerVirtualModelInstance() {
+		return getFocusedObject();
+	}
+
+	@Override
+	public FlexoResourceCenter<?> getResourceCenter() {
+		if (getFocusedObject() != null) {
+			return getFocusedObject().getResourceCenter();
+		}
+		return null;
+	}
+
 }

@@ -47,26 +47,34 @@ import org.openflexo.foundation.InconsistentDataException;
 import org.openflexo.foundation.InvalidModelDefinitionException;
 import org.openflexo.foundation.InvalidXMLException;
 import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
-import org.openflexo.foundation.fml.rt.VirtualModelInstanceModelFactory;
-import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
+import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
+import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstanceModelFactory;
 import org.openflexo.foundation.resource.FlexoFileNotFoundException;
 import org.openflexo.foundation.resource.PamelaResourceImpl;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.toolbox.IProgress;
 
 /**
- * Default implementation for {@link VirtualModelInstanceResource}
+ * Default implementation for {@link AbstractVirtualModelInstanceResource}
  * 
  * 
  * @author Sylvain
  * 
  */
-public abstract class VirtualModelInstanceResourceImpl<VMI extends VirtualModelInstance<VMI, VM>, VM extends VirtualModel<VM>>
-		extends PamelaResourceImpl<VMI, VirtualModelInstanceModelFactory<?>>
-		implements VirtualModelInstanceResource<VMI, VM> {
+public abstract class AbstractVirtualModelInstanceResourceImpl<VMI extends AbstractVirtualModelInstance<VMI, TA>, TA extends TechnologyAdapter>
+		extends PamelaResourceImpl<VMI, AbstractVirtualModelInstanceModelFactory<?>>
+		implements AbstractVirtualModelInstanceResource<VMI, TA> {
 
-	static final Logger logger = Logger.getLogger(VirtualModelInstanceResourceImpl.class.getPackage().getName());
+	static final Logger logger = Logger.getLogger(AbstractVirtualModelInstanceResourceImpl.class.getPackage().getName());
+
+	@Override
+	public VirtualModel getVirtualModel() {
+		if (getVirtualModelResource() != null) {
+			return getVirtualModelResource().getVirtualModel();
+		}
+		return null;
+	}
 
 	@Override
 	public VMI getVirtualModelInstance() {
@@ -101,7 +109,7 @@ public abstract class VirtualModelInstanceResourceImpl<VMI extends VirtualModelI
 		}
 
 		if (getContainer() != null) {
-			getContainer().getView().addToVirtualModelInstances(returned);
+			getContainer().getVirtualModelInstance().addToVirtualModelInstances(returned);
 		}
 		returned.clearIsModified();
 		/*if (returned.isSynchronizable()) {
@@ -156,15 +164,7 @@ public abstract class VirtualModelInstanceResourceImpl<VMI extends VirtualModelI
 	}
 
 	@Override
-	public FMLRTTechnologyAdapter getTechnologyAdapter() {
-		if (getServiceManager() != null) {
-			return getServiceManager().getTechnologyAdapterService().getTechnologyAdapter(FMLRTTechnologyAdapter.class);
-		}
-		return null;
-	}
-
-	@Override
-	public ViewResource getContainer() {
-		return (ViewResource) performSuperGetter(CONTAINER);
+	public AbstractVirtualModelInstanceResource<?, ?> getContainer() {
+		return (AbstractVirtualModelInstanceResource<?, ?>) performSuperGetter(CONTAINER);
 	}
 }
