@@ -42,6 +42,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.openflexo.exceptions.CopyException;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.InnerResourceData;
@@ -49,7 +50,7 @@ import org.openflexo.foundation.fml.FlexoRole.RoleCloningStrategy;
 import org.openflexo.foundation.fml.PrimitiveRole;
 import org.openflexo.foundation.fml.rt.ActorReference;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
-import org.openflexo.foundation.fml.rt.rm.VirtualModelInstanceResource;
+import org.openflexo.foundation.fml.rt.rm.AbstractVirtualModelInstanceResource;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.PamelaResource;
 import org.openflexo.model.factory.Clipboard;
@@ -82,7 +83,7 @@ public class FlexoClipboard {
 	public Clipboard getLeaderClipboard() {
 
 		for (PamelaResource<?, ?> r : clipboards.keySet()) {
-			if (r instanceof VirtualModelInstanceResource) {
+			if (r instanceof AbstractVirtualModelInstanceResource) {
 				// This resource has always the priority, since this is the place where federation take place
 				return clipboards.get(r);
 			}
@@ -114,7 +115,7 @@ public class FlexoClipboard {
 
 		// First lookup the VirtualModelInstanceResource
 		for (PamelaResource<?, ?> pamelaResource : objectsToBeCopied.keySet()) {
-			if (pamelaResource instanceof VirtualModelInstanceResource) {
+			if (pamelaResource instanceof AbstractVirtualModelInstanceResource) {
 				List<FlexoObject> objectsInVirtualModelInstanceResource = objectsToBeCopied.get(pamelaResource);
 				for (FlexoObject o : objectsInVirtualModelInstanceResource) {
 					// iteratate on all FlexoConceptInstance

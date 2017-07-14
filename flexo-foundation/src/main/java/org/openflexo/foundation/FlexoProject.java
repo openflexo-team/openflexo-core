@@ -61,8 +61,6 @@ import org.apache.commons.io.filefilter.FileFilterUtils;
 import org.openflexo.foundation.FlexoEditor.FlexoEditorFactory;
 import org.openflexo.foundation.ProjectDataResource.ProjectDataResourceImpl;
 import org.openflexo.foundation.ProjectDirectoryResource.ProjectDirectoryResourceImpl;
-import org.openflexo.foundation.fml.rt.ViewLibrary;
-import org.openflexo.foundation.fml.rt.rm.ViewResource;
 import org.openflexo.foundation.nature.ProjectNature;
 import org.openflexo.foundation.nature.ProjectWrapper;
 import org.openflexo.foundation.resource.DuplicateExternalRepositoryNameException;
@@ -267,7 +265,7 @@ public class FlexoProject extends FileSystemBasedResourceCenter
 
 	private FlexoObjectIDManager objectIDManager;
 
-	private ViewLibrary viewLibrary = null;
+	// private ViewLibrary viewLibrary = null;
 
 	private final List<FlexoObjectReference> objectReferences = new ArrayList<FlexoObjectReference>();
 
@@ -671,12 +669,12 @@ public class FlexoProject extends FileSystemBasedResourceCenter
 		return null;
 	}
 
-	public ViewLibrary<?> getViewLibrary() {
+	/*public ViewLibrary<?> getViewLibrary() {
 		if (viewLibrary == null) {
 			viewLibrary = ViewLibrary.createNewViewLibrary(this);
 		}
 		return viewLibrary;
-	}
+	}*/
 
 	boolean generateSnapshot = true;
 
@@ -1490,13 +1488,13 @@ public class FlexoProject extends FileSystemBasedResourceCenter
 	 */
 	public List<TechnologyAdapter> getRequiredTechnologyAdapters() {
 		List<TechnologyAdapter> returned = new ArrayList<>();
-		for (ViewResource vr : getViewLibrary().getAllResources()) {
+		/*for (ViewResource vr : getViewLibrary().getAllResources()) {
 			for (TechnologyAdapter ta : vr.getView().getRequiredTechnologyAdapters()) {
 				if (!returned.contains(ta)) {
 					returned.add(ta);
 				}
 			}
-		}
+		}*/
 		return returned;
 	}
 
