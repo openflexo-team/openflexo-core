@@ -23,11 +23,9 @@ package org.openflexo.foundation.fml.rt.rm;
 import java.io.IOException;
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceModelFactory;
-import org.openflexo.foundation.fml.rt.ViewLibrary;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.resource.FlexoIODelegate;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
@@ -92,8 +90,15 @@ public class FMLRTVirtualModelInstanceResourceFactory extends
 		registerResource(returned, resourceCenter, technologyContextManager);
 
 		if (createEmptyContents) {
-			createEmptyContents(returned);
+			VirtualModelInstance resourceData = createEmptyContents(returned);
+			resourceData.setVirtualModel(virtualModelResource.getVirtualModel());
 			returned.save(null);
+			if (resourceData.getFMLRunTimeEngine() != null) {
+				// TODO: today VirtualModelInstance is a RunTimeEvaluationContext
+				// TODO: design issue, we should separate FlexoConceptInstance from RunTimeEvaluationContext
+				// This inheritance should disappear
+				resourceData.getFMLRunTimeEngine().addToExecutionContext(resourceData, resourceData);
+			}
 		}
 
 		return returned;
@@ -132,6 +137,7 @@ public class FMLRTVirtualModelInstanceResourceFactory extends
 
 		if (createEmptyContents) {
 			VirtualModelInstance resourceData = createEmptyContents(returned);
+			resourceData.setVirtualModel(virtualModelResource.getVirtualModel());
 			returned.save(null);
 			if (resourceData.getFMLRunTimeEngine() != null) {
 				// TODO: today VirtualModelInstance is a RunTimeEvaluationContext
@@ -225,17 +231,14 @@ public class FMLRTVirtualModelInstanceResourceFactory extends
 			FlexoResourceCenter<I> resourceCenter, TechnologyContextManager<FMLRTTechnologyAdapter> technologyContextManager) {
 		super.registerResource(resource, resourceCenter, technologyContextManager);
 
-		ViewLibrary<I> viewLibrary = technologyContextManager.getTechnologyAdapter().getViewRepository(resourceCenter);
-
-		// Sets the ViewLibrary
-		// Register the resource in the FMLRTVirtualModelInstanceRepository of supplied resource center
-		// resource.setViewLibrary(viewLibrary);
-		registerResourceInResourceRepository(resource, viewLibrary);
+		// Register the resource in the VirtualModelInstanceRepository of supplied resource center
+		registerResourceInResourceRepository(resource,
+				technologyContextManager.getTechnologyAdapter().getVirtualModelInstanceRepository(resourceCenter));
 
 		// TODO: refactor this
-		if (resourceCenter instanceof FlexoProject) {
+		/*if (resourceCenter instanceof FlexoProject) {
 			registerResourceInResourceRepository(resource, ((FlexoProject) resourceCenter).getViewLibrary());
-		}
+		}*/
 
 		// Now look for virtual model instances and sub-views
 		exploreViewContents(resource, technologyContextManager);
@@ -265,36 +268,35 @@ public class FMLRTVirtualModelInstanceResourceFactory extends
 		String artefactName = resourceCenter.retrieveName(serializationArtefact);
 
 		String baseName = artefactName;
-		if (artefactName.endsWith(VIEW_SUFFIX)) {
-			baseName = artefactName.substring(0, artefactName.length() - VIEW_SUFFIX.length());
+		if (artefactName.endsWith(FML_RT_SUFFIX)) {
+			baseName = artefactName.substring(0, artefactName.length() - FML_RT_SUFFIX.length());
 		}
 
 		returned.initName(baseName);
 
-		ViewInfo vpi = findViewInfo(returned, resourceCenter);
-		if (vpi != null) {
-			returned.setURI(vpi.uri);
-			if (StringUtils.isNotEmpty(vpi.version)) {
-				returned.setVersion(new FlexoVersion(vpi.version));
+		VirtualModelInstanceInfo vmiInfo = findVirtualModelInstanceInfo(returned, resourceCenter);
+		if (vmiInfo != null) {
+			returned.setURI(vmiInfo.uri);
+			if (StringUtils.isNotEmpty(vmiInfo.version)) {
+				returned.setVersion(new FlexoVersion(vmiInfo.version));
 			}
 			else {
 				returned.setVersion(INITIAL_REVISION);
 			}
-			if (StringUtils.isNotEmpty(vpi.modelVersion)) {
-				returned.setModelVersion(new FlexoVersion(vpi.modelVersion));
+			if (StringUtils.isNotEmpty(vmiInfo.modelVersion)) {
+				returned.setModelVersion(new FlexoVersion(vmiInfo.modelVersion));
 			}
 			else {
 				returned.setModelVersion(CURRENT_FML_RT_VERSION);
 			}
-			if (StringUtils.isNotEmpty(vpi.viewPointURI)) {
-				ViewPointResource vpResource = resourceCenter.getServiceManager().getVirtualModelLibrary()
-						.getViewPointResource(vpi.viewPointURI);
-				returned.setViewPointResource(vpResource);
-				returned.setVirtualModelResource(vpResource);
-				if (vpResource == null) {
-					// In this case, serialize URI of viewpoint, to give a chance to find it later
-					returned.setViewpointURI(vpi.viewPointURI);
-					logger.warning("Could not retrieve viewpoint: " + vpi.viewPointURI);
+			if (StringUtils.isNotEmpty(vmiInfo.virtualModelURI)) {
+				VirtualModelResource vmResource = resourceCenter.getServiceManager().getVirtualModelLibrary()
+						.getVirtualModelResource(vmiInfo.virtualModelURI);
+				returned.setVirtualModelResource(vmResource);
+				if (vmResource == null) {
+					// In this case, serialize URI of virtual model, to give a chance to find it later
+					// returned.setVirtualModelURI(vpi.virtualModelURI);
+					// logger.warning("Could not retrieve virtual model: " + vpi.virtualModelURI);
 				}
 			}
 		}
@@ -311,74 +313,64 @@ public class FMLRTVirtualModelInstanceResourceFactory extends
 
 	@Override
 	protected <I> FlexoIODelegate<I> makeFlexoIODelegate(I serializationArtefact, FlexoResourceCenter<I> resourceCenter) {
-		return resourceCenter.makeDirectoryBasedFlexoIODelegate(serializationArtefact, VIEW_SUFFIX, CORE_FILE_SUFFIX, this);
+		return resourceCenter.makeDirectoryBasedFlexoIODelegate(serializationArtefact, FML_RT_SUFFIX, XML_SUFFIX, this);
 	}
 
-	private void exploreViewContents(ViewResource viewResource, TechnologyContextManager<FMLRTTechnologyAdapter> technologyContextManager) {
+	private void exploreViewContents(FMLRTVirtualModelInstanceResource viewResource,
+			TechnologyContextManager<FMLRTTechnologyAdapter> technologyContextManager) {
 
 		exploreResource(viewResource.getIODelegate().getSerializationArtefact(), viewResource, technologyContextManager);
 	}
 
-	private <I> void exploreResource(I serializationArtefact, ViewResource viewResource,
+	private <I> void exploreResource(I serializationArtefact, FMLRTVirtualModelInstanceResource containerResource,
 			TechnologyContextManager<FMLRTTechnologyAdapter> technologyContextManager) {
 		if (serializationArtefact == null) {
 			return;
 		}
 
-		FlexoResourceCenter<I> resourceCenter = (FlexoResourceCenter<I>) viewResource.getResourceCenter();
+		FlexoResourceCenter<I> resourceCenter = (FlexoResourceCenter<I>) containerResource.getResourceCenter();
 
 		for (I child : resourceCenter.getContents(resourceCenter.getContainer(serializationArtefact))) {
-			if (getVirtualModelInstanceResourceFactory().isValidArtefact(child, resourceCenter)) {
+			if (isValidArtefact(child, resourceCenter)) {
 				try {
-					VirtualModelInstanceResource virtualModelInstanceResource = getVirtualModelInstanceResourceFactory()
-							.retrieveVirtualModelInstanceResource(child, technologyContextManager, viewResource);
+					FMLRTVirtualModelInstanceResource virtualModelInstanceResource = retrieveFMLRTVirtualModelInstanceResource(child,
+							resourceCenter, technologyContextManager, containerResource);
 				} catch (ModelDefinitionException e) {
 					e.printStackTrace();
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
 			}
-			else if (isValidArtefact(child, resourceCenter, false)) { // We don't ignore subviews here !!!
-				try {
-					ViewResource subViewResource = retrieveViewResource(child, resourceCenter, technologyContextManager, viewResource);
-				} catch (ModelDefinitionException e) {
-					e.printStackTrace();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-
-			// recursively call
-			// exploreResource(child, viewResource, technologyContextManager);
 		}
 	}
 
-	private static class ViewInfo {
-		public String viewPointURI;
+	private static class VirtualModelInstanceInfo {
+		public String virtualModelURI;
 		@SuppressWarnings("unused")
-		public String viewPointVersion;
+		public String virtualModelVersion;
 		public String name;
 		public String uri;
 		public String version;
 		public String modelVersion;
 	}
 
-	private <I> ViewInfo findViewInfo(ViewResource resource, FlexoResourceCenter<I> resourceCenter) {
+	private <I> VirtualModelInstanceInfo findVirtualModelInstanceInfo(FMLRTVirtualModelInstanceResource resource,
+			FlexoResourceCenter<I> resourceCenter) {
 
-		ViewInfo returned = new ViewInfo();
+		VirtualModelInstanceInfo returned = new VirtualModelInstanceInfo();
 		XMLRootElementInfo xmlRootElementInfo = resourceCenter
 				.getXMLRootElementInfo((I) resource.getIODelegate().getSerializationArtefact());
 		if (xmlRootElementInfo == null) {
 			return null;
 		}
-		if (xmlRootElementInfo.getName().equals("View")) {
-			returned.uri = xmlRootElementInfo.getAttribute("uri");
+
+		if (xmlRootElementInfo.getName().equals("VirtualModelInstance")) {
 			returned.name = xmlRootElementInfo.getAttribute("name");
-			returned.viewPointURI = xmlRootElementInfo.getAttribute("viewPointURI");
-			returned.viewPointVersion = xmlRootElementInfo.getAttribute("viewPointVersion");
+			returned.uri = xmlRootElementInfo.getAttribute("uri");
+			returned.virtualModelURI = xmlRootElementInfo.getAttribute("virtualModelURI");
+			returned.virtualModelVersion = xmlRootElementInfo.getAttribute("virtualModelVersion");
 			returned.version = xmlRootElementInfo.getAttribute("version");
 			returned.modelVersion = xmlRootElementInfo.getAttribute("modelVersion");
-
 		}
 		return returned;
 	}

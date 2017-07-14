@@ -40,7 +40,7 @@ public abstract class AbstractVirtualModelInstanceResourceFactory<VMI extends Ab
 
 	public static final FlexoVersion INITIAL_REVISION = new FlexoVersion("0.1");
 
-	private static final Logger logger = Logger.getLogger(VirtualModelInstanceResourceFactory.class.getPackage().getName());
+	private static final Logger logger = Logger.getLogger(AbstractVirtualModelInstanceResourceFactory.class.getPackage().getName());
 
 	public AbstractVirtualModelInstanceResourceFactory(Class<VMR> resourceClass) throws ModelDefinitionException {
 		super(resourceClass);
