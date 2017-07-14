@@ -73,6 +73,7 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 
 	private FlexoServiceManager serviceManager = null;
 	private boolean isLoading = false;
+	protected boolean isUnloading = false;
 	protected RD resourceData = null;
 
 	/**
@@ -110,6 +111,12 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 	public synchronized RD getResourceData(IProgress progress)
 			throws ResourceLoadingCancelledException, ResourceLoadingCancelledException, FileNotFoundException, FlexoException {
 
+		if (isDeleted()) {
+			return null;
+		}
+		if (isUnloading) {
+			return null;
+		}
 		if (isLoading()) {
 			// logger.warning("trying to load a resource data from itself,
 			// please investigate");
@@ -246,6 +253,7 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 		else {
 			logger.warning("Resource " + this + " does not refer to any ServiceManager. Please investigate...");
 		}
+
 	}
 
 	/**
@@ -448,6 +456,7 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 	@Override
 	public void unloadResourceData(boolean deleteResourceData) {
 		if (isLoaded()) {
+			isUnloading = true;
 			if (deleteResourceData) {
 				resourceData.delete();
 			}
@@ -455,6 +464,7 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 			// That's fine, resource is loaded, now let's notify the loading of
 			// the resources
 			notifyResourceUnloaded();
+			isUnloading = false;
 		}
 	}
 

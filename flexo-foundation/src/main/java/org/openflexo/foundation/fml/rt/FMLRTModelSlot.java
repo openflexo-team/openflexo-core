@@ -38,11 +38,9 @@
 
 package org.openflexo.foundation.fml.rt;
 
-import java.io.FileNotFoundException;
 import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceRole;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
@@ -59,7 +57,6 @@ import org.openflexo.foundation.fml.rt.editionaction.AddVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.editionaction.SelectFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.SelectVirtualModelInstance;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
-import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.model.annotations.Getter;
@@ -187,15 +184,8 @@ public interface FMLRTModelSlot<VMI extends AbstractVirtualModelInstance<VMI, TA
 		@Override
 		public final VirtualModel getAccessedVirtualModel() {
 			if (getAccessedVirtualModelResource() != null) {
-				try {
-					return getAccessedVirtualModelResource().getResourceData(null);
-				} catch (FileNotFoundException e) {
-					e.printStackTrace();
-				} catch (ResourceLoadingCancelledException e) {
-					e.printStackTrace();
-				} catch (FlexoException e) {
-					e.printStackTrace();
-				}
+				// Do not load virtual model when unloaded
+				return getAccessedVirtualModelResource().getLoadedResourceData();
 			}
 			return null;
 		}

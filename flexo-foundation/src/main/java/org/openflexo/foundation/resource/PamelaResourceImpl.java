@@ -38,7 +38,6 @@
 
 package org.openflexo.foundation.resource;
 
-import com.google.common.base.Throwables;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -50,7 +49,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.swing.undo.UndoableEdit;
+
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
@@ -75,6 +76,8 @@ import org.openflexo.model.undo.AtomicEdit;
 import org.openflexo.toolbox.FileUtils;
 import org.openflexo.toolbox.FlexoVersion;
 import org.openflexo.toolbox.IProgress;
+
+import com.google.common.base.Throwables;
 
 /**
  * Default implementation for {@link PamelaResource} (a resource where underlying model is managed by PAMELA framework)
@@ -265,6 +268,9 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends 
 	@Override
 	public void unloadResourceData(boolean deleteResourceData) {
 		if (isLoaded()) {
+
+			isUnloading = true;
+
 			if (deleteResourceData) {
 
 				EditingContext editingContext = getServiceManager().getEditingContext();
@@ -281,9 +287,9 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends 
 				}
 			}
 			resourceData = null;
-			// That's fine, resource is loaded, now let's notify the loading of
-			// the resources
 			notifyResourceUnloaded();
+
+			isUnloading = false;
 		}
 	}
 
@@ -568,7 +574,7 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends 
 
 		isIndexing = true;
 		// System.out.println("Indexing PamelaResource " + this);
-		//objects = new HashMap<>();
+		// objects = new HashMap<>();
 		List<Object> allObjects = getFactory().getEmbeddedObjects(getLoadedResourceData(), EmbeddingType.CLOSURE);
 		allObjects.add(getLoadedResourceData());
 		for (Object temp : allObjects) {
