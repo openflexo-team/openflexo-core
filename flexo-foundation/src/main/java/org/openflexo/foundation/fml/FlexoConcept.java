@@ -1560,12 +1560,14 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 			out.append("FlexoConcept " + getName(), context);
 			if (getParentFlexoConcepts().size() > 0) {
 				out.append(" extends ", context);
+				boolean isFirst = true;
 				for (FlexoConcept parent : getParentFlexoConcepts()) {
-					out.append(parent.getName() + ",", context);
+					out.append((isFirst ? "" : ",") + parent.getName(), context);
+					isFirst = false;
 				}
 
 			}
-			out.append(" {" + StringUtils.LINE_SEPARATOR, context);
+			out.append(" {", context);
 
 			if (getDeclaredProperties().size() > 0) {
 				out.append(StringUtils.LINE_SEPARATOR, context);

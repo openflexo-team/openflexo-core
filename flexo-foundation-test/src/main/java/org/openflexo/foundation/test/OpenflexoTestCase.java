@@ -63,7 +63,7 @@ import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
-import org.openflexo.foundation.fml.ViewPoint;
+import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.localization.LocalizationService;
 import org.openflexo.foundation.resource.DefaultResourceCenterService;
@@ -439,8 +439,8 @@ public abstract class OpenflexoTestCase {
 		KeyValueLibrary.clearCache();
 	}
 
-	protected void assertViewPointIsValid(ViewPoint vp) {
-		assertObjectIsValid(vp);
+	protected void assertVirtualModelIsValid(VirtualModel vm) {
+		assertObjectIsValid(vm);
 	}
 
 	protected void assertObjectIsValid(FMLObject object) {

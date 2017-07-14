@@ -64,7 +64,6 @@ import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.SynchronizationScheme;
 import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.binding.VirtualModelBindingModel;
 import org.openflexo.foundation.fml.editionaction.FetchRequestCondition;
 import org.openflexo.foundation.fml.rt.action.SynchronizationSchemeAction;
 import org.openflexo.foundation.fml.rt.action.SynchronizationSchemeActionType;
@@ -1035,12 +1034,12 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 			else if (variable.getVariableName().equals(ViewPointBindingModel.VIEW_PROPERTY)) {
 				return getView();
 			}
-			else*/ if (variable.getVariableName().equals(VirtualModelBindingModel.PROJECT_PROPERTY)) {
-				return getResourceCenter();
-			}
-			else if (variable.getVariableName().equals(VirtualModelBindingModel.RC_PROPERTY)) {
-				return getResourceCenter();
-			}
+			else*/ /*if (variable.getVariableName().equals(VirtualModelBindingModel.PROJECT_PROPERTY)) {
+					return getResourceCenter();
+					}
+					else if (variable.getVariableName().equals(VirtualModelBindingModel.RC_PROPERTY)) {
+					return getResourceCenter();
+					}*/
 			/*else if (variable.getVariableName().equals(VirtualModelBindingModel.VIRTUAL_MODEL_INSTANCE_PROPERTY)) {
 				return this;
 			}*/

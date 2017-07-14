@@ -52,8 +52,8 @@ import org.openflexo.foundation.fml.action.CreateFlexoConcept;
 import org.openflexo.foundation.fml.action.DeleteFlexoConceptObjects;
 import org.openflexo.foundation.fml.action.DeleteViewpoint;
 import org.openflexo.foundation.fml.action.DeleteVirtualModel;
-import org.openflexo.foundation.fml.rm.ViewPointResource;
-import org.openflexo.foundation.fml.rm.ViewPointResourceFactory;
+import org.openflexo.foundation.fml.rm.VirtualModelResource;
+import org.openflexo.foundation.fml.rm.VirtualModelResourceFactory;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.fml.rm.VirtualModelResourceFactory;
 import org.openflexo.foundation.resource.DirectoryResourceCenter;
@@ -106,18 +106,18 @@ public class TestDeleteAction extends OpenflexoProjectAtRunTimeTestCase {
 
 		FMLTechnologyAdapter fmlTechnologyAdapter = serviceManager.getTechnologyAdapterService()
 				.getTechnologyAdapter(FMLTechnologyAdapter.class);
-		ViewPointResourceFactory factory = fmlTechnologyAdapter.getVirtualModelResourceFactory();
+		VirtualModelResourceFactory factory = fmlTechnologyAdapter.getVirtualModelResourceFactory();
 
-		ViewPointResource newViewPointResource = factory.makeViewPointResource(VIEWPOINT_NAME, VIEWPOINT_URI,
+		VirtualModelResource newVirtualModelResource = factory.makeVirtualModelResource(VIEWPOINT_NAME, VIEWPOINT_URI,
 				fmlTechnologyAdapter.getGlobalRepository(resourceCenter).getRootFolder(),
 				fmlTechnologyAdapter.getTechnologyContextManager(), true);
-		viewPoint = newViewPointResource.getLoadedResourceData();
+		viewPoint = newVirtualModelResource.getLoadedResourceData();
 
 		assertNotNull(viewPoint);
 		assertNotNull(viewPoint.getResource());
 
 		VirtualModelResourceFactory vmFactory = fmlTechnologyAdapter.getVirtualModelResourceFactory().getVirtualModelResourceFactory();
-		VirtualModelResource newVMResource = vmFactory.makeVirtualModelResource(VIRTUAL_MODEL_NAME, newViewPointResource,
+		VirtualModelResource newVMResource = vmFactory.makeVirtualModelResource(VIRTUAL_MODEL_NAME, newVirtualModelResource,
 				fmlTechnologyAdapter.getTechnologyContextManager(), true);
 		virtualModel = newVMResource.getLoadedResourceData();
 

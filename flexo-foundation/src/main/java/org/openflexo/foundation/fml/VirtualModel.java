@@ -105,10 +105,11 @@ import org.openflexo.toolbox.ToolBox;
  * @author sylvain
  * 
  */
-@ModelEntity(isAbstract = true)
+@ModelEntity
 @ImplementationClass(VirtualModel.VirtualModelImpl.class)
 @Imports({ @Import(FlexoConceptStructuralFacet.class), @Import(FlexoConceptBehaviouralFacet.class), @Import(InnerConceptsFacet.class),
 		@Import(DeleteFlexoConceptInstanceParameter.class) })
+@XMLElement
 public interface VirtualModel extends FlexoConcept, VirtualModelObject, FlexoMetaModel<VirtualModel>, ResourceData<VirtualModel>,
 		TechnologyObject<FMLTechnologyAdapter> {
 
@@ -150,6 +151,13 @@ public interface VirtualModel extends FlexoConcept, VirtualModelObject, FlexoMet
 	@Override
 	@Setter(value = RESOURCE)
 	public void setResource(FlexoResource<VirtualModel> aVirtualModelResource);
+
+	/**
+	 * Convenient method used to retrieved {@link VirtualModelResource}
+	 * 
+	 * @return
+	 */
+	public VirtualModelResource getVirtualModelResource();
 
 	/**
 	 * Called to clone the resource of this {@link VirtualModel}
@@ -448,6 +456,11 @@ public interface VirtualModel extends FlexoConcept, VirtualModelObject, FlexoMet
 		@Override
 		public final boolean hasNature(VirtualModelNature nature) {
 			return nature.hasNature(this);
+		}
+
+		@Override
+		public ViewPointLocalizedDictionary getLocalizedDictionary() {
+			return (ViewPointLocalizedDictionary) performSuperGetter(LOCALIZED_DICTIONARY_KEY);
 		}
 
 		/**
@@ -766,6 +779,16 @@ public interface VirtualModel extends FlexoConcept, VirtualModelObject, FlexoMet
 		@Override
 		public void setResource(FlexoResource<VirtualModel> resource) {
 			this.resource = (VirtualModelResource) resource;
+		}
+
+		/**
+		 * Convenient method used to retrieved {@link VirtualModelResource}
+		 * 
+		 * @return
+		 */
+		@Override
+		public VirtualModelResource getVirtualModelResource() {
+			return getResource();
 		}
 
 		@Override

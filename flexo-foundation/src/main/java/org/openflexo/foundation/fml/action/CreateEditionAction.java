@@ -58,11 +58,11 @@ import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.action.NotImplementedException;
-import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.FlexoRole;
+import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.controlgraph.ConditionalAction;
 import org.openflexo.foundation.fml.controlgraph.DefaultFMLControlGraphOwner;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
@@ -85,7 +85,6 @@ import org.openflexo.foundation.fml.editionaction.ReturnStatement;
 import org.openflexo.foundation.fml.editionaction.RoleSpecificAction;
 import org.openflexo.foundation.fml.editionaction.TechnologySpecificAction;
 import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstance;
-import org.openflexo.foundation.fml.rt.editionaction.AddSubView;
 import org.openflexo.foundation.fml.rt.editionaction.AddVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.editionaction.DeleteFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.FinalizeMatching;
@@ -181,7 +180,6 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 		addToAvailableActions(RemoveFromListAction.class, fmlTA);
 		addToAvailableActions(AddFlexoConceptInstance.class, fmlTA);
 		addToAvailableActions(AddVirtualModelInstance.class, fmlTA);
-		addToAvailableActions(AddSubView.class, fmlTA);
 		addToAvailableActions(InitiateMatching.class, fmlTA);
 		addToAvailableActions(MatchFlexoConceptInstance.class, fmlTA);
 		addToAvailableActions(FinalizeMatching.class, fmlTA);
@@ -477,9 +475,6 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 		}
 		else if (AddVirtualModelInstance.class.isAssignableFrom(editionActionClass)) {
 			returned = factory.newAddVirtualModelInstance();
-		}
-		else if (AddSubView.class.isAssignableFrom(editionActionClass)) {
-			returned = factory.newAddSubView();
 		}
 		else if (InitiateMatching.class.isAssignableFrom(editionActionClass)) {
 			returned = factory.newInitiateMatching();

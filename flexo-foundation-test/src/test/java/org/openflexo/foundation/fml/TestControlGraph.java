@@ -61,8 +61,8 @@ import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
 import org.openflexo.foundation.fml.controlgraph.Sequence;
 import org.openflexo.foundation.fml.editionaction.AssignationAction;
 import org.openflexo.foundation.fml.editionaction.ExpressionAction;
-import org.openflexo.foundation.fml.rm.ViewPointResource;
-import org.openflexo.foundation.fml.rm.ViewPointResourceFactory;
+import org.openflexo.foundation.fml.rm.VirtualModelResource;
+import org.openflexo.foundation.fml.rm.VirtualModelResourceFactory;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.fml.rm.VirtualModelResourceFactory;
 import org.openflexo.foundation.resource.DirectoryResourceCenter;
@@ -112,19 +112,19 @@ public class TestControlGraph extends OpenflexoTestCase {
 
 		FMLTechnologyAdapter fmlTechnologyAdapter = serviceManager.getTechnologyAdapterService()
 				.getTechnologyAdapter(FMLTechnologyAdapter.class);
-		ViewPointResourceFactory factory = fmlTechnologyAdapter.getVirtualModelResourceFactory();
+		VirtualModelResourceFactory factory = fmlTechnologyAdapter.getVirtualModelResourceFactory();
 
-		ViewPointResource newViewPointResource = factory.makeViewPointResource(VIEWPOINT_NAME, VIEWPOINT_URI,
+		VirtualModelResource newVirtualModelResource = factory.makeVirtualModelResource(VIEWPOINT_NAME, VIEWPOINT_URI,
 				fmlTechnologyAdapter.getGlobalRepository(resourceCenter).getRootFolder(),
 				fmlTechnologyAdapter.getTechnologyContextManager(), true);
-		newViewPoint = newViewPointResource.getLoadedResourceData();
+		newViewPoint = newVirtualModelResource.getLoadedResourceData();
 
-		// assertTrue(((ViewPointResource)
+		// assertTrue(((VirtualModelResource)
 		// newViewPoint.getResource()).getDirectory().exists());
-		// assertTrue(((ViewPointResource)
+		// assertTrue(((VirtualModelResource)
 		// newViewPoint.getResource()).getFile().exists());
-		assertTrue(((ViewPointResource) newViewPoint.getResource()).getDirectory() != null);
-		assertTrue(((ViewPointResource) newViewPoint.getResource()).getIODelegate().exists());
+		assertTrue(((VirtualModelResource) newViewPoint.getResource()).getDirectory() != null);
+		assertTrue(((VirtualModelResource) newViewPoint.getResource()).getIODelegate().exists());
 	}
 
 	/**
@@ -141,7 +141,7 @@ public class TestControlGraph extends OpenflexoTestCase {
 		VirtualModelResourceFactory factory = fmlTechnologyAdapter.getVirtualModelResourceFactory()
 				.getVirtualModelResourceFactory();
 		VirtualModelResource newVMResource = factory.makeVirtualModelResource(VIRTUAL_MODEL_NAME,
-				newViewPoint.getViewPointResource(), fmlTechnologyAdapter.getTechnologyContextManager(), true);
+				newViewPoint.getVirtualModelResource(), fmlTechnologyAdapter.getTechnologyContextManager(), true);
 		newVirtualModel = newVMResource.getLoadedResourceData();
 
 		assertTrue(ResourceLocator

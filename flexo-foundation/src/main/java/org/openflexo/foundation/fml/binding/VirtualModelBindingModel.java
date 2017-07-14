@@ -43,12 +43,10 @@ import java.beans.PropertyChangeListener;
 
 import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.BindingVariable;
-import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
-import org.openflexo.foundation.resource.FlexoResourceCenter;
 
 /**
  * This is the {@link BindingModel} exposed by a {@link VirtualModel}<br>
@@ -73,13 +71,13 @@ public class VirtualModelBindingModel extends FlexoConceptBindingModel implement
 	// public static final String REFLEXIVE_ACCESS_PROPERTY = "virtualModelDefinition";
 	// public static final String VIRTUAL_MODEL_INSTANCE_PROPERTY = "virtualModelInstance";
 
-	@Deprecated
+	/*@Deprecated
 	public static final String PROJECT_PROPERTY = "project";
 	public static final String RC_PROPERTY = "resourceCenter";
-
+	
 	@Deprecated
 	private final BindingVariable projectBindingVariable;
-	private final BindingVariable rcBindingVariable;
+	private final BindingVariable rcBindingVariable;*/
 
 	/**
 	 * Build a new {@link BindingModel} dedicated to a VirtualModel
@@ -96,16 +94,16 @@ public class VirtualModelBindingModel extends FlexoConceptBindingModel implement
 		// reflexiveAccessBindingVariable = new BindingVariable(REFLEXIVE_ACCESS_PROPERTY, VirtualModel.class);
 		// addToBindingVariables(reflexiveAccessBindingVariable);
 
-		if (virtualModel.getContainerVirtualModel() != null) {
+		/*if (virtualModel.getContainerVirtualModel() != null) {
 			containerBindingVariable = new BindingVariable(CONTAINER_PROPERTY, virtualModel.getContainerVirtualModel().getInstanceType());
 			addToBindingVariables(containerBindingVariable);
-		}
+		}*/
 
-		projectBindingVariable = new BindingVariable(PROJECT_PROPERTY, FlexoProject.class);
+		/*projectBindingVariable = new BindingVariable(PROJECT_PROPERTY, FlexoProject.class);
 		addToBindingVariables(projectBindingVariable);
-
+		
 		rcBindingVariable = new BindingVariable(RC_PROPERTY, FlexoResourceCenter.class);
-		addToBindingVariables(rcBindingVariable);
+		addToBindingVariables(rcBindingVariable);*/
 
 	}
 
@@ -148,7 +146,9 @@ public class VirtualModelBindingModel extends FlexoConceptBindingModel implement
 
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
-		// System.out.println("Hop, je recois " + evt.getPropertyName() + " source =" + evt.getSource() + " evt=" + evt);
+		// System.out.println("propertyChange() for VirtualModelBindingModel " + getVirtualModel() + ", je recois " + evt.getPropertyName()
+		// + " source ="
+		// + evt.getSource() + " evt=" + evt);
 		super.propertyChange(evt);
 		if (evt.getSource() == getVirtualModel()) {
 			if (evt.getPropertyName().equals(VirtualModel.CONTAINER_VIRTUAL_MODEL_KEY)) {
@@ -156,7 +156,9 @@ public class VirtualModelBindingModel extends FlexoConceptBindingModel implement
 				setBaseBindingModel(getVirtualModel().getContainerVirtualModel() != null
 						? getVirtualModel().getContainerVirtualModel().getBindingModel() : null);
 				// virtualModelInstanceBindingVariable.setType(getVirtualModelInstanceType());
-
+				updateContainerVirtualModelListener();
+				updateContainerBindingVariable();
+				updatePropertyVariables();
 			}
 
 			if (evt.getPropertyName().equals(FlexoConcept.CONTAINER_FLEXO_CONCEPT_KEY)) {

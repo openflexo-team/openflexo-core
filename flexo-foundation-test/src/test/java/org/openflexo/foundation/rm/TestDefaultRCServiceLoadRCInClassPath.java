@@ -135,7 +135,7 @@ public class TestDefaultRCServiceLoadRCInClassPath extends OpenflexoTestCase {
 
 		assertNotNull(testVP);
 		System.out.println("Found view point in " + ((ViewPointResource) testVP.getResource()).getIODelegate().toString());
-		assertViewPointIsValid(testVP);
+		assertVirtualModelIsValid(testVP);
 
 	}
 

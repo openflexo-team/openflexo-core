@@ -88,7 +88,6 @@ import org.openflexo.foundation.fml.inspector.TextFieldInspectorEntry;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstanceParameter;
-import org.openflexo.foundation.fml.rt.editionaction.AddSubView;
 import org.openflexo.foundation.fml.rt.editionaction.AddVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.editionaction.CreateFlexoConceptInstanceParameter;
 import org.openflexo.foundation.fml.rt.editionaction.DeleteFlexoConceptInstance;
@@ -445,10 +444,6 @@ public class FMLModelFactory extends FGEModelFactoryImpl implements PamelaResour
 
 	public AddVirtualModelInstance newAddVirtualModelInstance() {
 		return newInstance(AddVirtualModelInstance.class);
-	}
-
-	public AddSubView newAddSubView() {
-		return newInstance(AddSubView.class);
 	}
 
 	public SelectFlexoConceptInstance newSelectFlexoConceptInstance() {

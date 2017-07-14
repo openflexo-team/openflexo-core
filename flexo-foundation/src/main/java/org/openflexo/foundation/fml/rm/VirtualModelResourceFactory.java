@@ -133,7 +133,7 @@ public class VirtualModelResourceFactory
 			throws SaveResourceException, ModelDefinitionException {
 
 		FlexoResourceCenter<I> resourceCenter = (FlexoResourceCenter<I>) containerVirtualModelResource.getResourceCenter();
-		I serializationArtefact = resourceCenter.createDirectory(baseName,
+		I serializationArtefact = resourceCenter.createDirectory(baseName.endsWith(FML_SUFFIX) ? baseName : baseName + FML_SUFFIX,
 				resourceCenter.getContainer((I) containerVirtualModelResource.getIODelegate().getSerializationArtefact()));
 
 		VirtualModelResource returned = initResourceForCreation(serializationArtefact, resourceCenter, technologyContextManager, baseName,

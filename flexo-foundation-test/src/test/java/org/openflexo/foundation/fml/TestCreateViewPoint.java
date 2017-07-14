@@ -46,8 +46,8 @@ import java.io.IOException;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.openflexo.foundation.fml.rm.ViewPointResource;
-import org.openflexo.foundation.fml.rm.ViewPointResourceFactory;
+import org.openflexo.foundation.fml.rm.VirtualModelResource;
+import org.openflexo.foundation.fml.rm.VirtualModelResourceFactory;
 import org.openflexo.foundation.resource.DirectoryResourceCenter;
 import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.test.OpenflexoTestCase;
@@ -68,7 +68,7 @@ public class TestCreateViewPoint extends OpenflexoTestCase {
 	public static final String VIEWPOINT_URI = "http://openflexo.org/test/TestViewPoint";
 
 	static ViewPoint newViewPoint;
-	static ViewPointResource newViewPointResource;
+	static VirtualModelResource newVirtualModelResource;
 
 	private static DirectoryResourceCenter resourceCenter;
 
@@ -89,25 +89,25 @@ public class TestCreateViewPoint extends OpenflexoTestCase {
 
 		FMLTechnologyAdapter fmlTechnologyAdapter = serviceManager.getTechnologyAdapterService()
 				.getTechnologyAdapter(FMLTechnologyAdapter.class);
-		ViewPointResourceFactory factory = fmlTechnologyAdapter.getVirtualModelResourceFactory();
+		VirtualModelResourceFactory factory = fmlTechnologyAdapter.getVirtualModelResourceFactory();
 
-		newViewPointResource = factory.makeViewPointResource(VIEWPOINT_NAME, VIEWPOINT_URI,
+		newVirtualModelResource = factory.makeVirtualModelResource(VIEWPOINT_NAME, VIEWPOINT_URI,
 				fmlTechnologyAdapter.getGlobalRepository(resourceCenter).getRootFolder(),
 				fmlTechnologyAdapter.getTechnologyContextManager(), true);
-		newViewPoint = newViewPointResource.getLoadedResourceData();
+		newViewPoint = newVirtualModelResource.getLoadedResourceData();
 
 		// newViewPoint = ViewPointImpl.newViewPoint(VIEWPOINT_NAME,
 		// VIEWPOINT_URI, resourceCenter.getDirectory(),
 		// serviceManager.getViewPointLibrary(), resourceCenter);
 		assertNotNull(newViewPoint);
-		newViewPointResource = (ViewPointResource) newViewPoint.getResource();
-		assertNotNull(newViewPointResource);
-		// assertTrue(((ViewPointResource)
+		newVirtualModelResource = (VirtualModelResource) newViewPoint.getResource();
+		assertNotNull(newVirtualModelResource);
+		// assertTrue(((VirtualModelResource)
 		// newViewPoint.getResource()).getDirectory().exists());
-		// assertTrue(((ViewPointResource)
+		// assertTrue(((VirtualModelResource)
 		// newViewPoint.getResource()).getFile().exists());
-		assertTrue(((ViewPointResource) newViewPoint.getResource()).getDirectory() != null);
-		assertTrue(((ViewPointResource) newViewPoint.getResource()).getIODelegate().exists());
+		assertTrue(((VirtualModelResource) newViewPoint.getResource()).getDirectory() != null);
+		assertTrue(((VirtualModelResource) newViewPoint.getResource()).getIODelegate().exists());
 
 		assertNotNull(newViewPoint.getLocalizedDictionary());
 
@@ -142,7 +142,7 @@ public class TestCreateViewPoint extends OpenflexoTestCase {
 		serviceManager.getResourceCenterService().addToResourceCenters(
 				resourceCenter = new DirectoryResourceCenter(resourceCenter.getDirectory(), serviceManager.getResourceCenterService()));
 
-		ViewPointResource retrievedVPResource = serviceManager.getVirtualModelLibrary().getViewPointResource(VIEWPOINT_URI);
+		VirtualModelResource retrievedVPResource = serviceManager.getVirtualModelLibrary().getVirtualModelResource(VIEWPOINT_URI);
 		assertNotNull(retrievedVPResource);
 
 		ViewPoint reloadedViewPoint = retrievedVPResource.getViewPoint();

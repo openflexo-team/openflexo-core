@@ -97,15 +97,6 @@ public class FlexoConceptBindingModel extends BindingModel implements PropertyCh
 	 */
 	public FlexoConceptBindingModel(final FlexoConcept flexoConcept) {
 		this(flexoConcept.getOwningVirtualModel() != null ? flexoConcept.getOwningVirtualModel().getBindingModel() : null, flexoConcept);
-		// reflexiveAccessBindingVariable = new BindingVariable(REFLEXIVE_ACCESS_PROPERTY, FlexoConcept.class);
-		// addToBindingVariables(reflexiveAccessBindingVariable);
-		// TODO : Dirty, this should be fix when we have a clean type management system for the VM
-		flexoConceptInstanceBindingVariable = new FlexoConceptBindingVariable(THIS_PROPERTY, flexoConcept);
-		addToBindingVariables(flexoConceptInstanceBindingVariable);
-		if (flexoConcept.getContainerFlexoConcept() != null) {
-			containerBindingVariable = new BindingVariable(CONTAINER_PROPERTY, flexoConcept.getContainerFlexoConcept().getInstanceType());
-			addToBindingVariables(containerBindingVariable);
-		}
 	}
 
 	/**
@@ -120,6 +111,15 @@ public class FlexoConceptBindingModel extends BindingModel implements PropertyCh
 		if (flexoConcept != null && flexoConcept.getPropertyChangeSupport() != null) {
 			flexoConcept.getPropertyChangeSupport().addPropertyChangeListener(this);
 		}
+
+		flexoConceptInstanceBindingVariable = new FlexoConceptBindingVariable(THIS_PROPERTY, flexoConcept);
+		addToBindingVariables(flexoConceptInstanceBindingVariable);
+		/*if (flexoConcept.getContainerFlexoConcept() != null) {
+			containerBindingVariable = new BindingVariable(CONTAINER_PROPERTY, flexoConcept.getContainerFlexoConcept().getInstanceType());
+			addToBindingVariables(containerBindingVariable);
+		}*/
+
+		updateContainerBindingVariable();
 
 		propertyVariablesMap = new HashMap<FlexoProperty<?>, FlexoPropertyBindingVariable>();
 		updatePropertyVariables();
@@ -158,6 +158,7 @@ public class FlexoConceptBindingModel extends BindingModel implements PropertyCh
 				if (flexoConceptInstanceBindingVariable != null) {
 					flexoConceptInstanceBindingVariable.setType(FlexoConceptInstanceType.getFlexoConceptInstanceType(flexoConcept));
 				}
+				updateContainerBindingVariable();
 				// virtualModelInstanceBindingVariable.setType(flexoConcept.getVirtualModel() != null ? VirtualModelInstanceType
 				// .getFlexoConceptInstanceType(flexoConcept.getVirtualModel()) : VirtualModelInstance.class);
 			}
@@ -201,9 +202,18 @@ public class FlexoConceptBindingModel extends BindingModel implements PropertyCh
 			containerBindingVariable.setType(flexoConcept.getContainerFlexoConcept().getInstanceType());
 		}
 		else {
-			if (containerBindingVariable != null) {
-				removeFromBindingVariables(containerBindingVariable);
-				containerBindingVariable = null;
+			if (flexoConcept.getOwner() != null) {
+				if (containerBindingVariable == null) {
+					containerBindingVariable = new BindingVariable(CONTAINER_PROPERTY, flexoConcept.getOwner().getInstanceType());
+					addToBindingVariables(containerBindingVariable);
+				}
+				containerBindingVariable.setType(flexoConcept.getOwner().getInstanceType());
+			}
+			else {
+				if (containerBindingVariable != null) {
+					removeFromBindingVariables(containerBindingVariable);
+					containerBindingVariable = null;
+				}
 			}
 		}
 	}
