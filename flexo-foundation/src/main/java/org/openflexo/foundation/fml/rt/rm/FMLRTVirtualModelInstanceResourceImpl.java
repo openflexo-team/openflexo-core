@@ -144,12 +144,13 @@ public abstract class FMLRTVirtualModelInstanceResourceImpl
 	@Override
 	public String computeDefaultURI() {
 		if (getContainer() != null) {
-			return getContainer().getURI() + "/"
-					+ (getName().endsWith(FMLRTVirtualModelInstanceResourceFactory.VIEW_SUFFIX) ? getName() : getName() + FMLRTVirtualModelInstanceResourceFactory.VIEW_SUFFIX);
+			return getContainer().getURI() + "/" + (getName().endsWith(FMLRTVirtualModelInstanceResourceFactory.FML_RT_SUFFIX) ? getName()
+					: getName() + FMLRTVirtualModelInstanceResourceFactory.FML_RT_SUFFIX);
 		}
 		if (getResourceCenter() != null) {
 			return getResourceCenter().getDefaultBaseURI() + "/"
-					+ (getName().endsWith(FMLRTVirtualModelInstanceResourceFactory.VIEW_SUFFIX) ? getName() : getName() + FMLRTVirtualModelInstanceResourceFactory.VIEW_SUFFIX);
+					+ (getName().endsWith(FMLRTVirtualModelInstanceResourceFactory.FML_RT_SUFFIX) ? getName()
+							: getName() + FMLRTVirtualModelInstanceResourceFactory.FML_RT_SUFFIX);
 		}
 		return null;
 	}

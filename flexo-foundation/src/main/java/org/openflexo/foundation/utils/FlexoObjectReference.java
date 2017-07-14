@@ -41,10 +41,9 @@ package org.openflexo.foundation.utils;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoProject;
@@ -52,8 +51,6 @@ import org.openflexo.foundation.FlexoProjectObject;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.InnerResourceData;
 import org.openflexo.foundation.KVCFlexoObject;
-import org.openflexo.foundation.fml.rt.rm.FMLRTVirtualModelInstanceResourceFactory;
-import org.openflexo.foundation.fml.rt.rm.VirtualModelInstanceResourceFactory;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
@@ -74,7 +71,6 @@ import org.openflexo.logging.FlexoLogger;
  *            type of object being referenced by this reference
  */
 public class FlexoObjectReference<O extends FlexoObject> extends KVCFlexoObject implements ResourceLoadingListener, PropertyChangeListener {
-
 
 	private final static String SEPARATOR = "#";
 	private final static String PROJECT_SEPARATOR = "|";
@@ -257,7 +253,7 @@ public class FlexoObjectReference<O extends FlexoObject> extends KVCFlexoObject 
 			resource.getResourceData(null);
 			return (O) resource.findObject(objectIdentifier, userIdentifier, className);
 		} catch (RuntimeException | FileNotFoundException | ResourceLoadingCancelledException | FlexoException e) {
-			logger.log(Level.SEVERE, "Error while finding object in resource '"+ resource.getURI() +"'", e);
+			logger.log(Level.SEVERE, "Error while finding object in resource '" + resource.getURI() + "'", e);
 		}
 		logger.warning("Cannot find object " + userIdentifier + "_" + objectIdentifier + " in resource " + resource);
 		return null;
@@ -274,53 +270,10 @@ public class FlexoObjectReference<O extends FlexoObject> extends KVCFlexoObject 
 	}
 
 	public FlexoResource<?> getResource(boolean force) {
-		/*if (getReferringProject(force) != null) {
-			// We are locating a resource located in a project
-			if (resource == null) {
-				FlexoProject enclosingProject = getReferringProject(force);
-				if (enclosingProject != null) {
-					resource = enclosingProject.getServiceManager().getResourceManager().getResource(resourceIdentifier);
-				}
-			}
-			return resource;
-		} else {*/
 		if (resource == null && getOwner() != null && getOwner().getServiceManager() != null) {
 			resource = getOwner().getServiceManager().getResourceManager().getResource(resourceIdentifier);
-			if (resource == null) {
-				// Temporary hack to maintain 1.7.x projects
-				return attemptToFindResourceIdentifiedBy(resourceIdentifier);
-			}
 		}
 		return resource;
-		// }
-	}
-
-	/**
-	 * Temporary ensure compatibility with previous versions of Openflexo
-	 * 
-	 * @param resourceIdentifier
-	 * @return
-	 */
-	@Deprecated
-	private FlexoResource<?> attemptToFindResourceIdentifiedBy(String resourceIdentifier) {
-		List<String> alternateURIs = new ArrayList<>();
-		if (resourceIdentifier.lastIndexOf("/") > -1) {
-			String s1 = resourceIdentifier.substring(0, resourceIdentifier.lastIndexOf("/"));
-			String s2 = resourceIdentifier.substring(resourceIdentifier.lastIndexOf("/"));
-			alternateURIs
-					.add(s1 + FMLRTVirtualModelInstanceResourceFactory.VIEW_SUFFIX + s2 + VirtualModelInstanceResourceFactory.VIRTUAL_MODEL_INSTANCE_SUFFIX);
-			alternateURIs.add(s1 + FMLRTVirtualModelInstanceResourceFactory.VIEW_SUFFIX + s2);
-			alternateURIs.add(s1 + s2 + VirtualModelInstanceResourceFactory.VIRTUAL_MODEL_INSTANCE_SUFFIX);
-		}
-		for (String alternateURI : alternateURIs) {
-			FlexoResource<?> resource = getOwner().getServiceManager().getResourceManager().getResource(alternateURI);
-			if (resource != null) {
-				logger.warning("Found alternate resource uri " + alternateURI + " instead of " + resourceIdentifier);
-				return resource;
-			}
-		}
-		logger.warning("Cannot find resource " + resourceIdentifier);
-		return null;
 	}
 
 	public String getResourceIdentifier() {
@@ -461,8 +414,8 @@ public class FlexoObjectReference<O extends FlexoObject> extends KVCFlexoObject 
 		return result.toString();
 	}
 
-
-	public static String constructSerializationRepresentation(String projectURI, String resourceURI, String userIdentifier, String objectId, String className) {
+	public static String constructSerializationRepresentation(String projectURI, String resourceURI, String userIdentifier, String objectId,
+			String className) {
 		StringBuilder result = new StringBuilder();
 		if (projectURI != null) {
 			result.append(projectURI);
