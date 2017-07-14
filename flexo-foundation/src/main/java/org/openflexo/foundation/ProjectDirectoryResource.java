@@ -74,7 +74,7 @@ public interface ProjectDirectoryResource extends FlexoProjectResource<FlexoProj
 	 * @author Sylvain
 	 * 
 	 */
-	public static abstract class ProjectDirectoryResourceImpl extends FlexoResourceImpl<FlexoProject>implements ProjectDirectoryResource {
+	public static abstract class ProjectDirectoryResourceImpl extends FlexoResourceImpl<FlexoProject> implements ProjectDirectoryResource {
 
 		public static ProjectDirectoryResource makeProjectDirectoryResource(FlexoProject project) {
 			try {
@@ -93,7 +93,7 @@ public interface ProjectDirectoryResource extends FlexoProjectResource<FlexoProj
 					fileIODelegate.getFile().mkdirs();
 				}
 				returned.setResourceData(project);
-				project.getViewLibrary();
+				// project.getViewLibrary();
 				return returned;
 			} catch (ModelDefinitionException e) {
 				e.printStackTrace();
