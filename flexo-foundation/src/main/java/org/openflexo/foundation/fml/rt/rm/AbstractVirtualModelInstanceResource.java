@@ -116,4 +116,19 @@ public interface AbstractVirtualModelInstanceResource<VMI extends AbstractVirtua
 	 * @return
 	 */
 	public Class<TA> getTechnologyAdapterClass();
+
+	/**
+	 * Return URI of {@link VirtualModel} which this instance is conform to
+	 * 
+	 * @return
+	 */
+	public String getVirtualModelURI();
+
+	/**
+	 * Sets URI of {@link VirtualModel} which this instance is conform to
+	 * 
+	 * @param virtualModelURI
+	 */
+	public void setVirtualModelURI(String virtualModelURI);
+
 }

@@ -44,10 +44,8 @@ import java.util.Iterator;
 import java.util.logging.Logger;
 
 import org.junit.Test;
-import org.openflexo.foundation.fml.rm.ViewPointResource;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
-import org.openflexo.foundation.fml.rt.rm.ViewResource;
-import org.openflexo.foundation.fml.rt.rm.VirtualModelInstanceResource;
+import org.openflexo.foundation.fml.rt.rm.FMLRTVirtualModelInstanceResource;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.model.ModelContext;
 import org.openflexo.model.ModelEntity;
@@ -62,27 +60,6 @@ import org.openflexo.model.factory.ModelFactory;
 public class ResourceModelFactoryTest {
 
 	private static final Logger logger = FlexoLogger.getLogger(ResourceModelFactoryTest.class.getPackage().getName());
-
-	@Test
-	public void testInstantiateViewPointResourceModelFactory() {
-		try {
-			System.out.println("Instanciating ViewPointResource ModelFactory");
-
-			ModelFactory factory = new ModelFactory(ViewPointResource.class);
-			ModelContext modelContext = factory.getModelContext();
-			for (Iterator<ModelEntity> it = modelContext.getEntities(); it.hasNext();) {
-				// FD unused ModelEntity e =
-				it.next();
-			}
-			factory.checkMethodImplementations();
-		} catch (ModelDefinitionException e) {
-			e.printStackTrace();
-			fail(e.getMessage());
-		} catch (MissingImplementationException e) {
-			e.printStackTrace();
-			fail(e.getMessage());
-		}
-	}
 
 	@Test
 	public void testInstantiateVirtualModelResourceFactory() {
@@ -106,32 +83,11 @@ public class ResourceModelFactoryTest {
 	}
 
 	@Test
-	public void testInstantiateViewResourceModelFactory() {
-		try {
-			System.out.println("Instanciating ViewResource ModelFactory");
-
-			ModelFactory factory = new ModelFactory(ViewResource.class);
-			ModelContext modelContext = factory.getModelContext();
-			for (Iterator<ModelEntity> it = modelContext.getEntities(); it.hasNext();) {
-				// FD unused ModelEntity e =
-				it.next();
-			}
-			factory.checkMethodImplementations();
-		} catch (ModelDefinitionException e) {
-			e.printStackTrace();
-			fail(e.getMessage());
-		} catch (MissingImplementationException e) {
-			e.printStackTrace();
-			fail(e.getMessage());
-		}
-	}
-
-	@Test
 	public void testInstantiateVirtualModelInstanceResourceModelFactory() {
 		try {
 			System.out.println("Instanciating VirtualModelInstanceResource ModelFactory");
 
-			ModelFactory factory = new ModelFactory(VirtualModelInstanceResource.class);
+			ModelFactory factory = new ModelFactory(FMLRTVirtualModelInstanceResource.class);
 			ModelContext modelContext = factory.getModelContext();
 			for (Iterator<ModelEntity> it = modelContext.getEntities(); it.hasNext();) {
 				// FD unused ModelEntity e =

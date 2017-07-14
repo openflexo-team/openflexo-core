@@ -38,7 +38,9 @@
 
 package org.openflexo.foundation.fml.rm;
 
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -60,12 +62,14 @@ import org.openflexo.foundation.resource.FlexoFileNotFoundException;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.PamelaResourceImpl;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
+import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.task.FlexoTask;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.foundation.technologyadapter.UseModelSlotDeclaration;
 import org.openflexo.model.factory.AccessibleProxyObject;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
+import org.openflexo.toolbox.FileUtils;
 import org.openflexo.toolbox.IProgress;
 
 public abstract class VirtualModelResourceImpl extends PamelaResourceImpl<VirtualModel, FMLModelFactory>
@@ -319,11 +323,28 @@ public abstract class VirtualModelResourceImpl extends PamelaResourceImpl<Virtua
 	@Override
 	public void removeFromContents(FlexoResource<?> resource) {
 		performSuperRemover(CONTENTS, resource);
+		notifyContentsRemoved(resource);
 		/*if (resource instanceof VirtualModelResource) {
 			getViewPoint().removeFromVirtualModels(((VirtualModelResource) resource).getVirtualModel());
 		}*/
 	}
 
 	// FIN de ViewPointResource
+
+	@Override
+	protected void _saveResourceData(boolean clearIsModified) throws SaveResourceException {
+		super._saveResourceData(clearIsModified);
+		// Hook to write FML as well
+		if (getIODelegate() instanceof DirectoryBasedIODelegate) {
+			DirectoryBasedIODelegate ioDelegate = (DirectoryBasedIODelegate) getIODelegate();
+			File fmlFile = new File(ioDelegate.getDirectory(), ioDelegate.getDirectory().getName());
+			try {
+				FileUtils.saveToFile(fmlFile, getLoadedResourceData().getFMLRepresentation());
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
 
 }

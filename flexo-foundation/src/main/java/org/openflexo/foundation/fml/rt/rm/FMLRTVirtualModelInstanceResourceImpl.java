@@ -155,23 +155,23 @@ public abstract class FMLRTVirtualModelInstanceResourceImpl
 		return null;
 	}
 
-	/*@Override
-	public VirtualModelResource<ViewPoint> getVirtualModelResource() {
-		return getViewPointResource();
-	}*/
-
-	/*private String viewpointURI;
-	
 	@Override
-	public String getViewpointURI() {
-		if (getViewPointResource() != null) {
-			return getViewPointResource().getURI();
-		}
-		return viewpointURI;
+	public Class<FMLRTTechnologyAdapter> getTechnologyAdapterClass() {
+		return FMLRTTechnologyAdapter.class;
 	}
-	
+
+	private String virtualModelURI;
+
 	@Override
-	public void setViewpointURI(String viewpointURI) {
-		this.viewpointURI = viewpointURI;
-	}*/
+	public String getVirtualModelURI() {
+		if (getVirtualModelResource() != null) {
+			return getVirtualModelResource().getURI();
+		}
+		return virtualModelURI;
+	}
+
+	@Override
+	public void setVirtualModelURI(String virtualModelURI) {
+		this.virtualModelURI = virtualModelURI;
+	}
 }

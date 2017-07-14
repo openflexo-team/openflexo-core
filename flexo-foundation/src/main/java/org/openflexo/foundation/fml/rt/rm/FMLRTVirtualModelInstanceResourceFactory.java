@@ -295,8 +295,8 @@ public class FMLRTVirtualModelInstanceResourceFactory extends
 				returned.setVirtualModelResource(vmResource);
 				if (vmResource == null) {
 					// In this case, serialize URI of virtual model, to give a chance to find it later
-					// returned.setVirtualModelURI(vpi.virtualModelURI);
-					// logger.warning("Could not retrieve virtual model: " + vpi.virtualModelURI);
+					returned.setVirtualModelURI(vmiInfo.virtualModelURI);
+					logger.warning("Could not retrieve virtual model: " + vmiInfo.virtualModelURI);
 				}
 			}
 		}

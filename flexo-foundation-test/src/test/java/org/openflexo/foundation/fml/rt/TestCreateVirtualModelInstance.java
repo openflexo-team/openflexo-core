@@ -55,8 +55,8 @@ import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.action.CreateContainedVirtualModel;
-import org.openflexo.foundation.fml.rm.ViewPointResource;
-import org.openflexo.foundation.fml.rm.ViewPointResourceFactory;
+import org.openflexo.foundation.fml.rm.VirtualModelResource;
+import org.openflexo.foundation.fml.rm.VirtualModelResourceFactory;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.fml.rt.action.CreateBasicVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.CreateViewInFolder;
@@ -88,7 +88,7 @@ public class TestCreateVirtualModelInstance extends OpenflexoProjectAtRunTimeTes
 	private static FlexoProject project;
 	private static View newView;
 	private static VirtualModelInstance newVirtualModelInstance;
-	private static ViewPointResource newViewPointResource;
+	private static VirtualModelResource newVirtualModelResource;
 
 	private static DirectoryResourceCenter resourceCenter;
 
@@ -112,12 +112,12 @@ public class TestCreateVirtualModelInstance extends OpenflexoProjectAtRunTimeTes
 
 		FMLTechnologyAdapter fmlTechnologyAdapter = serviceManager.getTechnologyAdapterService()
 				.getTechnologyAdapter(FMLTechnologyAdapter.class);
-		ViewPointResourceFactory factory = fmlTechnologyAdapter.getVirtualModelResourceFactory();
+		VirtualModelResourceFactory factory = fmlTechnologyAdapter.getVirtualModelResourceFactory();
 
-		newViewPointResource = factory.makeViewPointResource(VIEWPOINT_NAME, VIEWPOINT_URI,
+		newVirtualModelResource = factory.makeVirtualModelResource(VIEWPOINT_NAME, VIEWPOINT_URI,
 				fmlTechnologyAdapter.getGlobalRepository(resourceCenter).getRootFolder(),
 				fmlTechnologyAdapter.getTechnologyContextManager(), true);
-		newViewPoint = newViewPointResource.getLoadedResourceData();
+		newViewPoint = newVirtualModelResource.getLoadedResourceData();
 
 		// newViewPoint = ViewPointImpl.newViewPoint("TestViewPoint",
 		// "http://openflexo.org/test/TestViewPoint",
@@ -125,12 +125,12 @@ public class TestCreateVirtualModelInstance extends OpenflexoProjectAtRunTimeTes
 		// serviceManager.getViewPointLibrary(), resourceCenter);
 		assertNotNull(newViewPoint);
 		assertNotNull(newViewPoint.getResource());
-		// assertTrue(((ViewPointResource)
+		// assertTrue(((VirtualModelResource)
 		// newViewPoint.getResource()).getDirectory().exists());
-		// assertTrue(((ViewPointResource)
+		// assertTrue(((VirtualModelResource)
 		// newViewPoint.getResource()).getFile().exists());
-		assertTrue(((ViewPointResource) newViewPoint.getResource()).getDirectory() != null);
-		assertTrue(((ViewPointResource) newViewPoint.getResource()).getIODelegate().exists());
+		assertTrue(((VirtualModelResource) newViewPoint.getResource()).getDirectory() != null);
+		assertTrue(((VirtualModelResource) newViewPoint.getResource()).getIODelegate().exists());
 
 		CreateContainedVirtualModel action = CreateContainedVirtualModel.actionType.makeNewAction(newViewPoint, null, editor);
 		action.setNewVirtualModelName("TestVirtualModel");
@@ -171,7 +171,7 @@ public class TestCreateVirtualModelInstance extends OpenflexoProjectAtRunTimeTes
 		CreateViewInFolder action = CreateViewInFolder.actionType.makeNewAction(project.getViewLibrary().getRootFolder(), null, editor);
 		action.setNewViewName("MyView");
 		action.setNewViewTitle("Test creation of a new view");
-		action.setViewpointResource((ViewPointResource) newViewPoint.getResource());
+		action.setViewpointResource((VirtualModelResource) newViewPoint.getResource());
 		action.doAction();
 		assertTrue(action.hasActionExecutionSucceeded());
 		newView = action.getNewView();
@@ -253,7 +253,7 @@ public class TestCreateVirtualModelInstance extends OpenflexoProjectAtRunTimeTes
 
 		instanciateTestServiceManager();
 		resourceCenter = makeNewDirectoryResourceCenter();
-		reloadResourceCenter(newViewPointResource.getDirectory());
+		reloadResourceCenter(newVirtualModelResource.getDirectory());
 
 		editor = reloadProject(project.getDirectory());
 		project = editor.getProject();

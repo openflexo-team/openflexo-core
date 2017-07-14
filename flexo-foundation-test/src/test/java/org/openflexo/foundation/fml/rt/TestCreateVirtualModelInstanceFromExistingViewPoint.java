@@ -54,7 +54,7 @@ import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.VirtualModelLibrary;
 import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.rm.ViewPointResource;
+import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.fml.rt.action.CreateBasicVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.CreateViewInFolder;
 import org.openflexo.foundation.fml.rt.rm.ViewResource;
@@ -122,7 +122,7 @@ public class TestCreateVirtualModelInstanceFromExistingViewPoint extends Openfle
 		CreateViewInFolder action = CreateViewInFolder.actionType.makeNewAction(project.getViewLibrary().getRootFolder(), null, editor);
 		action.setNewViewName("MyView");
 		action.setNewViewTitle("Test creation of a new view");
-		action.setViewpointResource((ViewPointResource) viewPoint.getResource());
+		action.setViewpointResource((VirtualModelResource) viewPoint.getResource());
 		action.doAction();
 		assertTrue(action.hasActionExecutionSucceeded());
 		newView = action.getNewView();
@@ -210,7 +210,7 @@ public class TestCreateVirtualModelInstanceFromExistingViewPoint extends Openfle
 		System.out.println("All resources=" + project.getAllResources());
 		assertNotNull(project.getResource(newView.getURI()));
 
-		ViewPointResource vpRes = newViewResource.getViewPointResource();
+		VirtualModelResource vpRes = newViewResource.getVirtualModelResource();
 		viewPoint = vpRes.getResourceData(null);
 		assertNotNull(viewPoint);
 

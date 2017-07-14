@@ -102,8 +102,10 @@ public abstract class OpenflexoProjectAtRunTimeTestCase extends OpenflexoTestCas
 
 	@AfterClass
 	public static void tearDownClass() {
-		deleteProject();
-		deleteTestResourceCenters();
+		if (DELETE_PROJECT_AFTER_TEST_EXECUTION) {
+			deleteProject();
+			deleteTestResourceCenters();
+		}
 		unloadServiceManager();
 	}
 

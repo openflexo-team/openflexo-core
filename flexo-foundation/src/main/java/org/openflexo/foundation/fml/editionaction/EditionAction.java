@@ -68,7 +68,6 @@ import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext.ReturnException;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstance;
-import org.openflexo.foundation.fml.rt.editionaction.AddSubView;
 import org.openflexo.foundation.fml.rt.editionaction.AddVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.editionaction.FinalizeMatching;
 import org.openflexo.foundation.fml.rt.editionaction.FireEventAction;
@@ -99,14 +98,13 @@ import org.openflexo.toolbox.StringUtils;
 @ModelEntity(isAbstract = true)
 @ImplementationClass(EditionAction.EditionActionImpl.class)
 @Imports({ @Import(AddToListAction.class), @Import(AddFlexoConceptInstance.class), @Import(AddVirtualModelInstance.class),
-		@Import(AddClassInstance.class), @Import(AddSubView.class), @Import(DeclarationAction.class), @Import(AssignationAction.class),
-		@Import(ReturnStatement.class), @Import(ExpressionAction.class), @Import(LogAction.class),
-		@Import(SelectFlexoConceptInstance.class), @Import(InitiateMatching.class), @Import(FinalizeMatching.class),
-		@Import(MatchFlexoConceptInstance.class), @Import(RemoveFromListAction.class), @Import(DeleteAction.class),
-		@Import(ConditionalAction.class), @Import(IterationAction.class), @Import(WhileAction.class),
-		@Import(IncrementalIterationAction.class), @Import(FetchRequestIterationAction.class), @Import(ExecutionAction.class),
-		@Import(DeclareFlexoRole.class), @Import(FireEventAction.class), @Import(NotifyPropertyChangedAction.class),
-		@Import(AddClassInstance.class) })
+		@Import(AddClassInstance.class), @Import(DeclarationAction.class), @Import(AssignationAction.class), @Import(ReturnStatement.class),
+		@Import(ExpressionAction.class), @Import(LogAction.class), @Import(SelectFlexoConceptInstance.class),
+		@Import(InitiateMatching.class), @Import(FinalizeMatching.class), @Import(MatchFlexoConceptInstance.class),
+		@Import(RemoveFromListAction.class), @Import(DeleteAction.class), @Import(ConditionalAction.class), @Import(IterationAction.class),
+		@Import(WhileAction.class), @Import(IncrementalIterationAction.class), @Import(FetchRequestIterationAction.class),
+		@Import(ExecutionAction.class), @Import(DeclareFlexoRole.class), @Import(FireEventAction.class),
+		@Import(NotifyPropertyChangedAction.class), @Import(AddClassInstance.class) })
 public abstract interface EditionAction extends FMLControlGraph {
 
 	@PropertyIdentifier(type = ActionContainer.class)
