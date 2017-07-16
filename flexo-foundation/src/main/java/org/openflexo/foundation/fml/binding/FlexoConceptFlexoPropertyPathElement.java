@@ -201,8 +201,9 @@ public class FlexoConceptFlexoPropertyPathElement<P extends FlexoProperty<?>> ex
 				// We might arrive here only in the case of a FlexoProperty does not correctely notify
 				// its type change. We warn it to 'tell' the developper that such notification should be done
 				// in FlexoProperty (see IndividualProperty for example)
-				logger.warning("Detecting un-notified type changing for FlexoProperty " + flexoProperty + " from " + lastKnownType + " to "
-						+ getType() + ". Trying to handle case.");
+				// logger.warning("Detecting un-notified type changing for FlexoProperty " + flexoProperty + " from " + lastKnownType + " to
+				// "
+				// + getType() + ". Trying to handle case.");
 				getPropertyChangeSupport().firePropertyChange(TYPE_PROPERTY, lastKnownType, getType());
 				lastKnownType = getType();
 			}

@@ -62,7 +62,6 @@ import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoBehaviourObject;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter.WidgetType;
-import org.openflexo.foundation.fml.GenericBehaviourParameter;
 import org.openflexo.toolbox.StringUtils;
 
 public class CreateGenericBehaviourParameter extends FlexoAction<CreateGenericBehaviourParameter, FlexoBehaviourObject, FMLObject>
@@ -108,7 +107,7 @@ public class CreateGenericBehaviourParameter extends FlexoAction<CreateGenericBe
 
 	private String description;
 
-	private GenericBehaviourParameter newParameter;
+	private FlexoBehaviourParameter newParameter;
 
 	CreateGenericBehaviourParameter(FlexoBehaviourObject focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);

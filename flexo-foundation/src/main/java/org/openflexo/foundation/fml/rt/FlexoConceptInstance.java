@@ -801,7 +801,8 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 			}
 			else {
 
-				if (flexoRole.getFlexoConcept() == getFlexoConcept().getOwningVirtualModel()) {
+				if (getOwningVirtualModelInstance() != null && flexoRole.getFlexoConcept() != null
+						&& flexoRole.getFlexoConcept() == getFlexoConcept().getOwningVirtualModel()) {
 					// logger.warning("Should not we delegate this to owning VM ???");
 					return getOwningVirtualModelInstance().getFlexoActor(flexoRole);
 				}
@@ -1408,7 +1409,10 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 
 		@Override
 		public BindingModel getBindingModel() {
-			return getFlexoConcept().getInspector().getBindingModel();
+			if (getFlexoConcept() != null && getFlexoConcept().getInspector() != null) {
+				return getFlexoConcept().getInspector().getBindingModel();
+			}
+			return null;
 		}
 
 		@Override
@@ -1417,18 +1421,6 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 			if (variable.getVariableName().equals(FlexoConceptInspector.FORMATTER_INSTANCE_PROPERTY)) {
 				return this;
 			}
-			/*else if (variable instanceof FlexoRoleBindingVariable && getFlexoConcept() != null) {
-				FlexoRole<?> role = ((FlexoRoleBindingVariable) variable).getFlexoRole();
-				// Handle here case of FlexoRole relates to VirtualModelInstance container
-				if (role.getFlexoConcept() == getFlexoConcept().getOwningVirtualModel()) {
-					return getOwningVirtualModelInstance().getValue(variable);
-				}
-				if (role != null) {
-					return getFlexoActor(role);
-				}
-				logger.warning("Unexpected " + variable);
-				// return null;
-			}*/
 			else if (variable instanceof FlexoPropertyBindingVariable && getFlexoConcept() != null) {
 				FlexoProperty<?> flexoProperty = ((FlexoPropertyBindingVariable) variable).getFlexoProperty();
 				if (!flexoProperty.getFlexoConcept().isAssignableFrom(getFlexoConcept())) {
@@ -1444,9 +1436,6 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 					return ((FlexoPropertyBindingVariable) variable).getValue(this);
 				}
 			}
-			/*else if (variable.getVariableName().equals(FlexoConceptBindingModel.REFLEXIVE_ACCESS_PROPERTY)) {
-				return getFlexoConcept();
-			}*/
 			else if (variable.getVariableName().equals(FlexoConceptBindingModel.THIS_PROPERTY)) {
 				return this;
 			}

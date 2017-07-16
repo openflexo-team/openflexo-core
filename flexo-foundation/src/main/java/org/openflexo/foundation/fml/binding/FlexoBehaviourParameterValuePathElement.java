@@ -93,7 +93,6 @@ public class FlexoBehaviourParameterValuePathElement extends SimplePathElement i
 		if (evt.getSource() == parameter) {
 			if (lastKnownType != getType()) {
 				lastKnownType = getType();
-				System.out.println("Tiens, si je veux, je notifie que le type change");
 			}
 
 		}

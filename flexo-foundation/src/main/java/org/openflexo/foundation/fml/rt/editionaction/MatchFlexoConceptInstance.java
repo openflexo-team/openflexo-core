@@ -537,7 +537,7 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 			if (evt.getSource().equals(getCreationScheme())) {
 				updateParameters();
 			}
-			else if (evt.getSource().equals(getFlexoConceptType())) {
+			else if (evt.getSource().equals(getFlexoConceptType()) && !isDeleting) {
 				updateMatchingCriterias();
 			}
 		}
@@ -550,6 +550,7 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 			if (getFlexoConceptType() == null) {
 				for (MatchingCriteria criteriaToRemove : new ArrayList<MatchingCriteria>(getMatchingCriterias())) {
 					removeFromMatchingCriterias(criteriaToRemove);
+					criteriaToRemove.delete();
 				}
 			}
 			else {
@@ -569,37 +570,12 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 					System.out.println("REMOVE " + removeThis.getFlexoProperty().getName() + " value=" + removeThis.getValue()
 							+ " updateMatchingCriterias for " + Integer.toHexString(hashCode()));
 					removeFromMatchingCriterias(removeThis);
+					removeThis.delete();
 				}
 
 			}
 			isUpdatingMatchingCriterias = false;
 
-			/*System.out.println("START updateMatchingCriterias for " + Integer.toHexString(hashCode()));
-			isUpdatingMatchingCriterias = true;
-			List<MatchingCriteria> existingCriterias = (List<MatchingCriteria>) performSuperGetter(MATCHING_CRITERIAS_KEY);
-			List<MatchingCriteria> criteriasToRemove = new ArrayList<MatchingCriteria>(existingCriterias);
-			if (getFlexoConceptType() != null) {
-				for (FlexoRole pr : getFlexoConceptType().getFlexoRoles()) {
-					MatchingCriteria existingCriteria = getMatchingCriteria(pr);
-					if (existingCriteria != null) {
-						criteriasToRemove.remove(existingCriteria);
-					} else {
-						System.out.println("ADD2 " + pr.getName() + " updateMatchingCriterias for " + Integer.toHexString(hashCode()));
-						addToMatchingCriterias(getFMLModelFactory().newMatchingCriteria(pr));
-					}
-				}
-			}
-			for (MatchingCriteria removeThis : criteriasToRemove) {
-				System.out.println("REMOVE2 " + removeThis.getFlexoRole().getName() + " value=" + removeThis.getValue()
-						+ " updateMatchingCriterias for " + Integer.toHexString(hashCode()));
-				removeFromMatchingCriterias(removeThis);
-			}
-			isUpdatingMatchingCriterias = false;
-			System.out.println("END1 updateMatchingCriterias for " + Integer.toHexString(hashCode()));
-			for (MatchingCriteria mc : (List<MatchingCriteria>) performSuperGetter(MATCHING_CRITERIAS_KEY)) {
-				System.out.println("> Criteria " + mc.getFlexoRole().getName() + " : " + mc.getValue());
-			}
-			System.out.println("END2 updateMatchingCriterias for " + Integer.toHexString(hashCode()));*/
 		}
 
 		@Override

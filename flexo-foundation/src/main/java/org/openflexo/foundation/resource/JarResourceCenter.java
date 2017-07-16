@@ -59,6 +59,8 @@ import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.converter.FlexoObjectReferenceConverter;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.VirtualModelRepository;
+import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
+import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceRepository;
 import org.openflexo.foundation.resource.DirectoryBasedJarIODelegate.DirectoryBasedJarIODelegateImpl;
 import org.openflexo.foundation.resource.InJarIODelegate.InJarIODelegateImpl;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
@@ -441,10 +443,20 @@ public class JarResourceCenter extends ResourceRepository<FlexoResource<?>, InJa
 
 	// TODO Remove this
 	@Override
-	public VirtualModelRepository<?> getViewPointRepository() {
+	public VirtualModelRepository<InJarResourceImpl> getViewPointRepository() {
 		if (getServiceManager() != null) {
 			FMLTechnologyAdapter vmTA = getServiceManager().getTechnologyAdapterService().getTechnologyAdapter(FMLTechnologyAdapter.class);
 			return vmTA.getVirtualModelRepository(this);
+		}
+		return null;
+	}
+
+	@Override
+	public FMLRTVirtualModelInstanceRepository<InJarResourceImpl> getVirtualModelInstanceRepository() {
+		if (getServiceManager() != null) {
+			FMLRTTechnologyAdapter vmRTTA = getServiceManager().getTechnologyAdapterService()
+					.getTechnologyAdapter(FMLRTTechnologyAdapter.class);
+			return vmRTTA.getVirtualModelInstanceRepository(this);
 		}
 		return null;
 	}
