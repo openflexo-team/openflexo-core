@@ -1076,13 +1076,13 @@ public interface VirtualModel extends FlexoConcept, VirtualModelObject, FlexoMet
 
 		@Override
 		public BindingFactory getBindingFactory() {
-			if (getDeclaringVirtualModel() != null) {
+			if (getDeclaringVirtualModel() != null && getDeclaringVirtualModel() != this) {
 				return getDeclaringVirtualModel().getBindingFactory();
 			}
 			if (bindingFactory == null) {
 				bindingFactory = new FMLBindingFactory(this);
 			}
-			return null;
+			return bindingFactory;
 		}
 
 		@Override

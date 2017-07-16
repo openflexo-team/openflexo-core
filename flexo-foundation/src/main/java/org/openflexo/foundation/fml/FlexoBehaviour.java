@@ -39,7 +39,6 @@
 package org.openflexo.foundation.fml;
 
 import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 import java.util.logging.Logger;
@@ -569,7 +568,7 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 		public void finalizeDeserialization() {
 			// Convert all references to former FlexoBehaviourParameter model to generic FlexoBehaviourParameters
 			// TODO: remove this code once all deprecated FlexoBehaviourParameter subinterfaces will be removed
-			if (getDeserializationFactory() != null) {
+			/*if (getDeserializationFactory() != null) {
 				for (FlexoBehaviourParameter p : new ArrayList<>(getParameters())) {
 					if (!(p instanceof GenericBehaviourParameter)) {
 						FMLModelFactory factory = getDeserializationFactory();
@@ -587,7 +586,7 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 						addToParameters(newParameter);
 					}
 				}
-			}
+			}*/
 
 			if (getControlGraph() != null) {
 				getControlGraph().accept(new FMLControlGraphVisitor() {

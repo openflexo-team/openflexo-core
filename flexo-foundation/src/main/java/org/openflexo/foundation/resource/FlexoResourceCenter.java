@@ -44,11 +44,15 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.converter.FlexoObjectReferenceConverter;
+import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelRepository;
+import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceRepository;
 import org.openflexo.foundation.resource.FileSystemBasedResourceCenter.FSBasedResourceCenterEntry;
 import org.openflexo.foundation.resource.JarResourceCenter.JarResourceCenterEntry;
 import org.openflexo.foundation.resource.RemoteResourceCenter.RemoteResourceCenterEntry;
@@ -167,7 +171,8 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, FlexoObject, Refere
 	 *            a progress monitor that will be notified of the progress of this task. This parameter can be <code>null</code>
 	 * @return a list of all resources available in this resource center.
 	 */
-	@Nonnull Collection<? extends FlexoResource<?>> getAllResources(@Nullable IProgress progress);
+	@Nonnull
+	Collection<? extends FlexoResource<?>> getAllResources(@Nullable IProgress progress);
 
 	/**
 	 * Return resource matching supplied artefact
@@ -191,7 +196,8 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, FlexoObject, Refere
 	 *            a progress monitor that will be notified of the progress of this task. This parameter can be <code>null</code>
 	 * @return the resource with the given <code>uri</code> and the provided <code>version</code>, or null if it cannot be found.
 	 */
-	@Nullable <T extends ResourceData<T>> FlexoResource<T> retrieveResource(@Nonnull String uri, @Nonnull FlexoVersion version,
+	@Nullable
+	<T extends ResourceData<T>> FlexoResource<T> retrieveResource(@Nonnull String uri, @Nonnull FlexoVersion version,
 			@Nonnull Class<T> type, @Nullable IProgress progress);
 
 	/**
@@ -204,7 +210,8 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, FlexoObject, Refere
 	 *            a progress monitor that will be notified of the progress of this task. This parameter can be <code>null</code>
 	 * @return the resource with the given <code>uri</code>, or null if it cannot be found.
 	 */
-	@Nullable FlexoResource<?> retrieveResource(@Nonnull String uri, @Nullable IProgress progress);
+	@Nullable
+	FlexoResource<?> retrieveResource(@Nonnull String uri, @Nullable IProgress progress);
 
 	/**
 	 * Returns all available versions of the resource identified by the given <code>uri</code>
@@ -219,7 +226,8 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, FlexoObject, Refere
 	 * @return all available versions of the resource identified by the given <code>uri</code>. An empty list is returned if no match were
 	 *         found
 	 */
-	@Nonnull <T extends ResourceData<T>> List<FlexoResource<T>> retrieveResource(@Nonnull String uri, @Nonnull Class<T> type,
+	@Nonnull
+	<T extends ResourceData<T>> List<FlexoResource<T>> retrieveResource(@Nonnull String uri, @Nonnull Class<T> type,
 			@Nullable IProgress progress);
 
 	/**
@@ -244,11 +252,20 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, FlexoObject, Refere
 	void update() throws IOException;
 
 	/**
-	 * Retrieve ViewPoint repository (containing all resources storing a ViewPoint) for this {@link FlexoResourceCenter}
+	 * Retrieve {@link VirtualModel} repository (containing all resources storing a {@link VirtualModel}) for this
+	 * {@link FlexoResourceCenter}
 	 * 
 	 * @return
 	 */
-	VirtualModelRepository getViewPointRepository();
+	public VirtualModelRepository<I> getViewPointRepository();
+
+	/**
+	 * Retrieve {@link FMLRTVirtualModelInstance} repository (containing all resources storing a {@link FMLRTVirtualModelInstance}) for this
+	 * {@link FlexoResourceCenter}
+	 * 
+	 * @return
+	 */
+	public FMLRTVirtualModelInstanceRepository<I> getVirtualModelInstanceRepository();
 
 	/**
 	 * Returns an iterator over a set of elements of type I, which are iterables artefacts this resource center stores
@@ -274,8 +291,7 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, FlexoObject, Refere
 	 * @return the registered repository
 	 */
 	// TODO: change to retrieveRepository(Class<? extends R> repositoryType, Class <? extends TechnologyAdapter technologyAdapterClass)
-	<R extends ResourceRepository<?, I>> R retrieveRepository(Class<? extends R> repositoryType,
-			TechnologyAdapter technologyAdapter);
+	<R extends ResourceRepository<?, I>> R retrieveRepository(Class<? extends R> repositoryType, TechnologyAdapter technologyAdapter);
 
 	/**
 	 * Register supplied repository for a given type and technology
@@ -369,8 +385,7 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, FlexoObject, Refere
 	 * @param serializationArtefact
 	 * @return
 	 */
-	FlexoIODelegate<I> makeFlexoIODelegate(I serializationArtefact, FlexoResourceFactory<?, ?, ?> resourceFactory)
-			throws IOException;
+	FlexoIODelegate<I> makeFlexoIODelegate(I serializationArtefact, FlexoResourceFactory<?, ?, ?> resourceFactory) throws IOException;
 
 	/**
 	 * Build a new {@link FlexoIODelegate} for a given serialization artefact

@@ -370,8 +370,8 @@ public class FMLModelFactory extends FGEModelFactoryImpl implements PamelaResour
 		return returned;
 	}
 
-	public GenericBehaviourParameter newParameter(FlexoBehaviour behaviour) {
-		GenericBehaviourParameter returned = newInstance(GenericBehaviourParameter.class);
+	public FlexoBehaviourParameter newParameter(FlexoBehaviour behaviour) {
+		FlexoBehaviourParameter returned = newInstance(FlexoBehaviourParameter.class);
 		behaviour.addToParameters(returned);
 		return returned;
 	}

@@ -339,8 +339,12 @@ public abstract interface FMLControlGraph extends FlexoConceptObject {
 
 		}
 
+		protected boolean isDeleting = false;
+
 		@Override
 		public boolean delete(Object... context) {
+
+			isDeleting = true;
 
 			// This part is valid only if we are not deleting the owner also.
 
@@ -372,6 +376,8 @@ public abstract interface FMLControlGraph extends FlexoConceptObject {
 			if (parentFlattenedSequence != null) {
 				parentFlattenedSequence.controlGraphChanged(this);
 			}
+
+			isDeleting = false;
 
 			return returned;
 		}

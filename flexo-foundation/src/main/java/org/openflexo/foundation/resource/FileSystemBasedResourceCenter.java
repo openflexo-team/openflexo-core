@@ -64,6 +64,8 @@ import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.converter.FlexoObjectReferenceConverter;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.VirtualModelRepository;
+import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
+import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceRepository;
 import org.openflexo.foundation.resource.DirectoryBasedIODelegate.DirectoryBasedIODelegateImpl;
 import org.openflexo.foundation.resource.FileIODelegate.FileIODelegateImpl;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
@@ -179,10 +181,20 @@ public abstract class FileSystemBasedResourceCenter extends ResourceRepository<F
 
 	@Override
 	public VirtualModelRepository<File> getViewPointRepository() {
-		if (rcService != null) {
+		if (getServiceManager() != null) {
 			FMLTechnologyAdapter vmTA = getServiceManager().getTechnologyAdapterService().getTechnologyAdapter(FMLTechnologyAdapter.class);
 			// return getRepository(VirtualModelRepository.class, vmTA);
 			return vmTA.getVirtualModelRepository(this);
+		}
+		return null;
+	}
+
+	@Override
+	public FMLRTVirtualModelInstanceRepository<File> getVirtualModelInstanceRepository() {
+		if (getServiceManager() != null) {
+			FMLRTTechnologyAdapter vmRTTA = getServiceManager().getTechnologyAdapterService()
+					.getTechnologyAdapter(FMLRTTechnologyAdapter.class);
+			return vmRTTA.getVirtualModelInstanceRepository(this);
 		}
 		return null;
 	}
