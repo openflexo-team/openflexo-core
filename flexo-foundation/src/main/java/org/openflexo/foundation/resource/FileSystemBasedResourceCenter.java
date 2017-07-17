@@ -678,6 +678,9 @@ public abstract class FileSystemBasedResourceCenter extends ResourceRepository<F
 
 		if (resource.getIODelegate() != null) {
 			File serializationArtefact = (File) resource.getIODelegate().getSerializationArtefact();
+			if (resource.getIODelegate() instanceof DirectoryBasedIODelegate) {
+				serializationArtefact = ((DirectoryBasedIODelegate) resource.getIODelegate()).getDirectory();
+			}
 			if (serializationArtefact != null) {
 				File f = serializationArtefact.getParentFile();
 				while (f != null && !(f.equals(getRootFolder().getSerializationArtefact()))) {

@@ -40,7 +40,6 @@ package org.openflexo.foundation.fml;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -48,8 +47,6 @@ import java.io.IOException;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.openflexo.foundation.fml.rm.VirtualModelResource;
-import org.openflexo.foundation.fml.rm.VirtualModelResourceFactory;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.fml.rm.VirtualModelResourceFactory;
 import org.openflexo.foundation.resource.DirectoryResourceCenter;
@@ -74,10 +71,10 @@ import org.openflexo.toolbox.FileUtils;
 public class TestCreateVirtualModel extends OpenflexoTestCase {
 
 	public static final String VIEWPOINT_NAME = "TestViewPoint";
-	public static final String VIEWPOINT_URI = "http://openflexo.org/test/TestViewPoint";
+	public static final String VIEWPOINT_URI = "http://openflexo.org/test/TestResourceCenter/TestViewPoint";
 	public static final String VIRTUAL_MODEL_NAME = "TestVirtualModel";
 
-	static ViewPoint newViewPoint;
+	static VirtualModel newViewPoint;
 	static VirtualModelResource newVirtualModelResource;
 
 	private static DirectoryResourceCenter resourceCenter;
@@ -101,7 +98,7 @@ public class TestCreateVirtualModel extends OpenflexoTestCase {
 				.getTechnologyAdapter(FMLTechnologyAdapter.class);
 		VirtualModelResourceFactory factory = fmlTechnologyAdapter.getVirtualModelResourceFactory();
 
-		newVirtualModelResource = factory.makeVirtualModelResource(VIEWPOINT_NAME, VIEWPOINT_URI,
+		newVirtualModelResource = factory.makeTopLevelVirtualModelResource(VIEWPOINT_NAME, VIEWPOINT_URI,
 				fmlTechnologyAdapter.getGlobalRepository(resourceCenter).getRootFolder(),
 				fmlTechnologyAdapter.getTechnologyContextManager(), true);
 		newViewPoint = newVirtualModelResource.getLoadedResourceData();
@@ -111,9 +108,8 @@ public class TestCreateVirtualModel extends OpenflexoTestCase {
 		assertTrue(newVirtualModelResource.getDirectory() != null);
 		assertTrue(newVirtualModelResource.getIODelegate().exists());
 
-		assertEquals(newViewPoint, newViewPoint.getViewPoint());
 		assertEquals(newViewPoint, newViewPoint.getVirtualModel());
-		assertEquals(null, newViewPoint.getOwningVirtualModel());
+		assertEquals(null, newViewPoint.getContainerVirtualModel());
 		assertEquals(newViewPoint, newViewPoint.getFlexoConcept());
 		assertEquals(newViewPoint, newViewPoint.getResourceData());
 
@@ -130,9 +126,9 @@ public class TestCreateVirtualModel extends OpenflexoTestCase {
 
 		FMLTechnologyAdapter fmlTechnologyAdapter = serviceManager.getTechnologyAdapterService()
 				.getTechnologyAdapter(FMLTechnologyAdapter.class);
-		VirtualModelResourceFactory factory = fmlTechnologyAdapter.getVirtualModelResourceFactory().getVirtualModelResourceFactory();
-		VirtualModelResource newVMResource = factory.makeVirtualModelResource(VIRTUAL_MODEL_NAME, newViewPoint.getVirtualModelResource(),
-				fmlTechnologyAdapter.getTechnologyContextManager(), true);
+		VirtualModelResourceFactory factory = fmlTechnologyAdapter.getVirtualModelResourceFactory();
+		VirtualModelResource newVMResource = factory.makeContainedVirtualModelResource(VIRTUAL_MODEL_NAME,
+				newViewPoint.getVirtualModelResource(), fmlTechnologyAdapter.getTechnologyContextManager(), true);
 		VirtualModel newVirtualModel = newVMResource.getLoadedResourceData();
 
 		// VirtualModel newVirtualModel =
@@ -140,11 +136,7 @@ public class TestCreateVirtualModel extends OpenflexoTestCase {
 		assertTrue(ResourceLocator.retrieveResourceAsFile(((VirtualModelResource) newVirtualModel.getResource()).getDirectory()).exists());
 		assertTrue(((VirtualModelResource) newVirtualModel.getResource()).getIODelegate().exists());
 
-		assertEquals(newViewPoint, newVirtualModel.getViewPoint());
-		assertEquals(newVirtualModel, newVirtualModel.getVirtualModel());
-
-		assertSame(newViewPoint, newVirtualModel.getOwningVirtualModel());
-
+		assertEquals(newViewPoint, newVirtualModel.getContainerVirtualModel());
 		assertEquals(newVirtualModel, newVirtualModel.getFlexoConcept());
 		assertEquals(newVirtualModel, newVirtualModel.getResourceData());
 
@@ -182,26 +174,17 @@ public class TestCreateVirtualModel extends OpenflexoTestCase {
 		VirtualModelResource retrievedVPResource = serviceManager.getVirtualModelLibrary().getVirtualModelResource(VIEWPOINT_URI);
 		assertNotNull(retrievedVPResource);
 
-		ViewPoint reloadedViewPoint = retrievedVPResource.getViewPoint();
-		assertEquals(reloadedViewPoint, reloadedViewPoint.getViewPoint());
+		VirtualModel reloadedViewPoint = retrievedVPResource.getVirtualModel();
 		assertEquals(reloadedViewPoint, reloadedViewPoint.getVirtualModel());
-		assertEquals(null, reloadedViewPoint.getOwningVirtualModel());
+		assertEquals(null, reloadedViewPoint.getContainerVirtualModel());
 		assertEquals(reloadedViewPoint, reloadedViewPoint.getFlexoConcept());
 		assertEquals(reloadedViewPoint, reloadedViewPoint.getResourceData());
 
 		VirtualModel reloadedVirtualModel = reloadedViewPoint.getVirtualModelNamed(VIRTUAL_MODEL_NAME);
 		assertNotNull(reloadedVirtualModel);
 
-		assertEquals(reloadedViewPoint, reloadedVirtualModel.getViewPoint());
+		assertEquals(reloadedViewPoint, reloadedVirtualModel.getContainerVirtualModel());
 		assertEquals(reloadedVirtualModel, reloadedVirtualModel.getVirtualModel());
-
-		if (reloadedVirtualModel instanceof ViewPoint) {
-			assertEquals(null, reloadedVirtualModel.getOwningVirtualModel());
-		}
-		else {
-			assertNotNull(reloadedVirtualModel.getOwningVirtualModel());
-		}
-
 		assertEquals(reloadedVirtualModel, reloadedVirtualModel.getFlexoConcept());
 		assertEquals(reloadedVirtualModel, reloadedVirtualModel.getResourceData());
 
