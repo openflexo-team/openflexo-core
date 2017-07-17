@@ -174,4 +174,5 @@ public abstract class FMLRTVirtualModelInstanceResourceImpl
 	public void setVirtualModelURI(String virtualModelURI) {
 		this.virtualModelURI = virtualModelURI;
 	}
+
 }

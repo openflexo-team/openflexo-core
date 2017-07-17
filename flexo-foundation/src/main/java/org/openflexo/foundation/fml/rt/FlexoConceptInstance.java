@@ -1418,7 +1418,18 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 		@Override
 		public Object getValue(BindingVariable variable) {
 
-			if (variable.getVariableName().equals(FlexoConceptInspector.FORMATTER_INSTANCE_PROPERTY)) {
+			if (variable.getVariableName().equals(FlexoConceptBindingModel.THIS_PROPERTY)) {
+				return this;
+			}
+			else if (variable.getVariableName().equals(FlexoConceptBindingModel.CONTAINER_PROPERTY) && getFlexoConcept() != null) {
+				if (getFlexoConcept().getContainerFlexoConcept() != null) {
+					return getContainerFlexoConceptInstance();
+				}
+				else {
+					return getOwningVirtualModelInstance();
+				}
+			}
+			else if (variable.getVariableName().equals(FlexoConceptInspector.FORMATTER_INSTANCE_PROPERTY)) {
 				return this;
 			}
 			else if (variable instanceof FlexoPropertyBindingVariable && getFlexoConcept() != null) {
@@ -1435,12 +1446,6 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 				else {
 					return ((FlexoPropertyBindingVariable) variable).getValue(this);
 				}
-			}
-			else if (variable.getVariableName().equals(FlexoConceptBindingModel.THIS_PROPERTY)) {
-				return this;
-			}
-			else if (variable.getVariableName().equals(FlexoConceptBindingModel.CONTAINER_PROPERTY)) {
-				return getContainerFlexoConceptInstance();
 			}
 
 			if (getOwningVirtualModelInstance() != null) {

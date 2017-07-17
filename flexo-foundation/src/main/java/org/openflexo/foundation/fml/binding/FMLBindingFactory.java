@@ -184,6 +184,9 @@ public class FMLBindingFactory extends JavaBindingFactory {
 						returned.add(new EPIRendererPathElement(parent));
 					}
 					returned.add(new FlexoConceptTypePathElement(parent, concept));
+					if (concept instanceof VirtualModel) {
+						returned.add(new VirtualModelTypePathElement(parent, concept));
+					}
 
 					if (concept instanceof VirtualModel && ((VirtualModel) concept).getContainerVirtualModel() == null) {
 						// Special case where there is no container
