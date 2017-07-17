@@ -244,14 +244,16 @@ public abstract class VirtualModelResourceImpl extends PamelaResourceImpl<Virtua
 		VirtualModel returned = super.loadResourceData(progress);
 		// We notify a deserialization start on ViewPoint AND VirtualModel, to avoid addToVirtualModel() and setViewPoint() to notify
 		// UndoManager
-		boolean containerWasDeserializing = getContainer().isDeserializing();
+		boolean containerWasDeserializing = getContainer() != null ? getContainer().isDeserializing() : true;
 		if (!containerWasDeserializing) {
 			getContainer().startDeserializing();
 		}
 		startDeserializing();
-		VirtualModel virtualModel = getContainer().getVirtualModel();
-		if (virtualModel != null)
-			virtualModel.addToVirtualModels(returned);
+		if (getContainer() != null) {
+			VirtualModel virtualModel = getContainer().getVirtualModel();
+			if (virtualModel != null)
+				virtualModel.addToVirtualModels(returned);
+		}
 		returned.clearIsModified();
 		// And, we notify a deserialization stop
 		stopDeserializing();

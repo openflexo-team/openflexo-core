@@ -502,6 +502,9 @@ public class JarResourceCenter extends ResourceRepository<FlexoResource<?>, InJa
 		String relativePath = "";
 		if (resource.getIODelegate() != null) {
 			InJarResourceImpl serializationArtefact = (InJarResourceImpl) resource.getIODelegate().getSerializationArtefact();
+			if (resource.getIODelegate() instanceof DirectoryBasedJarIODelegate) {
+				serializationArtefact = ((DirectoryBasedJarIODelegate) resource.getIODelegate()).getDirectory();
+			}
 			if (serializationArtefact != null) {
 				InJarResourceImpl f = serializationArtefact.getContainer();
 				while (f != null && !(f.equals(getRootFolder().getSerializationArtefact()))) {

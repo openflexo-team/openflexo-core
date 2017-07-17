@@ -272,6 +272,10 @@ public class VirtualModelResourceFactory
 			technologyContextManager.getServiceManager().getVirtualModelLibrary().registerVirtualModel(resource);
 		}
 
+		System.out.println("On vient d'enregistrer la resource " + resource);
+		System.out.println("On regarde maintenant dedans");
+		System.out.println("URI: " + resource.getURI());
+
 		// Now look for virtual models
 		exploreVirtualModels(resource, technologyContextManager);
 
@@ -312,41 +316,22 @@ public class VirtualModelResourceFactory
 
 		for (I child : resourceCenter.getContents(serializationArtefact)) {
 			String childName = resourceCenter.retrieveName(child);
-			if (childName.endsWith(".xml")) {
-				XMLRootElementInfo result = resourceCenter.getXMLRootElementInfo(child);
-				if (result != null && result.getName().equals("VirtualModel")) {
-					try {
-						VirtualModelResource childVirtualModelResource = retrieveContainedVirtualModelResource(serializationArtefact,
-								technologyContextManager, virtualModelResource);
-					} catch (ModelDefinitionException e) {
-						e.printStackTrace();
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-				}
-			}
-
-			/*try {
-				if (resourceCenter.retrieveName(child).endsWith(".xml")) {
-					// TODO refactor this
-					XMLRootElementInfo result = null;
-					if (child instanceof File) {
-						result = reader.readRootElement((File) child);
-					}
+			if (isValidArtefact(child, resourceCenter)) {
+				I xmlFile = resourceCenter.createEntry(childName + ".xml", child);
+				if (resourceCenter.exists(xmlFile)) {
+					XMLRootElementInfo result = resourceCenter.getXMLRootElementInfo(xmlFile);
 					if (result != null && result.getName().equals("VirtualModel")) {
-						VirtualModelResource virtualModelResource;
 						try {
-							virtualModelResource = getVirtualModelResourceFactory().retrieveVirtualModelResource(serializationArtefact,
-									technologyContextManager, viewPointResource);
+							VirtualModelResource childVirtualModelResource = retrieveContainedVirtualModelResource(child,
+									technologyContextManager, virtualModelResource);
 						} catch (ModelDefinitionException e) {
+							e.printStackTrace();
+						} catch (IOException e) {
 							e.printStackTrace();
 						}
 					}
 				}
-			} catch (IOException e) {
-				logger.warning("Unexpected IOException while reading " + child);
-				e.printStackTrace();
-			}*/
+			}
 
 			// recursively call
 			exploreResource(child, virtualModelResource, technologyContextManager);
