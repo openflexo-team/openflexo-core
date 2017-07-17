@@ -66,7 +66,7 @@ import org.openflexo.test.TestOrder;
 public class TestCreateViewPoint extends OpenflexoTestCase {
 
 	public static final String VIEWPOINT_NAME = "TestViewPoint";
-	public static final String VIEWPOINT_URI = "http://openflexo.org/test/TestResourceCenter/TestViewPoint";
+	public static final String VIEWPOINT_URI = "http://openflexo.org/test/TestResourceCenter/TestViewPoint.fml";
 
 	static VirtualModel newViewPoint;
 	static VirtualModelResource newVirtualModelResource;

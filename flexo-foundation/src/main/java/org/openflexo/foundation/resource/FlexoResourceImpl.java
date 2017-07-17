@@ -322,7 +322,11 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 	}
 
 	@Override
-	public final String toString() {
+	public String toString() {
+		if (getLoadedResourceData() instanceof FlexoObject) {
+			return ((FlexoObject) getLoadedResourceData()).getImplementedInterface().getSimpleName() + "." + getURI() + "." + getVersion()
+					+ "." + getRevision();
+		}
 		return getClass().getSimpleName() + "." + getURI() + "." + getVersion() + "." + getRevision();
 	}
 

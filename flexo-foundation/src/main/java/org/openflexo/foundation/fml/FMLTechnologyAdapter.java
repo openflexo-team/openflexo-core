@@ -157,6 +157,13 @@ public class FMLTechnologyAdapter extends TechnologyAdapter {
 		if (resourceCenter.isIgnorable(contents, this)) {
 			return true;
 		}
+		// This allows to ignore all contained VirtualModel, that will be explored from their container resource
+		if (resourceCenter.isDirectory(contents)) {
+			if (isContainedInDirectoryWithSuffix(resourceCenter, resourceCenter.getContainer(contents),
+					VirtualModelResourceFactory.FML_SUFFIX)) {
+				return true;
+			}
+		}
 		return false;
 	}
 

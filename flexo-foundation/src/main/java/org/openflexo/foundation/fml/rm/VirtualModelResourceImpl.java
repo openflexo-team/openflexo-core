@@ -78,6 +78,15 @@ public abstract class VirtualModelResourceImpl extends PamelaResourceImpl<Virtua
 	static final Logger logger = Logger.getLogger(VirtualModelResourceImpl.class.getPackage().getName());
 
 	@Override
+	public String computeDefaultURI() {
+		String returned = super.computeDefaultURI();
+		if (!returned.endsWith(VirtualModelResourceFactory.FML_SUFFIX)) {
+			return returned + VirtualModelResourceFactory.FML_SUFFIX;
+		}
+		return returned;
+	}
+
+	@Override
 	public void setName(String aName) throws CannotRenameException {
 		String oldName = getName();
 		super.setName(aName);

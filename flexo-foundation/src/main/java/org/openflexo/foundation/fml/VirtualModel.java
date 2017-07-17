@@ -53,6 +53,7 @@ import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOu
 import org.openflexo.foundation.fml.binding.FMLBindingFactory;
 import org.openflexo.foundation.fml.binding.VirtualModelBindingModel;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
+import org.openflexo.foundation.fml.rm.VirtualModelResourceFactory;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.editionaction.DeleteFlexoConceptInstanceParameter;
@@ -479,7 +480,8 @@ public interface VirtualModel extends FlexoConcept, VirtualModelObject, FlexoMet
 		@Override
 		public String getURI() {
 			if (getContainerVirtualModel() != null) {
-				return getContainerVirtualModel().getURI() + "/" + getName();
+				return getContainerVirtualModel().getURI() + "/" + getName()
+						+ (getName().endsWith(VirtualModelResourceFactory.FML_SUFFIX) ? "" : VirtualModelResourceFactory.FML_SUFFIX);
 			}
 			if (getResource() != null) {
 				return getResource().getURI();
