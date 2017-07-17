@@ -180,14 +180,6 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 				fmlTechnologyAdapter.getTechnologyContextManager(), true);
 		viewPoint = newVirtualModelResource.getLoadedResourceData();
 
-		// viewPoint = ViewPointImpl.newViewPoint("TestViewPoint",
-		// "http://openflexo.org/test/TestViewPoint",
-		// resourceCenter.getDirectory(),
-		// serviceManager.getViewPointLibrary(), resourceCenter);
-		// assertTrue(((VirtualModelResource)
-		// viewPoint.getResource()).getDirectory().exists());
-		// assertTrue(((VirtualModelResource)
-		// viewPoint.getResource()).getFile().exists());
 		assertTrue(((VirtualModelResource) viewPoint.getResource()).getDirectory() != null);
 		assertTrue(((VirtualModelResource) viewPoint.getResource()).getIODelegate().exists());
 

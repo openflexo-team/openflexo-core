@@ -106,16 +106,15 @@ public class TestCreateViewPointInProject extends OpenflexoProjectAtRunTimeTestC
 				.getTechnologyAdapter(FMLTechnologyAdapter.class);
 		VirtualModelResourceFactory factory = fmlTechnologyAdapter.getVirtualModelResourceFactory();
 
-		VirtualModelResource newVirtualModelResource = factory.makeVirtualModelResource(VIEWPOINT_NAME, VIEWPOINT_URI,
-				fmlTechnologyAdapter.getGlobalRepository(project).getRootFolder(),
-				fmlTechnologyAdapter.getTechnologyContextManager(), true);
-		ViewPoint newViewPoint = newVirtualModelResource.getLoadedResourceData();
+		VirtualModelResource newVirtualModelResource = factory.makeTopLevelVirtualModelResource(VIEWPOINT_NAME, VIEWPOINT_URI,
+				fmlTechnologyAdapter.getGlobalRepository(project).getRootFolder(), fmlTechnologyAdapter.getTechnologyContextManager(),
+				true);
+		VirtualModel newViewPoint = newVirtualModelResource.getLoadedResourceData();
 
 		assertNotNull(newViewPoint);
 		assertNotNull(newViewPoint.getResource());
 
-		System.out.println("Created viewpoint in project at: "
-				+ newViewPoint.getResource().getIODelegate().getSerializationArtefact());
+		System.out.println("Created viewpoint in project at: " + newViewPoint.getResource().getIODelegate().getSerializationArtefact());
 	}
 
 }

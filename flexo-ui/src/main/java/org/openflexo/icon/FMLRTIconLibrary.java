@@ -38,17 +38,16 @@
 
 package org.openflexo.icon;
 
+import java.util.logging.Logger;
+
+import javax.swing.ImageIcon;
+
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.ModelSlotInstance;
-import org.openflexo.foundation.fml.rt.View;
-import org.openflexo.foundation.fml.rt.ViewObject;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
-import org.openflexo.foundation.fml.rt.rm.ViewResource;
-import org.openflexo.foundation.fml.rt.rm.VirtualModelInstanceResource;
+import org.openflexo.foundation.fml.rt.VirtualModelInstanceObject;
+import org.openflexo.foundation.fml.rt.rm.FMLRTVirtualModelInstanceResource;
 import org.openflexo.rm.ResourceLocator;
-
-import javax.swing.*;
-import java.util.logging.Logger;
 
 /**
  * Utility class containing all icons used in context of FML@runtime technology adapter
@@ -98,11 +97,8 @@ public class FMLRTIconLibrary extends IconLibrary {
 	public static final ImageIconResource UNKNOWN_ICON = new ImageIconResource(
 			ResourceLocator.locateResource("Icons/Model/VE/UnknownIcon.gif"));
 
-	public static ImageIcon iconForObject(ViewObject object) {
-		if (object instanceof View) {
-			return VIEW_ICON;
-		}
-		else if (object instanceof ModelSlotInstance) {
+	public static ImageIcon iconForObject(VirtualModelInstanceObject object) {
+		if (object instanceof ModelSlotInstance) {
 			return FMLIconLibrary.iconForObject(((ModelSlotInstance) object).getModelSlot());
 		}
 		else if (object instanceof VirtualModelInstance) {
@@ -115,11 +111,7 @@ public class FMLRTIconLibrary extends IconLibrary {
 		return UNKNOWN_ICON;
 	}
 
-	public static ImageIcon iconForObject(ViewResource object) {
-		return VIEW_ICON;
-	}
-
-	public static ImageIcon iconForObject(VirtualModelInstanceResource object) {
+	public static ImageIcon iconForObject(FMLRTVirtualModelInstanceResource object) {
 		return VIRTUAL_MODEL_INSTANCE_ICON;
 	}
 

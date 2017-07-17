@@ -64,7 +64,6 @@ import org.openflexo.foundation.fml.NavigationScheme;
 import org.openflexo.foundation.fml.PrimitiveRole;
 import org.openflexo.foundation.fml.SynchronizationScheme;
 import org.openflexo.foundation.fml.TechnologySpecificFlexoBehaviour;
-import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.ViewPointLocalizedDictionary;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.controlgraph.ConditionalAction;
@@ -84,7 +83,6 @@ import org.openflexo.foundation.fml.editionaction.RemoveFromListAction;
 import org.openflexo.foundation.fml.editionaction.TechnologySpecificAction;
 import org.openflexo.foundation.fml.inspector.FlexoConceptInspector;
 import org.openflexo.foundation.fml.inspector.InspectorEntry;
-import org.openflexo.foundation.fml.rm.ViewPointResource;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.FinalizeMatching;
@@ -251,10 +249,7 @@ public class FMLIconLibrary extends IconLibrary {
 			return null;
 		}
 
-		if (object instanceof ViewPoint) {
-			return VIEWPOINT_ICON;
-		}
-		else if (object instanceof VirtualModel) {
+		if (object instanceof VirtualModel) {
 			return VIRTUAL_MODEL_ICON;
 		}
 		else if (object instanceof ModelSlot) {
@@ -469,10 +464,6 @@ public class FMLIconLibrary extends IconLibrary {
 		}
 		logger.warning("No icon for " + object.getClass());
 		return UNKNOWN_ICON;
-	}
-
-	public static ImageIcon iconForObject(ViewPointResource object) {
-		return VIEWPOINT_ICON;
 	}
 
 	public static ImageIcon iconForObject(VirtualModelResource object) {
