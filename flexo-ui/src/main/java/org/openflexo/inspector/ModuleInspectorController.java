@@ -664,11 +664,11 @@ public class ModuleInspectorController extends Observable implements Observer {
 		for (FlexoConcept parentEP : flexoConcept.getParentFlexoConcepts()) {
 			appendInspectorEntries(parentEP, newTab);
 		}
-		if (flexoConcept.getViewPoint() == null) {
-			logger.warning("Unexpected null viewpoint for concept " + flexoConcept);
+		if (flexoConcept.getVirtualModel() == null) {
+			logger.warning("Unexpected null virtual model for concept " + flexoConcept);
 			return;
 		}
-		ViewPointLocalizedDictionary localizedDictionary = flexoConcept.getViewPoint().getLocalizedDictionary();
+		ViewPointLocalizedDictionary localizedDictionary = flexoConcept.getVirtualModel().getLocalizedDictionary();
 		for (final InspectorEntry entry : flexoConcept.getInspector().getEntries()) {
 			FIBLabel label = getFactory().newFIBLabel();
 			String entryLabel = localizedDictionary.localizedForKeyAndLanguage(entry.getLabel(), FlexoLocalization.getCurrentLanguage());

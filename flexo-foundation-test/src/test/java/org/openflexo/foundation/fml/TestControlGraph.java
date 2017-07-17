@@ -52,8 +52,8 @@ import org.openflexo.foundation.DefaultFlexoEditor;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.fml.action.CreateEditionAction;
 import org.openflexo.foundation.fml.action.CreateFlexoBehaviour;
-import org.openflexo.foundation.fml.action.CreateFlexoBehaviourParameter;
 import org.openflexo.foundation.fml.action.CreateFlexoConcept;
+import org.openflexo.foundation.fml.action.CreateGenericBehaviourParameter;
 import org.openflexo.foundation.fml.action.CreatePrimitiveRole;
 import org.openflexo.foundation.fml.controlgraph.ConditionalAction;
 import org.openflexo.foundation.fml.controlgraph.EmptyControlGraph;
@@ -61,8 +61,6 @@ import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
 import org.openflexo.foundation.fml.controlgraph.Sequence;
 import org.openflexo.foundation.fml.editionaction.AssignationAction;
 import org.openflexo.foundation.fml.editionaction.ExpressionAction;
-import org.openflexo.foundation.fml.rm.VirtualModelResource;
-import org.openflexo.foundation.fml.rm.VirtualModelResourceFactory;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.fml.rm.VirtualModelResourceFactory;
 import org.openflexo.foundation.resource.DirectoryResourceCenter;
@@ -83,7 +81,7 @@ import org.openflexo.test.TestOrder;
 public class TestControlGraph extends OpenflexoTestCase {
 
 	static FlexoEditor editor;
-	static ViewPoint newViewPoint;
+	static VirtualModel newViewPoint;
 	static VirtualModel newVirtualModel;
 
 	static FlexoConcept flexoConcept;
@@ -114,7 +112,7 @@ public class TestControlGraph extends OpenflexoTestCase {
 				.getTechnologyAdapter(FMLTechnologyAdapter.class);
 		VirtualModelResourceFactory factory = fmlTechnologyAdapter.getVirtualModelResourceFactory();
 
-		VirtualModelResource newVirtualModelResource = factory.makeVirtualModelResource(VIEWPOINT_NAME, VIEWPOINT_URI,
+		VirtualModelResource newVirtualModelResource = factory.makeTopLevelVirtualModelResource(VIEWPOINT_NAME, VIEWPOINT_URI,
 				fmlTechnologyAdapter.getGlobalRepository(resourceCenter).getRootFolder(),
 				fmlTechnologyAdapter.getTechnologyContextManager(), true);
 		newViewPoint = newVirtualModelResource.getLoadedResourceData();
@@ -138,15 +136,12 @@ public class TestControlGraph extends OpenflexoTestCase {
 
 		FMLTechnologyAdapter fmlTechnologyAdapter = serviceManager.getTechnologyAdapterService()
 				.getTechnologyAdapter(FMLTechnologyAdapter.class);
-		VirtualModelResourceFactory factory = fmlTechnologyAdapter.getVirtualModelResourceFactory()
-				.getVirtualModelResourceFactory();
-		VirtualModelResource newVMResource = factory.makeVirtualModelResource(VIRTUAL_MODEL_NAME,
+		VirtualModelResourceFactory factory = fmlTechnologyAdapter.getVirtualModelResourceFactory();
+		VirtualModelResource newVMResource = factory.makeContainedVirtualModelResource(VIRTUAL_MODEL_NAME,
 				newViewPoint.getVirtualModelResource(), fmlTechnologyAdapter.getTechnologyContextManager(), true);
 		newVirtualModel = newVMResource.getLoadedResourceData();
 
-		assertTrue(ResourceLocator
-				.retrieveResourceAsFile(((VirtualModelResource) newVirtualModel.getResource()).getDirectory())
-				.exists());
+		assertTrue(ResourceLocator.retrieveResourceAsFile(((VirtualModelResource) newVirtualModel.getResource()).getDirectory()).exists());
 		assertTrue(((VirtualModelResource) newVirtualModel.getResource()).getIODelegate().exists());
 	}
 
@@ -180,8 +175,7 @@ public class TestControlGraph extends OpenflexoTestCase {
 
 		// System.out.println("Saved: " + ((VirtualModelResource)
 		// newVirtualModel.getResource()).getFile());
-		System.out.println(
-				"Saved: " + ((VirtualModelResource) newVirtualModel.getResource()).getIODelegate().toString());
+		System.out.println("Saved: " + ((VirtualModelResource) newVirtualModel.getResource()).getIODelegate().toString());
 	}
 
 	@Test
@@ -216,18 +210,16 @@ public class TestControlGraph extends OpenflexoTestCase {
 
 		log("testCreateACreationSchemeInConcept");
 
-		CreateFlexoBehaviour createCreationScheme = CreateFlexoBehaviour.actionType.makeNewAction(flexoConcept, null,
-				editor);
+		CreateFlexoBehaviour createCreationScheme = CreateFlexoBehaviour.actionType.makeNewAction(flexoConcept, null, editor);
 		createCreationScheme.setFlexoBehaviourClass(CreationScheme.class);
 		createCreationScheme.doAction();
 		CreationScheme creationScheme = (CreationScheme) createCreationScheme.getNewFlexoBehaviour();
 
 		assertTrue(creationScheme.getControlGraph() instanceof EmptyControlGraph);
-		assertTrue(creationScheme.getControlGraph().getBindingModel().getBaseBindingModel() == creationScheme
-				.getBindingModel());
+		assertTrue(creationScheme.getControlGraph().getBindingModel().getBaseBindingModel() == creationScheme.getBindingModel());
 
-		CreateEditionAction createEditionAction1 = CreateEditionAction.actionType
-				.makeNewAction(creationScheme.getControlGraph(), null, editor);
+		CreateEditionAction createEditionAction1 = CreateEditionAction.actionType.makeNewAction(creationScheme.getControlGraph(), null,
+				editor);
 		// createEditionAction1.actionChoice =
 		// CreateEditionActionChoice.BuiltInAction;
 		createEditionAction1.setEditionActionClass(ExpressionAction.class);
@@ -240,8 +232,8 @@ public class TestControlGraph extends OpenflexoTestCase {
 		assertEquals(action1, creationScheme.getControlGraph());
 		assertEquals(creationScheme.getBindingModel(), action1.getBindingModel().getBaseBindingModel());
 
-		CreateEditionAction createEditionAction2 = CreateEditionAction.actionType
-				.makeNewAction(creationScheme.getControlGraph(), null, editor);
+		CreateEditionAction createEditionAction2 = CreateEditionAction.actionType.makeNewAction(creationScheme.getControlGraph(), null,
+				editor);
 		// createEditionAction2.actionChoice =
 		// CreateEditionActionChoice.BuiltInAction;
 		createEditionAction2.setEditionActionClass(ExpressionAction.class);
@@ -256,8 +248,7 @@ public class TestControlGraph extends OpenflexoTestCase {
 		assertEquals(action1, seq1.getControlGraph1());
 		assertEquals(action2, seq1.getControlGraph2());
 
-		FMLModelFactory factory = ((VirtualModelResource) creationScheme.getOwningVirtualModel().getResource())
-				.getFactory();
+		FMLModelFactory factory = ((VirtualModelResource) creationScheme.getOwningVirtualModel().getResource()).getFactory();
 		FMLControlGraph controlGraph = creationScheme.getControlGraph();
 
 		String cg = factory.stringRepresentation(creationScheme);
@@ -267,8 +258,8 @@ public class TestControlGraph extends OpenflexoTestCase {
 		assertEquals(seq1.getBindingModel(), action1.getBindingModel().getBaseBindingModel());
 		assertEquals(seq1.getControlGraph1().getInferedBindingModel(), action2.getBindingModel().getBaseBindingModel());
 
-		CreateEditionAction createEditionAction3 = CreateEditionAction.actionType
-				.makeNewAction(creationScheme.getControlGraph(), null, editor);
+		CreateEditionAction createEditionAction3 = CreateEditionAction.actionType.makeNewAction(creationScheme.getControlGraph(), null,
+				editor);
 		// createEditionAction3.actionChoice =
 		// CreateEditionActionChoice.BuiltInAction;
 		createEditionAction3.setEditionActionClass(ExpressionAction.class);
@@ -287,14 +278,11 @@ public class TestControlGraph extends OpenflexoTestCase {
 		assertTrue(controlGraph instanceof Sequence);
 		assertTrue(((Sequence) controlGraph).getControlGraph1() instanceof AssignationAction);
 		assertTrue(((Sequence) controlGraph).getControlGraph2() instanceof Sequence);
-		assertTrue(((Sequence) ((Sequence) controlGraph).getControlGraph2())
-				.getControlGraph1() instanceof AssignationAction);
-		assertTrue(((Sequence) ((Sequence) controlGraph).getControlGraph2())
-				.getControlGraph2() instanceof AssignationAction);
+		assertTrue(((Sequence) ((Sequence) controlGraph).getControlGraph2()).getControlGraph1() instanceof AssignationAction);
+		assertTrue(((Sequence) ((Sequence) controlGraph).getControlGraph2()).getControlGraph2() instanceof AssignationAction);
 
 		assertTrue(creationScheme.getControlGraph() instanceof Sequence);
-		assertTrue(creationScheme.getControlGraph().getBindingModel().getBaseBindingModel() == creationScheme
-				.getBindingModel());
+		assertTrue(creationScheme.getControlGraph().getBindingModel().getBaseBindingModel() == creationScheme.getBindingModel());
 
 		Sequence seq2 = (Sequence) seq1.getControlGraph2();
 		assertTrue(seq1.getBindingModel().getBaseBindingModel() == creationScheme.getBindingModel());
@@ -309,8 +297,7 @@ public class TestControlGraph extends OpenflexoTestCase {
 		assertEquals(creationScheme, seq2.getRootOwner());
 
 		System.out.println("creationScheme:\n" + factory.stringRepresentation(creationScheme));
-		System.out.println(
-				"creationScheme.getControlGraph()=\n" + creationScheme.getControlGraph().getFMLRepresentation());
+		System.out.println("creationScheme.getControlGraph()=\n" + creationScheme.getControlGraph().getFMLRepresentation());
 
 		// We check that getFlattenedSequence() is correct for a chained
 		// sequence structure
@@ -321,8 +308,7 @@ public class TestControlGraph extends OpenflexoTestCase {
 		action2.delete();
 
 		System.out.println("creationScheme:\n" + factory.stringRepresentation(creationScheme));
-		System.out.println(
-				"creationScheme.getControlGraph()=\n" + creationScheme.getControlGraph().getFMLRepresentation());
+		System.out.println("creationScheme.getControlGraph()=\n" + creationScheme.getControlGraph().getFMLRepresentation());
 
 		assertEquals(2, seq1.getFlattenedSequence().size());
 		assertSameList(seq1.getFlattenedSequence(), action1, action3);
@@ -335,24 +321,23 @@ public class TestControlGraph extends OpenflexoTestCase {
 
 		log("testCreateAnActionSchemeInConcept");
 
-		CreateFlexoBehaviour createActionScheme = CreateFlexoBehaviour.actionType.makeNewAction(flexoConcept, null,
-				editor);
+		CreateFlexoBehaviour createActionScheme = CreateFlexoBehaviour.actionType.makeNewAction(flexoConcept, null, editor);
 		createActionScheme.setFlexoBehaviourClass(ActionScheme.class);
 		createActionScheme.doAction();
 		ActionScheme actionScheme = (ActionScheme) createActionScheme.getNewFlexoBehaviour();
 		assertNotNull(actionScheme);
 
-		CreateFlexoBehaviourParameter createParameter = CreateFlexoBehaviourParameter.actionType
-				.makeNewAction(actionScheme, null, editor);
-		createParameter.setFlexoBehaviourParameterClass(CheckboxParameter.class);
+		CreateGenericBehaviourParameter createParameter = CreateGenericBehaviourParameter.actionType.makeNewAction(actionScheme, null,
+				editor);
 		createParameter.setParameterName("aFlag");
+		createParameter.setParameterType(Boolean.class);
 		createParameter.doAction();
 		FlexoBehaviourParameter param = createParameter.getNewParameter();
 		assertNotNull(param);
 		assertTrue(actionScheme.getParameters().contains(param));
 
-		CreateEditionAction createConditionAction1 = CreateEditionAction.actionType
-				.makeNewAction(actionScheme.getControlGraph(), null, editor);
+		CreateEditionAction createConditionAction1 = CreateEditionAction.actionType.makeNewAction(actionScheme.getControlGraph(), null,
+				editor);
 		// createConditionAction1.actionChoice =
 		// CreateEditionActionChoice.ControlAction;
 		createConditionAction1.setEditionActionClass(ConditionalAction.class);
@@ -360,8 +345,7 @@ public class TestControlGraph extends OpenflexoTestCase {
 		ConditionalAction conditional1 = (ConditionalAction) createConditionAction1.getNewEditionAction();
 		conditional1.setCondition(new DataBinding<Boolean>("parameters.aFlag = true"));
 
-		FMLModelFactory factory = ((VirtualModelResource) actionScheme.getOwningVirtualModel().getResource())
-				.getFactory();
+		FMLModelFactory factory = ((VirtualModelResource) actionScheme.getOwningVirtualModel().getResource()).getFactory();
 
 		// String cg = factory.stringRepresentation(actionScheme);
 		// System.out.println("1 - Control graph:\n" + cg);
@@ -378,11 +362,10 @@ public class TestControlGraph extends OpenflexoTestCase {
 		createDeclarePatternRoleInCondition1.doAction();
 		AssignationAction<?> declarePatternRoleInCondition1 = (AssignationAction<?>) createDeclarePatternRoleInCondition1
 				.getNewEditionAction();
-		((ExpressionAction) declarePatternRoleInCondition1.getAssignableAction())
-				.setExpression(new DataBinding<Object>("8"));
+		((ExpressionAction) declarePatternRoleInCondition1.getAssignableAction()).setExpression(new DataBinding<Object>("8"));
 
-		CreateEditionAction createConditionAction2 = CreateEditionAction.actionType
-				.makeNewAction(actionScheme.getControlGraph(), null, editor);
+		CreateEditionAction createConditionAction2 = CreateEditionAction.actionType.makeNewAction(actionScheme.getControlGraph(), null,
+				editor);
 		// createConditionAction2.actionChoice =
 		// CreateEditionActionChoice.ControlAction;
 		createConditionAction2.setEditionActionClass(ConditionalAction.class);
@@ -402,8 +385,7 @@ public class TestControlGraph extends OpenflexoTestCase {
 		createDeclarePatternRoleInCondition2.doAction();
 		AssignationAction<?> declarePatternRoleInCondition2 = (AssignationAction<?>) createDeclarePatternRoleInCondition2
 				.getNewEditionAction();
-		((ExpressionAction) declarePatternRoleInCondition2.getAssignableAction())
-				.setExpression(new DataBinding<Object>("12"));
+		((ExpressionAction) declarePatternRoleInCondition2.getAssignableAction()).setExpression(new DataBinding<Object>("12"));
 
 		conditional2.setElseControlGraph(factory.newEmptyControlGraph());
 		CreateEditionAction createDeclarePatternRole2InCondition2 = CreateEditionAction.actionType
@@ -415,8 +397,7 @@ public class TestControlGraph extends OpenflexoTestCase {
 		createDeclarePatternRole2InCondition2.doAction();
 		AssignationAction<?> declarePatternRole2InCondition2 = (AssignationAction<?>) createDeclarePatternRole2InCondition2
 				.getNewEditionAction();
-		((ExpressionAction) declarePatternRole2InCondition2.getAssignableAction())
-				.setExpression(new DataBinding<Object>("3"));
+		((ExpressionAction) declarePatternRole2InCondition2.getAssignableAction()).setExpression(new DataBinding<Object>("3"));
 
 		String debug = factory.stringRepresentation(actionScheme);
 		System.out.println("actionScheme:\n" + debug);

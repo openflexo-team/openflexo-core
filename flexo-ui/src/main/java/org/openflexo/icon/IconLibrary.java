@@ -45,9 +45,7 @@ import javax.swing.ImageIcon;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.ProjectDataResource;
 import org.openflexo.foundation.ProjectDirectoryResource;
-import org.openflexo.foundation.fml.rm.ViewPointResource;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
-import org.openflexo.foundation.fml.rt.rm.ViewResource;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.model.validation.InformationIssue;
@@ -362,12 +360,6 @@ public class IconLibrary {
 		}
 		else if (resource instanceof ProjectDataResource) {
 			return OPENFLEXO_NOTEXT_16;
-		}
-		else if (resource instanceof ViewResource) {
-			return FMLRTIconLibrary.VIEW_ICON;
-		}
-		else if (resource instanceof ViewPointResource) {
-			return FMLIconLibrary.VIEWPOINT_ICON;
 		}
 		else if (resource instanceof VirtualModelResource) {
 			return FMLIconLibrary.VIRTUAL_MODEL_ICON;
