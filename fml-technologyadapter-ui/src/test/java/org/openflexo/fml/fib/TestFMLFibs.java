@@ -76,7 +76,7 @@ public class TestFMLFibs extends GenericFIBTestCase {
 
 	@Test
 	public void testViewPointLocalizedDictionaryView() {
-		validateFIB("Fib/FML/ViewPointLocalizedDictionaryView.fib");
+		validateFIB("Fib/FML/FMLLocalizedDictionaryView.fib");
 	}
 
 	@Test

@@ -41,6 +41,8 @@ package org.openflexo.fml.controller.view;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.FileNotFoundException;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -50,11 +52,12 @@ import org.junit.runner.RunWith;
 import org.openflexo.connie.type.PrimitiveType;
 import org.openflexo.foundation.DefaultFlexoEditor;
 import org.openflexo.foundation.FlexoEditor;
+import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.FlexoConcept;
-import org.openflexo.foundation.fml.ViewPoint;
-import org.openflexo.foundation.fml.VirtualModelLibrary;
 import org.openflexo.foundation.fml.VirtualModel;
+import org.openflexo.foundation.fml.VirtualModelLibrary;
 import org.openflexo.foundation.fml.action.CreatePrimitiveRole;
+import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.gina.swing.utils.FIBJPanel;
 import org.openflexo.gina.test.OpenflexoFIBTestCase;
 import org.openflexo.gina.test.SwingGraphicalContextDelegate;
@@ -107,11 +110,11 @@ public class TestFlexoConceptPanel extends OpenflexoFIBTestCase {
 
 	@Test
 	@TestOrder(3)
-	public void loadConcepts() {
+	public void loadConcepts() throws FileNotFoundException, ResourceLoadingCancelledException, FlexoException {
 
 		VirtualModelLibrary vpLib = serviceManager.getVirtualModelLibrary();
 		assertNotNull(vpLib);
-		ViewPoint viewPoint = vpLib.getViewPoint("http://openflexo.org/test/TestViewPointA");
+		VirtualModel viewPoint = vpLib.getVirtualModel("http://openflexo.org/test/TestResourceCenter/TestViewPointA.fml");
 		assertNotNull(viewPoint);
 		VirtualModel virtualModel = viewPoint.getVirtualModelNamed("TestVirtualModel");
 		assertNotNull(virtualModel);

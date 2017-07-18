@@ -38,7 +38,6 @@
 
 package org.openflexo.foundation.fml.action;
 
-import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Vector;
@@ -102,20 +101,21 @@ public class CreateTopLevelVirtualModel
 		FlexoObjectImpl.addActionForClass(CreateTopLevelVirtualModel.actionType, RepositoryFolder.class);
 	}
 
-	private String newViewPointName;
-	private String newViewPointURI;
-	private String newViewPointDescription;
+	private String newVirtualModelName;
+	private String newVirtualModelURI;
+	private String newVirtualModelDescription;
 	private VirtualModel newVirtualModel;
 
-	CreateTopLevelVirtualModel(RepositoryFolder focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
+	CreateTopLevelVirtualModel(RepositoryFolder<VirtualModelResource, ?> focusedObject, Vector<FMLObject> globalSelection,
+			FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 	}
 
-	public VirtualModelLibrary getViewPointLibrary() {
+	public VirtualModelLibrary getVirtualModelLibrary() {
 		if (!(getFocusedObject().getResourceRepository() instanceof VirtualModelRepository)) {
 			return null;
 		}
-		return ((VirtualModelRepository) getFocusedObject().getResourceRepository()).getVirtualModelLibrary();
+		return ((VirtualModelRepository<?>) getFocusedObject().getResourceRepository()).getVirtualModelLibrary();
 	}
 
 	@Override
@@ -127,22 +127,15 @@ public class CreateTopLevelVirtualModel
 
 		logger.info("Create new viewpoint");
 
-		// VirtualModelLibrary viewPointLibrary = getViewPointLibrary();
-		// VirtualModelRepository vpRepository = (VirtualModelRepository) getFocusedObject().getResourceRepository();
-
-		File newViewPointDir = getDirectoryWhereToCreateTheViewPoint();
-
-		logger.info("Creating viewpoint " + newViewPointDir.getAbsolutePath());
-
 		FMLTechnologyAdapter fmlTechnologyAdapter = getServiceManager().getTechnologyAdapterService()
 				.getTechnologyAdapter(FMLTechnologyAdapter.class);
 		VirtualModelResourceFactory factory = fmlTechnologyAdapter.getVirtualModelResourceFactory();
 
 		try {
-			VirtualModelResource newVirtualModelResource = factory.makeTopLevelVirtualModelResource(getBaseName(), getNewViewPointURI(),
-					getViewPointFolder(), fmlTechnologyAdapter.getTechnologyContextManager(), true);
+			VirtualModelResource newVirtualModelResource = factory.makeTopLevelVirtualModelResource(getBaseName(), getNewVirtualModelURI(),
+					getVirtualModelFolder(), fmlTechnologyAdapter.getTechnologyContextManager(), true);
 			newVirtualModel = newVirtualModelResource.getLoadedResourceData();
-			newVirtualModel.setDescription(getNewViewPointDescription());
+			newVirtualModel.setDescription(getNewVirtualModelDescription());
 		} catch (SaveResourceException e) {
 			throw new SaveResourceException(null);
 		} catch (ModelDefinitionException e) {
@@ -169,18 +162,18 @@ public class CreateTopLevelVirtualModel
 
 	}
 
-	public String getNewViewPointName() {
-		return newViewPointName;
+	public String getNewVirtualModelName() {
+		return newVirtualModelName;
 	}
 
-	public void setNewViewPointName(String newViewPointName) {
-		this.newViewPointName = newViewPointName;
-		getPropertyChangeSupport().firePropertyChange("newViewPointName", null, newViewPointName);
-		getPropertyChangeSupport().firePropertyChange("newViewPointURI", null, getNewViewPointURI());
+	public void setNewVirtualModelName(String newViewPointName) {
+		this.newVirtualModelName = newViewPointName;
+		getPropertyChangeSupport().firePropertyChange("newVirtualModelName", null, newViewPointName);
+		getPropertyChangeSupport().firePropertyChange("newVirtualModelURI", null, getNewVirtualModelURI());
 	}
 
-	public String getNewViewPointURI() {
-		if (newViewPointURI == null) {
+	public String getNewVirtualModelURI() {
+		if (newVirtualModelURI == null) {
 			String baseURI = getFocusedObject().getDefaultBaseURI();
 			if (!baseURI.endsWith("/")) {
 				baseURI = baseURI + "/";
@@ -188,48 +181,48 @@ public class CreateTopLevelVirtualModel
 			return baseURI + getBaseName() + ".viewpoint";
 		}
 
-		return newViewPointURI;
+		return newVirtualModelURI;
 	}
 
-	public void setNewViewPointURI(String newViewPointURI) {
-		this.newViewPointURI = newViewPointURI;
-		getPropertyChangeSupport().firePropertyChange("newViewPointURI", null, newViewPointURI);
+	public void setNewVirtualModelURI(String newVirtualModelURI) {
+		this.newVirtualModelURI = newVirtualModelURI;
+		getPropertyChangeSupport().firePropertyChange("newVirtualModelURI", null, newVirtualModelURI);
 
 	}
 
-	public String getNewViewPointDescription() {
-		return newViewPointDescription;
+	public String getNewVirtualModelDescription() {
+		return newVirtualModelDescription;
 	}
 
-	public void setNewViewPointDescription(String newViewPointDescription) {
-		this.newViewPointDescription = newViewPointDescription;
-		getPropertyChangeSupport().firePropertyChange("newViewPointDescription", null, newViewPointDescription);
+	public void setNewVirtualModelDescription(String newVirtualModelDescription) {
+		this.newVirtualModelDescription = newVirtualModelDescription;
+		getPropertyChangeSupport().firePropertyChange("newVirtualModelDescription", null, newVirtualModelDescription);
 	}
 
-	public RepositoryFolder getViewPointFolder() {
+	public RepositoryFolder<VirtualModelResource, ?> getVirtualModelFolder() {
 		return getFocusedObject();
 	}
 
-	public boolean isNewViewPointNameValid() {
-		if (StringUtils.isEmpty(getNewViewPointName())) {
+	public boolean isNewVirtualModelNameValid() {
+		if (StringUtils.isEmpty(getNewVirtualModelName())) {
 			return false;
 		}
 		return true;
 	}
 
-	public boolean isNewViewPointURIValid() {
-		if (StringUtils.isEmpty(getNewViewPointURI())) {
+	public boolean isNewVirtualModelURIValid() {
+		if (StringUtils.isEmpty(getNewVirtualModelURI())) {
 			return false;
 		}
 		try {
-			new URL(getNewViewPointURI());
+			new URL(getNewVirtualModelURI());
 		} catch (MalformedURLException e) {
 			return false;
 		}
-		if (getViewPointLibrary() == null) {
+		if (getVirtualModelLibrary() == null) {
 			return false;
 		}
-		if (getViewPointLibrary().getVirtualModelResource(getNewViewPointURI()) != null) {
+		if (getVirtualModelLibrary().getVirtualModelResource(getNewVirtualModelURI()) != null) {
 			return false;
 		}
 
@@ -238,10 +231,10 @@ public class CreateTopLevelVirtualModel
 
 	@Override
 	public boolean isValid() {
-		if (!isNewViewPointNameValid()) {
+		if (!isNewVirtualModelNameValid()) {
 			return false;
 		}
-		if (!isNewViewPointURIValid()) {
+		if (!isNewVirtualModelURIValid()) {
 			return false;
 		}
 		return true;
@@ -253,15 +246,7 @@ public class CreateTopLevelVirtualModel
 	}
 
 	private String getBaseName() {
-		return JavaUtils.getClassName(getNewViewPointName());
-	}
-
-	@Deprecated
-	private File getDirectoryWhereToCreateTheViewPoint() {
-		if (getFocusedObject() != null && getFocusedObject().getSerializationArtefact() instanceof File) {
-			return (File) getFocusedObject().getSerializationArtefact();
-		}
-		return null;
+		return JavaUtils.getClassName(getNewVirtualModelName());
 	}
 
 	@Override

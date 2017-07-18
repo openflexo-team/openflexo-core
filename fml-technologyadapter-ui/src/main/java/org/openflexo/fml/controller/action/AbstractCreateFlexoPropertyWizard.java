@@ -46,7 +46,7 @@ import org.openflexo.ApplicationContext;
 import org.openflexo.components.wizard.WizardStep;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FlexoConceptObject;
-import org.openflexo.foundation.fml.ViewPoint;
+import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.action.AbstractCreateFlexoProperty;
 import org.openflexo.foundation.fml.action.AbstractCreateFlexoRole;
 import org.openflexo.foundation.fml.action.CreateAbstractProperty;
@@ -121,8 +121,8 @@ public abstract class AbstractCreateFlexoPropertyWizard<A extends AbstractCreate
 			return AbstractCreateFlexoPropertyWizard.this.getAction();
 		}
 
-		public ViewPoint getViewPoint() {
-			return AbstractCreateFlexoPropertyWizard.this.getViewPoint();
+		public VirtualModel getVirtualModel() {
+			return AbstractCreateFlexoPropertyWizard.this.getVirtualModel();
 		}
 
 		@Override

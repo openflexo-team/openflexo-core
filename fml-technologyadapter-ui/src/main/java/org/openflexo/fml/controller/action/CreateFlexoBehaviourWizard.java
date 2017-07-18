@@ -42,28 +42,14 @@ import java.awt.Dimension;
 import java.awt.Image;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
 import org.openflexo.ApplicationContext;
 import org.openflexo.components.wizard.WizardStep;
-import org.openflexo.foundation.fml.CheckboxParameter;
-import org.openflexo.foundation.fml.DropDownParameter;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FlexoBehaviour;
-import org.openflexo.foundation.fml.FlexoBehaviourParameter;
-import org.openflexo.foundation.fml.FlexoConceptInstanceParameter;
 import org.openflexo.foundation.fml.FlexoConceptObject;
-import org.openflexo.foundation.fml.FlexoResourceParameter;
-import org.openflexo.foundation.fml.FlexoVMIResourceParameter;
-import org.openflexo.foundation.fml.FloatParameter;
-import org.openflexo.foundation.fml.IntegerParameter;
-import org.openflexo.foundation.fml.ListParameter;
-import org.openflexo.foundation.fml.TextAreaParameter;
-import org.openflexo.foundation.fml.TextFieldParameter;
-import org.openflexo.foundation.fml.URIParameter;
-import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.action.CreateFlexoBehaviour;
 import org.openflexo.foundation.fml.action.CreateFlexoBehaviour.BehaviourParameterEntry;
@@ -133,8 +119,8 @@ public class CreateFlexoBehaviourWizard extends AbstractCreateFMLElementWizard<C
 			return CreateFlexoBehaviourWizard.this.getAction();
 		}
 
-		public ViewPoint getViewPoint() {
-			return CreateFlexoBehaviourWizard.this.getViewPoint();
+		public VirtualModel getVirtualModel() {
+			return CreateFlexoBehaviourWizard.this.getVirtualModel();
 		}
 
 		@Override
@@ -233,49 +219,6 @@ public class CreateFlexoBehaviourWizard extends AbstractCreateFMLElementWizard<C
 		@Override
 		public String getTitle() {
 			return getAction().getLocales().localizedForKey("configure_behaviour_parameters");
-		}
-
-		private List<Class<? extends FlexoBehaviourParameter>> availableParameterTypes = null;
-
-		// TODO: this code is duplicated in CreateFlexoBehaviourParameter, it needs refactoring to avoid any mistake
-		public List<Class<? extends FlexoBehaviourParameter>> getAvailableParameterTypes() {
-			if (availableParameterTypes == null) {
-				availableParameterTypes = new ArrayList<Class<? extends FlexoBehaviourParameter>>();
-				availableParameterTypes.add(TextFieldParameter.class);
-				availableParameterTypes.add(TextAreaParameter.class);
-				availableParameterTypes.add(CheckboxParameter.class);
-				availableParameterTypes.add(DropDownParameter.class);
-				availableParameterTypes.add(FloatParameter.class);
-				availableParameterTypes.add(IntegerParameter.class);
-				availableParameterTypes.add(ListParameter.class);
-				availableParameterTypes.add(URIParameter.class);
-				availableParameterTypes.add(FlexoResourceParameter.class);
-				availableParameterTypes.add(FlexoConceptInstanceParameter.class);
-				availableParameterTypes.add(FlexoVMIResourceParameter.class);
-
-				/*if (getFocusedObject() != null && getFocusedObject().getOwningVirtualModel() != null
-						&& getFocusedObject().getOwningVirtualModel().getModelSlots() != null) {
-					for (ModelSlot<?> ms : getFocusedObject().getOwningVirtualModel().getModelSlots()) {
-						for (Class<? extends FlexoBehaviourParameter> paramType : ms.getAvailableFlexoBehaviourParameterTypes()) {
-							if (!availableParameterTypes.contains(paramType)) {
-								availableParameterTypes.add(paramType);
-							}
-						}
-					}
-				}
-				if (getFocusedObject().getFlexoConcept() instanceof VirtualModel) {
-					for (ModelSlot<?> ms : ((VirtualModel) getFocusedObject().getFlexoConcept()).getModelSlots()) {
-						for (Class<? extends FlexoBehaviourParameter> paramType : ms.getAvailableFlexoBehaviourParameterTypes()) {
-							if (!availableParameterTypes.contains(paramType)) {
-								availableParameterTypes.add(paramType);
-							}
-						}
-					}
-				}*/
-
-			}
-
-			return availableParameterTypes;
 		}
 
 		public List<BehaviourParameterEntry> getParameterEntries() {

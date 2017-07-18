@@ -64,7 +64,7 @@ import org.openflexo.foundation.fml.NavigationScheme;
 import org.openflexo.foundation.fml.PrimitiveRole;
 import org.openflexo.foundation.fml.SynchronizationScheme;
 import org.openflexo.foundation.fml.TechnologySpecificFlexoBehaviour;
-import org.openflexo.foundation.fml.ViewPointLocalizedDictionary;
+import org.openflexo.foundation.fml.FMLLocalizedDictionary;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.controlgraph.ConditionalAction;
 import org.openflexo.foundation.fml.controlgraph.IncrementalIterationAction;
@@ -439,7 +439,7 @@ public class FMLIconLibrary extends IconLibrary {
 		else if (object instanceof FlexoRole) {
 			return FLEXO_ROLE_ICON;
 		}
-		else if (object instanceof ViewPointLocalizedDictionary) {
+		else if (object instanceof FMLLocalizedDictionary) {
 			return LOCALIZATION_ICON;
 		}
 		else if (object instanceof InspectorEntry) {

@@ -53,7 +53,7 @@ import java.util.logging.Logger;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.fml.FlexoConcept;
-import org.openflexo.foundation.fml.ViewPointLocalizedDictionary;
+import org.openflexo.foundation.fml.FMLLocalizedDictionary;
 import org.openflexo.foundation.fml.inspector.FlexoConceptInspector;
 import org.openflexo.foundation.fml.inspector.InspectorEntry;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
@@ -668,7 +668,7 @@ public class ModuleInspectorController extends Observable implements Observer {
 			logger.warning("Unexpected null virtual model for concept " + flexoConcept);
 			return;
 		}
-		ViewPointLocalizedDictionary localizedDictionary = flexoConcept.getVirtualModel().getLocalizedDictionary();
+		FMLLocalizedDictionary localizedDictionary = flexoConcept.getVirtualModel().getLocalizedDictionary();
 		for (final InspectorEntry entry : flexoConcept.getInspector().getEntries()) {
 			FIBLabel label = getFactory().newFIBLabel();
 			String entryLabel = localizedDictionary.localizedForKeyAndLanguage(entry.getLabel(), FlexoLocalization.getCurrentLanguage());

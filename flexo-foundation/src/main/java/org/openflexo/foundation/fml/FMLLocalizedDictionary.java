@@ -83,11 +83,16 @@ import org.openflexo.model.undo.CompoundEdit;
 import org.openflexo.toolbox.HTMLUtils;
 import org.openflexo.toolbox.StringUtils;
 
+/**
+ * A dictionary of locales attached to a {@link VirtualModel} (see {@link #getOwner()})
+ * 
+ * @author sylvain
+ *
+ */
 @ModelEntity
-@ImplementationClass(ViewPointLocalizedDictionary.ViewPointLocalizedDictionaryImpl.class)
-@XMLElement(xmlTag = "ViewPointLocalizedDictionary")
-// TODO: rename as FMLLocalizedDictionary
-public interface ViewPointLocalizedDictionary extends FMLObject, org.openflexo.localization.LocalizedDelegate {
+@ImplementationClass(FMLLocalizedDictionary.ViewPointLocalizedDictionaryImpl.class)
+@XMLElement(xmlTag = "FMLLocalizedDictionary", deprecatedXMLTags = "FMLLocalizedDictionary")
+public interface FMLLocalizedDictionary extends FMLObject, org.openflexo.localization.LocalizedDelegate {
 
 	@PropertyIdentifier(type = VirtualModel.class)
 	public static final String OWNER_KEY = "owner";
@@ -126,9 +131,9 @@ public interface ViewPointLocalizedDictionary extends FMLObject, org.openflexo.l
 
 	public void deleteEntry(DynamicEntry entry);
 
-	public static abstract class ViewPointLocalizedDictionaryImpl extends FMLObjectImpl implements ViewPointLocalizedDictionary {
+	public static abstract class ViewPointLocalizedDictionaryImpl extends FMLObjectImpl implements FMLLocalizedDictionary {
 
-		private static final Logger logger = Logger.getLogger(ViewPointLocalizedDictionary.class.getPackage().getName());
+		private static final Logger logger = Logger.getLogger(FMLLocalizedDictionary.class.getPackage().getName());
 
 		// private Vector<LocalizedEntry> _entries;
 		private final Map<Language, Hashtable<String, String>> _values;
@@ -464,7 +469,7 @@ public interface ViewPointLocalizedDictionary extends FMLObject, org.openflexo.l
 		}
 
 		public void refresh() {
-			logger.fine("Refresh called on ViewPointLocalizedDictionary " + Integer.toHexString(hashCode()));
+			logger.fine("Refresh called on FMLLocalizedDictionary " + Integer.toHexString(hashCode()));
 			entries = null;
 			setChanged();
 			notifyObservers();

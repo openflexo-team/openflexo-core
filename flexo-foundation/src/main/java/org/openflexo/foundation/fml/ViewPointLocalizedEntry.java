@@ -57,7 +57,7 @@ import org.openflexo.model.validation.ValidationWarning;
 @XMLElement(xmlTag = "Localized")
 public interface ViewPointLocalizedEntry extends FMLObject {
 
-	@PropertyIdentifier(type = ViewPointLocalizedDictionary.class)
+	@PropertyIdentifier(type = FMLLocalizedDictionary.class)
 	public static final String LOCALIZED_DICTIONARY_KEY = "localizedDictionary";
 	@PropertyIdentifier(type = String.class)
 	public static final String KEY_KEY = "key";
@@ -87,15 +87,15 @@ public interface ViewPointLocalizedEntry extends FMLObject {
 	public void setValue(String value);
 
 	@Override
-	@Getter(value = LOCALIZED_DICTIONARY_KEY /*, inverse = ViewPointLocalizedDictionary.ENTRIES_KEY*/)
-	public ViewPointLocalizedDictionary getLocalizedDictionary();
+	@Getter(value = LOCALIZED_DICTIONARY_KEY /*, inverse = FMLLocalizedDictionary.ENTRIES_KEY*/)
+	public FMLLocalizedDictionary getLocalizedDictionary();
 
 	@Setter(LOCALIZED_DICTIONARY_KEY)
-	public void setLocalizedDictionary(ViewPointLocalizedDictionary owner);
+	public void setLocalizedDictionary(FMLLocalizedDictionary owner);
 
 	public static abstract class LocalizedEntryImpl extends FMLObjectImpl implements ViewPointLocalizedEntry {
 
-		private ViewPointLocalizedDictionary _dictionary;
+		private FMLLocalizedDictionary _dictionary;
 
 		private String key;
 		private String language;
@@ -105,7 +105,7 @@ public interface ViewPointLocalizedEntry extends FMLObject {
 			super();
 		}
 
-		public LocalizedEntryImpl(ViewPointLocalizedDictionary localizedDictionary, String key, String language, String value) {
+		public LocalizedEntryImpl(FMLLocalizedDictionary localizedDictionary, String key, String language, String value) {
 			super();
 			setLocalizedDictionary(localizedDictionary);
 			this.key = key;
@@ -114,12 +114,12 @@ public interface ViewPointLocalizedEntry extends FMLObject {
 		}
 
 		@Override
-		public void setLocalizedDictionary(ViewPointLocalizedDictionary dict) {
+		public void setLocalizedDictionary(FMLLocalizedDictionary dict) {
 			_dictionary = dict;
 		}
 
 		@Override
-		public ViewPointLocalizedDictionary getLocalizedDictionary() {
+		public FMLLocalizedDictionary getLocalizedDictionary() {
 			return _dictionary;
 		}
 
@@ -224,7 +224,7 @@ public interface ViewPointLocalizedEntry extends FMLObject {
 
 			@Override
 			protected void fixAction() {
-				ViewPointLocalizedDictionary dict = entry.getLocalizedDictionary();
+				FMLLocalizedDictionary dict = entry.getLocalizedDictionary();
 				if (dict != null) {
 					while (dict.getLocalizedEntries().indexOf(entry) != dict.getLocalizedEntries().lastIndexOf(entry)) {
 						System.out.println("remove " + entry);

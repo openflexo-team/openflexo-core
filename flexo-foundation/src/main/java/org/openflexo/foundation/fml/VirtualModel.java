@@ -125,7 +125,7 @@ public interface VirtualModel extends FlexoConcept, VirtualModelObject, FlexoMet
 	@PropertyIdentifier(type = UseModelSlotDeclaration.class, cardinality = Cardinality.LIST)
 	public static final String USE_DECLARATIONS_KEY = "useDeclarations";
 
-	@PropertyIdentifier(type = ViewPointLocalizedDictionary.class)
+	@PropertyIdentifier(type = FMLLocalizedDictionary.class)
 	String LOCALIZED_DICTIONARY_KEY = "localizedDictionary";
 	@PropertyIdentifier(type = VirtualModel.class, cardinality = Cardinality.LIST)
 	String VIRTUAL_MODELS_KEY = "virtualModels";
@@ -182,11 +182,11 @@ public interface VirtualModel extends FlexoConcept, VirtualModelObject, FlexoMet
 	public void setModelVersion(FlexoVersion modelVersion);
 
 	@Override
-	@Getter(value = LOCALIZED_DICTIONARY_KEY, inverse = ViewPointLocalizedDictionary.OWNER_KEY)
-	ViewPointLocalizedDictionary getLocalizedDictionary();
+	@Getter(value = LOCALIZED_DICTIONARY_KEY, inverse = FMLLocalizedDictionary.OWNER_KEY)
+	FMLLocalizedDictionary getLocalizedDictionary();
 
 	@Setter(LOCALIZED_DICTIONARY_KEY)
-	void setLocalizedDictionary(ViewPointLocalizedDictionary localizedDictionary);
+	void setLocalizedDictionary(FMLLocalizedDictionary localizedDictionary);
 
 	/**
 	 * Return list of {@link UseModelSlotDeclaration} accessible from this {@link VirtualModel}<br>
@@ -465,8 +465,8 @@ public interface VirtualModel extends FlexoConcept, VirtualModelObject, FlexoMet
 		}
 
 		@Override
-		public ViewPointLocalizedDictionary getLocalizedDictionary() {
-			return (ViewPointLocalizedDictionary) performSuperGetter(LOCALIZED_DICTIONARY_KEY);
+		public FMLLocalizedDictionary getLocalizedDictionary() {
+			return (FMLLocalizedDictionary) performSuperGetter(LOCALIZED_DICTIONARY_KEY);
 		}
 
 		/**

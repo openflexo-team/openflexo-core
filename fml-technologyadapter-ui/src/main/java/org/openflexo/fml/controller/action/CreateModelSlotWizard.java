@@ -47,7 +47,6 @@ import org.openflexo.components.wizard.WizardStep;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.FlexoConceptObject;
-import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.action.CreateModelSlot;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
@@ -121,8 +120,8 @@ public class CreateModelSlotWizard extends AbstractCreateFMLElementWizard<Create
 			return CreateModelSlotWizard.this.getAction();
 		}
 
-		public ViewPoint getViewPoint() {
-			return CreateModelSlotWizard.this.getViewPoint();
+		public VirtualModel getVirtualModel() {
+			return CreateModelSlotWizard.this.getVirtualModel();
 		}
 
 		@Override

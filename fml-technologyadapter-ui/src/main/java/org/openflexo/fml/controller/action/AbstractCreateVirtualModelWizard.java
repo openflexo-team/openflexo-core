@@ -48,13 +48,12 @@ import javax.swing.ImageIcon;
 
 import org.openflexo.ApplicationContext;
 import org.openflexo.components.wizard.WizardStep;
-import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.action.AbstractCreateVirtualModel;
 import org.openflexo.foundation.fml.action.AbstractCreateVirtualModel.ModelSlotEntry;
+import org.openflexo.foundation.fml.action.CreateContainedVirtualModel;
 import org.openflexo.foundation.fml.action.CreateFlexoConcept;
 import org.openflexo.foundation.fml.action.CreateTopLevelVirtualModel;
-import org.openflexo.foundation.fml.action.CreateContainedVirtualModel;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
@@ -101,7 +100,7 @@ public abstract class AbstractCreateVirtualModelWizard<A extends AbstractCreateV
 		return configureModelSlots;
 	}
 
-	public abstract ViewPoint getViewPoint();
+	public abstract VirtualModel getContainerVirtualModel();
 
 	/**
 	 * This step is used to set {@link VirtualModel} to be used, as well as name and title of the {@link VirtualModelInstance}
@@ -262,8 +261,8 @@ public abstract class AbstractCreateVirtualModelWizard<A extends AbstractCreateV
 			return AbstractCreateVirtualModelWizard.this.getAction();
 		}
 
-		public ViewPoint getViewPoint() {
-			return AbstractCreateVirtualModelWizard.this.getViewPoint();
+		public VirtualModel getContainerVirtualModel() {
+			return AbstractCreateVirtualModelWizard.this.getContainerVirtualModel();
 		}
 
 		public ApplicationContext getServiceManager() {

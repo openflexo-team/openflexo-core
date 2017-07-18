@@ -49,14 +49,15 @@ import org.openflexo.foundation.action.FlexoActionFinalizer;
 import org.openflexo.foundation.action.FlexoActionInitializer;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.action.CreateTopLevelVirtualModel;
-import org.openflexo.foundation.fml.rm.ViewPointResource;
+import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.resource.RepositoryFolder;
 import org.openflexo.gina.controller.FIBController.Status;
 import org.openflexo.icon.FMLIconLibrary;
 import org.openflexo.view.controller.ActionInitializer;
 import org.openflexo.view.controller.ControllerActionInitializer;
 
-public class CreateTopLevelVirtualModelInitializer extends ActionInitializer<CreateTopLevelVirtualModel, RepositoryFolder<ViewPointResource, ?>, FMLObject> {
+public class CreateTopLevelVirtualModelInitializer
+		extends ActionInitializer<CreateTopLevelVirtualModel, RepositoryFolder<VirtualModelResource, ?>, FMLObject> {
 
 	private static final Logger logger = Logger.getLogger(ControllerActionInitializer.class.getPackage().getName());
 
@@ -88,7 +89,7 @@ public class CreateTopLevelVirtualModelInitializer extends ActionInitializer<Cre
 		return new FlexoActionFinalizer<CreateTopLevelVirtualModel>() {
 			@Override
 			public boolean run(EventObject e, CreateTopLevelVirtualModel action) {
-				getController().selectAndFocusObject(action.getNewViewPoint());
+				getController().selectAndFocusObject(action.getNewVirtualModel());
 				return true;
 			}
 		};

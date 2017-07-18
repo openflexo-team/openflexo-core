@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Panel opaque="false" layout="border" darkLevel="0" 
-	dataClassName="org.openflexo.foundation.fml.ViewPointLocalizedDictionary"
+	dataClassName="org.openflexo.foundation.fml.FMLLocalizedDictionary"
 	controllerClassName="org.openflexo.fml.controller.FMLFIBController"
 	constraints="border(location=center)" visible="">
 	<Table
