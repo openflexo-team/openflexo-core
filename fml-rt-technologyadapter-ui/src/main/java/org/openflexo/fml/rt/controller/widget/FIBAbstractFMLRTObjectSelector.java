@@ -44,19 +44,16 @@ import java.util.logging.Logger;
 
 import org.openflexo.components.widget.FIBProjectObjectSelector;
 import org.openflexo.foundation.FlexoServiceManager;
-import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
-import org.openflexo.foundation.fml.ViewPoint;
-import org.openflexo.foundation.fml.ViewType;
+import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelInstanceType;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
+import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
-import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
-import org.openflexo.foundation.fml.rt.View;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceRepository;
+import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
-import org.openflexo.foundation.fml.rt.rm.ViewResource;
+import org.openflexo.foundation.fml.rt.rm.FMLRTVirtualModelInstanceResource;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.RepositoryFolder;
 
@@ -81,7 +78,6 @@ public abstract class FIBAbstractFMLRTObjectSelector<T extends FlexoConceptInsta
 
 	private FlexoServiceManager serviceManager;
 	private FlexoResourceCenter<?> resourceCenter;
-	private View view;
 	private AbstractVirtualModelInstance<?, ?> virtualModelInstance;
 	private Type expectedType;
 	private FlexoConceptInstanceType defaultExpectedType;
@@ -95,7 +91,6 @@ public abstract class FIBAbstractFMLRTObjectSelector<T extends FlexoConceptInsta
 	@Override
 	public void delete() {
 		super.delete();
-		view = null;
 		virtualModelInstance = null;
 		expectedType = null;
 		defaultExpectedType = null;
@@ -120,51 +115,21 @@ public abstract class FIBAbstractFMLRTObjectSelector<T extends FlexoConceptInsta
 		if (getVirtualModelInstance() != null) {
 			return getVirtualModelInstance();
 		}
-		else if (getView() != null) {
-			return getView();
-		}
 		else if (getProject() != null) {
 			FlexoServiceManager sm = getProject().getServiceManager();
 			FMLRTTechnologyAdapter fmlRTTA = sm.getTechnologyAdapterService().getTechnologyAdapter(FMLRTTechnologyAdapter.class);
-			return fmlRTTA.getViewRepository(getProject()).getRootFolder();
+			return fmlRTTA.getVirtualModelInstanceRepository(getProject()).getRootFolder();
 		}
 		else if (getResourceCenter() != null) {
 			FlexoServiceManager sm = getResourceCenter().getServiceManager();
 			FMLRTTechnologyAdapter fmlRTTA = sm.getTechnologyAdapterService().getTechnologyAdapter(FMLRTTechnologyAdapter.class);
-			return fmlRTTA.getViewRepository(getResourceCenter()).getRootFolder();
+			return fmlRTTA.getVirtualModelInstanceRepository(getResourceCenter()).getRootFolder();
 		}
 		else if (getServiceManager() != null) {
 			return getServiceManager().getTechnologyAdapterService().getTechnologyAdapter(FMLRTTechnologyAdapter.class);
 		}
 		return null;
 	}
-
-	/*public List<FlexoConceptInstance> getEPInstances(FlexoConcept ep) {
-	
-		if (getVirtualModelInstance() != null) {
-			if (getVirtualModelInstance().getVirtualModel() == ep) {
-				return Collections.singletonList((FlexoConceptInstance) getVirtualModelInstance());
-			}
-			return getVirtualModelInstance().getFlexoConceptInstances(ep);
-		}
-		else if (getView() != null) {
-			List<FlexoConceptInstance> returned = new ArrayList<FlexoConceptInstance>();
-			for (AbstractVirtualModelInstance<?, ?> vmi : getView().getVirtualModelInstances()) {
-				returned.addAll(vmi.getFlexoConceptInstances(ep));
-			}
-			return returned;
-		}
-		else if (getProject() != null) {
-			List<FlexoConceptInstance> returned = new ArrayList<FlexoConceptInstance>();
-			for (ViewResource vr : getProject().getViewLibrary().getAllResources()) {
-				for (AbstractVirtualModelInstance<?, ?> vmi : vr.getView().getVirtualModelInstances()) {
-					returned.addAll(vmi.getFlexoConceptInstances(ep));
-				}
-			}
-			return returned;
-		}
-		return null;
-	}*/
 
 	@Override
 	public boolean isAcceptableValue(Object o) {
@@ -193,19 +158,6 @@ public abstract class FIBAbstractFMLRTObjectSelector<T extends FlexoConceptInsta
 			FlexoResourceCenter<?> oldValue = this.resourceCenter;
 			this.resourceCenter = resourceCenter;
 			getPropertyChangeSupport().firePropertyChange("resourceCenter", oldValue, resourceCenter);
-			getPropertyChangeSupport().firePropertyChange("rootObject", null, getRootObject());
-		}
-	}
-
-	public View getView() {
-		return view;
-	}
-
-	public void setView(View view) {
-		if ((view == null && this.view != null) || (view != null && !view.equals(this.view))) {
-			View oldValue = this.view;
-			this.view = view;
-			getPropertyChangeSupport().firePropertyChange("view", oldValue, view);
 			getPropertyChangeSupport().firePropertyChange("rootObject", null, getRootObject());
 		}
 	}
@@ -241,7 +193,7 @@ public abstract class FIBAbstractFMLRTObjectSelector<T extends FlexoConceptInsta
 		}
 	}
 
-	public List<ViewResource> getViewResources(RepositoryFolder<?, ?> folder) {
+	public List<FMLRTVirtualModelInstanceResource> getVirtualModelInstanceResources(RepositoryFolder<?, ?> folder) {
 		if (folder.getResourceRepository() instanceof FMLRTVirtualModelInstanceRepository) {
 			return (List) folder.getResources();
 		}
@@ -253,8 +205,8 @@ public abstract class FIBAbstractFMLRTObjectSelector<T extends FlexoConceptInsta
 			return false;
 		}
 		if (getExpectedType() instanceof FlexoConceptInstanceType) {
-			for (ViewResource r : getViewResources(folder)) {
-				if (r.isLoaded() && isViewVisible(r.getLoadedResourceData())) {
+			for (FMLRTVirtualModelInstanceResource r : getVirtualModelInstanceResources(folder)) {
+				if (r.isLoaded() && isVirtualModelInstanceVisible(r.getLoadedResourceData())) {
 					return true;
 				}
 			}
@@ -264,15 +216,9 @@ public abstract class FIBAbstractFMLRTObjectSelector<T extends FlexoConceptInsta
 		return true;
 	}
 
-	public boolean isViewVisible(View view) {
-		if (getExpectedType() instanceof ViewType) {
-			// We are expecting a View of following type
-			ViewPoint viewPointType = ((ViewType) getExpectedType()).getViewPoint();
-			return (viewPointType == null) || (viewPointType.isAssignableFrom(view.getVirtualModel()));
-
-		}
-		else if ((getExpectedType() instanceof VirtualModelInstanceType) || (getExpectedType() instanceof FlexoConceptInstanceType)) {
-			for (AbstractVirtualModelInstance<?, ?> vmi : view.getVirtualModelInstances()) {
+	public boolean isVirtualModelInstanceVisible(VirtualModelInstance virtualModelInstance) {
+		if ((getExpectedType() instanceof VirtualModelInstanceType) || (getExpectedType() instanceof FlexoConceptInstanceType)) {
+			for (AbstractVirtualModelInstance<?, ?> vmi : virtualModelInstance.getVirtualModelInstances()) {
 				if (isVirtualModelInstanceVisible(vmi)) {
 					return true;
 				}

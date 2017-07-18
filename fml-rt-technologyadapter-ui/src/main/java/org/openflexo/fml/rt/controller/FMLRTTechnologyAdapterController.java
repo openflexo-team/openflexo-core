@@ -44,14 +44,11 @@ import org.openflexo.components.widget.FIBTechnologyBrowser;
 import org.openflexo.fml.rt.controller.action.ActionSchemeActionInitializer;
 import org.openflexo.fml.rt.controller.action.CreateBasicVirtualModelInstanceInitializer;
 import org.openflexo.fml.rt.controller.action.CreateFlexoConceptInstanceInitializer;
-import org.openflexo.fml.rt.controller.action.CreateViewInitializer;
-import org.openflexo.fml.rt.controller.action.DeleteViewInitializer;
 import org.openflexo.fml.rt.controller.action.DeleteVirtualModelInstanceInitializer;
-import org.openflexo.fml.rt.controller.action.MoveViewInitializer;
+import org.openflexo.fml.rt.controller.action.MoveVirtualModelInstanceInitializer;
 import org.openflexo.fml.rt.controller.action.NavigationSchemeActionInitializer;
 import org.openflexo.fml.rt.controller.action.OpenVirtualModelInstanceInitializer;
 import org.openflexo.fml.rt.controller.action.SynchronizationSchemeActionInitializer;
-import org.openflexo.fml.rt.controller.view.ViewModuleView;
 import org.openflexo.fml.rt.controller.view.VirtualModelInstanceView;
 import org.openflexo.fml.rt.controller.widget.FIBViewLibraryBrowser;
 import org.openflexo.foundation.fml.ActionScheme;
@@ -68,12 +65,10 @@ import org.openflexo.foundation.fml.editionaction.AddClassInstance;
 import org.openflexo.foundation.fml.editionaction.DeleteAction;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
+import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceRepository;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
-import org.openflexo.foundation.fml.rt.View;
-import org.openflexo.foundation.fml.rt.ViewLibrary;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstance;
-import org.openflexo.foundation.fml.rt.editionaction.AddSubView;
 import org.openflexo.foundation.fml.rt.editionaction.AddVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.editionaction.SelectFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.SelectVirtualModelInstance;
@@ -126,13 +121,11 @@ public class FMLRTTechnologyAdapterController extends TechnologyAdapterControlle
 	@Override
 	protected void initializeActions(ControllerActionInitializer actionInitializer) {
 
-		// View library perspective
-		new CreateViewInitializer(actionInitializer);
-		new MoveViewInitializer(actionInitializer);
+		// VirtualModelInstance
 
-		new DeleteViewInitializer(actionInitializer);
 		new CreateBasicVirtualModelInstanceInitializer(actionInitializer);
 		new DeleteVirtualModelInstanceInitializer(actionInitializer);
+		new MoveVirtualModelInstanceInitializer(actionInitializer);
 
 		new CreateFlexoConceptInstanceInitializer(actionInitializer);
 
@@ -189,10 +182,7 @@ public class FMLRTTechnologyAdapterController extends TechnologyAdapterControlle
 	 */
 	@Override
 	public ImageIcon getIconForTechnologyObject(Class<? extends TechnologyObject<?>> objectClass) {
-		if (View.class.isAssignableFrom(objectClass)) {
-			return FMLRTIconLibrary.VIEW_ICON;
-		}
-		else if (VirtualModelInstance.class.isAssignableFrom(objectClass)) {
+		if (VirtualModelInstance.class.isAssignableFrom(objectClass)) {
 			return FMLRTIconLibrary.VIRTUAL_MODEL_INSTANCE_ICON;
 		}
 		else if (FlexoConceptInstance.class.isAssignableFrom(objectClass)) {
@@ -222,9 +212,6 @@ public class FMLRTTechnologyAdapterController extends TechnologyAdapterControlle
 		}
 		if (AddVirtualModelInstance.class.isAssignableFrom(editionActionClass)) {
 			return IconFactory.getImageIcon(FMLRTIconLibrary.VIRTUAL_MODEL_INSTANCE_ICON, IconLibrary.DUPLICATE);
-		}
-		if (AddSubView.class.isAssignableFrom(editionActionClass)) {
-			return IconFactory.getImageIcon(FMLRTIconLibrary.VIEW_ICON, IconLibrary.DUPLICATE);
 		}
 		else if (AddClassInstance.class.isAssignableFrom(editionActionClass)) {
 			return IconFactory.getImageIcon(FMLRTIconLibrary.FLEXO_CLASS_INSTANCE_ICON, IconLibrary.DUPLICATE);
@@ -271,27 +258,19 @@ public class FMLRTTechnologyAdapterController extends TechnologyAdapterControlle
 	@Override
 	public boolean hasModuleViewForObject(TechnologyObject<FMLRTTechnologyAdapter> object, FlexoController controller) {
 
-		if (object instanceof View) {
+		if (object instanceof VirtualModelInstance) {
 			return true;
 		}
-		else if (object instanceof VirtualModelInstance) {
-			return true;
-		} /*else if (object instanceof FlexoConceptInstance) {
-			// NO module view yet
-			}*/
 		return false;
 	}
 
 	@Override
 	public String getWindowTitleforObject(TechnologyObject<FMLRTTechnologyAdapter> object, FlexoController controller) {
-		if (object instanceof ViewLibrary) {
-			return getLocales().localizedForKey("view_library");
+		if (object instanceof FMLRTVirtualModelInstanceRepository) {
+			return getLocales().localizedForKey("virtual_model_instance_repository");
 		}
 		if (object instanceof VirtualModelInstance) {
 			return ((VirtualModelInstance) object).getTitle();
-		}
-		if (object instanceof View) {
-			return ((View) object).getName();
 		}
 		return object.toString();
 	}
@@ -307,11 +286,7 @@ public class FMLRTTechnologyAdapterController extends TechnologyAdapterControlle
 	public ModuleView<?> createModuleViewForObject(TechnologyObject<FMLRTTechnologyAdapter> object, FlexoController controller,
 			FlexoPerspective perspective) {
 
-		if (object instanceof View) {
-			View view = (View) object;
-			return new ViewModuleView(view, controller, perspective);
-		}
-		else if (object instanceof VirtualModelInstance) {
+		if (object instanceof VirtualModelInstance) {
 			VirtualModelInstance vmi = (VirtualModelInstance) object;
 			return new VirtualModelInstanceView(vmi, controller, perspective);
 		}

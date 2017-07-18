@@ -50,12 +50,13 @@ import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.rm.AbstractVirtualModelInstanceResource;
 import org.openflexo.foundation.resource.RepositoryFolder;
 
-public class MoveView extends FlexoAction<MoveView, AbstractVirtualModelInstance<?, ?>, AbstractVirtualModelInstance<?, ?>> {
+public class MoveVirtualModelInstance
+		extends FlexoAction<MoveVirtualModelInstance, AbstractVirtualModelInstance<?, ?>, AbstractVirtualModelInstance<?, ?>> {
 
-	private static final Logger logger = Logger.getLogger(MoveView.class.getPackage().getName());
+	private static final Logger logger = Logger.getLogger(MoveVirtualModelInstance.class.getPackage().getName());
 
-	public static final FlexoActionType<MoveView, AbstractVirtualModelInstance<?, ?>, AbstractVirtualModelInstance<?, ?>> actionType = new FlexoActionType<MoveView, AbstractVirtualModelInstance<?, ?>, AbstractVirtualModelInstance<?, ?>>(
-			"move_view") {
+	public static final FlexoActionType<MoveVirtualModelInstance, AbstractVirtualModelInstance<?, ?>, AbstractVirtualModelInstance<?, ?>> actionType = new FlexoActionType<MoveVirtualModelInstance, AbstractVirtualModelInstance<?, ?>, AbstractVirtualModelInstance<?, ?>>(
+			"move_virtual_model_instance") {
 
 		@Override
 		public boolean isEnabledForSelection(AbstractVirtualModelInstance<?, ?> object,
@@ -70,9 +71,9 @@ public class MoveView extends FlexoAction<MoveView, AbstractVirtualModelInstance
 		}
 
 		@Override
-		public MoveView makeNewAction(AbstractVirtualModelInstance<?, ?> focusedObject,
+		public MoveVirtualModelInstance makeNewAction(AbstractVirtualModelInstance<?, ?> focusedObject,
 				Vector<AbstractVirtualModelInstance<?, ?>> globalSelection, FlexoEditor editor) {
-			return new MoveView(focusedObject, globalSelection, editor);
+			return new MoveVirtualModelInstance(focusedObject, globalSelection, editor);
 		}
 
 	};
@@ -83,8 +84,8 @@ public class MoveView extends FlexoAction<MoveView, AbstractVirtualModelInstance
 		FlexoObjectImpl.addActionForClass(actionType, AbstractVirtualModelInstance.class);
 	}
 
-	protected MoveView(AbstractVirtualModelInstance<?, ?> focusedObject, Vector<AbstractVirtualModelInstance<?, ?>> globalSelection,
-			FlexoEditor editor) {
+	protected MoveVirtualModelInstance(AbstractVirtualModelInstance<?, ?> focusedObject,
+			Vector<AbstractVirtualModelInstance<?, ?>> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 	}
 
