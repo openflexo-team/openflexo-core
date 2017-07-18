@@ -48,11 +48,11 @@ import org.junit.runner.RunWith;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
-import org.openflexo.foundation.fml.ViewPoint;
+import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.fml.rm.VirtualModelResourceFactory;
-import org.openflexo.foundation.fml.rt.action.CreateViewInFolder;
-import org.openflexo.foundation.fml.rt.rm.ViewResource;
+import org.openflexo.foundation.fml.rt.action.CreateBasicVirtualModelInstance;
+import org.openflexo.foundation.fml.rt.rm.FMLRTVirtualModelInstanceResource;
 import org.openflexo.foundation.resource.DirectoryResourceCenter;
 import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.test.OpenflexoProjectAtRunTimeTestCase;
@@ -61,8 +61,7 @@ import org.openflexo.test.OrderedRunner;
 import org.openflexo.test.TestOrder;
 
 /**
- * This unit test is intented to test View creation facilities with a ViewPoint
- * created on the fly
+ * This unit test is intented to test View creation facilities with a ViewPoint created on the fly
  * 
  * @author sylvain
  * 
@@ -73,10 +72,10 @@ public class TestCreateView extends OpenflexoProjectAtRunTimeTestCase {
 	public static final String VIEWPOINT_NAME = "TestViewPoint";
 	public static final String VIEWPOINT_URI = "http://openflexo.org/test/TestViewPoint";
 
-	private static ViewPoint newViewPoint;
+	private static VirtualModel newViewPoint;
 	private static FlexoEditor editor;
 	private static FlexoProject project;
-	private static View newView;
+	private static VirtualModelInstance newView;
 
 	private static DirectoryResourceCenter resourceCenter;
 
@@ -99,15 +98,11 @@ public class TestCreateView extends OpenflexoProjectAtRunTimeTestCase {
 				.getTechnologyAdapter(FMLTechnologyAdapter.class);
 		VirtualModelResourceFactory factory = fmlTechnologyAdapter.getVirtualModelResourceFactory();
 
-		VirtualModelResource newVirtualModelResource = factory.makeVirtualModelResource(VIEWPOINT_NAME, VIEWPOINT_URI,
+		VirtualModelResource newVirtualModelResource = factory.makeTopLevelVirtualModelResource(VIEWPOINT_NAME, VIEWPOINT_URI,
 				fmlTechnologyAdapter.getGlobalRepository(resourceCenter).getRootFolder(),
 				fmlTechnologyAdapter.getTechnologyContextManager(), true);
 		newViewPoint = newVirtualModelResource.getLoadedResourceData();
 
-		// newViewPoint = ViewPointImpl.newViewPoint("TestViewPoint",
-		// "http://openflexo.org/test/TestViewPoint",
-		// resourceCenter.getDirectory(),
-		// serviceManager.getViewPointLibrary(), resourceCenter);
 		assertNotNull(newViewPoint);
 		assertNotNull(newViewPoint.getResource());
 		VirtualModelResource resource = ((VirtualModelResource) newViewPoint.getResource());
@@ -135,21 +130,21 @@ public class TestCreateView extends OpenflexoProjectAtRunTimeTestCase {
 	@Test
 	@TestOrder(3)
 	public void testCreateView() {
-		CreateViewInFolder action = CreateViewInFolder.actionType
-				.makeNewAction(project.getViewLibrary().getRootFolder(), null, editor);
-		action.setNewViewName("MyView");
-		action.setNewViewTitle("Test creation of a new view");
-		action.setViewpointResource((VirtualModelResource) newViewPoint.getResource());
+		CreateBasicVirtualModelInstance action = CreateBasicVirtualModelInstance.actionType
+				.makeNewAction(project.getVirtualModelInstanceRepository().getRootFolder(), null, editor);
+		action.setNewVirtualModelInstanceName("MyView");
+		action.setNewVirtualModelInstanceTitle("Test creation of a new view");
+		action.setVirtualModel(newViewPoint);
 		action.doAction();
 		assertTrue(action.hasActionExecutionSucceeded());
-		newView = action.getNewView();
+		newView = action.getNewVirtualModelInstance();
 		assertNotNull(newView);
 		assertNotNull(newView.getResource());
 		// assertTrue(((ViewResource)
 		// newView.getResource()).getDirectory().exists());
 		// assertTrue(((ViewResource)
 		// newView.getResource()).getFile().exists());
-		assertTrue(((ViewResource) newView.getResource()).getDirectory() != null);
-		assertTrue(((ViewResource) newView.getResource()).getIODelegate().exists());
+		assertTrue(((FMLRTVirtualModelInstanceResource) newView.getResource()).getDirectory() != null);
+		assertTrue(((FMLRTVirtualModelInstanceResource) newView.getResource()).getIODelegate().exists());
 	}
 }

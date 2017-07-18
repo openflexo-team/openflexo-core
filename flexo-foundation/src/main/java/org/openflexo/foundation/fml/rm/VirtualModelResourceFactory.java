@@ -257,13 +257,6 @@ public class VirtualModelResourceFactory
 	}
 
 	@Override
-	public <I> VirtualModelResource retrieveResource(I serializationArtefact, FlexoResourceCenter<I> resourceCenter,
-			TechnologyContextManager<FMLTechnologyAdapter> technologyContextManager) throws ModelDefinitionException, IOException {
-		System.out.println("*********** ET HOP, on chope " + serializationArtefact);
-		return super.retrieveResource(serializationArtefact, resourceCenter, technologyContextManager);
-	}
-
-	@Override
 	protected <I> VirtualModelResource registerResource(VirtualModelResource resource, FlexoResourceCenter<I> resourceCenter,
 			TechnologyContextManager<FMLTechnologyAdapter> technologyContextManager) {
 		super.registerResource(resource, resourceCenter, technologyContextManager);
@@ -278,10 +271,6 @@ public class VirtualModelResourceFactory
 			resource.setVirtualModelLibrary(technologyContextManager.getServiceManager().getVirtualModelLibrary());
 			technologyContextManager.getServiceManager().getVirtualModelLibrary().registerVirtualModel(resource);
 		}
-
-		System.out.println("On vient d'enregistrer la resource " + resource);
-		System.out.println("On regarde maintenant dedans");
-		System.out.println("URI: " + resource.getURI());
 
 		// Now look for virtual models
 		exploreVirtualModels(resource, technologyContextManager);

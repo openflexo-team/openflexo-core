@@ -6,13 +6,13 @@
   <FlexoConcept id="3" name="FlexoConceptB" userID="FLX" flexoID="8">
     <Inspector id="4" inspectorTitle="FlexoConceptB" userID="FLX" flexoID="7" />
   </FlexoConcept>
-  <FlexoConcept id="5" parentFlexoConceptsList="http://openflexo.org/test/TestViewPointA/TestVirtualModel#FlexoConceptB" name="FlexoConceptC" userID="FLX" flexoID="10">
+  <FlexoConcept id="5" parentFlexoConceptsList="http://openflexo.org/test/TestResourceCenter/TestViewPointA.fml/TestVirtualModel.fml#FlexoConceptB" name="FlexoConceptC" userID="FLX" flexoID="10">
     <Inspector id="6" inspectorTitle="FlexoConceptC" userID="FLX" flexoID="9" />
   </FlexoConcept>
-  <FlexoConcept id="7" parentFlexoConceptsList="http://openflexo.org/test/TestViewPointA/TestVirtualModel#FlexoConceptB" name="FlexoConceptD" userID="FLX" flexoID="12">
+  <FlexoConcept id="7" parentFlexoConceptsList="http://openflexo.org/test/TestResourceCenter/TestViewPointA.fml/TestVirtualModel.fml#FlexoConceptB" name="FlexoConceptD" userID="FLX" flexoID="12">
     <Inspector id="8" inspectorTitle="FlexoConceptD" userID="FLX" flexoID="11" />
   </FlexoConcept>
-  <FlexoConcept id="9" parentFlexoConceptsList="http://openflexo.org/test/TestViewPointA/TestVirtualModel#FlexoConceptA,http://openflexo.org/test/TestViewPointA/TestVirtualModel#FlexoConceptB,http://openflexo.org/test/TestViewPointA/TestVirtualModel#FlexoConceptC" name="FlexoConceptE" userID="FLX" flexoID="14">
+  <FlexoConcept id="9" parentFlexoConceptsList="http://openflexo.org/test/TestResourceCenter/TestViewPointA.fml/TestVirtualModel.fml#FlexoConceptA,http://openflexo.org/test/TestResourceCenter/TestViewPointA.fml/TestVirtualModel.fml#FlexoConceptB,http://openflexo.org/test/TestResourceCenter/TestViewPointA.fml/TestVirtualModel.fml#FlexoConceptC" name="FlexoConceptE" userID="FLX" flexoID="14">
     <Inspector id="10" inspectorTitle="FlexoConceptE" userID="FLX" flexoID="13" />
   </FlexoConcept>
   <Inspector id="11" inspectorTitle="TestVirtualModel" userID="FLX" flexoID="2" />
