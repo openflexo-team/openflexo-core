@@ -44,6 +44,7 @@ import java.util.Iterator;
 import java.util.logging.Logger;
 
 import org.junit.Test;
+import org.openflexo.foundation.test.OpenflexoTestCase;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.model.ModelContext;
 import org.openflexo.model.ModelEntity;
@@ -53,15 +54,17 @@ import org.openflexo.model.exceptions.ModelDefinitionException;
  * Test instanciation of VirtualModelInstanceModelFactory<br>
  * 
  */
-public class VirtualModelInstanceModelFactoryTest {
+public class FMLRTVirtualModelInstanceModelFactoryTest extends OpenflexoTestCase {
 
-	private static final Logger logger = FlexoLogger.getLogger(VirtualModelInstanceModelFactoryTest.class.getPackage().getName());
+	private static final Logger logger = FlexoLogger.getLogger(FMLRTVirtualModelInstanceModelFactoryTest.class.getPackage().getName());
 
 	@Test
 	public void testInstantiateVirtualModelModelFactory() {
 		try {
-			System.out.println("Instanciating ViewPointModelFactory");
-			VirtualModelInstanceModelFactory factory = new VirtualModelInstanceModelFactory(null, null, null);
+			instanciateTestServiceManager();
+			System.out.println("Instanciating FMLRTVirtualModelInstanceModelFactory");
+			FMLRTVirtualModelInstanceModelFactory factory = new FMLRTVirtualModelInstanceModelFactory(null, null,
+					serviceManager.getTechnologyAdapterService());
 			ModelContext modelContext = factory.getModelContext();
 			for (Iterator<ModelEntity> it = modelContext.getEntities(); it.hasNext();) {
 				System.out.println("> Found " + it.next().getImplementedInterface());
