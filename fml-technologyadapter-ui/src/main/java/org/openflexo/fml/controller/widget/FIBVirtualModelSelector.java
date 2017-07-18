@@ -44,8 +44,6 @@ import org.openflexo.components.widget.FIBFlexoObjectSelector;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.fml.VirtualModelLibrary;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
-import org.openflexo.foundation.fml.rm.ViewPointResource;
-import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
 
@@ -92,36 +90,36 @@ public class FIBVirtualModelSelector extends FIBFlexoObjectSelector<VirtualModel
 
 	private VirtualModelLibrary virtualModelLibrary;
 
-	public VirtualModelLibrary getViewPointLibrary() {
+	public VirtualModelLibrary getVirtualModelLibrary() {
 		return virtualModelLibrary;
 	}
 
 	@CustomComponentParameter(name = "virtualModelLibrary", type = CustomComponentParameter.Type.MANDATORY)
-	public void setViewPointLibrary(VirtualModelLibrary virtualModelLibrary) {
+	public void setVirtualModelLibrary(VirtualModelLibrary virtualModelLibrary) {
 		this.virtualModelLibrary = virtualModelLibrary;
 	}
 
-	private ViewPointResource viewPoint;
+	private VirtualModelResource containedVirtualModel;
 
-	public ViewPointResource getViewPoint() {
-		return viewPoint;
+	public VirtualModelResource getContainerVirtualModel() {
+		return containedVirtualModel;
 	}
 
-	@CustomComponentParameter(name = "viewPoint", type = CustomComponentParameter.Type.OPTIONAL)
-	public void setViewPoint(ViewPointResource viewPoint) {
-		if (this.viewPoint != viewPoint) {
+	@CustomComponentParameter(name = "containerVirtualModel", type = CustomComponentParameter.Type.OPTIONAL)
+	public void setContainerVirtualModel(VirtualModelResource viewPoint) {
+		if (this.containedVirtualModel != viewPoint) {
 			FlexoObject oldRoot = getRootObject();
-			this.viewPoint = viewPoint;
+			this.containedVirtualModel = viewPoint;
 			getPropertyChangeSupport().firePropertyChange("rootObject", oldRoot, getRootObject());
 		}
 	}
 
 	public FlexoObject getRootObject() {
-		if (getViewPoint() != null) {
-			return getViewPoint();
+		if (getContainerVirtualModel() != null) {
+			return getContainerVirtualModel();
 		}
 		else {
-			return getViewPointLibrary();
+			return getVirtualModelLibrary();
 		}
 	}
 

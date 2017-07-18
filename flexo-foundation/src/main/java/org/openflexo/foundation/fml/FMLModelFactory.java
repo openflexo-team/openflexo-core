@@ -637,8 +637,8 @@ public class FMLModelFactory extends FGEModelFactoryImpl implements PamelaResour
 			logger.warning("Could not access resource beeing deserialized");
 		}
 		if (newlyCreatedObject instanceof VirtualModel && ((VirtualModel) newlyCreatedObject).getLocalizedDictionary() == null) {
-			// Always set a ViewPointLocalizedDictionary for a ViewPoint
-			ViewPointLocalizedDictionary localizedDictionary = newInstance(ViewPointLocalizedDictionary.class);
+			// Always set a FMLLocalizedDictionary for a ViewPoint
+			FMLLocalizedDictionary localizedDictionary = newInstance(FMLLocalizedDictionary.class);
 			((VirtualModel) newlyCreatedObject).setLocalizedDictionary(localizedDictionary);
 		}
 	}
@@ -647,8 +647,8 @@ public class FMLModelFactory extends FGEModelFactoryImpl implements PamelaResour
 	public <I> void objectHasBeenCreated(final I newlyCreatedObject, final Class<I> implementedInterface) {
 		super.objectHasBeenCreated(newlyCreatedObject, implementedInterface);
 		if (newlyCreatedObject instanceof VirtualModel && ((VirtualModel) newlyCreatedObject).getLocalizedDictionary() == null) {
-			// Always set a ViewPointLocalizedDictionary for a ViewPoint
-			ViewPointLocalizedDictionary localizedDictionary = newInstance(ViewPointLocalizedDictionary.class);
+			// Always set a FMLLocalizedDictionary for a ViewPoint
+			FMLLocalizedDictionary localizedDictionary = newInstance(FMLLocalizedDictionary.class);
 			((VirtualModel) newlyCreatedObject).setLocalizedDictionary(localizedDictionary);
 		}
 	}

@@ -45,10 +45,9 @@ import java.util.logging.Logger;
 
 import org.openflexo.ApplicationContext;
 import org.openflexo.components.wizard.WizardStep;
-import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.action.CreateTopLevelVirtualModel;
-import org.openflexo.foundation.fml.rm.ViewPointResource;
+import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.resource.RepositoryFolder;
 import org.openflexo.gina.annotation.FIBPanel;
@@ -85,7 +84,7 @@ public class CreateTopLevelVirtualModelWizard extends AbstractCreateVirtualModel
 	}
 
 	@Override
-	public ViewPoint getViewPoint() {
+	public VirtualModel getContainerVirtualModel() {
 		return null;
 	}
 
@@ -118,11 +117,11 @@ public class CreateTopLevelVirtualModelWizard extends AbstractCreateVirtualModel
 				setIssueMessage(getAction().getLocales().localizedForKey("no_folder_defined"), IssueMessageType.ERROR);
 				return false;
 			}
-			else if (StringUtils.isEmpty(getNewViewPointName())) {
+			else if (StringUtils.isEmpty(getNewVirtualModelName())) {
 				setIssueMessage(getAction().getLocales().localizedForKey("please_supply_valid_view_point_name"), IssueMessageType.ERROR);
 				return false;
 			}
-			else if (StringUtils.isEmpty(getNewViewPointURI())) {
+			else if (StringUtils.isEmpty(getNewVirtualModelURI())) {
 				setIssueMessage(getAction().getLocales().localizedForKey("please_supply_uri"), IssueMessageType.ERROR);
 				return false;
 			}
@@ -130,15 +129,15 @@ public class CreateTopLevelVirtualModelWizard extends AbstractCreateVirtualModel
 				setIssueMessage(getAction().getLocales().localizedForKey("please_supply_valid_uri"), IssueMessageType.ERROR);
 				return false;
 			}
-			else if (getAction().getViewPointLibrary() == null) {
+			else if (getAction().getVirtualModelLibrary() == null) {
 				setIssueMessage(getAction().getLocales().localizedForKey("could_not_access_viewpoint_library"), IssueMessageType.ERROR);
 				return false;
 			}
-			else if (getAction().getViewPointLibrary().getViewPointResource(getNewViewPointURI()) != null) {
+			else if (getAction().getVirtualModelLibrary().getVirtualModelResource(getNewVirtualModelURI()) != null) {
 				setIssueMessage(getAction().getLocales().localizedForKey("already_existing_viewpoint_uri"), IssueMessageType.ERROR);
 				return false;
 			}
-			else if (getViewPointFolder().getResourceWithName(getNewViewPointName()) != null) {
+			else if (getViewPointFolder().getResourceWithName(getNewVirtualModelName()) != null) {
 				setIssueMessage(getAction().getLocales().localizedForKey("already_existing_viewpoint_name"), IssueMessageType.ERROR);
 				return false;
 			}
@@ -150,41 +149,40 @@ public class CreateTopLevelVirtualModelWizard extends AbstractCreateVirtualModel
 			return true;
 		}
 
-		@SuppressWarnings("unchecked")
-		public RepositoryFolder<ViewPointResource, ?> getViewPointFolder() {
-			return getAction().getViewPointFolder();
+		public RepositoryFolder<VirtualModelResource, ?> getViewPointFolder() {
+			return getAction().getVirtualModelFolder();
 		}
 
-		public String getNewViewPointName() {
-			return getAction().getNewViewPointName();
+		public String getNewVirtualModelName() {
+			return getAction().getNewVirtualModelName();
 		}
 
-		public void setNewViewPointName(String newViewPointName) {
-			if (!newViewPointName.equals(getNewViewPointName())) {
-				String oldValue = getNewViewPointName();
-				getAction().setNewViewPointName(newViewPointName);
-				getPropertyChangeSupport().firePropertyChange("newViewPointName", oldValue, newViewPointName);
-				getPropertyChangeSupport().firePropertyChange("newViewPointURI", null, getNewViewPointURI());
+		public void setNewVirtualModelName(String newViewPointName) {
+			if (!newViewPointName.equals(getNewVirtualModelName())) {
+				String oldValue = getNewVirtualModelName();
+				getAction().setNewVirtualModelName(newViewPointName);
+				getPropertyChangeSupport().firePropertyChange("newVirtualModelName", oldValue, newViewPointName);
+				getPropertyChangeSupport().firePropertyChange("newVirtuelModelURI", null, getNewVirtualModelURI());
 				checkValidity();
 			}
 		}
 
-		public String getNewViewPointURI() {
-			return getAction().getNewViewPointURI();
+		public String getNewVirtualModelURI() {
+			return getAction().getNewVirtualModelURI();
 		}
 
-		public void setNewViewPointURI(String newViewPointURI) {
-			if (!newViewPointURI.equals(getNewViewPointURI())) {
-				String oldValue = getNewViewPointURI();
-				getAction().setNewViewPointURI(newViewPointURI);
-				getPropertyChangeSupport().firePropertyChange("newViewPointURI", oldValue, newViewPointURI);
+		public void setNewVirtualModelURI(String newVirtualModelURI) {
+			if (!newVirtualModelURI.equals(getNewVirtualModelURI())) {
+				String oldValue = getNewVirtualModelURI();
+				getAction().setNewVirtualModelURI(newVirtualModelURI);
+				getPropertyChangeSupport().firePropertyChange("newVirtualModelURI", oldValue, newVirtualModelURI);
 				checkValidity();
 			}
 		}
 
 		private boolean isValidURI() {
 			try {
-				new URL(getNewViewPointURI());
+				new URL(getNewVirtualModelURI());
 			} catch (MalformedURLException e) {
 				return false;
 			}
@@ -192,13 +190,13 @@ public class CreateTopLevelVirtualModelWizard extends AbstractCreateVirtualModel
 		}
 
 		public String getNewViewPointDescription() {
-			return getAction().getNewViewPointDescription();
+			return getAction().getNewVirtualModelDescription();
 		}
 
 		public void setNewViewPointDescription(String newViewPointDescription) {
 			if (!newViewPointDescription.equals(getNewViewPointDescription())) {
 				String oldValue = getNewViewPointDescription();
-				getAction().setNewViewPointDescription(newViewPointDescription);
+				getAction().setNewVirtualModelDescription(newViewPointDescription);
 				getPropertyChangeSupport().firePropertyChange("newViewPointDescription", oldValue, newViewPointDescription);
 				checkValidity();
 			}

@@ -59,7 +59,7 @@
 				method="controller.createFlexoConcept(selected.virtualModel)" name="create_flexo_concept" />
 		</BrowserElement>
 		<BrowserElement
-			dataClassName="org.openflexo.foundation.fml.ViewPointLocalizedDictionary"
+			dataClassName="org.openflexo.foundation.fml.FMLLocalizedDictionary"
 			label="&quot;Locales&quot;" icon="controller.iconForObject(inspector)"
 			isEditable="false" filtered="false" defaultVisible="true" name="inspector">
 		</BrowserElement>

@@ -670,6 +670,9 @@ public class TestFlexoConceptInheritance extends OpenflexoProjectAtRunTimeTestCa
 		assertNotNull(reloadedVirtualModel);
 
 		assertNotNull(flexoConceptA = reloadedVirtualModel.getFlexoConcept("FlexoConceptA"));
+		assertNotNull(flexoConceptB = reloadedVirtualModel.getFlexoConcept("FlexoConceptB"));
+		assertNotNull(flexoConceptC = reloadedVirtualModel.getFlexoConcept("FlexoConceptC"));
+		assertNotNull(flexoConceptD = reloadedVirtualModel.getFlexoConcept("FlexoConceptD"));
 
 		assertEquals(6, flexoConceptA.getFlexoProperties().size());
 		assertEquals(6, flexoConceptA.getDeclaredProperties().size());
@@ -714,6 +717,25 @@ public class TestFlexoConceptInheritance extends OpenflexoProjectAtRunTimeTestCa
 		// abstract
 		flexoConceptA.setAbstract(false);
 		assertTrue(flexoConceptA.isAbstract());
+
+		System.out.println("FML= " + virtualModel.getFMLRepresentation());
+	}
+
+	@Test
+	@TestOrder(21)
+	public void testUtils() throws IOException {
+
+		assertSame(flexoConceptA, FMLUtils.getMostSpecializedAncestor(flexoConceptA, flexoConceptA));
+		assertSame(flexoConceptA, FMLUtils.getMostSpecializedAncestor(flexoConceptA, flexoConceptB));
+		assertSame(flexoConceptA, FMLUtils.getMostSpecializedAncestor(flexoConceptA, flexoConceptD));
+		assertSame(flexoConceptA, FMLUtils.getMostSpecializedAncestor(flexoConceptD, flexoConceptA));
+		assertSame(flexoConceptA, FMLUtils.getMostSpecializedAncestor(flexoConceptB, flexoConceptA));
+		assertSame(flexoConceptA, FMLUtils.getMostSpecializedAncestor(flexoConceptB, flexoConceptC));
+		assertSame(flexoConceptA, FMLUtils.getMostSpecializedAncestor(flexoConceptC, flexoConceptB));
+
+		assertSame(flexoConceptB, FMLUtils.getMostSpecializedAncestor(flexoConceptD, flexoConceptB));
+		flexoConceptD.removeFromParentFlexoConcepts(flexoConceptB);
+		assertSame(flexoConceptA, FMLUtils.getMostSpecializedAncestor(flexoConceptD, flexoConceptB));
 
 	}
 

@@ -36,43 +36,43 @@
  * 
  */
 
-package org.openflexo.fml.controller.action;
+package org.openflexo.fml.controller.view;
 
-import java.util.EventObject;
-import java.util.logging.Logger;
-
-import javax.swing.Icon;
-
-import org.openflexo.foundation.action.FlexoActionInitializer;
-import org.openflexo.foundation.fml.FMLObject;
-import org.openflexo.foundation.fml.ViewPoint;
-import org.openflexo.foundation.fml.action.DeleteViewpoint;
-import org.openflexo.icon.IconLibrary;
-import org.openflexo.view.controller.ActionInitializer;
-import org.openflexo.view.controller.ControllerActionInitializer;
+import org.openflexo.fml.controller.CommonFIB;
+import org.openflexo.foundation.fml.FMLLocalizedDictionary;
+import org.openflexo.foundation.fml.FMLTechnologyAdapter;
+import org.openflexo.view.FIBModuleView;
+import org.openflexo.view.ModuleView;
 import org.openflexo.view.controller.FlexoController;
+import org.openflexo.view.controller.model.FlexoPerspective;
 
-public class DeleteViewPointInitializer extends ActionInitializer<DeleteViewpoint, ViewPoint, FMLObject> {
+/**
+ * This is the {@link ModuleView} representing a {@link ViewPoint}
+ * 
+ * @author sguerin
+ * 
+ */
+@SuppressWarnings("serial")
+public class FMLLocalizedDictionaryView extends FIBModuleView<FMLLocalizedDictionary> {
 
-	private static final Logger logger = Logger.getLogger(ControllerActionInitializer.class.getPackage().getName());
+	private final FlexoPerspective perspective;
 
-	public DeleteViewPointInitializer(ControllerActionInitializer actionInitializer) {
-		super(DeleteViewpoint.actionType, actionInitializer);
+	public FMLLocalizedDictionaryView(FMLLocalizedDictionary fMLLocalizedDictionary, FlexoController controller,
+			FlexoPerspective perspective) {
+		super(fMLLocalizedDictionary, controller, CommonFIB.FML_LOCALIZED_DICTIONARY_VIEW_FIB,
+				controller.getTechnologyAdapter(FMLTechnologyAdapter.class).getLocales());
+		this.perspective = perspective;
 	}
 
 	@Override
-	protected FlexoActionInitializer<DeleteViewpoint> getDefaultInitializer() {
-		return new FlexoActionInitializer<DeleteViewpoint>() {
-			@Override
-			public boolean run(EventObject e, DeleteViewpoint action) {
-				return FlexoController.confirm(action.getLocales().localizedForKey("would_you_really_like_to_delete_this_view_point"));
-			}
-		};
+	public FlexoPerspective getPerspective() {
+		return perspective;
 	}
 
 	@Override
-	protected Icon getEnabledIcon() {
-		return IconLibrary.DELETE_ICON;
+	public void show(final FlexoController controller, FlexoPerspective perspective) {
+
+		controller.getControllerModel().setRightViewVisible(false);
 	}
 
 }

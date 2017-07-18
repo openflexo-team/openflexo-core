@@ -44,9 +44,9 @@ import java.util.logging.Logger;
 
 import org.openflexo.components.widget.FIBFlexoObjectSelector;
 import org.openflexo.foundation.FlexoObject;
-import org.openflexo.foundation.fml.VirtualModel;
+import org.openflexo.foundation.fml.FMLUtils;
 import org.openflexo.foundation.fml.FlexoConcept;
-import org.openflexo.foundation.fml.ViewPoint;
+import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelLibrary;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
@@ -103,21 +103,6 @@ public class FIBFlexoConceptSelector extends FIBFlexoObjectSelector<FlexoConcept
 		this.virtualModelLibrary = virtualModelLibrary;
 	}
 
-	private ViewPoint viewPoint;
-
-	public ViewPoint getViewPoint() {
-		return viewPoint;
-	}
-
-	@CustomComponentParameter(name = "viewPoint", type = CustomComponentParameter.Type.OPTIONAL)
-	public void setViewPoint(ViewPoint viewPoint) {
-		if (this.viewPoint != viewPoint) {
-			FlexoObject oldRoot = getRootObject();
-			this.viewPoint = viewPoint;
-			getPropertyChangeSupport().firePropertyChange("rootObject", oldRoot, getRootObject());
-		}
-	}
-
 	private VirtualModel virtualModel;
 
 	public VirtualModel getVirtualModel() {
@@ -161,9 +146,6 @@ public class FIBFlexoConceptSelector extends FIBFlexoObjectSelector<FlexoConcept
 		if (getVirtualModel() != null) {
 			return getVirtualModel();
 		}
-		else if (getViewPoint() != null) {
-			return getViewPoint();
-		}
 		else {
 			return getViewPointLibrary();
 		}
@@ -174,7 +156,7 @@ public class FIBFlexoConceptSelector extends FIBFlexoObjectSelector<FlexoConcept
 		appendInheritingVirtualModels(getInheritingContext(), vmList);
 		VirtualModel returned = getInheritingContext();
 		for (VirtualModel vm : vmList) {
-			returned = getMostSpecializedContainer(returned, vm);
+			returned = (VirtualModel) FMLUtils.getMostSpecializedAncestor(returned, vm);
 		}
 		if (returned == null) {
 			return getInheritingContext().getVirtualModelLibrary();
@@ -182,20 +164,6 @@ public class FIBFlexoConceptSelector extends FIBFlexoObjectSelector<FlexoConcept
 		else {
 			return returned;
 		}
-	}
-
-	private VirtualModel getMostSpecializedContainer(VirtualModel vm1, VirtualModel vm2) {
-		if (vm1 == null || vm2 == null) {
-			return null;
-		}
-		if (vm1 == vm2) {
-			return vm1;
-		}
-		if (vm1.getViewPoint() == vm2.getViewPoint()) {
-			return vm1.getViewPoint();
-		}
-
-		return null;
 	}
 
 	private void appendInheritingVirtualModels(VirtualModel vm, List<VirtualModel> vmList) {

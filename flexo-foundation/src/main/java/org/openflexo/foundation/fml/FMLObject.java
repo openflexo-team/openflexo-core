@@ -145,7 +145,7 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData/*<Vi
 
 	// public void notifyBindingModelChanged();
 
-	public ViewPointLocalizedDictionary getLocalizedDictionary();
+	public FMLLocalizedDictionary getLocalizedDictionary();
 
 	@DeserializationInitializer
 	public void initializeDeserialization(FMLModelFactory factory);
@@ -351,7 +351,7 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData/*<Vi
 		}*/
 
 		@Override
-		public ViewPointLocalizedDictionary getLocalizedDictionary() {
+		public FMLLocalizedDictionary getLocalizedDictionary() {
 			return getDeclaringVirtualModel().getLocalizedDictionary();
 		}
 

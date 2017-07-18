@@ -51,7 +51,6 @@ import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FlexoBehaviourObject;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter.FlexoBehaviourParameterImpl;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter.WidgetType;
-import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.action.CreateGenericBehaviourParameter;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
@@ -117,8 +116,8 @@ public class CreateGenericBehaviourParameterWizard
 			return CreateGenericBehaviourParameterWizard.this.getAction();
 		}
 
-		public ViewPoint getViewPoint() {
-			return CreateGenericBehaviourParameterWizard.this.getViewPoint();
+		public VirtualModel getVirtualModel() {
+			return CreateGenericBehaviourParameterWizard.this.getVirtualModel();
 		}
 
 		@Override
