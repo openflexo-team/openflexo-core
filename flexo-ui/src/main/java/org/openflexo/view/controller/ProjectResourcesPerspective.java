@@ -46,8 +46,7 @@ import org.openflexo.components.widget.FIBProjectResourcesBrowser;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoProject;
-import org.openflexo.foundation.fml.rt.View;
-import org.openflexo.foundation.fml.rt.ViewLibrary;
+import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceRepository;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
@@ -103,14 +102,11 @@ public class ProjectResourcesPerspective extends FlexoPerspective {
 		if (object == null) {
 			return FlexoLocalization.getMainLocalizer().localizedForKey("no_selection");
 		}
-		if (object instanceof ViewLibrary) {
-			return FlexoLocalization.getMainLocalizer().localizedForKey("view_library");
+		if (object instanceof FMLRTVirtualModelInstanceRepository) {
+			return FlexoLocalization.getMainLocalizer().localizedForKey("virtual_model_instance_repository");
 		}
 		if (object instanceof VirtualModelInstance) {
 			return ((VirtualModelInstance) object).getTitle();
-		}
-		if (object instanceof View) {
-			return ((View) object).getName();
 		}
 		if (object instanceof TechnologyObject) {
 			return getWindowTitleForTechnologyObject((TechnologyObject<?>) object, getController());

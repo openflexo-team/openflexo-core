@@ -50,12 +50,11 @@ import org.openflexo.components.wizard.WizardStep;
 import org.openflexo.foundation.DataModification;
 import org.openflexo.foundation.FlexoObservable;
 import org.openflexo.foundation.FlexoObserver;
-import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.CreationScheme;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
+import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
 import org.openflexo.foundation.fml.rt.FMLRTModelSlotInstanceConfiguration;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
@@ -69,6 +68,7 @@ import org.openflexo.foundation.technologyadapter.FlexoModel;
 import org.openflexo.foundation.technologyadapter.FreeModelSlot;
 import org.openflexo.foundation.technologyadapter.FreeModelSlotInstanceConfiguration;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.foundation.technologyadapter.TypeAwareModelSlot;
 import org.openflexo.foundation.technologyadapter.TypeAwareModelSlotInstanceConfiguration;
@@ -84,9 +84,9 @@ public abstract class AbstractCreateVirtualModelInstanceWizard<A extends Abstrac
 
 	protected final A action;
 
-	private final AbstractChooseVirtualModel<?> chooseVirtualModel;
+	private final AbstractChooseVirtualModel chooseVirtualModel;
 	// private final List<ConfigureModelSlot<?, ?>> modelSlotConfigurationSteps;
-	private AbstractChooseAndConfigureCreationScheme<?> chooseAndConfigureCreationScheme = null;
+	private AbstractChooseAndConfigureCreationScheme chooseAndConfigureCreationScheme = null;
 
 	public AbstractCreateVirtualModelInstanceWizard(A action, FlexoController controller) {
 		super(controller);
@@ -95,9 +95,9 @@ public abstract class AbstractCreateVirtualModelInstanceWizard<A extends Abstrac
 		addStep(chooseVirtualModel = makeChooseVirtualModel());
 	}
 
-	protected abstract AbstractChooseVirtualModel<?> makeChooseVirtualModel();
+	protected abstract AbstractChooseVirtualModel makeChooseVirtualModel();
 
-	protected abstract AbstractChooseAndConfigureCreationScheme<?> makeChooseAndConfigureCreationScheme();
+	protected abstract AbstractChooseAndConfigureCreationScheme makeChooseAndConfigureCreationScheme();
 
 	private ConfigureModelSlot<?, ?> makeConfigureModelSlotStep(ModelSlot<?> ms) {
 		if (ms instanceof TypeAwareModelSlot) {
@@ -121,7 +121,7 @@ public abstract class AbstractCreateVirtualModelInstanceWizard<A extends Abstrac
 	 * @author sylvain
 	 * 
 	 */
-	public abstract class AbstractChooseVirtualModel<VM extends VirtualModel<VM>> extends WizardStep {
+	public abstract class AbstractChooseVirtualModel extends WizardStep {
 
 		public A getAction() {
 			return action;
@@ -204,11 +204,11 @@ public abstract class AbstractCreateVirtualModelInstanceWizard<A extends Abstrac
 			}
 		}
 
-		public VM getVirtualModel() {
-			return (VM) action.getVirtualModel();
+		public VirtualModel getVirtualModel() {
+			return action.getVirtualModel();
 		}
 
-		public void setVirtualModel(VM virtualModel) {
+		public void setVirtualModel(VirtualModel virtualModel) {
 			if (virtualModel != getVirtualModel()) {
 				VirtualModel oldValue = getVirtualModel();
 				((AbstractCreateVirtualModelInstance) action).setVirtualModel(virtualModel);
@@ -218,14 +218,14 @@ public abstract class AbstractCreateVirtualModelInstanceWizard<A extends Abstrac
 			}
 		}
 
-		public VirtualModelResource<VM> getVirtualModelResource() {
+		public VirtualModelResource getVirtualModelResource() {
 			if (action.getVirtualModel() != null) {
-				return (VirtualModelResource<VM>) action.getVirtualModel().getResource();
+				return (VirtualModelResource) action.getVirtualModel().getResource();
 			}
 			return null;
 		}
 
-		public void setVirtualModelResource(VirtualModelResource<VM> virtualModelResource) {
+		public void setVirtualModelResource(VirtualModelResource virtualModelResource) {
 			if (getVirtualModelResource() != virtualModelResource) {
 				VirtualModelResource oldValue = getVirtualModelResource();
 				if (virtualModelResource != null) {
@@ -426,10 +426,10 @@ public abstract class AbstractCreateVirtualModelInstanceWizard<A extends Abstrac
 	 * 
 	 */
 	@FIBPanel("Fib/Wizard/CreateVirtualModelInstance/ConfigureVirtualModelSlotInstance.fib")
-	public class ConfigureVirtualModelModelSlot<VMI extends VirtualModelInstance<VMI, VM>, VM extends VirtualModel<VM>>
-			extends ConfigureModelSlot<FMLRTModelSlot<VMI, VM>, VMI> {
+	public class ConfigureVirtualModelModelSlot<VMI extends AbstractVirtualModelInstance<VMI, TA>, TA extends TechnologyAdapter>
+			extends ConfigureModelSlot<FMLRTModelSlot<VMI, TA>, VMI> {
 
-		public ConfigureVirtualModelModelSlot(FMLRTModelSlot<VMI, VM> modelSlot) {
+		public ConfigureVirtualModelModelSlot(FMLRTModelSlot<VMI, TA> modelSlot) {
 			super(modelSlot);
 		}
 
@@ -452,8 +452,7 @@ public abstract class AbstractCreateVirtualModelInstanceWizard<A extends Abstrac
 	 * 
 	 */
 	@FIBPanel("Fib/Wizard/CreateVirtualModelInstance/ChooseAndConfigureCreationScheme.fib")
-	public abstract class AbstractChooseAndConfigureCreationScheme<VM extends VirtualModel<VM>> extends WizardStep
-			implements FlexoObserver {
+	public abstract class AbstractChooseAndConfigureCreationScheme extends WizardStep implements FlexoObserver {
 
 		private CreationSchemeAction creationSchemeAction;
 

@@ -44,14 +44,12 @@ import javax.swing.ImageIcon;
 
 import org.openflexo.components.widget.FIBTechnologyBrowser;
 import org.openflexo.foundation.FlexoObject;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
-import org.openflexo.foundation.fml.rt.VirtualModelInstanceNature;
+import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstanceNature;
-import org.openflexo.foundation.fml.rt.View;
-import org.openflexo.foundation.fml.rt.ViewNature;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
+import org.openflexo.foundation.fml.rt.VirtualModelInstanceNature;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.view.ModuleView;
 
@@ -68,16 +66,14 @@ public abstract class FMLRTNaturePerspective extends TechnologyPerspective<FMLRT
 	static final Logger logger = Logger.getLogger(FMLRTNaturePerspective.class.getPackage().getName());
 
 	private final TechnologyAdapter handlingTechnologyAdapter;
-	private final ViewNature viewNature;
 	private final VirtualModelInstanceNature virtualModelInstanceNature;
 	private final FlexoConceptInstanceNature flexoConceptInstanceNature;
 
-	public FMLRTNaturePerspective(ViewNature viewNature, VirtualModelInstanceNature virtualModelInstanceNature,
+	public FMLRTNaturePerspective(VirtualModelInstanceNature virtualModelInstanceNature,
 			FlexoConceptInstanceNature flexoConceptInstanceNature, FMLRTTechnologyAdapter fmlRTtechnologyAdapter,
 			TechnologyAdapter handlingTechnologyAdapter, FlexoController controller) {
 		super(fmlRTtechnologyAdapter, controller);
 		this.handlingTechnologyAdapter = handlingTechnologyAdapter;
-		this.viewNature = viewNature;
 		this.virtualModelInstanceNature = virtualModelInstanceNature;
 		this.flexoConceptInstanceNature = flexoConceptInstanceNature;
 	}
@@ -113,10 +109,6 @@ public abstract class FMLRTNaturePerspective extends TechnologyPerspective<FMLRT
 		return returned;
 	}
 
-	public ViewNature getViewNature() {
-		return viewNature;
-	}
-
 	public VirtualModelInstanceNature getVirtualModelInstanceNature() {
 		return virtualModelInstanceNature;
 	}
@@ -137,10 +129,8 @@ public abstract class FMLRTNaturePerspective extends TechnologyPerspective<FMLRT
 
 	@Override
 	public boolean hasModuleViewForObject(FlexoObject object) {
-		if (object instanceof View && viewNature != null && viewNature.hasNature((View) object)) {
-			return true;
-		}
-		if (object instanceof VirtualModelInstance && virtualModelInstanceNature != null && virtualModelInstanceNature.hasNature(object)) {
+		if (object instanceof VirtualModelInstance && virtualModelInstanceNature != null
+				&& virtualModelInstanceNature.hasNature((VirtualModelInstance) object)) {
 			return true;
 		}
 		if (object instanceof FlexoConceptInstance && flexoConceptInstanceNature != null

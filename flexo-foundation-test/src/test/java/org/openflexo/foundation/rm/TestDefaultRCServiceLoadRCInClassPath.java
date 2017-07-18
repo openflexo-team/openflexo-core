@@ -48,8 +48,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
-import org.openflexo.foundation.fml.ViewPoint;
-import org.openflexo.foundation.fml.rm.ViewPointResource;
+import org.openflexo.foundation.fml.VirtualModel;
+import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.resource.DefaultResourceCenterService;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
@@ -69,7 +69,7 @@ public class TestDefaultRCServiceLoadRCInClassPath extends OpenflexoTestCase {
 
 	public static FlexoProject project;
 	private static DefaultResourceCenterService rcService;
-	private static ViewPoint testVP;
+	private static VirtualModel testVP;
 
 	private static FlexoResourceCenter testRC, testRCfromCP;
 
@@ -114,15 +114,15 @@ public class TestDefaultRCServiceLoadRCInClassPath extends OpenflexoTestCase {
 
 		log("loadViewPoint");
 
-		String viewPointURI = "http://openflexo.org/test/TestViewPointA";
+		String viewPointURI = "http://openflexo.org/test/TestResourceCenter/TestViewPointA.fml";
 		log("Testing ViewPoint loading: " + viewPointURI);
 
-		ViewPointResource vpRes = serviceManager.getVirtualModelLibrary().getViewPointResource(viewPointURI);
+		VirtualModelResource vpRes = serviceManager.getVirtualModelLibrary().getVirtualModelResource(viewPointURI);
 
 		assertNotNull(vpRes);
 		assertFalse(vpRes.isLoaded());
 
-		testVP = vpRes.getViewPoint();
+		testVP = vpRes.getVirtualModel();
 		assertTrue(vpRes.isLoaded());
 
 	}
@@ -134,7 +134,7 @@ public class TestDefaultRCServiceLoadRCInClassPath extends OpenflexoTestCase {
 		log("testViewPoint");
 
 		assertNotNull(testVP);
-		System.out.println("Found view point in " + ((ViewPointResource) testVP.getResource()).getIODelegate().toString());
+		System.out.println("Found view point in " + ((VirtualModelResource) testVP.getResource()).getIODelegate().toString());
 		assertVirtualModelIsValid(testVP);
 
 	}

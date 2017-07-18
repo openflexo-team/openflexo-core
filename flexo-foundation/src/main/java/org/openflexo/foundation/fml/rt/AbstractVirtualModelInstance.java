@@ -703,6 +703,13 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 
 			// System.out.println("**** ensure register FCI " + fci + " in " + concept);
 
+			if (concept == null) {
+				System.out.println("C'est marrant fci n'a pas de concept !!!!");
+				System.out.println("uri: " + fci.getFlexoConceptURI());
+				System.out.println("concept: " + fci.getFlexoConcept());
+				System.exit(-1);
+			}
+
 			List<FlexoConceptInstance> list = flexoConceptInstances.get(concept);
 			if (list == null) {
 				list = new ArrayList<>();

@@ -44,12 +44,9 @@ import javax.swing.ImageIcon;
 
 import org.openflexo.components.widget.FIBTechnologyBrowser;
 import org.openflexo.foundation.FlexoObject;
-import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptNature;
-import org.openflexo.foundation.fml.ViewPoint;
-import org.openflexo.foundation.fml.ViewPointNature;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelNature;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
@@ -68,16 +65,13 @@ public abstract class FMLNaturePerspective extends TechnologyPerspective<FMLTech
 	static final Logger logger = Logger.getLogger(FMLNaturePerspective.class.getPackage().getName());
 
 	private final TechnologyAdapter handlingTechnologyAdapter;
-	private final ViewPointNature viewpointNature;
 	private final VirtualModelNature virtualModelNature;
 	private final FlexoConceptNature flexoConceptNature;
 
-	public FMLNaturePerspective(ViewPointNature viewpointNature, VirtualModelNature virtualModelNature,
-			FlexoConceptNature flexoConceptNature, FMLTechnologyAdapter fmlRTtechnologyAdapter, TechnologyAdapter handlingTechnologyAdapter,
-			FlexoController controller) {
+	public FMLNaturePerspective(VirtualModelNature virtualModelNature, FlexoConceptNature flexoConceptNature,
+			FMLTechnologyAdapter fmlRTtechnologyAdapter, TechnologyAdapter handlingTechnologyAdapter, FlexoController controller) {
 		super(fmlRTtechnologyAdapter, controller);
 		this.handlingTechnologyAdapter = handlingTechnologyAdapter;
-		this.viewpointNature = viewpointNature;
 		this.virtualModelNature = virtualModelNature;
 		this.flexoConceptNature = flexoConceptNature;
 	}
@@ -113,10 +107,6 @@ public abstract class FMLNaturePerspective extends TechnologyPerspective<FMLTech
 		return returned;
 	}
 
-	public ViewPointNature getViewpointNature() {
-		return viewpointNature;
-	}
-
 	public VirtualModelNature getVirtualModelNature() {
 		return virtualModelNature;
 	}
@@ -137,9 +127,6 @@ public abstract class FMLNaturePerspective extends TechnologyPerspective<FMLTech
 
 	@Override
 	public boolean hasModuleViewForObject(FlexoObject object) {
-		if (object instanceof ViewPoint && viewpointNature != null && viewpointNature.hasNature((ViewPoint) object)) {
-			return true;
-		}
 		if (object instanceof VirtualModel && virtualModelNature != null && virtualModelNature.hasNature((VirtualModel) object)) {
 			return true;
 		}

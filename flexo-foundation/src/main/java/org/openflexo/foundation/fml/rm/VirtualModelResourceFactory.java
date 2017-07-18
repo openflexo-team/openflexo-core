@@ -137,7 +137,7 @@ public class VirtualModelResourceFactory
 				resourceCenter.getContainer((I) containerVirtualModelResource.getIODelegate().getSerializationArtefact()));
 
 		VirtualModelResource returned = initResourceForCreation(serializationArtefact, resourceCenter, technologyContextManager, baseName,
-				containerVirtualModelResource.getURI() + "/" + baseName);
+				containerVirtualModelResource.getURI() + "/" + baseName + (baseName.endsWith(FML_SUFFIX) ? "" : FML_SUFFIX));
 
 		containerVirtualModelResource.addToContents(returned);
 
