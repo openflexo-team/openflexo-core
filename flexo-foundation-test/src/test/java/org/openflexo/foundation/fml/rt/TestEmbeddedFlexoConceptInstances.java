@@ -42,24 +42,25 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.FileNotFoundException;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openflexo.foundation.FlexoEditor;
+import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.fml.ActionScheme;
 import org.openflexo.foundation.fml.CreationScheme;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoProperty;
-import org.openflexo.foundation.fml.ViewPoint;
-import org.openflexo.foundation.fml.VirtualModelLibrary;
 import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.rm.VirtualModelResource;
+import org.openflexo.foundation.fml.VirtualModelLibrary;
 import org.openflexo.foundation.fml.rt.action.ActionSchemeAction;
 import org.openflexo.foundation.fml.rt.action.ActionSchemeActionType;
 import org.openflexo.foundation.fml.rt.action.CreateBasicVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.CreateFlexoConceptInstance;
-import org.openflexo.foundation.fml.rt.action.CreateViewInFolder;
+import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.test.OpenflexoProjectAtRunTimeTestCase;
 import org.openflexo.test.OrderedRunner;
@@ -74,7 +75,7 @@ import org.openflexo.test.TestOrder;
 @RunWith(OrderedRunner.class)
 public class TestEmbeddedFlexoConceptInstances extends OpenflexoProjectAtRunTimeTestCase {
 
-	private static ViewPoint viewPoint;
+	private static VirtualModel viewPoint;
 	private static VirtualModel vm1;
 	private static FlexoConcept conceptA;
 	private static FlexoConcept conceptB;
@@ -82,25 +83,32 @@ public class TestEmbeddedFlexoConceptInstances extends OpenflexoProjectAtRunTime
 
 	private static FlexoEditor editor;
 	private static FlexoProject project;
-	private static View newView;
+	private static VirtualModelInstance newView;
 	private static VirtualModelInstance vmi1;
 	private static VirtualModelInstance vmi2;
 
 	/**
 	 * Retrieve the ViewPoint
+	 * 
+	 * @throws FlexoException
+	 * @throws ResourceLoadingCancelledException
+	 * @throws FileNotFoundException
 	 */
 	@Test
 	@TestOrder(1)
-	public void testLoadViewPoint() {
+	public void testLoadViewPoint() throws FileNotFoundException, ResourceLoadingCancelledException, FlexoException {
 		instanciateTestServiceManager();
 		VirtualModelLibrary vpLib = serviceManager.getVirtualModelLibrary();
 		assertNotNull(vpLib);
-		viewPoint = vpLib.getViewPoint("http://openflexo.org/test/TestViewPointB");
+		viewPoint = vpLib.getVirtualModel("http://openflexo.org/test/TestResourceCenter/TestViewPointB.fml");
 		assertNotNull(viewPoint);
 		assertNotNull(vm1 = viewPoint.getVirtualModelNamed("VM1"));
 		assertNotNull(conceptA = vm1.getFlexoConcept("ConceptA"));
 		assertNotNull(conceptB = vm1.getFlexoConcept("ConceptB"));
 		assertNotNull(conceptC = vm1.getFlexoConcept("ConceptC"));
+
+		assertVirtualModelIsValid(viewPoint);
+
 	}
 
 	@Test
@@ -119,13 +127,14 @@ public class TestEmbeddedFlexoConceptInstances extends OpenflexoProjectAtRunTime
 	@Test
 	@TestOrder(3)
 	public void testCreateView() {
-		CreateViewInFolder action = CreateViewInFolder.actionType.makeNewAction(project.getViewLibrary().getRootFolder(), null, editor);
-		action.setNewViewName("MyView");
-		action.setNewViewTitle("Test creation of a new view");
-		action.setViewpointResource((VirtualModelResource) viewPoint.getResource());
+		CreateBasicVirtualModelInstance action = CreateBasicVirtualModelInstance.actionType
+				.makeNewAction(project.getVirtualModelInstanceRepository().getRootFolder(), null, editor);
+		action.setNewVirtualModelInstanceName("MyView");
+		action.setNewVirtualModelInstanceTitle("Test creation of a new view");
+		action.setVirtualModel(viewPoint);
 		action.doAction();
 		assertTrue(action.hasActionExecutionSucceeded());
-		newView = action.getNewView();
+		newView = action.getNewVirtualModelInstance();
 		assertNotNull(newView);
 	}
 
@@ -270,6 +279,8 @@ public class TestEmbeddedFlexoConceptInstances extends OpenflexoProjectAtRunTime
 		assertTrue(actionSchemeCreationAction.hasActionExecutionSucceeded());
 
 		vmi2.getResource().save(null);
+
+		System.out.println("FML=" + actionScheme.getFMLRepresentation());
 
 		FlexoConceptInstance a, b1, b2, c1, c2;
 

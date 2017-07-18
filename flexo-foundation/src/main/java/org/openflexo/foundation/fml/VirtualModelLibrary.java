@@ -423,7 +423,7 @@ public class VirtualModelLibrary extends DefaultFlexoObject implements FlexoServ
 		}
 	}
 
-	public FMLValidationModel getViewPointValidationModel() {
+	public FMLValidationModel getFMLValidationModel() {
 		if (viewPointValidationModel == null && serviceManager != null) {
 			try {
 				viewPointValidationModel = new FMLValidationModel(serviceManager.getTechnologyAdapterService());
