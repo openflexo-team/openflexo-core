@@ -579,7 +579,7 @@ public class JarResourceCenter extends ResourceRepository<FlexoResource<?>, InJa
 
 	@Override
 	public boolean exists(InJarResourceImpl serializationArtefact) {
-		return true;
+		return serializationArtefact != null;
 	}
 
 	@Override
