@@ -1,6 +1,6 @@
 dependencies {
   // openflexo dep
-  compile flexoFoundation()
+  compile project(':flexo-foundation')
   // external dep
 
   // testing dep
