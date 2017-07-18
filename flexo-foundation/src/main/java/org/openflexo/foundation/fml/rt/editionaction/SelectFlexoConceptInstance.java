@@ -379,8 +379,10 @@ public interface SelectFlexoConceptInstance<VMI extends AbstractVirtualModelInst
 
 		@Override
 		public List<FlexoConceptInstance> execute(RunTimeEvaluationContext evaluationContext) {
+
 			AbstractVirtualModelInstance<?, ?> vmi = getVirtualModelInstance(evaluationContext);
 			FlexoConceptInstance container = getContainer(evaluationContext);
+
 			if (container == null) {
 				container = vmi;
 			}
