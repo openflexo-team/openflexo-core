@@ -31,9 +31,9 @@ import org.openflexo.foundation.doc.FlexoDocParagraph;
 import org.openflexo.foundation.doc.FlexoDocument;
 import org.openflexo.foundation.doc.FlexoDrawingRun;
 import org.openflexo.foundation.fml.FlexoRole;
-import org.openflexo.foundation.fml.rt.VirtualModelInstanceModelFactory;
-import org.openflexo.foundation.fml.rt.VirtualModelInstanceNature;
+import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstanceModelFactory;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
+import org.openflexo.foundation.fml.rt.VirtualModelInstanceNature;
 import org.openflexo.foundation.nature.ScreenshotableNature;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.model.annotations.Getter;
@@ -227,7 +227,7 @@ public interface FlexoImageRole<R extends FlexoDrawingRun<D, TA>, D extends Flex
 
 		@Override
 		public ImageActorReference<R> makeActorReference(R drawingRun, FlexoConceptInstance fci) {
-			VirtualModelInstanceModelFactory<?> factory = fci.getFactory();
+			AbstractVirtualModelInstanceModelFactory<?> factory = fci.getFactory();
 			ImageActorReference<R> returned = factory.newInstance(ImageActorReference.class);
 			returned.setFlexoRole(this);
 			returned.setFlexoConceptInstance(fci);
