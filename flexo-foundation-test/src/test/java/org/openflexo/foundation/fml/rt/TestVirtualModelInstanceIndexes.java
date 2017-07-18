@@ -41,7 +41,6 @@ package org.openflexo.foundation.fml.rt;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -77,13 +76,11 @@ import org.openflexo.foundation.fml.rm.VirtualModelResourceFactory;
 import org.openflexo.foundation.fml.rt.action.ActionSchemeAction;
 import org.openflexo.foundation.fml.rt.action.ActionSchemeActionType;
 import org.openflexo.foundation.fml.rt.action.CreateBasicVirtualModelInstance;
-import org.openflexo.foundation.fml.rt.action.CreateViewInFolder;
 import org.openflexo.foundation.fml.rt.action.CreationSchemeAction;
 import org.openflexo.foundation.fml.rt.action.DeletionSchemeAction;
 import org.openflexo.foundation.fml.rt.action.DeletionSchemeActionType;
 import org.openflexo.foundation.fml.rt.editionaction.SelectFlexoConceptInstance;
-import org.openflexo.foundation.fml.rt.rm.ViewResource;
-import org.openflexo.foundation.fml.rt.rm.VirtualModelInstanceResource;
+import org.openflexo.foundation.fml.rt.rm.FMLRTVirtualModelInstanceResource;
 import org.openflexo.foundation.resource.DirectoryResourceCenter;
 import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.test.OpenflexoProjectAtRunTimeTestCase;
@@ -109,13 +106,13 @@ public class TestVirtualModelInstanceIndexes extends OpenflexoProjectAtRunTimeTe
 	static FlexoConcept flexoConceptA;
 
 	public static final String VIEWPOINT_NAME = "TestViewPoint";
-	public static final String VIEWPOINT_URI = "http://openflexo.org/test/TestViewPoint";
+	public static final String VIEWPOINT_URI = "http://openflexo.org/test/TestResourceCenter/TestViewPoint.fml";
 	public static final String VIRTUAL_MODEL_NAME = "TestVirtualModel";
 
 	private static DirectoryResourceCenter resourceCenter;
 
 	private static FlexoProject project;
-	private static View newView;
+	private static VirtualModelInstance newView;
 	private static VirtualModelInstance newVirtualModelInstance;
 
 	private static FlexoConceptInstance john;
@@ -145,21 +142,14 @@ public class TestVirtualModelInstanceIndexes extends OpenflexoProjectAtRunTimeTe
 				.getTechnologyAdapter(FMLTechnologyAdapter.class);
 		VirtualModelResourceFactory factory = fmlTechnologyAdapter.getVirtualModelResourceFactory();
 
-		VirtualModelResource newVirtualModelResource = factory.makeVirtualModelResource(VIEWPOINT_NAME, VIEWPOINT_URI,
+		VirtualModelResource newVirtualModelResource = factory.makeTopLevelVirtualModelResource(VIEWPOINT_NAME, VIEWPOINT_URI,
 				fmlTechnologyAdapter.getGlobalRepository(resourceCenter).getRootFolder(),
 				fmlTechnologyAdapter.getTechnologyContextManager(), true);
 		viewPoint = newVirtualModelResource.getLoadedResourceData();
 
-		// assertTrue(((VirtualModelResource)
-		// newViewPoint.getResource()).getDirectory().exists());
-		// assertTrue(((VirtualModelResource)
-		// newViewPoint.getResource()).getFile().exists());
 		assertTrue(((VirtualModelResource) viewPoint.getResource()).getDirectory() != null);
 		assertTrue(((VirtualModelResource) viewPoint.getResource()).getIODelegate().exists());
 
-		assertEquals(viewPoint, viewPoint.getViewPoint());
-		assertEquals(viewPoint, viewPoint.getVirtualModel());
-		assertEquals(null, viewPoint.getOwningVirtualModel());
 		assertEquals(viewPoint, viewPoint.getFlexoConcept());
 	}
 
@@ -174,19 +164,19 @@ public class TestVirtualModelInstanceIndexes extends OpenflexoProjectAtRunTimeTe
 
 		FMLTechnologyAdapter fmlTechnologyAdapter = serviceManager.getTechnologyAdapterService()
 				.getTechnologyAdapter(FMLTechnologyAdapter.class);
-		VirtualModelResourceFactory factory = fmlTechnologyAdapter.getVirtualModelResourceFactory().getVirtualModelResourceFactory();
-		VirtualModelResource newVMResource = factory.makeVirtualModelResource(VIRTUAL_MODEL_NAME, viewPoint.getVirtualModelResource(),
-				fmlTechnologyAdapter.getTechnologyContextManager(), true);
+		VirtualModelResourceFactory factory = fmlTechnologyAdapter.getVirtualModelResourceFactory();
+		VirtualModelResource newVMResource = factory.makeContainedVirtualModelResource(VIRTUAL_MODEL_NAME,
+				viewPoint.getVirtualModelResource(), fmlTechnologyAdapter.getTechnologyContextManager(), true);
 		virtualModel = newVMResource.getLoadedResourceData();
 
 		assertTrue(ResourceLocator.retrieveResourceAsFile(((VirtualModelResource) virtualModel.getResource()).getDirectory()).exists());
 		assertTrue(((VirtualModelResource) virtualModel.getResource()).getIODelegate().exists());
 
-		assertEquals(viewPoint, virtualModel.getViewPoint());
+		assertEquals(viewPoint, virtualModel.getContainerVirtualModel());
 		assertEquals(virtualModel, virtualModel.getVirtualModel());
 		// assertEquals(null, newVirtualModel.getOwningVirtualModel());
 
-		assertSame(viewPoint, virtualModel.getOwningVirtualModel());
+		assertEquals(viewPoint, virtualModel.getContainerVirtualModel());
 
 		assertEquals(virtualModel, virtualModel.getFlexoConcept());
 	}
@@ -217,7 +207,6 @@ public class TestVirtualModelInstanceIndexes extends OpenflexoProjectAtRunTimeTe
 
 		assertNotNull(flexoConcept);
 
-		assertEquals(viewPoint, flexoConcept.getViewPoint());
 		assertEquals(virtualModel, flexoConcept.getVirtualModel());
 		assertEquals(virtualModel, flexoConcept.getOwningVirtualModel());
 		assertEquals(flexoConcept, flexoConcept.getFlexoConcept());
@@ -327,7 +316,6 @@ public class TestVirtualModelInstanceIndexes extends OpenflexoProjectAtRunTimeTe
 
 		assertNotNull(flexoConceptA);
 
-		assertEquals(viewPoint, flexoConceptA.getViewPoint());
 		assertEquals(virtualModel, flexoConceptA.getVirtualModel());
 		assertEquals(virtualModel, flexoConceptA.getOwningVirtualModel());
 		assertEquals(flexoConceptA, flexoConceptA.getFlexoConcept());
@@ -370,11 +358,12 @@ public class TestVirtualModelInstanceIndexes extends OpenflexoProjectAtRunTimeTe
 		selectLastNameAndAge = makeRequest("selectLastNameAndAge", "selected.lastName = 'Smith'", "selected.age=43");
 
 		System.out.println("FML=\n" + virtualModel.getFMLRepresentation());
+
 	}
 
 	private ActionScheme makeRequest(String requestName, String... conditionExpressions) {
 
-		CreateFlexoBehaviour createActionScheme = CreateFlexoBehaviour.actionType.makeNewAction(flexoConcept, null, editor);
+		CreateFlexoBehaviour createActionScheme = CreateFlexoBehaviour.actionType.makeNewAction(virtualModel, null, editor);
 		createActionScheme.setFlexoBehaviourClass(ActionScheme.class);
 		createActionScheme.setFlexoBehaviourName(requestName);
 		createActionScheme.doAction();
@@ -390,7 +379,8 @@ public class TestVirtualModelInstanceIndexes extends OpenflexoProjectAtRunTimeTe
 		SelectFlexoConceptInstance selectFlexoConceptInstance = (SelectFlexoConceptInstance) createSelectFlexoConceptInstanceAction
 				.getBaseEditionAction();
 		selectFlexoConceptInstance.setFlexoConceptType(flexoConcept);
-		selectFlexoConceptInstance.setReceiver(new DataBinding<AbstractVirtualModelInstance<?, ?>>("virtualModelInstance"));
+		selectFlexoConceptInstance.setReceiver(new DataBinding<>("this"));
+		selectFlexoConceptInstance.setContainer(new DataBinding<>("this"));
 
 		for (String conditionExpression : conditionExpressions) {
 			FetchRequestCondition condition = selectFlexoConceptInstance.createCondition();
@@ -416,17 +406,19 @@ public class TestVirtualModelInstanceIndexes extends OpenflexoProjectAtRunTimeTe
 	@Test
 	@TestOrder(7)
 	public void testCreateView() {
-		CreateViewInFolder action = CreateViewInFolder.actionType.makeNewAction(project.getViewLibrary().getRootFolder(), null, editor);
-		action.setNewViewName("MyView");
-		action.setNewViewTitle("Test creation of a new view");
-		action.setViewpointResource((VirtualModelResource) viewPoint.getResource());
+		CreateBasicVirtualModelInstance action = CreateBasicVirtualModelInstance.actionType
+				.makeNewAction(project.getVirtualModelInstanceRepository().getRootFolder(), null, editor);
+		action.setNewVirtualModelInstanceName("MyView");
+		action.setNewVirtualModelInstanceTitle("Test creation of a new view");
+		action.setVirtualModel(viewPoint);
 		action.doAction();
 		assertTrue(action.hasActionExecutionSucceeded());
-		newView = action.getNewView();
+		newView = action.getNewVirtualModelInstance();
 		assertNotNull(newView);
 		assertNotNull(newView.getResource());
-		assertTrue(ResourceLocator.retrieveResourceAsFile(((ViewResource) newView.getResource()).getDirectory()).exists());
-		assertTrue(((ViewResource) newView.getResource()).getIODelegate().exists());
+		assertTrue(ResourceLocator.retrieveResourceAsFile(((FMLRTVirtualModelInstanceResource) newView.getResource()).getDirectory())
+				.exists());
+		assertTrue(((FMLRTVirtualModelInstanceResource) newView.getResource()).getIODelegate().exists());
 	}
 
 	/**
@@ -453,7 +445,7 @@ public class TestVirtualModelInstanceIndexes extends OpenflexoProjectAtRunTimeTe
 		newVirtualModelInstance = action.getNewVirtualModelInstance();
 		assertNotNull(newVirtualModelInstance);
 		assertNotNull(newVirtualModelInstance.getResource());
-		assertTrue(((ViewResource) newView.getResource()).getIODelegate().exists());
+		assertTrue(((FMLRTVirtualModelInstanceResource) newView.getResource()).getIODelegate().exists());
 
 		assertFalse(newVirtualModelInstance.isModified());
 
@@ -470,7 +462,7 @@ public class TestVirtualModelInstanceIndexes extends OpenflexoProjectAtRunTimeTe
 
 		log("testPopulateVirtualModelInstance()");
 
-		VirtualModelInstanceResource vmiRes = (VirtualModelInstanceResource) newVirtualModelInstance.getResource();
+		FMLRTVirtualModelInstanceResource vmiRes = (FMLRTVirtualModelInstanceResource) newVirtualModelInstance.getResource();
 		assertFalse(newVirtualModelInstance.isModified());
 
 		FlexoConceptInstance a1 = createFlexoConceptAInstance();
@@ -488,7 +480,7 @@ public class TestVirtualModelInstanceIndexes extends OpenflexoProjectAtRunTimeTe
 		assertTrue(serviceManager.getResourceManager().getUnsavedResources().contains(newVirtualModelInstance.getResource()));
 
 		newVirtualModelInstance.getResource().save(null);
-		assertTrue(((VirtualModelInstanceResource) newVirtualModelInstance.getResource()).getIODelegate().exists());
+		assertTrue(((FMLRTVirtualModelInstanceResource) newVirtualModelInstance.getResource()).getIODelegate().exists());
 		assertFalse(newVirtualModelInstance.isModified());
 
 		assertEquals(5, newVirtualModelInstance.getFlexoConceptInstances(flexoConcept).size());
@@ -529,6 +521,9 @@ public class TestVirtualModelInstanceIndexes extends OpenflexoProjectAtRunTimeTe
 	@TestOrder(10)
 	public void testIndexes1() throws SaveResourceException {
 
+		System.out.println("FML VP: " + viewPoint.getFMLRepresentation());
+		System.out.println("FML VM: " + virtualModel.getFMLRepresentation());
+
 		performRequest("selectFirstName", john);
 
 	}
@@ -567,7 +562,7 @@ public class TestVirtualModelInstanceIndexes extends OpenflexoProjectAtRunTimeTe
 
 	private void performRequest(String requestName, FlexoConceptInstance... expectedResult) throws SaveResourceException {
 
-		ActionScheme request1 = (ActionScheme) flexoConcept.getFlexoBehaviour(requestName);
+		ActionScheme request1 = (ActionScheme) virtualModel.getFlexoBehaviour(requestName);
 		ActionSchemeActionType request1AT = new ActionSchemeActionType(request1, newVirtualModelInstance);
 		ActionSchemeAction action = request1AT.makeNewAction(newVirtualModelInstance, null, editor);
 
