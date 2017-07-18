@@ -43,8 +43,8 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.openflexo.foundation.fml.ViewPoint;
-import org.openflexo.foundation.fml.ViewPointModelFactory;
+import org.openflexo.foundation.fml.FMLModelFactory;
+import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.test.OpenflexoTestCase;
 import org.openflexo.gina.test.SwingGraphicalContextDelegate;
 import org.openflexo.model.exceptions.ModelDefinitionException;
@@ -69,8 +69,8 @@ public class TestDescriptionWidget extends OpenflexoTestCase {
 	@Test
 	public void test1InstanciateWidget() throws ModelDefinitionException {
 
-		ModelFactory factory = new ViewPointModelFactory(null, null);
-		ViewPoint anObject = factory.newInstance(ViewPoint.class);
+		ModelFactory factory = new FMLModelFactory(null, null);
+		VirtualModel anObject = factory.newInstance(VirtualModel.class);
 		FIBDescriptionWidget descriptionWidget = new FIBDescriptionWidget(anObject);
 		gcDelegate.addTab("FIBDescriptionWidget", descriptionWidget.getController());
 	}

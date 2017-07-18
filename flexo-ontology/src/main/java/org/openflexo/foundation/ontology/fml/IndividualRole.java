@@ -43,7 +43,7 @@ import java.lang.reflect.Type;
 import org.openflexo.connie.BindingVariable;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
-import org.openflexo.foundation.fml.rt.VirtualModelInstanceModelFactory;
+import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstanceModelFactory;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.ontology.IFlexoOntologyClass;
 import org.openflexo.foundation.ontology.IFlexoOntologyIndividual;
@@ -165,7 +165,7 @@ public interface IndividualRole<I extends IFlexoOntologyIndividual<?>> extends O
 
 		@Override
 		public ConceptActorReference<I> makeActorReference(I object, FlexoConceptInstance fci) {
-			VirtualModelInstanceModelFactory<?> factory = fci.getFactory();
+			AbstractVirtualModelInstanceModelFactory<?> factory = fci.getFactory();
 			ConceptActorReference<I> returned = factory.newInstance(ConceptActorReference.class);
 			returned.setFlexoRole(this);
 			returned.setFlexoConceptInstance(fci);
