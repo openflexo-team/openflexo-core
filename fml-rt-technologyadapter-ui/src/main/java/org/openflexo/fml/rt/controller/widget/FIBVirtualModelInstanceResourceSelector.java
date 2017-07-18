@@ -45,11 +45,9 @@ import org.openflexo.components.widget.FIBProjectObjectSelector;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelInstanceType;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
-import org.openflexo.foundation.fml.rt.View;
-import org.openflexo.foundation.fml.rt.ViewLibrary;
+import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceRepository;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
-import org.openflexo.foundation.fml.rt.rm.VirtualModelInstanceResource;
-import org.openflexo.foundation.fml.rt.rm.VirtualModelInstanceResource;
+import org.openflexo.foundation.fml.rt.rm.FMLRTVirtualModelInstanceResource;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
 
@@ -60,19 +58,19 @@ import org.openflexo.rm.ResourceLocator;
  * 
  */
 @SuppressWarnings("serial")
-public class FIBVirtualModelInstanceResourceSelector extends FIBProjectObjectSelector<VirtualModelInstanceResource> {
+public class FIBVirtualModelInstanceResourceSelector extends FIBProjectObjectSelector<FMLRTVirtualModelInstanceResource> {
 
 	static final Logger logger = Logger.getLogger(FIBVirtualModelInstanceResourceSelector.class.getPackage().getName());
 
 	public static Resource FIB_FILE = ResourceLocator.locateResource("Fib/VirtualModelInstanceResourceSelector.fib");
 
-	private ViewLibrary viewLibrary;
-	private View view;
+	private FMLRTVirtualModelInstanceRepository<?> vmiRepository;
+	private VirtualModelInstance containerVirtualModelInstance;
 	private VirtualModel virtualModel;
 	private Type expectedType;
 	private VirtualModelInstanceType defaultExpectedType;
 
-	public FIBVirtualModelInstanceResourceSelector(VirtualModelInstanceResource editedObject) {
+	public FIBVirtualModelInstanceResourceSelector(FMLRTVirtualModelInstanceResource editedObject) {
 		super(editedObject);
 		defaultExpectedType = editedObject != null
 				? VirtualModelInstanceType.getVirtualModelInstanceType(editedObject.getVirtualModelResource().getVirtualModel())
@@ -82,8 +80,8 @@ public class FIBVirtualModelInstanceResourceSelector extends FIBProjectObjectSel
 	@Override
 	public void delete() {
 		super.delete();
-		viewLibrary = null;
-		view = null;
+		vmiRepository = null;
+		containerVirtualModelInstance = null;
 		virtualModel = null;
 	}
 
@@ -93,34 +91,34 @@ public class FIBVirtualModelInstanceResourceSelector extends FIBProjectObjectSel
 	}
 
 	@Override
-	public Class<VirtualModelInstanceResource> getRepresentedType() {
-		return VirtualModelInstanceResource.class;
+	public Class<FMLRTVirtualModelInstanceResource> getRepresentedType() {
+		return FMLRTVirtualModelInstanceResource.class;
 	}
 
 	@Override
-	public String renderedString(VirtualModelInstanceResource editedObject) {
+	public String renderedString(FMLRTVirtualModelInstanceResource editedObject) {
 		if (editedObject != null) {
 			return editedObject.getName();
 		}
 		return "";
 	}
 
-	public ViewLibrary getViewLibrary() {
-		return viewLibrary;
+	public FMLRTVirtualModelInstanceRepository<?> getVirtualModelInstanceRepository() {
+		return vmiRepository;
 	}
 
-	@CustomComponentParameter(name = "viewLibrary", type = CustomComponentParameter.Type.OPTIONAL)
-	public void setViewLibrary(ViewLibrary viewLibrary) {
-		this.viewLibrary = viewLibrary;
+	@CustomComponentParameter(name = "vmiRepository", type = CustomComponentParameter.Type.OPTIONAL)
+	public void setViewLibrary(FMLRTVirtualModelInstanceRepository<?> vmiRepository) {
+		this.vmiRepository = vmiRepository;
 	}
 
-	public View getView() {
-		return view;
+	public VirtualModelInstance getContainerVirtualModelInstance() {
+		return containerVirtualModelInstance;
 	}
 
-	@CustomComponentParameter(name = "view", type = CustomComponentParameter.Type.OPTIONAL)
-	public void setView(View view) {
-		this.view = view;
+	@CustomComponentParameter(name = "containerVirtualModelInstance", type = CustomComponentParameter.Type.OPTIONAL)
+	public void setContainerVirtualModelInstance(VirtualModelInstance containerVirtualModelInstance) {
+		this.containerVirtualModelInstance = containerVirtualModelInstance;
 	}
 
 	/**
@@ -144,11 +142,11 @@ public class FIBVirtualModelInstanceResourceSelector extends FIBProjectObjectSel
 	}
 
 	public Object getRootObject() {
-		if (getView() != null) {
-			return getView().getResource();
+		if (getContainerVirtualModelInstance() != null) {
+			return getContainerVirtualModelInstance().getResource();
 		}
-		else if (getViewLibrary() != null) {
-			return getViewLibrary();
+		else if (getVirtualModelInstanceRepository() != null) {
+			return getVirtualModelInstanceRepository();
 		}
 		else if (getProject() != null) {
 			return getProject();
@@ -176,13 +174,13 @@ public class FIBVirtualModelInstanceResourceSelector extends FIBProjectObjectSel
 		if (!super.isAcceptableValue(o)) {
 			return false;
 		}
-		if (!(o instanceof VirtualModelInstanceResource)) {
+		if (!(o instanceof FMLRTVirtualModelInstanceResource)) {
 			return false;
 		}
 		if (!(getExpectedType() instanceof VirtualModelInstanceType)) {
 			return false;
 		}
-		VirtualModelInstance vmi = ((VirtualModelInstanceResource) o).getVirtualModelInstance();
+		VirtualModelInstance vmi = ((FMLRTVirtualModelInstanceResource) o).getVirtualModelInstance();
 		VirtualModelInstanceType vmiType = (VirtualModelInstanceType) getExpectedType();
 		return (vmiType.getVirtualModel() == null) || (vmiType.getVirtualModel().isAssignableFrom(vmi.getVirtualModel()));
 

@@ -43,34 +43,35 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.action.FlexoActionFinalizer;
 import org.openflexo.foundation.action.FlexoActionInitializer;
-import org.openflexo.foundation.fml.rt.View;
-import org.openflexo.foundation.fml.rt.action.MoveView;
+import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
+import org.openflexo.foundation.fml.rt.action.MoveVirtualModelInstance;
 import org.openflexo.view.controller.ActionInitializer;
 import org.openflexo.view.controller.ControllerActionInitializer;
 
-public class MoveViewInitializer extends ActionInitializer<MoveView, View, View> {
+public class MoveVirtualModelInstanceInitializer
+		extends ActionInitializer<MoveVirtualModelInstance, AbstractVirtualModelInstance<?, ?>, AbstractVirtualModelInstance<?, ?>> {
 
 	private static final Logger logger = Logger.getLogger(ControllerActionInitializer.class.getPackage().getName());
 
-	public MoveViewInitializer(ControllerActionInitializer actionInitializer) {
-		super(MoveView.actionType, actionInitializer);
+	public MoveVirtualModelInstanceInitializer(ControllerActionInitializer actionInitializer) {
+		super(MoveVirtualModelInstance.actionType, actionInitializer);
 	}
 
 	@Override
-	protected FlexoActionInitializer<MoveView> getDefaultInitializer() {
-		return new FlexoActionInitializer<MoveView>() {
+	protected FlexoActionInitializer<MoveVirtualModelInstance> getDefaultInitializer() {
+		return new FlexoActionInitializer<MoveVirtualModelInstance>() {
 			@Override
-			public boolean run(EventObject e, MoveView action) {
+			public boolean run(EventObject e, MoveVirtualModelInstance action) {
 				return true;
 			}
 		};
 	}
 
 	@Override
-	protected FlexoActionFinalizer<MoveView> getDefaultFinalizer() {
-		return new FlexoActionFinalizer<MoveView>() {
+	protected FlexoActionFinalizer<MoveVirtualModelInstance> getDefaultFinalizer() {
+		return new FlexoActionFinalizer<MoveVirtualModelInstance>() {
 			@Override
-			public boolean run(EventObject e, MoveView action) {
+			public boolean run(EventObject e, MoveVirtualModelInstance action) {
 				return true;
 			}
 		};

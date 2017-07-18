@@ -87,7 +87,7 @@ public class CreateBasicVirtualModelInstanceWizard extends AbstractCreateVirtual
 	 * 
 	 */
 	@FIBPanel("Fib/Wizard/CreateVirtualModelInstance/ChooseVirtualModel.fib")
-	public class ChooseVirtualModel extends AbstractChooseVirtualModel<VirtualModel> {
+	public class ChooseVirtualModel extends AbstractChooseVirtualModel {
 
 		@Override
 		public String getTitle() {
@@ -96,7 +96,7 @@ public class CreateBasicVirtualModelInstanceWizard extends AbstractCreateVirtual
 	}
 
 	@FIBPanel("Fib/Wizard/CreateVirtualModelInstance/ChooseAndConfigureCreationSchemeForVirtualModel.fib")
-	public class ChooseAndConfigureCreationSchemeForVirtualModel extends AbstractChooseAndConfigureCreationScheme<VirtualModel> {
+	public class ChooseAndConfigureCreationSchemeForVirtualModel extends AbstractChooseAndConfigureCreationScheme {
 
 		public ChooseAndConfigureCreationSchemeForVirtualModel() {
 			super(action.getCreationSchemeAction());
