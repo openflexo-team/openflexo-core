@@ -86,6 +86,8 @@ public class TestCreateViewFromExistingViewPoint extends OpenflexoProjectAtRunTi
 		assertNotNull(vpLib);
 		viewPoint = vpLib.getVirtualModel("http://openflexo.org/test/TestResourceCenter/TestViewPointA.fml");
 		assertNotNull(viewPoint);
+
+		assertVirtualModelIsValid(viewPoint);
 	}
 
 	@Test

@@ -59,12 +59,16 @@ import org.openflexo.foundation.fml.rt.editionaction.SelectVirtualModelInstance;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
+import org.openflexo.model.annotations.DefineValidationRule;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.PropertyIdentifier;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
+import org.openflexo.model.validation.ValidationError;
+import org.openflexo.model.validation.ValidationIssue;
+import org.openflexo.model.validation.ValidationRule;
 import org.openflexo.toolbox.StringUtils;
 
 /**
@@ -241,4 +245,22 @@ public interface FMLRTModelSlot<VMI extends AbstractVirtualModelInstance<VMI, TA
 		}
 
 	}
+
+	@DefineValidationRule
+	public static class VirtualModelIsRequired extends ValidationRule<VirtualModelIsRequired, FMLRTModelSlot<?, ?>> {
+		public VirtualModelIsRequired() {
+			super(FMLRTModelSlot.class, "virtual_model_is_required");
+		}
+
+		@Override
+		public ValidationIssue<VirtualModelIsRequired, FMLRTModelSlot<?, ?>> applyValidation(FMLRTModelSlot<?, ?> modelSlot) {
+
+			if (modelSlot.getAccessedVirtualModel() == null) {
+				return new ValidationError<>(this, modelSlot, "fml_rt_model_slot_does_not_define_a_valid_virtual_model");
+			}
+			return null;
+		}
+
+	}
+
 }
