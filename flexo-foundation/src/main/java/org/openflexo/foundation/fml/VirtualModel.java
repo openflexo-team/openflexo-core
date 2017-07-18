@@ -1200,16 +1200,38 @@ public interface VirtualModel extends FlexoConcept, VirtualModelObject, FlexoMet
 		public VirtualModel getVirtualModelNamed(String virtualModelNameOrURI) {
 
 			if (getResource() != null) {
-				for (VirtualModelResource vmRes : getResource().getContents(VirtualModelResource.class)) {
+				VirtualModel returned = getContainedVirtualModelNamed(getResource(), virtualModelNameOrURI);
+				if (returned != null) {
+					return returned;
+				}
+			}
+
+			if (getContainerVirtualModel() != null) {
+				return getContainerVirtualModel().getVirtualModelNamed(virtualModelNameOrURI);
+			}
+
+			// Not found
+			return null;
+		}
+
+		private VirtualModel getContainedVirtualModelNamed(VirtualModelResource resource, String virtualModelNameOrURI) {
+
+			if (resource != null) {
+				for (VirtualModelResource vmRes : resource.getContents(VirtualModelResource.class)) {
 					if (vmRes.getName().equals(virtualModelNameOrURI)) {
 						return vmRes.getVirtualModel();
 					}
 					if (vmRes.getURI().equals(virtualModelNameOrURI)) {
 						return vmRes.getVirtualModel();
 					}
+					VirtualModel returned = getContainedVirtualModelNamed(vmRes, virtualModelNameOrURI);
+					if (returned != null) {
+						return returned;
+					}
 				}
 			}
 
+			// Not found
 			return null;
 		}
 

@@ -9,8 +9,8 @@
       <GenericBehaviourParameter id="6" isRequired="true" widget="TEXT_FIELD" name="aP" type="java.lang.String" userID="FLX" flexoID="60" />
     </CreationScheme>
     <DeletionScheme id="7" name="delete" width="800" label="delete" height="600" userID="FLX" flexoID="56">
-      <BehaviourControlGraph_DeleteAction id="8" object="p" userID="FLX" flexoID="61" />
-    </DeletionScheme>
+      <BehaviourControlGraph_EmptyControlGraph id="8" userID="FLX" flexoID="61" />
+     </DeletionScheme>
     <Inspector id="9" inspectorTitle="Concept" userID="FLX" flexoID="51">
       <GenericInspectorEntry id="10" widget="TEXT_FIELD" data="p" name="p" label="p" type="java.lang.String" userID="FLX" flexoID="62" />
     </Inspector>

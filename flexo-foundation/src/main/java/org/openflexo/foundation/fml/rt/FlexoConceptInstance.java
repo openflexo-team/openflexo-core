@@ -616,7 +616,7 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 					container = container.getContainerFlexoConceptInstance();
 				}
 			}
-			else if (flexoProperty.getFlexoConcept().isAssignableFrom(getFlexoConcept().getOwner())) {
+			else if (getVirtualModelInstance() != this && flexoProperty.getFlexoConcept().isAssignableFrom(getFlexoConcept().getOwner())) {
 				// In this case the property concerns the owner VirtualModelInstance
 				return getVirtualModelInstance().getFlexoPropertyValue(flexoProperty);
 			}

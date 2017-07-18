@@ -52,6 +52,7 @@ import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoService;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
+import org.openflexo.foundation.fml.rm.VirtualModelResourceFactory;
 import org.openflexo.foundation.resource.DefaultResourceCenterService.ResourceCenterAdded;
 import org.openflexo.foundation.resource.DefaultResourceCenterService.ResourceCenterRemoved;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
@@ -116,6 +117,9 @@ public class VirtualModelLibrary extends DefaultFlexoObject implements FlexoServ
 	public VirtualModel getVirtualModel(String virtualModelURI, boolean loadWhenRequired)
 			throws FileNotFoundException, ResourceLoadingCancelledException, FlexoException {
 		VirtualModelResource returned = getVirtualModelResource(virtualModelURI);
+		if (returned == null && !virtualModelURI.endsWith(VirtualModelResourceFactory.FML_SUFFIX)) {
+			returned = getVirtualModelResource(virtualModelURI + VirtualModelResourceFactory.FML_SUFFIX);
+		}
 		if (returned != null) {
 			if (loadWhenRequired) {
 				return returned.getResourceData(null);
@@ -242,7 +246,7 @@ public class VirtualModelLibrary extends DefaultFlexoObject implements FlexoServ
 	public FlexoConcept getFlexoConcept(String flexoConceptURI, boolean loadWhenRequired) {
 		FlexoConcept returned = null;
 
-		// Is that a viewpoint ?
+		// Is that a virtual model ?
 		try {
 			returned = getVirtualModel(flexoConceptURI, loadWhenRequired);
 		} catch (FileNotFoundException e) {

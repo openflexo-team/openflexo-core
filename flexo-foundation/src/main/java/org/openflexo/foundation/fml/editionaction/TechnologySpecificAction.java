@@ -442,7 +442,6 @@ public abstract interface TechnologySpecificAction<MS extends ModelSlot<?>, R ex
 		public ValidationIssue<BindingIsRequiredAndMustBeValid<TechnologySpecificAction>, TechnologySpecificAction> applyValidation(
 				TechnologySpecificAction action) {
 
-			System.out.println("On valide l'action " + action);
 			if (action.isReceiverMandatory()) {
 				return super.applyValidation(action);
 			}
