@@ -41,9 +41,13 @@ package org.openflexo.foundation.fml;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.io.FileNotFoundException;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.resource.JarResourceCenter;
+import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.test.OpenflexoTestCase;
 import org.openflexo.test.OrderedRunner;
 import org.openflexo.test.TestOrder;
@@ -73,21 +77,25 @@ public class TestLoadViewPoint extends OpenflexoTestCase {
 
 	/**
 	 * Test the loading
+	 * 
+	 * @throws FlexoException
+	 * @throws ResourceLoadingCancelledException
+	 * @throws FileNotFoundException
 	 */
 	@Test
 	@TestOrder(2)
-	public void testLoadViewPoint() {
+	public void testLoadViewPoint() throws FileNotFoundException, ResourceLoadingCancelledException, FlexoException {
 
 		VirtualModelLibrary vpLib = serviceManager.getVirtualModelLibrary();
 
 		System.out.println("VPLibrary=" + vpLib);
 		assertNotNull(vpLib);
 
-		System.out.println("All vp= " + vpLib.getViewPoints());
+		System.out.println("All vp= " + vpLib.getVirtualModels());
 
-		assertEquals(0, vpLib.getLoadedViewPoints().size());
+		assertEquals(0, vpLib.getLoadedVirtualModels().size());
 
-		ViewPoint viewPoint = vpLib.getViewPoint("http://openflexo.org/test/TestViewPointA");
+		VirtualModel viewPoint = vpLib.getVirtualModel("http://openflexo.org/test/TestResourceCenter/TestViewPointA.fml");
 
 		System.out.println("ViewPoint=" + viewPoint);
 

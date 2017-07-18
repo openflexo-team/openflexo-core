@@ -43,18 +43,21 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
+import java.io.FileNotFoundException;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.foundation.DefaultFlexoEditor;
 import org.openflexo.foundation.FlexoEditor;
+import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.action.CreateEditionAction;
 import org.openflexo.foundation.fml.binding.FlexoBehaviourBindingModel;
-import org.openflexo.foundation.fml.binding.VirtualModelBindingModel;
-import org.openflexo.foundation.fml.binding.VirtualModelBindingModel;
+import org.openflexo.foundation.fml.binding.FlexoConceptBindingModel;
 import org.openflexo.foundation.fml.controlgraph.Sequence;
 import org.openflexo.foundation.fml.editionaction.DeclarationAction;
 import org.openflexo.foundation.fml.editionaction.ExpressionAction;
+import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.test.OpenflexoTestCase;
 import org.openflexo.test.OrderedRunner;
 import org.openflexo.test.TestOrder;
@@ -92,21 +95,25 @@ public class TestSequence extends OpenflexoTestCase {
 
 	/**
 	 * Test the loading
+	 * 
+	 * @throws FlexoException
+	 * @throws ResourceLoadingCancelledException
+	 * @throws FileNotFoundException
 	 */
 	@Test
 	@TestOrder(2)
-	public void testLoadViewPoint() {
+	public void testLoadViewPoint() throws FileNotFoundException, ResourceLoadingCancelledException, FlexoException {
 
 		VirtualModelLibrary vpLib = serviceManager.getVirtualModelLibrary();
 
 		System.out.println("VPLibrary=" + vpLib);
 		assertNotNull(vpLib);
 
-		System.out.println("All vp= " + vpLib.getViewPoints());
+		System.out.println("All vp= " + vpLib.getVirtualModels());
 
-		assertEquals(0, vpLib.getLoadedViewPoints().size());
+		assertEquals(0, vpLib.getLoadedVirtualModels().size());
 
-		ViewPoint viewPoint = vpLib.getViewPoint("http://openflexo.org/test/TestSequence");
+		VirtualModel viewPoint = vpLib.getVirtualModel("http://openflexo.org/test/TestResourceCenter/TestSequence.fml");
 
 		System.out.println("ViewPoint=" + viewPoint);
 
@@ -139,36 +146,21 @@ public class TestSequence extends OpenflexoTestCase {
 		System.out.println("declaration2.BM=" + declaration2.getBindingModel());
 		System.out.println("declaration3.BM=" + declaration3.getBindingModel());
 
-		assertEquals(8, declaration1.getBindingModel().getBindingVariablesCount());
-		assertNotNull(declaration1.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.REFLEXIVE_ACCESS_PROPERTY));
-		assertNotNull(declaration1.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.REFLEXIVE_ACCESS_PROPERTY));
-		assertNotNull(declaration1.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.PROJECT_PROPERTY));
-		assertNotNull(declaration1.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.RC_PROPERTY));
-		assertNotNull(declaration1.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.VIEW_PROPERTY));
-		assertNotNull(declaration1.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.VIEW_PROPERTY));
+		assertEquals(3, declaration1.getBindingModel().getBindingVariablesCount());
+		assertNotNull(declaration1.getBindingModel().bindingVariableNamed(FlexoConceptBindingModel.THIS_PROPERTY));
+		assertNotNull(declaration1.getBindingModel().bindingVariableNamed(FlexoConceptBindingModel.CONTAINER_PROPERTY));
 		assertNotNull(declaration1.getBindingModel().bindingVariableNamed(FlexoBehaviourBindingModel.PARAMETERS_PROPERTY));
-		assertNotNull(declaration1.getBindingModel().bindingVariableNamed(FlexoBehaviourBindingModel.PARAMETERS_DEFINITION_PROPERTY));
 
-		assertEquals(9, declaration2.getBindingModel().getBindingVariablesCount());
-		assertNotNull(declaration2.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.REFLEXIVE_ACCESS_PROPERTY));
-		assertNotNull(declaration2.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.REFLEXIVE_ACCESS_PROPERTY));
-		assertNotNull(declaration2.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.PROJECT_PROPERTY));
-		assertNotNull(declaration2.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.RC_PROPERTY));
-		assertNotNull(declaration2.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.VIEW_PROPERTY));
-		assertNotNull(declaration2.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.VIEW_PROPERTY));
+		assertEquals(4, declaration2.getBindingModel().getBindingVariablesCount());
+		assertNotNull(declaration2.getBindingModel().bindingVariableNamed(FlexoConceptBindingModel.THIS_PROPERTY));
+		assertNotNull(declaration2.getBindingModel().bindingVariableNamed(FlexoConceptBindingModel.CONTAINER_PROPERTY));
 		assertNotNull(declaration2.getBindingModel().bindingVariableNamed(FlexoBehaviourBindingModel.PARAMETERS_PROPERTY));
-		assertNotNull(declaration2.getBindingModel().bindingVariableNamed(FlexoBehaviourBindingModel.PARAMETERS_DEFINITION_PROPERTY));
 		assertNotNull(declaration2.getBindingModel().bindingVariableNamed("variable1"));
 
-		assertEquals(10, declaration3.getBindingModel().getBindingVariablesCount());
-		assertNotNull(declaration3.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.REFLEXIVE_ACCESS_PROPERTY));
-		assertNotNull(declaration3.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.REFLEXIVE_ACCESS_PROPERTY));
-		assertNotNull(declaration3.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.PROJECT_PROPERTY));
-		assertNotNull(declaration3.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.RC_PROPERTY));
-		assertNotNull(declaration3.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.VIEW_PROPERTY));
-		assertNotNull(declaration3.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.VIEW_PROPERTY));
+		assertEquals(5, declaration3.getBindingModel().getBindingVariablesCount());
+		assertNotNull(declaration3.getBindingModel().bindingVariableNamed(FlexoConceptBindingModel.THIS_PROPERTY));
+		assertNotNull(declaration3.getBindingModel().bindingVariableNamed(FlexoConceptBindingModel.CONTAINER_PROPERTY));
 		assertNotNull(declaration3.getBindingModel().bindingVariableNamed(FlexoBehaviourBindingModel.PARAMETERS_PROPERTY));
-		assertNotNull(declaration3.getBindingModel().bindingVariableNamed(FlexoBehaviourBindingModel.PARAMETERS_DEFINITION_PROPERTY));
 		assertNotNull(declaration3.getBindingModel().bindingVariableNamed("variable1"));
 		assertNotNull(declaration3.getBindingModel().bindingVariableNamed("variable2"));
 	}
@@ -210,48 +202,28 @@ public class TestSequence extends OpenflexoTestCase {
 		System.out.println("declaration2.BM=" + declaration2.getBindingModel());
 		System.out.println("declaration3.BM=" + declaration3.getBindingModel());
 
-		assertEquals(8, declaration1.getBindingModel().getBindingVariablesCount());
-		assertNotNull(declaration1.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.REFLEXIVE_ACCESS_PROPERTY));
-		assertNotNull(declaration1.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.REFLEXIVE_ACCESS_PROPERTY));
-		assertNotNull(declaration1.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.PROJECT_PROPERTY));
-		assertNotNull(declaration1.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.RC_PROPERTY));
-		assertNotNull(declaration1.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.VIEW_PROPERTY));
-		assertNotNull(declaration1.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.VIEW_PROPERTY));
+		assertEquals(3, declaration1.getBindingModel().getBindingVariablesCount());
+		assertNotNull(declaration1.getBindingModel().bindingVariableNamed(FlexoConceptBindingModel.THIS_PROPERTY));
+		assertNotNull(declaration1.getBindingModel().bindingVariableNamed(FlexoConceptBindingModel.CONTAINER_PROPERTY));
 		assertNotNull(declaration1.getBindingModel().bindingVariableNamed(FlexoBehaviourBindingModel.PARAMETERS_PROPERTY));
-		assertNotNull(declaration1.getBindingModel().bindingVariableNamed(FlexoBehaviourBindingModel.PARAMETERS_DEFINITION_PROPERTY));
 
-		assertEquals(9, declaration4.getBindingModel().getBindingVariablesCount());
-		assertNotNull(declaration4.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.REFLEXIVE_ACCESS_PROPERTY));
-		assertNotNull(declaration4.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.REFLEXIVE_ACCESS_PROPERTY));
-		assertNotNull(declaration4.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.PROJECT_PROPERTY));
-		assertNotNull(declaration4.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.RC_PROPERTY));
-		assertNotNull(declaration4.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.VIEW_PROPERTY));
-		assertNotNull(declaration4.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.VIEW_PROPERTY));
+		assertEquals(4, declaration4.getBindingModel().getBindingVariablesCount());
+		assertNotNull(declaration4.getBindingModel().bindingVariableNamed(FlexoConceptBindingModel.THIS_PROPERTY));
+		assertNotNull(declaration4.getBindingModel().bindingVariableNamed(FlexoConceptBindingModel.CONTAINER_PROPERTY));
 		assertNotNull(declaration4.getBindingModel().bindingVariableNamed(FlexoBehaviourBindingModel.PARAMETERS_PROPERTY));
-		assertNotNull(declaration4.getBindingModel().bindingVariableNamed(FlexoBehaviourBindingModel.PARAMETERS_DEFINITION_PROPERTY));
 		assertNotNull(declaration4.getBindingModel().bindingVariableNamed("variable1"));
 
-		assertEquals(10, declaration2.getBindingModel().getBindingVariablesCount());
-		assertNotNull(declaration2.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.REFLEXIVE_ACCESS_PROPERTY));
-		assertNotNull(declaration2.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.REFLEXIVE_ACCESS_PROPERTY));
-		assertNotNull(declaration2.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.PROJECT_PROPERTY));
-		assertNotNull(declaration2.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.RC_PROPERTY));
-		assertNotNull(declaration2.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.VIEW_PROPERTY));
-		assertNotNull(declaration2.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.VIEW_PROPERTY));
+		assertEquals(5, declaration2.getBindingModel().getBindingVariablesCount());
+		assertNotNull(declaration2.getBindingModel().bindingVariableNamed(FlexoConceptBindingModel.THIS_PROPERTY));
+		assertNotNull(declaration2.getBindingModel().bindingVariableNamed(FlexoConceptBindingModel.CONTAINER_PROPERTY));
 		assertNotNull(declaration2.getBindingModel().bindingVariableNamed(FlexoBehaviourBindingModel.PARAMETERS_PROPERTY));
-		assertNotNull(declaration2.getBindingModel().bindingVariableNamed(FlexoBehaviourBindingModel.PARAMETERS_DEFINITION_PROPERTY));
 		assertNotNull(declaration2.getBindingModel().bindingVariableNamed("variable1"));
 		assertNotNull(declaration2.getBindingModel().bindingVariableNamed("variable4"));
 
-		assertEquals(11, declaration3.getBindingModel().getBindingVariablesCount());
-		assertNotNull(declaration3.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.REFLEXIVE_ACCESS_PROPERTY));
-		assertNotNull(declaration3.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.REFLEXIVE_ACCESS_PROPERTY));
-		assertNotNull(declaration3.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.PROJECT_PROPERTY));
-		assertNotNull(declaration3.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.RC_PROPERTY));
-		assertNotNull(declaration3.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.VIEW_PROPERTY));
-		assertNotNull(declaration3.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.VIEW_PROPERTY));
+		assertEquals(6, declaration3.getBindingModel().getBindingVariablesCount());
+		assertNotNull(declaration3.getBindingModel().bindingVariableNamed(FlexoConceptBindingModel.THIS_PROPERTY));
+		assertNotNull(declaration3.getBindingModel().bindingVariableNamed(FlexoConceptBindingModel.CONTAINER_PROPERTY));
 		assertNotNull(declaration3.getBindingModel().bindingVariableNamed(FlexoBehaviourBindingModel.PARAMETERS_PROPERTY));
-		assertNotNull(declaration3.getBindingModel().bindingVariableNamed(FlexoBehaviourBindingModel.PARAMETERS_DEFINITION_PROPERTY));
 		assertNotNull(declaration3.getBindingModel().bindingVariableNamed("variable1"));
 		assertNotNull(declaration3.getBindingModel().bindingVariableNamed("variable4"));
 		assertNotNull(declaration3.getBindingModel().bindingVariableNamed("variable2"));
