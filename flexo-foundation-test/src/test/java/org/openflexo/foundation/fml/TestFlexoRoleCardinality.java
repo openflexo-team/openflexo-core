@@ -93,7 +93,7 @@ import org.openflexo.test.TestOrder;
 public class TestFlexoRoleCardinality extends OpenflexoProjectAtRunTimeTestCase {
 
 	public static final String VIEWPOINT_NAME = "TestViewPoint";
-	public static final String VIEWPOINT_URI = "http://openflexo.org/test/TestViewPoint";
+	public static final String VIEWPOINT_URI = "http://openflexo.org/test/TestResourceCenter/TestViewPoint.fml";
 	public static final String VIRTUAL_MODEL_NAME = "TestVirtualModel";
 
 	static FlexoEditor editor;
@@ -565,6 +565,7 @@ public class TestFlexoRoleCardinality extends OpenflexoProjectAtRunTimeTestCase 
 
 		FlexoProject oldProject = project;
 		// instanciateTestServiceManager();
+
 		editor = reloadProject(project.getDirectory());
 		project = editor.getProject();
 		assertNotSame(oldProject, project);

@@ -119,14 +119,12 @@ import org.openflexo.foundation.fml.VirtualModelLibrary;
 import org.openflexo.foundation.fml.action.AbstractCreateFlexoConcept.ParentFlexoConceptEntry;
 import org.openflexo.foundation.fml.action.AbstractCreateVirtualModel.ModelSlotEntry;
 import org.openflexo.foundation.fml.action.CreateFlexoBehaviour.BehaviourParameterEntry;
-import org.openflexo.foundation.fml.rm.ViewPointResource;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
-import org.openflexo.foundation.fml.rt.ViewLibrary;
-import org.openflexo.foundation.fml.rt.ViewObject;
+import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceRepository;
+import org.openflexo.foundation.fml.rt.VirtualModelInstanceObject;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
-import org.openflexo.foundation.fml.rt.rm.ViewResource;
-import org.openflexo.foundation.fml.rt.rm.VirtualModelInstanceResource;
+import org.openflexo.foundation.fml.rt.rm.FMLRTVirtualModelInstanceResource;
 import org.openflexo.foundation.resource.FlexoProjectReference;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
@@ -2113,10 +2111,7 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 		if (object instanceof FlexoResource<?> && ((FlexoResource<?>) object).isLoaded()) {
 			return statelessIconForObject(((FlexoResource<?>) object).getLoadedResourceData());
 		}
-		else if (object instanceof ViewResource) {
-			return FMLRTIconLibrary.VIEW_ICON;
-		}
-		else if (object instanceof VirtualModelInstanceResource) {
+		else if (object instanceof FMLRTVirtualModelInstanceResource) {
 			return FMLRTIconLibrary.VIRTUAL_MODEL_INSTANCE_ICON;
 		}
 		else if (object instanceof TechnologyAdapterResource<?, ?>) {
@@ -2166,23 +2161,17 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 				}
 			}
 		}
-		else if (object instanceof ViewPointResource) {
-			return FMLIconLibrary.iconForObject((ViewPointResource) object);
-		}
 		else if (object instanceof VirtualModelResource) {
 			return FMLIconLibrary.iconForObject((VirtualModelResource) object);
 		}
-		else if (object instanceof ViewResource) {
-			return FMLRTIconLibrary.iconForObject((ViewResource) object);
+		else if (object instanceof FMLRTVirtualModelInstanceResource) {
+			return FMLRTIconLibrary.iconForObject((FMLRTVirtualModelInstanceResource) object);
 		}
-		else if (object instanceof VirtualModelInstanceResource) {
-			return FMLRTIconLibrary.iconForObject((VirtualModelInstanceResource) object);
-		}
-		else if (object instanceof ViewLibrary) {
+		else if (object instanceof FMLRTVirtualModelInstanceRepository) {
 			return FMLRTIconLibrary.VIEW_LIBRARY_ICON;
 		}
-		else if (object instanceof ViewObject) {
-			return FMLRTIconLibrary.iconForObject((ViewObject) object);
+		else if (object instanceof VirtualModelInstanceObject) {
+			return FMLRTIconLibrary.iconForObject((VirtualModelInstanceObject) object);
 		}
 		else if (object instanceof RepositoryFolder) {
 			if (((RepositoryFolder<?, ?>) object).isRootFolder()) {

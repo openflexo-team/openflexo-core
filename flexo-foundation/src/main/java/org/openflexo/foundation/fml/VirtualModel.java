@@ -427,6 +427,11 @@ public interface VirtualModel extends FlexoConcept, VirtualModelObject, FlexoMet
 		}
 
 		@Override
+		public VirtualModelInstanceType getVirtualModelInstanceType() {
+			return getInstanceType();
+		}
+
+		@Override
 		public FMLModelFactory getFMLModelFactory() {
 			if (deserializationFactory != null /*isDeserializing()*/) {
 				return deserializationFactory;

@@ -45,7 +45,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.openflexo.ApplicationContext;
 import org.openflexo.foundation.FlexoService;
 import org.openflexo.foundation.FlexoServiceImpl;
-import org.openflexo.foundation.fml.rt.rm.ViewResource;
+import org.openflexo.foundation.fml.rt.rm.AbstractVirtualModelInstanceResource;
 import org.openflexo.foundation.fml.rt.rm.FMLRTVirtualModelInstanceResourceImpl;
 import org.openflexo.foundation.resource.FileIODelegate;
 import org.openflexo.foundation.resource.FlexoResource;
@@ -67,7 +67,7 @@ public class ResourceConsistencyService extends FlexoServiceImpl {
 	// The whole set of conflicts
 	private List<ConflictedResourceSet> conflictedResourceSets;
 
-	private List<ViewResource> viewsWithoutViewpoint;
+	private List<AbstractVirtualModelInstanceResource<?, ?>> vmiWithoutVM;
 
 	private int skip = 1;
 
@@ -84,7 +84,7 @@ public class ResourceConsistencyService extends FlexoServiceImpl {
 		// Inform the user of conflicts
 		informOfConflictedResourceSets(conflictedResourceSets);
 
-		viewsWithoutViewpoint = new ArrayList<>();
+		vmiWithoutVM = new ArrayList<>();
 	}
 
 	/**
@@ -125,9 +125,9 @@ public class ResourceConsistencyService extends FlexoServiceImpl {
 	 * @param viewResource
 	 */
 	private void informOfViewpointMissing(FMLRTVirtualModelInstanceResourceImpl viewResource) {
-		if (viewResource.getViewPointResource() == null && !viewsWithoutViewpoint.contains(viewResource)) {
+		if (viewResource.getVirtualModelResource() == null && !vmiWithoutVM.contains(viewResource)) {
 			informOfViewPointMissing(viewResource);
-			viewsWithoutViewpoint.add(viewResource);
+			vmiWithoutVM.add(viewResource);
 		}
 	}
 
@@ -188,8 +188,8 @@ public class ResourceConsistencyService extends FlexoServiceImpl {
 	private static void informOfViewPointMissing(FMLRTVirtualModelInstanceResourceImpl resource) {
 		if (resource != null) {
 			Thread.dumpStack();
-			FlexoController.notify("<html> " + "<h3>Viewpoint resources is missing!</h3>" + "<p>View <font color=\"red\">"
-					+ resource.getURI() + "</font><br>requires Viewpoint: " + resource.getViewpointURI()
+			FlexoController.notify("<html> " + "<h3>VirtualModel resource is missing!</h3>" + "<p>VirtualModelInstance <font color=\"red\">"
+					+ resource.getURI() + "</font><br>requires VirtualModel: " + resource.getVirtualModelURI()
 					+ "<br>Please add resources in resource centers and restart Openflexo</html>");
 		}
 	}

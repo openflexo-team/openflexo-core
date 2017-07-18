@@ -57,8 +57,6 @@ import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
-import org.openflexo.foundation.fml.FlexoConceptInstanceParameter;
-import org.openflexo.foundation.fml.FlexoResourceParameter;
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.WidgetContext;
 import org.openflexo.foundation.fml.controlgraph.ConditionalAction;
@@ -75,7 +73,6 @@ import org.openflexo.foundation.fml.editionaction.NotifyPropertyChangedAction;
 import org.openflexo.foundation.fml.editionaction.RemoveFromListAction;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstance;
-import org.openflexo.foundation.fml.rt.editionaction.AddSubView;
 import org.openflexo.foundation.fml.rt.editionaction.AddVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.editionaction.FinalizeMatching;
 import org.openflexo.foundation.fml.rt.editionaction.FireEventAction;
@@ -95,7 +92,6 @@ import org.openflexo.gina.model.FIBModelFactory;
 import org.openflexo.gina.model.FIBWidget;
 import org.openflexo.gina.model.widget.FIBCheckBox;
 import org.openflexo.gina.model.widget.FIBCheckboxList;
-import org.openflexo.gina.model.widget.FIBCustom;
 import org.openflexo.gina.model.widget.FIBLabel;
 import org.openflexo.gina.model.widget.FIBNumber;
 import org.openflexo.gina.model.widget.FIBNumber.NumberType;
@@ -351,9 +347,6 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 		}
 		else if (AddVirtualModelInstance.class.isAssignableFrom(editionActionClass)) {
 			return IconFactory.getImageIcon(FMLRTIconLibrary.VIRTUAL_MODEL_INSTANCE_ICON, IconLibrary.DUPLICATE);
-		}
-		else if (AddSubView.class.isAssignableFrom(editionActionClass)) {
-			return IconFactory.getImageIcon(FMLRTIconLibrary.VIEW_ICON, IconLibrary.DUPLICATE);
 		}
 		else if (AddClassInstance.class.isAssignableFrom(editionActionClass)) {
 			return IconFactory.getImageIcon(FMLRTIconLibrary.FLEXO_CLASS_INSTANCE_ICON, IconLibrary.DUPLICATE);
@@ -623,7 +616,7 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 		}
 
 		// TODO check if needed
-		if (object instanceof FlexoConceptInstanceParameter) {
+		/*if (object instanceof FlexoConceptInstanceParameter) {
 			FIBCustom epiSelector = fibModelFactory.newFIBCustom();
 			epiSelector.setBindingFactory(object.getBindingFactory());
 			Class fciSelectorClass;
@@ -637,11 +630,11 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 					new DataBinding<>("data.editor.project"), true));
 			epiSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(epiSelector, new DataBinding<>("component.view"),
 					new DataBinding<>("data.virtualModelInstance.view"), true));
-
+		
 			epiSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(epiSelector,
 					new DataBinding<>("component.virtualModelInstance"),
 					new DataBinding<>("data." + ((FlexoConceptInstanceParameter) object).getVirtualModelInstance().toString()), true));
-
+		
 			// TODO: check but it seems that component.flexoConcept do not exist anymore
 			epiSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(epiSelector, new DataBinding<>("component.flexoConcept"),
 					new DataBinding<>("data.parametersDefinitions." + object.getName() + ".flexoConceptType"), true));
@@ -650,10 +643,11 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 					new DataBinding<>("data.parametersDefinitions." + object.getName() + ".modelSlotVirtualModel"), true));
 			epiSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(epiSelector,
 					new DataBinding<>("component.viewPointLibrary"), new DataBinding<>("data.serviceManager.viewPointLibrary"), true));
-
+		
 			return epiSelector;
-		}
-		else if (object instanceof FlexoResourceParameter) {
+		}*/
+
+		/*else if (object instanceof FlexoResourceParameter) {
 			FIBCustom resourceSelector = fibModelFactory.newFIBCustom();
 			resourceSelector.setBindingFactory(object.getBindingFactory());
 			Class resourceSelectorClass;
@@ -672,9 +666,9 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 							new DataBinding<>("data.parametersDefinitions." + object.getName() + ".resourceDataType"), true));
 			resourceSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(resourceSelector,
 					new DataBinding<>("component.resourceManager"), new DataBinding<>("data.serviceManager.resourceManager"), true));
-
+		
 			return resourceSelector;
-		}
+		}*/
 
 		return null;
 	}

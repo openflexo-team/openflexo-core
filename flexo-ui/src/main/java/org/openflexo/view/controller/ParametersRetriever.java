@@ -40,7 +40,6 @@ package org.openflexo.view.controller;
 
 import java.awt.Dimension;
 import java.util.Hashtable;
-import java.util.List;
 import java.util.logging.Logger;
 
 import org.openflexo.ApplicationContext;
@@ -48,7 +47,6 @@ import org.openflexo.connie.DataBinding;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoBehaviourActionType;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
-import org.openflexo.foundation.fml.URIParameter;
 import org.openflexo.foundation.fml.ViewPointLocalizedDictionary;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
@@ -182,7 +180,7 @@ public class ParametersRetriever<ES extends FlexoBehaviour> {
 		if (addTitle) {
 			FIBLabel titleLabel = fibModelFactory.newFIBLabel();
 			titleLabel.setAlign(Align.center);
-			ViewPointLocalizedDictionary dict = flexoBehaviour.getViewPoint().getLocalizedDictionary();
+			ViewPointLocalizedDictionary dict = flexoBehaviour.getDeclaringVirtualModel().getLocalizedDictionary();
 			titleLabel.setLabel(
 					dict.localizedForKey(flexoBehaviour.getLabel() != null ? flexoBehaviour.getLabel() : flexoBehaviour.getName()));
 			returned.addToSubComponents(titleLabel, new TwoColsLayoutConstraints(TwoColsLayoutLocation.center, true, false), 0);
@@ -222,7 +220,7 @@ public class ParametersRetriever<ES extends FlexoBehaviour> {
 				logger.warning("Cannot instanciate widget for " + parameter + " of " + (parameter != null ? parameter.getClass() : "null"));
 			}
 		}
-		for (final FlexoBehaviourParameter parameter : flexoBehaviour.getParameters()) {
+		/*for (final FlexoBehaviourParameter parameter : flexoBehaviour.getParameters()) {
 			if (parameter instanceof URIParameter) {
 				FIBPanel uriPanel = (FIBPanel) widgets.get(parameter);
 				List<FlexoBehaviourParameter> dependancies = ((URIParameter) parameter).getDependancies();
@@ -233,7 +231,7 @@ public class ParametersRetriever<ES extends FlexoBehaviour> {
 					}
 				}
 			}
-		}
+		}*/
 
 		if (addControls) {
 			FIBPanel buttonsPanel = fibModelFactory.newFIBPanel();

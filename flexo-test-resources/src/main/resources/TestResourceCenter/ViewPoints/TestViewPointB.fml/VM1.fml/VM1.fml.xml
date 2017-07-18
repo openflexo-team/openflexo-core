@@ -18,10 +18,7 @@
           <GenericBehaviourParameter id="13" isRequired="true" widget="CHECKBOX" defaultValue="false" name="aC2" type="java.lang.Boolean" userID="FLX" flexoID="56" />
         </CreationScheme>
         <DeletionScheme id="14" name="delete" width="800" label="delete" height="600" userID="FLX" flexoID="61">
-          <BehaviourControlGraph_Sequence id="15" userID="FLX" flexoID="60">
-            <ControlGraph2_DeleteAction id="16" object="c2" ownerContext="controlGraph2" userID="FLX" flexoID="58" />
-            <ControlGraph1_DeleteAction id="17" object="c1" ownerContext="controlGraph1" userID="FLX" flexoID="59" />
-          </BehaviourControlGraph_Sequence>
+          <BehaviourControlGraph_EmptyControlGraph id="15" userID="FLX" flexoID="60" />
         </DeletionScheme>
         <Inspector id="18" inspectorTitle="ConceptC" userID="FLX" flexoID="46">
           <GenericInspectorEntry id="19" widget="TEXT_FIELD" data="c1" name="c1" label="c1" type="java.lang.String" userID="FLX" flexoID="62" />
@@ -43,10 +40,7 @@
         <GenericBehaviourParameter id="30" isRequired="true" widget="FLOAT" defaultValue="3.141592654" name="aB2" type="java.lang.Float" userID="FLX" flexoID="36" />
       </CreationScheme>
       <DeletionScheme id="31" name="delete" width="800" label="delete" height="600" userID="FLX" flexoID="41">
-        <BehaviourControlGraph_Sequence id="32" userID="FLX" flexoID="40">
-          <ControlGraph2_DeleteAction id="33" object="b2" ownerContext="controlGraph2" userID="FLX" flexoID="38" />
-          <ControlGraph1_DeleteAction id="34" object="b1" ownerContext="controlGraph1" userID="FLX" flexoID="39" />
-        </BehaviourControlGraph_Sequence>
+        <BehaviourControlGraph_EmptyControlGraph id="32" userID="FLX" flexoID="40" />
       </DeletionScheme>
       <Inspector id="35" inspectorTitle="ConceptB" userID="FLX" flexoID="26">
         <GenericInspectorEntry id="36" widget="TEXT_FIELD" data="b1" name="b1" label="b1" type="java.lang.String" userID="FLX" flexoID="42" />
@@ -68,11 +62,8 @@
       <GenericBehaviourParameter id="47" isRequired="true" widget="INTEGER" defaultValue="7" name="anA2" type="java.lang.Integer" userID="FLX" flexoID="20" />
     </CreationScheme>
     <DeletionScheme id="48" name="delete" width="800" label="delete" height="600" userID="FLX" flexoID="10">
-      <BehaviourControlGraph_Sequence id="49" userID="FLX" flexoID="23">
-        <ControlGraph2_DeleteAction id="50" object="a2" ownerContext="controlGraph2" userID="FLX" flexoID="21" />
-        <ControlGraph1_DeleteAction id="51" object="a1" ownerContext="controlGraph1" userID="FLX" flexoID="22" />
-      </BehaviourControlGraph_Sequence>
-    </DeletionScheme>
+      <BehaviourControlGraph_EmptyControlGraph id="49" userID="FLX" flexoID="23" />
+     </DeletionScheme>
     <Inspector id="52" inspectorTitle="ConceptA" userID="FLX" flexoID="6">
       <GenericInspectorEntry id="53" widget="TEXT_FIELD" data="a1" name="a1" label="a1" type="java.lang.String" userID="FLX" flexoID="24" />
       <GenericInspectorEntry id="54" widget="INTEGER" data="a2" name="a2" label="a2" type="java.lang.Integer" userID="FLX" flexoID="25" />
