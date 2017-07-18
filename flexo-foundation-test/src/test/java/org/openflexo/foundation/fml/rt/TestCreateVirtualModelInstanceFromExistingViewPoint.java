@@ -51,14 +51,11 @@ import org.junit.runner.RunWith;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoProject;
-import org.openflexo.foundation.fml.ViewPoint;
-import org.openflexo.foundation.fml.VirtualModelLibrary;
 import org.openflexo.foundation.fml.VirtualModel;
+import org.openflexo.foundation.fml.VirtualModelLibrary;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.fml.rt.action.CreateBasicVirtualModelInstance;
-import org.openflexo.foundation.fml.rt.action.CreateViewInFolder;
-import org.openflexo.foundation.fml.rt.rm.ViewResource;
-import org.openflexo.foundation.fml.rt.rm.VirtualModelInstanceResource;
+import org.openflexo.foundation.fml.rt.rm.FMLRTVirtualModelInstanceResource;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.test.OpenflexoProjectAtRunTimeTestCase;
@@ -74,23 +71,27 @@ import org.openflexo.test.TestOrder;
 @RunWith(OrderedRunner.class)
 public class TestCreateVirtualModelInstanceFromExistingViewPoint extends OpenflexoProjectAtRunTimeTestCase {
 
-	private static ViewPoint viewPoint;
+	private static VirtualModel viewPoint;
 	private static VirtualModel virtualModel;
 	private static FlexoEditor editor;
 	private static FlexoProject project;
-	private static View newView;
+	private static VirtualModelInstance newView;
 	private static VirtualModelInstance newVirtualModelInstance;
 
 	/**
 	 * Retrieve the ViewPoint
+	 * 
+	 * @throws FlexoException
+	 * @throws ResourceLoadingCancelledException
+	 * @throws FileNotFoundException
 	 */
 	@Test
 	@TestOrder(1)
-	public void testLoadViewPoint() {
+	public void testLoadViewPoint() throws FileNotFoundException, ResourceLoadingCancelledException, FlexoException {
 		instanciateTestServiceManager();
 		VirtualModelLibrary vpLib = serviceManager.getVirtualModelLibrary();
 		assertNotNull(vpLib);
-		viewPoint = vpLib.getViewPoint("http://openflexo.org/test/TestViewPointA");
+		viewPoint = vpLib.getVirtualModel("http://openflexo.org/test/TestResourceCenter/TestViewPointA.fml");
 		assertNotNull(viewPoint);
 		assertEquals(1, viewPoint.getVirtualModels(true).size());
 		virtualModel = viewPoint.getVirtualModels(true).get(0);
@@ -119,13 +120,14 @@ public class TestCreateVirtualModelInstanceFromExistingViewPoint extends Openfle
 
 		log("testCreateView()");
 
-		CreateViewInFolder action = CreateViewInFolder.actionType.makeNewAction(project.getViewLibrary().getRootFolder(), null, editor);
-		action.setNewViewName("MyView");
-		action.setNewViewTitle("Test creation of a new view");
-		action.setViewpointResource((VirtualModelResource) viewPoint.getResource());
+		CreateBasicVirtualModelInstance action = CreateBasicVirtualModelInstance.actionType
+				.makeNewAction(project.getVirtualModelInstanceRepository().getRootFolder(), null, editor);
+		action.setNewVirtualModelInstanceName("MyView");
+		action.setNewVirtualModelInstanceTitle("Test creation of a new view");
+		action.setVirtualModel(viewPoint);
 		action.doAction();
 		assertTrue(action.hasActionExecutionSucceeded());
-		newView = action.getNewView();
+		newView = action.getNewVirtualModelInstance();
 		assertNotNull(newView);
 		assertNotNull(newView.getResource());
 		try {
@@ -133,13 +135,11 @@ public class TestCreateVirtualModelInstanceFromExistingViewPoint extends Openfle
 		} catch (SaveResourceException e) {
 			e.printStackTrace();
 		}
-		// assertTrue(((ViewResource) newView.getResource()).getDirectory().exists());
-		// assertTrue(((ViewResource) newView.getResource()).getFile().exists());
-		assertTrue(((ViewResource) newView.getResource()).getDirectory() != null);
-		assertTrue(((ViewResource) newView.getResource()).getIODelegate().exists());
+		assertTrue(((FMLRTVirtualModelInstanceResource) newView.getResource()).getDirectory() != null);
+		assertTrue(((FMLRTVirtualModelInstanceResource) newView.getResource()).getIODelegate().exists());
 
 		assertNotNull(project.getResource(newView.getURI()));
-		assertNotNull(project.getViewLibrary().getResource(newView.getURI()));
+		assertNotNull(project.getVirtualModelInstanceRepository().getResource(newView.getURI()));
 
 	}
 
@@ -162,30 +162,13 @@ public class TestCreateVirtualModelInstanceFromExistingViewPoint extends Openfle
 		newVirtualModelInstance = action.getNewVirtualModelInstance();
 		assertNotNull(newVirtualModelInstance);
 		assertNotNull(newVirtualModelInstance.getResource());
-		// assertTrue(((ViewResource) newView.getResource()).getDirectory().exists());
-		// assertTrue(((ViewResource) newView.getResource()).getFile().exists());
-		assertTrue(((ViewResource) newView.getResource()).getDirectory() != null);
-		assertTrue(((ViewResource) newView.getResource()).getIODelegate().exists());
-
-		// Not relevant anymore since reflexive model slot has disappeared from 1.7.0-beta to 1.7.0 version
-		// assertEquals(1, newVirtualModelInstance.getModelSlotInstances().size());
-		// VirtualModelModelSlotInstance reflexiveMSInstance = (VirtualModelModelSlotInstance)
-		// newVirtualModelInstance.getModelSlotInstances()
-		// .get(0);
-		// assertNotNull(reflexiveMSInstance);
-		// assertEquals(newVirtualModelInstance, reflexiveMSInstance.getAccessedResourceData());
+		assertTrue(((FMLRTVirtualModelInstanceResource) newView.getResource()).getDirectory() != null);
+		assertTrue(((FMLRTVirtualModelInstanceResource) newView.getResource()).getIODelegate().exists());
 
 		assertEquals(virtualModel, newVirtualModelInstance.getFlexoConcept());
 		assertEquals(virtualModel, newVirtualModelInstance.getVirtualModel());
 	}
 
-	/**
-	 * Instantiate in project a VirtualModelInstance conform to the VirtualModel
-	 * 
-	 * @throws FlexoException
-	 * @throws ResourceLoadingCancelledException
-	 * @throws FileNotFoundException
-	 */
 	@Test
 	@TestOrder(5)
 	public void testReloadProject() throws FileNotFoundException, ResourceLoadingCancelledException, FlexoException {
@@ -199,8 +182,9 @@ public class TestCreateVirtualModelInstanceFromExistingViewPoint extends Openfle
 		assertNotSame(oldProject, project);
 		assertNotNull(editor);
 		assertNotNull(project);
-		ViewResource newViewResource = project.getViewLibrary().getView(newView.getURI());
-		System.out.println("all resources = " + project.getViewLibrary().getAllResources());
+		FMLRTVirtualModelInstanceResource newViewResource = project.getVirtualModelInstanceRepository()
+				.getVirtualModelInstance(newView.getURI());
+		System.out.println("all resources = " + project.getVirtualModelInstanceRepository().getAllResources());
 		assertNotNull(newViewResource);
 		assertNull(newViewResource.getLoadedResourceData());
 		newViewResource.loadResourceData(null);
@@ -214,13 +198,13 @@ public class TestCreateVirtualModelInstanceFromExistingViewPoint extends Openfle
 		viewPoint = vpRes.getResourceData(null);
 		assertNotNull(viewPoint);
 
-		viewPoint.loadVirtualModelsWhenUnloaded();
+		viewPoint.loadContainedVirtualModelsWhenUnloaded();
 
 		assertEquals(1, viewPoint.getVirtualModels().size());
 		virtualModel = viewPoint.getVirtualModels().get(0);
 
 		assertEquals(1, newViewResource.getVirtualModelInstanceResources().size());
-		VirtualModelInstanceResource vmiRes = newViewResource.getVirtualModelInstanceResources().get(0);
+		FMLRTVirtualModelInstanceResource vmiRes = newViewResource.getVirtualModelInstanceResources().get(0);
 		newVirtualModelInstance = vmiRes.getVirtualModelInstance();
 
 		assertEquals(virtualModel, newVirtualModelInstance.getFlexoConcept());

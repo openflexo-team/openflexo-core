@@ -82,6 +82,7 @@ import org.openflexo.logging.FlexoLoggingManager;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.model.factory.ModelFactory;
 import org.openflexo.model.validation.ValidationError;
+import org.openflexo.model.validation.ValidationModel;
 import org.openflexo.model.validation.ValidationReport;
 import org.openflexo.rm.FileResourceImpl;
 import org.openflexo.rm.Resource;
@@ -450,19 +451,12 @@ public abstract class OpenflexoTestCase {
 	protected ValidationReport validate(FMLObject object) {
 
 		try {
-			ValidationReport report = object.getVirtualModelLibrary().getViewPointValidationModel().validate(object);
+			ValidationModel validationModel = object.getVirtualModelLibrary().getFMLValidationModel();
+			ValidationReport report = object.getVirtualModelLibrary().getFMLValidationModel().validate(object);
 
 			for (ValidationError error : report.getErrors()) {
-				System.out.println("Found error: " + error + " details=" + error.getDetailedInformations());
-				/*
-				 * if (error.getValidationRule() instanceof
-				 * BindingIsRequiredAndMustBeValid) {
-				 * BindingIsRequiredAndMustBeValid rule =
-				 * (BindingIsRequiredAndMustBeValid) error.getValidationRule();
-				 * System.out.println("Details: " +
-				 * rule.retrieveIssueDetails((FMLObject) error.getValidable()));
-				 * }
-				 */
+				System.out.println("Found error: " + validationModel.localizedIssueMessage(error) + " details="
+						+ validationModel.localizedIssueDetailedInformations(error) + " Object: " + error.getValidable());
 			}
 
 			return report;

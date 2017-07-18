@@ -52,15 +52,12 @@ import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
-import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.action.CreateContainedVirtualModel;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.fml.rm.VirtualModelResourceFactory;
-import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.fml.rt.action.CreateBasicVirtualModelInstance;
-import org.openflexo.foundation.fml.rt.action.CreateViewInFolder;
-import org.openflexo.foundation.fml.rt.rm.ViewResource;
+import org.openflexo.foundation.fml.rt.rm.FMLRTVirtualModelInstanceResource;
 import org.openflexo.foundation.resource.DirectoryResourceCenter;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.resource.SaveResourceException;
@@ -82,11 +79,11 @@ public class TestCreateVirtualModelInstance extends OpenflexoProjectAtRunTimeTes
 	public static final String VIEWPOINT_NAME = "TestViewPoint";
 	public static final String VIEWPOINT_URI = "http://openflexo.org/test/TestViewPoint";
 
-	private static ViewPoint newViewPoint;
+	private static VirtualModel newViewPoint;
 	private static VirtualModel newVirtualModel;
 	private static FlexoEditor editor;
 	private static FlexoProject project;
-	private static View newView;
+	private static VirtualModelInstance newView;
 	private static VirtualModelInstance newVirtualModelInstance;
 	private static VirtualModelResource newVirtualModelResource;
 
@@ -114,7 +111,7 @@ public class TestCreateVirtualModelInstance extends OpenflexoProjectAtRunTimeTes
 				.getTechnologyAdapter(FMLTechnologyAdapter.class);
 		VirtualModelResourceFactory factory = fmlTechnologyAdapter.getVirtualModelResourceFactory();
 
-		newVirtualModelResource = factory.makeVirtualModelResource(VIEWPOINT_NAME, VIEWPOINT_URI,
+		newVirtualModelResource = factory.makeTopLevelVirtualModelResource(VIEWPOINT_NAME, VIEWPOINT_URI,
 				fmlTechnologyAdapter.getGlobalRepository(resourceCenter).getRootFolder(),
 				fmlTechnologyAdapter.getTechnologyContextManager(), true);
 		newViewPoint = newVirtualModelResource.getLoadedResourceData();
@@ -168,13 +165,14 @@ public class TestCreateVirtualModelInstance extends OpenflexoProjectAtRunTimeTes
 
 		log("testCreateView()");
 
-		CreateViewInFolder action = CreateViewInFolder.actionType.makeNewAction(project.getViewLibrary().getRootFolder(), null, editor);
-		action.setNewViewName("MyView");
-		action.setNewViewTitle("Test creation of a new view");
-		action.setViewpointResource((VirtualModelResource) newViewPoint.getResource());
+		CreateBasicVirtualModelInstance action = CreateBasicVirtualModelInstance.actionType
+				.makeNewAction(project.getVirtualModelInstanceRepository().getRootFolder(), null, editor);
+		action.setNewVirtualModelInstanceName("MyView");
+		action.setNewVirtualModelInstanceTitle("Test creation of a new view");
+		action.setVirtualModel(newViewPoint);
 		action.doAction();
 		assertTrue(action.hasActionExecutionSucceeded());
-		newView = action.getNewView();
+		newView = action.getNewVirtualModelInstance();
 		assertNotNull(newView);
 		assertNotNull(newView.getResource());
 		try {
@@ -186,11 +184,11 @@ public class TestCreateVirtualModelInstance extends OpenflexoProjectAtRunTimeTes
 		// newView.getResource()).getDirectory().exists());
 		// assertTrue(((ViewResource)
 		// newView.getResource()).getFile().exists());
-		assertTrue(((ViewResource) newView.getResource()).getDirectory() != null);
-		assertTrue(((ViewResource) newView.getResource()).getIODelegate().exists());
+		assertTrue(((FMLRTVirtualModelInstanceResource) newView.getResource()).getDirectory() != null);
+		assertTrue(((FMLRTVirtualModelInstanceResource) newView.getResource()).getIODelegate().exists());
 
 		assertNotNull(project.getResource(newView.getURI()));
-		assertNotNull(project.getViewLibrary().getResource(newView.getURI()));
+		assertNotNull(project.getVirtualModelInstanceRepository().getResource(newView.getURI()));
 
 	}
 
@@ -213,24 +211,8 @@ public class TestCreateVirtualModelInstance extends OpenflexoProjectAtRunTimeTes
 		newVirtualModelInstance = action.getNewVirtualModelInstance();
 		assertNotNull(newVirtualModelInstance);
 		assertNotNull(newVirtualModelInstance.getResource());
-		// assertTrue(((ViewResource)
-		// newView.getResource()).getDirectory().exists());
-		// assertTrue(((ViewResource)
-		// newView.getResource()).getFile().exists());
-		assertTrue(((ViewResource) newView.getResource()).getDirectory() != null);
-		assertTrue(((ViewResource) newView.getResource()).getIODelegate().exists());
-
-		// Not relevant anymore since reflexive model slot has disappeared from
-		// 1.7.0-beta to 1.7.0 version
-		// assertEquals(1,
-		// newVirtualModelInstance.getModelSlotInstances().size());
-		// VirtualModelModelSlotInstance reflexiveMSInstance =
-		// (VirtualModelModelSlotInstance)
-		// newVirtualModelInstance.getModelSlotInstances()
-		// .get(0);
-		// assertNotNull(reflexiveMSInstance);
-		// assertEquals(newVirtualModelInstance,
-		// reflexiveMSInstance.getAccessedResourceData());
+		assertTrue(((FMLRTVirtualModelInstanceResource) newView.getResource()).getDirectory() != null);
+		assertTrue(((FMLRTVirtualModelInstanceResource) newView.getResource()).getIODelegate().exists());
 
 		assertEquals(newVirtualModel, newVirtualModelInstance.getFlexoConcept());
 		assertEquals(newVirtualModel, newVirtualModelInstance.getVirtualModel());
@@ -261,7 +243,8 @@ public class TestCreateVirtualModelInstance extends OpenflexoProjectAtRunTimeTes
 		assertNotNull(editor);
 		assertNotNull(project);
 
-		ViewResource newViewResource = project.getViewLibrary().getView(newView.getURI());
+		FMLRTVirtualModelInstanceResource newViewResource = project.getVirtualModelInstanceRepository()
+				.getVirtualModelInstance(newView.getURI());
 		assertNotNull(newViewResource);
 		assertNull(newViewResource.getLoadedResourceData());
 		newViewResource.loadResourceData(null);
