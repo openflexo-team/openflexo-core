@@ -40,7 +40,7 @@ package org.openflexo.foundation.ontology.fml;
 
 import java.lang.reflect.Type;
 
-import org.openflexo.foundation.fml.rt.VirtualModelInstanceModelFactory;
+import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstanceModelFactory;
 import org.openflexo.foundation.fml.rt.ActorReference;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.ontology.BuiltInDataType;
@@ -67,8 +67,8 @@ public abstract interface DataPropertyRole<P extends IFlexoOntologyDataProperty>
 	@Setter(DATA_TYPE_KEY)
 	public void setDataType(BuiltInDataType dataType);
 
-	public static abstract class DataPropertyRoleImpl<P extends IFlexoOntologyDataProperty> extends PropertyRoleImpl<P> implements
-			DataPropertyRole<P> {
+	public static abstract class DataPropertyRoleImpl<P extends IFlexoOntologyDataProperty> extends PropertyRoleImpl<P>
+			implements DataPropertyRole<P> {
 
 		private BuiltInDataType dataType;
 
@@ -113,7 +113,7 @@ public abstract interface DataPropertyRole<P extends IFlexoOntologyDataProperty>
 
 		@Override
 		public ActorReference<P> makeActorReference(P object, FlexoConceptInstance fci) {
-			VirtualModelInstanceModelFactory<?> factory = fci.getFactory();
+			AbstractVirtualModelInstanceModelFactory<?> factory = fci.getFactory();
 			ConceptActorReference<P> returned = factory.newInstance(ConceptActorReference.class);
 			returned.setFlexoRole(this);
 			returned.setFlexoConceptInstance(fci);

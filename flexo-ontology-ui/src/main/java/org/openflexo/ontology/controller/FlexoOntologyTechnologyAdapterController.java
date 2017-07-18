@@ -39,34 +39,13 @@
 
 package org.openflexo.ontology.controller;
 
-import java.util.List;
 import java.util.logging.Logger;
 
-import org.openflexo.connie.DataBinding;
-import org.openflexo.foundation.fml.FlexoBehaviourParameter;
-import org.openflexo.foundation.fml.URIParameter;
-import org.openflexo.foundation.fml.WidgetContext;
-import org.openflexo.foundation.fml.rt.ModelSlotInstance;
-import org.openflexo.foundation.fml.rt.TypeAwareModelSlotInstance;
-import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.foundation.ontology.IFlexoOntology;
-import org.openflexo.foundation.ontology.IFlexoOntologyClass;
 import org.openflexo.foundation.ontology.IFlexoOntologyObject;
-import org.openflexo.foundation.ontology.fml.ClassParameter;
-import org.openflexo.foundation.ontology.fml.DataPropertyParameter;
-import org.openflexo.foundation.ontology.fml.IndividualParameter;
-import org.openflexo.foundation.ontology.fml.ObjectPropertyParameter;
-import org.openflexo.foundation.ontology.fml.PropertyParameter;
-import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
-import org.openflexo.gina.model.FIBModelFactory;
-import org.openflexo.gina.model.FIBWidget;
-import org.openflexo.gina.model.widget.FIBCustom;
-import org.openflexo.ontology.components.widget.FIBIndividualSelector;
-import org.openflexo.ontology.components.widget.FIBPropertySelector;
 import org.openflexo.ontology.components.widget.OntologyBrowserModel;
-import org.openflexo.toolbox.StringUtils;
 import org.openflexo.view.controller.FlexoController;
 import org.openflexo.view.controller.TechnologyAdapterController;
 
@@ -97,7 +76,7 @@ public abstract class FlexoOntologyTechnologyAdapterController<TA extends Techno
 	 * @param parameter
 	 * @return
 	 */
-	@Override
+	/*@Override
 	public FIBWidget makeWidget(final WidgetContext parameter, FlexoBehaviourAction<?, ?, ?> action, FIBModelFactory fibModelFactory,
 			boolean[] expand) {
 		if (parameter instanceof URIParameter) {
@@ -107,18 +86,6 @@ public abstract class FlexoOntologyTechnologyAdapterController<TA extends Techno
 			FIBCustom individualSelector = fibModelFactory.newFIBCustom();
 			individualSelector.setComponentClass(FIBIndividualSelector.class);
 			// Quick and dirty hack to configure ClassSelector: refactor this when new binding model will be in use
-			// component.context = xxx
-			/*individualSelector.addToAssignments(new FIBCustomAssignment(individualSelector, new DataBinding<Object>("component.project"),
-					new DataBinding<Object>("data.project"), true));*/
-			/*individualSelector.addToAssignments(new FIBCustomAssignment(individualSelector,
-					new DataBinding("component.contextOntologyURI"), new DataBinding('"' + parameter.getViewPoint().getViewpointOntology()
-							.getURI() + '"') {
-						@Override
-						public BindingFactory getBindingFactory() {
-							return parameter.getBindingFactory();
-						}
-					}, true));*/
-
 			individualSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(individualSelector,
 					new DataBinding<>("component.informationSpace"), new DataBinding<>("data.project.informationSpace"), true));
 			if (action.getVirtualModelInstance() != null) {
@@ -152,16 +119,6 @@ public abstract class FlexoOntologyTechnologyAdapterController<TA extends Techno
 			FIBCustom classSelector = fibModelFactory.newFIBCustom();
 			classSelector.setComponentClass(org.openflexo.ontology.components.widget.FIBClassSelector.class);
 			// Quick and dirty hack to configure ClassSelector: refactor this when new binding model will be in use
-			// component.context = xxx
-			/*classSelector.addToAssignments(new FIBCustomAssignment(classSelector, new DataBinding<Object>("component.project"),
-					new DataBinding<Object>("data.project"), true));*/
-			/*classSelector.addToAssignments(new FIBCustomAssignment(classSelector, new DataBinding("component.contextOntologyURI"),
-					new DataBinding('"' + classParameter.getViewPoint().getViewpointOntology().getURI() + '"') {
-						@Override
-						public BindingFactory getBindingFactory() {
-							return parameter.getBindingFactory();
-						}
-					}, true));*/
 			classSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(classSelector,
 					new DataBinding<>("component.informationSpace"), new DataBinding<>("data.project.informationSpace"), true));
 			if (action.getVirtualModelInstance() != null) {
@@ -198,16 +155,6 @@ public abstract class FlexoOntologyTechnologyAdapterController<TA extends Techno
 			FIBCustom propertySelector = fibModelFactory.newFIBCustom();
 			propertySelector.setComponentClass(FIBPropertySelector.class);
 			// Quick and dirty hack to configure FIBPropertySelector: refactor this when new binding model will be in use
-			// component.context = xxx
-			/*propertySelector.addToAssignments(new FIBCustomAssignment(propertySelector, new DataBinding<Object>("component.project"),
-					new DataBinding<Object>("data.project"), true));*/
-			/*propertySelector.addToAssignments(new FIBCustomAssignment(propertySelector, new DataBinding("component.contextOntologyURI"),
-					new DataBinding('"' + propertyParameter.getViewPoint().getViewpointOntology().getURI() + '"') {
-						@Override
-						public BindingFactory getBindingFactory() {
-							return parameter.getBindingFactory();
-						}
-					}, true));*/
 			propertySelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(propertySelector,
 					new DataBinding<>("component.informationSpace"), new DataBinding<>("data.project.informationSpace"), true));
 			if (action.getVirtualModelInstance() != null) {
@@ -225,7 +172,7 @@ public abstract class FlexoOntologyTechnologyAdapterController<TA extends Techno
 			else {
 				logger.warning("Inconsistent data: no VirtualModelInstance for action " + action);
 			}
-
+	
 			// Quick and dirty hack to configure PropertySelector: refactor this when new binding model will be in use
 			IFlexoOntologyClass domainClass = null;
 			if (propertyParameter.getIsDynamicDomainValue()) {
@@ -239,7 +186,7 @@ public abstract class FlexoOntologyTechnologyAdapterController<TA extends Techno
 				propertySelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(propertySelector,
 						new DataBinding<>("component.domainClassURI"), new DataBinding<>('"' + domainClass.getURI() + '"'), true));
 			}
-
+	
 			if (propertyParameter instanceof ObjectPropertyParameter) {
 				IFlexoOntologyClass rangeClass = null;
 				if (propertyParameter.getIsDynamicDomainValue()) {
@@ -254,7 +201,7 @@ public abstract class FlexoOntologyTechnologyAdapterController<TA extends Techno
 							new DataBinding<>("component.rangeClassURI"), new DataBinding<>('"' + rangeClass.getURI() + '"'), true));
 				}
 			}
-
+	
 			if (propertyParameter instanceof ObjectPropertyParameter) {
 				propertySelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(propertySelector,
 						new DataBinding<>("component.selectDataProperties"), DataBinding.makeFalseBinding(), true));
@@ -265,12 +212,11 @@ public abstract class FlexoOntologyTechnologyAdapterController<TA extends Techno
 			}
 			return propertySelector;
 		}
-
+	
 		return super.makeWidget(parameter, action, fibModelFactory, expand);
-	}
+	}*/
 
-	protected FIBWidget makeURIPanel(final URIParameter parameter, FIBModelFactory fibModelFactory) {
-		/*
+	/*protected FIBWidget makeURIPanel(final URIParameter parameter, FIBModelFactory fibModelFactory) {
 		FIBPanel returned = fibModelFactory.newFIBPanel();
 		returned.setName(parameter.getName() + "URIPanel");
 		returned.setLayout(Layout.gridbag);
@@ -292,22 +238,20 @@ public abstract class FlexoOntologyTechnologyAdapterController<TA extends Techno
 				GridBagConstraints.REMAINDER, 1, 1.0, 0, AnchorType.west, FillType.horizontal, -3, 0, 0, 0, 0, 0));
 		tf.setData(new DataBinding<>("data.parameters." + parameter.getName()));
 		return returned;
-		*/
-		return null;
-	}
+	}*/
 
 	/**
 	 * Provides a hook to handle specific {@link FlexoBehaviourParameter} for a given technology
 	 * 
 	 * @param availableParameterTypes
 	 */
-	@Override
+	/*@Override
 	public void appendSpecificFlexoBehaviourParameters(List<Class<? extends FlexoBehaviourParameter>> availableParameterTypes) {
 		super.appendSpecificFlexoBehaviourParameters(availableParameterTypes);
 		availableParameterTypes.add(IndividualParameter.class);
 		availableParameterTypes.add(ClassParameter.class);
 		availableParameterTypes.add(ObjectPropertyParameter.class);
 		availableParameterTypes.add(DataPropertyParameter.class);
-	}
+	}*/
 
 }
