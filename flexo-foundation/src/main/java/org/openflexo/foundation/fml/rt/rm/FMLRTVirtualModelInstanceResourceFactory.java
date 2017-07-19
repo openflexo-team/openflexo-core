@@ -127,8 +127,7 @@ public class FMLRTVirtualModelInstanceResourceFactory extends
 		I serializationArtefact = resourceCenter.createDirectory((baseName.endsWith(FML_RT_SUFFIX) ? baseName : (baseName + FML_RT_SUFFIX)),
 				parentDir);
 
-		String viewURI = containerResource.getURI() + "/" + baseName
-				+ (baseName.endsWith(FML_RT_SUFFIX) ? baseName : (baseName + FML_RT_SUFFIX));
+		String viewURI = containerResource.getURI() + "/" + (baseName.endsWith(FML_RT_SUFFIX) ? baseName : (baseName + FML_RT_SUFFIX));
 
 		FMLRTVirtualModelInstanceResource returned = initResourceForCreation(serializationArtefact, resourceCenter,
 				technologyContextManager, baseName, viewURI);

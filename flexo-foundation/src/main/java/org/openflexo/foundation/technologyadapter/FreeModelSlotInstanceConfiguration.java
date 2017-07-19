@@ -50,6 +50,7 @@ import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstanceModelFactory;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.FreeModelSlotInstance;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.ModelSlotInstanceConfiguration;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
@@ -147,6 +148,8 @@ public class FreeModelSlotInstanceConfiguration<RD extends ResourceData<RD> & Te
 			}
 			else if (getOption() == DefaultModelSlotInstanceConfigurationOption.CreatePrivateNewResource) {
 				resource = createProjectSpecificEmptyResource(msInstance, getModelSlot());
+				System.out.println("On cree " + resource);
+				System.out.println("getResource()=" + getResource());
 				if (getResource() != null) {
 					RD resourceData = getResource().getResourceData(null);
 					if (resourceData != null) {
@@ -157,7 +160,7 @@ public class FreeModelSlotInstanceConfiguration<RD extends ResourceData<RD> & Te
 					}
 				}
 				else {
-					logger.warning("Could not create ProjectSpecificEmtpyResource for model slot " + getModelSlot());
+					logger.warning("Could not create ProjectSpecificEmptyResource for model slot " + getModelSlot());
 				}
 			} /* else if (getOption() == DefaultModelSlotInstanceConfigurationOption.CreateSharedNewResource) {
 				// resource = createSharedEmptyResource(msInstance, getModelSlot());
@@ -179,24 +182,24 @@ public class FreeModelSlotInstanceConfiguration<RD extends ResourceData<RD> & Te
 	}
 
 	private TechnologyAdapterResource<RD, ?> createProjectSpecificEmptyResource(FreeModelSlotInstance<RD, MS> msInstance, MS modelSlot) {
-		// return modelSlot.createProjectSpecificEmptyResource(getView(msInstance), getFilename(), getResourceUri());
-		return null;
+		return modelSlot.createProjectSpecificEmptyResource(getView(msInstance), getFilename(), getResourceUri());
 	}
 
 	private TechnologyAdapterResource<RD, ?> createSharedEmptyResource(FreeModelSlotInstance<RD, MS> msInstance, MS modelSlot) {
 		return modelSlot.createSharedEmptyResource(getResourceCenter(), getRelativePath(), getFilename(), getResourceUri());
 	}
 
-	/*private View getView(FreeModelSlotInstance<RD, MS> msInstance) {
-		View view = null;
-		if (msInstance.getView() != null) {
-			view = msInstance.getView();
+	private VirtualModelInstance getView(FreeModelSlotInstance<RD, MS> msInstance) {
+		VirtualModelInstance view = null;
+		if (msInstance.getVirtualModelInstance() != null) {
+			view = (VirtualModelInstance) msInstance.getVirtualModelInstance();
 		}
-		else if (msInstance.getVirtualModelInstance() != null && msInstance.getVirtualModelInstance().getView() != null) {
-			view = msInstance.getVirtualModelInstance().getView();
+		else if (msInstance.getVirtualModelInstance() != null
+				&& msInstance.getVirtualModelInstance().getContainerVirtualModelInstance() != null) {
+			view = (VirtualModelInstance) msInstance.getVirtualModelInstance().getContainerVirtualModelInstance();
 		}
 		return view;
-	}*/
+	}
 
 	public FlexoResourceCenter<?> getTargetResourceCenter() {
 		return targetResourceCenter;

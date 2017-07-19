@@ -38,6 +38,8 @@
 
 package org.openflexo.foundation.fml.action;
 
+import java.lang.reflect.Type;
+
 // org.openflexo.foundation.fml.action.AbstractCreateVirtualModel$ModelSlotEntry
 
 import java.util.ArrayList;
@@ -45,14 +47,19 @@ import java.util.List;
 import java.util.Vector;
 import java.util.logging.Logger;
 
+import org.openflexo.connie.DataBinding;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.fml.FMLObject;
+import org.openflexo.foundation.fml.FlexoBehaviour;
+import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.FlexoConcept;
+import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.task.Progress;
 import org.openflexo.foundation.technologyadapter.FlexoMetaModelResource;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
@@ -120,6 +127,20 @@ public abstract class AbstractCreateVirtualModel<A extends FlexoAction<A, T1, T2
 		action.setMmRes(entry.getMetaModelResource());
 		action.setVmRes(entry.getVirtualModelResource());
 		action.doAction();
+	}
+
+	protected FlexoBehaviourParameter createParameter(FlexoBehaviour behaviour, String parameterName, Type parameterType) {
+		CreateGenericBehaviourParameter createParameter = CreateGenericBehaviourParameter.actionType.makeNewEmbeddedAction(behaviour, null,
+				this);
+		createParameter.setParameterName(parameterName);
+		createParameter.setParameterType(parameterType);
+
+		createParameter.doAction();
+		FlexoBehaviourParameter returned = createParameter.getNewParameter();
+		if (parameterType instanceof FlexoConceptInstanceType) {
+			returned.setContainer(new DataBinding<VirtualModelInstance>("this"));
+		}
+		return returned;
 	}
 
 	public static class ModelSlotEntry extends PropertyChangedSupportDefaultImplementation {
