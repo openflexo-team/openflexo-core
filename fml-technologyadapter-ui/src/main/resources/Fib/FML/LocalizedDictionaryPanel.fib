@@ -4,7 +4,7 @@
 	controllerClassName="org.openflexo.fml.controller.FMLFIBController"
 	constraints="border(location=center)" visible="">
 	<Table
-		iteratorClassName="org.openflexo.foundation.fml.ViewPointLocalizedDictionary$DynamicEntry"
+		iteratorClassName="org.openflexo.foundation.fml.FMLLocalizedDictionary$DynamicEntry"
 		autoSelectFirstRow="false" createNewRowOnClick="false"
 		boundToSelectionManager="false" showFooter="true" selectionMode="MultipleIntervalSelection"
 		selected="" textSelectionColor="255,255,255" textNonSelectionColor="0,0,0"
@@ -42,10 +42,10 @@
 	<Panel layout="flow" hGap="5" vGap="0" flowAlignment="CENTER"
 		borderTitle="Panel" titleFont="SansSerif,0,11" darkLevel="0" index="1"
 		constraints="border(index=1;location=south)" visible="">
-		<Button action="data.viewPoint.localizedDictionary.searchNewEntries()"
+		<Button action="data.owner.localizedDictionary.searchNewEntries()"
 			buttonIcon="" buttonType="Trigger" label="search_new_localization_entries"
 			format="" icon="" tooltip="" localize="true" enable=""
-			clickAction="data.viewPoint.localizedDictionary.searchNewEntries()"
+			clickAction="data.owner.localizedDictionary.searchNewEntries()"
 			doubleClickAction="" rightClickAction="" enterPressedAction=""
 			valueChangedAction="" valueTransform="" valueValidator=""
 			name="SearchNewLocalizationEntriesButton" index="0" data=""

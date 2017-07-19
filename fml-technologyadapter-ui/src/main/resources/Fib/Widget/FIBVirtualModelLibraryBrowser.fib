@@ -17,7 +17,7 @@
 			label="technologyAdapter.name" icon="controller.iconForObject(technologyAdapter)"
 			tooltip="" enabled="" isEditable="false" editableLabel="" filtered="false"
 			defaultVisible="true" dynamicFont="" name="technologyAdapter">
-			<Children data="data.getViewPointRepositories()" cast="child.rootFolder"
+			<Children data="data.getVirtualModelRepositories()" cast="child.rootFolder"
 				name="repositories" />
 		</BrowserElement>
 		<BrowserElement dataClassName="org.openflexo.foundation.resource.RepositoryFolder"
@@ -28,21 +28,7 @@
 			<Children data="viewPointFolder.resources" name="resource" />
 			<!-- <BrowserRemoveAction method="controller.deleteFolder(selected)" name="delete_folder" 
 				/> -->
-			<BrowserAddAction method="controller.createViewPoint(selected)"
-				name="create_viewpoint" />
-		</BrowserElement>
-		<BrowserElement dataClassName="org.openflexo.foundation.fml.rm.ViewPointResource"
-			label="viewPointResource.name" editableLabel="viewPointResource.name"
-			icon="controller.iconForObject(viewPointResource)" enabled="viewPointResource.isLoaded"
-			isEditable="true" filtered="false" defaultVisible="true" dynamicFont=""
-			name="viewPointResource">
-			<Children data="viewPointResource.contents" visible="viewPointResource.isLoaded"
-				name="subResources" />
-			<Children data="viewPointResource.viewPoint.localizedDictionary"
-				visible="viewPointResource.isLoaded" name="localizedDictionary" />
-			<BrowserRemoveAction method="controller.deleteViewPoint(selected)"
-				name="delete_viewpoint" />
-			<BrowserAddAction method="controller.createVirtualModel(selected)"
+			<BrowserAddAction method="controller.createContainedVirtualModel(selected)"
 				name="create_virtual_model" />
 		</BrowserElement>
 		<BrowserElement dataClassName="org.openflexo.foundation.fml.rm.VirtualModelResource"

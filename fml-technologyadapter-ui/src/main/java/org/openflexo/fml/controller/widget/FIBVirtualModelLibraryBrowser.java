@@ -55,18 +55,18 @@ import org.openflexo.view.controller.FlexoController;
  * 
  */
 @SuppressWarnings("serial")
-public class FIBViewPointLibraryBrowser extends FIBTechnologyBrowser<FMLTechnologyAdapter> {
-	static final Logger logger = Logger.getLogger(FIBViewPointLibraryBrowser.class.getPackage().getName());
+public class FIBVirtualModelLibraryBrowser extends FIBTechnologyBrowser<FMLTechnologyAdapter> {
+	static final Logger logger = Logger.getLogger(FIBVirtualModelLibraryBrowser.class.getPackage().getName());
 
-	public static final Resource FIB_FILE = ResourceLocator.locateResource("Fib/Widget/FIBViewPointLibraryBrowser.fib");
+	public static final Resource FIB_FILE = ResourceLocator.locateResource("Fib/Widget/FIBVirtualModelLibraryBrowser.fib");
 
-	public FIBViewPointLibraryBrowser(FMLTechnologyAdapter technologyAdapter, FlexoController controller) {
+	public FIBVirtualModelLibraryBrowser(FMLTechnologyAdapter technologyAdapter, FlexoController controller) {
 		super(technologyAdapter, controller, FIB_FILE, controller.getTechnologyAdapter(FMLTechnologyAdapter.class).getLocales());
 	}
 
 	@Override
 	public void fireObjectSelected(FlexoObject object) {
-		//System.out.println("FIBViewPointLibraryBrowser / fireObjectSelected: " + object);
+		//System.out.println("FIBVirtualModelLibraryBrowser / fireObjectSelected: " + object);
 		if (object instanceof VirtualModel) {
 			getFIBView().getController().objectAddedToSelection(((VirtualModel) object).getResource());
 		}

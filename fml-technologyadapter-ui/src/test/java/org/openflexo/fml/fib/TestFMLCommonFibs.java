@@ -55,11 +55,6 @@ public class TestFMLCommonFibs extends GenericFIBTestCase {
 	}
 
 	@Test
-	public void testViewPointSelector() {
-		validateFIB("Fib/ViewPointSelector.fib");
-	}
-
-	@Test
 	public void testVirtualModelSelector() {
 		validateFIB("Fib/VirtualModelSelector.fib");
 	}

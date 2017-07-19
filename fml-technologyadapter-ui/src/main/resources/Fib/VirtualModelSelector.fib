@@ -44,7 +44,7 @@
 			tooltip="" enabled="" visible="" isEditable="false" editableLabel=""
 			filtered="false" defaultVisible="true" dynamicFont="" name="viewPointLibrary">
 			<Children data="viewPointLibrary.resourceCenterService.resourceCenters"
-				visible="" cast="child.viewPointRepository.rootFolder" name="resourceCenters" />
+				visible="" cast="child.virtualModelRepository.rootFolder" name="resourceCenters" />
 		</BrowserElement>
 		<BrowserElement dataClassName="org.openflexo.foundation.resource.RepositoryFolder"
 			label="viewPointFolder.displayableName" icon="controller.iconForObject(viewPointFolder)"
@@ -54,14 +54,6 @@
 				name="subFolders" />
 			<Children data="viewPointFolder.resources" visible="" cast=""
 				name="viewPoints" />
-		</BrowserElement>
-		<BrowserElement dataClassName="org.openflexo.foundation.fml.rm.ViewPointResource"
-			label="viewPoint.name" icon="controller.iconForObject(viewPoint)"
-			tooltip="" enabled="viewPoint.isLoaded" visible="" isEditable="false"
-			editableLabel="" filtered="false" defaultVisible="true" dynamicFont=""
-			name="viewPoint">
-			<Children data="viewPoint.contents" visible="viewPoint.isLoaded"
-				cast="" name="subResources" />
 		</BrowserElement>
 		<BrowserElement dataClassName="org.openflexo.foundation.fml.rm.VirtualModelResource"
 			label="virtualModel.name" icon="controller.iconForObject(virtualModel)"

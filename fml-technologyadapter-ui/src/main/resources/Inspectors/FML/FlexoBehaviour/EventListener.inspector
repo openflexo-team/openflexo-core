@@ -37,7 +37,7 @@
 				data="data.eventType" name="EventSelector"
 				constraints="twocols(anchor=center;expandHorizontally=true;expandVertically=false;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=5;insetsBottom=0;insetsLeft=5;insetsRight=2;insetsTop=0;location=right;padX=0;padY=0;weightX=0.0;weightY=0.0)">
 				<Assignment variable="component.virtualModel" value="data.listenedVirtualModelType" />
-				<Assignment variable="component.viewPointLibrary" value="data.viewPointLibrary" />
+				<Assignment variable="component.virtualModelLibrary" value="data.virtualModelLibrary" />
 			</Custom>
 			
 			

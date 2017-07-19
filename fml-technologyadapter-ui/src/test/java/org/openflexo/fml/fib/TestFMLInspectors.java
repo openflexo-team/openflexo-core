@@ -96,11 +96,6 @@ public class TestFMLInspectors extends GenericFIBInspectorTestCase {
 	}
 
 	@Test
-	public void testAddSubViewInspector() {
-		validateFIB("Inspectors/FML/EditionAction/AddSubView.inspector");
-	}
-
-	@Test
 	public void testAddToListActionInspector() {
 		validateFIB("Inspectors/FML/EditionAction/AddToListAction.inspector");
 	}
@@ -276,96 +271,6 @@ public class TestFMLInspectors extends GenericFIBInspectorTestCase {
 	}
 
 	@Test
-	public void testCheckboxParameterInspector() {
-		validateFIB("Inspectors/FML/FlexoBehaviourParameter/CheckboxParameter.inspector");
-	}
-
-	@Test
-	public void testClassParameterInspector() {
-		validateFIB("Inspectors/FML/FlexoBehaviourParameter/ClassParameter.inspector");
-	}
-
-	@Test
-	public void testDataPropertyParameterInspector() {
-		validateFIB("Inspectors/FML/FlexoBehaviourParameter/DataPropertyParameter.inspector");
-	}
-
-	@Test
-	public void testDropDownParameterInspector() {
-		validateFIB("Inspectors/FML/FlexoBehaviourParameter/DropDownParameter.inspector");
-	}
-
-	@Test
-	public void testFlexoBehaviourParameterInspector() {
-		validateFIB("Inspectors/FML/FlexoBehaviourParameter/FlexoBehaviourParameter.inspector");
-	}
-
-	@Test
-	public void testFlexoConceptInstanceParameterInspector() {
-		validateFIB("Inspectors/FML/FlexoBehaviourParameter/FlexoConceptInstanceParameter.inspector");
-	}
-
-	@Test
-	public void testFlexoResourceParameterInspector() {
-		validateFIB("Inspectors/FML/FlexoBehaviourParameter/FlexoResourceParameter.inspector");
-	}
-
-	@Test
-	public void testFlexoVMIResourceParameterInspector() {
-		validateFIB("Inspectors/FML/FlexoBehaviourParameter/FlexoVMIResourceParameter.inspector");
-	}
-
-	@Test
-	public void testFloatParameterInspector() {
-		validateFIB("Inspectors/FML/FlexoBehaviourParameter/FloatParameter.inspector");
-	}
-
-	@Test
-	public void testIndividualParameterInspector() {
-		validateFIB("Inspectors/FML/FlexoBehaviourParameter/IndividualParameter.inspector");
-	}
-
-	@Test
-	public void testInnerModelSlotParameterInspector() {
-		validateFIB("Inspectors/FML/FlexoBehaviourParameter/InnerModelSlotParameter.inspector");
-	}
-
-	@Test
-	public void testIntegerParameterInspector() {
-		validateFIB("Inspectors/FML/FlexoBehaviourParameter/IntegerParameter.inspector");
-	}
-
-	@Test
-	public void testListParameterInspector() {
-		validateFIB("Inspectors/FML/FlexoBehaviourParameter/ListParameter.inspector");
-	}
-
-	@Test
-	public void testObjectPropertyParameterInspector() {
-		validateFIB("Inspectors/FML/FlexoBehaviourParameter/ObjectPropertyParameter.inspector");
-	}
-
-	@Test
-	public void testPropertyParameterInspector() {
-		validateFIB("Inspectors/FML/FlexoBehaviourParameter/PropertyParameter.inspector");
-	}
-
-	@Test
-	public void testTextAreaParameterInspector() {
-		validateFIB("Inspectors/FML/FlexoBehaviourParameter/TextAreaParameter.inspector");
-	}
-
-	@Test
-	public void testTextFieldParameterInspector() {
-		validateFIB("Inspectors/FML/FlexoBehaviourParameter/TextFieldParameter.inspector");
-	}
-
-	@Test
-	public void testURIParameterInspector() {
-		validateFIB("Inspectors/FML/FlexoBehaviourParameter/URIParameter.inspector");
-	}
-
-	@Test
 	public void testFlexoConceptInspector() {
 		validateFIB("Inspectors/FML/FlexoConcept.inspector");
 	}
@@ -516,28 +421,13 @@ public class TestFMLInspectors extends GenericFIBInspectorTestCase {
 	}
 
 	@Test
-	public void testViewModelSlotInspector() {
-		validateFIB("Inspectors/FML/ModelSlot/ViewModelSlot.inspector");
-	}
-
-	@Test
 	public void testVirtualModelInstanceModelSlotInspector() {
 		validateFIB("Inspectors/FML/ModelSlot/FMLRTVirtualModelInstanceModelSlot.inspector");
 	}
 
 	@Test
-	public void testViewPointInspector() {
-		validateFIB("Inspectors/FML/ViewPoint.inspector");
-	}
-
-	@Test
-	public void testViewPointLibraryInspector() {
+	public void testVirtualModelLibraryInspector() {
 		validateFIB("Inspectors/FML/VirtualModelLibrary.inspector");
-	}
-
-	@Test
-	public void testViewPointResourceInspector() {
-		validateFIB("Inspectors/FML/ViewPointResource.inspector");
 	}
 
 	@Test

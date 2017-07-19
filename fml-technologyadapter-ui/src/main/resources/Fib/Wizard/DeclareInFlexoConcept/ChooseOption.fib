@@ -112,9 +112,7 @@
 		constraints="twocols(anchor=center;expandHorizontally=true;expandVertically=false;fill=horizontal;gridHeight=1;gridWidth=1;gridX=1;gridY=2;index=1;insetsBottom=0;insetsLeft=0;insetsRight=50;insetsTop=0;location=right;padX=0;padY=0;weightX=0.0;weightY=0.0)"
 		readOnly="false">
 		<Assignment id="37" mandatory="true"
-			value="data.action.editor.serviceManager.viewPointLibrary" variable="component.viewPointLibrary" />
-		<!--  <Assignment id="38" mandatory="true"
-			value="data.action.diagramSpecification" variable="component.diagramSpecification" />-->
+			value="data.action.editor.serviceManager.virtualModelLibrary" variable="component.virtualModelLibrary" />
 	</Custom>
 	<Label id="39" manageDynamicModel="false" useScrollBar="false"
 		controllerClassName="org.openflexo.gina.controller.FIBController"

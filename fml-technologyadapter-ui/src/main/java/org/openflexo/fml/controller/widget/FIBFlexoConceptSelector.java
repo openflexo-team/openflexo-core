@@ -94,12 +94,12 @@ public class FIBFlexoConceptSelector extends FIBFlexoObjectSelector<FlexoConcept
 
 	private VirtualModelLibrary virtualModelLibrary;
 
-	public VirtualModelLibrary getViewPointLibrary() {
+	public VirtualModelLibrary getVirtualModelLibrary() {
 		return virtualModelLibrary;
 	}
 
 	@CustomComponentParameter(name = "virtualModelLibrary", type = CustomComponentParameter.Type.MANDATORY)
-	public void setViewPointLibrary(VirtualModelLibrary virtualModelLibrary) {
+	public void setVirtualModelLibrary(VirtualModelLibrary virtualModelLibrary) {
 		this.virtualModelLibrary = virtualModelLibrary;
 	}
 
@@ -147,7 +147,7 @@ public class FIBFlexoConceptSelector extends FIBFlexoObjectSelector<FlexoConcept
 			return getVirtualModel();
 		}
 		else {
-			return getViewPointLibrary();
+			return getVirtualModelLibrary();
 		}
 	}
 

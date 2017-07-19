@@ -10,5 +10,5 @@
     <Localized key="Advanced" lang="French" value="Avancé" />
     <Localized key="Basic" lang="French" value="Basique" />
   </LocalizedDictionary>
-  <Parameter name="title" value="View Definition Library" />
+  <Parameter name="title" value="Virtual Model Library" />
 </Panel>

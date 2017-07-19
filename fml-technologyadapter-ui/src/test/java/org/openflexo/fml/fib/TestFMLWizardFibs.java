@@ -116,11 +116,6 @@ public class TestFMLWizardFibs extends GenericFIBTestCase {
 	}
 
 	@Test
-	public void testDescribeFlexoBehaviourParameter() {
-		validateFIB("Fib/Wizard/CreateFMLElement/DescribeFlexoBehaviourParameter.fib");
-	}
-
-	@Test
 	public void testDescribeFlexoConcept() {
 		validateFIB("Fib/Wizard/CreateFMLElement/DescribeFlexoConcept.fib");
 	}
@@ -176,8 +171,8 @@ public class TestFMLWizardFibs extends GenericFIBTestCase {
 	}
 
 	@Test
-	public void testDescribeViewPoint() {
-		validateFIB("Fib/Wizard/CreateFMLElement/DescribeViewPoint.fib");
+	public void testDescribeTopLevelVirtualModel() {
+		validateFIB("Fib/Wizard/CreateFMLElement/DescribeTopLevelVirtualModel.fib");
 	}
 
 	@Test
