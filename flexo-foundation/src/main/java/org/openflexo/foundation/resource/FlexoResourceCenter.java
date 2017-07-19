@@ -257,7 +257,7 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, FlexoObject, Refere
 	 * 
 	 * @return
 	 */
-	public VirtualModelRepository<I> getViewPointRepository();
+	public VirtualModelRepository<I> getVirtualModelRepository();
 
 	/**
 	 * Retrieve {@link FMLRTVirtualModelInstance} repository (containing all resources storing a {@link FMLRTVirtualModelInstance}) for this
