@@ -50,6 +50,7 @@ import org.openflexo.foundation.fml.CreationScheme;
 import org.openflexo.foundation.fml.DeletionScheme;
 import org.openflexo.foundation.fml.EventListener;
 import org.openflexo.foundation.fml.ExpressionProperty;
+import org.openflexo.foundation.fml.FMLLocalizedDictionary;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
@@ -64,7 +65,6 @@ import org.openflexo.foundation.fml.NavigationScheme;
 import org.openflexo.foundation.fml.PrimitiveRole;
 import org.openflexo.foundation.fml.SynchronizationScheme;
 import org.openflexo.foundation.fml.TechnologySpecificFlexoBehaviour;
-import org.openflexo.foundation.fml.FMLLocalizedDictionary;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.controlgraph.ConditionalAction;
 import org.openflexo.foundation.fml.controlgraph.IncrementalIterationAction;
@@ -110,7 +110,7 @@ public class FMLIconLibrary extends IconLibrary {
 	private static final Logger logger = Logger.getLogger(FMLIconLibrary.class.getPackage().getName());
 
 	public static final ImageIconResource VIEWPOINT_LIBRARY_ICON = new ImageIconResource(
-			ResourceLocator.locateResource("Icons/Model/VPM/VirtualModelLibrary.png"));
+			ResourceLocator.locateResource("Icons/Model/VPM/ViewPointLibrary.png"));
 
 	public static final ImageIconResource TECHNOLOGY_ADAPTER_ICON = new ImageIconResource(
 			ResourceLocator.locateResource("Icons/Common/TechnologyAdapter.png"));

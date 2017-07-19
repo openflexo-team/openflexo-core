@@ -64,7 +64,7 @@ import org.openflexo.model.annotations.XMLElement;
 @DeclareFetchRequests({ SelectFlexoConceptInstance.class })
 @ModelEntity
 @ImplementationClass(FMLRTVirtualModelInstanceModelSlot.VirtualModelInstanceModelSlotImpl.class)
-@XMLElement(xmlTag = "FMLRTVirtualModelInstanceModelSlot", deprecatedXMLTags = "ViewModelSlot")
+@XMLElement(xmlTag = "FMLRTVirtualModelInstanceModelSlot", deprecatedXMLTags = "ViewModelSlot,VirtualModelInstanceModelSlot")
 @FML("FMLRTVirtualModelInstanceModelSlot")
 public interface FMLRTVirtualModelInstanceModelSlot extends FMLRTModelSlot<VirtualModelInstance, FMLRTTechnologyAdapter> {
 
