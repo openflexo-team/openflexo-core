@@ -80,11 +80,6 @@ public class TestFMLFibs extends GenericFIBTestCase {
 	}
 
 	@Test
-	public void testViewPointView() {
-		validateFIB("Fib/FML/ViewPointView.fib");
-	}
-
-	@Test
 	public void testVirtualModelStructuralPanel() {
 		validateFIB("Fib/FML/VirtualModelStructuralPanel.fib");
 	}

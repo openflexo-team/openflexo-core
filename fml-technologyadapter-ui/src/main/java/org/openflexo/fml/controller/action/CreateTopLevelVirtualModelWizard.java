@@ -62,11 +62,11 @@ public class CreateTopLevelVirtualModelWizard extends AbstractCreateVirtualModel
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CreateTopLevelVirtualModelWizard.class.getPackage().getName());
 
-	private final DescribeViewPoint describeViewPoint;
+	private final DescribeTopLevelVirtualModel describeTopLevelVirtualModel;
 
 	public CreateTopLevelVirtualModelWizard(CreateTopLevelVirtualModel action, FlexoController controller) {
 		super(action, controller);
-		addStep(describeViewPoint = new DescribeViewPoint());
+		addStep(describeTopLevelVirtualModel = new DescribeTopLevelVirtualModel());
 	}
 
 	@Override
@@ -79,8 +79,8 @@ public class CreateTopLevelVirtualModelWizard extends AbstractCreateVirtualModel
 		return IconFactory.getImageIcon(FMLIconLibrary.VIEWPOINT_BIG_ICON, IconLibrary.NEW_32_32).getImage();
 	}
 
-	public DescribeViewPoint getDescribeViewPoint() {
-		return describeViewPoint;
+	public DescribeTopLevelVirtualModel getDescribeViewPoint() {
+		return describeTopLevelVirtualModel;
 	}
 
 	@Override
@@ -94,8 +94,8 @@ public class CreateTopLevelVirtualModelWizard extends AbstractCreateVirtualModel
 	 * @author sylvain
 	 *
 	 */
-	@FIBPanel("Fib/Wizard/CreateFMLElement/DescribeViewPoint.fib")
-	public class DescribeViewPoint extends WizardStep {
+	@FIBPanel("Fib/Wizard/CreateFMLElement/DescribeTopLevelVirtualModel.fib")
+	public class DescribeTopLevelVirtualModel extends WizardStep {
 
 		public ApplicationContext getServiceManager() {
 			return getController().getApplicationContext();
@@ -141,7 +141,7 @@ public class CreateTopLevelVirtualModelWizard extends AbstractCreateVirtualModel
 				setIssueMessage(getAction().getLocales().localizedForKey("already_existing_viewpoint_name"), IssueMessageType.ERROR);
 				return false;
 			}
-			else if (StringUtils.isEmpty(getNewViewPointDescription())) {
+			else if (StringUtils.isEmpty(getNewVirtualModelDescription())) {
 				setIssueMessage(getAction().getLocales().localizedForKey("it_is_recommanded_to_describe_view_point"),
 						IssueMessageType.WARNING);
 			}
@@ -189,15 +189,15 @@ public class CreateTopLevelVirtualModelWizard extends AbstractCreateVirtualModel
 			return true;
 		}
 
-		public String getNewViewPointDescription() {
+		public String getNewVirtualModelDescription() {
 			return getAction().getNewVirtualModelDescription();
 		}
 
-		public void setNewViewPointDescription(String newViewPointDescription) {
-			if (!newViewPointDescription.equals(getNewViewPointDescription())) {
-				String oldValue = getNewViewPointDescription();
+		public void setNewVirtualModelDescription(String newViewPointDescription) {
+			if (!newViewPointDescription.equals(getNewVirtualModelDescription())) {
+				String oldValue = getNewVirtualModelDescription();
 				getAction().setNewVirtualModelDescription(newViewPointDescription);
-				getPropertyChangeSupport().firePropertyChange("newViewPointDescription", oldValue, newViewPointDescription);
+				getPropertyChangeSupport().firePropertyChange("newVirtualModelDescription", oldValue, newViewPointDescription);
 				checkValidity();
 			}
 		}

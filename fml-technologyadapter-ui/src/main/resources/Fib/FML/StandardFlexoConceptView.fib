@@ -33,9 +33,6 @@
 				<Children id="9" data="flexoConcept.structuralFacet" name="structural" />
 				<Children id="10" data="flexoConcept.behaviouralFacet"
 					name="behavioural" />
-				<BrowserCustomAction id="11"
-					method="controller.duplicateFlexoConcept(selected,(selected.name + &quot;Copy&quot;))"
-					name="duplicate" />
 				<BrowserAddAction id="12"
 					method="controller.createFlexoConcept(selected)" name="add_action" />
 			</BrowserElement>

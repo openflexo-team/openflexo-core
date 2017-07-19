@@ -41,8 +41,8 @@
 		localize="true" manageDynamicModel="true" name="VirtualModelSelector"
 		index="9" data="data.virtualModelResource"
 		constraints="gridbag(anchor=west;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;insetsBottom=0;insetsLeft=0;insetsRight=20;insetsTop=0;padX=0;padY=0;weightX=1.0;weightY=0.0)">
-		<Assignment variable="component.viewPoint"
-			value="data.viewPoint.resource" />
+		<Assignment variable="component.containerVirtualModel"
+			value="data.containerVirtualModel" />
 		<Dependancy componentName="TechnologyAdapterDD" />
 		<Dependancy componentName="ModelSlotTypeDD" />
 	</Custom>

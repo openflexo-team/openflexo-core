@@ -28,7 +28,7 @@
 			displayTitle="true" disableTerminateEditOnFocusLost="false" title="flexo_concept"
 			columnWidth="80" resizable="true" showIcon="false">
 			<ColumnAssignment id="12" mandatory="true"
-				value="data.virtualModel" variable="component.inheritingContext" />
+				value="data.virtualModel"  variable="component.inheritingContext" />
 		</CustomColumn>
 		<RemoveAction id="13" name="delete"
 			method="data.deleteParentFlexoConceptEntry(selected)" />

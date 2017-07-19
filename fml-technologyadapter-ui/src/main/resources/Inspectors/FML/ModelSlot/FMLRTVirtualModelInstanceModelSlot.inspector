@@ -16,7 +16,7 @@
 				localize="true" manageDynamicModel="true" name="VirtualModelSelector"
 				index="17" data="data.accessedVirtualModelResource"
 				constraints="twocols(expandHorizontally=true;expandVertically=false;location=right)">
-				<Assignment variable="component.viewPoint" value="data.viewPoint.resource" />
+				<Assignment variable="component.containerVirtualModel" value="data.virtualModel.resource" />
 			</Custom>
 		</Tab>
 		<Tab title="Advanced" layout="twocols" titleFont="SansSerif,0,11"

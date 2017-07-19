@@ -140,7 +140,7 @@ public class FMLFIBController extends FlexoFIBController {
 		return createTopLevelVirtualModel.getNewVirtualModel();
 	}
 
-	public VirtualModel createContainerVirtualModel(FlexoResource<VirtualModel> containerVirtualModelResource)
+	public VirtualModel createContainedVirtualModel(FlexoResource<VirtualModel> containerVirtualModelResource)
 			throws FileNotFoundException, ResourceLoadingCancelledException, FlexoException {
 		CreateContainedVirtualModel createContainedVirtualModel = CreateContainedVirtualModel.actionType
 				.makeNewAction(containerVirtualModelResource.getResourceData(null), null, getEditor());

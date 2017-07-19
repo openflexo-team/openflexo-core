@@ -74,7 +74,7 @@ import org.openflexo.fml.controller.action.ShowFMLRepresentationInitializer;
 import org.openflexo.fml.controller.view.StandardFlexoConceptView;
 import org.openflexo.fml.controller.view.FMLLocalizedDictionaryView;
 import org.openflexo.fml.controller.view.VirtualModelView;
-import org.openflexo.fml.controller.widget.FIBViewPointLibraryBrowser;
+import org.openflexo.fml.controller.widget.FIBVirtualModelLibraryBrowser;
 import org.openflexo.fml.controller.widget.FlexoConceptInstanceTypeEditor;
 import org.openflexo.fml.controller.widget.FlexoResourceTypeEditor;
 import org.openflexo.fml.controller.widget.VirtualModelInstanceTypeEditor;
@@ -411,7 +411,7 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 
 	@Override
 	protected FIBTechnologyBrowser<FMLTechnologyAdapter> buildTechnologyBrowser(FlexoController controller) {
-		return new FIBViewPointLibraryBrowser(getTechnologyAdapter(), controller);
+		return new FIBVirtualModelLibraryBrowser(getTechnologyAdapter(), controller);
 	}
 
 	@Override

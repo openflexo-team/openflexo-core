@@ -17,7 +17,7 @@
 				index="15" data="data.metaModelResource"
 				constraints="twocols(expandHorizontally=true;expandVertically=false;location=right)">
 				<Assignment variable="component.resourceManager"
-					value="data.viewPoint.viewPointLibrary.serviceManager.resourceManager" />
+					value="data.declaringVirtualModel.virtualModelLibrary.serviceManager.resourceManager" />
 				<Assignment variable="component.technologyAdapter" value="data.modelSlotTechnologyAdapter" />
 			</Custom>
 		</Tab>

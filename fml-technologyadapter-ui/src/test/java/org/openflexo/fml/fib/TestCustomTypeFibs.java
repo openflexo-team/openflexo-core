@@ -61,11 +61,6 @@ public class TestCustomTypeFibs extends GenericFIBTestCase {
 	}
 
 	@Test
-	public void testViewTypeEditor() {
-		validateFIB("Fib/CustomType/ViewTypeEditor.fib");
-	}
-
-	@Test
 	public void testVirtualModelInstanceTypeEditor() {
 		validateFIB("Fib/CustomType/VirtualModelInstanceTypeEditor.fib");
 	}

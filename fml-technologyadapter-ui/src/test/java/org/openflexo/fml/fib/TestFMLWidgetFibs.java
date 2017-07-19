@@ -51,13 +51,8 @@ public class TestFMLWidgetFibs extends GenericFIBTestCase {
 	}
 
 	@Test
-	public void testFIBViewPointBrowser() {
-		validateFIB("Fib/Widget/FIBViewPointBrowser.fib");
-	}
-
-	@Test
-	public void testFIBViewPointLibraryBrowser() {
-		validateFIB("Fib/Widget/FIBViewPointLibraryBrowser.fib");
+	public void testVirtualModelLibraryBrowser() {
+		validateFIB("Fib/Widget/FIBVirtualModelLibraryBrowser.fib");
 	}
 
 	@Test
