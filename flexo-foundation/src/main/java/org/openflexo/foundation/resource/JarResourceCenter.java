@@ -443,7 +443,7 @@ public class JarResourceCenter extends ResourceRepository<FlexoResource<?>, InJa
 
 	// TODO Remove this
 	@Override
-	public VirtualModelRepository<InJarResourceImpl> getViewPointRepository() {
+	public VirtualModelRepository<InJarResourceImpl> getVirtualModelRepository() {
 		if (getServiceManager() != null) {
 			FMLTechnologyAdapter vmTA = getServiceManager().getTechnologyAdapterService().getTechnologyAdapter(FMLTechnologyAdapter.class);
 			return vmTA.getVirtualModelRepository(this);

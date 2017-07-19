@@ -110,7 +110,7 @@ public class TestTypeSelector extends OpenflexoTestCaseWithGUI {
 	public void testSomeConcepts() throws SaveResourceException {
 
 		CreateTopLevelVirtualModel addViewPointAction = CreateTopLevelVirtualModel.actionType
-				.makeNewAction(resourceCenter.getViewPointRepository().getRootFolder(), null, editor);
+				.makeNewAction(resourceCenter.getVirtualModelRepository().getRootFolder(), null, editor);
 		addViewPointAction.setNewVirtualModelName(VIEWPOINT_NAME);
 		addViewPointAction.setNewVirtualModelURI(VIEWPOINT_URI);
 		addViewPointAction.doAction();

@@ -180,7 +180,7 @@ public abstract class FileSystemBasedResourceCenter extends ResourceRepository<F
 	}
 
 	@Override
-	public VirtualModelRepository<File> getViewPointRepository() {
+	public VirtualModelRepository<File> getVirtualModelRepository() {
 		if (getServiceManager() != null) {
 			FMLTechnologyAdapter vmTA = getServiceManager().getTechnologyAdapterService().getTechnologyAdapter(FMLTechnologyAdapter.class);
 			// return getRepository(VirtualModelRepository.class, vmTA);
