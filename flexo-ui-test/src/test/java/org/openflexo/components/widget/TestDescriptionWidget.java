@@ -69,7 +69,7 @@ public class TestDescriptionWidget extends OpenflexoTestCase {
 	@Test
 	public void test1InstanciateWidget() throws ModelDefinitionException {
 
-		ModelFactory factory = new FMLModelFactory(null, null);
+		ModelFactory factory = new FMLModelFactory(null, serviceManager);
 		VirtualModel anObject = factory.newInstance(VirtualModel.class);
 		FIBDescriptionWidget descriptionWidget = new FIBDescriptionWidget(anObject);
 		gcDelegate.addTab("FIBDescriptionWidget", descriptionWidget.getController());

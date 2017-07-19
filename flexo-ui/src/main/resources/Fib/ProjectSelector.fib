@@ -82,7 +82,7 @@
 		index="3" localize="true"
 		constraints="twocols(expandHorizontally=true;expandVertically=true;index=0;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=center)"
 		visibleRowCount="4" createNewRowOnClick="false" format="object.name"
-		rowHeight="18" showText="true" iteratorClassName="org.openflexo.foundation.fml.rt.View"
+		rowHeight="18" showText="true" iteratorClassName="org.openflexo.foundation.FlexoProject"
 		horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED" showIcon="true"
 		enterPressedAction="controller.apply()" useScrollBar="true"
 		selected="data.selectedValue" clickAction="controller.selectedObjectChanged()"
