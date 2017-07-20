@@ -313,7 +313,7 @@ public class VirtualModelResourceFactory
 		for (I child : resourceCenter.getContents(serializationArtefact)) {
 			String childName = resourceCenter.retrieveName(child);
 			if (isValidArtefact(child, resourceCenter)) {
-				I xmlFile = resourceCenter.createEntry(childName + ".xml", child);
+				I xmlFile = resourceCenter.getEntry(childName + ".xml", child);
 				if (resourceCenter.exists(xmlFile)) {
 					XMLRootElementInfo result = resourceCenter.getXMLRootElementInfo(xmlFile);
 					if (result != null && result.getName().equals("VirtualModel")) {

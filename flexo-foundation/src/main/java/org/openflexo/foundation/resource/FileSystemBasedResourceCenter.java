@@ -875,6 +875,12 @@ public abstract class FileSystemBasedResourceCenter extends ResourceRepository<F
 	}
 
 	@Override
+	public File getEntry(String name, File parentDirectory) {
+		File returned = new File(parentDirectory, name);
+		return returned;
+	}
+
+	@Override
 	public boolean isDirectory(File serializationArtefact) {
 		return serializationArtefact.isDirectory();
 	}
