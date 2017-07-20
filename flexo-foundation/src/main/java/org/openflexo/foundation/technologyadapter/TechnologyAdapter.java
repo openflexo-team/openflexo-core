@@ -262,7 +262,7 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 				if (!isIgnorable(resourceCenter, serializationArtefact)) {
 					FlexoResource r = tryToLookupResource(resourceFactory, resourceCenter, serializationArtefact);
 					if (r != null) {
-						logger.info("> Look-up resource " + r.getImplementedInterface().getSimpleName() + " " + r.getURI());
+						logger.info(">>>>>>>>>> Look-up resource " + r.getImplementedInterface().getSimpleName() + " " + r.getURI());
 					}
 				}
 				if (resourceCenter.isDirectory(serializationArtefact)) {
@@ -290,8 +290,17 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 		}
 	}
 
-	protected <I> boolean isContainedInDirectoryWithSuffix(FlexoResourceCenter<I> resourceCenter, I folder, String suffix) {
-		I current = folder;
+	/**
+	 * Recursively explore containers of supplied serialization artefact and return boolean indicating if supplied serialization artefact is
+	 * recursively contained in a folder ending with supplied suffix
+	 * 
+	 * @param resourceCenter
+	 * @param serializationArtefact
+	 * @param suffix
+	 * @return
+	 */
+	protected <I> boolean isContainedInDirectoryWithSuffix(FlexoResourceCenter<I> resourceCenter, I serializationArtefact, String suffix) {
+		I current = resourceCenter.getContainer(serializationArtefact);
 		while (current != null && !current.equals(resourceCenter.getBaseArtefact())) {
 			if (resourceCenter.retrieveName(current).endsWith(suffix)) {
 				return true;
