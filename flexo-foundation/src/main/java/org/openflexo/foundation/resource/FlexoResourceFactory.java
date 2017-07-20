@@ -259,12 +259,18 @@ public abstract class FlexoResourceFactory<R extends TechnologyAdapterResource<R
 	protected <I> void registerResourceInResourceRepository(R resource, ResourceRepository<R, I> resourceRepository) {
 		FlexoResourceCenter<I> resourceCenter = resourceRepository.getResourceCenter();
 		FlexoIODelegate<I> ioDelegate = (FlexoIODelegate<I>) resource.getIODelegate();
-		RepositoryFolder<R, I> folder = resourceCenter.getRepositoryFolder(ioDelegate, resourceRepository);
-		if (folder != null) {
-			resourceRepository.registerResource(resource, folder);
+
+		if (resource.getContainer() == null) {
+			RepositoryFolder<R, I> folder = resourceCenter.getRepositoryFolder(ioDelegate, resourceRepository);
+			if (folder != null) {
+				resourceRepository.registerResource(resource, folder);
+			}
+			else {
+				logger.warning("Could not lookup folder for " + resourceCenter + " while registering " + resource);
+			}
 		}
 		else {
-			logger.warning("Could not lookup folder for " + resourceCenter + " while registering " + resource);
+			resourceRepository.registerResource(resource, (R) resource.getContainer());
 		}
 	}
 

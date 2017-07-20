@@ -329,8 +329,6 @@ public class VirtualModelResourceFactory
 				}
 			}
 
-			// recursively call
-			exploreResource(child, virtualModelResource, technologyContextManager);
 		}
 	}
 

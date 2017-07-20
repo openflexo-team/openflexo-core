@@ -103,6 +103,7 @@ public class FMLTechnologyAdapter extends TechnologyAdapter {
 		return (FMLTechnologyContextManager) super.getTechnologyContextManager();
 	}
 
+	@Override
 	public FlexoServiceManager getServiceManager() {
 		return this.getTechnologyAdapterService().getServiceManager();
 	}
@@ -153,21 +154,6 @@ public class FMLTechnologyAdapter extends TechnologyAdapter {
 	}
 
 	@Override
-	public <I> boolean isIgnorable(final FlexoResourceCenter<I> resourceCenter, final I contents) {
-		if (resourceCenter.isIgnorable(contents, this)) {
-			return true;
-		}
-		// This allows to ignore all contained VirtualModel, that will be explored from their container resource
-		if (resourceCenter.isDirectory(contents)) {
-			if (isContainedInDirectoryWithSuffix(resourceCenter, resourceCenter.getContainer(contents),
-					VirtualModelResourceFactory.FML_SUFFIX)) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	@Override
 	public String getIdentifier() {
 		return "FML";
 	}
@@ -194,6 +180,20 @@ public class FMLTechnologyAdapter extends TechnologyAdapter {
 	public void ensureAllRepositoriesAreCreated(FlexoResourceCenter<?> rc) {
 		super.ensureAllRepositoriesAreCreated(rc);
 		getVirtualModelRepository(rc);
+	}
+
+	@Override
+	public <I> boolean isIgnorable(final FlexoResourceCenter<I> resourceCenter, final I contents) {
+		if (resourceCenter.isIgnorable(contents, this)) {
+			return true;
+		}
+		// This allows to ignore all contained VirtualModel, that will be explored from their container resource
+		if (resourceCenter.isDirectory(contents)) {
+			if (isContainedInDirectoryWithSuffix(resourceCenter, contents, VirtualModelResourceFactory.FML_SUFFIX)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	@Override
