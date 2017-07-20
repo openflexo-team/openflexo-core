@@ -435,6 +435,16 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, FlexoObject, Refere
 	I createEntry(String name, I parentDirectory);
 
 	/**
+	 * Create simple serialization artefact, with supplied name and parent serialization artefact<br>
+	 * Name can also be a relative path name (with '/' as path separator)
+	 * 
+	 * @param name
+	 * @param parentDirectory
+	 * @return
+	 */
+	I getEntry(String name, I parentDirectory);
+
+	/**
 	 * Return boolean indicating if supplied serialization artefact already exists (is under its serialized form)
 	 * 
 	 * @param serializationArtefact

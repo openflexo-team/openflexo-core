@@ -618,6 +618,17 @@ public class JarResourceCenter extends ResourceRepository<FlexoResource<?>, InJa
 	}
 
 	@Override
+	public InJarResourceImpl getEntry(String name, InJarResourceImpl parentDirectory) {
+		for (InJarResourceImpl r : parentDirectory.getContents(false)) {
+			// System.out.println(" * " + r.getName() + " " + r);
+			if (name.equals(r.getName())) {
+				return r;
+			}
+		}
+		return null;
+	}
+
+	@Override
 	public InJarIODelegate makeFlexoIODelegate(InJarResourceImpl serializationArtefact, FlexoResourceFactory<?, ?, ?> resourceFactory) {
 		return InJarIODelegateImpl.makeInJarFlexoIODelegate(serializationArtefact, resourceFactory);
 	}
