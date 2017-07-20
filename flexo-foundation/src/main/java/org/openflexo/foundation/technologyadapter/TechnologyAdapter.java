@@ -727,6 +727,10 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 	public <I> I retrieveResourceSerializationArtefact(FlexoResourceCenter<I> resourceCenter, String resourceName, String relativePath,
 			String extension) {
 
+		if (resourceCenter == null) {
+			return null;
+		}
+
 		I containerBaseArtefact = resourceCenter.getBaseArtefact();
 
 		if (StringUtils.isEmpty(resourceName)) {
