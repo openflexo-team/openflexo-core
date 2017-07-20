@@ -119,7 +119,9 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 
 	private LocalizedDelegate locales = null;
 
-	// private List<Class<? extends TechnologySpecificType<?>>> availableTechnologySpecificTypes;
+	public FlexoServiceManager getServiceManager() {
+		return this.getTechnologyAdapterService().getServiceManager();
+	}
 
 	/**
 	 * Return human-understandable name for this technology adapter<br>
