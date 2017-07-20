@@ -73,6 +73,7 @@ import org.openflexo.foundation.resource.CannotRenameException;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.technologyadapter.FlexoModel;
+import org.openflexo.foundation.technologyadapter.ModelRepository;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
@@ -364,18 +365,14 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 
 	public boolean isValidVirtualModelInstanceName(String virtualModelName);
 
-	// @Deprecated
-	// public RepositoryFolder<AbstractVirtualModelInstanceResource<VMI, TA>, ?> getFolder();
-
-	// @Deprecated
-	// public ViewLibrary getViewLibrary();
-
 	/**
 	 * Return the list of {@link TechnologyAdapter} used in the context of this {@link View}
 	 * 
 	 * @return
 	 */
 	public List<TechnologyAdapter> getRequiredTechnologyAdapters();
+
+	public ModelRepository getVirtualModelInstanceRepository();
 
 	/**
 	 * Base implementation for AbstractVirtualModelInstance

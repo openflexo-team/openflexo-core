@@ -40,10 +40,10 @@
 			tooltip="" enabled="" visible="" isEditable="false" editableLabel=""
 			filtered="false" defaultVisible="true" dynamicFont=""
 			name="technologyAdapter">
-			<Children data="technologyAdapter.getViewLibraries()"
+			<Children data="technologyAdapter.getVirtualModelInstanceRepositories()"
 				visible="" cast="child.rootFolder" name="repositories" />
 		</BrowserElement>
-		<BrowserElement dataClassName="org.openflexo.foundation.fml.rt.ViewLibrary"
+		<BrowserElement dataClassName="org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceRepository"
 			label="&quot;View Library&quot;" icon="controller.iconForObject(library)"
 			isEditable="false" filtered="false" defaultVisible="true" name="library">
 			<Children data="library.rootFolder.children" name="subFolders" />
@@ -58,43 +58,17 @@
 			<Children data="viewFolder.resources" visible="" cast=""
 				name="views" />
 		</BrowserElement>
-		<BrowserElement dataClassName="org.openflexo.foundation.fml.rt.rm.ViewResource"
-			label="viewResource.name" icon="controller.iconForObject(viewResource)"
-			enabled="viewResource.isLoaded" isEditable="false" filtered="false"
-			defaultVisible="true" name="viewResource">
-			<Children data="viewResource.contents" visible="viewResource.isLoaded"
-				name="children" />
-		</BrowserElement>
 		<BrowserElement
-			dataClassName="org.openflexo.foundation.fml.rt.rm.VirtualModelInstanceResource"
+			dataClassName="org.openflexo.foundation.fml.rt.rm.AbstractVirtualModelInstanceResource"
 			label="virtualModelInstanceResource.name" icon="controller.iconForObject(virtualModelInstanceResource)"
 			enabled="(virtualModelInstanceResource.isLoaded) &amp; (data.isAcceptableValue(virtualModelInstanceResource))"
 			isEditable="false" filtered="false" defaultVisible="true"
-			name="virtualModelInstanceResource" />
+			name="virtualModelInstanceResource">
+			<Children data="virtualModelInstanceResource.contents" visible="virtualModelInstanceResource.isLoaded"
+				name="children" />
+		</BrowserElement>
 	</Browser>
 
-	<!-- <Browser root="data.rootObject" iteratorClassName="org.openflexo.foundation.fml.rt.rm.VirtualModelInstanceResource" 
-		visibleRowCount="5" rowHeight="18" boundToSelectionManager="false" selectionMode="DiscontiguousTreeSelection" 
-		selected="data.selectedValue" showFooter="true" rootVisible="true" showRootsHandle="true" 
-		localize="true" manageDynamicModel="true" clickAction="controller.selectedObjectChanged()" 
-		doubleClickAction="controller.apply()" enterPressedAction="controller.apply()" 
-		name="VirtualModelInstancesBrowser" index="2" constraints="twocols(expandHorizontally=true;expandVertically=true;index=2;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=center)"> 
-		<BrowserElement dataClassName="org.openflexo.foundation.fml.rt.ViewLibrary" 
-		label="&quot;View Library&quot;" icon="controller.iconForObject(viewLibrary)" 
-		isEditable="false" filtered="false" defaultVisible="true" name="viewLibrary"> 
-		<Children data="viewLibrary.rootFolder" name="rootFolder" /> </BrowserElement> 
-		<BrowserElement dataClassName="org.openflexo.foundation.resource.RepositoryFolder" 
-		label="viewFolder.name" icon="controller.iconForObject(viewFolder)" isEditable="false" 
-		filtered="false" defaultVisible="true" name="viewFolder"> <Children data="viewFolder.children" 
-		name="subFolders" /> <Children data="viewFolder.resources" name="views" /> 
-		</BrowserElement> <BrowserElement dataClassName="org.openflexo.foundation.rm.ViewResource" 
-		label="viewResource.name" icon="controller.iconForObject(viewResource)" enabled="viewResource.isLoaded" 
-		isEditable="false" filtered="false" defaultVisible="true" name="viewResource"> 
-		<Children data="viewResource.contents" visible="viewResource.isLoaded" name="children" 
-		/> </BrowserElement> <BrowserElement dataClassName="org.openflexo.foundation.fml.rt.rm.VirtualModelInstanceResource" 
-		label="virtualModelInstanceResource.name" icon="controller.iconForObject(virtualModelInstanceResource)" 
-		enabled="virtualModelInstanceResource.isLoaded" isEditable="false" filtered="false" 
-		defaultVisible="true" name="virtualModelInstanceResource" /> </Browser> -->
 	<Panel layout="flow" hGap="5" vGap="0" flowAlignment="CENTER"
 		borderTitle="Panel" darkLevel="0" index="3"
 		constraints="twocols(expandHorizontally=true;expandVertically=false;index=3;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=center)">

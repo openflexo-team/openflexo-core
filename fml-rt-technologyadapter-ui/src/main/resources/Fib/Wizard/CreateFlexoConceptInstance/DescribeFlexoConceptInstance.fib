@@ -1,18 +1,60 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Panel id="0" align="left" borderTop="0" borderLeft="0" trackViewPortHeight="true" trackViewPortWidth="true" borderBottom="0" border="empty" sizeAdjustment="OriginalSize" titleFont="Lucida Grande,0,13" layout="twocols" borderRight="0" controllerClassName="org.openflexo.view.controller.FlexoFIBController">
-  <Label id="1" label="container" align="left" localize="true" index="3" constraints="twocols(anchor=east;expandHorizontally=false;expandVertically=false;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;insetsBottom=0;insetsLeft=20;insetsRight=0;insetsTop=0;location=left;padX=0;padY=0;weightX=0.0;weightY=0.0)" name="VirtualModelInstanceTitleLabel" />
-  <Custom id="2" componentClassName="org.openflexo.fml.rt.controller.widget.FIBFlexoConceptInstanceSelector" dataClassForComponent="org.openflexo.foundation.fml.rt.FlexoConceptInstance" localize="true" manageDynamicModel="true" data="data.container" opaque="false" index="4" constraints="twocols(anchor=center;expandHorizontally=true;expandVertically=false;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;insetsBottom=5;insetsLeft=0;insetsRight=20;insetsTop=0;location=right;padX=0;padY=0;weightX=1.0;weightY=0.0)" name="CustomSelector">
-    <Assignment id="3" variable="component.project" mandatory="true" />
-    <Assignment id="4" variable="component.flexoController" mandatory="true" />
-    <Assignment id="5" variable="component.selectableCondition" mandatory="true" />
-    <Assignment id="6" variable="component.virtualModelInstance" value="data.container.virtualModelInstance" mandatory="true" />
-  </Custom>
-  <Label id="7" label="flexo_concept" align="left" localize="true" index="10" constraints="twocols(anchor=east;expandHorizontally=false;expandVertically=false;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;insetsBottom=0;insetsLeft=20;insetsRight=10;insetsTop=0;location=left;padX=0;padY=0;weightX=0.0;weightY=0.0)" name="FlexoConceptLabel" />
-  <DropDown id="8" autoSelectFirstRow="true" showText="true" iteratorClassName="org.openflexo.foundation.fml.FlexoConcept" list="data.availableFlexoConcepts" showIcon="true" icon="controller.flexoController.iconForObject(object)" format="object.name" data="data.flexoConcept" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=20;insetsTop=0;location=right)" name="dropdown" />
-  <Label id="9" label="creation_scheme" align="left" localize="true" visible="((VirtualModelSelector.value != null) &amp; (VirtualModelSelector.value.virtualModel.creationSchemes.size &gt; 0))" index="7" constraints="twocols(anchor=north_east;expandHorizontally=false;expandVertically=false;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=1;insetsBottom=0;insetsLeft=20;insetsRight=0;insetsTop=5;location=left;padX=0;padY=0;weightX=0.0;weightY=0.0)" name="CreationSchemeLabel" />
-  <RadioButtonList id="10" autoSelectFirstRow="true" staticList="" showText="true" iteratorClassName="org.openflexo.foundation.fml.CreationScheme" list="data.flexoConcept.creationSchemes" showIcon="true" icon="controller.flexoController.iconForObject(object)" format="object.signature" data="data.creationScheme" visible="(data.flexoConcept.creationSchemes.size &gt; 0)" constraints="twocols(anchor=center;expandHorizontally=true;expandVertically=false;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;insetsBottom=0;insetsLeft=0;insetsRight=20;insetsTop=5;location=right;padX=0;padY=0;weightX=0.0;weightY=0.0)" name="CreationSchemeSelector" />
-  <Label id="11" label="" align="left" visible="((VirtualModelSelector.value != null) &amp; (VirtualModelSelector.value.virtualModel.creationSchemes.size &gt; 0))" constraints="twocols(anchor=center;expandHorizontally=true;expandVertically=false;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left;padX=0;padY=0;weightX=0.0;weightY=0.0)" name="Label2" />
-  <Label id="12" label="label" align="left" data="data.creationScheme.description" visible="((VirtualModelSelector.value != null) &amp; (VirtualModelSelector.value.virtualModel.creationSchemes.size &gt; 0))" constraints="twocols(anchor=center;expandHorizontally=true;expandVertically=false;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right;padX=0;padY=0;weightX=0.0;weightY=0.0)" font="SansSerif,2,11" name="Label" />
-  <FIBVariable id="13" type="org.openflexo.fml.rt.controller.action.CreateFlexoConceptInstanceWizard$DescribeFlexoConceptInstance" name="data" />
-  <LocalizedDictionary id="14" />
+<Panel id="0" align="left" borderTop="0" borderLeft="0"
+	trackViewPortHeight="true" trackViewPortWidth="true" borderBottom="0"
+	border="empty" sizeAdjustment="OriginalSize" titleFont="Lucida Grande,0,13"
+	layout="twocols" borderRight="0"
+	controllerClassName="org.openflexo.view.controller.FlexoFIBController">
+	<Label id="1" label="container" align="left" localize="true"
+		index="3"
+		constraints="twocols(anchor=east;expandHorizontally=false;expandVertically=false;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;insetsBottom=0;insetsLeft=20;insetsRight=0;insetsTop=0;location=left;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+		name="VirtualModelInstanceTitleLabel" />
+	<Custom id="2"
+		componentClassName="org.openflexo.fml.rt.controller.widget.FIBFlexoConceptInstanceSelector"
+		dataClassForComponent="org.openflexo.foundation.fml.rt.FlexoConceptInstance"
+		localize="true" manageDynamicModel="true" data="data.container"
+		opaque="false" index="4"
+		constraints="twocols(anchor=center;expandHorizontally=true;expandVertically=false;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;insetsBottom=5;insetsLeft=0;insetsRight=20;insetsTop=0;location=right;padX=0;padY=0;weightX=1.0;weightY=0.0)"
+		name="CustomSelector">
+		<Assignment id="3" variable="component.project" mandatory="true" />
+		<Assignment id="4" variable="component.flexoController"
+			mandatory="true" />
+		<Assignment id="5" variable="component.selectableCondition"
+			mandatory="true" />
+		<Assignment id="6" variable="component.virtualModelInstance"
+			value="data.container.virtualModelInstance" mandatory="true" />
+	</Custom>
+	<Label id="7" label="flexo_concept" align="left" localize="true"
+		index="10"
+		constraints="twocols(anchor=east;expandHorizontally=false;expandVertically=false;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;insetsBottom=0;insetsLeft=20;insetsRight=10;insetsTop=0;location=left;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+		name="FlexoConceptLabel" />
+	<DropDown id="8" autoSelectFirstRow="true" showText="true"
+		iteratorClassName="org.openflexo.foundation.fml.FlexoConcept" list="data.availableFlexoConcepts"
+		showIcon="true" icon="controller.flexoController.iconForObject(object)"
+		format="object.name" data="data.flexoConcept"
+		constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=20;insetsTop=0;location=right)"
+		name="dropdown" />
+	<Label id="9" label="creation_scheme" align="left" localize="true"
+		index="7"
+		constraints="twocols(anchor=north_east;expandHorizontally=false;expandVertically=false;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=1;insetsBottom=0;insetsLeft=20;insetsRight=0;insetsTop=5;location=left;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+		name="CreationSchemeLabel" />
+	<RadioButtonList id="10" autoSelectFirstRow="true"
+		staticList="" showText="true" iteratorClassName="org.openflexo.foundation.fml.CreationScheme"
+		list="data.flexoConcept.creationSchemes" showIcon="true"
+		icon="controller.flexoController.iconForObject(object)" format="object.signature"
+		data="data.creationScheme" visible="(data.flexoConcept.creationSchemes.size &gt; 0)"
+		constraints="twocols(anchor=center;expandHorizontally=true;expandVertically=false;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;insetsBottom=0;insetsLeft=0;insetsRight=20;insetsTop=5;location=right;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+		name="CreationSchemeSelector" />
+	<Label id="11" label="" align="left"
+		visible="((data.creationScheme != null) &amp; (data.flexoConcept.creationSchemes.size &gt; 0))"
+		constraints="twocols(anchor=center;expandHorizontally=true;expandVertically=false;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+		name="Label2" />
+	<Label id="12" label="label" align="left"
+		data="data.creationScheme.description"
+		visible="((data.creationScheme != null) &amp; (data.flexoConcept.creationSchemes.size &gt; 0))"
+		constraints="twocols(anchor=center;expandHorizontally=true;expandVertically=false;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+		font="SansSerif,2,11" name="Label" />
+	<FIBVariable id="13"
+		type="org.openflexo.fml.rt.controller.action.CreateFlexoConceptInstanceWizard$DescribeFlexoConceptInstance"
+		name="data" />
+	<LocalizedDictionary id="14" />
 </Panel>

@@ -58,6 +58,8 @@ import org.openflexo.model.annotations.XMLElement;
 @XMLElement
 public interface VirtualModelInstance extends AbstractVirtualModelInstance<VirtualModelInstance, FMLRTTechnologyAdapter> {
 
+	public FMLRTVirtualModelInstanceRepository<?> getVirtualModelInstanceRepository();
+
 	public static abstract class VirtualModelInstanceImpl
 			extends AbstractVirtualModelInstanceImpl<VirtualModelInstance, FMLRTTechnologyAdapter> implements VirtualModelInstance {
 
@@ -71,6 +73,13 @@ public interface VirtualModelInstance extends AbstractVirtualModelInstance<Virtu
 			return null;
 		}
 
+		@Override
+		public FMLRTVirtualModelInstanceRepository<?> getVirtualModelInstanceRepository() {
+			if (getResource() != null) {
+				return getResource().getResourceCenter().getVirtualModelInstanceRepository();
+			}
+			return null;
+		}
 	}
 
 }

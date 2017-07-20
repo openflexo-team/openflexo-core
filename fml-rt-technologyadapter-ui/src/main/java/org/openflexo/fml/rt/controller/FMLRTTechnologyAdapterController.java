@@ -50,7 +50,7 @@ import org.openflexo.fml.rt.controller.action.NavigationSchemeActionInitializer;
 import org.openflexo.fml.rt.controller.action.OpenVirtualModelInstanceInitializer;
 import org.openflexo.fml.rt.controller.action.SynchronizationSchemeActionInitializer;
 import org.openflexo.fml.rt.controller.view.VirtualModelInstanceView;
-import org.openflexo.fml.rt.controller.widget.FIBViewLibraryBrowser;
+import org.openflexo.fml.rt.controller.widget.FIBVirtualModelInstanceRepositoriesBrowser;
 import org.openflexo.foundation.fml.ActionScheme;
 import org.openflexo.foundation.fml.CloningScheme;
 import org.openflexo.foundation.fml.CreationScheme;
@@ -299,6 +299,6 @@ public class FMLRTTechnologyAdapterController extends TechnologyAdapterControlle
 
 	@Override
 	protected FIBTechnologyBrowser<FMLRTTechnologyAdapter> buildTechnologyBrowser(FlexoController controller) {
-		return new FIBViewLibraryBrowser(getTechnologyAdapter(), controller);
+		return new FIBVirtualModelInstanceRepositoriesBrowser(getTechnologyAdapter(), controller);
 	}
 }
