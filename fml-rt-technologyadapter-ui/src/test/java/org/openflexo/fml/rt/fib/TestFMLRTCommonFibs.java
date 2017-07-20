@@ -55,21 +55,6 @@ public class TestFMLRTCommonFibs extends GenericFIBTestCase {
 	}
 
 	@Test
-	public void testViewFolderSelector() {
-		validateFIB("Fib/ViewFolderSelector.fib");
-	}
-
-	@Test
-	public void testViewResourceSelector() {
-		validateFIB("Fib/ViewResourceSelector.fib");
-	}
-
-	@Test
-	public void testViewSelector() {
-		validateFIB("Fib/ViewSelector.fib");
-	}
-
-	@Test
 	public void testVirtualModelInstanceResourceSelector() {
 		validateFIB("Fib/VirtualModelInstanceResourceSelector.fib");
 	}
@@ -85,8 +70,8 @@ public class TestFMLRTCommonFibs extends GenericFIBTestCase {
 	}
 
 	@Test
-	public void testFIBViewLibraryBrowser() {
-		validateFIB("Fib/Widget/FIBViewLibraryBrowser.fib");
+	public void testFIBVirtualModelInstanceRepositoriesBrowser() {
+		validateFIB("Fib/FIBVirtualModelInstanceRepositoriesBrowser.fib");
 	}
 
 }

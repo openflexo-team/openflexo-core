@@ -42,23 +42,24 @@ import java.util.logging.Logger;
 
 import org.openflexo.components.widget.FIBTechnologyBrowser;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.view.controller.FlexoController;
 
 /**
- * Browser allowing to browse through viewpoint library<br>
+ * Browser allowing to browse {@link VirtualModelInstance} objects <br>
  * 
  * @author sguerin
  * 
  */
 @SuppressWarnings("serial")
-public class FIBViewLibraryBrowser extends FIBTechnologyBrowser<FMLRTTechnologyAdapter> {
-	static final Logger logger = Logger.getLogger(FIBViewLibraryBrowser.class.getPackage().getName());
+public class FIBVirtualModelInstanceRepositoriesBrowser extends FIBTechnologyBrowser<FMLRTTechnologyAdapter> {
+	static final Logger logger = Logger.getLogger(FIBVirtualModelInstanceRepositoriesBrowser.class.getPackage().getName());
 
-	public static final Resource FIB_FILE = ResourceLocator.locateResource("Fib/Widget/FIBViewLibraryBrowser.fib");
+	public static final Resource FIB_FILE = ResourceLocator.locateResource("Fib/FIBVirtualModelInstanceRepositoriesBrowser.fib");
 
-	public FIBViewLibraryBrowser(FMLRTTechnologyAdapter technologyAdapter, FlexoController controller) {
+	public FIBVirtualModelInstanceRepositoriesBrowser(FMLRTTechnologyAdapter technologyAdapter, FlexoController controller) {
 		super(technologyAdapter, controller, FIB_FILE, controller.getTechnologyAdapter(FMLRTTechnologyAdapter.class).getLocales());
 	}
 

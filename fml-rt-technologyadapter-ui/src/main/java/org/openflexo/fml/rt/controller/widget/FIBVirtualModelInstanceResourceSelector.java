@@ -107,8 +107,8 @@ public class FIBVirtualModelInstanceResourceSelector extends FIBProjectObjectSel
 		return vmiRepository;
 	}
 
-	@CustomComponentParameter(name = "vmiRepository", type = CustomComponentParameter.Type.OPTIONAL)
-	public void setViewLibrary(FMLRTVirtualModelInstanceRepository<?> vmiRepository) {
+	@CustomComponentParameter(name = "virtualModelInstanceRepository", type = CustomComponentParameter.Type.OPTIONAL)
+	public void setVirtualModelInstanceRepository(FMLRTVirtualModelInstanceRepository<?> vmiRepository) {
 		this.vmiRepository = vmiRepository;
 	}
 

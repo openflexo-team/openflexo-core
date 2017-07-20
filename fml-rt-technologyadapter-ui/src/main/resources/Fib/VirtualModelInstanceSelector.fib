@@ -40,39 +40,7 @@
 		backgroundNonSelectionColor="255,255,255" selected="data.selectedValue"
 		clickAction="controller.selectedObjectChanged()" name="VirtualModelInstancesBrowser"
 		textNonSelectionColor="0,0,0" rootVisible="true"
-		backgroundSecondarySelectionColor="178,215,255">
-		<!--  <BrowserElement id="5"
-			icon="controller.iconForObject(technologyAdapter)" label="technologyAdapter.name"
-			dataClassName="org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter"
-			name="technologyAdapter" isEditable="false">
-			<Children id="6" cast="child.rootFolder" name="repositories"
-				data="technologyAdapter.getViewLibraries()" />
-		</BrowserElement>
-		<BrowserElement id="7" icon="controller.iconForObject(library)"
-			label="&quot;View Library&quot;" dataClassName="org.openflexo.foundation.fml.rt.ViewLibrary"
-			name="library" isEditable="false">
-			<Children id="8" name="subFolders" data="library.rootFolder.children" />
-			<Children id="9" name="views" data="library.rootFolder.resources" />
-		</BrowserElement>
-		<BrowserElement id="10"
-			icon="controller.iconForObject(viewFolder)" label="viewFolder.displayableName"
-			dataClassName="org.openflexo.foundation.resource.RepositoryFolder"
-			name="viewFolder" isEditable="false">
-			<Children id="11" name="subFolders" data="viewFolder.children" />
-			<Children id="12" name="views" data="viewFolder.resources" />
-		</BrowserElement>
-		<BrowserElement id="13" enabled="viewResource.isLoaded"
-			icon="controller.iconForObject(viewResource)" label="viewResource.name"
-			dataClassName="org.openflexo.foundation.fml.rt.rm.ViewResource" name="viewResource"
-			isEditable="false">
-			<Children id="14" visible="viewResource.isLoaded" cast="child.virtualModelInstance"
-				name="children" data="viewResource.virtualModelInstanceResources" />
-		</BrowserElement>
-		<BrowserElement id="15"
-			enabled="data.isAcceptableValue(virtualModelInstance)" icon="controller.iconForObject(virtualModelInstance)"
-			label="virtualModelInstance.name" dataClassName="org.openflexo.foundation.fml.rt.VirtualModelInstance"
-			name="virtualModelInstance" isEditable="false" />-->
-			
+		backgroundSecondarySelectionColor="178,215,255">			
 			
 		<BrowserElement
 			dataClassName="org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter"
@@ -80,7 +48,7 @@
 			tooltip="" enabled="" visible="" isEditable="false" editableLabel=""
 			filtered="false" defaultVisible="true" dynamicFont=""
 			name="technologyAdapter">
-			<Children data="technologyAdapter.getViewLibraries()" visible=""
+			<Children data="technologyAdapter.getVirtualModelInstanceRepositories()" visible=""
 				cast="child.rootFolder" name="repositories" />
 		</BrowserElement>
 		<BrowserElement dataClassName="org.openflexo.foundation.resource.RepositoryFolder"
@@ -89,21 +57,15 @@
 			filtered="false" defaultVisible="true" name="folder">
 			<Children data="folder.children" 
 				name="subFolders" />
-			<Children data="data.getViewResources(folder)" name="viewsInFolder" cast="child.view"/>
+			<Children data="data.getVirtualModelInstanceResources(folder)" name="viewsInFolder" cast="child.virtualModelInstance"/>
 		</BrowserElement>
-		<BrowserElement dataClassName="org.openflexo.foundation.fml.rt.View"
-			label="view.name" icon="controller.iconForObject(view)"
-			isEditable="false" visible="data.isViewVisible(view)"
-			filtered="false" defaultVisible="true"
-			name="view">
-			<Children data="view.virtualModelInstances" name="VMIInView"/>
-		</BrowserElement>
-		<BrowserElement dataClassName="org.openflexo.foundation.fml.rt.VirtualModelInstance"
+		<BrowserElement dataClassName="org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance"
 			label="virtualModelInstance.name" icon="controller.iconForObject(virtualModelInstance)"
 			isEditable="false" 
 			enabled="data.isAcceptableValue(virtualModelInstance)"
 			filtered="false" defaultVisible="true"
 			name="virtualModelInstance">
+			<Children data="virtualModelInstance.virtualModelInstances" name="VMIInView"/>
 		</BrowserElement>
 	
 	</Browser>

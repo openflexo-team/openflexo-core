@@ -56,18 +56,18 @@ public class TestFMLRTInspectors extends GenericFIBInspectorTestCase {
 	}
 
 	@Test
+	public void testAbstractVirtualModelInstanceInspector() {
+		validateFIB("Inspectors/FML-RT/AbstractVirtualModelInstance.inspector");
+	}
+
+	@Test
 	public void testFlexoConceptInstanceInspector() {
 		validateFIB("Inspectors/FML-RT/FlexoConceptInstance.inspector");
 	}
 
 	@Test
-	public void testViewInspector() {
-		validateFIB("Inspectors/FML-RT/View.inspector");
-	}
-
-	@Test
-	public void testViewLibraryInspector() {
-		validateFIB("Inspectors/FML-RT/ViewLibrary.inspector");
+	public void testFMLRTVirtualModelInstanceRepositoryInspector() {
+		validateFIB("Inspectors/FML-RT/FMLRTVirtualModelInstanceRepository.inspector");
 	}
 
 	@Test
