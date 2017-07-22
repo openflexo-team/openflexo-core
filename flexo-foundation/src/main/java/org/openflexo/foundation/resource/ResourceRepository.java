@@ -202,8 +202,13 @@ public abstract class ResourceRepository<R extends FlexoResource<?>, I> extends 
 	}
 
 	public void unregisterResource(R flexoResource) {
+		if (flexoResource.getContainer() != null) {
+			flexoResource.getContainer().removeFromContents(flexoResource);
+		}
 		RepositoryFolder<R, I> parentFolder = getParentFolder(flexoResource);
-		parentFolder.removeFromResources(flexoResource);
+		if (parentFolder != null) {
+			parentFolder.removeFromResources(flexoResource);
+		}
 		resources.remove(flexoResource.getURI());
 
 	}
