@@ -47,7 +47,7 @@ import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.doc.nature.FMLControlledDocumentContainerNature;
 import org.openflexo.foundation.doc.nature.FMLControlledDocumentVirtualModelNature;
 import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.CreateFMLRTVirtualModelInstance;
 
 public abstract class CreateFMLControlledDocumentVirtualModelInstance<A extends CreateFMLControlledDocumentVirtualModelInstance<A>>
@@ -67,8 +67,8 @@ public abstract class CreateFMLControlledDocumentVirtualModelInstance<A extends 
 
 		@Override
 		public boolean isVisibleForSelection(FlexoObject container, Vector<FlexoObject> globalSelection) {
-			if (container instanceof AbstractVirtualModelInstance) {
-				VirtualModel containerVirtualModel = ((AbstractVirtualModelInstance<?, ?>) container).getVirtualModel();
+			if (container instanceof VirtualModelInstance) {
+				VirtualModel containerVirtualModel = ((VirtualModelInstance<?, ?>) container).getVirtualModel();
 				if (containerVirtualModel.hasNature(nature)) {
 					return true;
 				}

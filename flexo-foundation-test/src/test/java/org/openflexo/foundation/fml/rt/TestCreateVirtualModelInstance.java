@@ -83,8 +83,8 @@ public class TestCreateVirtualModelInstance extends OpenflexoProjectAtRunTimeTes
 	private static VirtualModel newVirtualModel;
 	private static FlexoEditor editor;
 	private static FlexoProject project;
-	private static VirtualModelInstance newView;
-	private static VirtualModelInstance newVirtualModelInstance;
+	private static FMLRTVirtualModelInstance newView;
+	private static FMLRTVirtualModelInstance newVirtualModelInstance;
 	private static VirtualModelResource newVirtualModelResource;
 
 	private static DirectoryResourceCenter resourceCenter;
@@ -193,7 +193,7 @@ public class TestCreateVirtualModelInstance extends OpenflexoProjectAtRunTimeTes
 	}
 
 	/**
-	 * Instantiate in project a VirtualModelInstance conform to the VirtualModel
+	 * Instantiate in project a FMLRTVirtualModelInstance conform to the VirtualModel
 	 */
 	@Test
 	@TestOrder(4)
@@ -204,7 +204,7 @@ public class TestCreateVirtualModelInstance extends OpenflexoProjectAtRunTimeTes
 		System.out.println("newView=" + newView);
 		CreateBasicVirtualModelInstance action = CreateBasicVirtualModelInstance.actionType.makeNewAction(newView, null, editor);
 		action.setNewVirtualModelInstanceName("MyVirtualModelInstance");
-		action.setNewVirtualModelInstanceTitle("Test creation of a new VirtualModelInstance");
+		action.setNewVirtualModelInstanceTitle("Test creation of a new FMLRTVirtualModelInstance");
 		action.setVirtualModel(newVirtualModel);
 		action.doAction();
 		assertTrue(action.hasActionExecutionSucceeded());

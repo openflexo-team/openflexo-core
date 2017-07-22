@@ -42,13 +42,13 @@ import java.util.logging.Logger;
 
 import org.openflexo.components.widget.FIBTechnologyBrowser;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
+import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.view.controller.FlexoController;
 
 /**
- * Browser allowing to browse {@link VirtualModelInstance} objects <br>
+ * Browser allowing to browse {@link FMLRTVirtualModelInstance} objects <br>
  * 
  * @author sguerin
  * 

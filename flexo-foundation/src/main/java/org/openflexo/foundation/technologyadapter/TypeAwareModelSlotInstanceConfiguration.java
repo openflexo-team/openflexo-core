@@ -46,7 +46,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoException;
-import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstanceModelFactory;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.TypeAwareModelSlotInstance;
@@ -100,7 +100,7 @@ public abstract class TypeAwareModelSlotInstanceConfiguration<M extends FlexoMod
 
 	@Override
 	public TypeAwareModelSlotInstance<M, MM, MS> createModelSlotInstance(FlexoConceptInstance fci,
-			AbstractVirtualModelInstance<?, ?> view) {
+			VirtualModelInstance<?, ?> view) {
 		AbstractVirtualModelInstanceModelFactory<?> factory = fci.getFactory();
 		TypeAwareModelSlotInstance<M, MM, MS> returned = factory.newInstance(TypeAwareModelSlotInstance.class);
 		returned.setModelSlot(getModelSlot());
@@ -110,7 +110,7 @@ public abstract class TypeAwareModelSlotInstanceConfiguration<M extends FlexoMod
 	}
 
 	protected TypeAwareModelSlotInstance<M, MM, MS> configureModelSlotInstance(TypeAwareModelSlotInstance<M, MM, MS> msInstance,
-			AbstractVirtualModelInstance<?, ?> view) {
+			VirtualModelInstance<?, ?> view) {
 		if (getOption() == DefaultModelSlotInstanceConfigurationOption.SelectExistingModel) {
 			if (modelResource != null) {
 				System.out.println("Select model with uri " + getModelResource().getURI());

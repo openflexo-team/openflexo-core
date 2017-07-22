@@ -61,10 +61,10 @@ import org.openflexo.foundation.fml.FlexoConceptStructuralFacet;
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelInstanceType;
-import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
+import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 
 /**
@@ -262,21 +262,21 @@ public class CreateFlexoConceptInstanceRole extends AbstractCreateFlexoRole<Crea
 		return (FlexoConceptInstanceRole) super.getNewFlexoRole();
 	}
 
-	private DataBinding<AbstractVirtualModelInstance<?, ?>> virtualModelInstance;
+	private DataBinding<VirtualModelInstance<?, ?>> virtualModelInstance;
 
-	public DataBinding<AbstractVirtualModelInstance<?, ?>> getVirtualModelInstance() {
+	public DataBinding<VirtualModelInstance<?, ?>> getVirtualModelInstance() {
 		if (virtualModelInstance == null) {
-			virtualModelInstance = new DataBinding<AbstractVirtualModelInstance<?, ?>>(this, VirtualModelInstance.class,
+			virtualModelInstance = new DataBinding<VirtualModelInstance<?, ?>>(this, FMLRTVirtualModelInstance.class,
 					DataBinding.BindingDefinitionType.GET);
 		}
 		return virtualModelInstance;
 	}
 
-	public void setVirtualModelInstance(DataBinding<AbstractVirtualModelInstance<?, ?>> aVirtualModelInstance) {
+	public void setVirtualModelInstance(DataBinding<VirtualModelInstance<?, ?>> aVirtualModelInstance) {
 		if (aVirtualModelInstance != null) {
 			aVirtualModelInstance.setOwner(this);
 			aVirtualModelInstance.setBindingName("virtualModelInstance");
-			aVirtualModelInstance.setDeclaredType(VirtualModelInstance.class);
+			aVirtualModelInstance.setDeclaredType(FMLRTVirtualModelInstance.class);
 			aVirtualModelInstance.setBindingDefinitionType(DataBinding.BindingDefinitionType.GET);
 		}
 		if (this.virtualModelInstance != aVirtualModelInstance) {

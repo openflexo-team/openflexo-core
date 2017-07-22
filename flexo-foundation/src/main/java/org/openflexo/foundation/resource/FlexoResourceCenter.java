@@ -489,7 +489,7 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, FlexoObject, Refere
 	// TODO: must be refactored because it is from the responsability of the servicemanager
 	/**
 	 * the ObjectReferenceConverter is used when de-serializing resources that contains a reference to another FlexoObject (URI) Typically
-	 * for VirtualModelInstance referencing resources via ModelSlots
+	 * for FMLRTVirtualModelInstance referencing resources via ModelSlots
 	 * 
 	 * @return
 	 */
@@ -497,7 +497,7 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, FlexoObject, Refere
 
 	/**
 	 * the ObjectReferenceConverter is used when de-serializing resources that contains a reference to another FlexoObject (URI) Typically
-	 * for VirtualModelInstance referencing resources via ModelSlots
+	 * for FMLRTVirtualModelInstance referencing resources via ModelSlots
 	 * 
 	 * @param objectReferenceConverter
 	 * @return

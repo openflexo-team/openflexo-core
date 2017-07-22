@@ -46,33 +46,33 @@ import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionType;
-import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.rm.AbstractVirtualModelInstanceResource;
 import org.openflexo.foundation.resource.RepositoryFolder;
 
 public class MoveVirtualModelInstance
-		extends FlexoAction<MoveVirtualModelInstance, AbstractVirtualModelInstance<?, ?>, AbstractVirtualModelInstance<?, ?>> {
+		extends FlexoAction<MoveVirtualModelInstance, VirtualModelInstance<?, ?>, VirtualModelInstance<?, ?>> {
 
 	private static final Logger logger = Logger.getLogger(MoveVirtualModelInstance.class.getPackage().getName());
 
-	public static final FlexoActionType<MoveVirtualModelInstance, AbstractVirtualModelInstance<?, ?>, AbstractVirtualModelInstance<?, ?>> actionType = new FlexoActionType<MoveVirtualModelInstance, AbstractVirtualModelInstance<?, ?>, AbstractVirtualModelInstance<?, ?>>(
+	public static final FlexoActionType<MoveVirtualModelInstance, VirtualModelInstance<?, ?>, VirtualModelInstance<?, ?>> actionType = new FlexoActionType<MoveVirtualModelInstance, VirtualModelInstance<?, ?>, VirtualModelInstance<?, ?>>(
 			"move_virtual_model_instance") {
 
 		@Override
-		public boolean isEnabledForSelection(AbstractVirtualModelInstance<?, ?> object,
-				Vector<AbstractVirtualModelInstance<?, ?>> globalSelection) {
+		public boolean isEnabledForSelection(VirtualModelInstance<?, ?> object,
+				Vector<VirtualModelInstance<?, ?>> globalSelection) {
 			return true;
 		}
 
 		@Override
-		public boolean isVisibleForSelection(AbstractVirtualModelInstance<?, ?> object,
-				Vector<AbstractVirtualModelInstance<?, ?>> globalSelection) {
+		public boolean isVisibleForSelection(VirtualModelInstance<?, ?> object,
+				Vector<VirtualModelInstance<?, ?>> globalSelection) {
 			return false;
 		}
 
 		@Override
-		public MoveVirtualModelInstance makeNewAction(AbstractVirtualModelInstance<?, ?> focusedObject,
-				Vector<AbstractVirtualModelInstance<?, ?>> globalSelection, FlexoEditor editor) {
+		public MoveVirtualModelInstance makeNewAction(VirtualModelInstance<?, ?> focusedObject,
+				Vector<VirtualModelInstance<?, ?>> globalSelection, FlexoEditor editor) {
 			return new MoveVirtualModelInstance(focusedObject, globalSelection, editor);
 		}
 
@@ -81,11 +81,11 @@ public class MoveVirtualModelInstance
 	private RepositoryFolder<AbstractVirtualModelInstanceResource<?, ?>, ?> folder;
 
 	static {
-		FlexoObjectImpl.addActionForClass(actionType, AbstractVirtualModelInstance.class);
+		FlexoObjectImpl.addActionForClass(actionType, VirtualModelInstance.class);
 	}
 
-	protected MoveVirtualModelInstance(AbstractVirtualModelInstance<?, ?> focusedObject,
-			Vector<AbstractVirtualModelInstance<?, ?>> globalSelection, FlexoEditor editor) {
+	protected MoveVirtualModelInstance(VirtualModelInstance<?, ?> focusedObject,
+			Vector<VirtualModelInstance<?, ?>> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 	}
 
@@ -95,12 +95,12 @@ public class MoveVirtualModelInstance
 			logger.warning("Cannot move: null folder");
 			return;
 		}
-		for (AbstractVirtualModelInstance<?, ?> v : getGlobalSelection()) {
+		for (VirtualModelInstance<?, ?> v : getGlobalSelection()) {
 			moveToFolder(v, folder);
 		}
 	}
 
-	private void moveToFolder(AbstractVirtualModelInstance<?, ?> v,
+	private void moveToFolder(VirtualModelInstance<?, ?> v,
 			RepositoryFolder<AbstractVirtualModelInstanceResource<?, ?>, ?> folder) {
 		// TODO: reimplement this
 		// RepositoryFolder<AbstractVirtualModelInstanceResource<?,?>, ?> oldFolder = v.getFolder();

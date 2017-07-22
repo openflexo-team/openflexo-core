@@ -44,7 +44,7 @@ import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 /**
  * Represents an instance of FML@runtime engine<br>
  * 
- * Manages a list of {@link VirtualModelInstance} beeing monitored and executed by current engine instance<br>
+ * Manages a list of {@link FMLRTVirtualModelInstance} beeing monitored and executed by current engine instance<br>
  * Provides an execution semantics for FML
  * 
  * 
@@ -53,9 +53,9 @@ import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
  */
 public interface FMLRunTimeEngine {
 
-	public void addToExecutionContext(AbstractVirtualModelInstance<?, ?> vmi, RunTimeEvaluationContext evaluationContext);
+	public void addToExecutionContext(VirtualModelInstance<?, ?> vmi, RunTimeEvaluationContext evaluationContext);
 
-	public void removeFromExecutionContext(AbstractVirtualModelInstance<?, ?> vmi, RunTimeEvaluationContext evaluationContext);
+	public void removeFromExecutionContext(VirtualModelInstance<?, ?> vmi, RunTimeEvaluationContext evaluationContext);
 
 	public void execute(FlexoBehaviourAction<?, ?, ?> behaviourExecution);
 

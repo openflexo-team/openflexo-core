@@ -1,6 +1,6 @@
 /**
  * 
- * Copyright (c) 2015, Openflexo
+ * Copyright (c) 2014-2015, Openflexo
  * 
  * This file is part of Flexo-foundation, a component of the software infrastructure 
  * developed at Openflexo.
@@ -38,18 +38,48 @@
 
 package org.openflexo.foundation.fml.rt;
 
-import org.openflexo.foundation.nature.FlexoNature;
-import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
+import java.util.logging.Logger;
+
+import org.openflexo.foundation.fml.VirtualModel;
+import org.openflexo.model.annotations.ImplementationClass;
+import org.openflexo.model.annotations.ModelEntity;
+import org.openflexo.model.annotations.XMLElement;
 
 /**
- * Interface defining the nature of a {@link FMLRTVirtualModelInstance}<br>
+ * Implementation of an instance of a plain {@link VirtualModel} natively managed by the {@link FMLRTTechnologyAdapter}<br>
  * 
- * A {@link VirtualModelInstanceNature} might be seen as an interpretation of a given {@link FMLRTVirtualModelInstance}
+ * Such {@link VirtualModel} instance might be serialized using XML
  * 
  * @author sylvain
  * 
  */
-public interface AbstractVirtualModelInstanceNature<VMI extends VirtualModelInstance<VMI, TA>, TA extends TechnologyAdapter>
-		extends FlexoNature<VMI> {
+@ModelEntity
+@ImplementationClass(FMLRTVirtualModelInstance.FMLRTVirtualModelInstanceImpl.class)
+@XMLElement
+public interface FMLRTVirtualModelInstance extends VirtualModelInstance<FMLRTVirtualModelInstance, FMLRTTechnologyAdapter> {
+
+	public FMLRTVirtualModelInstanceRepository<?> getVirtualModelInstanceRepository();
+
+	public static abstract class FMLRTVirtualModelInstanceImpl
+			extends VirtualModelInstanceImpl<FMLRTVirtualModelInstance, FMLRTTechnologyAdapter> implements FMLRTVirtualModelInstance {
+
+		private static final Logger logger = Logger.getLogger(FMLRTVirtualModelInstance.class.getPackage().getName());
+
+		@Override
+		public FMLRTTechnologyAdapter getTechnologyAdapter() {
+			if (getResource() != null) {
+				return getResource().getTechnologyAdapter();
+			}
+			return null;
+		}
+
+		@Override
+		public FMLRTVirtualModelInstanceRepository<?> getVirtualModelInstanceRepository() {
+			if (getResource() != null) {
+				return getResource().getResourceCenter().getVirtualModelInstanceRepository();
+			}
+			return null;
+		}
+	}
 
 }

@@ -55,11 +55,11 @@ import org.openflexo.foundation.fml.VirtualModelInstanceType;
 import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.foundation.fml.editionaction.FetchRequest;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
-import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
+import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.logging.FlexoLogger;
@@ -76,7 +76,7 @@ import org.openflexo.model.validation.ValidationIssue;
 import org.openflexo.model.validation.ValidationRule;
 
 /**
- * Generic {@link FetchRequest} allowing to retrieve a selection of some {@link VirtualModelInstance} matching some conditions and a given
+ * Generic {@link FetchRequest} allowing to retrieve a selection of some {@link FMLRTVirtualModelInstance} matching some conditions and a given
  * {@link VirtualModel}.<br>
  * 
  * @author sylvain
@@ -86,8 +86,8 @@ import org.openflexo.model.validation.ValidationRule;
 @ImplementationClass(SelectVirtualModelInstance.SelectVirtualModelInstanceImpl.class)
 @XMLElement
 @FML("SelectVirtualModelInstance")
-public interface SelectVirtualModelInstance<VMI extends AbstractVirtualModelInstance<VMI, ?>>
-		extends FetchRequest<FMLRTModelSlot<VMI, ?>, VMI, AbstractVirtualModelInstance<?, ?>> {
+public interface SelectVirtualModelInstance<VMI extends VirtualModelInstance<VMI, ?>>
+		extends FetchRequest<FMLRTModelSlot<VMI, ?>, VMI, VirtualModelInstance<?, ?>> {
 
 	@PropertyIdentifier(type = String.class)
 	public static final String VIRTUAL_MODEL_TYPE_URI_KEY = "virtualModelTypeURI";
@@ -97,10 +97,10 @@ public interface SelectVirtualModelInstance<VMI extends AbstractVirtualModelInst
 
 	@Getter(value = CONTAINER_KEY)
 	@XMLAttribute
-	public DataBinding<AbstractVirtualModelInstance<?, ?>> getContainer();
+	public DataBinding<VirtualModelInstance<?, ?>> getContainer();
 
 	@Setter(CONTAINER_KEY)
-	public void setContainer(DataBinding<AbstractVirtualModelInstance<?, ?>> container);
+	public void setContainer(DataBinding<VirtualModelInstance<?, ?>> container);
 
 	@Getter(value = VIRTUAL_MODEL_TYPE_URI_KEY)
 	@XMLAttribute
@@ -115,8 +115,8 @@ public interface SelectVirtualModelInstance<VMI extends AbstractVirtualModelInst
 
 	public VirtualModel getAddressedVirtualModel();
 
-	public static abstract class SelectVirtualModelInstanceImpl<VMI extends AbstractVirtualModelInstance<VMI, ?>> extends
-			FetchRequestImpl<FMLRTModelSlot<VMI, ?>, VMI, AbstractVirtualModelInstance<?, ?>> implements SelectVirtualModelInstance<VMI> {
+	public static abstract class SelectVirtualModelInstanceImpl<VMI extends VirtualModelInstance<VMI, ?>> extends
+			FetchRequestImpl<FMLRTModelSlot<VMI, ?>, VMI, VirtualModelInstance<?, ?>> implements SelectVirtualModelInstance<VMI> {
 
 		protected static final Logger logger = FlexoLogger.getLogger(SelectVirtualModelInstance.class.getPackage().getName());
 
@@ -131,12 +131,12 @@ public interface SelectVirtualModelInstance<VMI extends AbstractVirtualModelInst
 			return super.getModelSlotTechnologyAdapter();
 		}
 
-		private DataBinding<AbstractVirtualModelInstance<?, ?>> container;
+		private DataBinding<VirtualModelInstance<?, ?>> container;
 
 		@Override
-		public DataBinding<AbstractVirtualModelInstance<?, ?>> getContainer() {
+		public DataBinding<VirtualModelInstance<?, ?>> getContainer() {
 			if (container == null) {
-				container = new DataBinding<AbstractVirtualModelInstance<?, ?>>(this, AbstractVirtualModelInstance.class,
+				container = new DataBinding<VirtualModelInstance<?, ?>>(this, VirtualModelInstance.class,
 						DataBinding.BindingDefinitionType.GET);
 				container.setBindingName("container");
 			}
@@ -144,11 +144,11 @@ public interface SelectVirtualModelInstance<VMI extends AbstractVirtualModelInst
 		}
 
 		@Override
-		public void setContainer(DataBinding<AbstractVirtualModelInstance<?, ?>> aContainer) {
+		public void setContainer(DataBinding<VirtualModelInstance<?, ?>> aContainer) {
 			if (aContainer != null) {
 				aContainer.setOwner(this);
 				aContainer.setBindingName("container");
-				aContainer.setDeclaredType(AbstractVirtualModelInstance.class);
+				aContainer.setDeclaredType(VirtualModelInstance.class);
 				aContainer.setBindingDefinitionType(DataBinding.BindingDefinitionType.GET);
 			}
 			this.container = aContainer;
@@ -232,7 +232,7 @@ public interface SelectVirtualModelInstance<VMI extends AbstractVirtualModelInst
 			}
 		}
 
-		public AbstractVirtualModelInstance<?, ?> getContainer(RunTimeEvaluationContext evaluationContext) {
+		public VirtualModelInstance<?, ?> getContainer(RunTimeEvaluationContext evaluationContext) {
 			if (getContainer() != null && getContainer().isSet() && getContainer().isValid()) {
 				try {
 					return getContainer().getBindingValue(evaluationContext);
@@ -249,8 +249,8 @@ public interface SelectVirtualModelInstance<VMI extends AbstractVirtualModelInst
 		}
 
 		@Override
-		public List<AbstractVirtualModelInstance<?, ?>> execute(RunTimeEvaluationContext evaluationContext) {
-			AbstractVirtualModelInstance<?, ?> container = getContainer(evaluationContext);
+		public List<VirtualModelInstance<?, ?>> execute(RunTimeEvaluationContext evaluationContext) {
+			VirtualModelInstance<?, ?> container = getContainer(evaluationContext);
 			if (container != null) {
 				try {
 					return filterWithConditions(
@@ -298,7 +298,7 @@ public interface SelectVirtualModelInstance<VMI extends AbstractVirtualModelInst
 		}
 
 		@Override
-		public DataBinding<AbstractVirtualModelInstance<?, ?>> getBinding(SelectVirtualModelInstance object) {
+		public DataBinding<VirtualModelInstance<?, ?>> getBinding(SelectVirtualModelInstance object) {
 			return object.getContainer();
 		}
 

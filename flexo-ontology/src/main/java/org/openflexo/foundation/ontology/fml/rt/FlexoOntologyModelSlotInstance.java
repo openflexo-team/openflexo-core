@@ -43,7 +43,7 @@ import java.util.logging.Logger;
 import org.openflexo.foundation.fml.rt.ActorReference;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.TypeAwareModelSlotInstance;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
+import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.ontology.IFlexoOntology;
 import org.openflexo.foundation.ontology.technologyadapter.FlexoOntologyModelSlot;
 import org.openflexo.foundation.technologyadapter.FlexoMetaModel;
@@ -57,7 +57,7 @@ import org.openflexo.model.annotations.XMLElement;
 /**
  * Concretize the binding of a {@link FlexoOntologyModelSlot} to a concrete {@link FlexoModel} conform to a given {@link FlexoMetaModel}
  * defined as {@link IFlexoOntology}<br>
- * This is the binding point between a {@link TypeAwareModelSlot} and its concretization in a {@link VirtualModelInstance}
+ * This is the binding point between a {@link TypeAwareModelSlot} and its concretization in a {@link FMLRTVirtualModelInstance}
  * 
  * @author Sylvain Guerin
  * @see TypeAwareModelSlot

@@ -72,7 +72,7 @@ import org.openflexo.model.validation.ValidationRule;
 import org.openflexo.toolbox.StringUtils;
 
 /**
- * Base model slot allowing to access an {@link AbstractVirtualModelInstance}
+ * Base model slot allowing to access an {@link VirtualModelInstance}
  * 
  * @author sylvain
  * 
@@ -82,7 +82,7 @@ import org.openflexo.toolbox.StringUtils;
 @DeclareFetchRequests({ SelectFlexoConceptInstance.class, SelectVirtualModelInstance.class })
 @ModelEntity(isAbstract = true)
 @ImplementationClass(FMLRTModelSlot.FMLRTModelSlotImpl.class)
-public interface FMLRTModelSlot<VMI extends AbstractVirtualModelInstance<VMI, TA>, TA extends TechnologyAdapter> extends ModelSlot<VMI> {
+public interface FMLRTModelSlot<VMI extends VirtualModelInstance<VMI, TA>, TA extends TechnologyAdapter> extends ModelSlot<VMI> {
 
 	@PropertyIdentifier(type = String.class)
 	public static final String VIRTUAL_MODEL_URI_KEY = "virtualModelURI";
@@ -106,7 +106,7 @@ public interface FMLRTModelSlot<VMI extends AbstractVirtualModelInstance<VMI, TA
 
 	public Class<TA> getTechnologyAdapterClass();
 
-	public static abstract class FMLRTModelSlotImpl<VMI extends AbstractVirtualModelInstance<VMI, TA>, TA extends TechnologyAdapter>
+	public static abstract class FMLRTModelSlotImpl<VMI extends VirtualModelInstance<VMI, TA>, TA extends TechnologyAdapter>
 			extends ModelSlotImpl<VMI> implements FMLRTModelSlot<VMI, TA> {
 
 		private static final Logger logger = Logger.getLogger(FMLRTModelSlot.class.getPackage().getName());

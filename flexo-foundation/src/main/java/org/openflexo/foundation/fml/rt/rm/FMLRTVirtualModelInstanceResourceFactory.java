@@ -26,7 +26,7 @@ import java.util.logging.Logger;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceModelFactory;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
+import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.resource.FlexoIODelegate;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.RepositoryFolder;
@@ -44,7 +44,7 @@ import org.openflexo.xml.XMLRootElementInfo;
  *
  */
 public class FMLRTVirtualModelInstanceResourceFactory extends
-		AbstractVirtualModelInstanceResourceFactory<VirtualModelInstance, FMLRTTechnologyAdapter, FMLRTVirtualModelInstanceResource> {
+		AbstractVirtualModelInstanceResourceFactory<FMLRTVirtualModelInstance, FMLRTTechnologyAdapter, FMLRTVirtualModelInstanceResource> {
 
 	private static final Logger logger = Logger.getLogger(FMLRTVirtualModelInstanceResourceFactory.class.getPackage().getName());
 
@@ -57,8 +57,8 @@ public class FMLRTVirtualModelInstanceResourceFactory extends
 	}
 
 	@Override
-	public VirtualModelInstance makeEmptyResourceData(FMLRTVirtualModelInstanceResource resource) {
-		return resource.getFactory().newInstance(VirtualModelInstance.class);
+	public FMLRTVirtualModelInstance makeEmptyResourceData(FMLRTVirtualModelInstanceResource resource) {
+		return resource.getFactory().newInstance(FMLRTVirtualModelInstance.class);
 	}
 
 	/**
@@ -90,11 +90,11 @@ public class FMLRTVirtualModelInstanceResourceFactory extends
 		registerResource(returned, resourceCenter, technologyContextManager);
 
 		if (createEmptyContents) {
-			VirtualModelInstance resourceData = createEmptyContents(returned);
+			FMLRTVirtualModelInstance resourceData = createEmptyContents(returned);
 			resourceData.setVirtualModel(virtualModelResource.getVirtualModel());
 			returned.save(null);
 			if (resourceData.getFMLRunTimeEngine() != null) {
-				// TODO: today VirtualModelInstance is a RunTimeEvaluationContext
+				// TODO: today FMLRTVirtualModelInstance is a RunTimeEvaluationContext
 				// TODO: design issue, we should separate FlexoConceptInstance from RunTimeEvaluationContext
 				// This inheritance should disappear
 				resourceData.getFMLRunTimeEngine().addToExecutionContext(resourceData, resourceData);
@@ -135,11 +135,11 @@ public class FMLRTVirtualModelInstanceResourceFactory extends
 		registerResource(returned, resourceCenter, technologyContextManager);
 
 		if (createEmptyContents) {
-			VirtualModelInstance resourceData = createEmptyContents(returned);
+			FMLRTVirtualModelInstance resourceData = createEmptyContents(returned);
 			resourceData.setVirtualModel(virtualModelResource.getVirtualModel());
 			returned.save(null);
 			if (resourceData.getFMLRunTimeEngine() != null) {
-				// TODO: today VirtualModelInstance is a RunTimeEvaluationContext
+				// TODO: today FMLRTVirtualModelInstance is a RunTimeEvaluationContext
 				// TODO: design issue, we should separate FlexoConceptInstance from RunTimeEvaluationContext
 				// This inheritance should disappear
 				resourceData.getFMLRunTimeEngine().addToExecutionContext(resourceData, resourceData);
@@ -363,7 +363,7 @@ public class FMLRTVirtualModelInstanceResourceFactory extends
 			return null;
 		}
 
-		if (xmlRootElementInfo.getName().equals("VirtualModelInstance")) {
+		if (xmlRootElementInfo.getName().equals("FMLRTVirtualModelInstance")) {
 			returned.name = xmlRootElementInfo.getAttribute("name");
 			returned.uri = xmlRootElementInfo.getAttribute("uri");
 			returned.virtualModelURI = xmlRootElementInfo.getAttribute("virtualModelURI");

@@ -41,13 +41,13 @@ package org.openflexo.foundation.doc.nature;
 import org.openflexo.foundation.doc.FlexoDocument;
 import org.openflexo.foundation.doc.fml.FlexoDocumentModelSlot;
 import org.openflexo.foundation.fml.rt.ModelSlotInstance;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
+import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstanceNature;
 
 /**
- * Define the "controlled-document" nature of a {@link VirtualModelInstance}<br>
+ * Define the "controlled-document" nature of a {@link FMLRTVirtualModelInstance}<br>
  * 
- * A {@link FMLControlledDocumentVirtualModelInstanceNature} might be seen as an interpretation of a given {@link VirtualModelInstance}
+ * A {@link FMLControlledDocumentVirtualModelInstanceNature} might be seen as an interpretation of a given {@link FMLRTVirtualModelInstance}
  * 
  * @author sylvain
  * 
@@ -62,9 +62,9 @@ public abstract class FMLControlledDocumentVirtualModelInstanceNature<MS extends
 	public abstract Class<MS> getModelSlotClass();
 
 	/**
-	 * Return boolean indicating if supplied {@link VirtualModelInstance} might be interpreted as a FML-Controlled document
+	 * Return boolean indicating if supplied {@link FMLRTVirtualModelInstance} might be interpreted as a FML-Controlled document
 	 */
-	public boolean hasNature(VirtualModelInstance virtualModelInstance, FMLControlledDocumentVirtualModelNature<MS> vmNature) {
+	public boolean hasNature(FMLRTVirtualModelInstance virtualModelInstance, FMLControlledDocumentVirtualModelNature<MS> vmNature) {
 
 		// The corresponding VirtualModel should have FMLControlledDiagramVirtualModelNature
 		if (!virtualModelInstance.getVirtualModel().hasNature(vmNature)) {
@@ -86,11 +86,11 @@ public abstract class FMLControlledDocumentVirtualModelInstanceNature<MS extends
 		return true;
 	}
 
-	protected MS _getModelSlot(VirtualModelInstance virtualModelInstance) {
+	protected MS _getModelSlot(FMLRTVirtualModelInstance virtualModelInstance) {
 		return virtualModelInstance.getVirtualModel().getModelSlots(getModelSlotClass()).get(0);
 	}
 
-	protected ModelSlotInstance<MS, D> _getModelSlotInstance(VirtualModelInstance virtualModelInstance) {
+	protected ModelSlotInstance<MS, D> _getModelSlotInstance(FMLRTVirtualModelInstance virtualModelInstance) {
 
 		MS documentMS = _getModelSlot(virtualModelInstance);
 
@@ -98,7 +98,7 @@ public abstract class FMLControlledDocumentVirtualModelInstanceNature<MS extends
 
 	}
 
-	protected D _getDocument(VirtualModelInstance virtualModelInstance) {
+	protected D _getDocument(FMLRTVirtualModelInstance virtualModelInstance) {
 		return _getModelSlotInstance(virtualModelInstance).getAccessedResourceData();
 	}
 

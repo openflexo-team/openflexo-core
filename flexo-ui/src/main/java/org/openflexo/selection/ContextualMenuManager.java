@@ -279,7 +279,7 @@ public class ContextualMenuManager {
 					}
 					/*if (commonConcept instanceof VirtualModel) {
 						for (FlexoConcept rootConcept : ((VirtualModel) commonConcept).getAllRootFlexoConcepts()) {
-							AddFlexoConceptInstance<VirtualModelInstance<VMI,?>>
+							AddFlexoConceptInstance<FMLRTVirtualModelInstance<VMI,?>>
 						}
 					}*/
 				}

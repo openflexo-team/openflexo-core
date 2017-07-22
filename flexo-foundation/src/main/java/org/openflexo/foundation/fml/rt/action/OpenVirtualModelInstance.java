@@ -46,41 +46,41 @@ import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.action.FlexoGUIAction;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
+import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 
-public class OpenVirtualModelInstance extends FlexoGUIAction<OpenVirtualModelInstance, VirtualModelInstance, FlexoObject> {
+public class OpenVirtualModelInstance extends FlexoGUIAction<OpenVirtualModelInstance, FMLRTVirtualModelInstance, FlexoObject> {
 
 	private static final Logger logger = Logger.getLogger(OpenVirtualModelInstance.class.getPackage().getName());
 
-	public static FlexoActionType<OpenVirtualModelInstance, VirtualModelInstance, FlexoObject> actionType = new FlexoActionType<OpenVirtualModelInstance, VirtualModelInstance, FlexoObject>(
+	public static FlexoActionType<OpenVirtualModelInstance, FMLRTVirtualModelInstance, FlexoObject> actionType = new FlexoActionType<OpenVirtualModelInstance, FMLRTVirtualModelInstance, FlexoObject>(
 			"open_virtual_model_instance", FlexoActionType.defaultGroup, FlexoActionType.NORMAL_ACTION_TYPE) {
 
 		/**
 		 * Factory method
 		 */
 		@Override
-		public OpenVirtualModelInstance makeNewAction(VirtualModelInstance focusedObject, Vector<FlexoObject> globalSelection,
+		public OpenVirtualModelInstance makeNewAction(FMLRTVirtualModelInstance focusedObject, Vector<FlexoObject> globalSelection,
 				FlexoEditor editor) {
 			return new OpenVirtualModelInstance(focusedObject, globalSelection, editor);
 		}
 
 		@Override
-		public boolean isVisibleForSelection(VirtualModelInstance virtualModelInstance, Vector<FlexoObject> globalSelection) {
+		public boolean isVisibleForSelection(FMLRTVirtualModelInstance virtualModelInstance, Vector<FlexoObject> globalSelection) {
 			return true;
 		}
 
 		@Override
-		public boolean isEnabledForSelection(VirtualModelInstance view, Vector<FlexoObject> globalSelection) {
+		public boolean isEnabledForSelection(FMLRTVirtualModelInstance view, Vector<FlexoObject> globalSelection) {
 			return true;
 		}
 
 	};
 
 	static {
-		FlexoObjectImpl.addActionForClass(OpenVirtualModelInstance.actionType, VirtualModelInstance.class);
+		FlexoObjectImpl.addActionForClass(OpenVirtualModelInstance.actionType, FMLRTVirtualModelInstance.class);
 	}
 
-	OpenVirtualModelInstance(VirtualModelInstance focusedObject, Vector<FlexoObject> globalSelection, FlexoEditor editor) {
+	OpenVirtualModelInstance(FMLRTVirtualModelInstance focusedObject, Vector<FlexoObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 	}
 

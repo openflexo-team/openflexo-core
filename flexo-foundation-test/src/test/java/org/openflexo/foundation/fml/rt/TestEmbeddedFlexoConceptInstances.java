@@ -83,9 +83,9 @@ public class TestEmbeddedFlexoConceptInstances extends OpenflexoProjectAtRunTime
 
 	private static FlexoEditor editor;
 	private static FlexoProject project;
-	private static VirtualModelInstance newView;
-	private static VirtualModelInstance vmi1;
-	private static VirtualModelInstance vmi2;
+	private static FMLRTVirtualModelInstance newView;
+	private static FMLRTVirtualModelInstance vmi1;
+	private static FMLRTVirtualModelInstance vmi2;
 
 	/**
 	 * Retrieve the ViewPoint
@@ -139,7 +139,7 @@ public class TestEmbeddedFlexoConceptInstances extends OpenflexoProjectAtRunTime
 	}
 
 	/**
-	 * Instantiate in View a VirtualModelInstance
+	 * Instantiate in View a FMLRTVirtualModelInstance
 	 */
 	@Test
 	@TestOrder(4)

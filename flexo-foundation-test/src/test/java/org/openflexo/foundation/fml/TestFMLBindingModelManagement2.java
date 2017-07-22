@@ -70,7 +70,7 @@ import org.openflexo.foundation.fml.editionaction.ExpressionAction;
 import org.openflexo.foundation.fml.editionaction.FetchRequestCondition;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.fml.rm.VirtualModelResourceFactory;
-import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.editionaction.SelectFlexoConceptInstance;
 import org.openflexo.foundation.resource.DirectoryResourceCenter;
 import org.openflexo.foundation.resource.SaveResourceException;
@@ -349,7 +349,7 @@ public class TestFMLBindingModelManagement2 extends OpenflexoProjectAtRunTimeTes
 
 		SelectFlexoConceptInstance selectFlexoConceptInstance = iteration1.getFMLModelFactory().newSelectFlexoConceptInstance();
 		selectFlexoConceptInstance.setFlexoConceptType(flexoConcept);
-		selectFlexoConceptInstance.setReceiver(new DataBinding<AbstractVirtualModelInstance<?, ?>>("container"));
+		selectFlexoConceptInstance.setReceiver(new DataBinding<VirtualModelInstance<?, ?>>("container"));
 		iteration1.setIterationAction(selectFlexoConceptInstance);
 
 		FetchRequestCondition condition1 = selectFlexoConceptInstance.createCondition();
@@ -433,7 +433,7 @@ public class TestFMLBindingModelManagement2 extends OpenflexoProjectAtRunTimeTes
 
 		SelectFlexoConceptInstance selectFlexoConceptInstance = iteration2.getFMLModelFactory().newSelectFlexoConceptInstance();
 		selectFlexoConceptInstance.setFlexoConceptType(flexoConcept);
-		selectFlexoConceptInstance.setReceiver(new DataBinding<AbstractVirtualModelInstance<?, ?>>("container"));
+		selectFlexoConceptInstance.setReceiver(new DataBinding<VirtualModelInstance<?, ?>>("container"));
 		iteration2.setIterationAction(selectFlexoConceptInstance);
 		iteration2.setIteratorName("item2");
 

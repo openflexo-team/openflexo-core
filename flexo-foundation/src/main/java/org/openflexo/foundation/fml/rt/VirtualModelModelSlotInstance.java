@@ -54,7 +54,7 @@ import org.openflexo.toolbox.StringUtils;
 
 /**
  * 
- * Concretize the binding of a {@link FMLRTModelSlot} to a concrete {@link VirtualModelInstance} conform to a given {@link VirtualModel}<br>
+ * Concretize the binding of a {@link FMLRTModelSlot} to a concrete {@link FMLRTVirtualModelInstance} conform to a given {@link VirtualModel}<br>
  * 
  * @author Sylvain Guerin
  * 
@@ -64,7 +64,7 @@ import org.openflexo.toolbox.StringUtils;
 @ModelEntity
 @ImplementationClass(VirtualModelModelSlotInstance.VirtualModelModelSlotInstanceImpl.class)
 @XMLElement
-public interface VirtualModelModelSlotInstance<VMI extends AbstractVirtualModelInstance<VMI, TA>, TA extends TechnologyAdapter>
+public interface VirtualModelModelSlotInstance<VMI extends VirtualModelInstance<VMI, TA>, TA extends TechnologyAdapter>
 		extends ModelSlotInstance<FMLRTModelSlot<VMI, TA>, VMI> {
 
 	@PropertyIdentifier(type = String.class)
@@ -77,7 +77,7 @@ public interface VirtualModelModelSlotInstance<VMI extends AbstractVirtualModelI
 	@Setter(VIRTUAL_MODEL_INSTANCE_URI_KEY)
 	public void setVirtualModelInstanceURI(String virtualModelInstanceURI);
 
-	public static abstract class VirtualModelModelSlotInstanceImpl<VMI extends AbstractVirtualModelInstance<VMI, TA>, TA extends TechnologyAdapter>
+	public static abstract class VirtualModelModelSlotInstanceImpl<VMI extends VirtualModelInstance<VMI, TA>, TA extends TechnologyAdapter>
 			extends ModelSlotInstanceImpl<FMLRTModelSlot<VMI, TA>, VMI> implements VirtualModelModelSlotInstance<VMI, TA> {
 
 		private static final Logger logger = Logger.getLogger(VirtualModelModelSlotInstance.class.getPackage().getName());

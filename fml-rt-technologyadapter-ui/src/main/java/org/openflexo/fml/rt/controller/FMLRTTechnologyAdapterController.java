@@ -67,7 +67,7 @@ import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceRepository;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
+import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.AddVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.editionaction.SelectFlexoConceptInstance;
@@ -121,7 +121,7 @@ public class FMLRTTechnologyAdapterController extends TechnologyAdapterControlle
 	@Override
 	protected void initializeActions(ControllerActionInitializer actionInitializer) {
 
-		// VirtualModelInstance
+		// FMLRTVirtualModelInstance
 
 		new CreateBasicVirtualModelInstanceInitializer(actionInitializer);
 		new DeleteVirtualModelInstanceInitializer(actionInitializer);
@@ -182,7 +182,7 @@ public class FMLRTTechnologyAdapterController extends TechnologyAdapterControlle
 	 */
 	@Override
 	public ImageIcon getIconForTechnologyObject(Class<? extends TechnologyObject<?>> objectClass) {
-		if (VirtualModelInstance.class.isAssignableFrom(objectClass)) {
+		if (FMLRTVirtualModelInstance.class.isAssignableFrom(objectClass)) {
 			return FMLRTIconLibrary.VIRTUAL_MODEL_INSTANCE_ICON;
 		}
 		else if (FlexoConceptInstance.class.isAssignableFrom(objectClass)) {
@@ -258,7 +258,7 @@ public class FMLRTTechnologyAdapterController extends TechnologyAdapterControlle
 	@Override
 	public boolean hasModuleViewForObject(TechnologyObject<FMLRTTechnologyAdapter> object, FlexoController controller) {
 
-		if (object instanceof VirtualModelInstance) {
+		if (object instanceof FMLRTVirtualModelInstance) {
 			return true;
 		}
 		return false;
@@ -269,8 +269,8 @@ public class FMLRTTechnologyAdapterController extends TechnologyAdapterControlle
 		if (object instanceof FMLRTVirtualModelInstanceRepository) {
 			return getLocales().localizedForKey("virtual_model_instance_repository");
 		}
-		if (object instanceof VirtualModelInstance) {
-			return ((VirtualModelInstance) object).getTitle();
+		if (object instanceof FMLRTVirtualModelInstance) {
+			return ((FMLRTVirtualModelInstance) object).getTitle();
 		}
 		return object.toString();
 	}
@@ -286,8 +286,8 @@ public class FMLRTTechnologyAdapterController extends TechnologyAdapterControlle
 	public ModuleView<?> createModuleViewForObject(TechnologyObject<FMLRTTechnologyAdapter> object, FlexoController controller,
 			FlexoPerspective perspective) {
 
-		if (object instanceof VirtualModelInstance) {
-			VirtualModelInstance vmi = (VirtualModelInstance) object;
+		if (object instanceof FMLRTVirtualModelInstance) {
+			FMLRTVirtualModelInstance vmi = (FMLRTVirtualModelInstance) object;
 			return new VirtualModelInstanceView(vmi, controller, perspective);
 		}
 		else if (object instanceof FlexoConceptInstance) {

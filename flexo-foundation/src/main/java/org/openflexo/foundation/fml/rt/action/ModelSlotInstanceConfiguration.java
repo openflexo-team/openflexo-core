@@ -42,7 +42,7 @@ import java.util.List;
 
 import org.openflexo.foundation.DefaultFlexoObject;
 import org.openflexo.foundation.FlexoProject;
-import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.ModelSlotInstance;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
@@ -184,16 +184,16 @@ public abstract class ModelSlotInstanceConfiguration<MS extends ModelSlot<RD>, R
 	}
 
 	/**
-	 * Called to instantiate a {@link ModelSlotInstance} using this configuration, in supplied VirtualModelInstance
+	 * Called to instantiate a {@link ModelSlotInstance} using this configuration, in supplied FMLRTVirtualModelInstance
 	 * 
 	 * @param vmInstance
 	 *            the virtual model instance where the ModelSlotInstance should be created
 	 * @param containerVMI
-	 *            the VirtualModelInstance in which the VirtualModelInstance will be added
+	 *            the FMLRTVirtualModelInstance in which the FMLRTVirtualModelInstance will be added
 	 * @return
 	 */
 	public abstract ModelSlotInstance<MS, RD> createModelSlotInstance(FlexoConceptInstance flexoConceptInstance,
-			AbstractVirtualModelInstance<?, ?> containerVMI);
+			VirtualModelInstance<?, ?> containerVMI);
 
 	private String errorMessage;
 

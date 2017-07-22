@@ -42,7 +42,7 @@ import java.awt.Image;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
+import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.CreateBasicVirtualModelInstance;
 import org.openflexo.gina.annotation.FIBPanel;
 import org.openflexo.icon.FMLRTIconLibrary;
@@ -81,7 +81,7 @@ public class CreateBasicVirtualModelInstanceWizard extends AbstractCreateVirtual
 	}
 
 	/**
-	 * This step is used to set {@link VirtualModel} to be used, as well as name and title of the {@link VirtualModelInstance}
+	 * This step is used to set {@link VirtualModel} to be used, as well as name and title of the {@link FMLRTVirtualModelInstance}
 	 * 
 	 * @author sylvain
 	 * 

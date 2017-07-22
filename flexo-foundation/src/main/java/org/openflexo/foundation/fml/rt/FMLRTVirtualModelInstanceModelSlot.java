@@ -53,7 +53,7 @@ import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.XMLElement;
 
 /**
- * Model slot allowing to access a {@link VirtualModelInstance} (native implementation of a VirtualModel instance in Openflexo
+ * Model slot allowing to access a {@link FMLRTVirtualModelInstance} (native implementation of a VirtualModel instance in Openflexo
  * infrastructure)
  * 
  * @author sylvain
@@ -66,9 +66,9 @@ import org.openflexo.model.annotations.XMLElement;
 @ImplementationClass(FMLRTVirtualModelInstanceModelSlot.VirtualModelInstanceModelSlotImpl.class)
 @XMLElement(xmlTag = "FMLRTVirtualModelInstanceModelSlot", deprecatedXMLTags = "ViewModelSlot,VirtualModelInstanceModelSlot")
 @FML("FMLRTVirtualModelInstanceModelSlot")
-public interface FMLRTVirtualModelInstanceModelSlot extends FMLRTModelSlot<VirtualModelInstance, FMLRTTechnologyAdapter> {
+public interface FMLRTVirtualModelInstanceModelSlot extends FMLRTModelSlot<FMLRTVirtualModelInstance, FMLRTTechnologyAdapter> {
 
-	public static abstract class VirtualModelInstanceModelSlotImpl extends FMLRTModelSlotImpl<VirtualModelInstance, FMLRTTechnologyAdapter>
+	public static abstract class VirtualModelInstanceModelSlotImpl extends FMLRTModelSlotImpl<FMLRTVirtualModelInstance, FMLRTTechnologyAdapter>
 			implements FMLRTVirtualModelInstanceModelSlot {
 
 		private static final Logger logger = Logger.getLogger(FMLRTVirtualModelInstanceModelSlot.class.getPackage().getName());

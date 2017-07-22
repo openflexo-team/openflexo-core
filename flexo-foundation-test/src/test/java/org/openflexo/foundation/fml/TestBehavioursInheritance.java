@@ -104,7 +104,7 @@ public class TestBehavioursInheritance extends OpenflexoProjectAtRunTimeTestCase
 
 	// static FlexoProject project;
 	// static View newView;
-	// static VirtualModelInstance vmi;
+	// static FMLRTVirtualModelInstance vmi;
 	// static FlexoConceptInstance a;
 
 	private static DirectoryResourceCenter resourceCenter;

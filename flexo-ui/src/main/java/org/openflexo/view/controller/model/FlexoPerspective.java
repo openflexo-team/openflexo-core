@@ -160,7 +160,7 @@ public abstract class FlexoPerspective extends ControllerModelObject {
 	 * 
 	 * This method should be overriden<br>
 	 * 
-	 * Default returned value is true for View/VirtualModelInstance/ViewPoint/VirtualModel/FlexoConcept objects<br>
+	 * Default returned value is true for View/FMLRTVirtualModelInstance/ViewPoint/VirtualModel/FlexoConcept objects<br>
 	 * Default returned value depends on nature availability for FlexoProject/FlexoConceptInstance objects
 	 * 
 	 * @param object

@@ -42,7 +42,7 @@ import java.util.List;
 
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
-import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstanceModelFactory;
 import org.openflexo.foundation.resource.DirectoryContainerResource;
 import org.openflexo.foundation.resource.FlexoResource;
@@ -55,14 +55,14 @@ import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.Setter;
 
 /**
- * Base API for a {@link FlexoResource} encoding a {@link AbstractVirtualModelInstance}
+ * Base API for a {@link FlexoResource} encoding a {@link VirtualModelInstance}
  * 
  * @author sylvain
  * 
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(AbstractVirtualModelInstanceResourceImpl.class)
-public interface AbstractVirtualModelInstanceResource<VMI extends AbstractVirtualModelInstance<VMI, TA>, TA extends TechnologyAdapter>
+public interface AbstractVirtualModelInstanceResource<VMI extends VirtualModelInstance<VMI, TA>, TA extends TechnologyAdapter>
 		extends PamelaResource<VMI, AbstractVirtualModelInstanceModelFactory<?>>, TechnologyAdapterResource<VMI, TA>,
 		DirectoryContainerResource<VMI> {
 
@@ -81,7 +81,7 @@ public interface AbstractVirtualModelInstanceResource<VMI extends AbstractVirtua
 	public AbstractVirtualModelInstanceResource<?, ?> getContainer();
 
 	/**
-	 * Return the {@link VirtualModel} this {@link AbstractVirtualModelInstance} is conform to
+	 * Return the {@link VirtualModel} this {@link VirtualModelInstance} is conform to
 	 * 
 	 * @return
 	 */

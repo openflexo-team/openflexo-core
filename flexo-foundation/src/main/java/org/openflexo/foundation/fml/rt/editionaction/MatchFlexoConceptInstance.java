@@ -65,7 +65,7 @@ import org.openflexo.foundation.fml.VirtualModelInstanceType;
 import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
+import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.CreationSchemeAction;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.foundation.fml.rt.action.MatchingSet;
@@ -90,7 +90,7 @@ import org.openflexo.model.validation.ValidationIssue;
 import org.openflexo.model.validation.ValidationRule;
 
 /**
- * This action is used to perform synchronization regarding an {@link FlexoConceptInstance} in a given {@link VirtualModelInstance}.<br>
+ * This action is used to perform synchronization regarding an {@link FlexoConceptInstance} in a given {@link FMLRTVirtualModelInstance}.<br>
  * The matching is performed on some pattern roles, with some values retrieved from an expression.<br>
  * If target {@link FlexoConceptInstance} could not been looked up, then a new {@link FlexoConceptInstance} is created using supplied
  * {@link CreationScheme} and some parameters
@@ -103,7 +103,7 @@ import org.openflexo.model.validation.ValidationRule;
 @ModelEntity
 @ImplementationClass(MatchFlexoConceptInstance.MatchFlexoConceptInstanceImpl.class)
 @XMLElement
-public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInstance, VirtualModelInstance> {
+public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInstance, FMLRTVirtualModelInstance> {
 
 	// @PropertyIdentifier(type = DataBinding.class)
 	// public static final String VIRTUAL_MODEL_INSTANCE_KEY = "virtualModelInstance";
@@ -183,7 +183,7 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 
 	public CreateFlexoConceptInstanceParameter getParameter(FlexoBehaviourParameter p);
 
-	public static abstract class MatchFlexoConceptInstanceImpl extends FMLRTActionImpl<FlexoConceptInstance, VirtualModelInstance>
+	public static abstract class MatchFlexoConceptInstanceImpl extends FMLRTActionImpl<FlexoConceptInstance, FMLRTVirtualModelInstance>
 			implements MatchFlexoConceptInstance, PropertyChangeListener {
 
 		private FlexoConcept flexoConceptType;
@@ -274,7 +274,7 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 			return null;
 		}
 
-		public VirtualModelInstance getVirtualModelInstance(RunTimeEvaluationContext evaluationContext) {
+		public FMLRTVirtualModelInstance getVirtualModelInstance(RunTimeEvaluationContext evaluationContext) {
 			try {
 				return getReceiver().getBindingValue(evaluationContext);
 			} catch (TypeMismatchException e) {
@@ -594,7 +594,7 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 					matchingSet = ((FlexoBehaviourAction<?, ?, ?>) evaluationContext).initiateDefaultMatchingSet(this);
 				}
 
-				VirtualModelInstance vmInstance = getVirtualModelInstance(evaluationContext);
+				FMLRTVirtualModelInstance vmInstance = getVirtualModelInstance(evaluationContext);
 				Hashtable<FlexoProperty<?>, Object> criterias = new Hashtable<FlexoProperty<?>, Object>();
 				for (MatchingCriteria mc : getMatchingCriterias()) {
 					Object value = mc.evaluateCriteriaValue(evaluationContext);
@@ -682,8 +682,8 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 		}
 
 		@Override
-		public Class<VirtualModelInstance> getVirtualModelInstanceClass() {
-			return VirtualModelInstance.class;
+		public Class<FMLRTVirtualModelInstance> getVirtualModelInstanceClass() {
+			return FMLRTVirtualModelInstance.class;
 		}
 
 		private DataBinding<FlexoConceptInstance> container;
@@ -805,7 +805,7 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 		}
 
 		@Override
-		public DataBinding<VirtualModelInstance> getBinding(MatchFlexoConceptInstance object) {
+		public DataBinding<FMLRTVirtualModelInstance> getBinding(MatchFlexoConceptInstance object) {
 			return object.getReceiver();
 		}
 
@@ -818,7 +818,7 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 				((UndefinedRequiredBindingIssue) returned).addToFixProposals(new UseLocalVirtualModelInstance());
 			}
 			else {
-				DataBinding<VirtualModelInstance> binding = getBinding(object);
+				DataBinding<FMLRTVirtualModelInstance> binding = getBinding(object);
 				if (binding.getAnalyzedType() instanceof VirtualModelInstanceType && object.getFlexoConceptType() != null) {
 					if (object.getFlexoConceptType().getVirtualModel() != ((VirtualModelInstanceType) binding.getAnalyzedType())
 							.getVirtualModel()) {
@@ -870,7 +870,7 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 			@Override
 			protected void fixAction() {
 				MatchFlexoConceptInstance action = getValidable();
-				action.setReceiver(new DataBinding<VirtualModelInstance>("virtualModelInstance"));
+				action.setReceiver(new DataBinding<FMLRTVirtualModelInstance>("virtualModelInstance"));
 			}
 		}
 
@@ -887,7 +887,7 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 			@Override
 			protected void fixAction() {
 				MatchFlexoConceptInstance action = getValidable();
-				action.setReceiver(new DataBinding<VirtualModelInstance>(modelSlot.getName()));
+				action.setReceiver(new DataBinding<FMLRTVirtualModelInstance>(modelSlot.getName()));
 			}
 		}
 

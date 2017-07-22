@@ -57,11 +57,11 @@ import org.openflexo.foundation.fml.FlexoConceptInstanceRole;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelInstanceType;
-import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
+import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.CreationSchemeAction;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstance.AddFlexoConceptInstanceImpl;
@@ -86,9 +86,9 @@ import org.openflexo.model.validation.ValidationIssue;
 import org.openflexo.model.validation.ValidationRule;
 
 /**
- * Generic base action used to instanciate a {@link FlexoConceptInstance} in a given {@link VirtualModelInstance}.
+ * Generic base action used to instanciate a {@link FlexoConceptInstance} in a given {@link FMLRTVirtualModelInstance}.
  * 
- * Note that this is also the base implementation for adding of a {@link VirtualModelInstance} in a {@link View}, or a {@link View} in its
+ * Note that this is also the base implementation for adding of a {@link FMLRTVirtualModelInstance} in a {@link View}, or a {@link View} in its
  * parent {@link View}
  * 
  * 
@@ -102,7 +102,7 @@ import org.openflexo.model.validation.ValidationRule;
 
 @ModelEntity(isAbstract = true)
 @ImplementationClass(AbstractAddFlexoConceptInstance.AbstractAddFlexoConceptInstanceImpl.class)
-public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstance, VMI extends AbstractVirtualModelInstance<VMI, ?>>
+public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstance, VMI extends VirtualModelInstance<VMI, ?>>
 		extends FMLRTAction<FCI, VMI> {
 
 	@PropertyIdentifier(type = String.class)
@@ -170,7 +170,7 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 	 */
 	public List<CreationScheme> getAvailableCreationSchemes();
 
-	public static abstract class AbstractAddFlexoConceptInstanceImpl<FCI extends FlexoConceptInstance, VMI extends AbstractVirtualModelInstance<VMI, ?>>
+	public static abstract class AbstractAddFlexoConceptInstanceImpl<FCI extends FlexoConceptInstance, VMI extends VirtualModelInstance<VMI, ?>>
 			extends FMLRTActionImpl<FCI, VMI> implements AbstractAddFlexoConceptInstance<FCI, VMI> {
 
 		static final Logger logger = Logger.getLogger(AbstractAddFlexoConceptInstance.class.getPackage().getName());
@@ -400,7 +400,7 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 
 			VMI vmInstance = getVirtualModelInstance(evaluationContext);
 			if (vmInstance == null) {
-				logger.warning("null VirtualModelInstance");
+				logger.warning("null FMLRTVirtualModelInstance");
 				return null;
 			}
 
@@ -555,7 +555,7 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 		}
 
 		@Override
-		public DataBinding<VirtualModelInstance> getBinding(AbstractAddFlexoConceptInstance object) {
+		public DataBinding<FMLRTVirtualModelInstance> getBinding(AbstractAddFlexoConceptInstance object) {
 			return object.getReceiver();
 		}
 
@@ -568,7 +568,7 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 				((UndefinedRequiredBindingIssue) returned).addToFixProposals(new UseLocalVirtualModelInstance());
 			}
 			else {
-				DataBinding<VirtualModelInstance> binding = getBinding(object);
+				DataBinding<FMLRTVirtualModelInstance> binding = getBinding(object);
 
 				if (binding.getAnalyzedType() instanceof VirtualModelInstanceType && object.getFlexoConceptType() != null) {
 					if (!(object.getFlexoConceptType() instanceof VirtualModel) && object.getFlexoConceptType()
@@ -617,7 +617,7 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 			@Override
 			protected void fixAction() {
 				AbstractAddFlexoConceptInstance action = getValidable();
-				action.setReceiver(new DataBinding<VirtualModelInstance>("virtualModelInstance"));
+				action.setReceiver(new DataBinding<FMLRTVirtualModelInstance>("virtualModelInstance"));
 			}
 		}
 
@@ -634,7 +634,7 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 			@Override
 			protected void fixAction() {
 				AbstractAddFlexoConceptInstance action = getValidable();
-				action.setReceiver(new DataBinding<VirtualModelInstance>(modelSlot.getName()));
+				action.setReceiver(new DataBinding<FMLRTVirtualModelInstance>(modelSlot.getName()));
 			}
 		}
 

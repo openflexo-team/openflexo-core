@@ -58,7 +58,7 @@ import org.openflexo.toolbox.StringUtils;
 
 /**
  * Concretize the binding of a {@link ModelSlot} to a concrete {@link FlexoModel} conform to a given {@link FlexoMetaModel}<br>
- * This is the binding point between a {@link TypeAwareModelSlot} and its concretization in a {@link VirtualModelInstance}
+ * This is the binding point between a {@link TypeAwareModelSlot} and its concretization in a {@link FMLRTVirtualModelInstance}
  * 
  * @author Sylvain Guerin
  * @see TypeAwareModelSlot
@@ -94,7 +94,7 @@ public interface TypeAwareModelSlotInstance<M extends FlexoModel<M, MM> & Techno
 			super(view, modelSlot);
 		}*/
 
-		/*public TypeAwareModelSlotInstanceImpl(VirtualModelInstance vmInstance, MS modelSlot) {
+		/*public TypeAwareModelSlotInstanceImpl(FMLRTVirtualModelInstance vmInstance, MS modelSlot) {
 			super(vmInstance, modelSlot);
 		}*/
 

@@ -46,7 +46,7 @@ import javax.swing.Icon;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.action.FlexoActionFinalizer;
 import org.openflexo.foundation.action.FlexoActionInitializer;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
+import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.DeleteVirtualModelInstance;
 import org.openflexo.icon.IconLibrary;
 import org.openflexo.view.controller.ActionInitializer;
@@ -54,7 +54,7 @@ import org.openflexo.view.controller.ControllerActionInitializer;
 import org.openflexo.view.controller.FlexoController;
 
 public class DeleteVirtualModelInstanceInitializer
-		extends ActionInitializer<DeleteVirtualModelInstance, VirtualModelInstance, FlexoObject> {
+		extends ActionInitializer<DeleteVirtualModelInstance, FMLRTVirtualModelInstance, FlexoObject> {
 
 	private static final Logger logger = Logger.getLogger(ControllerActionInitializer.class.getPackage().getName());
 

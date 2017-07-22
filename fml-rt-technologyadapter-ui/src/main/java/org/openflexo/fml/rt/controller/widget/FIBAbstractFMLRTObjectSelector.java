@@ -48,11 +48,11 @@ import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelInstanceType;
-import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceRepository;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
+import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.rm.FMLRTVirtualModelInstanceResource;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.RepositoryFolder;
@@ -65,7 +65,7 @@ import org.openflexo.foundation.resource.RepositoryFolder;
  * <li>the whole environment (all is foundable in all resource centers), if {@link FlexoServiceManager} has been set</li>
  * <li>a resource center, if {@link FlexoResourceCenter} has been set</li>
  * <li>a view, if {@link View} has been set</li>
- * <li>a virtual model instance, if {@link VirtualModelInstance} has been set</li>
+ * <li>a virtual model instance, if {@link FMLRTVirtualModelInstance} has been set</li>
  * </ul>
  * 
  * @author sguerin
@@ -78,7 +78,7 @@ public abstract class FIBAbstractFMLRTObjectSelector<T extends FlexoConceptInsta
 
 	private FlexoServiceManager serviceManager;
 	private FlexoResourceCenter<?> resourceCenter;
-	private AbstractVirtualModelInstance<?, ?> virtualModelInstance;
+	private VirtualModelInstance<?, ?> virtualModelInstance;
 	private Type expectedType;
 	private FlexoConceptInstanceType defaultExpectedType;
 
@@ -162,15 +162,15 @@ public abstract class FIBAbstractFMLRTObjectSelector<T extends FlexoConceptInsta
 		}
 	}
 
-	public AbstractVirtualModelInstance<?, ?> getVirtualModelInstance() {
+	public VirtualModelInstance<?, ?> getVirtualModelInstance() {
 		return virtualModelInstance;
 	}
 
-	public void setVirtualModelInstance(AbstractVirtualModelInstance<?, ?> virtualModelInstance) {
+	public void setVirtualModelInstance(VirtualModelInstance<?, ?> virtualModelInstance) {
 
 		if ((virtualModelInstance == null && this.virtualModelInstance != null)
 				|| (virtualModelInstance != null && !virtualModelInstance.equals(this.virtualModelInstance))) {
-			AbstractVirtualModelInstance<?, ?> oldValue = this.virtualModelInstance;
+			VirtualModelInstance<?, ?> oldValue = this.virtualModelInstance;
 			this.virtualModelInstance = virtualModelInstance;
 			getPropertyChangeSupport().firePropertyChange("virtualModelInstance", oldValue, virtualModelInstance);
 			getPropertyChangeSupport().firePropertyChange("rootObject", null, getRootObject());
@@ -216,9 +216,9 @@ public abstract class FIBAbstractFMLRTObjectSelector<T extends FlexoConceptInsta
 		return true;
 	}
 
-	public boolean isVirtualModelInstanceVisible(VirtualModelInstance virtualModelInstance) {
+	public boolean isVirtualModelInstanceVisible(FMLRTVirtualModelInstance virtualModelInstance) {
 		if ((getExpectedType() instanceof VirtualModelInstanceType) || (getExpectedType() instanceof FlexoConceptInstanceType)) {
-			for (AbstractVirtualModelInstance<?, ?> vmi : virtualModelInstance.getVirtualModelInstances()) {
+			for (VirtualModelInstance<?, ?> vmi : virtualModelInstance.getVirtualModelInstances()) {
 				if (isVirtualModelInstanceVisible(vmi)) {
 					return true;
 				}
@@ -229,7 +229,7 @@ public abstract class FIBAbstractFMLRTObjectSelector<T extends FlexoConceptInsta
 		return true;
 	}
 
-	public boolean isVirtualModelInstanceVisible(AbstractVirtualModelInstance<?, ?> virtualModelInstance) {
+	public boolean isVirtualModelInstanceVisible(VirtualModelInstance<?, ?> virtualModelInstance) {
 		if (getExpectedType() instanceof VirtualModelInstanceType) {
 			// We are expecting a VMI of following type
 			VirtualModel vmType = ((VirtualModelInstanceType) getExpectedType()).getVirtualModel();

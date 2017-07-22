@@ -44,7 +44,7 @@ import javax.swing.ImageIcon;
 
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.ModelSlotInstance;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
+import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstanceObject;
 import org.openflexo.foundation.fml.rt.rm.FMLRTVirtualModelInstanceResource;
 import org.openflexo.rm.ResourceLocator;
@@ -76,7 +76,7 @@ public class FMLRTIconLibrary extends IconLibrary {
 			ResourceLocator.locateResource("Icons/Model/VE/View_64x64.png"));
 
 	public static final ImageIconResource VIRTUAL_MODEL_INSTANCE_ICON = new ImageIconResource(
-			ResourceLocator.locateResource("Icons/Model/VE/VirtualModelInstance.png"));
+			ResourceLocator.locateResource("Icons/Model/VE/FMLRTVirtualModelInstance.png"));
 	public static final ImageIconResource VIRTUAL_MODEL_INSTANCE_MEDIUM_ICON = new ImageIconResource(
 			ResourceLocator.locateResource("Icons/Model/VE/VirtualModelInstance_32x32.png"));
 	public static final ImageIconResource VIRTUAL_MODEL_INSTANCE_BIG_ICON = new ImageIconResource(
@@ -101,7 +101,7 @@ public class FMLRTIconLibrary extends IconLibrary {
 		if (object instanceof ModelSlotInstance) {
 			return FMLIconLibrary.iconForObject(((ModelSlotInstance) object).getModelSlot());
 		}
-		else if (object instanceof VirtualModelInstance) {
+		else if (object instanceof FMLRTVirtualModelInstance) {
 			return VIRTUAL_MODEL_INSTANCE_ICON;
 		}
 		else if (object instanceof FlexoConceptInstance) {

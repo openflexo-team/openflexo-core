@@ -53,7 +53,7 @@ import org.openflexo.foundation.fml.VirtualModelInstanceType;
 import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
+import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.CreateBasicVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
@@ -66,20 +66,20 @@ import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.model.annotations.XMLElement;
 
 /**
- * This action is used to explicitely instanciate a new {@link VirtualModelInstance} in an other {@link VirtualModelInstance} with some
+ * This action is used to explicitely instanciate a new {@link FMLRTVirtualModelInstance} in an other {@link FMLRTVirtualModelInstance} with some
  * parameters
  * 
  * @author sylvain
  * 
  * @param <FCI>
- *            type of {@link VirtualModelInstance} beeing created by this action
+ *            type of {@link FMLRTVirtualModelInstance} beeing created by this action
  */
 
 @ModelEntity
 @ImplementationClass(AddVirtualModelInstance.AddVirtualModelInstanceImpl.class)
 @XMLElement
 @FML("AddVirtualModelInstance")
-public interface AddVirtualModelInstance extends AbstractAddFlexoConceptInstance<VirtualModelInstance, VirtualModelInstance> {
+public interface AddVirtualModelInstance extends AbstractAddFlexoConceptInstance<FMLRTVirtualModelInstance, FMLRTVirtualModelInstance> {
 
 	@PropertyIdentifier(type = DataBinding.class)
 	public static final String VIRTUAL_MODEL_INSTANCE_NAME_KEY = "virtualModelInstanceName";
@@ -112,7 +112,7 @@ public interface AddVirtualModelInstance extends AbstractAddFlexoConceptInstance
 	public VirtualModelResource getOwnerVirtualModelResource();
 
 	public static abstract class AddVirtualModelInstanceImpl extends
-			AbstractAddFlexoConceptInstanceImpl<VirtualModelInstance, VirtualModelInstance> implements AddVirtualModelInstance {
+			AbstractAddFlexoConceptInstanceImpl<FMLRTVirtualModelInstance, FMLRTVirtualModelInstance> implements AddVirtualModelInstance {
 
 		static final Logger logger = Logger.getLogger(AddVirtualModelInstance.class.getPackage().getName());
 
@@ -120,8 +120,8 @@ public interface AddVirtualModelInstance extends AbstractAddFlexoConceptInstance
 		private DataBinding<String> virtualModelInstanceTitle;
 
 		@Override
-		public Class<VirtualModelInstance> getVirtualModelInstanceClass() {
-			return VirtualModelInstance.class;
+		public Class<FMLRTVirtualModelInstance> getVirtualModelInstanceClass() {
+			return FMLRTVirtualModelInstance.class;
 		}
 
 		@Override
@@ -165,8 +165,8 @@ public interface AddVirtualModelInstance extends AbstractAddFlexoConceptInstance
 		}
 
 		@Override
-		public VirtualModelInstance execute(RunTimeEvaluationContext evaluationContext) {
-			System.out.println("Now create a VirtualModelInstance");
+		public FMLRTVirtualModelInstance execute(RunTimeEvaluationContext evaluationContext) {
+			System.out.println("Now create a FMLRTVirtualModelInstance");
 			return super.execute(evaluationContext);
 		}
 
@@ -222,8 +222,8 @@ public interface AddVirtualModelInstance extends AbstractAddFlexoConceptInstance
 		}
 
 		@Override
-		protected VirtualModelInstance makeNewFlexoConceptInstance(RunTimeEvaluationContext evaluationContext) {
-			VirtualModelInstance container = getVirtualModelInstance(evaluationContext);
+		protected FMLRTVirtualModelInstance makeNewFlexoConceptInstance(RunTimeEvaluationContext evaluationContext) {
+			FMLRTVirtualModelInstance container = getVirtualModelInstance(evaluationContext);
 			logger.info("container: " + container);
 			if (container == null) {
 				logger.warning("null container");
@@ -250,7 +250,7 @@ public interface AddVirtualModelInstance extends AbstractAddFlexoConceptInstance
 				createVMIAction.setNewVirtualModelInstanceName(name);
 				createVMIAction.setNewVirtualModelInstanceTitle(title);
 				createVMIAction.setVirtualModel((VirtualModel) getFlexoConceptType());
-				// He we just want to create a PLAIN and EMPTY VirtualModelInstance,
+				// He we just want to create a PLAIN and EMPTY FMLRTVirtualModelInstance,
 				// eventual CreationScheme will be executed later
 				// DONT UNCOMMENT THIS !!!!
 				/*if (getCreationScheme() != null) {

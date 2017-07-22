@@ -42,7 +42,7 @@ import java.io.FileNotFoundException;
 import org.openflexo.connie.type.CustomTypeFactory;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
+import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 
 /**
@@ -66,7 +66,7 @@ public class VirtualModelInstanceType extends FlexoConceptInstanceType {
 
 	@Override
 	public Class<?> getBaseClass() {
-		return VirtualModelInstance.class;
+		return FMLRTVirtualModelInstance.class;
 	}
 
 	public VirtualModel getVirtualModel() {

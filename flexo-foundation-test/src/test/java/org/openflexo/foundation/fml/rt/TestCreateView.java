@@ -75,7 +75,7 @@ public class TestCreateView extends OpenflexoProjectAtRunTimeTestCase {
 	private static VirtualModel newViewPoint;
 	private static FlexoEditor editor;
 	private static FlexoProject project;
-	private static VirtualModelInstance newView;
+	private static FMLRTVirtualModelInstance newView;
 
 	private static DirectoryResourceCenter resourceCenter;
 

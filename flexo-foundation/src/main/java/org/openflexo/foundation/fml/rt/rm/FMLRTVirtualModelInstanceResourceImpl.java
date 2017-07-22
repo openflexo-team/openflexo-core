@@ -46,7 +46,7 @@ import java.util.logging.Logger;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
+import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.resource.FileIODelegate;
 import org.openflexo.rm.FileSystemResourceLocatorImpl;
 import org.openflexo.rm.Resource;
@@ -60,14 +60,14 @@ import org.openflexo.rm.ResourceLocator;
  * 
  */
 public abstract class FMLRTVirtualModelInstanceResourceImpl
-		extends AbstractVirtualModelInstanceResourceImpl<VirtualModelInstance, FMLRTTechnologyAdapter>
+		extends AbstractVirtualModelInstanceResourceImpl<FMLRTVirtualModelInstance, FMLRTTechnologyAdapter>
 		implements FMLRTVirtualModelInstanceResource {
 
 	static final Logger logger = Logger.getLogger(FMLRTVirtualModelInstanceResourceImpl.class.getPackage().getName());
 
 	@Override
-	public Class<VirtualModelInstance> getResourceDataClass() {
-		return VirtualModelInstance.class;
+	public Class<FMLRTVirtualModelInstance> getResourceDataClass() {
+		return FMLRTVirtualModelInstance.class;
 	}
 
 	@Override
@@ -132,12 +132,12 @@ public abstract class FMLRTVirtualModelInstanceResourceImpl
 	}
 
 	@Override
-	public VirtualModelInstance getModelData() {
+	public FMLRTVirtualModelInstance getModelData() {
 		return getVirtualModelInstance();
 	}
 
 	@Override
-	public VirtualModelInstance getModel() {
+	public FMLRTVirtualModelInstance getModel() {
 		return getVirtualModelInstance();
 	}
 

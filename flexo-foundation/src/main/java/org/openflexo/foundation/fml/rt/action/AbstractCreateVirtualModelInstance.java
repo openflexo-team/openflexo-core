@@ -56,9 +56,9 @@ import org.openflexo.foundation.fml.CreationScheme;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
-import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
-import org.openflexo.foundation.fml.rt.ModelSlotInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
+import org.openflexo.foundation.fml.rt.ModelSlotInstance;
+import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.rm.AbstractVirtualModelInstanceResource;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.RepositoryFolder;
@@ -69,16 +69,16 @@ import org.openflexo.toolbox.JavaUtils;
 import org.openflexo.toolbox.StringUtils;
 
 /**
- * Abstract base implementation for an action which aims at creating a new {@link AbstractVirtualModelInstance}
+ * Abstract base implementation for an action which aims at creating a new {@link VirtualModelInstance}
  * 
  * @author sylvain
  * 
  * @param <A>
  *            type of action, required to manage introspection for inheritance
  * @param <T>
- *            type of container of newly created VirtualModelInstance
+ *            type of container of newly created FMLRTVirtualModelInstance
  */
-public abstract class AbstractCreateVirtualModelInstance<A extends AbstractCreateVirtualModelInstance<A, T, VMI, TA>, T extends FlexoObject, VMI extends AbstractVirtualModelInstance<VMI, TA>, TA extends TechnologyAdapter>
+public abstract class AbstractCreateVirtualModelInstance<A extends AbstractCreateVirtualModelInstance<A, T, VMI, TA>, T extends FlexoObject, VMI extends VirtualModelInstance<VMI, TA>, TA extends TechnologyAdapter>
 		extends FlexoAction<A, T, FlexoObject> implements FlexoObserver {
 
 	private static final Logger logger = Logger.getLogger(AbstractCreateVirtualModelInstance.class.getPackage().getName());
@@ -173,7 +173,7 @@ public abstract class AbstractCreateVirtualModelInstance<A extends AbstractCreat
 
 		}
 
-		// We add the VirtualModelInstance to the view
+		// We add the FMLRTVirtualModelInstance to the view
 		if (getContainerVirtualModelInstance() != null) {
 			getContainerVirtualModelInstance().addToVirtualModelInstances(newVirtualModelInstance);
 		}
@@ -370,7 +370,7 @@ public abstract class AbstractCreateVirtualModelInstance<A extends AbstractCreat
 		this.creationScheme = creationScheme;
 		if (creationScheme != null) {
 			creationSchemeAction = CreationSchemeAction.actionType.makeNewEmbeddedAction(
-					getFocusedObject() instanceof VirtualModelInstance ? (AbstractVirtualModelInstance<?, ?>) getFocusedObject() : null,
+					getFocusedObject() instanceof FMLRTVirtualModelInstance ? (VirtualModelInstance<?, ?>) getFocusedObject() : null,
 					null, this);
 			creationSchemeAction.setCreationScheme(creationScheme);
 			creationSchemeAction.addObserver(this);
@@ -404,8 +404,8 @@ public abstract class AbstractCreateVirtualModelInstance<A extends AbstractCreat
 	}
 
 	/**
-	 * Return the VirtualModel of the container of currently created {@link VirtualModelInstance}.<br>
-	 * Note that if we are creating a top-level VirtualModelInstance, container might be null, and this method will return null
+	 * Return the VirtualModel of the container of currently created {@link FMLRTVirtualModelInstance}.<br>
+	 * Note that if we are creating a top-level FMLRTVirtualModelInstance, container might be null, and this method will return null
 	 * 
 	 * @return
 	 */
@@ -417,8 +417,8 @@ public abstract class AbstractCreateVirtualModelInstance<A extends AbstractCreat
 	}
 
 	/**
-	 * Return the VirtualModel resource of the container of currently created {@link VirtualModelInstance}.<br>
-	 * Note that if we are creating a top-level VirtualModelInstance, container might be null, and this method will return null
+	 * Return the VirtualModel resource of the container of currently created {@link FMLRTVirtualModelInstance}.<br>
+	 * Note that if we are creating a top-level FMLRTVirtualModelInstance, container might be null, and this method will return null
 	 * 
 	 * @return
 	 */
@@ -430,21 +430,21 @@ public abstract class AbstractCreateVirtualModelInstance<A extends AbstractCreat
 	}
 
 	/**
-	 * Return the {@link AbstractVirtualModelInstance} acting as container of currently created {@link AbstractVirtualModelInstance}.<br>
+	 * Return the {@link VirtualModelInstance} acting as container of currently created {@link VirtualModelInstance}.<br>
 	 * 
-	 * Note that if we are creating a plain VirtualModelInstance (in a folder for example), container might be null
+	 * Note that if we are creating a plain FMLRTVirtualModelInstance (in a folder for example), container might be null
 	 * 
 	 * @return
 	 */
-	public AbstractVirtualModelInstance<?, ?> getContainerVirtualModelInstance() {
-		if (getFocusedObject() instanceof AbstractVirtualModelInstance) {
-			return (AbstractVirtualModelInstance<?, ?>) getFocusedObject();
+	public VirtualModelInstance<?, ?> getContainerVirtualModelInstance() {
+		if (getFocusedObject() instanceof VirtualModelInstance) {
+			return (VirtualModelInstance<?, ?>) getFocusedObject();
 		}
 		return null;
 	}
 
 	/**
-	 * Return the folder in which the new {@link AbstractVirtualModelInstance} is to be created
+	 * Return the folder in which the new {@link VirtualModelInstance} is to be created
 	 * 
 	 * @return
 	 */
@@ -502,7 +502,7 @@ public abstract class AbstractCreateVirtualModelInstance<A extends AbstractCreat
 	}
 
 	/**
-	 * Return boolean indicating if proposed name is a valid as name for the new VirtualModelInstance
+	 * Return boolean indicating if proposed name is a valid as name for the new FMLRTVirtualModelInstance
 	 * 
 	 * @param proposedName
 	 * @return

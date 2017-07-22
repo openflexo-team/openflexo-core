@@ -69,7 +69,7 @@ import org.openflexo.foundation.fml.editionaction.ExpressionAction;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.fml.rm.VirtualModelResourceFactory;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
+import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.CreateBasicVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.CreationSchemeAction;
 import org.openflexo.foundation.fml.rt.rm.FMLRTVirtualModelInstanceResource;
@@ -109,8 +109,8 @@ public class TestFlexoRoleCardinality extends OpenflexoProjectAtRunTimeTestCase 
 	public static FlexoConceptInstanceRole someFlexoConcept2;
 
 	static FlexoProject project;
-	static VirtualModelInstance newView;
-	static VirtualModelInstance vmi;
+	static FMLRTVirtualModelInstance newView;
+	static FMLRTVirtualModelInstance vmi;
 	static FlexoConceptInstance fci;
 	public static FlexoConceptInstance[] fci2;
 
@@ -351,7 +351,7 @@ public class TestFlexoRoleCardinality extends OpenflexoProjectAtRunTimeTestCase 
 
 		CreateBasicVirtualModelInstance createVMI = CreateBasicVirtualModelInstance.actionType.makeNewAction(newView, null, editor);
 		createVMI.setNewVirtualModelInstanceName("MyVirtualModelInstance");
-		createVMI.setNewVirtualModelInstanceTitle("Test creation of a new VirtualModelInstance");
+		createVMI.setNewVirtualModelInstanceTitle("Test creation of a new FMLRTVirtualModelInstance");
 		createVMI.setVirtualModel(virtualModel);
 		createVMI.doAction();
 		assertTrue(createVMI.hasActionExecutionSucceeded());
@@ -582,7 +582,7 @@ public class TestFlexoRoleCardinality extends OpenflexoProjectAtRunTimeTestCase 
 		System.out.println("All resources=" + project.getAllResources());
 		assertNotNull(project.getResource(newView.getURI()));
 
-		VirtualModelInstance reloadedVMI = (VirtualModelInstance) newView.getVirtualModelInstance("MyVirtualModelInstance");
+		FMLRTVirtualModelInstance reloadedVMI = (FMLRTVirtualModelInstance) newView.getVirtualModelInstance("MyVirtualModelInstance");
 		assertNotNull(reloadedVMI);
 
 		System.out.println(((PamelaResource<?, ?>) reloadedVMI.getResource()).getFactory().stringRepresentation(reloadedVMI));

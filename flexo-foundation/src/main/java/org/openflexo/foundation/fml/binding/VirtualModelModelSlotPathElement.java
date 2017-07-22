@@ -46,9 +46,9 @@ import org.openflexo.connie.binding.BindingPathElement;
 import org.openflexo.connie.binding.SimplePathElement;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
-import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
-import org.openflexo.foundation.fml.rt.ModelSlotInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
+import org.openflexo.foundation.fml.rt.ModelSlotInstance;
+import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 
 public class VirtualModelModelSlotPathElement<MS extends ModelSlot> extends SimplePathElement {
@@ -78,8 +78,8 @@ public class VirtualModelModelSlotPathElement<MS extends ModelSlot> extends Simp
 
 	@Override
 	public Object getBindingValue(Object target, BindingEvaluationContext context) throws TypeMismatchException, NullReferenceException {
-		if (target instanceof VirtualModelInstance) {
-			AbstractVirtualModelInstance<?, ?> vmi = (AbstractVirtualModelInstance<?, ?>) target;
+		if (target instanceof FMLRTVirtualModelInstance) {
+			VirtualModelInstance<?, ?> vmi = (VirtualModelInstance<?, ?>) target;
 			ModelSlotInstance<?, ?> msi = vmi.getModelSlotInstance(modelSlot);
 			if (msi != null) {
 				return msi.getAccessedResourceData();
@@ -94,11 +94,11 @@ public class VirtualModelModelSlotPathElement<MS extends ModelSlot> extends Simp
 	public void setBindingValue(Object value, Object target, BindingEvaluationContext context)
 			throws TypeMismatchException, NullReferenceException {
 
-		if (target instanceof VirtualModelInstance) {
+		if (target instanceof FMLRTVirtualModelInstance) {
 
 			System.out.println("OK, on tente de mettre la valeur suivante a " + modelSlot + " : " + value);
 
-			AbstractVirtualModelInstance<?, ?> vmi = (VirtualModelInstance) target;
+			VirtualModelInstance<?, ?> vmi = (FMLRTVirtualModelInstance) target;
 			vmi.setFlexoPropertyValue(modelSlot, value);
 			return;
 		}

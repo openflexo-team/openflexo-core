@@ -22,7 +22,7 @@ package org.openflexo.foundation.fml.rt.rm;
 
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstanceModelFactory;
 import org.openflexo.foundation.resource.PamelaResourceFactory;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
@@ -35,7 +35,7 @@ import org.openflexo.toolbox.FlexoVersion;
  * @author sylvain
  *
  */
-public abstract class AbstractVirtualModelInstanceResourceFactory<VMI extends AbstractVirtualModelInstance<VMI, TA>, TA extends TechnologyAdapter, VMR extends AbstractVirtualModelInstanceResource<VMI, TA>>
+public abstract class AbstractVirtualModelInstanceResourceFactory<VMI extends VirtualModelInstance<VMI, TA>, TA extends TechnologyAdapter, VMR extends AbstractVirtualModelInstanceResource<VMI, TA>>
 		extends PamelaResourceFactory<VMR, VMI, TA, AbstractVirtualModelInstanceModelFactory<?>> {
 
 	public static final FlexoVersion INITIAL_REVISION = new FlexoVersion("0.1");

@@ -69,7 +69,7 @@ public class TestCreateViewFromExistingViewPoint extends OpenflexoProjectAtRunTi
 	private static VirtualModel viewPoint;
 	private static FlexoEditor editor;
 	private static FlexoProject project;
-	private static VirtualModelInstance newView;
+	private static FMLRTVirtualModelInstance newView;
 
 	/**
 	 * Retrieve the ViewPoint

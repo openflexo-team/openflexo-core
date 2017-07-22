@@ -41,10 +41,10 @@ package org.openflexo.foundation.fml.rt.editionaction;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.annotations.FML;
-import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
+import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.model.annotations.DefineValidationRule;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
@@ -54,7 +54,7 @@ import org.openflexo.model.validation.ValidationIssue;
 import org.openflexo.model.validation.ValidationRule;
 
 /**
- * This action is used to explicitely instanciate a new {@link FlexoConceptInstance} in a given {@link VirtualModelInstance} with some
+ * This action is used to explicitely instanciate a new {@link FlexoConceptInstance} in a given {@link FMLRTVirtualModelInstance} with some
  * parameters
  * 
  * @author sylvain
@@ -67,10 +67,10 @@ import org.openflexo.model.validation.ValidationRule;
 @ImplementationClass(AddFlexoConceptInstance.AddFlexoConceptInstanceImpl.class)
 @XMLElement
 @FML("AddFlexoConceptInstance")
-public interface AddFlexoConceptInstance<VMI extends AbstractVirtualModelInstance<VMI, ?>>
+public interface AddFlexoConceptInstance<VMI extends VirtualModelInstance<VMI, ?>>
 		extends AbstractAddFlexoConceptInstance<FlexoConceptInstance, VMI> {
 
-	public static abstract class AddFlexoConceptInstanceImpl<VMI extends AbstractVirtualModelInstance<VMI, ?>>
+	public static abstract class AddFlexoConceptInstanceImpl<VMI extends VirtualModelInstance<VMI, ?>>
 			extends AbstractAddFlexoConceptInstanceImpl<FlexoConceptInstance, VMI> implements AddFlexoConceptInstance<VMI> {
 
 		static final Logger logger = Logger.getLogger(AddFlexoConceptInstance.class.getPackage().getName());
@@ -82,7 +82,7 @@ public interface AddFlexoConceptInstance<VMI extends AbstractVirtualModelInstanc
 
 		@Override
 		public Class<VMI> getVirtualModelInstanceClass() {
-			return (Class) VirtualModelInstance.class;
+			return (Class) FMLRTVirtualModelInstance.class;
 		}
 
 		@Override

@@ -46,7 +46,7 @@ import javax.swing.Icon;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.action.FlexoActionFinalizer;
 import org.openflexo.foundation.action.FlexoActionInitializer;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
+import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.OpenVirtualModelInstance;
 import org.openflexo.icon.FMLRTIconLibrary;
 import org.openflexo.icon.IconFactory;
@@ -55,7 +55,7 @@ import org.openflexo.view.controller.ActionInitializer;
 import org.openflexo.view.controller.ControllerActionInitializer;
 import org.openflexo.view.controller.TechnologyPerspective;
 
-public class OpenVirtualModelInstanceInitializer extends ActionInitializer<OpenVirtualModelInstance, VirtualModelInstance, FlexoObject> {
+public class OpenVirtualModelInstanceInitializer extends ActionInitializer<OpenVirtualModelInstance, FMLRTVirtualModelInstance, FlexoObject> {
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(ControllerActionInitializer.class.getPackage().getName());

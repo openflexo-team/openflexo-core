@@ -188,7 +188,7 @@ public class ResourceConsistencyService extends FlexoServiceImpl {
 	private static void informOfViewPointMissing(FMLRTVirtualModelInstanceResourceImpl resource) {
 		if (resource != null) {
 			Thread.dumpStack();
-			FlexoController.notify("<html> " + "<h3>VirtualModel resource is missing!</h3>" + "<p>VirtualModelInstance <font color=\"red\">"
+			FlexoController.notify("<html> " + "<h3>VirtualModel resource is missing!</h3>" + "<p>FMLRTVirtualModelInstance <font color=\"red\">"
 					+ resource.getURI() + "</font><br>requires VirtualModel: " + resource.getVirtualModelURI()
 					+ "<br>Please add resources in resource centers and restart Openflexo</html>");
 		}

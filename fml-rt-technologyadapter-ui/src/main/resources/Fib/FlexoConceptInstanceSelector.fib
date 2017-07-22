@@ -59,7 +59,7 @@
 		</BrowserElement>
 		<BrowserElement id="12"
 			visible="data.isVirtualModelInstanceVisible(virtualModelInstance)"
-			dataClassName="org.openflexo.foundation.fml.rt.VirtualModelInstance"
+			dataClassName="org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance"
 			icon="controller.iconForObject(virtualModelInstance)" label="virtualModelInstance.stringRepresentation"
 			isEditable="false" name="virtualModelInstance">
 			<Children id="11" data="virtualModelInstance.virtualModelInstances" name="subVMIs" />

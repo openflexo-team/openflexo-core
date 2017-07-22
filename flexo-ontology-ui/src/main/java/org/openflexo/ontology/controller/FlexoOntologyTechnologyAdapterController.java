@@ -101,7 +101,7 @@ public abstract class FlexoOntologyTechnologyAdapterController<TA extends Techno
 				}
 			}
 			else {
-				logger.warning("Inconsistent data: no VirtualModelInstance for action " + action);
+				logger.warning("Inconsistent data: no FMLRTVirtualModelInstance for action " + action);
 			}
 			// Quick and dirty hack to configure IndividualSelector: refactor this when new binding model will be in use
 			individualSelector
@@ -134,7 +134,7 @@ public abstract class FlexoOntologyTechnologyAdapterController<TA extends Techno
 				}
 			}
 			else {
-				logger.warning("Inconsistent data: no VirtualModelInstance for action " + action);
+				logger.warning("Inconsistent data: no FMLRTVirtualModelInstance for action " + action);
 			}
 			// Quick and dirty hack to configure ClassSelector: refactor this when new binding model will be in use
 			IFlexoOntologyClass conceptClass = null;
@@ -170,7 +170,7 @@ public abstract class FlexoOntologyTechnologyAdapterController<TA extends Techno
 				}
 			}
 			else {
-				logger.warning("Inconsistent data: no VirtualModelInstance for action " + action);
+				logger.warning("Inconsistent data: no FMLRTVirtualModelInstance for action " + action);
 			}
 	
 			// Quick and dirty hack to configure PropertySelector: refactor this when new binding model will be in use

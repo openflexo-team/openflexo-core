@@ -104,8 +104,8 @@ public class TestPopulateVirtualModelInstance extends OpenflexoProjectAtRunTimeT
 	private static DirectoryResourceCenter resourceCenter;
 
 	private static FlexoProject project;
-	private static VirtualModelInstance newView;
-	private static VirtualModelInstance newVirtualModelInstance;
+	private static FMLRTVirtualModelInstance newView;
+	private static FMLRTVirtualModelInstance newVirtualModelInstance;
 
 	/**
 	 * Test the VP creation
@@ -337,7 +337,7 @@ public class TestPopulateVirtualModelInstance extends OpenflexoProjectAtRunTimeT
 	}
 
 	/**
-	 * Instantiate in project a VirtualModelInstance conform to the VirtualModel
+	 * Instantiate in project a FMLRTVirtualModelInstance conform to the VirtualModel
 	 * 
 	 * @throws SaveResourceException
 	 */
@@ -349,7 +349,7 @@ public class TestPopulateVirtualModelInstance extends OpenflexoProjectAtRunTimeT
 
 		CreateBasicVirtualModelInstance action = CreateBasicVirtualModelInstance.actionType.makeNewAction(newView, null, editor);
 		action.setNewVirtualModelInstanceName("MyVirtualModelInstance");
-		action.setNewVirtualModelInstanceTitle("Test creation of a new VirtualModelInstance");
+		action.setNewVirtualModelInstanceTitle("Test creation of a new FMLRTVirtualModelInstance");
 		action.setVirtualModel(virtualModel);
 
 		action.doAction();
@@ -370,7 +370,7 @@ public class TestPopulateVirtualModelInstance extends OpenflexoProjectAtRunTimeT
 	}
 
 	/**
-	 * Try to populate VirtualModelInstance
+	 * Try to populate FMLRTVirtualModelInstance
 	 * 
 	 * @throws SaveResourceException
 	 */
@@ -457,7 +457,7 @@ public class TestPopulateVirtualModelInstance extends OpenflexoProjectAtRunTimeT
 	}
 
 	/**
-	 * Instantiate in project a VirtualModelInstance conform to the VirtualModel
+	 * Instantiate in project a FMLRTVirtualModelInstance conform to the VirtualModel
 	 * 
 	 * @throws FlexoException
 	 * @throws ResourceLoadingCancelledException

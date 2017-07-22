@@ -46,11 +46,11 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoException;
-import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstanceModelFactory;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.FreeModelSlotInstance;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
+import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.ModelSlotInstanceConfiguration;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
@@ -116,7 +116,7 @@ public class FreeModelSlotInstanceConfiguration<RD extends ResourceData<RD> & Te
 
 	@Override
 	public FreeModelSlotInstance<RD, MS> createModelSlotInstance(FlexoConceptInstance flexoConceptInstance,
-			AbstractVirtualModelInstance<?, ?> view) {
+			VirtualModelInstance<?, ?> view) {
 
 		AbstractVirtualModelInstanceModelFactory<?> factory = flexoConceptInstance.getFactory();
 
@@ -126,8 +126,8 @@ public class FreeModelSlotInstanceConfiguration<RD extends ResourceData<RD> & Te
 
 		FreeModelSlotInstance<RD, MS> returned = factory.newInstance(FreeModelSlotInstance.class);
 		returned.setModelSlot(getModelSlot());
-		/*if (flexoConceptInstance instanceof VirtualModelInstance) {
-			returned.setVirtualModelInstance((VirtualModelInstance) flexoConceptInstance);
+		/*if (flexoConceptInstance instanceof FMLRTVirtualModelInstance) {
+			returned.setVirtualModelInstance((FMLRTVirtualModelInstance) flexoConceptInstance);
 		}
 		else {*/
 		returned.setFlexoConceptInstance(flexoConceptInstance);
@@ -189,14 +189,14 @@ public class FreeModelSlotInstanceConfiguration<RD extends ResourceData<RD> & Te
 		return modelSlot.createSharedEmptyResource(getResourceCenter(), getRelativePath(), getFilename(), getResourceUri());
 	}
 
-	private VirtualModelInstance getView(FreeModelSlotInstance<RD, MS> msInstance) {
-		VirtualModelInstance view = null;
+	private FMLRTVirtualModelInstance getView(FreeModelSlotInstance<RD, MS> msInstance) {
+		FMLRTVirtualModelInstance view = null;
 		if (msInstance.getVirtualModelInstance() != null) {
-			view = (VirtualModelInstance) msInstance.getVirtualModelInstance();
+			view = (FMLRTVirtualModelInstance) msInstance.getVirtualModelInstance();
 		}
 		else if (msInstance.getVirtualModelInstance() != null
 				&& msInstance.getVirtualModelInstance().getContainerVirtualModelInstance() != null) {
-			view = (VirtualModelInstance) msInstance.getVirtualModelInstance().getContainerVirtualModelInstance();
+			view = (FMLRTVirtualModelInstance) msInstance.getVirtualModelInstance().getContainerVirtualModelInstance();
 		}
 		return view;
 	}

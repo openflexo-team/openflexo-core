@@ -46,13 +46,13 @@ import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelInstanceType;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceRepository;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
+import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.rm.FMLRTVirtualModelInstanceResource;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
 
 /**
- * Widget allowing to select a VirtualModelInstance
+ * Widget allowing to select a FMLRTVirtualModelInstance
  * 
  * @author sguerin
  * 
@@ -65,7 +65,7 @@ public class FIBVirtualModelInstanceResourceSelector extends FIBProjectObjectSel
 	public static Resource FIB_FILE = ResourceLocator.locateResource("Fib/VirtualModelInstanceResourceSelector.fib");
 
 	private FMLRTVirtualModelInstanceRepository<?> vmiRepository;
-	private VirtualModelInstance containerVirtualModelInstance;
+	private FMLRTVirtualModelInstance containerVirtualModelInstance;
 	private VirtualModel virtualModel;
 	private Type expectedType;
 	private VirtualModelInstanceType defaultExpectedType;
@@ -112,17 +112,17 @@ public class FIBVirtualModelInstanceResourceSelector extends FIBProjectObjectSel
 		this.vmiRepository = vmiRepository;
 	}
 
-	public VirtualModelInstance getContainerVirtualModelInstance() {
+	public FMLRTVirtualModelInstance getContainerVirtualModelInstance() {
 		return containerVirtualModelInstance;
 	}
 
 	@CustomComponentParameter(name = "containerVirtualModelInstance", type = CustomComponentParameter.Type.OPTIONAL)
-	public void setContainerVirtualModelInstance(VirtualModelInstance containerVirtualModelInstance) {
+	public void setContainerVirtualModelInstance(FMLRTVirtualModelInstance containerVirtualModelInstance) {
 		this.containerVirtualModelInstance = containerVirtualModelInstance;
 	}
 
 	/**
-	 * Return virtual model which selected VirtualModelInstance should conform
+	 * Return virtual model which selected FMLRTVirtualModelInstance should conform
 	 * 
 	 * @return
 	 */
@@ -131,7 +131,7 @@ public class FIBVirtualModelInstanceResourceSelector extends FIBProjectObjectSel
 	}
 
 	/**
-	 * Sets virtual model which selected VirtualModelInstance should conform
+	 * Sets virtual model which selected FMLRTVirtualModelInstance should conform
 	 * 
 	 * @param virtualModel
 	 */
@@ -160,7 +160,7 @@ public class FIBVirtualModelInstanceResourceSelector extends FIBProjectObjectSel
 	/*@Override
 	protected boolean isAcceptableValue(Object o) {
 		if (o instanceof VirtualModelInstanceResource) {
-			VirtualModelInstance vmi = ((VirtualModelInstanceResource) o).getVirtualModelInstance();
+			FMLRTVirtualModelInstance vmi = ((VirtualModelInstanceResource) o).getVirtualModelInstance();
 			if (getVirtualModel() != null) {
 				return vmi.getVirtualModel() == getVirtualModel();
 			}
@@ -180,7 +180,7 @@ public class FIBVirtualModelInstanceResourceSelector extends FIBProjectObjectSel
 		if (!(getExpectedType() instanceof VirtualModelInstanceType)) {
 			return false;
 		}
-		VirtualModelInstance vmi = ((FMLRTVirtualModelInstanceResource) o).getVirtualModelInstance();
+		FMLRTVirtualModelInstance vmi = ((FMLRTVirtualModelInstanceResource) o).getVirtualModelInstance();
 		VirtualModelInstanceType vmiType = (VirtualModelInstanceType) getExpectedType();
 		return (vmiType.getVirtualModel() == null) || (vmiType.getVirtualModel().isAssignableFrom(vmi.getVirtualModel()));
 

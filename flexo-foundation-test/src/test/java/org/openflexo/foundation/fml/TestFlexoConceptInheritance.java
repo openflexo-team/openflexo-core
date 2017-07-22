@@ -66,7 +66,7 @@ import org.openflexo.foundation.fml.binding.VirtualModelBindingModel;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.fml.rm.VirtualModelResourceFactory;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
+import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.resource.DirectoryResourceCenter;
 import org.openflexo.foundation.resource.FileSystemBasedResourceCenter;
 import org.openflexo.foundation.resource.SaveResourceException;
@@ -121,8 +121,8 @@ public class TestFlexoConceptInheritance extends OpenflexoProjectAtRunTimeTestCa
 	public static PrimitiveRole<String> property9InD;
 
 	static FlexoProject project;
-	static VirtualModelInstance newView;
-	static VirtualModelInstance vmi;
+	static FMLRTVirtualModelInstance newView;
+	static FMLRTVirtualModelInstance vmi;
 	static FlexoConceptInstance a;
 
 	private static DirectoryResourceCenter resourceCenter;

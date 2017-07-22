@@ -55,7 +55,7 @@ public class FMLRTVirtualModelInstanceModelFactory extends AbstractVirtualModelI
 
 	public FMLRTVirtualModelInstanceModelFactory(FMLRTVirtualModelInstanceResource resource, EditingContext editingContext,
 			TechnologyAdapterService taService) throws ModelDefinitionException {
-		super(resource, VirtualModelInstance.class, editingContext, taService);
+		super(resource, FMLRTVirtualModelInstance.class, editingContext, taService);
 	}
 
 }

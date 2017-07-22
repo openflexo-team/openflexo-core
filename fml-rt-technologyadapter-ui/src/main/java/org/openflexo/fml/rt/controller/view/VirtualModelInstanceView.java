@@ -40,7 +40,7 @@ package org.openflexo.fml.rt.controller.view;
 
 import org.openflexo.fml.rt.controller.CommonFIB;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
+import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.gina.model.listener.FIBMouseClickListener;
 import org.openflexo.gina.view.FIBView;
 import org.openflexo.view.FIBModuleView;
@@ -49,16 +49,16 @@ import org.openflexo.view.controller.FlexoController;
 import org.openflexo.view.controller.model.FlexoPerspective;
 
 /**
- * This is the {@link ModuleView} representing a {@link VirtualModelInstance}
+ * This is the {@link ModuleView} representing a {@link FMLRTVirtualModelInstance}
  * 
  * @author sguerin
  * 
  */
-public class VirtualModelInstanceView extends FIBModuleView<VirtualModelInstance>implements FIBMouseClickListener {
+public class VirtualModelInstanceView extends FIBModuleView<FMLRTVirtualModelInstance>implements FIBMouseClickListener {
 
 	private final FlexoPerspective perspective;
 
-	public VirtualModelInstanceView(VirtualModelInstance vmInstance, FlexoController controller, FlexoPerspective perspective) {
+	public VirtualModelInstanceView(FMLRTVirtualModelInstance vmInstance, FlexoController controller, FlexoPerspective perspective) {
 		super(vmInstance, controller, CommonFIB.VIRTUAL_MODEL_INSTANCE_VIEW_FIB,
 				controller.getTechnologyAdapter(FMLRTTechnologyAdapter.class).getLocales());
 		this.perspective = perspective;

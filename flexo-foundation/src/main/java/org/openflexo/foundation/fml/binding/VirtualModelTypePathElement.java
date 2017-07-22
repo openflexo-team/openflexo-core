@@ -48,7 +48,7 @@ import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.localization.FlexoLocalization;
 
 public class VirtualModelTypePathElement extends SimplePathElement {
@@ -76,8 +76,8 @@ public class VirtualModelTypePathElement extends SimplePathElement {
 
 	@Override
 	public Object getBindingValue(Object target, BindingEvaluationContext context) throws TypeMismatchException, NullReferenceException {
-		if (target instanceof AbstractVirtualModelInstance) {
-			return ((AbstractVirtualModelInstance<?, ?>) target).getVirtualModel();
+		if (target instanceof VirtualModelInstance) {
+			return ((VirtualModelInstance<?, ?>) target).getVirtualModel();
 		}
 		logger.warning("Please implement me, target=" + target + " context=" + context);
 		return null;

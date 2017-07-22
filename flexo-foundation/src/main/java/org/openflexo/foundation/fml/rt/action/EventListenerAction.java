@@ -48,10 +48,10 @@ import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.EventListener;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.binding.FiredEventBindingVariable;
-import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.FlexoEventInstance;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
+import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstanceObject;
 
 public class EventListenerAction extends FlexoBehaviourAction<EventListenerAction, EventListener, FlexoConceptInstance> {
@@ -77,7 +77,7 @@ public class EventListenerAction extends FlexoBehaviourAction<EventListenerActio
 
 	/**
 	 * Return the {@link FlexoConceptInstance} on which this {@link FlexoBehaviour} is applied.<br>
-	 * Note that here, the returned {@link FlexoConceptInstance} is the {@link VirtualModelInstance} which is to be synchronized
+	 * Note that here, the returned {@link FlexoConceptInstance} is the {@link FMLRTVirtualModelInstance} which is to be synchronized
 	 * 
 	 * @return
 	 */
@@ -117,10 +117,10 @@ public class EventListenerAction extends FlexoBehaviourAction<EventListenerActio
 	}
 
 	/**
-	 * Return {@link VirtualModelInstance} in which synchronized {@link VirtualModelInstance} does exist
+	 * Return {@link FMLRTVirtualModelInstance} in which synchronized {@link FMLRTVirtualModelInstance} does exist
 	 */
 	@Override
-	public AbstractVirtualModelInstance<?, ?> retrieveVirtualModelInstance() {
+	public VirtualModelInstance<?, ?> retrieveVirtualModelInstance() {
 		if (getFlexoConceptInstance() != null) {
 			return getFlexoConceptInstance().getVirtualModelInstance();
 		}

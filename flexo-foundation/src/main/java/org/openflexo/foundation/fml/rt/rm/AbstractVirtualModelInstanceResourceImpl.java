@@ -47,7 +47,7 @@ import org.openflexo.foundation.InconsistentDataException;
 import org.openflexo.foundation.InvalidModelDefinitionException;
 import org.openflexo.foundation.InvalidXMLException;
 import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstanceModelFactory;
 import org.openflexo.foundation.resource.FlexoFileNotFoundException;
 import org.openflexo.foundation.resource.PamelaResourceImpl;
@@ -62,7 +62,7 @@ import org.openflexo.toolbox.IProgress;
  * @author Sylvain
  * 
  */
-public abstract class AbstractVirtualModelInstanceResourceImpl<VMI extends AbstractVirtualModelInstance<VMI, TA>, TA extends TechnologyAdapter>
+public abstract class AbstractVirtualModelInstanceResourceImpl<VMI extends VirtualModelInstance<VMI, TA>, TA extends TechnologyAdapter>
 		extends PamelaResourceImpl<VMI, AbstractVirtualModelInstanceModelFactory<?>>
 		implements AbstractVirtualModelInstanceResource<VMI, TA> {
 
@@ -132,7 +132,7 @@ public abstract class AbstractVirtualModelInstanceResourceImpl<VMI extends Abstr
 		}*/
 
 		if (returned.getFMLRunTimeEngine() != null) {
-			// TODO: today VirtualModelInstance is a RunTimeEvaluationContext
+			// TODO: today FMLRTVirtualModelInstance is a RunTimeEvaluationContext
 			// TODO: design issue, we should separate FlexoConceptInstance from RunTimeEvaluationContext
 			// This inheritance should disappear
 			returned.getFMLRunTimeEngine().addToExecutionContext(returned, returned);
@@ -144,7 +144,7 @@ public abstract class AbstractVirtualModelInstanceResourceImpl<VMI extends Abstr
 	@Override
 	public void unloadResourceData(boolean deleteResourceData) {
 		if (getLoadedResourceData().getFMLRunTimeEngine() != null) {
-			// TODO: today VirtualModelInstance is a RunTimeEvaluationContext
+			// TODO: today FMLRTVirtualModelInstance is a RunTimeEvaluationContext
 			// TODO: design issue, we should separate FlexoConceptInstance from RunTimeEvaluationContext
 			// This inheritance should disappear
 			getLoadedResourceData().getFMLRunTimeEngine().removeFromExecutionContext(getLoadedResourceData(), getLoadedResourceData());

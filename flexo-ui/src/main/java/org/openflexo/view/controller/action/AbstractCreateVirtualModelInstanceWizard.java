@@ -54,10 +54,10 @@ import org.openflexo.foundation.fml.CreationScheme;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
-import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
 import org.openflexo.foundation.fml.rt.FMLRTModelSlotInstanceConfiguration;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
+import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.AbstractCreateVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.CreationSchemeAction;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
@@ -116,7 +116,7 @@ public abstract class AbstractCreateVirtualModelInstanceWizard<A extends Abstrac
 	}
 
 	/**
-	 * This step is used to set {@link VirtualModel} to be used, as well as name and title of the {@link VirtualModelInstance}
+	 * This step is used to set {@link VirtualModel} to be used, as well as name and title of the {@link FMLRTVirtualModelInstance}
 	 * 
 	 * @author sylvain
 	 * 
@@ -426,7 +426,7 @@ public abstract class AbstractCreateVirtualModelInstanceWizard<A extends Abstrac
 	 * 
 	 */
 	@FIBPanel("Fib/Wizard/CreateVirtualModelInstance/ConfigureVirtualModelSlotInstance.fib")
-	public class ConfigureVirtualModelModelSlot<VMI extends AbstractVirtualModelInstance<VMI, TA>, TA extends TechnologyAdapter>
+	public class ConfigureVirtualModelModelSlot<VMI extends VirtualModelInstance<VMI, TA>, TA extends TechnologyAdapter>
 			extends ConfigureModelSlot<FMLRTModelSlot<VMI, TA>, VMI> {
 
 		public ConfigureVirtualModelModelSlot(FMLRTModelSlot<VMI, TA> modelSlot) {
@@ -446,7 +446,7 @@ public abstract class AbstractCreateVirtualModelInstanceWizard<A extends Abstrac
 	}
 
 	/**
-	 * This step is used to set {@link VirtualModel} to be used, as well as name and title of the {@link VirtualModelInstance}
+	 * This step is used to set {@link VirtualModel} to be used, as well as name and title of the {@link FMLRTVirtualModelInstance}
 	 * 
 	 * @author sylvain
 	 * 

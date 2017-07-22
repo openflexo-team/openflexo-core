@@ -48,10 +48,10 @@ import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoProperty;
-import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
+import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.editionaction.FinalizeMatching;
 import org.openflexo.foundation.fml.rt.editionaction.InitiateMatching;
 import org.openflexo.foundation.fml.rt.editionaction.MatchCondition;
@@ -91,12 +91,12 @@ public class MatchingSet {
 
 		try {
 			container = initiateMatchingRequest.getContainer().getBindingValue(evaluationContext);
-			if (container instanceof VirtualModelInstance) {
+			if (container instanceof FMLRTVirtualModelInstance) {
 				if (flexoConceptType != null) {
-					allInstances = ((AbstractVirtualModelInstance<?, ?>) container).getFlexoConceptInstances(flexoConceptType);
+					allInstances = ((VirtualModelInstance<?, ?>) container).getFlexoConceptInstances(flexoConceptType);
 				}
 				else {
-					allInstances = ((AbstractVirtualModelInstance<?, ?>) container).getAllRootFlexoConceptInstances();
+					allInstances = ((VirtualModelInstance<?, ?>) container).getAllRootFlexoConceptInstances();
 				}
 			}
 			else {
@@ -172,11 +172,11 @@ public class MatchingSet {
 			// System.out.println("container=" + container);
 			if (container != null) {
 				/*if (flexoConceptType != null) {
-					allInstances = ((AbstractVirtualModelInstance<?, ?>) container).getFlexoConceptInstances(flexoConceptType);
+					allInstances = ((VirtualModelInstance<?, ?>) container).getFlexoConceptInstances(flexoConceptType);
 				}
 				else {*/
-				// allInstances = ((AbstractVirtualModelInstance<?, ?>) container).getAllRootFlexoConceptInstances();
-				allInstances = ((AbstractVirtualModelInstance<?, ?>) container).getFlexoConceptInstances();
+				// allInstances = ((VirtualModelInstance<?, ?>) container).getAllRootFlexoConceptInstances();
+				allInstances = ((VirtualModelInstance<?, ?>) container).getFlexoConceptInstances();
 				// }
 				// System.out.println("Toutes les instances: " + allInstances);
 			}

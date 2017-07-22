@@ -59,7 +59,7 @@ import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
+import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.task.Progress;
 import org.openflexo.foundation.technologyadapter.FlexoMetaModelResource;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
@@ -138,7 +138,7 @@ public abstract class AbstractCreateVirtualModel<A extends FlexoAction<A, T1, T2
 		createParameter.doAction();
 		FlexoBehaviourParameter returned = createParameter.getNewParameter();
 		if (parameterType instanceof FlexoConceptInstanceType) {
-			returned.setContainer(new DataBinding<VirtualModelInstance>("this"));
+			returned.setContainer(new DataBinding<FMLRTVirtualModelInstance>("this"));
 		}
 		return returned;
 	}

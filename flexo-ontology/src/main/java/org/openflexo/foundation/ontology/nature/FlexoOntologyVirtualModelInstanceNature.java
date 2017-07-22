@@ -38,14 +38,14 @@
 
 package org.openflexo.foundation.ontology.nature;
 
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
+import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstanceNature;
 import org.openflexo.foundation.ontology.technologyadapter.FlexoOntologyModelSlot;
 
 /**
- * Define the "FlexoOntology" nature of a {@link VirtualModelInstance}<br>
+ * Define the "FlexoOntology" nature of a {@link FMLRTVirtualModelInstance}<br>
  * 
- * A {@link VirtualModelInstance} with this nature has a least a {@link FlexoOntologyModelSlot}
+ * A {@link FMLRTVirtualModelInstance} with this nature has a least a {@link FlexoOntologyModelSlot}
  * 
  * @author sylvain
  * 
@@ -59,10 +59,10 @@ public class FlexoOntologyVirtualModelInstanceNature implements VirtualModelInst
 	}
 
 	/**
-	 * Return boolean indicating if supplied {@link VirtualModelInstance} might be interpreted as a FML-Controlled diagram
+	 * Return boolean indicating if supplied {@link FMLRTVirtualModelInstance} might be interpreted as a FML-Controlled diagram
 	 */
 	@Override
-	public boolean hasNature(VirtualModelInstance virtualModelInstance) {
+	public boolean hasNature(FMLRTVirtualModelInstance virtualModelInstance) {
 
 		if (virtualModelInstance == null) {
 			return false;

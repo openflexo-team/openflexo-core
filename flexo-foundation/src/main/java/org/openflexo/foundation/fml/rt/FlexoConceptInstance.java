@@ -108,8 +108,8 @@ import org.openflexo.toolbox.StringUtils;
 /**
  * A {@link FlexoConceptInstance} is the run-time concept (instance) of an {@link FlexoConcept}.<br>
  * 
- * As such, a {@link FlexoConceptInstance} is instantiated inside a {@link VirtualModelInstance} (only {@link VirtualModelInstance} objects
- * might leave outside an other {@link VirtualModelInstance}).<br>
+ * As such, a {@link FlexoConceptInstance} is instantiated inside a {@link FMLRTVirtualModelInstance} (only {@link FMLRTVirtualModelInstance} objects
+ * might leave outside an other {@link FMLRTVirtualModelInstance}).<br>
  * 
  * @author sylvain
  * 
@@ -141,20 +141,20 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 	// @PropertyIdentifier(type = List.class)
 	// public static final String MODEL_SLOT_INSTANCES_KEY = "modelSlotInstances";
 
-	@PropertyIdentifier(type = VirtualModelInstance.class)
+	@PropertyIdentifier(type = FMLRTVirtualModelInstance.class)
 	public static final String OWNING_VIRTUAL_MODEL_INSTANCE_KEY = "owningVirtualModelInstance";
 
 	/**
-	 * Return the {@link VirtualModelInstance} where this FlexoConceptInstance is instanciated (result might be different from
+	 * Return the {@link FMLRTVirtualModelInstance} where this FlexoConceptInstance is instanciated (result might be different from
 	 * {@link #getVirtualModelInstance()}, which is The {@link VirtualModelInstanceObject} API)
 	 * 
 	 * @return
 	 */
 	@Getter(value = OWNING_VIRTUAL_MODEL_INSTANCE_KEY)
-	public abstract AbstractVirtualModelInstance<?, ?> getOwningVirtualModelInstance();
+	public abstract VirtualModelInstance<?, ?> getOwningVirtualModelInstance();
 
 	@Setter(OWNING_VIRTUAL_MODEL_INSTANCE_KEY)
-	public void setOwningVirtualModelInstance(AbstractVirtualModelInstance<?, ?> virtualModelInstance);
+	public void setOwningVirtualModelInstance(VirtualModelInstance<?, ?> virtualModelInstance);
 
 	@Getter(FLEXO_CONCEPT_KEY)
 	public FlexoConcept getFlexoConcept();
@@ -455,7 +455,7 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 		/**
 		 * Default constructor
 		 */
-		public FlexoConceptInstanceImpl(/*VirtualModelInstance virtualModelInstance*/) {
+		public FlexoConceptInstanceImpl(/*FMLRTVirtualModelInstance virtualModelInstance*/) {
 			super();
 			actors = new HashMap<>();
 			actorLists = new HashMap<>();
@@ -543,7 +543,7 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 			}
 
 			@Override
-			public AbstractVirtualModelInstance<?, ?> getVirtualModelInstance() {
+			public VirtualModelInstance<?, ?> getVirtualModelInstance() {
 				return getFlexoConceptInstance().getOwningVirtualModelInstance();
 			}
 
@@ -617,7 +617,7 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 				}
 			}
 			else if (getVirtualModelInstance() != this && flexoProperty.getFlexoConcept().isAssignableFrom(getFlexoConcept().getOwner())) {
-				// In this case the property concerns the owner VirtualModelInstance
+				// In this case the property concerns the owner FMLRTVirtualModelInstance
 				return getVirtualModelInstance().getFlexoPropertyValue(flexoProperty);
 			}
 			else {
@@ -1138,9 +1138,9 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 				}
 			}
 
-			if (this instanceof AbstractVirtualModelInstance
-					&& ((AbstractVirtualModelInstance<?, ?>) this).getContainerVirtualModelInstance() != null) {
-				ModelSlotInstance<MS, RD> returned = ((AbstractVirtualModelInstance<?, ?>) this).getContainerVirtualModelInstance()
+			if (this instanceof VirtualModelInstance
+					&& ((VirtualModelInstance<?, ?>) this).getContainerVirtualModelInstance() != null) {
+				ModelSlotInstance<MS, RD> returned = ((VirtualModelInstance<?, ?>) this).getContainerVirtualModelInstance()
 						.getModelSlotInstance(modelSlot);
 				if (returned != null) {
 					return returned;
@@ -1233,7 +1233,7 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 		}
 
 		@Override
-		public AbstractVirtualModelInstance<?, ?> getVirtualModelInstance() {
+		public VirtualModelInstance<?, ?> getVirtualModelInstance() {
 			return getOwningVirtualModelInstance();
 		}
 
@@ -1547,7 +1547,7 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 				container.removeFromEmbeddedFlexoConceptInstances(this);
 			}
 
-			AbstractVirtualModelInstance<?, ?> vmi = getOwningVirtualModelInstance();
+			VirtualModelInstance<?, ?> vmi = getOwningVirtualModelInstance();
 			if (vmi != null) {
 				vmi.removeFromFlexoConceptInstances(this);
 			}
@@ -1646,7 +1646,7 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 		}
 
 		@Override
-		public AbstractVirtualModelInstance<?, ?> getResourceData() {
+		public VirtualModelInstance<?, ?> getResourceData() {
 			return getOwningVirtualModelInstance();
 		}
 

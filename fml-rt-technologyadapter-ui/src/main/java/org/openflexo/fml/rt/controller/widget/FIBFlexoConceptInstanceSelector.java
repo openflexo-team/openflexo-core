@@ -42,7 +42,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
+import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
 
@@ -53,7 +53,7 @@ import org.openflexo.rm.ResourceLocator;
  * <ul>
  * <li>the whole project, if {@link FlexoProject} has been set</li>
  * <li>a view, if {@link View} has been set</li>
- * <li>a virtual model instance, if {@link VirtualModelInstance} has been set</li>
+ * <li>a virtual model instance, if {@link FMLRTVirtualModelInstance} has been set</li>
  * </ul>
  * 
  * @author sguerin
@@ -71,7 +71,7 @@ public class FIBFlexoConceptInstanceSelector extends FIBAbstractFMLRTObjectSelec
 	private VirtualModel virtualModel;
 	private FlexoConcept flexoConcept;
 	private View view;
-	private VirtualModelInstance virtualModelInstance;
+	private FMLRTVirtualModelInstance virtualModelInstance;
 	private Type expectedType;
 	private FlexoConceptInstanceType defaultExpectedType;*/
 
@@ -182,7 +182,7 @@ public class FIBFlexoConceptInstanceSelector extends FIBAbstractFMLRTObjectSelec
 		}
 		else if (getView() != null) {
 			List<FlexoConceptInstance> returned = new ArrayList<FlexoConceptInstance>();
-			for (AbstractVirtualModelInstance<?, ?> vmi : getView().getVirtualModelInstances()) {
+			for (VirtualModelInstance<?, ?> vmi : getView().getVirtualModelInstances()) {
 				returned.addAll(vmi.getFlexoConceptInstances(ep));
 			}
 			return returned;
@@ -190,7 +190,7 @@ public class FIBFlexoConceptInstanceSelector extends FIBAbstractFMLRTObjectSelec
 		else if (getProject() != null) {
 			List<FlexoConceptInstance> returned = new ArrayList<FlexoConceptInstance>();
 			for (ViewResource vr : getProject().getViewLibrary().getAllResources()) {
-				for (AbstractVirtualModelInstance<?, ?> vmi : vr.getView().getVirtualModelInstances()) {
+				for (VirtualModelInstance<?, ?> vmi : vr.getView().getVirtualModelInstances()) {
 					returned.addAll(vmi.getFlexoConceptInstances(ep));
 				}
 			}
@@ -225,11 +225,11 @@ public class FIBFlexoConceptInstanceSelector extends FIBAbstractFMLRTObjectSelec
 		// System.out.println(">>>>>>>>> Sets view with " + view);
 	}
 	
-	public VirtualModelInstance getVirtualModelInstance() {
+	public FMLRTVirtualModelInstance getVirtualModelInstance() {
 		return virtualModelInstance;
 	}
 	
-	public void setVirtualModelInstance(VirtualModelInstance virtualModelInstance) {
+	public void setVirtualModelInstance(FMLRTVirtualModelInstance virtualModelInstance) {
 		this.virtualModelInstance = virtualModelInstance;
 	}
 	

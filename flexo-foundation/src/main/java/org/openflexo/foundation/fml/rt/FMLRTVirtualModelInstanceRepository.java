@@ -55,7 +55,7 @@ import org.openflexo.foundation.technologyadapter.ModelRepository;
  * 
  */
 public class FMLRTVirtualModelInstanceRepository<I> extends
-		ModelRepository<FMLRTVirtualModelInstanceResource, VirtualModelInstance, VirtualModel, FMLRTTechnologyAdapter, FMLTechnologyAdapter, I> {
+		ModelRepository<FMLRTVirtualModelInstanceResource, FMLRTVirtualModelInstance, VirtualModel, FMLRTTechnologyAdapter, FMLTechnologyAdapter, I> {
 
 	public FMLRTVirtualModelInstanceRepository(FMLRTTechnologyAdapter adapter, FlexoResourceCenter<I> resourceCenter) {
 		super(adapter, resourceCenter);
@@ -70,8 +70,8 @@ public class FMLRTVirtualModelInstanceRepository<I> extends
 		return null;
 	}
 
-	public List<VirtualModelInstance> getVirtualModelInstancesConformToVirtualModel(String virtualModelURI) {
-		List<VirtualModelInstance> views = new ArrayList<>();
+	public List<FMLRTVirtualModelInstance> getVirtualModelInstancesConformToVirtualModel(String virtualModelURI) {
+		List<FMLRTVirtualModelInstance> views = new ArrayList<>();
 		for (FMLRTVirtualModelInstanceResource vmiRes : getAllResources()) {
 			if (vmiRes.getVirtualModelResource() != null && vmiRes.getVirtualModelResource().getURI().equals(virtualModelURI)) {
 				views.add(vmiRes.getVirtualModelInstance());
@@ -123,7 +123,7 @@ public class FMLRTVirtualModelInstanceRepository<I> extends
 		else {
 			logger.info("Cannot find View '" + viewURI + "' in '" + getDefaultBaseURI() + "'");
 		}
-		logger.info("Cannot find VirtualModelInstance '" + virtualModelInstanceURI + "' in '" + getDefaultBaseURI() + "'");
+		logger.info("Cannot find FMLRTVirtualModelInstance '" + virtualModelInstanceURI + "' in '" + getDefaultBaseURI() + "'");
 		return null;
 	}*/
 

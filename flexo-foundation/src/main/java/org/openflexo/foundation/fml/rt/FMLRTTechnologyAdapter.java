@@ -60,7 +60,7 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapterInitializatio
 /**
  * This class defines and implements the Openflexo built-in FML@runtime technology adapter<br>
  * 
- * This adapter allows to manage {@link View} and {@link VirtualModelInstance} resources in Openflexo infrastructure.
+ * This adapter allows to manage {@link View} and {@link FMLRTVirtualModelInstance} resources in Openflexo infrastructure.
  * 
  * @author sylvain
  * 

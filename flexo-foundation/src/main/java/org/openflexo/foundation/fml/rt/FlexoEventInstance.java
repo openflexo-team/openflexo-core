@@ -52,7 +52,7 @@ import org.openflexo.model.annotations.XMLElement;
 /**
  * A {@link FlexoEventInstance} is the run-time concept (instance) of an {@link FlexoEvent}.<br>
  * 
- * As such, a {@link FlexoEventInstance} is instantiated inside a {@link VirtualModelInstance}.<br>
+ * As such, a {@link FlexoEventInstance} is instantiated inside a {@link FMLRTVirtualModelInstance}.<br>
  * 
  * @author sylvain
  * 
@@ -62,19 +62,19 @@ import org.openflexo.model.annotations.XMLElement;
 @XMLElement
 public interface FlexoEventInstance extends FlexoConceptInstance {
 
-	@PropertyIdentifier(type = AbstractVirtualModelInstance.class)
+	@PropertyIdentifier(type = VirtualModelInstance.class)
 	public static final String SOURCE_VIRTUAL_MODEL_INSTANCE_KEY = "sourceVirtualModelInstance";
 
 	/**
-	 * Return the {@link VirtualModelInstance} where this FlexoEventInstance was fired
+	 * Return the {@link FMLRTVirtualModelInstance} where this FlexoEventInstance was fired
 	 * 
 	 * @return
 	 */
 	@Getter(value = SOURCE_VIRTUAL_MODEL_INSTANCE_KEY)
-	public abstract AbstractVirtualModelInstance<?, ?> getSourceVirtualModelInstance();
+	public abstract VirtualModelInstance<?, ?> getSourceVirtualModelInstance();
 
 	@Setter(SOURCE_VIRTUAL_MODEL_INSTANCE_KEY)
-	public void setSourceVirtualModelInstance(AbstractVirtualModelInstance<?, ?> virtualModelInstance);
+	public void setSourceVirtualModelInstance(VirtualModelInstance<?, ?> virtualModelInstance);
 
 	@Override
 	public FlexoEvent getFlexoConcept();
@@ -97,9 +97,9 @@ public interface FlexoEventInstance extends FlexoConceptInstance {
 
 		// We override here getOwningVirtualModelInstance() by relying on getSourceVirtualModelInstance() instead of
 		// getVirtualModelInstance() which returns
-		// null value because FlexoEventInstance is not persistent in the VirtualModelInstance
+		// null value because FlexoEventInstance is not persistent in the FMLRTVirtualModelInstance
 		@Override
-		public AbstractVirtualModelInstance<?, ?> getOwningVirtualModelInstance() {
+		public VirtualModelInstance<?, ?> getOwningVirtualModelInstance() {
 			return getSourceVirtualModelInstance();
 		}
 

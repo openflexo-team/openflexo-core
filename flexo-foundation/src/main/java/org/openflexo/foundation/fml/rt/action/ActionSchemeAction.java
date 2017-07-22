@@ -45,7 +45,7 @@ import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.AbstractActionScheme;
 import org.openflexo.foundation.fml.FlexoBehaviour;
-import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstanceObject;
 
@@ -96,9 +96,9 @@ public class ActionSchemeAction extends FlexoBehaviourAction<ActionSchemeAction,
 	}
 
 	@Override
-	public AbstractVirtualModelInstance<?, ?> retrieveVirtualModelInstance() {
-		if (getFlexoConceptInstance() instanceof AbstractVirtualModelInstance) {
-			return (AbstractVirtualModelInstance<?, ?>) getFlexoConceptInstance();
+	public VirtualModelInstance<?, ?> retrieveVirtualModelInstance() {
+		if (getFlexoConceptInstance() instanceof VirtualModelInstance) {
+			return (VirtualModelInstance<?, ?>) getFlexoConceptInstance();
 		}
 		if (getFlexoConceptInstance() != null) {
 			return getFlexoConceptInstance().getVirtualModelInstance();

@@ -61,7 +61,7 @@ import org.openflexo.toolbox.StringUtils;
 
 /**
  * Concretize the binding of a {@link ModelSlot} to a concrete {@link FlexoModel}<br>
- * This is the binding point between a {@link FreeModelSlot} and its concretization in a {@link VirtualModelInstance}
+ * This is the binding point between a {@link FreeModelSlot} and its concretization in a {@link FMLRTVirtualModelInstance}
  * 
  * @author Sylvain Guerin, Vincent LeildÃ©
  * @see FreeModelSlot
@@ -97,7 +97,7 @@ public interface FreeModelSlotInstance<RD extends ResourceData<RD> & TechnologyO
 			super(view, modelSlot);
 		}*/
 
-		/*public FreeModelSlotInstanceImpl(VirtualModelInstance vmInstance, MS modelSlot) {
+		/*public FreeModelSlotInstanceImpl(FMLRTVirtualModelInstance vmInstance, MS modelSlot) {
 			super(vmInstance, modelSlot);
 		}*/
 

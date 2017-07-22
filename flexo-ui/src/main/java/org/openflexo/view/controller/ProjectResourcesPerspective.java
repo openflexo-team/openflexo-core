@@ -47,7 +47,7 @@ import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceRepository;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
+import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.icon.IconLibrary;
@@ -105,8 +105,8 @@ public class ProjectResourcesPerspective extends FlexoPerspective {
 		if (object instanceof FMLRTVirtualModelInstanceRepository) {
 			return FlexoLocalization.getMainLocalizer().localizedForKey("virtual_model_instance_repository");
 		}
-		if (object instanceof VirtualModelInstance) {
-			return ((VirtualModelInstance) object).getTitle();
+		if (object instanceof FMLRTVirtualModelInstance) {
+			return ((FMLRTVirtualModelInstance) object).getTitle();
 		}
 		if (object instanceof TechnologyObject) {
 			return getWindowTitleForTechnologyObject((TechnologyObject<?>) object, getController());

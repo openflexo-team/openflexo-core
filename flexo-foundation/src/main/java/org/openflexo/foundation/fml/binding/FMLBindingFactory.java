@@ -68,7 +68,7 @@ import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.TechnologySpecificType;
 import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
@@ -377,8 +377,8 @@ public class FMLBindingFactory extends JavaBindingFactory {
 				for (int i = 0; i < args.size(); i++) {
 					if (args.get(i).getExpression() instanceof ObjectConstant) {
 						Object value = ((ObjectConstant) args.get(i).getExpression()).getValue();
-						if (value instanceof AbstractVirtualModelInstance) {
-							paramsTypes[i] = ((AbstractVirtualModelInstance<?, ?>) value).getVirtualModel().getInstanceType();
+						if (value instanceof VirtualModelInstance) {
+							paramsTypes[i] = ((VirtualModelInstance<?, ?>) value).getVirtualModel().getInstanceType();
 						}
 						else if (value instanceof FlexoConceptInstance) {
 							paramsTypes[i] = ((FlexoConceptInstance) value).getFlexoConcept().getInstanceType();

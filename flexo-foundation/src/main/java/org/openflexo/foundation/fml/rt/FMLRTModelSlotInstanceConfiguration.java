@@ -55,7 +55,7 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
  * 
  */
 @Deprecated
-public class FMLRTModelSlotInstanceConfiguration<VMI extends AbstractVirtualModelInstance<VMI, TA>, TA extends TechnologyAdapter>
+public class FMLRTModelSlotInstanceConfiguration<VMI extends VirtualModelInstance<VMI, TA>, TA extends TechnologyAdapter>
 		extends ModelSlotInstanceConfiguration<FMLRTModelSlot<VMI, TA>, VMI> {
 
 	private static final Logger logger = Logger.getLogger(FMLRTModelSlotInstanceConfiguration.class.getPackage().getName());
@@ -85,7 +85,7 @@ public class FMLRTModelSlotInstanceConfiguration<VMI extends AbstractVirtualMode
 
 	@Override
 	public ModelSlotInstance<FMLRTModelSlot<VMI, TA>, VMI> createModelSlotInstance(FlexoConceptInstance fci,
-			AbstractVirtualModelInstance<?, ?> view) {
+			VirtualModelInstance<?, ?> view) {
 		AbstractVirtualModelInstanceModelFactory<?> factory = fci.getFactory();
 		VirtualModelModelSlotInstance returned = factory.newInstance(VirtualModelModelSlotInstance.class);
 		returned.setModelSlot(getModelSlot());

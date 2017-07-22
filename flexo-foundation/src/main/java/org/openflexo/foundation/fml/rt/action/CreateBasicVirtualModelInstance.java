@@ -45,18 +45,18 @@ import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.FlexoActionType;
-import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
+import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.resource.RepositoryFolder;
 
 /**
- * This action is called to create a regular {@link VirtualModelInstance} either as top level in a repository folder, or as a contained
- * {@link VirtualModelInstance} in a container {@link VirtualModelInstance}
+ * This action is called to create a regular {@link FMLRTVirtualModelInstance} either as top level in a repository folder, or as a contained
+ * {@link FMLRTVirtualModelInstance} in a container {@link FMLRTVirtualModelInstance}
  * 
  * @author sylvain
  *
  * @param <T>
- *            type of container (a repository folder or a container VirtualModelInstance)
+ *            type of container (a repository folder or a container FMLRTVirtualModelInstance)
  */
 public class CreateBasicVirtualModelInstance extends CreateFMLRTVirtualModelInstance<CreateBasicVirtualModelInstance> {
 
@@ -76,7 +76,7 @@ public class CreateBasicVirtualModelInstance extends CreateFMLRTVirtualModelInst
 
 		@Override
 		public boolean isVisibleForSelection(FlexoObject container, Vector<FlexoObject> globalSelection) {
-			if (container instanceof AbstractVirtualModelInstance || container instanceof RepositoryFolder) {
+			if (container instanceof VirtualModelInstance || container instanceof RepositoryFolder) {
 				return true;
 			}
 			return false;
@@ -91,7 +91,7 @@ public class CreateBasicVirtualModelInstance extends CreateFMLRTVirtualModelInst
 
 	static {
 		FlexoObjectImpl.addActionForClass(CreateBasicVirtualModelInstance.actionType, RepositoryFolder.class);
-		FlexoObjectImpl.addActionForClass(CreateBasicVirtualModelInstance.actionType, AbstractVirtualModelInstance.class);
+		FlexoObjectImpl.addActionForClass(CreateBasicVirtualModelInstance.actionType, VirtualModelInstance.class);
 	}
 
 	protected CreateBasicVirtualModelInstance(FlexoObject focusedObject, Vector<FlexoObject> globalSelection, FlexoEditor editor) {

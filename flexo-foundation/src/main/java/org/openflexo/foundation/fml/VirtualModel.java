@@ -55,7 +55,7 @@ import org.openflexo.foundation.fml.binding.VirtualModelBindingModel;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.fml.rm.VirtualModelResourceFactory;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
+import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.editionaction.DeleteFlexoConceptInstanceParameter;
 import org.openflexo.foundation.resource.CannotRenameException;
 import org.openflexo.foundation.resource.FlexoResource;
@@ -358,7 +358,7 @@ public interface VirtualModel extends FlexoConcept, VirtualModelObject, FlexoMet
 	public void setURI(String anURI);
 
 	/**
-	 * Retrieves the type of a {@link VirtualModelInstance} conform to this {@link VirtualModel}
+	 * Retrieves the type of a {@link FMLRTVirtualModelInstance} conform to this {@link VirtualModel}
 	 */
 	VirtualModelInstanceType getVirtualModelInstanceType();
 

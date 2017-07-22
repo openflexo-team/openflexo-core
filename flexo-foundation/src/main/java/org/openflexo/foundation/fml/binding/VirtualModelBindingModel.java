@@ -46,7 +46,7 @@ import org.openflexo.connie.BindingVariable;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
+import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 
 /**
  * This is the {@link BindingModel} exposed by a {@link VirtualModel}<br>
@@ -55,7 +55,7 @@ import org.openflexo.foundation.fml.rt.VirtualModelInstance;
  * Provides access to the {@link View}<br>
  * Allows reflexive access to the {@link VirtualModel} itself<br>
  * 
- * Note that default {@link RunTimeEvaluationContext} corresponding to this {@link BindingModel} is a {@link VirtualModelInstance}
+ * Note that default {@link RunTimeEvaluationContext} corresponding to this {@link BindingModel} is a {@link FMLRTVirtualModelInstance}
  * 
  * 
  * @author sylvain

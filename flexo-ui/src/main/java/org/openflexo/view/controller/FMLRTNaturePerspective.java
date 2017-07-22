@@ -44,11 +44,11 @@ import javax.swing.ImageIcon;
 
 import org.openflexo.components.widget.FIBTechnologyBrowser;
 import org.openflexo.foundation.FlexoObject;
-import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstanceNature;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
+import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstanceNature;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.view.ModuleView;
@@ -129,8 +129,8 @@ public abstract class FMLRTNaturePerspective extends TechnologyPerspective<FMLRT
 
 	@Override
 	public boolean hasModuleViewForObject(FlexoObject object) {
-		if (object instanceof VirtualModelInstance && virtualModelInstanceNature != null
-				&& virtualModelInstanceNature.hasNature((VirtualModelInstance) object)) {
+		if (object instanceof FMLRTVirtualModelInstance && virtualModelInstanceNature != null
+				&& virtualModelInstanceNature.hasNature((FMLRTVirtualModelInstance) object)) {
 			return true;
 		}
 		if (object instanceof FlexoConceptInstance && flexoConceptInstanceNature != null
@@ -143,10 +143,10 @@ public abstract class FMLRTNaturePerspective extends TechnologyPerspective<FMLRT
 	@Override
 	public final ModuleView<?> createModuleViewForObject(FlexoObject object) {
 
-		if (object instanceof VirtualModelInstance) {
-			return createModuleViewForVirtualModelInstance((AbstractVirtualModelInstance<?, ?>) object);
+		if (object instanceof FMLRTVirtualModelInstance) {
+			return createModuleViewForVirtualModelInstance((VirtualModelInstance<?, ?>) object);
 
-			/*VirtualModelInstance vmInstance = (VirtualModelInstance) object;
+			/*FMLRTVirtualModelInstance vmInstance = (FMLRTVirtualModelInstance) object;
 			return getHandlingTechnologyAdapterController().createVirtualModelInstanceModuleViewForSpecificNature(vmInstance,
 					getVirtualModelInstanceNature(), getController(), this);*/
 		}
@@ -160,8 +160,8 @@ public abstract class FMLRTNaturePerspective extends TechnologyPerspective<FMLRT
 		return super.createModuleViewForObject(object);
 	}
 
-	protected abstract ModuleView<? extends AbstractVirtualModelInstance<?, ?>> createModuleViewForVirtualModelInstance(
-			AbstractVirtualModelInstance<?, ?> view);
+	protected abstract ModuleView<? extends VirtualModelInstance<?, ?>> createModuleViewForVirtualModelInstance(
+			VirtualModelInstance<?, ?> view);
 
 	protected abstract ModuleView<FlexoConceptInstance> createModuleViewForFlexoConceptInstance(FlexoConceptInstance flexoConceptInstance);
 

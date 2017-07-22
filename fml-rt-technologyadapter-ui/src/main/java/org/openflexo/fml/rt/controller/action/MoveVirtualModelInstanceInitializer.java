@@ -43,13 +43,13 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.action.FlexoActionFinalizer;
 import org.openflexo.foundation.action.FlexoActionInitializer;
-import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.MoveVirtualModelInstance;
 import org.openflexo.view.controller.ActionInitializer;
 import org.openflexo.view.controller.ControllerActionInitializer;
 
 public class MoveVirtualModelInstanceInitializer
-		extends ActionInitializer<MoveVirtualModelInstance, AbstractVirtualModelInstance<?, ?>, AbstractVirtualModelInstance<?, ?>> {
+		extends ActionInitializer<MoveVirtualModelInstance, VirtualModelInstance<?, ?>, VirtualModelInstance<?, ?>> {
 
 	private static final Logger logger = Logger.getLogger(ControllerActionInitializer.class.getPackage().getName());
 

@@ -134,7 +134,7 @@ public abstract interface ActorReference<T> extends VirtualModelInstanceObject {
 		}*/
 
 		@Override
-		public AbstractVirtualModelInstance<?, ?> getResourceData() {
+		public VirtualModelInstance<?, ?> getResourceData() {
 			if (getFlexoConceptInstance() != null) {
 				return getFlexoConceptInstance().getResourceData();
 			}
@@ -188,9 +188,9 @@ public abstract interface ActorReference<T> extends VirtualModelInstanceObject {
 		}
 
 		@Override
-		public AbstractVirtualModelInstance<?, ?> getVirtualModelInstance() {
-			if (getFlexoConceptInstance() instanceof VirtualModelInstance) {
-				return (VirtualModelInstance) getFlexoConceptInstance();
+		public VirtualModelInstance<?, ?> getVirtualModelInstance() {
+			if (getFlexoConceptInstance() instanceof FMLRTVirtualModelInstance) {
+				return (FMLRTVirtualModelInstance) getFlexoConceptInstance();
 			}
 			if (getFlexoConceptInstance() != null) {
 				return getFlexoConceptInstance().getVirtualModelInstance();

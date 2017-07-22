@@ -62,7 +62,7 @@ import org.openflexo.toolbox.StringUtils;
 
 /**
  * Concretize the binding of a {@link ModelSlot} to a concrete {@link FlexoModel}<br>
- * This is the binding point between a {@link ModelSlot} and its concretization in a {@link VirtualModelInstance}
+ * This is the binding point between a {@link ModelSlot} and its concretization in a {@link FMLRTVirtualModelInstance}
  * 
  * The {@link ModelSlotInstance} are instantiated inside a {@link View}
  * 
@@ -149,7 +149,7 @@ public abstract interface ModelSlotInstance<MS extends ModelSlot<? extends RD>, 
 		private static final Logger logger = Logger.getLogger(ModelSlotInstance.class.getPackage().getName());
 
 		// private View view;
-		// private AbstractVirtualModelInstance<?, ?> vmInstance;
+		// private VirtualModelInstance<?, ?> vmInstance;
 		private MS modelSlot;
 		protected RD accessedResourceData;
 		protected TechnologyAdapterResource<RD, ?> resource;
@@ -166,7 +166,7 @@ public abstract interface ModelSlotInstance<MS extends ModelSlot<? extends RD>, 
 			this.modelSlot = modelSlot;
 		}*/
 
-		/*public ModelSlotInstanceImpl(VirtualModelInstance vmInstance, MS modelSlot) {
+		/*public ModelSlotInstanceImpl(FMLRTVirtualModelInstance vmInstance, MS modelSlot) {
 			super(vmInstance.getProject());
 			this.vmInstance = vmInstance;
 			this.view = vmInstance.getView();
@@ -181,7 +181,7 @@ public abstract interface ModelSlotInstance<MS extends ModelSlot<? extends RD>, 
 		}
 
 		@Override
-		public AbstractVirtualModelInstance<?, ?> getResourceData() {
+		public VirtualModelInstance<?, ?> getResourceData() {
 			return getVirtualModelInstance();
 		}
 
@@ -196,12 +196,12 @@ public abstract interface ModelSlotInstance<MS extends ModelSlot<? extends RD>, 
 		}*/
 
 		/*@Override
-		public AbstractVirtualModelInstance<?, ?> getVirtualModelInstance() {
+		public VirtualModelInstance<?, ?> getVirtualModelInstance() {
 			return vmInstance;
 		}
 		
 		@Override
-		public void setVirtualModelInstance(AbstractVirtualModelInstance<?, ?> vmInstance) {
+		public void setVirtualModelInstance(VirtualModelInstance<?, ?> vmInstance) {
 			this.vmInstance = vmInstance;
 		}*/
 

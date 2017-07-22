@@ -55,7 +55,7 @@ import org.openflexo.model.factory.EditingContext;
 import org.openflexo.model.factory.ModelFactory;
 
 /**
- * {@link ModelFactory} used to handle {@link AbstractVirtualModelInstance} models<br>
+ * {@link ModelFactory} used to handle {@link VirtualModelInstance} models<br>
  * 
  * @author sylvain
  * 
@@ -66,7 +66,7 @@ public abstract class AbstractVirtualModelInstanceModelFactory<R extends Abstrac
 	private RelativePathResourceConverter relativePathResourceConverter;
 
 	public AbstractVirtualModelInstanceModelFactory(R virtualModelInstanceResource,
-			Class<? extends AbstractVirtualModelInstance<?, ?>> baseVMIClass, EditingContext editingContext,
+			Class<? extends VirtualModelInstance<?, ?>> baseVMIClass, EditingContext editingContext,
 			TechnologyAdapterService taService) throws ModelDefinitionException {
 
 		super(virtualModelInstanceResource, allClassesForModelContext(baseVMIClass, taService));
@@ -95,7 +95,7 @@ public abstract class AbstractVirtualModelInstanceModelFactory<R extends Abstrac
 	 * @return
 	 * @throws ModelDefinitionException
 	 */
-	private static List<Class<?>> allClassesForModelContext(Class<? extends AbstractVirtualModelInstance<?, ?>> baseVMIClass,
+	private static List<Class<?>> allClassesForModelContext(Class<? extends VirtualModelInstance<?, ?>> baseVMIClass,
 			TechnologyAdapterService taService) throws ModelDefinitionException {
 		List<Class<?>> classes = new ArrayList<Class<?>>();
 		classes.add(baseVMIClass);

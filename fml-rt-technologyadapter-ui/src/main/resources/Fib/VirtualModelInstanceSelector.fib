@@ -35,7 +35,7 @@
 		selectionMode="DiscontiguousTreeSelection" index="2" localize="true"
 		constraints="twocols(expandHorizontally=true;expandVertically=true;index=2;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=center)"
 		visibleRowCount="5" rowHeight="18" textSelectionColor="255,255,255"
-		iteratorClassName="org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance"
+		iteratorClassName="org.openflexo.foundation.fml.rt.VirtualModelInstance"
 		backgroundSelectionColor="9,80,208" enterPressedAction="controller.apply()"
 		backgroundNonSelectionColor="255,255,255" selected="data.selectedValue"
 		clickAction="controller.selectedObjectChanged()" name="VirtualModelInstancesBrowser"
@@ -59,7 +59,7 @@
 				name="subFolders" />
 			<Children data="data.getVirtualModelInstanceResources(folder)" name="viewsInFolder" cast="child.virtualModelInstance"/>
 		</BrowserElement>
-		<BrowserElement dataClassName="org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance"
+		<BrowserElement dataClassName="org.openflexo.foundation.fml.rt.VirtualModelInstance"
 			label="virtualModelInstance.name" icon="controller.iconForObject(virtualModelInstance)"
 			isEditable="false" 
 			enabled="data.isAcceptableValue(virtualModelInstance)"

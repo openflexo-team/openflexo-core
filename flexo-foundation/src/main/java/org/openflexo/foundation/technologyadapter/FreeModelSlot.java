@@ -40,7 +40,7 @@ package org.openflexo.foundation.technologyadapter;
 
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.FreeModelSlotInstance;
 import org.openflexo.foundation.fml.rt.ModelSlotInstance;
@@ -59,7 +59,7 @@ import org.openflexo.toolbox.JavaUtils;
 @ImplementationClass(FreeModelSlot.FreeModelSlotImpl.class)
 public abstract interface FreeModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> extends ModelSlot<RD> {
 
-	public TechnologyAdapterResource<RD, ?> createProjectSpecificEmptyResource(AbstractVirtualModelInstance<?, ?> view, String filename,
+	public TechnologyAdapterResource<RD, ?> createProjectSpecificEmptyResource(VirtualModelInstance<?, ?> view, String filename,
 			String modelUri);
 
 	public TechnologyAdapterResource<RD, ?> createSharedEmptyResource(FlexoResourceCenter<?> resourceCenter, String relativePath,
@@ -135,7 +135,7 @@ public abstract interface FreeModelSlot<RD extends ResourceData<RD> & Technology
 		}
 
 		@Override
-		public abstract TechnologyAdapterResource<RD, ?> createProjectSpecificEmptyResource(AbstractVirtualModelInstance<?, ?> view,
+		public abstract TechnologyAdapterResource<RD, ?> createProjectSpecificEmptyResource(VirtualModelInstance<?, ?> view,
 				String filename, String modelUri);
 
 		@Override

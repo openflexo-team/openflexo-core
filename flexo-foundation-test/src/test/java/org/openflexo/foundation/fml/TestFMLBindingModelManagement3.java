@@ -74,7 +74,7 @@ import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
 import org.openflexo.foundation.fml.rt.FMLRTModelSlotInstanceConfiguration;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceModelSlot;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
+import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.CreateBasicVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.CreationSchemeAction;
 import org.openflexo.foundation.fml.rt.action.ModelSlotInstanceConfiguration.DefaultModelSlotInstanceConfigurationOption;
@@ -115,10 +115,10 @@ public class TestFMLBindingModelManagement3 extends OpenflexoProjectAtRunTimeTes
 	static FlexoConcept flexoConceptD;
 
 	static FlexoProject project;
-	static VirtualModelInstance newView;
-	static VirtualModelInstance vmi1;
-	static VirtualModelInstance vmi2;
-	static VirtualModelInstance vmi3;
+	static FMLRTVirtualModelInstance newView;
+	static FMLRTVirtualModelInstance vmi1;
+	static FMLRTVirtualModelInstance vmi2;
+	static FMLRTVirtualModelInstance vmi3;
 	static FlexoConceptInstance fci;
 
 	private static DirectoryResourceCenter resourceCenter;
@@ -426,7 +426,7 @@ public class TestFMLBindingModelManagement3 extends OpenflexoProjectAtRunTimeTes
 
 		CreateBasicVirtualModelInstance createVMI1 = CreateBasicVirtualModelInstance.actionType.makeNewAction(newView, null, editor);
 		createVMI1.setNewVirtualModelInstanceName("MyVirtualModelInstance1");
-		createVMI1.setNewVirtualModelInstanceTitle("Test creation of a new VirtualModelInstance 1");
+		createVMI1.setNewVirtualModelInstanceTitle("Test creation of a new FMLRTVirtualModelInstance 1");
 		createVMI1.setVirtualModel(virtualModel1);
 		createVMI1.doAction();
 		assertTrue(createVMI1.hasActionExecutionSucceeded());
@@ -441,7 +441,7 @@ public class TestFMLBindingModelManagement3 extends OpenflexoProjectAtRunTimeTes
 
 		CreateBasicVirtualModelInstance createVMI2 = CreateBasicVirtualModelInstance.actionType.makeNewAction(vmi1, null, editor);
 		createVMI2.setNewVirtualModelInstanceName("MyVirtualModelInstance2");
-		createVMI2.setNewVirtualModelInstanceTitle("Test creation of a new VirtualModelInstance 2");
+		createVMI2.setNewVirtualModelInstanceTitle("Test creation of a new FMLRTVirtualModelInstance 2");
 		createVMI2.setVirtualModel(virtualModel2);
 		createVMI2.doAction();
 		assertTrue(createVMI2.hasActionExecutionSucceeded());
@@ -456,7 +456,7 @@ public class TestFMLBindingModelManagement3 extends OpenflexoProjectAtRunTimeTes
 
 		CreateBasicVirtualModelInstance createVMI3 = CreateBasicVirtualModelInstance.actionType.makeNewAction(vmi2, null, editor);
 		createVMI3.setNewVirtualModelInstanceName("MyVirtualModelInstance3");
-		createVMI3.setNewVirtualModelInstanceTitle("Test creation of a new VirtualModelInstance 3");
+		createVMI3.setNewVirtualModelInstanceTitle("Test creation of a new FMLRTVirtualModelInstance 3");
 		createVMI3.setVirtualModel(virtualModel3);
 
 		FMLRTModelSlot ms1 = (FMLRTModelSlot) virtualModel3.getModelSlot("vm1");

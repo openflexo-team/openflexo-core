@@ -51,7 +51,7 @@ import org.openflexo.foundation.action.FlexoActionFinalizer;
 import org.openflexo.foundation.action.FlexoActionInitializer;
 import org.openflexo.foundation.action.FlexoExceptionHandler;
 import org.openflexo.foundation.action.NotImplementedException;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
+import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.CreateBasicVirtualModelInstance;
 import org.openflexo.gina.controller.FIBController.Status;
 import org.openflexo.icon.FMLRTIconLibrary;
@@ -80,11 +80,11 @@ public class CreateBasicVirtualModelInstanceInitializer
 					return true;
 				}
 				else {
-					if (action.getFocusedObject() instanceof VirtualModelInstance
-							&& ((VirtualModelInstance) action.getFocusedObject()).getVirtualModel() != null) {
+					if (action.getFocusedObject() instanceof FMLRTVirtualModelInstance
+							&& ((FMLRTVirtualModelInstance) action.getFocusedObject()).getVirtualModel() != null) {
 						// @Brutal
 						// TODO: Instead of doing this, it would be better to handle resources in wizard FIB
-						((VirtualModelInstance) action.getFocusedObject()).getVirtualModel().loadContainedVirtualModelsWhenUnloaded();
+						((FMLRTVirtualModelInstance) action.getFocusedObject()).getVirtualModel().loadContainedVirtualModelsWhenUnloaded();
 					}
 					Wizard wizard = new CreateBasicVirtualModelInstanceWizard(action, getController());
 					WizardDialog dialog = new WizardDialog(wizard, getController());

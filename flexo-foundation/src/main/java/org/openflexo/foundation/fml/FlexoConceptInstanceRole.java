@@ -44,12 +44,12 @@ import java.util.logging.Logger;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.annotations.FML;
-import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstanceModelFactory;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.ModelObjectActorReference;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
+import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.model.annotations.DefineValidationRule;
 import org.openflexo.model.annotations.Getter;
@@ -99,20 +99,20 @@ public interface FlexoConceptInstanceRole extends FlexoRole<FlexoConceptInstance
 	public void setFlexoConceptType(FlexoConcept flexoConceptType);
 
 	/**
-	 * This binding define the {@link VirtualModelInstance} where addressed {@link FlexoConceptInstance} "lives"
+	 * This binding define the {@link FMLRTVirtualModelInstance} where addressed {@link FlexoConceptInstance} "lives"
 	 * 
 	 * @return
 	 */
 	@Getter(value = VIRTUAL_MODEL_INSTANCE_KEY)
 	@XMLAttribute
-	public DataBinding<AbstractVirtualModelInstance<?, ?>> getVirtualModelInstance();
+	public DataBinding<VirtualModelInstance<?, ?>> getVirtualModelInstance();
 
 	@Setter(VIRTUAL_MODEL_INSTANCE_KEY)
-	public void setVirtualModelInstance(DataBinding<AbstractVirtualModelInstance<?, ?>> virtualModelInstance);
+	public void setVirtualModelInstance(DataBinding<VirtualModelInstance<?, ?>> virtualModelInstance);
 
 	/**
 	 * Return type of VirtualModel where this role may access to a FlexoConceptInstance<br>
-	 * This data is infered from eventual analyzed type of VirtualModelInstance binding
+	 * This data is infered from eventual analyzed type of FMLRTVirtualModelInstance binding
 	 * 
 	 * @return
 	 */
@@ -305,23 +305,23 @@ public interface FlexoConceptInstanceRole extends FlexoRole<FlexoConceptInstance
 			setModelSlot(modelSlot);
 		}*/
 
-		private DataBinding<AbstractVirtualModelInstance<?, ?>> virtualModelInstance;
+		private DataBinding<VirtualModelInstance<?, ?>> virtualModelInstance;
 
 		@Override
-		public DataBinding<AbstractVirtualModelInstance<?, ?>> getVirtualModelInstance() {
+		public DataBinding<VirtualModelInstance<?, ?>> getVirtualModelInstance() {
 			if (virtualModelInstance == null) {
-				virtualModelInstance = new DataBinding<AbstractVirtualModelInstance<?, ?>>(this, VirtualModelInstance.class,
+				virtualModelInstance = new DataBinding<VirtualModelInstance<?, ?>>(this, FMLRTVirtualModelInstance.class,
 						DataBinding.BindingDefinitionType.GET);
 			}
 			return virtualModelInstance;
 		}
 
 		@Override
-		public void setVirtualModelInstance(DataBinding<AbstractVirtualModelInstance<?, ?>> aVirtualModelInstance) {
+		public void setVirtualModelInstance(DataBinding<VirtualModelInstance<?, ?>> aVirtualModelInstance) {
 			if (aVirtualModelInstance != null) {
 				aVirtualModelInstance.setOwner(this);
 				aVirtualModelInstance.setBindingName("virtualModelInstance");
-				aVirtualModelInstance.setDeclaredType(VirtualModelInstance.class);
+				aVirtualModelInstance.setDeclaredType(FMLRTVirtualModelInstance.class);
 				aVirtualModelInstance.setBindingDefinitionType(DataBinding.BindingDefinitionType.GET);
 			}
 			if (this.virtualModelInstance != aVirtualModelInstance) {
@@ -351,7 +351,7 @@ public interface FlexoConceptInstanceRole extends FlexoRole<FlexoConceptInstance
 
 		/**
 		 * Return type of VirtualModel where this role may access to a FlexoConceptInstance<br>
-		 * This data is infered from eventual analyzed type of VirtualModelInstance binding
+		 * This data is infered from eventual analyzed type of FMLRTVirtualModelInstance binding
 		 * 
 		 * @return
 		 */

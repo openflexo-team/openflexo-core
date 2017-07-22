@@ -49,14 +49,14 @@ import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
-import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
+import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
+import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 
 /**
  * This is the "container" path element, applicable to a {@link FlexoConceptInstance} with allow to access to it's
- * {@link VirtualModelInstance} container
+ * {@link FMLRTVirtualModelInstance} container
  * 
  * There are three cases:
  * <ul>
@@ -138,8 +138,8 @@ public class ContainerPathElement extends SimplePathElement {
 		if (target instanceof FlexoBehaviourAction) {
 			return ((FlexoBehaviourAction) target).getVirtualModelInstance();
 		}
-		if (target instanceof AbstractVirtualModelInstance) {
-			return ((AbstractVirtualModelInstance) target).getContainerVirtualModelInstance();
+		if (target instanceof VirtualModelInstance) {
+			return ((VirtualModelInstance) target).getContainerVirtualModelInstance();
 		}
 		else if (target instanceof FlexoConceptInstance) {
 			if (applicableFlexoConcept.getContainerFlexoConcept() != null) {

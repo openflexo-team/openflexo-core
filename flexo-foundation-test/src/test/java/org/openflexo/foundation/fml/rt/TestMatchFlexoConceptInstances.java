@@ -87,11 +87,11 @@ public class TestMatchFlexoConceptInstances extends OpenflexoProjectAtRunTimeTes
 
 	private static FlexoEditor editor;
 	private static FlexoProject project;
-	private static VirtualModelInstance newView;
-	private static VirtualModelInstance model;
-	private static VirtualModelInstance matchingModel;
-	private static VirtualModelInstance model2;
-	private static VirtualModelInstance matchingModel2;
+	private static FMLRTVirtualModelInstance newView;
+	private static FMLRTVirtualModelInstance model;
+	private static FMLRTVirtualModelInstance matchingModel;
+	private static FMLRTVirtualModelInstance model2;
+	private static FMLRTVirtualModelInstance matchingModel2;
 
 	private static FlexoConceptInstance c1, c2, c3, c4;
 	private static FlexoConceptInstance a1, a2, a3, b1, b2, b3, b4, b5, b6, b7;
@@ -165,11 +165,11 @@ public class TestMatchFlexoConceptInstances extends OpenflexoProjectAtRunTimeTes
 		action.doAction();
 		assertTrue(action.hasActionExecutionSucceeded());
 		assertNotNull(newView = action.getNewVirtualModelInstance());
-		assertNotNull(model = (VirtualModelInstance) newView.getVirtualModelInstance("model"));
-		assertNotNull(matchingModel = (VirtualModelInstance) newView.getVirtualModelInstance("matchingModel"));
+		assertNotNull(model = (FMLRTVirtualModelInstance) newView.getVirtualModelInstance("model"));
+		assertNotNull(matchingModel = (FMLRTVirtualModelInstance) newView.getVirtualModelInstance("matchingModel"));
 		assertEquals(model, matchingModel.getFlexoPropertyValue("model"));
-		assertNotNull(model2 = (VirtualModelInstance) newView.getVirtualModelInstance("model2"));
-		assertNotNull(matchingModel2 = (VirtualModelInstance) newView.getVirtualModelInstance("matchingModel2"));
+		assertNotNull(model2 = (FMLRTVirtualModelInstance) newView.getVirtualModelInstance("model2"));
+		assertNotNull(matchingModel2 = (FMLRTVirtualModelInstance) newView.getVirtualModelInstance("matchingModel2"));
 		assertEquals(model2, matchingModel2.getFlexoPropertyValue("model"));
 
 	}

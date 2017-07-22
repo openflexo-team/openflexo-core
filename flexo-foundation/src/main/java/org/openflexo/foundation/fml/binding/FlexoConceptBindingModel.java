@@ -56,14 +56,14 @@ import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
+import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 
 /**
  * This is the {@link BindingModel} exposed by a {@link FlexoConcept}<br>
  * This {@link BindingModel} is based on VirtualModel's (owner of this FlexoConcept) {@link BindingModel} if this owner is not null
  * 
- * Provides access to the {@link VirtualModelInstance}<br>
+ * Provides access to the {@link FMLRTVirtualModelInstance}<br>
  * Allows reflexive access to the {@link VirtualModel} itself<br>
  * 
  * Note that default {@link RunTimeEvaluationContext} corresponding to this {@link BindingModel} is a {@link FlexoConceptInstance}
@@ -160,7 +160,7 @@ public class FlexoConceptBindingModel extends BindingModel implements PropertyCh
 				}
 				updateContainerBindingVariable();
 				// virtualModelInstanceBindingVariable.setType(flexoConcept.getVirtualModel() != null ? VirtualModelInstanceType
-				// .getFlexoConceptInstanceType(flexoConcept.getVirtualModel()) : VirtualModelInstance.class);
+				// .getFlexoConceptInstanceType(flexoConcept.getVirtualModel()) : FMLRTVirtualModelInstance.class);
 			}
 			else if (evt.getPropertyName().equals(FlexoConcept.FLEXO_PROPERTIES_KEY)) {
 				// Roles were modified in related flexoConcept

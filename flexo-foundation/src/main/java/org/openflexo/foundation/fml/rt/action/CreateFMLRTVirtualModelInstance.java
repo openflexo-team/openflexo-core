@@ -47,7 +47,7 @@ import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
+import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.rm.AbstractVirtualModelInstanceResource;
 import org.openflexo.foundation.fml.rt.rm.FMLRTVirtualModelInstanceResource;
 import org.openflexo.foundation.fml.rt.rm.FMLRTVirtualModelInstanceResourceFactory;
@@ -56,16 +56,16 @@ import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 
 /**
- * This action is called to create a regular {@link VirtualModelInstance} either as top level in a repository folder, or as a contained
- * {@link VirtualModelInstance} in a container {@link VirtualModelInstance}
+ * This action is called to create a regular {@link FMLRTVirtualModelInstance} either as top level in a repository folder, or as a contained
+ * {@link FMLRTVirtualModelInstance} in a container {@link FMLRTVirtualModelInstance}
  * 
  * @author sylvain
  *
  * @param <T>
- *            type of container (a repository folder or a container VirtualModelInstance)
+ *            type of container (a repository folder or a container FMLRTVirtualModelInstance)
  */
 public abstract class CreateFMLRTVirtualModelInstance<A extends CreateFMLRTVirtualModelInstance<A>>
-		extends AbstractCreateVirtualModelInstance<A, FlexoObject, VirtualModelInstance, FMLRTTechnologyAdapter> {
+		extends AbstractCreateVirtualModelInstance<A, FlexoObject, FMLRTVirtualModelInstance, FMLRTTechnologyAdapter> {
 
 	private static final Logger logger = Logger.getLogger(CreateFMLRTVirtualModelInstance.class.getPackage().getName());
 
@@ -106,7 +106,7 @@ public abstract class CreateFMLRTVirtualModelInstance<A extends CreateFMLRTVirtu
 			return null;
 		}
 
-		// return VirtualModelInstanceImpl.newVirtualModelInstance(getNewVirtualModelInstanceName(), getNewVirtualModelInstanceTitle(),
+		// return FMLRTVirtualModelInstanceImpl.newVirtualModelInstance(getNewVirtualModelInstanceName(), getNewVirtualModelInstanceTitle(),
 		// getVirtualModel(), getFocusedObject());
 	}
 

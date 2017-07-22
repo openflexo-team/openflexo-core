@@ -57,11 +57,11 @@ import org.openflexo.foundation.fml.binding.DeclarationBindingVariable;
 import org.openflexo.foundation.fml.binding.FMLBindingFactory;
 import org.openflexo.foundation.fml.binding.FlexoBehaviourBindingModel;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
-import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FMLRunTimeEngine;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
+import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstanceObject;
 import org.openflexo.foundation.fml.rt.editionaction.MatchFlexoConceptInstance;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
@@ -239,11 +239,11 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 	public abstract FB getFlexoBehaviour();
 
 	@Override
-	public AbstractVirtualModelInstance<?, ?> getVirtualModelInstance() {
+	public VirtualModelInstance<?, ?> getVirtualModelInstance() {
 		return retrieveVirtualModelInstance();
 	}
 
-	public abstract AbstractVirtualModelInstance<?, ?> retrieveVirtualModelInstance();
+	public abstract VirtualModelInstance<?, ?> retrieveVirtualModelInstance();
 
 	/**
 	 * Return the {@link FlexoConceptInstance} on which this {@link FlexoBehaviour} is applied.<br>
@@ -326,7 +326,7 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 			return getFlexoConceptInstance();
 		}
 		else if (variable.getVariableName().equals(FMLBindingFactory.VIRTUAL_MODEL_INSTANCE)) {
-			if (getFlexoConceptInstance() instanceof VirtualModelInstance) {
+			if (getFlexoConceptInstance() instanceof FMLRTVirtualModelInstance) {
 				return getFlexoConceptInstance();
 			}
 			return getVirtualModelInstance();
@@ -337,7 +337,7 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 			return getFlexoConceptInstance().getValue(variable);
 		}
 
-		// Maybe to the VirtualModelInstance ?
+		// Maybe to the FMLRTVirtualModelInstance ?
 		if (getVirtualModelInstance() != null) {
 			return getVirtualModelInstance().getValue(variable);
 		}

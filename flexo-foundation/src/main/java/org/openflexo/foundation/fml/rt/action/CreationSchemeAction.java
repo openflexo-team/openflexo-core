@@ -51,35 +51,35 @@ import org.openflexo.foundation.fml.CreationScheme;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
-import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
+import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
+import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstanceObject;
 
-public class CreationSchemeAction extends FlexoBehaviourAction<CreationSchemeAction, CreationScheme, AbstractVirtualModelInstance<?, ?>> {
+public class CreationSchemeAction extends FlexoBehaviourAction<CreationSchemeAction, CreationScheme, VirtualModelInstance<?, ?>> {
 
 	private static final Logger logger = Logger.getLogger(CreationSchemeAction.class.getPackage().getName());
 
-	public static FlexoActionType<CreationSchemeAction, AbstractVirtualModelInstance<?, ?>, VirtualModelInstanceObject> actionType = new FlexoActionType<CreationSchemeAction, AbstractVirtualModelInstance<?, ?>, VirtualModelInstanceObject>(
+	public static FlexoActionType<CreationSchemeAction, VirtualModelInstance<?, ?>, VirtualModelInstanceObject> actionType = new FlexoActionType<CreationSchemeAction, VirtualModelInstance<?, ?>, VirtualModelInstanceObject>(
 			"create_flexo_concept_instance", FlexoActionType.newMenu, FlexoActionType.defaultGroup, FlexoActionType.ADD_ACTION_TYPE) {
 
 		/**
 		 * Factory method
 		 */
 		@Override
-		public CreationSchemeAction makeNewAction(AbstractVirtualModelInstance<?, ?> focusedObject,
+		public CreationSchemeAction makeNewAction(VirtualModelInstance<?, ?> focusedObject,
 				Vector<VirtualModelInstanceObject> globalSelection, FlexoEditor editor) {
 			return new CreationSchemeAction(focusedObject, globalSelection, editor);
 		}
 
 		@Override
-		public boolean isVisibleForSelection(AbstractVirtualModelInstance<?, ?> object,
+		public boolean isVisibleForSelection(VirtualModelInstance<?, ?> object,
 				Vector<VirtualModelInstanceObject> globalSelection) {
 			return false;
 		}
 
 		@Override
-		public boolean isEnabledForSelection(AbstractVirtualModelInstance<?, ?> object,
+		public boolean isEnabledForSelection(VirtualModelInstance<?, ?> object,
 				Vector<VirtualModelInstanceObject> globalSelection) {
 			return true;
 		}
@@ -87,14 +87,14 @@ public class CreationSchemeAction extends FlexoBehaviourAction<CreationSchemeAct
 	};
 
 	static {
-		FlexoObjectImpl.addActionForClass(actionType, VirtualModelInstance.class);
+		FlexoObjectImpl.addActionForClass(actionType, FMLRTVirtualModelInstance.class);
 	}
 
-	private AbstractVirtualModelInstance<?, ?> vmInstance;
+	private VirtualModelInstance<?, ?> vmInstance;
 	private FlexoConceptInstance container;
 	private CreationScheme _creationScheme;
 
-	CreationSchemeAction(AbstractVirtualModelInstance<?, ?> focusedObject, Vector<VirtualModelInstanceObject> globalSelection,
+	CreationSchemeAction(VirtualModelInstance<?, ?> focusedObject, Vector<VirtualModelInstanceObject> globalSelection,
 			FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 	}
@@ -130,7 +130,7 @@ public class CreationSchemeAction extends FlexoBehaviourAction<CreationSchemeAct
 			if (getCreationScheme().getFlexoConcept() instanceof VirtualModel) {
 				// AbstractCreateVirtualModelAction should be used instead
 				throw new InvalidParametersException(
-						"Cannot create an VirtualModelInstance this way (AbstractCreateVirtualModelAction should be used instead)");
+						"Cannot create an FMLRTVirtualModelInstance this way (AbstractCreateVirtualModelAction should be used instead)");
 			}
 			else if (getCreationScheme().getFlexoConcept() != null) {
 				flexoConceptInstance = getVirtualModelInstance().makeNewFlexoConceptInstance(getFlexoConcept());
@@ -152,7 +152,7 @@ public class CreationSchemeAction extends FlexoBehaviourAction<CreationSchemeAct
 
 	/**
 	 * Used when creation of FlexoConceptInstance initialization is beeing delegated to an other component.<br>
-	 * This happens for example in the case of VirtualModelInstance creation, where the creation of FlexoConceptInstance is performed in the
+	 * This happens for example in the case of FMLRTVirtualModelInstance creation, where the creation of FlexoConceptInstance is performed in the
 	 * {@link AbstractCreateVirtualModelInstance} action
 	 * 
 	 * @param flexoConceptInstance
@@ -186,14 +186,14 @@ public class CreationSchemeAction extends FlexoBehaviourAction<CreationSchemeAct
 	}
 
 	@Override
-	public AbstractVirtualModelInstance<?, ?> getVirtualModelInstance() {
+	public VirtualModelInstance<?, ?> getVirtualModelInstance() {
 		if (vmInstance == null) {
 			vmInstance = getFocusedObject();
 		}
 		return vmInstance;
 	}
 
-	public void setVirtualModelInstance(AbstractVirtualModelInstance<?, ?> vmInstance) {
+	public void setVirtualModelInstance(VirtualModelInstance<?, ?> vmInstance) {
 		this.vmInstance = vmInstance;
 	}
 
@@ -228,7 +228,7 @@ public class CreationSchemeAction extends FlexoBehaviourAction<CreationSchemeAct
 	}
 
 	@Override
-	public AbstractVirtualModelInstance<?, ?> retrieveVirtualModelInstance() {
+	public VirtualModelInstance<?, ?> retrieveVirtualModelInstance() {
 		return getVirtualModelInstance();
 	}
 

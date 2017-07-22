@@ -105,7 +105,7 @@ import org.openflexo.foundation.fml.editionaction.DeleteAction;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceModelSlot;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
+import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.SelectFlexoConceptInstance;
@@ -274,7 +274,7 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 		else if (UseModelSlotDeclaration.class.isAssignableFrom(objectClass)) {
 			return FMLIconLibrary.IMPORT_ICON;
 		}
-		else if (VirtualModelInstance.class.isAssignableFrom(objectClass)) {
+		else if (FMLRTVirtualModelInstance.class.isAssignableFrom(objectClass)) {
 			return FMLRTIconLibrary.VIRTUAL_MODEL_INSTANCE_ICON;
 		}
 		else if (FlexoConceptInstance.class.isAssignableFrom(objectClass)) {

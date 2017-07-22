@@ -41,19 +41,19 @@ package org.openflexo.fml.rt.controller.widget;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.VirtualModelInstanceType;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
+import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
+import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
 
 /**
- * Widget allowing to select a VirtualModelInstance
+ * Widget allowing to select a FMLRTVirtualModelInstance
  * 
  * @author sguerin
  * 
  */
 @SuppressWarnings("serial")
-public class FIBVirtualModelInstanceSelector extends FIBAbstractFMLRTObjectSelector<VirtualModelInstance> {
+public class FIBVirtualModelInstanceSelector extends FIBAbstractFMLRTObjectSelector<FMLRTVirtualModelInstance> {
 
 	static final Logger logger = Logger.getLogger(FIBVirtualModelInstanceSelector.class.getPackage().getName());
 
@@ -65,7 +65,7 @@ public class FIBVirtualModelInstanceSelector extends FIBAbstractFMLRTObjectSelec
 	private Type expectedType;
 	private VirtualModelInstanceType defaultExpectedType;*/
 
-	public FIBVirtualModelInstanceSelector(VirtualModelInstance editedObject) {
+	public FIBVirtualModelInstanceSelector(FMLRTVirtualModelInstance editedObject) {
 		super(editedObject);
 		// defaultExpectedType = editedObject != null ? VirtualModelInstanceType.getVirtualModelInstanceType(editedObject.getVirtualModel())
 		// : VirtualModelInstanceType.UNDEFINED_VIRTUAL_MODEL_INSTANCE_TYPE;
@@ -85,12 +85,12 @@ public class FIBVirtualModelInstanceSelector extends FIBAbstractFMLRTObjectSelec
 	}
 
 	@Override
-	public Class<VirtualModelInstance> getRepresentedType() {
-		return VirtualModelInstance.class;
+	public Class<FMLRTVirtualModelInstance> getRepresentedType() {
+		return FMLRTVirtualModelInstance.class;
 	}
 
 	/*@Override
-	public String renderedString(VirtualModelInstance editedObject) {
+	public String renderedString(FMLRTVirtualModelInstance editedObject) {
 		if (editedObject != null) {
 			return editedObject.getName();
 		}
@@ -146,13 +146,13 @@ public class FIBVirtualModelInstanceSelector extends FIBAbstractFMLRTObjectSelec
 		if (!super.isAcceptableValue(o)) {
 			return false;
 		}
-		if (!(o instanceof VirtualModelInstance)) {
+		if (!(o instanceof FMLRTVirtualModelInstance)) {
 			return false;
 		}
 		if (!(getExpectedType() instanceof VirtualModelInstanceType)) {
 			return false;
 		}
-		VirtualModelInstance vmi = (VirtualModelInstance) o;
+		FMLRTVirtualModelInstance vmi = (FMLRTVirtualModelInstance) o;
 		VirtualModelInstanceType vmiType = (VirtualModelInstanceType) getExpectedType();
 		return (vmiType.getVirtualModel() == null) || (vmiType.getVirtualModel().isAssignableFrom(vmi.getVirtualModel()));
 

@@ -43,7 +43,7 @@ import java.util.List;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
+import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.technologyadapter.FlexoModelResource;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -60,8 +60,8 @@ import org.openflexo.model.annotations.XMLElement;
 @ImplementationClass(FMLRTVirtualModelInstanceResourceImpl.class)
 @XMLElement
 public interface FMLRTVirtualModelInstanceResource
-		extends AbstractVirtualModelInstanceResource<VirtualModelInstance, FMLRTTechnologyAdapter>,
-		FlexoModelResource<VirtualModelInstance, VirtualModel, FMLRTTechnologyAdapter, FMLTechnologyAdapter> {
+		extends AbstractVirtualModelInstanceResource<FMLRTVirtualModelInstance, FMLRTTechnologyAdapter>,
+		FlexoModelResource<FMLRTVirtualModelInstance, VirtualModel, FMLRTTechnologyAdapter, FMLTechnologyAdapter> {
 
 	/**
 	 * Return the list of all {@link VirtualModelInstanceResource} defined in this {@link ViewResource}

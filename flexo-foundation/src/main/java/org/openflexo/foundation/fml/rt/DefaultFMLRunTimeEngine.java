@@ -58,7 +58,7 @@ import org.openflexo.foundation.fml.rt.action.EventListenerActionType;
 /**
  * Base implementation for {@link FMLRunTimeEngine}
  * 
- * Manages a list of {@link VirtualModelInstance} beeing monitored and executed by current engine instance
+ * Manages a list of {@link FMLRTVirtualModelInstance} beeing monitored and executed by current engine instance
  * 
  * 
  * @author sylvain
@@ -66,14 +66,14 @@ import org.openflexo.foundation.fml.rt.action.EventListenerActionType;
  */
 public abstract class DefaultFMLRunTimeEngine implements FMLRunTimeEngine, PropertyChangeListener {
 
-	// Stores all VirtualModelInstance managed by this FMLRunTimeEngine
-	private List<AbstractVirtualModelInstance<?, ?>> virtualModelInstances;
+	// Stores all FMLRTVirtualModelInstance managed by this FMLRunTimeEngine
+	private List<VirtualModelInstance<?, ?>> virtualModelInstances;
 
 	// Stores all EventInstanceListener for this Run-time engine
 	private Set<EventInstanceListener> eventListeners;
 
-	// Stores all EventInstanceListener relatively to listened VirtualModelInstance
-	protected Map<AbstractVirtualModelInstance<?, ?>, Set<EventInstanceListener>> listeningInstances;
+	// Stores all EventInstanceListener relatively to listened FMLRTVirtualModelInstance
+	protected Map<VirtualModelInstance<?, ?>, Set<EventInstanceListener>> listeningInstances;
 
 	public DefaultFMLRunTimeEngine() {
 		virtualModelInstances = new ArrayList<>();
@@ -82,7 +82,7 @@ public abstract class DefaultFMLRunTimeEngine implements FMLRunTimeEngine, Prope
 	}
 
 	@Override
-	public void addToExecutionContext(AbstractVirtualModelInstance<?, ?> vmi, RunTimeEvaluationContext evaluationContext) {
+	public void addToExecutionContext(VirtualModelInstance<?, ?> vmi, RunTimeEvaluationContext evaluationContext) {
 		System.out.println("************ Adding to ExecutionContext: " + vmi);
 		virtualModelInstances.add(vmi);
 		if (vmi.getVirtualModel() != null) {
@@ -103,7 +103,7 @@ public abstract class DefaultFMLRunTimeEngine implements FMLRunTimeEngine, Prope
 	}
 
 	@Override
-	public void removeFromExecutionContext(AbstractVirtualModelInstance<?, ?> vmi, RunTimeEvaluationContext evaluationContext) {
+	public void removeFromExecutionContext(VirtualModelInstance<?, ?> vmi, RunTimeEvaluationContext evaluationContext) {
 		System.out.println("************ Removing from ExecutionContext: " + vmi);
 		virtualModelInstances.remove(vmi);
 		if (vmi.getVirtualModel() != null) {
@@ -125,19 +125,19 @@ public abstract class DefaultFMLRunTimeEngine implements FMLRunTimeEngine, Prope
 
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
-		if (evt.getSource() instanceof VirtualModelInstance && virtualModelInstances.contains(evt.getSource())) {
-			if (evt.getPropertyName().equals(VirtualModelInstance.EVENT_FIRED)) {
+		if (evt.getSource() instanceof FMLRTVirtualModelInstance && virtualModelInstances.contains(evt.getSource())) {
+			if (evt.getPropertyName().equals(FMLRTVirtualModelInstance.EVENT_FIRED)) {
 				// System.out.println("Ouaip je recois l'event " + evt.getNewValue());
 				receivedEvent((FlexoEventInstance) evt.getNewValue());
 			}
-			else if (evt.getPropertyName().equals(VirtualModelInstance.FLEXO_CONCEPT_INSTANCES_KEY)) {
+			else if (evt.getPropertyName().equals(FMLRTVirtualModelInstance.FLEXO_CONCEPT_INSTANCES_KEY)) {
 				// System.out.println(">>>>>>>>>> hop, je recois un nouvel event " + evt);
 				if (evt.getNewValue() instanceof FlexoConceptInstance) {
 					FlexoConceptInstance newValue = (FlexoConceptInstance) evt.getNewValue();
 					// System.out.println("Je detecte bien ici la creation d'un nouveau FlexoConceptInstance " + newValue);
 					if (requireEventListening(newValue.getFlexoConcept())) {
 						for (EventListener el : newValue.getFlexoConcept().getFlexoBehaviours(EventListener.class)) {
-							startEventListening(newValue, el, /*(VirtualModelInstance) evt.getSource()*/newValue);
+							startEventListening(newValue, el, /*(FMLRTVirtualModelInstance) evt.getSource()*/newValue);
 						}
 					}
 				}
@@ -145,7 +145,7 @@ public abstract class DefaultFMLRunTimeEngine implements FMLRunTimeEngine, Prope
 					FlexoConceptInstance oldValue = (FlexoConceptInstance) evt.getOldValue();
 					if (requireEventListening(oldValue.getFlexoConcept())) {
 						for (EventListener el : oldValue.getFlexoConcept().getFlexoBehaviours(EventListener.class)) {
-							stopEventListening(oldValue, el, (VirtualModelInstance) evt.getSource());
+							stopEventListening(oldValue, el, (FMLRTVirtualModelInstance) evt.getSource());
 						}
 					}
 				}
@@ -161,9 +161,9 @@ public abstract class DefaultFMLRunTimeEngine implements FMLRunTimeEngine, Prope
 
 		private FlexoConceptInstance instanceBeeingListening;
 		private EventListener listener;
-		private AbstractVirtualModelInstance<?, ?> listenedVMI;
+		private VirtualModelInstance<?, ?> listenedVMI;
 		private RunTimeEvaluationContext evaluationContext;
-		private BindingValueChangeListener<AbstractVirtualModelInstance<?, ?>> bvChangeListener;
+		private BindingValueChangeListener<VirtualModelInstance<?, ?>> bvChangeListener;
 
 		public EventInstanceListener(FlexoConceptInstance instanceBeeingListening, EventListener listener,
 				RunTimeEvaluationContext evaluationContext) {
@@ -187,12 +187,12 @@ public abstract class DefaultFMLRunTimeEngine implements FMLRunTimeEngine, Prope
 				bvChangeListener.delete();
 			}
 
-			DataBinding<AbstractVirtualModelInstance<?, ?>> vmiBinding = listener.getListenedVirtualModelInstance();
+			DataBinding<VirtualModelInstance<?, ?>> vmiBinding = listener.getListenedVirtualModelInstance();
 
 			if (vmiBinding != null && vmiBinding.isValid()) {
-				bvChangeListener = new BindingValueChangeListener<AbstractVirtualModelInstance<?, ?>>(vmiBinding, evaluationContext, true) {
+				bvChangeListener = new BindingValueChangeListener<VirtualModelInstance<?, ?>>(vmiBinding, evaluationContext, true) {
 					@Override
-					public void bindingValueChanged(Object source, AbstractVirtualModelInstance<?, ?> newValue) {
+					public void bindingValueChanged(Object source, VirtualModelInstance<?, ?> newValue) {
 						System.out.println(" **** bindingValueChanged() detected for fci=" + instanceBeeingListening + "vmi="
 								+ listener.getListenedVirtualModelInstance() + " with newValue=" + newValue + " source=" + source);
 						listenTo(newValue);
@@ -209,7 +209,7 @@ public abstract class DefaultFMLRunTimeEngine implements FMLRunTimeEngine, Prope
 			}
 		}
 
-		private void listenTo(AbstractVirtualModelInstance<?, ?> vmi) {
+		private void listenTo(VirtualModelInstance<?, ?> vmi) {
 
 			// System.out.println("Je suis " + instanceBeeingListening);
 			// System.out.println("J'ecoutais " + listenedVMI);
