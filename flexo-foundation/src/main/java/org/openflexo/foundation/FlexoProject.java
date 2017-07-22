@@ -506,11 +506,14 @@ public class FlexoProject extends FileSystemBasedResourceCenter
 
 	private ValidationReport repairProject() {
 		try {
-			return getProjectValidationModel().validate(this);
+			if (getProjectValidationModel() != null) {
+				return getProjectValidationModel().validate(this);
+			}
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 			return null;
 		}
+		return null;
 	}
 
 	/**
@@ -798,10 +801,10 @@ public class FlexoProject extends FileSystemBasedResourceCenter
 		}
 		return new FlexoProjectFile(this, "FlexoJavaFormatSettings.xml");
 	}
-	*/
+	 */
 	/**
-	*
-	*/
+	 *
+	 */
 
 	// TODO Code to be Removed as no use for that
 	/*
@@ -814,7 +817,7 @@ public class FlexoProject extends FileSystemBasedResourceCenter
 			e.printStackTrace();
 		}
 	}
-	*/
+	 */
 
 	/**
 	 * Ensure that all .prj contains required .cvsignore files
