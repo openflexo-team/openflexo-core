@@ -167,7 +167,7 @@ public class FIBDocFragmentSelector<F extends FlexoDocFragment<D, TA>, D extends
 			getServiceManager().getTaskManager().waitTask(task);
 			returned = task.getPanel();
 		}
-		else {
+		if (returned == null) {
 			returned = new FragmentSelectorDetailsPanel(editedObject);
 		}
 
@@ -362,7 +362,6 @@ public class FIBDocFragmentSelector<F extends FlexoDocFragment<D, TA>, D extends
 	}
 
 	protected void selectFragmentInDocumentEditor(F fragment, FIBCustomWidget<?, ?, ?> documentEditorWidget) {
-
 
 		// System.out.println("customPanel" + getCustomPanel());
 		// System.out.println("docEditorWidget=" + getCustomPanel().getDocEditorWidget());
