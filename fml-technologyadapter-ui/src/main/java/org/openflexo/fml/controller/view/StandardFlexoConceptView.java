@@ -55,15 +55,4 @@ public class StandardFlexoConceptView extends FlexoConceptView<FlexoConcept> {
 		super(flexoConcept, CommonFIB.STANDARD_FLEXO_CONCEPT_VIEW_FIB, controller, perspective);
 	}
 
-	/*@Override
-	public void fireObjectSelected(FlexoObject object) {
-		// System.out.println("StandardFlexoConceptView / fireObjectSelected: " + object);
-		if (object == getRepresentedObject()) {
-			getFIBView().getController().objectAddedToSelection(object);
-		}
-		else {
-			super.fireObjectSelected(object);
-		}
-	}*/
-
 }

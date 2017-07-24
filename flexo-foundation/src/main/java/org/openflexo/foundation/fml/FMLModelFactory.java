@@ -364,9 +364,9 @@ public class FMLModelFactory extends FGEModelFactoryImpl implements PamelaResour
 		return returned;
 	}
 
-	public InnerConceptsFacet newInnerConceptsFacet(VirtualModel virtualModel) {
+	public InnerConceptsFacet newInnerConceptsFacet(FlexoConcept flexoConcept) {
 		InnerConceptsFacet returned = newInstance(InnerConceptsFacet.class);
-		returned.setVirtualModel(virtualModel);
+		returned.setFlexoConcept(flexoConcept);
 		return returned;
 	}
 

@@ -53,11 +53,12 @@ import org.openflexo.model.annotations.ModelEntity;
  */
 @ModelEntity
 @ImplementationClass(InnerConceptsFacet.InnerConceptsFacetImpl.class)
-public interface InnerConceptsFacet extends FlexoConceptObject, FlexoFacet<VirtualModel> {
+public interface InnerConceptsFacet extends FlexoConceptObject, FlexoFacet<FlexoConcept> {
 
-	public VirtualModel getVirtualModel();
+	@Override
+	public FlexoConcept getFlexoConcept();
 
-	public void setVirtualModel(VirtualModel virtualModel);
+	public void setFlexoConcept(FlexoConcept flexoConcept);
 
 	/**
 	 * Return all {@link FlexoConcept} that are declared in related {@link VirtualModel}
@@ -72,7 +73,7 @@ public interface InnerConceptsFacet extends FlexoConceptObject, FlexoFacet<Virtu
 	 *
 	 * @return
 	 */
-	public List<FlexoConcept> getInheritanceRootFlexoConcepts();
+	// public List<FlexoConcept> getInheritanceRootFlexoConcepts();
 
 	/**
 	 * Return all {@link FlexoConcept} that are at the top of embedding hierarchy for related {@link VirtualModel}
@@ -85,25 +86,20 @@ public interface InnerConceptsFacet extends FlexoConceptObject, FlexoFacet<Virtu
 
 	public abstract class InnerConceptsFacetImpl extends FlexoConceptObjectImpl implements InnerConceptsFacet {
 
-		private VirtualModel virtualModel;
-
-		@Override
-		public VirtualModel getVirtualModel() {
-			return virtualModel;
-		}
-
-		@Override
-		public void setVirtualModel(VirtualModel virtualModel) {
-			if ((virtualModel == null && this.virtualModel != null) || (virtualModel != null && !virtualModel.equals(this.virtualModel))) {
-				VirtualModel oldValue = this.virtualModel;
-				this.virtualModel = virtualModel;
-				getPropertyChangeSupport().firePropertyChange("virtualModel", oldValue, virtualModel);
-			}
-		}
+		private FlexoConcept flexoConcept;
 
 		@Override
 		public FlexoConcept getFlexoConcept() {
-			return getVirtualModel();
+			return flexoConcept;
+		}
+
+		@Override
+		public void setFlexoConcept(FlexoConcept flexoConcept) {
+			if ((flexoConcept == null && this.flexoConcept != null) || (flexoConcept != null && !flexoConcept.equals(this.flexoConcept))) {
+				FlexoConcept oldValue = this.flexoConcept;
+				this.flexoConcept = flexoConcept;
+				getPropertyChangeSupport().firePropertyChange("flexoConcept", oldValue, flexoConcept);
+			}
 		}
 
 		@Override
@@ -112,35 +108,43 @@ public interface InnerConceptsFacet extends FlexoConceptObject, FlexoFacet<Virtu
 		}
 
 		@Override
-		public VirtualModel getObject() {
-			return getVirtualModel();
+		public FlexoConcept getObject() {
+			return getFlexoConcept();
 		}
 
 		@Override
 		public String getURI() {
-			return getVirtualModel().getURI();
+			return getFlexoConcept().getURI();
 		}
 
 		@Override
 		public List<FlexoConcept> getFlexoConcepts() {
-			return getVirtualModel().getFlexoConcepts();
+			if (getFlexoConcept() instanceof VirtualModel) {
+				return ((VirtualModel) getFlexoConcept()).getFlexoConcepts();
+			}
+			return getFlexoConcept().getChildFlexoConcepts();
 		}
 
-		@Override
+		/*@Override
 		public List<FlexoConcept> getInheritanceRootFlexoConcepts() {
-			return getVirtualModel().getAllRootFlexoConcepts();
-		}
+			if (getFlexoConcept() instanceof VirtualModel) {
+				return ((VirtualModel) getFlexoConcept()).getAllRootFlexoConcepts();
+			}
+			return getFlexoConcept().getChildFlexoConcepts();
+		}*/
 
 		@Override
 		public List<FlexoConcept> getEmbeddingRootFlexoConcepts() {
-			// TODO
-			return getVirtualModel().getFlexoConcepts();
+			if (getFlexoConcept() instanceof VirtualModel) {
+				return ((VirtualModel) getFlexoConcept()).getAllRootFlexoConcepts();
+			}
+			return getFlexoConcept().getChildFlexoConcepts();
 		}
 
 		@Override
 		public void notifiedConceptsChanged() {
 			getPropertyChangeSupport().firePropertyChange("flexoConcepts", null, getFlexoConcepts());
-			getPropertyChangeSupport().firePropertyChange("inheritanceRootFlexoConcepts", null, getInheritanceRootFlexoConcepts());
+			// getPropertyChangeSupport().firePropertyChange("inheritanceRootFlexoConcepts", null, getInheritanceRootFlexoConcepts());
 			getPropertyChangeSupport().firePropertyChange("embeddingRootFlexoConcepts", null, getEmbeddingRootFlexoConcepts());
 		}
 	}

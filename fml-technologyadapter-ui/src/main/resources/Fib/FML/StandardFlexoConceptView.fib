@@ -13,8 +13,8 @@
 			<Divider id="4" />
 			<Leaf id="5" name="right" weight="0.699999988079071" />
 		</RowSplit>
-		<Browser id="6" backgroundSelectionColor="9,80,208"
-			visibleRowCount="5" boundToSelectionManager="true" allowsDragAndDrop="true" 
+		<Browser id="6" backgroundSelectionColor="9,80,208" 
+			visibleRowCount="5" boundToSelectionManager="true" allowsDragAndDrop="true"
 			backgroundNonSelectionColor="255,255,255" textSelectionColor="255,255,255"
 			backgroundSecondarySelectionColor="178,215,255" iteratorClassName="java.lang.Object"
 			showRootsHandle="true" showFooter="true" textNonSelectionColor="0,0,0"
@@ -33,6 +33,7 @@
 				<Children id="9" data="flexoConcept.structuralFacet" name="structural" />
 				<Children id="10" data="flexoConcept.behaviouralFacet"
 					name="behavioural" />
+				<Children data="flexoConcept.innerConceptsFacet" name="innerConcepts" />
 				<BrowserAddAction id="12"
 					method="controller.createFlexoConcept(selected)" name="add_action" />
 			</BrowserElement>
@@ -222,6 +223,17 @@
 				<BrowserAddAction id="69"
 					method="controller.createAdvancedScheme(selected.flexoConcept)"
 					name="new_behaviour" />
+			</BrowserElement>
+			<BrowserElement dataClassName="org.openflexo.foundation.fml.InnerConceptsFacet"
+				label="&quot;Inner concepts&quot;" icon="controller.iconForObject(innerConceptsFacet)"
+				tooltip="" enabled="" isEditable="false" editableLabel="" filtered="false"
+				defaultVisible="true" dynamicFont="" name="innerConceptsFacet">
+				<Children data="innerConceptsFacet.embeddingRootFlexoConcepts"
+					name="children" />
+				<BrowserAddAction
+					method="controller.createFlexoConcept(selected.flexoConcept)" name="add_flexo_concept" />
+				<BrowserRemoveAction
+					method="controller.deleteFlexoConcept(selected.flexoConcept)" name="remove_flexo_concept" />
 			</BrowserElement>
 		</Browser>
 		<FIBReferencedComponent id="70"

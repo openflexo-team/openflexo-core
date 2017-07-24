@@ -39,6 +39,9 @@
 package org.openflexo.fml.controller;
 
 import java.lang.reflect.Type;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.logging.Logger;
 
 import javax.swing.ImageIcon;
 
@@ -71,8 +74,9 @@ import org.openflexo.fml.controller.action.DeclareNewVariableActionInitializer;
 import org.openflexo.fml.controller.action.DeleteFlexoConceptObjectsInitializer;
 import org.openflexo.fml.controller.action.DeleteVirtualModelInitializer;
 import org.openflexo.fml.controller.action.ShowFMLRepresentationInitializer;
-import org.openflexo.fml.controller.view.StandardFlexoConceptView;
+import org.openflexo.fml.controller.action.ValidateActionizer;
 import org.openflexo.fml.controller.view.FMLLocalizedDictionaryView;
+import org.openflexo.fml.controller.view.StandardFlexoConceptView;
 import org.openflexo.fml.controller.view.VirtualModelView;
 import org.openflexo.fml.controller.widget.FIBVirtualModelLibraryBrowser;
 import org.openflexo.fml.controller.widget.FlexoConceptInstanceTypeEditor;
@@ -86,6 +90,7 @@ import org.openflexo.foundation.fml.DeletionScheme;
 import org.openflexo.foundation.fml.EventListener;
 import org.openflexo.foundation.fml.FMLLocalizedDictionary;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
+import org.openflexo.foundation.fml.FMLValidationModel;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter.WidgetType;
@@ -103,9 +108,9 @@ import org.openflexo.foundation.fml.action.DeleteFlexoConceptObjects;
 import org.openflexo.foundation.fml.binding.FMLBindingFactory;
 import org.openflexo.foundation.fml.editionaction.DeleteAction;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
+import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceModelSlot;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
-import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.SelectFlexoConceptInstance;
@@ -113,6 +118,7 @@ import org.openflexo.foundation.fml.rt.editionaction.SelectVirtualModelInstance;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceType;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapterResource;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.foundation.technologyadapter.UseModelSlotDeclaration;
 import org.openflexo.gina.controller.CustomTypeEditor;
@@ -133,7 +139,11 @@ import org.openflexo.view.controller.model.FlexoPerspective;
 
 public class FMLTechnologyAdapterController extends TechnologyAdapterController<FMLTechnologyAdapter> {
 
+	private static final Logger logger = Logger.getLogger(FMLTechnologyAdapterController.class.getPackage().getName());
+
 	private InspectorGroup fmlInspectors;
+
+	private Map<VirtualModel, FMLValidationModel> validationModels = new HashMap<>();
 
 	@Override
 	public Class<FMLTechnologyAdapter> getTechnologyAdapterClass() {
@@ -166,6 +176,8 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 
 	@Override
 	protected void initializeActions(ControllerActionInitializer actionInitializer) {
+
+		new ValidateActionizer(actionInitializer);
 
 		new CreateTopLevelVirtualModelInitializer(actionInitializer);
 		new CreateModelSlotInitializer(actionInitializer);
@@ -592,4 +604,15 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 				new DataBinding<>("data.parametersDefinitions." + widgetContext.getName() + ".type"), true));
 		return viewSelector;
 	}
+
+	@Override
+	public void resourceLoading(TechnologyAdapterResource<?, FMLTechnologyAdapter> resource) {
+		logger.info("RESOURCE LOADED: " + resource);
+	}
+
+	@Override
+	public void resourceUnloaded(TechnologyAdapterResource<?, FMLTechnologyAdapter> resource) {
+		logger.info("RESOURCE UNLOADED: " + resource);
+	}
+
 }

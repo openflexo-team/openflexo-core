@@ -478,6 +478,8 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 
 	public FlexoConceptBehaviouralFacet getBehaviouralFacet();
 
+	public InnerConceptsFacet getInnerConceptsFacet();
+
 	public boolean isAssignableFrom(FlexoConcept flexoConcept);
 
 	public boolean isSuperConceptOf(FlexoConcept flexoConcept);
@@ -518,6 +520,7 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 
 		private FlexoConceptStructuralFacet structuralFacet;
 		private FlexoConceptBehaviouralFacet behaviouralFacet;
+		private InnerConceptsFacet innerConceptsFacet;
 
 		private final FlexoConceptInstanceType instanceType = new FlexoConceptInstanceType(this);
 
@@ -575,6 +578,22 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 				}
 			}
 			return behaviouralFacet;
+		}
+
+		@Override
+		public InnerConceptsFacet getInnerConceptsFacet() {
+			FMLModelFactory factory = getFMLModelFactory();
+			if (innerConceptsFacet == null && factory != null) {
+				CompoundEdit ce = null;
+				if (!factory.getEditingContext().getUndoManager().isBeeingRecording()) {
+					ce = factory.getEditingContext().getUndoManager().startRecording("CREATE_INNER_CONCEPTS_FACET");
+				}
+				innerConceptsFacet = factory.newInnerConceptsFacet(this);
+				if (ce != null) {
+					factory.getEditingContext().getUndoManager().stopRecording(ce);
+				}
+			}
+			return innerConceptsFacet;
 		}
 
 		@Override

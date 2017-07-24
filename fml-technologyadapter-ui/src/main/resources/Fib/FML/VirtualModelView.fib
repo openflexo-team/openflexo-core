@@ -262,12 +262,12 @@
 				label="&quot;Inner concepts&quot;" icon="controller.iconForObject(innerConceptsFacet)"
 				tooltip="" enabled="" isEditable="false" editableLabel="" filtered="false"
 				defaultVisible="true" dynamicFont="" name="innerConceptsFacet">
-				<Children data="innerConceptsFacet.inheritanceRootFlexoConcepts"
+				<Children data="innerConceptsFacet.embeddingRootFlexoConcepts"
 					name="children" />
 				<BrowserAddAction
-					method="controller.createFlexoConcept(selected.virtualModel)" name="add_flexo_concept" />
+					method="controller.createFlexoConcept(selected.flexoConcept)" name="add_flexo_concept" />
 				<BrowserRemoveAction
-					method="controller.deleteFlexoConcept(selected.virtualModel)" name="remove_flexo_concept" />
+					method="controller.deleteFlexoConcept(selected.flexoConcept)" name="remove_flexo_concept" />
 			</BrowserElement>
 			<BrowserElement dataClassName="org.openflexo.foundation.fml.FlexoConcept"
 				label="flexoConcept.name" editableLabel="flexoConcept.name"

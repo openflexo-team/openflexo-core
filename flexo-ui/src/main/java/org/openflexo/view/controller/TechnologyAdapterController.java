@@ -83,6 +83,7 @@ import org.openflexo.foundation.nature.ProjectNature;
 import org.openflexo.foundation.nature.ProjectNatureService;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapterResource;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.gina.controller.CustomTypeEditor;
@@ -703,6 +704,14 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 			customTypeEditors.put(typeClass, returned);
 		}
 		return returned;
+	}
+
+	public void resourceLoading(TechnologyAdapterResource<?, TA> resource) {
+		System.out.println("RESOURCE LOADED: " + resource);
+	}
+
+	public void resourceUnloaded(TechnologyAdapterResource<?, TA> resource) {
+		System.out.println("RESOURCE UNLOADED: " + resource);
 	}
 
 }

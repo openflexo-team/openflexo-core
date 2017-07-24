@@ -43,6 +43,7 @@ import java.util.Collection;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.ServiceLoader;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.type.CustomType;
@@ -53,9 +54,14 @@ import org.openflexo.foundation.FlexoServiceManager.TechnologyAdapterHasBeenActi
 import org.openflexo.foundation.FlexoServiceManager.TechnologyAdapterHasBeenDisactivated;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.nature.ProjectNatureService;
+import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
+import org.openflexo.foundation.resource.ResourceData;
+import org.openflexo.foundation.resource.ResourceLoaded;
+import org.openflexo.foundation.resource.ResourceUnloaded;
 import org.openflexo.foundation.task.Progress;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapterResource;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.gina.controller.CustomTypeEditor;
@@ -175,9 +181,40 @@ public abstract class DefaultTechnologyAdapterControllerService extends FlexoSer
 		return loadedAdapters.values();
 	}
 
+	private <RD extends ResourceData<RD> & TechnologyObject<TA>, TA extends TechnologyAdapter> void resourceLoaded(
+			TechnologyAdapterResource<RD, TA> r) {
+		TA ta = r.getTechnologyAdapter();
+		System.out.println("Loaded resource " + r + " for TA " + ta);
+		TechnologyAdapterController<TA> tac = getTechnologyAdapterController(ta);
+		tac.resourceLoading(r);
+	}
+
+	private <RD extends ResourceData<RD> & TechnologyObject<TA>, TA extends TechnologyAdapter> void resourceUnloaded(
+			TechnologyAdapterResource<RD, TA> r) {
+		TA ta = r.getTechnologyAdapter();
+		System.out.println("Unloaded resource " + r + " for TA " + ta);
+		TechnologyAdapterController<TA> tac = getTechnologyAdapterController(ta);
+		tac.resourceUnloaded(r);
+	}
+
 	@Override
 	public void receiveNotification(FlexoService caller, ServiceNotification notification) {
-		logger.fine("TechnologyAdapterController service received notification " + notification + " from " + caller);
+		if (logger.isLoggable(Level.FINE)) {
+			logger.fine("*************** TechnologyAdapterController service received notification " + notification + " from " + caller);
+		}
+
+		if (notification instanceof ResourceLoaded) {
+			FlexoResource<?> r = ((ResourceLoaded) notification).getLoadedResource();
+			if (r instanceof TechnologyAdapterResource) {
+				resourceLoaded((TechnologyAdapterResource<?, ?>) r);
+			}
+		}
+		if (notification instanceof ResourceUnloaded) {
+			FlexoResource<?> r = ((ResourceUnloaded) notification).getUnloadedResource();
+			if (r instanceof TechnologyAdapterResource) {
+				resourceUnloaded((TechnologyAdapterResource<?, ?>) r);
+			}
+		}
 		if (notification instanceof ModuleLoaded) {
 
 			// When a module is loaded, register all loaded technology adapter controllers with new new loaded module action initializer

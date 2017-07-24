@@ -54,8 +54,8 @@ import org.openflexo.foundation.fml.binding.FMLBindingFactory;
 import org.openflexo.foundation.fml.binding.VirtualModelBindingModel;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.fml.rm.VirtualModelResourceFactory;
-import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
+import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.DeleteFlexoConceptInstanceParameter;
 import org.openflexo.foundation.resource.CannotRenameException;
 import org.openflexo.foundation.resource.FlexoResource;
@@ -84,7 +84,6 @@ import org.openflexo.model.annotations.Remover;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.model.annotations.XMLElement;
-import org.openflexo.model.undo.CompoundEdit;
 import org.openflexo.model.validation.Validable;
 import org.openflexo.model.validation.ValidationError;
 import org.openflexo.model.validation.ValidationIssue;
@@ -306,8 +305,6 @@ public interface VirtualModel extends FlexoConcept, VirtualModelObject, FlexoMet
 
 	@Override
 	public VirtualModelBindingModel getBindingModel();
-
-	public InnerConceptsFacet getInnerConceptsFacet();
 
 	/**
 	 * Return the list of {@link TechnologyAdapter} used in the context of this {@link VirtualModel}
@@ -876,24 +873,6 @@ public interface VirtualModel extends FlexoConcept, VirtualModelObject, FlexoMet
 		public Object getObject(String objectURI) {
 			// TODO Auto-generated method stub
 			return null;
-		}
-
-		private InnerConceptsFacet innerConceptsFacet;
-
-		@Override
-		public InnerConceptsFacet getInnerConceptsFacet() {
-			FMLModelFactory factory = getFMLModelFactory();
-			if (innerConceptsFacet == null && factory != null) {
-				CompoundEdit ce = null;
-				if (!factory.getEditingContext().getUndoManager().isBeeingRecording()) {
-					ce = factory.getEditingContext().getUndoManager().startRecording("CREATE_INNER_CONCEPTS_FACET");
-				}
-				innerConceptsFacet = factory.newInnerConceptsFacet(this);
-				if (ce != null) {
-					factory.getEditingContext().getUndoManager().stopRecording(ce);
-				}
-			}
-			return innerConceptsFacet;
 		}
 
 		/**

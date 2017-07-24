@@ -3,7 +3,7 @@
  * Copyright (c) 2013-2014, Openflexo
  * Copyright (c) 2011-2012, AgileBirds
  * 
- * This file is part of Flexo-foundation, a component of the software infrastructure 
+ * This file is part of Flexo-ui, a component of the software infrastructure 
  * developed at Openflexo.
  * 
  * 
@@ -37,31 +37,50 @@
  * 
  */
 
-package org.openflexo.foundation.resource;
+package org.openflexo.fml.controller.action;
 
-import org.openflexo.foundation.DataModification;
-import org.openflexo.foundation.FlexoService.ServiceNotification;
+import java.awt.event.KeyEvent;
+import java.util.EventObject;
 
-/**
- * This {@link DataModification} is thrown when a {@link FlexoResource} has just been unloaded
- * 
- * @author sylvain
- * 
- */
-public class ResourceUnloaded<RD extends ResourceData<RD>> extends DataModification implements ServiceNotification {
+import javax.swing.Icon;
+import javax.swing.KeyStroke;
 
-	private FlexoResource<RD> resource;
+import org.openflexo.FlexoCst;
+import org.openflexo.foundation.FlexoObject;
+import org.openflexo.foundation.action.FlexoActionFinalizer;
+import org.openflexo.foundation.fml.FMLObject;
+import org.openflexo.icon.IconLibrary;
+import org.openflexo.view.controller.ActionInitializer;
+import org.openflexo.view.controller.ControllerActionInitializer;
 
-	/**
-	 * @param resource
-	 */
-	public ResourceUnloaded(FlexoResource<RD> resource, RD resourceData) {
-		super("isLoaded", null, resourceData);
-		this.resource = resource;
+public class ValidateActionizer extends ActionInitializer<ValidateAction, FMLObject, FlexoObject> {
+
+	private static final java.util.logging.Logger logger = org.openflexo.logging.FlexoLogger
+			.getLogger(ValidateActionizer.class.getPackage().getName());
+
+	public ValidateActionizer(ControllerActionInitializer actionInitializer) {
+		super(ValidateAction.actionType, actionInitializer);
 	}
 
-	public FlexoResource<RD> getUnloadedResource() {
-		return resource;
+	@Override
+	protected FlexoActionFinalizer<ValidateAction> getDefaultFinalizer() {
+		return new FlexoActionFinalizer<ValidateAction>() {
+			@Override
+			public boolean run(EventObject e, ValidateAction action) {
+				// getController().showInspector();
+				System.out.println("Tiens faudrait valider l'objet");
+				return true;
+			}
+		};
 	}
 
+	@Override
+	protected KeyStroke getShortcut() {
+		return KeyStroke.getKeyStroke(KeyEvent.VK_P, FlexoCst.META_MASK);
+	}
+
+	@Override
+	protected Icon getEnabledIcon() {
+		return IconLibrary.VALID_ICON;
+	}
 }

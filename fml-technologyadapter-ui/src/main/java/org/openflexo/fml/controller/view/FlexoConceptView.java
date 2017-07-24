@@ -40,6 +40,8 @@ package org.openflexo.fml.controller.view;
 
 import java.util.logging.Logger;
 
+import javax.swing.SwingUtilities;
+
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
@@ -72,12 +74,6 @@ public abstract class FlexoConceptView<EP extends FlexoConcept> extends FIBModul
 	public FlexoConceptView(EP flexoConcept, Resource fibFile, FlexoController controller, FlexoPerspective perspective) {
 		super(flexoConcept, controller, fibFile, controller.getTechnologyAdapter(FMLTechnologyAdapter.class).getLocales());
 		this.perspective = perspective;
-
-		if (getFIBView("FlexoConceptBrowser") instanceof JFIBBrowserWidget) {
-			JFIBBrowserWidget<FMLObject> browser = (JFIBBrowserWidget<FMLObject>) getFIBView("FlexoConceptBrowser");
-			browser.performExpand(flexoConcept.getStructuralFacet());
-			browser.performExpand(flexoConcept.getBehaviouralFacet());
-		}
 
 		// Fixed CORE-101 FlexoConceptView does not display FlexoConcept at creation
 		// SGU: I don't like this design, but i don't see other solutions unless getting deeply in the code: not enough time yet
@@ -127,6 +123,22 @@ public abstract class FlexoConceptView<EP extends FlexoConcept> extends FIBModul
 	public void fireObjectDeselected(FlexoObject object) {
 		// System.out.println("Object deselected: " + object);
 		super.fireObjectDeselected(object);
+	}
+
+	@Override
+	public void willShow() {
+		super.willShow();
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				if (getFIBView("FlexoConceptBrowser") instanceof JFIBBrowserWidget) {
+					JFIBBrowserWidget<FMLObject> browser = (JFIBBrowserWidget<FMLObject>) getFIBView("FlexoConceptBrowser");
+					browser.performExpand(getRepresentedObject().getStructuralFacet());
+					browser.performExpand(getRepresentedObject().getBehaviouralFacet());
+					browser.performExpand(getRepresentedObject().getInnerConceptsFacet());
+				}
+			}
+		});
 	}
 
 }
