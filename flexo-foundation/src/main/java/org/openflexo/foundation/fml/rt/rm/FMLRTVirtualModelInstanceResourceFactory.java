@@ -25,8 +25,8 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
-import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceModelFactory;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
+import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceModelFactory;
 import org.openflexo.foundation.resource.FlexoIODelegate;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.RepositoryFolder;
@@ -212,6 +212,12 @@ public class FMLRTVirtualModelInstanceResourceFactory extends
 			return true;
 		}
 		return false;
+	}
+
+	@Override
+	public <I> I getConvertableArtefact(I serializationArtefact, FlexoResourceCenter<I> resourceCenter) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	/**

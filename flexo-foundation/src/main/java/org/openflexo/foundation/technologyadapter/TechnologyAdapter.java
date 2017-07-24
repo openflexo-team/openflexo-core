@@ -356,14 +356,21 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 			RF resourceFactory, FlexoResourceCenter<I> resourceCenter, I serializationArtefact) {
 
 		TechnologyContextManager<TA> technologyContextManager = (TechnologyContextManager<TA>) getTechnologyContextManager();
-		if (resourceFactory.isValidArtefact(serializationArtefact, resourceCenter)) {
-			try {
+		try {
+			if (resourceFactory.isValidArtefact(serializationArtefact, resourceCenter)) {
 				return resourceFactory.retrieveResource(serializationArtefact, resourceCenter, technologyContextManager);
-			} catch (ModelDefinitionException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
 			}
+			else {
+				// Attempt to convert it from older format
+				I convertedSerializationArtefact = resourceFactory.getConvertableArtefact(serializationArtefact, resourceCenter);
+				if (convertedSerializationArtefact != null) {
+					return resourceFactory.retrieveResource(convertedSerializationArtefact, resourceCenter, technologyContextManager);
+				}
+			}
+		} catch (ModelDefinitionException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 		return null;
 	}

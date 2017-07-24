@@ -291,4 +291,18 @@ public abstract class FlexoResourceFactory<R extends TechnologyAdapterResource<R
 	 */
 	public abstract <I> boolean isValidArtefact(I serializationArtefact, FlexoResourceCenter<I> resourceCenter);
 
+	/**
+	 * If supplied serialization artefact is interpretable as a former format and might be read as a valid resource
+	 * 
+	 * Return converted serialization artefact when adequate, null if this serialization artefact is not to be converted.
+	 * 
+	 * This method is a hook to convert former resources when serialization change (backward compatibility)
+	 * 
+	 * 
+	 * @param serializationArtefact
+	 * @param resourceCenter
+	 * @return
+	 */
+	public abstract <I> I getConvertableArtefact(I serializationArtefact, FlexoResourceCenter<I> resourceCenter);
+
 }

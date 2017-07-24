@@ -20,12 +20,21 @@
 
 package org.openflexo.foundation.fml.rm;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.logging.Logger;
 
+import org.jdom2.Document;
+import org.jdom2.Element;
+import org.jdom2.JDOMException;
+import org.jdom2.input.SAXBuilder;
+import org.jdom2.output.Format;
+import org.jdom2.output.XMLOutputter;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.VirtualModel;
+import org.openflexo.foundation.resource.FileIODelegate.WillRenameFileOnDiskNotification;
 import org.openflexo.foundation.resource.FlexoIODelegate;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.PamelaResourceFactory;
@@ -33,6 +42,7 @@ import org.openflexo.foundation.resource.RepositoryFolder;
 import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.technologyadapter.TechnologyContextManager;
 import org.openflexo.model.exceptions.ModelDefinitionException;
+import org.openflexo.toolbox.FileUtils;
 import org.openflexo.toolbox.FlexoVersion;
 import org.openflexo.toolbox.StringUtils;
 import org.openflexo.xml.XMLRootElementInfo;
@@ -254,6 +264,80 @@ public class VirtualModelResourceFactory
 			return true;
 		}
 		return false;
+	}
+
+	@Override
+	public <I> I getConvertableArtefact(I serializationArtefact, FlexoResourceCenter<I> resourceCenter) {
+		if (serializationArtefact instanceof File && resourceCenter.exists(serializationArtefact)
+				&& resourceCenter.isDirectory(serializationArtefact) && resourceCenter.canRead(serializationArtefact)
+				&& (resourceCenter.retrieveName(serializationArtefact).endsWith(".viewpoint"))) {
+			File initialFile = (File) serializationArtefact;
+			System.out.println("Tiens faudrait convertir: " + initialFile);
+			String name = resourceCenter.retrieveName(serializationArtefact).substring(0,
+					resourceCenter.retrieveName(serializationArtefact).lastIndexOf(".viewpoint"));
+			File convertedFile = new File(initialFile.getParentFile(), name + ".fml");
+			File oldXmlFile = new File(initialFile, name + ".xml");
+			File newXmlFile = new File(initialFile, name + FML_XML_SUFFIX);
+			try {
+
+				resourceCenter.getServiceManager().notify(null, new WillRenameFileOnDiskNotification(oldXmlFile, newXmlFile));
+				resourceCenter.getServiceManager().notify(null, new WillRenameFileOnDiskNotification(initialFile, convertedFile));
+
+				FileUtils.rename(oldXmlFile, newXmlFile);
+				FileUtils.rename(initialFile, convertedFile);
+				newXmlFile = new File(convertedFile, name + FML_XML_SUFFIX);
+
+				SAXBuilder builder = new SAXBuilder();
+
+				try {
+
+					Document document = builder.build(newXmlFile);
+					Element rootNode = document.getRootElement();
+
+					System.out.println("root node= " + rootNode);
+
+					rootNode.setName("VirtualModel");
+
+					XMLOutputter xmlOutput = new XMLOutputter();
+
+					// display nice nice
+					xmlOutput.setFormat(Format.getPrettyFormat());
+					xmlOutput.output(document, new FileWriter(newXmlFile));
+
+					System.out.println("File Saved!");
+
+					// Then handle contained VirtualModel(s)
+
+					for (File vmDir : convertedFile.listFiles()) {
+						if (vmDir.isDirectory()) {
+							File vmXMLFile = new File(vmDir, vmDir.getName() + ".xml");
+							if (vmXMLFile.exists()) {
+								File newVMDir = new File(vmDir.getParentFile(), vmDir.getName() + FML_SUFFIX);
+								File newVMXMLFile = new File(vmDir, vmDir.getName() + FML_XML_SUFFIX);
+								resourceCenter.getServiceManager().notify(null,
+										new WillRenameFileOnDiskNotification(vmXMLFile, newVMXMLFile));
+								resourceCenter.getServiceManager().notify(null, new WillRenameFileOnDiskNotification(vmDir, newVMDir));
+								FileUtils.rename(vmXMLFile, newVMXMLFile);
+								FileUtils.rename(vmDir, newVMDir);
+							}
+						}
+					}
+
+					return (I) convertedFile;
+
+				} catch (IOException io) {
+					System.out.println(io.getMessage());
+				} catch (JDOMException jdomex) {
+					System.out.println(jdomex.getMessage());
+				}
+
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			// System.exit(-1);
+		}
+		return null;
 	}
 
 	@Override
