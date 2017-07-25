@@ -707,11 +707,9 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 	}
 
 	public void resourceLoading(TechnologyAdapterResource<?, TA> resource) {
-		System.out.println("RESOURCE LOADED: " + resource);
 	}
 
 	public void resourceUnloaded(TechnologyAdapterResource<?, TA> resource) {
-		System.out.println("RESOURCE UNLOADED: " + resource);
 	}
 
 }

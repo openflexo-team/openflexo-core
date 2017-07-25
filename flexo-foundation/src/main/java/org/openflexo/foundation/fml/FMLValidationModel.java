@@ -50,11 +50,12 @@ import org.openflexo.model.ModelContext;
 import org.openflexo.model.ModelContextLibrary;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.model.validation.Validable;
+import org.openflexo.model.validation.ValidationReport;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
 
 /**
- * This is the ValidationModel for FML model (ViewPoint, VirtualModel, FlexoConcept, etc...)
+ * This is the ValidationModel for FML model (VirtualModel, FlexoConcept, etc...)
  * 
  * @author sylvain
  * 
@@ -82,60 +83,6 @@ public class FMLValidationModel extends FlexoValidationModel {
 
 	public FMLValidationModel(TechnologyAdapterService taService) throws ModelDefinitionException {
 		super(computeModelContext(taService), VALIDATION_LOCALIZATION);
-
-		/*registerRule(new FlexoConcept.FlexoConceptShouldHaveRoles());
-		registerRule(new FlexoConcept.FlexoConceptShouldHaveEditionSchemes());
-		registerRule(new FlexoConcept.FlexoConceptShouldHaveDeletionScheme());
-		
-		registerRule(new FlexoRole.FlexoRoleMustHaveAName());
-		registerRule(new ClassRole.ClassRoleMustDefineAValidConceptClass());
-		registerRule(new IndividualRole.IndividualFlexoRoleMustDefineAValidConceptClass());
-		// registerRule(new DataPropertyStatementPatternRole.DataPropertyStatementPatternRoleMustDefineAValidProperty());
-		// registerRule(new ObjectPropertyStatementPatternRole.ObjectPropertyStatementPatternRoleMustDefineAValidProperty());
-		
-		registerRule(new InspectorEntry.DataBindingIsRequiredAndMustBeValid());
-		
-		registerRule(new URIParameter.BaseURIBindingIsRequiredAndMustBeValid());
-		
-		registerRule(new EditionAction.ConditionalBindingMustBeValid());
-		registerRule(new AssignableAction.AssignationBindingMustBeValid());
-		
-		registerRule(new AddIndividual.AddIndividualActionMustDefineAnOntologyClass());
-		registerRule(new AddIndividual.URIBindingIsRequiredAndMustBeValid());
-		
-		registerRule(new DataPropertyAssertion.DataPropertyAssertionMustDefineAnOntologyProperty());
-		registerRule(new DataPropertyAssertion.ValueBindingIsRequiredAndMustBeValid());
-		registerRule(new ObjectPropertyAssertion.ObjectPropertyAssertionMustDefineAnOntologyProperty());
-		registerRule(new ObjectPropertyAssertion.ObjectBindingIsRequiredAndMustBeValid());
-		
-		registerRule(new AddClass.AddClassActionMustDefineAnOntologyClass());
-		registerRule(new AddClass.URIBindingIsRequiredAndMustBeValid());
-		
-		// registerRule(new AddStatement.SubjectIsRequiredAndMustBeValid());
-		// registerRule(new AddObjectPropertyStatement.AddObjectPropertyStatementActionMustDefineAnObjectProperty());
-		// registerRule(new AddObjectPropertyStatement.ObjectIsRequiredAndMustBeValid());
-		// registerRule(new AddDataPropertyStatement.AddDataPropertyStatementActionMustDefineADataProperty());
-		// registerRule(new AddDataPropertyStatement.ValueIsRequiredAndMustBeValid());
-		
-		
-		// registerRule(new DeclareFlexoRole.AssignationBindingIsRequiredAndMustBeValid());
-		registerRule(new DeclareFlexoRole.ObjectBindingIsRequiredAndMustBeValid());
-		
-		registerRule(new DeleteAction.ObjectToDeleteBindingIsRequiredAndMustBeValid());
-		
-		// registerRule(new GraphicalAction.GraphicalActionMustHaveASubject());
-		// registerRule(new GraphicalAction.GraphicalActionMustDefineAValue());
-		
-		registerRule(new AddFlexoConceptInstance.VirtualModelInstanceBindingIsRequiredAndMustBeValid());
-		registerRule(new AddFlexoConceptInstance.AddFlexoConceptInstanceMustAddressACreationScheme());
-		registerRule(new AddFlexoConceptInstance.AddFlexoConceptInstanceParametersMustBeValid());
-		
-		registerRule(new ConditionalAction.ConditionBindingIsRequiredAndMustBeValid());
-		registerRule(new IterationAction.IterationBindingIsRequiredAndMustBeValid());
-		
-		// Notify that the validation model is complete and that inheritance
-		// computation could be performed
-		update();*/
 	}
 
 	/**
@@ -159,4 +106,13 @@ public class FMLValidationModel extends FlexoValidationModel {
 		return false;
 	}
 
+	@Override
+	public ValidationReport validate(Validable object) throws InterruptedException {
+		if (object instanceof VirtualModel) {
+			return new FMLValidationReport(this, (VirtualModel) object);
+		}
+		else {
+			return super.validate(object);
+		}
+	}
 }

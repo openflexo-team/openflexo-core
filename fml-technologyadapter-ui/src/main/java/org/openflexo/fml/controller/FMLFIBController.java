@@ -43,7 +43,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import javax.swing.ImageIcon;
+
 import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.action.DeleteRepositoryFolder;
 import org.openflexo.foundation.fml.AbstractProperty;
 import org.openflexo.foundation.fml.ActionScheme;
@@ -52,6 +55,8 @@ import org.openflexo.foundation.fml.CreationScheme;
 import org.openflexo.foundation.fml.DeletionScheme;
 import org.openflexo.foundation.fml.ExpressionProperty;
 import org.openflexo.foundation.fml.FMLObject;
+import org.openflexo.foundation.fml.FMLValidationModel;
+import org.openflexo.foundation.fml.FMLValidationReport;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.FlexoConcept;
@@ -101,10 +106,19 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.UseModelSlotDeclaration;
 import org.openflexo.gina.model.FIBComponent;
 import org.openflexo.gina.model.container.FIBTab;
+import org.openflexo.gina.swing.utils.FIBUtilsIconLibrary;
 import org.openflexo.gina.utils.FIBInspector;
 import org.openflexo.gina.utils.InspectorGroup;
 import org.openflexo.gina.view.GinaViewFactory;
+import org.openflexo.icon.IconFactory;
+import org.openflexo.icon.IconLibrary;
 import org.openflexo.logging.FlexoLogger;
+import org.openflexo.model.validation.InformationIssue;
+import org.openflexo.model.validation.Validable;
+import org.openflexo.model.validation.ValidationError;
+import org.openflexo.model.validation.ValidationIssue;
+import org.openflexo.model.validation.ValidationReport;
+import org.openflexo.model.validation.ValidationWarning;
 import org.openflexo.rm.Resource;
 import org.openflexo.view.controller.FlexoController;
 import org.openflexo.view.controller.FlexoFIBController;
@@ -739,10 +753,131 @@ public class FMLFIBController extends FlexoFIBController {
 		}
 		
 		// return returned;
-		*/
+		 */
 	}
 
 	public boolean canMoveControlGraph(FMLControlGraph controlGraph, FMLControlGraph receiver) {
 		return controlGraph != null && controlGraph.getOwner() != receiver;
+	}
+
+	public FMLValidationReport getValidationReport(VirtualModel virtualModel) {
+		if (getServiceManager() != null && virtualModel != null) {
+			FMLTechnologyAdapterController tac = getServiceManager().getTechnologyAdapterControllerService()
+					.getTechnologyAdapterController(FMLTechnologyAdapterController.class);
+			return tac.getValidationReport(virtualModel);
+		}
+		return null;
+	}
+
+	public ValidationReport getEmbeddedValidationReport(FMLObject object) {
+		if (object == null) {
+			return null;
+		}
+		if (getServiceManager() != null && object.getDeclaringVirtualModel() != null) {
+			FMLTechnologyAdapterController tac = getServiceManager().getTechnologyAdapterControllerService()
+					.getTechnologyAdapterController(FMLTechnologyAdapterController.class);
+			FMLValidationReport fmlVR = tac.getValidationReport(object.getDeclaringVirtualModel());
+			if (fmlVR != null) {
+				return fmlVR.getValidationReport(object);
+			}
+		}
+		return null;
+	}
+
+	public FMLValidationModel getFMLValidationModel() {
+		if (getServiceManager() != null) {
+			FMLTechnologyAdapterController tac = getServiceManager().getTechnologyAdapterControllerService()
+					.getTechnologyAdapterController(FMLTechnologyAdapterController.class);
+			return tac.getFMLValidationModel();
+		}
+		return null;
+	}
+
+	@Override
+	public ImageIcon iconForObject(Object object) {
+		if (object instanceof ValidationError) {
+			if (((ValidationError<?, ?>) object).isFixable()) {
+				return FIBUtilsIconLibrary.FIXABLE_ERROR_ICON;
+			}
+			else {
+				return FIBUtilsIconLibrary.UNFIXABLE_ERROR_ICON;
+			}
+		}
+		else if (object instanceof ValidationWarning) {
+			if (((ValidationWarning<?, ?>) object).isFixable()) {
+				return FIBUtilsIconLibrary.FIXABLE_WARNING_ICON;
+			}
+			else {
+				return FIBUtilsIconLibrary.UNFIXABLE_WARNING_ICON;
+			}
+		}
+		else if (object instanceof InformationIssue) {
+			return FIBUtilsIconLibrary.INFO_ISSUE_ICON;
+		}
+		else if (object instanceof VirtualModelResource && ((VirtualModelResource) object).isLoaded()) {
+			return iconForObject(((VirtualModelResource) object).getLoadedResourceData());
+		}
+		else if (object instanceof VirtualModel) {
+			if (getValidationReport((VirtualModel) object) != null && getValidationReport((VirtualModel) object).getErrors().size() > 0) {
+				return IconFactory.getImageIcon(super.iconForObject(object), IconLibrary.ERROR);
+			}
+			if (getValidationReport((VirtualModel) object) != null && getValidationReport((VirtualModel) object).getWarnings().size() > 0) {
+				return IconFactory.getImageIcon(super.iconForObject(object), IconLibrary.WARNING);
+			}
+		}
+		else if (object instanceof FMLObject && ((FMLObject) object).getDeclaringVirtualModel() != null) {
+			ImageIcon returned = fmlObjectsIcons.get(object);
+			if (returned == null) {
+				FMLValidationReport validationReport = getValidationReport(((FMLObject) object).getDeclaringVirtualModel());
+				if (validationReport != null) {
+					// System.out.println("Hop: " + validationReport.getErrors((FMLObject) object) + " of "
+					// + validationReport.getErrors((FMLObject) object).getClass());
+					if (validationReport.hasErrors((FMLObject) object)) {
+						returned = IconFactory.getImageIcon(super.iconForObject(object), IconLibrary.ERROR);
+					}
+					else if (validationReport.hasWarnings((FMLObject) object)) {
+						returned = IconFactory.getImageIcon(super.iconForObject(object), IconLibrary.WARNING);
+					}
+					else {
+						returned = super.iconForObject(object);
+					}
+				}
+				else {
+					System.out.println("Unexpected null validation report for " + object);
+					returned = super.iconForObject(object);
+				}
+				fmlObjectsIcons.put((FMLObject) object, returned);
+			}
+			return returned;
+		}
+
+		return super.iconForObject(object);
+	}
+
+	private Map<FMLObject, ImageIcon> fmlObjectsIcons = new HashMap<>();
+
+	private boolean showErrorsWarnings = true;
+
+	public boolean showErrorsWarnings() {
+		return showErrorsWarnings;
+	}
+
+	public void setShowErrorsWarnings(boolean showErrorsWarnings) {
+		System.out.println("setShowErrorsWarnings with " + showErrorsWarnings);
+		if (this.showErrorsWarnings != showErrorsWarnings) {
+			this.showErrorsWarnings = showErrorsWarnings;
+			getPropertyChangeSupport().firePropertyChange("showErrorsWarnings", !showErrorsWarnings, showErrorsWarnings);
+		}
+	}
+
+	public void showIssue(ValidationIssue<?, ?> issue) {
+		System.out.println("Montrons l'issue " + issue + " pour " + issue.getValidable());
+		Validable objectToSelect = issue.getValidable();
+		System.out.println("On selectionne " + objectToSelect);
+		getFlexoController().selectAndFocusObject((FlexoObject) objectToSelect);
+	}
+
+	public void fixIssue(ValidationIssue<?, ?> issue) {
+		System.out.println("Resolvons l'issue " + issue);
 	}
 }

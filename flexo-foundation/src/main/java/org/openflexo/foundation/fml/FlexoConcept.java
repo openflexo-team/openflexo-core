@@ -1652,8 +1652,8 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 
 		@Override
 		public ValidationIssue<FlexoConceptShouldHaveFlexoBehaviours, FlexoConcept> applyValidation(FlexoConcept flexoConcept) {
-			if (flexoConcept.getFlexoBehaviours().size() == 0) {
-				return new ValidationWarning<>(this, flexoConcept, "flexo_concept_has_no_edition_scheme");
+			if (!flexoConcept.isAbstract() && flexoConcept.getFlexoBehaviours().size() == 0) {
+				return new ValidationWarning<>(this, flexoConcept, "non_abstract_flexo_concept_($validable.name)_has_no_behaviours");
 			}
 			return null;
 		}
@@ -1662,14 +1662,15 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 	@DefineValidationRule
 	public static class FlexoConceptShouldHaveDeletionScheme extends ValidationRule<FlexoConceptShouldHaveDeletionScheme, FlexoConcept> {
 		public FlexoConceptShouldHaveDeletionScheme() {
-			super(FlexoConcept.class, "flexo_concept_should_have_deletion_scheme");
+			super(FlexoConcept.class, "non_abstract_flexo_concept_should_have_deletion_scheme");
 		}
 
 		@Override
 		public ValidationIssue<FlexoConceptShouldHaveDeletionScheme, FlexoConcept> applyValidation(FlexoConcept flexoConcept) {
-			if (flexoConcept.getDeletionSchemes().size() == 0) {
+			if (!flexoConcept.isAbstract() && flexoConcept.getDeletionSchemes().size() == 0) {
 				CreateDefaultDeletionScheme fixProposal = new CreateDefaultDeletionScheme(flexoConcept);
-				return new ValidationWarning<>(this, flexoConcept, "flexo_concept_has_no_deletion_scheme", fixProposal);
+				return new ValidationWarning<>(this, flexoConcept, "non_abstract_flexo_concept_($validable.name)_has_no_deletion_scheme",
+						fixProposal);
 			}
 			return null;
 		}

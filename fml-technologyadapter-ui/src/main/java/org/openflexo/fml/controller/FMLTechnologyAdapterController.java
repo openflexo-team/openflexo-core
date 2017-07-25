@@ -91,6 +91,7 @@ import org.openflexo.foundation.fml.EventListener;
 import org.openflexo.foundation.fml.FMLLocalizedDictionary;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.FMLValidationModel;
+import org.openflexo.foundation.fml.FMLValidationReport;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter.WidgetType;
@@ -108,6 +109,7 @@ import org.openflexo.foundation.fml.action.DeleteFlexoConceptObjects;
 import org.openflexo.foundation.fml.binding.FMLBindingFactory;
 import org.openflexo.foundation.fml.editionaction.DeleteAction;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
+import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceModelSlot;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
@@ -143,7 +145,8 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 
 	private InspectorGroup fmlInspectors;
 
-	private Map<VirtualModel, FMLValidationModel> validationModels = new HashMap<>();
+	private FMLValidationModel validationModel;
+	private Map<VirtualModel, FMLValidationReport> validationReports = new HashMap<>();
 
 	@Override
 	public Class<FMLTechnologyAdapter> getTechnologyAdapterClass() {
@@ -607,12 +610,36 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 
 	@Override
 	public void resourceLoading(TechnologyAdapterResource<?, FMLTechnologyAdapter> resource) {
-		logger.info("RESOURCE LOADED: " + resource);
+		// logger.info("RESOURCE LOADED: " + resource);
+
+		if (resource instanceof VirtualModelResource) {
+			VirtualModel vm = ((VirtualModelResource) resource).getLoadedVirtualModel();
+			try {
+				FMLValidationReport validationReport = (FMLValidationReport) getFMLValidationModel().validate(vm);
+				System.out.println("VALIDATED: " + validationReport.getFilteredIssues());
+				validationReports.put(vm, validationReport);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 	}
 
 	@Override
 	public void resourceUnloaded(TechnologyAdapterResource<?, FMLTechnologyAdapter> resource) {
-		logger.info("RESOURCE UNLOADED: " + resource);
+		logger.warning("RESOURCE UNLOADED not implemented: " + resource);
+		// TODO: unload validation report
+	}
+
+	public FMLValidationModel getFMLValidationModel() {
+		if (validationModel == null) {
+			validationModel = getServiceManager().getVirtualModelLibrary().getFMLValidationModel();
+		}
+		return validationModel;
+	}
+
+	public FMLValidationReport getValidationReport(VirtualModel virtualModel) {
+		return validationReports.get(virtualModel);
 	}
 
 }
