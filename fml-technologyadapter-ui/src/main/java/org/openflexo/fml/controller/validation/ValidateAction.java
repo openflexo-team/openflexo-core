@@ -37,7 +37,7 @@
  * 
  */
 
-package org.openflexo.fml.controller.action;
+package org.openflexo.fml.controller.validation;
 
 import java.util.Vector;
 import java.util.logging.Logger;
@@ -61,7 +61,7 @@ public class ValidateAction extends FlexoGUIAction<ValidateAction, FMLObject, Fl
 	private static final Logger logger = FlexoLogger.getLogger(ValidateAction.class.getPackage().getName());
 
 	public static FlexoActionType<ValidateAction, FMLObject, FlexoObject> actionType = new FlexoActionType<ValidateAction, FMLObject, FlexoObject>(
-			"validate", FlexoActionType.inspectGroup) {
+			"revalidate", FlexoActionType.inspectGroup) {
 
 		/**
 		 * Factory method

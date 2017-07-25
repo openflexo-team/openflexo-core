@@ -250,18 +250,9 @@ public class FMLValidationReport extends ValidationReport {
 		return Collections.emptyList();
 	}
 
-	/*public boolean hasErrors(FMLObject object) {
-		FMLValidationReport validationReport = getValidationReport(((FMLObject) object).getDeclaringVirtualModel());
-		if (validationReport != null) {
-			System.out.println("Hop: " + validationReport.getErrors((FMLObject) object) + " of "
-					+ validationReport.getErrors((FMLObject) object).getClass());
-			if (validationReport.getErrors((FMLObject) object).size() > 0) {
-				return IconFactory.getImageIcon(super.iconForObject(object), IconLibrary.ERROR);
-			}
-			else if (validationReport.getWarnings((FMLObject) object).size() > 0) {
-				return IconFactory.getImageIcon(super.iconForObject(object), IconLibrary.WARNING);
-			}
-		}
-	
-	}*/
+	@Override
+	public void revalidate(Validable validable) {
+		System.out.println("On revalide " + validable + " pour le VM " + virtualModel);
+		super.revalidate(validable);
+	}
 }

@@ -45,6 +45,8 @@ import java.util.logging.Logger;
 
 import javax.swing.ImageIcon;
 
+import org.openflexo.fml.controller.validation.FixIssueDialog;
+import org.openflexo.fml.controller.validation.IssueFixing;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.action.DeleteRepositoryFolder;
@@ -113,7 +115,9 @@ import org.openflexo.gina.view.GinaViewFactory;
 import org.openflexo.icon.IconFactory;
 import org.openflexo.icon.IconLibrary;
 import org.openflexo.logging.FlexoLogger;
+import org.openflexo.model.validation.FixProposal;
 import org.openflexo.model.validation.InformationIssue;
+import org.openflexo.model.validation.ProblemIssue;
 import org.openflexo.model.validation.Validable;
 import org.openflexo.model.validation.ValidationError;
 import org.openflexo.model.validation.ValidationIssue;
@@ -814,6 +818,9 @@ public class FMLFIBController extends FlexoFIBController {
 		else if (object instanceof InformationIssue) {
 			return FIBUtilsIconLibrary.INFO_ISSUE_ICON;
 		}
+		else if (object instanceof FixProposal) {
+			return FIBUtilsIconLibrary.FIX_PROPOSAL_ICON;
+		}
 		else if (object instanceof VirtualModelResource && ((VirtualModelResource) object).isLoaded()) {
 			return iconForObject(((VirtualModelResource) object).getLoadedResourceData());
 		}
@@ -879,5 +886,19 @@ public class FMLFIBController extends FlexoFIBController {
 
 	public void fixIssue(ValidationIssue<?, ?> issue) {
 		System.out.println("Resolvons l'issue " + issue);
+		if (issue instanceof ProblemIssue) {
+			IssueFixing fixing = new IssueFixing((ProblemIssue<?, ?>) issue, getFlexoController());
+			FixIssueDialog dialog = new FixIssueDialog(fixing, getFlexoController());
+			dialog.showDialog();
+		}
+	}
+
+	public void revalidate(VirtualModel virtualModel) {
+		if (getServiceManager() != null) {
+			FMLTechnologyAdapterController tac = getServiceManager().getTechnologyAdapterControllerService()
+					.getTechnologyAdapterController(FMLTechnologyAdapterController.class);
+			FMLValidationReport virtualModelReport = tac.getValidationReport(virtualModel);
+			virtualModelReport.revalidate(virtualModel);
+		}
 	}
 }

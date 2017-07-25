@@ -37,7 +37,7 @@
  * 
  */
 
-package org.openflexo.fml.controller.action;
+package org.openflexo.fml.controller.validation;
 
 import java.awt.event.KeyEvent;
 import java.util.EventObject;
@@ -46,9 +46,11 @@ import javax.swing.Icon;
 import javax.swing.KeyStroke;
 
 import org.openflexo.FlexoCst;
+import org.openflexo.fml.controller.FMLTechnologyAdapterController;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.action.FlexoActionFinalizer;
 import org.openflexo.foundation.fml.FMLObject;
+import org.openflexo.foundation.fml.FMLValidationReport;
 import org.openflexo.icon.IconLibrary;
 import org.openflexo.view.controller.ActionInitializer;
 import org.openflexo.view.controller.ControllerActionInitializer;
@@ -58,8 +60,11 @@ public class ValidateActionizer extends ActionInitializer<ValidateAction, FMLObj
 	private static final java.util.logging.Logger logger = org.openflexo.logging.FlexoLogger
 			.getLogger(ValidateActionizer.class.getPackage().getName());
 
-	public ValidateActionizer(ControllerActionInitializer actionInitializer) {
+	private FMLTechnologyAdapterController fmlTAController;
+
+	public ValidateActionizer(FMLTechnologyAdapterController fmlTAController, ControllerActionInitializer actionInitializer) {
 		super(ValidateAction.actionType, actionInitializer);
+		this.fmlTAController = fmlTAController;
 	}
 
 	@Override
@@ -67,8 +72,9 @@ public class ValidateActionizer extends ActionInitializer<ValidateAction, FMLObj
 		return new FlexoActionFinalizer<ValidateAction>() {
 			@Override
 			public boolean run(EventObject e, ValidateAction action) {
-				// getController().showInspector();
-				System.out.println("Tiens faudrait valider l'objet");
+				FMLValidationReport virtualModelReport = fmlTAController
+						.getValidationReport(action.getFocusedObject().getDeclaringVirtualModel());
+				virtualModelReport.revalidate(action.getFocusedObject());
 				return true;
 			}
 		};
