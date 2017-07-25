@@ -64,12 +64,12 @@ import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.foundation.fml.binding.FetchRequestConditionSelectedBindingVariable;
 import org.openflexo.foundation.fml.editionaction.FetchRequest;
 import org.openflexo.foundation.fml.editionaction.FetchRequestCondition;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
+import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
-import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.model.annotations.DefineValidationRule;
@@ -257,11 +257,17 @@ public interface SelectFlexoConceptInstance<VMI extends VirtualModelInstance<VMI
 			this.flexoConceptTypeURI = flexoConceptURI;
 		}
 
+		private boolean isComputingFlexoConceptType = false;
+
 		@Override
 		public FlexoConcept getFlexoConceptType() {
 
-			if (flexoConceptType == null && flexoConceptTypeURI != null && getAddressedVirtualModel() != null) {
-				flexoConceptType = getAddressedVirtualModel().getFlexoConcept(flexoConceptTypeURI);
+			if (!isComputingFlexoConceptType && flexoConceptType == null && flexoConceptTypeURI != null) {
+				isComputingFlexoConceptType = true;
+				if (getAddressedVirtualModel() != null) {
+					flexoConceptType = getAddressedVirtualModel().getFlexoConcept(flexoConceptTypeURI);
+				}
+				isComputingFlexoConceptType = false;
 			}
 
 			return flexoConceptType;
@@ -342,8 +348,8 @@ public interface SelectFlexoConceptInstance<VMI extends VirtualModelInstance<VMI
 			return null;
 		}
 
-		private List<FlexoConceptInstance> getIndexedMatchingList(FetchRequestCondition indexableCondition,
-				VirtualModelInstance<?, ?> vmi, RunTimeEvaluationContext evaluationContext)
+		private List<FlexoConceptInstance> getIndexedMatchingList(FetchRequestCondition indexableCondition, VirtualModelInstance<?, ?> vmi,
+				RunTimeEvaluationContext evaluationContext)
 				throws TypeMismatchException, NullReferenceException, InvocationTargetException {
 			Expression indexableTerm = getIndexableTerm(indexableCondition);
 			Expression oppositeTerm = getOppositeTerm(indexableCondition);
