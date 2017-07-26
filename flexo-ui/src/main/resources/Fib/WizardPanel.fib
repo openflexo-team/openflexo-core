@@ -15,8 +15,8 @@
     </Panel>
   </Panel>
   <Panel id="11" align="left" borderTop="5" flowAlignment="RIGHT" borderLeft="10" trackViewPortHeight="true" trackViewPortWidth="true" borderBottom="5" border="empty" sizeAdjustment="OriginalSize" layout="flow" vGap="5" borderRight="10" hGap="5" constraints="border(location=south)" name="ControlPanel">
-    <Button id="12" buttonType="Trigger" action="data.performPrevious()" label="back" localize="true" enable="data.isPreviousEnabled" constraints="flow()" name="PreviousButton" />
-    <Button id="13" buttonType="Trigger" action="data.performNext()" label="next" localize="true" enable="data.isNextEnabled" constraints="flow()" name="NextButton" />
+    <Button id="12" buttonType="Trigger" action="controller.performPrevious()" label="back" localize="true" enable="data.isPreviousEnabled" constraints="flow()" name="PreviousButton" />
+    <Button id="13" buttonType="Trigger" action="controller.performNext()" label="next" localize="true" enable="data.isNextEnabled" constraints="flow()" name="NextButton" />
     <Button id="14" buttonType="Trigger" action="controller.cancelAndDispose()" label="cancel" localize="true" constraints="flow()" name="CancelButton" />
     <Button id="15" buttonType="Trigger" action="controller.finish()" label="finish" localize="true" enable="data.canFinish" constraints="flow()" name="FinishButton" />
   </Panel>

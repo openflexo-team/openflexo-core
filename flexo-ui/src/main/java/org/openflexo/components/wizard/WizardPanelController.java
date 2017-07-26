@@ -38,10 +38,41 @@
 
 package org.openflexo.components.wizard;
 
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.FocusTraversalPolicy;
+import java.awt.KeyboardFocusManager;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.KeyStroke;
+
+import org.openflexo.gina.controller.FIBController;
 import org.openflexo.gina.model.FIBComponent;
+import org.openflexo.gina.model.FIBContainer;
+import org.openflexo.gina.model.FIBWidget;
+import org.openflexo.gina.model.widget.FIBReferencedComponent;
+import org.openflexo.gina.swing.view.JFIBView;
+import org.openflexo.gina.swing.view.widget.JFIBButtonWidget;
+import org.openflexo.gina.swing.view.widget.JFIBReferencedComponentWidget;
+import org.openflexo.gina.view.FIBView;
 import org.openflexo.gina.view.GinaViewFactory;
 import org.openflexo.view.controller.FlexoFIBController;
 
+/**
+ * {@link FIBController} used in Wizard context
+ * 
+ * We manage here a focus-traversal policy allowing to edit a wizard without using mouse
+ * 
+ * @author sylvain
+ *
+ */
 public class WizardPanelController extends FlexoFIBController {
 
 	public WizardPanelController(FIBComponent component, GinaViewFactory<?> viewFactory) {
@@ -63,4 +94,287 @@ public class WizardPanelController extends FlexoFIBController {
 		getDataObject().finish();
 		super.validateAndDispose();
 	}
+
+	public void performNext() {
+		getDataObject().performNext();
+		updateFocusPolicy();
+	}
+
+	public void performPrevious() {
+		getDataObject().performPrevious();
+		updateFocusPolicy();
+	}
+
+	public void updateFocusPolicy() {
+
+		List<JComponent> focusPolicyList = new ArrayList<>();
+
+		if (getRootComponent() instanceof FIBContainer) {
+			for (FIBComponent c : ((FIBContainer) getRootComponent()).getAllSubComponents()) {
+				if (!c.getName().equals("PreviousButton") && !c.getName().equals("NextButton") && !c.getName().equals("CancelButton")
+						&& !c.getName().equals("FinishButton")) {
+					setFocusTraversal(c, this, focusPolicyList);
+					if (c instanceof FIBReferencedComponent) {
+						JFIBReferencedComponentWidget refWidget = (JFIBReferencedComponentWidget) (FIBView) viewForComponent(c);
+						FIBController embeddedController = refWidget.getEmbeddedFIBController();
+						for (FIBComponent c2 : ((FIBContainer) embeddedController.getRootComponent()).getAllSubComponents()) {
+							System.out.println(" >> " + c2);
+							setFocusTraversal(c2, embeddedController, focusPolicyList);
+						}
+					}
+				}
+			}
+		}
+
+		previousButtonWidget = (JFIBButtonWidget) viewForComponent("PreviousButton");
+		nextButtonWidget = (JFIBButtonWidget) viewForComponent("NextButton");
+		cancelButtonWidget = (JFIBButtonWidget) viewForComponent("CancelButton");
+		finishButtonWidget = (JFIBButtonWidget) viewForComponent("FinishButton");
+
+		focusPolicyList.add(previousButtonWidget.getJComponent());
+		focusPolicyList.add(nextButtonWidget.getJComponent());
+		focusPolicyList.add(cancelButtonWidget.getJComponent());
+		focusPolicyList.add(finishButtonWidget.getJComponent());
+
+		Set forwardKeys = ((JFIBView<?, ?>) getRootView()).getResultingJComponent()
+				.getFocusTraversalKeys(KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS);
+		Set newForwardKeys = new HashSet(forwardKeys);
+		newForwardKeys.add(KeyStroke.getKeyStroke(KeyEvent.VK_TAB, 0));
+		((JFIBView<?, ?>) getRootView()).getResultingJComponent().setFocusTraversalKeys(KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS,
+				newForwardKeys);
+
+		Set downKeys = ((JFIBView<?, ?>) getRootView()).getResultingJComponent()
+				.getFocusTraversalKeys(KeyboardFocusManager.DOWN_CYCLE_TRAVERSAL_KEYS);
+		Set newDownKeys = new HashSet(downKeys);
+		newDownKeys.add(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0));
+		((JFIBView<?, ?>) getRootView()).getResultingJComponent().setFocusTraversalKeys(KeyboardFocusManager.DOWN_CYCLE_TRAVERSAL_KEYS,
+				newDownKeys);
+
+		((JFIBView<?, ?>) getRootView()).getResultingJComponent().setFocusTraversalPolicyProvider(true);
+		((JFIBView<?, ?>) getRootView()).getResultingJComponent().setFocusTraversalPolicy(new WizardFocusTraversalPolicy(focusPolicyList));
+
+		knownNextEnabled = getDataObject().isNextEnabled();
+		knownCanFinish = getDataObject().canFinish();
+
+		trackNextAndFinish();
+
+		finishButtonWidget.getJComponent().addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				super.keyPressed(e);
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					if (getDataObject().canFinish()) {
+						finish();
+					}
+				}
+			}
+		});
+
+		nextButtonWidget.getJComponent().addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				super.keyPressed(e);
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					if (getDataObject().isNextEnabled()) {
+						performNext();
+					}
+				}
+			}
+		});
+
+		previousButtonWidget.getJComponent().addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				super.keyPressed(e);
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					if (getDataObject().isPreviousEnabled()) {
+						performPrevious();
+					}
+				}
+			}
+		});
+
+		cancelButtonWidget.getJComponent().addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				super.keyPressed(e);
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					cancelAndDispose();
+				}
+			}
+		});
+
+	}
+
+	private JFIBButtonWidget finishButtonWidget;
+	private JFIBButtonWidget nextButtonWidget;
+	private JFIBButtonWidget previousButtonWidget;
+	private JFIBButtonWidget cancelButtonWidget;
+
+	private void setFocusTraversal(FIBComponent component, FIBController controller, List<JComponent> focusPolicyList) {
+		if (component instanceof FIBWidget && ((FIBWidget) component).isFocusable()) {
+			setKeyAdapter((FIBWidget) component, controller);
+			focusPolicyList.add(((JFIBView<?, ?>) controller.viewForComponent(component)).getJComponent());
+		}
+	}
+
+	private void setKeyAdapter(FIBWidget tf, FIBController controller) {
+		JFIBView<?, ?> widget = (JFIBView<?, ?>) controller.viewForComponent(tf);
+		widget.getJComponent().addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				super.keyPressed(e);
+				trackNextAndFinish();
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					if (getDataObject().canFinish()) {
+						finish();
+					}
+					else if (getDataObject().isNextEnabled()) {
+						performNext();
+					}
+				}
+			}
+		});
+	}
+
+	private boolean knownNextEnabled = false;
+	private boolean knownCanFinish = false;
+
+	private void trackNextAndFinish() {
+		if (!knownCanFinish && getDataObject().canFinish()) {
+			((JButton) finishButtonWidget.getJComponent()).setSelected(true);
+		}
+		else if (knownCanFinish && !getDataObject().canFinish()) {
+			((JButton) finishButtonWidget.getJComponent()).setSelected(false);
+		}
+		if (!knownNextEnabled && getDataObject().isNextEnabled() && !getDataObject().canFinish()) {
+			((JButton) nextButtonWidget.getJComponent()).setSelected(true);
+		}
+		else if (knownNextEnabled && (getDataObject().canFinish() || !getDataObject().isNextEnabled())) {
+			((JButton) nextButtonWidget.getJComponent()).setSelected(false);
+		}
+
+		knownNextEnabled = getDataObject().isNextEnabled();
+		knownCanFinish = getDataObject().canFinish();
+
+	}
+
+	class WizardFocusTraversalPolicy extends FocusTraversalPolicy {
+
+		private List<JComponent> focusPolicyList;
+
+		public WizardFocusTraversalPolicy(List<JComponent> focusPolicyList) {
+			this.focusPolicyList = focusPolicyList;
+		}
+
+		@Override
+		public Component getComponentAfter(Container aContainer, Component aComponent) {
+
+			if (allComponentsAreDisabled()) {
+				return null;
+			}
+
+			int index = focusPolicyList.indexOf(aComponent);
+			if (index > -1) {
+				JComponent next = null;
+				if (index < focusPolicyList.size() - 1) {
+					next = focusPolicyList.get(index + 1);
+				}
+				else {
+					next = focusPolicyList.get(0);
+				}
+				if (next.isEnabled()) {
+					return next;
+				}
+				else {
+					return getComponentAfter(aContainer, next);
+				}
+			}
+			return null;
+		}
+
+		@Override
+		public Component getComponentBefore(Container aContainer, Component aComponent) {
+			if (allComponentsAreDisabled()) {
+				return null;
+			}
+			int index = focusPolicyList.indexOf(aComponent);
+			if (index > -1) {
+				JComponent previous = null;
+				if (index > 0) {
+					previous = focusPolicyList.get(index - 1);
+				}
+				else {
+					previous = focusPolicyList.get(focusPolicyList.size() - 1);
+				}
+				if (previous.isEnabled()) {
+					return previous;
+				}
+				else {
+					return getComponentBefore(aContainer, previous);
+				}
+			}
+			return null;
+		}
+
+		@Override
+		public Component getDefaultComponent(Container aContainer) {
+			Component returned = getFirstComponent(aContainer);
+			return returned;
+		}
+
+		@Override
+		public Component getFirstComponent(Container aContainer) {
+			if (allComponentsAreDisabled()) {
+				return null;
+			}
+			JComponent returned = null;
+			if (focusPolicyList.size() > 0) {
+				returned = focusPolicyList.get(0);
+			}
+			if (returned == null) {
+				return null;
+			}
+			if (returned.isEnabled()) {
+				return returned;
+			}
+			else {
+				return getComponentAfter(aContainer, returned);
+			}
+		}
+
+		@Override
+		public Component getLastComponent(Container aContainer) {
+			if (allComponentsAreDisabled()) {
+				return null;
+			}
+			JComponent returned = null;
+			if (focusPolicyList.size() > 0) {
+				returned = focusPolicyList.get(focusPolicyList.size() - 1);
+			}
+			if (returned == null) {
+				return null;
+			}
+			if (returned.isEnabled()) {
+				return returned;
+			}
+			else {
+				return getComponentBefore(aContainer, returned);
+			}
+		}
+
+		private boolean allComponentsAreDisabled() {
+			if (focusPolicyList.size() == 0) {
+				return true;
+			}
+			for (JComponent c : focusPolicyList) {
+				if (c.isEnabled()) {
+					return false;
+				}
+			}
+			return true;
+		}
+
+	}
+
 }

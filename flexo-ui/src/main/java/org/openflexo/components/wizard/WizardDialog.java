@@ -83,13 +83,14 @@ public class WizardDialog extends JFIBDialog<Wizard> {
 		}
 		getController().setFlexoController(controller);
 
-		// Do not display dialog on top of all applications
-		// setAlwaysOnTop(true);
-
 		// Attempt to manage focus on buttons
-		/*FIBButtonWidget buttonWidget = (FIBButtonWidget) getController().viewForComponent("CancelButton");
-		buttonWidget.getJComponent().setSelected(true);
+		/*JFIBButtonWidget buttonWidget = (JFIBButtonWidget) getController().viewForComponent("CancelButton");
+		System.out.println("et hop, buttonWidget=" + buttonWidget);
+		System.out.println("button=" + buttonWidget.getJComponent());
+		((JButton) buttonWidget.getJComponent()).setSelected(true);
 		buttonWidget.getJComponent().requestFocus();*/
+
+		getController().updateFocusPolicy();
 	}
 
 	@Override
