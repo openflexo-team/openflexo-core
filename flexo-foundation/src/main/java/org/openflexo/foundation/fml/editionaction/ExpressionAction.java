@@ -155,8 +155,8 @@ public interface ExpressionAction<T> extends AssignableAction<T> {
 		public void setExpression(DataBinding<T> expression) {
 			if (expression != null) {
 				this.expression = new DataBinding<T>(expression.toString(), this, Object.class, DataBinding.BindingDefinitionType.GET);
-				expression.setBindingName("expression");
-				expression.setMandatory(true);
+				this.expression.setBindingName("expression");
+				this.expression.setMandatory(true);
 			}
 			notifiedBindingChanged(expression);
 		}
