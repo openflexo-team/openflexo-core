@@ -71,12 +71,12 @@ public class CreateTopLevelVirtualModelWizard extends AbstractCreateVirtualModel
 
 	@Override
 	public String getWizardTitle() {
-		return getAction().getLocales().localizedForKey("create_view_point");
+		return getAction().getLocales().localizedForKey("create_top_level_virtual_model");
 	}
 
 	@Override
 	public Image getDefaultPageImage() {
-		return IconFactory.getImageIcon(FMLIconLibrary.VIEWPOINT_BIG_ICON, IconLibrary.NEW_32_32).getImage();
+		return IconFactory.getImageIcon(FMLIconLibrary.VIRTUAL_MODEL_BIG_ICON, IconLibrary.NEW_32_32).getImage();
 	}
 
 	public DescribeTopLevelVirtualModel getDescribeViewPoint() {
@@ -118,7 +118,7 @@ public class CreateTopLevelVirtualModelWizard extends AbstractCreateVirtualModel
 				return false;
 			}
 			else if (StringUtils.isEmpty(getNewVirtualModelName())) {
-				setIssueMessage(getAction().getLocales().localizedForKey("please_supply_valid_view_point_name"), IssueMessageType.ERROR);
+				setIssueMessage(getAction().getLocales().localizedForKey("please_supply_valid_virtual_model_name"), IssueMessageType.ERROR);
 				return false;
 			}
 			else if (StringUtils.isEmpty(getNewVirtualModelURI())) {
@@ -130,19 +130,19 @@ public class CreateTopLevelVirtualModelWizard extends AbstractCreateVirtualModel
 				return false;
 			}
 			else if (getAction().getVirtualModelLibrary() == null) {
-				setIssueMessage(getAction().getLocales().localizedForKey("could_not_access_viewpoint_library"), IssueMessageType.ERROR);
+				setIssueMessage(getAction().getLocales().localizedForKey("could_not_access_virtual_model_library"), IssueMessageType.ERROR);
 				return false;
 			}
 			else if (getAction().getVirtualModelLibrary().getVirtualModelResource(getNewVirtualModelURI()) != null) {
-				setIssueMessage(getAction().getLocales().localizedForKey("already_existing_viewpoint_uri"), IssueMessageType.ERROR);
+				setIssueMessage(getAction().getLocales().localizedForKey("already_existing_virtual_model_uri"), IssueMessageType.ERROR);
 				return false;
 			}
 			else if (getViewPointFolder().getResourceWithName(getNewVirtualModelName()) != null) {
-				setIssueMessage(getAction().getLocales().localizedForKey("already_existing_viewpoint_name"), IssueMessageType.ERROR);
+				setIssueMessage(getAction().getLocales().localizedForKey("already_existing_virtual_model_name"), IssueMessageType.ERROR);
 				return false;
 			}
 			else if (StringUtils.isEmpty(getNewVirtualModelDescription())) {
-				setIssueMessage(getAction().getLocales().localizedForKey("it_is_recommanded_to_describe_view_point"),
+				setIssueMessage(getAction().getLocales().localizedForKey("it_is_recommanded_to_describe_virtual_model"),
 						IssueMessageType.WARNING);
 			}
 
@@ -162,7 +162,7 @@ public class CreateTopLevelVirtualModelWizard extends AbstractCreateVirtualModel
 				String oldValue = getNewVirtualModelName();
 				getAction().setNewVirtualModelName(newViewPointName);
 				getPropertyChangeSupport().firePropertyChange("newVirtualModelName", oldValue, newViewPointName);
-				getPropertyChangeSupport().firePropertyChange("newVirtuelModelURI", null, getNewVirtualModelURI());
+				getPropertyChangeSupport().firePropertyChange("newVirtualModelURI", null, getNewVirtualModelURI());
 				checkValidity();
 			}
 		}

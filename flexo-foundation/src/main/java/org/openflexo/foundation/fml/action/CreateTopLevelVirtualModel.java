@@ -178,7 +178,7 @@ public class CreateTopLevelVirtualModel
 			if (!baseURI.endsWith("/")) {
 				baseURI = baseURI + "/";
 			}
-			return baseURI + getBaseName() + ".viewpoint";
+			return baseURI + getBaseName() + VirtualModelResourceFactory.FML_SUFFIX;
 		}
 
 		return newVirtualModelURI;

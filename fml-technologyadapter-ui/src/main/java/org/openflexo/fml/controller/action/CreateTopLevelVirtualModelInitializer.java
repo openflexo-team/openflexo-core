@@ -53,6 +53,8 @@ import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.resource.RepositoryFolder;
 import org.openflexo.gina.controller.FIBController.Status;
 import org.openflexo.icon.FMLIconLibrary;
+import org.openflexo.icon.IconFactory;
+import org.openflexo.icon.IconLibrary;
 import org.openflexo.view.controller.ActionInitializer;
 import org.openflexo.view.controller.ControllerActionInitializer;
 
@@ -97,7 +99,7 @@ public class CreateTopLevelVirtualModelInitializer
 
 	@Override
 	protected Icon getEnabledIcon() {
-		return FMLIconLibrary.VIEWPOINT_ICON;
+		return IconFactory.getImageIcon(FMLIconLibrary.VIRTUAL_MODEL_ICON, IconLibrary.NEW_MARKER);
 	}
 
 }
