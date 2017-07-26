@@ -68,8 +68,8 @@ import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.TechnologySpecificType;
 import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterBindingFactory;
@@ -310,10 +310,12 @@ public class FMLBindingFactory extends JavaBindingFactory {
 
 		if (returned == null || forceUpdate) {
 			returned = new ArrayList<FlexoBehaviourPathElement>();
-			for (AbstractActionScheme as : concept.getAccessibleAbstractActionSchemes()) {
-				returned.add(new FlexoBehaviourPathElement(parent, as, null));
+			if (concept != null) {
+				for (AbstractActionScheme as : concept.getAccessibleAbstractActionSchemes()) {
+					returned.add(new FlexoBehaviourPathElement(parent, as, null));
+				}
+				map.put(concept, returned);
 			}
-			map.put(concept, returned);
 		}
 		return returned;
 	}
