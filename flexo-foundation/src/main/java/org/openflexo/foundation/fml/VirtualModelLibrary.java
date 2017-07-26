@@ -184,6 +184,7 @@ public class VirtualModelLibrary extends DefaultFlexoObject implements FlexoServ
 	 * @return
 	 */
 	public VirtualModelResource registerVirtualModel(VirtualModelResource vpRes) {
+		// clearNotFoundObjects();
 		String uri = vpRes.getURI();
 		if (StringUtils.isNotEmpty(uri)) {
 			map.put(uri, vpRes);
@@ -202,6 +203,7 @@ public class VirtualModelLibrary extends DefaultFlexoObject implements FlexoServ
 	 */
 	public VirtualModelResource unregisterVirtualModel(VirtualModelResource vpRes) {
 
+		// clearNotFoundObjects();
 		// Unregister the viewpoint resource from the viewpoint library
 		for (Iterator<Map.Entry<String, VirtualModelResource>> i = map.entrySet().iterator(); i.hasNext();) {
 			Map.Entry<String, VirtualModelResource> entry = i.next();
@@ -234,6 +236,18 @@ public class VirtualModelLibrary extends DefaultFlexoObject implements FlexoServ
 	public FlexoConcept getFlexoConcept(String flexoConceptURI) {
 		return getFlexoConcept(flexoConceptURI, true);
 	}
+
+	/*private List<String> notFoundVirtualModels = new ArrayList();
+	private List<String> notFoundFlexoConcepts = new ArrayList();
+	private List<String> notFoundProperties = new ArrayList();
+	private List<String> notFoundBehaviours = new ArrayList();
+	
+	private void clearNotFoundObjects() {
+		notFoundVirtualModels = new ArrayList();
+		notFoundFlexoConcepts = new ArrayList();
+		notFoundProperties = new ArrayList();
+		notFoundBehaviours = new ArrayList();
+	}*/
 
 	/**
 	 * Lookup and return {@link FlexoConcept} identified by supplied flexoConceptURI<br>
