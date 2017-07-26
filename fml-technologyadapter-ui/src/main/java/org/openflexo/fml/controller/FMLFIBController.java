@@ -890,6 +890,12 @@ public class FMLFIBController extends FlexoFIBController {
 			IssueFixing fixing = new IssueFixing((ProblemIssue<?, ?>) issue, getFlexoController());
 			FixIssueDialog dialog = new FixIssueDialog(fixing, getFlexoController());
 			dialog.showDialog();
+			if (dialog.getStatus() == Status.VALIDATED) {
+				fixing.fix();
+			}
+			else if (dialog.getStatus() == Status.NO) {
+				fixing.ignore();
+			}
 		}
 	}
 
@@ -898,7 +904,13 @@ public class FMLFIBController extends FlexoFIBController {
 			FMLTechnologyAdapterController tac = getServiceManager().getTechnologyAdapterControllerService()
 					.getTechnologyAdapterController(FMLTechnologyAdapterController.class);
 			FMLValidationReport virtualModelReport = tac.getValidationReport(virtualModel);
-			virtualModelReport.revalidate(virtualModel);
+			try {
+				virtualModelReport.revalidateAll();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			fmlObjectsIcons.clear();
 		}
 	}
 }

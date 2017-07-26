@@ -74,7 +74,12 @@ public class ValidateActionizer extends ActionInitializer<ValidateAction, FMLObj
 			public boolean run(EventObject e, ValidateAction action) {
 				FMLValidationReport virtualModelReport = fmlTAController
 						.getValidationReport(action.getFocusedObject().getDeclaringVirtualModel());
-				virtualModelReport.revalidate(action.getFocusedObject());
+				try {
+					virtualModelReport.revalidate(action.getFocusedObject());
+				} catch (InterruptedException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 				return true;
 			}
 		};

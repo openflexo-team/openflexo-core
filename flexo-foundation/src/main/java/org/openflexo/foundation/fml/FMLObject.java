@@ -460,14 +460,65 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData/*<Vi
 				return new UndefinedRequiredBindingIssue<C>(this, object);
 			}
 			else if (!b.isValid()) {
-				FMLObjectImpl.logger.info(getClass().getName() + ": Binding NOT valid: " + b + " for " + object.getStringRepresentation()
-						+ ". Reason: " + b.invalidBindingReason());
-				return new InvalidRequiredBindingIssue<C>(this, object);
+				// FMLObjectImpl.logger.info(getClass().getName() + ": Binding NOT valid: " + b + " for " + object.getStringRepresentation()
+				// + ". Reason: " + b.invalidBindingReason());
+				// Thread.dumpStack();
+
+				InvalidRequiredBindingIssue<C> returned = new InvalidRequiredBindingIssue<C>(this, object);
+
+				if (object instanceof FlexoConceptObject) {
+					String proposal = b.toString();
+					if (((FlexoConceptObject) object).getFlexoConcept() instanceof VirtualModel) {
+						// System.out.println("Pas valide pour VM " + ((FlexoConceptObject) object).getFlexoConcept() + " " + b);
+						proposal = proposal.replace("virtualModelInstance.virtualModelDefinition", "this.virtualModel");
+						proposal = proposal.replace("virtualModelInstance", "this");
+					}
+					else {
+						System.out.println("Pas valide pour Concept " + ((FlexoConceptObject) object).getFlexoConcept() + " " + b);
+						proposal = proposal.replace("virtualModelInstance", "container");
+						proposal = proposal.replace("flexoConceptInstance", "this");
+					}
+					if (!proposal.equals(b.toString())) {
+						System.out.println("Si on essayait " + proposal + " a la place de " + b.toString());
+						returned.addToFixProposals(new UseProposedBinding(b, proposal));
+					}
+					else {
+						System.out.println("Rien a proposer pour " + b.toString());
+					}
+				}
+
+				return returned;
 				// return new ValidationError<BindingIsRequiredAndMustBeValid<C>, C>(this, object,
 				// BindingIsRequiredAndMustBeValid.this.getRuleName(), "Binding: " + getBinding(object) + " reason: "
 				// + getBinding(object).invalidBindingReason());
 			}
 			return null;
+		}
+
+		protected static class UseProposedBinding<C extends FMLObject> extends FixProposal<BindingIsRequiredAndMustBeValid<C>, C> {
+
+			private DataBinding<?> binding;
+			private String proposedValue;
+
+			public UseProposedBinding(DataBinding<?> binding, String proposedValue) {
+				super("sets_value_to_($proposedValue)");
+				this.binding = binding;
+				this.proposedValue = proposedValue;
+			}
+
+			public DataBinding<?> getBinding() {
+				return binding;
+			}
+
+			public String getProposedValue() {
+				return proposedValue;
+			}
+
+			@Override
+			protected void fixAction() {
+				binding.setUnparsedBinding(proposedValue);
+				// binding.markedAsToBeReanalized();
+			}
 		}
 
 		public static class UndefinedRequiredBindingIssue<C extends FMLObject>

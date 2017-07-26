@@ -38,6 +38,7 @@
 
 package org.openflexo.foundation.fml;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -45,6 +46,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import org.openflexo.connie.DataBinding;
+import org.openflexo.foundation.fml.FMLObject.BindingIsRequiredAndMustBeValid;
 import org.openflexo.foundation.fml.editionaction.AbstractAssignationAction;
 import org.openflexo.foundation.fml.inspector.FlexoConceptInspector;
 import org.openflexo.model.validation.InformationIssue;
@@ -100,6 +103,14 @@ public class FMLValidationReport extends ValidationReport {
 			}
 			embeddedValidationReports.put(concept.getInspector(), new ValidationReport(validationModel, concept.getInspector()));
 		}
+
+		// endTime2 = System.currentTimeMillis();
+
+		/*System.out.println("***************** La validation a pris: " + (intermediateTime2 - startTime2) + " milliseconds + "
+				+ (endTime2 - intermediateTime2) + " milliseconds");
+		System.out.println("Rules nb: " + rulesNb);
+		System.out.println("Binding validés: " + DataBinding.dbValidated);*/
+
 	}
 
 	public ValidationReport getValidationReport(FMLObject object) {
@@ -130,7 +141,8 @@ public class FMLValidationReport extends ValidationReport {
 		if (object instanceof FlexoConceptInspector && getValidationReport((FlexoConceptInspector) object) != null) {
 			return (Collection) getValidationReport((FlexoConceptInspector) object).getFilteredIssues();
 		}
-		else if (object instanceof FlexoConceptObject && getValidationReport(((FlexoConceptObject) object).getFlexoConcept()) != null) {
+		else if (object instanceof FlexoConceptObject && getValidationReport(((FlexoConceptObject) object).getFlexoConcept()) != null
+				&& getValidationReport(((FlexoConceptObject) object).getFlexoConcept()) != this) {
 			return getValidationReport(((FlexoConceptObject) object).getFlexoConcept()).issuesRegarding(object);
 		}
 
@@ -186,9 +198,6 @@ public class FMLValidationReport extends ValidationReport {
 		else if (object instanceof FlexoConceptObject) {
 			if (getValidationReport(((FlexoConceptObject) object).getFlexoConcept()) != null) {
 				return getValidationReport(((FlexoConceptObject) object).getFlexoConcept()).errorIssuesRegarding(object);
-			}
-			else {
-				logger.warning("pas de validation report pour " + ((FlexoConceptObject) object).getFlexoConcept() + " de: " + object);
 			}
 		}
 
@@ -250,9 +259,86 @@ public class FMLValidationReport extends ValidationReport {
 		return Collections.emptyList();
 	}
 
+	// private long startTime;
+	// private long intermediateTime;
+	// private long endTime;
+
+	private <C extends FMLObject> void reanalyzeBinding(ValidationIssue<? extends BindingIsRequiredAndMustBeValid<C>, C> issue) {
+		DataBinding<?> db = issue.getCause().getBinding(issue.getValidable());
+		db.markedAsToBeReanalized();
+	}
+
 	@Override
-	public void revalidate(Validable validable) {
-		System.out.println("On revalide " + validable + " pour le VM " + virtualModel);
-		super.revalidate(validable);
+	public void revalidateAll() throws InterruptedException {
+
+		// System.out.println("On revalide TOUT !!!! pour " + virtualModel);
+
+		for (ValidationIssue issue : getAllIssues()) {
+			if (issue.getCause() instanceof BindingIsRequiredAndMustBeValid) {
+				reanalyzeBinding(issue);
+			}
+		}
+
+		// startTime = System.currentTimeMillis();
+		// DataBinding.dbValidated = 0;
+
+		super.revalidateAll();
+
+		// intermediateTime = System.currentTimeMillis();
+
+		// System.out.println("On a fini de TOUT revalider pour " + virtualModel);
+
+		for (FMLObject fmlObject : new ArrayList<>(embeddedValidationReports.keySet())) {
+			ValidationReport embeddedReport = embeddedValidationReports.get(fmlObject);
+			if (fmlObject.isDeleted()) {
+				embeddedReport.delete();
+				embeddedValidationReports.remove(fmlObject);
+			}
+			else {
+				embeddedReport.revalidateAll();
+			}
+		}
+
+		// endTime = System.currentTimeMillis();
+
+		/*System.out.println("***************** La validation a pris: " + (intermediateTime - startTime) + " milliseconds + "
+				+ (endTime - intermediateTime) + " milliseconds");
+		System.out.println("Rules nb: " + rulesNb);
+		System.out.println("Binding validés: " + DataBinding.dbValidated);*/
+
+	}
+
+	@Override
+	public void revalidate(Validable object) throws InterruptedException {
+		System.out.println("On revalide " + object + " pour le VM " + virtualModel);
+
+		if (object == virtualModel) {
+			revalidateAll();
+		}
+		else {
+			super.revalidate(object);
+
+			if (object instanceof FlexoConcept && object != virtualModel) {
+				getValidationReport((FlexoConcept) object).revalidate(object);
+			}
+			if (object instanceof FlexoProperty && getValidationReport((FlexoProperty<?>) object) != null) {
+				getValidationReport((FlexoProperty<?>) object).revalidate(object);
+				getValidationReport(((FlexoProperty<?>) object).getFlexoConcept()).revalidate(object);
+			}
+			if (object instanceof FlexoBehaviour && getValidationReport((FlexoBehaviour) object) != null) {
+				getValidationReport((FlexoBehaviour) object).revalidate(object);
+				getValidationReport(((FlexoBehaviour) object).getFlexoConcept()).revalidate(object);
+			}
+			if (object instanceof FlexoConceptInspector && getValidationReport((FlexoConceptInspector) object) != null) {
+				getValidationReport((FlexoConceptInspector) object).revalidate(object);
+				getValidationReport(((FlexoConceptInspector) object).getFlexoConcept()).revalidate(object);
+			}
+			else if (object instanceof FlexoConceptObject) {
+				if (getValidationReport(((FlexoConceptObject) object).getFlexoConcept()) != null
+						&& getValidationReport(((FlexoConceptObject) object).getFlexoConcept()) != this) {
+					getValidationReport(((FlexoConceptObject) object).getFlexoConcept()).revalidate(object);
+				}
+			}
+		}
 	}
 }

@@ -83,7 +83,7 @@ public class IssueFixing<R extends ValidationRule<R, V>, V extends Validable> ex
 		return controller;
 	}
 
-	public boolean isFixable(FixProposal<R, V> fixProposal) {
+	public boolean isFixable() {
 		return fixProposal != null;
 	}
 
@@ -91,11 +91,29 @@ public class IssueFixing<R extends ValidationRule<R, V>, V extends Validable> ex
 		return issue instanceof ValidationWarning;
 	}
 
-	public void fix(FixProposal<R, V> fixProposal) {
+	public void fix() {
 		System.out.println("Applying fix proposal " + fixProposal);
+		fixProposal.apply(true);
 	}
 
 	public void ignore() {
 		System.out.println("Ignoring");
+	}
+
+	FixProposal<R, V> fixProposal;
+
+	public FixProposal<R, V> getFixProposal() {
+		return fixProposal;
+	}
+
+	public void setFixProposal(FixProposal<R, V> fixProposal) {
+		System.out.println("On set le fixProposal a " + fixProposal);
+		if ((fixProposal == null && this.fixProposal != null) || (fixProposal != null && !fixProposal.equals(this.fixProposal))) {
+			FixProposal<R, V> oldValue = this.fixProposal;
+			this.fixProposal = fixProposal;
+			getPropertyChangeSupport().firePropertyChange("fixProposal", oldValue, fixProposal);
+			getPropertyChangeSupport().firePropertyChange("isFixable", !isFixable(), isFixable());
+			getPropertyChangeSupport().firePropertyChange("isIgnorable", !isIgnorable(), isIgnorable());
+		}
 	}
 }
