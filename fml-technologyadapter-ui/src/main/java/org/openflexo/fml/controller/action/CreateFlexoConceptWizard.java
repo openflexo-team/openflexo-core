@@ -44,7 +44,6 @@ import java.util.logging.Logger;
 
 import org.openflexo.ApplicationContext;
 import org.openflexo.components.wizard.WizardStep;
-import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.action.AbstractCreateFlexoConcept.ParentFlexoConceptEntry;
@@ -122,7 +121,7 @@ public class CreateFlexoConceptWizard extends AbstractCreateFlexoConceptWizard<C
 		}
 
 		public VirtualModel getVirtualModel() {
-			return getAction().getFocusedObject();
+			return getAction().getFocusedObject().getDeclaringVirtualModel();
 		}
 
 		@Override
@@ -138,7 +137,7 @@ public class CreateFlexoConceptWizard extends AbstractCreateFlexoConceptWizard<C
 				return false;
 			}
 			else if (getAction().getFocusedObject() instanceof VirtualModel
-					&& getAction().getFocusedObject().getFlexoConcept(getNewFlexoConceptName()) != null) {
+					&& getAction().getFocusedObject().getDeclaringVirtualModel().getFlexoConcept(getNewFlexoConceptName()) != null) {
 				setIssueMessage(getAction().getLocales().localizedForKey(DUPLICATED_NAME), IssueMessageType.ERROR);
 				return false;
 			}
