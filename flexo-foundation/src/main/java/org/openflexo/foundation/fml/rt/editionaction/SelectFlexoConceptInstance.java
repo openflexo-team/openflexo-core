@@ -273,6 +273,8 @@ public interface SelectFlexoConceptInstance<VMI extends VirtualModelInstance<VMI
 			return flexoConceptType;
 		}
 
+		private boolean isAnalyzingContainer = false;
+
 		/**
 		 * Return the {@link VirtualModel} beeing addressed by this action, according to the {@link #getVirtualModelInstance()} binding
 		 * 
@@ -280,13 +282,22 @@ public interface SelectFlexoConceptInstance<VMI extends VirtualModelInstance<VMI
 		 */
 		@Override
 		public VirtualModel getAddressedVirtualModel() {
-			if (getReceiver() != null && getReceiver().isSet() && getReceiver().isValid()) {
-				Type vmiType = getReceiver().getAnalyzedType();
-				if (vmiType instanceof VirtualModelInstanceType) {
-					return ((VirtualModelInstanceType) vmiType).getVirtualModel();
+			if (getReceiver() != null && getReceiver().isSet()) {
+				if (isAnalyzingContainer) {
+					return null;
+				}
+				else {
+					if (getReceiver().isValid()) {
+						isAnalyzingContainer = true;
+						Type vmiType = getReceiver().getAnalyzedType();
+						isAnalyzingContainer = false;
+						if (vmiType instanceof VirtualModelInstanceType) {
+							return ((VirtualModelInstanceType) vmiType).getVirtualModel();
+						}
+					}
 				}
 			}
-			// I could not find VM, trying to "guess" (TODO: remove this hask ?)
+			// I could not find VM, trying to "guess" (TODO: remove this hack ?)
 			if (getFlexoConcept() instanceof VirtualModel) {
 				return (VirtualModel) getFlexoConcept();
 			}
