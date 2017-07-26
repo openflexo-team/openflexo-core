@@ -64,9 +64,16 @@ public class CreateTopLevelVirtualModelWizard extends AbstractCreateVirtualModel
 
 	private final DescribeTopLevelVirtualModel describeTopLevelVirtualModel;
 
+	private final ConfigurePropertiesForNewFlexoConcept configurePropertiesForNewFlexoConcept;
+	private final ConfigureBehavioursForNewFlexoConcept configureBehavioursForNewFlexoConcept;
+	private final ConfigureInspectorForNewFlexoConcept configureInspectorForNewFlexoConcept;
+
 	public CreateTopLevelVirtualModelWizard(CreateTopLevelVirtualModel action, FlexoController controller) {
 		super(action, controller);
 		addStep(describeTopLevelVirtualModel = new DescribeTopLevelVirtualModel());
+		addStep(configurePropertiesForNewFlexoConcept = new ConfigurePropertiesForNewFlexoConcept());
+		addStep(configureBehavioursForNewFlexoConcept = new ConfigureBehavioursForNewFlexoConcept());
+		addStep(configureInspectorForNewFlexoConcept = new ConfigureInspectorForNewFlexoConcept());
 	}
 
 	@Override

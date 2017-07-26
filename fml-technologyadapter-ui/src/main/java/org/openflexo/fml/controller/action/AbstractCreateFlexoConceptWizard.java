@@ -51,9 +51,9 @@ import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.action.AbstractCreateFlexoConcept;
 import org.openflexo.foundation.fml.action.AbstractCreateFlexoConcept.PropertyEntry;
+import org.openflexo.foundation.fml.action.CreateContainedVirtualModel;
 import org.openflexo.foundation.fml.action.CreateFlexoConcept;
 import org.openflexo.foundation.fml.action.CreateTopLevelVirtualModel;
-import org.openflexo.foundation.fml.action.CreateContainedVirtualModel;
 import org.openflexo.gina.annotation.FIBPanel;
 import org.openflexo.icon.FMLIconLibrary;
 import org.openflexo.icon.FMLRTIconLibrary;
@@ -101,8 +101,6 @@ public abstract class AbstractCreateFlexoConceptWizard<A extends AbstractCreateF
 	@FIBPanel("Fib/Wizard/CreateFMLElement/ConfigurePropertiesForNewFlexoConcept.fib")
 	public class ConfigurePropertiesForNewFlexoConcept extends WizardStep {
 
-		private boolean defineSomeProperties = false;
-
 		public ApplicationContext getServiceManager() {
 			return getController().getApplicationContext();
 		}
@@ -123,15 +121,7 @@ public abstract class AbstractCreateFlexoConceptWizard<A extends AbstractCreateF
 		}
 
 		public boolean getDefineSomeProperties() {
-			return defineSomeProperties;
-		}
-
-		public void setDefineSomeProperties(boolean defineSomeProperties) {
-			if (defineSomeProperties != this.defineSomeProperties) {
-				this.defineSomeProperties = defineSomeProperties;
-				getPropertyChangeSupport().firePropertyChange("defineSomeProperties", !defineSomeProperties, defineSomeProperties);
-				checkValidity();
-			}
+			return getAction().getPropertiesEntries().size() > 0;
 		}
 
 		public Icon getIconForProperty(PropertyEntry entry) {

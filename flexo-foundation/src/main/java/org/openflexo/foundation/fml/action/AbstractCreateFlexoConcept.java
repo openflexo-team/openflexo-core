@@ -41,7 +41,9 @@ package org.openflexo.foundation.fml.action;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 import java.util.logging.Logger;
 
@@ -72,12 +74,16 @@ import org.openflexo.foundation.fml.action.CreateFlexoBehaviour.BehaviourParamet
 import org.openflexo.foundation.fml.editionaction.AssignationAction;
 import org.openflexo.foundation.fml.editionaction.ExpressionAction;
 import org.openflexo.foundation.fml.inspector.FlexoConceptInspector;
+import org.openflexo.foundation.fml.rm.VirtualModelResource;
+import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.task.Progress;
+import org.openflexo.foundation.technologyadapter.FlexoMetaModelResource;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
+import org.openflexo.foundation.technologyadapter.TypeAwareModelSlot;
 import org.openflexo.localization.LocalizedDelegate;
 import org.openflexo.toolbox.PropertyChangedSupportDefaultImplementation;
 import org.openflexo.toolbox.StringUtils;
@@ -579,6 +585,14 @@ public abstract class AbstractCreateFlexoConcept<A extends FlexoAction<A, T1, T2
 		}
 
 		public Type getType() {
+			if (getPropertyType() == PropertyType.MODEL_SLOT) {
+				if (isVirtualModelModelSlot() && getVirtualModelResource() != null) {
+					return getVirtualModelResource().getVirtualModel().getInstanceType();
+				}
+				if (getModelSlotClass() != null) {
+					return TypeUtils.getTypeArgument(getModelSlotClass(), ModelSlot.class, 0);
+				}
+			}
 			return type;
 		}
 
@@ -619,11 +633,21 @@ public abstract class AbstractCreateFlexoConcept<A extends FlexoAction<A, T1, T2
 				PropertyType oldValue = this.propertyType;
 				this.propertyType = propertyType;
 				getPropertyChangeSupport().firePropertyChange("propertyType", oldValue, propertyType);
+				getPropertyChangeSupport().firePropertyChange("technologyAdapter", oldValue, technologyAdapter);
+				getPropertyChangeSupport().firePropertyChange("availableFlexoRoleTypes", null, getAvailableFlexoRoleTypes());
+				getPropertyChangeSupport().firePropertyChange("availableModelSlotTypes", null, getAvailableModelSlotTypes());
+				getPropertyChangeSupport().firePropertyChange("modelSlotClass", null, getModelSlotClass());
+				getPropertyChangeSupport().firePropertyChange("flexoRoleClass", null, getFlexoRoleClass());
+				getPropertyChangeSupport().firePropertyChange("isTypeAwareModelSlot", !isTypeAwareModelSlot(), isTypeAwareModelSlot());
+				getPropertyChangeSupport().firePropertyChange("isVirtualModelModelSlot", !isVirtualModelModelSlot(),
+						isVirtualModelModelSlot());
+				getPropertyChangeSupport().firePropertyChange("type", null, getType());
 			}
 		}
 
 		public List<PropertyType> getAvailablePropertyTypes() {
-			return AbstractCreateFlexoConcept.getAvailablePropertyTypes(getType());
+			return ALL_TYPES;
+			// return AbstractCreateFlexoConcept.getAvailablePropertyTypes(getType());
 		}
 
 		public String getDescription() {
@@ -710,35 +734,75 @@ public abstract class AbstractCreateFlexoConcept<A extends FlexoAction<A, T1, T2
 			this.container = container;
 		}
 
+		private TechnologyAdapter technologyAdapter;
+		private Class<? extends ModelSlot<?>> modelSlotClass;
+		private Class<? extends FlexoRole<?>> flexoRoleClass;
+
 		/**
-		 * Return technology adapter infered from type, when possible
+		 * Return technology adapter
 		 * 
 		 * @return
 		 */
 		public TechnologyAdapter getTechnologyAdapter() {
-			Class<?> baseClass = TypeUtils.getBaseClass(getType());
-			if (TechnologyObject.class.isAssignableFrom(baseClass)) {
-				Class<? extends TechnologyAdapter> taClass = (Class<? extends TechnologyAdapter>) TypeUtils.getTypeArgument(baseClass,
-						TechnologyObject.class, 0);
-				return getServiceManager().getTechnologyAdapterService().getTechnologyAdapter(taClass);
+			if (technologyAdapter == null) {
+				/*Class<?> baseClass = TypeUtils.getBaseClass(getType());
+				if (TechnologyObject.class.isAssignableFrom(baseClass)) {
+					Class<? extends TechnologyAdapter> taClass = (Class<? extends TechnologyAdapter>) TypeUtils.getTypeArgument(baseClass,
+							TechnologyObject.class, 0);
+					return getServiceManager().getTechnologyAdapterService().getTechnologyAdapter(taClass);
+				}*/
+				return getServiceManager().getTechnologyAdapterService().getTechnologyAdapters().get(0);
 			}
-			return null;
+			return technologyAdapter;
+		}
+
+		public void setTechnologyAdapter(TechnologyAdapter technologyAdapter) {
+			if ((technologyAdapter == null && this.technologyAdapter != null)
+					|| (technologyAdapter != null && !technologyAdapter.equals(this.technologyAdapter))) {
+				TechnologyAdapter oldValue = this.technologyAdapter;
+				this.technologyAdapter = technologyAdapter;
+				getPropertyChangeSupport().firePropertyChange("technologyAdapter", oldValue, technologyAdapter);
+				getPropertyChangeSupport().firePropertyChange("availableFlexoRoleTypes", null, getAvailableFlexoRoleTypes());
+				getPropertyChangeSupport().firePropertyChange("availableModelSlotTypes", null, getAvailableModelSlotTypes());
+				getPropertyChangeSupport().firePropertyChange("modelSlotClass", null, getModelSlotClass());
+				getPropertyChangeSupport().firePropertyChange("flexoRoleClass", null, getFlexoRoleClass());
+				getPropertyChangeSupport().firePropertyChange("isTypeAwareModelSlot", !isTypeAwareModelSlot(), isTypeAwareModelSlot());
+				getPropertyChangeSupport().firePropertyChange("isVirtualModelModelSlot", !isVirtualModelModelSlot(),
+						isVirtualModelModelSlot());
+				getPropertyChangeSupport().firePropertyChange("type", null, getType());
+			}
 		}
 
 		public Class<? extends ModelSlot<?>> getModelSlotClass() {
-			if (getTechnologyAdapter() != null) {
+			/*if (getTechnologyAdapter() != null) {
 				for (Class<? extends ModelSlot<?>> msClass : getTechnologyAdapter().getAvailableModelSlotTypes()) {
 					Type rdType = TypeUtils.getTypeArgument(msClass, ModelSlot.class, 0);
 					if (TypeUtils.isTypeAssignableFrom(getType(), rdType)) {
 						return msClass;
 					}
 				}
+			}*/
+			if (modelSlotClass == null && getAvailableModelSlotTypes() != null && getAvailableModelSlotTypes().size() > 0) {
+				return getAvailableModelSlotTypes().get(0);
 			}
-			return null;
+			return modelSlotClass;
+		}
+
+		public void setModelSlotClass(Class<? extends ModelSlot<?>> modelSlotClass) {
+			if ((modelSlotClass == null && this.modelSlotClass != null)
+					|| (modelSlotClass != null && !modelSlotClass.equals(this.modelSlotClass))) {
+				Class<? extends ModelSlot<?>> oldValue = this.modelSlotClass;
+				this.modelSlotClass = modelSlotClass;
+				getPropertyChangeSupport().firePropertyChange("modelSlotClass", oldValue, modelSlotClass);
+				getPropertyChangeSupport().firePropertyChange("isTypeAwareModelSlot", !isTypeAwareModelSlot(), isTypeAwareModelSlot());
+				getPropertyChangeSupport().firePropertyChange("isVirtualModelModelSlot", !isVirtualModelModelSlot(),
+						isVirtualModelModelSlot());
+				getPropertyChangeSupport().firePropertyChange("type", null, getType());
+			}
 		}
 
 		public Class<? extends FlexoRole<?>> getFlexoRoleClass() {
-			if (getTechnologyAdapter() != null) {
+			/*if (getTechnologyAdapter() != null) {
 				for (Class<? extends ModelSlot<?>> msClass : getTechnologyAdapter().getAvailableModelSlotTypes()) {
 					for (Class<? extends FlexoRole<?>> roleClass : getTechnologyAdapter().getTechnologyAdapterService()
 							.getAvailableFlexoRoleTypes(msClass)) {
@@ -748,8 +812,21 @@ public abstract class AbstractCreateFlexoConcept<A extends FlexoAction<A, T1, T2
 						}
 					}
 				}
+			}*/
+			if (flexoRoleClass == null && getAvailableFlexoRoleTypes() != null && getAvailableFlexoRoleTypes().size() > 0) {
+				return getAvailableFlexoRoleTypes().get(0);
 			}
-			return null;
+			return flexoRoleClass;
+		}
+
+		public void setFlexoRoleClass(Class<? extends FlexoRole<?>> flexoRoleClass) {
+			if ((flexoRoleClass == null && this.flexoRoleClass != null)
+					|| (flexoRoleClass != null && !flexoRoleClass.equals(this.flexoRoleClass))) {
+				Class<? extends FlexoRole<?>> oldValue = this.flexoRoleClass;
+				this.flexoRoleClass = flexoRoleClass;
+				getPropertyChangeSupport().firePropertyChange("flexoRoleClass", oldValue, flexoRoleClass);
+				getPropertyChangeSupport().firePropertyChange("type", null, getType());
+			}
 		}
 
 		@Override
@@ -771,6 +848,80 @@ public abstract class AbstractCreateFlexoConcept<A extends FlexoAction<A, T1, T2
 
 		@Override
 		public void notifiedBindingDecoded(DataBinding<?> dataBinding) {
+		}
+
+		private Map<TechnologyAdapter, List<Class<? extends FlexoRole<?>>>> availableFlexoRoleTypes = new HashMap<>();
+
+		public List<Class<? extends FlexoRole<?>>> getAvailableFlexoRoleTypes() {
+			if (getTechnologyAdapter() == null) {
+				return null;
+			}
+			List<Class<? extends FlexoRole<?>>> returned = availableFlexoRoleTypes.get(getTechnologyAdapter());
+			if (returned == null) {
+				returned = buildAvailableFlexoRoleTypes(getTechnologyAdapter());
+				availableFlexoRoleTypes.put(getTechnologyAdapter(), returned);
+			}
+			return returned;
+		}
+
+		private List<Class<? extends FlexoRole<?>>> buildAvailableFlexoRoleTypes(TechnologyAdapter ta) {
+			List<Class<? extends FlexoRole<?>>> returned = new ArrayList<>();
+			for (Class<? extends ModelSlot<?>> modelSlotClass : ta.getAvailableModelSlotTypes()) {
+				for (Class<? extends FlexoRole<?>> flexoRoleClass : ta.getTechnologyAdapterService()
+						.getAvailableFlexoRoleTypes(modelSlotClass)) {
+					if (!returned.contains(flexoRoleClass)) {
+						returned.add(flexoRoleClass);
+					}
+				}
+			}
+			return returned;
+		}
+
+		public List<Class<? extends ModelSlot<?>>> getAvailableModelSlotTypes() {
+			if (getTechnologyAdapter() != null) {
+				return getTechnologyAdapter().getAvailableModelSlotTypes();
+			}
+			return null;
+		}
+
+		public boolean isTypeAwareModelSlot() {
+			return getModelSlotClass() != null && !isVirtualModelModelSlot()
+					&& TypeAwareModelSlot.class.isAssignableFrom(getModelSlotClass());
+		}
+
+		public boolean isVirtualModelModelSlot() {
+			return getModelSlotClass() != null && FMLRTModelSlot.class.isAssignableFrom(getModelSlotClass());
+		}
+
+		private VirtualModelResource virtualModelResource;
+		private FlexoMetaModelResource<?, ?, ?> metaModelResource;
+
+		public VirtualModelResource getVirtualModelResource() {
+			return virtualModelResource;
+		}
+
+		public void setVirtualModelResource(VirtualModelResource virtualModelResource) {
+			if ((virtualModelResource == null && this.virtualModelResource != null)
+					|| (virtualModelResource != null && !virtualModelResource.equals(this.virtualModelResource))) {
+				VirtualModelResource oldValue = this.virtualModelResource;
+				this.virtualModelResource = virtualModelResource;
+				getPropertyChangeSupport().firePropertyChange("virtualModelResource", oldValue, virtualModelResource);
+				getPropertyChangeSupport().firePropertyChange("type", null, getType());
+			}
+		}
+
+		public FlexoMetaModelResource<?, ?, ?> getMetaModelResource() {
+			return metaModelResource;
+		}
+
+		public void setMetaModelResource(FlexoMetaModelResource<?, ?, ?> metaModelResource) {
+			if ((metaModelResource == null && this.metaModelResource != null)
+					|| (metaModelResource != null && !metaModelResource.equals(this.metaModelResource))) {
+				FlexoMetaModelResource<?, ?, ?> oldValue = this.metaModelResource;
+				this.metaModelResource = metaModelResource;
+				getPropertyChangeSupport().firePropertyChange("metaModelResource", oldValue, metaModelResource);
+				getPropertyChangeSupport().firePropertyChange("type", null, getType());
+			}
 		}
 
 	}
