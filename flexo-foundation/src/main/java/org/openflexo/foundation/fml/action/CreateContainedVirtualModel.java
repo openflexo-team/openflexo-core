@@ -184,6 +184,14 @@ public class CreateContainedVirtualModel extends AbstractCreateVirtualModel<Crea
 
 	}
 
+	public String getNewVirtualModelURI() {
+		String baseURI = getFocusedObject().getURI();
+		if (!baseURI.endsWith("/")) {
+			baseURI = baseURI + "/";
+		}
+		return baseURI + getNewVirtualModelName() + VirtualModelResourceFactory.FML_SUFFIX;
+	}
+
 	public String getNewVirtualModelDescription() {
 		return newVirtualModelDescription;
 	}

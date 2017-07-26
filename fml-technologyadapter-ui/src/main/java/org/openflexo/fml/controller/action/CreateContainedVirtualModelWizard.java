@@ -135,8 +135,13 @@ public class CreateContainedVirtualModelWizard extends AbstractCreateVirtualMode
 				String oldValue = getNewVirtualModelName();
 				getAction().setNewVirtualModelName(newViewPointName);
 				getPropertyChangeSupport().firePropertyChange("newVirtualModelName", oldValue, newViewPointName);
+				getPropertyChangeSupport().firePropertyChange("newVirtualModelURI", null, getNewVirtualModelURI());
 				checkValidity();
 			}
+		}
+
+		public String getNewVirtualModelURI() {
+			return getAction().getNewVirtualModelURI();
 		}
 
 		public String getNewVirtualModelDescription() {
