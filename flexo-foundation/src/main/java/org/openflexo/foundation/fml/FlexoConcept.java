@@ -1263,7 +1263,7 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 
 			List<FlexoProperty<?>> propertiesToDelete = new ArrayList<>();
 			for (FlexoProperty<?> pr : getDeclaredProperties()) {
-				if (pr.defaultBehaviourIsToBeDeleted()) {
+				if (!(pr instanceof PrimitiveRole) && pr.defaultBehaviourIsToBeDeleted()) {
 					propertiesToDelete.add(pr);
 				}
 			}
