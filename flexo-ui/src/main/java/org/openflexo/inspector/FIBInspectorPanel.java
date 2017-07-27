@@ -132,8 +132,8 @@ public class FIBInspectorPanel extends JPanel implements Observer, ChangeListene
 
 	private FIBView<?, ?> buildViewFor(FIBInspector inspector) {
 
-		System.out.println("------ On construit une FIBView<?, ?> pour l'inspecteur " + inspector);
-		System.out.println("locales=" + inspector.getLocales());
+		// System.out.println("------ On construit une FIBView<?, ?> pour l'inspecteur " + inspector);
+		// System.out.println("locales=" + inspector.getLocales());
 
 		FIBView<?, ?> inspectorView = FIBController.makeView(inspector, SwingViewFactory.INSTANCE, inspector.getLocales(), true);
 		FIBController controller = inspectorView.getController();
