@@ -195,13 +195,13 @@
 				</Panel>
 			</SplitPanel>
 		</Tab>
-		<Tab title="FML" layout="border" darkLevel="0">
+		<!--  <Tab title="FML" layout="border" darkLevel="0">
 			<Editor validateOnReturn="true" columns="8" rows="3" text="Editor"
 				tokenMarkerStyle="FML" data="data.fMLRepresentation" constraints="border(location=center)"
 				width="120" height="120" useScrollBar="true"
 				horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED"
 				verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED" localize="true" />
-		</Tab>
+		</Tab>-->
 	</TabPanel>
 	<LocalizedDictionary />
 </Panel>
