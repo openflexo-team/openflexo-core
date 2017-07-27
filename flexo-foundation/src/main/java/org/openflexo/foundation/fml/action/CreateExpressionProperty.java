@@ -139,21 +139,17 @@ public class CreateExpressionProperty extends AbstractCreateFlexoProperty<Create
 	@Override
 	protected void doAction(Object context) throws NotImplementedException, InvalidParameterException {
 
-		if (getExpression() != null && getExpression().isSet() && getExpression().isValid()) {
-			FMLModelFactory factory = getFocusedObject().getFMLModelFactory();
-			newExpressionProperty = factory.newExpressionProperty();
+		FMLModelFactory factory = getFocusedObject().getFMLModelFactory();
+		newExpressionProperty = factory.newExpressionProperty();
 
-			if (newExpressionProperty != null) {
+		if (newExpressionProperty != null) {
 
-				newExpressionProperty.setPropertyName(getPropertyName());
+			newExpressionProperty.setPropertyName(getPropertyName());
+			if (getExpression() != null && getExpression().isSet() && getExpression().isValid()) {
 				newExpressionProperty.setExpression((DataBinding) getExpression());
-
-				finalizeDoAction(context);
 			}
-		}
 
-		else {
-			throw new InvalidParameterException("No expression or invalid expression defined");
+			finalizeDoAction(context);
 		}
 
 	}
