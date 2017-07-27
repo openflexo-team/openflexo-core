@@ -1,8 +1,12 @@
 use org.openflexo.technologyadapter.owl.OWLModelSlot as OWLModelSlot;
 
-import http://www.openflexo.org/Tests/ViewPoints/ViewPoint1.fml as ViewPoint1;
-import http://www.openflexo.org/Tests/OWL/Ontology1.owl as Ontology1;
+//import VirtualModel('http://www.openflexo.org/Tests/ViewPoints/ViewPoint1.fml') as ViewPoint1;
+//import OWLOntology('http://www.openflexo.org/Tests/OWL/Ontology1.owl') as Ontology1;
 
+def Ontology1 = OWLOntology("http://www.openflexo.org/Tests/OWL/Ontology1.owl");
+def ViewPoint1 = VirtualModel("http://www.openflexo.org/Tests/ViewPoints/ViewPoint1.fml");
+	
+	
 /**
  * This is a description of VirtualModel
  * 
@@ -86,7 +90,7 @@ public static class Test1VM extends Test2VM,ViewPoint1.AnOtherVM {
 	 * @version 1.2
 	 */
 	@FlexoConcept
-	public class Concept2 {
+	public FlexoConcept Concept2 {
 
 		/**
 		 * This is the description of the role
