@@ -63,7 +63,7 @@ public class CreateContainedVirtualModelWizard extends AbstractCreateVirtualMode
 	public CreateContainedVirtualModelWizard(CreateContainedVirtualModel action, FlexoController controller) {
 		super(action, controller);
 		addStep(describeVirtualModel = new DescribeVirtualModel());
-		appendConfigureModelSlots();
+		createAdditionalSteps();
 	}
 
 	@Override

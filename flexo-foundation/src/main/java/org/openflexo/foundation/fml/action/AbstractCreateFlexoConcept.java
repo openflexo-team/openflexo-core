@@ -344,9 +344,10 @@ public abstract class AbstractCreateFlexoConcept<A extends FlexoAction<A, T1, T2
 						.makeNewEmbeddedAction(getNewFlexoConcept(), null, this);
 				action = createFCIRole;
 				createFCIRole.setPropertyName(entry.getName());
-				if (entry.getType() instanceof FlexoConceptInstanceType) {
+				/*if (entry.getType() instanceof FlexoConceptInstanceType) {
 					createFCIRole.setFlexoConceptInstanceType(((FlexoConceptInstanceType) entry.getType()).getFlexoConcept());
-				}
+				}*/
+				createFCIRole.setFlexoConceptInstanceType(entry.getFlexoConcept());
 				createFCIRole.setVirtualModelInstance(new DataBinding<VirtualModelInstance<?, ?>>(entry.getContainer().toString()));
 				break;
 			case MODEL_SLOT:
@@ -356,6 +357,12 @@ public abstract class AbstractCreateFlexoConcept<A extends FlexoAction<A, T1, T2
 				if (entry.getTechnologyAdapter() != null) {
 					createModelSlot.setTechnologyAdapter(entry.getTechnologyAdapter());
 					createModelSlot.setModelSlotClass(entry.getModelSlotClass());
+					if (entry.isVirtualModelModelSlot()) {
+						createModelSlot.setVmRes(entry.getVirtualModelResource());
+					}
+					if (entry.isTypeAwareModelSlot()) {
+						createModelSlot.setMmRes(entry.getMetaModelResource());
+					}
 					// System.out.println("ModelSlotClass=" + entry.getModelSlotClass());
 				}
 				break;
@@ -365,9 +372,9 @@ public abstract class AbstractCreateFlexoConcept<A extends FlexoAction<A, T1, T2
 				action = createTechnologyRole;
 				createTechnologyRole.setRoleName(entry.getName());
 				if (entry.getTechnologyAdapter() != null && entry.getFlexoRoleClass() != null) {
-					System.out.println("FlexoRoleClass= " + entry.getFlexoRoleClass());
-					System.out.println("container= " + entry.getContainer());
-					System.out.println("defaultValue= " + entry.getDefaultValue());
+					// System.out.println("FlexoRoleClass= " + entry.getFlexoRoleClass());
+					// System.out.println("container= " + entry.getContainer());
+					// System.out.println("defaultValue= " + entry.getDefaultValue());
 					createTechnologyRole.setFlexoRoleClass(entry.getFlexoRoleClass());
 					createTechnologyRole.setIsRequired(entry.isRequired());
 					createTechnologyRole.setContainer(new DataBinding<Object>(entry.getContainer().toString()));
@@ -552,6 +559,16 @@ public abstract class AbstractCreateFlexoConcept<A extends FlexoAction<A, T1, T2
 
 		private final LocalizedDelegate locales;
 
+		private TechnologyAdapter technologyAdapter;
+		private Class<? extends ModelSlot<?>> modelSlotClass;
+		private Class<? extends FlexoRole<?>> flexoRoleClass;
+
+		private VirtualModelResource virtualModelResource;
+		private FlexoMetaModelResource<?, ?, ?> metaModelResource;
+		private FlexoConcept flexoConcept;
+
+		private Map<TechnologyAdapter, List<Class<? extends FlexoRole<?>>>> availableFlexoRoleTypes = new HashMap<>();
+
 		public PropertyEntry(String paramName, LocalizedDelegate locales) {
 			super();
 			this.name = paramName;
@@ -591,6 +608,17 @@ public abstract class AbstractCreateFlexoConcept<A extends FlexoAction<A, T1, T2
 				}
 				if (getModelSlotClass() != null) {
 					return TypeUtils.getTypeArgument(getModelSlotClass(), ModelSlot.class, 0);
+				}
+			}
+			else if (getPropertyType() == PropertyType.TECHNOLOGY_ROLE) {
+				return getFlexoRoleClass();
+			}
+			else if (getPropertyType() == PropertyType.FLEXO_CONCEPT_INSTANCE) {
+				if (getFlexoConcept() != null) {
+					return getFlexoConcept().getInstanceType();
+				}
+				else {
+					return FlexoConceptInstanceType.UNDEFINED_FLEXO_CONCEPT_INSTANCE_TYPE;
 				}
 			}
 			return type;
@@ -734,10 +762,6 @@ public abstract class AbstractCreateFlexoConcept<A extends FlexoAction<A, T1, T2
 			this.container = container;
 		}
 
-		private TechnologyAdapter technologyAdapter;
-		private Class<? extends ModelSlot<?>> modelSlotClass;
-		private Class<? extends FlexoRole<?>> flexoRoleClass;
-
 		/**
 		 * Return technology adapter
 		 * 
@@ -850,8 +874,6 @@ public abstract class AbstractCreateFlexoConcept<A extends FlexoAction<A, T1, T2
 		public void notifiedBindingDecoded(DataBinding<?> dataBinding) {
 		}
 
-		private Map<TechnologyAdapter, List<Class<? extends FlexoRole<?>>>> availableFlexoRoleTypes = new HashMap<>();
-
 		public List<Class<? extends FlexoRole<?>>> getAvailableFlexoRoleTypes() {
 			if (getTechnologyAdapter() == null) {
 				return null;
@@ -893,8 +915,18 @@ public abstract class AbstractCreateFlexoConcept<A extends FlexoAction<A, T1, T2
 			return getModelSlotClass() != null && FMLRTModelSlot.class.isAssignableFrom(getModelSlotClass());
 		}
 
-		private VirtualModelResource virtualModelResource;
-		private FlexoMetaModelResource<?, ?, ?> metaModelResource;
+		public FlexoConcept getFlexoConcept() {
+			return flexoConcept;
+		}
+
+		public void setFlexoConcept(FlexoConcept flexoConcept) {
+			if ((flexoConcept == null && this.flexoConcept != null) || (flexoConcept != null && !flexoConcept.equals(this.flexoConcept))) {
+				FlexoConcept oldValue = this.flexoConcept;
+				this.flexoConcept = flexoConcept;
+				getPropertyChangeSupport().firePropertyChange("flexoConcept", oldValue, flexoConcept);
+				getPropertyChangeSupport().firePropertyChange("type", null, getType());
+			}
+		}
 
 		public VirtualModelResource getVirtualModelResource() {
 			return virtualModelResource;

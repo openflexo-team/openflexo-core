@@ -65,16 +65,11 @@ public class CreateFlexoConceptWizard extends AbstractCreateFlexoConceptWizard<C
 	private static final String EMPTY_NAME = "flexo_concept_must_have_an_non_empty_and_unique_name";
 
 	private final DescribeFlexoConcept describeFlexoConcept;
-	private final ConfigurePropertiesForNewFlexoConcept configurePropertiesForNewFlexoConcept;
-	private final ConfigureBehavioursForNewFlexoConcept configureBehavioursForNewFlexoConcept;
-	private final ConfigureInspectorForNewFlexoConcept configureInspectorForNewFlexoConcept;
 
 	public CreateFlexoConceptWizard(CreateFlexoConcept action, FlexoController controller) {
 		super(action, controller);
 		addStep(describeFlexoConcept = new DescribeFlexoConcept());
-		addStep(configurePropertiesForNewFlexoConcept = new ConfigurePropertiesForNewFlexoConcept());
-		addStep(configureBehavioursForNewFlexoConcept = new ConfigureBehavioursForNewFlexoConcept());
-		addStep(configureInspectorForNewFlexoConcept = new ConfigureInspectorForNewFlexoConcept());
+		createAdditionalSteps();
 	}
 
 	@Override
@@ -89,18 +84,6 @@ public class CreateFlexoConceptWizard extends AbstractCreateFlexoConceptWizard<C
 
 	public DescribeFlexoConcept getDescribeFlexoConcept() {
 		return describeFlexoConcept;
-	}
-
-	public ConfigurePropertiesForNewFlexoConcept getConfigurePropertiesForNewFlexoConcept() {
-		return configurePropertiesForNewFlexoConcept;
-	}
-
-	public ConfigureBehavioursForNewFlexoConcept getConfigureBehavioursForNewFlexoConcept() {
-		return configureBehavioursForNewFlexoConcept;
-	}
-
-	public ConfigureInspectorForNewFlexoConcept getConfigureInspectorForNewFlexoConcept() {
-		return configureInspectorForNewFlexoConcept;
 	}
 
 	/**

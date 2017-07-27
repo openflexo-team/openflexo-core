@@ -1,131 +1,363 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Panel id="0" align="left" borderTop="0" borderLeft="0" trackViewPortHeight="true" trackViewPortWidth="true" borderBottom="0" border="empty" sizeAdjustment="OriginalSize" titleFont="Lucida Grande,0,13" layout="twocols" borderRight="0" controllerClassName="org.openflexo.view.controller.FlexoFIBController">
-  <Panel id="1" align="left" borderTop="2" borderLeft="0" trackViewPortHeight="true" trackViewPortWidth="true" borderBottom="2" border="empty" sizeAdjustment="OriginalSize" darkLevel="1" titleFont="SansSerif,0,11" layout="gridbag" borderRight="2" opaque="false" index="5" constraints="twocols(anchor=center;expandHorizontally=true;expandVertically=true;fill=both;gridHeight=0;gridWidth=1;gridX=0;gridY=0;index=0;insetsBottom=0;insetsLeft=10;insetsRight=10;insetsTop=0;location=north;padX=0;padY=0;splitIdentifier=top;weightX=1.0;weightY=1.0)" name="ParametersPanel">
-    <Table id="2" boundToSelectionManager="true" backgroundNonSelectionColor="255,255,255" iteratorClassName="org.openflexo.foundation.fml.action.AbstractCreateFlexoConcept$PropertyEntry" backgroundSecondarySelectionColor="178,215,255" autoSelectFirstRow="true" lookAndFeel="Classic" selectionMode="MultipleIntervalSelection" localize="true" manageDynamicModel="true" rightClickAction="controller.rightClick(PropertiesTable.selected,event)" data="data.action.propertiesEntries" index="0" constraints="gridbag(anchor=center;fill=both;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=center;padX=0;padY=0;weightX=0.0;weightY=1.0;x=0;y=0)" font="SansSerif.plain,0,11" name="PropertiesTable">
-      <IconColumn id="3" data="data.getIconForProperty(iterator)" resizable="false" title="icon" displayTitle="false" columnWidth="20" showIcon="false" name="icon" />
-      <TextFieldColumn id="4" data="iterator.name" resizable="true" title="property" displayTitle="true" columnWidth="120" showIcon="false" name="parameter" />
-      <AddAction id="5" method="data.action.newPropertyEntry" name="add_property" />
-      <RemoveAction id="6" method="data.action.deletePropertyEntry(selected)" name="delete_property" />
-    </Table>
-    <Panel id="7" align="left" borderTop="0" borderTitle="Panel" borderLeft="0" trackViewPortHeight="true" trackViewPortWidth="true" borderBottom="0" boxLayoutAxis="Y_AXIS" border="empty" sizeAdjustment="OriginalSize" titleFont="SansSerif,0,11" layout="box" borderRight="0" opaque="false" index="0" constraints="gridbag(anchor=north;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=0;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=east;padX=0;padY=0;weightX=0.0;weightY=0.0)" name="PropertiesOrderingPanel">
-      <Button id="8" buttonIcon="controller.arrowTop" buttonType="Trigger" action="data.action.propertyFirst(PropertiesTable.selected)" label="" localize="true" enable="((PropertiesTable.selected != null) &amp; (PropertiesTable.selected.index &gt; 0))" index="0" constraints="box(alignmentX=0.5;alignmentY=0.5;index=0;location=west)" name="Button">
-        <Dependancy id="9" componentName="PropertiesTable" />
-      </Button>
-      <Button id="10" buttonIcon="controller.arrowUp" buttonType="Trigger" action="data.action.propertyUp(PropertiesTable.selected)" label="" localize="true" enable="((PropertiesTable.selected != null) &amp; (PropertiesTable.selected.index &gt; 0))" index="1" constraints="box(alignmentX=0.5;alignmentY=0.5;index=1;location=north)" name="Button2">
-        <Dependancy id="11" componentName="PropertiesTable" />
-      </Button>
-      <Button id="12" buttonIcon="controller.arrowDown" buttonType="Trigger" action="data.action.propertyDown(PropertiesTable.selected)" label="" localize="true" enable="((PropertiesTable.selected != null) &amp; (PropertiesTable.selected.index &lt; (data.action.propertiesEntries.size - 1)))" index="2" constraints="box(alignmentX=0.5;alignmentY=0.5;index=2;location=center)" name="Button3">
-        <Dependancy id="13" componentName="PropertiesTable" />
-      </Button>
-      <Button id="14" buttonIcon="controller.arrowBottom" buttonType="Trigger" action="data.action.propertyLast(PropertiesTable.selected)" label="" localize="true" enable="((PropertiesTable.selected != null) &amp; (PropertiesTable.selected.index &lt; (data.action.propertiesEntries.size - 1)))" index="3" constraints="box(alignmentX=0.5;alignmentY=0.5;index=3;location=east)" name="Button4">
-        <Dependancy id="15" componentName="PropertiesTable" />
-      </Button>
-    </Panel>
-    <Panel id="16" align="left" borderTop="10" borderLeft="10" trackViewPortHeight="true" trackViewPortWidth="true" borderBottom="10" border="rounded3d" sizeAdjustment="OriginalSize" darkLevel="2" titleFont="SansSerif,0,11" layout="twocols" borderRight="10" index="2" constraints="gridbag(anchor=center;fill=both;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=2;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=1.0;weightY=1.0)" name="DetailsPanel">
-      <Label id="17" label="name" align="left" localize="true" visible="(PropertiesTable.selected != null)" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)" name="Label" />
-      <TextField id="18" columns="7" data="PropertiesTable.selected.name" visible="(PropertiesTable.selected != null)" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)" name="TextField" />
-      <Label id="19" label="type" align="left" localize="true" visible="(PropertiesTable.selected != null)" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)" name="Label2" />
-      <Custom id="20" componentClassName="org.openflexo.gina.swing.utils.TypeSelector" dataClassForComponent="java.lang.reflect.Type" localize="true" manageDynamicModel="true" data="PropertiesTable.selected.type" visible="(PropertiesTable.selected != null)" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)" name="TypeSelector">
-        <Assignment id="21" variable="component.customTypeManager" value="controller.serviceManager.technologyAdapterService" mandatory="true" />
-        <Assignment id="22" variable="component.customTypeEditorProvider" value="controller.serviceManager.technologyAdapterControllerService" mandatory="true" />
-      </Custom>
-      <Label id="23" label="cardinality" align="left" localize="true" visible="((PropertiesTable.selected != null) &amp; ((((PropertiesTable.selected.propertyType = &quot;TECHNOLOGY_ROLE&quot;) | (PropertiesTable.selected.propertyType = &quot;MODEL_SLOT&quot;)) | (PropertiesTable.selected.propertyType = &quot;PRIMITIVE&quot;)) | (PropertiesTable.selected.propertyType = &quot;FLEXO_CONCEPT_INSTANCE&quot;)))" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)" name="Label9" />
-      <DropDown id="24" autoSelectFirstRow="true" iteratorClassName="org.openflexo.foundation.fml.PropertyCardinality" showText="true" showIcon="false" enable="(PropertiesTable.selected != null)" data="PropertiesTable.selected.cardinality" visible="((PropertiesTable.selected != null) &amp; ((((PropertiesTable.selected.propertyType = &quot;TECHNOLOGY_ROLE&quot;) | (PropertiesTable.selected.propertyType = &quot;MODEL_SLOT&quot;)) | (PropertiesTable.selected.propertyType = &quot;PRIMITIVE&quot;)) | (PropertiesTable.selected.propertyType = &quot;FLEXO_CONCEPT_INSTANCE&quot;)))" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)" name="dropdown" />
-      <Label id="25" label="kind_of_property" align="left" localize="true" visible="(PropertiesTable.selected != null)" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)" name="Label3" />
-      <DropDown id="26" autoSelectFirstRow="true" iteratorClassName="org.openflexo.foundation.fml.action.AbstractCreateFlexoConcept$PropertyType" showText="true" list="PropertiesTable.selected.availablePropertyTypes" showIcon="false" localize="true" data="PropertiesTable.selected.propertyType" visible="(PropertiesTable.selected != null)" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)" name="dropdown" />
-      <Label id="27" label="technology" align="left" localize="true" visible="((PropertiesTable.selected != null) &amp; ((PropertiesTable.selected.propertyType = &quot;TECHNOLOGY_ROLE&quot;) | (PropertiesTable.selected.propertyType = &quot;MODEL_SLOT&quot;)))" index="3" constraints="twocols(anchor=east;expandHorizontally=false;expandVertically=false;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=3;insetsBottom=0;insetsLeft=20;insetsRight=0;insetsTop=0;location=left;padX=0;padY=0;weightX=0.0;weightY=0.0)" name="TechnologyAdapterLabel" />
-      <DropDown id="28" autoSelectFirstRow="true" iteratorClassName="org.openflexo.foundation.technologyadapter.TechnologyAdapter" showText="true" list="data.serviceManager.technologyAdapterService.technologyAdapters" showIcon="true" localize="true" manageDynamicModel="true" icon="controller.getTechnologyAdapterController(object).technologyIcon" format="object.name" data="PropertiesTable.selected.technologyAdapter" visible="((PropertiesTable.selected != null) &amp; ((PropertiesTable.selected.propertyType = &quot;TECHNOLOGY_ROLE&quot;) | (PropertiesTable.selected.propertyType = &quot;MODEL_SLOT&quot;)))" index="4" constraints="twocols(anchor=west;expandHorizontally=true;expandVertically=false;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=4;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right;padX=0;padY=0;weightX=0.0;weightY=0.0)" name="TechnologyAdapterDD" />
-      <Label id="29" label="model_slot_type" align="left" localize="true" visible="((PropertiesTable.selected != null) &amp; ((PropertiesTable.selected.propertyType = &quot;TECHNOLOGY_ROLE&quot;) | (PropertiesTable.selected.propertyType = &quot;MODEL_SLOT&quot;)))" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)" name="Label6" />
-      <DropDown id="30" autoSelectFirstRow="true" iteratorClassName="java.lang.Class&lt;? extends org.openflexo.foundation.technologyadapter.ModelSlot&lt;? extends java.lang.Object&gt;&gt;" showText="true" list="PropertiesTable.selected.availableModelSlotTypes" showIcon="true" icon="controller.getTechnologyAdapterController(PropertiesTable.selected.technologyAdapter).getIconForModelSlot(object)" format="object.simpleName" data="PropertiesTable.selected.modelSlotClass" visible="((PropertiesTable.selected != null) &amp; ((PropertiesTable.selected.propertyType = &quot;TECHNOLOGY_ROLE&quot;) | (PropertiesTable.selected.propertyType = &quot;MODEL_SLOT&quot;)))" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)" name="dropdown" />
-      <Label id="31" label="virtual_model" align="left" localize="true" visible="(((PropertiesTable.selected != null) &amp; (PropertiesTable.selected.propertyType = &quot;MODEL_SLOT&quot;)) &amp; PropertiesTable.selected.isVirtualModelModelSlot)" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)" name="Label10" />
-      <Custom id="32" componentClassName="org.openflexo.fml.controller.widget.FIBVirtualModelSelector" dataClassForComponent="org.openflexo.foundation.fml.rm.VirtualModelResource" localize="true" manageDynamicModel="true" data="PropertiesTable.selected.virtualModelResource" visible="(((PropertiesTable.selected != null) &amp; (PropertiesTable.selected.propertyType = &quot;MODEL_SLOT&quot;)) &amp; PropertiesTable.selected.isVirtualModelModelSlot)" index="9" constraints="twocols(anchor=west;expandHorizontally=true;expandVertically=false;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right;padX=0;padY=0;weightX=1.0;weightY=0.0)" name="VirtualModelSelector">
-        <Assignment id="33" variable="component.virtualModelLibrary" value="data.serviceManager.virtualModelLibrary" mandatory="true" />
-        <Assignment id="34" variable="component.viewPointLibrary" mandatory="true" />
-        <Assignment id="35" variable="component.serviceManager" mandatory="true" />
-        <Assignment id="36" variable="component.flexoController" mandatory="true" />
-        <Assignment id="37" variable="component.selectableCondition" mandatory="true" />
-        <Assignment id="38" variable="component.containerVirtualModel" mandatory="true" />
-      </Custom>
-      <Label id="39" label="meta_model" align="left" localize="true" visible="(((PropertiesTable.selected != null) &amp; (PropertiesTable.selected.propertyType = &quot;MODEL_SLOT&quot;)) &amp; PropertiesTable.selected.isTypeAwareModelSlot)" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)" name="Label12" />
-      <Custom id="40" componentClassName="org.openflexo.components.widget.FIBMetaModelSelector" dataClassForComponent="org.openflexo.foundation.technologyadapter.FlexoMetaModelResource" localize="true" manageDynamicModel="true" data="PropertiesTable.selected.metaModelResource" visible="(((PropertiesTable.selected != null) &amp; (PropertiesTable.selected.propertyType = &quot;MODEL_SLOT&quot;)) &amp; PropertiesTable.selected.isTypeAwareModelSlot)" index="9" constraints="twocols(anchor=west;expandHorizontally=true;expandVertically=false;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=6;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right;padX=0;padY=0;weightX=0.0;weightY=0.0)" name="MetaModelSelector">
-        <Assignment id="41" variable="component.serviceManager" mandatory="true" />
-        <Assignment id="42" variable="component.flexoController" mandatory="true" />
-        <Assignment id="43" variable="component.selectableCondition" mandatory="true" />
-        <Assignment id="44" variable="component.resourceManager" value="data.serviceManager.resourceManager" mandatory="true" />
-        <Assignment id="45" variable="component.technologyAdapter" value="TechnologyAdapterDD.selected" mandatory="true" />
-      </Custom>
-      <Label id="46" label="role_type" align="left" localize="true" visible="((PropertiesTable.selected != null) &amp; (PropertiesTable.selected.propertyType = &quot;TECHNOLOGY_ROLE&quot;))" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)" name="Label14" />
-      <DropDown id="47" autoSelectFirstRow="true" iteratorClassName="java.lang.Class&lt;? extends org.openflexo.foundation.fml.FlexoRole&lt;? extends java.lang.Object&gt;&gt;" showText="true" list="PropertiesTable.selected.availableFlexoRoleTypes" showIcon="true" icon="controller.getTechnologyAdapterController(PropertiesTable.selected.technologyAdapter).getIconForFlexoRole(object)" format="object.simpleName" data="PropertiesTable.selected.flexoRoleClass" visible="((PropertiesTable.selected != null) &amp; (PropertiesTable.selected.propertyType = &quot;TECHNOLOGY_ROLE&quot;))" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)" name="dropdown" />
-      <Label id="48" label="container" align="left" localize="true" visible="((PropertiesTable.selected != null) &amp; (((PropertiesTable.selected.propertyType = &quot;TECHNOLOGY_ROLE&quot;) | (PropertiesTable.selected.propertyType = &quot;MODEL_SLOT&quot;)) | (PropertiesTable.selected.propertyType = &quot;FLEXO_CONCEPT_INSTANCE&quot;)))" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)" name="Label4" />
-      <Custom id="49" componentClassName="org.openflexo.gina.swing.utils.BindingSelector" dataClassForComponent="org.openflexo.connie.DataBinding" manageDynamicModel="true" enable="(PropertiesTable.selected != null)" data="PropertiesTable.selected.container" visible="((PropertiesTable.selected != null) &amp; (((PropertiesTable.selected.propertyType = &quot;TECHNOLOGY_ROLE&quot;) | (PropertiesTable.selected.propertyType = &quot;MODEL_SLOT&quot;)) | (PropertiesTable.selected.propertyType = &quot;FLEXO_CONCEPT_INSTANCE&quot;)))" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)" name="CustomSelector">
-        <Assignment id="50" variable="component.bindable" mandatory="true" />
-      </Custom>
-      <Label id="51" label="default_value" align="left" localize="true" visible="(PropertiesTable.selected != null)" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)" name="Label5" />
-      <Custom id="52" componentClassName="org.openflexo.gina.swing.utils.BindingSelector" dataClassForComponent="org.openflexo.connie.DataBinding" manageDynamicModel="true" enable="(PropertiesTable.selected != null)" data="PropertiesTable.selected.defaultValue" visible="(PropertiesTable.selected != null)" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)" name="CustomSelector2">
-        <Assignment id="53" variable="component.bindable" mandatory="true" />
-      </Custom>
-      <Label id="54" label="required" align="left" localize="true" visible="(PropertiesTable.selected != null)" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)" name="Label7" />
-      <CheckBox id="55" selected="true" data="PropertiesTable.selected.isRequired" visible="(PropertiesTable.selected != null)" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)" name="checkbox" />
-      <Label id="56" label="description" align="left" localize="true" visible="(PropertiesTable.selected != null)" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)" name="Label8" />
-      <TextArea id="57" rows="3" columns="8" validateOnReturn="true" text="TextArea" data="PropertiesTable.selected.description" useScrollBar="true" visible="(PropertiesTable.selected != null)" verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED" constraints="twocols(expandHorizontally=true;expandVertically=true;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)" horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED" name="TextArea2" />
-      <Label id="58" label="&lt;html&gt;&lt;a href=&quot;&quot;&gt;click_to_add_a_property&lt;/a&gt;&lt;/html&gt;" align="center" localize="true" clickAction="data.action.newPropertyEntry" visible="(PropertiesTable.selected = null)" constraints="twocols(expandHorizontally=true;expandVertically=true;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)" name="ClickToAdd" />
-    </Panel>
-  </Panel>
-  <FIBVariable id="59" type="org.openflexo.fml.controller.action.AbstractCreateFlexoConceptWizard$ConfigurePropertiesForNewFlexoConcept" name="data" />
-  <LocalizedDictionary id="60">
-    <Localized id="61" lang="English" value="Icon" key="icon" />
-    <Localized id="62" lang="Dutch" value="Icon" key="icon" />
-    <Localized id="63" lang="French" value="Icone" key="icon" />
-    <Localized id="64" lang="English" value="Property" key="property" />
-    <Localized id="65" lang="Dutch" value="Property" key="property" />
-    <Localized id="66" lang="French" value="Propriété" key="property" />
-    <Localized id="67" lang="English" value="Add property" key="add_property" />
-    <Localized id="68" lang="Dutch" value="Add property" key="add_property" />
-    <Localized id="69" lang="French" value="Ajouter une propriété" key="add_property" />
-    <Localized id="70" lang="English" value="Delete property" key="delete_property" />
-    <Localized id="71" lang="Dutch" value="Delete property" key="delete_property" />
-    <Localized id="72" lang="French" value="Supprimer la propriété" key="delete_property" />
-    <Localized id="73" lang="English" value="Name" key="name" />
-    <Localized id="74" lang="Dutch" value="Name" key="name" />
-    <Localized id="75" lang="French" value="Nom" key="name" />
-    <Localized id="76" lang="English" value="Type" key="type" />
-    <Localized id="77" lang="Dutch" value="Type" key="type" />
-    <Localized id="78" lang="French" value="Type" key="type" />
-    <Localized id="79" lang="English" value="Cardinality" key="cardinality" />
-    <Localized id="80" lang="Dutch" value="Cardinality" key="cardinality" />
-    <Localized id="81" lang="French" value="Cardinalité" key="cardinality" />
-    <Localized id="82" lang="English" value="Kind of property" key="kind_of_property" />
-    <Localized id="83" lang="Dutch" value="Kind of property" key="kind_of_property" />
-    <Localized id="84" lang="French" value="Type de propriété" key="kind_of_property" />
-    <Localized id="85" lang="English" value="Technology" key="technology" />
-    <Localized id="86" lang="Dutch" value="Technology" key="technology" />
-    <Localized id="87" lang="French" value="Technologie" key="technology" />
-    <Localized id="88" lang="English" value="Model slot type" key="model_slot_type" />
-    <Localized id="89" lang="Dutch" value="Model slot type" key="model_slot_type" />
-    <Localized id="90" lang="French" value="Type de model slot" key="model_slot_type" />
-    <Localized id="91" lang="English" value="Virtual model" key="virtual_model" />
-    <Localized id="92" lang="Dutch" value="Virtual model" key="virtual_model" />
-    <Localized id="93" lang="French" value="Virtual model" key="virtual_model" />
-    <Localized id="94" lang="English" value="Meta model" key="meta_model" />
-    <Localized id="95" lang="Dutch" value="Meta model" key="meta_model" />
-    <Localized id="96" lang="French" value="Méta-modèle" key="meta_model" />
-    <Localized id="97" lang="English" value="Role type" key="role_type" />
-    <Localized id="98" lang="Dutch" value="Role type" key="role_type" />
-    <Localized id="99" lang="French" value="Type de role" key="role_type" />
-    <Localized id="100" lang="English" value="Container" key="container" />
-    <Localized id="101" lang="Dutch" value="Container" key="container" />
-    <Localized id="102" lang="French" value="Conteneur" key="container" />
-    <Localized id="103" lang="English" value="Default value" key="default_value" />
-    <Localized id="104" lang="Dutch" value="Default value" key="default_value" />
-    <Localized id="105" lang="French" value="Valeur par défaut" key="default_value" />
-    <Localized id="106" lang="English" value="Required" key="required" />
-    <Localized id="107" lang="Dutch" value="Required" key="required" />
-    <Localized id="108" lang="French" value="Obligatoire" key="required" />
-    <Localized id="109" lang="English" value="Description" key="description" />
-    <Localized id="110" lang="Dutch" value="Description" key="description" />
-    <Localized id="111" lang="French" value="Description" key="description" />
-    <Localized id="112" lang="English" value="&lt;html&gt;&lt;a href=&quot;&quot;&gt;Click to add a property&lt;/a&gt;&lt;/html&gt;" key="&lt;html&gt;&lt;a href=&quot;&quot;&gt;click_to_add_a_property&lt;/a&gt;&lt;/html&gt;" />
-    <Localized id="113" lang="Dutch" value="&lt;html&gt;&lt;a href=&quot;&quot;&gt;Click to add a property&lt;/a&gt;&lt;/html&gt;" key="&lt;html&gt;&lt;a href=&quot;&quot;&gt;click_to_add_a_property&lt;/a&gt;&lt;/html&gt;" />
-    <Localized id="114" lang="French" value="&lt;html&gt;&lt;a href=&quot;&quot;&gt;Cliquer pour ajouter une propriété&lt;/a&gt;&lt;/html&gt;" key="&lt;html&gt;&lt;a href=&quot;&quot;&gt;click_to_add_a_property&lt;/a&gt;&lt;/html&gt;" />
-  </LocalizedDictionary>
+<Panel id="0" align="left" borderTop="0" borderLeft="0"
+	trackViewPortHeight="true" trackViewPortWidth="true" borderBottom="0"
+	border="empty" sizeAdjustment="OriginalSize" titleFont="Lucida Grande,0,13"
+	layout="twocols" borderRight="0"
+	controllerClassName="org.openflexo.view.controller.FlexoFIBController">
+	<Panel id="1" align="left" borderTop="2" borderLeft="0"
+		trackViewPortHeight="true" trackViewPortWidth="true" borderBottom="2"
+		border="empty" sizeAdjustment="OriginalSize" darkLevel="1"
+		titleFont="SansSerif,0,11" layout="gridbag" borderRight="2" opaque="false"
+		index="5"
+		constraints="twocols(anchor=center;expandHorizontally=true;expandVertically=true;fill=both;gridHeight=0;gridWidth=1;gridX=0;gridY=0;index=0;insetsBottom=0;insetsLeft=10;insetsRight=10;insetsTop=0;location=north;padX=0;padY=0;splitIdentifier=top;weightX=1.0;weightY=1.0)"
+		name="ParametersPanel">
+		<Table id="2" boundToSelectionManager="true"
+			backgroundNonSelectionColor="255,255,255"
+			iteratorClassName="org.openflexo.foundation.fml.action.AbstractCreateFlexoConcept$PropertyEntry"
+			backgroundSecondarySelectionColor="178,215,255" autoSelectFirstRow="true"
+			lookAndFeel="Classic" selectionMode="MultipleIntervalSelection"
+			localize="true" manageDynamicModel="true"
+			rightClickAction="controller.rightClick(PropertiesTable.selected,event)"
+			data="data.action.propertiesEntries" index="0"
+			constraints="gridbag(anchor=center;fill=both;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=center;padX=0;padY=0;weightX=0.0;weightY=1.0;x=0;y=0)"
+			font="SansSerif.plain,0,11" name="PropertiesTable">
+			<IconColumn id="3" data="data.getIconForProperty(iterator)"
+				resizable="false" title="icon" displayTitle="false" columnWidth="20"
+				showIcon="false" name="icon" />
+			<TextFieldColumn id="4" data="iterator.name"
+				resizable="true" title="property" displayTitle="true" columnWidth="120"
+				showIcon="false" name="parameter" />
+			<AddAction id="5" method="data.action.newPropertyEntry"
+				name="add_property" />
+			<RemoveAction id="6"
+				method="data.action.deletePropertyEntry(selected)" name="delete_property" />
+		</Table>
+		<Panel id="7" align="left" borderTop="0" borderTitle="Panel"
+			borderLeft="0" trackViewPortHeight="true" trackViewPortWidth="true"
+			borderBottom="0" boxLayoutAxis="Y_AXIS" border="empty"
+			sizeAdjustment="OriginalSize" titleFont="SansSerif,0,11" layout="box"
+			borderRight="0" opaque="false" index="0"
+			constraints="gridbag(anchor=north;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=0;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=east;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+			name="PropertiesOrderingPanel">
+			<Button id="8" buttonIcon="controller.arrowTop" buttonType="Trigger"
+				action="data.action.propertyFirst(PropertiesTable.selected)" label=""
+				localize="true"
+				enable="((PropertiesTable.selected != null) &amp; (PropertiesTable.selected.index &gt; 0))"
+				index="0" constraints="box(alignmentX=0.5;alignmentY=0.5;index=0;location=west)"
+				name="Button">
+				<Dependancy id="9" componentName="PropertiesTable" />
+			</Button>
+			<Button id="10" buttonIcon="controller.arrowUp" buttonType="Trigger"
+				action="data.action.propertyUp(PropertiesTable.selected)" label=""
+				localize="true"
+				enable="((PropertiesTable.selected != null) &amp; (PropertiesTable.selected.index &gt; 0))"
+				index="1" constraints="box(alignmentX=0.5;alignmentY=0.5;index=1;location=north)"
+				name="Button2">
+				<Dependancy id="11" componentName="PropertiesTable" />
+			</Button>
+			<Button id="12" buttonIcon="controller.arrowDown" buttonType="Trigger"
+				action="data.action.propertyDown(PropertiesTable.selected)" label=""
+				localize="true"
+				enable="((PropertiesTable.selected != null) &amp; (PropertiesTable.selected.index &lt; (data.action.propertiesEntries.size - 1)))"
+				index="2" constraints="box(alignmentX=0.5;alignmentY=0.5;index=2;location=center)"
+				name="Button3">
+				<Dependancy id="13" componentName="PropertiesTable" />
+			</Button>
+			<Button id="14" buttonIcon="controller.arrowBottom"
+				buttonType="Trigger" action="data.action.propertyLast(PropertiesTable.selected)"
+				label="" localize="true"
+				enable="((PropertiesTable.selected != null) &amp; (PropertiesTable.selected.index &lt; (data.action.propertiesEntries.size - 1)))"
+				index="3" constraints="box(alignmentX=0.5;alignmentY=0.5;index=3;location=east)"
+				name="Button4">
+				<Dependancy id="15" componentName="PropertiesTable" />
+			</Button>
+		</Panel>
+		<Panel id="16" align="left" borderTop="10" borderLeft="10"
+			trackViewPortHeight="true" trackViewPortWidth="true" borderBottom="10"
+			border="rounded3d" sizeAdjustment="OriginalSize" darkLevel="2"
+			titleFont="SansSerif,0,11" layout="twocols" borderRight="10" index="2"
+			constraints="gridbag(anchor=center;fill=both;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=2;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=1.0;weightY=1.0)"
+			name="DetailsPanel">
+			<Label id="17" label="name" align="left" localize="true"
+				visible="(PropertiesTable.selected != null)"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)"
+				name="Label" />
+			<TextField id="18" columns="7" data="PropertiesTable.selected.name"
+				visible="(PropertiesTable.selected != null)"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)"
+				name="TextField" />
+			<Label id="19" label="type" align="left" localize="true"
+				visible="(PropertiesTable.selected != null)"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)"
+				name="Label2" />
+			<Custom id="20" componentClassName="org.openflexo.gina.swing.utils.TypeSelector"
+				dataClassForComponent="java.lang.reflect.Type" localize="true"
+				manageDynamicModel="true" data="PropertiesTable.selected.type"
+				visible="(PropertiesTable.selected != null)"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)"
+				name="TypeSelector">
+				<Assignment id="21" variable="component.customTypeManager"
+					value="controller.serviceManager.technologyAdapterService"
+					mandatory="true" />
+				<Assignment id="22" variable="component.customTypeEditorProvider"
+					value="controller.serviceManager.technologyAdapterControllerService"
+					mandatory="true" />
+			</Custom>
+			<Label id="23" label="cardinality" align="left" localize="true"
+				visible="((PropertiesTable.selected != null) &amp; ((((PropertiesTable.selected.propertyType = &quot;TECHNOLOGY_ROLE&quot;) | (PropertiesTable.selected.propertyType = &quot;MODEL_SLOT&quot;)) | (PropertiesTable.selected.propertyType = &quot;PRIMITIVE&quot;)) | (PropertiesTable.selected.propertyType = &quot;FLEXO_CONCEPT_INSTANCE&quot;)))"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)"
+				name="Label9" />
+			<DropDown id="24" autoSelectFirstRow="true"
+				iteratorClassName="org.openflexo.foundation.fml.PropertyCardinality"
+				showText="true" showIcon="false" enable="(PropertiesTable.selected != null)"
+				data="PropertiesTable.selected.cardinality"
+				visible="((PropertiesTable.selected != null) &amp; ((((PropertiesTable.selected.propertyType = &quot;TECHNOLOGY_ROLE&quot;) | (PropertiesTable.selected.propertyType = &quot;MODEL_SLOT&quot;)) | (PropertiesTable.selected.propertyType = &quot;PRIMITIVE&quot;)) | (PropertiesTable.selected.propertyType = &quot;FLEXO_CONCEPT_INSTANCE&quot;)))"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)"
+				name="dropdown" />
+			<Label id="25" label="kind_of_property" align="left" localize="true"
+				visible="(PropertiesTable.selected != null)"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)"
+				name="Label3" />
+			<DropDown id="26" autoSelectFirstRow="true"
+				iteratorClassName="org.openflexo.foundation.fml.action.AbstractCreateFlexoConcept$PropertyType"
+				showText="true" list="PropertiesTable.selected.availablePropertyTypes"
+				showIcon="false" localize="true" data="PropertiesTable.selected.propertyType"
+				visible="(PropertiesTable.selected != null)"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)"
+				name="dropdown" />
+			<Label id="27" label="technology" align="left" localize="true"
+				visible="((PropertiesTable.selected != null) &amp; ((PropertiesTable.selected.propertyType = &quot;TECHNOLOGY_ROLE&quot;) | (PropertiesTable.selected.propertyType = &quot;MODEL_SLOT&quot;)))"
+				index="3"
+				constraints="twocols(anchor=east;expandHorizontally=false;expandVertically=false;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=3;insetsBottom=0;insetsLeft=20;insetsRight=0;insetsTop=0;location=left;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+				name="TechnologyAdapterLabel" />
+			<DropDown id="28" autoSelectFirstRow="true"
+				iteratorClassName="org.openflexo.foundation.technologyadapter.TechnologyAdapter"
+				showText="true"
+				list="data.serviceManager.technologyAdapterService.technologyAdapters"
+				showIcon="true" localize="true" manageDynamicModel="true"
+				icon="controller.getTechnologyAdapterController(object).technologyIcon"
+				format="object.name" data="PropertiesTable.selected.technologyAdapter"
+				visible="((PropertiesTable.selected != null) &amp; ((PropertiesTable.selected.propertyType = &quot;TECHNOLOGY_ROLE&quot;) | (PropertiesTable.selected.propertyType = &quot;MODEL_SLOT&quot;)))"
+				index="4"
+				constraints="twocols(anchor=west;expandHorizontally=true;expandVertically=false;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=4;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+				name="TechnologyAdapterDD" />
+			<Label id="29" label="model_slot_type" align="left" localize="true"
+				visible="((PropertiesTable.selected != null) &amp; ((PropertiesTable.selected.propertyType = &quot;TECHNOLOGY_ROLE&quot;) | (PropertiesTable.selected.propertyType = &quot;MODEL_SLOT&quot;)))"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)"
+				name="Label6" />
+			<DropDown id="30" autoSelectFirstRow="true"
+				iteratorClassName="java.lang.Class&lt;? extends org.openflexo.foundation.technologyadapter.ModelSlot&lt;? extends java.lang.Object&gt;&gt;"
+				showText="true" list="PropertiesTable.selected.availableModelSlotTypes"
+				showIcon="true"
+				icon="controller.getTechnologyAdapterController(PropertiesTable.selected.technologyAdapter).getIconForModelSlot(object)"
+				format="object.simpleName" data="PropertiesTable.selected.modelSlotClass"
+				visible="((PropertiesTable.selected != null) &amp; ((PropertiesTable.selected.propertyType = &quot;TECHNOLOGY_ROLE&quot;) | (PropertiesTable.selected.propertyType = &quot;MODEL_SLOT&quot;)))"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)"
+				name="dropdown" />
+			<Label id="31" label="virtual_model" align="left" localize="true"
+				visible="(((PropertiesTable.selected != null) &amp; (PropertiesTable.selected.propertyType = &quot;MODEL_SLOT&quot;)) &amp; PropertiesTable.selected.isVirtualModelModelSlot)"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)"
+				name="Label10" />
+			<Custom id="32"
+				componentClassName="org.openflexo.fml.controller.widget.FIBVirtualModelSelector"
+				dataClassForComponent="org.openflexo.foundation.fml.rm.VirtualModelResource"
+				localize="true" manageDynamicModel="true"
+				data="PropertiesTable.selected.virtualModelResource"
+				visible="(((PropertiesTable.selected != null) &amp; (PropertiesTable.selected.propertyType = &quot;MODEL_SLOT&quot;)) &amp; PropertiesTable.selected.isVirtualModelModelSlot)"
+				index="9"
+				constraints="twocols(anchor=west;expandHorizontally=true;expandVertically=false;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right;padX=0;padY=0;weightX=1.0;weightY=0.0)"
+				name="VirtualModelSelector">
+				<Assignment id="33" variable="component.virtualModelLibrary"
+					value="data.serviceManager.virtualModelLibrary" mandatory="true" />
+				<Assignment id="34" variable="component.viewPointLibrary"
+					mandatory="true" />
+				<Assignment id="35" variable="component.serviceManager"
+					mandatory="true" />
+				<Assignment id="36" variable="component.flexoController"
+					mandatory="true" />
+				<Assignment id="37" variable="component.selectableCondition"
+					mandatory="true" />
+				<Assignment id="38" variable="component.containerVirtualModel"
+					mandatory="true" />
+			</Custom>
+			<Label label="flexo_concept" align="left" localize="true"
+				visible="(((PropertiesTable.selected != null) &amp; (PropertiesTable.selected.propertyType = &quot;FLEXO_CONCEPT_INSTANCE&quot;)))"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)"
+				name="FlexoConceptLabel" />
+			<Custom componentClassName="org.openflexo.fml.controller.widget.FIBFlexoConceptSelector"
+				dataClassForComponent="org.openflexo.foundation.fml.FlexoConcept"
+				localize="true" manageDynamicModel="true"
+				data="PropertiesTable.selected.flexoConcept"
+				visible="(((PropertiesTable.selected != null) &amp; (PropertiesTable.selected.propertyType = &quot;FLEXO_CONCEPT_INSTANCE&quot;)))"
+				index="9"
+				constraints="twocols(anchor=west;expandHorizontally=true;expandVertically=false;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right;padX=0;padY=0;weightX=1.0;weightY=0.0)"
+				name="FlexoConceptSelector">
+				<Assignment variable="component.virtualModelLibrary"
+					value="data.serviceManager.virtualModelLibrary" mandatory="true" />
+			</Custom>
+			<Label id="39" label="meta_model" align="left" localize="true"
+				visible="(((PropertiesTable.selected != null) &amp; (PropertiesTable.selected.propertyType = &quot;MODEL_SLOT&quot;)) &amp; PropertiesTable.selected.isTypeAwareModelSlot)"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)"
+				name="Label12" />
+			<Custom id="40"
+				componentClassName="org.openflexo.components.widget.FIBMetaModelSelector"
+				dataClassForComponent="org.openflexo.foundation.technologyadapter.FlexoMetaModelResource"
+				localize="true" manageDynamicModel="true"
+				data="PropertiesTable.selected.metaModelResource"
+				visible="(((PropertiesTable.selected != null) &amp; (PropertiesTable.selected.propertyType = &quot;MODEL_SLOT&quot;)) &amp; PropertiesTable.selected.isTypeAwareModelSlot)"
+				index="9"
+				constraints="twocols(anchor=west;expandHorizontally=true;expandVertically=false;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=6;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+				name="MetaModelSelector">
+				<Assignment id="41" variable="component.serviceManager"
+					mandatory="true" />
+				<Assignment id="42" variable="component.flexoController"
+					mandatory="true" />
+				<Assignment id="43" variable="component.selectableCondition"
+					mandatory="true" />
+				<Assignment id="44" variable="component.resourceManager"
+					value="data.serviceManager.resourceManager" mandatory="true" />
+				<Assignment id="45" variable="component.technologyAdapter"
+					value="TechnologyAdapterDD.selected" mandatory="true" />
+			</Custom>
+			<Label id="46" label="role_type" align="left" localize="true"
+				visible="((PropertiesTable.selected != null) &amp; (PropertiesTable.selected.propertyType = &quot;TECHNOLOGY_ROLE&quot;))"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)"
+				name="Label14" />
+			<DropDown id="47" autoSelectFirstRow="true"
+				iteratorClassName="java.lang.Class&lt;? extends org.openflexo.foundation.fml.FlexoRole&lt;? extends java.lang.Object&gt;&gt;"
+				showText="true" list="PropertiesTable.selected.availableFlexoRoleTypes"
+				showIcon="true"
+				icon="controller.getTechnologyAdapterController(PropertiesTable.selected.technologyAdapter).getIconForFlexoRole(object)"
+				format="object.simpleName" data="PropertiesTable.selected.flexoRoleClass"
+				visible="((PropertiesTable.selected != null) &amp; (PropertiesTable.selected.propertyType = &quot;TECHNOLOGY_ROLE&quot;))"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)"
+				name="dropdown" />
+			<Label id="48" label="container" align="left" localize="true"
+				visible="((PropertiesTable.selected != null) &amp; (((PropertiesTable.selected.propertyType = &quot;TECHNOLOGY_ROLE&quot;) | (PropertiesTable.selected.propertyType = &quot;MODEL_SLOT&quot;)) | (PropertiesTable.selected.propertyType = &quot;FLEXO_CONCEPT_INSTANCE&quot;)))"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)"
+				name="Label4" />
+			<Custom id="49" componentClassName="org.openflexo.gina.swing.utils.BindingSelector"
+				dataClassForComponent="org.openflexo.connie.DataBinding"
+				manageDynamicModel="true" enable="(PropertiesTable.selected != null)"
+				data="PropertiesTable.selected.container"
+				visible="((PropertiesTable.selected != null) &amp; (((PropertiesTable.selected.propertyType = &quot;TECHNOLOGY_ROLE&quot;) | (PropertiesTable.selected.propertyType = &quot;MODEL_SLOT&quot;)) | (PropertiesTable.selected.propertyType = &quot;FLEXO_CONCEPT_INSTANCE&quot;)))"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
+				name="CustomSelector">
+				<Assignment id="50" variable="component.bindable"
+					mandatory="true" />
+			</Custom>
+			<Label id="51" label="default_value" align="left" localize="true"
+				visible="(PropertiesTable.selected != null)"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)"
+				name="Label5" />
+			<Custom id="52" componentClassName="org.openflexo.gina.swing.utils.BindingSelector"
+				dataClassForComponent="org.openflexo.connie.DataBinding"
+				manageDynamicModel="true" enable="(PropertiesTable.selected != null)"
+				data="PropertiesTable.selected.defaultValue" visible="(PropertiesTable.selected != null)"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
+				name="CustomSelector2">
+				<Assignment id="53" variable="component.bindable"
+					mandatory="true" />
+			</Custom>
+			<Label id="54" label="required" align="left" localize="true"
+				visible="(PropertiesTable.selected != null)"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)"
+				name="Label7" />
+			<CheckBox id="55" selected="true"
+				data="PropertiesTable.selected.isRequired" visible="(PropertiesTable.selected != null)"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)"
+				name="checkbox" />
+			<Label id="56" label="description" align="left" localize="true"
+				visible="(PropertiesTable.selected != null)"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)"
+				name="Label8" />
+			<TextArea id="57" rows="3" columns="8" validateOnReturn="true"
+				text="TextArea" data="PropertiesTable.selected.description"
+				useScrollBar="true" visible="(PropertiesTable.selected != null)"
+				verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED"
+				constraints="twocols(expandHorizontally=true;expandVertically=true;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)"
+				horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED" name="TextArea2" />
+			<Label id="58"
+				label="&lt;html&gt;&lt;a href=&quot;&quot;&gt;click_to_add_a_property&lt;/a&gt;&lt;/html&gt;"
+				align="center" localize="true" clickAction="data.action.newPropertyEntry"
+				visible="(PropertiesTable.selected = null)"
+				constraints="twocols(expandHorizontally=true;expandVertically=true;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)"
+				name="ClickToAdd" />
+		</Panel>
+	</Panel>
+	<FIBVariable id="59"
+		type="org.openflexo.fml.controller.action.AbstractCreateFlexoConceptWizard$ConfigurePropertiesForNewFlexoConcept"
+		name="data" />
+	<LocalizedDictionary id="60">
+		<Localized id="61" lang="English" value="Icon" key="icon" />
+		<Localized id="62" lang="Dutch" value="Icon" key="icon" />
+		<Localized id="63" lang="French" value="Icone" key="icon" />
+		<Localized id="64" lang="English" value="Property" key="property" />
+		<Localized id="65" lang="Dutch" value="Property" key="property" />
+		<Localized id="66" lang="French" value="Propriété" key="property" />
+		<Localized id="67" lang="English" value="Add property" key="add_property" />
+		<Localized id="68" lang="Dutch" value="Add property" key="add_property" />
+		<Localized id="69" lang="French" value="Ajouter une propriété"
+			key="add_property" />
+		<Localized id="70" lang="English" value="Delete property"
+			key="delete_property" />
+		<Localized id="71" lang="Dutch" value="Delete property" key="delete_property" />
+		<Localized id="72" lang="French" value="Supprimer la propriété"
+			key="delete_property" />
+		<Localized id="73" lang="English" value="Name" key="name" />
+		<Localized id="74" lang="Dutch" value="Name" key="name" />
+		<Localized id="75" lang="French" value="Nom" key="name" />
+		<Localized id="76" lang="English" value="Type" key="type" />
+		<Localized id="77" lang="Dutch" value="Type" key="type" />
+		<Localized id="78" lang="French" value="Type" key="type" />
+		<Localized id="79" lang="English" value="Cardinality" key="cardinality" />
+		<Localized id="80" lang="Dutch" value="Cardinality" key="cardinality" />
+		<Localized id="81" lang="French" value="Cardinalité" key="cardinality" />
+		<Localized id="82" lang="English" value="Kind of property"
+			key="kind_of_property" />
+		<Localized id="83" lang="Dutch" value="Kind of property"
+			key="kind_of_property" />
+		<Localized id="84" lang="French" value="Type de propriété"
+			key="kind_of_property" />
+		<Localized id="85" lang="English" value="Technology" key="technology" />
+		<Localized id="86" lang="Dutch" value="Technology" key="technology" />
+		<Localized id="87" lang="French" value="Technologie" key="technology" />
+		<Localized id="88" lang="English" value="Model slot type"
+			key="model_slot_type" />
+		<Localized id="89" lang="Dutch" value="Model slot type" key="model_slot_type" />
+		<Localized id="90" lang="French" value="Type de model slot"
+			key="model_slot_type" />
+		<Localized id="91" lang="English" value="Virtual model" key="virtual_model" />
+		<Localized id="92" lang="Dutch" value="Virtual model" key="virtual_model" />
+		<Localized id="93" lang="French" value="Virtual model" key="virtual_model" />
+		<Localized id="94" lang="English" value="Meta model" key="meta_model" />
+		<Localized id="95" lang="Dutch" value="Meta model" key="meta_model" />
+		<Localized id="96" lang="French" value="Méta-modèle" key="meta_model" />
+		<Localized id="97" lang="English" value="Role type" key="role_type" />
+		<Localized id="98" lang="Dutch" value="Role type" key="role_type" />
+		<Localized id="99" lang="French" value="Type de role" key="role_type" />
+		<Localized id="100" lang="English" value="Container" key="container" />
+		<Localized id="101" lang="Dutch" value="Container" key="container" />
+		<Localized id="102" lang="French" value="Conteneur" key="container" />
+		<Localized id="103" lang="English" value="Default value"
+			key="default_value" />
+		<Localized id="104" lang="Dutch" value="Default value" key="default_value" />
+		<Localized id="105" lang="French" value="Valeur par défaut"
+			key="default_value" />
+		<Localized id="106" lang="English" value="Required" key="required" />
+		<Localized id="107" lang="Dutch" value="Required" key="required" />
+		<Localized id="108" lang="French" value="Obligatoire" key="required" />
+		<Localized id="109" lang="English" value="Description" key="description" />
+		<Localized id="110" lang="Dutch" value="Description" key="description" />
+		<Localized id="111" lang="French" value="Description" key="description" />
+		<Localized id="112" lang="English"
+			value="&lt;html&gt;&lt;a href=&quot;&quot;&gt;Click to add a property&lt;/a&gt;&lt;/html&gt;"
+			key="&lt;html&gt;&lt;a href=&quot;&quot;&gt;click_to_add_a_property&lt;/a&gt;&lt;/html&gt;" />
+		<Localized id="113" lang="Dutch"
+			value="&lt;html&gt;&lt;a href=&quot;&quot;&gt;Click to add a property&lt;/a&gt;&lt;/html&gt;"
+			key="&lt;html&gt;&lt;a href=&quot;&quot;&gt;click_to_add_a_property&lt;/a&gt;&lt;/html&gt;" />
+		<Localized id="114" lang="French"
+			value="&lt;html&gt;&lt;a href=&quot;&quot;&gt;Cliquer pour ajouter une propriété&lt;/a&gt;&lt;/html&gt;"
+			key="&lt;html&gt;&lt;a href=&quot;&quot;&gt;click_to_add_a_property&lt;/a&gt;&lt;/html&gt;" />
+	</LocalizedDictionary>
 </Panel>

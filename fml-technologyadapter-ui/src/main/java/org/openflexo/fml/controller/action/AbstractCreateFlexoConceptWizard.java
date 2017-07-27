@@ -78,9 +78,31 @@ public abstract class AbstractCreateFlexoConceptWizard<A extends AbstractCreateF
 
 	private static final Dimension DIMENSIONS = new Dimension(900, 600);
 
+	private ConfigurePropertiesForNewFlexoConcept configurePropertiesForNewFlexoConcept;
+	private ConfigureBehavioursForNewFlexoConcept configureBehavioursForNewFlexoConcept;
+	private ConfigureInspectorForNewFlexoConcept configureInspectorForNewFlexoConcept;
+
 	public AbstractCreateFlexoConceptWizard(A action, FlexoController controller) {
 		super(controller);
 		this.action = action;
+	}
+
+	protected void createAdditionalSteps() {
+		addStep(configurePropertiesForNewFlexoConcept = new ConfigurePropertiesForNewFlexoConcept());
+		addStep(configureBehavioursForNewFlexoConcept = new ConfigureBehavioursForNewFlexoConcept());
+		addStep(configureInspectorForNewFlexoConcept = new ConfigureInspectorForNewFlexoConcept());
+	}
+
+	public ConfigurePropertiesForNewFlexoConcept getConfigurePropertiesForNewFlexoConcept() {
+		return configurePropertiesForNewFlexoConcept;
+	}
+
+	public ConfigureBehavioursForNewFlexoConcept getConfigureBehavioursForNewFlexoConcept() {
+		return configureBehavioursForNewFlexoConcept;
+	}
+
+	public ConfigureInspectorForNewFlexoConcept getConfigureInspectorForNewFlexoConcept() {
+		return configureInspectorForNewFlexoConcept;
 	}
 
 	public A getAction() {
