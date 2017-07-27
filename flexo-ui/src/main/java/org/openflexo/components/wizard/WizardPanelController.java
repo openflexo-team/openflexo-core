@@ -118,7 +118,6 @@ public class WizardPanelController extends FlexoFIBController {
 						JFIBReferencedComponentWidget refWidget = (JFIBReferencedComponentWidget) (FIBView) viewForComponent(c);
 						FIBController embeddedController = refWidget.getEmbeddedFIBController();
 						for (FIBComponent c2 : ((FIBContainer) embeddedController.getRootComponent()).getAllSubComponents()) {
-							System.out.println(" >> " + c2);
 							setFocusTraversal(c2, embeddedController, focusPolicyList);
 						}
 					}
