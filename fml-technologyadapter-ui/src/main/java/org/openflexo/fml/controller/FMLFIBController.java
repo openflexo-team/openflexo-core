@@ -45,6 +45,7 @@ import java.util.logging.Logger;
 
 import javax.swing.ImageIcon;
 
+import org.openflexo.components.validation.RevalidationTask;
 import org.openflexo.fml.controller.validation.FixIssueDialog;
 import org.openflexo.fml.controller.validation.IssueFixing;
 import org.openflexo.foundation.FlexoException;
@@ -414,8 +415,7 @@ public class FMLFIBController extends FlexoFIBController {
 	public FlexoConcept createFlexoConcept(FlexoConcept flexoConcept) {
 		System.out.println("Nouveau concept " + flexoConcept);
 		if (flexoConcept instanceof VirtualModel) {
-			CreateFlexoConcept createFlexoConcept = CreateFlexoConcept.actionType.makeNewAction((VirtualModel) flexoConcept, null,
-					getEditor());
+			CreateFlexoConcept createFlexoConcept = CreateFlexoConcept.actionType.makeNewAction(flexoConcept, null, getEditor());
 			createFlexoConcept.switchNewlyCreatedFlexoConcept = false;
 			createFlexoConcept.doAction();
 			return createFlexoConcept.getNewFlexoConcept();
@@ -904,13 +904,14 @@ public class FMLFIBController extends FlexoFIBController {
 			FMLTechnologyAdapterController tac = getServiceManager().getTechnologyAdapterControllerService()
 					.getTechnologyAdapterController(FMLTechnologyAdapterController.class);
 			FMLValidationReport virtualModelReport = tac.getValidationReport(virtualModel);
-			try {
-				virtualModelReport.revalidateAll();
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			fmlObjectsIcons.clear();
+			RevalidationTask validationTask = new RevalidationTask(virtualModelReport) {
+				@Override
+				public void performTask() throws InterruptedException {
+					super.performTask();
+					fmlObjectsIcons.clear();
+				}
+			};
+			getServiceManager().getTaskManager().scheduleExecution(validationTask);
 		}
 	}
 }
