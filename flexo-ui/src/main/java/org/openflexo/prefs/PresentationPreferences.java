@@ -271,7 +271,7 @@ public interface PresentationPreferences extends PreferencesContainer {
 			FlexoProperty p = assertProperty(ToolBox.getPLATFORM() + LOOK_AND_FEEL);
 			String returned = p.getValue();
 			if (returned == null) {
-				p = assertProperty(LOOK_AND_FEEL);
+				p = assertProperty(ToolBox.getPLATFORM() + LOOK_AND_FEEL);
 				returned = p.getValue();
 			}
 			if (returned == null) {
