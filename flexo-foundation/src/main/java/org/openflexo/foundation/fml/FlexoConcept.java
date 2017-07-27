@@ -54,6 +54,7 @@ import org.openflexo.foundation.fml.FlexoConceptBehaviouralFacet.FlexoConceptBeh
 import org.openflexo.foundation.fml.FlexoConceptStructuralFacet.FlexoConceptStructuralFacetImpl;
 import org.openflexo.foundation.fml.action.CreateFlexoBehaviour;
 import org.openflexo.foundation.fml.binding.FlexoConceptBindingModel;
+import org.openflexo.foundation.fml.editionaction.AssignationAction;
 import org.openflexo.foundation.fml.editionaction.DeleteAction;
 import org.openflexo.foundation.fml.inspector.FlexoConceptInspector;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
@@ -1263,14 +1264,21 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 
 			List<FlexoProperty<?>> propertiesToDelete = new ArrayList<>();
 			for (FlexoProperty<?> pr : getDeclaredProperties()) {
-				if (!(pr instanceof PrimitiveRole) && pr.defaultBehaviourIsToBeDeleted()) {
+				if (pr.defaultBehaviourIsToBeDeleted()) {
 					propertiesToDelete.add(pr);
 				}
 			}
 			for (FlexoProperty<?> pr : propertiesToDelete) {
-				DeleteAction deleteAction = getFMLModelFactory().newDeleteAction();
-				deleteAction.setObject(new DataBinding<>(pr.getPropertyName()));
-				newDeletionScheme.getControlGraph().sequentiallyAppend(deleteAction);
+				if (pr instanceof PrimitiveRole) {
+					AssignationAction<Object> nullifyStatement = getFMLModelFactory().newAssignationAction(new DataBinding<Object>("null"));
+					nullifyStatement.setAssignation(new DataBinding<Object>(pr.getPropertyName()));
+					newDeletionScheme.getControlGraph().sequentiallyAppend(nullifyStatement);
+				}
+				else {
+					DeleteAction deleteAction = getFMLModelFactory().newDeleteAction();
+					deleteAction.setObject(new DataBinding<>(pr.getPropertyName()));
+					newDeletionScheme.getControlGraph().sequentiallyAppend(deleteAction);
+				}
 			}
 			return newDeletionScheme;
 		}
