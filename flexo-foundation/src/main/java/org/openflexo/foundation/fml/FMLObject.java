@@ -469,21 +469,23 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData/*<Vi
 				if (object instanceof FlexoConceptObject) {
 					String proposal = b.toString();
 					if (((FlexoConceptObject) object).getFlexoConcept() instanceof VirtualModel) {
-						// System.out.println("Pas valide pour VM " + ((FlexoConceptObject) object).getFlexoConcept() + " " + b);
+						FMLObjectImpl.logger
+								.info("Not valid for VirtualModel " + ((FlexoConceptObject) object).getFlexoConcept() + " " + b);
 						proposal = proposal.replace("virtualModelInstance.virtualModelDefinition", "this.virtualModel");
 						proposal = proposal.replace("virtualModelInstance", "this");
 					}
 					else {
-						System.out.println("Pas valide pour Concept " + ((FlexoConceptObject) object).getFlexoConcept() + " " + b);
+						FMLObjectImpl.logger.info("Not valid for Concept " + ((FlexoConceptObject) object).getFlexoConcept() + " " + b);
 						proposal = proposal.replace("virtualModelInstance", "container");
 						proposal = proposal.replace("flexoConceptInstance", "this");
 					}
 					if (!proposal.equals(b.toString())) {
-						System.out.println("Si on essayait " + proposal + " a la place de " + b.toString());
+						FMLObjectImpl.logger.info("DataBinding validation: providing proposal " + proposal + " instead of " + b.toString());
 						returned.addToFixProposals(new UseProposedBinding(b, proposal));
 					}
 					else {
-						System.out.println("Rien a proposer pour " + b.toString());
+						FMLObjectImpl.logger
+								.info("DataBinding validation: cannot find any proposal " + proposal + " instead of " + b.toString());
 					}
 				}
 
