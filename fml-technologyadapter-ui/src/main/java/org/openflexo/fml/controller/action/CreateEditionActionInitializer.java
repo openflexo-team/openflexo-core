@@ -47,6 +47,7 @@ import org.openflexo.components.wizard.Wizard;
 import org.openflexo.components.wizard.WizardDialog;
 import org.openflexo.foundation.action.FlexoActionFinalizer;
 import org.openflexo.foundation.action.FlexoActionInitializer;
+import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.action.CreateEditionAction;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
@@ -97,7 +98,7 @@ public class CreateEditionActionInitializer extends ActionInitializer<CreateEdit
 	}
 
 	@Override
-	protected Icon getEnabledIcon() {
+	protected Icon getEnabledIcon(FlexoActionType actionType) {
 		return FMLIconLibrary.FLEXO_CONCEPT_ACTION_ICON;
 	}
 

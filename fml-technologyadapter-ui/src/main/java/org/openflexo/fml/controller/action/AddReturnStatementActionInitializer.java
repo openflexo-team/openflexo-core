@@ -45,6 +45,7 @@ import javax.swing.Icon;
 
 import org.openflexo.foundation.action.FlexoActionFinalizer;
 import org.openflexo.foundation.action.FlexoActionInitializer;
+import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.action.AddReturnStatement;
 import org.openflexo.foundation.fml.editionaction.AssignableAction;
@@ -85,7 +86,7 @@ public class AddReturnStatementActionInitializer extends ActionInitializer<AddRe
 	}
 
 	@Override
-	protected Icon getEnabledIcon() {
+	protected Icon getEnabledIcon(FlexoActionType actionType) {
 		return FMLIconLibrary.FLEXO_CONCEPT_ACTION_ICON;
 	}
 

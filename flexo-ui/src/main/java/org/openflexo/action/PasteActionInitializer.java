@@ -97,7 +97,7 @@ public class PasteActionInitializer extends ActionInitializer<PasteAction, Flexo
 	}
 
 	@Override
-	protected Icon getEnabledIcon() {
+	protected Icon getEnabledIcon(FlexoActionType actionType) {
 		return IconLibrary.PASTE_ICON;
 	}
 

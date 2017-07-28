@@ -188,19 +188,21 @@ public abstract class ActionInitializer<A extends FlexoAction<A, T1, T2>, T1 ext
 
 	/**
 	 * Please override if required Default implementation return null
+	 * @param actionType TODO
 	 * 
 	 * @return null
 	 */
-	protected Icon getEnabledIcon() {
+	protected Icon getEnabledIcon(FlexoActionType actionType) {
 		return null;
 	}
 
 	/**
 	 * Please override if required Default implementation return null
+	 * @param actionType TODO
 	 * 
 	 * @return null
 	 */
-	protected Icon getDisabledIcon() {
+	protected Icon getDisabledIcon(FlexoActionType actionType) {
 		return null;
 	}
 

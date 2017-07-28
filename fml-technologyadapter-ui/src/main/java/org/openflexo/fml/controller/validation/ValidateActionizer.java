@@ -49,6 +49,7 @@ import org.openflexo.FlexoCst;
 import org.openflexo.fml.controller.FMLTechnologyAdapterController;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.action.FlexoActionFinalizer;
+import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FMLValidationReport;
 import org.openflexo.icon.IconLibrary;
@@ -91,7 +92,7 @@ public class ValidateActionizer extends ActionInitializer<ValidateAction, FMLObj
 	}
 
 	@Override
-	protected Icon getEnabledIcon() {
+	protected Icon getEnabledIcon(FlexoActionType actionType) {
 		return IconLibrary.VALID_ICON;
 	}
 }

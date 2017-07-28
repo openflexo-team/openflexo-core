@@ -405,7 +405,7 @@ public class InteractiveFlexoEditor extends DefaultFlexoEditor {
 			FlexoActionType<A, T1, T2> actionType) {
 		ActionInitializer<A, T1, T2> actionInitializer = getActionInitializer(actionType);
 		if (actionInitializer != null) {
-			return actionInitializer.getEnabledIcon();
+			return actionInitializer.getEnabledIcon(actionType);
 		}
 		if (actionType instanceof DeletionSchemeActionType) {
 			return FlexoController.statelessIconForObject(((DeletionSchemeActionType) actionType).getDeletionScheme());
@@ -422,7 +422,7 @@ public class InteractiveFlexoEditor extends DefaultFlexoEditor {
 			FlexoActionType<A, T1, T2> actionType) {
 		ActionInitializer<A, T1, T2> actionInitializer = getActionInitializer(actionType);
 		if (actionInitializer != null) {
-			return actionInitializer.getDisabledIcon();
+			return actionInitializer.getDisabledIcon(actionType);
 		}
 		return null;
 	}

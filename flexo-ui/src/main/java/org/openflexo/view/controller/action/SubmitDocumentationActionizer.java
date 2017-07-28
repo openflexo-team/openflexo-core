@@ -51,6 +51,7 @@ import org.openflexo.drm.ui.SubmitNewVersionPopup;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.action.FlexoActionFinalizer;
 import org.openflexo.foundation.action.FlexoActionInitializer;
+import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.icon.IconLibrary;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.localization.Language;
@@ -167,7 +168,7 @@ public class SubmitDocumentationActionizer extends ActionInitializer<SubmitDocum
 	}
 
 	@Override
-	protected Icon getEnabledIcon() {
+	protected Icon getEnabledIcon(FlexoActionType actionType) {
 		return IconLibrary.HELP_ICON;
 	}
 }

@@ -47,6 +47,7 @@ import javax.swing.Icon;
 import javax.swing.KeyStroke;
 
 import org.openflexo.foundation.action.FlexoActionInitializer;
+import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.action.copypaste.AbstractCopyAction.InvalidSelectionException;
 import org.openflexo.foundation.fml.FlexoConceptObject;
 import org.openflexo.foundation.fml.action.DeleteFlexoConceptObjects;
@@ -90,7 +91,7 @@ public class DeleteFlexoConceptObjectsInitializer
 	}
 
 	@Override
-	protected Icon getEnabledIcon() {
+	protected Icon getEnabledIcon(FlexoActionType actionType) {
 		return IconLibrary.DELETE_ICON;
 	}
 

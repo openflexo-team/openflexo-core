@@ -44,6 +44,7 @@ import java.util.logging.Logger;
 import javax.swing.Icon;
 
 import org.openflexo.foundation.action.FlexoActionInitializer;
+import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.action.DeleteVirtualModel;
@@ -72,7 +73,7 @@ public class DeleteVirtualModelInitializer extends ActionInitializer<DeleteVirtu
 	}
 
 	@Override
-	protected Icon getEnabledIcon() {
+	protected Icon getEnabledIcon(FlexoActionType actionType) {
 		return IconLibrary.DELETE_ICON;
 	}
 
