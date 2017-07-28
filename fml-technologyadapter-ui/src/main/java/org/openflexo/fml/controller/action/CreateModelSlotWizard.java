@@ -48,6 +48,7 @@ import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.FlexoConceptObject;
 import org.openflexo.foundation.fml.VirtualModel;
+import org.openflexo.foundation.fml.VirtualModelLibrary;
 import org.openflexo.foundation.fml.action.CreateModelSlot;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
@@ -124,6 +125,10 @@ public class CreateModelSlotWizard extends AbstractCreateFMLElementWizard<Create
 			return CreateModelSlotWizard.this.getVirtualModel();
 		}
 
+		public VirtualModelLibrary getVirtualModelLibrary() {
+			return getServiceManager().getVirtualModelLibrary();
+		}
+
 		@Override
 		public String getTitle() {
 			return getAction().getLocales().localizedForKey("describe_model_slot");
@@ -131,6 +136,11 @@ public class CreateModelSlotWizard extends AbstractCreateFMLElementWizard<Create
 
 		@Override
 		public boolean isValid() {
+
+			if (StringUtils.isEmpty(getDescription())) {
+				setIssueMessage(getAction().getLocales().localizedForKey("it_is_recommanded_to_describe_model_slot"),
+						IssueMessageType.WARNING);
+			}
 
 			if (StringUtils.isEmpty(getModelSlotName())) {
 				setIssueMessage(getAction().getLocales().localizedForKey(EMPTY_NAME), IssueMessageType.ERROR);
@@ -150,20 +160,13 @@ public class CreateModelSlotWizard extends AbstractCreateFMLElementWizard<Create
 			}
 			else if (getTechnologyAdapter() instanceof FMLTechnologyAdapter) {
 				if (getVmRes() == null) {
-					setIssueMessage(getAction().getLocales().localizedForKey(NO_VIRTUAL_MODEL), IssueMessageType.ERROR);
-					return false;
+					setIssueMessage(getAction().getLocales().localizedForKey(NO_VIRTUAL_MODEL), IssueMessageType.WARNING);
 				}
 			}
 			else if (TypeAwareModelSlot.class.isAssignableFrom(getModelSlotClass())) {
 				if (getMmRes() == null) {
-					setIssueMessage(getAction().getLocales().localizedForKey(NO_META_MODEL), IssueMessageType.ERROR);
-					return false;
+					setIssueMessage(getAction().getLocales().localizedForKey(NO_META_MODEL), IssueMessageType.WARNING);
 				}
-			}
-
-			if (StringUtils.isEmpty(getDescription())) {
-				setIssueMessage(getAction().getLocales().localizedForKey("it_is_recommanded_to_describe_model_slot"),
-						IssueMessageType.WARNING);
 			}
 
 			return true;

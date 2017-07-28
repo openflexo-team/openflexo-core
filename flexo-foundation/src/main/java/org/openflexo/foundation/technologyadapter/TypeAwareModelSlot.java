@@ -48,12 +48,16 @@ import org.openflexo.foundation.fml.rt.ModelSlotInstance;
 import org.openflexo.foundation.fml.rt.TypeAwareModelSlotInstance;
 import org.openflexo.foundation.fml.rt.action.ModelSlotInstanceConfiguration;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
+import org.openflexo.model.annotations.DefineValidationRule;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.PropertyIdentifier;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
+import org.openflexo.model.validation.ValidationError;
+import org.openflexo.model.validation.ValidationIssue;
+import org.openflexo.model.validation.ValidationRule;
 import org.openflexo.toolbox.JavaUtils;
 import org.openflexo.toolbox.StringUtils;
 
@@ -284,6 +288,26 @@ public interface TypeAwareModelSlot<M extends FlexoModel<M, MM> & TechnologyObje
 		public String getModelSlotDescription() {
 			return "Model conform to " + getMetaModelURI();
 		}
-
 	}
+
+	@DefineValidationRule
+	@SuppressWarnings({ "rawtypes" })
+	public static class TypeAwareModelSlotMustAddressAValidMetaModel
+			extends ValidationRule<TypeAwareModelSlotMustAddressAValidMetaModel, TypeAwareModelSlot> {
+		public TypeAwareModelSlotMustAddressAValidMetaModel() {
+			super(TypeAwareModelSlot.class, "ModelSlot_($validable.name)_must_address_a_valid_meta_model");
+		}
+
+		@Override
+		public ValidationIssue<TypeAwareModelSlotMustAddressAValidMetaModel, TypeAwareModelSlot> applyValidation(
+				TypeAwareModelSlot modelSlot) {
+
+			if (modelSlot.getMetaModelResource() == null) {
+				return new ValidationError<>(this, modelSlot, "ModelSlot_($validable.name)_doesn't_define_any_meta_model");
+			}
+
+			return null;
+		}
+	}
+
 }

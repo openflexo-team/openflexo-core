@@ -47,12 +47,11 @@ import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.action.NotImplementedException;
-import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.FMLObject;
-import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptObject;
 import org.openflexo.foundation.fml.FlexoConceptStructuralFacet;
+import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
 import org.openflexo.foundation.technologyadapter.FlexoMetaModel;
@@ -168,7 +167,7 @@ public class CreateModelSlot extends AbstractCreateFlexoProperty<CreateModelSlot
 		else if (technologyAdapter == null) {
 			return false;
 		}
-		else if (technologyAdapter instanceof FMLTechnologyAdapter) {
+		/*else if (technologyAdapter instanceof FMLTechnologyAdapter) {
 			if (vmRes == null) {
 				return false;
 			}
@@ -186,8 +185,8 @@ public class CreateModelSlot extends AbstractCreateFlexoProperty<CreateModelSlot
 			else {
 				return true;
 			}
-		}
-		return false;
+		}*/
+		return true;
 	}
 
 	public Class<? extends ModelSlot<?>> getModelSlotClass() {

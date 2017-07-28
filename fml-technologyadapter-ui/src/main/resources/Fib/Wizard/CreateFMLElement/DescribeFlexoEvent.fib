@@ -8,8 +8,6 @@
     <IconColumn id="6" data="controller.iconForObject(iterator)" resizable="false" title="icon" displayTitle="false" columnWidth="25" showIcon="false" name="icon" />
     <CustomColumn id="7" componentClassName="org.openflexo.fml.controller.widget.FIBFlexoConceptSelector" data="iterator.parentConcept" resizable="true" format="object.name" title="flexo_concept" displayTitle="true" columnWidth="80" showIcon="false" name="flexo_concept">
       <ColumnAssignment id="8" variable="component.virtualModel" mandatory="true" />
-      <ColumnAssignment id="9" variable="component.viewPoint" mandatory="true" />
-      <ColumnAssignment id="10" variable="component.viewPointLibrary" mandatory="true" />
       <ColumnAssignment id="11" variable="component.serviceManager" mandatory="true" />
       <ColumnAssignment id="12" variable="component.flexoController" mandatory="true" />
       <ColumnAssignment id="13" variable="component.selectableCondition" mandatory="true" />

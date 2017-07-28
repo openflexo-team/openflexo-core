@@ -66,33 +66,13 @@ public class TestFMLWizardFibs extends GenericFIBTestCase {
 	}
 
 	@Test
-	public void testConfigureFreeModelSlot() {
-		validateFIB("Fib/Wizard/CreateFMLElement/ConfigureFreeModelSlot.fib");
-	}
-
-	@Test
 	public void testConfigureInspectorForNewFlexoConcept() {
 		validateFIB("Fib/Wizard/CreateFMLElement/ConfigureInspectorForNewFlexoConcept.fib");
 	}
 
 	@Test
-	public void testConfigureModelSlots() {
-		validateFIB("Fib/Wizard/CreateFMLElement/ConfigureModelSlots.fib");
-	}
-
-	@Test
 	public void testConfigurePropertiesForNewFlexoConcept() {
 		validateFIB("Fib/Wizard/CreateFMLElement/ConfigurePropertiesForNewFlexoConcept.fib");
-	}
-
-	@Test
-	public void testConfigureTypeAwareModelSlot() {
-		validateFIB("Fib/Wizard/CreateFMLElement/ConfigureTypeAwareModelSlot.fib");
-	}
-
-	@Test
-	public void testConfigureVirtualModelModelSlot() {
-		validateFIB("Fib/Wizard/CreateFMLElement/ConfigureVirtualModelModelSlot.fib");
 	}
 
 	@Test
@@ -126,6 +106,11 @@ public class TestFMLWizardFibs extends GenericFIBTestCase {
 	}
 
 	@Test
+	public void testDescribeFlexoEvent() {
+		validateFIB("Fib/Wizard/CreateFMLElement/DescribeFlexoEvent.fib");
+	}
+
+	@Test
 	public void testDescribeGenericBehaviourParameter() {
 		validateFIB("Fib/Wizard/CreateFMLElement/DescribeGenericBehaviourParameter.fib");
 	}
@@ -152,7 +137,7 @@ public class TestFMLWizardFibs extends GenericFIBTestCase {
 
 	@Test
 	public void testDescribeModelSlot() {
-		validateFIB("Fib/Wizard/CreateFMLElement/DescribeUseDeclaration.fib");
+		validateFIB("Fib/Wizard/CreateFMLElement/DescribeModelSlot.fib");
 	}
 
 	@Test
@@ -176,6 +161,11 @@ public class TestFMLWizardFibs extends GenericFIBTestCase {
 	}
 
 	@Test
+	public void testDescribeUseDeclaration() {
+		validateFIB("Fib/Wizard/CreateFMLElement/DescribeUseDeclaration.fib");
+	}
+
+	@Test
 	public void testDescribeVirtualModel() {
 		validateFIB("Fib/Wizard/CreateFMLElement/DescribeVirtualModel.fib");
 	}
@@ -188,6 +178,11 @@ public class TestFMLWizardFibs extends GenericFIBTestCase {
 	@Test
 	public void testDescribeNewParentConcepts() {
 		validateFIB("Fib/Wizard/FMLAction/DescribeNewParentConcepts.fib");
+	}
+
+	@Test
+	public void testPropertyEntryPanel() {
+		validateFIB("Fib/Wizard/PropertyEntryPanel.fib");
 	}
 
 }
