@@ -117,7 +117,19 @@ public class FMLValidationReport extends ValidationReport {
 		if (object == virtualModel) {
 			return this;
 		}
-		return embeddedValidationReports.get(object);
+		ValidationReport returned = embeddedValidationReports.get(object);
+		if (returned == null) {
+			if ((object instanceof FlexoConcept || object instanceof FlexoProperty || object instanceof FlexoBehaviour
+					|| object instanceof FlexoConceptInspector) && object.getDeclaringVirtualModel() == virtualModel) {
+				try {
+					returned = new ValidationReport(getValidationModel(), object);
+					embeddedValidationReports.put(object, returned);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return returned;
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -126,23 +138,11 @@ public class FMLValidationReport extends ValidationReport {
 		if (object instanceof FlexoFacet) {
 			return Collections.emptyList();
 		}
-		if (object instanceof VirtualModel && getValidationReport((VirtualModel) object) != null) {
-			return (Collection) getValidationReport((VirtualModel) object).getFilteredIssues();
+		if ((object instanceof FlexoConcept || object instanceof FlexoProperty || object instanceof FlexoBehaviour
+				|| object instanceof FlexoConceptInspector) && ((FMLObject) object).getDeclaringVirtualModel() == virtualModel) {
+			return (Collection) getValidationReport((FMLObject) object).getFilteredIssues();
 		}
-		if (object instanceof FlexoConcept && getValidationReport((FlexoConcept) object) != null) {
-			return (Collection) getValidationReport((FlexoConcept) object).getFilteredIssues();
-		}
-		if (object instanceof FlexoProperty && getValidationReport((FlexoProperty) object) != null) {
-			return (Collection) getValidationReport((FlexoProperty) object).getFilteredIssues();
-		}
-		if (object instanceof FlexoBehaviour && getValidationReport((FlexoBehaviour) object) != null) {
-			return (Collection) getValidationReport((FlexoBehaviour) object).getFilteredIssues();
-		}
-		if (object instanceof FlexoConceptInspector && getValidationReport((FlexoConceptInspector) object) != null) {
-			return (Collection) getValidationReport((FlexoConceptInspector) object).getFilteredIssues();
-		}
-		else if (object instanceof FlexoConceptObject && getValidationReport(((FlexoConceptObject) object).getFlexoConcept()) != null
-				&& getValidationReport(((FlexoConceptObject) object).getFlexoConcept()) != this) {
+		else if (object instanceof FlexoConceptObject && getValidationReport(((FlexoConceptObject) object).getFlexoConcept()) != this) {
 			return getValidationReport(((FlexoConceptObject) object).getFlexoConcept()).issuesRegarding(object);
 		}
 
@@ -180,19 +180,8 @@ public class FMLValidationReport extends ValidationReport {
 		if (object instanceof FlexoFacet) {
 			return Collections.emptyList();
 		}
-		if (object instanceof VirtualModel && getValidationReport(object) != null) {
-			return getValidationReport(object).getErrors();
-		}
-		if (object instanceof FlexoConcept && getValidationReport(object) != null) {
-			return getValidationReport(object).getErrors();
-		}
-		if (object instanceof FlexoProperty && getValidationReport(object) != null) {
-			return getValidationReport(object).getErrors();
-		}
-		if (object instanceof FlexoBehaviour && getValidationReport(object) != null) {
-			return getValidationReport(object).getErrors();
-		}
-		if (object instanceof FlexoConceptInspector && getValidationReport(object) != null) {
+		if ((object instanceof FlexoConcept || object instanceof FlexoProperty || object instanceof FlexoBehaviour
+				|| object instanceof FlexoConceptInspector) && object.getDeclaringVirtualModel() == virtualModel) {
 			return getValidationReport(object).getErrors();
 		}
 		else if (object instanceof FlexoConceptObject) {
@@ -209,19 +198,8 @@ public class FMLValidationReport extends ValidationReport {
 		if (object instanceof FlexoFacet) {
 			return Collections.emptyList();
 		}
-		if (object instanceof VirtualModel && getValidationReport(object) != null) {
-			return getValidationReport(object).getWarnings();
-		}
-		if (object instanceof FlexoConcept && getValidationReport(object) != null) {
-			return getValidationReport(object).getWarnings();
-		}
-		if (object instanceof FlexoProperty && getValidationReport(object) != null) {
-			return getValidationReport(object).getWarnings();
-		}
-		if (object instanceof FlexoBehaviour && getValidationReport(object) != null) {
-			return getValidationReport(object).getWarnings();
-		}
-		if (object instanceof FlexoConceptInspector && getValidationReport(object) != null) {
+		if ((object instanceof FlexoConcept || object instanceof FlexoProperty || object instanceof FlexoBehaviour
+				|| object instanceof FlexoConceptInspector) && object.getDeclaringVirtualModel() == virtualModel) {
 			return getValidationReport(object).getWarnings();
 		}
 		else if (object instanceof FlexoConceptObject && getValidationReport(((FlexoConceptObject) object).getFlexoConcept()) != null) {
@@ -236,19 +214,8 @@ public class FMLValidationReport extends ValidationReport {
 		if (object instanceof FlexoFacet) {
 			return Collections.emptyList();
 		}
-		if (object instanceof VirtualModel && getValidationReport(object) != null) {
-			return getValidationReport(object).getInfoIssues();
-		}
-		if (object instanceof FlexoConcept && getValidationReport(object) != null) {
-			return getValidationReport(object).getInfoIssues();
-		}
-		if (object instanceof FlexoProperty && getValidationReport(object) != null) {
-			return getValidationReport(object).getInfoIssues();
-		}
-		if (object instanceof FlexoBehaviour && getValidationReport(object) != null) {
-			return getValidationReport(object).getInfoIssues();
-		}
-		if (object instanceof FlexoConceptInspector && getValidationReport(object) != null) {
+		if ((object instanceof FlexoConcept || object instanceof FlexoProperty || object instanceof FlexoBehaviour
+				|| object instanceof FlexoConceptInspector) && object.getDeclaringVirtualModel() == virtualModel) {
 			return getValidationReport(object).getInfoIssues();
 		}
 		else if (object instanceof FlexoConceptObject && getValidationReport(((FlexoConceptObject) object).getFlexoConcept()) != null) {
