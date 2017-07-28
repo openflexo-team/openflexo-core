@@ -35,6 +35,7 @@ import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.resource.FileIODelegate.WillRenameFileOnDiskNotification;
+import org.openflexo.foundation.resource.FileSystemBasedResourceCenter;
 import org.openflexo.foundation.resource.FlexoIODelegate;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.PamelaResourceFactory;
@@ -42,9 +43,11 @@ import org.openflexo.foundation.resource.RepositoryFolder;
 import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.technologyadapter.TechnologyContextManager;
 import org.openflexo.model.exceptions.ModelDefinitionException;
+import org.openflexo.toolbox.FileSystemMetaDataManager;
 import org.openflexo.toolbox.FileUtils;
 import org.openflexo.toolbox.FlexoVersion;
 import org.openflexo.toolbox.StringUtils;
+import org.openflexo.xml.XMLElementInfo;
 import org.openflexo.xml.XMLRootElementInfo;
 
 /**
@@ -421,9 +424,43 @@ public class VirtualModelResourceFactory
 		public String version;
 		public String name;
 		public String modelVersion;
+		public String requiredModelSlotList;
+
+		VirtualModelInfo() {
+		}
+
+		VirtualModelInfo(String uri, String version, String name, String modelVersion, String requiredModelSlotList) {
+			super();
+			this.uri = uri;
+			this.version = version;
+			this.name = name;
+			this.modelVersion = modelVersion;
+			this.requiredModelSlotList = requiredModelSlotList;
+		}
 	}
 
 	private <I> VirtualModelInfo findVirtualModelInfo(VirtualModelResource resource, FlexoResourceCenter<I> resourceCenter) {
+
+		if (resourceCenter instanceof FileSystemBasedResourceCenter) {
+			FileSystemMetaDataManager metaDataManager = ((FileSystemBasedResourceCenter) resourceCenter).getMetaDataManager();
+			File file = (File) resource.getIODelegate().getSerializationArtefact();
+			if (file.lastModified() < metaDataManager.metaDataLastModified(file)) {
+				// OK, in this case the metadata file is there and more recent than .fml.xml file
+				// Attempt to retrieve metadata from cache
+				String uri = metaDataManager.getProperty("uri", file);
+				String name = metaDataManager.getProperty("name", file);
+				String version = metaDataManager.getProperty("version", file);
+				String modelVersion = metaDataManager.getProperty("modelVersion", file);
+				String requiredModelSlotList = metaDataManager.getProperty("requiredModelSlotList", file);
+				if (uri != null && name != null && version != null && modelVersion != null && requiredModelSlotList != null) {
+					// Metadata are present, take it from cache
+					return new VirtualModelInfo(uri, version, name, modelVersion, requiredModelSlotList);
+				}
+			}
+			else {
+				// No way, metadata are either not present or older than file version, we should parse XML file, continuing...
+			}
+		}
 
 		VirtualModelInfo returned = new VirtualModelInfo();
 		XMLRootElementInfo xmlRootElementInfo = resourceCenter
@@ -436,8 +473,6 @@ public class VirtualModelResourceFactory
 			returned.name = xmlRootElementInfo.getAttribute("name");
 			returned.version = xmlRootElementInfo.getAttribute("version");
 			returned.modelVersion = xmlRootElementInfo.getAttribute("modelVersion");
-
-			System.out.println("Et hop on a les UseModelSlotDeclaration suivants: " + xmlRootElementInfo.getElements());
 
 			if (StringUtils.isEmpty(returned.name)) {
 				if (StringUtils.isNotEmpty(returned.uri)) {
@@ -453,6 +488,27 @@ public class VirtualModelResourceFactory
 				}
 			}
 
+			String requiredModelSlotList = "";
+			boolean isFirst = true;
+			for (XMLElementInfo elInfo : xmlRootElementInfo.getElements()) {
+				requiredModelSlotList = requiredModelSlotList + (isFirst ? "" : ",") + elInfo.getAttribute("modelSlotClass");
+				isFirst = false;
+			}
+
+			returned.requiredModelSlotList = requiredModelSlotList;
+
+			if (resourceCenter instanceof FileSystemBasedResourceCenter) {
+				// Save metadata !!!
+				FileSystemMetaDataManager metaDataManager = ((FileSystemBasedResourceCenter) resourceCenter).getMetaDataManager();
+				File file = (File) resource.getIODelegate().getSerializationArtefact();
+
+				metaDataManager.setProperty("uri", returned.uri, file, false);
+				metaDataManager.setProperty("name", returned.name, file, false);
+				metaDataManager.setProperty("version", returned.version, file, false);
+				metaDataManager.setProperty("modelVersion", returned.modelVersion, file, false);
+				metaDataManager.setProperty("requiredModelSlotList", returned.requiredModelSlotList, file, false);
+				metaDataManager.saveMetaDataProperties(file);
+			}
 		}
 		return returned;
 	}
