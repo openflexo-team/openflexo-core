@@ -544,7 +544,7 @@ public abstract class FileSystemBasedResourceCenter extends ResourceRepository<F
 	}
 
 	protected boolean isToBeIgnored(File f) {
-		return f.getName().endsWith("~");
+		return f.getName().endsWith("~") || f.getName().equals(".metadata");
 	}
 
 	@Override
@@ -736,7 +736,7 @@ public abstract class FileSystemBasedResourceCenter extends ResourceRepository<F
 
 	@Override
 	public void setDefaultBaseURI(String defaultBaseURI) {
-		fsMetaDataManager.setProperty(DEFAULT_BASE_URI, defaultBaseURI, getDirectory());
+		fsMetaDataManager.setProperty(DEFAULT_BASE_URI, defaultBaseURI, getDirectory(), true);
 	}
 
 	/**
@@ -1007,6 +1007,10 @@ public abstract class FileSystemBasedResourceCenter extends ResourceRepository<F
 		else {
 			return null;
 		}
+	}
+
+	public FileSystemMetaDataManager getMetaDataManager() {
+		return fsMetaDataManager;
 	}
 
 	@ModelEntity
