@@ -47,6 +47,7 @@ import org.openflexo.components.wizard.Wizard;
 import org.openflexo.components.wizard.WizardDialog;
 import org.openflexo.foundation.action.FlexoActionFinalizer;
 import org.openflexo.foundation.action.FlexoActionInitializer;
+import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FlexoConceptObject;
 import org.openflexo.foundation.fml.action.CreateFlexoBehaviour;
@@ -61,6 +62,12 @@ public class CreateFlexoBehaviourInitializer extends ActionInitializer<CreateFle
 
 	public CreateFlexoBehaviourInitializer(ControllerActionInitializer actionInitializer) {
 		super(CreateFlexoBehaviour.actionType, actionInitializer);
+		actionInitializer.registerInitializer(CreateFlexoBehaviour.createCreationSchemeType, this);
+		actionInitializer.registerInitializer(CreateFlexoBehaviour.createActionSchemeType, this);
+		actionInitializer.registerInitializer(CreateFlexoBehaviour.createDeletionSchemeType, this);
+		actionInitializer.registerInitializer(CreateFlexoBehaviour.createEventListenerType, this);
+		actionInitializer.registerInitializer(CreateFlexoBehaviour.createSynchronizationSchemeType, this);
+		actionInitializer.registerInitializer(CreateFlexoBehaviour.createCloningSchemeType, this);
 	}
 
 	@Override
@@ -93,7 +100,25 @@ public class CreateFlexoBehaviourInitializer extends ActionInitializer<CreateFle
 	}
 
 	@Override
-	protected Icon getEnabledIcon() {
+	protected Icon getEnabledIcon(FlexoActionType actionType) {
+		if (actionType == CreateFlexoBehaviour.createActionSchemeType) {
+			return FMLIconLibrary.ACTION_SCHEME_ICON;
+		}
+		if (actionType == CreateFlexoBehaviour.createCreationSchemeType) {
+			return FMLIconLibrary.CREATION_SCHEME_ICON;
+		}
+		if (actionType == CreateFlexoBehaviour.createDeletionSchemeType) {
+			return FMLIconLibrary.DELETION_SCHEME_ICON;
+		}
+		if (actionType == CreateFlexoBehaviour.createEventListenerType) {
+			return FMLIconLibrary.EVENT_LISTENER_ICON;
+		}
+		if (actionType == CreateFlexoBehaviour.createSynchronizationSchemeType) {
+			return FMLIconLibrary.SYNCHRONIZATION_SCHEME_ICON;
+		}
+		if (actionType == CreateFlexoBehaviour.createCloningSchemeType) {
+			return FMLIconLibrary.CLONING_SCHEME_ICON;
+		}
 		return FMLIconLibrary.FLEXO_CONCEPT_ACTION_ICON;
 	}
 

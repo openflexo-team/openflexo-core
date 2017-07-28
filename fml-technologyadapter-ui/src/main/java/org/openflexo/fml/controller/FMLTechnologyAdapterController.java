@@ -232,6 +232,7 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 
 		FlexoActionType.newVirtualModelMenu.setSmallIcon(FMLIconLibrary.VIRTUAL_MODEL_ICON);
 		FlexoActionType.newPropertyMenu.setSmallIcon(FMLIconLibrary.FLEXO_ROLE_ICON);
+		FlexoActionType.newBehaviourMenu.setSmallIcon(FMLIconLibrary.FLEXO_BEHAVIOUR_ICON);
 	}
 
 	@Override
