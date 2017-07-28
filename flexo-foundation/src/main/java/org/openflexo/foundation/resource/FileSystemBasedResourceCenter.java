@@ -912,11 +912,17 @@ public abstract class FileSystemBasedResourceCenter extends ResourceRepository<F
 
 	@Override
 	public XMLRootElementInfo getXMLRootElementInfo(File serializationArtefact) {
+		return getXMLRootElementInfo(serializationArtefact, false, null);
+	}
+
+	@Override
+	public XMLRootElementInfo getXMLRootElementInfo(File serializationArtefact, boolean parseFirstLevelElements,
+			String firstLevelElementName) {
 		if (!serializationArtefact.exists()) {
 			// logger.warning("Could not extract XMLRootElementInfo from a non existant file: " + serializationArtefact);
 			return null;
 		}
-		XMLRootElementReader reader = new XMLRootElementReader();
+		XMLRootElementReader reader = new XMLRootElementReader(parseFirstLevelElements, firstLevelElementName);
 		try {
 			return reader.readRootElement(serializationArtefact);
 		} catch (IOException e) {

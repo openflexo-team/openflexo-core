@@ -213,7 +213,7 @@ public class VirtualModelResourceFactory
 
 		returned.initName(baseName);
 
-		VirtualModelInfo vpi = findViewPointInfo(returned, resourceCenter);
+		VirtualModelInfo vpi = findVirtualModelInfo(returned, resourceCenter);
 		if (vpi != null) {
 			returned.setURI(vpi.uri);
 			if (StringUtils.isNotEmpty(vpi.version)) {
@@ -399,7 +399,7 @@ public class VirtualModelResourceFactory
 			if (isValidArtefact(child, resourceCenter)) {
 				I xmlFile = resourceCenter.getEntry(childName + ".xml", child);
 				if (resourceCenter.exists(xmlFile)) {
-					XMLRootElementInfo result = resourceCenter.getXMLRootElementInfo(xmlFile);
+					XMLRootElementInfo result = resourceCenter.getXMLRootElementInfo(xmlFile, true, "UseModelSlotDeclaration");
 					if (result != null && result.getName().equals("VirtualModel")) {
 						try {
 							VirtualModelResource childVirtualModelResource = retrieveContainedVirtualModelResource(child,
@@ -423,11 +423,11 @@ public class VirtualModelResourceFactory
 		public String modelVersion;
 	}
 
-	private <I> VirtualModelInfo findViewPointInfo(VirtualModelResource resource, FlexoResourceCenter<I> resourceCenter) {
+	private <I> VirtualModelInfo findVirtualModelInfo(VirtualModelResource resource, FlexoResourceCenter<I> resourceCenter) {
 
 		VirtualModelInfo returned = new VirtualModelInfo();
 		XMLRootElementInfo xmlRootElementInfo = resourceCenter
-				.getXMLRootElementInfo((I) resource.getIODelegate().getSerializationArtefact());
+				.getXMLRootElementInfo((I) resource.getIODelegate().getSerializationArtefact(), true, "UseModelSlotDeclaration");
 		if (xmlRootElementInfo == null) {
 			return null;
 		}
@@ -436,6 +436,8 @@ public class VirtualModelResourceFactory
 			returned.name = xmlRootElementInfo.getAttribute("name");
 			returned.version = xmlRootElementInfo.getAttribute("version");
 			returned.modelVersion = xmlRootElementInfo.getAttribute("modelVersion");
+
+			System.out.println("Et hop on a les UseModelSlotDeclaration suivants: " + xmlRootElementInfo.getElements());
 
 			if (StringUtils.isEmpty(returned.name)) {
 				if (StringUtils.isNotEmpty(returned.uri)) {

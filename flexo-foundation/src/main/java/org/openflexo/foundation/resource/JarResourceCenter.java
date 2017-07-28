@@ -645,7 +645,13 @@ public class JarResourceCenter extends ResourceRepository<FlexoResource<?>, InJa
 
 	@Override
 	public XMLRootElementInfo getXMLRootElementInfo(InJarResourceImpl serializationArtefact) {
-		XMLRootElementReader reader = new XMLRootElementReader();
+		return getXMLRootElementInfo(serializationArtefact, false, null);
+	}
+
+	@Override
+	public XMLRootElementInfo getXMLRootElementInfo(InJarResourceImpl serializationArtefact, boolean parseFirstLevelElements,
+			String firstLevelElementName) {
+		XMLRootElementReader reader = new XMLRootElementReader(parseFirstLevelElements, firstLevelElementName);
 		try {
 			return reader.readRootElement(serializationArtefact);
 		} catch (IOException e) {

@@ -52,6 +52,7 @@ import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.converter.FlexoObjectReferenceConverter;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelRepository;
+import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceRepository;
 import org.openflexo.foundation.resource.FileSystemBasedResourceCenter.FSBasedResourceCenterEntry;
 import org.openflexo.foundation.resource.JarResourceCenter.JarResourceCenterEntry;
@@ -475,6 +476,14 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, FlexoObject, Refere
 	 * @return
 	 */
 	XMLRootElementInfo getXMLRootElementInfo(I serializationArtefact);
+
+	/**
+	 * Return XMLRootElementInfo asserting serialization artefact encodes a XML contents
+	 * 
+	 * @param serializationArtefact
+	 * @return
+	 */
+	XMLRootElementInfo getXMLRootElementInfo(I serializationArtefact, boolean parseFirstLevelElements, String firstLevelElementName);
 
 	/**
 	 * Return properties stored in supplied directory<br>
