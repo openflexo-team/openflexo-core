@@ -106,8 +106,6 @@ import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.foundation.technologyadapter.UseModelSlotDeclaration;
-import org.openflexo.model.ModelContext;
-import org.openflexo.model.ModelContextLibrary;
 import org.openflexo.model.converter.DataBindingConverter;
 import org.openflexo.model.converter.FlexoVersionConverter;
 import org.openflexo.model.converter.RelativePathResourceConverter;
@@ -147,7 +145,7 @@ public class FMLModelFactory extends FGEModelFactoryImpl implements PamelaResour
 	public FMLModelFactory(VirtualModelResource virtualModelResource, FlexoServiceManager serviceManager) throws ModelDefinitionException {
 
 		// super(ModelContextLibrary.getCompoundModelContext(retrieveTechnologySpecificClasses(serviceManager.getTechnologyAdapterService())));
-		super(retrieveTechnologySpecificClasses(serviceManager.getTechnologyAdapterService()));
+		super(retrieveTechnologySpecificClasses(virtualModelResource.getUsedModelSlots()));
 		this.serviceManager = serviceManager;
 		TechnologyAdapterService taService = serviceManager.getTechnologyAdapterService();
 		setEditingContext(serviceManager.getEditingContext());
@@ -200,7 +198,7 @@ public class FMLModelFactory extends FGEModelFactoryImpl implements PamelaResour
 
 	/**
 	 * Iterate on all defined {@link TechnologyAdapter} to extract classes to expose being involved in technology adapter as VirtualModel
-	 * parts, and return a newly created ModelContext dedicated to {@link VirtualModel} manipulations
+	 * parts, and return a newly created list of classes dedicated to {@link VirtualModel} manipulations
 	 * 
 	 * @param taService
 	 * @return
@@ -209,52 +207,74 @@ public class FMLModelFactory extends FGEModelFactoryImpl implements PamelaResour
 	public static List<Class<?>> retrieveTechnologySpecificClasses(TechnologyAdapterService taService) throws ModelDefinitionException {
 		List<Class<?>> classes = new ArrayList<Class<?>>();
 		classes.add(VirtualModel.class);
-		/*classes.add(FlexoConceptStructuralFacet.class);
-		classes.add(FlexoConceptBehaviouralFacet.class);
-		classes.add(FlexoBehaviourParameters.class);*/
 		for (TechnologyAdapter ta : taService.getTechnologyAdapters()) {
-			for (Class<?> modelSlotClass : new ArrayList<>(ta.getAvailableModelSlotTypes())) {
-				classes.add(modelSlotClass);
-				DeclareFlexoRoles prDeclarations = modelSlotClass.getAnnotation(DeclareFlexoRoles.class);
-				if (prDeclarations != null) {
-					for (Class<? extends FlexoRole> roleClass : prDeclarations.value()) {
-						classes.add(roleClass);
-					}
-				}
-				DeclareFlexoBehaviours fbDeclarations = modelSlotClass.getAnnotation(DeclareFlexoBehaviours.class);
-				if (fbDeclarations != null) {
-					for (Class<? extends FlexoBehaviour> behaviourClass : fbDeclarations.value()) {
-						classes.add(behaviourClass);
-					}
-				}
-				DeclareFlexoBehaviourParameters fbpDeclarations = modelSlotClass.getAnnotation(DeclareFlexoBehaviourParameters.class);
-				if (fbpDeclarations != null) {
-					for (Class<? extends FlexoBehaviourParameter> behaviourParameterClass : fbpDeclarations.value()) {
-						classes.add(behaviourParameterClass);
-					}
-				}
-				DeclareEditionActions eaDeclarations = modelSlotClass.getAnnotation(DeclareEditionActions.class);
-				if (eaDeclarations != null) {
-					for (Class<? extends EditionAction> editionActionClass : eaDeclarations.value()) {
-						classes.add(editionActionClass);
-					}
-				}
-				DeclareFetchRequests frDeclarations = modelSlotClass.getAnnotation(DeclareFetchRequests.class);
-				if (frDeclarations != null) {
-					for (Class<? extends FetchRequest> fetchRequestClass : frDeclarations.value()) {
-						classes.add(fetchRequestClass);
-					}
-				}
-				DeclareInspectorEntries ieDeclarations = modelSlotClass.getAnnotation(DeclareInspectorEntries.class);
-				if (ieDeclarations != null) {
-					for (Class<? extends InspectorEntry> entryClass : ieDeclarations.value()) {
-						classes.add(entryClass);
-					}
-				}
+			for (Class<? extends ModelSlot<?>> modelSlotClass : new ArrayList<>(ta.getAvailableModelSlotTypes())) {
+				retrieveTechnologySpecificClasses(modelSlotClass, classes);
 			}
 		}
 
 		return classes;
+	}
+
+	/**
+	 * Iterate on all defined {@link TechnologyAdapter} to extract classes to expose being involved for a list of used model slots, and
+	 * return a newly created list of classes dedicated to {@link VirtualModel} manipulations
+	 * 
+	 * @param taService
+	 * @return
+	 * @throws ModelDefinitionException
+	 */
+	public static List<Class<?>> retrieveTechnologySpecificClasses(List<Class<? extends ModelSlot<?>>> usedModelSlots)
+			throws ModelDefinitionException {
+		List<Class<?>> classes = new ArrayList<Class<?>>();
+		classes.add(VirtualModel.class);
+		for (Class<? extends ModelSlot<?>> modelSlotClass : usedModelSlots) {
+			System.out.println("> " + modelSlotClass);
+			retrieveTechnologySpecificClasses(modelSlotClass, classes);
+		}
+
+		return classes;
+	}
+
+	private static void retrieveTechnologySpecificClasses(Class<? extends ModelSlot<?>> modelSlotClass, List<Class<?>> classes)
+			throws ModelDefinitionException {
+		classes.add(modelSlotClass);
+		DeclareFlexoRoles prDeclarations = modelSlotClass.getAnnotation(DeclareFlexoRoles.class);
+		if (prDeclarations != null) {
+			for (Class<? extends FlexoRole> roleClass : prDeclarations.value()) {
+				classes.add(roleClass);
+			}
+		}
+		DeclareFlexoBehaviours fbDeclarations = modelSlotClass.getAnnotation(DeclareFlexoBehaviours.class);
+		if (fbDeclarations != null) {
+			for (Class<? extends FlexoBehaviour> behaviourClass : fbDeclarations.value()) {
+				classes.add(behaviourClass);
+			}
+		}
+		DeclareFlexoBehaviourParameters fbpDeclarations = modelSlotClass.getAnnotation(DeclareFlexoBehaviourParameters.class);
+		if (fbpDeclarations != null) {
+			for (Class<? extends FlexoBehaviourParameter> behaviourParameterClass : fbpDeclarations.value()) {
+				classes.add(behaviourParameterClass);
+			}
+		}
+		DeclareEditionActions eaDeclarations = modelSlotClass.getAnnotation(DeclareEditionActions.class);
+		if (eaDeclarations != null) {
+			for (Class<? extends EditionAction> editionActionClass : eaDeclarations.value()) {
+				classes.add(editionActionClass);
+			}
+		}
+		DeclareFetchRequests frDeclarations = modelSlotClass.getAnnotation(DeclareFetchRequests.class);
+		if (frDeclarations != null) {
+			for (Class<? extends FetchRequest> fetchRequestClass : frDeclarations.value()) {
+				classes.add(fetchRequestClass);
+			}
+		}
+		DeclareInspectorEntries ieDeclarations = modelSlotClass.getAnnotation(DeclareInspectorEntries.class);
+		if (ieDeclarations != null) {
+			for (Class<? extends InspectorEntry> entryClass : ieDeclarations.value()) {
+				classes.add(entryClass);
+			}
+		}
 	}
 
 	/**
@@ -265,10 +285,10 @@ public class FMLModelFactory extends FGEModelFactoryImpl implements PamelaResour
 	 * @return
 	 * @throws ModelDefinitionException
 	 */
-	private static ModelContext computeModelContext(TechnologyAdapterService taService) throws ModelDefinitionException {
+	/*private static ModelContext computeModelContext(TechnologyAdapterService taService) throws ModelDefinitionException {
 		List<Class<?>> classes = retrieveTechnologySpecificClasses(taService);
 		return ModelContextLibrary.getCompoundModelContext(classes.toArray(new Class<?>[classes.size()]));
-	}
+	}*/
 
 	public VirtualModel newVirtualModel() {
 		return newInstance(VirtualModel.class);

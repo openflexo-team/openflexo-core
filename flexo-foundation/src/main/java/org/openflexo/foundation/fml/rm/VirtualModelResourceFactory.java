@@ -231,6 +231,11 @@ public class VirtualModelResourceFactory
 			else {
 				returned.setModelVersion(CURRENT_FML_VERSION);
 			}
+			((VirtualModelResourceImpl) returned).setUsedModelSlots(vpi.requiredModelSlotList);
+			// We set a new factory because of required model slots
+			if (StringUtils.isNotEmpty(vpi.requiredModelSlotList)) {
+				returned.setFactory(makeResourceDataFactory(returned, technologyContextManager));
+			}
 		}
 		else {
 			logger.warning("Cannot retrieve info from " + serializationArtefact);

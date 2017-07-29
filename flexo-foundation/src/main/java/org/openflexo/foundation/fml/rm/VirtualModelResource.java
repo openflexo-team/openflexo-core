@@ -46,6 +46,7 @@ import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelLibrary;
 import org.openflexo.foundation.resource.DirectoryContainerResource;
 import org.openflexo.foundation.resource.PamelaResource;
+import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterResource;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -90,4 +91,12 @@ public interface VirtualModelResource extends PamelaResource<VirtualModel, FMLMo
 	@Setter(VIRTUAL_MODEL_LIBRARY)
 	public void setVirtualModelLibrary(VirtualModelLibrary virtualModelLibrary);
 
+	/**
+	 * Return {@link ModelSlot} classes used in this {@link VirtualModel} resource<br>
+	 * Note that this information is extracted from metadata or from reading XML file before effective parsing<br>
+	 * This information is used to determine which technology adapters have to be activated before {@link VirtualModel} is loaded
+	 * 
+	 * @return
+	 */
+	public List<Class<? extends ModelSlot<?>>> getUsedModelSlots();
 }

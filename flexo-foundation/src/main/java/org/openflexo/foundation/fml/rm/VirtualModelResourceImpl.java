@@ -41,7 +41,9 @@ package org.openflexo.foundation.fml.rm;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.StringTokenizer;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoException;
@@ -64,8 +66,9 @@ import org.openflexo.foundation.resource.PamelaResourceImpl;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.task.FlexoTask;
+import org.openflexo.foundation.technologyadapter.ModelSlot;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
-import org.openflexo.foundation.technologyadapter.UseModelSlotDeclaration;
 import org.openflexo.model.factory.AccessibleProxyObject;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
@@ -187,32 +190,60 @@ public abstract class VirtualModelResourceImpl extends PamelaResourceImpl<Virtua
 	 * Activate all required technologies, while exploring declared model slots
 	 */
 	protected void activateRequiredTechnologies() {
+
+		System.out.println("Juste avant de charger faudrait voir si on a pas a activer un TA ou un autre tout de meme...");
+		System.out.println("USED: " + getUsedModelSlots());
+
+		TechnologyAdapterService taService = getServiceManager().getTechnologyAdapterService();
+		List<TechnologyAdapter> requiredTAList = new ArrayList<>();
+		requiredTAList.add(taService.getTechnologyAdapter(FMLRTTechnologyAdapter.class));
+		for (Class<? extends ModelSlot<?>> msClass : getUsedModelSlots()) {
+			TechnologyAdapter requiredTA = taService.getTechnologyAdapterForModelSlot(msClass);
+			if (!requiredTAList.contains(requiredTA)) {
+				requiredTAList.add(requiredTA);
+			}
+		}
+
+		List<FlexoTask> waitingTasks = new ArrayList<>();
+		for (TechnologyAdapter requiredTA : requiredTAList) {
+			System.out.println("> On active " + requiredTA);
+			FlexoTask t = taService.activateTechnologyAdapter(requiredTA);
+			if (t != null) {
+				waitingTasks.add(t);
+			}
+		}
+
+		for (FlexoTask waitingTask : waitingTasks) {
+			getServiceManager().getTaskManager().waitTask(waitingTask);
+		}
+
+		/*
 		if (getLoadedResourceData() != null) {
 			TechnologyAdapterService taService = getServiceManager().getTechnologyAdapterService();
 			// FD unused FlexoTask activateFMLRT =
 			taService.activateTechnologyAdapter(taService.getTechnologyAdapter(FMLRTTechnologyAdapter.class));
-			/*if (activateFMLRT != null) {
-				getServiceManager().getTaskManager().waitTask(activateFMLRT);
-			}*/
-
+			//if (activateFMLRT != null) {
+			//	getServiceManager().getTaskManager().waitTask(activateFMLRT);
+			//}
+		
 			// System.out.println("Activate technologies for " + getLoadedResourceData());
-
+		
 			for (UseModelSlotDeclaration useDeclaration : getLoadedResourceData().getUseDeclarations()) {
 				FlexoTask activateTA = taService
 						.activateTechnologyAdapter(taService.getTechnologyAdapterForModelSlot(useDeclaration.getModelSlotClass()));
-				/*if (activateTA != null) {
-				getServiceManager().getTaskManager().waitTask(activateTA);
-				}*/
+				//if (activateTA != null) {
+				//getServiceManager().getTaskManager().waitTask(activateTA);
+				//}
 			}
-
-			/*for (ModelSlot<?> ms : getLoadedResourceData().getModelSlots()) {
+		
+			//for (ModelSlot<?> ms : getLoadedResourceData().getModelSlots()) {
 				// System.out.println("Activate " + ms.getModelSlotTechnologyAdapter());
-				FlexoTask activateTA = taService.activateTechnologyAdapter(ms.getModelSlotTechnologyAdapter());
-				if (activateTA != null) {
-					getServiceManager().getTaskManager().waitTask(activateTA);
-				}
-			}*/
-		}
+				//FlexoTask activateTA = taService.activateTechnologyAdapter(ms.getModelSlotTechnologyAdapter());
+				//if (activateTA != null) {
+				//	getServiceManager().getTaskManager().waitTask(activateTA);
+				//}
+			 */
+
 	}
 
 	// DEBUT de VirtualModelResource
@@ -250,6 +281,9 @@ public abstract class VirtualModelResourceImpl extends PamelaResourceImpl<Virtua
 
 		logger.info("*************** Loading " + this);
 
+		// Now we have to activate all required technologies
+		activateRequiredTechnologies();
+
 		VirtualModel returned = super.loadResourceData(progress);
 		// We notify a deserialization start on ViewPoint AND VirtualModel, to avoid addToVirtualModel() and setViewPoint() to notify
 		// UndoManager
@@ -269,9 +303,6 @@ public abstract class VirtualModelResourceImpl extends PamelaResourceImpl<Virtua
 		if (!containerWasDeserializing) {
 			getContainer().stopDeserializing();
 		}
-
-		// Now we have to activate all required technologies
-		activateRequiredTechnologies();
 
 		return returned;
 	}
@@ -358,4 +389,37 @@ public abstract class VirtualModelResourceImpl extends PamelaResourceImpl<Virtua
 		}
 	}
 
+	private List<Class<? extends ModelSlot<?>>> usedModelSlots = new ArrayList<>();
+
+	/**
+	 * Return {@link ModelSlot} classes used in this {@link VirtualModel} resource<br>
+	 * Note that this information is extracted from metadata or from reading XML file before effective parsing<br>
+	 * This information is used to determine which technology adapters have to be activated before {@link VirtualModel} is loaded
+	 * 
+	 * @return
+	 */
+	@Override
+	public List<Class<? extends ModelSlot<?>>> getUsedModelSlots() {
+		return usedModelSlots;
+	}
+
+	/**
+	 * Internally sets UsedModelSlots
+	 * 
+	 * @param usedModelSlotClasses
+	 */
+	protected void setUsedModelSlots(String usedModelSlotClasses) {
+		usedModelSlots.clear();
+		StringTokenizer st = new StringTokenizer(usedModelSlotClasses, ",");
+		while (st.hasMoreTokens()) {
+			String next = st.nextToken();
+			try {
+				usedModelSlots.add((Class<? extends ModelSlot<?>>) Class.forName(next));
+			} catch (ClassNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		System.out.println(">>>>>>>>> et hop: " + usedModelSlots);
+	}
 }
