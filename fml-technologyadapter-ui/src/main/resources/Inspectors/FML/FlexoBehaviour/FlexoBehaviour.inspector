@@ -228,15 +228,6 @@
 					constraints="flow(anchor=west;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=3;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=-5;padX=0;padY=0;weightX=0.0;weightY=0.0)"
 					numberType="IntegerType" />
 			</Panel>
-			<Label id="53" name="DescriptionLabel" index="10000" localize="true"
-				align="left"
-				constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)"
-				label="description" />
-			<TextArea id="54" verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED"
-				useScrollBar="true" columns="8" name="TextArea" data="data.description"
-				text="TextArea" index="10001" localize="false"
-				constraints="twocols(expandHorizontally=true;expandVertically=true;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)"
-				rows="3" validateOnReturn="true" horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED" />
 		</Tab>
 		<Tab id="55" verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED"
 			borderLeft="0" sizeAdjustment="OriginalSize" borderRight="0" border="empty"

@@ -93,16 +93,6 @@
 				<RemoveAction method="controller.deleteConstraint(data,selected)"
 					name="delete_constraint" />
 			</Table>
-			<Label manageDynamicModel="false" useScrollBar="false"
-				localize="true" align="left" index="10000"
-				constraints="twocols(expandHorizontally=true;expandVertically=false;location=left)"
-				label="description" readOnly="false" />
-			<TextArea verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED"
-				manageDynamicModel="false" useScrollBar="true" columns="8"
-				data="data.description" localize="false" index="10001"
-				constraints="twocols(expandHorizontally=true;expandVertically=true;location=right)"
-				rows="3" readOnly="false" validateOnReturn="true"
-				horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED" />
 
 		</Tab>
 	    <Tab title="Advanced" layout="twocols" titleFont="SansSerif,0,11"

@@ -16,16 +16,6 @@
 				constraints="twocols(expandHorizontally=true;expandVertically=false;index=1;location=right)"
 				name="EditionActionTypeTextField" readOnly="true" localize="true"
 				columns="10" />
-			<Label manageDynamicModel="false" useScrollBar="false"
-				localize="true" align="left" index="10000"
-				constraints="twocols(expandHorizontally=true;expandVertically=false;location=left)"
-				label="description" readOnly="false" name="DescriptionLabel" />
-			<TextArea verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED"
-				manageDynamicModel="false" useScrollBar="true" columns="8"
-				text="TextArea" localize="false" index="10001" data="data.description"
-				constraints="twocols(expandHorizontally=true;expandVertically=true;location=right)"
-				rows="3" readOnly="false" validateOnReturn="true"
-				horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED" name="Description" />
 		</Tab>
 	    <Tab title="Advanced" layout="twocols" titleFont="SansSerif,0,11"
 			darkLevel="0" index="2" font="SansSerif,0,11" useScrollBar="true"
