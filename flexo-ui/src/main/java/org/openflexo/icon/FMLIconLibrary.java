@@ -109,6 +109,9 @@ public class FMLIconLibrary extends IconLibrary {
 
 	private static final Logger logger = Logger.getLogger(FMLIconLibrary.class.getPackage().getName());
 
+	public static final ImageIconResource FML_BIG_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/FML/FML_64x64.png"));
+	public static final ImageIconResource FML_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/FML/FML_16x16.png"));
+
 	public static final ImageIconResource VIEWPOINT_LIBRARY_ICON = new ImageIconResource(
 			ResourceLocator.locateResource("Icons/Model/VPM/ViewPointLibrary.png"));
 
