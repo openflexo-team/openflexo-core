@@ -39,7 +39,8 @@
 
 package org.openflexo;
 
-import java.awt.*;
+import java.awt.Frame;
+import java.awt.Window;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -62,7 +63,11 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
-import javax.swing.*;
+
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
+
 import org.openflexo.application.FlexoApplication;
 import org.openflexo.components.RequestLoginDialog;
 import org.openflexo.components.SplashWindow;
@@ -89,6 +94,7 @@ import org.openflexo.utils.CancelException;
 import org.openflexo.utils.TooManyFailedAttemptException;
 import org.openflexo.view.FlexoFrame;
 import org.openflexo.view.controller.FlexoController;
+
 import sun.misc.Signal;
 import sun.misc.SignalHandler;
 
@@ -321,6 +327,9 @@ public class Flexo {
 	protected static void initFlexo(InteractiveApplicationContext applicationContext, SplashWindow splashWindow) {
 		if (ToolBox.getPLATFORM() == ToolBox.MACOS) {
 			System.setProperty("apple.laf.useScreenMenuBar", "true");
+			System.setProperty("apple.awt.graphics.UseQuartz", "true");
+			System.setProperty("apple.awt.rendering", "quality");
+			System.out.println("PROUT !!!!!");
 		}
 		initUILAF(applicationContext.getPresentationPreferences().getLookAndFeelAsString());
 		if (isDev) {
