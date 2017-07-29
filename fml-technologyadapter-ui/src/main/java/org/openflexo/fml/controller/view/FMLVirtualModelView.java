@@ -2,7 +2,7 @@
  * 
  * Copyright (c) 2014, Openflexo
  * 
- * This file is part of Flexo-ui, a component of the software infrastructure 
+ * This file is part of Fml-technologyadapter-ui, a component of the software infrastructure 
  * developed at Openflexo.
  * 
  * 
@@ -36,26 +36,28 @@
  * 
  */
 
-package org.openflexo.fml.controller;
+package org.openflexo.fml.controller.view;
 
+import org.openflexo.fml.controller.CommonFIB;
+import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.rm.Resource;
-import org.openflexo.rm.ResourceLocator;
+import org.openflexo.view.controller.FlexoController;
+import org.openflexo.view.controller.model.FlexoPerspective;
 
 /**
- * This class stores all common FIB references
+ * This is the module view representing a {@link VirtualModel}<br>
  * 
- * @author sylvain
+ * @author sguerin
  * 
  */
-public class CommonFIB {
+public class FMLVirtualModelView extends FlexoConceptView<VirtualModel> {
 
-	// Saving operations
-	public static Resource REVIEW_UNSAVED_DIALOG_FIB = ResourceLocator.locateResource("Fib/Dialog/ReviewUnsavedDialog.fib");
+	public FMLVirtualModelView(VirtualModel virtualModel, FlexoController controller, FlexoPerspective perspective) {
+		super(virtualModel, CommonFIB.FML_VIRTUAL_MODEL_VIEW_FIB, controller, perspective);
+	}
 
-	// General components
-	public static Resource FML_LOCALIZED_DICTIONARY_VIEW_FIB = ResourceLocator.locateResource("Fib/FML/FMLLocalizedDictionaryView.fib");
-	public static Resource STANDARD_FLEXO_CONCEPT_VIEW_FIB = ResourceLocator.locateResource("Fib/FML/StandardFlexoConceptView.fib");
-	public static Resource VIRTUAL_MODEL_VIEW_FIB = ResourceLocator.locateResource("Fib/FML/VirtualModelView.fib");
-	public static Resource FML_VIRTUAL_MODEL_VIEW_FIB = ResourceLocator.locateResource("Fib/FML/FMLVirtualModelView.fib");
+	public FMLVirtualModelView(VirtualModel virtualModel, Resource fibFile, FlexoController controller, FlexoPerspective perspective) {
+		super(virtualModel, fibFile, controller, perspective);
+	}
 
 }

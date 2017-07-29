@@ -38,6 +38,8 @@
 
 package org.openflexo.fml.rt.controller;
 
+import java.util.logging.Logger;
+
 import javax.swing.ImageIcon;
 
 import org.openflexo.components.widget.FIBTechnologyBrowser;
@@ -65,13 +67,14 @@ import org.openflexo.foundation.fml.editionaction.AddClassInstance;
 import org.openflexo.foundation.fml.editionaction.DeleteAction;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
+import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceRepository;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
-import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.AddVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.editionaction.SelectFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.SelectVirtualModelInstance;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.gina.utils.InspectorGroup;
 import org.openflexo.icon.FMLIconLibrary;
@@ -85,11 +88,35 @@ import org.openflexo.view.controller.FlexoController;
 import org.openflexo.view.controller.TechnologyAdapterController;
 import org.openflexo.view.controller.model.FlexoPerspective;
 
+/**
+ * Technology-specific controller provided by {@link FMLRTTechnologyAdapter}<br>
+ * 
+ * @author sylvain
+ *
+ */
 public class FMLRTTechnologyAdapterController extends TechnologyAdapterController<FMLRTTechnologyAdapter> {
+
+	static final Logger logger = Logger.getLogger(FlexoController.class.getPackage().getName());
 
 	@Override
 	public Class<FMLRTTechnologyAdapter> getTechnologyAdapterClass() {
 		return FMLRTTechnologyAdapter.class;
+	}
+
+	@Override
+	public void installTechnologyPerspectives(FlexoController controller, FIBTechnologyBrowser<FMLRTTechnologyAdapter> sharedBrowser) {
+		super.installTechnologyPerspectives(controller, sharedBrowser);
+		// Then we iterate on all technology adapters
+		for (TechnologyAdapter ta : getServiceManager().getTechnologyAdapterService().getTechnologyAdapters()) {
+			TechnologyAdapterController<?> tac = getServiceManager().getTechnologyAdapterControllerService()
+					.getTechnologyAdapterController(ta);
+			if (tac != null) {
+				tac.installFMLRTNatureSpecificPerspectives(controller);
+			}
+			else {
+				logger.warning("Could not load TechnologyAdapterController for " + ta);
+			}
+		}
 	}
 
 	/**

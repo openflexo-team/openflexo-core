@@ -488,23 +488,13 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 		return null;
 	}
 
-	private final Map<FlexoController, TechnologyPerspective<TA>> technologyPerspectives = new HashMap<>();
-
-	public Map<FlexoController, TechnologyPerspective<TA>> getTechnologyPerspectives() {
-		return technologyPerspectives;
+	public void installTechnologyPerspectives(FlexoController controller, FIBTechnologyBrowser<TA> sharedBrowser) {
+		controller.addToPerspectives(makeDefaultTechnologyPerspective(controller, sharedBrowser));
 	}
 
-	public TechnologyPerspective<TA> getTechnologyPerspective(FlexoController controller) {
-		TechnologyPerspective<TA> returned = technologyPerspectives.get(controller);
-		if (returned == null) {
-			returned = new TechnologyPerspective<>(getTechnologyAdapter(), controller);
-			technologyPerspectives.put(controller, returned);
-		}
-		return returned;
-	}
-
-	public void installTechnologyPerspective(FlexoController controller) {
-		controller.addToPerspectives(getTechnologyPerspective(controller));
+	protected TechnologyPerspective<TA> makeDefaultTechnologyPerspective(FlexoController controller,
+			FIBTechnologyBrowser<TA> sharedBrowser) {
+		return new TechnologyPerspective<>(getTechnologyAdapter(), controller, sharedBrowser);
 	}
 
 	/**
@@ -615,62 +605,6 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 					break;
 			}
 		}
-
-		// TODO check if needed
-		/*if (object instanceof FlexoConceptInstanceParameter) {
-			FIBCustom epiSelector = fibModelFactory.newFIBCustom();
-			epiSelector.setBindingFactory(object.getBindingFactory());
-			Class fciSelectorClass;
-			try {
-				fciSelectorClass = Class.forName("org.openflexo.fml.rt.controller.widget.FIBFlexoConceptInstanceSelector");
-				epiSelector.setComponentClass(fciSelectorClass);
-			} catch (ClassNotFoundException e) {
-				e.printStackTrace();
-			}
-			epiSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(epiSelector, new DataBinding<>("component.project"),
-					new DataBinding<>("data.editor.project"), true));
-			epiSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(epiSelector, new DataBinding<>("component.view"),
-					new DataBinding<>("data.virtualModelInstance.view"), true));
-		
-			epiSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(epiSelector,
-					new DataBinding<>("component.virtualModelInstance"),
-					new DataBinding<>("data." + ((FlexoConceptInstanceParameter) object).getVirtualModelInstance().toString()), true));
-		
-			// TODO: check but it seems that component.flexoConcept do not exist anymore
-			epiSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(epiSelector, new DataBinding<>("component.flexoConcept"),
-					new DataBinding<>("data.parametersDefinitions." + object.getName() + ".flexoConceptType"), true));
-			// extra informations.
-			epiSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(epiSelector, new DataBinding<>("component.virtualModel"),
-					new DataBinding<>("data.parametersDefinitions." + object.getName() + ".modelSlotVirtualModel"), true));
-			epiSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(epiSelector,
-					new DataBinding<>("component.viewPointLibrary"), new DataBinding<>("data.serviceManager.viewPointLibrary"), true));
-		
-			return epiSelector;
-		}*/
-
-		/*else if (object instanceof FlexoResourceParameter) {
-			FIBCustom resourceSelector = fibModelFactory.newFIBCustom();
-			resourceSelector.setBindingFactory(object.getBindingFactory());
-			Class resourceSelectorClass;
-			try {
-				resourceSelectorClass = Class.forName("org.openflexo.components.widget.FIBResourceSelector");
-				resourceSelector.setComponentClass(resourceSelectorClass);
-			} catch (ClassNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			resourceSelector.addToAssignments(
-					fibModelFactory.newFIBCustomAssignment(resourceSelector, new DataBinding<>("component.technologyAdapter"),
-							new DataBinding<>("data.parametersDefinitions." + object.getName() + ".resourceTechnologyAdapter"), true));
-			resourceSelector.addToAssignments(
-					fibModelFactory.newFIBCustomAssignment(resourceSelector, new DataBinding<>("component.resourceDataClass"),
-							new DataBinding<>("data.parametersDefinitions." + object.getName() + ".resourceDataType"), true));
-			resourceSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(resourceSelector,
-					new DataBinding<>("component.resourceManager"), new DataBinding<>("data.serviceManager.resourceManager"), true));
-		
-			return resourceSelector;
-		}*/
-
 		return null;
 	}
 
@@ -681,17 +615,6 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 	 */
 	public void appendSpecificFlexoBehaviourParameters(List<Class<? extends FlexoBehaviourParameter>> availableParameterTypes) {
 	}
-
-	/**
-	 * Hook allowing to register technology-specific types
-	 * 
-	 */
-	/*public void initTechnologySpecificTypeEditors(TechnologyAdapterService taService) {
-		for (Class<? extends CustomType> typeClass : taService.getCustomTypeFactories().keySet()) {
-			CustomTypeEditor editor = makeCustomTypeEditor(typeClass);
-			customTypeEditors.put(typeClass, editor);
-		}
-	}*/
 
 	protected CustomTypeEditor makeCustomTypeEditor(Class<? extends CustomType> typeClass) {
 		return null;

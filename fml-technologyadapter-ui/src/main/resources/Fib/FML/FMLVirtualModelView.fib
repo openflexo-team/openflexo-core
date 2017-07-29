@@ -1,0 +1,480 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Panel id="0" align="left" borderTop="10" borderTitle="Panel"
+	borderLeft="0" trackViewPortHeight="true" trackViewPortWidth="true"
+	borderBottom="0" border="empty" sizeAdjustment="OriginalSize"
+	titleFont="SansSerif,0,11" layout="border" borderRight="0"
+	controllerClassName="org.openflexo.fml.controller.FMLFIBController"
+	opaque="false" font="SansSerif,0,12" name="main">
+	<SplitPanel id="1" index="0"
+		constraints="border(anchor=center;fill=both;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=0;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=center;padX=0;padY=0;weightX=1.0;weightY=1.0)"
+		name="FIBSplitPanel">
+		<RowSplit id="2" name="RowSplit" weight="0.0">
+			<Leaf id="3" name="left" weight="0.30000001192092896" />
+			<Divider id="4" />
+			<Leaf id="5" name="right" weight="0.699999988079071" />
+		</RowSplit>
+		<Browser id="6" backgroundSelectionColor="9,80,208"
+			visibleRowCount="5" boundToSelectionManager="true"
+			backgroundNonSelectionColor="255,255,255" iteratorClassName="java.lang.Object"
+			textSelectionColor="255,255,255" backgroundSecondarySelectionColor="178,215,255"
+			showRootsHandle="true" showFooter="true" allowsDragAndDrop="true"
+			textNonSelectionColor="0,0,0" root="data" deepExploration="true"
+			selectionMode="DiscontiguousTreeSelection" rootVisible="true"
+			rowHeight="18" localize="true" manageDynamicModel="true"
+			rightClickAction="controller.rightClick(FlexoConceptBrowser.selected,event)"
+			doubleClickAction="controller.doubleClick(FlexoConceptBrowser.selected)"
+			clickAction="controller.singleClick(FlexoConceptBrowser.selected)"
+			index="0" constraints="split(index=0;location=north;splitIdentifier=left)"
+			name="FlexoConceptBrowser">
+			<BrowserElement id="7"
+				dataClassName="org.openflexo.foundation.fml.VirtualModel" icon="controller.iconForObject(virtualModel)"
+				label="virtualModel.name" editableLabel="virtualModel.name"
+				isEditable="false" name="virtualModel">
+				<Children id="8" data="virtualModel.inspector" name="inspector" />
+				<Children id="9" data="virtualModel.structuralFacet" name="structural" />
+				<Children id="10" data="virtualModel.behaviouralFacet"
+					name="behavioural" />
+				<Children id="11" data="virtualModel.innerConceptsFacet"
+					name="innerConcepts" />
+			</BrowserElement>
+			<BrowserElement id="12"
+				dataClassName="org.openflexo.foundation.technologyadapter.ModelSlot"
+				icon="controller.iconForObject(modelSlot)"
+				label="((((&quot;[ModelSlot] &quot; + modelSlot.name) + &quot; (&quot;) + modelSlot.cardinality.stringRepresentation) + &quot;)&quot;)"
+				editableLabel="modelSlot.name" isEditable="false" name="modelSlot">
+				<BrowserRemoveAction id="13"
+					method="controller.deleteFlexoConceptObject(selected)" name="remove_flexo_concept" />
+			</BrowserElement>
+			<BrowserElement id="14"
+				dataClassName="org.openflexo.foundation.fml.FlexoRole" icon="controller.iconForObject(flexoRole)"
+				label="(((flexoRole.name + &quot; (&quot;) + flexoRole.cardinality.stringRepresentation) + &quot;)&quot;)"
+				editableLabel="flexoRole.name" isEditable="false" name="flexoRole">
+				<BrowserRemoveAction id="15"
+					method="controller.deleteFlexoConceptObject(selected)" name="remove_flexo_concept" />
+			</BrowserElement>
+			<BrowserElement id="16"
+				dataClassName="org.openflexo.foundation.fml.AbstractProperty" icon="controller.iconForObject(flexoProperty)"
+				label="flexoProperty.name" editableLabel="flexoProperty.name"
+				isEditable="false" name="flexoProperty">
+				<BrowserRemoveAction id="17"
+					method="controller.deleteFlexoConceptObject(selected)" name="remove_flexo_concept" />
+			</BrowserElement>
+			<BrowserElement id="18"
+				dataClassName="org.openflexo.foundation.fml.ExpressionProperty"
+				icon="controller.iconForObject(flexoProperty)" label="flexoProperty.name"
+				editableLabel="flexoProperty.name" isEditable="false" name="flexoProperty">
+				<BrowserRemoveAction id="19"
+					method="controller.deleteFlexoConceptObject(selected)" name="remove_flexo_concept" />
+			</BrowserElement>
+			<BrowserElement id="20"
+				dataClassName="org.openflexo.foundation.fml.GetSetProperty" icon="controller.iconForObject(flexoProperty)"
+				label="flexoProperty.name" editableLabel="flexoProperty.name"
+				isEditable="false" name="flexoProperty">
+				<Children id="21"
+					data="flexoProperty.getControlGraph.flattenedSequence" name="getChildren" />
+				<Children id="22"
+					data="flexoProperty.setControlGraph.flattenedSequence" name="setChildren" />
+				<BrowserAddAction id="23"
+					method="controller.createEditionActionInGetControlGraph(selected)"
+					name="add_action_in_GET_control_graph" />
+				<BrowserAddAction id="24"
+					method="controller.createEditionActionInSetControlGraph(selected)"
+					name="add_action_in_SET_control_graph" />
+				<BrowserRemoveAction id="25"
+					method="controller.deleteFlexoConceptObject(selected)" name="remove_flexo_concept" />
+			</BrowserElement>
+			<BrowserElement id="26"
+				dataClassName="org.openflexo.foundation.fml.FlexoBehaviour" icon="controller.iconForObject(flexoBehaviour)"
+				label="flexoBehaviour.signature" editableLabel="flexoBehaviour.name"
+				isEditable="false" name="flexoBehaviour">
+				<Children id="27"
+					data="flexoBehaviour.controlGraph.flattenedSequence" name="children" />
+				<BrowserAddAction id="28"
+					method="controller.createEditionAction(selected.controlGraph)"
+					name="add_action" />
+				<BrowserRemoveAction id="29"
+					method="controller.deleteFlexoConceptObject(selected)" name="remove_flexo_concept" />
+			</BrowserElement>
+			<BrowserElement id="30"
+				dataClassName="org.openflexo.foundation.fml.controlgraph.IterationAction"
+				icon="controller.iconForObject(iterationAction)" label="iterationAction.stringRepresentation"
+				isEditable="false" name="iterationAction">
+				<DragOperation id="31"
+					isAvailable="controller.canMoveControlGraph(dragged,target)"
+					targetElementName="editionAction" action="controller.moveControlGraph(dragged,target)"
+					name="drag_operation" />
+				<Children id="32"
+					data="iterationAction.controlGraph.flattenedSequence" name="children" />
+				<BrowserRemoveAction id="33"
+					method="controller.deleteFlexoConceptObject(selected)" name="delete_action" />
+				<BrowserAddAction id="34"
+					method="controller.createEditionAction(selected)" name="add_action" />
+				<BrowserAddAction id="35"
+					method="controller.createEditionActionInIteration(selected)" name="add_action_inside_iteration" />
+			</BrowserElement>
+			<BrowserElement id="36"
+				dataClassName="org.openflexo.foundation.fml.controlgraph.WhileAction"
+				icon="controller.iconForObject(whileAction)" label="whileAction.stringRepresentation"
+				isEditable="false" name="whileAction">
+				<DragOperation id="37"
+					isAvailable="controller.canMoveControlGraph(dragged,target)"
+					targetElementName="editionAction" action="controller.moveControlGraph(dragged,target)"
+					name="drag_operation" />
+				<Children id="38" data="whileAction.controlGraph.flattenedSequence"
+					name="children" />
+				<BrowserRemoveAction id="39"
+					method="controller.deleteFlexoConceptObject(selected)" name="delete_action" />
+				<BrowserAddAction id="40"
+					method="controller.createEditionAction(selected)" name="add_action" />
+				<BrowserAddAction id="41"
+					method="controller.createEditionActionInWhileAction(selected)"
+					name="add_action_inside_iteration" />
+			</BrowserElement>
+			<BrowserElement id="42"
+				dataClassName="org.openflexo.foundation.fml.controlgraph.IncrementalIterationAction"
+				icon="controller.iconForObject(incrementalIterationAction)" label="incrementalIterationAction.stringRepresentation"
+				isEditable="false" name="incrementalIterationAction">
+				<DragOperation id="43"
+					isAvailable="controller.canMoveControlGraph(dragged,target)"
+					targetElementName="editionAction" action="controller.moveControlGraph(dragged,target)"
+					name="drag_operation" />
+				<Children id="44"
+					data="incrementalIterationAction.controlGraph.flattenedSequence"
+					name="children" />
+				<BrowserRemoveAction id="45"
+					method="controller.deleteFlexoConceptObject(selected)" name="delete_action" />
+				<BrowserAddAction id="46"
+					method="controller.createEditionAction(selected)" name="add_action" />
+				<BrowserAddAction id="47"
+					method="controller.createEditionActionInIncrementalIterationAction(selected)"
+					name="add_action_inside_iteration" />
+			</BrowserElement>
+			<BrowserElement id="48"
+				dataClassName="org.openflexo.foundation.fml.controlgraph.ConditionalAction"
+				icon="controller.iconForObject(conditionalAction)" label="conditionalAction.stringRepresentation"
+				isEditable="false" name="conditionalAction">
+				<DragOperation id="49"
+					isAvailable="controller.canMoveControlGraph(dragged,target)"
+					targetElementName="editionAction" action="controller.moveControlGraph(dragged,target)"
+					name="drag_operation" />
+				<Children id="50"
+					data="conditionalAction.thenControlGraph.flattenedSequence" name="thenChildren" />
+				<Children id="51"
+					data="conditionalAction.elseControlGraph.flattenedSequence" name="elseChildren" />
+				<BrowserRemoveAction id="52"
+					method="controller.deleteFlexoConceptObject(selected)" name="delete_action" />
+				<BrowserAddAction id="53"
+					method="controller.createEditionAction(selected)" name="add_action" />
+				<BrowserAddAction id="54"
+					method="controller.createEditionActionInThenControlGraph(selected)"
+					name="add_action_in_then_control_graph" />
+				<BrowserAddAction id="55"
+					method="controller.createEditionActionInElseControlGraph(selected)"
+					name="add_action_in_else_control_graph" />
+			</BrowserElement>
+			<BrowserElement id="56"
+				dataClassName="org.openflexo.foundation.fml.editionaction.EditionAction"
+				icon="controller.iconForObject(editionAction)" label="editionAction.stringRepresentation"
+				isEditable="false" name="editionAction">
+				<DragOperation id="57"
+					isAvailable="controller.canMoveControlGraph(dragged,target)"
+					targetElementName="editionAction" action="controller.moveControlGraph(dragged,target)"
+					name="drag_operation" />
+				<BrowserAddAction id="58"
+					method="controller.createEditionAction(selected)" name="add_action" />
+				<BrowserRemoveAction id="59"
+					method="controller.deleteFlexoConceptObject(selected)" name="delete_action" />
+			</BrowserElement>
+			<BrowserElement id="60"
+				dataClassName="org.openflexo.foundation.fml.inspector.FlexoConceptInspector"
+				icon="controller.iconForObject(inspector)" label="&quot;Inspector&quot;"
+				isEditable="false" name="inspector">
+				<BrowserAddAction id="61"
+					method="controller.createInspectorEntry(data)" name="add_inspector_entry" />
+			</BrowserElement>
+			<BrowserElement id="62"
+				dataClassName="org.openflexo.foundation.fml.controlgraph.ControlStructureAction"
+				icon="controller.iconForObject(controlStructureAction)" isEditable="false"
+				name="controlStructureAction">
+				<Children id="63" data="controlStructureAction.actions"
+					name="children" />
+			</BrowserElement>
+			<BrowserElement id="64"
+				dataClassName="org.openflexo.foundation.fml.FlexoConceptStructuralFacet"
+				icon="controller.iconForObject(flexoConceptStructuralFacet)" label="&quot;Structural&quot;"
+				isEditable="false" name="flexoConceptStructuralFacet">
+				<Children id="65" data="flexoConceptStructuralFacet.properties"
+					name="flexoProperties" />
+				<BrowserAddAction id="66"
+					method="controller.createModelSlot(selected.flexoConcept)" name="new_model_slot" />
+				<BrowserAddAction id="67"
+					method="controller.createTechnologyRole(selected.flexoConcept)"
+					name="new_technology_role" />
+				<BrowserAddAction id="68"
+					method="controller.createFlexoConceptInstanceRole(selected.flexoConcept)"
+					name="new_flexo_concept_instance_role" />
+				<BrowserAddAction id="69"
+					method="controller.createPrimitiveRole(selected.flexoConcept)"
+					name="new_primitive_role" />
+				<BrowserAddAction id="70"
+					method="controller.createAbstractProperty(selected.flexoConcept)"
+					name="new_abstract_property" />
+				<BrowserAddAction id="71"
+					method="controller.createExpressionProperty(selected.flexoConcept)"
+					name="new_expression_property" />
+				<BrowserAddAction id="72"
+					method="controller.createGetSetProperty(selected.flexoConcept)"
+					name="new_get_set_property" />
+				<BrowserRemoveAction id="73"
+					method="controller.deleteFlexoProperty(data,selected)" name="delete" />
+			</BrowserElement>
+			<BrowserElement id="74"
+				dataClassName="org.openflexo.foundation.fml.FlexoConceptBehaviouralFacet"
+				icon="controller.iconForObject(flexoConceptBehaviouralFacet)" label="&quot;Behavioural&quot;"
+				isEditable="false" name="flexoConceptBehaviouralFacet">
+				<Children id="75"
+					data="flexoConceptBehaviouralFacet.flexoConcept.flexoBehaviours"
+					name="flexoBehaviours" />
+				<BrowserAddAction id="76"
+					method="controller.createAdvancedScheme(selected.flexoConcept)"
+					name="new_behaviour" />
+			</BrowserElement>
+			<BrowserElement id="77"
+				dataClassName="org.openflexo.foundation.fml.InnerConceptsFacet"
+				icon="controller.iconForObject(innerConceptsFacet)" label="&quot;Inner concepts&quot;"
+				isEditable="false" name="innerConceptsFacet">
+				<Children id="78"
+					data="innerConceptsFacet.embeddingRootFlexoConcepts" name="children" />
+				<BrowserAddAction id="79"
+					method="controller.createFlexoConcept(selected.flexoConcept)" name="add_flexo_concept" />
+				<BrowserRemoveAction id="80"
+					method="controller.deleteFlexoConcept(selected.flexoConcept)" name="remove_flexo_concept" />
+			</BrowserElement>
+			<BrowserElement id="81"
+				dataClassName="org.openflexo.foundation.fml.FlexoConcept" icon="controller.iconForObject(flexoConcept)"
+				label="flexoConcept.name" editableLabel="flexoConcept.name"
+				isEditable="false" name="flexoConcept">
+				<Children id="82" data="flexoConcept.embeddedFlexoConcepts"
+					name="children" />
+				<BrowserAddAction id="83"
+					method="controller.createFlexoConcept(selected)" name="add_flexo_concept" />
+				<BrowserRemoveAction id="84"
+					method="controller.deleteFlexoConcept(selected)" name="remove_flexo_concept" />
+			</BrowserElement>
+		</Browser>
+		<Panel id="85" align="left" borderTop="0" borderLeft="0"
+			trackViewPortHeight="true" trackViewPortWidth="true" borderBottom="0"
+			border="empty" sizeAdjustment="OriginalSize" titleFont="SansSerif,0,12"
+			layout="twocols" borderRight="0" index="0"
+			constraints="split(index=0;location=north;splitIdentifier=right)"
+			name="FIBPanel">
+			<Editor validateOnReturn="true" columns="8" rows="3" text="Editor"
+				tokenMarkerStyle="FML" index="2" data="data.fMLRepresentation"
+				constraints="twocols(expandHorizontally=true;expandVertically=true;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=center)"
+				useScrollBar="true" horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED"
+				verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED" localize="true" />
+			<!--  <FIBReferencedComponent id="86"
+				dynamicComponent="controller.inspectorForObject(FlexoConceptBrowser.selected)"
+				localize="true" manageDynamicModel="true" data="FlexoConceptBrowser.selected"
+				opaque="false" index="15"
+				constraints="twocols(expandHorizontally=true;expandVertically=true;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=center)"
+				name="InspectedWidget">
+				<ReferenceAssignment id="87"
+					variable="controller.flexoController" value="controller.flexoController"
+					mandatory="true" />
+			</FIBReferencedComponent>-->
+			<Label id="88" label="" align="left"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)"
+				name="Label2" />
+			<Panel id="89" align="right" borderTop="0" borderLeft="0"
+				trackViewPortHeight="true" trackViewPortWidth="true" borderBottom="0"
+				border="empty" sizeAdjustment="OriginalSize" titleFont="SansSerif,0,12"
+				layout="gridbag" borderRight="0"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)"
+				name="Panel">
+				<Label id="90" label="label" align="left"
+					data="((((&quot;&quot; + controller.getValidationReport(data).errors.size) + &quot; errors, &quot;) + controller.getValidationReport(data).warnings.size) + &quot; warnings&quot;)"
+					constraints="gridbag(anchor=west;fill=horizontal;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=1.0;weightY=0.0)"
+					font="SansSerif,2,11" name="Label" />
+				<Label id="91"
+					label="&lt;html&gt;&lt;a href=&quot;&quot;&gt;show_errors_warnings&lt;/a&gt;&lt;/html&gt;"
+					align="left" clickAction="controller.setShowErrorsWarnings(true)"
+					visible="(!(controller.showErrorsWarnings))" localize="true"
+					constraints="gridbag(anchor=center;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+					font="SansSerif,0,10" name="Label3" />
+				<Label id="92"
+					label="&lt;html&gt;&lt;a href=&quot;&quot;&gt;hide_errors_warnings&lt;/a&gt;&lt;/html&gt;"
+					align="left" clickAction="controller.setShowErrorsWarnings(false)"
+					visible="controller.showErrorsWarnings" localize="true"
+					constraints="gridbag(anchor=center;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+					font="SansSerif,0,10" name="Label4" />
+				<Label
+					label="&lt;html&gt;&lt;a href=&quot;&quot;&gt;revalidate&lt;/a&gt;&lt;/html&gt;"
+					align="left" clickAction="controller.revalidate(data)" localize="true"
+					constraints="gridbag(anchor=center;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+					font="SansSerif,0,10" name="Label5" />
+			</Panel>
+			<Table id="93" visibleRowCount="5" backgroundNonSelectionColor="255,255,255"
+				iteratorClassName="org.openflexo.model.validation.ValidationIssue"
+				backgroundSecondarySelectionColor="178,215,255" showFooter="false"
+				lookAndFeel="Classic" selectionMode="MultipleIntervalSelection"
+				rowHeight="18" manageDynamicModel="true"
+				doubleClickAction="controller.fixIssue(IssuesTable.selected)"
+				data="controller.getValidationReport(data).filteredIssues"
+				clickAction="controller.showIssue(IssuesTable.selected)" visible="controller.showErrorsWarnings"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=5;insetsLeft=0;insetsRight=5;insetsTop=0;location=right)"
+				name="IssuesTable">
+				<IconColumn id="94" data="controller.iconForObject(iterator)"
+					resizable="false" title="icon" displayTitle="false" columnWidth="20"
+					showIcon="false" name="icon" />
+				<LabelColumn id="95"
+					data="controller.fMLValidationModel.localizedIssueMessage(iterator)"
+					resizable="true" title="errors/warnings" displayTitle="true"
+					columnWidth="250" showIcon="false" name="label" />
+			</Table>
+		</Panel>
+	</SplitPanel>
+	<FIBVariable id="96" type="org.openflexo.foundation.fml.VirtualModel"
+		name="data" />
+	<LocalizedDictionary id="97">
+		<Localized id="93" lang="English" value="Add action" key="add_action" />
+		<Localized id="94" lang="Dutch" value="Add action" key="add_action" />
+		<Localized id="95" lang="French" value="add_action" key="add_action" />
+		<Localized id="96" lang="English" value="Remove flexo concept"
+			key="remove_flexo_concept" />
+		<Localized id="97" lang="Dutch" value="Remove flexo concept"
+			key="remove_flexo_concept" />
+		<Localized id="98" lang="French" value="remove_flexo_concept"
+			key="remove_flexo_concept" />
+		<Localized id="99" lang="English" value="Add action in GET control graph"
+			key="add_action_in_GET_control_graph" />
+		<Localized id="100" lang="Dutch" value="Add action in GET control graph"
+			key="add_action_in_GET_control_graph" />
+		<Localized id="101" lang="French" value="add_action_in_GET_control_graph"
+			key="add_action_in_GET_control_graph" />
+		<Localized id="102" lang="English" value="Add action in SET control graph"
+			key="add_action_in_SET_control_graph" />
+		<Localized id="103" lang="Dutch" value="Add action in SET control graph"
+			key="add_action_in_SET_control_graph" />
+		<Localized id="104" lang="French" value="add_action_in_SET_control_graph"
+			key="add_action_in_SET_control_graph" />
+		<Localized id="105" lang="English" value="Delete action"
+			key="delete_action" />
+		<Localized id="106" lang="Dutch" value="Delete action" key="delete_action" />
+		<Localized id="107" lang="French" value="delete_action" key="delete_action" />
+		<Localized id="108" lang="English" value="Add action inside iteration"
+			key="add_action_inside_iteration" />
+		<Localized id="109" lang="Dutch" value="Add action inside iteration"
+			key="add_action_inside_iteration" />
+		<Localized id="110" lang="French" value="add_action_inside_iteration"
+			key="add_action_inside_iteration" />
+		<Localized id="111" lang="English" value="Add action in then control graph"
+			key="add_action_in_then_control_graph" />
+		<Localized id="112" lang="Dutch" value="Add action in then control graph"
+			key="add_action_in_then_control_graph" />
+		<Localized id="113" lang="French" value="add_action_in_then_control_graph"
+			key="add_action_in_then_control_graph" />
+		<Localized id="114" lang="English" value="Add action in else control graph"
+			key="add_action_in_else_control_graph" />
+		<Localized id="115" lang="Dutch" value="Add action in else control graph"
+			key="add_action_in_else_control_graph" />
+		<Localized id="116" lang="French" value="add_action_in_else_control_graph"
+			key="add_action_in_else_control_graph" />
+		<Localized id="117" lang="English" value="Add inspector entry"
+			key="add_inspector_entry" />
+		<Localized id="118" lang="Dutch" value="Add inspector entry"
+			key="add_inspector_entry" />
+		<Localized id="119" lang="French" value="add_inspector_entry"
+			key="add_inspector_entry" />
+		<Localized id="120" lang="English" value="New technology role"
+			key="new_technology_role" />
+		<Localized id="121" lang="Dutch" value="New technology role"
+			key="new_technology_role" />
+		<Localized id="122" lang="French" value="new_technology_role"
+			key="new_technology_role" />
+		<Localized id="123" lang="English" value="New flexo concept instance role"
+			key="new_flexo_concept_instance_role" />
+		<Localized id="124" lang="Dutch" value="New flexo concept instance role"
+			key="new_flexo_concept_instance_role" />
+		<Localized id="125" lang="French" value="new_flexo_concept_instance_role"
+			key="new_flexo_concept_instance_role" />
+		<Localized id="126" lang="English" value="New primitive role"
+			key="new_primitive_role" />
+		<Localized id="127" lang="Dutch" value="New primitive role"
+			key="new_primitive_role" />
+		<Localized id="128" lang="French" value="new_primitive_role"
+			key="new_primitive_role" />
+		<Localized id="129" lang="English" value="New abstract property"
+			key="new_abstract_property" />
+		<Localized id="130" lang="Dutch" value="New abstract property"
+			key="new_abstract_property" />
+		<Localized id="131" lang="French" value="new_abstract_property"
+			key="new_abstract_property" />
+		<Localized id="132" lang="English" value="New expression property"
+			key="new_expression_property" />
+		<Localized id="133" lang="Dutch" value="New expression property"
+			key="new_expression_property" />
+		<Localized id="134" lang="French" value="new_expression_property"
+			key="new_expression_property" />
+		<Localized id="135" lang="English" value="New get set property"
+			key="new_get_set_property" />
+		<Localized id="136" lang="Dutch" value="New get set property"
+			key="new_get_set_property" />
+		<Localized id="137" lang="French" value="new_get_set_property"
+			key="new_get_set_property" />
+		<Localized id="138" lang="English" value="Delete" key="delete" />
+		<Localized id="139" lang="Dutch" value="Delete" key="delete" />
+		<Localized id="140" lang="French" value="delete" key="delete" />
+		<Localized id="141" lang="English" value="New behaviour"
+			key="new_behaviour" />
+		<Localized id="142" lang="Dutch" value="New behaviour" key="new_behaviour" />
+		<Localized id="143" lang="French" value="new_behaviour" key="new_behaviour" />
+		<Localized id="144" lang="English" value="Add flexo concept"
+			key="add_flexo_concept" />
+		<Localized id="145" lang="Dutch" value="Add flexo concept"
+			key="add_flexo_concept" />
+		<Localized id="146" lang="French" value="add_flexo_concept"
+			key="add_flexo_concept" />
+		<Localized id="147" lang="English" value="Label" key="label" />
+		<Localized id="148" lang="Dutch" value="Label" key="label" />
+		<Localized id="149" lang="French" value="label" key="label" />
+		<Localized id="150" lang="English"
+			value="&lt;html&gt;&lt;a href=&quot;&quot;&gt;Show errors/warnings&lt;/a&gt;&lt;/html&gt;"
+			key="&lt;html&gt;&lt;a href=&quot;&quot;&gt;show_errors_warnings&lt;/a&gt;&lt;/html&gt;" />
+		<Localized id="151" lang="Dutch"
+			value="&lt;html&gt;&lt;a href=&quot;&quot;&gt;Voir les erreurs&lt;/a&gt;&lt;/html&gt;"
+			key="&lt;html&gt;&lt;a href=&quot;&quot;&gt;show_errors_warnings&lt;/a&gt;&lt;/html&gt;" />
+		<Localized id="152" lang="French"
+			value="&lt;html&gt;&lt;a href=&quot;&quot;&gt;Show errors/warnings&lt;/a&gt;&lt;/html&gt;"
+			key="&lt;html&gt;&lt;a href=&quot;&quot;&gt;show_errors_warnings&lt;/a&gt;&lt;/html&gt;" />
+		<Localized id="153" lang="English"
+			value="&lt;html&gt;&lt;a href=&quot;&quot;&gt;Hide errors/warnings&lt;/a&gt;&lt;/html&gt;"
+			key="&lt;html&gt;&lt;a href=&quot;&quot;&gt;hide_errors_warnings&lt;/a&gt;&lt;/html&gt;" />
+		<Localized id="154" lang="Dutch"
+			value="&lt;html&gt;&lt;a href=&quot;&quot;&gt;Hide errors/warnings&lt;/a&gt;&lt;/html&gt;"
+			key="&lt;html&gt;&lt;a href=&quot;&quot;&gt;hide_errors_warnings&lt;/a&gt;&lt;/html&gt;" />
+		<Localized id="155" lang="French"
+			value="&lt;html&gt;&lt;a href=&quot;&quot;&gt;Cacher les erreurs&lt;/a&gt;&lt;/html&gt;"
+			key="&lt;html&gt;&lt;a href=&quot;&quot;&gt;hide_errors_warnings&lt;/a&gt;&lt;/html&gt;" />
+		<Localized id="156" lang="English"
+			value="&lt;html&gt;&lt;a href=&quot;&quot;&gt;Revalidate&lt;/a&gt;&lt;/html&gt;"
+			key="&lt;html&gt;&lt;a href=&quot;&quot;&gt;revalidate&lt;/a&gt;&lt;/html&gt;" />
+		<Localized id="157" lang="Dutch"
+			value="&lt;html&gt;&lt;a href=&quot;&quot;&gt;Revalidate&lt;/a&gt;&lt;/html&gt;"
+			key="&lt;html&gt;&lt;a href=&quot;&quot;&gt;revalidate&lt;/a&gt;&lt;/html&gt;" />
+		<Localized id="158" lang="French"
+			value="&lt;html&gt;&lt;a href=&quot;&quot;&gt;Revalider&lt;/a&gt;&lt;/html&gt;"
+			key="&lt;html&gt;&lt;a href=&quot;&quot;&gt;revalidate&lt;/a&gt;&lt;/html&gt;" />
+		<Localized id="159" lang="English" value="Icon" key="icon" />
+		<Localized id="160" lang="Dutch" value="Icon" key="icon" />
+		<Localized id="161" lang="French" value="icon" key="icon" />
+		<Localized id="162" lang="English" value="Errors/warnings"
+			key="errors/warnings" />
+		<Localized id="163" lang="Dutch" value="Errors/warnings"
+			key="errors/warnings" />
+		<Localized id="164" lang="French" value="errors/warnings"
+			key="errors/warnings" />
+	</LocalizedDictionary>
+</Panel>
+
+

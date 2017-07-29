@@ -54,9 +54,9 @@ import org.openflexo.icon.IconFactory;
 import org.openflexo.icon.IconLibrary;
 import org.openflexo.view.controller.ActionInitializer;
 import org.openflexo.view.controller.ControllerActionInitializer;
-import org.openflexo.view.controller.TechnologyPerspective;
 
-public class OpenVirtualModelInstanceInitializer extends ActionInitializer<OpenVirtualModelInstance, FMLRTVirtualModelInstance, FlexoObject> {
+public class OpenVirtualModelInstanceInitializer
+		extends ActionInitializer<OpenVirtualModelInstance, FMLRTVirtualModelInstance, FlexoObject> {
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(ControllerActionInitializer.class.getPackage().getName());
@@ -82,9 +82,10 @@ public class OpenVirtualModelInstanceInitializer extends ActionInitializer<OpenV
 			@Override
 			public boolean run(EventObject e, OpenVirtualModelInstance action) {
 
-				TechnologyPerspective<?> perspective = getController().getFMLRTTechnologyAdapterController()
+				/*TechnologyPerspective<?> perspective = getController().getFMLRTTechnologyAdapterController()
 						.getTechnologyPerspective(getController());
-				getController().setCurrentEditedObjectAsModuleView(action.getFocusedObject(), perspective);
+				getController().setCurrentEditedObjectAsModuleView(action.getFocusedObject(), perspective);*/
+				getController().setCurrentEditedObjectAsModuleView(action.getFocusedObject());
 				return true;
 			}
 		};

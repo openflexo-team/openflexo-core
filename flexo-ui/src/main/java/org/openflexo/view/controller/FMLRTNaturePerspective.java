@@ -42,13 +42,12 @@ import java.util.logging.Logger;
 
 import javax.swing.ImageIcon;
 
-import org.openflexo.components.widget.FIBTechnologyBrowser;
 import org.openflexo.foundation.FlexoObject;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
+import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstanceNature;
-import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstanceNature;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.view.ModuleView;
@@ -72,7 +71,7 @@ public abstract class FMLRTNaturePerspective extends TechnologyPerspective<FMLRT
 	public FMLRTNaturePerspective(VirtualModelInstanceNature virtualModelInstanceNature,
 			FlexoConceptInstanceNature flexoConceptInstanceNature, FMLRTTechnologyAdapter fmlRTtechnologyAdapter,
 			TechnologyAdapter handlingTechnologyAdapter, FlexoController controller) {
-		super(fmlRTtechnologyAdapter, controller);
+		super(fmlRTtechnologyAdapter, controller, controller.getSharedTechnologyBrowser(fmlRTtechnologyAdapter));
 		this.handlingTechnologyAdapter = handlingTechnologyAdapter;
 		this.virtualModelInstanceNature = virtualModelInstanceNature;
 		this.flexoConceptInstanceNature = flexoConceptInstanceNature;
@@ -95,18 +94,6 @@ public abstract class FMLRTNaturePerspective extends TechnologyPerspective<FMLRT
 	public TechnologyAdapterController<?> getHandlingTechnologyAdapterController() {
 		TechnologyAdapterControllerService tacService = getController().getApplicationContext().getTechnologyAdapterControllerService();
 		return tacService.getTechnologyAdapterController(getHandlingTechnologyAdapter());
-	}
-
-	/**
-	 * Internally called to make technology browser<br>
-	 * Instead of creating a browser for each perspective, we try to share the same instance
-	 * 
-	 * @return
-	 */
-	@Override
-	protected final FIBTechnologyBrowser<FMLRTTechnologyAdapter> makeTechnologyBrowser() {
-		FIBTechnologyBrowser<FMLRTTechnologyAdapter> returned = getController().getSharedFMLRTBrowser();
-		return returned;
 	}
 
 	public VirtualModelInstanceNature getVirtualModelInstanceNature() {

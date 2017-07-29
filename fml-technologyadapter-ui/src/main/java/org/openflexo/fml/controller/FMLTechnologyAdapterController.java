@@ -120,6 +120,7 @@ import org.openflexo.foundation.fml.rt.editionaction.SelectVirtualModelInstance;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceType;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterResource;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.foundation.technologyadapter.UseModelSlotDeclaration;
@@ -139,6 +140,12 @@ import org.openflexo.view.controller.FlexoController;
 import org.openflexo.view.controller.TechnologyAdapterController;
 import org.openflexo.view.controller.model.FlexoPerspective;
 
+/**
+ * Technology-specific controller provided by {@link FMLTechnologyAdapter}<br>
+ * 
+ * @author sylvain
+ *
+ */
 public class FMLTechnologyAdapterController extends TechnologyAdapterController<FMLTechnologyAdapter> {
 
 	private static final Logger logger = Logger.getLogger(FMLTechnologyAdapterController.class.getPackage().getName());
@@ -147,6 +154,23 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 
 	private FMLValidationModel validationModel;
 	private Map<VirtualModel, FMLValidationReport> validationReports = new HashMap<>();
+
+	@Override
+	public void installTechnologyPerspectives(FlexoController controller, FIBTechnologyBrowser<FMLTechnologyAdapter> sharedBrowser) {
+		super.installTechnologyPerspectives(controller, sharedBrowser);
+		controller.addToPerspectives(new FMLTechnologyPerspective(getTechnologyAdapter(), controller, sharedBrowser));
+		// Then we iterate on all technology adapters
+		for (TechnologyAdapter ta : getServiceManager().getTechnologyAdapterService().getTechnologyAdapters()) {
+			TechnologyAdapterController<?> tac = getServiceManager().getTechnologyAdapterControllerService()
+					.getTechnologyAdapterController(ta);
+			if (tac != null) {
+				tac.installFMLNatureSpecificPerspectives(controller);
+			}
+			else {
+				logger.warning("Could not load TechnologyAdapterController for " + ta);
+			}
+		}
+	}
 
 	@Override
 	public Class<FMLTechnologyAdapter> getTechnologyAdapterClass() {

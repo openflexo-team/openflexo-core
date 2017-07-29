@@ -71,11 +71,16 @@ public class TechnologyPerspective<TA extends TechnologyAdapter> extends FlexoPe
 	 * @param controller
 	 * @param name
 	 */
-	public TechnologyPerspective(TA technologyAdapter, FlexoController controller) {
+	public TechnologyPerspective(TA technologyAdapter, FlexoController controller, FIBTechnologyBrowser<TA> sharedBrowser) {
 		super(technologyAdapter.getName(), controller);
 		this.technologyAdapter = technologyAdapter;
 
-		technologyBrowser = makeTechnologyBrowser();
+		if (sharedBrowser == null) {
+			technologyBrowser = makeTechnologyBrowser();
+		}
+		else {
+			technologyBrowser = sharedBrowser;
+		}
 		setTopLeftView(technologyBrowser);
 
 	}
