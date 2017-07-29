@@ -55,29 +55,21 @@ import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.FlexoEditingContext;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject;
-import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
-import org.openflexo.foundation.action.AddFlexoProperty;
-import org.openflexo.foundation.action.DeleteFlexoProperty;
 import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionEnableCondition;
 import org.openflexo.foundation.action.FlexoActionFinalizer;
 import org.openflexo.foundation.action.FlexoActionInitializer;
 import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.action.FlexoActionVisibleCondition;
-import org.openflexo.foundation.action.FlexoActionizer;
 import org.openflexo.foundation.action.FlexoActionizer.EditorProvider;
 import org.openflexo.foundation.action.FlexoExceptionHandler;
-import org.openflexo.foundation.action.SortFlexoProperties;
 import org.openflexo.module.FlexoModule;
-import org.openflexo.view.controller.action.AddFlexoPropertyActionizer;
 import org.openflexo.view.controller.action.AddRepositoryFolderInitializer;
-import org.openflexo.view.controller.action.DeleteFlexoPropertyActionizer;
 import org.openflexo.view.controller.action.DeleteRepositoryFolderInitializer;
 import org.openflexo.view.controller.action.HelpActionizer;
 import org.openflexo.view.controller.action.InspectActionizer;
 import org.openflexo.view.controller.action.LoadAllImportedProjectInitializer;
 import org.openflexo.view.controller.action.LoadResourceActionInitializer;
-import org.openflexo.view.controller.action.SortFlexoPropertiesActionizer;
 
 // import org.openflexo.view.controller.action.SubmitDocumentationActionizer;
 
@@ -186,18 +178,6 @@ public class ControllerActionInitializer implements EditorProvider {
 		new AddRepositoryFolderInitializer(this);
 		new DeleteRepositoryFolderInitializer(this);
 
-		new AddFlexoPropertyActionizer(this);
-		new DeleteFlexoPropertyActionizer(this);
-		new SortFlexoPropertiesActionizer(this);
-		if (FlexoObjectImpl.addFlexoPropertyActionizer == null) {
-			FlexoObjectImpl.addFlexoPropertyActionizer = new FlexoActionizer<>(AddFlexoProperty.actionType, this);
-		}
-		if (FlexoObjectImpl.sortFlexoPropertiesActionizer == null) {
-			FlexoObjectImpl.sortFlexoPropertiesActionizer = new FlexoActionizer<>(SortFlexoProperties.actionType, this);
-		}
-		if (FlexoObjectImpl.deleteFlexoPropertyActionizer == null) {
-			FlexoObjectImpl.deleteFlexoPropertyActionizer = new FlexoActionizer<>(DeleteFlexoProperty.actionType, this);
-		}
 	}
 
 	@SuppressWarnings("unchecked")

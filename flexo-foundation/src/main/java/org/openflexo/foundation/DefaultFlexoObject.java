@@ -39,7 +39,6 @@
 package org.openflexo.foundation;
 
 import java.lang.reflect.Type;
-import java.util.List;
 
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 
@@ -67,30 +66,6 @@ public class DefaultFlexoObject extends FlexoObjectImpl {
 	@Override
 	public void performSuperSetModified(boolean modified) {
 		localModified = modified;
-	}
-
-	/*@Override
-	public void setModified(boolean modified) {
-		super.setModified(modified);
-		localModified = modified;
-	}
-
-	@Override
-	public synchronized void setIsModified() {
-		super.setIsModified();
-		localModified = true;
-	}
-
-	@Override
-	public synchronized void clearIsModified() {
-		super.clearIsModified();
-		localModified = false;
-	}*/
-
-	@Override
-	public void setCustomProperties(List<FlexoProperty> customProperties) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override

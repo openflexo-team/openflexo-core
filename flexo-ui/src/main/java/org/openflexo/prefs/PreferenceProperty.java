@@ -37,8 +37,9 @@
  * 
  */
 
-package org.openflexo.foundation;
+package org.openflexo.prefs;
 
+import org.openflexo.foundation.FlexoObject;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
@@ -48,9 +49,9 @@ import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.model.annotations.XMLElement;
 
 @ModelEntity
-@ImplementationClass(FlexoProperty.FlexoPropertyImpl.class)
+@ImplementationClass(PreferenceProperty.PreferencePropertyImpl.class)
 @XMLElement(xmlTag = "CoreProperty")
-public interface FlexoProperty extends FlexoObject {
+public interface PreferenceProperty extends FlexoObject {
 
 	@PropertyIdentifier(type = FlexoObject.class)
 	public static final String OWNER_KEY = "owner";
@@ -73,11 +74,11 @@ public interface FlexoProperty extends FlexoObject {
 	@Setter(VALUE_KEY)
 	public void setValue(String value);
 
-	@Getter(value = OWNER_KEY, ignoreType = true, inverse = FlexoObject.CUSTOM_PROPERTIES_KEY)
-	public FlexoObject getOwner();
+	@Getter(value = OWNER_KEY, ignoreType = true, inverse = PreferencesContainer.CUSTOM_PROPERTIES_KEY)
+	public PreferencesContainer getOwner();
 
 	@Setter(OWNER_KEY)
-	public void setOwner(FlexoObject owner);
+	public void setOwner(PreferencesContainer owner);
 
 	public boolean booleanValue();
 
@@ -95,20 +96,7 @@ public interface FlexoProperty extends FlexoObject {
 
 	public Boolean getBooleanValue();
 
-	public static abstract class FlexoPropertyImpl extends FlexoObjectImpl implements FlexoProperty {
-
-		private FlexoObject owner;
-
-		private String name;
-		private String value;
-
-		/*public FlexoProperty(FlexoBuilder<?> builder) {
-			this(builder.getProject());
-		}
-
-		public FlexoProperty(FlexoProjectBuilder builder) {
-			this(builder.project);
-		}*/
+	public static abstract class PreferencePropertyImpl extends FlexoObjectImpl implements PreferenceProperty {
 
 		@Override
 		public boolean delete(Object... context) {
@@ -116,40 +104,6 @@ public interface FlexoProperty extends FlexoObject {
 				getOwner().removeFromCustomProperties(this);
 			}
 			return performSuperDelete(context);
-		}
-
-		@Override
-		public String getName() {
-			return name;
-		}
-
-		@Override
-		public void setName(String name) {
-			this.name = name;
-			setChanged();
-			notifyObservers(new DataModification("name", null, name));
-		}
-
-		@Override
-		public String getValue() {
-			return value;
-		}
-
-		@Override
-		public void setValue(String value) {
-			this.value = value;
-			setChanged();
-			notifyObservers(new DataModification("value", null, value));
-		}
-
-		@Override
-		public FlexoObject getOwner() {
-			return owner;
-		}
-
-		@Override
-		public void setOwner(FlexoObject owner) {
-			this.owner = owner;
 		}
 
 		@Override
@@ -201,7 +155,7 @@ public interface FlexoProperty extends FlexoObject {
 
 		@Override
 		public void setIntegerValue(int value) {
-			this.value = "" + value;
+			setValue("" + value);
 		}
 
 	}

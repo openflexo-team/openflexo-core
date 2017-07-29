@@ -39,19 +39,15 @@
 
 package org.openflexo.inspector;
 
+import java.util.logging.Logger;
+
 import org.openflexo.foundation.DataModification;
-import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoObservable;
-import org.openflexo.foundation.FlexoProperty;
-import org.openflexo.foundation.InnerResourceData;
-import org.openflexo.foundation.action.AddFlexoProperty;
 import org.openflexo.foundation.resource.ResourceLoaded;
 import org.openflexo.gina.model.FIBComponent;
 import org.openflexo.gina.view.GinaViewFactory;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.view.controller.FlexoFIBController;
-
-import java.util.logging.Logger;
 
 /**
  * Represents the controller of a JFIBInspector (FIBComponent) in the context of Swing graphical inspection
@@ -82,19 +78,6 @@ public class FIBInspectorController extends FlexoFIBController {
 		if (dataModification instanceof ResourceLoaded) {
 			// System.out.println("Detected resource being loaded !");
 		}
-	}
-
-	public void addCustomProperty(FlexoObject object) {
-		if (object instanceof InnerResourceData) {
-			System.out.println("Creating property for object " + object);
-			AddFlexoProperty action = AddFlexoProperty.actionType.makeNewAction(object, null, getEditor());
-			action.doAction();
-		}
-	}
-
-	public void removeCustomProperty(FlexoProperty property) {
-		System.out.println("Deleting property " + property + " for object " + property.getOwner());
-		property.delete();
 	}
 
 }

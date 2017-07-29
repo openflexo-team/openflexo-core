@@ -46,15 +46,10 @@ import java.util.Hashtable;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.action.AddFlexoProperty;
-import org.openflexo.foundation.action.DeleteFlexoProperty;
 import org.openflexo.foundation.action.FlexoActionType;
-import org.openflexo.foundation.action.FlexoActionizer;
-import org.openflexo.foundation.action.SortFlexoProperties;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.PamelaResource;
 import org.openflexo.foundation.resource.ResourceData;
@@ -62,19 +57,14 @@ import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.foundation.utils.FlexoObjectReference;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.localization.LocalizedDelegate;
-import org.openflexo.model.annotations.Adder;
 import org.openflexo.model.annotations.CloningStrategy;
 import org.openflexo.model.annotations.CloningStrategy.StrategyType;
-import org.openflexo.model.annotations.Finder;
 import org.openflexo.model.annotations.Getter;
-import org.openflexo.model.annotations.Getter.Cardinality;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.PropertyIdentifier;
-import org.openflexo.model.annotations.Remover;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
-import org.openflexo.model.annotations.XMLElement;
 import org.openflexo.model.factory.AccessibleProxyObject;
 import org.openflexo.model.factory.CloneableProxyObject;
 import org.openflexo.model.factory.DeletableProxyObject;
@@ -101,8 +91,6 @@ public interface FlexoObject extends AccessibleProxyObject, DeletableProxyObject
 	String USER_IDENTIFIER_KEY = "userIdentifier";
 	@PropertyIdentifier(type = long.class)
 	String FLEXO_ID_KEY = "flexoID";
-	@PropertyIdentifier(type = Vector.class)
-	String CUSTOM_PROPERTIES_KEY = "customProperties";
 
 	@Getter(value = USER_IDENTIFIER_KEY)
 	@XMLAttribute(xmlTag = "userID")
@@ -135,22 +123,6 @@ public interface FlexoObject extends AccessibleProxyObject, DeletableProxyObject
 	 * @return
 	 */
 	public String hash();
-
-	@Getter(value = CUSTOM_PROPERTIES_KEY, cardinality = Cardinality.LIST, inverse = FlexoProperty.OWNER_KEY)
-	@XMLElement
-	public List<FlexoProperty> getCustomProperties();
-
-	@Setter(CUSTOM_PROPERTIES_KEY)
-	public void setCustomProperties(List<FlexoProperty> customProperties);
-
-	@Adder(CUSTOM_PROPERTIES_KEY)
-	public void addToCustomProperties(FlexoProperty aCustomPropertie);
-
-	@Remover(CUSTOM_PROPERTIES_KEY)
-	public void removeFromCustomProperties(FlexoProperty aCustomPropertie);
-
-	@Finder(attribute = FlexoProperty.NAME_KEY, collection = CUSTOM_PROPERTIES_KEY)
-	public FlexoProperty getPropertyNamed(String name);
 
 	public List<FlexoActionType<?, ?, ?>> getActionList();
 
@@ -266,8 +238,6 @@ public interface FlexoObject extends AccessibleProxyObject, DeletableProxyObject
 
 		private Object context;
 
-		private List<FlexoProperty> customProperties;
-
 		/**
 		 * A map that stores the different declared actions for each class
 		 */
@@ -278,28 +248,12 @@ public interface FlexoObject extends AccessibleProxyObject, DeletableProxyObject
 		 */
 		private static final Hashtable<Class, List<FlexoActionType<?, ?, ?>>> _actionListForClass = new Hashtable<Class, List<FlexoActionType<?, ?, ?>>>();
 
-		public static FlexoActionizer<AddFlexoProperty, FlexoObject, FlexoObject> addFlexoPropertyActionizer;
-
-		public static FlexoActionizer<DeleteFlexoProperty, FlexoProperty, FlexoProperty> deleteFlexoPropertyActionizer;
-
-		public static FlexoActionizer<SortFlexoProperties, FlexoObject, FlexoObject> sortFlexoPropertiesActionizer;
-
-		/**
-		 * This list contains all EPI's by reference
-		 */
-		// TODO: merge with referencers
-		// private List<FlexoObjectReference<FlexoConceptInstance>>
-		// flexoConceptReferences;
-
 		private final List<FlexoObjectReference<?>> referencers;
 
 		/**
 		 * Default constructor for {@link FlexoObject}
 		 */
 		public FlexoObjectImpl() {
-			customProperties = new ArrayList<FlexoProperty>();
-			// flexoConceptReferences = new
-			// ArrayList<FlexoObjectReference<FlexoConceptInstance>>();
 			referencers = new ArrayList<FlexoObjectReference<?>>();
 		}
 
@@ -736,133 +690,6 @@ public interface FlexoObject extends AccessibleProxyObject, DeletableProxyObject
 		 */
 		public String getLocalizedClassName() {
 			return getLocales().localizedForKey(getClass().getSimpleName());
-		}
-
-		@Override
-		public List<FlexoProperty> getCustomProperties() {
-			return customProperties;
-		}
-
-		@Override
-		public void setCustomProperties(List<FlexoProperty> customProperties) {
-			if (this.customProperties != null) {
-				for (FlexoProperty property : this.customProperties) {
-					property.setOwner(null);
-				}
-			}
-			this.customProperties = customProperties;
-			if (this.customProperties != null) {
-				for (FlexoProperty property : new ArrayList<FlexoProperty>(this.customProperties)) {
-					property.setOwner(this);
-				}
-			}
-
-		}
-
-		@Override
-		public void addToCustomProperties(FlexoProperty property) {
-			addToCustomProperties(property, false);
-		}
-
-		public void addToCustomProperties(FlexoProperty property, boolean insertSorted) {
-			if (insertSorted && property.getName() != null) {
-				int i = 0;
-				for (FlexoProperty p : customProperties) {
-					if (p.getName() != null && p.getName().compareTo(property.getName()) > 0) {
-						break;
-					}
-					i++;
-				}
-				customProperties.set(i, property);
-			}
-			else {
-				customProperties.add(property);
-			}
-			if (property != null) {
-				property.setOwner(this);
-			}
-			setChanged();
-			DataModification dm = new DataModification("customProperties", null, property);
-			notifyObservers(dm);
-		}
-
-		@Override
-		public void removeFromCustomProperties(FlexoProperty property) {
-			customProperties.remove(property);
-		}
-
-		public boolean hasPropertyNamed(String name) {
-			return getPropertyNamed(name) != null;
-		}
-
-		@Override
-		public FlexoProperty getPropertyNamed(String name) {
-			if (name == null) {
-				for (FlexoProperty p : getCustomProperties()) {
-					if (p.getName() == null) {
-						return p;
-					}
-				}
-			}
-			else {
-				for (FlexoProperty p : getCustomProperties()) {
-					if (name.equals(p.getName())) {
-						return p;
-					}
-				}
-			}
-			return null;
-		}
-
-		public List<FlexoProperty> getProperties(String name) {
-			List<FlexoProperty> v = new ArrayList<FlexoProperty>();
-			if (name == null) {
-				for (FlexoProperty p : getCustomProperties()) {
-					if (p.getName() == null) {
-						v.add(p);
-					}
-				}
-			}
-			else {
-				for (FlexoProperty p : getCustomProperties()) {
-					if (name.equals(p.getName())) {
-						v.add(p);
-					}
-				}
-			}
-			return v;
-		}
-
-		public void addProperty() {
-			if (addFlexoPropertyActionizer != null) {
-				addFlexoPropertyActionizer.run(this, null);
-			}
-		}
-
-		public boolean canSortProperties() {
-			return customProperties.size() > 1;
-		}
-
-		public void sortProperties() {
-			if (sortFlexoPropertiesActionizer != null) {
-				sortFlexoPropertiesActionizer.run(this, null);
-			}
-		}
-
-		public void deleteProperty(FlexoProperty property) {
-			if (deleteFlexoPropertyActionizer != null) {
-				deleteFlexoPropertyActionizer.run(property, null);
-			}
-		}
-
-		/**
-		 * This property is used by the hightlightUncommentedItem mode. The decoration meaning that the description is missing will only
-		 * appears on object for wich this method return true. So this method has to be overridden in subclass.
-		 * 
-		 * @return
-		 */
-		public boolean isDescriptionImportant() {
-			return false;
 		}
 
 		/**

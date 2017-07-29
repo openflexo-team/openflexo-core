@@ -48,7 +48,6 @@ import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 
 import org.openflexo.Flexo;
-import org.openflexo.foundation.FlexoProperty;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
@@ -268,7 +267,7 @@ public interface PresentationPreferences extends PreferencesContainer {
 
 		@Override
 		public LookAndFeel getLookAndFeel() {
-			FlexoProperty p = assertProperty(ToolBox.getPLATFORM() + LOOK_AND_FEEL);
+			PreferenceProperty p = assertProperty(ToolBox.getPLATFORM() + LOOK_AND_FEEL);
 			String returned = p.getValue();
 			if (returned == null) {
 				p = assertProperty(ToolBox.getPLATFORM() + LOOK_AND_FEEL);

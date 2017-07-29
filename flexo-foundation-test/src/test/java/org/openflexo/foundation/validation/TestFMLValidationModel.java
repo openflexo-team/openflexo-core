@@ -63,7 +63,7 @@ import org.openflexo.test.TestOrder;
  * 
  */
 @RunWith(OrderedRunner.class)
-public class TestViewPointValidationModel extends OpenflexoTestCase {
+public class TestFMLValidationModel extends OpenflexoTestCase {
 
 	static FMLValidationModel validationModel;
 
@@ -147,8 +147,6 @@ public class TestViewPointValidationModel extends OpenflexoTestCase {
 				.getModelEntity(org.openflexo.foundation.fml.PrimitiveRole.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
 				.getModelEntity(org.openflexo.foundation.fml.controlgraph.IterationAction.class) != null);
-		assertTrue(validationModel.getValidationModelFactory().getModelContext()
-				.getModelEntity(org.openflexo.foundation.FlexoProperty.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
 				.getModelEntity(org.openflexo.foundation.fml.controlgraph.ConditionalAction.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
