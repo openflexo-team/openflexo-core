@@ -57,7 +57,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.swing.Icon;
-import javax.swing.ImageIcon;
 import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -85,9 +84,6 @@ import org.openflexo.gina.swing.view.widget.JFIBBrowserWidget;
 import org.openflexo.gina.view.FIBView;
 import org.openflexo.gina.view.GinaViewFactory;
 import org.openflexo.gina.view.widget.FIBListWidget;
-import org.openflexo.icon.IconFactory;
-import org.openflexo.icon.IconLibrary;
-import org.openflexo.icon.IconMarker;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.rm.Resource;
 import org.openflexo.swing.TextFieldCustomPopup;
@@ -652,7 +648,7 @@ public abstract class FIBFlexoObjectSelector<T extends FlexoObject> extends Text
 		}
 
 		protected final Icon decorateIcon(FlexoObject object, Icon returned) {
-			if (getFlexoController() != null
+			/*if (getFlexoController() != null
 					&& getFlexoController().getApplicationContext().getAdvancedPrefs().getHightlightUncommentedItem() && object != null
 					&& !object.hasDescription()) {
 				if (returned instanceof ImageIcon) {
@@ -661,7 +657,7 @@ public abstract class FIBFlexoObjectSelector<T extends FlexoObject> extends Text
 				else {
 					logger.severe("CANNOT decorate a non ImageIcon for " + this);
 				}
-			}
+			}*/
 			return returned;
 		}
 

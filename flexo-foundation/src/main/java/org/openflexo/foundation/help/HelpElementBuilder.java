@@ -41,9 +41,7 @@ package org.openflexo.foundation.help;
 
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map.Entry;
 
-import org.jdom2.CDATA;
 import org.jdom2.Element;
 import org.openflexo.foundation.FlexoObject;
 
@@ -100,17 +98,17 @@ public class HelpElementBuilder {
 				Element action = new Element("action");
 				IEHyperlinkWidget b = i.next();
 				ActionNode actionNode = ci.getAllActionButtonPairs().get(b);
-
+	
 				Element d = buildDescriptionElement(actionNode);
 				if (d != null) {
 					action.addContent(d);
 				}
-
+	
 				Element sd = buildSpecificDescriptionElement(actionNode);
 				if (sd != null) {
 					action.addContent(sd);
 				}
-
+	
 				if (b.isCustomButton()) {
 					action.setAttribute("type", "Custom");
 					action.setAttribute("value", b.getValue() == null ? "undefined" : b.getValue());
@@ -132,7 +130,7 @@ public class HelpElementBuilder {
 	}*/
 
 	private static Element buildSpecificDescriptionElement(FlexoObject o) {
-		if (o.getSpecificDescriptions().size() > 0) {
+		/*if (o.getSpecificDescriptions().size() > 0) {
 			Element specificDescriptions = new Element("specificDescriptions");
 			for (Entry<String, String> e : o.getSpecificDescriptions().entrySet()) {
 				String k = e.getKey();
@@ -142,16 +140,16 @@ public class HelpElementBuilder {
 				specificDescriptions.addContent(element);
 			}
 			return specificDescriptions;
-		}
+		}*/
 		return null;
 	}
 
 	private static Element buildDescriptionElement(FlexoObject o) {
-		if (o.hasDescription()) {
+		/*if (o.hasDescription()) {
 			Element description = new Element("description");
 			description.addContent(new CDATA(o.getDescription()));
 			return description;
-		}
+		}*/
 		return null;
 	}
 

@@ -85,6 +85,15 @@ public interface ProjectData extends FlexoProjectObject, AccessibleProxyObject, 
 	public static final String PROJECT_VERSION_KEY = "projectVersion";
 	@PropertyIdentifier(type = FlexoProjectReference.class, cardinality = Cardinality.LIST)
 	public static final String IMPORTED_PROJECTS = "importedProjects";
+	@PropertyIdentifier(type = String.class)
+	String DESCRIPTION_KEY = "description";
+
+	@Getter(value = DESCRIPTION_KEY)
+	@XMLAttribute
+	public String getDescription();
+
+	@Setter(DESCRIPTION_KEY)
+	public void setDescription(String description);
 
 	@Getter(value = URI_KEY)
 	@XMLAttribute

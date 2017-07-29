@@ -43,6 +43,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import org.openflexo.foundation.DefaultFlexoObject;
 import org.openflexo.toolbox.StringUtils;
 
@@ -64,7 +65,7 @@ public class RepositoryFolder<R extends FlexoResource<?>, I> extends DefaultFlex
 	private I serializationArtefact;
 	private final ResourceRepository<R, I> resourceRepository;
 	private String name;
-	// private String fullQualifiedPath;
+	private String description;
 	private String repositoryContext = null;
 	private RepositoryFolder<R, I> parent;
 	private final ArrayList<RepositoryFolder<R, I>> children;
@@ -116,6 +117,18 @@ public class RepositoryFolder<R extends FlexoResource<?>, I> extends DefaultFlex
 			getPropertyChangeSupport().firePropertyChange(NAME_KEY, oldName, name);
 		}
 
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		if ((description == null && this.description != null) || (description != null && !description.equals(this.description))) {
+			String oldValue = this.description;
+			this.description = description;
+			getPropertyChangeSupport().firePropertyChange("description", oldValue, description);
+		}
 	}
 
 	public String getPathRelativeToRepository() {

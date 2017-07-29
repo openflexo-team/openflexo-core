@@ -52,9 +52,22 @@ public abstract class DRMObject extends DefaultFlexoObject implements Validable 
 	static final Logger logger = Logger.getLogger(DRMObject.class.getPackage().getName());
 
 	private DocItemFolder folder;
+	private String description;
 
 	public DRMObject() {
 		super();
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		if ((description == null && this.description != null) || (description != null && !description.equals(this.description))) {
+			String oldValue = this.description;
+			this.description = description;
+			getPropertyChangeSupport().firePropertyChange("description", oldValue, description);
+		}
 	}
 
 	public DocResourceCenter getDocResourceCenter() {

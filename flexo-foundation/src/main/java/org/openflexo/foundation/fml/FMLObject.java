@@ -63,6 +63,7 @@ import org.openflexo.model.validation.FixProposal;
 import org.openflexo.model.validation.ValidationError;
 import org.openflexo.model.validation.ValidationIssue;
 import org.openflexo.model.validation.ValidationRule;
+import org.openflexo.toolbox.StringUtils;
 
 /**
  * This is the root class for all objects involved in an {@link VirtualModel} (a FML "program").<br>
@@ -85,6 +86,8 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData/*<Vi
 
 	@PropertyIdentifier(type = String.class)
 	public static final String NAME_KEY = "name";
+	@PropertyIdentifier(type = String.class)
+	String DESCRIPTION_KEY = "description";
 
 	@Getter(value = NAME_KEY)
 	@XMLAttribute
@@ -92,6 +95,15 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData/*<Vi
 
 	@Setter(NAME_KEY)
 	public void setName(String name);
+
+	@Getter(value = DESCRIPTION_KEY)
+	@XMLAttribute
+	public String getDescription();
+
+	@Setter(DESCRIPTION_KEY)
+	public void setDescription(String description);
+
+	public boolean hasDescription();
 
 	/**
 	 * Return the URI of the {@link NamedFMLObject}<br>
@@ -209,6 +221,11 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData/*<Vi
 				notifyObservers(new NameChanged(oldName, name));
 				// getPropertyChangeSupport().firePropertyChange(NAME_KEY, oldName, name);
 			}
+		}
+
+		@Override
+		public boolean hasDescription() {
+			return StringUtils.isNotEmpty(getDescription());
 		}
 
 		@Override

@@ -46,10 +46,10 @@ import java.util.Hashtable;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import org.openflexo.foundation.action.AddFlexoProperty;
 import org.openflexo.foundation.action.DeleteFlexoProperty;
 import org.openflexo.foundation.action.FlexoActionType;
@@ -82,7 +82,6 @@ import org.openflexo.model.factory.EmbeddingType;
 import org.openflexo.model.factory.KeyValueCoding;
 import org.openflexo.model.factory.ModelFactory;
 import org.openflexo.model.validation.Validable;
-import org.openflexo.toolbox.HTMLUtils;
 
 /**
  * Super class for any object involved in Openflexo-Core (model layer)<br>
@@ -102,12 +101,6 @@ public interface FlexoObject extends AccessibleProxyObject, DeletableProxyObject
 	String USER_IDENTIFIER_KEY = "userIdentifier";
 	@PropertyIdentifier(type = long.class)
 	String FLEXO_ID_KEY = "flexoID";
-	@PropertyIdentifier(type = String.class)
-	String DESCRIPTION_KEY = "description";
-	@PropertyIdentifier(type = boolean.class)
-	String HAS_SPECIFIC_DESCRIPTIONS_KEY = "hasSpecificDescriptions";
-	@PropertyIdentifier(type = Map.class)
-	String SPECIFIC_DESCRIPTIONS_KEY = "specificDescriptions";
 	@PropertyIdentifier(type = Vector.class)
 	String CUSTOM_PROPERTIES_KEY = "customProperties";
 
@@ -143,40 +136,6 @@ public interface FlexoObject extends AccessibleProxyObject, DeletableProxyObject
 	 */
 	public String hash();
 
-	@Getter(value = DESCRIPTION_KEY)
-	@XMLAttribute
-	public String getDescription();
-
-	@Setter(DESCRIPTION_KEY)
-	public void setDescription(String description);
-
-	public boolean hasDescription();
-
-	@Getter(value = HAS_SPECIFIC_DESCRIPTIONS_KEY, defaultValue = "false")
-	@XMLAttribute(xmlTag = "useSpecificDescriptions")
-	public boolean getHasSpecificDescriptions();
-
-	@Setter(HAS_SPECIFIC_DESCRIPTIONS_KEY)
-	public void setHasSpecificDescriptions(boolean hasSpecificDescriptions);
-
-	public List<String> getSpecificDescriptionKeys();
-
-	@Getter(value = SPECIFIC_DESCRIPTIONS_KEY, ignoreType = true)
-	public Map<String, String> getSpecificDescriptions();
-
-	@Setter(SPECIFIC_DESCRIPTIONS_KEY)
-	public void setSpecificDescriptions(Map<String, String> specificDescriptions);
-
-	public boolean hasSpecificDescriptionForKey(String key);
-
-	public String getSpecificDescriptionForKey(String key);
-
-	@Adder(SPECIFIC_DESCRIPTIONS_KEY)
-	public void setSpecificDescriptionsForKey(String description, String key);
-
-	@Remover(SPECIFIC_DESCRIPTIONS_KEY)
-	public void removeSpecificDescriptionsWithKey(String key);
-
 	@Getter(value = CUSTOM_PROPERTIES_KEY, cardinality = Cardinality.LIST, inverse = FlexoProperty.OWNER_KEY)
 	@XMLElement
 	public List<FlexoProperty> getCustomProperties();
@@ -201,7 +160,7 @@ public interface FlexoObject extends AccessibleProxyObject, DeletableProxyObject
 
 	public List<FlexoObjectReference<?>> getReferencers();
 
-	public boolean hasSpecificHelp(String key);
+	// public boolean hasSpecificHelp(String key);
 
 	/**
 	 * Return the list of all references to FlexoConceptInstance where this FlexoObject is involved in a FlexoRole
@@ -291,11 +250,8 @@ public interface FlexoObject extends AccessibleProxyObject, DeletableProxyObject
 			if (resourceData != null && resourceData.getResource() != null) {
 				FlexoResource resource = resourceData.getResource();
 				return FlexoObjectReference.constructSerializationRepresentation(
-					this instanceof FlexoProjectObject ? ((FlexoProjectObject) this).getProject().getURI() : null,
-					resource.getURI(),
-					getUserIdentifier(),
-					Long.toString(getFlexoID()),
-					serializeClassName ? getClass().getName() : null);
+						this instanceof FlexoProjectObject ? ((FlexoProjectObject) this).getProject().getURI() : null, resource.getURI(),
+						getUserIdentifier(), Long.toString(getFlexoID()), serializeClassName ? getClass().getName() : null);
 			}
 		}
 		return null;
@@ -310,11 +266,7 @@ public interface FlexoObject extends AccessibleProxyObject, DeletableProxyObject
 
 		private Object context;
 
-		private String description;
-
-		private Map<String, String> specificDescriptions;
 		private List<FlexoProperty> customProperties;
-		private boolean hasSpecificDescriptions = false;
 
 		/**
 		 * A map that stores the different declared actions for each class
@@ -345,7 +297,6 @@ public interface FlexoObject extends AccessibleProxyObject, DeletableProxyObject
 		 * Default constructor for {@link FlexoObject}
 		 */
 		public FlexoObjectImpl() {
-			specificDescriptions = new TreeMap<String, String>();
 			customProperties = new ArrayList<FlexoProperty>();
 			// flexoConceptReferences = new
 			// ArrayList<FlexoObjectReference<FlexoConceptInstance>>();
@@ -765,87 +716,6 @@ public interface FlexoObject extends AccessibleProxyObject, DeletableProxyObject
 			return !isImported();
 		}
 
-		@Override
-		public String getDescription() {
-			if (description != null && description.startsWith("<html>First")) {
-				new Exception().printStackTrace();
-			}
-			return description;
-		}
-
-		@Override
-		public void setDescription(String description) {
-			if (!stringHasChanged(this.description, description)) {
-				return;
-			}
-			String old = this.description;
-			if (old == null && description == null) {
-				return;
-			}
-			if (old == null || !old.equals(description)) {
-				this.description = description;
-				// setChanged();
-				// notifyObservers(new DataModification("description", old, description));
-				getPropertyChangeSupport().firePropertyChange(DESCRIPTION_KEY, old, description);
-			}
-		}
-
-		public String getFullDescriptionWithOnlyBodyContent(String specificDescriptionType) {
-			StringBuilder sb = new StringBuilder();
-
-			if (getDescription() != null) {
-				String description = HTMLUtils.extractBodyContent(getDescription());
-				sb.append(description != null ? description : getDescription());
-			}
-
-			if (getHasSpecificDescriptions() && specificDescriptionType != null
-					&& getSpecificDescriptionForKey(specificDescriptionType) != null) {
-				String specifDesc = HTMLUtils.extractBodyContent(getSpecificDescriptionForKey(specificDescriptionType));
-				sb.append(specifDesc != null ? specifDesc : getSpecificDescriptionForKey(specificDescriptionType));
-			}
-
-			return sb.toString().trim();
-		}
-
-		@Override
-		public boolean getHasSpecificDescriptions() {
-			return hasSpecificDescriptions;
-		}
-
-		@Override
-		public void setHasSpecificDescriptions(boolean hasSpecificDescription) {
-			if (this.hasSpecificDescriptions == hasSpecificDescription) {
-				return;
-			}
-			boolean old = this.hasSpecificDescriptions;
-			this.hasSpecificDescriptions = hasSpecificDescription;
-			setChanged();
-			notifyObservers(new DataModification("hasSpecificDescriptions", old, hasSpecificDescription));
-		}
-
-		@Override
-		public List<String> getSpecificDescriptionKeys() {
-			if (!getHasSpecificDescriptions()) {
-				return null;
-			}
-			return new ArrayList<String>(getSpecificDescriptions().keySet());
-		}
-
-		@Override
-		public Map<String, String> getSpecificDescriptions() {
-			return specificDescriptions;
-		}
-
-		@Override
-		public void setSpecificDescriptions(Map<String, String> specificDescriptions) {
-			if (this.specificDescriptions == null) {
-				this.specificDescriptions = new TreeMap<String, String>();
-			}
-			else {
-				this.specificDescriptions = specificDescriptions;
-			}
-		}
-
 		public static LocalizedDelegate getLocales(FlexoServiceManager serviceManager) {
 			if (serviceManager != null) {
 				return serviceManager.getLocalizationService().getFlexoLocalizer();
@@ -985,11 +855,6 @@ public interface FlexoObject extends AccessibleProxyObject, DeletableProxyObject
 			}
 		}
 
-		@Override
-		public boolean hasDescription() {
-			return getDescription() != null && getDescription().trim().length() > 0;
-		}
-
 		/**
 		 * This property is used by the hightlightUncommentedItem mode. The decoration meaning that the description is missing will only
 		 * appears on object for wich this method return true. So this method has to be overridden in subclass.
@@ -998,34 +863,6 @@ public interface FlexoObject extends AccessibleProxyObject, DeletableProxyObject
 		 */
 		public boolean isDescriptionImportant() {
 			return false;
-		}
-
-		@Override
-		public boolean hasSpecificHelp(String key) {
-			return getSpecificDescriptionForKey(key) != null && getSpecificDescriptionForKey(key).length() > 0;
-		}
-
-		@Override
-		public boolean hasSpecificDescriptionForKey(String key) {
-			return getSpecificDescriptionForKey(key) != null && getSpecificDescriptionForKey(key).trim().length() > 0;
-		}
-
-		@Override
-		public String getSpecificDescriptionForKey(String key) {
-			return specificDescriptions.get(key);
-		}
-
-		@Override
-		public void setSpecificDescriptionsForKey(String description, String key) {
-			specificDescriptions.put(key, description);
-			setChanged();
-			DataModification dm = new DataModification("specificDescriptions", null, description);
-			notifyObservers(dm);
-		}
-
-		@Override
-		public void removeSpecificDescriptionsWithKey(String key) {
-			specificDescriptions.remove(key);
 		}
 
 		/**
@@ -1039,8 +876,7 @@ public interface FlexoObject extends AccessibleProxyObject, DeletableProxyObject
 			// System.out.println("> Compute getEmbeddedValidableObjects() for " + this.getClass() + " : " + this);
 			PamelaResource resource = getPamelaResource();
 			if (resource != null) {
-				List<?> embeddedObjects = resource.getFactory().getEmbeddedObjects(this,
-						EmbeddingType.CLOSURE);
+				List<?> embeddedObjects = resource.getFactory().getEmbeddedObjects(this, EmbeddingType.CLOSURE);
 				List<Validable> returned = new ArrayList<Validable>();
 				for (Object e : embeddedObjects) {
 					if (e instanceof Validable) {

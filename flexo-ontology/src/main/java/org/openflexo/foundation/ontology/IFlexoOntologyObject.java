@@ -77,7 +77,6 @@ public interface IFlexoOntologyObject<TA extends TechnologyAdapter> extends Tech
 	 * 
 	 * @return
 	 */
-	@Override
 	public String getDescription();
 
 	/**

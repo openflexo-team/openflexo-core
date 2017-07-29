@@ -1147,7 +1147,6 @@ public class FlexoProject extends FileSystemBasedResourceCenter
 		}
 	}
 
-	@Override
 	public String getDescription() {
 		if (getProjectData() != null) {
 			return getProjectData().getDescription();
@@ -1157,7 +1156,6 @@ public class FlexoProject extends FileSystemBasedResourceCenter
 		}
 	}
 
-	@Override
 	public void setDescription(String description) {
 		if (getProjectData() != null) {
 			getProjectData().setDescription(description);
