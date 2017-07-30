@@ -70,6 +70,11 @@ public class FMLTechnologyPerspective extends TechnologyPerspective<FMLTechnolog
 	}
 
 	@Override
+	public String getName() {
+		return "Textual-FML perspective";
+	}
+
+	@Override
 	public ImageIcon getActiveIcon() {
 		return FMLIconLibrary.FML_ICON;
 	}
