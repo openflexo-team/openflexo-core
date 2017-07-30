@@ -119,6 +119,7 @@ import org.openflexo.foundation.fml.rt.editionaction.SelectFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.SelectVirtualModelInstance;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceType;
+import org.openflexo.foundation.task.Progress;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterResource;
@@ -640,6 +641,7 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 		if (resource instanceof VirtualModelResource) {
 			VirtualModel vm = ((VirtualModelResource) resource).getLoadedVirtualModel();
 			try {
+				Progress.progress(getLocales().localizedForKey("validating_virtual_model..."));
 				FMLValidationReport validationReport = (FMLValidationReport) getFMLValidationModel().validate(vm);
 				System.out.println("VALIDATED: " + validationReport.getFilteredIssues());
 				validationReports.put(vm, validationReport);
