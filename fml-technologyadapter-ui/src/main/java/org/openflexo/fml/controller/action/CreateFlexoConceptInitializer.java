@@ -88,6 +88,7 @@ public class CreateFlexoConceptInitializer extends ActionInitializer {
 		return new FlexoActionFinalizer<CreateFlexoConcept>() {
 			@Override
 			public boolean run(EventObject e, CreateFlexoConcept action) {
+				action.getNewFlexoConcept().setAuthor(getController().getApplicationContext().getGeneralPreferences().getUserName());
 				if (action.switchNewlyCreatedFlexoConcept) {
 					getController().setCurrentEditedObjectAsModuleView(action.getNewFlexoConcept());
 				}

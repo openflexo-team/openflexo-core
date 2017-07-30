@@ -86,7 +86,7 @@ public interface FlexoConceptBehaviouralFacet extends FlexoConceptObject, FlexoF
 
 		@Override
 		public List<FlexoBehaviour> getBehaviours() {
-			return getFlexoConcept().getFlexoBehaviours();
+			return getFlexoConcept().getDeclaredFlexoBehaviours();
 		}
 
 		protected void notifiedBehavioursChanged(FlexoBehaviour oldValue, FlexoBehaviour newValue) {

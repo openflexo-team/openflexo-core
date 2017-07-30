@@ -42,7 +42,6 @@ import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.DataBinding;
-import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstanceModelFactory;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
@@ -145,13 +144,13 @@ public interface FlexoConceptInstanceRole extends FlexoRole<FlexoConceptInstance
 			logger.severe("############# Finalized FlexoConceptInstanceRole " + Integer.toHexString(hashCode()) + toString());
 		}*/
 
-		@Override
+		/*@Override
 		public String getFMLRepresentation(FMLRepresentationContext context) {
 			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
 			out.append("FlexoRole " + getName() + " as FlexoConceptInstance conformTo " + getTypeDescription() + " cardinality="
 					+ getCardinality() + ";", context);
 			return out.toString();
-		}
+		}*/
 
 		@Override
 		public Type getType() {

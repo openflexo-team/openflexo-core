@@ -38,6 +38,7 @@
 
 package org.openflexo.foundation.fml;
 
+import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.controlgraph.EmptyControlGraph;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
@@ -135,7 +136,7 @@ public abstract interface GetSetProperty<T> extends GetProperty<T> {
 			}
 		}
 
-		@Override
+		/*@Override
 		public String getFMLRepresentation(FMLRepresentationContext context) {
 			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
 			out.append("FlexoProperty " + getName() + " as " + getTypeDescription() + " cardinality=" + getCardinality() + " get={",
@@ -152,8 +153,36 @@ public abstract interface GetSetProperty<T> extends GetProperty<T> {
 			}
 			out.append("};", context);
 			out.append(StringUtils.LINE_SEPARATOR, context);
-
+		
 			return out.toString();
+		}*/
+
+		private String getSetFMLAnnotation(FMLRepresentationContext context) {
+			return "@" + getImplementedInterface().getSimpleName() + "(value=" + '"' + getName() + '"' + ", access=set)";
+		}
+
+		@Override
+		public String getFMLRepresentation(FMLRepresentationContext context) {
+			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
+			if (getSetControlGraph() != null && !(getSetControlGraph() instanceof EmptyControlGraph)) {
+				out.append(StringUtils.LINE_SEPARATOR, context);
+				out.append(getSetFMLAnnotation(context), context);
+				out.append(StringUtils.LINE_SEPARATOR, context);
+				out.append("public void " + getSetAccessorName() + "(" + TypeUtils.simpleRepresentation(getResultingType()) + " value) {",
+						context);
+				out.append(StringUtils.LINE_SEPARATOR, context);
+				out.append(getSetControlGraph().getFMLRepresentation(context), context, 1);
+				out.append(StringUtils.LINE_SEPARATOR, context);
+				out.append("}", context);
+			}
+			return super.getFMLRepresentation(context) + out.toString();
+		}
+
+		private String getSetAccessorName() {
+			if (StringUtils.isNotEmpty(getName())) {
+				return "set" + getName().substring(0, 1).toUpperCase() + getName().substring(1);
+			}
+			return "set";
 		}
 
 	}

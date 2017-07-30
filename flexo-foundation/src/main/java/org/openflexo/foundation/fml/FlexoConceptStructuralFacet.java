@@ -43,7 +43,6 @@ import java.util.List;
 import org.openflexo.connie.BindingModel;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
-import org.openflexo.toolbox.ConcatenedList;
 
 @ModelEntity
 @ImplementationClass(FlexoConceptStructuralFacet.FlexoConceptStructuralFacetImpl.class)
@@ -68,7 +67,7 @@ public interface FlexoConceptStructuralFacet extends FlexoConceptObject, FlexoFa
 		@Override
 		public void setFlexoConcept(FlexoConcept flexoConcept) {
 			this.flexoConcept = flexoConcept;
-			properties = null;
+			// properties = null;
 		}
 
 		@Override
@@ -86,11 +85,12 @@ public interface FlexoConceptStructuralFacet extends FlexoConceptObject, FlexoFa
 			return getFlexoConcept().getURI();
 		}
 
-		private List<FlexoProperty<?>> properties = null;
+		// private List<FlexoProperty<?>> properties = null;
 
 		@Override
 		public List<FlexoProperty<?>> getProperties() {
-			if (properties == null) {
+			return getFlexoConcept().getDeclaredProperties();
+			/*if (properties == null) {
 				if (getFlexoConcept() instanceof VirtualModel) {
 					properties = new ConcatenedList<FlexoProperty<?>>(((VirtualModel) getFlexoConcept()).getModelSlots(),
 							getFlexoConcept().getFlexoProperties());
@@ -98,7 +98,7 @@ public interface FlexoConceptStructuralFacet extends FlexoConceptObject, FlexoFa
 					properties = getFlexoConcept().getFlexoProperties();
 				}
 			}
-			return properties;
+			return properties;*/
 		}
 
 		public void notifiedPropertiesChanged(FlexoProperty<?> oldValue, FlexoProperty<?> newValue) {

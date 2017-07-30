@@ -103,20 +103,42 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 		/**
 		 * Default visibility: limited to FML scope, not available from public API
 		 */
-		Default,
+		Default {
+			@Override
+			public String getFMLRepresentation() {
+				return "";
+			}
+		},
 		/**
 		 * Public visibility: behaviours are accessible from everywhere. In the whole tooling, it means that for example behaviours are
 		 * available through right-clicking on instances
 		 */
-		Public,
+		Public {
+			@Override
+			public String getFMLRepresentation() {
+				return "public ";
+			}
+		},
 		/**
 		 * Visibility restricted to current FlexoConcept hierarchy and current ViewPoint
 		 */
-		Protected,
+		Protected {
+			@Override
+			public String getFMLRepresentation() {
+				return "protected ";
+			}
+		},
 		/**
 		 * Visibility restricted to current FlexoConcept
 		 */
-		Private
+		Private {
+			@Override
+			public String getFMLRepresentation() {
+				return "private ";
+			}
+		};
+
+		public abstract String getFMLRepresentation();
 	}
 
 	@PropertyIdentifier(type = FlexoConcept.class)
@@ -354,10 +376,16 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 			return (getFlexoConcept() != null ? getFlexoConcept().getStringRepresentation() : "null") + "." + getName();
 		}
 
+		protected String getFMLAnnotation(FMLRepresentationContext context) {
+			return "@" + getImplementedInterface().getSimpleName();
+		}
+
 		@Override
-		public String getFMLRepresentation(FMLRepresentationContext context) {
+		public final String getFMLRepresentation(FMLRepresentationContext context) {
 			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
-			out.append(getTechnologyAdapterIdentifier() + "::" + getImplementedInterface().getSimpleName() + " " + getName() + "("
+			out.append(getFMLAnnotation(context), context);
+			out.append(StringUtils.LINE_SEPARATOR, context);
+			out.append(getVisibility().getFMLRepresentation() + TypeUtils.simpleRepresentation(getReturnType()) + " " + getName() + "("
 					+ getParametersFMLRepresentation(context) + ") {", context);
 			out.append(StringUtils.LINE_SEPARATOR, context);
 			if (getControlGraph() != null) {

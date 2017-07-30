@@ -102,7 +102,7 @@ public interface DeclarationAction<T> extends AbstractAssignationAction<T> {
 		@Override
 		public String getFMLRepresentation(FMLRepresentationContext context) {
 			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
-			out.append(getFullQualifiedDeclarationTypeAsString() + " " + getVariableName() + " = "
+			out.append(getDeclarationTypeAsString() + " " + getVariableName() + " = "
 					+ (getAssignableAction() != null ? getAssignableAction().getFMLRepresentation() : "") + ";", context);
 			return out.toString();
 		}

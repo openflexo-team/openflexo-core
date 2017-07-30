@@ -55,7 +55,6 @@ import org.openflexo.connie.expr.BinaryOperatorExpression;
 import org.openflexo.connie.expr.BooleanBinaryOperator;
 import org.openflexo.connie.expr.Expression;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
-import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.VirtualModel;
@@ -231,12 +230,9 @@ public interface SelectFlexoConceptInstance<VMI extends VirtualModelInstance<VMI
 
 		@Override
 		public String getFMLRepresentation(FMLRepresentationContext context) {
-			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
-			out.append(getTechnologyAdapterIdentifier() + "::" + getImplementedInterface().getSimpleName()
-					+ (getReceiver() != null ? " from " + getReceiver() : "") + " as "
-					+ (getFlexoConceptType() != null ? getFlexoConceptType().getName() : "No Type Specified")
-					+ (getConditions().size() > 0 ? " " + getWhereClausesFMLRepresentation(context) : ""), context);
-			return out.toString();
+			return getReceiver().toString() + "." + getImplementedInterface().getSimpleName() + "("
+					+ (getFlexoConceptType() != null ? "type=" + getFlexoConceptType().getName() : "type=?")
+					+ (getConditions().size() > 0 ? ",where=" + getWhereClausesFMLRepresentation(context) : "") + ")";
 		}
 
 		@Override

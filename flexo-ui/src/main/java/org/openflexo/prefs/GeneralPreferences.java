@@ -82,6 +82,7 @@ public interface GeneralPreferences extends PreferencesContainer {
 	public static final String FAVORITE_MODULE_KEY = "favoriteModule";
 	public static final String DEFAULT_DOC_FORMAT = "defaultDocFormat";
 	public static final String USER_IDENTIFIER_KEY = "userIdentifier";
+	public static final String USER_NAME_KEY = "userName";
 	public static final String LAST_OPENED_PROJECTS_1 = "lastProjects_1";
 	public static final String LAST_OPENED_PROJECTS_2 = "lastProjects_2";
 	public static final String LAST_OPENED_PROJECTS_3 = "lastProjects_3";
@@ -175,6 +176,13 @@ public interface GeneralPreferences extends PreferencesContainer {
 	@Override
 	@Setter(USER_IDENTIFIER_KEY)
 	public void setUserIdentifier(String aUserIdentifier);
+
+	@Getter(USER_NAME_KEY)
+	@XMLAttribute
+	public String getUserName();
+
+	@Setter(USER_NAME_KEY)
+	public void setUserName(String aUserName);
 
 	@Getter(value = NOTIFY_VALID_PROJECT, defaultValue = "true")
 	@XMLAttribute

@@ -89,6 +89,7 @@ public class CreateContainedVirtualModelInitializer extends ActionInitializer<Cr
 		return new FlexoActionFinalizer<CreateContainedVirtualModel>() {
 			@Override
 			public boolean run(EventObject e, CreateContainedVirtualModel action) {
+				action.getNewVirtualModel().setAuthor(getController().getApplicationContext().getGeneralPreferences().getUserName());
 				getController().selectAndFocusObject(action.getNewVirtualModel());
 				return true;
 			}

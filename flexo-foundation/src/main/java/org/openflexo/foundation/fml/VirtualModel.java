@@ -815,37 +815,12 @@ public interface VirtualModel extends FlexoConcept, VirtualModelObject, FlexoMet
 		}
 
 		@Override
-		public String getFMLRepresentation(FMLRepresentationContext context) {
+		protected String getFMLAnnotation(FMLRepresentationContext context) {
+			return "@VirtualModel(uri=" + '"' + getURI() + '"' + ")";
+		}
+
+		protected String getFMLDeclaredConcepts(FMLRepresentationContext context) {
 			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
-			out.append("VirtualModel " + getName(), context);
-			out.append(" {" + StringUtils.LINE_SEPARATOR, context);
-
-			/*if (getModelSlots().size() > 0) {
-				out.append(StringUtils.LINE_SEPARATOR, context);
-				for (ModelSlot<?> modelSlot : getModelSlots()) {
-					// if (modelSlot.getMetaModelResource() != null) {
-					out.append(modelSlot.getFMLRepresentation(context), context, 1);
-					out.append(StringUtils.LINE_SEPARATOR, context, 1);
-					// }
-				}
-			}*/
-
-			if (getDeclaredProperties().size() > 0) {
-				out.append(StringUtils.LINE_SEPARATOR, context);
-				for (FlexoProperty<?> pr : getDeclaredProperties()) {
-					out.append(pr.getFMLRepresentation(context), context, 1);
-					out.append(StringUtils.LINE_SEPARATOR, context);
-				}
-			}
-
-			if (getFlexoBehaviours().size() > 0) {
-				out.append(StringUtils.LINE_SEPARATOR, context);
-				for (FlexoBehaviour es : getFlexoBehaviours()) {
-					out.append(es.getFMLRepresentation(context), context, 1);
-					out.append(StringUtils.LINE_SEPARATOR, context);
-				}
-			}
-
 			if (getFlexoConcepts().size() > 0) {
 				out.append(StringUtils.LINE_SEPARATOR, context);
 				for (FlexoConcept ep : getFlexoConcepts()) {
@@ -853,7 +828,34 @@ public interface VirtualModel extends FlexoConcept, VirtualModelObject, FlexoMet
 					out.append(StringUtils.LINE_SEPARATOR, context);
 				}
 			}
+			return out.toString();
+		}
+
+		@Override
+		public String getFMLRepresentation(FMLRepresentationContext context) {
+			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
+
+			for (UseModelSlotDeclaration msDecl : getUseDeclarations()) {
+				out.append("use " + msDecl.getModelSlotClass().getCanonicalName() + ";" + StringUtils.LINE_SEPARATOR, context);
+			}
+			out.append(StringUtils.LINE_SEPARATOR, context);
+
+			out.append(getFMLDocHeader(context), context);
+
+			out.append(getFMLAnnotation(context), context);
+			out.append(StringUtils.LINE_SEPARATOR, context);
+
+			out.append("public class " + getName() + getExtends(context), context);
+			out.append(" {" + StringUtils.LINE_SEPARATOR, context);
+
+			out.append(getFMLDeclaredProperties(context), context);
+
+			out.append(getFMLDeclaredBehaviours(context), context);
+
+			out.append(getFMLDeclaredConcepts(context), context);
+
 			out.append("}" + StringUtils.LINE_SEPARATOR, context);
+
 			return out.toString();
 		}
 

@@ -46,15 +46,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.FMLModelFactory;
-import org.openflexo.foundation.fml.FMLRepresentationContext;
-import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.GetProperty;
 import org.openflexo.foundation.fml.GetSetProperty;
+import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelObject;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraphVisitor;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
@@ -340,7 +338,7 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>>
 			this.isRequired = isRequired;
 		}
 
-		@Override
+		/*@Override
 		public String getFMLRepresentation(FMLRepresentationContext context) {
 			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
 			out.append("ModelSlot " + getName() + " as "
@@ -348,8 +346,9 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>>
 					+ getImplementedInterface().getSimpleName() + " " + getFMLRepresentationForConformToStatement() + "required="
 					+ getIsRequired() + " readOnly=" + getIsReadOnly() + ";", context);
 			return out.toString();
-		}
+		}*/
 
+		@Deprecated
 		protected String getFMLRepresentationForConformToStatement() {
 			return "";
 		}

@@ -48,6 +48,7 @@ import java.util.List;
 import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.type.ParameterizedTypeImpl;
 import org.openflexo.connie.type.TypeUtils;
+import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.model.annotations.CloningStrategy;
 import org.openflexo.model.annotations.CloningStrategy.StrategyType;
@@ -398,6 +399,19 @@ public abstract interface FlexoProperty<T> extends FlexoConceptObject {
 				getFlexoConcept().removeFromFlexoProperties(this);
 			}
 			return performSuperDelete(context);
+		}
+
+		protected String getFMLAnnotation(FMLRepresentationContext context) {
+			return "@" + getImplementedInterface().getSimpleName();
+		}
+
+		@Override
+		public String getFMLRepresentation(FMLRepresentationContext context) {
+			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
+			out.append(getFMLAnnotation(context), context);
+			out.append(StringUtils.LINE_SEPARATOR, context);
+			out.append("public " + TypeUtils.simpleRepresentation(getResultingType()) + " " + getName() + ";", context);
+			return out.toString();
 		}
 
 	}

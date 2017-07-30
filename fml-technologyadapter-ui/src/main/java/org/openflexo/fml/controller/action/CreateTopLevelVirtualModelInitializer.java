@@ -92,6 +92,7 @@ public class CreateTopLevelVirtualModelInitializer
 		return new FlexoActionFinalizer<CreateTopLevelVirtualModel>() {
 			@Override
 			public boolean run(EventObject e, CreateTopLevelVirtualModel action) {
+				action.getNewVirtualModel().setAuthor(getController().getApplicationContext().getGeneralPreferences().getUserName());
 				getController().selectAndFocusObject(action.getNewVirtualModel());
 				return true;
 			}

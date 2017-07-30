@@ -42,13 +42,7 @@
 				name="AuthorLabel" localize="true" />
 			<TextField index="1" data="data.author"
 				constraints="twocols(expandHorizontally=true;expandVertically=false;index=1;location=right)"
-				name="AuthorTextField" readOnly="true" localize="true" columns="10" />
-			<Label label="version" index="2"
-				constraints="twocols(expandHorizontally=false;expandVertically=false;index=2;location=left)"
-				name="VersionLabel" localize="true" />
-			<TextField index="3" data="data.version.toString"
-				constraints="twocols(expandHorizontally=true;expandVertically=false;index=3;location=right)"
-				name="VersionTextField" readOnly="true" localize="true" columns="10" />
+				name="AuthorTextField" localize="true" columns="10" />
 			<Label manageDynamicModel="false" useScrollBar="false"
 				localize="true" align="left" index="10"
 				constraints="twocols(expandHorizontally=true;expandVertically=false;location=left)"

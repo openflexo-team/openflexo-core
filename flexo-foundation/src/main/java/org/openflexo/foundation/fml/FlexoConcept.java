@@ -1579,23 +1579,44 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 			return false;
 		}
 
-		@Override
-		public String getFMLRepresentation(FMLRepresentationContext context) {
-			// Voir du cote de GeneratorFormatter pour formatter tout ca
-
-			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
-			out.append("FlexoConcept " + getName(), context);
+		protected String getExtends(FMLRepresentationContext context) {
 			if (getParentFlexoConcepts().size() > 0) {
-				out.append(" extends ", context);
+				StringBuffer sb = new StringBuffer();
+				sb.append(" extends ");
 				boolean isFirst = true;
 				for (FlexoConcept parent : getParentFlexoConcepts()) {
-					out.append((isFirst ? "" : ",") + parent.getName(), context);
+					sb.append((isFirst ? "" : ",") + parent.getName());
 					isFirst = false;
 				}
-
+				sb.append(" ");
+				return sb.toString();
 			}
-			out.append(" {", context);
+			return "";
+		}
 
+		protected String getFMLAnnotation(FMLRepresentationContext context) {
+			return "@FlexoConcept";
+		}
+
+		protected String getFMLDocHeader(FMLRepresentationContext context) {
+			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
+			out.append("/**" + StringUtils.LINE_SEPARATOR, context);
+			if (getDescription() != null && StringUtils.isNotEmpty(getDescription().trim())) {
+				out.append(" * " + getDescription().trim() + StringUtils.LINE_SEPARATOR, context);
+			}
+			out.append(" * " + StringUtils.LINE_SEPARATOR, context);
+			if (StringUtils.isNotEmpty(getAuthor())) {
+				out.append(" * @author " + getAuthor() + StringUtils.LINE_SEPARATOR, context);
+			}
+			if (this instanceof VirtualModel) {
+				out.append(" * @version " + ((VirtualModel) this).getVersion() + StringUtils.LINE_SEPARATOR, context);
+			}
+			out.append(" */" + StringUtils.LINE_SEPARATOR, context);
+			return out.toString();
+		}
+
+		protected String getFMLDeclaredProperties(FMLRepresentationContext context) {
+			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
 			if (getDeclaredProperties().size() > 0) {
 				out.append(StringUtils.LINE_SEPARATOR, context);
 				for (FlexoProperty<?> pr : getDeclaredProperties()) {
@@ -1603,7 +1624,11 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 					out.append(StringUtils.LINE_SEPARATOR, context);
 				}
 			}
+			return out.toString();
+		}
 
+		protected String getFMLDeclaredBehaviours(FMLRepresentationContext context) {
+			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
 			if (getFlexoBehaviours().size() > 0) {
 				out.append(StringUtils.LINE_SEPARATOR, context);
 				for (FlexoBehaviour es : getFlexoBehaviours()) {
@@ -1611,8 +1636,43 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 					out.append(StringUtils.LINE_SEPARATOR, context);
 				}
 			}
+			return out.toString();
+		}
+
+		protected String getFMLDeclaredInnerConcepts(FMLRepresentationContext context) {
+			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
+			if (getEmbeddedFlexoConcepts().size() > 0) {
+				out.append(StringUtils.LINE_SEPARATOR, context);
+				for (FlexoConcept ep : getEmbeddedFlexoConcepts()) {
+					out.append(ep.getFMLRepresentation(context), context, 1);
+					out.append(StringUtils.LINE_SEPARATOR, context);
+				}
+			}
+			return out.toString();
+		}
+
+		@Override
+		public String getFMLRepresentation(FMLRepresentationContext context) {
+			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
+
+			if (StringUtils.isNotEmpty(getDescription())) {
+				out.append(getFMLDocHeader(context), context);
+			}
+
+			out.append(getFMLAnnotation(context), context);
+			out.append(StringUtils.LINE_SEPARATOR, context);
+
+			out.append("public class " + getName() + getExtends(context), context);
+			out.append(" {" + StringUtils.LINE_SEPARATOR, context);
+
+			out.append(getFMLDeclaredProperties(context), context);
+
+			out.append(getFMLDeclaredBehaviours(context), context);
+
+			out.append(getFMLDeclaredInnerConcepts(context), context);
 
 			out.append("}" + StringUtils.LINE_SEPARATOR, context);
+
 			return out.toString();
 		}
 

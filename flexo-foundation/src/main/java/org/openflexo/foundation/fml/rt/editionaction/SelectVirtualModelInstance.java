@@ -48,18 +48,16 @@ import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.FlexoException;
-import org.openflexo.foundation.fml.FMLRepresentationContext;
-import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelInstanceType;
 import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.foundation.fml.editionaction.FetchRequest;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
-import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
+import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.logging.FlexoLogger;
@@ -76,8 +74,8 @@ import org.openflexo.model.validation.ValidationIssue;
 import org.openflexo.model.validation.ValidationRule;
 
 /**
- * Generic {@link FetchRequest} allowing to retrieve a selection of some {@link FMLRTVirtualModelInstance} matching some conditions and a given
- * {@link VirtualModel}.<br>
+ * Generic {@link FetchRequest} allowing to retrieve a selection of some {@link FMLRTVirtualModelInstance} matching some conditions and a
+ * given {@link VirtualModel}.<br>
  * 
  * @author sylvain
  * 
@@ -115,8 +113,8 @@ public interface SelectVirtualModelInstance<VMI extends VirtualModelInstance<VMI
 
 	public VirtualModel getAddressedVirtualModel();
 
-	public static abstract class SelectVirtualModelInstanceImpl<VMI extends VirtualModelInstance<VMI, ?>> extends
-			FetchRequestImpl<FMLRTModelSlot<VMI, ?>, VMI, VirtualModelInstance<?, ?>> implements SelectVirtualModelInstance<VMI> {
+	public static abstract class SelectVirtualModelInstanceImpl<VMI extends VirtualModelInstance<VMI, ?>>
+			extends FetchRequestImpl<FMLRTModelSlot<VMI, ?>, VMI, VirtualModelInstance<?, ?>> implements SelectVirtualModelInstance<VMI> {
 
 		protected static final Logger logger = FlexoLogger.getLogger(SelectVirtualModelInstance.class.getPackage().getName());
 
@@ -160,16 +158,6 @@ public interface SelectVirtualModelInstance<VMI extends VirtualModelInstance<VMI
 			String whereClauses = getWhereClausesFMLRepresentation(null);
 			return "(type=" + (getVirtualModelType() != null ? getVirtualModelType().getName() : "null")
 					+ (whereClauses != null ? "," + whereClauses : "") + ")";
-		}
-
-		@Override
-		public String getFMLRepresentation(FMLRepresentationContext context) {
-			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
-			out.append(getTechnologyAdapterIdentifier() + "::" + getImplementedInterface().getSimpleName()
-					+ (getContainer() != null ? " from " + getContainer() : "") + " as "
-					+ (getVirtualModelType() != null ? getVirtualModelType().getName() : "No Type Specified")
-					+ (getConditions().size() > 0 ? " " + getWhereClausesFMLRepresentation(context) : ""), context);
-			return out.toString();
 		}
 
 		@Override

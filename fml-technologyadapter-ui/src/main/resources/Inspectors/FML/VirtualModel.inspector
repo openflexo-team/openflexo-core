@@ -53,6 +53,18 @@
 				constraints="twocols(expandHorizontally=true;expandVertically=false;index=1;location=right)"
 				name="Version" readOnly="true" localize="true" columns="10" />
 		</Tab>
+		<Tab title="Doc" layout="twocols" titleFont="SansSerif,0,11"
+			darkLevel="0" index="3" font="SansSerif,0,11" useScrollBar="true"
+			horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED"
+			verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED" name="DocTab">
+			<Label label="version" index="2"
+				constraints="twocols(expandHorizontally=false;expandVertically=false;index=2;location=left)"
+				name="VersionLabel" localize="true" />
+			<TextField index="3" data="data.version.toString"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;index=3;location=right)"
+				name="VersionTextField" readOnly="true" localize="true" columns="10" />
+		</Tab>
+		
 	</TabPanel>
 	<LocalizedDictionary />
 	<Parameter name="title" value="VirtualModel" />

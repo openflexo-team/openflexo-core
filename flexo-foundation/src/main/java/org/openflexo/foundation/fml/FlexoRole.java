@@ -40,6 +40,7 @@ package org.openflexo.foundation.fml;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
+
 import org.openflexo.connie.BindingEvaluationContext;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
@@ -48,7 +49,6 @@ import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.connie.expr.BindingValue;
 import org.openflexo.foundation.DataModification;
-import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.binding.FlexoConceptFlexoPropertyPathElement;
 import org.openflexo.foundation.fml.binding.ModelSlotBindingVariable;
 import org.openflexo.foundation.fml.binding.VirtualModelModelSlotPathElement;
@@ -407,7 +407,7 @@ public interface FlexoRole<T> extends FlexoProperty<T> {
 			return null;
 		}
 
-		@Override
+		/*@Override
 		public String getFMLRepresentation(FMLRepresentationContext context) {
 			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
 			out.append("FlexoRole " + getName() + " as "
@@ -415,7 +415,7 @@ public interface FlexoRole<T> extends FlexoProperty<T> {
 							? getModelSlot().getModelSlotTechnologyAdapter().getIdentifier() : "???")
 					+ "::" + getImplementedInterface().getSimpleName() + " conformTo " + getTypeDescription() + ";", context);
 			return out.toString();
-		}
+		}*/
 
 		@Override
 		public LocalizedDelegate getLocales() {
@@ -446,6 +446,11 @@ public interface FlexoRole<T> extends FlexoProperty<T> {
 			if (dataBinding == getContainer()) {
 				getPropertyChangeSupport().firePropertyChange(MODEL_SLOT_KEY, null, getModelSlot());
 			}
+		}
+
+		@Override
+		protected String getFMLAnnotation(FMLRepresentationContext context) {
+			return "@" + getImplementedInterface().getSimpleName() + "(cardinality=" + getCardinality() + ",readOnly=" + isReadOnly() + ")";
 		}
 
 	}

@@ -88,6 +88,8 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData/*<Vi
 	public static final String NAME_KEY = "name";
 	@PropertyIdentifier(type = String.class)
 	String DESCRIPTION_KEY = "description";
+	@PropertyIdentifier(type = String.class)
+	String AUTHOR_KEY = "author";
 
 	@Getter(value = NAME_KEY)
 	@XMLAttribute
@@ -95,6 +97,13 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData/*<Vi
 
 	@Setter(NAME_KEY)
 	public void setName(String name);
+
+	@Getter(value = AUTHOR_KEY)
+	@XMLAttribute
+	public String getAuthor();
+
+	@Setter(AUTHOR_KEY)
+	public void setAuthor(String author);
 
 	@Getter(value = DESCRIPTION_KEY)
 	@XMLAttribute

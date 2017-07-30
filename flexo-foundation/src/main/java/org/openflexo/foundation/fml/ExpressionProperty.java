@@ -41,6 +41,7 @@ package org.openflexo.foundation.fml;
 import java.lang.reflect.Type;
 
 import org.openflexo.connie.DataBinding;
+import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -49,6 +50,7 @@ import org.openflexo.model.annotations.PropertyIdentifier;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.model.annotations.XMLElement;
+import org.openflexo.toolbox.StringUtils;
 
 /**
  * A {@link ExpressionProperty} is a particular implementation of a {@link FlexoProperty} allowing to access data using an expression<br>
@@ -157,8 +159,10 @@ public abstract interface ExpressionProperty<T> extends FlexoProperty<T> {
 		@Override
 		public String getFMLRepresentation(FMLRepresentationContext context) {
 			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
-			out.append("FlexoProperty " + getName() + " " + getExpression() + " as " + getTypeDescription() + " cardinality="
-					+ getCardinality() + ";", context);
+			out.append(getFMLAnnotation(context), context);
+			out.append(StringUtils.LINE_SEPARATOR, context);
+			out.append("public " + TypeUtils.simpleRepresentation(getResultingType()) + " " + getName() + " = " + getExpression() + ";",
+					context);
 			return out.toString();
 		}
 

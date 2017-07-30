@@ -40,6 +40,7 @@ package org.openflexo.foundation.fml;
 
 import java.lang.reflect.Type;
 
+import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -48,6 +49,7 @@ import org.openflexo.model.annotations.PropertyIdentifier;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.model.annotations.XMLElement;
+import org.openflexo.toolbox.StringUtils;
 
 /**
  * A {@link AbstractProperty} represents a pure declaration of a {@link FlexoProperty} with no implementation<br>
@@ -84,7 +86,7 @@ public abstract interface AbstractProperty<T> extends FlexoProperty<T> {
 	@Setter(TYPE_KEY)
 	public void setType(Type type);
 
-	public static abstract class AbstractPropertyImpl<T> extends FlexoPropertyImpl<T>implements AbstractProperty<T> {
+	public static abstract class AbstractPropertyImpl<T> extends FlexoPropertyImpl<T> implements AbstractProperty<T> {
 
 		@Override
 		public boolean defaultBehaviourIsToBeDeleted() {
@@ -102,10 +104,11 @@ public abstract interface AbstractProperty<T> extends FlexoProperty<T> {
 		}
 
 		@Override
-		public String getFMLRepresentation(FMLRepresentationContext context) {
+		public final String getFMLRepresentation(FMLRepresentationContext context) {
 			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
-			out.append("abstract FlexoProperty " + getName() + " as " + getTypeDescription() + " cardinality=" + getCardinality() + ";",
-					context);
+			out.append(getFMLAnnotation(context), context);
+			out.append(StringUtils.LINE_SEPARATOR, context);
+			out.append("abstract " + TypeUtils.simpleRepresentation(getResultingType()) + " " + getName() + ";", context);
 			return out.toString();
 		}
 

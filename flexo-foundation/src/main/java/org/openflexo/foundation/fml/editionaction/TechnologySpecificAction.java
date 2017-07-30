@@ -58,11 +58,11 @@ import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.binding.FlexoConceptFlexoPropertyPathElement;
 import org.openflexo.foundation.fml.binding.ModelSlotBindingVariable;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.ModelSlotInstance;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
@@ -334,8 +334,7 @@ public abstract interface TechnologySpecificAction<MS extends ModelSlot<?>, R ex
 
 		@Override
 		public String getFMLRepresentation(FMLRepresentationContext context) {
-			return (getReceiver().isValid() ? getReceiver().toString() + "." : "<???" + getReceiver() + ">")
-					+ getTechnologyAdapterIdentifier() + "::" + getImplementedInterface().getSimpleName() + "()";
+			return getReceiver().toString() + "." + getImplementedInterface().getSimpleName() + "()";
 		}
 
 		protected final String getTechnologyAdapterIdentifier() {

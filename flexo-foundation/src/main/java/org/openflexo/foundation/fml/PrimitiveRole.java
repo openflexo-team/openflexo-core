@@ -42,7 +42,6 @@ import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.type.PrimitiveType;
-import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstanceModelFactory;
 import org.openflexo.foundation.fml.rt.ActorReference;
@@ -86,12 +85,12 @@ public interface PrimitiveRole<T> extends FlexoRole<T> {
 			super();
 		}
 
-		@Override
+		/*@Override
 		public String getFMLRepresentation(FMLRepresentationContext context) {
 			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
 			out.append("FlexoRole " + getName() + " as " + getTypeDescription() + " cardinality=" + getCardinality() + ";", context);
 			return out.toString();
-		}
+		}*/
 
 		@Override
 		public PrimitiveType getPrimitiveType() {
