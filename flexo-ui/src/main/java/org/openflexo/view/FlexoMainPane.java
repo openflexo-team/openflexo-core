@@ -614,16 +614,6 @@ public class FlexoMainPane extends JPanel implements PropertyChangeListener {
 
 	@Override
 	public void propertyChange(final PropertyChangeEvent evt) {
-		// This is no more necessary, since this is now handled by task manager
-		/*if (!SwingUtilities.isEventDispatchThread()) {
-			   SwingUtilities.invokeLater(new Runnable() {
-				   @Override
-				   public void run() {
-					   propertyChange(evt);
-				   }
-			});
-			return;
-		}*/
 		if (evt.getSource() == controller.getControllerModel()) {
 			if (evt.getPropertyName().equals(ControllerModel.CURRENT_LOCATION)) {
 				Location previous = (Location) evt.getOldValue();
@@ -634,12 +624,28 @@ public class FlexoMainPane extends JPanel implements PropertyChangeListener {
 					saveLayout();
 					perspective = nextPerspective;
 					restoreLayout();
+					for (Location tab : tabbedPane.getTabs()) {
+						if (tab.getPerspective() != nextPerspective) {
+							tabbedPane.hideTab(tab);
+						}
+						else {
+							tabbedPane.showTab(tab);
+						}
+					}
 				}
 				if (next != null && next.getObject() != null) {
 					tabbedPane.selectTab(next);
 				}
 				else {
-					tabbedPane.selectTab(null);
+					// No object to display in this perspective, take the first one
+					Location defaultLocation = null;
+					for (Location tab : tabbedPane.getTabs()) {
+						if (tab.getPerspective() == nextPerspective) {
+							defaultLocation = tab;
+							break;
+						}
+					}
+					tabbedPane.selectTab(defaultLocation);
 				}
 				updatePropertyChangeListener(previousPerspective, nextPerspective);
 				updateLayoutForPerspective();
