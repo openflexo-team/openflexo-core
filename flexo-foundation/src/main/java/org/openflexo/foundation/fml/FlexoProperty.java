@@ -442,12 +442,48 @@ public abstract interface FlexoProperty<T> extends FlexoConceptObject {
 		public ValidationIssue<OverridenPropertiesMustBeTypeCompatible, FlexoProperty<?>> applyValidation(FlexoProperty<?> property) {
 			for (FlexoProperty<?> superProperty : property.getSuperProperties()) {
 				if (!TypeUtils.isTypeAssignableFrom(superProperty.getResultingType(), property.getResultingType())) {
-					return new ValidationError<OverridenPropertiesMustBeTypeCompatible, FlexoProperty<?>>(this, property,
-							"overriding_property_($object.propertyName)_does_not_define_compatible_type");
+
+					/*System.out.println("FML=" + property.getDeclaringVirtualModel().getFMLRepresentation());
+
+					System.out.println("overriding= " + property.getFMLRepresentation());
+					System.out.println("getType=" + property.getType());
+					System.out.println("getResultingType=" + property.getResultingType());
+					System.out.println("getType=" + property.getType());
+					System.out.println("getResultingType=" + property.getResultingType());*/
+
+					return new IncompatibleTypes(this, property, superProperty.getResultingType(), property.getResultingType());
 				}
 			}
 			return null;
 		}
+
+		public static class IncompatibleTypes extends ValidationError<OverridenPropertiesMustBeTypeCompatible, FlexoProperty<?>> {
+
+			private Type expectedType;
+			private Type overridingType;
+
+			public IncompatibleTypes(OverridenPropertiesMustBeTypeCompatible rule, FlexoProperty<?> anObject, Type expectedType,
+					Type overridingType) {
+				super(rule, anObject, "overriding_property_($validable.propertyName)_does_not_define_compatible_type");
+				this.expectedType = expectedType;
+				this.overridingType = overridingType;
+			}
+
+			public Type getExpectedType() {
+				System.out.println("hop: " + expectedType);
+				return expectedType;
+			}
+
+			public Type getOverridingType() {
+				return overridingType;
+			}
+
+			@Override
+			public String getDetailedInformations() {
+				return "expected: ($expectedType.toString) overriden as ($overridingType.toString)";
+			}
+		}
+
 	}
 
 	@DefineValidationRule
