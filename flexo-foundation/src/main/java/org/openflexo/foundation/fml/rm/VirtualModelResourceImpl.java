@@ -420,6 +420,5 @@ public abstract class VirtualModelResourceImpl extends PamelaResourceImpl<Virtua
 				e.printStackTrace();
 			}
 		}
-		System.out.println(">>>>>>>>> et hop: " + usedModelSlots);
 	}
 }

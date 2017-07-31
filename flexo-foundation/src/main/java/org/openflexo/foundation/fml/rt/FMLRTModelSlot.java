@@ -155,6 +155,7 @@ public interface FMLRTModelSlot<VMI extends VirtualModelInstance<VMI, TA>, TA ex
 
 		@Override
 		public VirtualModelResource getAccessedVirtualModelResource() {
+
 			if (virtualModelResource == null && StringUtils.isNotEmpty(virtualModelURI) && getDeclaringVirtualModel() != null) {
 				if (getDeclaringVirtualModel().getVirtualModelNamed(virtualModelURI) != null) {
 					virtualModelResource = (VirtualModelResource) getDeclaringVirtualModel().getVirtualModelNamed(virtualModelURI)
@@ -162,6 +163,7 @@ public interface FMLRTModelSlot<VMI extends VirtualModelInstance<VMI, TA>, TA ex
 					logger.info("Looked-up " + virtualModelResource);
 				}
 			}
+
 			return virtualModelResource;
 		}
 

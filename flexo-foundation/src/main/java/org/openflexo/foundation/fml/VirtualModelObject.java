@@ -50,6 +50,7 @@ import org.openflexo.model.annotations.ModelEntity;
  * 
  */
 @ModelEntity(isAbstract = true)
+@Deprecated
 public interface VirtualModelObject extends FlexoConceptObject {
 
 	/**

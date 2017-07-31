@@ -51,7 +51,6 @@ import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptObject;
 import org.openflexo.foundation.fml.binding.BehaviourParameterBindingModel;
-import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.model.annotations.DefineValidationRule;
 import org.openflexo.model.annotations.Getter;
@@ -72,7 +71,7 @@ import org.openflexo.model.validation.ValidationIssue;
 @ImplementationClass(BehaviourParameter.BehaviourParameterImpl.class)
 public interface BehaviourParameter<T extends FlexoConceptObject> extends FlexoBehaviourObject, Bindable {
 
-	@PropertyIdentifier(type = EditionAction.class)
+	@PropertyIdentifier(type = FlexoConceptObject.class)
 	public static final String OWNER_KEY = "owner";
 
 	@PropertyIdentifier(type = String.class)

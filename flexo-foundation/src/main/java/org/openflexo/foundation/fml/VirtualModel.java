@@ -38,6 +38,7 @@
 
 package org.openflexo.foundation.fml;
 
+import java.io.FileNotFoundException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -49,6 +50,7 @@ import java.util.Vector;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.BindingFactory;
+import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.binding.FMLBindingFactory;
 import org.openflexo.foundation.fml.binding.VirtualModelBindingModel;
@@ -60,6 +62,7 @@ import org.openflexo.foundation.fml.rt.editionaction.DeleteFlexoConceptInstanceP
 import org.openflexo.foundation.resource.CannotRenameException;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.ResourceData;
+import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.technologyadapter.FlexoMetaModel;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
@@ -117,6 +120,8 @@ public interface VirtualModel extends FlexoConcept, VirtualModelObject, FlexoMet
 
 	@PropertyIdentifier(type = FlexoVersion.class)
 	public static final String VERSION_KEY = "version";
+	@PropertyIdentifier(type = String.class)
+	public static final String URI_KEY = "URI";
 	@PropertyIdentifier(type = FlexoVersion.class)
 	public static final String MODEL_VERSION_KEY = "modelVersion";
 	@PropertyIdentifier(type = FlexoConcept.class, cardinality = Cardinality.LIST)
@@ -344,6 +349,8 @@ public interface VirtualModel extends FlexoConcept, VirtualModelObject, FlexoMet
 	 * 
 	 */
 	@Override
+	@Getter(value = URI_KEY)
+	@XMLAttribute
 	public abstract String getURI();
 
 	/**
@@ -352,6 +359,7 @@ public interface VirtualModel extends FlexoConcept, VirtualModelObject, FlexoMet
 	 * 
 	 * @param anURI
 	 */
+	@Setter(URI_KEY)
 	public void setURI(String anURI);
 
 	/**
@@ -1194,6 +1202,21 @@ public interface VirtualModel extends FlexoConcept, VirtualModelObject, FlexoMet
 
 			if (getContainerVirtualModel() != null) {
 				return getContainerVirtualModel().getVirtualModelNamed(virtualModelNameOrURI);
+			}
+
+			if (getVirtualModelLibrary() != null) {
+				try {
+					return getVirtualModelLibrary().getVirtualModel(virtualModelNameOrURI);
+				} catch (FileNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (ResourceLoadingCancelledException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (FlexoException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 
 			// Not found
