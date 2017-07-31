@@ -72,10 +72,23 @@ import org.openflexo.model.validation.ValidationRule;
 import org.openflexo.toolbox.StringUtils;
 
 /**
- * Base model slot allowing to access an {@link VirtualModelInstance}
+ * A {@link ModelSlot} allowing to access an {@link VirtualModelInstance}<br>
+ * 
+ * Such {@link ModelSlot} is defining a general contract modellized by an abstract {@link VirtualModel}<br>
+ * 
+ * There are two different implementations of a {@link FMLRTModelSlot}:
+ * <ul>
+ * <li>Native implementation (see {@link FMLRTVirtualModelInstanceModelSlot}) provided by {@link FMLRTTechnologyAdapter}</li>
+ * <li>Alternative implementation provided by some {@link TechnologyAdapter} which present data as instances of {@link FlexoConcept} (see
+ * )</li>
+ * </ul>
  * 
  * @author sylvain
- * 
+ *
+ * @param <VMI>
+ *            type of {@link VirtualModelInstance} presented by this model slot
+ * @param <TA>
+ *            technology providing this model slot
  */
 @DeclareFlexoRoles({ FlexoConceptInstanceRole.class, PrimitiveRole.class })
 @DeclareEditionActions({ AddFlexoConceptInstance.class, AddVirtualModelInstance.class })
