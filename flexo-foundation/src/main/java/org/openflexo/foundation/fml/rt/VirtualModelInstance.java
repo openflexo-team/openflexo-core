@@ -112,9 +112,8 @@ import org.openflexo.toolbox.StringUtils;
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(VirtualModelInstance.VirtualModelInstanceImpl.class)
-public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>, TA extends TechnologyAdapter>
-		extends FlexoConceptInstance, ResourceData<VMI>, FlexoModel<VMI, VirtualModel>, TechnologyObject<TA>,
-		IndexableContainer<FlexoConceptInstance> {
+public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>, TA extends TechnologyAdapter> extends FlexoConceptInstance,
+		ResourceData<VMI>, FlexoModel<VMI, VirtualModel>, TechnologyObject<TA>, IndexableContainer<FlexoConceptInstance> {
 
 	public static final String EVENT_FIRED = "EventFired";
 
@@ -138,8 +137,8 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 
 	/**
 	 * Returns URI for this {@link VirtualModelInstance}.<br>
-	 * Note that if this {@link VirtualModelInstance} is contained in another {@link VirtualModelInstance}, URI is computed
-	 * from URI of container VirtualModel
+	 * Note that if this {@link VirtualModelInstance} is contained in another {@link VirtualModelInstance}, URI is computed from URI of
+	 * container VirtualModel
 	 * 
 	 * The convention for URI are following:
 	 * <container_virtual_model_instance_uri>/<virtual_model_instance_name >#<flexo_concept_instance_id> <br>
@@ -153,8 +152,7 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 
 	/**
 	 * Sets URI for this {@link VirtualModelInstance}<br>
-	 * Note that if this {@link VirtualModelInstance} is contained in another {@link VirtualModelInstance}, this method will
-	 * be unefficient
+	 * Note that if this {@link VirtualModelInstance} is contained in another {@link VirtualModelInstance}, this method will be unefficient
 	 * 
 	 * @param anURI
 	 */
@@ -437,8 +435,8 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 
 		/**
 		 * Returns URI for this {@link VirtualModelInstance}.<br>
-		 * Note that if this {@link VirtualModelInstance} is contained in another {@link VirtualModelInstance}, URI is
-		 * computed from URI of container VirtualModel
+		 * Note that if this {@link VirtualModelInstance} is contained in another {@link VirtualModelInstance}, URI is computed from URI of
+		 * container VirtualModel
 		 * 
 		 * The convention for URI are following:
 		 * <container_virtual_model_instance_uri>/<virtual_model_instance_name >#<flexo_concept_instance_id> <br>
@@ -460,8 +458,8 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 
 		/**
 		 * Sets URI for this {@link VirtualModelInstance}<br>
-		 * Note that if this {@link VirtualModelInstance} is contained in another {@link VirtualModelInstance}, this method
-		 * will be unefficient
+		 * Note that if this {@link VirtualModelInstance} is contained in another {@link VirtualModelInstance}, this method will be
+		 * unefficient
 		 * 
 		 * @param anURI
 		 */
@@ -701,10 +699,8 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 			// System.out.println("**** ensure register FCI " + fci + " in " + concept);
 
 			if (concept == null) {
-				System.out.println("C'est marrant fci n'a pas de concept !!!!");
-				System.out.println("uri: " + fci.getFlexoConceptURI());
-				System.out.println("concept: " + fci.getFlexoConcept());
-				System.exit(-1);
+				logger.warning("ensureRegisterFCIInConcept called for FCI without concept: " + fci);
+				return;
 			}
 
 			List<FlexoConceptInstance> list = flexoConceptInstances.get(concept);

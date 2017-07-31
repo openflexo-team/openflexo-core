@@ -68,6 +68,7 @@ public class AbstractModelFactoryIntegrationTestCase extends OpenflexoTestCase {
 			taService.addToTechnologyAdapters(ta);
 			FMLModelFactory factory = new FMLModelFactory(null, serviceManager);
 			for (Class<?> modelSlotClass : ta.getAvailableModelSlotTypes()) {
+				System.out.println("Check: " + modelSlotClass);
 				assertNotNull(factory.getModelContext().getModelEntity(modelSlotClass));
 			}
 			factory.checkMethodImplementations();
