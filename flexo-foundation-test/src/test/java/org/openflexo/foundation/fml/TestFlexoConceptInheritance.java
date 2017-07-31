@@ -65,8 +65,8 @@ import org.openflexo.foundation.fml.action.CreatePrimitiveRole;
 import org.openflexo.foundation.fml.binding.VirtualModelBindingModel;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.fml.rm.VirtualModelResourceFactory;
-import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
+import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.resource.DirectoryResourceCenter;
 import org.openflexo.foundation.resource.FileSystemBasedResourceCenter;
 import org.openflexo.foundation.resource.SaveResourceException;
@@ -590,26 +590,6 @@ public class TestFlexoConceptInheritance extends OpenflexoProjectAtRunTimeTestCa
 
 	}
 
-	@Test
-	@TestOrder(19)
-	public void testViewPointIsValid() {
-
-		assertVirtualModelIsValid(viewPoint);
-
-		// We change the type of property3 in B with incompatible type and we
-		// check that an error occurs
-		property3InB.setType(String.class);
-
-		ValidationReport report = validate(virtualModel);
-		assertEquals(2, report.getErrors().size());
-		assertTrue(report.getErrors().get(0).getValidationRule() instanceof OverridenPropertiesMustBeTypeCompatible);
-		assertTrue(report.getErrors().get(1).getValidationRule() instanceof OverridenPropertiesMustBeTypeCompatible);
-
-		property3InB.setType(Integer.class);
-		assertObjectIsValid(virtualModel);
-
-	}
-
 	/**
 	 * Test FlexoConcept inheritance inconsistency detection
 	 */
@@ -626,6 +606,28 @@ public class TestFlexoConceptInheritance extends OpenflexoProjectAtRunTimeTestCa
 			// Excepted exception
 			System.out.println("InconsistentFlexoConceptHierarchyException thrown as expected");
 		}
+	}
+
+	@Test
+	@TestOrder(19)
+	public void testViewPointIsValid() {
+
+		assertVirtualModelIsValid(viewPoint);
+		assertVirtualModelIsValid(virtualModel);
+
+		// We change the type of property3 in B with incompatible type and we
+		// check that an error occurs
+		property3InB.setType(String.class);
+
+		ValidationReport report = validate(virtualModel);
+		assertEquals(2, report.getErrors().size());
+		assertTrue(report.getErrors().get(0).getValidationRule() instanceof OverridenPropertiesMustBeTypeCompatible);
+		assertTrue(report.getErrors().get(1).getValidationRule() instanceof OverridenPropertiesMustBeTypeCompatible);
+
+		property3InB.setType(Integer.class);
+
+		assertObjectIsValid(virtualModel);
+
 	}
 
 	/**
