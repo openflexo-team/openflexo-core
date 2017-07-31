@@ -124,36 +124,40 @@ public abstract interface ExpressionProperty<T> extends FlexoProperty<T> {
 		}
 
 		private boolean isAnalysingType = false;
+		private Type lastKnownType = Object.class;
 
 		@Override
 		public Type getType() {
 
 			if (isAnalysingType) {
-				return Object.class;
+				return lastKnownType;
 			}
 			else {
-				isAnalysingType = true;
 
-				/*System.out.println("Le type de " + getExpression() + " c'est quoi ?");
-				System.out.println("BM=" + getBindingModel());
-				System.out.println("valid=" + getExpression().isValid());
-				System.out.println("return: " + getExpression().getAnalyzedType())*/
+				try {
 
-				// getBindingModel();
+					isAnalysingType = true;
 
-				if (getExpression() != null && getExpression().isValid()) {
-					Type returned = getExpression().getAnalyzedType();
-					// System.out.println("je retourne " + returned);
-					// System.out.println("valid=" + getExpression().isValid());
+					/*System.out.println("Le type de " + getExpression() + " c'est quoi ?");
+					System.out.println("BM=" + getBindingModel());
+					System.out.println("valid=" + getExpression().isValid());
+					System.out.println("return: " + getExpression().getAnalyzedType())*/
 
+					// getBindingModel();
+
+					if (getExpression() != null && getExpression().isValid()) {
+						lastKnownType = getExpression().getAnalyzedType();
+						// System.out.println("je retourne " + returned);
+						// System.out.println("valid=" + getExpression().isValid());
+						isAnalysingType = false;
+					}
+				} finally {
 					isAnalysingType = false;
-					return returned;
 				}
 
-				isAnalysingType = false;
 			}
 
-			return Object.class;
+			return lastKnownType;
 		}
 
 		@Override
