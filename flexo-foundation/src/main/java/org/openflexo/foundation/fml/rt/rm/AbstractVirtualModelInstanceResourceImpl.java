@@ -38,17 +38,19 @@
 
 package org.openflexo.foundation.fml.rt.rm;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.IOFlexoException;
 import org.openflexo.foundation.InconsistentDataException;
 import org.openflexo.foundation.InvalidModelDefinitionException;
 import org.openflexo.foundation.InvalidXMLException;
 import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstanceModelFactory;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.resource.FlexoFileNotFoundException;
 import org.openflexo.foundation.resource.PamelaResourceImpl;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
@@ -167,4 +169,19 @@ public abstract class AbstractVirtualModelInstanceResourceImpl<VMI extends Virtu
 	public AbstractVirtualModelInstanceResource<?, ?> getContainer() {
 		return (AbstractVirtualModelInstanceResource<?, ?>) performSuperGetter(CONTAINER);
 	}
+
+	@Override
+	public boolean delete(Object... context) {
+		// gets service manager before deleting otherwise the service manager is null
+		FlexoServiceManager serviceManager = getServiceManager();
+		Object serializationArtefact = getIODelegate().getSerializationArtefact();
+		if (super.delete(context)) {
+			if (serializationArtefact instanceof File) {
+				serviceManager.getResourceManager().addToFilesToDelete((File) serializationArtefact);
+			}
+			return true;
+		}
+		return false;
+	}
+
 }
