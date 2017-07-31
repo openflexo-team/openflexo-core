@@ -145,7 +145,8 @@ public class FMLModelFactory extends FGEModelFactoryImpl implements PamelaResour
 	public FMLModelFactory(VirtualModelResource virtualModelResource, FlexoServiceManager serviceManager) throws ModelDefinitionException {
 
 		// super(ModelContextLibrary.getCompoundModelContext(retrieveTechnologySpecificClasses(serviceManager.getTechnologyAdapterService())));
-		super(retrieveTechnologySpecificClasses(virtualModelResource.getUsedModelSlots()));
+		super(virtualModelResource != null ? retrieveTechnologySpecificClasses(virtualModelResource.getUsedModelSlots())
+				: retrieveTechnologySpecificClasses(serviceManager.getTechnologyAdapterService()));
 		this.serviceManager = serviceManager;
 		TechnologyAdapterService taService = serviceManager.getTechnologyAdapterService();
 		setEditingContext(serviceManager.getEditingContext());
