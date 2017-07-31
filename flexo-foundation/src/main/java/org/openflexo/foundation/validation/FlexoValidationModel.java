@@ -89,7 +89,7 @@ public class FlexoValidationModel extends ValidationModel {
 	@Override
 	public String localizedInContext(String key, Object context) {
 		String localized = validationLocalization.localizedForKeyAndLanguage(key, FlexoLocalization.getCurrentLanguage(), true);
-		if (localized.contains("($")) {
+		if (localized != null && localized.contains("($")) {
 			String asBindingExpression = asBindingExpression(localized);
 			try {
 				if (context instanceof ValidationIssue) {
