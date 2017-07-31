@@ -405,7 +405,7 @@ public abstract interface TechnologySpecificAction<MS extends ModelSlot<?>, R ex
 
 		@Override
 		public final Class<? extends MS> getModelSlotClass() {
-			return (Class<? extends MS>) TypeUtils.getTypeArgument(getClass(), TechnologySpecificAction.class, 0);
+			return (Class<? extends MS>) TypeUtils.getBaseClass(TypeUtils.getTypeArgument(getClass(), TechnologySpecificAction.class, 0));
 		}
 
 		/*@Deprecated
