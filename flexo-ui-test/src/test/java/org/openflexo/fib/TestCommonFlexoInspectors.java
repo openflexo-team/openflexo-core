@@ -56,11 +56,6 @@ public class TestCommonFlexoInspectors extends GenericFIBInspectorTestCase {
 	}
 
 	@Test
-	public void testDocForModelObjectInspector() {
-		validateFIB("Inspectors/COMMON/DocForModelObject.inspector");
-	}
-
-	@Test
 	public void testFlexoObjectInspector() {
 		validateFIB("Inspectors/COMMON/FlexoObject.inspector");
 	}

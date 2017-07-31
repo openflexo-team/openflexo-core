@@ -60,11 +60,6 @@ public class TestCommonFlexoFibs extends GenericFIBTestCase {
 	}
 
 	@Test
-	public void testDescriptionWidget() {
-		validateFIB("Fib/DescriptionWidget.fib");
-	}
-
-	@Test
 	public void testReviewUnsavedDialog() {
 		validateFIB("Fib/Dialog/ReviewUnsavedDialog.fib");
 	}
