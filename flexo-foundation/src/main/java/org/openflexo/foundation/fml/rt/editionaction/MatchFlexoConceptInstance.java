@@ -63,9 +63,9 @@ import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelInstanceType;
 import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
+import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
-import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.CreationSchemeAction;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.foundation.fml.rt.action.MatchingSet;
@@ -90,7 +90,8 @@ import org.openflexo.model.validation.ValidationIssue;
 import org.openflexo.model.validation.ValidationRule;
 
 /**
- * This action is used to perform synchronization regarding an {@link FlexoConceptInstance} in a given {@link FMLRTVirtualModelInstance}.<br>
+ * This action is used to perform synchronization regarding an {@link FlexoConceptInstance} in a given
+ * {@link FMLRTVirtualModelInstance}.<br>
  * The matching is performed on some pattern roles, with some values retrieved from an expression.<br>
  * If target {@link FlexoConceptInstance} could not been looked up, then a new {@link FlexoConceptInstance} is created using supplied
  * {@link CreationScheme} and some parameters
@@ -578,9 +579,16 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 
 		}
 
+		// TODO: remove commented debug
 		@Override
 		public FlexoConceptInstance execute(RunTimeEvaluationContext evaluationContext) {
-			logger.fine("Perform perform MatchFlexoConceptInstance " + evaluationContext);
+			if (logger.isLoggable(Level.FINE)) {
+				logger.fine("Perform perform MatchFlexoConceptInstance " + evaluationContext);
+			}
+			// long startTime = System.currentTimeMillis();
+			// long time1 = 0, time2 = 0, time3 = 0, time4 = 0, time5 = 0;
+
+			// try {
 
 			if (evaluationContext instanceof FlexoBehaviourAction) {
 
@@ -590,9 +598,13 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 					matchingSet = getMatchingSet(evaluationContext);
 				}
 
+				// System.out.println("On utilise le matchingSet " + matchingSet);
+
 				if (matchingSet == null) {
 					matchingSet = ((FlexoBehaviourAction<?, ?, ?>) evaluationContext).initiateDefaultMatchingSet(this);
 				}
+
+				// time1 = System.currentTimeMillis();
 
 				FMLRTVirtualModelInstance vmInstance = getVirtualModelInstance(evaluationContext);
 				Hashtable<FlexoProperty<?>, Object> criterias = new Hashtable<FlexoProperty<?>, Object>();
@@ -603,6 +615,8 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 					}
 				}
 
+				// time2 = System.currentTimeMillis();
+
 				if (logger.isLoggable(Level.FINE)) {
 					logger.fine(">>>>>>>> Matching FCI with following criterias");
 					logger.fine("Type=" + getFlexoConceptType());
@@ -612,7 +626,13 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 					}
 				}
 
+				// System.out.println("On matche " + getFlexoConceptType() + " avec " + criterias);
+
 				FlexoConceptInstance matchingFlexoConceptInstance = matchingSet.matchFlexoConceptInstance(criterias);
+
+				// time3 = System.currentTimeMillis();
+
+				// System.out.println("On trouve " + matchingFlexoConceptInstance);
 
 				// FlexoConceptInstance matchingFlexoConceptInstance = ((FlexoBehaviourAction) evaluationContext)
 				// .matchFlexoConceptInstance(getFlexoConceptType(), criterias);
@@ -623,7 +643,8 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 					if (logger.isLoggable(Level.FINE)) {
 						logger.fine("Found " + matchingFlexoConceptInstance);
 					}
-					// ((FlexoBehaviourAction<?, ?, ?>) evaluationContext).foundMatchingFlexoConceptInstance(matchingFlexoConceptInstance);
+					// ((FlexoBehaviourAction<?, ?, ?>)
+					// evaluationContext).foundMatchingFlexoConceptInstance(matchingFlexoConceptInstance);
 
 					matchingSet.foundMatchingFlexoConceptInstance(matchingFlexoConceptInstance);
 
@@ -635,6 +656,8 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 						logger.fine("Creating new FCI for " + getCreationScheme().getFlexoConcept() + " using "
 								+ getCreationScheme().getName());
 					}
+
+					// System.out.println("On doit creer une nouvelle FCI");
 
 					CreationSchemeAction creationSchemeAction = CreationSchemeAction.actionType.makeNewEmbeddedAction(vmInstance, null,
 							((FlexoBehaviourAction<?, ?, ?>) evaluationContext));
@@ -656,7 +679,9 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 							creationSchemeAction.setParameterValue(p.getParam(), value/*p.evaluateParameterValue(action)*/);
 						}
 					}
+					// time4 = System.currentTimeMillis();
 					creationSchemeAction.doAction();
+					// time5 = System.currentTimeMillis();
 					if (creationSchemeAction.hasActionExecutionSucceeded()) {
 						matchingFlexoConceptInstance = creationSchemeAction.getFlexoConceptInstance();
 						// ((FlexoBehaviourAction<?, ?, ?>) evaluationContext).newFlexoConceptInstance(matchingFlexoConceptInstance);
@@ -673,6 +698,12 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 				logger.warning("Unexpected: " + evaluationContext);
 				return null;
 			}
+			/*} finally {
+				long endTime = System.currentTimeMillis();
+				System.out.println("MatchFlexoConceptInstance: " + (endTime - startTime) + "ms [creation took " + (time5 - time4)
+						+ "ms] from: " + startTime + " to " + endTime + " t1=" + time1 + " t2=" + time2 + " t3=" + time3 + " t4=" + time4
+						+ " t5=" + time5);
+			}*/
 
 		}
 
