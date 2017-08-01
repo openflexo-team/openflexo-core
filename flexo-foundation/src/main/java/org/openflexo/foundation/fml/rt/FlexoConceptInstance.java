@@ -108,8 +108,8 @@ import org.openflexo.toolbox.StringUtils;
 /**
  * A {@link FlexoConceptInstance} is the run-time concept (instance) of an {@link FlexoConcept}.<br>
  * 
- * As such, a {@link FlexoConceptInstance} is instantiated inside a {@link FMLRTVirtualModelInstance} (only {@link FMLRTVirtualModelInstance} objects
- * might leave outside an other {@link FMLRTVirtualModelInstance}).<br>
+ * As such, a {@link FlexoConceptInstance} is instantiated inside a {@link FMLRTVirtualModelInstance} (only
+ * {@link FMLRTVirtualModelInstance} objects might leave outside an other {@link FMLRTVirtualModelInstance}).<br>
  * 
  * @author sylvain
  * 
@@ -492,7 +492,9 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 		public void setContainerFlexoConceptInstance(FlexoConceptInstance aConceptInstance) {
 			performSuperSetter(CONTAINER_FLEXO_CONCEPT_INSTANCE_KEY, aConceptInstance);
 			if (getOwningVirtualModelInstance() != null) {
-				getOwningVirtualModelInstance().getPropertyChangeSupport().firePropertyChange("allRootFlexoConceptInstances", false, true);
+				getOwningVirtualModelInstance().notifyAllRootFlexoConceptInstancesMayHaveChanged();
+				// getOwningVirtualModelInstance().getPropertyChangeSupport().firePropertyChange("allRootFlexoConceptInstances", false,
+				// true);
 			}
 		}
 
@@ -500,7 +502,9 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 		public void addToEmbeddedFlexoConceptInstances(FlexoConceptInstance aConceptInstance) {
 			performSuperAdder(EMBEDDED_FLEXO_CONCEPT_INSTANCE_KEY, aConceptInstance);
 			if (getOwningVirtualModelInstance() != null) {
-				getOwningVirtualModelInstance().getPropertyChangeSupport().firePropertyChange("allRootFlexoConceptInstances", false, true);
+				getOwningVirtualModelInstance().notifyAllRootFlexoConceptInstancesMayHaveChanged();
+				// getOwningVirtualModelInstance().getPropertyChangeSupport().firePropertyChange("allRootFlexoConceptInstances", false,
+				// true);
 			}
 		}
 
@@ -508,7 +512,9 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 		public void removeFromEmbeddedFlexoConceptInstances(FlexoConceptInstance aConceptInstance) {
 			performSuperRemover(EMBEDDED_FLEXO_CONCEPT_INSTANCE_KEY, aConceptInstance);
 			if (getOwningVirtualModelInstance() != null) {
-				getOwningVirtualModelInstance().getPropertyChangeSupport().firePropertyChange("allRootFlexoConceptInstances", false, true);
+				getOwningVirtualModelInstance().notifyAllRootFlexoConceptInstancesMayHaveChanged();
+				// getOwningVirtualModelInstance().getPropertyChangeSupport().firePropertyChange("allRootFlexoConceptInstances", false,
+				// true);
 			}
 		}
 
@@ -1138,8 +1144,7 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 				}
 			}
 
-			if (this instanceof VirtualModelInstance
-					&& ((VirtualModelInstance<?, ?>) this).getContainerVirtualModelInstance() != null) {
+			if (this instanceof VirtualModelInstance && ((VirtualModelInstance<?, ?>) this).getContainerVirtualModelInstance() != null) {
 				ModelSlotInstance<MS, RD> returned = ((VirtualModelInstance<?, ?>) this).getContainerVirtualModelInstance()
 						.getModelSlotInstance(modelSlot);
 				if (returned != null) {
