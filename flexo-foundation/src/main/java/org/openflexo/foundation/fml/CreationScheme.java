@@ -38,9 +38,11 @@
 
 package org.openflexo.foundation.fml;
 
+import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.XMLElement;
+import org.openflexo.toolbox.StringUtils;
 
 @ModelEntity
 @ImplementationClass(CreationScheme.CreationSchemeImpl.class)
@@ -53,5 +55,21 @@ public interface CreationScheme extends AbstractCreationScheme {
 			super();
 		}
 
+		@Override
+		public final String getFMLRepresentation(FMLRepresentationContext context) {
+			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
+			out.append(getFMLAnnotation(context), context);
+			out.append(StringUtils.LINE_SEPARATOR, context);
+			out.append(getVisibility().getFMLRepresentation() + getFlexoConcept().getName() + ":" + getName() + "("
+					+ getParametersFMLRepresentation(context) + ") {", context);
+			out.append(StringUtils.LINE_SEPARATOR, context);
+			if (getControlGraph() != null) {
+				out.append(getControlGraph().getFMLRepresentation(context), context, 1);
+			}
+			out.append(StringUtils.LINE_SEPARATOR, context);
+			out.append("}", context);
+			out.append(StringUtils.LINE_SEPARATOR, context);
+			return out.toString();
+		}
 	}
 }

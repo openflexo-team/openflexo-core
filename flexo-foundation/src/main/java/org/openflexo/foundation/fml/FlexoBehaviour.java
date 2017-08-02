@@ -381,7 +381,7 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 		}
 
 		@Override
-		public final String getFMLRepresentation(FMLRepresentationContext context) {
+		public String getFMLRepresentation(FMLRepresentationContext context) {
 			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
 			out.append(getFMLAnnotation(context), context);
 			out.append(StringUtils.LINE_SEPARATOR, context);
