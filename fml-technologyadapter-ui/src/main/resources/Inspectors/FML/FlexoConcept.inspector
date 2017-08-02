@@ -14,7 +14,7 @@
 				name="NameLabel" localize="true" />
 			<TextField index="1" data="data.name"
 				constraints="twocols(expandHorizontally=true;expandVertically=false;index=1;location=right)"
-				name="Name" localize="true" columns="10" validateOnReturn="true"/>
+				name="Name" localize="true" columns="10" validateOnReturn="true" />
 
 			<CheckBox selected="true" index="8" data="data.isAbstract"
 				constraints="twocols(expandHorizontally=true;expandVertically=false;location=left)"
@@ -27,9 +27,8 @@
 				constraints="twocols(expandHorizontally=false;expandVertically=false;index=0;location=left)"
 				localize="true" />
 			<Custom componentClassName="org.openflexo.fml.controller.widget.FIBFlexoConceptSelector"
-				localize="true" 
-				manageDynamicModel="true" opaque="false"
-				name="ContainerSelector" index="11" data="data.containerFlexoConcept"
+				localize="true" manageDynamicModel="true" opaque="false" name="ContainerSelector"
+				index="11" data="data.containerFlexoConcept"
 				constraints="twocols(expandHorizontally=true;expandVertically=false;index=1;location=right)"
 				minWidth="200" minHeight="25">
 				<Assignment variable="component.virtualModel" value="data.owner" />
@@ -64,15 +63,15 @@
 				<AddAction method="controller.addParentFlexoConcept(data)"
 					name="addParentFlexoConcept" />
 			</Table>
+
 			<Label label="constraints" index="14"
 				constraints="twocols(expandHorizontally=false;expandVertically=false;index=4;location=left)"
 				localize="true" />
 			<Table iteratorClassName="org.openflexo.foundation.fml.FlexoConceptConstraint"
-				rowHeight="18" autoSelectFirstRow="false"
-				createNewRowOnClick="false" boundToSelectionManager="false"
-				showFooter="true" selectionMode="MultipleIntervalSelection"
-				textSelectionColor="255,255,255" textNonSelectionColor="0,0,0"
-				backgroundSelectionColor="26,96,206"
+				rowHeight="18" autoSelectFirstRow="false" createNewRowOnClick="false"
+				boundToSelectionManager="false" showFooter="true"
+				selectionMode="MultipleIntervalSelection" textSelectionColor="255,255,255"
+				textNonSelectionColor="0,0,0" backgroundSelectionColor="26,96,206"
 				backgroundSecondarySelectionColor="173,215,255"
 				backgroundNonSelectionColor="255,255,255" localize="true"
 				manageDynamicModel="true" name="ConstraintsTable" index="15"
@@ -94,21 +93,31 @@
 					name="delete_constraint" />
 			</Table>
 
+			<Label name="KeyPropertiesLabel" localize="true" visible="(data.flexoProperties.size &gt; 0)"
+				align="left" index="16"
+				constraints="twocols(expandHorizontally=false;expandVertically=false;index=2;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)"
+				label="key_properties" />
+			<CheckboxList data="data.keyProperties" index="17" visible="(data.flexoProperties.size &gt; 0)"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;index=3;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
+				format="object.name" showText="true"
+				iteratorClassName="org.openflexo.foundation.fml.FlexoProperty"
+				showIcon="true" staticList="" autoSelectFirstRow="true" name="CheckboxList"
+				icon="controller.iconForObject(object)" list="data.flexoProperties" />
+
+
 		</Tab>
-	    <Tab title="Advanced" layout="twocols" titleFont="SansSerif,0,11"
+		<Tab title="Advanced" layout="twocols" titleFont="SansSerif,0,11"
 			darkLevel="0" index="2" font="SansSerif,0,11" useScrollBar="true"
 			horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED"
 			verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED" name="AdvancedTab" />
-		<!--  <Tab title="FML" layout="twocols" titleFont="SansSerif,0,11"
-			darkLevel="0" index="3" font="SansSerif,0,11" useScrollBar="true"
-			horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED"
-			verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED" name="FMLTab">
-			<Editor validateOnReturn="true" columns="8" rows="3" text="Editor" font="SansSerif,0,13"
-				tokenMarkerStyle="FML" data="data.fMLRepresentation" constraints="twocols(expandHorizontally=true;expandVertically=true;location=center)"
-				width="120" height="120" useScrollBar="true"
-				horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED"
-				verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED" localize="true" />
-		</Tab>-->
+		<!-- <Tab title="FML" layout="twocols" titleFont="SansSerif,0,11" darkLevel="0" 
+			index="3" font="SansSerif,0,11" useScrollBar="true" horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED" 
+			verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED" name="FMLTab"> <Editor 
+			validateOnReturn="true" columns="8" rows="3" text="Editor" font="SansSerif,0,13" 
+			tokenMarkerStyle="FML" data="data.fMLRepresentation" constraints="twocols(expandHorizontally=true;expandVertically=true;location=center)" 
+			width="120" height="120" useScrollBar="true" horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED" 
+			verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED" localize="true" /> 
+			</Tab> -->
 	</TabPanel>
 	<LocalizedDictionary>
 		<Localized key="Advanced" lang="French" value="Avancé" />

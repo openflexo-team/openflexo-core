@@ -114,11 +114,13 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 	public static final String CONTAINER_FLEXO_CONCEPT_KEY = "containerFlexoConcept";
 	@PropertyIdentifier(type = List.class)
 	public static final String EMBEDDED_FLEXO_CONCEPT_KEY = "embeddedFlexoConcepts";
-	@PropertyIdentifier(type = List.class)
+	@PropertyIdentifier(type = FlexoBehaviour.class, cardinality = Cardinality.LIST)
 	public static final String FLEXO_BEHAVIOURS_KEY = "flexoBehaviours";
-	@PropertyIdentifier(type = List.class)
+	@PropertyIdentifier(type = FlexoProperty.class, cardinality = Cardinality.LIST)
 	public static final String FLEXO_PROPERTIES_KEY = "flexoProperties";
 	@PropertyIdentifier(type = FlexoConceptInspector.class)
+	public static final String KEY_PROPERTIES_KEY = "keyProperties";
+	@PropertyIdentifier(type = FlexoProperty.class, cardinality = Cardinality.LIST)
 	public static final String INSPECTOR_KEY = "inspector";
 	@PropertyIdentifier(type = String.class)
 	public static final String PARENT_FLEXO_CONCEPTS_LIST_KEY = "parentFlexoConceptsList";
@@ -227,21 +229,74 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 	 */
 	public FlexoBehaviour getDeclaredFlexoBehaviour(String behaviourName, Type... parameters);
 
+	/**
+	 * Return {@link FlexoProperty}'s explicitely declared in this {@link FlexoConcept}
+	 * 
+	 * @return
+	 */
 	@Getter(value = FLEXO_PROPERTIES_KEY, cardinality = Cardinality.LIST, inverse = FlexoProperty.FLEXO_CONCEPT_KEY)
 	@XMLElement(deprecatedContext = "ModelSlot_", primary = true)
 	@CloningStrategy(StrategyType.CLONE)
 	@Embedded
 	public List<FlexoProperty<?>> getFlexoProperties();
 
+	/**
+	 * Sets {@link FlexoProperty}'s explicitely declared in this {@link FlexoConcept}
+	 * 
+	 * @param properties
+	 */
 	@Setter(FLEXO_PROPERTIES_KEY)
 	public void setFlexoProperties(List<FlexoProperty<?>> properties);
 
+	/**
+	 * Add to {@link FlexoProperty}'s explicitely declared in this {@link FlexoConcept}
+	 * 
+	 * @param aProperty
+	 */
 	@Adder(FLEXO_PROPERTIES_KEY)
 	@PastingPoint
 	public void addToFlexoProperties(FlexoProperty<?> aProperty);
 
+	/**
+	 * Remove from {@link FlexoProperty}'s explicitely declared in this {@link FlexoConcept}
+	 * 
+	 * @param aProperty
+	 */
 	@Remover(FLEXO_PROPERTIES_KEY)
 	public void removeFromFlexoProperties(FlexoProperty<?> aProperty);
+
+	/**
+	 * Return properties used to uniquely identify an instance of this concept
+	 * 
+	 * @return
+	 */
+	@Getter(value = KEY_PROPERTIES_KEY, cardinality = Cardinality.LIST)
+	@XMLElement(context = "Key_", primary = false)
+	public List<FlexoProperty<?>> getKeyProperties();
+
+	/**
+	 * Sets properties used to uniquely identify an instance of this concept
+	 * 
+	 * @param properties
+	 */
+	@Setter(KEY_PROPERTIES_KEY)
+	public void setKeyProperties(List<FlexoProperty<?>> properties);
+
+	/**
+	 * Add to properties used to uniquely identify an instance of this concept
+	 * 
+	 * @param aProperty
+	 */
+	@Adder(KEY_PROPERTIES_KEY)
+	public void addToKeyProperties(FlexoProperty<?> aProperty);
+
+	/**
+	 * Remove from properties used to uniquely identify an instance of this concept
+	 * 
+	 * @param aProperty
+	 */
+	@Remover(KEY_PROPERTIES_KEY)
+	public void removeFromKeyProperties(FlexoProperty<?> aProperty);
 
 	@Getter(value = IS_ABSTRACT_KEY, defaultValue = "false")
 	@XMLAttribute
