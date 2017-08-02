@@ -69,6 +69,7 @@ import org.openflexo.foundation.task.FlexoTask;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
+import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.model.factory.AccessibleProxyObject;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
@@ -420,5 +421,24 @@ public abstract class VirtualModelResourceImpl extends PamelaResourceImpl<Virtua
 				e.printStackTrace();
 			}
 		}
+	}
+
+	/**
+	 * Rebuild a new {@link FMLModelFactory} using supplied use declarations, and set this new factory as model factory to use for this
+	 * resource<br>
+	 * This call is required for example when a new technology is required for a {@link VirtualModel}
+	 * 
+	 * @param useDeclarations
+	 */
+	@Override
+	public void updateFMLModelFactory(List<Class<? extends ModelSlot<?>>> usedModelSlots) {
+		this.usedModelSlots = usedModelSlots;
+		try {
+			FMLModelFactory modelFactory = new FMLModelFactory(this, getServiceManager());
+			setFactory(modelFactory);
+		} catch (ModelDefinitionException e) {
+			e.printStackTrace();
+		}
+
 	}
 }

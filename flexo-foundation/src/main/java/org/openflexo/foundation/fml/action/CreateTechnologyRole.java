@@ -109,6 +109,7 @@ public class CreateTechnologyRole extends AbstractCreateFlexoRole<CreateTechnolo
 	}
 
 	private Class<? extends FlexoRole<?>> flexoRoleClass;
+	private Class<? extends ModelSlot<?>> modelSlotClass;
 
 	public CreateTechnologyRole(FlexoConceptObject focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
@@ -129,12 +130,20 @@ public class CreateTechnologyRole extends AbstractCreateFlexoRole<CreateTechnolo
 
 	@Override
 	protected void doAction(Object context) throws NotImplementedException, InvalidParameterException {
-		// logger.info("Add flexo role, flexoRoleClass=" + flexoRoleClass);
-		// logger.info("modelSlot = " + getModelSlot());
+		logger.info("Add flexo role, flexoRoleClass=" + getFlexoRoleClass());
+		logger.info("modelSlotClass = " + getModelSlotClass());
+		logger.info("modelSlot = " + getModelSlot());
 
-		if (flexoRoleClass != null) {
+		if (getFlexoRoleClass() != null && getModelSlotClass() != null) {
+
+			// First handle FMLModelFactory update
+			VirtualModel virtualModel = getFlexoConcept().getDeclaringVirtualModel();
+			if (virtualModel != null && !virtualModel.uses(getModelSlotClass())) {
+				virtualModel.declareUse(getModelSlotClass());
+			}
+
 			if (getModelSlot() != null) {
-				newFlexoRole = getModelSlot().makeFlexoRole(flexoRoleClass);
+				newFlexoRole = getModelSlot().makeFlexoRole(getFlexoRoleClass());
 				newFlexoRole.setModelSlot(getModelSlot());
 			}
 			else {
@@ -221,6 +230,19 @@ public class CreateTechnologyRole extends AbstractCreateFlexoRole<CreateTechnolo
 		getPropertyChangeSupport().firePropertyChange("roleName", null, getRoleName());
 		getPropertyChangeSupport().firePropertyChange("propertyName", null, getRoleName());
 		getPropertyChangeSupport().firePropertyChange("flexoRoleClass", flexoRoleClass != null ? null : false, flexoRoleClass);
+	}
+
+	public Class<? extends ModelSlot<?>> getModelSlotClass() {
+		return modelSlotClass;
+	}
+
+	public void setModelSlotClass(Class<? extends ModelSlot<?>> modelSlotClass) {
+		if ((modelSlotClass == null && this.modelSlotClass != null)
+				|| (modelSlotClass != null && !modelSlotClass.equals(this.modelSlotClass))) {
+			Class<? extends FlexoRole<?>> oldValue = this.modelSlotClass;
+			this.modelSlotClass = modelSlotClass;
+			getPropertyChangeSupport().firePropertyChange("modelSlotClass", oldValue, modelSlotClass);
+		}
 	}
 
 	@Override

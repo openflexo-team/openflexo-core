@@ -1307,7 +1307,6 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 
 		@Override
 		public void finalizeDeserialization() {
-			super.finalizeDeserialization();
 			// createBindingModel();
 			for (FlexoBehaviour es : getFlexoBehaviours()) {
 				es.finalizeDeserialization();
@@ -1316,6 +1315,7 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 				pr.finalizeDeserialization();
 			}
 			decodeParentFlexoConceptList(true);
+			super.finalizeDeserialization();
 		}
 
 		public void debug() {

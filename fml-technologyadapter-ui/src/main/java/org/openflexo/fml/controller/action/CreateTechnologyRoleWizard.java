@@ -138,12 +138,25 @@ public class CreateTechnologyRoleWizard extends AbstractCreateFlexoRoleWizard<Cr
 			if (getFlexoRoleClass() != flexoRoleClass) {
 				Class<? extends FlexoRole> oldValue = getFlexoRoleClass();
 				getAction().setFlexoRoleClass(flexoRoleClass);
+				getAction().setModelSlotClass(getModelSlotClass());
 				getPropertyChangeSupport().firePropertyChange("flexoRoleClass", oldValue, flexoRoleClass);
 				getPropertyChangeSupport().firePropertyChange("roleName", null, getRoleName());
 				getAction().getDefaultValue().setDeclaredType(getDataType());
 				getAction().getPropertyChangeSupport().firePropertyChange("defaultValue", null, getAction().getDefaultValue());
 				checkValidity();
 			}
+		}
+
+		public Class<? extends ModelSlot<?>> getModelSlotClass() {
+			if (getTechnologyAdapter() != null) {
+				for (Class<? extends ModelSlot<?>> msClass : getTechnologyAdapter().getAvailableModelSlotTypes()) {
+					if (getTechnologyAdapter().getTechnologyAdapterService().getAvailableFlexoRoleTypes(msClass)
+							.contains(getFlexoRoleClass())) {
+						return msClass;
+					}
+				}
+			}
+			return null;
 		}
 
 		public boolean getIsRequired() {

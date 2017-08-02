@@ -85,10 +85,10 @@ public interface FlexoConceptObject extends FMLObject {
 
 		@Override
 		public FMLModelFactory getFMLModelFactory() {
-			if (getOwningVirtualModel() != null) {
+			if (getOwningVirtualModel() != null && getOwningVirtualModel().getFMLModelFactory() != null) {
 				return getOwningVirtualModel().getFMLModelFactory();
 			}
-			if (getFlexoConcept() instanceof VirtualModel) {
+			if (getFlexoConcept() instanceof VirtualModel && ((VirtualModel) getFlexoConcept()).getFMLModelFactory() != null) {
 				return getFlexoConcept().getFMLModelFactory();
 			}
 			return getDeserializationFactory();

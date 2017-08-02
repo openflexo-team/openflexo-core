@@ -118,6 +118,11 @@ public class CreateModelSlot extends AbstractCreateFlexoProperty<CreateModelSlot
 		}
 
 		if (technologyAdapter != null && getModelSlotClass() != null) {
+
+			if (getVirtualModel() != null && !getVirtualModel().uses(getModelSlotClass())) {
+				getVirtualModel().declareUse(getModelSlotClass());
+			}
+
 			newModelSlot = technologyAdapter.makeModelSlot(getModelSlotClass(), getFlexoConcept());
 			newModelSlot.setName(modelSlotName);
 			if (newModelSlot instanceof FMLRTModelSlot) {
@@ -132,9 +137,6 @@ public class CreateModelSlot extends AbstractCreateFlexoProperty<CreateModelSlot
 			newModelSlot.setDescription(description);
 			getFlexoConcept().addToModelSlots(newModelSlot);
 
-			if (getVirtualModel() != null && !getVirtualModel().uses(getModelSlotClass())) {
-				getVirtualModel().declareUse(getModelSlotClass());
-			}
 		}
 
 	}

@@ -589,11 +589,10 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>>
 
 		@Override
 		public void finalizeDeserialization() {
-			if (getVirtualModel() != null) {
+			if (getVirtualModel() != null && getFMLModelFactory() != null) {
 				Class<? extends ModelSlot<?>> modelSlotClass = getFMLModelFactory().getModelEntityForInstance(this)
 						.getImplementedInterface();
 				if (!getVirtualModel().uses(modelSlotClass)) {
-					System.out.println("On rajoute " + modelSlotClass + " dans les USES");
 					getVirtualModel().declareUse(modelSlotClass);
 				}
 			}

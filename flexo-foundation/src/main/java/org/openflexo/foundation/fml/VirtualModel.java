@@ -438,8 +438,8 @@ public interface VirtualModel extends FlexoConcept, VirtualModelObject, FlexoMet
 
 		@Override
 		public FMLModelFactory getFMLModelFactory() {
-			if (deserializationFactory != null /*isDeserializing()*/) {
-				return deserializationFactory;
+			if (getDeserializationFactory() != null /*isDeserializing()*/) {
+				return getDeserializationFactory();
 			}
 			if (getResource() != null) {
 				return getResource().getFactory();
@@ -449,17 +449,10 @@ public interface VirtualModel extends FlexoConcept, VirtualModelObject, FlexoMet
 			}
 		}
 
-		private FMLModelFactory deserializationFactory;
-
-		@Override
-		public void initializeDeserialization(FMLModelFactory factory) {
-			deserializationFactory = factory;
-		}
-
 		@Override
 		public void finalizeDeserialization() {
-			for (FlexoConcept ep : getFlexoConcepts()) {
-				ep.finalizeDeserialization();
+			for (FlexoConcept concept : getFlexoConcepts()) {
+				concept.finalizeDeserialization();
 			}
 			super.finalizeDeserialization();
 		}
@@ -946,9 +939,22 @@ public interface VirtualModel extends FlexoConcept, VirtualModelObject, FlexoMet
 			if (modelSlotClass == null) {
 				return null;
 			}
+
+			List<Class<? extends ModelSlot<?>>> usedModelSlots = new ArrayList<>();
+			for (UseModelSlotDeclaration msDecl : getUseDeclarations()) {
+				usedModelSlots.add(modelSlotClass);
+				if (modelSlotClass.equals(msDecl.getModelSlotClass())) {
+					return msDecl;
+				}
+			}
+
+			usedModelSlots.add(modelSlotClass);
+			getResource().updateFMLModelFactory(usedModelSlots);
+
 			UseModelSlotDeclaration useDeclaration = getFMLModelFactory().newUseModelSlotDeclaration(modelSlotClass);
 			addToUseDeclarations(useDeclaration);
 			return useDeclaration;
+
 		}
 
 		@Override
