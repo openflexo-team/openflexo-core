@@ -482,10 +482,10 @@ public class CreateFlexoBehaviour extends FlexoAction<CreateFlexoBehaviour, Flex
 	protected void doAction(Object context) throws NotImplementedException, InvalidParameterException {
 		logger.info("Add flexo behaviour, name=" + getFlexoBehaviourName() + " type=" + flexoBehaviourClass);
 
-		if (flexoBehaviourClass != null) {
+		if (getFlexoBehaviourClass() != null) {
 
 			FMLModelFactory factory = getFocusedObject().getFMLModelFactory();
-			newFlexoBehaviour = factory.newInstance(flexoBehaviourClass);
+			newFlexoBehaviour = factory.newInstance(getFlexoBehaviourClass());
 			newFlexoBehaviour.setName(getFlexoBehaviourName());
 			newFlexoBehaviour.setDescription(getDescription());
 			newFlexoBehaviour.setFlexoConcept(getFlexoConcept());
