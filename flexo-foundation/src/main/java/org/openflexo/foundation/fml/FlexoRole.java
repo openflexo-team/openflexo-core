@@ -49,6 +49,7 @@ import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.connie.expr.BindingValue;
 import org.openflexo.foundation.DataModification;
+import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.binding.FlexoConceptFlexoPropertyPathElement;
 import org.openflexo.foundation.fml.binding.ModelSlotBindingVariable;
 import org.openflexo.foundation.fml.binding.VirtualModelModelSlotPathElement;
@@ -212,10 +213,12 @@ public interface FlexoRole<T> extends FlexoProperty<T> {
 	 * Instanciate run-time-level object encoding reference to object (see {@link ActorReference})
 	 * 
 	 * @param object
+	 *            the object which are pointing to
 	 * @param fci
+	 *            the {@link FlexoConceptInstance} where this {@link ActorReference} is defined
 	 * @return
 	 */
-	ActorReference<T> makeActorReference(T object, FlexoConceptInstance fci);
+	ActorReference<? extends T> makeActorReference(T object, FlexoConceptInstance fci);
 
 	abstract class FlexoRoleImpl<T> extends FlexoPropertyImpl<T> implements FlexoRole<T> {
 
@@ -450,7 +453,14 @@ public interface FlexoRole<T> extends FlexoProperty<T> {
 
 		@Override
 		protected String getFMLAnnotation(FMLRepresentationContext context) {
-			return "@" + getImplementedInterface().getSimpleName() + "(cardinality=" + getCardinality() + ",readOnly=" + isReadOnly() + ")";
+			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
+			out.append("@" + getImplementedInterface().getSimpleName() + "(cardinality=" + getCardinality() + ",readOnly=" + isReadOnly()
+					+ ")", context);
+			if (isKey()) {
+				out.append(StringUtils.LINE_SEPARATOR, context);
+				out.append("@Key", context);
+			}
+			return out.toString();
 		}
 
 	}

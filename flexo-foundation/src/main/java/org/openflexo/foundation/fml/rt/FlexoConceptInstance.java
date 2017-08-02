@@ -66,6 +66,7 @@ import org.openflexo.foundation.fml.CloningScheme;
 import org.openflexo.foundation.fml.DeletionScheme;
 import org.openflexo.foundation.fml.ExpressionProperty;
 import org.openflexo.foundation.fml.FlexoConcept;
+import org.openflexo.foundation.fml.FlexoConceptInstanceRole;
 import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.GetProperty;
@@ -434,6 +435,17 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 	 */
 	public <T> T execute(String expression, Object... parameters)
 			throws TypeMismatchException, NullReferenceException, InvocationTargetException;
+
+	/**
+	 * Instanciate run-time-level object encoding reference to this {@link FlexoConceptInstance} object
+	 * 
+	 * @param role
+	 *            the {@link FlexoConceptInstanceRole} defining access to supplied object
+	 * @param fci
+	 *            the {@link FlexoConceptInstance} where this reference should be built
+	 * 
+	 */
+	public ActorReference<? extends FlexoConceptInstance> makeActorReference(FlexoConceptInstanceRole role, FlexoConceptInstance fci);
 
 	public static abstract class FlexoConceptInstanceImpl extends VirtualModelInstanceObjectImpl implements FlexoConceptInstance {
 
@@ -1030,7 +1042,7 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 					}
 
 					if (object != null && !done) {
-						ActorReference<T> actorReference = flexoRole.makeActorReference(object, this);
+						ActorReference<? extends T> actorReference = flexoRole.makeActorReference(object, this);
 						addToActors(actorReference);
 					}
 
@@ -1061,7 +1073,7 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 		public <T> void addToFlexoActors(T object, FlexoRole<T> flexoRole) {
 
 			if (object != null) {
-				ActorReference<T> actorReference = flexoRole.makeActorReference(object, this);
+				ActorReference<? extends T> actorReference = flexoRole.makeActorReference(object, this);
 				addToActors(actorReference);
 				getPropertyChangeSupport().firePropertyChange(flexoRole.getPropertyName(), null, object);
 			}
@@ -1832,6 +1844,25 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 		@Override
 		public boolean isOf(String conceptName) {
 			return getFlexoConcept().getName().equals(conceptName);
+		}
+
+		/**
+		 * Instanciate run-time-level object encoding reference to this {@link FlexoConceptInstance} object
+		 * 
+		 * @param role
+		 *            the {@link FlexoConceptInstanceRole} defining access to supplied object
+		 * @param fci
+		 *            the {@link FlexoConceptInstance} where this reference should be built
+		 * 
+		 */
+		@Override
+		public ActorReference<? extends FlexoConceptInstance> makeActorReference(FlexoConceptInstanceRole role, FlexoConceptInstance fci) {
+			AbstractVirtualModelInstanceModelFactory<?> factory = getFactory();
+			ModelObjectActorReference<FlexoConceptInstance> returned = factory.newInstance(ModelObjectActorReference.class);
+			returned.setFlexoRole(role);
+			returned.setFlexoConceptInstance(fci);
+			returned.setModellingElement(this);
+			return returned;
 		}
 
 	}

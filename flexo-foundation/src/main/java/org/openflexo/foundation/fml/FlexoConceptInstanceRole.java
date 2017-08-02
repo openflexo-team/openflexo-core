@@ -43,11 +43,10 @@ import java.util.logging.Logger;
 
 import org.openflexo.connie.DataBinding;
 import org.openflexo.foundation.fml.annotations.FML;
-import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstanceModelFactory;
+import org.openflexo.foundation.fml.rt.ActorReference;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
-import org.openflexo.foundation.fml.rt.ModelObjectActorReference;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.model.annotations.DefineValidationRule;
@@ -278,31 +277,25 @@ public interface FlexoConceptInstanceRole extends FlexoRole<FlexoConceptInstance
 			return false;
 		}
 
+		/**
+		 * Instanciate run-time-level object encoding reference to object (see {@link ActorReference})
+		 * 
+		 * @param object
+		 *            the object which are pointing to
+		 * @param fci
+		 *            the {@link FlexoConceptInstance} where this {@link ActorReference} is defined
+		 * 
+		 */
 		@Override
-		public ModelObjectActorReference<FlexoConceptInstance> makeActorReference(FlexoConceptInstance object, FlexoConceptInstance epi) {
-			AbstractVirtualModelInstanceModelFactory<?> factory = epi.getFactory();
+		public ActorReference<? extends FlexoConceptInstance> makeActorReference(FlexoConceptInstance object, FlexoConceptInstance fci) {
+			/*AbstractVirtualModelInstanceModelFactory<?> factory = epi.getFactory();
 			ModelObjectActorReference<FlexoConceptInstance> returned = factory.newInstance(ModelObjectActorReference.class);
 			returned.setFlexoRole(this);
 			returned.setFlexoConceptInstance(epi);
 			returned.setModellingElement(object);
-			return returned;
+			return returned;*/
+			return object.makeActorReference(this, fci);
 		}
-
-		/*@Override
-		public FMLRTModelSlot getModelSlot() {
-			FMLRTModelSlot returned = (FMLRTModelSlot) super.getModelSlot();
-			return returned;
-		}*/
-
-		/*@Override
-		public FMLRTModelSlot<?, ?> getVirtualModelModelSlot() {
-			return (FMLRTModelSlot<?, ?>) getModelSlot();
-		}
-		
-		@Override
-		public void setVirtualModelModelSlot(FMLRTModelSlot<?, ?> modelSlot) {
-			setModelSlot(modelSlot);
-		}*/
 
 		private DataBinding<VirtualModelInstance<?, ?>> virtualModelInstance;
 

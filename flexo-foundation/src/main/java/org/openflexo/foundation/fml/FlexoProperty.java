@@ -401,8 +401,18 @@ public abstract interface FlexoProperty<T> extends FlexoConceptObject {
 			return performSuperDelete(context);
 		}
 
+		public boolean isKey() {
+			return getFlexoConcept() != null && getFlexoConcept().getKeyProperties().contains(this);
+		}
+
 		protected String getFMLAnnotation(FMLRepresentationContext context) {
-			return "@" + getImplementedInterface().getSimpleName();
+			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
+			out.append("@" + getImplementedInterface().getSimpleName(), context);
+			if (isKey()) {
+				out.append(StringUtils.LINE_SEPARATOR, context);
+				out.append("@Key", context);
+			}
+			return out.toString();
 		}
 
 		@Override
@@ -444,7 +454,7 @@ public abstract interface FlexoProperty<T> extends FlexoConceptObject {
 				if (!TypeUtils.isTypeAssignableFrom(superProperty.getResultingType(), property.getResultingType())) {
 
 					/*System.out.println("FML=" + property.getDeclaringVirtualModel().getFMLRepresentation());
-
+					
 					System.out.println("overriding= " + property.getFMLRepresentation());
 					System.out.println("getType=" + property.getType());
 					System.out.println("getResultingType=" + property.getResultingType());

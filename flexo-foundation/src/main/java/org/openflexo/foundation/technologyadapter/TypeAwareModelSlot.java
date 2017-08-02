@@ -42,6 +42,7 @@ import java.util.logging.Logger;
 
 import org.apache.commons.lang3.reflect.TypeUtils;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
+import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.ModelSlotInstance;
 import org.openflexo.foundation.fml.rt.TypeAwareModelSlotInstance;
@@ -238,7 +239,14 @@ public interface TypeAwareModelSlot<M extends FlexoModel<M, MM> & TechnologyObje
 
 		@Override
 		protected String getFMLAnnotation(FMLRepresentationContext context) {
-			return super.getFMLAnnotation(context) + "(metamodel=" + '"' + getMetaModelURI() + '"' + ")";
+			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
+			out.append("@" + getImplementedInterface().getSimpleName() + "(metamodel=" + '"' + getMetaModelURI() + '"' + ",cardinality="
+					+ getCardinality() + ",readOnly=" + isReadOnly() + ")", context);
+			if (isKey()) {
+				out.append(StringUtils.LINE_SEPARATOR, context);
+				out.append("@Key", context);
+			}
+			return out.toString();
 		}
 
 		@Override
