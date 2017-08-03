@@ -281,7 +281,7 @@ public class FMLIconLibrary extends IconLibrary {
 			}
 			return FMLIconLibrary.UNKNOWN_ICON;
 		}
-		else if (object instanceof FlexoConceptInstanceRole) {
+		else if (object.getClass().equals(FlexoConceptInstanceRole.class)) {
 			return FMLRTIconLibrary.FLEXO_CONCEPT_INSTANCE_ICON;
 		}
 		else if (object instanceof FlexoRole /*&& ((FlexoRole) object).getModelSlot() != null*/) {
