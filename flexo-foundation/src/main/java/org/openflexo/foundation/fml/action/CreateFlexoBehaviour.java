@@ -43,9 +43,7 @@ import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.Vector;
 import java.util.logging.Logger;
 
@@ -76,11 +74,10 @@ import org.openflexo.foundation.fml.FlexoConceptBehaviouralFacet;
 import org.openflexo.foundation.fml.FlexoConceptObject;
 import org.openflexo.foundation.fml.NavigationScheme;
 import org.openflexo.foundation.fml.SynchronizationScheme;
-import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.task.Progress;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
-import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
+import org.openflexo.foundation.technologyadapter.UseModelSlotDeclaration;
 import org.openflexo.localization.LocalizedDelegate;
 import org.openflexo.toolbox.PropertyChangedSupportDefaultImplementation;
 import org.openflexo.toolbox.StringUtils;
@@ -269,19 +266,20 @@ public class CreateFlexoBehaviour extends FlexoAction<CreateFlexoBehaviour, Flex
 
 		behaviourClassMap = new LinkedHashMap<>();
 
-		if (focusedObject instanceof VirtualModel) {
-			addVirtualModelFlexoBehaviours((VirtualModel) focusedObject);
-		}
-		else if (focusedObject instanceof FlexoConcept) {
-			addFlexoConceptFlexoBehaviours((FlexoConcept) focusedObject);
-		}
-		else if (focusedObject instanceof FlexoConceptBehaviouralFacet) {
-			FlexoConcept facetConcept = focusedObject.getFlexoConcept();
-			if (facetConcept instanceof VirtualModel) {
-				addVirtualModelFlexoBehaviours((VirtualModel) facetConcept);
-			}
-			else {
-				addFlexoConceptFlexoBehaviours(facetConcept);
+		behaviourClassMap.put(ActionScheme.class, focusedObject.getDeclaringVirtualModel().getTechnologyAdapter());
+		behaviourClassMap.put(CloningScheme.class, focusedObject.getDeclaringVirtualModel().getTechnologyAdapter());
+		behaviourClassMap.put(CreationScheme.class, focusedObject.getDeclaringVirtualModel().getTechnologyAdapter());
+		behaviourClassMap.put(DeletionScheme.class, focusedObject.getDeclaringVirtualModel().getTechnologyAdapter());
+		behaviourClassMap.put(EventListener.class, focusedObject.getDeclaringVirtualModel().getTechnologyAdapter());
+
+		for (UseModelSlotDeclaration useMS : focusedObject.getDeclaringVirtualModel().getUseDeclarations()) {
+			Class<? extends ModelSlot<?>> msClass = useMS.getModelSlotClass();
+			for (Class<? extends FlexoBehaviour> behaviour : editor.getServiceManager().getTechnologyAdapterService()
+					.getAvailableFlexoBehaviourTypes(msClass)) {
+				if (!behaviourClassMap.containsKey(behaviour)) {
+					behaviourClassMap.put(behaviour,
+							editor.getServiceManager().getTechnologyAdapterService().getTechnologyAdapterForModelSlot(msClass));
+				}
 			}
 		}
 
@@ -353,47 +351,6 @@ public class CreateFlexoBehaviour extends FlexoAction<CreateFlexoBehaviour, Flex
 		getPropertyChangeSupport().firePropertyChange("parameterEntries", null, getParameterEntries());
 	}
 
-	private void addVirtualModelFlexoBehaviours(VirtualModel virtualModel) {
-		behaviourClassMap.put(CreationScheme.class, virtualModel.getTechnologyAdapter());
-		behaviourClassMap.put(ActionScheme.class, virtualModel.getTechnologyAdapter());
-		behaviourClassMap.put(DeletionScheme.class, virtualModel.getTechnologyAdapter());
-		behaviourClassMap.put(EventListener.class, virtualModel.getTechnologyAdapter());
-		behaviourClassMap.put(SynchronizationScheme.class, virtualModel.getTechnologyAdapter());
-		behaviourClassMap.put(CloningScheme.class, virtualModel.getTechnologyAdapter());
-
-		Set<Class<? extends ModelSlot<?>>> slotClasses = new LinkedHashSet<>();
-		virtualModel.getUseDeclarations().stream().forEach((use) -> slotClasses.add(use.getModelSlotClass()));
-		virtualModel.getModelSlots().stream().forEach((slot) -> slotClasses.add((Class<? extends ModelSlot<?>>) slot.getClass()));
-
-		TechnologyAdapterService service = getServiceManager().getTechnologyAdapterService();
-		for (Class<? extends ModelSlot<?>> slotClass : slotClasses) {
-			List<Class<? extends FlexoBehaviour>> msBehaviours = service.getAvailableFlexoBehaviourTypes(slotClass);
-			for (Class<? extends FlexoBehaviour> behaviour : msBehaviours) {
-				if (!behaviourClassMap.containsKey(behaviour)) {
-					behaviourClassMap.put(behaviour, service.getTechnologyAdapterForModelSlot(slotClass));
-				}
-			}
-		}
-	}
-
-	private void addFlexoConceptFlexoBehaviours(FlexoConcept flexoConcept) {
-		if (flexoConcept.getOwningVirtualModel() != null) {
-			behaviourClassMap.put(ActionScheme.class, flexoConcept.getOwningVirtualModel().getTechnologyAdapter());
-			behaviourClassMap.put(CloningScheme.class, flexoConcept.getOwningVirtualModel().getTechnologyAdapter());
-			behaviourClassMap.put(CreationScheme.class, flexoConcept.getOwningVirtualModel().getTechnologyAdapter());
-			behaviourClassMap.put(DeletionScheme.class, flexoConcept.getOwningVirtualModel().getTechnologyAdapter());
-			behaviourClassMap.put(EventListener.class, flexoConcept.getOwningVirtualModel().getTechnologyAdapter());
-			for (ModelSlot<?> ms : flexoConcept.getOwningVirtualModel().getModelSlots()) {
-				List<Class<? extends FlexoBehaviour>> msBehaviours = ms.getAvailableFlexoBehaviourTypes();
-				for (Class<? extends FlexoBehaviour> behaviour : msBehaviours) {
-					if (!behaviourClassMap.containsKey(behaviour)) {
-						behaviourClassMap.put(behaviour, ms.getModelSlotTechnologyAdapter());
-					}
-				}
-			}
-		}
-	}
-
 	public TechnologyAdapter getBehaviourTechnologyAdapter(Class<? extends FlexoBehaviour> behaviourClass) {
 		return behaviourClassMap.get(behaviourClass);
 	}
@@ -407,13 +364,6 @@ public class CreateFlexoBehaviour extends FlexoAction<CreateFlexoBehaviour, Flex
 		}
 		return behaviours;
 	}
-
-	/*public List<Class<? extends FlexoBehaviour>> getModelSlotSpecificBehaviours() {
-		if (modelSlot != null && !(modelSlot instanceof FMLRTModelSlot)) {
-			return modelSlot.getAvailableFlexoBehaviourTypes();
-		}
-		return null;
-	}*/
 
 	public FlexoConcept getFlexoConcept() {
 		if (getFocusedObject() != null) {
@@ -538,6 +488,7 @@ public class CreateFlexoBehaviour extends FlexoAction<CreateFlexoBehaviour, Flex
 		boolean wasValid = isValid();
 		this.flexoBehaviourClass = flexoBehaviourClass;
 		getPropertyChangeSupport().firePropertyChange("flexoBehaviourClass", null, flexoBehaviourClass);
+		getPropertyChangeSupport().firePropertyChange("flexoBehaviourName", null, getFlexoBehaviourName());
 		getPropertyChangeSupport().firePropertyChange("isValid", wasValid, isValid());
 	}
 
