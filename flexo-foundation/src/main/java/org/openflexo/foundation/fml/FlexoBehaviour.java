@@ -318,6 +318,14 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 	 */
 	public FlexoBehaviour getMostSpecializedBehaviour(FlexoConcept context);
 
+	/**
+	 * Return a flag indicating if this behaviour support custom definition of parameters<br>
+	 * Default implementation is to return true
+	 * 
+	 * @return
+	 */
+	public boolean supportParameters();
+
 	public static abstract class FlexoBehaviourImpl extends FlexoBehaviourObjectImpl implements FlexoBehaviour {
 
 		protected FlexoBehaviourBindingModel bindingModel;
@@ -975,6 +983,17 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 			if (getControlGraph() != null) {
 				getControlGraph().accept(controlGraph -> controlGraph.notifiedScopeChanged());
 			}
+		}
+
+		/**
+		 * Return a flag indicating if this behaviour support custom definition of parameters<br>
+		 * Default implementation is to return true
+		 * 
+		 * @return
+		 */
+		@Override
+		public boolean supportParameters() {
+			return true;
 		}
 
 	}
