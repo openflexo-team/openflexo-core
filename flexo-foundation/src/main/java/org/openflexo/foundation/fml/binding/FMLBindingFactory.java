@@ -86,8 +86,11 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapterBindingFactor
 public class FMLBindingFactory extends JavaBindingFactory {
 	static final Logger logger = Logger.getLogger(FMLBindingFactory.class.getPackage().getName());
 
+	@Deprecated
 	public static final String FLEXO_CONCEPT_INSTANCE = "flexoConceptInstance";
+	@Deprecated
 	public static final String VIRTUAL_MODEL_INSTANCE = "virtualModelInstance";
+	@Deprecated
 	public static final String VIEW = "view";
 	public static final String RESOURCE_CENTER = "resourceCenter";
 
