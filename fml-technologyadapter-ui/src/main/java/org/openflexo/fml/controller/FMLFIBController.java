@@ -46,6 +46,7 @@ import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 
 import org.openflexo.components.validation.RevalidationTask;
+import org.openflexo.connie.annotations.NotificationUnsafe;
 import org.openflexo.fml.controller.validation.FixIssueDialog;
 import org.openflexo.fml.controller.validation.IssueFixing;
 import org.openflexo.foundation.FlexoException;
@@ -798,6 +799,7 @@ public class FMLFIBController extends FlexoFIBController {
 	}
 
 	@Override
+	@NotificationUnsafe
 	public ImageIcon iconForObject(Object object) {
 		if (object instanceof ValidationError) {
 			if (((ValidationError<?, ?>) object).isFixable()) {

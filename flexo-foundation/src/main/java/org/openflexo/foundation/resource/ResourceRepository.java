@@ -52,6 +52,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.commons.lang3.reflect.TypeUtils;
+import org.openflexo.connie.annotations.NotificationUnsafe;
 import org.openflexo.foundation.DataFlexoObserver;
 import org.openflexo.foundation.DataModification;
 import org.openflexo.foundation.DefaultFlexoObject;
@@ -110,6 +111,7 @@ public abstract class ResourceRepository<R extends FlexoResource<?>, I> extends 
 		}
 	}
 
+	@NotificationUnsafe
 	public RepositoryFolder<R, I> getRootFolder() {
 		return rootFolder;
 	}

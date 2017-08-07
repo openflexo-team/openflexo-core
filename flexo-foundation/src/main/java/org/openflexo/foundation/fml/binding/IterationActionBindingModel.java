@@ -59,6 +59,7 @@ public class IterationActionBindingModel extends EditionActionBindingModel {
 	public IterationActionBindingModel(AbstractIterationAction editionAction) {
 		super(editionAction);
 		iteratorBindingVariable = new IterationActionBindingVariable(editionAction);
+		iteratorBindingVariable.setCacheable(false);
 		addToBindingVariables(iteratorBindingVariable);
 	}
 

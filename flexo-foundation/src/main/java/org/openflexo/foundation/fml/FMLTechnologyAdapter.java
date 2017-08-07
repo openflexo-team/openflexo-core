@@ -42,6 +42,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.openflexo.connie.annotations.NotificationUnsafe;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType.FlexoConceptInstanceTypeFactory;
 import org.openflexo.foundation.fml.VirtualModelInstanceType.VirtualModelInstanceTypeFactory;
@@ -162,6 +163,7 @@ public class FMLTechnologyAdapter extends TechnologyAdapter {
 		return getResourceFactory(VirtualModelResourceFactory.class);
 	}
 
+	@NotificationUnsafe
 	public List<VirtualModelRepository<?>> getVirtualModelRepositories() {
 		List<VirtualModelRepository<?>> returned = new ArrayList<>();
 		for (FlexoResourceCenter<?> rc : getServiceManager().getResourceCenterService().getResourceCenters()) {

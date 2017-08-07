@@ -97,6 +97,7 @@ import org.openflexo.components.ProgressWindow;
 import org.openflexo.components.ReviewUnsavedDialog;
 import org.openflexo.components.validation.ValidationWindow;
 import org.openflexo.components.widget.FIBTechnologyBrowser;
+import org.openflexo.connie.annotations.NotificationUnsafe;
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.editor.SelectAndFocusObjectTask;
 import org.openflexo.foundation.FlexoEditingContext;
@@ -1877,6 +1878,7 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 	// ============ Icons management ==============
 	// ================================================
 
+	@NotificationUnsafe
 	public ImageIcon iconForObject(Object object) {
 
 		if (object instanceof String) {

@@ -47,6 +47,7 @@ import javax.swing.ImageIcon;
 
 import org.apache.commons.lang3.StringUtils;
 import org.openflexo.ApplicationContext;
+import org.openflexo.connie.annotations.NotificationUnsafe;
 import org.openflexo.gina.model.FIBComponent;
 import org.openflexo.gina.swing.utils.JFIBDialog;
 import org.openflexo.gina.swing.view.SwingViewFactory;
@@ -123,6 +124,7 @@ public class PreferencesDialog extends JFIBDialog<FlexoPreferences> {
 		private final Map<PreferencesContainer, String> shortNames = new HashMap<>();
 		private final Map<PreferencesContainer, String> longNames = new HashMap<>();
 
+		@NotificationUnsafe
 		public Resource fibForPreferences(PreferencesContainer prefs) {
 
 			if (prefs == null) {
@@ -145,6 +147,7 @@ public class PreferencesDialog extends JFIBDialog<FlexoPreferences> {
 			return returned;
 		}
 
+		@NotificationUnsafe
 		public String shortNameForPreferences(PreferencesContainer prefs) {
 
 			if (prefs == null) {
@@ -171,6 +174,7 @@ public class PreferencesDialog extends JFIBDialog<FlexoPreferences> {
 
 		}
 
+		@NotificationUnsafe
 		public String longNameForPreferences(PreferencesContainer prefs) {
 
 			if (prefs == null) {
@@ -197,6 +201,7 @@ public class PreferencesDialog extends JFIBDialog<FlexoPreferences> {
 
 		}
 
+		@NotificationUnsafe
 		public ImageIcon iconForPreferences(PreferencesContainer prefs) {
 
 			if (prefs == null) {
@@ -230,6 +235,7 @@ public class PreferencesDialog extends JFIBDialog<FlexoPreferences> {
 
 		}
 
+		@NotificationUnsafe
 		public ImageIcon bigIconForPreferences(PreferencesContainer prefs) {
 
 			if (prefs == null) {

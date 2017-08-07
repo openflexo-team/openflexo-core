@@ -383,6 +383,7 @@ public class FlexoFIBController extends FIBController implements GraphicalFlexoO
 		return presPref.hideEmptyFolders();
 	}
 
+	@NotificationUnsafe
 	public boolean shouldBeDisplayed(RepositoryFolder<?, ?> folder) {
 		if (folder.isRootFolder()) {
 			return true;
