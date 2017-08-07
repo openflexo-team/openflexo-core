@@ -949,7 +949,9 @@ public interface VirtualModel extends FlexoConcept, VirtualModelObject, FlexoMet
 			}
 
 			usedModelSlots.add(modelSlotClass);
-			getResource().updateFMLModelFactory(usedModelSlots);
+			if (getResource() != null) {
+				getResource().updateFMLModelFactory(usedModelSlots);
+			}
 
 			UseModelSlotDeclaration useDeclaration = getFMLModelFactory().newUseModelSlotDeclaration(modelSlotClass);
 			addToUseDeclarations(useDeclaration);
