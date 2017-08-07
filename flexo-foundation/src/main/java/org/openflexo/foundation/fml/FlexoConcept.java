@@ -953,22 +953,24 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 		 */
 		@Override
 		public FlexoProperty<?> getAccessibleProperty(String propertyName) {
-			List<FlexoProperty<?>> pList = new ArrayList<>();
+			// List<FlexoProperty<?>> pList = new ArrayList<>();
 			for (FlexoProperty<?> p : getAccessibleProperties()) {
 				if (p.getName().equals(propertyName)) {
-					pList.add(p);
+					return p;
+					// pList.add(p);
 				}
 			}
-			if (pList.size() == 0) {
-				return null;
-			}
-			else if (pList.size() == 1) {
+			// if (pList.size() == 0) {
+			return null;
+			// }
+			/*else if (pList.size() == 1) {
 				return pList.get(0);
 			}
 			else {
 				logger.warning("More thant one matching property: " + pList);
+				if (pList.get(0).isSuperPropertyOf(property))
 				return pList.get(0);
-			}
+			}*/
 		}
 
 		/**
