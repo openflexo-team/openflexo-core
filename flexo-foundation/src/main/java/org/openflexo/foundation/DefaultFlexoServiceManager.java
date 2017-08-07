@@ -39,6 +39,8 @@
 
 package org.openflexo.foundation;
 
+import org.openflexo.connie.DataBinding;
+import org.openflexo.connie.DataBinding.CachingStrategy;
 import org.openflexo.foundation.FlexoProject.FlexoProjectReferenceLoader;
 import org.openflexo.foundation.fml.VirtualModelLibrary;
 import org.openflexo.foundation.localization.DefaultLocalizationService;
@@ -78,6 +80,8 @@ public class DefaultFlexoServiceManager extends FlexoServiceManager {
 	 *            true when 'developer' mode set to true (enable more services)
 	 */
 	public DefaultFlexoServiceManager(String localizationRelativePath, boolean devMode) {
+
+		DataBinding.setDefaultCachingStrategy(CachingStrategy.PRAGMATIC_CACHE);
 
 		LocalizationService localizationService = createLocalizationService(localizationRelativePath);
 		registerService(localizationService);
