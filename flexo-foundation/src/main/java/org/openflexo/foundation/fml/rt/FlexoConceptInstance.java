@@ -43,6 +43,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -824,7 +825,7 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 					// logger.warning("Should not we delegate this to owning VM ???");
 					return getOwningVirtualModelInstance().getFlexoActor(flexoRole);
 				}
-				List<ActorReference<T>> actorReferences = (List) actors.get(flexoRole.getRoleName());
+				List<ActorReference<T>> actorReferences = getActorReferenceList(flexoRole);
 
 				if (actorReferences != null && actorReferences.size() > 0) {
 					return actorReferences.get(0).getModellingElement();
@@ -878,7 +879,7 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 			}
 			else {
 
-				List<ActorReference<T>> actorReferences = (List) actors.get(flexoRole.getRoleName());
+				List<ActorReference<T>> actorReferences = getActorReferenceList(flexoRole);
 
 				List<T> returned = (List) actorLists.get(flexoRole);
 				if (returned == null) {
@@ -950,6 +951,9 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 			if (actorReferences != null && actorReferences.size() > 0) {
 				return actorReferences.get(0);
 			}
+			else {
+				System.out.println(">>>>>>>>>> Tiens on pourrait peut-etre creer une ActorReference ??? pour " + flexoRole);
+			}
 
 			return null;
 		}
@@ -969,8 +973,18 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 				return null;
 			}
 
-			return (List) actors.get(flexoRole.getRoleName());
+			List actorReferences = actors.get(flexoRole.getRoleName());
+
+			if ((actorReferences == null || actorReferences.size() == 0) && selfInstantiatedActorReferences.get(flexoRole) == null
+					&& flexoRole.supportSelfInstantiation()) {
+				actorReferences = flexoRole.selfInstantiate(this);
+				selfInstantiatedActorReferences.put(flexoRole, actorReferences);
+			}
+
+			return actorReferences;
 		}
+
+		private Map<FlexoRole<?>, List<ActorReference<?>>> selfInstantiatedActorReferences = new HashMap<>();
 
 		/*private <T> ActorReference<T> getParentActorReference(FlexoConcept flexoConcept, FlexoProperty<T> flexoProperty) {
 			ActorReference<T> actorReference;

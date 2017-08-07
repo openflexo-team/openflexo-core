@@ -40,6 +40,7 @@ package org.openflexo.foundation.fml;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
+import java.util.List;
 
 import org.openflexo.connie.BindingEvaluationContext;
 import org.openflexo.connie.DataBinding;
@@ -219,6 +220,21 @@ public interface FlexoRole<T> extends FlexoProperty<T> {
 	 * @return
 	 */
 	ActorReference<? extends T> makeActorReference(T object, FlexoConceptInstance fci);
+
+	/**
+	 * Return a boolean indicating if this {@link FlexoRole} handles itself instantiation and management of related ActorReference
+	 * 
+	 * @return
+	 */
+	boolean supportSelfInstantiation();
+
+	/**
+	 * If this {@link FlexoRole} supports self instantiation, perform it. Otherwise return null;
+	 * 
+	 * @param fci
+	 * @return
+	 */
+	public List<? extends ActorReference<? extends T>> selfInstantiate(FlexoConceptInstance fci);
 
 	abstract class FlexoRoleImpl<T> extends FlexoPropertyImpl<T> implements FlexoRole<T> {
 
@@ -461,6 +477,27 @@ public interface FlexoRole<T> extends FlexoProperty<T> {
 				out.append("@Key", context);
 			}
 			return out.toString();
+		}
+
+		/**
+		 * Return a boolean indicating if this {@link FlexoRole} handles itself instantiation and management of related ActorReference
+		 * 
+		 * @return
+		 */
+		@Override
+		public boolean supportSelfInstantiation() {
+			return false;
+		}
+
+		/**
+		 * If this {@link FlexoRole} supports self instantiation, perform it. Otherwise return null;
+		 * 
+		 * @param fci
+		 * @return
+		 */
+		@Override
+		public List<? extends ActorReference<? extends T>> selfInstantiate(FlexoConceptInstance fci) {
+			return null;
 		}
 
 	}
