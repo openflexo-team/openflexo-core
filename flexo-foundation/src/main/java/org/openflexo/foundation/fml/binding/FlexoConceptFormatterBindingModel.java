@@ -63,13 +63,17 @@ public class FlexoConceptFormatterBindingModel extends BindingModel {
 		if (conceptInspector != null && conceptInspector.getPropertyChangeSupport() != null) {
 			conceptInspector.getPropertyChangeSupport().addPropertyChangeListener(this);
 		}
-		addToBindingVariables(new BindingVariable(FlexoConceptInspector.FORMATTER_INSTANCE_PROPERTY,
+
+		BindingVariable formatterBV = new BindingVariable(FlexoConceptInspector.FORMATTER_INSTANCE_PROPERTY,
 				FlexoConceptInstanceType.getFlexoConceptInstanceType(conceptInspector.getFlexoConcept())) {
 			@Override
 			public Type getType() {
 				return FlexoConceptInstanceType.getFlexoConceptInstanceType(getConceptInspector().getFlexoConcept());
 			}
-		});
+		};
+		formatterBV.setCacheable(false);
+
+		addToBindingVariables(formatterBV);
 	}
 
 	/**
@@ -88,8 +92,8 @@ public class FlexoConceptFormatterBindingModel extends BindingModel {
 		super.propertyChange(evt);
 		if (evt.getSource() == conceptInspector) {
 			if (evt.getPropertyName().equals(FlexoConceptInspector.FLEXO_CONCEPT_KEY)) {
-				setBaseBindingModel(conceptInspector.getFlexoConcept() != null ? conceptInspector.getFlexoConcept().getBindingModel()
-						: null);
+				setBaseBindingModel(
+						conceptInspector.getFlexoConcept() != null ? conceptInspector.getFlexoConcept().getBindingModel() : null);
 			}
 		}
 	}

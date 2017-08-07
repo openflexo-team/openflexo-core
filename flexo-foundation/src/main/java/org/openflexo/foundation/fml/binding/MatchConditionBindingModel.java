@@ -61,6 +61,7 @@ public class MatchConditionBindingModel extends BindingModel implements Property
 
 		this.matchCondition = matchCondition;
 		selectedBindingVariable = new MatchConditionSelectedBindingVariable(matchCondition);
+		selectedBindingVariable.setCacheable(false);
 		addToBindingVariables(selectedBindingVariable);
 
 		if (matchCondition != null && matchCondition.getPropertyChangeSupport() != null) {

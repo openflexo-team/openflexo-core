@@ -61,6 +61,7 @@ public class FetchRequestConditionBindingModel extends BindingModel implements P
 
 		this.fetchRequestCondition = fetchRequestCondition;
 		selectedBindingVariable = new FetchRequestConditionSelectedBindingVariable(fetchRequestCondition);
+		selectedBindingVariable.setCacheable(false);
 		addToBindingVariables(selectedBindingVariable);
 
 		if (fetchRequestCondition != null && fetchRequestCondition.getPropertyChangeSupport() != null) {

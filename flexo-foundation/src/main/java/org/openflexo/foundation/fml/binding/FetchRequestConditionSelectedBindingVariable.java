@@ -63,6 +63,7 @@ public class FetchRequestConditionSelectedBindingVariable extends BindingVariabl
 	public FetchRequestConditionSelectedBindingVariable(FetchRequestCondition condition) {
 		super(FetchRequestCondition.SELECTED, condition.getAction() != null ? condition.getAction().getFetchedType() : Object.class, false);
 		this.condition = condition;
+		// setCacheable(false);
 		if (condition != null) {
 			if (condition.getPropertyChangeSupport() != null) {
 				condition.getPropertyChangeSupport().addPropertyChangeListener(this);

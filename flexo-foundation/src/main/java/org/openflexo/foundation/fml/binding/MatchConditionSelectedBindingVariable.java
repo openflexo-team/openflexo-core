@@ -75,6 +75,7 @@ public class MatchConditionSelectedBindingVariable extends BindingVariable imple
 				action.getPropertyChangeSupport().addPropertyChangeListener(this);
 			}
 		}
+		setCacheable(false);
 	}
 
 	@Override
