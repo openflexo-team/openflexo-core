@@ -507,14 +507,14 @@ public abstract interface FlexoProperty<T> extends FlexoConceptObject {
 			if (property.getFlexoConcept().getContainerFlexoConcept() != null) {
 				if (property.getFlexoConcept().getContainerFlexoConcept().getAccessibleProperty(property.getName()) != null) {
 					return new ValidationWarning<PropertyShadowingAnOtherOne, FlexoProperty<?>>(this, property,
-							"property_(object.propertyName)_shadows_an_other_property");
+							"property_($validable.propertyName)_shadows_an_other_property");
 				}
 			}
 			if (property.getFlexoConcept().getVirtualModel() != null
 					&& property.getFlexoConcept().getVirtualModel() != property.getFlexoConcept()) {
 				if (property.getFlexoConcept().getVirtualModel().getAccessibleProperty(property.getName()) != null) {
 					return new ValidationWarning<PropertyShadowingAnOtherOne, FlexoProperty<?>>(this, property,
-							"property_(object.propertyName)_shadows_an_other_property");
+							"property_($validable.propertyName)_shadows_an_other_property");
 				}
 			}
 			return null;
