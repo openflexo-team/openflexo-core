@@ -39,6 +39,7 @@
 package org.openflexo.foundation.fml;
 
 import java.io.FileNotFoundException;
+
 import org.openflexo.connie.type.CustomTypeFactory;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
@@ -46,15 +47,14 @@ import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 
 /**
- * Represent the type of a DiagramInstance of a given Diagram
+ * Represent the type of an instance of a {@link VirtualModel}
  * 
  * @author sylvain
  * 
  */
 public class VirtualModelInstanceType extends FlexoConceptInstanceType {
 
-	public static VirtualModelInstanceType UNDEFINED_VIRTUAL_MODEL_INSTANCE_TYPE = new VirtualModelInstanceType(
-			(VirtualModel) null);
+	public static VirtualModelInstanceType UNDEFINED_VIRTUAL_MODEL_INSTANCE_TYPE = new VirtualModelInstanceType((VirtualModel) null);
 
 	public VirtualModelInstanceType(VirtualModel aVirtualModel) {
 		super(aVirtualModel);
