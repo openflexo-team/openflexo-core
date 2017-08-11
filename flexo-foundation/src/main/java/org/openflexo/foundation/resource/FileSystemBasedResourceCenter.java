@@ -59,7 +59,6 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.converter.FlexoObjectReferenceConverter;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
@@ -721,7 +720,7 @@ public abstract class FileSystemBasedResourceCenter extends ResourceRepository<F
 
 	@Override
 	public void setDefaultBaseURI(String defaultBaseURI) {
-		fsMetaDataManager.setProperty(DEFAULT_BASE_URI, defaultBaseURI, getDirectory());
+		fsMetaDataManager.setProperty(DEFAULT_BASE_URI, defaultBaseURI, getDirectory(), true);
 	}
 
 	/**
