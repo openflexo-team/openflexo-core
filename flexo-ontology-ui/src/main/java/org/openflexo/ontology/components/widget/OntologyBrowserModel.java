@@ -50,6 +50,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import org.openflexo.connie.annotations.NotificationUnsafe;
 import org.openflexo.foundation.ontology.BuiltInDataType;
 import org.openflexo.foundation.ontology.FlexoOntologyObjectImpl;
 import org.openflexo.foundation.ontology.IFlexoOntology;
@@ -124,8 +125,15 @@ public class OntologyBrowserModel<TA extends TechnologyAdapter> implements HasPr
 		return roots;
 	}
 
+	@NotificationUnsafe
 	public List<FlexoOntologyObjectImpl<TA>> getChildren(IFlexoOntologyObject<TA> father) {
-		return structure.get(father);
+		if (father == null) {
+			return null;
+		}
+		if (structure != null) {
+			return structure.get(father);
+		}
+		return null;
 	}
 
 	protected boolean autoUpdate = true;
@@ -142,13 +150,14 @@ public class OntologyBrowserModel<TA extends TechnologyAdapter> implements HasPr
 
 	public final void recomputeStructure() {
 
-		logger.fine("BEGIN recomputeStructure for " + getContext());
+		logger.info("BEGIN recomputeStructure for " + getContext());
 
 		isRecomputingStructure = true;
 		if (getContext() != null) {
 			if (getHierarchicalMode()) {
 				computeHierarchicalStructure();
-			} else {
+			}
+			else {
 				computeNonHierarchicalStructure();
 			}
 		}
@@ -158,7 +167,7 @@ public class OntologyBrowserModel<TA extends TechnologyAdapter> implements HasPr
 
 		isRecomputingStructure = false;
 
-		logger.fine("END recomputeStructure for " + getContext());
+		logger.info("END recomputeStructure for " + getContext());
 	}
 
 	protected void printHierarchy() {
@@ -188,15 +197,15 @@ public class OntologyBrowserModel<TA extends TechnologyAdapter> implements HasPr
 
 	public void setContext(IFlexoOntology<TA> context) {
 		boolean changed = this.context != context;
-		if (changed){
-			if (this.context != null ) {
+		if (changed) {
+			if (this.context != null) {
 				this.context.getPropertyChangeSupport().removePropertyChangeListener(this);
 			}
 			this.context = context;
 			if (context != null) {
 				context.getPropertyChangeSupport().addPropertyChangeListener(this);
 			}
-			if (autoUpdate ) {
+			if (autoUpdate) {
 				recomputeStructure();
 			}
 		}
@@ -392,7 +401,8 @@ public class OntologyBrowserModel<TA extends TechnologyAdapter> implements HasPr
 		if (object instanceof IFlexoOntologyClass) {
 			if (getRootClass() != null && object instanceof IFlexoOntologyConcept) {
 				returned = getRootClass().isSuperConceptOf((IFlexoOntologyConcept<TA>) object);
-			} else {
+			}
+			else {
 				returned = true;
 			}
 		}
@@ -400,7 +410,8 @@ public class OntologyBrowserModel<TA extends TechnologyAdapter> implements HasPr
 		if (object instanceof IFlexoOntologyIndividual && showIndividuals) {
 			if (getRootClass() != null && object instanceof IFlexoOntologyConcept) {
 				returned = getRootClass().isSuperConceptOf((IFlexoOntologyConcept<TA>) object);
-			} else {
+			}
+			else {
 				returned = true;
 			}
 		}
@@ -452,7 +463,8 @@ public class OntologyBrowserModel<TA extends TechnologyAdapter> implements HasPr
 				if (!((IFlexoOntologyClass<TA>) p.getRange()).isSuperClassOf(getRange())) {
 					return false;
 				}
-			} else {
+			}
+			else {
 				return false;
 			}
 		}
@@ -489,7 +501,8 @@ public class OntologyBrowserModel<TA extends TechnologyAdapter> implements HasPr
 							storageClasses.add(preferredLocation);
 						}
 					}
-				} else {
+				}
+				else {
 					unstoredProperties.add(p);
 				}
 			}
@@ -503,7 +516,8 @@ public class OntologyBrowserModel<TA extends TechnologyAdapter> implements HasPr
 					if (!storageClasses.contains(preferredLocation)) {
 						storageClasses.add(preferredLocation);
 					}
-				} else {
+				}
+				else {
 					unstoredIndividuals.add(i);
 				}
 			}
@@ -519,7 +533,8 @@ public class OntologyBrowserModel<TA extends TechnologyAdapter> implements HasPr
 				removeOriginalFromRedefinedObjects(classes);
 				addClassesAsHierarchy(parent == null ? null : o, classes);
 			}
-		} else if (getDisplayPropertiesInClasses() || showIndividuals) {
+		}
+		else if (getDisplayPropertiesInClasses() || showIndividuals) {
 			removeOriginalFromRedefinedObjects(storageClasses);
 			appendParentClassesToStorageClasses(storageClasses);
 			addClassesAsHierarchy(parent == null ? null : o, storageClasses);
@@ -562,12 +577,14 @@ public class OntologyBrowserModel<TA extends TechnologyAdapter> implements HasPr
 	private void computeNonHierarchicalStructure() {
 		if (roots != null) {
 			roots.clear();
-		} else {
+		}
+		else {
 			roots = new ArrayList<IFlexoOntologyObject<TA>>();
 		}
 		if (structure != null) {
 			structure.clear();
-		} else {
+		}
+		else {
 			structure = new Hashtable<FlexoOntologyObjectImpl<TA>, List<FlexoOntologyObjectImpl<TA>>>();
 		}
 
@@ -579,7 +596,8 @@ public class OntologyBrowserModel<TA extends TechnologyAdapter> implements HasPr
 
 			appendOntologyContents(getContext(), null);
 
-		} else {
+		}
+		else {
 			// System.out.println("computeNonHierarchicalStructure()");
 			// System.out.println("context=" + getContext());
 			// System.out.println("imported ontologies: " + getContext().getImportedOntologies());
@@ -607,7 +625,8 @@ public class OntologyBrowserModel<TA extends TechnologyAdapter> implements HasPr
 			List<IFlexoOntologyStructuralProperty<TA>> someProperties) {
 		if (parent == null) {
 			roots.add(p);
-		} else {
+		}
+		else {
 			addChildren(parent, p);
 		}
 
@@ -622,7 +641,8 @@ public class OntologyBrowserModel<TA extends TechnologyAdapter> implements HasPr
 			List<IFlexoOntologyStructuralProperty<TA>> someProperties) {
 		if (p.getSuperProperties() == null) {
 			return false;
-		} else {
+		}
+		else {
 			for (IFlexoOntologyStructuralProperty<TA> sp : p.getSuperProperties()) {
 				if (someProperties.contains(sp)) {
 					return true;
@@ -650,12 +670,14 @@ public class OntologyBrowserModel<TA extends TechnologyAdapter> implements HasPr
 
 		if (roots != null) {
 			roots.clear();
-		} else {
+		}
+		else {
 			roots = new ArrayList<IFlexoOntologyObject<TA>>();
 		}
 		if (structure != null) {
 			structure.clear();
-		} else {
+		}
+		else {
 			structure = new Hashtable<FlexoOntologyObjectImpl<TA>, List<FlexoOntologyObjectImpl<TA>>>();
 		}
 
@@ -675,7 +697,8 @@ public class OntologyBrowserModel<TA extends TechnologyAdapter> implements HasPr
 		if (strictMode) {
 			properties = retrieveDisplayableProperties(getContext());
 			individuals = retrieveDisplayableIndividuals(getContext());
-		} else {
+		}
+		else {
 			for (IFlexoOntology<TA> o : OntologyUtils.getAllImportedOntologies(getContext())) {
 				properties.addAll(retrieveDisplayableProperties(o));
 				individuals.addAll(retrieveDisplayableIndividuals(o));
@@ -690,7 +713,8 @@ public class OntologyBrowserModel<TA extends TechnologyAdapter> implements HasPr
 					if (storedProperties.get(p) != null) {
 						List<IFlexoOntologyClass<TA>> existing = storedProperties.get(p);
 						existing.addAll(preferredLocations);
-					} else {
+					}
+					else {
 						storedProperties.put(p, preferredLocations);
 					}
 					for (IFlexoOntologyClass<TA> preferredLocation : preferredLocations) {
@@ -698,7 +722,8 @@ public class OntologyBrowserModel<TA extends TechnologyAdapter> implements HasPr
 							storageClasses.add(preferredLocation);
 						}
 					}
-				} else {
+				}
+				else {
 					unstoredProperties.add(p);
 				}
 			}
@@ -713,7 +738,8 @@ public class OntologyBrowserModel<TA extends TechnologyAdapter> implements HasPr
 					if (!storageClasses.contains(preferredLocation)) {
 						storageClasses.add(preferredLocation);
 					}
-				} else {
+				}
+				else {
 					unstoredIndividuals.add(i);
 				}
 			}
@@ -723,14 +749,16 @@ public class OntologyBrowserModel<TA extends TechnologyAdapter> implements HasPr
 			List<IFlexoOntologyClass<TA>> classes = new ArrayList<IFlexoOntologyClass<TA>>();
 			if (strictMode) {
 				classes = retrieveDisplayableClasses(getContext());
-			} else {
+			}
+			else {
 				for (IFlexoOntology<TA> o : OntologyUtils.getAllImportedOntologies(getContext())) {
 					classes.addAll(retrieveDisplayableClasses(o));
 				}
 			}
 			removeOriginalFromRedefinedObjects(classes);
 			addClassesAsHierarchy(null, classes);
-		} else if (getDisplayPropertiesInClasses() || showIndividuals) {
+		}
+		else if (getDisplayPropertiesInClasses() || showIndividuals) {
 			removeOriginalFromRedefinedObjects(storageClasses);
 			appendParentClassesToStorageClasses(storageClasses);
 			removeOriginalFromRedefinedObjects(storageClasses);
@@ -743,7 +771,7 @@ public class OntologyBrowserModel<TA extends TechnologyAdapter> implements HasPr
 		}
 
 		for (IFlexoOntologyIndividual<TA> i : unstoredIndividuals) {
-			if (getShowClasses()){
+			if (getShowClasses()) {
 				addChildren(getContext().getRootConcept(), i);
 			}
 			else {
@@ -772,7 +800,8 @@ public class OntologyBrowserModel<TA extends TechnologyAdapter> implements HasPr
 
 			addPropertiesAsHierarchy(null, unstoredProperties);
 
-		} else {
+		}
+		else {
 			addPropertiesAsHierarchy(null, properties);
 		}
 
@@ -806,7 +835,8 @@ public class OntologyBrowserModel<TA extends TechnologyAdapter> implements HasPr
 					}
 					return potentialStorageClasses;
 				}
-			} else {
+			}
+			else {
 				List<IFlexoOntologyClass<TA>> returned = new ArrayList<IFlexoOntologyClass<TA>>(getFirstDisplayableParents(c));
 
 				// Remove Thing references if list is non trivially the Thing singleton
@@ -832,7 +862,8 @@ public class OntologyBrowserModel<TA extends TechnologyAdapter> implements HasPr
 				if (!returned.contains(superClass)) {
 					returned.add(superClass);
 				}
-			} else {
+			}
+			else {
 				returned.addAll(getFirstDisplayableParents(superClass));
 			}
 		}
@@ -853,7 +884,8 @@ public class OntologyBrowserModel<TA extends TechnologyAdapter> implements HasPr
 				IFlexoOntologyClass<TA> returned = getContext().getClass(c.getURI());
 				if (returned != null) {
 					return returned;
-				} else {
+				}
+				else {
 					return c;
 				}
 			}
@@ -864,7 +896,8 @@ public class OntologyBrowserModel<TA extends TechnologyAdapter> implements HasPr
 	private void addClassesAsHierarchy(IFlexoOntologyObject<TA> parent, List<IFlexoOntologyClass<TA>> someClasses) {
 		if (someClasses.contains(getContext().getRootConcept())) {
 			appendClassInHierarchy(parent, getContext().getRootConcept(), someClasses);
-		} else {
+		}
+		else {
 			List<IFlexoOntologyClass<TA>> listByExcludingRootClasses = new ArrayList<IFlexoOntologyClass<TA>>(someClasses);
 			List<IFlexoOntologyClass<TA>> localRootClasses = new ArrayList<IFlexoOntologyClass<TA>>();
 			for (IFlexoOntologyClass<TA> c : someClasses) {
@@ -894,7 +927,8 @@ public class OntologyBrowserModel<TA extends TechnologyAdapter> implements HasPr
 
 		if (parent == null) {
 			roots.add(c);
-		} else {
+		}
+		else {
 			addChildren(parent, c);
 		}
 		if (listByExcludingCurrentClass.size() > 0) {
@@ -905,9 +939,10 @@ public class OntologyBrowserModel<TA extends TechnologyAdapter> implements HasPr
 	private boolean hasASuperClassDefinedInList(IFlexoOntologyClass<TA> c, List<IFlexoOntologyClass<TA>> someClasses) {
 		if (c.getSuperClasses() == null) {
 			return false;
-		} else {
+		}
+		else {
 			for (IFlexoOntologyClass<TA> c2 : someClasses) {
-				if (c2.isSuperConceptOf(c) /*&& c2 != c*/&& !c2.getURI().equals(c.getURI())) {
+				if (c2.isSuperConceptOf(c) /*&& c2 != c*/ && !c2.getURI().equals(c.getURI())) {
 					return true;
 				}
 			}
