@@ -101,6 +101,13 @@ public interface VirtualModelResource extends PamelaResource<VirtualModel, FMLMo
 	public List<Class<? extends ModelSlot<?>>> getUsedModelSlots();
 
 	/**
+	 * Return a string representation of used model slots classes as a comma-separated string with class names
+	 * 
+	 * @return
+	 */
+	public String getUsedModelSlotsAsString();
+
+	/**
 	 * Rebuild a new {@link FMLModelFactory} using supplied use declarations, and set this new factory as model factory to use for this
 	 * resource<br>
 	 * This call is required for example when a new technology is required for a {@link VirtualModel}

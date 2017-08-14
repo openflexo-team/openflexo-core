@@ -60,6 +60,7 @@ import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.resource.CannotRenameException;
 import org.openflexo.foundation.resource.DirectoryBasedIODelegate;
 import org.openflexo.foundation.resource.FileIODelegate;
+import org.openflexo.foundation.resource.FileSystemBasedResourceCenter;
 import org.openflexo.foundation.resource.FlexoFileNotFoundException;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.PamelaResourceImpl;
@@ -73,6 +74,7 @@ import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.model.factory.AccessibleProxyObject;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
+import org.openflexo.toolbox.FileSystemMetaDataManager;
 import org.openflexo.toolbox.FileUtils;
 import org.openflexo.toolbox.IProgress;
 
@@ -388,6 +390,21 @@ public abstract class VirtualModelResourceImpl extends PamelaResourceImpl<Virtua
 				e.printStackTrace();
 			}
 		}
+		saveMetaData();
+	}
+
+	private void saveMetaData() {
+		if (getResourceCenter() instanceof FileSystemBasedResourceCenter) {
+			FileSystemBasedResourceCenter rc = (FileSystemBasedResourceCenter) getResourceCenter();
+			FileSystemMetaDataManager metaDataManager = rc.getMetaDataManager();
+			File file = ((File) getIODelegate().getSerializationArtefact());
+			metaDataManager.setProperty("uri", getURI(), file, false);
+			metaDataManager.setProperty("name", getName(), file, false);
+			metaDataManager.setProperty("version", getVersion().toString(), file, false);
+			metaDataManager.setProperty("modelVersion", getModelVersion().toString(), file, false);
+			metaDataManager.setProperty("requiredModelSlotList", getUsedModelSlotsAsString(), file, false);
+			metaDataManager.saveMetaDataProperties(file);
+		}
 	}
 
 	private List<Class<? extends ModelSlot<?>>> usedModelSlots = new ArrayList<>();
@@ -402,6 +419,17 @@ public abstract class VirtualModelResourceImpl extends PamelaResourceImpl<Virtua
 	@Override
 	public List<Class<? extends ModelSlot<?>>> getUsedModelSlots() {
 		return usedModelSlots;
+	}
+
+	@Override
+	public String getUsedModelSlotsAsString() {
+		boolean isFirst = true;
+		StringBuffer sb = new StringBuffer();
+		for (Class<? extends ModelSlot<?>> msClass : usedModelSlots) {
+			sb.append((isFirst ? "" : ",") + msClass.getName());
+			isFirst = false;
+		}
+		return sb.toString();
 	}
 
 	/**
