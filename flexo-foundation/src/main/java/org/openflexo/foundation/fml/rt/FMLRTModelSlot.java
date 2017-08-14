@@ -132,14 +132,14 @@ public interface FMLRTModelSlot<VMI extends VirtualModelInstance<VMI, TA>, TA ex
 		}
 
 		@Override
-		public <PR extends FlexoRole<?>> String defaultFlexoRoleName(Class<PR> patternRoleClass) {
-			if (FlexoConceptInstanceRole.class.isAssignableFrom(patternRoleClass)) {
+		public <PR extends FlexoRole<?>> String defaultFlexoRoleName(Class<PR> flexoRoleClass) {
+			if (FlexoConceptInstanceRole.class.isAssignableFrom(flexoRoleClass)) {
 				return "flexoConceptInstance";
 			}
-			else if (PrimitiveRole.class.isAssignableFrom(patternRoleClass)) {
+			else if (PrimitiveRole.class.isAssignableFrom(flexoRoleClass)) {
 				return "primitive";
 			}
-			logger.warning("Unexpected pattern property: " + patternRoleClass.getName());
+			logger.warning("Unexpected role: " + flexoRoleClass.getName());
 			return null;
 		}
 
