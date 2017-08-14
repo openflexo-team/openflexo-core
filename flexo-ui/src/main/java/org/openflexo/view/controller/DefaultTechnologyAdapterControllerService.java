@@ -186,7 +186,9 @@ public abstract class DefaultTechnologyAdapterControllerService extends FlexoSer
 		TA ta = r.getTechnologyAdapter();
 		System.out.println("Loaded resource " + r + " for TA " + ta);
 		TechnologyAdapterController<TA> tac = getTechnologyAdapterController(ta);
-		tac.resourceLoading(r);
+		if (tac != null) {
+			tac.resourceLoading(r);
+		}
 	}
 
 	private <RD extends ResourceData<RD> & TechnologyObject<TA>, TA extends TechnologyAdapter> void resourceUnloaded(
