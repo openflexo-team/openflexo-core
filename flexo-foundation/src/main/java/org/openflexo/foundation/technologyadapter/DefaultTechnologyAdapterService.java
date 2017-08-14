@@ -557,4 +557,16 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 		}
 	}
 
+	@Override
+	public Class<? extends ModelSlot<?>> getModelSlotClass(Class<? extends FlexoRole<?>> roleClass) {
+		for (TechnologyAdapter ta : getTechnologyAdapters()) {
+			for (Class<? extends ModelSlot<?>> modelSlotClass : ta.getAvailableModelSlotTypes()) {
+				if (getAvailableFlexoRoleTypes(modelSlotClass).contains(roleClass)) {
+					return modelSlotClass;
+				}
+			}
+		}
+		return null;
+	}
+
 }

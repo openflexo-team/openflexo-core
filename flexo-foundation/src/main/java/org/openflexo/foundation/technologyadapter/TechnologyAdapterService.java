@@ -241,4 +241,6 @@ public interface TechnologyAdapterService extends FlexoService, CustomTypeManage
 	 */
 	public <MS extends ModelSlot<?>> List<Class<? extends FlexoBehaviour>> getAvailableFlexoBehaviourTypes(Class<MS> modelSlotClass);
 
+	public Class<? extends ModelSlot<?>> getModelSlotClass(Class<? extends FlexoRole<?>> roleClass);
+
 }

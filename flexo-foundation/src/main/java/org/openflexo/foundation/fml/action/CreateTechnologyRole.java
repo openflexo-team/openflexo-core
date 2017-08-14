@@ -233,6 +233,9 @@ public class CreateTechnologyRole extends AbstractCreateFlexoRole<CreateTechnolo
 	}
 
 	public Class<? extends ModelSlot<?>> getModelSlotClass() {
+		if (modelSlotClass == null && getFlexoRoleClass() != null) {
+			modelSlotClass = getServiceManager().getTechnologyAdapterService().getModelSlotClass(getFlexoRoleClass());
+		}
 		return modelSlotClass;
 	}
 
