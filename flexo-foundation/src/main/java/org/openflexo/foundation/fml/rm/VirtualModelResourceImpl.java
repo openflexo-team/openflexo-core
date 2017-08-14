@@ -436,18 +436,14 @@ public abstract class VirtualModelResourceImpl extends PamelaResourceImpl<Virtua
 	 * Internally sets UsedModelSlots
 	 * 
 	 * @param usedModelSlotClasses
+	 * @throws ClassNotFoundException
 	 */
-	protected void setUsedModelSlots(String usedModelSlotClasses) {
+	protected void setUsedModelSlots(String usedModelSlotClasses) throws ClassNotFoundException {
 		usedModelSlots.clear();
 		StringTokenizer st = new StringTokenizer(usedModelSlotClasses, ",");
 		while (st.hasMoreTokens()) {
 			String next = st.nextToken();
-			try {
-				usedModelSlots.add((Class<? extends ModelSlot<?>>) Class.forName(next));
-			} catch (ClassNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			usedModelSlots.add((Class<? extends ModelSlot<?>>) Class.forName(next));
 		}
 	}
 

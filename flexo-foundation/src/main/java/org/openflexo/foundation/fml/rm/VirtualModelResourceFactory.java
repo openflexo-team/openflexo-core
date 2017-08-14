@@ -231,7 +231,11 @@ public class VirtualModelResourceFactory
 			else {
 				returned.setModelVersion(CURRENT_FML_VERSION);
 			}
-			((VirtualModelResourceImpl) returned).setUsedModelSlots(vpi.requiredModelSlotList);
+			try {
+				((VirtualModelResourceImpl) returned).setUsedModelSlots(vpi.requiredModelSlotList);
+			} catch (ClassNotFoundException e) {
+				logger.warning("Could not find " + e.getMessage());
+			}
 			// We set a new factory because of required model slots
 			if (StringUtils.isNotEmpty(vpi.requiredModelSlotList)) {
 				returned.setFactory(makeResourceDataFactory(returned, technologyContextManager));
