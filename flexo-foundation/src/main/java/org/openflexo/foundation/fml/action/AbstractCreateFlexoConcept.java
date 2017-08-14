@@ -137,13 +137,7 @@ public abstract class AbstractCreateFlexoConcept<A extends FlexoAction<A, T1, T2
 
 	public List<PropertyEntry> getPropertiesUsedForInspector() {
 		if (propertiesUsedForInspector == null) {
-			propertiesUsedForInspector = new ArrayList<PropertyEntry>() {
-				@Override
-				public boolean add(PropertyEntry e) {
-					System.out.println("adding " + e);
-					return super.add(e);
-				}
-			};
+			propertiesUsedForInspector = new ArrayList<>();
 			propertiesUsedForInspector.addAll(getPropertiesEntries());
 		}
 		return propertiesUsedForInspector;
