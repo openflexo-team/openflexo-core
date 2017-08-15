@@ -230,7 +230,6 @@ public class FMLModelFactory extends FGEModelFactoryImpl implements PamelaResour
 		List<Class<?>> classes = new ArrayList<Class<?>>();
 		classes.add(VirtualModel.class);
 		for (Class<? extends ModelSlot<?>> modelSlotClass : usedModelSlots) {
-			System.out.println("> " + modelSlotClass);
 			retrieveTechnologySpecificClasses(modelSlotClass, classes);
 		}
 
