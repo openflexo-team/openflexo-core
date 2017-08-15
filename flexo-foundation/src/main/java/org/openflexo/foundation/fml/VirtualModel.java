@@ -121,7 +121,7 @@ public interface VirtualModel extends FlexoConcept, VirtualModelObject, FlexoMet
 	@PropertyIdentifier(type = FlexoVersion.class)
 	public static final String VERSION_KEY = "version";
 	@PropertyIdentifier(type = String.class)
-	public static final String URI_KEY = "URI";
+	public static final String URI_KEY = "uri";
 	@PropertyIdentifier(type = FlexoVersion.class)
 	public static final String MODEL_VERSION_KEY = "modelVersion";
 	@PropertyIdentifier(type = FlexoConcept.class, cardinality = Cardinality.LIST)
