@@ -142,7 +142,8 @@ public class FMLValidationReport extends ValidationReport {
 				|| object instanceof FlexoConceptInspector) && ((FMLObject) object).getDeclaringVirtualModel() == virtualModel) {
 			return (Collection) getValidationReport((FMLObject) object).getFilteredIssues();
 		}
-		else if (object instanceof FlexoConceptObject && getValidationReport(((FlexoConceptObject) object).getFlexoConcept()) != this) {
+		else if (object instanceof FlexoConceptObject && getValidationReport(((FlexoConceptObject) object).getFlexoConcept()) != null
+				&& getValidationReport(((FlexoConceptObject) object).getFlexoConcept()) != this) {
 			return getValidationReport(((FlexoConceptObject) object).getFlexoConcept()).issuesRegarding(object);
 		}
 

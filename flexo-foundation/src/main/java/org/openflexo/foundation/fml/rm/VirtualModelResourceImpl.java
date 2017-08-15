@@ -52,7 +52,9 @@ import org.openflexo.foundation.InconsistentDataException;
 import org.openflexo.foundation.InvalidModelDefinitionException;
 import org.openflexo.foundation.InvalidXMLException;
 import org.openflexo.foundation.fml.FMLModelFactory;
+import org.openflexo.foundation.fml.FMLObject.BindingIsRequiredAndMustBeValid.InvalidRequiredBindingIssue;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
+import org.openflexo.foundation.fml.FMLValidationModel;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelLibrary;
@@ -66,12 +68,15 @@ import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.PamelaResourceImpl;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.resource.SaveResourceException;
+import org.openflexo.foundation.resource.SaveResourcePermissionDeniedException;
 import org.openflexo.foundation.task.FlexoTask;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.model.factory.AccessibleProxyObject;
+import org.openflexo.model.validation.ValidationIssue;
+import org.openflexo.model.validation.ValidationReport;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.toolbox.FileSystemMetaDataManager;
@@ -245,7 +250,7 @@ public abstract class VirtualModelResourceImpl extends PamelaResourceImpl<Virtua
 				//if (activateTA != null) {
 				//	getServiceManager().getTaskManager().waitTask(activateTA);
 				//}
-			 */
+		 */
 
 	}
 
@@ -305,6 +310,36 @@ public abstract class VirtualModelResourceImpl extends PamelaResourceImpl<Virtua
 		stopDeserializing();
 		if (!containerWasDeserializing) {
 			getContainer().stopDeserializing();
+		}
+
+		if (needsConversion() || (getContainer() != null && getContainer().needsConversion())) {
+			System.out.println("Tiens, c'est un truc special, faudrait convertir !!!!");
+			FMLValidationModel validationModel = getServiceManager().getVirtualModelLibrary().getFMLValidationModel();
+			try {
+				ValidationReport validationReport = validationModel.validate(returned);
+				for (ValidationIssue<?, ?> issue : validationReport.getAllIssues()) {
+					System.out.println("Issue: " + issue);
+					if (issue instanceof InvalidRequiredBindingIssue) {
+						InvalidRequiredBindingIssue<?> invalidBinding = (InvalidRequiredBindingIssue<?>) issue;
+						System.out.println("Trouve un probleme avec " + invalidBinding.getBinding());
+						if (invalidBinding.getFixProposals().size() > 0) {
+							System.out.println("On tente " + invalidBinding.getFixProposals().get(0).getMessage());
+							invalidBinding.getFixProposals().get(0).apply(false);
+						}
+					}
+				}
+				saveResourceData(true);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (SaveResourcePermissionDeniedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (SaveResourceException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
 		}
 
 		return returned;
@@ -383,11 +418,13 @@ public abstract class VirtualModelResourceImpl extends PamelaResourceImpl<Virtua
 		if (getIODelegate() instanceof DirectoryBasedIODelegate) {
 			DirectoryBasedIODelegate ioDelegate = (DirectoryBasedIODelegate) getIODelegate();
 			File fmlFile = new File(ioDelegate.getDirectory(), ioDelegate.getDirectory().getName());
-			try {
-				FileUtils.saveToFile(fmlFile, getLoadedResourceData().getFMLRepresentation());
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			if (!fmlFile.isDirectory()) {
+				try {
+					FileUtils.saveToFile(fmlFile, getLoadedResourceData().getFMLRepresentation());
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		}
 		saveMetaData();

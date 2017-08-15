@@ -608,4 +608,15 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 	 * WillDeleteFileOnDiskNotification(file)); }
 	 */
 
+	private boolean needsConversion = false;
+
+	@Override
+	public void setNeedsConversion() {
+		needsConversion = true;
+	}
+
+	public boolean needsConversion() {
+		return needsConversion;
+	}
+
 }

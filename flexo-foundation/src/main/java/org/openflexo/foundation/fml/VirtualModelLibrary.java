@@ -293,6 +293,24 @@ public class VirtualModelLibrary extends DefaultFlexoObject implements FlexoServ
 			String virtualModelURI = flexoConceptURI.substring(0, flexoConceptURI.indexOf("#"));
 			String flexoConceptName = flexoConceptURI.substring(flexoConceptURI.indexOf("#") + 1);
 			VirtualModelResource vmRes = getVirtualModelResource(virtualModelURI);
+			if (vmRes == null) {
+				vmRes = getVirtualModelResource(virtualModelURI + ".fml");
+				if (vmRes == null) {
+					String vpURI = virtualModelURI.substring(0, virtualModelURI.lastIndexOf("/"));
+					if (vpURI.endsWith(".viewpoint")) {
+						vpURI = vpURI.substring(0, vpURI.length() - 10);
+					}
+					if (!vpURI.endsWith(".fml")) {
+						vpURI = vpURI + ".fml";
+					}
+					String vmName = virtualModelURI.substring(virtualModelURI.lastIndexOf("/") + 1);
+					if (!vmName.endsWith(".fml")) {
+						vmName = vmName + ".fml";
+					}
+					vmRes = getVirtualModelResource(vpURI + "/" + vmName);
+				}
+				logger.info("Attempt to retrieve VirtualModel from former URI form. Searched " + virtualModelURI + " Found: " + vmRes);
+			}
 			if (vmRes != null) {
 				VirtualModel vm;
 				if (loadWhenRequired) {
@@ -313,6 +331,7 @@ public class VirtualModelLibrary extends DefaultFlexoObject implements FlexoServ
 			// logger.warning("Cannot find virtual model " + virtualModelURI + " while searching flexo concept:" + flexoConceptURI + " ("
 			// + flexoConceptName + ")");
 		}
+
 		// logger.warning("Cannot find flexo concept:" + flexoConceptURI);
 		/*String viewPointURI = flexoConceptURI.substring(0, flexoConceptURI.lastIndexOf("/"));
 		for (VirtualModelResource r : getViewPointResource(viewPointURI).getVirtualModelResources()) {

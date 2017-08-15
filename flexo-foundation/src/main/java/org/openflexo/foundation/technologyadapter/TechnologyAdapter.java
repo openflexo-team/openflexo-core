@@ -62,6 +62,7 @@ import java.util.logging.Logger;
 import javax.swing.SwingUtilities;
 
 import org.apache.commons.io.IOUtils;
+import org.openflexo.connie.annotations.NotificationUnsafe;
 import org.openflexo.foundation.DataModification;
 import org.openflexo.foundation.FlexoObservable;
 import org.openflexo.foundation.FlexoServiceManager;
@@ -364,7 +365,9 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 				// Attempt to convert it from older format
 				I convertedSerializationArtefact = resourceFactory.getConvertableArtefact(serializationArtefact, resourceCenter);
 				if (convertedSerializationArtefact != null) {
-					return resourceFactory.retrieveResource(convertedSerializationArtefact, resourceCenter, technologyContextManager);
+					R returned = resourceFactory.retrieveResource(convertedSerializationArtefact, resourceCenter, technologyContextManager);
+					returned.setNeedsConversion();
+					return returned;
 				}
 			}
 		} catch (ModelDefinitionException e) {
@@ -483,6 +486,7 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 		return false;
 	}
 
+	@NotificationUnsafe
 	public List<Class<? extends ModelSlot<?>>> getAvailableModelSlotTypes() {
 		if (availableModelSlotTypes == null) {
 			availableModelSlotTypes = computeAvailableModelSlotTypes();

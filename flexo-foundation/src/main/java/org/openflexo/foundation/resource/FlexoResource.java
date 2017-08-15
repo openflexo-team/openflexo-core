@@ -42,6 +42,7 @@ package org.openflexo.foundation.resource;
 import java.io.FileNotFoundException;
 import java.util.Date;
 import java.util.List;
+
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoServiceManager;
@@ -449,4 +450,8 @@ public interface FlexoResource<RD extends ResourceData<RD>> extends FlexoObject,
 	default FlexoObject findObject(String objectIdentifier, String userIdentifier, String typeIdentifier) {
 		return null;
 	}
+
+	public boolean needsConversion();
+
+	public void setNeedsConversion();
 }

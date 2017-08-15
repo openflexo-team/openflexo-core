@@ -61,12 +61,12 @@ import org.openflexo.model.annotations.XMLElement;
 @DeclareFlexoRoles({ FlexoConceptInstanceRole.class, PrimitiveRole.class })
 @DeclareEditionActions({ AddFlexoConceptInstance.class, AddVirtualModelInstance.class })
 @ModelEntity
-@ImplementationClass(FMLRTVirtualModelInstanceModelSlot.VirtualModelInstanceModelSlotImpl.class)
+@ImplementationClass(FMLRTVirtualModelInstanceModelSlot.FMLRTVirtualModelInstanceModelSlotImpl.class)
 @XMLElement(xmlTag = "FMLRTVirtualModelInstanceModelSlot", deprecatedXMLTags = "ViewModelSlot,VirtualModelInstanceModelSlot")
 @FML("FMLRTVirtualModelInstanceModelSlot")
 public interface FMLRTVirtualModelInstanceModelSlot extends FMLRTModelSlot<FMLRTVirtualModelInstance, FMLRTTechnologyAdapter> {
 
-	public static abstract class VirtualModelInstanceModelSlotImpl
+	public static abstract class FMLRTVirtualModelInstanceModelSlotImpl
 			extends FMLRTModelSlotImpl<FMLRTVirtualModelInstance, FMLRTTechnologyAdapter> implements FMLRTVirtualModelInstanceModelSlot {
 
 		private static final Logger logger = Logger.getLogger(FMLRTVirtualModelInstanceModelSlot.class.getPackage().getName());
