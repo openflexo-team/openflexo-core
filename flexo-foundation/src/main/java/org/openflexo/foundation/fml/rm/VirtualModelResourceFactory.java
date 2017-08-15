@@ -529,7 +529,7 @@ public class VirtualModelResourceFactory
 			if (file.lastModified() < metaDataManager.metaDataLastModified(file)) {
 				// OK, in this case the metadata file is there and more recent than .fml.xml file
 				// Attempt to retrieve metadata from cache
-				String uri = metaDataManager.getProperty("uri", file);
+				String uri = metaDataManager.getProperty("URI", file);
 				String name = metaDataManager.getProperty("name", file);
 				String version = metaDataManager.getProperty("version", file);
 				String modelVersion = metaDataManager.getProperty("modelVersion", file);
@@ -551,7 +551,7 @@ public class VirtualModelResourceFactory
 			return null;
 		}
 		if (xmlRootElementInfo.getName().equals("VirtualModel")) {
-			returned.uri = xmlRootElementInfo.getAttribute("uri");
+			returned.uri = xmlRootElementInfo.getAttribute("URI");
 			returned.name = xmlRootElementInfo.getAttribute("name");
 			returned.version = xmlRootElementInfo.getAttribute("version");
 			returned.modelVersion = xmlRootElementInfo.getAttribute("modelVersion");
@@ -584,7 +584,7 @@ public class VirtualModelResourceFactory
 				FileSystemMetaDataManager metaDataManager = ((FileSystemBasedResourceCenter) resourceCenter).getMetaDataManager();
 				File file = (File) resource.getIODelegate().getSerializationArtefact();
 
-				metaDataManager.setProperty("uri", returned.uri, file, false);
+				metaDataManager.setProperty("URI", returned.uri, file, false);
 				metaDataManager.setProperty("name", returned.name, file, false);
 				metaDataManager.setProperty("version", returned.version, file, false);
 				metaDataManager.setProperty("modelVersion", returned.modelVersion, file, false);
