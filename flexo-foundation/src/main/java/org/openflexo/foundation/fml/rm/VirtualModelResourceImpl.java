@@ -199,8 +199,7 @@ public abstract class VirtualModelResourceImpl extends PamelaResourceImpl<Virtua
 	 */
 	protected void activateRequiredTechnologies() {
 
-		System.out.println("Juste avant de charger faudrait voir si on a pas a activer un TA ou un autre tout de meme...");
-		System.out.println("USED: " + getUsedModelSlots());
+		logger.info("activateRequiredTechnologies() for " + this + " used: " + getUsedModelSlots());
 
 		TechnologyAdapterService taService = getServiceManager().getTechnologyAdapterService();
 		List<TechnologyAdapter> requiredTAList = new ArrayList<>();
@@ -214,7 +213,7 @@ public abstract class VirtualModelResourceImpl extends PamelaResourceImpl<Virtua
 
 		List<FlexoTask> waitingTasks = new ArrayList<>();
 		for (TechnologyAdapter requiredTA : requiredTAList) {
-			System.out.println("> On active " + requiredTA);
+			logger.info("Activating " + requiredTA);
 			FlexoTask t = taService.activateTechnologyAdapter(requiredTA);
 			if (t != null) {
 				waitingTasks.add(t);
@@ -225,36 +224,7 @@ public abstract class VirtualModelResourceImpl extends PamelaResourceImpl<Virtua
 			getServiceManager().getTaskManager().waitTask(waitingTask);
 		}
 
-		/*
-		if (getLoadedResourceData() != null) {
-			TechnologyAdapterService taService = getServiceManager().getTechnologyAdapterService();
-			// FD unused FlexoTask activateFMLRT =
-			taService.activateTechnologyAdapter(taService.getTechnologyAdapter(FMLRTTechnologyAdapter.class));
-			//if (activateFMLRT != null) {
-			//	getServiceManager().getTaskManager().waitTask(activateFMLRT);
-			//}
-		
-			// System.out.println("Activate technologies for " + getLoadedResourceData());
-		
-			for (UseModelSlotDeclaration useDeclaration : getLoadedResourceData().getUseDeclarations()) {
-				FlexoTask activateTA = taService
-						.activateTechnologyAdapter(taService.getTechnologyAdapterForModelSlot(useDeclaration.getModelSlotClass()));
-				//if (activateTA != null) {
-				//getServiceManager().getTaskManager().waitTask(activateTA);
-				//}
-			}
-		
-			//for (ModelSlot<?> ms : getLoadedResourceData().getModelSlots()) {
-				// System.out.println("Activate " + ms.getModelSlotTechnologyAdapter());
-				//FlexoTask activateTA = taService.activateTechnologyAdapter(ms.getModelSlotTechnologyAdapter());
-				//if (activateTA != null) {
-				//	getServiceManager().getTaskManager().waitTask(activateTA);
-				//}
-		 */
-
 	}
-
-	// DEBUT de VirtualModelResource
 
 	/**
 	 * Return virtual model stored by this resource when loaded<br>
@@ -313,17 +283,14 @@ public abstract class VirtualModelResourceImpl extends PamelaResourceImpl<Virtua
 		}
 
 		if (needsConversion() || (getContainer() != null && getContainer().needsConversion())) {
-			System.out.println("Tiens, c'est un truc special, faudrait convertir !!!!");
+			logger.info("Converting " + this);
 			FMLValidationModel validationModel = getServiceManager().getVirtualModelLibrary().getFMLValidationModel();
 			try {
 				ValidationReport validationReport = validationModel.validate(returned);
 				for (ValidationIssue<?, ?> issue : validationReport.getAllIssues()) {
-					System.out.println("Issue: " + issue);
 					if (issue instanceof InvalidRequiredBindingIssue) {
 						InvalidRequiredBindingIssue<?> invalidBinding = (InvalidRequiredBindingIssue<?>) issue;
-						System.out.println("Trouve un probleme avec " + invalidBinding.getBinding());
 						if (invalidBinding.getFixProposals().size() > 0) {
-							System.out.println("On tente " + invalidBinding.getFixProposals().get(0).getMessage());
 							invalidBinding.getFixProposals().get(0).apply(false);
 						}
 					}
@@ -357,10 +324,6 @@ public abstract class VirtualModelResourceImpl extends PamelaResourceImpl<Virtua
 		return (VirtualModelResource) performSuperGetter(CONTAINER);
 	}
 
-	// FIN de VirtualModelResource
-
-	// DEBUT de ViewPointResource
-
 	@Override
 	public VirtualModelResource getVirtualModelResource(String virtualModelNameOrURI) {
 		for (VirtualModelResource vmRes : getContainedVirtualModelResources()) {
@@ -385,31 +348,17 @@ public abstract class VirtualModelResourceImpl extends PamelaResourceImpl<Virtua
 		return returned;
 	}
 
-	/*@Override
-	public void gitSave() {
-	
-	}*/
-
 	@Override
 	public void addToContents(FlexoResource<?> resource) {
 		performSuperAdder(CONTENTS, resource);
 		notifyContentsAdded(resource);
-		/*if (resource instanceof VirtualModelResource) {
-			System.out.println("getViewPoint()=" + getViewPoint());
-			getViewPoint().addToVirtualModels(((VirtualModelResource) resource).getVirtualModel());
-		}*/
 	}
 
 	@Override
 	public void removeFromContents(FlexoResource<?> resource) {
 		performSuperRemover(CONTENTS, resource);
 		notifyContentsRemoved(resource);
-		/*if (resource instanceof VirtualModelResource) {
-			getViewPoint().removeFromVirtualModels(((VirtualModelResource) resource).getVirtualModel());
-		}*/
 	}
-
-	// FIN de ViewPointResource
 
 	@Override
 	protected void _saveResourceData(boolean clearIsModified) throws SaveResourceException {
@@ -422,7 +371,6 @@ public abstract class VirtualModelResourceImpl extends PamelaResourceImpl<Virtua
 				try {
 					FileUtils.saveToFile(fmlFile, getLoadedResourceData().getFMLRepresentation());
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
