@@ -46,6 +46,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.ApplicationContext;
 import org.openflexo.components.wizard.WizardStep;
+import org.openflexo.connie.annotations.NotificationUnsafe;
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FlexoBehaviourObject;
@@ -175,10 +176,12 @@ public class CreateGenericBehaviourParameterWizard
 				getPropertyChangeSupport().firePropertyChange("parameterType", oldValue, parameterType);
 				getPropertyChangeSupport().firePropertyChange("parameterName", oldParameterName, getParameterName());
 				getPropertyChangeSupport().firePropertyChange("availableWidgetTypes", null, getAvailableWidgetTypes());
+				getPropertyChangeSupport().firePropertyChange("widgetType", oldValue, getWidgetType());
 				checkValidity();
 			}
 		}
 
+		@NotificationUnsafe
 		public WidgetType getWidgetType() {
 			return getAction().getWidgetType();
 		}
@@ -187,7 +190,7 @@ public class CreateGenericBehaviourParameterWizard
 			if (widgetType != getWidgetType()) {
 				WidgetType oldValue = getWidgetType();
 				getAction().setWidgetType(widgetType);
-				getPropertyChangeSupport().firePropertyChange("setWidgetType", oldValue, widgetType);
+				getPropertyChangeSupport().firePropertyChange("widgetType", oldValue, widgetType);
 				getPropertyChangeSupport().firePropertyChange("isList", !isList(), isList());
 				getPropertyChangeSupport().firePropertyChange("availableWidgetTypes", null, getAvailableWidgetTypes());
 				checkValidity();
