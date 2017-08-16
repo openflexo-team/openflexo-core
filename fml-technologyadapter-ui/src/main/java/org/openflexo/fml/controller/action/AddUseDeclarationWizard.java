@@ -40,6 +40,7 @@ package org.openflexo.fml.controller.action;
 
 import java.awt.Dimension;
 import java.awt.Image;
+import java.util.List;
 import java.util.logging.Logger;
 
 import org.openflexo.ApplicationContext;
@@ -146,8 +147,16 @@ public class AddUseDeclarationWizard extends FlexoWizard {
 				getAction().setModelSlotTechnologyAdapter(technologyAdapter);
 				getPropertyChangeSupport().firePropertyChange("technologyAdapter", oldValue, technologyAdapter);
 				getPropertyChangeSupport().firePropertyChange("modelSlotClass", null, getModelSlotClass());
+				getPropertyChangeSupport().firePropertyChange("availableModelSlotTypes", null, getAvailableModelSlotTypes());
 				checkValidity();
 			}
+		}
+
+		public List<Class<? extends ModelSlot<?>>> getAvailableModelSlotTypes() {
+			if (getTechnologyAdapter() != null) {
+				return getTechnologyAdapter().getAvailableModelSlotTypes();
+			}
+			return null;
 		}
 
 		public Class<? extends ModelSlot<?>> getModelSlotClass() {
