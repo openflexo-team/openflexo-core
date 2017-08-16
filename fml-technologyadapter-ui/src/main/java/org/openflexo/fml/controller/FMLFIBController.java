@@ -320,10 +320,6 @@ public class FMLFIBController extends FlexoFIBController {
 	}
 
 	public FlexoBehaviourParameter createFlexoBehaviourParameter(FlexoBehaviour flexoBehaviour) {
-		// CreateFlexoBehaviourParameter createFlexoBehaviourParameter =
-		// CreateFlexoBehaviourParameter.actionType.makeNewAction(flexoBehaviour,
-		// null, getEditor());
-		System.out.println("Hop , un nouveau parametre");
 		CreateGenericBehaviourParameter createFlexoBehaviourParameter = CreateGenericBehaviourParameter.actionType
 				.makeNewAction(flexoBehaviour, null, getEditor());
 		createFlexoBehaviourParameter.doAction();
