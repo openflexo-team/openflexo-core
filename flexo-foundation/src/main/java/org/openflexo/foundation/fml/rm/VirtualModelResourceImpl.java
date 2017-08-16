@@ -62,6 +62,8 @@ import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.resource.CannotRenameException;
 import org.openflexo.foundation.resource.DirectoryBasedIODelegate;
 import org.openflexo.foundation.resource.FileIODelegate;
+import org.openflexo.foundation.resource.FileIODelegate.FileHasBeenWrittenOnDiskNotification;
+import org.openflexo.foundation.resource.FileIODelegate.WillWriteFileOnDiskNotification;
 import org.openflexo.foundation.resource.FileSystemBasedResourceCenter;
 import org.openflexo.foundation.resource.FlexoFileNotFoundException;
 import org.openflexo.foundation.resource.FlexoResource;
@@ -369,7 +371,10 @@ public abstract class VirtualModelResourceImpl extends PamelaResourceImpl<Virtua
 			File fmlFile = new File(ioDelegate.getDirectory(), ioDelegate.getDirectory().getName());
 			if (!fmlFile.isDirectory()) {
 				try {
+					// Warn directory watcher about .fml file to be saved
+					getServiceManager().notify(null, new WillWriteFileOnDiskNotification(fmlFile));
 					FileUtils.saveToFile(fmlFile, getLoadedResourceData().getFMLRepresentation());
+					getServiceManager().notify(null, new FileHasBeenWrittenOnDiskNotification(fmlFile));
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
