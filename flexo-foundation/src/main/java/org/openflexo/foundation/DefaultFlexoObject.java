@@ -74,13 +74,13 @@ public class DefaultFlexoObject extends FlexoObjectImpl {
 		super.setModified(modified);
 		localModified = modified;
 	}
-
+	
 	@Override
 	public synchronized void setIsModified() {
 		super.setIsModified();
 		localModified = true;
 	}
-
+	
 	@Override
 	public synchronized void clearIsModified() {
 		super.clearIsModified();
@@ -175,6 +175,11 @@ public class DefaultFlexoObject extends FlexoObjectImpl {
 	public boolean equalsObject(Object obj) {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	@Override
+	public void updateWith(Object obj) {
+		// TODO Auto-generated method stub
 	}
 
 	@Override
