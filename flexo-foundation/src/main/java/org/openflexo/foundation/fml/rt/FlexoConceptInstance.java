@@ -46,7 +46,6 @@ import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import org.openflexo.connie.Bindable;
 import org.openflexo.connie.BindingFactory;
 import org.openflexo.connie.BindingModel;
@@ -1455,7 +1454,8 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 
 		@Override
 		public BindingModel getBindingModel() {
-			return getFlexoConcept().getInspector().getBindingModel();
+			FlexoConcept flexoConcept = getFlexoConcept();
+			return flexoConcept != null ? flexoConcept.getInspector().getBindingModel() : null;
 		}
 
 		@Override
