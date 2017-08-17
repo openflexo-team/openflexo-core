@@ -153,6 +153,11 @@ public class DefaultFlexoObject extends FlexoObjectImpl {
 	}
 
 	@Override
+	public void updateWith(Object obj) {
+		// TODO Auto-generated method stub
+	}
+
+	@Override
 	public void destroy() {
 		// TODO Auto-generated method stub
 
