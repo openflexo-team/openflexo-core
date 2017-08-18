@@ -232,7 +232,10 @@ public interface FileIODelegate extends StreamIODelegate<File> {
 
 		@Override
 		public String toString() {
-			return getFile().getAbsolutePath();
+			if (getFile() != null) {
+				return getFile().getAbsolutePath();
+			}
+			return "null";
 		}
 
 		@Override

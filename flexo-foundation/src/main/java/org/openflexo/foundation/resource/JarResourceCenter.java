@@ -790,4 +790,25 @@ public class JarResourceCenter extends ResourceRepository<FlexoResource<?>, InJa
 		}
 		return "???";
 	}
+
+	/**
+	 * Called to register a resource relatively to its serialization artefact
+	 * 
+	 * @param resource
+	 * @param serializationArtefact
+	 */
+	@Override
+	public void registerResource(FlexoResource<?> resource, InJarResourceImpl serializationArtefact) {
+	}
+
+	/**
+	 * Called to register a resource relatively to its serialization artefact
+	 * 
+	 * @param resource
+	 * @param serializationArtefact
+	 */
+	@Override
+	public void unregisterResource(FlexoResource<?> resource, InJarResourceImpl serializationArtefact) {
+	}
+
 }

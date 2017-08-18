@@ -69,6 +69,7 @@ import org.openflexo.foundation.utils.ProjectLoadingCancelledException;
 import org.openflexo.kvc.AccessorInvocationException;
 import org.openflexo.model.exceptions.InvalidDataException;
 import org.openflexo.model.exceptions.ModelDefinitionException;
+import org.openflexo.model.factory.AccessibleProxyObject;
 import org.openflexo.model.factory.EditingContext;
 import org.openflexo.model.factory.EmbeddingType;
 import org.openflexo.model.factory.ModelFactory;
@@ -87,7 +88,7 @@ import com.google.common.base.Throwables;
  * @author Sylvain
  * 
  */
-public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends ModelFactory & PamelaResourceModelFactory>
+public abstract class PamelaResourceImpl<RD extends ResourceData<RD> & AccessibleProxyObject, F extends ModelFactory & PamelaResourceModelFactory>
 		extends FlexoResourceImpl<RD> implements PamelaResource<RD, F> {
 
 	private static final Logger logger = Logger.getLogger(PamelaResourceImpl.class.getPackage().getName());
@@ -290,6 +291,54 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends 
 			notifyResourceUnloaded();
 
 			isUnloading = false;
+		}
+	}
+
+	/**
+	 * Return flag indicating if this resource support external update<br>
+	 * {@link PamelaResource} supports it, so return true
+	 * 
+	 * @return
+	 */
+	@Override
+	public boolean isUpdatable() {
+		return true;
+	}
+
+	/**
+	 * If this resource support external update (reloading), perform it now<br>
+	 * Default implementation does nothing
+	 * 
+	 * @param updatedResourceData
+	 * @see #isUpdatable()
+	 */
+	@Override
+	public void updateResourceData() {
+		System.out.println("OK on met a jour la resource avec sa resource data qu'on reloade");
+		RD reloadedResourceData;
+		try {
+
+			System.out.println("On recharge la resource");
+			// Reload resource data
+			reloadedResourceData = performLoad();
+			reloadedResourceData.setResource(this);
+
+			System.out.println("On obtient " + getFactory().stringRepresentation(reloadedResourceData));
+
+			System.out.println("Et ensuite on update");
+
+			// Now perform PAMELA updating with reloaded resource data
+			// Existing model will be updated and notified
+			resourceData.updateWith(reloadedResourceData);
+
+			System.out.println("Hop");
+
+			System.out.println("Apres le updateWith " + getFactory().stringRepresentation(resourceData));
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 

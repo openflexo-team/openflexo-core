@@ -472,6 +472,27 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 		}
 	}
 
+	/**
+	 * Return flag indicating if this resource support external update<br>
+	 * Default implementation return false
+	 * 
+	 * @return
+	 */
+	@Override
+	public boolean isUpdatable() {
+		return false;
+	}
+
+	/**
+	 * If this resource support external update (reloading), perform it now<br>
+	 * Default implementation does nothing
+	 * 
+	 * @see #isUpdatable()
+	 */
+	@Override
+	public void updateResourceData() {
+	}
+
 	@Override
 	public final boolean isModified() {
 		return isLoaded() && getLoadedResourceData().isModified();
@@ -615,6 +636,7 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 		needsConversion = true;
 	}
 
+	@Override
 	public boolean needsConversion() {
 		return needsConversion;
 	}

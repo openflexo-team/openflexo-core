@@ -381,6 +381,22 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, FlexoObject, Refere
 	List<I> getContents(I serializationArtefact);
 
 	/**
+	 * Called to register a resource relatively to its serialization artefact
+	 * 
+	 * @param resource
+	 * @param serializationArtefact
+	 */
+	void registerResource(FlexoResource<?> resource, I serializationArtefact);
+
+	/**
+	 * Called to register a resource relatively to its serialization artefact
+	 * 
+	 * @param resource
+	 * @param serializationArtefact
+	 */
+	void unregisterResource(FlexoResource<?> resource, I serializationArtefact);
+
+	/**
 	 * Build a new {@link FlexoIODelegate} for a given serialization artefact
 	 * 
 	 * @param serializationArtefact

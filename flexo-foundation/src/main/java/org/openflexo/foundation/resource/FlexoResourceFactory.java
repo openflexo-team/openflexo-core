@@ -215,6 +215,9 @@ public abstract class FlexoResourceFactory<R extends TechnologyAdapterResource<R
 			TechnologyContextManager<TA> technologyContextManager) {
 
 		resource.setResourceCenter(resourceCenter);
+
+		resourceCenter.registerResource(resource, (I) resource.getIODelegate().getSerializationArtefact());
+
 		// Register the resource in the global repository of technology adapter
 		if (resourceCenter != null) {
 			registerResourceInResourceRepository(resource,
@@ -244,8 +247,11 @@ public abstract class FlexoResourceFactory<R extends TechnologyAdapterResource<R
 	 */
 	protected <I> R unregisterResource(R resource, FlexoResourceCenter<I> resourceCenter,
 			TechnologyContextManager<TA> technologyContextManager) {
+
+		resourceCenter.unregisterResource(resource, (I) resource.getIODelegate().getSerializationArtefact());
+
 		// TODO
-		logger.warning("unregisterResource() not implemented yet");
+		logger.warning("unregisterResource() not fully implemented yet");
 		return resource;
 	}
 
