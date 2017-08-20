@@ -999,14 +999,6 @@ public abstract class FileSystemBasedResourceCenter extends ResourceRepository<F
 		}
 		try {
 			RepositoryFolder<R, File> returned = resourceRepository.getParentRepositoryFolder(candidateFile, true);
-			/*if (!returned.getSerializationArtefact().equals(candidateFile.getParentFile())
-					&& !returned.getSerializationArtefact().getAbsolutePath().contains("target")) {
-				System.out.println("N'importe quoi, on met " + candidateFile + " dans " + returned.getSerializationArtefact());
-				System.out.println("Root=" + resourceRepository.getRootFolder().getSerializationArtefact());
-				List<String> pathTo = getPathTo(candidateFile);
-				System.out.println("pathTo=" + pathTo);
-				System.exit(-1);
-			}*/
 			return returned;
 		} catch (IOException e) {
 			e.printStackTrace();
