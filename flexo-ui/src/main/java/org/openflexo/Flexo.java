@@ -329,7 +329,6 @@ public class Flexo {
 			System.setProperty("apple.laf.useScreenMenuBar", "true");
 			System.setProperty("apple.awt.graphics.UseQuartz", "true");
 			System.setProperty("apple.awt.rendering", "quality");
-			System.out.println("PROUT !!!!!");
 		}
 		initUILAF(applicationContext.getPresentationPreferences().getLookAndFeelAsString());
 		if (isDev) {
