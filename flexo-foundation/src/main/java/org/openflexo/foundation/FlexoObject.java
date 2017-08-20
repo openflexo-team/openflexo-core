@@ -780,10 +780,13 @@ public interface FlexoObject extends AccessibleProxyObject, DeletableProxyObject
 		}
 
 		public static void setCurrentUserIdentifier(String aUserIdentifier) {
-			if (aUserIdentifier != null && aUserIdentifier.indexOf('#') > -1) {
-				aUserIdentifier = aUserIdentifier.replace('#', '-');
+			if (aUserIdentifier != null) {
 				currentUserIdentifier = aUserIdentifier.intern();
 			}
+			/*if (aUserIdentifier != null && aUserIdentifier.indexOf('#') > -1) {
+				aUserIdentifier = aUserIdentifier.replace('#', '-');
+				currentUserIdentifier = aUserIdentifier.intern();
+			}*/
 		}
 
 		private String userIdentifier;
