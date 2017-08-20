@@ -404,6 +404,17 @@ public interface GeneralPreferences extends PreferencesContainer {
 			FlexoObjectImpl.setCurrentUserIdentifier(aUserIdentifier);
 		}
 
+		@Override
+		public String getUserName() {
+			String returned = (String) performSuperGetter(GeneralPreferences.USER_NAME_KEY);
+
+			if (returned == null) {
+				returned = System.getProperty("user.name");
+			}
+
+			return returned;
+		}
+
 		/**
 		 * Return the list all all {@link DirectoryResourceCenter} registered for the session
 		 * 

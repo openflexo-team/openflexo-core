@@ -1,20 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Panel id="0" align="left" borderTop="5" borderLeft="0" trackViewPortHeight="true" trackViewPortWidth="true" borderBottom="0" border="empty" sizeAdjustment="OriginalSize" titleFont="Lucida Grande,0,13" layout="twocols" borderRight="0" controllerClassName="org.openflexo.components.PreferencesDialog$PreferencesFIBController" width="99" height="99" name="GeneralPreferencesPanel">
-  <Label id="1" label="user_identifier" align="left" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=20;insetsRight=0;insetsTop=0;location=left)" name="UserIdentifierLabel" />
+  <Label id="1" label="user_identifier" align="left" localize="true" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=20;insetsRight=0;insetsTop=0;location=left)" name="UserIdentifierLabel" />
   <TextField id="2" columns="7" text="TextField" data="data.userIdentifier" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=20;insetsTop=0;location=right)" name="TextField" />
-  <Label id="3" label="user_name" align="left" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)" name="Label5" />
+  <Label id="3" label="user_name" align="left" localize="true" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)" name="Label5" />
   <TextField id="4" columns="7" data="data.userName" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=20;insetsTop=0;location=right)" name="TextField2" />
-  <Label id="5" label="language" align="left" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=10;location=left)" name="LanguageLabel" />
+  <Label id="5" label="language" align="left" localize="true" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=10;location=left)" name="LanguageLabel" />
   <DropDown id="6" iteratorClassName="org.openflexo.localization.Language" showText="true" list="data.language.availableValues" showIcon="false" data="data.language" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=20;insetsTop=10;location=right)" name="DropDown" />
-  <Label id="7" label="auto_save" align="left" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=10;location=left)" name="Label" />
+  <Label id="7" label="auto_save" align="left" localize="true" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=10;location=left)" name="Label" />
   <Panel id="8" align="left" borderTop="0" borderLeft="0" trackViewPortHeight="true" trackViewPortWidth="true" borderBottom="0" border="rounded3d" sizeAdjustment="OriginalSize" layout="twocols" borderRight="0" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=20;insetsTop=10;location=right)" name="FIBPanel">
-    <Label id="9" label="enable_auto_save" align="left" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)" name="Label2" />
+    <Label id="9" label="enable_auto_save" align="left" localize="true" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)" name="Label2" />
     <CheckBox id="10" selected="true" data="data.autoSaveEnabled" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)" name="checkbox" />
-    <Label id="11" label="auto_save_interval_(minutes)" align="left" enable="data.autoSaveEnabled" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)" name="Label3" />
+    <Label id="11" label="auto_save_interval_(minutes)" align="left" localize="true" enable="data.autoSaveEnabled" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)" name="Label3" />
     <Number id="12" minValue="1" numberType="IntegerType" maxValue="65535" columns="3" increment="1" enable="data.autoSaveEnabled" data="data.autoSaveInterval" constraints="twocols(expandHorizontally=false;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)" name="Integer" />
-    <Label id="13" label="auto_save_limit" align="left" enable="data.autoSaveEnabled" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)" name="Label4" />
+    <Label id="13" label="auto_save_limit" align="left" localize="true" enable="data.autoSaveEnabled" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)" name="Label4" />
     <Number id="14" minValue="0" numberType="IntegerType" maxValue="65535" columns="3" increment="1" enable="data.autoSaveEnabled" data="data.autoSaveLimit" constraints="twocols(expandHorizontally=false;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)" name="Integer" />
   </Panel>
   <FIBVariable id="15" type="org.openflexo.prefs.GeneralPreferences" name="data" />
-  <LocalizedDictionary id="16" />
+  <LocalizedDictionary id="16">
+    <Localized id="17" lang="English" value="User identifier" key="user_identifier" />
+    <Localized id="18" lang="Dutch" value="Gebruikersnaam" key="user_identifier" />
+    <Localized id="19" lang="French" value="Identifiant de l'utilisateur" key="user_identifier" />
+    <Localized id="20" lang="English" value="User name" key="user_name" />
+    <Localized id="21" lang="Dutch" value="Gebruikersnaam" key="user_name" />
+    <Localized id="22" lang="French" value="Nom d'utilisateur" key="user_name" />
+    <Localized id="23" lang="English" value="Language" key="language" />
+    <Localized id="24" lang="Dutch" value="Taal" key="language" />
+    <Localized id="25" lang="French" value="Langue" key="language" />
+    <Localized id="26" lang="English" value="Auto save" key="auto_save" />
+    <Localized id="27" lang="Dutch" value="Auto save" key="auto_save" />
+    <Localized id="28" lang="French" value="Sauvegarde automatique" key="auto_save" />
+    <Localized id="29" lang="English" value="Enable auto-save" key="enable_auto_save" />
+    <Localized id="30" lang="Dutch" value="Activeer automatisch opslagen" key="enable_auto_save" />
+    <Localized id="31" lang="French" value="Activer la sauvegarde automatique" key="enable_auto_save" />
+    <Localized id="32" lang="English" value="Auto save interval (minutes)" key="auto_save_interval_(minutes)" />
+    <Localized id="33" lang="Dutch" value="Auto save interval (minutes)" key="auto_save_interval_(minutes)" />
+    <Localized id="34" lang="French" value="Intervalle de sauvegarde (minutes)" key="auto_save_interval_(minutes)" />
+    <Localized id="35" lang="English" value="Auto save limit" key="auto_save_limit" />
+    <Localized id="36" lang="Dutch" value="Auto save limit" key="auto_save_limit" />
+    <Localized id="37" lang="French" value="Limite" key="auto_save_limit" />
+  </LocalizedDictionary>
 </Panel>
