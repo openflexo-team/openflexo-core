@@ -57,7 +57,6 @@ import org.openflexo.foundation.fml.annotations.DeclareInspectorEntries;
 import org.openflexo.foundation.fml.controlgraph.ConditionalAction;
 import org.openflexo.foundation.fml.controlgraph.EmptyControlGraph;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
-import org.openflexo.foundation.fml.controlgraph.FetchRequestIterationAction;
 import org.openflexo.foundation.fml.controlgraph.IncrementalIterationAction;
 import org.openflexo.foundation.fml.controlgraph.IterationAction;
 import org.openflexo.foundation.fml.controlgraph.Sequence;
@@ -67,10 +66,8 @@ import org.openflexo.foundation.fml.editionaction.AddToListAction;
 import org.openflexo.foundation.fml.editionaction.AssignableAction;
 import org.openflexo.foundation.fml.editionaction.AssignationAction;
 import org.openflexo.foundation.fml.editionaction.DeclarationAction;
-import org.openflexo.foundation.fml.editionaction.DeclareFlexoRole;
 import org.openflexo.foundation.fml.editionaction.DeleteAction;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
-import org.openflexo.foundation.fml.editionaction.ExecutionAction;
 import org.openflexo.foundation.fml.editionaction.ExpressionAction;
 import org.openflexo.foundation.fml.editionaction.FetchRequest;
 import org.openflexo.foundation.fml.editionaction.FetchRequestCondition;
@@ -502,22 +499,17 @@ public class FMLModelFactory extends FGEModelFactoryImpl implements PamelaResour
 		return newInstance(FinalizeMatching.class);
 	}
 
-	public DeclareFlexoRole newDeclareFlexoRole() {
-		return newInstance(DeclareFlexoRole.class);
-	}
-
-	public ExecutionAction newExecutionAction() {
-		return newInstance(ExecutionAction.class);
-	}
-
-	public RemoveFromListAction newRemoveFromListAction() {
+	@SuppressWarnings("unchecked")
+	public <T> RemoveFromListAction<T> newRemoveFromListAction() {
 		return newInstance(RemoveFromListAction.class);
 	}
 
-	public AddToListAction newAddToListAction() {
+	@SuppressWarnings("unchecked")
+	public <T> AddToListAction<T> newAddToListAction() {
 		return newInstance(AddToListAction.class);
 	}
 
+	@SuppressWarnings("unchecked")
 	public <T> AssignationAction<T> newAssignationAction() {
 		return newInstance(AssignationAction.class);
 	}
@@ -604,12 +596,6 @@ public class FMLModelFactory extends FGEModelFactoryImpl implements PamelaResour
 
 	public IncrementalIterationAction newIncrementalIterationAction() {
 		IncrementalIterationAction returned = newInstance(IncrementalIterationAction.class);
-		returned.setControlGraph(newEmptyControlGraph());
-		return returned;
-	}
-
-	public FetchRequestIterationAction newFetchRequestIterationAction() {
-		FetchRequestIterationAction returned = newInstance(FetchRequestIterationAction.class);
 		returned.setControlGraph(newEmptyControlGraph());
 		return returned;
 	}

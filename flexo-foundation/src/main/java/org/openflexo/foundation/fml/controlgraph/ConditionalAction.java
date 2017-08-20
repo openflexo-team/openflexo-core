@@ -41,6 +41,7 @@ package org.openflexo.foundation.fml.controlgraph;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
 import java.util.logging.Logger;
+
 import org.openflexo.connie.BindingEvaluationContext;
 import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.DataBinding;
@@ -52,7 +53,6 @@ import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.binding.ControlGraphBindingModel;
-import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext.ReturnException;
 import org.openflexo.model.annotations.CloningStrategy;
@@ -108,8 +108,11 @@ public interface ConditionalAction extends ControlStructureAction, FMLControlGra
 	@Setter(ELSE_CONTROL_GRAPH_KEY)
 	public void setElseControlGraph(FMLControlGraph aControlGraph);
 
+	public boolean evaluateCondition(BindingEvaluationContext evaluationContext);
+
 	public static abstract class ConditionalActionImpl extends ControlStructureActionImpl implements ConditionalAction {
 
+		@SuppressWarnings("unused")
 		private static final Logger logger = Logger.getLogger(ConditionalAction.class.getPackage().getName());
 
 		private DataBinding<Boolean> condition;
@@ -256,38 +259,6 @@ public interface ConditionalAction extends ControlStructureAction, FMLControlGra
 			}
 			return null;
 		}
-
-		@Deprecated
-		@Override
-		public void addToActions(EditionAction anAction) {
-			FMLControlGraphConverter.addToActions(this, THEN_CONTROL_GRAPH_KEY, anAction);
-		}
-
-		@Deprecated
-		@Override
-		public void removeFromActions(EditionAction anAction) {
-			FMLControlGraphConverter.removeFromActions(this, THEN_CONTROL_GRAPH_KEY, anAction);
-		}
-
-		/*@Deprecated
-		@Override
-		public void addToActions(EditionAction anAction) {
-			FMLControlGraph controlGraph = getThenControlGraph();
-			if (controlGraph == null) {
-				// If control graph is null, action will be new new control graph
-				setThenControlGraph(anAction);
-			} else {
-				// Otherwise, sequentially append action
-				controlGraph.sequentiallyAppend(anAction);
-			}
-			// performSuperAdder(ACTIONS_KEY, anAction);
-		}
-		
-		@Deprecated
-		@Override
-		public void removeFromActions(EditionAction anAction) {
-			anAction.delete();
-		}*/
 
 		@Override
 		public void reduce() {

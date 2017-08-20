@@ -598,33 +598,6 @@ public class FMLFIBController extends FlexoFIBController {
 		return createInspectorEntry.getNewEntry();
 	}
 
-	public void actionFirst(EditionAction action) {
-		if (action.getActionContainer() != null) {
-			action.getActionContainer().actionFirst(action);
-		}
-	}
-
-	public void actionUp(EditionAction action) {
-		if (action != null && action.getActionContainer() != null) {
-			action.getActionContainer().actionUp(action);
-		}
-		if (action == null) {
-			logger.warning("actionUp was called with null parameter");
-		}
-	}
-
-	public void actionDown(EditionAction action) {
-		if (action.getActionContainer() != null) {
-			action.getActionContainer().actionDown(action);
-		}
-	}
-
-	public void actionLast(EditionAction action) {
-		if (action.getActionContainer() != null) {
-			action.getActionContainer().actionLast(action);
-		}
-	}
-
 	public boolean isFlexoBehaviour(Object selectedObject, FlexoBehaviour context) {
 		return selectedObject == null || selectedObject == context;
 	}

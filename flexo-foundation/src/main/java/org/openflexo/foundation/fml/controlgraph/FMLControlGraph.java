@@ -210,7 +210,7 @@ public abstract interface FMLControlGraph extends FlexoConceptObject {
 		}
 
 		protected ControlGraphBindingModel<?> makeBindingModel() {
-			return new ControlGraphBindingModel(this);
+			return new ControlGraphBindingModel<FMLControlGraph>(this);
 		}
 
 		@Override

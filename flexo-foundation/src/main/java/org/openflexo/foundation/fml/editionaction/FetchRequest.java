@@ -47,7 +47,6 @@ import java.util.logging.Logger;
 import org.openflexo.connie.type.ParameterizedTypeImpl;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
-import org.openflexo.foundation.fml.controlgraph.FetchRequestIterationAction;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
@@ -98,32 +97,12 @@ public abstract interface FetchRequest<MS extends ModelSlot<RD>, RD extends Reso
 
 	public void deleteCondition(FetchRequestCondition aCondition);
 
-	@Deprecated
-	public FetchRequestIterationAction getEmbeddingIteration();
-
-	@Deprecated
-	public void setEmbeddingIteration(FetchRequestIterationAction embeddingIteration);
-
 	public Type getFetchedType();
 
 	public static abstract class FetchRequestImpl<MS extends ModelSlot<RD>, RD extends ResourceData<RD> & TechnologyObject<?>, T>
 			extends TechnologySpecificActionImpl<MS, RD, List<T>> implements FetchRequest<MS, RD, T> {
 
 		private static final Logger logger = Logger.getLogger(FetchRequest.class.getPackage().getName());
-
-		// null in fetch request is not embedded in an iteration
-		@Deprecated
-		private FetchRequestIterationAction embeddingIteration;
-
-		/*@Override
-		public String getFMLRepresentation(FMLRepresentationContext context) {
-			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
-			if (getAssignation().isSet()) {
-				out.append(getAssignation().toString() + " = ", context);
-			}
-			out.append(getImplementedInterface().getSimpleName(), context);
-			return out.toString();
-		}*/
 
 		protected String getWhereClausesFMLRepresentation(FMLRepresentationContext context) {
 			if (getConditions().size() > 0) {
@@ -203,22 +182,6 @@ public abstract interface FetchRequest<MS extends ModelSlot<RD>, RD extends Reso
 					}
 				}
 				return returned;
-			}
-		}
-
-		@Deprecated
-		@Override
-		public FetchRequestIterationAction getEmbeddingIteration() {
-			return embeddingIteration;
-		}
-
-		@Deprecated
-		@Override
-		public void setEmbeddingIteration(FetchRequestIterationAction embeddingIteration) {
-			if (this.embeddingIteration != embeddingIteration) {
-				FetchRequestIterationAction oldValue = this.embeddingIteration;
-				this.embeddingIteration = embeddingIteration;
-				getPropertyChangeSupport().firePropertyChange("embeddingIteration", oldValue, embeddingIteration);
 			}
 		}
 

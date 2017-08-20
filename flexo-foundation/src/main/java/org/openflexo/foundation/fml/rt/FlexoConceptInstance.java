@@ -77,8 +77,6 @@ import org.openflexo.foundation.fml.binding.FlexoPropertyBindingVariable;
 import org.openflexo.foundation.fml.binding.FlexoRoleBindingVariable;
 import org.openflexo.foundation.fml.binding.SetValueBindingVariable;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
-import org.openflexo.foundation.fml.editionaction.DeleteAction;
-import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.fml.inspector.FlexoConceptInspector;
 import org.openflexo.foundation.fml.rt.action.ModelSlotInstanceConfiguration;
 import org.openflexo.foundation.fml.rt.action.ModelSlotInstanceConfiguration.DefaultModelSlotInstanceConfigurationOption;
@@ -1655,7 +1653,7 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 		/**
 		 * Return list of objects that will be deleted when using supplied DeletionScheme
 		 */
-		public List<FlexoObject> objectsThatWillBeDeleted(DeletionScheme deletionScheme) {
+		/*public List<FlexoObject> objectsThatWillBeDeleted(DeletionScheme deletionScheme) {
 			Vector<FlexoObject> returned = new Vector<>();
 			for (EditionAction editionAction : deletionScheme.getActions()) {
 				if (editionAction instanceof DeleteAction) {
@@ -1666,7 +1664,7 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 				}
 			}
 			return returned;
-		}
+		}*/
 
 		@Override
 		public void notifiedBindingChanged(DataBinding<?> dataBinding) {

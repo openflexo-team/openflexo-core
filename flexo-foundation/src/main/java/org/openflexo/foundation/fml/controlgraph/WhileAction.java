@@ -51,7 +51,6 @@ import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.binding.ControlGraphBindingModel;
-import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext.ReturnException;
 import org.openflexo.model.annotations.CloningStrategy;
@@ -102,8 +101,11 @@ public interface WhileAction extends ControlStructureAction, FMLControlGraphOwne
 	@Setter(EVALUATE_CONDITION_AFTER_CYCLE_KEY)
 	public void setEvaluateConditionAfterCycle(boolean evaluateAfter);
 
+	public boolean evaluateCondition(BindingEvaluationContext evaluationContext);
+
 	public static abstract class WhileActionImpl extends ControlStructureActionImpl implements WhileAction {
 
+		@SuppressWarnings("unused")
 		private static final Logger logger = Logger.getLogger(WhileAction.class.getPackage().getName());
 
 		private DataBinding<Boolean> condition;
@@ -248,18 +250,6 @@ public interface WhileAction extends ControlStructureAction, FMLControlGraphOwne
 				}
 			}
 			return null;
-		}
-
-		@Deprecated
-		@Override
-		public void addToActions(EditionAction anAction) {
-			// FMLControlGraphConverter.addToActions(this, THEN_CONTROL_GRAPH_KEY, anAction);
-		}
-
-		@Deprecated
-		@Override
-		public void removeFromActions(EditionAction anAction) {
-			// FMLControlGraphConverter.removeFromActions(this, THEN_CONTROL_GRAPH_KEY, anAction);
 		}
 
 		@Override

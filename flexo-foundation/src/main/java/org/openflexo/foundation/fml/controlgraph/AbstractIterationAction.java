@@ -42,7 +42,6 @@ import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.binding.IterationActionBindingModel;
-import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.model.annotations.CloningStrategy;
 import org.openflexo.model.annotations.CloningStrategy.StrategyType;
 import org.openflexo.model.annotations.Embedded;
@@ -88,6 +87,7 @@ public interface AbstractIterationAction extends ControlStructureAction, FMLCont
 
 	public static abstract class AbstractIterationActionImpl extends ControlStructureActionImpl implements AbstractIterationAction {
 
+		@SuppressWarnings("unused")
 		private static final Logger logger = Logger.getLogger(AbstractIterationAction.class.getPackage().getName());
 
 		private String iteratorName = "item";
@@ -110,18 +110,6 @@ public interface AbstractIterationAction extends ControlStructureAction, FMLCont
 		@Override
 		protected IterationActionBindingModel makeInferedBindingModel() {
 			return new IterationActionBindingModel(this);
-		}
-
-		@Deprecated
-		@Override
-		public void addToActions(EditionAction anAction) {
-			// FMLControlGraphConverter.addToActions(this, CONTROL_GRAPH_KEY, anAction);
-		}
-
-		@Deprecated
-		@Override
-		public void removeFromActions(EditionAction anAction) {
-			// FMLControlGraphConverter.removeFromActions(this, CONTROL_GRAPH_KEY, anAction);
 		}
 
 		@Override

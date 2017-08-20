@@ -68,12 +68,12 @@ public class ControlStructureActionBindingModel<CG extends ControlStructureActio
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		super.propertyChange(evt);
-		if (evt.getSource() == getEditionAction()) {
+		/*if (evt.getSource() == getEditionAction()) {
 			if (evt.getPropertyName().equals(EditionAction.ACTION_CONTAINER_KEY)) {
 				setBaseBindingModel(getEditionAction().getOwner() != null ? getEditionAction().getOwner().getBaseBindingModel(
 						getEditionAction()) : null);
 			}
-		}
+		}*/
 	}
 
 	public CG getEditionAction() {

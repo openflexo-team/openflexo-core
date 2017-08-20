@@ -212,6 +212,7 @@ public interface IterationAction extends AbstractIterationAction {
 			return super.getControlGraph(ownerContext);
 		}
 
+		@SuppressWarnings("unchecked")
 		@Override
 		public void setControlGraph(FMLControlGraph controlGraph, String ownerContext) {
 
