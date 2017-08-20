@@ -59,6 +59,7 @@ import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.PropertyIdentifier;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
+import org.openflexo.model.annotations.XMLElement;
 import org.openflexo.model.validation.FixProposal;
 import org.openflexo.model.validation.ValidationError;
 import org.openflexo.model.validation.ValidationIssue;
@@ -82,6 +83,7 @@ import org.openflexo.toolbox.StringUtils;
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(FMLObject.FMLObjectImpl.class)
+@XMLElement(idFactory = "userIdentifier+'-'+flexoID")
 public interface FMLObject extends FlexoObject, Bindable, InnerResourceData/*<VirtualModel>*/, TechnologyObject<FMLTechnologyAdapter> {
 
 	@PropertyIdentifier(type = String.class)
