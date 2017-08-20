@@ -207,7 +207,7 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData/*<Vi
 		private String name;
 
 		/**
-		 * Return the URI of the {@link NamedFMLObject}<br>
+		 * Return the URI of the {@link FMLObject}<br>
 		 * The convention for URI are following: <container_virtual_model_uri>/<virtual_model_name >#<flexo_concept_name>.<behaviour_name>
 		 * eg<br>
 		 * http://www.mydomain.org/MyVirtuaModel1/MyVirtualModel2#MyFlexoConcept.MyProperty
