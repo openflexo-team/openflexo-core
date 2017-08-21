@@ -75,13 +75,8 @@ import org.openflexo.foundation.fml.editionaction.LogAction;
 import org.openflexo.foundation.fml.editionaction.NotifyPropertyChangedAction;
 import org.openflexo.foundation.fml.editionaction.RemoveFromListAction;
 import org.openflexo.foundation.fml.editionaction.ReturnStatement;
-import org.openflexo.foundation.fml.inspector.CheckboxInspectorEntry;
 import org.openflexo.foundation.fml.inspector.FlexoConceptInspector;
-import org.openflexo.foundation.fml.inspector.GenericInspectorEntry;
 import org.openflexo.foundation.fml.inspector.InspectorEntry;
-import org.openflexo.foundation.fml.inspector.IntegerInspectorEntry;
-import org.openflexo.foundation.fml.inspector.TextAreaInspectorEntry;
-import org.openflexo.foundation.fml.inspector.TextFieldInspectorEntry;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstanceParameter;
@@ -407,26 +402,10 @@ public class FMLModelFactory extends FGEModelFactoryImpl implements PamelaResour
 		return returned;
 	}
 
-	public GenericInspectorEntry newInspectorEntry(FlexoConceptInspector inspector) {
-		GenericInspectorEntry returned = newInstance(GenericInspectorEntry.class);
+	public InspectorEntry newInspectorEntry(FlexoConceptInspector inspector) {
+		InspectorEntry returned = newInstance(InspectorEntry.class);
 		inspector.addToEntries(returned);
 		return returned;
-	}
-
-	public TextFieldInspectorEntry newTextFieldInspectorEntry() {
-		return newInstance(TextFieldInspectorEntry.class);
-	}
-
-	public TextAreaInspectorEntry newTextAreaInspectorEntry() {
-		return newInstance(TextAreaInspectorEntry.class);
-	}
-
-	public IntegerInspectorEntry newIntegerInspectorEntry() {
-		return newInstance(IntegerInspectorEntry.class);
-	}
-
-	public CheckboxInspectorEntry newCheckboxInspectorEntry() {
-		return newInstance(CheckboxInspectorEntry.class);
 	}
 
 	public CreateFlexoConceptInstanceParameter newCreateFlexoConceptInstanceParameter(FlexoBehaviourParameter p) {
