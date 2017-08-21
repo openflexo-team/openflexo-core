@@ -45,7 +45,6 @@
 			filtered="false" defaultVisible="true" dynamicFont="" name="flexoBehaviour">
 			<Children data="flexoBehaviour.parameters" visible="(flexoBehaviour.parameters.size &gt; 0)"
 				cast="" name="parameters" />
-			<Children data="flexoBehaviour.actions" name="actions" />
 		</BrowserElement>
 		<BrowserElement
 			dataClassName="org.openflexo.foundation.fml.inspector.FlexoConceptInspector"
@@ -73,7 +72,6 @@
 			icon="controller.iconForObject(controlStructureAction)" tooltip=""
 			enabled="" visible="" isEditable="false" editableLabel="" filtered="false"
 			defaultVisible="true" dynamicFont="" name="controlStructureAction">
-			<Children data="controlStructureAction.actions" name="children" />
 		</BrowserElement>
 		<BrowserElement
 			dataClassName="org.openflexo.foundation.fml.FlexoConceptStructuralFacet"
