@@ -346,63 +346,13 @@ public class TestFMLInspectors extends GenericFIBInspectorTestCase {
 	}
 
 	@Test
-	public void testCheckboxInspectorEntryInspector() {
-		validateFIB("Inspectors/FML/Inspector/CheckboxInspectorEntry.inspector");
-	}
-
-	@Test
-	public void testClassInspectorEntryInspector() {
-		validateFIB("Inspectors/FML/Inspector/ClassInspectorEntry.inspector");
-	}
-
-	@Test
-	public void testDataPropertyInspectorEntryInspector() {
-		validateFIB("Inspectors/FML/Inspector/DataPropertyInspectorEntry.inspector");
-	}
-
-	@Test
 	public void testFlexoConceptInspectorInspector() {
 		validateFIB("Inspectors/FML/Inspector/FlexoConceptInspector.inspector");
 	}
 
 	@Test
-	public void testFloatInspectorEntryInspector() {
-		validateFIB("Inspectors/FML/Inspector/FloatInspectorEntry.inspector");
-	}
-
-	@Test
-	public void testIndividualInspectorEntryInspector() {
-		validateFIB("Inspectors/FML/Inspector/IndividualInspectorEntry.inspector");
-	}
-
-	@Test
 	public void testInspectorEntryInspector() {
 		validateFIB("Inspectors/FML/Inspector/InspectorEntry.inspector");
-	}
-
-	@Test
-	public void testIntegerInspectorEntryInspector() {
-		validateFIB("Inspectors/FML/Inspector/IntegerInspectorEntry.inspector");
-	}
-
-	@Test
-	public void testObjectPropertyInspectorEntryInspector() {
-		validateFIB("Inspectors/FML/Inspector/ObjectPropertyInspectorEntry.inspector");
-	}
-
-	@Test
-	public void testPropertyInspectorEntryInspector() {
-		validateFIB("Inspectors/FML/Inspector/PropertyInspectorEntry.inspector");
-	}
-
-	@Test
-	public void testTextAreaInspectorEntryInspector() {
-		validateFIB("Inspectors/FML/Inspector/TextAreaInspectorEntry.inspector");
-	}
-
-	@Test
-	public void testTextFieldInspectorEntryInspector() {
-		validateFIB("Inspectors/FML/Inspector/TextFieldInspectorEntry.inspector");
 	}
 
 	@Test

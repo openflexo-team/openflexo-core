@@ -72,33 +72,11 @@
 					format="" title="label" columnWidth="100" resizable="true"
 					displayTitle="true" color="" bgColor="" tooltip=""
 					valueChangedAction="" name="textfield" />
-				<LabelColumn data="iterator.widgetName" format="" title="widget"
+				<LabelColumn data="iterator.widget.name" format="" title="widget"
 					columnWidth="100" resizable="true" displayTitle="true" color=""
 					bgColor="" tooltip="" valueChangedAction="" name="label" />
 				<AddAction method="controller.createInspectorEntry(data)" 
 					name="add_inspector_entry" />
-				<!--  <AddAction method="data.createNewTextField" isAvailable=""
-					name="add_textfield" />
-				<AddAction method="data.createNewDataProperty"
-					isAvailable="" name="add_table" />
-				<RemoveAction method="data.deleteEntry(selected)"
-					isAvailable="" name="delete" />
-				<AddAction method="data.createNewTextArea" isAvailable=""
-					name="add_textarea" />
-				<AddAction method="data.createNewInteger" isAvailable=""
-					name="add_integer" />
-				<AddAction method="data.createNewCheckbox" isAvailable=""
-					name="add_checkbox" />
-				<AddAction method="data.createNewIndividual" isAvailable=""
-					name="add_individual" />
-				<AddAction method="data.createNewClass" isAvailable=""
-					name="add_class" />
-				<AddAction method="data.createNewObjectProperty"
-					isAvailable="" name="add_object_property" />
-				<AddAction method="data.createNewDataProperty"
-					isAvailable="" name="add_data_property" />
-				<AddAction method="data.createNewProperty" isAvailable=""
-					name="add_property" />-->
 			</Table>
 			<Panel layout="box" boxLayoutAxis="Y_AXIS" borderTitle="Panel"
 				titleFont="SansSerif,0,11" darkLevel="0" index="2" 
