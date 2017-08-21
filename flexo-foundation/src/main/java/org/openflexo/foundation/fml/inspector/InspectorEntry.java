@@ -177,9 +177,6 @@ public interface InspectorEntry extends FlexoConceptObject, Bindable, WidgetCont
 
 	public Object getList(BindingEvaluationContext evaluationContext);
 
-	@Deprecated
-	public String getWidgetName();
-
 	public int getIndex();
 
 	@Override
