@@ -42,6 +42,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.logging.Logger;
+
 import org.openflexo.connie.Bindable;
 import org.openflexo.connie.BindingEvaluationContext;
 import org.openflexo.connie.DataBinding;
@@ -59,12 +60,11 @@ import org.openflexo.foundation.fml.binding.InspectorEntryBindingModel;
 import org.openflexo.model.annotations.DefineValidationRule;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
-import org.openflexo.model.annotations.Import;
-import org.openflexo.model.annotations.Imports;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.PropertyIdentifier;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
+import org.openflexo.model.annotations.XMLElement;
 import org.openflexo.toolbox.StringUtils;
 
 /**
@@ -73,10 +73,9 @@ import org.openflexo.toolbox.StringUtils;
  * @author sylvain
  * 
  */
-@ModelEntity(isAbstract = true)
+@ModelEntity()
 @ImplementationClass(InspectorEntry.InspectorEntryImpl.class)
-@Imports({ @Import(CheckboxInspectorEntry.class), @Import(FloatInspectorEntry.class), @Import(IntegerInspectorEntry.class),
-		@Import(TextAreaInspectorEntry.class), @Import(TextFieldInspectorEntry.class), @Import(GenericInspectorEntry.class) })
+@XMLElement(xmlTag = "InspectorEntry", deprecatedXMLTags = "GenericInspectorEntry")
 public interface InspectorEntry extends FlexoConceptObject, Bindable, WidgetContext {
 
 	@PropertyIdentifier(type = FlexoConceptInspector.class)
@@ -143,6 +142,7 @@ public interface InspectorEntry extends FlexoConceptObject, Bindable, WidgetCont
 	@Setter(CONDITIONAL_KEY)
 	public void setConditional(DataBinding<Boolean> conditional);*/
 
+	@Override
 	@Getter(value = TYPE_KEY, isStringConvertable = true)
 	@XMLAttribute
 	public abstract Type getType();
@@ -150,6 +150,7 @@ public interface InspectorEntry extends FlexoConceptObject, Bindable, WidgetCont
 	@Setter(TYPE_KEY)
 	public void setType(Type aType);
 
+	@Override
 	@Getter(value = WIDGET_KEY)
 	@XMLAttribute
 	public WidgetType getWidget();
@@ -157,6 +158,7 @@ public interface InspectorEntry extends FlexoConceptObject, Bindable, WidgetCont
 	@Setter(WIDGET_KEY)
 	public void setWidget(WidgetType widget);
 
+	@Override
 	@Getter(value = CONTAINER_KEY)
 	@XMLAttribute
 	public DataBinding<?> getContainer();

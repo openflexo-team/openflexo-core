@@ -53,7 +53,7 @@
 						<FIBVariable name="selectedEditionAction"
 							value="($org.openflexo.foundation.fml.editionaction.EditionAction)EditionActionBrowser.selected"
 							type="org.openflexo.foundation.fml.editionaction.EditionAction" />
-						<Button action="controller.actionFirst(selectedEditionAction)"
+						<!--  <Button action="controller.actionFirst(selectedEditionAction)"
 							buttonIcon="controller.arrowTop" buttonType="Trigger" label=""
 							localize="true" enable="!(data.isAFirstAction(selectedEditionAction))"
 							index="0" constraints="box(alignmentX=0.5;alignmentY=0.5;index=0;location=north)"
@@ -81,7 +81,7 @@
 							opaque="false">
 							<LocalizedDictionary />
 						</Button>
-						<LocalizedDictionary />
+						<LocalizedDictionary />-->
 					</Panel>
 					<Browser root="data"
 						iteratorClassName="org.openflexo.foundation.fml.FlexoConceptObject"

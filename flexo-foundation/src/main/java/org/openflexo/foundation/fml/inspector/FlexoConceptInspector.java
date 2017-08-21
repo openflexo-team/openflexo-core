@@ -38,7 +38,6 @@
 
 package org.openflexo.foundation.fml.inspector;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 import java.util.logging.Logger;
@@ -48,7 +47,6 @@ import org.openflexo.connie.BindingFactory;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.connie.DefaultBindable;
-import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptObject;
 import org.openflexo.foundation.fml.binding.FlexoConceptFormatterBindingModel;
@@ -132,24 +130,6 @@ public interface FlexoConceptInspector extends FlexoConceptObject, Bindable {
 
 	public String getAvailableEntryName(String baseName);
 
-	public TextFieldInspectorEntry createNewTextField();
-
-	public TextAreaInspectorEntry createNewTextArea();
-
-	public IntegerInspectorEntry createNewInteger();
-
-	public CheckboxInspectorEntry createNewCheckbox();
-
-	/*public IndividualInspectorEntry createNewIndividual();
-	
-	public ClassInspectorEntry createNewClass();
-	
-	public PropertyInspectorEntry createNewProperty();
-	
-	public ObjectPropertyInspectorEntry createNewObjectProperty();
-	
-	public DataPropertyInspectorEntry createNewDataProperty();*/
-
 	public InspectorEntry deleteEntry(InspectorEntry entry);
 
 	public void entryFirst(InspectorEntry p);
@@ -218,31 +198,6 @@ public interface FlexoConceptInspector extends FlexoConceptObject, Bindable {
 			this.inspectorTitle = inspectorTitle;
 		}
 
-		/*@Override
-		public Vector<InspectorEntry> getEntries() {
-			return entries;
-		}
-		
-		public void setEntries(Vector<InspectorEntry> someEntries) {
-			entries = someEntries;
-		}
-		
-		@Override
-		public void addToEntries(InspectorEntry anEntry) {
-			anEntry.setInspector(this);
-			entries.add(anEntry);
-			setChanged();
-			notifyObservers(new InspectorEntryInserted(anEntry, this));
-		}
-		
-		@Override
-		public void removeFromEntries(InspectorEntry anEntry) {
-			anEntry.setInspector(null);
-			entries.remove(anEntry);
-			setChanged();
-			notifyObservers(new InspectorEntryRemoved(anEntry, this));
-		}*/
-
 		@Override
 		public String getAvailableEntryName(String baseName) {
 			String testName = baseName;
@@ -253,94 +208,6 @@ public interface FlexoConceptInspector extends FlexoConceptObject, Bindable {
 			}
 			return testName;
 		}
-
-		@Override
-		public TextFieldInspectorEntry createNewTextField() {
-			TextFieldInspectorEntry newEntry = getFMLModelFactory().newTextFieldInspectorEntry();
-			newEntry.setName("textfield");
-			// newEntry.setLabel("textfield");
-			addToEntries(newEntry);
-			return newEntry;
-		}
-
-		@Override
-		public TextAreaInspectorEntry createNewTextArea() {
-			TextAreaInspectorEntry newEntry = getFMLModelFactory().newTextAreaInspectorEntry();
-			newEntry.setName("textarea");
-			// newEntry.setLabel("textarea");
-			addToEntries(newEntry);
-			return newEntry;
-		}
-
-		@Override
-		public IntegerInspectorEntry createNewInteger() {
-			IntegerInspectorEntry newEntry = getFMLModelFactory().newIntegerInspectorEntry();
-			newEntry.setName("integer");
-			// newEntry.setLabel("integer");
-			addToEntries(newEntry);
-			return newEntry;
-		}
-
-		@Override
-		public CheckboxInspectorEntry createNewCheckbox() {
-			CheckboxInspectorEntry newEntry = getFMLModelFactory().newCheckboxInspectorEntry();
-			newEntry.setName("checkbox");
-			// newEntry.setLabel("checkbox");
-			addToEntries(newEntry);
-			return newEntry;
-		}
-
-		/*@Override
-		public IndividualInspectorEntry createNewIndividual() {
-			IndividualInspectorEntry newEntry = getFMLModelFactory().newIndividualInspectorEntry();
-			newEntry.setName("individual");
-			// newEntry.setLabel("individual");
-			addToEntries(newEntry);
-			return newEntry;
-		}
-		
-		@Override
-		public ClassInspectorEntry createNewClass() {
-			ClassInspectorEntry newEntry = getFMLModelFactory().newClassInspectorEntry();
-			newEntry.setName("class");
-			// newEntry.setLabel("class");
-			addToEntries(newEntry);
-			return newEntry;
-		}
-		
-		@Override
-		public PropertyInspectorEntry createNewProperty() {
-			PropertyInspectorEntry newEntry = getFMLModelFactory().newPropertyInspectorEntry();
-			newEntry.setName("property");
-			// newEntry.setLabel("class");
-			addToEntries(newEntry);
-			return newEntry;
-		}
-		
-		@Override
-		public ObjectPropertyInspectorEntry createNewObjectProperty() {
-			ObjectPropertyInspectorEntry newEntry = getFMLModelFactory().newObjectPropertyInspectorEntry();
-			newEntry.setName("objectProperty");
-			// newEntry.setLabel("class");
-			addToEntries(newEntry);
-			return newEntry;
-		}
-		
-		@Override
-		public DataPropertyInspectorEntry createNewDataProperty() {
-			DataPropertyInspectorEntry newEntry = getFMLModelFactory().newDataPropertyInspectorEntry();
-			newEntry.setName("dataProperty");
-			// newEntry.setLabel("class");
-			addToEntries(newEntry);
-			return newEntry;
-		}*/
-
-		/*
-		 * public FlexoObjectInspectorEntry createNewFlexoObject() {
-		 * FlexoObjectInspectorEntry newEntry = new FlexoObjectInspectorEntry();
-		 * newEntry.setName("flexoObject"); // newEntry.setLabel("flexoObject");
-		 * addToEntries(newEntry); return newEntry; }
-		 */
 
 		@Override
 		public InspectorEntry deleteEntry(InspectorEntry entry) {
@@ -355,40 +222,6 @@ public interface FlexoConceptInspector extends FlexoConceptObject, Bindable {
 				bindingModel = new FlexoConceptInspectorBindingModel(this);
 			}
 			return bindingModel;
-		}
-
-		@Override
-		public void finalizeDeserialization() {
-			// Convert all references to former FlexoBehaviourParameter model to generic FlexoBehaviourParameters
-			// TODO: remove this code once all deprecated FlexoBehaviourParameter subinterfaces will be removed
-			if (getDeserializationFactory() != null) {
-				for (InspectorEntry entry : new ArrayList<>(getEntries())) {
-					if (!(entry instanceof GenericInspectorEntry)) {
-						FMLModelFactory factory = getDeserializationFactory();
-						GenericInspectorEntry newEntry = factory.newInspectorEntry(this);
-						newEntry.setName(entry.getName());
-						newEntry.setType(entry.getType());
-						/*if (p instanceof FlexoConceptInstanceParameter) {
-						FMLTechnologyAdapter ta = factory.getServiceManager().getTechnologyAdapterService()
-								.getTechnologyAdapter(FMLTechnologyAdapter.class);
-						FlexoConceptInstanceTypeFactory fciFactory = ta.getFlexoConceptInstanceTypeFactory();
-						newEntry.setType(fciFactory.makeCustomType(((FlexoConceptInstanceParameter) p)._getFlexoConceptTypeURI()));
-						}*/
-						newEntry.setWidget(entry.getWidget());
-						newEntry.setContainer(entry.getContainer());
-						newEntry.setData(entry.getData());
-						newEntry.setList(entry.getList());
-						newEntry.setIsReadOnly(entry.getIsReadOnly());
-						newEntry.setDescription(entry.getDescription());
-						logger.info("Converted former entry " + entry + " into " + newEntry + " with " + newEntry.getType());
-						removeFromEntries(entry);
-						addToEntries(newEntry);
-					}
-				}
-			}
-
-			super.finalizeDeserialization();
-
 		}
 
 		@Override

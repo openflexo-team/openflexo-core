@@ -196,8 +196,8 @@
 				dataClassName="org.openflexo.foundation.fml.controlgraph.ControlStructureAction"
 				icon="controller.iconForObject(controlStructureAction)" isEditable="false"
 				name="controlStructureAction">
-				<Children id="63" data="controlStructureAction.actions"
-					name="children" />
+				<!--  <Children id="63" data="controlStructureAction.actions"
+					name="children" /> -->
 			</BrowserElement>
 			<BrowserElement id="64"
 				dataClassName="org.openflexo.foundation.fml.FlexoConceptStructuralFacet"

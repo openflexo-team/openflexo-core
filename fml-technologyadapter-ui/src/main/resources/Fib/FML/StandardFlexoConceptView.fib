@@ -74,7 +74,7 @@
         <BrowserAddAction id="60" method="controller.createInspectorEntry(data)" name="add_inspector_entry" />
       </BrowserElement>
       <BrowserElement id="61" dataClassName="org.openflexo.foundation.fml.controlgraph.ControlStructureAction" icon="controller.iconForObject(controlStructureAction)" isEditable="false" name="controlStructureAction">
-        <Children id="62" data="controlStructureAction.actions" name="children" />
+        <!--  <Children id="62" data="controlStructureAction.actions" name="children" /> -->
       </BrowserElement>
       <BrowserElement id="63" dataClassName="org.openflexo.foundation.fml.FlexoConceptStructuralFacet" icon="controller.iconForObject(flexoConceptStructuralFacet)" label="&quot;Structural&quot;" isEditable="false" name="flexoConceptStructuralFacet">
         <Children id="64" data="flexoConceptStructuralFacet.properties" name="flexoProperties" />
