@@ -1,86 +1,198 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Panel id="0" borderLeft="0" sizeAdjustment="OriginalSize" controllerClassName="org.openflexo.view.controller.FlexoFIBController" border="empty" borderRight="0" trackViewPortWidth="true" align="left" borderBottom="0" borderTop="0" trackViewPortHeight="true" layout="twocols">
-  <Label id="1" name="TechnologyAdapterLabel" index="3" localize="true" align="left" constraints="twocols(anchor=east;expandHorizontally=true;expandVertically=false;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=3;insetsBottom=0;insetsLeft=50;insetsRight=0;insetsTop=20;location=left;padX=0;padY=0;weightX=0.0;weightY=0.0)" label="technology_adapter" />
-  <DropDown id="2" manageDynamicModel="true" data="data.technologyAdapter" index="3" localize="true" constraints="twocols(anchor=west;expandHorizontally=true;expandVertically=false;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=4;insetsBottom=20;insetsLeft=20;insetsRight=20;insetsTop=20;location=right;padX=0;padY=0;weightX=0.0;weightY=0.0)" format="object.name" showText="true" iteratorClassName="org.openflexo.foundation.technologyadapter.TechnologyAdapter" showIcon="true" autoSelectFirstRow="true" name="TechnologyAdapterDD" icon="controller.getTechnologyAdapterController(object).technologyIcon" list="data.serviceManager.technologyAdapterService.technologyAdapters" />
-  <RadioButtonList id="3" data="data.modelSlotClass" localize="true" constraints="twocols(anchor=center;expandHorizontally=false;expandVertically=false;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;insetsBottom=0;insetsLeft=20;insetsRight=0;insetsTop=0;location=left;padX=0;padY=0;weightX=1.0;weightY=1.0)" format="object.simpleName" showText="true" iteratorClassName="java.lang.Class" showIcon="false" autoSelectFirstRow="true" name="PaletteRadioButtonList" icon="controller.iconForObject(object)" list="data.technologyAdapter.availableModelSlotTypes" />
-  <Panel id="4" borderLeft="0" sizeAdjustment="OriginalSize" border="rounded3d" borderRight="0" trackViewPortWidth="true" index="1" align="left" constraints="twocols(anchor=center;expandHorizontally=true;expandVertically=true;fill=both;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=1;insetsBottom=20;insetsLeft=20;insetsRight=20;insetsTop=0;location=right;padX=0;padY=0;weightX=1.0;weightY=1.0)" borderBottom="0" borderTitle="" borderTop="0" trackViewPortHeight="true" layout="twocols" name="FIBPanel2">
-    <Label id="5" name="NameLabel" index="1" localize="true" align="right" constraints="twocols(anchor=east;expandHorizontally=true;expandVertically=false;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left;padX=0;padY=0;weightX=0.0;weightY=0.0)" label="name" />
-    <TextField id="6" columns="20" name="ModelSlotName" data="data.modelSlotName" text="TextField" index="1" localize="true" constraints="twocols(anchor=west;expandHorizontally=true;expandVertically=false;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=2;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right;padX=0;padY=0;weightX=1.0;weightY=0.0)" />
-    <Label id="7" visible="data.isVirtualModelModelSlot" name="VirtualModelLabel" index="9" localize="true" align="left" constraints="twocols(anchor=east;expandHorizontally=true;expandVertically=false;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left;padX=0;padY=0;weightX=0.0;weightY=0.0)" label="virtual_model" />
-    <Custom id="8" visible="data.isVirtualModelModelSlot" manageDynamicModel="true" dataClassForComponent="org.openflexo.foundation.fml.rm.VirtualModelResource" componentClassName="org.openflexo.fml.controller.widget.FIBVirtualModelSelector" name="VirtualModelSelector" data="data.vmRes" index="9" localize="true" constraints="twocols(anchor=west;expandHorizontally=true;expandVertically=false;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right;padX=0;padY=0;weightX=1.0;weightY=0.0)">
-      <Assignment id="9" mandatory="true" variable="component.virtualModelLibrary" value="data.virtualModelLibrary"/>
-    </Custom>
-    <Label id="14" visible="data.isTypeAwareModelSlot" name="MetamodelLabel" index="9" localize="true" align="left" constraints="twocols(anchor=east;expandHorizontally=true;expandVertically=false;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=5;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left;padX=0;padY=0;weightX=0.0;weightY=0.0)" label="metamodel" />
-    <Custom id="15" visible="data.isTypeAwareModelSlot" manageDynamicModel="true" dataClassForComponent="org.openflexo.foundation.technologyadapter.FlexoMetaModelResource" componentClassName="org.openflexo.components.widget.FIBMetaModelSelector" name="MetaModelSelector" data="data.mmRes" index="9" localize="true" constraints="twocols(anchor=west;expandHorizontally=true;expandVertically=false;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=6;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right;padX=0;padY=0;weightX=0.0;weightY=0.0)">
-      <Assignment id="16" mandatory="true" variable="component.serviceManager" />
-      <Assignment id="17" mandatory="true" variable="component.flexoController" />
-      <Assignment id="18" mandatory="true" variable="component.selectableCondition" />
-      <Assignment id="19" mandatory="true" value="data.serviceManager.resourceManager" variable="component.resourceManager" />
-      <Assignment id="20" mandatory="true" value="TechnologyAdapterDD.selected" variable="component.technologyAdapter" />
-    </Custom>
-    <CheckBox id="21" selected="true" name="requiredCB" data="data.required" index="9" localize="true" constraints="twocols(anchor=east;expandHorizontally=true;expandVertically=false;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=7;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left;padX=0;padY=0;weightX=0.0;weightY=0.0)" />
-    <Label id="22" name="RequiredLabel" index="9" localize="true" align="left" constraints="twocols(anchor=west;expandHorizontally=true;expandVertically=false;fill=none;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=8;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right;padX=0;padY=0;weightX=0.0;weightY=0.0)" label="required" />
-    <CheckBox id="23" selected="true" name="readOnlyCB" data="data.readOnly" index="9" localize="true" constraints="twocols(anchor=east;expandHorizontally=true;expandVertically=false;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=9;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left;padX=0;padY=0;weightX=0.0;weightY=0.0)" />
-    <Label id="24" name="ReadOnlyLabel" index="10" localize="true" align="left" constraints="twocols(anchor=west;expandHorizontally=true;expandVertically=false;fill=none;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=10;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right;padX=0;padY=0;weightX=0.0;weightY=0.0)" label="read_only" />
-    <Label id="25" name="DescriptionLabel" index="11" localize="true" align="right" constraints="twocols(anchor=north_east;expandHorizontally=true;expandVertically=false;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=11;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left;padX=0;padY=0;weightX=0.0;weightY=0.0)" label="description" />
-    <TextArea id="26" verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED" useScrollBar="true" columns="6" name="TextArea" data="data.description" text="TextArea" index="12" localize="true" constraints="twocols(anchor=center;expandHorizontally=true;expandVertically=true;fill=both;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=12;insetsBottom=5;insetsLeft=0;insetsRight=5;insetsTop=0;location=right;padX=0;padY=0;weightX=1.0;weightY=1.0)" rows="2" horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED" />
-  </Panel>
-  <Panel id="27" borderLeft="0" sizeAdjustment="OriginalSize" border="empty" borderRight="0" trackViewPortWidth="true" index="13" font="Lucida Grande,2,11" align="left" constraints="twocols(anchor=center;expandHorizontally=false;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=13;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=center;padX=0;padY=0;weightX=0.0;weightY=0.0)" borderBottom="0" borderTitle="Panel" titleFont="Lucida Grande,2,11" borderTop="0" trackViewPortHeight="true" layout="border" name="FIBPanel" />
-  <FIBVariable id="28" name="data" type="org.openflexo.fml.controller.action.CreateModelSlotWizard$DescribeModelSlot" />
-  <LocalizedDictionary id="29">
-    <Localized id="30" value="Create Model Slot" lang="English" key="creates_model_slot" />
-    <Localized id="31" value="Créer un Model Slot" lang="French" key="creates_model_slot" />
-    <Localized id="32" value="Create Model Slot" lang="Dutch" key="creates_model_slot" />
-    <Localized id="33" value="Model Slot type" lang="English" key="model_slot_type" />
-    <Localized id="34" value="Type de Model Slot" lang="French" key="model_slot_type" />
-    <Localized id="35" value="Create Model Slot" lang="Dutch" key="model_slot_type" />
-    <Localized id="36" value="Required" lang="English" key="required" />
-    <Localized id="37" value="Exigé" lang="French" key="required" />
-    <Localized id="38" value="Required" lang="Dutch" key="required" />
-    <Localized id="39" value="Read only" lang="English" key="read_only" />
-    <Localized id="40" value="Lecture seule" lang="French" key="read_only" />
-    <Localized id="41" value="Read only" lang="Dutch" key="read_only" />
-    <Localized id="42" value="Openflexo built-in diagram technology adapter" lang="English" key="Openflexo built-in diagram technology adapter" />
-    <Localized id="43" value="Openflexo built-in diagram technology adapter" lang="French" key="Openflexo built-in diagram technology adapter" />
-    <Localized id="44" value="Openflexo built-in diagram technology adapter" lang="Dutch" key="Openflexo built-in diagram technology adapter" />
-    <Localized id="45" value="EMF technology adapter" lang="English" key="EMF technology adapter" />
-    <Localized id="46" value="EMF technology adapter" lang="French" key="EMF technology adapter" />
-    <Localized id="47" value="EMF technology adapter" lang="Dutch" key="EMF technology adapter" />
-    <Localized id="48" value="OWL technology adapter" lang="English" key="OWL technology adapter" />
-    <Localized id="49" value="OWL technology adapter" lang="French" key="OWL technology adapter" />
-    <Localized id="50" value="OWL technology adapter" lang="Dutch" key="OWL technology adapter" />
-    <Localized id="51" value="XSD/XML technology adapter" lang="English" key="XSD/XML technology adapter" />
-    <Localized id="52" value="XSD/XML technology adapter" lang="French" key="XSD/XML technology adapter" />
-    <Localized id="53" value="XSD/XML technology adapter" lang="Dutch" key="XSD/XML technology adapter" />
-    <Localized id="54" value="Openflexo built-in virtual model technology adapter" lang="English" key="Openflexo built-in virtual model technology adapter" />
-    <Localized id="55" value="Openflexo built-in virtual model technology adapter" lang="French" key="Openflexo built-in virtual model technology adapter" />
-    <Localized id="56" value="Openflexo built-in virtual model technology adapter" lang="Dutch" key="Openflexo built-in virtual model technology adapter" />
-    <Localized id="57" value="Excel technology adapter" lang="English" key="Excel technology adapter" />
-    <Localized id="58" value="Excel technology adapter" lang="French" key="Excel technology adapter" />
-    <Localized id="59" value="Excel technology adapter" lang="Dutch" key="Excel technology adapter" />
-    <Localized id="60" value="Openflexo diagram" lang="English" key="Openflexo diagram" />
-    <Localized id="61" value="Openflexo diagram" lang="French" key="Openflexo diagram" />
-    <Localized id="62" value="Openflexo diagram" lang="Dutch" key="Openflexo diagram" />
-    <Localized id="63" value="Openflexo virtual model" lang="English" key="Openflexo virtual model" />
-    <Localized id="64" value="Openflexo virtual model" lang="French" key="Openflexo virtual model" />
-    <Localized id="65" value="Openflexo virtual model" lang="Dutch" key="Openflexo virtual model" />
-    <Localized id="66" value="Technology adapter" lang="English" key="technology_adapter" />
-    <Localized id="67" value="Technology adapter" lang="Dutch" key="technology_adapter" />
-    <Localized id="68" value="technology_adapter" lang="French" key="technology_adapter" />
-    <Localized id="69" value="Name" lang="English" key="name" />
-    <Localized id="70" value="Name" lang="Dutch" key="name" />
-    <Localized id="71" value="name" lang="French" key="name" />
-    <Localized id="72" value="Virtual model" lang="English" key="virtual_model" />
-    <Localized id="73" value="Virtual model" lang="Dutch" key="virtual_model" />
-    <Localized id="74" value="virtual_model" lang="French" key="virtual_model" />
-    <Localized id="75" value="Metamodel" lang="English" key="metamodel" />
-    <Localized id="76" value="Metamodel" lang="Dutch" key="metamodel" />
-    <Localized id="77" value="metamodel" lang="French" key="metamodel" />
-    <Localized id="78" value="Description" lang="English" key="description" />
-    <Localized id="79" value="Description" lang="Dutch" key="description" />
-    <Localized id="80" value="description" lang="French" key="description" />
-    <Localized id="81" value="New entry" lang="English" key="new_entry" />
-    <Localized id="82" value="New entry" lang="Dutch" key="new_entry" />
-    <Localized id="83" value="new_entry" lang="French" key="new_entry" />
-  </LocalizedDictionary>
+<Panel id="0" borderLeft="0" sizeAdjustment="OriginalSize"
+	controllerClassName="org.openflexo.view.controller.FlexoFIBController"
+	border="empty" borderRight="0" trackViewPortWidth="true" align="left"
+	borderBottom="0" borderTop="0" trackViewPortHeight="true" layout="twocols">
+	<Label id="1" name="TechnologyAdapterLabel" index="3" localize="true"
+		align="left"
+		constraints="twocols(anchor=east;expandHorizontally=true;expandVertically=false;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=3;insetsBottom=0;insetsLeft=50;insetsRight=0;insetsTop=20;location=left;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+		label="technology_adapter" />
+	<DropDown id="2" manageDynamicModel="true" data="data.technologyAdapter"
+		index="3" localize="true"
+		constraints="twocols(anchor=west;expandHorizontally=true;expandVertically=false;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=4;insetsBottom=20;insetsLeft=20;insetsRight=20;insetsTop=20;location=right;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+		format="object.name" showText="true"
+		iteratorClassName="org.openflexo.foundation.technologyadapter.TechnologyAdapter"
+		showIcon="true" autoSelectFirstRow="true" name="TechnologyAdapterDD"
+		icon="controller.getTechnologyAdapterController(object).technologyIcon"
+		list="data.serviceManager.technologyAdapterService.technologyAdapters" />
+	<RadioButtonList id="3" data="data.modelSlotClass"
+		localize="true"
+		constraints="twocols(anchor=center;expandHorizontally=false;expandVertically=false;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;insetsBottom=0;insetsLeft=20;insetsRight=0;insetsTop=0;location=left;padX=0;padY=0;weightX=1.0;weightY=1.0)"
+		format="object.simpleName" showText="true" iteratorClassName="java.lang.Class"
+		showIcon="false" autoSelectFirstRow="true" name="PaletteRadioButtonList"
+		icon="controller.iconForObject(object)" list="data.availableModelSlotTypes" />
+	<Panel id="4" borderLeft="0" sizeAdjustment="OriginalSize"
+		border="rounded3d" borderRight="0" trackViewPortWidth="true" index="1"
+		align="left"
+		constraints="twocols(anchor=center;expandHorizontally=true;expandVertically=true;fill=both;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=1;insetsBottom=20;insetsLeft=20;insetsRight=20;insetsTop=0;location=right;padX=0;padY=0;weightX=1.0;weightY=1.0)"
+		borderBottom="0" borderTitle="" borderTop="0" trackViewPortHeight="true"
+		layout="twocols" name="FIBPanel2">
+		<Label id="5" name="NameLabel" index="1" localize="true" align="right"
+			constraints="twocols(anchor=east;expandHorizontally=true;expandVertically=false;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+			label="name" />
+		<TextField id="6" columns="20" name="ModelSlotName" data="data.modelSlotName"
+			text="TextField" index="1" localize="true"
+			constraints="twocols(anchor=west;expandHorizontally=true;expandVertically=false;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=2;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right;padX=0;padY=0;weightX=1.0;weightY=0.0)" />
+		<Label id="7" visible="data.isVirtualModelModelSlot" name="VirtualModelLabel"
+			index="9" localize="true" align="left"
+			constraints="twocols(anchor=east;expandHorizontally=true;expandVertically=false;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+			label="virtual_model" />
+		<Custom id="8" visible="data.isVirtualModelModelSlot"
+			manageDynamicModel="true"
+			dataClassForComponent="org.openflexo.foundation.fml.rm.VirtualModelResource"
+			componentClassName="org.openflexo.fml.controller.widget.FIBVirtualModelSelector"
+			name="VirtualModelSelector" data="data.vmRes" index="9" localize="true"
+			constraints="twocols(anchor=west;expandHorizontally=true;expandVertically=false;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right;padX=0;padY=0;weightX=1.0;weightY=0.0)">
+			<Assignment id="9" mandatory="true"
+				variable="component.virtualModelLibrary" value="data.virtualModelLibrary" />
+		</Custom>
+		<Label id="14" visible="data.isTypeAwareModelSlot" name="MetamodelLabel"
+			index="9" localize="true" align="left"
+			constraints="twocols(anchor=east;expandHorizontally=true;expandVertically=false;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=5;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+			label="metamodel" />
+		<Custom id="15" visible="data.isTypeAwareModelSlot"
+			manageDynamicModel="true"
+			dataClassForComponent="org.openflexo.foundation.technologyadapter.FlexoMetaModelResource"
+			componentClassName="org.openflexo.components.widget.FIBMetaModelSelector"
+			name="MetaModelSelector" data="data.mmRes" index="9" localize="true"
+			constraints="twocols(anchor=west;expandHorizontally=true;expandVertically=false;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=6;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right;padX=0;padY=0;weightX=0.0;weightY=0.0)">
+			<Assignment id="16" mandatory="true" variable="component.serviceManager" />
+			<Assignment id="17" mandatory="true" variable="component.flexoController" />
+			<Assignment id="18" mandatory="true"
+				variable="component.selectableCondition" />
+			<Assignment id="19" mandatory="true"
+				value="data.serviceManager.resourceManager" variable="component.resourceManager" />
+			<Assignment id="20" mandatory="true"
+				value="TechnologyAdapterDD.selected" variable="component.technologyAdapter" />
+		</Custom>
+		<CheckBox id="21" selected="true" name="requiredCB" data="data.required"
+			index="9" localize="true"
+			constraints="twocols(anchor=east;expandHorizontally=true;expandVertically=false;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=7;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left;padX=0;padY=0;weightX=0.0;weightY=0.0)" />
+		<Label id="22" name="RequiredLabel" index="9" localize="true"
+			align="left"
+			constraints="twocols(anchor=west;expandHorizontally=true;expandVertically=false;fill=none;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=8;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+			label="required" />
+		<CheckBox id="23" selected="true" name="readOnlyCB" data="data.readOnly"
+			index="9" localize="true"
+			constraints="twocols(anchor=east;expandHorizontally=true;expandVertically=false;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=9;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left;padX=0;padY=0;weightX=0.0;weightY=0.0)" />
+		<Label id="24" name="ReadOnlyLabel" index="10" localize="true"
+			align="left"
+			constraints="twocols(anchor=west;expandHorizontally=true;expandVertically=false;fill=none;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=10;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+			label="read_only" />
+		<Label id="25" name="DescriptionLabel" index="11" localize="true"
+			align="right"
+			constraints="twocols(anchor=north_east;expandHorizontally=true;expandVertically=false;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=11;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+			label="description" />
+		<TextArea id="26" verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED"
+			useScrollBar="true" columns="6" name="TextArea" data="data.description"
+			text="TextArea" index="12" localize="true"
+			constraints="twocols(anchor=center;expandHorizontally=true;expandVertically=true;fill=both;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=12;insetsBottom=5;insetsLeft=0;insetsRight=5;insetsTop=0;location=right;padX=0;padY=0;weightX=1.0;weightY=1.0)"
+			rows="2" horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED" />
+	</Panel>
+	<Panel id="27" borderLeft="0" sizeAdjustment="OriginalSize"
+		border="empty" borderRight="0" trackViewPortWidth="true" index="13"
+		font="Lucida Grande,2,11" align="left"
+		constraints="twocols(anchor=center;expandHorizontally=false;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=13;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=center;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+		borderBottom="0" borderTitle="Panel" titleFont="Lucida Grande,2,11"
+		borderTop="0" trackViewPortHeight="true" layout="border" name="FIBPanel" />
+	<FIBVariable id="28" name="data"
+		type="org.openflexo.fml.controller.action.CreateModelSlotWizard$DescribeModelSlot" />
+	<LocalizedDictionary id="29">
+		<Localized id="30" value="Create Model Slot" lang="English"
+			key="creates_model_slot" />
+		<Localized id="31" value="Créer un Model Slot" lang="French"
+			key="creates_model_slot" />
+		<Localized id="32" value="Create Model Slot" lang="Dutch"
+			key="creates_model_slot" />
+		<Localized id="33" value="Model Slot type" lang="English"
+			key="model_slot_type" />
+		<Localized id="34" value="Type de Model Slot" lang="French"
+			key="model_slot_type" />
+		<Localized id="35" value="Create Model Slot" lang="Dutch"
+			key="model_slot_type" />
+		<Localized id="36" value="Required" lang="English" key="required" />
+		<Localized id="37" value="Exigé" lang="French" key="required" />
+		<Localized id="38" value="Required" lang="Dutch" key="required" />
+		<Localized id="39" value="Read only" lang="English" key="read_only" />
+		<Localized id="40" value="Lecture seule" lang="French" key="read_only" />
+		<Localized id="41" value="Read only" lang="Dutch" key="read_only" />
+		<Localized id="42"
+			value="Openflexo built-in diagram technology adapter" lang="English"
+			key="Openflexo built-in diagram technology adapter" />
+		<Localized id="43"
+			value="Openflexo built-in diagram technology adapter" lang="French"
+			key="Openflexo built-in diagram technology adapter" />
+		<Localized id="44"
+			value="Openflexo built-in diagram technology adapter" lang="Dutch"
+			key="Openflexo built-in diagram technology adapter" />
+		<Localized id="45" value="EMF technology adapter" lang="English"
+			key="EMF technology adapter" />
+		<Localized id="46" value="EMF technology adapter" lang="French"
+			key="EMF technology adapter" />
+		<Localized id="47" value="EMF technology adapter" lang="Dutch"
+			key="EMF technology adapter" />
+		<Localized id="48" value="OWL technology adapter" lang="English"
+			key="OWL technology adapter" />
+		<Localized id="49" value="OWL technology adapter" lang="French"
+			key="OWL technology adapter" />
+		<Localized id="50" value="OWL technology adapter" lang="Dutch"
+			key="OWL technology adapter" />
+		<Localized id="51" value="XSD/XML technology adapter" lang="English"
+			key="XSD/XML technology adapter" />
+		<Localized id="52" value="XSD/XML technology adapter" lang="French"
+			key="XSD/XML technology adapter" />
+		<Localized id="53" value="XSD/XML technology adapter" lang="Dutch"
+			key="XSD/XML technology adapter" />
+		<Localized id="54"
+			value="Openflexo built-in virtual model technology adapter" lang="English"
+			key="Openflexo built-in virtual model technology adapter" />
+		<Localized id="55"
+			value="Openflexo built-in virtual model technology adapter" lang="French"
+			key="Openflexo built-in virtual model technology adapter" />
+		<Localized id="56"
+			value="Openflexo built-in virtual model technology adapter" lang="Dutch"
+			key="Openflexo built-in virtual model technology adapter" />
+		<Localized id="57" value="Excel technology adapter" lang="English"
+			key="Excel technology adapter" />
+		<Localized id="58" value="Excel technology adapter" lang="French"
+			key="Excel technology adapter" />
+		<Localized id="59" value="Excel technology adapter" lang="Dutch"
+			key="Excel technology adapter" />
+		<Localized id="60" value="Openflexo diagram" lang="English"
+			key="Openflexo diagram" />
+		<Localized id="61" value="Openflexo diagram" lang="French"
+			key="Openflexo diagram" />
+		<Localized id="62" value="Openflexo diagram" lang="Dutch"
+			key="Openflexo diagram" />
+		<Localized id="63" value="Openflexo virtual model" lang="English"
+			key="Openflexo virtual model" />
+		<Localized id="64" value="Openflexo virtual model" lang="French"
+			key="Openflexo virtual model" />
+		<Localized id="65" value="Openflexo virtual model" lang="Dutch"
+			key="Openflexo virtual model" />
+		<Localized id="66" value="Technology adapter" lang="English"
+			key="technology_adapter" />
+		<Localized id="67" value="Technology adapter" lang="Dutch"
+			key="technology_adapter" />
+		<Localized id="68" value="technology_adapter" lang="French"
+			key="technology_adapter" />
+		<Localized id="69" value="Name" lang="English" key="name" />
+		<Localized id="70" value="Name" lang="Dutch" key="name" />
+		<Localized id="71" value="name" lang="French" key="name" />
+		<Localized id="72" value="Virtual model" lang="English"
+			key="virtual_model" />
+		<Localized id="73" value="Virtual model" lang="Dutch"
+			key="virtual_model" />
+		<Localized id="74" value="virtual_model" lang="French"
+			key="virtual_model" />
+		<Localized id="75" value="Metamodel" lang="English" key="metamodel" />
+		<Localized id="76" value="Metamodel" lang="Dutch" key="metamodel" />
+		<Localized id="77" value="metamodel" lang="French" key="metamodel" />
+		<Localized id="78" value="Description" lang="English" key="description" />
+		<Localized id="79" value="Description" lang="Dutch" key="description" />
+		<Localized id="80" value="description" lang="French" key="description" />
+		<Localized id="81" value="New entry" lang="English" key="new_entry" />
+		<Localized id="82" value="New entry" lang="Dutch" key="new_entry" />
+		<Localized id="83" value="new_entry" lang="French" key="new_entry" />
+	</LocalizedDictionary>
 </Panel>

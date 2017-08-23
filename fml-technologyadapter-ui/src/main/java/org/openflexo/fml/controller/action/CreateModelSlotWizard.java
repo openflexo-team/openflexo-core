@@ -40,6 +40,7 @@ package org.openflexo.fml.controller.action;
 
 import java.awt.Dimension;
 import java.awt.Image;
+import java.util.List;
 import java.util.logging.Logger;
 
 import org.openflexo.ApplicationContext;
@@ -208,12 +209,21 @@ public class CreateModelSlotWizard extends AbstractCreateFMLElementWizard<Create
 				TechnologyAdapter oldValue = getTechnologyAdapter();
 				getAction().setTechnologyAdapter(technologyAdapter);
 				getPropertyChangeSupport().firePropertyChange("technologyAdapter", oldValue, technologyAdapter);
+				getPropertyChangeSupport().firePropertyChange("availableModelSlotTypes", false, getAvailableModelSlotTypes());
 				getPropertyChangeSupport().firePropertyChange("modelSlotClass", null, getModelSlotClass());
 				getPropertyChangeSupport().firePropertyChange("isTypeAwareModelSlot", !isTypeAwareModelSlot(), isTypeAwareModelSlot());
 				getPropertyChangeSupport().firePropertyChange("isVirtualModelModelSlot", !isVirtualModelModelSlot(),
 						isVirtualModelModelSlot());
 				checkValidity();
 			}
+		}
+
+		public List<Class<? extends ModelSlot<?>>> getAvailableModelSlotTypes() {
+			if (getTechnologyAdapter() != null) {
+				// System.out.println("On retourne " + getTechnologyAdapter().getAvailableModelSlotTypes());
+				return getTechnologyAdapter().getAvailableModelSlotTypes();
+			}
+			return null;
 		}
 
 		public FlexoMetaModelResource<?, ?, ?> getMmRes() {
