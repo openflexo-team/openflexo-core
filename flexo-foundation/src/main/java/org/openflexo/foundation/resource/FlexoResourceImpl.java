@@ -43,7 +43,6 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
-
 import org.openflexo.foundation.DataModification;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoObject;
@@ -456,6 +455,27 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 			// the resources
 			notifyResourceUnloaded();
 		}
+	}
+
+	/**
+	 * Return flag indicating if this resource support external update<br>
+	 * Default implementation return false
+	 *
+	 * @return
+	 */
+	@Override
+	public boolean isUpdatable() {
+		return false;
+	}
+
+	/**
+	 * If this resource support external update (reloading), perform it now<br>
+	 * Default implementation does nothing
+	 *
+	 * @see #isUpdatable()
+	 */
+	@Override
+	public void updateResourceData() {
 	}
 
 	@Override

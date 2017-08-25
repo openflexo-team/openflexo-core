@@ -352,8 +352,37 @@ public abstract class FileSystemBasedResourceCenter extends ResourceRepository<F
 
 	protected void fileModified(File file) {
 		if (!isIgnorable(file, null)) {
-			System.out.println("File MODIFIED " + file.getName() + " in " + file.getParentFile().getAbsolutePath());
+			FlexoResource<?> updatedResource = registeredResources.get(file);
+			System.out.println(
+					"File MODIFIED " + file.getName() + " in " + file.getParentFile().getAbsolutePath() + " resource=" + updatedResource);
+			if (updatedResource != null && updatedResource.isUpdatable()) {
+				updatedResource.updateResourceData();
+			}
 		}
+	}
+
+	private Map<File, FlexoResource<?>> registeredResources = new HashMap<>();
+
+	/**
+	 * Called to register a resource relatively to its serialization artefact
+	 * 
+	 * @param resource
+	 * @param serializationArtefact
+	 */
+	@Override
+	public void registerResource(FlexoResource<?> resource, File serializationArtefact) {
+		registeredResources.put(serializationArtefact, resource);
+	}
+
+	/**
+	 * Called to register a resource relatively to its serialization artefact
+	 * 
+	 * @param resource
+	 * @param serializationArtefact
+	 */
+	@Override
+	public void unregisterResource(FlexoResource<?> resource, File serializationArtefact) {
+		registeredResources.remove(serializationArtefact);
 	}
 
 	private final Map<TechnologyAdapter, List<File>> addedFilesToBeRenotified = new HashMap<>();

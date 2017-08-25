@@ -47,7 +47,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import org.openflexo.foundation.FlexoService.ServiceNotification;
 import org.openflexo.foundation.action.NotImplementedException;
 import org.openflexo.model.annotations.Getter;
@@ -232,7 +231,10 @@ public interface FileIODelegate extends StreamIODelegate<File> {
 
 		@Override
 		public String toString() {
-			return getFile().getAbsolutePath();
+			if (getFile() != null) {
+				return getFile().getAbsolutePath();
+			}
+			return "null";
 		}
 
 		@Override

@@ -54,7 +54,6 @@ import java.util.StringTokenizer;
 import java.util.jar.JarFile;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.converter.FlexoObjectReferenceConverter;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
@@ -757,5 +756,15 @@ public class JarResourceCenter extends ResourceRepository<FlexoResource<?>, InJa
 			return jarResourceImpl.getJarFileName();
 		}
 		return "???";
+	}
+
+	@Override
+	public void registerResource(FlexoResource<?> resource, InJarResourceImpl serializationArtefact) {
+
+	}
+
+	@Override
+	public void unregisterResource(FlexoResource<?> resource, InJarResourceImpl serializationArtefact) {
+
 	}
 }

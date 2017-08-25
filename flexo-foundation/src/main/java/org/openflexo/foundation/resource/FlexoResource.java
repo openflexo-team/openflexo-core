@@ -327,6 +327,13 @@ public interface FlexoResource<RD extends ResourceData<RD>> extends FlexoObject,
 	public boolean isLoadable();
 
 	/**
+	 * Return flag indicating if this resource support external update
+	 * 
+	 * @return
+	 */
+	public boolean isUpdatable();
+
+	/**
 	 * Returns the &quot;real&quot; resource data of this resource, asserting resource data is already loaded. If the resource is not
 	 * loaded, do not load the data, and return null
 	 * 
@@ -369,6 +376,15 @@ public interface FlexoResource<RD extends ResourceData<RD>> extends FlexoObject,
 	 * Also delete the resource data if flag set to true
 	 */
 	public void unloadResourceData(boolean deleteResourceData);
+
+	/**
+	 * If this resource support external update (reloading), perform it now<br>
+	 * Does nothing if this resource is not updatable
+	 * 
+	 * @param updatedResourceData
+	 * @see #isUpdatable()
+	 */
+	public void updateResourceData();
 
 	/**
 	 * Save the &quot;real&quot; resource data of this resource.

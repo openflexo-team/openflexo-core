@@ -40,7 +40,6 @@ package org.openflexo.foundation;
 
 import java.lang.reflect.Type;
 import java.util.List;
-
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 
 /**
@@ -184,7 +183,7 @@ public class DefaultFlexoObject extends FlexoObjectImpl {
 
 	@Override
 	public void destroy() {
-		// TODO Auto-generated method stub
+		// TODO Auto-genera ted method stub
 
 	}
 
