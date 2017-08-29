@@ -103,18 +103,6 @@ public interface SelectFlexoConceptInstance<VMI extends VirtualModelInstance<VMI
 	@PropertyIdentifier(type = DataBinding.class)
 	public static final String CONTAINER_KEY = "container";
 
-	public static final String DEPRECATED_VIRTUAL_MODEL_INSTANCE_KEY = "virtualModelInstance";
-
-	// TODO: remove from new releases after 1.8.1
-	@Deprecated
-	@Getter(value = DEPRECATED_VIRTUAL_MODEL_INSTANCE_KEY)
-	@XMLAttribute(xmlTag = "virtualModelInstance")
-	public String getDeprecatedVirtualModelInstance();
-
-	// TODO: remove from new releases after 1.8.1
-	@Setter(DEPRECATED_VIRTUAL_MODEL_INSTANCE_KEY)
-	public void setDeprecatedVirtualModelInstance(String virtualModelInstanceAsString);
-
 	@Getter(value = CONTAINER_KEY)
 	@XMLAttribute
 	public DataBinding<FlexoConceptInstance> getContainer();
@@ -148,16 +136,6 @@ public interface SelectFlexoConceptInstance<VMI extends VirtualModelInstance<VMI
 		private FlexoConcept flexoConceptType;
 		private String flexoConceptTypeURI;
 
-		public SelectFlexoConceptInstanceImpl() {
-			super();
-		}
-
-		/*@Override
-		public void setModelSlot(FMLRTModelSlot modelSlot) {
-		
-			performSuperSetter(TechnologySpecificAction.MODEL_SLOT_KEY, modelSlot);
-		}*/
-
 		@Override
 		public TechnologyAdapter getModelSlotTechnologyAdapter() {
 			if (getServiceManager() != null) {
@@ -166,40 +144,7 @@ public interface SelectFlexoConceptInstance<VMI extends VirtualModelInstance<VMI
 			return super.getModelSlotTechnologyAdapter();
 		}
 
-		// private DataBinding<VirtualModelInstance<?, ?>> virtualModelInstance;
 		private DataBinding<FlexoConceptInstance> container;
-
-		/*@Override
-		public DataBinding<VirtualModelInstance<?, ?>> getVirtualModelInstance() {
-			if (virtualModelInstance == null) {
-				virtualModelInstance = new DataBinding<VirtualModelInstance<?, ?>>(this, FMLRTVirtualModelInstance.class,
-						DataBinding.BindingDefinitionType.GET);
-				virtualModelInstance.setBindingName("virtualModelInstance");
-			}
-			return virtualModelInstance;
-		}
-		
-		@Override
-		public void setVirtualModelInstance(DataBinding<VirtualModelInstance<?, ?>> aVirtualModelInstance) {
-			if (aVirtualModelInstance != null) {
-				aVirtualModelInstance.setOwner(this);
-				aVirtualModelInstance.setBindingName("virtualModelInstance");
-				aVirtualModelInstance.setDeclaredType(FMLRTVirtualModelInstance.class);
-				aVirtualModelInstance.setBindingDefinitionType(DataBinding.BindingDefinitionType.GET);
-			}
-			this.virtualModelInstance = aVirtualModelInstance;
-			notifiedBindingChanged(virtualModelInstance);
-			getPropertyChangeSupport().firePropertyChange("addressedVirtualModel", getAddressedVirtualModel(), null);
-		}*/
-
-		@Override
-		public void setDeprecatedVirtualModelInstance(String virtualModelInstanceAsString) {
-
-			if (virtualModelInstanceAsString != null) {
-				getReceiver().setUnparsedBinding(virtualModelInstanceAsString);
-				notifiedBindingChanged(getReceiver());
-			}
-		}
 
 		@Override
 		public DataBinding<FlexoConceptInstance> getContainer() {
@@ -324,18 +269,6 @@ public interface SelectFlexoConceptInstance<VMI extends VirtualModelInstance<VMI
 					e.printStackTrace();
 				}
 			}
-			/*if (getModelSlot() instanceof FMLRTModelSlot && evaluationContext instanceof FlexoBehaviourAction) {
-				ModelSlotInstance modelSlotInstance = ((FlexoBehaviourAction) evaluationContext).getVirtualModelInstance()
-						.getModelSlotInstance((FMLRTModelSlot) getModelSlot());
-				if (modelSlotInstance != null) {
-					// System.out.println("modelSlotInstance=" + modelSlotInstance + " model=" + modelSlotInstance.getModel());
-					return (FMLRTVirtualModelInstance) modelSlotInstance.getAccessedResourceData();
-				}
-				else {
-					logger.warning("Cannot find ModelSlotInstance for " + getModelSlot());
-				}
-				return ((FlexoBehaviourAction<?, ?, ?>) evaluationContext).getVirtualModelInstance();
-			}*/
 			return null;
 
 		}
