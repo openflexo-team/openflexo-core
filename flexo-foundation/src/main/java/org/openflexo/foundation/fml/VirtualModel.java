@@ -212,14 +212,14 @@ public interface VirtualModel extends FlexoConcept, VirtualModelObject, FlexoMet
 	public List<UseModelSlotDeclaration> getUseDeclarations();
 
 	@Setter(USE_DECLARATIONS_KEY)
-	public void setUseDeclarations(List<UseModelSlotDeclaration> flexoConcepts);
+	public void setUseDeclarations(List<UseModelSlotDeclaration> useDecls);
 
 	@Adder(USE_DECLARATIONS_KEY)
 	@PastingPoint
-	public void addToUseDeclarations(UseModelSlotDeclaration aFlexoConcept);
+	public void addToUseDeclarations(UseModelSlotDeclaration useDecl);
 
 	@Remover(USE_DECLARATIONS_KEY)
-	public void removeFromUseDeclarations(UseModelSlotDeclaration aFlexoConcept);
+	public void removeFromUseDeclarations(UseModelSlotDeclaration useDecl);
 
 	/**
 	 * Return boolean indicating if this VirtualModel uses supplied modelSlotClass
@@ -418,7 +418,8 @@ public interface VirtualModel extends FlexoConcept, VirtualModelObject, FlexoMet
 
 		private VirtualModelResource resource;
 		private boolean readOnly = false;
-		private final VirtualModelInstanceType vmInstanceType = new VirtualModelInstanceType(this);
+		private VirtualModelInstanceType vmInstanceType;
+		private VirtualModelInstanceType defaultVMInstanceType = new VirtualModelInstanceType(this);
 
 		// Used during deserialization, do not use it
 		public VirtualModelImpl() {
@@ -427,8 +428,50 @@ public interface VirtualModel extends FlexoConcept, VirtualModelObject, FlexoMet
 		}
 
 		@Override
+		public void addToUseDeclarations(UseModelSlotDeclaration useDecl) {
+			performSuperAdder(USE_DECLARATIONS_KEY, useDecl);
+			vmInstanceType = null;
+		}
+
+		@Override
+		public void removeFromUseDeclarations(UseModelSlotDeclaration useDecl) {
+			performSuperRemover(USE_DECLARATIONS_KEY, useDecl);
+			vmInstanceType = null;
+		}
+
+		@Override
 		public VirtualModelInstanceType getInstanceType() {
+			if (vmInstanceType == null) {
+				// Hacking area
+				// I'm not proud of that, this should be handled from a more elegant way
+				// TODO: find a better solution
+				if (getServiceManager() != null) {
+					vmInstanceType = makeVirtualModelInstanceType();
+				}
+				else {
+					return defaultVMInstanceType;
+				}
+			}
 			return vmInstanceType;
+		}
+
+		// Hacking area
+		// I'm not proud of that, this should be handled from a more elegant way
+		// TODO: find a better solution
+		@Deprecated
+		private VirtualModelInstanceType makeVirtualModelInstanceType() {
+			VirtualModelInstanceType returned = null;
+			for (UseModelSlotDeclaration useMS : getUseDeclarations()) {
+				returned = useMS.getInferedVirtualModelInstanceType(this, getServiceManager());
+				if (returned != null) {
+					break;
+				}
+			}
+			if (returned == null) {
+				// No infered type found, use default
+				returned = defaultVMInstanceType;
+			}
+			return returned;
 		}
 
 		@Override

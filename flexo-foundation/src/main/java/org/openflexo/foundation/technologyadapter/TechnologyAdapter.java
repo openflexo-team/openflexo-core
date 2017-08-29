@@ -67,9 +67,12 @@ import org.openflexo.foundation.FlexoObservable;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.FlexoConcept;
+import org.openflexo.foundation.fml.VirtualModel;
+import org.openflexo.foundation.fml.VirtualModelInstanceType;
 import org.openflexo.foundation.fml.annotations.DeclareModelSlots;
 import org.openflexo.foundation.fml.annotations.DeclareResourceTypes;
 import org.openflexo.foundation.fml.annotations.DeclareVirtualModelInstanceNatures;
+import org.openflexo.foundation.fml.rt.InferedFMLRTModelSlot;
 import org.openflexo.foundation.fml.rt.VirtualModelInstanceNature;
 import org.openflexo.foundation.nature.ProjectNatureService;
 import org.openflexo.foundation.resource.DirectoryResourceCenter;
@@ -909,6 +912,15 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 	 * Hook to force the creation of all repositories (even empty)
 	 */
 	public void ensureAllRepositoriesAreCreated(FlexoResourceCenter<?> rc) {
+	}
+
+	// Hacking area
+	// I'm not proud of that, this should be handled from a more elegant way
+	// TODO: find a better solution
+	@Deprecated
+	public VirtualModelInstanceType getInferedVirtualModelInstanceType(VirtualModel vm,
+			Class<? extends InferedFMLRTModelSlot<?, ?>> modelSlotClass) {
+		return null;
 	}
 
 }

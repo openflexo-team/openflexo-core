@@ -40,7 +40,10 @@ package org.openflexo.foundation.technologyadapter;
 
 import org.openflexo.connie.type.PrimitiveType;
 import org.openflexo.foundation.FlexoObject;
+import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.VirtualModel;
+import org.openflexo.foundation.fml.VirtualModelInstanceType;
+import org.openflexo.foundation.fml.rt.InferedFMLRTModelSlot;
 import org.openflexo.model.annotations.CloningStrategy;
 import org.openflexo.model.annotations.CloningStrategy.StrategyType;
 import org.openflexo.model.annotations.Getter;
@@ -81,7 +84,25 @@ public interface UseModelSlotDeclaration extends FlexoObject {
 	@Setter(VIRTUAL_MODEL_KEY)
 	public void setVirtualModel(VirtualModel virtualModel);
 
+	@Deprecated
+	public VirtualModelInstanceType getInferedVirtualModelInstanceType(VirtualModel vm, FlexoServiceManager sm);
+
 	public abstract class UseModelSlotDeclarationImpl extends FlexoObjectImpl implements UseModelSlotDeclaration {
 
+		// Hacking area
+		// I'm not proud of that, this should be handled from a more elegant way
+		// TODO: find a better solution
+		@Deprecated
+		@Override
+		public VirtualModelInstanceType getInferedVirtualModelInstanceType(VirtualModel vm, FlexoServiceManager sm) {
+			if (sm != null && InferedFMLRTModelSlot.class.isAssignableFrom(getModelSlotClass())) {
+				TechnologyAdapterService taService = sm.getTechnologyAdapterService();
+				TechnologyAdapter ta = taService.getTechnologyAdapterForModelSlot(getModelSlotClass());
+				if (ta != null) {
+					return ta.getInferedVirtualModelInstanceType(vm, (Class<? extends InferedFMLRTModelSlot<?, ?>>) getModelSlotClass());
+				}
+			}
+			return null;
+		}
 	}
 }
