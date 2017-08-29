@@ -327,86 +327,110 @@ public class FMLFIBController extends FlexoFIBController {
 	}
 
 	public EditionAction createEditionAction(FMLControlGraph object) {
-		CreateEditionAction createEditionAction = CreateEditionAction.actionType.makeNewAction(object, null, getEditor());
-		createEditionAction.doAction();
-		return createEditionAction.getNewEditionAction();
+		if (object != null) {
+			CreateEditionAction createEditionAction = CreateEditionAction.actionType.makeNewAction(object, null, getEditor());
+			createEditionAction.doAction();
+			return createEditionAction.getNewEditionAction();
+		}
+		return null;
 	}
 
 	public EditionAction createEditionActionInThenControlGraph(ConditionalAction conditional) {
-		if (conditional.getThenControlGraph() == null) {
-			EmptyControlGraph cg = conditional.getFMLModelFactory().newEmptyControlGraph();
-			conditional.setThenControlGraph(cg);
+		if (conditional != null) {
+			if (conditional.getThenControlGraph() == null) {
+				EmptyControlGraph cg = conditional.getFMLModelFactory().newEmptyControlGraph();
+				conditional.setThenControlGraph(cg);
+			}
+			CreateEditionAction createEditionAction = CreateEditionAction.actionType.makeNewAction(conditional.getThenControlGraph(), null,
+					getEditor());
+			createEditionAction.doAction();
+			return createEditionAction.getNewEditionAction();
 		}
-		CreateEditionAction createEditionAction = CreateEditionAction.actionType.makeNewAction(conditional.getThenControlGraph(), null,
-				getEditor());
-		createEditionAction.doAction();
-		return createEditionAction.getNewEditionAction();
+		return null;
 	}
 
 	public EditionAction createEditionActionInElseControlGraph(ConditionalAction conditional) {
-		if (conditional.getElseControlGraph() == null) {
-			EmptyControlGraph cg = conditional.getFMLModelFactory().newEmptyControlGraph();
-			conditional.setElseControlGraph(cg);
+		if (conditional != null) {
+			if (conditional.getElseControlGraph() == null) {
+				EmptyControlGraph cg = conditional.getFMLModelFactory().newEmptyControlGraph();
+				conditional.setElseControlGraph(cg);
+			}
+			CreateEditionAction createEditionAction = CreateEditionAction.actionType.makeNewAction(conditional.getElseControlGraph(), null,
+					getEditor());
+			createEditionAction.doAction();
+			return createEditionAction.getNewEditionAction();
 		}
-		CreateEditionAction createEditionAction = CreateEditionAction.actionType.makeNewAction(conditional.getElseControlGraph(), null,
-				getEditor());
-		createEditionAction.doAction();
-		return createEditionAction.getNewEditionAction();
+		return null;
 	}
 
 	public EditionAction createEditionActionInIteration(IterationAction iteration) {
-		if (iteration.getControlGraph() == null) {
-			EmptyControlGraph cg = iteration.getFMLModelFactory().newEmptyControlGraph();
-			iteration.setControlGraph(cg);
+		if (iteration != null) {
+			if (iteration.getControlGraph() == null) {
+				EmptyControlGraph cg = iteration.getFMLModelFactory().newEmptyControlGraph();
+				iteration.setControlGraph(cg);
+			}
+			CreateEditionAction createEditionAction = CreateEditionAction.actionType.makeNewAction(iteration.getControlGraph(), null,
+					getEditor());
+			createEditionAction.doAction();
+			return createEditionAction.getNewEditionAction();
 		}
-		CreateEditionAction createEditionAction = CreateEditionAction.actionType.makeNewAction(iteration.getControlGraph(), null,
-				getEditor());
-		createEditionAction.doAction();
-		return createEditionAction.getNewEditionAction();
+		return null;
 	}
 
 	public EditionAction createEditionActionInWhileAction(WhileAction iteration) {
-		if (iteration.getControlGraph() == null) {
-			EmptyControlGraph cg = iteration.getFMLModelFactory().newEmptyControlGraph();
-			iteration.setControlGraph(cg);
+		if (iteration != null) {
+			if (iteration.getControlGraph() == null) {
+				EmptyControlGraph cg = iteration.getFMLModelFactory().newEmptyControlGraph();
+				iteration.setControlGraph(cg);
+			}
+			CreateEditionAction createEditionAction = CreateEditionAction.actionType.makeNewAction(iteration.getControlGraph(), null,
+					getEditor());
+			createEditionAction.doAction();
+			return createEditionAction.getNewEditionAction();
 		}
-		CreateEditionAction createEditionAction = CreateEditionAction.actionType.makeNewAction(iteration.getControlGraph(), null,
-				getEditor());
-		createEditionAction.doAction();
-		return createEditionAction.getNewEditionAction();
+		return null;
 	}
 
 	public EditionAction createEditionActionInIncrementalIterationAction(IncrementalIterationAction iteration) {
-		if (iteration.getControlGraph() == null) {
-			EmptyControlGraph cg = iteration.getFMLModelFactory().newEmptyControlGraph();
-			iteration.setControlGraph(cg);
+		if (iteration != null) {
+			if (iteration.getControlGraph() == null) {
+				EmptyControlGraph cg = iteration.getFMLModelFactory().newEmptyControlGraph();
+				iteration.setControlGraph(cg);
+			}
+			CreateEditionAction createEditionAction = CreateEditionAction.actionType.makeNewAction(iteration.getControlGraph(), null,
+					getEditor());
+			createEditionAction.doAction();
+			return createEditionAction.getNewEditionAction();
 		}
-		CreateEditionAction createEditionAction = CreateEditionAction.actionType.makeNewAction(iteration.getControlGraph(), null,
-				getEditor());
-		createEditionAction.doAction();
-		return createEditionAction.getNewEditionAction();
+		return null;
 	}
 
 	public EditionAction createEditionActionInGetControlGraph(GetSetProperty<?> property) {
-		if (property.getGetControlGraph() == null) {
-			EmptyControlGraph cg = property.getFMLModelFactory().newEmptyControlGraph();
-			property.setGetControlGraph(cg);
+		if (property != null) {
+			if (property.getGetControlGraph() == null) {
+				EmptyControlGraph cg = property.getFMLModelFactory().newEmptyControlGraph();
+				property.setGetControlGraph(cg);
+			}
+			CreateEditionAction createEditionAction = CreateEditionAction.actionType.makeNewAction(property.getGetControlGraph(), null,
+					getEditor());
+			createEditionAction.doAction();
+			return createEditionAction.getNewEditionAction();
 		}
-		CreateEditionAction createEditionAction = CreateEditionAction.actionType.makeNewAction(property.getGetControlGraph(), null,
-				getEditor());
-		createEditionAction.doAction();
-		return createEditionAction.getNewEditionAction();
+		return null;
 	}
 
 	public EditionAction createEditionActionInSetControlGraph(GetSetProperty<?> property) {
-		if (property.getSetControlGraph() == null) {
-			EmptyControlGraph cg = property.getFMLModelFactory().newEmptyControlGraph();
-			property.setSetControlGraph(cg);
+		if (property != null) {
+			if (property.getSetControlGraph() == null) {
+				EmptyControlGraph cg = property.getFMLModelFactory().newEmptyControlGraph();
+				property.setSetControlGraph(cg);
+			}
+			CreateEditionAction createEditionAction = CreateEditionAction.actionType.makeNewAction(property.getSetControlGraph(), null,
+					getEditor());
+			createEditionAction.doAction();
+			return createEditionAction.getNewEditionAction();
 		}
-		CreateEditionAction createEditionAction = CreateEditionAction.actionType.makeNewAction(property.getSetControlGraph(), null,
-				getEditor());
-		createEditionAction.doAction();
-		return createEditionAction.getNewEditionAction();
+		return null;
 	}
 
 	public FlexoConcept createFlexoConcept(FlexoConcept flexoConcept) {
