@@ -77,4 +77,9 @@ public class FlexoBehaviourParametersBindingVariable extends BindingVariable imp
 	public void propertyChange(PropertyChangeEvent evt) {
 	}
 
+	@Override
+	public String getTooltipText(Type resultingType) {
+		return "Parameters" + (flexoBehaviour != null ? " for behaviour " + flexoBehaviour.getName() : "");
+	}
+
 }
