@@ -47,7 +47,7 @@ import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoProjectObject;
 import org.openflexo.foundation.action.FlexoActionFinalizer;
 import org.openflexo.foundation.action.FlexoActionInitializer;
-import org.openflexo.foundation.action.FlexoActionType;
+import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.action.FlexoExceptionHandler;
 import org.openflexo.foundation.action.ImportProject;
 import org.openflexo.foundation.resource.ProjectImportLoopException;
@@ -149,7 +149,7 @@ public class ImportProjectInitializer extends ActionInitializer<ImportProject, F
 	}
 
 	@Override
-	protected Icon getEnabledIcon(FlexoActionType actionType) {
+	protected Icon getEnabledIcon(FlexoActionFactory actionType) {
 		return IconLibrary.IMPORT_ICON;
 	}
 

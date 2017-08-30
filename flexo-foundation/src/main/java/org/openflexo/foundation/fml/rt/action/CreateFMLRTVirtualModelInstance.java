@@ -43,7 +43,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject;
-import org.openflexo.foundation.action.FlexoActionType;
+import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
@@ -69,7 +69,7 @@ public abstract class CreateFMLRTVirtualModelInstance<A extends CreateFMLRTVirtu
 
 	private static final Logger logger = Logger.getLogger(CreateFMLRTVirtualModelInstance.class.getPackage().getName());
 
-	protected CreateFMLRTVirtualModelInstance(FlexoActionType<A, FlexoObject, FlexoObject> actionType, FlexoObject focusedObject,
+	protected CreateFMLRTVirtualModelInstance(FlexoActionFactory<A, FlexoObject, FlexoObject> actionType, FlexoObject focusedObject,
 			Vector<FlexoObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 	}

@@ -52,7 +52,7 @@ import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionSource;
-import org.openflexo.foundation.action.FlexoActionType;
+import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.view.controller.FlexoController;
 
 public class FlexoActionButton extends JButton {
@@ -60,11 +60,11 @@ public class FlexoActionButton extends JButton {
 	private final FlexoActionSource actionSource;
 	private final FlexoController controller;
 
-	public FlexoActionButton(FlexoActionType<?, ?, ?> actionType, FlexoActionSource source, FlexoController controller) {
+	public FlexoActionButton(FlexoActionFactory<?, ?, ?> actionType, FlexoActionSource source, FlexoController controller) {
 		this(actionType, null, source, controller);
 	}
 
-	public FlexoActionButton(FlexoActionType<?, ?, ?> actionType, String unlocalizedActionName, FlexoActionSource source,
+	public FlexoActionButton(FlexoActionFactory<?, ?, ?> actionType, String unlocalizedActionName, FlexoActionSource source,
 			FlexoController controller) {
 		super();
 		actionSource = source;
@@ -107,15 +107,15 @@ public class FlexoActionButton extends JButton {
 
 	public class ButtonAction<A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> implements ActionListener {
 
-		private final FlexoActionType<A, T1, T2> actionType;
+		private final FlexoActionFactory<A, T1, T2> actionType;
 		private String _unlocalizedName = null;
 
-		public ButtonAction(FlexoActionType<A, T1, T2> actionType) {
+		public ButtonAction(FlexoActionFactory<A, T1, T2> actionType) {
 			super();
 			this.actionType = actionType;
 		}
 
-		public ButtonAction(FlexoActionType<A, T1, T2> actionType, String actionName) {
+		public ButtonAction(FlexoActionFactory<A, T1, T2> actionType, String actionName) {
 			this(actionType);
 			_unlocalizedName = actionName;
 		}
@@ -138,7 +138,7 @@ public class FlexoActionButton extends JButton {
 			return false;
 		}
 
-		public FlexoActionType<A, T1, T2> getActionType() {
+		public FlexoActionFactory<A, T1, T2> getActionType() {
 			return actionType;
 		}
 

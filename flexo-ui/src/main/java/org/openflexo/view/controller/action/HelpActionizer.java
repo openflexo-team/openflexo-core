@@ -49,7 +49,7 @@ import org.openflexo.drm.DocItem;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.action.FlexoActionFinalizer;
 import org.openflexo.foundation.action.FlexoActionInitializer;
-import org.openflexo.foundation.action.FlexoActionType;
+import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.help.FlexoHelp;
 import org.openflexo.icon.IconLibrary;
 import org.openflexo.localization.FlexoLocalization;
@@ -101,7 +101,7 @@ public class HelpActionizer extends ActionInitializer<HelpAction, FlexoObject, F
 	}
 
 	@Override
-	protected Icon getEnabledIcon(FlexoActionType actionType) {
+	protected Icon getEnabledIcon(FlexoActionFactory actionType) {
 		return IconLibrary.HELP_ICON;
 	}
 }

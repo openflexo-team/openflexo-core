@@ -51,14 +51,14 @@ import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.FlexoAction;
-import org.openflexo.foundation.action.FlexoActionType;
+import org.openflexo.foundation.action.FlexoActionFactory;
 
 public class ImportDocSubmissionReport extends FlexoAction<ImportDocSubmissionReport, FlexoObject, FlexoObject> {
 
 	private static final Logger logger = Logger.getLogger(ImportDocSubmissionReport.class.getPackage().getName());
 
-	public static FlexoActionType actionType = new FlexoActionType("import_doc_submission_report", FlexoActionType.defaultGroup,
-			FlexoActionType.NORMAL_ACTION_TYPE) {
+	public static FlexoActionFactory actionType = new FlexoActionFactory("import_doc_submission_report", FlexoActionFactory.defaultGroup,
+			FlexoActionFactory.NORMAL_ACTION_TYPE) {
 
 		/**
 		 * Factory method

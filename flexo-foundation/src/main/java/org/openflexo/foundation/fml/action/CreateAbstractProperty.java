@@ -45,7 +45,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
-import org.openflexo.foundation.action.FlexoActionType;
+import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.action.NotImplementedException;
 import org.openflexo.foundation.fml.AbstractProperty;
 import org.openflexo.foundation.fml.FMLModelFactory;
@@ -69,8 +69,8 @@ public class CreateAbstractProperty extends AbstractCreateFlexoProperty<CreateAb
 
 	private static final Logger logger = Logger.getLogger(CreateAbstractProperty.class.getPackage().getName());
 
-	public static FlexoActionType<CreateAbstractProperty, FlexoConceptObject, FMLObject> actionType = new FlexoActionType<CreateAbstractProperty, FlexoConceptObject, FMLObject>(
-			"create_abstract_property", FlexoActionType.newPropertyMenu, FlexoActionType.defaultGroup, FlexoActionType.ADD_ACTION_TYPE) {
+	public static FlexoActionFactory<CreateAbstractProperty, FlexoConceptObject, FMLObject> actionType = new FlexoActionFactory<CreateAbstractProperty, FlexoConceptObject, FMLObject>(
+			"create_abstract_property", FlexoActionFactory.newPropertyMenu, FlexoActionFactory.defaultGroup, FlexoActionFactory.ADD_ACTION_TYPE) {
 
 		/**
 		 * Factory method

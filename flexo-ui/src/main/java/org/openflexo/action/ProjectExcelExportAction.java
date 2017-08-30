@@ -45,7 +45,7 @@ import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.FlexoProject;
-import org.openflexo.foundation.action.FlexoActionType;
+import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.action.FlexoGUIAction;
 
 /**
@@ -54,8 +54,8 @@ import org.openflexo.foundation.action.FlexoGUIAction;
  */
 public class ProjectExcelExportAction extends FlexoGUIAction<ProjectExcelExportAction, FlexoProject, FlexoObject> {
 
-	public static final FlexoActionType<ProjectExcelExportAction, FlexoProject, FlexoObject> actionType = new FlexoActionType<ProjectExcelExportAction, FlexoProject, FlexoObject>(
-			"project_excel_export", FlexoActionType.docGroup) {
+	public static final FlexoActionFactory<ProjectExcelExportAction, FlexoProject, FlexoObject> actionType = new FlexoActionFactory<ProjectExcelExportAction, FlexoProject, FlexoObject>(
+			"project_excel_export", FlexoActionFactory.docGroup) {
 
 		@Override
 		public boolean isEnabledForSelection(FlexoProject object, Vector<FlexoObject> globalSelection) {

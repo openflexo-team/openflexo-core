@@ -47,7 +47,7 @@ import org.openflexo.connie.DataBinding;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.action.FlexoAction;
-import org.openflexo.foundation.action.FlexoActionType;
+import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.action.LongRunningAction;
 import org.openflexo.foundation.fml.CloningScheme;
 import org.openflexo.foundation.fml.CreationScheme;
@@ -85,7 +85,7 @@ public abstract class AbstractCreateFlexoConcept<A extends FlexoAction<A, T1, T2
 	public static final String PARENT_FLEXO_CONCEPT_ENTRIES = "parentFlexoConceptEntries";
 	public static final String PROPERTIES_ENTRIES = "propertiesEntries";
 
-	AbstractCreateFlexoConcept(FlexoActionType<A, T1, T2> actionType, T1 focusedObject, Vector<T2> globalSelection, FlexoEditor editor) {
+	AbstractCreateFlexoConcept(FlexoActionFactory<A, T1, T2> actionType, T1 focusedObject, Vector<T2> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 		parentFlexoConceptEntries = new ArrayList<>();
 		propertiesEntries = new ArrayList<>();

@@ -46,14 +46,14 @@ import org.openflexo.drm.DRMObject;
 import org.openflexo.drm.DocResourceManager;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.action.FlexoAction;
-import org.openflexo.foundation.action.FlexoActionType;
+import org.openflexo.foundation.action.FlexoActionFactory;
 
 public class SaveDocumentationCenter extends FlexoAction<SaveDocumentationCenter, DRMObject, DRMObject> {
 
 	private static final Logger logger = Logger.getLogger(SaveDocumentationCenter.class.getPackage().getName());
 
-	public static FlexoActionType<SaveDocumentationCenter, DRMObject, DRMObject> actionType = new FlexoActionType<SaveDocumentationCenter, DRMObject, DRMObject>(
-			"save_documentation_center", FlexoActionType.defaultGroup, FlexoActionType.NORMAL_ACTION_TYPE) {
+	public static FlexoActionFactory<SaveDocumentationCenter, DRMObject, DRMObject> actionType = new FlexoActionFactory<SaveDocumentationCenter, DRMObject, DRMObject>(
+			"save_documentation_center", FlexoActionFactory.defaultGroup, FlexoActionFactory.NORMAL_ACTION_TYPE) {
 
 		/**
 		 * Factory method

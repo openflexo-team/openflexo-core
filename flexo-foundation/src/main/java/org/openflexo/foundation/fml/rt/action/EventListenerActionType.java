@@ -41,19 +41,19 @@ package org.openflexo.foundation.fml.rt.action;
 import java.util.Vector;
 
 import org.openflexo.foundation.FlexoEditor;
-import org.openflexo.foundation.action.FlexoActionType;
+import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.fml.EventListener;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstanceObject;
 import org.openflexo.localization.LocalizedDelegate;
 
-public class EventListenerActionType extends FlexoActionType<EventListenerAction, FlexoConceptInstance, VirtualModelInstanceObject> {
+public class EventListenerActionType extends FlexoActionFactory<EventListenerAction, FlexoConceptInstance, VirtualModelInstanceObject> {
 
 	private final EventListener eventListener;
 	private final FlexoConceptInstance flexoConceptInstance;
 
 	public EventListenerActionType(EventListener eventListener, FlexoConceptInstance flexoConceptInstance) {
-		super(eventListener.getLabel(), FlexoActionType.defaultGroup, FlexoActionType.NORMAL_ACTION_TYPE);
+		super(eventListener.getLabel(), FlexoActionFactory.defaultGroup, FlexoActionFactory.NORMAL_ACTION_TYPE);
 		this.eventListener = eventListener;
 		this.flexoConceptInstance = flexoConceptInstance;
 	}

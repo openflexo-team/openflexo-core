@@ -49,7 +49,7 @@ import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.FlexoAction;
-import org.openflexo.foundation.action.FlexoActionType;
+import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.editionaction.AddToListAction;
 import org.openflexo.foundation.fml.editionaction.AssignableAction;
@@ -68,8 +68,8 @@ public class AssignAction extends FlexoAction<AssignAction, AssignableAction<?>,
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(AssignAction.class.getPackage().getName());
 
-	public static FlexoActionType<AssignAction, AssignableAction<?>, FMLObject> actionType = new FlexoActionType<AssignAction, AssignableAction<?>, FMLObject>(
-			"assign_to", FlexoActionType.defaultGroup, FlexoActionType.NORMAL_ACTION_TYPE) {
+	public static FlexoActionFactory<AssignAction, AssignableAction<?>, FMLObject> actionType = new FlexoActionFactory<AssignAction, AssignableAction<?>, FMLObject>(
+			"assign_to", FlexoActionFactory.defaultGroup, FlexoActionFactory.NORMAL_ACTION_TYPE) {
 
 		/**
 		 * Factory method

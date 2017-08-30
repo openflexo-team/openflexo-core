@@ -51,7 +51,7 @@ import org.openflexo.foundation.FlexoObservable;
 import org.openflexo.foundation.FlexoObserver;
 import org.openflexo.foundation.InvalidArgumentException;
 import org.openflexo.foundation.action.FlexoAction;
-import org.openflexo.foundation.action.FlexoActionType;
+import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.fml.CreationScheme;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.VirtualModel;
@@ -96,7 +96,7 @@ public abstract class AbstractCreateVirtualModelInstance<A extends AbstractCreat
 
 	private boolean openAfterCreation = true;
 
-	protected AbstractCreateVirtualModelInstance(FlexoActionType<A, T, FlexoObject> actionType, T focusedObject,
+	protected AbstractCreateVirtualModelInstance(FlexoActionFactory<A, T, FlexoObject> actionType, T focusedObject,
 			Vector<FlexoObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 		modelSlotConfigurations = new Hashtable<ModelSlot<?>, ModelSlotInstanceConfiguration<?, ?>>();

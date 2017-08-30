@@ -47,7 +47,7 @@ import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.type.PrimitiveType;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
-import org.openflexo.foundation.action.FlexoActionType;
+import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.action.NotImplementedException;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.FMLObject;
@@ -80,8 +80,8 @@ public class CreateTechnologyRole extends AbstractCreateFlexoRole<CreateTechnolo
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CreateTechnologyRole.class.getPackage().getName());
 
-	public static FlexoActionType<CreateTechnologyRole, FlexoConceptObject, FMLObject> actionType = new FlexoActionType<CreateTechnologyRole, FlexoConceptObject, FMLObject>(
-			"create_technology_role", FlexoActionType.newPropertyMenu, FlexoActionType.defaultGroup, FlexoActionType.ADD_ACTION_TYPE) {
+	public static FlexoActionFactory<CreateTechnologyRole, FlexoConceptObject, FMLObject> actionType = new FlexoActionFactory<CreateTechnologyRole, FlexoConceptObject, FMLObject>(
+			"create_technology_role", FlexoActionFactory.newPropertyMenu, FlexoActionFactory.defaultGroup, FlexoActionFactory.ADD_ACTION_TYPE) {
 
 		/**
 		 * Factory method

@@ -41,7 +41,7 @@ package org.openflexo.view;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.action.FlexoAction;
-import org.openflexo.foundation.action.FlexoActionType;
+import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.gina.model.FIBModelFactory;
 import org.openflexo.gina.model.widget.FIBBrowserAction;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -75,16 +75,16 @@ public interface FIBBrowserActionAdapter<T extends FlexoObject> extends FIBBrows
 	public ActionType getActionType();
 
 	/**
-	 * Return {@link FlexoActionType}
+	 * Return {@link FlexoActionFactory}
 	 * 
 	 * @return
 	 */
-	public FlexoActionType<?, T, ?> getFlexoActionType();
+	public FlexoActionFactory<?, T, ?> getFlexoActionType();
 
 	public abstract class FIBBrowserActionAdapterImpl<T extends FlexoObject> extends FIBBrowserActionImpl
 			implements FIBBrowserActionAdapter<T> {
 
-		public static <T extends FlexoObject> FIBBrowserActionAdapter<T> makeFIBBrowserActionAdapter(FlexoActionType<?, T, ?> actionType,
+		public static <T extends FlexoObject> FIBBrowserActionAdapter<T> makeFIBBrowserActionAdapter(FlexoActionFactory<?, T, ?> actionType,
 				FIBBrowserView<?> browserView, FlexoController controller) throws ModelDefinitionException {
 
 			FIBModelFactory fibModelFactory = new FIBModelFactory(
@@ -96,10 +96,10 @@ public interface FIBBrowserActionAdapter<T extends FlexoObject> extends FIBBrows
 			return returned;
 		}
 
-		private FlexoActionType<?, T, ?> actionType;
+		private FlexoActionFactory<?, T, ?> actionType;
 		private FIBBrowserView<?> browserView;
 
-		private void initWithActionType(FlexoActionType<?, T, ?> actionType, FIBBrowserView<?> browserView) {
+		private void initWithActionType(FlexoActionFactory<?, T, ?> actionType, FIBBrowserView<?> browserView) {
 			this.actionType = actionType;
 			this.browserView = browserView;
 			setMethod(new DataBinding<>("action.performAction(selected)"));
@@ -136,10 +136,10 @@ public interface FIBBrowserActionAdapter<T extends FlexoObject> extends FIBBrows
 
 		@Override
 		public ActionType getActionType() {
-			if (actionType.getActionCategory() == FlexoActionType.ADD_ACTION_TYPE) {
+			if (actionType.getActionCategory() == FlexoActionFactory.ADD_ACTION_TYPE) {
 				return ActionType.Add;
 			}
-			else if (actionType.getActionCategory() == FlexoActionType.DELETE_ACTION_TYPE) {
+			else if (actionType.getActionCategory() == FlexoActionFactory.DELETE_ACTION_TYPE) {
 				return ActionType.Delete;
 			}
 			else {
@@ -148,7 +148,7 @@ public interface FIBBrowserActionAdapter<T extends FlexoObject> extends FIBBrows
 		}
 
 		@Override
-		public FlexoActionType<?, T, ?> getFlexoActionType() {
+		public FlexoActionFactory<?, T, ?> getFlexoActionType() {
 			return actionType;
 		}
 

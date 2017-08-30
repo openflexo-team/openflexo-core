@@ -46,15 +46,15 @@ import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.FlexoAction;
-import org.openflexo.foundation.action.FlexoActionType;
+import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 
 public class DeleteVirtualModelInstance extends FlexoAction<DeleteVirtualModelInstance, FMLRTVirtualModelInstance, FlexoObject> {
 
 	private static final Logger logger = Logger.getLogger(DeleteVirtualModelInstance.class.getPackage().getName());
 
-	public static FlexoActionType<DeleteVirtualModelInstance, FMLRTVirtualModelInstance, FlexoObject> actionType = new FlexoActionType<DeleteVirtualModelInstance, FMLRTVirtualModelInstance, FlexoObject>(
-			"delete_virtual_model_instance", FlexoActionType.editGroup, FlexoActionType.DELETE_ACTION_TYPE) {
+	public static FlexoActionFactory<DeleteVirtualModelInstance, FMLRTVirtualModelInstance, FlexoObject> actionType = new FlexoActionFactory<DeleteVirtualModelInstance, FMLRTVirtualModelInstance, FlexoObject>(
+			"delete_virtual_model_instance", FlexoActionFactory.editGroup, FlexoActionFactory.DELETE_ACTION_TYPE) {
 
 		/**
 		 * Factory method

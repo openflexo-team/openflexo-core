@@ -50,7 +50,7 @@ import org.openflexo.foundation.resource.FlexoProjectReference;
 
 public class ImportProject extends FlexoAction<ImportProject, FlexoProjectObject, FlexoProjectObject> {
 
-	public static final FlexoActionType<ImportProject, FlexoProjectObject, FlexoProjectObject> actionType = new FlexoActionType<ImportProject, FlexoProjectObject, FlexoProjectObject>(
+	public static final FlexoActionFactory<ImportProject, FlexoProjectObject, FlexoProjectObject> actionType = new FlexoActionFactory<ImportProject, FlexoProjectObject, FlexoProjectObject>(
 			"import_project") {
 
 		@Override

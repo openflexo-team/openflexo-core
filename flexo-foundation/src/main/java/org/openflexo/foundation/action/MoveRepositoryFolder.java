@@ -49,7 +49,7 @@ public class MoveRepositoryFolder extends FlexoAction<MoveRepositoryFolder, Repo
 
 	private static final Logger logger = Logger.getLogger(MoveRepositoryFolder.class.getPackage().getName());
 
-	public static final FlexoActionType<MoveRepositoryFolder, RepositoryFolder, RepositoryFolder> actionType = new FlexoActionType<MoveRepositoryFolder, RepositoryFolder, RepositoryFolder>(
+	public static final FlexoActionFactory<MoveRepositoryFolder, RepositoryFolder, RepositoryFolder> actionType = new FlexoActionFactory<MoveRepositoryFolder, RepositoryFolder, RepositoryFolder>(
 			"move_folder") {
 
 		@Override

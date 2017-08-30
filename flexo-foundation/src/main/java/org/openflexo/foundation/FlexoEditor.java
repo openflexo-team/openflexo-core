@@ -46,7 +46,7 @@ import javax.swing.Icon;
 import javax.swing.KeyStroke;
 
 import org.openflexo.foundation.action.FlexoAction;
-import org.openflexo.foundation.action.FlexoActionType;
+import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.action.FlexoUndoManager;
 import org.openflexo.foundation.fml.rt.FMLRunTimeEngine;
 import org.openflexo.foundation.fml.rt.logging.FMLConsole;
@@ -132,23 +132,23 @@ public interface FlexoEditor {
 	public FlexoUndoManager getUndoManager();
 
 	public <A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> A performActionType(
-			FlexoActionType<A, T1, T2> actionType, T1 focusedObject, Vector<T2> globalSelection, EventObject e);
+			FlexoActionFactory<A, T1, T2> actionType, T1 focusedObject, Vector<T2> globalSelection, EventObject e);
 
 	public <A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> A performAction(A action, EventObject e);
 
 	public <A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> boolean isActionEnabled(
-			FlexoActionType<A, T1, T2> actionType, T1 focusedObject, Vector<T2> globalSelection);
+			FlexoActionFactory<A, T1, T2> actionType, T1 focusedObject, Vector<T2> globalSelection);
 
 	public <A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> boolean isActionVisible(
-			FlexoActionType<A, T1, T2> actionType, T1 focusedObject, Vector<T2> globalSelection);
+			FlexoActionFactory<A, T1, T2> actionType, T1 focusedObject, Vector<T2> globalSelection);
 
 	public <A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> Icon getEnabledIconFor(
-			FlexoActionType<A, T1, T2> action);
+			FlexoActionFactory<A, T1, T2> action);
 
 	public <A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> Icon getDisabledIconFor(
-			FlexoActionType<A, T1, T2> action);
+			FlexoActionFactory<A, T1, T2> action);
 
 	public <A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> KeyStroke getKeyStrokeFor(
-			FlexoActionType<A, T1, T2> action);
+			FlexoActionFactory<A, T1, T2> action);
 
 }

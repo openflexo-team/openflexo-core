@@ -48,7 +48,7 @@ import org.openflexo.foundation.FlexoEditingContext;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.action.FlexoAction;
-import org.openflexo.foundation.action.FlexoActionType;
+import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.model.exceptions.ModelExecutionException;
 import org.openflexo.model.factory.Clipboard;
@@ -58,12 +58,12 @@ public class PasteAction extends FlexoAction<PasteAction, FlexoObject, FlexoObje
 
 	static final Logger logger = Logger.getLogger(PasteAction.class.getPackage().getName());
 
-	public static class PasteActionType extends FlexoActionType<PasteAction, FlexoObject, FlexoObject> {
+	public static class PasteActionType extends FlexoActionFactory<PasteAction, FlexoObject, FlexoObject> {
 
 		private final FlexoEditingContext editingContext;
 
 		public PasteActionType(FlexoEditingContext editingContext) {
-			super("paste", FlexoActionType.editGroup);
+			super("paste", FlexoActionFactory.editGroup);
 			this.editingContext = editingContext;
 		}
 

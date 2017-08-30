@@ -45,7 +45,7 @@ import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.FlexoAction;
-import org.openflexo.foundation.action.FlexoActionType;
+import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.editionaction.AddToListAction;
 import org.openflexo.foundation.fml.editionaction.AssignableAction;
@@ -64,8 +64,8 @@ public class AddReturnStatement extends FlexoAction<AddReturnStatement, Assignab
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(AddReturnStatement.class.getPackage().getName());
 
-	public static FlexoActionType<AddReturnStatement, AssignableAction<?>, FMLObject> actionType = new FlexoActionType<AddReturnStatement, AssignableAction<?>, FMLObject>(
-			"return", FlexoActionType.defaultGroup, FlexoActionType.NORMAL_ACTION_TYPE) {
+	public static FlexoActionFactory<AddReturnStatement, AssignableAction<?>, FMLObject> actionType = new FlexoActionFactory<AddReturnStatement, AssignableAction<?>, FMLObject>(
+			"return", FlexoActionFactory.defaultGroup, FlexoActionFactory.NORMAL_ACTION_TYPE) {
 
 		/**
 		 * Factory method

@@ -50,15 +50,15 @@ import org.openflexo.drm.DocResourceManager;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.FlexoAction;
-import org.openflexo.foundation.action.FlexoActionType;
+import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.prefs.PreferencesService;
 
 public class SubmitVersion extends FlexoAction<SubmitVersion, DocItem, DocItem> {
 
 	private static final Logger logger = Logger.getLogger(SubmitVersion.class.getPackage().getName());
 
-	public static FlexoActionType<SubmitVersion, DocItem, DocItem> actionType = new FlexoActionType<SubmitVersion, DocItem, DocItem>(
-			"submit_version", FlexoActionType.defaultGroup, FlexoActionType.NORMAL_ACTION_TYPE) {
+	public static FlexoActionFactory<SubmitVersion, DocItem, DocItem> actionType = new FlexoActionFactory<SubmitVersion, DocItem, DocItem>(
+			"submit_version", FlexoActionFactory.defaultGroup, FlexoActionFactory.NORMAL_ACTION_TYPE) {
 
 		/**
 		 * Factory method

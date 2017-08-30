@@ -50,7 +50,7 @@ import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
-import org.openflexo.foundation.action.FlexoActionType;
+import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.action.NotImplementedException;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.FMLObject;
@@ -86,9 +86,9 @@ public class CreateFlexoConceptInstanceRole extends AbstractCreateFlexoRole<Crea
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CreateFlexoConceptInstanceRole.class.getPackage().getName());
 
-	public static FlexoActionType<CreateFlexoConceptInstanceRole, FlexoConceptObject, FMLObject> actionType = new FlexoActionType<CreateFlexoConceptInstanceRole, FlexoConceptObject, FMLObject>(
-			"create_flexo_concept_instance_role", FlexoActionType.newPropertyMenu, FlexoActionType.defaultGroup,
-			FlexoActionType.ADD_ACTION_TYPE) {
+	public static FlexoActionFactory<CreateFlexoConceptInstanceRole, FlexoConceptObject, FMLObject> actionType = new FlexoActionFactory<CreateFlexoConceptInstanceRole, FlexoConceptObject, FMLObject>(
+			"create_flexo_concept_instance_role", FlexoActionFactory.newPropertyMenu, FlexoActionFactory.defaultGroup,
+			FlexoActionFactory.ADD_ACTION_TYPE) {
 
 		/**
 		 * Factory method

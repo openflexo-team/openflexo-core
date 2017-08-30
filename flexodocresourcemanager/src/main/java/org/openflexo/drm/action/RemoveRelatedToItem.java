@@ -45,12 +45,12 @@ import org.openflexo.drm.DocItem;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.action.FlexoAction;
-import org.openflexo.foundation.action.FlexoActionType;
+import org.openflexo.foundation.action.FlexoActionFactory;
 
 public class RemoveRelatedToItem extends FlexoAction {
 
-	public static FlexoActionType actionType = new FlexoActionType("remove_related_to_item", FlexoActionType.defaultGroup,
-			FlexoActionType.NORMAL_ACTION_TYPE) {
+	public static FlexoActionFactory actionType = new FlexoActionFactory("remove_related_to_item", FlexoActionFactory.defaultGroup,
+			FlexoActionFactory.NORMAL_ACTION_TYPE) {
 
 		/**
 		 * Factory method

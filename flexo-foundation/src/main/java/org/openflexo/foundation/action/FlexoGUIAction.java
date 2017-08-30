@@ -54,7 +54,7 @@ import org.openflexo.foundation.FlexoObject;
 public abstract class FlexoGUIAction<A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> extends
 		FlexoAction<A, T1, T2> {
 
-	protected FlexoGUIAction(FlexoActionType<A, T1, T2> actionType, T1 focusedObject, Vector<T2> globalSelection, FlexoEditor editor) {
+	protected FlexoGUIAction(FlexoActionFactory<A, T1, T2> actionType, T1 focusedObject, Vector<T2> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 	}
 

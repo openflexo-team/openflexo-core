@@ -49,7 +49,7 @@ import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.FlexoObservable;
 import org.openflexo.foundation.FlexoObserver;
 import org.openflexo.foundation.action.FlexoAction;
-import org.openflexo.foundation.action.FlexoActionType;
+import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.fml.CreationScheme;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.FlexoConcept;
@@ -67,8 +67,8 @@ public class CreateFlexoConceptInstance extends FlexoAction<CreateFlexoConceptIn
 
 	private static final Logger logger = Logger.getLogger(CreateFlexoConceptInstance.class.getPackage().getName());
 
-	public static FlexoActionType<CreateFlexoConceptInstance, FlexoConceptInstance, FlexoObject> actionType = new FlexoActionType<CreateFlexoConceptInstance, FlexoConceptInstance, FlexoObject>(
-			"instantiate_flexo_concept", FlexoActionType.defaultGroup, FlexoActionType.ADD_ACTION_TYPE) {
+	public static FlexoActionFactory<CreateFlexoConceptInstance, FlexoConceptInstance, FlexoObject> actionType = new FlexoActionFactory<CreateFlexoConceptInstance, FlexoConceptInstance, FlexoObject>(
+			"instantiate_flexo_concept", FlexoActionFactory.defaultGroup, FlexoActionFactory.ADD_ACTION_TYPE) {
 
 		/**
 		 * Factory method

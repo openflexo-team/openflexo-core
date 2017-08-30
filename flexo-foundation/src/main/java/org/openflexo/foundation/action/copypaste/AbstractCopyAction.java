@@ -51,7 +51,7 @@ import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.InnerResourceData;
 import org.openflexo.foundation.action.FlexoAction;
-import org.openflexo.foundation.action.FlexoActionType;
+import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.PamelaResource;
 
@@ -68,14 +68,14 @@ public abstract class AbstractCopyAction<A extends AbstractCopyAction<A>> extend
 	private static final Logger logger = Logger.getLogger(AbstractCopyAction.class.getPackage().getName());
 
 	public static abstract class AbstractCopyActionType<A extends AbstractCopyAction<A>>
-			extends FlexoActionType<A, FlexoObject, FlexoObject> {
+			extends FlexoActionFactory<A, FlexoObject, FlexoObject> {
 
 		protected final FlexoEditingContext editingContext;
 
 		protected Map<PamelaResource<?, ?>, List<FlexoObject>> objectsToBeCopied;
 
 		public AbstractCopyActionType(String actionName, FlexoEditingContext editingContext) {
-			super(actionName, FlexoActionType.editGroup);
+			super(actionName, FlexoActionFactory.editGroup);
 			this.editingContext = editingContext;
 			objectsToBeCopied = new HashMap<PamelaResource<?, ?>, List<FlexoObject>>();
 		}

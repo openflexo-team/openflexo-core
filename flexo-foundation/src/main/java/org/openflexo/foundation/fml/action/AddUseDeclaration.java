@@ -44,7 +44,7 @@ import java.util.logging.Logger;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.FlexoAction;
-import org.openflexo.foundation.action.FlexoActionType;
+import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.InconsistentFlexoConceptHierarchyException;
@@ -63,8 +63,8 @@ public class AddUseDeclaration extends FlexoAction<AddUseDeclaration, VirtualMod
 
 	private static final Logger logger = Logger.getLogger(AddUseDeclaration.class.getPackage().getName());
 
-	public static FlexoActionType<AddUseDeclaration, VirtualModel, FMLObject> actionType = new FlexoActionType<AddUseDeclaration, VirtualModel, FMLObject>(
-			"declare_use_of_model_slot", FlexoActionType.defaultGroup, FlexoActionType.NORMAL_ACTION_TYPE) {
+	public static FlexoActionFactory<AddUseDeclaration, VirtualModel, FMLObject> actionType = new FlexoActionFactory<AddUseDeclaration, VirtualModel, FMLObject>(
+			"declare_use_of_model_slot", FlexoActionFactory.defaultGroup, FlexoActionFactory.NORMAL_ACTION_TYPE) {
 
 		/**
 		 * Factory method

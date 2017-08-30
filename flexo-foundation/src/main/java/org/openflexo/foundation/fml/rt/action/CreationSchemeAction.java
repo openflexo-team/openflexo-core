@@ -44,7 +44,7 @@ import java.util.logging.Logger;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
-import org.openflexo.foundation.action.FlexoActionType;
+import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.action.InvalidParametersException;
 import org.openflexo.foundation.action.NotImplementedException;
 import org.openflexo.foundation.fml.CreationScheme;
@@ -60,8 +60,8 @@ public class CreationSchemeAction extends FlexoBehaviourAction<CreationSchemeAct
 
 	private static final Logger logger = Logger.getLogger(CreationSchemeAction.class.getPackage().getName());
 
-	public static FlexoActionType<CreationSchemeAction, VirtualModelInstance<?, ?>, VirtualModelInstanceObject> actionType = new FlexoActionType<CreationSchemeAction, VirtualModelInstance<?, ?>, VirtualModelInstanceObject>(
-			"create_flexo_concept_instance", FlexoActionType.newMenu, FlexoActionType.defaultGroup, FlexoActionType.ADD_ACTION_TYPE) {
+	public static FlexoActionFactory<CreationSchemeAction, VirtualModelInstance<?, ?>, VirtualModelInstanceObject> actionType = new FlexoActionFactory<CreationSchemeAction, VirtualModelInstance<?, ?>, VirtualModelInstanceObject>(
+			"create_flexo_concept_instance", FlexoActionFactory.newMenu, FlexoActionFactory.defaultGroup, FlexoActionFactory.ADD_ACTION_TYPE) {
 
 		/**
 		 * Factory method

@@ -51,15 +51,15 @@ import org.openflexo.drm.DocItemVersion;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.FlexoAction;
-import org.openflexo.foundation.action.FlexoActionType;
+import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.localization.Language;
 
 public class RefuseVersion extends FlexoAction<RefuseVersion, DocItem, DocItem> {
 
 	private static final Logger logger = Logger.getLogger(RefuseVersion.class.getPackage().getName());
 
-	public static FlexoActionType<RefuseVersion, DocItem, DocItem> actionType = new FlexoActionType<RefuseVersion, DocItem, DocItem>(
-			"refuse_version", FlexoActionType.defaultGroup, FlexoActionType.NORMAL_ACTION_TYPE) {
+	public static FlexoActionFactory<RefuseVersion, DocItem, DocItem> actionType = new FlexoActionFactory<RefuseVersion, DocItem, DocItem>(
+			"refuse_version", FlexoActionFactory.defaultGroup, FlexoActionFactory.NORMAL_ACTION_TYPE) {
 
 		/**
 		 * Factory method

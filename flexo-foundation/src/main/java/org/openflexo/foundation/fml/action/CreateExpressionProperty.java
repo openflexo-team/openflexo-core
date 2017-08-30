@@ -46,7 +46,7 @@ import org.openflexo.connie.Bindable;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
-import org.openflexo.foundation.action.FlexoActionType;
+import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.action.NotImplementedException;
 import org.openflexo.foundation.fml.ExpressionProperty;
 import org.openflexo.foundation.fml.FMLModelFactory;
@@ -70,8 +70,8 @@ public class CreateExpressionProperty extends AbstractCreateFlexoProperty<Create
 
 	private static final Logger logger = Logger.getLogger(CreateExpressionProperty.class.getPackage().getName());
 
-	public static FlexoActionType<CreateExpressionProperty, FlexoConceptObject, FMLObject> actionType = new FlexoActionType<CreateExpressionProperty, FlexoConceptObject, FMLObject>(
-			"create_expression_property", FlexoActionType.newPropertyMenu, FlexoActionType.defaultGroup, FlexoActionType.ADD_ACTION_TYPE) {
+	public static FlexoActionFactory<CreateExpressionProperty, FlexoConceptObject, FMLObject> actionType = new FlexoActionFactory<CreateExpressionProperty, FlexoConceptObject, FMLObject>(
+			"create_expression_property", FlexoActionFactory.newPropertyMenu, FlexoActionFactory.defaultGroup, FlexoActionFactory.ADD_ACTION_TYPE) {
 
 		/**
 		 * Factory method

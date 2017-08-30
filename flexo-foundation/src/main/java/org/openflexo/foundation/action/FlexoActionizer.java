@@ -49,10 +49,10 @@ public class FlexoActionizer<A extends FlexoAction<A, T1, T2>, T1 extends FlexoO
 		public FlexoEditor getEditor();
 	}
 
-	private FlexoActionType<A, T1, T2> _actionType;
+	private FlexoActionFactory<A, T1, T2> _actionType;
 	private final EditorProvider editorProvider;
 
-	public FlexoActionizer(FlexoActionType<A, T1, T2> actionType, EditorProvider editorProvider) {
+	public FlexoActionizer(FlexoActionFactory<A, T1, T2> actionType, EditorProvider editorProvider) {
 		_actionType = actionType;
 		this.editorProvider = editorProvider;
 	}

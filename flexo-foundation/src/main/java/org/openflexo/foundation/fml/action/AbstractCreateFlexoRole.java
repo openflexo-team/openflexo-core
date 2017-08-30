@@ -44,7 +44,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.connie.type.PrimitiveType;
 import org.openflexo.foundation.FlexoEditor;
-import org.openflexo.foundation.action.FlexoActionType;
+import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceRole;
@@ -88,7 +88,7 @@ public abstract class AbstractCreateFlexoRole<A extends AbstractCreateFlexoRole<
 
 	protected FlexoRole<?> newFlexoRole;
 
-	public AbstractCreateFlexoRole(FlexoActionType<A, FlexoConceptObject, FMLObject> actionType, FlexoConceptObject focusedObject,
+	public AbstractCreateFlexoRole(FlexoActionFactory<A, FlexoConceptObject, FMLObject> actionType, FlexoConceptObject focusedObject,
 			Vector<FMLObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 		defaultModelSlot = retrieveDefaultModelSlot();

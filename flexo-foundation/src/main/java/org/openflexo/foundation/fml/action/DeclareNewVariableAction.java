@@ -45,7 +45,7 @@ import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.FlexoAction;
-import org.openflexo.foundation.action.FlexoActionType;
+import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.editionaction.AddToListAction;
 import org.openflexo.foundation.fml.editionaction.AssignableAction;
@@ -65,8 +65,8 @@ public class DeclareNewVariableAction extends FlexoAction<DeclareNewVariableActi
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DeclareNewVariableAction.class.getPackage().getName());
 
-	public static FlexoActionType<DeclareNewVariableAction, AssignableAction<?>, FMLObject> actionType = new FlexoActionType<DeclareNewVariableAction, AssignableAction<?>, FMLObject>(
-			"declares_new_variable", FlexoActionType.defaultGroup, FlexoActionType.NORMAL_ACTION_TYPE) {
+	public static FlexoActionFactory<DeclareNewVariableAction, AssignableAction<?>, FMLObject> actionType = new FlexoActionFactory<DeclareNewVariableAction, AssignableAction<?>, FMLObject>(
+			"declares_new_variable", FlexoActionFactory.defaultGroup, FlexoActionFactory.NORMAL_ACTION_TYPE) {
 
 		/**
 		 * Factory method

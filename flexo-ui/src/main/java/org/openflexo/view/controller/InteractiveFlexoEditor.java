@@ -63,7 +63,7 @@ import org.openflexo.foundation.action.FlexoAction.ExecutionStatus;
 import org.openflexo.foundation.action.FlexoActionEnableCondition;
 import org.openflexo.foundation.action.FlexoActionFinalizer;
 import org.openflexo.foundation.action.FlexoActionInitializer;
-import org.openflexo.foundation.action.FlexoActionType;
+import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.action.FlexoActionVisibleCondition;
 import org.openflexo.foundation.action.FlexoExceptionHandler;
 import org.openflexo.foundation.action.FlexoGUIAction;
@@ -140,7 +140,7 @@ public class InteractiveFlexoEditor extends DefaultFlexoEditor {
 			final A action, final EventObject e) {
 		// NPE Protection
 		if (action != null) {
-			FlexoActionType<A, T1, T2> at = action.getActionType();
+			FlexoActionFactory<A, T1, T2> at = action.getActionType();
 			if (at != null) {
 				if (!action.getActionType().isEnabled(action.getFocusedObject(), action.getGlobalSelection())) {
 					return null;
@@ -344,7 +344,7 @@ public class InteractiveFlexoEditor extends DefaultFlexoEditor {
 	}
 
 	private <A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> ActionInitializer<A, T1, T2> getActionInitializer(
-			FlexoActionType<A, T1, T2> actionType) {
+			FlexoActionFactory<A, T1, T2> actionType) {
 		ControllerActionInitializer currentControllerActionInitializer = getCurrentControllerActionInitializer();
 		if (currentControllerActionInitializer != null) {
 			return currentControllerActionInitializer.getActionInitializer(actionType);
@@ -354,7 +354,7 @@ public class InteractiveFlexoEditor extends DefaultFlexoEditor {
 
 	@Override
 	public <A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> boolean isActionEnabled(
-			FlexoActionType<A, T1, T2> actionType, T1 focusedObject, Vector<T2> globalSelection) {
+			FlexoActionFactory<A, T1, T2> actionType, T1 focusedObject, Vector<T2> globalSelection) {
 		if (actionType instanceof ActionSchemeActionType) {
 			return true;
 		}
@@ -381,7 +381,7 @@ public class InteractiveFlexoEditor extends DefaultFlexoEditor {
 
 	@Override
 	public <A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> boolean isActionVisible(
-			FlexoActionType<A, T1, T2> actionType, T1 focusedObject, Vector<T2> globalSelection) {
+			FlexoActionFactory<A, T1, T2> actionType, T1 focusedObject, Vector<T2> globalSelection) {
 		if (actionType.isVisibleForSelection(focusedObject, globalSelection)) {
 			ActionInitializer<A, T1, T2> actionInitializer = getActionInitializer(actionType);
 			if (actionInitializer != null) {
@@ -402,7 +402,7 @@ public class InteractiveFlexoEditor extends DefaultFlexoEditor {
 
 	@Override
 	public <A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> Icon getEnabledIconFor(
-			FlexoActionType<A, T1, T2> actionType) {
+			FlexoActionFactory<A, T1, T2> actionType) {
 		ActionInitializer<A, T1, T2> actionInitializer = getActionInitializer(actionType);
 		if (actionInitializer != null) {
 			return actionInitializer.getEnabledIcon(actionType);
@@ -419,7 +419,7 @@ public class InteractiveFlexoEditor extends DefaultFlexoEditor {
 
 	@Override
 	public <A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> Icon getDisabledIconFor(
-			FlexoActionType<A, T1, T2> actionType) {
+			FlexoActionFactory<A, T1, T2> actionType) {
 		ActionInitializer<A, T1, T2> actionInitializer = getActionInitializer(actionType);
 		if (actionInitializer != null) {
 			return actionInitializer.getDisabledIcon(actionType);
@@ -429,7 +429,7 @@ public class InteractiveFlexoEditor extends DefaultFlexoEditor {
 
 	@Override
 	public <A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> KeyStroke getKeyStrokeFor(
-			FlexoActionType<A, T1, T2> actionType) {
+			FlexoActionFactory<A, T1, T2> actionType) {
 		ActionInitializer<A, T1, T2> actionInitializer = getActionInitializer(actionType);
 		if (actionInitializer != null) {
 			return actionInitializer.getShortcut();

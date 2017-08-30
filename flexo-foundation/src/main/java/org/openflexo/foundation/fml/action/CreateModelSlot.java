@@ -45,7 +45,7 @@ import java.util.logging.Logger;
 import org.apache.commons.lang3.reflect.TypeUtils;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
-import org.openflexo.foundation.action.FlexoActionType;
+import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.action.NotImplementedException;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FlexoConcept;
@@ -66,8 +66,8 @@ public class CreateModelSlot extends AbstractCreateFlexoProperty<CreateModelSlot
 
 	private static final Logger logger = Logger.getLogger(CreateModelSlot.class.getPackage().getName());
 
-	public static FlexoActionType<CreateModelSlot, FlexoConceptObject, FMLObject> actionType = new FlexoActionType<CreateModelSlot, FlexoConceptObject, FMLObject>(
-			"create_model_slot", FlexoActionType.newPropertyMenu, FlexoActionType.defaultGroup, FlexoActionType.ADD_ACTION_TYPE) {
+	public static FlexoActionFactory<CreateModelSlot, FlexoConceptObject, FMLObject> actionType = new FlexoActionFactory<CreateModelSlot, FlexoConceptObject, FMLObject>(
+			"create_model_slot", FlexoActionFactory.newPropertyMenu, FlexoActionFactory.defaultGroup, FlexoActionFactory.ADD_ACTION_TYPE) {
 
 		/**
 		 * Factory method

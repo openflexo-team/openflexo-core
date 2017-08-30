@@ -56,9 +56,9 @@ public class OpenFileInExplorer extends FlexoAction<OpenFileInExplorer, FlexoPro
 	@SuppressWarnings("unused")
 	private static final Logger logger = FlexoLogger.getLogger(OpenFileInExplorer.class.getPackage().getName());
 
-	public static FlexoActionType<OpenFileInExplorer, FlexoProjectObject, FlexoProjectObject> actionType = new FlexoActionType<OpenFileInExplorer, FlexoProjectObject, FlexoProjectObject>(
-			ToolBox.getPLATFORM() == ToolBox.MACOS ? "open_in_finder" : "open_in_explorer", FlexoActionType.defaultGroup,
-			FlexoActionType.NORMAL_ACTION_TYPE) {
+	public static FlexoActionFactory<OpenFileInExplorer, FlexoProjectObject, FlexoProjectObject> actionType = new FlexoActionFactory<OpenFileInExplorer, FlexoProjectObject, FlexoProjectObject>(
+			ToolBox.getPLATFORM() == ToolBox.MACOS ? "open_in_finder" : "open_in_explorer", FlexoActionFactory.defaultGroup,
+			FlexoActionFactory.NORMAL_ACTION_TYPE) {
 
 		/**
 		 * Factory method

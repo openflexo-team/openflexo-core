@@ -49,7 +49,7 @@ import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.action.FlexoAction;
-import org.openflexo.foundation.action.FlexoActionType;
+import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.action.NotImplementedException;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FlexoConcept;
@@ -75,7 +75,7 @@ public abstract class AbstractCreateFlexoProperty<A extends AbstractCreateFlexoP
 	private DataBinding<?> defaultValue;
 	private DataBinding<?> container;
 
-	AbstractCreateFlexoProperty(FlexoActionType<A, FlexoConceptObject, FMLObject> actionType, FlexoConceptObject focusedObject,
+	AbstractCreateFlexoProperty(FlexoActionFactory<A, FlexoConceptObject, FMLObject> actionType, FlexoConceptObject focusedObject,
 			Vector<FMLObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 	}

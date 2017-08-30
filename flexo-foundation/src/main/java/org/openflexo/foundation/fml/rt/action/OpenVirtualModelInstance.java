@@ -44,7 +44,7 @@ import java.util.logging.Logger;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
-import org.openflexo.foundation.action.FlexoActionType;
+import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.action.FlexoGUIAction;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 
@@ -52,8 +52,8 @@ public class OpenVirtualModelInstance extends FlexoGUIAction<OpenVirtualModelIns
 
 	private static final Logger logger = Logger.getLogger(OpenVirtualModelInstance.class.getPackage().getName());
 
-	public static FlexoActionType<OpenVirtualModelInstance, FMLRTVirtualModelInstance, FlexoObject> actionType = new FlexoActionType<OpenVirtualModelInstance, FMLRTVirtualModelInstance, FlexoObject>(
-			"open_virtual_model_instance", FlexoActionType.defaultGroup, FlexoActionType.NORMAL_ACTION_TYPE) {
+	public static FlexoActionFactory<OpenVirtualModelInstance, FMLRTVirtualModelInstance, FlexoObject> actionType = new FlexoActionFactory<OpenVirtualModelInstance, FMLRTVirtualModelInstance, FlexoObject>(
+			"open_virtual_model_instance", FlexoActionFactory.defaultGroup, FlexoActionFactory.NORMAL_ACTION_TYPE) {
 
 		/**
 		 * Factory method

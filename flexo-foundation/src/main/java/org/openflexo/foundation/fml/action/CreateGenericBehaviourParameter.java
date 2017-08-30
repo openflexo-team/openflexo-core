@@ -54,7 +54,7 @@ import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.FlexoAction;
-import org.openflexo.foundation.action.FlexoActionType;
+import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.action.NotImplementedException;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.FMLObject;
@@ -69,8 +69,8 @@ public class CreateGenericBehaviourParameter extends FlexoAction<CreateGenericBe
 
 	private static final Logger logger = Logger.getLogger(CreateGenericBehaviourParameter.class.getPackage().getName());
 
-	public static FlexoActionType<CreateGenericBehaviourParameter, FlexoBehaviourObject, FMLObject> actionType = new FlexoActionType<CreateGenericBehaviourParameter, FlexoBehaviourObject, FMLObject>(
-			"create_behaviour_parameter", FlexoActionType.newMenu, FlexoActionType.defaultGroup, FlexoActionType.ADD_ACTION_TYPE) {
+	public static FlexoActionFactory<CreateGenericBehaviourParameter, FlexoBehaviourObject, FMLObject> actionType = new FlexoActionFactory<CreateGenericBehaviourParameter, FlexoBehaviourObject, FMLObject>(
+			"create_behaviour_parameter", FlexoActionFactory.newMenu, FlexoActionFactory.defaultGroup, FlexoActionFactory.ADD_ACTION_TYPE) {
 
 		/**
 		 * Factory method

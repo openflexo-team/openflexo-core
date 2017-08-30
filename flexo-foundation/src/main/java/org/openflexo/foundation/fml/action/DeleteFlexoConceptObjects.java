@@ -47,7 +47,7 @@ import java.util.logging.Logger;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.FlexoAction;
-import org.openflexo.foundation.action.FlexoActionType;
+import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.action.copypaste.AbstractCopyAction.InvalidSelectionException;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.FMLModelFactory;
@@ -59,8 +59,8 @@ public class DeleteFlexoConceptObjects extends FlexoAction<DeleteFlexoConceptObj
 
 	private static final Logger logger = Logger.getLogger(DeleteFlexoConceptObjects.class.getPackage().getName());
 
-	public static FlexoActionType<DeleteFlexoConceptObjects, FlexoConceptObject, FlexoConceptObject> actionType = new FlexoActionType<DeleteFlexoConceptObjects, FlexoConceptObject, FlexoConceptObject>(
-			"delete", FlexoActionType.editGroup, FlexoActionType.DELETE_ACTION_TYPE) {
+	public static FlexoActionFactory<DeleteFlexoConceptObjects, FlexoConceptObject, FlexoConceptObject> actionType = new FlexoActionFactory<DeleteFlexoConceptObjects, FlexoConceptObject, FlexoConceptObject>(
+			"delete", FlexoActionFactory.editGroup, FlexoActionFactory.DELETE_ACTION_TYPE) {
 
 		/**
 		 * Factory method

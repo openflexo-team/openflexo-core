@@ -51,7 +51,7 @@ import org.openflexo.connie.DataBinding;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.action.FlexoAction;
-import org.openflexo.foundation.action.FlexoActionType;
+import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
@@ -81,7 +81,7 @@ public abstract class AbstractCreateVirtualModel<A extends FlexoAction<A, T1, T2
 
 	private final List<ModelSlotEntry> modelSlotEntries;
 
-	protected AbstractCreateVirtualModel(FlexoActionType<A, T1, T2> actionType, T1 focusedObject, Vector<T2> globalSelection,
+	protected AbstractCreateVirtualModel(FlexoActionFactory<A, T1, T2> actionType, T1 focusedObject, Vector<T2> globalSelection,
 			FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 		modelSlotEntries = new ArrayList<AbstractCreateVirtualModel.ModelSlotEntry>();

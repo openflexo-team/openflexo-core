@@ -43,7 +43,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
-import org.openflexo.foundation.action.FlexoActionType;
+import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.action.FlexoGUIAction;
 import org.openflexo.foundation.fml.FMLObject;
 
@@ -52,8 +52,8 @@ public class ShowFMLRepresentation extends FlexoGUIAction<ShowFMLRepresentation,
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(ShowFMLRepresentation.class.getPackage().getName());
 
-	public static FlexoActionType<ShowFMLRepresentation, FMLObject, FMLObject> actionType = new FlexoActionType<ShowFMLRepresentation, FMLObject, FMLObject>(
-			"show_flexo_modelling_language_representation", FlexoActionType.inspectGroup) {
+	public static FlexoActionFactory<ShowFMLRepresentation, FMLObject, FMLObject> actionType = new FlexoActionFactory<ShowFMLRepresentation, FMLObject, FMLObject>(
+			"show_flexo_modelling_language_representation", FlexoActionFactory.inspectGroup) {
 
 		/**
 		 * Factory method

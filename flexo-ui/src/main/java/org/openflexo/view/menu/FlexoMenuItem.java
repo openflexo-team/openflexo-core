@@ -59,7 +59,7 @@ import javax.swing.KeyStroke;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.action.FlexoActionSource;
-import org.openflexo.foundation.action.FlexoActionType;
+import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.selection.SelectionManager;
 import org.openflexo.view.controller.FlexoController;
@@ -76,7 +76,7 @@ public class FlexoMenuItem extends JMenuItem implements FlexoActionSource, Prope
 
 	private final FlexoController _controller;
 
-	private FlexoActionType actionType;
+	private FlexoActionFactory actionType;
 
 	public FlexoMenuItem(FlexoController controller, String unlocalizedMenuName) {
 		super();
@@ -107,7 +107,7 @@ public class FlexoMenuItem extends JMenuItem implements FlexoActionSource, Prope
 		setIcon(icon);
 	}
 
-	public FlexoMenuItem(FlexoActionType<?, ?, ?> actionType, KeyStroke accelerator, Icon icon, FlexoController controller) {
+	public FlexoMenuItem(FlexoActionFactory<?, ?, ?> actionType, KeyStroke accelerator, Icon icon, FlexoController controller) {
 		this(actionType, controller);
 		setIcon(icon);
 		if (accelerator != null) {
@@ -115,12 +115,12 @@ public class FlexoMenuItem extends JMenuItem implements FlexoActionSource, Prope
 		}
 	}
 
-	public FlexoMenuItem(FlexoActionType<?, ?, ?> actionType, Icon icon, FlexoController controller) {
+	public FlexoMenuItem(FlexoActionFactory<?, ?, ?> actionType, Icon icon, FlexoController controller) {
 		this(actionType, controller);
 		setIcon(icon);
 	}
 
-	public FlexoMenuItem(FlexoActionType<?, ?, ?> actionType, FlexoController controller) {
+	public FlexoMenuItem(FlexoActionFactory<?, ?, ?> actionType, FlexoController controller) {
 		super();
 		this.actionType = actionType;
 		_controller = controller;
@@ -151,7 +151,7 @@ public class FlexoMenuItem extends JMenuItem implements FlexoActionSource, Prope
 	 * 
 	 */
 	public void itemWillShow() {
-		if (actionType instanceof FlexoActionType && getSelectionManager() != null) {
+		if (actionType instanceof FlexoActionFactory && getSelectionManager() != null) {
 			if (getFocusedObject() == null || getFocusedObject().getActionList().indexOf(actionType) > -1) {
 				setEnabled(actionType.isEnabled(getFocusedObject(), getGlobalSelection()));
 			}

@@ -45,7 +45,7 @@ import java.util.logging.Logger;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
-import org.openflexo.foundation.action.FlexoActionType;
+import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.action.FlexoGUIAction;
 import org.openflexo.logging.FlexoLogger;
 
@@ -53,8 +53,8 @@ public class InspectAction extends FlexoGUIAction<InspectAction, FlexoObject, Fl
 
 	private static final Logger logger = FlexoLogger.getLogger(InspectAction.class.getPackage().getName());
 
-	public static FlexoActionType<InspectAction, FlexoObject, FlexoObject> actionType = new FlexoActionType<InspectAction, FlexoObject, FlexoObject>(
-			"inspect", FlexoActionType.inspectGroup) {
+	public static FlexoActionFactory<InspectAction, FlexoObject, FlexoObject> actionType = new FlexoActionFactory<InspectAction, FlexoObject, FlexoObject>(
+			"inspect", FlexoActionFactory.inspectGroup) {
 
 		/**
 		 * Factory method

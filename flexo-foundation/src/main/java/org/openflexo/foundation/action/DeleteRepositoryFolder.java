@@ -49,8 +49,8 @@ public class DeleteRepositoryFolder extends FlexoAction<DeleteRepositoryFolder, 
 
 	private static final Logger logger = Logger.getLogger(DeleteRepositoryFolder.class.getPackage().getName());
 
-	public static FlexoActionType<DeleteRepositoryFolder, RepositoryFolder, RepositoryFolder> actionType = new FlexoActionType<DeleteRepositoryFolder, RepositoryFolder, RepositoryFolder>(
-			"delete_folder", FlexoActionType.editGroup, FlexoActionType.DELETE_ACTION_TYPE) {
+	public static FlexoActionFactory<DeleteRepositoryFolder, RepositoryFolder, RepositoryFolder> actionType = new FlexoActionFactory<DeleteRepositoryFolder, RepositoryFolder, RepositoryFolder>(
+			"delete_folder", FlexoActionFactory.editGroup, FlexoActionFactory.DELETE_ACTION_TYPE) {
 
 		/**
 		 * Factory method

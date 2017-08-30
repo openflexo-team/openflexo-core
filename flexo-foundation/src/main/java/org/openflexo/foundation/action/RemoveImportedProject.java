@@ -54,7 +54,7 @@ public class RemoveImportedProject extends FlexoAction<RemoveImportedProject, Fl
 	private static final java.util.logging.Logger logger = org.openflexo.logging.FlexoLogger.getLogger(RemoveImportedProject.class
 			.getPackage().getName());
 
-	public static final FlexoActionType<RemoveImportedProject, FlexoProjectObject, FlexoProjectObject> actionType = new FlexoActionType<RemoveImportedProject, FlexoProjectObject, FlexoProjectObject>(
+	public static final FlexoActionFactory<RemoveImportedProject, FlexoProjectObject, FlexoProjectObject> actionType = new FlexoActionFactory<RemoveImportedProject, FlexoProjectObject, FlexoProjectObject>(
 			"remove_project") {
 
 		@Override

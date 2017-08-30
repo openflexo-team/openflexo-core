@@ -43,7 +43,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject;
-import org.openflexo.foundation.action.FlexoActionType;
+import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.doc.nature.FMLControlledDocumentContainerNature;
 import org.openflexo.foundation.doc.nature.FMLControlledDocumentVirtualModelNature;
 import org.openflexo.foundation.fml.VirtualModel;
@@ -56,12 +56,12 @@ public abstract class CreateFMLControlledDocumentVirtualModelInstance<A extends 
 	private static final Logger logger = Logger.getLogger(CreateFMLControlledDocumentVirtualModelInstance.class.getPackage().getName());
 
 	public static abstract class CreateFMLControlledDocumentVirtualModelInstanceActionType<A extends CreateFMLControlledDocumentVirtualModelInstance<A>>
-			extends FlexoActionType<A, FlexoObject, FlexoObject> {
+			extends FlexoActionFactory<A, FlexoObject, FlexoObject> {
 
 		private final FMLControlledDocumentContainerNature<?> nature;
 
 		public CreateFMLControlledDocumentVirtualModelInstanceActionType(FMLControlledDocumentContainerNature<?> nature) {
-			super("create_fml_controlled_document", FlexoActionType.newMenu, FlexoActionType.defaultGroup, FlexoActionType.ADD_ACTION_TYPE);
+			super("create_fml_controlled_document", FlexoActionFactory.newMenu, FlexoActionFactory.defaultGroup, FlexoActionFactory.ADD_ACTION_TYPE);
 			this.nature = nature;
 		}
 

@@ -41,7 +41,7 @@ package org.openflexo.foundation.fml.rt.action;
 import java.util.Vector;
 
 import org.openflexo.foundation.FlexoEditor;
-import org.openflexo.foundation.action.FlexoActionType;
+import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.fml.SynchronizationScheme;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstanceObject;
@@ -50,7 +50,7 @@ public class SynchronizationSchemeActionType
 		extends AbstractActionSchemeActionType<SynchronizationSchemeAction, SynchronizationScheme, VirtualModelInstance<?, ?>> {
 
 	public SynchronizationSchemeActionType(SynchronizationScheme synchronizationScheme, VirtualModelInstance<?, ?> virtualModelInstance) {
-		super(synchronizationScheme, virtualModelInstance, FlexoActionType.defaultGroup, FlexoActionType.NORMAL_ACTION_TYPE);
+		super(synchronizationScheme, virtualModelInstance, FlexoActionFactory.defaultGroup, FlexoActionFactory.NORMAL_ACTION_TYPE);
 	}
 
 	@Override

@@ -49,7 +49,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.action.FlexoActionType;
+import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.PamelaResource;
 import org.openflexo.foundation.resource.ResourceData;
@@ -124,7 +124,7 @@ public interface FlexoObject extends AccessibleProxyObject, DeletableProxyObject
 	 */
 	public String hash();
 
-	public List<FlexoActionType<?, ?, ?>> getActionList();
+	public List<FlexoActionFactory<?, ?, ?>> getActionList();
 
 	public void addToReferencers(FlexoObjectReference<? extends FlexoObject> ref);
 
@@ -241,12 +241,12 @@ public interface FlexoObject extends AccessibleProxyObject, DeletableProxyObject
 		/**
 		 * A map that stores the different declared actions for each class
 		 */
-		private static final Map<Class, List<FlexoActionType<?, ?, ?>>> _declaredActionsForClass = new LinkedHashMap<>();
+		private static final Map<Class, List<FlexoActionFactory<?, ?, ?>>> _declaredActionsForClass = new LinkedHashMap<>();
 
 		/**
 		 * A map that stores all the actions for each class (computed with the inheritance of each class)
 		 */
-		private static final Hashtable<Class, List<FlexoActionType<?, ?, ?>>> _actionListForClass = new Hashtable<Class, List<FlexoActionType<?, ?, ?>>>();
+		private static final Hashtable<Class, List<FlexoActionFactory<?, ?, ?>>> _actionListForClass = new Hashtable<Class, List<FlexoActionFactory<?, ?, ?>>>();
 
 		private final List<FlexoObjectReference<?>> referencers;
 
@@ -546,30 +546,30 @@ public interface FlexoObject extends AccessibleProxyObject, DeletableProxyObject
 		// ***************************************************
 
 		@Override
-		public final List<FlexoActionType<?, ?, ?>> getActionList() {
+		public final List<FlexoActionFactory<?, ?, ?>> getActionList() {
 			return getActionList(getClass());
 		}
 
-		public static <T extends FlexoObject> List<FlexoActionType<?, ?, ?>> getActionList(Class<T> aClass) {
+		public static <T extends FlexoObject> List<FlexoActionFactory<?, ?, ?>> getActionList(Class<T> aClass) {
 			if (_actionListForClass.get(aClass) == null) {
 				if (logger.isLoggable(Level.FINE)) {
 					logger.fine("COMPUTE ACTION_LIST FOR " + aClass.getName());
 				}
-				List<FlexoActionType<?, ?, ?>> returned = updateActionListFor(aClass);
+				List<FlexoActionFactory<?, ?, ?>> returned = updateActionListFor(aClass);
 				if (logger.isLoggable(Level.FINE)) {
 					logger.fine("DONE. COMPUTE ACTION_LIST FOR " + aClass.getName() + ": " + returned.size() + " action(s) :");
-					for (FlexoActionType<?, ?, ?> next : returned) {
+					for (FlexoActionFactory<?, ?, ?> next : returned) {
 						logger.fine(" " + next.getLocalizedName());
 					}
 					logger.fine(".");
 				}
 				return returned;
 			}
-			List<FlexoActionType<?, ?, ?>> returned = _actionListForClass.get(aClass);
+			List<FlexoActionFactory<?, ?, ?>> returned = _actionListForClass.get(aClass);
 			if (logger.isLoggable(Level.FINE)) {
 				logger.fine("RETURN (NO COMPUTING) ACTION_LIST FOR " + aClass.getName() + ": " + returned.size() + " action(s) :");
 
-				for (FlexoActionType<?, ?, ?> next : returned) {
+				for (FlexoActionFactory<?, ?, ?> next : returned) {
 					logger.fine(" " + next.getLocalizedName());
 				}
 				logger.fine(".");
@@ -584,14 +584,14 @@ public interface FlexoObject extends AccessibleProxyObject, DeletableProxyObject
 		 * @param objectClass
 		 */
 		@Deprecated
-		public static <T1 extends FlexoObject, T extends T1> void addActionForClass(FlexoActionType<?, T1, ?> actionType,
+		public static <T1 extends FlexoObject, T extends T1> void addActionForClass(FlexoActionFactory<?, T1, ?> actionType,
 				Class<T> objectClass) {
 			if (logger.isLoggable(Level.FINE)) {
 				logger.fine("addActionForClass: " + actionType + " for " + objectClass);
 			}
-			List<FlexoActionType<?, ?, ?>> actions = _declaredActionsForClass.get(objectClass);
+			List<FlexoActionFactory<?, ?, ?>> actions = _declaredActionsForClass.get(objectClass);
 			if (actions == null) {
-				actions = new ArrayList<FlexoActionType<?, ?, ?>>();
+				actions = new ArrayList<FlexoActionFactory<?, ?, ?>>();
 				_declaredActionsForClass.put(objectClass, actions);
 			}
 			if (actionType != null) {
@@ -619,18 +619,18 @@ public interface FlexoObject extends AccessibleProxyObject, DeletableProxyObject
 		}
 
 		@Deprecated
-		public static <T1 extends FlexoObject, T extends T1> void removeActionFromClass(FlexoActionType<?, T1, ?> actionType,
+		public static <T1 extends FlexoObject, T extends T1> void removeActionFromClass(FlexoActionFactory<?, T1, ?> actionType,
 				Class<T> objectClass) {
 
-			List<FlexoActionType<?, ?, ?>> actions = _declaredActionsForClass.get(objectClass);
+			List<FlexoActionFactory<?, ?, ?>> actions = _declaredActionsForClass.get(objectClass);
 			if (actions.contains(actionType)) {
 				actions.remove(actionType);
 			}
 		}
 
-		private static <T extends FlexoObject> List<FlexoActionType<?, ?, ?>> updateActionListFor(Class<T> aClass) {
-			List<FlexoActionType<?, ?, ?>> newActionList = new ArrayList<FlexoActionType<?, ?, ?>>();
-			for (Map.Entry<Class, List<FlexoActionType<?, ?, ?>>> e : _declaredActionsForClass.entrySet()) {
+		private static <T extends FlexoObject> List<FlexoActionFactory<?, ?, ?>> updateActionListFor(Class<T> aClass) {
+			List<FlexoActionFactory<?, ?, ?>> newActionList = new ArrayList<FlexoActionFactory<?, ?, ?>>();
+			for (Map.Entry<Class, List<FlexoActionFactory<?, ?, ?>>> e : _declaredActionsForClass.entrySet()) {
 				if (e.getKey().isAssignableFrom(aClass)) {
 					newActionList.addAll(e.getValue());
 				}
@@ -638,7 +638,7 @@ public interface FlexoObject extends AccessibleProxyObject, DeletableProxyObject
 			_actionListForClass.put(aClass, newActionList);
 			if (logger.isLoggable(Level.FINE)) {
 				logger.fine("updateActionListFor() class: " + aClass);
-				for (FlexoActionType<?, ?, ?> a : newActionList) {
+				for (FlexoActionFactory<?, ?, ?> a : newActionList) {
 					logger.finer(" > " + a);
 				}
 			}
@@ -649,7 +649,7 @@ public interface FlexoObject extends AccessibleProxyObject, DeletableProxyObject
 			return getActionList().size();
 		}
 
-		public FlexoActionType<?, ?, ?> getActionTypeAt(int index) {
+		public FlexoActionFactory<?, ?, ?> getActionTypeAt(int index) {
 			return getActionList().get(index);
 		}
 

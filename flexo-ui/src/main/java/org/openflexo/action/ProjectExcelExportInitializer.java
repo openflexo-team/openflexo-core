@@ -47,7 +47,7 @@ import javax.swing.Icon;
 import javax.swing.JFileChooser;
 
 import org.openflexo.foundation.action.FlexoActionInitializer;
-import org.openflexo.foundation.action.FlexoActionType;
+import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.icon.IconLibrary;
 import org.openflexo.toolbox.FileUtils;
 import org.openflexo.view.FlexoFrame;
@@ -123,7 +123,7 @@ public class ProjectExcelExportInitializer extends ActionInitializer {
 	}
 
 	@Override
-	protected Icon getEnabledIcon(FlexoActionType actionType) {
+	protected Icon getEnabledIcon(FlexoActionFactory actionType) {
 		return IconLibrary.BIG_EXCEL_ICON;
 	}
 

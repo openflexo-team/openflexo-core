@@ -47,7 +47,7 @@ import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.FlexoAction;
-import org.openflexo.foundation.action.FlexoActionType;
+import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.gina.model.FIBComponent;
 import org.openflexo.gina.model.FIBContainer;
 import org.openflexo.gina.model.listener.FIBSelectionListener;
@@ -136,9 +136,9 @@ public abstract class FIBBrowserView<O> extends SelectionSynchronizedFIBView imp
 		for (FIBBrowserElement el : browser.getElements()) {
 			if (el.getDataType() != null) {
 				if (TypeUtils.isTypeAssignableFrom(FlexoObject.class, el.getDataType())) {
-					List<FlexoActionType<?, ?, ?>> actionList = FlexoObjectImpl
+					List<FlexoActionFactory<?, ?, ?>> actionList = FlexoObjectImpl
 							.getActionList((Class<? extends FlexoObject>) TypeUtils.getBaseClass(el.getDataType()));
-					for (FlexoActionType<?, ?, ?> actionType : actionList) {
+					for (FlexoActionFactory<?, ?, ?> actionType : actionList) {
 						boolean foundAction = false;
 						for (FIBBrowserAction action : el.getActions()) {
 							if (action instanceof FIBBrowserActionAdapter) {

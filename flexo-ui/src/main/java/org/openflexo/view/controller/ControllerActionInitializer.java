@@ -59,7 +59,7 @@ import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionEnableCondition;
 import org.openflexo.foundation.action.FlexoActionFinalizer;
 import org.openflexo.foundation.action.FlexoActionInitializer;
-import org.openflexo.foundation.action.FlexoActionType;
+import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.action.FlexoActionVisibleCondition;
 import org.openflexo.foundation.action.FlexoActionizer.EditorProvider;
 import org.openflexo.foundation.action.FlexoExceptionHandler;
@@ -80,7 +80,7 @@ public class ControllerActionInitializer implements EditorProvider {
 
 	private final FlexoController _controller;
 
-	private final Map<FlexoActionType<?, ?, ?>, ActionInitializer<?, ?, ?>> initializers;
+	private final Map<FlexoActionFactory<?, ?, ?>, ActionInitializer<?, ?, ?>> initializers;
 	private final Map<Class<?>, ActionInitializer<?, ?, ?>> initializersByActionClass;
 
 	protected ControllerActionInitializer(FlexoController controller) {
@@ -91,7 +91,7 @@ public class ControllerActionInitializer implements EditorProvider {
 		initializeActions();
 	}
 
-	public Map<FlexoActionType<?, ?, ?>, ActionInitializer<?, ?, ?>> getActionInitializers() {
+	public Map<FlexoActionFactory<?, ?, ?>, ActionInitializer<?, ?, ?>> getActionInitializers() {
 		return initializers;
 	}
 
@@ -100,7 +100,7 @@ public class ControllerActionInitializer implements EditorProvider {
 	}
 
 	public <A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> void registerInitializer(
-			FlexoActionType<A, T1, T2> actionType, ActionInitializer<A, T1, T2> initializer) {
+			FlexoActionFactory<A, T1, T2> actionType, ActionInitializer<A, T1, T2> initializer) {
 		if (actionType != null) {
 			initializers.put(actionType, initializer);
 		}
@@ -120,7 +120,7 @@ public class ControllerActionInitializer implements EditorProvider {
 	}
 
 	public <A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> void clearInitializer(
-			FlexoActionType<A, T1, T2> actionType) {
+			FlexoActionFactory<A, T1, T2> actionType) {
 		if (actionType != null) {
 			System.out.println("Clear initializer for " + actionType);
 			initializers.remove(actionType);
@@ -182,7 +182,7 @@ public class ControllerActionInitializer implements EditorProvider {
 
 	@SuppressWarnings("unchecked")
 	public <A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> ActionInitializer<A, T1, T2> getActionInitializer(
-			FlexoActionType<A, T1, T2> actionType) {
+			FlexoActionFactory<A, T1, T2> actionType) {
 		ActionInitializer<A, T1, T2> actionInitializer = (ActionInitializer<A, T1, T2>) initializers.get(actionType);
 		if (actionInitializer == null) {
 			Type superClass = actionType.getClass().getGenericSuperclass();
@@ -195,7 +195,7 @@ public class ControllerActionInitializer implements EditorProvider {
 	}
 
 	public <A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> FlexoActionFinalizer<A> getFinalizerFor(
-			FlexoActionType<A, T1, T2> actionType) {
+			FlexoActionFactory<A, T1, T2> actionType) {
 		ActionInitializer<A, T1, T2> initializer = getActionInitializer(actionType);
 		if (initializer != null) {
 			return initializer.getDefaultFinalizer();
@@ -204,7 +204,7 @@ public class ControllerActionInitializer implements EditorProvider {
 	}
 
 	public <A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> FlexoActionInitializer<A> getInitializerFor(
-			FlexoActionType<A, T1, T2> actionType) {
+			FlexoActionFactory<A, T1, T2> actionType) {
 		ActionInitializer<A, T1, T2> initializer = getActionInitializer(actionType);
 		if (initializer != null) {
 			return initializer.getDefaultInitializer();
@@ -213,7 +213,7 @@ public class ControllerActionInitializer implements EditorProvider {
 	}
 
 	public <A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> FlexoActionEnableCondition<A, T1, T2> getEnableConditionFor(
-			FlexoActionType<A, T1, T2> actionType) {
+			FlexoActionFactory<A, T1, T2> actionType) {
 		ActionInitializer<A, T1, T2> initializer = getActionInitializer(actionType);
 		if (initializer != null) {
 			return initializer.getEnableCondition();
@@ -222,7 +222,7 @@ public class ControllerActionInitializer implements EditorProvider {
 	}
 
 	public <A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> FlexoActionVisibleCondition<A, T1, T2> getVisibleConditionFor(
-			FlexoActionType<A, T1, T2> actionType) {
+			FlexoActionFactory<A, T1, T2> actionType) {
 		ActionInitializer<A, T1, T2> initializer = getActionInitializer(actionType);
 		if (initializer != null) {
 			return initializer.getVisibleCondition();
@@ -231,7 +231,7 @@ public class ControllerActionInitializer implements EditorProvider {
 	}
 
 	public <A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> FlexoExceptionHandler<A> getExceptionHandlerFor(
-			FlexoActionType<A, T1, T2> actionType) {
+			FlexoActionFactory<A, T1, T2> actionType) {
 		ActionInitializer<A, T1, T2> initializer = getActionInitializer(actionType);
 		if (initializer != null) {
 			return initializer.getDefaultExceptionHandler();

@@ -45,12 +45,12 @@ import org.openflexo.drm.DocItem;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.action.FlexoAction;
-import org.openflexo.foundation.action.FlexoActionType;
+import org.openflexo.foundation.action.FlexoActionFactory;
 
 public class RemoveInheritanceChildItem extends FlexoAction {
 
-	public static FlexoActionType actionType = new FlexoActionType("remove_inheritance_child", FlexoActionType.defaultGroup,
-			FlexoActionType.NORMAL_ACTION_TYPE) {
+	public static FlexoActionFactory actionType = new FlexoActionFactory("remove_inheritance_child", FlexoActionFactory.defaultGroup,
+			FlexoActionFactory.NORMAL_ACTION_TYPE) {
 
 		/**
 		 * Factory method

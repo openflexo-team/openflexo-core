@@ -46,7 +46,7 @@ import java.util.logging.Logger;
 import org.openflexo.connie.type.PrimitiveType;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
-import org.openflexo.foundation.action.FlexoActionType;
+import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.action.NotImplementedException;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.FMLObject;
@@ -73,8 +73,8 @@ public class CreatePrimitiveRole extends AbstractCreateFlexoRole<CreatePrimitive
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CreatePrimitiveRole.class.getPackage().getName());
 
-	public static FlexoActionType<CreatePrimitiveRole, FlexoConceptObject, FMLObject> actionType = new FlexoActionType<CreatePrimitiveRole, FlexoConceptObject, FMLObject>(
-			"create_primitive_role", FlexoActionType.newPropertyMenu, FlexoActionType.defaultGroup, FlexoActionType.ADD_ACTION_TYPE) {
+	public static FlexoActionFactory<CreatePrimitiveRole, FlexoConceptObject, FMLObject> actionType = new FlexoActionFactory<CreatePrimitiveRole, FlexoConceptObject, FMLObject>(
+			"create_primitive_role", FlexoActionFactory.newPropertyMenu, FlexoActionFactory.defaultGroup, FlexoActionFactory.ADD_ACTION_TYPE) {
 
 		/**
 		 * Factory method

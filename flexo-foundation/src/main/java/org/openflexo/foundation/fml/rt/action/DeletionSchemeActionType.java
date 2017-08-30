@@ -41,7 +41,7 @@ package org.openflexo.foundation.fml.rt.action;
 import java.util.Vector;
 
 import org.openflexo.foundation.FlexoEditor;
-import org.openflexo.foundation.action.FlexoActionType;
+import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.fml.DeletionScheme;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstanceObject;
@@ -49,7 +49,7 @@ import org.openflexo.foundation.fml.rt.VirtualModelInstanceObject;
 public class DeletionSchemeActionType extends AbstractActionSchemeActionType<DeletionSchemeAction, DeletionScheme, FlexoConceptInstance> {
 
 	public DeletionSchemeActionType(DeletionScheme deletionScheme, FlexoConceptInstance flexoConceptInstance) {
-		super(deletionScheme, flexoConceptInstance, FlexoActionType.editGroup, FlexoActionType.DELETE_ACTION_TYPE);
+		super(deletionScheme, flexoConceptInstance, FlexoActionFactory.editGroup, FlexoActionFactory.DELETE_ACTION_TYPE);
 	}
 
 	@Override

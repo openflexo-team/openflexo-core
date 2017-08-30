@@ -45,7 +45,7 @@ import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.IOFlexoException;
-import org.openflexo.foundation.action.FlexoActionType;
+import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.VirtualModel;
@@ -68,9 +68,9 @@ public class CreateContainedVirtualModel extends AbstractCreateVirtualModel<Crea
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CreateContainedVirtualModel.class.getPackage().getName());
 
-	public static FlexoActionType<CreateContainedVirtualModel, VirtualModel, FMLObject> actionType = new FlexoActionType<CreateContainedVirtualModel, VirtualModel, FMLObject>(
-			"create_basic_virtual_model", FlexoActionType.newVirtualModelMenu, FlexoActionType.defaultGroup,
-			FlexoActionType.ADD_ACTION_TYPE) {
+	public static FlexoActionFactory<CreateContainedVirtualModel, VirtualModel, FMLObject> actionType = new FlexoActionFactory<CreateContainedVirtualModel, VirtualModel, FMLObject>(
+			"create_basic_virtual_model", FlexoActionFactory.newVirtualModelMenu, FlexoActionFactory.defaultGroup,
+			FlexoActionFactory.ADD_ACTION_TYPE) {
 
 		/**
 		 * Factory method

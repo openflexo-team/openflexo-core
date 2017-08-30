@@ -44,7 +44,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
-import org.openflexo.foundation.action.FlexoActionType;
+import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.action.NotImplementedException;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.FMLObject;
@@ -68,8 +68,8 @@ public class CreateGetSetProperty extends AbstractCreateFlexoProperty<CreateGetS
 
 	private static final Logger logger = Logger.getLogger(CreateGetSetProperty.class.getPackage().getName());
 
-	public static FlexoActionType<CreateGetSetProperty, FlexoConceptObject, FMLObject> actionType = new FlexoActionType<CreateGetSetProperty, FlexoConceptObject, FMLObject>(
-			"create_get_set_property", FlexoActionType.newPropertyMenu, FlexoActionType.defaultGroup, FlexoActionType.ADD_ACTION_TYPE) {
+	public static FlexoActionFactory<CreateGetSetProperty, FlexoConceptObject, FMLObject> actionType = new FlexoActionFactory<CreateGetSetProperty, FlexoConceptObject, FMLObject>(
+			"create_get_set_property", FlexoActionFactory.newPropertyMenu, FlexoActionFactory.defaultGroup, FlexoActionFactory.ADD_ACTION_TYPE) {
 
 		/**
 		 * Factory method

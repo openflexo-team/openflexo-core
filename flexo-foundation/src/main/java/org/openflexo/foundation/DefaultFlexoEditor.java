@@ -46,7 +46,7 @@ import javax.swing.Icon;
 import javax.swing.KeyStroke;
 
 import org.openflexo.foundation.action.FlexoAction;
-import org.openflexo.foundation.action.FlexoActionType;
+import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.action.FlexoUndoManager;
 import org.openflexo.foundation.fml.rt.FMLRunTimeEngine;
 import org.openflexo.foundation.fml.rt.SynchronousFMLRunTimeEngine;
@@ -147,7 +147,7 @@ public class DefaultFlexoEditor implements FlexoEditor {
 
 	@Override
 	public <A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> A performActionType(
-			FlexoActionType<A, T1, T2> actionType, T1 focusedObject, Vector<T2> globalSelection, EventObject e) {
+			FlexoActionFactory<A, T1, T2> actionType, T1 focusedObject, Vector<T2> globalSelection, EventObject e) {
 		A action = actionType.makeNewAction(focusedObject, globalSelection, this);
 		return performAction(action, e);
 	}
@@ -177,31 +177,31 @@ public class DefaultFlexoEditor implements FlexoEditor {
 
 	@Override
 	public <A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> KeyStroke getKeyStrokeFor(
-			FlexoActionType<A, T1, T2> action) {
+			FlexoActionFactory<A, T1, T2> action) {
 		return null;
 	}
 
 	@Override
 	public <A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> boolean isActionEnabled(
-			FlexoActionType<A, T1, T2> actionType, T1 focusedObject, Vector<T2> globalSelection) {
+			FlexoActionFactory<A, T1, T2> actionType, T1 focusedObject, Vector<T2> globalSelection) {
 		return actionType.isEnabled(focusedObject, globalSelection);
 	}
 
 	@Override
 	public <A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> boolean isActionVisible(
-			FlexoActionType<A, T1, T2> actionType, T1 focusedObject, Vector<T2> globalSelection) {
+			FlexoActionFactory<A, T1, T2> actionType, T1 focusedObject, Vector<T2> globalSelection) {
 		return true;
 	}
 
 	@Override
 	public <A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> Icon getEnabledIconFor(
-			FlexoActionType<A, T1, T2> action) {
+			FlexoActionFactory<A, T1, T2> action) {
 		return null;
 	}
 
 	@Override
 	public <A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> Icon getDisabledIconFor(
-			FlexoActionType<A, T1, T2> action) {
+			FlexoActionFactory<A, T1, T2> action) {
 		return null;
 	}
 

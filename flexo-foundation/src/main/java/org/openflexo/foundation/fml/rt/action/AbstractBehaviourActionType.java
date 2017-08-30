@@ -41,14 +41,14 @@ package org.openflexo.foundation.fml.rt.action;
 import java.util.Vector;
 
 import org.openflexo.foundation.action.ActionGroup;
-import org.openflexo.foundation.action.FlexoActionType;
+import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstanceObject;
 import org.openflexo.localization.LocalizedDelegate;
 
 public abstract class AbstractBehaviourActionType<A extends FlexoBehaviourAction<A, FB, O>, FB extends FlexoBehaviour, O extends FlexoConceptInstance>
-		extends FlexoActionType<A, O, VirtualModelInstanceObject> {
+		extends FlexoActionFactory<A, O, VirtualModelInstanceObject> {
 
 	private final FB behaviour;
 	private final O flexoConceptInstance;

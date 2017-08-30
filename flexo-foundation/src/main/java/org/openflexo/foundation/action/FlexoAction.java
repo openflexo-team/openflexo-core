@@ -54,8 +54,6 @@ import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
-import org.openflexo.foundation.utils.FlexoProgress;
-import org.openflexo.foundation.utils.FlexoProgressFactory;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.localization.LocalizedDelegate;
 import org.openflexo.logging.FlexoLogger;
@@ -74,19 +72,17 @@ public abstract class FlexoAction<A extends FlexoAction<A, T1, T2>, T1 extends F
 
 	private static final Logger logger = FlexoLogger.getLogger(FlexoAction.class.getPackage().getName());
 
-	private FlexoActionType<A, T1, T2> _actionType;
+	private FlexoActionFactory<A, T1, T2> _actionType;
 	private T1 _focusedObject;
 	private Vector<T2> _globalSelection;
 	private Object _context;
 	private Object _invoker;
-	private FlexoProgress _flexoProgress;
 	private FlexoEditor _editor;
 
 	private FlexoActionCompoundEdit compoundEdit;
 
 	public boolean delete() {
 		_editor = null;
-		_flexoProgress = null;
 		_invoker = null;
 		_context = null;
 		if (_globalSelection != null) {
@@ -139,7 +135,7 @@ public abstract class FlexoAction<A extends FlexoAction<A, T1, T2>, T1 extends F
 	protected ExecutionStatus executionStatus = ExecutionStatus.NEVER_EXECUTED;
 	private FlexoException thrownException = null;
 
-	public FlexoAction(FlexoActionType<A, T1, T2> actionType, T1 focusedObject, List<T2> globalSelection, FlexoEditor editor) {
+	public FlexoAction(FlexoActionFactory<A, T1, T2> actionType, T1 focusedObject, List<T2> globalSelection, FlexoEditor editor) {
 		super();
 		_editor = editor;
 		_actionType = actionType;
@@ -155,7 +151,7 @@ public abstract class FlexoAction<A extends FlexoAction<A, T1, T2>, T1 extends F
 		}
 	}
 
-	public FlexoActionType<A, T1, T2> getActionType() {
+	public FlexoActionFactory<A, T1, T2> getActionType() {
 		return _actionType;
 	}
 
@@ -242,13 +238,6 @@ public abstract class FlexoAction<A extends FlexoAction<A, T1, T2>, T1 extends F
 		return (A) this;
 	}
 
-	public void hideFlexoProgress() {
-		if (getFlexoProgress() != null) {
-			getFlexoProgress().hideWindow();
-			setFlexoProgress(null);
-		}
-	}
-
 	protected abstract void doAction(Object context) throws FlexoException;
 
 	public Object getContext() {
@@ -265,47 +254,6 @@ public abstract class FlexoAction<A extends FlexoAction<A, T1, T2>, T1 extends F
 
 	public void setInvoker(Object invoker) {
 		_invoker = invoker;
-	}
-
-	public FlexoProgressFactory getFlexoProgressFactory() {
-		if (getEditor() != null) {
-			return getEditor().getFlexoProgressFactory();
-		}
-		return null;
-	}
-
-	public FlexoProgress getFlexoProgress() {
-		return _flexoProgress;
-	}
-
-	public void setFlexoProgress(FlexoProgress flexoProgress) {
-		_flexoProgress = flexoProgress;
-	}
-
-	public FlexoProgress makeFlexoProgress(String title, int steps) {
-		if (getFlexoProgressFactory() != null) {
-			setFlexoProgress(getFlexoProgressFactory().makeFlexoProgress(title, steps));
-			return getFlexoProgress();
-		}
-		return null;
-	}
-
-	public void setProgress(String stepName) {
-		if (getFlexoProgress() != null) {
-			getFlexoProgress().setProgress(stepName);
-		}
-	}
-
-	public void resetSecondaryProgress(int steps) {
-		if (getFlexoProgress() != null) {
-			getFlexoProgress().resetSecondaryProgress(steps);
-		}
-	}
-
-	public void setSecondaryProgress(String stepName) {
-		if (getFlexoProgress() != null) {
-			getFlexoProgress().setSecondaryProgress(stepName);
-		}
 	}
 
 	public Vector<FlexoObject> getGlobalSelectionAndFocusedObject() {

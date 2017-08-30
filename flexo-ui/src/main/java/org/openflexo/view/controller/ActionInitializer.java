@@ -50,7 +50,7 @@ import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionEnableCondition;
 import org.openflexo.foundation.action.FlexoActionFinalizer;
 import org.openflexo.foundation.action.FlexoActionInitializer;
-import org.openflexo.foundation.action.FlexoActionType;
+import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.action.FlexoActionVisibleCondition;
 import org.openflexo.foundation.action.FlexoExceptionHandler;
 import org.openflexo.gina.ApplicationFIBLibrary;
@@ -66,9 +66,9 @@ import org.openflexo.view.FlexoFrame;
 
 public abstract class ActionInitializer<A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> {
 	private final ControllerActionInitializer _controllerActionInitializer;
-	private final FlexoActionType<A, T1, T2> _actionType;
+	private final FlexoActionFactory<A, T1, T2> _actionType;
 
-	public ActionInitializer(FlexoActionType<A, T1, T2> actionType, ControllerActionInitializer controllerActionInitializer) {
+	public ActionInitializer(FlexoActionFactory<A, T1, T2> actionType, ControllerActionInitializer controllerActionInitializer) {
 		super();
 		_controllerActionInitializer = controllerActionInitializer;
 		_actionType = actionType;
@@ -192,7 +192,7 @@ public abstract class ActionInitializer<A extends FlexoAction<A, T1, T2>, T1 ext
 	 * 
 	 * @return null
 	 */
-	protected Icon getEnabledIcon(FlexoActionType actionType) {
+	protected Icon getEnabledIcon(FlexoActionFactory actionType) {
 		return null;
 	}
 
@@ -202,7 +202,7 @@ public abstract class ActionInitializer<A extends FlexoAction<A, T1, T2>, T1 ext
 	 * 
 	 * @return null
 	 */
-	protected Icon getDisabledIcon(FlexoActionType actionType) {
+	protected Icon getDisabledIcon(FlexoActionFactory actionType) {
 		return null;
 	}
 

@@ -44,13 +44,13 @@ import java.util.Vector;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
-import org.openflexo.foundation.action.FlexoActionType;
+import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.action.FlexoGUIAction;
 
 public class HelpAction extends FlexoGUIAction<HelpAction, FlexoObject, FlexoObject> {
 
-	public static FlexoActionType<HelpAction, FlexoObject, FlexoObject> actionType = new FlexoActionType<HelpAction, FlexoObject, FlexoObject>(
-			"help", FlexoActionType.helpGroup) {
+	public static FlexoActionFactory<HelpAction, FlexoObject, FlexoObject> actionType = new FlexoActionFactory<HelpAction, FlexoObject, FlexoObject>(
+			"help", FlexoActionFactory.helpGroup) {
 
 		/**
 		 * Factory method

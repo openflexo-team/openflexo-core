@@ -45,7 +45,7 @@ import java.util.logging.Logger;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
-import org.openflexo.foundation.action.FlexoActionType;
+import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.action.FlexoGUIAction;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.logging.FlexoLogger;
@@ -60,8 +60,8 @@ public class ValidateAction extends FlexoGUIAction<ValidateAction, FMLObject, Fl
 
 	private static final Logger logger = FlexoLogger.getLogger(ValidateAction.class.getPackage().getName());
 
-	public static FlexoActionType<ValidateAction, FMLObject, FlexoObject> actionType = new FlexoActionType<ValidateAction, FMLObject, FlexoObject>(
-			"revalidate", FlexoActionType.inspectGroup) {
+	public static FlexoActionFactory<ValidateAction, FMLObject, FlexoObject> actionType = new FlexoActionFactory<ValidateAction, FMLObject, FlexoObject>(
+			"revalidate", FlexoActionFactory.inspectGroup) {
 
 		/**
 		 * Factory method

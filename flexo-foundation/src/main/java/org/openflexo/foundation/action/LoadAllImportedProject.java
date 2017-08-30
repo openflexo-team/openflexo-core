@@ -49,7 +49,7 @@ import org.openflexo.foundation.utils.ProjectLoadingCancelledException;
 
 public class LoadAllImportedProject extends FlexoAction<LoadAllImportedProject, FlexoProjectObject, FlexoProjectObject> {
 
-	public static final FlexoActionType<LoadAllImportedProject, FlexoProjectObject, FlexoProjectObject> actionType = new FlexoActionType<LoadAllImportedProject, FlexoProjectObject, FlexoProjectObject>(
+	public static final FlexoActionFactory<LoadAllImportedProject, FlexoProjectObject, FlexoProjectObject> actionType = new FlexoActionFactory<LoadAllImportedProject, FlexoProjectObject, FlexoProjectObject>(
 			"load_all_imported_project") {
 
 		@Override

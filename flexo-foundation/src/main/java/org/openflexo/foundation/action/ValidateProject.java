@@ -51,7 +51,7 @@ public class ValidateProject extends FlexoAction<ValidateProject, FlexoProjectOb
 
 	static final Logger logger = Logger.getLogger(ValidateProject.class.getPackage().getName());
 
-	public static FlexoActionType<ValidateProject, FlexoProjectObject, FlexoProjectObject> actionType = new FlexoActionType<ValidateProject, FlexoProjectObject, FlexoProjectObject>(
+	public static FlexoActionFactory<ValidateProject, FlexoProjectObject, FlexoProjectObject> actionType = new FlexoActionFactory<ValidateProject, FlexoProjectObject, FlexoProjectObject>(
 			"validate_project") {
 
 		/**

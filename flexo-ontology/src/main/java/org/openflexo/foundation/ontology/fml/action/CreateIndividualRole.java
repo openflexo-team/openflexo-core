@@ -46,7 +46,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
-import org.openflexo.foundation.action.FlexoActionType;
+import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.action.NotImplementedException;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.FMLObject;
@@ -80,8 +80,8 @@ public class CreateIndividualRole extends AbstractCreateFlexoRole<CreateIndividu
 
 	private final List<Class<? extends FlexoRole<?>>> vmAvailableFlexoRoleTypes = null;
 
-	public static FlexoActionType<CreateIndividualRole, FlexoConceptObject, FMLObject> actionType = new FlexoActionType<CreateIndividualRole, FlexoConceptObject, FMLObject>(
-			"create_individual_role", FlexoActionType.newPropertyMenu, FlexoActionType.defaultGroup, FlexoActionType.ADD_ACTION_TYPE) {
+	public static FlexoActionFactory<CreateIndividualRole, FlexoConceptObject, FMLObject> actionType = new FlexoActionFactory<CreateIndividualRole, FlexoConceptObject, FMLObject>(
+			"create_individual_role", FlexoActionFactory.newPropertyMenu, FlexoActionFactory.defaultGroup, FlexoActionFactory.ADD_ACTION_TYPE) {
 
 		/**
 		 * Factory method

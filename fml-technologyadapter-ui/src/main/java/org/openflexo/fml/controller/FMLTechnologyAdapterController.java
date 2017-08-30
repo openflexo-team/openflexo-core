@@ -82,7 +82,7 @@ import org.openflexo.fml.controller.widget.FIBVirtualModelLibraryBrowser;
 import org.openflexo.fml.controller.widget.FlexoConceptInstanceTypeEditor;
 import org.openflexo.fml.controller.widget.FlexoResourceTypeEditor;
 import org.openflexo.fml.controller.widget.VirtualModelInstanceTypeEditor;
-import org.openflexo.foundation.action.FlexoActionType;
+import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.fml.ActionScheme;
 import org.openflexo.foundation.fml.CloningScheme;
 import org.openflexo.foundation.fml.CreationScheme;
@@ -255,9 +255,9 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 		actionInitializer.getEditingContext().registerPasteHandler(new FMLControlGraphPasteHandler());
 		actionInitializer.getEditingContext().registerPasteHandler(new BehaviorPasteHandler());
 
-		FlexoActionType.newVirtualModelMenu.setSmallIcon(FMLIconLibrary.VIRTUAL_MODEL_ICON);
-		FlexoActionType.newPropertyMenu.setSmallIcon(FMLIconLibrary.FLEXO_ROLE_ICON);
-		FlexoActionType.newBehaviourMenu.setSmallIcon(FMLIconLibrary.FLEXO_BEHAVIOUR_ICON);
+		FlexoActionFactory.newVirtualModelMenu.setSmallIcon(FMLIconLibrary.VIRTUAL_MODEL_ICON);
+		FlexoActionFactory.newPropertyMenu.setSmallIcon(FMLIconLibrary.FLEXO_ROLE_ICON);
+		FlexoActionFactory.newBehaviourMenu.setSmallIcon(FMLIconLibrary.FLEXO_BEHAVIOUR_ICON);
 	}
 
 	@Override

@@ -54,9 +54,9 @@ import org.openflexo.foundation.FlexoObject;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.localization.LocalizedDelegate;
 
-public abstract class FlexoActionType<A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> {
+public abstract class FlexoActionFactory<A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> {
 
-	private static final Logger logger = Logger.getLogger(FlexoActionType.class.getPackage().getName());
+	private static final Logger logger = Logger.getLogger(FlexoActionFactory.class.getPackage().getName());
 
 	public static final ActionGroup inspectGroup = new ActionGroup("inspect", 0);
 	public static final ActionGroup defaultGroup = new ActionGroup("default", 1);
@@ -95,14 +95,14 @@ public abstract class FlexoActionType<A extends FlexoAction<A, T1, T2>, T1 exten
 
 	// private Vector _modulesWhereActionIsRegistered;
 
-	protected FlexoActionType(String actionName) {
+	protected FlexoActionFactory(String actionName) {
 		this(actionName, null, defaultGroup, NORMAL_ACTION_TYPE);
 	}
 
 	public Type getFocusedObjectType() {
-		Map<TypeVariable<?>, Type> typeArguments = TypeUtils.getTypeArguments(getClass(), FlexoActionType.class);
+		Map<TypeVariable<?>, Type> typeArguments = TypeUtils.getTypeArguments(getClass(), FlexoActionFactory.class);
 		for (Entry<TypeVariable<?>, Type> e : typeArguments.entrySet()) {
-			if (e.getKey().getName().equals("T1") && e.getKey().getGenericDeclaration() == FlexoActionType.class) {
+			if (e.getKey().getName().equals("T1") && e.getKey().getGenericDeclaration() == FlexoActionFactory.class) {
 				return e.getValue();
 			}
 		}
@@ -110,65 +110,65 @@ public abstract class FlexoActionType<A extends FlexoAction<A, T1, T2>, T1 exten
 	}
 
 	public Type getGlobalSelectionType() {
-		Map<TypeVariable<?>, Type> typeArguments = TypeUtils.getTypeArguments(getClass(), FlexoActionType.class);
+		Map<TypeVariable<?>, Type> typeArguments = TypeUtils.getTypeArguments(getClass(), FlexoActionFactory.class);
 		for (Entry<TypeVariable<?>, Type> e : typeArguments.entrySet()) {
-			if (e.getKey().getName().equals("T2") && e.getKey().getGenericDeclaration() == FlexoActionType.class) {
+			if (e.getKey().getName().equals("T2") && e.getKey().getGenericDeclaration() == FlexoActionFactory.class) {
 				return e.getValue();
 			}
 		}
 		return FlexoObject.class;
 	}
 
-	/*protected FlexoActionType (String actionName, Icon icon)
+	/*protected FlexoActionFactory (String actionName, Icon icon)
 	{
 	    this(actionName,null,defaultGroup,icon,NORMAL_ACTION_TYPE);
 	}*/
 
-	protected FlexoActionType(String actionName, ActionGroup actionGroup) {
+	protected FlexoActionFactory(String actionName, ActionGroup actionGroup) {
 		this(actionName, null, actionGroup, NORMAL_ACTION_TYPE);
 	}
 
-	protected FlexoActionType(String actionName, ActionGroup actionGroup, ActionMenu actionMenu) {
+	protected FlexoActionFactory(String actionName, ActionGroup actionGroup, ActionMenu actionMenu) {
 		this(actionName, actionMenu, actionGroup, NORMAL_ACTION_TYPE);
 	}
 
-	/*protected FlexoActionType (String actionName, ActionGroup actionGroup, Icon icon)
+	/*protected FlexoActionFactory (String actionName, ActionGroup actionGroup, Icon icon)
 	{
 	    this(actionName,null,actionGroup,icon,NORMAL_ACTION_TYPE);
 	}*/
 
-	protected FlexoActionType(String actionName, ActionMenu actionMenu, ActionGroup actionGroup) {
+	protected FlexoActionFactory(String actionName, ActionMenu actionMenu, ActionGroup actionGroup) {
 		this(actionName, actionMenu, actionGroup, NORMAL_ACTION_TYPE);
 	}
 
-	/* protected FlexoActionType (String actionName, ActionMenu actionMenu, ActionGroup actionGroup, Icon icon)
+	/* protected FlexoActionFactory (String actionName, ActionMenu actionMenu, ActionGroup actionGroup, Icon icon)
 	 {
 	     this(actionName,actionMenu,actionGroup,icon,NORMAL_ACTION_TYPE);
 	 }*/
 
-	protected FlexoActionType(String actionName, int actionCategory) {
+	protected FlexoActionFactory(String actionName, int actionCategory) {
 		this(actionName, defaultGroup, null, actionCategory);
 	}
 
-	/* protected FlexoActionType (String actionName, Icon icon, int actionCategory)
+	/* protected FlexoActionFactory (String actionName, Icon icon, int actionCategory)
 	 {
 	     this(actionName,null,defaultGroup,icon,actionCategory);
 	 }*/
 
-	protected FlexoActionType(String actionName, ActionGroup actionGroup, int actionCategory) {
+	protected FlexoActionFactory(String actionName, ActionGroup actionGroup, int actionCategory) {
 		this(actionName, actionGroup, null, actionCategory);
 	}
 
-	protected FlexoActionType(String actionName, ActionGroup actionGroup, ActionMenu actionMenu, int actionCategory) {
+	protected FlexoActionFactory(String actionName, ActionGroup actionGroup, ActionMenu actionMenu, int actionCategory) {
 		this(actionName, actionMenu, actionGroup, actionCategory);
 	}
 
-	/*protected FlexoActionType (String actionName, ActionGroup actionGroup, Icon icon, int actionCategory)
+	/*protected FlexoActionFactory (String actionName, ActionGroup actionGroup, Icon icon, int actionCategory)
 	{
 	    this(actionName,null,actionGroup,icon,actionCategory);
 	}*/
 
-	protected FlexoActionType(String actionName, ActionMenu actionMenu, ActionGroup actionGroup, int actionCategory) {
+	protected FlexoActionFactory(String actionName, ActionMenu actionMenu, ActionGroup actionGroup, int actionCategory) {
 		super();
 		_actionCategory = actionCategory;
 		_actionName = actionName;
@@ -176,7 +176,7 @@ public abstract class FlexoActionType<A extends FlexoAction<A, T1, T2>, T1 exten
 		setActionGroup(actionGroup);
 	}
 
-	/*protected FlexoActionType (String actionName, ActionMenu actionMenu, ActionGroup actionGroup, Icon icon, int actionCategory)
+	/*protected FlexoActionFactory (String actionName, ActionMenu actionMenu, ActionGroup actionGroup, Icon icon, int actionCategory)
 	{
 	    super();
 	    _actionCategory = actionCategory;
@@ -199,7 +199,7 @@ public abstract class FlexoActionType<A extends FlexoAction<A, T1, T2>, T1 exten
 	        if (next.isAvailable()) return true;
 	    }
 	    if (logger.isLoggable(Level.FINE))
-	        logger.fine ("FlexoActionType: sorry action not available !");
+	        logger.fine ("FlexoActionFactory: sorry action not available !");
 	    return false;
 	}*/
 

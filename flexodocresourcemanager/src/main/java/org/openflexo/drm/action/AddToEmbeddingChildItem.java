@@ -46,12 +46,12 @@ import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.FlexoAction;
-import org.openflexo.foundation.action.FlexoActionType;
+import org.openflexo.foundation.action.FlexoActionFactory;
 
 public class AddToEmbeddingChildItem extends FlexoAction {
 
-	public static FlexoActionType actionType = new FlexoActionType("add_embedding_child", FlexoActionType.newMenu,
-			FlexoActionType.defaultGroup, FlexoActionType.ADD_ACTION_TYPE) {
+	public static FlexoActionFactory actionType = new FlexoActionFactory("add_embedding_child", FlexoActionFactory.newMenu,
+			FlexoActionFactory.defaultGroup, FlexoActionFactory.ADD_ACTION_TYPE) {
 
 		/**
 		 * Factory method

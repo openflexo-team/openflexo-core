@@ -57,7 +57,7 @@ import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.FlexoAction;
-import org.openflexo.foundation.action.FlexoActionType;
+import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.action.NotImplementedException;
 import org.openflexo.foundation.fml.ActionScheme;
 import org.openflexo.foundation.fml.CloningScheme;
@@ -87,10 +87,10 @@ public class CreateFlexoBehaviour extends FlexoAction<CreateFlexoBehaviour, Flex
 	private static final Logger logger = Logger.getLogger(CreateFlexoBehaviour.class.getPackage().getName());
 
 	public static abstract class AbstractCreateFlexoBehaviourActionType
-			extends FlexoActionType<CreateFlexoBehaviour, FlexoConceptObject, FMLObject> {
+			extends FlexoActionFactory<CreateFlexoBehaviour, FlexoConceptObject, FMLObject> {
 
 		protected AbstractCreateFlexoBehaviourActionType(String actionName) {
-			super(actionName, FlexoActionType.newBehaviourMenu, FlexoActionType.defaultGroup, FlexoActionType.ADD_ACTION_TYPE);
+			super(actionName, FlexoActionFactory.newBehaviourMenu, FlexoActionFactory.defaultGroup, FlexoActionFactory.ADD_ACTION_TYPE);
 		}
 
 		@Override
@@ -105,7 +105,7 @@ public class CreateFlexoBehaviour extends FlexoAction<CreateFlexoBehaviour, Flex
 
 	};
 
-	public static FlexoActionType<CreateFlexoBehaviour, FlexoConceptObject, FMLObject> actionType = new AbstractCreateFlexoBehaviourActionType(
+	public static FlexoActionFactory<CreateFlexoBehaviour, FlexoConceptObject, FMLObject> actionType = new AbstractCreateFlexoBehaviourActionType(
 			"generic_behaviour") {
 
 		/**
@@ -118,7 +118,7 @@ public class CreateFlexoBehaviour extends FlexoAction<CreateFlexoBehaviour, Flex
 
 	};
 
-	public static FlexoActionType<CreateFlexoBehaviour, FlexoConceptObject, FMLObject> createActionSchemeType = new AbstractCreateFlexoBehaviourActionType(
+	public static FlexoActionFactory<CreateFlexoBehaviour, FlexoConceptObject, FMLObject> createActionSchemeType = new AbstractCreateFlexoBehaviourActionType(
 			"action_scheme") {
 
 		/**
@@ -136,7 +136,7 @@ public class CreateFlexoBehaviour extends FlexoAction<CreateFlexoBehaviour, Flex
 
 	};
 
-	public static FlexoActionType<CreateFlexoBehaviour, FlexoConceptObject, FMLObject> createCreationSchemeType = new AbstractCreateFlexoBehaviourActionType(
+	public static FlexoActionFactory<CreateFlexoBehaviour, FlexoConceptObject, FMLObject> createCreationSchemeType = new AbstractCreateFlexoBehaviourActionType(
 			"creation_scheme") {
 
 		/**
@@ -154,7 +154,7 @@ public class CreateFlexoBehaviour extends FlexoAction<CreateFlexoBehaviour, Flex
 
 	};
 
-	public static FlexoActionType<CreateFlexoBehaviour, FlexoConceptObject, FMLObject> createDeletionSchemeType = new AbstractCreateFlexoBehaviourActionType(
+	public static FlexoActionFactory<CreateFlexoBehaviour, FlexoConceptObject, FMLObject> createDeletionSchemeType = new AbstractCreateFlexoBehaviourActionType(
 			"deletion_scheme") {
 
 		/**
@@ -171,7 +171,7 @@ public class CreateFlexoBehaviour extends FlexoAction<CreateFlexoBehaviour, Flex
 		}
 	};
 
-	public static FlexoActionType<CreateFlexoBehaviour, FlexoConceptObject, FMLObject> createEventListenerType = new AbstractCreateFlexoBehaviourActionType(
+	public static FlexoActionFactory<CreateFlexoBehaviour, FlexoConceptObject, FMLObject> createEventListenerType = new AbstractCreateFlexoBehaviourActionType(
 			"event_listener") {
 
 		/**
@@ -188,7 +188,7 @@ public class CreateFlexoBehaviour extends FlexoAction<CreateFlexoBehaviour, Flex
 		}
 	};
 
-	public static FlexoActionType<CreateFlexoBehaviour, FlexoConceptObject, FMLObject> createSynchronizationSchemeType = new AbstractCreateFlexoBehaviourActionType(
+	public static FlexoActionFactory<CreateFlexoBehaviour, FlexoConceptObject, FMLObject> createSynchronizationSchemeType = new AbstractCreateFlexoBehaviourActionType(
 			"synchronization_scheme") {
 
 		/**
@@ -205,7 +205,7 @@ public class CreateFlexoBehaviour extends FlexoAction<CreateFlexoBehaviour, Flex
 		}
 	};
 
-	public static FlexoActionType<CreateFlexoBehaviour, FlexoConceptObject, FMLObject> createCloningSchemeType = new AbstractCreateFlexoBehaviourActionType(
+	public static FlexoActionFactory<CreateFlexoBehaviour, FlexoConceptObject, FMLObject> createCloningSchemeType = new AbstractCreateFlexoBehaviourActionType(
 			"cloning_scheme") {
 
 		/**

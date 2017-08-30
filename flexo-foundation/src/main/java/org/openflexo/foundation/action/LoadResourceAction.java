@@ -59,8 +59,8 @@ public class LoadResourceAction extends FlexoAction<LoadResourceAction, FlexoObj
 
 	private static final Logger logger = FlexoLogger.getLogger(LoadResourceAction.class.getPackage().getName());
 
-	public static FlexoActionType<LoadResourceAction, FlexoObject, FlexoObject> actionType = new FlexoActionType<LoadResourceAction, FlexoObject, FlexoObject>(
-			"load_resource", FlexoActionType.defaultGroup) {
+	public static FlexoActionFactory<LoadResourceAction, FlexoObject, FlexoObject> actionType = new FlexoActionFactory<LoadResourceAction, FlexoObject, FlexoObject>(
+			"load_resource", FlexoActionFactory.defaultGroup) {
 
 		/**
 		 * Factory method

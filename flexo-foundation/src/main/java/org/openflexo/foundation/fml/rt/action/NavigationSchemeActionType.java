@@ -41,19 +41,19 @@ package org.openflexo.foundation.fml.rt.action;
 import java.util.Vector;
 
 import org.openflexo.foundation.FlexoEditor;
-import org.openflexo.foundation.action.FlexoActionType;
+import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.fml.NavigationScheme;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstanceObject;
 import org.openflexo.localization.LocalizedDelegate;
 
-public class NavigationSchemeActionType extends FlexoActionType<NavigationSchemeAction, FlexoConceptInstance, VirtualModelInstanceObject> {
+public class NavigationSchemeActionType extends FlexoActionFactory<NavigationSchemeAction, FlexoConceptInstance, VirtualModelInstanceObject> {
 
 	private final NavigationScheme navigationScheme;
 	private final FlexoConceptInstance flexoConceptInstance;
 
 	public NavigationSchemeActionType(NavigationScheme navigationScheme, FlexoConceptInstance flexoConceptInstance) {
-		super(navigationScheme.getName(), FlexoActionType.defaultGroup, FlexoActionType.NORMAL_ACTION_TYPE);
+		super(navigationScheme.getName(), FlexoActionFactory.defaultGroup, FlexoActionFactory.NORMAL_ACTION_TYPE);
 		this.navigationScheme = navigationScheme;
 		this.flexoConceptInstance = flexoConceptInstance;
 	}

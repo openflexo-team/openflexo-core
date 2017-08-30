@@ -110,7 +110,7 @@ import org.openflexo.foundation.PamelaResourceModelFactory;
 import org.openflexo.foundation.ProjectData;
 import org.openflexo.foundation.ProjectLoader;
 import org.openflexo.foundation.action.FlexoAction;
-import org.openflexo.foundation.action.FlexoActionType;
+import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.action.FlexoUndoManager.FlexoActionCompoundEdit;
 import org.openflexo.foundation.action.LoadResourceAction;
 import org.openflexo.foundation.fml.FMLObject;
@@ -663,7 +663,7 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 	}
 
 	public void registerShortcuts(ControllerActionInitializer controllerInitializer) {
-		for (final Entry<FlexoActionType<?, ?, ?>, ActionInitializer<?, ?, ?>> entry : controllerInitializer.getActionInitializers()
+		for (final Entry<FlexoActionFactory<?, ?, ?>, ActionInitializer<?, ?, ?>> entry : controllerInitializer.getActionInitializers()
 				.entrySet()) {
 			KeyStroke accelerator = entry.getValue().getShortcut();
 			if (accelerator != null) {
@@ -674,7 +674,7 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 						System.out.println("actionPerformed() with " + entry.getKey());
 						FlexoObject focusedObject = getSelectionManager().getFocusedObject();
 						Vector<FlexoObject> globalSelection = getSelectionManager().getSelection();
-						FlexoActionType actionType = entry.getKey();
+						FlexoActionFactory actionType = entry.getKey();
 						if (TypeUtils.isAssignableTo(focusedObject, actionType.getFocusedObjectType()) && (globalSelection == null
 								|| TypeUtils.isAssignableTo(globalSelection, actionType.getGlobalSelectionType()))) {
 							getEditor().performActionType(actionType, focusedObject, globalSelection, e);
