@@ -1,6 +1,6 @@
 /**
  * 
- * Copyright (c) 2014, Openflexo
+ * Copyright (c) 2014-2015, Openflexo
  * 
  * This file is part of Flexo-foundation, a component of the software infrastructure 
  * developed at Openflexo.
@@ -38,28 +38,63 @@
 
 package org.openflexo.foundation.fml.rt.action;
 
-import java.util.Vector;
+import java.util.List;
+import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoEditor;
-import org.openflexo.foundation.action.FlexoActionType;
-import org.openflexo.foundation.fml.DeletionScheme;
+import org.openflexo.foundation.fml.AbstractActionScheme;
+import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstanceObject;
 
-public class DeletionSchemeActionType extends AbstractActionSchemeActionType<DeletionSchemeAction, DeletionScheme, FlexoConceptInstance> {
+public abstract class AbstractActionSchemeAction<A extends AbstractActionSchemeAction<A, FB, O>, FB extends AbstractActionScheme, O extends FlexoConceptInstance>
+		extends FlexoBehaviourAction<A, FB, O> {
 
-	public DeletionSchemeActionType(DeletionScheme deletionScheme, FlexoConceptInstance flexoConceptInstance) {
-		super(deletionScheme, flexoConceptInstance, FlexoActionType.editGroup, FlexoActionType.DELETE_ACTION_TYPE);
+	private static final Logger logger = Logger.getLogger(AbstractActionSchemeAction.class.getPackage().getName());
+
+	private final AbstractActionSchemeActionType<A, FB, O> actionType;
+
+	public AbstractActionSchemeAction(AbstractActionSchemeActionType<A, FB, O> actionType, O focusedObject,
+			List<VirtualModelInstanceObject> globalSelection, FlexoEditor editor) {
+		super(actionType, focusedObject, globalSelection, editor);
+		this.actionType = actionType;
+	}
+
+	public FB getActionScheme() {
+		if (actionType != null) {
+			return actionType.getBehaviour();
+		}
+		return null;
+	}
+
+	/**
+	 * Return the {@link FlexoConceptInstance} on which this {@link FlexoBehaviour} is applied.<br>
+	 * 
+	 * @return
+	 */
+	@Override
+	public O getFlexoConceptInstance() {
+		if (actionType != null) {
+			return actionType.getFlexoConceptInstance();
+		}
+		return getFocusedObject();
 	}
 
 	@Override
-	public DeletionSchemeAction makeNewAction(FlexoConceptInstance focusedObject, Vector<VirtualModelInstanceObject> globalSelection,
-			FlexoEditor editor) {
-		return new DeletionSchemeAction(this, focusedObject, globalSelection, editor);
+	public FB getFlexoBehaviour() {
+		return getActionScheme();
 	}
 
-	public DeletionScheme getDeletionScheme() {
-		return getBehaviour();
+	@Override
+	public VirtualModelInstance<?, ?> retrieveVirtualModelInstance() {
+		if (getFlexoConceptInstance() instanceof VirtualModelInstance) {
+			return (VirtualModelInstance<?, ?>) getFlexoConceptInstance();
+		}
+		if (getFlexoConceptInstance() != null) {
+			return getFlexoConceptInstance().getVirtualModelInstance();
+		}
+		return null;
 	}
 
 }

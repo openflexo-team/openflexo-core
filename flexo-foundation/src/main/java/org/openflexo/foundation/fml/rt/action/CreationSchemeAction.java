@@ -51,9 +51,9 @@ import org.openflexo.foundation.fml.CreationScheme;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
-import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
+import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstanceObject;
 
 public class CreationSchemeAction extends FlexoBehaviourAction<CreationSchemeAction, CreationScheme, VirtualModelInstance<?, ?>> {
@@ -73,14 +73,12 @@ public class CreationSchemeAction extends FlexoBehaviourAction<CreationSchemeAct
 		}
 
 		@Override
-		public boolean isVisibleForSelection(VirtualModelInstance<?, ?> object,
-				Vector<VirtualModelInstanceObject> globalSelection) {
+		public boolean isVisibleForSelection(VirtualModelInstance<?, ?> object, Vector<VirtualModelInstanceObject> globalSelection) {
 			return false;
 		}
 
 		@Override
-		public boolean isEnabledForSelection(VirtualModelInstance<?, ?> object,
-				Vector<VirtualModelInstanceObject> globalSelection) {
+		public boolean isEnabledForSelection(VirtualModelInstance<?, ?> object, Vector<VirtualModelInstanceObject> globalSelection) {
 			return true;
 		}
 
@@ -94,14 +92,13 @@ public class CreationSchemeAction extends FlexoBehaviourAction<CreationSchemeAct
 	private FlexoConceptInstance container;
 	private CreationScheme _creationScheme;
 
-	CreationSchemeAction(VirtualModelInstance<?, ?> focusedObject, Vector<VirtualModelInstanceObject> globalSelection,
-			FlexoEditor editor) {
+	CreationSchemeAction(VirtualModelInstance<?, ?> focusedObject, Vector<VirtualModelInstanceObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 	}
 
 	// private Hashtable<EditionAction,FlexoModelObject> createdObjects;
 
-	private FlexoConceptInstance flexoConceptInstance;
+	private FlexoConceptInstance newFlexoConceptInstance;
 
 	@Override
 	public boolean isValid() {
@@ -125,7 +122,7 @@ public class CreationSchemeAction extends FlexoBehaviourAction<CreationSchemeAct
 
 		retrieveMissingDefaultParameters();
 
-		if (flexoConceptInstance == null) {
+		if (newFlexoConceptInstance == null) {
 			// We have to create the FCI by ourselve
 			if (getCreationScheme().getFlexoConcept() instanceof VirtualModel) {
 				// AbstractCreateVirtualModelAction should be used instead
@@ -133,10 +130,10 @@ public class CreationSchemeAction extends FlexoBehaviourAction<CreationSchemeAct
 						"Cannot create an FMLRTVirtualModelInstance this way (AbstractCreateVirtualModelAction should be used instead)");
 			}
 			else if (getCreationScheme().getFlexoConcept() != null) {
-				flexoConceptInstance = getVirtualModelInstance().makeNewFlexoConceptInstance(getFlexoConcept());
+				newFlexoConceptInstance = getVirtualModelInstance().makeNewFlexoConceptInstance(getFlexoConcept());
 				if (getContainer() != null) {
 					// System.out.println(">>>>>> On ajoute " + flexoConceptInstance + " dans " + getContainer());
-					getContainer().addToEmbeddedFlexoConceptInstances(flexoConceptInstance);
+					getContainer().addToEmbeddedFlexoConceptInstances(newFlexoConceptInstance);
 				}
 			}
 			else {
@@ -152,13 +149,13 @@ public class CreationSchemeAction extends FlexoBehaviourAction<CreationSchemeAct
 
 	/**
 	 * Used when creation of FlexoConceptInstance initialization is beeing delegated to an other component.<br>
-	 * This happens for example in the case of FMLRTVirtualModelInstance creation, where the creation of FlexoConceptInstance is performed in the
-	 * {@link AbstractCreateVirtualModelInstance} action
+	 * This happens for example in the case of FMLRTVirtualModelInstance creation, where the creation of FlexoConceptInstance is performed
+	 * in the {@link AbstractCreateVirtualModelInstance} action
 	 * 
 	 * @param flexoConceptInstance
 	 */
 	public void initWithFlexoConceptInstance(FlexoConceptInstance flexoConceptInstance) {
-		this.flexoConceptInstance = flexoConceptInstance;
+		this.newFlexoConceptInstance = flexoConceptInstance;
 	}
 
 	public boolean retrieveMissingDefaultParameters() {
@@ -222,45 +219,29 @@ public class CreationSchemeAction extends FlexoBehaviourAction<CreationSchemeAct
 		return getCreationScheme();
 	}
 
+	/**
+	 * Return the new {@link FlexoConceptInstance} beeing created by this action
+	 * 
+	 * @return
+	 */
+	public FlexoConceptInstance getNewFlexoConceptInstance() {
+		return newFlexoConceptInstance;
+	}
+
+	/**
+	 * Return the {@link FlexoConceptInstance} on which this {@link FlexoBehaviour} is applied.<br>
+	 * 
+	 * Be carefull here: this is not the {@link FlexoConceptInstance} beeing created by this action, but the {@link VirtualModelInstance} in
+	 * which {@link FlexoConceptInstance} is created
+	 */
 	@Override
-	public FlexoConceptInstance getFlexoConceptInstance() {
-		return flexoConceptInstance;
+	public VirtualModelInstance<?, ?> getFlexoConceptInstance() {
+		return vmInstance;
 	}
 
 	@Override
 	public VirtualModelInstance<?, ?> retrieveVirtualModelInstance() {
 		return getVirtualModelInstance();
 	}
-
-	/**
-	 * This is the internal code performing execution of a single {@link EditionAction} defined to be part of the execution control graph of
-	 * related {@link FlexoBehaviour}<br>
-	 */
-	/*@Override
-	protected Object performAction(EditionAction action, Hashtable<EditionAction, Object> performedActions) throws FlexoException {
-		Object assignedObject = super.performAction(action, performedActions);
-		if (assignedObject != null && action instanceof AssignableAction) {
-			AssignableAction assignableAction = (AssignableAction) action;
-			if (assignableAction.getFlexoRole() != null) {
-				getFlexoConceptInstance().setObjectForFlexoRole(assignedObject, assignableAction.getFlexoRole());
-			}
-		}
-	
-		return assignedObject;
-	}*/
-
-	/*@Override
-	public Object getValue(BindingVariable variable) {
-		return super.getValue(variable);
-	}*/
-
-	/*@Override
-	public void setValue(Object value, BindingVariable variable) {
-		if (variable instanceof FlexoPropertyBindingVariable) {
-			getFlexoConceptInstance().setFlexoActor(value, (FlexoProperty) ((FlexoPropertyBindingVariable) variable).getFlexoProperty());
-			return;
-		}
-		super.setValue(value, variable);
-	}*/
 
 }

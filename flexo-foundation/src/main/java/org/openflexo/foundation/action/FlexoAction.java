@@ -43,6 +43,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 import java.util.logging.Logger;
+
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoObject;
@@ -60,7 +61,7 @@ import org.openflexo.localization.LocalizedDelegate;
 import org.openflexo.logging.FlexoLogger;
 
 /**
- * Abstract representation of an action on Flexo model (model edition primitive)
+ * Abstract representation of an action at model level (model edition primitive)
  * 
  * T2 is arbitrary and should be removed in the long run. There is absolutely no guarantee on the actual type of T2. No assertions can be
  * made. T1 can be kept if we ensure that only actions of the type FlexoAction<A extends FlexoAction<A, T1>, T1 extends FlexoModelObject>

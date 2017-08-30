@@ -43,82 +43,23 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoException;
-import org.openflexo.foundation.fml.AbstractActionScheme;
-import org.openflexo.foundation.fml.FlexoBehaviour;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
+import org.openflexo.foundation.fml.ActionScheme;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstanceObject;
 
-public class ActionSchemeAction extends FlexoBehaviourAction<ActionSchemeAction, AbstractActionScheme, FlexoConceptInstance> {
+public class ActionSchemeAction extends AbstractActionSchemeAction<ActionSchemeAction, ActionScheme, FlexoConceptInstance> {
 
 	private static final Logger logger = Logger.getLogger(ActionSchemeAction.class.getPackage().getName());
-
-	private final ActionSchemeActionType actionType;
 
 	public ActionSchemeAction(ActionSchemeActionType actionType, FlexoConceptInstance focusedObject,
 			List<VirtualModelInstanceObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
-		this.actionType = actionType;
-	}
-
-	public AbstractActionScheme getActionScheme() {
-		if (actionType != null) {
-			return actionType.getActionScheme();
-		}
-		return null;
-	}
-
-	/**
-	 * Return the {@link FlexoConceptInstance} on which this {@link FlexoBehaviour} is applied.<br>
-	 * 
-	 * @return
-	 */
-	@Override
-	public FlexoConceptInstance getFlexoConceptInstance() {
-		if (actionType != null) {
-			return actionType.getFlexoConceptInstance();
-		}
-		return null;
-	}
-
-	@Override
-	public AbstractActionScheme getFlexoBehaviour() {
-		return getActionScheme();
 	}
 
 	@Override
 	protected void doAction(Object context) throws FlexoException {
-		logger.fine("Perform action " + actionType);
-
-		if (getActionScheme() != null && getActionScheme().evaluateCondition(actionType.getFlexoConceptInstance())) {
+		if (getActionScheme() != null && getActionScheme().evaluateCondition(getFlexoConceptInstance())) {
 			executeControlGraph();
 		}
 	}
-
-	@Override
-	public VirtualModelInstance<?, ?> retrieveVirtualModelInstance() {
-		if (getFlexoConceptInstance() instanceof VirtualModelInstance) {
-			return (VirtualModelInstance<?, ?>) getFlexoConceptInstance();
-		}
-		if (getFlexoConceptInstance() != null) {
-			return getFlexoConceptInstance().getVirtualModelInstance();
-		}
-		return null;
-	}
-
-	/*@Override
-	public Object getValue(BindingVariable variable) {
-		return super.getValue(variable);
-	}*/
-
-	/*@Override
-	public void setValue(Object value, BindingVariable variable) {
-		// Why not upper ?
-		if (variable instanceof FlexoPropertyBindingVariable) {
-			getFlexoConceptInstance().setFlexoActor(value, (FlexoProperty) ((FlexoPropertyBindingVariable) variable).getFlexoProperty());
-			return;
-		}
-		super.setValue(value, variable);
-	}*/
-
 }

@@ -42,18 +42,14 @@ import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.openflexo.connie.BindingVariable;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoException;
-import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.SynchronizationScheme;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
-import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
-import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstanceObject;
 
 public class SynchronizationSchemeAction
-		extends FlexoBehaviourAction<SynchronizationSchemeAction, SynchronizationScheme, VirtualModelInstance<?, ?>> {
+		extends AbstractActionSchemeAction<SynchronizationSchemeAction, SynchronizationScheme, VirtualModelInstance<?, ?>> {
 
 	private static final Logger logger = Logger.getLogger(SynchronizationSchemeAction.class.getPackage().getName());
 
@@ -67,28 +63,9 @@ public class SynchronizationSchemeAction
 
 	public SynchronizationScheme getSynchronizationScheme() {
 		if (actionType != null) {
-			return actionType.getSynchronizationScheme();
+			return actionType.getBehaviour();
 		}
 		return null;
-	}
-
-	/**
-	 * Return the {@link FlexoConceptInstance} on which this {@link FlexoBehaviour} is applied.<br>
-	 * Note that here, the returned {@link FlexoConceptInstance} is the {@link FMLRTVirtualModelInstance} which is to be synchronized
-	 * 
-	 * @return
-	 */
-	@Override
-	public FlexoConceptInstance getFlexoConceptInstance() {
-		if (actionType != null) {
-			return actionType.getFlexoConceptInstance();
-		}
-		return null;
-	}
-
-	@Override
-	public SynchronizationScheme getFlexoBehaviour() {
-		return getSynchronizationScheme();
 	}
 
 	@Override
@@ -103,22 +80,6 @@ public class SynchronizationSchemeAction
 			// System.out.println(getSynchronizationScheme().getFMLRepresentation());
 			executeControlGraph();
 		}
-	}
-
-	/**
-	 * Return {@link FMLRTVirtualModelInstance} in which synchronized {@link FMLRTVirtualModelInstance} does exist
-	 */
-	@Override
-	public VirtualModelInstance<?, ?> retrieveVirtualModelInstance() {
-		if (getFlexoConceptInstance() != null) {
-			return getFlexoConceptInstance().getVirtualModelInstance();
-		}
-		return null;
-	}
-
-	@Override
-	public Object getValue(BindingVariable variable) {
-		return super.getValue(variable);
 	}
 
 }

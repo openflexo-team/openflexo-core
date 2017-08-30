@@ -39,10 +39,12 @@
 package org.openflexo.foundation.fml;
 
 import java.lang.reflect.InvocationTargetException;
+
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.ActionSchemeActionType;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -51,6 +53,12 @@ import org.openflexo.model.annotations.PropertyIdentifier;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
 
+/**
+ * Abstract behaviour beeing called on an existing {@link VirtualModelInstance}
+ * 
+ * @author sylvain
+ *
+ */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(AbstractActionScheme.AbstractActionSchemeImpl.class)
 public abstract interface AbstractActionScheme extends FlexoBehaviour {
@@ -113,24 +121,6 @@ public abstract interface AbstractActionScheme extends FlexoBehaviour {
 			}
 			return true;
 		}
-
-		@Override
-		public ActionSchemeActionType getActionFactory(FlexoConceptInstance fci) {
-			return new ActionSchemeActionType(this, fci);
-		}
-
-		/*@Override
-		protected void appendContextualBindingVariables(BindingModel bindingModel) {
-			super.appendContextualBindingVariables(bindingModel);
-			bindingModel.addToBindingVariables(new FlexoConceptPathElement<AbstractActionScheme>(FlexoBehaviour.THIS, getFlexoConcept(),
-					this));
-		}*/
-
-		/*@Override
-		public void setFlexoConcept(FlexoConcept flexoConcept) {
-		    super.setFlexoConcept(flexoConcept);
-		    updateBindingModels();
-		}*/
 
 	}
 }

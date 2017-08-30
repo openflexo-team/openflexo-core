@@ -42,54 +42,20 @@ import java.util.Vector;
 
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.action.FlexoActionType;
-import org.openflexo.foundation.fml.AbstractActionScheme;
+import org.openflexo.foundation.fml.ActionScheme;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstanceObject;
-import org.openflexo.localization.LocalizedDelegate;
 
-public class ActionSchemeActionType extends FlexoActionType<ActionSchemeAction, FlexoConceptInstance, VirtualModelInstanceObject> {
+public class ActionSchemeActionType extends AbstractActionSchemeActionType<ActionSchemeAction, ActionScheme, FlexoConceptInstance> {
 
-	private final AbstractActionScheme actionScheme;
-	private final FlexoConceptInstance flexoConceptInstance;
-
-	public ActionSchemeActionType(AbstractActionScheme actionScheme, FlexoConceptInstance flexoConceptInstance) {
-		super(actionScheme.getLabel(), FlexoActionType.defaultGroup, FlexoActionType.NORMAL_ACTION_TYPE);
-		this.actionScheme = actionScheme;
-		this.flexoConceptInstance = flexoConceptInstance;
-	}
-
-	@Override
-	public LocalizedDelegate getLocales() {
-		return actionScheme.getLocalizedDictionary();
-	}
-
-	@Override
-	public boolean isEnabled(FlexoConceptInstance object, Vector<VirtualModelInstanceObject> globalSelection) {
-		return isEnabledForSelection(object, globalSelection);
-	}
-
-	@Override
-	public boolean isEnabledForSelection(FlexoConceptInstance object, Vector<VirtualModelInstanceObject> globalSelection) {
-		return actionScheme.evaluateCondition(flexoConceptInstance);
-	}
-
-	@Override
-	public boolean isVisibleForSelection(FlexoConceptInstance object, Vector<VirtualModelInstanceObject> globalSelection) {
-		return true;
+	public ActionSchemeActionType(ActionScheme actionScheme, FlexoConceptInstance flexoConceptInstance) {
+		super(actionScheme, flexoConceptInstance, FlexoActionType.defaultGroup, FlexoActionType.NORMAL_ACTION_TYPE);
 	}
 
 	@Override
 	public ActionSchemeAction makeNewAction(FlexoConceptInstance focusedObject, Vector<VirtualModelInstanceObject> globalSelection,
 			FlexoEditor editor) {
 		return new ActionSchemeAction(this, focusedObject, globalSelection, editor);
-	}
-
-	public AbstractActionScheme getActionScheme() {
-		return actionScheme;
-	}
-
-	public FlexoConceptInstance getFlexoConceptInstance() {
-		return flexoConceptInstance;
 	}
 
 }

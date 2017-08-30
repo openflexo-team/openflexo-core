@@ -44,54 +44,19 @@ import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.fml.SynchronizationScheme;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
-import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstanceObject;
-import org.openflexo.localization.LocalizedDelegate;
 
 public class SynchronizationSchemeActionType
-		extends FlexoActionType<SynchronizationSchemeAction, VirtualModelInstance<?, ?>, VirtualModelInstanceObject> {
+		extends AbstractActionSchemeActionType<SynchronizationSchemeAction, SynchronizationScheme, VirtualModelInstance<?, ?>> {
 
-	private final SynchronizationScheme synchronizationScheme;
-	private final FlexoConceptInstance flexoConceptInstance;
-
-	public SynchronizationSchemeActionType(SynchronizationScheme synchronizationScheme, FlexoConceptInstance flexoConceptInstance) {
-		super(synchronizationScheme.getLabel(), FlexoActionType.defaultGroup, FlexoActionType.NORMAL_ACTION_TYPE);
-		this.synchronizationScheme = synchronizationScheme;
-		this.flexoConceptInstance = flexoConceptInstance;
-	}
-
-	@Override
-	public LocalizedDelegate getLocales() {
-		return synchronizationScheme.getLocalizedDictionary();
-	}
-
-	@Override
-	public boolean isEnabled(VirtualModelInstance<?, ?> object, Vector<VirtualModelInstanceObject> globalSelection) {
-		return isEnabledForSelection(object, globalSelection);
-	}
-
-	@Override
-	public boolean isEnabledForSelection(VirtualModelInstance<?, ?> object, Vector<VirtualModelInstanceObject> globalSelection) {
-		return synchronizationScheme.evaluateCondition(flexoConceptInstance);
-	}
-
-	@Override
-	public boolean isVisibleForSelection(VirtualModelInstance<?, ?> object, Vector<VirtualModelInstanceObject> globalSelection) {
-		return true;
+	public SynchronizationSchemeActionType(SynchronizationScheme synchronizationScheme, VirtualModelInstance<?, ?> virtualModelInstance) {
+		super(synchronizationScheme, virtualModelInstance, FlexoActionType.defaultGroup, FlexoActionType.NORMAL_ACTION_TYPE);
 	}
 
 	@Override
 	public SynchronizationSchemeAction makeNewAction(VirtualModelInstance<?, ?> focusedObject,
 			Vector<VirtualModelInstanceObject> globalSelection, FlexoEditor editor) {
 		return new SynchronizationSchemeAction(this, focusedObject, globalSelection, editor);
-	}
-
-	public SynchronizationScheme getSynchronizationScheme() {
-		return synchronizationScheme;
-	}
-
-	public FlexoConceptInstance getFlexoConceptInstance() {
-		return flexoConceptInstance;
 	}
 
 }

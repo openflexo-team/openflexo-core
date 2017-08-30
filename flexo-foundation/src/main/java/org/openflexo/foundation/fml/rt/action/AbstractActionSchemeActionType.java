@@ -40,25 +40,29 @@ package org.openflexo.foundation.fml.rt.action;
 
 import java.util.Vector;
 
-import org.openflexo.foundation.FlexoEditor;
-import org.openflexo.foundation.action.FlexoActionType;
-import org.openflexo.foundation.fml.DeletionScheme;
+import org.openflexo.foundation.action.ActionGroup;
+import org.openflexo.foundation.fml.AbstractActionScheme;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstanceObject;
 
-public class DeletionSchemeActionType extends AbstractActionSchemeActionType<DeletionSchemeAction, DeletionScheme, FlexoConceptInstance> {
+public abstract class AbstractActionSchemeActionType<A extends AbstractActionSchemeAction<A, FB, O>, FB extends AbstractActionScheme, O extends FlexoConceptInstance>
+		extends AbstractBehaviourActionType<A, FB, O> {
 
-	public DeletionSchemeActionType(DeletionScheme deletionScheme, FlexoConceptInstance flexoConceptInstance) {
-		super(deletionScheme, flexoConceptInstance, FlexoActionType.editGroup, FlexoActionType.DELETE_ACTION_TYPE);
+	public AbstractActionSchemeActionType(FB actionScheme, O flexoConceptInstance, ActionGroup actionGroup, int actionCategory) {
+		super(actionScheme, flexoConceptInstance, actionGroup, actionCategory);
 	}
 
 	@Override
-	public DeletionSchemeAction makeNewAction(FlexoConceptInstance focusedObject, Vector<VirtualModelInstanceObject> globalSelection,
-			FlexoEditor editor) {
-		return new DeletionSchemeAction(this, focusedObject, globalSelection, editor);
+	public boolean isEnabledForSelection(O object, Vector<VirtualModelInstanceObject> globalSelection) {
+		return getActionScheme().evaluateCondition(object);
 	}
 
-	public DeletionScheme getDeletionScheme() {
+	@Override
+	public boolean isVisibleForSelection(O object, Vector<VirtualModelInstanceObject> globalSelection) {
+		return true;
+	}
+
+	public AbstractActionScheme getActionScheme() {
 		return getBehaviour();
 	}
 
