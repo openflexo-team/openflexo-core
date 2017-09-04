@@ -45,20 +45,27 @@ import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject;
 
 public class FlexoActionizer<A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> {
+
+	/**
+	 * Implemented by a concept that provides an Editor
+	 * 
+	 * @author sylvain
+	 *
+	 */
 	public interface EditorProvider {
 		public FlexoEditor getEditor();
 	}
 
-	private FlexoActionFactory<A, T1, T2> _actionType;
+	private FlexoActionFactory<A, T1, T2> actionFactory;
 	private final EditorProvider editorProvider;
 
 	public FlexoActionizer(FlexoActionFactory<A, T1, T2> actionType, EditorProvider editorProvider) {
-		_actionType = actionType;
+		actionFactory = actionType;
 		this.editorProvider = editorProvider;
 	}
 
 	public void run(T1 focusedObject, Vector<T2> globalSelection) {
-		A action = _actionType.makeNewAction(focusedObject, globalSelection, editorProvider.getEditor());
+		A action = actionFactory.makeNewAction(focusedObject, globalSelection, editorProvider.getEditor());
 		action.doAction();
 	}
 }

@@ -677,7 +677,7 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 						FlexoActionFactory actionType = entry.getKey();
 						if (TypeUtils.isAssignableTo(focusedObject, actionType.getFocusedObjectType()) && (globalSelection == null
 								|| TypeUtils.isAssignableTo(globalSelection, actionType.getGlobalSelectionType()))) {
-							getEditor().performActionType(actionType, focusedObject, globalSelection, e);
+							getEditor().performActionFactory(actionType, focusedObject, globalSelection, e);
 						}
 					}
 				}, accelerator, entry.getKey().getUnlocalizedName());

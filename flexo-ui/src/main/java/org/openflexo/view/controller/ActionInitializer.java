@@ -43,14 +43,15 @@ import javax.swing.Icon;
 import javax.swing.KeyStroke;
 
 import org.openflexo.ApplicationContext;
+import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionEnableCondition;
+import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.action.FlexoActionFinalizer;
 import org.openflexo.foundation.action.FlexoActionInitializer;
-import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.action.FlexoActionVisibleCondition;
 import org.openflexo.foundation.action.FlexoExceptionHandler;
 import org.openflexo.gina.ApplicationFIBLibrary;
@@ -64,19 +65,60 @@ import org.openflexo.module.FlexoModule;
 import org.openflexo.rm.Resource;
 import org.openflexo.view.FlexoFrame;
 
+/**
+ * An {@link ActionInitializer} allows to define the integration of the execution of a {@link FlexoAction} in a given editing
+ * environment<br>
+ * 
+ * For a given ControllerActionInitializer it provides hooks for custom initializers, finalizers, enable and visible condition as well as
+ * exception handlers for various contexts.<br>
+ * 
+ * An {@link ActionInitializer} is either register to a {@link FlexoActionFactory} or a {@link FlexoAction} class
+ * 
+ * @see ControllerActionInitializer
+ * 
+ * @author sylvain
+ *
+ * @param <A>
+ *            type of FlexoAction
+ * @param <T1>
+ *            type of object such {@link FlexoAction} is to be applied as focused object
+ * @param <T2>
+ *            type of additional object such {@link FlexoAction} is to be applied as global selection
+ */
 public abstract class ActionInitializer<A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> {
-	private final ControllerActionInitializer _controllerActionInitializer;
-	private final FlexoActionFactory<A, T1, T2> _actionType;
 
-	public ActionInitializer(FlexoActionFactory<A, T1, T2> actionType, ControllerActionInitializer controllerActionInitializer) {
+	private final ControllerActionInitializer controllerActionInitializer;
+	private FlexoActionFactory<A, T1, T2> actionFactory;
+	private Class<A> actionType;
+
+	public ActionInitializer(FlexoActionFactory<A, T1, T2> actionFactory, ControllerActionInitializer controllerActionInitializer) {
 		super();
-		_controllerActionInitializer = controllerActionInitializer;
-		_actionType = actionType;
-		_controllerActionInitializer.registerInitializer(_actionType, this);
+		this.controllerActionInitializer = controllerActionInitializer;
+		this.actionFactory = actionFactory;
+		controllerActionInitializer.registerInitializer(actionFactory, this);
+	}
+
+	public ActionInitializer(Class<A> actionType, ControllerActionInitializer controllerActionInitializer) {
+		super();
+		this.controllerActionInitializer = controllerActionInitializer;
+		this.actionType = actionType;
+		controllerActionInitializer.registerInitializer(actionFactory, this);
+	}
+
+	public FlexoActionFactory<A, T1, T2> getActionFactory() {
+		return actionFactory;
+	}
+
+	@SuppressWarnings("unchecked")
+	public Class<A> getActionType() {
+		if (getActionFactory() != null) {
+			return (Class<A>) TypeUtils.getTypeArgument(actionFactory.getClass(), FlexoActionFactory.class, 0);
+		}
+		return actionType;
 	}
 
 	protected ControllerActionInitializer getControllerActionInitializer() {
-		return _controllerActionInitializer;
+		return controllerActionInitializer;
 	}
 
 	public FlexoEditor getEditor() {
@@ -84,10 +126,10 @@ public abstract class ActionInitializer<A extends FlexoAction<A, T1, T2>, T1 ext
 	}
 
 	public FlexoController getController() {
-		return _controllerActionInitializer.getController();
+		return controllerActionInitializer.getController();
 	}
 
-	public FlexoModule getModule() {
+	public FlexoModule<?> getModule() {
 		return getController().getModule();
 	}
 
@@ -100,40 +142,27 @@ public abstract class ActionInitializer<A extends FlexoAction<A, T1, T2>, T1 ext
 		}
 	}
 
-	/*public boolean instanciateAndShowDialog(Object object, File fibResource) {
-		FIBComponent fibComponent = FIBLibrary.instance().retrieveFIBComponent(fibResource);
-		FIBDialog dialog = FIBDialog.instanciateAndShowDialog(fibComponent, object, FlexoFrame.getActiveFrame(), true,
-				new FlexoFIBController(fibComponent, getController()));
-		return dialog.getStatus() == Status.VALIDATED;
-	}*/
-
 	public ApplicationFIBLibrary getApplicationFIBLibrary() {
 		return getController().getApplicationContext().getApplicationFIBLibraryService().getApplicationFIBLibrary();
 	}
 
 	public boolean instanciateAndShowDialog(Object object, Resource fibResource) {
 		FIBComponent fibComponent = getApplicationFIBLibrary().retrieveFIBComponent(fibResource);
-		JFIBDialog dialog = JFIBDialog.instanciateAndShowDialog(fibComponent, object, FlexoFrame.getActiveFrame(), true,
+		JFIBDialog<?> dialog = JFIBDialog.instanciateAndShowDialog(fibComponent, object, FlexoFrame.getActiveFrame(), true,
 				new FlexoFIBController(fibComponent, SwingViewFactory.INSTANCE, getController()));
 		return dialog.getStatus() == Status.VALIDATED;
 	}
 
-	/*public Status instanciateShowDialogAndReturnStatus(Object object, File fibResource) {
-		FIBComponent fibComponent = FIBLibrary.instance().retrieveFIBComponent(fibResource);
-		FIBDialog dialog = FIBDialog.instanciateAndShowDialog(fibComponent, object, FlexoFrame.getActiveFrame(), true,
-				new FlexoFIBController(fibComponent, getController()));
-		return dialog.getStatus();
-	}*/
-
 	public Status instanciateShowDialogAndReturnStatus(Object object, Resource fibResource) {
 		FIBComponent fibComponent = getApplicationFIBLibrary().retrieveFIBComponent(fibResource);
-		JFIBDialog dialog = JFIBDialog.instanciateAndShowDialog(fibComponent, object, FlexoFrame.getActiveFrame(), true,
+		JFIBDialog<?> dialog = JFIBDialog.instanciateAndShowDialog(fibComponent, object, FlexoFrame.getActiveFrame(), true,
 				new FlexoFIBController(fibComponent, SwingViewFactory.INSTANCE, getController()));
 		return dialog.getStatus();
 	}
 
 	/**
-	 * Please override if required Default implementation return null
+	 * Please override if required<br>
+	 * Default implementation return null
 	 * 
 	 * @return null
 	 */
@@ -142,7 +171,8 @@ public abstract class ActionInitializer<A extends FlexoAction<A, T1, T2>, T1 ext
 	}
 
 	/**
-	 * Please override if required Default implementation return null
+	 * Please override if required<br>
+	 * Default implementation return null
 	 * 
 	 * @return null
 	 */
@@ -151,7 +181,8 @@ public abstract class ActionInitializer<A extends FlexoAction<A, T1, T2>, T1 ext
 	}
 
 	/**
-	 * Please override if required Default implementation return null
+	 * Please override if required<br>
+	 * Default implementation return null
 	 * 
 	 * @return null
 	 */
@@ -160,7 +191,8 @@ public abstract class ActionInitializer<A extends FlexoAction<A, T1, T2>, T1 ext
 	}
 
 	/**
-	 * Please override if required Default implementation return null
+	 * Please override if required<br>
+	 * Default implementation return null
 	 * 
 	 * @return null
 	 */
@@ -169,7 +201,8 @@ public abstract class ActionInitializer<A extends FlexoAction<A, T1, T2>, T1 ext
 	}
 
 	/**
-	 * Please override if required Default implementation return null
+	 * Please override if required<br>
+	 * Default implementation return null
 	 * 
 	 * @return null
 	 */
@@ -178,7 +211,8 @@ public abstract class ActionInitializer<A extends FlexoAction<A, T1, T2>, T1 ext
 	}
 
 	/**
-	 * Please override if required Default implementation return null
+	 * Please override if required<br>
+	 * Default implementation return null
 	 * 
 	 * @return null
 	 */
@@ -187,22 +221,26 @@ public abstract class ActionInitializer<A extends FlexoAction<A, T1, T2>, T1 ext
 	}
 
 	/**
-	 * Please override if required Default implementation return null
-	 * @param actionType TODO
+	 * Please override if required<br>
+	 * Default implementation return null
+	 * 
+	 * @param actionFactory
 	 * 
 	 * @return null
 	 */
-	protected Icon getEnabledIcon(FlexoActionFactory actionType) {
+	protected Icon getEnabledIcon(FlexoActionFactory<?, ?, ?> actionFactory) {
 		return null;
 	}
 
 	/**
-	 * Please override if required Default implementation return null
-	 * @param actionType TODO
+	 * Please override if required<br>
+	 * Default implementation return null
+	 * 
+	 * @param actionFactory
 	 * 
 	 * @return null
 	 */
-	protected Icon getDisabledIcon(FlexoActionFactory actionType) {
+	protected Icon getDisabledIcon(FlexoActionFactory<?, ?, ?> actionFactory) {
 		return null;
 	}
 

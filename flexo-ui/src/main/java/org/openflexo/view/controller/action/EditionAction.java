@@ -80,7 +80,7 @@ public class EditionAction<A extends FlexoAction<A, T1, T2>, T1 extends FlexoObj
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		getEditor().performActionType(actionType, getFocusedObject(), getGlobalSelection(), e);
+		getEditor().performActionFactory(actionType, getFocusedObject(), getGlobalSelection(), e);
 	}
 
 	private FlexoEditor getEditor() {

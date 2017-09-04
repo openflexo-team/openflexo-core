@@ -131,24 +131,76 @@ public interface FlexoEditor {
 
 	public FlexoUndoManager getUndoManager();
 
-	public <A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> A performActionType(
-			FlexoActionFactory<A, T1, T2> actionType, T1 focusedObject, Vector<T2> globalSelection, EventObject e);
+	/**
+	 * Execute a {@link FlexoActionFactory}<br>
+	 * 
+	 * More precisely, instantiate and execute a {@link FlexoAction} using supplied {@link FlexoActionFactory}, with supplied focused object
+	 * and global selection, and forword the eventual supplied {@link EventObject}
+	 * 
+	 * @param actionFactory
+	 * @param focusedObject
+	 * @param globalSelection
+	 * @param e
+	 * @return
+	 */
+	public <A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> A performActionFactory(
+			FlexoActionFactory<A, T1, T2> actionFactory, T1 focusedObject, Vector<T2> globalSelection, EventObject e);
 
+	/**
+	 * Execute suppliued {@link FlexoAction} (forword the eventual supplied {@link EventObject})<br>
+	 * 
+	 * @param action
+	 * @param e
+	 * @return
+	 */
 	public <A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> A performAction(A action, EventObject e);
 
+	/**
+	 * Return flag indicating if supplied {@link FlexoActionFactory} implies an enabled action for supplied context (focused object and
+	 * global selection)
+	 * 
+	 * @param actionFactory
+	 * @param focusedObject
+	 * @param globalSelection
+	 * @return
+	 */
 	public <A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> boolean isActionEnabled(
-			FlexoActionFactory<A, T1, T2> actionType, T1 focusedObject, Vector<T2> globalSelection);
+			FlexoActionFactory<A, T1, T2> actionFactory, T1 focusedObject, Vector<T2> globalSelection);
 
+	/**
+	 * Return flag indicating if supplied {@link FlexoActionFactory} implies an visible action for supplied context (focused object and
+	 * global selection)
+	 * 
+	 * @param actionFactory
+	 * @param focusedObject
+	 * @param globalSelection
+	 * @return
+	 */
 	public <A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> boolean isActionVisible(
-			FlexoActionFactory<A, T1, T2> actionType, T1 focusedObject, Vector<T2> globalSelection);
+			FlexoActionFactory<A, T1, T2> actionFactory, T1 focusedObject, Vector<T2> globalSelection);
 
-	public <A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> Icon getEnabledIconFor(
-			FlexoActionFactory<A, T1, T2> action);
+	/**
+	 * Return 'enabled' icon for supplied {@link FlexoActionFactory}
+	 * 
+	 * @param actionFactory
+	 * @return
+	 */
+	public <A extends FlexoAction<A, ?, ?>> Icon getEnabledIconFor(FlexoActionFactory<A, ?, ?> actionFactory);
 
-	public <A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> Icon getDisabledIconFor(
-			FlexoActionFactory<A, T1, T2> action);
+	/**
+	 * Return 'disabled' icon for supplied {@link FlexoActionFactory}
+	 * 
+	 * @param actionFactory
+	 * @return
+	 */
+	public <A extends FlexoAction<A, ?, ?>> Icon getDisabledIconFor(FlexoActionFactory<A, ?, ?> actionFactory);
 
-	public <A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> KeyStroke getKeyStrokeFor(
-			FlexoActionFactory<A, T1, T2> action);
+	/**
+	 * Return eventual {@link KeyStroke} for supplied {@link FlexoActionFactory}
+	 * 
+	 * @param actionFactory
+	 * @return
+	 */
+	public <A extends FlexoAction<A, ?, ?>> KeyStroke getKeyStrokeFor(FlexoActionFactory<A, ?, ?> actionFactory);
 
 }

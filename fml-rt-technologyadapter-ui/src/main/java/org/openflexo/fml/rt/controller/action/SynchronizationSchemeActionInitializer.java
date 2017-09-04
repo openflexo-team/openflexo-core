@@ -44,9 +44,9 @@ import java.util.logging.Logger;
 import javax.swing.Icon;
 
 import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.action.FlexoActionFinalizer;
 import org.openflexo.foundation.action.FlexoActionInitializer;
-import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.action.FlexoExceptionHandler;
 import org.openflexo.foundation.action.NotImplementedException;
 import org.openflexo.foundation.fml.SynchronizationScheme;
@@ -65,7 +65,7 @@ public class SynchronizationSchemeActionInitializer
 	private static final Logger logger = Logger.getLogger(ControllerActionInitializer.class.getPackage().getName());
 
 	public SynchronizationSchemeActionInitializer(ControllerActionInitializer actionInitializer) {
-		super(null, actionInitializer);
+		super(SynchronizationSchemeAction.class, actionInitializer);
 	}
 
 	@Override

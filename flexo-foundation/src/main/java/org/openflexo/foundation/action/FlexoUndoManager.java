@@ -48,7 +48,6 @@ import java.util.logging.Logger;
 import javax.swing.undo.UndoableEdit;
 
 import org.openflexo.foundation.FlexoEditingContext;
-import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.PamelaResourceModelFactory;
 import org.openflexo.foundation.resource.PamelaResource;
 import org.openflexo.model.ModelProperty;
@@ -128,8 +127,7 @@ public class FlexoUndoManager extends UndoManager {
 	 * @param action
 	 *            : the FlexoAction that has just been successfully executed
 	 */
-	public <A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> void actionHasBeenPerformed(A action,
-			boolean success) {
+	public <A extends FlexoAction<A, ?, ?>> void actionHasBeenPerformed(A action, boolean success) {
 		if (success) {
 			hasSuccessfullyDone(action);
 		}

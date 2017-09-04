@@ -146,7 +146,7 @@ public class DefaultFlexoEditor implements FlexoEditor {
 	}
 
 	@Override
-	public <A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> A performActionType(
+	public <A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> A performActionFactory(
 			FlexoActionFactory<A, T1, T2> actionType, T1 focusedObject, Vector<T2> globalSelection, EventObject e) {
 		A action = actionType.makeNewAction(focusedObject, globalSelection, this);
 		return performAction(action, e);
@@ -159,16 +159,6 @@ public class DefaultFlexoEditor implements FlexoEditor {
 				&& !action.getActionFactory().isEnabled(action.getFocusedObject(), action.getGlobalSelection())) {
 			return null;
 		}
-		// TODO: check this
-		// This consrtaints has been released
-		/*if (action.getFocusedObject() instanceof FlexoProjectObject
-				&& ((FlexoProjectObject) action.getFocusedObject()).getProject() != getProject()) {
-			if (logger.isLoggable(Level.WARNING)) {
-				logger.warning("Focused object project is not the same as my project. Refusing to edit and execute action "
-						+ action.getLocalizedName());
-			}
-			return null;
-		}*/
 		try {
 			return action.doActionInContext();
 		} catch (FlexoException e1) {
@@ -177,33 +167,70 @@ public class DefaultFlexoEditor implements FlexoEditor {
 		}
 	}
 
-	@Override
-	public <A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> KeyStroke getKeyStrokeFor(
-			FlexoActionFactory<A, T1, T2> action) {
-		return null;
-	}
-
+	/**
+	 * Return flag indicating if supplied {@link FlexoActionFactory} implies an enabled action for supplied context (focused object and
+	 * global selection)
+	 * 
+	 * @param actionFactory
+	 * @param focusedObject
+	 * @param globalSelection
+	 * @return
+	 */
 	@Override
 	public <A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> boolean isActionEnabled(
-			FlexoActionFactory<A, T1, T2> actionType, T1 focusedObject, Vector<T2> globalSelection) {
-		return actionType.isEnabled(focusedObject, globalSelection);
+			FlexoActionFactory<A, T1, T2> actionFactory, T1 focusedObject, Vector<T2> globalSelection) {
+		return actionFactory.isEnabled(focusedObject, globalSelection);
 	}
 
+	/**
+	 * Return flag indicating if supplied {@link FlexoActionFactory} implies an visible action for supplied context (focused object and
+	 * global selection)
+	 *
+	 * Default implementation returns true
+	 * 
+	 * @param actionFactory
+	 * @param focusedObject
+	 * @param globalSelection
+	 * @return
+	 */
 	@Override
 	public <A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> boolean isActionVisible(
-			FlexoActionFactory<A, T1, T2> actionType, T1 focusedObject, Vector<T2> globalSelection) {
+			FlexoActionFactory<A, T1, T2> actionFactory, T1 focusedObject, Vector<T2> globalSelection) {
 		return true;
 	}
 
+	/**
+	 * Return 'enabled' icon for supplied {@link FlexoActionFactory}
+	 * 
+	 * @param actionFactory
+	 * @return
+	 */
 	@Override
-	public <A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> Icon getEnabledIconFor(
-			FlexoActionFactory<A, T1, T2> action) {
+	public <A extends FlexoAction<A, ?, ?>> Icon getEnabledIconFor(FlexoActionFactory<A, ?, ?> action) {
 		return null;
 	}
 
+	/**
+	 * Return 'disabled' icon for supplied {@link FlexoActionFactory}
+	 * 
+	 * @param actionFactory
+	 * @return
+	 */
 	@Override
-	public <A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> Icon getDisabledIconFor(
-			FlexoActionFactory<A, T1, T2> action) {
+	public <A extends FlexoAction<A, ?, ?>> Icon getDisabledIconFor(FlexoActionFactory<A, ?, ?> action) {
+		return null;
+	}
+
+	/**
+	 * Return eventual {@link KeyStroke} for supplied {@link FlexoActionFactory}<br>
+	 * 
+	 * Default implementation returns null
+	 * 
+	 * @param actionFactory
+	 * @return
+	 */
+	@Override
+	public <A extends FlexoAction<A, ?, ?>> KeyStroke getKeyStrokeFor(FlexoActionFactory<A, ?, ?> actionFactory) {
 		return null;
 	}
 

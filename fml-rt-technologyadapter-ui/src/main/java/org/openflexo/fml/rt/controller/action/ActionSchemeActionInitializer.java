@@ -64,7 +64,7 @@ public class ActionSchemeActionInitializer extends ActionInitializer<ActionSchem
 	private static final Logger logger = Logger.getLogger(ControllerActionInitializer.class.getPackage().getName());
 
 	public ActionSchemeActionInitializer(ControllerActionInitializer actionInitializer) {
-		super(null, actionInitializer);
+		super(ActionSchemeAction.class, actionInitializer);
 	}
 
 	@Override

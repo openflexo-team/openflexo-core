@@ -125,7 +125,7 @@ public class FlexoActionButton extends JButton {
 			List<? extends FlexoObject> globalSelection = getGlobalSelection();
 			if (TypeUtils.isAssignableTo(getFocusedObject(), actionType.getFocusedObjectType())
 					&& (globalSelection == null || TypeUtils.isAssignableTo(globalSelection, actionType.getGlobalSelectionType()))) {
-				getEditor().performActionType(actionType, (T1) getFocusedObject(), (Vector<T2>) globalSelection, event);
+				getEditor().performActionFactory(actionType, (T1) getFocusedObject(), (Vector<T2>) globalSelection, event);
 			}
 		}
 
