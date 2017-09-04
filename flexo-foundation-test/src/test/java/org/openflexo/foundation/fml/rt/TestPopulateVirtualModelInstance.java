@@ -69,7 +69,7 @@ import org.openflexo.foundation.fml.rm.VirtualModelResourceFactory;
 import org.openflexo.foundation.fml.rt.action.CreateBasicVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.CreationSchemeAction;
 import org.openflexo.foundation.fml.rt.action.DeletionSchemeAction;
-import org.openflexo.foundation.fml.rt.action.DeletionSchemeActionType;
+import org.openflexo.foundation.fml.rt.action.DeletionSchemeActionFactory;
 import org.openflexo.foundation.fml.rt.rm.FMLRTVirtualModelInstanceResource;
 import org.openflexo.foundation.resource.DirectoryResourceCenter;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
@@ -442,15 +442,14 @@ public class TestPopulateVirtualModelInstance extends OpenflexoProjectAtRunTimeT
 	}
 
 	private FlexoConceptInstance createInstance(FlexoConcept concept) {
-		CreationSchemeAction action = CreationSchemeAction.actionType.makeNewAction(newVirtualModelInstance, null, editor);
-		action.setCreationScheme(concept.getCreationSchemes().get(0));
+		CreationSchemeAction action = new CreationSchemeAction(concept.getCreationSchemes().get(0), newVirtualModelInstance, null, editor);
 		action.doAction();
 		assertTrue(action.hasActionExecutionSucceeded());
 		return action.getFlexoConceptInstance();
 	}
 
 	private void deleteFlexoConceptInstance(FlexoConceptInstance fci) {
-		DeletionSchemeActionType actionType = new DeletionSchemeActionType(fci.getFlexoConcept().getDefaultDeletionScheme(), fci);
+		DeletionSchemeActionFactory actionType = new DeletionSchemeActionFactory(fci.getFlexoConcept().getDefaultDeletionScheme(), fci);
 		DeletionSchemeAction action = actionType.makeNewAction(fci, null, editor);
 		action.doAction();
 		assertTrue(action.hasActionExecutionSucceeded());

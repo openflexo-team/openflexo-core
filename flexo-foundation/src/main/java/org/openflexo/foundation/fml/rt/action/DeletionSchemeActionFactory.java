@@ -41,55 +41,34 @@ package org.openflexo.foundation.fml.rt.action;
 import java.util.Vector;
 
 import org.openflexo.foundation.FlexoEditor;
+import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionFactory;
-import org.openflexo.foundation.fml.NavigationScheme;
+import org.openflexo.foundation.fml.DeletionScheme;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstanceObject;
-import org.openflexo.localization.LocalizedDelegate;
 
-public class NavigationSchemeActionType extends FlexoActionFactory<NavigationSchemeAction, FlexoConceptInstance, VirtualModelInstanceObject> {
+/**
+ * Factory for {@link DeletionSchemeAction} (an execution environment of a {@link DeletionScheme} on a given {@link FlexoConceptInstance} as
+ * a {@link FlexoAction})
+ * 
+ * @author sylvain
+ *
+ */
+public class DeletionSchemeActionFactory
+		extends AbstractActionSchemeActionFactory<DeletionSchemeAction, DeletionScheme, FlexoConceptInstance> {
 
-	private final NavigationScheme navigationScheme;
-	private final FlexoConceptInstance flexoConceptInstance;
-
-	public NavigationSchemeActionType(NavigationScheme navigationScheme, FlexoConceptInstance flexoConceptInstance) {
-		super(navigationScheme.getName(), FlexoActionFactory.defaultGroup, FlexoActionFactory.NORMAL_ACTION_TYPE);
-		this.navigationScheme = navigationScheme;
-		this.flexoConceptInstance = flexoConceptInstance;
+	public DeletionSchemeActionFactory(DeletionScheme deletionScheme, FlexoConceptInstance flexoConceptInstance) {
+		super(deletionScheme, flexoConceptInstance, FlexoActionFactory.editGroup, FlexoActionFactory.DELETE_ACTION_TYPE);
 	}
 
 	@Override
-	public LocalizedDelegate getLocales() {
-		return navigationScheme.getLocalizedDictionary();
-	}
-
-	@Override
-	public boolean isEnabled(FlexoConceptInstance object, Vector<VirtualModelInstanceObject> globalSelection) {
-		return isEnabledForSelection(object, globalSelection);
-	}
-
-	@Override
-	public boolean isEnabledForSelection(FlexoConceptInstance object, Vector<VirtualModelInstanceObject> globalSelection) {
-		return navigationScheme.evaluateCondition(flexoConceptInstance);
-	}
-
-	@Override
-	public boolean isVisibleForSelection(FlexoConceptInstance object, Vector<VirtualModelInstanceObject> globalSelection) {
-		return true;
-	}
-
-	@Override
-	public NavigationSchemeAction makeNewAction(FlexoConceptInstance focusedObject, Vector<VirtualModelInstanceObject> globalSelection,
+	public DeletionSchemeAction makeNewAction(FlexoConceptInstance focusedObject, Vector<VirtualModelInstanceObject> globalSelection,
 			FlexoEditor editor) {
-		return new NavigationSchemeAction(this, focusedObject, globalSelection, editor);
+		return new DeletionSchemeAction(this, focusedObject, globalSelection, editor);
 	}
 
-	public NavigationScheme getNavigationScheme() {
-		return navigationScheme;
-	}
-
-	public FlexoConceptInstance getFlexoConceptInstance() {
-		return flexoConceptInstance;
+	public DeletionScheme getDeletionScheme() {
+		return getBehaviour();
 	}
 
 }

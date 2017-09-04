@@ -56,7 +56,6 @@ import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionFactory;
-import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.localization.Language;
 import org.openflexo.rm.FileResourceImpl;
 import org.openflexo.rm.ResourceLocator;
@@ -137,17 +136,18 @@ public class GenerateHelpSet extends FlexoAction<GenerateHelpSet, DocResourceCen
 	@Override
 	protected void doAction(Object context) {
 		logger.info("GenerateHelpSet");
-		makeFlexoProgress(FlexoLocalization.getMainLocalizer().localizedForKey("generating_helpset"), configurations.size() + 2);
+		// makeFlexoProgress(FlexoLocalization.getMainLocalizer().localizedForKey("generating_helpset"), configurations.size() + 2);
 		getHelpsetDirectory().mkdirs();
 		for (HelpSetConfiguration config : configurations) {
 			DRMHelpSet helpSet = new DRMHelpSet(getFocusedObject(), getHelpsetDirectory(), getBaseName(), config);
 			logger.info("Generating " + helpSet.getLocalizedName());
-			setProgress(FlexoLocalization.getMainLocalizer().localizedForKey("generating") + " " + helpSet.getHelpSetDirectory().getName());
-			helpSet.generate(getFlexoProgress());
+			// setProgress(FlexoLocalization.getMainLocalizer().localizedForKey("generating") + " " +
+			// helpSet.getHelpSetDirectory().getName());
+			helpSet.generate(null/*getFlexoProgress()*/);
 			generatedHelpsets.put(config, helpSet);
 		}
 		vectorOfGeneratedHelpset = null;
-		hideFlexoProgress();
+		// hideFlexoProgress();
 	}
 
 	private File _helpSetDirectory;

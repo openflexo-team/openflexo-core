@@ -45,7 +45,7 @@ import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
-import org.openflexo.foundation.fml.rt.action.ActionSchemeActionType;
+import org.openflexo.foundation.fml.rt.action.AbstractActionSchemeActionFactory;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
@@ -75,7 +75,7 @@ public abstract interface AbstractActionScheme extends FlexoBehaviour {
 
 	public boolean evaluateCondition(FlexoConceptInstance flexoConceptInstance);
 
-	ActionSchemeActionType getActionFactory(FlexoConceptInstance fci);
+	AbstractActionSchemeActionFactory<?, ?, ?> getActionFactory(FlexoConceptInstance fci);
 
 	public static abstract class AbstractActionSchemeImpl extends FlexoBehaviourImpl implements AbstractActionScheme {
 
@@ -122,5 +122,9 @@ public abstract interface AbstractActionScheme extends FlexoBehaviour {
 			return true;
 		}
 
+		@Override
+		public AbstractActionSchemeActionFactory<?, ?, ?> getActionFactory(FlexoConceptInstance fci) {
+			return null;
+		}
 	}
 }

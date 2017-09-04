@@ -54,6 +54,21 @@ import org.openflexo.foundation.FlexoObject;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.localization.LocalizedDelegate;
 
+/**
+ * A factory for {@link FlexoAction}
+ * 
+ * Implements stuff to instantiate {@link FlexoAction} in a given context, and allowing to integrate {@link FlexoAction} management in a
+ * editing environment
+ * 
+ * @author sylvain
+ *
+ * @param <A>
+ *            type of FlexoAction
+ * @param <T1>
+ *            type of object such {@link FlexoAction} is to be applied as focused object
+ * @param <T2>
+ *            type of additional object such {@link FlexoAction} is to be applied as global selection
+ */
 public abstract class FlexoActionFactory<A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> {
 
 	private static final Logger logger = Logger.getLogger(FlexoActionFactory.class.getPackage().getName());

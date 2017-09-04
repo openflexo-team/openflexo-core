@@ -39,6 +39,7 @@
 package org.openflexo.foundation.fml;
 
 import java.lang.reflect.InvocationTargetException;
+
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.connie.exception.NullReferenceException;

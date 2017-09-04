@@ -74,11 +74,11 @@ import org.openflexo.foundation.fml.editionaction.FetchRequestCondition;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.fml.rm.VirtualModelResourceFactory;
 import org.openflexo.foundation.fml.rt.action.ActionSchemeAction;
-import org.openflexo.foundation.fml.rt.action.ActionSchemeActionType;
+import org.openflexo.foundation.fml.rt.action.ActionSchemeActionFactory;
 import org.openflexo.foundation.fml.rt.action.CreateBasicVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.CreationSchemeAction;
 import org.openflexo.foundation.fml.rt.action.DeletionSchemeAction;
-import org.openflexo.foundation.fml.rt.action.DeletionSchemeActionType;
+import org.openflexo.foundation.fml.rt.action.DeletionSchemeActionFactory;
 import org.openflexo.foundation.fml.rt.editionaction.SelectFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.rm.FMLRTVirtualModelInstanceResource;
 import org.openflexo.foundation.resource.DirectoryResourceCenter;
@@ -489,8 +489,7 @@ public class TestVirtualModelInstanceIndexes extends OpenflexoProjectAtRunTimeTe
 
 	private FlexoConceptInstance createInstance(String firstName, String lastName, int age) {
 		CreationScheme creationScheme = flexoConcept.getCreationSchemes().get(0);
-		CreationSchemeAction action = CreationSchemeAction.actionType.makeNewAction(newVirtualModelInstance, null, editor);
-		action.setCreationScheme(creationScheme);
+		CreationSchemeAction action = new CreationSchemeAction(creationScheme, newVirtualModelInstance, null, editor);
 		FlexoBehaviourParameter firstNameP = creationScheme.getParameter("aFirstName");
 		FlexoBehaviourParameter lastNameP = creationScheme.getParameter("aLastName");
 		FlexoBehaviourParameter ageP = creationScheme.getParameter("anAge");
@@ -503,15 +502,15 @@ public class TestVirtualModelInstanceIndexes extends OpenflexoProjectAtRunTimeTe
 	}
 
 	private FlexoConceptInstance createFlexoConceptAInstance() {
-		CreationSchemeAction action = CreationSchemeAction.actionType.makeNewAction(newVirtualModelInstance, null, editor);
-		action.setCreationScheme(flexoConceptA.getCreationSchemes().get(0));
+		CreationSchemeAction action = new CreationSchemeAction(flexoConceptA.getCreationSchemes().get(0), newVirtualModelInstance, null,
+				editor);
 		action.doAction();
 		assertTrue(action.hasActionExecutionSucceeded());
 		return action.getFlexoConceptInstance();
 	}
 
 	private void deleteInstance(FlexoConceptInstance fci) {
-		DeletionSchemeActionType actionType = new DeletionSchemeActionType(fci.getFlexoConcept().getDefaultDeletionScheme(), fci);
+		DeletionSchemeActionFactory actionType = new DeletionSchemeActionFactory(fci.getFlexoConcept().getDefaultDeletionScheme(), fci);
 		DeletionSchemeAction action = actionType.makeNewAction(fci, null, editor);
 		action.doAction();
 		assertTrue(action.hasActionExecutionSucceeded());
@@ -563,7 +562,7 @@ public class TestVirtualModelInstanceIndexes extends OpenflexoProjectAtRunTimeTe
 	private void performRequest(String requestName, FlexoConceptInstance... expectedResult) throws SaveResourceException {
 
 		ActionScheme request1 = (ActionScheme) virtualModel.getFlexoBehaviour(requestName);
-		ActionSchemeActionType request1AT = new ActionSchemeActionType(request1, newVirtualModelInstance);
+		ActionSchemeActionFactory request1AT = new ActionSchemeActionFactory(request1, newVirtualModelInstance);
 		ActionSchemeAction action = request1AT.makeNewAction(newVirtualModelInstance, null, editor);
 
 		action.doAction();

@@ -68,8 +68,8 @@ import org.openflexo.foundation.fml.editionaction.AssignationAction;
 import org.openflexo.foundation.fml.editionaction.ExpressionAction;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.fml.rm.VirtualModelResourceFactory;
-import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
+import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.action.CreateBasicVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.CreationSchemeAction;
 import org.openflexo.foundation.fml.rt.rm.FMLRTVirtualModelInstanceResource;
@@ -302,7 +302,6 @@ public class TestFlexoRoleCardinality extends OpenflexoProjectAtRunTimeTestCase 
 		assertTrue(flexoConcept2.getCreationSchemes().contains(creationScheme2));
 
 		System.out.println("FML=" + virtualModel.getFMLRepresentation());
-
 	}
 
 	@Test
@@ -374,13 +373,12 @@ public class TestFlexoRoleCardinality extends OpenflexoProjectAtRunTimeTestCase 
 		CreationScheme creationScheme = flexoConcept1.getFlexoBehaviours(CreationScheme.class).get(0);
 		assertNotNull(creationScheme);
 
-		CreationSchemeAction creationSchemeCreationAction = CreationSchemeAction.actionType.makeNewAction(vmi, null, editor);
-		creationSchemeCreationAction.setCreationScheme(creationScheme);
+		CreationSchemeAction creationSchemeCreationAction = new CreationSchemeAction(creationScheme, vmi, null, editor);
 		assertNotNull(creationSchemeCreationAction);
 		creationSchemeCreationAction.doAction();
 		assertTrue(creationSchemeCreationAction.hasActionExecutionSucceeded());
 
-		fci = creationSchemeCreationAction.getFlexoConceptInstance();
+		fci = creationSchemeCreationAction.getNewFlexoConceptInstance();
 		assertNotNull(fci);
 
 		assertEquals(flexoConcept1, fci.getFlexoConcept());
@@ -390,12 +388,11 @@ public class TestFlexoRoleCardinality extends OpenflexoProjectAtRunTimeTestCase 
 
 		fci2 = new FlexoConceptInstance[3];
 		for (int i = 0; i < 3; i++) {
-			CreationSchemeAction creationSchemeCreation2Action = CreationSchemeAction.actionType.makeNewAction(vmi, null, editor);
-			creationSchemeCreation2Action.setCreationScheme(creationScheme2);
+			CreationSchemeAction creationSchemeCreation2Action = new CreationSchemeAction(creationScheme2, vmi, null, editor);
 			assertNotNull(creationSchemeCreation2Action);
 			creationSchemeCreation2Action.doAction();
 			assertTrue(creationSchemeCreation2Action.hasActionExecutionSucceeded());
-			fci2[i] = creationSchemeCreation2Action.getFlexoConceptInstance();
+			fci2[i] = creationSchemeCreation2Action.getNewFlexoConceptInstance();
 			assertNotNull(fci2[i]);
 			assertEquals(flexoConcept2, fci2[i].getFlexoConcept());
 		}

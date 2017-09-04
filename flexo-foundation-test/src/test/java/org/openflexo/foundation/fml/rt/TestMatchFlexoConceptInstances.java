@@ -55,7 +55,7 @@ import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelLibrary;
 import org.openflexo.foundation.fml.rt.action.ActionSchemeAction;
-import org.openflexo.foundation.fml.rt.action.ActionSchemeActionType;
+import org.openflexo.foundation.fml.rt.action.ActionSchemeActionFactory;
 import org.openflexo.foundation.fml.rt.action.CreateBasicVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.CreateFlexoConceptInstance;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
@@ -240,9 +240,9 @@ public class TestMatchFlexoConceptInstances extends OpenflexoProjectAtRunTimeTes
 
 		synchronizeMatchingModelUsingMatchingSet();
 
-		/*for (FlexoConceptInstance fci : matchingModel.getFlexoConceptInstances()) {
-			System.out.println(" > " + fci.getStringRepresentation());
-		}*/
+		// for (FlexoConceptInstance fci : matchingModel.getFlexoConceptInstances()) {
+		// System.out.println(" > " + fci.getStringRepresentation());
+		// }
 
 		assertEquals(3, matchingModel.getFlexoConceptInstances().size());
 		assertEquals(matchedC1, matchingModel.getFlexoConceptInstances().get(2));
@@ -316,9 +316,9 @@ public class TestMatchFlexoConceptInstances extends OpenflexoProjectAtRunTimeTes
 
 		synchronizeMatchingModelUsingDefaultScheme();
 
-		/*for (FlexoConceptInstance fci : matchingModel.getFlexoConceptInstances()) {
-			System.out.println(" > " + fci.getStringRepresentation());
-		}*/
+		// for (FlexoConceptInstance fci : matchingModel.getFlexoConceptInstances()) {
+		// System.out.println(" > " + fci.getStringRepresentation());
+		// }
 
 		assertEquals(3, matchingModel.getFlexoConceptInstances().size());
 		assertEquals(matchedC1, matchingModel.getFlexoConceptInstances().get(2));
@@ -365,9 +365,9 @@ public class TestMatchFlexoConceptInstances extends OpenflexoProjectAtRunTimeTes
 		System.out.println("b4=" + b4.getStringRepresentation());
 		System.out.println("b5=" + b5.getStringRepresentation());
 
-		/*for (FlexoConceptInstance fci : matchingModel.getFlexoConceptInstances()) {
-		System.out.println(" > " + fci.getStringRepresentation());
-		}*/
+		// for (FlexoConceptInstance fci : matchingModel.getFlexoConceptInstances()) {
+		// System.out.println(" > " + fci.getStringRepresentation());
+		// }
 
 	}
 
@@ -466,7 +466,7 @@ public class TestMatchFlexoConceptInstances extends OpenflexoProjectAtRunTimeTes
 
 		ActionScheme actionScheme = matchingVM.getActionSchemes().get(0);
 
-		ActionSchemeActionType actionType = new ActionSchemeActionType(actionScheme, matchingModel);
+		ActionSchemeActionFactory actionType = new ActionSchemeActionFactory(actionScheme, matchingModel);
 		ActionSchemeAction actionSchemeCreationAction = actionType.makeNewAction(matchingModel, null, editor);
 		assertNotNull(actionSchemeCreationAction);
 		actionSchemeCreationAction.doAction();
@@ -479,7 +479,7 @@ public class TestMatchFlexoConceptInstances extends OpenflexoProjectAtRunTimeTes
 
 		ActionScheme actionScheme = matchingVM.getActionSchemes().get(1);
 
-		ActionSchemeActionType actionType = new ActionSchemeActionType(actionScheme, matchingModel);
+		ActionSchemeActionFactory actionType = new ActionSchemeActionFactory(actionScheme, matchingModel);
 		ActionSchemeAction actionSchemeCreationAction = actionType.makeNewAction(matchingModel, null, editor);
 		assertNotNull(actionSchemeCreationAction);
 		actionSchemeCreationAction.doAction();
@@ -492,7 +492,7 @@ public class TestMatchFlexoConceptInstances extends OpenflexoProjectAtRunTimeTes
 
 		ActionScheme actionScheme = matchingVM2.getActionSchemes().get(0);
 
-		ActionSchemeActionType actionType = new ActionSchemeActionType(actionScheme, matchingModel2);
+		ActionSchemeActionFactory actionType = new ActionSchemeActionFactory(actionScheme, matchingModel2);
 		ActionSchemeAction actionSchemeCreationAction = actionType.makeNewAction(matchingModel2, null, editor);
 		assertNotNull(actionSchemeCreationAction);
 		actionSchemeCreationAction.doAction();

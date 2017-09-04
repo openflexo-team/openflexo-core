@@ -90,8 +90,8 @@ public class ValidateProject extends FlexoAction<ValidateProject, FlexoProjectOb
 	@Override
 	protected void doAction(Object context) {
 		logger.info("Validate project");
-		makeFlexoProgress(getLocales().localizedForKey("check_model_consistency"), 5);
-		setProgress(getLocales().localizedForKey("loading_required_resources"));
+		// makeFlexoProgress(getLocales().localizedForKey("check_model_consistency"), 5);
+		// setProgress(getLocales().localizedForKey("loading_required_resources"));
 
 		/*if (getProject().getFlexoComponentLibrary(false) != null) {
 			// We validate the component library model
@@ -120,7 +120,7 @@ public class ValidateProject extends FlexoAction<ValidateProject, FlexoProjectOb
 			dmValidationReport = getProject().getDataModel().validate(dmValidationModel);
 			dmValidationModel.deleteObserver(dmValidationObserver);
 		}*/
-		hideFlexoProgress();
+		// hideFlexoProgress();
 	}
 
 	private ValidationReport ieValidationReport = null;

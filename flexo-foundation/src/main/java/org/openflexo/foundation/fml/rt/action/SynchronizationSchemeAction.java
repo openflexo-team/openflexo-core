@@ -39,42 +39,76 @@
 package org.openflexo.foundation.fml.rt.action;
 
 import java.util.Vector;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.fml.SynchronizationScheme;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstanceObject;
 
+/**
+ * Provides execution environment of a {@link SynchronizationScheme} on a given {@link VirtualModelInstance} as a {@link FlexoAction}
+ *
+ * An {@link SynchronizationSchemeAction} represents the execution (in the "instances" world) of a {@link SynchronizationScheme}.<br>
+ * To be used and executed on Openflexo platform, it is wrapped in a {@link FlexoAction}.<br>
+ * 
+ * @author sylvain
+ */
 public class SynchronizationSchemeAction
 		extends AbstractActionSchemeAction<SynchronizationSchemeAction, SynchronizationScheme, VirtualModelInstance<?, ?>> {
 
 	private static final Logger logger = Logger.getLogger(SynchronizationSchemeAction.class.getPackage().getName());
 
-	private final SynchronizationSchemeActionType actionType;
-
-	public SynchronizationSchemeAction(SynchronizationSchemeActionType actionType, VirtualModelInstance<?, ?> focusedObject,
+	/**
+	 * Constructor to be used with a factory
+	 * 
+	 * @param actionFactory
+	 * @param focusedObject
+	 * @param globalSelection
+	 * @param editor
+	 */
+	public SynchronizationSchemeAction(SynchronizationSchemeActionFactory actionFactory, VirtualModelInstance<?, ?> focusedObject,
 			Vector<VirtualModelInstanceObject> globalSelection, FlexoEditor editor) {
-		super(actionType, focusedObject, globalSelection, editor);
-		this.actionType = actionType;
+		super(actionFactory, focusedObject, globalSelection, editor);
+	}
+
+	/**
+	 * Constructor to be used for creating a new action without factory
+	 * 
+	 * @param flexoBehaviour
+	 * @param focusedObject
+	 * @param globalSelection
+	 * @param editor
+	 */
+	public SynchronizationSchemeAction(SynchronizationScheme behaviour, VirtualModelInstance<?, ?> focusedObject,
+			Vector<VirtualModelInstanceObject> globalSelection, FlexoEditor editor) {
+		super(behaviour, focusedObject, globalSelection, editor);
+	}
+
+	/**
+	 * Constructor to be used for creating a new action as an action embedded in another one
+	 * 
+	 * @param flexoBehaviour
+	 * @param focusedObject
+	 * @param globalSelection
+	 * @param ownerAction
+	 *            Action in which action to be created will be embedded
+	 */
+	public SynchronizationSchemeAction(SynchronizationScheme behaviour, VirtualModelInstance<?, ?> focusedObject,
+			Vector<VirtualModelInstanceObject> globalSelection, FlexoAction<?, ?, ?> ownerAction) {
+		super(behaviour, focusedObject, globalSelection, ownerAction);
 	}
 
 	public SynchronizationScheme getSynchronizationScheme() {
-		if (actionType != null) {
-			return actionType.getBehaviour();
-		}
-		return null;
+		return getFlexoBehaviour();
 	}
 
 	@Override
 	protected void doAction(Object context) throws FlexoException {
-		if (logger.isLoggable(Level.INFO)) {
-			logger.info("Perform action " + actionType);
-		}
 
-		if (getSynchronizationScheme() != null && getSynchronizationScheme().evaluateCondition(actionType.getFlexoConceptInstance())) {
+		if (getSynchronizationScheme() != null && getSynchronizationScheme().evaluateCondition(getFlexoConceptInstance())) {
 
 			// System.out.println("Executing code: ");
 			// System.out.println(getSynchronizationScheme().getFMLRepresentation());

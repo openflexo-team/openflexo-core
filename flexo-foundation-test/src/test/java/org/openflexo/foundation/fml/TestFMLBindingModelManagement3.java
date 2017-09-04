@@ -72,9 +72,9 @@ import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.fml.rm.VirtualModelResourceFactory;
 import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
 import org.openflexo.foundation.fml.rt.FMLRTModelSlotInstanceConfiguration;
+import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceModelSlot;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
-import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.CreateBasicVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.CreationSchemeAction;
 import org.openflexo.foundation.fml.rt.action.ModelSlotInstanceConfiguration.DefaultModelSlotInstanceConfigurationOption;
@@ -551,8 +551,7 @@ public class TestFMLBindingModelManagement3 extends OpenflexoProjectAtRunTimeTes
 		System.out.println("Instanciate using: ");
 		System.out.println(creationScheme.getFMLRepresentation());
 
-		CreationSchemeAction creationSchemeCreationAction = CreationSchemeAction.actionType.makeNewAction(vmi1, null, editor);
-		creationSchemeCreationAction.setCreationScheme(creationScheme);
+		CreationSchemeAction creationSchemeCreationAction = new CreationSchemeAction(creationScheme, vmi1, null, editor);
 		assertNotNull(creationSchemeCreationAction);
 		creationSchemeCreationAction.doAction();
 		assertTrue(creationSchemeCreationAction.hasActionExecutionSucceeded());

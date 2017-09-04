@@ -72,10 +72,11 @@ import org.openflexo.foundation.fml.FlexoBehaviour.Visibility;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.NavigationScheme;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
-import org.openflexo.foundation.fml.rt.action.ActionSchemeActionType;
-import org.openflexo.foundation.fml.rt.action.DeletionSchemeActionType;
-import org.openflexo.foundation.fml.rt.action.NavigationSchemeActionType;
-import org.openflexo.foundation.fml.rt.action.SynchronizationSchemeActionType;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
+import org.openflexo.foundation.fml.rt.action.ActionSchemeActionFactory;
+import org.openflexo.foundation.fml.rt.action.DeletionSchemeActionFactory;
+import org.openflexo.foundation.fml.rt.action.NavigationSchemeActionFactory;
+import org.openflexo.foundation.fml.rt.action.SynchronizationSchemeActionFactory;
 import org.openflexo.view.controller.FlexoController;
 import org.openflexo.view.controller.action.EditionAction;
 
@@ -253,27 +254,28 @@ public class ContextualMenuManager {
 				FlexoConceptInstance fci = (FlexoConceptInstance) focusedObject;
 				FlexoConcept commonConcept = fci.getFlexoConcept();
 				if (FlexoAction.isHomogeneousFlexoConceptInstanceSelection(focusedObject, _selectionManager.getSelection())) {
-					if (commonConcept.hasSynchronizationScheme()) {
-						contextualMenu.putAction(new SynchronizationSchemeActionType(commonConcept.getSynchronizationScheme(), fci));
+					if (commonConcept.hasSynchronizationScheme() && fci instanceof VirtualModelInstance) {
+						contextualMenu.putAction(new SynchronizationSchemeActionFactory(commonConcept.getSynchronizationScheme(),
+								(VirtualModelInstance<?, ?>) fci));
 					}
 					if (commonConcept.hasActionScheme()) {
 						for (ActionScheme as : commonConcept.getAccessibleActionSchemes()) {
 							if (as.getVisibility() == Visibility.Public) {
-								contextualMenu.putAction(new ActionSchemeActionType(as, fci));
+								contextualMenu.putAction(new ActionSchemeActionFactory(as, fci));
 							}
 						}
 					}
 					if (commonConcept.hasNavigationScheme()) {
 						for (NavigationScheme ns : commonConcept.getNavigationSchemes()) {
 							if (ns.getVisibility() == Visibility.Public) {
-								contextualMenu.putAction(new NavigationSchemeActionType(ns, fci));
+								contextualMenu.putAction(new NavigationSchemeActionFactory(ns, fci));
 							}
 						}
 					}
 					if (commonConcept.hasDeletionScheme()) {
 						for (DeletionScheme ds : commonConcept.getAccessibleDeletionSchemes()) {
 							if (ds.getVisibility() == Visibility.Public) {
-								contextualMenu.putAction(new DeletionSchemeActionType(ds, fci));
+								contextualMenu.putAction(new DeletionSchemeActionFactory(ds, fci));
 							}
 						}
 					}

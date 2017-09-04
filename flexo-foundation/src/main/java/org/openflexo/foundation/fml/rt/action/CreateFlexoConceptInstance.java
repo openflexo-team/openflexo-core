@@ -231,10 +231,7 @@ public class CreateFlexoConceptInstance extends FlexoAction<CreateFlexoConceptIn
 		boolean wasValidable = isActionValidable();
 		this.creationScheme = creationScheme;
 		if (creationScheme != null) {
-			creationSchemeAction = CreationSchemeAction.actionType.makeNewEmbeddedAction(getFocusedObject().getOwningVirtualModelInstance(),
-					null, this);
-			creationSchemeAction.setVirtualModelInstance(getFocusedObject().getOwningVirtualModelInstance());
-			creationSchemeAction.setCreationScheme(creationScheme);
+			creationSchemeAction = new CreationSchemeAction(creationScheme, getFocusedObject().getOwningVirtualModelInstance(), null, this);
 			creationSchemeAction.addObserver(this);
 			getPropertyChangeSupport().firePropertyChange("creationSchemeAction", null, creationSchemeAction);
 		}

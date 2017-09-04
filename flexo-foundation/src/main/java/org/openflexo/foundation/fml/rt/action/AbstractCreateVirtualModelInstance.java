@@ -56,9 +56,9 @@ import org.openflexo.foundation.fml.CreationScheme;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
-import org.openflexo.foundation.fml.rt.ModelSlotInstance;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
+import org.openflexo.foundation.fml.rt.ModelSlotInstance;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.rm.AbstractVirtualModelInstanceResource;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.RepositoryFolder;
@@ -369,10 +369,13 @@ public abstract class AbstractCreateVirtualModelInstance<A extends AbstractCreat
 		boolean wasValidable = isActionValidable();
 		this.creationScheme = creationScheme;
 		if (creationScheme != null) {
-			creationSchemeAction = CreationSchemeAction.actionType.makeNewEmbeddedAction(
-					getFocusedObject() instanceof FMLRTVirtualModelInstance ? (VirtualModelInstance<?, ?>) getFocusedObject() : null,
-					null, this);
-			creationSchemeAction.setCreationScheme(creationScheme);
+			creationSchemeAction = new CreationSchemeAction(creationScheme,
+					getFocusedObject() instanceof FMLRTVirtualModelInstance ? (VirtualModelInstance<?, ?>) getFocusedObject() : null, null,
+					this);
+			/*creationSchemeAction = CreationSchemeAction.actionType.makeNewEmbeddedAction(
+					getFocusedObject() instanceof FMLRTVirtualModelInstance ? (VirtualModelInstance<?, ?>) getFocusedObject() : null, null,
+					this);
+			creationSchemeAction.setCreationScheme(creationScheme);*/
 			creationSchemeAction.addObserver(this);
 			getPropertyChangeSupport().firePropertyChange("creationSchemeAction", null, creationSchemeAction);
 		}

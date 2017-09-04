@@ -41,15 +41,24 @@ package org.openflexo.foundation.fml.rt.action;
 import java.util.Vector;
 
 import org.openflexo.foundation.FlexoEditor;
+import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.fml.SynchronizationScheme;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstanceObject;
 
-public class SynchronizationSchemeActionType
-		extends AbstractActionSchemeActionType<SynchronizationSchemeAction, SynchronizationScheme, VirtualModelInstance<?, ?>> {
+/**
+ * Factory for {@link SynchronizationSchemeAction} (an execution environment of a {@link SynchronizationScheme} on a given
+ * {@link VirtualModelInstance} as a {@link FlexoAction})
+ * 
+ * @author sylvain
+ *
+ */
+public class SynchronizationSchemeActionFactory
+		extends AbstractActionSchemeActionFactory<SynchronizationSchemeAction, SynchronizationScheme, VirtualModelInstance<?, ?>> {
 
-	public SynchronizationSchemeActionType(SynchronizationScheme synchronizationScheme, VirtualModelInstance<?, ?> virtualModelInstance) {
+	public SynchronizationSchemeActionFactory(SynchronizationScheme synchronizationScheme,
+			VirtualModelInstance<?, ?> virtualModelInstance) {
 		super(synchronizationScheme, virtualModelInstance, FlexoActionFactory.defaultGroup, FlexoActionFactory.NORMAL_ACTION_TYPE);
 	}
 

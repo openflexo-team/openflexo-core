@@ -50,7 +50,7 @@
         <ControlGraph2_Sequence id="33" ownerContext="controlGraph2" userID="FLX" flexoID="116">
           <ControlGraph2_FinalizeMatching id="34" container="this" flexoBehaviourURI="http://openflexo.org/test/TestResourceCenter/TestMatchFlexoConceptInstance.fml/MatchingVM2.fml#MatchedConceptB.delete" matchingSet="matchingSet" flexoConceptTypeURI="http://openflexo.org/test/TestResourceCenter/TestMatchFlexoConceptInstance.fml/MatchingVM2.fml#MatchedConceptB" ownerContext="controlGraph2" userID="FLX" flexoID="115" />
           <ControlGraph1_IterationAction id="35" iteratorName="conceptB" ownerContext="controlGraph1" userID="FLX" flexoID="102">
-            <Iteration_SelectFlexoConceptInstance id="36" container="conceptA" virtualModelInstance="model" flexoConceptTypeURI="http://openflexo.org/test/TestResourceCenter/TestMatchFlexoConceptInstance.fml/VM2.fml#ConceptB" ownerContext="iterationControlGraph" userID="FLX" flexoID="104" />
+            <Iteration_SelectFlexoConceptInstance id="36" container="conceptA" receiver="model" flexoConceptTypeURI="http://openflexo.org/test/TestResourceCenter/TestMatchFlexoConceptInstance.fml/VM2.fml#ConceptB" ownerContext="iterationControlGraph" userID="FLX" flexoID="104" />
             <ControlGraph_DeclarationAction id="37" variable="matchedConceptB" ownerContext="controlGraph" userID="FLX" flexoID="113">
               <AssignableAction_MatchFlexoConceptInstance id="38" container="this" creationSchemeURI="http://openflexo.org/test/TestResourceCenter/TestMatchFlexoConceptInstance.fml/MatchingVM2.fml#MatchedConceptB.create" matchingSet="matchingSet" virtualModelInstance="container" userID="FLX" flexoID="106">
                 <MatchingCriteria id="39" patternRoleName="conceptB" value="conceptB" userID="FLX" flexoID="109" />
@@ -88,7 +88,7 @@
       <ControlGraph2_Sequence id="56" ownerContext="controlGraph2" userID="FLX" flexoID="66">
         <ControlGraph2_FinalizeMatching id="57" container="this" flexoBehaviourURI="http://openflexo.org/test/TestResourceCenter/TestMatchFlexoConceptInstance.fml/MatchingVM2.fml#MatchedConceptA.delete" matchingSet="matchingSet" flexoConceptTypeURI="http://openflexo.org/test/TestResourceCenter/TestMatchFlexoConceptInstance.fml/MatchingVM2.fml#MatchedConceptA" ownerContext="controlGraph2" userID="FLX" flexoID="65" />
         <ControlGraph1_IterationAction id="58" iteratorName="conceptA" ownerContext="controlGraph1" userID="FLX" flexoID="55">
-          <Iteration_SelectFlexoConceptInstance id="59" virtualModelInstance="model" flexoConceptTypeURI="http://openflexo.org/test/TestResourceCenter/TestMatchFlexoConceptInstance.fml/VM2.fml#ConceptA" ownerContext="iterationControlGraph" userID="FLX" flexoID="57">
+          <Iteration_SelectFlexoConceptInstance id="59" receiver="model" flexoConceptTypeURI="http://openflexo.org/test/TestResourceCenter/TestMatchFlexoConceptInstance.fml/VM2.fml#ConceptA" ownerContext="iterationControlGraph" userID="FLX" flexoID="57">
             <VirtualModelInstanceModelSlot idref="4" />
           </Iteration_SelectFlexoConceptInstance>
           <ControlGraph_Sequence id="60" ownerContext="controlGraph" userID="FLX" flexoID="94">

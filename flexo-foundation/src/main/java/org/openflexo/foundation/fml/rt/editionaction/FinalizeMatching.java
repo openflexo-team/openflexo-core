@@ -64,8 +64,8 @@ import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
-import org.openflexo.foundation.fml.rt.action.ActionSchemeActionType;
-import org.openflexo.foundation.fml.rt.action.DeletionSchemeActionType;
+import org.openflexo.foundation.fml.rt.action.ActionSchemeActionFactory;
+import org.openflexo.foundation.fml.rt.action.DeletionSchemeActionFactory;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.foundation.fml.rt.action.MatchingSet;
 import org.openflexo.model.annotations.Adder;
@@ -441,12 +441,12 @@ public interface FinalizeMatching extends EditionAction {
 					if (getFlexoConceptType().isAssignableFrom(fci.getFlexoConcept())) {
 						FlexoBehaviourAction<?, ?, ?> behaviourAction = null;
 						if (getFlexoBehaviour() instanceof ActionScheme) {
-							ActionSchemeActionType actionType = new ActionSchemeActionType((ActionScheme) getFlexoBehaviour(), fci);
+							ActionSchemeActionFactory actionType = new ActionSchemeActionFactory((ActionScheme) getFlexoBehaviour(), fci);
 							behaviourAction = actionType.makeNewEmbeddedAction(fci, null,
 									(FlexoBehaviourAction<?, ?, ?>) evaluationContext);
 						}
 						else if (getFlexoBehaviour() instanceof DeletionScheme) {
-							DeletionSchemeActionType actionType = new DeletionSchemeActionType((DeletionScheme) getFlexoBehaviour(), fci);
+							DeletionSchemeActionFactory actionType = new DeletionSchemeActionFactory((DeletionScheme) getFlexoBehaviour(), fci);
 							behaviourAction = actionType.makeNewEmbeddedAction(fci, null,
 									(FlexoBehaviourAction<?, ?, ?>) evaluationContext);
 						}

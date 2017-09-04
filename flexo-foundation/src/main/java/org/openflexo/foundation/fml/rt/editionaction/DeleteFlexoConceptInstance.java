@@ -54,11 +54,10 @@ import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.foundation.fml.editionaction.DeleteAction;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.DeletionSchemeAction;
-import org.openflexo.foundation.fml.rt.action.DeletionSchemeActionType;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.model.annotations.Adder;
 import org.openflexo.model.annotations.CloningStrategy;
@@ -317,13 +316,8 @@ public interface DeleteFlexoConceptInstance<VMI extends VirtualModelInstance<VMI
 
 					if (evaluationContext instanceof FlexoBehaviourAction) {
 
-						DeletionSchemeActionType actionType = new DeletionSchemeActionType(deletionScheme, objectToDelete);
-						DeletionSchemeAction deletionSchemeAction = actionType.makeNewEmbeddedAction(objectToDelete, null,
+						DeletionSchemeAction deletionSchemeAction = new DeletionSchemeAction(getDeletionScheme(), objectToDelete, null,
 								(FlexoBehaviourAction<?, ?, ?>) evaluationContext);
-
-						deletionSchemeAction.setFlexoConceptInstanceToDelete(objectToDelete);
-						deletionSchemeAction.setVirtualModelInstance(vmInstance);
-						// deletionSchemeAction.setDeletionScheme(getDeletionScheme());
 
 						for (DeleteFlexoConceptInstanceParameter p : getParameters()) {
 							FlexoBehaviourParameter param = p.getParam();

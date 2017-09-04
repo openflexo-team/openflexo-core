@@ -69,8 +69,8 @@ import org.openflexo.foundation.action.FlexoExceptionHandler;
 import org.openflexo.foundation.action.FlexoGUIAction;
 import org.openflexo.foundation.action.FlexoUndoManager;
 import org.openflexo.foundation.action.LongRunningAction;
-import org.openflexo.foundation.fml.rt.action.ActionSchemeActionType;
-import org.openflexo.foundation.fml.rt.action.DeletionSchemeActionType;
+import org.openflexo.foundation.fml.rt.action.ActionSchemeActionFactory;
+import org.openflexo.foundation.fml.rt.action.DeletionSchemeActionFactory;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.ResourceUpdateHandler;
 import org.openflexo.foundation.task.LongRunningActionTask;
@@ -140,9 +140,9 @@ public class InteractiveFlexoEditor extends DefaultFlexoEditor {
 			final A action, final EventObject e) {
 		// NPE Protection
 		if (action != null) {
-			FlexoActionFactory<A, T1, T2> at = action.getActionType();
+			FlexoActionFactory<A, T1, T2> at = action.getActionFactory();
 			if (at != null) {
-				if (!action.getActionType().isEnabled(action.getFocusedObject(), action.getGlobalSelection())) {
+				if (!action.getActionFactory().isEnabled(action.getFocusedObject(), action.getGlobalSelection())) {
 					return null;
 				}
 				if (!(action instanceof FlexoGUIAction<?, ?, ?>) && (action.getFocusedObject() instanceof FlexoProjectObject)
@@ -227,7 +227,7 @@ public class InteractiveFlexoEditor extends DefaultFlexoEditor {
 
 	private <A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> boolean runInitializer(A action,
 			EventObject event) {
-		ActionInitializer<A, T1, T2> actionInitializer = getActionInitializer(action.getActionType());
+		ActionInitializer<A, T1, T2> actionInitializer = getActionInitializer(action.getActionFactory());
 		if (actionInitializer != null) {
 			FlexoActionInitializer<A> initializer = actionInitializer.getDefaultInitializer();
 			if (initializer != null) {
@@ -251,7 +251,7 @@ public class InteractiveFlexoEditor extends DefaultFlexoEditor {
 
 	private <A extends org.openflexo.foundation.action.FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> void runFinalizer(
 			final A action, EventObject event) {
-		ActionInitializer<A, T1, T2> actionInitializer = getActionInitializer(action.getActionType());
+		ActionInitializer<A, T1, T2> actionInitializer = getActionInitializer(action.getActionFactory());
 		if (actionInitializer != null) {
 			FlexoActionFinalizer<A> finalizer = actionInitializer.getDefaultFinalizer();
 			if (finalizer != null) {
@@ -265,7 +265,7 @@ public class InteractiveFlexoEditor extends DefaultFlexoEditor {
 		actionHasBeenPerformed(action, false); // Action failed
 		ProgressWindow.hideProgressWindow();
 		FlexoExceptionHandler<A> exceptionHandler = null;
-		ActionInitializer<A, T1, T2> actionInitializer = getActionInitializer(action.getActionType());
+		ActionInitializer<A, T1, T2> actionInitializer = getActionInitializer(action.getActionFactory());
 		if (actionInitializer != null) {
 			exceptionHandler = actionInitializer.getDefaultExceptionHandler();
 		}
@@ -355,10 +355,10 @@ public class InteractiveFlexoEditor extends DefaultFlexoEditor {
 	@Override
 	public <A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> boolean isActionEnabled(
 			FlexoActionFactory<A, T1, T2> actionType, T1 focusedObject, Vector<T2> globalSelection) {
-		if (actionType instanceof ActionSchemeActionType) {
+		if (actionType instanceof ActionSchemeActionFactory) {
 			return true;
 		}
-		if (actionType instanceof DeletionSchemeActionType) {
+		if (actionType instanceof DeletionSchemeActionFactory) {
 			return true;
 		}
 		if (actionType.isEnabled(focusedObject, globalSelection)) {
@@ -407,11 +407,11 @@ public class InteractiveFlexoEditor extends DefaultFlexoEditor {
 		if (actionInitializer != null) {
 			return actionInitializer.getEnabledIcon(actionType);
 		}
-		if (actionType instanceof DeletionSchemeActionType) {
-			return FlexoController.statelessIconForObject(((DeletionSchemeActionType) actionType).getDeletionScheme());
+		if (actionType instanceof DeletionSchemeActionFactory) {
+			return FlexoController.statelessIconForObject(((DeletionSchemeActionFactory) actionType).getDeletionScheme());
 		}
-		else if (actionType instanceof ActionSchemeActionType) {
-			return FlexoController.statelessIconForObject(((ActionSchemeActionType) actionType).getActionScheme());
+		else if (actionType instanceof ActionSchemeActionFactory) {
+			return FlexoController.statelessIconForObject(((ActionSchemeActionFactory) actionType).getActionScheme());
 		}
 
 		return null;

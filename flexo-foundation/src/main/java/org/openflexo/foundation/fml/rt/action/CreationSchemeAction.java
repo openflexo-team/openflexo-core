@@ -43,15 +43,14 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoException;
-import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
-import org.openflexo.foundation.action.FlexoActionFactory;
+import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.InvalidParametersException;
 import org.openflexo.foundation.action.NotImplementedException;
 import org.openflexo.foundation.fml.CreationScheme;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
+import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstanceObject;
@@ -60,51 +59,71 @@ public class CreationSchemeAction extends FlexoBehaviourAction<CreationSchemeAct
 
 	private static final Logger logger = Logger.getLogger(CreationSchemeAction.class.getPackage().getName());
 
-	public static FlexoActionFactory<CreationSchemeAction, VirtualModelInstance<?, ?>, VirtualModelInstanceObject> actionType = new FlexoActionFactory<CreationSchemeAction, VirtualModelInstance<?, ?>, VirtualModelInstanceObject>(
-			"create_flexo_concept_instance", FlexoActionFactory.newMenu, FlexoActionFactory.defaultGroup, FlexoActionFactory.ADD_ACTION_TYPE) {
-
-		/**
-		 * Factory method
-		 */
-		@Override
-		public CreationSchemeAction makeNewAction(VirtualModelInstance<?, ?> focusedObject,
-				Vector<VirtualModelInstanceObject> globalSelection, FlexoEditor editor) {
-			return new CreationSchemeAction(focusedObject, globalSelection, editor);
-		}
-
-		@Override
-		public boolean isVisibleForSelection(VirtualModelInstance<?, ?> object, Vector<VirtualModelInstanceObject> globalSelection) {
-			return false;
-		}
-
-		@Override
-		public boolean isEnabledForSelection(VirtualModelInstance<?, ?> object, Vector<VirtualModelInstanceObject> globalSelection) {
-			return true;
-		}
-
-	};
-
-	static {
-		FlexoObjectImpl.addActionForClass(actionType, FMLRTVirtualModelInstance.class);
-	}
-
-	private VirtualModelInstance<?, ?> vmInstance;
+	// private VirtualModelInstance<?, ?> vmInstance;
 	private FlexoConceptInstance container;
-	private CreationScheme _creationScheme;
+	// private CreationScheme _creationScheme;
+	private FlexoConceptInstance newFlexoConceptInstance;
 
-	CreationSchemeAction(VirtualModelInstance<?, ?> focusedObject, Vector<VirtualModelInstanceObject> globalSelection, FlexoEditor editor) {
-		super(actionType, focusedObject, globalSelection, editor);
+	/**
+	 * Constructor to be used with a factory
+	 * 
+	 * @param actionFactory
+	 * @param focusedObject
+	 * @param globalSelection
+	 * @param editor
+	 */
+	public CreationSchemeAction(CreationSchemeActionFactory actionFactory, VirtualModelInstance<?, ?> focusedObject,
+			Vector<VirtualModelInstanceObject> globalSelection, FlexoEditor editor) {
+		super(actionFactory, focusedObject, globalSelection, editor);
 	}
 
-	// private Hashtable<EditionAction,FlexoModelObject> createdObjects;
+	/**
+	 * Constructor to be used for creating a new action without factory
+	 * 
+	 * @param creationScheme
+	 * @param focusedObject
+	 * @param globalSelection
+	 * @param editor
+	 */
+	public CreationSchemeAction(CreationScheme creationScheme, VirtualModelInstance<?, ?> focusedObject,
+			Vector<VirtualModelInstanceObject> globalSelection, FlexoEditor editor) {
+		super(creationScheme, focusedObject, globalSelection, editor);
+	}
 
-	private FlexoConceptInstance newFlexoConceptInstance;
+	/**
+	 * Constructor to be used for creating a new action as an action embedded in another one
+	 * 
+	 * @param creationScheme
+	 * @param focusedObject
+	 * @param globalSelection
+	 * @param ownerAction
+	 */
+	public CreationSchemeAction(CreationScheme creationScheme, VirtualModelInstance<?, ?> focusedObject,
+			Vector<VirtualModelInstanceObject> globalSelection, FlexoAction<?, ?, ?> ownerAction) {
+		super(creationScheme, focusedObject, globalSelection, ownerAction);
+	}
+
+	public CreationScheme getCreationScheme() {
+		return getFlexoBehaviour();
+	}
+
+	public FlexoConcept getFlexoConceptBeingCreated() {
+		if (getFlexoBehaviour() != null) {
+			return getFlexoBehaviour().getFlexoConcept();
+		}
+		return null;
+	}
 
 	@Override
 	public boolean isValid() {
 		if (!super.isValid()) {
 			return false;
 		}
+
+		if (getFlexoBehaviour() == null) {
+			return false;
+		}
+
 		if (getFlexoConceptInstance() == null) {
 			return false;
 		}
@@ -124,12 +143,12 @@ public class CreationSchemeAction extends FlexoBehaviourAction<CreationSchemeAct
 
 		if (newFlexoConceptInstance == null) {
 			// We have to create the FCI by ourselve
-			if (getCreationScheme().getFlexoConcept() instanceof VirtualModel) {
+			if (getFlexoConceptBeingCreated() instanceof VirtualModel) {
 				// AbstractCreateVirtualModelAction should be used instead
 				throw new InvalidParametersException(
 						"Cannot create an FMLRTVirtualModelInstance this way (AbstractCreateVirtualModelAction should be used instead)");
 			}
-			else if (getCreationScheme().getFlexoConcept() != null) {
+			else if (getFlexoConceptBeingCreated() != null) {
 				newFlexoConceptInstance = getVirtualModelInstance().makeNewFlexoConceptInstance(getFlexoConcept());
 				if (getContainer() != null) {
 					// System.out.println(">>>>>> On ajoute " + flexoConceptInstance + " dans " + getContainer());
@@ -143,8 +162,9 @@ public class CreationSchemeAction extends FlexoBehaviourAction<CreationSchemeAct
 			}
 		}
 
-		executeControlGraph();
+		System.out.println("OK on execute " + getFlexoBehaviour().getFMLRepresentation());
 
+		executeControlGraph();
 	}
 
 	/**
@@ -182,25 +202,25 @@ public class CreationSchemeAction extends FlexoBehaviourAction<CreationSchemeAct
 		return returned;
 	}
 
-	@Override
+	/*@Override
 	public VirtualModelInstance<?, ?> getVirtualModelInstance() {
 		if (vmInstance == null) {
 			vmInstance = getFocusedObject();
 		}
 		return vmInstance;
 	}
-
+	
 	public void setVirtualModelInstance(VirtualModelInstance<?, ?> vmInstance) {
 		this.vmInstance = vmInstance;
-	}
+	}*/
 
-	public CreationScheme getCreationScheme() {
+	/*public CreationScheme getCreationScheme() {
 		return _creationScheme;
 	}
-
+	
 	public void setCreationScheme(CreationScheme creationScheme) {
 		_creationScheme = creationScheme;
-	}
+	}*/
 
 	public FlexoConceptInstance getContainer() {
 		return container;
@@ -214,11 +234,6 @@ public class CreationSchemeAction extends FlexoBehaviourAction<CreationSchemeAct
 		}
 	}
 
-	@Override
-	public CreationScheme getFlexoBehaviour() {
-		return getCreationScheme();
-	}
-
 	/**
 	 * Return the new {@link FlexoConceptInstance} beeing created by this action
 	 * 
@@ -230,18 +245,22 @@ public class CreationSchemeAction extends FlexoBehaviourAction<CreationSchemeAct
 
 	/**
 	 * Return the {@link FlexoConceptInstance} on which this {@link FlexoBehaviour} is applied.<br>
+	 * Take care that on a {@link CreationSchemeAction}, returned {@link FlexoConceptInstance} is the created instance
 	 * 
-	 * Be carefull here: this is not the {@link FlexoConceptInstance} beeing created by this action, but the {@link VirtualModelInstance} in
-	 * which {@link FlexoConceptInstance} is created
+	 * @return
 	 */
 	@Override
-	public VirtualModelInstance<?, ?> getFlexoConceptInstance() {
-		return vmInstance;
+	public FlexoConceptInstance getFlexoConceptInstance() {
+		return getNewFlexoConceptInstance();
 	}
 
+	/**
+	 * Return the {@link VirtualModelInstance} on which we work<br>
+	 * Take care that on a {@link CreationSchemeAction}, returned {@link VirtualModelInstance} is the container of created
+	 * {@link FlexoConceptInstance}
+	 */
 	@Override
-	public VirtualModelInstance<?, ?> retrieveVirtualModelInstance() {
-		return getVirtualModelInstance();
+	public VirtualModelInstance<?, ?> getVirtualModelInstance() {
+		return (VirtualModelInstance<?, ?>) super.getFlexoConceptInstance();
 	}
-
 }

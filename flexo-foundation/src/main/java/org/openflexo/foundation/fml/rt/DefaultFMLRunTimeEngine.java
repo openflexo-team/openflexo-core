@@ -53,7 +53,7 @@ import org.openflexo.connie.binding.BindingValueChangeListener;
 import org.openflexo.foundation.fml.EventListener;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.rt.action.EventListenerAction;
-import org.openflexo.foundation.fml.rt.action.EventListenerActionType;
+import org.openflexo.foundation.fml.rt.action.EventListenerActionFactory;
 
 /**
  * Base implementation for {@link FMLRunTimeEngine}
@@ -280,7 +280,7 @@ public abstract class DefaultFMLRunTimeEngine implements FMLRunTimeEngine, Prope
 
 	protected void fireEventListener(FlexoConceptInstance fci, EventListener eventListener, FlexoEventInstance event) {
 		// System.out.println("fireEventListener " + eventListener + " for " + fci);
-		EventListenerActionType actionType = new EventListenerActionType(eventListener, fci);
+		EventListenerActionFactory actionType = new EventListenerActionFactory(eventListener, fci);
 		EventListenerAction action = actionType.makeNewAction(fci, null, fci.getEditor());
 		action.setEventInstance(event);
 		action.doAction();

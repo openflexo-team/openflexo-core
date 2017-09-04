@@ -89,11 +89,11 @@ import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.fml.rm.VirtualModelResourceFactory;
 import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
 import org.openflexo.foundation.fml.rt.FMLRTModelSlotInstanceConfiguration;
+import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceModelSlot;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
-import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.ActionSchemeAction;
-import org.openflexo.foundation.fml.rt.action.ActionSchemeActionType;
+import org.openflexo.foundation.fml.rt.action.ActionSchemeActionFactory;
 import org.openflexo.foundation.fml.rt.action.CreateBasicVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.CreationSchemeAction;
 import org.openflexo.foundation.fml.rt.action.ModelSlotInstanceConfiguration.DefaultModelSlotInstanceConfigurationOption;
@@ -1704,8 +1704,7 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		System.out.println("Instanciate using: ");
 		System.out.println(creationScheme.getFMLRepresentation());
 
-		CreationSchemeAction creationSchemeCreationAction = CreationSchemeAction.actionType.makeNewAction(vmi1, null, editor);
-		creationSchemeCreationAction.setCreationScheme(creationScheme);
+		CreationSchemeAction creationSchemeCreationAction = new CreationSchemeAction(creationScheme, vmi1, null, editor);
 		assertNotNull(creationSchemeCreationAction);
 		creationSchemeCreationAction.doAction();
 		assertTrue(creationSchemeCreationAction.hasActionExecutionSucceeded());
@@ -1774,7 +1773,7 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 
 		System.out.println("Soit en FML:\n" + actionScheme.getFMLRepresentation());
 
-		ActionSchemeActionType actionType = new ActionSchemeActionType(actionScheme, fci);
+		ActionSchemeActionFactory actionType = new ActionSchemeActionFactory(actionScheme, fci);
 
 		ActionSchemeAction actionSchemeCreationAction = actionType.makeNewAction(fci, null, editor);
 		assertNotNull(actionSchemeCreationAction);

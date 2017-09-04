@@ -40,30 +40,48 @@ package org.openflexo.foundation.fml.rt.action;
 
 import java.util.Vector;
 
-import org.openflexo.foundation.action.ActionGroup;
-import org.openflexo.foundation.fml.AbstractActionScheme;
+import org.openflexo.foundation.FlexoEditor;
+import org.openflexo.foundation.action.FlexoAction;
+import org.openflexo.foundation.action.FlexoActionFactory;
+import org.openflexo.foundation.fml.CreationScheme;
+import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstanceObject;
 
-public abstract class AbstractActionSchemeActionType<A extends AbstractActionSchemeAction<A, FB, O>, FB extends AbstractActionScheme, O extends FlexoConceptInstance>
-		extends AbstractBehaviourActionType<A, FB, O> {
+/**
+ * Factory for {@link CreationSchemeAction} (an execution environment of a {@link CreationScheme} for creating a new
+ * {@link FlexoConceptInstance} executed as a {@link FlexoAction})
+ * 
+ * @author sylvain
+ */
+public class CreationSchemeActionFactory
+		extends FlexoBehaviourActionFactory<CreationSchemeAction, CreationScheme, VirtualModelInstance<?, ?>> {
 
-	public AbstractActionSchemeActionType(FB actionScheme, O flexoConceptInstance, ActionGroup actionGroup, int actionCategory) {
-		super(actionScheme, flexoConceptInstance, actionGroup, actionCategory);
+	public CreationSchemeActionFactory(CreationScheme creationScheme, VirtualModelInstance<?, ?> virtualModelInstance) {
+		super(creationScheme, virtualModelInstance, FlexoActionFactory.defaultGroup, FlexoActionFactory.ADD_ACTION_TYPE);
 	}
 
 	@Override
-	public boolean isEnabledForSelection(O object, Vector<VirtualModelInstanceObject> globalSelection) {
-		return getActionScheme().evaluateCondition(object);
-	}
-
-	@Override
-	public boolean isVisibleForSelection(O object, Vector<VirtualModelInstanceObject> globalSelection) {
+	public boolean isEnabledForSelection(VirtualModelInstance<?, ?> object, Vector<VirtualModelInstanceObject> globalSelection) {
 		return true;
 	}
 
-	public AbstractActionScheme getActionScheme() {
+	public CreationScheme getCreationScheme() {
 		return getBehaviour();
+	}
+
+	public FlexoConcept getFlexoConceptBeingCreated() {
+		if (getCreationScheme() != null) {
+			return getCreationScheme().getFlexoConcept();
+		}
+		return null;
+	}
+
+	@Override
+	public CreationSchemeAction makeNewAction(VirtualModelInstance<?, ?> focusedObject, Vector<VirtualModelInstanceObject> globalSelection,
+			FlexoEditor editor) {
+		return new CreationSchemeAction(getCreationScheme(), focusedObject, globalSelection, editor);
 	}
 
 }

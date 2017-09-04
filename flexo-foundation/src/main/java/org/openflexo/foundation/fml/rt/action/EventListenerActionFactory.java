@@ -41,25 +41,30 @@ package org.openflexo.foundation.fml.rt.action;
 import java.util.Vector;
 
 import org.openflexo.foundation.FlexoEditor;
+import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionFactory;
-import org.openflexo.foundation.fml.DeletionScheme;
+import org.openflexo.foundation.fml.EventListener;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstanceObject;
 
-public class DeletionSchemeActionType extends AbstractActionSchemeActionType<DeletionSchemeAction, DeletionScheme, FlexoConceptInstance> {
+/**
+ * Factory for {@link EventListenerAction} (an execution environment of a {@link EventListener} on a given {@link FlexoConceptInstance} as a
+ * {@link FlexoAction})
+ * 
+ * @author sylvain
+ *
+ */
+public class EventListenerActionFactory
+		extends AbstractActionSchemeActionFactory<EventListenerAction, EventListener, FlexoConceptInstance> {
 
-	public DeletionSchemeActionType(DeletionScheme deletionScheme, FlexoConceptInstance flexoConceptInstance) {
-		super(deletionScheme, flexoConceptInstance, FlexoActionFactory.editGroup, FlexoActionFactory.DELETE_ACTION_TYPE);
+	public EventListenerActionFactory(EventListener eventListener, FlexoConceptInstance flexoConceptInstance) {
+		super(eventListener, flexoConceptInstance, FlexoActionFactory.defaultGroup, FlexoActionFactory.NORMAL_ACTION_TYPE);
 	}
 
 	@Override
-	public DeletionSchemeAction makeNewAction(FlexoConceptInstance focusedObject, Vector<VirtualModelInstanceObject> globalSelection,
+	public EventListenerAction makeNewAction(FlexoConceptInstance focusedObject, Vector<VirtualModelInstanceObject> globalSelection,
 			FlexoEditor editor) {
-		return new DeletionSchemeAction(this, focusedObject, globalSelection, editor);
-	}
-
-	public DeletionScheme getDeletionScheme() {
-		return getBehaviour();
+		return new EventListenerAction(this, focusedObject, globalSelection, editor);
 	}
 
 }

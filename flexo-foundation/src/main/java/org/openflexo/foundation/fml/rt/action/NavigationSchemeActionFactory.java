@@ -41,55 +41,30 @@ package org.openflexo.foundation.fml.rt.action;
 import java.util.Vector;
 
 import org.openflexo.foundation.FlexoEditor;
+import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionFactory;
-import org.openflexo.foundation.fml.EventListener;
+import org.openflexo.foundation.fml.NavigationScheme;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstanceObject;
-import org.openflexo.localization.LocalizedDelegate;
 
-public class EventListenerActionType extends FlexoActionFactory<EventListenerAction, FlexoConceptInstance, VirtualModelInstanceObject> {
+/**
+ * Factory for {@link NavigationSchemeAction} (an execution environment of a {@link NavigationScheme} on a given
+ * {@link FlexoConceptInstance} as a {@link FlexoAction})
+ * 
+ * @author sylvain
+ *
+ */
+public class NavigationSchemeActionFactory
+		extends AbstractActionSchemeActionFactory<NavigationSchemeAction, NavigationScheme, FlexoConceptInstance> {
 
-	private final EventListener eventListener;
-	private final FlexoConceptInstance flexoConceptInstance;
-
-	public EventListenerActionType(EventListener eventListener, FlexoConceptInstance flexoConceptInstance) {
-		super(eventListener.getLabel(), FlexoActionFactory.defaultGroup, FlexoActionFactory.NORMAL_ACTION_TYPE);
-		this.eventListener = eventListener;
-		this.flexoConceptInstance = flexoConceptInstance;
+	public NavigationSchemeActionFactory(NavigationScheme navigationScheme, FlexoConceptInstance flexoConceptInstance) {
+		super(navigationScheme, flexoConceptInstance, FlexoActionFactory.defaultGroup, FlexoActionFactory.NORMAL_ACTION_TYPE);
 	}
 
 	@Override
-	public LocalizedDelegate getLocales() {
-		return eventListener.getLocalizedDictionary();
-	}
-
-	@Override
-	public boolean isEnabled(FlexoConceptInstance object, Vector<VirtualModelInstanceObject> globalSelection) {
-		return isEnabledForSelection(object, globalSelection);
-	}
-
-	@Override
-	public boolean isEnabledForSelection(FlexoConceptInstance object, Vector<VirtualModelInstanceObject> globalSelection) {
-		return eventListener.evaluateCondition(flexoConceptInstance);
-	}
-
-	@Override
-	public boolean isVisibleForSelection(FlexoConceptInstance object, Vector<VirtualModelInstanceObject> globalSelection) {
-		return true;
-	}
-
-	@Override
-	public EventListenerAction makeNewAction(FlexoConceptInstance focusedObject, Vector<VirtualModelInstanceObject> globalSelection,
+	public NavigationSchemeAction makeNewAction(FlexoConceptInstance focusedObject, Vector<VirtualModelInstanceObject> globalSelection,
 			FlexoEditor editor) {
-		return new EventListenerAction(this, focusedObject, globalSelection, editor);
-	}
-
-	public EventListener getEventListener() {
-		return eventListener;
-	}
-
-	public FlexoConceptInstance getFlexoConceptInstance() {
-		return flexoConceptInstance;
+		return new NavigationSchemeAction(this, focusedObject, globalSelection, editor);
 	}
 
 }

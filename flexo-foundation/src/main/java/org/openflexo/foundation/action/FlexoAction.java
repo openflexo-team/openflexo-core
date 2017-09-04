@@ -65,39 +65,30 @@ import org.openflexo.logging.FlexoLogger;
  * made. T1 can be kept if we ensure that only actions of the type FlexoAction<A extends FlexoAction<A, T1>, T1 extends FlexoModelObject>
  * are actually returned for a given object of type T1.
  * 
- * @author sguerin
+ * @author sylvain
+ * 
+ * @param <A>
+ *            type of FlexoAction
+ * @param <T1>
+ *            type of object such {@link FlexoAction} is to be applied as focused object
+ * @param <T2>
+ *            type of additional object such {@link FlexoAction} is to be applied as global selection
+ *
  */
 public abstract class FlexoAction<A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject>
 		extends FlexoObservable {
 
+	@SuppressWarnings("unused")
 	private static final Logger logger = FlexoLogger.getLogger(FlexoAction.class.getPackage().getName());
 
-	private FlexoActionFactory<A, T1, T2> _actionType;
-	private T1 _focusedObject;
-	private Vector<T2> _globalSelection;
-	private Object _context;
-	private Object _invoker;
-	private FlexoEditor _editor;
+	private FlexoActionFactory<A, T1, T2> actionFactory;
+	private T1 focusedObject;
+	private Vector<T2> globalSelection;
+	private Object context;
+	private Object invoker;
+	private FlexoEditor editor;
 
 	private FlexoActionCompoundEdit compoundEdit;
-
-	public boolean delete() {
-		_editor = null;
-		_invoker = null;
-		_context = null;
-		if (_globalSelection != null) {
-			_globalSelection.clear();
-		}
-		_globalSelection = null;
-		_focusedObject = null;
-		_actionType = null;
-		return true;
-	}
-
-	@Override
-	public String getDeletedProperty() {
-		return null;
-	}
 
 	public enum ExecutionStatus {
 		NEVER_EXECUTED,
@@ -135,36 +126,72 @@ public abstract class FlexoAction<A extends FlexoAction<A, T1, T2>, T1 extends F
 	protected ExecutionStatus executionStatus = ExecutionStatus.NEVER_EXECUTED;
 	private FlexoException thrownException = null;
 
-	public FlexoAction(FlexoActionFactory<A, T1, T2> actionType, T1 focusedObject, List<T2> globalSelection, FlexoEditor editor) {
+	/**
+	 * Instantiate a {@link FlexoAction} with a factory, a focused object and a global selection
+	 * 
+	 * @param actionFactory
+	 * @param focusedObject
+	 * @param globalSelection
+	 * @param editor
+	 */
+	public FlexoAction(FlexoActionFactory<A, T1, T2> actionFactory, T1 focusedObject, List<T2> globalSelection, FlexoEditor editor) {
 		super();
-		_editor = editor;
-		_actionType = actionType;
-		_focusedObject = focusedObject;
+		this.editor = editor;
+		this.actionFactory = actionFactory;
+		this.focusedObject = focusedObject;
 		if (globalSelection != null) {
-			_globalSelection = new Vector<T2>();
-			for (T2 o : globalSelection) {
-				_globalSelection.add(o);
-			}
+			this.globalSelection = new Vector<T2>();
+			this.globalSelection.addAll(globalSelection);
 		}
 		else {
-			_globalSelection = null;
+			this.globalSelection = null;
 		}
 	}
 
-	public FlexoActionFactory<A, T1, T2> getActionType() {
-		return _actionType;
+	/**
+	 * Instantiate a {@link FlexoAction} with a focused object and a global selection<br>
+	 * The factory remains null
+	 * 
+	 * @param focusedObject
+	 * @param globalSelection
+	 * @param editor
+	 */
+	public FlexoAction(T1 focusedObject, List<T2> globalSelection, FlexoEditor editor) {
+		this(null, focusedObject, globalSelection, editor);
 	}
 
-	public String getLocalizedName() {
-		if (getActionType() != null) {
-			return getActionType().getLocalizedName();
+	public boolean delete() {
+		editor = null;
+		invoker = null;
+		context = null;
+		if (globalSelection != null) {
+			globalSelection.clear();
 		}
+		globalSelection = null;
+		focusedObject = null;
+		actionFactory = null;
+		return true;
+	}
+
+	@Override
+	public String getDeletedProperty() {
 		return null;
 	}
 
+	public FlexoActionFactory<A, T1, T2> getActionFactory() {
+		return actionFactory;
+	}
+
+	public String getLocalizedName() {
+		if (getActionFactory() != null) {
+			return getActionFactory().getLocalizedName();
+		}
+		return getClass().getSimpleName();
+	}
+
 	public String getLocalizedDescription() {
-		if (getActionType() != null) {
-			return getActionType().getLocalizedDescription();
+		if (getActionFactory() != null) {
+			return getActionFactory().getLocalizedDescription();
 		}
 		return null;
 	}
@@ -173,7 +200,7 @@ public abstract class FlexoAction<A extends FlexoAction<A, T1, T2>, T1 extends F
 	 * Sets focused object
 	 */
 	public void setFocusedObject(T1 focusedObject) {
-		_focusedObject = focusedObject;
+		this.focusedObject = focusedObject;
 	}
 
 	/**
@@ -183,22 +210,22 @@ public abstract class FlexoAction<A extends FlexoAction<A, T1, T2>, T1 extends F
 	 * @return a FlexoModelObject instance, representing focused object
 	 */
 	public T1 getFocusedObject() {
-		if (_focusedObject != null) {
-			return _focusedObject;
+		if (focusedObject != null) {
+			return focusedObject;
 		}
-		if (_globalSelection != null && _globalSelection.size() > 0) {
-			return (T1) _globalSelection.firstElement();
+		if (globalSelection != null && globalSelection.size() > 0) {
+			return (T1) globalSelection.firstElement();
 		}
 		return null;
 	}
 
 	public Vector<T2> getGlobalSelection() {
-		return _globalSelection;
+		return globalSelection;
 	}
 
 	public A doAction() {
-		if (_editor != null) {
-			_editor.performAction((A) this, null);
+		if (editor != null) {
+			editor.performAction((A) this, null);
 		}
 		else {
 			try {
@@ -223,8 +250,9 @@ public abstract class FlexoAction<A extends FlexoAction<A, T1, T2>, T1 extends F
 	}
 
 	public A doActionInContext() throws FlexoException {
-		if (!getActionType().isEnabled(getFocusedObject(), getGlobalSelection())) {
-			throw new InactiveFlexoActionException(getActionType(), getFocusedObject(), getGlobalSelection());
+		// If the factory is not null, check that factory allows execution in its context
+		if (getActionFactory() != null && !getActionFactory().isEnabled(getFocusedObject(), getGlobalSelection())) {
+			throw new InactiveFlexoActionException(getActionFactory(), getFocusedObject(), getGlobalSelection());
 		}
 		try {
 			executionStatus = ExecutionStatus.EXECUTING_CORE;
@@ -241,19 +269,19 @@ public abstract class FlexoAction<A extends FlexoAction<A, T1, T2>, T1 extends F
 	protected abstract void doAction(Object context) throws FlexoException;
 
 	public Object getContext() {
-		return _context;
+		return context;
 	}
 
 	public void setContext(Object context) {
-		_context = context;
+		this.context = context;
 	}
 
 	public Object getInvoker() {
-		return _invoker;
+		return invoker;
 	}
 
 	public void setInvoker(Object invoker) {
-		_invoker = invoker;
+		this.invoker = invoker;
 	}
 
 	public Vector<FlexoObject> getGlobalSelectionAndFocusedObject() {
@@ -306,7 +334,7 @@ public abstract class FlexoAction<A extends FlexoAction<A, T1, T2>, T1 extends F
 	}
 
 	public FlexoEditor getEditor() {
-		return _editor;
+		return editor;
 	}
 
 	private FlexoAction<?, ?, ?> ownerAction;
@@ -324,7 +352,7 @@ public abstract class FlexoAction<A extends FlexoAction<A, T1, T2>, T1 extends F
 		return embeddedActions;
 	}
 
-	protected void addToEmbeddedActions(FlexoAction<?, ?, ?> embeddedAction) {
+	public void addToEmbeddedActions(FlexoAction<?, ?, ?> embeddedAction) {
 		embeddedActions.add(embeddedAction);
 	}
 

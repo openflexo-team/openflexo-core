@@ -659,16 +659,12 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 
 					// System.out.println("On doit creer une nouvelle FCI");
 
-					CreationSchemeAction creationSchemeAction = CreationSchemeAction.actionType.makeNewEmbeddedAction(vmInstance, null,
+					CreationSchemeAction creationSchemeAction = new CreationSchemeAction(getCreationScheme(), vmInstance, null,
 							((FlexoBehaviourAction<?, ?, ?>) evaluationContext));
-					creationSchemeAction.setVirtualModelInstance(vmInstance);
-
 					FlexoConceptInstance container = getContainer(evaluationContext);
 					if (container != null) {
 						creationSchemeAction.setContainer(container);
 					}
-
-					creationSchemeAction.setCreationScheme(getCreationScheme());
 					// System.out.println("Creation scheme: " + getCreationScheme());
 					// System.out.println("FML=" + getCreationScheme().getFMLRepresentation());
 					for (CreateFlexoConceptInstanceParameter p : getParameters()) {

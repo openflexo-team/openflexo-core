@@ -44,21 +44,64 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.InvalidParametersException;
 import org.openflexo.foundation.action.NotImplementedException;
 import org.openflexo.foundation.fml.DeletionScheme;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstanceObject;
 
+/**
+ * Provides execution environment of a {@link DeletionScheme} on a given {@link FlexoConceptInstance} as a {@link FlexoAction}
+ *
+ * An {@link DeletionSchemeAction} represents the execution (in the "instances" world) of a {@link DeletionScheme}.<br>
+ * To be used and executed on Openflexo platform, it is wrapped in a {@link FlexoAction}.<br>
+ * 
+ * @author sylvain
+ */
 public class DeletionSchemeAction extends AbstractActionSchemeAction<DeletionSchemeAction, DeletionScheme, FlexoConceptInstance> {
 
 	private static final Logger logger = Logger.getLogger(DeletionSchemeAction.class.getPackage().getName());
 
-	public DeletionSchemeAction(DeletionSchemeActionType actionType, FlexoConceptInstance focusedObject,
+	/**
+	 * Constructor to be used with a factory
+	 * 
+	 * @param actionFactory
+	 * @param focusedObject
+	 * @param globalSelection
+	 * @param editor
+	 */
+	public DeletionSchemeAction(DeletionSchemeActionFactory actionType, FlexoConceptInstance focusedObject,
 			Vector<VirtualModelInstanceObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
+	}
+
+	/**
+	 * Constructor to be used for creating a new action without factory
+	 * 
+	 * @param flexoBehaviour
+	 * @param focusedObject
+	 * @param globalSelection
+	 * @param editor
+	 */
+	public DeletionSchemeAction(DeletionScheme deletionScheme, FlexoConceptInstance focusedObject,
+			Vector<VirtualModelInstanceObject> globalSelection, FlexoEditor editor) {
+		super(deletionScheme, focusedObject, globalSelection, editor);
+	}
+
+	/**
+	 * Constructor to be used for creating a new action as an action embedded in another one
+	 * 
+	 * @param flexoBehaviour
+	 * @param focusedObject
+	 * @param globalSelection
+	 * @param ownerAction
+	 *            Action in which action to be created will be embedded
+	 */
+	public DeletionSchemeAction(DeletionScheme deletionScheme, FlexoConceptInstance focusedObject,
+			Vector<VirtualModelInstanceObject> globalSelection, FlexoAction<?, ?, ?> ownerAction) {
+		super(deletionScheme, focusedObject, globalSelection, ownerAction);
 	}
 
 	public DeletionScheme getDeletionScheme() {
@@ -133,10 +176,10 @@ public class DeletionSchemeAction extends AbstractActionSchemeAction<DeletionSch
 		this.flexoConceptInstanceToDelete = flexoConceptInstanceToDelete;
 	}*/
 
-	@Override
+	/*@Override
 	public VirtualModelInstance<?, ?> retrieveVirtualModelInstance() {
 		return getVirtualModelInstance();
-	}
+	}*/
 
 	/*@Override
 	public Object getValue(BindingVariable variable) {

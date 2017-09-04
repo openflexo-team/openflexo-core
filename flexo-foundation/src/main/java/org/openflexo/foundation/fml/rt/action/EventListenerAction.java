@@ -39,54 +39,63 @@
 package org.openflexo.foundation.fml.rt.action;
 
 import java.util.Vector;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.BindingVariable;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.fml.EventListener;
-import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.binding.FiredEventBindingVariable;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.FlexoEventInstance;
-import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstanceObject;
 
-public class EventListenerAction extends FlexoBehaviourAction<EventListenerAction, EventListener, FlexoConceptInstance> {
+public class EventListenerAction extends AbstractActionSchemeAction<EventListenerAction, EventListener, FlexoConceptInstance> {
 
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(EventListenerAction.class.getPackage().getName());
-
-	private final EventListenerActionType actionType;
 
 	private FlexoEventInstance eventInstance;
 
-	public EventListenerAction(EventListenerActionType actionType, FlexoConceptInstance focusedObject,
+	/**
+	 * Constructor to be used with a factory
+	 * 
+	 * @param actionFactory
+	 * @param focusedObject
+	 * @param globalSelection
+	 * @param editor
+	 */
+	public EventListenerAction(EventListenerActionFactory actionFactory, FlexoConceptInstance focusedObject,
 			Vector<VirtualModelInstanceObject> globalSelection, FlexoEditor editor) {
-		super(actionType, focusedObject, globalSelection, editor);
-		this.actionType = actionType;
-	}
-
-	public EventListener getEventListener() {
-		if (actionType != null) {
-			return actionType.getEventListener();
-		}
-		return null;
+		super(actionFactory, focusedObject, globalSelection, editor);
 	}
 
 	/**
-	 * Return the {@link FlexoConceptInstance} on which this {@link FlexoBehaviour} is applied.<br>
-	 * Note that here, the returned {@link FlexoConceptInstance} is the {@link FMLRTVirtualModelInstance} which is to be synchronized
+	 * Constructor to be used for creating a new action without factory
 	 * 
-	 * @return
+	 * @param flexoBehaviour
+	 * @param focusedObject
+	 * @param globalSelection
+	 * @param editor
 	 */
-	@Override
-	public FlexoConceptInstance getFlexoConceptInstance() {
-		if (actionType != null) {
-			return actionType.getFlexoConceptInstance();
-		}
-		return null;
+	public EventListenerAction(EventListener behaviour, FlexoConceptInstance focusedObject,
+			Vector<VirtualModelInstanceObject> globalSelection, FlexoEditor editor) {
+		super(behaviour, focusedObject, globalSelection, editor);
+	}
+
+	/**
+	 * Constructor to be used for creating a new action as an action embedded in another one
+	 * 
+	 * @param flexoBehaviour
+	 * @param focusedObject
+	 * @param globalSelection
+	 * @param ownerAction
+	 *            Action in which action to be created will be embedded
+	 */
+	public EventListenerAction(EventListener behaviour, FlexoConceptInstance focusedObject,
+			Vector<VirtualModelInstanceObject> globalSelection, FlexoAction<?, ?, ?> ownerAction) {
+		super(behaviour, focusedObject, globalSelection, ownerAction);
 	}
 
 	public FlexoEventInstance getEventInstance() {
@@ -98,33 +107,10 @@ public class EventListenerAction extends FlexoBehaviourAction<EventListenerActio
 	}
 
 	@Override
-	public EventListener getFlexoBehaviour() {
-		return getEventListener();
-	}
-
-	@Override
 	protected void doAction(Object context) throws FlexoException {
-		if (logger.isLoggable(Level.INFO)) {
-			logger.info("Perform action " + actionType);
-		}
-
-		if (getEventListener() != null && getEventListener().evaluateCondition(actionType.getFlexoConceptInstance())) {
-
-			// System.out.println("Executing code: ");
-			// System.out.println(getSynchronizationScheme().getFMLRepresentation());
+		if (getFlexoBehaviour() != null && getFlexoBehaviour().evaluateCondition(getFlexoConceptInstance())) {
 			executeControlGraph();
 		}
-	}
-
-	/**
-	 * Return {@link FMLRTVirtualModelInstance} in which synchronized {@link FMLRTVirtualModelInstance} does exist
-	 */
-	@Override
-	public VirtualModelInstance<?, ?> retrieveVirtualModelInstance() {
-		if (getFlexoConceptInstance() != null) {
-			return getFlexoConceptInstance().getVirtualModelInstance();
-		}
-		return null;
 	}
 
 	@Override

@@ -41,14 +41,22 @@ package org.openflexo.foundation.fml.rt.action;
 import java.util.Vector;
 
 import org.openflexo.foundation.FlexoEditor;
+import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.fml.ActionScheme;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstanceObject;
 
-public class ActionSchemeActionType extends AbstractActionSchemeActionType<ActionSchemeAction, ActionScheme, FlexoConceptInstance> {
+/**
+ * Factory for {@link ActionSchemeAction} (an execution environment of a {@link ActionScheme} on a given {@link FlexoConceptInstance} as a
+ * {@link FlexoAction})
+ * 
+ * @author sylvain
+ *
+ */
+public class ActionSchemeActionFactory extends AbstractActionSchemeActionFactory<ActionSchemeAction, ActionScheme, FlexoConceptInstance> {
 
-	public ActionSchemeActionType(ActionScheme actionScheme, FlexoConceptInstance flexoConceptInstance) {
+	public ActionSchemeActionFactory(ActionScheme actionScheme, FlexoConceptInstance flexoConceptInstance) {
 		super(actionScheme, flexoConceptInstance, FlexoActionFactory.defaultGroup, FlexoActionFactory.NORMAL_ACTION_TYPE);
 	}
 

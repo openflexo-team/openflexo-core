@@ -36,29 +36,48 @@
  * 
  */
 
-package org.openflexo.foundation.fml;
+package org.openflexo.foundation.fml.rt.action;
 
+import java.util.Vector;
+
+import org.openflexo.foundation.action.ActionGroup;
+import org.openflexo.foundation.action.FlexoAction;
+import org.openflexo.foundation.fml.AbstractActionScheme;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
-import org.openflexo.foundation.fml.rt.action.ActionSchemeActionFactory;
-import org.openflexo.model.annotations.ImplementationClass;
-import org.openflexo.model.annotations.ModelEntity;
-import org.openflexo.model.annotations.XMLElement;
+import org.openflexo.foundation.fml.rt.VirtualModelInstanceObject;
 
-@ModelEntity
-@ImplementationClass(ActionScheme.ActionSchemeImpl.class)
-@XMLElement
-public interface ActionScheme extends AbstractActionScheme {
+/**
+ * Factory for {@link AbstractActionSchemeAction} (an execution environment of a {@link AbstractActionScheme} on a given
+ * {@link FlexoConceptInstance} as a {@link FlexoAction})
+ * 
+ * @author sylvain
+ *
+ * @param <A>
+ *            type of FlexoAction
+ * @param <FB>
+ *            type of {@link AbstractActionScheme}
+ * @param <O>
+ *            type of {@link FlexoConceptInstance} on which this action applies
+ */
+public abstract class AbstractActionSchemeActionFactory<A extends AbstractActionSchemeAction<A, FB, O>, FB extends AbstractActionScheme, O extends FlexoConceptInstance>
+		extends FlexoBehaviourActionFactory<A, FB, O> {
 
-	public static abstract class ActionSchemeImpl extends AbstractActionSchemeImpl implements ActionScheme {
-
-		public ActionSchemeImpl() {
-			super();
-		}
-
-		@Override
-		public ActionSchemeActionFactory getActionFactory(FlexoConceptInstance fci) {
-			return new ActionSchemeActionFactory(this, fci);
-		}
-
+	public AbstractActionSchemeActionFactory(FB actionScheme, O flexoConceptInstance, ActionGroup actionGroup, int actionCategory) {
+		super(actionScheme, flexoConceptInstance, actionGroup, actionCategory);
 	}
+
+	@Override
+	public boolean isEnabledForSelection(O object, Vector<VirtualModelInstanceObject> globalSelection) {
+		return getActionScheme().evaluateCondition(object);
+	}
+
+	@Override
+	public boolean isVisibleForSelection(O object, Vector<VirtualModelInstanceObject> globalSelection) {
+		return true;
+	}
+
+	public AbstractActionScheme getActionScheme() {
+		return getBehaviour();
+	}
+
 }

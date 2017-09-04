@@ -196,8 +196,8 @@ public class PasteAction extends FlexoAction<PasteAction, FlexoObject, FlexoObje
 	}
 
 	@Override
-	public PasteActionType getActionType() {
-		return (PasteActionType) super.getActionType();
+	public PasteActionType getActionFactory() {
+		return (PasteActionType) super.getActionFactory();
 	}
 
 	public Event getEvent() {

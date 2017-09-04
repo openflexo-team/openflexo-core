@@ -41,19 +41,33 @@ package org.openflexo.foundation.fml.rt.action;
 import java.util.Vector;
 
 import org.openflexo.foundation.action.ActionGroup;
+import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstanceObject;
 import org.openflexo.localization.LocalizedDelegate;
 
-public abstract class AbstractBehaviourActionType<A extends FlexoBehaviourAction<A, FB, O>, FB extends FlexoBehaviour, O extends FlexoConceptInstance>
+/**
+ * Factory for {@link FlexoBehaviourAction} (an execution environment of a {@link FlexoBehaviour} on a given {@link FlexoConceptInstance} as
+ * a {@link FlexoAction})
+ * 
+ * @author sylvain
+ *
+ * @param <A>
+ *            type of FlexoAction
+ * @param <FB>
+ *            type of {@link FlexoBehaviour}
+ * @param <O>
+ *            type of {@link FlexoConceptInstance} on which this action applies
+ */
+public abstract class FlexoBehaviourActionFactory<A extends FlexoBehaviourAction<A, FB, O>, FB extends FlexoBehaviour, O extends FlexoConceptInstance>
 		extends FlexoActionFactory<A, O, VirtualModelInstanceObject> {
 
 	private final FB behaviour;
 	private final O flexoConceptInstance;
 
-	public AbstractBehaviourActionType(FB behaviour, O flexoConceptInstance, ActionGroup actionGroup, int actionCategory) {
+	public FlexoBehaviourActionFactory(FB behaviour, O flexoConceptInstance, ActionGroup actionGroup, int actionCategory) {
 		super(behaviour.getLabel(), actionGroup, actionCategory);
 		this.behaviour = behaviour;
 		this.flexoConceptInstance = flexoConceptInstance;

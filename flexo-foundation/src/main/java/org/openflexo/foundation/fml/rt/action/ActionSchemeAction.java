@@ -43,17 +43,62 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.fml.ActionScheme;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstanceObject;
 
+/**
+ * Provides execution environment of a {@link ActionScheme} on a given {@link FlexoConceptInstance} as a {@link FlexoAction}
+ *
+ * An {@link ActionSchemeAction} represents the execution (in the "instances" world) of an {@link ActionScheme}.<br>
+ * To be used and executed on Openflexo platform, it is wrapped in a {@link FlexoAction}.<br>
+ * 
+ * @author sylvain
+ */
 public class ActionSchemeAction extends AbstractActionSchemeAction<ActionSchemeAction, ActionScheme, FlexoConceptInstance> {
 
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(ActionSchemeAction.class.getPackage().getName());
 
-	public ActionSchemeAction(ActionSchemeActionType actionType, FlexoConceptInstance focusedObject,
+	/**
+	 * Constructor to be used with a factory
+	 * 
+	 * @param actionFactory
+	 * @param focusedObject
+	 * @param globalSelection
+	 * @param editor
+	 */
+	public ActionSchemeAction(ActionSchemeActionFactory actionFactory, FlexoConceptInstance focusedObject,
 			List<VirtualModelInstanceObject> globalSelection, FlexoEditor editor) {
-		super(actionType, focusedObject, globalSelection, editor);
+		super(actionFactory, focusedObject, globalSelection, editor);
+	}
+
+	/**
+	 * Constructor to be used for creating a new action without factory
+	 * 
+	 * @param flexoBehaviour
+	 * @param focusedObject
+	 * @param globalSelection
+	 * @param editor
+	 */
+	public ActionSchemeAction(ActionScheme actionScheme, FlexoConceptInstance focusedObject,
+			List<VirtualModelInstanceObject> globalSelection, FlexoEditor editor) {
+		super(actionScheme, focusedObject, globalSelection, editor);
+	}
+
+	/**
+	 * Constructor to be used for creating a new action as an action embedded in another one
+	 * 
+	 * @param flexoBehaviour
+	 * @param focusedObject
+	 * @param globalSelection
+	 * @param ownerAction
+	 *            Action in which action to be created will be embedded
+	 */
+	public ActionSchemeAction(ActionScheme actionScheme, FlexoConceptInstance focusedObject,
+			List<VirtualModelInstanceObject> globalSelection, FlexoAction<?, ?, ?> ownerAction) {
+		super(actionScheme, focusedObject, globalSelection, ownerAction);
 	}
 
 	@Override

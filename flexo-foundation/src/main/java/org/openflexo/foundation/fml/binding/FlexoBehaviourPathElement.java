@@ -42,6 +42,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.logging.Logger;
+
 import org.openflexo.connie.BindingEvaluationContext;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.binding.BindingPathElement;
@@ -57,8 +58,8 @@ import org.openflexo.foundation.fml.AbstractActionScheme;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
-import org.openflexo.foundation.fml.rt.action.ActionSchemeAction;
-import org.openflexo.foundation.fml.rt.action.ActionSchemeActionType;
+import org.openflexo.foundation.fml.rt.action.AbstractActionSchemeAction;
+import org.openflexo.foundation.fml.rt.action.AbstractActionSchemeActionFactory;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 
 /**
@@ -142,11 +143,11 @@ public class FlexoBehaviourPathElement extends FunctionPathElement {
 
 				// FlexoBehaviourAction action = (FlexoBehaviourAction) context;
 				FlexoConceptInstance fci = (FlexoConceptInstance) target;
-				ActionSchemeActionType actionType = ((AbstractActionScheme) getFlexoBehaviour()).getActionFactory(fci);
-				ActionSchemeAction actionSchemeAction = null;
+				AbstractActionSchemeActionFactory actionType = ((AbstractActionScheme) getFlexoBehaviour()).getActionFactory(fci);
+				AbstractActionSchemeAction actionSchemeAction = null;
 
 				if (context instanceof FlexoBehaviourAction) {
-					actionSchemeAction = actionType.makeNewEmbeddedAction(fci.getVirtualModelInstance(), null,
+					actionSchemeAction = (AbstractActionSchemeAction) actionType.makeNewEmbeddedAction(fci.getVirtualModelInstance(), null,
 							(FlexoBehaviourAction) context);
 				}
 				else {
@@ -157,7 +158,7 @@ public class FlexoBehaviourPathElement extends FunctionPathElement {
 						editor = prj.getServiceManager().getProjectLoaderService().getEditorForProject(prj);
 					}
 
-					actionSchemeAction = actionType.makeNewAction(fci.getVirtualModelInstance(), null, editor);
+					actionSchemeAction = (AbstractActionSchemeAction) actionType.makeNewAction(fci.getVirtualModelInstance(), null, editor);
 				}
 				for (FlexoBehaviourParameter p : getFlexoBehaviour().getParameters()) {
 					DataBinding<?> param = getParameter(p);

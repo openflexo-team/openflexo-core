@@ -47,7 +47,7 @@ import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.CreateFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.action.SynchronizationSchemeAction;
-import org.openflexo.foundation.fml.rt.action.SynchronizationSchemeActionType;
+import org.openflexo.foundation.fml.rt.action.SynchronizationSchemeActionFactory;
 import org.openflexo.gina.model.FIBComponent;
 import org.openflexo.gina.view.GinaViewFactory;
 import org.openflexo.logging.FlexoLogger;
@@ -77,7 +77,7 @@ public class FMLRTFIBController extends FlexoFIBController {
 		VirtualModel vm = virtualModelInstance.getVirtualModel();
 		if (vm.hasSynchronizationScheme()) {
 			SynchronizationScheme ss = vm.getSynchronizationScheme();
-			SynchronizationSchemeActionType actionType = new SynchronizationSchemeActionType(ss, virtualModelInstance);
+			SynchronizationSchemeActionFactory actionType = new SynchronizationSchemeActionFactory(ss, virtualModelInstance);
 			SynchronizationSchemeAction action = actionType.makeNewAction(virtualModelInstance, null, getEditor());
 			action.doAction();
 			return virtualModelInstance;

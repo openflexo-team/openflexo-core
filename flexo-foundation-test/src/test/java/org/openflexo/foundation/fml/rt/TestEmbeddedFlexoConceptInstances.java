@@ -57,7 +57,7 @@ import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelLibrary;
 import org.openflexo.foundation.fml.rt.action.ActionSchemeAction;
-import org.openflexo.foundation.fml.rt.action.ActionSchemeActionType;
+import org.openflexo.foundation.fml.rt.action.ActionSchemeActionFactory;
 import org.openflexo.foundation.fml.rt.action.CreateBasicVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.CreateFlexoConceptInstance;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
@@ -268,7 +268,7 @@ public class TestEmbeddedFlexoConceptInstances extends OpenflexoProjectAtRunTime
 
 		ActionScheme actionScheme = vm1.getActionSchemes().get(0);
 
-		ActionSchemeActionType actionType = new ActionSchemeActionType(actionScheme, vmi2);
+		ActionSchemeActionFactory actionType = new ActionSchemeActionFactory(actionScheme, vmi2);
 
 		ActionSchemeAction actionSchemeCreationAction = actionType.makeNewAction(vmi2, null, editor);
 		assertNotNull(actionSchemeCreationAction);

@@ -69,7 +69,7 @@ import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.binding.FlexoConceptBindingModel;
 import org.openflexo.foundation.fml.editionaction.FetchRequestCondition;
 import org.openflexo.foundation.fml.rt.action.SynchronizationSchemeAction;
-import org.openflexo.foundation.fml.rt.action.SynchronizationSchemeActionType;
+import org.openflexo.foundation.fml.rt.action.SynchronizationSchemeActionFactory;
 import org.openflexo.foundation.fml.rt.rm.AbstractVirtualModelInstanceResource;
 import org.openflexo.foundation.resource.CannotRenameException;
 import org.openflexo.foundation.resource.FlexoResource;
@@ -959,7 +959,7 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 			if (isSynchronizable()) {
 				VirtualModel vm = getVirtualModel();
 				SynchronizationScheme ss = vm.getSynchronizationScheme();
-				SynchronizationSchemeActionType actionType = new SynchronizationSchemeActionType(ss, this);
+				SynchronizationSchemeActionFactory actionType = new SynchronizationSchemeActionFactory(ss, this);
 				SynchronizationSchemeAction action = actionType.makeNewAction(this, null, editor);
 				action.doAction();
 			}

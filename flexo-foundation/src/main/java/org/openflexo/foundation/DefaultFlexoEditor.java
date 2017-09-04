@@ -154,7 +154,9 @@ public class DefaultFlexoEditor implements FlexoEditor {
 
 	@Override
 	public <A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> A performAction(A action, EventObject e) {
-		if (!action.getActionType().isEnabled(action.getFocusedObject(), action.getGlobalSelection())) {
+		// If the factory is not null, check that factory allows execution in its context
+		if (action.getActionFactory() != null
+				&& !action.getActionFactory().isEnabled(action.getFocusedObject(), action.getGlobalSelection())) {
 			return null;
 		}
 		// TODO: check this

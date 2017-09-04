@@ -57,11 +57,11 @@ import org.openflexo.foundation.fml.FlexoConceptInstanceRole;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelInstanceType;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
+import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
-import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.CreationSchemeAction;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstance.AddFlexoConceptInstanceImpl;
@@ -88,8 +88,8 @@ import org.openflexo.model.validation.ValidationRule;
 /**
  * Generic base action used to instanciate a {@link FlexoConceptInstance} in a given {@link FMLRTVirtualModelInstance}.
  * 
- * Note that this is also the base implementation for adding of a {@link FMLRTVirtualModelInstance} in a {@link View}, or a {@link View} in its
- * parent {@link View}
+ * Note that this is also the base implementation for adding of a {@link FMLRTVirtualModelInstance} in a {@link View}, or a {@link View} in
+ * its parent {@link View}
  * 
  * 
  * @author sylvain
@@ -421,11 +421,9 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 				logger.fine("getCreationScheme()=" + getCreationScheme());
 			}
 			if (evaluationContext instanceof FlexoBehaviourAction) {
-				CreationSchemeAction creationSchemeAction = CreationSchemeAction.actionType.makeNewEmbeddedAction(vmInstance, null,
+				CreationSchemeAction creationSchemeAction = new CreationSchemeAction(getCreationScheme(), vmInstance, null,
 						(FlexoBehaviourAction<?, ?, ?>) evaluationContext);
-				creationSchemeAction.setVirtualModelInstance(vmInstance);
 				creationSchemeAction.initWithFlexoConceptInstance(makeNewFlexoConceptInstance(evaluationContext));
-				creationSchemeAction.setCreationScheme(getCreationScheme());
 				for (AddFlexoConceptInstanceParameter p : getParameters()) {
 					FlexoBehaviourParameter param = p.getParam();
 					Object value = p.evaluateParameterValue((FlexoBehaviourAction<?, ?, ?>) evaluationContext);

@@ -48,7 +48,6 @@ import org.openflexo.foundation.DataModification;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.action.FlexoAction;
-import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.FlexoConcept;
@@ -67,18 +66,21 @@ import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.utils.OperationCancelledException;
 
 /**
- * Provides execution environment of a {@link FlexoBehaviourAction} on a given {@link FlexoConceptInstance} as a {@link FlexoAction}
+ * Provides execution environment of a {@link FlexoBehaviour} on a given {@link FlexoConceptInstance} as a {@link FlexoAction}
  *
  * Abstract base implementation for a {@link FlexoAction} which aims at executing a {@link FlexoBehaviour}
  * 
  * An {@link FlexoBehaviourAction} represents the execution (in the "instances" world) of an {@link FlexoBehaviour}.<br>
  * To be used and executed on Openflexo platform, it is wrapped in a {@link FlexoAction}.<br>
  * 
- * 
  * @author sylvain
  * 
  * @param <A>
  *            type of {@link FlexoBehaviourAction} beeing executed
+ * @param <FB>
+ *            type of {@link FlexoBehaviour}
+ * @param <O>
+ *            type of {@link FlexoConceptInstance} on which this action applies
  */
 public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB, O>, FB extends FlexoBehaviour, O extends FlexoConceptInstance>
 		extends FlexoAction<A, O, VirtualModelInstanceObject> implements RunTimeEvaluationContext {
@@ -87,9 +89,10 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 
 	public static final String PARAMETER_VALUE_CHANGED = "parameterValueChanged";
 
+	private FB flexoBehaviour;
+
 	protected Hashtable<String, Object> variables;
 	protected ParameterValues parameterValues;
-	// protected Hashtable<ListParameter, List> parameterListValues;
 
 	private MatchingSet defaultMatchingSet = null;
 
@@ -97,12 +100,94 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 
 	public boolean escapeParameterRetrievingWhenValid = true;
 
-	public FlexoBehaviourAction(FlexoActionFactory<A, O, VirtualModelInstanceObject> actionType, O focusedObject,
+	/**
+	 * Constructor to be used with a factory
+	 * 
+	 * @param actionFactory
+	 * @param focusedObject
+	 * @param globalSelection
+	 * @param editor
+	 */
+	public FlexoBehaviourAction(FlexoBehaviourActionFactory<A, FB, O> actionFactory, O focusedObject,
 			List<VirtualModelInstanceObject> globalSelection, FlexoEditor editor) {
-		super(actionType, focusedObject, globalSelection, editor);
+		super(actionFactory, focusedObject, globalSelection, editor);
 		variables = new Hashtable<String, Object>();
 		parameterValues = new ParameterValues();
-		// parameterListValues = new Hashtable<ListParameter, List>();
+	}
+
+	/**
+	 * Constructor to be used for creating a new action without factory
+	 * 
+	 * @param flexoBehaviour
+	 * @param focusedObject
+	 * @param globalSelection
+	 * @param editor
+	 */
+	public FlexoBehaviourAction(FB flexoBehaviour, O focusedObject, List<VirtualModelInstanceObject> globalSelection, FlexoEditor editor) {
+		this((FlexoBehaviourActionFactory<A, FB, O>) null, focusedObject, globalSelection, editor);
+		this.flexoBehaviour = flexoBehaviour;
+	}
+
+	/**
+	 * Constructor to be used for creating a new action as an action embedded in another one
+	 * 
+	 * @param flexoBehaviour
+	 * @param focusedObject
+	 * @param globalSelection
+	 * @param ownerAction
+	 *            Action in which action to be created will be embedded
+	 */
+	public FlexoBehaviourAction(FB flexoBehaviour, O focusedObject, List<VirtualModelInstanceObject> globalSelection,
+			FlexoAction<?, ?, ?> ownerAction) {
+		this(flexoBehaviour, focusedObject, globalSelection, ownerAction.getEditor());
+		setOwnerAction(ownerAction);
+		ownerAction.addToEmbeddedActions(this);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public FlexoBehaviourActionFactory<A, FB, O> getActionFactory() {
+		return (FlexoBehaviourActionFactory<A, FB, O>) super.getActionFactory();
+	}
+
+	public final FB getFlexoBehaviour() {
+		if (getActionFactory() != null) {
+			return getActionFactory().getBehaviour();
+		}
+		return flexoBehaviour;
+	}
+
+	/**
+	 * Return the {@link FlexoConceptInstance} on which this {@link FlexoBehaviour} is applied.<br>
+	 * 
+	 * @return
+	 */
+	@Override
+	public FlexoConceptInstance getFlexoConceptInstance() {
+		if (getActionFactory() != null) {
+			return getActionFactory().getFlexoConceptInstance();
+		}
+		return getFocusedObject();
+	}
+
+	/**
+	 * Return the {@link VirtualModelInstance} on which we work.<br>
+	 * If {@link FlexoConceptInstance} on which this {@link FlexoBehaviour} is applied (see {@link #getFlexoConceptInstance()} is a
+	 * {@link VirtualModelInstance}, return it, otherwise return the owner {@link VirtualModelInstance}
+	 */
+	@Override
+	public VirtualModelInstance<?, ?> getVirtualModelInstance() {
+		return retrieveVirtualModelInstance();
+	}
+
+	private VirtualModelInstance<?, ?> retrieveVirtualModelInstance() {
+		if (getFlexoConceptInstance() instanceof VirtualModelInstance) {
+			return (VirtualModelInstance<?, ?>) getFlexoConceptInstance();
+		}
+		if (getFlexoConceptInstance() != null) {
+			return getFlexoConceptInstance().getVirtualModelInstance();
+		}
+		return null;
 	}
 
 	@Override
@@ -233,29 +318,6 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 			}
 		}*/
 	}
-
-	/*public List getParameterListValue(ListParameter parameter) {
-		return parameterListValues.get(parameter);
-	}*/
-
-	public abstract FB getFlexoBehaviour();
-
-	@Override
-	public VirtualModelInstance<?, ?> getVirtualModelInstance() {
-		return retrieveVirtualModelInstance();
-	}
-
-	public abstract VirtualModelInstance<?, ?> retrieveVirtualModelInstance();
-
-	/**
-	 * Return the {@link FlexoConceptInstance} on which this {@link FlexoBehaviour} is applied.<br>
-	 * An {@link FlexoBehaviourAction} may concern an existing {@link FlexoConceptInstance} or may also refer to an
-	 * {@link FlexoConceptInstance} instance to be created (if related {@link FlexoBehaviour} is a {@link CreationSchemeAction}).
-	 * 
-	 * @return
-	 */
-	@Override
-	public abstract O getFlexoConceptInstance();
 
 	/**
 	 * This is the internal code performing execution of the control graph of {@link FlexoBehaviour}
@@ -440,29 +502,4 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 		}
 	}
 
-	/*public String retrieveFullURI(FlexoBehaviourParameter parameter) {
-		if (parameter instanceof URIParameter) {
-			URIParameter uriParam = (URIParameter) parameter;
-			if (uriParam.getModelSlot() instanceof TypeAwareModelSlot) {
-				TypeAwareModelSlot modelSlot = uriParam.getModelSlot();
-				return modelSlot.generateUniqueURI((TypeAwareModelSlotInstance) getVirtualModelInstance().getModelSlotInstance(modelSlot),
-						(String) getParameterValue(parameter));
-			}
-		}
-		return "Invalid URI";
-	}*/
-
-	/*@Override
-	public void debug(String aLogString, FlexoConceptInstance fci, FlexoBehaviour behaviour) {
-		if (getEditor() != null) {
-			getEditor().getFMLConsole().debug(aLogString, fci, behaviour);
-		}
-	}
-	
-	@Override
-	public void log(String aLogString, FMLConsole.LogLevel logLevel, FlexoConceptInstance fci, FlexoBehaviour behaviour) {
-		if (getEditor() != null) {
-			getEditor().getFMLConsole().log(aLogString, logLevel, fci, behaviour);
-		}
-	}*/
 }
