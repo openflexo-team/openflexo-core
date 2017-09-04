@@ -47,22 +47,24 @@ import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.InvalidParametersException;
 import org.openflexo.foundation.action.NotImplementedException;
 import org.openflexo.foundation.fml.CreationScheme;
-import org.openflexo.foundation.fml.FlexoBehaviour;
-import org.openflexo.foundation.fml.FlexoBehaviourParameter;
-import org.openflexo.foundation.fml.FlexoConcept;
-import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstanceObject;
 
-public class CreationSchemeAction extends FlexoBehaviourAction<CreationSchemeAction, CreationScheme, VirtualModelInstance<?, ?>> {
+/**
+ * Provides execution environment of a {@link CreationScheme} on a given {@link VirtualModelInstance} as a {@link FlexoAction}<br>
+ * The {@link VirtualModelInstance} is the instance where new {@link FlexoConceptInstance} will be instantiated
+ *
+ * An {@link CreationSchemeAction} represents the execution (in the "instances" world) of an {@link CreationScheme} in a given
+ * {@link VirtualModelInstance}.<br>
+ * To be used and executed on Openflexo platform, it is wrapped in a {@link FlexoAction}.<br>
+ * 
+ * @author sylvain
+ *
+ */
+public class CreationSchemeAction extends AbstractCreationSchemeAction<CreationSchemeAction, CreationScheme, VirtualModelInstance<?, ?>> {
 
 	private static final Logger logger = Logger.getLogger(CreationSchemeAction.class.getPackage().getName());
-
-	// private VirtualModelInstance<?, ?> vmInstance;
-	private FlexoConceptInstance container;
-	// private CreationScheme _creationScheme;
-	private FlexoConceptInstance newFlexoConceptInstance;
 
 	/**
 	 * Constructor to be used with a factory
@@ -103,28 +105,9 @@ public class CreationSchemeAction extends FlexoBehaviourAction<CreationSchemeAct
 		super(creationScheme, focusedObject, globalSelection, ownerAction);
 	}
 
-	public CreationScheme getCreationScheme() {
-		return getFlexoBehaviour();
-	}
-
-	public FlexoConcept getFlexoConceptBeingCreated() {
-		if (getFlexoBehaviour() != null) {
-			return getFlexoBehaviour().getFlexoConcept();
-		}
-		return null;
-	}
-
 	@Override
 	public boolean isValid() {
 		if (!super.isValid()) {
-			return false;
-		}
-
-		if (getFlexoBehaviour() == null) {
-			return false;
-		}
-
-		if (getFlexoConceptInstance() == null) {
 			return false;
 		}
 		return true;
@@ -132,135 +115,7 @@ public class CreationSchemeAction extends FlexoBehaviourAction<CreationSchemeAct
 
 	@Override
 	protected void doAction(Object context) throws NotImplementedException, InvalidParametersException, FlexoException {
-		// logger.info("Create FlexoConceptInstance using CreationScheme");
-
-		// If referenced FlexoConcept is a plain FlexoConcept, we create it here and then we apply
-		// control graph associated to CreationScheme
-		// But if referenced FlexoConcept is a VirtualModel or a ViewPoint, it must has been
-		// initialized using #initWithFlexoConceptInstance(FlexoConceptInstance) method
-
-		retrieveMissingDefaultParameters();
-
-		if (newFlexoConceptInstance == null) {
-			// We have to create the FCI by ourselve
-			if (getFlexoConceptBeingCreated() instanceof VirtualModel) {
-				// AbstractCreateVirtualModelAction should be used instead
-				throw new InvalidParametersException(
-						"Cannot create an FMLRTVirtualModelInstance this way (AbstractCreateVirtualModelAction should be used instead)");
-			}
-			else if (getFlexoConceptBeingCreated() != null) {
-				newFlexoConceptInstance = getVirtualModelInstance().makeNewFlexoConceptInstance(getFlexoConcept());
-				if (getContainer() != null) {
-					// System.out.println(">>>>>> On ajoute " + flexoConceptInstance + " dans " + getContainer());
-					getContainer().addToEmbeddedFlexoConceptInstances(newFlexoConceptInstance);
-				}
-			}
-			else {
-				logger.warning("Could not create new FlexoConceptInstance because creation scheme refers to null FlexoConcept");
-				throw new InvalidParametersException(
-						"Could not create new FlexoConceptInstance because creation scheme refers to null FlexoConcept");
-			}
-		}
-
-		System.out.println("OK on execute " + getFlexoBehaviour().getFMLRepresentation());
-
-		executeControlGraph();
+		super.doAction(context);
 	}
 
-	/**
-	 * Used when creation of FlexoConceptInstance initialization is beeing delegated to an other component.<br>
-	 * This happens for example in the case of FMLRTVirtualModelInstance creation, where the creation of FlexoConceptInstance is performed
-	 * in the {@link AbstractCreateVirtualModelInstance} action
-	 * 
-	 * @param flexoConceptInstance
-	 */
-	public void initWithFlexoConceptInstance(FlexoConceptInstance flexoConceptInstance) {
-		this.newFlexoConceptInstance = flexoConceptInstance;
-	}
-
-	public boolean retrieveMissingDefaultParameters() {
-		boolean returned = true;
-		FlexoBehaviour flexoBehaviour = getFlexoBehaviour();
-		for (final FlexoBehaviourParameter parameter : flexoBehaviour.getParameters()) {
-			if (getParameterValue(parameter) == null) {
-				logger.warning("Found not initialized parameter " + parameter);
-				Object defaultValue = parameter.getDefaultValue(this);
-				if (defaultValue != null) {
-					logger.warning("Du coup je lui donne la valeur " + defaultValue);
-					parameterValues.put(parameter, defaultValue);
-					if (!parameter.isValid(this, defaultValue)) {
-						logger.info("Parameter " + parameter + " is not valid for value " + defaultValue);
-						returned = false;
-					}
-				}
-			}
-			/*if (parameter instanceof ListParameter) {
-				List<Object> list = (List<Object>) ((ListParameter) parameter).getList(this);
-				parameterListValues.put((ListParameter) parameter, list);
-			}*/
-		}
-		return returned;
-	}
-
-	/*@Override
-	public VirtualModelInstance<?, ?> getVirtualModelInstance() {
-		if (vmInstance == null) {
-			vmInstance = getFocusedObject();
-		}
-		return vmInstance;
-	}
-	
-	public void setVirtualModelInstance(VirtualModelInstance<?, ?> vmInstance) {
-		this.vmInstance = vmInstance;
-	}*/
-
-	/*public CreationScheme getCreationScheme() {
-		return _creationScheme;
-	}
-	
-	public void setCreationScheme(CreationScheme creationScheme) {
-		_creationScheme = creationScheme;
-	}*/
-
-	public FlexoConceptInstance getContainer() {
-		return container;
-	}
-
-	public void setContainer(FlexoConceptInstance container) {
-		if ((container == null && this.container != null) || (container != null && !container.equals(this.container))) {
-			FlexoConceptInstance oldValue = this.container;
-			this.container = container;
-			getPropertyChangeSupport().firePropertyChange("container", oldValue, container);
-		}
-	}
-
-	/**
-	 * Return the new {@link FlexoConceptInstance} beeing created by this action
-	 * 
-	 * @return
-	 */
-	public FlexoConceptInstance getNewFlexoConceptInstance() {
-		return newFlexoConceptInstance;
-	}
-
-	/**
-	 * Return the {@link FlexoConceptInstance} on which this {@link FlexoBehaviour} is applied.<br>
-	 * Take care that on a {@link CreationSchemeAction}, returned {@link FlexoConceptInstance} is the created instance
-	 * 
-	 * @return
-	 */
-	@Override
-	public FlexoConceptInstance getFlexoConceptInstance() {
-		return getNewFlexoConceptInstance();
-	}
-
-	/**
-	 * Return the {@link VirtualModelInstance} on which we work<br>
-	 * Take care that on a {@link CreationSchemeAction}, returned {@link VirtualModelInstance} is the container of created
-	 * {@link FlexoConceptInstance}
-	 */
-	@Override
-	public VirtualModelInstance<?, ?> getVirtualModelInstance() {
-		return (VirtualModelInstance<?, ?>) super.getFlexoConceptInstance();
-	}
 }

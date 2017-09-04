@@ -42,58 +42,46 @@ import java.util.Vector;
 
 import org.openflexo.foundation.action.ActionGroup;
 import org.openflexo.foundation.action.FlexoAction;
-import org.openflexo.foundation.action.FlexoActionFactory;
-import org.openflexo.foundation.fml.FlexoBehaviour;
+import org.openflexo.foundation.fml.AbstractCreationScheme;
+import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstanceObject;
-import org.openflexo.localization.LocalizedDelegate;
 
 /**
- * Factory for {@link FlexoBehaviourAction} (an execution environment of a {@link FlexoBehaviour} on a given {@link FlexoConceptInstance} as
- * a {@link FlexoAction})
+ * Base implementation for a factory for {@link CreationSchemeAction} (an execution environment of a {@link AbstractCreationScheme} for
+ * creating a new {@link FlexoConceptInstance} executed as a {@link FlexoAction})
  * 
  * @author sylvain
  *
  * @param <A>
  *            type of FlexoAction
  * @param <FB>
- *            type of {@link FlexoBehaviour}
+ *            type of {@link AbstractCreationScheme}
  * @param <O>
  *            type of {@link FlexoConceptInstance} on which this action applies
  */
-public abstract class FlexoBehaviourActionFactory<A extends FlexoBehaviourAction<A, FB, O>, FB extends FlexoBehaviour, O extends FlexoConceptInstance>
-		extends FlexoActionFactory<A, O, VirtualModelInstanceObject> {
+public abstract class AbstractCreationSchemeActionFactory<A extends AbstractCreationSchemeAction<A, FB, O>, FB extends AbstractCreationScheme, O extends VirtualModelInstance<?, ?>>
+		extends FlexoBehaviourActionFactory<A, FB, O> {
 
-	private final FB behaviour;
-	private final O flexoConceptInstance;
-
-	public FlexoBehaviourActionFactory(FB behaviour, O flexoConceptInstance, ActionGroup actionGroup, int actionCategory) {
-		super(behaviour.getLabel(), actionGroup, actionCategory);
-		this.behaviour = behaviour;
-		this.flexoConceptInstance = flexoConceptInstance;
+	public AbstractCreationSchemeActionFactory(FB creationScheme, O flexoConceptInstance, ActionGroup actionGroup, int actionCategory) {
+		super(creationScheme, flexoConceptInstance, actionGroup, actionCategory);
 	}
 
 	@Override
-	public final LocalizedDelegate getLocales() {
-		return behaviour.getLocalizedDictionary();
-	}
-
-	@Override
-	public final boolean isEnabled(O object, Vector<VirtualModelInstanceObject> globalSelection) {
-		return isEnabledForSelection(object, globalSelection);
-	}
-
-	@Override
-	public boolean isVisibleForSelection(O object, Vector<VirtualModelInstanceObject> globalSelection) {
+	public boolean isEnabledForSelection(O object, Vector<VirtualModelInstanceObject> globalSelection) {
 		return true;
 	}
 
-	public final FB getBehaviour() {
-		return behaviour;
+	public FB getCreationScheme() {
+		return getBehaviour();
 	}
 
-	public final O getFlexoConceptInstance() {
-		return flexoConceptInstance;
+	public FlexoConcept getFlexoConceptBeingCreated() {
+		if (getCreationScheme() != null) {
+			return getCreationScheme().getFlexoConcept();
+		}
+		return null;
 	}
 
 }

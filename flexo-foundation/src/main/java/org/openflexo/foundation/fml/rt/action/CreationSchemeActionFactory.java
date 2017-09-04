@@ -44,7 +44,6 @@ import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.fml.CreationScheme;
-import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstanceObject;
@@ -56,26 +55,10 @@ import org.openflexo.foundation.fml.rt.VirtualModelInstanceObject;
  * @author sylvain
  */
 public class CreationSchemeActionFactory
-		extends FlexoBehaviourActionFactory<CreationSchemeAction, CreationScheme, VirtualModelInstance<?, ?>> {
+		extends AbstractCreationSchemeActionFactory<CreationSchemeAction, CreationScheme, VirtualModelInstance<?, ?>> {
 
 	public CreationSchemeActionFactory(CreationScheme creationScheme, VirtualModelInstance<?, ?> virtualModelInstance) {
 		super(creationScheme, virtualModelInstance, FlexoActionFactory.defaultGroup, FlexoActionFactory.ADD_ACTION_TYPE);
-	}
-
-	@Override
-	public boolean isEnabledForSelection(VirtualModelInstance<?, ?> object, Vector<VirtualModelInstanceObject> globalSelection) {
-		return true;
-	}
-
-	public CreationScheme getCreationScheme() {
-		return getBehaviour();
-	}
-
-	public FlexoConcept getFlexoConceptBeingCreated() {
-		if (getCreationScheme() != null) {
-			return getCreationScheme().getFlexoConcept();
-		}
-		return null;
 	}
 
 	@Override
