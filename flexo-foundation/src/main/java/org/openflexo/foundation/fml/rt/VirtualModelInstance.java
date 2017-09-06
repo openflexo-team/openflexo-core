@@ -582,10 +582,12 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 			SwingUtilities.invokeLater(new Runnable() {
 				@Override
 				public void run() {
-					getPropertyChangeSupport().firePropertyChange("allRootFlexoConceptInstances", lastNotifiedRootFlexoConceptInstances,
-							getAllRootFlexoConceptInstances());
-					lastNotifiedRootFlexoConceptInstances = new ArrayList(getAllRootFlexoConceptInstances());
-					willNotifyAllRootFlexoConceptInstancesMayHaveChanged = false;
+					if (!isDeleted()) {
+						getPropertyChangeSupport().firePropertyChange("allRootFlexoConceptInstances", lastNotifiedRootFlexoConceptInstances,
+								getAllRootFlexoConceptInstances());
+						lastNotifiedRootFlexoConceptInstances = new ArrayList(getAllRootFlexoConceptInstances());
+						willNotifyAllRootFlexoConceptInstancesMayHaveChanged = false;
+					}
 				}
 			});
 		}
