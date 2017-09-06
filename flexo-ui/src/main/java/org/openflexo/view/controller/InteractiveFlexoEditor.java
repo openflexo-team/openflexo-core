@@ -156,9 +156,9 @@ public class InteractiveFlexoEditor extends DefaultFlexoEditor {
 				executeAction(action, e);
 				return action;
 			}
-			else {
-				logger.warning("Action Type was NULL!");
-				return null;
+			else { // No factory supplied, execute action inconditionnaly
+				executeAction(action, e);
+				return action;
 			}
 		}
 		else {
