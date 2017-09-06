@@ -64,6 +64,7 @@ individual_role_does_not_define_any_concept_class=Individual role does not defin
 infered_types_must_be_compatible_in_a_sequence_description=Infered types must be compatible in a sequence description
 iteration_action_is_not_iterable=Iteration action is not iterable
 match_flexo_concept_action_doesn't_define_any_flexo_concept=Match flexo concept action doesn't define any flexo concept
+more_than_one_initializer_defined=More than one initializer defined
 non_abstract_flexo_concept_($validable.name)_has_no_behaviours=Non abstract flexo concept ($validable.name) has no behaviours
 non_abstract_flexo_concept_($validable.name)_has_no_deletion_scheme=Non abstract flexo concept ($validable.name) has no deletion scheme
 non_abstract_flexo_concept_role_does_not_define_any_property=Non abstract flexo concept role does not define any property
