@@ -88,7 +88,7 @@ public interface AssignationAction<T> extends AbstractAssignationAction<T> {
 	@Override
 	public FlexoProperty<T> getAssignedFlexoProperty();
 
-	public static abstract class AssignationActionImpl<T> extends AbstractAssignationActionImpl<T>implements AssignationAction<T> {
+	public static abstract class AssignationActionImpl<T> extends AbstractAssignationActionImpl<T> implements AssignationAction<T> {
 
 		private static final Logger logger = Logger.getLogger(AssignationAction.class.getPackage().getName());
 
