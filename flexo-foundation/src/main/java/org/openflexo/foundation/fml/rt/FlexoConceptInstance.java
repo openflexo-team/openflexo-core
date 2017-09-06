@@ -1491,7 +1491,19 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 			if (variable instanceof FlexoRoleBindingVariable && getFlexoConcept() != null) {
 				FlexoRole role = ((FlexoRoleBindingVariable) variable).getFlexoRole();
 				if (role != null) {
-					setFlexoActor(value, role);
+					if (role.getCardinality().isMultipleCardinality()) {
+						if (value instanceof List) {
+							for (Object o : (List) value) {
+								addToFlexoActors(o, role);
+							}
+						}
+						else {
+							logger.warning("Unexpected value " + value + " for multiple cardinality role: " + role);
+						}
+					}
+					else {
+						setFlexoActor(value, role);
+					}
 				}
 				else {
 					logger.warning("Unexpected property " + variable);
