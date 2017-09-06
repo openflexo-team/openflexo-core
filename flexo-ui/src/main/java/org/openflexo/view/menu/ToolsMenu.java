@@ -46,8 +46,15 @@ import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.*;
+
+import javax.swing.AbstractAction;
+import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JFileChooser;
+import javax.swing.JMenuItem;
+import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileFilter;
+
 import org.openflexo.Flexo;
 import org.openflexo.FlexoCst;
 import org.openflexo.br.SendBugReportServiceTask;
@@ -76,6 +83,7 @@ import org.openflexo.view.controller.model.ControllerModel;
  * 
  * @author sguerin
  */
+@SuppressWarnings("serial")
 public class ToolsMenu extends FlexoMenu {
 
 	static final Logger logger = FlexoLogger.getLogger(ToolsMenu.class.getPackage().getName());
@@ -86,6 +94,7 @@ public class ToolsMenu extends FlexoMenu {
 	// ==========================================================================
 
 	public JMenuItem manageResourceCenterItem;
+	public JMenuItem manageTechnologiesItem;
 
 	public JMenuItem fmlConsoleItem;
 	public JMenuItem loggingItem;
@@ -111,6 +120,7 @@ public class ToolsMenu extends FlexoMenu {
 		super("tools", controller);
 		addSpecificItems();
 		add(manageResourceCenterItem = new ManageResourceCenterItem());
+		add(manageTechnologiesItem = new TechnologiesMenu(getController()));
 		add(fmlConsoleItem = new FMLConsoleItem());
 		add(loggingItem = new LoggingItem());
 		if (Flexo.isDev) {
@@ -158,6 +168,78 @@ public class ToolsMenu extends FlexoMenu {
 			ResourceCenterEditorDialog.showResourceCenterEditorDialog(getController().getApplicationContext(),
 					getController().getFlexoFrame(), false);
 		}
+	}
+
+	// ==========================================================================
+	// ======================== Technologies management =========================
+	// ==========================================================================
+
+	public class TechnologiesMenu extends FlexoMenu {
+
+		public TechnologiesMenu(FlexoController controller) {
+			super("technology_adapters", controller);
+
+			FlexoMenuItem label = new FlexoMenuItem(getController(), "click_to_activate...");
+			label.setEnabled(false);
+
+			add(label);
+
+			addSeparator();
+
+			for (TechnologyAdapter ta : controller.getApplicationContext().getTechnologyAdapterService().getTechnologyAdapters()) {
+				JMenuItem item = new TechnologyAdapterItem(ta);
+				if (controller.getApplicationContext().getTechnologyAdapterControllerService() != null && controller.getApplicationContext()
+						.getTechnologyAdapterControllerService().getTechnologyAdapterController(ta) != null) {
+					item.setIcon(controller.getApplicationContext().getTechnologyAdapterControllerService()
+							.getTechnologyAdapterController(ta).getTechnologyIcon());
+				}
+				add(item);
+			}
+
+		}
+
+	}
+
+	public class TechnologyAdapterItem extends JCheckBoxMenuItem implements PropertyChangeListener {
+
+		private final TechnologyAdapter technologyAdapter;
+
+		public TechnologyAdapterItem(TechnologyAdapter technologyAdapter) {
+			super(new TechnologyAdapterAction(technologyAdapter)/*, technologyAdapter.getName(), null, getController(), true*/);
+			this.technologyAdapter = technologyAdapter;
+			if (technologyAdapter != null) {
+				technologyAdapter.getPropertyChangeSupport().addPropertyChangeListener(this);
+				setSelected(technologyAdapter.isActivated());
+			}
+			else {
+				setSelected(false);
+			}
+		}
+
+		@Override
+		public void propertyChange(PropertyChangeEvent evt) {
+			if (evt.getPropertyName().equals("activated") && technologyAdapter != null) {
+				setSelected(technologyAdapter.isActivated());
+			}
+		}
+
+	}
+
+	public class TechnologyAdapterAction extends AbstractAction {
+
+		private final TechnologyAdapter technologyAdapter;
+
+		public TechnologyAdapterAction(TechnologyAdapter technologyAdapter) {
+			super(technologyAdapter.getName(), null);
+			this.technologyAdapter = technologyAdapter;
+		}
+
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			System.out.println("On active la techno " + technologyAdapter);
+			getController().getApplicationContext().activateTechnologyAdapter(technologyAdapter);
+		}
+
 	}
 
 	// ===================================================================
@@ -262,6 +344,7 @@ public class ToolsMenu extends FlexoMenu {
 
 	public class LocalizedEditorMenu extends FlexoMenu {
 
+		@SuppressWarnings("unused")
 		private LocalizedEditorItem flexoLocalesItem;
 
 		public LocalizedEditorMenu(FlexoController controller) {
@@ -344,9 +427,6 @@ public class ToolsMenu extends FlexoMenu {
 				technologyAdapter.getPropertyChangeSupport().addPropertyChangeListener(this);
 				setEnabled(technologyAdapter.isActivated());
 			}
-			else {
-				setEnabled(false);
-			}
 		}
 
 		@Override
@@ -383,9 +463,6 @@ public class ToolsMenu extends FlexoMenu {
 			if (module != null) {
 				module.getPropertyChangeSupport().addPropertyChangeListener(this);
 				setEnabled(module.isLoaded());
-			}
-			else {
-				setEnabled(false);
 			}
 		}
 
