@@ -165,10 +165,6 @@ public class PropertyEntry extends PropertyChangedSupportDefaultImplementation i
 		this.name = paramName;
 		this.locales = locales;
 		this.context = context;
-		System.out.println("Nouvelle property, context=" + context);
-		if (context != null) {
-			System.out.println("SM=" + context.getServiceManager());
-		}
 	}
 
 	public String getDisplayableName() {
