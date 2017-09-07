@@ -96,6 +96,7 @@ import org.openflexo.FlexoCst;
 import org.openflexo.components.ProgressWindow;
 import org.openflexo.components.ReviewUnsavedDialog;
 import org.openflexo.components.validation.ValidationWindow;
+import org.openflexo.components.widget.FIBResourceManagerBrowser;
 import org.openflexo.components.widget.FIBTechnologyBrowser;
 import org.openflexo.connie.annotations.NotificationUnsafe;
 import org.openflexo.connie.type.TypeUtils;
@@ -236,7 +237,7 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 	private ModuleInspectorController mainInspectorController;
 	protected PropertyChangeListenerRegistrationManager manager = new PropertyChangeListenerRegistrationManager();
 
-	private Map<TechnologyAdapter, FIBTechnologyBrowser<?>> sharedBrowsers = new HashMap<>();
+	// private Map<TechnologyAdapter, FIBTechnologyBrowser<?>> sharedBrowsers = new HashMap<>();
 
 	/**
 	 * Constructor
@@ -311,7 +312,7 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 	 * @param technologyAdapter
 	 * @return
 	 */
-	public <TA extends TechnologyAdapter> FIBTechnologyBrowser<TA> getSharedTechnologyBrowser(TA technologyAdapter) {
+	/*public <TA extends TechnologyAdapter> FIBTechnologyBrowser<TA> getSharedTechnologyBrowser(TA technologyAdapter) {
 		FIBTechnologyBrowser<TA> technologyBrowser = (FIBTechnologyBrowser<TA>) sharedBrowsers.get(technologyAdapter);
 		if (technologyBrowser == null) {
 			TechnologyAdapterController<TA> tac = getTechnologyAdapterController(technologyAdapter);
@@ -319,6 +320,15 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 			sharedBrowsers.put(technologyAdapter, technologyBrowser);
 		}
 		return technologyBrowser;
+	}*/
+
+	private FIBResourceManagerBrowser sharedBrowser;
+
+	public FIBResourceManagerBrowser getSharedBrowser() {
+		if (sharedBrowser == null) {
+			sharedBrowser = new FIBResourceManagerBrowser(getApplicationContext(), this, getModuleLocales());
+		}
+		return sharedBrowser;
 	}
 
 	/**
@@ -329,7 +339,7 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 	protected <TA extends TechnologyAdapter> void installTechnologyPerspectives(TA technologyAdapter) {
 		TechnologyAdapterController<TA> tac = getTechnologyAdapterController(technologyAdapter);
 		if (tac != null) {
-			tac.installTechnologyPerspectives(this, getSharedTechnologyBrowser(technologyAdapter));
+			tac.installTechnologyPerspectives(this, /*getSharedTechnologyBrowser(technologyAdapter)*/getSharedBrowser());
 		}
 	}
 

@@ -69,7 +69,8 @@ public abstract class FMLNaturePerspective extends TechnologyPerspective<FMLTech
 
 	public FMLNaturePerspective(VirtualModelNature virtualModelNature, FlexoConceptNature flexoConceptNature,
 			FMLTechnologyAdapter fmltechnologyAdapter, TechnologyAdapter handlingTechnologyAdapter, FlexoController controller) {
-		super(fmltechnologyAdapter, controller, controller.getSharedTechnologyBrowser(fmltechnologyAdapter));
+		super(fmltechnologyAdapter, controller,
+				/*controller.getSharedTechnologyBrowser(fmltechnologyAdapter)*/controller.getSharedBrowser());
 		this.handlingTechnologyAdapter = handlingTechnologyAdapter;
 		this.virtualModelNature = virtualModelNature;
 		this.flexoConceptNature = flexoConceptNature;

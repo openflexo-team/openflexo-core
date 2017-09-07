@@ -36,61 +36,37 @@
  * 
  */
 
-package org.openflexo.fml.controller;
+package org.openflexo.components.widget;
 
 import java.util.logging.Logger;
 
-import javax.swing.ImageIcon;
-
-import org.openflexo.components.widget.FIBResourceManagerBrowser;
-import org.openflexo.fml.controller.view.FMLVirtualModelView;
-import org.openflexo.foundation.FlexoObject;
-import org.openflexo.foundation.fml.FMLTechnologyAdapter;
-import org.openflexo.foundation.fml.VirtualModel;
+import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
-import org.openflexo.icon.FMLIconLibrary;
-import org.openflexo.view.ModuleView;
+import org.openflexo.localization.LocalizedDelegate;
+import org.openflexo.rm.Resource;
+import org.openflexo.rm.ResourceLocator;
+import org.openflexo.view.FIBBrowserView;
 import org.openflexo.view.controller.FlexoController;
-import org.openflexo.view.controller.TechnologyPerspective;
 
 /**
- * A perspective representing all the resources interpretable by a {@link TechnologyAdapter}
+ * Browser allowing to browse through information intepretable by a {@link TechnologyAdapter}<br>
  * 
- * @author sylvain
+ * @author sguerin
  * 
- * @param <TA>
  */
-public class FMLTechnologyPerspective extends TechnologyPerspective<FMLTechnologyAdapter> {
+@SuppressWarnings("serial")
+public class FIBResourceManagerBrowser extends FIBBrowserView<FlexoServiceManager> {
+	static final Logger logger = Logger.getLogger(FIBResourceManagerBrowser.class.getPackage().getName());
 
-	static final Logger logger = Logger.getLogger(FMLTechnologyPerspective.class.getPackage().getName());
+	public static final Resource FIB_FILE = ResourceLocator.locateResource("Fib/FIBResourceManagerBrowser.fib");
 
-	public FMLTechnologyPerspective(FMLTechnologyAdapter technologyAdapter, FlexoController controller,
-			FIBResourceManagerBrowser sharedBrowser) {
-		super(technologyAdapter, controller, sharedBrowser);
+	public FIBResourceManagerBrowser(FlexoServiceManager serviceManager, FlexoController controller, LocalizedDelegate locales) {
+		super(serviceManager, controller, FIB_FILE, locales);
 	}
 
-	@Override
-	public String getName() {
-		return "Textual-FML perspective";
-	}
-
-	@Override
-	public ImageIcon getActiveIcon() {
-		return FMLIconLibrary.FML_ICON;
-	}
-
-	@Override
-	@SuppressWarnings("unchecked")
-	public boolean hasModuleViewForObject(FlexoObject object) {
-		return object instanceof VirtualModel;
-	}
-
-	@Override
-	public ModuleView<?> createModuleViewForObject(FlexoObject object) {
-		if (object instanceof VirtualModel) {
-			return new FMLVirtualModelView((VirtualModel) object, getController(), this);
-		}
-		return super.createModuleViewForObject(object);
+	protected FIBResourceManagerBrowser(FlexoServiceManager serviceManager, FlexoController controller, Resource fibFile,
+			LocalizedDelegate locales) {
+		super(serviceManager, controller, fibFile, locales);
 	}
 
 }

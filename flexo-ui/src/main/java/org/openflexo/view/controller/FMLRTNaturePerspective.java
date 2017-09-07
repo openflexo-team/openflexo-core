@@ -71,7 +71,8 @@ public abstract class FMLRTNaturePerspective extends TechnologyPerspective<FMLRT
 	public FMLRTNaturePerspective(VirtualModelInstanceNature virtualModelInstanceNature,
 			FlexoConceptInstanceNature flexoConceptInstanceNature, FMLRTTechnologyAdapter fmlRTtechnologyAdapter,
 			TechnologyAdapter handlingTechnologyAdapter, FlexoController controller) {
-		super(fmlRTtechnologyAdapter, controller, controller.getSharedTechnologyBrowser(fmlRTtechnologyAdapter));
+		super(fmlRTtechnologyAdapter, controller,
+				/*controller.getSharedTechnologyBrowser(fmlRTtechnologyAdapter)*/controller.getSharedBrowser());
 		this.handlingTechnologyAdapter = handlingTechnologyAdapter;
 		this.virtualModelInstanceNature = virtualModelInstanceNature;
 		this.flexoConceptInstanceNature = flexoConceptInstanceNature;

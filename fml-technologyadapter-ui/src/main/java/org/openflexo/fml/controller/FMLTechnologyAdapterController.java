@@ -45,6 +45,7 @@ import java.util.logging.Logger;
 
 import javax.swing.ImageIcon;
 
+import org.openflexo.components.widget.FIBResourceManagerBrowser;
 import org.openflexo.components.widget.FIBTechnologyBrowser;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.type.CustomType;
@@ -157,7 +158,7 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 	private Map<VirtualModel, FMLValidationReport> validationReports = new HashMap<>();
 
 	@Override
-	public void installTechnologyPerspectives(FlexoController controller, FIBTechnologyBrowser<FMLTechnologyAdapter> sharedBrowser) {
+	public void installTechnologyPerspectives(FlexoController controller, FIBResourceManagerBrowser sharedBrowser) {
 		super.installTechnologyPerspectives(controller, sharedBrowser);
 		controller.addToPerspectives(new FMLTechnologyPerspective(getTechnologyAdapter(), controller, sharedBrowser));
 		// Then we iterate on all technology adapters

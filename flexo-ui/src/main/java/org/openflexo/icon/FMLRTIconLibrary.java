@@ -45,9 +45,11 @@ import javax.swing.ImageIcon;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.ModelSlotInstance;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstanceObject;
 import org.openflexo.foundation.fml.rt.rm.FMLRTVirtualModelInstanceResource;
 import org.openflexo.rm.ResourceLocator;
+import org.openflexo.view.controller.TechnologyAdapterController;
 
 /**
  * Utility class containing all icons used in context of FML@runtime technology adapter
@@ -102,6 +104,13 @@ public class FMLRTIconLibrary extends IconLibrary {
 			return FMLIconLibrary.iconForObject(((ModelSlotInstance) object).getModelSlot());
 		}
 		else if (object instanceof FMLRTVirtualModelInstance) {
+			return VIRTUAL_MODEL_INSTANCE_ICON;
+		}
+		else if (object instanceof VirtualModelInstance) {
+			TechnologyAdapterController<?> tac = getTechnologyAdapterController(((VirtualModelInstance) object).getTechnologyAdapter());
+			if (tac != null) {
+				return tac.getIconForTechnologyObject((VirtualModelInstance<?, ?>) object);
+			}
 			return VIRTUAL_MODEL_INSTANCE_ICON;
 		}
 		else if (object instanceof FlexoConceptInstance) {

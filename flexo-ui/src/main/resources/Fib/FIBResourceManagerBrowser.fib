@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Panel id="0" align="left" borderTop="0" borderLeft="0"
+	trackViewPortHeight="true" trackViewPortWidth="true" borderBottom="0"
+	border="empty" sizeAdjustment="OriginalSize" layout="twocols"
+	borderRight="0" controllerClassName="org.openflexo.view.controller.FlexoFIBController">
+	<Browser id="1" backgroundSelectionColor="9,80,208"
+		visibleRowCount="5" boundToSelectionManager="true"
+		backgroundNonSelectionColor="255,255,255" iteratorClassName="java.lang.Object"
+		textSelectionColor="255,255,255" backgroundSecondarySelectionColor="178,215,255"
+		showRootsHandle="true" showFooter="true" textNonSelectionColor="0,0,0"
+		root="data" selectionMode="DiscontiguousTreeSelection" rowHeight="18" rootVisible="false"
+		localize="true" manageDynamicModel="true"
+		rightClickAction="controller.rightClick(resourceManagerBrowser.selected,event)"
+		doubleClickAction="controller.doubleClick(resourceManagerBrowser.selected)"
+		clickAction="controller.singleClick(resourceManagerBrowser.selected)"
+		index="0"
+		constraints="twocols(expandHorizontally=true;expandVertically=true;index=0;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=center)"
+		name="resourceManagerBrowser">
+		<BrowserElement id="2"
+			dataClassName="org.openflexo.foundation.FlexoServiceManager" icon="controller.iconForObject(technologyAdapter)"
+			label="&quot;ServiceManager&quot;" isEditable="false" name="serviceManager">
+			<Children id="3" data="data.resourceCenterService.resourceCenters"
+				name="resourceCenters" cast="child.rootFolder" />
+		</BrowserElement>
+		<BrowserElement id="15"
+			visible="controller.shouldBeDisplayed(folder)" dataClassName="org.openflexo.foundation.resource.RepositoryFolder"
+			icon="controller.iconForObject(folder)" label="folder.displayableName"
+			isEditable="false" name="folder">
+			<Children id="16" data="folder.children" name="subFolders" />
+			<Children id="17" data="folder.resources" name="resource" />
+		</BrowserElement>
+		<BrowserElement id="29" visible="(!(resource.isDeleted))"
+			dataClassName="org.openflexo.foundation.resource.FlexoResource" icon="controller.iconForObject(resource)"
+			label="resource.name" enabled="resource.isLoaded" isEditable="false"
+			name="resource">
+			<Children id="30" visible="resource.isLoaded" data="resource.contents"
+				name="subResources" />
+		</BrowserElement>
+	</Browser>
+	<FIBVariable id="40"
+		type="org.openflexo.foundation.FlexoServiceManager" name="data" />
+	<LocalizedDictionary id="41" />
+</Panel>

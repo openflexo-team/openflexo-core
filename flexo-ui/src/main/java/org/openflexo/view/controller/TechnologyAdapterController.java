@@ -49,6 +49,7 @@ import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 
 import org.openflexo.ApplicationContext;
+import org.openflexo.components.widget.FIBResourceManagerBrowser;
 import org.openflexo.components.widget.FIBTechnologyBrowser;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.type.CustomType;
@@ -488,12 +489,12 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 		return null;
 	}
 
-	public void installTechnologyPerspectives(FlexoController controller, FIBTechnologyBrowser<TA> sharedBrowser) {
+	public void installTechnologyPerspectives(FlexoController controller, FIBResourceManagerBrowser sharedBrowser) {
 		controller.addToPerspectives(makeDefaultTechnologyPerspective(controller, sharedBrowser));
 	}
 
 	protected TechnologyPerspective<TA> makeDefaultTechnologyPerspective(FlexoController controller,
-			FIBTechnologyBrowser<TA> sharedBrowser) {
+			FIBResourceManagerBrowser sharedBrowser) {
 		return new TechnologyPerspective<>(getTechnologyAdapter(), controller, sharedBrowser);
 	}
 

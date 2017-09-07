@@ -16,7 +16,7 @@
       </ColSplit>
     </RowSplit>
     <Browser id="13" backgroundSelectionColor="9,80,208" visibleRowCount="3" boundToSelectionManager="true" backgroundNonSelectionColor="255,255,255" textSelectionColor="255,255,255" backgroundSecondarySelectionColor="178,215,255" iteratorClassName="org.openflexo.foundation.fml.rt.FlexoConceptInstance" showRootsHandle="true" showFooter="true" textNonSelectionColor="0,0,0" root="data" deepExploration="true" selectionMode="DiscontiguousTreeSelection" rootVisible="true" rowHeight="18" manageDynamicModel="true" rightClickAction="controller.rightClick(FlexoConceptInstanceBrowser.selected,event)" doubleClickAction="controller.doubleClick(FlexoConceptInstanceBrowser.selected)" clickAction="controller.singleClick(FlexoConceptInstanceBrowser.selected)" constraints="split(splitIdentifier=left)" width="300" height="200" name="FlexoConceptInstanceBrowser">
-      <BrowserElement id="14" dataClassName="org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance" icon="controller.iconForObject(virtualModelInstance)" label="virtualModelInstance.stringRepresentation" isEditable="false" name="virtualModelInstance">
+      <BrowserElement id="14" dataClassName="org.openflexo.foundation.fml.rt.VirtualModelInstance" icon="controller.iconForObject(virtualModelInstance)" label="virtualModelInstance.stringRepresentation" isEditable="false" name="virtualModelInstance">
         <Children id="15" data="virtualModelInstance.allRootFlexoConceptInstances" name="FCIInVMI" />
         <BrowserAddAction id="16" method="controller.createFlexoConceptInstance(selected)" name="add_action" />
       </BrowserElement>
@@ -42,7 +42,7 @@
       <FIBVariable id="32" type="org.openflexo.foundation.fml.rt.FlexoConceptInstance" value="FlexoConceptInstanceBrowser.selected" name="data" />
     </Panel>
   </SplitPanel>
-  <FIBVariable id="33" type="org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance" name="data" />
+  <FIBVariable id="33" type="org.openflexo.foundation.fml.rt.VirtualModelInstance" name="data" />
   <LocalizedDictionary id="34">
     <Localized id="35" lang="English" value="FlexoConcept instances" key="flexo_concept_instances" />
     <Localized id="36" lang="French" value="FlexoConcept instances" key="flexo_concept_instances" />

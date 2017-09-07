@@ -42,10 +42,12 @@ import java.util.logging.Logger;
 
 import javax.swing.ImageIcon;
 
+import org.openflexo.components.widget.FIBResourceManagerBrowser;
 import org.openflexo.components.widget.FIBTechnologyBrowser;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
+import org.openflexo.view.FIBBrowserView;
 import org.openflexo.view.controller.model.FlexoPerspective;
 
 /**
@@ -65,23 +67,23 @@ public class TechnologyPerspective<TA extends TechnologyAdapter> extends FlexoPe
 		return technologyAdapter;
 	}
 
-	private final FIBTechnologyBrowser<TA> technologyBrowser;
+	private final FIBBrowserView<?> browser;
 
 	/**
 	 * @param controller
 	 * @param name
 	 */
-	public TechnologyPerspective(TA technologyAdapter, FlexoController controller, FIBTechnologyBrowser<TA> sharedBrowser) {
+	public TechnologyPerspective(TA technologyAdapter, FlexoController controller, FIBResourceManagerBrowser sharedBrowser) {
 		super(technologyAdapter.getName(), controller);
 		this.technologyAdapter = technologyAdapter;
 
 		if (sharedBrowser == null) {
-			technologyBrowser = makeTechnologyBrowser();
+			browser = makeTechnologyBrowser();
 		}
 		else {
-			technologyBrowser = sharedBrowser;
+			browser = sharedBrowser;
 		}
-		setTopLeftView(technologyBrowser);
+		setTopLeftView(browser);
 
 	}
 
@@ -129,12 +131,13 @@ public class TechnologyPerspective<TA extends TechnologyAdapter> extends FlexoPe
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public boolean hasModuleViewForObject(FlexoObject object) {
 		if (object instanceof TechnologyObject) {
 			TechnologyAdapterControllerService tacService = getController().getApplicationContext().getTechnologyAdapterControllerService();
-			TechnologyAdapterController<TA> tac = tacService.getTechnologyAdapterController(technologyAdapter);
-			return tac.hasModuleViewForObject((TechnologyObject<TA>) object, getController());
+			TechnologyAdapterController<?> tac = tacService
+					.getTechnologyAdapterController(((TechnologyObject) object).getTechnologyAdapter());
+			return tac.hasModuleViewForObject((TechnologyObject) object, getController());
 		}
 		return false;
 	}

@@ -528,4 +528,7 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, FlexoObject, Refere
 	 * @return
 	 */
 	void setObjectReferenceConverter(FlexoObjectReferenceConverter objectReferenceConverter);
+
+	public RepositoryFolder<?, I> getRootFolder();
+
 }

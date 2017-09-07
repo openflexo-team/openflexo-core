@@ -42,6 +42,7 @@ import java.util.logging.Logger;
 
 import javax.swing.ImageIcon;
 
+import org.openflexo.components.widget.FIBResourceManagerBrowser;
 import org.openflexo.components.widget.FIBTechnologyBrowser;
 import org.openflexo.fml.rt.controller.action.ActionSchemeActionInitializer;
 import org.openflexo.fml.rt.controller.action.CreateBasicVirtualModelInstanceInitializer;
@@ -104,7 +105,7 @@ public class FMLRTTechnologyAdapterController extends TechnologyAdapterControlle
 	}
 
 	@Override
-	public void installTechnologyPerspectives(FlexoController controller, FIBTechnologyBrowser<FMLRTTechnologyAdapter> sharedBrowser) {
+	public void installTechnologyPerspectives(FlexoController controller, FIBResourceManagerBrowser sharedBrowser) {
 		super.installTechnologyPerspectives(controller, sharedBrowser);
 		// Then we iterate on all technology adapters
 		for (TechnologyAdapter ta : getServiceManager().getTechnologyAdapterService().getTechnologyAdapters()) {
