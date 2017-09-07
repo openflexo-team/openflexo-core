@@ -67,7 +67,9 @@ import org.openflexo.foundation.fml.VirtualModelRepository;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceRepository;
 import org.openflexo.foundation.resource.DirectoryBasedIODelegate.DirectoryBasedIODelegateImpl;
+import org.openflexo.foundation.resource.FileIODelegate.FileHasBeenWrittenOnDiskNotification;
 import org.openflexo.foundation.resource.FileIODelegate.FileIODelegateImpl;
+import org.openflexo.foundation.resource.FileIODelegate.WillWriteFileOnDiskNotification;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.utils.FlexoObjectReference;
 import org.openflexo.model.annotations.Getter;
@@ -872,7 +874,9 @@ public abstract class FileSystemBasedResourceCenter extends ResourceRepository<F
 	@Override
 	public File createDirectory(String name, File parentDirectory) {
 		File returned = new File(parentDirectory, name);
+		getServiceManager().notify(null, new WillWriteFileOnDiskNotification(returned));
 		returned.mkdirs();
+		getServiceManager().notify(null, new FileHasBeenWrittenOnDiskNotification(returned));
 		return returned;
 	}
 
