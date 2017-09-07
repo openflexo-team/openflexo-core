@@ -51,7 +51,6 @@ import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelLibrary;
-import org.openflexo.foundation.fml.VirtualModelRepository;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.fml.rm.VirtualModelResourceFactory;
 import org.openflexo.foundation.resource.RepositoryFolder;
@@ -87,7 +86,7 @@ public class CreateTopLevelVirtualModel
 
 		@Override
 		public boolean isVisibleForSelection(RepositoryFolder<VirtualModelResource, ?> object, Vector<FMLObject> globalSelection) {
-			return object.getResourceRepository() instanceof VirtualModelRepository;
+			return object.getResourceRepository() != null;
 		}
 
 		@Override
@@ -112,20 +111,17 @@ public class CreateTopLevelVirtualModel
 	}
 
 	public VirtualModelLibrary getVirtualModelLibrary() {
-		if (!(getFocusedObject().getResourceRepository() instanceof VirtualModelRepository)) {
+		return getServiceManager().getVirtualModelLibrary();
+		/*if (!(getFocusedObject().getResourceRepository() instanceof VirtualModelRepository)) {
 			return null;
 		}
-		return ((VirtualModelRepository<?>) getFocusedObject().getResourceRepository()).getVirtualModelLibrary();
+		return ((VirtualModelRepository<?>) getFocusedObject().getResourceRepository()).getVirtualModelLibrary();*/
 	}
 
 	@Override
 	protected void doAction(Object context) throws FlexoException {
 
-		if (!(getFocusedObject().getResourceRepository() instanceof VirtualModelRepository)) {
-			return;
-		}
-
-		logger.info("Create new viewpoint");
+		// logger.info("Create new viewpoint");
 
 		FMLTechnologyAdapter fmlTechnologyAdapter = getServiceManager().getTechnologyAdapterService()
 				.getTechnologyAdapter(FMLTechnologyAdapter.class);
