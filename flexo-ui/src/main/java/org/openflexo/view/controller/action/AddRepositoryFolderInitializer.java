@@ -45,9 +45,9 @@ import java.util.logging.Logger;
 import javax.swing.Icon;
 
 import org.openflexo.foundation.action.AddRepositoryFolder;
+import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.action.FlexoActionFinalizer;
 import org.openflexo.foundation.action.FlexoActionInitializer;
-import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.resource.RepositoryFolder;
 import org.openflexo.icon.IconLibrary;
 import org.openflexo.view.controller.ActionInitializer;
@@ -115,6 +115,14 @@ public class AddRepositoryFolderInitializer extends ActionInitializer<AddReposit
 						current = current.getParent();
 					}
 				}*/
+				if (getController().getApplicationContext().getPresentationPreferences().hideEmptyFolders()
+						&& action.getNewFolder().getResources().size() == 0) {
+					if (FlexoController.confirmWithWarning(
+							getController().getApplicationContext().getLocalizationService().getFlexoLocalizer().localizedForKey(
+									"<html>your_preferences_hide_empty_folder<br>would_you_like_to_show_empty_folders_?<br>you_can_change_this_option_in_presentation_preferences</html>"))) {
+						getController().getApplicationContext().getPresentationPreferences().setHideEmptyFolders(false);
+					}
+				}
 				return true;
 			}
 		};
