@@ -67,18 +67,10 @@ public class FMLRTIconLibrary extends IconLibrary {
 	public static final ImageIconResource FML_RT_BIG_ICON = new ImageIconResource(
 			ResourceLocator.locateResource("Icons/Model/VE/FML-RT_64x64.png"));
 
-	public static final ImageIconResource VIEW_LIBRARY_ICON = new ImageIconResource(
-			ResourceLocator.locateResource("Icons/Model/VE/ViewLibrary.png"));
-
-	public static final ImageIconResource VIEW_ICON = new ImageIconResource(
-			ResourceLocator.locateResource("Icons/Model/VE/View_16x16.png"));
-	public static final ImageIconResource VIEW_MEDIUM_ICON = new ImageIconResource(
-			ResourceLocator.locateResource("Icons/Model/VE/View_32x32.png"));
-	public static final ImageIconResource VIEW_BIG_ICON = new ImageIconResource(
-			ResourceLocator.locateResource("Icons/Model/VE/View_64x64.png"));
-
+	public static final ImageIconResource VIRTUAL_MODEL_INSTANCE_SMALL_ICON = new ImageIconResource(
+			ResourceLocator.locateResource("Icons/Model/VE/VirtualModelInstance_8x8.png"));
 	public static final ImageIconResource VIRTUAL_MODEL_INSTANCE_ICON = new ImageIconResource(
-			ResourceLocator.locateResource("Icons/Model/VE/VirtualModelInstance.png"));
+			ResourceLocator.locateResource("Icons/Model/VE/VirtualModelInstance_16x16.png"));
 	public static final ImageIconResource VIRTUAL_MODEL_INSTANCE_MEDIUM_ICON = new ImageIconResource(
 			ResourceLocator.locateResource("Icons/Model/VE/VirtualModelInstance_32x32.png"));
 	public static final ImageIconResource VIRTUAL_MODEL_INSTANCE_BIG_ICON = new ImageIconResource(
@@ -89,12 +81,10 @@ public class FMLRTIconLibrary extends IconLibrary {
 			ResourceLocator.locateResource("Icons/Model/VE/FlexoConceptInstance32.png"));
 	public static final ImageIconResource MODEL_SLOT_INSTANCE_ICON = new ImageIconResource(
 			ResourceLocator.locateResource("Icons/Model/VE/ModelSlotInstance.png"));
-	public static final ImageIconResource VIRTUAL_MODEL_INSTANCE_SMALL_ICON = new ImageIconResource(
-			ResourceLocator.locateResource("Icons/Model/VE/VirtualModelInstance_8x8.png"));
 	public static final ImageIconResource FLEXO_CLASS_INSTANCE_ICON = new ImageIconResource(
 			ResourceLocator.locateResource("Icons/Java/ClassPublic.gif"));
 
-	public static final IconMarker VIRTUAL_MODEL_INSTANCE_MARKER = new IconMarker(VIRTUAL_MODEL_INSTANCE_SMALL_ICON, 8, 0);
+	public static final IconMarker VIRTUAL_MODEL_INSTANCE_MARKER = new IconMarker(VIRTUAL_MODEL_INSTANCE_SMALL_ICON, 6, 0);
 
 	public static final ImageIconResource UNKNOWN_ICON = new ImageIconResource(
 			ResourceLocator.locateResource("Icons/Model/VE/UnknownIcon.gif"));

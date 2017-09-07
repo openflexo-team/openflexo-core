@@ -123,7 +123,6 @@ import org.openflexo.foundation.fml.action.AbstractCreateVirtualModel.ModelSlotE
 import org.openflexo.foundation.fml.action.CreateFlexoBehaviour.BehaviourParameterEntry;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
-import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceRepository;
 import org.openflexo.foundation.fml.rt.VirtualModelInstanceObject;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.foundation.fml.rt.rm.FMLRTVirtualModelInstanceResource;
@@ -2036,7 +2035,7 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 			return FMLIconLibrary.TECHNOLOGY_ADAPTER_ICON;
 		}
 		else if (object instanceof VirtualModelLibrary) {
-			return FMLIconLibrary.VIEWPOINT_LIBRARY_ICON;
+			return FMLIconLibrary.VIRTUAL_MODEL_LIBRARY_ICON;
 		}
 		else if (object instanceof FMLObject) {
 			return FMLIconLibrary.iconForObject((FMLObject) object);
@@ -2061,9 +2060,9 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 		else if (object instanceof FMLRTVirtualModelInstanceResource) {
 			return FMLRTIconLibrary.iconForObject((FMLRTVirtualModelInstanceResource) object);
 		}
-		else if (object instanceof FMLRTVirtualModelInstanceRepository) {
+		/*else if (object instanceof FMLRTVirtualModelInstanceRepository) {
 			return FMLRTIconLibrary.VIEW_LIBRARY_ICON;
-		}
+		}*/
 		else if (object instanceof VirtualModelInstanceObject) {
 			return FMLRTIconLibrary.iconForObject((VirtualModelInstanceObject) object);
 		}

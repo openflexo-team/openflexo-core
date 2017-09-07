@@ -112,8 +112,8 @@ public class FMLIconLibrary extends IconLibrary {
 	public static final ImageIconResource FML_BIG_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/FML/FML_64x64.png"));
 	public static final ImageIconResource FML_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/FML/FML_16x16.png"));
 
-	public static final ImageIconResource VIEWPOINT_LIBRARY_ICON = new ImageIconResource(
-			ResourceLocator.locateResource("Icons/Model/VPM/ViewPointLibrary.png"));
+	public static final ImageIconResource VIRTUAL_MODEL_LIBRARY_ICON = new ImageIconResource(
+			ResourceLocator.locateResource("Icons/Model/VPM/VirtualModelLibrary.png"));
 
 	public static final ImageIconResource TECHNOLOGY_ADAPTER_ICON = new ImageIconResource(
 			ResourceLocator.locateResource("Icons/Common/TechnologyAdapter.png"));
@@ -122,15 +122,8 @@ public class FMLIconLibrary extends IconLibrary {
 	public static final ImageIconResource TECHNOLOGY_ADAPTER_BIG_ICON = new ImageIconResource(
 			ResourceLocator.locateResource("Icons/Common/TechnologyAdapter_64x64.png"));
 
-	public static final ImageIconResource VIEWPOINT_ICON = new ImageIconResource(
-			ResourceLocator.locateResource("Icons/Model/VPM/ViewPoint.png"));
-	public static final ImageIconResource VIEWPOINT_MEDIUM_ICON = new ImageIconResource(
-			ResourceLocator.locateResource("Icons/Model/VPM/ViewPoint_32x32.png"));
-	public static final ImageIconResource VIEWPOINT_BIG_ICON = new ImageIconResource(
-			ResourceLocator.locateResource("Icons/Model/VPM/ViewPoint_64x64.png"));
-
 	public static final ImageIconResource VIRTUAL_MODEL_ICON = new ImageIconResource(
-			ResourceLocator.locateResource("Icons/Model/VPM/VirtualModel.png"));
+			ResourceLocator.locateResource("Icons/Model/VPM/VirtualModel_16x16.png"));
 	public static final ImageIconResource VIRTUAL_MODEL_MEDIUM_ICON = new ImageIconResource(
 			ResourceLocator.locateResource("Icons/Model/VPM/VirtualModel_32x32.png"));
 	public static final ImageIconResource VIRTUAL_MODEL_BIG_ICON = new ImageIconResource(
@@ -138,7 +131,7 @@ public class FMLIconLibrary extends IconLibrary {
 	public static final ImageIconResource VIRTUAL_MODEL_SMALL_ICON = new ImageIconResource(
 			ResourceLocator.locateResource("Icons/Model/VPM/VirtualModel_8x8.png"));
 
-	public static final IconMarker VIRTUAL_MODEL_MARKER = new IconMarker(VIRTUAL_MODEL_SMALL_ICON, 8, 0);
+	public static final IconMarker VIRTUAL_MODEL_MARKER = new IconMarker(VIRTUAL_MODEL_SMALL_ICON, 6, 0);
 	public static final IconMarker VIRTUAL_MODEL_BIG_MARKER = new IconMarker(VIRTUAL_MODEL_MEDIUM_ICON, 32, 32);
 
 	public static final ImageIconResource MODEL_SLOT_ICON = new ImageIconResource(

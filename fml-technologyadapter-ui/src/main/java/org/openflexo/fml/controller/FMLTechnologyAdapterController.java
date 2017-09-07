@@ -263,7 +263,7 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 
 	@Override
 	public ImageIcon getTechnologyBigIcon() {
-		return FMLIconLibrary.VIEWPOINT_MEDIUM_ICON;
+		return FMLIconLibrary.VIRTUAL_MODEL_MEDIUM_ICON;
 	}
 
 	/**
@@ -273,7 +273,7 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 	 */
 	@Override
 	public ImageIcon getTechnologyIcon() {
-		return FMLIconLibrary.VIEWPOINT_ICON;
+		return FMLIconLibrary.VIRTUAL_MODEL_ICON;
 	}
 
 	/**
@@ -283,7 +283,7 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 	 */
 	@Override
 	public ImageIcon getModelIcon() {
-		return FMLIconLibrary.VIEWPOINT_ICON;
+		return FMLIconLibrary.VIRTUAL_MODEL_ICON;
 	}
 
 	/**
@@ -293,7 +293,7 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 	 */
 	@Override
 	public ImageIcon getMetaModelIcon() {
-		return FMLIconLibrary.VIEWPOINT_ICON;
+		return FMLIconLibrary.VIRTUAL_MODEL_ICON;
 	}
 
 	/**
