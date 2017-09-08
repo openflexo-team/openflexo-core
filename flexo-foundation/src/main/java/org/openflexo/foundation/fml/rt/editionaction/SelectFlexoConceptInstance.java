@@ -45,7 +45,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
-
 import org.openflexo.connie.BindingVariable;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
@@ -274,7 +273,7 @@ public interface SelectFlexoConceptInstance<VMI extends AbstractVirtualModelInst
 		 */
 		@Override
 		public AbstractVirtualModel<?> getAddressedVirtualModel() {
-			if (getReceiver() != null && getReceiver().isSet() && getReceiver().isValid()) {
+			if (getReceiver() != null && getReceiver().isSet() /*&& getReceiver().isValid()*/) {
 				Type vmiType = getReceiver().getAnalyzedType();
 				if (vmiType instanceof VirtualModelInstanceType) {
 					return ((VirtualModelInstanceType) vmiType).getVirtualModel();
