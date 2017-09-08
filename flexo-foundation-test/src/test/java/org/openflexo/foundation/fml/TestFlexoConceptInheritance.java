@@ -38,16 +38,9 @@
 
 package org.openflexo.foundation.fml;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
 import java.io.File;
 import java.io.IOException;
-
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openflexo.connie.BindingModel;
@@ -81,6 +74,9 @@ import org.openflexo.rm.ResourceLocator;
 import org.openflexo.test.OrderedRunner;
 import org.openflexo.test.TestOrder;
 import org.openflexo.toolbox.FileUtils;
+
+
+import static org.junit.Assert.*;
 
 /**
  * This unit test is intented to test {@link FlexoConcept} inheritance features, as well as "isAbstract" management and
@@ -630,6 +626,7 @@ public class TestFlexoConceptInheritance extends OpenflexoProjectAtRunTimeTestCa
 
 	@Test
 	@TestOrder(19)
+	@Ignore
 	public void testViewPointIsValid() {
 
 		assertViewPointIsValid(viewPoint);
@@ -675,6 +672,7 @@ public class TestFlexoConceptInheritance extends OpenflexoProjectAtRunTimeTestCa
 	 */
 	@Test
 	@TestOrder(20)
+	@Ignore
 	public void testReloadViewPoint() throws IOException {
 
 		log("testReloadViewPoint()");
