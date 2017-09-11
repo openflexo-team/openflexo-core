@@ -45,6 +45,7 @@ import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 
 /**
  * Represent the type of an instance of a {@link VirtualModel}
@@ -108,24 +109,24 @@ public class VirtualModelInstanceType extends FlexoConceptInstanceType {
 	}
 
 	/**
-	 * Factory for FlexoConceptInstanceType instances
+	 * Base implementation
 	 * 
 	 * @author sylvain
 	 * 
 	 */
-	public static class VirtualModelInstanceTypeFactory extends TechnologyAdapterTypeFactory<VirtualModelInstanceType> {
+	public static abstract class AbstractVirtualModelInstanceTypeFactory<T extends VirtualModelInstanceType>
+			extends TechnologyAdapterTypeFactory<T> {
 
-		public VirtualModelInstanceTypeFactory(FMLTechnologyAdapter technologyAdapter) {
+		public AbstractVirtualModelInstanceTypeFactory(TechnologyAdapter technologyAdapter) {
 			super(technologyAdapter);
 		}
 
-		@Override
-		public Class<VirtualModelInstanceType> getCustomType() {
-			return VirtualModelInstanceType.class;
-		}
+		public abstract T getType(VirtualModel virtualModel);
+
+		public abstract T getType(String configuration, CustomTypeFactory<?> factory);
 
 		@Override
-		public VirtualModelInstanceType makeCustomType(String configuration) {
+		public T makeCustomType(String configuration) {
 
 			VirtualModel virtualModel = null;
 
@@ -141,12 +142,12 @@ public class VirtualModelInstanceType extends FlexoConceptInstanceType {
 			}
 
 			if (virtualModel != null) {
-				return getVirtualModelInstanceType(virtualModel);
+				return getType(virtualModel);
 			}
 			else {
 				// We don't return UNDEFINED_FLEXO_CONCEPT_INSTANCE_TYPE because we want here a mutable type
 				// if FlexoConcept might be resolved later
-				return new VirtualModelInstanceType(configuration, this);
+				return getType(configuration, this);
 			}
 		}
 
@@ -175,6 +176,35 @@ public class VirtualModelInstanceType extends FlexoConceptInstanceType {
 				setVirtualModelType(type.getVirtualModel());
 			}
 		}
+	}
+
+	/**
+	 * Factory for {@link VirtualModelInstanceType} instances
+	 * 
+	 * @author sylvain
+	 * 
+	 */
+	public static class VirtualModelInstanceTypeFactory extends AbstractVirtualModelInstanceTypeFactory<VirtualModelInstanceType> {
+
+		public VirtualModelInstanceTypeFactory(FMLTechnologyAdapter technologyAdapter) {
+			super(technologyAdapter);
+		}
+
+		@Override
+		public Class<VirtualModelInstanceType> getCustomType() {
+			return VirtualModelInstanceType.class;
+		}
+
+		@Override
+		public VirtualModelInstanceType getType(String configuration, CustomTypeFactory<?> factory) {
+			return new VirtualModelInstanceType(configuration, this);
+		}
+
+		@Override
+		public VirtualModelInstanceType getType(VirtualModel virtualModel) {
+			return getVirtualModelInstanceType(virtualModel);
+		}
+
 	}
 
 }
