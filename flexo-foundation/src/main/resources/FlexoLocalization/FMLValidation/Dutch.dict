@@ -13,6 +13,7 @@
 'virtual_model_instance'_binding_is_not_valid='virtual model instance' binding is not valid
 'virtual_model_instance'_binding_is_not_valid_description='virtual model instance' binding is not valid description
 ($reason)=($reason)
+CreateResource_should_not_have_null_RC=CreateResource should not have null RC
 EditionAction_should_not_have_reflexive_model_slot_no_more=EditionAction should not have reflexive model slot no more
 EditionAction_should_not_have_reflexive_model_slot_no_more_description=EditionAction should not have reflexive model slot no more description
 FlexoConceptInstanceRole_should_have_a_type=FlexoConceptInstanceRole should have a type
