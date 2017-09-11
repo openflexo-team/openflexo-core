@@ -38,6 +38,7 @@
 
 package org.openflexo.foundation.resource;
 
+import com.google.common.base.Throwables;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -49,9 +50,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import javax.swing.undo.UndoableEdit;
-
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
@@ -77,8 +76,6 @@ import org.openflexo.model.undo.AtomicEdit;
 import org.openflexo.toolbox.FileUtils;
 import org.openflexo.toolbox.FlexoVersion;
 import org.openflexo.toolbox.IProgress;
-
-import com.google.common.base.Throwables;
 
 /**
  * Default implementation for {@link PamelaResource} (a resource where underlying model is managed by PAMELA framework)
@@ -645,7 +642,7 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD> & Accessibl
 	@Override
 	public FlexoObject getFlexoObject(Long flexoId, String userIdentifier) {
 
-		if (flexoId == null || userIdentifier == null) {
+		if (flexoId == null) {
 			return null;
 		}
 
@@ -658,9 +655,17 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD> & Accessibl
 			indexed = true;
 		}
 
-		Map<Long, FlexoObject> objectsForUserIdentifier = objects.get(userIdentifier);
-		if (objectsForUserIdentifier != null) {
-			return objectsForUserIdentifier.get(flexoId);
+		if (userIdentifier != null) {
+			Map<Long, FlexoObject> objectsForUserIdentifier = objects.get(userIdentifier);
+			if (objectsForUserIdentifier != null) {
+				return objectsForUserIdentifier.get(flexoId);
+			}
+		} else {
+			for (Map<Long, FlexoObject> objectMap : objects.values()) {
+				if (objectMap.containsKey(flexoId)) {
+					return objectMap.get(flexoId);
+				}
+			}
 		}
 
 		return null;
