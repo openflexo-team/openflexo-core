@@ -51,9 +51,17 @@ import java.util.Observer;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.DataBinding;
+import org.openflexo.connie.exception.TransformException;
+import org.openflexo.connie.expr.BindingValue;
+import org.openflexo.connie.expr.BindingValue.AbstractBindingPathElement;
+import org.openflexo.connie.expr.BindingValue.NormalBindingPathElement;
+import org.openflexo.connie.expr.Expression;
+import org.openflexo.connie.expr.ExpressionTransformer;
+import org.openflexo.connie.expr.parser.ExpressionParser;
+import org.openflexo.connie.expr.parser.ParseException;
 import org.openflexo.connie.type.TypeUtils;
-import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FMLLocalizedDictionary;
+import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.inspector.FlexoConceptInspector;
 import org.openflexo.foundation.fml.inspector.InspectorEntry;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
@@ -680,7 +688,9 @@ public class ModuleInspectorController extends Observable implements Observer {
 			FIBWidget widget = makeWidget(entry, newTab);
 			if (widget != null) {
 				widget.setBindingFactory(entry.getBindingFactory());
-				widget.setData(new DataBinding<>("fci." + entry.getData().toString()));
+				String bindingPath = entry.getData().toString();
+				String normalizedBindingPath = normalizeBindingPath(bindingPath);
+				widget.setData(new DataBinding<>(normalizedBindingPath));
 				widget.setReadOnly(entry.getIsReadOnly());
 			}
 			/*System.out.println("Widget " + widget + " data=" + entry.getData());
@@ -690,6 +700,47 @@ public class ModuleInspectorController extends Observable implements Observer {
 			System.out.println("valid:" + widget.getData().isValid());
 			System.out.println("reason=" + widget.getData().invalidBindingReason());*/
 		}
+
+		//System.out.println("Je retourne " + getFactory().stringRepresentation(newTab));
+	}
+
+	/**
+	 * Normalized BindingPath so that all {@link BindingValue} starts with 'fci.' (name of FCI beeing represented)
+	 * 
+	 * @param bindingPath
+	 * @return
+	 */
+	private static String normalizeBindingPath(String bindingPath) {
+		Expression expression = null;
+		try {
+			expression = ExpressionParser.parse(bindingPath);
+
+			expression = expression.transform(new ExpressionTransformer() {
+				@Override
+				public Expression performTransformation(Expression e) throws TransformException {
+					if (e instanceof BindingValue) {
+						BindingValue bv = (BindingValue) e;
+						if (bv.getParsedBindingPath().size() > 0) {
+							AbstractBindingPathElement firstPathElement = bv.getParsedBindingPath().get(0);
+							if (!(firstPathElement instanceof NormalBindingPathElement)
+									|| !((NormalBindingPathElement) firstPathElement).property.equals("fci")) {
+								bv.getParsedBindingPath().add(0, new NormalBindingPathElement("fci"));
+								bv.clearSerializationRepresentation();
+							}
+						}
+						return bv;
+					}
+					return e;
+				}
+			});
+
+			return expression.toString();
+		} catch (ParseException e) {
+			e.printStackTrace();
+		} catch (TransformException e) {
+			e.printStackTrace();
+		}
+		return expression.toString();
 	}
 
 	/**
