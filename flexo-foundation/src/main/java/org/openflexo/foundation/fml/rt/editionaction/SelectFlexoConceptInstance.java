@@ -45,6 +45,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
+
 import org.openflexo.connie.BindingVariable;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
@@ -283,9 +284,9 @@ public interface SelectFlexoConceptInstance<VMI extends AbstractVirtualModelInst
 			if (getFlexoConcept() instanceof AbstractVirtualModel) {
 				return (AbstractVirtualModel<?>) getFlexoConcept();
 			}
-			if (getInferedModelSlot() instanceof FMLRTModelSlot) {
+			/*if (getInferedModelSlot() instanceof FMLRTModelSlot) {
 				return getInferedModelSlot().getAccessedVirtualModel();
-			}
+			}*/
 			return getOwningVirtualModel();
 		}
 
