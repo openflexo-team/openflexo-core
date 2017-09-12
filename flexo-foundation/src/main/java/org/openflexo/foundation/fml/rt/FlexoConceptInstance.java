@@ -1140,9 +1140,12 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 		 */
 		@Override
 		public <T> ActorReference<T> getActorReference(T object, FlexoRole<T> flexoRole) {
-			for (ActorReference<T> ar : getActorReferenceList(flexoRole)) {
-				if (ar.getModellingElement() == object) {
-					return ar;
+			List<ActorReference<T>> actorReferenceList = getActorReferenceList(flexoRole);
+			if (actorReferenceList != null) {
+				for (ActorReference<T> ar : actorReferenceList) {
+					if (ar.getModellingElement() == object) {
+						return ar;
+					}
 				}
 			}
 			return null;
@@ -1551,7 +1554,10 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 						if (value instanceof List) {
 							// We handle here a multiple value assignation
 							List<ActorReference<?>> arToRemove = new ArrayList<>();
-							arToRemove.addAll(getActorReferenceList(role));
+							List<ActorReference<?>> existingARs = getActorReferenceList(role);
+							if (existingARs != null) {
+								arToRemove.addAll(existingARs);
+							}
 							for (Object o : (List) value) {
 								ActorReference<?> existingAr = getActorReference(o, role);
 								if (existingAr == null) {
