@@ -193,7 +193,7 @@ public interface TableActorReference<T extends FlexoDocTable<?, ?>> extends Acto
 		}
 
 		@Override
-		public T getModellingElement() {
+		public T getModellingElement(boolean forceLoading) {
 
 			if (table == null) {
 				FlexoDocument<?, ?> document = getFlexoDocument();

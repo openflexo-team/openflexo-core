@@ -146,7 +146,7 @@ public interface TextSelectionActorReference<D extends FlexoDocument<D, TA>, TA 
 		}
 
 		@Override
-		public TextSelection<D, TA> getModellingElement() {
+		public TextSelection<D, TA> getModellingElement(boolean forceLoading) {
 
 			if (textSelection == null) {
 				System.out.println("Decoding TextSelection");

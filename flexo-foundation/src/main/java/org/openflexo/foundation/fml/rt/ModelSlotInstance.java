@@ -359,7 +359,7 @@ public abstract interface ModelSlotInstance<MS extends ModelSlot<? extends RD>, 
 		}
 
 		@Override
-		public RD getModellingElement() {
+		public RD getModellingElement(boolean forceLoading) {
 			return getAccessedResourceData();
 		}
 

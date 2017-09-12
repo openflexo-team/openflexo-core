@@ -125,7 +125,9 @@ public class AssignActionWizard extends FlexoWizard {
 			System.out.println("Je recois " + evt + " de " + evt.getSource());
 			if (evt.getSource() == getAction()) {
 				if (evt.getPropertyName().equals("assignation")) {
+					System.out.println("JE check ");
 					checkValidity();
+					System.out.println("Fin du check");
 				}
 			}
 		}

@@ -39,6 +39,7 @@
 package org.openflexo.foundation.ontology.fml.rt;
 
 import java.util.logging.Logger;
+
 import org.openflexo.foundation.fml.rt.ActorReference;
 import org.openflexo.foundation.fml.rt.ModelSlotInstance;
 import org.openflexo.foundation.ontology.IFlexoOntologyObject;
@@ -112,7 +113,7 @@ public interface ConceptActorReference<T extends IFlexoOntologyObject> extends A
 		}
 
 		@Override
-		public T getModellingElement() {
+		public T getModellingElement(boolean forceLoading) {
 			if (concept == null) {
 				ModelSlotInstance msInstance = getModelSlotInstance();
 				if (msInstance == null) {

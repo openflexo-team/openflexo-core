@@ -41,6 +41,7 @@ package org.openflexo.foundation.doc.fml;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
+
 import org.openflexo.foundation.doc.FlexoDocElement;
 import org.openflexo.foundation.doc.FlexoDocFragment;
 import org.openflexo.foundation.doc.FlexoDocFragment.FragmentConsistencyException;
@@ -157,7 +158,7 @@ public interface FragmentActorReference<F extends FlexoDocFragment<?, ?>> extend
 		}
 
 		@Override
-		public F getModellingElement() {
+		public F getModellingElement(boolean forceLoading) {
 
 			if (fragment == null) {
 				FlexoDocument<?, ?> document = getFlexoDocument();

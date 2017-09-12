@@ -110,7 +110,7 @@ public interface ParagraphActorReference<P extends FlexoDocParagraph<?, ?>> exte
 		}
 
 		@Override
-		public P getModellingElement() {
+		public P getModellingElement(boolean forceLoading) {
 
 			if (paragraph == null) {
 				FlexoDocument<?, ?> document = getFlexoDocument();

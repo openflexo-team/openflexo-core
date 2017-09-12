@@ -152,6 +152,9 @@ public class FlexoConceptFlexoPropertyPathElement<P extends FlexoProperty<?>> ex
 
 			if (effectiveProperty != null
 					&& effectiveProperty.getFlexoConcept().isAssignableFrom(flexoConceptInstance.getFlexoConcept().getOwner())) {
+				if (effectiveProperty instanceof FlexoRole && ((FlexoRole<?>) effectiveProperty).getCardinality().isMultipleCardinality()) {
+					return flexoConceptInstance.getVirtualModelInstance().getFlexoActorList((FlexoRole<?>) effectiveProperty);
+				}
 				return flexoConceptInstance.getVirtualModelInstance().getFlexoPropertyValue(effectiveProperty);
 			}
 
@@ -233,6 +236,9 @@ public class FlexoConceptFlexoPropertyPathElement<P extends FlexoProperty<?>> ex
 	@Override
 	public boolean isSettable() {
 		if (flexoProperty != null) {
+			if (flexoProperty.isReadOnly()) {
+				System.out.println("Pas settable a cause de " + flexoProperty + " readonly");
+			}
 			return !flexoProperty.isReadOnly();
 		}
 		return super.isSettable();

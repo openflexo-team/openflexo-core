@@ -337,6 +337,26 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 	 */
 	public <T> void nullifyFlexoActor(FlexoRole<T> flexoRole);
 
+	/**
+	 * Return boolean indicating if supplied object is already registered as an actor for supplied {@link FlexoRole}
+	 * 
+	 * @param object
+	 * @param flexoRole
+	 * @return
+	 */
+	public <T> boolean hasFlexoActor(T object, FlexoRole<T> flexoRole);
+
+	/**
+	 * Return {@link ActorReference} referencing supplied object if this one is already registered as an actor for supplied
+	 * {@link FlexoRole}<br>
+	 * When not return null
+	 * 
+	 * @param object
+	 * @param flexoRole
+	 * @return
+	 */
+	public <T> ActorReference<T> getActorReference(T object, FlexoRole<T> flexoRole);
+
 	public <T> FlexoProperty<T> getPropertyForActor(T actor);
 
 	/**
@@ -655,6 +675,11 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 				else if (flexoProperty instanceof FlexoRole) {
 					// Take care that we don't manage here the multiple cardinality !!!
 					// This is performed in both classes: FlexoConceptFlexoPropertyPathElement and FlexoPropertyBindingVariable
+					if (((FlexoRole) flexoProperty).getCardinality().isMultipleCardinality()) {
+						System.out.println("Tiens, y'aurait pas un truc la ???");
+						Thread.dumpStack();
+						return (T) getFlexoActorList((FlexoRole) flexoProperty);
+					}
 					return getFlexoActor((FlexoRole<T>) flexoProperty);
 				}
 				else if (flexoProperty instanceof ExpressionProperty) {
@@ -1093,6 +1118,37 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 		}
 
 		/**
+		 * Return boolean indicating if supplied object is already registered as an actor for supplied {@link FlexoRole}
+		 * 
+		 * @param object
+		 * @param flexoRole
+		 * @return
+		 */
+		@Override
+		public <T> boolean hasFlexoActor(T object, FlexoRole<T> flexoRole) {
+			return getActorReference(object, flexoRole) != null;
+		}
+
+		/**
+		 * Return {@link ActorReference} referencing supplied object if this one is already registered as an actor for supplied
+		 * {@link FlexoRole}<br>
+		 * When not return null
+		 * 
+		 * @param object
+		 * @param flexoRole
+		 * @return
+		 */
+		@Override
+		public <T> ActorReference<T> getActorReference(T object, FlexoRole<T> flexoRole) {
+			for (ActorReference<T> ar : getActorReferenceList(flexoRole)) {
+				if (ar.getModellingElement() == object) {
+					return ar;
+				}
+			}
+			return null;
+		}
+
+		/**
 		 * Remove actor from the list of reference associated with supplied property, asserting cardinality of supplied property is
 		 * MULTIPLE.<br>
 		 * If cardinality of supplied property is SINGLE, remove existing matching value
@@ -1493,15 +1549,28 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 				if (role != null) {
 					if (role.getCardinality().isMultipleCardinality()) {
 						if (value instanceof List) {
+							// We handle here a multiple value assignation
+							List<ActorReference<?>> arToRemove = new ArrayList<>();
+							arToRemove.addAll(getActorReferenceList(role));
 							for (Object o : (List) value) {
-								addToFlexoActors(o, role);
+								ActorReference<?> existingAr = getActorReference(o, role);
+								if (existingAr == null) {
+									addToFlexoActors(o, role);
+								}
+								else {
+									arToRemove.remove(existingAr);
+								}
+							}
+							// Finally remove all extra references
+							for (ActorReference<?> removedAR : arToRemove) {
+								removeFromActors(removedAR);
 							}
 						}
 						else {
 							logger.warning("Unexpected value " + value + " for multiple cardinality role: " + role);
 						}
 					}
-					else {
+					else { // Simple cardinality
 						setFlexoActor(value, role);
 					}
 				}

@@ -92,6 +92,14 @@ public abstract interface ActorReference<T> extends VirtualModelInstanceObject {
 	public T getModellingElement();
 
 	/**
+	 * Retrieve and return modelling element from informations stored in this {@link ActorReference}<br>
+	 * When forceLoading flag to false, and modelling element not loaded, return null
+	 * 
+	 * @return
+	 */
+	public T getModellingElement(boolean forceLoading);
+
+	/**
 	 * Sets modelling element referenced by this {@link ActorReference}
 	 * 
 	 * @param object
@@ -147,7 +155,18 @@ public abstract interface ActorReference<T> extends VirtualModelInstanceObject {
 		 * @return
 		 */
 		@Override
-		public abstract T getModellingElement();
+		public final T getModellingElement() {
+			return getModellingElement(true);
+		}
+
+		/**
+		 * Retrieve and return modelling element from informations stored in this {@link ActorReference}<br>
+		 * When forceLoading flag to false, and modelling element not loaded, return null
+		 * 
+		 * @return
+		 */
+		@Override
+		public abstract T getModellingElement(boolean forceLoading);
 
 		@Override
 		public FlexoConceptInstance getFlexoConceptInstance() {

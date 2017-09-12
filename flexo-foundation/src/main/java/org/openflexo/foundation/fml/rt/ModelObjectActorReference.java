@@ -39,6 +39,7 @@
 package org.openflexo.foundation.fml.rt;
 
 import java.util.logging.Logger;
+
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.resource.PamelaResource;
 import org.openflexo.foundation.utils.FlexoObjectReference;
@@ -91,7 +92,7 @@ public interface ModelObjectActorReference<T extends FlexoObject> extends ActorR
 		}
 
 		@Override
-		public synchronized T getModellingElement() {
+		public synchronized T getModellingElement(boolean forceLoading) {
 			if (getResourceData() != null && getResourceData().getResource() instanceof PamelaResource
 					&& ((PamelaResource) getResourceData().getResource()).isIndexing()) {
 				return null;

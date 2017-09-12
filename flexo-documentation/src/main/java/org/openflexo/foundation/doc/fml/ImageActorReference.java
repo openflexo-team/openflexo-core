@@ -177,7 +177,7 @@ public interface ImageActorReference<R extends FlexoDrawingRun<?, ?>> extends Ac
 		}
 
 		@Override
-		public R getModellingElement() {
+		public R getModellingElement(boolean forceLoading) {
 
 			FlexoDocument<?, ?> document = getFlexoDocument();
 			if (drawingRun == null && StringUtils.isNotEmpty(paragraphId) && runIndex > -1 && document != null) {

@@ -94,7 +94,7 @@ public interface PrimitiveActorReference<T> extends ActorReference<T> {
 		}
 
 		@Override
-		public T getModellingElement() {
+		public T getModellingElement(boolean forceLoading) {
 			if (modellingElement == null && getValueAsString() != null && getFactory() != null) {
 				try {
 					modellingElement = getFactory().getStringEncoder().fromString(getActorClass(), getValueAsString());
