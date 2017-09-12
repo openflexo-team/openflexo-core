@@ -76,10 +76,10 @@ public class VirtualModelInstanceType extends FlexoConceptInstanceType {
 
 	@Override
 	public void resolve(CustomTypeFactory<?> factory) {
-		if (factory instanceof VirtualModelInstanceTypeFactory) {
+		if (factory instanceof AbstractVirtualModelInstanceTypeFactory) {
 			VirtualModel virtualModel;
 			try {
-				virtualModel = ((VirtualModelInstanceTypeFactory) factory).getTechnologyAdapter().getTechnologyAdapterService()
+				virtualModel = ((AbstractVirtualModelInstanceTypeFactory<?>) factory).getTechnologyAdapter().getTechnologyAdapterService()
 						.getServiceManager().getVirtualModelLibrary().getVirtualModel(conceptURI);
 				if (virtualModel != null) {
 					flexoConcept = virtualModel;
