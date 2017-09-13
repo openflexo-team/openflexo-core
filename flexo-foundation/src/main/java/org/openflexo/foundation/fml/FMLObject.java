@@ -51,7 +51,6 @@ import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
-import org.openflexo.model.annotations.DeserializationFinalizer;
 import org.openflexo.model.annotations.DeserializationInitializer;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -173,7 +172,8 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData/*<Vi
 	@DeserializationInitializer
 	public void initializeDeserialization(FMLModelFactory factory);
 
-	@DeserializationFinalizer
+	// DeserializationFinalizer will be called only forward, just after VirtualModel loading
+	// @DeserializationFinalizer
 	public void finalizeDeserialization();
 
 	/**
