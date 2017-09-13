@@ -46,7 +46,6 @@ import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.type.CustomType;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
-import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.model.annotations.DefineValidationRule;
 import org.openflexo.model.annotations.Getter;
@@ -91,6 +90,13 @@ public interface ExpressionAction<T> extends AssignableAction<T> {
 		private boolean isComputingAssignableType = false;
 
 		@Override
+		public void finalizeDeserialization() {
+			super.finalizeDeserialization();
+			// Attempt to resolve assignable type at the deserialization
+			getAssignableType();
+		}
+
+		@Override
 		public Type getAssignableType() {
 
 			if (assignableType == null && !isComputingAssignableType) {
@@ -109,7 +115,7 @@ public interface ExpressionAction<T> extends AssignableAction<T> {
 				// Since, we have to way to know when this type will be resolved, we don't cache it
 				// TODO: handle this issue properly
 				if (assignableType instanceof CustomType && !((CustomType) assignableType).isResolved()) {
-					FlexoConceptInstanceType returned = (FlexoConceptInstanceType) assignableType;
+					CustomType returned = (CustomType) assignableType;
 					assignableType = null;
 					return returned;
 				}
