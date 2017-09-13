@@ -274,11 +274,13 @@ public class CreateFlexoBehaviour extends FlexoAction<CreateFlexoBehaviour, Flex
 
 		for (UseModelSlotDeclaration useMS : focusedObject.getDeclaringVirtualModel().getUseDeclarations()) {
 			Class<? extends ModelSlot<?>> msClass = useMS.getModelSlotClass();
-			for (Class<? extends FlexoBehaviour> behaviour : editor.getServiceManager().getTechnologyAdapterService()
-					.getAvailableFlexoBehaviourTypes(msClass)) {
-				if (!behaviourClassMap.containsKey(behaviour)) {
-					behaviourClassMap.put(behaviour,
-							editor.getServiceManager().getTechnologyAdapterService().getTechnologyAdapterForModelSlot(msClass));
+			if (editor != null && editor.getServiceManager() != null) {
+				for (Class<? extends FlexoBehaviour> behaviour : editor.getServiceManager().getTechnologyAdapterService()
+						.getAvailableFlexoBehaviourTypes(msClass)) {
+					if (!behaviourClassMap.containsKey(behaviour)) {
+						behaviourClassMap.put(behaviour,
+								editor.getServiceManager().getTechnologyAdapterService().getTechnologyAdapterForModelSlot(msClass));
+					}
 				}
 			}
 		}
