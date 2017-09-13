@@ -43,8 +43,10 @@ import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.DataBinding;
+import org.openflexo.connie.type.CustomType;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
+import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.model.annotations.DefineValidationRule;
 import org.openflexo.model.annotations.Getter;
@@ -102,6 +104,15 @@ public interface ExpressionAction<T> extends AssignableAction<T> {
 					// We wont try to decode it again unless explicit call to #notifyTypeMightHaveChanged()
 					assignableType = Object.class;
 				}*/
+				// Hacking area - No time yet to fix this
+				// This case handles a CustomType which is not resolved yet
+				// Since, we have to way to know when this type will be resolved, we don't cache it
+				// TODO: handle this issue properly
+				if (assignableType instanceof CustomType && !((CustomType) assignableType).isResolved()) {
+					FlexoConceptInstanceType returned = (FlexoConceptInstanceType) assignableType;
+					assignableType = null;
+					return returned;
+				}
 			}
 			if (assignableType == null) {
 				return Object.class;
