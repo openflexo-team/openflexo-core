@@ -91,6 +91,14 @@ public class FlexoBehaviourPathElement extends FunctionPathElement {
 		}
 	}
 
+	@Override
+	public Type getType() {
+		if (getFlexoBehaviour() != null) {
+			return getFlexoBehaviour().getReturnType();
+		}
+		return super.getType();
+	}
+
 	public FlexoBehaviour getFlexoBehaviour() {
 		return getFunction();
 	}
