@@ -171,17 +171,27 @@ public interface SelectVirtualModelInstance<VMI extends VirtualModelInstance<VMI
 			return null;
 		}
 
+		private boolean isFetching = false;
+
 		@Override
 		public VirtualModelInstanceType getFetchedType() {
-			if (getVirtualModelType() != null) {
-				if (getVirtualModelType().isLoaded()) {
-					return VirtualModelInstanceType.getVirtualModelInstanceType(
-							getVirtualModelType() != null ? getVirtualModelType().getLoadedResourceData() : null);
+			if (isFetching) {
+				return VirtualModelInstanceType.UNDEFINED_VIRTUAL_MODEL_INSTANCE_TYPE;
+			}
+			isFetching = true;
+			try {
+				if (getVirtualModelType() != null) {
+					if (getVirtualModelType().isLoaded()) {
+						return VirtualModelInstanceType.getVirtualModelInstanceType(
+								getVirtualModelType() != null ? getVirtualModelType().getLoadedResourceData() : null);
+					}
+					else {
+						return new VirtualModelInstanceType(_getVirtualModelTypeURI(),
+								getTechnologyAdapter().getVirtualModelInstanceTypeFactory());
+					}
 				}
-				else {
-					return new VirtualModelInstanceType(_getVirtualModelTypeURI(),
-							getTechnologyAdapter().getVirtualModelInstanceTypeFactory());
-				}
+			} finally {
+				isFetching = false;
 			}
 			return VirtualModelInstanceType.UNDEFINED_VIRTUAL_MODEL_INSTANCE_TYPE;
 		}
@@ -206,6 +216,24 @@ public interface SelectVirtualModelInstance<VMI extends VirtualModelInstance<VMI
 				if (vm != null) {
 					virtualModelType = (VirtualModelResource) vm.getResource();
 				}
+				/*else {
+					logger.warning("?????????????????? je trouve pas " + virtualModelTypeURI);
+					try {
+						if (getAddressedVirtualModel() != null && getAddressedVirtualModel().getVirtualModelLibrary() != null) {
+							System.out.println("Et: "
+									+ getAddressedVirtualModel().getVirtualModelLibrary().getVirtualModel(virtualModelTypeURI, true));
+						}
+					} catch (FileNotFoundException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (ResourceLoadingCancelledException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (FlexoException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}*/
 			}
 
 			return virtualModelType;
