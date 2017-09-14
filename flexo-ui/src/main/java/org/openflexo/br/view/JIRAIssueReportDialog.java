@@ -568,11 +568,13 @@ public class JIRAIssueReportDialog extends PropertyChangedSupportDefaultImplemen
 		}
 		List<JIRAComponent> availableComponents = new ArrayList<>();
 
-		for (JIRAComponent component : getIssue().getIssuetype().getComponentField().getAllowedValues()) {
-			// if (module.getJiraComponentID().equals(component.getId())) {
-			availableComponents.add(component);
-			// break;
-			// }
+		if (getIssue().getIssuetype().getComponentField() != null) {
+			for (JIRAComponent component : getIssue().getIssuetype().getComponentField().getAllowedValues()) {
+				// if (module.getJiraComponentID().equals(component.getId())) {
+				availableComponents.add(component);
+				// break;
+				// }
+			}
 		}
 		return availableComponents;
 	}
