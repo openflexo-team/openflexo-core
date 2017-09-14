@@ -44,10 +44,11 @@ import java.util.logging.Logger;
 
 import org.openflexo.ApplicationContext;
 import org.openflexo.connie.DataBinding;
+import org.openflexo.connie.annotations.NotificationUnsafe;
+import org.openflexo.foundation.fml.FMLLocalizedDictionary;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoBehaviourActionType;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
-import org.openflexo.foundation.fml.FMLLocalizedDictionary;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.gina.controller.FIBController.Status;
@@ -334,6 +335,7 @@ public class ParametersRetriever<ES extends FlexoBehaviour> {
 			setFlexoController(flexoController);
 		}
 
+		@NotificationUnsafe
 		public boolean isValidable(FlexoBehaviourAction<?, ?, ?> action) {
 			if (action == null) {
 				// Called during initialization, don't care
