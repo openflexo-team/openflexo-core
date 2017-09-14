@@ -104,6 +104,7 @@ public class FMLRTTechnologyAdapterController extends TechnologyAdapterControlle
 		return FMLRTTechnologyAdapter.class;
 	}
 
+	@Deprecated
 	@Override
 	public void installTechnologyPerspectives(FlexoController controller, FIBResourceManagerBrowser sharedBrowser) {
 		super.installTechnologyPerspectives(controller, sharedBrowser);

@@ -42,31 +42,27 @@ import java.util.logging.Logger;
 
 import javax.swing.ImageIcon;
 
-import org.openflexo.components.widget.FIBResourceManagerBrowser;
 import org.openflexo.fml.controller.view.FMLVirtualModelView;
 import org.openflexo.foundation.FlexoObject;
-import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.icon.FMLIconLibrary;
 import org.openflexo.view.ModuleView;
 import org.openflexo.view.controller.FlexoController;
-import org.openflexo.view.controller.TechnologyPerspective;
+import org.openflexo.view.controller.GenericPerspective;
 
 /**
- * A perspective representing all the resources interpretable by a {@link TechnologyAdapter}
+ * A perspective specializing {@link GenericPerspective} by representing {@link VirtualModel} with FML textual language
  * 
  * @author sylvain
  * 
  * @param <TA>
  */
-public class FMLTechnologyPerspective extends TechnologyPerspective<FMLTechnologyAdapter> {
+public class FMLTechnologyPerspective extends GenericPerspective {
 
 	static final Logger logger = Logger.getLogger(FMLTechnologyPerspective.class.getPackage().getName());
 
-	public FMLTechnologyPerspective(FMLTechnologyAdapter technologyAdapter, FlexoController controller,
-			FIBResourceManagerBrowser sharedBrowser) {
-		super(technologyAdapter, controller, sharedBrowser);
+	public FMLTechnologyPerspective(FlexoController controller) {
+		super(controller);
 	}
 
 	@Override
@@ -82,7 +78,10 @@ public class FMLTechnologyPerspective extends TechnologyPerspective<FMLTechnolog
 	@Override
 	@SuppressWarnings("unchecked")
 	public boolean hasModuleViewForObject(FlexoObject object) {
-		return object instanceof VirtualModel;
+		if (object instanceof VirtualModel) {
+			return true;
+		}
+		return super.hasModuleViewForObject(object);
 	}
 
 	@Override

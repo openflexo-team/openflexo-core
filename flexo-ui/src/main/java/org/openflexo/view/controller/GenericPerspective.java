@@ -43,61 +43,35 @@ import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 
 import org.openflexo.components.widget.FIBResourceManagerBrowser;
-import org.openflexo.components.widget.FIBTechnologyBrowser;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
-import org.openflexo.view.FIBBrowserView;
+import org.openflexo.icon.IconLibrary;
 import org.openflexo.view.controller.model.FlexoPerspective;
 
 /**
- * A perspective representing all the resources interpretable by a {@link TechnologyAdapter}
+ * A perspective allowing to show and edit resources using loaded technology adapters<br>
+ * 
+ * Viewing and editing teehnology-specific resources is delegated to specific {@link TechnologyAdapterController}
  * 
  * @author sylvain
  * 
- * @param <TA>
  */
-@Deprecated
-public class TechnologyPerspective<TA extends TechnologyAdapter> extends FlexoPerspective {
+public class GenericPerspective extends FlexoPerspective {
 
-	static final Logger logger = Logger.getLogger(TechnologyPerspective.class.getPackage().getName());
+	static final Logger logger = Logger.getLogger(GenericPerspective.class.getPackage().getName());
 
-	private final TA technologyAdapter;
-
-	public TA getTechnologyAdapter() {
-		return technologyAdapter;
-	}
-
-	private final FIBBrowserView<?> browser;
+	private final FIBResourceManagerBrowser browser;
 
 	/**
 	 * @param controller
 	 * @param name
 	 */
-	public TechnologyPerspective(TA technologyAdapter, FlexoController controller, FIBResourceManagerBrowser sharedBrowser) {
-		super(technologyAdapter.getName(), controller);
-		this.technologyAdapter = technologyAdapter;
-
-		if (sharedBrowser == null) {
-			browser = makeTechnologyBrowser();
-		}
-		else {
-			browser = sharedBrowser;
-		}
+	public GenericPerspective(FlexoController controller) {
+		super("Generic", controller);
+		browser = controller.getSharedBrowser();
 		setTopLeftView(browser);
 
-	}
-
-	/**
-	 * Internally called to make technology browser<br>
-	 * This job is delegated to the {@link TechnologyAdapterController}
-	 * 
-	 * @return
-	 */
-	protected FIBTechnologyBrowser<TA> makeTechnologyBrowser() {
-		TechnologyAdapterController<TA> tac = getController().getApplicationContext().getTechnologyAdapterControllerService()
-				.getTechnologyAdapterController(technologyAdapter);
-		return tac.makeTechnologyBrowser(getController());
 	}
 
 	/**
@@ -107,7 +81,7 @@ public class TechnologyPerspective<TA extends TechnologyAdapter> extends FlexoPe
 	 */
 	@Override
 	public ImageIcon getActiveIcon() {
-		return getController().iconForObject(technologyAdapter);
+		return IconLibrary.OPENFLEXO_NOTEXT_16;
 	}
 
 	@Override
@@ -148,10 +122,8 @@ public class TechnologyPerspective<TA extends TechnologyAdapter> extends FlexoPe
 	 */
 	@Override
 	public void willShow() {
-		System.out.println("TechnologyPerspective for " + technologyAdapter + " will be activated");
-		if (!getTechnologyAdapter().isActivated()) {
-			getTechnologyAdapter().getTechnologyAdapterService().activateTechnologyAdapter(getTechnologyAdapter());
-		}
+		System.out.println("GenericPerspective will be activated");
+		super.willShow();
 	}
 
 }

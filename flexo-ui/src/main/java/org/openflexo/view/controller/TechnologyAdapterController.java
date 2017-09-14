@@ -489,10 +489,12 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 		return null;
 	}
 
+	@Deprecated
 	public void installTechnologyPerspectives(FlexoController controller, FIBResourceManagerBrowser sharedBrowser) {
 		controller.addToPerspectives(makeDefaultTechnologyPerspective(controller, sharedBrowser));
 	}
 
+	@Deprecated
 	protected TechnologyPerspective<TA> makeDefaultTechnologyPerspective(FlexoController controller,
 			FIBResourceManagerBrowser sharedBrowser) {
 		return new TechnologyPerspective<>(getTechnologyAdapter(), controller, sharedBrowser);

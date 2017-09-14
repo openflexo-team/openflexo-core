@@ -60,6 +60,7 @@ import org.openflexo.view.ModuleView;
  * 
  * @param <TA>
  */
+@Deprecated
 public abstract class FMLRTNaturePerspective extends TechnologyPerspective<FMLRTTechnologyAdapter> {
 
 	static final Logger logger = Logger.getLogger(FMLRTNaturePerspective.class.getPackage().getName());

@@ -156,10 +156,11 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 	private FMLValidationModel validationModel;
 	private Map<VirtualModel, FMLValidationReport> validationReports = new HashMap<>();
 
+	@Deprecated
 	@Override
 	public void installTechnologyPerspectives(FlexoController controller, FIBResourceManagerBrowser sharedBrowser) {
 		super.installTechnologyPerspectives(controller, sharedBrowser);
-		controller.addToPerspectives(new FMLTechnologyPerspective(getTechnologyAdapter(), controller, sharedBrowser));
+		// controller.addToPerspectives(new FMLTechnologyPerspective(getTechnologyAdapter(), controller, sharedBrowser));
 		// Then we iterate on all technology adapters
 		for (TechnologyAdapter ta : getServiceManager().getTechnologyAdapterService().getTechnologyAdapters()) {
 			TechnologyAdapterController<?> tac = getServiceManager().getTechnologyAdapterControllerService()
