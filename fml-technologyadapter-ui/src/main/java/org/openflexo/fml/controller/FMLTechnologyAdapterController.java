@@ -45,7 +45,6 @@ import java.util.logging.Logger;
 
 import javax.swing.ImageIcon;
 
-import org.openflexo.components.widget.FIBResourceManagerBrowser;
 import org.openflexo.components.widget.FIBTechnologyBrowser;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.type.CustomType;
@@ -121,7 +120,6 @@ import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceType;
 import org.openflexo.foundation.task.Progress;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
-import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterResource;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.foundation.technologyadapter.UseModelSlotDeclaration;
@@ -155,24 +153,6 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 
 	private FMLValidationModel validationModel;
 	private Map<VirtualModel, FMLValidationReport> validationReports = new HashMap<>();
-
-	@Deprecated
-	@Override
-	public void installTechnologyPerspectives(FlexoController controller, FIBResourceManagerBrowser sharedBrowser) {
-		super.installTechnologyPerspectives(controller, sharedBrowser);
-		// controller.addToPerspectives(new FMLTechnologyPerspective(getTechnologyAdapter(), controller, sharedBrowser));
-		// Then we iterate on all technology adapters
-		for (TechnologyAdapter ta : getServiceManager().getTechnologyAdapterService().getTechnologyAdapters()) {
-			TechnologyAdapterController<?> tac = getServiceManager().getTechnologyAdapterControllerService()
-					.getTechnologyAdapterController(ta);
-			if (tac != null) {
-				tac.installFMLNatureSpecificPerspectives(controller);
-			}
-			else {
-				logger.warning("Could not load TechnologyAdapterController for " + ta);
-			}
-		}
-	}
 
 	@Override
 	public Class<FMLTechnologyAdapter> getTechnologyAdapterClass() {

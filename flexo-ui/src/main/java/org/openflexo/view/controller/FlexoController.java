@@ -97,7 +97,6 @@ import org.openflexo.components.ProgressWindow;
 import org.openflexo.components.ReviewUnsavedDialog;
 import org.openflexo.components.validation.ValidationWindow;
 import org.openflexo.components.widget.FIBResourceManagerBrowser;
-import org.openflexo.components.widget.FIBTechnologyBrowser;
 import org.openflexo.connie.annotations.NotificationUnsafe;
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.editor.SelectAndFocusObjectTask;
@@ -204,8 +203,7 @@ import com.google.common.collect.Multimap;
 /**
  * General controller managing an application module (see {@link FlexoModule}).<br>
  * 
- * 
- * @author benoit, sylvain
+ * @author sylvain
  */
 public abstract class FlexoController implements PropertyChangeListener, HasPropertyChangeSupport {
 
@@ -306,20 +304,16 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 	protected abstract void initializePerspectives();
 
 	/**
-	 * Return a {@link FIBTechnologyBrowser} shared by all perspectives of a same {@link TechnologyAdapter} in this module's controller
+	 * Called when a specific technology should be focused in module<br>
+	 * 
+	 * Implementation is module-specific
+	 * 
+	 * Please override when required
 	 * 
 	 * @param technologyAdapter
-	 * @return
 	 */
-	/*public <TA extends TechnologyAdapter> FIBTechnologyBrowser<TA> getSharedTechnologyBrowser(TA technologyAdapter) {
-		FIBTechnologyBrowser<TA> technologyBrowser = (FIBTechnologyBrowser<TA>) sharedBrowsers.get(technologyAdapter);
-		if (technologyBrowser == null) {
-			TechnologyAdapterController<TA> tac = getTechnologyAdapterController(technologyAdapter);
-			technologyBrowser = tac.makeTechnologyBrowser(this);
-			sharedBrowsers.put(technologyAdapter, technologyBrowser);
-		}
-		return technologyBrowser;
-	}*/
+	public void focusOnTechnologyAdapter(TechnologyAdapter technologyAdapter) {
+	}
 
 	private FIBResourceManagerBrowser sharedBrowser;
 
@@ -328,18 +322,6 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 			sharedBrowser = new FIBResourceManagerBrowser(getApplicationContext(), this, getModuleLocales());
 		}
 		return sharedBrowser;
-	}
-
-	/**
-	 * Install technology perspectives for supplied technology adapter
-	 * 
-	 * @param ta
-	 */
-	protected <TA extends TechnologyAdapter> void installTechnologyPerspectives(TA technologyAdapter) {
-		TechnologyAdapterController<TA> tac = getTechnologyAdapterController(technologyAdapter);
-		if (tac != null) {
-			tac.installTechnologyPerspectives(this, /*getSharedTechnologyBrowser(technologyAdapter)*/getSharedBrowser());
-		}
 	}
 
 	/**

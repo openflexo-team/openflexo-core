@@ -49,7 +49,6 @@ import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 
 import org.openflexo.ApplicationContext;
-import org.openflexo.components.widget.FIBResourceManagerBrowser;
 import org.openflexo.components.widget.FIBTechnologyBrowser;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.type.CustomType;
@@ -487,35 +486,6 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 	public ModuleView<FlexoProject> createFlexoProjectModuleViewForSpecificNature(FlexoProject project, ProjectNature nature,
 			FlexoController controller, FlexoPerspective perspective) {
 		return null;
-	}
-
-	@Deprecated
-	public void installTechnologyPerspectives(FlexoController controller, FIBResourceManagerBrowser sharedBrowser) {
-		controller.addToPerspectives(makeDefaultTechnologyPerspective(controller, sharedBrowser));
-	}
-
-	@Deprecated
-	protected TechnologyPerspective<TA> makeDefaultTechnologyPerspective(FlexoController controller,
-			FIBResourceManagerBrowser sharedBrowser) {
-		return new TechnologyPerspective<>(getTechnologyAdapter(), controller, sharedBrowser);
-	}
-
-	/**
-	 * Install specific perspectives for FML@Runtime model<br>
-	 * Override this method when required
-	 * 
-	 * @param controller
-	 */
-	public void installFMLNatureSpecificPerspectives(FlexoController controller) {
-	}
-
-	/**
-	 * Install specific perspectives for FML@Runtime model<br>
-	 * Override this method when required
-	 * 
-	 * @param controller
-	 */
-	public void installFMLRTNatureSpecificPerspectives(FlexoController controller) {
 	}
 
 	/**
