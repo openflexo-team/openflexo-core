@@ -102,7 +102,7 @@ public abstract class ActionInitializer<A extends FlexoAction<A, T1, T2>, T1 ext
 		super();
 		this.controllerActionInitializer = controllerActionInitializer;
 		this.actionType = actionType;
-		controllerActionInitializer.registerInitializer(actionFactory, this);
+		controllerActionInitializer.registerInitializer(actionType, this);
 	}
 
 	public FlexoActionFactory<A, T1, T2> getActionFactory() {
