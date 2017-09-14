@@ -39,6 +39,22 @@
 
 package org.openflexo.view.menu;
 
+import java.awt.Cursor;
+import java.awt.event.ActionEvent;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.io.File;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import javax.swing.AbstractAction;
+import javax.swing.JMenu;
+import javax.swing.KeyStroke;
+
 import org.openflexo.FlexoCst;
 import org.openflexo.components.NewProjectComponent;
 import org.openflexo.components.OpenProjectComponent;
@@ -58,24 +74,12 @@ import org.openflexo.toolbox.ToolBox;
 import org.openflexo.view.controller.FlexoController;
 import org.openflexo.view.controller.model.ControllerModel;
 
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.InputEvent;
-import java.awt.event.KeyEvent;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.io.File;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 /**
  * 'File' menu
  * 
  * @author sguerin
  */
+@SuppressWarnings("serial")
 public class FileMenu extends FlexoMenu {
 
 	static final Logger logger = Logger.getLogger(FileMenu.class.getPackage().getName());
@@ -256,6 +260,7 @@ public class FileMenu extends FlexoMenu {
 			super();
 		}
 
+		@SuppressWarnings({ "unchecked", "rawtypes" })
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
 			File projectDirectory = NewProjectComponent.getProjectDirectory(getController().getApplicationContext());
@@ -451,7 +456,7 @@ public class FileMenu extends FlexoMenu {
 			}
 			if (getController().getProject().hasUnsavedResources()) {
 				Cursor c = getController().getFlexoFrame().getCursor();
-				FileMenu.this._controller.getFlexoFrame().setCursor(Cursor.WAIT_CURSOR);
+				// FileMenu.this._controller.getFlexoFrame().setCursor(Cursor.WAIT_CURSOR);
 				try {
 					getProjectLoader().saveProjects(Arrays.asList(getController().getProject()));
 				} catch (SaveResourceExceptionList e) {
@@ -552,7 +557,7 @@ public class FileMenu extends FlexoMenu {
 		public void actionPerformed(ActionEvent arg0) {
 			if (getProjectLoader().someProjectsAreModified()) {
 				Cursor c = getController().getFlexoFrame().getCursor();
-				FileMenu.this._controller.getFlexoFrame().setCursor(Cursor.WAIT_CURSOR);
+				// FileMenu.this._controller.getFlexoFrame().setCursor(Cursor.WAIT_CURSOR);
 				try {
 					getProjectLoader().saveAllProjects();
 				} catch (SaveResourceExceptionList e) {

@@ -58,6 +58,7 @@ import org.openflexo.view.controller.FlexoController;
  * 
  * @author sguerin
  */
+@SuppressWarnings("serial")
 public abstract class FlexoMenu extends JMenu implements MouseListener, MenuListener {
 
 	private static final Logger logger = Logger.getLogger(FlexoMenu.class.getPackage().getName());

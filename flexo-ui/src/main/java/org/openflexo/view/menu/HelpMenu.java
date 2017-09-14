@@ -64,6 +64,7 @@ import org.openflexo.view.controller.FlexoController;
  * 
  * @author sguerin
  */
+@SuppressWarnings("serial")
 public class HelpMenu extends FlexoMenu implements Observer {
 
 	private JMenuItem generalHelp;

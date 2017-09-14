@@ -58,8 +58,8 @@ import javax.swing.KeyStroke;
 
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject;
-import org.openflexo.foundation.action.FlexoActionSource;
 import org.openflexo.foundation.action.FlexoActionFactory;
+import org.openflexo.foundation.action.FlexoActionSource;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.selection.SelectionManager;
 import org.openflexo.view.controller.FlexoController;
@@ -70,13 +70,15 @@ import org.openflexo.view.controller.action.EditionAction;
  * 
  * @author benoit
  */
+@SuppressWarnings("serial")
 public class FlexoMenuItem extends JMenuItem implements FlexoActionSource, PropertyChangeListener {
 
+	@SuppressWarnings("unused")
 	private static final Logger logger = FlexoLogger.getLogger(FlexoMenuItem.class.getPackage().getName());
 
 	private final FlexoController _controller;
 
-	private FlexoActionFactory actionType;
+	private FlexoActionFactory<?, ?, ?> actionType;
 
 	public FlexoMenuItem(FlexoController controller, String unlocalizedMenuName) {
 		super();
@@ -124,7 +126,7 @@ public class FlexoMenuItem extends JMenuItem implements FlexoActionSource, Prope
 		super();
 		this.actionType = actionType;
 		_controller = controller;
-		setAction(new EditionAction(actionType, this));
+		setAction(new EditionAction<>(actionType, this));
 		setText(controller.getModuleLocales().localizedForKey(actionType.getUnlocalizedName(), this));
 	}
 
@@ -150,10 +152,11 @@ public class FlexoMenuItem extends JMenuItem implements FlexoActionSource, Prope
 	/**
 	 * 
 	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public void itemWillShow() {
 		if (actionType instanceof FlexoActionFactory && getSelectionManager() != null) {
 			if (getFocusedObject() == null || getFocusedObject().getActionList().indexOf(actionType) > -1) {
-				setEnabled(actionType.isEnabled(getFocusedObject(), getGlobalSelection()));
+				setEnabled(((FlexoActionFactory) actionType).isEnabled(getFocusedObject(), getGlobalSelection()));
 			}
 			else {
 				setEnabled(false);

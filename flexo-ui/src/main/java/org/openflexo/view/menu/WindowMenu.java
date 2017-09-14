@@ -74,6 +74,7 @@ import org.openflexo.view.controller.model.ControllerModel;
  * 
  * @author sguerin
  */
+@SuppressWarnings("serial")
 public class WindowMenu extends FlexoMenu implements PropertyChangeListener {
 
 	private static final Logger logger = Logger.getLogger(WindowMenu.class.getPackage().getName());
@@ -102,7 +103,7 @@ public class WindowMenu extends FlexoMenu implements PropertyChangeListener {
 	/**
 	 * Hashtable where key is the class object representing module and value a JMenuItem
 	 */
-	private final Map<Module, JMenuItem> moduleMenuItems = new Hashtable<Module, JMenuItem>();
+	private final Map<Module<?>, JMenuItem> moduleMenuItems = new Hashtable<>();
 
 	protected FlexoMenuItem controlPanelItem;
 
@@ -110,7 +111,7 @@ public class WindowMenu extends FlexoMenu implements PropertyChangeListener {
 
 	protected PaletteItem paletteItem;
 
-	public WindowMenu(FlexoController controller, Module module) {
+	public WindowMenu(FlexoController controller, Module<?> module) {
 		super("window", controller);
 		if (logger.isLoggable(Level.FINE)) {
 			logger.fine("Build NEW module menu for " + module.getName());
@@ -353,6 +354,10 @@ public class WindowMenu extends FlexoMenu implements PropertyChangeListener {
 				FlexoController.notify("Cannot load module." + e.getMessage());
 				return;
 			}
+		}
+
+		public JCheckBoxMenuItem getItem() {
+			return menuItem;
 		}
 
 		public void setItem(JCheckBoxMenuItem menuItem) {

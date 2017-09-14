@@ -64,6 +64,7 @@ import org.openflexo.view.controller.model.ControllerModel;
  * 
  * @author sguerin
  */
+@SuppressWarnings("serial")
 public class EditMenu extends FlexoMenu {
 
 	static final Logger logger = Logger.getLogger(EditMenu.class.getPackage().getName());
