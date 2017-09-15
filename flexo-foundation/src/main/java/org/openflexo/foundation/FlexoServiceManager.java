@@ -308,4 +308,8 @@ public abstract class FlexoServiceManager {
 
 	protected abstract ProjectLoader createProjectLoaderService();
 
+	public FlexoEditor getDefaultEditor() {
+		return null;
+	}
+
 }

@@ -44,6 +44,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.openflexo.br.ActivateBugReportServiceTask;
 import org.openflexo.br.BugReportService;
 import org.openflexo.drm.DocResourceManager;
@@ -249,6 +250,11 @@ public abstract class ApplicationContext extends DefaultFlexoServiceManager impl
 		return applicationEditor;
 	}
 
+	@Override
+	public FlexoEditor getDefaultEditor() {
+		return getApplicationEditor();
+	}
+
 	/*
 	public ServerRestService getServerRestService() {
 		if (serverRestService == null) {
@@ -426,4 +432,5 @@ public abstract class ApplicationContext extends DefaultFlexoServiceManager impl
 		new TaskManagerPanel(returned);
 		return returned;
 	}
+
 }
