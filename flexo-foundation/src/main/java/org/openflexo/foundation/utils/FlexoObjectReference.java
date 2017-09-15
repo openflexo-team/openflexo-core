@@ -50,7 +50,7 @@ import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.FlexoProjectObject;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.InnerResourceData;
-import org.openflexo.foundation.KVCFlexoObject;
+import org.openflexo.foundation.converter.FlexoObjectReferenceConverter;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
@@ -65,15 +65,24 @@ import org.openflexo.logging.FlexoLogger;
  * This class manage serialization of a reference of a {@link FlexoObject} againts resource management, retrieving referenced object through
  * access to a resource.
  * 
+ * This serialization is performed using a simple {@link String} decoded by a {@link FlexoObjectReferenceConverter}.
+ * 
+ * Serialization has the form:
+ * 
+ * <pre>
+ *  resourceURI#userId_flexoId
+ * </pre>
+ * 
  * @author sylvain
  * 
  * @param <O>
  *            type of object being referenced by this reference
  */
-public class FlexoObjectReference<O extends FlexoObject> extends KVCFlexoObject implements ResourceLoadingListener, PropertyChangeListener {
+public class FlexoObjectReference<O extends FlexoObject> implements ResourceLoadingListener, PropertyChangeListener {
+
+	// metamodelElementReference="http://onsenfout/ExampleDiagram.diagram#SYL_3"
 
 	private final static String SEPARATOR = "#";
-	private final static String PROJECT_SEPARATOR = "|";
 	private final static String ID_SEPARATOR = "_";
 
 	private static final Logger logger = FlexoLogger.getLogger(FlexoObjectReference.class.getPackage().getName());
@@ -121,65 +130,22 @@ public class FlexoObjectReference<O extends FlexoObject> extends KVCFlexoObject 
 	private boolean deleted = false;
 
 	public FlexoObjectReference(O object) {
-		this.modelObject = object;
 
-		if (this.modelObject != null) {
-			this.modelObject.addToReferencers(this);
-		}
-		this.status = ReferenceStatus.RESOLVED;
+		setObject(object);
 
-		/**
-		 * We also initialize the string representation for the following reason: Let's say the user creates a reference to the given
-		 * <code>object</code> and then later on, the user deletes that <code>object</code> but the reference owner does not remove its
-		 * reference, we will have to serialize this without any data which will be a disaster (we should expect NullPointer,
-		 * ArrayIndexOutOfBounds, etc...
-		 */
-		if (modelObject instanceof InnerResourceData && ((InnerResourceData) modelObject).getResourceData() != null) {
-			if (((InnerResourceData) modelObject).getResourceData().getResource() != null) {
-				this.resourceIdentifier = ((InnerResourceData) modelObject).getResourceData().getResource().getURI();
-			}
-			else {
-				logger.warning("object " + modelObject + " has a resource data (" + ((InnerResourceData) modelObject).getResourceData()
-						+ ") with null resource ");
-			}
-		}
-		else {
-			logger.warning("object " + modelObject + " has no resource data !");
-		}
-		if (modelObject != null) {
-			this.userIdentifier = modelObject.getUserIdentifier();
-			this.objectIdentifier = Long.toString(modelObject.getFlexoID());
-			this.className = modelObject.getClass().getName();
-		}
-
-		if (object instanceof FlexoProjectObject) {
-			setOwner(((FlexoProjectObject) object).getProject());
-		}
-		else if (object instanceof InnerResourceData) {
-			ResourceData resourceData = ((InnerResourceData) object).getResourceData();
-			if (resourceData != null) {
-				setOwner(resourceData.getResource());
-			}
-		}
-		else {
-			logger.warning("Could not find any Reference owner for " + object);
-		}
 	}
 
 	@Override
 	public String toString() {
-		return "FlexoModelObjectReference resource=" + resourceIdentifier + " modelObject=" + modelObject + " status=" + status + " owner="
+		return "FlexoObjectReference resource=" + resourceIdentifier + " modelObject=" + modelObject + " status=" + status + " owner="
 				+ owner + " userIdentifier=" + userIdentifier + " className=" + className + " flexoID=" + objectIdentifier;
 	}
 
 	public FlexoObjectReference(String identifier, ReferenceOwner owner) {
+		System.out.println("On cree une reference pour " + identifier + " and " + owner);
 		setOwner(owner);
 		try {
 			String modelObjectIdentifier = identifier;
-			int indexOf = modelObjectIdentifier.indexOf(PROJECT_SEPARATOR);
-			if (indexOf > 0) {
-				modelObjectIdentifier = modelObjectIdentifier.substring(indexOf + PROJECT_SEPARATOR.length());
-			}
 			String[] s = modelObjectIdentifier.split(SEPARATOR);
 			this.resourceIdentifier = s[0];
 			this.userIdentifier = s[1].substring(0, s[1].lastIndexOf(ID_SEPARATOR));
@@ -213,6 +179,57 @@ public class FlexoObjectReference<O extends FlexoObject> extends KVCFlexoObject 
 
 	public O getObject() {
 		return getObject(false);
+	}
+
+	public void setObject(O object) {
+		if (modelObject != null) {
+			modelObject.removeFromReferencers(this);
+		}
+		/*if (owner != null) {
+			owner.objectDeleted(this);
+		}*/
+
+		this.modelObject = object;
+
+		if (this.modelObject != null) {
+			this.modelObject.addToReferencers(this);
+		}
+		this.status = ReferenceStatus.RESOLVED;
+
+		/**
+		 * We also initialize the string representation for the following reason: Let's say the user creates a reference to the given
+		 * <code>object</code> and then later on, the user deletes that <code>object</code> but the reference owner does not remove its
+		 * reference, we will have to serialize this without any data which will be a disaster (we should expect NullPointer,
+		 * ArrayIndexOutOfBounds, etc...
+		 */
+		if (modelObject instanceof InnerResourceData && ((InnerResourceData) modelObject).getResourceData() != null) {
+			if (((InnerResourceData) modelObject).getResourceData().getResource() != null) {
+				this.resourceIdentifier = ((InnerResourceData) modelObject).getResourceData().getResource().getURI();
+			}
+			else {
+				logger.warning("object " + modelObject + " has a resource data (" + ((InnerResourceData) modelObject).getResourceData()
+						+ ") with null resource ");
+			}
+		}
+		else {
+			logger.warning("object " + modelObject + " has no resource data !");
+		}
+		if (modelObject != null) {
+			this.userIdentifier = modelObject.getUserIdentifier();
+			this.objectIdentifier = Long.toString(modelObject.getFlexoID());
+			this.className = modelObject.getClass().getName();
+		}
+
+		if (object instanceof InnerResourceData) {
+			ResourceData resourceData = ((InnerResourceData) object).getResourceData();
+			if (resourceData != null) {
+				setOwner(resourceData.getResource());
+			}
+		}
+		else {
+			logger.warning("Could not find any Reference owner for " + object);
+		}
+
 	}
 
 	public String getClassName() {
@@ -414,13 +431,9 @@ public class FlexoObjectReference<O extends FlexoObject> extends KVCFlexoObject 
 		return result.toString();
 	}
 
-	public static String constructSerializationRepresentation(String projectURI, String resourceURI, String userIdentifier, String objectId,
+	public static String constructSerializationRepresentation(String resourceURI, String userIdentifier, String objectId,
 			String className) {
 		StringBuilder result = new StringBuilder();
-		if (projectURI != null) {
-			result.append(projectURI);
-			result.append(PROJECT_SEPARATOR);
-		}
 		result.append(resourceURI);
 		result.append(SEPARATOR);
 		result.append(userIdentifier);

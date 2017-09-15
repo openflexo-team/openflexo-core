@@ -56,7 +56,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoServiceManager;
-import org.openflexo.foundation.converter.FlexoObjectReferenceConverter;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.VirtualModelRepository;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
@@ -64,7 +63,6 @@ import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceRepository;
 import org.openflexo.foundation.resource.DirectoryBasedJarIODelegate.DirectoryBasedJarIODelegateImpl;
 import org.openflexo.foundation.resource.InJarIODelegate.InJarIODelegateImpl;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
-import org.openflexo.foundation.utils.FlexoObjectReference;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.Implementation;
 import org.openflexo.model.annotations.ModelEntity;
@@ -740,47 +738,6 @@ public class JarResourceCenter extends ResourceRepository<FlexoResource<?>, InJa
 		else {
 			return null;
 		}
-	}
-
-	/*
-	 * ReferenceOwner default implementation => does nothing
-	 * @see org.openflexo.foundation.utils.FlexoObjectReference.ReferenceOwner#notifyObjectLoaded(org.openflexo.foundation.utils.FlexoObjectReference)
-	 */
-
-	@Override
-	public void notifyObjectLoaded(FlexoObjectReference<?> reference) {
-		// logger.warning("TODO: implement this");
-	}
-
-	@Override
-	public void objectCantBeFound(FlexoObjectReference<?> reference) {
-		logger.warning("TODO: implement this");
-	}
-
-	@Override
-	public void objectSerializationIdChanged(FlexoObjectReference<?> reference) {
-		setChanged();
-	}
-
-	@Override
-	public void objectDeleted(FlexoObjectReference<?> reference) {
-		logger.warning("TODO: implement this");
-	}
-
-	/**
-	 * access to ObjectReference Converter used to translate strings to ObjectReference
-	 */
-
-	protected FlexoObjectReferenceConverter objectReferenceConverter = new FlexoObjectReferenceConverter(this);
-
-	@Override
-	public FlexoObjectReferenceConverter getObjectReferenceConverter() {
-		return objectReferenceConverter;
-	}
-
-	@Override
-	public void setObjectReferenceConverter(FlexoObjectReferenceConverter objectReferenceConverter) {
-		this.objectReferenceConverter = objectReferenceConverter;
 	}
 
 	@Override

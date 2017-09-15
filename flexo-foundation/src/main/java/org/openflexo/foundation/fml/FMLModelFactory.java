@@ -48,6 +48,7 @@ import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.PamelaResourceModelFactory;
 import org.openflexo.foundation.action.FlexoUndoManager;
+import org.openflexo.foundation.converter.FlexoObjectReferenceConverter;
 import org.openflexo.foundation.fml.annotations.DeclareEditionActions;
 import org.openflexo.foundation.fml.annotations.DeclareFetchRequests;
 import org.openflexo.foundation.fml.annotations.DeclareFlexoBehaviourParameters;
@@ -128,6 +129,7 @@ public class FMLModelFactory extends FGEModelFactoryImpl implements PamelaResour
 	private FlexoUndoManager undoManager = null;
 
 	private TypeConverter typeConverter;
+	private FlexoObjectReferenceConverter referenceConverter;
 
 	// TODO: the factory should be instantiated and managed by the ProjectNatureService, which should react to the registering
 	// of a new TA, and which is responsible to update the VirtualModelFactory of all VirtualModelResource
@@ -146,6 +148,7 @@ public class FMLModelFactory extends FGEModelFactoryImpl implements PamelaResour
 		addConverter(new DataBindingConverter());
 		addConverter(new FlexoVersionConverter());
 		addConverter(relativePathResourceConverter = new RelativePathResourceConverter(null));
+		addConverter(referenceConverter = new FlexoObjectReferenceConverter(serviceManager.getResourceManager()));
 		this.virtualModelResource = virtualModelResource;
 		if (virtualModelResource != null && virtualModelResource.getIODelegate() != null
 				&& virtualModelResource.getIODelegate().getSerializationArtefactAsResource() != null) {
@@ -636,6 +639,14 @@ public class FMLModelFactory extends FGEModelFactoryImpl implements PamelaResour
 			FMLLocalizedDictionary localizedDictionary = newInstance(FMLLocalizedDictionary.class);
 			((VirtualModel) newlyCreatedObject).setLocalizedDictionary(localizedDictionary);
 		}
+	}
+
+	public TypeConverter getTypeConverter() {
+		return typeConverter;
+	}
+
+	public FlexoObjectReferenceConverter getReferenceConverter() {
+		return referenceConverter;
 	}
 
 }

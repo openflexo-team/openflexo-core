@@ -39,36 +39,31 @@
 package org.openflexo.foundation.converter;
 
 import org.openflexo.foundation.FlexoObject;
-import org.openflexo.foundation.FlexoProject;
-import org.openflexo.foundation.resource.FlexoResourceCenter;
+import org.openflexo.foundation.resource.ResourceManager;
 import org.openflexo.foundation.utils.FlexoObjectReference;
 import org.openflexo.model.StringConverterLibrary.Converter;
 import org.openflexo.model.factory.ModelFactory;
 
 /**
- * String converter from/to {@link FlexoObjectReference} objects
+ * String converter from/to {@link FlexoObjectReference} objects<br>
+ * 
+ * This should be the way to reference an object in another resource
  * 
  * @author sylvain
  * 
  */
-
-// TODO: must be refactored in order to be used by the ServiceManager to provide resource retreiving
-
 public class FlexoObjectReferenceConverter extends Converter<FlexoObjectReference<?>> {
 
-	/**
-	 * 
-	 */
-	private final FlexoResourceCenter<?> rc;
+	private ResourceManager resourceManager;
 
-	public FlexoObjectReferenceConverter(FlexoResourceCenter<?> rc) {
+	public FlexoObjectReferenceConverter(ResourceManager resourceManager) {
 		super(FlexoObjectReference.class);
-		this.rc = rc;
+		this.resourceManager = resourceManager;
 	}
 
 	@Override
 	public FlexoObjectReference<?> convertFromString(String value, ModelFactory factory) {
-		return new FlexoObjectReference<FlexoObject>(value, this.rc);
+		return new FlexoObjectReference<FlexoObject>(value, resourceManager);
 	}
 
 	@Override

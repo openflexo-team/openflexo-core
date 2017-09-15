@@ -218,12 +218,11 @@ public interface FlexoObject extends AccessibleProxyObject, DeletableProxyObject
 
 	default String getReferenceForSerialization(boolean serializeClassName) {
 		if (this instanceof InnerResourceData) {
-			ResourceData resourceData = ((InnerResourceData) this).getResourceData();
+			ResourceData<?> resourceData = ((InnerResourceData<?>) this).getResourceData();
 			if (resourceData != null && resourceData.getResource() != null) {
-				FlexoResource resource = resourceData.getResource();
-				return FlexoObjectReference.constructSerializationRepresentation(
-						this instanceof FlexoProjectObject ? ((FlexoProjectObject) this).getProject().getURI() : null, resource.getURI(),
-						getUserIdentifier(), Long.toString(getFlexoID()), serializeClassName ? getClass().getName() : null);
+				FlexoResource<?> resource = resourceData.getResource();
+				return FlexoObjectReference.constructSerializationRepresentation(resource.getURI(), getUserIdentifier(),
+						Long.toString(getFlexoID()), serializeClassName ? getClass().getName() : null);
 			}
 		}
 		return null;
@@ -241,12 +240,12 @@ public interface FlexoObject extends AccessibleProxyObject, DeletableProxyObject
 		/**
 		 * A map that stores the different declared actions for each class
 		 */
-		private static final Map<Class, List<FlexoActionFactory<?, ?, ?>>> _declaredActionsForClass = new LinkedHashMap<>();
+		private static final Map<Class<?>, List<FlexoActionFactory<?, ?, ?>>> _declaredActionsForClass = new LinkedHashMap<>();
 
 		/**
 		 * A map that stores all the actions for each class (computed with the inheritance of each class)
 		 */
-		private static final Hashtable<Class, List<FlexoActionFactory<?, ?, ?>>> _actionListForClass = new Hashtable<Class, List<FlexoActionFactory<?, ?, ?>>>();
+		private static final Hashtable<Class<?>, List<FlexoActionFactory<?, ?, ?>>> _actionListForClass = new Hashtable<>();
 
 		private final List<FlexoObjectReference<?>> referencers;
 
@@ -604,7 +603,7 @@ public interface FlexoObject extends AccessibleProxyObject, DeletableProxyObject
 			}
 
 			if (_actionListForClass != null) {
-				List<Class> entriesToRemove = new ArrayList<Class>();
+				List<Class<?>> entriesToRemove = new ArrayList<>();
 				for (Class<?> aClass : _actionListForClass.keySet()) {
 					if (objectClass.isAssignableFrom(aClass)) {
 						entriesToRemove.add(aClass);
@@ -630,7 +629,7 @@ public interface FlexoObject extends AccessibleProxyObject, DeletableProxyObject
 
 		private static <T extends FlexoObject> List<FlexoActionFactory<?, ?, ?>> updateActionListFor(Class<T> aClass) {
 			List<FlexoActionFactory<?, ?, ?>> newActionList = new ArrayList<FlexoActionFactory<?, ?, ?>>();
-			for (Map.Entry<Class, List<FlexoActionFactory<?, ?, ?>>> e : _declaredActionsForClass.entrySet()) {
+			for (Map.Entry<Class<?>, List<FlexoActionFactory<?, ?, ?>>> e : _declaredActionsForClass.entrySet()) {
 				if (e.getKey().isAssignableFrom(aClass)) {
 					newActionList.addAll(e.getValue());
 				}
@@ -701,7 +700,7 @@ public interface FlexoObject extends AccessibleProxyObject, DeletableProxyObject
 		@Override
 		public Collection<? extends Validable> getEmbeddedValidableObjects() {
 			// System.out.println("> Compute getEmbeddedValidableObjects() for " + this.getClass() + " : " + this);
-			PamelaResource resource = getPamelaResource();
+			PamelaResource<?, ?> resource = getPamelaResource();
 			if (resource != null) {
 				List<?> embeddedObjects = resource.getFactory().getEmbeddedObjects(this, EmbeddingType.CLOSURE);
 				List<Validable> returned = new ArrayList<Validable>();
@@ -716,17 +715,17 @@ public interface FlexoObject extends AccessibleProxyObject, DeletableProxyObject
 			return null;
 		}
 
-		private PamelaResource getPamelaResource() {
-			ResourceData data = null;
+		private PamelaResource<?, ?> getPamelaResource() {
+			ResourceData<?> data = null;
 			if (this instanceof InnerResourceData) {
-				data = ((InnerResourceData) this).getResourceData();
+				data = ((InnerResourceData<?>) this).getResourceData();
 			}
 			if (this instanceof ResourceData) {
-				data = (ResourceData) this;
+				data = (ResourceData<?>) this;
 			}
 
 			if (data != null && data.getResource() instanceof PamelaResource) {
-				return (PamelaResource) data.getResource();
+				return (PamelaResource<?, ?>) data.getResource();
 			}
 
 			return null;
@@ -829,7 +828,7 @@ public interface FlexoObject extends AccessibleProxyObject, DeletableProxyObject
 		 */
 		@Override
 		public long obtainNewFlexoID() {
-			PamelaResource resource = getPamelaResource();
+			PamelaResource<?, ?> resource = getPamelaResource();
 			if (resource != null) {
 				flexoID = resource.getNewFlexoID();
 				resource.register(this);
@@ -852,7 +851,7 @@ public interface FlexoObject extends AccessibleProxyObject, DeletableProxyObject
 				// FD : seems unused
 				// long oldId = this.flexoID;
 				this.flexoID = flexoID;
-				PamelaResource resource = getPamelaResource();
+				PamelaResource<?, ?> resource = getPamelaResource();
 				if (resource != null) {
 					// TODO sets last id of resource ?
 				}
@@ -862,12 +861,12 @@ public interface FlexoObject extends AccessibleProxyObject, DeletableProxyObject
 		@Override
 		public Class<?> getImplementedInterface() {
 			if (this instanceof ResourceData && ((ResourceData<?>) this).getResource() instanceof PamelaResource) {
-				ModelFactory f = ((PamelaResource) ((ResourceData<?>) this).getResource()).getFactory();
+				ModelFactory f = ((PamelaResource<?, ?>) ((ResourceData<?>) this).getResource()).getFactory();
 				return f.getModelEntityForInstance(this).getImplementedInterface();
 			}
 			if (this instanceof InnerResourceData && ((InnerResourceData<?>) this).getResourceData() != null
 					&& ((InnerResourceData<?>) this).getResourceData().getResource() instanceof PamelaResource) {
-				ModelFactory f = ((PamelaResource) ((InnerResourceData<?>) this).getResourceData().getResource()).getFactory();
+				ModelFactory f = ((PamelaResource<?, ?>) ((InnerResourceData<?>) this).getResourceData().getResource()).getFactory();
 				return f.getModelEntityForInstance(this).getImplementedInterface();
 			}
 			return getClass();

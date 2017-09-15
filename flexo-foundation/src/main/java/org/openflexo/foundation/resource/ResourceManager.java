@@ -63,6 +63,8 @@ import org.openflexo.foundation.technologyadapter.ModelRepository;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterResourceRepository;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
+import org.openflexo.foundation.utils.FlexoObjectReference;
+import org.openflexo.foundation.utils.FlexoObjectReference.ReferenceOwner;
 import org.openflexo.toolbox.FileUtils;
 import org.openflexo.toolbox.FlexoVersion;
 
@@ -95,7 +97,7 @@ import org.openflexo.toolbox.FlexoVersion;
  * @author sylvain
  * 
  */
-public class ResourceManager extends FlexoServiceImpl implements FlexoService {
+public class ResourceManager extends FlexoServiceImpl implements FlexoService, ReferenceOwner {
 
 	protected static final Logger logger = Logger.getLogger(ResourceManager.class.getPackage().getName());
 
@@ -444,6 +446,30 @@ public class ResourceManager extends FlexoServiceImpl implements FlexoService {
 			return getServiceManager().getTechnologyAdapterService().getAllMetaModelRepositories(technologyAdapter);
 		}
 		return null;
+	}
+
+	@Override
+	public void notifyObjectLoaded(FlexoObjectReference<?> reference) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void objectCantBeFound(FlexoObjectReference<?> reference) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void objectDeleted(FlexoObjectReference<?> reference) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void objectSerializationIdChanged(FlexoObjectReference<?> reference) {
+		// TODO Auto-generated method stub
+
 	}
 
 }

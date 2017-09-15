@@ -78,7 +78,6 @@ import org.openflexo.foundation.task.Progress;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.utils.FlexoObjectIDManager;
 import org.openflexo.foundation.utils.FlexoObjectReference;
-import org.openflexo.foundation.utils.FlexoObjectReference.ReferenceOwner;
 import org.openflexo.foundation.utils.FlexoProgress;
 import org.openflexo.foundation.utils.ProjectInitializerException;
 import org.openflexo.foundation.utils.ProjectLoadingCancelledException;
@@ -114,8 +113,7 @@ import org.openflexo.toolbox.ZipUtils;
  * 
  * @author sguerin
  */
-public class FlexoProject extends FileSystemBasedResourceCenter
-		/*ResourceRepository<FlexoResource<?>>*/ implements Validable, ResourceData<FlexoProject>, ReferenceOwner {
+public class FlexoProject extends FileSystemBasedResourceCenter implements Validable, ResourceData<FlexoProject> {
 
 	protected static final Logger logger = Logger.getLogger(FlexoProject.class.getPackage().getName());
 

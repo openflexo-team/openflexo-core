@@ -49,7 +49,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import org.openflexo.foundation.FlexoObject;
-import org.openflexo.foundation.converter.FlexoObjectReferenceConverter;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelRepository;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
@@ -59,7 +58,6 @@ import org.openflexo.foundation.resource.JarResourceCenter.JarResourceCenterEntr
 import org.openflexo.foundation.resource.RemoteResourceCenter.RemoteResourceCenterEntry;
 import org.openflexo.foundation.task.Progress;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
-import org.openflexo.foundation.utils.FlexoObjectReference.ReferenceOwner;
 import org.openflexo.model.annotations.Import;
 import org.openflexo.model.annotations.Imports;
 import org.openflexo.model.annotations.ModelEntity;
@@ -78,7 +76,7 @@ import org.openflexo.xml.XMLRootElementInfo;
  * 
  */
 @ModelEntity
-public interface FlexoResourceCenter<I> extends Iterable<I>, FlexoObject, ReferenceOwner {
+public interface FlexoResourceCenter<I> extends Iterable<I>, FlexoObject {
 
 	String DEFAULT_BASE_URI = "defaultBaseURI";
 
@@ -510,24 +508,6 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, FlexoObject, Refere
 	Properties getProperties(I directory) throws IOException;
 
 	List<String> getPathTo(I serializationArtefact) throws IOException;
-
-	// TODO: must be refactored because it is from the responsability of the servicemanager
-	/**
-	 * the ObjectReferenceConverter is used when de-serializing resources that contains a reference to another FlexoObject (URI) Typically
-	 * for FMLRTVirtualModelInstance referencing resources via ModelSlots
-	 * 
-	 * @return
-	 */
-	FlexoObjectReferenceConverter getObjectReferenceConverter();
-
-	/**
-	 * the ObjectReferenceConverter is used when de-serializing resources that contains a reference to another FlexoObject (URI) Typically
-	 * for FMLRTVirtualModelInstance referencing resources via ModelSlots
-	 * 
-	 * @param objectReferenceConverter
-	 * @return
-	 */
-	void setObjectReferenceConverter(FlexoObjectReferenceConverter objectReferenceConverter);
 
 	public RepositoryFolder<?, I> getRootFolder();
 

@@ -42,6 +42,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.openflexo.foundation.DefaultPamelaResourceModelFactory;
+import org.openflexo.foundation.converter.FlexoObjectReferenceConverter;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.annotations.DeclareActorReferences;
 import org.openflexo.foundation.fml.rt.rm.AbstractVirtualModelInstanceResource;
@@ -66,23 +67,20 @@ public abstract class AbstractVirtualModelInstanceModelFactory<R extends Abstrac
 	private RelativePathResourceConverter relativePathResourceConverter;
 
 	public AbstractVirtualModelInstanceModelFactory(R virtualModelInstanceResource,
-			Class<? extends VirtualModelInstance<?, ?>> baseVMIClass, EditingContext editingContext,
-			TechnologyAdapterService taService) throws ModelDefinitionException {
+			Class<? extends VirtualModelInstance<?, ?>> baseVMIClass, EditingContext editingContext, TechnologyAdapterService taService)
+			throws ModelDefinitionException {
 
 		super(virtualModelInstanceResource, allClassesForModelContext(baseVMIClass, taService));
 		setEditingContext(editingContext);
 		addConverter(new DataBindingConverter());
 		addConverter(new FlexoVersionConverter());
+		addConverter(new FlexoObjectReferenceConverter(taService.getServiceManager().getResourceManager()));
 
 		addConverter(relativePathResourceConverter = new RelativePathResourceConverter(null));
 		if (virtualModelInstanceResource != null && virtualModelInstanceResource.getIODelegate() != null
 				&& virtualModelInstanceResource.getIODelegate().getSerializationArtefactAsResource() != null) {
 			relativePathResourceConverter
 					.setContainerResource(virtualModelInstanceResource.getIODelegate().getSerializationArtefactAsResource().getContainer());
-		}
-
-		if (virtualModelInstanceResource != null) {
-			addConverter(virtualModelInstanceResource.getResourceCenter().getObjectReferenceConverter());
 		}
 
 	}
