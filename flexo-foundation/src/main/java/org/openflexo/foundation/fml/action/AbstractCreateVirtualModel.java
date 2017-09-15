@@ -50,7 +50,6 @@ import java.util.logging.Logger;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject;
-import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FlexoBehaviour;
@@ -74,7 +73,7 @@ import org.openflexo.toolbox.StringUtils;
  * @author sylvain
  * 
  */
-public abstract class AbstractCreateVirtualModel<A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FMLObject>
+public abstract class AbstractCreateVirtualModel<A extends AbstractCreateVirtualModel<A, T1, T2>, T1 extends FlexoObject, T2 extends FMLObject>
 		extends AbstractCreateFlexoConcept<A, T1, T2> {
 
 	private static final Logger logger = Logger.getLogger(AbstractCreateVirtualModel.class.getPackage().getName());

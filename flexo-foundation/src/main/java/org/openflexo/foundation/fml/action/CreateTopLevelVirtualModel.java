@@ -73,7 +73,8 @@ public class CreateTopLevelVirtualModel
 	private static final Logger logger = Logger.getLogger(CreateTopLevelVirtualModel.class.getPackage().getName());
 
 	public static FlexoActionFactory<CreateTopLevelVirtualModel, RepositoryFolder<VirtualModelResource, ?>, FMLObject> actionType = new FlexoActionFactory<CreateTopLevelVirtualModel, RepositoryFolder<VirtualModelResource, ?>, FMLObject>(
-			"create_virtual_model", FlexoActionFactory.newMenu, FlexoActionFactory.defaultGroup, FlexoActionFactory.ADD_ACTION_TYPE) {
+			"create_virtual_model", FlexoActionFactory.newVirtualModelMenu, FlexoActionFactory.defaultGroup,
+			FlexoActionFactory.ADD_ACTION_TYPE) {
 
 		/**
 		 * Factory method
