@@ -68,7 +68,7 @@ public abstract class TechnologyContextManager<TA extends TechnologyAdapter> ext
 	private final FlexoResourceCenterService resourceCenterService;
 
 	/** Stores all known resources where key is the URI of resource */
-	protected Map<String, TechnologyAdapterResource<?, TA>> resources = new HashMap<String, TechnologyAdapterResource<?, TA>>();
+	protected Map<String, TechnologyAdapterResource<?, TA>> resources = new HashMap<>();
 
 	public TechnologyContextManager(TA adapter, FlexoResourceCenterService resourceCenterService) {
 		this.adapter = adapter;

@@ -127,7 +127,7 @@ public interface IterationAction extends AbstractIterationAction {
 		@Override
 		public DataBinding<List<?>> getIteration() {
 			if (iteration == null) {
-				iteration = new DataBinding<List<?>>(this, List.class, BindingDefinitionType.GET);
+				iteration = new DataBinding<>(this, List.class, BindingDefinitionType.GET);
 			}
 			return iteration;
 		}
@@ -280,12 +280,10 @@ public interface IterationAction extends AbstractIterationAction {
 		@Override
 		public ValidationIssue<IterationActionMustDefineAValidIteration, IterationAction> applyValidation(IterationAction action) {
 			if (action.getIterationAction() == null) {
-				return new ValidationError<IterationActionMustDefineAValidIteration, IterationAction>(this, action,
-						"iteration_action_does_not_define_a_valid_iteration");
+				return new ValidationError<>(this, action, "iteration_action_does_not_define_a_valid_iteration");
 			}
 			if (!action.getIterationAction().isIterable()) {
-				return new ValidationError<IterationActionMustDefineAValidIteration, IterationAction>(this, action,
-						"iteration_action_is_not_iterable");
+				return new ValidationError<>(this, action, "iteration_action_is_not_iterable");
 			}
 
 			return null;

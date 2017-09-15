@@ -111,7 +111,7 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 	public FlexoBehaviourAction(FlexoBehaviourActionFactory<A, FB, O> actionFactory, O focusedObject,
 			List<VirtualModelInstanceObject> globalSelection, FlexoEditor editor) {
 		super(actionFactory, focusedObject, globalSelection, editor);
-		variables = new Hashtable<String, Object>();
+		variables = new Hashtable<>();
 		parameterValues = new ParameterValues();
 	}
 

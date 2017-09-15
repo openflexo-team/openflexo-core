@@ -137,7 +137,7 @@ public class FMLRTTechnologyAdapter extends TechnologyAdapter {
 		FMLRTVirtualModelInstanceRepository<I> returned = resourceCenter.retrieveRepository(FMLRTVirtualModelInstanceRepository.class,
 				this);
 		if (returned == null) {
-			returned = new FMLRTVirtualModelInstanceRepository<I>(this, resourceCenter);
+			returned = new FMLRTVirtualModelInstanceRepository<>(this, resourceCenter);
 			resourceCenter.registerRepository(returned, FMLRTVirtualModelInstanceRepository.class, this);
 		}
 		return returned;

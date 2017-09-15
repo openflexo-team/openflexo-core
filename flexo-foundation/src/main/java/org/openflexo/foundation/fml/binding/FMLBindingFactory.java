@@ -100,15 +100,15 @@ public class FMLBindingFactory extends JavaBindingFactory {
 	private final Map<BindingPathElement, BehavioursForConcepts> flexoBehaviourPathElements;
 
 	public FMLBindingFactory(VirtualModel virtualModel) {
-		storedBindingPathElements = new HashMap<BindingPathElement, Map<Object, SimplePathElement>>();
-		flexoBehaviourPathElements = new HashMap<BindingPathElement, BehavioursForConcepts>();
+		storedBindingPathElements = new HashMap<>();
+		flexoBehaviourPathElements = new HashMap<>();
 		this.virtualModel = virtualModel;
 	}
 
 	protected SimplePathElement getSimplePathElement(Object object, BindingPathElement parent) {
 		Map<Object, SimplePathElement> storedValues = storedBindingPathElements.get(parent);
 		if (storedValues == null) {
-			storedValues = new HashMap<Object, SimplePathElement>();
+			storedValues = new HashMap<>();
 			storedBindingPathElements.put(parent, storedValues);
 		}
 		SimplePathElement returned = storedValues.get(object);
@@ -158,7 +158,7 @@ public class FMLBindingFactory extends JavaBindingFactory {
 			}
 
 			if (pType instanceof FlexoBehaviourParametersType) {
-				List<SimplePathElement> returned = new ArrayList<SimplePathElement>();
+				List<SimplePathElement> returned = new ArrayList<>();
 				FlexoBehaviour es = ((FlexoBehaviourParametersType) pType).getFlexoBehaviour();
 				for (FlexoBehaviourParameter p : es.getParameters()) {
 					returned.add(getSimplePathElement(p, parent));
@@ -167,7 +167,7 @@ public class FMLBindingFactory extends JavaBindingFactory {
 				return returned;
 			}
 			else if (pType instanceof FlexoBehaviourParametersValuesType) {
-				List<SimplePathElement> returned = new ArrayList<SimplePathElement>();
+				List<SimplePathElement> returned = new ArrayList<>();
 				FlexoBehaviour es = ((FlexoBehaviourParametersValuesType) pType).getFlexoBehaviour();
 				for (FlexoBehaviourParameter p : es.getParameters()) {
 					returned.add(getSimplePathElement(p, parent));
@@ -176,7 +176,7 @@ public class FMLBindingFactory extends JavaBindingFactory {
 				return returned;
 			}
 			else if (pType instanceof FlexoConceptInstanceType) {
-				List<SimplePathElement> returned = new ArrayList<SimplePathElement>();
+				List<SimplePathElement> returned = new ArrayList<>();
 				FlexoConcept concept = ((FlexoConceptInstanceType) pType).getFlexoConcept();
 
 				if (concept != null) {
@@ -203,7 +203,7 @@ public class FMLBindingFactory extends JavaBindingFactory {
 				return returned;
 			}
 			else if (pType instanceof FlexoBehaviourType) {
-				List<SimplePathElement> returned = new ArrayList<SimplePathElement>();
+				List<SimplePathElement> returned = new ArrayList<>();
 				FlexoBehaviour flexoBehaviour = ((FlexoBehaviourType) pType).getFlexoBehaviour();
 				returned.add(new FlexoBehaviourParametersValuesPathElement(parent, flexoBehaviour));
 				returned.add(new FlexoBehaviourParametersDefinitionsPathElement(parent, flexoBehaviour));
@@ -213,7 +213,7 @@ public class FMLBindingFactory extends JavaBindingFactory {
 				return returned;
 			}
 			else if (pType instanceof FlexoBehaviourActionType) {
-				List<SimplePathElement> returned = new ArrayList<SimplePathElement>();
+				List<SimplePathElement> returned = new ArrayList<>();
 				FlexoBehaviour flexoBehaviour = ((FlexoBehaviourActionType) pType).getFlexoBehaviour();
 				returned.add(new FlexoBehaviourParametersValuesPathElement(parent, flexoBehaviour));
 				returned.add(new FlexoBehaviourParametersDefinitionsPathElement(parent, flexoBehaviour));
@@ -312,7 +312,7 @@ public class FMLBindingFactory extends JavaBindingFactory {
 		}
 
 		if (returned == null || forceUpdate) {
-			returned = new ArrayList<FlexoBehaviourPathElement>();
+			returned = new ArrayList<>();
 			if (concept != null) {
 				for (AbstractActionScheme as : concept.getAccessibleAbstractActionSchemes()) {
 					returned.add(new FlexoBehaviourPathElement(parent, as, null));

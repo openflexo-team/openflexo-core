@@ -135,7 +135,7 @@ public interface MatchingCriteria extends FlexoConceptObject, Bindable {
 		@Override
 		public DataBinding<?> getValue() {
 			if (value == null) {
-				value = new DataBinding<Object>(this, getFlexoProperty() != null ? getFlexoProperty().getResultingType() : Object.class,
+				value = new DataBinding<>(this, getFlexoProperty() != null ? getFlexoProperty().getResultingType() : Object.class,
 						DataBinding.BindingDefinitionType.GET);
 				value.setBindingName(getFlexoProperty() != null ? getFlexoProperty().getName() : "param");
 			}
@@ -168,7 +168,8 @@ public interface MatchingCriteria extends FlexoConceptObject, Bindable {
 					logger.warning("Required parameter missing: " + param + ", some strange behaviour may happen from now...");
 				}*/
 				return null;
-			} else if (getValue().isValid()) {
+			}
+			else if (getValue().isValid()) {
 				try {
 					return getValue().getBindingValue(evaluationContext);
 				} catch (TypeMismatchException e) {
@@ -179,7 +180,8 @@ public interface MatchingCriteria extends FlexoConceptObject, Bindable {
 					e.printStackTrace();
 				}
 				return null;
-			} else {
+			}
+			else {
 				logger.warning("Invalid binding: " + getValue() + " Reason: " + getValue().invalidBindingReason());
 			}
 			return null;

@@ -235,7 +235,7 @@ public abstract interface TechnologySpecificAction<MS extends ModelSlot<?>, R ex
 
 		@Deprecated
 		private List<ModelSlot<?>> findAvailableModelSlots(List<ModelSlot<?>> msList) {
-			List<ModelSlot<?>> returned = new ArrayList<ModelSlot<?>>();
+			List<ModelSlot<?>> returned = new ArrayList<>();
 			if (msList == null) {
 				msList = getAllAvailableModelSlots();
 			}

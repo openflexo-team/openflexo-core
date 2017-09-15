@@ -82,7 +82,7 @@ public abstract class FlexoServiceManager {
 	private final ArrayList<FlexoService> registeredServices;
 
 	public FlexoServiceManager() {
-		registeredServices = new ArrayList<FlexoService>();
+		registeredServices = new ArrayList<>();
 	}
 
 	/*@Override

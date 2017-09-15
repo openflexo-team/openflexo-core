@@ -38,13 +38,14 @@
 
 package org.openflexo.foundation;
 
-import java.awt.*;
+import java.awt.Event;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.FlexoUndoManager;
@@ -178,7 +179,7 @@ public class FlexoEditingContext extends EditingContextImpl implements FlexoServ
 		// logger.info("%%%%%%%%% registerPasteHandler " + pasteHandler + " for " + pasteHandler.getPastingPointHolderType());
 		List<PasteHandler<?>> handlersList = pasteHandlers.get(pasteHandler.getPastingPointHolderType());
 		if (handlersList == null) {
-			handlersList = new ArrayList<PasteHandler<?>>();
+			handlersList = new ArrayList<>();
 			pasteHandlers.put(pasteHandler.getPastingPointHolderType(), handlersList);
 		}
 		if (!handlersList.contains(pasteHandler)) {
@@ -238,8 +239,8 @@ public class FlexoEditingContext extends EditingContextImpl implements FlexoServ
 
 				PastingContext potentialPastingContext = h.retrievePastingContext(focusedObject, globalSelection, getClipboard(), event);
 
-				boolean correctlyTyped = potentialPastingContext == null ||
-						h.getPastingPointHolderType().isInstance(potentialPastingContext.getPastingPointHolder());
+				boolean correctlyTyped = potentialPastingContext == null
+						|| h.getPastingPointHolderType().isInstance(potentialPastingContext.getPastingPointHolder());
 				if (correctlyTyped && h.isPastable(clipboard, potentialPastingContext)) {
 					// System.out.println("OK, this is pastable...");
 
@@ -249,7 +250,7 @@ public class FlexoEditingContext extends EditingContextImpl implements FlexoServ
 						// System.out.println("Found PasteHandler " + h + " for " + focusedObject);
 						List<PasteHandler<?>> l = matchingHandlers.get(h.getPastingPointHolderType());
 						if (l == null) {
-							l = new ArrayList<PasteHandler<?>>();
+							l = new ArrayList<>();
 							matchingHandlers.put(h.getPastingPointHolderType(), l);
 						}
 						l.add(h);

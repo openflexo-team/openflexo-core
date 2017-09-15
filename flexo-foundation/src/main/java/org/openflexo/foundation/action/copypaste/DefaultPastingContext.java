@@ -17,7 +17,7 @@ public class DefaultPastingContext<T extends FlexoObject> implements PastingCont
 
 	private final T pastingPointHolder;
 	private final Event event;
-	private final Map<String, String> pasteProperties = new HashMap<String, String>();
+	private final Map<String, String> pasteProperties = new HashMap<>();
 
 	public DefaultPastingContext(T holder, Event event) {
 		this.pastingPointHolder = holder;

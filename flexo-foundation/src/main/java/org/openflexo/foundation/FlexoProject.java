@@ -335,14 +335,14 @@ public class FlexoProject extends FileSystemBasedResourceCenter implements Valid
 		super(aProjectDirectory, serviceManager.getResourceCenterService());
 		this.serviceManager = serviceManager;
 
-		editors = new Vector<FlexoEditor>();
+		editors = new Vector<>();
 		synchronized (FlexoProject.class) {
 			id = ID++;
 		}
 		logger.info("Create new project, ID=" + id);
-		_externalRepositories = new ArrayList<ProjectExternalRepository>();
-		repositoriesCache = new Hashtable<String, ProjectExternalRepository>();
-		filesToDelete = new Vector<File>();
+		_externalRepositories = new ArrayList<>();
+		repositoriesCache = new Hashtable<>();
+		filesToDelete = new Vector<>();
 
 		projectName = nameFromDirectory(aProjectDirectory);
 		setProjectDirectory(aProjectDirectory);
@@ -529,7 +529,7 @@ public class FlexoProject extends FileSystemBasedResourceCenter implements Valid
 	 * Return a collection of all resources of this project which are to be saved (resource data is modified)
 	 */
 	public List<FlexoResource<?>> getUnsavedResources() {
-		List<FlexoResource<?>> unsaved = new ArrayList<FlexoResource<?>>();
+		List<FlexoResource<?>> unsaved = new ArrayList<>();
 		for (FlexoResource<?> r : getAllResources()) {
 			if (r.isLoaded() && r.getLoadedResourceData().isModified()) {
 				unsaved.add(r);

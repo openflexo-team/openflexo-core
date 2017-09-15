@@ -297,7 +297,7 @@ public interface InspectorEntry extends FlexoConceptObject, Bindable, WidgetCont
 		@Override
 		public DataBinding<?> getData() {
 			if (data == null) {
-				data = new DataBinding<Object>(this, getType(),
+				data = new DataBinding<>(this, getType(),
 						(getIsReadOnly() ? DataBinding.BindingDefinitionType.GET : DataBinding.BindingDefinitionType.GET_SET));
 				data.setBindingName("data");
 			}
@@ -340,7 +340,7 @@ public interface InspectorEntry extends FlexoConceptObject, Bindable, WidgetCont
 		@Override
 		public DataBinding<?> getContainer() {
 			if (container == null) {
-				container = new DataBinding<Object>(this, Object.class, BindingDefinitionType.GET);
+				container = new DataBinding<>(this, Object.class, BindingDefinitionType.GET);
 				container.setBindingName("container");
 			}
 			return container;
@@ -376,7 +376,7 @@ public interface InspectorEntry extends FlexoConceptObject, Bindable, WidgetCont
 		@Override
 		public DataBinding<List<?>> getList() {
 			if (list == null) {
-				list = new DataBinding<List<?>>(this, getListType(), BindingDefinitionType.GET);
+				list = new DataBinding<>(this, getListType(), BindingDefinitionType.GET);
 			}
 			return list;
 		}

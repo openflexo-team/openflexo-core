@@ -357,7 +357,7 @@ public interface FlexoRole<T> extends FlexoProperty<T> {
 		@Override
 		public DataBinding<?> getContainer() {
 			if (container == null) {
-				container = new DataBinding<Object>(this, Object.class, BindingDefinitionType.GET);
+				container = new DataBinding<>(this, Object.class, BindingDefinitionType.GET);
 				container.setBindingName("container");
 			}
 			return container;
@@ -393,7 +393,7 @@ public interface FlexoRole<T> extends FlexoProperty<T> {
 		@Override
 		public DataBinding<?> getDefaultValue() {
 			if (defaultValue == null) {
-				defaultValue = new DataBinding<Object>(this, getType(), BindingDefinitionType.GET);
+				defaultValue = new DataBinding<>(this, getType(), BindingDefinitionType.GET);
 				defaultValue.setBindingName("defaultValue");
 			}
 			return defaultValue;
@@ -515,7 +515,7 @@ public interface FlexoRole<T> extends FlexoProperty<T> {
 		@Override
 		public ValidationIssue<FlexoRoleMustHaveAName, FlexoRole> applyValidation(FlexoRole flexoRole) {
 			if (StringUtils.isEmpty(flexoRole.getRoleName())) {
-				return new ValidationError<FlexoRoleMustHaveAName, FlexoRole>(this, flexoRole, "flexo_role_has_no_name");
+				return new ValidationError<>(this, flexoRole, "flexo_role_has_no_name");
 			}
 			return null;
 		}
@@ -534,8 +534,7 @@ public interface FlexoRole<T> extends FlexoProperty<T> {
 			ModelSlot<?> ms = aRole.getModelSlot();
 			if (ms instanceof FMLRTModelSlot && "virtualModelInstance".equals(ms.getName())) {
 				RemoveReflexiveVirtualModelModelSlot fixProposal = new RemoveReflexiveVirtualModelModelSlot(aRole);
-				return new ValidationWarning<ShouldNotHaveReflexiveVirtualModelModelSlot, FlexoRole>(this, aRole,
-						"FlexoRole_should_not_have_reflexive_model_slot_no_more", fixProposal);
+				return new ValidationWarning<>(this, aRole, "FlexoRole_should_not_have_reflexive_model_slot_no_more", fixProposal);
 
 			}
 			return null;

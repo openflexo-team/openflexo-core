@@ -45,7 +45,6 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.action.FlexoActionFactory;
-import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoRole;
@@ -139,9 +138,9 @@ public abstract class AbstractDeclareInFlexoConcept<A extends AbstractDeclareInF
 		}
 	}
 
-	private final List<FlexoConceptCreationStrategy<A>> availableFlexoConceptCreationStrategies = new ArrayList<FlexoConceptCreationStrategy<A>>();
-	private final List<FlexoRoleCreationStrategy<A, ? extends FlexoRole<T1>, T1, T2>> availableFlexoRoleCreationStrategies = new ArrayList<FlexoRoleCreationStrategy<A, ? extends FlexoRole<T1>, T1, T2>>();
-	private final List<FlexoRoleSettingStrategy<A, ? extends FlexoRole<T1>, T1, T2>> availableFlexoRoleSettingStrategies = new ArrayList<FlexoRoleSettingStrategy<A, ? extends FlexoRole<T1>, T1, T2>>();
+	private final List<FlexoConceptCreationStrategy<A>> availableFlexoConceptCreationStrategies = new ArrayList<>();
+	private final List<FlexoRoleCreationStrategy<A, ? extends FlexoRole<T1>, T1, T2>> availableFlexoRoleCreationStrategies = new ArrayList<>();
+	private final List<FlexoRoleSettingStrategy<A, ? extends FlexoRole<T1>, T1, T2>> availableFlexoRoleSettingStrategies = new ArrayList<>();
 
 	/**
 	 * Return the list of all available {@link FlexoConceptCreationStrategy}
@@ -366,7 +365,7 @@ public abstract class AbstractDeclareInFlexoConcept<A extends AbstractDeclareInF
 
 	public List<FMLRTModelSlot<?, ?>> getVirtualModelModelSlots() {
 		if (virtualModelModelSlots == null) {
-			virtualModelModelSlots = new ArrayList<FMLRTModelSlot<?, ?>>();
+			virtualModelModelSlots = new ArrayList<>();
 		}
 		if (!virtualModelModelSlots.isEmpty()) {
 			virtualModelModelSlots.clear();
@@ -383,7 +382,7 @@ public abstract class AbstractDeclareInFlexoConcept<A extends AbstractDeclareInF
 
 	public List<TypeAwareModelSlot<?, ?>> getTypeAwareModelSlots() {
 		if (typeAwareModelSlots == null) {
-			typeAwareModelSlots = new ArrayList<TypeAwareModelSlot<?, ?>>();
+			typeAwareModelSlots = new ArrayList<>();
 		}
 		if (!typeAwareModelSlots.isEmpty()) {
 			typeAwareModelSlots.clear();

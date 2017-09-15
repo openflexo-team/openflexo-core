@@ -127,7 +127,7 @@ public interface IncrementalIterationAction extends AbstractIterationAction {
 		@Override
 		public DataBinding<Number> getStartValue() {
 			if (startValue == null) {
-				startValue = new DataBinding<Number>("0", this, Number.class, BindingDefinitionType.GET);
+				startValue = new DataBinding<>("0", this, Number.class, BindingDefinitionType.GET);
 				startValue.setBindingName("startValue");
 			}
 			return startValue;
@@ -147,7 +147,7 @@ public interface IncrementalIterationAction extends AbstractIterationAction {
 		@Override
 		public DataBinding<Number> getExclusiveEndValue() {
 			if (exclusiveEndValue == null) {
-				exclusiveEndValue = new DataBinding<Number>(this, Number.class, BindingDefinitionType.GET);
+				exclusiveEndValue = new DataBinding<>(this, Number.class, BindingDefinitionType.GET);
 				exclusiveEndValue.setBindingName("exclusiveEndValue");
 			}
 			return exclusiveEndValue;
@@ -167,7 +167,7 @@ public interface IncrementalIterationAction extends AbstractIterationAction {
 		@Override
 		public DataBinding<Number> getIncrement() {
 			if (increment == null) {
-				increment = new DataBinding<Number>("1", this, Number.class, BindingDefinitionType.GET);
+				increment = new DataBinding<>("1", this, Number.class, BindingDefinitionType.GET);
 				increment.setBindingName("increment");
 			}
 			return increment;
@@ -317,21 +317,17 @@ public interface IncrementalIterationAction extends AbstractIterationAction {
 		public ValidationIssue<IncrementalIterationActionMustDefineAValidIteration, IncrementalIterationAction> applyValidation(
 				IncrementalIterationAction action) {
 			if (action.getStartValue() == null || !action.getStartValue().isValid()) {
-				return new ValidationError<IncrementalIterationActionMustDefineAValidIteration, IncrementalIterationAction>(this, action,
-						"iteration_action_does_not_define_a_valid_start_value");
+				return new ValidationError<>(this, action, "iteration_action_does_not_define_a_valid_start_value");
 			}
 			if (action.getExclusiveEndValue() == null || !action.getExclusiveEndValue().isValid()) {
-				return new ValidationError<IncrementalIterationActionMustDefineAValidIteration, IncrementalIterationAction>(this, action,
-						"iteration_action_does_not_define_a_valid_exclusive_end_value_value");
+				return new ValidationError<>(this, action, "iteration_action_does_not_define_a_valid_exclusive_end_value_value");
 			}
 			if (action.getIncrement() == null || !action.getIncrement().isValid()) {
-				return new ValidationError<IncrementalIterationActionMustDefineAValidIteration, IncrementalIterationAction>(this, action,
-						"iteration_action_does_not_define_a_valid_increment");
+				return new ValidationError<>(this, action, "iteration_action_does_not_define_a_valid_increment");
 			}
 			if (!TypeUtils.isTypeAssignableFrom(action.getItemType(), action.getExclusiveEndValue().getAnalyzedType())
 					|| !TypeUtils.isTypeAssignableFrom(action.getItemType(), action.getIncrement().getAnalyzedType())) {
-				return new ValidationError<IncrementalIterationActionMustDefineAValidIteration, IncrementalIterationAction>(this, action,
-						"types_are_incompatible");
+				return new ValidationError<>(this, action, "types_are_incompatible");
 			}
 			return null;
 		}

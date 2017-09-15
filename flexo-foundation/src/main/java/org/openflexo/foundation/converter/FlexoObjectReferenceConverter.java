@@ -38,7 +38,6 @@
 
 package org.openflexo.foundation.converter;
 
-import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.resource.ResourceManager;
 import org.openflexo.foundation.utils.FlexoObjectReference;
 import org.openflexo.model.StringConverterLibrary.Converter;
@@ -63,7 +62,7 @@ public class FlexoObjectReferenceConverter extends Converter<FlexoObjectReferenc
 
 	@Override
 	public FlexoObjectReference<?> convertFromString(String value, ModelFactory factory) {
-		return new FlexoObjectReference<FlexoObject>(value, resourceManager);
+		return new FlexoObjectReference<>(value, resourceManager);
 	}
 
 	@Override

@@ -77,7 +77,7 @@ public abstract class AbstractCopyAction<A extends AbstractCopyAction<A>> extend
 		public AbstractCopyActionType(String actionName, FlexoEditingContext editingContext) {
 			super(actionName, FlexoActionFactory.editGroup);
 			this.editingContext = editingContext;
-			objectsToBeCopied = new HashMap<PamelaResource<?, ?>, List<FlexoObject>>();
+			objectsToBeCopied = new HashMap<>();
 		}
 
 		// Override parent implementation by preventing check that this
@@ -126,7 +126,7 @@ public abstract class AbstractCopyAction<A extends AbstractCopyAction<A>> extend
 						if (resource instanceof PamelaResource) {
 							List<FlexoObject> objectsInResource = objectsToBeCopied.get(resource);
 							if (objectsInResource == null) {
-								objectsInResource = new ArrayList<FlexoObject>();
+								objectsInResource = new ArrayList<>();
 								objectsToBeCopied.put((PamelaResource<?, ?>) resource, objectsInResource);
 							}
 							objectsInResource.add(o);

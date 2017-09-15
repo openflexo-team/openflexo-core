@@ -46,7 +46,6 @@ import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.action.NotImplementedException;
-import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FlexoEvent;
@@ -65,8 +64,7 @@ public class CreateFlexoEvent extends AbstractCreateFlexoConcept<CreateFlexoEven
 		 * Factory method
 		 */
 		@Override
-		public CreateFlexoEvent makeNewAction(VirtualModel focusedObject, Vector<FMLObject> globalSelection,
-				FlexoEditor editor) {
+		public CreateFlexoEvent makeNewAction(VirtualModel focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
 			return new CreateFlexoEvent(focusedObject, globalSelection, editor);
 		}
 

@@ -234,7 +234,7 @@ public class CreateInspectorEntry extends FlexoAction<CreateInspectorEntry, Flex
 
 	public DataBinding<?> getContainer() {
 		if (container == null) {
-			container = new DataBinding<Object>(this, Object.class, BindingDefinitionType.GET);
+			container = new DataBinding<>(this, Object.class, BindingDefinitionType.GET);
 			container.setBindingName("container");
 		}
 		return container;
@@ -252,7 +252,7 @@ public class CreateInspectorEntry extends FlexoAction<CreateInspectorEntry, Flex
 
 	public DataBinding<?> getData() {
 		if (data == null) {
-			data = new DataBinding<Object>(this, Object.class, BindingDefinitionType.GET);
+			data = new DataBinding<>(this, Object.class, BindingDefinitionType.GET);
 			data.setBindingName("data");
 		}
 		return data;
@@ -270,7 +270,7 @@ public class CreateInspectorEntry extends FlexoAction<CreateInspectorEntry, Flex
 
 	public DataBinding<List<?>> getList() {
 		if (list == null) {
-			list = new DataBinding<List<?>>(this, List.class, BindingDefinitionType.GET);
+			list = new DataBinding<>(this, List.class, BindingDefinitionType.GET);
 		}
 		return list;
 	}

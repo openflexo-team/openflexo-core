@@ -97,7 +97,7 @@ public interface NotifyPropertyChangedAction extends EditionAction {
 		@Override
 		public DataBinding<HasPropertyChangeSupport> getObject() {
 			if (object == null) {
-				object = new DataBinding<HasPropertyChangeSupport>(this, HasPropertyChangeSupport.class, BindingDefinitionType.GET);
+				object = new DataBinding<>(this, HasPropertyChangeSupport.class, BindingDefinitionType.GET);
 				object.setBindingName("object");
 			}
 			return object;

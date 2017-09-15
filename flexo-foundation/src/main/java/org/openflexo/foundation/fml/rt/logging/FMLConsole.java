@@ -41,10 +41,10 @@ package org.openflexo.foundation.fml.rt.logging;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
-import org.openflexo.foundation.fml.rt.logging.FMLConsole.LogLevel;
 import org.openflexo.foundation.fml.rt.logging.FMLLoggingFilter.FilterType;
 import org.openflexo.toolbox.PropertyChangedSupportDefaultImplementation;
 
@@ -63,7 +63,7 @@ public class FMLConsole extends PropertyChangedSupportDefaultImplementation {
 	 * @param logLevel
 	 */
 	// public void log(String aLogString, LogLevel logLevel, FlexoConceptInstance fci, FlexoBehaviour behaviour);
-	
+
 	public static enum LogLevel {
 		SEVERE, WARNING, INFO, FINE, FINER, FINEST, DEBUG
 	}
@@ -74,7 +74,7 @@ public class FMLConsole extends PropertyChangedSupportDefaultImplementation {
 	private int maxLogCount = -1; // -1 means infinite
 
 	private final LinkedList<FMLLogRecord> allRecords;
-	private final ArrayList<FMLLogRecord> filteredRecords = new ArrayList<FMLLogRecord>();
+	private final ArrayList<FMLLogRecord> filteredRecords = new ArrayList<>();
 	private List<FMLLogRecord> records;
 
 	private int totalLogs = 0;
@@ -92,7 +92,7 @@ public class FMLConsole extends PropertyChangedSupportDefaultImplementation {
 
 	public FMLConsole(FlexoEditor editor) {
 		this.editor = editor;
-		allRecords = new LinkedList<FMLLogRecord>();
+		allRecords = new LinkedList<>();
 		records = allRecords;
 		formatter = new FMLLoggingFormatter();
 	}
@@ -324,7 +324,7 @@ public class FMLConsole extends PropertyChangedSupportDefaultImplementation {
 		warningCount = 0;
 		severeCount = 0;
 		textSearchApplied = true;
-		records = new ArrayList<FMLLogRecord>();
+		records = new ArrayList<>();
 		FMLLoggingFilter f = new FMLLoggingFilter("search");
 		f.setHasFilteredMessage(true);
 		f.filteredContent = someText;

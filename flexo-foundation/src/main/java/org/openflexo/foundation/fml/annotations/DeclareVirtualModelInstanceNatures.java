@@ -45,7 +45,6 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import org.openflexo.foundation.fml.rt.VirtualModelInstanceNature;
-import org.openflexo.foundation.fml.rt.VirtualModelInstanceNature;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 
 /**

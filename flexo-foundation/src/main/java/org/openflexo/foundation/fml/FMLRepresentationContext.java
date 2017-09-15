@@ -51,7 +51,7 @@ public class FMLRepresentationContext {
 
 	public FMLRepresentationContext() {
 		// currentIndentation = 0;
-		nameSpaces = new HashMap<String, FMLObject>();
+		nameSpaces = new HashMap<>();
 	}
 
 	public void addToNameSpaces(FMLObject object) {
@@ -101,7 +101,7 @@ public class FMLRepresentationContext {
 				appendnl();
 				return;
 			}
-
+			
 			BufferedReader rdr = new BufferedReader(new StringReader(s));
 			boolean isFirst = true;
 			for (;;) {

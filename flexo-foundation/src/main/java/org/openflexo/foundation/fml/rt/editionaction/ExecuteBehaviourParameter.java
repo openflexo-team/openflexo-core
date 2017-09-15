@@ -147,8 +147,7 @@ public interface ExecuteBehaviourParameter extends FlexoBehaviourObject, Bindabl
 		@Override
 		public DataBinding<?> getValue() {
 			if (value == null) {
-				value = new DataBinding<Object>(this, param != null ? param.getType() : Object.class,
-						DataBinding.BindingDefinitionType.GET);
+				value = new DataBinding<>(this, param != null ? param.getType() : Object.class, DataBinding.BindingDefinitionType.GET);
 				value.setBindingName(param != null ? param.getName() : "param");
 			}
 			return value;

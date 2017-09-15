@@ -151,7 +151,7 @@ public interface DeleteFlexoConceptInstanceParameter extends FlexoBehaviourObjec
 		@Override
 		public DataBinding<Object> getValue() {
 			if (value == null) {
-				value = new DataBinding<Object>(this, param.getType(), DataBinding.BindingDefinitionType.GET);
+				value = new DataBinding<>(this, param.getType(), DataBinding.BindingDefinitionType.GET);
 				value.setBindingName(param.getName());
 			}
 			return value;

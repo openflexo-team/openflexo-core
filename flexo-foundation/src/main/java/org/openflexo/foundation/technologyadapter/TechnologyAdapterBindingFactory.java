@@ -65,13 +65,13 @@ public abstract class TechnologyAdapterBindingFactory extends JavaBindingFactory
 	private final HashMap<BindingPathElement, HashMap<Object, SimplePathElement>> storedBindingPathElements;
 
 	public TechnologyAdapterBindingFactory() {
-		storedBindingPathElements = new HashMap<BindingPathElement, HashMap<Object, SimplePathElement>>();
+		storedBindingPathElements = new HashMap<>();
 	}
 
 	protected final SimplePathElement getSimplePathElement(Object object, BindingPathElement parent) {
 		HashMap<Object, SimplePathElement> storedValues = storedBindingPathElements.get(parent);
 		if (storedValues == null) {
-			storedValues = new HashMap<Object, SimplePathElement>();
+			storedValues = new HashMap<>();
 			storedBindingPathElements.put(parent, storedValues);
 		}
 		SimplePathElement returned = storedValues.get(object);

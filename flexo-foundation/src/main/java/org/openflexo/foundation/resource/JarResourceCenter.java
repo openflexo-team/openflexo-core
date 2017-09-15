@@ -724,7 +724,7 @@ public class JarResourceCenter extends ResourceRepository<FlexoResource<?>, InJa
 	@Override
 	public List<String> getPathTo(InJarResourceImpl resource) {
 		if (!getRootFolder().getChildren().contains(resource)) {
-			List<String> pathTo = new ArrayList<String>();
+			List<String> pathTo = new ArrayList<>();
 			StringTokenizer string = new StringTokenizer(/*resource.getURI()*/resource.getEntry().getName(),
 					Character.toString(ClasspathResourceLocatorImpl.PATH_SEP.toCharArray()[0]));
 			while (string.hasMoreTokens()) {

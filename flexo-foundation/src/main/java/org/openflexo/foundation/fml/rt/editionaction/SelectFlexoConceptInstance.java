@@ -149,7 +149,7 @@ public interface SelectFlexoConceptInstance<VMI extends VirtualModelInstance<VMI
 		@Override
 		public DataBinding<FlexoConceptInstance> getContainer() {
 			if (container == null) {
-				container = new DataBinding<FlexoConceptInstance>(this, FlexoConceptInstance.class, BindingDefinitionType.GET);
+				container = new DataBinding<>(this, FlexoConceptInstance.class, BindingDefinitionType.GET);
 				container.setBindingName("container");
 			}
 			return container;
@@ -507,8 +507,7 @@ public interface SelectFlexoConceptInstance<VMI extends VirtualModelInstance<VMI
 		public ValidationIssue<SelectFlexoConceptInstanceMustAddressAFlexoConceptType, SelectFlexoConceptInstance> applyValidation(
 				SelectFlexoConceptInstance action) {
 			if (action.getFlexoConceptType() == null) {
-				return new ValidationError<SelectFlexoConceptInstanceMustAddressAFlexoConceptType, SelectFlexoConceptInstance>(this, action,
-						"select_flexo_concept_instance_action_doesn't_define_any_flexo_concept_type");
+				return new ValidationError<>(this, action, "select_flexo_concept_instance_action_doesn't_define_any_flexo_concept_type");
 			}
 			return null;
 		}

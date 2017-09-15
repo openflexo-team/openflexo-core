@@ -111,7 +111,7 @@ public interface LogAction extends EditionAction {
 		@Override
 		public DataBinding<String> getLogString() {
 			if (logString == null) {
-				logString = new DataBinding<String>(this, String.class, BindingDefinitionType.GET);
+				logString = new DataBinding<>(this, String.class, BindingDefinitionType.GET);
 				logString.setBindingName("logString");
 			}
 			return logString;

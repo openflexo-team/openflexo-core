@@ -205,8 +205,7 @@ public interface ViewPointLocalizedEntry extends FMLObject {
 				if (entry.getLocalizedDictionary().getLocalizedEntries().indexOf(entry) != entry.getLocalizedDictionary()
 						.getLocalizedEntries().lastIndexOf(entry)) {
 					RemoveExtraReferences fixProposal = new RemoveExtraReferences(entry);
-					return new ValidationWarning<LocalizedEntryShouldNotBeRegisteredTwice, ViewPointLocalizedEntry>(this, entry,
-							"localized_entry_is_registered_twice", fixProposal);
+					return new ValidationWarning<>(this, entry, "localized_entry_is_registered_twice", fixProposal);
 				}
 			}
 			return null;

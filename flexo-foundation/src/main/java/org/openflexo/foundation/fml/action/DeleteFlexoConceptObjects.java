@@ -44,14 +44,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 import java.util.logging.Logger;
+
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.action.copypaste.AbstractCopyAction.InvalidSelectionException;
-import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.FlexoConceptObject;
+import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.model.factory.EmbeddingType;
 
@@ -114,7 +115,7 @@ public class DeleteFlexoConceptObjects extends FlexoAction<DeleteFlexoConceptObj
 	protected static List<FlexoConceptObject> getObjectsToDelete(List<FlexoConceptObject> globalSelection)
 			throws InvalidSelectionException {
 
-		List<FlexoConceptObject> allObjects = new ArrayList<FlexoConceptObject>();
+		List<FlexoConceptObject> allObjects = new ArrayList<>();
 
 		VirtualModelResource resource = null;
 		FMLModelFactory modelFactory = null;
@@ -134,8 +135,8 @@ public class DeleteFlexoConceptObjects extends FlexoAction<DeleteFlexoConceptObj
 			}
 		}
 
-		List<FlexoConceptObject> returned = new ArrayList<FlexoConceptObject>();
-		Map<FlexoConceptObject, List<Object>> allDerived = new HashMap<FlexoConceptObject, List<Object>>();
+		List<FlexoConceptObject> returned = new ArrayList<>();
+		Map<FlexoConceptObject, List<Object>> allDerived = new HashMap<>();
 
 		for (FlexoConceptObject o : allObjects) {
 			if (isDeletable(o)) {

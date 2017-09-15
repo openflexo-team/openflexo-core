@@ -54,9 +54,9 @@ import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.VirtualModel;
+import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
-import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 
 /**
@@ -78,7 +78,7 @@ public class FlexoConceptBindingModel extends BindingModel implements PropertyCh
 
 	// private BindingVariable reflexiveAccessBindingVariable;
 	private final Map<FlexoProperty<?>, FlexoPropertyBindingVariable> propertyVariablesMap;
-	private final List<FlexoConcept> knownParentConcepts = new ArrayList<FlexoConcept>();
+	private final List<FlexoConcept> knownParentConcepts = new ArrayList<>();
 	private FlexoConcept lastKnownContainer = null;
 
 	private BindingVariable flexoConceptInstanceBindingVariable;
@@ -121,7 +121,7 @@ public class FlexoConceptBindingModel extends BindingModel implements PropertyCh
 
 		updateContainerBindingVariable();
 
-		propertyVariablesMap = new HashMap<FlexoProperty<?>, FlexoPropertyBindingVariable>();
+		propertyVariablesMap = new HashMap<>();
 		updatePropertyVariables();
 		updateContainerFlexoConceptListener();
 		updateParentFlexoConceptListeners();
@@ -220,7 +220,7 @@ public class FlexoConceptBindingModel extends BindingModel implements PropertyCh
 
 	protected void updatePropertyVariables() {
 
-		List<FlexoProperty<?>> propertiesToBeDeleted = new ArrayList<FlexoProperty<?>>(propertyVariablesMap.keySet());
+		List<FlexoProperty<?>> propertiesToBeDeleted = new ArrayList<>(propertyVariablesMap.keySet());
 
 		((FlexoConceptImpl) flexoConcept).clearAccessiblePropertiesCache();
 
@@ -259,7 +259,7 @@ public class FlexoConceptBindingModel extends BindingModel implements PropertyCh
 
 	private void updateParentFlexoConceptListeners() {
 
-		List<FlexoConcept> parentConceptsNotToListenAnymore = new ArrayList<FlexoConcept>();
+		List<FlexoConcept> parentConceptsNotToListenAnymore = new ArrayList<>();
 		parentConceptsNotToListenAnymore.addAll(knownParentConcepts);
 
 		for (FlexoConcept p : flexoConcept.getAllParentFlexoConcepts()) {
@@ -308,7 +308,7 @@ public class FlexoConceptBindingModel extends BindingModel implements PropertyCh
 		if (flexoConcept != null && flexoConcept.getPropertyChangeSupport() != null) {
 			flexoConcept.getPropertyChangeSupport().removePropertyChangeListener(this);
 		}
-		for (FlexoConcept p : new ArrayList<FlexoConcept>(knownParentConcepts)) {
+		for (FlexoConcept p : new ArrayList<>(knownParentConcepts)) {
 			if (p.getPropertyChangeSupport() != null) {
 				p.getPropertyChangeSupport().removePropertyChangeListener(this);
 				knownParentConcepts.remove(p);

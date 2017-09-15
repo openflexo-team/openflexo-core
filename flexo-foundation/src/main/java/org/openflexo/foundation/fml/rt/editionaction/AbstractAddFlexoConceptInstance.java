@@ -185,7 +185,7 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 		@Override
 		public DataBinding<FlexoConceptInstance> getContainer() {
 			if (container == null) {
-				container = new DataBinding<FlexoConceptInstance>(this, FlexoConceptInstance.class, DataBinding.BindingDefinitionType.GET);
+				container = new DataBinding<>(this, FlexoConceptInstance.class, DataBinding.BindingDefinitionType.GET);
 				container.setBindingName("container");
 				container.setDeclaredType(getFlexoConceptType() != null && getFlexoConceptType().getContainerFlexoConcept() != null
 						? getFlexoConceptType().getContainerFlexoConcept().getInstanceType() : FlexoConceptInstance.class);
@@ -344,7 +344,7 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 		public void addToParameters(AddFlexoConceptInstanceParameter parameter) {
 			parameter.setAction(this);
 			if (parameters == null) {
-				parameters = new ArrayList<AddFlexoConceptInstanceParameter>();
+				parameters = new ArrayList<>();
 			}
 			parameters.add(parameter);
 		}
@@ -353,7 +353,7 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 		public void removeFromParameters(AddFlexoConceptInstanceParameter parameter) {
 			parameter.setAction(null);
 			if (parameters == null) {
-				parameters = new ArrayList<AddFlexoConceptInstanceParameter>();
+				parameters = new ArrayList<>();
 			}
 			parameters.remove(parameter);
 		}
@@ -369,10 +369,10 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 
 		private void updateParameters() {
 			if (parameters == null) {
-				parameters = new ArrayList<AddFlexoConceptInstanceParameter>();
+				parameters = new ArrayList<>();
 			}
-			List<AddFlexoConceptInstanceParameter> oldValue = new ArrayList<AddFlexoConceptInstanceParameter>(parameters);
-			List<AddFlexoConceptInstanceParameter> parametersToRemove = new ArrayList<AddFlexoConceptInstanceParameter>(parameters);
+			List<AddFlexoConceptInstanceParameter> oldValue = new ArrayList<>(parameters);
+			List<AddFlexoConceptInstanceParameter> parametersToRemove = new ArrayList<>(parameters);
 			if (creationScheme != null) {
 				for (FlexoBehaviourParameter p : creationScheme.getParameters()) {
 					AddFlexoConceptInstanceParameter existingParam = getParameter(p);
@@ -515,7 +515,7 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 		public ValidationIssue<AddFlexoConceptInstanceParametersMustBeValid, AbstractAddFlexoConceptInstance<?, ?>> applyValidation(
 				AbstractAddFlexoConceptInstance<?, ?> action) {
 			if (action.getCreationScheme() != null) {
-				Vector<ValidationIssue<AddFlexoConceptInstanceParametersMustBeValid, AbstractAddFlexoConceptInstance<?, ?>>> issues = new Vector<ValidationIssue<AddFlexoConceptInstanceParametersMustBeValid, AbstractAddFlexoConceptInstance<?, ?>>>();
+				Vector<ValidationIssue<AddFlexoConceptInstanceParametersMustBeValid, AbstractAddFlexoConceptInstance<?, ?>>> issues = new Vector<>();
 				for (AddFlexoConceptInstanceParameter p : action.getParameters()) {
 					FlexoBehaviourParameter param = p.getParam();
 					if (param.getIsRequired()) {

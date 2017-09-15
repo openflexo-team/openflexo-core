@@ -113,8 +113,8 @@ public class ResourceManager extends FlexoServiceImpl implements FlexoService, R
 	private ResourceManager() {
 		// Not now: will be performed by the ServiceManager
 		// initialize();
-		resources = new ArrayList<FlexoResource<?>>();
-		filesToDelete = new ArrayList<File>();
+		resources = new ArrayList<>();
+		filesToDelete = new ArrayList<>();
 	}
 
 	@Override
@@ -158,7 +158,7 @@ public class ResourceManager extends FlexoServiceImpl implements FlexoService, R
 	}
 
 	public <R extends FlexoResource<?>> List<? extends R> getRegisteredResources(Class<R> resourceClass) {
-		List<R> returned = new ArrayList<R>();
+		List<R> returned = new ArrayList<>();
 		for (FlexoResource<?> r : getRegisteredResources()) {
 			if (resourceClass.isAssignableFrom(r.getClass())) {
 				returned.add((R) r);
@@ -169,7 +169,7 @@ public class ResourceManager extends FlexoServiceImpl implements FlexoService, R
 
 	// TODO: optimize this
 	public List<FlexoResource<?>> getLoadedResources() {
-		List<FlexoResource<?>> returned = new ArrayList<FlexoResource<?>>();
+		List<FlexoResource<?>> returned = new ArrayList<>();
 		for (FlexoResource<?> r : resources) {
 			if (r.isLoaded()) {
 				returned.add(r);
@@ -180,8 +180,8 @@ public class ResourceManager extends FlexoServiceImpl implements FlexoService, R
 
 	// TODO: optimize this
 	public List<FlexoResource<?>> getUnsavedResources() {
-		List<FlexoResource<?>> returned = new ArrayList<FlexoResource<?>>();
-		for (FlexoResource<?> r : new ArrayList<FlexoResource<?>>(resources)) {
+		List<FlexoResource<?>> returned = new ArrayList<>();
+		for (FlexoResource<?> r : new ArrayList<>(resources)) {
 			if (r.isLoaded() && r.getLoadedResourceData().isModified()) {
 				returned.add(r);
 			}
@@ -277,7 +277,7 @@ public class ResourceManager extends FlexoServiceImpl implements FlexoService, R
 			}
 
 			// Because we cannot be confident of #getAllResources() we proceed to iterate on all registered resources
-			for (FlexoResource<?> r : new ArrayList<FlexoResource<?>>(resources)) {
+			for (FlexoResource<?> r : new ArrayList<>(resources)) {
 				if (r.getResourceCenter() == removedRC) {
 					unregisterResource(r);
 				}

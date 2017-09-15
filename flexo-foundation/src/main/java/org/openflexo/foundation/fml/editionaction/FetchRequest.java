@@ -163,7 +163,7 @@ public abstract interface FetchRequest<MS extends ModelSlot<RD>, RD extends Reso
 				}*/
 				// if (true)
 				// return fetchResult;
-				List<T> returned = new ArrayList<T>();
+				List<T> returned = new ArrayList<>();
 				for (final T proposedFetchResult : fetchResult) {
 					boolean takeIt = true;
 					for (FetchRequestCondition condition : getConditions()) {

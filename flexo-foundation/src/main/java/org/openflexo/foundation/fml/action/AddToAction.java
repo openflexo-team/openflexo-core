@@ -121,7 +121,7 @@ public class AddToAction extends FlexoAction<AddToAction, AssignableAction<?>, F
 
 	public DataBinding<?> getList() {
 		if (list == null) {
-			list = new DataBinding<List<?>>(this, List.class, DataBinding.BindingDefinitionType.GET);
+			list = new DataBinding<>(this, List.class, DataBinding.BindingDefinitionType.GET);
 			list.setBindingName("list");
 			list.setMandatory(true);
 

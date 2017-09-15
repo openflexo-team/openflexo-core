@@ -1282,7 +1282,7 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 
 		@Override
 		public List<VirtualModelInstance<?, ?>> getVirtualModelInstancesForVirtualModel(final VirtualModel virtualModel) {
-			List<VirtualModelInstance<?, ?>> returned = new ArrayList<VirtualModelInstance<?, ?>>();
+			List<VirtualModelInstance<?, ?>> returned = new ArrayList<>();
 			for (VirtualModelInstance<?, ?> vmi : getVirtualModelInstances()) {
 				if (virtualModel.isAssignableFrom(vmi.getVirtualModel())) {
 					returned.add(vmi);

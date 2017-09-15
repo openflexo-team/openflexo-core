@@ -114,7 +114,7 @@ public interface RemoveFromListAction<T> extends AssignableAction<T> {
 
 			// TODO Xtof: when I will have found how to set same kind of Individual:<name> type in the XSD TA
 			if (list == null) {
-				list = new DataBinding<List<T>>(this, new ParameterizedTypeImpl(List.class, Object.class), BindingDefinitionType.GET);
+				list = new DataBinding<>(this, new ParameterizedTypeImpl(List.class, Object.class), BindingDefinitionType.GET);
 				list.setBindingName("list");
 			}
 			return list;
@@ -136,7 +136,7 @@ public interface RemoveFromListAction<T> extends AssignableAction<T> {
 		@Override
 		public DataBinding<T> getValue() {
 			if (value == null) {
-				value = new DataBinding<T>(this, Object.class, BindingDefinitionType.GET);
+				value = new DataBinding<>(this, Object.class, BindingDefinitionType.GET);
 				value.setBindingName("value");
 			}
 			return value;

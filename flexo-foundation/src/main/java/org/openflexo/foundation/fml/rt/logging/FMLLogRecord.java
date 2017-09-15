@@ -44,7 +44,6 @@ import java.util.Date;
 
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
-import org.openflexo.foundation.fml.rt.logging.FMLConsole.LogLevel;
 
 /**
  * This class is used to encode a simple log record in Flexo

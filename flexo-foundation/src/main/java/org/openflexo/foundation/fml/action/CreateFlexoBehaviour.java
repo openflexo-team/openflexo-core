@@ -627,7 +627,7 @@ public class CreateFlexoBehaviour extends FlexoAction<CreateFlexoBehaviour, Flex
 
 		public DataBinding<?> getDefaultValue() {
 			if (defaultValue == null) {
-				defaultValue = new DataBinding<Object>(this, getParameterType(), BindingDefinitionType.GET);
+				defaultValue = new DataBinding<>(this, getParameterType(), BindingDefinitionType.GET);
 				defaultValue.setBindingName("defaultValue");
 			}
 			return defaultValue;
@@ -645,7 +645,7 @@ public class CreateFlexoBehaviour extends FlexoAction<CreateFlexoBehaviour, Flex
 
 		public DataBinding<?> getContainer() {
 			if (container == null) {
-				container = new DataBinding<Object>(this, Object.class, BindingDefinitionType.GET);
+				container = new DataBinding<>(this, Object.class, BindingDefinitionType.GET);
 				container.setBindingName("container");
 			}
 			return container;
@@ -663,7 +663,7 @@ public class CreateFlexoBehaviour extends FlexoAction<CreateFlexoBehaviour, Flex
 
 		public DataBinding<List<?>> getList() {
 			if (list == null) {
-				list = new DataBinding<List<?>>(this, getListType(), BindingDefinitionType.GET);
+				list = new DataBinding<>(this, getListType(), BindingDefinitionType.GET);
 			}
 			return list;
 		}

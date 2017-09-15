@@ -65,7 +65,7 @@ public class FMLRTModelSlotInstanceConfiguration<VMI extends VirtualModelInstanc
 
 	protected FMLRTModelSlotInstanceConfiguration(FMLRTModelSlot<VMI, TA> ms, FlexoConceptInstance fci, FlexoResourceCenter<?> rc) {
 		super(ms, fci, rc);
-		options = new ArrayList<ModelSlotInstanceConfiguration.ModelSlotInstanceConfigurationOption>();
+		options = new ArrayList<>();
 		/*if (ms.isReflexiveModelSlot()) {
 			options.add(DefaultModelSlotInstanceConfigurationOption.Autoconfigure);
 		} else {*/

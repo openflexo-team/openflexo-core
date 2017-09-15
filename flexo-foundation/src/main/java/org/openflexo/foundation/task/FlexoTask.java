@@ -145,7 +145,7 @@ public abstract class FlexoTask implements Runnable, HasPropertyChangeSupport {
 	public FlexoTask(String title) {
 		this.taskTitle = title;
 		status = TaskStatus.WAITING;
-		dependantTasks = new ArrayList<FlexoTask>();
+		dependantTasks = new ArrayList<>();
 	}
 
 	@Override

@@ -1327,8 +1327,8 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 			}
 			for (FlexoProperty<?> pr : propertiesToDelete) {
 				if (pr instanceof PrimitiveRole) {
-					AssignationAction<Object> nullifyStatement = getFMLModelFactory().newAssignationAction(new DataBinding<Object>("null"));
-					nullifyStatement.setAssignation(new DataBinding<Object>(pr.getPropertyName()));
+					AssignationAction<Object> nullifyStatement = getFMLModelFactory().newAssignationAction(new DataBinding<>("null"));
+					nullifyStatement.setAssignation(new DataBinding<>(pr.getPropertyName()));
 					newDeletionScheme.getControlGraph().sequentiallyAppend(nullifyStatement);
 				}
 				else {
