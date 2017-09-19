@@ -139,7 +139,7 @@ public interface InnerConceptsFacet extends FlexoConceptObject, FlexoFacet<Flexo
 			if (getFlexoConcept() instanceof VirtualModel) {
 				return ((VirtualModel) getFlexoConcept()).getAllRootFlexoConcepts();
 			}
-			return getFlexoConcept().getChildFlexoConcepts();
+			return getFlexoConcept().getEmbeddedFlexoConcepts();
 		}
 
 		@Override
