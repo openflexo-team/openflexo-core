@@ -364,7 +364,12 @@ public class VirtualModelLibrary extends DefaultFlexoObject implements FlexoServ
 				return ep.getFlexoBehaviour(behaviourURI.substring(behaviourURI.lastIndexOf(".") + 1));
 			}
 		}
-		logger.warning("Cannot find behaviour:" + behaviourURI);
+		if (loadWhenRequired) {
+			logger.warning("Cannot find behaviour:" + behaviourURI);
+		}
+		else {
+			logger.info("Cannot find behaviour yet:" + behaviourURI);
+		}
 		return null;
 	}
 
