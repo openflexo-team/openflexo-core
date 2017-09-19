@@ -82,7 +82,7 @@ public interface NavigationScheme extends AbstractActionScheme {
 		@Override
 		public DataBinding<?> getTargetObject() {
 			if (targetObject == null) {
-				targetObject = new DataBinding<Object>(this, FlexoObject.class, BindingDefinitionType.GET);
+				targetObject = new DataBinding<>(this, FlexoObject.class, BindingDefinitionType.GET);
 				targetObject.setBindingName("targetObject");
 			}
 			return targetObject;

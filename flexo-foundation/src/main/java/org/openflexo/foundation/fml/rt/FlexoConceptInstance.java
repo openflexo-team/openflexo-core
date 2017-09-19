@@ -675,7 +675,7 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 				else if (flexoProperty instanceof FlexoRole) {
 					// Take care that we don't manage here the multiple cardinality !!!
 					// This is performed in both classes: FlexoConceptFlexoPropertyPathElement and FlexoPropertyBindingVariable
-					if (((FlexoRole) flexoProperty).getCardinality().isMultipleCardinality()) {
+					if (((FlexoRole<?>) flexoProperty).getCardinality().isMultipleCardinality()) {
 						System.out.println("Tiens, y'aurait pas un truc la ???");
 						Thread.dumpStack();
 						return (T) getFlexoActorList((FlexoRole) flexoProperty);
@@ -1450,10 +1450,7 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 		}
 
 		public Object evaluate(String expression) {
-			DataBinding<Object> vpdb = new DataBinding<>(expression);
-			vpdb.setOwner(getFlexoConcept());
-			vpdb.setDeclaredType(Object.class);
-			vpdb.setBindingDefinitionType(BindingDefinitionType.GET);
+			DataBinding<Object> vpdb = new DataBinding<>(expression, getFlexoConcept(), Object.class, BindingDefinitionType.GET);
 			try {
 				return vpdb.getBindingValue(this);
 			} catch (TypeMismatchException e) {
@@ -1467,10 +1464,7 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 		}
 
 		public boolean setBindingValue(String expression, Object value) {
-			DataBinding<Object> vpdb = new DataBinding<>(expression);
-			vpdb.setOwner(getFlexoConcept());
-			vpdb.setDeclaredType(Object.class);
-			vpdb.setBindingDefinitionType(BindingDefinitionType.SET);
+			DataBinding<Object> vpdb = new DataBinding<>(expression, getFlexoConcept(), Object.class, BindingDefinitionType.SET);
 			if (vpdb.isValid()) {
 				try {
 					vpdb.setBindingValue(value, this);

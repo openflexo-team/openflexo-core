@@ -65,7 +65,7 @@ import org.openflexo.toolbox.StringUtils;
  * @param <A>
  */
 public abstract class AbstractCreateFlexoProperty<A extends AbstractCreateFlexoProperty<A>>
-		extends FlexoAction<A, FlexoConceptObject, FMLObject>implements Bindable {
+		extends FlexoAction<A, FlexoConceptObject, FMLObject> implements Bindable {
 
 	private static final Logger logger = Logger.getLogger(AbstractCreateFlexoProperty.class.getPackage().getName());
 
@@ -119,7 +119,7 @@ public abstract class AbstractCreateFlexoProperty<A extends AbstractCreateFlexoP
 
 	public DataBinding<?> getContainer() {
 		if (container == null) {
-			container = new DataBinding<Object>(this, Object.class, BindingDefinitionType.GET);
+			container = new DataBinding<>(this, Object.class, BindingDefinitionType.GET);
 			container.setBindingName("container");
 		}
 		return container;
@@ -137,7 +137,7 @@ public abstract class AbstractCreateFlexoProperty<A extends AbstractCreateFlexoP
 
 	public DataBinding<?> getDefaultValue() {
 		if (defaultValue == null) {
-			defaultValue = new DataBinding<Object>(this, Object.class, BindingDefinitionType.GET);
+			defaultValue = new DataBinding<>(this, Object.class, BindingDefinitionType.GET);
 			defaultValue.setBindingName("defaultValue");
 		}
 		return defaultValue;

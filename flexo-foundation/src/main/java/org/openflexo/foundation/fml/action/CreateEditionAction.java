@@ -549,7 +549,7 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 	}
 
 	public List<ModelSlot<?>> getAvailableModelSlotsForAction(Class<? extends EditionAction> actionType) {
-		List<ModelSlot<?>> returned = new ArrayList<ModelSlot<?>>();
+		List<ModelSlot<?>> returned = new ArrayList<>();
 		// if (getFocusedObject().getOwner().getOwningVirtualModel() != null) {
 		for (ModelSlot<?> ms : getModelSlotsAccessibleFromFocusedObject()) {
 			if (ms.getAvailableEditionActionTypes().contains(actionType)) {
@@ -912,7 +912,7 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 	public DataBinding<?> getIterationExpression() {
 		if (iterationExpression == null) {
 
-			iterationExpression = new DataBinding<Object>(this, List.class, DataBinding.BindingDefinitionType.GET);
+			iterationExpression = new DataBinding<>(this, List.class, DataBinding.BindingDefinitionType.GET);
 			iterationExpression.setBindingName("iterationExpression");
 			iterationExpression.setMandatory(true);
 
@@ -923,7 +923,7 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 
 	public void setIterationExpression(DataBinding<?> iterationExpression) {
 		if (iterationExpression != null) {
-			this.iterationExpression = new DataBinding<Object>(iterationExpression.toString(), this, List.class,
+			this.iterationExpression = new DataBinding<>(iterationExpression.toString(), this, List.class,
 					DataBinding.BindingDefinitionType.GET);
 			iterationExpression.setBindingName("iterationExpression");
 			iterationExpression.setMandatory(true);
@@ -936,7 +936,7 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 
 	public DataBinding<?> getListExpression() {
 		if (listExpression == null) {
-			listExpression = new DataBinding<Object>(this, List.class, DataBinding.BindingDefinitionType.GET);
+			listExpression = new DataBinding<>(this, List.class, DataBinding.BindingDefinitionType.GET);
 			listExpression.setBindingName("listExpression");
 			listExpression.setMandatory(true);
 
@@ -947,8 +947,7 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 
 	public void setListExpression(DataBinding<?> listExpression) {
 		if (listExpression != null) {
-			this.listExpression = new DataBinding<Object>(listExpression.toString(), this, List.class,
-					DataBinding.BindingDefinitionType.GET);
+			this.listExpression = new DataBinding<>(listExpression.toString(), this, List.class, DataBinding.BindingDefinitionType.GET);
 			listExpression.setBindingName("listExpression");
 			listExpression.setMandatory(true);
 		}

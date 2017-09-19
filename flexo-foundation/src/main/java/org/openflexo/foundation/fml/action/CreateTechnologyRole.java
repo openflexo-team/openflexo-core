@@ -81,7 +81,8 @@ public class CreateTechnologyRole extends AbstractCreateFlexoRole<CreateTechnolo
 	private static final Logger logger = Logger.getLogger(CreateTechnologyRole.class.getPackage().getName());
 
 	public static FlexoActionFactory<CreateTechnologyRole, FlexoConceptObject, FMLObject> actionType = new FlexoActionFactory<CreateTechnologyRole, FlexoConceptObject, FMLObject>(
-			"create_technology_role", FlexoActionFactory.newPropertyMenu, FlexoActionFactory.defaultGroup, FlexoActionFactory.ADD_ACTION_TYPE) {
+			"create_technology_role", FlexoActionFactory.newPropertyMenu, FlexoActionFactory.defaultGroup,
+			FlexoActionFactory.ADD_ACTION_TYPE) {
 
 		/**
 		 * Factory method
@@ -156,13 +157,13 @@ public class CreateTechnologyRole extends AbstractCreateFlexoRole<CreateTechnolo
 				newFlexoRole.setCardinality(getCardinality());
 				newFlexoRole.setModelSlot(getModelSlot());
 
-				newFlexoRole.setContainer(new DataBinding<Object>(getContainer().toString()));
+				newFlexoRole.setContainer(new DataBinding<>(getContainer().toString()));
 
 				if (!getContainer().isSet() && getModelSlot() != null) {
 					newFlexoRole.getContainer().setUnparsedBinding(getModelSlot().getName());
 				}
 
-				newFlexoRole.setDefaultValue(new DataBinding<Object>(getDefaultValue().toString()));
+				newFlexoRole.setDefaultValue(new DataBinding<>(getDefaultValue().toString()));
 				newFlexoRole.setIsRequired(getIsRequired());
 				finalizeDoAction(context);
 			}

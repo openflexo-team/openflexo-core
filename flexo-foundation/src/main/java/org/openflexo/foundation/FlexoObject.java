@@ -590,7 +590,7 @@ public interface FlexoObject extends AccessibleProxyObject, DeletableProxyObject
 			}
 			List<FlexoActionFactory<?, ?, ?>> actions = _declaredActionsForClass.get(objectClass);
 			if (actions == null) {
-				actions = new ArrayList<FlexoActionFactory<?, ?, ?>>();
+				actions = new ArrayList<>();
 				_declaredActionsForClass.put(objectClass, actions);
 			}
 			if (actionType != null) {
@@ -703,7 +703,7 @@ public interface FlexoObject extends AccessibleProxyObject, DeletableProxyObject
 			PamelaResource<?, ?> resource = getPamelaResource();
 			if (resource != null) {
 				List<?> embeddedObjects = resource.getFactory().getEmbeddedObjects(this, EmbeddingType.CLOSURE);
-				List<Validable> returned = new ArrayList<Validable>();
+				List<Validable> returned = new ArrayList<>();
 				for (Object e : embeddedObjects) {
 					if (e instanceof Validable) {
 						returned.add((Validable) e);

@@ -390,7 +390,7 @@ public class ProjectLoader extends FlexoServiceImpl implements HasPropertyChange
 	}
 
 	public void saveProjects(List<FlexoProject> projects) throws SaveResourceExceptionList {
-		List<SaveResourceException> exceptions = new ArrayList<SaveResourceException>();
+		List<SaveResourceException> exceptions = new ArrayList<>();
 		Collections.sort(projects, new Comparator<FlexoProject>() {
 			@Override
 			public int compare(FlexoProject o1, FlexoProject o2) {

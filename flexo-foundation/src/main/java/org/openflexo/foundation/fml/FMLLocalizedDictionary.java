@@ -140,10 +140,10 @@ public interface FMLLocalizedDictionary extends FMLObject, org.openflexo.localiz
 		private Map<String, DynamicEntry> entriesMap = null;
 		private List<DynamicEntry> entries = null;
 
-		private final WeakHashMap<Component, String> _storedLocalizedForComponents = new WeakHashMap<Component, String>();
-		private final WeakHashMap<JComponent, String> _storedLocalizedForComponentTooltips = new WeakHashMap<JComponent, String>();
-		private final WeakHashMap<TitledBorder, String> _storedLocalizedForBorders = new WeakHashMap<TitledBorder, String>();
-		private final WeakHashMap<TableColumn, String> _storedLocalizedForTableColumn = new WeakHashMap<TableColumn, String>();
+		private final WeakHashMap<Component, String> _storedLocalizedForComponents = new WeakHashMap<>();
+		private final WeakHashMap<JComponent, String> _storedLocalizedForComponentTooltips = new WeakHashMap<>();
+		private final WeakHashMap<TitledBorder, String> _storedLocalizedForBorders = new WeakHashMap<>();
+		private final WeakHashMap<TableColumn, String> _storedLocalizedForTableColumn = new WeakHashMap<>();
 
 		public ViewPointLocalizedDictionaryImpl() {
 			super();
@@ -190,7 +190,7 @@ public interface FMLLocalizedDictionary extends FMLObject, org.openflexo.localiz
 		private Hashtable<String, String> getDictForLang(Language lang) {
 			Hashtable<String, String> dict = _values.get(lang);
 			if (dict == null) {
-				dict = new Hashtable<String, String>();
+				dict = new Hashtable<>();
 				_values.put(lang, dict);
 			}
 			return dict;
@@ -426,7 +426,7 @@ public interface FMLLocalizedDictionary extends FMLObject, org.openflexo.localiz
 		// This method is really not efficient, but only called in the context of locales editor
 		// This issue is not really severe.
 		private List<String> buildAllKeys() {
-			List<String> returned = new ArrayList<String>();
+			List<String> returned = new ArrayList<>();
 			for (Language l : _values.keySet()) {
 				for (String key : _values.get(l).keySet()) {
 					if (!returned.contains(key)) {
@@ -442,7 +442,7 @@ public interface FMLLocalizedDictionary extends FMLObject, org.openflexo.localiz
 		@Override
 		public List<DynamicEntry> getEntries() {
 			if (entries == null) {
-				entries = new Vector<DynamicEntry>();
+				entries = new Vector<>();
 				for (String key : buildAllKeys()) {
 					entries.add(getEntry(key, true));
 				}

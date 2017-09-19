@@ -145,7 +145,7 @@ public interface AddToListAction<T> extends AssignableAction<T>, FMLControlGraph
 		public DataBinding<? extends List<T>> getList() {
 
 			if (list == null) {
-				list = new DataBinding<List<T>>(this, new ParameterizedTypeImpl(List.class, Object.class), BindingDefinitionType.GET);
+				list = new DataBinding<>(this, new ParameterizedTypeImpl(List.class, Object.class), BindingDefinitionType.GET);
 				list.setBindingName("list");
 			}
 			return list;
@@ -167,7 +167,7 @@ public interface AddToListAction<T> extends AssignableAction<T>, FMLControlGraph
 		@Deprecated
 		public DataBinding<T> getValue() {
 			if (value == null) {
-				value = new DataBinding<T>(this, Object.class, BindingDefinitionType.GET);
+				value = new DataBinding<>(this, Object.class, BindingDefinitionType.GET);
 				value.setBindingName("value");
 			}
 			return value;

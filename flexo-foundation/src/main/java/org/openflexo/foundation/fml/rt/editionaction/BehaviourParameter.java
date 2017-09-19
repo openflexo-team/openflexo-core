@@ -148,8 +148,7 @@ public interface BehaviourParameter<T extends FlexoConceptObject> extends FlexoB
 		@Override
 		public DataBinding<Object> getValue() {
 			if (value == null) {
-				value = new DataBinding<Object>(this, param != null ? param.getType() : Object.class,
-						DataBinding.BindingDefinitionType.GET);
+				value = new DataBinding<>(this, param != null ? param.getType() : Object.class, DataBinding.BindingDefinitionType.GET);
 				value.setBindingName(param != null ? param.getName() : "param");
 			}
 			return value;

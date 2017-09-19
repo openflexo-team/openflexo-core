@@ -319,7 +319,7 @@ public class PropertyEntry extends PropertyChangedSupportDefaultImplementation i
 
 	public DataBinding<?> getDefaultValue() {
 		if (defaultValue == null) {
-			defaultValue = new DataBinding<Object>(this, getType(), BindingDefinitionType.GET);
+			defaultValue = new DataBinding<>(this, getType(), BindingDefinitionType.GET);
 			defaultValue.setBindingName("defaultValue");
 		}
 		return defaultValue;
@@ -337,7 +337,7 @@ public class PropertyEntry extends PropertyChangedSupportDefaultImplementation i
 
 	public DataBinding<?> getContainer() {
 		if (container == null) {
-			container = new DataBinding<Object>(this, Object.class, BindingDefinitionType.GET);
+			container = new DataBinding<>(this, Object.class, BindingDefinitionType.GET);
 			container.setBindingName("container");
 		}
 		return container;
@@ -646,8 +646,8 @@ public class PropertyEntry extends PropertyChangedSupportDefaultImplementation i
 					// System.out.println("defaultValue= " + getDefaultValue());
 					createTechnologyRole.setFlexoRoleClass(getFlexoRoleClass());
 					createTechnologyRole.setIsRequired(isRequired());
-					createTechnologyRole.setContainer(new DataBinding<Object>(getContainer().toString()));
-					createTechnologyRole.setDefaultValue(new DataBinding<Object>(getDefaultValue().toString()));
+					createTechnologyRole.setContainer(new DataBinding<>(getContainer().toString()));
+					createTechnologyRole.setDefaultValue(new DataBinding<>(getDefaultValue().toString()));
 				}
 				break;
 		}

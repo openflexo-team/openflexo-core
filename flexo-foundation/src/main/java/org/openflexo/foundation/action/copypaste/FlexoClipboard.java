@@ -77,7 +77,7 @@ public class FlexoClipboard {
 	private PamelaResource<?, ?> leaderResource;
 
 	private FlexoClipboard() {
-		clipboards = new HashMap<PamelaResource<?, ?>, Clipboard>();
+		clipboards = new HashMap<>();
 	}
 
 	public Clipboard getLeaderClipboard() {
@@ -108,9 +108,9 @@ public class FlexoClipboard {
 			Map<PamelaResource<?, ?>, List<FlexoObject>> objectsToBeCopied) {
 
 		// This map will be augmented by all modelling element which are actors of a FlexoRole
-		Map<PamelaResource<?, ?>, List<FlexoObject>> extendedObjectsToBeCopied = new HashMap<PamelaResource<?, ?>, List<FlexoObject>>();
+		Map<PamelaResource<?, ?>, List<FlexoObject>> extendedObjectsToBeCopied = new HashMap<>();
 		for (PamelaResource<?, ?> pamelaResource : objectsToBeCopied.keySet()) {
-			extendedObjectsToBeCopied.put(pamelaResource, new ArrayList<FlexoObject>(objectsToBeCopied.get(pamelaResource)));
+			extendedObjectsToBeCopied.put(pamelaResource, new ArrayList<>(objectsToBeCopied.get(pamelaResource)));
 		}
 
 		// First lookup the VirtualModelInstanceResource
@@ -135,7 +135,7 @@ public class FlexoClipboard {
 											.getModellingElement()).getResourceData().getResource();
 									List<FlexoObject> alreadyExistingObjects = extendedObjectsToBeCopied.get(modelSlotSpecificResource);
 									if (alreadyExistingObjects == null) {
-										alreadyExistingObjects = new ArrayList<FlexoObject>();
+										alreadyExistingObjects = new ArrayList<>();
 										extendedObjectsToBeCopied.put(modelSlotSpecificResource, alreadyExistingObjects);
 									}
 									System.out.println("Adding in modelSlotSpecificResource " + modelSlotSpecificResource + " : "

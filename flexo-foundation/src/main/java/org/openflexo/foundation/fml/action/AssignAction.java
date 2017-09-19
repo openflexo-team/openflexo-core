@@ -120,7 +120,7 @@ public class AssignAction extends FlexoAction<AssignAction, AssignableAction<?>,
 
 	public DataBinding<?> getAssignation() {
 		if (assignation == null) {
-			assignation = new DataBinding<Object>(this, Object.class, DataBinding.BindingDefinitionType.GET_SET);
+			assignation = new DataBinding<>(this, Object.class, DataBinding.BindingDefinitionType.GET_SET);
 			assignation.setBindingName("assignation");
 			assignation.setMandatory(true);
 

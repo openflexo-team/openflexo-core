@@ -140,7 +140,7 @@ public abstract class FlexoAction<A extends FlexoAction<A, T1, T2>, T1 extends F
 		this.actionFactory = actionFactory;
 		this.focusedObject = focusedObject;
 		if (globalSelection != null) {
-			this.globalSelection = new Vector<T2>();
+			this.globalSelection = new Vector<>();
 			this.globalSelection.addAll(globalSelection);
 		}
 		else {
@@ -290,7 +290,7 @@ public abstract class FlexoAction<A extends FlexoAction<A, T1, T2>, T1 extends F
 
 	public static Vector<FlexoObject> getGlobalSelectionAndFocusedObject(FlexoObject focusedObject,
 			Vector<? extends FlexoObject> globalSelection) {
-		Vector<FlexoObject> v = globalSelection != null ? new Vector<FlexoObject>(globalSelection.size() + 1) : new Vector<FlexoObject>(1);
+		Vector<FlexoObject> v = globalSelection != null ? new Vector<>(globalSelection.size() + 1) : new Vector<>(1);
 		if (globalSelection != null) {
 			v.addAll(globalSelection);
 		}
@@ -301,7 +301,7 @@ public abstract class FlexoAction<A extends FlexoAction<A, T1, T2>, T1 extends F
 	}
 
 	public static <T extends FlexoObject> List<T> getGlobalSelection(T focusedObject, List<T> globalSelection) {
-		Vector<T> v = globalSelection != null ? new Vector<T>(globalSelection.size() + 1) : new Vector<T>(1);
+		Vector<T> v = globalSelection != null ? new Vector<>(globalSelection.size() + 1) : new Vector<>(1);
 		if (globalSelection != null) {
 			v.addAll(globalSelection);
 		}

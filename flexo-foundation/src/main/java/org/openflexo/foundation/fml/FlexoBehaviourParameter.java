@@ -263,7 +263,7 @@ public interface FlexoBehaviourParameter extends FlexoBehaviourObject, FunctionA
 		@Override
 		public DataBinding<?> getContainer() {
 			if (container == null) {
-				container = new DataBinding<Object>(this, Object.class, BindingDefinitionType.GET);
+				container = new DataBinding<>(this, Object.class, BindingDefinitionType.GET);
 				container.setBindingName("container");
 			}
 			return container;
@@ -299,7 +299,7 @@ public interface FlexoBehaviourParameter extends FlexoBehaviourObject, FunctionA
 		@Override
 		public DataBinding<List<?>> getList() {
 			if (list == null) {
-				list = new DataBinding<List<?>>(this, getListType(), BindingDefinitionType.GET);
+				list = new DataBinding<>(this, getListType(), BindingDefinitionType.GET);
 			}
 			return list;
 		}
@@ -343,7 +343,7 @@ public interface FlexoBehaviourParameter extends FlexoBehaviourObject, FunctionA
 		@Override
 		public DataBinding<?> getDefaultValue() {
 			if (defaultValue == null) {
-				defaultValue = new DataBinding<Object>(this, getType(), BindingDefinitionType.GET);
+				defaultValue = new DataBinding<>(this, getType(), BindingDefinitionType.GET);
 				defaultValue.setBindingName("defaultValue");
 			}
 			return defaultValue;

@@ -99,7 +99,7 @@ public abstract class AbstractCreateVirtualModelInstance<A extends AbstractCreat
 	protected AbstractCreateVirtualModelInstance(FlexoActionFactory<A, T, FlexoObject> actionType, T focusedObject,
 			Vector<FlexoObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
-		modelSlotConfigurations = new Hashtable<ModelSlot<?>, ModelSlotInstanceConfiguration<?, ?>>();
+		modelSlotConfigurations = new Hashtable<>();
 	}
 
 	@Override

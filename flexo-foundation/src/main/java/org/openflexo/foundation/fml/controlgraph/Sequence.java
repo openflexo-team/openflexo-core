@@ -206,7 +206,7 @@ public interface Sequence extends FMLControlGraph, FMLControlGraphOwner {
 
 		@Override
 		public List<FMLControlGraph> getFlattenedSequence() {
-			List<FMLControlGraph> returned = new ArrayList<FMLControlGraph>();
+			List<FMLControlGraph> returned = new ArrayList<>();
 			if (getControlGraph1() instanceof Sequence) {
 				returned.addAll(((Sequence) getControlGraph1()).getFlattenedSequence());
 			}
@@ -344,8 +344,8 @@ public interface Sequence extends FMLControlGraph, FMLControlGraphOwner {
 					&& !TypeUtils.isTypeAssignableFrom(inferedType2, inferedType1)) {
 				System.out.println("Types are not compatible in:");
 				System.out.println(sequence.getFMLRepresentation());
-				return new ValidationError<InferedTypesMustBeCompatible, Sequence>(this, sequence, "types_are_not_compatible ("
-						+ TypeUtils.simpleRepresentation(inferedType1) + " and " + TypeUtils.simpleRepresentation(inferedType2) + ")");
+				return new ValidationError<>(this, sequence, "types_are_not_compatible (" + TypeUtils.simpleRepresentation(inferedType1)
+						+ " and " + TypeUtils.simpleRepresentation(inferedType2) + ")");
 			}
 			return null;
 		}

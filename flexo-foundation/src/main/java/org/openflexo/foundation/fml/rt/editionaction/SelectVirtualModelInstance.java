@@ -134,8 +134,7 @@ public interface SelectVirtualModelInstance<VMI extends VirtualModelInstance<VMI
 		@Override
 		public DataBinding<VirtualModelInstance<?, ?>> getContainer() {
 			if (container == null) {
-				container = new DataBinding<VirtualModelInstance<?, ?>>(this, VirtualModelInstance.class,
-						DataBinding.BindingDefinitionType.GET);
+				container = new DataBinding<>(this, VirtualModelInstance.class, DataBinding.BindingDefinitionType.GET);
 				container.setBindingName("container");
 			}
 			return container;
@@ -300,8 +299,7 @@ public interface SelectVirtualModelInstance<VMI extends VirtualModelInstance<VMI
 		public ValidationIssue<SelectVirtualModelInstanceMustAddressAFlexoConceptType, SelectVirtualModelInstance> applyValidation(
 				SelectVirtualModelInstance action) {
 			if (action.getVirtualModelType() == null) {
-				return new ValidationError<SelectVirtualModelInstanceMustAddressAFlexoConceptType, SelectVirtualModelInstance>(this, action,
-						"select_virtual_model_instance_action_doesn't_define_any_virtual_model_type");
+				return new ValidationError<>(this, action, "select_virtual_model_instance_action_doesn't_define_any_virtual_model_type");
 			}
 			return null;
 		}

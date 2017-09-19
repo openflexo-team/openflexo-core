@@ -266,8 +266,7 @@ public class CreateFlexoConceptInstanceRole extends AbstractCreateFlexoRole<Crea
 
 	public DataBinding<VirtualModelInstance<?, ?>> getVirtualModelInstance() {
 		if (virtualModelInstance == null) {
-			virtualModelInstance = new DataBinding<VirtualModelInstance<?, ?>>(this, FMLRTVirtualModelInstance.class,
-					DataBinding.BindingDefinitionType.GET);
+			virtualModelInstance = new DataBinding<>(this, FMLRTVirtualModelInstance.class, DataBinding.BindingDefinitionType.GET);
 		}
 		return virtualModelInstance;
 	}

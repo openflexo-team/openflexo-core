@@ -93,8 +93,8 @@ public abstract class ResourceRepository<R extends FlexoResource<?>, I> extends 
 	 */
 	public ResourceRepository(FlexoResourceCenter<I> resourceCenter, I baseArtefact) {
 		this.resourceCenter = resourceCenter;
-		resources = new HashMap<String, R>();
-		rootFolder = new RepositoryFolder<R, I>(baseArtefact, null, this);
+		resources = new HashMap<>();
+		rootFolder = new RepositoryFolder<>(baseArtefact, null, this);
 		this.baseArtefact = baseArtefact;
 	}
 
@@ -181,7 +181,7 @@ public abstract class ResourceRepository<R extends FlexoResource<?>, I> extends 
 		// resources are registered or unregistered)
 
 		// scheme to resolve resources from URI whose value has changed since registration
-		for (String oldURI : new ArrayList<String>(resources.keySet())) {
+		for (String oldURI : new ArrayList<>(resources.keySet())) {
 			R resource = resources.get(oldURI);
 			if (!Objects.equals(oldURI, resource.getURI())) {
 				resources.remove(oldURI);
@@ -260,7 +260,7 @@ public abstract class ResourceRepository<R extends FlexoResource<?>, I> extends 
 		// System.out.println("Create folder " + folderName + " parent=" + parentFolder);
 		// System.out.println("parent file = " + parentFolder.getFile());
 		I serializationArtefact = getResourceCenter().createDirectory(folderName, parentFolder.getSerializationArtefact());
-		RepositoryFolder<R, I> newFolder = new RepositoryFolder<R, I>(serializationArtefact, parentFolder, this);
+		RepositoryFolder<R, I> newFolder = new RepositoryFolder<>(serializationArtefact, parentFolder, this);
 
 		return newFolder;
 	}
@@ -362,7 +362,7 @@ public abstract class ResourceRepository<R extends FlexoResource<?>, I> extends 
 	 * @return an Enumeration of FlexoComponentFolder elements
 	 */
 	public Enumeration<RepositoryFolder<R, I>> allFolders() {
-		Vector<RepositoryFolder<R, I>> temp = new Vector<RepositoryFolder<R, I>>();
+		Vector<RepositoryFolder<R, I>> temp = new Vector<>();
 		addFolders(temp, getRootFolder());
 		return temp.elements();
 	}
@@ -371,7 +371,7 @@ public abstract class ResourceRepository<R extends FlexoResource<?>, I> extends 
 	 * Return number of folders
 	 */
 	public int allFoldersCount() {
-		Vector<RepositoryFolder<R, I>> temp = new Vector<RepositoryFolder<R, I>>();
+		Vector<RepositoryFolder<R, I>> temp = new Vector<>();
 		addFolders(temp, getRootFolder());
 		return temp.size();
 	}
@@ -468,7 +468,7 @@ public abstract class ResourceRepository<R extends FlexoResource<?>, I> extends 
 				if (currentFolder == null) {
 					if (createWhenNonExistent) {
 						I serializationArtefact = getResourceCenter().getDirectory(pathElement, returned.getSerializationArtefact());
-						RepositoryFolder<R, I> newFolder = new RepositoryFolder<R, I>(serializationArtefact, returned, this);
+						RepositoryFolder<R, I> newFolder = new RepositoryFolder<>(serializationArtefact, returned, this);
 						// System.out.println("On notifie " + newFolder + " pour " + returned);
 						returned.getPropertyChangeSupport().firePropertyChange("children", null, newFolder);
 						currentFolder = newFolder;

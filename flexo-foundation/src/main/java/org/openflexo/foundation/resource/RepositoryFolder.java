@@ -82,8 +82,8 @@ public class RepositoryFolder<R extends FlexoResource<?>, I> extends DefaultFlex
 		this.resourceRepository = resourceRepository;
 		this.name = resourceRepository.getResourceCenter().retrieveName(serializationArtefact);
 		this.parent = parentFolder;
-		children = new ArrayList<RepositoryFolder<R, I>>();
-		resources = new ArrayList<R>();
+		children = new ArrayList<>();
+		resources = new ArrayList<>();
 		if (parentFolder != null) {
 			// FIXME: Adding try catch here to avoid failure in case of concurrent modifications
 			try {

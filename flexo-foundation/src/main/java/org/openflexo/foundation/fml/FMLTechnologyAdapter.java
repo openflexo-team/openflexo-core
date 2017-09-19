@@ -148,7 +148,7 @@ public class FMLTechnologyAdapter extends TechnologyAdapter {
 	public <I> VirtualModelRepository<I> getVirtualModelRepository(FlexoResourceCenter<I> resourceCenter) {
 		VirtualModelRepository<I> returned = resourceCenter.retrieveRepository(VirtualModelRepository.class, this);
 		if (returned == null) {
-			returned = new VirtualModelRepository<I>(this, resourceCenter);
+			returned = new VirtualModelRepository<>(this, resourceCenter);
 			resourceCenter.registerRepository(returned, VirtualModelRepository.class, this);
 		}
 		return returned;

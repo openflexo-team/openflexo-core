@@ -348,7 +348,7 @@ public abstract interface FlexoProperty<T> extends FlexoConceptObject {
 			if (getFlexoConcept().getParentFlexoConcepts() == null || getFlexoConcept().getParentFlexoConcepts().size() == 0) {
 				return Collections.emptyList();
 			}
-			List<FlexoProperty<?>> returned = new ArrayList<FlexoProperty<?>>();
+			List<FlexoProperty<?>> returned = new ArrayList<>();
 			for (FlexoConcept parentConcept : getFlexoConcept().getParentFlexoConcepts()) {
 				FlexoProperty<?> p = parentConcept.getAccessibleProperty(getPropertyName());
 				if (p != null) {
@@ -368,7 +368,7 @@ public abstract interface FlexoProperty<T> extends FlexoConceptObject {
 		 */
 		@Override
 		public List<FlexoProperty<?>> getAllSuperProperties() {
-			List<FlexoProperty<?>> returned = new ArrayList<FlexoProperty<?>>();
+			List<FlexoProperty<?>> returned = new ArrayList<>();
 			appendAllSuperProperties(returned);
 			return returned;
 		}
@@ -435,7 +435,7 @@ public abstract interface FlexoProperty<T> extends FlexoConceptObject {
 		@Override
 		public ValidationIssue<FlexoPropertyMustHaveAName, FlexoProperty> applyValidation(FlexoProperty flexoRole) {
 			if (StringUtils.isEmpty(flexoRole.getPropertyName())) {
-				return new ValidationError<FlexoPropertyMustHaveAName, FlexoProperty>(this, flexoRole, "flexo_property_has_no_name");
+				return new ValidationError<>(this, flexoRole, "flexo_property_has_no_name");
 			}
 			return null;
 		}
@@ -506,15 +506,13 @@ public abstract interface FlexoProperty<T> extends FlexoConceptObject {
 		public ValidationIssue<PropertyShadowingAnOtherOne, FlexoProperty<?>> applyValidation(FlexoProperty<?> property) {
 			if (property.getFlexoConcept().getContainerFlexoConcept() != null) {
 				if (property.getFlexoConcept().getContainerFlexoConcept().getAccessibleProperty(property.getName()) != null) {
-					return new ValidationWarning<PropertyShadowingAnOtherOne, FlexoProperty<?>>(this, property,
-							"property_($validable.propertyName)_shadows_an_other_property");
+					return new ValidationWarning<>(this, property, "property_($validable.propertyName)_shadows_an_other_property");
 				}
 			}
 			if (property.getFlexoConcept().getVirtualModel() != null
 					&& property.getFlexoConcept().getVirtualModel() != property.getFlexoConcept()) {
 				if (property.getFlexoConcept().getVirtualModel().getAccessibleProperty(property.getName()) != null) {
-					return new ValidationWarning<PropertyShadowingAnOtherOne, FlexoProperty<?>>(this, property,
-							"property_($validable.propertyName)_shadows_an_other_property");
+					return new ValidationWarning<>(this, property, "property_($validable.propertyName)_shadows_an_other_property");
 				}
 			}
 			return null;

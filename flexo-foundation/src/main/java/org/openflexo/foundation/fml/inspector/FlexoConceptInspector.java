@@ -273,7 +273,7 @@ public interface FlexoConceptInspector extends FlexoConceptObject, Bindable {
 		@Override
 		public DataBinding<String> getRenderer() {
 			if (renderer == null) {
-				renderer = new DataBinding<String>(formatter, String.class, BindingDefinitionType.GET);
+				renderer = new DataBinding<>(formatter, String.class, BindingDefinitionType.GET);
 				renderer.setBindingName("renderer");
 			}
 			return renderer;

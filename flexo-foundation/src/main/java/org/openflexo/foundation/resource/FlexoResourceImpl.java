@@ -348,7 +348,7 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 	 */
 	@Override
 	public <R extends FlexoResource<?>> List<R> getContents(Class<R> resourceClass) {
-		ArrayList<R> returned = new ArrayList<R>();
+		ArrayList<R> returned = new ArrayList<>();
 		for (FlexoResource<?> r : getContents()) {
 			if (resourceClass.isAssignableFrom(r.getClass())) {
 				returned.add((R) r);

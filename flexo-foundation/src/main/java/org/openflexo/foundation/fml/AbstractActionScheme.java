@@ -88,7 +88,7 @@ public abstract interface AbstractActionScheme extends FlexoBehaviour {
 		@Override
 		public DataBinding<Boolean> getConditional() {
 			if (conditional == null) {
-				conditional = new DataBinding<Boolean>(this, Boolean.class, DataBinding.BindingDefinitionType.GET);
+				conditional = new DataBinding<>(this, Boolean.class, DataBinding.BindingDefinitionType.GET);
 				conditional.setBindingName("conditional");
 			}
 			return conditional;

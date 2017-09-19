@@ -50,6 +50,7 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.jar.JarFile;
+
 import org.apache.commons.io.IOUtils;
 import org.openflexo.foundation.FlexoService;
 import org.openflexo.foundation.FlexoServiceImpl;
@@ -381,7 +382,7 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 			}
 			else if (notification instanceof TechnologyAdapterHasBeenActivated) {
 				// Avoid Concurrent Modification Exception issues
-				ArrayList<FlexoResourceCenter<?>> listRC = new ArrayList<FlexoResourceCenter<?>>(getResourceCenters());
+				ArrayList<FlexoResourceCenter<?>> listRC = new ArrayList<>(getResourceCenters());
 				for (FlexoResourceCenter<?> rc : listRC) {
 					if (rc != null) {
 						rc.activateTechnology(((TechnologyAdapterHasBeenActivated) notification).getTechnologyAdapter());

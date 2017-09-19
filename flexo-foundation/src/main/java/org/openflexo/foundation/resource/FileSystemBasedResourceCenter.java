@@ -983,7 +983,7 @@ public abstract class FileSystemBasedResourceCenter extends ResourceRepository<F
 	@Override
 	public List<String> getPathTo(File aFile) throws IOException {
 		if (FileUtils.directoryContainsFile(getRootFolder().getSerializationArtefact(), aFile, true)) {
-			List<String> pathTo = new ArrayList<String>();
+			List<String> pathTo = new ArrayList<>();
 			File f = aFile.getParentFile().getCanonicalFile();
 			while (f != null && !f.equals(getRootFolder().getSerializationArtefact().getCanonicalFile())) {
 				pathTo.add(0, f.getName());

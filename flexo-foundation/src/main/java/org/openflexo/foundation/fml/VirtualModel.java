@@ -424,7 +424,7 @@ public interface VirtualModel extends FlexoConcept, VirtualModelObject, FlexoMet
 		// Used during deserialization, do not use it
 		public VirtualModelImpl() {
 			super();
-			virtualModels = new ArrayList<VirtualModel>();
+			virtualModels = new ArrayList<>();
 		}
 
 		@Override
@@ -1174,7 +1174,7 @@ public interface VirtualModel extends FlexoConcept, VirtualModelObject, FlexoMet
 		 * @return
 		 */
 		public <VM extends VirtualModel> List<VM> getVirtualModels(Class<VM> virtualModelClass, boolean onlyFinalInstances) {
-			List<VM> returned = new ArrayList<VM>();
+			List<VM> returned = new ArrayList<>();
 			for (VirtualModel vm : getVirtualModels()) {
 				if (onlyFinalInstances) {
 					if (virtualModelClass.equals(vm.getClass())) {

@@ -86,7 +86,7 @@ public class FlexoUndoManager extends UndoManager {
 	private final FlexoEditingContext editingContext;
 
 	public FlexoUndoManager(FlexoEditingContext editingContext) {
-		ignoreHandlers = new ArrayList<IgnoreHandler>();
+		ignoreHandlers = new ArrayList<>();
 		this.editingContext = editingContext;
 	}
 
@@ -365,7 +365,7 @@ public class FlexoUndoManager extends UndoManager {
 			this.action = action;
 			pcSupport = new PropertyChangeSupport(this);
 			stackTrace = new Exception().getStackTrace();
-			embeddedFlexoActionCompoundEdits = new ArrayList<FlexoActionCompoundEdit>();
+			embeddedFlexoActionCompoundEdits = new ArrayList<>();
 		}
 
 		public FlexoActionCompoundEdit(FlexoActionCompoundEdit owner, FlexoAction<?, ?, ?> action) {
@@ -373,7 +373,7 @@ public class FlexoUndoManager extends UndoManager {
 			this.action = action;
 			pcSupport = new PropertyChangeSupport(this);
 			stackTrace = new Exception().getStackTrace();
-			embeddedFlexoActionCompoundEdits = new ArrayList<FlexoActionCompoundEdit>();
+			embeddedFlexoActionCompoundEdits = new ArrayList<>();
 			this.owner = owner;
 		}
 

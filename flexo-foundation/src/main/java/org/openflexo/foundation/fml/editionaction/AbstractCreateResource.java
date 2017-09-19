@@ -163,7 +163,7 @@ public interface AbstractCreateResource<MS extends ModelSlot<RD>, RD extends Res
 		@Override
 		public DataBinding<String> getResourceName() {
 			if (resourceName == null) {
-				resourceName = new DataBinding<String>(this, String.class, DataBinding.BindingDefinitionType.GET);
+				resourceName = new DataBinding<>(this, String.class, DataBinding.BindingDefinitionType.GET);
 				resourceName.setBindingName("resourceName");
 			}
 			return resourceName;
@@ -183,7 +183,7 @@ public interface AbstractCreateResource<MS extends ModelSlot<RD>, RD extends Res
 		@Override
 		public DataBinding<String> getResourceURI() {
 			if (resourceURI == null) {
-				resourceURI = new DataBinding<String>(this, String.class, DataBinding.BindingDefinitionType.GET);
+				resourceURI = new DataBinding<>(this, String.class, DataBinding.BindingDefinitionType.GET);
 				resourceURI.setBindingName("resourceURI");
 			}
 			return resourceURI;
@@ -205,8 +205,7 @@ public interface AbstractCreateResource<MS extends ModelSlot<RD>, RD extends Res
 		@Override
 		public DataBinding<FlexoResourceCenter<?>> getResourceCenter() {
 			if (resourceCenter == null) {
-				resourceCenter = new DataBinding<FlexoResourceCenter<?>>(this, FlexoResourceCenter.class,
-						DataBinding.BindingDefinitionType.GET);
+				resourceCenter = new DataBinding<>(this, FlexoResourceCenter.class, DataBinding.BindingDefinitionType.GET);
 				resourceCenter.setBindingName("resourceCenter");
 			}
 			return resourceCenter;

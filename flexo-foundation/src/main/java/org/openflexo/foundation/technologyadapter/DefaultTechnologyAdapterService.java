@@ -234,10 +234,10 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 
 	@Override
 	public void initialize() {
-		availableFlexoRoleTypes = new HashMap();
-		availableEditionActionTypes = new HashMap();
-		availableFetchRequestActionTypes = new HashMap();
-		availableFlexoBehaviourTypes = new HashMap();
+		availableFlexoRoleTypes = new HashMap<>();
+		availableEditionActionTypes = new HashMap<>();
+		availableFetchRequestActionTypes = new HashMap<>();
+		availableFlexoBehaviourTypes = new HashMap<>();
 		loadAvailableTechnologyAdapters();
 	}
 
@@ -250,7 +250,7 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 	 */
 	@Override
 	public List<ResourceRepository<?, ?>> getAllRepositories(TechnologyAdapter technologyAdapter) {
-		List<ResourceRepository<?, ?>> returned = new ArrayList<ResourceRepository<?, ?>>();
+		List<ResourceRepository<?, ?>> returned = new ArrayList<>();
 		for (FlexoResourceCenter<?> rc : getFlexoResourceCenterService().getResourceCenters()) {
 			Collection<? extends ResourceRepository<?, ?>> repCollection = rc.getRegistedRepositories(technologyAdapter, true);
 			if (repCollection != null) {

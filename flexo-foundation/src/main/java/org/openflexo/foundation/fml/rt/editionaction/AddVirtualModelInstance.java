@@ -52,8 +52,8 @@ import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelInstanceType;
 import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
-import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
+import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.action.CreateBasicVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
@@ -66,8 +66,8 @@ import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.model.annotations.XMLElement;
 
 /**
- * This action is used to explicitely instanciate a new {@link FMLRTVirtualModelInstance} in an other {@link FMLRTVirtualModelInstance} with some
- * parameters
+ * This action is used to explicitely instanciate a new {@link FMLRTVirtualModelInstance} in an other {@link FMLRTVirtualModelInstance} with
+ * some parameters
  * 
  * @author sylvain
  * 
@@ -127,7 +127,7 @@ public interface AddVirtualModelInstance extends AbstractAddFlexoConceptInstance
 		@Override
 		public DataBinding<String> getVirtualModelInstanceName() {
 			if (virtualModelInstanceName == null) {
-				virtualModelInstanceName = new DataBinding<String>(this, String.class, DataBinding.BindingDefinitionType.GET);
+				virtualModelInstanceName = new DataBinding<>(this, String.class, DataBinding.BindingDefinitionType.GET);
 				virtualModelInstanceName.setBindingName("virtualModelInstanceName");
 			}
 			return virtualModelInstanceName;
@@ -147,7 +147,7 @@ public interface AddVirtualModelInstance extends AbstractAddFlexoConceptInstance
 		@Override
 		public DataBinding<String> getVirtualModelInstanceTitle() {
 			if (virtualModelInstanceTitle == null) {
-				virtualModelInstanceTitle = new DataBinding<String>(this, String.class, DataBinding.BindingDefinitionType.GET);
+				virtualModelInstanceTitle = new DataBinding<>(this, String.class, DataBinding.BindingDefinitionType.GET);
 				virtualModelInstanceTitle.setBindingName("virtualModelInstanceTitle");
 			}
 			return virtualModelInstanceTitle;

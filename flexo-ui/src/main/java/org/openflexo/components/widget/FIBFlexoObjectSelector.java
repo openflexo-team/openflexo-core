@@ -809,10 +809,7 @@ public abstract class FIBFlexoObjectSelector<T extends FlexoObject> extends Text
 		if (_selectableConditionAsString == null || StringUtils.isEmpty(_selectableConditionAsString)) {
 			return null;
 		}
-		_selectableCondition = new DataBinding<>(_selectableConditionAsString);
-		_selectableCondition.setOwner(component);
-		_selectableCondition.setDeclaredType(Boolean.class);
-		_selectableCondition.setBindingDefinitionType(BindingDefinitionType.GET);
+		_selectableCondition = new DataBinding<>(_selectableConditionAsString, component, Boolean.class, BindingDefinitionType.GET);
 		// System.out.println("setSelectableCondition with "+_selectableCondition+" valid ? "+_selectableCondition.isValid());
 		return _selectableCondition;
 	}

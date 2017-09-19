@@ -52,7 +52,6 @@ import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
-import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.ActionScheme;
 import org.openflexo.foundation.fml.DeletionScheme;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
@@ -61,6 +60,7 @@ import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
+import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
@@ -192,7 +192,7 @@ public interface FinalizeMatching extends EditionAction {
 		@Override
 		public DataBinding<MatchingSet> getMatchingSet() {
 			if (matchingSet == null) {
-				matchingSet = new DataBinding<MatchingSet>(this, MatchingSet.class, BindingDefinitionType.GET);
+				matchingSet = new DataBinding<>(this, MatchingSet.class, BindingDefinitionType.GET);
 				matchingSet.setBindingName("matchingSet");
 			}
 			return matchingSet;
@@ -212,7 +212,7 @@ public interface FinalizeMatching extends EditionAction {
 		@Override
 		public DataBinding<FlexoConceptInstance> getContainer() {
 			if (container == null) {
-				container = new DataBinding<FlexoConceptInstance>(this, FlexoConceptInstance.class, BindingDefinitionType.GET);
+				container = new DataBinding<>(this, FlexoConceptInstance.class, BindingDefinitionType.GET);
 				container.setBindingName("container");
 			}
 			return container;
@@ -446,7 +446,8 @@ public interface FinalizeMatching extends EditionAction {
 									(FlexoBehaviourAction<?, ?, ?>) evaluationContext);
 						}
 						else if (getFlexoBehaviour() instanceof DeletionScheme) {
-							DeletionSchemeActionFactory actionType = new DeletionSchemeActionFactory((DeletionScheme) getFlexoBehaviour(), fci);
+							DeletionSchemeActionFactory actionType = new DeletionSchemeActionFactory((DeletionScheme) getFlexoBehaviour(),
+									fci);
 							behaviourAction = actionType.makeNewEmbeddedAction(fci, null,
 									(FlexoBehaviourAction<?, ?, ?>) evaluationContext);
 						}

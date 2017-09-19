@@ -41,7 +41,6 @@ package org.openflexo.foundation.fml.rt;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoObject;
-import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.InnerResourceData;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.rt.rm.AbstractVirtualModelInstanceResource;
@@ -54,8 +53,8 @@ import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.PropertyIdentifier;
 
 /**
- * A {@link VirtualModelInstanceObject} is an abstract run-time concept (instance) for an object "living" in a {@link FMLRTVirtualModelInstance}
- * (instanceof a {@link VirtualModel})
+ * A {@link VirtualModelInstanceObject} is an abstract run-time concept (instance) for an object "living" in a
+ * {@link FMLRTVirtualModelInstance} (instanceof a {@link VirtualModel})
  * 
  * @author sylvain
  * 

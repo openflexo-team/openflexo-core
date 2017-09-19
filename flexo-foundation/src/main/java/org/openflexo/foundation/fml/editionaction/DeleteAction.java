@@ -108,7 +108,7 @@ public interface DeleteAction<T extends FlexoObject> extends EditionAction, Assi
 		@Override
 		public DataBinding<T> getObject() {
 			if (object == null) {
-				object = new DataBinding<T>(this, FlexoObject.class, BindingDefinitionType.GET);
+				object = new DataBinding<>(this, FlexoObject.class, BindingDefinitionType.GET);
 				object.setBindingName("object");
 			}
 			return object;

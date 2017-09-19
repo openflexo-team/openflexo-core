@@ -302,8 +302,7 @@ public interface FlexoConceptInstanceRole extends FlexoRole<FlexoConceptInstance
 		@Override
 		public DataBinding<VirtualModelInstance<?, ?>> getVirtualModelInstance() {
 			if (virtualModelInstance == null) {
-				virtualModelInstance = new DataBinding<VirtualModelInstance<?, ?>>(this, VirtualModelInstance.class,
-						DataBinding.BindingDefinitionType.GET);
+				virtualModelInstance = new DataBinding<>(this, VirtualModelInstance.class, DataBinding.BindingDefinitionType.GET);
 			}
 			return virtualModelInstance;
 		}
@@ -387,8 +386,7 @@ public interface FlexoConceptInstanceRole extends FlexoRole<FlexoConceptInstance
 		public ValidationIssue<MustHaveAConceptType, FlexoConceptInstanceRole> applyValidation(FlexoConceptInstanceRole aRole) {
 			FlexoConcept fc = aRole.getFlexoConceptType();
 			if (fc == null) {
-				return new ValidationWarning<MustHaveAConceptType, FlexoConceptInstanceRole>(this, aRole,
-						"FlexoConceptInstanceRole_should_have_a_type");
+				return new ValidationWarning<>(this, aRole, "FlexoConceptInstanceRole_should_have_a_type");
 
 			}
 			return null;

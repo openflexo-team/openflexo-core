@@ -107,7 +107,7 @@ public class ThreadPoolFlexoTaskManager extends FlexoServiceImpl implements Flex
 			};*/
 		};
 
-		scheduledTasks = new ArrayList<FlexoTask>();
+		scheduledTasks = new ArrayList<>();
 	}
 
 	@Override
@@ -151,7 +151,7 @@ public class ThreadPoolFlexoTaskManager extends FlexoServiceImpl implements Flex
 
 	private synchronized void launchReadyToExecuteTasks(FlexoTask... ignoredTasks) {
 		// System.out.println("launchReadyToExecuteTasks()");
-		for (FlexoTask task : new ArrayList<FlexoTask>(getScheduledTasks())) {
+		for (FlexoTask task : new ArrayList<>(getScheduledTasks())) {
 			if (task.isReadyToExecute()) {
 				boolean ignored = false;
 				if (ignoredTasks.length > 0) {

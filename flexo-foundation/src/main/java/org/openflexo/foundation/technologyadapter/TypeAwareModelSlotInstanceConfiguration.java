@@ -46,10 +46,10 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoException;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstanceModelFactory;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.TypeAwareModelSlotInstance;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.ModelSlotInstanceConfiguration;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
@@ -83,7 +83,7 @@ public abstract class TypeAwareModelSlotInstanceConfiguration<M extends FlexoMod
 		if (rcService.getResourceCenters().size() > 0) {
 			targetResourceCenter = rcService.getResourceCenters().get(0);
 		}
-		options = new ArrayList<ModelSlotInstanceConfiguration.ModelSlotInstanceConfigurationOption>();
+		options = new ArrayList<>();
 		options.add(DefaultModelSlotInstanceConfigurationOption.SelectExistingModel);
 		options.add(DefaultModelSlotInstanceConfigurationOption.CreatePrivateNewModel);
 		options.add(DefaultModelSlotInstanceConfigurationOption.CreateSharedNewModel);
@@ -99,8 +99,7 @@ public abstract class TypeAwareModelSlotInstanceConfiguration<M extends FlexoMod
 	}
 
 	@Override
-	public TypeAwareModelSlotInstance<M, MM, MS> createModelSlotInstance(FlexoConceptInstance fci,
-			VirtualModelInstance<?, ?> view) {
+	public TypeAwareModelSlotInstance<M, MM, MS> createModelSlotInstance(FlexoConceptInstance fci, VirtualModelInstance<?, ?> view) {
 		AbstractVirtualModelInstanceModelFactory<?> factory = fci.getFactory();
 		TypeAwareModelSlotInstance<M, MM, MS> returned = factory.newInstance(TypeAwareModelSlotInstance.class);
 		returned.setModelSlot(getModelSlot());
