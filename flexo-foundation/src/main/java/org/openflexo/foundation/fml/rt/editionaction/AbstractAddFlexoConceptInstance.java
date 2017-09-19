@@ -284,11 +284,18 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 			_creationSchemeURI = uri;
 		}
 
+		private void loadMetaModelWhenRequired() {
+			if (creationScheme == null && _creationSchemeURI != null && getVirtualModelLibrary() != null) {
+				creationScheme = (CreationScheme) getVirtualModelLibrary().getFlexoBehaviour(_creationSchemeURI, true);
+				updateParameters();
+			}
+		}
+
 		@Override
 		public CreationScheme getCreationScheme() {
 
 			if (creationScheme == null && _creationSchemeURI != null && getVirtualModelLibrary() != null) {
-				creationScheme = (CreationScheme) getVirtualModelLibrary().getFlexoBehaviour(_creationSchemeURI, true);
+				creationScheme = (CreationScheme) getVirtualModelLibrary().getFlexoBehaviour(_creationSchemeURI, false);
 				updateParameters();
 			}
 			if (creationScheme == null && getAssignedFlexoProperty() instanceof FlexoConceptInstanceRole) {
@@ -398,6 +405,8 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 				logger.fine("--------------> Perform performAddFlexoConceptInstance " + evaluationContext);
 			}
 
+			loadMetaModelWhenRequired();
+
 			VMI vmInstance = getVirtualModelInstance(evaluationContext);
 			if (vmInstance == null) {
 				logger.warning("null FMLRTVirtualModelInstance");
@@ -405,6 +414,11 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 			}
 
 			FlexoConceptInstance container = null;
+
+			if (getFlexoConceptType() == null) {
+				logger.warning("null concept type while creating new concept");
+				return null;
+			}
 
 			if (getFlexoConceptType().getContainerFlexoConcept() != null) {
 				container = getContainer(evaluationContext);
@@ -472,7 +486,7 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 		@Override
 		public void finalizeDeserialization() {
 			super.finalizeDeserialization();
-			getCreationScheme();
+			loadMetaModelWhenRequired();
 		}
 
 		@Override
