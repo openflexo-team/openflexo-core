@@ -40,7 +40,6 @@ package org.openflexo.foundation;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.Date;
 
 import org.openflexo.foundation.ProjectData.ProjectDataFactory;
 import org.openflexo.foundation.resource.FileIODelegate;
@@ -94,10 +93,8 @@ public interface ProjectDataResource extends PamelaResource<ProjectData, Project
 				returned.setFactory(projectDataFactory);
 				returned.initName(project.getProjectName() + "-data");
 				returned.setIODelegate(FileIODelegateImpl.makeFileFlexoIODelegate(xmlFile, resourceFactory));
-				Date currentDate = new Date();
-				String projectURI = FlexoProject.BASE_PROJECT_URI + "/" + (1900 + currentDate.getYear()) + "/"
-						+ (currentDate.getMonth() + 1) + "/" + project.projectName + "_" + System.currentTimeMillis();
-				returned.setURI(projectURI);
+				returned.setURI(project.buildProjectURI());
+
 				returned.setResourceCenter(project);
 				returned.setServiceManager(project.getServiceManager());
 				if (xmlFile.exists()) {

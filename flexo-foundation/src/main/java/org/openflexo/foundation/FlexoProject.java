@@ -43,6 +43,7 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Hashtable;
@@ -1124,15 +1125,19 @@ public class FlexoProject extends FileSystemBasedResourceCenter implements Valid
 		setURI(projectURI);
 	}
 
+	public String buildProjectURI() {
+		Calendar rightNow = Calendar.getInstance();
+		return BASE_PROJECT_URI + "/" + rightNow.get(Calendar.YEAR) + "/" + (rightNow.get(Calendar.MONTH) + 1) + "/" + getProjectName()
+				+ "_" + System.currentTimeMillis();
+	}
+
 	public String getURI() {
-		if (getProjectData() != null) {
-			if (getProjectData().getURI() == null) {
-				Date currentDate = new Date();
-				String projectURI = BASE_PROJECT_URI + "/" + (1900 + currentDate.getYear()) + "/" + (currentDate.getMonth() + 1) + "/"
-						+ getProjectName() + "_" + System.currentTimeMillis();
-				getProjectData().setURI(projectURI);
+		ProjectData pd = getProjectData();
+		if (pd != null) {
+			if (pd.getURI() == null) {
+				pd.setURI(buildProjectURI());
 			}
-			return getProjectData().getURI();
+			return pd.getURI();
 		}
 		else {
 			return null;
