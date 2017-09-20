@@ -155,7 +155,7 @@ public interface ObjectPropertyAssertion extends AbstractAssertion {
 		@Override
 		public DataBinding<?> getObject() {
 			if (object == null) {
-				object = new DataBinding<Object>(this, getObjectType(), BindingDefinitionType.GET);
+				object = new DataBinding<>(this, getObjectType(), BindingDefinitionType.GET);
 				object.setBindingName("object");
 			}
 			return object;
@@ -217,8 +217,7 @@ public interface ObjectPropertyAssertion extends AbstractAssertion {
 		public ValidationIssue<ObjectPropertyAssertionMustDefineAnOntologyProperty, ObjectPropertyAssertion> applyValidation(
 				ObjectPropertyAssertion assertion) {
 			if (assertion.getOntologyProperty() == null) {
-				return new ValidationError<ObjectPropertyAssertionMustDefineAnOntologyProperty, ObjectPropertyAssertion>(this, assertion,
-						"object_property_assertion_must_define_an_ontology_property");
+				return new ValidationError<>(this, assertion, "object_property_assertion_must_define_an_ontology_property");
 			}
 			return null;
 		}

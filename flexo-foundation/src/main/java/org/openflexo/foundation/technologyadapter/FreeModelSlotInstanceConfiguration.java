@@ -225,7 +225,7 @@ public class FreeModelSlotInstanceConfiguration<RD extends ResourceData<RD> & Te
 
 	public String getResourceUri() {
 		if (resourceUri == null) {
-			FlexoResourceCenter localRC;
+			FlexoResourceCenter<?> localRC;
 			if (getTargetResourceCenter() != null) {
 				localRC = getTargetResourceCenter();
 			}

@@ -57,8 +57,8 @@ import org.openflexo.view.controller.ControllerActionInitializer;
 
 public class LoadResourceActionInitializer extends ActionInitializer<LoadResourceAction, FlexoObject, FlexoObject> {
 
-	private static final java.util.logging.Logger logger = org.openflexo.logging.FlexoLogger.getLogger(LoadResourceActionInitializer.class
-			.getPackage().getName());
+	private static final java.util.logging.Logger logger = org.openflexo.logging.FlexoLogger
+			.getLogger(LoadResourceActionInitializer.class.getPackage().getName());
 
 	public LoadResourceActionInitializer(ControllerActionInitializer actionInitializer) {
 		super(LoadResourceAction.actionType, actionInitializer);
@@ -85,7 +85,7 @@ public class LoadResourceActionInitializer extends ActionInitializer<LoadResourc
 			@Override
 			public boolean run(EventObject e, LoadResourceAction action) {
 				try {
-					FlexoObject loadedData = (FlexoObject) ((FlexoResource) action.getFocusedObject()).getResourceData(null);
+					FlexoObject loadedData = (FlexoObject) ((FlexoResource<?>) action.getFocusedObject()).getResourceData(null);
 					getController().setCurrentEditedObjectAsModuleView(loadedData);
 					getController().getSelectionManager().setSelectedObject(loadedData);
 				} catch (FileNotFoundException e1) {

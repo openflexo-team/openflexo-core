@@ -9,7 +9,6 @@ import org.eclipse.jgit.dircache.DirCache;
 import org.eclipse.jgit.dircache.DirCacheEntry;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.Repository;
-import org.eclipse.jgit.revwalk.RevCommit;
 import org.openflexo.foundation.resource.GitIODelegate.GitIODelegateImpl;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.Import;
@@ -82,7 +81,8 @@ public interface GitIODelegate extends FileIODelegate {
 				}
 
 				System.out.println("Commit ressource : " + resource.getName() + " in Repository : " + repository.getBranch());
-				RevCommit commit = git.commit().setMessage("Ressource ViewPoint committed").call();
+				// Unused RevCommit commit =
+				git.commit().setMessage("Ressource ViewPoint committed").call();
 
 			} catch (GitAPIException | IOException e) {
 				e.printStackTrace();

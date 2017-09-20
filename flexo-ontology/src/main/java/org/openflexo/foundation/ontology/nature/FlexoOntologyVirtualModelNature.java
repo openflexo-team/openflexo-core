@@ -43,7 +43,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelNature;
 import org.openflexo.foundation.ontology.IFlexoOntology;
 import org.openflexo.foundation.ontology.IFlexoOntologyClass;
@@ -93,7 +92,7 @@ public class FlexoOntologyVirtualModelNature implements VirtualModelNature {
 		return INSTANCE._getFlexoOntologyModelSlots(virtualModel);
 	}
 
-	private List<? extends FlexoOntologyModelSlot<?, ?, ?>> _getFlexoOntologyModelSlots(VirtualModel virtualModel) {
+	private static List<? extends FlexoOntologyModelSlot<?, ?, ?>> _getFlexoOntologyModelSlots(VirtualModel virtualModel) {
 		if (virtualModel != null && virtualModel.getModelSlots(FlexoOntologyModelSlot.class).size() > 0) {
 			return (List) virtualModel.getModelSlots(FlexoOntologyModelSlot.class);
 		}
@@ -106,7 +105,7 @@ public class FlexoOntologyVirtualModelNature implements VirtualModelNature {
 	 * @return a {@link Set} of {@link IFlexoOntology}
 	 */
 	public static Set<IFlexoOntology<?>> getAllReferencedMetaModels(VirtualModel virtualModel) {
-		HashSet<IFlexoOntology<?>> returned = new HashSet<IFlexoOntology<?>>();
+		HashSet<IFlexoOntology<?>> returned = new HashSet<>();
 		for (FlexoOntologyModelSlot<?, ?, ?> modelSlot : getFlexoOntologyModelSlots(virtualModel)) {
 			if (modelSlot.getMetaModelResource() != null) {
 				returned.add(modelSlot.getMetaModelResource().getMetaModelData());
@@ -148,7 +147,7 @@ public class FlexoOntologyVirtualModelNature implements VirtualModelNature {
 	public static IFlexoOntologyObject<?> getOntologyObject(String uri, VirtualModel virtualModel) {
 		Object returned = getObject(uri, virtualModel);
 		if (returned instanceof IFlexoOntologyObject) {
-			return (IFlexoOntologyObject) returned;
+			return (IFlexoOntologyObject<?>) returned;
 		}
 		return null;
 	}

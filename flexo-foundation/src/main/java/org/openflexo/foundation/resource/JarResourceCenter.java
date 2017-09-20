@@ -204,13 +204,13 @@ public class JarResourceCenter extends ResourceRepository<FlexoResource<?>, InJa
 		HashMap<Class<? extends ResourceRepository<?, InJarResourceImpl>>, ResourceRepository<?, InJarResourceImpl>> map = repositories
 				.get(technologyAdapter);
 		if (map == null) {
-			map = new HashMap<Class<? extends ResourceRepository<?, InJarResourceImpl>>, ResourceRepository<?, InJarResourceImpl>>();
+			map = new HashMap<>();
 			repositories.put(technologyAdapter, map);
 		}
 		return map;
 	}
 
-	@SuppressWarnings({ "hiding", "unchecked" })
+	@SuppressWarnings("unchecked")
 	@Override
 	public final <R extends ResourceRepository<?, InJarResourceImpl>> R retrieveRepository(Class<? extends R> repositoryType,
 			TechnologyAdapter technologyAdapter) {
@@ -219,7 +219,6 @@ public class JarResourceCenter extends ResourceRepository<FlexoResource<?>, InJa
 		return (R) map.get(repositoryType);
 	}
 
-	@SuppressWarnings("hiding")
 	@Override
 	public final <R extends ResourceRepository<?, InJarResourceImpl>> void registerRepository(R repository,
 			Class<? extends R> repositoryType, TechnologyAdapter technologyAdapter) {
@@ -338,7 +337,6 @@ public class JarResourceCenter extends ResourceRepository<FlexoResource<?>, InJa
 	 * 
 	 * @param rcService
 	 */
-	@SuppressWarnings("rawtypes")
 	public static JarResourceCenter addNamedJarFromClassPath(FlexoResourceCenterService rcService, String name) {
 		JarResourceCenter rc = null;
 		for (JarFile file : ClassPathUtils.getClassPathJarFiles()) {
@@ -356,7 +354,6 @@ public class JarResourceCenter extends ResourceRepository<FlexoResource<?>, InJa
 	 * @param jarFile
 	 * @param rcService
 	 */
-	@SuppressWarnings("rawtypes")
 	public static JarResourceCenter addJarFile(JarFile jarFile, FlexoResourceCenterService rcService) {
 		logger.info("Try to create a resource center from a jar file : " + jarFile.getName());
 		JarResourceCenter rc = new JarResourceCenter(jarFile, rcService);

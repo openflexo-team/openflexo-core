@@ -286,7 +286,7 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>>
 		 */
 		@Override
 		public <A extends TechnologySpecificAction<?, ?, ?>> A createAction(Class<A> actionClass) {
-			Class[] constructorParams = new Class[0];
+			Class<?>[] constructorParams = new Class[0];
 			// constructorParams[0] = VirtualModel.VirtualModelBuilder.class;
 			try {
 				Constructor<A> c = actionClass.getConstructor(constructorParams);
@@ -537,7 +537,7 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>>
 			FMLControlGraphVisitor cgVisitor = controlGraph -> {
 				if (controlGraph instanceof TechnologySpecificAction
 						&& ((TechnologySpecificAction<?, ?, ?>) controlGraph).getInferedModelSlot() == ModelSlotImpl.this) {
-					TechnologySpecificAction<?, ?, ?> action = (TechnologySpecificAction<?, ?, ?>) controlGraph;
+					// Unused TechnologySpecificAction<?, ?, ?> action = (TechnologySpecificAction<?, ?, ?>) controlGraph;
 					// nullify model slot for action
 					// action.setModelSlot(null);
 				}

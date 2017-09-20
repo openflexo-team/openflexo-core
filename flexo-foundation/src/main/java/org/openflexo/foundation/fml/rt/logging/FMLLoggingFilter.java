@@ -206,7 +206,7 @@ public class FMLLoggingFilter extends PropertyChangedSupportDefaultImplementatio
 		return record.sequence >= startSequence && record.sequence <= endSequence;
 	}
 
-	private boolean dateMatches(FMLLogRecord record) {
+	private static boolean dateMatches(FMLLogRecord record) {
 		LOGGER.warning("Not implemented ");
 		return true;
 	}

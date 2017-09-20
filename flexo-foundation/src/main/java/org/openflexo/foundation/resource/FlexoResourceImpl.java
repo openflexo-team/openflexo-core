@@ -220,7 +220,7 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 	public void notifyResourceLoaded() {
 		logger.fine("notifyResourceLoaded(), resource=" + this);
 
-		ResourceLoaded notification = new ResourceLoaded(this, resourceData);
+		ResourceLoaded<?> notification = new ResourceLoaded<>(this, resourceData);
 		setChanged();
 		notifyObservers(notification);
 		// Also notify that the contents of the resource may also have changed
@@ -241,7 +241,7 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 	public void notifyResourceUnloaded() {
 		logger.fine("notifyResourceUnloaded(), resource=" + this);
 
-		ResourceUnloaded notification = new ResourceUnloaded(this, resourceData);
+		ResourceUnloaded<?> notification = new ResourceUnloaded<>(this, resourceData);
 		setChanged();
 		notifyObservers(notification);
 		// Also notify that the contents of the resource may also have changed

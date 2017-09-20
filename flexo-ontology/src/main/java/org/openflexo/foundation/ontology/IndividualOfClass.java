@@ -72,7 +72,7 @@ public class IndividualOfClass<TA extends TechnologyAdapter> implements Technolo
 		@Override
 		public IndividualOfClass<?> makeCustomType(String configuration) {
 
-			FlexoObjectReference<IFlexoOntologyClass<?>> reference = new FlexoObjectReference<IFlexoOntologyClass<?>>(configuration, this);
+			FlexoObjectReference<IFlexoOntologyClass<?>> reference = new FlexoObjectReference<>(configuration, this);
 
 			IFlexoOntologyClass<?> ontologyClass = reference.getObject();
 
@@ -161,7 +161,7 @@ public class IndividualOfClass<TA extends TechnologyAdapter> implements Technolo
 
 	@Override
 	public String getSerializationRepresentation() {
-		return new FlexoObjectReference<IFlexoOntologyClass<TA>>(ontologyClass).getStringRepresentation();
+		return new FlexoObjectReference<>(ontologyClass).getStringRepresentation();
 	}
 
 	@Override

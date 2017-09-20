@@ -186,8 +186,7 @@ public interface IndividualRole<I extends IFlexoOntologyIndividual<?>> extends O
 		public ValidationIssue<IndividualFlexoRoleMustDefineAValidConceptClass, IndividualRole> applyValidation(
 				IndividualRole patternRole) {
 			if (patternRole.getOntologicType() == null) {
-				return new ValidationError<IndividualFlexoRoleMustDefineAValidConceptClass, IndividualRole>(this, patternRole,
-						"individual_role_does_not_define_any_concept_class");
+				return new ValidationError<>(this, patternRole, "individual_role_does_not_define_any_concept_class");
 			}
 			return null;
 		}

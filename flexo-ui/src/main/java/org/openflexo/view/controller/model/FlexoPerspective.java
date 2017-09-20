@@ -121,7 +121,7 @@ public abstract class FlexoPerspective extends ControllerModelObject {
 		return controller;
 	}
 
-	public void setupDefaultLayout(Node layout) {
+	public void setupDefaultLayout(Node<?> layout) {
 	}
 
 	public abstract ImageIcon getActiveIcon();
@@ -140,7 +140,7 @@ public abstract class FlexoPerspective extends ControllerModelObject {
 
 		if (object instanceof FlexoProject) {
 			FlexoProject project = (FlexoProject) object;
-			List<ProjectNature> availableNatures = getSpecificNaturesForProject(project);
+			List<ProjectNature<?, ?>> availableNatures = getSpecificNaturesForProject(project);
 			if (availableNatures.size() > 0) {
 				ProjectNature<?, ?> nature = availableNatures.get(0);
 				return getModuleViewForProject(project, nature);
@@ -337,8 +337,8 @@ public abstract class FlexoPerspective extends ControllerModelObject {
 
 	// Handle natures for FlexoProject
 
-	public List<ProjectNature> getSpecificNaturesForProject(FlexoProject project) {
-		List<ProjectNature> returned = new ArrayList<>();
+	public List<ProjectNature<?, ?>> getSpecificNaturesForProject(FlexoProject project) {
+		List<ProjectNature<?, ?>> returned = new ArrayList<>();
 		TechnologyAdapterControllerService tacService = controller.getApplicationContext().getTechnologyAdapterControllerService();
 		TechnologyAdapterService taService = controller.getApplicationContext().getTechnologyAdapterService();
 		for (TechnologyAdapter ta : taService.getTechnologyAdapters()) {

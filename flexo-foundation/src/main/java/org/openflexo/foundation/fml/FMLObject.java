@@ -427,10 +427,10 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData/*<Vi
 				if (!getBinding(object).isValid()) {
 					FMLObjectImpl.logger.info("Binding NOT valid: " + getBinding(object) + " for " + object.getStringRepresentation()
 							+ ". Reason: " + getBinding(object).invalidBindingReason());
-					DeleteBinding<C> deleteBinding = new DeleteBinding<C>(this);
+					DeleteBinding<C> deleteBinding = new DeleteBinding<>(this);
 					// return new ValidationError<BindingMustBeValid<C>, C>(this, object, BindingMustBeValid.this.getRuleName(), "Binding: "
 					// + getBinding(object) + " reason: " + getBinding(object).invalidBindingReason(), deleteBinding);
-					return new InvalidBindingIssue<C>(this, object, deleteBinding);
+					return new InvalidBindingIssue<>(this, object, deleteBinding);
 				}
 			}
 			return null;
@@ -438,6 +438,7 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData/*<Vi
 
 		public static class InvalidBindingIssue<C extends FMLObject> extends ValidationError<BindingMustBeValid<C>, C> {
 
+			@SafeVarargs
 			public InvalidBindingIssue(BindingMustBeValid<C> rule, C anObject, FixProposal<BindingMustBeValid<C>, C>... fixProposals) {
 				super(rule, anObject, "binding_'($binding.bindingName)'_is_not_valid: ($binding)", fixProposals);
 			}
@@ -485,14 +486,14 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData/*<Vi
 		public ValidationIssue<BindingIsRequiredAndMustBeValid<C>, C> applyValidation(C object) {
 			DataBinding<?> b = getBinding(object);
 			if (b == null || !b.isSet()) {
-				return new UndefinedRequiredBindingIssue<C>(this, object);
+				return new UndefinedRequiredBindingIssue<>(this, object);
 			}
 			else if (!b.isValid()) {
 				// FMLObjectImpl.logger.info(getClass().getName() + ": Binding NOT valid: " + b + " for " + object.getStringRepresentation()
 				// + ". Reason: " + b.invalidBindingReason());
 				// Thread.dumpStack();
 
-				InvalidRequiredBindingIssue<C> returned = new InvalidRequiredBindingIssue<C>(this, object);
+				InvalidRequiredBindingIssue<C> returned = new InvalidRequiredBindingIssue<>(this, object);
 
 				if (object instanceof FlexoConceptObject) {
 					String proposal = b.toString();
@@ -509,7 +510,7 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData/*<Vi
 					}
 					if (!proposal.equals(b.toString())) {
 						FMLObjectImpl.logger.info("DataBinding validation: providing proposal " + proposal + " instead of " + b.toString());
-						returned.addToFixProposals(new UseProposedBinding(b, proposal));
+						returned.addToFixProposals(new UseProposedBinding<>(b, proposal));
 					}
 					else {
 						FMLObjectImpl.logger
@@ -554,6 +555,7 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData/*<Vi
 		public static class UndefinedRequiredBindingIssue<C extends FMLObject>
 				extends ValidationError<BindingIsRequiredAndMustBeValid<C>, C> {
 
+			@SafeVarargs
 			public UndefinedRequiredBindingIssue(BindingIsRequiredAndMustBeValid<C> rule, C anObject,
 					FixProposal<BindingIsRequiredAndMustBeValid<C>, C>... fixProposals) {
 				super(rule, anObject, "binding_'($binding.bindingName)'_is_required_but_was_not_set", fixProposals);
@@ -576,6 +578,7 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData/*<Vi
 		public static class InvalidRequiredBindingIssue<C extends FMLObject>
 				extends ValidationError<BindingIsRequiredAndMustBeValid<C>, C> {
 
+			@SafeVarargs
 			public InvalidRequiredBindingIssue(BindingIsRequiredAndMustBeValid<C> rule, C anObject,
 					FixProposal<BindingIsRequiredAndMustBeValid<C>, C>... fixProposals) {
 				super(rule, anObject, "binding_'($binding.bindingName)'_is_required_but_value_is_invalid: ($binding)", fixProposals);

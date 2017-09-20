@@ -102,8 +102,8 @@ public class GenerateHelpSet extends FlexoAction<GenerateHelpSet, DocResourceCen
 
 	protected GenerateHelpSet(DocResourceCenter focusedObject, Vector<FlexoObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
-		configurations = new Vector<HelpSetConfiguration>();
-		generatedHelpsets = new Hashtable<HelpSetConfiguration, DRMHelpSet>();
+		configurations = new Vector<>();
+		generatedHelpsets = new Hashtable<>();
 	}
 
 	/*
@@ -167,7 +167,7 @@ public class GenerateHelpSet extends FlexoAction<GenerateHelpSet, DocResourceCen
 
 	public Vector<DRMHelpSet> getVectorOfGeneratedHelpset() {
 		if (vectorOfGeneratedHelpset == null) {
-			vectorOfGeneratedHelpset = new Vector<DRMHelpSet>();
+			vectorOfGeneratedHelpset = new Vector<>();
 			vectorOfGeneratedHelpset.addAll(generatedHelpsets.values());
 			Collections.sort(vectorOfGeneratedHelpset, new Comparator<DRMHelpSet>() {
 				@Override

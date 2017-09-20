@@ -266,7 +266,7 @@ public class FlexoProject extends FileSystemBasedResourceCenter implements Valid
 
 	// private ViewLibrary viewLibrary = null;
 
-	private final List<FlexoObjectReference> objectReferences = new ArrayList<FlexoObjectReference>();
+	private final List<FlexoObjectReference> objectReferences = new ArrayList<>();
 
 	private boolean lastUniqueIDHasBeenSet = false;
 	private long lastID = Integer.MIN_VALUE;
@@ -1086,7 +1086,7 @@ public class FlexoProject extends FileSystemBasedResourceCenter implements Valid
 				return issues;
 			}
 			else {
-				return new InformationIssue<FlexoIDMustBeUnique, FlexoProject>(object, "no_duplicated_identifiers_found");
+				return new InformationIssue<>(object, "no_duplicated_identifiers_found");
 			}
 		}
 
@@ -1294,7 +1294,7 @@ public class FlexoProject extends FileSystemBasedResourceCenter implements Valid
 	}
 
 	public List<FlexoProjectReference> getResolvedProjectReferences() {
-		List<FlexoProjectReference> refs = new ArrayList<FlexoProjectReference>();
+		List<FlexoProjectReference> refs = new ArrayList<>();
 		appendResolvedReferences(this, refs);
 		return refs;
 	}

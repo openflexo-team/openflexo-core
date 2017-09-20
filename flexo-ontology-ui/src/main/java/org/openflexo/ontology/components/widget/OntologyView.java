@@ -91,7 +91,7 @@ public abstract class OntologyView<T extends FlexoObject & IFlexoOntology> exten
 
 	@Override
 	public List<SelectionListener> getSelectionListeners() {
-		Vector<SelectionListener> reply = new Vector<SelectionListener>();
+		Vector<SelectionListener> reply = new Vector<>();
 		reply.add(this);
 		return reply;
 	}

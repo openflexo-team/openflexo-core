@@ -185,7 +185,7 @@ public abstract class Module<M extends FlexoModule<M>> extends PropertyChangedSu
 		if (logger.isLoggable(Level.INFO)) {
 			logger.info("Registering module '" + getName() + "'");
 		}
-		Class[] constructorSigner;
+		Class<?>[] constructorSigner;
 		constructorSigner = new Class[1];
 		constructorSigner[0] = ApplicationContext.class;
 		try {

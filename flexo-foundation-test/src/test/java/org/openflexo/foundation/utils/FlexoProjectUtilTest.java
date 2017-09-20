@@ -43,9 +43,9 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import junit.framework.TestCase;
-
 import org.openflexo.toolbox.FlexoVersion;
+
+import junit.framework.TestCase;
 
 public class FlexoProjectUtilTest extends TestCase {
 
@@ -63,8 +63,9 @@ public class FlexoProjectUtilTest extends TestCase {
 	}
 
 	public void testCurrentFlexoVersionIsSmallerThanLastVersionWhenThereIsNoVersionFile() {
-		assertFalse("No version file in a prj must be considered as not smaller than last version. "
-				+ "(probably need to be fixed, but this test is conservative.)",
+		assertFalse(
+				"No version file in a prj must be considered as not smaller than last version. "
+						+ "(probably need to be fixed, but this test is conservative.)",
 				FlexoProjectUtil.currentFlexoVersionIsSmallerThanLastVersion(getDirectoryPrjWitoutVersion()));
 	}
 
@@ -117,7 +118,7 @@ public class FlexoProjectUtilTest extends TestCase {
 		assertVersion(1, 3, 0, false, false, version);
 	}
 
-	private void assertVersion(int major, int minor, int patch, boolean isAlpha, boolean isBeta, FlexoVersion version) {
+	private static void assertVersion(int major, int minor, int patch, boolean isAlpha, boolean isBeta, FlexoVersion version) {
 		assertEquals("Major version missmatch.", major, version.major);
 		assertEquals("Minor version missmatch.", minor, version.minor);
 		assertEquals("Patch version missmatch.", patch, version.patch);
@@ -155,39 +156,39 @@ public class FlexoProjectUtilTest extends TestCase {
 		}
 	}
 
-	private File getDirectoryPrjWitoutVersion() {
+	private static File getDirectoryPrjWitoutVersion() {
 		return createPrjDirectoryWithoutVersionFile("ProjectWithoutVersionFile");
 	}
 
-	private File getPrjDirectory113() {
+	private static File getPrjDirectory113() {
 		return createPrjDirectoryWithVersionContent("1.1.3", "Project113");
 	}
 
-	private File getPrjDirectory125() {
+	private static File getPrjDirectory125() {
 		return createPrjDirectoryWithVersionContent("1.2.5", "Project125");
 	}
 
-	private File getPrjDirectory13() {
+	private static File getPrjDirectory13() {
 		return createPrjDirectoryWithVersionContent("1.3", "Project13");
 	}
 
-	private File getPrjDirectory14() {
+	private static File getPrjDirectory14() {
 		return createPrjDirectoryWithVersionContent("1.4", "Project14");
 	}
 
-	private File getPrjDirectory144() {
+	private static File getPrjDirectory144() {
 		return createPrjDirectoryWithVersionContent("1.4.4", "Project144");
 	}
 
-	private File getPrjDirectory999() {
+	private static File getPrjDirectory999() {
 		return createPrjDirectoryWithVersionContent("9.9.9", "Project999");
 	}
 
-	private File getPrjDirectoryInvalidVersionFile() {
+	private static File getPrjDirectoryInvalidVersionFile() {
 		return createPrjDirectoryWithVersionContent("a.b.c", "ProjectInvalidVersionFile");
 	}
 
-	private File createPrjDirectoryWithVersionContent(String versionContent, String prjName) {
+	private static File createPrjDirectoryWithVersionContent(String versionContent, String prjName) {
 		File projectDirectory = createPrjDirectoryWithoutVersionFile(prjName);
 		File versionFile = new File(projectDirectory, ".version");
 		try {
@@ -203,7 +204,7 @@ public class FlexoProjectUtilTest extends TestCase {
 		return projectDirectory;
 	}
 
-	private File createPrjDirectoryWithoutVersionFile(String prjName) {
+	private static File createPrjDirectoryWithoutVersionFile(String prjName) {
 		File projectDirectory = null;
 		try {
 			File tempFile = File.createTempFile(prjName, "");

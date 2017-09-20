@@ -454,11 +454,11 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 			return null;
 		}
 
-		private boolean isUpdatingParameters = false;
+		// Unused private boolean isUpdatingParameters = false;
 
 		private synchronized void updateParameters() {
 
-			isUpdatingParameters = true;
+			// Unused isUpdatingParameters = true;
 			if (getCreationScheme() == null) {
 				for (CreateFlexoConceptInstanceParameter p : new ArrayList<>(getParameters())) {
 					removeFromParameters(p);
@@ -483,7 +483,7 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 					removeFromParameters(removeThis);
 				}
 			}
-			isUpdatingParameters = false;
+			// Unused isUpdatingParameters = false;
 		}
 
 		/*@Override
@@ -523,7 +523,7 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 		}*/
 
 		@Override
-		public MatchingCriteria getMatchingCriteria(FlexoProperty pr) {
+		public MatchingCriteria getMatchingCriteria(FlexoProperty<?> pr) {
 			for (MatchingCriteria mc : getMatchingCriterias()) {
 				if (mc.getFlexoProperty() == pr) {
 					return mc;
@@ -542,11 +542,11 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 			}
 		}
 
-		private boolean isUpdatingMatchingCriterias = false;
+		// Unused private boolean isUpdatingMatchingCriterias = false;
 
 		private synchronized void updateMatchingCriterias() {
 
-			isUpdatingMatchingCriterias = true;
+			// Unused isUpdatingMatchingCriterias = true;
 			if (getFlexoConceptType() == null) {
 				for (MatchingCriteria criteriaToRemove : new ArrayList<>(getMatchingCriterias())) {
 					removeFromMatchingCriterias(criteriaToRemove);
@@ -574,7 +574,7 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 				}
 
 			}
-			isUpdatingMatchingCriterias = false;
+			// Unused isUpdatingMatchingCriterias = false;
 
 		}
 
@@ -851,8 +851,8 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 						// System.out.println("VM2=" + ((VirtualModelInstanceType) binding.getAnalyzedType()).getVirtualModel());
 						// System.out.println("VM2="
 						// + Integer.toHexString(((VirtualModelInstanceType) binding.getAnalyzedType()).getVirtualModel().hashCode()));
-						returned = new ValidationError(this, object, "incompatible_virtual_model_type avec " + object.getFlexoConceptType()
-								+ " et " + binding.getAnalyzedType());
+						returned = new ValidationError<>(this, object, "incompatible_virtual_model_type avec "
+								+ object.getFlexoConceptType() + " et " + binding.getAnalyzedType());
 
 						/*System.out.println(object.getRootOwner().getFMLRepresentation());
 						System.out.println("FC=" + object.getRootOwner().getFlexoConcept());
@@ -861,7 +861,7 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 
 						// Attempt to find some solutions...
 
-						for (FMLRTModelSlot ms : object.getOwningVirtualModel().getModelSlots(FMLRTModelSlot.class)) {
+						for (FMLRTModelSlot<?, ?> ms : object.getOwningVirtualModel().getModelSlots(FMLRTModelSlot.class)) {
 							// System.out.println("modelSlot " + ms + " vm=" + ms.getAddressedVirtualModel());
 							if (object.getFlexoConceptType().getVirtualModel().isAssignableFrom(ms.getAccessedVirtualModel())) {
 								((ValidationError) returned).addToFixProposals(new UseFMLRTModelSlot(ms));
@@ -869,7 +869,7 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 						}
 
 						if (object.getRootOwner().getFlexoConcept() instanceof VirtualModel) {
-							for (FMLRTModelSlot ms : ((VirtualModel) object.getRootOwner().getFlexoConcept())
+							for (FMLRTModelSlot<?, ?> ms : ((VirtualModel) object.getRootOwner().getFlexoConcept())
 									.getModelSlots(FMLRTModelSlot.class)) {
 								// System.out.println("modelSlot " + ms + " vm=" + ms.getAddressedVirtualModel());
 								if (object.getFlexoConceptType().getVirtualModel().isAssignableFrom(ms.getAccessedVirtualModel())) {
@@ -901,9 +901,9 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 		protected static class UseFMLRTModelSlot
 				extends FixProposal<BindingIsRequiredAndMustBeValid<MatchFlexoConceptInstance>, MatchFlexoConceptInstance> {
 
-			private final FMLRTModelSlot modelSlot;
+			private final FMLRTModelSlot<?, ?> modelSlot;
 
-			public UseFMLRTModelSlot(FMLRTModelSlot modelSlot) {
+			public UseFMLRTModelSlot(FMLRTModelSlot<?, ?> modelSlot) {
 				super("sets_virtual_model_instance_to_'" + modelSlot.getName() + "'");
 				this.modelSlot = modelSlot;
 			}

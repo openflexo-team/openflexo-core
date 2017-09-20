@@ -49,7 +49,6 @@ import org.openflexo.model.factory.ModelFactory;
 public abstract class FlexoResourceFactory<R extends TechnologyAdapterResource<RD, TA>, RD extends ResourceData<RD> & TechnologyObject<TA>, TA extends TechnologyAdapter>
 		extends ModelFactory {
 
-	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(FlexoResourceFactory.class.getPackage().getName());
 
 	private final Class<R> resourceClass;

@@ -55,7 +55,6 @@ import org.openflexo.model.validation.ValidationModel;
  * @author sylvain
  * 
  */
-@SuppressWarnings("serial")
 public class FlexoValidationModel extends ValidationModel {
 
 	private final LocalizedDelegate validationLocalization;

@@ -102,7 +102,7 @@ public abstract class FlexoRelativeWindow extends JFrame /*implements FocusListe
 		return null;
 	}
 
-	public FlexoModule getModule() {
+	public FlexoModule<?> getModule() {
 		if (getParentFrame() != null) {
 			return getParentFrame().getModule();
 		}

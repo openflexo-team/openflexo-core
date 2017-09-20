@@ -84,7 +84,7 @@ public class MatchConditionBindingModel extends BindingModel implements Property
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		super.propertyChange(evt);
-		if (evt.getSource() == matchCondition && evt.getPropertyName().equals(matchCondition.ACTION_KEY)) {
+		if (evt.getSource() == matchCondition && evt.getPropertyName().equals(MatchCondition.ACTION_KEY)) {
 			setBaseBindingModel(matchCondition.getAction() != null ? matchCondition.getAction().getBindingModel() : null);
 		}
 	}

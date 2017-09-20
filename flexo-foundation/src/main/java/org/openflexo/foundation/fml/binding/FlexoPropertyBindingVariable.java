@@ -40,7 +40,6 @@ package org.openflexo.foundation.fml.binding;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
 import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
@@ -70,7 +69,6 @@ public class FlexoPropertyBindingVariable extends BindingVariable implements Pro
 	public void delete() {
 		// Thread.dumpStack();
 		if (flexoProperty != null && flexoProperty.getPropertyChangeSupport() != null) {
-			PropertyChangeSupport pcSupport = flexoProperty.getPropertyChangeSupport();
 			// System.out.println("Je lui dit d'arreter d'observer " + flexoProperty);
 			flexoProperty.getPropertyChangeSupport().removePropertyChangeListener(this);
 		}

@@ -338,8 +338,8 @@ public class FMLRTVirtualModelInstanceResourceFactory extends
 		for (I child : resourceCenter.getContents(resourceCenter.getContainer(serializationArtefact))) {
 			if (isValidArtefact(child, resourceCenter)) {
 				try {
-					FMLRTVirtualModelInstanceResource virtualModelInstanceResource = retrieveFMLRTVirtualModelInstanceResource(child,
-							resourceCenter, technologyContextManager, containerResource);
+					// Unused FMLRTVirtualModelInstanceResource virtualModelInstanceResource =
+					retrieveFMLRTVirtualModelInstanceResource(child, resourceCenter, technologyContextManager, containerResource);
 				} catch (ModelDefinitionException e) {
 					e.printStackTrace();
 				} catch (IOException e) {

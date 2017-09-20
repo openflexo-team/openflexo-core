@@ -201,7 +201,7 @@ public class FMLModelFactory extends FGEModelFactoryImpl implements PamelaResour
 	 * @throws ModelDefinitionException
 	 */
 	public static List<Class<?>> retrieveTechnologySpecificClasses(TechnologyAdapterService taService) throws ModelDefinitionException {
-		List<Class<?>> classes = new ArrayList<Class<?>>();
+		List<Class<?>> classes = new ArrayList<>();
 		classes.add(VirtualModel.class);
 		for (TechnologyAdapter ta : taService.getTechnologyAdapters()) {
 			for (Class<? extends ModelSlot<?>> modelSlotClass : new ArrayList<>(ta.getAvailableModelSlotTypes())) {
@@ -222,7 +222,7 @@ public class FMLModelFactory extends FGEModelFactoryImpl implements PamelaResour
 	 */
 	public static List<Class<?>> retrieveTechnologySpecificClasses(List<Class<? extends ModelSlot<?>>> usedModelSlots)
 			throws ModelDefinitionException {
-		List<Class<?>> classes = new ArrayList<Class<?>>();
+		List<Class<?>> classes = new ArrayList<>();
 		classes.add(VirtualModel.class);
 		for (Class<? extends ModelSlot<?>> modelSlotClass : usedModelSlots) {
 			retrieveTechnologySpecificClasses(modelSlotClass, classes);
@@ -433,7 +433,7 @@ public class FMLModelFactory extends FGEModelFactoryImpl implements PamelaResour
 		return newInstance(FlexoConceptInstanceRole.class);
 	}
 
-	public AddFlexoConceptInstance newAddFlexoConceptInstance() {
+	public AddFlexoConceptInstance<?> newAddFlexoConceptInstance() {
 		return newInstance(AddFlexoConceptInstance.class);
 	}
 
@@ -445,11 +445,11 @@ public class FMLModelFactory extends FGEModelFactoryImpl implements PamelaResour
 		return newInstance(AddVirtualModelInstance.class);
 	}
 
-	public SelectFlexoConceptInstance newSelectFlexoConceptInstance() {
+	public SelectFlexoConceptInstance<?> newSelectFlexoConceptInstance() {
 		return newInstance(SelectFlexoConceptInstance.class);
 	}
 
-	public SelectVirtualModelInstance newSelectVirtualModelInstance() {
+	public SelectVirtualModelInstance<?> newSelectVirtualModelInstance() {
 		return newInstance(SelectVirtualModelInstance.class);
 	}
 

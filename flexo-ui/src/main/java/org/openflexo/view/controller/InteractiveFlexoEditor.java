@@ -97,7 +97,7 @@ public class InteractiveFlexoEditor extends DefaultFlexoEditor {
 
 	private final ApplicationContext applicationContext;
 
-	private Map<FlexoModule, ControllerActionInitializer> actionInitializers;
+	private Map<FlexoModule<?>, ControllerActionInitializer> actionInitializers;
 
 	public InteractiveFlexoEditor(ApplicationContext applicationContext, FlexoProject project) {
 		super(project, applicationContext);

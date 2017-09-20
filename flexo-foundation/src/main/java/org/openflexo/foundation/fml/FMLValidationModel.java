@@ -60,7 +60,6 @@ import org.openflexo.rm.ResourceLocator;
  * @author sylvain
  * 
  */
-@SuppressWarnings("serial")
 public class FMLValidationModel extends FlexoValidationModel {
 
 	private static Resource fibValidationLocalizedDelegate = ResourceLocator.locateResource("FlexoLocalization/FMLValidation");
@@ -75,8 +74,7 @@ public class FMLValidationModel extends FlexoValidationModel {
 	 * @throws ModelDefinitionException
 	 */
 	private static ModelContext computeModelContext(TechnologyAdapterService taService) throws ModelDefinitionException {
-		List<Class<?>> classes = (taService != null ? FMLModelFactory.retrieveTechnologySpecificClasses(taService)
-				: new ArrayList<Class<?>>());
+		List<Class<?>> classes = (taService != null ? FMLModelFactory.retrieveTechnologySpecificClasses(taService) : new ArrayList<>());
 		classes.add(VirtualModel.class);
 		return ModelContextLibrary.getCompoundModelContext(classes.toArray(new Class<?>[classes.size()]));
 	}

@@ -55,7 +55,7 @@ public class JHIndexer {
 	private static final String JAVA_HELP_SEARCH = "JavaHelpSearch";
 
 	private final File _helpsetDirectory;
-	private final Vector<String> indexerFileList = new Vector<String>();
+	private final Vector<String> indexerFileList = new Vector<>();
 
 	public JHIndexer(File helpsetDirectory) {
 		_helpsetDirectory = helpsetDirectory;
@@ -122,7 +122,8 @@ public class JHIndexer {
 				fName = files[i].getAbsolutePath();
 				if (files[i].isDirectory()) {
 					getIndexerFiles(files[i].getAbsolutePath());
-				} else if (fName.endsWith(".htm") || fName.endsWith(".html")) {
+				}
+				else if (fName.endsWith(".htm") || fName.endsWith(".html")) {
 					if (!fName.endsWith("index.htm") && !fName.endsWith("toc.htm") && !fName.endsWith("images")
 							&& !fName.endsWith("JavaHelpSearch")) {
 						String added = fName.replace('\\', '/');
@@ -139,7 +140,7 @@ public class JHIndexer {
 	 * create a list of options for the Indexer call
 	 */
 	private String[] getIndexerArguments(File dbDir, File cFile) {
-		Vector<String> list = new Vector<String>(0);
+		Vector<String> list = new Vector<>(0);
 		String arg = null;
 		list.addElement("-c");
 		arg = cFile.getAbsolutePath();

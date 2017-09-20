@@ -177,7 +177,7 @@ public class JiraObjectTypeAdapterFactory implements TypeAdapterFactory {
 				return null;
 			}
 
-			Collection collection = new ArrayList();
+			Collection<JIRAObject<?>> collection = new ArrayList<>();
 			in.beginArray();
 			while (in.hasNext()) {
 				JIRAObject<?> instance = jiraObjectAdapter.read(in);

@@ -40,10 +40,10 @@ package org.openflexo.foundation.technologyadapter;
 
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.FreeModelSlotInstance;
 import org.openflexo.foundation.fml.rt.ModelSlotInstance;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.ModelSlotInstanceConfiguration;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.ResourceData;
@@ -98,7 +98,7 @@ public abstract interface FreeModelSlot<RD extends ResourceData<RD> & Technology
 		 * @param proposedName
 		 * @return
 		 */
-		public String generateUniqueURI(FreeModelSlotInstance msInstance, String proposedName) {
+		public String generateUniqueURI(FreeModelSlotInstance<?, ?> msInstance, String proposedName) {
 			if (msInstance == null || msInstance.getResourceData() == null) {
 				return null;
 			}
@@ -113,14 +113,14 @@ public abstract interface FreeModelSlot<RD extends ResourceData<RD> & Technology
 		 * @param proposedName
 		 * @return
 		 */
-		public String generateUniqueURIName(FreeModelSlotInstance msInstance, String proposedName) {
+		public String generateUniqueURIName(FreeModelSlotInstance<?, ?> msInstance, String proposedName) {
 			if (msInstance == null || msInstance.getResourceData() == null) {
 				return proposedName;
 			}
 			return generateUniqueURIName(msInstance, proposedName, msInstance.getResourceURI() + "#");
 		}
 
-		public String generateUniqueURIName(FreeModelSlotInstance msInstance, String proposedName, String uriPrefix) {
+		public String generateUniqueURIName(FreeModelSlotInstance<?, ?> msInstance, String proposedName, String uriPrefix) {
 			if (msInstance == null || msInstance.getResourceData() == null) {
 				return proposedName;
 			}

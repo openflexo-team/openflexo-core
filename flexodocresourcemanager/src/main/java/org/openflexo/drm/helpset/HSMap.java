@@ -79,7 +79,7 @@ public class HSMap extends KVCFlexoObject {
 
 	public Vector<HSMapEntry> getEntries() {
 		if (_entries == null) {
-			_entries = new Vector<HSMapEntry>();
+			_entries = new Vector<>();
 			_entries.add(new HSMapEntry(DRMHelpSet.TOP_LEVEL_FOLDER, DRMHelpSet.TOP_LEVEL_IMAGE));
 			for (DocItem next : _drc.getAllItems()) {
 				if (next.isIncluded(configuration)) {
@@ -195,8 +195,8 @@ public class HSMap extends KVCFlexoObject {
 				while (currentDocItem != null) {
 					boolean hasEmbeddedItemsToInclude = false;
 					StringBuffer embeddedItemsAtThisLevel = new StringBuffer();
-					for (Enumeration en = currentDocItem.getEmbeddingChildItems().elements(); en.hasMoreElements();) {
-						DocItem next = (DocItem) en.nextElement();
+					for (Enumeration<DocItem> en = currentDocItem.getEmbeddingChildItems().elements(); en.hasMoreElements();) {
+						DocItem next = en.nextElement();
 						if (next.isIncluded(configuration)) {
 							if (next.getIsEmbedded() && next.isPublished()) {
 								hasEmbeddedItemsToInclude = true;
@@ -320,8 +320,8 @@ public class HSMap extends KVCFlexoObject {
 			returned.append(
 					"<b>" + FlexoLocalization.getMainLocalizer().localizedForKeyAndLanguage("inheritance_child_items", lang) + "</b> ");
 			boolean isFirst = true;
-			for (Enumeration en = docItem.getDerivedInheritanceChildItems().elements(); en.hasMoreElements();) {
-				DocItem next = (DocItem) en.nextElement();
+			for (Enumeration<DocItem> en = docItem.getDerivedInheritanceChildItems().elements(); en.hasMoreElements();) {
+				DocItem next = en.nextElement();
 				if (next.isPublished()) {
 					returned.append((isFirst ? "" : ", ") + next.getHTMLLinkFrom(docItem, _language));
 					isFirst = false;
@@ -332,7 +332,7 @@ public class HSMap extends KVCFlexoObject {
 		}
 
 		private String getEmbeddingChildsHTMLFragment() {
-			Vector<DocItem> embeddedChilds = new Vector<DocItem>();
+			Vector<DocItem> embeddedChilds = new Vector<>();
 			for (DocItem next : docItem.getEmbeddingChildItems()) {
 				if (!next.getIsEmbedded()) {
 					embeddedChilds.add(next);
@@ -365,8 +365,8 @@ public class HSMap extends KVCFlexoObject {
 			returned.append("<p>");
 			returned.append("<b>" + FlexoLocalization.getMainLocalizer().localizedForKeyAndLanguage("related_to_items", lang) + "</b> ");
 			boolean isFirst = true;
-			for (Enumeration en = docItem.getRelatedToItems().elements(); en.hasMoreElements();) {
-				DocItem next = (DocItem) en.nextElement();
+			for (Enumeration<DocItem> en = docItem.getRelatedToItems().elements(); en.hasMoreElements();) {
+				DocItem next = en.nextElement();
 				if (next.isPublished()) {
 					returned.append((isFirst ? "" : ", ") + next.getHTMLLinkFrom(docItem, _language));
 					isFirst = false;
