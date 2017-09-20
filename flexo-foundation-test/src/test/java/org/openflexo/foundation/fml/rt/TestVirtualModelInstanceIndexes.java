@@ -265,26 +265,26 @@ public class TestVirtualModelInstanceIndexes extends OpenflexoProjectAtRunTimeTe
 		CreateEditionAction createEditionAction1 = CreateEditionAction.actionType.makeNewAction(creationScheme.getControlGraph(), null,
 				editor);
 		createEditionAction1.setEditionActionClass(ExpressionAction.class);
-		createEditionAction1.setAssignation(new DataBinding<Object>("firstName"));
+		createEditionAction1.setAssignation(new DataBinding<>("firstName"));
 		createEditionAction1.doAction();
 		AssignationAction<?> action1 = (AssignationAction<?>) createEditionAction1.getNewEditionAction();
-		((ExpressionAction) action1.getAssignableAction()).setExpression(new DataBinding<Object>("parameters.aFirstName"));
+		((ExpressionAction) action1.getAssignableAction()).setExpression(new DataBinding<>("parameters.aFirstName"));
 
 		CreateEditionAction createEditionAction2 = CreateEditionAction.actionType.makeNewAction(creationScheme.getControlGraph(), null,
 				editor);
 		createEditionAction2.setEditionActionClass(ExpressionAction.class);
-		createEditionAction2.setAssignation(new DataBinding<Object>("lastName"));
+		createEditionAction2.setAssignation(new DataBinding<>("lastName"));
 		createEditionAction2.doAction();
 		AssignationAction<?> action2 = (AssignationAction<?>) createEditionAction2.getNewEditionAction();
-		((ExpressionAction) action2.getAssignableAction()).setExpression(new DataBinding<Object>("parameters.aLastName"));
+		((ExpressionAction) action2.getAssignableAction()).setExpression(new DataBinding<>("parameters.aLastName"));
 
 		CreateEditionAction createEditionAction3 = CreateEditionAction.actionType.makeNewAction(creationScheme.getControlGraph(), null,
 				editor);
 		createEditionAction3.setEditionActionClass(ExpressionAction.class);
-		createEditionAction3.setAssignation(new DataBinding<Object>("age"));
+		createEditionAction3.setAssignation(new DataBinding<>("age"));
 		createEditionAction3.doAction();
 		AssignationAction<?> action3 = (AssignationAction<?>) createEditionAction3.getNewEditionAction();
-		((ExpressionAction) action3.getAssignableAction()).setExpression(new DataBinding<Object>("parameters.anAge"));
+		((ExpressionAction) action3.getAssignableAction()).setExpression(new DataBinding<>("parameters.anAge"));
 
 		CreateFlexoBehaviour createDeletionScheme = CreateFlexoBehaviour.actionType.makeNewAction(flexoConcept, null, editor);
 		createDeletionScheme.setFlexoBehaviourClass(DeletionScheme.class);
@@ -361,7 +361,7 @@ public class TestVirtualModelInstanceIndexes extends OpenflexoProjectAtRunTimeTe
 
 	}
 
-	private ActionScheme makeRequest(String requestName, String... conditionExpressions) {
+	private static ActionScheme makeRequest(String requestName, String... conditionExpressions) {
 
 		CreateFlexoBehaviour createActionScheme = CreateFlexoBehaviour.actionType.makeNewAction(virtualModel, null, editor);
 		createActionScheme.setFlexoBehaviourClass(ActionScheme.class);
@@ -376,7 +376,7 @@ public class TestVirtualModelInstanceIndexes extends OpenflexoProjectAtRunTimeTe
 
 		createSelectFlexoConceptInstanceAction.doAction();
 
-		SelectFlexoConceptInstance selectFlexoConceptInstance = (SelectFlexoConceptInstance) createSelectFlexoConceptInstanceAction
+		SelectFlexoConceptInstance<?> selectFlexoConceptInstance = (SelectFlexoConceptInstance<?>) createSelectFlexoConceptInstanceAction
 				.getBaseEditionAction();
 		selectFlexoConceptInstance.setFlexoConceptType(flexoConcept);
 		selectFlexoConceptInstance.setReceiver(new DataBinding<>("this"));
@@ -465,8 +465,11 @@ public class TestVirtualModelInstanceIndexes extends OpenflexoProjectAtRunTimeTe
 		FMLRTVirtualModelInstanceResource vmiRes = (FMLRTVirtualModelInstanceResource) newVirtualModelInstance.getResource();
 		assertFalse(newVirtualModelInstance.isModified());
 
+		@SuppressWarnings("unused")
 		FlexoConceptInstance a1 = createFlexoConceptAInstance();
+		@SuppressWarnings("unused")
 		FlexoConceptInstance a2 = createFlexoConceptAInstance();
+		@SuppressWarnings("unused")
 		FlexoConceptInstance a3 = createFlexoConceptAInstance();
 
 		john = createInstance("John", "Smith", 43);
@@ -487,7 +490,7 @@ public class TestVirtualModelInstanceIndexes extends OpenflexoProjectAtRunTimeTe
 		assertEquals(3, newVirtualModelInstance.getFlexoConceptInstances(flexoConceptA).size());
 	}
 
-	private FlexoConceptInstance createInstance(String firstName, String lastName, int age) {
+	private static FlexoConceptInstance createInstance(String firstName, String lastName, int age) {
 		CreationScheme creationScheme = flexoConcept.getCreationSchemes().get(0);
 		CreationSchemeAction action = new CreationSchemeAction(creationScheme, newVirtualModelInstance, null, editor);
 		FlexoBehaviourParameter firstNameP = creationScheme.getParameter("aFirstName");
@@ -501,7 +504,7 @@ public class TestVirtualModelInstanceIndexes extends OpenflexoProjectAtRunTimeTe
 		return action.getFlexoConceptInstance();
 	}
 
-	private FlexoConceptInstance createFlexoConceptAInstance() {
+	private static FlexoConceptInstance createFlexoConceptAInstance() {
 		CreationSchemeAction action = new CreationSchemeAction(flexoConceptA.getCreationSchemes().get(0), newVirtualModelInstance, null,
 				editor);
 		action.doAction();
@@ -509,7 +512,7 @@ public class TestVirtualModelInstanceIndexes extends OpenflexoProjectAtRunTimeTe
 		return action.getFlexoConceptInstance();
 	}
 
-	private void deleteInstance(FlexoConceptInstance fci) {
+	private static void deleteInstance(FlexoConceptInstance fci) {
 		DeletionSchemeActionFactory actionType = new DeletionSchemeActionFactory(fci.getFlexoConcept().getDefaultDeletionScheme(), fci);
 		DeletionSchemeAction action = actionType.makeNewAction(fci, null, editor);
 		action.doAction();
@@ -559,7 +562,7 @@ public class TestVirtualModelInstanceIndexes extends OpenflexoProjectAtRunTimeTe
 
 	}
 
-	private void performRequest(String requestName, FlexoConceptInstance... expectedResult) throws SaveResourceException {
+	private static void performRequest(String requestName, FlexoConceptInstance... expectedResult) throws SaveResourceException {
 
 		ActionScheme request1 = (ActionScheme) virtualModel.getFlexoBehaviour(requestName);
 		ActionSchemeActionFactory request1AT = new ActionSchemeActionFactory(request1, newVirtualModelInstance);

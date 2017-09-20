@@ -51,8 +51,8 @@ import org.openflexo.foundation.utils.FlexoObjectReference;
 
 public class RemoveImportedProject extends FlexoAction<RemoveImportedProject, FlexoProjectObject, FlexoProjectObject> {
 
-	private static final java.util.logging.Logger logger = org.openflexo.logging.FlexoLogger.getLogger(RemoveImportedProject.class
-			.getPackage().getName());
+	private static final java.util.logging.Logger logger = org.openflexo.logging.FlexoLogger
+			.getLogger(RemoveImportedProject.class.getPackage().getName());
 
 	public static final FlexoActionFactory<RemoveImportedProject, FlexoProjectObject, FlexoProjectObject> actionType = new FlexoActionFactory<RemoveImportedProject, FlexoProjectObject, FlexoProjectObject>(
 			"remove_project") {
@@ -91,7 +91,7 @@ public class RemoveImportedProject extends FlexoAction<RemoveImportedProject, Fl
 			String projectToRemoveURI = getProjectToRemoveURI();
 			FlexoProjectReference projectReferenceWithURI = getProject().getProjectData().getProjectReferenceWithURI(projectToRemoveURI);
 			if (projectReferenceWithURI != null) {
-				List<FlexoObjectReference<?>> toDelete = new ArrayList<FlexoObjectReference<?>>();
+				List<FlexoObjectReference<?>> toDelete = new ArrayList<>();
 				for (FlexoObjectReference<?> ref : getProject().getObjectReferences()) {
 					if (projectToRemoveURI.equals(ref.getReferringProject(true).getURI())) {
 						toDelete.add(ref);

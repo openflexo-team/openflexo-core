@@ -85,7 +85,7 @@ public abstract class OpenflexoFIBInspectorTestCase extends OpenflexoTestCaseWit
 				fail("Component not found: " + fibResouce.getURI());
 			}
 			ValidationReport validationReport = component.validate();
-			for (ValidationError error : validationReport.getErrors()) {
+			for (ValidationError<?, ?> error : validationReport.getErrors()) {
 				logger.severe("FIBComponent validation error: Object: " + error.getValidable() + " message: " + error.getMessage());
 			}
 			assertEquals(0, validationReport.getErrorsCount());

@@ -38,7 +38,6 @@
 
 package org.openflexo.foundation.resource;
 
-import com.google.common.base.Throwables;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -50,10 +49,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.swing.undo.UndoableEdit;
+
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
+import org.jdom2.Parent;
 import org.jdom2.filter.ElementFilter;
 import org.jdom2.input.SAXBuilder;
 import org.openflexo.foundation.FlexoObject;
@@ -77,6 +79,8 @@ import org.openflexo.toolbox.FileUtils;
 import org.openflexo.toolbox.FlexoVersion;
 import org.openflexo.toolbox.IProgress;
 
+import com.google.common.base.Throwables;
+
 /**
  * Default implementation for {@link PamelaResource} (a resource where underlying model is managed by PAMELA framework)
  * 
@@ -90,6 +94,7 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD> & Accessibl
 
 	private static final Logger logger = Logger.getLogger(PamelaResourceImpl.class.getPackage().getName());
 
+	@SuppressWarnings("unused")
 	private boolean isLoading = false;
 
 	// private boolean isConverting = false;
@@ -187,8 +192,6 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD> & Accessibl
 			progress.resetSecondaryProgress(4);
 			progress.setProgress(getLocales().localizedForKey("loading_from_disk"));
 		}
-
-		LoadResourceException exception = null;
 
 		if (logger.isLoggable(Level.FINE)) {
 			logger.fine("Load resource data for " + this);
@@ -660,7 +663,8 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD> & Accessibl
 			if (objectsForUserIdentifier != null) {
 				return objectsForUserIdentifier.get(flexoId);
 			}
-		} else {
+		}
+		else {
 			for (Map<Long, FlexoObject> objectMap : objects.values()) {
 				if (objectMap.containsKey(flexoId)) {
 					return objectMap.get(flexoId);
@@ -688,18 +692,8 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD> & Accessibl
 		return reply;
 	}
 
-	public static Element getElement(Document document, String name) {
-		Iterator it = document.getDescendants(new ElementFilter(name));
-		if (it.hasNext()) {
-			return (Element) it.next();
-		}
-		else {
-			return null;
-		}
-	}
-
-	public static Element getElement(Element from, String name) {
-		Iterator it = from.getDescendants(new ElementFilter(name));
+	public static Element getElement(Parent parent, String name) {
+		Iterator<Element> it = parent.getDescendants(new ElementFilter(name));
 		if (it.hasNext()) {
 			return (Element) it.next();
 		}
@@ -725,8 +719,9 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD> & Accessibl
 		@Override
 		public boolean isIgnorable(UndoableEdit edit) {
 			if (edit instanceof AtomicEdit) {
-				Object o = ((AtomicEdit) edit).getObject();
-				if (((AtomicEdit) edit).getModelFactory() == resource.getFactory()) {
+				// Unsused Object o =
+				((AtomicEdit<?>) edit).getObject();
+				if (((AtomicEdit<?>) edit).getModelFactory() == resource.getFactory()) {
 					// System.out.println("PAMELA RESOURCE LOADING : Ignore edit
 					// "
 					// + edit);

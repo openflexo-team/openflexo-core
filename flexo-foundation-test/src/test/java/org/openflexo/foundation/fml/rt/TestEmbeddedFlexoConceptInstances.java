@@ -235,7 +235,7 @@ public class TestEmbeddedFlexoConceptInstances extends OpenflexoProjectAtRunTime
 
 	}
 
-	private FlexoConceptInstance createInstance(FlexoConcept concept, FlexoConceptInstance container, String name) {
+	private static FlexoConceptInstance createInstance(FlexoConcept concept, FlexoConceptInstance container, String name) {
 
 		CreateFlexoConceptInstance action = CreateFlexoConceptInstance.actionType.makeNewAction(container, null, editor);
 		action.setFlexoConcept(concept);

@@ -92,8 +92,8 @@ public class ProjectLoader extends FlexoServiceImpl implements HasPropertyChange
 	private ModelFactory modelFactory;
 
 	public ProjectLoader() {
-		this.rootProjects = new ArrayList<FlexoProject>();
-		this.editors = new LinkedHashMap<FlexoProject, FlexoEditor>();
+		this.rootProjects = new ArrayList<>();
+		this.editors = new LinkedHashMap<>();
 		try {
 			modelFactory = new ModelFactory(FlexoProjectReference.class);
 		} catch (ModelDefinitionException e) {
@@ -291,7 +291,7 @@ public class ProjectLoader extends FlexoServiceImpl implements HasPropertyChange
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		for (FlexoProject project : new ArrayList<FlexoProject>(editors.keySet())) {
+		for (FlexoProject project : new ArrayList<>(editors.keySet())) {
 			if (project.getProjectData() != null) {
 				for (FlexoProjectReference reference : project.getProjectData().getImportedProjects()) {
 					reference.getReferredProject(false);
@@ -334,7 +334,7 @@ public class ProjectLoader extends FlexoServiceImpl implements HasPropertyChange
 	}
 
 	public List<FlexoProject> getModifiedProjects() {
-		List<FlexoProject> projects = new ArrayList<FlexoProject>(editors.size());
+		List<FlexoProject> projects = new ArrayList<>(editors.size());
 		// 1. compute all modified projects
 		for (FlexoProject project : getRootProjects()) {
 			if (project.hasUnsavedResources()) {
@@ -343,7 +343,7 @@ public class ProjectLoader extends FlexoServiceImpl implements HasPropertyChange
 		}
 		// 2. we now add all the projects that depend on a modified project
 		// to the list of modified projects (so that they also get saved
-		for (FlexoProject modifiedProject : new ArrayList<FlexoProject>(projects)) {
+		for (FlexoProject modifiedProject : new ArrayList<>(projects)) {
 			for (FlexoProject project : getRootProjects()) {
 				if (project.importsProject(modifiedProject)) {
 					if (!projects.contains(project)) {
@@ -384,7 +384,7 @@ public class ProjectLoader extends FlexoServiceImpl implements HasPropertyChange
 	public void saveAllProjects() throws SaveResourceExceptionList {
 		// Saves all projects. It is necessary to save all projects because during serialization, a project may increment its revision which
 		// in turn can modify project that import the former one.
-		List<FlexoProject> projects = new ArrayList<FlexoProject>(rootProjects);
+		List<FlexoProject> projects = new ArrayList<>(rootProjects);
 		saveProjects(projects);
 
 	}

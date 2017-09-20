@@ -38,11 +38,12 @@
 
 package org.openflexo.foundation.action.copypaste;
 
-import java.awt.*;
+import java.awt.Event;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 import java.util.logging.Logger;
+
 import org.openflexo.exceptions.PasteException;
 import org.openflexo.foundation.FlexoEditingContext;
 import org.openflexo.foundation.FlexoEditor;
@@ -239,7 +240,7 @@ public class PasteAction extends FlexoAction<PasteAction, FlexoObject, FlexoObje
 
 		System.out.println("PasteHandler=" + handler);
 
-		PastingContext pastingContext = handler.retrievePastingContext(getFocusedObject(), getGlobalSelection(),
+		PastingContext<FlexoObject> pastingContext = handler.retrievePastingContext(getFocusedObject(), getGlobalSelection(),
 				editingContext.getClipboard(), getEvent());
 
 		System.out.println("PastingContext=" + pastingContext);

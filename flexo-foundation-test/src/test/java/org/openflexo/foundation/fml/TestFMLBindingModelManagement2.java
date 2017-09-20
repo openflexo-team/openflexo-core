@@ -263,7 +263,7 @@ public class TestFMLBindingModelManagement2 extends OpenflexoProjectAtRunTimeTes
 		assertNotNull(flexoConcept.getBindingModel().bindingVariableNamed("anIntegerInA"));
 		assertEquals(Integer.class, flexoConcept.getBindingModel().bindingVariableNamed("anIntegerInA").getType());
 
-		PrimitiveRole aStringInA = (PrimitiveRole) flexoConcept.getAccessibleProperty("aStringInA");
+		PrimitiveRole<?> aStringInA = (PrimitiveRole<?>) flexoConcept.getAccessibleProperty("aStringInA");
 		assertNotNull(aStringInA);
 
 		FlexoPropertyBindingVariable bv = (FlexoPropertyBindingVariable) flexoConcept.getBindingModel().bindingVariableNamed("aStringInA");
@@ -349,7 +349,7 @@ public class TestFMLBindingModelManagement2 extends OpenflexoProjectAtRunTimeTes
 
 		SelectFlexoConceptInstance selectFlexoConceptInstance = iteration1.getFMLModelFactory().newSelectFlexoConceptInstance();
 		selectFlexoConceptInstance.setFlexoConceptType(flexoConcept);
-		selectFlexoConceptInstance.setReceiver(new DataBinding<VirtualModelInstance<?, ?>>("container"));
+		selectFlexoConceptInstance.setReceiver(new DataBinding<>("container"));
 		iteration1.setIterationAction(selectFlexoConceptInstance);
 
 		FetchRequestCondition condition1 = selectFlexoConceptInstance.createCondition();
@@ -370,15 +370,15 @@ public class TestFMLBindingModelManagement2 extends OpenflexoProjectAtRunTimeTes
 		createAssignationAction.setDeclarationVariableName("name");
 		createAssignationAction.doAction();
 		assignation1 = (DeclarationAction<String>) createAssignationAction.getNewEditionAction();
-		((ExpressionAction) assignation1.getAssignableAction()).setExpression(new DataBinding<Object>("item.aStringInA"));
+		((ExpressionAction) assignation1.getAssignableAction()).setExpression(new DataBinding<>("item.aStringInA"));
 
 		CreateEditionAction createAssignationAction2 = CreateEditionAction.actionType.makeNewAction(iteration1.getControlGraph(), null,
 				editor);
 		createAssignationAction2.setEditionActionClass(ExpressionAction.class);
-		createAssignationAction2.setAssignation(new DataBinding<Object>("item.aStringInA"));
+		createAssignationAction2.setAssignation(new DataBinding<>("item.aStringInA"));
 		createAssignationAction2.doAction();
 		assignation2 = (AssignationAction<String>) createAssignationAction2.getNewEditionAction();
-		((ExpressionAction) assignation2.getAssignableAction()).setExpression(new DataBinding<Object>("name+\"foo\""));
+		((ExpressionAction) assignation2.getAssignableAction()).setExpression(new DataBinding<>("name+\"foo\""));
 
 		assertTrue(((ExpressionAction) assignation2.getAssignableAction()).getExpression().isValid());
 		assertTrue(assignation2.getAssignation().isValid());

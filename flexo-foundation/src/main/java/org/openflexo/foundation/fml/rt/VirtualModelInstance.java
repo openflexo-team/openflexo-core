@@ -585,7 +585,7 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 					if (!isDeleted()) {
 						getPropertyChangeSupport().firePropertyChange("allRootFlexoConceptInstances", lastNotifiedRootFlexoConceptInstances,
 								getAllRootFlexoConceptInstances());
-						lastNotifiedRootFlexoConceptInstances = new ArrayList(getAllRootFlexoConceptInstances());
+						lastNotifiedRootFlexoConceptInstances = new ArrayList<>(getAllRootFlexoConceptInstances());
 						willNotifyAllRootFlexoConceptInstancesMayHaveChanged = false;
 					}
 				}
@@ -1211,7 +1211,7 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 					mapForType = new WeakHashMap<>();
 					indexes.put(type, mapForType);
 				}
-				FlexoConceptInstanceIndex returned = mapForType.get(indexableTerm.toString());
+				FlexoConceptInstanceIndex<?> returned = mapForType.get(indexableTerm.toString());
 				if (returned == null) {
 					returned = makeIndex((FlexoConceptInstanceType) type, indexableTerm);
 					mapForType.put(indexableTerm.toString(), returned);

@@ -162,7 +162,8 @@ public class OpenflexoGinaSwingEditorTestCase extends OpenflexoTestCase {
 		paletteDialog.setVisible(true);
 
 		Resource fib = ResourceLocator.locateSourceCodeResource(fibResource);
-		FIBEditorController controller = editor.loadFIB(fib, data, gcDelegate.getFrame());
+		// Unused FIBEditorController controller =
+		editor.loadFIB(fib, data, gcDelegate.getFrame());
 
 		gcDelegate.addTab(title, splitPane);
 

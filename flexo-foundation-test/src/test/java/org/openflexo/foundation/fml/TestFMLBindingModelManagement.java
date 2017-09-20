@@ -333,7 +333,7 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		assertNotNull(flexoConceptA.getBindingModel().bindingVariableNamed("anIntegerInA"));
 		assertEquals(Integer.class, flexoConceptA.getBindingModel().bindingVariableNamed("anIntegerInA").getType());
 
-		PrimitiveRole aStringInA = (PrimitiveRole) flexoConceptA.getAccessibleProperty("aStringInA");
+		PrimitiveRole<?> aStringInA = (PrimitiveRole<?>) flexoConceptA.getAccessibleProperty("aStringInA");
 		assertNotNull(aStringInA);
 
 		FlexoPropertyBindingVariable bv = (FlexoPropertyBindingVariable) flexoConceptA.getBindingModel().bindingVariableNamed("aStringInA");
@@ -443,7 +443,7 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		assertNotNull(flexoConceptC.getBindingModel().bindingVariableNamed("aStringInC"));
 		assertEquals(String.class, flexoConceptC.getBindingModel().bindingVariableNamed("aStringInC").getType());
 
-		PrimitiveRole aStringInB = (PrimitiveRole) flexoConceptB.getAccessibleProperty("aStringInB");
+		PrimitiveRole<?> aStringInB = (PrimitiveRole<?>) flexoConceptB.getAccessibleProperty("aStringInB");
 		assertNotNull(aStringInB);
 
 		// We now try to rename the FlexoRole in FlexoConceptB
@@ -652,7 +652,7 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		createMS1.doAction();
 		assertTrue(createMS1.hasActionExecutionSucceeded());
 
-		FMLRTModelSlot ms1 = (FMLRTModelSlot) virtualModel3.getModelSlot("vm1");
+		FMLRTModelSlot<?, ?> ms1 = (FMLRTModelSlot<?, ?>) virtualModel3.getModelSlot("vm1");
 		assertNotNull(ms1);
 		assertSame(createMS1.getNewModelSlot(), ms1);
 
@@ -1083,7 +1083,7 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		createSelectFlexoConceptInstanceAction.setEditionActionClass(SelectFlexoConceptInstance.class);
 		createSelectFlexoConceptInstanceAction.doAction();
 
-		SelectFlexoConceptInstance selectFlexoConceptInstance = (SelectFlexoConceptInstance) createSelectFlexoConceptInstanceAction
+		SelectFlexoConceptInstance<?> selectFlexoConceptInstance = (SelectFlexoConceptInstance<?>) createSelectFlexoConceptInstanceAction
 				.getNewEditionAction();
 		selectFlexoConceptInstance.setFlexoConceptType(flexoConceptA);
 		selectFlexoConceptInstance.setReceiver(new DataBinding<>("container"));
@@ -1172,7 +1172,8 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		createIterationAction.doAction();
 		IterationAction fetchRequestIteration = (IterationAction) createIterationAction.getNewEditionAction();
 
-		SelectFlexoConceptInstance selectFlexoConceptInstance = fetchRequestIteration.getFMLModelFactory().newSelectFlexoConceptInstance();
+		SelectFlexoConceptInstance<?> selectFlexoConceptInstance = fetchRequestIteration.getFMLModelFactory()
+				.newSelectFlexoConceptInstance();
 		selectFlexoConceptInstance.setFlexoConceptType(flexoConceptA);
 		selectFlexoConceptInstance.setReceiver(new DataBinding<>("container"));
 		fetchRequestIteration.setIterationAction(selectFlexoConceptInstance);
@@ -1310,7 +1311,8 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		createSelectFetchRequestIterationAction.doAction();
 		IterationAction fetchRequestIteration = (IterationAction) createSelectFetchRequestIterationAction.getNewEditionAction();
 
-		SelectFlexoConceptInstance selectFlexoConceptInstance = fetchRequestIteration.getFMLModelFactory().newSelectFlexoConceptInstance();
+		SelectFlexoConceptInstance<?> selectFlexoConceptInstance = fetchRequestIteration.getFMLModelFactory()
+				.newSelectFlexoConceptInstance();
 		selectFlexoConceptInstance.setFlexoConceptType(flexoConceptA);
 		selectFlexoConceptInstance.setReceiver(new DataBinding<>("container"));
 		fetchRequestIteration.setIterationAction(selectFlexoConceptInstance);
@@ -1418,7 +1420,7 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		createRole.setRoleName("anOtherIntegerInA");
 		createRole.setPrimitiveType(PrimitiveType.Integer);
 		createRole.doAction();
-		FlexoRole newRole = createRole.getNewFlexoRole();
+		FlexoRole<?> newRole = createRole.getNewFlexoRole();
 
 		assertEquals(5, matchFlexoConceptInstance.getMatchingCriterias().size());
 		assertNotNull(matchFlexoConceptInstance.getMatchingCriteria(newRole));
@@ -1630,14 +1632,14 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		createVMI3.setNewVirtualModelInstanceTitle("Test creation of a new FMLRTVirtualModelInstance 3");
 		createVMI3.setVirtualModel(virtualModel3);
 
-		FMLRTModelSlot ms1 = (FMLRTModelSlot) virtualModel3.getModelSlot("vm1");
+		FMLRTModelSlot<?, ?> ms1 = (FMLRTModelSlot<?, ?>) virtualModel3.getModelSlot("vm1");
 		FMLRTModelSlotInstanceConfiguration ms1Configuration = (FMLRTModelSlotInstanceConfiguration) createVMI3
 				.getModelSlotInstanceConfiguration(ms1);
 		ms1Configuration.setOption(DefaultModelSlotInstanceConfigurationOption.SelectExistingVirtualModel);
 		ms1Configuration.setAddressedVirtualModelInstanceResource((FMLRTVirtualModelInstanceResource) vmi1.getResource());
 		assertTrue(ms1Configuration.isValidConfiguration());
 
-		FMLRTModelSlot ms2 = (FMLRTModelSlot) virtualModel3.getModelSlot("vm2");
+		FMLRTModelSlot<?, ?> ms2 = (FMLRTModelSlot<?, ?>) virtualModel3.getModelSlot("vm2");
 		FMLRTModelSlotInstanceConfiguration ms2Configuration = (FMLRTModelSlotInstanceConfiguration) createVMI3
 				.getModelSlotInstanceConfiguration(ms2);
 		ms2Configuration.setOption(DefaultModelSlotInstanceConfigurationOption.SelectExistingVirtualModel);
@@ -1815,7 +1817,8 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 
 	}
 
-	private void checkBindingVariableAccess(String variableName, Bindable owner, BindingEvaluationContext beContext, Object expectedValue) {
+	private static void checkBindingVariableAccess(String variableName, Bindable owner, BindingEvaluationContext beContext,
+			Object expectedValue) {
 		BindingVariable bv = owner.getBindingModel().bindingVariableNamed(variableName);
 		assertNotNull(bv);
 		DataBinding<Object> db = new DataBinding<>(bv.getVariableName(), owner, bv.getType(), BindingDefinitionType.GET);
@@ -1834,7 +1837,7 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		}
 	}
 
-	private void checkBinding(String binding, Bindable owner, BindingEvaluationContext beContext, Object expectedValue) {
+	private static void checkBinding(String binding, Bindable owner, BindingEvaluationContext beContext, Object expectedValue) {
 		DataBinding<Object> db = new DataBinding<>(binding, owner, Object.class, BindingDefinitionType.GET);
 		assertTrue(db.isValid());
 		try {

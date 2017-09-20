@@ -446,7 +446,7 @@ public class TestMatchFlexoConceptInstances extends OpenflexoProjectAtRunTimeTes
 
 	}
 
-	private FlexoConceptInstance createInstance(FlexoConcept concept, FlexoConceptInstance container, Object... parameters) {
+	private static FlexoConceptInstance createInstance(FlexoConcept concept, FlexoConceptInstance container, Object... parameters) {
 
 		CreateFlexoConceptInstance action = CreateFlexoConceptInstance.actionType.makeNewAction(container, null, editor);
 		action.setFlexoConcept(concept);
@@ -462,7 +462,7 @@ public class TestMatchFlexoConceptInstances extends OpenflexoProjectAtRunTimeTes
 		return action.getNewFlexoConceptInstance();
 	}
 
-	private void synchronizeMatchingModelUsingMatchingSet() {
+	private static void synchronizeMatchingModelUsingMatchingSet() {
 
 		ActionScheme actionScheme = matchingVM.getActionSchemes().get(0);
 
@@ -475,7 +475,7 @@ public class TestMatchFlexoConceptInstances extends OpenflexoProjectAtRunTimeTes
 
 	}
 
-	private void synchronizeMatchingModelUsingDefaultScheme() {
+	private static void synchronizeMatchingModelUsingDefaultScheme() {
 
 		ActionScheme actionScheme = matchingVM.getActionSchemes().get(1);
 
@@ -488,7 +488,7 @@ public class TestMatchFlexoConceptInstances extends OpenflexoProjectAtRunTimeTes
 
 	}
 
-	private void synchronizeMatchingModel2UsingMatchingSet() {
+	private static void synchronizeMatchingModel2UsingMatchingSet() {
 
 		ActionScheme actionScheme = matchingVM2.getActionSchemes().get(0);
 

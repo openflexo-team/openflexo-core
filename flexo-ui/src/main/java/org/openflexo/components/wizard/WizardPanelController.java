@@ -38,6 +38,7 @@
 
 package org.openflexo.components.wizard;
 
+import java.awt.AWTKeyStroke;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.FocusTraversalPolicy;
@@ -135,16 +136,16 @@ public class WizardPanelController extends FlexoFIBController {
 		focusPolicyList.add(cancelButtonWidget.getJComponent());
 		focusPolicyList.add(finishButtonWidget.getJComponent());
 
-		Set forwardKeys = ((JFIBView<?, ?>) getRootView()).getResultingJComponent()
+		Set<AWTKeyStroke> forwardKeys = ((JFIBView<?, ?>) getRootView()).getResultingJComponent()
 				.getFocusTraversalKeys(KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS);
-		Set newForwardKeys = new HashSet(forwardKeys);
+		Set<AWTKeyStroke> newForwardKeys = new HashSet<>(forwardKeys);
 		newForwardKeys.add(KeyStroke.getKeyStroke(KeyEvent.VK_TAB, 0));
 		((JFIBView<?, ?>) getRootView()).getResultingJComponent().setFocusTraversalKeys(KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS,
 				newForwardKeys);
 
-		Set downKeys = ((JFIBView<?, ?>) getRootView()).getResultingJComponent()
+		Set<AWTKeyStroke> downKeys = ((JFIBView<?, ?>) getRootView()).getResultingJComponent()
 				.getFocusTraversalKeys(KeyboardFocusManager.DOWN_CYCLE_TRAVERSAL_KEYS);
-		Set newDownKeys = new HashSet(downKeys);
+		Set<AWTKeyStroke> newDownKeys = new HashSet<>(downKeys);
 		newDownKeys.add(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0));
 		((JFIBView<?, ?>) getRootView()).getResultingJComponent().setFocusTraversalKeys(KeyboardFocusManager.DOWN_CYCLE_TRAVERSAL_KEYS,
 				newDownKeys);

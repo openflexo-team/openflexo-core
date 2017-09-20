@@ -285,7 +285,7 @@ public class VirtualModelResourceFactory
 	}
 
 	@Deprecated
-	private void convertFMLXMLFrom1_8_1_to_1_9(File xmlFile, FlexoServiceManager sm) throws JDOMException, IOException {
+	private static void convertFMLXMLFrom1_8_1_to_1_9(File xmlFile, FlexoServiceManager sm) throws JDOMException, IOException {
 
 		SAXBuilder builder = new SAXBuilder();
 
@@ -487,8 +487,8 @@ public class VirtualModelResourceFactory
 					XMLRootElementInfo result = resourceCenter.getXMLRootElementInfo(xmlFile, true, "UseModelSlotDeclaration");
 					if (result != null && result.getName().equals("VirtualModel")) {
 						try {
-							VirtualModelResource childVirtualModelResource = retrieveContainedVirtualModelResource(child,
-									technologyContextManager, virtualModelResource);
+							// Unused VirtualModelResource childVirtualModelResource =
+							retrieveContainedVirtualModelResource(child, technologyContextManager, virtualModelResource);
 						} catch (ModelDefinitionException e) {
 							e.printStackTrace();
 						} catch (IOException e) {
@@ -521,7 +521,7 @@ public class VirtualModelResourceFactory
 		}
 	}
 
-	private <I> VirtualModelInfo findVirtualModelInfo(VirtualModelResource resource, FlexoResourceCenter<I> resourceCenter) {
+	private static <I> VirtualModelInfo findVirtualModelInfo(VirtualModelResource resource, FlexoResourceCenter<I> resourceCenter) {
 
 		if (resourceCenter instanceof FileSystemBasedResourceCenter) {
 			FileSystemMetaDataManager metaDataManager = ((FileSystemBasedResourceCenter) resourceCenter).getMetaDataManager();

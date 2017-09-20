@@ -73,7 +73,7 @@ public class TestSequence extends OpenflexoTestCase {
 
 	static FlexoEditor editor;
 
-	static DeclarationAction declaration1, declaration2, declaration3, declaration4;
+	static DeclarationAction<?> declaration1, declaration2, declaration3, declaration4;
 
 	static FlexoBehaviour behaviour;
 
@@ -131,16 +131,16 @@ public class TestSequence extends OpenflexoTestCase {
 		Sequence sequence1 = (Sequence) behaviour.getControlGraph();
 
 		assertTrue(sequence1.getControlGraph1() instanceof DeclarationAction);
-		declaration1 = (DeclarationAction) sequence1.getControlGraph1();
+		declaration1 = (DeclarationAction<?>) sequence1.getControlGraph1();
 
 		assertTrue(sequence1.getControlGraph2() instanceof Sequence);
 		Sequence sequence2 = (Sequence) sequence1.getControlGraph2();
 
 		assertTrue(sequence2.getControlGraph1() instanceof DeclarationAction);
-		declaration2 = (DeclarationAction) sequence2.getControlGraph1();
+		declaration2 = (DeclarationAction<?>) sequence2.getControlGraph1();
 
 		assertTrue(sequence2.getControlGraph1() instanceof DeclarationAction);
-		declaration3 = (DeclarationAction) sequence2.getControlGraph2();
+		declaration3 = (DeclarationAction<?>) sequence2.getControlGraph2();
 
 		System.out.println("declaration1.BM=" + declaration1.getBindingModel());
 		System.out.println("declaration2.BM=" + declaration2.getBindingModel());
@@ -179,8 +179,8 @@ public class TestSequence extends OpenflexoTestCase {
 		createDeclaration4.doAction();
 		System.out.println("<-------------- C'est fait");
 
-		declaration4 = (DeclarationAction) createDeclaration4.getNewEditionAction();
-		((ExpressionAction) declaration4.getAssignableAction()).setExpression(new DataBinding<Object>("4"));
+		declaration4 = (DeclarationAction<?>) createDeclaration4.getNewEditionAction();
+		((ExpressionAction) declaration4.getAssignableAction()).setExpression(new DataBinding<>("4"));
 
 		System.out.println("FML=" + behaviour.getFMLRepresentation());
 

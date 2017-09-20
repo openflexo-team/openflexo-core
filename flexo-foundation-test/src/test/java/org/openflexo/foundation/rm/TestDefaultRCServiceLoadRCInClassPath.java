@@ -71,14 +71,13 @@ public class TestDefaultRCServiceLoadRCInClassPath extends OpenflexoTestCase {
 	private static DefaultResourceCenterService rcService;
 	private static VirtualModel testVP;
 
-	private static FlexoResourceCenter testRC, testRCfromCP;
+	private static FlexoResourceCenter<?> testRC, testRCfromCP;
 
 	/**
 	 * Instantiate test resource center
 	 * 
 	 * @throws IOException
 	 */
-	@SuppressWarnings({ "unchecked" })
 	@Test
 	@TestOrder(1)
 	public void instantiateResourceCenter() throws IOException {
@@ -92,7 +91,7 @@ public class TestDefaultRCServiceLoadRCInClassPath extends OpenflexoTestCase {
 
 		testRC = makeNewDirectoryResourceCenter();
 
-		for (FlexoResourceCenter rc : rcService.getResourceCenters()) {
+		for (FlexoResourceCenter<?> rc : rcService.getResourceCenters()) {
 			log("FOUND: RC name " + rc.getName() + "  [" + rc.getDefaultBaseURI() + "]");
 			if (rc.getDefaultBaseURI().equals("http://openflexo.org/test/TestResourceCenter")) {
 				testRC = rc;

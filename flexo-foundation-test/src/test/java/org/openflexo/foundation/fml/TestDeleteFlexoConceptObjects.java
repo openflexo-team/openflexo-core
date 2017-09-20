@@ -260,10 +260,10 @@ public class TestDeleteFlexoConceptObjects extends OpenflexoProjectAtRunTimeTest
 		// createEditionAction1.actionChoice =
 		// CreateEditionActionChoice.BuiltInAction;
 		createEditionAction1.setEditionActionClass(ExpressionAction.class);
-		createEditionAction1.setAssignation(new DataBinding<Object>("aStringInA"));
+		createEditionAction1.setAssignation(new DataBinding<>("aStringInA"));
 		createEditionAction1.doAction();
 		action1 = (AssignationAction<?>) createEditionAction1.getNewEditionAction();
-		((ExpressionAction) action1.getAssignableAction()).setExpression(new DataBinding<Object>("'foo'"));
+		((ExpressionAction) action1.getAssignableAction()).setExpression(new DataBinding<>("'foo'"));
 		action1.setName("action1");
 
 		assertTrue(action1.getAssignation().isValid());
@@ -293,7 +293,7 @@ public class TestDeleteFlexoConceptObjects extends OpenflexoProjectAtRunTimeTest
 
 		log("testDelete1");
 
-		Vector<FlexoConceptObject> sel = new Vector<FlexoConceptObject>();
+		Vector<FlexoConceptObject> sel = new Vector<>();
 		DeleteFlexoConceptObjects deleteAction = DeleteFlexoConceptObjects.actionType.makeNewAction(flexoConcept1, sel, editor);
 		assertSameList(deleteAction.getObjectsToDelete(), flexoConcept1);
 	}
@@ -304,7 +304,7 @@ public class TestDeleteFlexoConceptObjects extends OpenflexoProjectAtRunTimeTest
 
 		log("testDelete2");
 
-		Vector<FlexoConceptObject> sel = new Vector<FlexoConceptObject>();
+		Vector<FlexoConceptObject> sel = new Vector<>();
 		sel.add(flexoConcept1);
 		sel.add(flexoConcept2);
 		DeleteFlexoConceptObjects deleteAction = DeleteFlexoConceptObjects.actionType.makeNewAction(flexoConcept1, sel, editor);
@@ -317,7 +317,7 @@ public class TestDeleteFlexoConceptObjects extends OpenflexoProjectAtRunTimeTest
 
 		log("testDelete3");
 
-		Vector<FlexoConceptObject> sel = new Vector<FlexoConceptObject>();
+		Vector<FlexoConceptObject> sel = new Vector<>();
 		sel.add(aStringInA);
 		sel.add(someBooleanInA);
 		sel.add(someIntegerInA);
@@ -332,7 +332,7 @@ public class TestDeleteFlexoConceptObjects extends OpenflexoProjectAtRunTimeTest
 
 		log("testDelete4");
 
-		Vector<FlexoConceptObject> sel = new Vector<FlexoConceptObject>();
+		Vector<FlexoConceptObject> sel = new Vector<>();
 		sel.add(flexoConcept1);
 		sel.add(aStringInA);
 		sel.add(someBooleanInA);
@@ -346,7 +346,7 @@ public class TestDeleteFlexoConceptObjects extends OpenflexoProjectAtRunTimeTest
 
 		log("testDelete5");
 
-		Vector<FlexoConceptObject> sel = new Vector<FlexoConceptObject>();
+		Vector<FlexoConceptObject> sel = new Vector<>();
 		sel.add(aStringInA);
 		sel.add(someBooleanInA);
 		DeleteFlexoConceptObjects deleteAction = DeleteFlexoConceptObjects.actionType.makeNewAction(null, sel, editor);
@@ -367,7 +367,7 @@ public class TestDeleteFlexoConceptObjects extends OpenflexoProjectAtRunTimeTest
 
 		log("testDelete6");
 
-		Vector<FlexoConceptObject> sel = new Vector<FlexoConceptObject>();
+		Vector<FlexoConceptObject> sel = new Vector<>();
 		sel.add(action1);
 		DeleteFlexoConceptObjects deleteAction = DeleteFlexoConceptObjects.actionType.makeNewAction(null, sel, editor);
 		assertSameList(deleteAction.getObjectsToDelete(), action1);
@@ -388,7 +388,7 @@ public class TestDeleteFlexoConceptObjects extends OpenflexoProjectAtRunTimeTest
 
 		log("testDelete7");
 
-		Vector<FlexoConceptObject> sel = new Vector<FlexoConceptObject>();
+		Vector<FlexoConceptObject> sel = new Vector<>();
 		sel.add(creationScheme);
 		DeleteFlexoConceptObjects deleteAction = DeleteFlexoConceptObjects.actionType.makeNewAction(null, sel, editor);
 		assertSameList(deleteAction.getObjectsToDelete(), creationScheme);
@@ -413,7 +413,7 @@ public class TestDeleteFlexoConceptObjects extends OpenflexoProjectAtRunTimeTest
 
 		log("testDelete8");
 
-		Vector<FlexoConceptObject> sel = new Vector<FlexoConceptObject>();
+		Vector<FlexoConceptObject> sel = new Vector<>();
 		sel.add(flexoConcept1);
 		sel.add(flexoConcept2);
 		DeleteFlexoConceptObjects deleteAction = DeleteFlexoConceptObjects.actionType.makeNewAction(null, sel, editor);

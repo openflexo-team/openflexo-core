@@ -386,14 +386,17 @@ public class TestPopulateVirtualModelInstance extends OpenflexoProjectAtRunTimeT
 
 		FlexoConceptInstance a1 = createInstance(flexoConceptA);
 		FlexoConceptInstance a2 = createInstance(flexoConceptA);
+		@SuppressWarnings("unused")
 		FlexoConceptInstance a3 = createInstance(flexoConceptA);
 
 		FlexoConceptInstance b1 = createInstance(flexoConceptB);
 		FlexoConceptInstance b2 = createInstance(flexoConceptB);
+		@SuppressWarnings("unused")
 		FlexoConceptInstance b3 = createInstance(flexoConceptB);
 
 		FlexoConceptInstance c1 = createInstance(flexoConceptC);
 		FlexoConceptInstance c2 = createInstance(flexoConceptC);
+		@SuppressWarnings("unused")
 		FlexoConceptInstance c3 = createInstance(flexoConceptC);
 
 		System.out.println(vmiRes.getFactory().stringRepresentation(vmiRes.getLoadedResourceData()));
@@ -432,8 +435,11 @@ public class TestPopulateVirtualModelInstance extends OpenflexoProjectAtRunTimeT
 		assertEquals(2, newVirtualModelInstance.getFlexoConceptInstances(flexoConceptB).size());
 		assertEquals(1, newVirtualModelInstance.getFlexoConceptInstances(flexoConceptC).size());
 
+		@SuppressWarnings("unused")
 		FlexoConceptInstance a4 = createInstance(flexoConceptA);
+		@SuppressWarnings("unused")
 		FlexoConceptInstance b4 = createInstance(flexoConceptB);
+		@SuppressWarnings("unused")
 		FlexoConceptInstance c4 = createInstance(flexoConceptC);
 
 		assertEquals(6, newVirtualModelInstance.getFlexoConceptInstances(flexoConceptA).size());
@@ -441,14 +447,14 @@ public class TestPopulateVirtualModelInstance extends OpenflexoProjectAtRunTimeT
 		assertEquals(2, newVirtualModelInstance.getFlexoConceptInstances(flexoConceptC).size());
 	}
 
-	private FlexoConceptInstance createInstance(FlexoConcept concept) {
+	private static FlexoConceptInstance createInstance(FlexoConcept concept) {
 		CreationSchemeAction action = new CreationSchemeAction(concept.getCreationSchemes().get(0), newVirtualModelInstance, null, editor);
 		action.doAction();
 		assertTrue(action.hasActionExecutionSucceeded());
 		return action.getFlexoConceptInstance();
 	}
 
-	private void deleteFlexoConceptInstance(FlexoConceptInstance fci) {
+	private static void deleteFlexoConceptInstance(FlexoConceptInstance fci) {
 		DeletionSchemeActionFactory actionType = new DeletionSchemeActionFactory(fci.getFlexoConcept().getDefaultDeletionScheme(), fci);
 		DeletionSchemeAction action = actionType.makeNewAction(fci, null, editor);
 		action.doAction();

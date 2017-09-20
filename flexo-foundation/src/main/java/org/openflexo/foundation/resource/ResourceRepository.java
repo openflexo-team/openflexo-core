@@ -488,7 +488,6 @@ public abstract class ResourceRepository<R extends FlexoResource<?>, I> extends 
 	 * 
 	 * @return
 	 */
-	@SuppressWarnings("unchecked")
 	public final Class<?> getResourceClass() {
 		return org.openflexo.connie.type.TypeUtils.getBaseClass(
 				TypeUtils.getTypeArguments(getClass(), ResourceRepository.class).get(ResourceRepository.class.getTypeParameters()[0]));

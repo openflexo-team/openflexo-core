@@ -43,6 +43,7 @@ public class OpenFlexoTestCaseWithGit extends OpenflexoProjectAtRunTimeTestCase 
 	 * @param taClasses
 	 * @return a newly created {@link FlexoServiceManager}
 	 */
+	@SafeVarargs
 	protected static FlexoServiceManager instanciateTestServiceManager(Class<? extends TechnologyAdapter>... taClasses) {
 		File previousResourceCenterDirectoryToRemove = null;
 		if (testResourceCenterDirectory != null && testResourceCenterDirectory.exists()) {
@@ -153,7 +154,7 @@ public class OpenFlexoTestCaseWithGit extends OpenflexoProjectAtRunTimeTestCase 
 
 		if (previousResourceCenterDirectoryToRemove != null) {
 			if (testResourceCenterDirectoriesToRemove == null) {
-				testResourceCenterDirectoriesToRemove = new ArrayList<File>();
+				testResourceCenterDirectoriesToRemove = new ArrayList<>();
 			}
 			testResourceCenterDirectoriesToRemove.add(previousResourceCenterDirectoryToRemove);
 		}

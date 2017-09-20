@@ -218,7 +218,7 @@ public abstract class TypeAwareModelSlotInstanceConfiguration<M extends FlexoMod
 
 	public String getModelUri() {
 		if (modelUri == null) {
-			FlexoResourceCenter localRC;
+			FlexoResourceCenter<?> localRC;
 			if (getTargetResourceCenter() != null) {
 				localRC = getTargetResourceCenter();
 			}

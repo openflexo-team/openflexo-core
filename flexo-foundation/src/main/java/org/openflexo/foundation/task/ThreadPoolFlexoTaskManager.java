@@ -157,7 +157,7 @@ public class ThreadPoolFlexoTaskManager extends FlexoServiceImpl implements Flex
 				if (ignoredTasks.length > 0) {
 					for (int i = 0; i < ignoredTasks.length; i++) {
 						FlexoTask ignoredTask = ignoredTasks[i];
-						if (task == ignoredTasks[i]) {
+						if (task == ignoredTask) {
 							logger.fine("Ignoring " + task);
 							ignored = true;
 						}

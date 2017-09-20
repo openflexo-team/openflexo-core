@@ -238,7 +238,7 @@ public class TestFMLBindingModelManagement3 extends OpenflexoProjectAtRunTimeTes
 		createMS1.doAction();
 		assertTrue(createMS1.hasActionExecutionSucceeded());
 
-		FMLRTModelSlot ms1 = (FMLRTModelSlot) virtualModel3.getModelSlot("vm1");
+		FMLRTModelSlot<?, ?> ms1 = (FMLRTModelSlot<?, ?>) virtualModel3.getModelSlot("vm1");
 		assertNotNull(ms1);
 		assertSame(createMS1.getNewModelSlot(), ms1);
 
@@ -459,14 +459,14 @@ public class TestFMLBindingModelManagement3 extends OpenflexoProjectAtRunTimeTes
 		createVMI3.setNewVirtualModelInstanceTitle("Test creation of a new FMLRTVirtualModelInstance 3");
 		createVMI3.setVirtualModel(virtualModel3);
 
-		FMLRTModelSlot ms1 = (FMLRTModelSlot) virtualModel3.getModelSlot("vm1");
+		FMLRTModelSlot<?, ?> ms1 = (FMLRTModelSlot<?, ?>) virtualModel3.getModelSlot("vm1");
 		FMLRTModelSlotInstanceConfiguration ms1Configuration = (FMLRTModelSlotInstanceConfiguration) createVMI3
 				.getModelSlotInstanceConfiguration(ms1);
 		ms1Configuration.setOption(DefaultModelSlotInstanceConfigurationOption.SelectExistingVirtualModel);
 		ms1Configuration.setAddressedVirtualModelInstanceResource((FMLRTVirtualModelInstanceResource) vmi1.getResource());
 		assertTrue(ms1Configuration.isValidConfiguration());
 
-		FMLRTModelSlot ms2 = (FMLRTModelSlot) virtualModel3.getModelSlot("vm2");
+		FMLRTModelSlot<?, ?> ms2 = (FMLRTModelSlot<?, ?>) virtualModel3.getModelSlot("vm2");
 		FMLRTModelSlotInstanceConfiguration ms2Configuration = (FMLRTModelSlotInstanceConfiguration) createVMI3
 				.getModelSlotInstanceConfiguration(ms2);
 		ms2Configuration.setOption(DefaultModelSlotInstanceConfigurationOption.SelectExistingVirtualModel);

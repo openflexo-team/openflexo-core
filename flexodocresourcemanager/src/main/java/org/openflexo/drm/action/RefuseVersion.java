@@ -86,7 +86,7 @@ public class RefuseVersion extends FlexoAction<RefuseVersion, DocItem, DocItem> 
 	}
 
 	protected static List<DocItemAction> getPendingActions(DocItem item) {
-		List<DocItemAction> returned = new ArrayList<DocItemAction>();
+		List<DocItemAction> returned = new ArrayList<>();
 		for (Language lang : Language.availableValues()) {
 			DocItemAction dia = item.getLastPendingActionForLanguage(lang);
 			if (dia != null) {
@@ -105,7 +105,7 @@ public class RefuseVersion extends FlexoAction<RefuseVersion, DocItem, DocItem> 
 
 	public Vector<DocItemVersion> getVersionsThatCanBeApproved() {
 		if (_versionsThatCanBeApproved == null) {
-			_versionsThatCanBeApproved = new Vector<DocItemVersion>();
+			_versionsThatCanBeApproved = new Vector<>();
 			for (DocItemAction next : getPendingActions(getDocItem())) {
 				_versionsThatCanBeApproved.add(next.getVersion());
 			}

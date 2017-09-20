@@ -52,14 +52,12 @@ import org.openflexo.logging.FlexoLogger;
 import org.openflexo.logging.FlexoLoggingManager;
 
 /**
- * Provides a JUnit 4 generic environment of Openflexo-core with a project at
- * run-time for testing purposes in graphics environment
+ * Provides a JUnit 4 generic environment of Openflexo-core with a project at run-time for testing purposes in graphics environment
  * 
  */
 public abstract class OpenflexoProjectAtRunTimeTestCaseWithGUI extends OpenflexoProjectAtRunTimeTestCase {
 
-	private static final Logger logger = FlexoLogger
-			.getLogger(OpenflexoProjectAtRunTimeTestCaseWithGUI.class.getPackage().getName());
+	private static final Logger logger = FlexoLogger.getLogger(OpenflexoProjectAtRunTimeTestCaseWithGUI.class.getPackage().getName());
 
 	static {
 		try {
@@ -71,11 +69,12 @@ public abstract class OpenflexoProjectAtRunTimeTestCaseWithGUI extends Openflexo
 		}
 	}
 
+	@SafeVarargs
 	protected static ApplicationContext instanciateTestServiceManager(Class<? extends TechnologyAdapter>... taClasses) {
 		serviceManager = new TestApplicationContext();
 		for (Class<? extends TechnologyAdapter> technologyAdapterClass : taClasses) {
-			serviceManager.activateTechnologyAdapter(
-					serviceManager.getTechnologyAdapterService().getTechnologyAdapter(technologyAdapterClass));
+			serviceManager
+					.activateTechnologyAdapter(serviceManager.getTechnologyAdapterService().getTechnologyAdapter(technologyAdapterClass));
 		}
 		return (ApplicationContext) serviceManager;
 	}
@@ -85,7 +84,7 @@ public abstract class OpenflexoProjectAtRunTimeTestCaseWithGUI extends Openflexo
 	}
 
 	@Override
-	protected FlexoEditor createProject(String projectName, ProjectNature nature) {
+	protected FlexoEditor createProject(String projectName, ProjectNature<?, ?> nature) {
 		if (serviceManager == null) {
 			serviceManager = instanciateTestServiceManager();
 		}

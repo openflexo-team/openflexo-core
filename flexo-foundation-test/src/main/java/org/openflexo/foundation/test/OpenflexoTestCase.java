@@ -219,6 +219,7 @@ public abstract class OpenflexoTestCase {
 	 * 
 	 * @return a newly created {@link FlexoServiceManager}
 	 */
+	@SafeVarargs
 	protected static FlexoServiceManager instanciateTestServiceManager(Class<? extends TechnologyAdapter>... taClasses) {
 		File previousResourceCenterDirectoryToRemove = null;
 		if (testResourceCenterDirectory != null && testResourceCenterDirectory.exists()) {
@@ -256,7 +257,7 @@ public abstract class OpenflexoTestCase {
 
 		if (previousResourceCenterDirectoryToRemove != null) {
 			if (testResourceCenterDirectoriesToRemove == null) {
-				testResourceCenterDirectoriesToRemove = new ArrayList<File>();
+				testResourceCenterDirectoriesToRemove = new ArrayList<>();
 			}
 			testResourceCenterDirectoriesToRemove.add(previousResourceCenterDirectoryToRemove);
 		}
@@ -274,7 +275,7 @@ public abstract class OpenflexoTestCase {
 			ModelFactory factory = new ModelFactory(FSBasedResourceCenterEntry.class);
 			FSBasedResourceCenterEntry entry = factory.newInstance(FSBasedResourceCenterEntry.class);
 			entry.setDirectory(FileUtils.createTempDirectory(name, "ResourceCenter"));
-			List<ResourceCenterEntry<?>> rcList = new ArrayList<ResourceCenterEntry<?>>();
+			List<ResourceCenterEntry<?>> rcList = new ArrayList<>();
 			rcList.add(entry);
 			return DefaultResourceCenterService.getNewInstance(rcList, true);
 		} catch (IOException e) {
@@ -334,7 +335,7 @@ public abstract class OpenflexoTestCase {
 		return serviceManager;
 	}
 
-	protected void assertNotModified(FlexoResource resource) {
+	protected void assertNotModified(FlexoResource<?> resource) {
 		try {
 			if (resource.isLoaded()) {
 				assertFalse("Resource " + resource.getURI() + " should not be modfied", resource.getLoadedResourceData().isModified());
@@ -348,7 +349,7 @@ public abstract class OpenflexoTestCase {
 		}
 	}
 
-	protected void assertModified(FlexoResource resource) {
+	protected void assertModified(FlexoResource<?> resource) {
 		try {
 			if (resource.isLoaded()) {
 				assertTrue("Resource " + resource.getURI() + " should be modified", resource.getLoadedResourceData().isModified());
@@ -362,7 +363,7 @@ public abstract class OpenflexoTestCase {
 		}
 	}
 
-	protected void assertNotLoaded(FlexoResource resource) {
+	protected void assertNotLoaded(FlexoResource<?> resource) {
 		try {
 			assertFalse("Resource " + resource.getURI() + " should not be loaded", resource.isLoaded());
 		} catch (AssertionFailedError e) {
@@ -371,7 +372,7 @@ public abstract class OpenflexoTestCase {
 		}
 	}
 
-	protected void assertLoaded(FlexoResource resource) {
+	protected void assertLoaded(FlexoResource<?> resource) {
 		try {
 			assertTrue("Resource " + resource.getURI() + " should be loaded", resource.isLoaded());
 		} catch (AssertionFailedError e) {
@@ -415,6 +416,7 @@ public abstract class OpenflexoTestCase {
 	 * @param objects
 	 * @throws AssertionFailedError
 	 */
+	@SafeVarargs
 	public static <T> void assertSameList(Collection<? extends T> aList, T... objects) throws AssertionFailedError {
 		Set<T> set1 = new HashSet<>(aList);
 		Set<T> set2 = new HashSet<>();
@@ -457,7 +459,7 @@ public abstract class OpenflexoTestCase {
 			ValidationModel validationModel = object.getVirtualModelLibrary().getFMLValidationModel();
 			ValidationReport report = object.getVirtualModelLibrary().getFMLValidationModel().validate(object);
 
-			for (ValidationError error : report.getErrors()) {
+			for (ValidationError<?, ?> error : report.getErrors()) {
 				System.out.println("Found error: " + validationModel.localizedIssueMessage(error) + " details="
 						+ validationModel.localizedIssueDetailedInformations(error) + " Object: " + error.getValidable());
 			}

@@ -174,7 +174,7 @@ public interface WhileAction extends ControlStructureAction, FMLControlGraphOwne
 		@Override
 		public DataBinding<Boolean> getCondition() {
 			if (condition == null) {
-				condition = new DataBinding<Boolean>(this, Boolean.class, DataBinding.BindingDefinitionType.GET);
+				condition = new DataBinding<>(this, Boolean.class, DataBinding.BindingDefinitionType.GET);
 				condition.setBindingName("condition");
 			}
 			return condition;

@@ -56,8 +56,7 @@ import org.openflexo.logging.FlexoLogger;
 import org.openflexo.logging.FlexoLoggingManager;
 
 /**
- * Provides a JUnit 4 generic environment of Openflexo-core for testing purposes
- * in graphics environment
+ * Provides a JUnit 4 generic environment of Openflexo-core for testing purposes in graphics environment
  * 
  */
 public abstract class OpenflexoTestCaseWithGUI extends OpenflexoTestCase {
@@ -94,12 +93,13 @@ public abstract class OpenflexoTestCaseWithGUI extends OpenflexoTestCase {
 		unloadServiceManager();
 	}
 
+	@SafeVarargs
 	protected static ApplicationContext instanciateTestServiceManager(Class<? extends TechnologyAdapter>... taClasses) {
 		Flexo.isDev = true;
 		serviceManager = new TestApplicationContext(/* generateCompoundTestResourceCenter */);
 		for (Class<? extends TechnologyAdapter> technologyAdapterClass : taClasses) {
-			serviceManager.activateTechnologyAdapter(
-					serviceManager.getTechnologyAdapterService().getTechnologyAdapter(technologyAdapterClass));
+			serviceManager
+					.activateTechnologyAdapter(serviceManager.getTechnologyAdapterService().getTechnologyAdapter(technologyAdapterClass));
 		}
 		return serviceManager;
 	}

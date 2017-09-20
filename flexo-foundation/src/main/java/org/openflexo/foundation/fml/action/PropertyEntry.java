@@ -475,7 +475,7 @@ public class PropertyEntry extends PropertyChangedSupportDefaultImplementation i
 		return returned;
 	}
 
-	private List<Class<? extends FlexoRole<?>>> buildAvailableFlexoRoleTypes(TechnologyAdapter ta) {
+	private static List<Class<? extends FlexoRole<?>>> buildAvailableFlexoRoleTypes(TechnologyAdapter ta) {
 		List<Class<? extends FlexoRole<?>>> returned = new ArrayList<>();
 		for (Class<? extends ModelSlot<?>> modelSlotClass : ta.getAvailableModelSlotTypes()) {
 			for (Class<? extends FlexoRole<?>> flexoRoleClass : ta.getTechnologyAdapterService()
@@ -556,7 +556,7 @@ public class PropertyEntry extends PropertyChangedSupportDefaultImplementation i
 	public FlexoProperty<?> performCreateProperty(FlexoConcept destinationConcept, FlexoAction<?, ?, ?> containerAction) {
 		Progress.progress(getLocales().localizedForKey("create_property") + " " + getName());
 
-		AbstractCreateFlexoProperty action = null;
+		AbstractCreateFlexoProperty<?> action = null;
 
 		switch (getPropertyType()) {
 			case PRIMITIVE:

@@ -478,12 +478,12 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 	}
 
 	// Override when required
-	public List<? extends ProjectNature> getSpecificProjectNatures(FlexoProject project) {
+	public List<? extends ProjectNature<?, ?>> getSpecificProjectNatures(FlexoProject project) {
 		return Collections.emptyList();
 	}
 
 	// Override when required
-	public ModuleView<FlexoProject> createFlexoProjectModuleViewForSpecificNature(FlexoProject project, ProjectNature nature,
+	public ModuleView<FlexoProject> createFlexoProjectModuleViewForSpecificNature(FlexoProject project, ProjectNature<?, ?> nature,
 			FlexoController controller, FlexoPerspective perspective) {
 		return null;
 	}

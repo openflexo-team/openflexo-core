@@ -117,7 +117,7 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 
 	public TechnologyAdapter() {
 		resourceFactories = new ArrayList<>();
-		availableResourceTypes = new ArrayList<Class<? extends TechnologyAdapterResource<?, ?>>>();
+		availableResourceTypes = new ArrayList<>();
 	}
 
 	private LocalizedDelegate locales = null;
@@ -263,7 +263,7 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 			while (it.hasNext()) {
 				I serializationArtefact = it.next();
 				if (!isIgnorable(resourceCenter, serializationArtefact)) {
-					FlexoResource r = tryToLookupResource(resourceFactory, resourceCenter, serializationArtefact);
+					FlexoResource<?> r = tryToLookupResource(resourceFactory, resourceCenter, serializationArtefact);
 					if (r != null) {
 						logger.info(">>>>>>>>>> Look-up resource " + r.getImplementedInterface().getSimpleName() + " " + r.getURI());
 					}
@@ -285,10 +285,11 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 	protected final <I> void foundFolder(FlexoResourceCenter<I> resourceCenter, I folder) throws IOException {
 		if (resourceCenter.isDirectory(folder) && !isFolderIgnorable(resourceCenter, folder)) {
 			TechnologyAdapterGlobalRepository globalRepository = getGlobalRepository(resourceCenter);
-			RepositoryFolder newRepositoryFolder = globalRepository.getRepositoryFolder(folder, true);
-			for (ResourceRepository<?, I> repository : (List<ResourceRepository<?, I>>) (List) getAllRepositories()) {
+			// Unused RepositoryFolder newRepositoryFolder =
+			globalRepository.getRepositoryFolder(folder, true);
+			for (ResourceRepository<?, ?> repository : getAllRepositories()) {
 				if (repository.getResourceCenter() == resourceCenter)
-					repository.getRepositoryFolder(folder, true);
+					((ResourceRepository<?, I>) repository).getRepositoryFolder(folder, true);
 			}
 		}
 	}
@@ -423,7 +424,7 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 	 * @return a boolean indicating if this file removing has been handled by the technology, when false ResourceCenter might resend
 	 *         notification
 	 */
-	public final <I> boolean contentsDeleted(FlexoResourceCenter<I> resourceCenter, I serializationArtefact) {
+	public static final <I> boolean contentsDeleted(FlexoResourceCenter<I> resourceCenter, I serializationArtefact) {
 		// TODO
 		return false;
 	}
@@ -436,7 +437,7 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 	 * @return a boolean indicating if this file removing has been handled by the technology, when false ResourceCenter might resend
 	 *         notification
 	 */
-	public final <I> boolean contentsModified(FlexoResourceCenter<I> resourceCenter, I serializationArtefact) {
+	public static final <I> boolean contentsModified(FlexoResourceCenter<I> resourceCenter, I serializationArtefact) {
 		// TODO
 		return false;
 	}
@@ -449,7 +450,7 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 	 * @return a boolean indicating if this file removing has been handled by the technology, when false ResourceCenter might resend
 	 *         notification
 	 */
-	public final <I> boolean contentsRenamed(FlexoResourceCenter<I> resourceCenter, I serializationArtefact, String oldName,
+	public static final <I> boolean contentsRenamed(FlexoResourceCenter<I> resourceCenter, I serializationArtefact, String oldName,
 			String newName) {
 		// TODO
 		return false;
@@ -496,7 +497,7 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 	}
 
 	private List<Class<? extends ModelSlot<?>>> computeAvailableModelSlotTypes() {
-		availableModelSlotTypes = new ArrayList<Class<? extends ModelSlot<?>>>();
+		availableModelSlotTypes = new ArrayList<>();
 		Class<?> cl = getClass();
 		if (cl.isAnnotationPresent(DeclareModelSlots.class)) {
 			DeclareModelSlots allModelSlots = cl.getAnnotation(DeclareModelSlots.class);
@@ -515,7 +516,7 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 	}
 
 	private List<Class<? extends VirtualModelInstanceNature>> computeAvailableVirtualModelInstanceNatures() {
-		availableVirtualModelInstanceNatures = new ArrayList<Class<? extends VirtualModelInstanceNature>>();
+		availableVirtualModelInstanceNatures = new ArrayList<>();
 		Class<?> cl = getClass();
 		if (cl.isAnnotationPresent(DeclareVirtualModelInstanceNatures.class)) {
 			DeclareVirtualModelInstanceNatures allVirtualModelInstanceNatures = cl.getAnnotation(DeclareVirtualModelInstanceNatures.class);
@@ -838,14 +839,14 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 
 		FlexoServiceManager serviceManager = getTechnologyAdapterService().getServiceManager();
 		Enumeration<URL> urlList;
-		ArrayList<FlexoResourceCenter> rcList = new ArrayList<>(serviceManager.getResourceCenterService().getResourceCenters());
+		ArrayList<FlexoResourceCenter<?>> rcList = new ArrayList<>(serviceManager.getResourceCenterService().getResourceCenters());
 
 		try {
 			urlList = ClassLoader.getSystemClassLoader()
 					.getResources("META-INF/PrivateRC/" + getIdentifier() + "/" + FlexoResourceCenter.class.getCanonicalName());
 
 			if (urlList != null && urlList.hasMoreElements()) {
-				FlexoResourceCenter rc = null;
+				FlexoResourceCenter<?> rc = null;
 				boolean rcExists = false;
 				while (urlList.hasMoreElements()) {
 					URL url = urlList.nextElement();
@@ -857,7 +858,7 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 					System.out.println("Protocol " + url.getProtocol() + ": Attempt to loading RC " + rcBaseUri + " from " + url);
 
 					rcExists = false;
-					for (FlexoResourceCenter r : rcList) {
+					for (FlexoResourceCenter<?> r : rcList) {
 						rcExists = r.getDefaultBaseURI().equals(rcBaseUri) || rcExists;
 					}
 					if (!rcExists) {

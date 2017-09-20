@@ -73,8 +73,7 @@ public class SubPropertyOfProperty<TA extends TechnologyAdapter> implements Tech
 		@Override
 		public SubPropertyOfProperty<?> makeCustomType(String configuration) {
 
-			FlexoObjectReference<IFlexoOntologyStructuralProperty<?>> reference = new FlexoObjectReference<IFlexoOntologyStructuralProperty<?>>(
-					configuration, this);
+			FlexoObjectReference<IFlexoOntologyStructuralProperty<?>> reference = new FlexoObjectReference<>(configuration, this);
 
 			IFlexoOntologyStructuralProperty<?> property = reference.getObject();
 

@@ -184,7 +184,7 @@ public class TestFMLValidationModel extends OpenflexoTestCase {
 		ValidationRuleSet<?> ruleSet = validationModel.getRuleSet(VirtualModel.class);
 		assertNotNull(ruleSet);
 		System.out.println("ruleSet=" + ruleSet + " size=" + ruleSet.getRulesCount());
-		for (ValidationRule r : ruleSet.getRules()) {
+		for (ValidationRule<?, ?> r : ruleSet.getRules()) {
 			System.out.println("> " + r);
 		}
 		assertTrue(ruleSet.containsRuleClass(VirtualModel.VirtualModelMustHaveAName.class));
@@ -197,7 +197,7 @@ public class TestFMLValidationModel extends OpenflexoTestCase {
 		ValidationRuleSet<?> ruleSet = validationModel.getRuleSet(FlexoConcept.class);
 		assertNotNull(ruleSet);
 		System.out.println("ruleSet=" + ruleSet + " size=" + ruleSet.getRulesCount());
-		for (ValidationRule r : ruleSet.getRules()) {
+		for (ValidationRule<?, ?> r : ruleSet.getRules()) {
 			System.out.println("> " + r);
 		}
 		assertTrue(ruleSet.containsRuleClass(FlexoConcept.FlexoConceptShouldHaveDeletionScheme.class));
@@ -211,7 +211,7 @@ public class TestFMLValidationModel extends OpenflexoTestCase {
 		ValidationRuleSet<?> ruleSet = validationModel.getRuleSet(FlexoRole.class);
 		assertNotNull(ruleSet);
 		System.out.println("ruleSet=" + ruleSet + " size=" + ruleSet.getRulesCount());
-		for (ValidationRule r : ruleSet.getRules()) {
+		for (ValidationRule<?, ?> r : ruleSet.getRules()) {
 			System.out.println("> " + r);
 		}
 		assertTrue(ruleSet.containsRuleClass(FlexoRole.FlexoRoleMustHaveAName.class));
@@ -223,7 +223,7 @@ public class TestFMLValidationModel extends OpenflexoTestCase {
 		ValidationRuleSet<?> ruleSet = validationModel.getRuleSet(ModelSlot.class);
 		assertNotNull(ruleSet);
 		System.out.println("ruleSet=" + ruleSet + " size=" + ruleSet.getRulesCount());
-		for (ValidationRule r : ruleSet.getRules()) {
+		for (ValidationRule<?, ?> r : ruleSet.getRules()) {
 			System.out.println("> " + r);
 		}
 		assertTrue(ruleSet.containsRuleClass(FlexoRole.FlexoRoleMustHaveAName.class));
@@ -235,7 +235,7 @@ public class TestFMLValidationModel extends OpenflexoTestCase {
 		ValidationRuleSet<?> ruleSet = validationModel.getRuleSet(AssignationAction.class);
 		assertNotNull(ruleSet);
 		System.out.println("ruleSet=" + ruleSet + " size=" + ruleSet.getRulesCount());
-		for (ValidationRule r : ruleSet.getRules()) {
+		for (ValidationRule<?, ?> r : ruleSet.getRules()) {
 			System.out.println("> " + r);
 		}
 		assertTrue(ruleSet.containsRuleClass(AssignationAction.AssignationBindingIsRequiredAndMustBeValid.class));

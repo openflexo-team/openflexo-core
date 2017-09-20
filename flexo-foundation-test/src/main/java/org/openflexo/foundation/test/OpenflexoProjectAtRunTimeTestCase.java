@@ -155,7 +155,7 @@ public abstract class OpenflexoProjectAtRunTimeTestCase extends OpenflexoTestCas
 		return createProject(projectName, null);
 	}
 
-	protected FlexoEditor createProject(String projectName, ProjectNature nature) {
+	protected FlexoEditor createProject(String projectName, ProjectNature<?, ?> nature) {
 		if (serviceManager == null) {
 			serviceManager = instanciateTestServiceManager();
 		}
@@ -167,7 +167,7 @@ public abstract class OpenflexoProjectAtRunTimeTestCase extends OpenflexoTestCas
 			ModelFactory factory = new ModelFactory(FSBasedResourceCenterEntry.class);
 			FSBasedResourceCenterEntry entry = factory.newInstance(FSBasedResourceCenterEntry.class);
 			entry.setDirectory(FileUtils.createTempDirectory(name, "ResourceCenter"));
-			List<ResourceCenterEntry<?>> rcList = new ArrayList<ResourceCenterEntry<?>>();
+			List<ResourceCenterEntry<?>> rcList = new ArrayList<>();
 			rcList.add(entry);
 			return DefaultResourceCenterService.getNewInstance(rcList, true);
 		} catch (IOException e) {
@@ -180,7 +180,7 @@ public abstract class OpenflexoProjectAtRunTimeTestCase extends OpenflexoTestCas
 		return null;
 	}
 
-	protected FlexoEditor createProject(String projectName, ProjectNature nature, FlexoServiceManager serviceManager) {
+	protected FlexoEditor createProject(String projectName, ProjectNature<?, ?> nature, FlexoServiceManager serviceManager) {
 		FlexoLoggingManager.forceInitialize(-1, true, null, Level.INFO, null);
 		try {
 			File tempFile = File.createTempFile(projectName, "");
