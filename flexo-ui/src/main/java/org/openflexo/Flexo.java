@@ -95,9 +95,6 @@ import org.openflexo.utils.TooManyFailedAttemptException;
 import org.openflexo.view.FlexoFrame;
 import org.openflexo.view.controller.FlexoController;
 
-import sun.misc.Signal;
-import sun.misc.SignalHandler;
-
 /**
  * Main class of the Flexo Application Suite
  * 
@@ -159,31 +156,20 @@ public class Flexo {
 		}
 	}
 
-	@SuppressWarnings("restriction")
 	protected static void registerShutdownHook() {
-		try {
-			Class.forName("sun.misc.Signal");
-			Class.forName("sun.misc.SignalHandler");
-			Signal.handle(new Signal("TERM"), new SignalHandler() {
-
-				@Override
-				public void handle(Signal arg0) {
-					FlexoFrame activeFrame = FlexoFrame.getActiveFrame(false);
-					if (activeFrame != null) {
-						try {
-							activeFrame.getController().getModuleLoader()
-									.quit(activeFrame.getController().getProjectLoader().someProjectsAreModified());
-						} catch (OperationCancelledException e) {
-							e.printStackTrace();
-						}
+		Runtime.getRuntime().addShutdownHook(new Thread() {
+			public void run() {
+				FlexoFrame activeFrame = FlexoFrame.getActiveFrame(false);
+				if (activeFrame != null) {
+					try {
+						activeFrame.getController().getModuleLoader()
+								.quit(activeFrame.getController().getProjectLoader().someProjectsAreModified());
+					} catch (OperationCancelledException e) {
+						e.printStackTrace();
 					}
 				}
-			});
-		} catch (IllegalArgumentException e) {
-			e.printStackTrace();
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		}
+			}
+		});
 	}
 
 	/**
@@ -236,7 +222,7 @@ public class Flexo {
 		// 1. Very important to initiate first the ResourceLocator. Nothing else. See also issue 463.
 		String resourcepath = getResourcePath();
 
-		// TODO : XtoF, Check if this is necesary.... now that Resources are located in classpath
+		// TODO : XtoF, Check if this is necessary.... now that Resources are located in classpath
 
 		final FileSystemResourceLocatorImpl fsrl = new FileSystemResourceLocatorImpl();
 		fsrl.appendToDirectories(resourcepath);
@@ -358,7 +344,7 @@ public class Flexo {
 					splashWindow.dispose();
 					splashWindow = null;
 				}
-				Module module = applicationContext.getModuleLoader()
+				Module<?> module = applicationContext.getModuleLoader()
 						.getModuleNamed(applicationContext.getGeneralPreferences().getFavoriteModuleName());
 				if (module == null) {
 					if (applicationContext.getModuleLoader().getKnownModules().size() > 0) {
