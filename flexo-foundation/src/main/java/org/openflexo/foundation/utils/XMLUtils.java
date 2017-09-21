@@ -233,20 +233,12 @@ public class XMLUtils {
 		return reply;
 	}
 
-	public static org.jdom2.Element getElement(org.jdom2.Document document, String name) {
-		Iterator it = document.getDescendants(new ElementFilter(name));
+	public static org.jdom2.Element getElement(org.jdom2.Parent parent, String name) {
+		Iterator<org.jdom2.Element> it = parent.getDescendants(new ElementFilter(name));
 		if (it.hasNext()) {
 			return (org.jdom2.Element) it.next();
-		} else {
-			return null;
 		}
-	}
-
-	public static org.jdom2.Element getElement(org.jdom2.Element from, String name) {
-		Iterator it = from.getDescendants(new ElementFilter(name));
-		if (it.hasNext()) {
-			return (org.jdom2.Element) it.next();
-		} else {
+		else {
 			return null;
 		}
 	}
