@@ -142,7 +142,7 @@ public class FlexoObjectReference<O extends FlexoObject> implements ResourceLoad
 	}
 
 	public FlexoObjectReference(String identifier, ReferenceOwner owner) {
-		System.out.println("On cree une reference pour " + identifier + " and " + owner);
+		// System.out.println("On cree une reference pour " + identifier + " and " + owner);
 		setOwner(owner);
 		try {
 			String modelObjectIdentifier = identifier;
