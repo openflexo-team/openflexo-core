@@ -56,10 +56,6 @@ public abstract class FlexoOntologyObjectImpl<TA extends TechnologyAdapter> exte
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(FlexoOntologyObjectImpl.class.getPackage().getName());
 
-	public FlexoOntologyObjectImpl() {
-		super();
-	}
-
 	public IFlexoOntology<TA> getOntology() {
 		return getFlexoOntology();
 	}

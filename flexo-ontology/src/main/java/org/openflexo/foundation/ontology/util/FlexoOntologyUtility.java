@@ -129,7 +129,7 @@ public class FlexoOntologyUtility {
 	 */
 	public static <TA extends TechnologyAdapter> List<IFlexoOntologyConcept<TA>> getAllConcepts(
 			IFlexoOntologyConceptContainer<TA> container) {
-		List<IFlexoOntologyConcept<TA>> result = new ArrayList<IFlexoOntologyConcept<TA>>();
+		List<IFlexoOntologyConcept<TA>> result = new ArrayList<>();
 		result.addAll(container.getConcepts());
 		for (IFlexoOntologyConceptContainer<TA> subContainer : container.getSubContainers()) {
 			result.addAll(getAllConcepts(subContainer));
@@ -184,7 +184,7 @@ public class FlexoOntologyUtility {
 	 */
 	public static <TA extends TechnologyAdapter> List<IFlexoOntologyIndividual<TA>> getIndividualOfType(IFlexoOntology<TA> flexoOntology,
 			IFlexoOntologyClass<TA> emfClass) {
-		List<IFlexoOntologyIndividual<TA>> result = new ArrayList<IFlexoOntologyIndividual<TA>>();
+		List<IFlexoOntologyIndividual<TA>> result = new ArrayList<>();
 		for (IFlexoOntologyConcept<TA> concept : getAllConcepts(flexoOntology)) {
 			if (concept instanceof IFlexoOntologyIndividual) {
 				if (((IFlexoOntologyIndividual<TA>) concept).isIndividualOf(emfClass)) {

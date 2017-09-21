@@ -132,13 +132,13 @@ public class FIBPropertySelector extends FIBFlexoObjectSelector<IFlexoOntologySt
 		return "";
 	}
 
-	public IFlexoOntology getContext() {
+	public IFlexoOntology<?> getContext() {
 		return getModel().getContext();
 	}
 
 	@CustomComponentParameter(name = "context", type = CustomComponentParameter.Type.MANDATORY)
 	public void setContext(IFlexoOntology context) {
-		IFlexoOntology oldValue = getContext();
+		IFlexoOntology<?> oldValue = getContext();
 		if (oldValue != context) {
 			getModel().setContext(context);
 			update();
@@ -147,11 +147,11 @@ public class FIBPropertySelector extends FIBFlexoObjectSelector<IFlexoOntologySt
 		}
 	}
 
-	public IFlexoOntology getOntology() {
+	public IFlexoOntology<?> getOntology() {
 		return getContext();
 	}
 
-	public void setOntology(IFlexoOntology ontology) {
+	public void setOntology(IFlexoOntology<?> ontology) {
 		setContext(ontology);
 	}
 
@@ -166,20 +166,20 @@ public class FIBPropertySelector extends FIBFlexoObjectSelector<IFlexoOntologySt
 	public void setRootClassURI(String aRootClassURI) {
 		// logger.info("Sets rootClassURI with " + aRootClassURI + " context=" + getContext());
 		if (getContext() != null) {
-			IFlexoOntologyClass rootClass = getContext().getClass(aRootClassURI);
+			IFlexoOntologyClass<?> rootClass = getContext().getClass(aRootClassURI);
 			if (rootClass != null) {
 				setRootClass(rootClass);
 			}
 		}
 	}
 
-	public IFlexoOntologyClass getRootClass() {
+	public IFlexoOntologyClass<?> getRootClass() {
 		return getModel().getRootClass();
 	}
 
 	@CustomComponentParameter(name = "rootClass", type = CustomComponentParameter.Type.OPTIONAL)
-	public void setRootClass(IFlexoOntologyClass rootClass) {
-		IFlexoOntologyClass oldValue = getRootClass();
+	public void setRootClass(IFlexoOntologyClass<?> rootClass) {
+		IFlexoOntologyClass<?> oldValue = getRootClass();
 		if (oldValue != rootClass) {
 			model.setRootClass(rootClass);
 			update();
@@ -187,13 +187,13 @@ public class FIBPropertySelector extends FIBFlexoObjectSelector<IFlexoOntologySt
 		}
 	}
 
-	public IFlexoOntologyClass getDomain() {
+	public IFlexoOntologyClass<?> getDomain() {
 		return getModel().getDomain();
 	}
 
 	@CustomComponentParameter(name = "domain", type = CustomComponentParameter.Type.OPTIONAL)
-	public void setDomain(IFlexoOntologyClass domain) {
-		IFlexoOntologyClass oldValue = getDomain();
+	public void setDomain(IFlexoOntologyClass<?> domain) {
+		IFlexoOntologyClass<?> oldValue = getDomain();
 		if (oldValue != domain) {
 			model.setDomain(domain);
 			update();
@@ -212,20 +212,20 @@ public class FIBPropertySelector extends FIBFlexoObjectSelector<IFlexoOntologySt
 	public void setDomainClassURI(String aDomainClassURI) {
 		// logger.info("Sets domainClassURI with " + aDomainClassURI + " context=" + getContext());
 		if (getContext() != null) {
-			IFlexoOntologyClass rootClass = getContext().getClass(aDomainClassURI);
+			IFlexoOntologyClass<?> rootClass = getContext().getClass(aDomainClassURI);
 			if (rootClass != null) {
 				setDomain(rootClass);
 			}
 		}
 	}
 
-	public IFlexoOntologyClass getRange() {
+	public IFlexoOntologyClass<?> getRange() {
 		return getModel().getRange();
 	}
 
 	@CustomComponentParameter(name = "range", type = CustomComponentParameter.Type.OPTIONAL)
-	public void setRange(IFlexoOntologyClass range) {
-		IFlexoOntologyClass oldValue = getRange();
+	public void setRange(IFlexoOntologyClass<?> range) {
+		IFlexoOntologyClass<?> oldValue = getRange();
 		if (oldValue != range) {
 			model.setRange(range);
 			update();
@@ -244,7 +244,7 @@ public class FIBPropertySelector extends FIBFlexoObjectSelector<IFlexoOntologySt
 	public void setRangeClassURI(String aRangeClassURI) {
 		// logger.info("Sets rangeClassURI with " + aRangeClassURI + " context=" + getContext());
 		if (getContext() != null) {
-			IFlexoOntologyClass rootClass = getContext().getClass(aRangeClassURI);
+			IFlexoOntologyClass<?> rootClass = getContext().getClass(aRangeClassURI);
 			if (rootClass != null) {
 				setRange(rootClass);
 			}
@@ -359,13 +359,13 @@ public class FIBPropertySelector extends FIBFlexoObjectSelector<IFlexoOntologySt
 		this.technologyAdapter = technologyAdapter;
 	}
 
-	private ModelSlot modelSlot;
+	private ModelSlot<?> modelSlot;
 
-	public ModelSlot getModelSlot() {
+	public ModelSlot<?> getModelSlot() {
 		return modelSlot;
 	}
 
-	public void setModelSlot(ModelSlot modelSlot) {
+	public void setModelSlot(ModelSlot<?> modelSlot) {
 		this.modelSlot = modelSlot;
 	}
 
@@ -374,16 +374,16 @@ public class FIBPropertySelector extends FIBFlexoObjectSelector<IFlexoOntologySt
 	 * 
 	 * @return
 	 */
-	public FlexoMetaModel getAdressedFlexoMetaModel() {
+	public FlexoMetaModel<?> getAdressedFlexoMetaModel() {
 		if (modelSlot instanceof TypeAwareModelSlot) {
-			TypeAwareModelSlot typeAwareModelSlot = (TypeAwareModelSlot) modelSlot;
+			TypeAwareModelSlot<?, ?> typeAwareModelSlot = (TypeAwareModelSlot<?, ?>) modelSlot;
 			return typeAwareModelSlot.getMetaModelResource().getMetaModelData();
 		}
 		return null;
 	}
 
-	protected OntologyBrowserModel performBuildOntologyBrowserModel(IFlexoOntology ontology) {
-		return new OntologyBrowserModel(ontology);
+	protected OntologyBrowserModel<?> performBuildOntologyBrowserModel(IFlexoOntology<?> ontology) {
+		return new OntologyBrowserModel<>(ontology);
 	}
 
 	/**
@@ -392,8 +392,8 @@ public class FIBPropertySelector extends FIBFlexoObjectSelector<IFlexoOntologySt
 	 * 
 	 * @return
 	 */
-	protected OntologyBrowserModel makeBrowserModel(IFlexoOntology ontology) {
-		OntologyBrowserModel returned = null;
+	protected OntologyBrowserModel<?> makeBrowserModel(IFlexoOntology<?> ontology) {
+		OntologyBrowserModel<?> returned = null;
 		if (getTechnologyAdapter() != null) {
 			// Use technology specific browser model
 			TechnologyAdapterController<?> technologyAdapterController = getTechnologyAdapter().getTechnologyAdapterService()

@@ -181,13 +181,8 @@ public abstract class DRMObject extends DefaultFlexoObject implements Validable 
 	 * 
 	 * @return a Vector of Validable objects
 	 */
-	/**
-	 * Return a vector of all embedded objects at this level does NOT include itself
-	 * 
-	 * @return a Vector of Validable objects
-	 */
 	@Override
-	public Collection<? extends DRMObject> getEmbeddedValidableObjects() {
+	public Collection<Validable> getEmbeddedValidableObjects() {
 		return Collections.emptyList();
 	}
 

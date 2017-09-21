@@ -132,7 +132,7 @@ public interface FetchRequestCondition extends FlexoConceptObject {
 		@Override
 		public DataBinding<Boolean> getCondition() {
 			if (condition == null) {
-				condition = new DataBinding<Boolean>(this, Boolean.class, BindingDefinitionType.GET);
+				condition = new DataBinding<>(this, Boolean.class, BindingDefinitionType.GET);
 				condition.setBindingName("condition");
 			}
 			return condition;

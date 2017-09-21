@@ -39,7 +39,6 @@
 
 package org.openflexo.drm.action;
 
-import java.util.Enumeration;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -59,7 +58,8 @@ public class DeleteDocItemFolder extends FlexoAction {
 
 	private static final Logger logger = Logger.getLogger(DeleteDocItemFolder.class.getPackage().getName());
 
-	public static FlexoActionFactory actionType = new FlexoActionFactory("delete", FlexoActionFactory.editGroup, FlexoActionFactory.DELETE_ACTION_TYPE) {
+	public static FlexoActionFactory actionType = new FlexoActionFactory("delete", FlexoActionFactory.editGroup,
+			FlexoActionFactory.DELETE_ACTION_TYPE) {
 
 		/**
 		 * Factory method
@@ -85,7 +85,7 @@ public class DeleteDocItemFolder extends FlexoAction {
 		super(actionType, focusedObject, globalSelection, editor);
 	}
 
-	private Vector folders;
+	private Vector<DocItemFolder> folders;
 
 	/**
 	 * Overrides doAction
@@ -95,21 +95,19 @@ public class DeleteDocItemFolder extends FlexoAction {
 	@Override
 	protected void doAction(Object context) throws FlexoException {
 		if (folders != null) {
-			Enumeration en = folders.elements();
-			while (en.hasMoreElements()) {
-				DocItemFolder folder = (DocItemFolder) en.nextElement();
+			for (DocItemFolder folder : folders)
 				folder.delete();
-			}
-		} else if (logger.isLoggable(Level.WARNING)) {
+		}
+		else if (logger.isLoggable(Level.WARNING)) {
 			logger.warning("Tried to delete doc folders, but folders was not set.");
 		}
 	}
 
-	public Vector getFolders() {
+	public Vector<DocItemFolder> getFolders() {
 		return folders;
 	}
 
-	public void setFolders(Vector folders) {
+	public void setFolders(Vector<DocItemFolder> folders) {
 		this.folders = folders;
 	}
 

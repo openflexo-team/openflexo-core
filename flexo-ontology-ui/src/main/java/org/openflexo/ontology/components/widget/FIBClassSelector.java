@@ -79,7 +79,7 @@ public class FIBClassSelector extends FIBFlexoObjectSelector<IFlexoOntologyClass
 	protected OntologyBrowserModel model = null;
 	private TechnologyAdapter technologyAdapter;
 
-	public FIBClassSelector(IFlexoOntologyClass editedObject) {
+	public FIBClassSelector(IFlexoOntologyClass<?> editedObject) {
 		super(editedObject);
 		model = makeBrowserModel(editedObject != null ? editedObject.getOntology() : null);
 	}
@@ -138,13 +138,13 @@ public class FIBClassSelector extends FIBFlexoObjectSelector<IFlexoOntologyClass
 		}
 	}
 
-	public IFlexoOntology getContext() {
+	public IFlexoOntology<?> getContext() {
 		return getModel().getContext();
 	}
 
 	@CustomComponentParameter(name = "context", type = CustomComponentParameter.Type.MANDATORY)
 	public void setContext(IFlexoOntology context) {
-		IFlexoOntology oldValue = getContext();
+		IFlexoOntology<?> oldValue = getContext();
 		if (oldValue != context) {
 			getModel().setContext(context);
 			update();
@@ -153,11 +153,11 @@ public class FIBClassSelector extends FIBFlexoObjectSelector<IFlexoOntologyClass
 		}
 	}
 
-	public IFlexoOntology getOntology() {
+	public IFlexoOntology<?> getOntology() {
 		return getContext();
 	}
 
-	public void setOntology(IFlexoOntology ontology) {
+	public void setOntology(IFlexoOntology<?> ontology) {
 		setContext(ontology);
 	}
 
@@ -229,8 +229,8 @@ public class FIBClassSelector extends FIBFlexoObjectSelector<IFlexoOntologyClass
 		this.technologyAdapter = technologyAdapter;
 	}
 
-	protected OntologyBrowserModel performBuildOntologyBrowserModel(IFlexoOntology ontology) {
-		return new OntologyBrowserModel(ontology);
+	protected OntologyBrowserModel<?> performBuildOntologyBrowserModel(IFlexoOntology<?> ontology) {
+		return new OntologyBrowserModel<>(ontology);
 	}
 
 	/**
@@ -239,8 +239,8 @@ public class FIBClassSelector extends FIBFlexoObjectSelector<IFlexoOntologyClass
 	 * 
 	 * @return
 	 */
-	protected OntologyBrowserModel makeBrowserModel(IFlexoOntology ontology) {
-		OntologyBrowserModel returned = null;
+	protected OntologyBrowserModel<?> makeBrowserModel(IFlexoOntology<?> ontology) {
+		OntologyBrowserModel<?> returned = null;
 		if (getTechnologyAdapter() != null) {
 			// Use technology specific browser model
 			TechnologyAdapterController<?> technologyAdapterController = getTechnologyAdapter().getTechnologyAdapterService()

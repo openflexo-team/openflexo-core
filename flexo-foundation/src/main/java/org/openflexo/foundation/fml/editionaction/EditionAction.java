@@ -181,7 +181,7 @@ public abstract interface EditionAction extends FMLControlGraph {
 			return "";
 		}
 
-		private String disambiguate(String context) {
+		private static String disambiguate(String context) {
 			if (context == null) {
 				return null;
 			}

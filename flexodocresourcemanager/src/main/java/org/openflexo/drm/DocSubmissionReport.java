@@ -51,7 +51,7 @@ public class DocSubmissionReport extends DRMObject {
 
 	public DocSubmissionReport() {
 		super();
-		_submissionActions = new Vector<DocItemAction>();
+		_submissionActions = new Vector<>();
 	}
 
 	public Vector getSubmissionActions() {
@@ -75,7 +75,7 @@ public class DocSubmissionReport extends DRMObject {
 	}
 
 	/*private static XMLMapping _dsrMapping;
-
+	
 	public static XMLMapping getDSRMapping() {
 		if (_dsrMapping == null) {
 			StringEncoder.getDefaultInstance()._addConverter(DocItemVersion.Version.converter);

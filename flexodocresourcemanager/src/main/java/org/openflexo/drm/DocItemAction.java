@@ -164,8 +164,8 @@ public class DocItemAction extends DRMObject {
 	}
 
 	public boolean isApproved() {
-		for (Enumeration en = getItem().getActions().elements(); en.hasMoreElements();) {
-			DocItemAction next = (DocItemAction) en.nextElement();
+		for (Enumeration<DocItemAction> en = getItem().getActions().elements(); en.hasMoreElements();) {
+			DocItemAction next = en.nextElement();
 			if (next.getVersion() == getVersion() && next.getActionType() == ActionType.APPROVED) {
 				return true;
 			}
@@ -185,8 +185,8 @@ public class DocItemAction extends DRMObject {
 	}
 
 	public boolean isRefused() {
-		for (Enumeration en = getItem().getActions().elements(); en.hasMoreElements();) {
-			DocItemAction next = (DocItemAction) en.nextElement();
+		for (Enumeration<DocItemAction> en = getItem().getActions().elements(); en.hasMoreElements();) {
+			DocItemAction next = en.nextElement();
 			if (next.getVersion() == getVersion() && next.getActionType() == ActionType.REFUSED) {
 				return true;
 			}

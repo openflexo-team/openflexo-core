@@ -87,7 +87,7 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 
 	private static final Logger logger = Logger.getLogger(DefaultTechnologyAdapterService.class.getPackage().getName());
 
-	private Map<Class, TechnologyAdapter> loadedAdapters;
+	private Map<Class<?>, TechnologyAdapter> loadedAdapters;
 
 	private Map<Class<? extends ModelSlot<?>>, List<Class<? extends FlexoRole<?>>>> availableFlexoRoleTypes;
 	private Map<Class<? extends ModelSlot<?>>, List<Class<? extends FlexoBehaviour>>> availableFlexoBehaviourTypes;
@@ -126,7 +126,7 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 
 		if (loadedAdapters == null) {
 
-			loadedAdapters = new Hashtable<Class, TechnologyAdapter>();
+			loadedAdapters = new Hashtable<>();
 
 			logger.info("Loading available technology adapters...");
 
@@ -214,7 +214,7 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 	public void receiveNotification(FlexoService caller, ServiceNotification notification) {
 		if (caller instanceof FlexoResourceCenterService) {
 			if (notification instanceof ResourceCenterAdded) {
-				FlexoResourceCenter rc = ((ResourceCenterAdded) notification).getAddedResourceCenter();
+				FlexoResourceCenter<?> rc = ((ResourceCenterAdded) notification).getAddedResourceCenter();
 				Progress.progress(getLocales().localizedForKey("initializing") + " " + rc);
 				for (TechnologyAdapter ta : getTechnologyAdapters()) {
 					if (ta.isActivated()) {
@@ -224,7 +224,7 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 				}
 			}
 			if (notification instanceof ResourceCenterRemoved) {
-				FlexoResourceCenter rc = ((ResourceCenterRemoved) notification).getRemovedResourceCenter();
+				FlexoResourceCenter<?> rc = ((ResourceCenterRemoved) notification).getRemovedResourceCenter();
 				for (TechnologyAdapter ta : getTechnologyAdapters()) {
 					ta.resourceCenterRemoved(rc);
 				}
@@ -348,7 +348,7 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 		return returned;
 	}
 
-	private final Map<Class<? extends CustomType>, CustomTypeFactory<?>> customTypeFactories = new HashMap<Class<? extends CustomType>, CustomTypeFactory<?>>();
+	private final Map<Class<? extends CustomType>, CustomTypeFactory<?>> customTypeFactories = new HashMap<>();
 
 	/**
 	 * Return all {@link CustomType} factories defined for all known technologies
@@ -501,7 +501,7 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 			appendDeclareFlexoRoles(aList, cl.getSuperclass());
 		}
 
-		for (Class superInterface : cl.getInterfaces()) {
+		for (Class<?> superInterface : cl.getInterfaces()) {
 			appendDeclareFlexoRoles(aList, superInterface);
 		}
 	}
@@ -518,7 +518,7 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 		if (cl.getSuperclass() != null) {
 			appendEditionActionTypes(aList, cl.getSuperclass());
 		}
-		for (Class superInterface : cl.getInterfaces()) {
+		for (Class<?> superInterface : cl.getInterfaces()) {
 			appendEditionActionTypes(aList, superInterface);
 		}
 	}
@@ -535,7 +535,7 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 		if (cl.getSuperclass() != null) {
 			appendFetchRequestActionTypes(aList, cl.getSuperclass());
 		}
-		for (Class superInterface : cl.getInterfaces()) {
+		for (Class<?> superInterface : cl.getInterfaces()) {
 			appendFetchRequestActionTypes(aList, superInterface);
 		}
 	}
@@ -552,7 +552,7 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 		if (cl.getSuperclass() != null) {
 			appendFlexoBehaviourTypes(aList, cl.getSuperclass());
 		}
-		for (Class superInterface : cl.getInterfaces()) {
+		for (Class<?> superInterface : cl.getInterfaces()) {
 			appendFlexoBehaviourTypes(aList, superInterface);
 		}
 	}

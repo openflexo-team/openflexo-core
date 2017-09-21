@@ -77,8 +77,9 @@ public abstract class FlexoOntologyTechnologyContextManager<TA extends Technolog
 	public IndividualOfClass<TA> getIndividualOfClass(IFlexoOntologyClass<TA> anOntologyClass) {
 		if (individualsOfClass.get(anOntologyClass) != null) {
 			return individualsOfClass.get(anOntologyClass);
-		} else {
-			IndividualOfClass<TA> returned = new IndividualOfClass<TA>(anOntologyClass);
+		}
+		else {
+			IndividualOfClass<TA> returned = new IndividualOfClass<>(anOntologyClass);
 			individualsOfClass.put(anOntologyClass, returned);
 			return returned;
 		}
@@ -87,8 +88,9 @@ public abstract class FlexoOntologyTechnologyContextManager<TA extends Technolog
 	public SubClassOfClass<TA> getSubClassOfClass(IFlexoOntologyClass<TA> anOntologyClass) {
 		if (subclassesOfClass.get(anOntologyClass) != null) {
 			return subclassesOfClass.get(anOntologyClass);
-		} else {
-			SubClassOfClass<TA> returned = new SubClassOfClass<TA>(anOntologyClass);
+		}
+		else {
+			SubClassOfClass<TA> returned = new SubClassOfClass<>(anOntologyClass);
 			subclassesOfClass.put(anOntologyClass, returned);
 			return returned;
 		}
@@ -97,8 +99,9 @@ public abstract class FlexoOntologyTechnologyContextManager<TA extends Technolog
 	public SubPropertyOfProperty<TA> getSubPropertyOfProperty(IFlexoOntologyStructuralProperty<TA> anOntologyProperty) {
 		if (subpropertiesOfProperty.get(anOntologyProperty) != null) {
 			return subpropertiesOfProperty.get(anOntologyProperty);
-		} else {
-			SubPropertyOfProperty<TA> returned = new SubPropertyOfProperty<TA>(anOntologyProperty);
+		}
+		else {
+			SubPropertyOfProperty<TA> returned = new SubPropertyOfProperty<>(anOntologyProperty);
 			subpropertiesOfProperty.put(anOntologyProperty, returned);
 			return returned;
 		}
@@ -106,9 +109,9 @@ public abstract class FlexoOntologyTechnologyContextManager<TA extends Technolog
 
 	public FlexoOntologyTechnologyContextManager(TA adapter, FlexoResourceCenterService resourceCenterService) {
 		super(adapter, resourceCenterService);
-		individualsOfClass = new Hashtable<IFlexoOntologyClass<TA>, IndividualOfClass<TA>>();
-		subclassesOfClass = new Hashtable<IFlexoOntologyClass<TA>, SubClassOfClass<TA>>();
-		subpropertiesOfProperty = new Hashtable<IFlexoOntologyStructuralProperty<TA>, SubPropertyOfProperty<TA>>();
+		individualsOfClass = new Hashtable<>();
+		subclassesOfClass = new Hashtable<>();
+		subpropertiesOfProperty = new Hashtable<>();
 	}
 
 }

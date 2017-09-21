@@ -336,7 +336,7 @@ public class DRMHelpSet extends KVCFlexoObject {
 
 	private void copyImages() {
 
-		Vector<String> v = new Vector<String>();
+		Vector<String> v = new Vector<>();
 		try {
 			v.add(_drc.getFolder().getDirectory().getCanonicalPath());
 		} catch (IOException e1) {

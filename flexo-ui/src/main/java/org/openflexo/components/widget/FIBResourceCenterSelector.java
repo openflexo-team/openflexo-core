@@ -61,7 +61,7 @@ public class FIBResourceCenterSelector extends FIBFlexoObjectSelector<FlexoResou
 
 	private FlexoResourceCenterService rcService;
 
-	public FIBResourceCenterSelector(FlexoResourceCenter editedObject) {
+	public FIBResourceCenterSelector(FlexoResourceCenter<?> editedObject) {
 		super(editedObject);
 	}
 

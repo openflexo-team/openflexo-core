@@ -83,9 +83,9 @@ public class DocItemFolder extends DRMObject {
 	public DocItemFolder() {
 		super();
 		identifier = null;
-		childFolders = new Vector<DocItemFolder>();
-		items = new Vector<DocItem>();
-		itemCache = new HashMap<String, DocItem>();
+		childFolders = new Vector<>();
+		items = new Vector<>();
+		itemCache = new HashMap<>();
 	}
 
 	public static DocItemFolder createDocItemFolder(String anIdentifier, String aDescription, DocItemFolder parent,
@@ -112,14 +112,14 @@ public class DocItemFolder extends DRMObject {
 	 */
 	@Override
 	public boolean delete(Object... context) {
-		Enumeration en = ((Vector) childFolders.clone()).elements();
+		Enumeration<DocItemFolder> en = ((Vector<DocItemFolder>) childFolders.clone()).elements();
 		while (en.hasMoreElements()) {
-			DocItemFolder f = (DocItemFolder) en.nextElement();
+			DocItemFolder f = en.nextElement();
 			f.delete();
 		}
-		en = ((Vector) items.clone()).elements();
-		while (en.hasMoreElements()) {
-			DocItem it = (DocItem) en.nextElement();
+		Enumeration<DocItem> en1 = ((Vector<DocItem>) items.clone()).elements();
+		while (en1.hasMoreElements()) {
+			DocItem it = en1.nextElement();
 			it.delete();
 		}
 		if (getFolder() != null) {
@@ -207,9 +207,9 @@ public class DocItemFolder extends DRMObject {
 	private boolean itemsNeedsReordering = true;
 	private Vector<DocItem> orderedItems;
 
-	public Vector getOrderedItems() {
+	public Vector<DocItem> getOrderedItems() {
 		if (itemsNeedsReordering) {
-			orderedItems = new Vector<DocItem>();
+			orderedItems = new Vector<>();
 			orderedItems.addAll(items);
 			Collections.sort(orderedItems, DocItem.COMPARATOR);
 			itemsNeedsReordering = false;
@@ -267,7 +267,7 @@ public class DocItemFolder extends DRMObject {
 
 	public Vector<DocItemFolder> getOrderedChildFolders() {
 		if (childFolderNeedsReordering) {
-			orderedChildFolders = new Vector<DocItemFolder>();
+			orderedChildFolders = new Vector<>();
 			orderedChildFolders.addAll(childFolders);
 			Collections.sort(orderedChildFolders, COMPARATOR);
 			childFolderNeedsReordering = false;
@@ -338,8 +338,8 @@ public class DocItemFolder extends DRMObject {
 		if (returned != null) {
 			return returned;
 		}
-		for (Enumeration en = getChildFolders().elements(); en.hasMoreElements();) {
-			DocItemFolder nextFolder = (DocItemFolder) en.nextElement();
+		for (Enumeration<DocItemFolder> en = getChildFolders().elements(); en.hasMoreElements();) {
+			DocItemFolder nextFolder = en.nextElement();
 			returned = nextFolder.getItemNamed(itemIdentifier);
 			if (returned != null) {
 				return returned;
@@ -349,8 +349,8 @@ public class DocItemFolder extends DRMObject {
 	}
 
 	public DocItemFolder getItemFolderNamed(String itemFolderIdentifier) {
-		for (Enumeration en = getChildFolders().elements(); en.hasMoreElements();) {
-			DocItemFolder next = (DocItemFolder) en.nextElement();
+		for (Enumeration<DocItemFolder> en = getChildFolders().elements(); en.hasMoreElements();) {
+			DocItemFolder next = en.nextElement();
 			if (next.getIdentifier().equals(itemFolderIdentifier)) {
 				return next;
 			}
@@ -364,8 +364,8 @@ public class DocItemFolder extends DRMObject {
 	 * @return a Vector of Validable objects
 	 */
 	@Override
-	public List<? extends DRMObject> getEmbeddedValidableObjects() {
-		List<DRMObject> returned = new ArrayList<DRMObject>();
+	public List<Validable> getEmbeddedValidableObjects() {
+		List<Validable> returned = new ArrayList<>();
 		returned.addAll(getChildFolders());
 		returned.addAll(getItems());
 		return returned;
@@ -379,8 +379,8 @@ public class DocItemFolder extends DRMObject {
 		if (anItem.getFolder() == this) {
 			return true;
 		}
-		for (Enumeration en = getChildFolders().elements(); en.hasMoreElements();) {
-			DocItemFolder next = (DocItemFolder) en.nextElement();
+		for (Enumeration<DocItemFolder> en = getChildFolders().elements(); en.hasMoreElements();) {
+			DocItemFolder next = en.nextElement();
 			if (next.isAncestorOf(anItem)) {
 				return true;
 			}
@@ -393,24 +393,25 @@ public class DocItemFolder extends DRMObject {
 	// ==========================================================================
 
 	@DefineValidationRule
-	public static class DocItemFolderMustHavePrimaryItem extends ValidationRule {
+	public static class DocItemFolderMustHavePrimaryItem<R extends ValidationRule<R, DocItemFolder>>
+			extends ValidationRule<R, DocItemFolder> {
 		public DocItemFolderMustHavePrimaryItem() {
 			super(DocItemFolder.class, "documentation_folder_must_have_primary_doc_item");
 		}
 
 		@Override
-		public ValidationIssue applyValidation(final Validable object) {
+		public ValidationIssue<R, DocItemFolder> applyValidation(final DocItemFolder object) {
 			final DocItemFolder folder = (DocItemFolder) object;
-			ProblemIssue issue = null;
+			ProblemIssue<R, DocItemFolder> issue = null;
 			if (folder.getPrimaryDocItem() == null) {
-				issue = new ValidationError(this, object, "doc_item_folder_($object.identifier)_has_no_primary_doc_item");
-				issue.addToFixProposals(new CreateDefaultPrimaryDocItem(folder));
-				issue.addToFixProposals(new SetPrimaryDocItem(folder));
+				issue = new ValidationError<>((R) this, object, "doc_item_folder_($object.identifier)_has_no_primary_doc_item");
+				issue.addToFixProposals(new CreateDefaultPrimaryDocItem<R, DocItemFolder>(folder));
+				issue.addToFixProposals(new SetPrimaryDocItem<R, DocItemFolder>(folder));
 			}
 			return issue;
 		}
 
-		public static class CreateDefaultPrimaryDocItem extends FixProposal {
+		public static class CreateDefaultPrimaryDocItem<R extends ValidationRule<R, V>, V extends Validable> extends FixProposal<R, V> {
 			public DocItemFolder folder;
 
 			public CreateDefaultPrimaryDocItem(DocItemFolder aFolder) {
@@ -424,7 +425,7 @@ public class DocItemFolder extends DRMObject {
 			}
 		}
 
-		public static class SetPrimaryDocItem extends ParameteredFixProposal {
+		public static class SetPrimaryDocItem<R extends ValidationRule<R, V>, V extends Validable> extends ParameteredFixProposal<R, V> {
 			public DocItemFolder folder;
 
 			public SetPrimaryDocItem(DocItemFolder aFolder) {
@@ -432,8 +433,8 @@ public class DocItemFolder extends DRMObject {
 				folder = aFolder;
 			}
 
-			private static ParameterDefinition[] buildParameters(DocItemFolder aFolder) {
-				ParameterDefinition[] returned = new ParameterDefinition[1];
+			private static ParameterDefinition<?>[] buildParameters(DocItemFolder aFolder) {
+				ParameterDefinition<?>[] returned = new ParameterDefinition[1];
 				returned[0] = new DocItemParameter("docItem", "doc_item_to_choose", null);
 				return returned;
 			}
