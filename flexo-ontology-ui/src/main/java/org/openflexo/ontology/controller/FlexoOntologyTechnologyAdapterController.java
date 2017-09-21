@@ -43,6 +43,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.DataBinding;
+import org.openflexo.connie.DataBindingFactory;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.URIParameter;
 import org.openflexo.foundation.fml.WidgetContext;
@@ -257,11 +258,11 @@ public abstract class FlexoOntologyTechnologyAdapterController<TA extends Techno
 
 			if (propertyParameter instanceof ObjectPropertyParameter) {
 				propertySelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(propertySelector,
-						new DataBinding<>("component.selectDataProperties"), DataBinding.makeFalseBinding(), true));
+						new DataBinding<>("component.selectDataProperties"), DataBindingFactory.makeFalseBinding(), true));
 			}
 			else if (propertyParameter instanceof DataPropertyParameter) {
 				propertySelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(propertySelector,
-						new DataBinding<>("component.selectObjectProperties"), DataBinding.makeFalseBinding(), true));
+						new DataBinding<>("component.selectObjectProperties"), DataBindingFactory.makeFalseBinding(), true));
 			}
 			return propertySelector;
 		}
