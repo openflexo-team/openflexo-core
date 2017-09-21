@@ -202,18 +202,17 @@ public class FlexoObjectReference<O extends FlexoObject> implements ResourceLoad
 		 * reference, we will have to serialize this without any data which will be a disaster (we should expect NullPointer,
 		 * ArrayIndexOutOfBounds, etc...
 		 */
-		if (modelObject instanceof InnerResourceData && ((InnerResourceData) modelObject).getResourceData() != null) {
-			if (((InnerResourceData) modelObject).getResourceData().getResource() != null) {
-				this.resourceIdentifier = ((InnerResourceData) modelObject).getResourceData().getResource().getURI();
+		if (modelObject instanceof InnerResourceData) {
+			InnerResourceData<?> ird = (InnerResourceData<?>) modelObject;
+			ResourceData<?> rd = ird.getResourceData();
+			if (rd != null) {
+				this.resourceIdentifier = rd.getResource().getURI();
 			}
-			else {
-				logger.warning("object " + modelObject + " has a resource data (" + ((InnerResourceData) modelObject).getResourceData()
-						+ ") with null resource ");
-			}
+			else
+				logger.warning("object " + modelObject + " has a resource data (" + rd + ") with null resource ");
 		}
-		else {
+		else
 			logger.warning("object " + modelObject + " has no resource data !");
-		}
 		if (modelObject != null) {
 			this.userIdentifier = modelObject.getUserIdentifier();
 			this.objectIdentifier = Long.toString(modelObject.getFlexoID());
@@ -221,7 +220,7 @@ public class FlexoObjectReference<O extends FlexoObject> implements ResourceLoad
 		}
 
 		if (object instanceof InnerResourceData) {
-			ResourceData resourceData = ((InnerResourceData) object).getResourceData();
+			ResourceData<?> resourceData = ((InnerResourceData<?>) object).getResourceData();
 			if (resourceData != null) {
 				setOwner(resourceData.getResource());
 			}
@@ -229,7 +228,6 @@ public class FlexoObjectReference<O extends FlexoObject> implements ResourceLoad
 		else {
 			logger.warning("Could not find any Reference owner for " + object);
 		}
-
 	}
 
 	public String getClassName() {
