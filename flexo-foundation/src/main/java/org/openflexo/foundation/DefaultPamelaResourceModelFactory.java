@@ -84,7 +84,7 @@ public class DefaultPamelaResourceModelFactory<R extends PamelaResource<?, ?>> e
 	}
 
 	private static Class<?>[] appendGRClasses(final Collection<Class<?>> classes) {
-		final Set<Class<?>> returned = new HashSet<Class<?>>(classes);
+		final Set<Class<?>> returned = new HashSet<>(classes);
 		return returned.toArray(new Class<?>[returned.size()]);
 	}
 

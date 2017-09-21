@@ -40,7 +40,6 @@ package org.openflexo.foundation.nature;
 
 import java.util.Collection;
 import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.logging.Logger;
@@ -60,7 +59,7 @@ public abstract class DefaultProjectNatureService extends FlexoServiceImpl imple
 
 	private static final Logger logger = Logger.getLogger(DefaultProjectNatureService.class.getPackage().getName());
 
-	private Map<Class, ProjectNature<?, ?>> loadedProjectNatures;
+	private Map<Class<?>, ProjectNature<?, ?>> loadedProjectNatures;
 
 	public static ProjectNatureService getNewInstance() {
 		try {
@@ -83,12 +82,10 @@ public abstract class DefaultProjectNatureService extends FlexoServiceImpl imple
 	 */
 	public void loadAvailableProjectNatures() {
 		if (loadedProjectNatures == null) {
-			loadedProjectNatures = new Hashtable<Class, ProjectNature<?, ?>>();
+			loadedProjectNatures = new Hashtable<>();
 			logger.info("Loading available project natures...");
 			ServiceLoader<ProjectNature> loader = ServiceLoader.load(ProjectNature.class);
-			Iterator<ProjectNature> iterator = loader.iterator();
-			while (iterator.hasNext()) {
-				ProjectNature projectNature = iterator.next();
+			for (ProjectNature<?, ?> projectNature : loader) {
 				registerProjectNature(projectNature);
 			}
 			logger.info("Loading available project natures. Done.");
@@ -96,7 +93,7 @@ public abstract class DefaultProjectNatureService extends FlexoServiceImpl imple
 
 	}
 
-	private void registerProjectNature(ProjectNature projectNature) {
+	private void registerProjectNature(ProjectNature<?, ?> projectNature) {
 		logger.info("Found " + projectNature);
 		projectNature.setProjectNatureService(this);
 		addToProjectNatures(projectNature);
@@ -106,7 +103,8 @@ public abstract class DefaultProjectNatureService extends FlexoServiceImpl imple
 		if (loadedProjectNatures.containsKey(projectNature.getClass())) {
 			logger.severe("Cannot include ProjectNature with classname '" + projectNature.getClass().getName()
 					+ "' because it already exists !!!! A ProjectNature name MUST be unique !");
-		} else {
+		}
+		else {
 			loadedProjectNatures.put(projectNature.getClass(), projectNature);
 		}
 	}

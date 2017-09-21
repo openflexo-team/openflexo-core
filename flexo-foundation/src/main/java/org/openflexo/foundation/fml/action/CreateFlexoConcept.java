@@ -107,7 +107,8 @@ public class CreateFlexoConcept extends AbstractCreateFlexoConcept<CreateFlexoCo
 		newFlexoConcept.setName(getNewFlexoConceptName());
 		newFlexoConcept.setDescription(getNewFlexoConceptDescription());
 
-		FlexoConcept addressedConcept = getFocusedObject().getFlexoConcept();
+		// Unused FlexoConcept addressedConcept =
+		getFocusedObject().getFlexoConcept();
 		VirtualModel virtualModel = getFocusedObject().getDeclaringVirtualModel();
 
 		virtualModel.addToFlexoConcepts(newFlexoConcept);

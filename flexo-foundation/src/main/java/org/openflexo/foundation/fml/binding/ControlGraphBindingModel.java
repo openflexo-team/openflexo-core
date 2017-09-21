@@ -123,7 +123,7 @@ public class ControlGraphBindingModel<CG extends FMLControlGraph> extends Bindin
 				&& controlGraph.getOwnerContext().equals(GetSetProperty.SET_CONTROL_GRAPH_KEY)) {
 			// In this case, we detect that we are in a context of a SET control graph of a GetSetProperty
 			if (setValueBindingVariable == null) {
-				setValueBindingVariable = new SetValueBindingVariable((GetSetProperty<?>) controlGraph.getOwner());
+				setValueBindingVariable = new SetValueBindingVariable<>((GetSetProperty<?>) controlGraph.getOwner());
 				addToBindingVariables(setValueBindingVariable);
 			}
 		}

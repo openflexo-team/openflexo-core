@@ -99,20 +99,20 @@ public abstract class DefaultCustomTypeEditorImpl<T extends CustomType> extends 
 	}
 
 	public static class SelectorFIBController extends FlexoFIBController {
-		private DefaultCustomTypeEditorImpl editor;
+		private DefaultCustomTypeEditorImpl<?> editor;
 
 		public SelectorFIBController(FIBComponent component, GinaViewFactory<?> viewFactory) {
 			super(component, viewFactory);
 		}
 
-		public SelectorFIBController(FIBComponent component, DefaultCustomTypeEditorImpl editor, FlexoController controller) {
+		public SelectorFIBController(FIBComponent component, DefaultCustomTypeEditorImpl<?> editor, FlexoController controller) {
 			super(component, SwingViewFactory.INSTANCE);
 			this.editor = editor;
 			setFlexoController(controller);
 		}
 
 		public void selectedObjectChanged() {
-			// System.out.println("L'objet selectionne change");
+			// System.out.println("L'objet selectionné change");
 		}
 
 		public void apply() {

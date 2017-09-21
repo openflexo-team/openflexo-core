@@ -95,7 +95,7 @@ public abstract class AbstractVirtualModelInstanceModelFactory<R extends Abstrac
 	 */
 	private static List<Class<?>> allClassesForModelContext(Class<? extends VirtualModelInstance<?, ?>> baseVMIClass,
 			TechnologyAdapterService taService) throws ModelDefinitionException {
-		List<Class<?>> classes = new ArrayList<Class<?>>();
+		List<Class<?>> classes = new ArrayList<>();
 		classes.add(baseVMIClass);
 		if (taService != null) {
 			for (TechnologyAdapter ta : taService.getTechnologyAdapters()) {

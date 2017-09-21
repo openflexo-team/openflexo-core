@@ -77,7 +77,6 @@ import org.openflexo.foundation.technologyadapter.ModelSlot;
  */
 public class CreateTechnologyRole extends AbstractCreateFlexoRole<CreateTechnologyRole, ModelSlot<?>> {
 
-	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CreateTechnologyRole.class.getPackage().getName());
 
 	public static FlexoActionFactory<CreateTechnologyRole, FlexoConceptObject, FMLObject> actionType = new FlexoActionFactory<CreateTechnologyRole, FlexoConceptObject, FMLObject>(

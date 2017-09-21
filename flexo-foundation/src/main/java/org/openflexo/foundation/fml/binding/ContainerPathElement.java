@@ -49,9 +49,9 @@ import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
-import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
+import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 
 /**
@@ -136,10 +136,10 @@ public class ContainerPathElement extends SimplePathElement {
 	@Override
 	public Object getBindingValue(Object target, BindingEvaluationContext context) throws TypeMismatchException, NullReferenceException {
 		if (target instanceof FlexoBehaviourAction) {
-			return ((FlexoBehaviourAction) target).getVirtualModelInstance();
+			return ((FlexoBehaviourAction<?, ?, ?>) target).getVirtualModelInstance();
 		}
 		if (target instanceof VirtualModelInstance) {
-			return ((VirtualModelInstance) target).getContainerVirtualModelInstance();
+			return ((VirtualModelInstance<?, ?>) target).getContainerVirtualModelInstance();
 		}
 		else if (target instanceof FlexoConceptInstance) {
 			if (applicableFlexoConcept.getContainerFlexoConcept() != null) {

@@ -172,7 +172,7 @@ public interface AddClassInstance extends AssignableAction<Object> {
 		@Override
 		public ValidationIssue<AddClassMustAddressAType, AddClassInstance> applyValidation(AddClassInstance action) {
 			if (action.getType() == null) {
-				return new ValidationError(this, action, "add_class_instance_action_doesn't_define_any_type");
+				return new ValidationError<>(this, action, "add_class_instance_action_doesn't_define_any_type");
 			}
 			return null;
 		}

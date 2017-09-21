@@ -167,8 +167,7 @@ public interface ClassRole<C extends IFlexoOntologyClass> extends OntologicObjec
 		@Override
 		public ValidationIssue<ClassRoleMustDefineAValidConceptClass, ClassRole> applyValidation(ClassRole patternRole) {
 			if (patternRole.getOntologicType() == null) {
-				return new ValidationError<ClassRoleMustDefineAValidConceptClass, ClassRole>(this, patternRole,
-						"flexo_role_does_not_define_any_concept_class");
+				return new ValidationError<>(this, patternRole, "flexo_role_does_not_define_any_concept_class");
 			}
 			return null;
 		}

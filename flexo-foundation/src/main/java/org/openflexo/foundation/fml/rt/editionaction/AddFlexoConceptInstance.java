@@ -41,10 +41,10 @@ package org.openflexo.foundation.fml.rt.editionaction;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.annotations.FML;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
+import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
-import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.model.annotations.DefineValidationRule;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
@@ -80,9 +80,10 @@ public interface AddFlexoConceptInstance<VMI extends VirtualModelInstance<VMI, ?
 			return super.execute(evaluationContext);
 		}
 
+		@SuppressWarnings("unchecked")
 		@Override
 		public Class<VMI> getVirtualModelInstanceClass() {
-			return (Class) FMLRTVirtualModelInstance.class;
+			return (Class<VMI>) FMLRTVirtualModelInstance.class;
 		}
 
 		@Override
@@ -114,12 +115,10 @@ public interface AddFlexoConceptInstance<VMI extends VirtualModelInstance<VMI, ?
 				AddFlexoConceptInstance action) {
 			if (action.getCreationScheme() == null) {
 				if (action.getFlexoConceptType() == null) {
-					return new ValidationError<AddFlexoConceptInstanceMustAddressACreationScheme, AddFlexoConceptInstance>(this, action,
-							"add_flexo_concept_action_doesn't_define_any_flexo_concept");
+					return new ValidationError<>(this, action, "add_flexo_concept_action_doesn't_define_any_flexo_concept");
 				}
 				else {
-					return new ValidationError<AddFlexoConceptInstanceMustAddressACreationScheme, AddFlexoConceptInstance>(this, action,
-							"add_flexo_concept_action_doesn't_define_any_creation_scheme");
+					return new ValidationError<>(this, action, "add_flexo_concept_action_doesn't_define_any_creation_scheme");
 				}
 			}
 			return null;

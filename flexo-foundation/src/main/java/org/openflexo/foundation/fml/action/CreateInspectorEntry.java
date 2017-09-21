@@ -65,7 +65,6 @@ import org.openflexo.toolbox.StringUtils;
 
 public class CreateInspectorEntry extends FlexoAction<CreateInspectorEntry, FlexoConceptInspector, FMLObject> implements Bindable {
 
-	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CreateInspectorEntry.class.getPackage().getName());
 
 	public static FlexoActionFactory<CreateInspectorEntry, FlexoConceptInspector, FMLObject> actionType = new FlexoActionFactory<CreateInspectorEntry, FlexoConceptInspector, FMLObject>(

@@ -69,7 +69,8 @@ public class BasicFMLModelFactoryTest extends OpenflexoTestCase {
 			FMLModelFactory factory = new FMLModelFactory(null, serviceManager);
 			ModelContext modelContext = factory.getModelContext();
 			for (Iterator<ModelEntity> it = modelContext.getEntities(); it.hasNext();) {
-				ModelEntity e = it.next();
+				// Unused ModelEntity e =
+				it.next();
 			}
 			factory.checkMethodImplementations();
 		} catch (ModelDefinitionException e) {

@@ -108,7 +108,7 @@ public abstract interface AddDataProperty<MS extends TypeAwareModelSlot<M, ?>, M
 		@Override
 		public DataBinding<String> getPropertyName() {
 			if (propertyName == null) {
-				propertyName = new DataBinding<String>(this, String.class, DataBinding.BindingDefinitionType.GET);
+				propertyName = new DataBinding<>(this, String.class, DataBinding.BindingDefinitionType.GET);
 				propertyName.setBindingName("propertyName");
 			}
 			return propertyName;
@@ -128,8 +128,7 @@ public abstract interface AddDataProperty<MS extends TypeAwareModelSlot<M, ?>, M
 		@Override
 		public DataBinding<IFlexoOntologyClass<?>> getDynamicDomain() {
 			if (dynamicDomain == null) {
-				dynamicDomain = new DataBinding<IFlexoOntologyClass<?>>(this, IFlexoOntologyClass.class,
-						DataBinding.BindingDefinitionType.GET);
+				dynamicDomain = new DataBinding<>(this, IFlexoOntologyClass.class, DataBinding.BindingDefinitionType.GET);
 				dynamicDomain.setBindingName("dynamicDomain");
 			}
 			return dynamicDomain;

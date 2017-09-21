@@ -312,7 +312,7 @@ public abstract interface AddIndividual<MS extends TypeAwareModelSlot<M, ?>, M e
 		@Override
 		public DataBinding<String> getIndividualName() {
 			if (individualName == null) {
-				individualName = new DataBinding<String>(this, String.class, DataBinding.BindingDefinitionType.GET);
+				individualName = new DataBinding<>(this, String.class, DataBinding.BindingDefinitionType.GET);
 				individualName.setBindingName("individualName");
 			}
 			return individualName;
@@ -349,33 +349,32 @@ public abstract interface AddIndividual<MS extends TypeAwareModelSlot<M, ?>, M e
 		@Override
 		public ValidationIssue<AddIndividualActionMustDefineAnOntologyClass, AddIndividual> applyValidation(AddIndividual action) {
 			if (action.getOntologyClass() == null && action.getOwner() instanceof AssignationAction) {
-				Vector<FixProposal<AddIndividualActionMustDefineAnOntologyClass, AddIndividual>> v = new Vector<FixProposal<AddIndividualActionMustDefineAnOntologyClass, AddIndividual>>();
+				Vector<FixProposal<AddIndividualActionMustDefineAnOntologyClass, AddIndividual>> v = new Vector<>();
 				for (IndividualRole<?> pr : action.getFlexoConcept().getAccessibleProperties(IndividualRole.class)) {
 					v.add(new SetsFlexoRole(pr));
 				}
-				return new ValidationError<AddIndividualActionMustDefineAnOntologyClass, AddIndividual>(this, action,
-						"add_individual_action_does_not_define_any_ontology_class", v);
+				return new ValidationError<>(this, action, "add_individual_action_does_not_define_any_ontology_class", v);
 			}
 			return null;
 		}
 
 		protected static class SetsFlexoRole extends FixProposal<AddIndividualActionMustDefineAnOntologyClass, AddIndividual> {
 
-			private final IndividualRole flexoRole;
+			private final IndividualRole<?> flexoRole;
 
-			public SetsFlexoRole(IndividualRole flexoRole) {
+			public SetsFlexoRole(IndividualRole<?> flexoRole) {
 				super("assign_action_to_flexo_role" + " " + flexoRole.getRoleName());
 				this.flexoRole = flexoRole;
 			}
 
-			public IndividualRole getFlexoRole() {
+			public IndividualRole<?> getFlexoRole() {
 				return flexoRole;
 			}
 
 			@Override
 			protected void fixAction() {
 				AddIndividual<?, ?, ?> action = getValidable();
-				((AssignationAction) action.getOwner()).setAssignation(new DataBinding<Object>(flexoRole.getRoleName()));
+				((AssignationAction) action.getOwner()).setAssignation(new DataBinding<>(flexoRole.getRoleName()));
 			}
 
 		}

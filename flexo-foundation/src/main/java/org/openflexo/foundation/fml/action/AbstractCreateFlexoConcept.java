@@ -194,7 +194,7 @@ public abstract class AbstractCreateFlexoConcept<A extends FlexoAction<A, T1, T2
 		}
 	}
 
-	private String paramNameForEntry(PropertyEntry entry) {
+	private static String paramNameForEntry(PropertyEntry entry) {
 		String capitalizedName = entry.getName().substring(0, 1).toUpperCase() + entry.getName().substring(1);
 		if (capitalizedName.startsWith("A") || capitalizedName.startsWith("E") || capitalizedName.startsWith("I")
 				|| capitalizedName.startsWith("O") || capitalizedName.startsWith("U")) {
@@ -279,7 +279,7 @@ public abstract class AbstractCreateFlexoConcept<A extends FlexoAction<A, T1, T2
 		action.setEntryType(entry.getType());
 		action.setWidgetType(FlexoBehaviourParameterImpl.getAvailableWidgetTypes(entry.getType()).get(0));
 		action.setContainer(entry.getContainer());
-		action.setData(new DataBinding(entry.getName()));
+		action.setData(new DataBinding<>(entry.getName()));
 		// action.setList(entry.getList());
 		action.setIsReadOnly(false);
 		action.setDescription(entry.getDescription());

@@ -45,9 +45,9 @@ import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionFactory;
-import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.InconsistentFlexoConceptHierarchyException;
+import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.UseModelSlotDeclaration;
@@ -58,7 +58,6 @@ import org.openflexo.foundation.technologyadapter.UseModelSlotDeclaration;
  * @author sylvain
  *
  */
-@SuppressWarnings("serial")
 public class AddUseDeclaration extends FlexoAction<AddUseDeclaration, VirtualModel, FMLObject> {
 
 	private static final Logger logger = Logger.getLogger(AddUseDeclaration.class.getPackage().getName());
@@ -70,8 +69,7 @@ public class AddUseDeclaration extends FlexoAction<AddUseDeclaration, VirtualMod
 		 * Factory method
 		 */
 		@Override
-		public AddUseDeclaration makeNewAction(VirtualModel focusedObject, Vector<FMLObject> globalSelection,
-				FlexoEditor editor) {
+		public AddUseDeclaration makeNewAction(VirtualModel focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
 			return new AddUseDeclaration(focusedObject, globalSelection, editor);
 		}
 

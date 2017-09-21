@@ -58,7 +58,6 @@ import org.openflexo.foundation.fml.action.AbstractCreateFlexoConcept.ParentFlex
  * @author sylvain
  *
  */
-@SuppressWarnings("serial")
 public class AddParentFlexoConcept extends FlexoAction<AddParentFlexoConcept, FlexoConcept, FMLObject> {
 
 	private static final Logger logger = Logger.getLogger(AddParentFlexoConcept.class.getPackage().getName());
@@ -94,7 +93,7 @@ public class AddParentFlexoConcept extends FlexoAction<AddParentFlexoConcept, Fl
 
 	AddParentFlexoConcept(FlexoConcept focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
-		parentFlexoConceptEntries = new ArrayList<AbstractCreateFlexoConcept.ParentFlexoConceptEntry>();
+		parentFlexoConceptEntries = new ArrayList<>();
 		for (FlexoConcept parentConcept : getFocusedObject().getParentFlexoConcepts()) {
 			addToParentConcepts(parentConcept);
 		}

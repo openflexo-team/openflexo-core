@@ -86,7 +86,7 @@ public class ApproveVersion extends FlexoAction<ApproveVersion, DocItem, DocItem
 	}
 
 	protected static List<DocItemAction> getPendingActions(DocItem item) {
-		List<DocItemAction> returned = new ArrayList<DocItemAction>();
+		List<DocItemAction> returned = new ArrayList<>();
 		for (Language lang : item.getDocResourceCenter().getLanguages()) {
 			DocItemAction dia = item.getLastPendingActionForLanguage(lang);
 			if (dia != null) {
@@ -106,7 +106,7 @@ public class ApproveVersion extends FlexoAction<ApproveVersion, DocItem, DocItem
 
 	public Vector<DocItemVersion> getVersionsThatCanBeApproved() {
 		if (_versionsThatCanBeApproved == null) {
-			_versionsThatCanBeApproved = new Vector<DocItemVersion>();
+			_versionsThatCanBeApproved = new Vector<>();
 			for (DocItemAction next : getPendingActions(getDocItem())) {
 				_versionsThatCanBeApproved.add(next.getVersion());
 			}

@@ -83,7 +83,7 @@ public abstract class AbstractCreateVirtualModel<A extends AbstractCreateVirtual
 	protected AbstractCreateVirtualModel(FlexoActionFactory<A, T1, T2> actionType, T1 focusedObject, Vector<T2> globalSelection,
 			FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
-		modelSlotEntries = new ArrayList<AbstractCreateVirtualModel.ModelSlotEntry>();
+		modelSlotEntries = new ArrayList<>();
 	}
 
 	public List<ModelSlotEntry> getModelSlotEntries() {

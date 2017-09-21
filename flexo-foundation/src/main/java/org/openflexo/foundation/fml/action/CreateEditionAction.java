@@ -161,10 +161,10 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 	CreateEditionAction(FMLControlGraph focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 
-		availableActions = new ArrayList<Class<? extends EditionAction>>();
-		availableFetchRequests = new ArrayList<Class<? extends FetchRequest<?, ?, ?>>>();
-		editionActionForTechnologyAdapterMap = new HashMap<Class<? extends EditionAction>, TechnologyAdapter>();
-		editionActionMap = new HashMap<Class<? extends EditionAction>, EditionAction>();
+		availableActions = new ArrayList<>();
+		availableFetchRequests = new ArrayList<>();
+		editionActionForTechnologyAdapterMap = new HashMap<>();
+		editionActionMap = new HashMap<>();
 
 		// availableActions.add(AssignationAction.class);
 		// availableActions.add(DeclarationAction.class);
@@ -674,7 +674,7 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 		}
 	}
 
-	private Type getAssignableType() {
+	private static Type getAssignableType() {
 		return Object.class;
 	}
 
@@ -830,7 +830,8 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 				case FetchRequest:
 					FetchRequest<?, ?, ?> fetchRequest = factory.newInstance(getFetchRequestClass());
 					iterationAction.setIterationAction(fetchRequest);
-					List<ModelSlot<?>> availableMS = getAvailableModelSlotsForAction(getFetchRequestClass());
+					// Unused List<ModelSlot<?>> availableMS =
+					getAvailableModelSlotsForAction(getFetchRequestClass());
 					break;
 				default:
 					break;

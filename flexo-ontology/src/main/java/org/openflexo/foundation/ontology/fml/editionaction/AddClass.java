@@ -187,7 +187,7 @@ public abstract interface AddClass<MS extends TypeAwareModelSlot<M, ?>, M extend
 		@Override
 		public DataBinding<String> getClassName() {
 			if (className == null) {
-				className = new DataBinding<String>(this, String.class, DataBinding.BindingDefinitionType.GET);
+				className = new DataBinding<>(this, String.class, DataBinding.BindingDefinitionType.GET);
 				className.setBindingName("className");
 			}
 			return className;
@@ -223,33 +223,32 @@ public abstract interface AddClass<MS extends TypeAwareModelSlot<M, ?>, M extend
 		@Override
 		public ValidationIssue<AddClassActionMustDefineAnOntologyClass, AddClass> applyValidation(AddClass action) {
 			if (action.getOntologyClass() == null && action.getOwner() instanceof AssignationAction) {
-				Vector<FixProposal<AddClassActionMustDefineAnOntologyClass, AddClass>> v = new Vector<FixProposal<AddClassActionMustDefineAnOntologyClass, AddClass>>();
+				Vector<FixProposal<AddClassActionMustDefineAnOntologyClass, AddClass>> v = new Vector<>();
 				for (ClassRole<?> pr : action.getFlexoConcept().getAccessibleProperties(ClassRole.class)) {
 					v.add(new SetsFlexoRole(pr));
 				}
-				return new ValidationError<AddClassActionMustDefineAnOntologyClass, AddClass>(this, action,
-						"add_individual_action_does_not_define_any_ontology_class", v);
+				return new ValidationError<>(this, action, "add_individual_action_does_not_define_any_ontology_class", v);
 			}
 			return null;
 		}
 
 		protected static class SetsFlexoRole extends FixProposal<AddClassActionMustDefineAnOntologyClass, AddClass> {
 
-			private final ClassRole flexoRole;
+			private final ClassRole<?> flexoRole;
 
-			public SetsFlexoRole(ClassRole flexoRole) {
+			public SetsFlexoRole(ClassRole<?> flexoRole) {
 				super("assign_action_to_flexo_role_($flexoRole.flexoRoleName)");
 				this.flexoRole = flexoRole;
 			}
 
-			public ClassRole getFlexoRole() {
+			public ClassRole<?> getFlexoRole() {
 				return flexoRole;
 			}
 
 			@Override
 			protected void fixAction() {
 				AddClass<?, ?, ?> action = getValidable();
-				((AssignationAction) action.getOwner()).setAssignation(new DataBinding<Object>(flexoRole.getRoleName()));
+				((AssignationAction) action.getOwner()).setAssignation(new DataBinding<>(flexoRole.getRoleName()));
 			}
 
 		}

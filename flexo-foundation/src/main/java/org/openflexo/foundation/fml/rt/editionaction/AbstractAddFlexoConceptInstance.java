@@ -337,7 +337,7 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 		public List<AddFlexoConceptInstanceParameter> getParameters() {
 			// Comment this because of an infinite loop with updateParameters() method
 			if (parameters == null) {
-				parameters = new ArrayList<AddFlexoConceptInstanceParameter>();
+				parameters = new ArrayList<>();
 				updateParameters();
 			}
 			return parameters;
@@ -534,13 +534,13 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 					FlexoBehaviourParameter param = p.getParam();
 					if (param.getIsRequired()) {
 						if (p.getValue() == null || !p.getValue().isSet()) {
-							issues.add(new ValidationError(this, action, "parameter_s_value_is_not_defined: " + param.getName()));
+							issues.add(new ValidationError<>(this, action, "parameter_s_value_is_not_defined: " + param.getName()));
 						}
 						else if (!p.getValue().isValid()) {
 							AddFlexoConceptInstanceImpl.logger
 									.info("Binding NOT valid: " + p.getValue() + " for " + p.getName() + " object="
 											+ p.getAction().getStringRepresentation() + ". Reason: " + p.getValue().invalidBindingReason());
-							issues.add(new ValidationError(this, action, "parameter_s_value_is_not_valid: " + param.getName()));
+							issues.add(new ValidationError<>(this, action, "parameter_s_value_is_not_valid: " + param.getName()));
 						}
 					}
 				}
@@ -551,8 +551,7 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 					return issues.firstElement();
 				}
 				else {
-					return new CompoundIssue<AddFlexoConceptInstanceParametersMustBeValid, AbstractAddFlexoConceptInstance<?, ?>>(action,
-							issues);
+					return new CompoundIssue<>(action, issues);
 				}
 			}
 			return null;
@@ -585,7 +584,7 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 				if (binding.getAnalyzedType() instanceof VirtualModelInstanceType && object.getFlexoConceptType() != null) {
 					if (!(object.getFlexoConceptType() instanceof VirtualModel) && object.getFlexoConceptType()
 							.getOwningVirtualModel() != ((VirtualModelInstanceType) binding.getAnalyzedType()).getVirtualModel()) {
-						returned = new ValidationError(this, object, "incompatible_virtual_model_type");
+						returned = new ValidationError<>(this, object, "incompatible_virtual_model_type");
 
 						/*System.out.println(object.getRootOwner().getFMLRepresentation());
 						System.out.println("binding=" + binding);
@@ -628,25 +627,25 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 
 			@Override
 			protected void fixAction() {
-				AbstractAddFlexoConceptInstance action = getValidable();
-				action.setReceiver(new DataBinding<FMLRTVirtualModelInstance>("virtualModelInstance"));
+				AbstractAddFlexoConceptInstance<?, ?> action = getValidable();
+				action.setReceiver(new DataBinding<>("virtualModelInstance"));
 			}
 		}
 
 		protected static class UseFMLRTModelSlot
 				extends FixProposal<BindingIsRequiredAndMustBeValid<AbstractAddFlexoConceptInstance>, AbstractAddFlexoConceptInstance> {
 
-			private final FMLRTModelSlot modelSlot;
+			private final FMLRTModelSlot<?, ?> modelSlot;
 
-			public UseFMLRTModelSlot(FMLRTModelSlot modelSlot) {
+			public UseFMLRTModelSlot(FMLRTModelSlot<?, ?> modelSlot) {
 				super("sets_receiver_to_'" + modelSlot.getName() + "'");
 				this.modelSlot = modelSlot;
 			}
 
 			@Override
 			protected void fixAction() {
-				AbstractAddFlexoConceptInstance action = getValidable();
-				action.setReceiver(new DataBinding<FMLRTVirtualModelInstance>(modelSlot.getName()));
+				AbstractAddFlexoConceptInstance<?, ?> action = getValidable();
+				action.setReceiver(new DataBinding<>(modelSlot.getName()));
 			}
 		}
 

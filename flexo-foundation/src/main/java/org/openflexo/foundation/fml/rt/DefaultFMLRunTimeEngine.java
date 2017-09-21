@@ -153,7 +153,7 @@ public abstract class DefaultFMLRunTimeEngine implements FMLRunTimeEngine, Prope
 		}
 	}
 
-	private boolean requireEventListening(FlexoConcept concept) {
+	private static boolean requireEventListening(FlexoConcept concept) {
 		return concept.getFlexoBehaviours(EventListener.class).size() > 0;
 	}
 

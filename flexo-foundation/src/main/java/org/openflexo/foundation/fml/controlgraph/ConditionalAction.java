@@ -194,7 +194,7 @@ public interface ConditionalAction extends ControlStructureAction, FMLControlGra
 		@Override
 		public DataBinding<Boolean> getCondition() {
 			if (condition == null) {
-				condition = new DataBinding<Boolean>(this, Boolean.class, DataBinding.BindingDefinitionType.GET);
+				condition = new DataBinding<>(this, Boolean.class, DataBinding.BindingDefinitionType.GET);
 				condition.setBindingName("condition");
 			}
 			return condition;
@@ -365,7 +365,7 @@ public interface ConditionalAction extends ControlStructureAction, FMLControlGra
 					Type inferedType2 = conditional.getElseControlGraph().getInferedType();
 					if (!TypeUtils.isTypeAssignableFrom(inferedType1, inferedType2)
 							&& !TypeUtils.isTypeAssignableFrom(inferedType2, inferedType1)) {
-						return new ValidationError<InferedTypesMustBeCompatible, ConditionalAction>(this, conditional,
+						return new ValidationError<>(this, conditional,
 								"types_are_not_compatible (" + TypeUtils.simpleRepresentation(inferedType1) + " and "
 										+ TypeUtils.simpleRepresentation(inferedType2) + ")");
 					}

@@ -256,11 +256,10 @@ public interface AbstractCreateResource<MS extends ModelSlot<RD>, RD extends Res
 		@Override
 		public ValidationIssue<ResourceCenterShouldNotBeNull, TechnologySpecificAction<?, ?, ?>> applyValidation(
 				TechnologySpecificAction<?, ?, ?> anAction) {
-			DataBinding rcbinding = ((AbstractCreateResource) anAction).getResourceCenter();
+			DataBinding<?> rcbinding = ((AbstractCreateResource<?, ?, ?>) anAction).getResourceCenter();
 			if (rcbinding == null || rcbinding.isNull() || rcbinding.getExpression() == null) {
 				SetResourceCenterBeingProjectByDefault fixProposal = new SetResourceCenterBeingProjectByDefault(anAction);
-				return new ValidationWarning<ResourceCenterShouldNotBeNull, TechnologySpecificAction<?, ?, ?>>(this, anAction,
-						"CreateResource_should_not_have_null_RC", fixProposal);
+				return new ValidationWarning<>(this, anAction, "CreateResource_should_not_have_null_RC", fixProposal);
 
 			}
 			return null;
