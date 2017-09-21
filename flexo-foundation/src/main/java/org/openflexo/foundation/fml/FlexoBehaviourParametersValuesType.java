@@ -71,7 +71,7 @@ public class FlexoBehaviourParametersValuesType implements CustomType {
 	}
 
 	@Override
-	public Class getBaseClass() {
+	public Class<?> getBaseClass() {
 		return Hashtable.class;
 	}
 

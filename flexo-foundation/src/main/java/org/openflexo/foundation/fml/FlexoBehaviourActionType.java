@@ -70,7 +70,7 @@ public class FlexoBehaviourActionType implements CustomType {
 	}
 
 	@Override
-	public Class getBaseClass() {
+	public Class<?> getBaseClass() {
 		return FlexoBehaviourAction.class;
 	}
 

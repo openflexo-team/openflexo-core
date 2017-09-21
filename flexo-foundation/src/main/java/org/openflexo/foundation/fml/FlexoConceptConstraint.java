@@ -101,7 +101,8 @@ public interface FlexoConceptConstraint extends FlexoConceptObject {
 		public BindingModel getBindingModel() {
 			if (getFlexoConcept() != null) {
 				return getFlexoConcept().getBindingModel();
-			} else {
+			}
+			else {
 				return null;
 			}
 		}
@@ -124,7 +125,7 @@ public interface FlexoConceptConstraint extends FlexoConceptObject {
 		@Override
 		public DataBinding<Boolean> getConstraint() {
 			if (constraint == null) {
-				constraint = new DataBinding<Boolean>(this, Boolean.class, BindingDefinitionType.GET);
+				constraint = new DataBinding<>(this, Boolean.class, BindingDefinitionType.GET);
 				constraint.setBindingName("constraint");
 			}
 			return constraint;

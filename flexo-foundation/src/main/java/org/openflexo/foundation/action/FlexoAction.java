@@ -338,7 +338,7 @@ public abstract class FlexoAction<A extends FlexoAction<A, T1, T2>, T1 extends F
 	}
 
 	private FlexoAction<?, ?, ?> ownerAction;
-	private final List<FlexoAction<?, ?, ?>> embeddedActions = new ArrayList<FlexoAction<?, ?, ?>>();
+	private final List<FlexoAction<?, ?, ?>> embeddedActions = new ArrayList<>();
 
 	public FlexoAction<?, ?, ?> getOwnerAction() {
 		return ownerAction;
@@ -370,7 +370,6 @@ public abstract class FlexoAction<A extends FlexoAction<A, T1, T2>, T1 extends F
 
 	@Override
 	public String toString() {
-		boolean isFirst = true;
 		StringBuilder returned = new StringBuilder();
 		returned.append("FlexoAction: ").append(getClass().getName()).append("[");
 		returned.append("]");
@@ -391,7 +390,7 @@ public abstract class FlexoAction<A extends FlexoAction<A, T1, T2>, T1 extends F
 	}
 
 	/**
-	 * Hook that might be overriden in sub-classes while implementing dynamic reference replacement scheme
+	 * Hook that might be overridden in sub-classes while implementing dynamic reference replacement scheme
 	 * 
 	 * @param propertyKey
 	 * @param index

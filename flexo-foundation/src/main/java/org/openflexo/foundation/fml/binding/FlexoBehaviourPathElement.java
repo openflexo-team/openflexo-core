@@ -152,11 +152,11 @@ public class FlexoBehaviourPathElement extends FunctionPathElement {
 				// FlexoBehaviourAction action = (FlexoBehaviourAction) context;
 				FlexoConceptInstance fci = (FlexoConceptInstance) target;
 				AbstractActionSchemeActionFactory actionType = ((AbstractActionScheme) getFlexoBehaviour()).getActionFactory(fci);
-				AbstractActionSchemeAction actionSchemeAction = null;
+				AbstractActionSchemeAction<?, ?, ?> actionSchemeAction = null;
 
 				if (context instanceof FlexoBehaviourAction) {
-					actionSchemeAction = (AbstractActionSchemeAction) actionType.makeNewEmbeddedAction(fci.getVirtualModelInstance(), null,
-							(FlexoBehaviourAction) context);
+					actionSchemeAction = (AbstractActionSchemeAction<?, ?, ?>) actionType
+							.makeNewEmbeddedAction(fci.getVirtualModelInstance(), null, (FlexoBehaviourAction) context);
 				}
 				else {
 					FlexoEditor editor = null;
@@ -166,7 +166,8 @@ public class FlexoBehaviourPathElement extends FunctionPathElement {
 						editor = prj.getServiceManager().getProjectLoaderService().getEditorForProject(prj);
 					}
 
-					actionSchemeAction = (AbstractActionSchemeAction) actionType.makeNewAction(fci.getVirtualModelInstance(), null, editor);
+					actionSchemeAction = (AbstractActionSchemeAction<?, ?, ?>) actionType.makeNewAction(fci.getVirtualModelInstance(), null,
+							editor);
 				}
 				for (FlexoBehaviourParameter p : getFlexoBehaviour().getParameters()) {
 					DataBinding<?> param = getParameter(p);

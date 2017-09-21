@@ -47,6 +47,7 @@ import java.util.Iterator;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import org.openflexo.toolbox.HasPropertyChangeSupport;
 
 /**
@@ -97,19 +98,12 @@ public abstract class FlexoObservable extends KVCFlexoObject implements HasPrope
 	 * This hastable stores for all classes encountered as observers for this observable a property coded as a Boolean indicating if
 	 * notifications should be fired.
 	 */
-	protected final HashMap<Class, Boolean> observerClasses = new HashMap<>();
+	protected final HashMap<Class<?>, Boolean> observerClasses = new HashMap<>();
 
 	/**
 	 * This flag codes the necessity to fire notifications or not
 	 */
 	protected boolean enableObserving = true;
-
-	/**
-	 * Construct a FlexoObservable with zero observers.
-	 */
-	public FlexoObservable() {
-		super();
-	}
 
 	@Override
 	public PropertyChangeSupport getPropertyChangeSupport() {
@@ -132,7 +126,7 @@ public abstract class FlexoObservable extends KVCFlexoObject implements HasPrope
 		synchronized (flexoObservers) {
 
 			if (!isObservedBy(o)) {
-				flexoObservers.add(new WeakReference<FlexoObserver>(o));
+				flexoObservers.add(new WeakReference<>(o));
 				if (observerClasses.get(o.getClass()) == null) {
 					// Add an entry for this kind of observer
 					observerClasses.put(o.getClass(), new Boolean(true));
@@ -196,6 +190,7 @@ public abstract class FlexoObservable extends KVCFlexoObject implements HasPrope
 			 * a temporary array buffer, used as a snapshot of the state of
 			 * current FlexoObservers.
 			 */
+			@SuppressWarnings("unchecked")
 			WeakReference<FlexoObserver>[] arrLocal1 = new WeakReference[flexoObservers.size()];
 
 			synchronized (this) {
@@ -242,7 +237,7 @@ public abstract class FlexoObservable extends KVCFlexoObject implements HasPrope
 
 	/**
 	 * Build and return a Vector of all current observers, as a snapshot of the state of current FlexoObservers and Inspector observers. Be
-	 * careful with method such as indexOf, contains, etc... which usually rely on equals() method. They have been overriden to use
+	 * careful with method such as indexOf, contains, etc... which usually rely on equals() method. They have been overridden to use
 	 * explicitly the == operator.
 	 */
 	public Vector<FlexoObserver> getAllObservers() {
@@ -354,7 +349,7 @@ public abstract class FlexoObservable extends KVCFlexoObject implements HasPrope
 	 * Enable observing for all observers of class 'observerClass' and all related subclasses
 	 */
 	public synchronized void enableObserving(Class<?> observerClass) {
-		for (Class aClass : observerClasses.keySet()) {
+		for (Class<?> aClass : observerClasses.keySet()) {
 			if (observerClass.isAssignableFrom(aClass)) {
 				if (logger.isLoggable(Level.FINE)) {
 					logger.fine("Enable observing for " + ((Class<?>) aClass).getName());
@@ -368,7 +363,7 @@ public abstract class FlexoObservable extends KVCFlexoObject implements HasPrope
 	 * Disable observing for all observers of class 'observerClass' and all related subclasses
 	 */
 	public synchronized void disableObserving(Class<?> observerClass) {
-		for (Class aClass : observerClasses.keySet()) {
+		for (Class<?> aClass : observerClasses.keySet()) {
 			if (observerClass.isAssignableFrom(aClass)) {
 				if (logger.isLoggable(Level.FINE)) {
 					logger.fine("Disable observing for " + ((Class<?>) aClass).getName());
@@ -379,14 +374,17 @@ public abstract class FlexoObservable extends KVCFlexoObject implements HasPrope
 	}
 
 	public static boolean areSameValue(Object o1, Object o2) {
-		if (o1 == null) return o2 == null;
-		if (o1.equals(o2)) return true;
+		if (o1 == null)
+			return o2 == null;
+		if (o1.equals(o2))
+			return true;
 		if (o1 instanceof Number && o2 instanceof Number) {
 			Number n1 = (Number) o1;
 			Number n2 = (Number) o2;
 			long l1 = n1.longValue();
 			long l2 = n2.longValue();
-			if (l1 != l2) return false;
+			if (l1 != l2)
+				return false;
 			return n1.doubleValue() == n2.doubleValue();
 		}
 		return false;

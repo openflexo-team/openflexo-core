@@ -111,7 +111,7 @@ public class FlexoEditingContext extends EditingContextImpl implements FlexoServ
 
 	private FlexoEditingContext(boolean warnOnUnexpectedEdits) {
 		this.warnOnUnexpectedEdits = warnOnUnexpectedEdits;
-		pasteHandlers = new HashMap<Class<?>, List<PasteHandler<? extends FlexoObject>>>();
+		pasteHandlers = new HashMap<>();
 		defaultPasteHandler = new DefaultPasteHandler();
 	}
 
@@ -225,7 +225,7 @@ public class FlexoEditingContext extends EditingContextImpl implements FlexoServ
 		}*/
 
 		// We will store all matching handlers in a map where the key is the pasting point holder type
-		Map<Class<?>, List<PasteHandler<?>>> matchingHandlers = new HashMap<Class<?>, List<PasteHandler<?>>>();
+		Map<Class<?>, List<PasteHandler<?>>> matchingHandlers = new HashMap<>();
 
 		Clipboard masterClipboard = clipboard.getLeaderClipboard();
 
@@ -309,7 +309,7 @@ public class FlexoEditingContext extends EditingContextImpl implements FlexoServ
 		return null;
 	}
 
-	private PasteHandler<?> getMostSpecializedPasteHander(List<PasteHandler<?>> l) {
+	private static PasteHandler<?> getMostSpecializedPasteHander(List<PasteHandler<?>> l) {
 		if (l.size() == 0) {
 			return null;
 		}
@@ -319,7 +319,7 @@ public class FlexoEditingContext extends EditingContextImpl implements FlexoServ
 		else if (l.size() > 1) {
 			// In this case, this is not easy, we have to define a strategy
 			// Lets' try to return the most specialized class
-			Map<Class<?>, PasteHandler<?>> handlerClasses = new HashMap<Class<?>, PasteHandler<?>>();
+			Map<Class<?>, PasteHandler<?>> handlerClasses = new HashMap<>();
 			for (PasteHandler<?> h : l) {
 				handlerClasses.put(h.getClass(), h);
 			}

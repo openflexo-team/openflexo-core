@@ -91,7 +91,7 @@ public class FlexoObjectIDManager {
 		// Iterate on all objects to validate
 		used = new Hashtable<>();
 		badObjects = new Vector<>();
-		Vector<FlexoProjectObject> objectsToUnregister = new Vector<>();
+		// Unused Vector<FlexoProjectObject> objectsToUnregister = new Vector<>();
 
 		// TODO: implement this
 		logger.warning("Not implemented yet");

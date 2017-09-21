@@ -233,7 +233,7 @@ public abstract class FileSystemBasedResourceCenter extends ResourceRepository<F
 
 	@Override
 	public Iterator<File> iterator() {
-		List<File> allFiles = new ArrayList<File>();
+		List<File> allFiles = new ArrayList<>();
 		if (getRootDirectory() != null) {
 			appendFiles(getRootDirectory(), allFiles);
 		}
@@ -417,7 +417,7 @@ public abstract class FileSystemBasedResourceCenter extends ResourceRepository<F
 				if (!isIgnorable(file, adapter)) {
 					List<File> filesToBeNotified = addedFilesToBeRenotified.get(adapter);
 					if (filesToBeNotified == null) {
-						filesToBeNotified = new ArrayList<File>();
+						filesToBeNotified = new ArrayList<>();
 						addedFilesToBeRenotified.put(adapter, filesToBeNotified);
 					}
 					if (adapter.isActivated()) {
@@ -440,7 +440,7 @@ public abstract class FileSystemBasedResourceCenter extends ResourceRepository<F
 				if (adapter.isActivated()) {
 					List<File> filesToBeNotified = addedFilesToBeRenotified.get(adapter);
 					if (filesToBeNotified != null && filesToBeNotified.size() > 0) {
-						for (File f : new ArrayList<File>(filesToBeNotified)) {
+						for (File f : new ArrayList<>(filesToBeNotified)) {
 							logger.info("fileAdded (discovered later)" + f + " with adapter " + adapter.getName() + " : " + f);
 							adapter.contentsAdded(this, f);
 							filesToBeNotified.remove(f);
@@ -461,12 +461,12 @@ public abstract class FileSystemBasedResourceCenter extends ResourceRepository<F
 				if (!isIgnorable(file, adapter)) {
 					List<File> filesToBeNotified = removedFilesToBeRenotified.get(adapter);
 					if (filesToBeNotified == null) {
-						filesToBeNotified = new ArrayList<File>();
+						filesToBeNotified = new ArrayList<>();
 						removedFilesToBeRenotified.put(adapter, filesToBeNotified);
 					}
 					if (adapter.isActivated()) {
 						logger.info("fileDeleted " + file + " with adapter " + adapter.getName());
-						if (adapter.contentsDeleted(this, file)) {
+						if (TechnologyAdapter.contentsDeleted(this, file)) {
 							filesToBeNotified.remove(file);
 						}
 						else {
@@ -485,8 +485,8 @@ public abstract class FileSystemBasedResourceCenter extends ResourceRepository<F
 				if (adapter.isActivated()) {
 					List<File> filesToBeNotified = removedFilesToBeRenotified.get(adapter);
 					if (filesToBeNotified != null && filesToBeNotified.size() > 0) {
-						for (File f : new ArrayList<File>(filesToBeNotified)) {
-							if (adapter.contentsDeleted(this, f)) {
+						for (File f : new ArrayList<>(filesToBeNotified)) {
+							if (TechnologyAdapter.contentsDeleted(this, f)) {
 								filesToBeNotified.remove(f);
 								logger.info("fileDeleted (discovered later)" + f + " with adapter " + adapter.getName() + " : " + f);
 							}
@@ -606,7 +606,7 @@ public abstract class FileSystemBasedResourceCenter extends ResourceRepository<F
 		}
 		HashMap<Class<? extends ResourceRepository<?, File>>, ResourceRepository<?, File>> map = repositories.get(technologyAdapter);
 		if (map == null) {
-			map = new HashMap<Class<? extends ResourceRepository<?, File>>, ResourceRepository<?, File>>();
+			map = new HashMap<>();
 			repositories.put(technologyAdapter, map);
 		}
 		return map;

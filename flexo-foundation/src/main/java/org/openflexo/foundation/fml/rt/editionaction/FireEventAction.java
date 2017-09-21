@@ -44,11 +44,11 @@ import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoEvent;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
+import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.FlexoEventInstance;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
-import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.XMLElement;
@@ -93,9 +93,10 @@ public interface FireEventAction<VMI extends VirtualModelInstance<VMI, ?>>
 			return null;
 		}
 
+		@SuppressWarnings("unchecked")
 		@Override
 		public Class<VMI> getVirtualModelInstanceClass() {
-			return (Class) FMLRTVirtualModelInstance.class;
+			return (Class<VMI>) FMLRTVirtualModelInstance.class;
 		}
 
 		@Override
