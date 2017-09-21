@@ -253,7 +253,7 @@ public interface FlexoObject extends AccessibleProxyObject, DeletableProxyObject
 		 * Default constructor for {@link FlexoObject}
 		 */
 		public FlexoObjectImpl() {
-			referencers = new ArrayList<FlexoObjectReference<?>>();
+			referencers = new ArrayList<>();
 		}
 
 		@Override
@@ -628,7 +628,7 @@ public interface FlexoObject extends AccessibleProxyObject, DeletableProxyObject
 		}
 
 		private static <T extends FlexoObject> List<FlexoActionFactory<?, ?, ?>> updateActionListFor(Class<T> aClass) {
-			List<FlexoActionFactory<?, ?, ?>> newActionList = new ArrayList<FlexoActionFactory<?, ?, ?>>();
+			List<FlexoActionFactory<?, ?, ?>> newActionList = new ArrayList<>();
 			for (Map.Entry<Class<?>, List<FlexoActionFactory<?, ?, ?>>> e : _declaredActionsForClass.entrySet()) {
 				if (e.getKey().isAssignableFrom(aClass)) {
 					newActionList.addAll(e.getValue());
@@ -698,7 +698,7 @@ public interface FlexoObject extends AccessibleProxyObject, DeletableProxyObject
 		 * 
 		 */
 		@Override
-		public Collection<? extends Validable> getEmbeddedValidableObjects() {
+		public Collection<Validable> getEmbeddedValidableObjects() {
 			// System.out.println("> Compute getEmbeddedValidableObjects() for " + this.getClass() + " : " + this);
 			PamelaResource<?, ?> resource = getPamelaResource();
 			if (resource != null) {

@@ -39,6 +39,7 @@
 package org.openflexo.foundation.fml;
 
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -374,8 +375,10 @@ public class VirtualModelLibrary extends DefaultFlexoObject implements FlexoServ
 	}
 
 	@Override
-	public Collection<VirtualModel> getEmbeddedValidableObjects() {
-		return getLoadedVirtualModels();
+	public Collection<Validable> getEmbeddedValidableObjects() {
+		Collection<Validable> returned = new ArrayList<>();
+		returned.addAll(getLoadedVirtualModels());
+		return returned;
 	}
 
 	@Override

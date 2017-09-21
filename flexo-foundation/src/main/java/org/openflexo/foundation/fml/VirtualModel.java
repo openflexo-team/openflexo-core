@@ -114,7 +114,7 @@ import org.openflexo.toolbox.ToolBox;
 		@Import(DeleteFlexoConceptInstanceParameter.class) })
 @XMLElement
 public interface VirtualModel extends FlexoConcept, VirtualModelObject, FlexoMetaModel<VirtualModel>, ResourceData<VirtualModel>,
-		TechnologyObject<FMLTechnologyAdapter> {
+		TechnologyObject<FMLTechnologyAdapter>, Validable {
 
 	public static final String RESOURCE = "resource";
 
@@ -1309,9 +1309,8 @@ public interface VirtualModel extends FlexoConcept, VirtualModelObject, FlexoMet
 		}
 
 		@Override
-		public Collection<? extends Validable> getEmbeddedValidableObjects() {
-
-			Collection returned = super.getEmbeddedValidableObjects();
+		public Collection<Validable> getEmbeddedValidableObjects() {
+			Collection<Validable> returned = super.getEmbeddedValidableObjects();
 			returned.addAll(getVirtualModels());
 			return returned;
 		}
@@ -1350,7 +1349,7 @@ public interface VirtualModel extends FlexoConcept, VirtualModelObject, FlexoMet
 				try {
 					new URL(vm.getURI());
 				} catch (MalformedURLException e) {
-					return new ValidationError(this, vm, "virtual_model_uri_is_not_valid");
+					return new ValidationError<>(this, vm, "virtual_model_uri_is_not_valid");
 				}
 			}
 			return null;
