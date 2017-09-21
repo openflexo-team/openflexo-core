@@ -1279,27 +1279,19 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 		private void setModelSlotValue(ModelSlot<?> ms, Object value) {
 
 			if (getFlexoConcept() != null && ms != null) {
+				ModelSlotInstance msi = getModelSlotInstance(ms.getName());
+				if (msi == null) {
+					ModelSlotInstanceConfiguration<?, ?> msiConfiguration = ms.createConfiguration(this, getResourceCenter());
+					msiConfiguration.setOption(DefaultModelSlotInstanceConfigurationOption.SelectExistingResource);
+					msi = msiConfiguration.createModelSlotInstance(this, getOwningVirtualModelInstance());
+					msi.setFlexoConceptInstance(this);
+					addToActors(msi);
+				}
 				if (value instanceof TechnologyAdapterResource) {
-					ModelSlotInstance msi = getModelSlotInstance(ms.getName());
-					if (msi == null) {
-						ModelSlotInstanceConfiguration<?, ?> msiConfiguration = ms.createConfiguration(this, getResourceCenter());
-						msiConfiguration.setOption(DefaultModelSlotInstanceConfigurationOption.SelectExistingResource);
-						msi = msiConfiguration.createModelSlotInstance(this, getOwningVirtualModelInstance());
-						msi.setFlexoConceptInstance(this);
-						addToActors(msi);
-					}
-					msi.setResource((TechnologyAdapterResource) value);
+					msi.setResource((TechnologyAdapterResource<?, ?>) value);
 				}
 				if (value instanceof ResourceData) {
-					ModelSlotInstance msi = getModelSlotInstance(ms.getName());
-					if (msi == null) {
-						ModelSlotInstanceConfiguration<?, ?> msiConfiguration = ms.createConfiguration(this, getResourceCenter());
-						msiConfiguration.setOption(DefaultModelSlotInstanceConfigurationOption.SelectExistingResource);
-						msi = msiConfiguration.createModelSlotInstance(this, getOwningVirtualModelInstance());
-						msi.setFlexoConceptInstance(this);
-						addToActors(msi);
-					}
-					msi.setAccessedResourceData((ResourceData) value);
+					msi.setAccessedResourceData((ResourceData<?>) value);
 				}
 				else {
 					logger.warning("Unexpected resource data " + value + " for model slot " + ms);
