@@ -48,7 +48,6 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.logging.Level;
 
-import javax.annotation.Nonnull;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JMenuBar;
@@ -96,7 +95,7 @@ public class MainPaneTopBar extends JMenuBar {
 
 	private FIBProjectSelector projectSelector;
 
-	public MainPaneTopBar(@Nonnull FlexoController controller) {
+	public MainPaneTopBar(FlexoController controller) {
 		this.controller = controller;
 		this.model = controller.getControllerModel();
 		registrationManager = new PropertyChangeListenerRegistrationManager();

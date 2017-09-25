@@ -22,3 +22,8 @@ compileJava {
     options.fork = true
     options.forkOptions.executable = 'javac'
 }
+if (JavaVersion.current().isJava9Compatible()) {
+	tasks.withType(JavaCompile) {
+		options.compilerArgs.addAll(['--add-modules', 'java.xml.ws'])
+    }
+}  
