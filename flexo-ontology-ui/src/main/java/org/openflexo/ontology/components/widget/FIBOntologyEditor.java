@@ -178,11 +178,12 @@ public abstract class FIBOntologyEditor extends SelectionSynchronizedFIBView {
 		return getModel().getRootClass();
 	}
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@CustomComponentParameter(name = "rootClass", type = CustomComponentParameter.Type.OPTIONAL)
-	public void setRootClass(IFlexoOntologyClass rootClass) {
+	public void setRootClass(IFlexoOntologyClass<?> rootClass) {
 		IFlexoOntologyClass<?> oldValue = getRootClass();
 		if (oldValue != rootClass) {
-			model.setRootClass(rootClass);
+			model.setRootClass((IFlexoOntologyClass) rootClass);
 			update();
 			getPropertyChangeSupport().firePropertyChange("rootClass", oldValue, rootClass);
 		}

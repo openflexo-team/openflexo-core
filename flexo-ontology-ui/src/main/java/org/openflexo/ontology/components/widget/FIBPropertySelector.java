@@ -136,11 +136,12 @@ public class FIBPropertySelector extends FIBFlexoObjectSelector<IFlexoOntologySt
 		return getModel().getContext();
 	}
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@CustomComponentParameter(name = "context", type = CustomComponentParameter.Type.MANDATORY)
-	public void setContext(IFlexoOntology context) {
+	public void setContext(IFlexoOntology<?> context) {
 		IFlexoOntology<?> oldValue = getContext();
 		if (oldValue != context) {
-			getModel().setContext(context);
+			getModel().setContext((IFlexoOntology) context);
 			update();
 			getPropertyChangeSupport().firePropertyChange("context", oldValue, context);
 			getPropertyChangeSupport().firePropertyChange("ontology", oldValue, context);
