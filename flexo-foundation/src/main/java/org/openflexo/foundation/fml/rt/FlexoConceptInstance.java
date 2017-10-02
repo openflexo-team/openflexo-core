@@ -78,11 +78,8 @@ import org.openflexo.foundation.fml.binding.FlexoRoleBindingVariable;
 import org.openflexo.foundation.fml.binding.SetValueBindingVariable;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
 import org.openflexo.foundation.fml.inspector.FlexoConceptInspector;
-import org.openflexo.foundation.fml.rt.action.ModelSlotInstanceConfiguration;
-import org.openflexo.foundation.fml.rt.action.ModelSlotInstanceConfiguration.DefaultModelSlotInstanceConfigurationOption;
 import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
-import org.openflexo.foundation.technologyadapter.TechnologyAdapterResource;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.model.annotations.Adder;
@@ -405,7 +402,8 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 	 * @param modelSlot
 	 * @return
 	 */
-	public <RD extends ResourceData<RD> & TechnologyObject<?>> ModelSlotInstance<?, RD> getModelSlotInstance(String modelSlotName);
+	public <RD extends ResourceData<RD> & TechnologyObject<?>, MS extends ModelSlot<? extends RD>> ModelSlotInstance<MS, RD> getModelSlotInstance(
+			String modelSlotName);
 
 	/**
 	 * Return boolean indicating if type of this FlexoConceptInstance has the supplied name
@@ -747,7 +745,7 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 				T oldValue = getFlexoPropertyValue(flexoProperty);
 				if ((value == null && oldValue != null) || (value != null && !value.equals(oldValue))) {
 					if (flexoProperty instanceof ModelSlot) {
-						setModelSlotValue((ModelSlot<?>) flexoProperty, value);
+						setModelSlotValue((ModelSlot) flexoProperty, value);
 						setIsModified();
 						getPropertyChangeSupport().firePropertyChange(flexoProperty.getPropertyName(), oldValue, value);
 					}
@@ -1252,12 +1250,13 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 		 * @return
 		 */
 		@Override
-		public <RD extends ResourceData<RD> & TechnologyObject<?>> ModelSlotInstance<?, RD> getModelSlotInstance(String modelSlotName) {
+		public <RD extends ResourceData<RD> & TechnologyObject<?>, MS extends ModelSlot<? extends RD>> ModelSlotInstance<MS, RD> getModelSlotInstance(
+				String modelSlotName) {
 
 			for (ActorReference<?> actorReference : getActors()) {
 				if (actorReference instanceof ModelSlotInstance
 						&& ((ModelSlotInstance<?, ?>) actorReference).getModelSlot().getName() == modelSlotName) {
-					return (ModelSlotInstance<?, RD>) actorReference;
+					return (ModelSlotInstance<MS, RD>) actorReference;
 				}
 			}
 			// Do not warn: the model slot may be null here
@@ -1270,24 +1269,22 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 			List<ModelSlotInstance<?, ?>> returned = new ArrayList<>();
 			for (ActorReference<?> actorReference : getActors()) {
 				if (actorReference instanceof ModelSlotInstance) {
-					returned.add((ModelSlotInstance) actorReference);
+					returned.add((ModelSlotInstance<?, ?>) actorReference);
 				}
 			}
 			return returned;
 		}
 
-		private void setModelSlotValue(ModelSlot<?> ms, Object value) {
+		@SuppressWarnings("unchecked")
+		private <MS extends ModelSlot<RD>, RD extends ResourceData<RD> & TechnologyObject<?>> void setModelSlotValue(MS ms, Object value) {
 
 			if (getFlexoConcept() != null && ms != null) {
-				ModelSlotInstance msi = getModelSlotInstance(ms.getName());
+				ModelSlotInstance<MS, RD> msi = getModelSlotInstance(ms.getName());
 				if (msi == null) {
-					ModelSlotInstanceConfiguration<?, ?> msiConfiguration = ms.createConfiguration(this, getResourceCenter());
-					msiConfiguration.setOption(DefaultModelSlotInstanceConfigurationOption.SelectExistingResource);
-					msi = msiConfiguration.createModelSlotInstance(this, getOwningVirtualModelInstance());
-					msi.setFlexoConceptInstance(this);
+					msi = (ModelSlotInstance<MS, RD>) ms.makeActorReference((RD) value, this);
 					addToActors(msi);
 				}
-				if (value instanceof TechnologyAdapterResource) {
+				/*if (value instanceof TechnologyAdapterResource) {
 					msi.setResource((TechnologyAdapterResource<?, ?>) value);
 				}
 				if (value instanceof ResourceData) {
@@ -1295,7 +1292,7 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 				}
 				else {
 					logger.warning("Unexpected resource data " + value + " for model slot " + ms);
-				}
+				}*/
 			}
 		}
 

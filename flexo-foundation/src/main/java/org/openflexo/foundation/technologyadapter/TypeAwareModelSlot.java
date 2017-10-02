@@ -43,10 +43,10 @@ import java.util.logging.Logger;
 import org.apache.commons.lang3.reflect.TypeUtils;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
+import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstanceModelFactory;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.ModelSlotInstance;
 import org.openflexo.foundation.fml.rt.TypeAwareModelSlotInstance;
-import org.openflexo.foundation.fml.rt.action.ModelSlotInstanceConfiguration;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.model.annotations.DefineValidationRule;
 import org.openflexo.model.annotations.Getter;
@@ -126,12 +126,17 @@ public interface TypeAwareModelSlot<M extends FlexoModel<M, MM> & TechnologyObje
 		private FlexoMetaModelResource<M, MM, ?> metaModelResource;
 		private String metaModelURI;
 
-		/**
-		 * Instanciate a new model slot instance configuration for this model slot
-		 */
+		@SuppressWarnings({ "rawtypes", "unchecked" })
 		@Override
-		public abstract ModelSlotInstanceConfiguration<? extends TypeAwareModelSlot<M, MM>, M> createConfiguration(FlexoConceptInstance fci,
-				FlexoResourceCenter<?> rc);
+		public TypeAwareModelSlotInstance<M, MM, ?> makeActorReference(M object, FlexoConceptInstance fci) {
+
+			AbstractVirtualModelInstanceModelFactory<?> factory = fci.getFactory();
+			TypeAwareModelSlotInstance returned = factory.newInstance(TypeAwareModelSlotInstance.class);
+			returned.setModelSlot(this);
+			returned.setFlexoConceptInstance(fci);
+			returned.setAccessedResourceData(object);
+			return returned;
+		}
 
 		/**
 		 * Return a new String (full URI) uniquely identifying a new object in related technology, according to the conventions of related

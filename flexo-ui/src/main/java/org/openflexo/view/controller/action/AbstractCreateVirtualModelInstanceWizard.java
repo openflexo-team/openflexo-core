@@ -38,11 +38,7 @@
 
 package org.openflexo.view.controller.action;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.logging.Logger;
-
-import javax.swing.ImageIcon;
 
 import org.openflexo.ApplicationContext;
 import org.openflexo.components.wizard.FlexoWizard;
@@ -54,24 +50,10 @@ import org.openflexo.foundation.fml.CreationScheme;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
-import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
-import org.openflexo.foundation.fml.rt.FMLRTModelSlotInstanceConfiguration;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.AbstractCreateVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.CreationSchemeAction;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
-import org.openflexo.foundation.fml.rt.action.ModelSlotInstanceConfiguration;
-import org.openflexo.foundation.resource.ResourceData;
-import org.openflexo.foundation.technologyadapter.FlexoMetaModel;
-import org.openflexo.foundation.technologyadapter.FlexoModel;
-import org.openflexo.foundation.technologyadapter.FreeModelSlot;
-import org.openflexo.foundation.technologyadapter.FreeModelSlotInstanceConfiguration;
-import org.openflexo.foundation.technologyadapter.ModelSlot;
-import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
-import org.openflexo.foundation.technologyadapter.TechnologyObject;
-import org.openflexo.foundation.technologyadapter.TypeAwareModelSlot;
-import org.openflexo.foundation.technologyadapter.TypeAwareModelSlotInstanceConfiguration;
 import org.openflexo.gina.annotation.FIBPanel;
 import org.openflexo.toolbox.JavaUtils;
 import org.openflexo.toolbox.StringUtils;
@@ -98,22 +80,6 @@ public abstract class AbstractCreateVirtualModelInstanceWizard<A extends Abstrac
 	protected abstract AbstractChooseVirtualModel makeChooseVirtualModel();
 
 	protected abstract AbstractChooseAndConfigureCreationScheme makeChooseAndConfigureCreationScheme();
-
-	private ConfigureModelSlot<?, ?> makeConfigureModelSlotStep(ModelSlot<?> ms) {
-		if (ms instanceof TypeAwareModelSlot) {
-			return new ConfigureTypeAwareModelSlot((TypeAwareModelSlot) ms);
-		}
-		else if (ms instanceof FreeModelSlot) {
-			return new ConfigureFreeModelSlot((FreeModelSlot) ms);
-		}
-		else if (ms instanceof FMLRTModelSlot) {
-			return new ConfigureVirtualModelModelSlot((FMLRTModelSlot) ms);
-		}
-		else {
-			logger.warning("Could not instantiate ConfigureModelSlot for " + ms);
-			return null;
-		}
-	}
 
 	/**
 	 * This step is used to set {@link VirtualModel} to be used, as well as name and title of the {@link FMLRTVirtualModelInstance}
@@ -311,137 +277,6 @@ public abstract class AbstractCreateVirtualModelInstanceWizard<A extends Abstrac
 		public boolean chooseCreationScheme() {
 			return getInitializationOption() != null && getInitializationOption().equals("choose_a_creation_scheme");
 		}*/
-
-	}
-
-	/**
-	 * This abstract generic step is used to configure a model slot
-	 * 
-	 * @author sylvain
-	 * 
-	 */
-	public abstract class ConfigureModelSlot<MS extends ModelSlot<RD>, RD extends ResourceData<RD> & TechnologyObject<?>> extends WizardStep
-			implements PropertyChangeListener {
-
-		private final MS modelSlot;
-		private final ModelSlotInstanceConfiguration<MS, RD> configuration;
-
-		public ConfigureModelSlot(MS modelSlot) {
-			this.modelSlot = modelSlot;
-			configuration = (ModelSlotInstanceConfiguration<MS, RD>) getAction().getModelSlotInstanceConfiguration(getModelSlot());
-			configuration.getPropertyChangeSupport().addPropertyChangeListener(this);
-		}
-
-		@Override
-		public void propertyChange(PropertyChangeEvent evt) {
-			// System.out.println("propertyChange() in " + getClass());
-			checkValidity();
-		}
-
-		public A getAction() {
-			return action;
-		}
-
-		public MS getModelSlot() {
-			return modelSlot;
-		}
-
-		public ModelSlotInstanceConfiguration<MS, RD> getConfiguration() {
-			return configuration;
-		}
-
-		@Override
-		public boolean isValid() {
-			boolean isValid = getConfiguration().isValidConfiguration();
-			if (!isValid) {
-				setIssueMessage(getConfiguration().getErrorMessage(), IssueMessageType.ERROR);
-			}
-			else {
-				setIssueMessage(getAction().getLocales().localizedForKey("valid_configuration"), IssueMessageType.INFO);
-			}
-			return isValid;
-		}
-
-		public ImageIcon getTechnologyIcon() {
-			return getController().getTechnologyAdapterController(getModelSlot().getModelSlotTechnologyAdapter()).getTechnologyBigIcon();
-		}
-	}
-
-	/**
-	 * This step is used to configure a type-aware model slot
-	 * 
-	 * @author sylvain
-	 * 
-	 */
-	@FIBPanel("Fib/Wizard/CreateVirtualModelInstance/ConfigureTypeAwareModelSlotInstance.fib")
-	public class ConfigureTypeAwareModelSlot<M extends FlexoModel<M, MM> & TechnologyObject<?>, MM extends FlexoMetaModel<MM> & TechnologyObject<?>>
-			extends ConfigureModelSlot<TypeAwareModelSlot<M, MM>, M> {
-
-		public ConfigureTypeAwareModelSlot(TypeAwareModelSlot<M, MM> modelSlot) {
-			super(modelSlot);
-		}
-
-		@Override
-		public String getTitle() {
-			return getAction().getLocales().localizedForKey("configure_type_aware_model_slot") + " : " + getModelSlot().getName();
-		}
-
-		@Override
-		public TypeAwareModelSlotInstanceConfiguration<M, MM, TypeAwareModelSlot<M, MM>> getConfiguration() {
-			return (TypeAwareModelSlotInstanceConfiguration<M, MM, TypeAwareModelSlot<M, MM>>) super.getConfiguration();
-		}
-
-	}
-
-	/**
-	 * This step is used to configure a type-aware model slot
-	 * 
-	 * @author sylvain
-	 * 
-	 */
-	@FIBPanel("Fib/Wizard/CreateVirtualModelInstance/ConfigureFreeModelSlotInstance.fib")
-	public class ConfigureFreeModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>>
-			extends ConfigureModelSlot<FreeModelSlot<RD>, RD> {
-
-		public ConfigureFreeModelSlot(FreeModelSlot<RD> modelSlot) {
-			super(modelSlot);
-		}
-
-		@Override
-		public String getTitle() {
-			return getAction().getLocales().localizedForKey("configure_free_model_slot") + " : " + getModelSlot().getName();
-		}
-
-		@Override
-		public FreeModelSlotInstanceConfiguration<RD, FreeModelSlot<RD>> getConfiguration() {
-			return (FreeModelSlotInstanceConfiguration<RD, FreeModelSlot<RD>>) super.getConfiguration();
-		}
-
-	}
-
-	/**
-	 * This step is used to configure a type-aware model slot
-	 * 
-	 * @author sylvain
-	 * 
-	 */
-	@FIBPanel("Fib/Wizard/CreateVirtualModelInstance/ConfigureVirtualModelSlotInstance.fib")
-	public class ConfigureVirtualModelModelSlot<VMI extends VirtualModelInstance<VMI, TA>, TA extends TechnologyAdapter>
-			extends ConfigureModelSlot<FMLRTModelSlot<VMI, TA>, VMI> {
-
-		public ConfigureVirtualModelModelSlot(FMLRTModelSlot<VMI, TA> modelSlot) {
-			super(modelSlot);
-		}
-
-		@Override
-		public String getTitle() {
-			return getAction().getLocales().localizedForKey("configure_virtual_model_slot") + " : " + getModelSlot().getName();
-		}
-
-		@Override
-		public FMLRTModelSlotInstanceConfiguration getConfiguration() {
-			return (FMLRTModelSlotInstanceConfiguration) super.getConfiguration();
-		}
 
 	}
 

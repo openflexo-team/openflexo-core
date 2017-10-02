@@ -40,12 +40,10 @@ package org.openflexo.foundation.technologyadapter;
 
 import java.util.logging.Logger;
 
+import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstanceModelFactory;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.FreeModelSlotInstance;
 import org.openflexo.foundation.fml.rt.ModelSlotInstance;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
-import org.openflexo.foundation.fml.rt.action.ModelSlotInstanceConfiguration;
-import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
@@ -59,36 +57,23 @@ import org.openflexo.toolbox.JavaUtils;
 @ImplementationClass(FreeModelSlot.FreeModelSlotImpl.class)
 public abstract interface FreeModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> extends ModelSlot<RD> {
 
-	public TechnologyAdapterResource<RD, ?> createProjectSpecificEmptyResource(VirtualModelInstance<?, ?> view, String filename,
-			String modelUri);
-
-	public TechnologyAdapterResource<RD, ?> createSharedEmptyResource(FlexoResourceCenter<?> resourceCenter, String relativePath,
-			String filename, String modelUri);
-
 	public static abstract class FreeModelSlotImpl<RD extends ResourceData<RD> & TechnologyObject<?>> extends ModelSlotImpl<RD>
 			implements FreeModelSlot<RD> {
 
+		@SuppressWarnings("unused")
 		private static final Logger logger = Logger.getLogger(FreeModelSlot.class.getPackage().getName());
 
-		/**
-		 * Instanciate a new model slot instance configuration for this model slot
-		 */
+		@SuppressWarnings({ "rawtypes", "unchecked" })
 		@Override
-		public abstract ModelSlotInstanceConfiguration<? extends FreeModelSlot<RD>, RD> createConfiguration(FlexoConceptInstance fci,
-				FlexoResourceCenter<?> rc);
+		public FreeModelSlotInstance<RD, ?> makeActorReference(RD object, FlexoConceptInstance fci) {
 
-		/**
-		 * Instantiate a new IndividualRole
-		 * 
-		 * @param ontClass
-		 * @return
-		 */
-		/*public IndividualRole<?> makeIndividualRole(IFlexoOntologyClass ontClass) {
-			Class<? extends IndividualRole> individualPRClass = getFlexoRoleClass(IndividualRole.class);
-			IndividualRole<?> returned = makeFlexoRole(individualPRClass);
-			returned.setOntologicType(ontClass);
+			AbstractVirtualModelInstanceModelFactory<?> factory = fci.getFactory();
+			FreeModelSlotInstance returned = factory.newInstance(FreeModelSlotInstance.class);
+			returned.setModelSlot(this);
+			returned.setFlexoConceptInstance(fci);
+			returned.setAccessedResourceData(object);
 			return returned;
-		}*/
+		}
 
 		/**
 		 * Return a new String (full URI) uniquely identifying a new object in related technology, according to the conventions of related
@@ -125,30 +110,16 @@ public abstract interface FreeModelSlot<RD extends ResourceData<RD> & Technology
 				return proposedName;
 			}
 			String baseName = JavaUtils.getClassName(proposedName);
-			/*
-			 * boolean unique = false; int testThis = 0; while (!unique) {
-			 * unique = msInstance.getResourceData().getObject(uriPrefix +
-			 * baseName) == null; if (!unique) { testThis++; baseName =
-			 * proposedName + testThis; } }
-			 */
 			return baseName;
 		}
 
 		@Override
-		public abstract TechnologyAdapterResource<RD, ?> createProjectSpecificEmptyResource(VirtualModelInstance<?, ?> view,
-				String filename, String modelUri);
-
-		@Override
-		public abstract TechnologyAdapterResource<RD, ?> createSharedEmptyResource(FlexoResourceCenter<?> resourceCenter,
-				String relativePath, String filename, String modelUri);
-
-		@Override
-		public final String getURIForObject(ModelSlotInstance msInstance, Object o) {
+		public final String getURIForObject(ModelSlotInstance<? extends ModelSlot<RD>, RD> msInstance, Object o) {
 			return getURIForObject((FreeModelSlotInstance<RD, ? extends FreeModelSlot<RD>>) msInstance, o);
 		}
 
 		@Override
-		public final Object retrieveObjectWithURI(ModelSlotInstance msInstance, String objectURI) {
+		public final Object retrieveObjectWithURI(ModelSlotInstance<? extends ModelSlot<RD>, RD> msInstance, String objectURI) {
 			return retrieveObjectWithURI((FreeModelSlotInstance<RD, ? extends FreeModelSlot<RD>>) msInstance, objectURI);
 		}
 

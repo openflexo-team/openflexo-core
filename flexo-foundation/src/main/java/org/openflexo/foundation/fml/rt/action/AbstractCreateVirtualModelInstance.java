@@ -39,7 +39,6 @@
 package org.openflexo.foundation.fml.rt.action;
 
 import java.security.InvalidParameterException;
-import java.util.Hashtable;
 import java.util.Vector;
 import java.util.logging.Logger;
 
@@ -49,7 +48,6 @@ import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoObservable;
 import org.openflexo.foundation.FlexoObserver;
-import org.openflexo.foundation.InvalidArgumentException;
 import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.fml.CreationScheme;
@@ -57,13 +55,11 @@ import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
-import org.openflexo.foundation.fml.rt.ModelSlotInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.rm.AbstractVirtualModelInstanceResource;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.RepositoryFolder;
 import org.openflexo.foundation.resource.SaveResourceException;
-import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.toolbox.JavaUtils;
 import org.openflexo.toolbox.StringUtils;
@@ -92,14 +88,12 @@ public abstract class AbstractCreateVirtualModelInstance<A extends AbstractCreat
 	private CreationSchemeAction creationSchemeAction;
 
 	private boolean skipChoosePopup = false;
-	private boolean escapeModelSlotConfiguration = false;
 
 	private boolean openAfterCreation = true;
 
 	protected AbstractCreateVirtualModelInstance(FlexoActionFactory<A, T, FlexoObject> actionType, T focusedObject,
 			Vector<FlexoObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
-		modelSlotConfigurations = new Hashtable<>();
 	}
 
 	@Override
@@ -136,27 +130,6 @@ public abstract class AbstractCreateVirtualModelInstance<A extends AbstractCreat
 				+ newVirtualModelInstanceResource.getIODelegate().stringRepresentation());
 
 		System.out.println("creationSchemeAction=" + creationSchemeAction);
-		System.out.println("escapeModelSlotConfiguration=" + escapeModelSlotConfiguration());
-
-		// If we do not escape model slot configuration, this is the right time to do it
-		if (!escapeModelSlotConfiguration() && allModelSlotConfigurationAreValid()) {
-			for (ModelSlot<?> ms : virtualModel.getModelSlots()) {
-				// System.out.println("*** ModelSlot: " + ms);
-				ModelSlotInstanceConfiguration<?, ?> configuration = getModelSlotInstanceConfiguration(ms);
-				if (configuration.isValidConfiguration()) {
-					ModelSlotInstance<?, ?> msi = configuration.createModelSlotInstance(newVirtualModelInstance,
-							getContainerVirtualModelInstance());
-					msi.setFlexoConceptInstance(newVirtualModelInstance);
-					newVirtualModelInstance.addToActors(msi);
-				}
-				else {
-					logger.warning("Wrong configuration for model slot: " + configuration.getModelSlot() + " error: "
-							+ configuration.getErrorMessage());
-					throw new InvalidArgumentException(
-							"Wrong configuration for model slot " + configuration.getModelSlot() + " configuration=" + configuration);
-				}
-			}
-		}
 
 		// We init the new VMI using a creation scheme
 		if (creationSchemeAction != null) {
@@ -187,26 +160,6 @@ public abstract class AbstractCreateVirtualModelInstance<A extends AbstractCreat
 
 		System.out.println("Saving file again...");
 		newVirtualModelInstanceResource.save(null);
-	}
-
-	/*private String errorMessage;
-	
-	public String getErrorMessage() {
-		isValid();
-		// System.out.println("valid=" + isValid());
-		// System.out.println("errorMessage=" + errorMessage);
-		return errorMessage;
-	}*/
-
-	private boolean allModelSlotConfigurationAreValid() {
-		for (ModelSlot<?> ms : virtualModel.getModelSlots()) {
-			// System.out.println("*** ModelSlot: " + ms);
-			ModelSlotInstanceConfiguration<?, ?> configuration = getModelSlotInstanceConfiguration(ms);
-			if (!configuration.isValidConfiguration()) {
-				return false;
-			}
-		}
-		return true;
 	}
 
 	public int getStepsNumber() {
@@ -245,8 +198,6 @@ public abstract class AbstractCreateVirtualModelInstance<A extends AbstractCreat
 		return newVirtualModelInstance;
 	}
 
-	private final Hashtable<ModelSlot<?>, ModelSlotInstanceConfiguration<?, ?>> modelSlotConfigurations;
-
 	public VirtualModel getVirtualModel() {
 		return virtualModel;
 	}
@@ -254,44 +205,9 @@ public abstract class AbstractCreateVirtualModelInstance<A extends AbstractCreat
 	public void setVirtualModel(VirtualModel virtualModel) {
 		if (virtualModel != this.virtualModel) {
 			this.virtualModel = virtualModel;
-			modelSlotConfigurations.clear();
-			if (this.virtualModel != null) {
-				for (ModelSlot<?> ms : this.virtualModel.getModelSlots()) {
-					ModelSlotInstanceConfiguration<?, ?> createConfiguration = ms.createConfiguration(null, getResourceCenter());
-					modelSlotConfigurations.put(ms, createConfiguration);
-				}
-				/*if (virtualModel.getCreationSchemes().size() > 0) {
-					System.out.println("Tiens, je trouve un CreationScheme: " + virtualModel.getCreationSchemes().get(0));
-					setCreationScheme(virtualModel.getCreationSchemes().get(0));
-				}*/
-			}
 			setChanged();
 			notifyObservers(new DataModification("isActionValidable", false, true));
 		}
-	}
-
-	/*public DiagramSpecification getDiagramSpecification() {
-		if (virtualModel instanceof DiagramSpecification) {
-			return (DiagramSpecification) virtualModel;
-		} else {
-			return null;
-		}
-	}
-	
-	public void setDiagramSpecification(DiagramSpecification diagramSpecification) {
-		if (diagramSpecification != this.virtualModel) {
-			this.virtualModel = diagramSpecification;
-			modelSlotConfigurations.clear();
-			if (this.virtualModel != null) {
-				for (ModelSlot<?> ms : this.virtualModel.getModelSlots()) {
-					modelSlotConfigurations.put(ms, ms.createConfiguration(this));
-				}
-			}
-		}
-	}*/
-
-	public ModelSlotInstanceConfiguration<?, ?> getModelSlotInstanceConfiguration(ModelSlot<?> ms) {
-		return modelSlotConfigurations.get(ms);
 	}
 
 	/**
@@ -306,12 +222,6 @@ public abstract class AbstractCreateVirtualModelInstance<A extends AbstractCreat
 		}
 		if (getVirtualModel() == null) {
 			return false;
-		}
-		for (ModelSlot ms : virtualModel.getModelSlots()) {
-			ModelSlotInstanceConfiguration<?, ?> configuration = getModelSlotInstanceConfiguration(ms);
-			if (!configuration.isValidConfiguration()) {
-				return false;
-			}
 		}
 		if (getVirtualModel().hasCreationScheme()) {
 			if (getCreationScheme() == null) {
@@ -483,14 +393,6 @@ public abstract class AbstractCreateVirtualModelInstance<A extends AbstractCreat
 
 	public void setSkipChoosePopup(boolean skipChoosePopup) {
 		this.skipChoosePopup = skipChoosePopup;
-	}
-
-	public boolean escapeModelSlotConfiguration() {
-		return escapeModelSlotConfiguration;
-	}
-
-	public void setEscapeModelSlotConfiguration(boolean escapeModelSlotConfiguration) {
-		this.escapeModelSlotConfiguration = escapeModelSlotConfiguration;
 	}
 
 	public boolean openAfterCreation() {

@@ -246,7 +246,6 @@ public interface AddVirtualModelInstance extends AbstractAddFlexoConceptInstance
 				CreateBasicVirtualModelInstance createVMIAction = CreateBasicVirtualModelInstance.actionType
 						.makeNewEmbeddedAction(container, null, (FlexoBehaviourAction<?, ?, ?>) evaluationContext);
 				createVMIAction.setSkipChoosePopup(true);
-				createVMIAction.setEscapeModelSlotConfiguration(true);
 				createVMIAction.setNewVirtualModelInstanceName(name);
 				createVMIAction.setNewVirtualModelInstanceTitle(title);
 				createVMIAction.setVirtualModel((VirtualModel) getFlexoConceptType());

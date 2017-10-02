@@ -42,6 +42,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.rt.rm.AbstractVirtualModelInstanceResource;
+import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -54,7 +55,8 @@ import org.openflexo.toolbox.StringUtils;
 
 /**
  * 
- * Concretize the binding of a {@link FMLRTModelSlot} to a concrete {@link FMLRTVirtualModelInstance} conform to a given {@link VirtualModel}<br>
+ * Concretize the binding of a {@link FMLRTModelSlot} to a concrete {@link FMLRTVirtualModelInstance} conform to a given
+ * {@link VirtualModel}<br>
  * 
  * @author Sylvain Guerin
  * 
@@ -91,6 +93,11 @@ public interface VirtualModelModelSlotInstance<VMI extends VirtualModelInstance<
 
 				resource = (AbstractVirtualModelInstanceResource<VMI, TA>) getServiceManager().getResourceManager()
 						.getResource(virtualModelInstanceURI);
+
+				System.out.println("Toutes les resources connues:");
+				for (FlexoResource<?> r : getServiceManager().getResourceManager().getRegisteredResources()) {
+					System.out.println(" > " + r.getURI());
+				}
 
 				/*FMLRTTechnologyAdapter fmlRTTA = getServiceManager().getTechnologyAdapterService()
 						.getTechnologyAdapter(FMLRTTechnologyAdapter.class);

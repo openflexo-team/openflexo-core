@@ -48,8 +48,6 @@ import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.PrimitiveRole;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
-import org.openflexo.foundation.fml.rt.action.ModelSlotInstanceConfiguration;
-import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.model.annotations.DefineValidationRule;
@@ -135,12 +133,6 @@ public interface FMLRTModelSlot<VMI extends VirtualModelInstance<VMI, TA>, TA ex
 			}
 			logger.warning("Unexpected role: " + flexoRoleClass.getName());
 			return null;
-		}
-
-		@Override
-		public ModelSlotInstanceConfiguration<? extends FMLRTModelSlot<VMI, TA>, VMI> createConfiguration(FlexoConceptInstance fci,
-				FlexoResourceCenter<?> rc) {
-			return new FMLRTModelSlotInstanceConfiguration(this, fci, rc);
 		}
 
 		protected VirtualModelResource virtualModelResource;
@@ -250,6 +242,18 @@ public interface FMLRTModelSlot<VMI extends VirtualModelInstance<VMI, TA>, TA ex
 		@Override
 		protected String getFMLRepresentationForConformToStatement() {
 			return "conformTo " + getAccessedVirtualModelURI() + " ";
+		}
+
+		@SuppressWarnings("unchecked")
+		@Override
+		public VirtualModelModelSlotInstance<VMI, TA> makeActorReference(VMI object, FlexoConceptInstance fci) {
+			AbstractVirtualModelInstanceModelFactory<?> factory = fci.getFactory();
+			VirtualModelModelSlotInstance<VMI, TA> returned = factory.newInstance(VirtualModelModelSlotInstance.class);
+			returned.setModelSlot(this);
+			returned.setFlexoConceptInstance(fci);
+			returned.setVirtualModelInstanceURI(object.getURI());
+			return returned;
+
 		}
 
 	}

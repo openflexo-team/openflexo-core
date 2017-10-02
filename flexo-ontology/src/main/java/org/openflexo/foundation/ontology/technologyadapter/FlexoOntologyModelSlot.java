@@ -44,16 +44,15 @@ import org.openflexo.connie.DataBinding;
 import org.openflexo.foundation.fml.AbstractCreationScheme;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
+import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstanceModelFactory;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
-import org.openflexo.foundation.fml.rt.action.ModelSlotInstanceConfiguration;
+import org.openflexo.foundation.fml.rt.TypeAwareModelSlotInstance;
 import org.openflexo.foundation.ontology.IFlexoOntology;
 import org.openflexo.foundation.ontology.IFlexoOntologyClass;
 import org.openflexo.foundation.ontology.fml.IndividualRole;
 import org.openflexo.foundation.ontology.fml.editionaction.AddIndividual;
 import org.openflexo.foundation.ontology.fml.rt.FlexoOntologyModelSlotInstance;
-import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.technologyadapter.FlexoMetaModel;
-import org.openflexo.foundation.technologyadapter.FlexoMetaModelResource;
 import org.openflexo.foundation.technologyadapter.FlexoModel;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TypeAwareModelSlot;
@@ -91,22 +90,26 @@ public interface FlexoOntologyModelSlot<M extends FlexoModel<M, MM> & IFlexoOnto
 	public static abstract class FlexoOntologyModelSlotImpl<M extends FlexoModel<M, MM> & IFlexoOntology<TA>, MM extends FlexoMetaModel<MM> & IFlexoOntology<TA>, TA extends TechnologyAdapter>
 			extends TypeAwareModelSlotImpl<M, MM> implements FlexoOntologyModelSlot<M, MM, TA> {
 
+		@SuppressWarnings("unused")
 		private static final Logger logger = Logger.getLogger(FlexoOntologyModelSlot.class.getPackage().getName());
 
-		private FlexoMetaModelResource<M, MM, ?> metaModelResource;
-		private String metaModelURI;
+		@SuppressWarnings({ "rawtypes", "unchecked" })
+		@Override
+		public TypeAwareModelSlotInstance<M, MM, ?> makeActorReference(M object, FlexoConceptInstance fci) {
 
+			AbstractVirtualModelInstanceModelFactory<?> factory = fci.getFactory();
+			FlexoOntologyModelSlotInstance returned = factory.newInstance(FlexoOntologyModelSlotInstance.class);
+			returned.setModelSlot(this);
+			returned.setFlexoConceptInstance(fci);
+			returned.setAccessedResourceData(object);
+			return returned;
+		}
+
+		@SuppressWarnings({ "unchecked", "rawtypes" })
 		@Override
 		public Class<? extends IndividualRole<?>> getIndividualRoleClass() {
 			return (Class) getFlexoRoleClass(IndividualRole.class);
 		}
-
-		/**
-		 * Instanciate a new model slot instance configuration for this model slot
-		 */
-		@Override
-		public abstract ModelSlotInstanceConfiguration<? extends FlexoOntologyModelSlot<M, MM, TA>, M> createConfiguration(
-				FlexoConceptInstance fci, FlexoResourceCenter<?> rc);
 
 		/**
 		 * Instantiate a new IndividualRole

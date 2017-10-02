@@ -58,12 +58,9 @@ import org.openflexo.foundation.fml.controlgraph.FMLControlGraphVisitor;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.fml.editionaction.FetchRequest;
 import org.openflexo.foundation.fml.editionaction.TechnologySpecificAction;
-import org.openflexo.foundation.fml.rt.ActorReference;
 import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.ModelSlotInstance;
-import org.openflexo.foundation.fml.rt.action.ModelSlotInstanceConfiguration;
-import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -206,14 +203,14 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>>
 
 	public abstract Object retrieveObjectWithURI(ModelSlotInstance<? extends ModelSlot<RD>, RD> msInstance, String objectURI);
 
-	public abstract ModelSlotInstanceConfiguration<? extends ModelSlot<RD>, RD> createConfiguration(
-			FlexoConceptInstance flexoConceptInstance, FlexoResourceCenter<?> rc);
-
 	public String getModelSlotDescription();
 
 	// Use with caution, this is not the name of model slot, but a displayable name
 	@Deprecated
 	public String getModelSlotName();
+
+	@Override
+	public ModelSlotInstance<?, RD> makeActorReference(RD object, FlexoConceptInstance epi);
 
 	public static abstract class ModelSlotImpl<RD extends ResourceData<RD> & TechnologyObject<?>> extends FlexoRoleImpl<RD>
 			implements ModelSlot<RD> {
@@ -429,9 +426,9 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>>
 			return factory.newInstance(fetchRequestClass);
 		}
 
-		@Override
+		/*@Override
 		public abstract ModelSlotInstanceConfiguration<? extends ModelSlot<RD>, RD> createConfiguration(
-				FlexoConceptInstance flexoConceptInstance, FlexoResourceCenter<?> rc);
+				FlexoConceptInstance flexoConceptInstance, FlexoResourceCenter<?> rc);*/
 
 		/**
 		 * A Model Slot is responsible for URI mapping
@@ -520,11 +517,6 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>>
 		@Override
 		public boolean defaultBehaviourIsToBeDeleted() {
 			return false;
-		}
-
-		@Override
-		public ActorReference<RD> makeActorReference(RD object, FlexoConceptInstance epi) {
-			return null;
 		}
 
 		@Override

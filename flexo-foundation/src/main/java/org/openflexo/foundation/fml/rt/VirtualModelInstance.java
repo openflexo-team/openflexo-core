@@ -71,6 +71,7 @@ import org.openflexo.foundation.fml.editionaction.FetchRequestCondition;
 import org.openflexo.foundation.fml.rt.action.SynchronizationSchemeAction;
 import org.openflexo.foundation.fml.rt.action.SynchronizationSchemeActionFactory;
 import org.openflexo.foundation.fml.rt.rm.AbstractVirtualModelInstanceResource;
+import org.openflexo.foundation.fml.rt.rm.FMLRTVirtualModelInstanceResourceFactory;
 import org.openflexo.foundation.resource.CannotRenameException;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.ResourceData;
@@ -451,7 +452,8 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 		@Override
 		public String getURI() {
 			if (getContainerVirtualModelInstance() != null) {
-				return getContainerVirtualModelInstance().getURI() + "/" + getName();
+				return getContainerVirtualModelInstance().getURI() + "/" + getName()
+						+ FMLRTVirtualModelInstanceResourceFactory.FML_RT_SUFFIX;
 			}
 			if (getResource() != null) {
 				return getResource().getURI();
