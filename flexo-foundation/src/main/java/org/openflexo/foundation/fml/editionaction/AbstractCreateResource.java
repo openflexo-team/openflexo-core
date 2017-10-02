@@ -241,6 +241,15 @@ public interface AbstractCreateResource<MS extends ModelSlot<RD>, RD extends Res
 					extension, createEmptyContents);
 		}
 
+		@Override
+		public String getRelativePath() {
+			String returned = (String) performSuperGetter(AbstractCreateResource.RELATIVE_PATH_KEY);
+			if (returned == null) {
+				return "";
+			}
+			return returned;
+		}
+
 	}
 
 	/* Validation Rule to avoid ResourceCenter to be Null/Empty */
