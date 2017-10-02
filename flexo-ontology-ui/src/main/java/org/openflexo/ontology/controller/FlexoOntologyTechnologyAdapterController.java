@@ -57,6 +57,7 @@ import org.openflexo.view.controller.TechnologyAdapterController;
  */
 public abstract class FlexoOntologyTechnologyAdapterController<TA extends TechnologyAdapter> extends TechnologyAdapterController<TA> {
 
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(FlexoOntologyTechnologyAdapterController.class.getPackage().getName());
 
 	public abstract OntologyBrowserModel<TA> makeOntologyBrowserModel(IFlexoOntology<TA> context);

@@ -986,7 +986,7 @@ public class OntologyBrowserModel<TA extends TechnologyAdapter> implements HasPr
 	protected void removeOriginalFromRedefinedObjects(List<? extends IFlexoOntologyObject<TA>> list) {
 		for (IFlexoOntologyObject<TA> c : new ArrayList<>(list)) {
 			if (c instanceof IFlexoOntologyClass && ((IFlexoOntologyClass<TA>) c).isRootConcept()
-					&& ((IFlexoOntologyClass) c).getOntology() != getContext() && list.contains(getContext().getRootConcept())) {
+					&& ((IFlexoOntologyClass<TA>) c).getOntology() != getContext() && list.contains(getContext().getRootConcept())) {
 				list.remove(c);
 			}
 		}
