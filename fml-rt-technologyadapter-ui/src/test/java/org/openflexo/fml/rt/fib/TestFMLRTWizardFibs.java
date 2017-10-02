@@ -70,19 +70,4 @@ public class TestFMLRTWizardFibs extends GenericFIBTestCase {
 		validateFIB("Fib/Wizard/CreateVirtualModelInstance/ChooseVirtualModel.fib");
 	}
 
-	@Test
-	public void testConfigureFreeModelSlotInstance() {
-		validateFIB("Fib/Wizard/CreateVirtualModelInstance/ConfigureFreeModelSlotInstance.fib");
-	}
-
-	@Test
-	public void testConfigureTypeAwareModelSlotInstance() {
-		validateFIB("Fib/Wizard/CreateVirtualModelInstance/ConfigureTypeAwareModelSlotInstance.fib");
-	}
-
-	@Test
-	public void testConfigureVirtualModelSlotInstance() {
-		validateFIB("Fib/Wizard/CreateVirtualModelInstance/ConfigureVirtualModelSlotInstance.fib");
-	}
-
 }
