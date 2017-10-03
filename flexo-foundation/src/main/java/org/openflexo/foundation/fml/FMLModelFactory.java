@@ -137,12 +137,18 @@ public class FMLModelFactory extends FGEModelFactoryImpl implements PamelaResour
 	private RelativePathResourceConverter relativePathResourceConverter;
 
 	public FMLModelFactory(VirtualModelResource virtualModelResource, FlexoServiceManager serviceManager) throws ModelDefinitionException {
+		this(virtualModelResource, serviceManager, serviceManager.getTechnologyAdapterService());
+	}
 
-		// super(ModelContextLibrary.getCompoundModelContext(retrieveTechnologySpecificClasses(serviceManager.getTechnologyAdapterService())));
+	public FMLModelFactory(VirtualModelResource virtualModelResource, FlexoServiceManager serviceManager,
+			TechnologyAdapterService taService) throws ModelDefinitionException {
+
 		super(virtualModelResource != null ? retrieveTechnologySpecificClasses(virtualModelResource.getUsedModelSlots())
-				: retrieveTechnologySpecificClasses(serviceManager.getTechnologyAdapterService()));
+				: retrieveTechnologySpecificClasses(taService != null ? taService : serviceManager.getTechnologyAdapterService()));
 		this.serviceManager = serviceManager;
-		TechnologyAdapterService taService = serviceManager.getTechnologyAdapterService();
+		if (taService == null) {
+			taService = serviceManager.getTechnologyAdapterService();
+		}
 		setEditingContext(serviceManager.getEditingContext());
 		addConverter(typeConverter = new TypeConverter(taService.getCustomTypeFactories()));
 		addConverter(new DataBindingConverter());
