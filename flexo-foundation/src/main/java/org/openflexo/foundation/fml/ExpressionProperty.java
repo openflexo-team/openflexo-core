@@ -134,6 +134,13 @@ public abstract interface ExpressionProperty<T> extends FlexoProperty<T> {
 			}
 			else {
 
+				// TODO: we should cache the result of analyzed type
+				// Because it takes too much time
+				// We need to explore the conditions for an analyzed type to change
+				// See https://bugs.openflexo.org/browse/CONNIE-18
+
+				// if (lastKnownType == null) {
+
 				try {
 
 					isAnalysingType = true;
@@ -141,9 +148,7 @@ public abstract interface ExpressionProperty<T> extends FlexoProperty<T> {
 					/*System.out.println("Le type de " + getExpression() + " c'est quoi ?");
 					System.out.println("BM=" + getBindingModel());
 					System.out.println("valid=" + getExpression().isValid());
-					System.out.println("return: " + getExpression().getAnalyzedType())*/
-
-					// getBindingModel();
+					System.out.println("return: " + getExpression().getAnalyzedType());*/
 
 					if (getExpression() != null && getExpression().isValid()) {
 						lastKnownType = getExpression().getAnalyzedType();
@@ -154,6 +159,7 @@ public abstract interface ExpressionProperty<T> extends FlexoProperty<T> {
 				} finally {
 					isAnalysingType = false;
 				}
+				// }
 
 			}
 
