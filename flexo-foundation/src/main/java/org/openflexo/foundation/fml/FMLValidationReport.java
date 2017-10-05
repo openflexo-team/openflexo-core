@@ -38,12 +38,7 @@
 
 package org.openflexo.foundation.fml;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.DataBinding;
@@ -51,7 +46,6 @@ import org.openflexo.foundation.fml.FMLObject.BindingIsRequiredAndMustBeValid;
 import org.openflexo.foundation.fml.editionaction.AbstractAssignationAction;
 import org.openflexo.foundation.fml.inspector.FlexoConceptInspector;
 import org.openflexo.model.validation.InformationIssue;
-import org.openflexo.model.validation.Validable;
 import org.openflexo.model.validation.ValidationError;
 import org.openflexo.model.validation.ValidationIssue;
 import org.openflexo.model.validation.ValidationModel;
@@ -81,77 +75,14 @@ public class FMLValidationReport extends ValidationReport {
 	private static final Logger logger = Logger.getLogger(FMLValidationReport.class.getPackage().getName());
 
 	private VirtualModel virtualModel;
-	private Map<FMLObject, ValidationReport> embeddedValidationReports = new HashMap<>();
 
 	public FMLValidationReport(ValidationModel validationModel, VirtualModel virtualModel) throws InterruptedException {
 		super(validationModel, virtualModel);
 		this.virtualModel = virtualModel;
-		for (FlexoProperty<?> property : virtualModel.getFlexoProperties()) {
-			embeddedValidationReports.put(property, new ValidationReport(validationModel, property));
-		}
-		for (FlexoBehaviour behaviour : virtualModel.getFlexoBehaviours()) {
-			embeddedValidationReports.put(behaviour, new ValidationReport(validationModel, behaviour));
-		}
-		embeddedValidationReports.put(virtualModel.getInspector(), new ValidationReport(validationModel, virtualModel.getInspector()));
-		for (FlexoConcept concept : virtualModel.getFlexoConcepts()) {
-			embeddedValidationReports.put(concept, new ValidationReport(validationModel, concept));
-			for (FlexoProperty<?> property : concept.getFlexoProperties()) {
-				embeddedValidationReports.put(property, new ValidationReport(validationModel, property));
-			}
-			for (FlexoBehaviour behaviour : concept.getFlexoBehaviours()) {
-				embeddedValidationReports.put(behaviour, new ValidationReport(validationModel, behaviour));
-			}
-			embeddedValidationReports.put(concept.getInspector(), new ValidationReport(validationModel, concept.getInspector()));
-		}
-
-		// endTime2 = System.currentTimeMillis();
-
-		/*System.out.println("***************** La validation a pris: " + (intermediateTime2 - startTime2) + " milliseconds + "
-				+ (endTime2 - intermediateTime2) + " milliseconds");
-		System.out.println("Rules nb: " + rulesNb);
-		System.out.println("Binding validés: " + DataBinding.dbValidated);*/
-
-	}
-
-	public ValidationReport getValidationReport(FMLObject object) {
-		if (object == virtualModel) {
-			return this;
-		}
-		ValidationReport returned = embeddedValidationReports.get(object);
-		if (returned == null) {
-			if ((object instanceof FlexoConcept || object instanceof FlexoProperty || object instanceof FlexoBehaviour
-					|| object instanceof FlexoConceptInspector) && object.getDeclaringVirtualModel() == virtualModel) {
-				try {
-					returned = new ValidationReport(getValidationModel(), object);
-					embeddedValidationReports.put(object, returned);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-			}
-		}
-		return returned;
-	}
-
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	@Override
-	public Collection<ValidationIssue<?, ?>> issuesRegarding(Validable object) {
-		if (object instanceof FlexoFacet) {
-			return Collections.emptyList();
-		}
-		if ((object instanceof FlexoConcept || object instanceof FlexoProperty || object instanceof FlexoBehaviour
-				|| object instanceof FlexoConceptInspector) && ((FMLObject) object).getDeclaringVirtualModel() == virtualModel) {
-			return (Collection) getValidationReport((FMLObject) object).getFilteredIssues();
-		}
-		else if (object instanceof FlexoConceptObject && getValidationReport(((FlexoConceptObject) object).getFlexoConcept()) != null
-				&& getValidationReport(((FlexoConceptObject) object).getFlexoConcept()) != this) {
-			return getValidationReport(((FlexoConceptObject) object).getFlexoConcept()).issuesRegarding(object);
-		}
-
-		return super.issuesRegarding(object);
 	}
 
 	public boolean hasErrors(FMLObject object) {
-		List<ValidationError<?, ?>> errors = getErrors(object);
+		Collection<ValidationError<?, ? super FMLObject>> errors = getErrors(object);
 		if (errors.size() == 0 && object instanceof AbstractAssignationAction) {
 			errors = getErrors(((AbstractAssignationAction<?>) object).getAssignableAction());
 			return errors.size() > 0;
@@ -160,7 +91,7 @@ public class FMLValidationReport extends ValidationReport {
 	}
 
 	public boolean hasWarnings(FMLObject object) {
-		List<ValidationWarning<?, ?>> warnings = getWarnings(object);
+		Collection<ValidationWarning<?, ? super FMLObject>> warnings = getWarnings(object);
 		if (warnings.size() == 0 && object instanceof AbstractAssignationAction) {
 			warnings = getWarnings(((AbstractAssignationAction<?>) object).getAssignableAction());
 			return warnings.size() > 0;
@@ -169,7 +100,7 @@ public class FMLValidationReport extends ValidationReport {
 	}
 
 	public boolean hasInfoIssues(FMLObject object) {
-		List<InformationIssue<?, ?>> infos = getInformationIssues(object);
+		Collection<InformationIssue<?, ? super FMLObject>> infos = getInformationIssues(object);
 		if (infos.size() == 0 && object instanceof AbstractAssignationAction) {
 			infos = getInformationIssues(((AbstractAssignationAction<?>) object).getAssignableAction());
 			return infos.size() > 0;
@@ -177,54 +108,16 @@ public class FMLValidationReport extends ValidationReport {
 		return infos.size() > 0;
 	}
 
-	public List<ValidationError<?, ?>> getErrors(FMLObject object) {
-		if (object instanceof FlexoFacet) {
-			return Collections.emptyList();
-		}
-		if ((object instanceof FlexoConcept || object instanceof FlexoProperty || object instanceof FlexoBehaviour
-				|| object instanceof FlexoConceptInspector) && object.getDeclaringVirtualModel() == virtualModel) {
-			return getValidationReport(object).getErrors();
-		}
-		else if (object instanceof FlexoConceptObject) {
-			if (getValidationReport(((FlexoConceptObject) object).getFlexoConcept()) != null) {
-				return getValidationReport(((FlexoConceptObject) object).getFlexoConcept()).errorIssuesRegarding(object);
-			}
-		}
-
-		logger.warning("Unexpected validable " + object);
-		return Collections.emptyList();
+	public Collection<ValidationError<?, ? super FMLObject>> getErrors(FMLObject object) {
+		return errorIssuesRegarding(object);
 	}
 
-	public List<ValidationWarning<?, ?>> getWarnings(FMLObject object) {
-		if (object instanceof FlexoFacet) {
-			return Collections.emptyList();
-		}
-		if ((object instanceof FlexoConcept || object instanceof FlexoProperty || object instanceof FlexoBehaviour
-				|| object instanceof FlexoConceptInspector) && object.getDeclaringVirtualModel() == virtualModel) {
-			return getValidationReport(object).getWarnings();
-		}
-		else if (object instanceof FlexoConceptObject && getValidationReport(((FlexoConceptObject) object).getFlexoConcept()) != null) {
-			return getValidationReport(((FlexoConceptObject) object).getFlexoConcept()).warningIssuesRegarding(object);
-		}
-
-		logger.warning("Unexpected validable " + object);
-		return Collections.emptyList();
+	public Collection<ValidationWarning<?, ? super FMLObject>> getWarnings(FMLObject object) {
+		return warningIssuesRegarding(object);
 	}
 
-	public List<InformationIssue<?, ?>> getInformationIssues(FMLObject object) {
-		if (object instanceof FlexoFacet) {
-			return Collections.emptyList();
-		}
-		if ((object instanceof FlexoConcept || object instanceof FlexoProperty || object instanceof FlexoBehaviour
-				|| object instanceof FlexoConceptInspector) && object.getDeclaringVirtualModel() == virtualModel) {
-			return getValidationReport(object).getInfoIssues();
-		}
-		else if (object instanceof FlexoConceptObject && getValidationReport(((FlexoConceptObject) object).getFlexoConcept()) != null) {
-			return getValidationReport(((FlexoConceptObject) object).getFlexoConcept()).infoIssuesRegarding(object);
-		}
-
-		logger.warning("Unexpected validable " + object);
-		return Collections.emptyList();
+	public Collection<InformationIssue<?, ? super FMLObject>> getInformationIssues(FMLObject object) {
+		return infoIssuesRegarding(object);
 	}
 
 	// private long startTime;
@@ -237,9 +130,7 @@ public class FMLValidationReport extends ValidationReport {
 	}
 
 	@Override
-	public void revalidateAll() throws InterruptedException {
-
-		// System.out.println("On revalide TOUT !!!! pour " + virtualModel);
+	public void revalidate() throws InterruptedException {
 
 		for (ValidationIssue issue : getAllIssues()) {
 			if (issue.getCause() instanceof BindingIsRequiredAndMustBeValid) {
@@ -247,66 +138,7 @@ public class FMLValidationReport extends ValidationReport {
 			}
 		}
 
-		// startTime = System.currentTimeMillis();
-		// DataBinding.dbValidated = 0;
-
-		super.revalidateAll();
-
-		// intermediateTime = System.currentTimeMillis();
-
-		// System.out.println("On a fini de TOUT revalider pour " + virtualModel);
-
-		for (FMLObject fmlObject : new ArrayList<>(embeddedValidationReports.keySet())) {
-			ValidationReport embeddedReport = embeddedValidationReports.get(fmlObject);
-			if (fmlObject.isDeleted()) {
-				embeddedReport.delete();
-				embeddedValidationReports.remove(fmlObject);
-			}
-			else {
-				embeddedReport.revalidateAll();
-			}
-		}
-
-		// endTime = System.currentTimeMillis();
-
-		/*System.out.println("***************** La validation a pris: " + (intermediateTime - startTime) + " milliseconds + "
-				+ (endTime - intermediateTime) + " milliseconds");
-		System.out.println("Rules nb: " + rulesNb);
-		System.out.println("Binding validés: " + DataBinding.dbValidated);*/
-
+		super.revalidate();
 	}
 
-	@Override
-	public void revalidate(Validable object) throws InterruptedException {
-		System.out.println("On revalide " + object + " pour le VM " + virtualModel);
-
-		if (object == virtualModel) {
-			revalidateAll();
-		}
-		else {
-			super.revalidate(object);
-
-			if (object instanceof FlexoConcept && object != virtualModel) {
-				getValidationReport((FlexoConcept) object).revalidate(object);
-			}
-			if (object instanceof FlexoProperty && getValidationReport((FlexoProperty<?>) object) != null) {
-				getValidationReport((FlexoProperty<?>) object).revalidate(object);
-				getValidationReport(((FlexoProperty<?>) object).getFlexoConcept()).revalidate(object);
-			}
-			if (object instanceof FlexoBehaviour && getValidationReport((FlexoBehaviour) object) != null) {
-				getValidationReport((FlexoBehaviour) object).revalidate(object);
-				getValidationReport(((FlexoBehaviour) object).getFlexoConcept()).revalidate(object);
-			}
-			if (object instanceof FlexoConceptInspector && getValidationReport((FlexoConceptInspector) object) != null) {
-				getValidationReport((FlexoConceptInspector) object).revalidate(object);
-				getValidationReport(((FlexoConceptInspector) object).getFlexoConcept()).revalidate(object);
-			}
-			else if (object instanceof FlexoConceptObject) {
-				if (getValidationReport(((FlexoConceptObject) object).getFlexoConcept()) != null
-						&& getValidationReport(((FlexoConceptObject) object).getFlexoConcept()) != this) {
-					getValidationReport(((FlexoConceptObject) object).getFlexoConcept()).revalidate(object);
-				}
-			}
-		}
-	}
 }

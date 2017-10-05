@@ -81,6 +81,7 @@ import org.openflexo.foundation.fml.rt.editionaction.MatchFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.SelectFlexoConceptInstance;
 import org.openflexo.foundation.nature.ProjectNature;
 import org.openflexo.foundation.nature.ProjectNatureService;
+import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterResource;
@@ -104,6 +105,8 @@ import org.openflexo.icon.FMLRTIconLibrary;
 import org.openflexo.icon.IconFactory;
 import org.openflexo.icon.IconLibrary;
 import org.openflexo.localization.LocalizedDelegate;
+import org.openflexo.model.validation.ValidationModel;
+import org.openflexo.model.validation.ValidationReport;
 import org.openflexo.module.FlexoModule;
 import org.openflexo.module.ModuleLoader;
 import org.openflexo.rm.Resource;
@@ -606,6 +609,14 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 	}
 
 	public void resourceUnloaded(TechnologyAdapterResource<?, TA> resource) {
+	}
+
+	public ValidationModel getValidationModel(Class<? extends ResourceData<?>> resourceDataClass) {
+		return null;
+	}
+
+	public ValidationReport getValidationReport(ResourceData<?> resourceData) {
+		return null;
 	}
 
 }

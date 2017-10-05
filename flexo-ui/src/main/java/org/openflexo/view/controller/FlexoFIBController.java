@@ -40,7 +40,9 @@
 package org.openflexo.view.controller;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 import java.util.logging.Logger;
 
@@ -56,6 +58,7 @@ import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoObservable;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.GraphicalFlexoObserver;
+import org.openflexo.foundation.InnerResourceData;
 import org.openflexo.foundation.action.ImportProject;
 import org.openflexo.foundation.action.RemoveImportedProject;
 import org.openflexo.foundation.action.copypaste.CopyAction;
@@ -64,17 +67,32 @@ import org.openflexo.foundation.action.copypaste.CutAction;
 import org.openflexo.foundation.action.copypaste.CutAction.CutActionType;
 import org.openflexo.foundation.action.copypaste.PasteAction;
 import org.openflexo.foundation.action.copypaste.PasteAction.PasteActionType;
+import org.openflexo.foundation.fml.FMLObject;
+import org.openflexo.foundation.fml.FMLValidationReport;
 import org.openflexo.foundation.resource.FlexoProjectReference;
+import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.RepositoryFolder;
+import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
+import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.gina.controller.FIBController;
 import org.openflexo.gina.controller.FIBSelectable;
 import org.openflexo.gina.model.FIBComponent;
 import org.openflexo.gina.model.FIBMouseEvent;
+import org.openflexo.gina.swing.utils.FIBUtilsIconLibrary;
 import org.openflexo.gina.view.FIBView;
 import org.openflexo.gina.view.GinaViewFactory;
+import org.openflexo.icon.IconFactory;
+import org.openflexo.icon.IconLibrary;
 import org.openflexo.icon.UtilsIconLibrary;
 import org.openflexo.localization.FlexoLocalization;
+import org.openflexo.model.validation.FixProposal;
+import org.openflexo.model.validation.InformationIssue;
+import org.openflexo.model.validation.Validable;
+import org.openflexo.model.validation.ValidationError;
+import org.openflexo.model.validation.ValidationModel;
+import org.openflexo.model.validation.ValidationReport;
+import org.openflexo.model.validation.ValidationWarning;
 import org.openflexo.prefs.PresentationPreferences;
 import org.openflexo.selection.SelectionManager;
 
@@ -217,8 +235,118 @@ public class FlexoFIBController extends FIBController implements GraphicalFlexoO
 		}
 	}
 
+	private Map<Object, ImageIcon> cachedIcons = new HashMap<>();
+
 	@NotificationUnsafe
-	public ImageIcon iconForObject(Object object) {
+	public final ImageIcon iconForObject(Object object) {
+
+		if (object instanceof FlexoResource && ((FlexoResource<?>) object).isLoaded()) {
+			return iconForObject(((FlexoResource<?>) object).getLoadedResourceData());
+		}
+
+		ImageIcon returned = cachedIcons.get(object);
+		if (returned == null) {
+			returned = retrieveIconForObject(object);
+			if (object instanceof Validable) {
+				if (hasErrors((Validable) object)) {
+					returned = IconFactory.getImageIcon(returned, IconLibrary.ERROR);
+				}
+				else if (hasWarnings((Validable) object)) {
+					returned = IconFactory.getImageIcon(returned, IconLibrary.WARNING);
+				}
+			}
+			cachedIcons.put(object, returned);
+		}
+		return returned;
+	}
+
+	protected void clearCachedIcons() {
+		cachedIcons.clear();
+	}
+
+	public boolean hasErrors(Validable object) {
+		if (object instanceof FMLObject) {
+			FMLValidationReport validationReport = (FMLValidationReport) getValidationReport(object);
+			if (validationReport != null) {
+				return validationReport.hasErrors((FMLObject) object);
+			}
+		}
+		return false;
+	}
+
+	public boolean hasWarnings(Validable object) {
+		if (object instanceof FMLObject) {
+			FMLValidationReport validationReport = (FMLValidationReport) getValidationReport(object);
+			if (validationReport != null) {
+				return validationReport.hasWarnings((FMLObject) object);
+			}
+		}
+		return false;
+	}
+
+	public ValidationReport getValidationReport(Validable object) {
+		if (getServiceManager() != null && object instanceof TechnologyObject) {
+			TechnologyAdapter ta = ((TechnologyObject<?>) object).getTechnologyAdapter();
+			TechnologyAdapterController<?> tac = getServiceManager().getTechnologyAdapterControllerService()
+					.getTechnologyAdapterController(ta);
+			if (object instanceof ResourceData) {
+				return tac.getValidationReport((ResourceData<?>) object);
+			}
+			if (object instanceof InnerResourceData) {
+				return tac.getValidationReport(((InnerResourceData<?>) object).getResourceData());
+			}
+		}
+		return null;
+	}
+
+	public ValidationModel getValidationModel(Validable object) {
+		if (object instanceof TechnologyObject) {
+			TechnologyAdapter ta = ((TechnologyObject<?>) object).getTechnologyAdapter();
+			TechnologyAdapterController<?> tac = getServiceManager().getTechnologyAdapterControllerService()
+					.getTechnologyAdapterController(ta);
+			if (object instanceof ResourceData) {
+				return tac.getValidationModel((Class) object.getClass());
+			}
+			if (object instanceof InnerResourceData) {
+				return tac.getValidationModel((Class) ((InnerResourceData<?>) object).getResourceData().getClass());
+			}
+		}
+		return null;
+	}
+
+	protected ImageIcon retrieveIconForObject(Object object) {
+		if (object instanceof ValidationError) {
+			if (((ValidationError<?, ?>) object).isFixable()) {
+				return FIBUtilsIconLibrary.FIXABLE_ERROR_ICON;
+			}
+			else {
+				return FIBUtilsIconLibrary.UNFIXABLE_ERROR_ICON;
+			}
+		}
+		else if (object instanceof ValidationWarning) {
+			if (((ValidationWarning<?, ?>) object).isFixable()) {
+				return FIBUtilsIconLibrary.FIXABLE_WARNING_ICON;
+			}
+			else {
+				return FIBUtilsIconLibrary.UNFIXABLE_WARNING_ICON;
+			}
+		}
+		else if (object instanceof InformationIssue) {
+			return FIBUtilsIconLibrary.INFO_ISSUE_ICON;
+		}
+		else if (object instanceof FixProposal) {
+			return FIBUtilsIconLibrary.FIX_PROPOSAL_ICON;
+		}
+
+		/*else if (object instanceof VirtualModel) {
+			if (getValidationReport((VirtualModel) object) != null && getValidationReport((VirtualModel) object).getErrors().size() > 0) {
+				return IconFactory.getImageIcon(super.retrieveIconForObject(object), IconLibrary.ERROR);
+			}
+			if (getValidationReport((VirtualModel) object) != null && getValidationReport((VirtualModel) object).getWarnings().size() > 0) {
+				return IconFactory.getImageIcon(super.retrieveIconForObject(object), IconLibrary.WARNING);
+			}
+		}*/
+
 		if (controller != null) {
 			return controller.iconForObject(object);
 		}

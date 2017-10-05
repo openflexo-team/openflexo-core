@@ -83,7 +83,7 @@ public class RevalidationTask extends FlexoApplicationTask implements PropertyCh
 
 		validationReport.getValidationModel().getPropertyChangeSupport().addPropertyChangeListener(this);
 
-		validationReport.revalidateAll();
+		validationReport.revalidate();
 
 		validationReport.getValidationModel().getPropertyChangeSupport().removePropertyChangeListener(this);
 

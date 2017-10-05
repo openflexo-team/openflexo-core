@@ -459,7 +459,7 @@ public abstract class OpenflexoTestCase {
 			ValidationModel validationModel = object.getVirtualModelLibrary().getFMLValidationModel();
 			ValidationReport report = object.getVirtualModelLibrary().getFMLValidationModel().validate(object);
 
-			for (ValidationError<?, ?> error : report.getErrors()) {
+			for (ValidationError<?, ?> error : report.getAllErrors()) {
 				System.out.println("Found error: " + validationModel.localizedIssueMessage(error) + " details="
 						+ validationModel.localizedIssueDetailedInformations(error) + " Object: " + error.getValidable());
 			}

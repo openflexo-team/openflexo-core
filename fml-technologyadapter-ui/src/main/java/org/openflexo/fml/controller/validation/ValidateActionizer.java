@@ -48,8 +48,8 @@ import javax.swing.KeyStroke;
 import org.openflexo.FlexoCst;
 import org.openflexo.fml.controller.FMLTechnologyAdapterController;
 import org.openflexo.foundation.FlexoObject;
-import org.openflexo.foundation.action.FlexoActionFinalizer;
 import org.openflexo.foundation.action.FlexoActionFactory;
+import org.openflexo.foundation.action.FlexoActionFinalizer;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FMLValidationReport;
 import org.openflexo.icon.IconLibrary;
@@ -73,7 +73,7 @@ public class ValidateActionizer extends ActionInitializer<ValidateAction, FMLObj
 		return new FlexoActionFinalizer<ValidateAction>() {
 			@Override
 			public boolean run(EventObject e, ValidateAction action) {
-				FMLValidationReport virtualModelReport = fmlTAController
+				FMLValidationReport virtualModelReport = (FMLValidationReport) fmlTAController
 						.getValidationReport(action.getFocusedObject().getDeclaringVirtualModel());
 				try {
 					virtualModelReport.revalidate(action.getFocusedObject());

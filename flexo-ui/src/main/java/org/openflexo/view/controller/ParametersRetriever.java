@@ -263,7 +263,7 @@ public class ParametersRetriever<ES extends FlexoBehaviour> {
 		ValidationReport validationReport;
 		try {
 			validationReport = returned.validate();
-			for (ValidationError<?, ?> error : validationReport.getErrors()) {
+			for (ValidationError<?, ?> error : validationReport.getAllErrors()) {
 				logger.warning("Parameters retriever FIBComponent validation error: Object: " + error.getValidable() + " message: "
 						+ validationReport.getValidationModel().localizedIssueMessage(error) + " detais="
 						+ validationReport.getValidationModel().localizedIssueDetailedInformations(error));

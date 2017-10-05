@@ -698,7 +698,7 @@ public interface FlexoObject extends AccessibleProxyObject, DeletableProxyObject
 		 * 
 		 */
 		@Override
-		public Collection<Validable> getEmbeddedValidableObjects() {
+		public Collection<? extends Validable> getEmbeddedValidableObjects() {
 			// System.out.println("> Compute getEmbeddedValidableObjects() for " + this.getClass() + " : " + this);
 			PamelaResource<?, ?> resource = getPamelaResource();
 			if (resource != null) {

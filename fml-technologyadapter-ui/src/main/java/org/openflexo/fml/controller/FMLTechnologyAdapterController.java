@@ -118,6 +118,7 @@ import org.openflexo.foundation.fml.rt.editionaction.SelectFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.SelectVirtualModelInstance;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceType;
+import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.task.Progress;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterResource;
@@ -132,6 +133,8 @@ import org.openflexo.icon.FMLIconLibrary;
 import org.openflexo.icon.FMLRTIconLibrary;
 import org.openflexo.icon.IconFactory;
 import org.openflexo.icon.IconLibrary;
+import org.openflexo.model.validation.ValidationModel;
+import org.openflexo.model.validation.ValidationReport;
 import org.openflexo.view.EmptyPanel;
 import org.openflexo.view.ModuleView;
 import org.openflexo.view.controller.ControllerActionInitializer;
@@ -648,8 +651,20 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 		return validationModel;
 	}
 
-	public FMLValidationReport getValidationReport(VirtualModel virtualModel) {
-		return validationReports.get(virtualModel);
+	@Override
+	public ValidationModel getValidationModel(Class<? extends ResourceData<?>> resourceDataClass) {
+		if (VirtualModel.class.isAssignableFrom(resourceDataClass)) {
+			return getFMLValidationModel();
+		}
+		return null;
+	}
+
+	@Override
+	public ValidationReport getValidationReport(ResourceData<?> resourceData) {
+		if (resourceData instanceof VirtualModel) {
+			return validationReports.get(resourceData);
+		}
+		return null;
 	}
 
 }

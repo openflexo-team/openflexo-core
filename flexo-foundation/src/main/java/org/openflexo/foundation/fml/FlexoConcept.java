@@ -40,6 +40,7 @@ package org.openflexo.foundation.fml;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -81,6 +82,7 @@ import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.model.annotations.XMLElement;
 import org.openflexo.model.undo.CompoundEdit;
 import org.openflexo.model.validation.FixProposal;
+import org.openflexo.model.validation.Validable;
 import org.openflexo.model.validation.ValidationIssue;
 import org.openflexo.model.validation.ValidationRule;
 import org.openflexo.model.validation.ValidationWarning;
@@ -1737,6 +1739,19 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 			for (FlexoBehaviour behaviour : getFlexoBehaviours()) {
 				behaviour.notifiedScopeChanged();
 			}
+		}
+
+		private List<Validable> embeddedValidable = null;
+
+		@Override
+		public Collection<Validable> getEmbeddedValidableObjects() {
+			if (embeddedValidable == null) {
+				embeddedValidable = new ArrayList<>();
+				embeddedValidable.add(getStructuralFacet());
+				embeddedValidable.add(getBehaviouralFacet());
+				embeddedValidable.add(getInnerConceptsFacet());
+			}
+			return embeddedValidable;
 		}
 
 	}

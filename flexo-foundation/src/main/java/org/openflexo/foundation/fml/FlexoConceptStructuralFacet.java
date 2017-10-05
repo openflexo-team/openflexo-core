@@ -38,11 +38,13 @@
 
 package org.openflexo.foundation.fml;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.openflexo.connie.BindingModel;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
+import org.openflexo.model.validation.Validable;
 
 @ModelEntity
 @ImplementationClass(FlexoConceptStructuralFacet.FlexoConceptStructuralFacetImpl.class)
@@ -103,6 +105,11 @@ public interface FlexoConceptStructuralFacet extends FlexoConceptObject, FlexoFa
 
 		public void notifiedPropertiesChanged(FlexoProperty<?> oldValue, FlexoProperty<?> newValue) {
 			getPropertyChangeSupport().firePropertyChange("properties", oldValue, newValue);
+		}
+
+		@Override
+		public Collection<? extends Validable> getEmbeddedValidableObjects() {
+			return getProperties();
 		}
 
 	}

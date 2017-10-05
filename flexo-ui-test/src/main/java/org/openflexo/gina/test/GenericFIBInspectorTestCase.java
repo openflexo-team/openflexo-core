@@ -81,7 +81,7 @@ public abstract class GenericFIBInspectorTestCase extends GenericFIBTestCase {
 				fail("Component not found: " + fibResource.getURI());
 			}
 			ValidationReport validationReport = component.validate();
-			for (ValidationError<?, ?> error : validationReport.getErrors()) {
+			for (ValidationError<?, ?> error : validationReport.getAllErrors()) {
 				String message = validationReport.getValidationModel().localizedIssueMessage(error);
 				String details = validationReport.getValidationModel().localizedIssueDetailedInformations(error);
 				logger.severe("FIBComponent validation error: Object: " + error.getValidable() + " message: " + message + "\ndetails: "

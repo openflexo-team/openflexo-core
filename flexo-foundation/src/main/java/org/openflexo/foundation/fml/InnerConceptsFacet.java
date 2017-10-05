@@ -38,11 +38,13 @@
 
 package org.openflexo.foundation.fml;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.openflexo.connie.BindingModel;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
+import org.openflexo.model.validation.Validable;
 
 /**
  * A structural facet defined for {@link VirtualModel}<br>
@@ -148,5 +150,14 @@ public interface InnerConceptsFacet extends FlexoConceptObject, FlexoFacet<Flexo
 			// getPropertyChangeSupport().firePropertyChange("inheritanceRootFlexoConcepts", null, getInheritanceRootFlexoConcepts());
 			getPropertyChangeSupport().firePropertyChange("embeddingRootFlexoConcepts", null, getEmbeddingRootFlexoConcepts());
 		}
+
+		@Override
+		public Collection<? extends Validable> getEmbeddedValidableObjects() {
+			if (getFlexoConcept() instanceof VirtualModel) {
+				return ((VirtualModel) getFlexoConcept()).getFlexoConcepts();
+			}
+			return getFlexoConcept().getEmbeddedFlexoConcepts();
+		}
+
 	}
 }

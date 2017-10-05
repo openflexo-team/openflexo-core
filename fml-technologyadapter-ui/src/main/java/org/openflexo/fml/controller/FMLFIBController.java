@@ -43,10 +43,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import javax.swing.ImageIcon;
-
 import org.openflexo.components.validation.RevalidationTask;
-import org.openflexo.connie.annotations.NotificationUnsafe;
 import org.openflexo.fml.controller.validation.FixIssueDialog;
 import org.openflexo.fml.controller.validation.IssueFixing;
 import org.openflexo.foundation.FlexoException;
@@ -59,7 +56,6 @@ import org.openflexo.foundation.fml.CreationScheme;
 import org.openflexo.foundation.fml.DeletionScheme;
 import org.openflexo.foundation.fml.ExpressionProperty;
 import org.openflexo.foundation.fml.FMLObject;
-import org.openflexo.foundation.fml.FMLValidationModel;
 import org.openflexo.foundation.fml.FMLValidationReport;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
@@ -110,21 +106,13 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.UseModelSlotDeclaration;
 import org.openflexo.gina.model.FIBComponent;
 import org.openflexo.gina.model.container.FIBTab;
-import org.openflexo.gina.swing.utils.FIBUtilsIconLibrary;
 import org.openflexo.gina.utils.FIBInspector;
 import org.openflexo.gina.utils.InspectorGroup;
 import org.openflexo.gina.view.GinaViewFactory;
-import org.openflexo.icon.IconFactory;
-import org.openflexo.icon.IconLibrary;
 import org.openflexo.logging.FlexoLogger;
-import org.openflexo.model.validation.FixProposal;
-import org.openflexo.model.validation.InformationIssue;
 import org.openflexo.model.validation.ProblemIssue;
 import org.openflexo.model.validation.Validable;
-import org.openflexo.model.validation.ValidationError;
 import org.openflexo.model.validation.ValidationIssue;
-import org.openflexo.model.validation.ValidationReport;
-import org.openflexo.model.validation.ValidationWarning;
 import org.openflexo.rm.Resource;
 import org.openflexo.view.controller.FlexoController;
 import org.openflexo.view.controller.FlexoFIBController;
@@ -758,6 +746,7 @@ public class FMLFIBController extends FlexoFIBController {
 		return controlGraph != null && controlGraph.getOwner() != receiver;
 	}
 
+	/*@Deprecated
 	public FMLValidationReport getValidationReport(VirtualModel virtualModel) {
 		if (getServiceManager() != null && virtualModel != null) {
 			FMLTechnologyAdapterController tac = getServiceManager().getTechnologyAdapterControllerService()
@@ -766,7 +755,8 @@ public class FMLFIBController extends FlexoFIBController {
 		}
 		return null;
 	}
-
+	
+	@Deprecated
 	public ValidationReport getEmbeddedValidationReport(FMLObject object) {
 		if (object == null) {
 			return null;
@@ -781,7 +771,8 @@ public class FMLFIBController extends FlexoFIBController {
 		}
 		return null;
 	}
-
+	
+	@Deprecated
 	public FMLValidationModel getFMLValidationModel() {
 		if (getServiceManager() != null) {
 			FMLTechnologyAdapterController tac = getServiceManager().getTechnologyAdapterControllerService()
@@ -789,42 +780,20 @@ public class FMLFIBController extends FlexoFIBController {
 			return tac.getFMLValidationModel();
 		}
 		return null;
-	}
+	}*/
 
+	/*@Deprecated
 	@Override
-	@NotificationUnsafe
-	public ImageIcon iconForObject(Object object) {
-		if (object instanceof ValidationError) {
-			if (((ValidationError<?, ?>) object).isFixable()) {
-				return FIBUtilsIconLibrary.FIXABLE_ERROR_ICON;
-			}
-			else {
-				return FIBUtilsIconLibrary.UNFIXABLE_ERROR_ICON;
-			}
-		}
-		else if (object instanceof ValidationWarning) {
-			if (((ValidationWarning<?, ?>) object).isFixable()) {
-				return FIBUtilsIconLibrary.FIXABLE_WARNING_ICON;
-			}
-			else {
-				return FIBUtilsIconLibrary.UNFIXABLE_WARNING_ICON;
-			}
-		}
-		else if (object instanceof InformationIssue) {
-			return FIBUtilsIconLibrary.INFO_ISSUE_ICON;
-		}
-		else if (object instanceof FixProposal) {
-			return FIBUtilsIconLibrary.FIX_PROPOSAL_ICON;
-		}
-		else if (object instanceof VirtualModelResource && ((VirtualModelResource) object).isLoaded()) {
-			return iconForObject(((VirtualModelResource) object).getLoadedResourceData());
+	protected ImageIcon retrieveIconForObject(Object object) {
+		if (object instanceof VirtualModelResource && ((VirtualModelResource) object).isLoaded()) {
+			return retrieveIconForObject(((VirtualModelResource) object).getLoadedResourceData());
 		}
 		else if (object instanceof VirtualModel) {
 			if (getValidationReport((VirtualModel) object) != null && getValidationReport((VirtualModel) object).getErrors().size() > 0) {
-				return IconFactory.getImageIcon(super.iconForObject(object), IconLibrary.ERROR);
+				return IconFactory.getImageIcon(super.retrieveIconForObject(object), IconLibrary.ERROR);
 			}
 			if (getValidationReport((VirtualModel) object) != null && getValidationReport((VirtualModel) object).getWarnings().size() > 0) {
-				return IconFactory.getImageIcon(super.iconForObject(object), IconLibrary.WARNING);
+				return IconFactory.getImageIcon(super.retrieveIconForObject(object), IconLibrary.WARNING);
 			}
 		}
 		else if (object instanceof FMLObject && ((FMLObject) object).getDeclaringVirtualModel() != null) {
@@ -852,11 +821,21 @@ public class FMLFIBController extends FlexoFIBController {
 			}
 			return returned;
 		}
+	
+		return super.retrieveIconForObject(object);
+	}*/
 
-		return super.iconForObject(object);
+	/*@Deprecated
+	@Override
+	protected boolean hasErrors(Validable object) {
+		return false;
 	}
-
-	private Map<FMLObject, ImageIcon> fmlObjectsIcons = new HashMap<>();
+	
+	@Deprecated
+	@Override
+	protected boolean hasWarnings(Validable object) {
+		return false;
+	}*/
 
 	private boolean showErrorsWarnings = true;
 
@@ -898,12 +877,13 @@ public class FMLFIBController extends FlexoFIBController {
 		if (getServiceManager() != null) {
 			FMLTechnologyAdapterController tac = getServiceManager().getTechnologyAdapterControllerService()
 					.getTechnologyAdapterController(FMLTechnologyAdapterController.class);
-			FMLValidationReport virtualModelReport = tac.getValidationReport(virtualModel);
+			FMLValidationReport virtualModelReport = (FMLValidationReport) tac.getValidationReport(virtualModel);
 			RevalidationTask validationTask = new RevalidationTask(virtualModelReport) {
 				@Override
 				public void performTask() throws InterruptedException {
 					super.performTask();
-					fmlObjectsIcons.clear();
+					clearCachedIcons();
+					// fmlObjectsIcons.clear();
 				}
 			};
 			getServiceManager().getTaskManager().scheduleExecution(validationTask);

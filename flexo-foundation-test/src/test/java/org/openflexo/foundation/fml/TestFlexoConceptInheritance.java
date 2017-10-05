@@ -47,6 +47,7 @@ import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Iterator;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -72,6 +73,7 @@ import org.openflexo.foundation.resource.FileSystemBasedResourceCenter;
 import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.test.OpenflexoProjectAtRunTimeTestCase;
 import org.openflexo.model.exceptions.ModelDefinitionException;
+import org.openflexo.model.validation.ValidationError;
 import org.openflexo.model.validation.ValidationReport;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.test.OrderedRunner;
@@ -620,9 +622,10 @@ public class TestFlexoConceptInheritance extends OpenflexoProjectAtRunTimeTestCa
 		property3InB.setType(String.class);
 
 		ValidationReport report = validate(virtualModel);
-		assertEquals(2, report.getErrors().size());
-		assertTrue(report.getErrors().get(0).getValidationRule() instanceof OverridenPropertiesMustBeTypeCompatible);
-		assertTrue(report.getErrors().get(1).getValidationRule() instanceof OverridenPropertiesMustBeTypeCompatible);
+		assertEquals(2, report.getAllErrors().size());
+		Iterator<ValidationError<?, ?>> iterator = report.getAllErrors().iterator();
+		assertTrue(iterator.next().getValidationRule() instanceof OverridenPropertiesMustBeTypeCompatible);
+		assertTrue(iterator.next().getValidationRule() instanceof OverridenPropertiesMustBeTypeCompatible);
 
 		property3InB.setType(Integer.class);
 

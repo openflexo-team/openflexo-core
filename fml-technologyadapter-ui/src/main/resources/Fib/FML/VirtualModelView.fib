@@ -2,12 +2,12 @@
 <Panel id="0" align="left" borderTop="10" borderTitle="Panel"
 	borderLeft="0" trackViewPortHeight="true" trackViewPortWidth="true"
 	borderBottom="0" border="empty" sizeAdjustment="OriginalSize"
-	titleFont="SansSerif,0,11" layout="border" borderRight="0"
+	titleFont="SansSerif,0,11" layout="border" borderRight="0" opaque="false"
 	controllerClassName="org.openflexo.fml.controller.FMLFIBController"
-	opaque="false" font="SansSerif,0,12" name="main">
-	<SplitPanel id="1" index="0"
+	font="SansSerif,0,12" name="main">
+	<SplitPanel id="1"
 		constraints="border(anchor=center;fill=both;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=0;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=center;padX=0;padY=0;weightX=1.0;weightY=1.0)"
-		name="FIBSplitPanel">
+		index="0" name="FIBSplitPanel">
 		<RowSplit id="2" name="RowSplit" weight="0.0">
 			<Leaf id="3" name="left" weight="0.30000001192092896" />
 			<Divider id="4" />
@@ -19,13 +19,13 @@
 			textSelectionColor="255,255,255" backgroundSecondarySelectionColor="178,215,255"
 			showRootsHandle="true" showFooter="true" allowsDragAndDrop="true"
 			textNonSelectionColor="0,0,0" root="data" deepExploration="true"
-			selectionMode="DiscontiguousTreeSelection" rootVisible="true"
-			rowHeight="18" localize="true" manageDynamicModel="true"
+			selectionMode="DiscontiguousTreeSelection" rowHeight="18" localize="true"
+			manageDynamicModel="true"
 			rightClickAction="controller.rightClick(FlexoConceptBrowser.selected,event)"
 			doubleClickAction="controller.doubleClick(FlexoConceptBrowser.selected)"
 			clickAction="controller.singleClick(FlexoConceptBrowser.selected)"
-			index="0" constraints="split(index=0;location=north;splitIdentifier=left)"
-			name="FlexoConceptBrowser">
+			constraints="split(index=0;location=north;splitIdentifier=left)"
+			index="0" name="FlexoConceptBrowser">
 			<BrowserElement id="7"
 				dataClassName="org.openflexo.foundation.fml.VirtualModel" icon="controller.iconForObject(virtualModel)"
 				label="virtualModel.name" editableLabel="virtualModel.name"
@@ -195,117 +195,113 @@
 			<BrowserElement id="62"
 				dataClassName="org.openflexo.foundation.fml.controlgraph.ControlStructureAction"
 				icon="controller.iconForObject(controlStructureAction)" isEditable="false"
-				name="controlStructureAction">
-				<!--  <Children id="63" data="controlStructureAction.actions"
-					name="children" /> -->
-			</BrowserElement>
-			<BrowserElement id="64"
+				name="controlStructureAction" />
+			<BrowserElement id="63"
 				dataClassName="org.openflexo.foundation.fml.FlexoConceptStructuralFacet"
 				icon="controller.iconForObject(flexoConceptStructuralFacet)" label="&quot;Structural&quot;"
 				isEditable="false" name="flexoConceptStructuralFacet">
-				<Children id="65" data="flexoConceptStructuralFacet.properties"
+				<Children id="64" data="flexoConceptStructuralFacet.properties"
 					name="flexoProperties" />
-				<BrowserAddAction id="66"
+				<BrowserAddAction id="65"
 					method="controller.createModelSlot(selected.flexoConcept)" name="new_model_slot" />
-				<BrowserAddAction id="67"
+				<BrowserAddAction id="66"
 					method="controller.createTechnologyRole(selected.flexoConcept)"
 					name="new_technology_role" />
-				<BrowserAddAction id="68"
+				<BrowserAddAction id="67"
 					method="controller.createFlexoConceptInstanceRole(selected.flexoConcept)"
 					name="new_flexo_concept_instance_role" />
-				<BrowserAddAction id="69"
+				<BrowserAddAction id="68"
 					method="controller.createPrimitiveRole(selected.flexoConcept)"
 					name="new_primitive_role" />
-				<BrowserAddAction id="70"
+				<BrowserAddAction id="69"
 					method="controller.createAbstractProperty(selected.flexoConcept)"
 					name="new_abstract_property" />
-				<BrowserAddAction id="71"
+				<BrowserAddAction id="70"
 					method="controller.createExpressionProperty(selected.flexoConcept)"
 					name="new_expression_property" />
-				<BrowserAddAction id="72"
+				<BrowserAddAction id="71"
 					method="controller.createGetSetProperty(selected.flexoConcept)"
 					name="new_get_set_property" />
-				<BrowserRemoveAction id="73"
+				<BrowserRemoveAction id="72"
 					method="controller.deleteFlexoProperty(data,selected)" name="delete" />
 			</BrowserElement>
-			<BrowserElement id="74"
+			<BrowserElement id="73"
 				dataClassName="org.openflexo.foundation.fml.FlexoConceptBehaviouralFacet"
 				icon="controller.iconForObject(flexoConceptBehaviouralFacet)" label="&quot;Behavioural&quot;"
 				isEditable="false" name="flexoConceptBehaviouralFacet">
-				<Children id="75"
+				<Children id="74"
 					data="flexoConceptBehaviouralFacet.flexoConcept.flexoBehaviours"
 					name="flexoBehaviours" />
-				<BrowserAddAction id="76"
+				<BrowserAddAction id="75"
 					method="controller.createAdvancedScheme(selected.flexoConcept)"
 					name="new_behaviour" />
 			</BrowserElement>
-			<BrowserElement id="77"
+			<BrowserElement id="76"
 				dataClassName="org.openflexo.foundation.fml.InnerConceptsFacet"
 				icon="controller.iconForObject(innerConceptsFacet)" label="&quot;Inner concepts&quot;"
 				isEditable="false" name="innerConceptsFacet">
-				<Children id="78"
+				<Children id="77"
 					data="innerConceptsFacet.embeddingRootFlexoConcepts" name="children" />
-				<BrowserAddAction id="79"
+				<BrowserAddAction id="78"
 					method="controller.createFlexoConcept(selected.flexoConcept)" name="add_flexo_concept" />
-				<BrowserRemoveAction id="80"
+				<BrowserRemoveAction id="79"
 					method="controller.deleteFlexoConcept(selected.flexoConcept)" name="remove_flexo_concept" />
 			</BrowserElement>
-			<BrowserElement id="81"
+			<BrowserElement id="80"
 				dataClassName="org.openflexo.foundation.fml.FlexoConcept" icon="controller.iconForObject(flexoConcept)"
 				label="flexoConcept.name" editableLabel="flexoConcept.name"
 				isEditable="false" name="flexoConcept">
-				<Children id="82" data="flexoConcept.embeddedFlexoConcepts"
+				<Children id="81" data="flexoConcept.embeddedFlexoConcepts"
 					name="children" />
-				<BrowserAddAction id="83"
+				<BrowserAddAction id="82"
 					method="controller.createFlexoConcept(selected)" name="add_flexo_concept" />
-				<BrowserRemoveAction id="84"
+				<BrowserRemoveAction id="83"
 					method="controller.deleteFlexoConcept(selected)" name="remove_flexo_concept" />
 			</BrowserElement>
 		</Browser>
-		<Panel id="85" align="left" borderTop="0" borderLeft="0"
+		<Panel id="84" align="left" borderTop="0" borderLeft="0"
 			trackViewPortHeight="true" trackViewPortWidth="true" borderBottom="0"
 			border="empty" sizeAdjustment="OriginalSize" titleFont="SansSerif,0,12"
-			layout="twocols" borderRight="0" index="0"
+			layout="twocols" borderRight="0"
 			constraints="split(index=0;location=north;splitIdentifier=right)"
-			name="FIBPanel">
-			<FIBReferencedComponent id="86"
+			index="0" name="FIBPanel">
+			<FIBReferencedComponent id="85"
 				dynamicComponent="controller.inspectorForObject(FlexoConceptBrowser.selected)"
 				localize="true" manageDynamicModel="true" data="FlexoConceptBrowser.selected"
-				opaque="false" index="15"
 				constraints="twocols(expandHorizontally=true;expandVertically=true;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=center)"
-				name="InspectedWidget">
-				<ReferenceAssignment id="87"
+				opaque="false" index="15" name="InspectedWidget">
+				<ReferenceAssignment id="86"
 					variable="controller.flexoController" value="controller.flexoController"
 					mandatory="true" />
 			</FIBReferencedComponent>
-			<Label id="88" label="" align="left"
+			<Label id="87" label="" align="left"
 				constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)"
 				name="Label2" />
-			<Panel id="89" align="right" borderTop="0" borderLeft="0"
+			<Panel id="88" align="right" borderTop="0" borderLeft="0"
 				trackViewPortHeight="true" trackViewPortWidth="true" borderBottom="0"
 				border="empty" sizeAdjustment="OriginalSize" titleFont="SansSerif,0,12"
 				layout="gridbag" borderRight="0"
 				constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)"
-				name="Panel">
-				<Label id="90" label="label" align="left"
-					data="((((&quot;&quot; + controller.getValidationReport(data).errors.size) + &quot; errors, &quot;) + controller.getValidationReport(data).warnings.size) + &quot; warnings&quot;)"
+				name="ValidationPanel">
+	<FIBVariable type="org.openflexo.model.validation.Validable" name="focusedValidable" value="FlexoConceptBrowser.selected != null ? FlexoConceptBrowser.selected : data" />
+				<Label id="89" label="label" align="left"
+					data="((((&quot;&quot; + controller.getValidationReport(data).errorIssuesRegarding(focusedValidable).size) + &quot; errors, &quot;) + controller.getValidationReport(data).warningIssuesRegarding(focusedValidable).size) + &quot; warnings&quot;)"
 					constraints="gridbag(anchor=west;fill=horizontal;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=1.0;weightY=0.0)"
 					font="SansSerif,2,11" name="Label" />
-				<Label id="91"
+				<Label id="90"
 					label="&lt;html&gt;&lt;a href=&quot;&quot;&gt;show_errors_warnings&lt;/a&gt;&lt;/html&gt;"
-					align="left" clickAction="controller.setShowErrorsWarnings(true)"
-					visible="(!(controller.showErrorsWarnings))" localize="true"
+					align="left" localize="true" clickAction="controller.setShowErrorsWarnings(true)"
 					constraints="gridbag(anchor=center;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)"
-					font="SansSerif,0,10" name="Label3" />
-				<Label id="92"
+					visible="(!(controller.showErrorsWarnings))" font="SansSerif,0,10"
+					name="Label3" />
+				<Label id="91"
 					label="&lt;html&gt;&lt;a href=&quot;&quot;&gt;hide_errors_warnings&lt;/a&gt;&lt;/html&gt;"
-					align="left" clickAction="controller.setShowErrorsWarnings(false)"
-					visible="controller.showErrorsWarnings" localize="true"
+					align="left" localize="true" clickAction="controller.setShowErrorsWarnings(false)"
 					constraints="gridbag(anchor=center;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)"
-					font="SansSerif,0,10" name="Label4" />
-				<Label
+					visible="controller.showErrorsWarnings" font="SansSerif,0,10" name="Label4" />
+				<Label id="92"
 					label="&lt;html&gt;&lt;a href=&quot;&quot;&gt;revalidate&lt;/a&gt;&lt;/html&gt;"
-					align="left" clickAction="controller.revalidate(data)" localize="true"
+					align="left" localize="true" clickAction="controller.revalidate(data)"
 					constraints="gridbag(anchor=center;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)"
 					font="SansSerif,0,10" name="Label5" />
 			</Panel>
@@ -315,159 +311,152 @@
 				lookAndFeel="Classic" selectionMode="MultipleIntervalSelection"
 				rowHeight="18" manageDynamicModel="true"
 				doubleClickAction="controller.fixIssue(IssuesTable.selected)"
-				data="controller.getValidationReport(data).filteredIssues"
-				clickAction="controller.showIssue(IssuesTable.selected)" visible="controller.showErrorsWarnings"
+				data="controller.getValidationReport(data).issuesRegarding(ValidationPanel.focusedValidable)"
+				clickAction="controller.showIssue(IssuesTable.selected)"
 				constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=5;insetsLeft=0;insetsRight=5;insetsTop=0;location=right)"
-				name="IssuesTable">
+				visible="controller.showErrorsWarnings" name="IssuesTable">
 				<IconColumn id="94" data="controller.iconForObject(iterator)"
 					resizable="false" title="icon" displayTitle="false" columnWidth="20"
 					showIcon="false" name="icon" />
 				<LabelColumn id="95"
-					data="controller.fMLValidationModel.localizedIssueMessage(iterator)"
+					data="controller.getValidationModel(data).localizedIssueMessage(iterator)"
 					resizable="true" title="errors/warnings" displayTitle="true"
 					columnWidth="250" showIcon="false" name="label" />
 			</Table>
 		</Panel>
 	</SplitPanel>
-	<FIBVariable id="96" type="org.openflexo.foundation.fml.VirtualModel"
-		name="data" />
-	<LocalizedDictionary id="97">
-		<Localized id="93" lang="English" value="Add action" key="add_action" />
-		<Localized id="94" lang="Dutch" value="Add action" key="add_action" />
-		<Localized id="95" lang="French" value="add_action" key="add_action" />
-		<Localized id="96" lang="English" value="Remove flexo concept"
+	<LocalizedDictionary id="96">
+		<Localized id="97" lang="French" value="remove_flexo_concept"
 			key="remove_flexo_concept" />
-		<Localized id="97" lang="Dutch" value="Remove flexo concept"
-			key="remove_flexo_concept" />
-		<Localized id="98" lang="French" value="remove_flexo_concept"
-			key="remove_flexo_concept" />
-		<Localized id="99" lang="English" value="Add action in GET control graph"
+		<Localized id="98" lang="English" value="Add action in GET control graph"
 			key="add_action_in_GET_control_graph" />
-		<Localized id="100" lang="Dutch" value="Add action in GET control graph"
+		<Localized id="99" lang="Dutch" value="Add action in GET control graph"
 			key="add_action_in_GET_control_graph" />
-		<Localized id="101" lang="French" value="add_action_in_GET_control_graph"
+		<Localized id="100" lang="French" value="add_action_in_GET_control_graph"
 			key="add_action_in_GET_control_graph" />
-		<Localized id="102" lang="English" value="Add action in SET control graph"
+		<Localized id="101" lang="English" value="Add action in SET control graph"
 			key="add_action_in_SET_control_graph" />
-		<Localized id="103" lang="Dutch" value="Add action in SET control graph"
+		<Localized id="102" lang="Dutch" value="Add action in SET control graph"
 			key="add_action_in_SET_control_graph" />
-		<Localized id="104" lang="French" value="add_action_in_SET_control_graph"
+		<Localized id="103" lang="French" value="add_action_in_SET_control_graph"
 			key="add_action_in_SET_control_graph" />
-		<Localized id="105" lang="English" value="Delete action"
+		<Localized id="104" lang="English" value="Delete action"
 			key="delete_action" />
-		<Localized id="106" lang="Dutch" value="Delete action" key="delete_action" />
-		<Localized id="107" lang="French" value="delete_action" key="delete_action" />
-		<Localized id="108" lang="English" value="Add action inside iteration"
+		<Localized id="105" lang="Dutch" value="Delete action" key="delete_action" />
+		<Localized id="106" lang="French" value="delete_action" key="delete_action" />
+		<Localized id="107" lang="English" value="Add action inside iteration"
 			key="add_action_inside_iteration" />
-		<Localized id="109" lang="Dutch" value="Add action inside iteration"
+		<Localized id="108" lang="Dutch" value="Add action inside iteration"
 			key="add_action_inside_iteration" />
-		<Localized id="110" lang="French" value="add_action_inside_iteration"
+		<Localized id="109" lang="French" value="add_action_inside_iteration"
 			key="add_action_inside_iteration" />
-		<Localized id="111" lang="English" value="Add action in then control graph"
+		<Localized id="110" lang="English" value="Add action in then control graph"
 			key="add_action_in_then_control_graph" />
-		<Localized id="112" lang="Dutch" value="Add action in then control graph"
+		<Localized id="111" lang="Dutch" value="Add action in then control graph"
 			key="add_action_in_then_control_graph" />
-		<Localized id="113" lang="French" value="add_action_in_then_control_graph"
+		<Localized id="112" lang="French" value="add_action_in_then_control_graph"
 			key="add_action_in_then_control_graph" />
-		<Localized id="114" lang="English" value="Add action in else control graph"
+		<Localized id="113" lang="English" value="Add action in else control graph"
 			key="add_action_in_else_control_graph" />
-		<Localized id="115" lang="Dutch" value="Add action in else control graph"
+		<Localized id="114" lang="Dutch" value="Add action in else control graph"
 			key="add_action_in_else_control_graph" />
-		<Localized id="116" lang="French" value="add_action_in_else_control_graph"
+		<Localized id="115" lang="French" value="add_action_in_else_control_graph"
 			key="add_action_in_else_control_graph" />
-		<Localized id="117" lang="English" value="Add inspector entry"
+		<Localized id="116" lang="English" value="Add inspector entry"
 			key="add_inspector_entry" />
-		<Localized id="118" lang="Dutch" value="Add inspector entry"
+		<Localized id="117" lang="Dutch" value="Add inspector entry"
 			key="add_inspector_entry" />
-		<Localized id="119" lang="French" value="add_inspector_entry"
+		<Localized id="118" lang="French" value="add_inspector_entry"
 			key="add_inspector_entry" />
-		<Localized id="120" lang="English" value="New technology role"
+		<Localized id="119" lang="English" value="New technology role"
 			key="new_technology_role" />
-		<Localized id="121" lang="Dutch" value="New technology role"
+		<Localized id="120" lang="Dutch" value="New technology role"
 			key="new_technology_role" />
-		<Localized id="122" lang="French" value="new_technology_role"
+		<Localized id="121" lang="French" value="new_technology_role"
 			key="new_technology_role" />
-		<Localized id="123" lang="English" value="New flexo concept instance role"
+		<Localized id="122" lang="English" value="New flexo concept instance role"
 			key="new_flexo_concept_instance_role" />
-		<Localized id="124" lang="Dutch" value="New flexo concept instance role"
+		<Localized id="123" lang="Dutch" value="New flexo concept instance role"
 			key="new_flexo_concept_instance_role" />
-		<Localized id="125" lang="French" value="new_flexo_concept_instance_role"
+		<Localized id="124" lang="French" value="new_flexo_concept_instance_role"
 			key="new_flexo_concept_instance_role" />
-		<Localized id="126" lang="English" value="New primitive role"
+		<Localized id="125" lang="English" value="New primitive role"
 			key="new_primitive_role" />
-		<Localized id="127" lang="Dutch" value="New primitive role"
+		<Localized id="126" lang="Dutch" value="New primitive role"
 			key="new_primitive_role" />
-		<Localized id="128" lang="French" value="new_primitive_role"
+		<Localized id="127" lang="French" value="new_primitive_role"
 			key="new_primitive_role" />
-		<Localized id="129" lang="English" value="New abstract property"
+		<Localized id="128" lang="English" value="New abstract property"
 			key="new_abstract_property" />
-		<Localized id="130" lang="Dutch" value="New abstract property"
+		<Localized id="129" lang="Dutch" value="New abstract property"
 			key="new_abstract_property" />
-		<Localized id="131" lang="French" value="new_abstract_property"
+		<Localized id="130" lang="French" value="new_abstract_property"
 			key="new_abstract_property" />
-		<Localized id="132" lang="English" value="New expression property"
+		<Localized id="131" lang="English" value="New expression property"
 			key="new_expression_property" />
-		<Localized id="133" lang="Dutch" value="New expression property"
+		<Localized id="132" lang="Dutch" value="New expression property"
 			key="new_expression_property" />
-		<Localized id="134" lang="French" value="new_expression_property"
+		<Localized id="133" lang="French" value="new_expression_property"
 			key="new_expression_property" />
-		<Localized id="135" lang="English" value="New get set property"
+		<Localized id="134" lang="English" value="New get set property"
 			key="new_get_set_property" />
-		<Localized id="136" lang="Dutch" value="New get set property"
+		<Localized id="135" lang="Dutch" value="New get set property"
 			key="new_get_set_property" />
-		<Localized id="137" lang="French" value="new_get_set_property"
+		<Localized id="136" lang="French" value="new_get_set_property"
 			key="new_get_set_property" />
-		<Localized id="138" lang="English" value="Delete" key="delete" />
-		<Localized id="139" lang="Dutch" value="Delete" key="delete" />
-		<Localized id="140" lang="French" value="delete" key="delete" />
-		<Localized id="141" lang="English" value="New behaviour"
+		<Localized id="137" lang="English" value="Delete" key="delete" />
+		<Localized id="138" lang="Dutch" value="Delete" key="delete" />
+		<Localized id="139" lang="French" value="delete" key="delete" />
+		<Localized id="140" lang="English" value="New behaviour"
 			key="new_behaviour" />
-		<Localized id="142" lang="Dutch" value="New behaviour" key="new_behaviour" />
-		<Localized id="143" lang="French" value="new_behaviour" key="new_behaviour" />
-		<Localized id="144" lang="English" value="Add flexo concept"
+		<Localized id="141" lang="Dutch" value="New behaviour" key="new_behaviour" />
+		<Localized id="142" lang="French" value="new_behaviour" key="new_behaviour" />
+		<Localized id="143" lang="English" value="Add flexo concept"
 			key="add_flexo_concept" />
-		<Localized id="145" lang="Dutch" value="Add flexo concept"
+		<Localized id="144" lang="Dutch" value="Add flexo concept"
 			key="add_flexo_concept" />
-		<Localized id="146" lang="French" value="add_flexo_concept"
+		<Localized id="145" lang="French" value="add_flexo_concept"
 			key="add_flexo_concept" />
-		<Localized id="147" lang="English" value="Label" key="label" />
-		<Localized id="148" lang="Dutch" value="Label" key="label" />
-		<Localized id="149" lang="French" value="label" key="label" />
-		<Localized id="150" lang="English"
+		<Localized id="146" lang="English" value="Label" key="label" />
+		<Localized id="147" lang="Dutch" value="Label" key="label" />
+		<Localized id="148" lang="French" value="label" key="label" />
+		<Localized id="149" lang="English"
 			value="&lt;html&gt;&lt;a href=&quot;&quot;&gt;Show errors/warnings&lt;/a&gt;&lt;/html&gt;"
 			key="&lt;html&gt;&lt;a href=&quot;&quot;&gt;show_errors_warnings&lt;/a&gt;&lt;/html&gt;" />
-		<Localized id="151" lang="Dutch"
+		<Localized id="150" lang="Dutch"
 			value="&lt;html&gt;&lt;a href=&quot;&quot;&gt;Voir les erreurs&lt;/a&gt;&lt;/html&gt;"
 			key="&lt;html&gt;&lt;a href=&quot;&quot;&gt;show_errors_warnings&lt;/a&gt;&lt;/html&gt;" />
-		<Localized id="152" lang="French"
+		<Localized id="151" lang="French"
 			value="&lt;html&gt;&lt;a href=&quot;&quot;&gt;Show errors/warnings&lt;/a&gt;&lt;/html&gt;"
 			key="&lt;html&gt;&lt;a href=&quot;&quot;&gt;show_errors_warnings&lt;/a&gt;&lt;/html&gt;" />
-		<Localized id="153" lang="English"
+		<Localized id="152" lang="English"
 			value="&lt;html&gt;&lt;a href=&quot;&quot;&gt;Hide errors/warnings&lt;/a&gt;&lt;/html&gt;"
 			key="&lt;html&gt;&lt;a href=&quot;&quot;&gt;hide_errors_warnings&lt;/a&gt;&lt;/html&gt;" />
-		<Localized id="154" lang="Dutch"
+		<Localized id="153" lang="Dutch"
 			value="&lt;html&gt;&lt;a href=&quot;&quot;&gt;Hide errors/warnings&lt;/a&gt;&lt;/html&gt;"
 			key="&lt;html&gt;&lt;a href=&quot;&quot;&gt;hide_errors_warnings&lt;/a&gt;&lt;/html&gt;" />
-		<Localized id="155" lang="French"
+		<Localized id="154" lang="French"
 			value="&lt;html&gt;&lt;a href=&quot;&quot;&gt;Cacher les erreurs&lt;/a&gt;&lt;/html&gt;"
 			key="&lt;html&gt;&lt;a href=&quot;&quot;&gt;hide_errors_warnings&lt;/a&gt;&lt;/html&gt;" />
-		<Localized id="156" lang="English"
+		<Localized id="155" lang="English"
 			value="&lt;html&gt;&lt;a href=&quot;&quot;&gt;Revalidate&lt;/a&gt;&lt;/html&gt;"
 			key="&lt;html&gt;&lt;a href=&quot;&quot;&gt;revalidate&lt;/a&gt;&lt;/html&gt;" />
-		<Localized id="157" lang="Dutch"
+		<Localized id="156" lang="Dutch"
 			value="&lt;html&gt;&lt;a href=&quot;&quot;&gt;Revalidate&lt;/a&gt;&lt;/html&gt;"
 			key="&lt;html&gt;&lt;a href=&quot;&quot;&gt;revalidate&lt;/a&gt;&lt;/html&gt;" />
-		<Localized id="158" lang="French"
+		<Localized id="157" lang="French"
 			value="&lt;html&gt;&lt;a href=&quot;&quot;&gt;Revalider&lt;/a&gt;&lt;/html&gt;"
 			key="&lt;html&gt;&lt;a href=&quot;&quot;&gt;revalidate&lt;/a&gt;&lt;/html&gt;" />
-		<Localized id="159" lang="English" value="Icon" key="icon" />
-		<Localized id="160" lang="Dutch" value="Icon" key="icon" />
-		<Localized id="161" lang="French" value="icon" key="icon" />
-		<Localized id="162" lang="English" value="Errors/warnings"
+		<Localized id="158" lang="English" value="Icon" key="icon" />
+		<Localized id="159" lang="Dutch" value="Icon" key="icon" />
+		<Localized id="160" lang="French" value="icon" key="icon" />
+		<Localized id="161" lang="English" value="Errors/warnings"
 			key="errors/warnings" />
-		<Localized id="163" lang="Dutch" value="Errors/warnings"
+		<Localized id="162" lang="Dutch" value="Errors/warnings"
 			key="errors/warnings" />
-		<Localized id="164" lang="French" value="errors/warnings"
+		<Localized id="163" lang="French" value="errors/warnings"
 			key="errors/warnings" />
 	</LocalizedDictionary>
+	<FIBVariable id="164" type="org.openflexo.foundation.fml.VirtualModel"
+		name="data" />
 </Panel>
