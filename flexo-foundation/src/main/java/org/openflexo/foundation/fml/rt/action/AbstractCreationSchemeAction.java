@@ -143,9 +143,10 @@ public class AbstractCreationSchemeAction<A extends AbstractCreationSchemeAction
 			return false;
 		}
 
-		if (getFlexoConceptInstance() == null) {
+		if (getVirtualModelInstance() == null) {
 			return false;
 		}
+
 		return true;
 	}
 
