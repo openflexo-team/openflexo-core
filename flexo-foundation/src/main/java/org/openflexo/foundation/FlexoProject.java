@@ -659,12 +659,12 @@ public class FlexoProject extends FileSystemBasedResourceCenter implements Valid
 	public final ProjectWrapper<?> asNature(String projectNatureClassName) {
 		if (!closed) {
 			ProjectNature<?, ?> projectNature = getServiceManager().getProjectNatureService().getProjectNature(projectNatureClassName);
-			if (projectNature != null) {
+			if (projectNature != null && hasNature(projectNature)) {
 				return projectNature.getProjectWrapper(this);
 			}
 		}
 
-		System.out.println("Could not lookup nature " + projectNatureClassName);
+		// System.out.println("Could not lookup nature " + projectNatureClassName);
 		return null;
 	}
 
