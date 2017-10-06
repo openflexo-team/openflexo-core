@@ -604,7 +604,7 @@ public abstract class FIBFlexoObjectSelector<T extends FlexoObject> extends Text
 	}
 
 	public static class SelectorFIBController extends FlexoFIBController {
-		private FIBFlexoObjectSelector<RepositoryFolder<?,?>> selector;
+		private FIBFlexoObjectSelector selector;
 
 		public SelectorFIBController(FIBComponent component, GinaViewFactory<?> viewFactory) {
 			super(component, viewFactory);
