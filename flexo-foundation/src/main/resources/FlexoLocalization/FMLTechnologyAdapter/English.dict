@@ -122,6 +122,7 @@ matching_set=Matching set
 metamodel=Metamodel
 model_slot=Model Slot
 model_slot_class=Model slot class
+model_slot_nature=Model slot nature
 model_version=Model version
 multiline=Multiline
 name=Name
