@@ -915,10 +915,14 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 	public void ensureAllRepositoriesAreCreated(FlexoResourceCenter<?> rc) {
 	}
 
-	// Hacking area
-	// I'm not proud of that, this should be handled from a more elegant way
-	// TODO: find a better solution
-	@Deprecated
+	/**
+	 * Return type of an instance of supplied {@link VirtualModel} asserting this {@link VirtualModel} contractualize supplied
+	 * {@link InferedFMLRTModelSlot} class
+	 * 
+	 * @param vm
+	 * @param modelSlotClass
+	 * @return
+	 */
 	public VirtualModelInstanceType getInferedVirtualModelInstanceType(VirtualModel vm,
 			Class<? extends InferedFMLRTModelSlot<?, ?>> modelSlotClass) {
 		return null;

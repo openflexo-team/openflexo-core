@@ -41,6 +41,16 @@
 				<AddAction method="controller.addToUseDeclarations(data)"
 					name="addToUseDeclarations" />
 			</Table>
+			<Label label="model_slot_nature" index="8" visible="data.useDeclarations.size &gt; 0"
+				constraints="twocols(anchor=east;expandHorizontally=false;expandVertically=false;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=10;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+				localize="true" />
+			<DropDown index="9" data="data.modelSlotNatureClass"
+				constraints="twocols(anchor=west;expandHorizontally=false;expandVertically=false;fill=none;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=11;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+				visible="data.useDeclarations.size > 0" name="ModelSlotNatureClassDropDown" format="object.simpleName"
+				list="data.availableModelSlotNatureClasses"
+				iteratorClassName="java.lang.Class">
+			</DropDown>
+			
 		</Tab>
 		<Tab title="Advanced" layout="twocols" titleFont="SansSerif,0,11"
 			darkLevel="0" index="2" font="SansSerif,0,11" useScrollBar="true"

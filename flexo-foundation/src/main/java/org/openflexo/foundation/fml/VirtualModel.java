@@ -58,6 +58,7 @@ import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.fml.rm.VirtualModelResourceFactory;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
+import org.openflexo.foundation.fml.rt.InferedFMLRTModelSlot;
 import org.openflexo.foundation.fml.rt.editionaction.DeleteFlexoConceptInstanceParameter;
 import org.openflexo.foundation.resource.CannotRenameException;
 import org.openflexo.foundation.resource.FlexoResource;
@@ -67,6 +68,7 @@ import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.technologyadapter.FlexoMetaModel;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.foundation.technologyadapter.TypeAwareModelSlot;
 import org.openflexo.foundation.technologyadapter.UseModelSlotDeclaration;
@@ -133,6 +135,18 @@ public interface VirtualModel extends FlexoConcept, VirtualModelObject, FlexoMet
 	String LOCALIZED_DICTIONARY_KEY = "localizedDictionary";
 	@PropertyIdentifier(type = VirtualModel.class, cardinality = Cardinality.LIST)
 	String VIRTUAL_MODELS_KEY = "virtualModels";
+
+	@PropertyIdentifier(type = Class.class)
+	public static final String MODEL_SLOT_NATURE_CLASS_KEY = "modelSlotNatureClass";
+
+	@Getter(value = MODEL_SLOT_NATURE_CLASS_KEY)
+	@XMLAttribute
+	public Class<? extends InferedFMLRTModelSlot<?, ?>> getModelSlotNatureClass();
+
+	@Setter(MODEL_SLOT_NATURE_CLASS_KEY)
+	public void setModelSlotNatureClass(Class<? extends InferedFMLRTModelSlot<?, ?>> modelSlotNatureClass);
+
+	public List<Class<? extends InferedFMLRTModelSlot<?, ?>>> getAvailableModelSlotNatureClasses();
 
 	@Override
 	public FMLModelFactory getFMLModelFactory();
@@ -431,47 +445,55 @@ public interface VirtualModel extends FlexoConcept, VirtualModelObject, FlexoMet
 		public void addToUseDeclarations(UseModelSlotDeclaration useDecl) {
 			performSuperAdder(USE_DECLARATIONS_KEY, useDecl);
 			vmInstanceType = null;
+			availableModelSlotNatureClasses = null;
+			getPropertyChangeSupport().firePropertyChange("availableModelSlotNatureClasses", null, getAvailableModelSlotNatureClasses());
 		}
 
 		@Override
 		public void removeFromUseDeclarations(UseModelSlotDeclaration useDecl) {
 			performSuperRemover(USE_DECLARATIONS_KEY, useDecl);
 			vmInstanceType = null;
+			availableModelSlotNatureClasses = null;
+			getPropertyChangeSupport().firePropertyChange("availableModelSlotNatureClasses", null, getAvailableModelSlotNatureClasses());
+		}
+
+		@Override
+		public void setModelSlotNatureClass(Class<? extends InferedFMLRTModelSlot<?, ?>> modelSlotNatureClass) {
+			performSuperSetter(MODEL_SLOT_NATURE_CLASS_KEY, modelSlotNatureClass);
+			vmInstanceType = null;
+		}
+
+		private List<Class<? extends InferedFMLRTModelSlot<?, ?>>> availableModelSlotNatureClasses = null;
+
+		@SuppressWarnings("unchecked")
+		@Override
+		public List<Class<? extends InferedFMLRTModelSlot<?, ?>>> getAvailableModelSlotNatureClasses() {
+			if (availableModelSlotNatureClasses == null) {
+				availableModelSlotNatureClasses = new ArrayList<>();
+				for (UseModelSlotDeclaration useMSDecl : getUseDeclarations()) {
+					if (InferedFMLRTModelSlot.class.isAssignableFrom(useMSDecl.getModelSlotClass())) {
+						availableModelSlotNatureClasses.add((Class<? extends InferedFMLRTModelSlot<?, ?>>) useMSDecl.getModelSlotClass());
+					}
+				}
+			}
+			return availableModelSlotNatureClasses;
 		}
 
 		@Override
 		public VirtualModelInstanceType getInstanceType() {
 			if (vmInstanceType == null) {
-				// Hacking area
-				// I'm not proud of that, this should be handled from a more elegant way
-				// TODO: find a better solution
-				if (getServiceManager() != null) {
-					vmInstanceType = makeVirtualModelInstanceType();
+				if (getModelSlotNatureClass() != null && getServiceManager() != null) {
+					TechnologyAdapterService taService = getServiceManager().getTechnologyAdapterService();
+					TechnologyAdapter ta = taService.getTechnologyAdapterForModelSlot(getModelSlotNatureClass());
+					if (ta != null) {
+						vmInstanceType = ta.getInferedVirtualModelInstanceType(this, getModelSlotNatureClass());
+					}
 				}
 				else {
 					return defaultVMInstanceType;
 				}
 			}
 			return vmInstanceType;
-		}
-
-		// Hacking area
-		// I'm not proud of that, this should be handled from a more elegant way
-		// TODO: find a better solution
-		@Deprecated
-		private VirtualModelInstanceType makeVirtualModelInstanceType() {
-			VirtualModelInstanceType returned = null;
-			for (UseModelSlotDeclaration useMS : getUseDeclarations()) {
-				returned = useMS.getInferedVirtualModelInstanceType(this, getServiceManager());
-				if (returned != null) {
-					break;
-				}
-			}
-			if (returned == null) {
-				// No infered type found, use default
-				returned = defaultVMInstanceType;
-			}
-			return returned;
 		}
 
 		@Override

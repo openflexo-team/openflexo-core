@@ -38,7 +38,6 @@
 
 package org.openflexo.foundation.technologyadapter;
 
-import org.openflexo.connie.type.PrimitiveType;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.VirtualModel;
@@ -67,7 +66,7 @@ public interface UseModelSlotDeclaration extends FlexoObject {
 
 	@PropertyIdentifier(type = VirtualModel.class)
 	public static final String VIRTUAL_MODEL_KEY = "virtualModel";
-	@PropertyIdentifier(type = PrimitiveType.class)
+	@PropertyIdentifier(type = Class.class)
 	public static final String MODEL_SLOT_CLASS_KEY = "modelSlotClass";
 
 	@Getter(value = MODEL_SLOT_CLASS_KEY)
