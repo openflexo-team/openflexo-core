@@ -289,11 +289,13 @@ public class FlexoFIBController extends FIBController implements GraphicalFlexoO
 			TechnologyAdapter ta = ((TechnologyObject<?>) object).getTechnologyAdapter();
 			TechnologyAdapterController<?> tac = getServiceManager().getTechnologyAdapterControllerService()
 					.getTechnologyAdapterController(ta);
-			if (object instanceof ResourceData) {
-				return tac.getValidationReport((ResourceData<?>) object);
-			}
-			if (object instanceof InnerResourceData) {
-				return tac.getValidationReport(((InnerResourceData<?>) object).getResourceData());
+			if (tac != null) {
+				if (object instanceof ResourceData) {
+					return tac.getValidationReport((ResourceData<?>) object);
+				}
+				if (object instanceof InnerResourceData) {
+					return tac.getValidationReport(((InnerResourceData<?>) object).getResourceData());
+				}
 			}
 		}
 		return null;
