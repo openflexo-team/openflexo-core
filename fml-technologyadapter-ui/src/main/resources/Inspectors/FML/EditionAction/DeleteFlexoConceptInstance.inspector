@@ -21,8 +21,6 @@
 				valueValidator="" staticList="" list="data.flexoConceptType.deletionSchemes"
 				array="" showIcon="true" iteratorClassName="org.openflexo.foundation.fml.DeletionScheme"
 				autoSelectFirstRow="true">
-				<Dependancy componentName="DeleteFlexoConceptActionPanel" />
-				<Dependancy componentName="DeleteFlexoConceptPatternRoleDropDown" />
 			</DropDown>
 			<Label label="parameters" index="14" data=""
 				constraints="twocols(expandHorizontally=true;expandVertically=false;index=12;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)"
