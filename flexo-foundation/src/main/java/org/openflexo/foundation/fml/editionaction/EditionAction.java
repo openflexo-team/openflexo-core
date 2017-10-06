@@ -66,6 +66,7 @@ import org.openflexo.foundation.fml.rt.editionaction.FireEventAction;
 import org.openflexo.foundation.fml.rt.editionaction.InitiateMatching;
 import org.openflexo.foundation.fml.rt.editionaction.MatchFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.SelectFlexoConceptInstance;
+import org.openflexo.foundation.fml.rt.editionaction.SelectVirtualModelInstance;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.Import;
@@ -83,13 +84,15 @@ import org.openflexo.toolbox.StringUtils;
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(EditionAction.EditionActionImpl.class)
+// Following imports are required for those actions be available in a VirtualModel even if no model slot is declared
 @Imports({ @Import(AddToListAction.class), @Import(AddFlexoConceptInstance.class), @Import(AddVirtualModelInstance.class),
 		@Import(AddClassInstance.class), @Import(DeclarationAction.class), @Import(AssignationAction.class), @Import(ReturnStatement.class),
 		@Import(ExpressionAction.class), @Import(LogAction.class), @Import(SelectFlexoConceptInstance.class),
-		@Import(InitiateMatching.class), @Import(FinalizeMatching.class), @Import(MatchFlexoConceptInstance.class),
-		@Import(RemoveFromListAction.class), @Import(DeleteAction.class), @Import(ConditionalAction.class), @Import(IterationAction.class),
-		@Import(WhileAction.class), @Import(IncrementalIterationAction.class), @Import(FireEventAction.class),
-		@Import(NotifyPropertyChangedAction.class), @Import(AddClassInstance.class) })
+		@Import(SelectVirtualModelInstance.class), @Import(InitiateMatching.class), @Import(FinalizeMatching.class),
+		@Import(MatchFlexoConceptInstance.class), @Import(RemoveFromListAction.class), @Import(DeleteAction.class),
+		@Import(ConditionalAction.class), @Import(IterationAction.class), @Import(WhileAction.class),
+		@Import(IncrementalIterationAction.class), @Import(FireEventAction.class), @Import(NotifyPropertyChangedAction.class),
+		@Import(AddClassInstance.class) })
 public abstract interface EditionAction extends FMLControlGraph {
 
 	/**
