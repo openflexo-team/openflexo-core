@@ -585,8 +585,10 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 				@Override
 				public void run() {
 					if (!isDeleted()) {
-						getPropertyChangeSupport().firePropertyChange("allRootFlexoConceptInstances", lastNotifiedRootFlexoConceptInstances,
-								getAllRootFlexoConceptInstances());
+						getPropertyChangeSupport().firePropertyChange(
+								"allRootFlexoConceptInstances", (lastNotifiedRootFlexoConceptInstances != null
+										? new ArrayList<>(lastNotifiedRootFlexoConceptInstances) : null),
+								new ArrayList<>(getAllRootFlexoConceptInstances()));
 						lastNotifiedRootFlexoConceptInstances = new ArrayList<>(getAllRootFlexoConceptInstances());
 						willNotifyAllRootFlexoConceptInstancesMayHaveChanged = false;
 					}
