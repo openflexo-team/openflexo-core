@@ -180,13 +180,24 @@ public class FMLRTVirtualModelInstanceResourceFactory extends
 	 * @throws ModelDefinitionException
 	 * @throws IOException
 	 */
-	public <I> FMLRTVirtualModelInstanceResource retrieveFMLRTVirtualModelInstanceResource(I serializationArtefact,
-			FlexoResourceCenter<I> resourceCenter, TechnologyContextManager<FMLRTTechnologyAdapter> technologyContextManager,
+	public <I> FMLRTVirtualModelInstanceResource retrieveContainedFMLRTVirtualModelInstanceResource(I serializationArtefact,
+			TechnologyContextManager<FMLRTTechnologyAdapter> technologyContextManager,
 			AbstractVirtualModelInstanceResource<?, ?> containerResource) throws ModelDefinitionException, IOException {
-		FMLRTVirtualModelInstanceResource returned = retrieveResource(serializationArtefact, resourceCenter, technologyContextManager);
+
+		FlexoResourceCenter<I> resourceCenter = (FlexoResourceCenter<I>) containerResource.getResourceCenter();
+		String name = resourceCenter.retrieveName(serializationArtefact);
+
+		FMLRTVirtualModelInstanceResource returned = initResourceForRetrieving(serializationArtefact, resourceCenter,
+				technologyContextManager);
+		returned.setURI(containerResource.getURI() + "/" + name);
+
 		containerResource.addToContents(returned);
 		containerResource.notifyContentsAdded(returned);
+
+		registerResource(returned, resourceCenter, technologyContextManager);
+
 		return returned;
+
 	}
 
 	/**
@@ -339,7 +350,7 @@ public class FMLRTVirtualModelInstanceResourceFactory extends
 			if (isValidArtefact(child, resourceCenter)) {
 				try {
 					// Unused FMLRTVirtualModelInstanceResource virtualModelInstanceResource =
-					retrieveFMLRTVirtualModelInstanceResource(child, resourceCenter, technologyContextManager, containerResource);
+					retrieveContainedFMLRTVirtualModelInstanceResource(child, technologyContextManager, containerResource);
 				} catch (ModelDefinitionException e) {
 					e.printStackTrace();
 				} catch (IOException e) {

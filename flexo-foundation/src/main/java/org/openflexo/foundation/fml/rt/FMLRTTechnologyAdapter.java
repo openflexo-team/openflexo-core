@@ -123,6 +123,7 @@ public class FMLRTTechnologyAdapter extends TechnologyAdapter {
 		return (FMLRTTechnologyContextManager) super.getTechnologyContextManager();
 	}
 
+	@Override
 	public FlexoServiceManager getServiceManager() {
 		return this.getTechnologyAdapterService().getServiceManager();
 	}
@@ -223,11 +224,14 @@ public class FMLRTTechnologyAdapter extends TechnologyAdapter {
 		if (resourceCenter.isIgnorable(contents, this)) {
 			return true;
 		}
-		/*I parentFolder = resourceCenter.getContainer(contents);
-		if (parentFolder != null && resourceCenter.retrieveName(parentFolder).endsWith(FMLRTVirtualModelInstanceResourceFactory.VIEW_SUFFIX)) {
-			// ignore .view subcontents
-			return true;
-		}*/
+
+		// This allows to ignore all contained VirtualModel, that will be explored from their container resource
+		if (resourceCenter.isDirectory(contents)) {
+			if (isContainedInDirectoryWithSuffix(resourceCenter, contents, FMLRTVirtualModelInstanceResourceFactory.FML_RT_SUFFIX)) {
+				return true;
+			}
+		}
+
 		return false;
 	}
 
