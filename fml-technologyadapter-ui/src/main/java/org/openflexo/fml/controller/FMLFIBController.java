@@ -844,7 +844,7 @@ public class FMLFIBController extends FlexoFIBController {
 	}
 
 	public void setShowErrorsWarnings(boolean showErrorsWarnings) {
-		System.out.println("setShowErrorsWarnings with " + showErrorsWarnings);
+		// System.out.println("setShowErrorsWarnings with " + showErrorsWarnings);
 		if (this.showErrorsWarnings != showErrorsWarnings) {
 			this.showErrorsWarnings = showErrorsWarnings;
 			getPropertyChangeSupport().firePropertyChange("showErrorsWarnings", !showErrorsWarnings, showErrorsWarnings);
@@ -852,20 +852,24 @@ public class FMLFIBController extends FlexoFIBController {
 	}
 
 	public void showIssue(ValidationIssue<?, ?> issue) {
-		System.out.println("Montrons l'issue " + issue + " pour " + issue.getValidable());
 		Validable objectToSelect = issue.getValidable();
-		System.out.println("On selectionne " + objectToSelect);
 		getFlexoController().selectAndFocusObject((FlexoObject) objectToSelect);
 	}
 
 	public void fixIssue(ValidationIssue<?, ?> issue) {
-		System.out.println("Resolvons l'issue " + issue);
 		if (issue instanceof ProblemIssue) {
+			VirtualModel vmToRevalidate = null;
+			if (issue.getValidationReport().getRootObject() instanceof VirtualModel) {
+				vmToRevalidate = (VirtualModel) issue.getValidationReport().getRootObject();
+			}
 			IssueFixing fixing = new IssueFixing((ProblemIssue<?, ?>) issue, getFlexoController());
 			FixIssueDialog dialog = new FixIssueDialog(fixing, getFlexoController());
 			dialog.showDialog();
 			if (dialog.getStatus() == Status.VALIDATED) {
 				fixing.fix();
+				if (vmToRevalidate != null) {
+					revalidate(vmToRevalidate);
+				}
 			}
 			else if (dialog.getStatus() == Status.NO) {
 				fixing.ignore();
