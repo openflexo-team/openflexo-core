@@ -90,7 +90,7 @@ import org.openflexo.toolbox.StringUtils;
  *
  */
 @ModelEntity
-@ImplementationClass(FMLLocalizedDictionary.ViewPointLocalizedDictionaryImpl.class)
+@ImplementationClass(FMLLocalizedDictionary.FMLLocalizedDictionaryImpl.class)
 @XMLElement(xmlTag = "FMLLocalizedDictionary", deprecatedXMLTags = "FMLLocalizedDictionary")
 public interface FMLLocalizedDictionary extends FMLObject, org.openflexo.localization.LocalizedDelegate {
 
@@ -99,19 +99,20 @@ public interface FMLLocalizedDictionary extends FMLObject, org.openflexo.localiz
 	@PropertyIdentifier(type = List.class)
 	public static final String LOCALIZED_ENTRIES_KEY = "localizedEntries";
 
-	@Getter(value = LOCALIZED_ENTRIES_KEY, cardinality = Cardinality.LIST, inverse = ViewPointLocalizedEntry.LOCALIZED_DICTIONARY_KEY)
+	@Getter(value = LOCALIZED_ENTRIES_KEY, cardinality = Cardinality.LIST, inverse = FMLLocalizedEntry.LOCALIZED_DICTIONARY_KEY)
 	@Embedded
 	@CloningStrategy(StrategyType.CLONE)
-	public List<ViewPointLocalizedEntry> getLocalizedEntries();
+	@XMLElement
+	public List<FMLLocalizedEntry> getLocalizedEntries();
 
 	@Setter(LOCALIZED_ENTRIES_KEY)
-	public void setLocalizedEntries(List<ViewPointLocalizedEntry> entries);
+	public void setLocalizedEntries(List<FMLLocalizedEntry> entries);
 
 	@Adder(LOCALIZED_ENTRIES_KEY)
-	public void addToLocalizedEntries(ViewPointLocalizedEntry aEntrie);
+	public void addToLocalizedEntries(FMLLocalizedEntry aEntrie);
 
 	@Remover(LOCALIZED_ENTRIES_KEY)
-	public void removeFromLocalizedEntries(ViewPointLocalizedEntry aEntrie);
+	public void removeFromLocalizedEntries(FMLLocalizedEntry aEntrie);
 
 	@Getter(value = OWNER_KEY, inverse = VirtualModel.LOCALIZED_DICTIONARY_KEY)
 	public VirtualModel getOwner();
@@ -131,7 +132,7 @@ public interface FMLLocalizedDictionary extends FMLObject, org.openflexo.localiz
 
 	public void deleteEntry(DynamicEntry entry);
 
-	public static abstract class ViewPointLocalizedDictionaryImpl extends FMLObjectImpl implements FMLLocalizedDictionary {
+	public static abstract class FMLLocalizedDictionaryImpl extends FMLObjectImpl implements FMLLocalizedDictionary {
 
 		private static final Logger logger = Logger.getLogger(FMLLocalizedDictionary.class.getPackage().getName());
 
@@ -145,7 +146,7 @@ public interface FMLLocalizedDictionary extends FMLObject, org.openflexo.localiz
 		private final WeakHashMap<TitledBorder, String> _storedLocalizedForBorders = new WeakHashMap<>();
 		private final WeakHashMap<TableColumn, String> _storedLocalizedForTableColumn = new WeakHashMap<>();
 
-		public ViewPointLocalizedDictionaryImpl() {
+		public FMLLocalizedDictionaryImpl() {
 			super();
 			_values = new HashMap<>();
 			entriesMap = new HashMap<>();
@@ -163,7 +164,7 @@ public interface FMLLocalizedDictionary extends FMLObject, org.openflexo.localiz
 		}
 
 		@Override
-		public void addToLocalizedEntries(ViewPointLocalizedEntry entry) {
+		public void addToLocalizedEntries(FMLLocalizedEntry entry) {
 			performSuperAdder(LOCALIZED_ENTRIES_KEY, entry);
 			// entry.setLocalizedDictionary(this);
 			// _entries.add(entry);
@@ -178,8 +179,8 @@ public interface FMLLocalizedDictionary extends FMLObject, org.openflexo.localiz
 			getDictForLang(lang).put(entry.getKey(), entry.getValue());
 		}
 
-		private ViewPointLocalizedEntry getLocalizedEntry(Language language, String key) {
-			for (ViewPointLocalizedEntry entry : getLocalizedEntries()) {
+		private FMLLocalizedEntry getLocalizedEntry(Language language, String key) {
+			for (FMLLocalizedEntry entry : getLocalizedEntries()) {
 				if (Language.retrieveLanguage(entry.getLanguage()) == language && key.equals(entry.getKey())) {
 					return entry;
 				}
@@ -258,12 +259,12 @@ public interface FMLLocalizedDictionary extends FMLObject, org.openflexo.localiz
 						return getDictForLang(language).get(key);
 					}
 					else {
-						return getParent().localizedForKeyAndLanguage(key, language, true);
+						return getParent().localizedForKeyAndLanguage(key, language, createsNewEntryInFirstEditableParent);
 					}
 				}
 				else {
 					// parent is null
-					if (handleNewEntry(key, language)) {
+					if (createsNewEntryInFirstEditableParent && handleNewEntry(key, language)) {
 						addEntry(key);
 						return getDictForLang(language).get(key);
 					}
@@ -403,9 +404,9 @@ public interface FMLLocalizedDictionary extends FMLObject, org.openflexo.localiz
 
 		public void setLocalizedForKeyAndLanguage(String key, String value, Language language) {
 			getDictForLang(language).put(key, value);
-			ViewPointLocalizedEntry entry = getLocalizedEntry(language, key);
+			FMLLocalizedEntry entry = getLocalizedEntry(language, key);
 			if (entry == null) {
-				ViewPointLocalizedEntry newEntry = getOwner().getFMLModelFactory().newInstance(ViewPointLocalizedEntry.class);
+				FMLLocalizedEntry newEntry = getOwner().getFMLModelFactory().newInstance(FMLLocalizedEntry.class);
 				newEntry.setLanguage(language.getName());
 				newEntry.setKey(key);
 				newEntry.setValue(value);
@@ -416,7 +417,7 @@ public interface FMLLocalizedDictionary extends FMLObject, org.openflexo.localiz
 			}
 		}
 
-		private boolean handleNewEntry = false;
+		private boolean handleNewEntry = true;
 
 		@Override
 		public boolean handleNewEntry(String key, Language language) {
@@ -485,7 +486,7 @@ public interface FMLLocalizedDictionary extends FMLObject, org.openflexo.localiz
 			}
 			else {
 				for (Language l : FlexoLocalization.getAvailableLanguages()) {
-					ViewPointLocalizedEntry newEntry = getOwner().getFMLModelFactory().newInstance(ViewPointLocalizedEntry.class);
+					FMLLocalizedEntry newEntry = getOwner().getFMLModelFactory().newInstance(FMLLocalizedEntry.class);
 					newEntry.setLanguage(l.getName());
 					newEntry.setKey(aKey);
 					newEntry.setValue(aKey);
@@ -551,7 +552,7 @@ public interface FMLLocalizedDictionary extends FMLObject, org.openflexo.localiz
 			}
 			for (Language l : Language.availableValues()) {
 				_values.get(l).remove(entry.getKey());
-				ViewPointLocalizedEntry e = getLocalizedEntry(l, entry.getKey());
+				FMLLocalizedEntry e = getLocalizedEntry(l, entry.getKey());
 				if (e != null) {
 					removeFromLocalizedEntries(e);
 					// _entries.remove(e);
@@ -734,7 +735,7 @@ public interface FMLLocalizedDictionary extends FMLObject, org.openflexo.localiz
 					entries.remove(this);
 				}
 				for (Language l : Language.getAvailableLanguages()) {
-					ViewPointLocalizedEntry e = getLocalizedEntry(l, key);
+					FMLLocalizedEntry e = getLocalizedEntry(l, key);
 					if (e != null) {
 						System.out.println("Removing " + e.getValue() + " for key " + key + " language=" + l);
 						removeFromLocalizedEntries(e);
@@ -757,7 +758,7 @@ public interface FMLLocalizedDictionary extends FMLObject, org.openflexo.localiz
 					if (oldValue != null) {
 						_values.get(l).put(aNewKey, oldValue);
 					}
-					ViewPointLocalizedEntry e = getLocalizedEntry(l, oldKey);
+					FMLLocalizedEntry e = getLocalizedEntry(l, oldKey);
 					if (e != null) {
 						e.setKey(aNewKey);
 					}

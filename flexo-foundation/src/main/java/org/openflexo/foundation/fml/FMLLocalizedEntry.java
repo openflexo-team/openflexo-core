@@ -53,9 +53,9 @@ import org.openflexo.model.validation.ValidationRule;
 import org.openflexo.model.validation.ValidationWarning;
 
 @ModelEntity
-@ImplementationClass(ViewPointLocalizedEntry.LocalizedEntryImpl.class)
+@ImplementationClass(FMLLocalizedEntry.FMLLocalizedEntryImpl.class)
 @XMLElement(xmlTag = "Localized")
-public interface ViewPointLocalizedEntry extends FMLObject {
+public interface FMLLocalizedEntry extends FMLObject {
 
 	@PropertyIdentifier(type = FMLLocalizedDictionary.class)
 	public static final String LOCALIZED_DICTIONARY_KEY = "localizedDictionary";
@@ -81,6 +81,7 @@ public interface ViewPointLocalizedEntry extends FMLObject {
 	public void setLanguage(String language);
 
 	@Getter(value = VALUE_KEY)
+	@XMLAttribute
 	public String getValue();
 
 	@Setter(VALUE_KEY)
@@ -93,25 +94,13 @@ public interface ViewPointLocalizedEntry extends FMLObject {
 	@Setter(LOCALIZED_DICTIONARY_KEY)
 	public void setLocalizedDictionary(FMLLocalizedDictionary owner);
 
-	public static abstract class LocalizedEntryImpl extends FMLObjectImpl implements ViewPointLocalizedEntry {
+	public static abstract class FMLLocalizedEntryImpl extends FMLObjectImpl implements FMLLocalizedEntry {
 
 		private FMLLocalizedDictionary _dictionary;
 
 		private String key;
 		private String language;
 		private String value;
-
-		public LocalizedEntryImpl() {
-			super();
-		}
-
-		public LocalizedEntryImpl(FMLLocalizedDictionary localizedDictionary, String key, String language, String value) {
-			super();
-			setLocalizedDictionary(localizedDictionary);
-			this.key = key;
-			this.language = language;
-			this.value = value;
-		}
 
 		@Override
 		public void setLocalizedDictionary(FMLLocalizedDictionary dict) {
@@ -192,14 +181,13 @@ public interface ViewPointLocalizedEntry extends FMLObject {
 
 	@DefineValidationRule
 	public static class LocalizedEntryShouldNotBeRegisteredTwice
-			extends ValidationRule<LocalizedEntryShouldNotBeRegisteredTwice, ViewPointLocalizedEntry> {
+			extends ValidationRule<LocalizedEntryShouldNotBeRegisteredTwice, FMLLocalizedEntry> {
 		public LocalizedEntryShouldNotBeRegisteredTwice() {
-			super(ViewPointLocalizedEntry.class, "localized_entry_should_not_be_registered_twice");
+			super(FMLLocalizedEntry.class, "localized_entry_should_not_be_registered_twice");
 		}
 
 		@Override
-		public ValidationIssue<LocalizedEntryShouldNotBeRegisteredTwice, ViewPointLocalizedEntry> applyValidation(
-				ViewPointLocalizedEntry entry) {
+		public ValidationIssue<LocalizedEntryShouldNotBeRegisteredTwice, FMLLocalizedEntry> applyValidation(FMLLocalizedEntry entry) {
 
 			if (entry.getLocalizedDictionary() != null) {
 				if (entry.getLocalizedDictionary().getLocalizedEntries().indexOf(entry) != entry.getLocalizedDictionary()
@@ -211,12 +199,11 @@ public interface ViewPointLocalizedEntry extends FMLObject {
 			return null;
 		}
 
-		protected static class RemoveExtraReferences
-				extends FixProposal<LocalizedEntryShouldNotBeRegisteredTwice, ViewPointLocalizedEntry> {
+		protected static class RemoveExtraReferences extends FixProposal<LocalizedEntryShouldNotBeRegisteredTwice, FMLLocalizedEntry> {
 
-			private final ViewPointLocalizedEntry entry;
+			private final FMLLocalizedEntry entry;
 
-			public RemoveExtraReferences(ViewPointLocalizedEntry entry) {
+			public RemoveExtraReferences(FMLLocalizedEntry entry) {
 				super("remove_duplicated_references");
 				this.entry = entry;
 			}

@@ -201,6 +201,7 @@ public interface VirtualModel extends FlexoConcept, VirtualModelObject, FlexoMet
 
 	@Override
 	@Getter(value = LOCALIZED_DICTIONARY_KEY, inverse = FMLLocalizedDictionary.OWNER_KEY)
+	@XMLElement
 	FMLLocalizedDictionary getLocalizedDictionary();
 
 	@Setter(LOCALIZED_DICTIONARY_KEY)
