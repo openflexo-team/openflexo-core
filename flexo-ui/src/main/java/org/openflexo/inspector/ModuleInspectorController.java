@@ -99,7 +99,7 @@ import org.openflexo.view.controller.TechnologyAdapterController;
  */
 public class ModuleInspectorController extends Observable implements Observer {
 
-	private static final String CONTROLLER_EDITABLE_BINDING = "controller.flexoController.isEditable(data)";
+	// private static final String CONTROLLER_EDITABLE_BINDING = "controller.flexoController.isEditable(data)";
 
 	static final Logger logger = Logger.getLogger(ModuleInspectorController.class.getPackage().getName());
 
@@ -184,7 +184,7 @@ public class ModuleInspectorController extends Observable implements Observer {
 				// Dont do it anymore: perfs issues
 				// appendEditableCondition(inspector);
 				Progress.progress(FlexoLocalization.getMainLocalizer().localizedForKey("loaded_inspector") + " "
-						+ inspector.getDataClass().getSimpleName());
+						+ inspector.getInspectedClass().getSimpleName());
 			}
 		};
 		inspectorGroups.add(newInspectorGroup);
@@ -237,7 +237,7 @@ public class ModuleInspectorController extends Observable implements Observer {
 		}
 	}*/
 
-	private void appendEditableCondition(FIBComponent component) {
+	/*private void appendEditableCondition(FIBComponent component) {
 		if (component instanceof FIBWidget) {
 			FIBWidget widget = (FIBWidget) component;
 			DataBinding<Boolean> enable = widget.getEnable();
@@ -253,7 +253,7 @@ public class ModuleInspectorController extends Observable implements Observer {
 				appendEditableCondition(child);
 			}
 		}
-	}
+	}*/
 
 	private void appendVisibleFor(FIBComponent component) {
 		/*String visibleForParam = component.getParameter("visibleFor");
@@ -298,7 +298,7 @@ public class ModuleInspectorController extends Observable implements Observer {
 		for (InspectorGroup inspectorGroup : new ArrayList<>(inspectorGroups)) {
 			FIBInspector inspector = inspectorGroup.inspectorForClass(objectClass);
 			if (inspector != null) {
-				potentialInspectors.put(inspector.getDataClass(), inspector);
+				potentialInspectors.put(inspector.getInspectedClass(), inspector);
 			}
 		}
 
@@ -615,7 +615,9 @@ public class ModuleInspectorController extends Observable implements Observer {
 		inspector.addToVariables(dataVariable);
 		inspector.setName(flexoConcept.getName() + "Panel");
 
+		logger.info("Building inspector for " + flexoConcept);
 		appendInspectorEntries(flexoConcept, inspector);
+		logger.info("Built inspector for " + flexoConcept);
 		inspector.finalizeDeserialization();
 
 		return inspector;
@@ -672,11 +674,11 @@ public class ModuleInspectorController extends Observable implements Observer {
 		for (FlexoConcept parentEP : flexoConcept.getParentFlexoConcepts()) {
 			appendInspectorEntries(parentEP, newTab);
 		}
-		if (flexoConcept.getVirtualModel() == null) {
+		if (flexoConcept.getDeclaringVirtualModel() == null) {
 			logger.warning("Unexpected null virtual model for concept " + flexoConcept);
 			return;
 		}
-		FMLLocalizedDictionary localizedDictionary = flexoConcept.getVirtualModel().getLocalizedDictionary();
+		FMLLocalizedDictionary localizedDictionary = flexoConcept.getDeclaringVirtualModel().getLocalizedDictionary();
 		for (final InspectorEntry entry : flexoConcept.getInspector().getEntries()) {
 			FIBLabel label = getFactory().newFIBLabel();
 			String entryLabel = localizedDictionary.localizedForKeyAndLanguage(entry.getLabel(), FlexoLocalization.getCurrentLanguage());
@@ -684,7 +686,7 @@ public class ModuleInspectorController extends Observable implements Observer {
 				entryLabel = entry.getLabel();
 			}
 			label.setLabel(entryLabel);
-			newTab.addToSubComponents(label, new TwoColsLayoutConstraints(TwoColsLayoutLocation.left, false, false));
+			newTab.addToSubComponentsNoNotification(label, new TwoColsLayoutConstraints(TwoColsLayoutLocation.left, false, false));
 			FIBWidget widget = makeWidget(entry, newTab);
 			if (widget != null) {
 				widget.setBindingFactory(entry.getBindingFactory());
@@ -701,7 +703,9 @@ public class ModuleInspectorController extends Observable implements Observer {
 			System.out.println("reason=" + widget.getData().invalidBindingReason());*/
 		}
 
-		//System.out.println("Je retourne " + getFactory().stringRepresentation(newTab));
+		newTab.fireSubComponentsChanged();
+
+		// System.out.println("Je retourne " + getFactory().stringRepresentation(newTab));
 	}
 
 	/**
@@ -754,10 +758,11 @@ public class ModuleInspectorController extends Observable implements Observer {
 	 */
 	private FIBWidget makeWidget(final InspectorEntry entry, FIBPanel newTab) {
 		for (TechnologyAdapter ta : flexoController.getApplicationContext().getTechnologyAdapterService().getTechnologyAdapters()) {
-			TechnologyAdapterController<?> tac = flexoController.getTechnologyAdapterController(ta);
+			TechnologyAdapterController<?> tac = FlexoController.getTechnologyAdapterController(ta);
 			boolean[] expand = { true, false };
 			FIBWidget returned = tac.makeWidget(entry, null, getFactory(), expand);
-			newTab.addToSubComponents(returned, new TwoColsLayoutConstraints(TwoColsLayoutLocation.right, expand[0], expand[1]));
+			newTab.addToSubComponentsNoNotification(returned,
+					new TwoColsLayoutConstraints(TwoColsLayoutLocation.right, expand[0], expand[1]));
 			if (returned != null) {
 				return returned;
 			}
