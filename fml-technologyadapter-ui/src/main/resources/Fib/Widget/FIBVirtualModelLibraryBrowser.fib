@@ -7,13 +7,14 @@
     <BrowserElement id="4" visible="controller.shouldBeDisplayed(viewPointFolder)" dataClassName="org.openflexo.foundation.resource.RepositoryFolder" icon="controller.iconForObject(viewPointFolder)" label="viewPointFolder.displayableName" isEditable="false" name="viewPointFolder">
       <Children id="5" data="viewPointFolder.children" name="subFolders" />
       <Children id="6" data="viewPointFolder.resources" name="resource" />
-      <BrowserAddAction id="7" method="controller.createContainedVirtualModel(selected)" name="create_virtual_model" />
+      <BrowserAddAction id="7" method="controller.createTopLevelVirtualModel(selected)" name="create_virtual_model" />
     </BrowserElement>
     <BrowserElement id="21" dataClassName="org.openflexo.foundation.fml.rm.VirtualModelResource" icon="controller.iconForObject(virtualModel)" label="(virtualModel.name + &quot;.fml&quot;)" enabled="virtualModel.isLoaded" editableLabel="virtualModel.name" name="virtualModel">
       <Children id="22" visible="virtualModel.isLoaded" data="virtualModel.contents" name="subresources" />
       <Children id="23" visible="virtualModel.isLoaded" data="virtualModel.loadedVirtualModel.allRootFlexoConcepts" name="rootFlexoConcepts" />
       <BrowserRemoveAction id="24" method="controller.deleteVirtualModel(selected)" name="delete_virtual_model" />
       <BrowserAddAction id="25" method="controller.createFlexoConcept(selected.virtualModel)" name="create_flexo_concept" />
+      <BrowserAddAction method="controller.createContainedVirtualModel(selected)" name="create_virtual_model" />
     </BrowserElement>
     <BrowserElement id="37" dataClassName="org.openflexo.foundation.fml.FMLLocalizedDictionary" icon="controller.iconForObject(inspector)" label="&quot;Locales&quot;" isEditable="false" name="inspector">
     </BrowserElement>

@@ -50,7 +50,9 @@ import org.openflexo.connie.binding.Function.FunctionArgument;
 import org.openflexo.connie.binding.FunctionPathElement;
 import org.openflexo.connie.exception.InvocationTargetTransformException;
 import org.openflexo.connie.exception.NullReferenceException;
+import org.openflexo.connie.exception.TransformException;
 import org.openflexo.connie.exception.TypeMismatchException;
+import org.openflexo.connie.expr.ExpressionTransformer;
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoProject;
@@ -200,6 +202,12 @@ public class FlexoBehaviourPathElement extends FunctionPathElement {
 		}
 		return null;
 
+	}
+
+	@Override
+	public FunctionPathElement transform(ExpressionTransformer transformer) throws TransformException {
+		// TODO Auto-generated method stub
+		return this;
 	}
 
 }

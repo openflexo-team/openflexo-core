@@ -163,14 +163,14 @@ public class FMLFIBController extends FlexoFIBController {
 		deleteVirtualModel.doAction();
 	}
 
-	public ModelSlot<?> createModelSlot(VirtualModel virtualModel) {
-		CreateModelSlot createModelSlot = CreateModelSlot.actionType.makeNewAction(virtualModel, null, getEditor());
+	public ModelSlot<?> createModelSlot(FlexoConcept concept) {
+		CreateModelSlot createModelSlot = CreateModelSlot.actionType.makeNewAction(concept, null, getEditor());
 		createModelSlot.doAction();
 		return createModelSlot.getNewModelSlot();
 	}
 
-	public void deleteModelSlot(VirtualModel virtualModel, ModelSlot<?> modelSlot) {
-		virtualModel.removeFromModelSlots(modelSlot);
+	public void deleteModelSlot(FlexoConcept concept, ModelSlot<?> modelSlot) {
+		concept.removeFromModelSlots(modelSlot);
 		modelSlot.delete();
 	}
 

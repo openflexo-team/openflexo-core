@@ -15,7 +15,7 @@
 		</RowSplit>
 		<Browser id="6" backgroundSelectionColor="9,80,208"
 			visibleRowCount="5" boundToSelectionManager="true"
-			backgroundNonSelectionColor="255,255,255" iteratorClassName="java.lang.Object"
+			backgroundNonSelectionColor="255,255,255" iteratorClassName="org.openflexo.foundation.fml.FMLObject"
 			textSelectionColor="255,255,255" backgroundSecondarySelectionColor="178,215,255"
 			showRootsHandle="true" showFooter="true" allowsDragAndDrop="true"
 			textNonSelectionColor="0,0,0" root="data" deepExploration="true"
@@ -184,7 +184,7 @@
 				icon="controller.iconForObject(inspector)" label="&quot;Inspector&quot;"
 				isEditable="false" name="inspector">
 				<BrowserAddAction id="60"
-					method="controller.createInspectorEntry(data)" name="add_inspector_entry" />
+					method="controller.createInspectorEntry(selected)" name="add_inspector_entry" />
 			</BrowserElement>
 			<BrowserElement id="61"
 				dataClassName="org.openflexo.foundation.fml.controlgraph.ControlStructureAction"
@@ -217,8 +217,6 @@
 				<BrowserAddAction id="70"
 					method="controller.createGetSetProperty(selected.flexoConcept)"
 					name="new_get_set_property" />
-				<BrowserRemoveAction id="71"
-					method="controller.deleteFlexoProperty(data,selected)" name="delete" />
 			</BrowserElement>
 			<BrowserElement id="72"
 				dataClassName="org.openflexo.foundation.fml.FlexoConceptBehaviouralFacet"

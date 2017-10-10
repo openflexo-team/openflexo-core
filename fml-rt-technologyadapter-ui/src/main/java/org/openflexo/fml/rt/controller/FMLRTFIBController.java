@@ -44,7 +44,7 @@ import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.SynchronizationScheme;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
-import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.CreateFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.action.SynchronizationSchemeAction;
 import org.openflexo.foundation.fml.rt.action.SynchronizationSchemeActionFactory;
@@ -73,7 +73,7 @@ public class FMLRTFIBController extends FlexoFIBController {
 		super(component, viewFactory, controller);
 	}
 
-	public FMLRTVirtualModelInstance synchronizeVirtualModelInstance(FMLRTVirtualModelInstance virtualModelInstance) {
+	public VirtualModelInstance<?, ?> synchronizeVirtualModelInstance(VirtualModelInstance<?, ?> virtualModelInstance) {
 		VirtualModel vm = virtualModelInstance.getVirtualModel();
 		if (vm.hasSynchronizationScheme()) {
 			SynchronizationScheme ss = vm.getSynchronizationScheme();
