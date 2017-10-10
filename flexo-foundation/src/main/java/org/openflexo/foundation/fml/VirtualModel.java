@@ -49,6 +49,7 @@ import java.util.Set;
 import java.util.Vector;
 import java.util.logging.Logger;
 
+import org.openflexo.connie.Bindable;
 import org.openflexo.connie.BindingFactory;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
@@ -1058,7 +1059,7 @@ public interface VirtualModel extends FlexoConcept, VirtualModelObject, FlexoMet
 		public VirtualModelBindingModel getBindingModel() {
 			if (bindingModel == null) {
 				bindingModel = new VirtualModelBindingModel(this);
-				// createBindingModel();
+				getPropertyChangeSupport().firePropertyChange(Bindable.BINDING_MODEL_PROPERTY, null, bindingModel);
 			}
 			return bindingModel;
 		}

@@ -48,6 +48,7 @@ import java.util.StringTokenizer;
 import java.util.Vector;
 import java.util.logging.Logger;
 
+import org.openflexo.connie.Bindable;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
@@ -1383,6 +1384,7 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 			if (bindingModel == null) {
 				// createBindingModel();
 				bindingModel = new FlexoConceptBindingModel(this);
+				getPropertyChangeSupport().firePropertyChange(Bindable.BINDING_MODEL_PROPERTY, null, bindingModel);
 			}
 			return bindingModel;
 		}

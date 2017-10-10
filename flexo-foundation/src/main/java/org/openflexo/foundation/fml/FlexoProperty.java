@@ -45,6 +45,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.openflexo.connie.Bindable;
 import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.type.ParameterizedTypeImpl;
 import org.openflexo.connie.type.TypeUtils;
@@ -331,6 +332,14 @@ public abstract interface FlexoProperty<T> extends FlexoConceptObject {
 				return getFlexoConcept().getBindingModel();
 			}
 			return null;
+		}
+
+		@Override
+		public void setFlexoConcept(FlexoConcept flexoConcept) {
+			BindingModel oldBM = getFlexoConcept() != null ? getFlexoConcept().getBindingModel() : null;
+			performSuperSetter(FLEXO_CONCEPT_KEY, flexoConcept);
+			BindingModel newBM = getFlexoConcept() != null ? getFlexoConcept().getBindingModel() : null;
+			getPropertyChangeSupport().firePropertyChange(Bindable.BINDING_MODEL_PROPERTY, oldBM, newBM);
 		}
 
 		@Override

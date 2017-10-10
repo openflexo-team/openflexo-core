@@ -44,6 +44,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.openflexo.connie.Bindable;
 import org.openflexo.connie.BindingEvaluationContext;
 import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.DataBinding;
@@ -258,6 +259,14 @@ public interface FlexoBehaviourParameter extends FlexoBehaviourObject, FunctionA
 				return getBehaviour().getBindingModel();
 			}
 			return null;
+		}
+
+		@Override
+		public void setBehaviour(FlexoBehaviour flexoBehaviour) {
+			BindingModel oldBM = getFlexoBehaviour() != null ? getFlexoBehaviour().getBindingModel() : null;
+			performSuperSetter(FLEXO_BEHAVIOUR_KEY, flexoBehaviour);
+			BindingModel newBM = getFlexoBehaviour() != null ? getFlexoBehaviour().getBindingModel() : null;
+			getPropertyChangeSupport().firePropertyChange(Bindable.BINDING_MODEL_PROPERTY, oldBM, newBM);
 		}
 
 		@Override

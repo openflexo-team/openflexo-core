@@ -41,6 +41,7 @@ package org.openflexo.foundation.fml;
 import java.util.Collection;
 import java.util.List;
 
+import org.openflexo.connie.Bindable;
 import org.openflexo.connie.BindingModel;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
@@ -97,11 +98,12 @@ public interface InnerConceptsFacet extends FlexoConceptObject, FlexoFacet<Flexo
 
 		@Override
 		public void setFlexoConcept(FlexoConcept flexoConcept) {
-			if ((flexoConcept == null && this.flexoConcept != null) || (flexoConcept != null && !flexoConcept.equals(this.flexoConcept))) {
-				FlexoConcept oldValue = this.flexoConcept;
-				this.flexoConcept = flexoConcept;
-				getPropertyChangeSupport().firePropertyChange("flexoConcept", oldValue, flexoConcept);
-			}
+			FlexoConcept oldValue = this.flexoConcept;
+			BindingModel oldBM = getFlexoConcept() != null ? getFlexoConcept().getBindingModel() : null;
+			this.flexoConcept = flexoConcept;
+			BindingModel newBM = getFlexoConcept() != null ? getFlexoConcept().getBindingModel() : null;
+			getPropertyChangeSupport().firePropertyChange(Bindable.BINDING_MODEL_PROPERTY, oldBM, newBM);
+			getPropertyChangeSupport().firePropertyChange("flexoConcept", oldValue, flexoConcept);
 		}
 
 		@Override

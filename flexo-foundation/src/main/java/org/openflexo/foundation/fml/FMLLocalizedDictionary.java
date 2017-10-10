@@ -62,6 +62,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.TableColumn;
 
+import org.openflexo.connie.Bindable;
 import org.openflexo.connie.BindingModel;
 import org.openflexo.foundation.fml.inspector.InspectorEntry;
 import org.openflexo.localization.FlexoLocalization;
@@ -628,6 +629,14 @@ public interface FMLLocalizedDictionary extends FMLObject, org.openflexo.localiz
 		@Override
 		public BindingModel getBindingModel() {
 			return getOwner().getBindingModel();
+		}
+
+		@Override
+		public void setOwner(VirtualModel owner) {
+			BindingModel oldBM = getOwner() != null ? getOwner().getBindingModel() : null;
+			performSuperSetter(OWNER_KEY, owner);
+			BindingModel newBM = getOwner() != null ? getOwner().getBindingModel() : null;
+			getPropertyChangeSupport().firePropertyChange(Bindable.BINDING_MODEL_PROPERTY, oldBM, newBM);
 		}
 
 		@Override

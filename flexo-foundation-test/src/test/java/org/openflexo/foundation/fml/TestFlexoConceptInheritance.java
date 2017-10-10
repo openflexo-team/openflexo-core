@@ -553,6 +553,12 @@ public class TestFlexoConceptInheritance extends OpenflexoProjectAtRunTimeTestCa
 		assertSameList(property2InB.getSuperProperties(), property2InA);
 
 		assertSame(property3InD, flexoConceptD.getAccessibleProperty("property3"));
+
+		System.out.println("FML=" + flexoConceptD.getFMLRepresentation());
+
+		System.out.println("Exp=" + property3InD.getExpression() + " valid=" + property3InD.getExpression().isValid());
+		System.out.println("reason: " + property3InD.getExpression().invalidBindingReason());
+
 		assertEquals(Integer.TYPE, property3InD.getType());
 		assertEquals(Integer.TYPE, property3InD.getResultingType());
 		assertSameList(property3InD.getSuperProperties(), property3InA, property3InB);

@@ -43,6 +43,7 @@ import java.util.List;
 import java.util.Vector;
 import java.util.logging.Logger;
 
+import org.openflexo.connie.Bindable;
 import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.binding.Function;
 import org.openflexo.connie.type.TypeUtils;
@@ -539,6 +540,7 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, Function, FMLContr
 		public final FlexoBehaviourBindingModel getBindingModel() {
 			if (bindingModel == null) {
 				bindingModel = makeBindingModel();
+				getPropertyChangeSupport().firePropertyChange(Bindable.BINDING_MODEL_PROPERTY, null, bindingModel);
 			}
 			return bindingModel;
 		}
