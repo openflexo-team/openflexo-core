@@ -65,22 +65,17 @@ public class DeclarationBindingVariable extends BindingVariable implements Prope
 		if (action != null) {
 			lastKnownType = action.getAssignableType();
 		}
-	}
-
-	@Override
-	public void activate() {
-		super.activate();
 		if (action != null && action.getPropertyChangeSupport() != null) {
 			action.getPropertyChangeSupport().addPropertyChangeListener(this);
 		}
 	}
 
 	@Override
-	public void desactivate() {
+	public void delete() {
 		if (action != null && action.getPropertyChangeSupport() != null) {
 			action.getPropertyChangeSupport().removePropertyChangeListener(this);
 		}
-		super.desactivate();
+		super.delete();
 	}
 
 	@Override

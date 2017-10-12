@@ -60,25 +60,21 @@ public class FlexoPropertyBindingVariable extends BindingVariable implements Pro
 		if (flexoProperty != null) {
 			lastKnownType = flexoProperty.getResultingType();
 		}
-	}
-
-	@Override
-	public void activate() {
-		super.activate();
-		if (flexoProperty != null) {
-			lastKnownType = flexoProperty.getResultingType();
-		}
 		if (flexoProperty != null && flexoProperty.getPropertyChangeSupport() != null) {
 			flexoProperty.getPropertyChangeSupport().addPropertyChangeListener(this);
 		}
 	}
 
 	@Override
-	public void desactivate() {
+	public void delete() {
+		// System.out.println("################# Desactivate " + this + " " + Integer.toHexString(hashCode()) + " on ecoute " +
+		// flexoProperty
+		// + " cs=" + flexoProperty.getPropertyChangeSupport());
+
 		if (flexoProperty != null && flexoProperty.getPropertyChangeSupport() != null) {
 			flexoProperty.getPropertyChangeSupport().removePropertyChangeListener(this);
 		}
-		super.desactivate();
+		super.delete();
 	}
 
 	@Override

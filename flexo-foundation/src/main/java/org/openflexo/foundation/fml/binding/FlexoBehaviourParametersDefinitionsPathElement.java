@@ -42,7 +42,7 @@ import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.BindingEvaluationContext;
-import org.openflexo.connie.binding.BindingPathElement;
+import org.openflexo.connie.binding.IBindingPathElement;
 import org.openflexo.connie.binding.SimplePathElement;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
@@ -55,7 +55,7 @@ public class FlexoBehaviourParametersDefinitionsPathElement extends SimplePathEl
 
 	private FlexoBehaviour flexoBehaviour;
 
-	public FlexoBehaviourParametersDefinitionsPathElement(BindingPathElement parent, FlexoBehaviour aFlexoBehaviour) {
+	public FlexoBehaviourParametersDefinitionsPathElement(IBindingPathElement parent, FlexoBehaviour aFlexoBehaviour) {
 		super(parent, "parametersDefinitions", FlexoBehaviourParametersType.getFlexoBehaviourParametersType(aFlexoBehaviour));
 		this.flexoBehaviour = aFlexoBehaviour;
 	}
@@ -87,8 +87,8 @@ public class FlexoBehaviourParametersDefinitionsPathElement extends SimplePathEl
 	}
 
 	@Override
-	public void setBindingValue(Object value, Object target, BindingEvaluationContext context) throws TypeMismatchException,
-			NullReferenceException {
+	public void setBindingValue(Object value, Object target, BindingEvaluationContext context)
+			throws TypeMismatchException, NullReferenceException {
 		logger.warning("Please implement me, target=" + target + " context=" + context);
 	}
 

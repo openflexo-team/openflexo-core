@@ -48,9 +48,9 @@ import java.util.logging.Logger;
 import org.openflexo.connie.BindingEvaluationContext;
 import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.DataBinding;
-import org.openflexo.connie.binding.BindingPathElement;
 import org.openflexo.connie.binding.Function.FunctionArgument;
 import org.openflexo.connie.binding.FunctionPathElement;
+import org.openflexo.connie.binding.IBindingPathElement;
 import org.openflexo.connie.exception.InvocationTargetTransformException;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TransformException;
@@ -79,10 +79,8 @@ public class FlexoBehaviourPathElement extends FunctionPathElement implements Pr
 
 	private Type lastKnownType = null;
 
-	public FlexoBehaviourPathElement(BindingPathElement parent, FlexoBehaviour flexoBehaviour, List<DataBinding<?>> args) {
+	public FlexoBehaviourPathElement(IBindingPathElement parent, FlexoBehaviour flexoBehaviour, List<DataBinding<?>> args) {
 		super(parent, flexoBehaviour, args);
-
-		System.out.println("))))))))))) Created FlexoBehaviourPathElement " + Integer.toHexString(hashCode()));
 
 	}
 
@@ -114,12 +112,6 @@ public class FlexoBehaviourPathElement extends FunctionPathElement implements Pr
 			getFlexoBehaviour().getPropertyChangeSupport().removePropertyChangeListener(this);
 		}
 		super.desactivate();
-	}
-
-	@Override
-	public final void delete() {
-		System.out.println("))))))))))) On doit supprimer le FlexoBehaviourPathElement " + Integer.toHexString(hashCode()));
-		super.delete();
 	}
 
 	@Override

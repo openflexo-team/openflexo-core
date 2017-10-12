@@ -64,12 +64,6 @@ public class MatchConditionSelectedBindingVariable extends BindingVariable imple
 	public MatchConditionSelectedBindingVariable(MatchCondition condition) {
 		super(FetchRequestCondition.SELECTED, condition.getAction() != null ? condition.getAction().getMatchedType() : Object.class, false);
 		this.condition = condition;
-		setCacheable(false);
-	}
-
-	@Override
-	public void activate() {
-		super.activate();
 		if (condition != null) {
 			if (condition.getPropertyChangeSupport() != null) {
 				condition.getPropertyChangeSupport().addPropertyChangeListener(this);
@@ -80,10 +74,11 @@ public class MatchConditionSelectedBindingVariable extends BindingVariable imple
 				action.getPropertyChangeSupport().addPropertyChangeListener(this);
 			}
 		}
+		setCacheable(false);
 	}
 
 	@Override
-	public void desactivate() {
+	public void delete() {
 		if (condition != null) {
 			if (condition.getPropertyChangeSupport() != null) {
 				condition.getPropertyChangeSupport().addPropertyChangeListener(this);
@@ -93,7 +88,7 @@ public class MatchConditionSelectedBindingVariable extends BindingVariable imple
 				action.getPropertyChangeSupport().addPropertyChangeListener(this);
 			}
 		}
-		super.desactivate();
+		super.delete();
 	}
 
 	@Override

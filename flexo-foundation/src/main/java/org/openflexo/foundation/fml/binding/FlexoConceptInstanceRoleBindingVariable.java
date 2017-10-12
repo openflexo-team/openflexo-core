@@ -51,12 +51,6 @@ public class FlexoConceptInstanceRoleBindingVariable extends FlexoRoleBindingVar
 
 	public FlexoConceptInstanceRoleBindingVariable(FlexoConceptInstanceRole role) {
 		super(role);
-
-	}
-
-	@Override
-	public void activate() {
-		super.activate();
 		if (getFlexoRole().getFlexoConceptType() != null) {
 			conceptBeeingListened = getFlexoRole().getFlexoConceptType();
 			conceptBeeingListened.getPropertyChangeSupport().addPropertyChangeListener(this);
@@ -64,11 +58,11 @@ public class FlexoConceptInstanceRoleBindingVariable extends FlexoRoleBindingVar
 	}
 
 	@Override
-	public void desactivate() {
+	public void delete() {
 		if (conceptBeeingListened != null) {
 			conceptBeeingListened.getPropertyChangeSupport().removePropertyChangeListener(this);
 		}
-		super.desactivate();
+		super.delete();
 	}
 
 	@Override

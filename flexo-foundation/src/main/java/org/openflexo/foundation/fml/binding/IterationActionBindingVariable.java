@@ -65,14 +65,6 @@ public class IterationActionBindingVariable extends BindingVariable implements P
 		if (action != null) {
 			lastKnownType = action.getItemType();
 		}
-	}
-
-	@Override
-	public void activate() {
-		super.activate();
-		if (action != null) {
-			lastKnownType = action.getItemType();
-		}
 		if (action != null && action.getPropertyChangeSupport() != null) {
 			action.getPropertyChangeSupport().addPropertyChangeListener(this);
 		}
@@ -83,14 +75,14 @@ public class IterationActionBindingVariable extends BindingVariable implements P
 	}
 
 	@Override
-	public void desactivate() {
+	public void delete() {
 		if (action instanceof IterationAction && ((IterationAction) action).getIterationAction().getPropertyChangeSupport() != null) {
 			((IterationAction) action).getIterationAction().getPropertyChangeSupport().removePropertyChangeListener(this);
 		}
 		if (action != null && action.getPropertyChangeSupport() != null) {
 			action.getPropertyChangeSupport().removePropertyChangeListener(this);
 		}
-		super.desactivate();
+		super.delete();
 	}
 
 	@Override

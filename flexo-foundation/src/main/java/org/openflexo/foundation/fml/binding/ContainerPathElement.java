@@ -42,7 +42,7 @@ import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.BindingEvaluationContext;
-import org.openflexo.connie.binding.BindingPathElement;
+import org.openflexo.connie.binding.IBindingPathElement;
 import org.openflexo.connie.binding.SimplePathElement;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
@@ -78,7 +78,7 @@ public class ContainerPathElement extends SimplePathElement {
 	private FlexoConcept applicableFlexoConcept;
 	private FlexoConcept containerType;
 
-	public ContainerPathElement(BindingPathElement parent, FlexoConcept applicableFlexoConcept) {
+	public ContainerPathElement(IBindingPathElement parent, FlexoConcept applicableFlexoConcept) {
 		super(parent, FlexoConceptBindingModel.CONTAINER_PROPERTY, Object.class);
 		this.applicableFlexoConcept = applicableFlexoConcept;
 		if (applicableFlexoConcept instanceof VirtualModel) {

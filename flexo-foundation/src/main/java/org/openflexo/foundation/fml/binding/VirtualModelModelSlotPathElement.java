@@ -42,13 +42,13 @@ import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.BindingEvaluationContext;
-import org.openflexo.connie.binding.BindingPathElement;
+import org.openflexo.connie.binding.IBindingPathElement;
 import org.openflexo.connie.binding.SimplePathElement;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
-import org.openflexo.foundation.fml.rt.ModelSlotInstance;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
+import org.openflexo.foundation.fml.rt.ModelSlotInstance;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 
 public class VirtualModelModelSlotPathElement<MS extends ModelSlot> extends SimplePathElement {
@@ -57,7 +57,7 @@ public class VirtualModelModelSlotPathElement<MS extends ModelSlot> extends Simp
 
 	private final MS modelSlot;
 
-	public VirtualModelModelSlotPathElement(BindingPathElement parent, MS modelSlot) {
+	public VirtualModelModelSlotPathElement(IBindingPathElement parent, MS modelSlot) {
 		super(parent, modelSlot.getName(), modelSlot.getResultingType());
 		this.modelSlot = modelSlot;
 	}

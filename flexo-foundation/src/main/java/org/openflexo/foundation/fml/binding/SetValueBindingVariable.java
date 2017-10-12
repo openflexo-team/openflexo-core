@@ -26,25 +26,17 @@ public class SetValueBindingVariable<T> extends BindingVariable implements Prope
 		if (property != null) {
 			lastKnownType = property.getType();
 		}
-	}
-
-	@Override
-	public void activate() {
-		super.activate();
-		if (property != null) {
-			lastKnownType = property.getType();
-		}
 		if (property != null && property.getPropertyChangeSupport() != null) {
 			property.getPropertyChangeSupport().addPropertyChangeListener(this);
 		}
 	}
 
 	@Override
-	public void desactivate() {
+	public void delete() {
 		if (property != null && property.getPropertyChangeSupport() != null) {
 			property.getPropertyChangeSupport().removePropertyChangeListener(this);
 		}
-		super.desactivate();
+		super.delete();
 	}
 
 	@Override

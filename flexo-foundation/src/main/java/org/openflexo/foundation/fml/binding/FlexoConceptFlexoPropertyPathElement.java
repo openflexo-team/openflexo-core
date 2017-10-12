@@ -44,7 +44,7 @@ import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.BindingEvaluationContext;
-import org.openflexo.connie.binding.BindingPathElement;
+import org.openflexo.connie.binding.IBindingPathElement;
 import org.openflexo.connie.binding.SimplePathElement;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
@@ -61,7 +61,7 @@ public class FlexoConceptFlexoPropertyPathElement<P extends FlexoProperty<?>> ex
 	private Type lastKnownType = null;
 	private final P flexoProperty;
 
-	public FlexoConceptFlexoPropertyPathElement(BindingPathElement parent, P flexoProperty) {
+	public FlexoConceptFlexoPropertyPathElement(IBindingPathElement parent, P flexoProperty) {
 		super(parent, flexoProperty.getPropertyName(), flexoProperty.getResultingType());
 		this.flexoProperty = flexoProperty;
 		if (flexoProperty != null) {
