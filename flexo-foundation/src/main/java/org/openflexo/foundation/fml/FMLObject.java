@@ -46,7 +46,6 @@ import org.openflexo.connie.DataBinding;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.InnerResourceData;
-import org.openflexo.foundation.NameChanged;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
@@ -159,6 +158,8 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData/*<Vi
 	 */
 	public String getFMLRepresentation();
 
+	public void clearFMLRepresentation();
+
 	/**
 	 * Return a string representation suitable for a common user<br>
 	 * This representation will used in all GUIs
@@ -228,9 +229,9 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData/*<Vi
 			if (requireChange(this.name, name)) {
 				String oldName = this.name;
 				this.name = name;
-				setChanged();
-				notifyObservers(new NameChanged(oldName, name));
-				// getPropertyChangeSupport().firePropertyChange(NAME_KEY, oldName, name);
+				// setChanged();
+				// notifyObservers(new NameChanged(oldName, name));
+				getPropertyChangeSupport().firePropertyChange(NAME_KEY, oldName, name);
 			}
 		}
 
@@ -385,6 +386,11 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData/*<Vi
 				fmlRepresentation = getFMLRepresentation(new FMLRepresentationContext());
 			}
 			return fmlRepresentation;
+		}
+
+		@Override
+		public void clearFMLRepresentation() {
+			fmlRepresentation = null;
 		}
 
 		@Override
