@@ -49,11 +49,6 @@ public class FlexoRoleBindingVariable extends FlexoPropertyBindingVariable {
 		super(role);
 	}
 
-	@Override
-	public void delete() {
-		super.delete();
-	}
-
 	public FlexoRole<?> getFlexoRole() {
 		return (FlexoRole<?>) getFlexoProperty();
 	}

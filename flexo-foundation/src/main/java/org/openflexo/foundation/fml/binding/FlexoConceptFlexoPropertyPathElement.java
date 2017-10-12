@@ -67,6 +67,11 @@ public class FlexoConceptFlexoPropertyPathElement<P extends FlexoProperty<?>> ex
 		if (flexoProperty != null) {
 			lastKnownType = flexoProperty.getResultingType();
 		}
+	}
+
+	@Override
+	public void activate() {
+		super.activate();
 		if (flexoProperty != null && flexoProperty.getPropertyChangeSupport() != null) {
 			flexoProperty.getPropertyChangeSupport().addPropertyChangeListener(this);
 		}
@@ -76,14 +81,14 @@ public class FlexoConceptFlexoPropertyPathElement<P extends FlexoProperty<?>> ex
 	}
 
 	@Override
-	public void delete() {
+	public void desactivate() {
 		if (flexoProperty instanceof FlexoConceptInstanceRole && ((FlexoConceptInstanceRole) flexoProperty).getFlexoConceptType() != null) {
 			((FlexoConceptInstanceRole) flexoProperty).getFlexoConceptType().getPropertyChangeSupport().removePropertyChangeListener(this);
 		}
 		if (flexoProperty != null && flexoProperty.getPropertyChangeSupport() != null) {
 			flexoProperty.getPropertyChangeSupport().removePropertyChangeListener(this);
 		}
-		super.delete();
+		super.desactivate();
 	}
 
 	public P getFlexoProperty() {

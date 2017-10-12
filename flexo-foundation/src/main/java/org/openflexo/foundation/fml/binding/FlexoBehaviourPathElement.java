@@ -38,12 +38,15 @@
 
 package org.openflexo.foundation.fml.binding;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.BindingEvaluationContext;
+import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.binding.BindingPathElement;
 import org.openflexo.connie.binding.Function.FunctionArgument;
@@ -70,27 +73,53 @@ import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
  * @author sylvain
  * 
  */
-public class FlexoBehaviourPathElement extends FunctionPathElement {
+public class FlexoBehaviourPathElement extends FunctionPathElement implements PropertyChangeListener {
 
 	static final Logger logger = Logger.getLogger(FlexoBehaviourPathElement.class.getPackage().getName());
+
+	private Type lastKnownType = null;
 
 	public FlexoBehaviourPathElement(BindingPathElement parent, FlexoBehaviour flexoBehaviour, List<DataBinding<?>> args) {
 		super(parent, flexoBehaviour, args);
 
+		System.out.println("))))))))))) Created FlexoBehaviourPathElement " + Integer.toHexString(hashCode()));
+
+	}
+
+	@Override
+	public void activate() {
+		super.activate();
 		// Do not instanciate parameters now, we will do it later
 		// instanciateParameters(owner);
-		if (flexoBehaviour != null) {
-			for (FunctionArgument arg : flexoBehaviour.getArguments()) {
+		if (getFlexoBehaviour() != null) {
+			if (getFlexoBehaviour() != null && getFlexoBehaviour().getPropertyChangeSupport() != null) {
+				getFlexoBehaviour().getPropertyChangeSupport().addPropertyChangeListener(this);
+			}
+			for (FunctionArgument arg : getFlexoBehaviour().getArguments()) {
 				DataBinding<?> argValue = getParameter(arg);
 				if (argValue != null && arg != null) {
 					argValue.setDeclaredType(arg.getArgumentType());
 				}
 			}
-			setType(flexoBehaviour.getReturnType());
+			lastKnownType = getFlexoBehaviour().getReturnType();
 		}
 		else {
 			logger.warning("Inconsistent data: null FlexoBehaviour");
 		}
+	}
+
+	@Override
+	public void desactivate() {
+		if (getFlexoBehaviour() != null && getFlexoBehaviour().getPropertyChangeSupport() != null) {
+			getFlexoBehaviour().getPropertyChangeSupport().removePropertyChangeListener(this);
+		}
+		super.desactivate();
+	}
+
+	@Override
+	public final void delete() {
+		System.out.println("))))))))))) On doit supprimer le FlexoBehaviourPathElement " + Integer.toHexString(hashCode()));
+		super.delete();
 	}
 
 	@Override
@@ -118,6 +147,34 @@ public class FlexoBehaviourPathElement extends FunctionPathElement {
 	@Override
 	public String getTooltipText(Type resultingType) {
 		return getFlexoBehaviour().getDescription();
+	}
+
+	@Override
+	public void propertyChange(PropertyChangeEvent evt) {
+		if (evt.getSource() == getFlexoBehaviour()) {
+			if (evt.getPropertyName().equals(FlexoBehaviourParameter.NAME_KEY)) {
+				// System.out.println("Notify behaviour name changing for " + getFlexoBehaviour() + " new=" +
+				// getFlexoBehaviour().getName());
+				serializationRepresentation = null;
+				if (getFlexoBehaviour() != null && getFlexoBehaviour().getFlexoConcept() != null
+						&& getFlexoBehaviour().getFlexoConcept().getBindingModel() != null
+						&& getFlexoBehaviour().getFlexoConcept().getBindingModel().getPropertyChangeSupport() != null) {
+					getFlexoBehaviour().getFlexoConcept().getBindingModel().getPropertyChangeSupport()
+							.firePropertyChange(BindingModel.BINDING_PATH_ELEMENT_NAME_CHANGED, null, this);
+				}
+			}
+			if (lastKnownType != getType()) {
+				lastKnownType = getType();
+				serializationRepresentation = null;
+				if (getFlexoBehaviour() != null && getFlexoBehaviour().getFlexoConcept() != null
+						&& getFlexoBehaviour().getFlexoConcept().getBindingModel() != null
+						&& getFlexoBehaviour().getFlexoConcept().getBindingModel().getPropertyChangeSupport() != null) {
+					getFlexoBehaviour().getFlexoConcept().getBindingModel().getPropertyChangeSupport()
+							.firePropertyChange(BindingModel.BINDING_PATH_ELEMENT_TYPE_CHANGED, null, this);
+				}
+			}
+
+		}
 	}
 
 	@Override
@@ -208,6 +265,12 @@ public class FlexoBehaviourPathElement extends FunctionPathElement {
 	public FunctionPathElement transform(ExpressionTransformer transformer) throws TransformException {
 		// TODO Auto-generated method stub
 		return this;
+	}
+
+	@Override
+	public String getSerializationRepresentation() {
+		// TODO Auto-generated method stub
+		return super.getSerializationRepresentation();
 	}
 
 }

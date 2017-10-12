@@ -60,19 +60,25 @@ public class FlexoPropertyBindingVariable extends BindingVariable implements Pro
 		if (flexoProperty != null) {
 			lastKnownType = flexoProperty.getResultingType();
 		}
+	}
+
+	@Override
+	public void activate() {
+		super.activate();
+		if (flexoProperty != null) {
+			lastKnownType = flexoProperty.getResultingType();
+		}
 		if (flexoProperty != null && flexoProperty.getPropertyChangeSupport() != null) {
 			flexoProperty.getPropertyChangeSupport().addPropertyChangeListener(this);
 		}
 	}
 
 	@Override
-	public void delete() {
-		// Thread.dumpStack();
+	public void desactivate() {
 		if (flexoProperty != null && flexoProperty.getPropertyChangeSupport() != null) {
-			// System.out.println("Je lui dit d'arreter d'observer " + flexoProperty);
 			flexoProperty.getPropertyChangeSupport().removePropertyChangeListener(this);
 		}
-		super.delete();
+		super.desactivate();
 	}
 
 	@Override
@@ -94,7 +100,7 @@ public class FlexoPropertyBindingVariable extends BindingVariable implements Pro
 
 		if (evt.getSource() == getFlexoProperty()) {
 			if (evt.getPropertyName().equals(FlexoProperty.NAME_KEY) || evt.getPropertyName().equals(FlexoProperty.PROPERTY_NAME_KEY)) {
-				// System.out.println("Notify name changing for " + getFlexoRole() + " new=" + getVariableName());
+				// System.out.println("Notify name changing for " + getFlexoProperty() + " new=" + getVariableName());
 				if (getPropertyChangeSupport() != null) {
 					getPropertyChangeSupport().firePropertyChange(VARIABLE_NAME_PROPERTY, evt.getOldValue(), getVariableName());
 				}

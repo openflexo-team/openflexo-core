@@ -38,26 +38,19 @@
 
 package org.openflexo.foundation.fml.binding;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.BindingVariable;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 
-public class FlexoBehaviourParametersBindingVariable extends BindingVariable implements PropertyChangeListener {
+public class FlexoBehaviourParametersBindingVariable extends BindingVariable {
 	static final Logger logger = Logger.getLogger(FlexoBehaviourParametersBindingVariable.class.getPackage().getName());
 
 	private FlexoBehaviour flexoBehaviour;
 
 	public FlexoBehaviourParametersBindingVariable(FlexoBehaviour flexoBehaviour) {
 		super(FlexoBehaviourBindingModel.PARAMETERS_PROPERTY, flexoBehaviour.getFlexoBehaviourParametersValuesType(), true);
-	}
-
-	@Override
-	public void delete() {
-		super.delete();
 	}
 
 	@Override
@@ -71,10 +64,6 @@ public class FlexoBehaviourParametersBindingVariable extends BindingVariable imp
 			return flexoBehaviour.getFlexoBehaviourParametersValuesType();
 		}
 		return super.getType();
-	}
-
-	@Override
-	public void propertyChange(PropertyChangeEvent evt) {
 	}
 
 	@Override

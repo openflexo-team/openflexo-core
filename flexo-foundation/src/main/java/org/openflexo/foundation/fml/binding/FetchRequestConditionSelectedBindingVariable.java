@@ -63,6 +63,11 @@ public class FetchRequestConditionSelectedBindingVariable extends BindingVariabl
 		super(FetchRequestCondition.SELECTED, condition.getAction() != null ? condition.getAction().getFetchedType() : Object.class, false);
 		this.condition = condition;
 		// setCacheable(false);
+	}
+
+	@Override
+	public void activate() {
+		super.activate();
 		if (condition != null) {
 			if (condition.getPropertyChangeSupport() != null) {
 				condition.getPropertyChangeSupport().addPropertyChangeListener(this);
@@ -76,17 +81,17 @@ public class FetchRequestConditionSelectedBindingVariable extends BindingVariabl
 	}
 
 	@Override
-	public void delete() {
+	public void desactivate() {
 		if (condition != null) {
 			if (condition.getPropertyChangeSupport() != null) {
-				condition.getPropertyChangeSupport().addPropertyChangeListener(this);
+				condition.getPropertyChangeSupport().removePropertyChangeListener(this);
 			}
 			FetchRequest<?, ?, ?> action = condition.getAction();
 			if (action != null && action.getPropertyChangeSupport() != null) {
-				action.getPropertyChangeSupport().addPropertyChangeListener(this);
+				action.getPropertyChangeSupport().removePropertyChangeListener(this);
 			}
 		}
-		super.delete();
+		super.desactivate();
 	}
 
 	@Override

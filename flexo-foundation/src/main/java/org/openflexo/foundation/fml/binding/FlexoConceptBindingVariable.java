@@ -61,13 +61,22 @@ public class FlexoConceptBindingVariable extends BindingVariable implements Prop
 	public FlexoConceptBindingVariable(String variableName, FlexoConcept anFlexoConcept) {
 		super(variableName, FlexoConceptInstanceType.getFlexoConceptInstanceType(anFlexoConcept));
 		this.flexoConcept = anFlexoConcept;
-		flexoConcept.getPropertyChangeSupport().addPropertyChangeListener(this);
 	}
 
 	@Override
-	public void delete() {
-		flexoConcept.getPropertyChangeSupport().removePropertyChangeListener(this);
-		super.delete();
+	public void activate() {
+		super.activate();
+		if (flexoConcept != null && flexoConcept.getPropertyChangeSupport() != null) {
+			flexoConcept.getPropertyChangeSupport().addPropertyChangeListener(this);
+		}
+	}
+
+	@Override
+	public void desactivate() {
+		if (flexoConcept != null && flexoConcept.getPropertyChangeSupport() != null) {
+			flexoConcept.getPropertyChangeSupport().removePropertyChangeListener(this);
+		}
+		super.desactivate();
 	}
 
 	@Override

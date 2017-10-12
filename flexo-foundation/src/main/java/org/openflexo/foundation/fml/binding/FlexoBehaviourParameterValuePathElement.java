@@ -45,6 +45,7 @@ import java.util.Hashtable;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.BindingEvaluationContext;
+import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.binding.BindingPathElement;
 import org.openflexo.connie.binding.SimplePathElement;
 import org.openflexo.connie.exception.NullReferenceException;
@@ -62,25 +63,30 @@ public class FlexoBehaviourParameterValuePathElement extends SimplePathElement i
 	public FlexoBehaviourParameterValuePathElement(BindingPathElement parent, FlexoBehaviourParameter parameter) {
 		super(parent, parameter.getName(), parameter.getType());
 		this.parameter = parameter;
-		if (parameter != null && parameter.getPropertyChangeSupport() != null) {
-			parameter.getPropertyChangeSupport().addPropertyChangeListener(this);
-		}
 		if (parameter != null) {
 			lastKnownType = parameter.getType();
 		}
 
 	}
 
-	public FlexoBehaviourParameter getParameter() {
-		return parameter;
+	@Override
+	public void activate() {
+		super.activate();
+		if (parameter != null && parameter.getPropertyChangeSupport() != null) {
+			parameter.getPropertyChangeSupport().addPropertyChangeListener(this);
+		}
 	}
 
 	@Override
-	public void delete() {
+	public void desactivate() {
 		if (parameter != null && parameter.getPropertyChangeSupport() != null) {
 			parameter.getPropertyChangeSupport().removePropertyChangeListener(this);
 		}
-		super.delete();
+		super.desactivate();
+	}
+
+	public FlexoBehaviourParameter getParameter() {
+		return parameter;
 	}
 
 	@Override
@@ -90,9 +96,22 @@ public class FlexoBehaviourParameterValuePathElement extends SimplePathElement i
 
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
-		if (evt.getSource() == parameter) {
+		if (evt.getSource() == getParameter()) {
+			if (evt.getPropertyName().equals(FlexoBehaviourParameter.NAME_KEY)) {
+				System.out.println("Notify paramter name changing for " + getParameter() + " new=" + getParameter().getName());
+				if (getParameter() != null && getParameter().getBindingModel() != null
+						&& getParameter().getBindingModel().getPropertyChangeSupport() != null) {
+					getParameter().getBindingModel().getPropertyChangeSupport()
+							.firePropertyChange(BindingModel.BINDING_PATH_ELEMENT_NAME_CHANGED, null, this);
+				}
+			}
 			if (lastKnownType != getType()) {
 				lastKnownType = getType();
+				if (getParameter() != null && getParameter().getBindingModel() != null
+						&& getParameter().getBindingModel().getPropertyChangeSupport() != null) {
+					getParameter().getBindingModel().getPropertyChangeSupport()
+							.firePropertyChange(BindingModel.BINDING_PATH_ELEMENT_TYPE_CHANGED, null, this);
+				}
 			}
 
 		}
@@ -100,6 +119,11 @@ public class FlexoBehaviourParameterValuePathElement extends SimplePathElement i
 
 	@Override
 	public String getLabel() {
+		return parameter.getName();
+	}
+
+	@Override
+	public String getPropertyName() {
 		return parameter.getName();
 	}
 
@@ -136,4 +160,8 @@ public class FlexoBehaviourParameterValuePathElement extends SimplePathElement i
 		logger.warning("Please implement me, target=" + target + " context=" + context);
 	}
 
+	@Override
+	public String toString() {
+		return "FlexoBehaviourParameterPathElement:" + getLabel();
+	}
 }

@@ -69,13 +69,22 @@ public class FlexoConceptInstancePathElement extends SimplePathElement implement
 	public FlexoConceptInstancePathElement(BindingPathElement parent, String pathElementName, FlexoConcept flexoConcept) {
 		super(parent, pathElementName, FlexoConceptInstanceType.getFlexoConceptInstanceType(flexoConcept));
 		this.flexoConcept = flexoConcept;
-		flexoConcept.getPropertyChangeSupport().addPropertyChangeListener(this);
 	}
 
 	@Override
-	public void delete() {
-		flexoConcept.getPropertyChangeSupport().removePropertyChangeListener(this);
-		super.delete();
+	public void activate() {
+		super.activate();
+		if (flexoConcept != null && flexoConcept.getPropertyChangeSupport() != null) {
+			flexoConcept.getPropertyChangeSupport().addPropertyChangeListener(this);
+		}
+	}
+
+	@Override
+	public void desactivate() {
+		if (flexoConcept != null && flexoConcept.getPropertyChangeSupport() != null) {
+			flexoConcept.getPropertyChangeSupport().removePropertyChangeListener(this);
+		}
+		super.desactivate();
 	}
 
 	public FlexoConcept getFlexoConcept() {

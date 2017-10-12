@@ -59,42 +59,38 @@ public class IterationActionBindingVariable extends BindingVariable implements P
 	private final AbstractIterationAction action;
 	private Type lastKnownType = null;
 
-	// private boolean debug = false;
-
 	public IterationActionBindingVariable(AbstractIterationAction action) {
 		super(action.getIteratorName(), action.getItemType(), true);
 		this.action = action;
-		/*if (action.getIteratorName() != null && action.getIteratorName().equals("phase")) {
-			debug = true;
-		}*/
 		if (action != null) {
 			lastKnownType = action.getItemType();
 		}
-		// if (debug) {
-		// System.out.println("******* Got iterator " + action.getIteratorName() + " type=" + lastKnownType);
-		// }
+	}
+
+	@Override
+	public void activate() {
+		super.activate();
+		if (action != null) {
+			lastKnownType = action.getItemType();
+		}
 		if (action != null && action.getPropertyChangeSupport() != null) {
-			// if (debug)
-			// System.out.println("****** Listening " + action.getFMLRepresentation());
 			action.getPropertyChangeSupport().addPropertyChangeListener(this);
 		}
 		if (action instanceof IterationAction && ((IterationAction) action).getIterationAction() != null
 				&& ((IterationAction) action).getIterationAction().getPropertyChangeSupport() != null) {
-			// if (debug)
-			// System.out.println("****** Also listening " + ((IterationAction) action).getIterationAction().getFMLRepresentation());
 			((IterationAction) action).getIterationAction().getPropertyChangeSupport().addPropertyChangeListener(this);
 		}
 	}
 
 	@Override
-	public void delete() {
+	public void desactivate() {
 		if (action instanceof IterationAction && ((IterationAction) action).getIterationAction().getPropertyChangeSupport() != null) {
 			((IterationAction) action).getIterationAction().getPropertyChangeSupport().removePropertyChangeListener(this);
 		}
 		if (action != null && action.getPropertyChangeSupport() != null) {
 			action.getPropertyChangeSupport().removePropertyChangeListener(this);
 		}
-		super.delete();
+		super.desactivate();
 	}
 
 	@Override
