@@ -162,7 +162,7 @@ public interface ExpressionAction<T> extends AssignableAction<T> {
 		public DataBinding<T> getExpression() {
 			if (expression == null) {
 				expression = new DataBinding<>(this, Object.class, DataBinding.BindingDefinitionType.GET);
-				expression.setBindingName("expression");
+				expression.setBindingName(EXPRESSION_KEY);
 				expression.setMandatory(true);
 			}
 			return expression;
@@ -171,10 +171,13 @@ public interface ExpressionAction<T> extends AssignableAction<T> {
 		@Override
 		public void setExpression(DataBinding<T> expression) {
 			if (expression != null) {
-				this.expression = new DataBinding<>(expression.toString(), this, Object.class, DataBinding.BindingDefinitionType.GET);
-				this.expression.setBindingName("expression");
-				this.expression.setMandatory(true);
+				expression.setOwner(this);
+				expression.setDeclaredType(Object.class);
+				expression.setBindingDefinitionType(DataBinding.BindingDefinitionType.GET);
+				expression.setBindingName(EXPRESSION_KEY);
+				expression.setMandatory(true);
 			}
+			this.expression = expression;
 			notifiedBindingChanged(expression);
 		}
 
