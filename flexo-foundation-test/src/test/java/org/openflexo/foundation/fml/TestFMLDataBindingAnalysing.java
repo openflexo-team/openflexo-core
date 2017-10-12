@@ -52,7 +52,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openflexo.connie.Bindable;
 import org.openflexo.connie.DataBinding;
-import org.openflexo.connie.expr.BindingValue;
 import org.openflexo.connie.type.PrimitiveType;
 import org.openflexo.foundation.DefaultFlexoEditor;
 import org.openflexo.foundation.FlexoEditor;
@@ -577,7 +576,7 @@ public class TestFMLDataBindingAnalysing extends OpenflexoTestCase {
 	@TestOrder(25)
 	public void testChangeBehaviourName() {
 
-		System.out.println(virtualModel.getFMLRepresentation());
+		// System.out.println(virtualModel.getFMLRepresentation());
 
 		System.out.println("*********** testChangeBehaviourName");
 
@@ -594,8 +593,6 @@ public class TestFMLDataBindingAnalysing extends OpenflexoTestCase {
 		assertEquals("this.action2(false)", db.toString());
 		assertTrue(db.isValid());
 
-		System.out.println("Ici c'est " + Integer.toHexString(db.hashCode()));
-
 		db.delete();
 	}
 
@@ -603,58 +600,25 @@ public class TestFMLDataBindingAnalysing extends OpenflexoTestCase {
 	@TestOrder(26)
 	public void testChangeBehaviourAndParametersName() {
 
-		System.out.println(virtualModel.getFMLRepresentation());
+		// System.out.println(virtualModel.getFMLRepresentation());
 
 		System.out.println("*********** testChangeBehaviourAndParametersName");
 
 		DataBinding<?> db = makeBinding(actionScheme, "this.action2(parameters.aFlag)", true, Void.class);
 
-		assertTrue(db.isValid());
-
-		System.out.println("VRAIMENT AVANT");
-		db.debug();
-		if (db.isBindingValue()) {
-			((BindingValue) db.getExpression()).debug();
-		}
-
+		// Rename ActionScheme, check that DataBinding was accordingly modified
 		actionScheme2.setName("actionWasRenamed");
-
-		/*System.out.println("AVANT");
-		db.debug();
-		if (db.isBindingValue()) {
-			((BindingValue) db.getExpression()).debug();
-		}*/
-
-		// System.out.println("Ici2, db.isValid=" + db.isValid());
-
-		/*System.out.println("APRES");
-		db.debug();
-		if (db.isBindingValue()) {
-			((BindingValue) db.getExpression()).debug();
-		}*/
-
-		// System.out.println("Ici2, db.isValid=" + db.isValid());
-		// System.out.println("Ici2, db.isValid=" + db.isValid());
-
 		assertEquals("this.actionWasRenamed(parameters.aFlag)", db.toString());
 		assertTrue(db.isValid());
 
-		// db.debug = true;
-		System.out.println(">>>>>>>> BEGIN");
+		// Rename parameter, check that DataBinding was accordingly modified
 		actionScheme.getParameters().get(0).setName("aRenamedParameter");
-		System.out.println("<<<<<<<< END");
-		// System.out.println("db3=" + db);
-
-		// System.out.println("Ici3, db.isValid=" + db.isValid());
-		// System.out.println("Ici3, reason=" + db.invalidBindingReason());
-
 		assertEquals("this.actionWasRenamed(parameters.aRenamedParameter)", db.toString());
 		assertTrue(db.isValid());
 
-		System.out.println(">>>>>>>>> Attention, c'est parti !!!");
+		// Revert to old values
 		actionScheme.getParameters().get(0).setName("aFlag");
 		actionScheme2.setName("action2");
-
 		assertEquals("this.action2(parameters.aFlag)", db.toString());
 		assertTrue(db.isValid());
 
