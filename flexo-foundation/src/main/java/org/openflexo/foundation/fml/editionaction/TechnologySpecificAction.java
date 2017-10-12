@@ -48,7 +48,7 @@ import java.util.logging.Logger;
 import org.openflexo.connie.BindingEvaluationContext;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
-import org.openflexo.connie.binding.BindingPathElement;
+import org.openflexo.connie.binding.IBindingPathElement;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.connie.expr.BindingValue;
@@ -280,7 +280,7 @@ public abstract interface TechnologySpecificAction<MS extends ModelSlot<?>, R ex
 		public MS getInferedModelSlot() {
 			if (getReceiver().isSet() && getReceiver().isValid() && getReceiver().isBindingValue()) {
 				BindingValue bindingValue = ((BindingValue) getReceiver().getExpression());
-				BindingPathElement lastPathElement = bindingValue.getLastBindingPathElement();
+				IBindingPathElement lastPathElement = bindingValue.getLastBindingPathElement();
 				if (lastPathElement instanceof ModelSlotBindingVariable) {
 					return (MS) ((ModelSlotBindingVariable) lastPathElement).getModelSlot();
 				}

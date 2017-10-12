@@ -42,7 +42,7 @@ import java.util.HashMap;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.BindingFactory;
-import org.openflexo.connie.binding.BindingPathElement;
+import org.openflexo.connie.binding.IBindingPathElement;
 import org.openflexo.connie.binding.SimplePathElement;
 import org.openflexo.connie.java.JavaBindingFactory;
 import org.openflexo.foundation.fml.FlexoRole;
@@ -62,13 +62,13 @@ import org.openflexo.foundation.fml.TechnologySpecificType;
 public abstract class TechnologyAdapterBindingFactory extends JavaBindingFactory {
 	static final Logger logger = Logger.getLogger(TechnologyAdapterBindingFactory.class.getPackage().getName());
 
-	private final HashMap<BindingPathElement, HashMap<Object, SimplePathElement>> storedBindingPathElements;
+	private final HashMap<IBindingPathElement, HashMap<Object, SimplePathElement>> storedBindingPathElements;
 
 	public TechnologyAdapterBindingFactory() {
 		storedBindingPathElements = new HashMap<>();
 	}
 
-	protected final SimplePathElement getSimplePathElement(Object object, BindingPathElement parent) {
+	protected final SimplePathElement getSimplePathElement(Object object, IBindingPathElement parent) {
 		HashMap<Object, SimplePathElement> storedValues = storedBindingPathElements.get(parent);
 		if (storedValues == null) {
 			storedValues = new HashMap<>();
@@ -82,7 +82,7 @@ public abstract class TechnologyAdapterBindingFactory extends JavaBindingFactory
 		return returned;
 	}
 
-	protected abstract SimplePathElement makeSimplePathElement(Object object, BindingPathElement parent);
+	protected abstract SimplePathElement makeSimplePathElement(Object object, IBindingPathElement parent);
 
 	/**
 	 * Return boolean indicating if this binding path element strategy should apply to supplied type

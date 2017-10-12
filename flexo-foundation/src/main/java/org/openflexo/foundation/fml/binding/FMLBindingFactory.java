@@ -52,6 +52,7 @@ import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.binding.BindingPathElement;
 import org.openflexo.connie.binding.Function;
 import org.openflexo.connie.binding.FunctionPathElement;
+import org.openflexo.connie.binding.IBindingPathElement;
 import org.openflexo.connie.binding.SimplePathElement;
 import org.openflexo.connie.expr.Constant.ObjectConstant;
 import org.openflexo.connie.java.JavaBindingFactory;
@@ -94,10 +95,10 @@ public class FMLBindingFactory extends JavaBindingFactory {
 	public static final String VIEW = "view";
 	public static final String RESOURCE_CENTER = "resourceCenter";
 
-	private final Map<BindingPathElement, Map<Object, SimplePathElement>> storedBindingPathElements;
+	private final Map<IBindingPathElement, Map<Object, SimplePathElement>> storedBindingPathElements;
 	private final VirtualModel virtualModel;
 
-	private final Map<BindingPathElement, BehavioursForConcepts> flexoBehaviourPathElements;
+	private final Map<IBindingPathElement, BehavioursForConcepts> flexoBehaviourPathElements;
 
 	public FMLBindingFactory(VirtualModel virtualModel) {
 		storedBindingPathElements = new HashMap<>();
@@ -105,7 +106,7 @@ public class FMLBindingFactory extends JavaBindingFactory {
 		this.virtualModel = virtualModel;
 	}
 
-	protected SimplePathElement getSimplePathElement(Object object, BindingPathElement parent) {
+	protected SimplePathElement getSimplePathElement(Object object, IBindingPathElement parent) {
 		Map<Object, SimplePathElement> storedValues = storedBindingPathElements.get(parent);
 		if (storedValues == null) {
 			storedValues = new HashMap<>();
@@ -119,7 +120,7 @@ public class FMLBindingFactory extends JavaBindingFactory {
 		return returned;
 	}
 
-	protected SimplePathElement makeSimplePathElement(Object object, BindingPathElement parent) {
+	protected SimplePathElement makeSimplePathElement(Object object, IBindingPathElement parent) {
 		if (object instanceof ModelSlot) {
 			return new VirtualModelModelSlotPathElement<ModelSlot<?>>(parent, (ModelSlot<?>) object);
 		}
@@ -139,7 +140,7 @@ public class FMLBindingFactory extends JavaBindingFactory {
 	}
 
 	@Override
-	public List<? extends SimplePathElement> getAccessibleSimplePathElements(BindingPathElement parent) {
+	public List<? extends SimplePathElement> getAccessibleSimplePathElements(IBindingPathElement parent) {
 
 		if (parent != null) {
 			Type pType = parent.getType();
@@ -238,7 +239,7 @@ public class FMLBindingFactory extends JavaBindingFactory {
 	}
 
 	@Override
-	public List<? extends FunctionPathElement> getAccessibleFunctionPathElements(BindingPathElement parent) {
+	public List<? extends FunctionPathElement> getAccessibleFunctionPathElements(IBindingPathElement parent) {
 
 		Type pType = parent.getType();
 		if (pType instanceof FlexoConceptInstanceType) {
@@ -298,7 +299,7 @@ public class FMLBindingFactory extends JavaBindingFactory {
 		}
 	}
 
-	public List<FlexoBehaviourPathElement> getFlexoBehaviourPathElements(BindingPathElement parent, FlexoConcept concept,
+	public List<FlexoBehaviourPathElement> getFlexoBehaviourPathElements(IBindingPathElement parent, FlexoConcept concept,
 			boolean forceUpdate) {
 
 		BehavioursForConcepts map = flexoBehaviourPathElements.get(parent);
@@ -324,7 +325,7 @@ public class FMLBindingFactory extends JavaBindingFactory {
 	}
 
 	@Override
-	public SimplePathElement makeSimplePathElement(BindingPathElement parent, String propertyName) {
+	public SimplePathElement makeSimplePathElement(IBindingPathElement parent, String propertyName) {
 
 		// We want to avoid code duplication, so iterate on all accessible simple path element and choose the right one
 		SimplePathElement returned = null;
@@ -351,7 +352,7 @@ public class FMLBindingFactory extends JavaBindingFactory {
 	}
 
 	@Override
-	public FunctionPathElement makeFunctionPathElement(BindingPathElement parent, Function function, List<DataBinding<?>> args) {
+	public FunctionPathElement makeFunctionPathElement(IBindingPathElement parent, Function function, List<DataBinding<?>> args) {
 		if (parent.getType() == null) {
 			return null;
 		}

@@ -45,7 +45,7 @@ import java.util.List;
 import org.openflexo.connie.BindingEvaluationContext;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
-import org.openflexo.connie.binding.BindingPathElement;
+import org.openflexo.connie.binding.IBindingPathElement;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.connie.expr.BindingValue;
@@ -267,7 +267,7 @@ public interface FlexoRole<T> extends FlexoProperty<T> {
 		private ModelSlot<?> getInferedModelSlot() {
 			if (getContainer().isSet() && getContainer().isValid() && getContainer().isBindingValue()) {
 				BindingValue bindingValue = ((BindingValue) getContainer().getExpression());
-				BindingPathElement lastPathElement = bindingValue.getLastBindingPathElement();
+				IBindingPathElement lastPathElement = bindingValue.getLastBindingPathElement();
 				// System.out.println(
 				// "lastPathElement=" + lastPathElement + " of " + (lastPathElement != null ? lastPathElement.getClass() : "null"));
 				if (lastPathElement instanceof ModelSlotBindingVariable) {
