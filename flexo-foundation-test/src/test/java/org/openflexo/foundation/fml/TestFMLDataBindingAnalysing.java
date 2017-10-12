@@ -618,9 +618,12 @@ public class TestFMLDataBindingAnalysing extends OpenflexoTestCase {
 
 		// Revert to old values
 		actionScheme.getParameters().get(0).setName("aFlag");
-		actionScheme2.setName("action2");
-		assertEquals("this.action2(parameters.aFlag)", db.toString());
 		assertTrue(db.isValid());
+		assertEquals("this.actionWasRenamed(parameters.aFlag)", db.toString());
+
+		actionScheme2.setName("action2");
+		assertTrue(db.isValid());
+		assertEquals("this.action2(parameters.aFlag)", db.toString());
 
 		db.delete();
 
