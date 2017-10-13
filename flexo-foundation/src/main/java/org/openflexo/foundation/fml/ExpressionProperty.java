@@ -129,6 +129,13 @@ public abstract interface ExpressionProperty<T> extends FlexoProperty<T> {
 		@Override
 		public Type getType() {
 
+			// TODO: i think following code is no more necessary, since DataBinding now handle this
+			// Just do something like:
+			// if (getExpression() != null && getExpression().isSet() && getExpression().isValid()) {
+			// return getExpression().getAnalyzedType();
+			// }
+			// return Object.class;
+
 			if (isAnalysingType) {
 				return lastKnownType;
 			}

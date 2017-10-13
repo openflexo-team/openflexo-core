@@ -43,7 +43,6 @@ import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.DataBinding;
-import org.openflexo.connie.type.CustomType;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
@@ -82,12 +81,13 @@ public interface ExpressionAction<T> extends AssignableAction<T> {
 
 	public static abstract class ExpressionActionImpl<T> extends AssignableActionImpl<T> implements ExpressionAction<T> {
 
+		@SuppressWarnings("unused")
 		private static final Logger logger = Logger.getLogger(ExpressionAction.class.getPackage().getName());
 
 		private DataBinding<T> expression;
 
-		private Type assignableType = null;
-		private boolean isComputingAssignableType = false;
+		// private Type assignableType = null;
+		// private boolean isComputingAssignableType = false;
 
 		@Override
 		public void finalizeDeserialization() {
@@ -99,17 +99,18 @@ public interface ExpressionAction<T> extends AssignableAction<T> {
 		@Override
 		public Type getAssignableType() {
 
-			if (assignableType == null && !isComputingAssignableType) {
+			if (getExpression() != null && getExpression().isSet() && getExpression().isValid()) {
+				return getExpression().getAnalyzedType();
+			}
+			return Object.class;
+
+			/*if (assignableType == null && !isComputingAssignableType) {
 				isComputingAssignableType = true;
 				if (getExpression() != null && getExpression().isSet() && getExpression().isValid()) {
 					assignableType = getExpression().getAnalyzedType();
+					System.out.println("Pour l'expression [" + getExpression() + "] le type c'est " + assignableType);
 				}
 				isComputingAssignableType = false;
-				/*else {
-					// Expression is not valid
-					// We wont try to decode it again unless explicit call to #notifyTypeMightHaveChanged()
-					assignableType = Object.class;
-				}*/
 				// Hacking area - No time yet to fix this
 				// This case handles a CustomType which is not resolved yet
 				// Since, we have to way to know when this type will be resolved, we don't cache it
@@ -123,7 +124,7 @@ public interface ExpressionAction<T> extends AssignableAction<T> {
 			if (assignableType == null) {
 				return Object.class;
 			}
-			return assignableType;
+			return assignableType;*/
 		}
 
 		@Override
@@ -137,7 +138,7 @@ public interface ExpressionAction<T> extends AssignableAction<T> {
 		 * Force expression DataBinding to be re-evaluated
 		 */
 		private void notifyTypeMightHaveChanged() {
-			assignableType = null;
+			// assignableType = null;
 			getPropertyChangeSupport().firePropertyChange("assignableType", null, getAssignableType());
 			getPropertyChangeSupport().firePropertyChange("iteratorType", null, getIteratorType());
 		}
