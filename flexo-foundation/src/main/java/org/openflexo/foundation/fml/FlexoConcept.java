@@ -956,6 +956,9 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 		 */
 		@Override
 		public FlexoProperty<?> getAccessibleProperty(String propertyName) {
+			if (propertyName == null) {
+				return null;
+			}
 			for (FlexoProperty<?> p : getAccessibleProperties()) {
 				if (propertyName.equals(p.getName())) {
 					return p;
