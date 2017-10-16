@@ -41,6 +41,7 @@ package org.openflexo.fml.controller;
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.swing.ImageIcon;
@@ -133,6 +134,7 @@ import org.openflexo.icon.FMLIconLibrary;
 import org.openflexo.icon.FMLRTIconLibrary;
 import org.openflexo.icon.IconFactory;
 import org.openflexo.icon.IconLibrary;
+import org.openflexo.model.validation.ValidationError;
 import org.openflexo.model.validation.ValidationModel;
 import org.openflexo.model.validation.ValidationReport;
 import org.openflexo.view.EmptyPanel;
@@ -627,10 +629,20 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 		if (resource instanceof VirtualModelResource) {
 			VirtualModel vm = ((VirtualModelResource) resource).getLoadedVirtualModel();
 			try {
+				if (logger.isLoggable(Level.INFO)) {
+					logger.info("Validating virtual model " + vm);
+				}
 				Progress.progress(getLocales().localizedForKey("validating_virtual_model..."));
 				FMLValidationReport validationReport = (FMLValidationReport) getFMLValidationModel().validate(vm);
-				System.out.println("VALIDATED: " + validationReport.getFilteredIssues());
 				validationReports.put(vm, validationReport);
+				if (logger.isLoggable(Level.INFO)) {
+					logger.info("End validating virtual model " + vm);
+					logger.info("Errors=" + validationReport.getAllErrors().size());
+					for (ValidationError<?, ?> e : validationReport.getAllErrors()) {
+						logger.info(" > " + validationReport.getValidationModel().localizedIssueMessage(e) + " details="
+								+ validationReport.getValidationModel().localizedIssueDetailedInformations(e));
+					}
+				}
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
