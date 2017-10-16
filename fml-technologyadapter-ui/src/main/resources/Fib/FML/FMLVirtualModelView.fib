@@ -58,8 +58,6 @@
 				<BrowserAddAction 
 					method="controller.createGetSetProperty(selected.flexoConcept)"
 					name="new_get_set_property" />
-				<BrowserRemoveAction 
-					method="controller.deleteFlexoProperty(data,selected)" name="delete" />
 				<BrowserAddAction
 					method="controller.createAdvancedScheme(selected.flexoConcept)"
 					name="new_behaviour" />
@@ -95,8 +93,6 @@
 				<BrowserAddAction 
 					method="controller.createGetSetProperty(selected.flexoConcept)"
 					name="new_get_set_property" />
-				<BrowserRemoveAction 
-					method="controller.deleteFlexoProperty(data,selected)" name="delete" />
 				<BrowserAddAction
 					method="controller.createAdvancedScheme(selected.flexoConcept)"
 					name="new_behaviour" />
@@ -249,13 +245,6 @@
 				<BrowserRemoveAction id="59"
 					method="controller.deleteFlexoConceptObject(selected)" name="delete_action" />
 			</BrowserElement>
-			<BrowserElement id="62"
-				dataClassName="org.openflexo.foundation.fml.controlgraph.ControlStructureAction"
-				icon="controller.iconForObject(controlStructureAction)" isEditable="false"
-				name="controlStructureAction">
-				<Children id="63" data="controlStructureAction.actions"
-					name="children" />
-			</BrowserElement>
 		</Browser>
 		<Panel id="85" align="left" borderTop="0" borderLeft="0"
 			trackViewPortHeight="true" trackViewPortWidth="true" borderBottom="0"
@@ -288,7 +277,7 @@
 				constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)"
 				name="Panel">
 				<Label id="90" label="label" align="left"
-					data="((((&quot;&quot; + controller.getValidationReport(data).errors.size) + &quot; errors, &quot;) + controller.getValidationReport(data).warnings.size) + &quot; warnings&quot;)"
+					data="((((&quot;&quot; + controller.getValidationReport(data).errorIssuesRegarding(data).size) + &quot; errors, &quot;) + controller.getValidationReport(data).warningIssuesRegarding(data).size) + &quot; warnings&quot;)"
 					constraints="gridbag(anchor=west;fill=horizontal;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=1.0;weightY=0.0)"
 					font="SansSerif,2,11" name="Label" />
 				<Label id="91"
@@ -315,7 +304,7 @@
 				lookAndFeel="Classic" selectionMode="MultipleIntervalSelection"
 				rowHeight="18" manageDynamicModel="true"
 				doubleClickAction="controller.fixIssue(IssuesTable.selected)"
-				data="controller.getValidationReport(data).filteredIssues"
+				data="controller.getValidationReport(data).issuesRegarding(data)"
 				clickAction="controller.showIssue(IssuesTable.selected)" visible="controller.showErrorsWarnings"
 				constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=5;insetsLeft=0;insetsRight=5;insetsTop=0;location=right)"
 				name="IssuesTable">
@@ -323,7 +312,7 @@
 					resizable="false" title="icon" displayTitle="false" columnWidth="20"
 					showIcon="false" name="icon" />
 				<LabelColumn id="95"
-					data="controller.fMLValidationModel.localizedIssueMessage(iterator)"
+					data="controller.getValidationModel(data).localizedIssueMessage(iterator)"
 					resizable="true" title="errors/warnings" displayTitle="true"
 					columnWidth="250" showIcon="false" name="label" />
 			</Table>
