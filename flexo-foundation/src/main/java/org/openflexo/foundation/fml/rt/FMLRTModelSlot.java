@@ -155,6 +155,9 @@ public interface FMLRTModelSlot<VMI extends VirtualModelInstance<VMI, TA>, TA ex
 		@Override
 		public void setAccessedVirtualModelResource(VirtualModelResource virtualModelResource) {
 			this.virtualModelResource = virtualModelResource;
+			if (virtualModelResource == null) {
+				virtualModelURI = null;
+			}
 		}
 
 		@Override
