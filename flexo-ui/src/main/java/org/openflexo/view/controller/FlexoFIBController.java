@@ -39,6 +39,8 @@
 
 package org.openflexo.view.controller;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -105,7 +107,7 @@ import org.openflexo.selection.SelectionManager;
  * 
  * @param <T>
  */
-public class FlexoFIBController extends FIBController implements GraphicalFlexoObserver {
+public class FlexoFIBController extends FIBController implements GraphicalFlexoObserver, PropertyChangeListener {
 
 	private static final Logger logger = Logger.getLogger(FlexoFIBController.class.getPackage().getName());
 
@@ -129,12 +131,10 @@ public class FlexoFIBController extends FIBController implements GraphicalFlexoO
 
 	@Override
 	public void delete() {
-		/*if (getDataObject() instanceof FlexoObservable) {
-			((FlexoObservable) getDataObject()).deleteObserver(this);
+		for (ValidationReport report : observedReports) {
+			report.getPropertyChangeSupport().removePropertyChangeListener(this);
 		}
-		if (getDataObject() instanceof HasPropertyChangeSupport) {
-			((HasPropertyChangeSupport) getDataObject()).getPropertyChangeSupport().removePropertyChangeListener(this);
-		}*/
+		observedReports.clear();
 		super.delete();
 	}
 
@@ -316,6 +316,15 @@ public class FlexoFIBController extends FIBController implements GraphicalFlexoO
 		return null;
 	}
 
+	private final List<ValidationReport> observedReports = new ArrayList<>();
+
+	@Override
+	public void propertyChange(PropertyChangeEvent evt) {
+		if (evt.getSource() instanceof ValidationReport) {
+			clearCachedIcons();
+		}
+	}
+
 	protected ImageIcon retrieveIconForObject(Object object) {
 		if (object instanceof ValidationError) {
 			if (((ValidationError<?, ?>) object).isFixable()) {
@@ -340,14 +349,15 @@ public class FlexoFIBController extends FIBController implements GraphicalFlexoO
 			return FIBUtilsIconLibrary.FIX_PROPOSAL_ICON;
 		}
 
-		/*else if (object instanceof VirtualModel) {
-			if (getValidationReport((VirtualModel) object) != null && getValidationReport((VirtualModel) object).getErrors().size() > 0) {
-				return IconFactory.getImageIcon(super.retrieveIconForObject(object), IconLibrary.ERROR);
+		if (object instanceof Validable) {
+			ValidationReport report = getValidationReport((Validable) object);
+			if (report != null) {
+				if (!observedReports.contains(report)) {
+					report.getPropertyChangeSupport().addPropertyChangeListener(this);
+					observedReports.add(report);
+				}
 			}
-			if (getValidationReport((VirtualModel) object) != null && getValidationReport((VirtualModel) object).getWarnings().size() > 0) {
-				return IconFactory.getImageIcon(super.retrieveIconForObject(object), IconLibrary.WARNING);
-			}
-		}*/
+		}
 
 		if (controller != null) {
 			return controller.iconForObject(object);

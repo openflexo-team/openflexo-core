@@ -882,14 +882,7 @@ public class FMLFIBController extends FlexoFIBController {
 			FMLTechnologyAdapterController tac = getServiceManager().getTechnologyAdapterControllerService()
 					.getTechnologyAdapterController(FMLTechnologyAdapterController.class);
 			FMLValidationReport virtualModelReport = (FMLValidationReport) tac.getValidationReport(virtualModel);
-			RevalidationTask validationTask = new RevalidationTask(virtualModelReport) {
-				@Override
-				public void performTask() throws InterruptedException {
-					super.performTask();
-					clearCachedIcons();
-					// fmlObjectsIcons.clear();
-				}
-			};
+			RevalidationTask validationTask = new RevalidationTask(virtualModelReport);
 			getServiceManager().getTaskManager().scheduleExecution(validationTask);
 		}
 	}
