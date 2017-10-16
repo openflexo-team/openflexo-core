@@ -134,7 +134,7 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 
 	public void setCreationScheme(CreationScheme creationScheme);
 
-	@Getter(value = PARAMETERS_KEY, cardinality = Cardinality.LIST, inverse = AddFlexoConceptInstanceParameter.ACTION_KEY)
+	@Getter(value = PARAMETERS_KEY, cardinality = Cardinality.LIST, inverse = AddFlexoConceptInstanceParameter.OWNER_KEY)
 	@XMLElement
 	@Embedded
 	@CloningStrategy(StrategyType.CLONE)
@@ -349,7 +349,7 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 
 		@Override
 		public void addToParameters(AddFlexoConceptInstanceParameter parameter) {
-			parameter.setAction(this);
+			parameter.setOwner(this);
 			if (parameters == null) {
 				parameters = new ArrayList<>();
 			}
@@ -358,7 +358,7 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 
 		@Override
 		public void removeFromParameters(AddFlexoConceptInstanceParameter parameter) {
-			parameter.setAction(null);
+			parameter.setOwner(null);
 			if (parameters == null) {
 				parameters = new ArrayList<>();
 			}
@@ -536,10 +536,10 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 						if (p.getValue() == null || !p.getValue().isSet()) {
 							issues.add(new ValidationError<>(this, action, "parameter_s_value_is_not_defined: " + param.getName()));
 						}
-						else if (!p.getValue().isValid()) {
+						else if (!p.getValue().forceRevalidate()) {
 							AddFlexoConceptInstanceImpl.logger
 									.info("Binding NOT valid: " + p.getValue() + " for " + p.getName() + " object="
-											+ p.getAction().getStringRepresentation() + ". Reason: " + p.getValue().invalidBindingReason());
+											+ p.getOwner().getStringRepresentation() + ". Reason: " + p.getValue().invalidBindingReason());
 							issues.add(new ValidationError<>(this, action, "parameter_s_value_is_not_valid: " + param.getName()));
 						}
 					}
