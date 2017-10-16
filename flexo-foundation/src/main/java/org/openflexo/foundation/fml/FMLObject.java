@@ -430,7 +430,8 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData/*<Vi
 		@Override
 		public ValidationIssue<BindingMustBeValid<C>, C> applyValidation(C object) {
 			if (getBinding(object) != null && getBinding(object).isSet()) {
-				if (!getBinding(object).isValid()) {
+				// We force revalidate the binding to be sure that the binding is valid
+				if (!getBinding(object).forceRevalidate()) {
 					FMLObjectImpl.logger.info("Binding NOT valid: " + getBinding(object) + " for " + object.getStringRepresentation()
 							+ ". Reason: " + getBinding(object).invalidBindingReason());
 					DeleteBinding<C> deleteBinding = new DeleteBinding<>(this);
@@ -494,10 +495,18 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData/*<Vi
 			if (b == null || !b.isSet()) {
 				return new UndefinedRequiredBindingIssue<>(this, object);
 			}
-			else if (!b.isValid()) {
+			// We force revalidate the binding to be sure that the binding is valid
+			else if (!b.forceRevalidate()) {
 				// FMLObjectImpl.logger.info(getClass().getName() + ": Binding NOT valid: " + b + " for " + object.getStringRepresentation()
 				// + ". Reason: " + b.invalidBindingReason());
 				// Thread.dumpStack();
+
+				/*if (b.toString().equals("donneesReferentiel.tiers")) {
+					System.out.println(
+							"C'est la que j'ai mon probleme, avec " + b + " pour " + object + " of " + object.getImplementedInterface());
+					System.out.println("reason: " + b.invalidBindingReason());
+					Thread.dumpStack();
+				}*/
 
 				InvalidRequiredBindingIssue<C> returned = new InvalidRequiredBindingIssue<>(this, object);
 
