@@ -65,6 +65,16 @@ public class TestFMLFibs extends GenericFIBTestCase {
 	}
 
 	@Test
+	public void testFMLLocalizedDictionaryView() {
+		validateFIB("Fib/FML/FMLLocalizedDictionaryView.fib");
+	}
+
+	@Test
+	public void testFMLVirtualModelView() {
+		validateFIB("Fib/FML/FMLVirtualModelView.fib");
+	}
+
+	@Test
 	public void testLocalizedDictionaryPanel() {
 		validateFIB("Fib/FML/LocalizedDictionaryPanel.fib");
 	}
@@ -72,11 +82,6 @@ public class TestFMLFibs extends GenericFIBTestCase {
 	@Test
 	public void testStandardFlexoConceptView() {
 		validateFIB("Fib/FML/StandardFlexoConceptView.fib");
-	}
-
-	@Test
-	public void testViewPointLocalizedDictionaryView() {
-		validateFIB("Fib/FML/FMLLocalizedDictionaryView.fib");
 	}
 
 	@Test
