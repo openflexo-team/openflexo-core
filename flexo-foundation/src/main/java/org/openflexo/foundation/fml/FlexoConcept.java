@@ -1079,7 +1079,7 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 					if (b.getParameters().size() == parameters.length) {
 						boolean allParametersMatch = true;
 						for (int i = 0; i < b.getParameters().size(); i++) {
-							if (!TypeUtils.isTypeAssignableFrom(b.getParameters().get(i).getType(), parameters[i], true)) {
+							if (!TypeUtils.isTypeAssignableFrom(parameters[i], b.getParameters().get(i).getType(), true)) {
 								allParametersMatch = false;
 								break;
 							}
