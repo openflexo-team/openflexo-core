@@ -1009,7 +1009,7 @@ public interface VirtualModel extends FlexoConcept, VirtualModelObject, FlexoMet
 
 			List<Class<? extends ModelSlot<?>>> usedModelSlots = new ArrayList<>();
 			for (UseModelSlotDeclaration msDecl : getUseDeclarations()) {
-				usedModelSlots.add(modelSlotClass);
+				usedModelSlots.add(msDecl.getModelSlotClass());
 				if (modelSlotClass.equals(msDecl.getModelSlotClass())) {
 					return msDecl;
 				}
@@ -1117,9 +1117,9 @@ public interface VirtualModel extends FlexoConcept, VirtualModelObject, FlexoMet
 					return true;
 				}
 			}
-			if (getContainerVirtualModel() != null && getContainerVirtualModel().uses(modelSlotClass)) {
+			/*if (getContainerVirtualModel() != null && getContainerVirtualModel().uses(modelSlotClass)) {
 				return true;
-			}
+			}*/
 			return false;
 		}
 
