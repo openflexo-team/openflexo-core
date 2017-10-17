@@ -1024,7 +1024,11 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 
 		@Override
 		public ModelSlot<?> getModelSlot(String modelSlotName) {
-			return (ModelSlot<?>) getAccessibleProperty(modelSlotName);
+			FlexoProperty<?> returned = getAccessibleProperty(modelSlotName);
+			if (returned instanceof ModelSlot) {
+				return (ModelSlot<?>) returned;
+			}
+			return null;
 		}
 
 		@Override
