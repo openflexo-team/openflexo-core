@@ -361,7 +361,7 @@ public class FlexoUndoManager extends UndoManager {
 		private FlexoActionCompoundEdit currentEmbeddedFlexoActionCompoundEdit = null;
 
 		public FlexoActionCompoundEdit(FlexoAction<?, ?, ?> action, String presentationName) {
-			super(action != null ? action.getLocalizedName() : presentationName);
+			super(presentationName);
 			this.action = action;
 			pcSupport = new PropertyChangeSupport(this);
 			stackTrace = new Exception().getStackTrace();
