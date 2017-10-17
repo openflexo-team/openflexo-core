@@ -265,4 +265,9 @@ public class FlexoBehaviourPathElement extends FunctionPathElement implements Pr
 		return super.getSerializationRepresentation();
 	}
 
+	@Override
+	public boolean isNotificationSafe() {
+		return true;
+	}
+
 }

@@ -89,4 +89,9 @@ public class FlexoBehaviourParametersValuesPathElement extends SimplePathElement
 		logger.warning("Please implement me, target=" + target + " context=" + context);
 	}
 
+	@Override
+	public boolean isNotificationSafe() {
+		return false;
+	}
+
 }
