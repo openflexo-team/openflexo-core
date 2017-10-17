@@ -103,5 +103,10 @@ public interface UseModelSlotDeclaration extends FlexoObject {
 			}
 			return null;
 		}
+
+		@Override
+		public String toString() {
+			return "UseModelSlotDeclaration:" + getModelSlotClass();
+		}
 	}
 }
