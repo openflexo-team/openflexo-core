@@ -38,11 +38,13 @@
 
 package org.openflexo.fml.rt.controller.action;
 
-import java.awt.*;
+import java.awt.Dimension;
+import java.awt.Image;
 import java.util.List;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
 import org.openflexo.ApplicationContext;
 import org.openflexo.components.wizard.FlexoWizard;
 import org.openflexo.components.wizard.WizardStep;
