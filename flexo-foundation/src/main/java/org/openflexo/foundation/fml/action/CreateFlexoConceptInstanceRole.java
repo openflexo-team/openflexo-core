@@ -62,7 +62,6 @@ import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelInstanceType;
 import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
-import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
@@ -266,7 +265,7 @@ public class CreateFlexoConceptInstanceRole extends AbstractCreateFlexoRole<Crea
 
 	public DataBinding<VirtualModelInstance<?, ?>> getVirtualModelInstance() {
 		if (virtualModelInstance == null) {
-			virtualModelInstance = new DataBinding<>(this, FMLRTVirtualModelInstance.class, DataBinding.BindingDefinitionType.GET);
+			virtualModelInstance = new DataBinding<>(this, VirtualModelInstance.class, DataBinding.BindingDefinitionType.GET);
 		}
 		return virtualModelInstance;
 	}
@@ -275,7 +274,7 @@ public class CreateFlexoConceptInstanceRole extends AbstractCreateFlexoRole<Crea
 		if (aVirtualModelInstance != null) {
 			aVirtualModelInstance.setOwner(this);
 			aVirtualModelInstance.setBindingName("virtualModelInstance");
-			aVirtualModelInstance.setDeclaredType(FMLRTVirtualModelInstance.class);
+			aVirtualModelInstance.setDeclaredType(VirtualModelInstance.class);
 			aVirtualModelInstance.setBindingDefinitionType(DataBinding.BindingDefinitionType.GET);
 		}
 		if (this.virtualModelInstance != aVirtualModelInstance) {
