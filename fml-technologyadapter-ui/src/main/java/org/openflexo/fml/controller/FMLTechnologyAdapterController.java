@@ -465,15 +465,7 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 	}
 
 	private String getContainerBinding(WidgetContext object) {
-		StringBuilder result = new StringBuilder("fci.");
-		/*if (needsVirtualModelInstanceContext(object)) {
-			result.append(FMLBindingFactory.VIRTUAL_MODEL_INSTANCE);
-		}
-		else {
-			result.append(FMLBindingFactory.FLEXO_CONCEPT_INSTANCE);
-		}*/
-		result.append(object.getContainer().toString());
-		return result.toString();
+		return "data." + object.getContainer().toString();
 	}
 
 	private FIBWidget makeFlexoResourceSelector(final WidgetContext object, FIBModelFactory fibModelFactory) {
@@ -534,7 +526,7 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 		}
 
 		fciSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(fciSelector, new DataBinding<>("component.expectedType"),
-				new DataBinding<>("data.parameters." + parameter.getName() + ".type"), true));
+				new DataBinding<>("data.parametersDefinitions." + parameter.getName() + ".type"), true));
 
 		return fciSelector;
 
