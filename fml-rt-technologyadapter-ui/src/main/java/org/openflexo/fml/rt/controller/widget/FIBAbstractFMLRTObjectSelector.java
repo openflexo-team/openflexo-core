@@ -81,6 +81,7 @@ public abstract class FIBAbstractFMLRTObjectSelector<T extends FlexoConceptInsta
 	private VirtualModelInstance<?, ?> virtualModelInstance;
 	private Type expectedType;
 	private FlexoConceptInstanceType defaultExpectedType;
+	private FlexoConcept expectedFlexoConceptType = null;
 
 	public FIBAbstractFMLRTObjectSelector(T editedObject) {
 		super(editedObject);
@@ -133,9 +134,22 @@ public abstract class FIBAbstractFMLRTObjectSelector<T extends FlexoConceptInsta
 
 	@Override
 	public boolean isAcceptableValue(Object o) {
+
 		if (!super.isAcceptableValue(o)) {
 			return false;
 		}
+
+		if (!isVisibleValue(o)) {
+			return false;
+		}
+
+		// TODO: business conditions here when required
+
+		return true;
+	}
+
+	public boolean isVisibleValue(Object o) {
+
 		if (!(o instanceof FlexoConceptInstance)) {
 			return false;
 		}
@@ -178,6 +192,9 @@ public abstract class FIBAbstractFMLRTObjectSelector<T extends FlexoConceptInsta
 	}
 
 	public Type getExpectedType() {
+		if (expectedFlexoConceptType != null) {
+			return expectedFlexoConceptType.getInstanceType();
+		}
 		if (expectedType == null) {
 			return defaultExpectedType;
 		}
@@ -190,6 +207,21 @@ public abstract class FIBAbstractFMLRTObjectSelector<T extends FlexoConceptInsta
 			Type oldValue = this.expectedType;
 			this.expectedType = expectedType;
 			getPropertyChangeSupport().firePropertyChange("expectedType", oldValue, expectedType);
+		}
+	}
+
+	public FlexoConcept getExpectedFlexoConceptType() {
+		return expectedFlexoConceptType;
+	}
+
+	public void setExpectedFlexoConceptType(FlexoConcept expectedFlexoConceptType) {
+
+		if ((expectedFlexoConceptType == null && this.expectedFlexoConceptType != null)
+				|| (expectedFlexoConceptType != null && !expectedFlexoConceptType.equals(this.expectedFlexoConceptType))) {
+			FlexoConcept oldValue = this.expectedFlexoConceptType;
+			this.expectedFlexoConceptType = expectedFlexoConceptType;
+			getPropertyChangeSupport().firePropertyChange("expectedFlexoConceptType", oldValue, expectedFlexoConceptType);
+			getPropertyChangeSupport().firePropertyChange("expectedType", null, getExpectedType());
 		}
 	}
 

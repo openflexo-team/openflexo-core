@@ -69,7 +69,7 @@
 		<BrowserElement id="14"
 			dataClassName="org.openflexo.foundation.fml.rt.FlexoConceptInstance"
 			icon="controller.iconForObject(flexoConceptInstance)" label="flexoConceptInstance.stringRepresentation"
-			enabled="data.isAcceptableValue(flexoConceptInstance)" isEditable="false"
+			visible="data.isVisibleValue(flexoConceptInstance)" enabled="data.isAcceptableValue(flexoConceptInstance)" isEditable="false"
 			name="flexoConceptInstance">
 			<Children id="15"
 				data="flexoConceptInstance.embeddedFlexoConceptInstances" name="embeddedFCI" />
