@@ -1,8 +1,8 @@
 /**
  * 
- * Copyright (c) 2014, Openflexo
+ * Copyright (c) 2014-2015, Openflexo
  * 
- * This file is part of Fml-rt-technologyadapter-ui, a component of the software infrastructure 
+ * This file is part of Fml-technologyadapter-ui, a component of the software infrastructure 
  * developed at Openflexo.
  * 
  * 
@@ -36,43 +36,22 @@
  * 
  */
 
-package org.openflexo.fml.rt.fib;
+package org.openflexo.fml.rt.controller.action;
 
-import org.junit.Test;
-import org.openflexo.gina.test.GenericFIBTestCase;
-import org.openflexo.rm.FileResourceImpl;
-import org.openflexo.rm.ResourceLocator;
+import java.util.logging.Logger;
 
-public class TestFMLRTWizardFibs extends GenericFIBTestCase {
+import org.openflexo.foundation.fml.AbstractActionScheme;
+import org.openflexo.foundation.fml.rt.action.AbstractActionSchemeAction;
+import org.openflexo.view.controller.FlexoController;
 
-	public static void main(String[] args) {
-		System.out.println(
-				generateFIBTestCaseClass(((FileResourceImpl) ResourceLocator.locateResource("Fib/Wizard")).getFile(), "Fib/Wizard/"));
-	}
+public class AbstractActionSchemeActionWizard<A extends AbstractActionSchemeAction<A, FB, ?>, FB extends AbstractActionScheme>
+		extends FlexoBehaviourActionWizard<A, FB> {
 
-	@Test
-	public void testConfigureCreationScheme() {
-		validateFIB("Fib/Wizard/CreateFlexoConceptInstance/ConfigureCreationScheme.fib");
-	}
+	@SuppressWarnings("unused")
+	private static final Logger logger = Logger.getLogger(AbstractActionSchemeActionWizard.class.getPackage().getName());
 
-	@Test
-	public void testDescribeFlexoConceptInstance() {
-		validateFIB("Fib/Wizard/CreateFlexoConceptInstance/DescribeFlexoConceptInstance.fib");
-	}
-
-	@Test
-	public void testChooseAndConfigureCreationSchemeForVirtualModel() {
-		validateFIB("Fib/Wizard/CreateVirtualModelInstance/ChooseAndConfigureCreationSchemeForVirtualModel.fib");
-	}
-
-	@Test
-	public void testChooseVirtualModel() {
-		validateFIB("Fib/Wizard/CreateVirtualModelInstance/ChooseVirtualModel.fib");
-	}
-
-	@Test
-	public void testConfigureFlexoBehaviour() {
-		validateFIB("Fib/Wizard/FlexoBehaviourAction/ConfigureFlexoBehaviour.fib");
+	public AbstractActionSchemeActionWizard(A action, FlexoController controller) {
+		super(action, controller);
 	}
 
 }

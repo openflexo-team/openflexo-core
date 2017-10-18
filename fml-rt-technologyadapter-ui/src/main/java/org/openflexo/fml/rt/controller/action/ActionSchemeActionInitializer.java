@@ -43,21 +43,22 @@ import java.util.logging.Logger;
 
 import javax.swing.Icon;
 
+import org.openflexo.components.wizard.Wizard;
+import org.openflexo.components.wizard.WizardDialog;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.action.FlexoActionFinalizer;
 import org.openflexo.foundation.action.FlexoActionInitializer;
 import org.openflexo.foundation.action.FlexoExceptionHandler;
 import org.openflexo.foundation.action.NotImplementedException;
-import org.openflexo.foundation.fml.ActionScheme;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstanceObject;
 import org.openflexo.foundation.fml.rt.action.ActionSchemeAction;
+import org.openflexo.gina.controller.FIBController.Status;
 import org.openflexo.icon.FMLIconLibrary;
 import org.openflexo.view.controller.ActionInitializer;
 import org.openflexo.view.controller.ControllerActionInitializer;
 import org.openflexo.view.controller.FlexoController;
-import org.openflexo.view.controller.ParametersRetriever;
 
 public class ActionSchemeActionInitializer extends ActionInitializer<ActionSchemeAction, FlexoConceptInstance, VirtualModelInstanceObject> {
 
@@ -73,12 +74,22 @@ public class ActionSchemeActionInitializer extends ActionInitializer<ActionSchem
 			@Override
 			public boolean run(EventObject e, ActionSchemeAction action) {
 				getController().willExecute(action);
-				ParametersRetriever<ActionScheme> parameterRetriever = new ParametersRetriever<ActionScheme>(action,
+
+				Wizard wizard = new ActionSchemeActionWizard(action, getController());
+				WizardDialog dialog = new WizardDialog(wizard, getController());
+				dialog.showDialog();
+				if (dialog.getStatus() != Status.VALIDATED) {
+					// Operation cancelled
+					return false;
+				}
+				return true;
+
+				/*ParametersRetriever<ActionScheme> parameterRetriever = new ParametersRetriever<ActionScheme>(action,
 						getController() != null ? getController().getApplicationContext() : null);
 				if (action.escapeParameterRetrievingWhenValid && parameterRetriever.isSkipable()) {
 					return true;
 				}
-				return parameterRetriever.retrieveParameters();
+				return parameterRetriever.retrieveParameters();*/
 			}
 		};
 	}
