@@ -38,7 +38,9 @@
 
 package org.openflexo.foundation.fml;
 
+import java.io.File;
 import java.lang.reflect.Type;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -47,6 +49,8 @@ import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.Vector;
 import java.util.logging.Logger;
+
+import javax.swing.ImageIcon;
 
 import org.openflexo.connie.Bindable;
 import org.openflexo.connie.DataBinding;
@@ -87,6 +91,10 @@ import org.openflexo.model.validation.Validable;
 import org.openflexo.model.validation.ValidationIssue;
 import org.openflexo.model.validation.ValidationRule;
 import org.openflexo.model.validation.ValidationWarning;
+import org.openflexo.rm.BasicResourceImpl.LocatorNotFoundException;
+import org.openflexo.rm.FileResourceImpl;
+import org.openflexo.rm.Resource;
+import org.openflexo.swing.ImageUtils;
 import org.openflexo.toolbox.StringUtils;
 
 /**
@@ -571,6 +579,88 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 	 */
 	public List<FlexoConcept> getAllParentFlexoConcepts();
 
+	@PropertyIdentifier(type = Resource.class)
+	public static final String BIG_ICON_RESOURCE_KEY = "bigIconResource";
+	@PropertyIdentifier(type = Resource.class)
+	public static final String MEDIUM_ICON_RESOURCE_KEY = "mediumIconResource";
+	@PropertyIdentifier(type = Resource.class)
+	public static final String SMALL_ICON_RESOURCE_KEY = "smallIconResource";
+
+	/**
+	 * Icon for FlexoConcept, with 64x64 pixel format
+	 * 
+	 * @return
+	 */
+	@Getter(value = BIG_ICON_RESOURCE_KEY, isStringConvertable = true)
+	@XMLAttribute
+	public Resource getBigIconResource();
+
+	@Setter(BIG_ICON_RESOURCE_KEY)
+	public void setBigIconResource(Resource imageFile);
+
+	// TODO : this is a Workaround for Fib File selector...It has to be fixed in a more efficient way
+	public File getBigIconFile();
+
+	// TODO : this is a Workaround for Fib File selector...It has to be fixed in a more efficient way
+	public void setBigIconFile(File file) throws MalformedURLException, LocatorNotFoundException;
+
+	/**
+	 * Icon for FlexoConcept, with 64x64 pixel format
+	 * 
+	 * @return
+	 */
+	public ImageIcon getBigIcon();
+
+	/**
+	 * Icon for FlexoConcept, with 32x32 pixel format
+	 * 
+	 * @return
+	 */
+	@Getter(value = MEDIUM_ICON_RESOURCE_KEY, isStringConvertable = true)
+	@XMLAttribute
+	public Resource getMediumIconResource();
+
+	@Setter(MEDIUM_ICON_RESOURCE_KEY)
+	public void setMediumIconResource(Resource imageFile);
+
+	// TODO : this is a Workaround for Fib File selector...It has to be fixed in a more efficient way
+	public File getMediumIconFile();
+
+	// TODO : this is a Workaround for Fib File selector...It has to be fixed in a more efficient way
+	public void setMediumIconFile(File file) throws MalformedURLException, LocatorNotFoundException;
+
+	/**
+	 * Icon for FlexoConcept, with 32x32 pixel format
+	 * 
+	 * @return
+	 */
+	public ImageIcon getMediumIcon();
+
+	/**
+	 * Icon for FlexoConcept, with 16x16 pixel format
+	 * 
+	 * @return
+	 */
+	@Getter(value = SMALL_ICON_RESOURCE_KEY, isStringConvertable = true)
+	@XMLAttribute
+	public Resource getSmallIconResource();
+
+	@Setter(SMALL_ICON_RESOURCE_KEY)
+	public void setSmallIconResource(Resource imageFile);
+
+	// TODO : this is a Workaround for Fib File selector...It has to be fixed in a more efficient way
+	public File getSmallIconFile();
+
+	// TODO : this is a Workaround for Fib File selector...It has to be fixed in a more efficient way
+	public void setSmallIconFile(File file) throws MalformedURLException, LocatorNotFoundException;
+
+	/**
+	 * Icon for FlexoConcept, with 16x16 pixel format
+	 * 
+	 * @return
+	 */
+	public ImageIcon getSmallIcon();
+
 	public static abstract class FlexoConceptImpl extends FlexoConceptObjectImpl implements FlexoConcept {
 
 		protected static final Logger logger = FlexoLogger.getLogger(FlexoConcept.class.getPackage().getName());
@@ -591,6 +681,10 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 		 * Stores a cache for properties for all end-properties of this {@link FlexoConcept}
 		 */
 		private List<FlexoProperty<?>> accessibleProperties;
+
+		private ImageIcon bigIcon;
+		private ImageIcon mediumIcon;
+		private ImageIcon smallIcon;
 
 		@Override
 		public VirtualModel getVirtualModel() {
@@ -1763,6 +1857,86 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 			return embeddedValidable;
 		}
 
+		// TODO : this is a Workaround for Fib File selector...It has to be fixed in a more efficient way
+		@Override
+		public File getBigIconFile() {
+			if (getBigIconResource() instanceof FileResourceImpl) {
+				return ((FileResourceImpl) getBigIconResource()).getFile();
+			}
+			else
+				return null;
+		}
+
+		// TODO : this is a Workaround for Fib File selector...It has to be fixed in a more efficient way
+		@Override
+		public void setBigIconFile(File file) throws MalformedURLException, LocatorNotFoundException {
+
+			this.setBigIconResource(new FileResourceImpl(file));
+			bigIcon = null;
+			getPropertyChangeSupport().firePropertyChange("bigIcon", null, getBigIcon());
+		}
+
+		// TODO : this is a Workaround for Fib File selector...It has to be fixed in a more efficient way
+		@Override
+		public File getMediumIconFile() {
+			if (getMediumIconResource() instanceof FileResourceImpl) {
+				return ((FileResourceImpl) getMediumIconResource()).getFile();
+			}
+			else
+				return null;
+		}
+
+		// TODO : this is a Workaround for Fib File selector...It has to be fixed in a more efficient way
+		@Override
+		public void setMediumIconFile(File file) throws MalformedURLException, LocatorNotFoundException {
+
+			this.setMediumIconResource(new FileResourceImpl(file));
+			mediumIcon = null;
+			getPropertyChangeSupport().firePropertyChange("mediumIcon", null, getMediumIcon());
+		}
+
+		// TODO : this is a Workaround for Fib File selector...It has to be fixed in a more efficient way
+		@Override
+		public File getSmallIconFile() {
+			if (getSmallIconResource() instanceof FileResourceImpl) {
+				return ((FileResourceImpl) getSmallIconResource()).getFile();
+			}
+			else
+				return null;
+		}
+
+		// TODO : this is a Workaround for Fib File selector...It has to be fixed in a more efficient way
+		@Override
+		public void setSmallIconFile(File file) throws MalformedURLException, LocatorNotFoundException {
+
+			this.setSmallIconResource(new FileResourceImpl(file));
+			smallIcon = null;
+			getPropertyChangeSupport().firePropertyChange("smallIcon", null, getSmallIcon());
+		}
+
+		@Override
+		public ImageIcon getBigIcon() {
+			if (bigIcon == null && getBigIconResource() != null && getBigIconResource().exists()) {
+				bigIcon = new ImageIcon(ImageUtils.loadImageFromResource(getBigIconResource()));
+			}
+			return bigIcon;
+		}
+
+		@Override
+		public ImageIcon getMediumIcon() {
+			if (mediumIcon == null && getMediumIconResource() != null && getMediumIconResource().exists()) {
+				mediumIcon = new ImageIcon(ImageUtils.loadImageFromResource(getMediumIconResource()));
+			}
+			return mediumIcon;
+		}
+
+		@Override
+		public ImageIcon getSmallIcon() {
+			if (smallIcon == null && getSmallIconResource() != null && getSmallIconResource().exists()) {
+				smallIcon = new ImageIcon(ImageUtils.loadImageFromResource(getSmallIconResource()));
+			}
+			return smallIcon;
+		}
 	}
 
 	@DefineValidationRule

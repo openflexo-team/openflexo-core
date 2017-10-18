@@ -93,16 +93,53 @@
 					name="delete_constraint" />
 			</Table>
 
-			<Label name="KeyPropertiesLabel" localize="true" visible="(data.flexoProperties.size &gt; 0)"
-				align="left" index="18"
+			<Label name="KeyPropertiesLabel" localize="true"
+				visible="(data.flexoProperties.size &gt; 0)" align="left" index="18"
 				constraints="twocols(expandHorizontally=false;expandVertically=false;index=2;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)"
 				label="key_properties" />
-			<CheckboxList data="data.keyProperties" index="19" visible="(data.flexoProperties.size &gt; 0)"
+			<CheckboxList data="data.keyProperties" index="19"
+				visible="(data.flexoProperties.size &gt; 0)"
 				constraints="twocols(expandHorizontally=true;expandVertically=false;index=3;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
 				format="object.name" showText="true"
 				iteratorClassName="org.openflexo.foundation.fml.FlexoProperty"
 				showIcon="true" staticList="" autoSelectFirstRow="true" name="CheckboxList"
 				icon="controller.iconForObject(object)" list="data.flexoProperties" />
+
+			<Label index="30" label="big_icon_(64x64px)" constraints="twocols(expandHorizontally=false;expandVertically=false;index=2;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)"
+				localize="true" />
+			<Panel index="31" layout="border" hGap="0" vGap="0"
+				flowAlignment="LEADING" borderLeft="2" titleFont="SansSerif,0,11"
+				darkLevel="0" constraints="twocols(expandHorizontally=true;location=right)">
+				<Image manageDynamicModel="false" useScrollBar="false" data="data.bigIcon.image"
+					sizeAdjustment="FitToAvailableSizeRespectRatio" imageHeight="64" localize="true"
+					align="left" readOnly="false" imageWidth="64" constraints="border(location=west)" />
+				<File isDirectory="false" columns="5" localize="true"
+					data="data.bigIconFile" constraints="border(location=border)" />
+			</Panel>
+
+			<Label index="32" label="medium_icon_(32x32px)" constraints="twocols(expandHorizontally=false;expandVertically=false;index=2;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)"
+				localize="true" />
+			<Panel index="33" layout="border" hGap="0" vGap="0"
+				flowAlignment="LEADING" borderLeft="2" titleFont="SansSerif,0,11"
+				darkLevel="0" constraints="twocols(expandHorizontally=true;location=right)">
+				<Image manageDynamicModel="false" useScrollBar="false" data="data.mediumIcon.image"
+					sizeAdjustment="FitToAvailableSizeRespectRatio" imageHeight="32" localize="true"
+					align="left" readOnly="false" imageWidth="32" constraints="border(location=west)" />
+				<File isDirectory="false" columns="5" localize="true"
+					data="data.mediumIconFile" constraints="border(location=border)" />
+			</Panel>
+
+			<Label index="34" label="small_icon_(16x16px)" constraints="twocols(expandHorizontally=false;expandVertically=false;index=2;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)"
+				localize="true" />
+			<Panel index="35" layout="border" hGap="0" vGap="0"
+				flowAlignment="LEADING" borderLeft="2" titleFont="SansSerif,0,11"
+				darkLevel="0" constraints="twocols(expandHorizontally=true;location=right)">
+				<Image manageDynamicModel="false" useScrollBar="false" data="data.smallIcon.image"
+					sizeAdjustment="OriginalSize" imageHeight="16" localize="true"
+					align="left" readOnly="false" imageWidth="16" constraints="border(location=west)" />
+				<File isDirectory="false" columns="5" localize="true"
+					data="data.smallIconFile" constraints="border(location=border)" />
+			</Panel>
 
 
 		</Tab>
