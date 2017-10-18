@@ -42,6 +42,8 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.ActionScheme;
 import org.openflexo.foundation.fml.rt.action.ActionSchemeAction;
+import org.openflexo.icon.FMLRTIconLibrary;
+import org.openflexo.icon.IconMarker;
 import org.openflexo.view.controller.FlexoController;
 
 public class ActionSchemeActionWizard extends AbstractActionSchemeActionWizard<ActionSchemeAction, ActionScheme> {
@@ -51,6 +53,11 @@ public class ActionSchemeActionWizard extends AbstractActionSchemeActionWizard<A
 
 	public ActionSchemeActionWizard(ActionSchemeAction action, FlexoController controller) {
 		super(action, controller);
+	}
+
+	@Override
+	public IconMarker getIconMarker() {
+		return FMLRTIconLibrary.ACTION_MARKER;
 	}
 
 }

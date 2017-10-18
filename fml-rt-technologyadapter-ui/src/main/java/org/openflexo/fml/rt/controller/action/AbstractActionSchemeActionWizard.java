@@ -44,7 +44,7 @@ import org.openflexo.foundation.fml.AbstractActionScheme;
 import org.openflexo.foundation.fml.rt.action.AbstractActionSchemeAction;
 import org.openflexo.view.controller.FlexoController;
 
-public class AbstractActionSchemeActionWizard<A extends AbstractActionSchemeAction<A, FB, ?>, FB extends AbstractActionScheme>
+public abstract class AbstractActionSchemeActionWizard<A extends AbstractActionSchemeAction<A, FB, ?>, FB extends AbstractActionScheme>
 		extends FlexoBehaviourActionWizard<A, FB> {
 
 	@SuppressWarnings("unused")

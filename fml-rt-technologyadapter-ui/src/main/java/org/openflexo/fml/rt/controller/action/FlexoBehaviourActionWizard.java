@@ -49,10 +49,12 @@ import org.openflexo.foundation.FlexoObservable;
 import org.openflexo.foundation.FlexoObserver;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
+import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.gina.annotation.FIBPanel;
+import org.openflexo.icon.FMLRTIconLibrary;
 import org.openflexo.icon.IconFactory;
-import org.openflexo.icon.IconLibrary;
+import org.openflexo.icon.IconMarker;
 import org.openflexo.toolbox.StringUtils;
 import org.openflexo.view.controller.FlexoController;
 
@@ -89,8 +91,23 @@ public abstract class FlexoBehaviourActionWizard<A extends FlexoBehaviourAction<
 
 	@Override
 	public Image getDefaultPageImage() {
-		return IconFactory.getImageIcon(IconLibrary.OPENFLEXO_NOTEXT_64, IconLibrary.NEW_32_32).getImage();
+		System.out.println("getAction().getFlexoBehaviour().getFlexoConcept()=" + getAction().getFlexoBehaviour().getFlexoConcept());
+		System.out.println("getAction().getFlexoBehaviour().getFlexoConcept().getBigIcon()="
+				+ getAction().getFlexoBehaviour().getFlexoConcept().getBigIcon());
+		if (getAction().getFlexoBehaviour().getFlexoConcept().getBigIcon() != null) {
+			return IconFactory.getImageIcon(getAction().getFlexoBehaviour().getFlexoConcept().getBigIcon(), getIconMarker()).getImage();
+		}
+		if (getAction().getFlexoBehaviour().getFlexoConcept() instanceof VirtualModel) {
+			return IconFactory.getImageIcon(FMLRTIconLibrary.VIRTUAL_MODEL_INSTANCE_MEDIUM_ICON, getIconMarker()).getImage();
+		}
+		return IconFactory.getImageIcon(FMLRTIconLibrary.FLEXO_CONCEPT_INSTANCE_MEDIUM_ICON, getIconMarker()).getImage();
 	}
+
+	public abstract IconMarker getIconMarker();
+
+	/*public IconMarker getIconMarker() {
+		return IconLibrary.NEW_32_32;
+	}*/
 
 	public ConfigureFlexoBehaviour getConfigureFlexoBehaviour() {
 		return configureFlexoBehaviour;

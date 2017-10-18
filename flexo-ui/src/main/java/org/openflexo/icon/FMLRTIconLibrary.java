@@ -84,6 +84,10 @@ public class FMLRTIconLibrary extends IconLibrary {
 	public static final ImageIconResource FLEXO_CLASS_INSTANCE_ICON = new ImageIconResource(
 			ResourceLocator.locateResource("Icons/Java/ClassPublic.gif"));
 
+	public static final IconMarker DELETE_MARKER = new IconMarker(FMLIconLibrary.DELETION_SCHEME_ICON, 45, 0);
+	public static final IconMarker ADD_MARKER = new IconMarker(FMLIconLibrary.CREATION_SCHEME_ICON, 45, 0);
+	public static final IconMarker ACTION_MARKER = new IconMarker(FMLIconLibrary.ACTION_SCHEME_ICON, 45, 0);
+
 	public static final IconMarker VIRTUAL_MODEL_INSTANCE_MARKER = new IconMarker(VIRTUAL_MODEL_INSTANCE_SMALL_ICON, 6, 0);
 
 	public static final ImageIconResource UNKNOWN_ICON = new ImageIconResource(
