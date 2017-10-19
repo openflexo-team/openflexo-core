@@ -98,7 +98,8 @@ public class FMLRTIconLibrary extends IconLibrary {
 			return FMLIconLibrary.iconForObject(((ModelSlotInstance) object).getModelSlot());
 		}
 		else if (object instanceof FMLRTVirtualModelInstance) {
-			if (((FMLRTVirtualModelInstance) object).getVirtualModel().getSmallIcon() != null) {
+			if (((FMLRTVirtualModelInstance) object).getVirtualModel() != null
+					&& ((FMLRTVirtualModelInstance) object).getVirtualModel().getSmallIcon() != null) {
 				return ((FMLRTVirtualModelInstance) object).getVirtualModel().getSmallIcon();
 			}
 			return VIRTUAL_MODEL_INSTANCE_ICON;
@@ -111,7 +112,8 @@ public class FMLRTIconLibrary extends IconLibrary {
 			return VIRTUAL_MODEL_INSTANCE_ICON;
 		}
 		else if (object instanceof FlexoConceptInstance) {
-			if (((FlexoConceptInstance) object).getFlexoConcept().getSmallIcon() != null) {
+			if (((FlexoConceptInstance) object).getFlexoConcept() != null
+					&& ((FlexoConceptInstance) object).getFlexoConcept().getSmallIcon() != null) {
 				return ((FlexoConceptInstance) object).getFlexoConcept().getSmallIcon();
 			}
 			return FLEXO_CONCEPT_INSTANCE_ICON;
