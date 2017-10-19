@@ -256,7 +256,7 @@ public abstract class AbstractCreateFlexoConcept<A extends FlexoAction<A, T1, T2
 		}
 	}
 
-	protected void performCreateInspectors() {
+	public void performCreateInspectors() {
 
 		if (getDefineInspector()) {
 
@@ -273,6 +273,8 @@ public abstract class AbstractCreateFlexoConcept<A extends FlexoAction<A, T1, T2
 
 	private void performCreateInspectorEntry(PropertyEntry entry, FlexoConceptInspector inspector) {
 		Progress.progress(getLocales().localizedForKey("create_inspector_entry") + " " + entry.getName());
+
+		System.out.println("Create inspector entry " + entry.getName() + " type=" + entry.getType());
 
 		CreateInspectorEntry action = CreateInspectorEntry.actionType.makeNewEmbeddedAction(inspector, null, this);
 		action.setEntryName(entry.getName());

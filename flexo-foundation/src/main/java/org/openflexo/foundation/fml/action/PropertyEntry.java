@@ -203,7 +203,18 @@ public class PropertyEntry extends PropertyChangedSupportDefaultImplementation i
 			}
 		}
 		else if (getPropertyType() == PropertyType.TECHNOLOGY_ROLE) {
-			return getFlexoRoleClass();
+			Type genericRoleClass = Object.class;
+			if (getFlexoRoleClass() != null) {
+				genericRoleClass = TypeUtils.getTypeArgument(getFlexoRoleClass(), FlexoRole.class, 0);
+			}
+			// System.out.println("type for " + getFlexoRoleClass() + " is " + genericRoleClass);
+			// System.out.println("type=" + type);
+			// System.out.println("assignable=" + TypeUtils.isTypeAssignableFrom(genericRoleClass, type));
+			if (type != null && TypeUtils.isTypeAssignableFrom(genericRoleClass, type)) {
+				// System.out.println("Returning " + type + " for " + getName());
+				return type;
+			}
+			return genericRoleClass;
 		}
 		else if (getPropertyType() == PropertyType.FLEXO_CONCEPT_INSTANCE) {
 			if (getFlexoConcept() != null) {

@@ -166,12 +166,14 @@ public class CreateInspectorEntry extends FlexoAction<CreateInspectorEntry, Flex
 
 	@Override
 	protected void doAction(Object context) throws NotImplementedException, InvalidParameterException {
-		logger.info("Add InspectorEntry, name=" + getEntryName() + " type=" + getEntryType() + " widget=" + getWidgetType());
+		logger.info("Add InspectorEntry, name=" + getEntryName() + " type1=" + entryType + " analyzed_type="
+				+ (getData().isValid() ? getData().getAnalyzedType() : "???") + " widget=" + getWidgetType());
 
 		FMLModelFactory factory = getFocusedObject().getFMLModelFactory();
 		newEntry = factory.newInspectorEntry(getFocusedObject());
 		newEntry.setName(getEntryName());
 		newEntry.setType(getEntryType());
+		newEntry.setWidget(getWidgetType());
 		newEntry.setContainer(getContainer());
 		newEntry.setData(getData());
 		newEntry.setList(getList());
