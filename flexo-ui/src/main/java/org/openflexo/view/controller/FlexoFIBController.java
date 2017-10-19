@@ -71,6 +71,7 @@ import org.openflexo.foundation.action.copypaste.PasteAction;
 import org.openflexo.foundation.action.copypaste.PasteAction.PasteActionType;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FMLValidationReport;
+import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.resource.FlexoProjectReference;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.RepositoryFolder;
@@ -247,15 +248,15 @@ public class FlexoFIBController extends FIBController implements GraphicalFlexoO
 		ImageIcon returned = cachedIcons.get(object);
 		if (returned == null) {
 			returned = retrieveIconForObject(object);
-			if (object instanceof Validable) {
+			if (object instanceof Validable && hasValidationReport((Validable) object)) {
 				if (hasErrors((Validable) object)) {
 					returned = IconFactory.getImageIcon(returned, IconLibrary.ERROR);
 				}
 				else if (hasWarnings((Validable) object)) {
 					returned = IconFactory.getImageIcon(returned, IconLibrary.WARNING);
 				}
+				cachedIcons.put(object, returned);
 			}
-			cachedIcons.put(object, returned);
 		}
 		return returned;
 	}
@@ -264,22 +265,23 @@ public class FlexoFIBController extends FIBController implements GraphicalFlexoO
 		cachedIcons.clear();
 	}
 
+	public boolean hasValidationReport(Validable object) {
+		FMLValidationReport validationReport = (FMLValidationReport) getValidationReport(object);
+		return (validationReport != null);
+	}
+
 	public boolean hasErrors(Validable object) {
-		if (object instanceof FMLObject) {
-			FMLValidationReport validationReport = (FMLValidationReport) getValidationReport(object);
-			if (validationReport != null) {
-				return validationReport.hasErrors((FMLObject) object);
-			}
+		FMLValidationReport validationReport = (FMLValidationReport) getValidationReport(object);
+		if (validationReport != null) {
+			return validationReport.hasErrors((FMLObject) object);
 		}
 		return false;
 	}
 
 	public boolean hasWarnings(Validable object) {
-		if (object instanceof FMLObject) {
-			FMLValidationReport validationReport = (FMLValidationReport) getValidationReport(object);
-			if (validationReport != null) {
-				return validationReport.hasWarnings((FMLObject) object);
-			}
+		FMLValidationReport validationReport = (FMLValidationReport) getValidationReport(object);
+		if (validationReport != null) {
+			return validationReport.hasWarnings((FMLObject) object);
 		}
 		return false;
 	}
