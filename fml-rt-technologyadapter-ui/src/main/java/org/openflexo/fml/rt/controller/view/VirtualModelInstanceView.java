@@ -71,7 +71,7 @@ public class VirtualModelInstanceView extends FIBModuleView<VirtualModelInstance
 
 	@Override
 	public void mouseClicked(FIBView<?, ?> view, int clickCount) {
-		System.out.println("mouseClicked with " + view + " and " + clickCount);
+		// System.out.println("mouseClicked with " + view + " and " + clickCount);
 		/*if (data instanceof FIBTableDynamicModel && ((FIBTableDynamicModel) data).selected instanceof FlexoModelObject && clickCount == 2) {
 			FlexoObject o = (FlexoObject) ((FIBTableDynamicModel) data).selected;
 			if (o instanceof ViewPoint || o instanceof FlexoConcept || o instanceof ExampleDiagram || o instanceof DiagramPalette) {
