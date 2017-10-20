@@ -113,7 +113,7 @@ public abstract class FlexoBehaviourActionWizard<A extends FlexoBehaviourAction<
 		return configureFlexoBehaviour;
 	}
 
-	@FIBPanel("Fib/Wizard/FlexobehaviourAction/ConfigureFlexoBehaviour.fib")
+	@FIBPanel("Fib/Wizard/FlexoBehaviourAction/ConfigureFlexoBehaviour.fib")
 	public class ConfigureFlexoBehaviour extends WizardStep implements FlexoObserver {
 
 		public ConfigureFlexoBehaviour() {
