@@ -56,6 +56,7 @@ import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.connie.MultipleParametersBindingEvaluator;
 import org.openflexo.connie.binding.BindingValueChangeListener;
+import org.openflexo.connie.exception.InvalidBindingException;
 import org.openflexo.connie.exception.NotSettableContextException;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
@@ -426,7 +427,8 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 	 * @throws NullReferenceException
 	 * @throws InvocationTargetException
 	 */
-	public <T> T execute(String expression) throws TypeMismatchException, NullReferenceException, InvocationTargetException;
+	public <T> T execute(String expression)
+			throws TypeMismatchException, NullReferenceException, InvocationTargetException, InvalidBindingException;
 
 	/**
 	 * Use the current FlexoConceptInstance as the run-time context of an expression supplied<br>
@@ -451,7 +453,7 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 	 * @throws InvocationTargetException
 	 */
 	public <T> T execute(String expression, Object... parameters)
-			throws TypeMismatchException, NullReferenceException, InvocationTargetException;
+			throws TypeMismatchException, NullReferenceException, InvocationTargetException, InvalidBindingException;
 
 	/**
 	 * Instanciate run-time-level object encoding reference to this {@link FlexoConceptInstance} object
@@ -1912,9 +1914,16 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 		}
 
 		@Override
-		public <T> T execute(String expression) throws TypeMismatchException, NullReferenceException, InvocationTargetException {
+		public <T> T execute(String expression)
+				throws TypeMismatchException, NullReferenceException, InvocationTargetException, InvalidBindingException {
 			DataBinding<T> db = new DataBinding<>(expression, this, Object.class, BindingDefinitionType.GET);
-			return db.getBindingValue(this);
+			if (!db.isValid()) {
+				logger.warning("Invalid binding " + db + " reason: " + db.invalidBindingReason());
+				throw new InvalidBindingException(db);
+			}
+			T returned = db.getBindingValue(this);
+			db.delete();
+			return returned;
 		}
 
 		@Override
