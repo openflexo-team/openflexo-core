@@ -150,15 +150,22 @@ public interface LogAction extends EditionAction {
 				e1.printStackTrace();
 			}
 
-			if (getRootOwner() instanceof FlexoBehaviour) {
-				evaluationContext.getEditor().getFMLConsole().log(logString, getLogLevel(), evaluationContext.getFlexoConceptInstance(),
-						(FlexoBehaviour) getRootOwner());
-			}
-			else {
-				evaluationContext.getEditor().getFMLConsole().log(logString, getLogLevel(), evaluationContext.getFlexoConceptInstance(),
-						null);
+			if (evaluationContext.getEditor() != null && evaluationContext.getEditor().getFMLConsole() != null) {
+
+				if (getRootOwner() instanceof FlexoBehaviour) {
+					evaluationContext.getEditor().getFMLConsole().log(logString, getLogLevel(), evaluationContext.getFlexoConceptInstance(),
+							(FlexoBehaviour) getRootOwner());
+				}
+				else {
+					evaluationContext.getEditor().getFMLConsole().log(logString, getLogLevel(), evaluationContext.getFlexoConceptInstance(),
+							null);
+				}
 			}
 
+			else {
+				logger.warning("Cannot access FML console");
+				System.out.println(logString);
+			}
 			return null;
 		}
 
