@@ -182,7 +182,7 @@ public class AbstractCreationSchemeAction<A extends AbstractCreationSchemeAction
 			}
 		}
 
-		System.out.println("OK on execute " + getFlexoBehaviour().getFMLRepresentation());
+		// System.out.println("OK on execute " + getFlexoBehaviour().getFMLRepresentation());
 
 		executeControlGraph();
 	}
