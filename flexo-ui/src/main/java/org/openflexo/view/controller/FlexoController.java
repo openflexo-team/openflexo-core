@@ -2042,9 +2042,6 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 		else if (object instanceof FMLRTVirtualModelInstanceResource) {
 			return FMLRTIconLibrary.iconForObject((FMLRTVirtualModelInstanceResource) object);
 		}
-		/*else if (object instanceof FMLRTVirtualModelInstanceRepository) {
-			return FMLRTIconLibrary.VIEW_LIBRARY_ICON;
-		}*/
 		else if (object instanceof VirtualModelInstanceObject) {
 			return FMLRTIconLibrary.iconForObject((VirtualModelInstanceObject) object);
 		}
