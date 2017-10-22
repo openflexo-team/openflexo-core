@@ -52,6 +52,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.DataBinding;
+import org.openflexo.connie.exception.InvalidBindingException;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.connie.type.PrimitiveType;
@@ -391,7 +392,8 @@ public class TestFMLBindingModelManagement3 extends OpenflexoProjectAtRunTimeTes
 
 	@Test
 	@TestOrder(6)
-	public void testInstanciateVirtualModelInstances() throws TypeMismatchException, NullReferenceException, InvocationTargetException {
+	public void testInstanciateVirtualModelInstances()
+			throws TypeMismatchException, NullReferenceException, InvocationTargetException, InvalidBindingException {
 
 		log("testInstanciateVirtualModelInstances()");
 
@@ -502,7 +504,8 @@ public class TestFMLBindingModelManagement3 extends OpenflexoProjectAtRunTimeTes
 
 	@Test
 	@TestOrder(7)
-	public void checkContainerAccess() throws TypeMismatchException, NullReferenceException, InvocationTargetException {
+	public void checkContainerAccess()
+			throws TypeMismatchException, NullReferenceException, InvocationTargetException, InvalidBindingException {
 		assertEquals(vmi3, vmi3.execute("this"));
 		assertEquals(vmi2, vmi3.execute("this.container"));
 		assertEquals(vmi2, vmi3.execute("container"));
@@ -514,7 +517,8 @@ public class TestFMLBindingModelManagement3 extends OpenflexoProjectAtRunTimeTes
 
 	@Test
 	@TestOrder(8)
-	public void checkIntrospectiveAccess() throws TypeMismatchException, NullReferenceException, InvocationTargetException {
+	public void checkIntrospectiveAccess()
+			throws TypeMismatchException, NullReferenceException, InvocationTargetException, InvalidBindingException {
 		assertEquals(virtualModel3, vmi3.execute("this.concept"));
 		assertEquals(virtualModel3, vmi3.execute("this.virtualModel"));
 		assertEquals(virtualModel2, vmi3.execute("this.container.concept"));
@@ -534,7 +538,8 @@ public class TestFMLBindingModelManagement3 extends OpenflexoProjectAtRunTimeTes
 
 	@Test
 	@TestOrder(10)
-	public void testInstanciateFlexoConceptInstance() throws TypeMismatchException, NullReferenceException, InvocationTargetException {
+	public void testInstanciateFlexoConceptInstance()
+			throws TypeMismatchException, NullReferenceException, InvocationTargetException, InvalidBindingException {
 
 		log("testInstanciateFlexoConceptInstance()");
 
@@ -602,6 +607,7 @@ public class TestFMLBindingModelManagement3 extends OpenflexoProjectAtRunTimeTes
 	 * The goal is to let the FileSystem monitoring system detects the new directory and instantiate ViewPoint
 	 * 
 	 * @throws IOException
+	 * @throws InvalidBindingException
 	 */
 	/*@Test
 	@TestOrder(11)
@@ -641,7 +647,7 @@ public class TestFMLBindingModelManagement3 extends OpenflexoProjectAtRunTimeTes
 	@Test
 	@TestOrder(12)
 	public void testReloadProject() throws ResourceLoadingCancelledException, FlexoException, TypeMismatchException, NullReferenceException,
-			InvocationTargetException, IOException {
+			InvocationTargetException, IOException, InvalidBindingException {
 
 		log("testReloadProject()");
 

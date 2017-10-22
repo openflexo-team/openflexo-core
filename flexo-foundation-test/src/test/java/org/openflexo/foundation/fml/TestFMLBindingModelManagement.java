@@ -58,6 +58,7 @@ import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.BindingVariable;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
+import org.openflexo.connie.exception.InvalidBindingException;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.connie.type.PrimitiveType;
@@ -1552,7 +1553,8 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 
 	@Test
 	@TestOrder(20)
-	public void testInstanciateVirtualModelInstances() throws TypeMismatchException, NullReferenceException, InvocationTargetException {
+	public void testInstanciateVirtualModelInstances()
+			throws TypeMismatchException, NullReferenceException, InvocationTargetException, InvalidBindingException {
 
 		log("testInstanciateVirtualModelInstances()");
 
