@@ -58,6 +58,7 @@ import org.openflexo.model.annotations.XMLElement;
 @XMLElement
 public interface FMLRTVirtualModelInstance extends VirtualModelInstance<FMLRTVirtualModelInstance, FMLRTTechnologyAdapter> {
 
+	@Override
 	public FMLRTVirtualModelInstanceRepository<?> getVirtualModelInstanceRepository();
 
 	public static abstract class FMLRTVirtualModelInstanceImpl
