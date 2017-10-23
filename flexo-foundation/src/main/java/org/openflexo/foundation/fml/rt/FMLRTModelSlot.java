@@ -146,9 +146,11 @@ public interface FMLRTModelSlot<VMI extends VirtualModelInstance<VMI, TA>, TA ex
 
 			if (virtualModelResource == null && StringUtils.isNotEmpty(virtualModelURI) && getVirtualModelLibrary() != null) {
 				virtualModelResource = getVirtualModelLibrary().getVirtualModelResource(virtualModelURI);
-				logger.info("Looked-up " + virtualModelResource);
-				getPropertyChangeSupport().firePropertyChange("type", null, getType());
-				getPropertyChangeSupport().firePropertyChange("resultingType", null, getResultingType());
+				if (virtualModelResource != null) {
+					logger.info("Looked-up " + virtualModelResource);
+					getPropertyChangeSupport().firePropertyChange("type", null, getType());
+					getPropertyChangeSupport().firePropertyChange("resultingType", null, getResultingType());
+				}
 			}
 
 			return virtualModelResource;
@@ -192,7 +194,7 @@ public interface FMLRTModelSlot<VMI extends VirtualModelInstance<VMI, TA>, TA ex
 		 */
 		@Override
 		public final VirtualModel getAccessedVirtualModel() {
-			if (getAccessedVirtualModelResource() != null) {
+			if (getAccessedVirtualModelResource() != null && !getAccessedVirtualModelResource().isLoading()) {
 				// Do not load virtual model when unloaded
 				// return getAccessedVirtualModelResource().getLoadedResourceData();
 				try {

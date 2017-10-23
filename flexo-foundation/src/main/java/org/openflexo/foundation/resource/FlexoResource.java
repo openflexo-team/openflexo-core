@@ -314,6 +314,14 @@ public interface FlexoResource<RD extends ResourceData<RD>> extends FlexoObject,
 	public void setIODelegate(FlexoIODelegate<?> delegate);
 
 	/**
+	 * Return flag indicating if this resource is currently beeing loading<br>
+	 * Can be used to prevent StackOverflow on some tricky loadings
+	 * 
+	 * @return
+	 */
+	public boolean isLoading();
+
+	/**
 	 * Return flag indicating if this resource is loaded
 	 * 
 	 * @return

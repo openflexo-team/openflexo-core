@@ -115,4 +115,5 @@ public interface VirtualModelResource extends PamelaResource<VirtualModel, FMLMo
 	 * @param useDeclarations
 	 */
 	public void updateFMLModelFactory(List<Class<? extends ModelSlot<?>>> useDeclarations);
+
 }

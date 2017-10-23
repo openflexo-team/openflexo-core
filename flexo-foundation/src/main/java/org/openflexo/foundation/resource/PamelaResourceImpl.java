@@ -167,6 +167,11 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD> & Accessibl
 		return isDeserializing;
 	}
 
+	@Override
+	public boolean isLoading() {
+		return isLoading;
+	}
+
 	/**
 	 * Load resource data by applying a special scheme handling XML versionning, ie to find right XML version of current resource file.<br>
 	 * If version of stored file is not conform to latest declared version, convert resource file and update it to latest version.
@@ -695,7 +700,7 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD> & Accessibl
 	public static Element getElement(Parent parent, String name) {
 		Iterator<Element> it = parent.getDescendants(new ElementFilter(name));
 		if (it.hasNext()) {
-			return (Element) it.next();
+			return it.next();
 		}
 		else {
 			return null;
