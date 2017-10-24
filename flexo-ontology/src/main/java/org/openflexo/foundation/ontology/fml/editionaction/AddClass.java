@@ -60,9 +60,9 @@ import org.openflexo.model.annotations.PropertyIdentifier;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.model.validation.FixProposal;
-import org.openflexo.model.validation.ValidationError;
 import org.openflexo.model.validation.ValidationIssue;
 import org.openflexo.model.validation.ValidationRule;
+import org.openflexo.model.validation.ValidationWarning;
 
 @ModelEntity(isAbstract = true)
 @ImplementationClass(AddClass.AddClassImpl.class)
@@ -215,24 +215,25 @@ public abstract interface AddClass<MS extends TypeAwareModelSlot<M, ?>, M extend
 	}
 
 	@DefineValidationRule
-	public static class AddClassActionMustDefineAnOntologyClass extends ValidationRule<AddClassActionMustDefineAnOntologyClass, AddClass> {
-		public AddClassActionMustDefineAnOntologyClass() {
-			super(AddClass.class, "add_individual_action_must_define_an_ontology_class");
+	public static class AddClassActionShouldDefineAnOntologyClass
+			extends ValidationRule<AddClassActionShouldDefineAnOntologyClass, AddClass> {
+		public AddClassActionShouldDefineAnOntologyClass() {
+			super(AddClass.class, "add_individual_action_should_define_an_ontology_class");
 		}
 
 		@Override
-		public ValidationIssue<AddClassActionMustDefineAnOntologyClass, AddClass> applyValidation(AddClass action) {
+		public ValidationIssue<AddClassActionShouldDefineAnOntologyClass, AddClass> applyValidation(AddClass action) {
 			if (action.getOntologyClass() == null && action.getOwner() instanceof AssignationAction) {
-				Vector<FixProposal<AddClassActionMustDefineAnOntologyClass, AddClass>> v = new Vector<>();
+				Vector<FixProposal<AddClassActionShouldDefineAnOntologyClass, AddClass>> v = new Vector<>();
 				for (ClassRole<?> pr : action.getFlexoConcept().getAccessibleProperties(ClassRole.class)) {
 					v.add(new SetsFlexoRole(pr));
 				}
-				return new ValidationError<>(this, action, "add_individual_action_does_not_define_any_ontology_class", v);
+				return new ValidationWarning<>(this, action, "add_individual_action_does_not_define_any_ontology_class", v);
 			}
 			return null;
 		}
 
-		protected static class SetsFlexoRole extends FixProposal<AddClassActionMustDefineAnOntologyClass, AddClass> {
+		protected static class SetsFlexoRole extends FixProposal<AddClassActionShouldDefineAnOntologyClass, AddClass> {
 
 			private final ClassRole<?> flexoRole;
 
