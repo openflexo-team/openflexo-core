@@ -329,6 +329,42 @@ public interface Sequence extends FMLControlGraph, FMLControlGraphOwner {
 	}
 
 	@DefineValidationRule
+	public static class ControlGraph1IsRequired extends ValidationRule<ControlGraph1IsRequired, Sequence> {
+		public ControlGraph1IsRequired() {
+			super(Sequence.class, "sequence_must_contain_first_control_graph");
+		}
+
+		@Override
+		public ValidationIssue<ControlGraph1IsRequired, Sequence> applyValidation(Sequence sequence) {
+
+			if (sequence.getControlGraph1() == null) {
+				System.err.println("Missing control graph for " + sequence);
+				System.err.println(sequence.getRootOwner().getFMLRepresentation());
+				return new ValidationError<>(this, sequence, "missing_control_graph_(first_statement)");
+			}
+			return null;
+		}
+	}
+
+	@DefineValidationRule
+	public static class ControlGraph2IsRequired extends ValidationRule<ControlGraph2IsRequired, Sequence> {
+		public ControlGraph2IsRequired() {
+			super(Sequence.class, "sequence_must_contain_first_control_graph");
+		}
+
+		@Override
+		public ValidationIssue<ControlGraph2IsRequired, Sequence> applyValidation(Sequence sequence) {
+
+			if (sequence.getControlGraph2() == null) {
+				System.err.println("Missing control graph for " + sequence);
+				System.err.println(sequence.getRootOwner().getFMLRepresentation());
+				return new ValidationError<>(this, sequence, "missing_control_graph_(second_statement)");
+			}
+			return null;
+		}
+	}
+
+	@DefineValidationRule
 	public static class InferedTypesMustBeCompatible extends ValidationRule<InferedTypesMustBeCompatible, Sequence> {
 		public InferedTypesMustBeCompatible() {
 			super(Sequence.class, "infered_types_must_be_compatible_in_a_sequence");
@@ -336,6 +372,7 @@ public interface Sequence extends FMLControlGraph, FMLControlGraphOwner {
 
 		@Override
 		public ValidationIssue<InferedTypesMustBeCompatible, Sequence> applyValidation(Sequence sequence) {
+
 			Type inferedType1 = sequence.getControlGraph1().getInferedType();
 			Type inferedType2 = sequence.getControlGraph2().getInferedType();
 
