@@ -100,13 +100,13 @@ public abstract class AbstractCreateVirtualModelInstance<A extends AbstractCreat
 	protected void doAction(Object context) throws FlexoException {
 		logger.info("Add virtual model instance in view " + getFocusedObject() + " creationSchemeAction=" + creationSchemeAction);
 
-		System.out.println("VirtualModelBeeing created: " + getVirtualModel());
-		if (creationSchemeAction != null && creationSchemeAction.getCreationScheme() != null) {
+		// System.out.println("VirtualModelBeeing created: " + getVirtualModel());
+		/*if (creationSchemeAction != null && creationSchemeAction.getCreationScheme() != null) {
 			System.out.println("FML: " + creationSchemeAction.getCreationScheme().getFMLRepresentation());
-		}
+		}*/
 
-		System.out.println("getNewVirtualModelInstanceName()=" + getNewVirtualModelInstanceName());
-		System.out.println("getNewVirtualModelInstanceTitle()=" + getNewVirtualModelInstanceTitle());
+		// System.out.println("getNewVirtualModelInstanceName()=" + getNewVirtualModelInstanceName());
+		// System.out.println("getNewVirtualModelInstanceTitle()=" + getNewVirtualModelInstanceTitle());
 
 		if (StringUtils.isEmpty(getNewVirtualModelInstanceName())) {
 			throw new InvalidParameterException("virtual model instance name is undefined");
@@ -126,16 +126,17 @@ public abstract class AbstractCreateVirtualModelInstance<A extends AbstractCreat
 		logger.info("Added virtual model instance " + newVirtualModelInstance + " in container " + getFocusedObject());
 
 		// System.out.println("OK, we have created the file " + newVirtualModelInstanceResource.getFile().getAbsolutePath());
-		System.out.println("OK, we have created the VirtualModelInstanceResource " + newVirtualModelInstanceResource.getURI() + " delegate="
-				+ newVirtualModelInstanceResource.getIODelegate().stringRepresentation());
+		// System.out.println("OK, we have created the VirtualModelInstanceResource " + newVirtualModelInstanceResource.getURI() + "
+		// delegate="
+		// + newVirtualModelInstanceResource.getIODelegate().stringRepresentation());
 
-		System.out.println("creationSchemeAction=" + creationSchemeAction);
+		// System.out.println("creationSchemeAction=" + creationSchemeAction);
 
 		// We init the new VMI using a creation scheme
 		if (creationSchemeAction != null) {
 
-			System.out.println("We now execute " + creationSchemeAction);
-			System.out.println("FML=" + creationSchemeAction.getCreationScheme().getFMLRepresentation());
+			// System.out.println("We now execute " + creationSchemeAction);
+			// System.out.println("FML=" + creationSchemeAction.getCreationScheme().getFMLRepresentation());
 
 			creationSchemeAction.initWithFlexoConceptInstance(newVirtualModelInstance);
 			creationSchemeAction.setFocusedObject(newVirtualModelInstance);
@@ -151,14 +152,14 @@ public abstract class AbstractCreateVirtualModelInstance<A extends AbstractCreat
 			getContainerVirtualModelInstance().addToVirtualModelInstances(newVirtualModelInstance);
 		}
 
-		System.out.println("Now, we try to synchronize the new virtual model instance");
+		// System.out.println("Now, we try to synchronize the new virtual model instance");
 
 		if (newVirtualModelInstance.isSynchronizable()) {
-			System.out.println("Go for it");
+			// System.out.println("Go for it");
 			newVirtualModelInstance.synchronize(null);
 		}
 
-		System.out.println("Saving file again...");
+		// System.out.println("Saving file again...");
 		newVirtualModelInstanceResource.save(null);
 	}
 
