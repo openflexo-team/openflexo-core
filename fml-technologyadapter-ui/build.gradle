@@ -3,6 +3,7 @@ dependencies {
   compile project(':flexo-foundation')
   compile project(':flexo-ui')
   compile project(':flexo-ontology')
+  compile project(':flexo-ontology-ui')
   // external dep
 
   // testing dep
