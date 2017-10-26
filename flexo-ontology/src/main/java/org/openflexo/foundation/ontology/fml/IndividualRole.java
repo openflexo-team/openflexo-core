@@ -57,9 +57,9 @@ import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.PropertyIdentifier;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
-import org.openflexo.model.validation.ValidationError;
 import org.openflexo.model.validation.ValidationIssue;
 import org.openflexo.model.validation.ValidationRule;
+import org.openflexo.model.validation.ValidationWarning;
 
 @ModelEntity(isAbstract = true)
 @ImplementationClass(IndividualRole.IndividualRoleImpl.class)
@@ -184,9 +184,9 @@ public interface IndividualRole<I extends IFlexoOntologyIndividual<?>> extends O
 
 		@Override
 		public ValidationIssue<IndividualFlexoRoleMustDefineAValidConceptClass, IndividualRole> applyValidation(
-				IndividualRole patternRole) {
-			if (patternRole.getOntologicType() == null) {
-				return new ValidationError<>(this, patternRole, "individual_role_does_not_define_any_concept_class");
+				IndividualRole role) {
+			if (role.getOntologicType() == null) {
+				return new ValidationWarning<>(this, role, "individual_role_does_not_define_any_concept_class");
 			}
 			return null;
 		}

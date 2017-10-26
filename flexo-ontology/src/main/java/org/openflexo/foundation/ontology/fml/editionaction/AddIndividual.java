@@ -348,7 +348,7 @@ public abstract interface AddIndividual<MS extends TypeAwareModelSlot<M, ?>, M e
 
 		@Override
 		public ValidationIssue<AddIndividualActionMustDefineAnOntologyClass, AddIndividual> applyValidation(AddIndividual action) {
-			if (action.getOntologyClass() == null && action.getOwner() instanceof AssignationAction) {
+			if (!action.getDynamicType().isSet() && action.getOntologyClass() == null && action.getOwner() instanceof AssignationAction) {
 				Vector<FixProposal<AddIndividualActionMustDefineAnOntologyClass, AddIndividual>> v = new Vector<>();
 				for (IndividualRole<?> pr : action.getFlexoConcept().getAccessibleProperties(IndividualRole.class)) {
 					v.add(new SetsFlexoRole(pr));
