@@ -149,6 +149,10 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 	@Remover(PARAMETERS_KEY)
 	public void removeFromParameters(AddFlexoConceptInstanceParameter aParameter);
 
+	public AddFlexoConceptInstanceParameter getParameter(String paramName);
+
+	public AddFlexoConceptInstanceParameter getParameter(FlexoBehaviourParameter p);
+
 	/**
 	 * Get concept as type to be created by this action
 	 * 
@@ -365,6 +369,16 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 			parameters.remove(parameter);
 		}
 
+		@Override
+		public AddFlexoConceptInstanceParameter getParameter(String paramName) {
+			if (getCreationScheme() == null) {
+				return null;
+			}
+			FlexoBehaviourParameter p = getCreationScheme().getParameter(paramName);
+			return getParameter(p);
+		}
+
+		@Override
 		public AddFlexoConceptInstanceParameter getParameter(FlexoBehaviourParameter p) {
 			for (AddFlexoConceptInstanceParameter addEPParam : getParameters()) {
 				if (addEPParam.getParam() == p) {
