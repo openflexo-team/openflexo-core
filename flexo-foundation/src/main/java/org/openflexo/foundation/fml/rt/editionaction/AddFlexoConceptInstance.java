@@ -40,6 +40,7 @@ package org.openflexo.foundation.fml.rt.editionaction;
 
 import java.util.logging.Logger;
 
+import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
@@ -76,7 +77,7 @@ public interface AddFlexoConceptInstance<VMI extends VirtualModelInstance<VMI, ?
 		static final Logger logger = Logger.getLogger(AddFlexoConceptInstance.class.getPackage().getName());
 
 		@Override
-		public FlexoConceptInstance execute(RunTimeEvaluationContext evaluationContext) {
+		public FlexoConceptInstance execute(RunTimeEvaluationContext evaluationContext) throws FlexoException {
 			return super.execute(evaluationContext);
 		}
 

@@ -221,17 +221,20 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 		FlexoBehaviour flexoBehaviour = getFlexoBehaviour();
 		// logger.info("BEGIN retrieveDefaultParameters() for " + flexoBehaviour);
 		for (final FlexoBehaviourParameter parameter : flexoBehaviour.getParameters()) {
-			Object defaultValue = parameter.getDefaultValue(this);
-			// logger.info("Parameter " + parameter.getName() + " default value = " + defaultValue);
-			if (defaultValue != null) {
-				parameterValues.put(parameter, defaultValue);
+			Object value = parameterValues.get(parameter);
+			if (value == null) {
+				value = parameter.getDefaultValue(this);
+				// logger.info("Parameter " + parameter.getName() + " default value = " + defaultValue);
+				if (value != null) {
+					parameterValues.put(parameter, value);
+				}
 			}
 			/*if (parameter instanceof ListParameter) {
 				List list = (List) ((ListParameter) parameter).getList(this);
 				parameterListValues.put((ListParameter) parameter, list);
 			}*/
 			// logger.info("Parameter " + parameter.getName() + " valid=" + parameter.isValid(this, defaultValue));
-			if (!parameter.isValid(this, defaultValue)) {
+			if (!parameter.isValid(this, value)) {
 				// logger.info("Parameter " + parameter + " is not valid for value " + defaultValue);
 				returned = false;
 			}
@@ -330,6 +333,11 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 			} catch (ReturnException e) {
 				returnedValue = e.getReturnedValue();
 			} catch (OperationCancelledException e) {
+				throw e;
+			} catch (FlexoException e) {
+				logger.warning("Unexpected exception while executing FML control graph: " + e);
+				System.err.println(getFlexoBehaviour().getFMLRepresentation());
+				e.printStackTrace();
 				throw e;
 			} catch (Exception e) {
 				logger.warning("Unexpected exception while executing FML control graph: " + e);

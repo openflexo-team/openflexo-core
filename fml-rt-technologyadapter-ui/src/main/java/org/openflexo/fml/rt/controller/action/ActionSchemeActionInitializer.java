@@ -43,7 +43,6 @@ import java.util.logging.Logger;
 
 import javax.swing.Icon;
 
-import org.openflexo.components.wizard.Wizard;
 import org.openflexo.components.wizard.WizardDialog;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.action.FlexoActionFactory;
@@ -75,12 +74,14 @@ public class ActionSchemeActionInitializer extends ActionInitializer<ActionSchem
 			public boolean run(EventObject e, ActionSchemeAction action) {
 				getController().willExecute(action);
 
-				Wizard wizard = new ActionSchemeActionWizard(action, getController());
-				WizardDialog dialog = new WizardDialog(wizard, getController());
-				dialog.showDialog();
-				if (dialog.getStatus() != Status.VALIDATED) {
-					// Operation cancelled
-					return false;
+				ActionSchemeActionWizard wizard = new ActionSchemeActionWizard(action, getController());
+				if (!wizard.isSkipable()) {
+					WizardDialog dialog = new WizardDialog(wizard, getController());
+					dialog.showDialog();
+					if (dialog.getStatus() != Status.VALIDATED) {
+						// Operation cancelled
+						return false;
+					}
 				}
 				return true;
 

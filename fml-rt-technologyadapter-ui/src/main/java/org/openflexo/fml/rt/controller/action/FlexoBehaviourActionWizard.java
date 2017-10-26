@@ -81,7 +81,21 @@ public abstract class FlexoBehaviourActionWizard<A extends FlexoBehaviourAction<
 	public FlexoBehaviourActionWizard(A action, FlexoController controller) {
 		super(controller);
 		this.action = action;
-		addStep(configureFlexoBehaviour = new ConfigureFlexoBehaviour());
+
+		if (!isSkipable()) {
+			addStep(configureFlexoBehaviour = new ConfigureFlexoBehaviour());
+		}
+	}
+
+	public boolean isSkipable() {
+
+		boolean successfullyRetrievedDefaultParameters = action.retrieveDefaultParameters();
+
+		if (successfullyRetrievedDefaultParameters && action.getFlexoBehaviour().getSkipConfirmationPanel()) {
+			return true;
+		}
+
+		return false;
 	}
 
 	@Override

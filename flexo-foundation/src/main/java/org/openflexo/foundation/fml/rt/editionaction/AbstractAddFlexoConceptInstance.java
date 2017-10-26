@@ -49,6 +49,7 @@ import java.util.logging.Logger;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
+import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.CreationScheme;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
@@ -414,7 +415,7 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 		}
 
 		@Override
-		public FCI execute(RunTimeEvaluationContext evaluationContext) {
+		public FCI execute(RunTimeEvaluationContext evaluationContext) throws FlexoException {
 			if (logger.isLoggable(Level.FINE)) {
 				logger.fine("--------------> Perform performAddFlexoConceptInstance " + evaluationContext);
 			}
@@ -485,7 +486,8 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 			return null;
 		}
 
-		protected abstract FlexoConceptInstance makeNewFlexoConceptInstance(RunTimeEvaluationContext evaluationContext);
+		protected abstract FlexoConceptInstance makeNewFlexoConceptInstance(RunTimeEvaluationContext evaluationContext)
+				throws FlexoException;
 
 		@Override
 		public Type getAssignableType() {

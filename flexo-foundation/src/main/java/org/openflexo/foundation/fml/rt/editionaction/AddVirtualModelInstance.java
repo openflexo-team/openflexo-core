@@ -165,7 +165,7 @@ public interface AddVirtualModelInstance extends AbstractAddFlexoConceptInstance
 		}
 
 		@Override
-		public FMLRTVirtualModelInstance execute(RunTimeEvaluationContext evaluationContext) {
+		public FMLRTVirtualModelInstance execute(RunTimeEvaluationContext evaluationContext) throws FlexoException {
 			System.out.println("Now create a FMLRTVirtualModelInstance");
 			return super.execute(evaluationContext);
 		}
