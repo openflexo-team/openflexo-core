@@ -400,6 +400,10 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 					AddFlexoConceptInstanceParameter existingParam = getParameter(p);
 					if (existingParam != null) {
 						parametersToRemove.remove(existingParam);
+						// Force revalidate the binding (binding factory was null)
+						if (!existingParam.getValue().isValid()) {
+							existingParam.getValue().forceRevalidate();
+						}
 					}
 					else {
 						if (getFMLModelFactory() != null) {
