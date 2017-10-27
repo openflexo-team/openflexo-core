@@ -43,6 +43,7 @@ import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.DataBinding;
+import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
@@ -196,6 +197,9 @@ public interface ExpressionAction<T> extends AssignableAction<T> {
 					throw (FlexoException) e.getTargetException();
 				}
 				throw new FlexoException(e);
+			} catch (NullReferenceException e) {
+				System.out.println("Unexpected NullReferenceException while executing " + getExpression());
+				return null;
 			} catch (Exception e) {
 				e.printStackTrace();
 				throw new FlexoException(e);
