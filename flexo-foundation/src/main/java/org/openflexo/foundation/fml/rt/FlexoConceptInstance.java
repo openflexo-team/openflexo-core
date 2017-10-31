@@ -676,8 +676,6 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 					// Take care that we don't manage here the multiple cardinality !!!
 					// This is performed in both classes: FlexoConceptFlexoPropertyPathElement and FlexoPropertyBindingVariable
 					if (((FlexoRole<?>) flexoProperty).getCardinality().isMultipleCardinality()) {
-						System.out.println("Tiens, y'aurait pas un truc la ???");
-						Thread.dumpStack();
 						return (T) getFlexoActorList((FlexoRole) flexoProperty);
 					}
 					return getFlexoActor((FlexoRole<T>) flexoProperty);
