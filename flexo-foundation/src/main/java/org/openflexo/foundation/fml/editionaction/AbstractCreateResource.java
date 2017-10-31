@@ -252,6 +252,19 @@ public interface AbstractCreateResource<MS extends ModelSlot<RD>, RD extends Res
 
 	}
 
+	@DefineValidationRule
+	public static class ResourceNameIsRequiredAndMustBeValid extends BindingIsRequiredAndMustBeValid<AbstractCreateResource> {
+		public ResourceNameIsRequiredAndMustBeValid() {
+			super("'resource_name'_binding_is_required_and_must_be_valid", AbstractCreateResource.class);
+		}
+
+		@Override
+		public DataBinding<Object> getBinding(AbstractCreateResource object) {
+			return object.getResourceName();
+		}
+
+	}
+
 	/* Validation Rule to avoid ResourceCenter to be Null/Empty */
 
 	@DefineValidationRule
