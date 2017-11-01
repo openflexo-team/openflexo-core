@@ -376,6 +376,19 @@ public interface FlexoConceptInstanceRole extends FlexoRole<FlexoConceptInstance
 	}
 
 	@DefineValidationRule
+	public static class VirtualModelInstanceIsRequiredAndMustBeValid extends BindingIsRequiredAndMustBeValid<FlexoConceptInstanceRole> {
+		public VirtualModelInstanceIsRequiredAndMustBeValid() {
+			super("'virtual_model_instance'_binding_is_required_and_must_be_valid", FlexoConceptInstanceRole.class);
+		}
+
+		@Override
+		public DataBinding<VirtualModelInstance<?, ?>> getBinding(FlexoConceptInstanceRole object) {
+			return object.getVirtualModelInstance();
+		}
+
+	}
+
+	@DefineValidationRule
 	public static class MustHaveAConceptType extends ValidationRule<MustHaveAConceptType, FlexoConceptInstanceRole> {
 
 		public MustHaveAConceptType() {
