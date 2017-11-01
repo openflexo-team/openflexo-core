@@ -62,6 +62,7 @@ import org.openflexo.model.validation.FixProposal;
 import org.openflexo.model.validation.ValidationError;
 import org.openflexo.model.validation.ValidationIssue;
 import org.openflexo.model.validation.ValidationRule;
+import org.openflexo.model.validation.ValidationWarning;
 import org.openflexo.toolbox.StringUtils;
 
 /**
@@ -417,6 +418,85 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData/*<Vi
 
 		public FMLModelFactory getDeserializationFactory() {
 			return deserializationFactory;
+		}
+	}
+
+	public static abstract class BindingIsRecommandedAndShouldBeValid<C extends FMLObject>
+			extends ValidationRule<BindingIsRecommandedAndShouldBeValid<C>, C> {
+		public BindingIsRecommandedAndShouldBeValid(String ruleName, Class<C> clazz) {
+			super(clazz, ruleName);
+		}
+
+		public abstract DataBinding<?> getBinding(C object);
+
+		@Override
+		public ValidationIssue<BindingIsRecommandedAndShouldBeValid<C>, C> applyValidation(C object) {
+			if (getBinding(object) != null && getBinding(object).isSet()) {
+				// We force revalidate the binding to be sure that the binding is valid
+				if (!getBinding(object).forceRevalidate()) {
+					FMLObjectImpl.logger.info("Binding NOT valid: " + getBinding(object) + " for " + object.getStringRepresentation()
+							+ ". Reason: " + getBinding(object).invalidBindingReason());
+					DeleteBinding<C> deleteBinding = new DeleteBinding<>(this);
+					// return new ValidationError<BindingMustBeValid<C>, C>(this, object, BindingMustBeValid.this.getRuleName(), "Binding: "
+					// + getBinding(object) + " reason: " + getBinding(object).invalidBindingReason(), deleteBinding);
+					return new InvalidBindingIssue<>(this, object, deleteBinding);
+				}
+			}
+			else {
+				return new RecommandedBindingWarning<>(this, object);
+			}
+			return null;
+		}
+
+		public static class RecommandedBindingWarning<C extends FMLObject>
+				extends ValidationWarning<BindingIsRecommandedAndShouldBeValid<C>, C> {
+
+			public RecommandedBindingWarning(BindingIsRecommandedAndShouldBeValid<C> rule, C anObject) {
+				super(rule, anObject, "binding_'($binding.bindingName)'_is_recommanded_here");
+			}
+
+			public DataBinding<?> getBinding() {
+				return getCause().getBinding(getValidable());
+			}
+
+		}
+
+		public static class InvalidBindingIssue<C extends FMLObject> extends ValidationError<BindingIsRecommandedAndShouldBeValid<C>, C> {
+
+			@SafeVarargs
+			public InvalidBindingIssue(BindingIsRecommandedAndShouldBeValid<C> rule, C anObject,
+					FixProposal<BindingIsRecommandedAndShouldBeValid<C>, C>... fixProposals) {
+				super(rule, anObject, "binding_'($binding.bindingName)'_is_not_valid: ($binding)", fixProposals);
+			}
+
+			public DataBinding<?> getBinding() {
+				return getCause().getBinding(getValidable());
+			}
+
+			public String getReason() {
+				return getBinding().invalidBindingReason();
+			}
+
+			@Override
+			public String getDetailedInformations() {
+				return "($reason)";
+			}
+		}
+
+		protected static class DeleteBinding<C extends FMLObject> extends FixProposal<BindingIsRecommandedAndShouldBeValid<C>, C> {
+
+			private final BindingIsRecommandedAndShouldBeValid<C> rule;
+
+			public DeleteBinding(BindingIsRecommandedAndShouldBeValid<C> rule) {
+				super("delete_this_binding");
+				this.rule = rule;
+			}
+
+			@Override
+			protected void fixAction() {
+				rule.getBinding(getValidable()).reset();
+			}
+
 		}
 	}
 
