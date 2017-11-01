@@ -53,7 +53,7 @@
 		</BrowserElement>
 		<BrowserElement dataClassName="org.openflexo.foundation.fml.VirtualModel"
 			label="virtualModel.name" icon="controller.iconForObject(virtualModel)"
-			tooltip="" enabled="virtualModel.isLoaded" isEditable="false"
+			isEditable="false"
 			editableLabel="" filtered="false" defaultVisible="true" dynamicFont=""
 			name="virtualModel">
 			<Children data="virtualModel.virtualModels" name="subresources" />
