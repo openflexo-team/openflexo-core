@@ -128,4 +128,53 @@ public class FMLUtils {
 
 	}
 
+	public static FlexoConcept getMostSpecializedContainer(FlexoConcept concept1, FlexoConcept concept2) {
+
+		if (concept1 == null || concept2 == null) {
+			return null;
+		}
+		if (concept1 == concept2) {
+			return concept1;
+		}
+
+		VirtualModel vm1 = concept1.getDeclaringVirtualModel();
+		VirtualModel vm2 = concept2.getDeclaringVirtualModel();
+
+		if (vm1.getContainerVirtualModel() == null && vm2.getContainerVirtualModel() == null) {
+			// nothing in common
+			return null;
+		}
+
+		if (vm1.isContainedIn(vm2)) {
+			return vm2;
+		}
+
+		if (vm2.isContainedIn(vm1)) {
+			return vm1;
+		}
+
+		VirtualModel pivot = null;
+		VirtualModel iterated = null;
+		if (vm1.getContainerVirtualModel() != null) {
+			pivot = vm1;
+			iterated = vm2;
+		}
+		else {
+			pivot = vm2;
+			iterated = vm1;
+		}
+
+		if (iterated.isContainedIn(pivot.getContainerVirtualModel())) {
+			return pivot.getContainerVirtualModel();
+		}
+
+		FlexoConcept returned = getMostSpecializedContainer(pivot.getContainerVirtualModel(), iterated);
+		if (returned != null) {
+			return returned;
+		}
+
+		return null;
+
+	}
+
 }

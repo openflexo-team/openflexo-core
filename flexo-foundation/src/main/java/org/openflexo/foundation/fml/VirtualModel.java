@@ -423,6 +423,17 @@ public interface VirtualModel extends FlexoConcept, VirtualModelObject, FlexoMet
 	void loadContainedVirtualModelsWhenUnloaded();
 
 	/**
+	 * Return boolean indicating in this {@link VirtualModel} is contained in supplied {@link VirtualModel} with the recursive semantics
+	 * 
+	 * Also return true if this {@link VirtualModel} is deeply contained in supplied {@link VirtualModel}<br>
+	 * If both virtual models are same return true
+	 * 
+	 * @param virtualModel
+	 * @return
+	 */
+	public boolean isContainedIn(VirtualModel virtualModel);
+
+	/**
 	 * Default implementation for {@link VirtualModel} API
 	 * 
 	 * @author sylvain
@@ -1337,6 +1348,26 @@ public interface VirtualModel extends FlexoConcept, VirtualModelObject, FlexoMet
 			Collection<Validable> returned = super.getEmbeddedValidableObjects();
 			returned.addAll(getVirtualModels());
 			return returned;
+		}
+
+		/**
+		 * Return boolean indicating in this {@link VirtualModel} is contained in supplied {@link VirtualModel} with the recursive semantics
+		 * 
+		 * Also return true if this {@link VirtualModel} is deeply contained in supplied {@link VirtualModel}<br>
+		 * If both virtual models are same return true
+		 * 
+		 * @param virtualModel
+		 * @return
+		 */
+		@Override
+		public boolean isContainedIn(VirtualModel virtualModel) {
+			if (virtualModel == this) {
+				return true;
+			}
+			if (getContainerVirtualModel() == null) {
+				return false;
+			}
+			return getContainerVirtualModel().isContainedIn(virtualModel);
 		}
 
 	}

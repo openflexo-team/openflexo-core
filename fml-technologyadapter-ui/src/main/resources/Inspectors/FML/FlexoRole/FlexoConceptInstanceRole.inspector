@@ -27,8 +27,9 @@
 				localize="true" manageDynamicModel="true" index="11"
 				data="data.flexoConceptType" name="ConceptSelector"
 				constraints="twocols(expandHorizontally=true;expandVertically=false;index=6;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=right)">
-				<Assignment variable="component.virtualModel" value="data.virtualModelType" />
 				<Assignment variable="component.virtualModelLibrary" value="data.virtualModelLibrary" />
+				<Assignment variable="component.restrictToContext" value="true" />
+				<Assignment variable="component.inheritingContext" value="data.virtualModelType" />
 			</Custom>
 		</Tab>
 		<Tab title="Advanced" layout="twocols" titleFont="SansSerif,0,11"

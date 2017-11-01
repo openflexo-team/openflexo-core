@@ -137,8 +137,18 @@ public class AddParentFlexoConceptWizard extends FlexoWizard {
 			return getAction().getLocales().localizedForKey("define_parent_concepts");
 		}
 
+		/**
+		 * Return the {@link VirtualModel} which will be used as inheriting context in FlexoConceptSelector
+		 * 
+		 * @return
+		 */
 		public VirtualModel getVirtualModel() {
-			return getAction().getFocusedObject().getDeclaringVirtualModel().getContainerVirtualModel();
+			if (getAction().getFocusedObject() instanceof VirtualModel) {
+				return ((VirtualModel) getAction().getFocusedObject()).getContainerVirtualModel();
+			}
+			else {
+				return getAction().getFocusedObject().getDeclaringVirtualModel();
+			}
 		}
 
 		public VirtualModelLibrary getVirtualModelLibrary() {
