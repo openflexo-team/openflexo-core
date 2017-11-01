@@ -27,8 +27,10 @@
 			componentClassName="org.openflexo.fml.controller.widget.FIBFlexoConceptSelector"
 			displayTitle="true" disableTerminateEditOnFocusLost="false" title="flexo_concept"
 			columnWidth="80" resizable="true" showIcon="false">
-			<ColumnAssignment id="12" mandatory="true"
+			<ColumnAssignment mandatory="true"
 				value="data.virtualModel"  variable="component.inheritingContext" />
+			<ColumnAssignment mandatory="true"
+				value="data.virtualModelLibrary" variable="component.virtualModelLibrary" />
 		</CustomColumn>
 		<RemoveAction id="13" name="delete"
 			method="data.deleteParentFlexoConceptEntry(selected)" />

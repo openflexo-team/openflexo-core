@@ -48,6 +48,7 @@ import org.openflexo.foundation.fml.FMLUtils;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelLibrary;
+import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
 
@@ -133,11 +134,10 @@ public class FIBFlexoConceptSelector extends FIBFlexoObjectSelector<FlexoConcept
 		}
 	}
 
-	/*@Override
+	@Override
 	protected boolean isAcceptableValue(Object o) {
-		System.out.println("Est ce acceptable ? " + o);
 		return super.isAcceptableValue(o);
-	}*/
+	}
 
 	public FlexoObject getRootObject() {
 		if (getInheritingContext() != null) {

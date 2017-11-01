@@ -49,7 +49,7 @@ import org.openflexo.ApplicationContext;
 import org.openflexo.components.wizard.FlexoWizard;
 import org.openflexo.components.wizard.WizardStep;
 import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.VirtualModel;
+import org.openflexo.foundation.fml.VirtualModelLibrary;
 import org.openflexo.foundation.fml.action.AbstractCreateFlexoConcept.ParentFlexoConceptEntry;
 import org.openflexo.foundation.fml.action.AddParentFlexoConcept;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
@@ -138,7 +138,11 @@ public class AddParentFlexoConceptWizard extends FlexoWizard {
 		}
 
 		public VirtualModel getVirtualModel() {
-			return getAction().getFocusedObject().getOwningVirtualModel();
+			return getAction().getFocusedObject().getDeclaringVirtualModel().getContainerVirtualModel();
+		}
+
+		public VirtualModelLibrary getVirtualModelLibrary() {
+			return getAction().getFocusedObject().getDeclaringVirtualModel().getVirtualModelLibrary();
 		}
 
 		@Override

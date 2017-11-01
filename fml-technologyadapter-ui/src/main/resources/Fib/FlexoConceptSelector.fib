@@ -30,14 +30,13 @@
 			enable="" clickAction="" doubleClickAction="" rightClickAction=""
 			enterPressedAction="" valueChangedAction="" />
 	</Panel>
-	<Browser root="data.rootObject" iteratorClassName="org.openflexo.foundation.fml.FlexoConcept" deepExploration="true"
-		visibleRowCount="5" rowHeight="18" boundToSelectionManager="false"
-		selectionMode="DiscontiguousTreeSelection" selected="data.selectedValue"
-		showFooter="true" rootVisible="true" showRootsHandle="true" format=""
-		localize="true" manageDynamicModel="true"
+	<Browser root="data.rootObject" iteratorClassName="org.openflexo.foundation.fml.FlexoConcept"
+		deepExploration="true" visibleRowCount="5" rowHeight="18"
+		boundToSelectionManager="false" selectionMode="DiscontiguousTreeSelection"
+		selected="data.selectedValue" showFooter="true" rootVisible="true"
+		showRootsHandle="true" format="" localize="true" manageDynamicModel="true"
 		clickAction="controller.selectedObjectChanged()" doubleClickAction="controller.apply()"
-		enterPressedAction="controller.apply()"
-		name="ViewPointBrowser" index="2" 
+		enterPressedAction="controller.apply()" name="ViewPointBrowser" index="2"
 		constraints="twocols(expandHorizontally=true;expandVertically=true;index=2;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=center)">
 		<BrowserElement dataClassName="org.openflexo.foundation.fml.VirtualModelLibrary"
 			label="&quot;Viewpoint Library&quot;" icon="controller.iconForObject(viewPointLibrary)"
@@ -49,19 +48,16 @@
 			label="viewPointFolder.displayableName" icon="controller.iconForObject(viewPointFolder)"
 			isEditable="false" filtered="false" defaultVisible="true" name="viewPointFolder">
 			<Children data="viewPointFolder.children" name="subFolders" />
-			<Children data="viewPointFolder.resources" name="viewPoints" />
+			<Children data="viewPointFolder.resources" name="viewPoints"
+				cast="child.loadedResourceData" />
 		</BrowserElement>
-		<BrowserElement dataClassName="org.openflexo.foundation.fml.rm.VirtualModelResource"
+		<BrowserElement dataClassName="org.openflexo.foundation.fml.VirtualModel"
 			label="virtualModel.name" icon="controller.iconForObject(virtualModel)"
 			tooltip="" enabled="virtualModel.isLoaded" isEditable="false"
 			editableLabel="" filtered="false" defaultVisible="true" dynamicFont=""
 			name="virtualModel">
-			<Children data="virtualModel.contents" visible="virtualModel.isLoaded"
-				cast="" name="subresources" />
-			<!-- <Children data="virtualModel.loadedVirtualModel.modelSlots" visible="virtualModel.isLoaded" 
-				cast="" name="modelSlots" /> -->
-			<Children data="virtualModel.loadedVirtualModel.allRootFlexoConcepts"
-				visible="virtualModel.isLoaded" cast="" name="rootFlexoConcepts" />
+			<Children data="virtualModel.virtualModels" name="subresources" />
+			<Children data="virtualModel.allRootFlexoConcepts" name="rootFlexoConcepts" />
 		</BrowserElement>
 		<BrowserElement dataClassName="org.openflexo.foundation.fml.FlexoConcept"
 			label="flexoConcept.name" icon="controller.iconForObject(flexoConcept)"
