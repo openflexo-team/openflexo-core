@@ -183,7 +183,7 @@ public class FIBFlexoConceptSelector extends FIBFlexoObjectSelector<FlexoConcept
 	}
 
 	@Override
-	protected boolean isAcceptableValue(Object o) {
+	public boolean isAcceptableValue(Object o) {
 		boolean returned = super.isAcceptableValue(o);
 		if (returned && isRestrictToContext()) {
 			if (getInheritingContext() == null) {
@@ -197,13 +197,9 @@ public class FIBFlexoConceptSelector extends FIBFlexoObjectSelector<FlexoConcept
 					return ((VirtualModel) o).getContainerVirtualModel().isAssignableFrom(getInheritingContext());
 				}
 				else {
-					return ((FlexoConcept) o).getOwningVirtualModel().isAssignableFrom(getInheritingContext());
+					return ((FlexoConcept) o).getOwningVirtualModel() != null
+							&& ((FlexoConcept) o).getOwningVirtualModel().isAssignableFrom(getInheritingContext());
 				}
-				/*System.out.println("Alors je regarde et je retourne "
-						+ ((FlexoConcept) o).getOwningVirtualModel().isAssignableFrom(getInheritingContext()));
-				System.out.println("((FlexoConcept)o).getOwningVirtualModel()=" + ((FlexoConcept) o).getOwningVirtualModel());
-				System.out.println("getInheritingContext()=" + getInheritingContext());
-				return ((FlexoConcept) o).getOwningVirtualModel().isAssignableFrom(getInheritingContext());*/
 			}
 		}
 		return returned;
