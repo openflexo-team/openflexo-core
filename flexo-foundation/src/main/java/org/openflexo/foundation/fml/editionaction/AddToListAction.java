@@ -49,6 +49,7 @@ import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.connie.type.ParameterizedTypeImpl;
+import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
@@ -67,6 +68,9 @@ import org.openflexo.model.annotations.PropertyIdentifier;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.model.annotations.XMLElement;
+import org.openflexo.model.validation.ValidationError;
+import org.openflexo.model.validation.ValidationIssue;
+import org.openflexo.model.validation.ValidationRule;
 
 @ModelEntity
 @ImplementationClass(AddToListAction.AddToListActionImpl.class)
@@ -293,18 +297,30 @@ public interface AddToListAction<T> extends AssignableAction<T>, FMLControlGraph
 
 	// TODO: a rule that check that assignableAction is not null
 
-	/*@DefineValidationRule
-	public static class ValueBindingIsRequiredAndMustBeValid extends BindingIsRequiredAndMustBeValid<AddToListAction> {
-		public ValueBindingIsRequiredAndMustBeValid() {
-			super("'value'_binding_is_not_valid", AddToListAction.class);
+	@DefineValidationRule
+	public static class AssignableTypeMustBeCompatible extends ValidationRule<AssignableTypeMustBeCompatible, AddToListAction> {
+		public AssignableTypeMustBeCompatible() {
+			super(AddToListAction.class, "assignable_type_must_be_compatible_with_list_type");
 		}
-	
+
 		@Override
-		public DataBinding<?> getBinding(AddToListAction object) {
-			return object.getValue();
+		public ValidationIssue<AssignableTypeMustBeCompatible, AddToListAction> applyValidation(AddToListAction action) {
+
+			if (action.getAssignableAction() == null) {
+				return new ValidationError<>(this, action, "item_to_add_is_not_defined");
+			}
+
+			if (action.getList().isValid()) {
+				Type itemType = TypeUtils.getTypeArgument(action.getList().getAnalyzedType(), List.class, 0);
+				if (!TypeUtils.isTypeAssignableFrom(itemType, action.getAssignableType())) {
+					return new ValidationError<>(this, action, "types_are_not_compatible (" + TypeUtils.simpleRepresentation(itemType)
+							+ " and " + TypeUtils.simpleRepresentation(action.getAssignableType()) + ")");
+				}
+			}
+
+			return null;
 		}
-	
-	}*/
+	}
 
 	@DefineValidationRule
 	public static class ListBindingIsRequiredAndMustBeValid extends BindingIsRequiredAndMustBeValid<AddToListAction> {
