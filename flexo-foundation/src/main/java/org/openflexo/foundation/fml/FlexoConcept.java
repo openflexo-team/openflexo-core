@@ -114,7 +114,7 @@ import org.openflexo.toolbox.StringUtils;
 @ModelEntity
 @ImplementationClass(FlexoConcept.FlexoConceptImpl.class)
 @XMLElement
-@Imports({ @Import(FlexoEvent.class) })
+@Imports({ @Import(FlexoEvent.class), @Import(FlexoEnum.class) })
 public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 
 	@PropertyIdentifier(type = VirtualModel.class)
@@ -1949,7 +1949,7 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 		@Override
 		public ValidationIssue<NonAbstractFlexoConceptShouldHaveProperties, FlexoConcept> applyValidation(FlexoConcept flexoConcept) {
 			if (!(flexoConcept instanceof VirtualModel) && flexoConcept.getDeclaredProperties().size() == 0) {
-				return new ValidationWarning<>(this, flexoConcept, "non_abstract_flexo_concept_role_does_not_define_any_property");
+				return new ValidationWarning<>(this, flexoConcept, "non_abstract_flexo_concept_does_not_define_any_property");
 			}
 			return null;
 		}

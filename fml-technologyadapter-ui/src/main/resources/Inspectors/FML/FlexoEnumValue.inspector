@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Panel className="org.openflexo.gina.utils.FIBInspector" layout="border"
+	titleFont="SansSerif,0,12" darkLevel="0"
+	dataClassName="org.openflexo.foundation.fml.FlexoEnumValue"
+	controllerClassName="org.openflexo.fml.controller.FMLFIBInspectorController"
+	font="SansSerif,0,12" name="Inspector">
+	<TabPanel name="Tab" constraints="border(location=center)">
+		<Tab title="Basic" layout="twocols" titleFont="SansSerif,0,11"
+			darkLevel="0" index="0" font="SansSerif,0,11" useScrollBar="true"
+			horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED"
+			verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED" name="BasicTab">
+			<CheckBox name="AbstractCB">
+				<Parameter name="hidden" value="true" />
+			</CheckBox>
+			<Label name="AbstractLabel">
+				<Parameter name="hidden" value="true" />
+			</Label>
+
+			<Label name="ContainerLabel">
+				<Parameter name="hidden" value="true" />
+			</Label>
+			<Custom name="ContainerSelector">
+				<Parameter name="hidden" value="true" />
+			</Custom>
+
+			<Label name="ParentConceptsLabel">
+				<Parameter name="hidden" value="true" />
+			</Label>
+			<Table name="ParentFlexoConceptTable">
+				<Parameter name="hidden" value="true" />
+			</Table>
+
+			<Label name="ConstraintsLabel">
+				<Parameter name="hidden" value="true" />
+			</Label>
+			<Table name="ConstraintsTable">
+				<Parameter name="hidden" value="true" />
+			</Table>
+
+			<Label name="KeyPropertiesLabel">
+				<Parameter name="hidden" value="true" />
+			</Label>
+			<CheckboxList name="KeyPropertiesCBList">
+				<Parameter name="hidden" value="true" />
+			</CheckboxList>
+			
+
+		</Tab>
+		<Tab title="Advanced" layout="twocols" titleFont="SansSerif,0,11"
+			darkLevel="0" index="2" font="SansSerif,0,11" useScrollBar="true"
+			horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED"
+			verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED" name="AdvancedTab" />
+		<!-- <Tab title="FML" layout="twocols" titleFont="SansSerif,0,11" darkLevel="0" 
+			index="3" font="SansSerif,0,11" useScrollBar="true" horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED" 
+			verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED" name="FMLTab"> <Editor 
+			validateOnReturn="true" columns="8" rows="3" text="Editor" font="SansSerif,0,13" 
+			tokenMarkerStyle="FML" data="data.fMLRepresentation" constraints="twocols(expandHorizontally=true;expandVertically=true;location=center)" 
+			width="120" height="120" useScrollBar="true" horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED" 
+			verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED" localize="true" /> 
+			</Tab> -->
+	</TabPanel>
+	<LocalizedDictionary>
+		<Localized key="Advanced" lang="French" value="Avancé" />
+		<Localized key="Basic" lang="French" value="Basique" />
+		<Localized key="name" lang="English" value="Name" />
+		<Localized key="name" lang="French" value="Nom" />
+		<Localized key="name" lang="Dutch" value="Name" />
+	</LocalizedDictionary>
+	<Parameter name="title" value="FlexoEnumValue" />
+</Panel>

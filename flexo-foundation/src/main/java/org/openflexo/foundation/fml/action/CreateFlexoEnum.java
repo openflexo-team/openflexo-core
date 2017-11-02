@@ -49,25 +49,25 @@ import org.openflexo.foundation.action.NotImplementedException;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FlexoConceptObject;
-import org.openflexo.foundation.fml.FlexoEvent;
+import org.openflexo.foundation.fml.FlexoEnum;
 import org.openflexo.foundation.fml.InconsistentFlexoConceptHierarchyException;
 import org.openflexo.foundation.fml.InnerConceptsFacet;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.toolbox.StringUtils;
 
-public class CreateFlexoEvent extends AbstractCreateFlexoConcept<CreateFlexoEvent, FlexoConceptObject, FMLObject> {
+public class CreateFlexoEnum extends AbstractCreateFlexoConcept<CreateFlexoEnum, FlexoConceptObject, FMLObject> {
 
-	private static final Logger logger = Logger.getLogger(CreateFlexoEvent.class.getPackage().getName());
+	private static final Logger logger = Logger.getLogger(CreateFlexoEnum.class.getPackage().getName());
 
-	public static FlexoActionFactory<CreateFlexoEvent, FlexoConceptObject, FMLObject> actionType = new FlexoActionFactory<CreateFlexoEvent, FlexoConceptObject, FMLObject>(
-			"flexo_event", FlexoActionFactory.newMenu, FlexoActionFactory.defaultGroup, FlexoActionFactory.ADD_ACTION_TYPE) {
+	public static FlexoActionFactory<CreateFlexoEnum, FlexoConceptObject, FMLObject> actionType = new FlexoActionFactory<CreateFlexoEnum, FlexoConceptObject, FMLObject>(
+			"flexo_enum", FlexoActionFactory.newMenu, FlexoActionFactory.defaultGroup, FlexoActionFactory.ADD_ACTION_TYPE) {
 
 		/**
 		 * Factory method
 		 */
 		@Override
-		public CreateFlexoEvent makeNewAction(FlexoConceptObject focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
-			return new CreateFlexoEvent(focusedObject, globalSelection, editor);
+		public CreateFlexoEnum makeNewAction(FlexoConceptObject focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
+			return new CreateFlexoEnum(focusedObject, globalSelection, editor);
 		}
 
 		@Override
@@ -83,17 +83,17 @@ public class CreateFlexoEvent extends AbstractCreateFlexoConcept<CreateFlexoEven
 	};
 
 	static {
-		FlexoObjectImpl.addActionForClass(CreateFlexoEvent.actionType, VirtualModel.class);
-		FlexoObjectImpl.addActionForClass(CreateFlexoEvent.actionType, InnerConceptsFacet.class);
+		FlexoObjectImpl.addActionForClass(CreateFlexoEnum.actionType, VirtualModel.class);
+		FlexoObjectImpl.addActionForClass(CreateFlexoEnum.actionType, InnerConceptsFacet.class);
 	}
 
-	private String newFlexoEventName;
-	private String newFlexoEventDescription;
-	private FlexoEvent newFlexoEvent;
+	private String newFlexoEnumName;
+	private String newFlexoEnumDescription;
+	private FlexoEnum newFlexoEnum;
 
 	public boolean switchNewlyCreatedFlexoConcept = false;
 
-	CreateFlexoEvent(FlexoConceptObject focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
+	CreateFlexoEnum(FlexoConceptObject focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 	}
 
@@ -103,12 +103,12 @@ public class CreateFlexoEvent extends AbstractCreateFlexoConcept<CreateFlexoEven
 
 		FMLModelFactory factory = getFocusedObject().getFMLModelFactory();
 
-		newFlexoEvent = factory.newFlexoEvent();
-		newFlexoEvent.setName(getNewFlexoEventName());
+		newFlexoEnum = factory.newFlexoEnum();
+		newFlexoEnum.setName(getNewFlexoEnumName());
 
 		VirtualModel virtualModel = getFocusedObject().getDeclaringVirtualModel();
 
-		virtualModel.addToFlexoConcepts(newFlexoEvent);
+		virtualModel.addToFlexoConcepts(newFlexoEnum);
 
 		performSetParentConcepts();
 		performCreateProperties();
@@ -119,42 +119,42 @@ public class CreateFlexoEvent extends AbstractCreateFlexoConcept<CreateFlexoEven
 	}
 
 	@Override
-	public FlexoEvent getNewFlexoConcept() {
-		return newFlexoEvent;
+	public FlexoEnum getNewFlexoConcept() {
+		return newFlexoEnum;
 	}
 
-	public String getNewFlexoEventName() {
-		return newFlexoEventName;
+	public String getNewFlexoEnumName() {
+		return newFlexoEnumName;
 	}
 
-	public void setNewFlexoEventName(String newFlexoEventName) {
-		if ((newFlexoEventName == null && this.newFlexoEventName != null)
-				|| (newFlexoEventName != null && !newFlexoEventName.equals(this.newFlexoEventName))) {
-			String oldValue = this.newFlexoEventName;
-			this.newFlexoEventName = newFlexoEventName;
-			getPropertyChangeSupport().firePropertyChange("newFlexoEventName", oldValue, newFlexoEventName);
+	public void setNewFlexoEnumName(String newFlexoEnumName) {
+		if ((newFlexoEnumName == null && this.newFlexoEnumName != null)
+				|| (newFlexoEnumName != null && !newFlexoEnumName.equals(this.newFlexoEnumName))) {
+			String oldValue = this.newFlexoEnumName;
+			this.newFlexoEnumName = newFlexoEnumName;
+			getPropertyChangeSupport().firePropertyChange("newFlexoEnumName", oldValue, newFlexoEnumName);
 		}
 	}
 
-	public String getNewFlexoEventDescription() {
-		return newFlexoEventDescription;
+	public String getNewFlexoEnumDescription() {
+		return newFlexoEnumDescription;
 	}
 
-	public void setNewFlexoEventDescription(String newFlexoEventDescription) {
-		if ((newFlexoEventDescription == null && this.newFlexoEventDescription != null)
-				|| (newFlexoEventDescription != null && !newFlexoEventDescription.equals(this.newFlexoEventDescription))) {
-			String oldValue = this.newFlexoEventDescription;
-			this.newFlexoEventDescription = newFlexoEventDescription;
-			getPropertyChangeSupport().firePropertyChange("newFlexoEventDescription", oldValue, newFlexoEventDescription);
+	public void setNewFlexoEnumDescription(String newFlexoEnumDescription) {
+		if ((newFlexoEnumDescription == null && this.newFlexoEnumDescription != null)
+				|| (newFlexoEnumDescription != null && !newFlexoEnumDescription.equals(this.newFlexoEnumDescription))) {
+			String oldValue = this.newFlexoEnumDescription;
+			this.newFlexoEnumDescription = newFlexoEnumDescription;
+			getPropertyChangeSupport().firePropertyChange("newFlexoEnumDescription", oldValue, newFlexoEnumDescription);
 		}
 	}
 
 	@Override
 	public boolean isValid() {
-		if (StringUtils.isEmpty(newFlexoEventName)) {
+		if (StringUtils.isEmpty(newFlexoEnumName)) {
 			return false;
 		}
-		else if (getFocusedObject().getDeclaringVirtualModel().getFlexoConcept(newFlexoEventName) != null) {
+		else if (getFocusedObject().getDeclaringVirtualModel().getFlexoConcept(newFlexoEnumName) != null) {
 			return false;
 		}
 		return true;

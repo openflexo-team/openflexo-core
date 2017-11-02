@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Panel id="0" borderLeft="0" sizeAdjustment="OriginalSize"
+	controllerClassName="org.openflexo.view.controller.FlexoFIBController"
+	border="empty" borderRight="0" trackViewPortWidth="true" align="left"
+	borderBottom="0" borderTop="0" trackViewPortHeight="true" layout="twocols">
+	<Label id="1" name="NameLabel" index="1" localize="true" align="right"
+		constraints="twocols(anchor=east;expandHorizontally=true;expandVertically=false;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+		label="parameter_name" />
+	<TextField id="2" columns="20" name="ModelSlotName" data="data.valueName"
+		text="TextField" index="2" localize="true"
+		constraints="twocols(anchor=west;expandHorizontally=true;expandVertically=false;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=2;insetsBottom=0;insetsLeft=0;insetsRight=20;insetsTop=0;location=right;padX=0;padY=0;weightX=1.0;weightY=0.0)" />
+	<Label id="19" name="Label8" localize="true" align="left" index="15"
+		constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)"
+		label="description" />
+	<TextArea id="20" verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED" index="16"
+		useScrollBar="true" columns="8" name="TextArea2" data="data.description"
+		text="TextArea"
+		constraints="twocols(expandHorizontally=true;expandVertically=true;insetsBottom=20;insetsLeft=0;insetsRight=20;insetsTop=0;location=right)"
+		rows="3" validateOnReturn="true" horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED" />
+	<FIBVariable id="21" name="data"
+		type="org.openflexo.fml.controller.action.CreateFlexoEnumValueWizard$DescribeFlexoEnumValue" />
+	<LocalizedDictionary id="22" />
+</Panel>

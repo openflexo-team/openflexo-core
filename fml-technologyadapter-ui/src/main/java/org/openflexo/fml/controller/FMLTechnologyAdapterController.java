@@ -62,6 +62,8 @@ import org.openflexo.fml.controller.action.CreateExpressionPropertyInitializer;
 import org.openflexo.fml.controller.action.CreateFlexoBehaviourInitializer;
 import org.openflexo.fml.controller.action.CreateFlexoConceptInitializer;
 import org.openflexo.fml.controller.action.CreateFlexoConceptInstanceRoleInitializer;
+import org.openflexo.fml.controller.action.CreateFlexoEnumInitializer;
+import org.openflexo.fml.controller.action.CreateFlexoEnumValueInitializer;
 import org.openflexo.fml.controller.action.CreateFlexoEventInitializer;
 import org.openflexo.fml.controller.action.CreateGenericBehaviourParameterInitializer;
 import org.openflexo.fml.controller.action.CreateGetSetPropertyInitializer;
@@ -99,6 +101,8 @@ import org.openflexo.foundation.fml.FlexoBehaviourParameter.WidgetType;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceRole;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
+import org.openflexo.foundation.fml.FlexoEnum;
+import org.openflexo.foundation.fml.FlexoEnumValue;
 import org.openflexo.foundation.fml.FlexoEvent;
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.NavigationScheme;
@@ -212,11 +216,10 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 		new CreateFlexoBehaviourInitializer(actionInitializer);
 		new CreateFlexoConceptInitializer(actionInitializer);
 		new CreateFlexoEventInitializer(actionInitializer);
-		// new CreateFlexoBehaviourParameterInitializer(actionInitializer);
+		new CreateFlexoEnumInitializer(actionInitializer);
+		new CreateFlexoEnumValueInitializer(actionInitializer);
 		new CreateGenericBehaviourParameterInitializer(actionInitializer);
 		new CreateInspectorEntryInitializer(actionInitializer);
-		// new DeleteFlexoConceptInitializer(actionInitializer);
-		// new DuplicateFlexoConceptInitializer(actionInitializer);
 		new ShowFMLRepresentationInitializer(actionInitializer);
 
 		new DeclareNewVariableActionInitializer(actionInitializer);
@@ -294,6 +297,12 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 		}
 		else if (FlexoEvent.class.isAssignableFrom(objectClass)) {
 			return FMLIconLibrary.FLEXO_EVENT_ICON;
+		}
+		else if (FlexoEnum.class.isAssignableFrom(objectClass)) {
+			return FMLIconLibrary.FLEXO_ENUM_ICON;
+		}
+		else if (FlexoEnumValue.class.isAssignableFrom(objectClass)) {
+			return FMLIconLibrary.FLEXO_ENUM_VALUE_ICON;
 		}
 		else if (FlexoConcept.class.isAssignableFrom(objectClass)) {
 			return FMLIconLibrary.FLEXO_CONCEPT_ICON;

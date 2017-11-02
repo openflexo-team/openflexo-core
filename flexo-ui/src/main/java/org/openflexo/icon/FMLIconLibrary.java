@@ -57,6 +57,8 @@ import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptConstraint;
 import org.openflexo.foundation.fml.FlexoConceptInstanceRole;
+import org.openflexo.foundation.fml.FlexoEnum;
+import org.openflexo.foundation.fml.FlexoEnumValue;
 import org.openflexo.foundation.fml.FlexoEvent;
 import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.FlexoRole;
@@ -154,6 +156,20 @@ public class FMLIconLibrary extends IconLibrary {
 			ResourceLocator.locateResource("Icons/Model/VPM/EventIcon_32x32.png"));
 	public static final ImageIconResource FLEXO_EVENT_BIG_ICON = new ImageIconResource(
 			ResourceLocator.locateResource("Icons/Model/VPM/EventIcon_64x64.png"));
+
+	public static final ImageIconResource FLEXO_ENUM_ICON = new ImageIconResource(
+			ResourceLocator.locateResource("Icons/Model/VPM/FlexoEnum_16x16.png"));
+	public static final ImageIconResource FLEXO_ENUM_MEDIUM_ICON = new ImageIconResource(
+			ResourceLocator.locateResource("Icons/Model/VPM/FlexoEnum_32x32.png"));
+	public static final ImageIconResource FLEXO_ENUM_BIG_ICON = new ImageIconResource(
+			ResourceLocator.locateResource("Icons/Model/VPM/FlexoEnum_64x64.png"));
+
+	public static final ImageIconResource FLEXO_ENUM_VALUE_ICON = new ImageIconResource(
+			ResourceLocator.locateResource("Icons/Model/VPM/FlexoEnumValue_16x16.png"));
+	public static final ImageIconResource FLEXO_ENUM_VALUE_MEDIUM_ICON = new ImageIconResource(
+			ResourceLocator.locateResource("Icons/Model/VPM/FlexoEnumValue_32x32.png"));
+	public static final ImageIconResource FLEXO_ENUM_VALUE_BIG_ICON = new ImageIconResource(
+			ResourceLocator.locateResource("Icons/Model/VPM/FlexoEnumValue_64x64.png"));
 
 	public static final ImageIconResource FLEXO_ROLE_ICON = new ImageIconResource(
 			ResourceLocator.locateResource("Icons/Model/VPM/FlexoRole.png"));
@@ -380,6 +396,12 @@ public class FMLIconLibrary extends IconLibrary {
 		}
 		else if (object instanceof FlexoEvent) {
 			return FLEXO_EVENT_ICON;
+		}
+		else if (object instanceof FlexoEnum) {
+			return FLEXO_ENUM_ICON;
+		}
+		else if (object instanceof FlexoEnumValue) {
+			return FLEXO_ENUM_VALUE_ICON;
 		}
 		else if (object instanceof FlexoConcept) {
 			return FLEXO_CONCEPT_ICON;
