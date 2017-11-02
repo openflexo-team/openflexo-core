@@ -46,7 +46,7 @@ import org.openflexo.ApplicationContext;
 import org.openflexo.components.wizard.WizardStep;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.action.AbstractCreateFlexoConcept.ParentFlexoConceptEntry;
-import org.openflexo.foundation.fml.action.CreateFlexoEvent;
+import org.openflexo.foundation.fml.action.CreateFlexoEnum;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.gina.annotation.FIBPanel;
 import org.openflexo.icon.FMLIconLibrary;
@@ -55,54 +55,33 @@ import org.openflexo.icon.IconLibrary;
 import org.openflexo.toolbox.StringUtils;
 import org.openflexo.view.controller.FlexoController;
 
-public class CreateFlexoEventWizard extends AbstractCreateFlexoConceptWizard<CreateFlexoEvent> {
+public class CreateFlexoEnumWizard extends AbstractCreateFlexoConceptWizard<CreateFlexoEnum> {
 
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(CreateFlexoEventWizard.class.getPackage().getName());
+	private static final Logger logger = Logger.getLogger(CreateFlexoEnumWizard.class.getPackage().getName());
 
 	private static final String DUPLICATED_NAME = "this_name_is_already_used_please_choose_an_other_one";
-	private static final String EMPTY_NAME = "flexo_event_must_have_an_non_empty_and_unique_name";
+	private static final String EMPTY_NAME = "flexo_enum_must_have_an_non_empty_and_unique_name";
 
-	private final DescribeFlexoEvent describeFlexoEvent;
-	private final ConfigurePropertiesForNewFlexoConcept configurePropertiesForNewFlexoConcept;
-	private final ConfigureBehavioursForNewFlexoConcept configureBehavioursForNewFlexoConcept;
-	private final ConfigureInspectorForNewFlexoConcept configureInspectorForNewFlexoConcept;
+	private final DescribeFlexoEnum describeFlexoEnum;
 
-	public CreateFlexoEventWizard(CreateFlexoEvent action, FlexoController controller) {
+	public CreateFlexoEnumWizard(CreateFlexoEnum action, FlexoController controller) {
 		super(action, controller);
-		addStep(describeFlexoEvent = new DescribeFlexoEvent());
-		addStep(configurePropertiesForNewFlexoConcept = new ConfigurePropertiesForNewFlexoConcept());
-		addStep(configureBehavioursForNewFlexoConcept = new ConfigureBehavioursForNewFlexoConcept());
-		addStep(configureInspectorForNewFlexoConcept = new ConfigureInspectorForNewFlexoConcept());
+		addStep(describeFlexoEnum = new DescribeFlexoEnum());
 	}
 
 	@Override
 	public String getWizardTitle() {
-		return getAction().getLocales().localizedForKey("create_flexo_event");
+		return getAction().getLocales().localizedForKey("create_flexo_enum");
 	}
 
 	@Override
 	public Image getDefaultPageImage() {
-		return IconFactory.getImageIcon(FMLIconLibrary.FLEXO_EVENT_BIG_ICON, IconLibrary.NEW_32_32).getImage();
+		return IconFactory.getImageIcon(FMLIconLibrary.FLEXO_ENUM_BIG_ICON, IconLibrary.NEW_32_32).getImage();
 	}
 
-	public DescribeFlexoEvent getDescribeFlexoEvent() {
-		return describeFlexoEvent;
-	}
-
-	@Override
-	public ConfigurePropertiesForNewFlexoConcept getConfigurePropertiesForNewFlexoConcept() {
-		return configurePropertiesForNewFlexoConcept;
-	}
-
-	@Override
-	public ConfigureBehavioursForNewFlexoConcept getConfigureBehavioursForNewFlexoConcept() {
-		return configureBehavioursForNewFlexoConcept;
-	}
-
-	@Override
-	public ConfigureInspectorForNewFlexoConcept getConfigureInspectorForNewFlexoConcept() {
-		return configureInspectorForNewFlexoConcept;
+	public DescribeFlexoEnum getDescribeFlexoEnum() {
+		return describeFlexoEnum;
 	}
 
 	/**
@@ -111,15 +90,15 @@ public class CreateFlexoEventWizard extends AbstractCreateFlexoConceptWizard<Cre
 	 * @author sylvain
 	 *
 	 */
-	@FIBPanel("Fib/Wizard/CreateFMLElement/DescribeFlexoEvent.fib")
-	public class DescribeFlexoEvent extends WizardStep {
+	@FIBPanel("Fib/Wizard/CreateFMLElement/DescribeFlexoEnum.fib")
+	public class DescribeFlexoEnum extends WizardStep {
 
 		public ApplicationContext getServiceManager() {
 			return getController().getApplicationContext();
 		}
 
-		public CreateFlexoEvent getAction() {
-			return CreateFlexoEventWizard.this.getAction();
+		public CreateFlexoEnum getAction() {
+			return CreateFlexoEnumWizard.this.getAction();
 		}
 
 		public VirtualModel getVirtualModel() {
@@ -128,23 +107,23 @@ public class CreateFlexoEventWizard extends AbstractCreateFlexoConceptWizard<Cre
 
 		@Override
 		public String getTitle() {
-			return getAction().getLocales().localizedForKey("describe_flexo_event");
+			return getAction().getLocales().localizedForKey("describe_flexo_Enum");
 		}
 
 		@Override
 		public boolean isValid() {
 
-			if (StringUtils.isEmpty(getNewFlexoEventName())) {
+			if (StringUtils.isEmpty(getNewFlexoEnumName())) {
 				setIssueMessage(getAction().getLocales().localizedForKey(EMPTY_NAME), IssueMessageType.ERROR);
 				return false;
 			}
 			else if (getAction().getFocusedObject() instanceof VirtualModel
-					&& getAction().getFocusedObject().getDeclaringVirtualModel().getFlexoConcept(getNewFlexoEventName()) != null) {
+					&& getAction().getFocusedObject().getDeclaringVirtualModel().getFlexoConcept(getNewFlexoEnumName()) != null) {
 				setIssueMessage(getAction().getLocales().localizedForKey(DUPLICATED_NAME), IssueMessageType.ERROR);
 				return false;
 			}
-			else if (StringUtils.isEmpty(getNewFlexoEventDescription())) {
-				setIssueMessage(getAction().getLocales().localizedForKey("it_is_recommanded_to_describe_flexo_event"),
+			else if (StringUtils.isEmpty(getNewFlexoEnumDescription())) {
+				setIssueMessage(getAction().getLocales().localizedForKey("it_is_recommanded_to_describe_flexo_Enum"),
 						IssueMessageType.WARNING);
 			}
 
@@ -155,28 +134,28 @@ public class CreateFlexoEventWizard extends AbstractCreateFlexoConceptWizard<Cre
 			return getAction().getParentFlexoConceptEntries();
 		}
 
-		public String getNewFlexoEventName() {
-			return getAction().getNewFlexoEventName();
+		public String getNewFlexoEnumName() {
+			return getAction().getNewFlexoEnumName();
 		}
 
-		public void setNewFlexoEventName(String newEventName) {
-			if (!newEventName.equals(getNewFlexoEventName())) {
-				String oldValue = getNewFlexoEventName();
-				getAction().setNewFlexoEventName(newEventName);
-				getPropertyChangeSupport().firePropertyChange("newFlexoEventName", oldValue, newEventName);
+		public void setNewFlexoEnumName(String newEnumName) {
+			if (!newEnumName.equals(getNewFlexoEnumName())) {
+				String oldValue = getNewFlexoEnumName();
+				getAction().setNewFlexoEnumName(newEnumName);
+				getPropertyChangeSupport().firePropertyChange("newFlexoEnumName", oldValue, newEnumName);
 				checkValidity();
 			}
 		}
 
-		public String getNewFlexoEventDescription() {
-			return getAction().getNewFlexoEventDescription();
+		public String getNewFlexoEnumDescription() {
+			return getAction().getNewFlexoEnumDescription();
 		}
 
-		public void setNewFlexoEventDescription(String newFlexoEventDescription) {
-			if (!newFlexoEventDescription.equals(getNewFlexoEventDescription())) {
-				String oldValue = getNewFlexoEventDescription();
-				getAction().setNewFlexoEventDescription(newFlexoEventDescription);
-				getPropertyChangeSupport().firePropertyChange("newFlexoEventDescription", oldValue, newFlexoEventDescription);
+		public void setNewFlexoEnumDescription(String newFlexoEnumDescription) {
+			if (!newFlexoEnumDescription.equals(getNewFlexoEnumDescription())) {
+				String oldValue = getNewFlexoEnumDescription();
+				getAction().setNewFlexoEnumDescription(newFlexoEnumDescription);
+				getPropertyChangeSupport().firePropertyChange("newFlexoEnumDescription", oldValue, newFlexoEnumDescription);
 				checkValidity();
 			}
 		}

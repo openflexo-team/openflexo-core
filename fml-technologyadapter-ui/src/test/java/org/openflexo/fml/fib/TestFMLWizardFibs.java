@@ -106,6 +106,16 @@ public class TestFMLWizardFibs extends GenericFIBTestCase {
 	}
 
 	@Test
+	public void testDescribeFlexoEnum() {
+		validateFIB("Fib/Wizard/CreateFMLElement/DescribeFlexoEnum.fib");
+	}
+
+	@Test
+	public void testDescribeFlexoEnumValue() {
+		validateFIB("Fib/Wizard/CreateFMLElement/DescribeFlexoEnumValue.fib");
+	}
+
+	@Test
 	public void testDescribeFlexoEvent() {
 		validateFIB("Fib/Wizard/CreateFMLElement/DescribeFlexoEvent.fib");
 	}

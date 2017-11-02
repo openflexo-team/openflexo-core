@@ -467,6 +467,16 @@ public class FMLModelFactory extends FGEModelFactoryImpl implements PamelaResour
 		return newInstance(FlexoEvent.class);
 	}
 
+	public FlexoEnum newFlexoEnum() {
+		return newInstance(FlexoEnum.class);
+	}
+
+	public FlexoEnumValue newFlexoEnumValue(FlexoEnum flexoEnum) {
+		FlexoEnumValue returned = newInstance(FlexoEnumValue.class);
+		flexoEnum.addToValues(returned);
+		return returned;
+	}
+
 	public DeleteAction newDeleteAction() {
 		return newInstance(DeleteAction.class);
 	}

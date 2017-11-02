@@ -63,6 +63,8 @@ import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptConstraint;
 import org.openflexo.foundation.fml.FlexoConceptInstanceRole;
 import org.openflexo.foundation.fml.FlexoConceptObject;
+import org.openflexo.foundation.fml.FlexoEnum;
+import org.openflexo.foundation.fml.FlexoEnumValue;
 import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.GetSetProperty;
@@ -78,6 +80,7 @@ import org.openflexo.foundation.fml.action.CreateExpressionProperty;
 import org.openflexo.foundation.fml.action.CreateFlexoBehaviour;
 import org.openflexo.foundation.fml.action.CreateFlexoConcept;
 import org.openflexo.foundation.fml.action.CreateFlexoConceptInstanceRole;
+import org.openflexo.foundation.fml.action.CreateFlexoEnumValue;
 import org.openflexo.foundation.fml.action.CreateGenericBehaviourParameter;
 import org.openflexo.foundation.fml.action.CreateGetSetProperty;
 import org.openflexo.foundation.fml.action.CreateInspectorEntry;
@@ -239,6 +242,18 @@ public class FMLFIBController extends FlexoFIBController {
 		flexoConcept.removeFromFlexoConceptConstraints(constraint);
 		constraint.delete();
 		return constraint;
+	}
+
+	public FlexoEnumValue createFlexoEnumValue(FlexoEnum flexoEnum) {
+		CreateFlexoEnumValue createFlexoBehaviourParameter = CreateFlexoEnumValue.actionType.makeNewAction(flexoEnum, null, getEditor());
+		createFlexoBehaviourParameter.doAction();
+		return createFlexoBehaviourParameter.getNewValue();
+	}
+
+	public FlexoEnumValue deleteFlexoEnumValue(FlexoEnum flexoEnum, FlexoEnumValue enumValue) {
+		flexoEnum.removeFromValues(enumValue);
+		enumValue.delete();
+		return enumValue;
 	}
 
 	/**
