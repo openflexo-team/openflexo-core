@@ -41,6 +41,11 @@ package org.openflexo.foundation.fml;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.openflexo.foundation.FlexoObject;
+import org.openflexo.foundation.fml.rm.VirtualModelResource;
+import org.openflexo.foundation.resource.RepositoryFolder;
+import org.openflexo.foundation.resource.ResourceRepository;
+
 /**
  * Utility class provinding usefull methods in FML context
  * 
@@ -128,7 +133,22 @@ public class FMLUtils {
 
 	}
 
-	public static FlexoConcept getMostSpecializedContainer(FlexoConcept concept1, FlexoConcept concept2) {
+	/**
+	 * Return the most specialized container for the two supplied {@link FlexoConcept}
+	 * 
+	 * Returned value could be:
+	 * <ul>
+	 * <li>a {@link VirtualModel}</li>
+	 * <li>a {@link RepositoryFolder}</li>
+	 * <li>a {@link ResourceRepository} (a ResourceCenter)</li>
+	 * <li>otherwise the {@link VirtualModelLibrary} is the most specialized container</li>
+	 * </ul>
+	 * 
+	 * @param concept1
+	 * @param concept2
+	 * @return
+	 */
+	public static FlexoObject getMostSpecializedContainer(FlexoConcept concept1, FlexoConcept concept2) {
 
 		if (concept1 == null || concept2 == null) {
 			return null;
@@ -140,40 +160,75 @@ public class FMLUtils {
 		VirtualModel vm1 = concept1.getDeclaringVirtualModel();
 		VirtualModel vm2 = concept2.getDeclaringVirtualModel();
 
-		if (vm1.getContainerVirtualModel() == null && vm2.getContainerVirtualModel() == null) {
-			// nothing in common
+		return getMostSpecializedContainer(vm1, vm2);
+	}
+
+	/**
+	 * Return the most specialized container for the two supplied {@link VirtualModel}
+	 * 
+	 * Returned value could be:
+	 * <ul>
+	 * <li>a {@link VirtualModel}</li>
+	 * <li>a {@link RepositoryFolder}</li>
+	 * <li>a {@link ResourceRepository} (a ResourceCenter)</li>
+	 * <li>otherwise the {@link VirtualModelLibrary} is the most specialized container</li>
+	 * </ul>
+	 * 
+	 * @param vm1
+	 * @param vm2
+	 * @return
+	 */
+	public static FlexoObject getMostSpecializedContainer(VirtualModel vm1, VirtualModel vm2) {
+
+		if (vm1 == null || vm2 == null) {
 			return null;
 		}
-
-		if (vm1.isContainedIn(vm2)) {
+		if (vm1 == vm2) {
 			return vm2;
 		}
 
-		if (vm2.isContainedIn(vm1)) {
-			return vm1;
+		if (vm1.getContainerVirtualModel() != null || vm2.getContainerVirtualModel() != null) {
+
+			if (vm1.isContainedIn(vm2)) {
+				return vm2;
+			}
+
+			if (vm2.isContainedIn(vm1)) {
+				return vm1;
+			}
+
+			VirtualModel pivot = null;
+			VirtualModel iterated = null;
+			if (vm1.getContainerVirtualModel() != null) {
+				pivot = vm1;
+				iterated = vm2;
+			}
+			else {
+				pivot = vm2;
+				iterated = vm1;
+			}
+
+			if (iterated.isContainedIn(pivot.getContainerVirtualModel())) {
+				return pivot.getContainerVirtualModel();
+			}
+
+			FlexoObject returned = getMostSpecializedContainer(pivot.getContainerVirtualModel(), iterated);
+			if (returned != null) {
+				return returned;
+			}
 		}
 
-		VirtualModel pivot = null;
-		VirtualModel iterated = null;
-		if (vm1.getContainerVirtualModel() != null) {
-			pivot = vm1;
-			iterated = vm2;
-		}
-		else {
-			pivot = vm2;
-			iterated = vm1;
+		VirtualModelResource r1 = (VirtualModelResource) vm1.getResource();
+		VirtualModelResource r2 = (VirtualModelResource) vm2.getResource();
+
+		if (r1.getResourceCenter() == r2.getResourceCenter()) {
+			FlexoObject returned = r1.getResourceCenter().getVirtualModelRepository().getMostSpecializedContainer(r1, r2);
+			if (returned != null) {
+				return returned;
+			}
 		}
 
-		if (iterated.isContainedIn(pivot.getContainerVirtualModel())) {
-			return pivot.getContainerVirtualModel();
-		}
-
-		FlexoConcept returned = getMostSpecializedContainer(pivot.getContainerVirtualModel(), iterated);
-		if (returned != null) {
-			return returned;
-		}
-
-		return null;
+		return vm1.getVirtualModelLibrary();
 
 	}
 

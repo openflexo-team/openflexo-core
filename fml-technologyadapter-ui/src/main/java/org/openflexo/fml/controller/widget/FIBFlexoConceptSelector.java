@@ -224,11 +224,17 @@ public class FIBFlexoConceptSelector extends FIBFlexoObjectSelector<FlexoConcept
 	private FlexoObject getInheritingContextRoot() {
 		List<VirtualModel> vmList = new ArrayList<>();
 		appendInheritingVirtualModels(getInheritingContext(), vmList);
-		VirtualModel returned = getInheritingContext();
+		FlexoObject returned = getInheritingContext();
 		if (vmList.size() >= 1) {
-			returned = vmList.get(0);
+			// returned = vmList.get(0);
 			for (VirtualModel vm : vmList) {
-				returned = (VirtualModel) FMLUtils.getMostSpecializedContainer(returned, vm);
+				if (returned instanceof VirtualModel) {
+					returned = FMLUtils.getMostSpecializedContainer((VirtualModel) returned, vm);
+				}
+				else {
+					// TODO: check that vm is in returned
+					logger.warning("TODO: check that " + vm + " is in " + returned);
+				}
 			}
 		}
 		if (returned == null) {

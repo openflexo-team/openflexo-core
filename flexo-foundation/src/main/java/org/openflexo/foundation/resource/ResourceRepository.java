@@ -56,6 +56,7 @@ import org.openflexo.connie.annotations.NotificationUnsafe;
 import org.openflexo.foundation.DataFlexoObserver;
 import org.openflexo.foundation.DataModification;
 import org.openflexo.foundation.DefaultFlexoObject;
+import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoObservable;
 import org.openflexo.toolbox.FileUtils;
 import org.openflexo.toolbox.StringUtils;
@@ -526,4 +527,129 @@ public abstract class ResourceRepository<R extends FlexoResource<?>, I> extends 
 	}
 
 	public abstract String getDisplayableName();
+
+	/**
+	 * Return boolean indicating is supplied resource is contained (recursive semantics) in supplied container
+	 * 
+	 * @param resource
+	 * @param container
+	 * @return
+	 */
+	public boolean isResourceContainedIn(FlexoResource<?> resource, FlexoResource<?> container) {
+		if (resource == container) {
+			return true;
+		}
+		if (resource.getContainer() == null) {
+			return false;
+		}
+		return isResourceContainedIn(resource.getContainer(), container);
+	}
+
+	/**
+	 * Return the most specialized container for the two supplied {@link FlexoResource}
+	 * 
+	 * Returned value could be:
+	 * <ul>
+	 * <li>a {@link FlexoResource} containing both resources</li>
+	 * <li>a {@link RepositoryFolder} containing both resources</li>
+	 * <li>a {@link ResourceRepository} (a ResourceCenter) containing both resources</li>
+	 * </ul>
+	 * 
+	 * @param resource1
+	 * @param resource2
+	 * @return
+	 */
+	// TODO: we should write unit tests for that
+	public FlexoObject getMostSpecializedContainer(R resource1, R resource2) {
+
+		if (resource1 == null || resource1 == null) {
+			return null;
+		}
+
+		if (!containsResource(resource1) || !containsResource(resource2)) {
+			return null;
+		}
+
+		if (resource1 == resource2) {
+			return resource2;
+		}
+
+		if (isResourceContainedIn(resource1, resource2)) {
+			return resource2;
+		}
+
+		if (isResourceContainedIn(resource2, resource1)) {
+			return resource1;
+		}
+
+		RepositoryFolder<R, I> folder1 = getRepositoryFolder(resource1);
+		RepositoryFolder<R, I> folder2 = getRepositoryFolder(resource2);
+
+		RepositoryFolder<R, I> commonFolder = getMostSpecializedRepositoryFolder(folder1, folder2);
+		if (commonFolder != null) {
+			return commonFolder;
+		}
+
+		// Otherwise, parent ancestor is the repository itself
+		return this;
+	}
+
+	/**
+	 * Return the most specialized {@link RepositoryFolder} for the two supplied {@link FlexoResource}
+	 * 
+	 * @param folder1
+	 * @param folder2
+	 * @return
+	 */
+	// TODO: we should write unit tests for that
+	public RepositoryFolder<R, I> getMostSpecializedRepositoryFolder(RepositoryFolder<R, I> folder1, RepositoryFolder<R, I> folder2) {
+
+		if (folder1 == null || folder2 == null) {
+			return null;
+		}
+		if (folder1 == folder2) {
+			return folder2;
+		}
+
+		if (folder1.getResourceRepository() != this && folder2.getResourceRepository() != this) {
+			return null;
+		}
+
+		if (folder1.getParentFolder() == null && folder2.getParentFolder() == null) {
+			// nothing in common
+			return null;
+		}
+
+		if (folder2.isFatherOf(folder1)) {
+			return folder2;
+		}
+
+		if (folder1.isFatherOf(folder2)) {
+			return folder1;
+		}
+
+		RepositoryFolder<R, I> pivot = null;
+		RepositoryFolder<R, I> iterated = null;
+		if (folder1.getParentFolder() != null) {
+			pivot = folder1;
+			iterated = folder2;
+		}
+		else {
+			pivot = folder2;
+			iterated = folder1;
+		}
+
+		if (pivot.getParentFolder().isFatherOf(iterated)) {
+			return pivot.getParentFolder();
+		}
+
+		RepositoryFolder<R, I> returned = getMostSpecializedRepositoryFolder(pivot.getParentFolder(), iterated);
+		if (returned != null) {
+			return returned;
+		}
+
+		return null;
+
+	}
+
 }
