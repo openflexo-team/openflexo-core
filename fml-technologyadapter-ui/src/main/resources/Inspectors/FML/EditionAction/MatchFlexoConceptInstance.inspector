@@ -77,7 +77,7 @@
 				valueValidator="" />
 			<DropDown index="17" data="data.creationScheme"
 				constraints="twocols(anchor=west;expandHorizontally=false;expandVertically=false;fill=none;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=13;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right;padX=0;padY=0;weightX=0.0;weightY=0.0)"
-				visible="" name="CreationSchemeDropDown" format="object.name"
+				visible="" name="CreationSchemeDropDown" format="object.signature"
 				icon="controller.iconForObject(object)" tooltip="" localize="true"
 				enable="" clickAction="" doubleClickAction="" rightClickAction=""
 				enterPressedAction="" valueChangedAction="" valueTransform=""
