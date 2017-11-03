@@ -94,6 +94,7 @@ import org.openflexo.gina.model.FIBModelFactory;
 import org.openflexo.gina.model.FIBWidget;
 import org.openflexo.gina.model.widget.FIBCheckBox;
 import org.openflexo.gina.model.widget.FIBCheckboxList;
+import org.openflexo.gina.model.widget.FIBDropDown;
 import org.openflexo.gina.model.widget.FIBLabel;
 import org.openflexo.gina.model.widget.FIBNumber;
 import org.openflexo.gina.model.widget.FIBNumber.NumberType;
@@ -561,6 +562,11 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 					expand[0] = false;
 					return numberF;
 				case DROPDOWN:
+					System.out.println("object=" + object);
+					System.out.println("type=" + object.getType());
+					FIBDropDown dropDown = fibModelFactory.newFIBDropDown();
+					dropDown.setName(object.getName() + "DropDown");
+					return dropDown;
 				case RADIO_BUTTON:
 					// ListParameter listParameter = (ListParameter) parameter;
 					FIBCheckboxList cbList = fibModelFactory.newFIBCheckboxList();

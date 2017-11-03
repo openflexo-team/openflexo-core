@@ -45,6 +45,7 @@ import java.util.logging.Logger;
 import org.openflexo.connie.annotations.NotificationUnsafe;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType.FlexoConceptInstanceTypeFactory;
+import org.openflexo.foundation.fml.FlexoEnumType.FlexoEnumTypeFactory;
 import org.openflexo.foundation.fml.VirtualModelInstanceType.VirtualModelInstanceTypeFactory;
 import org.openflexo.foundation.fml.annotations.DeclareResourceTypes;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
@@ -111,12 +112,14 @@ public class FMLTechnologyAdapter extends TechnologyAdapter {
 
 	private FlexoResourceTypeFactory resourceTypeFactory;
 	private FlexoConceptInstanceTypeFactory fciFactory;
+	private FlexoEnumTypeFactory enumFactory;
 	private VirtualModelInstanceTypeFactory vmiFactory;
 
 	@Override
 	public void initTechnologySpecificTypes(TechnologyAdapterService taService) {
 		taService.registerTypeClass(FlexoResourceType.class, getFlexoResourceTypeFactory());
 		taService.registerTypeClass(FlexoConceptInstanceType.class, getFlexoConceptInstanceTypeFactory());
+		taService.registerTypeClass(FlexoEnumType.class, getFlexoEnumTypeFactory());
 		taService.registerTypeClass(VirtualModelInstanceType.class, getVirtualModelInstanceTypeFactory());
 	}
 
@@ -125,6 +128,13 @@ public class FMLTechnologyAdapter extends TechnologyAdapter {
 			resourceTypeFactory = new FlexoResourceTypeFactory(this);
 		}
 		return resourceTypeFactory;
+	}
+
+	public FlexoEnumTypeFactory getFlexoEnumTypeFactory() {
+		if (enumFactory == null) {
+			enumFactory = new FlexoEnumTypeFactory(this);
+		}
+		return enumFactory;
 	}
 
 	public FlexoConceptInstanceTypeFactory getFlexoConceptInstanceTypeFactory() {

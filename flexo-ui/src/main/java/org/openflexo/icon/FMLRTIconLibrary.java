@@ -76,9 +76,11 @@ public class FMLRTIconLibrary extends IconLibrary {
 	public static final ImageIconResource VIRTUAL_MODEL_INSTANCE_BIG_ICON = new ImageIconResource(
 			ResourceLocator.locateResource("Icons/Model/VE/VirtualModelInstance_64x64.png"));
 	public static final ImageIconResource FLEXO_CONCEPT_INSTANCE_ICON = new ImageIconResource(
-			ResourceLocator.locateResource("Icons/Model/VE/FlexoConceptInstance.png"));
+			ResourceLocator.locateResource("Icons/Model/VE/FlexoConceptInstance_16x16.png"));
 	public static final ImageIconResource FLEXO_CONCEPT_INSTANCE_MEDIUM_ICON = new ImageIconResource(
-			ResourceLocator.locateResource("Icons/Model/VE/FlexoConceptInstance32.png"));
+			ResourceLocator.locateResource("Icons/Model/VE/FlexoConceptInstance_32x32.png"));
+	public static final ImageIconResource FLEXO_CONCEPT_INSTANCE_BIG_ICON = new ImageIconResource(
+			ResourceLocator.locateResource("Icons/Model/VE/FlexoConceptInstance_64x64.png"));
 	public static final ImageIconResource MODEL_SLOT_INSTANCE_ICON = new ImageIconResource(
 			ResourceLocator.locateResource("Icons/Model/VE/ModelSlotInstance.png"));
 	public static final ImageIconResource FLEXO_CLASS_INSTANCE_ICON = new ImageIconResource(

@@ -41,6 +41,8 @@ package org.openflexo.fml.controller.widget;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
+import org.openflexo.foundation.fml.FlexoEnum;
+import org.openflexo.foundation.fml.FlexoEnumType;
 import org.openflexo.gina.annotation.FIBPanel;
 
 /**
@@ -49,40 +51,40 @@ import org.openflexo.gina.annotation.FIBPanel;
  * @author sylvain
  * 
  */
-@FIBPanel("Fib/CustomType/FlexoConceptInstanceTypeEditor.fib")
-public class FlexoConceptInstanceTypeEditor extends AbstractFlexoConceptInstanceTypeEditor<FlexoConceptInstanceType> {
+@FIBPanel("Fib/CustomType/FlexoEnumTypeEditor.fib")
+public class FlexoEnumTypeEditor extends AbstractFlexoConceptInstanceTypeEditor<FlexoEnumType> {
 
-	private FlexoConcept selectedFlexoConcept = null;
+	private FlexoEnum selectedFlexoEnum = null;
 
-	public FlexoConceptInstanceTypeEditor(FlexoServiceManager serviceManager) {
+	public FlexoEnumTypeEditor(FlexoServiceManager serviceManager) {
 		super(serviceManager);
 	}
 
 	@Override
 	public String getPresentationName() {
-		return "FlexoConcept inst.";
+		return "Flexo enum.";
 	}
 
 	@Override
-	public Class<FlexoConceptInstanceType> getCustomType() {
-		return FlexoConceptInstanceType.class;
+	public Class<FlexoEnumType> getCustomType() {
+		return FlexoEnumType.class;
 	}
 
-	public FlexoConcept getSelectedFlexoConcept() {
-		return selectedFlexoConcept;
+	public FlexoEnum getSelectedFlexoEnum() {
+		return selectedFlexoEnum;
 	}
 
-	public void setSelectedFlexoConcept(FlexoConcept selectedFlexoConcept) {
-		if ((selectedFlexoConcept == null && this.selectedFlexoConcept != null)
-				|| (selectedFlexoConcept != null && !selectedFlexoConcept.equals(this.selectedFlexoConcept))) {
-			FlexoConcept oldValue = this.selectedFlexoConcept;
-			this.selectedFlexoConcept = selectedFlexoConcept;
-			getPropertyChangeSupport().firePropertyChange("selectedFlexoConcept", oldValue, selectedFlexoConcept);
+	public void setSelectedFlexoEnum(FlexoEnum selectedFlexoEnum) {
+		if ((selectedFlexoEnum == null && this.selectedFlexoEnum != null)
+				|| (selectedFlexoEnum != null && !selectedFlexoEnum.equals(this.selectedFlexoEnum))) {
+			FlexoConcept oldValue = this.selectedFlexoEnum;
+			this.selectedFlexoEnum = selectedFlexoEnum;
+			getPropertyChangeSupport().firePropertyChange("selectedFlexoEnum", oldValue, selectedFlexoEnum);
 		}
 	}
 
 	@Override
-	public FlexoConceptInstanceType getEditedType() {
-		return FlexoConceptInstanceType.getFlexoConceptInstanceType(getSelectedFlexoConcept());
+	public FlexoEnumType getEditedType() {
+		return FlexoEnumType.getFlexoEnumType(getSelectedFlexoEnum());
 	}
 }

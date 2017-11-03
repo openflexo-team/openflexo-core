@@ -54,6 +54,7 @@ import org.openflexo.foundation.FlexoObserver;
 import org.openflexo.foundation.fml.CreationScheme;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.FlexoConcept;
+import org.openflexo.foundation.fml.FlexoEnum;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.action.CreateFlexoConceptInstance;
@@ -73,7 +74,7 @@ public class CreateFlexoConceptInstanceWizard extends FlexoWizard {
 	private static final String NO_CONTAINER = "please_supply_a_valid_container";
 	private static final String NO_CONCEPT = "please_supply_a_valid_type_for_instance_beeing_created";
 	private static final String SELECT_A_CREATION_SCHEME = "select_a_creation_scheme";
-	private static final String INVALID_PARAMETERS = "some_parameters_are_not_valid";
+	private static final String CANNOT_INSTANTIATE_ENUM = "cannot_instantiate_enum";
 
 	private DescribeFlexoConceptInstance describeFlexoConceptInstance;
 
@@ -103,7 +104,7 @@ public class CreateFlexoConceptInstanceWizard extends FlexoWizard {
 
 	@Override
 	public Image getDefaultPageImage() {
-		return IconFactory.getImageIcon(FMLRTIconLibrary.FLEXO_CONCEPT_INSTANCE_MEDIUM_ICON, IconLibrary.NEW_32_32).getImage();
+		return IconFactory.getImageIcon(FMLRTIconLibrary.FLEXO_CONCEPT_INSTANCE_BIG_ICON, IconLibrary.NEW_32_32).getImage();
 	}
 
 	public DescribeFlexoConceptInstance getDescribeNewParentConcepts() {
@@ -138,6 +139,9 @@ public class CreateFlexoConceptInstanceWizard extends FlexoWizard {
 				getAction().setContainer(container);
 				getPropertyChangeSupport().firePropertyChange("container", oldValue, container);
 				getPropertyChangeSupport().firePropertyChange("availableFlexoConcepts", null, getAvailableFlexoConcepts());
+				if (getAvailableFlexoConcepts().size() > 0) {
+					setFlexoConcept(getAvailableFlexoConcepts().get(0));
+				}
 				checkValidity();
 			}
 		}
@@ -151,6 +155,12 @@ public class CreateFlexoConceptInstanceWizard extends FlexoWizard {
 				FlexoConcept oldValue = getFlexoConcept();
 				getAction().setFlexoConcept(flexoConcept);
 				getPropertyChangeSupport().firePropertyChange("flexoConcept", oldValue, flexoConcept);
+				if (flexoConcept != null && flexoConcept.getCreationSchemes().size() > 0) {
+					setCreationScheme(flexoConcept.getCreationSchemes().get(0));
+				}
+				else {
+					setCreationScheme(null);
+				}
 				checkValidity();
 			}
 		}
@@ -194,6 +204,10 @@ public class CreateFlexoConceptInstanceWizard extends FlexoWizard {
 			}
 			if (getFlexoConcept() == null) {
 				setIssueMessage(getAction().getLocales().localizedForKey(NO_CONCEPT), IssueMessageType.ERROR);
+				return false;
+			}
+			if (getFlexoConcept() instanceof FlexoEnum) {
+				setIssueMessage(getAction().getLocales().localizedForKey(CANNOT_INSTANTIATE_ENUM), IssueMessageType.ERROR);
 				return false;
 			}
 			if (getFlexoConcept().hasCreationScheme()) {

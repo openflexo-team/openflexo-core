@@ -56,6 +56,11 @@ public class TestCustomTypeFibs extends GenericFIBTestCase {
 	}
 
 	@Test
+	public void testFlexoEnumTypeEditor() {
+		validateFIB("Fib/CustomType/FlexoEnumTypeEditor.fib");
+	}
+
+	@Test
 	public void testFlexoResourceTypeEditor() {
 		validateFIB("Fib/CustomType/FlexoResourceTypeEditor.fib");
 	}

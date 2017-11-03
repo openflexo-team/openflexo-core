@@ -100,9 +100,14 @@ public interface FlexoEnum extends FlexoConcept {
 
 	public void valueLast(FlexoEnumValue p);
 
+	@Override
+	public FlexoEnumType getInstanceType();
+
 	public static abstract class FlexoEnumImpl extends FlexoConceptImpl implements FlexoEnum {
 
 		protected static final Logger logger = FlexoLogger.getLogger(FlexoEnum.class.getPackage().getName());
+
+		private final FlexoEnumType instanceType = new FlexoEnumType(this);
 
 		protected void updateValues() {
 
@@ -162,6 +167,11 @@ public interface FlexoEnum extends FlexoConcept {
 			getValues().add(p);
 			getPropertyChangeSupport().firePropertyChange(VALUES_KEY, null, getValues());
 			updateValues();
+		}
+
+		@Override
+		public FlexoEnumType getInstanceType() {
+			return instanceType;
 		}
 
 	}

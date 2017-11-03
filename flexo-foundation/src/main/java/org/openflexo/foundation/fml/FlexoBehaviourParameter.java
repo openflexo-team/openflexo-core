@@ -466,6 +466,9 @@ public interface FlexoBehaviourParameter extends FlexoBehaviourObject, FunctionA
 			else if (TypeUtils.isList(type)) {
 				return LIST_WIDGET_TYPES;
 			}
+			else if (type instanceof FlexoEnumType) {
+				return LIST_WIDGET_TYPES;
+			}
 			return CUSTOM_WIDGET_TYPES;
 		}
 	}

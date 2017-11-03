@@ -83,6 +83,7 @@ import org.openflexo.fml.controller.view.StandardFlexoConceptView;
 import org.openflexo.fml.controller.view.VirtualModelView;
 import org.openflexo.fml.controller.widget.FIBVirtualModelLibraryBrowser;
 import org.openflexo.fml.controller.widget.FlexoConceptInstanceTypeEditor;
+import org.openflexo.fml.controller.widget.FlexoEnumTypeEditor;
 import org.openflexo.fml.controller.widget.FlexoResourceTypeEditor;
 import org.openflexo.fml.controller.widget.VirtualModelInstanceTypeEditor;
 import org.openflexo.foundation.action.FlexoActionFactory;
@@ -102,6 +103,7 @@ import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceRole;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.FlexoEnum;
+import org.openflexo.foundation.fml.FlexoEnumType;
 import org.openflexo.foundation.fml.FlexoEnumValue;
 import org.openflexo.foundation.fml.FlexoEvent;
 import org.openflexo.foundation.fml.FlexoRole;
@@ -185,6 +187,9 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 		}
 		else if (typeClass.equals(VirtualModelInstanceType.class)) {
 			return new VirtualModelInstanceTypeEditor(getServiceManager());
+		}
+		else if (typeClass.equals(FlexoEnumType.class)) {
+			return new FlexoEnumTypeEditor(getServiceManager());
 		}
 		else if (typeClass.equals(FlexoConceptInstanceType.class)) {
 			return new FlexoConceptInstanceTypeEditor(getServiceManager());
