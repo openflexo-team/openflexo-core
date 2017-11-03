@@ -38,6 +38,7 @@
 
 package org.openflexo.fml.controller.action;
 
+import java.awt.Dimension;
 import java.awt.Image;
 import java.util.List;
 import java.util.logging.Logger;
@@ -63,11 +64,18 @@ public class CreateFlexoEnumWizard extends AbstractCreateFlexoConceptWizard<Crea
 	private static final String DUPLICATED_NAME = "this_name_is_already_used_please_choose_an_other_one";
 	private static final String EMPTY_NAME = "flexo_enum_must_have_an_non_empty_and_unique_name";
 
+	private static final Dimension DIMENSIONS = new Dimension(550, 400);
+
 	private final DescribeFlexoEnum describeFlexoEnum;
 
 	public CreateFlexoEnumWizard(CreateFlexoEnum action, FlexoController controller) {
 		super(action, controller);
 		addStep(describeFlexoEnum = new DescribeFlexoEnum());
+	}
+
+	@Override
+	public Dimension getPreferredSize() {
+		return DIMENSIONS;
 	}
 
 	@Override
