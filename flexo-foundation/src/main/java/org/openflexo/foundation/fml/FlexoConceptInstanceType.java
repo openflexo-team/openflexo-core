@@ -92,9 +92,6 @@ public class FlexoConceptInstanceType implements TechnologySpecificType<FMLTechn
 						.getFlexoConcept(configuration, false);
 				// Do not load virtual models for that reason, resolving will be performed later
 
-				System.out.println("On cherche le concept " + configuration);
-				System.out.println("on trouve " + concept);
-
 			}
 			else {
 				concept = getFlexoConceptType();

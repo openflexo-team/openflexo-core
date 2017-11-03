@@ -62,7 +62,7 @@ public class FlexoEnumTypeEditor extends AbstractFlexoConceptInstanceTypeEditor<
 
 	@Override
 	public String getPresentationName() {
-		return "Flexo enum.";
+		return "Flexo Enumeration";
 	}
 
 	@Override

@@ -123,9 +123,6 @@ public class FlexoEnumType extends FlexoConceptInstanceType {
 				concept = (FlexoEnum) getTechnologyAdapter().getTechnologyAdapterService().getServiceManager().getVirtualModelLibrary()
 						.getFlexoConcept(configuration, false);
 
-				System.out.println("On cherche l'enum " + configuration);
-				System.out.println("on trouve " + concept);
-
 				// Do not load virtual models for that reason, resolving will be performed later
 			}
 			else {

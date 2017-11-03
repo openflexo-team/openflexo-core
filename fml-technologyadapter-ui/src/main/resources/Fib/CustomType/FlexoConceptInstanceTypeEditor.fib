@@ -44,10 +44,10 @@
 				cast="child.virtualModelRepository.rootFolder" name="resourceCenters" />
 		</BrowserElement>
 		<BrowserElement dataClassName="org.openflexo.foundation.resource.RepositoryFolder"
-			label="virtualModelFolder.displayableName" icon="controller.iconForObject(virtualModelFolder)"
-			isEditable="false" filtered="false" defaultVisible="true" name="virtualModelFolder">
-			<Children data="virtualModelFolder.children" name="subFolders" />
-			<Children data="virtualModelFolder.resources" name="viewPoints" />
+			label="folder.displayableName" icon="controller.iconForObject(folder)"
+			isEditable="false" filtered="false" defaultVisible="true" name="folder" visible="(folder.resources.size &gt; 0) || (folder.children.size &gt; 0)">
+			<Children data="folder.children" name="subFolders" />
+			<Children data="folder.resources" name="resources" />
 		</BrowserElement>
 		<BrowserElement dataClassName="org.openflexo.foundation.fml.rm.VirtualModelResource"
 			label="virtualModel.name" icon="controller.iconForObject(virtualModel)"

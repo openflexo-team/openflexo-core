@@ -44,6 +44,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ServiceLoader;
@@ -348,7 +349,7 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 		return returned;
 	}
 
-	private final Map<Class<? extends CustomType>, CustomTypeFactory<?>> customTypeFactories = new HashMap<>();
+	private final Map<Class<? extends CustomType>, CustomTypeFactory<?>> customTypeFactories = new LinkedHashMap<>();
 
 	/**
 	 * Return all {@link CustomType} factories defined for all known technologies

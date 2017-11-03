@@ -42,6 +42,7 @@ package org.openflexo.view.controller;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -130,7 +131,7 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 
 	private TechnologyAdapterControllerService technologyAdapterControllerService;
 
-	private final Map<Class<? extends CustomType>, CustomTypeEditor> customTypeEditors = new HashMap<>();
+	private final Map<Class<? extends CustomType>, CustomTypeEditor> customTypeEditors = new LinkedHashMap<>();
 
 	/**
 	 * Returns applicable {@link ProjectNatureService}
