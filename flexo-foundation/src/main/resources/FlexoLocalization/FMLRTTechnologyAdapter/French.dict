@@ -3,6 +3,7 @@ Capteur\ [ID\=7]=Capteur [ID\=7]
 Culture\ [ID\=1]=Culture [ID\=1]
 Type\ [ID\=1]=Type [ID\=1]
 TypeSouche\ [ID\=10]=TypeSouche [ID\=10]
+cannot_instantiate_enum=cannot_instantiate_enum
 define_new_concept_instance=define_new_concept_instance
 describe_flexo_concept_instance=describe_flexo_concept_instance
 discouraged_name_for_new_virtual_model_instance=discouraged_name_for_new_virtual_model_instance
