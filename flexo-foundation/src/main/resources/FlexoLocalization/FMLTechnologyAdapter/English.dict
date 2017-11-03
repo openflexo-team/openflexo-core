@@ -14,6 +14,7 @@ Expression=Expression
 FLOAT=FLOAT
 FlexoConcept=FlexoConcept
 FlexoEnum=FlexoEnum
+FlexoEnumValue=FlexoEnumValue
 FlexoEvent=FlexoEvent
 Float=Float
 GenericInspectorEntry=GenericInspectorEntry
