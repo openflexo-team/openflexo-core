@@ -48,6 +48,7 @@ FML@runtime\ technology\ adapter=FML@runtime technology adapter
 FetchRequest=FetchRequest
 FinalizeMatching=FinalizeMatching
 FireEventAction=FireEventAction
+Flexo\ Enumeration=Flexo Enumeration
 FlexoConcept\ inst.=FlexoConcept inst.
 FlexoResource=FlexoResource
 FloatInspectorEntry=FloatInspectorEntry
