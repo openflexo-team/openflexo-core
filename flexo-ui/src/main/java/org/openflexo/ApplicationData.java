@@ -98,6 +98,7 @@ public class ApplicationData extends PropertyChangedSupportDefaultImplementation
 		return IconLibrary.OPENFLEXO_TEXT_SMALL_ICON;
 	}
 
+	@NotificationUnsafe
 	public Module<?> getFavoriteModule() {
 		Module<?> returned = applicationContext.getModuleLoader()
 				.getModuleNamed(applicationContext.getGeneralPreferences().getFavoriteModuleName());
