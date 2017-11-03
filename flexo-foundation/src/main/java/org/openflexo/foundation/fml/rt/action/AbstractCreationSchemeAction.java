@@ -169,10 +169,11 @@ public class AbstractCreationSchemeAction<A extends AbstractCreationSchemeAction
 						"Cannot create an FMLRTVirtualModelInstance this way (AbstractCreateVirtualModelAction should be used instead)");
 			}
 			else if (getFlexoConceptBeingCreated() != null) {
-				newFlexoConceptInstance = getVirtualModelInstance().makeNewFlexoConceptInstance(getFlexoConcept());
 				if (getContainer() != null) {
-					// System.out.println(">>>>>> On ajoute " + flexoConceptInstance + " dans " + getContainer());
-					getContainer().addToEmbeddedFlexoConceptInstances(newFlexoConceptInstance);
+					newFlexoConceptInstance = getVirtualModelInstance().makeNewFlexoConceptInstance(getFlexoConcept(), getContainer());
+				}
+				else {
+					newFlexoConceptInstance = getVirtualModelInstance().makeNewFlexoConceptInstance(getFlexoConcept());
 				}
 			}
 			else {
