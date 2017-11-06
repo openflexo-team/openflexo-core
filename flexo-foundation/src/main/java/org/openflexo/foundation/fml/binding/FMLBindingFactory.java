@@ -144,14 +144,23 @@ public class FMLBindingFactory extends JavaBindingFactory {
 
 		if (parent != null) {
 
-			Type pType = parent.getType();
-
 			if (parent instanceof FlexoBehaviourParameterValuePathElement) {
-				List<SimplePathElement> returned = new ArrayList<SimplePathElement>(super.getAccessibleSimplePathElements(parent));
+				List<SimplePathElement> returned = new ArrayList<SimplePathElement>(_getAccessibleSimplePathElements(parent));
 				FlexoBehaviourParameter p = ((FlexoBehaviourParameterValuePathElement) parent).getParameter();
 				returned.add(0, new FlexoBehaviourParameterDefinitionPathElement(parent, p));
 				return returned;
 			}
+
+		}
+
+		return _getAccessibleSimplePathElements(parent);
+	}
+
+	private List<? extends SimplePathElement> _getAccessibleSimplePathElements(IBindingPathElement parent) {
+
+		if (parent != null) {
+
+			Type pType = parent.getType();
 
 			if (pType instanceof TechnologySpecificType) {
 				TechnologySpecificType parentType = (TechnologySpecificType) pType;
