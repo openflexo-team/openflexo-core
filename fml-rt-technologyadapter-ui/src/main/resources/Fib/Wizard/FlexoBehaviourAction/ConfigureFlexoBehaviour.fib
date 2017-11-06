@@ -7,7 +7,7 @@
 	dataClassName="org.openflexo.fml.rt.controller.action.FlexoBehaviourActionWizard$ConfigureFlexoBehaviour"
 	titleFont="Lucida Grande,0,11" trackViewPortHeight="true">
 
-	<Panel darkLevel="0" useScrollBar="false" protectContent="false"
+	<!--  <Panel darkLevel="0" useScrollBar="false" protectContent="false"
 		layout="border" controllerClassName="org.openflexo.gina.controller.FIBController"
 		border="empty" borderRight="2" trackViewPortWidth="true" index="0"
 		constraints="border(location=north)" borderBottom="2" borderTitle=""
@@ -20,7 +20,7 @@
 			data="data.flexoBehaviour.description" controllerClassName="org.openflexo.gina.controller.FIBController"
 			localize="true" align="center" constraints="border(location=center)"
 			label="label2" readOnly="false" />
-	</Panel>
+	</Panel>-->
 
 
 	<Custom manageDynamicModel="true" useScrollBar="false"
