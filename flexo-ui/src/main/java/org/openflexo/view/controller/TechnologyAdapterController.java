@@ -95,6 +95,7 @@ import org.openflexo.gina.model.FIBModelFactory;
 import org.openflexo.gina.model.FIBWidget;
 import org.openflexo.gina.model.widget.FIBCheckBox;
 import org.openflexo.gina.model.widget.FIBCheckboxList;
+import org.openflexo.gina.model.widget.FIBDate;
 import org.openflexo.gina.model.widget.FIBDropDown;
 import org.openflexo.gina.model.widget.FIBLabel;
 import org.openflexo.gina.model.widget.FIBNumber;
@@ -547,6 +548,10 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 					ta.setVerticalScrollbarPolicy(VerticalScrollBarPolicy.VERTICAL_SCROLLBAR_AS_NEEDED);
 					expand[1] = true;
 					return ta;
+				case DATE:
+					FIBDate dateWidget = fibModelFactory.newFIBDate();
+					dateWidget.setName(object.getName() + "Date");
+					return dateWidget;
 				case CHECKBOX:
 					FIBCheckBox cb = fibModelFactory.newFIBCheckBox();
 					cb.setName(object.getName() + "CheckBox");

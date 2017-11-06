@@ -315,6 +315,9 @@ public abstract class AbstractCreateFlexoConceptWizard<A extends AbstractCreateF
 				if (TypeUtils.isString(entry.getType())) {
 					return FMLIconLibrary.STRING_PRIMITIVE_ICON;
 				}
+				if (TypeUtils.isDate(entry.getType())) {
+					return FMLIconLibrary.DATE_PRIMITIVE_ICON;
+				}
 				if (TypeUtils.isBoolean(entry.getType())) {
 					return FMLIconLibrary.BOOLEAN_PRIMITIVE_ICON;
 				}
