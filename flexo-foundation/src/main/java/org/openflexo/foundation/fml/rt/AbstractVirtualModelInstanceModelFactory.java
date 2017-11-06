@@ -75,6 +75,7 @@ public abstract class AbstractVirtualModelInstanceModelFactory<R extends Abstrac
 		addConverter(new DataBindingConverter());
 		addConverter(new FlexoVersionConverter());
 		addConverter(new FlexoObjectReferenceConverter(taService.getServiceManager().getResourceManager()));
+		addConverter(new FlexoEnumValueConverter());
 
 		addConverter(relativePathResourceConverter = new RelativePathResourceConverter(null));
 		if (virtualModelInstanceResource != null && virtualModelInstanceResource.getIODelegate() != null

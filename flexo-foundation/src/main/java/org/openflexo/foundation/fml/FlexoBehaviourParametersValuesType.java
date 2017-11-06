@@ -92,12 +92,14 @@ public class FlexoBehaviourParametersValuesType implements CustomType {
 
 	@Override
 	public String simpleRepresentation() {
-		return "FlexoBehaviourParametersValuesType" + ":" + getFlexoBehaviour();
+		return "Parameters for " + getFlexoBehaviour().getSignature();
+		// return "FlexoBehaviourParametersValuesType" + ":" + getFlexoBehaviour();
 	}
 
 	@Override
 	public String fullQualifiedRepresentation() {
-		return "FlexoBehaviourParametersValuesType" + ":" + getFlexoBehaviour();
+		return "Parameters for " + getFlexoBehaviour().getSignature();
+		// return "FlexoBehaviourParametersValuesType" + ":" + getFlexoBehaviour();
 	}
 
 	@Override

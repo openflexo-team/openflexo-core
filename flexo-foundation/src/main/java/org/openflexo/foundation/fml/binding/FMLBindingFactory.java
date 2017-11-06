@@ -143,7 +143,16 @@ public class FMLBindingFactory extends JavaBindingFactory {
 	public List<? extends SimplePathElement> getAccessibleSimplePathElements(IBindingPathElement parent) {
 
 		if (parent != null) {
+
 			Type pType = parent.getType();
+
+			if (parent instanceof FlexoBehaviourParameterValuePathElement) {
+				List<SimplePathElement> returned = new ArrayList<SimplePathElement>(super.getAccessibleSimplePathElements(parent));
+				FlexoBehaviourParameter p = ((FlexoBehaviourParameterValuePathElement) parent).getParameter();
+				returned.add(0, new FlexoBehaviourParameterDefinitionPathElement(parent, p));
+				return returned;
+			}
+
 			if (pType instanceof TechnologySpecificType) {
 				TechnologySpecificType parentType = (TechnologySpecificType) pType;
 				TechnologyAdapter ta = parentType.getSpecificTechnologyAdapter();
@@ -207,7 +216,6 @@ public class FMLBindingFactory extends JavaBindingFactory {
 				List<SimplePathElement> returned = new ArrayList<>();
 				FlexoBehaviour flexoBehaviour = ((FlexoBehaviourType) pType).getFlexoBehaviour();
 				returned.add(new FlexoBehaviourParametersValuesPathElement(parent, flexoBehaviour));
-				returned.add(new FlexoBehaviourParametersDefinitionsPathElement(parent, flexoBehaviour));
 				for (FlexoProperty<?> pr : flexoBehaviour.getFlexoConcept().getAccessibleProperties()) {
 					returned.add(getSimplePathElement(pr, parent));
 				}
@@ -217,7 +225,6 @@ public class FMLBindingFactory extends JavaBindingFactory {
 				List<SimplePathElement> returned = new ArrayList<>();
 				FlexoBehaviour flexoBehaviour = ((FlexoBehaviourActionType) pType).getFlexoBehaviour();
 				returned.add(new FlexoBehaviourParametersValuesPathElement(parent, flexoBehaviour));
-				returned.add(new FlexoBehaviourParametersDefinitionsPathElement(parent, flexoBehaviour));
 				for (FlexoProperty<?> pr : flexoBehaviour.getFlexoConcept().getAccessibleProperties()) {
 					returned.add(getSimplePathElement(pr, parent));
 				}

@@ -128,7 +128,7 @@ public class ParametersRetriever<ES extends FlexoBehaviour> {
 				TechnologyAdapterController<?> tac = applicationContext.getTechnologyAdapterControllerService()
 						.getTechnologyAdapterController(ta);
 				boolean[] expand = { true, false };
-				FIBComponent returned = tac.makeWidget(parameter, action, fibModelFactory, expand);
+				FIBComponent returned = tac.makeWidget(parameter, action, fibModelFactory, "data", expand);
 
 				((FIBWidget) returned).setData(new DataBinding<>("data.parameters." + parameter.getName()));
 				if (returned instanceof FIBWidget) {

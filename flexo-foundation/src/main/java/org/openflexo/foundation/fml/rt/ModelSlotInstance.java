@@ -374,7 +374,7 @@ public abstract interface ModelSlotInstance<MS extends ModelSlot<? extends RD>, 
 		}
 
 		@Override
-		public void setFlexoRole(FlexoRole<RD> flexoRole) {
+		public void setFlexoRole(FlexoRole<? super RD> flexoRole) {
 			setModelSlot((MS) flexoRole);
 		}
 

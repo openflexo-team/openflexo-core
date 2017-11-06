@@ -99,6 +99,7 @@ import org.openflexo.gina.model.widget.FIBDropDown;
 import org.openflexo.gina.model.widget.FIBLabel;
 import org.openflexo.gina.model.widget.FIBNumber;
 import org.openflexo.gina.model.widget.FIBNumber.NumberType;
+import org.openflexo.gina.model.widget.FIBRadioButtonList;
 import org.openflexo.gina.model.widget.FIBTextArea;
 import org.openflexo.gina.model.widget.FIBTextField;
 import org.openflexo.gina.utils.InspectorGroup;
@@ -528,7 +529,7 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 	 * @return
 	 */
 	public FIBWidget makeWidget(final WidgetContext object, FlexoBehaviourAction<?, ?, ?> action, FIBModelFactory fibModelFactory,
-			boolean[] expand) {
+			String variableName, boolean[] expand) {
 		if (object.getWidget() != null) {
 			switch (object.getWidget()) {
 				case TEXT_FIELD:
@@ -563,18 +564,19 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 					expand[0] = false;
 					return numberF;
 				case DROPDOWN:
-					System.out.println("object=" + object);
-					System.out.println("type=" + object.getType());
 					FIBDropDown dropDown = fibModelFactory.newFIBDropDown();
 					dropDown.setName(object.getName() + "DropDown");
+					dropDown.setList(new DataBinding<List<?>>(variableName + "." + object.getWidgetDefinitionAccess() + ".listOfObjects"));
 					return dropDown;
 				case RADIO_BUTTON:
-					// ListParameter listParameter = (ListParameter) parameter;
+					FIBRadioButtonList rbList = fibModelFactory.newFIBRadioButtonList();
+					rbList.setName(object.getName() + "FIBRadioButtonList");
+					rbList.setList(new DataBinding<List<?>>(variableName + "." + object.getWidgetDefinitionAccess() + ".listOfObjects"));
+					return rbList;
+				case CHECKBOX_LIST:
 					FIBCheckboxList cbList = fibModelFactory.newFIBCheckboxList();
 					cbList.setName(object.getName() + "CheckboxList");
-					// TODO: repair this !!!
-					logger.warning("This feature is no more implemented, please repair this !!!");
-					cbList.setList(new DataBinding<List<?>>("data.parameters." + object.getName() + "TODO"));
+					cbList.setList(new DataBinding<List<?>>(variableName + "." + object.getWidgetDefinitionAccess() + ".listOfObjects"));
 					cbList.setUseScrollBar(true);
 					cbList.setHorizontalScrollbarPolicy(HorizontalScrollBarPolicy.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 					cbList.setVerticalScrollbarPolicy(VerticalScrollBarPolicy.VERTICAL_SCROLLBAR_AS_NEEDED);

@@ -38,9 +38,11 @@
 
 package org.openflexo.foundation.fml;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.openflexo.foundation.fml.rt.FlexoEnumInstance;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.model.annotations.Adder;
 import org.openflexo.model.annotations.CloningStrategy;
@@ -56,6 +58,8 @@ import org.openflexo.model.annotations.PropertyIdentifier;
 import org.openflexo.model.annotations.Remover;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLElement;
+import org.openflexo.model.exceptions.ModelDefinitionException;
+import org.openflexo.model.factory.ModelFactory;
 
 /**
  * An {@link FlexoEnum} represent an enumeration reflected by a {@link FlexoConcept}
@@ -103,12 +107,47 @@ public interface FlexoEnum extends FlexoConcept {
 	@Override
 	public FlexoEnumType getInstanceType();
 
+	/**
+	 * Return list of run-time instances of this {@link FlexoEnum}.<br>
+	 * 
+	 * Take care that those instances are shared by the whole application: only one {@link FlexoEnumInstance} might be instantiated for one
+	 * {@link FlexoEnumValue} in the JVM
+	 * 
+	 * @return
+	 */
+	public List<FlexoEnumInstance> getInstances();
+
+	/**
+	 * Return run-time instance matching supplied name
+	 * 
+	 * @param name
+	 * @return
+	 */
+	public FlexoEnumInstance getInstance(String name);
+
 	public static abstract class FlexoEnumImpl extends FlexoConceptImpl implements FlexoEnum {
 
 		protected static final Logger logger = FlexoLogger.getLogger(FlexoEnum.class.getPackage().getName());
 
 		private final FlexoEnumType instanceType = new FlexoEnumType(this);
 
+		/**
+		 * Run-time instances of this {@link FlexoEnum}
+		 */
+		private List<FlexoEnumInstance> instances = new ArrayList<>();
+
+		static ModelFactory RT_FACTORY;
+
+		static {
+			try {
+				RT_FACTORY = new ModelFactory(FlexoEnumInstance.class);
+			} catch (ModelDefinitionException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+
+		// TODO: remove this > not used
 		protected void updateValues() {
 
 		}
@@ -120,14 +159,22 @@ public interface FlexoEnum extends FlexoConcept {
 		}
 
 		@Override
-		public void addToValues(FlexoEnumValue Value) {
-			performSuperAdder(VALUES_KEY, Value);
+		public void addToValues(FlexoEnumValue value) {
+			performSuperAdder(VALUES_KEY, value);
+			FlexoEnumInstance newInstance = RT_FACTORY.newInstance(FlexoEnumInstance.class);
+			newInstance.setValue(value);
+			instances.add(newInstance);
 			updateValues();
 		}
 
 		@Override
-		public void removeFromValues(FlexoEnumValue Value) {
-			performSuperRemover(VALUES_KEY, Value);
+		public void removeFromValues(FlexoEnumValue value) {
+			performSuperRemover(VALUES_KEY, value);
+			for (FlexoEnumInstance i : new ArrayList<>(instances)) {
+				if (i.getValue() == value) {
+					instances.remove(i);
+				}
+			}
 			updateValues();
 		}
 
@@ -172,6 +219,39 @@ public interface FlexoEnum extends FlexoConcept {
 		@Override
 		public FlexoEnumType getInstanceType() {
 			return instanceType;
+		}
+
+		/*@Override
+		public FlexoEnumValue getValue(String name) {
+			for (FlexoEnumValue value : getValues()) {
+				if (value.getName().equals(name)) {
+					return value;
+				}
+			}
+			return null;
+		}*/
+
+		@Override
+		public FlexoEnumInstance getInstance(String name) {
+			for (FlexoEnumInstance instance : getInstances()) {
+				if (instance.getValue().getName().equals(name)) {
+					return instance;
+				}
+			}
+			return null;
+		}
+
+		/**
+		 * Return list of run-time instances of this {@link FlexoEnum}.<br>
+		 * 
+		 * Take care that those instances are shared by the whole application: only one {@link FlexoEnumInstance} might be instantiated for
+		 * one {@link FlexoEnumValue} in the JVM
+		 * 
+		 * @return
+		 */
+		@Override
+		public List<FlexoEnumInstance> getInstances() {
+			return instances;
 		}
 
 	}

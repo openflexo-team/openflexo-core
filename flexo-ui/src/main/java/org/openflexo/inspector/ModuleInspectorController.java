@@ -760,7 +760,7 @@ public class ModuleInspectorController extends Observable implements Observer {
 		for (TechnologyAdapter ta : flexoController.getApplicationContext().getTechnologyAdapterService().getTechnologyAdapters()) {
 			TechnologyAdapterController<?> tac = FlexoController.getTechnologyAdapterController(ta);
 			boolean[] expand = { true, false };
-			FIBWidget returned = tac.makeWidget(entry, null, getFactory(), expand);
+			FIBWidget returned = tac.makeWidget(entry, null, getFactory(), "fci", expand);
 			newTab.addToSubComponentsNoNotification(returned,
 					new TwoColsLayoutConstraints(TwoColsLayoutLocation.right, expand[0], expand[1]));
 			if (returned != null) {
