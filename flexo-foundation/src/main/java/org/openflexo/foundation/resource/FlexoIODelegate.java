@@ -51,8 +51,7 @@ import org.openflexo.model.factory.AccessibleProxyObject;
 import org.openflexo.rm.Resource;
 
 /**
- * Flexo IO Delegate makes a link between a flexo resource and a serialization
- * artefact.
+ * Flexo IO Delegate makes a link between a flexo resource and a serialization artefact.
  * 
  * @author Vincent, Sylvain
  *
@@ -69,8 +68,7 @@ public interface FlexoIODelegate<I> extends AccessibleProxyObject {
 	public static final String FLEXO_RESOURCE = "flexo_resource";
 
 	/**
-	 * A Serialization Artefact represents the flexo resource according to a
-	 * given serialization type
+	 * A Serialization Artefact represents the flexo resource according to a given serialization type
 	 */
 	public static final String SERIALIZATION_ARTEFACT = "serialization_artefact";
 
@@ -91,12 +89,10 @@ public interface FlexoIODelegate<I> extends AccessibleProxyObject {
 	public Resource getSerializationArtefactAsResource();
 
 	/**
-	 * Indicates whether this resource can be edited or not. Returns
-	 * <code>true</code> if the resource cannot be edited, else returns
+	 * Indicates whether this resource can be edited or not. Returns <code>true</code> if the resource cannot be edited, else returns
 	 * <code>false</code>.
 	 * 
-	 * @return <code>true</code> if the resource cannot be edited, else returns
-	 *         <code>false</code>.
+	 * @return <code>true</code> if the resource cannot be edited, else returns <code>false</code>.
 	 */
 	public boolean isReadOnly();
 
@@ -130,27 +126,24 @@ public interface FlexoIODelegate<I> extends AccessibleProxyObject {
 	public String getParentPath();
 
 	/**
-	 * Called when the {@link FlexoResource} this delegate handle I/O has been
-	 * renamed.
+	 * Called when the {@link FlexoResource} this delegate handle I/O has been renamed.
 	 */
 	public void rename() throws CannotRenameException;
 
 	public void save(FlexoResource<?> resource) throws NotImplementedException;
 
-	public RepositoryFolder<?, I> getRepositoryFolder(ResourceRepository<?, I> resourceRepository,
-			boolean createWhenNonExistent) throws IOException;
+	public RepositoryFolder<?, I> getRepositoryFolder(ResourceRepository<?, I> resourceRepository, boolean createWhenNonExistent)
+			throws IOException;
 
 	/**
-	 * Used to retrieve a ClassLoader exposing code embedded in serialization
-	 * artefact
+	 * Used to retrieve a ClassLoader exposing code embedded in serialization artefact
 	 * 
 	 * @return
 	 */
 	public ClassLoader retrieveClassLoader();
 
 	/**
-	 * Used to retrieve a resource stored in parent serialization artefact, and
-	 * identified by a relativePathName
+	 * Used to retrieve a resource stored in parent serialization artefact, and identified by a relativePathName
 	 * 
 	 * @param relativePathName
 	 * @return

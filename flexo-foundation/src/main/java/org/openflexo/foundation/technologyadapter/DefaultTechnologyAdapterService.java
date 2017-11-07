@@ -73,6 +73,7 @@ import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
 import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.resource.ResourceRepository;
+import org.openflexo.foundation.resource.ResourceRepositoryImpl;
 import org.openflexo.foundation.task.FlexoTask;
 import org.openflexo.foundation.task.Progress;
 import org.openflexo.model.exceptions.ModelDefinitionException;
@@ -243,7 +244,7 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 	}
 
 	/**
-	 * Return the list of all non-empty {@link ResourceRepository} discovered in the scope of {@link FlexoServiceManager}, related to
+	 * Return the list of all non-empty {@link ResourceRepositoryImpl} discovered in the scope of {@link FlexoServiceManager}, related to
 	 * technology as supplied by {@link TechnologyAdapter} parameter
 	 * 
 	 * @param technologyAdapter
@@ -262,7 +263,7 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 	}
 
 	/**
-	 * Return the list of all global {@link ResourceRepository} discovered in this {@link InformationSpace}, related to technology as
+	 * Return the list of all global {@link ResourceRepositoryImpl} discovered in this {@link InformationSpace}, related to technology as
 	 * supplied by {@link TechnologyAdapter} parameter.<br>
 	 * One global repository for each {@link FlexoResourceCenter} is returned
 	 * 
@@ -280,7 +281,7 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 	}
 
 	/**
-	 * Return the list of all non-empty {@link ResourceRepository} discovered in the scope of {@link FlexoServiceManager} which may give
+	 * Return the list of all non-empty {@link ResourceRepositoryImpl} discovered in the scope of {@link FlexoServiceManager} which may give
 	 * access to some instance of supplied resource data class, related to technology as supplied by {@link TechnologyAdapter} parameter
 	 * 
 	 * @param technologyAdapter
@@ -295,7 +296,7 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 			if (repCollection != null) {
 				for (ResourceRepository<?, ?> rep : repCollection) {
 					if (resourceDataClass.isAssignableFrom(rep.getResourceDataClass())) {
-						returned.add((ResourceRepository<? extends FlexoResource<RD>, ?>) rep);
+						returned.add((ResourceRepositoryImpl<? extends FlexoResource<RD>, ?>) rep);
 					}
 				}
 			}

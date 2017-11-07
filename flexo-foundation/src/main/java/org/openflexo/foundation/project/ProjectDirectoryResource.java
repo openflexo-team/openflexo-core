@@ -36,12 +36,14 @@
  * 
  */
 
-package org.openflexo.foundation;
+package org.openflexo.foundation.project;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 
-import org.openflexo.foundation.ProjectDirectoryResource.ProjectDirectoryResourceImpl;
+import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.FlexoProject;
+import org.openflexo.foundation.project.ProjectDirectoryResource.ProjectDirectoryResourceImpl;
 import org.openflexo.foundation.resource.FileIODelegate;
 import org.openflexo.foundation.resource.FlexoProjectResource;
 import org.openflexo.foundation.resource.FlexoResource;

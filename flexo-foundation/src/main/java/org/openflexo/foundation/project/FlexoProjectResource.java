@@ -1,8 +1,8 @@
 /**
  * 
- * Copyright (c) 2014-2015, Openflexo
+ * Copyright (c) 2014, Openflexo
  * 
- * This file is part of Flexo-foundation, a component of the software infrastructure 
+ * This file is part of Flexodiagram, a component of the software infrastructure 
  * developed at Openflexo.
  * 
  * 
@@ -36,21 +36,26 @@
  * 
  */
 
-package org.openflexo.foundation.fml.annotations;
+package org.openflexo.foundation.project;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Inherited;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import org.openflexo.foundation.FlexoProject;
+import org.openflexo.foundation.resource.FlexoResource;
+import org.openflexo.foundation.resource.PamelaResource;
+import org.openflexo.model.annotations.ImplementationClass;
+import org.openflexo.model.annotations.ModelEntity;
+import org.openflexo.model.annotations.XMLElement;
 
-import org.openflexo.foundation.resource.ResourceRepositoryImpl;
+/**
+ * This is the {@link FlexoResource} encoding a {@link FlexoProject}
+ * 
+ * @author sylvain
+ * 
+ */
+@ModelEntity
+@ImplementationClass(FlexoProjectResourceImpl.class)
+@XMLElement
+public interface FlexoProjectResource extends PamelaResource<FlexoProject<?>, FlexoProjectFactory> {
 
-@Retention(RetentionPolicy.RUNTIME)
-@Inherited
-@Target(value = ElementType.TYPE)
-@Deprecated
-public @interface DeclareRepositoryType {
+	public FlexoProject<?> getFlexoProject();
 
-	public Class<? extends ResourceRepositoryImpl>[]value();
 }

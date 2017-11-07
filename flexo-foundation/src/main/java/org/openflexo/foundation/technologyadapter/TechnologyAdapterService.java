@@ -56,6 +56,7 @@ import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
 import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.resource.ResourceRepository;
+import org.openflexo.foundation.resource.ResourceRepositoryImpl;
 import org.openflexo.foundation.task.FlexoTask;
 import org.openflexo.model.annotations.Adder;
 import org.openflexo.model.annotations.Getter;
@@ -138,7 +139,7 @@ public interface TechnologyAdapterService extends FlexoService, CustomTypeManage
 	public List<MetaModelRepository<?, ?, ?, ?, ?>> getAllMetaModelRepositories(TechnologyAdapter technologyAdapter);
 
 	/**
-	 * Return the list of all non-empty {@link ResourceRepository} discovered in the scope of {@link FlexoServiceManager}, related to
+	 * Return the list of all non-empty {@link ResourceRepositoryImpl} discovered in the scope of {@link FlexoServiceManager}, related to
 	 * technology as supplied by {@link TechnologyAdapter} parameter
 	 * 
 	 * @param technologyAdapter
@@ -147,7 +148,7 @@ public interface TechnologyAdapterService extends FlexoService, CustomTypeManage
 	public List<ResourceRepository<?, ?>> getAllRepositories(TechnologyAdapter technologyAdapter);
 
 	/**
-	 * Return the list of all global {@link ResourceRepository} discovered in this {@link InformationSpace}, related to technology as
+	 * Return the list of all global {@link ResourceRepositoryImpl} discovered in this {@link InformationSpace}, related to technology as
 	 * supplied by {@link TechnologyAdapter} parameter.<br>
 	 * One global repository for each {@link FlexoResourceCenter} is returned
 	 * 
@@ -158,7 +159,7 @@ public interface TechnologyAdapterService extends FlexoService, CustomTypeManage
 			TA technologyAdapter);
 
 	/**
-	 * Return the list of all non-empty {@link ResourceRepository} discovered in the scope of {@link FlexoServiceManager} which may give
+	 * Return the list of all non-empty {@link ResourceRepositoryImpl} discovered in the scope of {@link FlexoServiceManager} which may give
 	 * access to some instance of supplied resource data class, related to technology as supplied by {@link TechnologyAdapter} parameter
 	 * 
 	 * @param technologyAdapter

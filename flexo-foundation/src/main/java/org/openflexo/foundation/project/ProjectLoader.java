@@ -36,7 +36,7 @@
  * 
  */
 
-package org.openflexo.foundation;
+package org.openflexo.foundation.project;
 
 import java.io.File;
 import java.io.IOException;
@@ -50,6 +50,14 @@ import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.openflexo.foundation.DefaultFlexoEditor;
+import org.openflexo.foundation.FlexoEditor;
+import org.openflexo.foundation.FlexoProject;
+import org.openflexo.foundation.FlexoService;
+import org.openflexo.foundation.FlexoServiceImpl;
+import org.openflexo.foundation.FlexoServiceManager;
+import org.openflexo.foundation.FlexoEditor.FlexoEditorFactory;
+import org.openflexo.foundation.FlexoService.ServiceNotification;
 import org.openflexo.foundation.nature.ProjectNature;
 import org.openflexo.foundation.resource.FlexoProjectReference;
 import org.openflexo.foundation.resource.ProjectClosed;

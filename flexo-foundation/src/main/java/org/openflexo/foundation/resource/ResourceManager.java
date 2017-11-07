@@ -297,13 +297,13 @@ public class ResourceManager extends FlexoServiceImpl implements FlexoService, R
 	}
 
 	/**
-	 * Return the list of all non-empty {@link ResourceRepository} discovered in this {@link InformationSpace}, related to technology as
+	 * Return the list of all non-empty {@link ResourceRepositoryImpl} discovered in this {@link InformationSpace}, related to technology as
 	 * supplied by {@link TechnologyAdapter} parameter
 	 * 
 	 * @param technologyAdapter
 	 * @return
 	 */
-	public List<ResourceRepository<?, ?>> getAllRepositories(TechnologyAdapter technologyAdapter) {
+	public List<ResourceRepositoryImpl<?, ?>> getAllRepositories(TechnologyAdapter technologyAdapter) {
 		if (getServiceManager() != null) {
 			return getServiceManager().getTechnologyAdapterService().getAllRepositories(technologyAdapter);
 		}
@@ -311,7 +311,7 @@ public class ResourceManager extends FlexoServiceImpl implements FlexoService, R
 	}
 
 	/**
-	 * Return the list of all global {@link ResourceRepository} discovered in this {@link InformationSpace}, related to technology as
+	 * Return the list of all global {@link ResourceRepositoryImpl} discovered in this {@link InformationSpace}, related to technology as
 	 * supplied by {@link TechnologyAdapter} parameter.<br>
 	 * One global repository for each {@link FlexoResourceCenter} is returned
 	 * 
@@ -327,13 +327,13 @@ public class ResourceManager extends FlexoServiceImpl implements FlexoService, R
 	}
 
 	/**
-	 * Return the list of all non-empty {@link ResourceRepository} discovered in the scope of {@link FlexoServiceManager} which may give
+	 * Return the list of all non-empty {@link ResourceRepositoryImpl} discovered in the scope of {@link FlexoServiceManager} which may give
 	 * access to some instance of supplied resource data class, related to technology as supplied by {@link TechnologyAdapter} parameter
 	 * 
 	 * @param technologyAdapter
 	 * @return
 	 */
-	public <RD extends ResourceData<RD>> List<ResourceRepository<? extends FlexoResource<RD>, ?>> getAllRepositories(
+	public <RD extends ResourceData<RD>> List<ResourceRepositoryImpl<? extends FlexoResource<RD>, ?>> getAllRepositories(
 			TechnologyAdapter technologyAdapter, Class<RD> resourceDataClass) {
 		if (getServiceManager() != null) {
 			return getServiceManager().getTechnologyAdapterService().getAllRepositories(technologyAdapter, resourceDataClass);

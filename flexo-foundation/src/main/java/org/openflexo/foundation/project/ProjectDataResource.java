@@ -36,12 +36,18 @@
  * 
  */
 
-package org.openflexo.foundation;
+package org.openflexo.foundation.project;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 
-import org.openflexo.foundation.ProjectData.ProjectDataFactory;
+import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.FlexoProject;
+import org.openflexo.foundation.IOFlexoException;
+import org.openflexo.foundation.InconsistentDataException;
+import org.openflexo.foundation.InvalidModelDefinitionException;
+import org.openflexo.foundation.InvalidXMLException;
+import org.openflexo.foundation.project.ProjectData.ProjectDataFactory;
 import org.openflexo.foundation.resource.FileIODelegate;
 import org.openflexo.foundation.resource.FileIODelegate.FileIODelegateImpl;
 import org.openflexo.foundation.resource.FlexoFileNotFoundException;
@@ -66,6 +72,8 @@ import org.openflexo.model.factory.ModelFactory;
 @ModelEntity
 @ImplementationClass(ProjectDataResource.ProjectDataResourceImpl.class)
 @XMLElement
+@Deprecated
+// TODO: remove this
 public interface ProjectDataResource extends PamelaResource<ProjectData, ProjectDataFactory>, FlexoProjectResource<ProjectData> {
 
 	public static final String FILE_NAME = "ProjectData.xml";

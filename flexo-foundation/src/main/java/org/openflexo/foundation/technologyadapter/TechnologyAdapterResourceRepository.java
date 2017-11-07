@@ -44,11 +44,11 @@ import java.util.logging.Logger;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.ResourceData;
-import org.openflexo.foundation.resource.ResourceRepository;
+import org.openflexo.foundation.resource.ResourceRepositoryImpl;
 
 /**
  * A {@link TechnologyAdapterResourceRepository} stores all resources storing resources relative to a given technology<br>
- * Resources are organized with a folder hierarchy inside a {@link ResourceRepository}
+ * Resources are organized with a folder hierarchy inside a {@link ResourceRepositoryImpl}
  * 
  * @author sylvain
  * 
@@ -56,7 +56,7 @@ import org.openflexo.foundation.resource.ResourceRepository;
  * @param <TA>
  */
 public abstract class TechnologyAdapterResourceRepository<R extends TechnologyAdapterResource<RD, TA> & FlexoResource<RD>, TA extends TechnologyAdapter, RD extends ResourceData<RD> & TechnologyObject<TA>, I>
-		extends ResourceRepository<R, I> {
+		extends ResourceRepositoryImpl<R, I> {
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TechnologyAdapterResourceRepository.class.getPackage().getName());

@@ -230,8 +230,8 @@ public abstract class FlexoResourceFactory<R extends TechnologyAdapterResource<R
 		resource.setTechnologyContextManager(technologyContextManager);
 		technologyContextManager.registerResource(resource);
 
-		// Also register the resource in the ResourceCenter seen as a ResourceRepository
-		if (resourceCenter instanceof ResourceRepository) {
+		// Also register the resource in the ResourceCenter seen as a ResourceRepositoryImpl
+		if (resourceCenter instanceof ResourceRepositoryImpl) {
 			registerResourceInResourceRepository(resource, (ResourceRepository) resourceCenter);
 		}
 
@@ -259,7 +259,7 @@ public abstract class FlexoResourceFactory<R extends TechnologyAdapterResource<R
 	}
 
 	/**
-	 * Internally called to register a {@link FlexoResource} in a {@link ResourceRepository}<br>
+	 * Internally called to register a {@link FlexoResource} in a {@link ResourceRepositoryImpl}<br>
 	 * Folder in computed according to I/O delegate type
 	 * 
 	 * @param resource

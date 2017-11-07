@@ -134,7 +134,7 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, FlexoObject {
 	String getDefaultBaseURI();
 
 	/**
-	 * Sets the default base URI associated with the {@link ResourceRepository}.<br>
+	 * Sets the default base URI associated with the {@link ResourceRepositoryImpl}.<br>
 	 * 
 	 * This URI might be used as default base URI for any resource stored in this repository, if no explicit URI was given to related
 	 * resource. Resulting URI will be given by concatenation of this base URI with base name for related resource
@@ -304,7 +304,7 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, FlexoObject {
 			TechnologyAdapter technologyAdapter);
 
 	/**
-	 * Return the list of all {@link ResourceRepository} registered in this ResourceCenter for a given technology
+	 * Return the list of all {@link ResourceRepositoryImpl} registered in this ResourceCenter for a given technology
 	 * 
 	 * @param technologyAdapter
 	 * @return

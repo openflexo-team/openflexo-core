@@ -425,7 +425,7 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 			isDeleting = true;
 			logger.info("Deleting resource " + this);
 
-			if (getResourceCenter() instanceof ResourceRepository) {
+			if (getResourceCenter() instanceof ResourceRepositoryImpl) {
 				((ResourceRepository) getResourceCenter()).unregisterResource(this);
 			}
 

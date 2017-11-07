@@ -199,8 +199,8 @@ public class GitResourceCenter extends FileSystemBasedResourceCenter {
 	
 			if (ta != null) {
 				System.out.println("globalRC=" + ta.getGlobalRepository(this));
-				ResourceRepository repository = ta.getGlobalRepository(this);
-				// for (ResourceRepository repository : getRegistedRepositories(ta)) {
+				ResourceRepositoryImpl repository = ta.getGlobalRepository(this);
+				// for (ResourceRepositoryImpl repository : getRegistedRepositories(ta)) {
 				System.out.println("repo:" + repository);
 				if (repository.containsResource(resource)) {
 					System.out.println("yes");

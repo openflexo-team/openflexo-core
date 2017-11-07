@@ -43,9 +43,9 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 
 import org.openflexo.foundation.FlexoServiceManager;
-import org.openflexo.foundation.ProjectDataResource;
-import org.openflexo.foundation.ProjectDirectoryResource;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
+import org.openflexo.foundation.project.ProjectDataResource;
+import org.openflexo.foundation.project.ProjectDirectoryResource;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.model.validation.InformationIssue;

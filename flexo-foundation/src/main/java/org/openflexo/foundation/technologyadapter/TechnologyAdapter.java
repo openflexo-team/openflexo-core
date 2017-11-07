@@ -80,10 +80,11 @@ import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
 import org.openflexo.foundation.resource.FlexoResourceFactory;
+import org.openflexo.foundation.resource.ResourceRepository;
 import org.openflexo.foundation.resource.JarResourceCenter;
 import org.openflexo.foundation.resource.RepositoryFolder;
 import org.openflexo.foundation.resource.ResourceData;
-import org.openflexo.foundation.resource.ResourceRepository;
+import org.openflexo.foundation.resource.ResourceRepositoryImpl;
 import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.localization.LocalizedDelegate;
@@ -632,18 +633,18 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 	 * @return
 	 */
 	/**
-	 * Return the list of all non-empty {@link ResourceRepository} discovered in the scope of {@link FlexoServiceManager}, related to
+	 * Return the list of all non-empty {@link ResourceRepositoryImpl} discovered in the scope of {@link FlexoServiceManager}, related to
 	 * technology as supplied by {@link TechnologyAdapter} parameter
 	 * 
 	 * @param technologyAdapter
 	 * @return
 	 */
-	public List<ResourceRepository<?, ?>> getGlobalRepositories() {
-		List<ResourceRepository<?, ?>> returned = new ArrayList<>();
+	public List<ResourceRepositoryImpl<?, ?>> getGlobalRepositories() {
+		List<ResourceRepositoryImpl<?, ?>> returned = new ArrayList<>();
 		for (FlexoResourceCenter<?> rc : getTechnologyAdapterService().getServiceManager().getResourceCenterService()
 				.getResourceCenters()) {
 			// System.out.println("Pour le RC " + rc);
-			ResourceRepository<?, ?> globalRepository = getGlobalRepository(rc);// rc.getGlobalRepository(this);
+			ResourceRepositoryImpl<?, ?> globalRepository = getGlobalRepository(rc);// rc.getGlobalRepository(this);
 			// System.out.println("global repo = " + globalRepository);
 			if (globalRepository != null) {
 				returned.add(globalRepository);
@@ -664,17 +665,17 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 	}
 
 	/**
-	 * Return the list of all non-empty {@link ResourceRepository} discovered in the scope of {@link FlexoServiceManager}, related to
+	 * Return the list of all non-empty {@link ResourceRepositoryImpl} discovered in the scope of {@link FlexoServiceManager}, related to
 	 * technology as supplied by {@link TechnologyAdapter} parameter
 	 * 
 	 * @param technologyAdapter
 	 * @return
 	 */
-	public <I> List<ResourceRepository<?, I>> getAllRepositories() {
-		List<ResourceRepository<?, I>> returned = new ArrayList<>();
+	public <I> List<ResourceRepositoryImpl<?, I>> getAllRepositories() {
+		List<ResourceRepositoryImpl<?, I>> returned = new ArrayList<>();
 		for (FlexoResourceCenter<?> rc : new ArrayList<>(
 				getTechnologyAdapterService().getServiceManager().getResourceCenterService().getResourceCenters())) {
-			Collection<? extends ResourceRepository<?, I>> repCollection = (Collection) rc.getRegistedRepositories(this, true);
+			Collection<? extends ResourceRepositoryImpl<?, I>> repCollection = (Collection) rc.getRegistedRepositories(this, true);
 			if (repCollection != null) {
 				returned.addAll(repCollection);
 			}

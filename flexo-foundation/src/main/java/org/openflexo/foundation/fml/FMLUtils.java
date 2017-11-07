@@ -44,7 +44,7 @@ import java.util.List;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.resource.RepositoryFolder;
-import org.openflexo.foundation.resource.ResourceRepository;
+import org.openflexo.foundation.resource.ResourceRepositoryImpl;
 
 /**
  * Utility class provinding usefull methods in FML context
@@ -140,7 +140,7 @@ public class FMLUtils {
 	 * <ul>
 	 * <li>a {@link VirtualModel}</li>
 	 * <li>a {@link RepositoryFolder}</li>
-	 * <li>a {@link ResourceRepository} (a ResourceCenter)</li>
+	 * <li>a {@link ResourceRepositoryImpl} (a ResourceCenter)</li>
 	 * <li>otherwise the {@link VirtualModelLibrary} is the most specialized container</li>
 	 * </ul>
 	 * 
@@ -170,7 +170,7 @@ public class FMLUtils {
 	 * <ul>
 	 * <li>a {@link VirtualModel}</li>
 	 * <li>a {@link RepositoryFolder}</li>
-	 * <li>a {@link ResourceRepository} (a ResourceCenter)</li>
+	 * <li>a {@link ResourceRepositoryImpl} (a ResourceCenter)</li>
 	 * <li>otherwise the {@link VirtualModelLibrary} is the most specialized container</li>
 	 * </ul>
 	 * 

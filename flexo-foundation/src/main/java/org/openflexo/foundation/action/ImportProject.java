@@ -45,7 +45,7 @@ import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.FlexoProjectObject;
-import org.openflexo.foundation.ProjectDataResource;
+import org.openflexo.foundation.project.ProjectDataResource;
 import org.openflexo.foundation.resource.FlexoProjectReference;
 
 public class ImportProject extends FlexoAction<ImportProject, FlexoProjectObject, FlexoProjectObject> {

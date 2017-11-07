@@ -41,11 +41,11 @@ package org.openflexo.foundation.technologyadapter;
 
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
-import org.openflexo.foundation.resource.ResourceRepository;
+import org.openflexo.foundation.resource.ResourceRepositoryImpl;
 
 /**
  * A {@link ModelRepository} stores all resources storing models relative to a given technology<br>
- * Resources are organized with a folder hierarchy inside a {@link ResourceRepository}
+ * Resources are organized with a folder hierarchy inside a {@link ResourceRepositoryImpl}
  * 
  * @author sylvain
  * 

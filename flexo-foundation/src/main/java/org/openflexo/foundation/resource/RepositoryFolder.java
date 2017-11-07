@@ -48,10 +48,10 @@ import org.openflexo.foundation.DefaultFlexoObject;
 import org.openflexo.toolbox.StringUtils;
 
 /**
- * Represents a folder, as an organization item inside a {@link ResourceRepository}
+ * Represents a folder, as an organization item inside a {@link ResourceRepositoryImpl}
  * 
  * @param <R>
- *            type of resources being stored in this {@link ResourceRepository}
+ *            type of resources being stored in this {@link ResourceRepositoryImpl}
  * @param <I>
  *            serialization artefact type
  *

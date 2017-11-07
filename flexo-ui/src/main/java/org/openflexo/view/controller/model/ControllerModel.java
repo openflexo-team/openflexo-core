@@ -55,7 +55,7 @@ import org.openflexo.ApplicationContext;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoProject;
-import org.openflexo.foundation.ProjectLoader;
+import org.openflexo.foundation.project.ProjectLoader;
 import org.openflexo.module.FlexoModule;
 import org.openflexo.module.ModuleLoader;
 import org.openflexo.project.InteractiveProjectLoader;

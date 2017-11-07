@@ -89,10 +89,10 @@ import org.openflexo.xml.XMLRootElementReader;
  * @author Vincent, xtof
  *
  */
-public class JarResourceCenter extends ResourceRepository<FlexoResource<?>, InJarResourceImpl>
+public class JarResourceCenter extends ResourceRepositoryImpl<FlexoResource<?>, InJarResourceImpl>
 		implements FlexoResourceCenter<InJarResourceImpl> {
 
-	protected static final Logger logger = Logger.getLogger(ResourceRepository.class.getPackage().getName());
+	protected static final Logger logger = Logger.getLogger(ResourceRepositoryImpl.class.getPackage().getName());
 
 	/**
 	 * A jar file the resource center might interpret
@@ -112,7 +112,7 @@ public class JarResourceCenter extends ResourceRepository<FlexoResource<?>, InJa
 
 	private final FlexoResourceCenterService rcService;
 
-	// private final Map<TechnologyAdapter, ResourceRepository<?>> globalRepositories = new HashMap<>();
+	// private final Map<TechnologyAdapter, ResourceRepositoryImpl<?>> globalRepositories = new HashMap<>();
 
 	/**
 	 * Contructor based on a given JarResource
@@ -248,7 +248,7 @@ public class JarResourceCenter extends ResourceRepository<FlexoResource<?>, InJa
 	 * @param technologyAdapter
 	 */
 	/*@Override
-	public final void registerGlobalRepository(ResourceRepository<?> repository, TechnologyAdapter technologyAdapter) {
+	public final void registerGlobalRepository(ResourceRepositoryImpl<?> repository, TechnologyAdapter technologyAdapter) {
 		if (repository != null && technologyAdapter != null) {
 			globalRepositories.put(technologyAdapter, repository);
 		}
@@ -264,7 +264,7 @@ public class JarResourceCenter extends ResourceRepository<FlexoResource<?>, InJa
 	 * @return
 	 */
 	/*@Override
-	public ResourceRepository<?> getGlobalRepository(TechnologyAdapter technologyAdapter) {
+	public ResourceRepositoryImpl<?> getGlobalRepository(TechnologyAdapter technologyAdapter) {
 		if (technologyAdapter != null) {
 			return globalRepositories.get(technologyAdapter);
 		}

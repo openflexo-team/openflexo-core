@@ -39,7 +39,7 @@
 package org.openflexo.foundation.resource;
 
 import org.openflexo.foundation.FlexoProject;
-import org.openflexo.foundation.ProjectData;
+import org.openflexo.foundation.project.ProjectData;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.Initializer;

@@ -58,6 +58,7 @@ import org.openflexo.model.annotations.Setter;
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(FlexoProjectObject.FlexoProjectObjectImpl.class)
+@Deprecated
 public interface FlexoProjectObject extends FlexoObject {
 
 	@PropertyIdentifier(type = FlexoProject.class)
