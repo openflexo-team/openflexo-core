@@ -142,6 +142,7 @@ import org.openflexo.icon.IconLibrary;
 import org.openflexo.model.validation.ValidationError;
 import org.openflexo.model.validation.ValidationModel;
 import org.openflexo.model.validation.ValidationReport;
+import org.openflexo.toolbox.StringUtils;
 import org.openflexo.view.EmptyPanel;
 import org.openflexo.view.ModuleView;
 import org.openflexo.view.controller.ControllerActionInitializer;
@@ -477,8 +478,9 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 				&& ((FlexoBehaviourParameter) object).getFlexoBehaviour() instanceof CreationScheme;
 	}*/
 
-	private String getContainerBinding(WidgetContext object) {
-		return "data." + object.getContainer().toString();
+	private String getContainerBinding(WidgetContext widgetContext, String variableName) {
+		return variableName + "." + (StringUtils.isNotEmpty(widgetContext.getFlexoConceptInstanceAccess())
+				? widgetContext.getFlexoConceptInstanceAccess() + "." : "") + widgetContext.getContainer().toString();
 	}
 
 	private FIBWidget makeFlexoResourceSelector(final WidgetContext widgetContext, FIBModelFactory fibModelFactory, String variableName) {
@@ -519,7 +521,7 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 		fciSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(fciSelector, new DataBinding<>("component.project"),
 				new DataBinding<>("controller.editor.project"), true));
 
-		String containerBinding = getContainerBinding(widgetContext);
+		String containerBinding = getContainerBinding(widgetContext, variableName);
 		DataBinding<?> container = widgetContext.getContainer();
 		if (container != null && container.isSet() && container.isValid()) {
 			Type containerType = container.getAnalyzedType();
@@ -561,7 +563,7 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 		vmiSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(vmiSelector, new DataBinding<>("component.project"),
 				new DataBinding<>("controller.editor.project"), true));
 
-		String containerBinding = getContainerBinding(widgetContext);
+		String containerBinding = getContainerBinding(widgetContext, variableName);
 		DataBinding<?> container = widgetContext.getContainer();
 		if (container != null && container.isSet() && container.isValid()) {
 			Type containerType = container.getAnalyzedType();
@@ -604,7 +606,7 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 		viewSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(viewSelector, new DataBinding<>("component.project"),
 				new DataBinding<>("controller.editor.project"), true));
 
-		String containerBinding = getContainerBinding(widgetContext);
+		String containerBinding = getContainerBinding(widgetContext, variableName);
 		DataBinding<?> container = widgetContext.getContainer();
 		if (container != null && container.isSet() && container.isValid()) {
 			Type containerType = container.getAnalyzedType();

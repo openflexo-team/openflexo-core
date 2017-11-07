@@ -469,7 +469,7 @@ public interface InspectorEntry extends FlexoConceptObject, Bindable, WidgetCont
 		 * @return
 		 */
 		@Override
-		public String getWidgetAccess() {
+		public String getWidgetDataAccess() {
 			return getData().toString();
 		}
 
@@ -481,6 +481,16 @@ public interface InspectorEntry extends FlexoConceptObject, Bindable, WidgetCont
 		@Override
 		public String getWidgetDefinitionAccess() {
 			return "flexoConcept.inspector.getEntry(\"" + getName() + "\")";
+		}
+
+		/**
+		 * Return a String encoding a {@link DataBinding} which should get access to instance of FlexoConcept
+		 * 
+		 * @return
+		 */
+		@Override
+		public String getFlexoConceptInstanceAccess() {
+			return null;
 		}
 
 		/**

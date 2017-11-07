@@ -496,7 +496,7 @@ public interface FlexoBehaviourParameter extends FlexoBehaviourObject, FunctionA
 		 * @return
 		 */
 		@Override
-		public String getWidgetAccess() {
+		public String getWidgetDataAccess() {
 			return "parameters." + getName() + "";
 		}
 
@@ -508,6 +508,16 @@ public interface FlexoBehaviourParameter extends FlexoBehaviourObject, FunctionA
 		@Override
 		public String getWidgetDefinitionAccess() {
 			return "parameters." + getName() + ".definition";
+		}
+
+		/**
+		 * Return a String encoding a {@link DataBinding} which should get access to instance of FlexoConcept
+		 * 
+		 * @return
+		 */
+		@Override
+		public String getFlexoConceptInstanceAccess() {
+			return "flexoConceptInstance";
 		}
 
 		/**

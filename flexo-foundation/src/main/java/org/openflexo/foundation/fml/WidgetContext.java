@@ -68,7 +68,7 @@ public interface WidgetContext extends FlexoConceptObject {
 	 * 
 	 * @return
 	 */
-	String getWidgetAccess();
+	String getWidgetDataAccess();
 
 	/**
 	 * Return a String encoding a {@link DataBinding} which should get access to represented data definition (which is this object)
@@ -76,6 +76,13 @@ public interface WidgetContext extends FlexoConceptObject {
 	 * @return
 	 */
 	String getWidgetDefinitionAccess();
+
+	/**
+	 * Return a String encoding a {@link DataBinding} which should get access to instance of FlexoConcept
+	 * 
+	 * @return
+	 */
+	String getFlexoConceptInstanceAccess();
 
 	/**
 	 * Depending of type of data to represent, return a list of objects which may be used to represented data
