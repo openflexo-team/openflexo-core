@@ -3,6 +3,7 @@ ActionScheme$ActionSchemeImpl_$$_jvstb0c_9b=ActionScheme$ActionSchemeImpl_$$_jvs
 Assign=Assign
 Boolean=Boolean
 CHECKBOX=CHECKBOX
+CHECKBOX_LIST=CHECKBOX_LIST
 CUSTOM_WIDGET=CUSTOM_WIDGET
 Connection=Connection
 CreationScheme=CreationScheme

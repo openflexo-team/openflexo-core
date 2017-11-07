@@ -80,7 +80,18 @@ import org.openflexo.toolbox.StringUtils;
 public interface FlexoBehaviourParameter extends FlexoBehaviourObject, FunctionArgument, WidgetContext {
 
 	public static enum WidgetType {
-		TEXT_FIELD, TEXT_AREA, URI, LOCALIZED_TEXT_FIELD, INTEGER, FLOAT, CHECKBOX, DROPDOWN, RADIO_BUTTON, CUSTOM_WIDGET;
+		TEXT_FIELD,
+		TEXT_AREA,
+		DATE,
+		URI,
+		LOCALIZED_TEXT_FIELD,
+		INTEGER,
+		FLOAT,
+		CHECKBOX,
+		DROPDOWN,
+		RADIO_BUTTON,
+		CHECKBOX_LIST,
+		CUSTOM_WIDGET;
 	}
 
 	@PropertyIdentifier(type = String.class)
@@ -437,13 +448,16 @@ public interface FlexoBehaviourParameter extends FlexoBehaviourObject, FunctionA
 
 		private static WidgetType[] STRING_WIDGET_TYPES_ARRAY = { WidgetType.TEXT_FIELD, WidgetType.TEXT_AREA, WidgetType.URI,
 				WidgetType.LOCALIZED_TEXT_FIELD, WidgetType.DROPDOWN, WidgetType.RADIO_BUTTON, WidgetType.CUSTOM_WIDGET };
+		private static WidgetType[] DATE_WIDGET_TYPES_ARRAY = { WidgetType.DATE, WidgetType.CUSTOM_WIDGET };
 		private static WidgetType[] BOOLEAN_WIDGET_TYPES_ARRAY = { WidgetType.CHECKBOX, WidgetType.CUSTOM_WIDGET };
 		private static WidgetType[] FLOAT_WIDGET_TYPES_ARRAY = { WidgetType.FLOAT, WidgetType.CUSTOM_WIDGET };
 		private static WidgetType[] INTEGER_WIDGET_TYPES_ARRAY = { WidgetType.INTEGER, WidgetType.CUSTOM_WIDGET };
-		private static WidgetType[] LIST_WIDGET_TYPES_ARRAY = { WidgetType.DROPDOWN, WidgetType.RADIO_BUTTON, WidgetType.CUSTOM_WIDGET };
+		private static WidgetType[] LIST_WIDGET_TYPES_ARRAY = { WidgetType.DROPDOWN, WidgetType.RADIO_BUTTON, WidgetType.CHECKBOX_LIST,
+				WidgetType.CUSTOM_WIDGET };
 		private static WidgetType[] CUSTOM_WIDGET_TYPES_ARRAY = { WidgetType.CUSTOM_WIDGET };
 
 		private static List<WidgetType> STRING_WIDGET_TYPES = Arrays.asList(STRING_WIDGET_TYPES_ARRAY);
+		private static List<WidgetType> DATE_WIDGET_TYPES = Arrays.asList(DATE_WIDGET_TYPES_ARRAY);
 		private static List<WidgetType> BOOLEAN_WIDGET_TYPES = Arrays.asList(BOOLEAN_WIDGET_TYPES_ARRAY);
 		private static List<WidgetType> FLOAT_WIDGET_TYPES = Arrays.asList(FLOAT_WIDGET_TYPES_ARRAY);
 		private static List<WidgetType> INTEGER_WIDGET_TYPES = Arrays.asList(INTEGER_WIDGET_TYPES_ARRAY);
@@ -453,6 +467,9 @@ public interface FlexoBehaviourParameter extends FlexoBehaviourObject, FunctionA
 		public static List<WidgetType> getAvailableWidgetTypes(Type type) {
 			if (TypeUtils.isString(type)) {
 				return STRING_WIDGET_TYPES;
+			}
+			if (TypeUtils.isDate(type)) {
+				return DATE_WIDGET_TYPES;
 			}
 			else if (TypeUtils.isBoolean(type)) {
 				return BOOLEAN_WIDGET_TYPES;
@@ -471,5 +488,40 @@ public interface FlexoBehaviourParameter extends FlexoBehaviourObject, FunctionA
 			}
 			return CUSTOM_WIDGET_TYPES;
 		}
+
+		/**
+		 * Return a String encoding a {@link DataBinding} which should get access to represented data from the context beeing represented by
+		 * this
+		 * 
+		 * @return
+		 */
+		@Override
+		public String getWidgetAccess() {
+			return "parameters." + getName() + "";
+		}
+
+		/**
+		 * Return a String encoding a {@link DataBinding} which should get access to represented data definition (which is this object)
+		 * 
+		 * @return
+		 */
+		@Override
+		public String getWidgetDefinitionAccess() {
+			return "parameters." + getName() + ".definition";
+		}
+
+		/**
+		 * Depending of type of data to represent, return a list of objects which may be used to represented data
+		 * 
+		 * @return
+		 */
+		@Override
+		public List<?> getListOfObjects() {
+			if (getType() instanceof FlexoEnumType) {
+				return ((FlexoEnumType) getType()).getFlexoEnum().getInstances();
+			}
+			return null;
+		}
+
 	}
 }

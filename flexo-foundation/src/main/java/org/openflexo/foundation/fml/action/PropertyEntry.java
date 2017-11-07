@@ -579,6 +579,9 @@ public class PropertyEntry extends PropertyChangedSupportDefaultImplementation i
 				if (TypeUtils.isString(getType())) {
 					createPrimitive.setPrimitiveType(PrimitiveType.String);
 				}
+				if (TypeUtils.isDate(getType())) {
+					createPrimitive.setPrimitiveType(PrimitiveType.Date);
+				}
 				if (TypeUtils.isBoolean(getType())) {
 					createPrimitive.setPrimitiveType(PrimitiveType.Boolean);
 				}

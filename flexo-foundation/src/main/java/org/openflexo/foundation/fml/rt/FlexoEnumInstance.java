@@ -40,6 +40,7 @@ package org.openflexo.foundation.fml.rt;
 
 import java.util.logging.Logger;
 
+import org.openflexo.foundation.fml.FlexoConceptInstanceRole;
 import org.openflexo.foundation.fml.FlexoEnum;
 import org.openflexo.foundation.fml.FlexoEnumValue;
 import org.openflexo.logging.FlexoLogger;
@@ -52,6 +53,8 @@ import org.openflexo.model.annotations.XMLElement;
  * 
  * This is the run-time concept of a {@link FlexoEnumValue}
  * 
+ * Take care that resource or owner {@link VirtualModelInstance} is here null
+ * 
  * @author sylvain
  * 
  */
@@ -61,11 +64,13 @@ import org.openflexo.model.annotations.XMLElement;
 public interface FlexoEnumInstance extends FlexoConceptInstance {
 
 	@Override
-	public FlexoEnum getFlexoConcept();
+	public FlexoEnumValue getFlexoConcept();
 
 	public FlexoEnum getFlexoEnum();
 
 	public FlexoEnumValue getValue();
+
+	public void setValue(FlexoEnumValue value);
 
 	public static abstract class FlexoEnumInstanceImpl extends FlexoConceptInstanceImpl implements FlexoEnumInstance {
 
@@ -75,12 +80,12 @@ public interface FlexoEnumInstance extends FlexoConceptInstance {
 
 		@Override
 		public FlexoEnum getFlexoEnum() {
-			return getFlexoConcept();
+			return getFlexoConcept().getFlexoEnum();
 		}
 
 		@Override
-		public FlexoEnum getFlexoConcept() {
-			return (FlexoEnum) super.getFlexoConcept();
+		public FlexoEnumValue getFlexoConcept() {
+			return getValue();
 		}
 
 		@Override
@@ -91,12 +96,38 @@ public interface FlexoEnumInstance extends FlexoConceptInstance {
 			return value;
 		}
 
+		@Override
 		public void setValue(FlexoEnumValue value) {
 			if ((value == null && this.value != null) || (value != null && !value.equals(this.value))) {
 				FlexoEnumValue oldValue = this.value;
 				this.value = value;
 				getPropertyChangeSupport().firePropertyChange("value", oldValue, value);
 			}
+		}
+
+		@Override
+		public String toString() {
+			return getValue().getName();
+		}
+
+		/**
+		 * Instanciate run-time-level object encoding reference to this {@link FlexoConceptInstance} object
+		 * 
+		 * @param role
+		 *            the {@link FlexoConceptInstanceRole} defining access to supplied object
+		 * @param fci
+		 *            the {@link FlexoConceptInstance} where this reference should be built
+		 * 
+		 */
+		@Override
+		public ActorReference<? extends FlexoConceptInstance> makeActorReference(FlexoConceptInstanceRole role, FlexoConceptInstance fci) {
+
+			AbstractVirtualModelInstanceModelFactory<?> factory = fci.getFactory();
+			FlexoEnumValueActorReference returned = factory.newInstance(FlexoEnumValueActorReference.class);
+			returned.setFlexoRole(role);
+			returned.setFlexoConceptInstance(fci);
+			returned.setModellingElement(this);
+			return returned;
 		}
 
 	}

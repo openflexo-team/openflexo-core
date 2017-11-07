@@ -55,6 +55,7 @@ import org.openflexo.foundation.fml.FlexoBehaviourParameter.FlexoBehaviourParame
 import org.openflexo.foundation.fml.FlexoBehaviourParameter.WidgetType;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptObject;
+import org.openflexo.foundation.fml.FlexoEnumType;
 import org.openflexo.foundation.fml.WidgetContext;
 import org.openflexo.foundation.fml.binding.InspectorEntryBindingModel;
 import org.openflexo.model.annotations.DefineValidationRule;
@@ -459,6 +460,40 @@ public interface InspectorEntry extends FlexoConceptObject, Bindable, WidgetCont
 				bindingModel = new InspectorEntryBindingModel(this);
 			}
 			return bindingModel;
+		}
+
+		/**
+		 * Return a String encoding a {@link DataBinding} which should get access to represented data from the context beeing represented by
+		 * this
+		 * 
+		 * @return
+		 */
+		@Override
+		public String getWidgetAccess() {
+			return getData().toString();
+		}
+
+		/**
+		 * Return a String encoding a {@link DataBinding} which should get access to represented data definition (which is this object)
+		 * 
+		 * @return
+		 */
+		@Override
+		public String getWidgetDefinitionAccess() {
+			return "flexoConcept.inspector.getEntry(\"" + getName() + "\")";
+		}
+
+		/**
+		 * Depending of type of data to represent, return a list of objects which may be used to represented data
+		 * 
+		 * @return
+		 */
+		@Override
+		public List<?> getListOfObjects() {
+			if (getType() instanceof FlexoEnumType) {
+				return ((FlexoEnumType) getType()).getFlexoEnum().getInstances();
+			}
+			return null;
 		}
 
 	}

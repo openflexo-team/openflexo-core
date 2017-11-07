@@ -91,12 +91,12 @@ public class FlexoBehaviourActionType implements CustomType {
 
 	@Override
 	public String simpleRepresentation() {
-		return "FlexoBehaviourActionType" + ":" + getFlexoBehaviour();
+		return getFlexoBehaviour().getSignature();
 	}
 
 	@Override
 	public String fullQualifiedRepresentation() {
-		return "FlexoBehaviourActionType" + ":" + getFlexoBehaviour();
+		return getFlexoBehaviour().getSignature();
 	}
 
 	@Override

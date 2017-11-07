@@ -105,16 +105,13 @@ public abstract class FlexoBehaviourActionWizard<A extends FlexoBehaviourAction<
 
 	@Override
 	public Image getDefaultPageImage() {
-		System.out.println("getAction().getFlexoBehaviour().getFlexoConcept()=" + getAction().getFlexoBehaviour().getFlexoConcept());
-		System.out.println("getAction().getFlexoBehaviour().getFlexoConcept().getBigIcon()="
-				+ getAction().getFlexoBehaviour().getFlexoConcept().getBigIcon());
 		if (getAction().getFlexoBehaviour().getFlexoConcept().getBigIcon() != null) {
 			return IconFactory.getImageIcon(getAction().getFlexoBehaviour().getFlexoConcept().getBigIcon(), getIconMarker()).getImage();
 		}
 		if (getAction().getFlexoBehaviour().getFlexoConcept() instanceof VirtualModel) {
-			return IconFactory.getImageIcon(FMLRTIconLibrary.VIRTUAL_MODEL_INSTANCE_MEDIUM_ICON, getIconMarker()).getImage();
+			return IconFactory.getImageIcon(FMLRTIconLibrary.VIRTUAL_MODEL_INSTANCE_BIG_ICON, getIconMarker()).getImage();
 		}
-		return IconFactory.getImageIcon(FMLRTIconLibrary.FLEXO_CONCEPT_INSTANCE_MEDIUM_ICON, getIconMarker()).getImage();
+		return IconFactory.getImageIcon(FMLRTIconLibrary.FLEXO_CONCEPT_INSTANCE_BIG_ICON, getIconMarker()).getImage();
 	}
 
 	public abstract IconMarker getIconMarker();

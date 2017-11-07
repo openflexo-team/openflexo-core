@@ -36,21 +36,51 @@
 package org.openflexo.foundation.fml;
 
 import java.lang.reflect.Type;
+import java.util.List;
+
 import org.openflexo.connie.DataBinding;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter.WidgetType;
 
 /**
- *
  * Widget Context for an object allowing to construct a widget to edit its value.
+ * 
+ * This is the required API to be able to programmatically build a GINA fib widget
  *
  * Created by charlie on 13/03/2017.
  */
 public interface WidgetContext extends FlexoConceptObject {
 
-	default WidgetType getWidget() { return null; }
+	default WidgetType getWidget() {
+		return null;
+	}
 
-	default DataBinding<?> getContainer() { return null; }
+	default DataBinding<?> getContainer() {
+		return null;
+	}
 
-	default Type getType() { return null; }
+	default Type getType() {
+		return null;
+	}
 
+	/**
+	 * Return a String encoding a {@link DataBinding} which should get access to represented data from the context beeing represented by
+	 * this
+	 * 
+	 * @return
+	 */
+	String getWidgetAccess();
+
+	/**
+	 * Return a String encoding a {@link DataBinding} which should get access to represented data definition (which is this object)
+	 * 
+	 * @return
+	 */
+	String getWidgetDefinitionAccess();
+
+	/**
+	 * Depending of type of data to represent, return a list of objects which may be used to represented data
+	 * 
+	 * @return
+	 */
+	public List<?> getListOfObjects();
 }

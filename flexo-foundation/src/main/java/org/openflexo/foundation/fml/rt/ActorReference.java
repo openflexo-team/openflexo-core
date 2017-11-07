@@ -64,7 +64,8 @@ import org.openflexo.toolbox.StringUtils;
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(ActorReference.ActorReferenceImpl.class)
-@Imports({ @Import(ModelObjectActorReference.class), @Import(PrimitiveActorReference.class), @Import(ModelSlotInstance.class) })
+@Imports({ @Import(ModelObjectActorReference.class), @Import(PrimitiveActorReference.class), @Import(FlexoEnumValueActorReference.class),
+		@Import(ModelSlotInstance.class) })
 public abstract interface ActorReference<T> extends VirtualModelInstanceObject {
 
 	@PropertyIdentifier(type = FlexoConceptInstance.class)
@@ -119,27 +120,18 @@ public abstract interface ActorReference<T> extends VirtualModelInstanceObject {
 	@Setter(FLEXO_CONCEPT_INSTANCE_KEY)
 	public void setFlexoConceptInstance(FlexoConceptInstance epi);
 
-	public FlexoRole<T> getFlexoRole();
+	public FlexoRole<? super T> getFlexoRole();
 
-	public void setFlexoRole(FlexoRole<T> patternRole);
+	public void setFlexoRole(FlexoRole<? super T> patternRole);
 
 	public ModelSlotInstance<?, ?> getModelSlotInstance();
 
 	public Class<? extends T> getActorClass();
 
 	public static abstract class ActorReferenceImpl<T> extends VirtualModelInstanceObjectImpl implements ActorReference<T> {
-		private FlexoRole<T> flexoRole;
+		private FlexoRole<? super T> flexoRole;
 		private String flexoRoleName;
-		// private ModelSlot modelSlot;
 		private FlexoConceptInstance flexoConceptInstance;
-
-		/*public ModelSlot getModelSlot() {
-			return modelSlot;
-		}
-		
-		public void setModelSlot(ModelSlot modelSlot) {
-			this.modelSlot = modelSlot;
-		}*/
 
 		@Override
 		public VirtualModelInstance<?, ?> getResourceData() {
@@ -179,7 +171,7 @@ public abstract interface ActorReference<T> extends VirtualModelInstanceObject {
 		}
 
 		@Override
-		public FlexoRole<T> getFlexoRole() {
+		public FlexoRole<? super T> getFlexoRole() {
 			if (flexoRole == null && flexoConceptInstance != null && flexoConceptInstance.getFlexoConcept() != null
 					&& StringUtils.isNotEmpty(flexoRoleName)
 					&& flexoConceptInstance.getFlexoConcept().getAccessibleProperty(flexoRoleName) instanceof FlexoRole) {
@@ -189,8 +181,8 @@ public abstract interface ActorReference<T> extends VirtualModelInstanceObject {
 		}
 
 		@Override
-		public void setFlexoRole(FlexoRole<T> patternRole) {
-			this.flexoRole = patternRole;
+		public void setFlexoRole(FlexoRole<? super T> flexoRole) {
+			this.flexoRole = flexoRole;
 		}
 
 		@Override

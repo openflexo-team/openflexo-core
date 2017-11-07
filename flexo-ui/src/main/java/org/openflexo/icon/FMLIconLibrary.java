@@ -220,6 +220,8 @@ public class FMLIconLibrary extends IconLibrary {
 			ResourceLocator.locateResource("Icons/Model/VPM/DoublePrimitiveIcon.gif"));
 	public static final ImageIconResource BOOLEAN_PRIMITIVE_ICON = new ImageIconResource(
 			ResourceLocator.locateResource("Icons/Model/VPM/BooleanPrimitiveIcon.gif"));
+	public static final ImageIconResource DATE_PRIMITIVE_ICON = new ImageIconResource(
+			ResourceLocator.locateResource("Icons/Model/VPM/DatePrimitiveIcon.png"));
 
 	public static final ImageIconResource EXPRESSION_ACTION_ICON = new ImageIconResource(
 			ResourceLocator.locateResource("Icons/Model/VPM/ExpressionActionIcon.png"));
@@ -278,6 +280,8 @@ public class FMLIconLibrary extends IconLibrary {
 				switch (((PrimitiveRole) object).getPrimitiveType()) {
 					case String:
 						return FMLIconLibrary.STRING_PRIMITIVE_ICON;
+					case Date:
+						return FMLIconLibrary.DATE_PRIMITIVE_ICON;
 					case Integer:
 						return FMLIconLibrary.INTEGER_PRIMITIVE_ICON;
 					case Double:
