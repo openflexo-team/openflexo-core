@@ -737,9 +737,11 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 		private void ensureRegisterFCIInConcept(FlexoConceptInstance fci, FlexoConcept concept) {
 
 			// System.out.println("**** ensure register FCI " + fci + " in " + concept);
-
 			if (fci.isRoot()) {
-				rootFlexoConceptInstances.add(fci);
+				// Prevent when ensureRegisterFCIInConcept method is invoked twice, in case an instance has a parent.
+				if(!rootFlexoConceptInstances.contains(fci)){
+					rootFlexoConceptInstances.add(fci);
+				}
 			}
 
 			if (concept == null) {
