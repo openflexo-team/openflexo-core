@@ -59,7 +59,7 @@ import org.openflexo.logging.FlexoLogger;
  */
 public class FlexoObjectIDManager {
 
-	private final FlexoProject project;
+	private final FlexoProject<?> project;
 
 	private static final Logger logger = FlexoLogger.getLogger(FlexoObjectIDManager.class.getPackage().toString());
 
@@ -69,7 +69,7 @@ public class FlexoObjectIDManager {
 	/**
 	 * 
 	 */
-	public FlexoObjectIDManager(FlexoProject project) {
+	public FlexoObjectIDManager(FlexoProject<?> project) {
 		this.project = project;
 	}
 

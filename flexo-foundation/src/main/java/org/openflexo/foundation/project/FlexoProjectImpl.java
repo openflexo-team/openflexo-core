@@ -45,7 +45,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
-import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
@@ -53,40 +52,34 @@ import java.util.Objects;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.regex.Pattern;
 import java.util.zip.Deflater;
 
 import javax.naming.InvalidNameException;
 
 import org.apache.commons.io.filefilter.FileFilterUtils;
-import org.openflexo.foundation.DataModification;
 import org.openflexo.foundation.FlexoEditor;
-import org.openflexo.foundation.FlexoEditor.FlexoEditorFactory;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.FlexoProjectObject;
 import org.openflexo.foundation.FlexoService;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.nature.ProjectNature;
 import org.openflexo.foundation.nature.ProjectWrapper;
-import org.openflexo.foundation.project.ProjectDataResource.ProjectDataResourceImpl;
-import org.openflexo.foundation.project.ProjectDirectoryResource.ProjectDirectoryResourceImpl;
+import org.openflexo.foundation.resource.CannotRenameException;
 import org.openflexo.foundation.resource.DuplicateExternalRepositoryNameException;
 import org.openflexo.foundation.resource.ExternalRepositorySet;
-import org.openflexo.foundation.resource.FlexoProjectReference;
+import org.openflexo.foundation.resource.FileSystemBasedResourceCenter;
 import org.openflexo.foundation.resource.FlexoResource;
+import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.ImportedProjectLoaded;
 import org.openflexo.foundation.resource.ProjectExternalRepository;
 import org.openflexo.foundation.resource.ProjectImportLoopException;
 import org.openflexo.foundation.resource.ResourceRepositoryImpl;
 import org.openflexo.foundation.resource.SaveResourceException;
-import org.openflexo.foundation.task.FlexoTask;
-import org.openflexo.foundation.task.Progress;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.utils.FlexoObjectIDManager;
 import org.openflexo.foundation.utils.FlexoObjectReference;
 import org.openflexo.foundation.utils.FlexoProgress;
 import org.openflexo.foundation.utils.ProjectInitializerException;
-import org.openflexo.foundation.utils.ProjectLoadingCancelledException;
 import org.openflexo.foundation.utils.ProjectLoadingHandler;
 import org.openflexo.foundation.validation.FlexoProjectValidationModel;
 import org.openflexo.model.annotations.DefineValidationRule;
@@ -126,16 +119,16 @@ public class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoResource<?>
 	 * @return
 	 * @throws ProjectInitializerException
 	 */
-	public static FlexoEditor newProject(File aProjectDirectory, FlexoEditorFactory editorFactory, FlexoServiceManager serviceManager,
+	/*public static FlexoEditor newProject(File aProjectDirectory, FlexoEditorFactory editorFactory, FlexoServiceManager serviceManager,
 			FlexoProgress progress) throws ProjectInitializerException {
-
+	
 		// We should have already asked the user if the new project has to override the old one
 		// When true, old directory was renamed to backup file
 		// So, this is not normal to have here an existing file
 		if (aProjectDirectory.exists()) {
 			throw new ProjectInitializerException("This directory already exists: " + aProjectDirectory, aProjectDirectory);
 		}
-
+	
 		FlexoProjectImpl project = new FlexoProjectImpl(aProjectDirectory, serviceManager);
 		project.setServiceManager(serviceManager);
 		FlexoEditor editor = editorFactory.makeFlexoEditor(project, serviceManager);
@@ -143,13 +136,13 @@ public class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoResource<?>
 		if (logger.isLoggable(Level.INFO)) {
 			logger.info("Building project: " + aProjectDirectory.getAbsolutePath());
 		}
-
+	
 		try {
 			project.setCreationUserId(FlexoObjectImpl.getCurrentUserIdentifier());
 			project.setCreationDate(new Date());
 			// TODO : Code to be removed, no more java Generation
 			// project.initJavaFormatter();
-
+	
 			try {
 				// This needs to be called to ensure the consistency of the project
 				project.setGenerateSnapshot(false);
@@ -168,7 +161,7 @@ public class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoResource<?>
 			}
 			e.printStackTrace();
 		}
-
+	
 		// We add the newly created project as a ResourceCenter
 		// Maybe this will be done now, but it may also be done in a task
 		// In this case, we have to reference the task to wait for its execution
@@ -176,20 +169,20 @@ public class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoResource<?>
 		if (addResourceCenterTask != null) {
 			serviceManager.getTaskManager().waitTask(addResourceCenterTask);
 		}
-
+	
 		return editor;
-	}
+	}*/
 
 	// TODO: add ProjectLoadingHandler to the parameters
-	public static FlexoEditor openProject(File aProjectDirectory, FlexoEditorFactory editorFactory, FlexoServiceManager serviceManager,
+	/*public static FlexoEditor openProject(File aProjectDirectory, FlexoEditorFactory editorFactory, FlexoServiceManager serviceManager,
 			FlexoProgress progress) throws ProjectInitializerException, ProjectLoadingCancelledException {
-
+	
 		Progress.progress(getLocales(serviceManager).localizedForKey("opening_project") + aProjectDirectory.getAbsolutePath());
-
+	
 		if (!aProjectDirectory.exists()) {
 			throw new ProjectInitializerException("This directory does not exists: " + aProjectDirectory, aProjectDirectory);
 		}
-
+	
 		FlexoProjectImpl project = new FlexoProjectImpl(aProjectDirectory, serviceManager);
 		project.setServiceManager(serviceManager);
 		FlexoEditor editor = editorFactory.makeFlexoEditor(project, serviceManager);
@@ -197,24 +190,8 @@ public class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoResource<?>
 		if (logger.isLoggable(Level.INFO)) {
 			logger.info("Loading project: " + aProjectDirectory.getAbsolutePath());
 		}
-
+	
 		try {
-			// project.setCreationUserId(FlexoObjectImpl.getCurrentUserIdentifier());
-			// project.setCreationDate(new Date());
-			// TODO: Code to be Removed
-			// project.initJavaFormatter();
-			/*try {
-				// This needs to be called to ensure the consistency of the
-				// project
-				project.setGenerateSnapshot(false);
-				project.save(progress);
-				project.setGenerateSnapshot(true);
-			} catch (SaveResourceException e) {
-				if (logger.isLoggable(Level.SEVERE)) {
-					logger.severe("Could not save all resources for project: " + project.getProjectName() + " located in "
-							+ project.getProjectDirectory().getAbsolutePath());
-				}
-			}*/
 		} catch (Exception e) {
 			// Warns about the exception
 			if (logger.isLoggable(Level.WARNING)) {
@@ -222,30 +199,17 @@ public class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoResource<?>
 			}
 			e.printStackTrace();
 		}
-
+	
 		// We add the newly created project as a ResourceCenter
 		FlexoTask addResourceCenterTask = serviceManager.resourceCenterAdded(project);
-
+	
 		// If resource center adding is executing in a task, we have to wait the task to be finished
 		if (addResourceCenterTask != null) {
 			serviceManager.getTaskManager().waitTask(addResourceCenterTask);
 		}
-
+	
 		return editor;
-	}
-
-	public static String nameFromDirectory(File projectDirectory) {
-		String projectName = projectDirectory.getName().replaceAll(BAD_CHARACTERS_REG_EXP, " ");
-		if (projectName.endsWith(".prj")) {
-			projectName = projectName.substring(0, projectName.length() - 4);
-		}
-		else {
-			if (logger.isLoggable(Level.WARNING)) {
-				logger.warning("Project directory does not end with '.prj'");
-			}
-		}
-		return projectName;
-	}
+	}*/
 
 	public static final String BASE_PROJECT_URI = "http://www.openflexo.org/projects";
 	public static final String RESOURCES = "resources";
@@ -256,37 +220,31 @@ public class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoResource<?>
 	public static final String VERSION = "version";
 	public static final String PROJECT_URI = "projectURI";
 
-	public static final String VIEWPOINT_EXPECTED_DIRECTORY = "Viewpoints";
+	// public static final String VIEWPOINT_EXPECTED_DIRECTORY = "Viewpoints";
 
-	private FlexoServiceManager serviceManager;
+	// private FlexoServiceManager serviceManager;
 
 	private FlexoObjectIDManager objectIDManager;
 
 	// private ViewLibrary viewLibrary = null;
 
-	private final List<FlexoObjectReference> objectReferences = new ArrayList<>();
+	private final List<FlexoObjectReference<?>> objectReferences = new ArrayList<>();
 
 	private boolean lastUniqueIDHasBeenSet = false;
 	private long lastID = Integer.MIN_VALUE;
 
-	// " | ? * [ ] / < > = { } & % # ~ \ _
-	public static final String BAD_CHARACTERS_REG_EXP = "[\"|\\?\\*\\[\\]/<>:{}&%#~\\\\_]";
+	// protected String projectName;
 
-	public static final Pattern BAD_CHARACTERS_PATTERN = Pattern.compile(BAD_CHARACTERS_REG_EXP);
+	protected I projectDirectory;
+	// private List<I> filesToDelete;
 
-	protected String projectName;
-
-	protected File projectDirectory;
-
-	private List<File> filesToDelete;
-
-	private String projectDescription = "";
+	// private String projectDescription = "";
 
 	private final long firstOperationFlexoID = -1;
 
-	private FlexoVersion version = new FlexoVersion("1.0");
+	// private FlexoVersion version = new FlexoVersion("1.0");
 
-	private long revision = 0;
+	// private long revision = 0;
 
 	private FlexoProjectValidationModel projectValidationModel;
 
@@ -303,7 +261,7 @@ public class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoResource<?>
 
 	private ProjectLoadingHandler loadingHandler;
 
-	private ProjectDirectoryResource projectDirectoryResource;
+	private FlexoProjectResource resource;
 
 	public int getID() {
 		return id;
@@ -313,7 +271,7 @@ public class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoResource<?>
 
 	private FlexoProjectReferenceLoader projectReferenceLoader;
 
-	private List<ProjectExternalRepository> _externalRepositories;
+	private final List<ProjectExternalRepository> _externalRepositories;
 	private final Map<String, ProjectExternalRepository> repositoriesCache;
 
 	public static interface FlexoProjectReferenceLoader extends FlexoService {
@@ -330,9 +288,9 @@ public class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoResource<?>
 
 	}
 
-	protected FlexoProjectImpl(File aProjectDirectory, FlexoServiceManager serviceManager) {
-		super(aProjectDirectory, serviceManager.getResourceCenterService());
-		this.serviceManager = serviceManager;
+	protected FlexoProjectImpl(/*File aProjectDirectory, FlexoServiceManager serviceManager*/) {
+		super(null, null/*aProjectDirectory, serviceManager.getResourceCenterService()*/);
+		// this.serviceManager = serviceManager;
 
 		editors = new Vector<>();
 		synchronized (FlexoProjectImpl.class) {
@@ -341,20 +299,76 @@ public class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoResource<?>
 		logger.info("Create new project, ID=" + id);
 		_externalRepositories = new ArrayList<>();
 		repositoriesCache = new Hashtable<>();
-		filesToDelete = new Vector<>();
+		// filesToDelete = new Vector<>();
 
-		projectName = nameFromDirectory(aProjectDirectory);
-		setProjectDirectory(aProjectDirectory);
 	}
 
 	@Override
-	public ProjectDirectoryResource getResource() {
-		return projectDirectoryResource;
+	public String getProjectName() {
+		return getResource().getName();
 	}
 
 	@Override
-	public void setResource(FlexoResource<FlexoProjectImpl> resource) {
-		projectDirectoryResource = (ProjectDirectoryResource) resource;
+	public String getName() {
+		return getProjectName();
+	}
+
+	public String getDisplayName() {
+		return getProjectName();
+	}
+
+	/*public void setProjectName(String aName) throws InvalidNameException {
+		if (!BAD_CHARACTERS_PATTERN.matcher(aName).find()) {
+			projectName = aName;
+			// resources.restoreKeys();
+		}
+		else {
+			throw new InvalidNameException();
+		}
+	}*/
+
+	@Override
+	public String getPrefix() {
+		String prefix = null;
+		if (getProjectName().length() > 2) {
+			prefix = getProjectName().substring(0, 3).toUpperCase();
+		}
+		else {
+			prefix = getProjectName().toUpperCase();
+		}
+		return ToolBox.getJavaName(prefix, true, false);
+	}
+
+	@Override
+	public I getProjectDirectory() {
+		return (I) getResource().getIODelegate().getSerializationArtefact();
+	}
+
+	/*public void setProjectDirectory(File aProjectDirectory) {
+		setProjectDirectory(aProjectDirectory, true);
+	}
+	
+	public void setProjectDirectory(File aProjectDirectory, boolean notify) {
+		if (!aProjectDirectory.equals(projectDirectory)) {
+			File oldProjectDirectory = this.projectDirectory;
+			projectDirectory = aProjectDirectory;
+			setResource(ProjectDirectoryResourceImpl.makeProjectDirectoryResource(this));
+			// clearCachedFiles();
+			if (notify) {
+				setChanged();
+				notifyObservers(new DataModification(PROJECT_DIRECTORY, oldProjectDirectory, projectDirectory));
+			}
+		}
+	}*/
+
+	@Override
+	public FlexoResource<FlexoProject<I>> getResource() {
+		return (FlexoResource) resource;
+	}
+
+	@Override
+	public void setResource(FlexoResource<FlexoProject<I>> resource) {
+		this.resource = (FlexoProjectResource) (FlexoResource) resource;
 	}
 
 	/**
@@ -377,7 +391,6 @@ public class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoResource<?>
 		logger.info("Saving project...");
 
 		getResource().save(progress);
-		getProjectDataResource().save(progress);
 
 		saveModifiedResources(progress, true);
 
@@ -386,7 +399,8 @@ public class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoResource<?>
 		logger.info("Saving project... DONE");
 	}
 
-	public void copyTo(File newProjectDirectory) throws SaveResourceException, InvalidNameException {
+	@Override
+	public void copyTo(I newProjectDirectory) throws SaveResourceException, InvalidNameException, CannotRenameException {
 		logger.info("Copy project to... (" + newProjectDirectory + ")");
 
 		if (Objects.equals(getProjectDirectory(), newProjectDirectory)) {
@@ -395,11 +409,13 @@ public class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoResource<?>
 		else {
 			try {
 				// sets project directory
-				setProjectDirectory(newProjectDirectory);
+				getResource().setName(retrieveName(newProjectDirectory));
 
-				File current = getRootDirectory();
-				FileUtils.copyContentDirToDir(current, newProjectDirectory, CopyStrategy.REPLACE,
-						FileFilterUtils.notFileFilter(FileFilterUtils.suffixFileFilter("~")));
+				if (newProjectDirectory instanceof File) {
+					File current = (File) getResource().getIODelegate().getSerializationArtefact();
+					FileUtils.copyContentDirToDir(current, (File) newProjectDirectory, CopyStrategy.REPLACE,
+							FileFilterUtils.notFileFilter(FileFilterUtils.suffixFileFilter("~")));
+				}
 
 			} catch (IOException e) {
 				throw new SaveResourceException(getResource().getIODelegate(), e);
@@ -425,7 +441,7 @@ public class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoResource<?>
 			FileUtils.createNewFile(zipFile);
 			File tempProjectDirectory = FileUtils
 					.createTempDirectory(getProjectName().length() > 2 ? getProjectName() : "FlexoProject-" + getProjectName(), "");
-			tempProjectDirectory = new File(tempProjectDirectory, getProjectDirectory().getName());
+			tempProjectDirectory = new File(tempProjectDirectory, getProjectName());
 			// copyTo(tempProjectDirectory, progress, null, false, copyCVSFiles);
 			if (lightenProject) {
 				// replaceBigJarsWithEmtpyJars(progress, tempProjectDirectory);
@@ -560,19 +576,40 @@ public class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoResource<?>
 				// Revision is incremented only if a FlexoStorageResource has
 				// been changed. This is allows essentially to track if the
 				// model of the project has changed.
-				setRevision(revision + 1);
+				setProjectRevision(getProjectRevision() + 1);
 			}
 		}
+	}
+
+	/**
+	 * Overrides super {@link #getResourceCenter()} by returning itself
+	 */
+	@Override
+	public FlexoResourceCenter<I> getResourceCenter() {
+		/*if (getResource() != null) {
+			return (FlexoResourceCenter<I>)getResource().getResourceCenter();
+		}*/
+		System.out.println("Returned project instead of" + super.getResourceCenter());
+		// return super.getResourceCenter();
+		return this;
+	}
+
+	public DirectoryWatcher getDirectoryWatcher() {
+		if (getResourceCenter() instanceof FileSystemBasedResourceCenter) {
+			return ((FileSystemBasedResourceCenter) getResourceCenter()).getDirectoryWatcher();
+		}
+		System.out.println("Problem: cannot find DirectoryWatcher");
+		return null;
 	}
 
 	private boolean closed = false;
 
 	/**
-	 * Close this project Don't save anything
-	 * 
-	 * Overrides
+	 * Close this project<br>
+	 * Don't save anything
 	 * 
 	 */
+	@Override
 	public void close() {
 
 		if (closed) {
@@ -592,7 +629,6 @@ public class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoResource<?>
 		if (logger.isLoggable(Level.INFO)) {
 			logger.info("Closing project...");
 		}
-		serviceManager = null;
 		deleteObservers();
 		if (logger.isLoggable(Level.INFO)) {
 			logger.info("Closing project... DONE");
@@ -666,13 +702,6 @@ public class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoResource<?>
 		return null;
 	}
 
-	/*public ViewLibrary<?> getViewLibrary() {
-		if (viewLibrary == null) {
-			viewLibrary = ViewLibrary.createNewViewLibrary(this);
-		}
-		return viewLibrary;
-	}*/
-
 	boolean generateSnapshot = true;
 
 	private void setGenerateSnapshot(boolean b) {
@@ -681,74 +710,6 @@ public class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoResource<?>
 
 	public boolean isGenerateSnapshot() {
 		return generateSnapshot;
-	}
-
-	public File getProjectDirectory() {
-		return projectDirectory;
-	}
-
-	public void setProjectDirectory(File aProjectDirectory) {
-		setProjectDirectory(aProjectDirectory, true);
-	}
-
-	public void setProjectDirectory(File aProjectDirectory, boolean notify) {
-		if (!aProjectDirectory.equals(projectDirectory)) {
-			File oldProjectDirectory = this.projectDirectory;
-			projectDirectory = aProjectDirectory;
-			setResource(ProjectDirectoryResourceImpl.makeProjectDirectoryResource(this));
-			// clearCachedFiles();
-			if (notify) {
-				setChanged();
-				notifyObservers(new DataModification(PROJECT_DIRECTORY, oldProjectDirectory, projectDirectory));
-			}
-		}
-	}
-
-	public String getProjectName() {
-		return projectName;
-	}
-
-	@Override
-	public String getName() {
-		return getProjectName();
-	}
-
-	public String getDisplayName() {
-		String name = getProjectDirectory().getName();
-		if (name.toLowerCase().endsWith(".prj")) {
-			return name.substring(0, name.length() - 4);
-		}
-		return name;
-	}
-
-	public void setProjectName(String aName) throws InvalidNameException {
-		if (!BAD_CHARACTERS_PATTERN.matcher(aName).find()) {
-			projectName = aName;
-			// resources.restoreKeys();
-		}
-		else {
-			throw new InvalidNameException();
-		}
-	}
-
-	public String getProjectDescription() {
-		return projectDescription;
-	}
-
-	public void setProjectDescription(String aDescription) {
-		projectDescription = aDescription;
-		setChanged();
-	}
-
-	public String getPrefix() {
-		String prefix = null;
-		if (getProjectName().length() > 2) {
-			prefix = getProjectName().substring(0, 3).toUpperCase();
-		}
-		else {
-			prefix = getProjectName().toUpperCase();
-		}
-		return ToolBox.getJavaName(prefix, true, false);
 	}
 
 	// ======================================================================
@@ -771,6 +732,7 @@ public class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoResource<?>
 	 * 
 	 * @return Returns the lastUniqueID.
 	 */
+	@Override
 	public long getLastUniqueID() {
 		if (getLastID() < 1) {
 			setLastID(1);
@@ -783,6 +745,7 @@ public class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoResource<?>
 	 * @param lastUniqueID
 	 *            The lastUniqueID to set.
 	 */
+	@Override
 	public void setLastUniqueID(long lastUniqueID) {
 		setLastID(lastUniqueID);
 	}
@@ -908,18 +871,22 @@ public class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoResource<?>
 		return false;
 	}
 
+	@Override
 	public List<FlexoEditor> getEditors() {
 		return editors;
 	}
 
+	@Override
 	public void setEditors(List<FlexoEditor> editors) {
 		this.editors = editors;
 	}
 
+	@Override
 	public void addToEditors(FlexoEditor editor) {
 		editors.add(editor);
 	}
 
+	@Override
 	public void removeFromEditors(FlexoEditor editor) {
 		editors.remove(editor);
 	}
@@ -928,10 +895,12 @@ public class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoResource<?>
 		return loadingHandler;
 	}
 
+	@Override
 	public boolean lastUniqueIDHasBeenSet() {
 		return lastUniqueIDHasBeenSet;
 	}
 
+	@Override
 	public long getNewFlexoID() {
 		if (lastID < 0) {
 			return -1;
@@ -942,6 +911,7 @@ public class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoResource<?>
 	/**
 	 * @return Returns the lastUniqueID.
 	 */
+	@Override
 	public long getLastID() {
 		if (lastUniqueIDHasBeenSet && lastID < 0) {
 			lastID = 0;
@@ -953,15 +923,12 @@ public class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoResource<?>
 	 * @param lastUniqueID
 	 *            The lastUniqueID to set.
 	 */
+	@Override
 	public void setLastID(long lastUniqueID) {
 		if (lastUniqueID > lastID) {
 			lastID = lastUniqueID;
 			lastUniqueIDHasBeenSet = true;
 		}
-	}
-
-	public boolean getLastUniqueIDHasBeenSet() {
-		return lastUniqueIDHasBeenSet;
 	}
 
 	public static boolean getIsLoadingAProject() {
@@ -1014,47 +981,6 @@ public class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoResource<?>
 		return _rebuildDependanciesIsRequired;
 	}
 
-	@Deprecated
-	public void addToFilesToDelete(File f) {
-		filesToDelete.add(f);
-	}
-
-	@Deprecated
-	public void removeFromFilesToDelete(File f) {
-		filesToDelete.remove(f);
-	}
-
-	@Deprecated
-	public void deleteFilesToBeDeleted() {
-		for (File f : filesToDelete) {
-			try {
-				if (FileUtils.recursiveDeleteFile(f)) {
-					if (logger.isLoggable(Level.INFO)) {
-						logger.info("Successfully deleted " + f.getAbsolutePath());
-						// filesToDelete.remove(f);
-					}
-				}
-				else if (logger.isLoggable(Level.WARNING)) {
-					logger.warning("Could not delete " + f.getAbsolutePath());
-				}
-			} catch (RuntimeException e) {
-				e.printStackTrace();
-				if (logger.isLoggable(Level.WARNING)) {
-					logger.warning("Could not delete " + f.getAbsolutePath());
-				}
-			}
-		}
-		filesToDelete.clear();
-	}
-
-	public List<File> getFilesToDelete() {
-		return filesToDelete;
-	}
-
-	public void setFilesToDelete(List<File> filesToDel) {
-		this.filesToDelete = filesToDel;
-	}
-
 	@DefineValidationRule
 	public static class FlexoIDMustBeUnique extends ValidationRule<FlexoIDMustBeUnique, FlexoProjectImpl> {
 
@@ -1097,96 +1023,10 @@ public class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoResource<?>
 		}
 	}
 
-	@Override
-	public FlexoVersion getProjectVersion() {
-		if (getProjectData() != null) {
-			if (getProjectData().getProjectVersion() == null) {
-				getProjectData().setProjectVersion(new FlexoVersion("0.1"));
-			}
-			return getProjectData().getProjectVersion();
-		}
-		else {
-			return null;
-		}
-	}
-
-	@Override
-	public void setProjectVersion(FlexoVersion projectVersion) {
-		if (getProjectData() != null) {
-			getProjectData().setProjectVersion(projectVersion);
-		}
-	}
-
-	public String getProjectURI() {
-		return getURI();
-	}
-
-	public void setProjectURI(String projectURI) {
-		setURI(projectURI);
-	}
-
 	public String buildProjectURI() {
 		Calendar rightNow = Calendar.getInstance();
 		return BASE_PROJECT_URI + "/" + rightNow.get(Calendar.YEAR) + "/" + (rightNow.get(Calendar.MONTH) + 1) + "/" + getProjectName()
 				+ "_" + System.currentTimeMillis();
-	}
-
-	@Override
-	public String getURI() {
-		ProjectData pd = getProjectData();
-		if (pd != null) {
-			if (pd.getURI() == null) {
-				pd.setURI(buildProjectURI());
-			}
-			return pd.getURI();
-		}
-		else {
-			return null;
-		}
-	}
-
-	@Override
-	public void setURI(String projectURI) {
-		if (getProjectData() != null) {
-			getProjectData().setURI(projectURI);
-		}
-	}
-
-	@Override
-	public String getDescription() {
-		if (getProjectData() != null) {
-			return getProjectData().getDescription();
-		}
-		else {
-			return null;
-		}
-	}
-
-	@Override
-	public void setDescription(String description) {
-		if (getProjectData() != null) {
-			getProjectData().setDescription(description);
-		}
-	}
-
-	@Override
-	public Date getCreationDate() {
-		if (getProjectData() != null) {
-			if (getProjectData().getCreationDate() == null) {
-				getProjectData().setCreationDate(new Date());
-			}
-			return getProjectData().getCreationDate();
-		}
-		else {
-			return null;
-		}
-	}
-
-	@Override
-	public void setCreationDate(Date creationDate) {
-		if (getProjectData() != null) {
-			getProjectData().setCreationDate(creationDate);
-		}
 	}
 
 	public String getCreationDateAsString() {
@@ -1197,53 +1037,18 @@ public class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoResource<?>
 	}
 
 	@Override
-	public String getCreationUserId() {
-		if (getProjectData() != null) {
-			return getProjectData().getCreationUserId();
-		}
-		else {
-			return null;
-		}
-	}
-
-	@Override
-	public void setCreationUserId(String creationUserId) {
-		if (getProjectData() != null) {
-			getProjectData().setCreationUserId(creationUserId);
-		}
-	}
-
-	@Override
 	public String toString() {
 		return "PROJECT-" + getDisplayName() + " ID=" + getID();
 	}
 
-	private ProjectDataResource projectDataResource;
-
-	private boolean projectDataResourceIsLoading = false;
-
-	public ProjectDataResource getProjectDataResource() {
-		if (projectDataResource == null && !projectDataResourceIsLoading) {
-			projectDataResourceIsLoading = true;
-			projectDataResource = ProjectDataResourceImpl.makeProjectDataResource(this);
-			projectDataResourceIsLoading = false;
-		}
-		return projectDataResource;
-	}
-
-	public ProjectData getProjectData() {
-		if (getProjectDataResource() != null) {
-			return getProjectDataResource().getProjectData();
-		}
-		return null;
-	}
-
-	public boolean importsProject(FlexoProjectImpl project) {
+	@Override
+	public boolean importsProject(FlexoProject project) {
 		return project != null && importsProjectWithURI(project.getProjectURI());
 	}
 
+	@Override
 	public boolean importsProjectWithURI(String projectURI) {
-		return getProjectData() != null && getProjectData().getProjectReferenceWithURI(projectURI, true) != null;
+		return getProjectReferenceWithURI(projectURI, true) != null;
 	}
 
 	public FlexoObjectIDManager getObjectIDManager() {
@@ -1253,52 +1058,17 @@ public class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoResource<?>
 		return objectIDManager;
 	}
 
-	// TODO: Should be refactored with injectors
-	@Override
-	public FlexoServiceManager getServiceManager() {
-		return serviceManager;
-	}
-
-	public void setServiceManager(FlexoServiceManager serviceManager) {
-		this.serviceManager = serviceManager;
-	}
-
-	public FlexoVersion getVersion() {
-		return version;
-	}
-
-	public void setVersion(FlexoVersion version) {
-		if (version != null) {
-			version = new FlexoVersion(version.toString().replace("~", ""));
-		}
-		FlexoVersion old = this.version;
-		this.version = version;
-		setChanged();
-		notifyObservers(new DataModification(VERSION, old, version));
-	}
-
-	public long getRevision() {
-		return revision;
-	}
-
-	public void setRevision(long revision) {
-		long old = this.revision;
-		this.revision = revision;
-		setChanged();
-		notifyObservers(new DataModification(REVISION, old, revision));
-	}
-
-	public String canImportProject(FlexoProjectImpl project) {
+	/*public String canImportProject(FlexoProjectImpl project) {
 		if (getProjectData() == null) {
 			return null;
 		}
 		else {
 			return getProjectData().canImportProject(project);
 		}
-	}
+	}*/
 
 	public boolean hasImportedProjects() {
-		return getProjectData() != null && getProjectData().getImportedProjects().size() > 0;
+		return getImportedProjects().size() > 0;
 	}
 
 	public List<FlexoProjectReference> getResolvedProjectReferences() {
@@ -1307,9 +1077,9 @@ public class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoResource<?>
 		return refs;
 	}
 
-	private void appendResolvedReferences(FlexoProjectImpl project, List<FlexoProjectReference> refs) {
-		if (project.getProjectData() != null) {
-			for (FlexoProjectReference ref : project.getProjectData().getImportedProjects()) {
+	private void appendResolvedReferences(FlexoProject<?> project, List<FlexoProjectReference> refs) {
+		if (project != null) {
+			for (FlexoProjectReference ref : project.getImportedProjects()) {
 				boolean alreadyAdded = false;
 				for (FlexoProjectReference addedRef : refs) {
 					if (addedRef.getURI().equals(ref.getURI())) {
@@ -1321,39 +1091,40 @@ public class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoResource<?>
 					refs.add(ref);
 				}
 			}
-			for (FlexoProjectReference ref : project.getProjectData().getImportedProjects()) {
-				if (ref.getReferredProject() != null) {
-					appendResolvedReferences(ref.getReferredProject(), refs);
+			for (FlexoProjectReference ref : project.getImportedProjects()) {
+				if (ref.getReferencedProject() != null) {
+					appendResolvedReferences(ref.getReferencedProject(), refs);
 				}
 			}
 		}
 	}
 
-	public List<FlexoObjectReference> getObjectReferences() {
+	@Override
+	public List<FlexoObjectReference<?>> getObjectReferences() {
 		return objectReferences;
 	}
 
+	@Override
 	public void addToObjectReferences(FlexoObjectReference<?> objectReference) {
 		objectReferences.add(objectReference);
 	}
 
+	@Override
 	public void removeObjectReferences(FlexoObjectReference<?> objectReference) {
 		objectReferences.remove(objectReference);
 	}
 
+	@Override
 	public boolean areAllImportedProjectsLoaded() {
 		return areAllImportedProjectsLoaded(this);
 	}
 
-	private static boolean areAllImportedProjectsLoaded(FlexoProjectImpl project) {
-		if (project.getProjectData() == null) {
-			return true;
-		}
-		for (FlexoProjectReference ref : project.getProjectData().getImportedProjects()) {
-			if (ref.getReferredProject() == null) {
+	private static boolean areAllImportedProjectsLoaded(FlexoProject<?> project) {
+		for (FlexoProjectReference ref : project.getImportedProjects()) {
+			if (ref.getReferencedProject() == null) {
 				return false;
 			}
-			else if (!ref.getReferredProject().areAllImportedProjectsLoaded()) {
+			else if (!ref.getReferencedProject().areAllImportedProjectsLoaded()) {
 				return false;
 			}
 		}
@@ -1372,11 +1143,11 @@ public class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoResource<?>
 		return null;
 	}
 
-	public static File getProjectSpecificModelsDirectory(FlexoProjectImpl project) {
+	/*public static File getProjectSpecificModelsDirectory(FlexoProjectImpl project) {
 		File returned = new File(project.getProjectDirectory(), "Models");
 		returned.mkdirs();
 		return returned;
-	}
+	}*/
 
 	public ProjectExternalRepository createExternalRepositoryWithKey(String identifier) throws DuplicateExternalRepositoryNameException {
 		for (ProjectExternalRepository rep : _externalRepositories) {
@@ -1438,16 +1209,6 @@ public class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoResource<?>
 		return _externalRepositories;
 	}
 
-	public void setExternalRepositories(List<ProjectExternalRepository> externalRepositories) {
-		_externalRepositories = externalRepositories;
-		repositoriesCache.clear();
-		if (externalRepositories != null) {
-			for (ProjectExternalRepository projectExternalRepository : externalRepositories) {
-				repositoriesCache.put(projectExternalRepository.getIdentifier(), projectExternalRepository);
-			}
-		}
-	}
-
 	public void addToExternalRepositories(ProjectExternalRepository anExternalRepository) {
 		_externalRepositories.add(anExternalRepository);
 		repositoriesCache.put(anExternalRepository.getIdentifier(), anExternalRepository);
@@ -1460,6 +1221,7 @@ public class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoResource<?>
 		setChanged();
 	}
 
+	@Override
 	public boolean hasUnsavedResources() {
 		for (FlexoResource<?> r : getAllResources()) {
 			if (r.isLoaded() && r.getLoadedResourceData().isModified()) {
@@ -1467,10 +1229,6 @@ public class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoResource<?>
 			}
 		}
 		return false;
-	}
-
-	public File getExpectedViewPointDirectory() {
-		return new File(getProjectDirectory(), VIEWPOINT_EXPECTED_DIRECTORY);
 	}
 
 	@Override
@@ -1487,16 +1245,18 @@ public class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoResource<?>
 
 	@Override
 	public String getDefaultBaseURI() {
-		return getURI();
+		return getProjectURI();
 	}
 
 	/**
-	 * Return the list of {@link TechnologyAdapter} used in the context of this {@link ViewPoint}
+	 * Return the list of {@link TechnologyAdapter} used in the context of this {@link FlexoProject}
 	 * 
 	 * @return
 	 */
+	@Override
 	public List<TechnologyAdapter> getRequiredTechnologyAdapters() {
 		List<TechnologyAdapter> returned = new ArrayList<>();
+		// TODO
 		/*for (ViewResource vr : getViewLibrary().getAllResources()) {
 			for (TechnologyAdapter ta : vr.getView().getRequiredTechnologyAdapters()) {
 				if (!returned.contains(ta)) {
@@ -1520,43 +1280,12 @@ public class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoResource<?>
 		}
 		if (searchRecursively) {
 			for (FlexoProjectReference ref2 : getImportedProjects()) {
-				FlexoProjectReference projectWithURI = null;
-				if (ref2.getReferredProject() != null) {
-					ProjectData projectData = ref2.getReferredProject().getProjectData();
-					if (projectData != null) {
-						projectWithURI = projectData.getProjectReferenceWithURI(projectURI, searchRecursively);
-					}
-					if (projectWithURI != null) {
-						return projectWithURI;
-					}
+				if (ref2.getReferencedProject().getProjectReferenceWithURI(projectURI, searchRecursively) != null) {
+					return ref2.getReferencedProject().getProjectReferenceWithURI(projectURI, searchRecursively);
 				}
-
 			}
 		}
 		return null;
-	}
-
-	@Override
-	public List<FlexoProjectReference> getProjectReferenceWithName(String name, boolean searchRecursively) {
-		List<FlexoProjectReference> refs = getProjectReferenceWithName(name);
-		if (searchRecursively) {
-			for (FlexoProjectReference ref2 : getImportedProjects()) {
-				if (ref2.getReferredProject() != null) {
-					ProjectData projectData = ref2.getReferredProject().getProjectData();
-					if (projectData != null) {
-						List<FlexoProjectReference> projectReferenceWithName = projectData.getProjectReferenceWithName(name,
-								searchRecursively);
-						for (FlexoProjectReference ref : projectReferenceWithName) {
-							if (!refs.contains(ref)) {
-								refs.add(ref);
-							}
-						}
-					}
-				}
-
-			}
-		}
-		return refs;
 	}
 
 	@Override
@@ -1565,7 +1294,7 @@ public class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoResource<?>
 			if (getImportedProjects().contains(projectReference)) {
 				return;
 			}
-			String reason = canImportProject(projectReference.getReferredProject());
+			String reason = canImportProject(projectReference.getReferencedProject());
 			if (reason != null) {
 				throw new ProjectImportLoopException(reason);
 			}
@@ -1603,6 +1332,11 @@ public class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoResource<?>
 				break;
 			}
 		}
+	}
+
+	@Override
+	public FlexoProjectFactory getModelFactory() {
+		return ((FlexoProjectResource) getResourceData().getResource()).getFactory();
 	}
 
 }

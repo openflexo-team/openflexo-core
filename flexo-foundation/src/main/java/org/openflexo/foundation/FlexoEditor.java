@@ -76,16 +76,16 @@ public interface FlexoEditor {
 	 * @author sylvain
 	 *
 	 */
-	public static interface FlexoEditorFactory {
-		public FlexoEditor makeFlexoEditor(FlexoProject project, FlexoServiceManager serviceManager);
-	}
+	/*public static interface FlexoEditorFactory {
+		public FlexoEditor makeFlexoEditor(FlexoProject<?> project, FlexoServiceManager serviceManager);
+	}*/
 
 	/**
 	 * Return project beeing edited/executed
 	 * 
 	 * @return
 	 */
-	public FlexoProject getProject();
+	public FlexoProject<?> getProject();
 
 	/**
 	 * Return {@link FlexoServiceManager} provided by the running application

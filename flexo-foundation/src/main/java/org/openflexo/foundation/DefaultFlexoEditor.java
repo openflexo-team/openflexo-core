@@ -67,12 +67,12 @@ public class DefaultFlexoEditor implements FlexoEditor {
 	private static final java.util.logging.Logger logger = org.openflexo.logging.FlexoLogger
 			.getLogger(DefaultFlexoEditor.class.getPackage().getName());
 
-	private final FlexoProject project;
+	private final FlexoProject<?> project;
 	private final FlexoServiceManager serviceManager;
 	private final ResourceUpdateHandler resourceUpdateHandler;
 	private final FMLConsole console;
 
-	public DefaultFlexoEditor(FlexoProject project, FlexoServiceManager serviceManager) {
+	public DefaultFlexoEditor(FlexoProject<?> project, FlexoServiceManager serviceManager) {
 		this.project = project;
 		this.serviceManager = serviceManager;
 		if (project != null) {
@@ -89,7 +89,7 @@ public class DefaultFlexoEditor implements FlexoEditor {
 	}
 
 	@Override
-	public final FlexoProject getProject() {
+	public final FlexoProject<?> getProject() {
 		return project;
 	}
 

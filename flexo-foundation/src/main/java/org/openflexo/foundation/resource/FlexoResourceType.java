@@ -62,7 +62,7 @@ import org.openflexo.toolbox.StringUtils;
  */
 public class FlexoResourceType implements JavaCustomType {
 
-	protected FlexoResourceFactory<?, ?, ?> resourceFactory;
+	protected ITechnologySpecificFlexoResourceFactory<?, ?, ?> resourceFactory;
 	protected String resourceDataClassName;
 
 	// factory stored for unresolved types
@@ -71,7 +71,7 @@ public class FlexoResourceType implements JavaCustomType {
 
 	protected static final Logger logger = FlexoLogger.getLogger(FlexoResourceType.class.getPackage().getName());
 
-	public static FlexoResourceType UNDEFINED_RESOURCE_TYPE = new FlexoResourceType((FlexoResourceFactory<?, ?, ?>) null);
+	public static FlexoResourceType UNDEFINED_RESOURCE_TYPE = new FlexoResourceType((TechnologySpecificFlexoResourceFactory<?, ?, ?>) null);
 
 	/**
 	 * Factory for FlexoResourceType instances
@@ -93,7 +93,7 @@ public class FlexoResourceType implements JavaCustomType {
 		@Override
 		public FlexoResourceType makeCustomType(String configuration) {
 
-			FlexoResourceFactory<?, ?, ?> resourceFactory = null;
+			ITechnologySpecificFlexoResourceFactory<?, ?, ?> resourceFactory = null;
 
 			if (configuration != null) {
 				try {
@@ -117,16 +117,16 @@ public class FlexoResourceType implements JavaCustomType {
 			}
 		}
 
-		private FlexoResourceFactory<?, ?, ?> resourceFactory;
+		private ITechnologySpecificFlexoResourceFactory<?, ?, ?> resourceFactory;
 
-		public FlexoResourceFactory<?, ?, ?> getResourceFactory() {
+		public ITechnologySpecificFlexoResourceFactory<?, ?, ?> getResourceFactory() {
 			return resourceFactory;
 		}
 
-		public void setResourceFactory(FlexoResourceFactory<?, ?, ?> resourceFactory) {
+		public void setResourceFactory(ITechnologySpecificFlexoResourceFactory<?, ?, ?> resourceFactory) {
 			if ((resourceFactory == null && this.resourceFactory != null)
 					|| (resourceFactory != null && !resourceFactory.equals(this.resourceFactory))) {
-				FlexoResourceFactory<?, ?, ?> oldValue = this.resourceFactory;
+				ITechnologySpecificFlexoResourceFactory<?, ?, ?> oldValue = this.resourceFactory;
 				this.resourceFactory = resourceFactory;
 				getPropertyChangeSupport().firePropertyChange("resourceFactory", oldValue, resourceFactory);
 			}
@@ -145,7 +145,7 @@ public class FlexoResourceType implements JavaCustomType {
 		}
 	}
 
-	public FlexoResourceType(FlexoResourceFactory<?, ?, ?> resourceFactory) {
+	public FlexoResourceType(ITechnologySpecificFlexoResourceFactory<?, ?, ?> resourceFactory) {
 		this.resourceFactory = resourceFactory;
 	}
 
@@ -153,7 +153,7 @@ public class FlexoResourceType implements JavaCustomType {
 		this.resourceDataClassName = resourceDataClassName;
 	}
 
-	public FlexoResourceFactory<?, ?, ?> getResourceFactory() {
+	public ITechnologySpecificFlexoResourceFactory<?, ?, ?> getResourceFactory() {
 		if (!isResolved() && customTypeFactory != null) {
 			resolve(customTypeFactory);
 		}
@@ -273,16 +273,16 @@ public class FlexoResourceType implements JavaCustomType {
 		return true;
 	}
 
-	private static <R extends TechnologyAdapterResource<RD, TA>, RD extends ResourceData<RD> & TechnologyObject<TA>, TA extends TechnologyAdapter> FlexoResourceFactory<R, RD, TA> getFlexoResourceFactoryForClass(
+	private static <R extends TechnologyAdapterResource<RD, TA>, RD extends ResourceData<RD> & TechnologyObject<TA>, TA extends TechnologyAdapter> ITechnologySpecificFlexoResourceFactory<R, RD, TA> getFlexoResourceFactoryForClass(
 			Class<? extends RD> resourceOrResourceDataClass, TechnologyAdapterService taService) {
 		for (TechnologyAdapter ta : taService.getTechnologyAdapters()) {
-			List<FlexoResourceFactory<?, ?, ?>> resourceFactories = ta.getResourceFactories();
-			for (FlexoResourceFactory<?, ?, ?> f : resourceFactories) {
+			List<ITechnologySpecificFlexoResourceFactory<?, ?, ?>> resourceFactories = ta.getResourceFactories();
+			for (ITechnologySpecificFlexoResourceFactory<?, ?, ?> f : resourceFactories) {
 				if (f.getResourceClass().equals(resourceOrResourceDataClass)) {
-					return (FlexoResourceFactory<R, RD, TA>) f;
+					return (ITechnologySpecificFlexoResourceFactory<R, RD, TA>) f;
 				}
 				if (f.getResourceDataClass().equals(resourceOrResourceDataClass)) {
-					return (FlexoResourceFactory<R, RD, TA>) f;
+					return (ITechnologySpecificFlexoResourceFactory<R, RD, TA>) f;
 				}
 			}
 		}
@@ -293,12 +293,12 @@ public class FlexoResourceType implements JavaCustomType {
 	public static <R extends TechnologyAdapterResource<RD, TA>, RD extends ResourceData<RD> & TechnologyObject<TA>, TA extends TechnologyAdapter> FlexoResourceType getFlexoResourceType(
 			Class<RD> resourceDataClass, TechnologyAdapterService taService) {
 
-		FlexoResourceFactory<R, RD, TA> resourceFactory = getFlexoResourceFactoryForClass(resourceDataClass, taService);
+		ITechnologySpecificFlexoResourceFactory<R, RD, TA> resourceFactory = getFlexoResourceFactoryForClass(resourceDataClass, taService);
 		return getFlexoResourceType(resourceFactory);
 	}
 
 	public static <R extends TechnologyAdapterResource<RD, TA>, RD extends ResourceData<RD> & TechnologyObject<TA>, TA extends TechnologyAdapter> FlexoResourceType getFlexoResourceType(
-			FlexoResourceFactory<R, RD, TA> resourceFactory) {
+			ITechnologySpecificFlexoResourceFactory<R, RD, TA> resourceFactory) {
 
 		if (resourceFactory != null) {
 			return resourceFactory.getResourceType();

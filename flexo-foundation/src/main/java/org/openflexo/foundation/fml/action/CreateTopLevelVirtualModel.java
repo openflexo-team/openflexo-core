@@ -130,7 +130,7 @@ public class CreateTopLevelVirtualModel
 
 		try {
 			VirtualModelResource newVirtualModelResource = factory.makeTopLevelVirtualModelResource(getBaseName(), getNewVirtualModelURI(),
-					getVirtualModelFolder(), fmlTechnologyAdapter.getTechnologyContextManager(), true);
+					getVirtualModelFolder(), true);
 			newVirtualModel = newVirtualModelResource.getLoadedResourceData();
 			newVirtualModel.setDescription(getNewVirtualModelDescription());
 		} catch (SaveResourceException e) {

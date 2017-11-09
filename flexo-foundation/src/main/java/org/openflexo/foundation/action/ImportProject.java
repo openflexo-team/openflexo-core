@@ -43,10 +43,10 @@ import java.util.Vector;
 
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
+import org.openflexo.foundation.project.FlexoProjectReference;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.FlexoProjectObject;
-import org.openflexo.foundation.project.ProjectDataResource;
-import org.openflexo.foundation.resource.FlexoProjectReference;
 
 public class ImportProject extends FlexoAction<ImportProject, FlexoProjectObject, FlexoProjectObject> {
 
@@ -54,7 +54,8 @@ public class ImportProject extends FlexoAction<ImportProject, FlexoProjectObject
 			"import_project") {
 
 		@Override
-		public ImportProject makeNewAction(FlexoProjectObject focusedObject, Vector<FlexoProjectObject> globalSelection, FlexoEditor editor) {
+		public ImportProject makeNewAction(FlexoProjectObject focusedObject, Vector<FlexoProjectObject> globalSelection,
+				FlexoEditor editor) {
 			return new ImportProject(focusedObject, globalSelection, editor);
 		}
 
@@ -70,12 +71,10 @@ public class ImportProject extends FlexoAction<ImportProject, FlexoProjectObject
 	};
 
 	static {
-		// FlexoProjectObject.addActionForClass(actionType, FlexoWorkflow.class);
-		// FlexoProjectObject.addActionForClass(actionType, FlexoProcess.class);
-		// FlexoObject.addActionForClass(actionType, FlexoProject.class);
+		FlexoObjectImpl.addActionForClass(actionType, FlexoProject.class);
 	}
 
-	private FlexoProject projectToImport;
+	private FlexoProject<?> projectToImport;
 
 	public ImportProject(FlexoProjectObject focusedObject, Vector<FlexoProjectObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
@@ -83,21 +82,21 @@ public class ImportProject extends FlexoAction<ImportProject, FlexoProjectObject
 
 	@Override
 	protected void doAction(Object context) throws FlexoException {
-		FlexoProject project = getImportingProject();
-		ProjectDataResource resource = project.getProjectDataResource();
-		FlexoProjectReference projectReference = resource.getFactory().newInstance(FlexoProjectReference.class).init(projectToImport);
-		project.getProjectData().addToImportedProjects(projectReference);
+		FlexoProject<?> project = getImportingProject();
+
+		FlexoProjectReference projectReference = project.getModelFactory().newInstance(FlexoProjectReference.class).init(projectToImport);
+		project.addToImportedProjects(projectReference);
 	}
 
-	public FlexoProject getImportingProject() {
+	public FlexoProject<?> getImportingProject() {
 		return getFocusedObject().getProject();
 	}
 
-	public FlexoProject getProjectToImport() {
+	public FlexoProject<?> getProjectToImport() {
 		return projectToImport;
 	}
 
-	public void setProjectToImport(FlexoProject projectToImport) {
+	public void setProjectToImport(FlexoProject<?> projectToImport) {
 		this.projectToImport = projectToImport;
 	}
 

@@ -123,13 +123,13 @@ import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.fml.rt.VirtualModelInstanceObject;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.foundation.fml.rt.rm.FMLRTVirtualModelInstanceResource;
+import org.openflexo.foundation.project.FlexoProjectReference;
 import org.openflexo.foundation.project.ProjectData;
 import org.openflexo.foundation.project.ProjectLoader;
-import org.openflexo.foundation.resource.FlexoProjectReference;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
-import org.openflexo.foundation.resource.FlexoResourceFactory;
+import org.openflexo.foundation.resource.TechnologySpecificFlexoResourceFactory;
 import org.openflexo.foundation.resource.ProjectClosedNotification;
 import org.openflexo.foundation.resource.RepositoryFolder;
 import org.openflexo.foundation.resource.ResourceData;
@@ -1876,10 +1876,10 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 			return null;
 		}
 
-		if (object instanceof FlexoResourceFactory) {
-			Class<? extends TechnologyAdapter> taClass = ((FlexoResourceFactory<?, ?, ?>) object).getTechnologyAdapterClass();
+		if (object instanceof TechnologySpecificFlexoResourceFactory) {
+			Class<? extends TechnologyAdapter> taClass = ((TechnologySpecificFlexoResourceFactory<?, ?, ?>) object).getTechnologyAdapterClass();
 			TechnologyAdapterController<?> tac = getTechnologyAdapterController(taClass);
-			return tac.getIconForTechnologyObject(((FlexoResourceFactory<?, ?, ?>) object).getResourceDataClass());
+			return tac.getIconForTechnologyObject(((TechnologySpecificFlexoResourceFactory<?, ?, ?>) object).getResourceDataClass());
 		}
 
 		ImageIcon iconForObject = statelessIconForObject(object);

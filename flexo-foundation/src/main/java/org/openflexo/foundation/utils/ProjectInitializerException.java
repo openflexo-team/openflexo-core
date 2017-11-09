@@ -43,24 +43,24 @@ import java.io.File;
 
 public class ProjectInitializerException extends Exception {
 
-	private final File projectDirectory;
+	private final Object projectDirectory;
 
 	public ProjectInitializerException(String message, Throwable arg1, File projectDirectory) {
 		super(message, arg1);
 		this.projectDirectory = projectDirectory;
 	}
 
-	public ProjectInitializerException(String message, File projectDirectory) {
+	public ProjectInitializerException(String message, Object projectDirectory) {
 		super(message);
 		this.projectDirectory = projectDirectory;
 	}
 
-	public ProjectInitializerException(Throwable arg0, File projectDirectory) {
+	public ProjectInitializerException(Throwable arg0, Object projectDirectory) {
 		super(arg0);
 		this.projectDirectory = projectDirectory;
 	}
 
-	public File getProjectDirectory() {
+	public Object getProjectDirectory() {
 		return projectDirectory;
 	}
 

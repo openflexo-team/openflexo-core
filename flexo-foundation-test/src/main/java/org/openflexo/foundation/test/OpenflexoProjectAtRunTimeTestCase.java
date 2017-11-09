@@ -195,6 +195,8 @@ public abstract class OpenflexoProjectAtRunTimeTestCase extends OpenflexoTestCas
 
 		FlexoEditor reply;
 		try {
+			reply = serviceManager.getProjectLoaderService().newProject(_projectDirectory);
+
 			reply = FlexoProject.newProject(_projectDirectory, EDITOR_FACTORY, serviceManager, null);
 			if (nature != null) {
 				nature.givesNature(reply.getProject(), reply);

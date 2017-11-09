@@ -49,7 +49,7 @@ import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
-import org.openflexo.foundation.resource.FlexoResourceFactory;
+import org.openflexo.foundation.resource.TechnologySpecificFlexoResourceFactory;
 import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
@@ -225,7 +225,7 @@ public interface AbstractCreateResource<MS extends ModelSlot<RD>, RD extends Res
 		@Override
 		public abstract Type getAssignableType();
 
-		protected <I, R extends TechnologyAdapterResource<RD, TA>, RF extends FlexoResourceFactory<R, RD, TA>> R createResource(
+		protected <I, R extends TechnologyAdapterResource<RD, TA>, RF extends TechnologySpecificFlexoResourceFactory<R, RD, TA>> R createResource(
 				TA technologyAdapter, Class<RF> resourceFactoryClass, FlexoResourceCenter<I> resourceCenter, String resourceName,
 				String resourceURI, String relativePath, String extension, boolean createEmptyContents)
 				throws SaveResourceException, ModelDefinitionException {

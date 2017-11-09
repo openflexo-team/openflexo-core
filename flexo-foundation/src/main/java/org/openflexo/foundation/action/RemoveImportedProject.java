@@ -46,7 +46,7 @@ import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.FlexoProjectObject;
-import org.openflexo.foundation.resource.FlexoProjectReference;
+import org.openflexo.foundation.project.FlexoProjectReference;
 import org.openflexo.foundation.utils.FlexoObjectReference;
 
 public class RemoveImportedProject extends FlexoAction<RemoveImportedProject, FlexoProjectObject, FlexoProjectObject> {
@@ -70,8 +70,7 @@ public class RemoveImportedProject extends FlexoAction<RemoveImportedProject, Fl
 
 		@Override
 		public boolean isEnabledForSelection(FlexoProjectObject object, Vector<FlexoProjectObject> globalSelection) {
-			return object != null && object.getProject() != null && object.getProject().getProjectData() != null
-					&& object.getProject().getProjectData().getImportedProjects().size() > 0;
+			return object != null && object.getProject() != null && object.getProject().getImportedProjects().size() > 0;
 		}
 	};
 
@@ -87,13 +86,13 @@ public class RemoveImportedProject extends FlexoAction<RemoveImportedProject, Fl
 
 	@Override
 	protected void doAction(Object context) throws FlexoException {
-		if (getProject().getProjectData() != null) {
+		if (getProject() != null) {
 			String projectToRemoveURI = getProjectToRemoveURI();
-			FlexoProjectReference projectReferenceWithURI = getProject().getProjectData().getProjectReferenceWithURI(projectToRemoveURI);
+			FlexoProjectReference projectReferenceWithURI = getProject().getProjectReferenceWithURI(projectToRemoveURI);
 			if (projectReferenceWithURI != null) {
 				List<FlexoObjectReference<?>> toDelete = new ArrayList<>();
 				for (FlexoObjectReference<?> ref : getProject().getObjectReferences()) {
-					if (projectToRemoveURI.equals(ref.getReferringProject(true).getURI())) {
+					if (projectToRemoveURI.equals(ref.getReferringProject(true).getProjectURI())) {
 						toDelete.add(ref);
 					}
 				}
@@ -105,7 +104,7 @@ public class RemoveImportedProject extends FlexoAction<RemoveImportedProject, Fl
 		}
 	}
 
-	public FlexoProject getProject() {
+	public FlexoProject<?> getProject() {
 		return getFocusedObject().getProject();
 	}
 

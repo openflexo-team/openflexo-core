@@ -129,7 +129,7 @@ public interface FileIODelegate extends StreamIODelegate<File> {
 					&& (!getFile().getParentFile().exists() || getFile().getParentFile().canWrite());
 		}
 
-		private boolean renameFileTo(String name) throws InvalidFileNameException, IOException {
+		private boolean renameFileTo(String name) throws IOException {
 			if (name != null && getFile() != null) {
 				File newFile = new File(getFile().getParentFile(), name);
 				if (getFile().exists()) {
@@ -297,8 +297,6 @@ public interface FileIODelegate extends StreamIODelegate<File> {
 		public void rename() throws CannotRenameException {
 			try {
 				renameFileTo(getFileName());
-			} catch (InvalidFileNameException e) {
-				throw new CannotRenameException(getFlexoResource());
 			} catch (IOException e) {
 				throw new CannotRenameException(getFlexoResource());
 			}

@@ -79,13 +79,14 @@ import org.openflexo.foundation.resource.DirectoryResourceCenter;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
-import org.openflexo.foundation.resource.FlexoResourceFactory;
-import org.openflexo.foundation.resource.ResourceRepository;
+import org.openflexo.foundation.resource.ITechnologySpecificFlexoResourceFactory;
 import org.openflexo.foundation.resource.JarResourceCenter;
 import org.openflexo.foundation.resource.RepositoryFolder;
 import org.openflexo.foundation.resource.ResourceData;
+import org.openflexo.foundation.resource.ResourceRepository;
 import org.openflexo.foundation.resource.ResourceRepositoryImpl;
 import org.openflexo.foundation.resource.SaveResourceException;
+import org.openflexo.foundation.resource.TechnologySpecificFlexoResourceFactory;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.localization.LocalizedDelegate;
 import org.openflexo.localization.LocalizedDelegateImpl;
@@ -110,7 +111,7 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 	private TechnologyAdapterService technologyAdapterService;
 	private TechnologyContextManager<?> technologyContextManager;
 
-	private final List<FlexoResourceFactory<?, ?, ?>> resourceFactories;
+	private final List<ITechnologySpecificFlexoResourceFactory<?, ?, ?>> resourceFactories;
 
 	private List<Class<? extends ModelSlot<?>>> availableModelSlotTypes;
 	private List<Class<? extends VirtualModelInstanceNature>> availableVirtualModelInstanceNatures;
@@ -208,15 +209,15 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 		return isActivated;
 	}
 
-	public List<FlexoResourceFactory<?, ?, ?>> getResourceFactories() {
+	public List<ITechnologySpecificFlexoResourceFactory<?, ?, ?>> getResourceFactories() {
 		return resourceFactories;
 	}
 
-	public <R extends FlexoResourceFactory<?, ?, ?>> R getResourceFactory(Class<R> resourceFactory) {
+	public <R extends ITechnologySpecificFlexoResourceFactory<?, ?, ?>> R getResourceFactory(Class<R> resourceFactory) {
 		if (!isActivated()) {
 			activate();
 		}
-		for (FlexoResourceFactory<?, ?, ?> frf : getResourceFactories()) {
+		for (ITechnologySpecificFlexoResourceFactory<?, ?, ?> frf : getResourceFactories()) {
 			if (resourceFactory.isAssignableFrom(frf.getClass())) {
 				return (R) frf;
 			}
@@ -240,11 +241,11 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 	/**
 	 * Initialize the supplied resource center with the technology<br>
 	 * 
-	 * Supplied resource center is scanned according to all declared {@link FlexoResourceFactory}.<br>
+	 * Supplied resource center is scanned according to all declared {@link TechnologySpecificFlexoResourceFactory}.<br>
 	 * New technology-specific resources are build and registered.<br>
 	 * 
-	 * Note that if the technology declares model and meta-models, {@link FlexoResourceFactory} must be declared with a specific order
-	 * (metamodels BEFORE models), so that retrieving of models might find their respective metamodels
+	 * Note that if the technology declares model and meta-models, {@link TechnologySpecificFlexoResourceFactory} must be declared with a
+	 * specific order (metamodels BEFORE models), so that retrieving of models might find their respective metamodels
 	 * 
 	 * @param resourceCenter
 	 */
@@ -256,7 +257,7 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 
 		// We iterate on FlexoResourceFactory in the same order as they are declared in TechnologyAdapter
 		// (metamodels BEFORE models), so that retrieving of models might find their respective metamodels
-		for (FlexoResourceFactory<?, ?, ?> resourceFactory : getResourceFactories()) {
+		for (ITechnologySpecificFlexoResourceFactory<?, ?, ?> resourceFactory : getResourceFactories()) {
 
 			// Then we iterate on all resources found in the resource factory
 			it = resourceCenter.iterator();
@@ -357,19 +358,18 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 	 * @param serializationArtefact
 	 * @return
 	 */
-	private <RF extends FlexoResourceFactory<R, RD, TA>, R extends TechnologyAdapterResource<RD, TA>, RD extends ResourceData<RD> & TechnologyObject<TA>, TA extends TechnologyAdapter, I> R tryToLookupResource(
+	private <RF extends ITechnologySpecificFlexoResourceFactory<R, RD, TA>, R extends TechnologyAdapterResource<RD, TA>, RD extends ResourceData<RD> & TechnologyObject<TA>, TA extends TechnologyAdapter, I> R tryToLookupResource(
 			RF resourceFactory, FlexoResourceCenter<I> resourceCenter, I serializationArtefact) {
 
-		TechnologyContextManager<TA> technologyContextManager = (TechnologyContextManager<TA>) getTechnologyContextManager();
 		try {
 			if (resourceFactory.isValidArtefact(serializationArtefact, resourceCenter)) {
-				return resourceFactory.retrieveResource(serializationArtefact, resourceCenter, technologyContextManager);
+				return resourceFactory.retrieveResource(serializationArtefact, resourceCenter);
 			}
 			else {
 				// Attempt to convert it from older format
 				I convertedSerializationArtefact = resourceFactory.getConvertableArtefact(serializationArtefact, resourceCenter);
 				if (convertedSerializationArtefact != null) {
-					R returned = resourceFactory.retrieveResource(convertedSerializationArtefact, resourceCenter, technologyContextManager);
+					R returned = resourceFactory.retrieveResource(convertedSerializationArtefact, resourceCenter);
 					returned.setNeedsConversion();
 					return returned;
 				}
@@ -398,7 +398,7 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 	public final <I> boolean contentsAdded(FlexoResourceCenter<I> resourceCenter, I serializationArtefact) {
 		boolean hasBeenLookedUp = false;
 		if (!isIgnorable(resourceCenter, serializationArtefact)) {
-			for (FlexoResourceFactory<?, ?, ?> resourceFactory : getResourceFactories()) {
+			for (ITechnologySpecificFlexoResourceFactory<?, ?, ?> resourceFactory : getResourceFactories()) {
 				FlexoResource<?> resource = tryToLookupResource(resourceFactory, resourceCenter, serializationArtefact);
 				if (resource != null) {
 					hasBeenLookedUp = true;
@@ -534,12 +534,12 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 		Class<?> cl = getClass();
 		if (cl.isAnnotationPresent(DeclareResourceTypes.class)) {
 			DeclareResourceTypes allResourceTypes = cl.getAnnotation(DeclareResourceTypes.class);
-			for (Class<? extends FlexoResourceFactory<?, ?, ?>> resourceFactoryClass : allResourceTypes.value()) {
-				Constructor<? extends FlexoResourceFactory<?, ?, ?>> constructor;
+			for (Class<? extends ITechnologySpecificFlexoResourceFactory<?, ?, ?>> resourceFactoryClass : allResourceTypes.value()) {
+				Constructor<? extends ITechnologySpecificFlexoResourceFactory<?, ?, ?>> constructor;
 				try {
 					constructor = resourceFactoryClass.getConstructor();
 					logger.info("Loading resource factory " + resourceFactoryClass + " using " + constructor);
-					FlexoResourceFactory<?, ?, ?> newFactory = constructor.newInstance();
+					ITechnologySpecificFlexoResourceFactory<?, ?, ?> newFactory = constructor.newInstance();
 					resourceFactories.add(newFactory);
 					availableResourceTypes.add(newFactory.getResourceClass());
 					logger.info("Initialized ResourceFactory for " + newFactory.getResourceClass().getSimpleName());
@@ -714,7 +714,7 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 	 * @throws SaveResourceException
 	 * @throws ModelDefinitionException
 	 */
-	public <I, R extends TechnologyAdapterResource<?, ?>, RF extends FlexoResourceFactory<R, ?, ?>> R createResource(
+	public <I, R extends TechnologyAdapterResource<?, ?>, RF extends TechnologySpecificFlexoResourceFactory<R, ?, ?>> R createResource(
 			Class<RF> resourceFactoryClass, FlexoResourceCenter<I> resourceCenter, String resourceName, String resourceURI,
 			String relativePath, String extension, boolean createEmptyContents) throws SaveResourceException, ModelDefinitionException {
 
@@ -728,9 +728,8 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 
 		System.out.println("serialization artefact=" + serializationArtefact);
 
-		R returned = (R) resourceFactory.makeResource(serializationArtefact, resourceCenter,
-				(TechnologyContextManager) getTechnologyContextManager(), resourceCenter.retrieveName(serializationArtefact), resourceURI,
-				createEmptyContents);
+		R returned = resourceFactory.makeResource(serializationArtefact, resourceCenter, resourceCenter.retrieveName(serializationArtefact),
+				resourceURI, createEmptyContents);
 
 		System.out.println("Return " + returned);
 

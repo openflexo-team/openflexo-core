@@ -891,14 +891,13 @@ public abstract class FileSystemBasedResourceCenter extends ResourceRepositoryIm
 	}
 
 	@Override
-	public FileIODelegate makeFlexoIODelegate(File serializationArtefact, FlexoResourceFactory<?, ?, ?> resourceFactory)
-			throws IOException {
+	public FileIODelegate makeFlexoIODelegate(File serializationArtefact, FlexoResourceFactory<?, ?> resourceFactory) throws IOException {
 		return FileIODelegateImpl.makeFileFlexoIODelegate(serializationArtefact, resourceFactory);
 	}
 
 	@Override
 	public FlexoIODelegate<File> makeDirectoryBasedFlexoIODelegate(File serializationArtefact, String directoryExtension,
-			String fileExtension, FlexoResourceFactory<?, ?, ?> resourceFactory) {
+			String fileExtension, FlexoResourceFactory<?, ?> resourceFactory) {
 		String baseName = serializationArtefact.getName().substring(0,
 				serializationArtefact.getName().length() - directoryExtension.length());
 		return DirectoryBasedIODelegateImpl.makeDirectoryBasedFlexoIODelegate(serializationArtefact.getParentFile(), baseName,

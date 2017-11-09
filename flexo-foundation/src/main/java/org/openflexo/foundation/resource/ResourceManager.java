@@ -303,7 +303,7 @@ public class ResourceManager extends FlexoServiceImpl implements FlexoService, R
 	 * @param technologyAdapter
 	 * @return
 	 */
-	public List<ResourceRepositoryImpl<?, ?>> getAllRepositories(TechnologyAdapter technologyAdapter) {
+	public List<ResourceRepository<?, ?>> getAllRepositories(TechnologyAdapter technologyAdapter) {
 		if (getServiceManager() != null) {
 			return getServiceManager().getTechnologyAdapterService().getAllRepositories(technologyAdapter);
 		}
@@ -333,7 +333,7 @@ public class ResourceManager extends FlexoServiceImpl implements FlexoService, R
 	 * @param technologyAdapter
 	 * @return
 	 */
-	public <RD extends ResourceData<RD>> List<ResourceRepositoryImpl<? extends FlexoResource<RD>, ?>> getAllRepositories(
+	public <RD extends ResourceData<RD>> List<ResourceRepository<? extends FlexoResource<RD>, ?>> getAllRepositories(
 			TechnologyAdapter technologyAdapter, Class<RD> resourceDataClass) {
 		if (getServiceManager() != null) {
 			return getServiceManager().getTechnologyAdapterService().getAllRepositories(technologyAdapter, resourceDataClass);

@@ -72,7 +72,7 @@ import org.openflexo.foundation.action.copypaste.PasteAction.PasteActionType;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FMLValidationReport;
 import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.resource.FlexoProjectReference;
+import org.openflexo.foundation.project.FlexoProjectReference;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.RepositoryFolder;
 import org.openflexo.foundation.resource.ResourceData;

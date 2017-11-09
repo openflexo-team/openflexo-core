@@ -624,13 +624,13 @@ public class JarResourceCenter extends ResourceRepositoryImpl<FlexoResource<?>, 
 	}
 
 	@Override
-	public InJarIODelegate makeFlexoIODelegate(InJarResourceImpl serializationArtefact, FlexoResourceFactory<?, ?, ?> resourceFactory) {
+	public InJarIODelegate makeFlexoIODelegate(InJarResourceImpl serializationArtefact, FlexoResourceFactory<?, ?> resourceFactory) {
 		return InJarIODelegateImpl.makeInJarFlexoIODelegate(serializationArtefact, resourceFactory);
 	}
 
 	@Override
 	public FlexoIODelegate<InJarResourceImpl> makeDirectoryBasedFlexoIODelegate(InJarResourceImpl serializationArtefact,
-			String directoryExtension, String fileExtension, FlexoResourceFactory<?, ?, ?> resourceFactory) {
+			String directoryExtension, String fileExtension, FlexoResourceFactory<?, ?> resourceFactory) {
 
 		String baseName = retrieveName(serializationArtefact).substring(0,
 				retrieveName(serializationArtefact).length() - directoryExtension.length());

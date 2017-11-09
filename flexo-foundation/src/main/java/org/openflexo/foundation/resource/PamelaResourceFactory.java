@@ -20,20 +20,16 @@
 
 package org.openflexo.foundation.resource;
 
-import java.io.IOException;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.PamelaResourceModelFactory;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterResource;
-import org.openflexo.foundation.technologyadapter.TechnologyContextManager;
-import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.model.factory.ModelFactory;
 
 /**
- * Abstract implementation a factory that manages the creation of a given type of {@link FlexoResource} and a given
- * {@link TechnologyAdapter}, in PAMELA context
+ * Abstract implementation a factory that manages the creation of a given type of {@link FlexoResource} in PAMELA context
  * 
  * @author sylvain
  *
@@ -47,8 +43,8 @@ import org.openflexo.model.factory.ModelFactory;
  * @param <F>
  *            type of {@link PamelaResourceModelFactory} managing contents of resources
  */
-public abstract class PamelaResourceFactory<R extends TechnologyAdapterResource<RD, TA> & PamelaResource<RD, F>, RD extends ResourceData<RD> & TechnologyObject<TA>, TA extends TechnologyAdapter, F extends ModelFactory & PamelaResourceModelFactory>
-		extends FlexoResourceFactory<R, RD, TA> {
+public abstract class PamelaResourceFactory<R extends FlexoResource<RD>, RD extends ResourceData<RD>, F extends ModelFactory & PamelaResourceModelFactory>
+		extends FlexoResourceFactory<R, RD> {
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(PamelaResourceFactory.class.getPackage().getName());
@@ -63,30 +59,21 @@ public abstract class PamelaResourceFactory<R extends TechnologyAdapterResource<
 		super(resourceClass);
 	}
 
-	@Override
-	protected <I> R initResourceForRetrieving(I serializationArtefact, FlexoResourceCenter<I> resourceCenter,
-			TechnologyContextManager<TA> technologyContextManager) throws ModelDefinitionException, IOException {
-		R returned = super.initResourceForRetrieving(serializationArtefact, resourceCenter, technologyContextManager);
-		returned.setFactory(makeResourceDataFactory(returned, technologyContextManager));
+	/*@Override
+	protected <I> R initResourceForRetrieving(I serializationArtefact, FlexoResourceCenter<I> resourceCenter)
+			throws ModelDefinitionException, IOException {
+		R returned = super.initResourceForRetrieving(serializationArtefact, resourceCenter);
+		// TechnologyContextManager<TA> technologyContextManager = getTechnologyContextManager(resourceCenter.getServiceManager());
+		// returned.setFactory(makeResourceDataFactory(returned, technologyContextManager));
 		return returned;
 	}
-
+	
 	@Override
-	protected <I> R initResourceForCreation(I serializationArtefact, FlexoResourceCenter<I> resourceCenter,
-			TechnologyContextManager<TA> technologyContextManager, String name, String uri) throws ModelDefinitionException {
-		R returned = super.initResourceForCreation(serializationArtefact, resourceCenter, technologyContextManager, name, uri);
-		returned.setFactory(makeResourceDataFactory(returned, technologyContextManager));
+	protected <I> R initResourceForCreation(I serializationArtefact, FlexoResourceCenter<I> resourceCenter, String name, String uri)
+			throws ModelDefinitionException {
+		R returned = super.initResourceForCreation(serializationArtefact, resourceCenter, name, uri);
+		// returned.setFactory(makeResourceDataFactory(returned, technologyContextManager));
 		return returned;
-	}
-
-	/**
-	 * Build a new factory managing contents of a {@link PamelaResource}
-	 * 
-	 * @param resource
-	 * @param technologyContextManager
-	 * @return
-	 */
-	public abstract F makeResourceDataFactory(R resource, TechnologyContextManager<TA> technologyContextManager)
-			throws ModelDefinitionException;
+	}*/
 
 }

@@ -58,17 +58,16 @@ import org.openflexo.model.annotations.Setter;
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(FlexoProjectObject.FlexoProjectObjectImpl.class)
-@Deprecated
 public interface FlexoProjectObject extends FlexoObject {
 
 	@PropertyIdentifier(type = FlexoProject.class)
 	public static final String PROJECT = "project";
 
 	@Getter(value = PROJECT, ignoreType = true)
-	public FlexoProject getProject();
+	public FlexoProject<?> getProject();
 
 	@Setter(PROJECT)
-	public void setProject(FlexoProject project);
+	public void setProject(FlexoProject<?> project);
 
 	@Override
 	public FlexoServiceManager getServiceManager();
@@ -78,13 +77,13 @@ public interface FlexoProjectObject extends FlexoObject {
 		@SuppressWarnings("unused")
 		private static final Logger logger = Logger.getLogger(FlexoProjectObject.class.getPackage().getName());
 
-		private FlexoProject project;
+		private FlexoProject<?> project;
 
 		public FlexoProjectObjectImpl() {
 			super();
 		}
 
-		public FlexoProjectObjectImpl(FlexoProject project) {
+		public FlexoProjectObjectImpl(FlexoProject<?> project) {
 			this();
 			this.project = project;
 		}
@@ -96,12 +95,12 @@ public interface FlexoProjectObject extends FlexoObject {
 		}
 
 		@Override
-		public FlexoProject getProject() {
+		public FlexoProject<?> getProject() {
 			return project;
 		}
 
 		@Override
-		public void setProject(FlexoProject project) {
+		public void setProject(FlexoProject<?> project) {
 			this.project = project;
 		}
 

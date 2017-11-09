@@ -50,6 +50,7 @@ import org.openflexo.foundation.InvalidXMLException;
 import org.openflexo.foundation.resource.FlexoFileNotFoundException;
 import org.openflexo.foundation.resource.PamelaResourceImpl;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
+import org.openflexo.foundation.task.FlexoTask;
 import org.openflexo.toolbox.IProgress;
 
 /**
@@ -87,7 +88,80 @@ public abstract class FlexoProjectResourceImpl extends PamelaResourceImpl<FlexoP
 	public FlexoProject<?> loadResourceData(IProgress progress) throws FlexoFileNotFoundException, IOFlexoException, InvalidXMLException,
 			InconsistentDataException, InvalidModelDefinitionException {
 		FlexoProject<?> returned = super.loadResourceData(progress);
+		returned.setLastUniqueID(0);
+
+		// We add the newly created project as a ResourceCenter
+		FlexoTask addResourceCenterTask = getServiceManager().resourceCenterAdded(returned);
+
+		// If resource center adding is executing in a task, we have to wait the task to be finished
+		if (addResourceCenterTask != null) {
+			getServiceManager().getTaskManager().waitTask(addResourceCenterTask);
+		}
+
 		return returned;
 	}
+
+	/*
+	public static abstract class ProjectDataResourceImpl extends PamelaResourceImpl<ProjectData, ProjectDataFactory>
+	implements ProjectDataResource {
+	
+	public static ProjectDataResource makeProjectDataResource(FlexoProject project) {
+	try {
+		ModelFactory resourceFactory = new ModelFactory(
+				ModelContextLibrary.getCompoundModelContext(FileIODelegate.class, ProjectDataResource.class));
+		ProjectDataResourceImpl returned = (ProjectDataResourceImpl) resourceFactory.newInstance(ProjectDataResource.class);
+		File xmlFile = new File(project.getProjectDirectory(), FILE_NAME);
+		returned.setProject(project);
+		ProjectDataFactory projectDataFactory = new ProjectDataFactory(returned, project.getServiceManager().getEditingContext());
+		returned.setFactory(projectDataFactory);
+		returned.initName(project.getProjectName() + "-data");
+		returned.setIODelegate(FileIODelegateImpl.makeFileFlexoIODelegate(xmlFile, resourceFactory));
+		returned.setURI(project.buildProjectURI());
+	
+		returned.setResourceCenter(project);
+		returned.setServiceManager(project.getServiceManager());
+		if (xmlFile.exists()) {
+			returned.loadResourceData(null);
+		}
+		else {
+			ProjectData newProjectData = returned.getFactory().newInstance(ProjectData.class);
+			returned.setResourceData(newProjectData);
+		}
+		return returned;
+	} catch (ModelDefinitionException e) {
+		e.printStackTrace();
+	} catch (FlexoFileNotFoundException e) {
+		e.printStackTrace();
+	} catch (IOFlexoException e) {
+		e.printStackTrace();
+	} catch (InvalidXMLException e) {
+		e.printStackTrace();
+	} catch (InconsistentDataException e) {
+		e.printStackTrace();
+	} catch (InvalidModelDefinitionException e) {
+		e.printStackTrace();
+	}
+	return null;
+	}
+	
+	@Override
+	public ProjectData getProjectData() {
+	try {
+		return getResourceData(null);
+	} catch (FileNotFoundException e) {
+		e.printStackTrace();
+	} catch (ResourceLoadingCancelledException e) {
+		e.printStackTrace();
+	} catch (FlexoException e) {
+		e.printStackTrace();
+	}
+	return null;
+	}
+	
+	@Override
+	public Class<ProjectData> getResourceDataClass() {
+	return ProjectData.class;
+	}
+	}*/
 
 }

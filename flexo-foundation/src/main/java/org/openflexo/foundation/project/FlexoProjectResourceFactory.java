@@ -29,11 +29,7 @@ import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.PamelaResourceFactory;
 import org.openflexo.foundation.resource.RepositoryFolder;
 import org.openflexo.foundation.resource.SaveResourceException;
-import org.openflexo.foundation.technologyadapter.TechnologyContextManager;
 import org.openflexo.model.exceptions.ModelDefinitionException;
-import org.openflexo.technologyadapter.diagram.DiagramTechnologyAdapter;
-import org.openflexo.technologyadapter.diagram.metamodel.DiagramSpecification;
-import org.openflexo.technologyadapter.diagram.metamodel.DiagramSpecificationFactory;
 import org.openflexo.toolbox.FlexoVersion;
 import org.openflexo.toolbox.StringUtils;
 import org.openflexo.xml.XMLRootElementInfo;
@@ -44,121 +40,42 @@ import org.openflexo.xml.XMLRootElementInfo;
  * @author sylvain
  *
  */
-public class FlexoProjectResourceFactory
-		extends PamelaResourceFactory<FlexoProjectResource, FlexoProject, DiagramTechnologyAdapter, DiagramSpecificationFactory> {
+public class FlexoProjectResourceFactory<I> extends PamelaResourceFactory<FlexoProjectResource, FlexoProject<?>, FlexoProjectFactory> {
 
 	private static final Logger logger = Logger.getLogger(FlexoProjectResourceFactory.class.getPackage().getName());
 
 	public static final String CORE_FILE_SUFFIX = ".xml";
-	public static final String DIAGRAM_SPECIFICATION_SUFFIX = ".diagramspecification";
+	public static final String PROJECT_SUFFIX = ".prj";
 	public static final FlexoVersion INITIAL_REVISION = new FlexoVersion("0.1");
 	public static final FlexoVersion CURRENT_MODEL_VERSION = new FlexoVersion("1.0");
 
-	private final ExampleDiagramResourceFactory exampleDiagramsResourceFactory;
-	private final DiagramPaletteResourceFactory paletteResourceFactory;
-
 	public FlexoProjectResourceFactory() throws ModelDefinitionException {
-		super(DiagramSpecificationResource.class);
-		exampleDiagramsResourceFactory = new ExampleDiagramResourceFactory();
-		paletteResourceFactory = new DiagramPaletteResourceFactory();
-	}
-
-	public ExampleDiagramResourceFactory getExampleDiagramsResourceFactory() {
-		return exampleDiagramsResourceFactory;
-	}
-
-	public DiagramPaletteResourceFactory getPaletteResourceFactory() {
-		return paletteResourceFactory;
+		super(FlexoProjectResource.class);
 	}
 
 	@Override
-	public DiagramSpecification makeEmptyResourceData(DiagramSpecificationResource resource) {
-		return resource.getFactory().makeNewDiagramSpecification();
+	public FlexoProject<?> makeEmptyResourceData(FlexoProjectResource resource) {
+		return resource.getFactory().makeNewFlexoProject();
+	}
+
+	public FlexoProjectFactory makeResourceDataFactory(FlexoProjectResource resource) throws ModelDefinitionException {
+		return new FlexoProjectFactory(resource, resource.getServiceManager().getEditingContext());
 	}
 
 	@Override
-	public DiagramSpecificationFactory makeResourceDataFactory(DiagramSpecificationResource resource,
-			TechnologyContextManager<DiagramTechnologyAdapter> technologyContextManager) throws ModelDefinitionException {
-		return new DiagramSpecificationFactory(resource, technologyContextManager.getServiceManager().getEditingContext());
-	}
+	protected <I> FlexoProjectResource initResourceForRetrieving(I serializationArtefact, FlexoResourceCenter<I> resourceCenter)
+			throws ModelDefinitionException, IOException {
+		FlexoProjectResource returned = super.initResourceForRetrieving(serializationArtefact, resourceCenter);
 
-	@Override
-	public <I> boolean isValidArtefact(I serializationArtefact, FlexoResourceCenter<I> resourceCenter) {
-
-		if (resourceCenter.exists(serializationArtefact) && resourceCenter.isDirectory(serializationArtefact)
-				&& resourceCenter.canRead(serializationArtefact)
-				&& (resourceCenter.retrieveName(serializationArtefact).endsWith(DIAGRAM_SPECIFICATION_SUFFIX)
-				/*|| resourceCenter.retrieveName(serializationArtefact).endsWith(DIAGRAM_SPECIFICATION_SUFFIX + "/")*/)) {
-			/*final String baseName = candidateFile.getName().substring(0,
-					candidateFile.getName().length() - ViewPointResource.DIAGRAM_SPECIFICATION_SUFFIX.length());
-			final File xmlFile = new File(candidateFile, baseName + ".xml");
-			return xmlFile.exists();*/
-			return true;
-		}
-		return false;
-	}
-
-	@Override
-	public <I> I getConvertableArtefact(I serializationArtefact, FlexoResourceCenter<I> resourceCenter) {
-		return null;
-	}
-
-	public <I> DiagramSpecificationResource makeDiagramSpecificationResourceResource(String baseName, String uri,
-			RepositoryFolder<DiagramSpecificationResource, I> folder,
-			TechnologyContextManager<DiagramTechnologyAdapter> technologyContextManager, boolean createEmptyContents)
-			throws SaveResourceException, ModelDefinitionException {
-
-		FlexoResourceCenter<I> resourceCenter = folder.getResourceRepository().getResourceCenter();
-
-		String artefactName = baseName.endsWith(FlexoProjectResourceFactory.DIAGRAM_SPECIFICATION_SUFFIX) ? baseName
-				: baseName + FlexoProjectResourceFactory.DIAGRAM_SPECIFICATION_SUFFIX;
-		I serializationArtefact = resourceCenter.createDirectory(artefactName, folder.getSerializationArtefact());
-		return makeResource(serializationArtefact, resourceCenter, technologyContextManager, baseName, uri, createEmptyContents);
-	}
-
-	@Override
-	protected <I> DiagramSpecificationResource registerResource(DiagramSpecificationResource resource,
-			FlexoResourceCenter<I> resourceCenter, TechnologyContextManager<DiagramTechnologyAdapter> technologyContextManager) {
-		super.registerResource(resource, resourceCenter, technologyContextManager);
-
-		// Register the resource in the VirtualModelRepository of supplied resource center
-		registerResourceInResourceRepository(resource,
-				technologyContextManager.getTechnologyAdapter().getDiagramSpecificationRepository(resourceCenter));
-
-		// Now look inside
-		exploreDiagramSpecificationContents(resource, technologyContextManager);
-
-		return resource;
-
-	}
-
-	@Override
-	protected <I> DiagramSpecificationResource initResourceForCreation(I serializationArtefact, FlexoResourceCenter<I> resourceCenter,
-			TechnologyContextManager<DiagramTechnologyAdapter> technologyContextManager, String name, String uri)
-			throws ModelDefinitionException {
-		DiagramSpecificationResource returned = super.initResourceForCreation(serializationArtefact, resourceCenter,
-				technologyContextManager, name, uri);
-
-		returned.setVersion(INITIAL_REVISION);
-		returned.setModelVersion(CURRENT_MODEL_VERSION);
-
-		return returned;
-	}
-
-	@Override
-	protected <I> DiagramSpecificationResource initResourceForRetrieving(I serializationArtefact, FlexoResourceCenter<I> resourceCenter,
-			TechnologyContextManager<DiagramTechnologyAdapter> technologyContextManager) throws ModelDefinitionException, IOException {
-
-		DiagramSpecificationResource returned = super.initResourceForRetrieving(serializationArtefact, resourceCenter,
-				technologyContextManager);
+		returned.setFactory(makeResourceDataFactory(returned));
 
 		String artefactName = resourceCenter.retrieveName(serializationArtefact);
-		String baseName = artefactName.endsWith(DIAGRAM_SPECIFICATION_SUFFIX)
-				? artefactName.substring(0, artefactName.length() - DIAGRAM_SPECIFICATION_SUFFIX.length()) : artefactName;
+		String baseName = artefactName.endsWith(PROJECT_SUFFIX) ? artefactName.substring(0, artefactName.length() - PROJECT_SUFFIX.length())
+				: artefactName;
 
 		returned.initName(baseName);
 
-		DiagramSpecificationInfo vpi = findDiagramSpecificationInfo(returned, resourceCenter);
+		FlexoProjectInfo vpi = findFlexoProjectInfo(returned, resourceCenter);
 		if (vpi != null) {
 
 			returned.setURI(vpi.uri);
@@ -185,72 +102,81 @@ public class FlexoProjectResourceFactory
 	}
 
 	@Override
+	protected <I> FlexoProjectResource initResourceForCreation(I serializationArtefact, FlexoResourceCenter<I> resourceCenter, String name,
+			String uri) throws ModelDefinitionException {
+		FlexoProjectResource returned = super.initResourceForCreation(serializationArtefact, resourceCenter, name, uri);
+
+		returned.setVersion(INITIAL_REVISION);
+		returned.setModelVersion(CURRENT_MODEL_VERSION);
+		returned.setFactory(makeResourceDataFactory(returned));
+		return returned;
+	}
+
+	@Override
+	public <I> boolean isValidArtefact(I serializationArtefact, FlexoResourceCenter<I> resourceCenter) {
+
+		if (resourceCenter.exists(serializationArtefact) && resourceCenter.isDirectory(serializationArtefact)
+				&& resourceCenter.canRead(serializationArtefact)
+				&& (resourceCenter.retrieveName(serializationArtefact).endsWith(PROJECT_SUFFIX)
+				/*|| resourceCenter.retrieveName(serializationArtefact).endsWith(DIAGRAM_SPECIFICATION_SUFFIX + "/")*/)) {
+			/*final String baseName = candidateFile.getName().substring(0,
+					candidateFile.getName().length() - ViewPointResource.DIAGRAM_SPECIFICATION_SUFFIX.length());
+			final File xmlFile = new File(candidateFile, baseName + ".xml");
+			return xmlFile.exists();*/
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public <I> I getConvertableArtefact(I serializationArtefact, FlexoResourceCenter<I> resourceCenter) {
+		return null;
+	}
+
+	public <I> FlexoProjectResource makeFlexoProjectResource(String baseName, String uri, RepositoryFolder<FlexoProjectResource, I> folder,
+			boolean createEmptyContents) throws SaveResourceException, ModelDefinitionException {
+
+		FlexoResourceCenter<I> resourceCenter = folder.getResourceRepository().getResourceCenter();
+
+		String artefactName = baseName.endsWith(FlexoProjectResourceFactory.PROJECT_SUFFIX) ? baseName
+				: baseName + FlexoProjectResourceFactory.PROJECT_SUFFIX;
+		I serializationArtefact = resourceCenter.createDirectory(artefactName, folder.getSerializationArtefact());
+		return makeResource(serializationArtefact, resourceCenter, baseName, uri, createEmptyContents);
+	}
+
+	@Override
+	protected <I> FlexoProjectResource registerResource(FlexoProjectResource resource, FlexoResourceCenter<I> resourceCenter) {
+		super.registerResource(resource, resourceCenter);
+
+		System.out.println("HOP, je register la FlexoProjectResource");
+
+		// Now look inside ???
+
+		return resource;
+
+	}
+
+	@Override
 	protected <I> FlexoIODelegate<I> makeFlexoIODelegate(I serializationArtefact, FlexoResourceCenter<I> resourceCenter) {
-		return resourceCenter.makeDirectoryBasedFlexoIODelegate(serializationArtefact, DIAGRAM_SPECIFICATION_SUFFIX, CORE_FILE_SUFFIX,
-				this);
+		return resourceCenter.makeDirectoryBasedFlexoIODelegate(serializationArtefact, PROJECT_SUFFIX, CORE_FILE_SUFFIX, this);
 	}
 
-	private void exploreDiagramSpecificationContents(DiagramSpecificationResource dsResource,
-			TechnologyContextManager<DiagramTechnologyAdapter> technologyContextManager) {
-
-		exploreResource(dsResource.getIODelegate().getSerializationArtefact(), dsResource, technologyContextManager);
-	}
-
-	private <I> void exploreResource(I serializationArtefact, DiagramSpecificationResource dsResource,
-			TechnologyContextManager<DiagramTechnologyAdapter> technologyContextManager) {
-		if (serializationArtefact == null) {
-			return;
-		}
-
-		FlexoResourceCenter<I> resourceCenter = (FlexoResourceCenter<I>) dsResource.getResourceCenter();
-
-		for (I child : resourceCenter.getContents(resourceCenter.getContainer(serializationArtefact))) {
-			if (getExampleDiagramsResourceFactory().isValidArtefact(child, resourceCenter)) {
-				try {
-					DiagramResource exampleDiagramRes = getExampleDiagramsResourceFactory().retrieveExampleDiagramResource(child,
-							technologyContextManager, dsResource);
-				} catch (ModelDefinitionException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-			else if (getPaletteResourceFactory().isValidArtefact(child, resourceCenter)) {
-				try {
-					DiagramPaletteResource paletteRes = getPaletteResourceFactory().retrievePaletteResource(child, technologyContextManager,
-							dsResource);
-				} catch (ModelDefinitionException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-		}
-	}
-
-	private static class DiagramSpecificationInfo {
+	private static class FlexoProjectInfo {
 		public String uri;
 		public String version;
-		public String name;
 		public String modelVersion;
 	}
 
-	private <I> DiagramSpecificationInfo findDiagramSpecificationInfo(DiagramSpecificationResource resource,
-			FlexoResourceCenter<I> resourceCenter) {
+	private <I> FlexoProjectInfo findFlexoProjectInfo(FlexoProjectResource resource, FlexoResourceCenter<I> resourceCenter) {
 
-		DiagramSpecificationInfo returned = new DiagramSpecificationInfo();
+		FlexoProjectInfo returned = new FlexoProjectInfo();
 		XMLRootElementInfo xmlRootElementInfo = resourceCenter
 				.getXMLRootElementInfo((I) resource.getIODelegate().getSerializationArtefact());
 		if (xmlRootElementInfo == null) {
 			return null;
 		}
 		if (xmlRootElementInfo.getName().equals("DiagramSpecification")) {
-			returned.name = xmlRootElementInfo.getAttribute(DiagramSpecification.NAME_KEY);
-			returned.uri = xmlRootElementInfo.getAttribute(DiagramSpecification.URI_KEY);
+			returned.uri = xmlRootElementInfo.getAttribute(FlexoProject.PROJECT_URI_KEY);
 			returned.version = xmlRootElementInfo.getAttribute("version");
 			returned.modelVersion = xmlRootElementInfo.getAttribute("modelVersion");
 		}

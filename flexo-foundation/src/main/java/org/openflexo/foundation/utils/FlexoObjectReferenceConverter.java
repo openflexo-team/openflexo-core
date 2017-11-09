@@ -36,42 +36,37 @@
  * 
  */
 
-package org.openflexo.foundation.converter;
+package org.openflexo.foundation.utils;
 
-import java.io.File;
-
-import org.openflexo.foundation.utils.FlexoProjectFile;
+import org.openflexo.foundation.resource.ResourceManager;
 import org.openflexo.model.StringConverterLibrary.Converter;
 import org.openflexo.model.factory.ModelFactory;
 
 /**
- * String converter from/to {@link FlexoProjectFile} objects
+ * String converter from/to {@link FlexoObjectReference} objects<br>
+ * 
+ * This should be the way to reference an object in another resource
  * 
  * @author sylvain
  * 
  */
-public class FlexoProjectFileConverter extends Converter<FlexoProjectFile> {
+public class FlexoObjectReferenceConverter extends Converter<FlexoObjectReference<?>> {
 
-	private static final char fileSeparator = File.separator.charAt(0);
+	private ResourceManager resourceManager;
 
-	private static final char alternateFileSeparator = fileSeparator == '\\' ? '/' : '\\';
-
-	public static String transformIntoValidPath(String aRelativePath) {
-		return aRelativePath.replace(alternateFileSeparator, fileSeparator);
-	}
-
-	public FlexoProjectFileConverter() {
-		super(FlexoProjectFile.class);
+	public FlexoObjectReferenceConverter(ResourceManager resourceManager) {
+		super(FlexoObjectReference.class);
+		this.resourceManager = resourceManager;
 	}
 
 	@Override
-	public FlexoProjectFile convertFromString(String value, ModelFactory factory) {
-		return new FlexoProjectFile(transformIntoValidPath(value));
+	public FlexoObjectReference<?> convertFromString(String value, ModelFactory factory) {
+		return new FlexoObjectReference<>(value, resourceManager);
 	}
 
 	@Override
-	public String convertToString(FlexoProjectFile value) {
-		return value.toString();
+	public String convertToString(FlexoObjectReference value) {
+		return value.getStringRepresentation();
 	}
 
 }

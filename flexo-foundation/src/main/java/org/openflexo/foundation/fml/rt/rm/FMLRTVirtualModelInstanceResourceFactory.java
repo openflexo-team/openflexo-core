@@ -77,17 +77,15 @@ public class FMLRTVirtualModelInstanceResourceFactory extends
 	 */
 	public <I> FMLRTVirtualModelInstanceResource makeTopLevelFMLRTVirtualModelInstanceResource(String baseName, String uri,
 			VirtualModelResource virtualModelResource, RepositoryFolder<FMLRTVirtualModelInstanceResource, I> folder,
-			TechnologyContextManager<FMLRTTechnologyAdapter> technologyContextManager, boolean createEmptyContents)
-			throws SaveResourceException, ModelDefinitionException {
+			boolean createEmptyContents) throws SaveResourceException, ModelDefinitionException {
 
 		FlexoResourceCenter<I> resourceCenter = folder.getResourceRepository().getResourceCenter();
 		I serializationArtefact = resourceCenter.createDirectory((baseName.endsWith(FML_RT_SUFFIX) ? baseName : baseName + FML_RT_SUFFIX),
 				folder.getSerializationArtefact());
 
-		FMLRTVirtualModelInstanceResource returned = initResourceForCreation(serializationArtefact, resourceCenter,
-				technologyContextManager, baseName, uri);
+		FMLRTVirtualModelInstanceResource returned = initResourceForCreation(serializationArtefact, resourceCenter, baseName, uri);
 		returned.setVirtualModelResource(virtualModelResource);
-		registerResource(returned, resourceCenter, technologyContextManager);
+		registerResource(returned, resourceCenter);
 
 		if (createEmptyContents) {
 			FMLRTVirtualModelInstance resourceData = createEmptyContents(returned);
@@ -129,10 +127,9 @@ public class FMLRTVirtualModelInstanceResourceFactory extends
 
 		String viewURI = containerResource.getURI() + "/" + (baseName.endsWith(FML_RT_SUFFIX) ? baseName : (baseName + FML_RT_SUFFIX));
 
-		FMLRTVirtualModelInstanceResource returned = initResourceForCreation(serializationArtefact, resourceCenter,
-				technologyContextManager, baseName, viewURI);
+		FMLRTVirtualModelInstanceResource returned = initResourceForCreation(serializationArtefact, resourceCenter, baseName, viewURI);
 		returned.setVirtualModelResource(virtualModelResource);
-		registerResource(returned, resourceCenter, technologyContextManager);
+		registerResource(returned, resourceCenter);
 
 		if (createEmptyContents) {
 			FMLRTVirtualModelInstance resourceData = createEmptyContents(returned);
@@ -162,9 +159,8 @@ public class FMLRTVirtualModelInstanceResourceFactory extends
 	 * @throws IOException
 	 */
 	public <I> FMLRTVirtualModelInstanceResource retrieveFMLRTVirtualModelInstanceResource(I serializationArtefact,
-			FlexoResourceCenter<I> resourceCenter, TechnologyContextManager<FMLRTTechnologyAdapter> technologyContextManager)
-			throws ModelDefinitionException, IOException {
-		FMLRTVirtualModelInstanceResource returned = retrieveResource(serializationArtefact, resourceCenter, technologyContextManager);
+			FlexoResourceCenter<I> resourceCenter) throws ModelDefinitionException, IOException {
+		FMLRTVirtualModelInstanceResource returned = retrieveResource(serializationArtefact, resourceCenter);
 		return returned;
 	}
 
@@ -181,20 +177,18 @@ public class FMLRTVirtualModelInstanceResourceFactory extends
 	 * @throws IOException
 	 */
 	public <I> FMLRTVirtualModelInstanceResource retrieveContainedFMLRTVirtualModelInstanceResource(I serializationArtefact,
-			TechnologyContextManager<FMLRTTechnologyAdapter> technologyContextManager,
 			AbstractVirtualModelInstanceResource<?, ?> containerResource) throws ModelDefinitionException, IOException {
 
 		FlexoResourceCenter<I> resourceCenter = (FlexoResourceCenter<I>) containerResource.getResourceCenter();
 		String name = resourceCenter.retrieveName(serializationArtefact);
 
-		FMLRTVirtualModelInstanceResource returned = initResourceForRetrieving(serializationArtefact, resourceCenter,
-				technologyContextManager);
+		FMLRTVirtualModelInstanceResource returned = initResourceForRetrieving(serializationArtefact, resourceCenter);
 		returned.setURI(containerResource.getURI() + "/" + name);
 
 		containerResource.addToContents(returned);
 		containerResource.notifyContentsAdded(returned);
 
-		registerResource(returned, resourceCenter, technologyContextManager);
+		registerResource(returned, resourceCenter);
 
 		return returned;
 
@@ -244,30 +238,23 @@ public class FMLRTVirtualModelInstanceResourceFactory extends
 
 	@Override
 	protected <I> FMLRTVirtualModelInstanceResource registerResource(FMLRTVirtualModelInstanceResource resource,
-			FlexoResourceCenter<I> resourceCenter, TechnologyContextManager<FMLRTTechnologyAdapter> technologyContextManager) {
-		super.registerResource(resource, resourceCenter, technologyContextManager);
+			FlexoResourceCenter<I> resourceCenter) {
+		super.registerResource(resource, resourceCenter);
 
 		// Register the resource in the VirtualModelInstanceRepository of supplied resource center
 		registerResourceInResourceRepository(resource,
-				technologyContextManager.getTechnologyAdapter().getVirtualModelInstanceRepository(resourceCenter));
-
-		// TODO: refactor this
-		/*if (resourceCenter instanceof FlexoProject) {
-			registerResourceInResourceRepository(resource, ((FlexoProject) resourceCenter).getViewLibrary());
-		}*/
+				getTechnologyAdapter(resourceCenter.getServiceManager()).getVirtualModelInstanceRepository(resourceCenter));
 
 		// Now look for virtual model instances and sub-views
-		exploreViewContents(resource, technologyContextManager);
+		exploreViewContents(resource);
 
 		return resource;
 	}
 
 	@Override
 	protected <I> FMLRTVirtualModelInstanceResource initResourceForCreation(I serializationArtefact, FlexoResourceCenter<I> resourceCenter,
-			TechnologyContextManager<FMLRTTechnologyAdapter> technologyContextManager, String name, String uri)
-			throws ModelDefinitionException {
-		FMLRTVirtualModelInstanceResource returned = super.initResourceForCreation(serializationArtefact, resourceCenter,
-				technologyContextManager, name, uri);
+			String name, String uri) throws ModelDefinitionException {
+		FMLRTVirtualModelInstanceResource returned = super.initResourceForCreation(serializationArtefact, resourceCenter, name, uri);
 		returned.setVersion(INITIAL_REVISION);
 		returned.setModelVersion(CURRENT_FML_RT_VERSION);
 		return returned;
@@ -275,11 +262,9 @@ public class FMLRTVirtualModelInstanceResourceFactory extends
 
 	@Override
 	protected <I> FMLRTVirtualModelInstanceResource initResourceForRetrieving(I serializationArtefact,
-			FlexoResourceCenter<I> resourceCenter, TechnologyContextManager<FMLRTTechnologyAdapter> technologyContextManager)
-			throws ModelDefinitionException, IOException {
+			FlexoResourceCenter<I> resourceCenter) throws ModelDefinitionException, IOException {
 
-		FMLRTVirtualModelInstanceResource returned = super.initResourceForRetrieving(serializationArtefact, resourceCenter,
-				technologyContextManager);
+		FMLRTVirtualModelInstanceResource returned = super.initResourceForRetrieving(serializationArtefact, resourceCenter);
 
 		String artefactName = resourceCenter.retrieveName(serializationArtefact);
 
@@ -332,14 +317,12 @@ public class FMLRTVirtualModelInstanceResourceFactory extends
 		return resourceCenter.makeDirectoryBasedFlexoIODelegate(serializationArtefact, FML_RT_SUFFIX, XML_SUFFIX, this);
 	}
 
-	private void exploreViewContents(FMLRTVirtualModelInstanceResource viewResource,
-			TechnologyContextManager<FMLRTTechnologyAdapter> technologyContextManager) {
+	private void exploreViewContents(FMLRTVirtualModelInstanceResource viewResource) {
 
-		exploreResource(viewResource.getIODelegate().getSerializationArtefact(), viewResource, technologyContextManager);
+		exploreResource(viewResource.getIODelegate().getSerializationArtefact(), viewResource);
 	}
 
-	private <I> void exploreResource(I serializationArtefact, FMLRTVirtualModelInstanceResource containerResource,
-			TechnologyContextManager<FMLRTTechnologyAdapter> technologyContextManager) {
+	private <I> void exploreResource(I serializationArtefact, FMLRTVirtualModelInstanceResource containerResource) {
 		if (serializationArtefact == null) {
 			return;
 		}
@@ -350,7 +333,7 @@ public class FMLRTVirtualModelInstanceResourceFactory extends
 			if (isValidArtefact(child, resourceCenter)) {
 				try {
 					// Unused FMLRTVirtualModelInstanceResource virtualModelInstanceResource =
-					retrieveContainedFMLRTVirtualModelInstanceResource(child, technologyContextManager, containerResource);
+					retrieveContainedFMLRTVirtualModelInstanceResource(child, containerResource);
 				} catch (ModelDefinitionException e) {
 					e.printStackTrace();
 				} catch (IOException e) {

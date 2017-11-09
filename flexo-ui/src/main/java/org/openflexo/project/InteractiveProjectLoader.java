@@ -228,9 +228,11 @@ public class InteractiveProjectLoader extends ProjectLoader {
 	}
 
 	@Override
-	public void preInitialization(File projectDirectory) {
-		getServiceManager().getGeneralPreferences().addToLastOpenedProjects(projectDirectory);
-		getServiceManager().getPreferencesService().savePreferences();
+	public <I> void preInitialization(I projectDirectory) {
+		if (projectDirectory instanceof File) {
+			getServiceManager().getGeneralPreferences().addToLastOpenedProjects((File) projectDirectory);
+			getServiceManager().getPreferencesService().savePreferences();
+		}
 	}
 
 	@Override

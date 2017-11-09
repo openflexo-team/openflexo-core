@@ -39,46 +39,42 @@
 package org.openflexo.foundation.project;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.DefaultFlexoEditor;
 import org.openflexo.foundation.FlexoEditor;
+import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.FlexoService;
 import org.openflexo.foundation.FlexoServiceImpl;
-import org.openflexo.foundation.FlexoServiceManager;
-import org.openflexo.foundation.FlexoEditor.FlexoEditorFactory;
-import org.openflexo.foundation.FlexoService.ServiceNotification;
+import org.openflexo.foundation.action.CreateProject;
 import org.openflexo.foundation.nature.ProjectNature;
-import org.openflexo.foundation.resource.FlexoProjectReference;
+import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.ProjectClosed;
 import org.openflexo.foundation.resource.ProjectLoaded;
+import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.resource.SaveResourceExceptionList;
-import org.openflexo.foundation.task.FlexoTask;
 import org.openflexo.foundation.task.Progress;
-import org.openflexo.foundation.utils.FlexoProjectUtil;
 import org.openflexo.foundation.utils.ProjectInitializerException;
 import org.openflexo.foundation.utils.ProjectLoadingCancelledException;
-import org.openflexo.foundation.utils.UnreadableProjectException;
 import org.openflexo.localization.LocalizedDelegate;
 import org.openflexo.model.exceptions.ModelDefinitionException;
-import org.openflexo.model.factory.ModelFactory;
 import org.openflexo.toolbox.FileUtils;
 import org.openflexo.toolbox.HasPropertyChangeSupport;
 
 /**
- * This {@link FlexoService} allows to instanciate {@link FlexoProject} through a {@link FlexoEditor} for a given
- * {@link FlexoServiceManager}
+ * This {@link FlexoService} is responsible to provide {@link FlexoEditor}s on {@link FlexoProject}
  * 
  * @author sylvain
  *
@@ -94,58 +90,171 @@ public class ProjectLoader extends FlexoServiceImpl implements HasPropertyChange
 	public static final String EDITOR_REMOVED = "editorRemoved";
 	public static final String ROOT_PROJECTS = "rootProjects";
 
-	private final Map<FlexoProject, FlexoEditor> editors;
+	private final Map<FlexoProject<?>, FlexoEditor> editors;
+	private Map<Object, FlexoProjectResource> projectResourcesForSerializationArtefacts = new HashMap<Object, FlexoProjectResource>();
 
-	private final List<FlexoProject> rootProjects;
-	private ModelFactory modelFactory;
+	private final List<FlexoProject<?>> rootProjects;
+	// private ModelFactory modelFactory;
 
+	private FlexoProjectResourceFactory flexoProjectResourceFactory;
+
+	/**
+	 * Build new {@link ProjectLoader}
+	 */
 	public ProjectLoader() {
 		this.rootProjects = new ArrayList<>();
 		this.editors = new LinkedHashMap<>();
-		try {
+		/*try {
 			modelFactory = new ModelFactory(FlexoProjectReference.class);
 		} catch (ModelDefinitionException e) {
 			e.printStackTrace();
 			throw new RuntimeException(e);
+		}*/
+		try {
+			flexoProjectResourceFactory = new FlexoProjectResourceFactory();
+		} catch (ModelDefinitionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 
-	public FlexoEditor getEditorForProject(FlexoProject project) {
-		return editors.get(project);
+	/**
+	 * Return the {@link FlexoProjectResourceFactory}
+	 * 
+	 * @return
+	 */
+	public FlexoProjectResourceFactory getFlexoProjectResourceFactory() {
+		return flexoProjectResourceFactory;
 	}
 
-	public FlexoEditor editorForProjectURIAndRevision(String projectURI, long revision) {
-		for (Entry<FlexoProject, FlexoEditor> e : editors.entrySet()) {
-			if (e.getKey().getProjectURI().equals(projectURI) && e.getKey().getRevision() == revision) {
-				return e.getValue();
-			}
+	/**
+	 * Create and return a new {@link FlexoEditor} for supplied {@link FlexoProject}
+	 * 
+	 * @param project
+	 * @return
+	 */
+	public final FlexoEditor makeFlexoEditor(FlexoProject<?> project) {
+		FlexoEditor returned = new DefaultFlexoEditor(project, getServiceManager());
+		getPropertyChangeSupport().firePropertyChange(EDITOR_ADDED, null, returned);
+		return returned;
+	}
+
+	public <I> FlexoProjectResource retrieveFlexoProjectResource(I serializationArtefact)
+			throws ProjectInitializerException, ModelDefinitionException, IOException {
+		if (serializationArtefact == null) {
+			throw new IllegalArgumentException("Project directory cannot be null");
 		}
-		return null;
-	}
-
-	public boolean hasEditorForProjectDirectory(File projectDirectory) {
-		return getEditorForProjectDirectory(projectDirectory) != null;
-	}
-
-	public FlexoEditor getEditorForProjectDirectory(File projectDirectory) {
-		if (projectDirectory == null) {
-			return null;
+		if (serializationArtefact instanceof File && !((File) serializationArtefact).exists()) {
+			throw new ProjectInitializerException("project directory does not exist", serializationArtefact);
 		}
-		for (Entry<FlexoProject, FlexoEditor> e : editors.entrySet()) {
-			if (e.getKey().getProjectDirectory().equals(projectDirectory)) {
-				return e.getValue();
-			}
+		FlexoProjectResource returned = projectResourcesForSerializationArtefacts.get(serializationArtefact);
+		if (returned == null) {
+			returned = (FlexoProjectResource) flexoProjectResourceFactory.retrieveResource(serializationArtefact, null);
+			projectResourcesForSerializationArtefacts.put(serializationArtefact, returned);
 		}
-		return null;
+		return returned;
 	}
 
-	public Map<FlexoProject, FlexoEditor> getEditors() {
+	public Map<FlexoProject<?>, FlexoEditor> getEditors() {
 		return editors;
 	}
 
-	public FlexoTask loadProject(File projectDirectory, FlexoTask... tasksToBeExecutedBefore)
-			throws ProjectLoadingCancelledException, ProjectInitializerException {
-		return loadProject(projectDirectory, false, tasksToBeExecutedBefore);
+	/**
+	 * Create a new {@link FlexoProject} with supplied projectDirectory<br>
+	 * 
+	 * @param projectDirectory
+	 * @return
+	 * @throws IOException
+	 * @throws ProjectInitializerException
+	 */
+	public <I> FlexoEditor newProject(I projectDirectory) throws IOException, ProjectInitializerException {
+		return newProject(projectDirectory, null);
+	}
+
+	/**
+	 * Create a new {@link FlexoProject} with supplied projectDirectory<br>
+	 * Also gives supplied nature to the project
+	 * 
+	 * @param projectDirectory
+	 * @param projectNature
+	 * @return
+	 * @throws IOException
+	 * @throws ProjectInitializerException
+	 */
+	public <I> FlexoEditor newProject(I projectDirectory, ProjectNature<?, ?> projectNature)
+			throws IOException, ProjectInitializerException {
+
+		// This will just create the .version in the project
+		// FlexoProjectUtil.currentFlexoVersionIsSmallerThanLastVersion(projectDirectory);
+
+		preInitialization(projectDirectory);
+
+		if (projectDirectory instanceof File && ((File) projectDirectory).exists()) {
+			// We should have already asked the user if the new project has to override the old one
+			// so we really delete the old project
+
+			File backupProject = new File(((File) projectDirectory).getParentFile(), ((File) projectDirectory).getName() + "~");
+			if (backupProject.exists()) {
+				FileUtils.recursiveDeleteFile(backupProject);
+			}
+
+			try {
+				FileUtils.rename(((File) projectDirectory), backupProject);
+			} catch (IOException e) {
+				throw e;
+			}
+		}
+
+		FlexoProject<?> newProject = null;
+		FlexoEditor newEditor = null;
+
+		// TODO: attempt to lookup an eventual FlexoResourceCenter, repository and folder for supplied project directory;
+
+		// Create the project
+		CreateProject action = CreateProject.actionType.makeNewAction(null, null, getServiceManager().getDefaultEditor());
+		action.doAction();
+		newProject = action.getNewProject();
+
+		projectResourcesForSerializationArtefacts.put(projectDirectory, (FlexoProjectResource) (FlexoResource) newProject.getResource());
+
+		/*try {
+			editor = FlexoProject.newProject(projectDirectory, new FlexoEditor.FlexoEditorFactory() {
+				@Override
+				public FlexoEditor makeFlexoEditor(FlexoProject project, FlexoServiceManager serviceManager) {
+					return new DefaultFlexoEditor(project, serviceManager);
+				}
+			}, getServiceManager(), null);
+		} catch (ProjectInitializerException e) {
+			throw e;
+		}*/
+
+		// newEditor(editor);
+		addToRootProjects(newProject);
+
+		// Notify project just loaded
+		getServiceManager().notify(this, new ProjectLoaded(newProject));
+
+		// Now, if a nature has been supplied, gives this nature to the project
+		if (projectNature != null) {
+			projectNature.givesNature(newProject, newEditor);
+		}
+
+		// Create and return a FlexoEditor for the new FlexoProject
+		return makeFlexoEditor(newProject);
+	}
+
+	/**
+	 * Loads the project located in supplied directory
+	 * 
+	 * @param projectDirectory
+	 * @return
+	 * @throws ProjectLoadingCancelledException
+	 *             whenever the load procedure is interrupted by the user or by Flexo.
+	 * @throws ProjectInitializerException
+	 *             a an exception occurs during project initialization
+	 */
+	public <I> FlexoEditor loadProject(I projectDirectory) throws ProjectLoadingCancelledException, ProjectInitializerException {
+		return loadProject(projectDirectory, false);
 	}
 
 	/**
@@ -159,48 +268,114 @@ public class ProjectLoader extends FlexoServiceImpl implements HasPropertyChange
 	 * @throws org.openflexo.foundation.utils.ProjectLoadingCancelledException
 	 *             whenever the load procedure is interrupted by the user or by Flexo.
 	 * @throws ProjectInitializerException
+	 * @throws IOException
+	 * @throws ModelDefinitionException
 	 */
-	public FlexoTask loadProject(File projectDirectory, boolean asImportedProject, FlexoTask... tasksToBeExecutedBefore)
+	public <I> FlexoEditor loadProject(I projectDirectory, boolean asImportedProject)
 			throws ProjectInitializerException, ProjectLoadingCancelledException {
 
-		internalLoadProject(projectDirectory, asImportedProject);
+		try {
+			// Retrieve project resource
+			FlexoProjectResource projectResource = retrieveFlexoProjectResource(projectDirectory);
+
+			// Load project
+			FlexoProject<?> loadedProject = internalLoadProject(projectResource, asImportedProject);
+
+			// Create and return a FlexoEditor for the new FlexoProject
+			return makeFlexoEditor(loadedProject);
+
+		} catch (ResourceLoadingCancelledException e) {
+			throw new ProjectLoadingCancelledException();
+		} catch (ModelDefinitionException e) {
+			throw new ProjectInitializerException(e, projectDirectory);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (FlexoException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return null;
 	}
 
-	private FlexoEditor internalLoadProject(File projectDirectory, boolean asImportedProject)
-			throws ProjectInitializerException, ProjectLoadingCancelledException {
+	/**
+	 * Return default {@link FlexoEditor} for supplied project
+	 * 
+	 * @param project
+	 * @return
+	 */
+	public FlexoEditor getEditorForProject(FlexoProject<?> project) {
+		return editors.get(project);
+	}
+
+	/*public FlexoEditor editorForProjectURIAndRevision(String projectURI, long revision) {
+		for (Entry<FlexoProject<?>, FlexoEditor> e : editors.entrySet()) {
+			if (e.getKey().getProjectURI().equals(projectURI) && e.getKey().getProjectRevision() == revision) {
+				return e.getValue();
+			}
+		}
+		return null;
+	}*/
+
+	/*public boolean hasEditorForProjectDirectory(File projectDirectory) {
+		return getEditorForProjectDirectory(projectDirectory) != null;
+	}
+	
+	public FlexoEditor getEditorForProjectDirectory(File projectDirectory) {
+		if (projectDirectory == null) {
+			return null;
+		}
+		for (Entry<FlexoProject<?>, FlexoEditor> e : editors.entrySet()) {
+			if (e.getKey().getProjectDirectory().equals(projectDirectory)) {
+				return e.getValue();
+			}
+		}
+		return null;
+	}*/
+
+	/**
+	 * Internally load supplied project resource
+	 * 
+	 * @param projectResource
+	 * @param asImportedProject
+	 * @return
+	 * @throws ProjectInitializerException
+	 * @throws FileNotFoundException
+	 * @throws ResourceLoadingCancelledException
+	 * @throws FlexoException
+	 */
+	private <I> FlexoProject<I> internalLoadProject(FlexoProjectResource projectResource, boolean asImportedProject)
+			throws ProjectInitializerException, FileNotFoundException, ResourceLoadingCancelledException, FlexoException {
 		LocalizedDelegate locales = getServiceManager().getLocalizationService().getFlexoLocalizer();
 
-		if (projectDirectory == null) {
-			throw new IllegalArgumentException("Project directory cannot be null");
-		}
-		if (!projectDirectory.exists()) {
-			throw new ProjectInitializerException("project directory does not exist", projectDirectory);
-		}
-		try {
+		/*try {
 			FlexoProjectUtil.isProjectOpenable(projectDirectory);
 		} catch (UnreadableProjectException e) {
 			throw new ProjectLoadingCancelledException(e.getMessage());
-		}
+		}*/
 
-		Progress.progress(locales.localizedForKey("opening_project") + projectDirectory.getAbsolutePath());
+		Progress.progress(locales.localizedForKey("opening_project") + projectResource.getName());
 
-		FlexoEditor editor = null;
+		// FlexoEditor editor = null;
 
 		if (logger.isLoggable(Level.FINE)) {
-			logger.fine("Opening " + projectDirectory.getAbsolutePath());
+			logger.fine("Opening " + projectResource);
 		}
 		if (!asImportedProject) {
 			// Adds to recent project
-			Progress.progress(locales.localizedForKey("preinitialize_project") + projectDirectory.getAbsolutePath());
-			preInitialization(projectDirectory);
+			Progress.progress(locales.localizedForKey("preinitialize_project") + projectResource);
+			preInitialization(projectResource.getIODelegate().getSerializationArtefact());
 		}
-		for (Entry<FlexoProject, FlexoEditor> e : editors.entrySet()) {
+
+		/*for (Entry<FlexoProject<?>, FlexoEditor> e : editors.entrySet()) {
 			if (e.getKey().getProjectDirectory().equals(projectDirectory)) {
 				editor = e.getValue();
 			}
-		}
-		if (editor == null) {
+		}*/
+
+		FlexoProject<I> loadedProject = (FlexoProject<I>) projectResource.getResourceData(null);
+
+		/*if (editor == null) {
 			try {
 				editor = FlexoProject.openProject(projectDirectory, new FlexoEditor.FlexoEditorFactory() {
 					@Override
@@ -215,80 +390,26 @@ public class ProjectLoader extends FlexoServiceImpl implements HasPropertyChange
 			}
 			Progress.progress(locales.localizedForKey("create_and_open_editor"));
 			newEditor(editor);
-		}
+		}*/
+
 		if (!asImportedProject) {
-			addToRootProjects(editor.getProject());
+			addToRootProjects(loadedProject);
 		}
 
 		// Notify project just loaded
 		Progress.progress(locales.localizedForKey("notify_editors"));
-		getServiceManager().notify(this, new ProjectLoaded(editor.getProject()));
+		getServiceManager().notify(this, new ProjectLoaded(loadedProject));
 
-		return editor;
+		return loadedProject;
 	}
 
-	public FlexoTask reloadProject(FlexoProject project) throws ProjectLoadingCancelledException, ProjectInitializerException {
-		File projectDirectory = project.getProjectDirectory();
+	public <I> FlexoEditor reloadProject(FlexoProject<I> project) throws ProjectLoadingCancelledException, ProjectInitializerException {
+		I projectDirectory = (I) project.getResource().getIODelegate().getSerializationArtefact();
 		closeProject(project);
 		return loadProject(projectDirectory);
 	}
 
-	public FlexoTask newProject(File projectDirectory, FlexoTask... tasksToBeExecutedBefore)
-			throws IOException, ProjectInitializerException {
-		return newProject(projectDirectory, null, tasksToBeExecutedBefore);
-	}
-
-	public FlexoTask newProject(File projectDirectory, ProjectNature<?, ?> projectNature, FlexoTask... tasksToBeExecutedBefore)
-			throws IOException, ProjectInitializerException {
-
-		// This will just create the .version in the project
-		FlexoProjectUtil.currentFlexoVersionIsSmallerThanLastVersion(projectDirectory);
-
-		preInitialization(projectDirectory);
-
-		if (projectDirectory.exists()) {
-			// We should have already asked the user if the new project has to override the old one
-			// so we really delete the old project
-
-			File backupProject = new File(projectDirectory.getParentFile(), projectDirectory.getName() + "~");
-			if (backupProject.exists()) {
-				FileUtils.recursiveDeleteFile(backupProject);
-			}
-
-			try {
-				FileUtils.rename(projectDirectory, backupProject);
-			} catch (IOException e) {
-				throw e;
-			}
-		}
-
-		FlexoEditor editor = null;
-
-		try {
-			editor = FlexoProject.newProject(projectDirectory, new FlexoEditor.FlexoEditorFactory() {
-				@Override
-				public FlexoEditor makeFlexoEditor(FlexoProject project, FlexoServiceManager serviceManager) {
-					return new DefaultFlexoEditor(project, serviceManager);
-				}
-			}, getServiceManager(), null);
-		} catch (ProjectInitializerException e) {
-			throw e;
-		}
-		newEditor(editor);
-		addToRootProjects(editor.getProject());
-
-		// Notify project just loaded
-		getServiceManager().notify(this, new ProjectLoaded(editor.getProject()));
-
-		// Now, if a nature has been supplied, gives this nature to the project
-		if (projectNature != null) {
-			projectNature.givesNature(editor.getProject(), editor);
-		}
-
-		return null;
-	}
-
-	protected void newEditor(FlexoEditor editor) {
+	/*protected void newEditor(FlexoEditor editor) {
 		editors.put(editor.getProject(), editor);
 		getPropertyChangeSupport().firePropertyChange(EDITOR_ADDED, null, editor);
 		try {
@@ -306,9 +427,9 @@ public class ProjectLoader extends FlexoServiceImpl implements HasPropertyChange
 				}
 			}
 		}
-	}
+	}*/
 
-	public void closeProject(FlexoProject project) {
+	public void closeProject(FlexoProject<?> project) {
 		FlexoEditor editor = editors.remove(project);
 		if (project != null) {
 			project.close();
@@ -318,41 +439,41 @@ public class ProjectLoader extends FlexoServiceImpl implements HasPropertyChange
 		getServiceManager().notify(this, new ProjectClosed(project));
 	}
 
-	public void saveAsProject(File projectDirectory, FlexoProject project) throws Exception {
+	public <I> FlexoEditor saveAsProject(I projectDirectory, FlexoProject<I> project) throws Exception {
 		// closes the selected project
 		closeProject(project);
 
 		// prepare target if exists
-		if (projectDirectory.exists()) {
+		if (projectDirectory instanceof File && ((File) projectDirectory).exists()) {
 			// We should have already asked the user if the new project has to override the old one
 			// so we really delete the old project
 
-			File backupProject = new File(projectDirectory.getParentFile(), projectDirectory.getName() + "~");
+			File backupProject = new File(((File) projectDirectory).getParentFile(), ((File) projectDirectory).getName() + "~");
 			if (backupProject.exists()) {
 				FileUtils.recursiveDeleteFile(backupProject);
 			}
-			FileUtils.rename(projectDirectory, backupProject);
+			FileUtils.rename(((File) projectDirectory), backupProject);
 		}
 
 		// copy project files
 		project.copyTo(projectDirectory);
 
 		// reload project
-		loadProject(projectDirectory);
+		return loadProject(projectDirectory);
 	}
 
-	public List<FlexoProject> getModifiedProjects() {
-		List<FlexoProject> projects = new ArrayList<>(editors.size());
+	public List<FlexoProject<?>> getModifiedProjects() {
+		List<FlexoProject<?>> projects = new ArrayList<>(editors.size());
 		// 1. compute all modified projects
-		for (FlexoProject project : getRootProjects()) {
+		for (FlexoProject<?> project : getRootProjects()) {
 			if (project.hasUnsavedResources()) {
 				projects.add(project);
 			}
 		}
 		// 2. we now add all the projects that depend on a modified project
 		// to the list of modified projects (so that they also get saved
-		for (FlexoProject modifiedProject : new ArrayList<>(projects)) {
-			for (FlexoProject project : getRootProjects()) {
+		for (FlexoProject<?> modifiedProject : new ArrayList<>(projects)) {
+			for (FlexoProject<?> project : getRootProjects()) {
 				if (project.importsProject(modifiedProject)) {
 					if (!projects.contains(project)) {
 						projects.add(project);
@@ -361,21 +482,21 @@ public class ProjectLoader extends FlexoServiceImpl implements HasPropertyChange
 			}
 		}
 		// 3. We restore the order of projects according to the one in rootProjects
-		Collections.sort(projects, new Comparator<FlexoProject>() {
+		Collections.sort(projects, new Comparator<FlexoProject<?>>() {
 
 			@Override
-			public int compare(FlexoProject o1, FlexoProject o2) {
+			public int compare(FlexoProject<?> o1, FlexoProject<?> o2) {
 				return rootProjects.indexOf(o1) - rootProjects.indexOf(o2);
 			}
 		});
 		return projects;
 	}
 
-	public List<FlexoProject> getRootProjects() {
+	public List<FlexoProject<?>> getRootProjects() {
 		return rootProjects;
 	}
 
-	public void addToRootProjects(FlexoProject project) {
+	public void addToRootProjects(FlexoProject<?> project) {
 		if (!rootProjects.contains(project)) {
 			rootProjects.add(project);
 			getPropertyChangeSupport().firePropertyChange(PROJECT_OPENED, null, project);
@@ -383,7 +504,7 @@ public class ProjectLoader extends FlexoServiceImpl implements HasPropertyChange
 		}
 	}
 
-	public void removeFromRootProjects(FlexoProject project) {
+	public void removeFromRootProjects(FlexoProject<?> project) {
 		rootProjects.remove(project);
 		getPropertyChangeSupport().firePropertyChange(PROJECT_CLOSED, project, null);
 		getPropertyChangeSupport().firePropertyChange(ROOT_PROJECTS, project, null);
@@ -392,16 +513,16 @@ public class ProjectLoader extends FlexoServiceImpl implements HasPropertyChange
 	public void saveAllProjects() throws SaveResourceExceptionList {
 		// Saves all projects. It is necessary to save all projects because during serialization, a project may increment its revision which
 		// in turn can modify project that import the former one.
-		List<FlexoProject> projects = new ArrayList<>(rootProjects);
+		List<FlexoProject<?>> projects = new ArrayList<>(rootProjects);
 		saveProjects(projects);
 
 	}
 
-	public void saveProjects(List<FlexoProject> projects) throws SaveResourceExceptionList {
+	public void saveProjects(List<FlexoProject<?>> projects) throws SaveResourceExceptionList {
 		List<SaveResourceException> exceptions = new ArrayList<>();
-		Collections.sort(projects, new Comparator<FlexoProject>() {
+		Collections.sort(projects, new Comparator<FlexoProject<?>>() {
 			@Override
-			public int compare(FlexoProject o1, FlexoProject o2) {
+			public int compare(FlexoProject<?> o1, FlexoProject<?> o2) {
 				if (o1.importsProject(o2)) {
 					return 1;
 				}
@@ -411,9 +532,9 @@ public class ProjectLoader extends FlexoServiceImpl implements HasPropertyChange
 				return 0;
 			}
 		});
-		for (FlexoProject project : projects) {
+		for (FlexoProject<?> project : projects) {
 			try {
-				project.save(null);
+				project.getResource().save(null);
 			} catch (SaveResourceException e) {
 				e.printStackTrace();
 				exceptions.add(e);
@@ -424,7 +545,7 @@ public class ProjectLoader extends FlexoServiceImpl implements HasPropertyChange
 		}
 	}
 
-	protected void preInitialization(File projectDirectory) {
+	protected <I> void preInitialization(I projectDirectory) {
 	}
 
 	public boolean someProjectsAreModified() {
@@ -445,8 +566,8 @@ public class ProjectLoader extends FlexoServiceImpl implements HasPropertyChange
 	public void initialize() {
 	}
 
-	public ModelFactory getModelFactory() {
+	/*public ModelFactory getModelFactory() {
 		return modelFactory;
-	}
+	}*/
 
 }

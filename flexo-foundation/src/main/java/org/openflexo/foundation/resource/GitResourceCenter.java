@@ -139,13 +139,13 @@ public class GitResourceCenter extends FileSystemBasedResourceCenter {
 	}
 
 	@Override
-	public GitIODelegate makeFlexoIODelegate(File serializationArtefact, FlexoResourceFactory<?, ?, ?> resourceFactory) throws IOException {
+	public GitIODelegate makeFlexoIODelegate(File serializationArtefact, FlexoResourceFactory<?, ?> resourceFactory) throws IOException {
 		return GitIODelegateImpl.makeFlexoIOGitDelegate(serializationArtefact, resourceFactory, getGitRepository());
 	}
 
 	@Override
 	public FlexoIODelegate<File> makeDirectoryBasedFlexoIODelegate(File serializationArtefact, String directoryExtension,
-			String fileExtension, FlexoResourceFactory<?, ?, ?> resourceFactory) {
+			String fileExtension, FlexoResourceFactory<?, ?> resourceFactory) {
 		String baseName = serializationArtefact.getName().substring(0,
 				serializationArtefact.getName().length() - directoryExtension.length());
 		return DirectoryBasedGitIODelegateImpl.makeDirectoryBasedFlexoIOGitDelegate(serializationArtefact.getParentFile(), baseName,

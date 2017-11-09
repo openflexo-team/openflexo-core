@@ -92,8 +92,7 @@ public abstract class CreateFMLRTVirtualModelInstance<A extends CreateFMLRTVirtu
 			else if (getFolder() != null) {
 				returned = factory.makeTopLevelFMLRTVirtualModelInstanceResource(getNewVirtualModelInstanceName(), null,
 						// Let URI be automatically computed
-						(VirtualModelResource) getVirtualModel().getResource(), getFolder(),
-						fmlRTTechnologyAdapter.getTechnologyContextManager(), true);
+						(VirtualModelResource) getVirtualModel().getResource(), getFolder(), true);
 			}
 
 			if (returned != null) {

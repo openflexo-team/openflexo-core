@@ -46,7 +46,7 @@ import org.openflexo.components.widget.DefaultCustomTypeEditorImpl;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
-import org.openflexo.foundation.resource.FlexoResourceFactory;
+import org.openflexo.foundation.resource.TechnologySpecificFlexoResourceFactory;
 import org.openflexo.foundation.resource.FlexoResourceType;
 import org.openflexo.gina.ApplicationFIBLibrary.ApplicationFIBLibraryImpl;
 import org.openflexo.gina.annotation.FIBPanel;
@@ -66,7 +66,7 @@ public class FlexoResourceTypeEditor extends DefaultCustomTypeEditorImpl<FlexoRe
 
 	private List<FlexoConcept> matchingValues = new ArrayList<>();
 
-	private FlexoResourceFactory<?, ?, ?> selectedResourceFactory = null;
+	private TechnologySpecificFlexoResourceFactory<?, ?, ?> selectedResourceFactory = null;
 
 	public FlexoResourceTypeEditor(FlexoServiceManager serviceManager) {
 		super(serviceManager);
@@ -82,14 +82,14 @@ public class FlexoResourceTypeEditor extends DefaultCustomTypeEditorImpl<FlexoRe
 		return FlexoResourceType.class;
 	}
 
-	public FlexoResourceFactory<?, ?, ?> getSelectedResourceFactory() {
+	public TechnologySpecificFlexoResourceFactory<?, ?, ?> getSelectedResourceFactory() {
 		return selectedResourceFactory;
 	}
 
-	public void setSelectedResourceFactory(FlexoResourceFactory<?, ?, ?> selectedResourceFactory) {
+	public void setSelectedResourceFactory(TechnologySpecificFlexoResourceFactory<?, ?, ?> selectedResourceFactory) {
 		if ((selectedResourceFactory == null && this.selectedResourceFactory != null)
 				|| (selectedResourceFactory != null && !selectedResourceFactory.equals(this.selectedResourceFactory))) {
-			FlexoResourceFactory<?, ?, ?> oldValue = this.selectedResourceFactory;
+			TechnologySpecificFlexoResourceFactory<?, ?, ?> oldValue = this.selectedResourceFactory;
 			this.selectedResourceFactory = selectedResourceFactory;
 			getPropertyChangeSupport().firePropertyChange("selectedResourceFactory", oldValue, selectedResourceFactory);
 			// System.out.println("class:" + selectedResourceFactory.getResourceClass());

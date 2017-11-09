@@ -400,7 +400,7 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, FlexoObject {
 	 * @param serializationArtefact
 	 * @return
 	 */
-	FlexoIODelegate<I> makeFlexoIODelegate(I serializationArtefact, FlexoResourceFactory<?, ?, ?> resourceFactory) throws IOException;
+	FlexoIODelegate<I> makeFlexoIODelegate(I serializationArtefact, FlexoResourceFactory<?, ?> resourceFactory) throws IOException;
 
 	/**
 	 * Build a new {@link FlexoIODelegate} for a given serialization artefact
@@ -409,7 +409,7 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, FlexoObject {
 	 * @return
 	 */
 	FlexoIODelegate<I> makeDirectoryBasedFlexoIODelegate(I serializationArtefact, String directoryExtension, String fileExtension,
-			FlexoResourceFactory<?, ?, ?> resourceFactory);
+			FlexoResourceFactory<?, ?> resourceFactory);
 
 	/**
 	 * Computes the folder for serialization item supported by supplied I/O delegate

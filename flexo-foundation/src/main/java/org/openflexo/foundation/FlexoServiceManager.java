@@ -43,12 +43,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.FlexoProject.FlexoProjectReferenceLoader;
 import org.openflexo.foundation.FlexoService.ServiceNotification;
 import org.openflexo.foundation.fml.VirtualModelLibrary;
 import org.openflexo.foundation.localization.LocalizationService;
 import org.openflexo.foundation.nature.ProjectNatureService;
 import org.openflexo.foundation.nature.ScreenshotService;
+import org.openflexo.foundation.project.FlexoProjectImpl.FlexoProjectReferenceLoader;
 import org.openflexo.foundation.project.ProjectLoader;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
@@ -128,12 +128,12 @@ public abstract class FlexoServiceManager {
 		}
 	}
 
-	protected FlexoTask resourceCenterAdded(FlexoResourceCenter<?> resourceCenter) {
+	public FlexoTask resourceCenterAdded(FlexoResourceCenter<?> resourceCenter) {
 		getResourceCenterService().addToResourceCenters(resourceCenter);
 		return null;
 	}
 
-	protected FlexoTask resourceCenterRemoved(FlexoResourceCenter<?> resourceCenter) {
+	public FlexoTask resourceCenterRemoved(FlexoResourceCenter<?> resourceCenter) {
 		getResourceCenterService().removeFromResourceCenters(resourceCenter);
 		return null;
 	}

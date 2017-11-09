@@ -95,16 +95,16 @@ public abstract class AbstractCreateNatureSpecificVirtualModel<A extends Abstrac
 		VirtualModelResourceFactory factory = fmlTechnologyAdapter.getVirtualModelResourceFactory();
 
 		if (getFocusedObject() instanceof RepositoryFolder) {
-			RepositoryFolder folder = (RepositoryFolder) getFocusedObject();
+			RepositoryFolder<VirtualModelResource, ?> folder = (RepositoryFolder<VirtualModelResource, ?>) getFocusedObject();
 			VirtualModelResource newTopLevelVirtualModelResource = factory.makeTopLevelVirtualModelResource(getNewVirtualModelName(),
-					getNewVirtualModelURI(), folder, fmlTechnologyAdapter.getTechnologyContextManager(), true);
+					getNewVirtualModelURI(), folder, true);
 			return newTopLevelVirtualModelResource;
 		}
 
 		else if (getFocusedObject() instanceof VirtualModel) {
 			VirtualModel containerVM = (VirtualModel) getFocusedObject();
 			VirtualModelResource containedVirtualModelResource = factory.makeContainedVirtualModelResource(getNewVirtualModelName(),
-					(VirtualModelResource) containerVM.getResource(), fmlTechnologyAdapter.getTechnologyContextManager(), true);
+					(VirtualModelResource) containerVM.getResource(), true);
 			return containedVirtualModelResource;
 		}
 

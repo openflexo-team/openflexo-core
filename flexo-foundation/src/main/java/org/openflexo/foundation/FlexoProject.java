@@ -41,13 +41,20 @@ package org.openflexo.foundation;
 import java.util.Date;
 import java.util.List;
 
+import javax.naming.InvalidNameException;
+
+import org.openflexo.foundation.project.FlexoProjectFactory;
 import org.openflexo.foundation.project.FlexoProjectImpl;
-import org.openflexo.foundation.resource.FlexoProjectReference;
+import org.openflexo.foundation.project.FlexoProjectReference;
+import org.openflexo.foundation.resource.CannotRenameException;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.ProjectImportLoopException;
 import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.resource.ResourceRepository;
+import org.openflexo.foundation.resource.SaveResourceException;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
+import org.openflexo.foundation.utils.FlexoObjectReference;
 import org.openflexo.foundation.utils.ProjectLoadingCancelledException;
 import org.openflexo.model.annotations.Adder;
 import org.openflexo.model.annotations.Embedded;
@@ -78,35 +85,36 @@ import org.openflexo.toolbox.FlexoVersion;
 @ModelEntity
 @ImplementationClass(FlexoProjectImpl.class)
 @XMLElement
-public interface FlexoProject<I>
-		extends ResourceRepository<FlexoResource<?>, I>, FlexoResourceCenter<I>, Validable, ResourceData<FlexoProject<I>> {
+public interface FlexoProject<I> extends ResourceRepository<FlexoResource<?>, I>, FlexoResourceCenter<I>, Validable, FlexoProjectObject,
+		ResourceData<FlexoProject<I>> {
 
 	@PropertyIdentifier(type = String.class)
-	public static final String URI_KEY = "uri";
+	public static final String PROJECT_NAME_KEY = "projectName";
+	@PropertyIdentifier(type = String.class)
+	public static final String PROJECT_URI_KEY = "projectURI";
 	@PropertyIdentifier(type = Date.class)
 	public static final String CREATION_DATE_KEY = "creationDate";
 	@PropertyIdentifier(type = String.class)
 	public static final String CREATION_USER_ID_KEY = "creationUserId";
 	@PropertyIdentifier(type = FlexoVersion.class)
 	public static final String PROJECT_VERSION_KEY = "projectVersion";
+	@PropertyIdentifier(type = Long.class)
+	public static final String PROJECT_REVISION_KEY = "projectRevision";
 	@PropertyIdentifier(type = FlexoProjectReference.class, cardinality = Cardinality.LIST)
 	public static final String IMPORTED_PROJECTS = "importedProjects";
+	@PropertyIdentifier(type = FlexoEditor.class, cardinality = Cardinality.LIST)
+	public static final String EDITORS = "editors";
 	@PropertyIdentifier(type = String.class)
-	String DESCRIPTION_KEY = "description";
+	String PROJECT_DESCRIPTION_KEY = "projectDescription";
 
-	@Getter(value = DESCRIPTION_KEY)
+	public String getProjectName();
+
+	@Getter(value = PROJECT_URI_KEY)
 	@XMLAttribute
-	public String getDescription();
+	public String getProjectURI();
 
-	@Setter(DESCRIPTION_KEY)
-	public void setDescription(String description);
-
-	@Getter(value = URI_KEY)
-	@XMLAttribute
-	public String getURI();
-
-	@Setter(URI_KEY)
-	public void setURI(String projectURI);
+	@Setter(PROJECT_URI_KEY)
+	public void setProjectURI(String projectURI);
 
 	@Getter(value = CREATION_DATE_KEY)
 	@XMLAttribute
@@ -129,17 +137,37 @@ public interface FlexoProject<I>
 	@Setter(PROJECT_VERSION_KEY)
 	public void setProjectVersion(FlexoVersion version);
 
-	@Finder(collection = IMPORTED_PROJECTS, attribute = FlexoProjectReference.URI, isMultiValued = false)
+	@Getter(value = PROJECT_REVISION_KEY, defaultValue = "1")
+	@XMLAttribute
+	public long getProjectRevision();
+
+	@Setter(PROJECT_REVISION_KEY)
+	public void setProjectRevision(long revision);
+
+	@Getter(value = PROJECT_DESCRIPTION_KEY)
+	@XMLAttribute
+	public String getProjectDescription();
+
+	@Setter(PROJECT_DESCRIPTION_KEY)
+	public void setProjectDescription(String description);
+
+	public String getPrefix();
+
+	public I getProjectDirectory();
+
+	@Finder(collection = IMPORTED_PROJECTS, attribute = FlexoProjectReference.REFERENCED_PROJECT_URI, isMultiValued = false)
 	public FlexoProjectReference getProjectReferenceWithURI(String uri);
 
 	public FlexoProjectReference getProjectReferenceWithURI(String projectURI, boolean searchRecursively);
 
-	@Finder(collection = IMPORTED_PROJECTS, attribute = FlexoProjectReference.NAME, isMultiValued = true)
-	public List<FlexoProjectReference> getProjectReferenceWithName(String name);
+	// @Deprecated
+	// @Finder(collection = IMPORTED_PROJECTS, attribute = FlexoProjectReference.NAME, isMultiValued = true)
+	// public List<FlexoProjectReference> getProjectReferenceWithName(String name);
 
-	public List<FlexoProjectReference> getProjectReferenceWithName(String name, boolean searchRecursively);
+	// @Deprecated
+	// public List<FlexoProjectReference> getProjectReferenceWithName(String name, boolean searchRecursively);
 
-	@Getter(value = IMPORTED_PROJECTS, cardinality = Cardinality.LIST, inverse = FlexoProjectReference.PROJECT_DATA)
+	@Getter(value = IMPORTED_PROJECTS, cardinality = Cardinality.LIST, inverse = FlexoProjectReference.OWNER)
 	@XMLElement(xmlTag = "ImportedProjects")
 	@Embedded
 	public List<FlexoProjectReference> getImportedProjects();
@@ -157,5 +185,77 @@ public interface FlexoProject<I>
 	public String canImportProject(FlexoProject project);
 
 	public void removeFromImportedProjects(FlexoProject project);
+
+	@Getter(value = EDITORS, cardinality = Cardinality.LIST, ignoreType = true)
+	public List<FlexoEditor> getEditors();
+
+	@Setter(value = EDITORS)
+	public void setEditors(List<FlexoEditor> editors);
+
+	@Adder(EDITORS)
+	public void addToEditors(FlexoEditor editor);
+
+	@Remover(EDITORS)
+	public void removeFromEditors(FlexoEditor editor);
+
+	/**
+	 * Return the list of {@link TechnologyAdapter} used in the context of this {@link FlexoProject}
+	 * 
+	 * @return
+	 */
+	public List<TechnologyAdapter> getRequiredTechnologyAdapters();
+
+	public FlexoProjectFactory getModelFactory();
+
+	public List<FlexoObjectReference<?>> getObjectReferences();
+
+	public void addToObjectReferences(FlexoObjectReference<?> objectReference);
+
+	public void removeObjectReferences(FlexoObjectReference<?> objectReference);
+
+	public boolean areAllImportedProjectsLoaded();
+
+	public boolean lastUniqueIDHasBeenSet();
+
+	public long getNewFlexoID();
+
+	/**
+	 * @return Returns the lastUniqueID.
+	 */
+	public long getLastID();
+
+	/**
+	 * @param lastUniqueID
+	 *            The lastUniqueID to set.
+	 */
+	public void setLastID(long lastUniqueID);
+
+	/**
+	 * Don't use this method to get a new ID. Use getNewUniqueID instead
+	 * 
+	 * @return Returns the lastUniqueID.
+	 */
+	public long getLastUniqueID();
+
+	/**
+	 * @param lastUniqueID
+	 *            The lastUniqueID to set.
+	 */
+	public void setLastUniqueID(long lastUniqueID);
+
+	/**
+	 * Close this project<br>
+	 * Don't save anything
+	 * 
+	 */
+	public void close();
+
+	public void copyTo(I newProjectDirectory) throws SaveResourceException, InvalidNameException, CannotRenameException;
+
+	public boolean hasUnsavedResources();
+
+	public boolean importsProject(FlexoProject<?> project);
+
+	public boolean importsProjectWithURI(String projectURI);
 
 }
