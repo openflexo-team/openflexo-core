@@ -182,7 +182,9 @@ public abstract class FlexoResourceFactory<R extends FlexoResource<RD>, RD exten
 			resourceCenter.registerResource(resource, (I) resource.getIODelegate().getSerializationArtefact());
 		}
 
-		resource.setServiceManager(resourceCenter.getServiceManager());
+		if (resourceCenter != null) {
+			resource.setServiceManager(resourceCenter.getServiceManager());
+		}
 
 		// Also register the resource in the ResourceCenter seen as a ResourceRepositoryImpl
 		if (resourceCenter instanceof ResourceRepositoryImpl) {

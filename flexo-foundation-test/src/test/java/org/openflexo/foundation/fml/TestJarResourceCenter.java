@@ -41,6 +41,8 @@ package org.openflexo.foundation.fml;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.io.IOException;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openflexo.foundation.resource.JarResourceCenter;
@@ -62,10 +64,12 @@ public class TestJarResourceCenter extends OpenflexoTestCase {
 
 	/**
 	 * Instanciate compound test resource center
+	 * 
+	 * @throws IOException
 	 */
 	@Test
 	@TestOrder(1)
-	public void testinstanciateTestServiceManager() {
+	public void testinstanciateTestServiceManager() throws IOException {
 		instanciateTestServiceManager();
 		jarResourceCenter = JarResourceCenter.addNamedJarFromClassPath(getFlexoServiceManager().getResourceCenterService(),
 				"testViewpoint2-1.0");

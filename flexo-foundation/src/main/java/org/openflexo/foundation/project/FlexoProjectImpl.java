@@ -45,10 +45,13 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Properties;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -62,17 +65,25 @@ import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.FlexoProjectObject;
 import org.openflexo.foundation.FlexoService;
 import org.openflexo.foundation.FlexoServiceManager;
+import org.openflexo.foundation.fml.VirtualModelRepository;
+import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceRepository;
 import org.openflexo.foundation.nature.ProjectNature;
 import org.openflexo.foundation.nature.ProjectWrapper;
 import org.openflexo.foundation.resource.CannotRenameException;
 import org.openflexo.foundation.resource.DuplicateExternalRepositoryNameException;
 import org.openflexo.foundation.resource.ExternalRepositorySet;
 import org.openflexo.foundation.resource.FileSystemBasedResourceCenter;
+import org.openflexo.foundation.resource.FlexoIODelegate;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
+import org.openflexo.foundation.resource.FlexoResourceCenterService;
+import org.openflexo.foundation.resource.FlexoResourceFactory;
 import org.openflexo.foundation.resource.ImportedProjectLoaded;
 import org.openflexo.foundation.resource.ProjectExternalRepository;
 import org.openflexo.foundation.resource.ProjectImportLoopException;
+import org.openflexo.foundation.resource.RepositoryFolder;
+import org.openflexo.foundation.resource.ResourceData;
+import org.openflexo.foundation.resource.ResourceRepository;
 import org.openflexo.foundation.resource.ResourceRepositoryImpl;
 import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
@@ -95,8 +106,10 @@ import org.openflexo.toolbox.FileUtils;
 import org.openflexo.toolbox.FileUtils.CopyStrategy;
 import org.openflexo.toolbox.FlexoVersion;
 import org.openflexo.toolbox.IProgress;
+import org.openflexo.toolbox.StringUtils;
 import org.openflexo.toolbox.ToolBox;
 import org.openflexo.toolbox.ZipUtils;
+import org.openflexo.xml.XMLRootElementInfo;
 
 /**
  * Base implementation for a {@link FlexoProject}
@@ -105,7 +118,7 @@ import org.openflexo.toolbox.ZipUtils;
  * @param <I>
  *            type of serialization artefact this project stores
  */
-public class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoResource<?>, I> implements FlexoProject<I> {
+public abstract class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoResource<?>, I> implements FlexoProject<I> {
 
 	protected static final Logger logger = Logger.getLogger(FlexoProjectImpl.class.getPackage().getName());
 
@@ -263,6 +276,8 @@ public class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoResource<?>
 
 	private FlexoProjectResource resource;
 
+	private FlexoResourceCenterService rcService;
+
 	public int getID() {
 		return id;
 	}
@@ -305,7 +320,10 @@ public class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoResource<?>
 
 	@Override
 	public String getProjectName() {
-		return getResource().getName();
+		if (getResource() != null) {
+			return getResource().getName();
+		}
+		return null;
 	}
 
 	@Override
@@ -341,7 +359,29 @@ public class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoResource<?>
 
 	@Override
 	public I getProjectDirectory() {
+		return getContainer((I) getResource().getIODelegate().getSerializationArtefact());
+	}
+
+	@Override
+	public String getProjectURI() {
+		String returned = (String) performSuperGetter(PROJECT_URI);
+		if (StringUtils.isEmpty(returned) && getResource() != null) {
+			return getDefaultBaseURI();
+		}
+		return returned;
+	}
+
+	@Override
+	public I getBaseArtefact() {
 		return (I) getResource().getIODelegate().getSerializationArtefact();
+	}
+
+	@Override
+	public RepositoryFolder<FlexoResource<?>, I> getRootFolder() {
+		if (getDelegateResourceCenter() != null) {
+			return getDelegateResourceCenter().getRootFolder();
+		}
+		return null;
 	}
 
 	/*public void setProjectDirectory(File aProjectDirectory) {
@@ -362,6 +402,11 @@ public class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoResource<?>
 	}*/
 
 	@Override
+	public FlexoProjectResource getProjectResource() {
+		return (FlexoProjectResource) (FlexoResource) getResource();
+	}
+
+	@Override
 	public FlexoResource<FlexoProject<I>> getResource() {
 		return (FlexoResource) resource;
 	}
@@ -369,6 +414,26 @@ public class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoResource<?>
 	@Override
 	public void setResource(FlexoResource<FlexoProject<I>> resource) {
 		this.resource = (FlexoProjectResource) (FlexoResource) resource;
+	}
+
+	/**
+	 * Return {@link FlexoResourceCenterService} managing this {@link FlexoResourceCenter}
+	 * 
+	 * @return
+	 */
+	@Override
+	public FlexoResourceCenterService getFlexoResourceCenterService() {
+		return rcService;
+	}
+
+	/**
+	 * Sets {@link FlexoResourceCenterService} managing this {@link FlexoResourceCenter}
+	 * 
+	 * @return
+	 */
+	@Override
+	public void setFlexoResourceCenterService(FlexoResourceCenterService rcService) {
+		this.rcService = rcService;
 	}
 
 	/**
@@ -383,10 +448,12 @@ public class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoResource<?>
 	 * Save this project
 	 * 
 	 */
+	@Override
 	public void save() throws SaveResourceException {
 		save(null);
 	}
 
+	@Override
 	public void save(FlexoProgress progress) throws SaveResourceException {
 		logger.info("Saving project...");
 
@@ -486,6 +553,7 @@ public class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoResource<?>
 	 * @see org.openflexo.foundation.rm.FlexoResourceData#save()
 	 * @see org.openflexo.foundation.rm.FlexoResourceData#save()
 	 */
+	@Override
 	public synchronized void saveModifiedResources(FlexoProgress progress) throws SaveResourceException {
 		saveModifiedResources(progress, true);
 	}
@@ -501,6 +569,7 @@ public class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoResource<?>
 	 * @see org.openflexo.foundation.rm.FlexoResourceData#save()
 	 * @see org.openflexo.foundation.rm.FlexoResourceData#save()
 	 */
+	@Override
 	public synchronized void saveModifiedResources(FlexoProgress progress, boolean clearModifiedStatus) throws SaveResourceException {
 		try {
 			_saveModifiedResources(progress, clearModifiedStatus);
@@ -532,6 +601,9 @@ public class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoResource<?>
 	 */
 	@Override
 	public Collection<FlexoResource<?>> getAllResources() {
+		if (getDelegateResourceCenter() != null) {
+			return getDelegateResourceCenter().getAllResources();
+		}
 		return super.getAllResources();
 	}
 
@@ -582,21 +654,42 @@ public class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoResource<?>
 	}
 
 	/**
-	 * Overrides super {@link #getResourceCenter()} by returning itself
+	 * Returns owner {@link FlexoResourceCenter} Overrides super {@link #getResourceCenter()} by returning {@link FlexoResourceCenter} of
+	 * related resource (where the project resource is defined)
 	 */
 	@Override
 	public FlexoResourceCenter<I> getResourceCenter() {
-		/*if (getResource() != null) {
-			return (FlexoResourceCenter<I>)getResource().getResourceCenter();
-		}*/
-		System.out.println("Returned project instead of" + super.getResourceCenter());
-		// return super.getResourceCenter();
-		return this;
+		if (getResource() != null) {
+			return (FlexoResourceCenter<I>) getResource().getResourceCenter();
+		}
+		return null;
+	}
+
+	/**
+	 * Return {@link FlexoResourceCenter} acting as a delegate for the {@link FlexoProject}
+	 */
+	@Override
+	public FlexoResourceCenter<I> getDelegateResourceCenter() {
+		if (getResource() != null) {
+			return (FlexoResourceCenter<I>) (getProjectResource()).getDelegateResourceCenter();
+		}
+		return null;
+	}
+
+	/**
+	 * When true, indicates that this {@link FlexoProject} has no parent {@link FlexoResourceCenter}
+	 * 
+	 * @return
+	 */
+	@Override
+	public boolean isStandAlone() {
+		return (getProjectResource() != null
+				&& getProjectResource().getResourceCenter() == getProjectResource().getDelegateResourceCenter());
 	}
 
 	public DirectoryWatcher getDirectoryWatcher() {
-		if (getResourceCenter() instanceof FileSystemBasedResourceCenter) {
-			return ((FileSystemBasedResourceCenter) getResourceCenter()).getDirectoryWatcher();
+		if (getDelegateResourceCenter() instanceof FileSystemBasedResourceCenter) {
+			return ((FileSystemBasedResourceCenter) getDelegateResourceCenter()).getDirectoryWatcher();
 		}
 		System.out.println("Problem: cannot find DirectoryWatcher");
 		return null;
@@ -780,7 +873,7 @@ public class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoResource<?>
 	 * Ensure that all .prj contains required .cvsignore files
 	 * 
 	 */
-	public static void cvsIgnorize(File projectDirectory) {
+	/*public static void cvsIgnorize(File projectDirectory) {
 		File mainCVSIgnoreFile = new File(projectDirectory, ".cvsignore");
 		if (!mainCVSIgnoreFile.exists()) {
 			try {
@@ -791,12 +884,12 @@ public class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoResource<?>
 				e.printStackTrace();
 			}
 		}
-
+	
 		cvsIgnorizeDir(projectDirectory);
+	
+	}*/
 
-	}
-
-	private static void cvsIgnorizeDir(File aDirectory) {
+	/*private static void cvsIgnorizeDir(File aDirectory) {
 		File cvsIgnoreFile = new File(aDirectory, ".cvsignore");
 		if (!cvsIgnoreFile.exists()) {
 			try {
@@ -807,7 +900,7 @@ public class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoResource<?>
 				e.printStackTrace();
 			}
 		}
-
+	
 		File[] allDirs = aDirectory.listFiles(new java.io.FileFilter() {
 			@Override
 			public boolean accept(File pathname) {
@@ -815,23 +908,23 @@ public class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoResource<?>
 						&& !pathname.getName().equals(".wo.LAST_ACCEPTED") && !pathname.getName().equals(".wo.LAST_GENERATED");
 			}
 		});
-
+	
 		for (File f : allDirs) {
 			cvsIgnorizeDir(f);
 		}
-	}
+	}*/
 
 	/**
 	 * Remove all CVS directories
 	 */
-	public static void removeCVSDirs(File projectDirectory) {
+	/*public static void removeCVSDirs(File projectDirectory) {
 		removeCVSDirs(projectDirectory, true);
-	}
+	}*/
 
 	/**
 	 * Remove all CVS directories
 	 */
-	public static void removeCVSDirs(File aDirectory, boolean recurse) {
+	/*public static void removeCVSDirs(File aDirectory, boolean recurse) {
 		File cvsDir = new File(aDirectory, "CVS");
 		if (cvsDir.exists()) {
 			FileUtils.recursiveDeleteFile(cvsDir);
@@ -847,12 +940,12 @@ public class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoResource<?>
 				removeCVSDirs(f);
 			}
 		}
-	}
+	}*/
 
 	/**
 	 * Search (deeply) CVS directories Return true if at least one CVS dir was found
 	 */
-	public static boolean searchCVSDirs(File aDirectory) {
+	/*public static boolean searchCVSDirs(File aDirectory) {
 		File cvsDir = new File(aDirectory, "CVS");
 		if (cvsDir.exists()) {
 			return true;
@@ -869,7 +962,7 @@ public class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoResource<?>
 			}
 		}
 		return false;
-	}
+	}*/
 
 	@Override
 	public List<FlexoEditor> getEditors() {
@@ -1023,7 +1116,7 @@ public class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoResource<?>
 		}
 	}
 
-	public String buildProjectURI() {
+	private String buildProjectURI() {
 		Calendar rightNow = Calendar.getInstance();
 		return BASE_PROJECT_URI + "/" + rightNow.get(Calendar.YEAR) + "/" + (rightNow.get(Calendar.MONTH) + 1) + "/" + getProjectName()
 				+ "_" + System.currentTimeMillis();
@@ -1243,9 +1336,14 @@ public class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoResource<?>
 
 	}
 
+	private String defaultBaseURI = null;
+
 	@Override
 	public String getDefaultBaseURI() {
-		return getProjectURI();
+		if (defaultBaseURI == null) {
+			defaultBaseURI = buildProjectURI();
+		}
+		return defaultBaseURI;
 	}
 
 	/**
@@ -1326,8 +1424,8 @@ public class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoResource<?>
 
 	@Override
 	public void removeFromImportedProjects(FlexoProject project) {
-		for (FlexoProjectReference ref : getImportedProjects()) {
-			if (ref.getReferredProject() == project) {
+		for (FlexoProjectReference ref : new ArrayList<>(getImportedProjects())) {
+			if (ref.getReferencedProject() == project) {
 				removeFromImportedProjects(ref);
 				break;
 			}
@@ -1336,7 +1434,319 @@ public class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoResource<?>
 
 	@Override
 	public FlexoProjectFactory getModelFactory() {
-		return ((FlexoProjectResource) getResourceData().getResource()).getFactory();
+		return ((FlexoProjectResource) (FlexoResource) getResource()).getFactory();
+	}
+
+	@Override
+	public void setDefaultBaseURI(String defaultBaseURI) {
+		setProjectURI(defaultBaseURI);
+	}
+
+	// Following code is delegated to effective resource center
+
+	@Override
+	public FMLRTVirtualModelInstanceRepository<I> getVirtualModelInstanceRepository() {
+		if (getDelegateResourceCenter() == null) {
+			return null;
+		}
+		return getDelegateResourceCenter().getVirtualModelInstanceRepository();
+	}
+
+	@Override
+	public VirtualModelRepository<I> getVirtualModelRepository() {
+		if (getDelegateResourceCenter() == null) {
+			return null;
+		}
+		return getDelegateResourceCenter().getVirtualModelRepository();
+	}
+
+	@Override
+	public <R extends FlexoResource<?>> String getDefaultResourceURI(R resource) {
+		if (getDelegateResourceCenter() == null) {
+			return null;
+		}
+		return getDelegateResourceCenter().getDefaultResourceURI(resource);
+	}
+
+	@Override
+	public FlexoResource<?> getResource(String resourceURI) {
+		if (getDelegateResourceCenter() != null) {
+			return getDelegateResourceCenter().getResource(resourceURI);
+		}
+		return super.getResource(resourceURI);
+	}
+
+	@Override
+	public <R extends FlexoResource<?>> R getResource(I resourceArtefact, Class<R> resourceClass) {
+
+		if (getDelegateResourceCenter() == null) {
+			return null;
+		}
+		return getDelegateResourceCenter().getResource(resourceArtefact, resourceClass);
+	}
+
+	@Override
+	public <T extends ResourceData<T>> FlexoResource<T> retrieveResource(String uri, FlexoVersion version, Class<T> type,
+			IProgress progress) {
+		if (getDelegateResourceCenter() == null) {
+			return null;
+		}
+		return getDelegateResourceCenter().retrieveResource(uri, version, type, progress);
+	}
+
+	@Override
+	public FlexoResource<?> retrieveResource(String uri, IProgress progress) {
+		if (getDelegateResourceCenter() == null) {
+			return null;
+		}
+		return getDelegateResourceCenter().retrieveResource(uri, progress);
+	}
+
+	@Override
+	public <T extends ResourceData<T>> List<FlexoResource<T>> retrieveResource(String uri, Class<T> type, IProgress progress) {
+		if (getDelegateResourceCenter() == null) {
+			return null;
+		}
+		return getDelegateResourceCenter().retrieveResource(uri, type, progress);
+	}
+
+	@Override
+	public void updateWith(Object obj) {
+		if (getDelegateResourceCenter() == null) {
+			return;
+		}
+		getDelegateResourceCenter().updateWith(obj);
+	}
+
+	@Override
+	public boolean isIgnorable(I artefact, TechnologyAdapter technologyAdapter) {
+		if (getDelegateResourceCenter() == null) {
+			return true;
+		}
+		return getDelegateResourceCenter().isIgnorable(artefact, technologyAdapter);
+	}
+
+	@Override
+	public <R extends ResourceRepository<?, I>> R retrieveRepository(Class<? extends R> repositoryType,
+			TechnologyAdapter technologyAdapter) {
+		if (getDelegateResourceCenter() == null) {
+			return null;
+		}
+		return getDelegateResourceCenter().retrieveRepository(repositoryType, technologyAdapter);
+	}
+
+	@Override
+	public <R extends ResourceRepository<?, I>> void registerRepository(R repository, Class<? extends R> repositoryType,
+			TechnologyAdapter technologyAdapter) {
+		if (getDelegateResourceCenter() == null) {
+			return;
+		}
+		getDelegateResourceCenter().registerRepository(repository, repositoryType, technologyAdapter);
+	}
+
+	@Override
+	public Collection<? extends ResourceRepository<?, I>> getRegistedRepositories(TechnologyAdapter technologyAdapter,
+			boolean considerEmptyRepositories) {
+		if (getDelegateResourceCenter() == null) {
+			return Collections.emptyList();
+		}
+		return getDelegateResourceCenter().getRegistedRepositories(technologyAdapter, considerEmptyRepositories);
+	}
+
+	@Override
+	public ResourceCenterEntry<?> getResourceCenterEntry() {
+		if (getDelegateResourceCenter() == null) {
+			return null;
+		}
+		return getDelegateResourceCenter().getResourceCenterEntry();
+	}
+
+	@Override
+	public String retrieveName(I serializationArtefact) {
+		if (getDelegateResourceCenter() == null) {
+			return null;
+		}
+		return getDelegateResourceCenter().retrieveName(serializationArtefact);
+	}
+
+	@Override
+	public I rename(I serializationArtefact, String newName) {
+		if (getDelegateResourceCenter() == null) {
+			return null;
+		}
+		return getDelegateResourceCenter().rename(serializationArtefact, newName);
+	}
+
+	@Override
+	public void registerResource(FlexoResource<?> resource, I serializationArtefact) {
+		if (getDelegateResourceCenter() == null) {
+			return;
+		}
+		getDelegateResourceCenter().registerResource(resource, serializationArtefact);
+	}
+
+	@Override
+	public void unregisterResource(FlexoResource<?> resource, I serializationArtefact) {
+		if (getDelegateResourceCenter() == null) {
+			return;
+		}
+		getDelegateResourceCenter().unregisterResource(resource, serializationArtefact);
+	}
+
+	@Override
+	public FlexoIODelegate<I> makeFlexoIODelegate(I serializationArtefact, FlexoResourceFactory<?, ?> resourceFactory) throws IOException {
+		if (getDelegateResourceCenter() == null) {
+			return null;
+		}
+		return getDelegateResourceCenter().makeFlexoIODelegate(serializationArtefact, resourceFactory);
+	}
+
+	@Override
+	public FlexoIODelegate<I> makeDirectoryBasedFlexoIODelegate(I serializationArtefact, String directoryExtension, String fileExtension,
+			FlexoResourceFactory<?, ?> resourceFactory) {
+		if (getDelegateResourceCenter() == null) {
+			return null;
+		}
+		return getDelegateResourceCenter().makeDirectoryBasedFlexoIODelegate(serializationArtefact, directoryExtension, fileExtension,
+				resourceFactory);
+	}
+
+	@Override
+	public <R extends FlexoResource<?>> RepositoryFolder<R, I> getRepositoryFolder(FlexoIODelegate<I> ioDelegate,
+			ResourceRepository<R, I> resourceRepository) {
+		if (getDelegateResourceCenter() == null) {
+			return null;
+		}
+		return getDelegateResourceCenter().getRepositoryFolder(ioDelegate, resourceRepository);
+	}
+
+	@Override
+	public boolean isDirectory(I serializationArtefact) {
+		if (getDelegateResourceCenter() == null) {
+			return false;
+		}
+		return getDelegateResourceCenter().isDirectory(serializationArtefact);
+	}
+
+	@Override
+	public XMLRootElementInfo getXMLRootElementInfo(I serializationArtefact) {
+		if (getDelegateResourceCenter() == null) {
+			return null;
+		}
+		return getDelegateResourceCenter().getXMLRootElementInfo(serializationArtefact);
+	}
+
+	@Override
+	public XMLRootElementInfo getXMLRootElementInfo(I serializationArtefact, boolean parseFirstLevelElements,
+			String firstLevelElementName) {
+		if (getDelegateResourceCenter() == null) {
+			return null;
+		}
+		return getDelegateResourceCenter().getXMLRootElementInfo(serializationArtefact, parseFirstLevelElements, firstLevelElementName);
+	}
+
+	@Override
+	public Iterator<I> iterator() {
+		if (getDelegateResourceCenter() == null) {
+			return null;
+		}
+		return getDelegateResourceCenter().iterator();
+	}
+
+	@Override
+	public Properties getProperties(I directory) throws IOException {
+		if (getDelegateResourceCenter() == null) {
+			return null;
+		}
+		return getDelegateResourceCenter().getProperties(directory);
+	}
+
+	@Override
+	public I delete(I serializationArtefact) {
+		if (getDelegateResourceCenter() == null) {
+			return null;
+		}
+		return getDelegateResourceCenter().delete(serializationArtefact);
+	}
+
+	@Override
+	public void stop() {
+		if (getDelegateResourceCenter() == null) {
+			return;
+		}
+		getDelegateResourceCenter().stop();
+	}
+
+	@Override
+	public boolean canRead(I serializationArtefact) {
+		if (getDelegateResourceCenter() == null) {
+			return false;
+		}
+		return getDelegateResourceCenter().canRead(serializationArtefact);
+	}
+
+	@Override
+	public boolean exists(I serializationArtefact) {
+		if (getDelegateResourceCenter() == null) {
+			return false;
+		}
+		return getDelegateResourceCenter().exists(serializationArtefact);
+	}
+
+	@Override
+	public I createDirectory(String name, I parentDirectory) {
+		if (getDelegateResourceCenter() == null) {
+			return null;
+		}
+		return getDelegateResourceCenter().createDirectory(name, parentDirectory);
+	}
+
+	@Override
+	public I createEntry(String name, I parentDirectory) {
+		if (getDelegateResourceCenter() == null) {
+			return null;
+		}
+		return getDelegateResourceCenter().createEntry(name, parentDirectory);
+	}
+
+	@Override
+	public I getEntry(String name, I parentDirectory) {
+		if (getDelegateResourceCenter() == null) {
+			return null;
+		}
+		return getDelegateResourceCenter().getEntry(name, parentDirectory);
+	}
+
+	@Override
+	public I getContainer(I serializationArtefact) {
+		if (getDelegateResourceCenter() == null) {
+			return null;
+		}
+		return getDelegateResourceCenter().getContainer(serializationArtefact);
+	}
+
+	@Override
+	public List<I> getContents(I serializationArtefact) {
+		if (getDelegateResourceCenter() == null) {
+			return null;
+		}
+		return getDelegateResourceCenter().getContents(serializationArtefact);
+	}
+
+	@Override
+	public I getDirectory(String name, I parentDirectory) {
+		if (getDelegateResourceCenter() == null) {
+			return null;
+		}
+		return getDelegateResourceCenter().getDirectory(name, parentDirectory);
+	}
+
+	@Override
+	public List<String> getPathTo(I serializationArtefact) throws IOException {
+		if (getDelegateResourceCenter() == null) {
+			return null;
+		}
+		return getDelegateResourceCenter().getPathTo(serializationArtefact);
 	}
 
 }

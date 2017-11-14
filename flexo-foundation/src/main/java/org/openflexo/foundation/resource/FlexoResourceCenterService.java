@@ -87,4 +87,6 @@ public interface FlexoResourceCenterService extends FlexoService, AccessibleProx
 
 	public void setDevMode(boolean devMode);
 
+	public <I> FlexoResourceCenter<I> getResourceCenterContaining(I serializationArtefact);
+
 }

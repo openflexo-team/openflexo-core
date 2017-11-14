@@ -42,6 +42,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.Implementation;
+import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.PropertyIdentifier;
 import org.openflexo.model.annotations.Setter;
@@ -57,9 +58,51 @@ import org.openflexo.model.factory.ModelFactory;
  * 
  */
 // TODO
-public abstract class RemoteResourceCenter extends ResourceRepositoryImpl<FlexoResource<?>, Object> implements FlexoResourceCenter<Object> {
+@ModelEntity
+@ImplementationClass(RemoteResourceCenter.RemoteResourceCenterImpl.class)
+public interface RemoteResourceCenter extends ResourceRepository<FlexoResource<?>, Object>, FlexoResourceCenter<Object> {
 
-	protected static final Logger logger = Logger.getLogger(RemoteResourceCenter.class.getPackage().getName());
+	public static abstract class RemoteResourceCenterImpl extends ResourceRepositoryImpl<FlexoResource<?>, Object>
+			implements RemoteResourceCenter {
+
+		protected static final Logger logger = Logger.getLogger(RemoteResourceCenter.class.getPackage().getName());
+
+		/*public RemoteResourceCenterImpl(FlexoResourceCenter<Object> resourceCenter) {
+			super(resourceCenter, null);
+		}*/
+
+		public String getURL() {
+			return null;
+		}
+
+		public void setURL(String aURL) {
+
+		}
+
+		private RemoteResourceCenterEntry entry;
+
+		@Override
+		public RemoteResourceCenterEntry getResourceCenterEntry() {
+			if (entry == null) {
+				try {
+					ModelFactory factory = new ModelFactory(RemoteResourceCenterEntry.class);
+					entry = factory.newInstance(RemoteResourceCenterEntry.class);
+					entry.setURL(getURL());
+				} catch (ModelDefinitionException e) {
+					e.printStackTrace();
+				}
+			}
+			return entry;
+		}
+
+		/**
+		 * Stops the Resource Center (When needed)
+		 */
+		@Override
+		public void stop() {
+			logger.warning("STOP method needs to be implemented for RemoteResourceCenters");
+		}
+	}
 
 	@ModelEntity
 	@XMLElement
@@ -96,42 +139,6 @@ public abstract class RemoteResourceCenter extends ResourceRepositoryImpl<FlexoR
 			}
 		}
 
-	}
-
-	public RemoteResourceCenter(FlexoResourceCenter<Object> resourceCenter) {
-		super(resourceCenter, null);
-	}
-
-	public String getURL() {
-		return null;
-	}
-
-	public void setURL(String aURL) {
-
-	}
-
-	private RemoteResourceCenterEntry entry;
-
-	@Override
-	public RemoteResourceCenterEntry getResourceCenterEntry() {
-		if (entry == null) {
-			try {
-				ModelFactory factory = new ModelFactory(RemoteResourceCenterEntry.class);
-				entry = factory.newInstance(RemoteResourceCenterEntry.class);
-				entry.setURL(getURL());
-			} catch (ModelDefinitionException e) {
-				e.printStackTrace();
-			}
-		}
-		return entry;
-	}
-
-	/**
-	 * Stops the Resource Center (When needed)
-	 */
-	@Override
-	public void stop() {
-		logger.warning("STOP method needs to be implemented for RemoteResourceCenters");
 	}
 
 }

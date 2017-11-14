@@ -69,6 +69,7 @@ import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.fml.rm.VirtualModelResourceFactory;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.localization.LocalizationService;
+import org.openflexo.foundation.project.ProjectLoader;
 import org.openflexo.foundation.resource.DefaultResourceCenterService;
 import org.openflexo.foundation.resource.DirectoryResourceCenter;
 import org.openflexo.foundation.resource.FileSystemBasedResourceCenter;
@@ -193,6 +194,21 @@ public abstract class OpenflexoTestCase {
 
 	}
 
+	public static class TestProjectLoader extends ProjectLoader {
+		/**
+		 * Create and return a new {@link FlexoEditor} for supplied {@link FlexoProject}
+		 * 
+		 * @param project
+		 * @return
+		 */
+		@Override
+		public FlexoEditor makeFlexoEditor(FlexoProject<?> project) {
+			FlexoEditor returned = new FlexoTestEditor(project, getServiceManager());
+			getPropertyChangeSupport().firePropertyChange(EDITOR_ADDED, null, returned);
+			return returned;
+		}
+	}
+
 	public File getResource(String resourceRelativeName) {
 		File retval = new File("src/test/resources", resourceRelativeName);
 		if (retval.exists()) {
@@ -242,8 +258,13 @@ public abstract class OpenflexoTestCase {
 			}
 
 			@Override
-			protected FlexoEditor createApplicationEditor() {
+			protected FlexoTestEditor createApplicationEditor() {
 				return new FlexoTestEditor(null, this);
+			}
+
+			@Override
+			protected TestProjectLoader createProjectLoaderService() {
+				return new TestProjectLoader();
 			}
 
 		};
@@ -310,7 +331,8 @@ public abstract class OpenflexoTestCase {
 		tempFile.delete();
 		testResourceCenterDirectory.mkdirs();
 		FlexoResourceCenterService rcService = serviceManager.getResourceCenterService();
-		resourceCenter = new DirectoryResourceCenter(testResourceCenterDirectory, RESOURCE_CENTER_URI, rcService);
+		resourceCenter = DirectoryResourceCenter.instanciateNewDirectoryResourceCenter(testResourceCenterDirectory, rcService);
+		resourceCenter.setDefaultBaseURI(RESOURCE_CENTER_URI);
 		rcService.addToResourceCenters(resourceCenter);
 		return resourceCenter;
 	}
@@ -318,7 +340,7 @@ public abstract class OpenflexoTestCase {
 	protected void reloadResourceCenter(Resource oldRCDirectory) {
 		if (oldRCDirectory instanceof FileResourceImpl) {
 			File directory = ((FileResourceImpl) oldRCDirectory).getFile();
-			File newDirectory = new File(((FileSystemBasedResourceCenter) resourceCenter).getDirectory(), directory.getName());
+			File newDirectory = new File(((FileSystemBasedResourceCenter) resourceCenter).getRootDirectory(), directory.getName());
 			newDirectory.mkdirs();
 			try {
 				FileUtils.copyContentDirToDir(directory, newDirectory);

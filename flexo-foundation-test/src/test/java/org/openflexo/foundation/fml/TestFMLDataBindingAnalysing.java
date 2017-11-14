@@ -156,8 +156,7 @@ public class TestFMLDataBindingAnalysing extends OpenflexoTestCase {
 		VirtualModelResourceFactory factory = fmlTechnologyAdapter.getVirtualModelResourceFactory();
 
 		VirtualModelResource newVirtualModelResource = factory.makeTopLevelVirtualModelResource(VIEWPOINT_NAME, VIEWPOINT_URI,
-				fmlTechnologyAdapter.getGlobalRepository(resourceCenter).getRootFolder(),
-				fmlTechnologyAdapter.getTechnologyContextManager(), true);
+				fmlTechnologyAdapter.getGlobalRepository(resourceCenter).getRootFolder(), true);
 		topVirtualModel = newVirtualModelResource.getLoadedResourceData();
 
 		assertTrue(((VirtualModelResource) topVirtualModel.getResource()).getDirectory() != null);
@@ -182,7 +181,7 @@ public class TestFMLDataBindingAnalysing extends OpenflexoTestCase {
 				.getTechnologyAdapter(FMLTechnologyAdapter.class);
 		VirtualModelResourceFactory factory = fmlTechnologyAdapter.getVirtualModelResourceFactory();
 		VirtualModelResource newVMResource = factory.makeContainedVirtualModelResource(VIRTUAL_MODEL_NAME,
-				topVirtualModel.getVirtualModelResource(), fmlTechnologyAdapter.getTechnologyContextManager(), true);
+				topVirtualModel.getVirtualModelResource(), true);
 		virtualModel = newVMResource.getLoadedResourceData();
 
 		assertTrue(ResourceLocator.retrieveResourceAsFile(((VirtualModelResource) virtualModel.getResource()).getDirectory()).exists());

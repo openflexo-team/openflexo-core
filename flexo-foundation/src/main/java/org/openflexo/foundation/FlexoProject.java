@@ -46,6 +46,7 @@ import javax.naming.InvalidNameException;
 import org.openflexo.foundation.project.FlexoProjectFactory;
 import org.openflexo.foundation.project.FlexoProjectImpl;
 import org.openflexo.foundation.project.FlexoProjectReference;
+import org.openflexo.foundation.project.FlexoProjectResource;
 import org.openflexo.foundation.resource.CannotRenameException;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
@@ -55,6 +56,7 @@ import org.openflexo.foundation.resource.ResourceRepository;
 import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.utils.FlexoObjectReference;
+import org.openflexo.foundation.utils.FlexoProgress;
 import org.openflexo.foundation.utils.ProjectLoadingCancelledException;
 import org.openflexo.model.annotations.Adder;
 import org.openflexo.model.annotations.Embedded;
@@ -155,7 +157,7 @@ public interface FlexoProject<I> extends ResourceRepository<FlexoResource<?>, I>
 
 	public I getProjectDirectory();
 
-	@Finder(collection = IMPORTED_PROJECTS, attribute = FlexoProjectReference.REFERENCED_PROJECT_URI, isMultiValued = false)
+	@Finder(collection = IMPORTED_PROJECTS, attribute = FlexoProjectReference.URI, isMultiValued = false)
 	public FlexoProjectReference getProjectReferenceWithURI(String uri);
 
 	public FlexoProjectReference getProjectReferenceWithURI(String projectURI, boolean searchRecursively);
@@ -244,6 +246,30 @@ public interface FlexoProject<I> extends ResourceRepository<FlexoResource<?>, I>
 	public void setLastUniqueID(long lastUniqueID);
 
 	/**
+	 * Save this project
+	 * 
+	 */
+	public void save() throws SaveResourceException;
+
+	public void save(FlexoProgress progress) throws SaveResourceException;
+
+	/**
+	 * Save this project using FlexoEditingContext scheme<br>
+	 * Additionnaly save all known resources related to this project
+	 */
+	public void saveModifiedResources(FlexoProgress progress) throws SaveResourceException;
+
+	/**
+	 * Save this project<br>
+	 * Additionally save all known resources related to this project
+	 * 
+	 * Overrides
+	 * 
+	 * @param clearModifiedStatus
+	 */
+	public void saveModifiedResources(FlexoProgress progress, boolean clearModifiedStatus) throws SaveResourceException;
+
+	/**
 	 * Close this project<br>
 	 * Don't save anything
 	 * 
@@ -258,4 +284,17 @@ public interface FlexoProject<I> extends ResourceRepository<FlexoResource<?>, I>
 
 	public boolean importsProjectWithURI(String projectURI);
 
+	/**
+	 * When true, indicates that this {@link FlexoProject} has no parent {@link FlexoResourceCenter}
+	 * 
+	 * @return
+	 */
+	public boolean isStandAlone();
+
+	/**
+	 * Return {@link FlexoResourceCenter} acting as a delegate for the {@link FlexoProject}
+	 */
+	public FlexoResourceCenter<I> getDelegateResourceCenter();
+
+	public FlexoProjectResource getProjectResource();
 }

@@ -93,8 +93,7 @@ public class TestCreateViewPoint extends OpenflexoTestCase {
 		VirtualModelResourceFactory factory = fmlTechnologyAdapter.getVirtualModelResourceFactory();
 
 		newVirtualModelResource = factory.makeTopLevelVirtualModelResource(VIEWPOINT_NAME, VIEWPOINT_URI,
-				fmlTechnologyAdapter.getGlobalRepository(resourceCenter).getRootFolder(),
-				fmlTechnologyAdapter.getTechnologyContextManager(), true);
+				fmlTechnologyAdapter.getGlobalRepository(resourceCenter).getRootFolder(), true);
 		newViewPoint = newVirtualModelResource.getLoadedResourceData();
 
 		assertNotNull(newViewPoint);
@@ -132,8 +131,8 @@ public class TestCreateViewPoint extends OpenflexoTestCase {
 
 		instanciateTestServiceManager();
 
-		serviceManager.getResourceCenterService().addToResourceCenters(
-				resourceCenter = new DirectoryResourceCenter(resourceCenter.getDirectory(), serviceManager.getResourceCenterService()));
+		serviceManager.getResourceCenterService().addToResourceCenters(resourceCenter = DirectoryResourceCenter
+				.instanciateNewDirectoryResourceCenter(resourceCenter.getRootDirectory(), serviceManager.getResourceCenterService()));
 
 		VirtualModelResource retrievedVPResource1 = (VirtualModelResource) serviceManager.getResourceManager().getResource(VIEWPOINT_URI);
 		assertNotNull(retrievedVPResource1);

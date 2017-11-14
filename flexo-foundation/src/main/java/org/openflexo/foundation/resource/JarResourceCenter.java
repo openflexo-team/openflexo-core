@@ -65,6 +65,7 @@ import org.openflexo.foundation.resource.InJarIODelegate.InJarIODelegateImpl;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.Implementation;
+import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.PropertyIdentifier;
 import org.openflexo.model.annotations.Setter;
@@ -89,243 +90,34 @@ import org.openflexo.xml.XMLRootElementReader;
  * @author Vincent, xtof
  *
  */
-public class JarResourceCenter extends ResourceRepositoryImpl<FlexoResource<?>, InJarResourceImpl>
-		implements FlexoResourceCenter<InJarResourceImpl> {
+@ModelEntity
+@ImplementationClass(JarResourceCenter.JarResourceCenterImpl.class)
+public interface JarResourceCenter extends ResourceRepository<FlexoResource<?>, InJarResourceImpl>, FlexoResourceCenter<InJarResourceImpl> {
 
-	protected static final Logger logger = Logger.getLogger(ResourceRepositoryImpl.class.getPackage().getName());
-
-	/**
-	 * A jar file the resource center might interpret
-	 */
-	private final JarFile jarFile;
-
-	/**
-	 * A string that is used to identify the JarRC and build uri of resources included in the RC
-	 * 
-	 */
-	private String rcBaseUri;
-
-	/**
-	 * A JarResource is the main element of a JarResource center. It contains a set of InJarResource elements.
-	 */
-	private JarResourceImpl jarResourceImpl;
-
-	private final FlexoResourceCenterService rcService;
-
-	// private final Map<TechnologyAdapter, ResourceRepositoryImpl<?>> globalRepositories = new HashMap<>();
-
-	/**
-	 * Contructor based on a given JarResource
-	 * 
-	 * @param jarResourceImpl
-	 */
-	public JarResourceCenter(JarResourceImpl jarResourceImpl, FlexoResourceCenterService rcService) {
-		super(null, jarResourceImpl.getRootEntry());
-		this.rcService = rcService;
-		this.jarFile = jarResourceImpl.getJarfile();
-		this.jarResourceImpl = jarResourceImpl;
-
-	}
-
-	/**
-	 * Constructor based on a given jarFile
-	 * 
-	 * @param jarFile
-	 */
-	public JarResourceCenter(JarFile jarFile, FlexoResourceCenterService rcService) {
-		super(null, null);
-		this.rcService = rcService;
-		ClasspathResourceLocatorImpl locator = (ClasspathResourceLocatorImpl) ResourceLocator
-				.getInstanceForLocatorClass(ClasspathResourceLocatorImpl.class);
-		jarResourceImpl = (JarResourceImpl) locator.locateResource(jarFile.getName());
-		if (jarResourceImpl == null) {
-			try {
-				jarResourceImpl = new JarResourceImpl(ResourceLocator.getInstanceForLocatorClass(ClasspathResourceLocatorImpl.class),
-						jarFile);
-				setBaseArtefact(jarResourceImpl.getRootEntry());
-			} catch (MalformedURLException e) {
-				logger.warning("Unable to create a Jar Resource Center for jar " + jarFile.getName());
-			}
-		}
-		this.jarFile = jarFile;
-		locator.getJarResourcesList().put(jarResourceImpl.getRelativePath(), jarResourceImpl);
-	}
-
-	@Override
-	public JarResourceCenter getResourceCenter() {
-		return this;
-	}
-
-	public JarResourceImpl getJarResourceImpl() {
-		return jarResourceImpl;
-	}
-
-	@Override
-	public String toString() {
-		return super.toString() + " jar=" + (jarResourceImpl != null ? jarResourceImpl.toString() : null);
-	}
-
-	@Override
-	public FlexoServiceManager getServiceManager() {
-		if (getFlexoResourceCenterService() == null) {
-			return super.getServiceManager();
-		}
-		return getFlexoResourceCenterService().getServiceManager();
-	}
-
-	public FlexoResourceCenterService getFlexoResourceCenterService() {
-		return rcService;
-	}
-
-	/**
-	 * Returns an iterator over contained InJarResources
-	 */
-	@SuppressWarnings("unchecked")
-	@Override
-	public Iterator<InJarResourceImpl> iterator() {
-		return (Iterator<InJarResourceImpl>) getJarResourceImpl().getContents().iterator();
-	}
-
-	@Override
-	public String getName() {
-		if (jarFile != null) {
-			return jarFile.getName();
-		}
-		return "unset";
-	}
-
-	private final HashMap<TechnologyAdapter, HashMap<Class<? extends ResourceRepository<?, InJarResourceImpl>>, ResourceRepository<?, InJarResourceImpl>>> repositories = new HashMap<>();
-
-	private HashMap<Class<? extends ResourceRepository<?, InJarResourceImpl>>, ResourceRepository<?, InJarResourceImpl>> getRepositoriesForAdapter(
-			TechnologyAdapter technologyAdapter, boolean considerEmptyRepositories) {
-		if (considerEmptyRepositories) {
-			technologyAdapter.ensureAllRepositoriesAreCreated(this);
-		}
-		HashMap<Class<? extends ResourceRepository<?, InJarResourceImpl>>, ResourceRepository<?, InJarResourceImpl>> map = repositories
-				.get(technologyAdapter);
-		if (map == null) {
-			map = new HashMap<>();
-			repositories.put(technologyAdapter, map);
-		}
-		return map;
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public final <R extends ResourceRepository<?, InJarResourceImpl>> R retrieveRepository(Class<? extends R> repositoryType,
-			TechnologyAdapter technologyAdapter) {
-		HashMap<Class<? extends ResourceRepository<?, InJarResourceImpl>>, ResourceRepository<?, InJarResourceImpl>> map = getRepositoriesForAdapter(
-				technologyAdapter, false);
-		return (R) map.get(repositoryType);
-	}
-
-	@Override
-	public final <R extends ResourceRepository<?, InJarResourceImpl>> void registerRepository(R repository,
-			Class<? extends R> repositoryType, TechnologyAdapter technologyAdapter) {
-		HashMap<Class<? extends ResourceRepository<?, InJarResourceImpl>>, ResourceRepository<?, InJarResourceImpl>> map = getRepositoriesForAdapter(
-				technologyAdapter, false);
-		if (map.get(repositoryType) == null) {
-			map.put(repositoryType, repository);
-		}
-		else {
-			logger.warning("Repository already registered: " + repositoryType + " for " + repository);
-		}
-	}
-
-	@Override
-	public Collection<ResourceRepository<?, InJarResourceImpl>> getRegistedRepositories(TechnologyAdapter technologyAdapter,
-			boolean considerEmptyRepositories) {
-		return getRepositoriesForAdapter(technologyAdapter, considerEmptyRepositories).values();
-	}
-
-	/**
-	 * Register global repository for this resource center<br>
-	 * It is stated that the global repository contains all resources which supplied technology adapter has discovered and may interpret<br>
-	 * This is the resource repository which is generally given in GUIs (such as browsers) to display the contents of a resource center for
-	 * a given technology
-	 * 
-	 * @param repository
-	 * @param technologyAdapter
-	 */
-	/*@Override
-	public final void registerGlobalRepository(ResourceRepositoryImpl<?> repository, TechnologyAdapter technologyAdapter) {
-		if (repository != null && technologyAdapter != null) {
-			globalRepositories.put(technologyAdapter, repository);
-		}
-	}*/
-
-	/**
-	 * Return the global repository for this resource center and for supplied technology adapter<br>
-	 * It is stated that the global repository contains all resources which supplied technology adapter has discovered and may interpret<br>
-	 * This is the resource repository which is generally given in GUIs (such as browsers) to display the contents of a resource center for
-	 * a given technology
-	 * 
-	 * @param technologyAdapter
-	 * @return
-	 */
-	/*@Override
-	public ResourceRepositoryImpl<?> getGlobalRepository(TechnologyAdapter technologyAdapter) {
-		if (technologyAdapter != null) {
-			return globalRepositories.get(technologyAdapter);
+	public static JarResourceCenter instanciateNewJarResourceCenter(JarFile jarFile, FlexoResourceCenterService rcService)
+			throws IOException {
+		JarResourceCenterImpl.logger.info("Instanciate JarResourceCenter from " + jarFile);
+		ModelFactory factory;
+		try {
+			factory = new ModelFactory(JarResourceCenter.class);
+			JarResourceCenter jarResourceCenter = factory.newInstance(JarResourceCenter.class);
+			jarResourceCenter.setFlexoResourceCenterService(rcService);
+			jarResourceCenter.setJarFile(jarFile);
+			jarResourceCenter.update();
+			return jarResourceCenter;
+		} catch (ModelDefinitionException e) {
+			e.printStackTrace();
 		}
 		return null;
-	}*/
-
-	@Override
-	public <T extends ResourceData<T>> List<FlexoResource<T>> retrieveResource(String uri, Class<T> type, IProgress progress) {
-		// TODO: provide support for class and version
-		FlexoResource<T> uniqueResource = retrieveResource(uri, null, null, progress);
-		return Collections.singletonList(uniqueResource);
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public <T extends ResourceData<T>> FlexoResource<T> retrieveResource(String uri, FlexoVersion version, Class<T> type,
-			IProgress progress) {
-		// TODO: provide support for class and version
-		return (FlexoResource<T>) retrieveResource(uri, progress);
-	}
-
-	@Override
-	public FlexoResource<?> retrieveResource(String uri, IProgress progress) {
-		return getResource(uri);
-	}
-
-	@Override
-	public <R extends FlexoResource<?>> R getResource(InJarResourceImpl resourceArtifact, Class<R> resourceClass) {
-		try {
-			// searches for parent folder.
-			RepositoryFolder<?, InJarResourceImpl> folder = getParentRepositoryFolder(resourceArtifact, false);
-			if (folder == null) {
-				return null;
-			}
-
-			for (FlexoResource<?> r : folder.getResources()) {
-				if (Objects.equals(r.getIODelegate().getSerializationArtefact(), resourceArtifact)) {
-					if (resourceClass.isInstance(r)) {
-						return resourceClass.cast(r);
-					}
-					logger.warning("Found resource matching file " + resourceArtifact + " but not of desired type: " + r.getClass()
-							+ " instead of " + resourceClass);
-					return null;
-				}
-			}
-
-			// Cannot find the resource
-			return null;
-
-		} catch (IOException e) {
-			logger.log(Level.WARNING, "Error while getting parent folder for " + resourceArtifact, e);
-			return null;
-		}
 	}
 
 	/**
 	 * Add all the jars from the class path to resource centers
 	 * 
 	 * @param rcService
+	 * @throws IOException
 	 */
-	public static void addAllJarFromClassPath(FlexoResourceCenterService rcService) {
+	public static void addAllJarFromClassPath(FlexoResourceCenterService rcService) throws IOException {
 		for (JarFile file : ClassPathUtils.getClassPathJarFiles()) {
 			addJarFile(file, rcService);
 		}
@@ -336,8 +128,9 @@ public class JarResourceCenter extends ResourceRepositoryImpl<FlexoResource<?>, 
 	 * c:/a/b/c/org/openflexo/myjar.jar Name : org.openflexo.myjar Return the c:/a/b/c/org/openflexo/myjar.jar
 	 * 
 	 * @param rcService
+	 * @throws IOException
 	 */
-	public static JarResourceCenter addNamedJarFromClassPath(FlexoResourceCenterService rcService, String name) {
+	public static JarResourceCenter addNamedJarFromClassPath(FlexoResourceCenterService rcService, String name) throws IOException {
 		JarResourceCenter rc = null;
 		for (JarFile file : ClassPathUtils.getClassPathJarFiles()) {
 			if ((file.getName().endsWith(name + ".jar")) || (name.endsWith(".jar") && file.getName().endsWith(name))) {
@@ -353,30 +146,653 @@ public class JarResourceCenter extends ResourceRepositoryImpl<FlexoResource<?>, 
 	 * 
 	 * @param jarFile
 	 * @param rcService
+	 * @throws IOException
 	 */
-	public static JarResourceCenter addJarFile(JarFile jarFile, FlexoResourceCenterService rcService) {
-		logger.info("Try to create a resource center from a jar file : " + jarFile.getName());
-		JarResourceCenter rc = new JarResourceCenter(jarFile, rcService);
-
+	public static JarResourceCenter addJarFile(JarFile jarFile, FlexoResourceCenterService rcService) throws IOException {
+		JarResourceCenterImpl.logger.info("Try to create a resource center from a jar file : " + jarFile.getName());
+		// JarResourceCenter rc = new JarResourceCenter(jarFile, rcService);
+		JarResourceCenter rc = instanciateNewJarResourceCenter(jarFile, rcService);
 		rc.setDefaultBaseURI(jarFile.getName());
 		rcService.addToResourceCenters(rc);
 		rcService.storeDirectoryResourceCenterLocations();
 		return rc;
 	}
 
-	@Override
-	public Collection<? extends FlexoResource<?>> getAllResources(IProgress progress) {
-		return getAllResources();
-	}
+	public JarFile getJarFile();
 
-	@Override
-	public void publishResource(FlexoResource<?> resource, FlexoVersion newVersion, IProgress progress) throws Exception {
-		// TODO Not yet implemented
-	}
+	public void setJarFile(JarFile jarFile);
 
-	@Override
-	public void update() throws IOException {
-		// TODO Not yet implemented
+	public static abstract class JarResourceCenterImpl extends ResourceRepositoryImpl<FlexoResource<?>, InJarResourceImpl>
+			implements JarResourceCenter {
+
+		protected static final Logger logger = Logger.getLogger(ResourceRepositoryImpl.class.getPackage().getName());
+
+		/**
+		 * A jar file the resource center might interpret
+		 */
+		private JarFile jarFile;
+
+		/**
+		 * A string that is used to identify the JarRC and build uri of resources included in the RC
+		 * 
+		 */
+		private String rcBaseUri;
+
+		/**
+		 * A JarResource is the main element of a JarResource center. It contains a set of InJarResource elements.
+		 */
+		private JarResourceImpl jarResourceImpl;
+
+		private FlexoResourceCenterService rcService;
+
+		/**
+		 * Contructor based on a given JarResource
+		 * 
+		 * @param jarResourceImpl
+		 */
+		/*public JarResourceCenterImpl(JarResourceImpl jarResourceImpl, FlexoResourceCenterService rcService) {
+			super(null, jarResourceImpl.getRootEntry());
+			this.rcService = rcService;
+			this.jarFile = jarResourceImpl.getJarfile();
+			this.jarResourceImpl = jarResourceImpl;
+		}*/
+
+		/**
+		 * Constructor based on a given jarFile
+		 * 
+		 * @param jarFile
+		 */
+		/*public JarResourceCenterImpl(JarFile jarFile, FlexoResourceCenterService rcService) {
+			super(null, null);
+			this.rcService = rcService;
+			ClasspathResourceLocatorImpl locator = (ClasspathResourceLocatorImpl) ResourceLocator
+					.getInstanceForLocatorClass(ClasspathResourceLocatorImpl.class);
+			jarResourceImpl = (JarResourceImpl) locator.locateResource(jarFile.getName());
+			if (jarResourceImpl == null) {
+				try {
+					jarResourceImpl = new JarResourceImpl(ResourceLocator.getInstanceForLocatorClass(ClasspathResourceLocatorImpl.class),
+							jarFile);
+					setBaseArtefact(jarResourceImpl.getRootEntry());
+				} catch (MalformedURLException e) {
+					logger.warning("Unable to create a Jar Resource Center for jar " + jarFile.getName());
+				}
+			}
+			this.jarFile = jarFile;
+			locator.getJarResourcesList().put(jarResourceImpl.getRelativePath(), jarResourceImpl);
+		}*/
+
+		/**
+		 * Return {@link FlexoResourceCenterService} managing this {@link FlexoResourceCenter}
+		 * 
+		 * @return
+		 */
+		@Override
+		public FlexoResourceCenterService getFlexoResourceCenterService() {
+			return rcService;
+		}
+
+		/**
+		 * Sets {@link FlexoResourceCenterService} managing this {@link FlexoResourceCenter}
+		 * 
+		 * @return
+		 */
+		@Override
+		public void setFlexoResourceCenterService(FlexoResourceCenterService rcService) {
+			this.rcService = rcService;
+		}
+
+		@Override
+		public JarResourceCenter getResourceCenter() {
+			return this;
+		}
+
+		public JarResourceImpl getJarResourceImpl() {
+			return jarResourceImpl;
+		}
+
+		@Override
+		public String toString() {
+			return super.toString() + " jar=" + (jarResourceImpl != null ? jarResourceImpl.toString() : null);
+		}
+
+		@Override
+		public FlexoServiceManager getServiceManager() {
+			if (getFlexoResourceCenterService() == null) {
+				return super.getServiceManager();
+			}
+			return getFlexoResourceCenterService().getServiceManager();
+		}
+
+		/**
+		 * Returns an iterator over contained InJarResources
+		 */
+		@SuppressWarnings("unchecked")
+		@Override
+		public Iterator<InJarResourceImpl> iterator() {
+			return (Iterator<InJarResourceImpl>) getJarResourceImpl().getContents().iterator();
+		}
+
+		@Override
+		public String getName() {
+			if (jarFile != null) {
+				return jarFile.getName();
+			}
+			return "unset";
+		}
+
+		private final HashMap<TechnologyAdapter, HashMap<Class<? extends ResourceRepository<?, InJarResourceImpl>>, ResourceRepository<?, InJarResourceImpl>>> repositories = new HashMap<>();
+
+		private HashMap<Class<? extends ResourceRepository<?, InJarResourceImpl>>, ResourceRepository<?, InJarResourceImpl>> getRepositoriesForAdapter(
+				TechnologyAdapter technologyAdapter, boolean considerEmptyRepositories) {
+			if (considerEmptyRepositories) {
+				technologyAdapter.ensureAllRepositoriesAreCreated(this);
+			}
+			HashMap<Class<? extends ResourceRepository<?, InJarResourceImpl>>, ResourceRepository<?, InJarResourceImpl>> map = repositories
+					.get(technologyAdapter);
+			if (map == null) {
+				map = new HashMap<>();
+				repositories.put(technologyAdapter, map);
+			}
+			return map;
+		}
+
+		@SuppressWarnings("unchecked")
+		@Override
+		public final <R extends ResourceRepository<?, InJarResourceImpl>> R retrieveRepository(Class<? extends R> repositoryType,
+				TechnologyAdapter technologyAdapter) {
+			HashMap<Class<? extends ResourceRepository<?, InJarResourceImpl>>, ResourceRepository<?, InJarResourceImpl>> map = getRepositoriesForAdapter(
+					technologyAdapter, false);
+			return (R) map.get(repositoryType);
+		}
+
+		@Override
+		public final <R extends ResourceRepository<?, InJarResourceImpl>> void registerRepository(R repository,
+				Class<? extends R> repositoryType, TechnologyAdapter technologyAdapter) {
+			HashMap<Class<? extends ResourceRepository<?, InJarResourceImpl>>, ResourceRepository<?, InJarResourceImpl>> map = getRepositoriesForAdapter(
+					technologyAdapter, false);
+			if (map.get(repositoryType) == null) {
+				map.put(repositoryType, repository);
+			}
+			else {
+				logger.warning("Repository already registered: " + repositoryType + " for " + repository);
+			}
+		}
+
+		@Override
+		public Collection<ResourceRepository<?, InJarResourceImpl>> getRegistedRepositories(TechnologyAdapter technologyAdapter,
+				boolean considerEmptyRepositories) {
+			return getRepositoriesForAdapter(technologyAdapter, considerEmptyRepositories).values();
+		}
+
+		/**
+		 * Register global repository for this resource center<br>
+		 * It is stated that the global repository contains all resources which supplied technology adapter has discovered and may
+		 * interpret<br>
+		 * This is the resource repository which is generally given in GUIs (such as browsers) to display the contents of a resource center
+		 * for a given technology
+		 * 
+		 * @param repository
+		 * @param technologyAdapter
+		 */
+		/*@Override
+		public final void registerGlobalRepository(ResourceRepositoryImpl<?> repository, TechnologyAdapter technologyAdapter) {
+			if (repository != null && technologyAdapter != null) {
+				globalRepositories.put(technologyAdapter, repository);
+			}
+		}*/
+
+		/**
+		 * Return the global repository for this resource center and for supplied technology adapter<br>
+		 * It is stated that the global repository contains all resources which supplied technology adapter has discovered and may
+		 * interpret<br>
+		 * This is the resource repository which is generally given in GUIs (such as browsers) to display the contents of a resource center
+		 * for a given technology
+		 * 
+		 * @param technologyAdapter
+		 * @return
+		 */
+		/*@Override
+		public ResourceRepositoryImpl<?> getGlobalRepository(TechnologyAdapter technologyAdapter) {
+			if (technologyAdapter != null) {
+				return globalRepositories.get(technologyAdapter);
+			}
+			return null;
+		}*/
+
+		@Override
+		public <T extends ResourceData<T>> List<FlexoResource<T>> retrieveResource(String uri, Class<T> type, IProgress progress) {
+			// TODO: provide support for class and version
+			FlexoResource<T> uniqueResource = retrieveResource(uri, null, null, progress);
+			return Collections.singletonList(uniqueResource);
+		}
+
+		@SuppressWarnings("unchecked")
+		@Override
+		public <T extends ResourceData<T>> FlexoResource<T> retrieveResource(String uri, FlexoVersion version, Class<T> type,
+				IProgress progress) {
+			// TODO: provide support for class and version
+			return (FlexoResource<T>) retrieveResource(uri, progress);
+		}
+
+		@Override
+		public FlexoResource<?> retrieveResource(String uri, IProgress progress) {
+			return getResource(uri);
+		}
+
+		@Override
+		public <R extends FlexoResource<?>> R getResource(InJarResourceImpl resourceArtifact, Class<R> resourceClass) {
+			try {
+				// searches for parent folder.
+				RepositoryFolder<?, InJarResourceImpl> folder = getParentRepositoryFolder(resourceArtifact, false);
+				if (folder == null) {
+					return null;
+				}
+
+				for (FlexoResource<?> r : folder.getResources()) {
+					if (Objects.equals(r.getIODelegate().getSerializationArtefact(), resourceArtifact)) {
+						if (resourceClass.isInstance(r)) {
+							return resourceClass.cast(r);
+						}
+						logger.warning("Found resource matching file " + resourceArtifact + " but not of desired type: " + r.getClass()
+								+ " instead of " + resourceClass);
+						return null;
+					}
+				}
+
+				// Cannot find the resource
+				return null;
+
+			} catch (IOException e) {
+				logger.log(Level.WARNING, "Error while getting parent folder for " + resourceArtifact, e);
+				return null;
+			}
+		}
+
+		@Override
+		public Collection<? extends FlexoResource<?>> getAllResources(IProgress progress) {
+			return getAllResources();
+		}
+
+		@Override
+		public void publishResource(FlexoResource<?> resource, FlexoVersion newVersion, IProgress progress) throws Exception {
+			// TODO Not yet implemented
+		}
+
+		@Override
+		public void update() throws IOException {
+			// TODO Not yet implemented
+		}
+
+		@Override
+		public String getDefaultBaseURI() {
+			return rcBaseUri;
+		}
+
+		@Override
+		public void setDefaultBaseURI(String defaultBaseURI) {
+			rcBaseUri = defaultBaseURI;
+
+		}
+
+		@Override
+		public boolean isIgnorable(InJarResourceImpl artefact, TechnologyAdapter technologyAdapter) {
+			// Trivial implementation
+			return false;
+		}
+
+		// TODO Remove this
+		@Override
+		public VirtualModelRepository<InJarResourceImpl> getVirtualModelRepository() {
+			if (getServiceManager() != null) {
+				FMLTechnologyAdapter vmTA = getServiceManager().getTechnologyAdapterService()
+						.getTechnologyAdapter(FMLTechnologyAdapter.class);
+				return vmTA.getVirtualModelRepository(this);
+			}
+			return null;
+		}
+
+		@Override
+		public FMLRTVirtualModelInstanceRepository<InJarResourceImpl> getVirtualModelInstanceRepository() {
+			if (getServiceManager() != null) {
+				FMLRTTechnologyAdapter vmRTTA = getServiceManager().getTechnologyAdapterService()
+						.getTechnologyAdapter(FMLRTTechnologyAdapter.class);
+				return vmRTTA.getVirtualModelInstanceRepository(this);
+			}
+			return null;
+		}
+
+		@Override
+		public JarFile getJarFile() {
+			return jarFile;
+		}
+
+		@Override
+		public void setJarFile(JarFile jarFile) {
+			ClasspathResourceLocatorImpl locator = (ClasspathResourceLocatorImpl) ResourceLocator
+					.getInstanceForLocatorClass(ClasspathResourceLocatorImpl.class);
+			jarResourceImpl = (JarResourceImpl) locator.locateResource(jarFile.getName());
+			if (jarResourceImpl == null) {
+				try {
+					jarResourceImpl = new JarResourceImpl(ResourceLocator.getInstanceForLocatorClass(ClasspathResourceLocatorImpl.class),
+							jarFile);
+					setBaseArtefact(jarResourceImpl.getRootEntry());
+				} catch (MalformedURLException e) {
+					logger.warning("Unable to create a Jar Resource Center for jar " + jarFile.getName());
+				}
+			}
+			this.jarFile = jarFile;
+			locator.getJarResourcesList().put(jarResourceImpl.getRelativePath(), jarResourceImpl);
+		}
+
+		private JarResourceCenterEntry entry;
+
+		@Override
+		public ResourceCenterEntry<?> getResourceCenterEntry() {
+			if (entry == null) {
+				try {
+					ModelFactory factory = new ModelFactory(JarResourceCenterEntry.class);
+					entry = factory.newInstance(JarResourceCenterEntry.class);
+					entry.setFile(new File(getJarResourceImpl().getRelativePath()));
+				} catch (ModelDefinitionException e) {
+					e.printStackTrace();
+				}
+			}
+			return entry;
+		}
+
+		/**
+		 * Stops the Resource Center (When needed)
+		 */
+		@Override
+		public void stop() {
+			// Nothing to do for now
+		}
+
+		/**
+		 * Compute and return a default URI for supplied resource<br>
+		 * If resource does not provide URI support, this might be delegated to the {@link FlexoResourceCenter} through this method
+		 * 
+		 * @param resource
+		 * @return
+		 */
+		@Override
+		public <R extends FlexoResource<?>> String getDefaultResourceURI(R resource) {
+			String defaultBaseURI = getDefaultBaseURI();
+			if (!defaultBaseURI.endsWith("/")) {
+				defaultBaseURI = defaultBaseURI + "/";
+			}
+			String lastPath = resource.getName();
+			String relativePath = "";
+			if (resource.getIODelegate() != null) {
+				InJarResourceImpl serializationArtefact = (InJarResourceImpl) resource.getIODelegate().getSerializationArtefact();
+				if (resource.getIODelegate() instanceof DirectoryBasedJarIODelegate) {
+					serializationArtefact = ((DirectoryBasedJarIODelegate) resource.getIODelegate()).getDirectory();
+				}
+				if (serializationArtefact != null) {
+					InJarResourceImpl f = serializationArtefact.getContainer();
+					while (f != null && !(f.equals(getRootFolder().getSerializationArtefact()))) {
+						relativePath = f.getName() + "/" + relativePath;
+						f = f.getContainer();
+					}
+				}
+			}
+
+			return defaultBaseURI + relativePath + lastPath;
+		}
+
+		@Override
+		public String retrieveName(InJarResourceImpl serializationArtefact) {
+			if (serializationArtefact != null) {
+				String returned = serializationArtefact.getURL().getFile();
+				if (returned.endsWith("!")) {
+					returned = returned.substring(0, returned.length() - 1);
+				}
+				if (returned.endsWith("/")) {
+					returned = returned.substring(0, returned.length() - 1);
+				}
+				returned = returned.substring(returned.lastIndexOf("/") + 1);
+				return returned;
+			}
+			return getName();
+		}
+
+		@Override
+		public InJarResourceImpl rename(InJarResourceImpl serializationArtefact, String newName) {
+			// Not applicable
+			return null;
+		}
+
+		@Override
+		public InJarResourceImpl delete(InJarResourceImpl serializationArtefact) {
+			// Not applicable
+			return null;
+		}
+
+		/**
+		 * Return serialization artefact containing supplied serialization artefact (parent directory)
+		 * 
+		 * @param serializationArtefact
+		 * @return
+		 */
+		@Override
+		public InJarResourceImpl getContainer(InJarResourceImpl serializationArtefact) {
+			Resource container = serializationArtefact.getContainer();
+			if (container instanceof InJarResourceImpl) {
+				return (InJarResourceImpl) container;
+			}
+			return null;
+		}
+
+		/**
+		 * Return list of serialization actefacts contained in supplied serialization actifact<br>
+		 * Return empty list if supplied serialization artefact has no contents
+		 * 
+		 * @param serializationArtefact
+		 * @return
+		 */
+		@Override
+		public List<InJarResourceImpl> getContents(InJarResourceImpl serializationArtefact) {
+			return serializationArtefact.getContents(false);
+		}
+
+		@Override
+		public boolean isDirectory(InJarResourceImpl serializationArtefact) {
+			return serializationArtefact.isContainer();
+		}
+
+		@Override
+		public boolean exists(InJarResourceImpl serializationArtefact) {
+			return serializationArtefact != null;
+		}
+
+		@Override
+		public boolean canRead(InJarResourceImpl serializationArtefact) {
+			return true;
+		}
+
+		@Override
+		public InJarResourceImpl createDirectory(String name, InJarResourceImpl parentDirectory) {
+			// Not applicable
+			return null;
+		}
+
+		/**
+		 * Get container serialization artefact, with supplied name and parent serialization artefact
+		 * 
+		 * @param name
+		 * @param parentDirectory
+		 * @return
+		 */
+		@Override
+		public InJarResourceImpl getDirectory(String name, InJarResourceImpl parentDirectory) {
+			for (InJarResourceImpl r : parentDirectory.getContents(false)) {
+				// System.out.println(" * " + r.getName() + " " + r);
+				if (name.equals(r.getName())) {
+					return r;
+				}
+			}
+			return null;
+		}
+
+		@Override
+		public InJarResourceImpl createEntry(String name, InJarResourceImpl parentDirectory) {
+			// Not applicable
+			return null;
+		}
+
+		@Override
+		public InJarResourceImpl getEntry(String name, InJarResourceImpl parentDirectory) {
+			for (InJarResourceImpl r : parentDirectory.getContents(false)) {
+				// System.out.println(" * " + r.getName() + " " + r);
+				if (name.equals(r.getName())) {
+					return r;
+				}
+			}
+			return null;
+		}
+
+		@Override
+		public InJarIODelegate makeFlexoIODelegate(InJarResourceImpl serializationArtefact, FlexoResourceFactory<?, ?> resourceFactory) {
+			return InJarIODelegateImpl.makeInJarFlexoIODelegate(serializationArtefact, resourceFactory);
+		}
+
+		@Override
+		public FlexoIODelegate<InJarResourceImpl> makeDirectoryBasedFlexoIODelegate(InJarResourceImpl serializationArtefact,
+				String directoryExtension, String fileExtension, FlexoResourceFactory<?, ?> resourceFactory) {
+
+			String baseName = retrieveName(serializationArtefact).substring(0,
+					retrieveName(serializationArtefact).length() - directoryExtension.length());
+			return DirectoryBasedJarIODelegateImpl.makeDirectoryBasedFlexoIODelegate(serializationArtefact.getContainer(), baseName,
+					directoryExtension, fileExtension, this, resourceFactory);
+		}
+
+		@Override
+		public XMLRootElementInfo getXMLRootElementInfo(InJarResourceImpl serializationArtefact) {
+			return getXMLRootElementInfo(serializationArtefact, false, null);
+		}
+
+		@Override
+		public XMLRootElementInfo getXMLRootElementInfo(InJarResourceImpl serializationArtefact, boolean parseFirstLevelElements,
+				String firstLevelElementName) {
+			XMLRootElementReader reader = new XMLRootElementReader(parseFirstLevelElements, firstLevelElementName);
+			try {
+				return reader.readRootElement(serializationArtefact);
+			} catch (IOException e) {
+				e.printStackTrace();
+				return null;
+			}
+
+		}
+
+		/**
+		 * Return properties stored in supplied directory<br>
+		 * Find the first entry whose name ends with .properties and analyze it as a {@link Properties} serialization
+		 * 
+		 * @return
+		 * @throws IOException
+		 */
+		@Override
+		public Properties getProperties(InJarResourceImpl directory) throws IOException {
+			// System.out.println("Reading properties from JarEntry " + directory);
+			Properties returned = null;
+			if (isDirectory(directory)) {
+				InJarResourceImpl propertiesJarEntry = null;
+				for (InJarResourceImpl content : getContents(directory)) {
+					if (retrieveName(content).endsWith(".properties")) {
+						propertiesJarEntry = content;
+						break;
+					}
+				}
+				if (propertiesJarEntry != null) {
+					returned = new Properties();
+					InputStream is = propertiesJarEntry.openInputStream();
+					try {
+						returned.load(is);
+					} finally {
+						is.close();
+					}
+				}
+			}
+			// System.out.println("Return properties: " + returned);
+			return returned;
+		}
+
+		@Override
+		public <R extends FlexoResource<?>> RepositoryFolder<R, InJarResourceImpl> getRepositoryFolder(
+				FlexoIODelegate<InJarResourceImpl> ioDelegate, ResourceRepository<R, InJarResourceImpl> resourceRepository) {
+
+			InJarResourceImpl candidateFile = null;
+			if (ioDelegate instanceof DirectoryBasedJarIODelegate) {
+				candidateFile = ((DirectoryBasedJarIODelegate) ioDelegate).getDirectory();
+			}
+			else if (ioDelegate instanceof InJarIODelegate) {
+				candidateFile = ((InJarIODelegate) ioDelegate).getInJarResource();
+			}
+			try {
+
+				// System.out.println("Folder for " + ioDelegate.getSerializationArtefact() + " is "
+				// + resourceRepository.getRepositoryFolder(candidateFile, true));
+
+				return resourceRepository.getParentRepositoryFolder(candidateFile, true);
+			} catch (IOException e) {
+				e.printStackTrace();
+				return resourceRepository.getRootFolder();
+			}
+		}
+
+		/**
+		 * Get the set of path in the case of InJarResource
+		 * 
+		 * @param resource
+		 * @return
+		 */
+		@Override
+		public List<String> getPathTo(InJarResourceImpl resource) {
+			if (!getRootFolder().getChildren().contains(resource)) {
+				List<String> pathTo = new ArrayList<>();
+				StringTokenizer string = new StringTokenizer(/*resource.getURI()*/resource.getEntry().getName(),
+						Character.toString(ClasspathResourceLocatorImpl.PATH_SEP.toCharArray()[0]));
+				while (string.hasMoreTokens()) {
+					String next = string.nextToken();
+					if (string.hasMoreTokens()) {
+						pathTo.add(next);
+					}
+				}
+				return pathTo;
+			}
+			else {
+				return null;
+			}
+		}
+
+		@Override
+		public String getDisplayableName() {
+			if (jarResourceImpl != null) {
+				return jarResourceImpl.getJarFileName();
+			}
+			return "???";
+		}
+
+		/**
+		 * Called to register a resource relatively to its serialization artefact
+		 * 
+		 * @param resource
+		 * @param serializationArtefact
+		 */
+		@Override
+		public void registerResource(FlexoResource<?> resource, InJarResourceImpl serializationArtefact) {
+		}
+
+		/**
+		 * Called to register a resource relatively to its serialization artefact
+		 * 
+		 * @param resource
+		 * @param serializationArtefact
+		 */
+		@Override
+		public void unregisterResource(FlexoResource<?> resource, InJarResourceImpl serializationArtefact) {
+		}
+
 	}
 
 	@ModelEntity
@@ -399,7 +815,7 @@ public class JarResourceCenter extends ResourceRepositoryImpl<FlexoResource<?>, 
 				JarFile jarFile;
 				try {
 					jarFile = new JarFile(getFile());
-					return new JarResourceCenter(jarFile, rcService);
+					return instanciateNewJarResourceCenter(jarFile, rcService);
 				} catch (IOException e) {
 					return null;
 				}
@@ -417,352 +833,6 @@ public class JarResourceCenter extends ResourceRepositoryImpl<FlexoResource<?>, 
 			}
 		}
 
-	}
-
-	@Override
-	public String getDefaultBaseURI() {
-		return rcBaseUri;
-	}
-
-	@Override
-	public void setDefaultBaseURI(String defaultBaseURI) {
-		rcBaseUri = defaultBaseURI;
-
-	}
-
-	@Override
-	public boolean isIgnorable(InJarResourceImpl artefact, TechnologyAdapter technologyAdapter) {
-		// Trivial implementation
-		return false;
-	}
-
-	// TODO Remove this
-	@Override
-	public VirtualModelRepository<InJarResourceImpl> getVirtualModelRepository() {
-		if (getServiceManager() != null) {
-			FMLTechnologyAdapter vmTA = getServiceManager().getTechnologyAdapterService().getTechnologyAdapter(FMLTechnologyAdapter.class);
-			return vmTA.getVirtualModelRepository(this);
-		}
-		return null;
-	}
-
-	@Override
-	public FMLRTVirtualModelInstanceRepository<InJarResourceImpl> getVirtualModelInstanceRepository() {
-		if (getServiceManager() != null) {
-			FMLRTTechnologyAdapter vmRTTA = getServiceManager().getTechnologyAdapterService()
-					.getTechnologyAdapter(FMLRTTechnologyAdapter.class);
-			return vmRTTA.getVirtualModelInstanceRepository(this);
-		}
-		return null;
-	}
-
-	private JarResourceCenterEntry entry;
-
-	@Override
-	public ResourceCenterEntry<?> getResourceCenterEntry() {
-		if (entry == null) {
-			try {
-				ModelFactory factory = new ModelFactory(JarResourceCenterEntry.class);
-				entry = factory.newInstance(JarResourceCenterEntry.class);
-				entry.setFile(new File(getJarResourceImpl().getRelativePath()));
-			} catch (ModelDefinitionException e) {
-				e.printStackTrace();
-			}
-		}
-		return entry;
-	}
-
-	/**
-	 * Stops the Resource Center (When needed)
-	 */
-	@Override
-	public void stop() {
-		// Nothing to do for now
-	}
-
-	/**
-	 * Compute and return a default URI for supplied resource<br>
-	 * If resource does not provide URI support, this might be delegated to the {@link FlexoResourceCenter} through this method
-	 * 
-	 * @param resource
-	 * @return
-	 */
-	@Override
-	public <R extends FlexoResource<?>> String getDefaultResourceURI(R resource) {
-		String defaultBaseURI = getDefaultBaseURI();
-		if (!defaultBaseURI.endsWith("/")) {
-			defaultBaseURI = defaultBaseURI + "/";
-		}
-		String lastPath = resource.getName();
-		String relativePath = "";
-		if (resource.getIODelegate() != null) {
-			InJarResourceImpl serializationArtefact = (InJarResourceImpl) resource.getIODelegate().getSerializationArtefact();
-			if (resource.getIODelegate() instanceof DirectoryBasedJarIODelegate) {
-				serializationArtefact = ((DirectoryBasedJarIODelegate) resource.getIODelegate()).getDirectory();
-			}
-			if (serializationArtefact != null) {
-				InJarResourceImpl f = serializationArtefact.getContainer();
-				while (f != null && !(f.equals(getRootFolder().getSerializationArtefact()))) {
-					relativePath = f.getName() + "/" + relativePath;
-					f = f.getContainer();
-				}
-			}
-		}
-
-		return defaultBaseURI + relativePath + lastPath;
-	}
-
-	@Override
-	public String retrieveName(InJarResourceImpl serializationArtefact) {
-		if (serializationArtefact != null) {
-			String returned = serializationArtefact.getURL().getFile();
-			if (returned.endsWith("!")) {
-				returned = returned.substring(0, returned.length() - 1);
-			}
-			if (returned.endsWith("/")) {
-				returned = returned.substring(0, returned.length() - 1);
-			}
-			returned = returned.substring(returned.lastIndexOf("/") + 1);
-			return returned;
-		}
-		return getName();
-	}
-
-	@Override
-	public InJarResourceImpl rename(InJarResourceImpl serializationArtefact, String newName) {
-		// Not applicable
-		return null;
-	}
-
-	@Override
-	public InJarResourceImpl delete(InJarResourceImpl serializationArtefact) {
-		// Not applicable
-		return null;
-	}
-
-	/**
-	 * Return serialization artefact containing supplied serialization artefact (parent directory)
-	 * 
-	 * @param serializationArtefact
-	 * @return
-	 */
-	@Override
-	public InJarResourceImpl getContainer(InJarResourceImpl serializationArtefact) {
-		Resource container = serializationArtefact.getContainer();
-		if (container instanceof InJarResourceImpl) {
-			return (InJarResourceImpl) container;
-		}
-		return null;
-	}
-
-	/**
-	 * Return list of serialization actefacts contained in supplied serialization actifact<br>
-	 * Return empty list if supplied serialization artefact has no contents
-	 * 
-	 * @param serializationArtefact
-	 * @return
-	 */
-	@Override
-	public List<InJarResourceImpl> getContents(InJarResourceImpl serializationArtefact) {
-		return serializationArtefact.getContents(false);
-	}
-
-	@Override
-	public boolean isDirectory(InJarResourceImpl serializationArtefact) {
-		return serializationArtefact.isContainer();
-	}
-
-	@Override
-	public boolean exists(InJarResourceImpl serializationArtefact) {
-		return serializationArtefact != null;
-	}
-
-	@Override
-	public boolean canRead(InJarResourceImpl serializationArtefact) {
-		return true;
-	}
-
-	@Override
-	public InJarResourceImpl createDirectory(String name, InJarResourceImpl parentDirectory) {
-		// Not applicable
-		return null;
-	}
-
-	/**
-	 * Get container serialization artefact, with supplied name and parent serialization artefact
-	 * 
-	 * @param name
-	 * @param parentDirectory
-	 * @return
-	 */
-	@Override
-	public InJarResourceImpl getDirectory(String name, InJarResourceImpl parentDirectory) {
-		for (InJarResourceImpl r : parentDirectory.getContents(false)) {
-			// System.out.println(" * " + r.getName() + " " + r);
-			if (name.equals(r.getName())) {
-				return r;
-			}
-		}
-		return null;
-	}
-
-	@Override
-	public InJarResourceImpl createEntry(String name, InJarResourceImpl parentDirectory) {
-		// Not applicable
-		return null;
-	}
-
-	@Override
-	public InJarResourceImpl getEntry(String name, InJarResourceImpl parentDirectory) {
-		for (InJarResourceImpl r : parentDirectory.getContents(false)) {
-			// System.out.println(" * " + r.getName() + " " + r);
-			if (name.equals(r.getName())) {
-				return r;
-			}
-		}
-		return null;
-	}
-
-	@Override
-	public InJarIODelegate makeFlexoIODelegate(InJarResourceImpl serializationArtefact, FlexoResourceFactory<?, ?> resourceFactory) {
-		return InJarIODelegateImpl.makeInJarFlexoIODelegate(serializationArtefact, resourceFactory);
-	}
-
-	@Override
-	public FlexoIODelegate<InJarResourceImpl> makeDirectoryBasedFlexoIODelegate(InJarResourceImpl serializationArtefact,
-			String directoryExtension, String fileExtension, FlexoResourceFactory<?, ?> resourceFactory) {
-
-		String baseName = retrieveName(serializationArtefact).substring(0,
-				retrieveName(serializationArtefact).length() - directoryExtension.length());
-		return DirectoryBasedJarIODelegateImpl.makeDirectoryBasedFlexoIODelegate(serializationArtefact.getContainer(), baseName,
-				directoryExtension, fileExtension, this, resourceFactory);
-	}
-
-	@Override
-	public XMLRootElementInfo getXMLRootElementInfo(InJarResourceImpl serializationArtefact) {
-		return getXMLRootElementInfo(serializationArtefact, false, null);
-	}
-
-	@Override
-	public XMLRootElementInfo getXMLRootElementInfo(InJarResourceImpl serializationArtefact, boolean parseFirstLevelElements,
-			String firstLevelElementName) {
-		XMLRootElementReader reader = new XMLRootElementReader(parseFirstLevelElements, firstLevelElementName);
-		try {
-			return reader.readRootElement(serializationArtefact);
-		} catch (IOException e) {
-			e.printStackTrace();
-			return null;
-		}
-
-	}
-
-	/**
-	 * Return properties stored in supplied directory<br>
-	 * Find the first entry whose name ends with .properties and analyze it as a {@link Properties} serialization
-	 * 
-	 * @return
-	 * @throws IOException
-	 */
-	@Override
-	public Properties getProperties(InJarResourceImpl directory) throws IOException {
-		// System.out.println("Reading properties from JarEntry " + directory);
-		Properties returned = null;
-		if (isDirectory(directory)) {
-			InJarResourceImpl propertiesJarEntry = null;
-			for (InJarResourceImpl content : getContents(directory)) {
-				if (retrieveName(content).endsWith(".properties")) {
-					propertiesJarEntry = content;
-					break;
-				}
-			}
-			if (propertiesJarEntry != null) {
-				returned = new Properties();
-				InputStream is = propertiesJarEntry.openInputStream();
-				try {
-					returned.load(is);
-				} finally {
-					is.close();
-				}
-			}
-		}
-		// System.out.println("Return properties: " + returned);
-		return returned;
-	}
-
-	@Override
-	public <R extends FlexoResource<?>> RepositoryFolder<R, InJarResourceImpl> getRepositoryFolder(
-			FlexoIODelegate<InJarResourceImpl> ioDelegate, ResourceRepository<R, InJarResourceImpl> resourceRepository) {
-
-		InJarResourceImpl candidateFile = null;
-		if (ioDelegate instanceof DirectoryBasedJarIODelegate) {
-			candidateFile = ((DirectoryBasedJarIODelegate) ioDelegate).getDirectory();
-		}
-		else if (ioDelegate instanceof InJarIODelegate) {
-			candidateFile = ((InJarIODelegate) ioDelegate).getInJarResource();
-		}
-		try {
-
-			// System.out.println("Folder for " + ioDelegate.getSerializationArtefact() + " is "
-			// + resourceRepository.getRepositoryFolder(candidateFile, true));
-
-			return resourceRepository.getParentRepositoryFolder(candidateFile, true);
-		} catch (IOException e) {
-			e.printStackTrace();
-			return resourceRepository.getRootFolder();
-		}
-	}
-
-	/**
-	 * Get the set of path in the case of InJarResource
-	 * 
-	 * @param resource
-	 * @return
-	 */
-	@Override
-	public List<String> getPathTo(InJarResourceImpl resource) {
-		if (!getRootFolder().getChildren().contains(resource)) {
-			List<String> pathTo = new ArrayList<>();
-			StringTokenizer string = new StringTokenizer(/*resource.getURI()*/resource.getEntry().getName(),
-					Character.toString(ClasspathResourceLocatorImpl.PATH_SEP.toCharArray()[0]));
-			while (string.hasMoreTokens()) {
-				String next = string.nextToken();
-				if (string.hasMoreTokens()) {
-					pathTo.add(next);
-				}
-			}
-			return pathTo;
-		}
-		else {
-			return null;
-		}
-	}
-
-	@Override
-	public String getDisplayableName() {
-		if (jarResourceImpl != null) {
-			return jarResourceImpl.getJarFileName();
-		}
-		return "???";
-	}
-
-	/**
-	 * Called to register a resource relatively to its serialization artefact
-	 * 
-	 * @param resource
-	 * @param serializationArtefact
-	 */
-	@Override
-	public void registerResource(FlexoResource<?> resource, InJarResourceImpl serializationArtefact) {
-	}
-
-	/**
-	 * Called to register a resource relatively to its serialization artefact
-	 * 
-	 * @param resource
-	 * @param serializationArtefact
-	 */
-	@Override
-	public void unregisterResource(FlexoResource<?> resource, InJarResourceImpl serializationArtefact) {
 	}
 
 }

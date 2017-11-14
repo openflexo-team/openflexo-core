@@ -39,10 +39,13 @@
 package org.openflexo.foundation;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.io.IOException;
 
 import org.junit.Test;
 import org.openflexo.foundation.resource.DirectoryResourceCenter;
@@ -54,20 +57,28 @@ import org.openflexo.foundation.test.OpenflexoProjectAtRunTimeTestCase;
  * @author sylvain
  * 
  */
-public class TestCreateProject extends OpenflexoProjectAtRunTimeTestCase {
+public class TestCreateProjectInResourceCenter extends OpenflexoProjectAtRunTimeTestCase {
+
+	private static DirectoryResourceCenter resourceCenter;
 
 	@Test
-	public void testCreateProject() {
+	public void testCreateProject() throws IOException {
 
-		FlexoEditor editor = createStandaloneProject("TestProject");
+		instanciateTestServiceManager();
+
+		resourceCenter = makeNewDirectoryResourceCenter();
+		assertNotNull(resourceCenter);
+		System.out.println("ResourceCenter= " + resourceCenter);
+
+		FlexoEditor editor = createProjectInResourceCenter("TestProject", resourceCenter);
 		FlexoProject<File> project = (FlexoProject<File>) editor.getProject();
 		System.out.println("Created project " + project.getProjectDirectory());
 		assertTrue(project.getProjectDirectory().exists());
 		assertTrue(project.getResource().getIODelegate().exists());
-		assertTrue(project.isStandAlone());
+		assertFalse(project.isStandAlone());
 		assertEquals(project.getRootFolder().getSerializationArtefact(), project.getProjectDirectory());
 		assertEquals(project.getBaseArtefact().getParentFile(), project.getProjectDirectory());
-		assertSame(project.getProjectResource().getDelegateResourceCenter(), project.getResourceCenter());
+		assertSame(resourceCenter, project.getResourceCenter());
 		assertTrue(project.getDelegateResourceCenter() instanceof DirectoryResourceCenter);
 		assertEquals(project.getProjectDirectory(), ((DirectoryResourceCenter) project.getDelegateResourceCenter()).getRootDirectory());
 	}

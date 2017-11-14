@@ -71,6 +71,8 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
  */
 public class DefaultFlexoServiceManager extends FlexoServiceManager {
 
+	private final FlexoEditor applicationEditor;
+
 	/**
 	 * Initialize a new {@link DefaultFlexoServiceManager}
 	 * 
@@ -117,6 +119,8 @@ public class DefaultFlexoServiceManager extends FlexoServiceManager {
 
 		ProjectLoader projectLoaderService = createProjectLoaderService();
 		registerService(projectLoaderService);
+
+		applicationEditor = createApplicationEditor();
 
 	}
 
@@ -171,10 +175,19 @@ public class DefaultFlexoServiceManager extends FlexoServiceManager {
 		return null;
 	}
 
+	public final FlexoEditor getApplicationEditor() {
+		return applicationEditor;
+	}
+
+	@Override
+	public FlexoEditor getDefaultEditor() {
+		return getApplicationEditor();
+	}
+
 	@Override
 	protected FlexoEditor createApplicationEditor() {
 		// Please override
-		return null;
+		return new DefaultFlexoEditor(null, this);
 	}
 
 	@Override

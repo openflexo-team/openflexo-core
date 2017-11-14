@@ -162,8 +162,7 @@ public class TestFlexoConceptInheritance extends OpenflexoProjectAtRunTimeTestCa
 		VirtualModelResourceFactory factory = fmlTechnologyAdapter.getVirtualModelResourceFactory();
 
 		VirtualModelResource newVirtualModelResource = factory.makeTopLevelVirtualModelResource(VIEWPOINT_NAME, VIEWPOINT_URI,
-				fmlTechnologyAdapter.getGlobalRepository(resourceCenter).getRootFolder(),
-				fmlTechnologyAdapter.getTechnologyContextManager(), true);
+				fmlTechnologyAdapter.getGlobalRepository(resourceCenter).getRootFolder(), true);
 		viewPoint = newVirtualModelResource.getLoadedResourceData();
 
 		// viewPoint = ViewPointImpl.newViewPoint(VIEWPOINT_NAME, VIEWPOINT_URI,
@@ -196,7 +195,7 @@ public class TestFlexoConceptInheritance extends OpenflexoProjectAtRunTimeTestCa
 				.getTechnologyAdapter(FMLTechnologyAdapter.class);
 		VirtualModelResourceFactory factory = fmlTechnologyAdapter.getVirtualModelResourceFactory();
 		VirtualModelResource newVMResource = factory.makeContainedVirtualModelResource(VIRTUAL_MODEL_NAME,
-				viewPoint.getVirtualModelResource(), fmlTechnologyAdapter.getTechnologyContextManager(), true);
+				viewPoint.getVirtualModelResource(), true);
 		virtualModel = newVMResource.getLoadedResourceData();
 
 		// virtualModel = VirtualModelImpl.newVirtualModel(VIRTUAL_MODEL_NAME,
@@ -658,7 +657,7 @@ public class TestFlexoConceptInheritance extends OpenflexoProjectAtRunTimeTestCa
 		resourceCenter = makeNewDirectoryResourceCenter();
 
 		File directory = ResourceLocator.retrieveResourceAsFile(viewPointResource.getDirectory());
-		File newDirectory = new File(((FileSystemBasedResourceCenter) resourceCenter).getDirectory(), directory.getName());
+		File newDirectory = new File(((FileSystemBasedResourceCenter) resourceCenter).getRootDirectory(), directory.getName());
 		newDirectory.mkdirs();
 
 		try {

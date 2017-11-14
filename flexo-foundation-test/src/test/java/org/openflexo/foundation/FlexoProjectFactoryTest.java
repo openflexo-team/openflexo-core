@@ -1,6 +1,6 @@
 /**
  * 
- * Copyright (c) 2014-2015, Openflexo
+ * Copyright (c) 2014, Openflexo
  * 
  * This file is part of Flexo-foundation, a component of the software infrastructure 
  * developed at Openflexo.
@@ -36,21 +36,47 @@
  * 
  */
 
-package org.openflexo.foundation.fml.annotations;
+package org.openflexo.foundation;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Inherited;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import static org.junit.Assert.fail;
 
-import org.openflexo.foundation.resource.ResourceRepositoryImpl;
+import java.util.Iterator;
+import java.util.logging.Logger;
 
-@Retention(RetentionPolicy.RUNTIME)
-@Inherited
-@Target(value = ElementType.TYPE)
-@Deprecated
-public @interface DeclareRepositoryType {
+import org.junit.Test;
+import org.openflexo.foundation.project.FlexoProjectFactory;
+import org.openflexo.foundation.test.OpenflexoTestCase;
+import org.openflexo.logging.FlexoLogger;
+import org.openflexo.model.ModelContext;
+import org.openflexo.model.ModelEntity;
+import org.openflexo.model.exceptions.MissingImplementationException;
+import org.openflexo.model.exceptions.ModelDefinitionException;
 
-	public Class<? extends ResourceRepositoryImpl>[]value();
+/**
+ * Test instanciation of {@link FlexoProjectFactory}<br>
+ * 
+ */
+public class FlexoProjectFactoryTest extends OpenflexoTestCase {
+
+	private static final Logger logger = FlexoLogger.getLogger(FlexoProjectFactoryTest.class.getPackage().getName());
+
+	@Test
+	public void testInstantiateVirtualModelModelFactory() {
+		try {
+			instanciateTestServiceManager();
+			System.out.println("Instanciating FlexoProjectFactory");
+			FlexoProjectFactory factory = new FlexoProjectFactory(null, null);
+			ModelContext modelContext = factory.getModelContext();
+			for (Iterator<ModelEntity> it = modelContext.getEntities(); it.hasNext();) {
+				System.out.println("> Found " + it.next().getImplementedInterface());
+			}
+			factory.checkMethodImplementations();
+		} catch (ModelDefinitionException e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		} catch (MissingImplementationException e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		}
+	}
 }

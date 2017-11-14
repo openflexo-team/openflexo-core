@@ -41,6 +41,7 @@ package org.openflexo.foundation.fml;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
 import java.io.IOException;
 
 import org.junit.Test;
@@ -69,7 +70,7 @@ public class TestCreateViewPointInProject extends OpenflexoProjectAtRunTimeTestC
 	public static final String VIEWPOINT_URI = "http://openflexo.org/test/TestViewPoint";
 
 	static FlexoEditor editor;
-	static FlexoProject project;
+	static FlexoProject<File> project;
 
 	private static DirectoryResourceCenter resourceCenter;
 
@@ -85,11 +86,11 @@ public class TestCreateViewPointInProject extends OpenflexoProjectAtRunTimeTestC
 	@Test
 	@TestOrder(2)
 	public void testCreateProject() {
-		editor = createProject("TestProject");
-		project = editor.getProject();
+		editor = createStandaloneProject("TestProject");
+		project = (FlexoProject<File>) editor.getProject();
 		System.out.println("Created project " + project.getProjectDirectory());
 		assertTrue(project.getProjectDirectory().exists());
-		assertTrue(project.getProjectDataResource().getIODelegate().exists());
+		assertTrue(project.getResource().getIODelegate().exists());
 	}
 
 	/**
@@ -107,8 +108,7 @@ public class TestCreateViewPointInProject extends OpenflexoProjectAtRunTimeTestC
 		VirtualModelResourceFactory factory = fmlTechnologyAdapter.getVirtualModelResourceFactory();
 
 		VirtualModelResource newVirtualModelResource = factory.makeTopLevelVirtualModelResource(VIEWPOINT_NAME, VIEWPOINT_URI,
-				fmlTechnologyAdapter.getGlobalRepository(project).getRootFolder(), fmlTechnologyAdapter.getTechnologyContextManager(),
-				true);
+				fmlTechnologyAdapter.getGlobalRepository(project).getRootFolder(), true);
 		VirtualModel newViewPoint = newVirtualModelResource.getLoadedResourceData();
 
 		assertNotNull(newViewPoint);

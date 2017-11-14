@@ -38,18 +38,37 @@
 
 package org.openflexo.foundation.technologyadapter;
 
+import java.io.IOException;
+
 import org.openflexo.foundation.resource.FlexoResourceCenter;
+import org.openflexo.model.annotations.ModelEntity;
+import org.openflexo.model.exceptions.ModelDefinitionException;
+import org.openflexo.model.factory.ModelFactory;
 
 /**
- * The global resource repository for Diagram Technology Adapter
+ * The global resource repository for a Technology Adapter
  * 
  * @author sylvain
  * 
  */
-public class TechnologyAdapterGlobalRepository extends TechnologyAdapterResourceRepository {
+@ModelEntity
+public interface TechnologyAdapterGlobalRepository<TA extends TechnologyAdapter, I> extends TechnologyAdapterResourceRepository {
 
-	public TechnologyAdapterGlobalRepository(TechnologyAdapter adapter, FlexoResourceCenter<?> resourceCenter) {
-		super(adapter, resourceCenter);
+	public static <TA extends TechnologyAdapter, I> TechnologyAdapterGlobalRepository<TA, I> instanciateNewRepository(TA technologyAdapter,
+			FlexoResourceCenter<I> resourceCenter) throws IOException {
+		ModelFactory factory;
+		try {
+			factory = new ModelFactory(TechnologyAdapterGlobalRepository.class);
+			TechnologyAdapterGlobalRepository<TA, I> newRepository = factory.newInstance(TechnologyAdapterGlobalRepository.class);
+			newRepository.setTechnologyAdapter(technologyAdapter);
+			newRepository.setResourceCenter(resourceCenter);
+			newRepository.setBaseArtefact(resourceCenter.getBaseArtefact());
+			newRepository.getRootFolder().setRepositoryContext(null);
+			return newRepository;
+		} catch (ModelDefinitionException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 }

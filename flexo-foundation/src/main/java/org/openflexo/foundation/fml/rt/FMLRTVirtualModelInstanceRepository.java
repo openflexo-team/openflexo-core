@@ -38,6 +38,7 @@
 
 package org.openflexo.foundation.fml.rt;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,6 +48,9 @@ import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.rt.rm.FMLRTVirtualModelInstanceResource;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.technologyadapter.ModelRepository;
+import org.openflexo.model.annotations.ModelEntity;
+import org.openflexo.model.exceptions.ModelDefinitionException;
+import org.openflexo.model.factory.ModelFactory;
 
 /**
  * A repository storing {@link FMLRTVirtualModelInstanceResource} for a resource center
@@ -54,77 +58,101 @@ import org.openflexo.foundation.technologyadapter.ModelRepository;
  * @author sylvain
  * 
  */
-public class FMLRTVirtualModelInstanceRepository<I> extends
+@ModelEntity
+public interface FMLRTVirtualModelInstanceRepository<I> extends
 		ModelRepository<FMLRTVirtualModelInstanceResource, FMLRTVirtualModelInstance, VirtualModel, FMLRTTechnologyAdapter, FMLTechnologyAdapter, I> {
 
-	public FMLRTVirtualModelInstanceRepository(FMLRTTechnologyAdapter adapter, FlexoResourceCenter<I> resourceCenter) {
-		super(adapter, resourceCenter);
-		getRootFolder().setRepositoryContext(null);
-	}
-
-	@Override
-	public FlexoServiceManager getServiceManager() {
-		if (getResourceCenter() != null) {
-			return getResourceCenter().getServiceManager();
+	public static <I> FMLRTVirtualModelInstanceRepository<I> instanciateNewRepository(FMLRTTechnologyAdapter technologyAdapter,
+			FlexoResourceCenter<I> resourceCenter) throws IOException {
+		ModelFactory factory;
+		try {
+			factory = new ModelFactory(FMLRTVirtualModelInstanceRepository.class);
+			FMLRTVirtualModelInstanceRepository<I> newRepository = factory.newInstance(FMLRTVirtualModelInstanceRepository.class);
+			newRepository.setTechnologyAdapter(technologyAdapter);
+			newRepository.setResourceCenter(resourceCenter);
+			newRepository.setBaseArtefact(resourceCenter.getBaseArtefact());
+			newRepository.getRootFolder().setRepositoryContext(resourceCenter.getLocales().localizedForKey("[Models]"));
+			return newRepository;
+		} catch (ModelDefinitionException e) {
+			e.printStackTrace();
 		}
 		return null;
 	}
 
-	public List<FMLRTVirtualModelInstance> getVirtualModelInstancesConformToVirtualModel(String virtualModelURI) {
-		List<FMLRTVirtualModelInstance> views = new ArrayList<>();
-		for (FMLRTVirtualModelInstanceResource vmiRes : getAllResources()) {
-			if (vmiRes.getVirtualModelResource() != null && vmiRes.getVirtualModelResource().getURI().equals(virtualModelURI)) {
-				views.add(vmiRes.getVirtualModelInstance());
+	public FMLRTVirtualModelInstanceResource getVirtualModelInstance(String virtualModelInstanceURI);
+
+	public FMLRTVirtualModelInstanceResource getVirtualModelInstanceResourceNamed(String value);
+
+	public List<FMLRTVirtualModelInstance> getVirtualModelInstancesConformToVirtualModel(String virtualModelURI);
+
+	public boolean isValidForANewVirtualModelInstanceName(String value);
+
+	public static abstract class FMLRTVirtualModelInstanceRepositoryImpl<I> extends
+			ModelRepositoryImpl<FMLRTVirtualModelInstanceResource, FMLRTVirtualModelInstance, VirtualModel, FMLRTTechnologyAdapter, FMLTechnologyAdapter, I> {
+
+		@Override
+		public FlexoServiceManager getServiceManager() {
+			if (getResourceCenter() != null) {
+				return getResourceCenter().getServiceManager();
 			}
-		}
-		return views;
-	}
-
-	public boolean isValidForANewVirtualModelInstanceName(String value) {
-		if (value == null) {
-			return false;
-		}
-		return getRootFolder().isValidResourceName(value);
-	}
-
-	public FMLRTVirtualModelInstanceResource getVirtualModelInstanceResourceNamed(String value) {
-		if (value == null) {
 			return null;
 		}
-		return getRootFolder().getResourceWithName(value);
-	}
 
-	public FMLRTVirtualModelInstanceResource getVirtualModelInstance(String virtualModelInstanceURI) {
-		if (virtualModelInstanceURI == null) {
-			return null;
-		}
-		return getResource(virtualModelInstanceURI);
-	}
-
-	/*public VirtualModelInstanceResource<?, ?> getVirtualModelInstance(String virtualModelInstanceURI) {
-		if (virtualModelInstanceURI == null) {
-			return null;
-		}
-		if (getView(virtualModelInstanceURI) != null) {
-			return getView(virtualModelInstanceURI);
-		}
-		// System.out.println("lookup mvi " + virtualModelInstanceURI);
-		String viewURI = virtualModelInstanceURI.substring(0, virtualModelInstanceURI.lastIndexOf("/"));
-		// System.out.println("lookup view " + viewURI);
-		ViewResource vr = getView(viewURI);
-		if (vr != null) {
-			for (VirtualModelInstanceResource<?, ?> vmir : vr.getContents(VirtualModelInstanceResource.class)) {
-				if (vmir.getURI().equals(virtualModelInstanceURI)) {
-					// System.out.println("Found " + vmir.getURI());
-					return vmir;
+		public List<FMLRTVirtualModelInstance> getVirtualModelInstancesConformToVirtualModel(String virtualModelURI) {
+			List<FMLRTVirtualModelInstance> views = new ArrayList<>();
+			for (FMLRTVirtualModelInstanceResource vmiRes : getAllResources()) {
+				if (vmiRes.getVirtualModelResource() != null && vmiRes.getVirtualModelResource().getURI().equals(virtualModelURI)) {
+					views.add(vmiRes.getVirtualModelInstance());
 				}
 			}
+			return views;
 		}
-		else {
-			logger.info("Cannot find View '" + viewURI + "' in '" + getDefaultBaseURI() + "'");
-		}
-		logger.info("Cannot find FMLRTVirtualModelInstance '" + virtualModelInstanceURI + "' in '" + getDefaultBaseURI() + "'");
-		return null;
-	}*/
 
+		public boolean isValidForANewVirtualModelInstanceName(String value) {
+			if (value == null) {
+				return false;
+			}
+			return getRootFolder().isValidResourceName(value);
+		}
+
+		public FMLRTVirtualModelInstanceResource getVirtualModelInstanceResourceNamed(String value) {
+			if (value == null) {
+				return null;
+			}
+			return getRootFolder().getResourceWithName(value);
+		}
+
+		public FMLRTVirtualModelInstanceResource getVirtualModelInstance(String virtualModelInstanceURI) {
+			if (virtualModelInstanceURI == null) {
+				return null;
+			}
+			return getResource(virtualModelInstanceURI);
+		}
+
+		/*public VirtualModelInstanceResource<?, ?> getVirtualModelInstance(String virtualModelInstanceURI) {
+			if (virtualModelInstanceURI == null) {
+				return null;
+			}
+			if (getView(virtualModelInstanceURI) != null) {
+				return getView(virtualModelInstanceURI);
+			}
+			// System.out.println("lookup mvi " + virtualModelInstanceURI);
+			String viewURI = virtualModelInstanceURI.substring(0, virtualModelInstanceURI.lastIndexOf("/"));
+			// System.out.println("lookup view " + viewURI);
+			ViewResource vr = getView(viewURI);
+			if (vr != null) {
+				for (VirtualModelInstanceResource<?, ?> vmir : vr.getContents(VirtualModelInstanceResource.class)) {
+					if (vmir.getURI().equals(virtualModelInstanceURI)) {
+						// System.out.println("Found " + vmir.getURI());
+						return vmir;
+					}
+				}
+			}
+			else {
+				logger.info("Cannot find View '" + viewURI + "' in '" + getDefaultBaseURI() + "'");
+			}
+			logger.info("Cannot find FMLRTVirtualModelInstance '" + virtualModelInstanceURI + "' in '" + getDefaultBaseURI() + "'");
+			return null;
+		}*/
+	}
 }

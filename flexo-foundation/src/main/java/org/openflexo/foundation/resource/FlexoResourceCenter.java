@@ -75,8 +75,8 @@ import org.openflexo.xml.XMLRootElementInfo;
  * @author sylvain
  * 
  */
-@ModelEntity
-public interface FlexoResourceCenter<I> extends Iterable<I>, FlexoObject {
+@ModelEntity(isAbstract = true)
+public interface FlexoResourceCenter<I> extends Iterable<I>, ResourceRepository<FlexoResource<?>, I>, FlexoObject {
 
 	String DEFAULT_BASE_URI = "defaultBaseURI";
 
@@ -121,6 +121,7 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, FlexoObject {
 	 * 
 	 * @return
 	 */
+	@Override
 	String getDisplayableName();
 
 	/**
@@ -131,6 +132,7 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, FlexoObject {
 	 * 
 	 * @return
 	 */
+	@Override
 	String getDefaultBaseURI();
 
 	/**
@@ -141,6 +143,20 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, FlexoObject {
 	 * 
 	 */
 	void setDefaultBaseURI(String defaultBaseURI);
+
+	/**
+	 * Return {@link FlexoResourceCenterService} managing this {@link FlexoResourceCenter}
+	 * 
+	 * @return
+	 */
+	FlexoResourceCenterService getFlexoResourceCenterService();
+
+	/**
+	 * Sets {@link FlexoResourceCenterService} managing this {@link FlexoResourceCenter}
+	 * 
+	 * @return
+	 */
+	void setFlexoResourceCenterService(FlexoResourceCenterService rcService);
 
 	/**
 	 * Enable a {@link TechnologyAdapter}<br>
@@ -333,6 +349,7 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, FlexoObject {
 	 * 
 	 * @return
 	 */
+	@Override
 	I getBaseArtefact();
 
 	/**
@@ -508,7 +525,5 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, FlexoObject {
 	Properties getProperties(I directory) throws IOException;
 
 	List<String> getPathTo(I serializationArtefact) throws IOException;
-
-	public RepositoryFolder<?, I> getRootFolder();
 
 }

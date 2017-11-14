@@ -47,10 +47,7 @@ import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
-import org.openflexo.foundation.resource.FileIODelegate;
-import org.openflexo.rm.FileSystemResourceLocatorImpl;
 import org.openflexo.rm.Resource;
-import org.openflexo.rm.ResourceLocator;
 
 /**
  * Default implementation for {@link FMLRTVirtualModelInstanceResource}
@@ -116,20 +113,24 @@ public abstract class FMLRTVirtualModelInstanceResourceImpl
 
 	@Override
 	public Resource getDirectory() {
-		String parentPath = getDirectoryPath();
+		return getIODelegate().getSerializationArtefactAsResource().getContainer();
+
+		/*String parentPath = getDirectoryPath();
 		if (ResourceLocator.locateResource(parentPath) == null) {
+			System.out.println("jessaie un lookup de " + parentPath);
+			System.out.println("" + getIODelegate().getSerializationArtefact());
 			FileSystemResourceLocatorImpl.appendDirectoryToFileSystemResourceLocator(parentPath);
 		}
-		return ResourceLocator.locateResource(parentPath);
+		return ResourceLocator.locateResource(parentPath);*/
 	}
 
-	public String getDirectoryPath() {
+	/*public String getDirectoryPath() {
 		if (getIODelegate() instanceof FileIODelegate) {
 			FileIODelegate ioDelegate = (FileIODelegate) getIODelegate();
 			return ioDelegate.getFile().getParentFile().getAbsolutePath();
 		}
 		return "";
-	}
+	}*/
 
 	@Override
 	public FMLRTVirtualModelInstance getModelData() {
@@ -144,11 +145,12 @@ public abstract class FMLRTVirtualModelInstanceResourceImpl
 	@Override
 	public String computeDefaultURI() {
 		if (getContainer() != null) {
-			return getContainer().getURI() + "/" + (getName().endsWith(FMLRTVirtualModelInstanceResourceFactory.FML_RT_SUFFIX) ? getName()
-					: getName() + FMLRTVirtualModelInstanceResourceFactory.FML_RT_SUFFIX);
+			return getContainer().getURI() + (!getContainer().getURI().endsWith("/") ? "/" : "")
+					+ (getName().endsWith(FMLRTVirtualModelInstanceResourceFactory.FML_RT_SUFFIX) ? getName()
+							: getName() + FMLRTVirtualModelInstanceResourceFactory.FML_RT_SUFFIX);
 		}
 		if (getResourceCenter() != null) {
-			return getResourceCenter().getDefaultBaseURI() + "/"
+			return getResourceCenter().getDefaultBaseURI() + (!getResourceCenter().getDefaultBaseURI().endsWith("/") ? "/" : "")
 					+ (getName().endsWith(FMLRTVirtualModelInstanceResourceFactory.FML_RT_SUFFIX) ? getName()
 							: getName() + FMLRTVirtualModelInstanceResourceFactory.FML_RT_SUFFIX);
 		}

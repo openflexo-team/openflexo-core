@@ -113,7 +113,7 @@ public class TestFMLBindingModelManagement3 extends OpenflexoProjectAtRunTimeTes
 	static FlexoConcept flexoConceptC;
 	static FlexoConcept flexoConceptD;
 
-	static FlexoProject project;
+	static FlexoProject<File> project;
 	static FMLRTVirtualModelInstance newView;
 	static FMLRTVirtualModelInstance vmi1;
 	static FMLRTVirtualModelInstance vmi2;
@@ -155,8 +155,7 @@ public class TestFMLBindingModelManagement3 extends OpenflexoProjectAtRunTimeTes
 		VirtualModelResourceFactory factory = fmlTechnologyAdapter.getVirtualModelResourceFactory();
 
 		VirtualModelResource newVirtualModelResource = factory.makeTopLevelVirtualModelResource(VIEWPOINT_NAME, VIEWPOINT_URI,
-				fmlTechnologyAdapter.getGlobalRepository(resourceCenter).getRootFolder(),
-				fmlTechnologyAdapter.getTechnologyContextManager(), true);
+				fmlTechnologyAdapter.getGlobalRepository(resourceCenter).getRootFolder(), true);
 		viewPoint = newVirtualModelResource.getLoadedResourceData();
 
 		assertTrue(((VirtualModelResource) viewPoint.getResource()).getDirectory() != null);
@@ -180,8 +179,7 @@ public class TestFMLBindingModelManagement3 extends OpenflexoProjectAtRunTimeTes
 		FMLTechnologyAdapter fmlTechnologyAdapter = serviceManager.getTechnologyAdapterService()
 				.getTechnologyAdapter(FMLTechnologyAdapter.class);
 		VirtualModelResourceFactory factory = fmlTechnologyAdapter.getVirtualModelResourceFactory();
-		VirtualModelResource newVMResource = factory.makeContainedVirtualModelResource("VM1", viewPoint.getVirtualModelResource(),
-				fmlTechnologyAdapter.getTechnologyContextManager(), true);
+		VirtualModelResource newVMResource = factory.makeContainedVirtualModelResource("VM1", viewPoint.getVirtualModelResource(), true);
 		virtualModel1 = newVMResource.getLoadedResourceData();
 
 		assertTrue(((VirtualModelResource) virtualModel1.getResource()).getIODelegate().exists());
@@ -199,7 +197,7 @@ public class TestFMLBindingModelManagement3 extends OpenflexoProjectAtRunTimeTes
 				virtualModel1.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.THIS_PROPERTY).getType());
 
 		VirtualModelResource newVMResource2 = factory.makeContainedVirtualModelResource("VM2",
-				(VirtualModelResource) virtualModel1.getResource(), fmlTechnologyAdapter.getTechnologyContextManager(), true);
+				(VirtualModelResource) virtualModel1.getResource(), true);
 		virtualModel2 = newVMResource2.getLoadedResourceData();
 
 		assertTrue(((VirtualModelResource) virtualModel2.getResource()).getIODelegate().exists());
@@ -214,7 +212,7 @@ public class TestFMLBindingModelManagement3 extends OpenflexoProjectAtRunTimeTes
 				virtualModel2.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.THIS_PROPERTY).getType());
 
 		VirtualModelResource newVMResource3 = factory.makeContainedVirtualModelResource("VM3",
-				(VirtualModelResource) virtualModel2.getResource(), fmlTechnologyAdapter.getTechnologyContextManager(), true);
+				(VirtualModelResource) virtualModel2.getResource(), true);
 		virtualModel3 = newVMResource3.getLoadedResourceData();
 		assertTrue(ResourceLocator.retrieveResourceAsFile(((VirtualModelResource) virtualModel3.getResource()).getDirectory()).exists());
 		assertTrue(((VirtualModelResource) virtualModel3.getResource()).getIODelegate().exists());
@@ -397,11 +395,11 @@ public class TestFMLBindingModelManagement3 extends OpenflexoProjectAtRunTimeTes
 
 		log("testInstanciateVirtualModelInstances()");
 
-		editor = createProject("TestProject");
-		project = editor.getProject();
+		editor = createStandaloneProject("TestProject");
+		project = (FlexoProject<File>) editor.getProject();
 		System.out.println("Created project " + project.getProjectDirectory());
 		assertTrue(project.getProjectDirectory().exists());
-		assertTrue(project.getProjectDataResource().getIODelegate().exists());
+		assertTrue(project.getResource().getIODelegate().exists());
 
 		CreateBasicVirtualModelInstance action = CreateBasicVirtualModelInstance.actionType
 				.makeNewAction(project.getVirtualModelInstanceRepository().getRootFolder(), null, editor);
@@ -656,7 +654,7 @@ public class TestFMLBindingModelManagement3 extends OpenflexoProjectAtRunTimeTes
 		resourceCenter = makeNewDirectoryResourceCenter();
 
 		File directory = ResourceLocator.retrieveResourceAsFile(((VirtualModelResource) viewPoint.getResource()).getDirectory());
-		File newDirectory = new File(((FileSystemBasedResourceCenter) resourceCenter).getDirectory(), directory.getName());
+		File newDirectory = new File(((FileSystemBasedResourceCenter) resourceCenter).getRootDirectory(), directory.getName());
 		newDirectory.mkdirs();
 
 		try {
@@ -684,13 +682,16 @@ public class TestFMLBindingModelManagement3 extends OpenflexoProjectAtRunTimeTes
 		System.out.println("Found resource " + reloadedVM2.getURI());
 		System.out.println("Found resource " + reloadedVM3.getURI());
 
-		editor = reloadProject(project.getDirectory());
-		project = editor.getProject();
+		editor = reloadProject(project.getProjectDirectory());
+		project = (FlexoProject<File>) editor.getProject();
 		assertNotNull(editor);
 		assertNotNull(project);
 
 		System.out.println("All resources=" + project.getAllResources());
+		System.out.println("searching: " + newView.getURI());
 		assertEquals(4, project.getAllResources().size());
+		System.out.println("not null: " + project.getResource(newView.getURI()));
+		System.exit(-1);
 		assertNotNull(project.getResource(newView.getURI()));
 
 		FMLRTVirtualModelInstanceResource newViewResource = project.getVirtualModelInstanceRepository()

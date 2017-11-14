@@ -113,8 +113,7 @@ public class TestControlGraph extends OpenflexoTestCase {
 		VirtualModelResourceFactory factory = fmlTechnologyAdapter.getVirtualModelResourceFactory();
 
 		VirtualModelResource newVirtualModelResource = factory.makeTopLevelVirtualModelResource(VIEWPOINT_NAME, VIEWPOINT_URI,
-				fmlTechnologyAdapter.getGlobalRepository(resourceCenter).getRootFolder(),
-				fmlTechnologyAdapter.getTechnologyContextManager(), true);
+				fmlTechnologyAdapter.getGlobalRepository(resourceCenter).getRootFolder(), true);
 		newViewPoint = newVirtualModelResource.getLoadedResourceData();
 
 		// assertTrue(((VirtualModelResource)
@@ -138,7 +137,7 @@ public class TestControlGraph extends OpenflexoTestCase {
 				.getTechnologyAdapter(FMLTechnologyAdapter.class);
 		VirtualModelResourceFactory factory = fmlTechnologyAdapter.getVirtualModelResourceFactory();
 		VirtualModelResource newVMResource = factory.makeContainedVirtualModelResource(VIRTUAL_MODEL_NAME,
-				newViewPoint.getVirtualModelResource(), fmlTechnologyAdapter.getTechnologyContextManager(), true);
+				newViewPoint.getVirtualModelResource(), true);
 		newVirtualModel = newVMResource.getLoadedResourceData();
 
 		assertTrue(ResourceLocator.retrieveResourceAsFile(((VirtualModelResource) newVirtualModel.getResource()).getDirectory()).exists());

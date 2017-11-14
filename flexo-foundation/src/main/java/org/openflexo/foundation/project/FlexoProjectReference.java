@@ -48,8 +48,6 @@ import org.openflexo.model.annotations.Parameter;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.model.annotations.XMLElement;
-import org.openflexo.model.factory.AccessibleProxyObject;
-import org.openflexo.model.factory.DeletableProxyObject;
 
 /**
  * Encodes the reference to a {@link FlexoProject} (import relationship between two projects)
@@ -60,8 +58,7 @@ import org.openflexo.model.factory.DeletableProxyObject;
 @ModelEntity
 @XMLElement
 @ImplementationClass(FlexoProjectReferenceImpl.class)
-public interface FlexoProjectReference
-		extends AccessibleProxyObject, DeletableProxyObject, FlexoProjectObject /*, FlexoResource<FlexoProject>*/ {
+public interface FlexoProjectReference extends FlexoProjectObject {
 
 	public static final String OWNER = "owner";
 	public static final String REFERENCED_PROJECT = "referencedProject";

@@ -167,7 +167,7 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 
 							File rcDir = new File(dirPath);
 							if (rcDir.exists()) {
-								rc = new DirectoryResourceCenter(rcDir, this);
+								rc = DirectoryResourceCenter.instanciateNewDirectoryResourceCenter(rcDir, this);
 							}
 						}
 						else if (url.getProtocol().equals("jar")) {
@@ -411,6 +411,13 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 		for (FlexoResourceCenter<?> r : RCs) {
 			r.stop();
 		}
+	}
+
+	@Override
+	public <I> FlexoResourceCenter<I> getResourceCenterContaining(I serializationArtefact) {
+		System.out.println("Je cherche un RC qui pourrait contenir " + serializationArtefact);
+		System.out.println("TODO !!!");
+		return null;
 	}
 
 	private boolean devMode = false;

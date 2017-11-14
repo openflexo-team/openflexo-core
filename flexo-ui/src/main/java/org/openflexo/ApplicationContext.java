@@ -53,8 +53,8 @@ import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoEditor.FlexoEditorFactory;
 import org.openflexo.foundation.FlexoService;
 import org.openflexo.foundation.FlexoService.ServiceNotification;
-import org.openflexo.foundation.project.ProjectLoader;
 import org.openflexo.foundation.FlexoServiceManager;
+import org.openflexo.foundation.project.ProjectLoader;
 import org.openflexo.foundation.resource.DefaultResourceCenterService;
 import org.openflexo.foundation.resource.DefaultResourceCenterService.DefaultPackageResourceCenterIsNotInstalled;
 import org.openflexo.foundation.resource.DefaultResourceCenterService.ResourceCenterListShouldBeStored;
@@ -100,8 +100,6 @@ import org.openflexo.view.controller.TechnologyAdapterControllerService;
  */
 public abstract class ApplicationContext extends DefaultFlexoServiceManager implements FlexoEditorFactory {
 
-	private final FlexoEditor applicationEditor;
-
 	private final ApplicationData applicationData;
 
 	// private ServerRestService serverRestService;
@@ -123,8 +121,6 @@ public abstract class ApplicationContext extends DefaultFlexoServiceManager impl
 		registerApplicationFIBLibraryService();
 		registerModuleLoaderService();
 		registerPreferencesService();
-
-		applicationEditor = createApplicationEditor();
 
 		TechnologyAdapterControllerService technologyAdapterControllerService = createTechnologyAdapterControllerService();
 		registerService(technologyAdapterControllerService);
@@ -244,15 +240,6 @@ public abstract class ApplicationContext extends DefaultFlexoServiceManager impl
 
 	public final TechnologyAdapterControllerService getTechnologyAdapterControllerService() {
 		return getService(TechnologyAdapterControllerService.class);
-	}
-
-	public final FlexoEditor getApplicationEditor() {
-		return applicationEditor;
-	}
-
-	@Override
-	public FlexoEditor getDefaultEditor() {
-		return getApplicationEditor();
 	}
 
 	/*

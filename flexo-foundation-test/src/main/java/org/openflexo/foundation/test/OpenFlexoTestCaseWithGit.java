@@ -119,9 +119,10 @@ public class OpenFlexoTestCaseWithGit extends OpenflexoProjectAtRunTimeTestCase 
 					System.out.println("testResourceCenterDirectory=" + testResourceCenterDirectory);
 
 					try {
-						rcService.addToResourceCenters(gitResourceCenter = new GitResourceCenter(testResourceCenterDirectory,
-								testResourceCenterDirectory, rcService));
+						gitResourceCenter = GitResourceCenter.instanciateNewGitResourceCenter(testResourceCenterDirectory,
+								testResourceCenterDirectory, rcService);
 						gitResourceCenter.setDefaultBaseURI(TEST_RESOURCE_CENTER_URI);
+						rcService.addToResourceCenters(gitResourceCenter);
 					} catch (IllegalStateException | GitAPIException e) {
 						e.printStackTrace();
 					}

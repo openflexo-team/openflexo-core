@@ -38,36 +38,46 @@
 
 package org.openflexo.foundation;
 
-import java.io.File;
+import static org.junit.Assert.fail;
 
-import org.openflexo.foundation.resource.DirectoryResourceCenter;
+import java.util.Iterator;
+import java.util.logging.Logger;
+
+import org.junit.Test;
+import org.openflexo.foundation.project.FlexoProjectFactory;
+import org.openflexo.foundation.project.FlexoProjectResourceFactory;
+import org.openflexo.foundation.test.OpenflexoTestCase;
+import org.openflexo.logging.FlexoLogger;
+import org.openflexo.model.ModelContext;
+import org.openflexo.model.ModelEntity;
+import org.openflexo.model.exceptions.MissingImplementationException;
+import org.openflexo.model.exceptions.ModelDefinitionException;
 
 /**
- * Test purposes: implements an FlexoServiceManager with a unique ResourceCenter
- * 
- * @author sylvain
+ * Test instanciation of {@link FlexoProjectFactory}<br>
  * 
  */
-public class TestFlexoServiceManager extends DefaultFlexoServiceManager {
+public class FlexoProjectResourceFactoryTest extends OpenflexoTestCase {
 
-	private final File resourceCenterDirectory;
+	private static final Logger logger = FlexoLogger.getLogger(FlexoProjectResourceFactoryTest.class.getPackage().getName());
 
-	public static class FlexoTestEditor extends DefaultFlexoEditor {
-		public FlexoTestEditor(FlexoProject project, FlexoServiceManager sm) {
-			super(project, sm);
+	@Test
+	public void testInstantiateVirtualModelModelFactory() {
+		try {
+			instanciateTestServiceManager();
+			System.out.println("Instanciating FlexoProjectFactory");
+			FlexoProjectResourceFactory factory = new FlexoProjectResourceFactory(serviceManager);
+			ModelContext modelContext = factory.getModelContext();
+			for (Iterator<ModelEntity> it = modelContext.getEntities(); it.hasNext();) {
+				System.out.println("> Found " + it.next().getImplementedInterface());
+			}
+			factory.checkMethodImplementations();
+		} catch (ModelDefinitionException e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		} catch (MissingImplementationException e) {
+			e.printStackTrace();
+			fail(e.getMessage());
 		}
-
 	}
-
-	public TestFlexoServiceManager(File resourceCenterDirectory) {
-		super(null, true);
-		this.resourceCenterDirectory = resourceCenterDirectory;
-		getResourceCenterService().addToResourceCenters(new DirectoryResourceCenter(resourceCenterDirectory, getResourceCenterService()));
-	}
-
-	@Override
-	protected FlexoEditor createApplicationEditor() {
-		return new FlexoTestEditor(null, this);
-	}
-
 }

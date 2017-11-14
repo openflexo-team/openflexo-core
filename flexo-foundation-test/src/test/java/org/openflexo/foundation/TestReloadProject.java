@@ -40,10 +40,14 @@ package org.openflexo.foundation;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
+
+import java.io.File;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.openflexo.foundation.resource.DirectoryResourceCenter;
 import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.test.OpenflexoProjectAtRunTimeTestCase;
 import org.openflexo.test.OrderedRunner;
@@ -60,7 +64,7 @@ import org.openflexo.test.TestOrder;
 public class TestReloadProject extends OpenflexoProjectAtRunTimeTestCase {
 
 	private static FlexoEditor editor;
-	private static FlexoProject project;
+	private static FlexoProject<File> project;
 
 	/**
 	 * Create an empty project
@@ -70,13 +74,21 @@ public class TestReloadProject extends OpenflexoProjectAtRunTimeTestCase {
 	@Test
 	@TestOrder(1)
 	public void testCreateProject() throws SaveResourceException {
-		editor = createProject("TestProject");
-		project = editor.getProject();
+		editor = createStandaloneProject("TestProject");
+		project = (FlexoProject<File>) editor.getProject();
 		System.out.println("Created project " + project.getProjectDirectory());
 		assertTrue(project.getProjectDirectory().exists());
-		assertTrue(project.getProjectDataResource().getIODelegate().exists());
-		project.setDescription("This is a test project");
+		assertTrue(project.getResource().getIODelegate().exists());
+		project.setProjectDescription("This is a test project");
 		project.save();
+
+		assertTrue(project.isStandAlone());
+		assertEquals(project.getRootFolder().getSerializationArtefact(), project.getProjectDirectory());
+		assertEquals(project.getBaseArtefact().getParentFile(), project.getProjectDirectory());
+		assertSame(project.getProjectResource().getDelegateResourceCenter(), project.getResourceCenter());
+		assertTrue(project.getDelegateResourceCenter() instanceof DirectoryResourceCenter);
+		assertEquals(project.getProjectDirectory(), ((DirectoryResourceCenter) project.getDelegateResourceCenter()).getRootDirectory());
+
 	}
 
 	/**
@@ -86,17 +98,26 @@ public class TestReloadProject extends OpenflexoProjectAtRunTimeTestCase {
 	@TestOrder(2)
 	public void testReloadProject() {
 
-		String oldURI = project.getURI();
+		String oldURI = project.getProjectURI();
 		System.out.println("Old URI: " + oldURI);
+		System.out.println("Old project dir: " + project.getProjectDirectory());
 		instanciateTestServiceManager();
-		editor = reloadProject(project.getDirectory());
-		project = editor.getProject();
-		String newURI = project.getURI();
+		editor = reloadProject(project.getProjectDirectory());
+		project = (FlexoProject<File>) editor.getProject();
+		String newURI = project.getProjectURI();
 		System.out.println("New URI: " + newURI);
 		assertNotNull(editor);
 		assertNotNull(project);
 		assertEquals(newURI, oldURI);
-		assertEquals("This is a test project", project.getDescription());
+		assertEquals("This is a test project", project.getProjectDescription());
+
+		assertTrue(project.isStandAlone());
+		assertEquals(project.getRootFolder().getSerializationArtefact(), project.getProjectDirectory());
+		assertEquals(project.getBaseArtefact().getParentFile(), project.getProjectDirectory());
+		assertSame(project.getProjectResource().getDelegateResourceCenter(), project.getResourceCenter());
+		assertTrue(project.getDelegateResourceCenter() instanceof DirectoryResourceCenter);
+		assertEquals(project.getProjectDirectory(), ((DirectoryResourceCenter) project.getDelegateResourceCenter()).getRootDirectory());
+
 	}
 
 }

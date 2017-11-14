@@ -55,9 +55,10 @@ import org.apache.commons.lang3.reflect.TypeUtils;
 import org.openflexo.connie.annotations.NotificationUnsafe;
 import org.openflexo.foundation.DataFlexoObserver;
 import org.openflexo.foundation.DataModification;
-import org.openflexo.foundation.DefaultFlexoObject;
 import org.openflexo.foundation.FlexoObject;
+import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.FlexoObservable;
+import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.toolbox.FileUtils;
 import org.openflexo.toolbox.StringUtils;
 
@@ -73,7 +74,8 @@ import org.openflexo.toolbox.StringUtils;
  * @param <I>
  *            serialization artefact type
  */
-public abstract class ResourceRepositoryImpl<R extends FlexoResource<?>, I> extends DefaultFlexoObject implements DataFlexoObserver, ResourceRepository<R, I> {
+public abstract class ResourceRepositoryImpl<R extends FlexoResource<?>, I> extends FlexoObjectImpl
+		/*DefaultFlexoObject*/ implements DataFlexoObserver, ResourceRepository<R, I> {
 
 	private static final Logger logger = Logger.getLogger(ResourceRepositoryImpl.class.getPackage().getName());
 
@@ -84,7 +86,7 @@ public abstract class ResourceRepositoryImpl<R extends FlexoResource<?>, I> exte
 	 */
 	protected HashMap<String, R> resources;
 
-	private final RepositoryFolder<R, I> rootFolder;
+	private RepositoryFolder<R, I> rootFolder;
 
 	/** Stores the resource center which is the "owner" of this repository */
 	private FlexoResourceCenter<I> resourceCenter;
@@ -92,10 +94,16 @@ public abstract class ResourceRepositoryImpl<R extends FlexoResource<?>, I> exte
 	/**
 	 * Creates a new {@link ResourceRepositoryImpl}
 	 */
-	public ResourceRepositoryImpl(FlexoResourceCenter<I> resourceCenter, I baseArtefact) {
-		this.resourceCenter = resourceCenter;
+	public ResourceRepositoryImpl() {
 		resources = new HashMap<>();
-		rootFolder = new RepositoryFolder<>(baseArtefact, null, this);
+	}
+
+	/**
+	 * Creates a new {@link ResourceRepositoryImpl}
+	 */
+	public ResourceRepositoryImpl(FlexoResourceCenter<I> resourceCenter, I baseArtefact) {
+		this();
+		this.resourceCenter = resourceCenter;
 		this.baseArtefact = baseArtefact;
 	}
 
@@ -107,12 +115,13 @@ public abstract class ResourceRepositoryImpl<R extends FlexoResource<?>, I> exte
 		return baseArtefact;
 	}
 
-	protected void setBaseArtefact(I baseArtefact) {
+	@Override
+	public void setBaseArtefact(I baseArtefact) {
 		if ((baseArtefact == null && this.baseArtefact != null) || (baseArtefact != null && !baseArtefact.equals(this.baseArtefact))) {
 			I oldValue = this.baseArtefact;
 			this.baseArtefact = baseArtefact;
 			getPropertyChangeSupport().firePropertyChange("baseArtefact", oldValue, baseArtefact);
-			rootFolder.setSerializationArtefact(baseArtefact);
+			rootFolder = new RepositoryFolder<>(baseArtefact, null, this);
 		}
 	}
 
@@ -144,6 +153,14 @@ public abstract class ResourceRepositoryImpl<R extends FlexoResource<?>, I> exte
 			returnedURI = baseURI + i;
 		}
 		return returnedURI;
+	}
+
+	@Override
+	public FlexoServiceManager getServiceManager() {
+		if (getResourceCenter() != null) {
+			return getResourceCenter().getServiceManager();
+		}
+		return super.getServiceManager();
 	}
 
 	/* (non-Javadoc)
@@ -220,6 +237,7 @@ public abstract class ResourceRepositoryImpl<R extends FlexoResource<?>, I> exte
 	 */
 	@Override
 	public void registerResource(R resource, RepositoryFolder<R, I> parentFolder) {
+		System.out.println("repository " + this + " registered " + resource + " for uri " + resource.getURI());
 		if (resource == null) {
 			logger.warning("Trying to register a null resource");
 			return;
@@ -471,8 +489,8 @@ public abstract class ResourceRepositoryImpl<R extends FlexoResource<?>, I> exte
 	 */
 	@Override
 	public final Class<?> getResourceClass() {
-		return org.openflexo.connie.type.TypeUtils.getBaseClass(
-				TypeUtils.getTypeArguments(getClass(), ResourceRepositoryImpl.class).get(ResourceRepositoryImpl.class.getTypeParameters()[0]));
+		return org.openflexo.connie.type.TypeUtils.getBaseClass(TypeUtils.getTypeArguments(getClass(), ResourceRepositoryImpl.class)
+				.get(ResourceRepositoryImpl.class.getTypeParameters()[0]));
 	}
 
 	/* (non-Javadoc)

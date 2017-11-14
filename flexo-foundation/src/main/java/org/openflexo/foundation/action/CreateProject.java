@@ -105,6 +105,8 @@ public class CreateProject extends FlexoAction<CreateProject, RepositoryFolder<F
 	private String newProjectDescription;
 	private FlexoProject newFlexoProject;
 
+	private Object serializationArtefact;
+
 	CreateProject(RepositoryFolder<FlexoProjectResource, ?> focusedObject, Vector<FlexoObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 	}
@@ -114,13 +116,27 @@ public class CreateProject extends FlexoAction<CreateProject, RepositoryFolder<F
 
 		logger.info("Create new FlexoProject");
 
+		System.out.println("Create new FlexoProject");
+		System.out.println("getEditor()=" + getEditor());
+		System.out.println("getServiceManager()=" + getServiceManager());
+		System.out.println("getSerializationArtefact()=" + getSerializationArtefact());
+
 		FlexoProjectResourceFactory factory = getServiceManager().getProjectLoaderService().getFlexoProjectResourceFactory();
 
 		try {
-			FlexoProjectResource newProjectResource = factory.makeFlexoProjectResource(getBaseName(), getNewProjectURI(),
-					getNewProjectFolder(), true);
+
+			FlexoProjectResource newProjectResource = null;
+			if (getFocusedObject() != null) {
+				System.out.println("Hop, on cree un projet dans un RC");
+				newProjectResource = factory.makeFlexoProjectResource(getNewProjectName(), getNewProjectURI(), getFocusedObject(), true);
+				System.out.println("et donc =" + newProjectResource.getDelegateResourceCenter());
+			}
+			else {
+				newProjectResource = factory.makeFlexoProjectResource(getSerializationArtefact(), getNewProjectURI(), true);
+			}
+
 			newFlexoProject = newProjectResource.getLoadedResourceData();
-			newFlexoProject.setDescription(getNewProjectDescription());
+			newFlexoProject.setProjectDescription(getNewProjectDescription());
 			newFlexoProject.setLastUniqueID(0);
 			newFlexoProject.setCreationUserId(FlexoObjectImpl.getCurrentUserIdentifier());
 			newFlexoProject.setCreationDate(new Date());
@@ -129,6 +145,10 @@ public class CreateProject extends FlexoAction<CreateProject, RepositoryFolder<F
 			// We add the newly created project as a ResourceCenter
 			// Maybe this will be done now, but it may also be done in a task
 			// In this case, we have to reference the task to wait for its execution
+
+			System.out.println("Hop, newProjectResource=" + newProjectResource);
+			System.out.println("Hop, newProjectResource.getDelegateResourceCenter()=" + newProjectResource.getDelegateResourceCenter());
+
 			FlexoTask addResourceCenterTask = getServiceManager().resourceCenterAdded(newFlexoProject);
 			if (addResourceCenterTask != null) {
 				getServiceManager().getTaskManager().waitTask(addResourceCenterTask);
@@ -142,6 +162,10 @@ public class CreateProject extends FlexoAction<CreateProject, RepositoryFolder<F
 
 	}
 
+	public FlexoProject<?> getNewFlexoProject() {
+		return newFlexoProject;
+	}
+
 	public String getNewProjectName() {
 		return newProjectName;
 	}
@@ -153,7 +177,7 @@ public class CreateProject extends FlexoAction<CreateProject, RepositoryFolder<F
 	}
 
 	public String getNewProjectURI() {
-		if (newProjectURI == null) {
+		if (newProjectURI == null && getFocusedObject() != null) {
 			String baseURI = getFocusedObject().getDefaultBaseURI();
 			if (!baseURI.endsWith("/")) {
 				baseURI = baseURI + "/";
@@ -177,10 +201,6 @@ public class CreateProject extends FlexoAction<CreateProject, RepositoryFolder<F
 	public void setNewProjectDescription(String newProjectDescription) {
 		this.newProjectDescription = newProjectDescription;
 		getPropertyChangeSupport().firePropertyChange("newProjectDescription", null, newProjectDescription);
-	}
-
-	public RepositoryFolder<FlexoProjectResource, ?> getNewProjectFolder() {
-		return getFocusedObject();
 	}
 
 	public boolean isNewProjectNameValid() {
@@ -245,6 +265,19 @@ public class CreateProject extends FlexoAction<CreateProject, RepositoryFolder<F
 			}
 		}
 		return projectName;
+	}
+
+	public Object getSerializationArtefact() {
+		return serializationArtefact;
+	}
+
+	public void setSerializationArtefact(Object serializationArtefact) {
+		if ((serializationArtefact == null && this.serializationArtefact != null)
+				|| (serializationArtefact != null && !serializationArtefact.equals(this.serializationArtefact))) {
+			Object oldValue = this.serializationArtefact;
+			this.serializationArtefact = serializationArtefact;
+			getPropertyChangeSupport().firePropertyChange("serializationArtefact", oldValue, serializationArtefact);
+		}
 	}
 
 }

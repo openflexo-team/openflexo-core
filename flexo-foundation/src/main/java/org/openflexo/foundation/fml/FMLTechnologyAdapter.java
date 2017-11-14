@@ -38,6 +38,7 @@
 
 package org.openflexo.foundation.fml;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -158,7 +159,12 @@ public class FMLTechnologyAdapter extends TechnologyAdapter {
 	public <I> VirtualModelRepository<I> getVirtualModelRepository(FlexoResourceCenter<I> resourceCenter) {
 		VirtualModelRepository<I> returned = resourceCenter.retrieveRepository(VirtualModelRepository.class, this);
 		if (returned == null) {
-			returned = new VirtualModelRepository<>(this, resourceCenter);
+			try {
+				returned = VirtualModelRepository.instanciateNewRepository(this, resourceCenter);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			resourceCenter.registerRepository(returned, VirtualModelRepository.class, this);
 		}
 		return returned;
@@ -177,7 +183,9 @@ public class FMLTechnologyAdapter extends TechnologyAdapter {
 	public List<VirtualModelRepository<?>> getVirtualModelRepositories() {
 		List<VirtualModelRepository<?>> returned = new ArrayList<>();
 		for (FlexoResourceCenter<?> rc : getServiceManager().getResourceCenterService().getResourceCenters()) {
-			returned.add(getVirtualModelRepository(rc));
+			if (!rc.isDeleted()) {
+				returned.add(getVirtualModelRepository(rc));
+			}
 		}
 		return returned;
 	}

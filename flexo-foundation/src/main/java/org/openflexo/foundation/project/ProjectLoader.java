@@ -60,8 +60,10 @@ import org.openflexo.foundation.FlexoServiceImpl;
 import org.openflexo.foundation.action.CreateProject;
 import org.openflexo.foundation.nature.ProjectNature;
 import org.openflexo.foundation.resource.FlexoResource;
+import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.ProjectClosed;
 import org.openflexo.foundation.resource.ProjectLoaded;
+import org.openflexo.foundation.resource.RepositoryFolder;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.resource.SaveResourceExceptionList;
@@ -110,12 +112,6 @@ public class ProjectLoader extends FlexoServiceImpl implements HasPropertyChange
 			e.printStackTrace();
 			throw new RuntimeException(e);
 		}*/
-		try {
-			flexoProjectResourceFactory = new FlexoProjectResourceFactory();
-		} catch (ModelDefinitionException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 	}
 
 	/**
@@ -133,7 +129,7 @@ public class ProjectLoader extends FlexoServiceImpl implements HasPropertyChange
 	 * @param project
 	 * @return
 	 */
-	public final FlexoEditor makeFlexoEditor(FlexoProject<?> project) {
+	public FlexoEditor makeFlexoEditor(FlexoProject<?> project) {
 		FlexoEditor returned = new DefaultFlexoEditor(project, getServiceManager());
 		getPropertyChangeSupport().firePropertyChange(EDITOR_ADDED, null, returned);
 		return returned;
@@ -147,9 +143,12 @@ public class ProjectLoader extends FlexoServiceImpl implements HasPropertyChange
 		if (serializationArtefact instanceof File && !((File) serializationArtefact).exists()) {
 			throw new ProjectInitializerException("project directory does not exist", serializationArtefact);
 		}
+
 		FlexoProjectResource returned = projectResourcesForSerializationArtefacts.get(serializationArtefact);
 		if (returned == null) {
-			returned = (FlexoProjectResource) flexoProjectResourceFactory.retrieveResource(serializationArtefact, null);
+			FlexoResourceCenter<I> resourceCenter = getServiceManager().getResourceCenterService()
+					.getResourceCenterContaining(serializationArtefact);
+			returned = flexoProjectResourceFactory.retrieveResource(serializationArtefact, resourceCenter);
 			projectResourcesForSerializationArtefacts.put(serializationArtefact, returned);
 		}
 		return returned;
@@ -160,28 +159,43 @@ public class ProjectLoader extends FlexoServiceImpl implements HasPropertyChange
 	}
 
 	/**
-	 * Create a new {@link FlexoProject} with supplied projectDirectory<br>
+	 * Create a new {@link FlexoProject} with supplied projectDirectory and instantiate and return a new {@link FlexoEditor} on it<br>
 	 * 
 	 * @param projectDirectory
-	 * @return
+	 * @return a new FlexoEditor allowing to edit new created {@link FlexoProject}
 	 * @throws IOException
 	 * @throws ProjectInitializerException
 	 */
-	public <I> FlexoEditor newProject(I projectDirectory) throws IOException, ProjectInitializerException {
-		return newProject(projectDirectory, null);
+	public <I> FlexoEditor newStandaloneProject(I projectDirectory) throws IOException, ProjectInitializerException {
+		return newStandaloneProject(projectDirectory, null);
 	}
 
 	/**
-	 * Create a new {@link FlexoProject} with supplied projectDirectory<br>
-	 * Also gives supplied nature to the project
+	 * Create a new {@link FlexoProject} with supplied name and repository folder and instantiate and return a new {@link FlexoEditor} on
+	 * it<br>
 	 * 
-	 * @param projectDirectory
-	 * @param projectNature
-	 * @return
+	 * @param projectName
+	 * @param folder
+	 * @return a new FlexoEditor allowing to edit new created {@link FlexoProject}
 	 * @throws IOException
 	 * @throws ProjectInitializerException
 	 */
-	public <I> FlexoEditor newProject(I projectDirectory, ProjectNature<?, ?> projectNature)
+	public <I> FlexoEditor newProjectInResourceCenter(String projectName, RepositoryFolder<FlexoProjectResource, I> folder)
+			throws IOException, ProjectInitializerException {
+		return newProjectInResourceCenter(projectName, folder, null);
+	}
+
+	/**
+	 * Create a new {@link FlexoProject} with supplied projectDirectory and instantiate and return a new {@link FlexoEditor} on it<br>
+	 * Also gives supplied nature to the project when not null
+	 * 
+	 * @param projectDirectory
+	 * @param projectNature
+	 * @return a new FlexoEditor allowing to edit new created {@link FlexoProject}
+	 * @throws IOException
+	 * @throws ProjectInitializerException
+	 */
+	public <I> FlexoEditor newStandaloneProject(I projectDirectory, ProjectNature<?, ?> projectNature)
 			throws IOException, ProjectInitializerException {
 
 		// This will just create the .version in the project
@@ -212,6 +226,7 @@ public class ProjectLoader extends FlexoServiceImpl implements HasPropertyChange
 
 		// Create the project
 		CreateProject action = CreateProject.actionType.makeNewAction(null, null, getServiceManager().getDefaultEditor());
+		action.setSerializationArtefact(projectDirectory);
 		action.doAction();
 		newProject = action.getNewProject();
 
@@ -227,6 +242,50 @@ public class ProjectLoader extends FlexoServiceImpl implements HasPropertyChange
 		} catch (ProjectInitializerException e) {
 			throw e;
 		}*/
+
+		// newEditor(editor);
+		addToRootProjects(newProject);
+
+		// Notify project just loaded
+		getServiceManager().notify(this, new ProjectLoaded(newProject));
+
+		// Now, if a nature has been supplied, gives this nature to the project
+		if (projectNature != null) {
+			projectNature.givesNature(newProject, newEditor);
+		}
+
+		// Create and return a FlexoEditor for the new FlexoProject
+		return makeFlexoEditor(newProject);
+	}
+
+	/**
+	 * Create a new {@link FlexoProject} with supplied projectDirectory and instantiate and return a new {@link FlexoEditor} on it<br>
+	 * Also gives supplied nature to the project when not null
+	 * 
+	 * @param projectName
+	 * @param folder
+	 * @return a new FlexoEditor allowing to edit new created {@link FlexoProject}
+	 * @throws IOException
+	 * @throws ProjectInitializerException
+	 */
+	public <I> FlexoEditor newProjectInResourceCenter(String projectName, RepositoryFolder<FlexoProjectResource, I> folder,
+			ProjectNature<?, ?> projectNature) throws IOException, ProjectInitializerException {
+
+		FlexoProject<?> newProject = null;
+		FlexoEditor newEditor = null;
+
+		// TODO: attempt to lookup an eventual FlexoResourceCenter, repository and folder for supplied project directory;
+
+		// Create the project
+		CreateProject action = CreateProject.actionType.makeNewAction(folder, null, getServiceManager().getDefaultEditor());
+		action.setNewProjectName(projectName);
+		action.doAction();
+		newProject = action.getNewProject();
+
+		preInitialization(newProject.getProjectDirectory());
+
+		projectResourcesForSerializationArtefacts.put(newProject.getProjectDirectory(),
+				(FlexoProjectResource) (FlexoResource) newProject.getResource());
 
 		// newEditor(editor);
 		addToRootProjects(newProject);
@@ -564,6 +623,12 @@ public class ProjectLoader extends FlexoServiceImpl implements HasPropertyChange
 
 	@Override
 	public void initialize() {
+		try {
+			flexoProjectResourceFactory = new FlexoProjectResourceFactory(getServiceManager());
+		} catch (ModelDefinitionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	/*public ModelFactory getModelFactory() {

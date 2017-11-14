@@ -639,12 +639,12 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 	 * @param technologyAdapter
 	 * @return
 	 */
-	public List<ResourceRepositoryImpl<?, ?>> getGlobalRepositories() {
-		List<ResourceRepositoryImpl<?, ?>> returned = new ArrayList<>();
+	public List<TechnologyAdapterGlobalRepository<?, ?>> getGlobalRepositories() {
+		List<TechnologyAdapterGlobalRepository<?, ?>> returned = new ArrayList<>();
 		for (FlexoResourceCenter<?> rc : getTechnologyAdapterService().getServiceManager().getResourceCenterService()
 				.getResourceCenters()) {
 			// System.out.println("Pour le RC " + rc);
-			ResourceRepositoryImpl<?, ?> globalRepository = getGlobalRepository(rc);// rc.getGlobalRepository(this);
+			TechnologyAdapterGlobalRepository<?, ?> globalRepository = getGlobalRepository(rc);// rc.getGlobalRepository(this);
 			// System.out.println("global repo = " + globalRepository);
 			if (globalRepository != null) {
 				returned.add(globalRepository);
@@ -655,10 +655,15 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 
 	private final Map<FlexoResourceCenter<?>, TechnologyAdapterGlobalRepository> globalRepositories = new HashMap<>();
 
-	public <I> TechnologyAdapterGlobalRepository getGlobalRepository(FlexoResourceCenter<I> rc) {
-		TechnologyAdapterGlobalRepository returned = globalRepositories.get(rc);
+	public <I> TechnologyAdapterGlobalRepository<?, I> getGlobalRepository(FlexoResourceCenter<I> rc) {
+		TechnologyAdapterGlobalRepository<?, I> returned = globalRepositories.get(rc);
 		if (returned == null) {
-			returned = new TechnologyAdapterGlobalRepository(this, rc);
+			try {
+				returned = TechnologyAdapterGlobalRepository.instanciateNewRepository(this, rc);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			globalRepositories.put(rc, returned);
 		}
 		return returned;
@@ -869,7 +874,8 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 									.replace("target/classes", "src/main/resources");
 							File rcDir = new File(dirPath);
 							if (rcDir.exists()) {
-								rc = new DirectoryResourceCenter(rcDir, serviceManager.getResourceCenterService());
+								rc = DirectoryResourceCenter.instanciateNewDirectoryResourceCenter(rcDir,
+										serviceManager.getResourceCenterService());
 							}
 						}
 						else if (url.getProtocol().equals("jar")) {

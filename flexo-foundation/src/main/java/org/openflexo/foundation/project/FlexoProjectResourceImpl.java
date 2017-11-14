@@ -48,6 +48,7 @@ import org.openflexo.foundation.InconsistentDataException;
 import org.openflexo.foundation.InvalidModelDefinitionException;
 import org.openflexo.foundation.InvalidXMLException;
 import org.openflexo.foundation.resource.FlexoFileNotFoundException;
+import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.PamelaResourceImpl;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.task.FlexoTask;
@@ -64,6 +65,26 @@ public abstract class FlexoProjectResourceImpl extends PamelaResourceImpl<FlexoP
 		implements FlexoProjectResource {
 
 	static final Logger logger = Logger.getLogger(FlexoProjectResourceImpl.class.getPackage().getName());
+
+	/**
+	 * Instantiation of a delegate RC if project is stand-alone (not contained in another RC)
+	 */
+	private FlexoResourceCenter<?> delegateResourceCenter = null;
+
+	@Override
+	public FlexoResourceCenter<?> getDelegateResourceCenter() {
+		return delegateResourceCenter;
+	}
+
+	@Override
+	public void setDelegateResourceCenter(FlexoResourceCenter<?> delegateResourceCenter) {
+		if ((delegateResourceCenter == null && this.delegateResourceCenter != null)
+				|| (delegateResourceCenter != null && !delegateResourceCenter.equals(this.delegateResourceCenter))) {
+			FlexoResourceCenter<?> oldValue = this.delegateResourceCenter;
+			this.delegateResourceCenter = delegateResourceCenter;
+			getPropertyChangeSupport().firePropertyChange("delegateResourceCenter", oldValue, delegateResourceCenter);
+		}
+	}
 
 	@Override
 	public FlexoProject<?> getFlexoProject() {

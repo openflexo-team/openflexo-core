@@ -38,13 +38,14 @@
 
 package org.openflexo.foundation.fml;
 
-import java.util.logging.Logger;
+import java.io.IOException;
 
-import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
-import org.openflexo.foundation.technologyadapter.ModelRepository;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterResourceRepository;
+import org.openflexo.model.annotations.ModelEntity;
+import org.openflexo.model.exceptions.ModelDefinitionException;
+import org.openflexo.model.factory.ModelFactory;
 
 /**
  * A {@link VirtualModelRepository} references {@link VirtualModelResource} stored in a given {@link FlexoResourceCenter}
@@ -52,20 +53,24 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapterResourceRepos
  * @author sylvain
  * 
  */
-public class VirtualModelRepository<I>
+@ModelEntity
+public interface VirtualModelRepository<I>
 		extends TechnologyAdapterResourceRepository<VirtualModelResource, FMLTechnologyAdapter, VirtualModel, I> {
 
-	private static final Logger logger = Logger.getLogger(ModelRepository.class.getPackage().getName());
-
-	private final FlexoServiceManager serviceManager;
-
-	public VirtualModelRepository(FMLTechnologyAdapter adapter, FlexoResourceCenter<I> resourceCenter) {
-		super(adapter, resourceCenter);
-		this.serviceManager = adapter.getServiceManager();
+	public static <I> VirtualModelRepository<I> instanciateNewRepository(FMLTechnologyAdapter technologyAdapter,
+			FlexoResourceCenter<I> resourceCenter) throws IOException {
+		ModelFactory factory;
+		try {
+			factory = new ModelFactory(VirtualModelRepository.class);
+			VirtualModelRepository<I> newRepository = factory.newInstance(VirtualModelRepository.class);
+			newRepository.setTechnologyAdapter(technologyAdapter);
+			newRepository.setResourceCenter(resourceCenter);
+			newRepository.setBaseArtefact(resourceCenter.getBaseArtefact());
+			newRepository.getRootFolder().setRepositoryContext(null);
+			return newRepository;
+		} catch (ModelDefinitionException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
-
-	public VirtualModelLibrary getVirtualModelLibrary() {
-		return serviceManager.getVirtualModelLibrary();
-	}
-
 }

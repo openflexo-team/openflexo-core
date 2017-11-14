@@ -40,8 +40,8 @@
 package org.openflexo.foundation.technologyadapter;
 
 import org.openflexo.foundation.resource.FlexoResource;
-import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.ResourceRepositoryImpl;
+import org.openflexo.model.annotations.ModelEntity;
 
 /**
  * A {@link MetaModelRepository} stores all resources storing metamodels relative to a given technology<br>
@@ -52,7 +52,8 @@ import org.openflexo.foundation.resource.ResourceRepositoryImpl;
  * @param <R>
  * @param <TA>
  */
-public abstract class MetaModelRepository<R extends FlexoMetaModelResource<M, MM, TA> & FlexoResource<MM>, M extends FlexoModel<M, MM> & TechnologyObject<TA>, MM extends FlexoMetaModel<MM> & TechnologyObject<TA>, TA extends TechnologyAdapter, I>
+@ModelEntity(isAbstract = true)
+public interface MetaModelRepository<R extends FlexoMetaModelResource<M, MM, TA> & FlexoResource<MM>, M extends FlexoModel<M, MM> & TechnologyObject<TA>, MM extends FlexoMetaModel<MM> & TechnologyObject<TA>, TA extends TechnologyAdapter, I>
 		extends TechnologyAdapterResourceRepository<R, TA, MM, I> {
 
 	/**
@@ -61,11 +62,11 @@ public abstract class MetaModelRepository<R extends FlexoMetaModelResource<M, MM
 	 * @param technologyAdapter
 	 * @param resourceCenter
 	 */
-	public MetaModelRepository(TA technologyAdapter, FlexoResourceCenter<I> resourceCenter) {
+	/*public MetaModelRepository(TA technologyAdapter, FlexoResourceCenter<I> resourceCenter) {
 		super(technologyAdapter, resourceCenter);
 		getRootFolder().setRepositoryContext(resourceCenter.getLocales().localizedForKey("[Metamodels]"));
 		getRootFolder().setDescription(
 				"MetaModelRepository for technology " + technologyAdapter.getName() + " resource center: " + resourceCenter);
-	}
+	}*/
 
 }

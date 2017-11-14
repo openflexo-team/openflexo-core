@@ -41,11 +41,12 @@ package org.openflexo.foundation.project;
 import java.beans.PropertyChangeListener;
 import java.util.logging.Logger;
 
+import org.openflexo.foundation.FlexoProjectObject.FlexoProjectObjectImpl;
 import org.openflexo.foundation.utils.FlexoObjectReference;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.model.annotations.Setter;
 
-public abstract class FlexoProjectReferenceImpl implements FlexoProjectReference, PropertyChangeListener {
+public abstract class FlexoProjectReferenceImpl extends FlexoProjectObjectImpl implements FlexoProjectReference, PropertyChangeListener {
 
 	private static final Logger logger = FlexoLogger.getLogger(FlexoObjectReference.class.getPackage().getName());
 

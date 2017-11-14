@@ -42,6 +42,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
 import java.io.IOException;
 
 import org.junit.Test;
@@ -65,7 +66,7 @@ import org.openflexo.test.TestOrder;
 public class TestDeleteAction extends OpenflexoProjectAtRunTimeTestCase {
 
 	static FlexoEditor editor;
-	static FlexoProject project;
+	static FlexoProject<File> project;
 
 	public static final String VIEWPOINT_NAME = "TestViewPoint";
 	public static final String VIEWPOINT_URI = "http://openflexo.org/test/TestViewPoint";
@@ -84,11 +85,11 @@ public class TestDeleteAction extends OpenflexoProjectAtRunTimeTestCase {
 		resourceCenter = makeNewDirectoryResourceCenter();
 		assertNotNull(resourceCenter);
 		System.out.println("ResourceCenter= " + resourceCenter);
-		editor = createProject("TestProject");
-		project = editor.getProject();
+		editor = createStandaloneProject("TestProject");
+		project = (FlexoProject<File>) editor.getProject();
 		System.out.println("Created project " + project.getProjectDirectory());
 		assertTrue(project.getProjectDirectory().exists());
-		assertTrue(project.getProjectDataResource().getIODelegate().exists());
+		assertTrue(project.getResource().getIODelegate().exists());
 	}
 
 	/**
@@ -106,15 +107,13 @@ public class TestDeleteAction extends OpenflexoProjectAtRunTimeTestCase {
 		VirtualModelResourceFactory factory = fmlTechnologyAdapter.getVirtualModelResourceFactory();
 
 		VirtualModelResource newVirtualModelResource = factory.makeTopLevelVirtualModelResource(VIEWPOINT_NAME, VIEWPOINT_URI,
-				fmlTechnologyAdapter.getGlobalRepository(resourceCenter).getRootFolder(),
-				fmlTechnologyAdapter.getTechnologyContextManager(), true);
+				fmlTechnologyAdapter.getGlobalRepository(resourceCenter).getRootFolder(), true);
 		viewPoint = newVirtualModelResource.getLoadedResourceData();
 
 		assertNotNull(viewPoint);
 		assertNotNull(viewPoint.getResource());
 
-		VirtualModelResource newVMResource = factory.makeContainedVirtualModelResource(VIRTUAL_MODEL_NAME, newVirtualModelResource,
-				fmlTechnologyAdapter.getTechnologyContextManager(), true);
+		VirtualModelResource newVMResource = factory.makeContainedVirtualModelResource(VIRTUAL_MODEL_NAME, newVirtualModelResource, true);
 		virtualModel = newVMResource.getLoadedResourceData();
 
 		assertTrue(ResourceLocator.retrieveResourceAsFile(((VirtualModelResource) virtualModel.getResource()).getDirectory()).exists());

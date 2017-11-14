@@ -42,9 +42,11 @@ package org.openflexo.foundation.technologyadapter;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.resource.FlexoResource;
-import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.ResourceData;
+import org.openflexo.foundation.resource.ResourceRepository;
 import org.openflexo.foundation.resource.ResourceRepositoryImpl;
+import org.openflexo.model.annotations.ImplementationClass;
+import org.openflexo.model.annotations.ModelEntity;
 
 /**
  * A {@link TechnologyAdapterResourceRepository} stores all resources storing resources relative to a given technology<br>
@@ -55,36 +57,51 @@ import org.openflexo.foundation.resource.ResourceRepositoryImpl;
  * @param <R>
  * @param <TA>
  */
-public abstract class TechnologyAdapterResourceRepository<R extends TechnologyAdapterResource<RD, TA> & FlexoResource<RD>, TA extends TechnologyAdapter, RD extends ResourceData<RD> & TechnologyObject<TA>, I>
-		extends ResourceRepositoryImpl<R, I> {
+@ModelEntity(isAbstract = true)
+@ImplementationClass(TechnologyAdapterResourceRepository.TechnologyAdapterResourceRepositoryImpl.class)
+public interface TechnologyAdapterResourceRepository<R extends TechnologyAdapterResource<RD, TA> & FlexoResource<RD>, TA extends TechnologyAdapter, RD extends ResourceData<RD> & TechnologyObject<TA>, I>
+		extends ResourceRepository<R, I> {
 
-	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(TechnologyAdapterResourceRepository.class.getPackage().getName());
+	public TA getTechnologyAdapter();
 
-	private final TA technologyAdapter;
+	public void setTechnologyAdapter(TA technologyAdapter);
 
-	public TechnologyAdapterResourceRepository(TA technologyAdapter, FlexoResourceCenter<I> resourceCenter) {
-		// this(technologyAdapter, resourceCenter, resourceCenter instanceof FileSystemBasedResourceCenter
-		// ? ((FileSystemBasedResourceCenter) resourceCenter).getRootDirectory() : null);
-		super(resourceCenter, resourceCenter.getBaseArtefact());
-		this.technologyAdapter = technologyAdapter;
-		// getRootFolder().setFullQualifiedPath(resourceCenter.getName());
-		getRootFolder().setDescription(
-				"FileResource Repository for technology " + technologyAdapter.getName() + " resource center: " + resourceCenter);
+	public static abstract class TechnologyAdapterResourceRepositoryImpl<R extends TechnologyAdapterResource<RD, TA> & FlexoResource<RD>, TA extends TechnologyAdapter, RD extends ResourceData<RD> & TechnologyObject<TA>, I>
+			extends ResourceRepositoryImpl<R, I> implements TechnologyAdapterResourceRepository<R, TA, RD, I> {
+
+		@SuppressWarnings("unused")
+		private static final Logger logger = Logger.getLogger(TechnologyAdapterResourceRepository.class.getPackage().getName());
+
+		private TA technologyAdapter;
+
+		/*public TechnologyAdapterResourceRepository(TA technologyAdapter, FlexoResourceCenter<I> resourceCenter) {
+			// this(technologyAdapter, resourceCenter, resourceCenter instanceof FileSystemBasedResourceCenter
+			// ? ((FileSystemBasedResourceCenter) resourceCenter).getRootDirectory() : null);
+			super(resourceCenter, resourceCenter.getBaseArtefact());
+			this.technologyAdapter = technologyAdapter;
+			// getRootFolder().setFullQualifiedPath(resourceCenter.getName());
+			getRootFolder().setDescription(
+					"FileResource Repository for technology " + technologyAdapter.getName() + " resource center: " + resourceCenter);
+		}*/
+
+		@Override
+		public TA getTechnologyAdapter() {
+			return technologyAdapter;
+		}
+
+		@Override
+		public void setTechnologyAdapter(TA technologyAdapter) {
+			this.technologyAdapter = technologyAdapter;
+		}
+
+		@Override
+		public final String getDefaultBaseURI() {
+			return getResourceCenter().getDefaultBaseURI() /*+ "/" + getTechnologyAdapter().getIdentifier()*/;
+		}
+
+		@Override
+		public String getDisplayableName() {
+			return getResourceCenter().getDisplayableName();
+		}
 	}
-
-	public TA getTechnologyAdapter() {
-		return technologyAdapter;
-	}
-
-	@Override
-	public final String getDefaultBaseURI() {
-		return getResourceCenter().getDefaultBaseURI() /*+ "/" + getTechnologyAdapter().getIdentifier()*/;
-	}
-
-	@Override
-	public String getDisplayableName() {
-		return getResourceCenter().getDisplayableName();
-	}
-
 }

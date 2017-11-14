@@ -45,6 +45,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
@@ -108,7 +109,7 @@ public class TestFlexoRoleCardinality extends OpenflexoProjectAtRunTimeTestCase 
 	public static PrimitiveRole<Integer> someIntegerInA;
 	public static FlexoConceptInstanceRole someFlexoConcept2;
 
-	static FlexoProject project;
+	static FlexoProject<File> project;
 	static FMLRTVirtualModelInstance newView;
 	static FMLRTVirtualModelInstance vmi;
 	static FlexoConceptInstance fci;
@@ -149,8 +150,7 @@ public class TestFlexoRoleCardinality extends OpenflexoProjectAtRunTimeTestCase 
 		VirtualModelResourceFactory factory = fmlTechnologyAdapter.getVirtualModelResourceFactory();
 
 		VirtualModelResource newVirtualModelResource = factory.makeTopLevelVirtualModelResource(VIEWPOINT_NAME, VIEWPOINT_URI,
-				fmlTechnologyAdapter.getGlobalRepository(resourceCenter).getRootFolder(),
-				fmlTechnologyAdapter.getTechnologyContextManager(), true);
+				fmlTechnologyAdapter.getGlobalRepository(resourceCenter).getRootFolder(), true);
 		viewPoint = newVirtualModelResource.getLoadedResourceData();
 
 		// viewPoint = ViewPointImpl.newViewPoint("TestViewPoint",
@@ -181,8 +181,7 @@ public class TestFlexoRoleCardinality extends OpenflexoProjectAtRunTimeTestCase 
 		FMLTechnologyAdapter fmlTechnologyAdapter = serviceManager.getTechnologyAdapterService()
 				.getTechnologyAdapter(FMLTechnologyAdapter.class);
 		VirtualModelResourceFactory factory = fmlTechnologyAdapter.getVirtualModelResourceFactory();
-		VirtualModelResource newVMResource = factory.makeContainedVirtualModelResource("VM1", viewPoint.getVirtualModelResource(),
-				fmlTechnologyAdapter.getTechnologyContextManager(), true);
+		VirtualModelResource newVMResource = factory.makeContainedVirtualModelResource("VM1", viewPoint.getVirtualModelResource(), true);
 		virtualModel = newVMResource.getLoadedResourceData();
 
 		// virtualModel = VirtualModelImpl.newVirtualModel("VM1", viewPoint);
@@ -318,11 +317,11 @@ public class TestFlexoRoleCardinality extends OpenflexoProjectAtRunTimeTestCase 
 
 		log("testInstanciateVirtualModelInstances()");
 
-		editor = createProject("TestProject");
-		project = editor.getProject();
+		editor = createStandaloneProject("TestProject");
+		project = (FlexoProject<File>) editor.getProject();
 		System.out.println("Created project " + project.getProjectDirectory());
 		assertTrue(project.getProjectDirectory().exists());
-		assertTrue(project.getProjectDataResource().getIODelegate().exists());
+		assertTrue(project.getResource().getIODelegate().exists());
 
 		CreateBasicVirtualModelInstance action = CreateBasicVirtualModelInstance.actionType
 				.makeNewAction(project.getVirtualModelInstanceRepository().getRootFolder(), null, editor);
@@ -560,11 +559,11 @@ public class TestFlexoRoleCardinality extends OpenflexoProjectAtRunTimeTestCase 
 
 		log("testReloadProject()");
 
-		FlexoProject oldProject = project;
+		FlexoProject<File> oldProject = project;
 		// instanciateTestServiceManager();
 
-		editor = reloadProject(project.getDirectory());
-		project = editor.getProject();
+		editor = reloadProject(project.getProjectDirectory());
+		project = (FlexoProject<File>) editor.getProject();
 		assertNotSame(oldProject, project);
 		assertNotNull(editor);
 		assertNotNull(project);

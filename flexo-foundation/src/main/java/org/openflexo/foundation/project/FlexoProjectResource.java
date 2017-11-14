@@ -40,6 +40,7 @@ package org.openflexo.foundation.project;
 
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.resource.FlexoResource;
+import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.PamelaResource;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
@@ -57,5 +58,12 @@ import org.openflexo.model.annotations.XMLElement;
 public interface FlexoProjectResource extends PamelaResource<FlexoProject<?>, FlexoProjectFactory> {
 
 	public FlexoProject<?> getFlexoProject();
+
+	/**
+	 * Return delegate RC if project is stand-alone (not contained in another RC)
+	 */
+	public FlexoResourceCenter<?> getDelegateResourceCenter();
+
+	public void setDelegateResourceCenter(FlexoResourceCenter<?> delegateResourceCenter);
 
 }

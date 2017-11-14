@@ -42,6 +42,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -63,10 +64,12 @@ public class TestLoadViewPoint extends OpenflexoTestCase {
 
 	/**
 	 * Instanciate compound test resource center
+	 * 
+	 * @throws IOException
 	 */
 	@Test
 	@TestOrder(1)
-	public void testinstanciateTestServiceManager() {
+	public void testinstanciateTestServiceManager() throws IOException {
 		instanciateTestServiceManager();
 		JarResourceCenter.addNamedJarFromClassPath(getFlexoServiceManager().getResourceCenterService(), "testViewpoint2-1.0");
 

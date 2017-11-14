@@ -99,8 +99,7 @@ public class TestCreateVirtualModel extends OpenflexoTestCase {
 		VirtualModelResourceFactory factory = fmlTechnologyAdapter.getVirtualModelResourceFactory();
 
 		newVirtualModelResource = factory.makeTopLevelVirtualModelResource(VIEWPOINT_NAME, VIEWPOINT_URI,
-				fmlTechnologyAdapter.getGlobalRepository(resourceCenter).getRootFolder(),
-				fmlTechnologyAdapter.getTechnologyContextManager(), true);
+				fmlTechnologyAdapter.getGlobalRepository(resourceCenter).getRootFolder(), true);
 		newViewPoint = newVirtualModelResource.getLoadedResourceData();
 
 		// assertTrue(newVirtualModelResource.getDirectory().exists());
@@ -128,7 +127,7 @@ public class TestCreateVirtualModel extends OpenflexoTestCase {
 				.getTechnologyAdapter(FMLTechnologyAdapter.class);
 		VirtualModelResourceFactory factory = fmlTechnologyAdapter.getVirtualModelResourceFactory();
 		VirtualModelResource newVMResource = factory.makeContainedVirtualModelResource(VIRTUAL_MODEL_NAME,
-				newViewPoint.getVirtualModelResource(), fmlTechnologyAdapter.getTechnologyContextManager(), true);
+				newViewPoint.getVirtualModelResource(), true);
 		VirtualModel newVirtualModel = newVMResource.getLoadedResourceData();
 
 		// VirtualModel newVirtualModel =
@@ -159,7 +158,7 @@ public class TestCreateVirtualModel extends OpenflexoTestCase {
 		resourceCenter = makeNewDirectoryResourceCenter();
 
 		File directory = ResourceLocator.retrieveResourceAsFile(newVirtualModelResource.getDirectory());
-		File newDirectory = new File(((FileSystemBasedResourceCenter) resourceCenter).getDirectory(), directory.getName());
+		File newDirectory = new File(((FileSystemBasedResourceCenter) resourceCenter).getRootDirectory(), directory.getName());
 		newDirectory.mkdirs();
 
 		try {

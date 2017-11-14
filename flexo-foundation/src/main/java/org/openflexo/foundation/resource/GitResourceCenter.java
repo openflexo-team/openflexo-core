@@ -48,155 +48,190 @@ import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 import org.openflexo.foundation.resource.DirectoryBasedGitIODelegate.DirectoryBasedGitIODelegateImpl;
 import org.openflexo.foundation.resource.GitIODelegate.GitIODelegateImpl;
+import org.openflexo.model.annotations.ImplementationClass;
+import org.openflexo.model.annotations.ModelEntity;
+import org.openflexo.model.exceptions.ModelDefinitionException;
+import org.openflexo.model.factory.ModelFactory;
 import org.openflexo.toolbox.FileUtils;
 import org.openflexo.toolbox.FlexoVersion;
 import org.openflexo.toolbox.IProgress;
 
-public class GitResourceCenter extends FileSystemBasedResourceCenter {
+@ModelEntity
+@ImplementationClass(GitResourceCenter.GitResourceCenterImpl.class)
+public interface GitResourceCenter extends FileSystemBasedResourceCenter {
 
-	protected static final Logger logger = Logger.getLogger(GitResourceCenter.class.getPackage().getName());
-
-	private IODelegateFactory<File> gitIODelegateFactory;
-
-	/**
-	 * For a first impl, consider that one GitResourceCenter holds one gitRepository
-	 */
-
-	private Repository gitRepository;
-	private Git git;
-	// .git directory
-	private File gitDir;
-
-	public GitResourceCenter(File resourceCenterDirectory, File gitRepository, FlexoResourceCenterService rcService)
-			throws IllegalStateException, IOException, GitAPIException {
-		super(resourceCenterDirectory, rcService);
-		initializeRepositoryGit(gitRepository);
-		gitIODelegateFactory = new GitIODelegateFactory();
-	}
-
-	/**
-	 * needed for sub-classing and steel accessing to JGit Tooling
-	 * 
-	 * @return
-	 */
-	public Git getGit() {
-		return git;
-	}
-
-	@Override
-	protected boolean isToBeIgnored(File file) {
-		if (super.isToBeIgnored(file)) {
-			return true;
+	public static GitResourceCenter instanciateNewGitResourceCenter(File resourceCenterDirectory, File gitRepository,
+			FlexoResourceCenterService rcService) throws IllegalStateException, IOException, GitAPIException {
+		GitResourceCenterImpl.logger.info("Instanciate ResourceCenter from " + resourceCenterDirectory.getAbsolutePath());
+		ModelFactory factory;
+		try {
+			factory = new ModelFactory(GitResourceCenter.class);
+			GitResourceCenter gitResourceCenter = factory.newInstance(GitResourceCenter.class);
+			gitResourceCenter.setBaseArtefact(resourceCenterDirectory);
+			gitResourceCenter.setFlexoResourceCenterService(rcService);
+			gitResourceCenter.initializeRepositoryGit(gitRepository);
+			gitResourceCenter.update();
+			gitResourceCenter.startDirectoryWatching();
+			return gitResourceCenter;
+		} catch (ModelDefinitionException e) {
+			e.printStackTrace();
 		}
-		if (file.isDirectory() && file.getName().equals(".git")) {
-			return true;
-		}
-		if (FileUtils.isFileContainedIn(file, gitDir)) {
-			return true;
-		}
-		return false;
+		return null;
 	}
 
-	public Repository getGitRepository() {
-		return gitRepository;
-	}
+	public void initializeRepositoryGit(File gitFile) throws IOException, IllegalStateException, GitAPIException;
 
-	public IODelegateFactory<File> getGitIODelegateFactory() {
-		return gitIODelegateFactory;
-	}
+	public Repository getGitRepository();
 
-	public void initializeRepositoryGit(File gitFile) throws IOException, IllegalStateException, GitAPIException {
-		gitDir = new File(gitFile.getAbsolutePath(), ".git");
-		if (!gitDir.exists()) {
-			Git.init().setDirectory(gitFile).call();
+	public IODelegateFactory<File> getGitIODelegateFactory();
+
+	public static abstract class GitResourceCenterImpl extends FileSystemBasedResourceCenterImpl implements GitResourceCenter {
+		protected static final Logger logger = Logger.getLogger(GitResourceCenter.class.getPackage().getName());
+
+		private IODelegateFactory<File> gitIODelegateFactory;
+
+		/**
+		 * For a first impl, consider that one GitResourceCenter holds one gitRepository
+		 */
+
+		private Repository gitRepository;
+		private Git git;
+		// .git directory
+		private File gitDir;
+
+		public GitResourceCenterImpl(/*File resourceCenterDirectory, File gitRepository, FlexoResourceCenterService rcService*/)
+				throws IllegalStateException, IOException, GitAPIException {
+			super();
+			gitIODelegateFactory = new GitIODelegateFactory();
 		}
 
-		// Our GitRepository is of type file
-		gitRepository = FileRepositoryBuilder.create(gitDir);
-		System.out.println("Created a new repository at " + gitRepository.getDirectory());
-		// Where files are checked
-		System.out.println("Working tree : " + gitRepository.getWorkTree());
-		// Where index is checked
-		System.out.println("Index File : " + gitRepository.getIndexFile());
-		git = new Git(gitRepository);
-
-		logger.info("New Git Repository Created");
-	}
-
-	@Override
-	public Collection<? extends FlexoResource<?>> getAllResources(IProgress progress) {
-		return getAllResources();
-	}
-
-	@Override
-	public void publishResource(FlexoResource<?> resource, FlexoVersion newVersion, IProgress progress) throws Exception {
-		// TODO Not yet implemented
-	}
-
-	@Override
-	public void update() throws IOException {
-		// TODO Not yet implemented
-	}
-
-	@Override
-	public GitIODelegate makeFlexoIODelegate(File serializationArtefact, FlexoResourceFactory<?, ?> resourceFactory) throws IOException {
-		return GitIODelegateImpl.makeFlexoIOGitDelegate(serializationArtefact, resourceFactory, getGitRepository());
-	}
-
-	@Override
-	public FlexoIODelegate<File> makeDirectoryBasedFlexoIODelegate(File serializationArtefact, String directoryExtension,
-			String fileExtension, FlexoResourceFactory<?, ?> resourceFactory) {
-		String baseName = serializationArtefact.getName().substring(0,
-				serializationArtefact.getName().length() - directoryExtension.length());
-		return DirectoryBasedGitIODelegateImpl.makeDirectoryBasedFlexoIOGitDelegate(serializationArtefact.getParentFile(), baseName,
-				directoryExtension, fileExtension, resourceFactory);
-	}
-
-	@Override
-	public <R extends FlexoResource<?>> RepositoryFolder<R, File> getRepositoryFolder(FlexoIODelegate<File> ioDelegate,
-			ResourceRepository<R, File> resourceRepository) {
-
-		File candidateFile = null;
-		if (ioDelegate instanceof DirectoryBasedGitIODelegate) {
-			candidateFile = ((DirectoryBasedGitIODelegate) ioDelegate).getDirectory();
-		}
-		else if (ioDelegate instanceof GitIODelegate) {
-			candidateFile = ((GitIODelegate) ioDelegate).getFile();
+		/**
+		 * needed for sub-classing and steel accessing to JGit Tooling
+		 * 
+		 * @return
+		 */
+		public Git getGit() {
+			return git;
 		}
 
-		if (candidateFile != null) {
-			try {
-				RepositoryFolder<R, File> returned = resourceRepository.getParentRepositoryFolder(candidateFile, true);
-				return returned;
-			} catch (IOException e) {
-				e.printStackTrace();
-				return resourceRepository.getRootFolder();
+		@Override
+		protected boolean isToBeIgnored(File file) {
+			if (super.isToBeIgnored(file)) {
+				return true;
 			}
-		}
-		else {
-			logger.warning("Could not retrieve File for ioDelegate=" + ioDelegate);
-			return null;
+			if (file.isDirectory() && file.getName().equals(".git")) {
+				return true;
+			}
+			if (FileUtils.isFileContainedIn(file, gitDir)) {
+				return true;
+			}
+			return false;
 		}
 
-	}
+		@Override
+		public Repository getGitRepository() {
+			return gitRepository;
+		}
 
-	/**
-	 * Compute and return a default URI for supplied resource<br>
-	 * If resource does not provide URI support, this might be delegated to the {@link FlexoResourceCenter} through this method
-	 * 
-	 * @param resource
-	 * @return
-	 */
-	/*@Override
-	public String getDefaultResourceURI(FlexoResource<?> resource) {
+		@Override
+		public IODelegateFactory<File> getGitIODelegateFactory() {
+			return gitIODelegateFactory;
+		}
+
+		@Override
+		public void initializeRepositoryGit(File gitFile) throws IOException, IllegalStateException, GitAPIException {
+			gitDir = new File(gitFile.getAbsolutePath(), ".git");
+			if (!gitDir.exists()) {
+				Git.init().setDirectory(gitFile).call();
+			}
+
+			// Our GitRepository is of type file
+			gitRepository = FileRepositoryBuilder.create(gitDir);
+			System.out.println("Created a new repository at " + gitRepository.getDirectory());
+			// Where files are checked
+			System.out.println("Working tree : " + gitRepository.getWorkTree());
+			// Where index is checked
+			System.out.println("Index File : " + gitRepository.getIndexFile());
+			git = new Git(gitRepository);
+
+			logger.info("New Git Repository Created");
+		}
+
+		@Override
+		public Collection<? extends FlexoResource<?>> getAllResources(IProgress progress) {
+			return getAllResources();
+		}
+
+		@Override
+		public void publishResource(FlexoResource<?> resource, FlexoVersion newVersion, IProgress progress) throws Exception {
+			// TODO Not yet implemented
+		}
+
+		@Override
+		public void update() throws IOException {
+			// TODO Not yet implemented
+		}
+
+		@Override
+		public GitIODelegate makeFlexoIODelegate(File serializationArtefact, FlexoResourceFactory<?, ?> resourceFactory)
+				throws IOException {
+			return GitIODelegateImpl.makeFlexoIOGitDelegate(serializationArtefact, resourceFactory, getGitRepository());
+		}
+
+		@Override
+		public FlexoIODelegate<File> makeDirectoryBasedFlexoIODelegate(File serializationArtefact, String directoryExtension,
+				String fileExtension, FlexoResourceFactory<?, ?> resourceFactory) {
+			String baseName = serializationArtefact.getName().substring(0,
+					serializationArtefact.getName().length() - directoryExtension.length());
+			return DirectoryBasedGitIODelegateImpl.makeDirectoryBasedFlexoIOGitDelegate(serializationArtefact.getParentFile(), baseName,
+					directoryExtension, fileExtension, resourceFactory);
+		}
+
+		@Override
+		public <R extends FlexoResource<?>> RepositoryFolder<R, File> getRepositoryFolder(FlexoIODelegate<File> ioDelegate,
+				ResourceRepository<R, File> resourceRepository) {
+
+			File candidateFile = null;
+			if (ioDelegate instanceof DirectoryBasedGitIODelegate) {
+				candidateFile = ((DirectoryBasedGitIODelegate) ioDelegate).getDirectory();
+			}
+			else if (ioDelegate instanceof GitIODelegate) {
+				candidateFile = ((GitIODelegate) ioDelegate).getFile();
+			}
+
+			if (candidateFile != null) {
+				try {
+					RepositoryFolder<R, File> returned = resourceRepository.getParentRepositoryFolder(candidateFile, true);
+					return returned;
+				} catch (IOException e) {
+					e.printStackTrace();
+					return resourceRepository.getRootFolder();
+				}
+			}
+			else {
+				logger.warning("Could not retrieve File for ioDelegate=" + ioDelegate);
+				return null;
+			}
+
+		}
+
+		/**
+		 * Compute and return a default URI for supplied resource<br>
+		 * If resource does not provide URI support, this might be delegated to the {@link FlexoResourceCenter} through this method
+		 * 
+		 * @param resource
+		 * @return
+		 */
+		/*@Override
+		public String getDefaultResourceURI(FlexoResource<?> resource) {
 		String returned = super.getDefaultResourceURI(resource);
 		System.out.println("Pour " + resource.getName() + " uri=" + returned);
-	
+		
 		if (resource instanceof TechnologyAdapterResource) {
 			System.out.println("hop");
 			TechnologyAdapter ta = ((TechnologyAdapterResource<?, ?>) resource).getTechnologyAdapter();
 			System.out.println("ta=" + ta);
-	
+		
 			if (ta != null) {
 				System.out.println("globalRC=" + ta.getGlobalRepository(this));
 				ResourceRepositoryImpl repository = ta.getGlobalRepository(this);
@@ -206,7 +241,7 @@ public class GitResourceCenter extends FileSystemBasedResourceCenter {
 					System.out.println("yes");
 					String path = "";
 					RepositoryFolder f = repository.getRepositoryFolder(resource);
-	
+		
 					while (f != null && !f.isRootFolder()) {
 						path = f.getName() + File.separator + path;
 						f = f.getParentFolder();
@@ -222,20 +257,21 @@ public class GitResourceCenter extends FileSystemBasedResourceCenter {
 			}
 			// }
 		}
-	
+		
 		return null;
-	}*/
+		}*/
 
-	/*@Override
-	public void setDefaultBaseURI(String defaultBaseURI) {
+		/*@Override
+		public void setDefaultBaseURI(String defaultBaseURI) {
 		System.out.println("ah, je sette le defaultBaseURI a " + defaultBaseURI);
 		super.setDefaultBaseURI(defaultBaseURI);
 		System.out.println("get=" + getDefaultBaseURI());
-	}*/
+		}*/
 
-	@Override
-	public String getDisplayableName() {
-		return getDefaultBaseURI();
+		@Override
+		public String getDisplayableName() {
+			return getDefaultBaseURI();
+		}
+
 	}
-
 }

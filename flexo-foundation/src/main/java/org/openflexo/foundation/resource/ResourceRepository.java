@@ -4,12 +4,17 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.Enumeration;
 
-import org.openflexo.connie.annotations.NotificationUnsafe;
 import org.openflexo.foundation.FlexoObject;
+import org.openflexo.model.annotations.ImplementationClass;
+import org.openflexo.model.annotations.ModelEntity;
 
+@ModelEntity(isAbstract = true)
+@ImplementationClass(ResourceRepositoryImpl.class)
 public interface ResourceRepository<R extends FlexoResource<?>, I> {
 
 	I getBaseArtefact();
+
+	public void setBaseArtefact(I baseArtefact);
 
 	RepositoryFolder<R, I> getRootFolder();
 
