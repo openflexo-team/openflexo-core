@@ -237,7 +237,6 @@ public abstract class ResourceRepositoryImpl<R extends FlexoResource<?>, I> exte
 	 */
 	@Override
 	public void registerResource(R resource, RepositoryFolder<R, I> parentFolder) {
-		System.out.println("repository " + this + " registered " + resource + " for uri " + resource.getURI());
 		if (resource == null) {
 			logger.warning("Trying to register a null resource");
 			return;

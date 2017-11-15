@@ -682,20 +682,20 @@ public class TestFMLBindingModelManagement3 extends OpenflexoProjectAtRunTimeTes
 		System.out.println("Found resource " + reloadedVM2.getURI());
 		System.out.println("Found resource " + reloadedVM3.getURI());
 
+		String searchedViewURI = newView.getURI();
+
 		editor = reloadProject(project.getProjectDirectory());
 		project = (FlexoProject<File>) editor.getProject();
 		assertNotNull(editor);
 		assertNotNull(project);
 
 		System.out.println("All resources=" + project.getAllResources());
-		System.out.println("searching: " + newView.getURI());
-		assertEquals(4, project.getAllResources().size());
-		System.out.println("not null: " + project.getResource(newView.getURI()));
-		System.exit(-1);
-		assertNotNull(project.getResource(newView.getURI()));
+		System.out.println("searching: " + searchedViewURI);
+		assertEquals(5, project.getAllResources().size());
+		assertNotNull(project.getResource(searchedViewURI));
 
 		FMLRTVirtualModelInstanceResource newViewResource = project.getVirtualModelInstanceRepository()
-				.getVirtualModelInstance(newView.getURI());
+				.getVirtualModelInstance(searchedViewURI);
 		assertNotNull(newViewResource);
 		assertNull(newViewResource.getLoadedResourceData());
 		newViewResource.loadResourceData(null);

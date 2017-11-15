@@ -159,8 +159,9 @@ public class FlexoProjectResourceFactory extends PamelaResourceFactory<FlexoProj
 	private <I> FlexoResourceCenter<I> makeDelegateRC(I serializationArtefact) {
 		if (serializationArtefact instanceof File) {
 			try {
-				return (FlexoResourceCenter<I>) DirectoryResourceCenter.instanciateNewDirectoryResourceCenter((File) serializationArtefact,
-						serviceManager.getResourceCenterService());
+				FlexoResourceCenter<I> returned = (FlexoResourceCenter<I>) DirectoryResourceCenter
+						.instanciateNewDirectoryResourceCenter((File) serializationArtefact, serviceManager.getResourceCenterService());
+				return returned;
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -187,6 +188,7 @@ public class FlexoProjectResourceFactory extends PamelaResourceFactory<FlexoProj
 		}
 
 		FlexoProjectResource returned = makeResource(serializationArtefact, resourceCenter, baseName, uri, createEmptyContents);
+
 		returned.setDelegateResourceCenter(delegateResourceCenter);
 		return returned;
 	}
@@ -262,6 +264,7 @@ public class FlexoProjectResourceFactory extends PamelaResourceFactory<FlexoProj
 	private static class FlexoProjectInfo {
 		public String uri;
 		public String version;
+		public String revision;
 		public String modelVersion;
 	}
 
@@ -273,9 +276,10 @@ public class FlexoProjectResourceFactory extends PamelaResourceFactory<FlexoProj
 		if (xmlRootElementInfo == null) {
 			return null;
 		}
-		if (xmlRootElementInfo.getName().equals("DiagramSpecification")) {
+		if (xmlRootElementInfo.getName().equals("FlexoProject")) {
 			returned.uri = xmlRootElementInfo.getAttribute(FlexoProject.PROJECT_URI_KEY);
-			returned.version = xmlRootElementInfo.getAttribute("version");
+			returned.version = xmlRootElementInfo.getAttribute(FlexoProject.PROJECT_VERSION_KEY);
+			returned.revision = xmlRootElementInfo.getAttribute(FlexoProject.PROJECT_REVISION_KEY);
 			returned.modelVersion = xmlRootElementInfo.getAttribute("modelVersion");
 		}
 		return returned;

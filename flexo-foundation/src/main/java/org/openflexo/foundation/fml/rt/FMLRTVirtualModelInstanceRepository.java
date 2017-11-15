@@ -48,6 +48,7 @@ import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.rt.rm.FMLRTVirtualModelInstanceResource;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.technologyadapter.ModelRepository;
+import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.model.factory.ModelFactory;
@@ -59,6 +60,7 @@ import org.openflexo.model.factory.ModelFactory;
  * 
  */
 @ModelEntity
+@ImplementationClass(FMLRTVirtualModelInstanceRepository.FMLRTVirtualModelInstanceRepositoryImpl.class)
 public interface FMLRTVirtualModelInstanceRepository<I> extends
 		ModelRepository<FMLRTVirtualModelInstanceResource, FMLRTVirtualModelInstance, VirtualModel, FMLRTTechnologyAdapter, FMLTechnologyAdapter, I> {
 
@@ -88,7 +90,8 @@ public interface FMLRTVirtualModelInstanceRepository<I> extends
 	public boolean isValidForANewVirtualModelInstanceName(String value);
 
 	public static abstract class FMLRTVirtualModelInstanceRepositoryImpl<I> extends
-			ModelRepositoryImpl<FMLRTVirtualModelInstanceResource, FMLRTVirtualModelInstance, VirtualModel, FMLRTTechnologyAdapter, FMLTechnologyAdapter, I> {
+			ModelRepositoryImpl<FMLRTVirtualModelInstanceResource, FMLRTVirtualModelInstance, VirtualModel, FMLRTTechnologyAdapter, FMLTechnologyAdapter, I>
+			implements FMLRTVirtualModelInstanceRepository<I> {
 
 		@Override
 		public FlexoServiceManager getServiceManager() {
@@ -98,6 +101,7 @@ public interface FMLRTVirtualModelInstanceRepository<I> extends
 			return null;
 		}
 
+		@Override
 		public List<FMLRTVirtualModelInstance> getVirtualModelInstancesConformToVirtualModel(String virtualModelURI) {
 			List<FMLRTVirtualModelInstance> views = new ArrayList<>();
 			for (FMLRTVirtualModelInstanceResource vmiRes : getAllResources()) {
@@ -108,6 +112,7 @@ public interface FMLRTVirtualModelInstanceRepository<I> extends
 			return views;
 		}
 
+		@Override
 		public boolean isValidForANewVirtualModelInstanceName(String value) {
 			if (value == null) {
 				return false;
@@ -115,6 +120,7 @@ public interface FMLRTVirtualModelInstanceRepository<I> extends
 			return getRootFolder().isValidResourceName(value);
 		}
 
+		@Override
 		public FMLRTVirtualModelInstanceResource getVirtualModelInstanceResourceNamed(String value) {
 			if (value == null) {
 				return null;
@@ -122,6 +128,7 @@ public interface FMLRTVirtualModelInstanceRepository<I> extends
 			return getRootFolder().getResourceWithName(value);
 		}
 
+		@Override
 		public FMLRTVirtualModelInstanceResource getVirtualModelInstance(String virtualModelInstanceURI) {
 			if (virtualModelInstanceURI == null) {
 				return null;

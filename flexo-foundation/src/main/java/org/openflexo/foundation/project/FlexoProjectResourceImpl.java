@@ -39,6 +39,8 @@
 package org.openflexo.foundation.project;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.Calendar;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoException;
@@ -66,6 +68,8 @@ public abstract class FlexoProjectResourceImpl extends PamelaResourceImpl<FlexoP
 
 	static final Logger logger = Logger.getLogger(FlexoProjectResourceImpl.class.getPackage().getName());
 
+	public static final String BASE_PROJECT_URI = "http://www.openflexo.org/projects";
+
 	/**
 	 * Instantiation of a delegate RC if project is stand-alone (not contained in another RC)
 	 */
@@ -82,6 +86,7 @@ public abstract class FlexoProjectResourceImpl extends PamelaResourceImpl<FlexoP
 				|| (delegateResourceCenter != null && !delegateResourceCenter.equals(this.delegateResourceCenter))) {
 			FlexoResourceCenter<?> oldValue = this.delegateResourceCenter;
 			this.delegateResourceCenter = delegateResourceCenter;
+			delegateResourceCenter.setDefaultBaseURI(getURI());
 			getPropertyChangeSupport().firePropertyChange("delegateResourceCenter", oldValue, delegateResourceCenter);
 		}
 	}
@@ -106,6 +111,15 @@ public abstract class FlexoProjectResourceImpl extends PamelaResourceImpl<FlexoP
 	}
 
 	@Override
+	protected FlexoProject<?> performLoad() throws IOException, Exception {
+		FlexoProject<?> returned = super.performLoad();
+		if (returned != null) {
+			setURI(returned.getProjectURI());
+		}
+		return returned;
+	}
+
+	@Override
 	public FlexoProject<?> loadResourceData(IProgress progress) throws FlexoFileNotFoundException, IOFlexoException, InvalidXMLException,
 			InconsistentDataException, InvalidModelDefinitionException {
 		FlexoProject<?> returned = super.loadResourceData(progress);
@@ -120,6 +134,31 @@ public abstract class FlexoProjectResourceImpl extends PamelaResourceImpl<FlexoP
 		}
 
 		return returned;
+	}
+
+	private String buildProjectURI() {
+		Calendar rightNow = Calendar.getInstance();
+		String returned = BASE_PROJECT_URI + "/" + rightNow.get(Calendar.YEAR) + "/" + (rightNow.get(Calendar.MONTH) + 1) + "/" + getName()
+				+ "_" + System.currentTimeMillis();
+		return returned;
+	}
+
+	private String defaultURI = null;
+
+	@Override
+	public String computeDefaultURI() {
+		if (defaultURI == null) {
+			defaultURI = buildProjectURI();
+		}
+		return defaultURI;
+	}
+
+	@Override
+	public void setURI(String anURI) {
+		performSuperSetter(URI, anURI);
+		if (getDelegateResourceCenter() != null) {
+			getDelegateResourceCenter().setDefaultBaseURI(anURI);
+		}
 	}
 
 	/*

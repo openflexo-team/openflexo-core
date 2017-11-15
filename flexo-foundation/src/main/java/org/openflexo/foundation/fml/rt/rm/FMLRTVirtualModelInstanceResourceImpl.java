@@ -149,7 +149,7 @@ public abstract class FMLRTVirtualModelInstanceResourceImpl
 					+ (getName().endsWith(FMLRTVirtualModelInstanceResourceFactory.FML_RT_SUFFIX) ? getName()
 							: getName() + FMLRTVirtualModelInstanceResourceFactory.FML_RT_SUFFIX);
 		}
-		if (getResourceCenter() != null) {
+		if (getResourceCenter() != null && getResourceCenter().getDefaultBaseURI() != null) {
 			return getResourceCenter().getDefaultBaseURI() + (!getResourceCenter().getDefaultBaseURI().endsWith("/") ? "/" : "")
 					+ (getName().endsWith(FMLRTVirtualModelInstanceResourceFactory.FML_RT_SUFFIX) ? getName()
 							: getName() + FMLRTVirtualModelInstanceResourceFactory.FML_RT_SUFFIX);

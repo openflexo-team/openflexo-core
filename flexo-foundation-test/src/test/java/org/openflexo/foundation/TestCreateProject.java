@@ -45,8 +45,11 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.openflexo.foundation.resource.DirectoryResourceCenter;
 import org.openflexo.foundation.test.OpenflexoProjectAtRunTimeTestCase;
+import org.openflexo.test.OrderedRunner;
+import org.openflexo.test.TestOrder;
 
 /**
  * This unit test is intented to test project creation facilities
@@ -54,13 +57,17 @@ import org.openflexo.foundation.test.OpenflexoProjectAtRunTimeTestCase;
  * @author sylvain
  * 
  */
+@RunWith(OrderedRunner.class)
 public class TestCreateProject extends OpenflexoProjectAtRunTimeTestCase {
 
+	private static FlexoProject<File> project;
+
 	@Test
+	@TestOrder(1)
 	public void testCreateProject() {
 
 		FlexoEditor editor = createStandaloneProject("TestProject");
-		FlexoProject<File> project = (FlexoProject<File>) editor.getProject();
+		project = (FlexoProject<File>) editor.getProject();
 		System.out.println("Created project " + project.getProjectDirectory());
 		assertTrue(project.getProjectDirectory().exists());
 		assertTrue(project.getResource().getIODelegate().exists());
@@ -70,6 +77,33 @@ public class TestCreateProject extends OpenflexoProjectAtRunTimeTestCase {
 		assertSame(project.getProjectResource().getDelegateResourceCenter(), project.getResourceCenter());
 		assertTrue(project.getDelegateResourceCenter() instanceof DirectoryResourceCenter);
 		assertEquals(project.getProjectDirectory(), ((DirectoryResourceCenter) project.getDelegateResourceCenter()).getRootDirectory());
+
+		assertEquals(project.getProjectURI(), project.getResource().getURI());
+		assertEquals(project.getProjectURI(), project.getDelegateResourceCenter().getDefaultBaseURI());
+
+	}
+
+	@Test
+	@TestOrder(2)
+	public void testChangeProjectURI() {
+
+		System.out.println("Project URI was 1 : " + project.getProjectURI());
+		System.out.println("Project URI was 2 : " + project.getResource().getURI());
+		System.out.println("Project URI was 3 : " + project.getDelegateResourceCenter().getDefaultBaseURI());
+
+		assertEquals(project.getProjectURI(), project.getResource().getURI());
+		assertEquals(project.getProjectURI(), project.getDelegateResourceCenter().getDefaultBaseURI());
+
+		project.setProjectURI("http://aNewProjectURI");
+
+		System.out.println("Project URI is now 1 : " + project.getProjectURI());
+		System.out.println("Project URI is now 2 : " + project.getResource().getURI());
+		System.out.println("Project URI is now 3 : " + project.getDelegateResourceCenter().getDefaultBaseURI());
+
+		assertEquals("http://aNewProjectURI", project.getResource().getURI());
+		assertEquals(project.getProjectURI(), project.getResource().getURI());
+		assertEquals(project.getProjectURI(), project.getDelegateResourceCenter().getDefaultBaseURI());
+
 	}
 
 }

@@ -43,7 +43,6 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Hashtable;
@@ -106,7 +105,6 @@ import org.openflexo.toolbox.FileUtils;
 import org.openflexo.toolbox.FileUtils.CopyStrategy;
 import org.openflexo.toolbox.FlexoVersion;
 import org.openflexo.toolbox.IProgress;
-import org.openflexo.toolbox.StringUtils;
 import org.openflexo.toolbox.ToolBox;
 import org.openflexo.toolbox.ZipUtils;
 import org.openflexo.xml.XMLRootElementInfo;
@@ -224,14 +222,13 @@ public abstract class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoRe
 		return editor;
 	}*/
 
-	public static final String BASE_PROJECT_URI = "http://www.openflexo.org/projects";
 	public static final String RESOURCES = "resources";
 
 	public static final String PROJECT_DIRECTORY = "projectDirectory";
 	public static final String PROJECT_DATA = "projectData";
 	public static final String REVISION = "revision";
 	public static final String VERSION = "version";
-	public static final String PROJECT_URI = "projectURI";
+	// public static final String PROJECT_URI = "projectURI";
 
 	// public static final String VIEWPOINT_EXPECTED_DIRECTORY = "Viewpoints";
 
@@ -364,11 +361,31 @@ public abstract class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoRe
 
 	@Override
 	public String getProjectURI() {
+		if (getResource() != null) {
+			return getResource().getURI();
+		}
+		return (String) performSuperGetter(PROJECT_URI_KEY);
+	}
+
+	/*@Override
+	public String getProjectURI() {
 		String returned = (String) performSuperGetter(PROJECT_URI);
 		if (StringUtils.isEmpty(returned) && getResource() != null) {
 			return getDefaultBaseURI();
 		}
 		return returned;
+	}*/
+
+	@Override
+	public void setProjectURI(String projectURI) {
+
+		performSuperSetter(PROJECT_URI_KEY, projectURI);
+		if (getResource() != null) {
+			getResource().setURI(projectURI);
+		}
+		if (getDelegateResourceCenter() != null) {
+			getDelegateResourceCenter().setDefaultBaseURI(projectURI);
+		}
 	}
 
 	@Override
@@ -413,7 +430,14 @@ public abstract class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoRe
 
 	@Override
 	public void setResource(FlexoResource<FlexoProject<I>> resource) {
+		// We first take the URI value as found in serialized XML
+		String projectURI = getProjectURI();
+		// We set the resource
 		this.resource = (FlexoProjectResource) (FlexoResource) resource;
+		// Then we give serialized project URI to the resource
+		if (resource != null) {
+			resource.setURI(projectURI);
+		}
 	}
 
 	/**
@@ -1116,12 +1140,6 @@ public abstract class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoRe
 		}
 	}
 
-	private String buildProjectURI() {
-		Calendar rightNow = Calendar.getInstance();
-		return BASE_PROJECT_URI + "/" + rightNow.get(Calendar.YEAR) + "/" + (rightNow.get(Calendar.MONTH) + 1) + "/" + getProjectName()
-				+ "_" + System.currentTimeMillis();
-	}
-
 	public String getCreationDateAsString() {
 		if (getCreationDate() != null) {
 			return new SimpleDateFormat("dd/MM HH:mm:ss").format(getCreationDate());
@@ -1336,14 +1354,15 @@ public abstract class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoRe
 
 	}
 
-	private String defaultBaseURI = null;
+	// private String defaultBaseURI = null;
 
 	@Override
 	public String getDefaultBaseURI() {
-		if (defaultBaseURI == null) {
+		/*if (defaultBaseURI == null) {
 			defaultBaseURI = buildProjectURI();
 		}
-		return defaultBaseURI;
+		return defaultBaseURI;*/
+		return getProjectURI();
 	}
 
 	/**
@@ -1579,10 +1598,26 @@ public abstract class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoRe
 
 	@Override
 	public void registerResource(FlexoResource<?> resource, I serializationArtefact) {
+		// System.out.println("********** on enregistre " + resource + " with " + serializationArtefact);
+		// System.out.println("delRC=" + getDelegateResourceCenter());
+		// System.out.println("URI=" + resource.getURI());
 		if (getDelegateResourceCenter() == null) {
 			return;
 		}
 		getDelegateResourceCenter().registerResource(resource, serializationArtefact);
+		/*System.out.println("j'ai maintenant");
+		for (FlexoResource<?> r : getAllResources()) {
+			System.out.println(" > " + r.getURI());
+		}*/
+		/*if (getDelegateResourceCenter() instanceof FileSystemBasedResourceCenterImpl) {
+			Map<File, FlexoResource<?>> registeredResources = ((FileSystemBasedResourceCenterImpl) getDelegateResourceCenter())
+					.getRegisteredResources();
+			System.out.println("registered:");
+			for (File f : registeredResources.keySet()) {
+				System.out.println(" > " + f.getAbsolutePath() + " " + registeredResources.get(f));
+			}
+		}*/
+		// System.out.println("et donc: " + getResource(resource.getURI()));
 	}
 
 	@Override

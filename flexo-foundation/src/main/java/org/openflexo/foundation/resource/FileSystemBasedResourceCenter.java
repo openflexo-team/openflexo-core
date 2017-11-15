@@ -483,6 +483,7 @@ public interface FileSystemBasedResourceCenter extends ResourceRepository<FlexoR
 		 */
 		@Override
 		public void registerResource(FlexoResource<?> resource, File serializationArtefact) {
+			registerResource(resource);
 			registeredResources.put(serializationArtefact, resource);
 		}
 
@@ -494,6 +495,7 @@ public interface FileSystemBasedResourceCenter extends ResourceRepository<FlexoR
 		 */
 		@Override
 		public void unregisterResource(FlexoResource<?> resource, File serializationArtefact) {
+			unregisterResource(resource);
 			registeredResources.remove(serializationArtefact);
 		}
 
@@ -856,10 +858,6 @@ public interface FileSystemBasedResourceCenter extends ResourceRepository<FlexoR
 
 		@Override
 		public void setDefaultBaseURI(String defaultBaseURI) {
-
-			System.out.println("Pour " + fsMetaDataManager);
-			System.out.println("getDirectory()=" + getDirectory());
-
 			fsMetaDataManager.setProperty(DEFAULT_BASE_URI, defaultBaseURI, getDirectory(), true);
 		}
 

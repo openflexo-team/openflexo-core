@@ -781,6 +781,7 @@ public interface JarResourceCenter extends ResourceRepository<FlexoResource<?>, 
 		 */
 		@Override
 		public void registerResource(FlexoResource<?> resource, InJarResourceImpl serializationArtefact) {
+			registerResource(resource);
 		}
 
 		/**
@@ -791,6 +792,7 @@ public interface JarResourceCenter extends ResourceRepository<FlexoResource<?>, 
 		 */
 		@Override
 		public void unregisterResource(FlexoResource<?> resource, InJarResourceImpl serializationArtefact) {
+			unregisterResource(resource);
 		}
 
 	}

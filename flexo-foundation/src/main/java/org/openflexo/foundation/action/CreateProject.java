@@ -114,7 +114,7 @@ public class CreateProject extends FlexoAction<CreateProject, RepositoryFolder<F
 	@Override
 	protected void doAction(Object context) throws FlexoException {
 
-		logger.info("Create new FlexoProject");
+		logger.info("!!!!!!!!!!!!! Create new FlexoProject uri=" + getNewProjectURI());
 
 		System.out.println("Create new FlexoProject");
 		System.out.println("getEditor()=" + getEditor());
@@ -127,9 +127,7 @@ public class CreateProject extends FlexoAction<CreateProject, RepositoryFolder<F
 
 			FlexoProjectResource newProjectResource = null;
 			if (getFocusedObject() != null) {
-				System.out.println("Hop, on cree un projet dans un RC");
 				newProjectResource = factory.makeFlexoProjectResource(getNewProjectName(), getNewProjectURI(), getFocusedObject(), true);
-				System.out.println("et donc =" + newProjectResource.getDelegateResourceCenter());
 			}
 			else {
 				newProjectResource = factory.makeFlexoProjectResource(getSerializationArtefact(), getNewProjectURI(), true);
