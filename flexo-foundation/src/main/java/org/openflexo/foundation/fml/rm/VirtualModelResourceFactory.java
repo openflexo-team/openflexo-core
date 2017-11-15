@@ -132,6 +132,9 @@ public class VirtualModelResourceFactory
 		I serializationArtefact = resourceCenter.createDirectory(baseName.endsWith(FML_SUFFIX) ? baseName : baseName + FML_SUFFIX,
 				folder.getSerializationArtefact());
 
+		System.out.println("On cree un VM dans " + serializationArtefact);
+		System.out.println("folder: " + folder.getSerializationArtefact());
+
 		return makeResource(serializationArtefact, resourceCenter, baseName, virtualModelURI, createEmptyContents);
 	}
 

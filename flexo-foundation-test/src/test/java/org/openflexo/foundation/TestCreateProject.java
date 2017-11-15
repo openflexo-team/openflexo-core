@@ -73,7 +73,7 @@ public class TestCreateProject extends OpenflexoProjectAtRunTimeTestCase {
 		assertTrue(project.getResource().getIODelegate().exists());
 		assertTrue(project.isStandAlone());
 		assertEquals(project.getRootFolder().getSerializationArtefact(), project.getProjectDirectory());
-		assertEquals(project.getBaseArtefact().getParentFile(), project.getProjectDirectory());
+		assertEquals(project.getBaseArtefact(), project.getProjectDirectory());
 		assertSame(project.getProjectResource().getDelegateResourceCenter(), project.getResourceCenter());
 		assertTrue(project.getDelegateResourceCenter() instanceof DirectoryResourceCenter);
 		assertEquals(project.getProjectDirectory(), ((DirectoryResourceCenter) project.getDelegateResourceCenter()).getRootDirectory());

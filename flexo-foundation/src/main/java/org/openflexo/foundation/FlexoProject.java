@@ -50,6 +50,7 @@ import org.openflexo.foundation.project.FlexoProjectResource;
 import org.openflexo.foundation.resource.CannotRenameException;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
+import org.openflexo.foundation.resource.FlexoResourceCenterService;
 import org.openflexo.foundation.resource.ProjectImportLoopException;
 import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.resource.ResourceRepository;
@@ -270,8 +271,9 @@ public interface FlexoProject<I> extends ResourceRepository<FlexoResource<?>, I>
 	public void saveModifiedResources(FlexoProgress progress, boolean clearModifiedStatus) throws SaveResourceException;
 
 	/**
-	 * Close this project<br>
-	 * Don't save anything
+	 * Close this project by de-referencing all contents of that project and removing it from {@link FlexoResourceCenterService}<br>
+	 * Don't save anything if not done before<br>
+	 * Take care that after this call, this {@link FlexoProject} has been fully nullifed and should not be used anymore
 	 * 
 	 */
 	public void close();

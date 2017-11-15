@@ -77,7 +77,7 @@ public class TestCreateProjectInResourceCenter extends OpenflexoProjectAtRunTime
 		assertTrue(project.getResource().getIODelegate().exists());
 		assertFalse(project.isStandAlone());
 		assertEquals(project.getRootFolder().getSerializationArtefact(), project.getProjectDirectory());
-		assertEquals(project.getBaseArtefact().getParentFile(), project.getProjectDirectory());
+		assertEquals(project.getBaseArtefact(), project.getProjectDirectory());
 		assertSame(resourceCenter, project.getResourceCenter());
 		assertTrue(project.getDelegateResourceCenter() instanceof DirectoryResourceCenter);
 		assertEquals(project.getProjectDirectory(), ((DirectoryResourceCenter) project.getDelegateResourceCenter()).getRootDirectory());

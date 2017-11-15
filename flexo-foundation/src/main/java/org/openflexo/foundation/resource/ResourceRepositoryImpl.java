@@ -63,9 +63,7 @@ import org.openflexo.toolbox.FileUtils;
 import org.openflexo.toolbox.StringUtils;
 
 /**
- * A {@link ResourceRepositoryImpl} stores all resources of a particular type.<br>
- * Resources are organized with a folder hierarchy inside a repository<br>
- * A {@link ResourceRepositoryImpl} lives in a {@link FlexoResourceCenter}.
+ * Default implementation for {@link ResourceRepository}
  * 
  * @author sylvain
  * 
@@ -75,7 +73,7 @@ import org.openflexo.toolbox.StringUtils;
  *            serialization artefact type
  */
 public abstract class ResourceRepositoryImpl<R extends FlexoResource<?>, I> extends FlexoObjectImpl
-		/*DefaultFlexoObject*/ implements DataFlexoObserver, ResourceRepository<R, I> {
+		implements DataFlexoObserver, ResourceRepository<R, I> {
 
 	private static final Logger logger = Logger.getLogger(ResourceRepositoryImpl.class.getPackage().getName());
 

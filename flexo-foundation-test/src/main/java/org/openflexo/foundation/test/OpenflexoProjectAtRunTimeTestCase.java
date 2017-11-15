@@ -69,6 +69,7 @@ import org.openflexo.toolbox.FileUtils;
 
 /**
  * Provides a JUnit 4 generic environment with a {@link FlexoProject} for testing purposes<br>
+ * Note that we exclusively work on file system
  * 
  * @see OpenflexoTestCase
  */
@@ -83,7 +84,7 @@ public abstract class OpenflexoProjectAtRunTimeTestCase extends OpenflexoTestCas
 	private static final Logger logger = FlexoLogger.getLogger(OpenflexoProjectAtRunTimeTestCase.class.getPackage().getName());
 
 	protected static FlexoEditor _editor;
-	protected static FlexoProject _project;
+	protected static FlexoProject<File> _project;
 	protected static File _projectDirectory;
 	protected static String _projectIdentifier;
 
@@ -148,11 +149,11 @@ public abstract class OpenflexoProjectAtRunTimeTestCase extends OpenflexoTestCas
 		return createStandaloneProject(projectName, null, serviceManager);
 	}
 
-	protected FlexoEditor createProjectInResourceCenter(String projectName, FlexoResourceCenter<?> rc) {
+	protected FlexoEditor createProjectInResourceCenter(String projectName, FlexoResourceCenter<File> rc) {
 		return createProjectInResourceCenter(projectName, null, rc);
 	}
 
-	protected FlexoEditor createProjectInResourceCenter(String projectName, ProjectNature<?, ?> nature, FlexoResourceCenter<?> rc) {
+	protected FlexoEditor createProjectInResourceCenter(String projectName, ProjectNature<?, ?> nature, FlexoResourceCenter<File> rc) {
 		if (serviceManager == null) {
 			serviceManager = instanciateTestServiceManager();
 		}
@@ -211,12 +212,12 @@ public abstract class OpenflexoProjectAtRunTimeTestCase extends OpenflexoTestCas
 			fail();
 		}
 		_editor = reply;
-		_project = _editor.getProject();
+		_project = (FlexoProject<File>) _editor.getProject();
 		return reply;
 	}
 
 	protected FlexoEditor createProjectInResourceCenter(String projectName, ProjectNature<?, ?> nature, FlexoServiceManager serviceManager,
-			FlexoResourceCenter<?> rc) {
+			FlexoResourceCenter<File> rc) {
 		FlexoLoggingManager.forceInitialize(-1, true, null, Level.INFO, null);
 		FlexoEditor reply;
 		try {
@@ -239,7 +240,7 @@ public abstract class OpenflexoProjectAtRunTimeTestCase extends OpenflexoTestCas
 			fail();
 		}
 		_editor = reply;
-		_project = _editor.getProject();
+		_project = (FlexoProject<File>) _editor.getProject();
 		return reply;
 	}
 
@@ -255,19 +256,59 @@ public abstract class OpenflexoProjectAtRunTimeTestCase extends OpenflexoTestCas
 		}
 	}
 
-	protected FlexoEditor reloadProject(File prjDir) {
+	/**
+	 * Load project denoted by supplied project directory
+	 * 
+	 * @param prjDir
+	 * @return
+	 */
+	protected FlexoEditor loadProject(File projectDirectory) {
+
 		try {
 			FlexoEditor anEditor = null;
 
 			try {
-				anEditor = serviceManager.getProjectLoaderService().loadProject(prjDir);
+				anEditor = serviceManager.getProjectLoaderService().loadProject(projectDirectory);
 			} catch (ProjectInitializerException e) {
 				e.printStackTrace();
 				fail(e.getMessage());
 				return null;
 			}
 
-			_project = anEditor.getProject();
+			_project = (FlexoProject<File>) anEditor.getProject();
+			return anEditor;
+		} catch (ProjectLoadingCancelledException e) {
+			e.printStackTrace();
+			fail();
+		}
+		return null;
+	}
+
+	/**
+	 * Close supplied project, and reload using the same {@link FlexoServiceManager}
+	 * 
+	 * @param prjDir
+	 * @return
+	 */
+	protected FlexoEditor reloadProject(FlexoProject<File> projectToReload) {
+
+		File oldDirectory = projectToReload.getProjectDirectory();
+
+		// Close the project first
+		projectToReload.close();
+
+		try {
+			FlexoEditor anEditor = null;
+
+			try {
+				anEditor = serviceManager.getProjectLoaderService().loadProject(oldDirectory);
+			} catch (ProjectInitializerException e) {
+				e.printStackTrace();
+				fail(e.getMessage());
+				return null;
+			}
+
+			_project = (FlexoProject<File>) anEditor.getProject();
 			return anEditor;
 		} catch (ProjectLoadingCancelledException e) {
 			e.printStackTrace();

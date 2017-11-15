@@ -52,6 +52,7 @@ import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.fml.rm.VirtualModelResourceFactory;
 import org.openflexo.foundation.resource.DirectoryResourceCenter;
 import org.openflexo.foundation.resource.SaveResourceException;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapterGlobalRepository;
 import org.openflexo.foundation.test.OpenflexoProjectAtRunTimeTestCase;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.test.OrderedRunner;
@@ -106,6 +107,9 @@ public class TestCreateViewPointInProject extends OpenflexoProjectAtRunTimeTestC
 		FMLTechnologyAdapter fmlTechnologyAdapter = serviceManager.getTechnologyAdapterService()
 				.getTechnologyAdapter(FMLTechnologyAdapter.class);
 		VirtualModelResourceFactory factory = fmlTechnologyAdapter.getVirtualModelResourceFactory();
+
+		TechnologyAdapterGlobalRepository<?, File> globalRepository = fmlTechnologyAdapter.getGlobalRepository(project);
+		System.out.println("globalRepository=" + globalRepository + " of " + globalRepository.getClass());
 
 		VirtualModelResource newVirtualModelResource = factory.makeTopLevelVirtualModelResource(VIEWPOINT_NAME, VIEWPOINT_URI,
 				fmlTechnologyAdapter.getGlobalRepository(project).getRootFolder(), true);

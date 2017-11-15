@@ -684,7 +684,7 @@ public class TestFMLBindingModelManagement3 extends OpenflexoProjectAtRunTimeTes
 
 		String searchedViewURI = newView.getURI();
 
-		editor = reloadProject(project.getProjectDirectory());
+		editor = loadProject(project.getProjectDirectory());
 		project = (FlexoProject<File>) editor.getProject();
 		assertNotNull(editor);
 		assertNotNull(project);

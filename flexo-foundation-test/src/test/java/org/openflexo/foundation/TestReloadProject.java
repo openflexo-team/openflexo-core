@@ -40,6 +40,7 @@ package org.openflexo.foundation;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
@@ -84,7 +85,7 @@ public class TestReloadProject extends OpenflexoProjectAtRunTimeTestCase {
 
 		assertTrue(project.isStandAlone());
 		assertEquals(project.getRootFolder().getSerializationArtefact(), project.getProjectDirectory());
-		assertEquals(project.getBaseArtefact().getParentFile(), project.getProjectDirectory());
+		assertEquals(project.getBaseArtefact(), project.getProjectDirectory());
 		assertSame(project.getProjectResource().getDelegateResourceCenter(), project.getResourceCenter());
 		assertTrue(project.getDelegateResourceCenter() instanceof DirectoryResourceCenter);
 		assertEquals(project.getProjectDirectory(), ((DirectoryResourceCenter) project.getDelegateResourceCenter()).getRootDirectory());
@@ -98,22 +99,24 @@ public class TestReloadProject extends OpenflexoProjectAtRunTimeTestCase {
 	@TestOrder(2)
 	public void testReloadProject() {
 
-		String oldURI = project.getProjectURI();
+		FlexoProject<File> oldProject = project;
+		String oldURI = oldProject.getProjectURI();
 		System.out.println("Old URI: " + oldURI);
 		System.out.println("Old project dir: " + project.getProjectDirectory());
-		instanciateTestServiceManager();
-		editor = reloadProject(project.getProjectDirectory());
+		// instanciateTestServiceManager();
+		editor = reloadProject(project);
 		project = (FlexoProject<File>) editor.getProject();
 		String newURI = project.getProjectURI();
 		System.out.println("New URI: " + newURI);
 		assertNotNull(editor);
 		assertNotNull(project);
+		assertNotSame(oldProject, project);
 		assertEquals(newURI, oldURI);
 		assertEquals("This is a test project", project.getProjectDescription());
 
 		assertTrue(project.isStandAlone());
 		assertEquals(project.getRootFolder().getSerializationArtefact(), project.getProjectDirectory());
-		assertEquals(project.getBaseArtefact().getParentFile(), project.getProjectDirectory());
+		assertEquals(project.getBaseArtefact(), project.getProjectDirectory());
 		assertSame(project.getProjectResource().getDelegateResourceCenter(), project.getResourceCenter());
 		assertTrue(project.getDelegateResourceCenter() instanceof DirectoryResourceCenter);
 		assertEquals(project.getProjectDirectory(), ((DirectoryResourceCenter) project.getDelegateResourceCenter()).getRootDirectory());

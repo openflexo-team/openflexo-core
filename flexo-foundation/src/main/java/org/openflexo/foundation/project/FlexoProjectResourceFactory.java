@@ -157,6 +157,9 @@ public class FlexoProjectResourceFactory extends PamelaResourceFactory<FlexoProj
 	}
 
 	private <I> FlexoResourceCenter<I> makeDelegateRC(I serializationArtefact) {
+
+		System.out.println("*********** on cree un delegate RC pour " + serializationArtefact);
+
 		if (serializationArtefact instanceof File) {
 			try {
 				FlexoResourceCenter<I> returned = (FlexoResourceCenter<I>) DirectoryResourceCenter

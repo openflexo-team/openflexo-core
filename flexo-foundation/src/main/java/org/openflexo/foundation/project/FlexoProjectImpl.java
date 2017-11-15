@@ -390,7 +390,8 @@ public abstract class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoRe
 
 	@Override
 	public I getBaseArtefact() {
-		return (I) getResource().getIODelegate().getSerializationArtefact();
+		// return (I) getResource().getIODelegate().getSerializationArtefact();
+		return getProjectDirectory();
 	}
 
 	@Override

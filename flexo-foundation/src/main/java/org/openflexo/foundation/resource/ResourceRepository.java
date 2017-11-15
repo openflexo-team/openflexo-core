@@ -8,14 +8,41 @@ import org.openflexo.foundation.FlexoObject;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 
+/**
+ * A {@link ResourceRepository} stores all resources of a particular type.<br>
+ * Resources are organized with a logical folder hierarchy inside the repository<br>
+ * A {@link ResourceRepository} lives in a {@link FlexoResourceCenter}.
+ * 
+ * @author sylvain
+ * 
+ * @param <R>
+ *            type of resources being stored in this {@link ResourceRepositoryImpl}
+ * @param <I>
+ *            serialization artefact type
+ */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(ResourceRepositoryImpl.class)
 public interface ResourceRepository<R extends FlexoResource<?>, I> {
 
+	/**
+	 * Return serialization artefact which is the base of this {@link ResourceRepository}
+	 * 
+	 * @return
+	 */
 	I getBaseArtefact();
 
+	/**
+	 * Sets serialization artefact which is the base of this {@link ResourceRepository}
+	 * 
+	 * @param baseArtefact
+	 */
 	public void setBaseArtefact(I baseArtefact);
 
+	/**
+	 * Return the logical root folder for this {@link ResourceRepository}
+	 * 
+	 * @return
+	 */
 	RepositoryFolder<R, I> getRootFolder();
 
 	/**

@@ -560,15 +560,14 @@ public class TestFlexoRoleCardinality extends OpenflexoProjectAtRunTimeTestCase 
 		log("testReloadProject()");
 
 		FlexoProject<File> oldProject = project;
-		// instanciateTestServiceManager();
-
-		editor = reloadProject(project.getProjectDirectory());
+		String oldViewURI = newView.getURI();
+		editor = reloadProject(project);
 		project = (FlexoProject<File>) editor.getProject();
+
 		assertNotSame(oldProject, project);
 		assertNotNull(editor);
 		assertNotNull(project);
-		FMLRTVirtualModelInstanceResource newViewResource = project.getVirtualModelInstanceRepository()
-				.getVirtualModelInstance(newView.getURI());
+		FMLRTVirtualModelInstanceResource newViewResource = project.getVirtualModelInstanceRepository().getVirtualModelInstance(oldViewURI);
 		assertNotNull(newViewResource);
 		assertNull(newViewResource.getLoadedResourceData());
 		newViewResource.loadResourceData(null);
@@ -576,7 +575,7 @@ public class TestFlexoRoleCardinality extends OpenflexoProjectAtRunTimeTestCase 
 		newView = newViewResource.getLoadedResourceData();
 
 		System.out.println("All resources=" + project.getAllResources());
-		assertNotNull(project.getResource(newView.getURI()));
+		assertNotNull(project.getResource(oldViewURI));
 
 		FMLRTVirtualModelInstance reloadedVMI = (FMLRTVirtualModelInstance) newView.getVirtualModelInstance("MyVirtualModelInstance");
 		assertNotNull(reloadedVMI);
@@ -597,8 +596,8 @@ public class TestFlexoRoleCardinality extends OpenflexoProjectAtRunTimeTestCase 
 			assertEquals(flexoConcept2, reloadedFci2[i].getFlexoConcept());
 		}
 
-		assertSameList(fci.getFlexoActorList(someFlexoConcept2), reloadedFci2[0], reloadedFci2[1], reloadedFci2[2]);
-		assertEquals(reloadedFci2[0], fci.getFlexoActor(someFlexoConcept2));
+		assertSameList(reloadedFCI.getFlexoActorList(someFlexoConcept2), reloadedFci2[0], reloadedFci2[1], reloadedFci2[2]);
+		assertEquals(reloadedFci2[0], reloadedFCI.getFlexoActor(someFlexoConcept2));
 
 	}
 
