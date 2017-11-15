@@ -46,6 +46,7 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
@@ -103,7 +104,7 @@ public class TestPopulateVirtualModelInstance extends OpenflexoProjectAtRunTimeT
 
 	private static DirectoryResourceCenter resourceCenter;
 
-	private static FlexoProject project;
+	private static FlexoProject<File> project;
 	private static FMLRTVirtualModelInstance newView;
 	private static FMLRTVirtualModelInstance newVirtualModelInstance;
 
@@ -128,8 +129,7 @@ public class TestPopulateVirtualModelInstance extends OpenflexoProjectAtRunTimeT
 		VirtualModelResourceFactory factory = fmlTechnologyAdapter.getVirtualModelResourceFactory();
 
 		VirtualModelResource newVirtualModelResource = factory.makeTopLevelVirtualModelResource(VIEWPOINT_NAME, VIEWPOINT_URI,
-				fmlTechnologyAdapter.getGlobalRepository(resourceCenter).getRootFolder(),
-				fmlTechnologyAdapter.getTechnologyContextManager(), true);
+				fmlTechnologyAdapter.getGlobalRepository(resourceCenter).getRootFolder(), true);
 		viewPoint = newVirtualModelResource.getLoadedResourceData();
 
 		// assertTrue(((VirtualModelResource)
@@ -154,7 +154,7 @@ public class TestPopulateVirtualModelInstance extends OpenflexoProjectAtRunTimeT
 				.getTechnologyAdapter(FMLTechnologyAdapter.class);
 		VirtualModelResourceFactory factory = fmlTechnologyAdapter.getVirtualModelResourceFactory();
 		VirtualModelResource newVMResource = factory.makeContainedVirtualModelResource(VIRTUAL_MODEL_NAME,
-				viewPoint.getVirtualModelResource(), fmlTechnologyAdapter.getTechnologyContextManager(), true);
+				viewPoint.getVirtualModelResource(), true);
 		virtualModel = newVMResource.getLoadedResourceData();
 
 		assertTrue(ResourceLocator.retrieveResourceAsFile(((VirtualModelResource) virtualModel.getResource()).getDirectory()).exists());
@@ -308,11 +308,10 @@ public class TestPopulateVirtualModelInstance extends OpenflexoProjectAtRunTimeT
 	@Test
 	@TestOrder(6)
 	public void testCreateProject() {
-		editor = createProject("TestProject");
-		project = editor.getProject();
+		editor = createStandaloneProject("TestProject");
+		project = (FlexoProject<File>) editor.getProject();
 		System.out.println("Created project " + project.getProjectDirectory());
 		assertTrue(project.getProjectDirectory().exists());
-		assertTrue(project.getProjectDataResource().getIODelegate().exists());
 	}
 
 	/**
@@ -474,22 +473,19 @@ public class TestPopulateVirtualModelInstance extends OpenflexoProjectAtRunTimeT
 
 		log("testReloadProject()");
 
-		instanciateTestServiceManager();
+		FlexoProject<File> oldProject = project;
+		String oldViewURI = newView.getURI();
 
-		serviceManager.getResourceCenterService().addToResourceCenters(
-				resourceCenter = new DirectoryResourceCenter(resourceCenter.getDirectory(), serviceManager.getResourceCenterService()));
-
-		editor = reloadProject(project.getDirectory());
-		project = editor.getProject();
+		editor = reloadProject(project);
+		project = (FlexoProject<File>) editor.getProject();
 		assertNotNull(editor);
 		assertNotNull(project);
 
 		System.out.println("All resources=" + project.getAllResources());
-		assertEquals(2, project.getAllResources().size());
-		assertNotNull(project.getResource(newView.getURI()));
+		assertEquals(3, project.getAllResources().size());
+		assertNotNull(project.getResource(oldViewURI));
 
-		FMLRTVirtualModelInstanceResource newViewResource = project.getVirtualModelInstanceRepository()
-				.getVirtualModelInstance(newView.getURI());
+		FMLRTVirtualModelInstanceResource newViewResource = project.getVirtualModelInstanceRepository().getVirtualModelInstance(oldViewURI);
 		assertNotNull(newViewResource);
 		assertNull(newViewResource.getLoadedResourceData());
 		newViewResource.loadResourceData(null);

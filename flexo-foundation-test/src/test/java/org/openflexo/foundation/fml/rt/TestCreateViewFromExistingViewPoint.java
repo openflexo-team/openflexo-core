@@ -41,6 +41,7 @@ package org.openflexo.foundation.fml.rt;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 
 import org.junit.Test;
@@ -68,7 +69,7 @@ public class TestCreateViewFromExistingViewPoint extends OpenflexoProjectAtRunTi
 
 	private static VirtualModel viewPoint;
 	private static FlexoEditor editor;
-	private static FlexoProject project;
+	private static FlexoProject<File> project;
 	private static FMLRTVirtualModelInstance newView;
 
 	/**
@@ -93,11 +94,10 @@ public class TestCreateViewFromExistingViewPoint extends OpenflexoProjectAtRunTi
 	@Test
 	@TestOrder(2)
 	public void testCreateProject() {
-		editor = createProject("TestProject");
-		project = editor.getProject();
+		editor = createStandaloneProject("TestProject");
+		project = (FlexoProject<File>) editor.getProject();
 		System.out.println("Created project " + project.getProjectDirectory());
 		assertTrue(project.getProjectDirectory().exists());
-		assertTrue(project.getProjectDataResource().getIODelegate().exists());
 	}
 
 	/**

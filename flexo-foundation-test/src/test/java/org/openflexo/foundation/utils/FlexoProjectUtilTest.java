@@ -49,13 +49,13 @@ import junit.framework.TestCase;
 
 public class FlexoProjectUtilTest extends TestCase {
 
-	public void testIsProjectOpenableWhenThereIsNoVersionFile() {
+	/*public void testIsProjectOpenableWhenThereIsNoVersionFile() {
 		try {
 			assertTrue("Project with no version file must openable.", FlexoProjectUtil.isProjectOpenable(getDirectoryPrjWitoutVersion()));
 		} catch (UnreadableProjectException e) {
 			fail("UnreadableProjectException can be thrown when testing the project version.");
 		}
-	}
+	}*/
 
 	public void testGetVersionWhenThereIsNoVersionFile() {
 		FlexoVersion version = FlexoProjectUtil.getVersion(getDirectoryPrjWitoutVersion());

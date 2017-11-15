@@ -44,6 +44,7 @@ import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 
 import org.junit.Test;
@@ -74,7 +75,7 @@ public class TestCreateVirtualModelInstanceFromExistingViewPoint extends Openfle
 	private static VirtualModel viewPoint;
 	private static VirtualModel virtualModel;
 	private static FlexoEditor editor;
-	private static FlexoProject project;
+	private static FlexoProject<File> project;
 	private static FMLRTVirtualModelInstance newView;
 	private static FMLRTVirtualModelInstance newVirtualModelInstance;
 
@@ -104,11 +105,10 @@ public class TestCreateVirtualModelInstanceFromExistingViewPoint extends Openfle
 
 		log("testCreateProject()");
 
-		editor = createProject("TestProject");
-		project = editor.getProject();
+		editor = createStandaloneProject("TestProject");
+		project = (FlexoProject<File>) editor.getProject();
 		System.out.println("Created project " + project.getProjectDirectory());
 		assertTrue(project.getProjectDirectory().exists());
-		assertTrue(project.getProjectDataResource().getIODelegate().exists());
 	}
 
 	/**
@@ -175,15 +175,15 @@ public class TestCreateVirtualModelInstanceFromExistingViewPoint extends Openfle
 
 		log("testReloadProject()");
 
-		FlexoProject oldProject = project;
-		instanciateTestServiceManager();
-		editor = reloadProject(project.getDirectory());
-		project = editor.getProject();
+		FlexoProject<File> oldProject = project;
+		String oldViewURI = newView.getURI();
+		// instanciateTestServiceManager();
+		editor = reloadProject(project);
+		project = (FlexoProject<File>) editor.getProject();
 		assertNotSame(oldProject, project);
 		assertNotNull(editor);
 		assertNotNull(project);
-		FMLRTVirtualModelInstanceResource newViewResource = project.getVirtualModelInstanceRepository()
-				.getVirtualModelInstance(newView.getURI());
+		FMLRTVirtualModelInstanceResource newViewResource = project.getVirtualModelInstanceRepository().getVirtualModelInstance(oldViewURI);
 		System.out.println("all resources = " + project.getVirtualModelInstanceRepository().getAllResources());
 		assertNotNull(newViewResource);
 		assertNull(newViewResource.getLoadedResourceData());

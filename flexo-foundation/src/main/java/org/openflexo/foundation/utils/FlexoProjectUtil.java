@@ -46,6 +46,7 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.toolbox.FlexoVersion;
 
 public class FlexoProjectUtil {
@@ -56,7 +57,7 @@ public class FlexoProjectUtil {
 	 * @param projectDirectory
 	 * @return false whenever .version is less than 1.3 or project .version higher than current FlexoVersion.
 	 */
-	/*public static boolean isProjectOpenable(File projectDirectory) throws UnreadableProjectException {
+	public static boolean isProjectOpenable(File projectDirectory) throws UnreadableProjectException {
 		FlexoVersion version = getVersion(projectDirectory);
 		if (version != null && version.major == 1 && version.minor < 3) {
 			throw new UnreadableProjectException(
@@ -67,7 +68,7 @@ public class FlexoProjectUtil {
 					.localizedForKey("current_flexo_version_is_smaller_than_last_used_to_open_this_project"));
 		}
 		return true;
-	}*/
+	}
 
 	/**
 	 * @param projectDirectory
@@ -117,7 +118,7 @@ public class FlexoProjectUtil {
 	 *            the project directory
 	 * @return
 	 */
-	/*public static boolean currentFlexoVersionIsSmallerThanLastVersion(File projectDirectory) {
+	public static boolean currentFlexoVersionIsSmallerThanLastVersion(File projectDirectory) {
 		File f = getVersionFile(projectDirectory);
 		if (!f.exists()) {
 			return false;
@@ -133,7 +134,7 @@ public class FlexoProjectUtil {
 			FlexoVersion applicationVersion = new FlexoVersion("1.7");
 			return applicationVersion.isLesserThan(v);
 		}
-	}*/
+	}
 
 	/**
 	 * @param projectDirectory
