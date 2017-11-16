@@ -9,9 +9,6 @@
 			darkLevel="0" index="0" font="SansSerif,0,11" useScrollBar="true"
 			horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED"
 			verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED" name="BasicTab">
-			<Label index="1" data="data.helpText"
-				constraints="twocols(expandHorizontally=true;expandVertically=true;index=1;location=right)"
-				width="200" height="200" name="HelpText" localize="true" />
 		</Tab>
 		<Tab title="Advanced" layout="twocols" titleFont="SansSerif,0,11"
 			darkLevel="0" index="2" font="SansSerif,0,11" useScrollBar="true"
@@ -22,5 +19,5 @@
 		<Localized key="Advanced" lang="French" value="Avancé" />
 		<Localized key="Basic" lang="French" value="Basique" />
 	</LocalizedDictionary>
-	<Parameter name="title" value="View Library" />
+	<Parameter name="title" value="VirtualModelInstance Library" />
 </Panel>
