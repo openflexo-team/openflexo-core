@@ -719,7 +719,7 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 	 * @throws SaveResourceException
 	 * @throws ModelDefinitionException
 	 */
-	public <I, R extends TechnologyAdapterResource<?, ?>, RF extends TechnologySpecificFlexoResourceFactory<R, ?, ?>> R createResource(
+	public <I, R extends TechnologyAdapterResource<?, ?>, RF extends ITechnologySpecificFlexoResourceFactory<R, ?, ?>> R createResource(
 			Class<RF> resourceFactoryClass, FlexoResourceCenter<I> resourceCenter, String resourceName, String resourceURI,
 			String relativePath, String extension, boolean createEmptyContents) throws SaveResourceException, ModelDefinitionException {
 
