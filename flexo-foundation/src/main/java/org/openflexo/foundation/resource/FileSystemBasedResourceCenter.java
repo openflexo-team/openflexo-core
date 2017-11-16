@@ -60,11 +60,14 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.VirtualModelRepository;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceRepository;
+import org.openflexo.foundation.project.FlexoProjectResource;
+import org.openflexo.foundation.project.FlexoProjectResourceFactory;
 import org.openflexo.foundation.resource.DirectoryBasedIODelegate.DirectoryBasedIODelegateImpl;
 import org.openflexo.foundation.resource.FileIODelegate.FileHasBeenWrittenOnDiskNotification;
 import org.openflexo.foundation.resource.FileIODelegate.FileIODelegateImpl;
@@ -998,8 +1001,15 @@ public interface FileSystemBasedResourceCenter extends ResourceRepository<FlexoR
 				String fileExtension, FlexoResourceFactory<?, ?> resourceFactory) {
 			String baseName = serializationArtefact.getName().substring(0,
 					serializationArtefact.getName().length() - directoryExtension.length());
-			return DirectoryBasedIODelegateImpl.makeDirectoryBasedFlexoIODelegate(serializationArtefact.getParentFile(), baseName,
-					directoryExtension, fileExtension, resourceFactory);
+			File directory = new File(serializationArtefact.getParentFile(), baseName + directoryExtension);
+			File file = new File(directory, baseName + fileExtension);
+			return makeDirectoryBasedFlexoIODelegate(directory, file, resourceFactory);
+		}
+
+		@Override
+		public FlexoIODelegate<File> makeDirectoryBasedFlexoIODelegate(File directory, File file,
+				FlexoResourceFactory<?, ?> resourceFactory) {
+			return DirectoryBasedIODelegateImpl.makeDirectoryBasedFlexoIODelegate(directory, file, resourceFactory);
 		}
 
 		@Override
@@ -1060,6 +1070,9 @@ public interface FileSystemBasedResourceCenter extends ResourceRepository<FlexoR
 			else if (ioDelegate instanceof FileIODelegate) {
 				candidateFile = ((FileIODelegate) ioDelegate).getFile();
 			}
+			if (getRootFolder().getSerializationArtefact().equals(candidateFile)) {
+				return (RepositoryFolder<R, File>) getRootFolder();
+			}
 			try {
 				RepositoryFolder<R, File> returned = resourceRepository.getParentRepositoryFolder(candidateFile, true);
 				return returned;
@@ -1098,6 +1111,36 @@ public interface FileSystemBasedResourceCenter extends ResourceRepository<FlexoR
 			return fsMetaDataManager;
 		}
 
+		private FlexoProjectResource<File> delegatingProjectResource;
+
+		/**
+		 * Returns project which delegates it's FlexoResourceCenter to this<br>
+		 * Returns null if this {@link FlexoResourceCenter} is not acting as a delegate for a {@link FlexoProject}
+		 * 
+		 * @return
+		 */
+		@Override
+		public FlexoProjectResource<File> getDelegatingProjectResource() {
+			return delegatingProjectResource;
+		}
+
+		/**
+		 * Sets project which delegates it's FlexoResourceCenter to this<br>
+		 * 
+		 * @return
+		 */
+		@Override
+		public void setDelegatingProjectResource(FlexoProjectResource<File> delegatingProjectResource) {
+			this.delegatingProjectResource = delegatingProjectResource;
+		}
+
+		@Override
+		public final String getDisplayableName() {
+			if (getDelegatingProjectResource() != null) {
+				return getDelegatingProjectResource().getName() + FlexoProjectResourceFactory.PROJECT_SUFFIX;
+			}
+			return getDefaultBaseURI();// getRootDirectory().getName();
+		}
 	}
 
 	@ModelEntity(isAbstract = true)

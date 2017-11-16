@@ -230,6 +230,7 @@ public class MainPaneTopBar extends JMenuBar {
 					model.setCurrentProject(projectSelector.getEditedObject());
 				}
 				else {
+					System.out.println("OK, le editedObject c'est " + model.getCurrentProject());
 					projectSelector.setEditedObject(model.getCurrentProject());
 				}
 			}

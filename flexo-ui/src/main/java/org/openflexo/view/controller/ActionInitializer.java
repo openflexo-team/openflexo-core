@@ -133,7 +133,7 @@ public abstract class ActionInitializer<A extends FlexoAction<A, T1, T2>, T1 ext
 		return getController().getModule();
 	}
 
-	public FlexoProject getProject() {
+	public FlexoProject<?> getProject() {
 		if (getEditor() != null) {
 			return getEditor().getProject();
 		}

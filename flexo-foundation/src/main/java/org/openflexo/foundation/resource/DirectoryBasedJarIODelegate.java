@@ -38,15 +38,13 @@
 
 package org.openflexo.foundation.resource;
 
+import java.io.File;
 import java.net.URL;
 import java.util.logging.Logger;
 
-import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.Implementation;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
-import org.openflexo.model.annotations.Setter;
-import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.model.annotations.XMLElement;
 import org.openflexo.model.factory.ModelFactory;
 import org.openflexo.rm.InJarResourceImpl;
@@ -67,8 +65,8 @@ import org.openflexo.toolbox.JarClassLoader;
 @ImplementationClass(DirectoryBasedJarIODelegate.DirectoryBasedJarIODelegateImpl.class)
 public interface DirectoryBasedJarIODelegate extends InJarIODelegate {
 
-	public static final String FILE_EXTENSION = "fileExtension";
-	public static final String DIRECTORY_EXTENSION = "directoryExtension";
+	// public static final String FILE_EXTENSION = "fileExtension";
+	// public static final String DIRECTORY_EXTENSION = "directoryExtension";
 
 	/**
 	 * Return directory where core file is stored
@@ -92,19 +90,19 @@ public interface DirectoryBasedJarIODelegate extends InJarIODelegate {
 	@Override
 	public InJarResourceImpl getInJarResource();
 
-	@Getter(FILE_EXTENSION)
+	/*@Getter(FILE_EXTENSION)
 	@XMLAttribute
 	public String getFileExtension();
-
+	
 	@Setter(FILE_EXTENSION)
 	public void setFileExtension(String extension);
-
+	
 	@Getter(DIRECTORY_EXTENSION)
 	@XMLAttribute
 	public String getDirectoryExtension();
-
+	
 	@Setter(DIRECTORY_EXTENSION)
-	public void setDirectoryExtension(String extension);
+	public void setDirectoryExtension(String extension);*/
 
 	@Implementation
 	public abstract class DirectoryBasedJarIODelegateImpl extends InJarIODelegateImpl implements DirectoryBasedJarIODelegate {
@@ -113,19 +111,30 @@ public interface DirectoryBasedJarIODelegate extends InJarIODelegate {
 
 		private InJarResourceImpl directory;
 
-		public static DirectoryBasedJarIODelegate makeDirectoryBasedFlexoIODelegate(InJarResourceImpl containerDir, String baseName,
-				String directoryExtension, String fileExtension, JarResourceCenter resourceCenter, ModelFactory factory) {
-			DirectoryBasedJarIODelegate fileIODelegate = factory.newInstance(DirectoryBasedJarIODelegate.class);
-			fileIODelegate.setDirectoryExtension(directoryExtension);
+		public static DirectoryBasedIODelegate makeDirectoryBasedFlexoIODelegate(File directory, File file, ModelFactory factory) {
+			DirectoryBasedIODelegate fileIODelegate = factory.newInstance(DirectoryBasedIODelegate.class);
+			/*fileIODelegate.setDirectoryExtension(directoryExtension);
 			fileIODelegate.setFileExtension(fileExtension);
+			File directory = new File(containerDir, baseName + directoryExtension);
+			File file = new File(directory, baseName + fileExtension);*/
+			fileIODelegate.setDirectory(directory);
+			fileIODelegate.setFile(file);
+			return fileIODelegate;
+		}
+
+		public static DirectoryBasedJarIODelegate makeDirectoryBasedFlexoIODelegate(InJarResourceImpl directory, InJarResourceImpl file,
+				ModelFactory factory) {
+			DirectoryBasedJarIODelegate fileIODelegate = factory.newInstance(DirectoryBasedJarIODelegate.class);
+			// fileIODelegate.setDirectoryExtension(directoryExtension);
+			// fileIODelegate.setFileExtension(fileExtension);
 
 			// System.out.println("Building DirectoryBasedJarIODelegate");
 			// System.out.println("containerDir=" + containerDir);
 
-			InJarResourceImpl directory = resourceCenter.getDirectory(baseName + directoryExtension, containerDir);
+			// InJarResourceImpl directory = resourceCenter.getDirectory(baseName + directoryExtension, containerDir);
 			// System.out.println("directory=" + directory);
 
-			InJarResourceImpl file = resourceCenter.getDirectory(baseName + fileExtension, directory);
+			// InJarResourceImpl file = resourceCenter.getDirectory(baseName + fileExtension, directory);
 			// System.out.println("file=" + file);
 
 			fileIODelegate.setDirectory(directory);

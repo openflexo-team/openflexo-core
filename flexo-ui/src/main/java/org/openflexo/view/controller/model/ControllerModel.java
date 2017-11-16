@@ -509,6 +509,8 @@ public class ControllerModel extends ControllerModelObject implements PropertyCh
 				FlexoProject project = (FlexoProject) evt.getNewValue();
 				if (getCurrentPerspective() != null) {
 					FlexoObject object = getCurrentPerspective().getDefaultObject(project);
+					System.out.println("Je veux afficher le project " + project);
+					System.out.println("Editor: " + getProjectLoader().getEditorForProject(project));
 					setCurrentLocation(getProjectLoader().getEditorForProject(project), object, getCurrentPerspective());
 				}
 				else {

@@ -309,6 +309,7 @@ public abstract class ApplicationContext extends DefaultFlexoServiceManager {
 
 	@Override
 	public AddResourceCenterTask resourceCenterAdded(FlexoResourceCenter<?> resourceCenter) {
+		System.out.println("AddResourceCenterTask with " + resourceCenter);
 		AddResourceCenterTask addRCTask = new AddResourceCenterTask(getResourceCenterService(), resourceCenter);
 		getTaskManager().scheduleExecution(addRCTask);
 		return addRCTask;

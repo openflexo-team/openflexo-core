@@ -43,6 +43,8 @@ import java.util.List;
 
 import javax.naming.InvalidNameException;
 
+import org.openflexo.foundation.nature.ProjectNature;
+import org.openflexo.foundation.nature.ProjectWrapper;
 import org.openflexo.foundation.project.FlexoProjectFactory;
 import org.openflexo.foundation.project.FlexoProjectImpl;
 import org.openflexo.foundation.project.FlexoProjectReference;
@@ -88,7 +90,7 @@ import org.openflexo.toolbox.FlexoVersion;
  */
 @ModelEntity
 @ImplementationClass(FlexoProjectImpl.class)
-@XMLElement
+@XMLElement(deprecatedXMLTags = "ProjectData")
 public interface FlexoProject<I> extends ResourceRepository<FlexoResource<?>, I>, FlexoResourceCenter<I>, Validable, FlexoProjectObject,
 		ResourceData<FlexoProject<I>> {
 
@@ -114,7 +116,7 @@ public interface FlexoProject<I> extends ResourceRepository<FlexoResource<?>, I>
 	public String getProjectName();
 
 	@Getter(value = PROJECT_URI_KEY)
-	@XMLAttribute
+	@XMLAttribute(xmlTag = "uri")
 	public String getProjectURI();
 
 	@Setter(PROJECT_URI_KEY)
@@ -304,4 +306,38 @@ public interface FlexoProject<I> extends ResourceRepository<FlexoResource<?>, I>
 	public FlexoProjectResource getProjectResource();
 
 	public ValidationModel getProjectValidationModel();
+
+	/**
+	 * Return boolean indicating if this project might be interpreted according to this project nature
+	 * 
+	 * @param projectNature
+	 * @return
+	 */
+	public boolean hasNature(ProjectNature<?, ?> projectNature);
+
+	/**
+	 * Return boolean indicating if this project might be interpreted according to this project nature (supplied as string representing full
+	 * class name)
+	 * 
+	 * @param projectNature
+	 * @return
+	 */
+	public boolean hasNature(String projectNatureClassName);
+
+	/**
+	 * Return project wrapper object representing this project according to supplied nature
+	 * 
+	 * @param projectNature
+	 * @return
+	 */
+	public <N extends ProjectNature<N, P>, P extends ProjectWrapper<N>> P asNature(N projectNature);
+
+	/**
+	 * Return project wrapper object representing this project according to supplied nature
+	 * 
+	 * @param projectNature
+	 * @return
+	 */
+	public ProjectWrapper<?> asNature(String projectNatureClassName);
+
 }

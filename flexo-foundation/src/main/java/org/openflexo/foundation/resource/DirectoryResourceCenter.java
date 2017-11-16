@@ -125,11 +125,6 @@ public interface DirectoryResourceCenter extends FileSystemBasedResourceCenter {
 			return false;
 		}
 
-		@Override
-		public String getDisplayableName() {
-			return getDefaultBaseURI();// getRootDirectory().getName();
-		}
-
 		private DirectoryResourceCenterEntry entry;
 
 		@Override

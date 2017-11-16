@@ -49,14 +49,14 @@ import org.openflexo.foundation.FlexoProject;
  * @author sylvain
  * 
  */
-public interface ProjectNature<N extends ProjectNature<N, P>, P extends ProjectWrapper<N>> extends FlexoNature<FlexoProject> {
+public interface ProjectNature<N extends ProjectNature<N, P>, P extends ProjectWrapper<N>> extends FlexoNature<FlexoProject<?>> {
 
 	/**
 	 * Gives to supplied FlexoProject this nature
 	 * 
 	 * @return
 	 */
-	public void givesNature(FlexoProject project, FlexoEditor editor);
+	public void givesNature(FlexoProject<?> project, FlexoEditor editor);
 
 	/**
 	 * Return wrapping object representing the interpretation of supplied project with this nature
@@ -64,7 +64,7 @@ public interface ProjectNature<N extends ProjectNature<N, P>, P extends ProjectW
 	 * @param project
 	 * @return
 	 */
-	public P getProjectWrapper(FlexoProject project);
+	public P getProjectWrapper(FlexoProject<?> project);
 
 	/**
 	 * Returns service managing project natures

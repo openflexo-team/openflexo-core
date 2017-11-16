@@ -178,7 +178,7 @@ public interface DirectoryBasedGitIODelegate extends GitIODelegate {
 
 		@Override
 		public String getFileName() {
-			return getFlexoResource().getName() + getFileExtension();
+			return getDirectoryName();
 		}
 
 		public String getDirectoryName() {

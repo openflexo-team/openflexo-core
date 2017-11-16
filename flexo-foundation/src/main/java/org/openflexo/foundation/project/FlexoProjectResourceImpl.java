@@ -87,6 +87,7 @@ public abstract class FlexoProjectResourceImpl<I> extends PamelaResourceImpl<Fle
 			FlexoResourceCenter<?> oldValue = this.delegateResourceCenter;
 			this.delegateResourceCenter = delegateResourceCenter;
 			delegateResourceCenter.setDefaultBaseURI(getURI());
+			delegateResourceCenter.setDelegatingProjectResource(this);
 			getPropertyChangeSupport().firePropertyChange("delegateResourceCenter", oldValue, delegateResourceCenter);
 		}
 	}

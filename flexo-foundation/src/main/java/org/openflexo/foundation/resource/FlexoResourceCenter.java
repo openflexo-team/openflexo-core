@@ -49,10 +49,12 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import org.openflexo.foundation.FlexoObject;
+import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelRepository;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceRepository;
+import org.openflexo.foundation.project.FlexoProjectResource;
 import org.openflexo.foundation.resource.DirectoryResourceCenter.DirectoryResourceCenterEntry;
 import org.openflexo.foundation.resource.FileSystemBasedResourceCenter.FSBasedResourceCenterEntry;
 import org.openflexo.foundation.resource.JarResourceCenter.JarResourceCenterEntry;
@@ -420,13 +422,23 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, ResourceRepository<
 	FlexoIODelegate<I> makeFlexoIODelegate(I serializationArtefact, FlexoResourceFactory<?, ?> resourceFactory) throws IOException;
 
 	/**
-	 * Build a new {@link FlexoIODelegate} for a given serialization artefact
+	 * Build a new {@link FlexoIODelegate} as a directory-based<br>
+	 * It consists of a directory with a single file whose name is computed from basae name of directory and supplied extension
 	 * 
 	 * @param serializationArtefact
 	 * @return
 	 */
-	FlexoIODelegate<I> makeDirectoryBasedFlexoIODelegate(I serializationArtefact, String directoryExtension, String fileExtension,
+	public FlexoIODelegate<I> makeDirectoryBasedFlexoIODelegate(I serializationArtefact, String directoryExtension, String fileExtension,
 			FlexoResourceFactory<?, ?> resourceFactory);
+
+	/**
+	 * Build a new {@link FlexoIODelegate} as a directory-based<br>
+	 * It consists of a directory with a single file inside it
+	 * 
+	 * @param serializationArtefact
+	 * @return
+	 */
+	FlexoIODelegate<I> makeDirectoryBasedFlexoIODelegate(I directory, I file, FlexoResourceFactory<?, ?> resourceFactory);
 
 	/**
 	 * Computes the folder for serialization item supported by supplied I/O delegate
@@ -525,5 +537,20 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, ResourceRepository<
 	Properties getProperties(I directory) throws IOException;
 
 	List<String> getPathTo(I serializationArtefact) throws IOException;
+
+	/**
+	 * Returns project which delegates it's FlexoResourceCenter to this<br>
+	 * Returns null if this {@link FlexoResourceCenter} is not acting as a delegate for a {@link FlexoProject}
+	 * 
+	 * @return
+	 */
+	public FlexoProjectResource<I> getDelegatingProjectResource();
+
+	/**
+	 * Sets project which delegates it's FlexoResourceCenter to this<br>
+	 * 
+	 * @return
+	 */
+	public void setDelegatingProjectResource(FlexoProjectResource<I> delegatingProjectResource);
 
 }

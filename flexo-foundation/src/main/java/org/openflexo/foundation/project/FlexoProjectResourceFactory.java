@@ -26,7 +26,6 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.FlexoServiceManager;
-import org.openflexo.foundation.resource.DirectoryBasedIODelegate.DirectoryBasedIODelegateImpl;
 import org.openflexo.foundation.resource.DirectoryResourceCenter;
 import org.openflexo.foundation.resource.FlexoIODelegate;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
@@ -48,7 +47,7 @@ public class FlexoProjectResourceFactory<I> extends PamelaResourceFactory<FlexoP
 
 	private static final Logger logger = Logger.getLogger(FlexoProjectResourceFactory.class.getPackage().getName());
 
-	public static final String CORE_FILE_SUFFIX = ".xml";
+	public static final String PROJECT_DATA_FILENAME = "ProjectData.xml";
 	public static final String PROJECT_SUFFIX = ".prj";
 	public static final FlexoVersion INITIAL_REVISION = new FlexoVersion("0.1");
 	public static final FlexoVersion CURRENT_MODEL_VERSION = new FlexoVersion("1.0");
@@ -262,16 +261,17 @@ public class FlexoProjectResourceFactory<I> extends PamelaResourceFactory<FlexoP
 	@Override
 	protected <I2> FlexoIODelegate<I2> makeFlexoIODelegate(I2 serializationArtefact, FlexoResourceCenter<I2> resourceCenter) {
 		if (resourceCenter != null) {
-			return resourceCenter.makeDirectoryBasedFlexoIODelegate(serializationArtefact, PROJECT_SUFFIX, CORE_FILE_SUFFIX, this);
+			I2 singleFileArtefact = resourceCenter.getEntry(PROJECT_DATA_FILENAME, serializationArtefact);
+			return resourceCenter.makeDirectoryBasedFlexoIODelegate(serializationArtefact, singleFileArtefact, this);
 		}
-		else {
+		/*else {
 			if (serializationArtefact instanceof File) {
 				String baseName = ((File) serializationArtefact).getName().substring(0,
 						((File) serializationArtefact).getName().length() - PROJECT_SUFFIX.length());
 				return (FlexoIODelegate<I2>) DirectoryBasedIODelegateImpl.makeDirectoryBasedFlexoIODelegate(
 						((File) serializationArtefact).getParentFile(), baseName, PROJECT_SUFFIX, CORE_FILE_SUFFIX, this);
 			}
-		}
+		}*/
 		return null;
 	}
 
@@ -291,7 +291,7 @@ public class FlexoProjectResourceFactory<I> extends PamelaResourceFactory<FlexoP
 			return null;
 		}
 		if (xmlRootElementInfo.getName().equals("FlexoProject")) {
-			returned.uri = xmlRootElementInfo.getAttribute(FlexoProject.PROJECT_URI_KEY);
+			returned.uri = xmlRootElementInfo.getAttribute("uri");
 			returned.version = xmlRootElementInfo.getAttribute(FlexoProject.PROJECT_VERSION_KEY);
 			returned.revision = xmlRootElementInfo.getAttribute(FlexoProject.PROJECT_REVISION_KEY);
 			returned.modelVersion = xmlRootElementInfo.getAttribute("modelVersion");

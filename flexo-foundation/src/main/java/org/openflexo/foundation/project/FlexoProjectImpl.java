@@ -760,6 +760,7 @@ public abstract class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoRe
 	 * @param projectNature
 	 * @return
 	 */
+	@Override
 	public final boolean hasNature(ProjectNature<?, ?> projectNature) {
 		return projectNature.hasNature(this);
 	}
@@ -771,6 +772,7 @@ public abstract class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoRe
 	 * @param projectNature
 	 * @return
 	 */
+	@Override
 	public final boolean hasNature(String projectNatureClassName) {
 		ProjectNature<?, ?> projectNature = getServiceManager().getProjectNatureService().getProjectNature(projectNatureClassName);
 		return projectNature.hasNature(this);
@@ -798,6 +800,7 @@ public abstract class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoRe
 	 * @param projectNature
 	 * @return
 	 */
+	@Override
 	public final <N extends ProjectNature<N, P>, P extends ProjectWrapper<N>> P asNature(N projectNature) {
 		return projectNature.getProjectWrapper(this);
 	}
@@ -808,6 +811,7 @@ public abstract class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoRe
 	 * @param projectNature
 	 * @return
 	 */
+	@Override
 	public final ProjectWrapper<?> asNature(String projectNatureClassName) {
 		if (!closed) {
 			ProjectNature<?, ?> projectNature = getServiceManager().getProjectNatureService().getProjectNature(projectNatureClassName);
@@ -1650,6 +1654,14 @@ public abstract class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoRe
 	}
 
 	@Override
+	public FlexoIODelegate<I> makeDirectoryBasedFlexoIODelegate(I directory, I file, FlexoResourceFactory<?, ?> resourceFactory) {
+		if (getDelegateResourceCenter() == null) {
+			return null;
+		}
+		return getDelegateResourceCenter().makeDirectoryBasedFlexoIODelegate(directory, file, resourceFactory);
+	}
+
+	@Override
 	public <R extends FlexoResource<?>> RepositoryFolder<R, I> getRepositoryFolder(FlexoIODelegate<I> ioDelegate,
 			ResourceRepository<R, I> resourceRepository) {
 		if (getDelegateResourceCenter() == null) {
@@ -1785,6 +1797,21 @@ public abstract class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoRe
 			return null;
 		}
 		return getDelegateResourceCenter().getPathTo(serializationArtefact);
+	}
+
+	@Override
+	public FlexoProjectResource<I> getDelegatingProjectResource() {
+		return null;
+	}
+
+	/**
+	 * Sets project which delegates it's FlexoResourceCenter to this<br>
+	 * 
+	 * @return
+	 */
+	@Override
+	public void setDelegatingProjectResource(FlexoProjectResource<I> delegatingProjectResource) {
+		// Not applicable
 	}
 
 }

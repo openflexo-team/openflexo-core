@@ -44,11 +44,8 @@ import java.util.Collections;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
-import org.openflexo.model.annotations.Setter;
-import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.model.annotations.XMLElement;
 import org.openflexo.model.factory.ModelFactory;
 import org.openflexo.toolbox.FileUtils;
@@ -69,8 +66,8 @@ import org.openflexo.toolbox.JarInDirClassLoader;
 @ImplementationClass(DirectoryBasedIODelegate.DirectoryBasedIODelegateImpl.class)
 public interface DirectoryBasedIODelegate extends FileIODelegate {
 
-	public static final String FILE_EXTENSION = "fileExtension";
-	public static final String DIRECTORY_EXTENSION = "directoryExtension";
+	// public static final String FILE_EXTENSION = "fileExtension";
+	// public static final String DIRECTORY_EXTENSION = "directoryExtension";
 
 	/**
 	 * Return directory where core file is stored
@@ -94,19 +91,19 @@ public interface DirectoryBasedIODelegate extends FileIODelegate {
 	@Override
 	public File getFile();
 
-	@Getter(FILE_EXTENSION)
+	/*@Getter(FILE_EXTENSION)
 	@XMLAttribute
 	public String getFileExtension();
-
+	
 	@Setter(FILE_EXTENSION)
 	public void setFileExtension(String extension);
-
+	
 	@Getter(DIRECTORY_EXTENSION)
 	@XMLAttribute
 	public String getDirectoryExtension();
-
+	
 	@Setter(DIRECTORY_EXTENSION)
-	public void setDirectoryExtension(String extension);
+	public void setDirectoryExtension(String extension);*/
 
 	public abstract class DirectoryBasedIODelegateImpl extends FileIODelegateImpl implements DirectoryBasedIODelegate {
 
@@ -114,13 +111,12 @@ public interface DirectoryBasedIODelegate extends FileIODelegate {
 
 		private File directory;
 
-		public static DirectoryBasedIODelegate makeDirectoryBasedFlexoIODelegate(File containerDir, String baseName,
-				String directoryExtension, String fileExtension, ModelFactory factory) {
+		public static DirectoryBasedIODelegate makeDirectoryBasedFlexoIODelegate(File directory, File file, ModelFactory factory) {
 			DirectoryBasedIODelegate fileIODelegate = factory.newInstance(DirectoryBasedIODelegate.class);
-			fileIODelegate.setDirectoryExtension(directoryExtension);
+			/*fileIODelegate.setDirectoryExtension(directoryExtension);
 			fileIODelegate.setFileExtension(fileExtension);
 			File directory = new File(containerDir, baseName + directoryExtension);
-			File file = new File(directory, baseName + fileExtension);
+			File file = new File(directory, baseName + fileExtension);*/
 			fileIODelegate.setDirectory(directory);
 			fileIODelegate.setFile(file);
 			return fileIODelegate;
@@ -174,11 +170,11 @@ public interface DirectoryBasedIODelegate extends FileIODelegate {
 
 		@Override
 		public String getFileName() {
-			return getFlexoResource().getName() + getFileExtension();
+			return getFile().getName();
 		}
 
 		public String getDirectoryName() {
-			return getFlexoResource().getName() + getDirectoryExtension();
+			return getDirectory().getName();
 		}
 
 		/**

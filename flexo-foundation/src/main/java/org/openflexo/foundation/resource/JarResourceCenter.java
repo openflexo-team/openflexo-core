@@ -55,11 +55,13 @@ import java.util.jar.JarFile;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.VirtualModelRepository;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceRepository;
+import org.openflexo.foundation.project.FlexoProjectResource;
 import org.openflexo.foundation.resource.DirectoryBasedJarIODelegate.DirectoryBasedJarIODelegateImpl;
 import org.openflexo.foundation.resource.InJarIODelegate.InJarIODelegateImpl;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
@@ -665,8 +667,17 @@ public interface JarResourceCenter extends ResourceRepository<FlexoResource<?>, 
 
 			String baseName = retrieveName(serializationArtefact).substring(0,
 					retrieveName(serializationArtefact).length() - directoryExtension.length());
-			return DirectoryBasedJarIODelegateImpl.makeDirectoryBasedFlexoIODelegate(serializationArtefact.getContainer(), baseName,
-					directoryExtension, fileExtension, this, resourceFactory);
+
+			InJarResourceImpl directory = getDirectory(baseName + directoryExtension, getContainer(serializationArtefact));
+			InJarResourceImpl file = getEntry(baseName + fileExtension, directory);
+
+			return makeDirectoryBasedFlexoIODelegate(directory, file, resourceFactory);
+		}
+
+		@Override
+		public FlexoIODelegate<InJarResourceImpl> makeDirectoryBasedFlexoIODelegate(InJarResourceImpl directory, InJarResourceImpl file,
+				FlexoResourceFactory<?, ?> resourceFactory) {
+			return DirectoryBasedJarIODelegateImpl.makeDirectoryBasedFlexoIODelegate(directory, file, resourceFactory);
 		}
 
 		@Override
@@ -796,6 +807,29 @@ public interface JarResourceCenter extends ResourceRepository<FlexoResource<?>, 
 		@Override
 		public void unregisterResource(FlexoResource<?> resource, InJarResourceImpl serializationArtefact) {
 			unregisterResource(resource);
+		}
+
+		private FlexoProjectResource<InJarResourceImpl> delegatingProjectResource;
+
+		/**
+		 * Returns project which delegates it's FlexoResourceCenter to this<br>
+		 * Returns null if this {@link FlexoResourceCenter} is not acting as a delegate for a {@link FlexoProject}
+		 * 
+		 * @return
+		 */
+		@Override
+		public FlexoProjectResource<InJarResourceImpl> getDelegatingProjectResource() {
+			return delegatingProjectResource;
+		}
+
+		/**
+		 * Sets project which delegates it's FlexoResourceCenter to this<br>
+		 * 
+		 * @return
+		 */
+		@Override
+		public void setDelegatingProjectResource(FlexoProjectResource<InJarResourceImpl> delegatingProjectResource) {
+			this.delegatingProjectResource = delegatingProjectResource;
 		}
 
 	}

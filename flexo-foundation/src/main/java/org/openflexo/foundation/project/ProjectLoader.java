@@ -124,18 +124,6 @@ public class ProjectLoader extends FlexoServiceImpl implements HasPropertyChange
 		return flexoProjectResourceFactory;
 	}
 
-	/**
-	 * Create and return a new {@link FlexoEditor} for supplied {@link FlexoProject}
-	 * 
-	 * @param project
-	 * @return
-	 */
-	public FlexoEditor makeFlexoEditor(FlexoProject<?> project) {
-		FlexoEditor returned = new DefaultFlexoEditor(project, getServiceManager());
-		getPropertyChangeSupport().firePropertyChange(EDITOR_ADDED, null, returned);
-		return returned;
-	}
-
 	public <I> FlexoProjectResource retrieveFlexoProjectResource(I serializationArtefact)
 			throws ProjectInitializerException, ModelDefinitionException, IOException {
 		if (serializationArtefact == null) {
@@ -262,7 +250,7 @@ public class ProjectLoader extends FlexoServiceImpl implements HasPropertyChange
 
 		// Create and return a FlexoEditor for the new FlexoProject
 		Progress.progress(FlexoLocalization.getMainLocalizer().localizedForKey("make_editor_for_project") + " " + newProject.getName());
-		return makeFlexoEditor(newProject);
+		return getEditorForProject(newProject);
 	}
 
 	/**
@@ -306,7 +294,7 @@ public class ProjectLoader extends FlexoServiceImpl implements HasPropertyChange
 		}
 
 		// Create and return a FlexoEditor for the new FlexoProject
-		return makeFlexoEditor(newProject);
+		return getEditorForProject(newProject);
 	}
 
 	/**
@@ -353,7 +341,7 @@ public class ProjectLoader extends FlexoServiceImpl implements HasPropertyChange
 			// Create and return a FlexoEditor for the new FlexoProject
 			Progress.progress(
 					FlexoLocalization.getMainLocalizer().localizedForKey("make_editor_for_project") + " " + projectResource.getName());
-			return makeFlexoEditor(loadedProject);
+			return getEditorForProject(loadedProject);
 
 		} catch (ResourceLoadingCancelledException e) {
 			throw new ProjectLoadingCancelledException();
@@ -375,8 +363,18 @@ public class ProjectLoader extends FlexoServiceImpl implements HasPropertyChange
 	 * @param project
 	 * @return
 	 */
-	public FlexoEditor getEditorForProject(FlexoProject<?> project) {
-		return editors.get(project);
+	public final FlexoEditor getEditorForProject(FlexoProject<?> project) {
+		FlexoEditor returned = editors.get(project);
+		if (returned == null) {
+			returned = makeFlexoEditor(project);
+			editors.put(project, returned);
+			getPropertyChangeSupport().firePropertyChange(EDITOR_ADDED, null, returned);
+		}
+		return returned;
+	}
+
+	public FlexoEditor makeFlexoEditor(FlexoProject<?> project) {
+		return new DefaultFlexoEditor(project, getServiceManager());
 	}
 
 	/*public FlexoEditor editorForProjectURIAndRevision(String projectURI, long revision) {
@@ -415,7 +413,7 @@ public class ProjectLoader extends FlexoServiceImpl implements HasPropertyChange
 	 * @throws ResourceLoadingCancelledException
 	 * @throws FlexoException
 	 */
-	private <I> FlexoProject<I> internalLoadProject(FlexoProjectResource projectResource, boolean asImportedProject)
+	private <I> FlexoProject<I> internalLoadProject(FlexoProjectResource<I> projectResource, boolean asImportedProject)
 			throws ProjectInitializerException, FileNotFoundException, ResourceLoadingCancelledException, FlexoException {
 		LocalizedDelegate locales = getServiceManager().getLocalizationService().getFlexoLocalizer();
 
@@ -435,7 +433,8 @@ public class ProjectLoader extends FlexoServiceImpl implements HasPropertyChange
 		if (!asImportedProject) {
 			// Adds to recent project
 			Progress.progress(locales.localizedForKey("preinitialize_project") + projectResource);
-			preInitialization(projectResource.getIODelegate().getSerializationArtefact());
+			preInitialization(projectResource.getDelegateResourceCenter()
+					.getContainer((I) projectResource.getIODelegate().getSerializationArtefact()));
 		}
 
 		/*for (Entry<FlexoProject<?>, FlexoEditor> e : editors.entrySet()) {
@@ -444,7 +443,7 @@ public class ProjectLoader extends FlexoServiceImpl implements HasPropertyChange
 			}
 		}*/
 
-		FlexoProject<I> loadedProject = (FlexoProject<I>) projectResource.getResourceData(null);
+		FlexoProject<I> loadedProject = projectResource.getResourceData(null);
 
 		/*if (editor == null) {
 			try {

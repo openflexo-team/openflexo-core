@@ -2043,7 +2043,14 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 		}
 		else if (object instanceof RepositoryFolder) {
 			if (((RepositoryFolder<?, ?>) object).isRootFolder()) {
-				return statelessIconForObject(((RepositoryFolder<?, ?>) object).getResourceRepository().getResourceCenter());
+				FlexoResourceCenter<?> rc = ((RepositoryFolder<?, ?>) object).getResourceRepository().getResourceCenter();
+				if (rc.getDelegatingProjectResource() != null) {
+					// This is the delegate RC of a FlexoProject
+					return IconLibrary.OPENFLEXO_NOTEXT_16;
+				}
+				else {
+					return statelessIconForObject(rc);
+				}
 			}
 			return IconLibrary.FOLDER_ICON;
 		}
