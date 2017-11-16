@@ -172,6 +172,8 @@ public interface FileSystemBasedResourceCenter extends ResourceRepository<FlexoR
 	 */
 	public FileSystemMetaDataManager getMetaDataManager();
 
+	public File retrieveResourceFile(String resourceName, String relativePath, String extension);
+
 	public static abstract class FileSystemBasedResourceCenterImpl extends ResourceRepositoryImpl<FlexoResource<?>, File>
 			implements FileSystemBasedResourceCenter {
 
@@ -824,6 +826,7 @@ public interface FileSystemBasedResourceCenter extends ResourceRepository<FlexoR
 		 * @param extension
 		 * @return
 		 */
+		@Override
 		public File retrieveResourceFile(String resourceName, String relativePath, String extension) {
 			if (StringUtils.isEmpty(resourceName)) {
 				return null;

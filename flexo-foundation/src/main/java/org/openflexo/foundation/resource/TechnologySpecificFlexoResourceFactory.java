@@ -107,16 +107,18 @@ public abstract class TechnologySpecificFlexoResourceFactory<R extends Technolog
 
 		R returned = super.registerResource(resource, resourceCenter);
 
-		TechnologyContextManager<TA> technologyContextManager = getTechnologyContextManager(resourceCenter.getServiceManager());
-
 		// Register the resource in the global repository of technology adapter
 		if (resourceCenter != null) {
+			TechnologyContextManager<TA> technologyContextManager = getTechnologyContextManager(resourceCenter.getServiceManager());
 			registerResourceInResourceRepository(resource,
 					technologyContextManager.getTechnologyAdapter().getGlobalRepository(resourceCenter));
+			resource.setTechnologyAdapter(technologyContextManager.getTechnologyAdapter());
+			resource.setTechnologyContextManager(technologyContextManager);
+			technologyContextManager.registerResource(resource);
 		}
-		resource.setTechnologyAdapter(technologyContextManager.getTechnologyAdapter());
-		resource.setTechnologyContextManager(technologyContextManager);
-		technologyContextManager.registerResource(resource);
+		else {
+			logger.warning("Could not register in null FlexoResourceCenter");
+		}
 
 		return returned;
 	}
