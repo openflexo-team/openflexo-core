@@ -75,6 +75,7 @@ import org.openflexo.foundation.resource.DirectoryResourceCenter;
 import org.openflexo.foundation.resource.FileSystemBasedResourceCenter;
 import org.openflexo.foundation.resource.FileSystemBasedResourceCenter.FSBasedResourceCenterEntry;
 import org.openflexo.foundation.resource.FlexoResource;
+import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenter.ResourceCenterEntry;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
 import org.openflexo.foundation.resource.GitResourceCenter;
@@ -499,7 +500,7 @@ public abstract class OpenflexoTestCase {
 		return serviceManager.getTechnologyAdapterService().getTechnologyAdapter(type);
 	}
 
-	protected VirtualModel createTopLevelVirtualModel(FileSystemBasedResourceCenter rc, String vmName, String vmURI)
+	protected VirtualModel createTopLevelVirtualModel(FlexoResourceCenter<File> rc, String vmName, String vmURI)
 			throws org.openflexo.foundation.resource.SaveResourceException, ModelDefinitionException {
 		FMLTechnologyAdapter fmlTechnologyAdapter = getTA(FMLTechnologyAdapter.class);
 		VirtualModelResourceFactory factory = fmlTechnologyAdapter.getVirtualModelResourceFactory();
