@@ -58,7 +58,6 @@ import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.resource.SaveResourceExceptionList;
 import org.openflexo.foundation.resource.SaveResourcePermissionDeniedException;
 import org.openflexo.foundation.task.FlexoTask;
-import org.openflexo.foundation.utils.ProjectInitializerException;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.view.controller.FlexoController;
 import org.openflexo.view.controller.InteractiveFlexoEditor;
@@ -88,19 +87,13 @@ public class InteractiveProjectLoader extends ProjectLoader {
 	}
 
 	/**
-	 * Loads the project located withing <code> projectDirectory </code>. The following method is the default methode to call when opening a
-	 * project from a GUI (Interactive mode) so that resource update handling is properly initialized. Additional small stuffs can be
-	 * performed in that call so that projects are always opened the same way.
+	 * Instantiate, launch and return a task loading project located in supplied <code>projectDirectory</code>
 	 * 
 	 * @param projectDirectory
 	 *            the project directory
-	 * @return the {@link InteractiveFlexoEditor} editor if the opening succeeded else <code>null</code>
-	 * @throws org.openflexo.foundation.utils.ProjectLoadingCancelledException
-	 *             whenever the load procedure is interrupted by the user or by Flexo.
-	 * @throws ProjectInitializerException
+	 * @return
 	 */
-	@Override
-	public LoadProjectTask loadProject(File projectDirectory, boolean asImportedProject, FlexoTask... tasksToBeExecutedBefore) {
+	public LoadProjectTask makeLoadProjectTask(File projectDirectory, boolean asImportedProject, FlexoTask... tasksToBeExecutedBefore) {
 
 		LoadProjectTask loadProject = new LoadProjectTask(this, projectDirectory, asImportedProject);
 		for (FlexoTask task : tasksToBeExecutedBefore) {
@@ -111,25 +104,50 @@ public class InteractiveProjectLoader extends ProjectLoader {
 
 	}
 
-	@Override
-	public LoadProjectTask loadProject(File projectDirectory, FlexoTask... tasksToBeExecutedBefore) {
-		return loadProject(projectDirectory, false, tasksToBeExecutedBefore);
+	/**
+	 * Instantiate, launch and return a task loading project located in supplied <code> projectDirectory </code>
+	 * 
+	 * @param projectDirectory
+	 *            the project directory
+	 * @return
+	 */
+	public LoadProjectTask makeLoadProjectTask(File projectDirectory, FlexoTask... tasksToBeExecutedBefore) {
+		return makeLoadProjectTask(projectDirectory, false, tasksToBeExecutedBefore);
 	}
 
-	@Override
-	public LoadProjectTask reloadProject(FlexoProject project) {
+	/**
+	 * Instantiate, launch and return a task reloading supplied {@link FlexoProject}
+	 * 
+	 * @param projectDirectory
+	 *            the project directory
+	 * @return
+	 */
+	public LoadProjectTask makeReloadProjectTask(FlexoProject<File> project) {
 		File projectDirectory = project.getProjectDirectory();
 		closeProject(project);
-		return loadProject(projectDirectory);
+		return makeLoadProjectTask(projectDirectory);
 	}
 
-	@Override
-	public NewProjectTask newProject(File projectDirectory, FlexoTask... tasksToBeExecutedBefore) {
-		return newProject(projectDirectory, null, tasksToBeExecutedBefore);
+	/**
+	 * Instantiate, launch and return a task creating a new {@link FlexoProject} in supplied <code>projectDirectory</code>
+	 * 
+	 * @param projectDirectory
+	 * @param tasksToBeExecutedBefore
+	 * @return
+	 */
+	public NewProjectTask makeNewProjectTask(File projectDirectory, FlexoTask... tasksToBeExecutedBefore) {
+		return makeNewProjectTask(projectDirectory, null, tasksToBeExecutedBefore);
 	}
 
-	@Override
-	public NewProjectTask newProject(File projectDirectory, ProjectNature<?, ?> projectNature, FlexoTask... tasksToBeExecutedBefore) {
+	/**
+	 * Instantiate, launch and return a task creating a new {@link FlexoProject} in supplied <code>projectDirectory</code>
+	 * 
+	 * @param projectDirectory
+	 * @param tasksToBeExecutedBefore
+	 * @return
+	 */
+	public NewProjectTask makeNewProjectTask(File projectDirectory, ProjectNature<?, ?> projectNature,
+			FlexoTask... tasksToBeExecutedBefore) {
 
 		NewProjectTask returned = new NewProjectTask(this, projectDirectory, projectNature);
 		for (FlexoTask task : tasksToBeExecutedBefore) {
@@ -140,16 +158,22 @@ public class InteractiveProjectLoader extends ProjectLoader {
 
 	}
 
+	/**
+	 * Create and return a new {@link FlexoEditor} for supplied {@link FlexoProject}
+	 * 
+	 * @param project
+	 * @return
+	 */
 	@Override
-	protected void newEditor(FlexoEditor editor) {
+	public FlexoEditor makeFlexoEditor(FlexoProject<?> project) {
 		if (getServiceManager().isAutoSaveServiceEnabled()) {
-			autoSaveServices.put(editor.getProject(), new AutoSaveService(this, editor.getProject()));
+			autoSaveServices.put(project, new AutoSaveService(this, project));
 		}
-		super.newEditor(editor);
+		return new InteractiveFlexoEditor(getServiceManager(), project);
 	}
 
 	@Override
-	public void closeProject(FlexoProject project) {
+	public void closeProject(FlexoProject<?> project) {
 		AutoSaveService autoSaveService = getAutoSaveService(project);
 		if (autoSaveService != null) {
 			autoSaveService.close();
@@ -158,12 +182,12 @@ public class InteractiveProjectLoader extends ProjectLoader {
 		super.closeProject(project);
 	}
 
-	public AutoSaveService getAutoSaveService(FlexoProject project) {
+	public AutoSaveService getAutoSaveService(FlexoProject<?> project) {
 		return autoSaveServices.get(project);
 	}
 
 	@Override
-	public void saveProjects(List<FlexoProject> projects) throws SaveResourceExceptionList {
+	public void saveProjects(List<FlexoProject<?>> projects) throws SaveResourceExceptionList {
 		List<SaveResourceException> exceptions = new ArrayList<>();
 		Collections.sort(projects, new Comparator<FlexoProject>() {
 			@Override
@@ -182,7 +206,7 @@ public class InteractiveProjectLoader extends ProjectLoader {
 			for (FlexoProject project : projects) {
 				try {
 					ProgressWindow.setProgressInstance(
-							FlexoLocalization.getMainLocalizer().localizedForKey("saving") + " " + project.getDisplayName());
+							FlexoLocalization.getMainLocalizer().localizedForKey("saving") + " " + project.getProjectName());
 					project.save(ProgressWindow.instance());
 				} catch (SaveResourceException e) {
 					e.printStackTrace();

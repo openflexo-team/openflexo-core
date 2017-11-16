@@ -149,33 +149,11 @@ public abstract class OpenflexoProjectAtRunTimeTestCase extends OpenflexoTestCas
 		return createStandaloneProject(projectName, null, serviceManager);
 	}
 
-	protected FlexoEditor createProjectInResourceCenter(String projectName, FlexoResourceCenter<File> rc) {
-		return createProjectInResourceCenter(projectName, null, rc);
-	}
-
-	protected FlexoEditor createProjectInResourceCenter(String projectName, ProjectNature<?, ?> nature, FlexoResourceCenter<File> rc) {
+	protected FlexoEditor createStandaloneProject(String projectName, ProjectNature<?, ?> nature) {
 		if (serviceManager == null) {
 			serviceManager = instanciateTestServiceManager();
 		}
-		return createProjectInResourceCenter(projectName, nature, serviceManager, rc);
-	}
-
-	protected static FlexoResourceCenterService getNewResourceCenter(String name) {
-		try {
-			ModelFactory factory = new ModelFactory(FSBasedResourceCenterEntry.class);
-			FSBasedResourceCenterEntry entry = factory.newInstance(FSBasedResourceCenterEntry.class);
-			entry.setDirectory(FileUtils.createTempDirectory(name, "ResourceCenter"));
-			List<ResourceCenterEntry<?>> rcList = new ArrayList<>();
-			rcList.add(entry);
-			return DefaultResourceCenterService.getNewInstance(rcList, true);
-		} catch (IOException e) {
-			e.printStackTrace();
-			fail();
-		} catch (ModelDefinitionException e) {
-			e.printStackTrace();
-			fail();
-		}
-		return null;
+		return createStandaloneProject(projectName, nature, serviceManager);
 	}
 
 	protected FlexoEditor createStandaloneProject(String projectName, ProjectNature<?, ?> nature, FlexoServiceManager serviceManager) {
@@ -214,6 +192,35 @@ public abstract class OpenflexoProjectAtRunTimeTestCase extends OpenflexoTestCas
 		_editor = reply;
 		_project = (FlexoProject<File>) _editor.getProject();
 		return reply;
+	}
+
+	protected FlexoEditor createProjectInResourceCenter(String projectName, FlexoResourceCenter<File> rc) {
+		return createProjectInResourceCenter(projectName, null, rc);
+	}
+
+	protected FlexoEditor createProjectInResourceCenter(String projectName, ProjectNature<?, ?> nature, FlexoResourceCenter<File> rc) {
+		if (serviceManager == null) {
+			serviceManager = instanciateTestServiceManager();
+		}
+		return createProjectInResourceCenter(projectName, nature, serviceManager, rc);
+	}
+
+	protected static FlexoResourceCenterService getNewResourceCenter(String name) {
+		try {
+			ModelFactory factory = new ModelFactory(FSBasedResourceCenterEntry.class);
+			FSBasedResourceCenterEntry entry = factory.newInstance(FSBasedResourceCenterEntry.class);
+			entry.setDirectory(FileUtils.createTempDirectory(name, "ResourceCenter"));
+			List<ResourceCenterEntry<?>> rcList = new ArrayList<>();
+			rcList.add(entry);
+			return DefaultResourceCenterService.getNewInstance(rcList, true);
+		} catch (IOException e) {
+			e.printStackTrace();
+			fail();
+		} catch (ModelDefinitionException e) {
+			e.printStackTrace();
+			fail();
+		}
+		return null;
 	}
 
 	protected FlexoEditor createProjectInResourceCenter(String projectName, ProjectNature<?, ?> nature, FlexoServiceManager serviceManager,

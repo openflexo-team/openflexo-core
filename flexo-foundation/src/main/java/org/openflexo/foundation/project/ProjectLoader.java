@@ -70,6 +70,7 @@ import org.openflexo.foundation.resource.SaveResourceExceptionList;
 import org.openflexo.foundation.task.Progress;
 import org.openflexo.foundation.utils.ProjectInitializerException;
 import org.openflexo.foundation.utils.ProjectLoadingCancelledException;
+import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.localization.LocalizedDelegate;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.toolbox.FileUtils;
@@ -198,6 +199,8 @@ public class ProjectLoader extends FlexoServiceImpl implements HasPropertyChange
 	public <I> FlexoEditor newStandaloneProject(I projectDirectory, ProjectNature<?, ?> projectNature)
 			throws IOException, ProjectInitializerException {
 
+		Progress.progress(FlexoLocalization.getMainLocalizer().localizedForKey("new_project") + projectDirectory);
+
 		// This will just create the .version in the project
 		// FlexoProjectUtil.currentFlexoVersionIsSmallerThanLastVersion(projectDirectory);
 
@@ -223,6 +226,8 @@ public class ProjectLoader extends FlexoServiceImpl implements HasPropertyChange
 		FlexoEditor newEditor = null;
 
 		// TODO: attempt to lookup an eventual FlexoResourceCenter, repository and folder for supplied project directory;
+
+		Progress.progress(FlexoLocalization.getMainLocalizer().localizedForKey("create_new_project") + projectDirectory);
 
 		// Create the project
 		CreateProject action = CreateProject.actionType.makeNewAction(null, null, getServiceManager().getDefaultEditor());
@@ -251,10 +256,12 @@ public class ProjectLoader extends FlexoServiceImpl implements HasPropertyChange
 
 		// Now, if a nature has been supplied, gives this nature to the project
 		if (projectNature != null) {
+			Progress.progress(FlexoLocalization.getMainLocalizer().localizedForKey("gives_nature") + projectDirectory);
 			projectNature.givesNature(newProject, newEditor);
 		}
 
 		// Create and return a FlexoEditor for the new FlexoProject
+		Progress.progress(FlexoLocalization.getMainLocalizer().localizedForKey("make_editor_for_project") + " " + newProject.getName());
 		return makeFlexoEditor(newProject);
 	}
 
@@ -333,14 +340,19 @@ public class ProjectLoader extends FlexoServiceImpl implements HasPropertyChange
 	public <I> FlexoEditor loadProject(I projectDirectory, boolean asImportedProject)
 			throws ProjectInitializerException, ProjectLoadingCancelledException {
 
+		Progress.progress(FlexoLocalization.getMainLocalizer().localizedForKey("opening_project") + projectDirectory);
+
 		try {
 			// Retrieve project resource
 			FlexoProjectResource projectResource = retrieveFlexoProjectResource(projectDirectory);
 
 			// Load project
+			Progress.progress(FlexoLocalization.getMainLocalizer().localizedForKey("loading_project") + " " + projectResource.getName());
 			FlexoProject<?> loadedProject = internalLoadProject(projectResource, asImportedProject);
 
 			// Create and return a FlexoEditor for the new FlexoProject
+			Progress.progress(
+					FlexoLocalization.getMainLocalizer().localizedForKey("make_editor_for_project") + " " + projectResource.getName());
 			return makeFlexoEditor(loadedProject);
 
 		} catch (ResourceLoadingCancelledException e) {

@@ -463,7 +463,8 @@ public class JIRAIssueReportDialog extends PropertyChangedSupportDefaultImplemen
 					}
 					if (sendProject) {
 						if (flexoProject != null) {
-							File projectDirectory = flexoProject.getProjectDirectory();
+							// TODO: if project is not a File-System project ???
+							File projectDirectory = (File) flexoProject.getProjectDirectory();
 							String directoryName = projectDirectory.getName();
 							File zipFile = new File(System.getProperty("java.io.tmpdir"),
 									directoryName.substring(0, directoryName.length() - 4) + ".zip");

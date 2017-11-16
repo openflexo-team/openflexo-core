@@ -50,7 +50,6 @@ import org.openflexo.br.BugReportService;
 import org.openflexo.drm.DocResourceManager;
 import org.openflexo.foundation.DefaultFlexoServiceManager;
 import org.openflexo.foundation.FlexoEditor;
-import org.openflexo.foundation.FlexoEditor.FlexoEditorFactory;
 import org.openflexo.foundation.FlexoService;
 import org.openflexo.foundation.FlexoService.ServiceNotification;
 import org.openflexo.foundation.FlexoServiceManager;
@@ -98,11 +97,9 @@ import org.openflexo.view.controller.TechnologyAdapterControllerService;
  * @author sylvain
  * 
  */
-public abstract class ApplicationContext extends DefaultFlexoServiceManager implements FlexoEditorFactory {
+public abstract class ApplicationContext extends DefaultFlexoServiceManager {
 
 	private final ApplicationData applicationData;
-
-	// private ServerRestService serverRestService;
 
 	/**
 	 * Initialize a new {@link ApplicationContext}
@@ -297,7 +294,7 @@ public abstract class ApplicationContext extends DefaultFlexoServiceManager impl
 			List<File> rcList = new ArrayList<>();
 			for (FlexoResourceCenter<?> rc : ((FlexoResourceCenterService) caller).getResourceCenters()) {
 				if (rc instanceof DirectoryResourceCenter) {
-					rcList.add(((DirectoryResourceCenter) rc).getDirectory());
+					rcList.add(((DirectoryResourceCenter) rc).getRootDirectory());
 				}
 				else if (rc instanceof JarResourceCenter) {
 					rcList.add(new File(((JarResourceCenter) rc).getJarResourceImpl().getRelativePath()));
@@ -311,14 +308,14 @@ public abstract class ApplicationContext extends DefaultFlexoServiceManager impl
 	}
 
 	@Override
-	protected AddResourceCenterTask resourceCenterAdded(FlexoResourceCenter<?> resourceCenter) {
+	public AddResourceCenterTask resourceCenterAdded(FlexoResourceCenter<?> resourceCenter) {
 		AddResourceCenterTask addRCTask = new AddResourceCenterTask(getResourceCenterService(), resourceCenter);
 		getTaskManager().scheduleExecution(addRCTask);
 		return addRCTask;
 	}
 
 	@Override
-	protected RemoveResourceCenterTask resourceCenterRemoved(FlexoResourceCenter<?> resourceCenter) {
+	public RemoveResourceCenterTask resourceCenterRemoved(FlexoResourceCenter<?> resourceCenter) {
 		RemoveResourceCenterTask removeRCTask = new RemoveResourceCenterTask(getResourceCenterService(), resourceCenter);
 		getTaskManager().scheduleExecution(removeRCTask);
 		return removeRCTask;

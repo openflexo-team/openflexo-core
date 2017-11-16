@@ -53,9 +53,9 @@ public class SaveDialog extends JOptionPane {
 
 	private int retval = JOptionPane.CANCEL_OPTION;
 
-	public SaveDialog(Component parent, FlexoProject project) {
+	public SaveDialog(Component parent, FlexoProject<?> project) {
 		retval = JOptionPane.showConfirmDialog(parent,
-				project.getLocales().localizedForKey("project_has_unsaved_changes") + ": " + project.getProjectDirectory().getAbsolutePath()
+				project.getLocales().localizedForKey("project_has_unsaved_changes") + ": " + project.getProjectDirectory()
 						+ "\n" + project.getLocales().localizedForKey("would_you_like_to_save_the_changes?"),
 				project.getLocales().localizedForKey("exiting_flexo"), JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
 	}

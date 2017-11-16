@@ -44,7 +44,6 @@ import java.io.File;
 import org.openflexo.br.BugReportService;
 import org.openflexo.drm.DocResourceManager;
 import org.openflexo.foundation.FlexoEditor;
-import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.VirtualModelLibrary;
 import org.openflexo.foundation.project.ProjectLoader;
@@ -94,11 +93,6 @@ public class InteractiveApplicationContext extends ApplicationContext {
 	 */
 	public InteractiveApplicationContext(String localizationRelativePath, boolean devMode, boolean recordMode, boolean playMode) {
 		super(localizationRelativePath, devMode);
-	}
-
-	@Override
-	public FlexoEditor makeFlexoEditor(FlexoProject project, FlexoServiceManager sm) {
-		return new InteractiveFlexoEditor(this, project);
 	}
 
 	@Override

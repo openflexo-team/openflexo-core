@@ -75,7 +75,7 @@ public abstract class InteractiveProjectLoadingHandler implements ProjectLoading
 		return performingAutomaticConversion;
 	}
 
-	protected Vector<ResourceToConvert> searchResourcesToConvert(FlexoProject project) {
+	protected Vector<ResourceToConvert> searchResourcesToConvert(FlexoProject<?> project) {
 		Vector<ResourceToConvert> resourcesToConvert = new Vector<>();
 
 		for (FlexoResource<?> resource : project.getAllResources()) {

@@ -33,23 +33,23 @@
 		dataClassName="org.openflexo.components.widget.FIBProjectSelector"
 		rootVisible="false" readOnly="false">
 		<BrowserElement id="5" icon="controller.iconForObject(project)"
-			filtered="false" label="project.displayName" defaultVisible="true"
+			filtered="false" label="project.projectName" defaultVisible="true"
 			dataClassName="org.openflexo.foundation.FlexoProject" name="project"
-			isEditable="false" tooltip="project.projectDirectory.absolutePath">
-			<Children id="6" name="children" data="project.projectData.importedProjects" />
+			isEditable="false" tooltip="project.projectDirectory.toString">
+			<Children id="6" name="children" data="project.importedProjects" />
 		</BrowserElement>
 		<BrowserElement id="7" filtered="false" defaultVisible="true"
-			dataClassName="org.openflexo.foundation.ProjectLoader" name="projectLoader"
+			dataClassName="org.openflexo.foundation.project.ProjectLoader" name="projectLoader"
 			isEditable="false">
 			<Children id="8" name="children" data="projectLoader.rootProjects" />
 		</BrowserElement>
 		<BrowserElement id="9"
 			icon="controller.flexoController.iconForObject(projectReference)"
-			filtered="false" label="projectReference.name" defaultVisible="true"
-			dataClassName="org.openflexo.foundation.resource.FlexoProjectReference"
-			name="projectReference" isEditable="false" tooltip="projectReference.uRI">
+			filtered="false" label="projectReference.referencedProject.projectName" defaultVisible="true"
+			dataClassName="org.openflexo.foundation.project.FlexoProjectReference"
+			name="projectReference" isEditable="false" tooltip="projectReference.URI">
 			<Children id="10" name="children"
-				data="projectReference.referredProject.projectData.importedProjects" />
+				data="projectReference.referencedProject.importedProjects" />
 		</BrowserElement>
 	</Browser>
 	<Panel id="11" darkLevel="0" vGap="0" useScrollBar="false"

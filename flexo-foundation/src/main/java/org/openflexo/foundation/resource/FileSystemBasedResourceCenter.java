@@ -77,6 +77,7 @@ import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.PropertyIdentifier;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
+import org.openflexo.model.annotations.XMLElement;
 import org.openflexo.toolbox.DirectoryWatcher;
 import org.openflexo.toolbox.FileSystemMetaDataManager;
 import org.openflexo.toolbox.FileUtils;
@@ -1098,6 +1099,7 @@ public interface FileSystemBasedResourceCenter extends ResourceRepository<FlexoR
 
 	@ModelEntity(isAbstract = true)
 	@ImplementationClass(FSBasedResourceCenterEntry.FSBasedResourceCenterEntryImpl.class)
+	@XMLElement(xmlTag = "AbstractFSBasedResourceCenterEntry")
 	public static interface FSBasedResourceCenterEntry<RC extends FileSystemBasedResourceCenter> extends ResourceCenterEntry<RC> {
 		@PropertyIdentifier(type = File.class)
 		public static final String DIRECTORY_KEY = "directory";

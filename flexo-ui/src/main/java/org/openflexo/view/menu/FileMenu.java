@@ -59,6 +59,7 @@ import org.openflexo.FlexoCst;
 import org.openflexo.components.NewProjectComponent;
 import org.openflexo.components.OpenProjectComponent;
 import org.openflexo.foundation.FlexoEditor;
+import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.nature.ProjectNature;
 import org.openflexo.foundation.project.ProjectLoader;
 import org.openflexo.foundation.resource.SaveResourceExceptionList;
@@ -269,7 +270,7 @@ public class FileMenu extends FlexoMenu {
 					ProjectNature<?, ?> nature = getController().getApplicationContext().getProjectNatureService()
 							.getProjectNature(((NatureSpecificModule) getController().getModule().getModule()).getNatureClass());
 					try {
-						getProjectLoader().newProject(projectDirectory, nature);
+						getProjectLoader().newStandaloneProject(projectDirectory, nature);
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -280,7 +281,7 @@ public class FileMenu extends FlexoMenu {
 				}
 				else {
 					try {
-						getProjectLoader().newProject(projectDirectory);
+						getProjectLoader().newStandaloneProject(projectDirectory);
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -509,7 +510,7 @@ public class FileMenu extends FlexoMenu {
 			File projectDirectory = NewProjectComponent.getProjectDirectory(getController().getApplicationContext());
 			if (projectDirectory != null) {
 				try {
-					getProjectLoader().saveAsProject(projectDirectory, getController().getProject());
+					getProjectLoader().saveAsProject(projectDirectory, (FlexoProject<File>) getController().getProject());
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -616,7 +617,7 @@ public class FileMenu extends FlexoMenu {
 			} catch (ProjectInitializerException e) {
 				e.printStackTrace();
 				FlexoController.notify(FlexoLocalization.getMainLocalizer().localizedForKey("could_not_open_project_located_at")
-						+ e.getProjectDirectory().getAbsolutePath());
+						+ e.getProjectDirectory());
 			}
 		}
 

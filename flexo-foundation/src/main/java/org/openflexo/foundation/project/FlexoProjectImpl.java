@@ -296,7 +296,7 @@ public abstract class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoRe
 		 *            if true, the loading should be silent. This flag is typically meant for interactive loaders.
 		 * @return
 		 */
-		public FlexoProjectImpl loadProject(FlexoProjectReference reference, boolean silentlyOnly);
+		public FlexoProject<?> loadProject(FlexoProjectReference reference, boolean silentlyOnly);
 
 	}
 
@@ -1243,9 +1243,9 @@ public abstract class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoRe
 		return true;
 	}
 
-	public FlexoProjectImpl loadProjectReference(FlexoProjectReference reference, boolean silentlyOnly) {
+	public FlexoProject<?> loadProjectReference(FlexoProjectReference reference, boolean silentlyOnly) {
 		if (projectReferenceLoader != null) {
-			FlexoProjectImpl loadProject = projectReferenceLoader.loadProject(reference, silentlyOnly);
+			FlexoProject<?> loadProject = projectReferenceLoader.loadProject(reference, silentlyOnly);
 			if (loadProject != null) {
 				setChanged();
 				notifyObservers(new ImportedProjectLoaded(loadProject));

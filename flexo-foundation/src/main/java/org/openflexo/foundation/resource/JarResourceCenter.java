@@ -162,6 +162,8 @@ public interface JarResourceCenter extends ResourceRepository<FlexoResource<?>, 
 
 	public void setJarFile(JarFile jarFile);
 
+	public JarResourceImpl getJarResourceImpl();
+
 	public static abstract class JarResourceCenterImpl extends ResourceRepositoryImpl<FlexoResource<?>, InJarResourceImpl>
 			implements JarResourceCenter {
 
@@ -246,6 +248,7 @@ public interface JarResourceCenter extends ResourceRepository<FlexoResource<?>, 
 			return this;
 		}
 
+		@Override
 		public JarResourceImpl getJarResourceImpl() {
 			return jarResourceImpl;
 		}

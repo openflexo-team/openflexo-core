@@ -75,11 +75,12 @@ public class InstallDefaultPackagedResourceCenterDirectory {
 		this.resourceCenterDirectory = resourceCenterDirectory;
 	}
 
-	public void installDefaultPackagedResourceCenter(FlexoResourceCenterService rcService) {
+	public void installDefaultPackagedResourceCenter(FlexoResourceCenterService rcService) throws IOException {
 		getResourceCenterDirectory().mkdirs();
 		copyViewPoints(VIEWPOINT_LIBRARY_DIR, getResourceCenterDirectory(), CopyStrategy.REPLACE_OLD_ONLY);
 		copyOntologies(ONTOLOGIES_DIR, getResourceCenterDirectory(), CopyStrategy.REPLACE_OLD_ONLY);
-		DirectoryResourceCenter newRC = new DirectoryResourceCenter(getResourceCenterDirectory(), rcService);
+		DirectoryResourceCenter newRC = DirectoryResourceCenter.instanciateNewDirectoryResourceCenter(getResourceCenterDirectory(),
+				rcService);
 		rcService.addToResourceCenters(newRC);
 		rcService.storeDirectoryResourceCenterLocations();
 	}

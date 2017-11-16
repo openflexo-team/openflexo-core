@@ -66,12 +66,9 @@ import javax.swing.WindowConstants;
 
 import org.openflexo.FlexoCst;
 import org.openflexo.components.ProgressWindow;
-import org.openflexo.foundation.DataModification;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject;
-import org.openflexo.foundation.FlexoObservable;
-import org.openflexo.foundation.GraphicalFlexoObserver;
-import org.openflexo.foundation.NameChanged;
+import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.action.FlexoActionSource;
 import org.openflexo.icon.IconLibrary;
 import org.openflexo.module.FlexoModule;
@@ -87,7 +84,7 @@ import org.openflexo.view.controller.model.ControllerModel;
  * @author sguerin
  */
 
-public final class FlexoFrame extends JFrame implements GraphicalFlexoObserver, FlexoActionSource, PropertyChangeListener {
+public final class FlexoFrame extends JFrame implements FlexoActionSource, PropertyChangeListener {
 
 	private final class FlexoModuleWindowListener extends WindowAdapter {
 
@@ -349,7 +346,7 @@ public final class FlexoFrame extends JFrame implements GraphicalFlexoObserver, 
 			_controller.getControllerModel().getPropertyChangeSupport().removePropertyChangeListener(ControllerModel.CURRENT_LOCATION,
 					this);
 			if (_controller.getProject() != null) {
-				_controller.getProject().deleteObserver(this);
+				_controller.getProject().getPropertyChangeSupport().removePropertyChangeListener(this);
 			}
 			_controller = null;
 		}
@@ -393,7 +390,7 @@ public final class FlexoFrame extends JFrame implements GraphicalFlexoObserver, 
 
 	private static final String WINDOW_MODIFIED = "windowModified";
 
-	@Override
+	/*@Override
 	public void update(final FlexoObservable observable, final DataModification dataModification) {
 		if (getController() == null) {
 			observable.deleteObserver(this);
@@ -417,10 +414,10 @@ public final class FlexoFrame extends JFrame implements GraphicalFlexoObserver, 
 		else if ("projectDirectory".equals(dataModification.propertyName())) {
 			updateTitle();
 		}
-
+	
 		updateWindowModified();
-
-	}
+	
+	}*/
 
 	public void updateWindowModified() {
 		if (ToolBox.getPLATFORM() == ToolBox.MACOS) {
@@ -436,14 +433,19 @@ public final class FlexoFrame extends JFrame implements GraphicalFlexoObserver, 
 			FlexoEditor newEditor = (FlexoEditor) evt.getNewValue();
 			if (oldEditor != newEditor) {
 				if (oldEditor != null && oldEditor.getProject() != null) {
-					oldEditor.getProject().deleteObserver(this);
+					oldEditor.getProject().getPropertyChangeSupport().removePropertyChangeListener(this);
 				}
 				if (newEditor != null && newEditor.getProject() != null) {
-					newEditor.getProject().addObserver(this);
+					newEditor.getProject().getPropertyChangeSupport().addPropertyChangeListener(this);
 				}
 				updateTitle();
 			}
 		}
+		if (evt.getPropertyName().equals(FlexoProject.PROJECT_NAME_KEY)) {
+			updateTitle();
+		}
+		updateWindowModified();
+
 	}
 
 	@Override

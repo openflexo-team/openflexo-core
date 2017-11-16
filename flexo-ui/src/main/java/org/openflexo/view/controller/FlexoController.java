@@ -54,7 +54,6 @@ import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.ConnectException;
@@ -124,18 +123,17 @@ import org.openflexo.foundation.fml.rt.VirtualModelInstanceObject;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.foundation.fml.rt.rm.FMLRTVirtualModelInstanceResource;
 import org.openflexo.foundation.project.FlexoProjectReference;
-import org.openflexo.foundation.project.ProjectData;
 import org.openflexo.foundation.project.ProjectLoader;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
-import org.openflexo.foundation.resource.TechnologySpecificFlexoResourceFactory;
 import org.openflexo.foundation.resource.ProjectClosedNotification;
 import org.openflexo.foundation.resource.RepositoryFolder;
 import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.resource.ResourceManager;
 import org.openflexo.foundation.resource.SaveResourceExceptionList;
 import org.openflexo.foundation.resource.SaveResourcePermissionDeniedException;
+import org.openflexo.foundation.resource.TechnologySpecificFlexoResourceFactory;
 import org.openflexo.foundation.task.FlexoTask;
 import org.openflexo.foundation.task.Progress;
 import org.openflexo.foundation.technologyadapter.FlexoMetaModel;
@@ -516,14 +514,14 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 
 	public abstract FlexoObject getDefaultObjectToSelect(FlexoProject project);
 
-	public FlexoProject getProject() {
+	public FlexoProject<?> getProject() {
 		if (getEditor() != null) {
 			return getEditor().getProject();
 		}
 		return null;
 	}
 
-	public File getProjectDirectory() {
+	public Object getProjectDirectory() {
 		return getProject().getProjectDirectory();
 	}
 
@@ -1379,7 +1377,7 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 
 	public String getWindowTitle() {
 		String projectTitle = /*getModule().getModule().requireProject() &&*/getProject() != null
-				? " - " + getProject().getProjectName() + " - " + getProjectDirectory().getAbsolutePath() : "";
+				? " - " + getProject().getProjectName() + " - " + getProjectDirectory() : "";
 		if (getCurrentModuleView() != null) {
 			return getModule().getName() + " : " + getWindowTitleforObject(getCurrentDisplayedObjectAsModuleView()) + projectTitle;
 		}
@@ -1877,7 +1875,8 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 		}
 
 		if (object instanceof TechnologySpecificFlexoResourceFactory) {
-			Class<? extends TechnologyAdapter> taClass = ((TechnologySpecificFlexoResourceFactory<?, ?, ?>) object).getTechnologyAdapterClass();
+			Class<? extends TechnologyAdapter> taClass = ((TechnologySpecificFlexoResourceFactory<?, ?, ?>) object)
+					.getTechnologyAdapterClass();
 			TechnologyAdapterController<?> tac = getTechnologyAdapterController(taClass);
 			return tac.getIconForTechnologyObject(((TechnologySpecificFlexoResourceFactory<?, ?, ?>) object).getResourceDataClass());
 		}
@@ -1999,9 +1998,6 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 			return IconLibrary.FOLDER_ICON;
 		}
 		else if (object instanceof FlexoProject) {
-			return IconLibrary.OPENFLEXO_NOTEXT_16;
-		}
-		else if (object instanceof ProjectData) {
 			return IconLibrary.OPENFLEXO_NOTEXT_16;
 		}
 		else if (object instanceof FlexoPreferences) {

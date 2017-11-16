@@ -150,7 +150,7 @@ public interface DirectoryResourceCenter extends FileSystemBasedResourceCenter {
 
 	@ModelEntity
 	@ImplementationClass(DirectoryResourceCenterEntry.DirectoryResourceCenterEntryImpl.class)
-	@XMLElement
+	@XMLElement(xmlTag = "FSBasedResourceCenterEntry")
 	public static interface DirectoryResourceCenterEntry extends FSBasedResourceCenterEntry<DirectoryResourceCenter> {
 		@Implementation
 		public static abstract class DirectoryResourceCenterEntryImpl implements DirectoryResourceCenterEntry {

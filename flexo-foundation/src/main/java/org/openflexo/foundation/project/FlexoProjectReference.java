@@ -48,6 +48,7 @@ import org.openflexo.model.annotations.Parameter;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.model.annotations.XMLElement;
+import org.openflexo.toolbox.FlexoVersion;
 
 /**
  * Encodes the reference to a {@link FlexoProject} (import relationship between two projects)
@@ -63,6 +64,8 @@ public interface FlexoProjectReference extends FlexoProjectObject {
 	public static final String OWNER = "owner";
 	public static final String REFERENCED_PROJECT = "referencedProject";
 	public static final String URI = "URI";
+	public static final String VERSION_KEY = "version";
+	public static final String REVISION_KEY = "revision";
 
 	@Initializer
 	public FlexoProjectReference init(@Parameter(REFERENCED_PROJECT) FlexoProject<?> referencedProject);
@@ -113,4 +116,19 @@ public interface FlexoProjectReference extends FlexoProjectObject {
 	 */
 	@Setter(value = URI)
 	public void setURI(String uri);
+
+	@Getter(value = VERSION_KEY, isStringConvertable = true)
+	@XMLAttribute
+	public FlexoVersion getVersion();
+
+	@Setter(VERSION_KEY)
+	public void setVersion(FlexoVersion version);
+
+	@Getter(value = REVISION_KEY, defaultValue = "1")
+	@XMLAttribute
+	public long getRevision();
+
+	@Setter(REVISION_KEY)
+	public void setRevision(long revision);
+
 }

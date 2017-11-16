@@ -53,6 +53,7 @@ import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelRepository;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceRepository;
+import org.openflexo.foundation.resource.DirectoryResourceCenter.DirectoryResourceCenterEntry;
 import org.openflexo.foundation.resource.FileSystemBasedResourceCenter.FSBasedResourceCenterEntry;
 import org.openflexo.foundation.resource.JarResourceCenter.JarResourceCenterEntry;
 import org.openflexo.foundation.resource.RemoteResourceCenter.RemoteResourceCenterEntry;
@@ -61,7 +62,6 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.model.annotations.Import;
 import org.openflexo.model.annotations.Imports;
 import org.openflexo.model.annotations.ModelEntity;
-import org.openflexo.model.annotations.XMLElement;
 import org.openflexo.toolbox.FlexoVersion;
 import org.openflexo.toolbox.IProgress;
 import org.openflexo.xml.XMLRootElementInfo;
@@ -86,9 +86,9 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, ResourceRepository<
 	 * @author sylvain
 	 * 
 	 */
-	@ModelEntity
-	@XMLElement
-	@Imports({ @Import(FSBasedResourceCenterEntry.class), @Import(RemoteResourceCenterEntry.class), @Import(JarResourceCenterEntry.class) })
+	@ModelEntity(isAbstract = true)
+	@Imports({ @Import(FSBasedResourceCenterEntry.class), @Import(DirectoryResourceCenterEntry.class),
+			@Import(RemoteResourceCenterEntry.class), @Import(JarResourceCenterEntry.class) })
 	interface ResourceCenterEntry<RC extends FlexoResourceCenter<?>> {
 
 		RC makeResourceCenter(FlexoResourceCenterService rcService);

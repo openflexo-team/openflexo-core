@@ -158,6 +158,7 @@ public class Flexo {
 
 	protected static void registerShutdownHook() {
 		Runtime.getRuntime().addShutdownHook(new Thread() {
+			@Override
 			public void run() {
 				FlexoFrame activeFrame = FlexoFrame.getActiveFrame(false);
 				if (activeFrame != null) {
@@ -353,7 +354,7 @@ public class Flexo {
 				}
 				applicationContext.getModuleLoader().switchToModule(module);
 
-				LoadProjectTask loadProject = applicationContext.getProjectLoader().loadProject(projectDirectory);
+				LoadProjectTask loadProject = applicationContext.getProjectLoader().makeLoadProjectTask(projectDirectory);
 				applicationContext.getTaskManager().waitTask(loadProject);
 				if (loadProject.getTaskStatus() == TaskStatus.EXCEPTION_THROWN) {
 					if (loadProject.getThrownException() instanceof ProjectLoadingCancelledException) {

@@ -84,7 +84,7 @@ public abstract class OpenflexoTestCaseWithGUI extends OpenflexoTestCase {
 			List<FlexoResourceCenter<?>> listRC = RCService.getResourceCenters();
 			for (FlexoResourceCenter<?> rc : listRC) {
 				if (rc instanceof DirectoryResourceCenter && !rc.getResourceCenterEntry().isSystemEntry()) {
-					File RCDirectory = ((DirectoryResourceCenter) rc).getDirectory();
+					File RCDirectory = ((DirectoryResourceCenter) rc).getRootDirectory();
 					RCDirectory.deleteOnExit();
 				}
 			}

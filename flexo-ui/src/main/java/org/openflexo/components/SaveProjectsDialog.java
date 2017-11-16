@@ -63,30 +63,30 @@ public class SaveProjectsDialog {
 	private final ProjectList data;
 
 	public static class ProjectList extends PropertyChangedSupportDefaultImplementation {
-		private final List<FlexoProject> projects;
-		private List<FlexoProject> selected;
+		private final List<FlexoProject<?>> projects;
+		private List<FlexoProject<?>> selected;
 
-		public ProjectList(List<FlexoProject> projects) {
+		public ProjectList(List<FlexoProject<?>> projects) {
 			this.projects = projects;
-			this.selected = new ArrayList<FlexoProject>(projects);
+			this.selected = new ArrayList<>(projects);
 		}
 
-		public List<FlexoProject> getProjects() {
+		public List<FlexoProject<?>> getProjects() {
 			return projects;
 		}
 
-		public List<FlexoProject> getSelected() {
+		public List<FlexoProject<?>> getSelected() {
 			return selected;
 		}
 
-		public void setSelected(List<FlexoProject> selected) {
-			List<FlexoProject> old = this.selected;
+		public void setSelected(List<FlexoProject<?>> selected) {
+			List<FlexoProject<?>> old = this.selected;
 			this.selected = selected;
 			getPropertyChangeSupport().firePropertyChange("selected", old, selected);
 		}
 
 		public void selectAll() {
-			for (FlexoProject p : getProjects()) {
+			for (FlexoProject<?> p : getProjects()) {
 				if (!selected.contains(p)) {
 					selected.add(p);
 					getPropertyChangeSupport().firePropertyChange("selected", null, p);
@@ -95,7 +95,7 @@ public class SaveProjectsDialog {
 		}
 
 		public void deselectAll() {
-			for (FlexoProject p : getProjects()) {
+			for (FlexoProject<?> p : getProjects()) {
 				if (selected.contains(p)) {
 					selected.remove(p);
 					getPropertyChangeSupport().firePropertyChange("selected", p, null);
@@ -106,7 +106,7 @@ public class SaveProjectsDialog {
 
 	private boolean ok = false;
 
-	public SaveProjectsDialog(FlexoController controller, List<FlexoProject> modifiedProjects) {
+	public SaveProjectsDialog(FlexoController controller, List<FlexoProject<?>> modifiedProjects) {
 		data = new ProjectList(modifiedProjects);
 		JFIBDialog<ProjectList> dialog = JFIBDialog.instanciateDialog(FIB_FILE_NAME, data,
 				controller.getApplicationContext().getApplicationFIBLibraryService().getApplicationFIBLibrary(),
@@ -119,7 +119,7 @@ public class SaveProjectsDialog {
 		ok = dialog.getController().getStatus() == Status.YES;
 	}
 
-	public List<FlexoProject> getSelectedProject() {
+	public List<FlexoProject<?>> getSelectedProject() {
 		return data.getSelected();
 	}
 

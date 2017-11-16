@@ -39,19 +39,12 @@
 package org.openflexo.project;
 
 import java.io.File;
-import java.util.Map.Entry;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.openflexo.components.ProgressWindow;
 import org.openflexo.foundation.FlexoEditor;
-import org.openflexo.foundation.FlexoProject;
-import org.openflexo.foundation.resource.ProjectLoaded;
 import org.openflexo.foundation.task.Progress;
-import org.openflexo.foundation.utils.FlexoProjectUtil;
 import org.openflexo.foundation.utils.ProjectInitializerException;
 import org.openflexo.foundation.utils.ProjectLoadingCancelledException;
-import org.openflexo.foundation.utils.UnreadableProjectException;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.task.FlexoApplicationTask;
 import org.openflexo.view.controller.FlexoController;
@@ -82,10 +75,19 @@ public class LoadProjectTask extends FlexoApplicationTask {
 	@Override
 	public void performTask() {
 
-		//System.out.println("Loading project " + projectDirectory);
+		// System.out.println("Loading project " + projectDirectory);
 
 		Progress.setExpectedProgressSteps(10);
-		if (projectDirectory == null) {
+
+		try {
+			projectLoader.loadProject(projectDirectory);
+		} catch (ProjectLoadingCancelledException e) {
+			throwException(e);
+		} catch (ProjectInitializerException e) {
+			throwException(e);
+		}
+
+		/*if (projectDirectory == null) {
 			throwException(new IllegalArgumentException("Project directory cannot be null"));
 		}
 		if (!projectDirectory.exists()) {
@@ -96,9 +98,9 @@ public class LoadProjectTask extends FlexoApplicationTask {
 		} catch (UnreadableProjectException e) {
 			throwException(new ProjectLoadingCancelledException(e.getMessage()));
 		}
-
+		
 		Progress.progress(FlexoLocalization.getMainLocalizer().localizedForKey("opening_project") + projectDirectory.getAbsolutePath());
-
+		
 		if (logger.isLoggable(Level.FINE)) {
 			logger.fine("Opening " + projectDirectory.getAbsolutePath());
 		}
@@ -128,10 +130,10 @@ public class LoadProjectTask extends FlexoApplicationTask {
 		if (!asImportedProject) {
 			projectLoader.addToRootProjects(flexoEditor.getProject());
 		}
-
+		
 		// Notify project just loaded
 		Progress.progress(FlexoLocalization.getMainLocalizer().localizedForKey("notify_editors"));
-		projectLoader.getServiceManager().notify(projectLoader, new ProjectLoaded(flexoEditor.getProject()));
+		projectLoader.getServiceManager().notify(projectLoader, new ProjectLoaded(flexoEditor.getProject()));*/
 	}
 
 	public FlexoEditor getFlexoEditor() {

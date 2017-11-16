@@ -52,10 +52,12 @@ import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.VirtualModelLibrary;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.localization.LocalizationService;
+import org.openflexo.foundation.project.ProjectLoader;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
 import org.openflexo.foundation.technologyadapter.DefaultTechnologyAdapterService;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
+import org.openflexo.foundation.test.OpenflexoTestCase.TestProjectLoader;
 import org.openflexo.foundation.utils.ProjectLoadingHandler;
 import org.openflexo.prefs.PreferencesService;
 import org.openflexo.rm.ActivateTechnologyAdapterTask;
@@ -104,8 +106,8 @@ public class TestApplicationContext extends ApplicationContext {
 	}
 
 	@Override
-	public FlexoEditor makeFlexoEditor(FlexoProject project, FlexoServiceManager serviceManager) {
-		return new FlexoTestEditor(project, serviceManager);
+	protected ProjectLoader createProjectLoaderService() {
+		return new TestProjectLoader();
 	}
 
 	@Override
@@ -125,8 +127,7 @@ public class TestApplicationContext extends ApplicationContext {
 	}
 
 	@Override
-	protected TechnologyAdapterService createTechnologyAdapterService(
-			FlexoResourceCenterService resourceCenterService) {
+	protected TechnologyAdapterService createTechnologyAdapterService(FlexoResourceCenterService resourceCenterService) {
 		return DefaultTechnologyAdapterService.getNewInstance(resourceCenterService);
 	}
 
@@ -177,8 +178,7 @@ public class TestApplicationContext extends ApplicationContext {
 
 	/**
 	 * Enable a {@link TechnologyAdapter}<br>
-	 * All resources centers are notified to scan the resources that they may
-	 * interpret
+	 * All resources centers are notified to scan the resources that they may interpret
 	 * 
 	 * @param technologyAdapter
 	 */
@@ -198,8 +198,7 @@ public class TestApplicationContext extends ApplicationContext {
 
 	/**
 	 * Disable a {@link TechnologyAdapter}<br>
-	 * All resources centers are notified to free the resources that they are
-	 * managing, if possible
+	 * All resources centers are notified to free the resources that they are managing, if possible
 	 * 
 	 * @param technologyAdapter
 	 */

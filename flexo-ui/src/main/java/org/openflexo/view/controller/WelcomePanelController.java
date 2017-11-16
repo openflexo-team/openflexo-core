@@ -41,12 +41,12 @@ package org.openflexo.view.controller;
 
 import java.io.File;
 import java.io.IOException;
+
 import org.openflexo.ApplicationData;
 import org.openflexo.components.NewProjectComponent;
 import org.openflexo.components.OpenProjectComponent;
 import org.openflexo.foundation.nature.ProjectNature;
 import org.openflexo.foundation.nature.ProjectNatureService;
-import org.openflexo.foundation.project.ProjectLoader;
 import org.openflexo.foundation.task.FlexoTaskManager;
 import org.openflexo.foundation.utils.OperationCancelledException;
 import org.openflexo.foundation.utils.ProjectInitializerException;
@@ -59,6 +59,7 @@ import org.openflexo.module.Module;
 import org.openflexo.module.ModuleLoader;
 import org.openflexo.module.ModuleLoadingException;
 import org.openflexo.module.NatureSpecificModule;
+import org.openflexo.project.InteractiveProjectLoader;
 
 public class WelcomePanelController extends FlexoFIBController {
 
@@ -75,8 +76,8 @@ public class WelcomePanelController extends FlexoFIBController {
 		return getDataObject().getApplicationContext().getModuleLoader();
 	}
 
-	private ProjectLoader getProjectLoader() {
-		return getDataObject().getApplicationContext().getProjectLoader();
+	private InteractiveProjectLoader getProjectLoader() {
+		return (InteractiveProjectLoader) getDataObject().getApplicationContext().getProjectLoader();
 	}
 
 	private FlexoTaskManager getTaskManager() {
@@ -106,7 +107,6 @@ public class WelcomePanelController extends FlexoFIBController {
 		}
 	}
 
-
 	public void openProject(Module module) throws ProjectLoadingCancelledException, ProjectInitializerException {
 		File projectDirectory = OpenProjectComponent.getProjectDirectory(getDataObject().getApplicationContext());
 		if (projectDirectory != null) {
@@ -115,7 +115,8 @@ public class WelcomePanelController extends FlexoFIBController {
 	}
 
 	public void openProject(File projectDirectory, Module module) throws ProjectLoadingCancelledException, ProjectInitializerException {
-		if (projectDirectory == null) return;
+		if (projectDirectory == null)
+			return;
 
 		hide();
 		LoadModuleTask loadModuleTask = null;
@@ -127,7 +128,7 @@ public class WelcomePanelController extends FlexoFIBController {
 			show();
 		}
 
-		getProjectLoader().loadProject(projectDirectory, loadModuleTask);
+		getProjectLoader().makeLoadProjectTask(projectDirectory, loadModuleTask);
 
 		validateAndDispose();
 
@@ -153,10 +154,10 @@ public class WelcomePanelController extends FlexoFIBController {
 
 		if (module instanceof NatureSpecificModule) {
 			ProjectNature<?, ?> nature = getProjectNatureService().getProjectNature(((NatureSpecificModule) module).getNatureClass());
-			getProjectLoader().newProject(projectDirectory, nature, loadModuleTask);
+			getProjectLoader().makeNewProjectTask(projectDirectory, nature, loadModuleTask);
 		}
 		else {
-			getProjectLoader().newProject(projectDirectory, loadModuleTask);
+			getProjectLoader().makeNewProjectTask(projectDirectory, loadModuleTask);
 		}
 		validateAndDispose();
 	}

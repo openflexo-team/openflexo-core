@@ -40,14 +40,17 @@
 package org.openflexo.action;
 
 import java.util.logging.Logger;
-import javax.swing.*;
+
+import javax.swing.Icon;
+import javax.swing.JFileChooser;
+
 import org.openflexo.InteractiveApplicationContext;
 import org.openflexo.components.ProjectChooserComponent;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoProjectObject;
+import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.action.FlexoActionFinalizer;
 import org.openflexo.foundation.action.FlexoActionInitializer;
-import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.action.FlexoExceptionHandler;
 import org.openflexo.foundation.action.ImportProject;
 import org.openflexo.foundation.resource.ProjectImportLoopException;
@@ -74,7 +77,7 @@ public class ImportProjectInitializer extends ActionInitializer<ImportProject, F
 		return (exception, action) -> {
 			if (action.getThrownException() instanceof ProjectImportLoopException) {
 				FlexoController.notify(action.getLocales().localizedForKey("project_already_imported") + " "
-						+ action.getProjectToImport().getDisplayName());
+						+ action.getProjectToImport().getProjectName());
 			}
 			return true;
 		};
@@ -85,7 +88,7 @@ public class ImportProjectInitializer extends ActionInitializer<ImportProject, F
 		return (event, action) -> {
 			if (action.hasActionExecutionSucceeded()) {
 				FlexoController.notify(action.getLocales().localizedForKey("successfully_imported_project") + " "
-						+ action.getProjectToImport().getDisplayName());
+						+ action.getProjectToImport().getProjectName());
 			}
 			return true;
 		};
@@ -109,7 +112,7 @@ public class ImportProjectInitializer extends ActionInitializer<ImportProject, F
 					FlexoEditor editor = null;
 
 					LoadProjectTask loadProject = ((InteractiveApplicationContext) getController().getApplicationContext())
-							.getProjectLoader().loadProject(chooser.getSelectedFile(), true);
+							.getProjectLoader().makeLoadProjectTask(chooser.getSelectedFile(), true);
 					getController().getApplicationContext().getTaskManager().waitTask(loadProject);
 					if (loadProject.getTaskStatus() == TaskStatus.EXCEPTION_THROWN) {
 						if (loadProject.getThrownException() instanceof ProjectLoadingCancelledException) {

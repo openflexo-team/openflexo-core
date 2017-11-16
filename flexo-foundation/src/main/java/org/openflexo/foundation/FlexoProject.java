@@ -72,6 +72,7 @@ import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.model.annotations.XMLElement;
 import org.openflexo.model.validation.Validable;
+import org.openflexo.model.validation.ValidationModel;
 import org.openflexo.toolbox.FlexoVersion;
 
 /**
@@ -125,6 +126,8 @@ public interface FlexoProject<I> extends ResourceRepository<FlexoResource<?>, I>
 
 	@Setter(CREATION_DATE_KEY)
 	public void setCreationDate(Date creationDate);
+
+	public String getCreationDateAsString();
 
 	@Getter(value = CREATION_USER_ID_KEY)
 	@XMLAttribute
@@ -299,4 +302,6 @@ public interface FlexoProject<I> extends ResourceRepository<FlexoResource<?>, I>
 	public FlexoResourceCenter<I> getDelegateResourceCenter();
 
 	public FlexoProjectResource getProjectResource();
+
+	public ValidationModel getProjectValidationModel();
 }

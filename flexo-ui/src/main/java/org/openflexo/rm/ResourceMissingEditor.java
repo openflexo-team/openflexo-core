@@ -41,6 +41,7 @@ package org.openflexo.rm;
 import java.awt.Window;
 import java.beans.PropertyChangeSupport;
 import java.io.File;
+import java.io.IOException;
 
 import org.openflexo.foundation.resource.DirectoryResourceCenter;
 import org.openflexo.foundation.resource.MissingFlexoResource;
@@ -100,8 +101,8 @@ public class ResourceMissingEditor implements HasPropertyChangeSupport {
 		this.missingResource = missingResource;
 	}
 
-	public void load() {
-		DirectoryResourceCenter newRC = new DirectoryResourceCenter(getMissingFile().getParentFile(),
+	public void load() throws IOException {
+		DirectoryResourceCenter newRC = DirectoryResourceCenter.instanciateNewDirectoryResourceCenter(getMissingFile().getParentFile(),
 				service.getServiceManager().getResourceCenterService());
 		service.getServiceManager().getResourceCenterService().addToResourceCenters(newRC);
 

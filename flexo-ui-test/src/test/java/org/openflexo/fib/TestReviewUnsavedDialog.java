@@ -40,6 +40,8 @@ package org.openflexo.fib;
 
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -65,21 +67,22 @@ public class TestReviewUnsavedDialog extends OpenflexoProjectAtRunTimeTestCaseWi
 	private static FIBDialogGraphicalContextDelegate gcDelegate;
 
 	private static FlexoEditor editor;
-	private static FlexoProject project;
+	private static FlexoProject<File> project;
 
 	@Test
 	@TestOrder(1)
 	public void testCreateProject() {
-		editor = createProject("TestProject");
-		project = editor.getProject();
+		serviceManager = instanciateTestServiceManager();
+		editor = createStandaloneProject("TestProject");
+		project = (FlexoProject<File>) editor.getProject();
 		System.out.println("Created project " + project.getProjectDirectory());
 		assertTrue(project.getProjectDirectory().exists());
-		assertTrue(project.getProjectDataResource().getIODelegate().exists());
 	}
 
 	@Test
 	@TestOrder(2)
 	public void testInstanciateWidget() {
+		System.out.println(">>>>>>>>>>>>> serviceManager=" + serviceManager);
 		ReviewUnsavedDialog dialog = new ReviewUnsavedDialog((ApplicationContext) serviceManager, serviceManager.getResourceManager());
 		log("instanciated " + dialog);
 		gcDelegate = new FIBDialogGraphicalContextDelegate(dialog, ReviewUnsavedDialog.FIB_FILE_NAME);

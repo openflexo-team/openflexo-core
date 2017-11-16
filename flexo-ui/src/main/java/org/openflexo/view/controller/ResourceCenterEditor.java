@@ -40,6 +40,7 @@ package org.openflexo.view.controller;
 
 import java.awt.Window;
 import java.beans.PropertyChangeSupport;
+import java.io.IOException;
 import java.util.logging.Logger;
 
 import org.openflexo.ApplicationContext;
@@ -105,19 +106,27 @@ public class ResourceCenterEditor implements HasPropertyChangeSupport {
 		return (ApplicationContext) rcService.getServiceManager();
 	}
 
-	public void addResourceCenter() {
+	public FlexoResourceCenter<?> addResourceCenter() {
 		FIBComponent askRCDirectoryComponent = getApplicationFIBLibrary().retrieveFIBComponent(AskResourceCenterDirectory.FIB_FILE);
 		AskResourceCenterDirectory askDir = new AskResourceCenterDirectory();
 		JFIBDialog dialog = JFIBDialog.instanciateAndShowDialog(askRCDirectoryComponent, askDir, FlexoFrame.getActiveFrame(), true,
 				FlexoLocalization.getMainLocalizer());
 		if (dialog.getStatus() == Status.VALIDATED) {
-			DirectoryResourceCenter newRC = new DirectoryResourceCenter(askDir.getLocalResourceDirectory(), rcService);
-			AddResourceCenterTask task = new AddResourceCenterTask(getRcService(), newRC);
-			rcService.getServiceManager().getTaskManager().scheduleExecution(task);
+			try {
+				DirectoryResourceCenter newRC = DirectoryResourceCenter
+						.instanciateNewDirectoryResourceCenter(askDir.getLocalResourceDirectory(), rcService);
+				AddResourceCenterTask task = new AddResourceCenterTask(getRcService(), newRC);
+				rcService.getServiceManager().getTaskManager().scheduleExecution(task);
+				return newRC;
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
+		return null;
 	}
 
-	public void removeResourceCenter(FlexoResourceCenter rc) {
+	public void removeResourceCenter(FlexoResourceCenter<?> rc) {
 		logger.info("removeResourceCenter " + rc);
 		// if (rc instanceof DirectoryResourceCenter) {
 		RemoveResourceCenterTask task = new RemoveResourceCenterTask(getRcService(), rc);

@@ -93,7 +93,7 @@ public class FlexoAutoSaveThread extends Thread {
 	/**
 	 * The project on which this thread works
 	 */
-	private final FlexoProject project;
+	private final FlexoProject<File> project;
 
 	/**
 	 * The root directory for the specified project containing all the intermediate project save. For example, you will have tempDirectory
@@ -113,7 +113,7 @@ public class FlexoAutoSaveThread extends Thread {
 	/**
 	 *
 	 */
-	public FlexoAutoSaveThread(FlexoProject project) {
+	public FlexoAutoSaveThread(FlexoProject<File> project) {
 		super("Auto-save thread for " + project.getName());
 		this.project = project;
 		setPriority(Thread.MIN_PRIORITY);
@@ -302,7 +302,7 @@ public class FlexoAutoSaveThread extends Thread {
 		}
 	}
 
-	public FlexoProject getProject() {
+	public FlexoProject<File> getProject() {
 		return project;
 	}
 
