@@ -63,8 +63,8 @@ import org.openflexo.toolbox.IProgress;
  * @author Sylvain
  * 
  */
-public abstract class FlexoProjectResourceImpl extends PamelaResourceImpl<FlexoProject<?>, FlexoProjectFactory>
-		implements FlexoProjectResource {
+public abstract class FlexoProjectResourceImpl<I> extends PamelaResourceImpl<FlexoProject<I>, FlexoProjectFactory>
+		implements FlexoProjectResource<I> {
 
 	static final Logger logger = Logger.getLogger(FlexoProjectResourceImpl.class.getPackage().getName());
 
@@ -73,15 +73,15 @@ public abstract class FlexoProjectResourceImpl extends PamelaResourceImpl<FlexoP
 	/**
 	 * Instantiation of a delegate RC if project is stand-alone (not contained in another RC)
 	 */
-	private FlexoResourceCenter<?> delegateResourceCenter = null;
+	private FlexoResourceCenter<I> delegateResourceCenter = null;
 
 	@Override
-	public FlexoResourceCenter<?> getDelegateResourceCenter() {
+	public FlexoResourceCenter<I> getDelegateResourceCenter() {
 		return delegateResourceCenter;
 	}
 
 	@Override
-	public void setDelegateResourceCenter(FlexoResourceCenter<?> delegateResourceCenter) {
+	public void setDelegateResourceCenter(FlexoResourceCenter<I> delegateResourceCenter) {
 		if ((delegateResourceCenter == null && this.delegateResourceCenter != null)
 				|| (delegateResourceCenter != null && !delegateResourceCenter.equals(this.delegateResourceCenter))) {
 			FlexoResourceCenter<?> oldValue = this.delegateResourceCenter;
@@ -92,7 +92,7 @@ public abstract class FlexoProjectResourceImpl extends PamelaResourceImpl<FlexoP
 	}
 
 	@Override
-	public FlexoProject<?> getFlexoProject() {
+	public FlexoProject<I> getFlexoProject() {
 		try {
 			return getResourceData(null);
 		} catch (FileNotFoundException e) {
@@ -106,13 +106,13 @@ public abstract class FlexoProjectResourceImpl extends PamelaResourceImpl<FlexoP
 	}
 
 	@Override
-	public Class<FlexoProject<?>> getResourceDataClass() {
+	public Class<FlexoProject<I>> getResourceDataClass() {
 		return (Class) FlexoProject.class;
 	}
 
 	@Override
-	protected FlexoProject<?> performLoad() throws IOException, Exception {
-		FlexoProject<?> returned = super.performLoad();
+	protected FlexoProject<I> performLoad() throws IOException, Exception {
+		FlexoProject<I> returned = super.performLoad();
 		if (returned != null) {
 			setURI(returned.getProjectURI());
 		}
@@ -120,9 +120,9 @@ public abstract class FlexoProjectResourceImpl extends PamelaResourceImpl<FlexoP
 	}
 
 	@Override
-	public FlexoProject<?> loadResourceData(IProgress progress) throws FlexoFileNotFoundException, IOFlexoException, InvalidXMLException,
+	public FlexoProject<I> loadResourceData(IProgress progress) throws FlexoFileNotFoundException, IOFlexoException, InvalidXMLException,
 			InconsistentDataException, InvalidModelDefinitionException {
-		FlexoProject<?> returned = super.loadResourceData(progress);
+		FlexoProject<I> returned = super.loadResourceData(progress);
 		returned.setLastUniqueID(0);
 
 		// We add the newly created project as a ResourceCenter

@@ -426,7 +426,7 @@ public abstract class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoRe
 
 	@Override
 	public FlexoResource<FlexoProject<I>> getResource() {
-		return (FlexoResource) resource;
+		return resource;
 	}
 
 	@Override
@@ -696,7 +696,7 @@ public abstract class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoRe
 	@Override
 	public FlexoResourceCenter<I> getDelegateResourceCenter() {
 		if (getResource() != null) {
-			return (FlexoResourceCenter<I>) (getProjectResource()).getDelegateResourceCenter();
+			return (getProjectResource()).getDelegateResourceCenter();
 		}
 		return null;
 	}
@@ -834,6 +834,7 @@ public abstract class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoRe
 	// ============================= Validation =============================
 	// ======================================================================
 
+	@Override
 	public ValidationModel getProjectValidationModel() {
 		if (projectValidationModel == null) {
 			try {
@@ -1141,6 +1142,7 @@ public abstract class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoRe
 		}
 	}
 
+	@Override
 	public String getCreationDateAsString() {
 		if (getCreationDate() != null) {
 			return new SimpleDateFormat("dd/MM HH:mm:ss").format(getCreationDate());
@@ -1454,7 +1456,7 @@ public abstract class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoRe
 
 	@Override
 	public FlexoProjectFactory getModelFactory() {
-		return ((FlexoProjectResource) (FlexoResource) getResource()).getFactory();
+		return ((FlexoProjectResource<I>) getResource()).getFactory();
 	}
 
 	@Override

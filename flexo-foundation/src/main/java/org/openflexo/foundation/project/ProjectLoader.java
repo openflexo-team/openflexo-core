@@ -181,7 +181,7 @@ public class ProjectLoader extends FlexoServiceImpl implements HasPropertyChange
 	 * @throws IOException
 	 * @throws ProjectInitializerException
 	 */
-	public <I> FlexoEditor newProjectInResourceCenter(String projectName, RepositoryFolder<FlexoProjectResource, I> folder)
+	public <I> FlexoEditor newProjectInResourceCenter(String projectName, RepositoryFolder<FlexoProjectResource<?>, I> folder)
 			throws IOException, ProjectInitializerException {
 		return newProjectInResourceCenter(projectName, folder, null);
 	}
@@ -275,7 +275,7 @@ public class ProjectLoader extends FlexoServiceImpl implements HasPropertyChange
 	 * @throws IOException
 	 * @throws ProjectInitializerException
 	 */
-	public <I> FlexoEditor newProjectInResourceCenter(String projectName, RepositoryFolder<FlexoProjectResource, I> folder,
+	public <I> FlexoEditor newProjectInResourceCenter(String projectName, RepositoryFolder<FlexoProjectResource<?>, I> folder,
 			ProjectNature<?, ?> projectNature) throws IOException, ProjectInitializerException {
 
 		FlexoProject<?> newProject = null;

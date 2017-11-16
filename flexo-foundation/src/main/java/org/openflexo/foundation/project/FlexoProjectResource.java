@@ -55,15 +55,15 @@ import org.openflexo.model.annotations.XMLElement;
 @ModelEntity
 @ImplementationClass(FlexoProjectResourceImpl.class)
 @XMLElement
-public interface FlexoProjectResource extends PamelaResource<FlexoProject<?>, FlexoProjectFactory> {
+public interface FlexoProjectResource<I> extends PamelaResource<FlexoProject<I>, FlexoProjectFactory> {
 
-	public FlexoProject<?> getFlexoProject();
+	public FlexoProject<I> getFlexoProject();
 
 	/**
 	 * Return delegate RC if project is stand-alone (not contained in another RC)
 	 */
-	public FlexoResourceCenter<?> getDelegateResourceCenter();
+	public FlexoResourceCenter<I> getDelegateResourceCenter();
 
-	public void setDelegateResourceCenter(FlexoResourceCenter<?> delegateResourceCenter);
+	public void setDelegateResourceCenter(FlexoResourceCenter<I> delegateResourceCenter);
 
 }

@@ -55,14 +55,14 @@ import org.openflexo.model.factory.EditingContext;
  * @author sylvain
  * 
  */
-public class FlexoProjectFactory extends DefaultPamelaResourceModelFactory<FlexoProjectResource> {
+public class FlexoProjectFactory extends DefaultPamelaResourceModelFactory<FlexoProjectResource<?>> {
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(FlexoProjectFactory.class.getPackage().getName());
 
 	private RelativePathResourceConverter relativePathResourceConverter;
 
-	public FlexoProjectFactory(FlexoProjectResource resource, EditingContext editingContext) throws ModelDefinitionException {
+	public FlexoProjectFactory(FlexoProjectResource<?> resource, EditingContext editingContext) throws ModelDefinitionException {
 		super(resource, ModelContextLibrary.getModelContext(FlexoProject.class));
 		setEditingContext(editingContext);
 		addConverter(new FlexoVersionConverter());

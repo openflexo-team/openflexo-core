@@ -133,8 +133,7 @@ public class VirtualModelPasteHandler extends FlexoPasteHandler<VirtualModel> {
 				VirtualModelResource newResource;
 				try {
 					newResource = vmResFactory.makeContainedVirtualModelResource(originalVM.getResource().getName() + "-Copy",
-							pastingContext.getPastingPointHolder().getVirtualModelResource(),
-							originalVM.getTechnologyAdapter().getTechnologyContextManager(), false);
+							pastingContext.getPastingPointHolder().getVirtualModelResource(), false);
 					System.out.println("On vient de creer " + newResource);
 					copy.setResource(newResource);
 					newResource.setResourceData(copy);

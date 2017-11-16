@@ -68,29 +68,29 @@ import org.openflexo.toolbox.StringUtils;
  * @author sylvain
  * 
  */
-public class CreateProject extends FlexoAction<CreateProject, RepositoryFolder<FlexoProjectResource, ?>, FlexoObject> {
+public class CreateProject extends FlexoAction<CreateProject, RepositoryFolder<FlexoProjectResource<?>, ?>, FlexoObject> {
 
 	private static final Logger logger = Logger.getLogger(CreateProject.class.getPackage().getName());
 
-	public static FlexoActionFactory<CreateProject, RepositoryFolder<FlexoProjectResource, ?>, FlexoObject> actionType = new FlexoActionFactory<CreateProject, RepositoryFolder<FlexoProjectResource, ?>, FlexoObject>(
+	public static FlexoActionFactory<CreateProject, RepositoryFolder<FlexoProjectResource<?>, ?>, FlexoObject> actionType = new FlexoActionFactory<CreateProject, RepositoryFolder<FlexoProjectResource<?>, ?>, FlexoObject>(
 			"create_project", FlexoActionFactory.newMenu, FlexoActionFactory.defaultGroup, FlexoActionFactory.ADD_ACTION_TYPE) {
 
 		/**
 		 * Factory method
 		 */
 		@Override
-		public CreateProject makeNewAction(RepositoryFolder<FlexoProjectResource, ?> focusedObject, Vector<FlexoObject> globalSelection,
+		public CreateProject makeNewAction(RepositoryFolder<FlexoProjectResource<?>, ?> focusedObject, Vector<FlexoObject> globalSelection,
 				FlexoEditor editor) {
 			return new CreateProject(focusedObject, globalSelection, editor);
 		}
 
 		@Override
-		public boolean isVisibleForSelection(RepositoryFolder<FlexoProjectResource, ?> object, Vector<FlexoObject> globalSelection) {
+		public boolean isVisibleForSelection(RepositoryFolder<FlexoProjectResource<?>, ?> object, Vector<FlexoObject> globalSelection) {
 			return true;
 		}
 
 		@Override
-		public boolean isEnabledForSelection(RepositoryFolder<FlexoProjectResource, ?> object, Vector<FlexoObject> globalSelection) {
+		public boolean isEnabledForSelection(RepositoryFolder<FlexoProjectResource<?>, ?> object, Vector<FlexoObject> globalSelection) {
 			return true;
 		}
 
@@ -107,7 +107,7 @@ public class CreateProject extends FlexoAction<CreateProject, RepositoryFolder<F
 
 	private Object serializationArtefact;
 
-	CreateProject(RepositoryFolder<FlexoProjectResource, ?> focusedObject, Vector<FlexoObject> globalSelection, FlexoEditor editor) {
+	CreateProject(RepositoryFolder<FlexoProjectResource<?>, ?> focusedObject, Vector<FlexoObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 	}
 
@@ -125,7 +125,7 @@ public class CreateProject extends FlexoAction<CreateProject, RepositoryFolder<F
 
 		try {
 
-			FlexoProjectResource newProjectResource = null;
+			FlexoProjectResource<?> newProjectResource = null;
 			if (getFocusedObject() != null) {
 				newProjectResource = factory.makeFlexoProjectResource(getNewProjectName(), getNewProjectURI(), getFocusedObject(), true);
 			}

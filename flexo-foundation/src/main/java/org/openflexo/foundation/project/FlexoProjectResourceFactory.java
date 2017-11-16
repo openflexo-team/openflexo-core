@@ -44,7 +44,7 @@ import org.openflexo.xml.XMLRootElementInfo;
  * @author sylvain
  *
  */
-public class FlexoProjectResourceFactory extends PamelaResourceFactory<FlexoProjectResource, FlexoProject<?>, FlexoProjectFactory> {
+public class FlexoProjectResourceFactory<I> extends PamelaResourceFactory<FlexoProjectResource<I>, FlexoProject<I>, FlexoProjectFactory> {
 
 	private static final Logger logger = Logger.getLogger(FlexoProjectResourceFactory.class.getPackage().getName());
 
@@ -55,24 +55,31 @@ public class FlexoProjectResourceFactory extends PamelaResourceFactory<FlexoProj
 
 	private FlexoServiceManager serviceManager;
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public FlexoProjectResourceFactory(FlexoServiceManager serviceManager) throws ModelDefinitionException {
-		super(FlexoProjectResource.class);
+		super((Class) FlexoProjectResource.class);
 		this.serviceManager = serviceManager;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public FlexoProject<?> makeEmptyResourceData(FlexoProjectResource resource) {
-		return resource.getFactory().makeNewFlexoProject();
+	public FlexoProject<I> makeEmptyResourceData(FlexoProjectResource<I> resource) {
+		return (FlexoProject<I>) resource.getFactory().makeNewFlexoProject();
 	}
 
-	public FlexoProjectFactory makeResourceDataFactory(FlexoProjectResource resource) throws ModelDefinitionException {
+	public FlexoProjectFactory makeResourceDataFactory(FlexoProjectResource<I> resource) throws ModelDefinitionException {
 		return new FlexoProjectFactory(resource, resource.getServiceManager().getEditingContext());
 	}
 
 	@Override
-	protected <I> FlexoProjectResource initResourceForRetrieving(I serializationArtefact, FlexoResourceCenter<I> resourceCenter)
+	protected <I2> FlexoProjectResource<I> initResourceForRetrieving(I2 serializationArtefact, FlexoResourceCenter<I2> resourceCenter)
 			throws ModelDefinitionException, IOException {
-		FlexoProjectResource returned = super.initResourceForRetrieving(serializationArtefact, resourceCenter);
+		return _initResourceForRetrieving((I) serializationArtefact, (FlexoResourceCenter<I>) resourceCenter);
+	}
+
+	protected FlexoProjectResource<I> _initResourceForRetrieving(I serializationArtefact, FlexoResourceCenter<I> resourceCenter)
+			throws ModelDefinitionException, IOException {
+		FlexoProjectResource<I> returned = super.initResourceForRetrieving(serializationArtefact, resourceCenter);
 
 		// the ResourceCenter might be null here, so we "force" the ServiceManager
 		returned.setServiceManager(serviceManager);
@@ -112,9 +119,9 @@ public class FlexoProjectResourceFactory extends PamelaResourceFactory<FlexoProj
 	}
 
 	@Override
-	protected <I> FlexoProjectResource initResourceForCreation(I serializationArtefact, FlexoResourceCenter<I> resourceCenter, String name,
-			String uri) throws ModelDefinitionException {
-		FlexoProjectResource returned = super.initResourceForCreation(serializationArtefact, resourceCenter, name, uri);
+	protected <I2> FlexoProjectResource<I> initResourceForCreation(I2 serializationArtefact, FlexoResourceCenter<I2> resourceCenter,
+			String name, String uri) throws ModelDefinitionException {
+		FlexoProjectResource<I> returned = super.initResourceForCreation(serializationArtefact, resourceCenter, name, uri);
 
 		returned.setVersion(INITIAL_REVISION);
 		returned.setModelVersion(CURRENT_MODEL_VERSION);
@@ -122,7 +129,7 @@ public class FlexoProjectResourceFactory extends PamelaResourceFactory<FlexoProj
 	}
 
 	@Override
-	public <I> boolean isValidArtefact(I serializationArtefact, FlexoResourceCenter<I> resourceCenter) {
+	public <I2> boolean isValidArtefact(I2 serializationArtefact, FlexoResourceCenter<I2> resourceCenter) {
 
 		if (resourceCenter.exists(serializationArtefact) && resourceCenter.isDirectory(serializationArtefact)
 				&& resourceCenter.canRead(serializationArtefact)
@@ -138,12 +145,13 @@ public class FlexoProjectResourceFactory extends PamelaResourceFactory<FlexoProj
 	}
 
 	@Override
-	public <I> I getConvertableArtefact(I serializationArtefact, FlexoResourceCenter<I> resourceCenter) {
+	public <I2> I2 getConvertableArtefact(I2 serializationArtefact, FlexoResourceCenter<I2> resourceCenter) {
 		return null;
 	}
 
-	public <I> FlexoProjectResource makeFlexoProjectResource(String baseName, String uri, RepositoryFolder<FlexoProjectResource, I> folder,
-			boolean createEmptyContents) throws SaveResourceException, ModelDefinitionException {
+	public FlexoProjectResource<I> makeFlexoProjectResource(String baseName, String uri,
+			RepositoryFolder<FlexoProjectResource<I>, I> folder, boolean createEmptyContents)
+			throws SaveResourceException, ModelDefinitionException {
 		FlexoResourceCenter<I> resourceCenter = folder.getResourceRepository().getResourceCenter();
 
 		String artefactName = baseName.endsWith(FlexoProjectResourceFactory.PROJECT_SUFFIX) ? baseName
@@ -151,18 +159,19 @@ public class FlexoProjectResourceFactory extends PamelaResourceFactory<FlexoProj
 		I serializationArtefact = resourceCenter.createDirectory(artefactName, folder.getSerializationArtefact());
 
 		FlexoResourceCenter<I> delegateResourceCenter = makeDelegateRC(serializationArtefact);
-		FlexoProjectResource returned = makeResource(serializationArtefact, resourceCenter, baseName, uri, createEmptyContents);
+		FlexoProjectResource<I> returned = makeResource(serializationArtefact, resourceCenter, baseName, uri, createEmptyContents);
 		returned.setDelegateResourceCenter(delegateResourceCenter);
 		return returned;
 	}
 
-	private <I> FlexoResourceCenter<I> makeDelegateRC(I serializationArtefact) {
+	@SuppressWarnings("unchecked")
+	private <I2> FlexoResourceCenter<I2> makeDelegateRC(I2 serializationArtefact) {
 
 		System.out.println("*********** on cree un delegate RC pour " + serializationArtefact);
 
 		if (serializationArtefact instanceof File) {
 			try {
-				FlexoResourceCenter<I> returned = (FlexoResourceCenter<I>) DirectoryResourceCenter
+				FlexoResourceCenter<I2> returned = (FlexoResourceCenter<I2>) DirectoryResourceCenter
 						.instanciateNewDirectoryResourceCenter((File) serializationArtefact, serviceManager.getResourceCenterService());
 				return returned;
 			} catch (IOException e) {
@@ -174,7 +183,7 @@ public class FlexoProjectResourceFactory extends PamelaResourceFactory<FlexoProj
 		return null;
 	}
 
-	public <I> FlexoProjectResource makeFlexoProjectResource(I serializationArtefact, String uri, boolean createEmptyContents)
+	public FlexoProjectResource<I> makeFlexoProjectResource(I serializationArtefact, String uri, boolean createEmptyContents)
 			throws SaveResourceException, ModelDefinitionException {
 
 		FlexoResourceCenter<I> resourceCenter = serviceManager.getResourceCenterService()
@@ -190,13 +199,13 @@ public class FlexoProjectResourceFactory extends PamelaResourceFactory<FlexoProj
 			baseName = baseName.substring(0, baseName.length() - PROJECT_SUFFIX.length());
 		}
 
-		FlexoProjectResource returned = makeResource(serializationArtefact, resourceCenter, baseName, uri, createEmptyContents);
+		FlexoProjectResource<I> returned = makeResource(serializationArtefact, resourceCenter, baseName, uri, createEmptyContents);
 
 		returned.setDelegateResourceCenter(delegateResourceCenter);
 		return returned;
 	}
 
-	public <I> FlexoProjectResource makeFlexoProjectResource(String projectName, RepositoryFolder<FlexoProjectResource, I> folder,
+	public FlexoProjectResource<I> makeFlexoProjectResource(String projectName, RepositoryFolder<FlexoProjectResource<I>, I> folder,
 			String uri, boolean createEmptyContents) throws SaveResourceException, ModelDefinitionException {
 
 		FlexoResourceCenter<I> resourceCenter = folder.getResourceRepository().getResourceCenter();
@@ -207,16 +216,17 @@ public class FlexoProjectResourceFactory extends PamelaResourceFactory<FlexoProj
 		I serializationArtefact = resourceCenter.createDirectory(projectName + PROJECT_SUFFIX, folder.getSerializationArtefact());
 
 		FlexoResourceCenter<I> delegateResourceCenter = makeDelegateRC(serializationArtefact);
-		FlexoProjectResource returned = makeResource(serializationArtefact, resourceCenter, projectName, uri, createEmptyContents);
+		FlexoProjectResource<I> returned = makeResource(serializationArtefact, resourceCenter, projectName, uri, createEmptyContents);
 		returned.setDelegateResourceCenter(delegateResourceCenter);
 		return returned;
 	}
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
-	public <I> FlexoProjectResource retrieveResource(I serializationArtefact, FlexoResourceCenter<I> resourceCenter)
+	public <I2> FlexoProjectResource<I> retrieveResource(I2 serializationArtefact, FlexoResourceCenter<I2> resourceCenter)
 			throws ModelDefinitionException, IOException {
 
-		FlexoResourceCenter<I> delegateResourceCenter = makeDelegateRC(serializationArtefact);
+		FlexoResourceCenter<I2> delegateResourceCenter = makeDelegateRC(serializationArtefact);
 
 		if (resourceCenter == null) {
 			resourceCenter = delegateResourceCenter;
@@ -228,7 +238,7 @@ public class FlexoProjectResourceFactory extends PamelaResourceFactory<FlexoProj
 	}
 
 	@Override
-	protected <I> FlexoProjectResource registerResource(FlexoProjectResource resource, FlexoResourceCenter<I> resourceCenter) {
+	protected <I2> FlexoProjectResource<I> registerResource(FlexoProjectResource<I> resource, FlexoResourceCenter<I2> resourceCenter) {
 
 		// the ResourceCenter might be null here, so we "force" the ServiceManager
 		resource.setServiceManager(serviceManager);
@@ -248,8 +258,9 @@ public class FlexoProjectResourceFactory extends PamelaResourceFactory<FlexoProj
 
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	protected <I> FlexoIODelegate<I> makeFlexoIODelegate(I serializationArtefact, FlexoResourceCenter<I> resourceCenter) {
+	protected <I2> FlexoIODelegate<I2> makeFlexoIODelegate(I2 serializationArtefact, FlexoResourceCenter<I2> resourceCenter) {
 		if (resourceCenter != null) {
 			return resourceCenter.makeDirectoryBasedFlexoIODelegate(serializationArtefact, PROJECT_SUFFIX, CORE_FILE_SUFFIX, this);
 		}
@@ -257,7 +268,7 @@ public class FlexoProjectResourceFactory extends PamelaResourceFactory<FlexoProj
 			if (serializationArtefact instanceof File) {
 				String baseName = ((File) serializationArtefact).getName().substring(0,
 						((File) serializationArtefact).getName().length() - PROJECT_SUFFIX.length());
-				return (FlexoIODelegate<I>) DirectoryBasedIODelegateImpl.makeDirectoryBasedFlexoIODelegate(
+				return (FlexoIODelegate<I2>) DirectoryBasedIODelegateImpl.makeDirectoryBasedFlexoIODelegate(
 						((File) serializationArtefact).getParentFile(), baseName, PROJECT_SUFFIX, CORE_FILE_SUFFIX, this);
 			}
 		}
@@ -271,7 +282,7 @@ public class FlexoProjectResourceFactory extends PamelaResourceFactory<FlexoProj
 		public String modelVersion;
 	}
 
-	private <I> FlexoProjectInfo findFlexoProjectInfo(FlexoProjectResource resource, FlexoResourceCenter<I> resourceCenter) {
+	private FlexoProjectInfo findFlexoProjectInfo(FlexoProjectResource<I> resource, FlexoResourceCenter<I> resourceCenter) {
 
 		FlexoProjectInfo returned = new FlexoProjectInfo();
 		XMLRootElementInfo xmlRootElementInfo = resourceCenter
