@@ -739,7 +739,7 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 			// System.out.println("**** ensure register FCI " + fci + " in " + concept);
 			if (fci.isRoot()) {
 				// Prevent when ensureRegisterFCIInConcept method is invoked twice, in case an instance has a parent.
-				if(!rootFlexoConceptInstances.contains(fci)){
+				if (!rootFlexoConceptInstances.contains(fci)) {
 					rootFlexoConceptInstances.add(fci);
 				}
 			}
@@ -944,7 +944,7 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 		@Override
 		public final boolean delete(Object... context) {
 
-			logger.info("Deleting virtual model instance " + this);
+			logger.info("Deleting virtual model instance ");
 
 			// Dereference the resource
 			if (resource != null) {
