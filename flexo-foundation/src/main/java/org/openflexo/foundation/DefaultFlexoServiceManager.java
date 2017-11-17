@@ -102,6 +102,9 @@ public class DefaultFlexoServiceManager extends FlexoServiceManager {
 			registerService(projectReferenceLoader);
 		}
 
+		ProjectLoader projectLoaderService = createProjectLoaderService();
+		registerService(projectLoaderService);
+
 		FlexoResourceCenterService resourceCenterService = createResourceCenterService();
 		registerService(resourceCenterService);
 
@@ -116,9 +119,6 @@ public class DefaultFlexoServiceManager extends FlexoServiceManager {
 
 		ScreenshotService screenshotService = createScreenshotService();
 		registerService(screenshotService);
-
-		ProjectLoader projectLoaderService = createProjectLoaderService();
-		registerService(projectLoaderService);
 
 		applicationEditor = createApplicationEditor();
 

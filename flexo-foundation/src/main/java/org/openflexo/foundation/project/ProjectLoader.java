@@ -99,8 +99,6 @@ public class ProjectLoader extends FlexoServiceImpl implements HasPropertyChange
 	private final List<FlexoProject<?>> rootProjects;
 	// private ModelFactory modelFactory;
 
-	private FlexoProjectResourceFactory flexoProjectResourceFactory;
-
 	/**
 	 * Build new {@link ProjectLoader}
 	 */
@@ -115,30 +113,34 @@ public class ProjectLoader extends FlexoServiceImpl implements HasPropertyChange
 		}*/
 	}
 
-	/**
-	 * Return the {@link FlexoProjectResourceFactory}
-	 * 
-	 * @return
-	 */
-	public FlexoProjectResourceFactory getFlexoProjectResourceFactory() {
-		return flexoProjectResourceFactory;
-	}
-
-	public <I> FlexoProjectResource retrieveFlexoProjectResource(I serializationArtefact)
+	public <I> FlexoProjectResource<I> retrieveFlexoProjectResource(I projectDirectory)
 			throws ProjectInitializerException, ModelDefinitionException, IOException {
-		if (serializationArtefact == null) {
+		if (projectDirectory == null) {
 			throw new IllegalArgumentException("Project directory cannot be null");
 		}
-		if (serializationArtefact instanceof File && !((File) serializationArtefact).exists()) {
-			throw new ProjectInitializerException("project directory does not exist", serializationArtefact);
+		if (projectDirectory instanceof File && !((File) projectDirectory).exists()) {
+			throw new ProjectInitializerException("project directory does not exist", projectDirectory);
 		}
 
-		FlexoProjectResource returned = projectResourcesForSerializationArtefacts.get(serializationArtefact);
+		FlexoProjectResource returned = projectResourcesForSerializationArtefacts.get(projectDirectory);
+
+		if (returned == null) {
+			for (FlexoResourceCenter rc : getServiceManager().getResourceCenterService().getResourceCenters()) {
+				Object serializationArtefact = rc.getEntry(FlexoProjectResourceFactory.PROJECT_DATA_FILENAME, projectDirectory);
+				returned = (FlexoProjectResource) rc.getResource(serializationArtefact, FlexoProjectResource.class);
+				if (returned != null) {
+					return returned;
+				}
+			}
+		}
+
+		// Not found nowhere in all RCs, create a new FlexoProjectResource
 		if (returned == null) {
 			FlexoResourceCenter<I> resourceCenter = getServiceManager().getResourceCenterService()
-					.getResourceCenterContaining(serializationArtefact);
-			returned = flexoProjectResourceFactory.retrieveResource(serializationArtefact, resourceCenter);
-			projectResourcesForSerializationArtefacts.put(serializationArtefact, returned);
+					.getResourceCenterContaining(projectDirectory);
+			returned = getServiceManager().getResourceCenterService().getFlexoProjectResourceFactory().retrieveResource(projectDirectory,
+					resourceCenter);
+			projectResourcesForSerializationArtefacts.put(projectDirectory, returned);
 		}
 		return returned;
 	}
@@ -634,12 +636,6 @@ public class ProjectLoader extends FlexoServiceImpl implements HasPropertyChange
 
 	@Override
 	public void initialize() {
-		try {
-			flexoProjectResourceFactory = new FlexoProjectResourceFactory(getServiceManager());
-		} catch (ModelDefinitionException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 	}
 
 	/*public ModelFactory getModelFactory() {

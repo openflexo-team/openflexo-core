@@ -389,6 +389,13 @@ public interface JarResourceCenter extends ResourceRepository<FlexoResource<?>, 
 			try {
 				// searches for parent folder.
 				RepositoryFolder<?, InJarResourceImpl> folder = getParentRepositoryFolder(resourceArtifact, false);
+
+				// When not found
+				// It might be a resource artefact encoded as a directory based, try to find parent folder
+				if (folder == null) {
+					folder = getParentRepositoryFolder(resourceArtifact.getContainer(), false);
+				}
+
 				if (folder == null) {
 					return null;
 				}

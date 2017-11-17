@@ -75,6 +75,7 @@ import org.openflexo.foundation.fml.annotations.DeclareVirtualModelInstanceNatur
 import org.openflexo.foundation.fml.rt.InferedFMLRTModelSlot;
 import org.openflexo.foundation.fml.rt.VirtualModelInstanceNature;
 import org.openflexo.foundation.nature.ProjectNatureService;
+import org.openflexo.foundation.project.FlexoProjectResourceFactory;
 import org.openflexo.foundation.resource.DirectoryResourceCenter;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
@@ -264,7 +265,7 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 
 			while (it.hasNext()) {
 				I serializationArtefact = it.next();
-				if (!isIgnorable(resourceCenter, serializationArtefact)) {
+				if (!isSerializationArtefactIgnorable(resourceCenter, serializationArtefact)) {
 					FlexoResource<?> r = tryToLookupResource(resourceFactory, resourceCenter, serializationArtefact);
 					if (r != null) {
 						logger.info(">>>>>>>>>> Look-up resource " + r.getImplementedInterface().getSimpleName() + " " + r.getURI());
@@ -294,26 +295,6 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 					((ResourceRepository<?, I>) repository).getRepositoryFolder(folder, true);
 			}
 		}
-	}
-
-	/**
-	 * Recursively explore containers of supplied serialization artefact and return boolean indicating if supplied serialization artefact is
-	 * recursively contained in a folder ending with supplied suffix
-	 * 
-	 * @param resourceCenter
-	 * @param serializationArtefact
-	 * @param suffix
-	 * @return
-	 */
-	protected <I> boolean isContainedInDirectoryWithSuffix(FlexoResourceCenter<I> resourceCenter, I serializationArtefact, String suffix) {
-		I current = resourceCenter.getContainer(serializationArtefact);
-		while (current != null && !current.equals(resourceCenter.getBaseArtefact())) {
-			if (resourceCenter.retrieveName(current).endsWith(suffix)) {
-				return true;
-			}
-			current = resourceCenter.getContainer(current);
-		}
-		return false;
 	}
 
 	protected void resourceCenterHasBeenInitialized(FlexoResourceCenter<?> rc) {
@@ -382,10 +363,21 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 		return null;
 	}
 
+	public <I> boolean isSerializationArtefactIgnorable(final FlexoResourceCenter<I> resourceCenter, final I contents) {
+		// This allows to ignore all resources contained in prj, that will be explored from their prj resource
+		if (resourceCenter.isDirectory(contents)) {
+			if (FlexoResourceCenter.isContainedInDirectoryWithSuffix(resourceCenter, contents,
+					FlexoProjectResourceFactory.PROJECT_SUFFIX)) {
+				return true;
+			}
+		}
+		return isIgnorable(resourceCenter, contents);
+	}
+
 	public abstract <I> boolean isIgnorable(FlexoResourceCenter<I> resourceCenter, I contents);
 
 	public <I> boolean isFolderIgnorable(FlexoResourceCenter<I> resourceCenter, I contents) {
-		return isIgnorable(resourceCenter, contents);
+		return isSerializationArtefactIgnorable(resourceCenter, contents);
 	}
 
 	/**
@@ -397,7 +389,7 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 	 */
 	public final <I> boolean contentsAdded(FlexoResourceCenter<I> resourceCenter, I serializationArtefact) {
 		boolean hasBeenLookedUp = false;
-		if (!isIgnorable(resourceCenter, serializationArtefact)) {
+		if (!isSerializationArtefactIgnorable(resourceCenter, serializationArtefact)) {
 			for (ITechnologySpecificFlexoResourceFactory<?, ?, ?> resourceFactory : getResourceFactories()) {
 				FlexoResource<?> resource = tryToLookupResource(resourceFactory, resourceCenter, serializationArtefact);
 				if (resource != null) {

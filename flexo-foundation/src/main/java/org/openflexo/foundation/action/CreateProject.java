@@ -121,7 +121,7 @@ public class CreateProject extends FlexoAction<CreateProject, RepositoryFolder<F
 		System.out.println("getServiceManager()=" + getServiceManager());
 		System.out.println("getSerializationArtefact()=" + getSerializationArtefact());
 
-		FlexoProjectResourceFactory factory = getServiceManager().getProjectLoaderService().getFlexoProjectResourceFactory();
+		FlexoProjectResourceFactory factory = getServiceManager().getResourceCenterService().getFlexoProjectResourceFactory();
 
 		try {
 

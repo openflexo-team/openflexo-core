@@ -45,8 +45,10 @@ import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
+import org.openflexo.foundation.project.FlexoProjectResource;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.task.Progress;
+import org.openflexo.foundation.utils.ProjectInitializerException;
 import org.openflexo.logging.FlexoLogger;
 
 /**
@@ -93,7 +95,18 @@ public class LoadResourceAction extends FlexoAction<LoadResourceAction, FlexoObj
 	@Override
 	protected void doAction(Object context) throws FlexoException {
 		if (getFocusedObject() instanceof FlexoResource) {
-			if (!((FlexoResource<?>) getFocusedObject()).isLoaded()) {
+
+			if (getFocusedObject() instanceof FlexoProjectResource) {
+				FlexoProjectResource<Object> prjResource = (FlexoProjectResource) getFocusedObject();
+				Object serializationArtefact = prjResource.getIODelegate().getSerializationArtefact();
+				Object projectDirectory = prjResource.getDelegateResourceCenter().getContainer(serializationArtefact);
+				try {
+					getServiceManager().getProjectLoaderService().loadProject(projectDirectory);
+				} catch (ProjectInitializerException e) {
+					throw new FlexoException(e);
+				}
+			}
+			else if (!((FlexoResource<?>) getFocusedObject()).isLoaded()) {
 				// FlexoProgress progress = getEditor().getFlexoProgressFactory().makeFlexoProgress("loading_resource", 3);
 				Progress.progress("loading_resource");
 				try {

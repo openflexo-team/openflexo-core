@@ -233,7 +233,8 @@ public class FMLRTTechnologyAdapter extends TechnologyAdapter {
 
 		// This allows to ignore all contained VirtualModel, that will be explored from their container resource
 		if (resourceCenter.isDirectory(contents)) {
-			if (isContainedInDirectoryWithSuffix(resourceCenter, contents, FMLRTVirtualModelInstanceResourceFactory.FML_RT_SUFFIX)) {
+			if (FlexoResourceCenter.isContainedInDirectoryWithSuffix(resourceCenter, contents,
+					FMLRTVirtualModelInstanceResourceFactory.FML_RT_SUFFIX)) {
 				return true;
 			}
 		}
@@ -244,7 +245,8 @@ public class FMLRTTechnologyAdapter extends TechnologyAdapter {
 	@Override
 	public <I> boolean isFolderIgnorable(FlexoResourceCenter<I> resourceCenter, I contents) {
 		if (resourceCenter.isDirectory(contents)) {
-			if (isContainedInDirectoryWithSuffix(resourceCenter, contents, FMLRTVirtualModelInstanceResourceFactory.FML_RT_SUFFIX)) {
+			if (FlexoResourceCenter.isContainedInDirectoryWithSuffix(resourceCenter, contents,
+					FMLRTVirtualModelInstanceResourceFactory.FML_RT_SUFFIX)) {
 				return true;
 			}
 		}

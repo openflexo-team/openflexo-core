@@ -48,15 +48,21 @@ import java.net.URL;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.List;
 import java.util.jar.JarFile;
 
+import javax.swing.SwingUtilities;
+
 import org.apache.commons.io.IOUtils;
+import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.FlexoService;
 import org.openflexo.foundation.FlexoServiceImpl;
 import org.openflexo.foundation.FlexoServiceManager.ServiceRegistered;
 import org.openflexo.foundation.FlexoServiceManager.TechnologyAdapterHasBeenActivated;
 import org.openflexo.foundation.FlexoServiceManager.TechnologyAdapterHasBeenDisactivated;
+import org.openflexo.foundation.project.FlexoProjectResource;
+import org.openflexo.foundation.project.FlexoProjectResourceFactory;
 import org.openflexo.foundation.resource.FileIODelegate.FileHasBeenWrittenOnDiskNotification;
 import org.openflexo.foundation.resource.FileIODelegate.WillDeleteFileOnDiskNotification;
 import org.openflexo.foundation.resource.FileIODelegate.WillRenameFileOnDiskNotification;
@@ -114,7 +120,19 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 		return returned;
 	}
 
+	private FlexoProjectResourceFactory<?> flexoProjectResourceFactory;
+
 	public DefaultResourceCenterService() {
+	}
+
+	/**
+	 * Return the {@link FlexoProjectResourceFactory}
+	 * 
+	 * @return
+	 */
+	@Override
+	public FlexoProjectResourceFactory<?> getFlexoProjectResourceFactory() {
+		return flexoProjectResourceFactory;
 	}
 
 	/**
@@ -216,8 +234,146 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 			if (getServiceManager() != null) {
 				getServiceManager().notify(this, new ResourceCenterAdded(resourceCenter));
 			}
+
+			lookupProjectsInResourceCenter(resourceCenter);
+
 			getPropertyChangeSupport().firePropertyChange(RESOURCE_CENTERS, null, resourceCenter);
 		}
+	}
+
+	/**
+	 * Initialize the supplied resource center according to project management
+	 * 
+	 * @param resourceCenter
+	 */
+	public final <I> void lookupProjectsInResourceCenter(FlexoResourceCenter<I> resourceCenter) {
+
+		logger.info("--------> lookupProjectsInResourceCenter for " + resourceCenter);
+
+		Iterator<I> it;
+
+		// Then we iterate on all resources found in the resource factory
+		it = resourceCenter.iterator();
+
+		while (it.hasNext()) {
+			I serializationArtefact = it.next();
+			if (!isIgnorable(resourceCenter, serializationArtefact)) {
+				FlexoResource<?> r = tryToLookupResource(resourceCenter, serializationArtefact);
+				if (r != null) {
+					logger.info(">>>>>>>>>> Look-up resource " + r.getImplementedInterface().getSimpleName() + " " + r.getURI());
+				}
+			}
+			if (resourceCenter.isDirectory(serializationArtefact)) {
+				try {
+					foundFolder(resourceCenter, serializationArtefact);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+
+		resourceCenterHasBeenInitialized(resourceCenter);
+
+	}
+
+	public <I> boolean isIgnorable(final FlexoResourceCenter<I> resourceCenter, final I contents) {
+		// This allows to ignore all contained VirtualModel, that will be explored from their container resource
+		if (resourceCenter.isDirectory(contents)) {
+			if (FlexoResourceCenter.isContainedInDirectoryWithSuffix(resourceCenter, contents,
+					FlexoProjectResourceFactory.PROJECT_SUFFIX)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public <I> boolean isFolderIgnorable(FlexoResourceCenter<I> resourceCenter, I contents) {
+		System.out.println("Tiens, faudrait pas ignorer le folder " + contents);
+		if (resourceCenter.isDirectory(contents)) {
+			if (FlexoResourceCenter.isContainedInDirectoryWithSuffix(resourceCenter, contents,
+					FlexoProjectResourceFactory.PROJECT_SUFFIX)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Internally called to lookup resources from serialization artefacts
+	 * 
+	 * @param resourceCenter
+	 * @param serializationArtefact
+	 * @return
+	 */
+	private <I> FlexoProjectResource<I> tryToLookupResource(FlexoResourceCenter<I> resourceCenter, I serializationArtefact) {
+
+		if (getFlexoProjectResourceFactory() == null) {
+			logger.warning("Cannot lookup FlexoProject resources in " + resourceCenter + " because resource factory not available yet");
+			return null;
+		}
+
+		try {
+			if (getFlexoProjectResourceFactory().isValidArtefact(serializationArtefact, resourceCenter)) {
+				return ((FlexoProjectResourceFactory) getFlexoProjectResourceFactory()).retrieveResource(serializationArtefact,
+						resourceCenter);
+			}
+			else {
+				// Attempt to convert it from older format
+				// TODO ??? Any needs ?
+				/*I convertedSerializationArtefact = resourceFactory.getConvertableArtefact(serializationArtefact, resourceCenter);
+				if (convertedSerializationArtefact != null) {
+					R returned = resourceFactory.retrieveResource(convertedSerializationArtefact, resourceCenter);
+					returned.setNeedsConversion();
+					return returned;
+				}*/
+			}
+		} catch (ModelDefinitionException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	protected final <I> void foundFolder(FlexoResourceCenter<I> resourceCenter, I folder) throws IOException {
+		if (resourceCenter.isDirectory(folder) && !isFolderIgnorable(resourceCenter, folder)) {
+			logger.warning("TODO: handle folder for " + folder);
+			/*TechnologyAdapterGlobalRepository globalRepository = getGlobalRepository(resourceCenter);
+			// Unused RepositoryFolder newRepositoryFolder =
+			globalRepository.getRepositoryFolder(folder, true);
+			for (ResourceRepository<?, ?> repository : getAllRepositories()) {
+				if (repository.getResourceCenter() == resourceCenter)
+					((ResourceRepository<?, I>) repository).getRepositoryFolder(folder, true);
+			}*/
+		}
+	}
+
+	protected void resourceCenterHasBeenInitialized(FlexoResourceCenter<?> rc) {
+		// Call it to update the current repositories
+		if (!SwingUtilities.isEventDispatchThread()) {
+			SwingUtilities.invokeLater(new Runnable() {
+				@Override
+				public void run() {
+					// Call it to update the current repositories
+					notifyRepositoryStructureChanged();
+				}
+			});
+		}
+		else {
+			// Call it to update the current repositories
+			notifyRepositoryStructureChanged();
+		}
+	}
+
+	/**
+	 * Called to notify that the structure of registered and/or global repositories has changed
+	 */
+	public void notifyRepositoryStructureChanged() {
+
+		System.out.println("TODO ??? Something to fire ??");
+		/*getPropertyChangeSupport().firePropertyChange("getAllRepositories()", null, getAllRepositories());
+		getPropertyChangeSupport().firePropertyChange("getGlobalRepositories()", null, getGlobalRepositories());*/
+
 	}
 
 	@Override
@@ -308,6 +464,18 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 
 	@Override
 	public void initialize() {
+
+		try {
+			flexoProjectResourceFactory = new FlexoProjectResourceFactory<Object>(getServiceManager());
+		} catch (ModelDefinitionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		for (FlexoResourceCenter<?> resourceCenter : getResourceCenters()) {
+			lookupProjectsInResourceCenter(resourceCenter);
+		}
+
 		if (getResourceCenters().size() < 1) {
 			if (getServiceManager() != null) {
 				System.out.println("Trying to install default packaged resource center");
@@ -326,15 +494,39 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 	public class DefaultPackageResourceCenterIsNotInstalled implements ServiceNotification {
 	}
 
+	private void notifyWillWrite(File fileBeeingAdded, FileSystemBasedResourceCenter rc) {
+		File rootDirectory = rc.getRootDirectory();
+		if (FileUtils.directoryContainsFile(rootDirectory, fileBeeingAdded, true)) {
+			rc.willWrite(fileBeeingAdded);
+		}
+	}
+
 	@Override
 	public void receiveNotification(FlexoService caller, ServiceNotification notification) {
 		if (notification instanceof WillWriteFileOnDiskNotification) {
+			File fileBeeingAdded = ((WillWriteFileOnDiskNotification) notification).getFile();
 			for (FlexoResourceCenter<?> rc : getResourceCenters()) {
+				if (rc instanceof FlexoProject) {
+					FlexoProject<?> prj = (FlexoProject<?>) rc;
+					if (prj.getDelegateResourceCenter() instanceof FileSystemBasedResourceCenter) {
+						notifyWillWrite(fileBeeingAdded, (FileSystemBasedResourceCenter) prj.getDelegateResourceCenter());
+					}
+					if (!prj.isStandAlone()) {
+						if (prj.getResourceCenter() instanceof FileSystemBasedResourceCenter) {
+							notifyWillWrite(fileBeeingAdded, (FileSystemBasedResourceCenter) prj.getResourceCenter());
+						}
+					}
+				}
 				if (rc instanceof FileSystemBasedResourceCenter) {
-					File rootDirectory = ((FileSystemBasedResourceCenter) rc).getRootDirectory();
-					File fileBeeingAdded = ((WillWriteFileOnDiskNotification) notification).getFile();
-					if (FileUtils.directoryContainsFile(rootDirectory, fileBeeingAdded, true)) {
-						((FileSystemBasedResourceCenter) rc).willWrite(fileBeeingAdded);
+					notifyWillWrite(fileBeeingAdded, (FileSystemBasedResourceCenter) rc);
+					if (rc.getDelegatingProjectResource() != null) {
+						FlexoProjectResource<?> projectResource = rc.getDelegatingProjectResource();
+						if (!projectResource.isStandAlone()) {
+							System.out.println("tiens je dis au parent " + projectResource.getResourceCenter());
+							if (projectResource.getResourceCenter() instanceof FileSystemBasedResourceCenter) {
+								notifyWillWrite(fileBeeingAdded, (FileSystemBasedResourceCenter) projectResource.getResourceCenter());
+							}
+						}
 					}
 				}
 			}

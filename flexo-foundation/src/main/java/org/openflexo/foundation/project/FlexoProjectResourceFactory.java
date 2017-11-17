@@ -232,7 +232,7 @@ public class FlexoProjectResourceFactory<I> extends PamelaResourceFactory<FlexoP
 		}
 
 		FlexoProjectResource returned = super.retrieveResource(serializationArtefact, resourceCenter);
-		returned.setDelegateResourceCenter(resourceCenter);
+		returned.setDelegateResourceCenter(delegateResourceCenter);
 		return returned;
 	}
 

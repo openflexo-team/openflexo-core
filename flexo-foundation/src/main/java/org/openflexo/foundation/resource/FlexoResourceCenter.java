@@ -553,4 +553,25 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, ResourceRepository<
 	 */
 	public void setDelegatingProjectResource(FlexoProjectResource<I> delegatingProjectResource);
 
+	/**
+	 * Recursively explore containers of supplied serialization artefact and return boolean indicating if supplied serialization artefact is
+	 * recursively contained in a folder ending with supplied suffix
+	 * 
+	 * @param resourceCenter
+	 * @param serializationArtefact
+	 * @param suffix
+	 * @return
+	 */
+	public static <I> boolean isContainedInDirectoryWithSuffix(FlexoResourceCenter<I> resourceCenter, I serializationArtefact,
+			String suffix) {
+		I current = resourceCenter.getContainer(serializationArtefact);
+		while (current != null && !current.equals(resourceCenter.getBaseArtefact())) {
+			if (resourceCenter.retrieveName(current).endsWith(suffix)) {
+				return true;
+			}
+			current = resourceCenter.getContainer(current);
+		}
+		return false;
+	}
+
 }

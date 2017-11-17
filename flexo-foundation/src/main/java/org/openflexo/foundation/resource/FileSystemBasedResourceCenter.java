@@ -245,6 +245,13 @@ public interface FileSystemBasedResourceCenter extends ResourceRepository<FlexoR
 			try {
 				// searches for parent folder.
 				RepositoryFolder<?, File> folder = getParentRepositoryFolder(resourceArtifact, false);
+
+				// When not found
+				// It might be a resource artefact encoded as a directory based, try to find parent folder
+				if (folder == null) {
+					folder = getParentRepositoryFolder(resourceArtifact.getParentFile(), false);
+				}
+
 				if (folder == null) {
 					return null;
 				}
@@ -693,6 +700,7 @@ public interface FileSystemBasedResourceCenter extends ResourceRepository<FlexoR
 
 		@Override
 		public boolean isIgnorable(File file, TechnologyAdapter technologyAdapter) {
+
 			if (isToBeIgnored(file)) {
 				return true;
 			}

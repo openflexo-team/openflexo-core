@@ -70,6 +70,11 @@ public class TestCommonFlexoFibs extends GenericFIBTestCase {
 	}
 
 	@Test
+	public void testFIBResourceManagerBrowser() {
+		validateFIB("Fib/FIBResourceManagerBrowser.fib");
+	}
+
+	@Test
 	public void testFIBTechnologyBrowser() {
 		validateFIB("Fib/FIBTechnologyBrowser.fib");
 	}
@@ -150,6 +155,11 @@ public class TestCommonFlexoFibs extends GenericFIBTestCase {
 	}
 
 	@Test
+	public void testPresentationPreferences() {
+		validateFIB("Fib/Prefs/PresentationPreferences.fib");
+	}
+
+	@Test
 	public void testResourceCenterPreferences() {
 		validateFIB("Fib/Prefs/ResourceCenterPreferences.fib");
 	}
@@ -192,11 +202,6 @@ public class TestCommonFlexoFibs extends GenericFIBTestCase {
 	@Test
 	public void testSaveProjects() {
 		validateFIB("Fib/SaveProjects.fib");
-	}
-
-	@Test
-	public void testTypeSelector() {
-		validateFIB("Fib/TypeSelector.fib");
 	}
 
 	@Test

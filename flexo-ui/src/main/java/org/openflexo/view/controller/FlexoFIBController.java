@@ -41,6 +41,7 @@ package org.openflexo.view.controller;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -56,6 +57,7 @@ import org.openflexo.ApplicationContext;
 import org.openflexo.connie.annotations.NotificationUnsafe;
 import org.openflexo.foundation.DataModification;
 import org.openflexo.foundation.FlexoEditor;
+import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoObservable;
 import org.openflexo.foundation.FlexoProject;
@@ -71,11 +73,20 @@ import org.openflexo.foundation.action.copypaste.PasteAction;
 import org.openflexo.foundation.action.copypaste.PasteAction.PasteActionType;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FMLValidationReport;
+import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.VirtualModel;
+import org.openflexo.foundation.fml.action.CreateContainedVirtualModel;
+import org.openflexo.foundation.fml.action.CreateFlexoConcept;
+import org.openflexo.foundation.fml.action.CreateTopLevelVirtualModel;
+import org.openflexo.foundation.fml.action.DeleteFlexoConceptObjects;
+import org.openflexo.foundation.fml.action.DeleteVirtualModel;
+import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.project.FlexoProjectReference;
+import org.openflexo.foundation.project.FlexoProjectResource;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.RepositoryFolder;
 import org.openflexo.foundation.resource.ResourceData;
+import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.gina.controller.FIBController;
@@ -613,6 +624,80 @@ public class FlexoFIBController extends FIBController implements GraphicalFlexoO
 			localSelectionManager.setSelectedObjects((List) newSelection);
 			isLocalSelectionManagerUpdating = false;
 		}
+	}
+
+	public boolean isVisibleInBrowser(FlexoResource<?> resource) {
+		if (resource instanceof FlexoProjectResource && ((FlexoProjectResource) resource).isStandAlone()) {
+			System.out
+					.println("attention je veux cacher " + resource + " isStandAlone=" + ((FlexoProjectResource) resource).isStandAlone());
+			return false;
+		}
+		return !resource.isDeleted();
+	}
+
+	// Should be above to be available from everywhere
+	// TODO: refactor this (generic perspective should be adapted to FML in OpenflexoModeller)
+	public FlexoConcept createFlexoConcept(FlexoConcept flexoConcept) {
+		if (flexoConcept instanceof VirtualModel) {
+			CreateFlexoConcept createFlexoConcept = CreateFlexoConcept.actionType.makeNewAction(flexoConcept, null, getEditor());
+			createFlexoConcept.switchNewlyCreatedFlexoConcept = false;
+			createFlexoConcept.doAction();
+			return createFlexoConcept.getNewFlexoConcept();
+		}
+		else if (flexoConcept != null) {
+			CreateFlexoConcept createFlexoConcept = CreateFlexoConcept.actionType.makeNewAction(flexoConcept.getOwningVirtualModel(), null,
+					getEditor());
+			createFlexoConcept.setContainerFlexoConcept(flexoConcept);
+			createFlexoConcept.switchNewlyCreatedFlexoConcept = false;
+			createFlexoConcept.doAction();
+			return createFlexoConcept.getNewFlexoConcept();
+		}
+		logger.warning("Unexpected null flexo concept");
+		return null;
+	}
+
+	// Should be above to be available from everywhere
+	// TODO: refactor this (generic perspective should be adapted to FML in OpenflexoModeller)
+	public FlexoConcept deleteFlexoConcept(FlexoConcept flexoConcept) {
+		if (flexoConcept instanceof VirtualModel) {
+			DeleteVirtualModel deleteVirtualModel = DeleteVirtualModel.actionType.makeNewAction((VirtualModel) flexoConcept, null,
+					getEditor());
+			deleteVirtualModel.doAction();
+		}
+		else if (flexoConcept != null) {
+			DeleteFlexoConceptObjects deleteFlexoConcept = DeleteFlexoConceptObjects.actionType.makeNewAction(flexoConcept, null,
+					getEditor());
+			deleteFlexoConcept.doAction();
+		}
+		return flexoConcept;
+	}
+
+	// Should be above to be available from everywhere
+	// TODO: refactor this (generic perspective should be adapted to FML in OpenflexoModeller)
+	public VirtualModel createTopLevelVirtualModel(RepositoryFolder<VirtualModelResource, ?> folder) {
+		CreateTopLevelVirtualModel createTopLevelVirtualModel = CreateTopLevelVirtualModel.actionType.makeNewAction(folder, null,
+				getEditor());
+		createTopLevelVirtualModel.doAction();
+		return createTopLevelVirtualModel.getNewVirtualModel();
+	}
+
+	// Should be above to be available from everywhere
+	// TODO: refactor this (generic perspective should be adapted to FML in OpenflexoModeller)
+	public VirtualModel createContainedVirtualModel(FlexoResource<VirtualModel> containerVirtualModelResource)
+			throws FileNotFoundException, ResourceLoadingCancelledException, FlexoException {
+		CreateContainedVirtualModel createContainedVirtualModel = CreateContainedVirtualModel.actionType
+				.makeNewAction(containerVirtualModelResource.getResourceData(null), null, getEditor());
+		createContainedVirtualModel.doAction();
+		return createContainedVirtualModel.getNewVirtualModel();
+	}
+
+	// Should be above to be available from everywhere
+	// TODO: refactor this (generic perspective should be adapted to FML in OpenflexoModeller)
+	public void deleteVirtualModel(FlexoResource<VirtualModel> virtualModelResource)
+			throws FileNotFoundException, ResourceLoadingCancelledException, FlexoException {
+		DeleteVirtualModel deleteVirtualModel = DeleteVirtualModel.actionType.makeNewAction(virtualModelResource.getResourceData(null),
+				null, getEditor());
+		deleteVirtualModel.doAction();
 	}
 
 }

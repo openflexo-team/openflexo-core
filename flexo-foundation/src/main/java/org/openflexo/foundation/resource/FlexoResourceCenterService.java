@@ -43,6 +43,7 @@ import java.util.List;
 
 import org.openflexo.foundation.FlexoService;
 import org.openflexo.foundation.FlexoServiceManager;
+import org.openflexo.foundation.project.FlexoProjectResourceFactory;
 import org.openflexo.model.annotations.Adder;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.Getter.Cardinality;
@@ -89,4 +90,10 @@ public interface FlexoResourceCenterService extends FlexoService, AccessibleProx
 
 	public <I> FlexoResourceCenter<I> getResourceCenterContaining(I serializationArtefact);
 
+	/**
+	 * Return the {@link FlexoProjectResourceFactory}
+	 * 
+	 * @return
+	 */
+	public FlexoProjectResourceFactory<?> getFlexoProjectResourceFactory();
 }

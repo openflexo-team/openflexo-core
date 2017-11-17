@@ -123,6 +123,7 @@ import org.openflexo.foundation.fml.rt.VirtualModelInstanceObject;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.foundation.fml.rt.rm.FMLRTVirtualModelInstanceResource;
 import org.openflexo.foundation.project.FlexoProjectReference;
+import org.openflexo.foundation.project.FlexoProjectResource;
 import org.openflexo.foundation.project.ProjectLoader;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
@@ -1616,9 +1617,7 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 	public void objectWasDoubleClicked(Object object) {
 		logger.info("Object was double-clicked: " + object);
 		if (object instanceof FlexoResource<?>) {
-			// FlexoObject resourceData = null;
 			if (((FlexoResource<?>) object).isLoadable() && !((FlexoResource<?>) object).isLoaded()) {
-
 				LoadResourceAction action = LoadResourceAction.actionType.makeNewAction((FlexoResource<?>) object, null, getEditor());
 				action.doAction();
 			}
@@ -1978,6 +1977,10 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 		}
 		else if (object instanceof BehaviourParameterEntry) {
 			return FMLIconLibrary.FLEXO_CONCEPT_PARAMETER_ICON;
+		}
+
+		if (object instanceof FlexoProjectResource) {
+			return IconLibrary.OPENFLEXO_NOTEXT_16;
 		}
 
 		// If object is a resource and if this resource is loaded, use icon of

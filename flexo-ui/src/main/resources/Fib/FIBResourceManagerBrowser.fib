@@ -17,7 +17,7 @@
 		constraints="twocols(expandHorizontally=true;expandVertically=true;index=0;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=center)"
 		name="resourceManagerBrowser">
 		<BrowserElement id="2"
-			dataClassName="org.openflexo.foundation.FlexoServiceManager" icon="controller.iconForObject(technologyAdapter)"
+			dataClassName="org.openflexo.foundation.FlexoServiceManager" icon="controller.iconForObject(serviceManager)"
 			label="&quot;ServiceManager&quot;" isEditable="false" name="serviceManager">
 			<Children id="3" data="data.resourceCenterService.resourceCenters"
 				name="resourceCenters" cast="child.rootFolder" />
@@ -28,6 +28,7 @@
 			isEditable="false" name="folder">
 			<Children id="16" data="folder.children" name="subFolders" />
 			<Children id="17" data="folder.resources" name="resource" />
+			<!--  <Children data="controller.getContainedProjects(folder)" name="projects" />-->
 		</BrowserElement>
 		    <BrowserElement id="21" dataClassName="org.openflexo.foundation.fml.rm.VirtualModelResource" icon="controller.iconForObject(virtualModel)" label="(virtualModel.name + &quot;.fml&quot;)" enabled="virtualModel.isLoaded" editableLabel="virtualModel.name" name="virtualModel">
       <Children id="22" visible="virtualModel.isLoaded" data="virtualModel.contents" name="subresources" />
@@ -42,8 +43,7 @@
       <BrowserRemoveAction id="51" method="controller.deleteFlexoConcept(selected)" name="delete_flexo_concept" />
       <BrowserAddAction id="52" method="controller.createFlexoConcept(selected)" name="create_flexo_concept" />
     </BrowserElement>
-		
-		<BrowserElement id="129" visible="(!(resource.isDeleted))"
+		<BrowserElement id="129" visible="controller.isVisibleInBrowser(resource)"
 			dataClassName="org.openflexo.foundation.resource.FlexoResource" icon="controller.iconForObject(resource)"
 			label="resource.name" enabled="resource.isLoaded" isEditable="false"
 			name="resource">

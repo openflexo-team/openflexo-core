@@ -56,6 +56,7 @@ import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.action.FlexoActionizer.EditorProvider;
 import org.openflexo.module.FlexoModule;
 import org.openflexo.view.controller.action.AddRepositoryFolderInitializer;
+import org.openflexo.view.controller.action.CreateProjectInitializer;
 import org.openflexo.view.controller.action.DeleteRepositoryFolderInitializer;
 import org.openflexo.view.controller.action.HelpActionizer;
 import org.openflexo.view.controller.action.InspectActionizer;
@@ -221,6 +222,7 @@ public class ControllerActionInitializer implements EditorProvider {
 		new AddRepositoryFolderInitializer(this);
 		new DeleteRepositoryFolderInitializer(this);
 
+		new CreateProjectInitializer(this);
 	}
 
 	@SuppressWarnings("unchecked")

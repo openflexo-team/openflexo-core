@@ -419,8 +419,6 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD> & Accessibl
 			makeLocalCopy();
 			// Using temporary file
 
-			System.out.println("On cree un temp file dans " + getFile().getParentFile());
-
 			temporaryFile = File.createTempFile("temp", ".xml", getFile().getParentFile());
 			if (logger.isLoggable(Level.FINE)) {
 				logger.finer("Creating temp file " + temporaryFile.getAbsolutePath());

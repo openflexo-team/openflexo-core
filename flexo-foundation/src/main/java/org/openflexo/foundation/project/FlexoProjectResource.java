@@ -66,4 +66,10 @@ public interface FlexoProjectResource<I> extends PamelaResource<FlexoProject<I>,
 
 	public void setDelegateResourceCenter(FlexoResourceCenter<I> delegateResourceCenter);
 
+	/**
+	 * When true, indicates that this {@link FlexoProject} has no parent {@link FlexoResourceCenter}
+	 * 
+	 * @return
+	 */
+	public boolean isStandAlone();
 }
