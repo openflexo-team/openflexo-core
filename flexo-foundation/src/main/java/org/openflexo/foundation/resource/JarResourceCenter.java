@@ -251,6 +251,11 @@ public interface JarResourceCenter extends ResourceRepository<FlexoResource<?>, 
 		}
 
 		@Override
+		public Class<InJarResourceImpl> getSerializationArtefactClass() {
+			return InJarResourceImpl.class;
+		}
+
+		@Override
 		public JarResourceImpl getJarResourceImpl() {
 			return jarResourceImpl;
 		}

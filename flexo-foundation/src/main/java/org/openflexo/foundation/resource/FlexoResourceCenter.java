@@ -355,6 +355,13 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, ResourceRepository<
 	I getBaseArtefact();
 
 	/**
+	 * Return class of serialization artefact managed by this {@link FlexoResourceCenter}
+	 * 
+	 * @return
+	 */
+	public Class<? extends I> getSerializationArtefactClass();
+
+	/**
 	 * Retrieve name of supplied serialization artefact
 	 * 
 	 * @param serializationArtefact

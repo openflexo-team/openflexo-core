@@ -199,6 +199,11 @@ public interface FileSystemBasedResourceCenter extends ResourceRepository<FlexoR
 			// startDirectoryWatching();
 		}*/
 
+		@Override
+		public Class<File> getSerializationArtefactClass() {
+			return File.class;
+		}
+
 		/**
 		 * Return {@link FlexoResourceCenterService} managing this {@link FlexoResourceCenter}
 		 * 
