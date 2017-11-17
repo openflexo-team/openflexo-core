@@ -83,7 +83,7 @@ public abstract class CreateFMLRTVirtualModelInstance<A extends CreateFMLRTVirtu
 
 		FMLRTVirtualModelInstanceResource returned = null;
 		try {
-			if (getContainerVirtualModelResource() != null) {
+			if (getContainerVirtualModelInstance() != null) {
 				returned = factory.makeContainedFMLRTVirtualModelInstanceResource(getNewVirtualModelInstanceName(),
 						(VirtualModelResource) getVirtualModel().getResource(),
 						(AbstractVirtualModelInstanceResource<?, ?>) getContainerVirtualModelInstance().getResource(),
