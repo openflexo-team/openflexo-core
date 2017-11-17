@@ -288,7 +288,7 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 	}
 
 	public <I> boolean isFolderIgnorable(FlexoResourceCenter<I> resourceCenter, I contents) {
-		System.out.println("Tiens, faudrait pas ignorer le folder " + contents);
+		// System.out.println("Tiens, faudrait pas ignorer le folder " + contents);
 		if (resourceCenter.isDirectory(contents)) {
 			if (FlexoResourceCenter.isContainedInDirectoryWithSuffix(resourceCenter, contents,
 					FlexoProjectResourceFactory.PROJECT_SUFFIX)) {

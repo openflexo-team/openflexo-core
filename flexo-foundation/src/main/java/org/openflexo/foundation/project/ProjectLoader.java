@@ -213,7 +213,6 @@ public class ProjectLoader extends FlexoServiceImpl implements HasPropertyChange
 		}
 
 		FlexoProject<?> newProject = null;
-		FlexoEditor newEditor = null;
 
 		// TODO: attempt to lookup an eventual FlexoResourceCenter, repository and folder for supplied project directory;
 
@@ -243,6 +242,8 @@ public class ProjectLoader extends FlexoServiceImpl implements HasPropertyChange
 
 		// Notify project just loaded
 		getServiceManager().notify(this, new ProjectLoaded(newProject));
+
+		FlexoEditor newEditor = getEditorForProject(newProject);
 
 		// Now, if a nature has been supplied, gives this nature to the project
 		if (projectNature != null) {
