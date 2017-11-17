@@ -126,10 +126,12 @@ public class ProjectLoader extends FlexoServiceImpl implements HasPropertyChange
 
 		if (returned == null) {
 			for (FlexoResourceCenter rc : getServiceManager().getResourceCenterService().getResourceCenters()) {
-				Object serializationArtefact = rc.getEntry(FlexoProjectResourceFactory.PROJECT_DATA_FILENAME, projectDirectory);
-				returned = (FlexoProjectResource) rc.getResource(serializationArtefact, FlexoProjectResource.class);
-				if (returned != null) {
-					return returned;
+				if (rc.getSerializationArtefactClass().isAssignableFrom(projectDirectory.getClass())) {
+					Object serializationArtefact = rc.getEntry(FlexoProjectResourceFactory.PROJECT_DATA_FILENAME, projectDirectory);
+					returned = (FlexoProjectResource) rc.getResource(serializationArtefact, FlexoProjectResource.class);
+					if (returned != null) {
+						return returned;
+					}
 				}
 			}
 		}

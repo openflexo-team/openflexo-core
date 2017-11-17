@@ -395,6 +395,14 @@ public abstract class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoRe
 	}
 
 	@Override
+	public Class<? extends I> getSerializationArtefactClass() {
+		if (getDelegateResourceCenter() != null) {
+			return getDelegateResourceCenter().getSerializationArtefactClass();
+		}
+		return null;
+	}
+
+	@Override
 	public RepositoryFolder<FlexoResource<?>, I> getRootFolder() {
 		if (getDelegateResourceCenter() != null) {
 			return getDelegateResourceCenter().getRootFolder();
