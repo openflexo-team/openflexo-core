@@ -501,6 +501,27 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 		}
 	}
 
+	private void notifyHasBeenWritten(File fileBeeingAdded, FileSystemBasedResourceCenter rc) {
+		File rootDirectory = rc.getRootDirectory();
+		if (FileUtils.directoryContainsFile(rootDirectory, fileBeeingAdded, true)) {
+			rc.hasBeenWritten(fileBeeingAdded);
+		}
+	}
+
+	private void notifyWillRename(File fromFile, File toFile, FileSystemBasedResourceCenter rc) {
+		File rootDirectory = rc.getRootDirectory();
+		if (FileUtils.directoryContainsFile(rootDirectory, toFile, true)) {
+			rc.willRename(fromFile, toFile);
+		}
+	}
+
+	private void notifyWillDelete(File fileBeeingDeleted, FileSystemBasedResourceCenter rc) {
+		File rootDirectory = rc.getRootDirectory();
+		if (FileUtils.directoryContainsFile(rootDirectory, fileBeeingDeleted, true)) {
+			rc.willDelete(fileBeeingDeleted);
+		}
+	}
+
 	@Override
 	public void receiveNotification(FlexoService caller, ServiceNotification notification) {
 		if (notification instanceof WillWriteFileOnDiskNotification) {
@@ -522,7 +543,6 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 					if (rc.getDelegatingProjectResource() != null) {
 						FlexoProjectResource<?> projectResource = rc.getDelegatingProjectResource();
 						if (!projectResource.isStandAlone()) {
-							System.out.println("tiens je dis au parent " + projectResource.getResourceCenter());
 							if (projectResource.getResourceCenter() instanceof FileSystemBasedResourceCenter) {
 								notifyWillWrite(fileBeeingAdded, (FileSystemBasedResourceCenter) projectResource.getResourceCenter());
 							}
@@ -532,35 +552,86 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 			}
 		}
 		if (notification instanceof FileHasBeenWrittenOnDiskNotification) {
+			File fileBeeingAdded = ((FileHasBeenWrittenOnDiskNotification) notification).getFile();
 			for (FlexoResourceCenter<?> rc : getResourceCenters()) {
+				if (rc instanceof FlexoProject) {
+					FlexoProject<?> prj = (FlexoProject<?>) rc;
+					if (prj.getDelegateResourceCenter() instanceof FileSystemBasedResourceCenter) {
+						notifyHasBeenWritten(fileBeeingAdded, (FileSystemBasedResourceCenter) prj.getDelegateResourceCenter());
+					}
+					if (!prj.isStandAlone()) {
+						if (prj.getResourceCenter() instanceof FileSystemBasedResourceCenter) {
+							notifyHasBeenWritten(fileBeeingAdded, (FileSystemBasedResourceCenter) prj.getResourceCenter());
+						}
+					}
+				}
 				if (rc instanceof FileSystemBasedResourceCenter) {
-					File rootDirectory = ((FileSystemBasedResourceCenter) rc).getRootDirectory();
-					File fileBeeingAdded = ((FileHasBeenWrittenOnDiskNotification) notification).getFile();
-					if (FileUtils.directoryContainsFile(rootDirectory, fileBeeingAdded, true)) {
-						((FileSystemBasedResourceCenter) rc).hasBeenWritten(fileBeeingAdded);
+					notifyHasBeenWritten(fileBeeingAdded, (FileSystemBasedResourceCenter) rc);
+					if (rc.getDelegatingProjectResource() != null) {
+						FlexoProjectResource<?> projectResource = rc.getDelegatingProjectResource();
+						if (!projectResource.isStandAlone()) {
+							if (projectResource.getResourceCenter() instanceof FileSystemBasedResourceCenter) {
+								notifyHasBeenWritten(fileBeeingAdded, (FileSystemBasedResourceCenter) projectResource.getResourceCenter());
+							}
+						}
 					}
 				}
 			}
 		}
 		if (notification instanceof WillRenameFileOnDiskNotification) {
 			for (FlexoResourceCenter<?> rc : getResourceCenters()) {
-				if (rc instanceof FileSystemBasedResourceCenter) {
-					File rootDirectory = ((FileSystemBasedResourceCenter) rc).getRootDirectory();
-					File fromFile = ((WillRenameFileOnDiskNotification) notification).getFromFile();
-					File toFile = ((WillRenameFileOnDiskNotification) notification).getToFile();
-					if (FileUtils.directoryContainsFile(rootDirectory, fromFile, true)) {
-						((FileSystemBasedResourceCenter) rc).willRename(fromFile, toFile);
+
+				File fromFile = ((WillRenameFileOnDiskNotification) notification).getFromFile();
+				File toFile = ((WillRenameFileOnDiskNotification) notification).getToFile();
+
+				if (rc instanceof FlexoProject) {
+					FlexoProject<?> prj = (FlexoProject<?>) rc;
+					if (prj.getDelegateResourceCenter() instanceof FileSystemBasedResourceCenter) {
+						notifyWillRename(fromFile, toFile, (FileSystemBasedResourceCenter) prj.getDelegateResourceCenter());
+					}
+					if (!prj.isStandAlone()) {
+						if (prj.getResourceCenter() instanceof FileSystemBasedResourceCenter) {
+							notifyWillRename(fromFile, toFile, (FileSystemBasedResourceCenter) prj.getResourceCenter());
+						}
 					}
 				}
+				if (rc instanceof FileSystemBasedResourceCenter) {
+					notifyWillRename(fromFile, toFile, (FileSystemBasedResourceCenter) rc);
+					if (rc.getDelegatingProjectResource() != null) {
+						FlexoProjectResource<?> projectResource = rc.getDelegatingProjectResource();
+						if (!projectResource.isStandAlone()) {
+							if (projectResource.getResourceCenter() instanceof FileSystemBasedResourceCenter) {
+								notifyWillRename(fromFile, toFile, (FileSystemBasedResourceCenter) projectResource.getResourceCenter());
+							}
+						}
+					}
+				}
+
 			}
 		}
 		if (notification instanceof WillDeleteFileOnDiskNotification) {
 			for (FlexoResourceCenter<?> rc : getResourceCenters()) {
+				File fileBeeingDeleted = ((WillDeleteFileOnDiskNotification) notification).getFile();
+				if (rc instanceof FlexoProject) {
+					FlexoProject<?> prj = (FlexoProject<?>) rc;
+					if (prj.getDelegateResourceCenter() instanceof FileSystemBasedResourceCenter) {
+						notifyWillDelete(fileBeeingDeleted, (FileSystemBasedResourceCenter) prj.getDelegateResourceCenter());
+					}
+					if (!prj.isStandAlone()) {
+						if (prj.getResourceCenter() instanceof FileSystemBasedResourceCenter) {
+							notifyWillDelete(fileBeeingDeleted, (FileSystemBasedResourceCenter) prj.getResourceCenter());
+						}
+					}
+				}
 				if (rc instanceof FileSystemBasedResourceCenter) {
-					File rootDirectory = ((FileSystemBasedResourceCenter) rc).getRootDirectory();
-					File fileBeeingDeleted = ((WillDeleteFileOnDiskNotification) notification).getFile();
-					if (FileUtils.directoryContainsFile(rootDirectory, fileBeeingDeleted, true)) {
-						((FileSystemBasedResourceCenter) rc).willDelete(fileBeeingDeleted);
+					notifyWillDelete(fileBeeingDeleted, (FileSystemBasedResourceCenter) rc);
+					if (rc.getDelegatingProjectResource() != null) {
+						FlexoProjectResource<?> projectResource = rc.getDelegatingProjectResource();
+						if (!projectResource.isStandAlone()) {
+							if (projectResource.getResourceCenter() instanceof FileSystemBasedResourceCenter) {
+								notifyWillDelete(fileBeeingDeleted, (FileSystemBasedResourceCenter) projectResource.getResourceCenter());
+							}
+						}
 					}
 				}
 			}
