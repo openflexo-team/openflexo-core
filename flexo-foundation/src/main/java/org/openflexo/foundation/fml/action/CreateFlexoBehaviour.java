@@ -271,6 +271,7 @@ public class CreateFlexoBehaviour extends FlexoAction<CreateFlexoBehaviour, Flex
 		behaviourClassMap.put(CreationScheme.class, focusedObject.getDeclaringVirtualModel().getTechnologyAdapter());
 		behaviourClassMap.put(DeletionScheme.class, focusedObject.getDeclaringVirtualModel().getTechnologyAdapter());
 		behaviourClassMap.put(EventListener.class, focusedObject.getDeclaringVirtualModel().getTechnologyAdapter());
+		behaviourClassMap.put(SynchronizationScheme.class, focusedObject.getDeclaringVirtualModel().getTechnologyAdapter());
 
 		for (UseModelSlotDeclaration useMS : focusedObject.getDeclaringVirtualModel().getUseDeclarations()) {
 			Class<? extends ModelSlot<?>> msClass = useMS.getModelSlotClass();
@@ -390,6 +391,9 @@ public class CreateFlexoBehaviour extends FlexoAction<CreateFlexoBehaviour, Flex
 			}
 			else if (NavigationScheme.class.isAssignableFrom(flexoBehaviourClass)) {
 				return "navigate";
+			}
+			else if (SynchronizationScheme.class.isAssignableFrom(flexoBehaviourClass)) {
+				return "synchronize";
 			}
 			String baseName = flexoBehaviourClass.getSimpleName();
 			return baseName.substring(0, 1).toLowerCase() + baseName.substring(1);
