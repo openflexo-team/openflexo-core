@@ -128,13 +128,13 @@ import org.openflexo.foundation.project.ProjectLoader;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
+import org.openflexo.foundation.resource.ITechnologySpecificFlexoResourceFactory;
 import org.openflexo.foundation.resource.ProjectClosedNotification;
 import org.openflexo.foundation.resource.RepositoryFolder;
 import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.resource.ResourceManager;
 import org.openflexo.foundation.resource.SaveResourceExceptionList;
 import org.openflexo.foundation.resource.SaveResourcePermissionDeniedException;
-import org.openflexo.foundation.resource.TechnologySpecificFlexoResourceFactory;
 import org.openflexo.foundation.task.FlexoTask;
 import org.openflexo.foundation.task.Progress;
 import org.openflexo.foundation.technologyadapter.FlexoMetaModel;
@@ -1873,11 +1873,11 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 			return null;
 		}
 
-		if (object instanceof TechnologySpecificFlexoResourceFactory) {
-			Class<? extends TechnologyAdapter> taClass = ((TechnologySpecificFlexoResourceFactory<?, ?, ?>) object)
+		if (object instanceof ITechnologySpecificFlexoResourceFactory) {
+			Class<? extends TechnologyAdapter> taClass = ((ITechnologySpecificFlexoResourceFactory<?, ?, ?>) object)
 					.getTechnologyAdapterClass();
 			TechnologyAdapterController<?> tac = getTechnologyAdapterController(taClass);
-			return tac.getIconForTechnologyObject(((TechnologySpecificFlexoResourceFactory<?, ?, ?>) object).getResourceDataClass());
+			return tac.getIconForTechnologyObject(((ITechnologySpecificFlexoResourceFactory<?, ?, ?>) object).getResourceDataClass());
 		}
 
 		ImageIcon iconForObject = statelessIconForObject(object);

@@ -46,8 +46,8 @@ import org.openflexo.components.widget.DefaultCustomTypeEditorImpl;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
-import org.openflexo.foundation.resource.TechnologySpecificFlexoResourceFactory;
 import org.openflexo.foundation.resource.FlexoResourceType;
+import org.openflexo.foundation.resource.ITechnologySpecificFlexoResourceFactory;
 import org.openflexo.gina.ApplicationFIBLibrary.ApplicationFIBLibraryImpl;
 import org.openflexo.gina.annotation.FIBPanel;
 import org.openflexo.gina.model.FIBComponent;
@@ -66,7 +66,7 @@ public class FlexoResourceTypeEditor extends DefaultCustomTypeEditorImpl<FlexoRe
 
 	private List<FlexoConcept> matchingValues = new ArrayList<>();
 
-	private TechnologySpecificFlexoResourceFactory<?, ?, ?> selectedResourceFactory = null;
+	private ITechnologySpecificFlexoResourceFactory<?, ?, ?> selectedResourceFactory = null;
 
 	public FlexoResourceTypeEditor(FlexoServiceManager serviceManager) {
 		super(serviceManager);
@@ -82,14 +82,17 @@ public class FlexoResourceTypeEditor extends DefaultCustomTypeEditorImpl<FlexoRe
 		return FlexoResourceType.class;
 	}
 
-	public TechnologySpecificFlexoResourceFactory<?, ?, ?> getSelectedResourceFactory() {
+	public ITechnologySpecificFlexoResourceFactory<?, ?, ?> getSelectedResourceFactory() {
 		return selectedResourceFactory;
 	}
 
-	public void setSelectedResourceFactory(TechnologySpecificFlexoResourceFactory<?, ?, ?> selectedResourceFactory) {
+	public void setSelectedResourceFactory(ITechnologySpecificFlexoResourceFactory<?, ?, ?> selectedResourceFactory) {
+
+		System.out.println("selected: " + selectedResourceFactory);
+		System.out.println("resource: " + selectedResourceFactory.getResourceClass());
 		if ((selectedResourceFactory == null && this.selectedResourceFactory != null)
 				|| (selectedResourceFactory != null && !selectedResourceFactory.equals(this.selectedResourceFactory))) {
-			TechnologySpecificFlexoResourceFactory<?, ?, ?> oldValue = this.selectedResourceFactory;
+			ITechnologySpecificFlexoResourceFactory<?, ?, ?> oldValue = this.selectedResourceFactory;
 			this.selectedResourceFactory = selectedResourceFactory;
 			getPropertyChangeSupport().firePropertyChange("selectedResourceFactory", oldValue, selectedResourceFactory);
 			// System.out.println("class:" + selectedResourceFactory.getResourceClass());

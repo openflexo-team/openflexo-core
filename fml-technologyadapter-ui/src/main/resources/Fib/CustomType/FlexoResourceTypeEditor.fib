@@ -36,7 +36,7 @@
 		index="2" localize="true"
 		constraints="twocols(expandHorizontally=true;expandVertically=true;index=2;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=center)"
 		visibleRowCount="5" deepExploration="true" rowHeight="18"
-		textSelectionColor="255,255,255" iteratorClassName="org.openflexo.foundation.resource.FlexoResourceFactory"
+		textSelectionColor="255,255,255" iteratorClassName="org.openflexo.foundation.resource.IFlexoResourceFactory"
 		backgroundSelectionColor="9,80,208" enterPressedAction="controller.apply()"
 		backgroundNonSelectionColor="255,255,255" selected="data.selectedResourceFactory"
 		clickAction="controller.selectedObjectChanged()" name="ResourceFactoriesBrowser"
