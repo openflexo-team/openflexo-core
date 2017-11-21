@@ -501,7 +501,7 @@ public interface FileSystemBasedResourceCenter extends ResourceRepository<FlexoR
 		 */
 		@Override
 		public void registerResource(FlexoResource<?> resource, File serializationArtefact) {
-			registerResource(resource);
+			// registerResource(resource);
 			registeredResources.put(serializationArtefact, resource);
 		}
 
@@ -513,7 +513,7 @@ public interface FileSystemBasedResourceCenter extends ResourceRepository<FlexoR
 		 */
 		@Override
 		public void unregisterResource(FlexoResource<?> resource, File serializationArtefact) {
-			unregisterResource(resource);
+			// unregisterResource(resource);
 			registeredResources.remove(serializationArtefact);
 		}
 
