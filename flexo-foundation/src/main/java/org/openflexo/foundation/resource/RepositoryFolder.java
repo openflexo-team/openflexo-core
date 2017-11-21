@@ -44,6 +44,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.openflexo.connie.annotations.NotificationUnsafe;
 import org.openflexo.foundation.DefaultFlexoObject;
 import org.openflexo.toolbox.StringUtils;
 
@@ -162,6 +163,7 @@ public class RepositoryFolder<R extends FlexoResource<?>, I> extends DefaultFlex
 		}
 	}
 
+	@NotificationUnsafe
 	public List<RepositoryFolder<R, I>> getChildren() {
 		return children;
 	}
@@ -199,6 +201,7 @@ public class RepositoryFolder<R extends FlexoResource<?>, I> extends DefaultFlex
 		return null;
 	}
 
+	@NotificationUnsafe
 	public List<R> getResources() {
 		return resources;
 	}
