@@ -628,8 +628,6 @@ public class FlexoFIBController extends FIBController implements GraphicalFlexoO
 
 	public boolean isVisibleInBrowser(FlexoResource<?> resource) {
 		if (resource instanceof FlexoProjectResource && ((FlexoProjectResource) resource).isStandAlone()) {
-			System.out
-					.println("attention je veux cacher " + resource + " isStandAlone=" + ((FlexoProjectResource) resource).isStandAlone());
 			return false;
 		}
 		return !resource.isDeleted();
