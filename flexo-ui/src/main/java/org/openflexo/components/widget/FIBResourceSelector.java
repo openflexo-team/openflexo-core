@@ -44,6 +44,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceType;
+import org.openflexo.foundation.resource.ITechnologySpecificFlexoResourceFactory;
 import org.openflexo.foundation.resource.RepositoryFolder;
 import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.resource.ResourceManager;
@@ -98,7 +99,7 @@ public class FIBResourceSelector extends FIBFlexoObjectSelector<TechnologyAdapte
 	@Override
 	public String renderedString(TechnologyAdapterResource editedObject) {
 		if (editedObject != null) {
-			return editedObject.getURI();
+			return editedObject.getName();
 		}
 		return "";
 	}
@@ -124,8 +125,10 @@ public class FIBResourceSelector extends FIBFlexoObjectSelector<TechnologyAdapte
 
 	public TechnologyAdapter getTechnologyAdapter() {
 		if (technologyAdapter == null && getServiceManager() != null && getExpectedType() instanceof FlexoResourceType) {
-			return getServiceManager().getTechnologyAdapterService()
-					.getTechnologyAdapter(((FlexoResourceType) getExpectedType()).getResourceFactory().getTechnologyAdapterClass());
+			ITechnologySpecificFlexoResourceFactory<?, ?, ?> resourceFactory = ((FlexoResourceType) getExpectedType()).getResourceFactory();
+			if (resourceFactory != null) {
+				return getServiceManager().getTechnologyAdapterService().getTechnologyAdapter(resourceFactory.getTechnologyAdapterClass());
+			}
 		}
 		return technologyAdapter;
 	}
@@ -189,6 +192,7 @@ public class FIBResourceSelector extends FIBFlexoObjectSelector<TechnologyAdapte
 		return expectedType;
 	}
 
+	@CustomComponentParameter(name = "expectedType", type = CustomComponentParameter.Type.OPTIONAL)
 	public void setExpectedType(Type expectedType) {
 
 		if ((expectedType == null && this.expectedType != null) || (expectedType != null && !expectedType.equals(this.expectedType))) {
