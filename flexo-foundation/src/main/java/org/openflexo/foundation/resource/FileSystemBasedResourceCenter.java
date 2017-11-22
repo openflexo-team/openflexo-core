@@ -502,6 +502,8 @@ public interface FileSystemBasedResourceCenter extends ResourceRepository<FlexoR
 		@Override
 		public void registerResource(FlexoResource<?> resource, File serializationArtefact) {
 			// registerResource(resource);
+			// if (getDelegatingProjectResource() != null) {cxv
+			resources.put(resource.getURI(), resource);
 			registeredResources.put(serializationArtefact, resource);
 		}
 
@@ -514,8 +516,30 @@ public interface FileSystemBasedResourceCenter extends ResourceRepository<FlexoR
 		@Override
 		public void unregisterResource(FlexoResource<?> resource, File serializationArtefact) {
 			// unregisterResource(resource);
+			resources.remove(resource.getURI(), resource);
 			registeredResources.remove(serializationArtefact);
 		}
+
+		/*@Override
+		public FlexoResource<?> getResource(String resourceURI) {
+			FlexoResource<?> returned = resources.get(resourceURI);
+		
+			// TODO: perf issue : implement a scheme to avoid another search for an URI that could not be resolved once (unless some other
+			// resources are registered or unregistered)
+		
+			// scheme to resolve resources from URI whose value has changed since registration
+			for (String oldURI : new ArrayList<>(resources.keySet())) {
+				FlexoResource<?> resource = resources.get(oldURI);
+				if (!Objects.equals(oldURI, resource.getURI())) {
+					resources.remove(oldURI);
+					resources.put(resource.getURI(), resource);
+				}
+				if (Objects.equals(resource.getURI(), resourceURI)) {
+					return resource;
+				}
+			}
+			return returned;
+		}*/
 
 		private final Map<TechnologyAdapter, List<File>> addedFilesToBeRenotified = new HashMap<>();
 		private final Map<TechnologyAdapter, List<File>> removedFilesToBeRenotified = new HashMap<>();
