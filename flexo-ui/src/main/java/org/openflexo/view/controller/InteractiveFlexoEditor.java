@@ -377,22 +377,27 @@ public class InteractiveFlexoEditor extends DefaultFlexoEditor {
 	@Override
 	public <A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> boolean isActionVisible(
 			FlexoActionFactory<A, T1, T2> actionFactory, T1 focusedObject, Vector<T2> globalSelection) {
-		if (actionFactory.isVisibleForSelection(focusedObject, globalSelection)) {
-			ActionInitializer<A, T1, T2> actionInitializer = (ActionInitializer<A, T1, T2>) getActionInitializer(actionFactory);
-			if (actionInitializer != null) {
-				FlexoActionVisibleCondition<A, T1, T2> condition = actionInitializer.getVisibleCondition();
-				if (condition != null) {
-					return condition.isVisible(actionFactory, focusedObject, globalSelection, this);
+		try {
+			if (actionFactory.isVisibleForSelection(focusedObject, globalSelection)) {
+				ActionInitializer<A, T1, T2> actionInitializer = (ActionInitializer<A, T1, T2>) getActionInitializer(actionFactory);
+				if (actionInitializer != null) {
+					FlexoActionVisibleCondition<A, T1, T2> condition = actionInitializer.getVisibleCondition();
+					if (condition != null) {
+						return condition.isVisible(actionFactory, focusedObject, globalSelection, this);
+					}
+				}
+				else {
+					return false;
 				}
 			}
 			else {
 				return false;
 			}
-		}
-		else {
+			return true;
+		} catch (ClassCastException e) {
+			// Might happen in some circonstances, when trying to lookup focused object and global selection
 			return false;
 		}
-		return true;
 	}
 
 	@Override
