@@ -42,6 +42,8 @@ import java.io.FileNotFoundException;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.resource.FlexoResource;
+import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.technologyadapter.FlexoModel;
@@ -117,6 +119,17 @@ public interface FreeModelSlotInstance<RD extends ResourceData<RD> & TechnologyO
 				returned = (TechnologyAdapterResource<RD, ?>) getServiceManager().getResourceManager().getResource(resourceURI,
 						getVersion());
 				// System.out.println("Je trouve " + returned);
+
+				/*if (returned == null) {
+					System.out.println("Bon, je trouve pas la resource " + resourceURI);
+					for (FlexoResourceCenter<?> rc : getServiceManager().getResourceCenterService().getResourceCenters()) {
+						System.out.println("> Dans " + rc);
+						for (FlexoResource<?> r : rc.getAllResources()) {
+							System.out.println("   >>> " + r.getURI());
+						}
+					}
+				}*/
+
 				setResource(returned, false);
 			}
 			return returned;
