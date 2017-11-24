@@ -369,7 +369,7 @@ public interface SelectFlexoConceptInstance<VMI extends VirtualModelInstance<VMI
 				// Otherwise, we do it brute force !!!
 
 				List<FlexoConceptInstance> fciList = null;
-				if (container instanceof FMLRTVirtualModelInstance) {
+				if (container instanceof VirtualModelInstance) {
 					fciList = ((VirtualModelInstance<?, ?>) container).getFlexoConceptInstances(getFlexoConceptType());
 				}
 				else {
