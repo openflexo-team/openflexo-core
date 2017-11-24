@@ -284,6 +284,8 @@ public class FMLIconLibrary extends IconLibrary {
 						return FMLIconLibrary.DATE_PRIMITIVE_ICON;
 					case Integer:
 						return FMLIconLibrary.INTEGER_PRIMITIVE_ICON;
+					case Long:
+						return FMLIconLibrary.INTEGER_PRIMITIVE_ICON;
 					case Double:
 						return FMLIconLibrary.DOUBLE_PRIMITIVE_ICON;
 					case Float:
