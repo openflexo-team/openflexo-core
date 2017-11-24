@@ -241,7 +241,10 @@ public abstract class VirtualModelResourceImpl extends PamelaResourceImpl<Virtua
 	}
 
 	@Override
-	public Class<VirtualModel> getResourceDataClass() {
+	public Class<? extends VirtualModel> getResourceDataClass() {
+		if (getSpecializedResourceDataClass() != null) {
+			return getSpecializedResourceDataClass();
+		}
 		return VirtualModel.class;
 	}
 
@@ -453,6 +456,22 @@ public abstract class VirtualModelResourceImpl extends PamelaResourceImpl<Virtua
 		} catch (ModelDefinitionException e) {
 			e.printStackTrace();
 		}
-
 	}
+
+	@Override
+	public void setSpecializedResourceDataClass(Class<? extends VirtualModel> specializedResourceDataClass) {
+		performSuperSetter(SPECIALIZED_VIRTUAL_MODEL_CLASS, specializedResourceDataClass);
+		if (getServiceManager() != null) {
+			try {
+				FMLModelFactory modelFactory = new FMLModelFactory(this, getServiceManager());
+				setFactory(modelFactory);
+			} catch (ModelDefinitionException e) {
+				e.printStackTrace();
+			}
+		}
+		else {
+			logger.warning("Could not access to ServiceManager");
+		}
+	}
+
 }

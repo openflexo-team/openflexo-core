@@ -89,24 +89,71 @@ public abstract class FlexoResourceFactory<R extends FlexoResource<RD>, RD exten
 		return (Class<RD>) (TypeUtils.getBaseClass(TypeUtils.getTypeArgument(getResourceClass(), TechnologyAdapterResource.class, 0)));
 	}
 
-	/* (non-Javadoc)
-	 * @see org.openflexo.foundation.resource.IFlexoResourceFactory#makeResource(I, org.openflexo.foundation.resource.FlexoResourceCenter, boolean)
+	/**
+	 * Make a new empty resource for a given artefact, a resource center and a technology context manager.<br>
+	 * The newly created resource is set with empty contents as it is computed from {@link #makeEmptyResourceData()}<br>
+	 * Name of resource is retrieved from the name of serialization artefact, and uri is set to default (given by the resource center)
+	 * 
+	 * @param serializationArtefact
+	 * @param resourceCenter
+	 * @param createEmptyContents
+	 *            when set to true, initiate contents of resource with technology specific empty contents
+	 * @return
+	 * @throws SaveResourceException
+	 * @throws ModelDefinitionException
 	 */
 	@Override
 	public <I> R makeResource(I serializationArtefact, FlexoResourceCenter<I> resourceCenter, boolean createEmptyContents)
 			throws SaveResourceException, ModelDefinitionException {
-		return makeResource(serializationArtefact, resourceCenter, resourceCenter.retrieveName(serializationArtefact), null,
+		return makeResource(serializationArtefact, resourceCenter, resourceCenter.retrieveName(serializationArtefact), null, null,
 				createEmptyContents);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.openflexo.foundation.resource.IFlexoResourceFactory#makeResource(I, org.openflexo.foundation.resource.FlexoResourceCenter, java.lang.String, java.lang.String, boolean)
+	/**
+	 * Make a new empty resource for a given artefact, a resource center and a technology context manager.<br>
+	 * The newly created resource is set with empty contents as it is computed from {@link #makeEmptyResourceData()}<br>
+	 * Name and URI are explicitely given to the new resource
+	 * 
+	 * @param serializationArtefact
+	 * @param resourceCenter
+	 * @param name
+	 * @param uri
+	 * @param createEmptyContents
+	 *            when set to true, initiate contents of resource with technology specific empty contents
+	 * @return
+	 * @throws SaveResourceException
+	 * @throws ModelDefinitionException
 	 */
 	@Override
 	public <I> R makeResource(I serializationArtefact, FlexoResourceCenter<I> resourceCenter, String name, String uri,
 			boolean createEmptyContents) throws SaveResourceException, ModelDefinitionException {
+		return makeResource(serializationArtefact, resourceCenter, name, uri, null, createEmptyContents);
+	}
+
+	/**
+	 * Make a new empty resource for a given artefact, a resource center and a technology context manager.<br>
+	 * The newly created resource is set with empty contents as it is computed from {@link #makeEmptyResourceData()}<br>
+	 * Name and URI are explicitely given to the new resource
+	 * 
+	 * @param serializationArtefact
+	 * @param resourceCenter
+	 * @param name
+	 * @param uri
+	 * @param specializedResourceDataClass
+	 *            might be null if default, or specialized resource data class
+	 * @param createEmptyContents
+	 *            when set to true, initiate contents of resource with technology specific empty contents
+	 * @return
+	 * @throws SaveResourceException
+	 * @throws ModelDefinitionException
+	 */
+	@Override
+	public <I> R makeResource(I serializationArtefact, FlexoResourceCenter<I> resourceCenter, String name, String uri,
+			Class<? extends RD> specializedResourceDataClass, boolean createEmptyContents)
+			throws SaveResourceException, ModelDefinitionException {
 		R returned = initResourceForCreation(serializationArtefact, resourceCenter, name, uri);
 		registerResource(returned, resourceCenter);
+		returned.setSpecializedResourceDataClass(specializedResourceDataClass);
 
 		if (createEmptyContents) {
 			createEmptyContents(returned);

@@ -120,7 +120,7 @@ public class CreateContainedVirtualModel extends AbstractCreateVirtualModel<Crea
 
 		try {
 			VirtualModelResource vmResource = factory.makeContainedVirtualModelResource(getNewVirtualModelName(),
-					(VirtualModelResource) getFocusedObject().getResource(), true);
+					(VirtualModelResource) getFocusedObject().getResource(), null, true);
 			newVirtualModel = vmResource.getLoadedResourceData();
 			newVirtualModel.setDescription(newVirtualModelDescription);
 		} catch (SaveResourceException e) {

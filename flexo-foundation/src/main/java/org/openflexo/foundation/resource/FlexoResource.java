@@ -81,6 +81,7 @@ public interface FlexoResource<RD extends ResourceData<RD>> extends FlexoObject,
 	public static final String SERVICE_MANAGER = "serviceManager";
 	public static final String RESOURCE_CENTER = "resourceCenter";
 	public static final String FLEXO_IO_DELEGATE = "flexoIODelegate";
+	public static final String SPECIALIZED_VIRTUAL_MODEL_CLASS = "specializedVirtualModelClass";
 
 	/**
 	 * Returns the name of this resource. The name of the resource is a displayable name that the end-user will understand. There are no
@@ -214,7 +215,7 @@ public interface FlexoResource<RD extends ResourceData<RD>> extends FlexoObject,
 	 * 
 	 * @return the class of the resource data.
 	 */
-	public Class<RD> getResourceDataClass();
+	public Class<? extends RD> getResourceDataClass();
 
 	/**
 	 * Indicates whether this resource can be edited or not. Returns <code>true</code> if the resource cannot be edited, else returns
@@ -478,4 +479,11 @@ public interface FlexoResource<RD extends ResourceData<RD>> extends FlexoObject,
 	public boolean needsConversion();
 
 	public void setNeedsConversion();
+
+	@Getter(value = SPECIALIZED_VIRTUAL_MODEL_CLASS, ignoreType = true)
+	public Class<? extends RD> getSpecializedResourceDataClass();
+
+	@Setter(SPECIALIZED_VIRTUAL_MODEL_CLASS)
+	public void setSpecializedResourceDataClass(Class<? extends RD> specializedResourceDataClass);
+
 }

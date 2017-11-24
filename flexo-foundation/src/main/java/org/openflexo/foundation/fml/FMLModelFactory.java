@@ -143,7 +143,8 @@ public class FMLModelFactory extends FGEModelFactoryImpl implements PamelaResour
 	public FMLModelFactory(VirtualModelResource virtualModelResource, FlexoServiceManager serviceManager,
 			TechnologyAdapterService taService) throws ModelDefinitionException {
 
-		super(virtualModelResource != null ? retrieveTechnologySpecificClasses(virtualModelResource.getUsedModelSlots())
+		super(virtualModelResource != null
+				? retrieveTechnologySpecificClasses(virtualModelResource.getResourceDataClass(), virtualModelResource.getUsedModelSlots())
 				: retrieveTechnologySpecificClasses(taService != null ? taService : serviceManager.getTechnologyAdapterService()));
 		this.serviceManager = serviceManager;
 		if (taService == null) {
@@ -211,7 +212,7 @@ public class FMLModelFactory extends FGEModelFactoryImpl implements PamelaResour
 		classes.add(VirtualModel.class);
 		for (TechnologyAdapter ta : taService.getTechnologyAdapters()) {
 			for (Class<? extends ModelSlot<?>> modelSlotClass : new ArrayList<>(ta.getAvailableModelSlotTypes())) {
-				retrieveTechnologySpecificClasses(modelSlotClass, classes);
+				retrieveTechnologySpecificClassesForModelSlot(modelSlotClass, classes);
 			}
 		}
 
@@ -226,18 +227,18 @@ public class FMLModelFactory extends FGEModelFactoryImpl implements PamelaResour
 	 * @return
 	 * @throws ModelDefinitionException
 	 */
-	public static List<Class<?>> retrieveTechnologySpecificClasses(List<Class<? extends ModelSlot<?>>> usedModelSlots)
-			throws ModelDefinitionException {
+	public static List<Class<?>> retrieveTechnologySpecificClasses(Class<? extends VirtualModel> baseClass,
+			List<Class<? extends ModelSlot<?>>> usedModelSlots) throws ModelDefinitionException {
 		List<Class<?>> classes = new ArrayList<>();
-		classes.add(VirtualModel.class);
+		classes.add(baseClass);
 		for (Class<? extends ModelSlot<?>> modelSlotClass : usedModelSlots) {
-			retrieveTechnologySpecificClasses(modelSlotClass, classes);
+			retrieveTechnologySpecificClassesForModelSlot(modelSlotClass, classes);
 		}
 
 		return classes;
 	}
 
-	private static void retrieveTechnologySpecificClasses(Class<? extends ModelSlot<?>> modelSlotClass, List<Class<?>> classes)
+	private static void retrieveTechnologySpecificClassesForModelSlot(Class<? extends ModelSlot<?>> modelSlotClass, List<Class<?>> classes)
 			throws ModelDefinitionException {
 		classes.add(modelSlotClass);
 		DeclareFlexoRoles prDeclarations = modelSlotClass.getAnnotation(DeclareFlexoRoles.class);

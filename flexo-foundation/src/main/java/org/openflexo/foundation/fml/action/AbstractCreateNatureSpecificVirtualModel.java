@@ -73,6 +73,8 @@ public abstract class AbstractCreateNatureSpecificVirtualModel<A extends Abstrac
 	private String newVirtualModelURI;
 	private String newVirtualModelDescription;
 
+	private Class<? extends VirtualModel> specializedVirtualModelClass;
+
 	protected AbstractCreateNatureSpecificVirtualModel(FlexoActionFactory<A, FlexoObject, FMLObject> actionFactory,
 			FlexoObject focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
 		super(actionFactory, focusedObject, globalSelection, editor);
@@ -97,14 +99,39 @@ public abstract class AbstractCreateNatureSpecificVirtualModel<A extends Abstrac
 		if (getFocusedObject() instanceof RepositoryFolder) {
 			RepositoryFolder<VirtualModelResource, ?> folder = (RepositoryFolder<VirtualModelResource, ?>) getFocusedObject();
 			VirtualModelResource newTopLevelVirtualModelResource = factory.makeTopLevelVirtualModelResource(getNewVirtualModelName(),
-					getNewVirtualModelURI(), folder, true);
+					getNewVirtualModelURI(), folder, getSpecializedVirtualModelClass(), true);
 			return newTopLevelVirtualModelResource;
 		}
 
 		else if (getFocusedObject() instanceof VirtualModel) {
 			VirtualModel containerVM = (VirtualModel) getFocusedObject();
 			VirtualModelResource containedVirtualModelResource = factory.makeContainedVirtualModelResource(getNewVirtualModelName(),
-					(VirtualModelResource) containerVM.getResource(), true);
+					(VirtualModelResource) containerVM.getResource(), getSpecializedVirtualModelClass(), true);
+			return containedVirtualModelResource;
+		}
+
+		logger.warning("Unexpected focused object " + getFocusedObject());
+		return null;
+	}
+
+	protected VirtualModelResource makeVirtualModelResource(Class<? extends VirtualModel> vmClass)
+			throws SaveResourceException, ModelDefinitionException {
+
+		FMLTechnologyAdapter fmlTechnologyAdapter = getServiceManager().getTechnologyAdapterService()
+				.getTechnologyAdapter(FMLTechnologyAdapter.class);
+		VirtualModelResourceFactory factory = fmlTechnologyAdapter.getVirtualModelResourceFactory();
+
+		if (getFocusedObject() instanceof RepositoryFolder) {
+			RepositoryFolder<VirtualModelResource, ?> folder = (RepositoryFolder<VirtualModelResource, ?>) getFocusedObject();
+			VirtualModelResource newTopLevelVirtualModelResource = factory.makeTopLevelVirtualModelResource(getNewVirtualModelName(),
+					getNewVirtualModelURI(), folder, getSpecializedVirtualModelClass(), true);
+			return newTopLevelVirtualModelResource;
+		}
+
+		else if (getFocusedObject() instanceof VirtualModel) {
+			VirtualModel containerVM = (VirtualModel) getFocusedObject();
+			VirtualModelResource containedVirtualModelResource = factory.makeContainedVirtualModelResource(getNewVirtualModelName(),
+					(VirtualModelResource) containerVM.getResource(), getSpecializedVirtualModelClass(), true);
 			return containedVirtualModelResource;
 		}
 
@@ -168,6 +195,19 @@ public abstract class AbstractCreateNatureSpecificVirtualModel<A extends Abstrac
 		this.newVirtualModelURI = newVirtualModelURI;
 		getPropertyChangeSupport().firePropertyChange("newVirtualModelURI", null, newVirtualModelURI);
 
+	}
+
+	public Class<? extends VirtualModel> getSpecializedVirtualModelClass() {
+		return specializedVirtualModelClass;
+	}
+
+	public void setSpecializedVirtualModelClass(Class<? extends VirtualModel> specializedVirtualModelClass) {
+		if ((specializedVirtualModelClass == null && this.specializedVirtualModelClass != null)
+				|| (specializedVirtualModelClass != null && !specializedVirtualModelClass.equals(this.specializedVirtualModelClass))) {
+			Class<? extends VirtualModel> oldValue = this.specializedVirtualModelClass;
+			this.specializedVirtualModelClass = specializedVirtualModelClass;
+			getPropertyChangeSupport().firePropertyChange("specializedVirtualModelClass", oldValue, specializedVirtualModelClass);
+		}
 	}
 
 	public String getNewVirtualModelDescription() {

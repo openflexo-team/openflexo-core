@@ -99,7 +99,13 @@ public class VirtualModelResourceFactory
 	 */
 	@Override
 	public VirtualModel makeEmptyResourceData(VirtualModelResource resource) {
-		return resource.getFactory().newVirtualModel();
+		if (resource.getSpecializedResourceDataClass() != null) {
+			System.out.println("Plutot que de creer un VirtualModel, je cree un " + resource.getSpecializedResourceDataClass());
+			return resource.getFactory().newInstance(resource.getSpecializedResourceDataClass());
+		}
+		else {
+			return resource.getFactory().newVirtualModel();
+		}
 	}
 
 	@Override
@@ -109,6 +115,26 @@ public class VirtualModelResourceFactory
 			resource.getContainer().getVirtualModel().addToVirtualModels(returned);
 		}
 		return returned;
+	}
+
+	/**
+	 * Build a new {@link VirtualModelResource} with supplied baseName and URI, and located in supplied folder No specialization for
+	 * resource data class
+	 * 
+	 * 
+	 * @param baseName
+	 * @param virtualModelURI
+	 * @param folder
+	 * @param technologyContextManager
+	 * @param createEmptyContents
+	 * @return
+	 * @throws SaveResourceException
+	 * @throws ModelDefinitionException
+	 */
+	public <I> VirtualModelResource makeTopLevelVirtualModelResource(String baseName, String virtualModelURI,
+			RepositoryFolder<VirtualModelResource, I> folder, boolean createEmptyContents)
+			throws SaveResourceException, ModelDefinitionException {
+		return makeTopLevelVirtualModelResource(baseName, virtualModelURI, folder, null, createEmptyContents);
 	}
 
 	/**
@@ -125,17 +151,32 @@ public class VirtualModelResourceFactory
 	 * @throws ModelDefinitionException
 	 */
 	public <I> VirtualModelResource makeTopLevelVirtualModelResource(String baseName, String virtualModelURI,
-			RepositoryFolder<VirtualModelResource, I> folder, boolean createEmptyContents)
-			throws SaveResourceException, ModelDefinitionException {
+			RepositoryFolder<VirtualModelResource, I> folder, Class<? extends VirtualModel> specializedVirtualModelClass,
+			boolean createEmptyContents) throws SaveResourceException, ModelDefinitionException {
 
 		FlexoResourceCenter<I> resourceCenter = folder.getResourceRepository().getResourceCenter();
 		I serializationArtefact = resourceCenter.createDirectory(baseName.endsWith(FML_SUFFIX) ? baseName : baseName + FML_SUFFIX,
 				folder.getSerializationArtefact());
 
-		System.out.println("On cree un VM dans " + serializationArtefact);
-		System.out.println("folder: " + folder.getSerializationArtefact());
+		return makeResource(serializationArtefact, resourceCenter, baseName, virtualModelURI, specializedVirtualModelClass,
+				createEmptyContents);
+	}
 
-		return makeResource(serializationArtefact, resourceCenter, baseName, virtualModelURI, createEmptyContents);
+	/**
+	 * Build a new {@link VirtualModelResource} with supplied baseName and URI, and located in supplied VirtualModelResource<br>
+	 * No specialization for resource data class
+	 * 
+	 * @param baseName
+	 * @param containerVirtualModelResource
+	 * @param technologyContextManager
+	 * @param createEmptyContents
+	 * @return
+	 * @throws SaveResourceException
+	 * @throws ModelDefinitionException
+	 */
+	public <I> VirtualModelResource makeContainedVirtualModelResource(String baseName, VirtualModelResource containerVirtualModelResource,
+			boolean createEmptyContents) throws SaveResourceException, ModelDefinitionException {
+		return makeContainedVirtualModelResource(baseName, containerVirtualModelResource, null, createEmptyContents);
 	}
 
 	/**
@@ -150,7 +191,8 @@ public class VirtualModelResourceFactory
 	 * @throws ModelDefinitionException
 	 */
 	public <I> VirtualModelResource makeContainedVirtualModelResource(String baseName, VirtualModelResource containerVirtualModelResource,
-			boolean createEmptyContents) throws SaveResourceException, ModelDefinitionException {
+			Class<? extends VirtualModel> specializedVirtualModelClass, boolean createEmptyContents)
+			throws SaveResourceException, ModelDefinitionException {
 
 		FlexoResourceCenter<I> resourceCenter = (FlexoResourceCenter<I>) containerVirtualModelResource.getResourceCenter();
 		I serializationArtefact = resourceCenter.createDirectory(baseName.endsWith(FML_SUFFIX) ? baseName : baseName + FML_SUFFIX,
@@ -545,7 +587,7 @@ public class VirtualModelResourceFactory
 		if (xmlRootElementInfo == null) {
 			return null;
 		}
-		if (xmlRootElementInfo.getName().equals("VirtualModel")) {
+		if (xmlRootElementInfo.getName().contains("VirtualModel")) {
 			returned.uri = xmlRootElementInfo.getAttribute("uri");
 			returned.name = xmlRootElementInfo.getAttribute("name");
 			returned.version = xmlRootElementInfo.getAttribute("version");
