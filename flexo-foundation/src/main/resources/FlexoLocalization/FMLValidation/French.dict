@@ -38,6 +38,7 @@ assign_action_to_flexo_role\ cityInModel1=assign_action_to_flexo_role cityInMode
 assign_action_to_flexo_role\ cityInModel2=assign_action_to_flexo_role cityInModel2
 assign_action_to_flexo_role_($flexoRole.flexoRoleName)=assign_action_to_flexo_role_($flexoRole.flexoRoleName)
 binding_'($binding.bindingName)'_is_not_valid\:\ ($binding)=binding_'($binding.bindingName)'_is_not_valid\: ($binding)
+binding_'($binding.bindingName)'_is_recommanded_here=binding_'($binding.bindingName)'_is_recommanded_here
 binding_'($binding.bindingName)'_is_required_but_set_value_is_invalid\:\ ($binding)=binding_'($binding.bindingName)'_is_required_but_set_value_is_invalid\: ($binding)
 binding_'($binding.bindingName)'_is_required_but_value_is_invalid\:\ ($binding)=binding_'($binding.bindingName)'_is_required_but_value_is_invalid\: ($binding)
 binding_'($binding.bindingName)'_is_required_but_was_not_set=binding_'($binding.bindingName)'_is_required_but_was_not_set
