@@ -181,7 +181,7 @@ public interface BehaviourParameter<T extends FlexoConceptObject> extends FlexoB
 				}*/
 				return null;
 			}
-			else if (getValue().isValid()) {
+			else if (getValue().forceRevalidate()) {
 				try {
 					return getValue().getBindingValue(action);
 				} catch (TypeMismatchException e) {
