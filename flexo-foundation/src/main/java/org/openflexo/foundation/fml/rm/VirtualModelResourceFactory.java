@@ -34,6 +34,7 @@ import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
 import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
+import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
@@ -263,6 +264,7 @@ public class VirtualModelResourceFactory
 		returned.initName(baseName);
 
 		VirtualModelInfo vpi = findVirtualModelInfo(returned, resourceCenter);
+
 		if (vpi != null) {
 			returned.setURI(vpi.uri);
 			if (StringUtils.isNotEmpty(vpi.version)) {
@@ -285,6 +287,15 @@ public class VirtualModelResourceFactory
 			// We set a new factory because of required model slots
 			if (StringUtils.isNotEmpty(vpi.requiredModelSlotList)) {
 				returned.setFactory(makeResourceDataFactory(returned, getTechnologyContextManager(resourceCenter.getServiceManager())));
+			}
+			if (StringUtils.isNotEmpty(vpi.virtualModelClassName)) {
+				Class<? extends VirtualModel> virtualModelClass;
+				try {
+					virtualModelClass = (Class<? extends VirtualModel>) Class.forName(vpi.virtualModelClassName);
+					returned.setSpecializedResourceDataClass(virtualModelClass);
+				} catch (ClassNotFoundException e) {
+					e.printStackTrace();
+				}
 			}
 		}
 		else {
@@ -544,21 +555,28 @@ public class VirtualModelResourceFactory
 		public String name;
 		public String modelVersion;
 		public String requiredModelSlotList;
+		public String virtualModelClassName;
 
 		VirtualModelInfo() {
 		}
 
-		VirtualModelInfo(String uri, String version, String name, String modelVersion, String requiredModelSlotList) {
+		VirtualModelInfo(String uri, String version, String name, String modelVersion, String requiredModelSlotList,
+				String virtualModelClassName) {
 			super();
 			this.uri = uri;
 			this.version = version;
 			this.name = name;
 			this.modelVersion = modelVersion;
 			this.requiredModelSlotList = requiredModelSlotList;
+			this.virtualModelClassName = virtualModelClassName;
 		}
 	}
 
 	private static <I> VirtualModelInfo findVirtualModelInfo(VirtualModelResource resource, FlexoResourceCenter<I> resourceCenter) {
+
+		if (resourceCenter instanceof FlexoProject) {
+			resourceCenter = ((FlexoProject<I>) resourceCenter).getDelegateResourceCenter();
+		}
 
 		if (resourceCenter instanceof FileSystemBasedResourceCenter) {
 			FileSystemMetaDataManager metaDataManager = ((FileSystemBasedResourceCenter) resourceCenter).getMetaDataManager();
@@ -571,9 +589,10 @@ public class VirtualModelResourceFactory
 				String version = metaDataManager.getProperty("version", file);
 				String modelVersion = metaDataManager.getProperty("modelVersion", file);
 				String requiredModelSlotList = metaDataManager.getProperty("requiredModelSlotList", file);
+				String virtualModelClassName = metaDataManager.getProperty("virtualModelClassName", file);
 				if (uri != null && name != null && version != null && modelVersion != null && requiredModelSlotList != null) {
 					// Metadata are present, take it from cache
-					return new VirtualModelInfo(uri, version, name, modelVersion, requiredModelSlotList);
+					return new VirtualModelInfo(uri, version, name, modelVersion, requiredModelSlotList, virtualModelClassName);
 				}
 			}
 			else {
@@ -587,48 +606,51 @@ public class VirtualModelResourceFactory
 		if (xmlRootElementInfo == null) {
 			return null;
 		}
-		if (xmlRootElementInfo.getName().contains("VirtualModel")) {
-			returned.uri = xmlRootElementInfo.getAttribute("uri");
-			returned.name = xmlRootElementInfo.getAttribute("name");
-			returned.version = xmlRootElementInfo.getAttribute("version");
-			returned.modelVersion = xmlRootElementInfo.getAttribute("modelVersion");
 
-			if (StringUtils.isEmpty(returned.name)) {
-				if (StringUtils.isNotEmpty(returned.uri)) {
-					if (returned.uri.indexOf("/") > -1) {
-						returned.name = returned.uri.substring(returned.uri.lastIndexOf("/") + 1);
-					}
-					else if (returned.uri.indexOf("\\") > -1) {
-						returned.name = returned.uri.substring(returned.uri.lastIndexOf("\\") + 1);
-					}
-					else {
-						returned.name = returned.uri;
-					}
+		returned.uri = xmlRootElementInfo.getAttribute("uri");
+		returned.name = xmlRootElementInfo.getAttribute("name");
+		returned.version = xmlRootElementInfo.getAttribute("version");
+		returned.modelVersion = xmlRootElementInfo.getAttribute("modelVersion");
+		returned.virtualModelClassName = xmlRootElementInfo.getAttribute("virtualModelClass");
+
+		if (StringUtils.isEmpty(returned.name)) {
+			if (StringUtils.isNotEmpty(returned.uri)) {
+				if (returned.uri.indexOf("/") > -1) {
+					returned.name = returned.uri.substring(returned.uri.lastIndexOf("/") + 1);
+				}
+				else if (returned.uri.indexOf("\\") > -1) {
+					returned.name = returned.uri.substring(returned.uri.lastIndexOf("\\") + 1);
+				}
+				else {
+					returned.name = returned.uri;
 				}
 			}
-
-			String requiredModelSlotList = "";
-			boolean isFirst = true;
-			for (XMLElementInfo elInfo : xmlRootElementInfo.getElements()) {
-				requiredModelSlotList = requiredModelSlotList + (isFirst ? "" : ",") + elInfo.getAttribute("modelSlotClass");
-				isFirst = false;
-			}
-
-			returned.requiredModelSlotList = requiredModelSlotList;
-
-			if (resourceCenter instanceof FileSystemBasedResourceCenter) {
-				// Save metadata !!!
-				FileSystemMetaDataManager metaDataManager = ((FileSystemBasedResourceCenter) resourceCenter).getMetaDataManager();
-				File file = (File) resource.getIODelegate().getSerializationArtefact();
-
-				metaDataManager.setProperty("uri", returned.uri, file, false);
-				metaDataManager.setProperty("name", returned.name, file, false);
-				metaDataManager.setProperty("version", returned.version, file, false);
-				metaDataManager.setProperty("modelVersion", returned.modelVersion, file, false);
-				metaDataManager.setProperty("requiredModelSlotList", returned.requiredModelSlotList, file, false);
-				metaDataManager.saveMetaDataProperties(file);
-			}
 		}
+
+		String requiredModelSlotList = "";
+		boolean isFirst = true;
+		for (XMLElementInfo elInfo : xmlRootElementInfo.getElements()) {
+			requiredModelSlotList = requiredModelSlotList + (isFirst ? "" : ",") + elInfo.getAttribute("modelSlotClass");
+			isFirst = false;
+		}
+
+		returned.requiredModelSlotList = requiredModelSlotList;
+
+		if (resourceCenter instanceof FileSystemBasedResourceCenter) {
+			// Save metadata !!!
+			FileSystemMetaDataManager metaDataManager = ((FileSystemBasedResourceCenter) resourceCenter).getMetaDataManager();
+			File file = (File) resource.getIODelegate().getSerializationArtefact();
+
+			metaDataManager.setProperty("uri", returned.uri, file, false);
+			metaDataManager.setProperty("name", returned.name, file, false);
+			metaDataManager.setProperty("version", returned.version, file, false);
+			metaDataManager.setProperty("modelVersion", returned.modelVersion, file, false);
+			metaDataManager.setProperty("requiredModelSlotList", returned.requiredModelSlotList, file, false);
+			metaDataManager.setProperty("virtualModelClassName", returned.virtualModelClassName, file, false);
+
+			metaDataManager.saveMetaDataProperties(file);
+		}
+
 		return returned;
 	}
 

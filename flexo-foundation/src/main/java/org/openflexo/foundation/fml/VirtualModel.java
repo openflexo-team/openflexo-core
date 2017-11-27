@@ -142,12 +142,19 @@ public interface VirtualModel extends FlexoConcept, VirtualModelObject, FlexoMet
 
 	@Getter(value = MODEL_SLOT_NATURE_CLASS_KEY)
 	@XMLAttribute
+	@Deprecated
 	public Class<? extends InferedFMLRTModelSlot<?, ?>> getModelSlotNatureClass();
 
 	@Setter(MODEL_SLOT_NATURE_CLASS_KEY)
+	@Deprecated
 	public void setModelSlotNatureClass(Class<? extends InferedFMLRTModelSlot<?, ?>> modelSlotNatureClass);
 
+	@Deprecated
 	public List<Class<? extends InferedFMLRTModelSlot<?, ?>>> getAvailableModelSlotNatureClasses();
+
+	@Getter("virtualModelClass")
+	@XMLAttribute
+	public Class<? extends VirtualModel> getVirtualModelClass();
 
 	@Override
 	public FMLModelFactory getFMLModelFactory();
@@ -1370,6 +1377,10 @@ public interface VirtualModel extends FlexoConcept, VirtualModelObject, FlexoMet
 			return getContainerVirtualModel().isContainedIn(virtualModel);
 		}
 
+		@Override
+		public Class<? extends VirtualModel> getVirtualModelClass() {
+			return (Class<? extends VirtualModel>) getImplementedInterface();
+		}
 	}
 
 	// FIN: provient de VirtualModel

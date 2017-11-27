@@ -47,6 +47,7 @@ import java.util.StringTokenizer;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.IOFlexoException;
 import org.openflexo.foundation.InconsistentDataException;
 import org.openflexo.foundation.InvalidModelDefinitionException;
@@ -471,6 +472,17 @@ public abstract class VirtualModelResourceImpl extends PamelaResourceImpl<Virtua
 		}
 		else {
 			logger.warning("Could not access to ServiceManager");
+		}
+	}
+
+	@Override
+	public void setServiceManager(FlexoServiceManager serviceManager) {
+		super.setServiceManager(serviceManager);
+		try {
+			FMLModelFactory modelFactory = new FMLModelFactory(this, getServiceManager());
+			setFactory(modelFactory);
+		} catch (ModelDefinitionException e) {
+			e.printStackTrace();
 		}
 	}
 
