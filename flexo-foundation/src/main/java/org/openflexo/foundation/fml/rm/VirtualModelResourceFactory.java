@@ -201,6 +201,7 @@ public class VirtualModelResourceFactory
 
 		VirtualModelResource returned = initResourceForCreation(serializationArtefact, resourceCenter, baseName,
 				containerVirtualModelResource.getURI() + "/" + baseName + (baseName.endsWith(FML_SUFFIX) ? "" : FML_SUFFIX));
+		returned.setSpecializedResourceDataClass(specializedVirtualModelClass);
 
 		containerVirtualModelResource.addToContents(returned);
 

@@ -103,7 +103,12 @@ public class CreateFlexoConcept extends AbstractCreateFlexoConcept<CreateFlexoCo
 
 		FMLModelFactory factory = getFocusedObject().getFMLModelFactory();
 
-		newFlexoConcept = factory.newFlexoConcept();
+		if (getSpecializedFlexoConceptClass() != null) {
+			newFlexoConcept = factory.newInstance(getSpecializedFlexoConceptClass());
+		}
+		else {
+			newFlexoConcept = factory.newFlexoConcept();
+		}
 		newFlexoConcept.setName(getNewFlexoConceptName());
 		newFlexoConcept.setDescription(getNewFlexoConceptDescription());
 
@@ -187,6 +192,21 @@ public class CreateFlexoConcept extends AbstractCreateFlexoConcept<CreateFlexoCo
 			FlexoConcept oldValue = this.containerFlexoConcept;
 			this.containerFlexoConcept = containerFlexoConcept;
 			getPropertyChangeSupport().firePropertyChange("containerFlexoConcept", oldValue, containerFlexoConcept);
+		}
+	}
+
+	private Class<? extends FlexoConcept> specializedFlexoConceptClass;
+
+	public Class<? extends FlexoConcept> getSpecializedFlexoConceptClass() {
+		return specializedFlexoConceptClass;
+	}
+
+	public void setSpecializedFlexoConceptClass(Class<? extends FlexoConcept> specializedFlexoConceptClass) {
+		if ((specializedFlexoConceptClass == null && this.specializedFlexoConceptClass != null)
+				|| (specializedFlexoConceptClass != null && !specializedFlexoConceptClass.equals(this.specializedFlexoConceptClass))) {
+			Class<? extends FlexoConcept> oldValue = this.specializedFlexoConceptClass;
+			this.specializedFlexoConceptClass = specializedFlexoConceptClass;
+			getPropertyChangeSupport().firePropertyChange("specializedFlexoConceptClass", oldValue, specializedFlexoConceptClass);
 		}
 	}
 
