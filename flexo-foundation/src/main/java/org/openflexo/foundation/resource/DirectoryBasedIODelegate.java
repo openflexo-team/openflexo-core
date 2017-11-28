@@ -209,6 +209,11 @@ public interface DirectoryBasedIODelegate extends FileIODelegate {
 			return new JarInDirClassLoader(Collections.singletonList(getDirectory()));
 		}
 
+		@Override
+		public String getDisplayName() {
+			return getDirectoryName();
+		}
+
 	}
 
 }

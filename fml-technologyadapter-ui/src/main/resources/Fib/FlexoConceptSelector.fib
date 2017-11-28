@@ -52,7 +52,7 @@
 				cast="child.loadedResourceData" />
 		</BrowserElement>
 		<BrowserElement dataClassName="org.openflexo.foundation.fml.VirtualModel"
-			label="virtualModel.name" icon="controller.iconForObject(virtualModel)"
+			label="virtualModel.name+'.fml'" icon="controller.iconForObject(virtualModel)"
 			isEditable="false"
 			editableLabel="" filtered="false" defaultVisible="true" dynamicFont=""
 			name="virtualModel">

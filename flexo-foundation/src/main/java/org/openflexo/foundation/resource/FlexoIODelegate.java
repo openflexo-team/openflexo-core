@@ -84,6 +84,8 @@ public interface FlexoIODelegate<I> extends AccessibleProxyObject {
 	@Setter(SERIALIZATION_ARTEFACT)
 	public void setSerializationArtefact(I artefact);
 
+	public String getDisplayName();
+
 	public String getSerializationArtefactName();
 
 	public Resource getSerializationArtefactAsResource();

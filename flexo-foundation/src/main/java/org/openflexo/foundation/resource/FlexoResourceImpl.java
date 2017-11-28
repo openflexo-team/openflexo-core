@@ -650,7 +650,7 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 	@Override
 	public String getDisplayName() {
 		if (getIODelegate() != null) {
-			return getIODelegate().getSerializationArtefactName();
+			return getIODelegate().getDisplayName();
 		}
 		return getName();
 	}

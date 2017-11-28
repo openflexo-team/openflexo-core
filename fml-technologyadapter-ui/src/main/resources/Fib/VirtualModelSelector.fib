@@ -56,7 +56,7 @@
 				name="viewPoints" />
 		</BrowserElement>
 		<BrowserElement dataClassName="org.openflexo.foundation.fml.rm.VirtualModelResource"
-			label="virtualModel.name" icon="controller.iconForObject(virtualModel)"
+			label="virtualModel.displayName" icon="controller.iconForObject(virtualModel)"
 			tooltip="" enabled="virtualModel.isLoaded" visible="" isEditable="false"
 			editableLabel="" filtered="false" defaultVisible="true" dynamicFont=""
 			name="virtualModel">

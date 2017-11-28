@@ -146,6 +146,12 @@ public interface ClassLoaderIODelegate extends FlexoIODelegate<ClassLoader> {
 			}
 			return null;
 		}
+
+		@Override
+		public String getDisplayName() {
+			return getSerializationArtefactName();
+		}
+
 	}
 
 }

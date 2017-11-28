@@ -240,6 +240,11 @@ public interface StreamIODelegate<I> extends FlexoIODelegate<I> {
 		}
 
 		@Override
+		public String getDisplayName() {
+			return getSerializationArtefactName();
+		}
+
+		@Override
 		public boolean getSaveToSourceResource() {
 			return saveToSourceResource;
 		}
