@@ -211,6 +211,13 @@ public interface FlexoResource<RD extends ResourceData<RD>> extends FlexoObject,
 	public void setResourceCenter(FlexoResourceCenter<?> resourceCenter);
 
 	/**
+	 * Return displayable name for this FlexoResource
+	 * 
+	 * @return
+	 */
+	public String getDisplayName();
+
+	/**
 	 * Returns the class of the resource data held by this resource.
 	 * 
 	 * @return the class of the resource data.

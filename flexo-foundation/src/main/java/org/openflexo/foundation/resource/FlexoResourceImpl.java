@@ -139,6 +139,7 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 	 * 
 	 * @return
 	 */
+	@Override
 	public boolean isLoading() {
 		return isLoading;
 	}
@@ -639,6 +640,19 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 	@Override
 	public boolean needsConversion() {
 		return needsConversion;
+	}
+
+	/**
+	 * Return displayable name for this FlexoResource
+	 * 
+	 * @return
+	 */
+	@Override
+	public String getDisplayName() {
+		if (getIODelegate() != null) {
+			return getIODelegate().getSerializationArtefactName();
+		}
+		return getName();
 	}
 
 }

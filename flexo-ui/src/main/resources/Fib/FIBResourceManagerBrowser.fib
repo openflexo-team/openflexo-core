@@ -45,7 +45,7 @@
     </BrowserElement>
 		<BrowserElement id="129" visible="controller.isVisibleInBrowser(resource)"
 			dataClassName="org.openflexo.foundation.resource.FlexoResource" icon="controller.iconForObject(resource)"
-			label="resource.name" enabled="resource.isLoaded" isEditable="false"
+			label="resource.displayName" enabled="resource.isLoaded" isEditable="false"
 			name="resource">
 			<Children id="130" visible="resource.isLoaded" data="resource.contents"
 				name="subResources" />
