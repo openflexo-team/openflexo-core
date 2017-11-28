@@ -397,6 +397,9 @@ public abstract class VirtualModelResourceImpl extends PamelaResourceImpl<Virtua
 			metaDataManager.setProperty("version", getVersion().toString(), file, false);
 			metaDataManager.setProperty("modelVersion", getModelVersion().toString(), file, false);
 			metaDataManager.setProperty("requiredModelSlotList", getUsedModelSlotsAsString(), file, false);
+			if (getSpecializedResourceDataClass() != null) {
+				metaDataManager.setProperty("virtualModelClassName", getSpecializedResourceDataClass().getName(), file, false);
+			}
 			metaDataManager.saveMetaDataProperties(file);
 		}
 	}

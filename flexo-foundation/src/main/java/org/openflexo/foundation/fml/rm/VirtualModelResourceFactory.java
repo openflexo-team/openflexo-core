@@ -534,7 +534,8 @@ public class VirtualModelResourceFactory
 				I xmlFile = resourceCenter.getEntry(childName + ".xml", child);
 				if (resourceCenter.exists(xmlFile)) {
 					XMLRootElementInfo result = resourceCenter.getXMLRootElementInfo(xmlFile, true, "UseModelSlotDeclaration");
-					if (result != null && result.getName().equals("VirtualModel")) {
+					if (result != null && (result.getName().equals("VirtualModel")
+							|| StringUtils.isNotEmpty(result.getAttribute("virtualModelClass")))) {
 						try {
 							// Unused VirtualModelResource childVirtualModelResource =
 							retrieveContainedVirtualModelResource(child, virtualModelResource);
