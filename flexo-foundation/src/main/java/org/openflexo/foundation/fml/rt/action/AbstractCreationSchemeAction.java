@@ -162,30 +162,40 @@ public class AbstractCreationSchemeAction<A extends AbstractCreationSchemeAction
 		retrieveMissingDefaultParameters();
 
 		if (newFlexoConceptInstance == null) {
-			// We have to create the FCI by ourselve
-			if (getFlexoConceptBeingCreated() instanceof VirtualModel) {
-				// AbstractCreateVirtualModelAction should be used instead
-				throw new InvalidParametersException(
-						"Cannot create an FMLRTVirtualModelInstance this way (AbstractCreateVirtualModelAction should be used instead)");
-			}
-			else if (getFlexoConceptBeingCreated() != null) {
-				if (getContainer() != null) {
-					newFlexoConceptInstance = getVirtualModelInstance().makeNewFlexoConceptInstance(getFlexoConcept(), getContainer());
-				}
-				else {
-					newFlexoConceptInstance = getVirtualModelInstance().makeNewFlexoConceptInstance(getFlexoConcept());
-				}
-			}
-			else {
-				logger.warning("Could not create new FlexoConceptInstance because creation scheme refers to null FlexoConcept");
-				throw new InvalidParametersException(
-						"Could not create new FlexoConceptInstance because creation scheme refers to null FlexoConcept");
-			}
+			newFlexoConceptInstance = makeNewFlexoConceptInstance();
 		}
 
 		// System.out.println("OK on execute " + getFlexoBehaviour().getFMLRepresentation());
 
 		executeControlGraph();
+	}
+
+	/**
+	 * Called to create new {@link FlexoConceptInstance} when not externally initialized
+	 * 
+	 * @return
+	 * @throws InvalidParametersException
+	 */
+	protected FlexoConceptInstance makeNewFlexoConceptInstance() throws InvalidParametersException {
+		// We have to create the FCI by ourselve
+		if (getFlexoConceptBeingCreated() instanceof VirtualModel) {
+			// AbstractCreateVirtualModelAction should be used instead
+			throw new InvalidParametersException(
+					"Cannot create an FMLRTVirtualModelInstance this way (AbstractCreateVirtualModelAction should be used instead)");
+		}
+		else if (getFlexoConceptBeingCreated() != null) {
+			if (getContainer() != null) {
+				return getVirtualModelInstance().makeNewFlexoConceptInstance(getFlexoConcept(), getContainer());
+			}
+			else {
+				return getVirtualModelInstance().makeNewFlexoConceptInstance(getFlexoConcept());
+			}
+		}
+		else {
+			logger.warning("Could not create new FlexoConceptInstance because creation scheme refers to null FlexoConcept");
+			throw new InvalidParametersException(
+					"Could not create new FlexoConceptInstance because creation scheme refers to null FlexoConcept");
+		}
 	}
 
 	/**
