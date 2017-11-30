@@ -493,7 +493,6 @@ public abstract interface FlexoProperty<T> extends FlexoConceptObject {
 			}
 
 			public Type getExpectedType() {
-				System.out.println("hop: " + expectedType);
 				return expectedType;
 			}
 
