@@ -481,11 +481,13 @@ public abstract class VirtualModelResourceImpl extends PamelaResourceImpl<Virtua
 	@Override
 	public void setServiceManager(FlexoServiceManager serviceManager) {
 		super.setServiceManager(serviceManager);
-		try {
-			FMLModelFactory modelFactory = new FMLModelFactory(this, getServiceManager());
-			setFactory(modelFactory);
-		} catch (ModelDefinitionException e) {
-			e.printStackTrace();
+		if (serviceManager != null) {
+			try {
+				FMLModelFactory modelFactory = new FMLModelFactory(this, getServiceManager());
+				setFactory(modelFactory);
+			} catch (ModelDefinitionException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
