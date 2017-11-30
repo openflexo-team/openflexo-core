@@ -306,14 +306,18 @@ public abstract interface FlexoProperty<T> extends FlexoConceptObject {
 			}
 
 			// Otherwise, compute the resulting type again
-			if (getCardinality().isMultipleCardinality()) {
-				resultingType = new ParameterizedTypeImpl(List.class, getType());
-			}
-			else {
-				resultingType = getType();
-			}
+			resultingType = makeResultingType();
 
 			return resultingType;
+		}
+
+		protected Type makeResultingType() {
+			if (getCardinality().isMultipleCardinality()) {
+				return new ParameterizedTypeImpl(List.class, getType());
+			}
+			else {
+				return getType();
+			}
 		}
 
 		@Override
