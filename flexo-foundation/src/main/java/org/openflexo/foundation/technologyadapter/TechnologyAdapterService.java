@@ -49,6 +49,7 @@ import org.openflexo.foundation.FlexoService;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoRole;
+import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.fml.editionaction.FetchRequest;
 import org.openflexo.foundation.fml.editionaction.TechnologySpecificAction;
 import org.openflexo.foundation.resource.FlexoResource;
@@ -222,8 +223,7 @@ public interface TechnologyAdapterService extends FlexoService, CustomTypeManage
 	 * @param modelSlotClass
 	 * @return
 	 */
-	public <MS extends ModelSlot<?>> List<Class<? extends TechnologySpecificAction<?, ?, ?>>> getAvailableEditionActionTypes(
-			Class<MS> modelSlotClass);
+	public <MS extends ModelSlot<?>> List<Class<? extends EditionAction>> getAvailableEditionActionTypes(Class<MS> modelSlotClass);
 
 	/**
 	 * Return the list of {@link FetchRequest} class available for supplied modelSlotClass

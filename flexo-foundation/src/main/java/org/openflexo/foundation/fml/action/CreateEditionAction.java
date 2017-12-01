@@ -194,7 +194,7 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 			Class<? extends ModelSlot<?>> modelSlotClass = useDecl.getModelSlotClass();
 			TechnologyAdapter modelSlotTA = getServiceManager().getTechnologyAdapterService()
 					.getTechnologyAdapterForModelSlot(modelSlotClass);
-			for (Class<? extends TechnologySpecificAction<?, ?, ?>> eaClass : getServiceManager().getTechnologyAdapterService()
+			for (Class<? extends EditionAction> eaClass : getServiceManager().getTechnologyAdapterService()
 					.getAvailableEditionActionTypes(modelSlotClass)) {
 				addToAvailableActions(eaClass, modelSlotTA);
 			}

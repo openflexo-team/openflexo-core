@@ -62,6 +62,7 @@ import org.openflexo.foundation.fml.annotations.DeclareEditionActions;
 import org.openflexo.foundation.fml.annotations.DeclareFetchRequests;
 import org.openflexo.foundation.fml.annotations.DeclareFlexoBehaviours;
 import org.openflexo.foundation.fml.annotations.DeclareFlexoRoles;
+import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.fml.editionaction.FetchRequest;
 import org.openflexo.foundation.fml.editionaction.TechnologySpecificAction;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
@@ -93,7 +94,7 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 
 	private Map<Class<? extends ModelSlot<?>>, List<Class<? extends FlexoRole<?>>>> availableFlexoRoleTypes;
 	private Map<Class<? extends ModelSlot<?>>, List<Class<? extends FlexoBehaviour>>> availableFlexoBehaviourTypes;
-	private Map<Class<? extends ModelSlot<?>>, List<Class<? extends TechnologySpecificAction<?, ?, ?>>>> availableEditionActionTypes;
+	private Map<Class<? extends ModelSlot<?>>, List<Class<? extends EditionAction>>> availableEditionActionTypes;
 	private Map<Class<? extends ModelSlot<?>>, List<Class<? extends FetchRequest<?, ?, ?>>>> availableFetchRequestActionTypes;
 
 	// private Map<Class<? extends ModelSlot<?>>, List<Class<? extends FlexoBehaviourParameter>>> availableFlexoBehaviourParameterTypes;
@@ -443,9 +444,8 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 	 * @return
 	 */
 	@Override
-	public <MS extends ModelSlot<?>> List<Class<? extends TechnologySpecificAction<?, ?, ?>>> getAvailableEditionActionTypes(
-			Class<MS> modelSlotClass) {
-		List<Class<? extends TechnologySpecificAction<?, ?, ?>>> returned = availableEditionActionTypes.get(modelSlotClass);
+	public <MS extends ModelSlot<?>> List<Class<? extends EditionAction>> getAvailableEditionActionTypes(Class<MS> modelSlotClass) {
+		List<Class<? extends EditionAction>> returned = availableEditionActionTypes.get(modelSlotClass);
 		if (returned == null) {
 			returned = new ArrayList<>();
 			appendEditionActionTypes(returned, modelSlotClass);
@@ -508,12 +508,17 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 		}
 	}
 
-	private static void appendEditionActionTypes(List<Class<? extends TechnologySpecificAction<?, ?, ?>>> aList, Class<?> cl) {
+	private static void appendEditionActionTypes(List<Class<? extends EditionAction>> aList, Class<?> cl) {
 		if (cl.isAnnotationPresent(DeclareEditionActions.class)) {
 			DeclareEditionActions allEditionActions = cl.getAnnotation(DeclareEditionActions.class);
-			for (Class<? extends TechnologySpecificAction> editionActionClass : allEditionActions.value()) {
+			/*for (Class<? extends TechnologySpecificAction> editionActionClass : allEditionActions.value()) {
 				if (!aList.contains(editionActionClass)) {
 					aList.add((Class<? extends TechnologySpecificAction<?, ?, ?>>) editionActionClass);
+				}
+			}*/
+			for (Class<? extends EditionAction> editionActionClass : allEditionActions.value()) {
+				if (!aList.contains(editionActionClass)) {
+					aList.add(editionActionClass);
 				}
 			}
 		}

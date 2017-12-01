@@ -139,7 +139,7 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>>
 
 	public List<Class<? extends FlexoRole<?>>> getAvailableFlexoRoleTypes();
 
-	public List<Class<? extends TechnologySpecificAction<?, ?, ?>>> getAvailableEditionActionTypes();
+	public List<Class<? extends EditionAction>> getAvailableEditionActionTypes();
 
 	public List<Class<? extends FetchRequest<?, ?, ?>>> getAvailableFetchRequestActionTypes();
 
@@ -375,7 +375,7 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>>
 		}
 
 		@Override
-		public List<Class<? extends TechnologySpecificAction<?, ?, ?>>> getAvailableEditionActionTypes() {
+		public List<Class<? extends EditionAction>> getAvailableEditionActionTypes() {
 			if (getTechnologyAdapterService() != null) {
 				return getTechnologyAdapterService().getAvailableEditionActionTypes(getClass());
 			}
