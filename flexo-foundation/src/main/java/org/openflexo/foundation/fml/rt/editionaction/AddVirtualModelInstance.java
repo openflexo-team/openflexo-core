@@ -217,7 +217,7 @@ public interface AddVirtualModelInstance extends AbstractAddFlexoConceptInstance
 		public void notifiedBindingChanged(DataBinding<?> dataBinding) {
 			super.notifiedBindingChanged(dataBinding);
 			if (dataBinding == getReceiver()) {
-				getPropertyChangeSupport().firePropertyChange("ownerViewPointTypeResource", null, getOwnerVirtualModelResource());
+				getPropertyChangeSupport().firePropertyChange("ownerVirtualModelResource", null, getOwnerVirtualModelResource());
 			}
 		}
 
