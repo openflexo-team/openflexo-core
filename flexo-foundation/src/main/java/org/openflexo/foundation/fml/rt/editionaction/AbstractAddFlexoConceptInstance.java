@@ -453,7 +453,8 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 				logger.fine("concept=" + (getCreationScheme() != null ? getCreationScheme().getFlexoConcept() : null));
 				logger.fine("getCreationScheme()=" + getCreationScheme());
 			}
-			if (evaluationContext instanceof FlexoBehaviourAction) {
+
+			/*if (evaluationContext instanceof FlexoBehaviourAction) {
 				CreationSchemeAction creationSchemeAction = new CreationSchemeAction(getCreationScheme(), vmInstance, null,
 						(FlexoBehaviourAction<?, ?, ?>) evaluationContext);
 				creationSchemeAction.initWithFlexoConceptInstance(makeNewFlexoConceptInstance(evaluationContext));
@@ -468,16 +469,17 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 								p.evaluateParameterValue((FlexoBehaviourAction<?, ?, ?>) evaluationContext));
 					}
 				}
+				System.out.println("et maintenant on execute le creation scheme");
 				creationSchemeAction.doAction();
-
+			
 				if (creationSchemeAction.hasActionExecutionSucceeded()) {
-
+			
 					FCI newFCI = (FCI) creationSchemeAction.getFlexoConceptInstance();
-
+			
 					if (getFlexoConceptType().getContainerFlexoConcept() != null) {
 						container.addToEmbeddedFlexoConceptInstances(newFCI);
 					}
-
+			
 					if (logger.isLoggable(Level.FINE)) {
 						logger.fine("Successfully performed performAddFlexoConcept " + evaluationContext);
 					}
@@ -486,12 +488,65 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 			}
 			else {
 				logger.warning("Unexpected: " + evaluationContext);
+			}*/
+
+			FCI newFCI = makeNewFlexoConceptInstance(evaluationContext);
+			if (executeCreationScheme(newFCI, vmInstance, evaluationContext)) {
+				if (getFlexoConceptType().getContainerFlexoConcept() != null) {
+					container.addToEmbeddedFlexoConceptInstances(newFCI);
+				}
+				if (logger.isLoggable(Level.FINE)) {
+					logger.fine("Successfully performed performAddFlexoConcept " + evaluationContext);
+				}
+				return newFCI;
 			}
+
 			return null;
 		}
 
-		protected abstract FlexoConceptInstance makeNewFlexoConceptInstance(RunTimeEvaluationContext evaluationContext)
-				throws FlexoException;
+		protected boolean executeCreationScheme(FCI newInstance, VirtualModelInstance<?, ?> vmInstance,
+				RunTimeEvaluationContext evaluationContext) {
+			if (evaluationContext instanceof FlexoBehaviourAction) {
+				CreationSchemeAction creationSchemeAction = new CreationSchemeAction(getCreationScheme(), vmInstance, null,
+						(FlexoBehaviourAction<?, ?, ?>) evaluationContext);
+				creationSchemeAction.initWithFlexoConceptInstance(newInstance);
+				for (AddFlexoConceptInstanceParameter p : getParameters()) {
+					FlexoBehaviourParameter param = p.getParam();
+					Object value = p.evaluateParameterValue((FlexoBehaviourAction<?, ?, ?>) evaluationContext);
+					if (logger.isLoggable(Level.FINE)) {
+						logger.fine("For parameter " + param + " value is " + value);
+					}
+					if (value != null) {
+						creationSchemeAction.setParameterValue(p.getParam(),
+								p.evaluateParameterValue((FlexoBehaviourAction<?, ?, ?>) evaluationContext));
+					}
+				}
+				System.out.println("et maintenant on execute le creation scheme");
+				creationSchemeAction.doAction();
+
+				return creationSchemeAction.hasActionExecutionSucceeded();
+
+				/*if (creationSchemeAction.hasActionExecutionSucceeded()) {
+				
+					FCI newFCI = (FCI) creationSchemeAction.getFlexoConceptInstance();
+				
+					if (getFlexoConceptType().getContainerFlexoConcept() != null) {
+						container.addToEmbeddedFlexoConceptInstances(newFCI);
+					}
+				
+					if (logger.isLoggable(Level.FINE)) {
+						logger.fine("Successfully performed performAddFlexoConcept " + evaluationContext);
+					}
+					return newFCI;
+				}*/
+			}
+			else {
+				logger.warning("Unexpected: " + evaluationContext);
+				return false;
+			}
+		}
+
+		protected abstract FCI makeNewFlexoConceptInstance(RunTimeEvaluationContext evaluationContext) throws FlexoException;
 
 		@Override
 		public Type getAssignableType() {

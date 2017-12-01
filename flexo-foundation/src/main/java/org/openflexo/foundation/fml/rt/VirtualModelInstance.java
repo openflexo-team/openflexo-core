@@ -617,12 +617,23 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 		@Override
 		public FlexoConceptInstance makeNewFlexoConceptInstance(FlexoConcept concept, FlexoConceptInstance container) {
 
-			FlexoConceptInstance returned = getResource().getFactory().newInstance(FlexoConceptInstance.class);
-			returned.setFlexoConcept(concept);
+			FlexoConceptInstance returned = buildNewFlexoConceptInstance(concept);
 			if (container != null) {
 				container.addToEmbeddedFlexoConceptInstances(returned);
 			}
 			addToFlexoConceptInstances(returned);
+			return returned;
+		}
+
+		/**
+		 * Build a new FlexoConceptInstance<br>
+		 * Just instantiate, do not register yet
+		 * 
+		 * @return
+		 */
+		protected FlexoConceptInstance buildNewFlexoConceptInstance(FlexoConcept concept) {
+			FlexoConceptInstance returned = getResource().getFactory().newInstance(FlexoConceptInstance.class);
+			returned.setFlexoConcept(concept);
 			return returned;
 		}
 
