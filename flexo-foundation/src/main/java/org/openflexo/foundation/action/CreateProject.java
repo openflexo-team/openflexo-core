@@ -59,6 +59,7 @@ import org.openflexo.foundation.resource.RepositoryFolder;
 import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.task.FlexoTask;
 import org.openflexo.model.exceptions.ModelDefinitionException;
+import org.openflexo.rm.InJarResourceImpl;
 import org.openflexo.toolbox.JavaUtils;
 import org.openflexo.toolbox.StringUtils;
 
@@ -165,6 +166,21 @@ public class CreateProject extends FlexoAction<CreateProject, RepositoryFolder<F
 	}
 
 	public String getNewProjectName() {
+		if (newProjectName == null && getSerializationArtefact() != null) {
+			String computedName = null;
+			if (getSerializationArtefact() instanceof File) {
+				computedName = ((File) getSerializationArtefact()).getName();
+			}
+			else if (getSerializationArtefact() instanceof InJarResourceImpl) {
+				computedName = ((InJarResourceImpl) getSerializationArtefact()).getName();
+			}
+			else {
+				computedName = getSerializationArtefact().toString();
+			}
+			if (computedName.endsWith(FlexoProjectResourceFactory.PROJECT_SUFFIX)) {
+				return computedName.substring(0, computedName.lastIndexOf(FlexoProjectResourceFactory.PROJECT_SUFFIX));
+			}
+		}
 		return newProjectName;
 	}
 
