@@ -42,7 +42,7 @@ import org.openflexo.connie.type.CustomTypeFactory;
 import org.openflexo.foundation.fml.rt.FlexoEnumInstance;
 
 /**
- * Represent the type of an instance of a {@link VirtualModel}
+ * Represent the type of an instance of a {@link FlexoEnum}
  * 
  * @author sylvain
  * 
