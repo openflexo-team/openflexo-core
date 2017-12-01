@@ -257,6 +257,16 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 	public <T> T getFlexoPropertyValue(String propertyName);
 
 	/**
+	 * Sets value associated with supplied property
+	 * 
+	 * @param propertyName
+	 *            name of property to use
+	 * @param value
+	 *            the new value to set
+	 */
+	public <T> void setFlexoPropertyValue(String propertyName, T value);
+
+	/**
 	 * Return actor associated with supplied role, asserting cardinality of supplied property is SINGLE.<br>
 	 * If cardinality of supplied property is MULTIPLE, return first found value
 	 * 
@@ -814,6 +824,24 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 				return null;
 			}
 			return getFlexoPropertyValue(property);
+		}
+
+		/**
+		 * Sets value associated with supplied property
+		 * 
+		 * @param propertyName
+		 *            name of property to use
+		 * @param value
+		 *            the new value to set
+		 */
+		@Override
+		public <T> void setFlexoPropertyValue(String propertyName, T value) {
+			FlexoProperty<T> property = (FlexoProperty<T>) getFlexoConcept().getAccessibleProperty(propertyName);
+			if (property == null) {
+				logger.warning("Cannot lookup property " + propertyName);
+				return;
+			}
+			setFlexoPropertyValue(property, value);
 		}
 
 		/**
