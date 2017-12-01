@@ -41,7 +41,7 @@ package org.openflexo.foundation.ontology.fml.editionaction;
 import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.fml.editionaction.TechnologySpecificAction;
+import org.openflexo.foundation.fml.editionaction.TechnologySpecificActionDefiningReceiver;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.TypeAwareModelSlotInstance;
 import org.openflexo.foundation.ontology.IFlexoOntologyClass;
@@ -55,10 +55,10 @@ import org.openflexo.model.annotations.ModelEntity;
 @ModelEntity(isAbstract = true)
 @ImplementationClass(AddConcept.AddConceptImpl.class)
 public abstract interface AddConcept<MS extends TypeAwareModelSlot<M, ?>, M extends FlexoModel<M, ?> & TechnologyObject<?>, T>
-		extends TechnologySpecificAction<MS, M, T> {
+		extends TechnologySpecificActionDefiningReceiver<MS, M, T> {
 
 	public static abstract class AddConceptImpl<MS extends TypeAwareModelSlot<M, ?>, M extends FlexoModel<M, ?> & TechnologyObject<?>, T>
-			extends TechnologySpecificActionImpl<MS, M, T> implements AddConcept<MS, M, T> {
+			extends TechnologySpecificActionDefiningReceiverImpl<MS, M, T> implements AddConcept<MS, M, T> {
 
 		protected static final Logger logger = FlexoLogger.getLogger(AddConcept.class.getPackage().getName());
 
@@ -70,54 +70,8 @@ public abstract interface AddConcept<MS extends TypeAwareModelSlot<M, ?>, M exte
 
 		public abstract void setOntologyClass(IFlexoOntologyClass<?> ontologyClass);
 
-		/*public IFlexoOntologyConcept getOntologyObject(FlexoProject project)
-		{
-			getCalc().loadWhenUnloaded();
-			if (StringUtils.isEmpty(getConceptURI())) return null;
-			return project.getOntologyLibrary().getOntologyObject(getConceptURI());
-		}*/
-
-		/*@Override
-		public R getPatternRole() {
-			try {
-				return super.getPatternRole();
-			} catch (ClassCastException e) {
-				logger.warning("Unexpected pattern property type");
-				setPatternRole(null);
-				return null;
-			}
-		}*/
-
-		// FIXME: if we remove this useless code, some FIB won't work (see FlexoConceptView.fib, inspect an AddIndividual)
-		// Need to be fixed in KeyValueProperty.java
-		/*@Override
-		public void setPatternRole(R patternRole) {
-			super.setPatternRole(patternRole);
-		}*/
-
 		@Override
 		public abstract Type getAssignableType();
-
-		/**
-		 * Overrides parent method by returning default model slot if model slot is not defined for this action
-		 */
-		/*@Override
-		public MS getModelSlot() {
-			MS returned = (MS) performSuperGetter(MODEL_SLOT_KEY);
-			if (returned == null && getOwningVirtualModel() != null) {
-				@SuppressWarnings("rawtypes")
-				List<TypeAwareModelSlot> msList = getOwningVirtualModel().getModelSlots(TypeAwareModelSlot.class);
-				if (msList.size() > 0) {
-					return (MS) msList.get(0);
-				}
-			}
-			return returned;
-		}
-		
-		@Override
-		public void setModelSlot(MS modelSlot) {
-			performSuperSetter(MODEL_SLOT_KEY, modelSlot);
-		}*/
 
 		@Override
 		public TypeAwareModelSlotInstance<?, ?, MS> getModelSlotInstance(RunTimeEvaluationContext evaluationContext) {

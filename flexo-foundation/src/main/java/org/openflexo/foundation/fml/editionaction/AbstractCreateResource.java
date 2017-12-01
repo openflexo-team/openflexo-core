@@ -83,8 +83,8 @@ import org.openflexo.model.validation.ValidationWarning;
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(AbstractCreateResource.AbstractCreateResourceImpl.class)
-public interface AbstractCreateResource<MS extends ModelSlot<RD>, RD extends ResourceData<RD> & TechnologyObject<TA>, TA extends TechnologyAdapter>
-		extends TechnologySpecificAction<MS, RD, RD> {
+public interface AbstractCreateResource<MS extends ModelSlot<?>, RD extends ResourceData<RD> & TechnologyObject<TA>, TA extends TechnologyAdapter>
+		extends TechnologySpecificAction<MS, RD> {
 
 	@PropertyIdentifier(type = DataBinding.class)
 	public static final String RESOURCE_NAME_KEY = "resourceName";
@@ -124,7 +124,7 @@ public interface AbstractCreateResource<MS extends ModelSlot<RD>, RD extends Res
 	public void setRelativePath(String relativePath);
 
 	public static abstract class AbstractCreateResourceImpl<MS extends ModelSlot<RD>, RD extends ResourceData<RD> & TechnologyObject<TA>, TA extends TechnologyAdapter>
-			extends TechnologySpecificActionImpl<MS, RD, RD> implements AbstractCreateResource<MS, RD, TA> {
+			extends TechnologySpecificActionImpl<MS, RD> implements AbstractCreateResource<MS, RD, TA> {
 
 		private static final Logger logger = Logger.getLogger(AbstractCreateResource.class.getPackage().getName());
 
@@ -269,15 +269,15 @@ public interface AbstractCreateResource<MS extends ModelSlot<RD>, RD extends Res
 
 	@DefineValidationRule
 	public static class ResourceCenterShouldNotBeNull
-			extends ValidationRule<ResourceCenterShouldNotBeNull, TechnologySpecificAction<?, ?, ?>> {
+			extends ValidationRule<ResourceCenterShouldNotBeNull, TechnologySpecificAction<?, ?>> {
 
 		public ResourceCenterShouldNotBeNull() {
 			super(TechnologySpecificAction.class, "CreateResource_need_a_rc");
 		}
 
 		@Override
-		public ValidationIssue<ResourceCenterShouldNotBeNull, TechnologySpecificAction<?, ?, ?>> applyValidation(
-				TechnologySpecificAction<?, ?, ?> anAction) {
+		public ValidationIssue<ResourceCenterShouldNotBeNull, TechnologySpecificAction<?, ?>> applyValidation(
+				TechnologySpecificAction<?, ?> anAction) {
 			DataBinding<?> rcbinding = ((AbstractCreateResource<?, ?, ?>) anAction).getResourceCenter();
 			if (rcbinding == null || rcbinding.isNull() || rcbinding.getExpression() == null) {
 				SetResourceCenterBeingProjectByDefault fixProposal = new SetResourceCenterBeingProjectByDefault(anAction);
@@ -288,11 +288,11 @@ public interface AbstractCreateResource<MS extends ModelSlot<RD>, RD extends Res
 		}
 
 		protected static class SetResourceCenterBeingProjectByDefault
-				extends FixProposal<ResourceCenterShouldNotBeNull, TechnologySpecificAction<?, ?, ?>> {
+				extends FixProposal<ResourceCenterShouldNotBeNull, TechnologySpecificAction<?, ?>> {
 
-			private final TechnologySpecificAction<?, ?, ?> action;
+			private final TechnologySpecificAction<?, ?> action;
 
-			public SetResourceCenterBeingProjectByDefault(TechnologySpecificAction<?, ?, ?> anAction) {
+			public SetResourceCenterBeingProjectByDefault(TechnologySpecificAction<?, ?> anAction) {
 				super("set_rc_defaulting_to_project");
 				this.action = anAction;
 			}
