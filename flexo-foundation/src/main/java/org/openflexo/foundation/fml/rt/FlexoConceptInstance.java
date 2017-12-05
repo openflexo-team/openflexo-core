@@ -197,7 +197,7 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 	public void setEmbeddedFlexoConceptInstances(List<FlexoConceptInstance> flexoConcepts);
 
 	@Adder(EMBEDDED_FLEXO_CONCEPT_INSTANCE_KEY)
-	@PastingPoint
+	@PastingPoint(priority = 1)
 	public void addToEmbeddedFlexoConceptInstances(FlexoConceptInstance aFlexoConcept);
 
 	@Remover(EMBEDDED_FLEXO_CONCEPT_INSTANCE_KEY)

@@ -47,10 +47,8 @@ import org.openflexo.foundation.fml.rt.rm.AbstractVirtualModelInstanceResource;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.ResourceData;
-import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
-import org.openflexo.model.annotations.PropertyIdentifier;
 
 /**
  * A {@link VirtualModelInstanceObject} is an abstract run-time concept (instance) for an object "living" in a
@@ -63,19 +61,12 @@ import org.openflexo.model.annotations.PropertyIdentifier;
 @ImplementationClass(VirtualModelInstanceObject.VirtualModelInstanceObjectImpl.class)
 public interface VirtualModelInstanceObject extends InnerResourceData<VirtualModelInstance<?, ?>>, FlexoObject {
 
-	@PropertyIdentifier(type = FMLRTVirtualModelInstance.class)
-	public static final String VIRTUAL_MODEL_INSTANCE_KEY = "virtualModelInstance";
-
 	/**
 	 * Return the {@link FMLRTVirtualModelInstance} where this object is declared and living
 	 * 
 	 * @return
 	 */
-	@Getter(value = VIRTUAL_MODEL_INSTANCE_KEY)
 	public abstract VirtualModelInstance<?, ?> getVirtualModelInstance();
-
-	// @Setter(VIRTUAL_MODEL_INSTANCE_KEY)
-	// public void setVirtualModelInstance(VirtualModelInstance<?, ?> virtualModelInstance);
 
 	public AbstractVirtualModelInstanceModelFactory<?> getFactory();
 

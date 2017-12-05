@@ -215,7 +215,7 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 	public void setFlexoConceptInstances(List<FlexoConceptInstance> someFlexoConceptInstances);
 
 	@Adder(FLEXO_CONCEPT_INSTANCES_KEY)
-	@PastingPoint
+	@PastingPoint(priority = 0)
 	public void addToFlexoConceptInstances(FlexoConceptInstance aFlexoConceptInstance);
 
 	@Remover(FLEXO_CONCEPT_INSTANCES_KEY)

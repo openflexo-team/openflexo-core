@@ -226,6 +226,10 @@ public class ProjectLoader extends FlexoServiceImpl implements HasPropertyChange
 		action.doAction();
 		newProject = action.getNewProject();
 
+		if (newProject == null) {
+			return null;
+		}
+
 		projectResourcesForSerializationArtefacts.put(projectDirectory, (FlexoProjectResource) (FlexoResource) newProject.getResource());
 
 		/*try {
@@ -246,6 +250,10 @@ public class ProjectLoader extends FlexoServiceImpl implements HasPropertyChange
 		getServiceManager().notify(this, new ProjectLoaded(newProject));
 
 		FlexoEditor newEditor = getEditorForProject(newProject);
+
+		System.out.println("Hop, on vient de creer le projet " + newProject);
+		System.out.println("newEditor=" + newEditor);
+		System.out.println("projectNature=" + projectNature);
 
 		// Now, if a nature has been supplied, gives this nature to the project
 		if (projectNature != null) {

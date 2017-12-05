@@ -43,7 +43,6 @@ import java.util.EventObject;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.Vector;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.swing.Icon;
@@ -57,7 +56,6 @@ import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoProject;
-import org.openflexo.foundation.FlexoProjectObject;
 import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoAction.ExecutionStatus;
 import org.openflexo.foundation.action.FlexoActionEnableCondition;
@@ -66,7 +64,6 @@ import org.openflexo.foundation.action.FlexoActionFinalizer;
 import org.openflexo.foundation.action.FlexoActionInitializer;
 import org.openflexo.foundation.action.FlexoActionVisibleCondition;
 import org.openflexo.foundation.action.FlexoExceptionHandler;
-import org.openflexo.foundation.action.FlexoGUIAction;
 import org.openflexo.foundation.action.FlexoUndoManager;
 import org.openflexo.foundation.action.LongRunningAction;
 import org.openflexo.foundation.fml.rt.action.ActionSchemeActionFactory;
@@ -145,14 +142,6 @@ public class InteractiveFlexoEditor extends DefaultFlexoEditor {
 				if (!action.getActionFactory().isEnabled(action.getFocusedObject(), action.getGlobalSelection())) {
 					return null;
 				}
-				if (!(action instanceof FlexoGUIAction<?, ?, ?>) && (action.getFocusedObject() instanceof FlexoProjectObject)
-						&& ((FlexoProjectObject) action.getFocusedObject()).getProject() != getProject()) {
-					if (logger.isLoggable(Level.INFO)) {
-						logger.info("Cannot execute action because focused object is within another project than the one of this editor");
-					}
-					return null;
-				}
-
 				executeAction(action, e);
 				return action;
 			}
