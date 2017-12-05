@@ -65,7 +65,7 @@ import org.openflexo.model.annotations.XMLElement;
 @ModelEntity(isAbstract = true)
 @ImplementationClass(RoleSpecificAction.RoleSpecificActionImpl.class)
 public abstract interface RoleSpecificAction<R extends FlexoRole<T>, MS extends ModelSlot<?>, T extends TechnologyObject<?>>
-		extends TechnologySpecificAction<MS, T, T> {
+		extends TechnologySpecificActionDefiningReceiver<MS, T, T> {
 
 	@PropertyIdentifier(type = FlexoRole.class)
 	public static final String FLEXO_ROLE_KEY = "flexoRole";
@@ -88,7 +88,7 @@ public abstract interface RoleSpecificAction<R extends FlexoRole<T>, MS extends 
 	public R getInferedFlexoRole();
 
 	public static abstract class RoleSpecificActionImpl<R extends FlexoRole<T>, MS extends ModelSlot<?>, T extends TechnologyObject<?>>
-			extends TechnologySpecificActionImpl<MS, T, T> implements RoleSpecificAction<R, MS, T> {
+			extends TechnologySpecificActionDefiningReceiverImpl<MS, T, T> implements RoleSpecificAction<R, MS, T> {
 
 		private static final Logger logger = Logger.getLogger(RoleSpecificAction.class.getPackage().getName());
 
@@ -101,17 +101,17 @@ public abstract interface RoleSpecificAction<R extends FlexoRole<T>, MS extends 
 			}
 		}
 
-		@Deprecated
+		/*@Deprecated
 		@Override
 		public MS getDeprecatedModelSlot() {
 			return null;
-		}
+		}*/
 
-		@Deprecated
+		/*@Deprecated
 		@Override
 		public void setDeprecatedModelSlot(MS modelSlot) {
 			// Do nothing, this will be handled by setFlexoRole()
-		}
+		}*/
 
 		/**
 		 * Return a string representation suitable for a common user<br>

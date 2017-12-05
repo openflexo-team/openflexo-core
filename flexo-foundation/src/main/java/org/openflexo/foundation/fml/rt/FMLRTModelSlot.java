@@ -228,7 +228,7 @@ public interface FMLRTModelSlot<VMI extends VirtualModelInstance<VMI, TA>, TA ex
 		 * @return URI as String
 		 */
 		@Override
-		public String getURIForObject(ModelSlotInstance msInstance, Object o) {
+		public String getURIForObject(VMI resourceData, Object o) {
 			logger.warning("This method should be refined by child classes");
 			return null;
 		}
@@ -239,7 +239,7 @@ public interface FMLRTModelSlot<VMI extends VirtualModelInstance<VMI, TA>, TA ex
 		 * @return the Object
 		 */
 		@Override
-		public Object retrieveObjectWithURI(ModelSlotInstance msInstance, String objectURI) {
+		public Object retrieveObjectWithURI(VMI resourceData, String objectURI) {
 			logger.warning("This method should be refined by child classes");
 			return null;
 		}

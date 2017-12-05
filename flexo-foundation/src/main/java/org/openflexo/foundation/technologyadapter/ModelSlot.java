@@ -48,13 +48,9 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.FlexoBehaviour;
-import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoRole;
-import org.openflexo.foundation.fml.GetProperty;
-import org.openflexo.foundation.fml.GetSetProperty;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelObject;
-import org.openflexo.foundation.fml.controlgraph.FMLControlGraphVisitor;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.fml.editionaction.FetchRequest;
 import org.openflexo.foundation.fml.editionaction.TechnologySpecificAction;
@@ -72,12 +68,12 @@ import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
 
 /**
- * A model slot is a named object providing access to a particular data encoded in a given technology A model slot should be seen as a
- * connector.<br>
+ * A model slot is a named object providing access to a particular data encoded in a given technology<br>
+ * A model slot should be seen as a connector to a data.<br>
  * A model slot formalizes a contract for accessing to a data
  * 
- * It is defined at viewpoint level. <br>
- * A {@link ModelSlotInstance} binds used slots to some data within the project.
+ * It is defined at FML level. <br>
+ * A {@link ModelSlotInstance} binds used slots to some data
  * 
  * @param <RD>
  *            Type of resource data handled by this ModelSlot
@@ -127,7 +123,7 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>>
 	 *            class of EditionAction to be instantiated
 	 * @return
 	 */
-	public <A extends TechnologySpecificAction<?, ?, ?>> A createAction(Class<A> actionClass);
+	public <A extends TechnologySpecificAction<?, ?>> A createAction(Class<A> actionClass);
 
 	@Override
 	public TechnologyAdapter getModelSlotTechnologyAdapter();
@@ -163,7 +159,7 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>>
 	 * @param editionActionClass
 	 * @return
 	 */
-	public abstract <EA extends TechnologySpecificAction<?, ?, ?>> EA makeEditionAction(Class<EA> editionActionClass);
+	public abstract <EA extends TechnologySpecificAction<?, ?>> EA makeEditionAction(Class<EA> editionActionClass);
 
 	/**
 	 * Creates and return a new {@link FetchRequest} of supplied class.<br>
@@ -186,22 +182,22 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>>
 	/**
 	 * A Model Slot is responsible for URI mapping
 	 * 
-	 * @param msInstance
+	 * @param resourceData
 	 * @param o
 	 * @return URI as String
 	 */
-
-	public abstract String getURIForObject(ModelSlotInstance<? extends ModelSlot<RD>, RD> msInstance, Object o);
+	// TODO: deprecate ?
+	public abstract String getURIForObject(RD resourceData, Object o);
 
 	/**
 	 * A Model Slot is responsible for URI mapping
 	 * 
-	 * @param msInstance
+	 * @param resourceData
 	 * @param objectURI
 	 * @return the Object
 	 */
-
-	public abstract Object retrieveObjectWithURI(ModelSlotInstance<? extends ModelSlot<RD>, RD> msInstance, String objectURI);
+	// TODO: deprecate ?
+	public abstract Object retrieveObjectWithURI(RD resourceData, String objectURI);
 
 	public String getModelSlotDescription();
 
@@ -282,7 +278,7 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>>
 		 * @return
 		 */
 		@Override
-		public <A extends TechnologySpecificAction<?, ?, ?>> A createAction(Class<A> actionClass) {
+		public <A extends TechnologySpecificAction<?, ?>> A createAction(Class<A> actionClass) {
 			Class<?>[] constructorParams = new Class[0];
 			// constructorParams[0] = VirtualModel.VirtualModelBuilder.class;
 			try {
@@ -407,7 +403,7 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>>
 		 * @return
 		 */
 		@Override
-		public final <EA extends TechnologySpecificAction<?, ?, ?>> EA makeEditionAction(Class<EA> editionActionClass) {
+		public final <EA extends TechnologySpecificAction<?, ?>> EA makeEditionAction(Class<EA> editionActionClass) {
 			FMLModelFactory factory = getFMLModelFactory();
 			return factory.newInstance(editionActionClass);
 		}
@@ -433,24 +429,24 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>>
 		/**
 		 * A Model Slot is responsible for URI mapping
 		 * 
-		 * @param msInstance
+		 * @param resourceData
 		 * @param o
 		 * @return URI as String
 		 */
-
+		// TODO: deprecate ?
 		@Override
-		public abstract String getURIForObject(ModelSlotInstance<? extends ModelSlot<RD>, RD> msInstance, Object o);
+		public abstract String getURIForObject(RD resourceData, Object o);
 
 		/**
 		 * A Model Slot is responsible for URI mapping
 		 * 
-		 * @param msInstance
+		 * @param resourceData
 		 * @param objectURI
 		 * @return the Object
 		 */
-
+		// TODO: deprecate ?
 		@Override
-		public abstract Object retrieveObjectWithURI(ModelSlotInstance<? extends ModelSlot<RD>, RD> msInstance, String objectURI);
+		public abstract Object retrieveObjectWithURI(RD resourceData, String objectURI);
 
 		/**
 		 * Return first found class matching supplied class.<br>
@@ -459,10 +455,11 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>>
 		 * @param flexoRoleClass
 		 * @return
 		 */
-		public <PR extends FlexoRole<?>> Class<? extends PR> getFlexoRoleClass(Class<PR> patternRoleClass) {
-			for (Class<?> patternRoleType : getAvailableFlexoRoleTypes()) {
-				if (patternRoleClass.isAssignableFrom(patternRoleType)) {
-					return (Class<? extends PR>) patternRoleType;
+		@SuppressWarnings("unchecked")
+		public <PR extends FlexoRole<?>> Class<? extends PR> getFlexoRoleClass(Class<PR> flexoRoleClass) {
+			for (Class<?> flexoRoleType : getAvailableFlexoRoleTypes()) {
+				if (flexoRoleClass.isAssignableFrom(flexoRoleType)) {
+					return (Class<? extends PR>) flexoRoleType;
 				}
 			}
 			return null;
@@ -475,10 +472,11 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>>
 		 * @param flexoRoleClass
 		 * @return
 		 */
+		@SuppressWarnings("unchecked")
 		public <EA extends EditionAction> Class<? extends EA> getEditionActionClass(Class<EA> editionActionClass) {
-			for (Class editionActionType : getAvailableEditionActionTypes()) {
+			for (Class<? extends EditionAction> editionActionType : getAvailableEditionActionTypes()) {
 				if (editionActionClass.isAssignableFrom(editionActionType)) {
-					return editionActionType;
+					return (Class<? extends EA>) editionActionType;
 				}
 			}
 			return null;
@@ -526,14 +524,14 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>>
 
 		@Override
 		public boolean delete(Object... context) {
-			FMLControlGraphVisitor cgVisitor = controlGraph -> {
+			/*FMLControlGraphVisitor cgVisitor = controlGraph -> {
 				if (controlGraph instanceof TechnologySpecificAction
-						&& ((TechnologySpecificAction<?, ?, ?>) controlGraph).getInferedModelSlot() == ModelSlotImpl.this) {
+						&& ((TechnologySpecificAction<?, ?>) controlGraph).getInferedModelSlot() == ModelSlotImpl.this) {
 					// Unused TechnologySpecificAction<?, ?, ?> action = (TechnologySpecificAction<?, ?, ?>) controlGraph;
 					// nullify model slot for action
 					// action.setModelSlot(null);
 				}
-			};
+			};*/
 
 			VirtualModel virtualModel = getVirtualModel();
 			if (virtualModel != null) {
@@ -544,6 +542,7 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>>
 					}
 				}
 
+				/*
 				// Also iterate on all behaviours, and find EditionAction that are declared with this model slot
 				for (FlexoBehaviour behaviour : virtualModel.getFlexoBehaviours()) {
 					if (behaviour.getControlGraph() != null) {
@@ -568,7 +567,7 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>>
 							((GetSetProperty<?>) property).getSetControlGraph().accept(cgVisitor);
 						}
 					}
-				}
+				}*/
 			}
 
 			return super.delete(context);

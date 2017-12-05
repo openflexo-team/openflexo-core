@@ -43,7 +43,6 @@ import java.util.logging.Logger;
 import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstanceModelFactory;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.FreeModelSlotInstance;
-import org.openflexo.foundation.fml.rt.ModelSlotInstance;
 import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
@@ -112,20 +111,6 @@ public abstract interface FreeModelSlot<RD extends ResourceData<RD> & Technology
 			String baseName = JavaUtils.getClassName(proposedName);
 			return baseName;
 		}
-
-		@Override
-		public final String getURIForObject(ModelSlotInstance<? extends ModelSlot<RD>, RD> msInstance, Object o) {
-			return getURIForObject((FreeModelSlotInstance<RD, ? extends FreeModelSlot<RD>>) msInstance, o);
-		}
-
-		@Override
-		public final Object retrieveObjectWithURI(ModelSlotInstance<? extends ModelSlot<RD>, RD> msInstance, String objectURI) {
-			return retrieveObjectWithURI((FreeModelSlotInstance<RD, ? extends FreeModelSlot<RD>>) msInstance, objectURI);
-		}
-
-		public abstract String getURIForObject(FreeModelSlotInstance<RD, ? extends FreeModelSlot<RD>> msInstance, Object o);
-
-		public abstract Object retrieveObjectWithURI(FreeModelSlotInstance<RD, ? extends FreeModelSlot<RD>> msInstance, String objectURI);
 
 		@Override
 		public String getTypeDescription() {

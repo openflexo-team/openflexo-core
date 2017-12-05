@@ -319,12 +319,11 @@ public class FMLIconLibrary extends IconLibrary {
 		}
 		else if (object instanceof EditionAction) {
 			if ((object instanceof TechnologySpecificAction)
-					&& (((TechnologySpecificAction<?, ?, ?>) object).getModelSlotTechnologyAdapter() != null)) {
+					&& (((TechnologySpecificAction<?, ?>) object).getModelSlotTechnologyAdapter() != null)) {
 				TechnologyAdapterController<?> tac = getTechnologyAdapterController(
-						((TechnologySpecificAction<?, ?, ?>) object).getModelSlotTechnologyAdapter());
+						((TechnologySpecificAction<?, ?>) object).getModelSlotTechnologyAdapter());
 				if (tac != null) {
-					ImageIcon returned = tac
-							.getIconForEditionAction((Class<? extends TechnologySpecificAction<?, ?, ?>>) object.getClass());
+					ImageIcon returned = tac.getIconForEditionAction((Class<? extends TechnologySpecificAction<?, ?>>) object.getClass());
 					if (returned != null) {
 						return returned;
 					}

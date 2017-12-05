@@ -84,6 +84,7 @@ import org.openflexo.foundation.fml.editionaction.RemoveFromListAction;
 import org.openflexo.foundation.fml.editionaction.ReturnStatement;
 import org.openflexo.foundation.fml.editionaction.RoleSpecificAction;
 import org.openflexo.foundation.fml.editionaction.TechnologySpecificAction;
+import org.openflexo.foundation.fml.editionaction.TechnologySpecificActionDefiningReceiver;
 import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.AddVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.editionaction.DeleteFlexoConceptInstance;
@@ -514,7 +515,7 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 			returned = getModelSlot().makeFetchRequest((Class<FetchRequest<?, ?, ?>>) editionActionClass);
 		}
 		else if (TechnologySpecificAction.class.isAssignableFrom(editionActionClass) && getModelSlot() != null) {
-			returned = getModelSlot().makeEditionAction((Class<TechnologySpecificAction<?, ?, ?>>) editionActionClass);
+			returned = getModelSlot().makeEditionAction((Class<TechnologySpecificAction<?, ?>>) editionActionClass);
 		}
 
 		// Special case for technoly specific action whose model slot cannot be looked-up
@@ -529,9 +530,9 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 		if (RoleSpecificAction.class.isAssignableFrom(editionActionClass) && getFlexoRole() != null) {
 			((RoleSpecificAction) returned).setFlexoRole(getFlexoRole());
 		}
-		else if (TechnologySpecificAction.class.isAssignableFrom(editionActionClass) && getModelSlot() != null) {
+		else if (TechnologySpecificActionDefiningReceiver.class.isAssignableFrom(editionActionClass) && getModelSlot() != null) {
 			// ((TechnologySpecificAction) returned).setModelSlot(getModelSlot());
-			((TechnologySpecificAction) returned).getReceiver().setUnparsedBinding(getModelSlot().getName());
+			((TechnologySpecificActionDefiningReceiver<?, ?, ?>) returned).getReceiver().setUnparsedBinding(getModelSlot().getName());
 		}
 
 		if (returned != null) {

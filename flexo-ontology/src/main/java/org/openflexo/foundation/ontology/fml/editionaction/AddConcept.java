@@ -42,8 +42,6 @@ import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.editionaction.TechnologySpecificActionDefiningReceiver;
-import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
-import org.openflexo.foundation.fml.rt.TypeAwareModelSlotInstance;
 import org.openflexo.foundation.ontology.IFlexoOntologyClass;
 import org.openflexo.foundation.technologyadapter.FlexoModel;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
@@ -73,10 +71,10 @@ public abstract interface AddConcept<MS extends TypeAwareModelSlot<M, ?>, M exte
 		@Override
 		public abstract Type getAssignableType();
 
-		@Override
+		/*@Override
 		public TypeAwareModelSlotInstance<?, ?, MS> getModelSlotInstance(RunTimeEvaluationContext evaluationContext) {
 			return (TypeAwareModelSlotInstance<?, ?, MS>) super.getModelSlotInstance(evaluationContext);
-		}
+		}*/
 
 	}
 }

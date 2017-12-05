@@ -108,7 +108,7 @@ public interface ConceptActorReference<T extends IFlexoOntologyObject> extends A
 			if (concept != null && getModelSlotInstance() != null) {
 				ModelSlotInstance msInstance = getModelSlotInstance();
 				/** Model Slot is responsible for URI mapping */
-				conceptURI = msInstance.getModelSlot().getURIForObject(msInstance, concept);
+				conceptURI = msInstance.getModelSlot().getURIForObject(msInstance.getAccessedResourceData(), concept);
 			}
 		}
 
@@ -123,7 +123,7 @@ public interface ConceptActorReference<T extends IFlexoOntologyObject> extends A
 					if (msInstance.getResourceData() != null) {
 						// object = (T) getProject().getObject(objectURI);
 						/** Model Slot is responsible for URI mapping */
-						concept = (T) msInstance.getModelSlot().retrieveObjectWithURI(msInstance, conceptURI);
+						concept = (T) msInstance.getModelSlot().retrieveObjectWithURI(msInstance.getAccessedResourceData(), conceptURI);
 					}
 					else {
 						logger.warning("Could not access to model in model slot " + getModelSlotInstance());
@@ -141,7 +141,7 @@ public interface ConceptActorReference<T extends IFlexoOntologyObject> extends A
 		public String getConceptURI() {
 			ModelSlotInstance msInstance = getModelSlotInstance();
 			if (concept != null && msInstance != null) {
-				conceptURI = msInstance.getModelSlot().getURIForObject(msInstance, concept);
+				conceptURI = msInstance.getModelSlot().getURIForObject(msInstance.getAccessedResourceData(), concept);
 			}
 			return conceptURI;
 		}

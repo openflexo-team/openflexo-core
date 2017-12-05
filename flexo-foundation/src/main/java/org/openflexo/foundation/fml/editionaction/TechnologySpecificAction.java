@@ -63,9 +63,28 @@ import org.openflexo.model.annotations.ModelEntity;
 @ImplementationClass(TechnologySpecificAction.TechnologySpecificActionImpl.class)
 public abstract interface TechnologySpecificAction<MS extends ModelSlot<?>, T> extends AssignableAction<T> {
 
+	/**
+	 * Return the {@link TechnologyAdapter} were this {@link EditionAction} was registered
+	 * 
+	 * @return
+	 */
 	public TechnologyAdapter getModelSlotTechnologyAdapter();
 
+	/**
+	 * Return {@link Class} of model slot were this {@link EditionAction} was registered
+	 * 
+	 * @return
+	 */
 	public Class<? extends MS> getModelSlotClass();
+
+	/**
+	 * Compute and return assigned model slot asserting this action is assigned to requested {@link ModelSlot}<br>
+	 * 
+	 * Please not there is absolutely no guarantee that this {@link EditionAction} is assigned to a {@link ModelSlot}<br>
+	 * 
+	 * @return null if this {@link EditionAction} is not assigned to a {@link ModelSlot}
+	 */
+	public MS getAssignedModelSlot();
 
 	public static abstract class TechnologySpecificActionImpl<MS extends ModelSlot<?>, T> extends AssignableActionImpl<T>
 			implements TechnologySpecificAction<MS, T> {
@@ -115,6 +134,23 @@ public abstract interface TechnologySpecificAction<MS extends ModelSlot<?>, T> e
 			}
 			return null;
 		}
+
+		/**
+		 * Compute and return assigned model slot asserting this action is assigned to requested {@link ModelSlot}<br>
+		 * 
+		 * Please not there is absolutely no guarantee that this {@link EditionAction} is assigned to a {@link ModelSlot}<br>
+		 * 
+		 * @return null if this {@link EditionAction} is not assigned to a {@link ModelSlot}
+		 */
+		@Override
+		public MS getAssignedModelSlot() {
+			if (getModelSlotClass().isAssignableFrom(getAssignedFlexoProperty().getClass())) {
+				System.out.println("Cool, j'ai trouve !!!!!!!!!!");
+				System.exit(-1);
+			}
+			return null;
+		}
+
 	}
 
 }

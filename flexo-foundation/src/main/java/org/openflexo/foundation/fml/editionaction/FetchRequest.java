@@ -73,7 +73,7 @@ import org.openflexo.model.annotations.XMLElement;
 @ModelEntity(isAbstract = true)
 @ImplementationClass(FetchRequest.FetchRequestImpl.class)
 public abstract interface FetchRequest<MS extends ModelSlot<RD>, RD extends ResourceData<RD> & TechnologyObject<?>, T>
-		extends TechnologySpecificAction<MS, RD, List<T>> {
+		extends TechnologySpecificActionDefiningReceiver<MS, RD, List<T>> {
 
 	@PropertyIdentifier(type = Vector.class)
 	public static final String CONDITIONS_KEY = "conditions";
@@ -100,7 +100,7 @@ public abstract interface FetchRequest<MS extends ModelSlot<RD>, RD extends Reso
 	public Type getFetchedType();
 
 	public static abstract class FetchRequestImpl<MS extends ModelSlot<RD>, RD extends ResourceData<RD> & TechnologyObject<?>, T>
-			extends TechnologySpecificActionImpl<MS, RD, List<T>> implements FetchRequest<MS, RD, T> {
+			extends TechnologySpecificActionDefiningReceiverImpl<MS, RD, List<T>> implements FetchRequest<MS, RD, T> {
 
 		private static final Logger logger = Logger.getLogger(FetchRequest.class.getPackage().getName());
 

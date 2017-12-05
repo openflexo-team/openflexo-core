@@ -53,10 +53,6 @@ import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.binding.FlexoConceptFlexoPropertyPathElement;
 import org.openflexo.foundation.fml.binding.ModelSlotBindingVariable;
-import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
-import org.openflexo.foundation.fml.rt.ModelSlotInstance;
-import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.model.annotations.DefineValidationRule;
@@ -111,8 +107,16 @@ public abstract interface TechnologySpecificActionDefiningReceiver<MS extends Mo
 	 */
 	public MS getInferedModelSlot();
 
-	@Deprecated
-	public ModelSlotInstance<MS, ?> getModelSlotInstance(RunTimeEvaluationContext action);
+	/**
+	 * Evaluate and return receiver of this action, given supplied context
+	 * 
+	 * @param evaluationContext
+	 * @return
+	 */
+	public R getReceiver(BindingEvaluationContext evaluationContext);
+
+	// @Deprecated
+	// public ModelSlotInstance<MS, ?> getModelSlotInstance(RunTimeEvaluationContext action);
 
 	public static abstract class TechnologySpecificActionDefiningReceiverImpl<MS extends ModelSlot<?>, R extends TechnologyObject<?>, T>
 			extends TechnologySpecificActionImpl<MS, T> implements TechnologySpecificActionDefiningReceiver<MS, R, T> {
@@ -143,7 +147,7 @@ public abstract interface TechnologySpecificActionDefiningReceiver<MS extends Mo
 			return null;
 		}
 
-		@Deprecated
+		/*@Deprecated
 		@Override
 		public ModelSlotInstance<MS, ?> getModelSlotInstance(RunTimeEvaluationContext action) {
 			FlexoConceptInstance fci = action.getFlexoConceptInstance();
@@ -165,7 +169,7 @@ public abstract interface TechnologySpecificActionDefiningReceiver<MS extends Mo
 				logger.severe("Could not access virtual model instance for action " + action);
 				return null;
 			}
-		}
+		}*/
 
 		/**
 		 * Return a string representation suitable for a common user<br>
@@ -211,6 +215,13 @@ public abstract interface TechnologySpecificActionDefiningReceiver<MS extends Mo
 			this.receiver = receiver;
 		}
 
+		/**
+		 * Evaluate and return receiver of this action, given supplied context
+		 * 
+		 * @param evaluationContext
+		 * @return
+		 */
+		@Override
 		public R getReceiver(BindingEvaluationContext evaluationContext) {
 			if (getReceiver().isValid()) {
 				try {
