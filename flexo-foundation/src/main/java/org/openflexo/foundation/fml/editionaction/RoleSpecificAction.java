@@ -42,22 +42,19 @@ import java.util.logging.Logger;
 
 import org.openflexo.connie.binding.IBindingPathElement;
 import org.openflexo.connie.expr.BindingValue;
+import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.binding.FlexoConceptFlexoPropertyPathElement;
 import org.openflexo.foundation.fml.binding.FlexoRoleBindingVariable;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
-import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
-import org.openflexo.model.annotations.PropertyIdentifier;
-import org.openflexo.model.annotations.Setter;
-import org.openflexo.model.annotations.XMLElement;
 
 /**
  * Represents an {@link TechnologySpecificAction} which address a specific technology object accessible as a {@link FlexoRole}
  * 
- * Such action must access via the getReceiver§) property to an object whose type match type declared by the {@link FlexoRole}
+ * Such action must access via the {@link #getReceiver()} property to an object whose type match type declared by the {@link FlexoRole}
  * 
  * @author sylvain
  * 
@@ -67,51 +64,34 @@ import org.openflexo.model.annotations.XMLElement;
 public abstract interface RoleSpecificAction<R extends FlexoRole<T>, MS extends ModelSlot<?>, T extends TechnologyObject<?>>
 		extends TechnologySpecificActionDefiningReceiver<MS, T, T> {
 
-	@PropertyIdentifier(type = FlexoRole.class)
-	public static final String FLEXO_ROLE_KEY = "flexoRole";
-
-	@Deprecated
-	@Getter(value = FLEXO_ROLE_KEY)
-	@XMLElement(primary = false, context = "Accessed")
-	public R getFlexoRole();
-
-	@Deprecated
-	@Setter(FLEXO_ROLE_KEY)
-	public void setFlexoRole(R role);
-
 	/**
 	 * Compute and return infered {@link FlexoRole} from getReceiver() binding<br>
-	 * Please not that infered role might be null if receiver value is not given through a {@link FlexoRole}
+	 * Please note that infered role might be null if receiver value is not given through a {@link FlexoRole}
 	 * 
 	 * @return role beeing addressed
 	 */
 	public R getInferedFlexoRole();
 
+	/**
+	 * Compute and return assigned flexo role asserting this action is assigned to requested {@link FlexoRole}<br>
+	 * 
+	 * Please not there is absolutely no guarantee that this {@link EditionAction} is assigned to a {@link FlexoRole}<br>
+	 * 
+	 * @return null if this {@link EditionAction} is not assigned to a {@link ModelSlot}
+	 */
+	public R getAssignedFlexoRole();
+
+	/**
+	 * Return type of {@link FlexoRole} this {@link EditionAction} refer to
+	 * 
+	 * @return
+	 */
+	public Class<? extends R> getFlexoRoleClass();
+
 	public static abstract class RoleSpecificActionImpl<R extends FlexoRole<T>, MS extends ModelSlot<?>, T extends TechnologyObject<?>>
 			extends TechnologySpecificActionDefiningReceiverImpl<MS, T, T> implements RoleSpecificAction<R, MS, T> {
 
 		private static final Logger logger = Logger.getLogger(RoleSpecificAction.class.getPackage().getName());
-
-		@Deprecated
-		@Override
-		public void setFlexoRole(R role) {
-
-			if (role != null) {
-				getReceiver().setUnparsedBinding(role.getName());
-			}
-		}
-
-		/*@Deprecated
-		@Override
-		public MS getDeprecatedModelSlot() {
-			return null;
-		}*/
-
-		/*@Deprecated
-		@Override
-		public void setDeprecatedModelSlot(MS modelSlot) {
-			// Do nothing, this will be handled by setFlexoRole()
-		}*/
 
 		/**
 		 * Return a string representation suitable for a common user<br>
@@ -119,7 +99,7 @@ public abstract interface RoleSpecificAction<R extends FlexoRole<T>, MS extends 
 		 */
 		@Override
 		public String getStringRepresentation() {
-			return (getFlexoRole() != null ? getFlexoRole().getName() + "." : "") + super.getStringRepresentation();
+			return (getInferedFlexoRole() != null ? getInferedFlexoRole().getName() + "." : "") + super.getStringRepresentation();
 		}
 
 		/**
@@ -140,6 +120,33 @@ public abstract interface RoleSpecificAction<R extends FlexoRole<T>, MS extends 
 						&& ((FlexoConceptFlexoPropertyPathElement) lastPathElement).getFlexoProperty() instanceof FlexoRole) {
 					return (R) ((FlexoConceptFlexoPropertyPathElement) lastPathElement).getFlexoProperty();
 				}
+			}
+			return null;
+		}
+
+		/**
+		 * Return type of {@link FlexoRole} this {@link EditionAction} refer to
+		 * 
+		 * @return
+		 */
+		@SuppressWarnings("unchecked")
+		@Override
+		public final Class<? extends R> getFlexoRoleClass() {
+			return (Class<? extends R>) TypeUtils.getBaseClass(TypeUtils.getTypeArgument(getClass(), RoleSpecificAction.class, 0));
+		}
+
+		/**
+		 * Compute and return assigned flexo role asserting this action is assigned to requested {@link FlexoRole}<br>
+		 * 
+		 * Please not there is absolutely no guarantee that this {@link EditionAction} is assigned to a {@link FlexoRole}<br>
+		 * 
+		 * @return null if this {@link EditionAction} is not assigned to a {@link ModelSlot}
+		 */
+		@SuppressWarnings("unchecked")
+		@Override
+		public R getAssignedFlexoRole() {
+			if (getFlexoRoleClass().isAssignableFrom(getAssignedFlexoProperty().getClass())) {
+				return (R) getAssignedFlexoProperty();
 			}
 			return null;
 		}

@@ -101,7 +101,7 @@ public abstract interface TechnologySpecificActionDefiningReceiver<MS extends Mo
 
 	/**
 	 * Compute and return infered model slot from getReceiver() binding<br>
-	 * Please not that infered model slot might be null if receiver value is not given through a ModelSlot
+	 * Please note that infered model slot might be null if receiver value is not given through a ModelSlot
 	 * 
 	 * @return
 	 */

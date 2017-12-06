@@ -121,12 +121,22 @@ public abstract interface TechnologySpecificAction<MS extends ModelSlot<?>, T> e
 			return "FML";
 		}
 
+		/**
+		 * Return {@link Class} of model slot were this {@link EditionAction} was registered
+		 * 
+		 * @return
+		 */
 		@SuppressWarnings("unchecked")
 		@Override
 		public final Class<? extends MS> getModelSlotClass() {
 			return (Class<? extends MS>) TypeUtils.getBaseClass(TypeUtils.getTypeArgument(getClass(), TechnologySpecificAction.class, 0));
 		}
 
+		/**
+		 * Return the {@link TechnologyAdapter} were this {@link EditionAction} was registered
+		 * 
+		 * @return
+		 */
 		@Override
 		public TechnologyAdapter getModelSlotTechnologyAdapter() {
 			if (getServiceManager() != null) {
@@ -142,11 +152,11 @@ public abstract interface TechnologySpecificAction<MS extends ModelSlot<?>, T> e
 		 * 
 		 * @return null if this {@link EditionAction} is not assigned to a {@link ModelSlot}
 		 */
+		@SuppressWarnings("unchecked")
 		@Override
 		public MS getAssignedModelSlot() {
 			if (getModelSlotClass().isAssignableFrom(getAssignedFlexoProperty().getClass())) {
-				System.out.println("Cool, j'ai trouve !!!!!!!!!!");
-				System.exit(-1);
+				return (MS) getAssignedFlexoProperty();
 			}
 			return null;
 		}

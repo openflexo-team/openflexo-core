@@ -221,6 +221,11 @@ public class TestFMLInspectors extends GenericFIBInspectorTestCase {
 	}
 
 	@Test
+	public void testTechnologySpecificActionDefiningReceiverInspector() {
+		validateFIB("Inspectors/FML/EditionAction/TechnologySpecificActionDefiningReceiver.inspector");
+	}
+
+	@Test
 	public void testWhileActionInspector() {
 		validateFIB("Inspectors/FML/EditionAction/WhileAction.inspector");
 	}
