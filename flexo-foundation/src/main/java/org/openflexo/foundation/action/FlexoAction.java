@@ -44,6 +44,7 @@ import java.util.List;
 import java.util.Vector;
 import java.util.logging.Logger;
 
+import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoObject;
@@ -51,6 +52,7 @@ import org.openflexo.foundation.FlexoObservable;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.action.FlexoUndoManager.FlexoActionCompoundEdit;
 import org.openflexo.foundation.fml.FlexoConcept;
+import org.openflexo.foundation.fml.editionaction.TechnologySpecificAction;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
@@ -184,14 +186,14 @@ public abstract class FlexoAction<A extends FlexoAction<A, T1, T2>, T1 extends F
 
 	public String getLocalizedName() {
 		if (getActionFactory() != null) {
-			return getActionFactory().getLocalizedName();
+			return getLocales().localizedForKey(getActionFactory().getActionName());
 		}
 		return getClass().getSimpleName();
 	}
 
 	public String getLocalizedDescription() {
 		if (getActionFactory() != null) {
-			return getActionFactory().getLocalizedDescription();
+			return getLocales().localizedForKey(getActionFactory().getActionName() + "_description");
 		}
 		return null;
 	}
@@ -432,7 +434,7 @@ public abstract class FlexoAction<A extends FlexoAction<A, T1, T2>, T1 extends F
 		compoundEdit.setAction(this);
 	}
 
-	public static LocalizedDelegate getLocales(FlexoServiceManager serviceManager) {
+	public static LocalizedDelegate getDefaultLocales(FlexoServiceManager serviceManager) {
 		if (serviceManager != null) {
 			return serviceManager.getLocalizationService().getFlexoLocalizer();
 		}
@@ -440,13 +442,21 @@ public abstract class FlexoAction<A extends FlexoAction<A, T1, T2>, T1 extends F
 	}
 
 	public LocalizedDelegate getLocales() {
+		if (this instanceof TechnologySpecificAction) {
+			Class<? extends TechnologyAdapter> taClass = (Class<? extends TechnologyAdapter>) TypeUtils
+					.getBaseClass(TypeUtils.getTypeArgument(getClass(), TechnologySpecificFlexoAction.class, 0));
+			if (taClass != null) {
+				TechnologyAdapter ta = getServiceManager().getTechnologyAdapterService().getTechnologyAdapter(taClass);
+				return ta.getLocales();
+			}
+		}
 		if (getFocusedObject() instanceof TechnologyObject) {
 			TechnologyAdapter ta = ((TechnologyObject) getFocusedObject()).getTechnologyAdapter();
 			if (ta != null) {
 				return ta.getLocales();
 			}
 		}
-		return getLocales(getServiceManager());
+		return getDefaultLocales(getServiceManager());
 	}
 
 	public void performPostProcessings() {

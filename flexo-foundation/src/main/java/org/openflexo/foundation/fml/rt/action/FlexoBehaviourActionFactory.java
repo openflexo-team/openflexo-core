@@ -46,7 +46,6 @@ import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstanceObject;
-import org.openflexo.localization.LocalizedDelegate;
 
 /**
  * Factory for {@link FlexoBehaviourAction} (an execution environment of a {@link FlexoBehaviour} on a given {@link FlexoConceptInstance} as
@@ -71,11 +70,6 @@ public abstract class FlexoBehaviourActionFactory<A extends FlexoBehaviourAction
 		super(behaviour.getLabel(), actionGroup, actionCategory);
 		this.behaviour = behaviour;
 		this.flexoConceptInstance = flexoConceptInstance;
-	}
-
-	@Override
-	public final LocalizedDelegate getLocales() {
-		return behaviour.getLocalizedDictionary();
 	}
 
 	@Override

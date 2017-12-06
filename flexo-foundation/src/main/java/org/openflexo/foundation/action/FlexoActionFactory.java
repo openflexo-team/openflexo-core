@@ -39,7 +39,6 @@
 
 package org.openflexo.foundation.action;
 
-import java.awt.Component;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.util.Map;
@@ -48,9 +47,12 @@ import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.apache.commons.lang3.reflect.TypeUtils;
+import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject;
+import org.openflexo.foundation.FlexoServiceManager;
+import org.openflexo.foundation.fml.editionaction.TechnologySpecificAction;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.localization.LocalizedDelegate;
 
@@ -222,21 +224,22 @@ public abstract class FlexoActionFactory<A extends FlexoAction<A, T1, T2>, T1 ex
 		return _actionName;
 	}
 
+	/*
 	public LocalizedDelegate getLocales() {
 		return FlexoLocalization.getMainLocalizer();
 	}
-
+	
 	public String getLocalizedName() {
 		return getLocales().localizedForKey(_actionName);
 	}
-
+	
 	public String getLocalizedName(Component component) {
 		return getLocales().localizedForKey(_actionName, component);
 	}
-
+	
 	public String getLocalizedDescription() {
 		return getLocales().localizedForKey(_actionName + "_description");
-	}
+	}*/
 
 	/**
 	 * Deprecated call to an action building outside the context of a FlexoEditor Please DON'T use it anymore !!!
@@ -309,7 +312,7 @@ public abstract class FlexoActionFactory<A extends FlexoAction<A, T1, T2>, T1 ex
 	public boolean isEnabled(T1 object, Vector<T2> globalSelection) {
 		if (object != null && object.getActionList().indexOf(this) == -1) {
 			if (logger.isLoggable(Level.WARNING)) {
-				logger.warning("Cannot execute " + getLocalizedName() + " on " + object.getClass().getName()
+				logger.warning("Cannot execute " + _actionName + " on " + object.getClass().getName()
 						+ " because action is not registered on this object type");
 			}
 			return false;
@@ -320,13 +323,13 @@ public abstract class FlexoActionFactory<A extends FlexoAction<A, T1, T2>, T1 ex
 
 	public String getDisabledReason(T1 object, Vector<T2> globalSelection, FlexoEditor editor) {
 		if (object != null && object.getActionList().indexOf(this) == -1) {
-			return getLocales().localizedForKey("action") + " " + getLocalizedName() + " "
-					+ getLocales().localizedForKey("is_not_active_for") + " "
-					+ getLocales().localizedForKey(object.getClass().getSimpleName());
+			return FlexoLocalization.getMainLocalizer().localizedForKey("action") + " " + _actionName + " "
+					+ FlexoLocalization.getMainLocalizer().localizedForKey("is_not_active_for") + " "
+					+ FlexoLocalization.getMainLocalizer().localizedForKey(object.getClass().getSimpleName());
 		}
 		if (!isEnabledForSelection(object, globalSelection)) {
-			return getLocales().localizedForKey("action") + " " + getLocalizedName() + " "
-					+ getLocales().localizedForKey("is_not_active_for_this_selection");
+			return FlexoLocalization.getMainLocalizer().localizedForKey("action") + " " + _actionName + " "
+					+ FlexoLocalization.getMainLocalizer().localizedForKey("is_not_active_for_this_selection");
 		}
 		return null;
 	}
@@ -357,6 +360,25 @@ public abstract class FlexoActionFactory<A extends FlexoAction<A, T1, T2>, T1 ex
 
 	protected String[] getPersistentProperties() {
 		return new String[0];
+	}
+
+	@SuppressWarnings("unchecked")
+	public Class<? extends FlexoAction<?, ?, ?>> getFlexoActionClass() {
+		return (Class<? extends FlexoAction<?, ?, ?>>) TypeUtils
+				.getBaseClass(TypeUtils.getTypeArgument(getClass(), FlexoActionFactory.class, 0));
+	}
+
+	@SuppressWarnings("unchecked")
+	public LocalizedDelegate getLocales(FlexoServiceManager serviceManager) {
+		if (TechnologySpecificAction.class.isAssignableFrom(getFlexoActionClass())) {
+			Class<? extends TechnologyAdapter> taClass = (Class<? extends TechnologyAdapter>) TypeUtils
+					.getBaseClass(TypeUtils.getTypeArgument(getFlexoActionClass(), TechnologySpecificFlexoAction.class, 0));
+			if (taClass != null) {
+				TechnologyAdapter ta = serviceManager.getTechnologyAdapterService().getTechnologyAdapter(taClass);
+				return ta.getLocales();
+			}
+		}
+		return FlexoLocalization.getMainLocalizer();
 	}
 
 }

@@ -78,7 +78,7 @@ import org.openflexo.foundation.fml.rt.action.DeletionSchemeActionFactory;
 import org.openflexo.foundation.fml.rt.action.NavigationSchemeActionFactory;
 import org.openflexo.foundation.fml.rt.action.SynchronizationSchemeActionFactory;
 import org.openflexo.view.controller.FlexoController;
-import org.openflexo.view.controller.action.EditionAction;
+import org.openflexo.view.controller.action.MenuItemAction;
 
 public class ContextualMenuManager {
 
@@ -506,14 +506,11 @@ public class ContextualMenuManager {
 					}
 				}
 			}
-			EditionAction<A, T1, T2> action = new EditionAction<>(actionType, (T1) focusedObject, globalSelection, getEditor());
+			MenuItemAction<A, T1, T2> action = new MenuItemAction<>(actionType, (T1) focusedObject, globalSelection, getEditor());
 			JMenuItem item = menu.add(action);
-			if (controller != null && controller.getModuleLocales() != null) {
-				item.setText(controller.getModuleLocales().localizedForKey(actionType.getActionName()));
-			}
-			else {
-				item.setText(actionType.getLocalizedName());
-			}
+
+			item.setText(action.getLocalizedActionName());
+
 			if (getEditor().getKeyStrokeFor(actionType) != null) {
 				item.setAccelerator(getEditor().getKeyStrokeFor(actionType));
 			}
@@ -534,16 +531,12 @@ public class ContextualMenuManager {
 	<A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> JMenuItem makeMenuItem(
 			FlexoActionFactory<A, T1, T2> actionType, T1 focusedObject, JMenu menu) {
 		try {
-			EditionAction<A, T1, T2> action = new EditionAction<>(actionType, focusedObject,
+			MenuItemAction<A, T1, T2> action = new MenuItemAction<>(actionType, focusedObject,
 					_selectionManager != null ? (Vector<T2>) _selectionManager.getSelection() : null, getEditor());
 			JMenuItem item = menu.add(action);
 
-			if (controller != null && controller.getModuleLocales() != null) {
-				item.setText(controller.getModuleLocales().localizedForKey(actionType.getActionName()));
-			}
-			else {
-				item.setText(actionType.getLocalizedName());
-			}
+			item.setText(action.getLocalizedActionName());
+
 			if (getEditor().getKeyStrokeFor(actionType) != null) {
 				item.setAccelerator(getEditor().getKeyStrokeFor(actionType));
 			}

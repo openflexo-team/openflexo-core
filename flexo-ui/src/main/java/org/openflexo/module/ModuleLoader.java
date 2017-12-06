@@ -228,6 +228,20 @@ public class ModuleLoader extends FlexoServiceImpl implements FlexoService, HasP
 	}
 
 	/**
+	 * Return the module definition of supplied module class
+	 * 
+	 * @return
+	 */
+	public <M extends Module<?>> M getModuleForClass(Class<? extends FlexoModule<?>> flexoModuleClass) {
+		for (Module<?> module : getKnownModules()) {
+			if (flexoModuleClass.isAssignableFrom(module.getModuleClass())) {
+				return (M) module;
+			}
+		}
+		return null;
+	}
+
+	/**
 	 * Return a collection containing all loaded modules as a list of Module instances
 	 * 
 	 * @return
@@ -365,6 +379,11 @@ public class ModuleLoader extends FlexoServiceImpl implements FlexoService, HasP
 
 	public boolean isActive(FlexoModule<?> module) {
 		return getActiveModule() == module;
+	}
+
+	public <M extends FlexoModule<M>> M getModuleInstance(Class<M> moduleClass) throws ModuleLoadingException {
+		Module<M> module = getModuleForClass(moduleClass);
+		return getModuleInstance(module);
 	}
 
 	public <M extends FlexoModule<M>> M getModuleInstance(Module<M> module) throws ModuleLoadingException {

@@ -51,8 +51,9 @@ import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.action.FlexoAction;
-import org.openflexo.foundation.action.FlexoActionSource;
 import org.openflexo.foundation.action.FlexoActionFactory;
+import org.openflexo.foundation.action.FlexoActionSource;
+import org.openflexo.localization.LocalizedDelegate;
 import org.openflexo.view.controller.FlexoController;
 
 public class FlexoActionButton extends JButton {
@@ -143,12 +144,12 @@ public class FlexoActionButton extends JButton {
 		}
 
 		public String getLocalizedName(Component component) {
+			LocalizedDelegate locales = actionType.getLocales(getEditor().getServiceManager());
 			if (_unlocalizedName == null) {
-				return actionType.getLocalizedName(component);
-
+				return locales.localizedForKey(actionType.getActionName(), component);
 			}
 			else {
-				return controller.getModuleLocales().localizedForKey(_unlocalizedName, component);
+				return locales.localizedForKey(_unlocalizedName, component);
 			}
 		}
 

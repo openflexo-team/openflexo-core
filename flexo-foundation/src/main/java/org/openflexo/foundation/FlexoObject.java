@@ -558,7 +558,7 @@ public interface FlexoObject extends AccessibleProxyObject, DeletableProxyObject
 				if (logger.isLoggable(Level.FINE)) {
 					logger.fine("DONE. COMPUTE ACTION_LIST FOR " + aClass.getName() + ": " + returned.size() + " action(s) :");
 					for (FlexoActionFactory<?, ?, ?> next : returned) {
-						logger.fine(" " + next.getLocalizedName());
+						logger.fine(" " + next.getActionName());
 					}
 					logger.fine(".");
 				}
@@ -569,7 +569,7 @@ public interface FlexoObject extends AccessibleProxyObject, DeletableProxyObject
 				logger.fine("RETURN (NO COMPUTING) ACTION_LIST FOR " + aClass.getName() + ": " + returned.size() + " action(s) :");
 
 				for (FlexoActionFactory<?, ?, ?> next : returned) {
-					logger.fine(" " + next.getLocalizedName());
+					logger.fine(" " + next.getActionName());
 				}
 				logger.fine(".");
 			}

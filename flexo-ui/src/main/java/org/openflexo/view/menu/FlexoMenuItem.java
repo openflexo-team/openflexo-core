@@ -63,7 +63,7 @@ import org.openflexo.foundation.action.FlexoActionSource;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.selection.SelectionManager;
 import org.openflexo.view.controller.FlexoController;
-import org.openflexo.view.controller.action.EditionAction;
+import org.openflexo.view.controller.action.MenuItemAction;
 
 /**
  * Give a shortcut to the item and register the action near the FlexoMainController
@@ -126,7 +126,7 @@ public class FlexoMenuItem extends JMenuItem implements FlexoActionSource, Prope
 		super();
 		this.actionType = actionType;
 		_controller = controller;
-		setAction(new EditionAction<>(actionType, this));
+		setAction(new MenuItemAction<>(actionType, this));
 		setText(controller.getModuleLocales().localizedForKey(actionType.getUnlocalizedName(), this));
 	}
 
