@@ -403,7 +403,7 @@ public class ToolsMenu extends FlexoMenu {
 	public class TechnologyLocalizedItem extends FlexoMenuItem {
 
 		public TechnologyLocalizedItem(TechnologyAdapter technologyAdapter) {
-			super(new TechnologyLocalizedEditorAction(technologyAdapter), technologyAdapter.getName(), null, getController(), true);
+			super(new TechnologyLocalizedEditorAction(technologyAdapter), technologyAdapter.getName(), null, getController(), false);
 		}
 
 	}
@@ -411,7 +411,7 @@ public class ToolsMenu extends FlexoMenu {
 	public class ModuleLocalizedItem extends FlexoMenuItem {
 
 		public ModuleLocalizedItem(Module<?> module) {
-			super(new ModuleLocalizedEditorAction(module), module.getName(), null, getController(), true);
+			super(new ModuleLocalizedEditorAction(module), module.getName(), null, getController(), false);
 		}
 
 	}

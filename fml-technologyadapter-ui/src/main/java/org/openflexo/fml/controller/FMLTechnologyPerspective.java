@@ -67,7 +67,7 @@ public class FMLTechnologyPerspective extends GenericPerspective {
 
 	@Override
 	public String getName() {
-		return "Textual-FML perspective";
+		return "textual_FML_perspective";
 	}
 
 	@Override

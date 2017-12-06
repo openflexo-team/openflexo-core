@@ -126,7 +126,7 @@ public class MainPaneTopBar extends JMenuBar {
 	private void initModules() {
 		for (final Module<?> module : model.getModuleLoader().getKnownModules()) {
 			final JButton button = new BarButton(module.getMediumIcon());
-			button.setToolTipText(controller.getModuleLocales().localizedTooltipForKey(module.getName(), button));
+			button.setToolTipText(module.getName());
 			button.setEnabled(true);
 			button.setFocusable(false);
 			if (forcePreferredSize && button.getIcon() != null) {
@@ -286,6 +286,9 @@ public class MainPaneTopBar extends JMenuBar {
 
 	private void insertPerspective(final FlexoPerspective p) {
 		final JButton button = new BarButton(p.getActiveIcon());
+		System.out.println("Hop on ajoute la perspective " + p);
+		System.out.println("module: " + controller.getModule());
+		System.out.println("locales: " + controller.getModuleLocales());
 		button.setToolTipText(controller.getModuleLocales().localizedTooltipForKey(p.getName(), button));
 		if (forcePreferredSize) {
 			int size = Math.max(button.getIcon().getIconWidth() + 8, button.getIcon().getIconHeight() + 4);

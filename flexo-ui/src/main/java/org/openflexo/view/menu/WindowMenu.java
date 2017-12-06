@@ -119,7 +119,7 @@ public class WindowMenu extends FlexoMenu implements PropertyChangeListener {
 		loadWindowMenu = new JMenu();
 		for (Module<?> m : controller.getModuleLoader().getKnownModules()) {
 			JMenuItem item = new JMenuItem(new SwitchToModuleAction(m));
-			item.setText(controller.getModuleLocales().localizedForKey(m.getName(), item));
+			item.setText(m.getName());
 			item.setIcon(m.getSmallIcon());
 			moduleMenuItems.put(m, item);
 			if (getModuleLoader().isLoaded(m)) {

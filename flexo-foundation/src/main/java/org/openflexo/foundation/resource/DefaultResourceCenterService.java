@@ -337,7 +337,7 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 
 	protected final <I> void foundFolder(FlexoResourceCenter<I> resourceCenter, I folder) throws IOException {
 		if (resourceCenter.isDirectory(folder) && !isFolderIgnorable(resourceCenter, folder)) {
-			logger.warning("TODO: handle folder for " + folder);
+			// logger.warning("TODO: handle folder for " + folder);
 			/*TechnologyAdapterGlobalRepository globalRepository = getGlobalRepository(resourceCenter);
 			// Unused RepositoryFolder newRepositoryFolder =
 			globalRepository.getRepositoryFolder(folder, true);

@@ -93,10 +93,10 @@ public abstract class FlexoModule<M extends FlexoModule<M>> implements DataFlexo
 	}
 
 	public void initModule() {
-		controller = createControllerForModule();
 		locales = new LocalizedDelegateImpl(ResourceLocator.locateResource(getLocalizationDirectory()),
 				getApplicationContext().getLocalizationService().getFlexoLocalizer(),
 				getApplicationContext().getLocalizationService().getAutomaticSaving(), true);
+		controller = createControllerForModule();
 	}
 
 	private LocalizedDelegate locales = null;
