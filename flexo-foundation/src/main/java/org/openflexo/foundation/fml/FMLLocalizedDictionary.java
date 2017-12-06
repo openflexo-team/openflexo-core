@@ -126,10 +126,8 @@ public interface FMLLocalizedDictionary extends FMLObject, org.openflexo.localiz
 
 	public void searchNewEntries();
 
-	public DynamicEntry addEntry(String key);
-
 	@Override
-	public DynamicEntry addEntry();
+	public DynamicEntry addEntry(String key);
 
 	public void deleteEntry(DynamicEntry entry);
 
@@ -507,12 +505,12 @@ public interface FMLLocalizedDictionary extends FMLObject, org.openflexo.localiz
 			return returned;
 		}
 
-		@Override
-		public DynamicEntry addEntry() {
-
+		/*@Override
+		public DynamicEntry addEntry(String key) {
+		
 			CompoundEdit ce = null;
 			FMLModelFactory factory = null;
-
+		
 			if (getOwner() != null) {
 				factory = getOwner().getFMLModelFactory();
 				if (factory != null) {
@@ -521,7 +519,7 @@ public interface FMLLocalizedDictionary extends FMLObject, org.openflexo.localiz
 					}
 				}
 			}
-
+		
 			String keyToCreate = "key";
 			boolean keyAlreadyExists = (getEntry(keyToCreate, false) != null);
 			int index = 1;
@@ -530,9 +528,9 @@ public interface FMLLocalizedDictionary extends FMLObject, org.openflexo.localiz
 				keyAlreadyExists = (getEntry(keyToCreate, false) != null);
 				index++;
 			}
-
+		
 			DynamicEntry returned = addEntry(keyToCreate);
-
+		
 			if (factory != null) {
 				if (ce != null) {
 					factory.getEditingContext().getUndoManager().stopRecording(ce);
@@ -542,9 +540,9 @@ public interface FMLLocalizedDictionary extends FMLObject, org.openflexo.localiz
 							.stopRecording(factory.getEditingContext().getUndoManager().getCurrentEdition());
 				}
 			}
-
+		
 			return returned;
-		}
+		}*/
 
 		@Override
 		public void deleteEntry(DynamicEntry entry) {
