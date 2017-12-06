@@ -153,7 +153,7 @@ public abstract class FlexoModule<M extends FlexoModule<M>> implements DataFlexo
 	}
 
 	public final String getName() {
-		return getModule().getLocalizedName();
+		return getModule().getName();
 	}
 
 	public final String getShortName() {

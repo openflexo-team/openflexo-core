@@ -165,10 +165,6 @@ public abstract class Module<M extends FlexoModule<M>> extends PropertyChangedSu
 		return notFoundNotified;
 	}
 
-	public String getLocalizedName() {
-		return FlexoLocalization.getMainLocalizer().localizedForKey(getName());
-	}
-
 	public final String getDescription() {
 		return getName() + "_description";
 	}
@@ -208,7 +204,7 @@ public abstract class Module<M extends FlexoModule<M>> extends PropertyChangedSu
 
 	@Override
 	public String toString() {
-		return getLocalizedName();
+		return getName();
 	}
 
 	public ApplicationContext getApplicationContext() {
