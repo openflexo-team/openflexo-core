@@ -1,5 +1,4 @@
 ActionScheme=ActionScheme
-ActionScheme$ActionSchemeImpl_$$_jvstb0c_9b=ActionScheme$ActionSchemeImpl_$$_jvstb0c_9b
 Assign=Assign
 Boolean=Boolean
 CHECKBOX=CHECKBOX
@@ -174,7 +173,7 @@ please_supply_a_type_for_the_new_parameter=Please supply a type for the new para
 preview=Preview
 primitive_type=Primitief type
 property=Eigenschap
-prout=Prout
+prout=prout
 read_only=Enkel lezen
 relative_path=Relative path
 required=Required
