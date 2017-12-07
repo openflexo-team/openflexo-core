@@ -117,5 +117,20 @@ public abstract interface FreeModelSlot<RD extends ResourceData<RD> & Technology
 			// TODO Auto-generated method stub
 			return null;
 		}
+
+		@Override
+		public String getURIForObject(RD resourceData, Object o) {
+			// TODO
+			// Override when required
+			return null;
+		}
+
+		@Override
+		public Object retrieveObjectWithURI(RD resourceData, String objectURI) {
+			// TODO
+			// Override when required
+			return null;
+		}
+
 	}
 }
