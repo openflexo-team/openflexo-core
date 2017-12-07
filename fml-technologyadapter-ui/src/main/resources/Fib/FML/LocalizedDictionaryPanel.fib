@@ -33,7 +33,7 @@
 			format="" title="dutch" columnWidth="100" resizable="true"
 			displayTitle="true" color="" bgColor="" tooltip=""
 			valueChangedAction="" name="textfield" />
-		<AddAction method="data.addEntry" isAvailable="" name="add_action" />
+		<AddAction method="data.addEntry('new_entry')" isAvailable="" name="add_action" />
 		<RemoveAction method="data.deleteEntry(selected)"
 			isAvailable="" name="delete_action" />
 		<Dependancy componentName="SearchNewLocalizationEntriesButton" />
