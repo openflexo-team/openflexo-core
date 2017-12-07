@@ -58,6 +58,7 @@ import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.resource.ResourceRepository;
 import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
+import org.openflexo.foundation.utils.FlexoObjectIDManager;
 import org.openflexo.foundation.utils.FlexoObjectReference;
 import org.openflexo.foundation.utils.FlexoProgress;
 import org.openflexo.foundation.utils.ProjectLoadingCancelledException;
@@ -167,13 +168,6 @@ public interface FlexoProject<I> extends ResourceRepository<FlexoResource<?>, I>
 	public FlexoProjectReference getProjectReferenceWithURI(String uri);
 
 	public FlexoProjectReference getProjectReferenceWithURI(String projectURI, boolean searchRecursively);
-
-	// @Deprecated
-	// @Finder(collection = IMPORTED_PROJECTS, attribute = FlexoProjectReference.NAME, isMultiValued = true)
-	// public List<FlexoProjectReference> getProjectReferenceWithName(String name);
-
-	// @Deprecated
-	// public List<FlexoProjectReference> getProjectReferenceWithName(String name, boolean searchRecursively);
 
 	@Getter(value = IMPORTED_PROJECTS, cardinality = Cardinality.LIST, inverse = FlexoProjectReference.OWNER)
 	@XMLElement(xmlTag = "ImportedProjects")
@@ -303,9 +297,11 @@ public interface FlexoProject<I> extends ResourceRepository<FlexoResource<?>, I>
 	 */
 	public FlexoResourceCenter<I> getDelegateResourceCenter();
 
-	public FlexoProjectResource getProjectResource();
+	public FlexoProjectResource<I> getProjectResource();
 
 	public ValidationModel getProjectValidationModel();
+
+	public FlexoObjectIDManager getObjectIDManager();
 
 	/**
 	 * Return boolean indicating if this project might be interpreted according to this project nature

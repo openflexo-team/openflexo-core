@@ -89,7 +89,6 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.utils.FlexoObjectIDManager;
 import org.openflexo.foundation.utils.FlexoObjectReference;
 import org.openflexo.foundation.utils.FlexoProgress;
-import org.openflexo.foundation.utils.ProjectInitializerException;
 import org.openflexo.foundation.utils.ProjectLoadingHandler;
 import org.openflexo.foundation.validation.FlexoProjectValidationModel;
 import org.openflexo.model.annotations.DefineValidationRule;
@@ -120,164 +119,31 @@ public abstract class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoRe
 
 	protected static final Logger logger = Logger.getLogger(FlexoProjectImpl.class.getPackage().getName());
 
-	/**
-	 * This is the generic API to create a new FlexoProject
-	 * 
-	 * @param aProjectDirectory
-	 * @param editorFactory
-	 * @param serviceManager
-	 * @param progress
-	 * @return
-	 * @throws ProjectInitializerException
-	 */
-	/*public static FlexoEditor newProject(File aProjectDirectory, FlexoEditorFactory editorFactory, FlexoServiceManager serviceManager,
-			FlexoProgress progress) throws ProjectInitializerException {
-	
-		// We should have already asked the user if the new project has to override the old one
-		// When true, old directory was renamed to backup file
-		// So, this is not normal to have here an existing file
-		if (aProjectDirectory.exists()) {
-			throw new ProjectInitializerException("This directory already exists: " + aProjectDirectory, aProjectDirectory);
-		}
-	
-		FlexoProjectImpl project = new FlexoProjectImpl(aProjectDirectory, serviceManager);
-		project.setServiceManager(serviceManager);
-		FlexoEditor editor = editorFactory.makeFlexoEditor(project, serviceManager);
-		project.setLastUniqueID(0);
-		if (logger.isLoggable(Level.INFO)) {
-			logger.info("Building project: " + aProjectDirectory.getAbsolutePath());
-		}
-	
-		try {
-			project.setCreationUserId(FlexoObjectImpl.getCurrentUserIdentifier());
-			project.setCreationDate(new Date());
-			// TODO : Code to be removed, no more java Generation
-			// project.initJavaFormatter();
-	
-			try {
-				// This needs to be called to ensure the consistency of the project
-				project.setGenerateSnapshot(false);
-				project.save(progress);
-				project.setGenerateSnapshot(true);
-			} catch (SaveResourceException e) {
-				if (logger.isLoggable(Level.SEVERE)) {
-					logger.severe("Could not save all resources for project: " + project.getProjectName() + " located in "
-							+ project.getProjectDirectory().getAbsolutePath());
-				}
-			}
-		} catch (Exception e) {
-			// Warns about the exception
-			if (logger.isLoggable(Level.WARNING)) {
-				logger.warning("Exception raised: " + e.getClass().getName() + ". See console for details.");
-			}
-			e.printStackTrace();
-		}
-	
-		// We add the newly created project as a ResourceCenter
-		// Maybe this will be done now, but it may also be done in a task
-		// In this case, we have to reference the task to wait for its execution
-		FlexoTask addResourceCenterTask = serviceManager.resourceCenterAdded(project);
-		if (addResourceCenterTask != null) {
-			serviceManager.getTaskManager().waitTask(addResourceCenterTask);
-		}
-	
-		return editor;
-	}*/
-
-	// TODO: add ProjectLoadingHandler to the parameters
-	/*public static FlexoEditor openProject(File aProjectDirectory, FlexoEditorFactory editorFactory, FlexoServiceManager serviceManager,
-			FlexoProgress progress) throws ProjectInitializerException, ProjectLoadingCancelledException {
-	
-		Progress.progress(getLocales(serviceManager).localizedForKey("opening_project") + aProjectDirectory.getAbsolutePath());
-	
-		if (!aProjectDirectory.exists()) {
-			throw new ProjectInitializerException("This directory does not exists: " + aProjectDirectory, aProjectDirectory);
-		}
-	
-		FlexoProjectImpl project = new FlexoProjectImpl(aProjectDirectory, serviceManager);
-		project.setServiceManager(serviceManager);
-		FlexoEditor editor = editorFactory.makeFlexoEditor(project, serviceManager);
-		project.setLastUniqueID(0);
-		if (logger.isLoggable(Level.INFO)) {
-			logger.info("Loading project: " + aProjectDirectory.getAbsolutePath());
-		}
-	
-		try {
-		} catch (Exception e) {
-			// Warns about the exception
-			if (logger.isLoggable(Level.WARNING)) {
-				logger.warning("Exception raised: " + e.getClass().getName() + ". See console for details.");
-			}
-			e.printStackTrace();
-		}
-	
-		// We add the newly created project as a ResourceCenter
-		FlexoTask addResourceCenterTask = serviceManager.resourceCenterAdded(project);
-	
-		// If resource center adding is executing in a task, we have to wait the task to be finished
-		if (addResourceCenterTask != null) {
-			serviceManager.getTaskManager().waitTask(addResourceCenterTask);
-		}
-	
-		return editor;
-	}*/
-
 	public static final String RESOURCES = "resources";
 
 	public static final String PROJECT_DIRECTORY = "projectDirectory";
 	public static final String PROJECT_DATA = "projectData";
 	public static final String REVISION = "revision";
 	public static final String VERSION = "version";
-	// public static final String PROJECT_URI = "projectURI";
-
-	// public static final String VIEWPOINT_EXPECTED_DIRECTORY = "Viewpoints";
-
-	// private FlexoServiceManager serviceManager;
 
 	private FlexoObjectIDManager objectIDManager;
-
-	// private ViewLibrary viewLibrary = null;
 
 	private final List<FlexoObjectReference<?>> objectReferences = new ArrayList<>();
 
 	private boolean lastUniqueIDHasBeenSet = false;
 	private long lastID = Integer.MIN_VALUE;
 
-	// protected String projectName;
-
 	protected I projectDirectory;
-	// private List<I> filesToDelete;
-
-	// private String projectDescription = "";
-
-	private final long firstOperationFlexoID = -1;
-
-	// private FlexoVersion version = new FlexoVersion("1.0");
-
-	// private long revision = 0;
 
 	private FlexoProjectValidationModel projectValidationModel;
 
 	private static int ID = 0;
-
 	private final int id;
-
-	// private Date creationDate;
-	// private String creationUserId;
-	// private String projectURI;
-	// private String projectVersionURI;
-
 	private boolean holdObjectRegistration = false;
 
 	private ProjectLoadingHandler loadingHandler;
-
-	private FlexoProjectResource resource;
-
+	private FlexoProjectResource<I> resource;
 	private FlexoResourceCenterService rcService;
-
-	public int getID() {
-		return id;
-	}
 
 	private List<FlexoEditor> editors;
 
@@ -300,9 +166,8 @@ public abstract class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoRe
 
 	}
 
-	protected FlexoProjectImpl(/*File aProjectDirectory, FlexoServiceManager serviceManager*/) {
-		super(null, null/*aProjectDirectory, serviceManager.getResourceCenterService()*/);
-		// this.serviceManager = serviceManager;
+	protected FlexoProjectImpl() {
+		super(null, null);
 
 		editors = new Vector<>();
 		synchronized (FlexoProjectImpl.class) {
@@ -311,7 +176,6 @@ public abstract class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoRe
 		logger.info("Create new project, ID=" + id);
 		_externalRepositories = new ArrayList<>();
 		repositoriesCache = new Hashtable<>();
-		// filesToDelete = new Vector<>();
 
 	}
 
@@ -332,16 +196,6 @@ public abstract class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoRe
 		return getProjectName();
 	}
 
-	/*public void setProjectName(String aName) throws InvalidNameException {
-		if (!BAD_CHARACTERS_PATTERN.matcher(aName).find()) {
-			projectName = aName;
-			// resources.restoreKeys();
-		}
-		else {
-			throw new InvalidNameException();
-		}
-	}*/
-
 	@Override
 	public String getPrefix() {
 		String prefix = null;
@@ -359,6 +213,10 @@ public abstract class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoRe
 		return getContainer((I) getResource().getIODelegate().getSerializationArtefact());
 	}
 
+	public int getID() {
+		return id;
+	}
+
 	@Override
 	public String getProjectURI() {
 		if (getResource() != null) {
@@ -366,15 +224,6 @@ public abstract class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoRe
 		}
 		return (String) performSuperGetter(PROJECT_URI_KEY);
 	}
-
-	/*@Override
-	public String getProjectURI() {
-		String returned = (String) performSuperGetter(PROJECT_URI);
-		if (StringUtils.isEmpty(returned) && getResource() != null) {
-			return getDefaultBaseURI();
-		}
-		return returned;
-	}*/
 
 	@Override
 	public void setProjectURI(String projectURI) {
@@ -390,7 +239,6 @@ public abstract class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoRe
 
 	@Override
 	public I getBaseArtefact() {
-		// return (I) getResource().getIODelegate().getSerializationArtefact();
 		return getProjectDirectory();
 	}
 
@@ -410,26 +258,10 @@ public abstract class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoRe
 		return null;
 	}
 
-	/*public void setProjectDirectory(File aProjectDirectory) {
-		setProjectDirectory(aProjectDirectory, true);
-	}
-	
-	public void setProjectDirectory(File aProjectDirectory, boolean notify) {
-		if (!aProjectDirectory.equals(projectDirectory)) {
-			File oldProjectDirectory = this.projectDirectory;
-			projectDirectory = aProjectDirectory;
-			setResource(ProjectDirectoryResourceImpl.makeProjectDirectoryResource(this));
-			// clearCachedFiles();
-			if (notify) {
-				setChanged();
-				notifyObservers(new DataModification(PROJECT_DIRECTORY, oldProjectDirectory, projectDirectory));
-			}
-		}
-	}*/
-
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
-	public FlexoProjectResource getProjectResource() {
-		return (FlexoProjectResource) (FlexoResource) getResource();
+	public FlexoProjectResource<I> getProjectResource() {
+		return (FlexoProjectResource<I>) (FlexoResource) getResource();
 	}
 
 	@Override
@@ -437,12 +269,13 @@ public abstract class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoRe
 		return resource;
 	}
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public void setResource(FlexoResource<FlexoProject<I>> resource) {
 		// We first take the URI value as found in serialized XML
 		String projectURI = getProjectURI();
 		// We set the resource
-		this.resource = (FlexoProjectResource) (FlexoResource) resource;
+		this.resource = (FlexoProjectResource<I>) (FlexoResource) resource;
 		// Then we give serialized project URI to the resource
 		if (resource != null) {
 			resource.setURI(projectURI);
@@ -542,7 +375,6 @@ public abstract class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoRe
 			File tempProjectDirectory = FileUtils
 					.createTempDirectory(getProjectName().length() > 2 ? getProjectName() : "FlexoProject-" + getProjectName(), "");
 			tempProjectDirectory = new File(tempProjectDirectory, getProjectName());
-			// copyTo(tempProjectDirectory, progress, null, false, copyCVSFiles);
 			if (lightenProject) {
 				// replaceBigJarsWithEmtpyJars(progress, tempProjectDirectory);
 				// removeScreenshots(progress, tempProjectDirectory);
@@ -832,16 +664,6 @@ public abstract class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoRe
 		return null;
 	}
 
-	boolean generateSnapshot = true;
-
-	private void setGenerateSnapshot(boolean b) {
-		generateSnapshot = b;
-	}
-
-	public boolean isGenerateSnapshot() {
-		return generateSnapshot;
-	}
-
 	// ======================================================================
 	// ============================= Validation =============================
 	// ======================================================================
@@ -880,127 +702,6 @@ public abstract class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoRe
 	public void setLastUniqueID(long lastUniqueID) {
 		setLastID(lastUniqueID);
 	}
-
-	// TODO Code to be Removed as no use for that
-	/*
-	public FlexoProjectFile getJavaFormatterSettings() {
-		if (!new FlexoProjectFile(this, "FlexoJavaFormatSettings.xml").getFile().exists()) {
-			initJavaFormatter();
-		}
-		return new FlexoProjectFile(this, "FlexoJavaFormatSettings.xml");
-	}
-	 */
-	/**
-	 *
-	 */
-
-	// TODO Code to be Removed as no use for that
-	/*
-	protected void initJavaFormatter() {
-		File file = ResourceLocator.retrieveResourceAsFile("Config/FlexoJavaFormatSettings.xml");
-		FlexoProjectFile prjFile = new FlexoProjectFile(this, "FlexoJavaFormatSettings.xml");
-		try {
-			FileUtils.copyFileToFile(file, prjFile.getFile());
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-	 */
-
-	/**
-	 * Ensure that all .prj contains required .cvsignore files
-	 * 
-	 */
-	/*public static void cvsIgnorize(File projectDirectory) {
-		File mainCVSIgnoreFile = new File(projectDirectory, ".cvsignore");
-		if (!mainCVSIgnoreFile.exists()) {
-			try {
-				FileUtils.saveToFile(mainCVSIgnoreFile,
-						"*~\n" + ".#*\n" + "*.rmxml.ts\n" + "temp?.xml\n" + "*.ini\n" + "*.cvsrepository\n" + "*.bak\n" + "*.autosave\n");
-			} catch (IOException e) {
-				logger.warning("Could not create file " + mainCVSIgnoreFile + ": " + e.getMessage());
-				e.printStackTrace();
-			}
-		}
-	
-		cvsIgnorizeDir(projectDirectory);
-	
-	}*/
-
-	/*private static void cvsIgnorizeDir(File aDirectory) {
-		File cvsIgnoreFile = new File(aDirectory, ".cvsignore");
-		if (!cvsIgnoreFile.exists()) {
-			try {
-				FileUtils.saveToFile(cvsIgnoreFile, "*~\n" + ".#*\n" + "temp?.xml\n" + "*.rmxml.ts\n" + "*.history\n" + "PB.project\n"
-						+ "*.xcodeproj\n" + "*.autosave\n");
-			} catch (IOException e) {
-				logger.warning("Could not create file " + cvsIgnoreFile + ": " + e.getMessage());
-				e.printStackTrace();
-			}
-		}
-	
-		File[] allDirs = aDirectory.listFiles(new java.io.FileFilter() {
-			@Override
-			public boolean accept(File pathname) {
-				return pathname.isDirectory() && !pathname.getName().equals("CVS") && !pathname.getName().equals(".history")
-						&& !pathname.getName().equals(".wo.LAST_ACCEPTED") && !pathname.getName().equals(".wo.LAST_GENERATED");
-			}
-		});
-	
-		for (File f : allDirs) {
-			cvsIgnorizeDir(f);
-		}
-	}*/
-
-	/**
-	 * Remove all CVS directories
-	 */
-	/*public static void removeCVSDirs(File projectDirectory) {
-		removeCVSDirs(projectDirectory, true);
-	}*/
-
-	/**
-	 * Remove all CVS directories
-	 */
-	/*public static void removeCVSDirs(File aDirectory, boolean recurse) {
-		File cvsDir = new File(aDirectory, "CVS");
-		if (cvsDir.exists()) {
-			FileUtils.recursiveDeleteFile(cvsDir);
-		}
-		if (recurse) {
-			File[] allDirs = aDirectory.listFiles(new java.io.FileFilter() {
-				@Override
-				public boolean accept(File pathname) {
-					return pathname.isDirectory() && !pathname.getName().equals("CVS");
-				}
-			});
-			for (File f : allDirs) {
-				removeCVSDirs(f);
-			}
-		}
-	}*/
-
-	/**
-	 * Search (deeply) CVS directories Return true if at least one CVS dir was found
-	 */
-	/*public static boolean searchCVSDirs(File aDirectory) {
-		File cvsDir = new File(aDirectory, "CVS");
-		if (cvsDir.exists()) {
-			return true;
-		}
-		File[] allDirs = aDirectory.listFiles(new java.io.FileFilter() {
-			@Override
-			public boolean accept(File pathname) {
-				return pathname.isDirectory() && !pathname.getName().equals("CVS");
-			}
-		});
-		for (File f : allDirs) {
-			if (searchCVSDirs(f)) {
-				return true;
-			}
-		}
-		return false;
-	}*/
 
 	@Override
 	public List<FlexoEditor> getEditors() {
@@ -1078,18 +779,6 @@ public abstract class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoRe
 		super.finalize();
 	}
 
-	/*public String getUnusedImageName(String name) {
-			String attempt = name;
-			int i = 1;
-			while (resourceForFile(new File(getImportedImagesDir(), attempt)) != null) {
-				if (name.indexOf('.') > -1) {
-					attempt = name.substring(0, name.lastIndexOf('.')) + "-" + i + name.substring(name.lastIndexOf('.')).toLowerCase();
-				}
-				i++;
-			}
-			return attempt;
-		}*/
-
 	public boolean isHoldingProjectRegistration() {
 		return holdObjectRegistration;
 	}
@@ -1113,14 +802,14 @@ public abstract class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoRe
 	}
 
 	@DefineValidationRule
-	public static class FlexoIDMustBeUnique extends ValidationRule<FlexoIDMustBeUnique, FlexoProjectImpl> {
+	public static class FlexoIDMustBeUnique extends ValidationRule<FlexoIDMustBeUnique, FlexoProject> {
 
 		/**
 		 * @param objectType
 		 * @param ruleName
 		 */
 		public FlexoIDMustBeUnique() {
-			super(FlexoProjectImpl.class, "flexo_id_must_be_unique");
+			super(FlexoProject.class, "flexo_id_must_be_unique");
 		}
 
 		/**
@@ -1129,13 +818,13 @@ public abstract class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoRe
 		 * @see org.openflexo.model.validation.ValidationRule#applyValidation(org.openflexo.model.validation.Validable)
 		 */
 		@Override
-		public ValidationIssue<FlexoIDMustBeUnique, FlexoProjectImpl> applyValidation(FlexoProjectImpl object) {
+		public ValidationIssue<FlexoIDMustBeUnique, FlexoProject> applyValidation(FlexoProject object) {
 			List<FlexoProjectObject> badObjects = object.getObjectIDManager().checkProject(true);
 			if (badObjects.size() > 0) {
 				DuplicateObjectIDIssue issues = new DuplicateObjectIDIssue(object);
 				// TODO FD pour SG pourquoi obj pas utilisé dans la boucle ?
 				for (FlexoProjectObject obj : badObjects) {
-					issues.addToContainedIssues(new InformationIssue<FlexoIDMustBeUnique, FlexoProjectImpl>(object,
+					issues.addToContainedIssues(new InformationIssue<FlexoIDMustBeUnique, FlexoProject>(object,
 							"identifier_of_($object.fullyQualifiedName)_was_duplicated_and_reset_to_($object.flexoID)"));
 				}
 				return issues;
@@ -1145,9 +834,9 @@ public abstract class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoRe
 			}
 		}
 
-		public static class DuplicateObjectIDIssue extends CompoundIssue<FlexoIDMustBeUnique, FlexoProjectImpl> {
+		public static class DuplicateObjectIDIssue extends CompoundIssue<FlexoIDMustBeUnique, FlexoProject> {
 
-			public DuplicateObjectIDIssue(FlexoProjectImpl anObject) {
+			public DuplicateObjectIDIssue(FlexoProject anObject) {
 				super(anObject);
 			}
 
@@ -1177,21 +866,13 @@ public abstract class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoRe
 		return getProjectReferenceWithURI(projectURI, true) != null;
 	}
 
+	@Override
 	public FlexoObjectIDManager getObjectIDManager() {
 		if (objectIDManager == null) {
 			objectIDManager = new FlexoObjectIDManager(this);
 		}
 		return objectIDManager;
 	}
-
-	/*public String canImportProject(FlexoProjectImpl project) {
-		if (getProjectData() == null) {
-			return null;
-		}
-		else {
-			return getProjectData().canImportProject(project);
-		}
-	}*/
 
 	public boolean hasImportedProjects() {
 		return getImportedProjects().size() > 0;
@@ -1268,12 +949,6 @@ public abstract class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoRe
 		}
 		return null;
 	}
-
-	/*public static File getProjectSpecificModelsDirectory(FlexoProjectImpl project) {
-		File returned = new File(project.getProjectDirectory(), "Models");
-		returned.mkdirs();
-		return returned;
-	}*/
 
 	public ProjectExternalRepository createExternalRepositoryWithKey(String identifier) throws DuplicateExternalRepositoryNameException {
 		for (ProjectExternalRepository rep : _externalRepositories) {
@@ -1369,14 +1044,8 @@ public abstract class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoRe
 
 	}
 
-	// private String defaultBaseURI = null;
-
 	@Override
 	public String getDefaultBaseURI() {
-		/*if (defaultBaseURI == null) {
-			defaultBaseURI = buildProjectURI();
-		}
-		return defaultBaseURI;*/
 		return getProjectURI();
 	}
 
