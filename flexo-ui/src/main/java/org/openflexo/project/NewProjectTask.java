@@ -60,19 +60,20 @@ public class NewProjectTask extends FlexoApplicationTask {
 	 */
 	private final InteractiveProjectLoader projectLoader;
 	private final File projectDirectory;
-	private final ProjectNature<?, ?> projectNature;
+	private final Class<? extends ProjectNature> projectNatureClass;
 	private FlexoEditor flexoEditor;
 
 	public NewProjectTask(InteractiveProjectLoader projectLoader, File projectDirectory) {
 		this(projectLoader, projectDirectory, null);
 	}
 
-	public NewProjectTask(InteractiveProjectLoader projectLoader, File projectDirectory, ProjectNature<?, ?> projectNature) {
+	public NewProjectTask(InteractiveProjectLoader projectLoader, File projectDirectory,
+			Class<? extends ProjectNature> projectNatureClass) {
 		super(FlexoLocalization.getMainLocalizer().localizedForKey("new_project") + " " + projectDirectory.getName(),
 				projectLoader.getServiceManager());
 		this.projectLoader = projectLoader;
 		this.projectDirectory = projectDirectory;
-		this.projectNature = projectNature;
+		this.projectNatureClass = projectNatureClass;
 	}
 
 	@Override
@@ -81,7 +82,7 @@ public class NewProjectTask extends FlexoApplicationTask {
 		Progress.setExpectedProgressSteps(10);
 
 		try {
-			projectLoader.newStandaloneProject(projectDirectory, projectNature);
+			projectLoader.newStandaloneProject(projectDirectory, projectNatureClass);
 		} catch (ProjectInitializerException e) {
 			throwException(e);
 		} catch (IOException e) {

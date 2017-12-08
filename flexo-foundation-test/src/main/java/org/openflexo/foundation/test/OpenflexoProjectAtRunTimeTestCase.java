@@ -149,14 +149,15 @@ public abstract class OpenflexoProjectAtRunTimeTestCase extends OpenflexoTestCas
 		return createStandaloneProject(projectName, null, serviceManager);
 	}
 
-	protected FlexoEditor createStandaloneProject(String projectName, ProjectNature<?, ?> nature) {
+	protected FlexoEditor createStandaloneProject(String projectName, Class<? extends ProjectNature> projectNatureClass) {
 		if (serviceManager == null) {
 			serviceManager = instanciateTestServiceManager();
 		}
-		return createStandaloneProject(projectName, nature, serviceManager);
+		return createStandaloneProject(projectName, projectNatureClass, serviceManager);
 	}
 
-	protected FlexoEditor createStandaloneProject(String projectName, ProjectNature<?, ?> nature, FlexoServiceManager serviceManager) {
+	protected FlexoEditor createStandaloneProject(String projectName, Class<? extends ProjectNature> projectNatureClass,
+			FlexoServiceManager serviceManager) {
 		FlexoLoggingManager.forceInitialize(-1, true, null, Level.INFO, null);
 		try {
 			File tempFile = File.createTempFile(projectName, "");
@@ -171,7 +172,7 @@ public abstract class OpenflexoProjectAtRunTimeTestCase extends OpenflexoTestCas
 
 		FlexoEditor reply;
 		try {
-			reply = serviceManager.getProjectLoaderService().newStandaloneProject(_projectDirectory, nature);
+			reply = serviceManager.getProjectLoaderService().newStandaloneProject(_projectDirectory, projectNatureClass);
 		} catch (ProjectInitializerException e) {
 			e.printStackTrace();
 			fail(e.getMessage());
@@ -185,6 +186,7 @@ public abstract class OpenflexoProjectAtRunTimeTestCase extends OpenflexoTestCas
 		try {
 			// reply.getProject().setProjectName(_projectIdentifier/* projectName */);
 			reply.getProject().saveModifiedResources(null);
+			reply.getProject().save();
 		} catch (SaveResourceException e) {
 			e.printStackTrace();
 			fail();
@@ -198,11 +200,12 @@ public abstract class OpenflexoProjectAtRunTimeTestCase extends OpenflexoTestCas
 		return createProjectInResourceCenter(projectName, null, rc);
 	}
 
-	protected FlexoEditor createProjectInResourceCenter(String projectName, ProjectNature<?, ?> nature, FlexoResourceCenter<File> rc) {
+	protected FlexoEditor createProjectInResourceCenter(String projectName, Class<? extends ProjectNature> projectNatureClass,
+			FlexoResourceCenter<File> rc) {
 		if (serviceManager == null) {
 			serviceManager = instanciateTestServiceManager();
 		}
-		return createProjectInResourceCenter(projectName, nature, serviceManager, rc);
+		return createProjectInResourceCenter(projectName, projectNatureClass, serviceManager, rc);
 	}
 
 	protected static FlexoResourceCenterService getNewResourceCenter(String name) {
@@ -223,13 +226,13 @@ public abstract class OpenflexoProjectAtRunTimeTestCase extends OpenflexoTestCas
 		return null;
 	}
 
-	protected FlexoEditor createProjectInResourceCenter(String projectName, ProjectNature<?, ?> nature, FlexoServiceManager serviceManager,
-			FlexoResourceCenter<File> rc) {
+	protected FlexoEditor createProjectInResourceCenter(String projectName, Class<? extends ProjectNature> projectNatureClass,
+			FlexoServiceManager serviceManager, FlexoResourceCenter<File> rc) {
 		FlexoLoggingManager.forceInitialize(-1, true, null, Level.INFO, null);
 		FlexoEditor reply;
 		try {
 			reply = serviceManager.getProjectLoaderService().newProjectInResourceCenter(projectName, (RepositoryFolder) rc.getRootFolder(),
-					nature);
+					projectNatureClass);
 		} catch (ProjectInitializerException e) {
 			e.printStackTrace();
 			fail(e.getMessage());
@@ -242,6 +245,7 @@ public abstract class OpenflexoProjectAtRunTimeTestCase extends OpenflexoTestCas
 		logger.info("Project has been SUCCESSFULLY created");
 		try {
 			reply.getProject().saveModifiedResources(null);
+			reply.getProject().save();
 		} catch (SaveResourceException e) {
 			e.printStackTrace();
 			fail();

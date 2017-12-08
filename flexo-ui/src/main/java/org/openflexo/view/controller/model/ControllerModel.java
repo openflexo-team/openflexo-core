@@ -270,15 +270,15 @@ public class ControllerModel extends ControllerModelObject implements PropertyCh
 		}
 	}
 
-	public FlexoProject getCurrentProject() {
+	public FlexoProject<?> getCurrentProject() {
 		return getCurrentEditor() != null ? getCurrentEditor().getProject() : null;
 	}
 
-	public void setCurrentProject(FlexoProject project) {
+	public void setCurrentProject(FlexoProject<?> project) {
 		setCurrentEditor(project != null ? context.getProjectLoader().getEditorForProject(project) : null);
 	}
 
-	public boolean isSelectableProject(FlexoProject project) {
+	public boolean isSelectableProject(FlexoProject<?> project) {
 		return context.getProjectLoader().getRootProjects().contains(project);
 	}
 
@@ -506,7 +506,7 @@ public class ControllerModel extends ControllerModelObject implements PropertyCh
 	public void propertyChange(PropertyChangeEvent evt) {
 		if (evt.getSource() == getProjectLoader()) {
 			if (evt.getPropertyName().equals(InteractiveProjectLoader.PROJECT_OPENED)) {
-				FlexoProject project = (FlexoProject) evt.getNewValue();
+				FlexoProject<?> project = (FlexoProject<?>) evt.getNewValue();
 				if (getCurrentPerspective() != null) {
 					FlexoObject object = getCurrentPerspective().getDefaultObject(project);
 					System.out.println("Je veux afficher le project " + project);
@@ -518,7 +518,7 @@ public class ControllerModel extends ControllerModelObject implements PropertyCh
 				}
 			}
 			else if (evt.getPropertyName().equals(InteractiveProjectLoader.PROJECT_CLOSED)) {
-				handleProjectRemoval((FlexoProject) evt.getOldValue());
+				handleProjectRemoval((FlexoProject<?>) evt.getOldValue());
 				setCurrentProject(null);
 			}
 		}
@@ -528,7 +528,7 @@ public class ControllerModel extends ControllerModelObject implements PropertyCh
 		}
 	}
 
-	private void handleProjectRemoval(FlexoProject removedProject) {
+	private void handleProjectRemoval(FlexoProject<?> removedProject) {
 		updateHistoryForProjectRemoval(previousHistory, removedProject);
 		updateHistoryForProjectRemoval(nextHistory, removedProject);
 		for (Location location : new ArrayList<>(locations)) {
@@ -538,7 +538,7 @@ public class ControllerModel extends ControllerModelObject implements PropertyCh
 		}
 	}
 
-	private static void updateHistoryForProjectRemoval(Stack<Location> history, FlexoProject removedProject) {
+	private static void updateHistoryForProjectRemoval(Stack<Location> history, FlexoProject<?> removedProject) {
 		Iterator<Location> i = history.iterator();
 		while (i.hasNext()) {
 			Location hl = i.next();

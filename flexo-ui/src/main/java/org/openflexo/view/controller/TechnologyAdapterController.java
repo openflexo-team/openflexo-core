@@ -480,17 +480,17 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 	// Management of FlexoProject natures
 	// ***************************************************************
 
-	public final boolean hasSpecificFlexoProjectNature(FlexoProject project) {
+	public final boolean hasSpecificFlexoProjectNature(FlexoProject<?> project) {
 		return getSpecificProjectNatures(project).size() > 0;
 	}
 
 	// Override when required
-	public List<? extends ProjectNature<?, ?>> getSpecificProjectNatures(FlexoProject project) {
+	public List<? extends ProjectNature> getSpecificProjectNatures(FlexoProject<?> project) {
 		return Collections.emptyList();
 	}
 
 	// Override when required
-	public ModuleView<FlexoProject> createFlexoProjectModuleViewForSpecificNature(FlexoProject project, ProjectNature<?, ?> nature,
+	public ModuleView<FlexoProject<?>> createFlexoProjectModuleViewForSpecificNature(FlexoProject<?> project, ProjectNature nature,
 			FlexoController controller, FlexoPerspective perspective) {
 		return null;
 	}

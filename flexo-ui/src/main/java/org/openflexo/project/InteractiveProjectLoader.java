@@ -146,10 +146,10 @@ public class InteractiveProjectLoader extends ProjectLoader {
 	 * @param tasksToBeExecutedBefore
 	 * @return
 	 */
-	public NewProjectTask makeNewProjectTask(File projectDirectory, ProjectNature<?, ?> projectNature,
+	public NewProjectTask makeNewProjectTask(File projectDirectory, Class<? extends ProjectNature> projectNatureClass,
 			FlexoTask... tasksToBeExecutedBefore) {
 
-		NewProjectTask returned = new NewProjectTask(this, projectDirectory, projectNature);
+		NewProjectTask returned = new NewProjectTask(this, projectDirectory, projectNatureClass);
 		for (FlexoTask task : tasksToBeExecutedBefore) {
 			returned.addToDependantTasks(task);
 		}

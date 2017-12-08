@@ -2,7 +2,7 @@
  * 
  * Copyright (c) 2014, Openflexo
  * 
- * This file is part of Flexo-foundation, a component of the software infrastructure 
+ * This file is part of Freemodellingeditor, a component of the software infrastructure 
  * developed at Openflexo.
  * 
  * 
@@ -38,23 +38,40 @@
 
 package org.openflexo.foundation.nature;
 
-import org.openflexo.foundation.FlexoObject;
-import org.openflexo.foundation.FlexoProject;
+import java.util.logging.Logger;
+
+import org.openflexo.logging.FlexoLogger;
 
 /**
- * Represents a project with a specific {@link ProjectNature} <br>
- * 
- * This class is a wrapper class above {@link FlexoProject} and provides a specific interpretation of a generic {@link FlexoProject}<br>
- * Instances of {@link ProjectWrapper} are managed and should be retrieved from a specific {@link ProjectNature}.
- * 
- * @see FreeModelProjectNature
+ * Default implementation for {@link ProjectNatureFactory}
  * 
  * @author sylvain
  * 
  */
-public interface ProjectWrapper<N extends ProjectNature> extends FlexoObject {
+public abstract class DefaultProjectNatureFactoryImpl<N extends ProjectNature> implements ProjectNatureFactory<N> {
 
-	public FlexoProject getProject();
+	static final Logger logger = FlexoLogger.getLogger(DefaultProjectNatureFactoryImpl.class.getPackage().getName());
 
-	public N getProjectNature();
+	private final Class<N> projectNatureClass;
+	private ProjectNatureService projectNatureService;
+
+	protected DefaultProjectNatureFactoryImpl(Class<N> projectNatureClass) {
+		this.projectNatureClass = projectNatureClass;
+	}
+
+	@Override
+	public Class<N> getProjectNatureClass() {
+		return projectNatureClass;
+	}
+
+	@Override
+	public ProjectNatureService getProjectNatureService() {
+		return projectNatureService;
+	}
+
+	@Override
+	public void setProjectNatureService(ProjectNatureService projectNatureService) {
+		this.projectNatureService = projectNatureService;
+	}
+
 }

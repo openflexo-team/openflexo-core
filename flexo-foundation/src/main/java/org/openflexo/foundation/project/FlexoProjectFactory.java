@@ -38,15 +38,18 @@
 
 package org.openflexo.foundation.project;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.DefaultPamelaResourceModelFactory;
 import org.openflexo.foundation.FlexoProject;
-import org.openflexo.model.ModelContextLibrary;
+import org.openflexo.foundation.FlexoServiceManager;
+import org.openflexo.foundation.nature.ProjectNatureFactory;
+import org.openflexo.foundation.nature.ProjectNatureService;
 import org.openflexo.model.converter.FlexoVersionConverter;
 import org.openflexo.model.converter.RelativePathResourceConverter;
 import org.openflexo.model.exceptions.ModelDefinitionException;
-import org.openflexo.model.factory.EditingContext;
 
 /**
  * {@link FlexoProject} PAMELA factory<br>
@@ -62,15 +65,33 @@ public class FlexoProjectFactory extends DefaultPamelaResourceModelFactory<Flexo
 
 	private RelativePathResourceConverter relativePathResourceConverter;
 
-	public FlexoProjectFactory(FlexoProjectResource<?> resource, EditingContext editingContext) throws ModelDefinitionException {
-		super(resource, ModelContextLibrary.getModelContext(FlexoProject.class));
-		setEditingContext(editingContext);
+	public FlexoProjectFactory(FlexoProjectResource<?> resource, FlexoServiceManager serviceManager) throws ModelDefinitionException {
+		super(resource, retrieveProjectNatureSpecificClasses(serviceManager.getProjectNatureService()));
+		setEditingContext(serviceManager.getEditingContext());
 		addConverter(new FlexoVersionConverter());
 		addConverter(relativePathResourceConverter = new RelativePathResourceConverter(null));
 		if (resource != null && resource.getIODelegate() != null && resource.getIODelegate().getSerializationArtefactAsResource() != null) {
 			relativePathResourceConverter
 					.setContainerResource(resource.getIODelegate().getSerializationArtefactAsResource().getContainer());
 		}
+	}
+
+	/**
+	 * Iterate on all defined {@link ProjectNatureFactory} to extract classes to expose
+	 * 
+	 * @param pnService
+	 * @return
+	 * @throws ModelDefinitionException
+	 */
+	private static List<Class<?>> retrieveProjectNatureSpecificClasses(ProjectNatureService pnService) throws ModelDefinitionException {
+
+		List<Class<?>> classes = new ArrayList<>();
+		classes.add(FlexoProject.class);
+
+		for (ProjectNatureFactory<?> factory : pnService.getProjectNatureFactories()) {
+			classes.add(factory.getProjectNatureClass());
+		}
+		return classes;
 	}
 
 	public FlexoProject<?> makeNewFlexoProject() {

@@ -2,7 +2,7 @@
  * 
  * Copyright (c) 2014, Openflexo
  * 
- * This file is part of Flexo-ui, a component of the software infrastructure 
+ * This file is part of Freemodellingeditor, a component of the software infrastructure 
  * developed at Openflexo.
  * 
  * 
@@ -36,32 +36,30 @@
  * 
  */
 
-package org.openflexo.module;
+package org.openflexo.foundation.nature;
 
-import javax.swing.ImageIcon;
-
-import org.openflexo.foundation.nature.ProjectNature;
-import org.openflexo.prefs.ModulePreferences;
+import org.openflexo.foundation.FlexoProjectObject;
+import org.openflexo.model.annotations.Getter;
+import org.openflexo.model.annotations.ModelEntity;
+import org.openflexo.model.annotations.PropertyIdentifier;
+import org.openflexo.model.annotations.Setter;
 
 /**
- * Represents a Module in Openflexo intrastructure managing a specific {@link ProjectNature}
+ * Base implementation of an object participating to {@link ProjectNature} encoding
  * 
- * @author sguerin
+ * @author sylvain
  * 
  */
-public abstract class NatureSpecificModule<M extends FlexoModule<M>, N extends ProjectNature> extends Module<M> {
+@ModelEntity(isAbstract = true)
+public interface NatureObject<N extends ProjectNature> extends FlexoProjectObject {
 
-	private final Class<N> projectNatureClass;
+	@PropertyIdentifier(type = ProjectNature.class)
+	public static final String NATURE = "nature";
 
-	public NatureSpecificModule(String name, String shortName, Class<M> moduleClass, Class<? extends ModulePreferences<M>> preferencesClass,
-			String relativeDirectory, String jiraComponentID, String helpTopic, ImageIcon smallIcon, ImageIcon mediumIcon,
-			ImageIcon mediumIconWithHover, ImageIcon bigIcon, Class<N> projectNatureClass) {
-		super(name, shortName, moduleClass, preferencesClass, relativeDirectory, jiraComponentID, helpTopic, smallIcon, mediumIcon,
-				mediumIconWithHover, bigIcon);
-		this.projectNatureClass = projectNatureClass;
-	}
+	@Getter(value = NATURE)
+	public N getNature();
 
-	public Class<N> getProjectNatureClass() {
-		return projectNatureClass;
-	}
+	@Setter(NATURE)
+	public void setNature(N nature);
+
 }

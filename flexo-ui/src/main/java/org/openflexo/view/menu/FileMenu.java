@@ -267,10 +267,10 @@ public class FileMenu extends FlexoMenu {
 			File projectDirectory = NewProjectComponent.getProjectDirectory(getController().getApplicationContext());
 			if (projectDirectory != null) {
 				if (getController().getModule().getModule() instanceof NatureSpecificModule) {
-					ProjectNature<?, ?> nature = getController().getApplicationContext().getProjectNatureService()
-							.getProjectNature(((NatureSpecificModule) getController().getModule().getModule()).getNatureClass());
+					Class<? extends ProjectNature> projectNatureClass = ((NatureSpecificModule) getController().getModule().getModule())
+							.getProjectNatureClass();
 					try {
-						getProjectLoader().newStandaloneProject(projectDirectory, nature);
+						getProjectLoader().newStandaloneProject(projectDirectory, projectNatureClass);
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();

@@ -2,7 +2,7 @@
  * 
  * Copyright (c) 2014, Openflexo
  * 
- * This file is part of Flexo-ui, a component of the software infrastructure 
+ * This file is part of Flexo-foundation, a component of the software infrastructure 
  * developed at Openflexo.
  * 
  * 
@@ -36,32 +36,47 @@
  * 
  */
 
-package org.openflexo.module;
+package org.openflexo.foundation.nature;
 
-import javax.swing.ImageIcon;
-
-import org.openflexo.foundation.nature.ProjectNature;
-import org.openflexo.prefs.ModulePreferences;
+import org.openflexo.foundation.FlexoEditor;
+import org.openflexo.foundation.FlexoProject;
+import org.openflexo.foundation.FlexoServiceManager;
 
 /**
- * Represents a Module in Openflexo intrastructure managing a specific {@link ProjectNature}
+ * API for a factory of {@link ProjectNature}. Only one instance of the factory is present in the application (managed by the
+ * {@link FlexoServiceManager})
  * 
- * @author sguerin
+ * @author sylvain
  * 
  */
-public abstract class NatureSpecificModule<M extends FlexoModule<M>, N extends ProjectNature> extends Module<M> {
+public interface ProjectNatureFactory<N extends ProjectNature> {
 
-	private final Class<N> projectNatureClass;
+	/**
+	 * Gives to supplied {@link FlexoProject} related {@link ProjectNature}
+	 * 
+	 * @return
+	 */
+	public N givesNature(FlexoProject<?> project, FlexoEditor editor);
 
-	public NatureSpecificModule(String name, String shortName, Class<M> moduleClass, Class<? extends ModulePreferences<M>> preferencesClass,
-			String relativeDirectory, String jiraComponentID, String helpTopic, ImageIcon smallIcon, ImageIcon mediumIcon,
-			ImageIcon mediumIconWithHover, ImageIcon bigIcon, Class<N> projectNatureClass) {
-		super(name, shortName, moduleClass, preferencesClass, relativeDirectory, jiraComponentID, helpTopic, smallIcon, mediumIcon,
-				mediumIconWithHover, bigIcon);
-		this.projectNatureClass = projectNatureClass;
-	}
+	/**
+	 * Return class of related {@link ProjectNature}
+	 * 
+	 * @return
+	 */
+	public Class<N> getProjectNatureClass();
 
-	public Class<N> getProjectNatureClass() {
-		return projectNatureClass;
-	}
+	/**
+	 * Returns service managing project natures
+	 * 
+	 * @return
+	 */
+	public ProjectNatureService getProjectNatureService();
+
+	/**
+	 * Sets service managing project natures
+	 * 
+	 * @param projectNatureService
+	 */
+	public void setProjectNatureService(ProjectNatureService projectNatureService);
+
 }

@@ -67,7 +67,6 @@ import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.VirtualModelRepository;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceRepository;
 import org.openflexo.foundation.nature.ProjectNature;
-import org.openflexo.foundation.nature.ProjectWrapper;
 import org.openflexo.foundation.resource.CannotRenameException;
 import org.openflexo.foundation.resource.DuplicateExternalRepositoryNameException;
 import org.openflexo.foundation.resource.ExternalRepositorySet;
@@ -601,8 +600,13 @@ public abstract class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoRe
 	 * @return
 	 */
 	@Override
-	public final boolean hasNature(ProjectNature<?, ?> projectNature) {
-		return projectNature.hasNature(this);
+	public final boolean hasNature(Class<? extends ProjectNature> projectNatureClass) {
+		for (ProjectNature n : getProjectNatures()) {
+			if (projectNatureClass.isAssignableFrom(n.getClass())) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/**
@@ -614,8 +618,31 @@ public abstract class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoRe
 	 */
 	@Override
 	public final boolean hasNature(String projectNatureClassName) {
-		ProjectNature<?, ?> projectNature = getServiceManager().getProjectNatureService().getProjectNature(projectNatureClassName);
-		return projectNature.hasNature(this);
+
+		Class<? extends ProjectNature> projectNatureClass;
+		try {
+			projectNatureClass = (Class<? extends ProjectNature>) Class.forName(projectNatureClassName);
+			return hasNature(projectNatureClass);
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	/**
+	 * Return nature of supplied class when existing.<br>
+	 * 
+	 * @param projectNatureClass
+	 * @return
+	 */
+	@Override
+	public <N extends ProjectNature> N getNature(Class<N> projectNatureClass) {
+		for (ProjectNature n : getProjectNatures()) {
+			if (projectNatureClass.isAssignableFrom(n.getClass())) {
+				return (N) n;
+			}
+		}
+		return null;
 	}
 
 	/**
@@ -628,11 +655,11 @@ public abstract class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoRe
 	 * @param editor
 	 *            the editor to use to edit the project
 	 */
-	public final void givesNature(ProjectNature<?, ?> projectNature, FlexoEditor editor) {
+	/*public final void givesNature(ProjectNature<?, ?> projectNature, FlexoEditor editor) {
 		if (!hasNature(projectNature)) {
 			projectNature.givesNature(this, editor);
 		}
-	}
+	}*/
 
 	/**
 	 * Return project wrapper object representing this project according to supplied nature
@@ -640,10 +667,10 @@ public abstract class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoRe
 	 * @param projectNature
 	 * @return
 	 */
-	@Override
+	/*@Override
 	public final <N extends ProjectNature<N, P>, P extends ProjectWrapper<N>> P asNature(N projectNature) {
 		return projectNature.getProjectWrapper(this);
-	}
+	}*/
 
 	/**
 	 * Return project wrapper object representing this project according to supplied nature
@@ -651,7 +678,7 @@ public abstract class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoRe
 	 * @param projectNature
 	 * @return
 	 */
-	@Override
+	/*@Override
 	public final ProjectWrapper<?> asNature(String projectNatureClassName) {
 		if (!closed) {
 			ProjectNature<?, ?> projectNature = getServiceManager().getProjectNatureService().getProjectNature(projectNatureClassName);
@@ -659,10 +686,10 @@ public abstract class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoRe
 				return projectNature.getProjectWrapper(this);
 			}
 		}
-
+	
 		// System.out.println("Could not lookup nature " + projectNatureClassName);
 		return null;
-	}
+	}*/
 
 	// ======================================================================
 	// ============================= Validation =============================

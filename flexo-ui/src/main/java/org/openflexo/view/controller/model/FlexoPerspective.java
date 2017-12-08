@@ -39,7 +39,6 @@
 
 package org.openflexo.view.controller.model;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -139,10 +138,10 @@ public abstract class FlexoPerspective extends ControllerModelObject {
 	public ModuleView<?> createModuleViewForObject(FlexoObject object) {
 
 		if (object instanceof FlexoProject) {
-			FlexoProject project = (FlexoProject) object;
-			List<ProjectNature<?, ?>> availableNatures = getSpecificNaturesForProject(project);
+			FlexoProject<?> project = (FlexoProject<?>) object;
+			List<ProjectNature> availableNatures = getSpecificNaturesForProject(project);
 			if (availableNatures.size() > 0) {
-				ProjectNature<?, ?> nature = availableNatures.get(0);
+				ProjectNature nature = availableNatures.get(0);
 				return getModuleViewForProject(project, nature);
 			}
 			// No default view for a FlexoProject !
@@ -168,7 +167,7 @@ public abstract class FlexoPerspective extends ControllerModelObject {
 	 */
 	public boolean hasModuleViewForObject(FlexoObject object) {
 		if (object instanceof FlexoProject) {
-			return getSpecificNaturesForProject((FlexoProject) object).size() > 0;
+			return getSpecificNaturesForProject((FlexoProject<?>) object).size() > 0;
 		}
 		if (object instanceof TechnologyObject) {
 			return hasModuleViewForTechnologyObject((TechnologyObject<?>) object);
@@ -337,8 +336,9 @@ public abstract class FlexoPerspective extends ControllerModelObject {
 
 	// Handle natures for FlexoProject
 
-	public List<ProjectNature<?, ?>> getSpecificNaturesForProject(FlexoProject project) {
-		List<ProjectNature<?, ?>> returned = new ArrayList<>();
+	public List<ProjectNature> getSpecificNaturesForProject(FlexoProject<?> project) {
+		return project.getProjectNatures();
+		/*List<ProjectNature<?, ?>> returned = new ArrayList<>();
 		TechnologyAdapterControllerService tacService = controller.getApplicationContext().getTechnologyAdapterControllerService();
 		TechnologyAdapterService taService = controller.getApplicationContext().getTechnologyAdapterService();
 		for (TechnologyAdapter ta : taService.getTechnologyAdapters()) {
@@ -350,15 +350,15 @@ public abstract class FlexoPerspective extends ControllerModelObject {
 				logger.warning("INVESTIGATE: there is a enabled TA with no TAC enabled (not yet): " + ta.getClass().getCanonicalName());
 			}
 		}
-		return returned;
+		return returned;*/
 	}
 
-	public ModuleView<FlexoProject> getModuleViewForProject(FlexoProject project, ProjectNature<?, ?> nature) {
+	public ModuleView<FlexoProject<?>> getModuleViewForProject(FlexoProject<?> project, ProjectNature nature) {
 		TechnologyAdapterControllerService tacService = controller.getApplicationContext().getTechnologyAdapterControllerService();
 		TechnologyAdapterService taService = controller.getApplicationContext().getTechnologyAdapterService();
 		for (TechnologyAdapter ta : taService.getTechnologyAdapters()) {
 			TechnologyAdapterController<?> tac = tacService.getTechnologyAdapterController(ta);
-			ModuleView<FlexoProject> returned = tac.createFlexoProjectModuleViewForSpecificNature(project, nature, controller, this);
+			ModuleView<FlexoProject<?>> returned = tac.createFlexoProjectModuleViewForSpecificNature(project, nature, controller, this);
 			if (returned != null) {
 				return returned;
 			}

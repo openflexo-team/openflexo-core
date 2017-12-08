@@ -38,8 +38,15 @@
 
 package org.openflexo.foundation.nature;
 
-import org.openflexo.foundation.FlexoEditor;
+import java.util.logging.Logger;
+
 import org.openflexo.foundation.FlexoProject;
+import org.openflexo.foundation.FlexoProjectObject;
+import org.openflexo.logging.FlexoLogger;
+import org.openflexo.model.annotations.Getter;
+import org.openflexo.model.annotations.ImplementationClass;
+import org.openflexo.model.annotations.ModelEntity;
+import org.openflexo.model.annotations.Setter;
 
 /**
  * Interface defining the nature of a {@link FlexoProject}<br>
@@ -49,34 +56,36 @@ import org.openflexo.foundation.FlexoProject;
  * @author sylvain
  * 
  */
-public interface ProjectNature<N extends ProjectNature<N, P>, P extends ProjectWrapper<N>> extends FlexoNature<FlexoProject<?>> {
+@ModelEntity(isAbstract = true)
+@ImplementationClass(ProjectNature.ProjectNatureImpl.class)
+public interface ProjectNature extends FlexoProjectObject, FlexoNature<FlexoProject<?>> {
+
+	public static final String OWNER = "owner";
 
 	/**
-	 * Gives to supplied FlexoProject this nature
+	 * Return owner for this project nature (the project where this nature is declared)
 	 * 
 	 * @return
 	 */
-	public void givesNature(FlexoProject<?> project, FlexoEditor editor);
+	@Getter(value = OWNER, inverse = FlexoProject.PROJECT_NATURES)
+	public FlexoProject<?> getOwner();
 
 	/**
-	 * Return wrapping object representing the interpretation of supplied project with this nature
+	 * Sets owner for this project nature (the project where this nature is declared)
 	 * 
 	 * @param project
-	 * @return
+	 *            the project where this nature is declared
 	 */
-	public P getProjectWrapper(FlexoProject<?> project);
+	@Setter(OWNER)
+	public void setOwner(FlexoProject<?> project);
 
-	/**
-	 * Returns service managing project natures
-	 * 
-	 * @return
-	 */
-	public ProjectNatureService getProjectNatureService();
+	public abstract class ProjectNatureImpl extends FlexoProjectObjectImpl implements ProjectNature {
 
-	/**
-	 * Sets service managing project natures
-	 * 
-	 * @param projectNatureService
-	 */
-	public void setProjectNatureService(ProjectNatureService projectNatureService);
+		private static final Logger logger = FlexoLogger.getLogger(ProjectNature.class.getPackage().getName());
+
+		@Override
+		public FlexoProject<?> getProject() {
+			return getOwner();
+		}
+	}
 }

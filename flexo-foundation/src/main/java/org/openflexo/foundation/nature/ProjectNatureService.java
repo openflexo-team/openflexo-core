@@ -61,16 +61,16 @@ public interface ProjectNatureService extends FlexoService {
 	public static final String PROJECT_NATURES = "projectNatures";
 
 	@Getter(value = PROJECT_NATURES, cardinality = Cardinality.LIST, ignoreType = true)
-	public List<ProjectNature<?, ?>> getProjectNatures();
+	public List<ProjectNatureFactory<?>> getProjectNatureFactories();
 
 	@Setter(PROJECT_NATURES)
-	public void setProjectNatures(List<ProjectNature<?, ?>> projectNatures);
+	public void setProjectNatureFactories(List<ProjectNatureFactory<?>> projectNatureFactories);
 
 	@Adder(PROJECT_NATURES)
-	public void addToProjectNatures(ProjectNature<?, ?> projectNature);
+	public void addToProjectNatureFactories(ProjectNatureFactory<?> projectNatureFactory);
 
 	@Remover(PROJECT_NATURES)
-	public void removeFromProjectNatures(ProjectNature<?, ?> projectNature);
+	public void removeFromProjectNatureFactories(ProjectNatureFactory<?> projectNatureFactory);
 
 	/**
 	 * Return project nature mapping supplied class<br>
@@ -78,7 +78,7 @@ public interface ProjectNatureService extends FlexoService {
 	 * @param projectNatureClass
 	 * @return
 	 */
-	public <N extends ProjectNature<?, ?>> N getProjectNature(Class<N> projectNatureClass);
+	public <F extends ProjectNatureFactory<N>, N extends ProjectNature> F getProjectNatureFactory(Class<N> projectNatureClass);
 
 	/**
 	 * Return project nature mapping supplied class<br>
@@ -86,6 +86,6 @@ public interface ProjectNatureService extends FlexoService {
 	 * @param projectNatureClass
 	 * @return
 	 */
-	public ProjectNature<?, ?> getProjectNature(String projectNatureClassName);
+	public ProjectNatureFactory<?> getProjectNatureFactory(String projectNatureClassName);
 
 }

@@ -44,7 +44,6 @@ import java.util.List;
 import javax.naming.InvalidNameException;
 
 import org.openflexo.foundation.nature.ProjectNature;
-import org.openflexo.foundation.nature.ProjectWrapper;
 import org.openflexo.foundation.project.FlexoProjectFactory;
 import org.openflexo.foundation.project.FlexoProjectImpl;
 import org.openflexo.foundation.project.FlexoProjectReference;
@@ -109,6 +108,8 @@ public interface FlexoProject<I> extends ResourceRepository<FlexoResource<?>, I>
 	public static final String PROJECT_REVISION_KEY = "projectRevision";
 	@PropertyIdentifier(type = FlexoProjectReference.class, cardinality = Cardinality.LIST)
 	public static final String IMPORTED_PROJECTS = "importedProjects";
+	@PropertyIdentifier(type = ProjectNature.class, cardinality = Cardinality.LIST)
+	public static final String PROJECT_NATURES = "projectNatures";
 	@PropertyIdentifier(type = FlexoEditor.class, cardinality = Cardinality.LIST)
 	public static final String EDITORS = "editors";
 	@PropertyIdentifier(type = String.class)
@@ -303,30 +304,44 @@ public interface FlexoProject<I> extends ResourceRepository<FlexoResource<?>, I>
 
 	public FlexoObjectIDManager getObjectIDManager();
 
+	@Getter(value = PROJECT_NATURES, cardinality = Cardinality.LIST, inverse = ProjectNature.OWNER)
+	@XMLElement
+	@Embedded
+	public List<ProjectNature> getProjectNatures();
+
+	@Setter(value = PROJECT_NATURES)
+	public void setProjectNatures(List<ProjectNature> projectNatures);
+
+	@Adder(PROJECT_NATURES)
+	public void addToProjectNatures(ProjectNature projectNature);
+
+	@Remover(value = PROJECT_NATURES)
+	public void removeFromProjectNatures(ProjectNature projectNature);
+
 	/**
 	 * Return boolean indicating if this project might be interpreted according to this project nature
 	 * 
-	 * @param projectNature
+	 * @param projectNatureClass
 	 * @return
 	 */
-	public boolean hasNature(ProjectNature<?, ?> projectNature);
+	public boolean hasNature(Class<? extends ProjectNature> projectNatureClass);
 
 	/**
 	 * Return boolean indicating if this project might be interpreted according to this project nature (supplied as string representing full
 	 * class name)
 	 * 
-	 * @param projectNature
+	 * @param projectNatureClassName
 	 * @return
 	 */
 	public boolean hasNature(String projectNatureClassName);
 
 	/**
-	 * Return project wrapper object representing this project according to supplied nature
+	 * Return nature of supplied class when existing.<br>
 	 * 
-	 * @param projectNature
+	 * @param projectNatureClass
 	 * @return
 	 */
-	public <N extends ProjectNature<N, P>, P extends ProjectWrapper<N>> P asNature(N projectNature);
+	public <N extends ProjectNature> N getNature(Class<N> projectNatureClass);
 
 	/**
 	 * Return project wrapper object representing this project according to supplied nature
@@ -334,6 +349,14 @@ public interface FlexoProject<I> extends ResourceRepository<FlexoResource<?>, I>
 	 * @param projectNature
 	 * @return
 	 */
-	public ProjectWrapper<?> asNature(String projectNatureClassName);
+	// public <N extends ProjectNature<N, P>, P extends ProjectWrapper<N>> P asNature(N projectNature);
+
+	/**
+	 * Return project wrapper object representing this project according to supplied nature
+	 * 
+	 * @param projectNature
+	 * @return
+	 */
+	// public ProjectWrapper<?> asNature(String projectNatureClassName);
 
 }

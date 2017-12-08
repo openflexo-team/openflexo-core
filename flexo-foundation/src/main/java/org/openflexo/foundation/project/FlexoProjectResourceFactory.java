@@ -67,7 +67,7 @@ public class FlexoProjectResourceFactory<I> extends PamelaResourceFactory<FlexoP
 	}
 
 	public FlexoProjectFactory makeResourceDataFactory(FlexoProjectResource<I> resource) throws ModelDefinitionException {
-		return new FlexoProjectFactory(resource, resource.getServiceManager().getEditingContext());
+		return new FlexoProjectFactory(resource, resource.getServiceManager());
 	}
 
 	@Override

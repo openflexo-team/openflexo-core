@@ -153,8 +153,8 @@ public class WelcomePanelController extends FlexoFIBController {
 		}
 
 		if (module instanceof NatureSpecificModule) {
-			ProjectNature<?, ?> nature = getProjectNatureService().getProjectNature(((NatureSpecificModule) module).getNatureClass());
-			getProjectLoader().makeNewProjectTask(projectDirectory, nature, loadModuleTask);
+			Class<? extends ProjectNature> projectNatureClass = ((NatureSpecificModule<?, ?>) module).getProjectNatureClass();
+			getProjectLoader().makeNewProjectTask(projectDirectory, projectNatureClass, loadModuleTask);
 		}
 		else {
 			getProjectLoader().makeNewProjectTask(projectDirectory, loadModuleTask);

@@ -84,11 +84,11 @@ public abstract class OpenflexoProjectAtRunTimeTestCaseWithGUI extends Openflexo
 	}
 
 	@Override
-	protected FlexoEditor createStandaloneProject(String projectName, ProjectNature<?, ?> nature) {
+	protected FlexoEditor createStandaloneProject(String projectName, Class<? extends ProjectNature> projectNatureClass) {
 		if (serviceManager == null) {
 			serviceManager = instanciateTestServiceManager();
 		}
-		return createStandaloneProject(projectName, nature, serviceManager);
+		return createStandaloneProject(projectName, projectNatureClass, serviceManager);
 	}
 
 }

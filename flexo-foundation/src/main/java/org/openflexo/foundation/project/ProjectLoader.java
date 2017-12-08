@@ -59,6 +59,7 @@ import org.openflexo.foundation.FlexoService;
 import org.openflexo.foundation.FlexoServiceImpl;
 import org.openflexo.foundation.action.CreateProject;
 import org.openflexo.foundation.nature.ProjectNature;
+import org.openflexo.foundation.nature.ProjectNatureFactory;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.ProjectClosed;
@@ -188,7 +189,7 @@ public class ProjectLoader extends FlexoServiceImpl implements HasPropertyChange
 	 * @throws IOException
 	 * @throws ProjectInitializerException
 	 */
-	public <I> FlexoEditor newStandaloneProject(I projectDirectory, ProjectNature<?, ?> projectNature)
+	public <I> FlexoEditor newStandaloneProject(I projectDirectory, Class<? extends ProjectNature> projectNatureClass)
 			throws IOException, ProjectInitializerException {
 
 		Progress.progress(FlexoLocalization.getMainLocalizer().localizedForKey("new_project") + projectDirectory);
@@ -218,7 +219,7 @@ public class ProjectLoader extends FlexoServiceImpl implements HasPropertyChange
 
 		// TODO: attempt to lookup an eventual FlexoResourceCenter, repository and folder for supplied project directory;
 
-		Progress.progress(FlexoLocalization.getMainLocalizer().localizedForKey("create_new_project") + projectDirectory);
+		Progress.progress(FlexoLocalization.getMainLocalizer().localizedForKey("create_new_project") + " " + projectDirectory);
 
 		// Create the project
 		CreateProject action = CreateProject.actionType.makeNewAction(null, null, getServiceManager().getDefaultEditor());
@@ -253,12 +254,14 @@ public class ProjectLoader extends FlexoServiceImpl implements HasPropertyChange
 
 		System.out.println("Hop, on vient de creer le projet " + newProject);
 		System.out.println("newEditor=" + newEditor);
-		System.out.println("projectNature=" + projectNature);
+		System.out.println("projectNatureClass=" + projectNatureClass);
 
 		// Now, if a nature has been supplied, gives this nature to the project
-		if (projectNature != null) {
+		if (projectNatureClass != null) {
 			Progress.progress(FlexoLocalization.getMainLocalizer().localizedForKey("gives_nature") + projectDirectory);
-			projectNature.givesNature(newProject, newEditor);
+			ProjectNatureFactory<?> natureFactory = getServiceManager().getProjectNatureService()
+					.getProjectNatureFactory(projectNatureClass);
+			natureFactory.givesNature(newProject, newEditor);
 		}
 
 		// Create and return a FlexoEditor for the new FlexoProject
@@ -277,7 +280,7 @@ public class ProjectLoader extends FlexoServiceImpl implements HasPropertyChange
 	 * @throws ProjectInitializerException
 	 */
 	public <I> FlexoEditor newProjectInResourceCenter(String projectName, RepositoryFolder<FlexoProjectResource<?>, I> folder,
-			ProjectNature<?, ?> projectNature) throws IOException, ProjectInitializerException {
+			Class<? extends ProjectNature> projectNatureClass) throws IOException, ProjectInitializerException {
 
 		FlexoProject<?> newProject = null;
 		FlexoEditor newEditor = null;
@@ -302,8 +305,12 @@ public class ProjectLoader extends FlexoServiceImpl implements HasPropertyChange
 		getServiceManager().notify(this, new ProjectLoaded(newProject));
 
 		// Now, if a nature has been supplied, gives this nature to the project
-		if (projectNature != null) {
-			projectNature.givesNature(newProject, newEditor);
+		if (projectNatureClass != null) {
+			Progress.progress(
+					FlexoLocalization.getMainLocalizer().localizedForKey("gives_nature") + " " + newProject.getProjectDirectory());
+			ProjectNatureFactory<?> natureFactory = getServiceManager().getProjectNatureService()
+					.getProjectNatureFactory(projectNatureClass);
+			natureFactory.givesNature(newProject, newEditor);
 		}
 
 		// Create and return a FlexoEditor for the new FlexoProject
