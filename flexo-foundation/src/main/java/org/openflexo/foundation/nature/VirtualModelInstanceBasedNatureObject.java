@@ -46,6 +46,7 @@ import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.rm.FMLRTVirtualModelInstanceResource;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
+import org.openflexo.foundation.resource.ResourceManager;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -94,7 +95,7 @@ public interface VirtualModelInstanceBasedNatureObject<N extends ProjectNature> 
 		@Override
 		public FMLRTVirtualModelInstanceResource getAccessedVirtualModelInstanceResource() {
 
-			org.openflexo.foundation.resource.ResourceManager resourceManager = null;
+			ResourceManager resourceManager = null;
 			if (getNature() != null && getNature().getProject() != null) {
 				resourceManager = getNature().getProject().getServiceManager().getResourceManager();
 			}
