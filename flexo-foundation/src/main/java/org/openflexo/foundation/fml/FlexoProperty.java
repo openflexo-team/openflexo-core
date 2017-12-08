@@ -433,10 +433,22 @@ public abstract interface FlexoProperty<T> extends FlexoConceptObject {
 			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
 			out.append(getFMLAnnotation(context), context);
 			out.append(StringUtils.LINE_SEPARATOR, context);
-			out.append("public " + TypeUtils.simpleRepresentation(getResultingType()) + " " + getName() + ";", context);
+			if (detailedFMLSpecifications(context) == null) {
+				out.append("public " + TypeUtils.simpleRepresentation(getResultingType()) + " " + getName() + ";", context);
+			}
+			else {
+				out.append("public " + TypeUtils.simpleRepresentation(getResultingType()) + " " + getName() + " {", context);
+				out.append(StringUtils.LINE_SEPARATOR, context);
+				out.append(detailedFMLSpecifications(context), context, 1);
+				// out.append(StringUtils.LINE_SEPARATOR, context);
+				out.append("}", context);
+			}
 			return out.toString();
 		}
 
+		public String detailedFMLSpecifications(FMLRepresentationContext context) {
+			return null;
+		}
 	}
 
 	@DefineValidationRule
