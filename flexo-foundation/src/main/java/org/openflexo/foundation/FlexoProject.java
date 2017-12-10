@@ -43,6 +43,7 @@ import java.util.List;
 
 import javax.naming.InvalidNameException;
 
+import org.openflexo.connie.annotations.NotificationUnsafe;
 import org.openflexo.foundation.nature.ProjectNature;
 import org.openflexo.foundation.project.FlexoProjectFactory;
 import org.openflexo.foundation.project.FlexoProjectImpl;
@@ -324,6 +325,7 @@ public interface FlexoProject<I> extends ResourceRepository<FlexoResource<?>, I>
 	 * @param projectNatureClass
 	 * @return
 	 */
+	@NotificationUnsafe
 	public boolean hasNature(Class<? extends ProjectNature> projectNatureClass);
 
 	/**
@@ -333,6 +335,7 @@ public interface FlexoProject<I> extends ResourceRepository<FlexoResource<?>, I>
 	 * @param projectNatureClassName
 	 * @return
 	 */
+	@NotificationUnsafe
 	public boolean hasNature(String projectNatureClassName);
 
 	/**
@@ -341,22 +344,16 @@ public interface FlexoProject<I> extends ResourceRepository<FlexoResource<?>, I>
 	 * @param projectNatureClass
 	 * @return
 	 */
+	@NotificationUnsafe
 	public <N extends ProjectNature> N getNature(Class<N> projectNatureClass);
 
 	/**
-	 * Return project wrapper object representing this project according to supplied nature
+	 * Return nature of supplied class when existing.<br>
 	 * 
-	 * @param projectNature
+	 * @param projectNatureClassName
 	 * @return
 	 */
-	// public <N extends ProjectNature<N, P>, P extends ProjectWrapper<N>> P asNature(N projectNature);
-
-	/**
-	 * Return project wrapper object representing this project according to supplied nature
-	 * 
-	 * @param projectNature
-	 * @return
-	 */
-	// public ProjectWrapper<?> asNature(String projectNatureClassName);
+	@NotificationUnsafe
+	public <N extends ProjectNature> N getNature(String projectNatureClassName);
 
 }

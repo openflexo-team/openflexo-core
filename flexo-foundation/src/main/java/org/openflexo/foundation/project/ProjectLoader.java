@@ -224,6 +224,8 @@ public class ProjectLoader extends FlexoServiceImpl implements HasPropertyChange
 		// Create the project
 		CreateProject action = CreateProject.actionType.makeNewAction(null, null, getServiceManager().getDefaultEditor());
 		action.setSerializationArtefact(projectDirectory);
+		action.setProjectNatureClass(projectNatureClass);
+
 		action.doAction();
 		newProject = action.getNewProject();
 

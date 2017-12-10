@@ -53,6 +53,7 @@ import org.openflexo.foundation.action.FlexoActionFinalizer;
 import org.openflexo.foundation.action.FlexoActionInitializer;
 import org.openflexo.foundation.project.FlexoProjectResource;
 import org.openflexo.foundation.resource.RepositoryFolder;
+import org.openflexo.foundation.task.Progress;
 import org.openflexo.gina.controller.FIBController.Status;
 import org.openflexo.icon.IconFactory;
 import org.openflexo.icon.IconLibrary;
@@ -72,9 +73,11 @@ public class CreateProjectInitializer extends ActionInitializer<CreateProject, R
 		return new FlexoActionInitializer<CreateProject>() {
 			@Override
 			public boolean run(EventObject e, CreateProject action) {
+				Progress.forceHideTaskBar();
 				Wizard wizard = new CreateProjectWizard(action, getController());
 				WizardDialog dialog = new WizardDialog(wizard, getController());
 				dialog.showDialog();
+				Progress.stopForceHideTaskBar();
 				if (dialog.getStatus() != Status.VALIDATED) {
 					// Operation cancelled
 					return false;

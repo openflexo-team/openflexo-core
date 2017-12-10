@@ -53,6 +53,8 @@ import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.fml.rm.VirtualModelResourceFactory;
+import org.openflexo.foundation.nature.ProjectNature;
+import org.openflexo.foundation.nature.ProjectNatureFactory;
 import org.openflexo.foundation.project.FlexoProjectResource;
 import org.openflexo.foundation.project.FlexoProjectResourceFactory;
 import org.openflexo.foundation.resource.RepositoryFolder;
@@ -104,9 +106,11 @@ public class CreateProject extends FlexoAction<CreateProject, RepositoryFolder<F
 	private String newProjectName;
 	private String newProjectURI;
 	private String newProjectDescription;
-	private FlexoProject newFlexoProject;
+	private FlexoProject<?> newFlexoProject;
 
 	private Object serializationArtefact;
+
+	private Class<? extends ProjectNature> projectNatureClass;
 
 	CreateProject(RepositoryFolder<FlexoProjectResource<?>, ?> focusedObject, Vector<FlexoObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
@@ -291,6 +295,26 @@ public class CreateProject extends FlexoAction<CreateProject, RepositoryFolder<F
 			Object oldValue = this.serializationArtefact;
 			this.serializationArtefact = serializationArtefact;
 			getPropertyChangeSupport().firePropertyChange("serializationArtefact", oldValue, serializationArtefact);
+		}
+	}
+
+	public Class<? extends ProjectNature> getProjectNatureClass() {
+		return projectNatureClass;
+	}
+
+	public void setProjectNatureClass(Class<? extends ProjectNature> projectNatureClass) {
+		if ((projectNatureClass == null && this.projectNatureClass != null)
+				|| (projectNatureClass != null && !projectNatureClass.equals(this.projectNatureClass))) {
+			Class<? extends ProjectNature> oldValue = this.projectNatureClass;
+			this.projectNatureClass = projectNatureClass;
+
+			if (projectNatureClass != null) {
+				ProjectNatureFactory<? extends ProjectNature> projectNatureFactory = getServiceManager().getProjectNatureService()
+						.getProjectNatureFactory(projectNatureClass);
+				System.out.println("Found factory " + projectNatureFactory);
+			}
+
+			getPropertyChangeSupport().firePropertyChange("projectNatureClass", oldValue, projectNatureClass);
 		}
 	}
 

@@ -513,7 +513,7 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 
 	}
 
-	public abstract FlexoObject getDefaultObjectToSelect(FlexoProject project);
+	public abstract FlexoObject getDefaultObjectToSelect(FlexoProject<?> project);
 
 	public FlexoProject<?> getProject() {
 		if (getEditor() != null) {
@@ -1628,11 +1628,11 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 				}
 			}
 		}
-		if (object instanceof FlexoObject && getCurrentPerspective().hasModuleViewForObject((FlexoObject) object)) {
-			// Try to display object in view
-			selectAndFocusObjectAsTask((FlexoObject) object);
-		}
 		if (getCurrentPerspective() != null) {
+			if (object instanceof FlexoObject && getCurrentPerspective().hasModuleViewForObject((FlexoObject) object)) {
+				// Try to display object in view
+				selectAndFocusObjectAsTask((FlexoObject) object);
+			}
 			if (object instanceof FlexoObject) {
 				getCurrentPerspective().objectWasDoubleClicked(getRelevantObject((FlexoObject) object), this);
 			}
@@ -1802,6 +1802,14 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 
 	public final FlexoPerspective getCurrentPerspective() {
 		return getControllerModel().getCurrentPerspective();
+	}
+
+	public FlexoPerspective getDefaultPerspective() {
+		if (getControllerModel() != null && getControllerModel().getPerspectives() != null
+				&& getControllerModel().getPerspectives().size() > 0) {
+			return getControllerModel().getPerspectives().get(0);
+		}
+		return null;
 	}
 
 	public final FlexoEditor getEditor() {

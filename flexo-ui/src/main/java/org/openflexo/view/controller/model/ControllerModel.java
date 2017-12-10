@@ -84,7 +84,7 @@ public class ControllerModel extends ControllerModelObject implements PropertyCh
 	public static final String CURRENT_EDITOR = "currentEditor";
 	public static final String CURRENT_PERSPECTIVE = "currentPerspective";
 
-	private static final Location NO_LOCATION = new Location(null, null, null);
+	private final Location NO_LOCATION;
 
 	/** Gson instance used to serialize and deserialize layouts of the mainpane multisplitpane */
 	private Gson gsonLayout;
@@ -114,7 +114,7 @@ public class ControllerModel extends ControllerModelObject implements PropertyCh
 	private final Stack<Location> nextHistory;
 
 	/** The current location in the history */
-	private Location currentLocation = NO_LOCATION;
+	private Location currentLocation;
 
 	/** Internal flag that indicates if we are currently moving forward in the history */
 	private boolean isGoingForward = false;
@@ -135,6 +135,18 @@ public class ControllerModel extends ControllerModelObject implements PropertyCh
 		this.context = context;
 		this.module = module;
 		registrationManager = new PropertyChangeListenerRegistrationManager();
+
+		NO_LOCATION = new Location(null, null, null) {
+			@Override
+			public FlexoPerspective getPerspective() {
+				if (module != null && module.getController() != null) {
+					return module.getController().getDefaultPerspective();
+				}
+				return null;
+			}
+		};
+		currentLocation = NO_LOCATION;
+
 		if (context.getGeneralPreferences() != null) {
 			leftViewVisible = context.getPresentationPreferences().getShowLeftView(module.getShortName());
 			rightViewVisible = context.getPresentationPreferences().getShowRightView(module.getShortName());
@@ -192,9 +204,11 @@ public class ControllerModel extends ControllerModelObject implements PropertyCh
 			return currentLocation.getPerspective();
 		}
 		else {
-			return null;
+			return defaultPerspective;
 		}
 	}
+
+	private FlexoPerspective defaultPerspective = null;
 
 	public void setCurrentPerspective(FlexoPerspective currentPerspective) {
 
@@ -202,6 +216,15 @@ public class ControllerModel extends ControllerModelObject implements PropertyCh
 		// System.out.println("currentPerspective=" + currentLocation.getPerspective());
 		// System.out.println("currentObject=" + getCurrentObject());
 		// System.out.println(">>>>>>>> SWITCHING to " + currentPerspective);
+
+		if (currentPerspective != null) {
+			defaultPerspective = currentPerspective;
+		}
+
+		if (currentPerspective == null) {
+			System.out.println("Qui me passe la current perspective a null ????");
+			Thread.dumpStack();
+		}
 
 		FlexoObject object = getCurrentObject();
 		if (currentPerspective != null) {
@@ -326,6 +349,8 @@ public class ControllerModel extends ControllerModelObject implements PropertyCh
 			}
 			else {
 				setCurrentLocation(location.getEditor(), location.getObject(), location.getPerspective());
+				defaultPerspective = location.getPerspective();
+
 			}
 		}
 	}

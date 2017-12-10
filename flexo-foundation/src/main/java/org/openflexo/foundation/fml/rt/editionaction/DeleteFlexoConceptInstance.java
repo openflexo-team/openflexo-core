@@ -48,6 +48,8 @@ import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.fml.DeletionScheme;
+import org.openflexo.foundation.fml.FMLRepresentationContext;
+import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
@@ -358,6 +360,17 @@ public interface DeleteFlexoConceptInstance<VMI extends VirtualModelInstance<VMI
 			return FlexoConceptInstance.class;
 		}
 
+		@Override
+		public String getFMLRepresentation(FMLRepresentationContext context) {
+			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
+			if (getDeletionScheme() != null) {
+				out.append(getObject().toString() + "." + getDeletionScheme().getName() + "()" + ";", context);
+			}
+			else {
+				out.append(getObject().toString() + ".delete()" + ";", context);
+			}
+			return out.toString();
+		}
 	}
 
 	@DefineValidationRule

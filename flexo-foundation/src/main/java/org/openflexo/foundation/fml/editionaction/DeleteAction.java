@@ -88,7 +88,7 @@ public interface DeleteAction<T extends FlexoObject> extends EditionAction, Assi
 		@Override
 		public String getFMLRepresentation(FMLRepresentationContext context) {
 			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
-			out.append("delete " + getObject().toString(), context);
+			out.append(getObject().toString() + ".delete()" + ";", context);
 			return out.toString();
 		}
 

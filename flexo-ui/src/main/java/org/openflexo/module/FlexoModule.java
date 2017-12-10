@@ -40,13 +40,15 @@
 package org.openflexo.module;
 
 import java.awt.Frame;
+import java.io.File;
+import java.io.IOException;
 import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.swing.SwingUtilities;
-
 import org.openflexo.ApplicationContext;
+import org.openflexo.components.NewProjectComponent;
+import org.openflexo.components.OpenProjectComponent;
 import org.openflexo.foundation.DataFlexoObserver;
 import org.openflexo.foundation.DataModification;
 import org.openflexo.foundation.FlexoEditor;
@@ -54,6 +56,7 @@ import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoObservable;
 import org.openflexo.foundation.FlexoService;
 import org.openflexo.foundation.FlexoService.ServiceNotification;
+import org.openflexo.foundation.nature.ProjectNature;
 import org.openflexo.foundation.project.ProjectLoader;
 import org.openflexo.foundation.resource.ProjectClosed;
 import org.openflexo.foundation.resource.ProjectLoaded;
@@ -61,10 +64,19 @@ import org.openflexo.foundation.resource.ResourceModified;
 import org.openflexo.foundation.resource.ResourceRegistered;
 import org.openflexo.foundation.resource.ResourceSaved;
 import org.openflexo.foundation.resource.ResourceUnregistered;
+import org.openflexo.foundation.task.FlexoTask;
 import org.openflexo.foundation.utils.OperationCancelledException;
+import org.openflexo.foundation.utils.ProjectInitializerException;
+import org.openflexo.foundation.utils.ProjectLoadingCancelledException;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.localization.LocalizedDelegate;
 import org.openflexo.localization.LocalizedDelegateImpl;
+import org.openflexo.model.annotations.Getter;
+import org.openflexo.model.annotations.ImplementationClass;
+import org.openflexo.model.annotations.ModelEntity;
+import org.openflexo.model.annotations.Setter;
+import org.openflexo.model.exceptions.ModelDefinitionException;
+import org.openflexo.model.factory.ModelFactory;
 import org.openflexo.prefs.ModulePreferences;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.view.FlexoFrame;
@@ -188,6 +200,86 @@ public abstract class FlexoModule<M extends FlexoModule<M>> implements DataFlexo
 		return getController().getEditor();
 	}
 
+	@ModelEntity
+	@ImplementationClass(WelcomePanel.WelcomePanelImpl.class)
+	public static interface WelcomePanel<M extends FlexoModule<?>> extends FlexoObject {
+
+		@Getter(value = "module", ignoreType = true)
+		public M getModule();
+
+		@Setter("module")
+		public void setModule(M module);
+
+		public void openProject();
+
+		public void newProject();
+
+		public static abstract class WelcomePanelImpl extends FlexoObjectImpl implements WelcomePanel {
+
+			@Override
+			public void openProject() {
+				File projectDirectory = OpenProjectComponent.getProjectDirectory(getModule().getController().getApplicationContext());
+				if (projectDirectory != null) {
+					// try {
+					try {
+						getModule().getProjectLoader().loadProject(projectDirectory);
+					} catch (ProjectLoadingCancelledException e) {
+						// Nothing to do
+					} catch (ProjectInitializerException e) {
+						e.printStackTrace();
+						FlexoController.notify(FlexoLocalization.getMainLocalizer().localizedForKey("could_not_open_project_located_at")
+								+ projectDirectory.getAbsolutePath());
+					}
+				}
+			}
+
+			@Override
+			public void newProject() {
+				File projectDirectory = NewProjectComponent.getProjectDirectory(getModule().getController().getApplicationContext());
+				if (projectDirectory != null) {
+					if (getModule().getModule() instanceof NatureSpecificModule) {
+						Class<? extends ProjectNature> projectNatureClass = ((NatureSpecificModule) getModule().getModule())
+								.getProjectNatureClass();
+						try {
+							getModule().getProjectLoader().newStandaloneProject(projectDirectory, projectNatureClass);
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						} catch (ProjectInitializerException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+					else {
+						try {
+							getModule().getProjectLoader().newStandaloneProject(projectDirectory);
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						} catch (ProjectInitializerException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+				}
+			}
+
+		}
+	}
+
+	private WelcomePanel<M> makeWelcomePanel() {
+		try {
+			ModelFactory factory = new ModelFactory(WelcomePanel.class);
+			WelcomePanel<M> returned = factory.newInstance(WelcomePanel.class);
+			returned.setModule((M) this);
+			return returned;
+		} catch (ModelDefinitionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+
 	private void selectDefaultObjectWhenAvailable() {
 		if (getEditor() != null && getEditor().getProject() != null && getController().getCurrentDisplayedObjectAsModuleView() == null) {
 			boolean selectDefaultObject = false;
@@ -212,6 +304,9 @@ public abstract class FlexoModule<M extends FlexoModule<M>> implements DataFlexo
 			getFlexoController().getSelectionManager().fireUpdateSelection();
 
 		}
+		else if (getFlexoController().getEditor() == null || getFlexoController().getEditor().getProject() == null) {
+			getFlexoController().setCurrentEditedObjectAsModuleView(makeWelcomePanel());
+		}
 
 		if (getFlexoController().getCurrentModuleView() != null) {
 			getFlexoController().getCurrentModuleView().willShow();
@@ -229,12 +324,33 @@ public abstract class FlexoModule<M extends FlexoModule<M>> implements DataFlexo
 		getFlexoFrame().setExtendedState(state);
 		getFlexoFrame().setVisible(true);
 
-		SwingUtilities.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				selectDefaultObjectWhenAvailable();
-			}
-		});
+		selectDefaultObjectWhenAvailableLater();
+
+	}
+
+	/**
+	 * Instantiate a task to be executed after all already scheduled tasks which will select a default object when required<br>
+	 * This design is better than SwingUtilities.invokeLater()
+	 */
+	private void selectDefaultObjectWhenAvailableLater() {
+		SelectDefaultObjectWhenRequired task = new SelectDefaultObjectWhenRequired();
+		for (FlexoTask sTask : getController().getApplicationContext().getTaskManager().getScheduledTasks()) {
+			task.addToDependantTasks(sTask);
+		}
+		getController().getApplicationContext().getTaskManager().scheduleExecution(task);
+	}
+
+	private class SelectDefaultObjectWhenRequired extends FlexoTask {
+
+		public SelectDefaultObjectWhenRequired() {
+			super(getLocales().localizedForKey("select_default_object"));
+		}
+
+		@Override
+		public void performTask() throws InterruptedException {
+			selectDefaultObjectWhenAvailable();
+		}
+
 	}
 
 	/**
@@ -331,12 +447,7 @@ public abstract class FlexoModule<M extends FlexoModule<M>> implements DataFlexo
 			}
 		}
 		else if (notification instanceof ProjectLoaded) {
-			SwingUtilities.invokeLater(new Runnable() {
-				@Override
-				public void run() {
-					selectDefaultObjectWhenAvailable();
-				}
-			});
+			selectDefaultObjectWhenAvailableLater();
 		}
 		else if (notification instanceof ResourceModified || notification instanceof ResourceSaved
 				|| notification instanceof ResourceRegistered || notification instanceof ResourceUnregistered) {

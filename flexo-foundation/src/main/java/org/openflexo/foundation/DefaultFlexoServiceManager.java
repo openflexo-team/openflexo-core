@@ -105,14 +105,14 @@ public class DefaultFlexoServiceManager extends FlexoServiceManager {
 		ProjectLoader projectLoaderService = createProjectLoaderService();
 		registerService(projectLoaderService);
 
+		ProjectNatureService projectNatureService = createProjectNatureService();
+		registerService(projectNatureService);
+
 		FlexoResourceCenterService resourceCenterService = createResourceCenterService();
 		registerService(resourceCenterService);
 
 		TechnologyAdapterService technologyAdapterService = createTechnologyAdapterService(resourceCenterService);
 		registerService(technologyAdapterService);
-
-		ProjectNatureService projectNatureService = createProjectNatureService();
-		registerService(projectNatureService);
 
 		VirtualModelLibrary virtualModelLibrary = createViewPointLibraryService();
 		registerService(virtualModelLibrary);

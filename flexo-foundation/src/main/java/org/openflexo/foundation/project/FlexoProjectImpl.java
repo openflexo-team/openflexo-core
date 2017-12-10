@@ -59,6 +59,7 @@ import java.util.zip.Deflater;
 import javax.naming.InvalidNameException;
 
 import org.apache.commons.io.filefilter.FileFilterUtils;
+import org.openflexo.connie.annotations.NotificationUnsafe;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.FlexoProjectObject;
@@ -209,7 +210,10 @@ public abstract class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoRe
 
 	@Override
 	public I getProjectDirectory() {
-		return getContainer((I) getResource().getIODelegate().getSerializationArtefact());
+		if (getResource() != null && getResource().getIODelegate() != null) {
+			return getContainer((I) getResource().getIODelegate().getSerializationArtefact());
+		}
+		return null;
 	}
 
 	public int getID() {
@@ -600,6 +604,7 @@ public abstract class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoRe
 	 * @return
 	 */
 	@Override
+	@NotificationUnsafe
 	public final boolean hasNature(Class<? extends ProjectNature> projectNatureClass) {
 		for (ProjectNature n : getProjectNatures()) {
 			if (projectNatureClass.isAssignableFrom(n.getClass())) {
@@ -617,6 +622,7 @@ public abstract class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoRe
 	 * @return
 	 */
 	@Override
+	@NotificationUnsafe
 	public final boolean hasNature(String projectNatureClassName) {
 
 		Class<? extends ProjectNature> projectNatureClass;
@@ -636,6 +642,7 @@ public abstract class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoRe
 	 * @return
 	 */
 	@Override
+	@NotificationUnsafe
 	public <N extends ProjectNature> N getNature(Class<N> projectNatureClass) {
 		for (ProjectNature n : getProjectNatures()) {
 			if (projectNatureClass.isAssignableFrom(n.getClass())) {
@@ -643,6 +650,26 @@ public abstract class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoRe
 			}
 		}
 		return null;
+	}
+
+	/**
+	 * Return nature of supplied class when existing.<br>
+	 * 
+	 * @param projectNatureClassName
+	 * @return
+	 */
+	@Override
+	@NotificationUnsafe
+	public <N extends ProjectNature> N getNature(String projectNatureClassName) {
+
+		Class<? extends ProjectNature> projectNatureClass;
+		try {
+			projectNatureClass = (Class<? extends ProjectNature>) Class.forName(projectNatureClassName);
+			return (N) getNature(projectNatureClass);
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 	/**
