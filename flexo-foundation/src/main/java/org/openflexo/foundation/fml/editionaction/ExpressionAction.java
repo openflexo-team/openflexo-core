@@ -188,8 +188,18 @@ public interface ExpressionAction<T> extends AssignableAction<T> {
 			return getHeaderContext() + (getExpression() != null ? getExpression().toString() : "");
 		}
 
+		private boolean forceRevalidated = false;
+
 		@Override
 		public T execute(RunTimeEvaluationContext evaluationContext) throws FlexoException {
+
+			// Quick and dirty hack because found invalid binding
+			// TODO: please investigate
+			if (!getExpression().isValid() && !forceRevalidated) {
+				forceRevalidated = true;
+				getExpression().forceRevalidate();
+			}
+
 			try {
 				return getExpression().getBindingValue(evaluationContext);
 			} catch (InvocationTargetException e) {
