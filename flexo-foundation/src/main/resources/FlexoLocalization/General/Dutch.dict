@@ -76,6 +76,7 @@ init_perspectives=init_perspectives
 initialization=Initialization
 initialize_actions_for_technology_adapter=initialize_actions_for_technology_adapter
 initializing=initializing
+initialize_project=Initialize projet
 initializing_adapter=initializing_adapter
 inspect=Onderzoek
 inspect_project=Onderzoek project

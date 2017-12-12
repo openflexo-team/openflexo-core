@@ -76,6 +76,7 @@ init_inspectors=init_inspectors
 init_module_controller=Initialisation du contr\u00F4leur du module
 init_perspectives=init_perspectives
 initialization=initialization
+initialize_project=Initialisation du projet
 initialize_actions_for_technology_adapter=initialize_actions_for_technology_adapter
 initializing=initializing
 initializing_adapter=initializing_adapter
