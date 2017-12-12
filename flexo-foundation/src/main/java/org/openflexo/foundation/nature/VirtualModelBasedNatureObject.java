@@ -63,7 +63,7 @@ import org.openflexo.toolbox.StringUtils;
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(VirtualModelBasedNatureObject.VirtualModelBasedNatureObjectImpl.class)
-public interface VirtualModelBasedNatureObject<N extends ProjectNature> extends NatureObject<N> {
+public interface VirtualModelBasedNatureObject<N extends ProjectNature<N>> extends NatureObject<N> {
 
 	@PropertyIdentifier(type = String.class)
 	public static final String VIRTUAL_MODEL_URI_KEY = "virtualModelURI";
@@ -83,7 +83,7 @@ public interface VirtualModelBasedNatureObject<N extends ProjectNature> extends 
 
 	public void setAccessedVirtualModel(VirtualModel aVirtualModel);
 
-	public abstract class VirtualModelBasedNatureObjectImpl<N extends ProjectNature> extends FlexoProjectObjectImpl
+	public abstract class VirtualModelBasedNatureObjectImpl<N extends ProjectNature<N>> extends FlexoProjectObjectImpl
 			implements VirtualModelBasedNatureObject<N> {
 
 		private static final Logger logger = FlexoLogger.getLogger(VirtualModelBasedNatureObject.class.getPackage().getName());

@@ -52,11 +52,11 @@ import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.FlexoProject;
-import org.openflexo.foundation.fml.rm.VirtualModelResourceFactory;
 import org.openflexo.foundation.nature.ProjectNature;
 import org.openflexo.foundation.nature.ProjectNatureFactory;
 import org.openflexo.foundation.project.FlexoProjectResource;
 import org.openflexo.foundation.project.FlexoProjectResourceFactory;
+import org.openflexo.foundation.project.FlexoProjectResourceImpl;
 import org.openflexo.foundation.resource.RepositoryFolder;
 import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.task.FlexoTask;
@@ -194,13 +194,23 @@ public class CreateProject extends FlexoAction<CreateProject, RepositoryFolder<F
 		getPropertyChangeSupport().firePropertyChange("newProjectURI", null, getNewProjectURI());
 	}
 
+	public boolean isDefaultProjectURI() {
+		return newProjectURI == null;
+	}
+
 	public String getNewProjectURI() {
-		if (newProjectURI == null && getFocusedObject() != null) {
-			String baseURI = getFocusedObject().getDefaultBaseURI();
-			if (!baseURI.endsWith("/")) {
-				baseURI = baseURI + "/";
+
+		if (newProjectURI == null) {
+			if (getFocusedObject() != null) {
+				String baseURI = getFocusedObject().getDefaultBaseURI();
+				if (!baseURI.endsWith("/")) {
+					baseURI = baseURI + "/";
+				}
+				return baseURI + getBaseName() + FlexoProjectResourceFactory.PROJECT_SUFFIX;
 			}
-			return baseURI + getBaseName() + VirtualModelResourceFactory.FML_SUFFIX;
+			else {
+				return FlexoProjectResourceImpl.buildProjectURI(getBaseName());
+			}
 		}
 
 		return newProjectURI;

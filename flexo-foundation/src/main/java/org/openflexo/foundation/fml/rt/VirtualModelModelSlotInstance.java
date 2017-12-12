@@ -88,7 +88,8 @@ public interface VirtualModelModelSlotInstance<VMI extends VirtualModelInstance<
 
 		@Override
 		public AbstractVirtualModelInstanceResource<VMI, TA> getResource() {
-			if (getVirtualModelInstance() != null && resource == null && StringUtils.isNotEmpty(virtualModelInstanceURI)) {
+			if (getVirtualModelInstance() != null && resource == null && StringUtils.isNotEmpty(virtualModelInstanceURI)
+					&& getServiceManager() != null && getServiceManager().getResourceManager() != null) {
 
 				resource = (AbstractVirtualModelInstanceResource<VMI, TA>) getServiceManager().getResourceManager()
 						.getResource(virtualModelInstanceURI);

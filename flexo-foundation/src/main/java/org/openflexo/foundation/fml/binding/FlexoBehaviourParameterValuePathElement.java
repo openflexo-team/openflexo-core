@@ -162,6 +162,6 @@ public class FlexoBehaviourParameterValuePathElement extends SimplePathElement i
 
 	@Override
 	public String toString() {
-		return "FlexoBehaviourParameterPathElement:" + getLabel();
+		return "FlexoBehaviourParameterValuePathElement:" + getLabel();
 	}
 }

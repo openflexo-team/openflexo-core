@@ -39,7 +39,6 @@
 package org.openflexo.foundation.nature;
 
 import java.util.Vector;
-import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject;
@@ -54,10 +53,8 @@ import org.openflexo.foundation.resource.SaveResourceException;
  * 
  * @author sylvain
  */
-public abstract class GivesNatureAction<A extends GivesNatureAction<A, N>, N extends ProjectNature>
+public abstract class GivesNatureAction<A extends GivesNatureAction<A, N>, N extends ProjectNature<N>>
 		extends FlexoAction<A, FlexoProject<?>, FlexoObject> {
-
-	private static final Logger logger = Logger.getLogger(GivesNatureAction.class.getPackage().getName());
 
 	private N newNature;
 

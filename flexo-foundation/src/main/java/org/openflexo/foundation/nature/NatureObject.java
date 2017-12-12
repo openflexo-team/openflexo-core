@@ -51,7 +51,7 @@ import org.openflexo.model.annotations.Setter;
  * 
  */
 @ModelEntity(isAbstract = true)
-public interface NatureObject<N extends ProjectNature> extends FlexoProjectObject {
+public interface NatureObject<N extends ProjectNature<N>> extends FlexoProjectObject {
 
 	@PropertyIdentifier(type = ProjectNature.class)
 	public static final String NATURE = "nature";

@@ -157,6 +157,9 @@ public class CreateGenericBehaviourParameter extends FlexoAction<CreateGenericBe
 	}
 
 	public WidgetType getWidgetType() {
+		if (widgetType == null) {
+			return WidgetType.CUSTOM_WIDGET;
+		}
 		return widgetType;
 	}
 
@@ -203,15 +206,19 @@ public class CreateGenericBehaviourParameter extends FlexoAction<CreateGenericBe
 	@Override
 	public boolean isValid() {
 		if (StringUtils.isEmpty(getParameterName())) {
+			System.out.println("hop1 " + getParameterName());
 			return false;
 		}
 		else if (getFlexoBehaviour().getParameter(getParameterName()) != null) {
+			System.out.println("hop2 " + getParameterName());
 			return false;
 		}
 		if (getParameterType() == null) {
+			System.out.println("hop3 " + getParameterType());
 			return false;
 		}
 		if (getWidgetType() == null) {
+			System.out.println("hop4 " + getWidgetType());
 			return false;
 		}
 		return true;

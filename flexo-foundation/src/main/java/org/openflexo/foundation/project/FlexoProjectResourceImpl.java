@@ -137,10 +137,10 @@ public abstract class FlexoProjectResourceImpl<I> extends PamelaResourceImpl<Fle
 		return returned;
 	}
 
-	private String buildProjectURI() {
+	public static String buildProjectURI(String baseName) {
 		Calendar rightNow = Calendar.getInstance();
-		String returned = BASE_PROJECT_URI + "/" + rightNow.get(Calendar.YEAR) + "/" + (rightNow.get(Calendar.MONTH) + 1) + "/" + getName()
-				+ "_" + System.currentTimeMillis();
+		String returned = BASE_PROJECT_URI + "/" + rightNow.get(Calendar.YEAR) + "/" + (rightNow.get(Calendar.MONTH) + 1) + "/" + baseName
+				+ "_" + System.currentTimeMillis() + FlexoProjectResourceFactory.PROJECT_SUFFIX;
 		return returned;
 	}
 
@@ -149,7 +149,7 @@ public abstract class FlexoProjectResourceImpl<I> extends PamelaResourceImpl<Fle
 	@Override
 	public String computeDefaultURI() {
 		if (defaultURI == null) {
-			defaultURI = buildProjectURI();
+			defaultURI = buildProjectURI(getName());
 		}
 		return defaultURI;
 	}

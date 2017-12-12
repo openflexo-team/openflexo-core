@@ -83,7 +83,7 @@ public class FIBVirtualModelSelector extends FIBFlexoObjectSelector<VirtualModel
 	@Override
 	public String renderedString(VirtualModelResource editedObject) {
 		if (editedObject != null) {
-			return editedObject.getName();
+			return editedObject.getDisplayName();
 		}
 		return "";
 	}

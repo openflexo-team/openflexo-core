@@ -454,7 +454,7 @@ public class ProjectLoader extends FlexoServiceImpl implements HasPropertyChange
 		}
 		if (!asImportedProject) {
 			// Adds to recent project
-			Progress.progress(locales.localizedForKey("preinitialize_project") + projectResource);
+			Progress.progress(locales.localizedForKey("initialize_project") + projectResource.getName());
 			preInitialization(projectResource.getDelegateResourceCenter()
 					.getContainer((I) projectResource.getIODelegate().getSerializationArtefact()));
 		}

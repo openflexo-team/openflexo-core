@@ -66,7 +66,7 @@ public class CreateProjectWizard extends FlexoWizard {
 
 	private final ConfigureNewProject configureNewProject;
 
-	private static final Dimension DIMENSIONS = new Dimension(600, 400);
+	private static final Dimension DIMENSIONS = new Dimension(700, 450);
 
 	public CreateProjectWizard(CreateProject action, FlexoController controller) {
 		super(controller);
@@ -126,8 +126,12 @@ public class CreateProjectWizard extends FlexoWizard {
 				setIssueMessage(action.getLocales().localizedForKey("you_must_define_project_name"), IssueMessageType.ERROR);
 				return false;
 			}
-			if (StringUtils.isEmpty(getDescription())) {
-				setIssueMessage(action.getLocales().localizedForKey("it_is_recommanded_to_describe_your_new_project"),
+			if (StringUtils.isEmpty(getProjectURI())) {
+				setIssueMessage(action.getLocales().localizedForKey("you_must_define_project_uri"), IssueMessageType.ERROR);
+				return false;
+			}
+			if (getAction().isDefaultProjectURI()) {
+				setIssueMessage(action.getLocales().localizedForKey("don't_you_want_to_set_a_more_user_friendly_uri_for_your_project"),
 						IssueMessageType.WARNING);
 			}
 
@@ -144,6 +148,20 @@ public class CreateProjectWizard extends FlexoWizard {
 				String oldValue = getProjectName();
 				action.setNewProjectName(projectName);
 				getPropertyChangeSupport().firePropertyChange("projectName", oldValue, projectName);
+				getPropertyChangeSupport().firePropertyChange("projectURI", null, getProjectURI());
+				checkValidity();
+			}
+		}
+
+		public String getProjectURI() {
+			return action.getNewProjectURI();
+		}
+
+		public void setProjectURI(String projectURI) {
+			if (!projectURI.equals(getProjectURI())) {
+				String oldValue = getProjectURI();
+				action.setNewProjectURI(projectURI);
+				getPropertyChangeSupport().firePropertyChange("projectURI", oldValue, projectURI);
 				checkValidity();
 			}
 		}

@@ -58,7 +58,7 @@ import org.openflexo.model.annotations.Setter;
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(ProjectNature.ProjectNatureImpl.class)
-public interface ProjectNature extends FlexoProjectObject, FlexoNature<FlexoProject<?>> {
+public interface ProjectNature<N extends ProjectNature<N>> extends FlexoProjectObject, FlexoNature<FlexoProject<?>>, NatureObject<N> {
 
 	public static final String OWNER = "owner";
 
@@ -79,7 +79,7 @@ public interface ProjectNature extends FlexoProjectObject, FlexoNature<FlexoProj
 	@Setter(OWNER)
 	public void setOwner(FlexoProject<?> project);
 
-	public abstract class ProjectNatureImpl extends FlexoProjectObjectImpl implements ProjectNature {
+	public abstract class ProjectNatureImpl<N extends ProjectNature<N>> extends FlexoProjectObjectImpl implements ProjectNature<N> {
 
 		private static final Logger logger = FlexoLogger.getLogger(ProjectNature.class.getPackage().getName());
 
@@ -87,5 +87,11 @@ public interface ProjectNature extends FlexoProjectObject, FlexoNature<FlexoProj
 		public FlexoProject<?> getProject() {
 			return getOwner();
 		}
+
+		@Override
+		public N getNature() {
+			return (N) this;
+		}
+
 	}
 }
