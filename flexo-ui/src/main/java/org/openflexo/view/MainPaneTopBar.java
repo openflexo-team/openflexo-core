@@ -231,7 +231,6 @@ public class MainPaneTopBar extends JMenuBar {
 					controller.selectAndFocusObject(controller.getDefaultObjectToSelect(projectSelector.getEditedObject()));
 				}
 				else {
-					// System.out.println("OK, le editedObject c'est " + model.getCurrentProject());
 					projectSelector.setEditedObject(model.getCurrentProject());
 				}
 			}
@@ -287,9 +286,6 @@ public class MainPaneTopBar extends JMenuBar {
 
 	private void insertPerspective(final FlexoPerspective p) {
 		final JButton button = new BarButton(p.getActiveIcon());
-		System.out.println("Hop on ajoute la perspective " + p);
-		System.out.println("module: " + controller.getModule());
-		System.out.println("locales: " + controller.getModuleLocales());
 		button.setToolTipText(controller.getModuleLocales().localizedTooltipForKey(p.getName(), button));
 		if (forcePreferredSize) {
 			int size = Math.max(button.getIcon().getIconWidth() + 8, button.getIcon().getIconHeight() + 4);
