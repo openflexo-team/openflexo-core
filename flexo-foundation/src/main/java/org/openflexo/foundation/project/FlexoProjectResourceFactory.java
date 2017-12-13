@@ -166,7 +166,7 @@ public class FlexoProjectResourceFactory<I> extends PamelaResourceFactory<FlexoP
 	@SuppressWarnings("unchecked")
 	private <I2> FlexoResourceCenter<I2> makeDelegateRC(I2 serializationArtefact) {
 
-		System.out.println("*********** on cree un delegate RC pour " + serializationArtefact);
+		// System.out.println("*********** on cree un delegate RC pour " + serializationArtefact);
 
 		if (serializationArtefact instanceof File) {
 			try {
