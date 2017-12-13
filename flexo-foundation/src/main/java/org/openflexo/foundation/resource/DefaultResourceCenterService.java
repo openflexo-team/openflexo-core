@@ -308,7 +308,7 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 	private <I> FlexoProjectResource<I> tryToLookupResource(FlexoResourceCenter<I> resourceCenter, I serializationArtefact) {
 
 		if (getFlexoProjectResourceFactory() == null) {
-			logger.warning("Cannot lookup FlexoProject resources in " + resourceCenter + " because resource factory not available yet");
+			// logger.warning("Cannot lookup FlexoProject resources in " + resourceCenter + " because resource factory not available yet");
 			return null;
 		}
 
