@@ -57,6 +57,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.jar.JarFile;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.swing.SwingUtilities;
@@ -252,7 +253,9 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 	 */
 	public final <I> void performInitializeResourceCenter(FlexoResourceCenter<I> resourceCenter) {
 
-		logger.info("--------> performInitializeResourceCenter " + getName() + " for " + resourceCenter);
+		if (logger.isLoggable(Level.FINE)) {
+			logger.fine("--------> performInitializeResourceCenter " + getName() + " for " + resourceCenter);
+		}
 
 		Iterator<I> it;
 
@@ -268,7 +271,9 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 				if (!isSerializationArtefactIgnorable(resourceCenter, serializationArtefact)) {
 					FlexoResource<?> r = tryToLookupResource(resourceFactory, resourceCenter, serializationArtefact);
 					if (r != null) {
-						logger.info(">>>>>>>>>> Look-up resource " + r.getImplementedInterface().getSimpleName() + " " + r.getURI());
+						if (logger.isLoggable(Level.FINE)) {
+							logger.fine(">>>>>>>>>> Look-up resource " + r.getImplementedInterface().getSimpleName() + " " + r.getURI());
+						}
 					}
 				}
 				if (resourceCenter.isDirectory(serializationArtefact)) {
