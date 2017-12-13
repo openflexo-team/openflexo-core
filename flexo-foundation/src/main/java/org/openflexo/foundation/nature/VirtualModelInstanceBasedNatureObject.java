@@ -42,6 +42,7 @@ import java.io.FileNotFoundException;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.rm.FMLRTVirtualModelInstanceResource;
@@ -166,13 +167,15 @@ public interface VirtualModelInstanceBasedNatureObject<N extends ProjectNature<N
 
 		@Override
 		public void setAccessedVirtualModelInstance(FMLRTVirtualModelInstance aVirtualModelInstance) {
-			if (getAccessedVirtualModelInstance() != null) {
-				fireVirtualModelInstanceDisconnected(getAccessedVirtualModelInstance());
-			}
-			this.virtualModelInstanceURI = aVirtualModelInstance.getURI();
-			this.virtualModelInstanceResource = (FMLRTVirtualModelInstanceResource) aVirtualModelInstance.getResource();
-			if (aVirtualModelInstance != null) {
-				fireVirtualModelInstanceDisconnected(aVirtualModelInstance);
+			if (getAccessedVirtualModelInstance() != aVirtualModelInstance) {
+				if (getAccessedVirtualModelInstance() != null) {
+					fireVirtualModelInstanceDisconnected(getAccessedVirtualModelInstance());
+				}
+				this.virtualModelInstanceURI = aVirtualModelInstance.getURI();
+				this.virtualModelInstanceResource = (FMLRTVirtualModelInstanceResource) aVirtualModelInstance.getResource();
+				if (aVirtualModelInstance != null) {
+					fireVirtualModelInstanceConnected(aVirtualModelInstance);
+				}
 			}
 		}
 
@@ -180,6 +183,19 @@ public interface VirtualModelInstanceBasedNatureObject<N extends ProjectNature<N
 		}
 
 		public void fireVirtualModelInstanceDisconnected(FMLRTVirtualModelInstance aVirtualModelInstance) {
+		}
+
+		@Override
+		public FlexoProject<?> getResourceData() {
+			return getProject();
+		}
+
+		@Override
+		public FlexoProject<?> getProject() {
+			if (getNature() != null) {
+				return getNature().getOwner();
+			}
+			return super.getProject();
 		}
 
 	}

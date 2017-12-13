@@ -93,5 +93,10 @@ public interface ProjectNature<N extends ProjectNature<N>> extends FlexoProjectO
 			return (N) this;
 		}
 
+		@Override
+		public FlexoProject<?> getResourceData() {
+			return getProject();
+		}
+
 	}
 }

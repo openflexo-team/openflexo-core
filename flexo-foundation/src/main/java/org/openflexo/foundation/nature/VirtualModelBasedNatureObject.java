@@ -42,6 +42,7 @@ import java.io.FileNotFoundException;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelLibrary;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
@@ -162,6 +163,19 @@ public interface VirtualModelBasedNatureObject<N extends ProjectNature<N>> exten
 		public void setAccessedVirtualModel(VirtualModel aVirtualModel) {
 			this.virtualModelURI = aVirtualModel.getURI();
 			this.virtualModelResource = (VirtualModelResource) aVirtualModel.getResource();
+		}
+
+		@Override
+		public FlexoProject<?> getResourceData() {
+			return getProject();
+		}
+
+		@Override
+		public FlexoProject<?> getProject() {
+			if (getNature() != null) {
+				return getNature().getOwner();
+			}
+			return super.getProject();
 		}
 
 	}

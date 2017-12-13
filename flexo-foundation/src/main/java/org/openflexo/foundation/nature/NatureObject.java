@@ -38,7 +38,9 @@
 
 package org.openflexo.foundation.nature;
 
+import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.FlexoProjectObject;
+import org.openflexo.foundation.InnerResourceData;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.PropertyIdentifier;
@@ -51,7 +53,7 @@ import org.openflexo.model.annotations.Setter;
  * 
  */
 @ModelEntity(isAbstract = true)
-public interface NatureObject<N extends ProjectNature<N>> extends FlexoProjectObject {
+public interface NatureObject<N extends ProjectNature<N>> extends FlexoProjectObject, InnerResourceData<FlexoProject<?>> {
 
 	@PropertyIdentifier(type = ProjectNature.class)
 	public static final String NATURE = "nature";
