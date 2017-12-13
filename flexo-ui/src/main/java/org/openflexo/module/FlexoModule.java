@@ -281,6 +281,12 @@ public abstract class FlexoModule<M extends FlexoModule<M>> implements DataFlexo
 	}
 
 	private void selectDefaultObjectWhenAvailable() {
+
+		if (getController().getCurrentDisplayedObjectAsModuleView() != null) {
+			// An object is already selected, do not select another one
+			return;
+		}
+
 		if (getEditor() != null && getEditor().getProject() != null && getController().getCurrentDisplayedObjectAsModuleView() == null) {
 			boolean selectDefaultObject = false;
 			FlexoObject defaultObjectToSelect = getController().getDefaultObjectToSelect(getEditor().getProject());
@@ -328,11 +334,17 @@ public abstract class FlexoModule<M extends FlexoModule<M>> implements DataFlexo
 
 	}
 
+	private boolean isRequestingDefaultObjectSelection = false;
+
 	/**
 	 * Instantiate a task to be executed after all already scheduled tasks which will select a default object when required<br>
 	 * This design is better than SwingUtilities.invokeLater()
 	 */
 	private void selectDefaultObjectWhenAvailableLater() {
+		if (isRequestingDefaultObjectSelection) {
+			return;
+		}
+		isRequestingDefaultObjectSelection = true;
 		SelectDefaultObjectWhenRequired task = new SelectDefaultObjectWhenRequired();
 		for (FlexoTask sTask : getController().getApplicationContext().getTaskManager().getScheduledTasks()) {
 			task.addToDependantTasks(sTask);
@@ -349,6 +361,7 @@ public abstract class FlexoModule<M extends FlexoModule<M>> implements DataFlexo
 		@Override
 		public void performTask() throws InterruptedException {
 			selectDefaultObjectWhenAvailable();
+			isRequestingDefaultObjectSelection = false;
 		}
 
 	}
