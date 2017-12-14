@@ -473,6 +473,10 @@ public class ControllerModel extends ControllerModelObject implements PropertyCh
 				}
 			}
 		}
+		/*if (editor != null) {
+			System.out.println("Comme lastLocation, je retourne " + (editor != null ? editor.getProject() : null));
+			return new Location(editor, null, perspective);
+		}*/
 		return NO_LOCATION;
 	}
 

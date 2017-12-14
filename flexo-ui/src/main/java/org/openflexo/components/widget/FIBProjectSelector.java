@@ -47,7 +47,7 @@ import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
 
 /**
- * Widget allowing to select a ViewPoint
+ * Widget allowing to select a {@link FlexoProject}
  * 
  * @author sguerin
  * 
