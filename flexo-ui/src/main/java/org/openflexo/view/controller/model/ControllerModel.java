@@ -378,10 +378,18 @@ public class ControllerModel extends ControllerModelObject implements PropertyCh
 	}
 
 	public boolean removeFromLocations(Location location) {
+
+		//System.out.println("On supprime la location pour " + location.getEditor().getProject() + " object=" + location.getObject()
+		//		+ " perspective=" + location.getPerspective());
+
 		boolean removed = locations.remove(location);
 		if (removed) {
 			if (location != null && location.equals(currentLocation)) {
-				setCurrentLocation(getLastLocationForEditor(getCurrentEditor(), getCurrentPerspective()));
+				Location lastLocationForEditor = getLastLocationForEditor(getCurrentEditor(), getCurrentPerspective());
+				//System.out.println("Et on passe a la location pour "
+				//		+ (lastLocationForEditor.getEditor() != null ? lastLocationForEditor.getEditor().getProject() : null) + " object="
+				//		+ lastLocationForEditor.getObject() + " perspective=" + lastLocationForEditor.getPerspective());
+				setCurrentLocation(lastLocationForEditor);
 			}
 			getPropertyChangeSupport().firePropertyChange(LOCATIONS, location, null);
 		}
