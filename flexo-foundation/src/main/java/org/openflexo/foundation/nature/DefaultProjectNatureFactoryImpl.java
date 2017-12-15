@@ -48,7 +48,7 @@ import org.openflexo.logging.FlexoLogger;
  * @author sylvain
  * 
  */
-public abstract class DefaultProjectNatureFactoryImpl<N extends ProjectNature> implements ProjectNatureFactory<N> {
+public abstract class DefaultProjectNatureFactoryImpl<N extends ProjectNature<N>> implements ProjectNatureFactory<N> {
 
 	static final Logger logger = FlexoLogger.getLogger(DefaultProjectNatureFactoryImpl.class.getPackage().getName());
 
