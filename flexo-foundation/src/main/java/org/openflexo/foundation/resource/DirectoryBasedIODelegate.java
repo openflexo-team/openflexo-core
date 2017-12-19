@@ -137,10 +137,30 @@ public interface DirectoryBasedIODelegate extends FileIODelegate {
 		}
 
 		@Override
-		public void rename() throws CannotRenameException {
+		public void rename(String newName) throws CannotRenameException {
 			System.out.println("OK, c'est parti pour un renommage dans DirectoryBasedFlexoIODelegate");
+			System.out.println("le nouveau nom c'est " + newName);
 
-			File renamedFile = new File(getDirectory(), getFileName());
+			String directoryExtension = getDirectoryName().substring(getDirectoryName().indexOf("."));
+			String fileExtension = getFileName().substring(getFileName().indexOf("."));
+
+			System.out.println("directoryExtension=" + directoryExtension);
+			System.out.println("fileExtension=" + fileExtension);
+
+			if (newName.endsWith(directoryExtension)) {
+				newName = newName.substring(0, newName.lastIndexOf(directoryExtension));
+			}
+			if (newName.endsWith(fileExtension)) {
+				newName = newName.substring(0, newName.lastIndexOf(fileExtension));
+			}
+
+			String newFileName = newName.endsWith(fileExtension) ? newName : newName + fileExtension;
+			String newDirectoryName = newName.endsWith(directoryExtension) ? newName : newName + directoryExtension;
+
+			System.out.println("newFileName=" + newFileName);
+			System.out.println("newDirectoryName=" + newDirectoryName);
+
+			File renamedFile = new File(getDirectory(), newFileName);
 			if (getFile().exists()) {
 				try {
 					FileUtils.rename(getFile(), renamedFile);
@@ -152,7 +172,7 @@ public interface DirectoryBasedIODelegate extends FileIODelegate {
 					getFile().delete();
 				}
 			}
-			File renamedDirectory = new File(getDirectory().getParentFile(), getDirectoryName());
+			File renamedDirectory = new File(getDirectory().getParentFile(), newDirectoryName);
 			if (getDirectory().exists()) {
 				try {
 					FileUtils.rename(getDirectory(), renamedDirectory);
@@ -162,8 +182,14 @@ public interface DirectoryBasedIODelegate extends FileIODelegate {
 				}
 			}
 
+			System.out.println("renamedFile:" + renamedFile);
+			System.out.println("renamedDirectory:" + renamedDirectory);
+
 			setDirectory(renamedDirectory);
-			setFile(new File(renamedDirectory, getFileName()));
+			setFile(new File(renamedDirectory, newFileName));
+
+			System.out.println("file: " + getFile());
+
 			resetDiskLastModifiedDate();
 
 		}

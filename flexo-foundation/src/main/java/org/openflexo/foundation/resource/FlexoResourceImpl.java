@@ -188,10 +188,15 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 			return;
 		}
 		if (getIODelegate() != null && getIODelegate().hasWritePermission()) {
+			if (computeDefaultURI() != null && computeDefaultURI().equals(getURI())) {
+				// This was the default URI, which should then be recomputed
+				setURI(null);
+			}
 			performSuperSetter(NAME, aName);
 			if (getIODelegate() != null) {
-				getIODelegate().rename();
+				getIODelegate().rename(aName);
 			}
+			//System.out.println("Renamed URI: " + getURI());
 		}
 		else if (!isDeleting()) {
 			System.out.println("Trying to rename " + this + " from " + getName() + " to " + aName);

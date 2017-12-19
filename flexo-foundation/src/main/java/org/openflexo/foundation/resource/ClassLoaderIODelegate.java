@@ -114,7 +114,7 @@ public interface ClassLoaderIODelegate extends FlexoIODelegate<ClassLoader> {
 		}
 
 		@Override
-		public void rename() throws CannotRenameException {
+		public void rename(String newName) throws CannotRenameException {
 			throw new CannotRenameException(getFlexoResource());
 		}
 

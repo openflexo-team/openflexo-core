@@ -171,7 +171,7 @@ public class FIBInspectorPanel extends JPanel implements Observer, ChangeListene
 	 */
 	/*private boolean inspectObject(Object object, JFIBInspector inspector, boolean updateEPTabs) {
 		JFIBInspector newInspector = 
-		
+	
 		if (object == currentInspectedObject) {
 			return false;
 		}
@@ -272,7 +272,9 @@ public class FIBInspectorPanel extends JPanel implements Observer, ChangeListene
 		if (logger.isLoggable(Level.FINE)) {
 			logger.fine("switchToObject " + inspectedObject + " for " + this);
 		}
-		currentInspectorView.getController().setDataObject(inspectedObject);
+		if (currentInspectorView != null) {
+			currentInspectorView.getController().setDataObject(inspectedObject);
+		}
 	}
 
 	private FIBView<?, ?> viewForInspector(FIBInspector inspector) {

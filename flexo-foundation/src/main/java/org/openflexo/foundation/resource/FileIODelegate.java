@@ -294,9 +294,9 @@ public interface FileIODelegate extends StreamIODelegate<File> {
 		}
 
 		@Override
-		public void rename() throws CannotRenameException {
+		public void rename(String newName) throws CannotRenameException {
 			try {
-				renameFileTo(getFileName());
+				renameFileTo(newName);
 			} catch (IOException e) {
 				throw new CannotRenameException(getFlexoResource());
 			}

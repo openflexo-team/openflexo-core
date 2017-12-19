@@ -145,7 +145,7 @@ public interface DirectoryBasedGitIODelegate extends GitIODelegate {
 		}
 
 		@Override
-		public void rename() throws CannotRenameException {
+		public void rename(String newName) throws CannotRenameException {
 			System.out.println("OK, c'est parti pour un renommage dans DirectoryBasedFlexoIODelegate");
 
 			File renamedFile = new File(getDirectory(), getFileName());

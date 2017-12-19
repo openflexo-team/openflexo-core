@@ -44,6 +44,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.logging.Logger;
+
 import org.openflexo.foundation.action.NotImplementedException;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -159,7 +160,7 @@ public interface InJarIODelegate extends StreamIODelegate<InJarResourceImpl> {
 		}
 
 		@Override
-		public void rename() throws CannotRenameException {
+		public void rename(String newName) throws CannotRenameException {
 			throw new CannotRenameException(getFlexoResource());
 		}
 

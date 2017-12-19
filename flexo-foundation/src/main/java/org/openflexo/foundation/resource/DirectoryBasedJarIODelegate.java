@@ -161,7 +161,7 @@ public interface DirectoryBasedJarIODelegate extends InJarIODelegate {
 		}
 
 		@Override
-		public void rename() throws CannotRenameException {
+		public void rename(String newName) throws CannotRenameException {
 			// Not applicable
 		}
 

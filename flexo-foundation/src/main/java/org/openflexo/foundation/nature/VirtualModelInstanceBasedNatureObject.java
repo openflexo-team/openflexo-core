@@ -46,6 +46,8 @@ import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.rm.FMLRTVirtualModelInstanceResource;
+import org.openflexo.foundation.resource.FlexoResource;
+import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.resource.ResourceManager;
 import org.openflexo.logging.FlexoLogger;
@@ -193,6 +195,8 @@ public interface VirtualModelInstanceBasedNatureObject<N extends ProjectNature<N
 		}
 
 		public void fireVirtualModelInstanceConnected(FMLRTVirtualModelInstance aVirtualModelInstance) {
+			// getPropertyChangeSupport().firePropertyChange("name", null, aVirtualModelInstance.getName());
+			// getPropertyChangeSupport().firePropertyChange("URI", null, aVirtualModelInstance.getURI());
 		}
 
 		public void fireVirtualModelInstanceDisconnected(FMLRTVirtualModelInstance aVirtualModelInstance) {
@@ -213,12 +217,18 @@ public interface VirtualModelInstanceBasedNatureObject<N extends ProjectNature<N
 
 		@Override
 		public String getName() {
-			return getAccessedVirtualModelInstance().getName();
+			if (getAccessedVirtualModelInstance() != null) {
+				return getAccessedVirtualModelInstance().getName();
+			}
+			return null;
 		}
 
 		@Override
 		public String getURI() {
-			return getAccessedVirtualModelInstance().getURI();
+			if (getAccessedVirtualModelInstance() != null) {
+				return getAccessedVirtualModelInstance().getURI();
+			}
+			return null;
 		}
 
 	}
