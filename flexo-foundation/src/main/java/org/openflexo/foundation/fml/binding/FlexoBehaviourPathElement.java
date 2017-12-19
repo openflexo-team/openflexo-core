@@ -267,7 +267,9 @@ public class FlexoBehaviourPathElement extends FunctionPathElement implements Pr
 
 	@Override
 	public boolean isNotificationSafe() {
-		return true;
+		// By default, we assume that the result of the execution of a FlexoBehaviour is not notification-safe
+		// (we cannot rely on the fact that a notification will be thrown if the result of the execution of the behaviour change)
+		return false;
 	}
 
 }
