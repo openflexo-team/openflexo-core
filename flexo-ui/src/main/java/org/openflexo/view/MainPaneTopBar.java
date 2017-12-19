@@ -227,7 +227,6 @@ public class MainPaneTopBar extends JMenuBar {
 			@Override
 			public void fireApplyPerformed() {
 				if (projectSelector.getEditedObject() != null) {
-					System.out.println("********* Et hop on passe au projet " + projectSelector.getEditedObject());
 					model.setCurrentProject(projectSelector.getEditedObject());
 					controller.selectAndFocusObject(controller.getDefaultObjectToSelect(projectSelector.getEditedObject()));
 				}
@@ -246,8 +245,6 @@ public class MainPaneTopBar extends JMenuBar {
 
 			@Override
 			public void propertyChange(PropertyChangeEvent evt) {
-				System.out.println("********* Et hop on repasse au projet " + model.getCurrentProject());
-				Thread.dumpStack();
 				projectSelector.setEditedObject(model.getCurrentProject());
 			}
 		}, model);
