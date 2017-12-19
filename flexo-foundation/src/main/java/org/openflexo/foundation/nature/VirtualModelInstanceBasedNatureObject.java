@@ -69,6 +69,8 @@ public interface VirtualModelInstanceBasedNatureObject<N extends ProjectNature<N
 
 	@PropertyIdentifier(type = String.class)
 	public static final String VIRTUAL_MODEL_INSTANCE_URI_KEY = "virtualModelInstanceURI";
+	@PropertyIdentifier(type = String.class)
+	String DESCRIPTION_KEY = "description";
 
 	@Getter(value = VIRTUAL_MODEL_INSTANCE_URI_KEY)
 	@XMLAttribute(xmlTag = "virtualModelInstanceURI")
@@ -84,6 +86,17 @@ public interface VirtualModelInstanceBasedNatureObject<N extends ProjectNature<N
 	public FMLRTVirtualModelInstance getAccessedVirtualModelInstance();
 
 	public void setAccessedVirtualModelInstance(FMLRTVirtualModelInstance aVirtualModelInstance);
+
+	public String getName();
+
+	public String getURI();
+
+	@Getter(value = DESCRIPTION_KEY)
+	@XMLAttribute
+	public String getDescription();
+
+	@Setter(DESCRIPTION_KEY)
+	public void setDescription(String description);
 
 	public abstract class VirtualModelInstanceBasedNatureObjectImpl<N extends ProjectNature<N>> extends FlexoProjectObjectImpl
 			implements VirtualModelInstanceBasedNatureObject<N> {
@@ -196,6 +209,16 @@ public interface VirtualModelInstanceBasedNatureObject<N extends ProjectNature<N
 				return getNature().getOwner();
 			}
 			return super.getProject();
+		}
+
+		@Override
+		public String getName() {
+			return getAccessedVirtualModelInstance().getName();
+		}
+
+		@Override
+		public String getURI() {
+			return getAccessedVirtualModelInstance().getURI();
 		}
 
 	}
