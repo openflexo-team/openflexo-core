@@ -106,6 +106,7 @@ flexo_id=OpenFlexo ID
 generic_behaviour=Generic behaviour
 gives_screen=Gives screen
 hash=Hash
+initial_component=Initial component
 inspector_entry_should_define_valid_data=Inspector entry should define valid data
 inspector_title=Inspector title
 it_is_recommanded_to_describe_entry=It is recommanded to describe entry
