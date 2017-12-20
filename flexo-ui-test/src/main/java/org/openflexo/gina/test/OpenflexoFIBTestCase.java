@@ -41,6 +41,7 @@ package org.openflexo.gina.test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
+import java.io.File;
 import java.util.logging.Logger;
 
 import org.junit.runner.RunWith;
@@ -51,6 +52,7 @@ import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.model.validation.ValidationError;
 import org.openflexo.model.validation.ValidationReport;
 import org.openflexo.rm.Resource;
+import org.openflexo.rm.ResourceLocator;
 import org.openflexo.test.OrderedRunner;
 
 /**
@@ -64,16 +66,28 @@ public abstract class OpenflexoFIBTestCase extends OpenflexoTestCaseWithGUI {
 
 	static final Logger logger = Logger.getLogger(OpenflexoFIBTestCase.class.getPackage().getName());
 
+	public void validateFIB(String fibRelativePath) throws InterruptedException {
+		validateFIB(ResourceLocator.locateResource(fibRelativePath));
+	}
+
 	public void validateFIB(Resource fibResouce) throws InterruptedException {
+
+		if (serviceManager == null) {
+			instanciateTestServiceManager();
+		}
+
 		try {
 			System.out.println("Validating fib file " + fibResouce);
-			FIBComponent component = ApplicationFIBLibraryImpl.instance().retrieveFIBComponent(fibResouce);
+			FIBComponent component = ApplicationFIBLibraryImpl.instance(serviceManager.getTechnologyAdapterService())
+					.retrieveFIBComponent(fibResouce);
 			if (component == null) {
 				fail("Component not found: " + fibResouce.getURI());
 			}
 			ValidationReport validationReport = component.validate();
 			for (ValidationError<?, ?> error : validationReport.getAllErrors()) {
-				logger.severe("FIBComponent validation error: Object: " + error.getValidable() + " message: " + error.getMessage());
+				logger.severe("FIBComponent validation error: Object: " + error.getValidable() + " message: "
+						+ validationReport.getValidationModel().localizedIssueMessage(error) + " details="
+						+ validationReport.getValidationModel().localizedIssueDetailedInformations(error));
 			}
 			assertEquals(0, validationReport.getErrorsCount());
 		} finally {
@@ -81,29 +95,9 @@ public abstract class OpenflexoFIBTestCase extends OpenflexoTestCaseWithGUI {
 		}
 	}
 
-	// SHould not be used any more
-	/*
-	
-	public void validateFIB(String fibFileName) {
-		try {
-			System.out.println("Validating fib file " + fibFileName);
-			FIBComponent component = FIBLibrary.instance().retrieveFIBComponent(fibFileName);
-			if (component == null) {
-				fail("Component not found: " + fibFileName);
-			}
-			ValidationReport validationReport = component.validate();
-			for (ValidationError error : validationReport.getErrors()) {
-				logger.severe("FIBComponent validation error: Object: " + error.getObject() + " message: " + error.getMessage());
-			}
-			assertEquals(0, validationReport.getErrorNb());
-		} finally {
-			FIBLibrary.instance().removeFIBComponentFromCache(fibFileName);
-		}
-	}
-	*/
-
 	public <T> FIBJPanel<T> instanciateFIB(Resource fibResource, T context, final Class<T> contextType) {
-		return new FIBJPanel<T>(fibResource, context, ApplicationFIBLibraryImpl.instance(), FlexoLocalization.getMainLocalizer()) {
+		return new FIBJPanel<T>(fibResource, context, ApplicationFIBLibraryImpl.instance(serviceManager.getTechnologyAdapterService()),
+				FlexoLocalization.getMainLocalizer()) {
 
 			@Override
 			public Class<T> getRepresentedType() {
@@ -117,22 +111,37 @@ public abstract class OpenflexoFIBTestCase extends OpenflexoTestCaseWithGUI {
 		};
 
 	}
-	// Should not be used anymore
-	/*
-		public <T> FIBJPanel<T> instanciateFIB(String fibFileName, T context, final Class<T> contextType) {
-			return new FIBJPanel<T>(fibFileName, context, FlexoLocalization.getMainLocalizer()) {
-	
-				@Override
-				public Class<T> getRepresentedType() {
-					return contextType;
-				}
-	
-				@Override
-				public void delete() {
-				}
-	
-			};
-	
+
+	public static String generateFIBTestCaseClass(File directory, String relativePath) {
+		StringBuffer sb = new StringBuffer();
+		for (File f : directory.listFiles()) {
+			if (f.isDirectory()) {
+				generateFIBTestCaseClass(f, relativePath + f.getName() + File.separator, sb);
+			}
+			else if (f.getName().endsWith(".fib")) {
+				String fibName = f.getName().substring(0, f.getName().indexOf(".fib"));
+				sb.append("@Test\n");
+				sb.append("public void test" + fibName + "() {\n");
+				sb.append("  validateFIB(\"" + relativePath + f.getName() + "\");\n");
+				sb.append("}\n\n");
+			}
 		}
-		*/
+		return sb.toString();
+	}
+
+	private static void generateFIBTestCaseClass(File directory, String relativePath, StringBuffer sb) {
+		for (File f : directory.listFiles()) {
+			if (f.isDirectory()) {
+				generateFIBTestCaseClass(f, relativePath + f.getName() + File.separator);
+			}
+			else if (f.getName().endsWith(".fib")) {
+				String fibName = f.getName().substring(0, f.getName().indexOf(".fib"));
+				sb.append("@Test\n");
+				sb.append("public void test" + fibName + "() {\n");
+				sb.append("  validateFIB(\"" + relativePath + f.getName() + "\");\n");
+				sb.append("}\n\n");
+			}
+		}
+	}
+
 }
