@@ -45,7 +45,10 @@ import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.FlexoObject;
+import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
+import org.openflexo.foundation.fml.rt.action.NavigationSchemeActionFactory;
+import org.openflexo.model.annotations.DefineValidationRule;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
@@ -115,5 +118,23 @@ public interface NavigationScheme extends AbstractActionScheme {
 			return null;
 		}
 
+		@Override
+		public NavigationSchemeActionFactory getActionFactory(FlexoConceptInstance fci) {
+			return new NavigationSchemeActionFactory(this, fci);
+		}
+
 	}
+
+	@DefineValidationRule
+	public static class TargetObjectIsRequiredAndMustBeValid extends BindingIsRequiredAndMustBeValid<NavigationScheme> {
+		public TargetObjectIsRequiredAndMustBeValid() {
+			super("'target_object'_binding_is_not_valid", NavigationScheme.class);
+		}
+
+		@Override
+		public DataBinding<?> getBinding(NavigationScheme object) {
+			return object.getTargetObject();
+		}
+	}
+
 }

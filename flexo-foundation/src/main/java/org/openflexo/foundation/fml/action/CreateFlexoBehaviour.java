@@ -222,6 +222,24 @@ public class CreateFlexoBehaviour extends FlexoAction<CreateFlexoBehaviour, Flex
 		}
 	};
 
+	public static FlexoActionFactory<CreateFlexoBehaviour, FlexoConceptObject, FMLObject> createNativationSchemeType = new AbstractCreateFlexoBehaviourActionType(
+			"navigation_scheme") {
+
+		/**
+		 * Factory method
+		 */
+		@Override
+		public CreateNavigationScheme makeNewAction(FlexoConceptObject focusedObject, Vector<FMLObject> globalSelection,
+				FlexoEditor editor) {
+			return new CreateNavigationScheme(focusedObject, globalSelection, editor) {
+				@Override
+				public Class<? extends FlexoBehaviour> getFlexoBehaviourClass() {
+					return NavigationScheme.class;
+				}
+			};
+		}
+	};
+
 	static {
 		FlexoObjectImpl.addActionForClass(CreateFlexoBehaviour.actionType, FlexoConcept.class);
 		FlexoObjectImpl.addActionForClass(CreateFlexoBehaviour.actionType, FlexoConceptBehaviouralFacet.class);
@@ -237,6 +255,8 @@ public class CreateFlexoBehaviour extends FlexoAction<CreateFlexoBehaviour, Flex
 		FlexoObjectImpl.addActionForClass(CreateFlexoBehaviour.createSynchronizationSchemeType, FlexoConceptBehaviouralFacet.class);
 		FlexoObjectImpl.addActionForClass(CreateFlexoBehaviour.createCloningSchemeType, FlexoConcept.class);
 		FlexoObjectImpl.addActionForClass(CreateFlexoBehaviour.createCloningSchemeType, FlexoConceptBehaviouralFacet.class);
+		FlexoObjectImpl.addActionForClass(CreateFlexoBehaviour.createNativationSchemeType, FlexoConcept.class);
+		FlexoObjectImpl.addActionForClass(CreateFlexoBehaviour.createNativationSchemeType, FlexoConceptBehaviouralFacet.class);
 	}
 
 	public static class CreateActionScheme extends CreateFlexoBehaviour {
@@ -247,6 +267,17 @@ public class CreateFlexoBehaviour extends FlexoAction<CreateFlexoBehaviour, Flex
 		@Override
 		public Class<? extends FlexoBehaviour> getFlexoBehaviourClass() {
 			return ActionScheme.class;
+		}
+	}
+
+	public static class CreateNavigationScheme extends CreateFlexoBehaviour {
+		CreateNavigationScheme(FlexoConceptObject focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
+			super(focusedObject, globalSelection, editor);
+		}
+
+		@Override
+		public Class<? extends FlexoBehaviour> getFlexoBehaviourClass() {
+			return NavigationScheme.class;
 		}
 	}
 
@@ -272,6 +303,7 @@ public class CreateFlexoBehaviour extends FlexoAction<CreateFlexoBehaviour, Flex
 		behaviourClassMap.put(DeletionScheme.class, focusedObject.getDeclaringVirtualModel().getTechnologyAdapter());
 		behaviourClassMap.put(EventListener.class, focusedObject.getDeclaringVirtualModel().getTechnologyAdapter());
 		behaviourClassMap.put(SynchronizationScheme.class, focusedObject.getDeclaringVirtualModel().getTechnologyAdapter());
+		behaviourClassMap.put(NavigationScheme.class, focusedObject.getDeclaringVirtualModel().getTechnologyAdapter());
 
 		for (UseModelSlotDeclaration useMS : focusedObject.getDeclaringVirtualModel().getUseDeclarations()) {
 			Class<? extends ModelSlot<?>> msClass = useMS.getModelSlotClass();

@@ -100,6 +100,7 @@ public class NavigationSchemeActionInitializer
 			public boolean run(EventObject e, NavigationSchemeAction action) {
 				if (action.getTargetObject() != null) {
 					// Editor will handle switch to right module and perspective, and select target object
+					System.out.println("-------------> Du coup, focus sur " + action.getTargetObject());
 					getEditor().focusOn(action.getTargetObject());
 					return true;
 				}

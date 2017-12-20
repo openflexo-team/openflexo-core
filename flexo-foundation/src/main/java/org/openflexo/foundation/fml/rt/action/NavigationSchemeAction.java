@@ -102,10 +102,20 @@ public class NavigationSchemeAction extends AbstractActionSchemeAction<Navigatio
 	}
 
 	private FlexoObject targetObject = null;
+	private boolean forceRevalidated = false;
 
 	@Override
 	protected void doAction(Object context) throws FlexoException {
+
 		if (evaluateCondition()) {
+
+			// Quick and dirty hack because found invalid binding
+			// TODO: please investigate
+			if (!getFlexoBehaviour().getTargetObject().isValid() && !forceRevalidated) {
+				forceRevalidated = true;
+				getFlexoBehaviour().getTargetObject().forceRevalidate();
+			}
+
 			if (getFlexoBehaviour().getTargetObject() != null && getFlexoBehaviour().getTargetObject().isSet()
 					&& getFlexoBehaviour().getTargetObject().isValid()) {
 				targetObject = evaluateTargetObject();
@@ -117,6 +127,7 @@ public class NavigationSchemeAction extends AbstractActionSchemeAction<Navigatio
 				}
 			}
 		}
+
 	}
 
 	public FlexoObject getTargetObject() {
