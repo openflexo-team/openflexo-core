@@ -44,8 +44,10 @@ import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.foundation.fml.binding.EventListenerBindingModel;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
+import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
+import org.openflexo.foundation.fml.rt.action.EventListenerActionFactory;
 import org.openflexo.model.annotations.CloningStrategy;
 import org.openflexo.model.annotations.CloningStrategy.StrategyType;
 import org.openflexo.model.annotations.Getter;
@@ -192,6 +194,11 @@ public interface EventListener extends AbstractActionScheme {
 			}
 			return "FlexoEvent";*/
 			return "event";
+		}
+
+		@Override
+		public EventListenerActionFactory getActionFactory(FlexoConceptInstance fci) {
+			return new EventListenerActionFactory(this, fci);
 		}
 
 	}

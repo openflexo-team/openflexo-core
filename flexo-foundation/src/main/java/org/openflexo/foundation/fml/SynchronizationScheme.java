@@ -38,8 +38,10 @@
 
 package org.openflexo.foundation.fml;
 
-import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
+import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
+import org.openflexo.foundation.fml.rt.action.SynchronizationSchemeActionFactory;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.XMLElement;
@@ -70,6 +72,11 @@ public interface SynchronizationScheme extends AbstractActionScheme {
 		@Override
 		public void setSynchronizedVirtualModel(VirtualModel virtualModel) {
 			setFlexoConcept(virtualModel);
+		}
+
+		@Override
+		public SynchronizationSchemeActionFactory getActionFactory(FlexoConceptInstance fci) {
+			return new SynchronizationSchemeActionFactory(this, (VirtualModelInstance<?, ?>) fci);
 		}
 
 	}
