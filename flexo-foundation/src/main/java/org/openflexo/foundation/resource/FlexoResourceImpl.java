@@ -184,7 +184,7 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 	@Override
 	public void setName(String aName) throws CannotRenameException {
 		if (StringUtils.isEmpty(aName)) {
-			logger.warning("Trying to rename a FlexoResource with a null or empty name. Please investigate.");
+			// logger.warning("Trying to rename a FlexoResource with a null or empty name. Please investigate.");
 			return;
 		}
 		if (getIODelegate() != null && getIODelegate().hasWritePermission()) {
@@ -196,7 +196,7 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 			if (getIODelegate() != null) {
 				getIODelegate().rename(aName);
 			}
-			//System.out.println("Renamed URI: " + getURI());
+			// System.out.println("Renamed URI: " + getURI());
 		}
 		else if (!isDeleting()) {
 			System.out.println("Trying to rename " + this + " from " + getName() + " to " + aName);
