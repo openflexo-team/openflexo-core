@@ -290,12 +290,12 @@ public class VirtualModelResourceFactory
 				returned.setFactory(makeResourceDataFactory(returned, getTechnologyContextManager(resourceCenter.getServiceManager())));
 			}
 			if (StringUtils.isNotEmpty(vpi.virtualModelClassName)) {
-				Class<? extends VirtualModel> virtualModelClass;
+				Class<? extends VirtualModel> virtualModelClass = null;
 				try {
 					virtualModelClass = (Class<? extends VirtualModel>) Class.forName(vpi.virtualModelClassName);
 					returned.setSpecializedResourceDataClass(virtualModelClass);
 				} catch (ClassNotFoundException e) {
-					e.printStackTrace();
+					logger.warning("Cannot find class " + vpi.virtualModelClassName);
 				}
 			}
 		}
