@@ -188,9 +188,9 @@ public class ResourceConsistencyService extends FlexoServiceImpl {
 	private static void informOfViewPointMissing(FMLRTVirtualModelInstanceResourceImpl resource) {
 		if (resource != null) {
 			Thread.dumpStack();
-			FlexoController.notify("<html> " + "<h3>VirtualModel resource is missing!</h3>" + "<p>FMLRTVirtualModelInstance <font color=\"red\">"
-					+ resource.getURI() + "</font><br>requires VirtualModel: " + resource.getVirtualModelURI()
-					+ "<br>Please add resources in resource centers and restart Openflexo</html>");
+			FlexoController.notify("<html> " + "<h3>VirtualModel resource is missing!</h3>"
+					+ "<p>FMLRTVirtualModelInstance <font color=\"red\">" + resource.getURI() + "</font><br>requires VirtualModel: "
+					+ resource.getVirtualModelURI() + "<br>Please add resources in resource centers and restart Openflexo</html>");
 		}
 	}
 
@@ -214,6 +214,7 @@ public class ResourceConsistencyService extends FlexoServiceImpl {
 
 	private void informOfConflictedResourceSet(ConflictedResourceSet conflict) {
 		if (skip != 0) {
+			System.out.println("Conflict: " + informationMessageForConflictSet(conflict));
 			skip = FlexoController.selectOption(
 					"<html> <h3> URI conflicts have been found:</h3></br>" + informationMessageForConflictSet(conflict) + "</html>",
 					options2, "OK");
