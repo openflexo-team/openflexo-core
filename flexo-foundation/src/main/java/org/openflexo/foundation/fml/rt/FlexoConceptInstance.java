@@ -1977,6 +1977,9 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 		@Override
 		public ActorReference<? extends FlexoConceptInstance> makeActorReference(FlexoConceptInstanceRole role, FlexoConceptInstance fci) {
 			AbstractVirtualModelInstanceModelFactory<?> factory = getFactory();
+			if (factory == null) {
+				return null;
+			}
 			ModelObjectActorReference<FlexoConceptInstance> returned = factory.newInstance(ModelObjectActorReference.class);
 			returned.setFlexoRole(role);
 			returned.setFlexoConceptInstance(fci);
