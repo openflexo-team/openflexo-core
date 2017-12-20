@@ -363,7 +363,8 @@ public interface ConditionalAction extends ControlStructureAction, FMLControlGra
 				Type inferedType1 = conditional.getThenControlGraph().getInferedType();
 				if (conditional.getElseControlGraph() != null) {
 					Type inferedType2 = conditional.getElseControlGraph().getInferedType();
-					if (!TypeUtils.isTypeAssignableFrom(inferedType1, inferedType2)
+					if (inferedType1 != Void.class && inferedType2 != Void.class
+							&& !TypeUtils.isTypeAssignableFrom(inferedType1, inferedType2)
 							&& !TypeUtils.isTypeAssignableFrom(inferedType2, inferedType1)) {
 						return new ValidationError<>(this, conditional,
 								"types_are_not_compatible (" + TypeUtils.simpleRepresentation(inferedType1) + " and "
