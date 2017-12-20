@@ -113,24 +113,11 @@ public abstract class FMLRTVirtualModelInstanceResourceImpl
 
 	@Override
 	public Resource getDirectory() {
-		return getIODelegate().getSerializationArtefactAsResource().getContainer();
-
-		/*String parentPath = getDirectoryPath();
-		if (ResourceLocator.locateResource(parentPath) == null) {
-			System.out.println("jessaie un lookup de " + parentPath);
-			System.out.println("" + getIODelegate().getSerializationArtefact());
-			FileSystemResourceLocatorImpl.appendDirectoryToFileSystemResourceLocator(parentPath);
+		if (getIODelegate() != null && getIODelegate().getSerializationArtefactAsResource() != null) {
+			return getIODelegate().getSerializationArtefactAsResource().getContainer();
 		}
-		return ResourceLocator.locateResource(parentPath);*/
+		return null;
 	}
-
-	/*public String getDirectoryPath() {
-		if (getIODelegate() instanceof FileIODelegate) {
-			FileIODelegate ioDelegate = (FileIODelegate) getIODelegate();
-			return ioDelegate.getFile().getParentFile().getAbsolutePath();
-		}
-		return "";
-	}*/
 
 	@Override
 	public FMLRTVirtualModelInstance getModelData() {
