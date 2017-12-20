@@ -61,6 +61,7 @@ import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.DeletionSchemeAction;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
+import org.openflexo.foundation.fml.rt.rm.AbstractVirtualModelInstanceResource;
 import org.openflexo.model.annotations.Adder;
 import org.openflexo.model.annotations.CloningStrategy;
 import org.openflexo.model.annotations.CloningStrategy.StrategyType;
@@ -318,6 +319,13 @@ public interface DeleteFlexoConceptInstance<VMI extends VirtualModelInstance<VMI
 
 					if (evaluationContext instanceof FlexoBehaviourAction) {
 
+						AbstractVirtualModelInstanceResource<?, ?> resourceToDelete = null;
+
+						if (objectToDelete instanceof VirtualModelInstance) {
+							resourceToDelete = (AbstractVirtualModelInstanceResource<?, ?>) ((VirtualModelInstance<?, ?>) objectToDelete)
+									.getResource();
+						}
+
 						DeletionSchemeAction deletionSchemeAction = new DeletionSchemeAction(getDeletionScheme(), objectToDelete, null,
 								(FlexoBehaviourAction<?, ?, ?>) evaluationContext);
 
@@ -334,6 +342,11 @@ public interface DeleteFlexoConceptInstance<VMI extends VirtualModelInstance<VMI
 						deletionSchemeAction.doAction();
 						// Finally delete the FlexoConcept
 						objectToDelete.delete();
+
+						if (resourceToDelete != null) {
+							System.out.println("Cool, on supprime la resource: " + resourceToDelete);
+							resourceToDelete.delete();
+						}
 
 						if (deletionSchemeAction.hasActionExecutionSucceeded()) {
 							logger.info("Successfully performed performDeleteFlexoConcept " + evaluationContext);

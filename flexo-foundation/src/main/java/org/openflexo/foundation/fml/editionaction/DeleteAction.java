@@ -52,6 +52,8 @@ import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOu
 import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
+import org.openflexo.foundation.resource.FlexoResource;
+import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.model.annotations.DefineValidationRule;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -152,8 +154,20 @@ public interface DeleteAction<T extends FlexoObject> extends EditionAction, Assi
 				return null;
 			}
 			try {
+
+				FlexoResource<?> resourceToDelete = null;
+				if (objectToDelete instanceof ResourceData) {
+					resourceToDelete = ((ResourceData<?>) objectToDelete).getResource();
+				}
+
 				logger.info("Delete object " + objectToDelete + " for object " + getObject() + " this=" + this);
 				objectToDelete.delete();
+
+				if (resourceToDelete != null) {
+					logger.info("Also delete resource " + resourceToDelete);
+					resourceToDelete.delete();
+				}
+
 			} catch (Exception e) {
 				logger.warning("Unexpected exception occured during deletion: " + e.getMessage());
 				e.printStackTrace();
