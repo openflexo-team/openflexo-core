@@ -40,10 +40,13 @@ package org.openflexo.foundation.fml.binding;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.BindingEvaluationContext;
+import org.openflexo.connie.DataBinding;
+import org.openflexo.connie.binding.BindingPathElement;
 import org.openflexo.connie.binding.IBindingPathElement;
 import org.openflexo.connie.binding.SimplePathElement;
 import org.openflexo.connie.exception.NullReferenceException;
@@ -242,11 +245,26 @@ public class FlexoConceptFlexoPropertyPathElement<P extends FlexoProperty<?>> ex
 	public boolean isSettable() {
 		if (flexoProperty != null) {
 			if (flexoProperty.isReadOnly()) {
-				System.out.println("Pas settable a cause de " + flexoProperty + " readonly");
+				System.out.println("Not settable because of " + flexoProperty + " readonly");
 			}
 			return !flexoProperty.isReadOnly();
 		}
 		return super.isSettable();
+	}
+
+	/**
+	 * Return boolean indicating if this {@link BindingPathElement} is notification-safe (all modifications of data are notified using
+	 * {@link PropertyChangeSupport} scheme)<br>
+	 * 
+	 * When tagged as unsafe, disable caching while evaluating related {@link DataBinding}.
+	 * 
+	 * Otherwise return true
+	 * 
+	 * @return
+	 */
+	@Override
+	public boolean isNotificationSafe() {
+		return flexoProperty.isNotificationSafe();
 	}
 
 }

@@ -38,6 +38,7 @@
 
 package org.openflexo.foundation.fml;
 
+import java.beans.PropertyChangeSupport;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
 import java.util.List;
@@ -498,6 +499,19 @@ public interface FlexoRole<T> extends FlexoProperty<T> {
 		@Override
 		public List<? extends ActorReference<? extends T>> selfInstantiate(FlexoConceptInstance fci) {
 			return null;
+		}
+
+		/**
+		 * Return boolean indicating if this {@link FlexoProperty} is notification-safe (all modifications of data retrived from that
+		 * property are notified using {@link PropertyChangeSupport} scheme)<br>
+		 * 
+		 * When tagged as unsafe, disable caching while evaluating related {@link DataBinding}.
+		 * 
+		 * @return
+		 */
+		@Override
+		public boolean isNotificationSafe() {
+			return true;
 		}
 
 	}

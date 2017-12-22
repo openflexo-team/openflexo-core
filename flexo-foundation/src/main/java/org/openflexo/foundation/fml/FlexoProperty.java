@@ -47,6 +47,7 @@ import java.util.List;
 
 import org.openflexo.connie.Bindable;
 import org.openflexo.connie.BindingModel;
+import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.type.ParameterizedTypeImpl;
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
@@ -173,6 +174,16 @@ public abstract interface FlexoProperty<T> extends FlexoConceptObject {
 	public boolean isAbstract();
 
 	public boolean isSuperPropertyOf(FlexoProperty<?> property);
+
+	/**
+	 * Return boolean indicating if this {@link FlexoProperty} is notification-safe (all modifications of data retrived from that property
+	 * are notified using {@link PropertyChangeSupport} scheme)<br>
+	 * 
+	 * When tagged as unsafe, disable caching while evaluating related {@link DataBinding}.
+	 * 
+	 * @return
+	 */
+	public boolean isNotificationSafe();
 
 	public static abstract class FlexoPropertyImpl<T> extends FlexoConceptObjectImpl implements FlexoProperty<T> {
 

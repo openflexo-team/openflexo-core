@@ -38,9 +38,11 @@
 
 package org.openflexo.foundation.fml;
 
+import java.beans.PropertyChangeSupport;
 import java.lang.reflect.Type;
 
 import org.openflexo.connie.BindingModel;
+import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.controlgraph.EmptyControlGraph;
@@ -187,6 +189,19 @@ public abstract interface GetProperty<T> extends FlexoProperty<T>, FMLControlGra
 				return "get" + getName().substring(0, 1).toUpperCase() + getName().substring(1);
 			}
 			return "get";
+		}
+
+		/**
+		 * Return boolean indicating if this {@link FlexoProperty} is notification-safe (all modifications of data retrived from that
+		 * property are notified using {@link PropertyChangeSupport} scheme)<br>
+		 * 
+		 * When tagged as unsafe, disable caching while evaluating related {@link DataBinding}.
+		 * 
+		 * @return
+		 */
+		@Override
+		public boolean isNotificationSafe() {
+			return false;
 		}
 
 		/*@Override

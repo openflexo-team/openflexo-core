@@ -38,6 +38,7 @@
 
 package org.openflexo.foundation.fml;
 
+import java.beans.PropertyChangeSupport;
 import java.lang.reflect.Type;
 
 import org.openflexo.connie.DataBinding;
@@ -181,6 +182,19 @@ public abstract interface ExpressionProperty<T> extends FlexoProperty<T> {
 			out.append("public " + TypeUtils.simpleRepresentation(getResultingType()) + " " + getName() + " = " + getExpression() + ";",
 					context);
 			return out.toString();
+		}
+
+		/**
+		 * Return boolean indicating if this {@link FlexoProperty} is notification-safe (all modifications of data retrived from that
+		 * property are notified using {@link PropertyChangeSupport} scheme)<br>
+		 * 
+		 * When tagged as unsafe, disable caching while evaluating related {@link DataBinding}.
+		 * 
+		 * @return
+		 */
+		@Override
+		public boolean isNotificationSafe() {
+			return true;
 		}
 
 	}

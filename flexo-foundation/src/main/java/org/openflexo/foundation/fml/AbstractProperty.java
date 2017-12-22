@@ -38,8 +38,10 @@
 
 package org.openflexo.foundation.fml;
 
+import java.beans.PropertyChangeSupport;
 import java.lang.reflect.Type;
 
+import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.model.annotations.Getter;
@@ -110,6 +112,19 @@ public abstract interface AbstractProperty<T> extends FlexoProperty<T> {
 			out.append(StringUtils.LINE_SEPARATOR, context);
 			out.append("abstract " + TypeUtils.simpleRepresentation(getResultingType()) + " " + getName() + ";", context);
 			return out.toString();
+		}
+
+		/**
+		 * Return boolean indicating if this {@link FlexoProperty} is notification-safe (all modifications of data retrived from that
+		 * property are notified using {@link PropertyChangeSupport} scheme)<br>
+		 * 
+		 * When tagged as unsafe, disable caching while evaluating related {@link DataBinding}.
+		 * 
+		 * @return
+		 */
+		@Override
+		public boolean isNotificationSafe() {
+			return true;
 		}
 
 	}
