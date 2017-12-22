@@ -161,7 +161,7 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 					IOUtils.copy(url.openStream(), writer, "UTF-8");
 					String rcBaseUri = writer.toString().trim();
 
-					System.out.println("Attempt to loading RC " + rcBaseUri);
+					// System.out.println("Attempt to loading RC " + rcBaseUri);
 
 					rcExists = false;
 					for (FlexoResourceCenter<?> r : rcList) {
@@ -370,7 +370,7 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 	 */
 	public void notifyRepositoryStructureChanged() {
 
-		System.out.println("TODO ??? Something to fire ??");
+		// TODO ??? Something to fire ?
 		/*getPropertyChangeSupport().firePropertyChange("getAllRepositories()", null, getAllRepositories());
 		getPropertyChangeSupport().firePropertyChange("getGlobalRepositories()", null, getGlobalRepositories());*/
 

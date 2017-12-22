@@ -41,7 +41,6 @@ package org.openflexo.foundation.fml.rt.editionaction;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.DataBinding;
-import org.openflexo.connie.expr.BindingValue;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
@@ -93,11 +92,11 @@ public interface AddFlexoConceptInstanceParameter extends BehaviourParameter<Abs
 			if (b == null || !b.isSet()) {
 				return new UndefinedRequiredBindingIssue<>(this, object);
 			}
-			else if (!b.isValid()) {
+			/*else if (!b.isValid()) {
 				// FMLObjectImpl.logger.info(getClass().getName() + ": Binding NOT valid: " + b + " for " + object.getStringRepresentation()
 				// + ". Reason: " + b.invalidBindingReason());
 				// Thread.dumpStack();
-
+			
 				System.out.println("Un pb de binding pour l'object " + object + " of " + object.getImplementedInterface());
 				System.out.println("FML=" + object.getFMLRepresentation());
 				System.out.println("binding=" + b + " " + Integer.toHexString(b.hashCode()));
@@ -115,7 +114,7 @@ public interface AddFlexoConceptInstanceParameter extends BehaviourParameter<Abs
 					System.out.println("referenced db owner = " + bindingValue.getDataBinding().getOwner());
 					System.out.println("referenced db owner bf = " + bindingValue.getDataBinding().getOwner().getBindingFactory());
 				}
-			}
+			}*/
 
 			if (object.getParam().getIsRequired()) {
 				return super.applyValidation(object);
