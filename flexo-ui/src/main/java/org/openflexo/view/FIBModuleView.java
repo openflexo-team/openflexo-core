@@ -128,7 +128,7 @@ public abstract class FIBModuleView<O extends FlexoObject> extends SelectionSync
 	@Override
 	public void willHide() {
 		// System.out.println("************ ModuleView willHide() " + this + " devient INVISIBLE");
-		setVisible(false);
+		// setVisible(false);
 	}
 
 	@Override
