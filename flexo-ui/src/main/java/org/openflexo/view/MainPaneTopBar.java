@@ -52,6 +52,7 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JMenuBar;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
 import org.openflexo.components.widget.FIBProjectSelector;
@@ -136,12 +137,19 @@ public class MainPaneTopBar extends JMenuBar {
 
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					try {
-						model.getModuleLoader().switchToModule(module);
-					} catch (ModuleLoadingException e1) {
-						e1.printStackTrace();
-						FlexoController.notify(e1.getLocalizedMessage());
-					}
+					// We activate the module LATER
+					// to let the window manager to handle all events BEFORE to perform the switch
+					SwingUtilities.invokeLater(new Runnable() {
+						@Override
+						public void run() {
+							try {
+								model.getModuleLoader().switchToModule(module);
+							} catch (ModuleLoadingException e1) {
+								e1.printStackTrace();
+								FlexoController.notify(e1.getLocalizedMessage());
+							}
+						}
+					});
 				}
 			});
 			PropertyChangeListener listener = new PropertyChangeListener() {

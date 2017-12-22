@@ -74,6 +74,7 @@ import org.openflexo.icon.IconLibrary;
 import org.openflexo.module.FlexoModule;
 import org.openflexo.module.ModuleLoader;
 import org.openflexo.module.ModuleLoadingException;
+import org.openflexo.task.TaskManagerPanel;
 import org.openflexo.toolbox.ToolBox;
 import org.openflexo.view.controller.FlexoController;
 import org.openflexo.view.controller.model.ControllerModel;
@@ -86,11 +87,18 @@ import org.openflexo.view.controller.model.ControllerModel;
 
 public final class FlexoFrame extends JFrame implements FlexoActionSource, PropertyChangeListener {
 
+	// private FlexoModule<?>
+
 	private final class FlexoModuleWindowListener extends WindowAdapter {
 
 		@Override
 		public void windowActivated(WindowEvent e) {
-			if (!(e.getOppositeWindow() instanceof ProgressWindow) && getModuleLoader().isLoaded(getModule().getModule())) {
+			if (!(e.getOppositeWindow() instanceof ProgressWindow) && !(e.getOppositeWindow() instanceof TaskManagerPanel)
+					&& getModuleLoader().isLoaded(getModule().getModule())) {
+				//System.out.println("windowActivated for " + getModule());
+				//System.out.println("Opposite: " + e.getOppositeWindow());
+				//System.out.println("active module: " + getModuleLoader().getActiveModule());
+				//System.out.println("WindowEvent source: " + e.getSource());
 				switchToModule();
 			}
 		}

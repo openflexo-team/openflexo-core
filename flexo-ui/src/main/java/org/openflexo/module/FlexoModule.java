@@ -330,7 +330,19 @@ public abstract class FlexoModule<M extends FlexoModule<M>> implements DataFlexo
 		getFlexoFrame().setExtendedState(state);
 		getFlexoFrame().setVisible(true);
 
-		selectDefaultObjectWhenAvailableLater();
+		if (getFlexoController() != null) {
+			if (getFlexoController().getValidationWindow(false) != null) {
+				getFlexoController().getValidationWindow(false).setVisible(true);
+			}
+
+			if (getFlexoController().getCurrentModuleView() != null) {
+				getFlexoController().getCurrentModuleView().willShow();
+			}
+
+			else {
+				selectDefaultObjectWhenAvailableLater();
+			}
+		}
 
 	}
 
