@@ -50,6 +50,7 @@ import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
+import org.openflexo.localization.LocalizedDelegate;
 import org.openflexo.model.annotations.DeserializationInitializer;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -239,6 +240,14 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData/*<Vi
 		@Override
 		public boolean hasDescription() {
 			return StringUtils.isNotEmpty(getDescription());
+		}
+
+		@Override
+		public LocalizedDelegate getLocales() {
+			if (getDeclaringVirtualModel() != null) {
+				return getDeclaringVirtualModel().getLocalizedDictionary();
+			}
+			return super.getLocales();
 		}
 
 		@Override

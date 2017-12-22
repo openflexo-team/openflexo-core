@@ -64,6 +64,7 @@ import org.openflexo.foundation.fml.rt.VirtualModelInstanceObject;
 import org.openflexo.foundation.fml.rt.editionaction.MatchFlexoConceptInstance;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.utils.OperationCancelledException;
+import org.openflexo.localization.LocalizedDelegate;
 
 /**
  * Provides execution environment of a {@link FlexoBehaviour} on a given {@link FlexoConceptInstance} as a {@link FlexoAction}
@@ -148,6 +149,14 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 	@Override
 	public FlexoBehaviourActionFactory<A, FB, O> getActionFactory() {
 		return (FlexoBehaviourActionFactory<A, FB, O>) super.getActionFactory();
+	}
+
+	@Override
+	public LocalizedDelegate getLocales() {
+		if (getFlexoBehaviour() != null) {
+			return getFlexoBehaviour().getLocales();
+		}
+		return super.getLocales();
 	}
 
 	public final FB getFlexoBehaviour() {
