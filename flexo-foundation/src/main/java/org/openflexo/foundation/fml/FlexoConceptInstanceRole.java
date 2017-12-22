@@ -303,6 +303,7 @@ public interface FlexoConceptInstanceRole extends FlexoRole<FlexoConceptInstance
 		public DataBinding<VirtualModelInstance<?, ?>> getVirtualModelInstance() {
 			if (virtualModelInstance == null) {
 				virtualModelInstance = new DataBinding<>(this, VirtualModelInstance.class, DataBinding.BindingDefinitionType.GET);
+				virtualModelInstance.setBindingName("virtualModelInstance");
 			}
 			return virtualModelInstance;
 		}
