@@ -66,8 +66,13 @@ public abstract class OpenflexoFIBTestCase extends OpenflexoTestCaseWithGUI {
 
 	static final Logger logger = Logger.getLogger(OpenflexoFIBTestCase.class.getPackage().getName());
 
-	public void validateFIB(String fibRelativePath) throws InterruptedException {
-		validateFIB(ResourceLocator.locateResource(fibRelativePath));
+	public void validateFIB(String fibRelativePath) {
+		try {
+			validateFIB(ResourceLocator.locateResource(fibRelativePath));
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+			fail();
+		}
 	}
 
 	public void validateFIB(Resource fibResouce) throws InterruptedException {
@@ -80,6 +85,7 @@ public abstract class OpenflexoFIBTestCase extends OpenflexoTestCaseWithGUI {
 			System.out.println("Validating fib file " + fibResouce);
 			FIBComponent component = ApplicationFIBLibraryImpl.instance(serviceManager.getTechnologyAdapterService())
 					.retrieveFIBComponent(fibResouce);
+
 			if (component == null) {
 				fail("Component not found: " + fibResouce.getURI());
 			}
