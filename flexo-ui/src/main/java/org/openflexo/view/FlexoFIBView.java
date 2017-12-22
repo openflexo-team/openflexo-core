@@ -102,19 +102,22 @@ public class FlexoFIBView extends JPanel implements GraphicalFlexoObserver, HasP
 	protected FlexoFIBView(Object dataObject, FlexoController controller, FIBComponent fibComponent, LocalizedDelegate locales,
 			boolean addScrollBar) {
 		super(new BorderLayout());
-		this.dataObject = dataObject;
 		this.controller = controller;
 		this.fibComponent = fibComponent;
 
-		if (dataObject instanceof HasPropertyChangeSupport) {
+		// TODO: try to remove following lines
+		/*if (dataObject instanceof HasPropertyChangeSupport) {
 			manager.addListener(this, (HasPropertyChangeSupport) dataObject);
 		}
 		else if (dataObject instanceof FlexoObservable) {
 			((FlexoObservable) dataObject).addObserver(this);
-		}
+		}*/
+		// TODO: try to remove previous lines
 
 		pcSupport = new PropertyChangeSupport(this);
 
+		// Important to set dataObject now
+		this.dataObject = dataObject;
 		initializeFIBComponent();
 
 		if (getFlexoController() != null) {
@@ -130,7 +133,9 @@ public class FlexoFIBView extends JPanel implements GraphicalFlexoObserver, HasP
 
 		Progress.progress("init_view");
 
-		fibController.setDataObject(dataObject);
+		setDataObject(dataObject);
+
+		// fibController.setDataObject(dataObject);
 
 		if (this instanceof FIBMouseClickListener) {
 			fibView.getController().addMouseClickListener((FIBMouseClickListener) this);
@@ -223,7 +228,10 @@ public class FlexoFIBView extends JPanel implements GraphicalFlexoObserver, HasP
 	}
 
 	public FIBView<?, ?> getFIBView(String componentName) {
-		return fibController.viewForComponent(componentName);
+		if (fibController != null) {
+			return fibController.viewForComponent(componentName);
+		}
+		return null;
 	}
 
 	public void deleteView() {
