@@ -18,8 +18,6 @@
 				list="data.availableCreationSchemes"
 				showIcon="true" iteratorClassName="org.openflexo.foundation.fml.CreationScheme"
 				autoSelectFirstRow="false">
-				<!--  <Dependancy componentName="AddFlexoConceptActionPanel" />
-				<Dependancy componentName="AddFlexoConceptPatternRoleDropDown" />-->
 			</DropDown>
 			<Label label="parameters" index="22" data=""
 				constraints="twocols(expandHorizontally=true;expandVertically=false;index=12;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)"
@@ -54,8 +52,6 @@
 					<ColumnAssignment variable="component.bindable"
 						value="iterator" />
 				</CustomColumn>
-				<Dependancy componentName="AddFlexoConceptActionPanel" />
-				<Dependancy componentName="AddFlexoConceptPatternRoleDropDown" />
 				<Dependancy componentName="CreationSchemeDropDown" />
 				<LocalizedDictionary />
 			</Table>
