@@ -110,7 +110,7 @@ public abstract class AbstractVirtualModelInstanceResourceImpl<VMI extends Virtu
 			returned.setVirtualModel(getVirtualModelResource().getVirtualModel());
 		}
 
-		if (getContainer() != null) {
+		if (getContainer() != null && getContainer().getVirtualModelInstance() != null) {
 			getContainer().getVirtualModelInstance().addToVirtualModelInstances(returned);
 		}
 		returned.clearIsModified();
