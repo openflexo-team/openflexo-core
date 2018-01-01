@@ -1,8 +1,10 @@
+ActionScheme=ActionScheme
 Assign=Assign
 Boolean=Boolean
 CHECKBOX=CHECKBOX
 CHECKBOX_LIST=CHECKBOX_LIST
 CUSTOM_WIDGET=CUSTOM_WIDGET
+CreationScheme=CreationScheme
 DROPDOWN=DROPDOWN
 Double=Double
 Expression=Expression
