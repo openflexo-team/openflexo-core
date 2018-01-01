@@ -230,6 +230,7 @@ public abstract class FlexoAction<A extends FlexoAction<A, T1, T2>, T1 extends F
 			editor.performAction((A) this, null);
 		}
 		else {
+			logger.warning("No editor for action " + this);
 			try {
 				doActionInContext();
 			} catch (FlexoException e) {
