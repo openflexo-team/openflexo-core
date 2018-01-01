@@ -506,7 +506,11 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 		// TODO: this is not a good idea, we should separate FlexoConceptInstance from RunTimeEvaluationContext
 		private FlexoEditor getFlexoEditor() {
 			if (getResourceCenter() instanceof FlexoProject && getServiceManager() != null) {
-				return getServiceManager().getProjectLoaderService().getEditorForProject((FlexoProject) getResourceCenter());
+				return getServiceManager().getProjectLoaderService().getEditorForProject((FlexoProject<?>) getResourceCenter());
+			}
+			else if (getResourceCenter().getDelegatingProjectResource() != null) {
+				return getServiceManager().getProjectLoaderService()
+						.getEditorForProject(getResourceCenter().getDelegatingProjectResource().getFlexoProject());
 			}
 			return null;
 		}
