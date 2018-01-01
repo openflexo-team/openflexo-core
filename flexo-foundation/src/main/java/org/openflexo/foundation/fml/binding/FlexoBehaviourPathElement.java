@@ -173,10 +173,10 @@ public class FlexoBehaviourPathElement extends FunctionPathElement implements Pr
 	public Object getBindingValue(Object target, BindingEvaluationContext context)
 			throws TypeMismatchException, NullReferenceException, InvocationTargetTransformException {
 
-		/*System.out.println("****************** Computing FlexoBehaviourPathElement");
-		System.out.println("getFunction()=" + getFunction());
-		System.out.println("target=" + target);
-		System.out.println("context=" + context);*/
+		// System.out.println("****************** Computing FlexoBehaviourPathElement");
+		// System.out.println("getFunction()=" + getFunction());
+		// System.out.println("target=" + target);
+		// System.out.println("context=" + context);
 
 		// System.out.println("Evaluating getBindingValue() in FlexoBehaviourPathElement for " + getFlexoBehaviour().getSignature() + " in "
 		// + getFlexoBehaviour().getFlexoConcept());
@@ -198,7 +198,7 @@ public class FlexoBehaviourPathElement extends FunctionPathElement implements Pr
 			// logger.warning("Please implements execution of FlexoBehaviourPathElement here !!!! context=" + context + " of "
 			// + context.getClass() + " target=" + target);
 
-			if (/*context instanceof FlexoBehaviourAction &&*/ target instanceof FlexoConceptInstance) {
+			if (target instanceof FlexoConceptInstance) {
 
 				// FlexoBehaviourAction action = (FlexoBehaviourAction) context;
 				FlexoConceptInstance fci = (FlexoConceptInstance) target;
@@ -211,9 +211,12 @@ public class FlexoBehaviourPathElement extends FunctionPathElement implements Pr
 				}
 				else {
 					FlexoEditor editor = null;
-
 					if (fci.getResourceCenter() instanceof FlexoProject) {
-						FlexoProject prj = (FlexoProject) fci.getResourceCenter();
+						FlexoProject<?> prj = (FlexoProject<?>) fci.getResourceCenter();
+						editor = prj.getServiceManager().getProjectLoaderService().getEditorForProject(prj);
+					}
+					else if (fci.getResourceCenter().getDelegatingProjectResource() != null) {
+						FlexoProject<?> prj = fci.getResourceCenter().getDelegatingProjectResource().getFlexoProject();
 						editor = prj.getServiceManager().getProjectLoaderService().getEditorForProject(prj);
 					}
 
