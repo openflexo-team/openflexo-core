@@ -142,6 +142,7 @@ public interface ExpressionAction<T> extends AssignableAction<T> {
 			// assignableType = null;
 			getPropertyChangeSupport().firePropertyChange("assignableType", null, getAssignableType());
 			getPropertyChangeSupport().firePropertyChange("iteratorType", null, getIteratorType());
+			getPropertyChangeSupport().firePropertyChange("isIterable", null, isIterable());
 		}
 
 		@Override
