@@ -38,6 +38,7 @@
 
 package org.openflexo.rm;
 
+import org.openflexo.br.BugReportService;
 import org.openflexo.foundation.task.FlexoTask;
 import org.openflexo.foundation.task.Progress;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
@@ -57,7 +58,7 @@ public class ActivateTechnologyAdapterTask extends FlexoApplicationTask {
 	private final TechnologyAdapter technologyAdapter;
 
 	public ActivateTechnologyAdapterTask(TechnologyAdapterService taService, TechnologyAdapter technologyAdapter) {
-		super(FlexoLocalization.getMainLocalizer().localizedForKey("activate_technology") + " " + technologyAdapter.getName(),
+		super(FlexoLocalization.getMainLocalizer().localizedForKey("activation_of_technology") + " " + technologyAdapter.getName(),
 				taService.getServiceManager());
 		this.taService = taService;
 		this.technologyAdapter = technologyAdapter;
