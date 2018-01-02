@@ -373,6 +373,10 @@ public interface Sequence extends FMLControlGraph, FMLControlGraphOwner {
 		@Override
 		public ValidationIssue<InferedTypesMustBeCompatible, Sequence> applyValidation(Sequence sequence) {
 
+			if (sequence.getControlGraph1() == null || sequence.getControlGraph2() == null) {
+				return null;
+			}
+
 			Type inferedType1 = sequence.getControlGraph1().getInferedType();
 			Type inferedType2 = sequence.getControlGraph2().getInferedType();
 
