@@ -50,6 +50,7 @@ import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.editionaction.AssignableAction;
+import org.openflexo.foundation.fml.editionaction.ExpressionAction;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext.ReturnException;
 import org.openflexo.model.annotations.CloningStrategy;
@@ -283,6 +284,15 @@ public interface IterationAction extends AbstractIterationAction {
 				return new ValidationError<>(this, action, "iteration_action_does_not_define_a_valid_iteration");
 			}
 			if (!action.getIterationAction().isIterable()) {
+				/*System.out.println("iteration_action_is_not_iterable a cause de ");
+				System.out.println("action=" + action.getIterationAction());
+				System.out.println("FML=" + action.getIterationAction());
+				if (action.getIterationAction() instanceof ExpressionAction) {
+					ExpressionAction exp = (ExpressionAction) action.getIterationAction();
+					System.out.println("exp " + exp.getExpression());
+					System.out.println("valide? " + exp.getExpression().isValid());
+					System.out.println("reason " + exp.getExpression().invalidBindingReason());
+				}*/
 				return new ValidationError<>(this, action, "iteration_action_is_not_iterable");
 			}
 
