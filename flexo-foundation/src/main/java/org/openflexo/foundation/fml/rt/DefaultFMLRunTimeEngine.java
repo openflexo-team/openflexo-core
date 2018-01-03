@@ -83,7 +83,7 @@ public abstract class DefaultFMLRunTimeEngine implements FMLRunTimeEngine, Prope
 
 	@Override
 	public void addToExecutionContext(VirtualModelInstance<?, ?> vmi, RunTimeEvaluationContext evaluationContext) {
-		System.out.println("************ Adding to ExecutionContext: " + vmi);
+		// System.out.println("************ Adding to ExecutionContext: " + (vmi != null ? vmi.getURI() : "null"));
 		virtualModelInstances.add(vmi);
 		if (vmi.getVirtualModel() != null) {
 			for (EventListener el : vmi.getVirtualModel().getFlexoBehaviours(EventListener.class)) {
@@ -104,7 +104,7 @@ public abstract class DefaultFMLRunTimeEngine implements FMLRunTimeEngine, Prope
 
 	@Override
 	public void removeFromExecutionContext(VirtualModelInstance<?, ?> vmi, RunTimeEvaluationContext evaluationContext) {
-		System.out.println("************ Removing from ExecutionContext: " + vmi);
+		// System.out.println("************ Removing from ExecutionContext: " + (vmi != null ? vmi.getURI() : "null"));
 		virtualModelInstances.remove(vmi);
 		if (vmi.getVirtualModel() != null) {
 			for (EventListener el : vmi.getVirtualModel().getFlexoBehaviours(EventListener.class)) {
