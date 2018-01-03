@@ -41,7 +41,6 @@ package org.openflexo.foundation.fml.rt;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -186,7 +185,6 @@ public class TestCreateVirtualModelInstanceFromExistingViewPoint extends Openfle
 		FMLRTVirtualModelInstanceResource newViewResource = project.getVirtualModelInstanceRepository().getVirtualModelInstance(oldViewURI);
 		System.out.println("all resources = " + project.getVirtualModelInstanceRepository().getAllResources());
 		assertNotNull(newViewResource);
-		assertNull(newViewResource.getLoadedResourceData());
 		newViewResource.loadResourceData(null);
 		assertNotNull(newViewResource.getLoadedResourceData());
 		newView = newViewResource.getLoadedResourceData();
