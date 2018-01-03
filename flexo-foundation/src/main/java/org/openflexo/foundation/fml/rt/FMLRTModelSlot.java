@@ -173,7 +173,7 @@ public interface FMLRTModelSlot<VMI extends VirtualModelInstance<VMI, TA>, TA ex
 
 		@Override
 		public String getTypeDescription() {
-			return "Virtual Model";
+			return "VirtualModel instance";
 		};
 
 		@Override
