@@ -41,7 +41,6 @@ package org.openflexo.foundation.fml;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -569,7 +568,6 @@ public class TestFlexoRoleCardinality extends OpenflexoProjectAtRunTimeTestCase 
 		assertNotNull(project);
 		FMLRTVirtualModelInstanceResource newViewResource = project.getVirtualModelInstanceRepository().getVirtualModelInstance(oldViewURI);
 		assertNotNull(newViewResource);
-		assertNull(newViewResource.getLoadedResourceData());
 		newViewResource.loadResourceData(null);
 		assertNotNull(newViewResource.getLoadedResourceData());
 		newView = newViewResource.getLoadedResourceData();
