@@ -14,6 +14,7 @@ Resource\ Center=Resource Center
 String=Tekst
 You\ might\ use\ wildcards\ (*\ \=\ any\ string)\ and\ press\ 'Search'=You might use wildcards (* \= any string) and press 'Search'
 activate_technology=activate_technology
+activation_of_technology=activation_of_technology
 actor=Actor
 actors=Actors
 add_to_list=Add to list

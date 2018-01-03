@@ -16,6 +16,7 @@ Resource\ Center=Resource Center
 String=Cha\u00EEne de caract\u00E8res
 You\ might\ use\ wildcards\ (*\ \=\ any\ string)\ and\ press\ 'Search'=You might use wildcards (* \= any string) and press 'Search'
 activate_technology=Activer la technologie
+activation_of_technology=Activation de la technologie
 actor=Acteur
 actors=Acteurs
 add_to_list=Ajouter \u00E0 la liste
