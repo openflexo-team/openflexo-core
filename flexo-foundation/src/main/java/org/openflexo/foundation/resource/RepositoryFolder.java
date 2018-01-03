@@ -104,7 +104,7 @@ public class RepositoryFolder<R extends FlexoResource<?>, I> extends DefaultFlex
 	}
 
 	public String getName() {
-		if (getSerializationArtefact() == null) {
+		if (getSerializationArtefact() == null || getResourceRepository() == null || getResourceRepository().getResourceCenter() == null) {
 			return name;
 		}
 		return (getResourceRepository().getResourceCenter().retrieveName(getSerializationArtefact()));
