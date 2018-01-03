@@ -39,6 +39,7 @@
 package org.openflexo.foundation.project;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -66,8 +67,11 @@ public class FlexoProjectFactory extends DefaultPamelaResourceModelFactory<Flexo
 	private RelativePathResourceConverter relativePathResourceConverter;
 
 	public FlexoProjectFactory(FlexoProjectResource<?> resource, FlexoServiceManager serviceManager) throws ModelDefinitionException {
-		super(resource, retrieveProjectNatureSpecificClasses(serviceManager.getProjectNatureService()));
-		setEditingContext(serviceManager.getEditingContext());
+		super(resource, serviceManager != null ? retrieveProjectNatureSpecificClasses(serviceManager.getProjectNatureService())
+				: Collections.singletonList(FlexoProject.class));
+		if (serviceManager != null) {
+			setEditingContext(serviceManager.getEditingContext());
+		}
 		addConverter(new FlexoVersionConverter());
 		addConverter(relativePathResourceConverter = new RelativePathResourceConverter(null));
 		if (resource != null && resource.getIODelegate() != null && resource.getIODelegate().getSerializationArtefactAsResource() != null) {
