@@ -44,6 +44,7 @@ import javax.swing.ImageIcon;
 
 import org.openflexo.components.widget.FIBResourceManagerBrowser;
 import org.openflexo.foundation.FlexoObject;
+import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.icon.IconLibrary;
@@ -85,13 +86,17 @@ public class GenericPerspective extends FlexoPerspective {
 		return IconLibrary.OPENFLEXO_NOTEXT_16;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public String getWindowTitleforObject(FlexoObject object, FlexoController controller) {
 		if (object instanceof WelcomePanel) {
 			return "Welcome";
 		}
+		if (object instanceof FlexoProject) {
+			return ((FlexoProject<?>) object).getName();
+		}
 		if (object instanceof TechnologyObject) {
-			TechnologyAdapter ta = ((TechnologyObject) object).getTechnologyAdapter();
+			TechnologyAdapter ta = ((TechnologyObject<?>) object).getTechnologyAdapter();
 			if (ta == null) {
 				return null;
 			}

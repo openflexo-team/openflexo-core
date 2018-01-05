@@ -47,6 +47,7 @@ import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.rt.rm.FMLRTVirtualModelInstanceResource;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
+import org.openflexo.foundation.resource.RepositoryFolder;
 import org.openflexo.foundation.technologyadapter.ModelRepository;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
@@ -88,6 +89,8 @@ public interface FMLRTVirtualModelInstanceRepository<I> extends
 	public List<FMLRTVirtualModelInstance> getVirtualModelInstancesConformToVirtualModel(String virtualModelURI);
 
 	public boolean isValidForANewVirtualModelInstanceName(String value);
+
+	public List<FMLRTVirtualModelInstanceResource> getTopLevelVirtualModelInstanceResources();
 
 	public static abstract class FMLRTVirtualModelInstanceRepositoryImpl<I> extends
 			ModelRepositoryImpl<FMLRTVirtualModelInstanceResource, FMLRTVirtualModelInstance, VirtualModel, FMLRTTechnologyAdapter, FMLTechnologyAdapter, I>
@@ -136,30 +139,45 @@ public interface FMLRTVirtualModelInstanceRepository<I> extends
 			return getResource(virtualModelInstanceURI);
 		}
 
-		/*public VirtualModelInstanceResource<?, ?> getVirtualModelInstance(String virtualModelInstanceURI) {
-			if (virtualModelInstanceURI == null) {
-				return null;
-			}
-			if (getView(virtualModelInstanceURI) != null) {
-				return getView(virtualModelInstanceURI);
-			}
-			// System.out.println("lookup mvi " + virtualModelInstanceURI);
-			String viewURI = virtualModelInstanceURI.substring(0, virtualModelInstanceURI.lastIndexOf("/"));
-			// System.out.println("lookup view " + viewURI);
-			ViewResource vr = getView(viewURI);
-			if (vr != null) {
-				for (VirtualModelInstanceResource<?, ?> vmir : vr.getContents(VirtualModelInstanceResource.class)) {
-					if (vmir.getURI().equals(virtualModelInstanceURI)) {
-						// System.out.println("Found " + vmir.getURI());
-						return vmir;
+		private List<FMLRTVirtualModelInstanceResource> topLevelVirtualModelInstanceResources = null;
+
+		@Override
+		public List<FMLRTVirtualModelInstanceResource> getTopLevelVirtualModelInstanceResources() {
+			if (topLevelVirtualModelInstanceResources == null) {
+				topLevelVirtualModelInstanceResources = new ArrayList<>();
+				for (FMLRTVirtualModelInstanceResource r : getAllResources()) {
+					if (r.getContainer() == null) {
+						topLevelVirtualModelInstanceResources.add(r);
 					}
 				}
 			}
-			else {
-				logger.info("Cannot find View '" + viewURI + "' in '" + getDefaultBaseURI() + "'");
-			}
-			logger.info("Cannot find FMLRTVirtualModelInstance '" + virtualModelInstanceURI + "' in '" + getDefaultBaseURI() + "'");
-			return null;
-		}*/
+			return topLevelVirtualModelInstanceResources;
+		}
+
+		@Override
+		public void unregisterResource(FMLRTVirtualModelInstanceResource flexoResource) {
+			super.unregisterResource(flexoResource);
+			topLevelVirtualModelInstanceResources = null;
+			getPropertyChangeSupport().firePropertyChange("topLevelVirtualModelInstanceResources", null,
+					getTopLevelVirtualModelInstanceResources());
+		}
+
+		@Override
+		public void registerResource(FMLRTVirtualModelInstanceResource resource,
+				RepositoryFolder<FMLRTVirtualModelInstanceResource, I> parentFolder) {
+			super.registerResource(resource, parentFolder);
+			topLevelVirtualModelInstanceResources = null;
+			getPropertyChangeSupport().firePropertyChange("topLevelVirtualModelInstanceResources", null,
+					getTopLevelVirtualModelInstanceResources());
+		}
+
+		@Override
+		public void registerResource(FMLRTVirtualModelInstanceResource resource, FMLRTVirtualModelInstanceResource parentResource) {
+			super.registerResource(resource, parentResource);
+			topLevelVirtualModelInstanceResources = null;
+			getPropertyChangeSupport().firePropertyChange("topLevelVirtualModelInstanceResources", null,
+					getTopLevelVirtualModelInstanceResources());
+		}
+
 	}
 }

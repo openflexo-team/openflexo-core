@@ -39,10 +39,15 @@
 package org.openflexo.foundation.fml;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
+import org.openflexo.foundation.resource.RepositoryFolder;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterResourceRepository;
+import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.model.factory.ModelFactory;
@@ -54,8 +59,11 @@ import org.openflexo.model.factory.ModelFactory;
  * 
  */
 @ModelEntity
+@ImplementationClass(VirtualModelRepository.VirtualModelRepositoryImpl.class)
 public interface VirtualModelRepository<I>
 		extends TechnologyAdapterResourceRepository<VirtualModelResource, FMLTechnologyAdapter, VirtualModel, I> {
+
+	public List<VirtualModelResource> getTopLevelVirtualModelResources();
 
 	public static <I> VirtualModelRepository<I> instanciateNewRepository(FMLTechnologyAdapter technologyAdapter,
 			FlexoResourceCenter<I> resourceCenter) throws IOException {
@@ -72,5 +80,50 @@ public interface VirtualModelRepository<I>
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+	public static abstract class VirtualModelRepositoryImpl<I>
+			extends TechnologyAdapterResourceRepositoryImpl<VirtualModelResource, FMLTechnologyAdapter, VirtualModel, I>
+			implements VirtualModelRepository<I> {
+
+		@SuppressWarnings("unused")
+		private static final Logger logger = Logger.getLogger(TechnologyAdapterResourceRepository.class.getPackage().getName());
+
+		private List<VirtualModelResource> topLevelVirtualModelResources = null;
+
+		@Override
+		public List<VirtualModelResource> getTopLevelVirtualModelResources() {
+			if (topLevelVirtualModelResources == null) {
+				topLevelVirtualModelResources = new ArrayList<>();
+				for (VirtualModelResource r : getAllResources()) {
+					if (r.getContainer() == null) {
+						topLevelVirtualModelResources.add(r);
+					}
+				}
+			}
+			return topLevelVirtualModelResources;
+		}
+
+		@Override
+		public void unregisterResource(VirtualModelResource flexoResource) {
+			super.unregisterResource(flexoResource);
+			topLevelVirtualModelResources = null;
+			getPropertyChangeSupport().firePropertyChange("topLevelVirtualModelResources", null, getTopLevelVirtualModelResources());
+		}
+
+		@Override
+		public void registerResource(VirtualModelResource resource, RepositoryFolder<VirtualModelResource, I> parentFolder) {
+			super.registerResource(resource, parentFolder);
+			topLevelVirtualModelResources = null;
+			getPropertyChangeSupport().firePropertyChange("topLevelVirtualModelResources", null, getTopLevelVirtualModelResources());
+		}
+
+		@Override
+		public void registerResource(VirtualModelResource resource, VirtualModelResource parentResource) {
+			super.registerResource(resource, parentResource);
+			topLevelVirtualModelResources = null;
+			getPropertyChangeSupport().firePropertyChange("topLevelVirtualModelResources", null, getTopLevelVirtualModelResources());
+		}
+
 	}
 }
