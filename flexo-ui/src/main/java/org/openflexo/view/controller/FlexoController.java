@@ -172,6 +172,7 @@ import org.openflexo.model.validation.ValidationModel;
 import org.openflexo.model.validation.ValidationRule;
 import org.openflexo.model.validation.ValidationRuleFilter;
 import org.openflexo.module.FlexoModule;
+import org.openflexo.module.FlexoModule.WelcomePanel;
 import org.openflexo.module.Module;
 import org.openflexo.module.ModuleLoader;
 import org.openflexo.prefs.ApplicationFIBLibraryService;
@@ -2265,4 +2266,7 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 		return FlexoLocalization.getMainLocalizer();
 	}
 
+	public abstract ModuleView<?> makeWelcomePanel(WelcomePanel<?> welcomePanel, FlexoPerspective perspective);
+
+	public abstract ModuleView<?> makeDefaultProjectView(FlexoProject<?> project, FlexoPerspective perspective);
 }

@@ -47,6 +47,7 @@ import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.icon.IconLibrary;
+import org.openflexo.module.FlexoModule.WelcomePanel;
 import org.openflexo.view.controller.model.FlexoPerspective;
 
 /**
@@ -86,6 +87,9 @@ public class GenericPerspective extends FlexoPerspective {
 
 	@Override
 	public String getWindowTitleforObject(FlexoObject object, FlexoController controller) {
+		if (object instanceof WelcomePanel) {
+			return "Welcome";
+		}
 		if (object instanceof TechnologyObject) {
 			TechnologyAdapter ta = ((TechnologyObject) object).getTechnologyAdapter();
 			if (ta == null) {
@@ -108,13 +112,16 @@ public class GenericPerspective extends FlexoPerspective {
 	@Override
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public boolean hasModuleViewForObject(FlexoObject object) {
+		if (object instanceof WelcomePanel) {
+			return true;
+		}
 		if (object instanceof TechnologyObject) {
 			TechnologyAdapterControllerService tacService = getController().getApplicationContext().getTechnologyAdapterControllerService();
 			TechnologyAdapterController<?> tac = tacService
 					.getTechnologyAdapterController(((TechnologyObject) object).getTechnologyAdapter());
 			return tac.hasModuleViewForObject((TechnologyObject) object, getController());
 		}
-		return false;
+		return super.hasModuleViewForObject(object);
 	}
 
 	/**

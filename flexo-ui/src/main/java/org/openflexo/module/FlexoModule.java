@@ -300,6 +300,9 @@ public abstract class FlexoModule<M extends FlexoModule<M>> implements DataFlexo
 				selectDefaultObject = true;
 			}
 			if (selectDefaultObject) {
+				if (defaultObjectToSelect == null) {
+					defaultObjectToSelect = makeWelcomePanel();
+				}
 				getFlexoController().setCurrentEditedObjectAsModuleView(defaultObjectToSelect);
 			}
 			else {
@@ -322,7 +325,7 @@ public abstract class FlexoModule<M extends FlexoModule<M>> implements DataFlexo
 
 	void setAsActiveModule() {
 
-		// System.out.println("**************** setAsActiveModule()");
+		// System.out.println("**************** setAsActiveModule() for " + this);
 
 		isActive = true;
 		int state = getFlexoFrame().getExtendedState();
