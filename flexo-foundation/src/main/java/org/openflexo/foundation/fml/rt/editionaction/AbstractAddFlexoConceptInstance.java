@@ -407,7 +407,9 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 					}
 					else {
 						if (getFMLModelFactory() != null) {
-							addToParameters(getFMLModelFactory().newAddFlexoConceptInstanceParameter(p));
+							AddFlexoConceptInstanceParameter newAddFlexoConceptInstanceParameter = getFMLModelFactory()
+									.newAddFlexoConceptInstanceParameter(p);
+							addToParameters(newAddFlexoConceptInstanceParameter);
 						}
 					}
 				}

@@ -131,17 +131,17 @@ public interface BehaviourParameter<T extends FlexoConceptObject> extends FlexoB
 
 		@Override
 		public FlexoConcept getFlexoConcept() {
-			if (param != null) {
-				return param.getFlexoConcept();
+			if (getOwner() != null) {
+				return getOwner().getFlexoConcept();
 			}
 			return null;
 		}
 
 		@Override
 		public FlexoBehaviour getFlexoBehaviour() {
-			if (param != null) {
+			/*if (param != null) {
 				return param.getFlexoBehaviour();
-			}
+			}*/
 			return getAccessedBehaviour();
 		}
 
