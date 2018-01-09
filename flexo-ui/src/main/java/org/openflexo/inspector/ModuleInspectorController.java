@@ -41,6 +41,8 @@ package org.openflexo.inspector;
 
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -379,49 +381,51 @@ public class ModuleInspectorController extends Observable implements Observer {
 			// And append tab matching FlexoConceptInspector
 			appendFlexoConceptInspector(concept, returned);
 			flexoConceptInspectors.put(concept, returned);
+
+			FlexoConceptInstanceInspectorUpdater updater = new FlexoConceptInstanceInspectorUpdater(returned, concept);
+			concept.getInspector().getPropertyChangeSupport().addPropertyChangeListener(updater);
+			for (InspectorEntry entry : concept.getInspector().getEntries()) {
+				entry.getPropertyChangeSupport().addPropertyChangeListener(updater);
+			}
+
 			return returned;
 		}
 	}
 
-	/*protected FIBInspector inspectorForClass(Class<?> aClass) {
-		if (aClass == null) {
-			return null;
+	/**
+	 * Internal listener of an inspector tab of a FlexoConcept
+	 * 
+	 * @author sylvain
+	 *
+	 */
+	class FlexoConceptInstanceInspectorUpdater implements PropertyChangeListener {
+
+		private FIBInspector inspector;
+		private FlexoConcept concept;
+
+		public FlexoConceptInstanceInspectorUpdater(FIBInspector inspector, FlexoConcept concept) {
+			this.inspector = inspector;
+			this.concept = concept;
 		}
-		FIBInspector returned = inspectors.get(aClass);
-		if (returned != null) {
-			return returned;
-		} else {
-			Class<?> superclass = aClass.getSuperclass();
-			if (superclass != null) {
-				returned = inspectors.get(aClass);
-				if (returned != null) {
-					return returned;
-				} else {
-					for (Class<?> superInterface : aClass.getInterfaces()) {
-						returned = inspectors.get(superInterface);
-						if (returned != null) {
-							return returned;
-						}
-					}
-					return inspectorForClass(superclass);
+
+		@Override
+		public void propertyChange(PropertyChangeEvent evt) {
+			// System.out.println(">>>>>>>>>>>>> Hop, ca change, on recoit " + evt.getPropertyName());
+			if (evt.getSource() == concept.getInspector() && evt.getPropertyName().equals(FlexoConceptInspector.ENTRIES_KEY)) {
+				updateFlexoConceptInspector(concept, inspector);
+				if (evt.getNewValue() instanceof InspectorEntry) {
+					((InspectorEntry) evt.getNewValue()).getPropertyChangeSupport().addPropertyChangeListener(this);
+				}
+				else if (evt.getOldValue() instanceof InspectorEntry) {
+					((InspectorEntry) evt.getOldValue()).getPropertyChangeSupport().removePropertyChangeListener(this);
 				}
 			}
-		}
-		List<Class<?>> matchingClasses = new ArrayList<Class<?>>();
-		for (Class<?> cl : inspectors.keySet()) {
-			if (cl.isAssignableFrom(aClass)) {
-				matchingClasses.add(cl);
+			if (evt.getSource() instanceof InspectorEntry) {
+				updateFlexoConceptInspector(concept, inspector);
 			}
 		}
-		if (matchingClasses.size() > 0) {
-			return inspectors.get(TypeUtils.getMostSpecializedClass(matchingClasses));
-		}
-		return null;
-	}*/
 
-	/*protected Map<Class<?>, FIBInspector> getInspectors() {
-		return inspectors;
-	}*/
+	}
 
 	public FIBInspectorDialog getInspectorDialog() {
 		return inspectorDialog;
@@ -482,14 +486,8 @@ public class ModuleInspectorController extends Observable implements Observer {
 			switchToEmptyContent();
 		}
 		else {
-			/*boolean updateEPTabs = false;
-			if (object instanceof FlexoConceptInstance) {
-				updateEPTabs = newInspector.updateFlexoConceptInstanceInspector((FlexoConceptInstance) object);
-			} else if (object instanceof FlexoObject) {
-				updateEPTabs = newInspector.updateFlexoObjectInspector((FlexoObject) object);
-			}*/
-			if (newInspector != currentInspector /*|| updateEPTabs*/) {
-				switchToInspector(newInspector/*, updateEPTabs*/);
+			if (newInspector != currentInspector) {
+				switchToInspector(newInspector);
 			}
 			displayObject(object);
 		}
@@ -534,17 +532,11 @@ public class ModuleInspectorController extends Observable implements Observer {
 	}
 
 	public static class InspectorSwitching {
-		// private final boolean updateEPTabs;
 		private final FIBInspector newInspector;
 
 		public InspectorSwitching(FIBInspector newInspector/*, boolean updateEPTabs*/) {
 			this.newInspector = newInspector;
-			// this.updateEPTabs = updateEPTabs;
 		}
-
-		/*public boolean updateEPTabs() {
-			return updateEPTabs;
-		}*/
 
 		public FIBInspector getNewInspector() {
 			return newInspector;
@@ -569,22 +561,25 @@ public class ModuleInspectorController extends Observable implements Observer {
 		currentInspector = null;
 	}
 
-	private void appendFlexoConceptInspector(FlexoConcept concept, FIBInspector inspector) {
+	private FIBTab appendFlexoConceptInspector(FlexoConcept concept, FIBInspector inspector) {
 		FIBTab newTab = makeFIBTab(concept);
+		// TODO: we have to set the parent first, otherwise in FIBViewImpl.java
+		// The value of FIBVariable fci is still invalid when component beeing added
+		// Thus, this is not listened
+		newTab.setParent(inspector.getTabPanel());
 		inspector.getTabPanel().addToSubComponents(newTab, null, 0);
+		return newTab;
+	}
 
-		/*try {
-			logger.info("Getting this "
-					+ XMLCoder.encodeObjectWithMapping(this, FIBLibrary.getFIBMapping(), StringEncoder.getDefaultInstance()));
-		} catch (InvalidObjectSpecificationException e) {
-			e.printStackTrace();
-		} catch (InvalidModelException e) {
-			e.printStackTrace();
-		} catch (AccessorInvocationException e) {
-			e.printStackTrace();
-		} catch (DuplicateSerializationIdentifierException e) {
-			e.printStackTrace();
-		}*/
+	private FIBTab updateFlexoConceptInspector(FlexoConcept concept, FIBInspector inspector) {
+		if (inspector != null && inspector.getTabPanel() != null && inspector.getTabPanel().getSubComponents().size() > 0) {
+			FIBTab existingTab = (FIBTab) inspector.getTabPanel().getSubComponents().get(0);
+			if (existingTab.getTitle().equals(concept.getInspector().getInspectorTitle())) {
+				inspector.getTabPanel().removeFromSubComponents(existingTab);
+			}
+		}
+
+		return appendFlexoConceptInspector(concept, inspector);
 	}
 
 	private Map<FlexoConcept, FIBPanel> flexoConceptInspectorPanels = new HashMap<>();
@@ -761,10 +756,13 @@ public class ModuleInspectorController extends Observable implements Observer {
 			TechnologyAdapterController<?> tac = FlexoController.getTechnologyAdapterController(ta);
 			boolean[] expand = { true, false };
 			FIBWidget returned = tac.makeWidget(entry, null, getFactory(), "fci", expand);
-			newTab.addToSubComponentsNoNotification(returned,
-					new TwoColsLayoutConstraints(TwoColsLayoutLocation.right, expand[0], expand[1]));
 			if (returned != null) {
+				newTab.addToSubComponentsNoNotification(returned,
+						new TwoColsLayoutConstraints(TwoColsLayoutLocation.right, expand[0], expand[1]));
 				return returned;
+			}
+			else {
+				logger.warning("Cannot make widget for inspector entry " + entry);
 			}
 		}
 
