@@ -269,6 +269,22 @@ public interface InspectorEntry extends FlexoConceptObject, Bindable, WidgetCont
 			performSuperSetter(LABEL_KEY, label);
 		}
 
+		@Override
+		public WidgetType getWidget() {
+			WidgetType returned = (WidgetType) performSuperGetter(WIDGET_KEY);
+			if (returned == null && getType() != null) {
+				return getDefaultWidget();
+			}
+			return returned;
+		}
+
+		private WidgetType getDefaultWidget() {
+			if (getType() != null) {
+				return FlexoBehaviourParameterImpl.getAvailableWidgetTypes(getType()).get(0);
+			}
+			return WidgetType.TEXT_FIELD;
+		}
+
 		public boolean isSingleEntry() {
 			return true;
 		}

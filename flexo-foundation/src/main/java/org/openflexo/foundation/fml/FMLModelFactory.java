@@ -412,8 +412,12 @@ public class FMLModelFactory extends FGEModelFactoryImpl implements PamelaResour
 		return returned;
 	}
 
+	public InspectorEntry newInspectorEntry() {
+		return newInstance(InspectorEntry.class);
+	}
+
 	public InspectorEntry newInspectorEntry(FlexoConceptInspector inspector) {
-		InspectorEntry returned = newInstance(InspectorEntry.class);
+		InspectorEntry returned = newInspectorEntry();
 		inspector.addToEntries(returned);
 		return returned;
 	}

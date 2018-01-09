@@ -169,27 +169,22 @@ public class CreateInspectorEntry extends FlexoAction<CreateInspectorEntry, Flex
 		logger.info("Add InspectorEntry, name=" + getEntryName() + " type1=" + entryType + " analyzed_type="
 				+ (getData().isValid() ? getData().getAnalyzedType() : "???") + " widget=" + getWidgetType());
 
-		FMLModelFactory factory = getFocusedObject().getFMLModelFactory();
-		newEntry = factory.newInspectorEntry(getFocusedObject());
-		newEntry.setName(getEntryName());
-		newEntry.setType(getEntryType());
-		newEntry.setWidget(getWidgetType());
-		newEntry.setContainer(getContainer());
-		newEntry.setData(getData());
-		newEntry.setList(getList());
-		newEntry.setIsReadOnly(getIsReadOnly());
-		newEntry.setDescription(getDescription());
-
-		/*if (getEntryType() != null) {
-			if (getEntryType().equals(obj))
-		}*/
-
-		/*if (inspectorEntryClass != null) {
+		if (getFocusedObject() != null) {
 			FMLModelFactory factory = getFocusedObject().getFMLModelFactory();
-			newEntry = factory.newInstance(inspectorEntryClass);
+			newEntry = factory.newInspectorEntry();
 			newEntry.setName(getEntryName());
+			newEntry.setType(getEntryType());
+			newEntry.setWidget(getWidgetType());
+			newEntry.setContainer(getContainer());
+			newEntry.setData(getData());
+			newEntry.setList(getList());
+			newEntry.setIsReadOnly(getIsReadOnly());
+			newEntry.setDescription(getDescription());
 			getFocusedObject().addToEntries(newEntry);
-		}*/
+		}
+		else {
+			logger.warning("Cannot create inspector entry for null inspector");
+		}
 
 	}
 
