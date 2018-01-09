@@ -66,7 +66,7 @@ public class CreateFlexoEnumValueWizard extends AbstractCreateFMLElementWizard<C
 
 	private final DescribeFlexoEnumValue describeValue;
 
-	private static final Dimension DIMENSIONS = new Dimension(450, 300);
+	private static final Dimension DIMENSIONS = new Dimension(550, 350);
 
 	public CreateFlexoEnumValueWizard(CreateFlexoEnumValue action, FlexoController controller) {
 		super(action, controller);
