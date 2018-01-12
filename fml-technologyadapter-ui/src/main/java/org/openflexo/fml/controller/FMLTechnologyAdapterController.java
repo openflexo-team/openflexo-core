@@ -200,6 +200,18 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 	@Override
 	protected void initializeActions(ControllerActionInitializer actionInitializer) {
 
+		// Add paste handlers
+		actionInitializer.getEditingContext().registerPasteHandler(new VirtualModelPasteHandler());
+		actionInitializer.getEditingContext().registerPasteHandler(new FlexoConceptPasteHandler());
+		actionInitializer.getEditingContext().registerPasteHandler(new FlexoPropertyPasteHandler());
+		actionInitializer.getEditingContext().registerPasteHandler(new FlexoBehaviourPasteHandler());
+		actionInitializer.getEditingContext().registerPasteHandler(new FMLControlGraphPasteHandler());
+		actionInitializer.getEditingContext().registerPasteHandler(new BehaviorPasteHandler());
+
+	}
+
+	public void initializeAdvancedActions(ControllerActionInitializer actionInitializer) {
+
 		new ValidateActionizer(this, actionInitializer);
 
 		new CreateTopLevelVirtualModelInitializer(actionInitializer);
@@ -240,14 +252,6 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 		}
 
 		new AddParentFlexoConceptInitializer(actionInitializer);
-
-		// Add paste handlers
-		actionInitializer.getEditingContext().registerPasteHandler(new VirtualModelPasteHandler());
-		actionInitializer.getEditingContext().registerPasteHandler(new FlexoConceptPasteHandler());
-		actionInitializer.getEditingContext().registerPasteHandler(new FlexoPropertyPasteHandler());
-		actionInitializer.getEditingContext().registerPasteHandler(new FlexoBehaviourPasteHandler());
-		actionInitializer.getEditingContext().registerPasteHandler(new FMLControlGraphPasteHandler());
-		actionInitializer.getEditingContext().registerPasteHandler(new BehaviorPasteHandler());
 
 		FlexoActionFactory.newVirtualModelMenu.setSmallIcon(FMLIconLibrary.VIRTUAL_MODEL_ICON);
 		FlexoActionFactory.newPropertyMenu.setSmallIcon(FMLIconLibrary.FLEXO_ROLE_ICON);
