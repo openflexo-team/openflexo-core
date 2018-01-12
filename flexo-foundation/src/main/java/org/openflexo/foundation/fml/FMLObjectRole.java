@@ -38,6 +38,7 @@
 
 package org.openflexo.foundation.fml;
 
+import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.annotations.FML;
@@ -99,6 +100,11 @@ public interface FMLObjectRole<T extends FMLObject> extends FlexoRole<T> {
 			return returned;
 		}
 
+		@Override
+		public Type getType() {
+			// TODO
+			return null;
+		}
 	}
 
 }
