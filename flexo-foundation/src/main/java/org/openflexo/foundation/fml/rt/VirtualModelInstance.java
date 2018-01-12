@@ -282,6 +282,13 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 	public List<FlexoConcept> getUsedFlexoConcepts();
 
 	/**
+	 * Return a new list of FlexoConcept, which are all top-level concepts used in this FMLRTVirtualModelInstance
+	 * 
+	 * @return
+	 */
+	public List<FlexoConcept> getUsedTopLevelFlexoConcepts();
+
+	/**
 	 * Return a newly created list of all {@link FlexoConceptInstance} conform to the supplied FlexoConcept
 	 * 
 	 * @param flexoConcept
@@ -867,6 +874,22 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 			List<FlexoConcept> returned = new ArrayList<>();
 			for (FlexoConcept concept : flexoConceptInstances.keySet()) {
 				returned.add(concept);
+			}
+			return returned;
+		}
+
+		/**
+		 * Return a new list of FlexoConcept, which are all concepts used in this FMLRTVirtualModelInstance
+		 * 
+		 * @return
+		 */
+		@Override
+		public List<FlexoConcept> getUsedTopLevelFlexoConcepts() {
+			List<FlexoConcept> returned = new ArrayList<>();
+			for (FlexoConcept concept : flexoConceptInstances.keySet()) {
+				if (concept.getContainerFlexoConcept() == null) {
+					returned.add(concept);
+				}
 			}
 			return returned;
 		}
