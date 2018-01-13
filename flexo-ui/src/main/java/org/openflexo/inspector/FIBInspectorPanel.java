@@ -68,11 +68,12 @@ import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.view.controller.FlexoFIBController;
 
 /**
- * Represent a JDialog showing inspector for the selection managed by an instance of ModuleInspectorController
+ * Represent a {@link JPanel} showing inspector for the selection managed by an instance of ModuleInspectorController
  * 
  * @author sylvain
  * 
  */
+@SuppressWarnings("serial")
 public class FIBInspectorPanel extends JPanel implements Observer, ChangeListener {
 
 	static final Logger logger = Logger.getLogger(FIBInspectorPanel.class.getPackage().getName());
