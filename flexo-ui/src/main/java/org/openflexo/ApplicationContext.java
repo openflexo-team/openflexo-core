@@ -325,7 +325,13 @@ public abstract class ApplicationContext extends DefaultFlexoServiceManager {
 	private Map<TechnologyAdapter, ActivateTechnologyAdapterTask> activatingTechnologyAdapters;
 
 	@Override
-	public synchronized ActivateTechnologyAdapterTask activateTechnologyAdapter(TechnologyAdapter technologyAdapter) {
+	public synchronized ActivateTechnologyAdapterTask activateTechnologyAdapter(TechnologyAdapter technologyAdapter,
+			boolean performNowInThisThread) {
+
+		if (performNowInThisThread) {
+			super.activateTechnologyAdapter(technologyAdapter, true);
+			return null;
+		}
 
 		// We try here to prevent activate all TA concurrently
 

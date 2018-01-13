@@ -191,7 +191,7 @@ public interface TechnologyAdapterService extends FlexoService, CustomTypeManage
 	 * 
 	 * @param technologyAdapter
 	 */
-	public FlexoTask activateTechnologyAdapter(TechnologyAdapter technologyAdapter);
+	public FlexoTask activateTechnologyAdapter(TechnologyAdapter technologyAdapter, boolean now);
 
 	/**
 	 * Disable a {@link TechnologyAdapter}<br>

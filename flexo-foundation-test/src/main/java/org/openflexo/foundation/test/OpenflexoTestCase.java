@@ -274,8 +274,8 @@ public abstract class OpenflexoTestCase {
 
 		// Activate both FML and FML@RT technology adapters
 		TechnologyAdapterService taService = serviceManager.getTechnologyAdapterService();
-		taService.activateTechnologyAdapter(taService.getTechnologyAdapter(FMLTechnologyAdapter.class));
-		taService.activateTechnologyAdapter(taService.getTechnologyAdapter(FMLRTTechnologyAdapter.class));
+		taService.activateTechnologyAdapter(taService.getTechnologyAdapter(FMLTechnologyAdapter.class), true);
+		taService.activateTechnologyAdapter(taService.getTechnologyAdapter(FMLRTTechnologyAdapter.class), true);
 
 		if (previousResourceCenterDirectoryToRemove != null) {
 			if (testResourceCenterDirectoriesToRemove == null) {
@@ -285,8 +285,8 @@ public abstract class OpenflexoTestCase {
 		}
 
 		for (Class<? extends TechnologyAdapter> technologyAdapterClass : taClasses) {
-			serviceManager
-					.activateTechnologyAdapter(serviceManager.getTechnologyAdapterService().getTechnologyAdapter(technologyAdapterClass));
+			serviceManager.activateTechnologyAdapter(
+					serviceManager.getTechnologyAdapterService().getTechnologyAdapter(technologyAdapterClass), true);
 		}
 
 		return serviceManager;

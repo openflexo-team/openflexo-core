@@ -217,7 +217,7 @@ public abstract class VirtualModelResourceImpl extends PamelaResourceImpl<Virtua
 		List<FlexoTask> waitingTasks = new ArrayList<>();
 		for (TechnologyAdapter requiredTA : requiredTAList) {
 			logger.info("Activating " + requiredTA);
-			FlexoTask t = taService.activateTechnologyAdapter(requiredTA);
+			FlexoTask t = taService.activateTechnologyAdapter(requiredTA, false);
 			if (t != null) {
 				waitingTasks.add(t);
 			}

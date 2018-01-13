@@ -382,9 +382,9 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 	 * @param technologyAdapter
 	 */
 	@Override
-	public FlexoTask activateTechnologyAdapter(TechnologyAdapter technologyAdapter) {
+	public FlexoTask activateTechnologyAdapter(TechnologyAdapter technologyAdapter, boolean now) {
 
-		return getServiceManager().activateTechnologyAdapter(technologyAdapter);
+		return getServiceManager().activateTechnologyAdapter(technologyAdapter, now);
 	}
 
 	/**

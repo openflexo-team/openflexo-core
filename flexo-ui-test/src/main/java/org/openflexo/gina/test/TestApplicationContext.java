@@ -93,8 +93,8 @@ public class TestApplicationContext extends ApplicationContext {
 
 		// Activate both FML and FML@RT technology adapters
 		TechnologyAdapterService taService = getTechnologyAdapterService();
-		taService.activateTechnologyAdapter(taService.getTechnologyAdapter(FMLTechnologyAdapter.class));
-		taService.activateTechnologyAdapter(taService.getTechnologyAdapter(FMLRTTechnologyAdapter.class));
+		taService.activateTechnologyAdapter(taService.getTechnologyAdapter(FMLTechnologyAdapter.class), true);
+		taService.activateTechnologyAdapter(taService.getTechnologyAdapter(FMLRTTechnologyAdapter.class), true);
 
 	}
 
@@ -183,7 +183,7 @@ public class TestApplicationContext extends ApplicationContext {
 	 * @param technologyAdapter
 	 */
 	@Override
-	public ActivateTechnologyAdapterTask activateTechnologyAdapter(TechnologyAdapter technologyAdapter) {
+	public ActivateTechnologyAdapterTask activateTechnologyAdapter(TechnologyAdapter technologyAdapter, boolean performNowInThisThread) {
 
 		if (technologyAdapter.isActivated()) {
 			return null;

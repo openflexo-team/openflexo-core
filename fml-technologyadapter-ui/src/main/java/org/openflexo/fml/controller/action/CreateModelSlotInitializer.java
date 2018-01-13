@@ -45,13 +45,12 @@ import javax.swing.Icon;
 
 import org.openflexo.components.wizard.Wizard;
 import org.openflexo.components.wizard.WizardDialog;
+import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.action.FlexoActionFinalizer;
 import org.openflexo.foundation.action.FlexoActionInitializer;
-import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FlexoConceptObject;
 import org.openflexo.foundation.fml.action.CreateModelSlot;
-import org.openflexo.foundation.task.FlexoTask;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.gina.controller.FIBController.Status;
 import org.openflexo.icon.FMLIconLibrary;
@@ -90,11 +89,7 @@ public class CreateModelSlotInitializer extends ActionInitializer<CreateModelSlo
 			public boolean run(EventObject e, CreateModelSlot action) {
 				if (action.getNewModelSlot() != null) {
 					TechnologyAdapterService taService = getController().getApplicationContext().getTechnologyAdapterService();
-					FlexoTask activateTechnologyAdapter = taService
-							.activateTechnologyAdapter(action.getNewModelSlot().getModelSlotTechnologyAdapter());
-					if (activateTechnologyAdapter != null) {
-						getController().getApplicationContext().getTaskManager().waitTask(activateTechnologyAdapter);
-					}
+					taService.activateTechnologyAdapter(action.getNewModelSlot().getModelSlotTechnologyAdapter(), true);
 					getController().selectAndFocusObject(action.getNewModelSlot());
 					return true;
 				}

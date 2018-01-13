@@ -120,7 +120,7 @@ public abstract class FlexoServiceManager {
 		if (notification instanceof ProjectLoaded) {
 			resourceCenterAdded(((ProjectLoaded) notification).getProject());
 			for (TechnologyAdapter ta : ((ProjectLoaded) notification).getProject().getRequiredTechnologyAdapters()) {
-				activateTechnologyAdapter(ta);
+				activateTechnologyAdapter(ta, false);
 			}
 		}
 		if (notification instanceof ProjectClosed) {
@@ -144,7 +144,7 @@ public abstract class FlexoServiceManager {
 	 * 
 	 * @param technologyAdapter
 	 */
-	public FlexoTask activateTechnologyAdapter(TechnologyAdapter technologyAdapter) {
+	public FlexoTask activateTechnologyAdapter(TechnologyAdapter technologyAdapter, boolean performNowInThisThread) {
 
 		if (technologyAdapter.isActivated()) {
 			return null;

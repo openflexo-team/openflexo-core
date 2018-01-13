@@ -181,7 +181,7 @@ public abstract class SpecificNaturePerspective<TA extends TechnologyAdapter> ex
 	public void willShow() {
 		super.willShow();
 		if (!getTechnologyAdapter().isActivated()) {
-			getTechnologyAdapter().getTechnologyAdapterService().activateTechnologyAdapter(getTechnologyAdapter());
+			getTechnologyAdapter().getTechnologyAdapterService().activateTechnologyAdapter(getTechnologyAdapter(), false);
 		}
 	}
 

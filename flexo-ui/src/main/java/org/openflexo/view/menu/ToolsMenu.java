@@ -237,7 +237,7 @@ public class ToolsMenu extends FlexoMenu {
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
 			System.out.println("On active la techno " + technologyAdapter);
-			getController().getApplicationContext().activateTechnologyAdapter(technologyAdapter);
+			getController().getApplicationContext().activateTechnologyAdapter(technologyAdapter, false);
 		}
 
 	}

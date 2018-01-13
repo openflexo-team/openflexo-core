@@ -45,13 +45,12 @@ import javax.swing.Icon;
 
 import org.openflexo.components.wizard.Wizard;
 import org.openflexo.components.wizard.WizardDialog;
+import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.action.FlexoActionFinalizer;
 import org.openflexo.foundation.action.FlexoActionInitializer;
-import org.openflexo.foundation.action.FlexoActionFactory;
-import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.FMLObject;
+import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.action.AddUseDeclaration;
-import org.openflexo.foundation.task.FlexoTask;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.gina.controller.FIBController.Status;
 import org.openflexo.icon.FMLIconLibrary;
@@ -90,10 +89,7 @@ public class AddUseDeclarationInitializer extends ActionInitializer<AddUseDeclar
 			public boolean run(EventObject e, AddUseDeclaration action) {
 				if (action.getModelSlotTechnologyAdapter() != null) {
 					TechnologyAdapterService taService = getController().getApplicationContext().getTechnologyAdapterService();
-					FlexoTask activateTechnologyAdapter = taService.activateTechnologyAdapter(action.getModelSlotTechnologyAdapter());
-					if (activateTechnologyAdapter != null) {
-						getController().getApplicationContext().getTaskManager().waitTask(activateTechnologyAdapter);
-					}
+					taService.activateTechnologyAdapter(action.getModelSlotTechnologyAdapter(), true);
 					return true;
 				}
 				return false;
