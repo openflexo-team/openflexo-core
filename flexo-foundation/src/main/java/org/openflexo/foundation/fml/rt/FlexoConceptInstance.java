@@ -1844,7 +1844,7 @@ public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceO
 				} catch (TypeMismatchException e) {
 					e.printStackTrace();
 				} catch (NullReferenceException e) {
-					e.printStackTrace();
+					// e.printStackTrace();
 				} catch (InvocationTargetException e) {
 					e.printStackTrace();
 				} finally {
