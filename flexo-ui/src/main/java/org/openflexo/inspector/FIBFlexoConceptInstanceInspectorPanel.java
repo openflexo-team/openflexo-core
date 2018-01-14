@@ -201,8 +201,6 @@ public class FIBFlexoConceptInstanceInspectorPanel extends JPanel implements Obs
 
 	private void switchToObject(Object inspectedObject) {
 
-		System.out.println("Tiens faudrait afficher " + inspectedObject);
-
 		if (logger.isLoggable(Level.FINE)) {
 			logger.fine("switchToObject " + inspectedObject + " for " + this);
 		}
