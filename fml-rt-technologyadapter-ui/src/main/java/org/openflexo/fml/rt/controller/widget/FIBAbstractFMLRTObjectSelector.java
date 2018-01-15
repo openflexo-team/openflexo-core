@@ -222,6 +222,7 @@ public abstract class FIBAbstractFMLRTObjectSelector<T extends FlexoConceptInsta
 			this.expectedFlexoConceptType = expectedFlexoConceptType;
 			getPropertyChangeSupport().firePropertyChange("expectedFlexoConceptType", oldValue, expectedFlexoConceptType);
 			getPropertyChangeSupport().firePropertyChange("expectedType", null, getExpectedType());
+			getPropertyChangeSupport().firePropertyChange("rootObject", null, getRootObject());
 		}
 	}
 
