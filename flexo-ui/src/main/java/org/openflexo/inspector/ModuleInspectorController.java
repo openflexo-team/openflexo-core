@@ -410,7 +410,6 @@ public class ModuleInspectorController extends Observable implements Observer {
 
 		@Override
 		public void propertyChange(PropertyChangeEvent evt) {
-			// System.out.println(">>>>>>>>>>>>> Hop, ca change, on recoit " + evt.getPropertyName());
 			if (evt.getSource() == concept.getInspector() && evt.getPropertyName().equals(FlexoConceptInspector.ENTRIES_KEY)) {
 				updateFlexoConceptInspector(concept, inspector);
 				if (evt.getNewValue() instanceof InspectorEntry) {
@@ -572,6 +571,7 @@ public class ModuleInspectorController extends Observable implements Observer {
 	}
 
 	private FIBTab updateFlexoConceptInspector(FlexoConcept concept, FIBInspector inspector) {
+		Object wasInspected = currentInspectedObject;
 		if (inspector != null && inspector.getTabPanel() != null && inspector.getTabPanel().getSubComponents().size() > 0) {
 			FIBTab existingTab = (FIBTab) inspector.getTabPanel().getSubComponents().get(0);
 			if (existingTab.getTitle().equals(concept.getInspector().getInspectorTitle())) {
@@ -579,7 +579,12 @@ public class ModuleInspectorController extends Observable implements Observer {
 			}
 		}
 
-		return appendFlexoConceptInspector(concept, inspector);
+		FIBTab returned = appendFlexoConceptInspector(concept, inspector);
+		if (wasInspected != null) {
+			switchToEmptyContent();
+			inspectObject(wasInspected);
+		}
+		return returned;
 	}
 
 	private Map<FlexoConcept, FIBPanel> flexoConceptInspectorPanels = new HashMap<>();
