@@ -202,7 +202,8 @@ public class FMLBindingFactory extends JavaBindingFactory {
 					for (FlexoProperty<?> pr : concept.getAccessibleProperties()) {
 						returned.add(getSimplePathElement(pr, parent));
 					}
-					if (concept.getInspector().getRenderer().isSet() && concept.getInspector().getRenderer().isValid()) {
+					if (concept.getInspector() != null && concept.getInspector().getRenderer().isSet()
+							&& concept.getInspector().getRenderer().isValid()) {
 						returned.add(new EPIRendererPathElement(parent));
 					}
 					returned.add(new FlexoConceptTypePathElement(parent, concept));
