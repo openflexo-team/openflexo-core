@@ -122,7 +122,7 @@ public class FlexoClipboard {
 					if (o instanceof FlexoConceptInstance) {
 						FlexoConceptInstance fci = (FlexoConceptInstance) o;
 						for (ActorReference<?> actor : fci.getActors()) {
-							if (actor.getFlexoRole().getCloningStrategy() == RoleCloningStrategy.Clone
+							if (actor.getFlexoRole() != null && actor.getFlexoRole().getCloningStrategy() == RoleCloningStrategy.Clone
 									&& (!(actor.getFlexoRole() instanceof PrimitiveRole))) {
 								if ((actor.getModellingElement() instanceof InnerResourceData)
 										&& (actor.getModellingElement() instanceof FlexoObject)
