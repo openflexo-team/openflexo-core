@@ -572,7 +572,8 @@ public class ModuleInspectorController extends Observable implements Observer {
 
 	private FIBTab updateFlexoConceptInspector(FlexoConcept concept, FIBInspector inspector) {
 		Object wasInspected = currentInspectedObject;
-		if (inspector != null && inspector.getTabPanel() != null && inspector.getTabPanel().getSubComponents().size() > 0) {
+		if (concept != null && inspector != null && inspector.getTabPanel() != null
+				&& inspector.getTabPanel().getSubComponents().size() > 0) {
 			FIBTab existingTab = (FIBTab) inspector.getTabPanel().getSubComponents().get(0);
 			if (existingTab.getTitle().equals(concept.getInspector().getInspectorTitle())) {
 				inspector.getTabPanel().removeFromSubComponents(existingTab);
@@ -740,11 +741,14 @@ public class ModuleInspectorController extends Observable implements Observer {
 
 			return expression.toString();
 		} catch (ParseException e) {
+			System.out.println("Could not parse: " + bindingPath);
 			e.printStackTrace();
+			return bindingPath;
 		} catch (TransformException e) {
+			System.out.println("TransformException while parsing: " + bindingPath);
 			e.printStackTrace();
+			return bindingPath;
 		}
-		return expression.toString();
 	}
 
 	/**
