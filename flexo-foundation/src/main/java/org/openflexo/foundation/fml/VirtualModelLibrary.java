@@ -295,7 +295,7 @@ public class VirtualModelLibrary extends DefaultFlexoObject implements FlexoServ
 			VirtualModelResource vmRes = getVirtualModelResource(virtualModelURI);
 			if (vmRes == null) {
 				vmRes = getVirtualModelResource(virtualModelURI + ".fml");
-				if (vmRes == null) {
+				if (vmRes == null && virtualModelURI.contains("/")) {
 					String vpURI = virtualModelURI.substring(0, virtualModelURI.lastIndexOf("/"));
 					if (vpURI.endsWith(".viewpoint")) {
 						vpURI = vpURI.substring(0, vpURI.length() - 10);
