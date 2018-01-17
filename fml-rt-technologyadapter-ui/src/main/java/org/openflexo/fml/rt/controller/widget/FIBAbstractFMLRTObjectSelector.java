@@ -139,13 +139,17 @@ public abstract class FIBAbstractFMLRTObjectSelector<T extends FlexoConceptInsta
 			return false;
 		}
 
-		if (!isVisibleValue(o)) {
+		if (!(o instanceof FlexoConceptInstance)) {
 			return false;
 		}
+		if (!(getExpectedType() instanceof FlexoConceptInstanceType)) {
+			return false;
+		}
+		FlexoConceptInstance fci = (FlexoConceptInstance) o;
 
-		// TODO: business conditions here when required
+		FlexoConceptInstanceType fciType = (FlexoConceptInstanceType) getExpectedType();
+		return (fciType.getFlexoConcept() == null) || (fciType.getFlexoConcept().isAssignableFrom(fci.getFlexoConcept()));
 
-		return true;
 	}
 
 	public boolean isVisibleValue(Object o) {
@@ -157,6 +161,11 @@ public abstract class FIBAbstractFMLRTObjectSelector<T extends FlexoConceptInsta
 			return false;
 		}
 		FlexoConceptInstance fci = (FlexoConceptInstance) o;
+
+		if (fci.getEmbeddedFlexoConceptInstances().size() > 0) {
+			return true;
+		}
+
 		FlexoConceptInstanceType fciType = (FlexoConceptInstanceType) getExpectedType();
 		return (fciType.getFlexoConcept() == null) || (fciType.getFlexoConcept().isAssignableFrom(fci.getFlexoConcept()));
 
@@ -249,19 +258,6 @@ public abstract class FIBAbstractFMLRTObjectSelector<T extends FlexoConceptInsta
 		return true;
 	}
 
-	/*public boolean isVirtualModelInstanceVisible(FMLRTVirtualModelInstance virtualModelInstance) {
-		if ((getExpectedType() instanceof VirtualModelInstanceType) || (getExpectedType() instanceof FlexoConceptInstanceType)) {
-			for (VirtualModelInstance<?, ?> vmi : virtualModelInstance.getVirtualModelInstances()) {
-				if (isVirtualModelInstanceVisible(vmi)) {
-					return true;
-				}
-			}
-			// System.out.println("excluding view " + view);
-			return false;
-		}
-		return true;
-	}*/
-
 	public boolean isVirtualModelInstanceVisible(VirtualModelInstance<?, ?> virtualModelInstance) {
 		if (getExpectedType() instanceof VirtualModelInstanceType) {
 			// We are expecting a VMI of following type
@@ -276,10 +272,20 @@ public abstract class FIBAbstractFMLRTObjectSelector<T extends FlexoConceptInsta
 				return true;
 			}
 			VirtualModel vmType = conceptType.getOwningVirtualModel();
-			/*if (!vmType.isAssignableFrom(virtualModelInstance.getVirtualModel())) {
+			boolean takeIt = false;
+			VirtualModel current = vmType;
+			while (current != null && !takeIt) {
+				if (current.isAssignableFrom(virtualModelInstance.getVirtualModel())) {
+					takeIt = true;
+				}
+				current = current.getContainerVirtualModel();
+			}
+
+			/*if (!takeIt) {
 				System.out.println("excluding " + virtualModelInstance);
 			}*/
-			return vmType.isAssignableFrom(virtualModelInstance.getVirtualModel());
+			return takeIt;
+
 		}
 		return true;
 	}
