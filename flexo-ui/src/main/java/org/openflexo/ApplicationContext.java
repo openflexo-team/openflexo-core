@@ -325,8 +325,7 @@ public abstract class ApplicationContext extends DefaultFlexoServiceManager {
 	private Map<TechnologyAdapter, ActivateTechnologyAdapterTask> activatingTechnologyAdapters;
 
 	@Override
-	public synchronized ActivateTechnologyAdapterTask activateTechnologyAdapter(TechnologyAdapter technologyAdapter,
-			boolean performNowInThisThread) {
+	public ActivateTechnologyAdapterTask activateTechnologyAdapter(TechnologyAdapter technologyAdapter, boolean performNowInThisThread) {
 
 		if (performNowInThisThread) {
 			super.activateTechnologyAdapter(technologyAdapter, true);
