@@ -503,6 +503,12 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 					&& flexoConcept == null && StringUtils.isNotEmpty(flexoConceptURI)) {
 				flexoConcept = getContainerVirtualModelInstance().getVirtualModel().getVirtualModelNamed(flexoConceptURI);
 			}
+			if (flexoConcept == null && getResource() != null) {
+				// We can sometimes arrive here: flexoConcept is still not set
+				// But we have another chance to retrieve the VirtualModel while requesting it to the resource
+				// Then set the FlexoConcept
+				flexoConcept = getResource().getVirtualModel();
+			}
 			return (VirtualModel) flexoConcept;
 		}
 
