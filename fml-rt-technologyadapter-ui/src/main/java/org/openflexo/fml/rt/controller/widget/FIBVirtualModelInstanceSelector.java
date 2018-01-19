@@ -38,10 +38,10 @@
 
 package org.openflexo.fml.rt.controller.widget;
 
+import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.VirtualModelInstanceType;
-import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
@@ -59,24 +59,8 @@ public class FIBVirtualModelInstanceSelector extends FIBAbstractFMLRTObjectSelec
 
 	public static Resource FIB_FILE = ResourceLocator.locateResource("Fib/VirtualModelInstanceSelector.fib");
 
-	/*private ViewLibrary viewLibrary;
-	private View view;
-	private VirtualModel virtualModel;
-	private Type expectedType;
-	private VirtualModelInstanceType defaultExpectedType;*/
-
 	public FIBVirtualModelInstanceSelector(FMLRTVirtualModelInstance editedObject) {
 		super(editedObject);
-		// defaultExpectedType = editedObject != null ? VirtualModelInstanceType.getVirtualModelInstanceType(editedObject.getVirtualModel())
-		// : VirtualModelInstanceType.UNDEFINED_VIRTUAL_MODEL_INSTANCE_TYPE;
-	}
-
-	@Override
-	public void delete() {
-		super.delete();
-		/*viewLibrary = null;
-		view = null;
-		virtualModel = null;*/
 	}
 
 	@Override
@@ -89,58 +73,11 @@ public class FIBVirtualModelInstanceSelector extends FIBAbstractFMLRTObjectSelec
 		return FMLRTVirtualModelInstance.class;
 	}
 
-	/*@Override
-	public String renderedString(FMLRTVirtualModelInstance editedObject) {
-		if (editedObject != null) {
-			return editedObject.getName();
-		}
-		return "";
+	@Override
+	public Type getDefaultExpectedType() {
+		return VirtualModelInstanceType.UNDEFINED_VIRTUAL_MODEL_INSTANCE_TYPE;
 	}
-	
-	public ViewLibrary getViewLibrary() {
-		return viewLibrary;
-	}
-	
-	@CustomComponentParameter(name = "viewLibrary", type = CustomComponentParameter.Type.OPTIONAL)
-	public void setViewLibrary(ViewLibrary viewLibrary) {
-		this.viewLibrary = viewLibrary;
-	}
-	
-	public View getView() {
-		return view;
-	}
-	
-	@CustomComponentParameter(name = "view", type = CustomComponentParameter.Type.OPTIONAL)
-	public void setView(View view) {
-		this.view = view;
-	}
-	
-	public VirtualModel getVirtualModel() {
-		return virtualModel;
-	}
-	
-	@CustomComponentParameter(name = "virtualModel", type = CustomComponentParameter.Type.OPTIONAL)
-	public void setVirtualModel(VirtualModel virtualModel) {
-		this.virtualModel = virtualModel;
-		defaultExpectedType = VirtualModelInstanceType.getVirtualModelInstanceType(virtualModel);
-	}
-	
-	public Object getRootObject() {
-		if (getView() != null) {
-			return getView().getResource();
-		}
-		else if (getViewLibrary() != null) {
-			return getViewLibrary();
-		}
-		else if (getProject() != null) {
-			return getProject();
-		}
-		else if (getServiceManager() != null) {
-			return getServiceManager().getTechnologyAdapterService().getTechnologyAdapter(FMLRTTechnologyAdapter.class);
-		}
-		return null;
-	}
-	*/
+
 	@Override
 	public boolean isAcceptableValue(Object o) {
 		if (!super.isAcceptableValue(o)) {
@@ -157,48 +94,5 @@ public class FIBVirtualModelInstanceSelector extends FIBAbstractFMLRTObjectSelec
 		return (vmiType.getVirtualModel() == null) || (vmiType.getVirtualModel().isAssignableFrom(vmi.getVirtualModel()));
 
 	}
-
-	/*public Type getExpectedType() {
-		if (expectedType == null) {
-			return defaultExpectedType;
-		}
-		return expectedType;
-	}
-	
-	public void setExpectedType(Type expectedType) {
-	
-		if ((expectedType == null && this.expectedType != null) || (expectedType != null && !expectedType.equals(this.expectedType))) {
-			Type oldValue = this.expectedType;
-			this.expectedType = expectedType;
-			getPropertyChangeSupport().firePropertyChange("expectedType", oldValue, expectedType);
-		}
-	}*/
-
-	// Please uncomment this for a live test
-	// Never commit this uncommented since it will not compile on continuous build
-	// To have icon, you need to choose "Test interface" in the editor (otherwise, flexo controller is not insanciated in EDIT mode)
-	/*public static void main(String[] args) {
-		FIBAbstractEditor editor = new FIBAbstractEditor() {
-			@Override
-			public Object[] getData() {
-				TestApplicationContext testApplicationContext = new TestApplicationContext(new FileResource(
-						"src/test/resources/TestResourceCenter"));
-				FIBVirtualModelSelector selector = new FIBVirtualModelSelector(null);
-				selector.setViewPointLibrary(testApplicationContext.getViewPointLibrary());
-				return makeArray(selector);
-			}
-	
-			@Override
-			public File getFIBFile() {
-				return FIB_FILE;
-			}
-	
-			@Override
-			public FIBController makeNewController(FIBComponent component) {
-				return new FlexoFIBController(component);
-			}
-		};
-		editor.launch();
-	}*/
 
 }
