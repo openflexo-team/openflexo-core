@@ -42,11 +42,12 @@ import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
 import org.openflexo.components.widget.FIBProjectObjectSelector;
+import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelInstanceType;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
-import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceRepository;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
+import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceRepository;
 import org.openflexo.foundation.fml.rt.rm.FMLRTVirtualModelInstanceResource;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
@@ -149,7 +150,9 @@ public class FIBVirtualModelInstanceResourceSelector extends FIBProjectObjectSel
 			return getVirtualModelInstanceRepository();
 		}
 		else if (getProject() != null) {
-			return getProject();
+			FlexoServiceManager sm = getProject().getServiceManager();
+			FMLRTTechnologyAdapter fmlRTTA = sm.getTechnologyAdapterService().getTechnologyAdapter(FMLRTTechnologyAdapter.class);
+			return fmlRTTA.getVirtualModelInstanceRepository(getProject()).getRootFolder();
 		}
 		else if (getServiceManager() != null) {
 			return getServiceManager().getTechnologyAdapterService().getTechnologyAdapter(FMLRTTechnologyAdapter.class);
