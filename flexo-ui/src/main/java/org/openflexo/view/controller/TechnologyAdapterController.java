@@ -221,6 +221,9 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 		if (module.getFlexoController() != null) {
 			initializeInspectors(module.getFlexoController());
 			initializeActions(module.getFlexoController().getControllerActionInitializer());
+			if (module.activateAdvancedActions(getTechnologyAdapter())) {
+				initializeAdvancedActions(module.getFlexoController().getControllerActionInitializer());
+			}
 		}
 	}
 
@@ -242,6 +245,14 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 	 * @param actionInitializer
 	 */
 	protected abstract void initializeActions(ControllerActionInitializer actionInitializer);
+
+	/**
+	 * Overrides when required
+	 * 
+	 * @param actionInitializer
+	 */
+	public void initializeAdvancedActions(ControllerActionInitializer actionInitializer) {
+	}
 
 	/**
 	 * Initialize inspectors for supplied module using supplied {@link FlexoController}

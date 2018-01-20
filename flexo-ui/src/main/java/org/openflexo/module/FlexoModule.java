@@ -65,6 +65,7 @@ import org.openflexo.foundation.resource.ResourceRegistered;
 import org.openflexo.foundation.resource.ResourceSaved;
 import org.openflexo.foundation.resource.ResourceUnregistered;
 import org.openflexo.foundation.task.FlexoTask;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.utils.OperationCancelledException;
 import org.openflexo.foundation.utils.ProjectInitializerException;
 import org.openflexo.foundation.utils.ProjectLoadingCancelledException;
@@ -484,5 +485,16 @@ public abstract class FlexoModule<M extends FlexoModule<M>> implements DataFlexo
 			}
 		}
 
+	}
+
+	/**
+	 * Hooks used to handle the fact that a module should activate or not advanced actions of a {@link TechnologyAdapter}<br>
+	 * Overrides when required. Default behaviour returns null.
+	 * 
+	 * @param technologyAdapter
+	 * @return
+	 */
+	public boolean activateAdvancedActions(TechnologyAdapter technologyAdapter) {
+		return false;
 	}
 }
