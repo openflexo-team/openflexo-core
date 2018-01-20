@@ -107,6 +107,8 @@ public class CreateInspectorEntry extends FlexoAction<CreateInspectorEntry, Flex
 	private String description;
 	// private Class<? extends InspectorEntry> inspectorEntryClass;
 
+	private int index = -1;
+
 	private InspectorEntry newEntry;
 
 	CreateInspectorEntry(FlexoConceptInspector focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
@@ -164,6 +166,18 @@ public class CreateInspectorEntry extends FlexoAction<CreateInspectorEntry, Flex
 		}
 	}
 
+	public int getIndex() {
+		return index;
+	}
+
+	public void setIndex(int index) {
+		if (index != this.index) {
+			int oldValue = this.index;
+			this.index = index;
+			getPropertyChangeSupport().firePropertyChange("index", oldValue, index);
+		}
+	}
+
 	@Override
 	protected void doAction(Object context) throws NotImplementedException, InvalidParameterException {
 		logger.info("Add InspectorEntry, name=" + getEntryName() + " type1=" + entryType + " analyzed_type="
@@ -181,6 +195,9 @@ public class CreateInspectorEntry extends FlexoAction<CreateInspectorEntry, Flex
 			newEntry.setIsReadOnly(getIsReadOnly());
 			newEntry.setDescription(getDescription());
 			getFocusedObject().addToEntries(newEntry);
+			if (getIndex() > -1) {
+				getFocusedObject().moveInspectorEntryToIndex(newEntry, getIndex());
+			}
 		}
 		else {
 			logger.warning("Cannot create inspector entry for null inspector");

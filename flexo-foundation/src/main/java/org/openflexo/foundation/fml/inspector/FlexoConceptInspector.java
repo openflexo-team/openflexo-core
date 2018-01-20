@@ -62,6 +62,7 @@ import org.openflexo.model.annotations.Getter.Cardinality;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.PropertyIdentifier;
+import org.openflexo.model.annotations.Reindexer;
 import org.openflexo.model.annotations.Remover;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
@@ -124,6 +125,9 @@ public interface FlexoConceptInspector extends FlexoConceptObject, Bindable {
 
 	@Remover(ENTRIES_KEY)
 	public void removeFromEntries(InspectorEntry aEntrie);
+
+	@Reindexer(ENTRIES_KEY)
+	public void moveInspectorEntryToIndex(InspectorEntry entry, int index);
 
 	@Finder(collection = ENTRIES_KEY, attribute = InspectorEntry.NAME_KEY)
 	public InspectorEntry getEntry(String name);
