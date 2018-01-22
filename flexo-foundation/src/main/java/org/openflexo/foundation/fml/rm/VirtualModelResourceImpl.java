@@ -72,7 +72,6 @@ import org.openflexo.foundation.resource.PamelaResourceImpl;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.resource.SaveResourcePermissionDeniedException;
-import org.openflexo.foundation.task.FlexoTask;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
@@ -214,18 +213,18 @@ public abstract class VirtualModelResourceImpl extends PamelaResourceImpl<Virtua
 			}
 		}
 
-		List<FlexoTask> waitingTasks = new ArrayList<>();
+		// List<FlexoTask> waitingTasks = new ArrayList<>();
 		for (TechnologyAdapter requiredTA : requiredTAList) {
 			logger.info("Activating " + requiredTA);
-			FlexoTask t = taService.activateTechnologyAdapter(requiredTA, false);
-			if (t != null) {
+			/*FlexoTask t =*/ taService.activateTechnologyAdapter(requiredTA, true);
+			/*if (t != null) {
 				waitingTasks.add(t);
-			}
+			}*/
 		}
 
-		for (FlexoTask waitingTask : waitingTasks) {
+		/*for (FlexoTask waitingTask : waitingTasks) {
 			getServiceManager().getTaskManager().waitTask(waitingTask);
-		}
+		}*/
 
 	}
 
