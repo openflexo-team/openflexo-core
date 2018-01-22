@@ -45,9 +45,9 @@ import javax.swing.Icon;
 
 import org.openflexo.components.wizard.Wizard;
 import org.openflexo.components.wizard.WizardDialog;
+import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.action.FlexoActionFinalizer;
 import org.openflexo.foundation.action.FlexoActionInitializer;
-import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FlexoConceptObject;
 import org.openflexo.foundation.fml.action.CreateFlexoBehaviour;
@@ -68,6 +68,7 @@ public class CreateFlexoBehaviourInitializer extends ActionInitializer<CreateFle
 		actionInitializer.registerInitializer(CreateFlexoBehaviour.createEventListenerType, this);
 		actionInitializer.registerInitializer(CreateFlexoBehaviour.createSynchronizationSchemeType, this);
 		actionInitializer.registerInitializer(CreateFlexoBehaviour.createCloningSchemeType, this);
+		actionInitializer.registerInitializer(CreateFlexoBehaviour.createNavigationSchemeType, this);
 	}
 
 	@Override

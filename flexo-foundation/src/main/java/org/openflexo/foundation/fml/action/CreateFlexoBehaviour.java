@@ -222,7 +222,7 @@ public class CreateFlexoBehaviour extends FlexoAction<CreateFlexoBehaviour, Flex
 		}
 	};
 
-	public static FlexoActionFactory<CreateFlexoBehaviour, FlexoConceptObject, FMLObject> createNativationSchemeType = new AbstractCreateFlexoBehaviourActionType(
+	public static FlexoActionFactory<CreateFlexoBehaviour, FlexoConceptObject, FMLObject> createNavigationSchemeType = new AbstractCreateFlexoBehaviourActionType(
 			"navigation_scheme") {
 
 		/**
@@ -255,8 +255,8 @@ public class CreateFlexoBehaviour extends FlexoAction<CreateFlexoBehaviour, Flex
 		FlexoObjectImpl.addActionForClass(CreateFlexoBehaviour.createSynchronizationSchemeType, FlexoConceptBehaviouralFacet.class);
 		FlexoObjectImpl.addActionForClass(CreateFlexoBehaviour.createCloningSchemeType, FlexoConcept.class);
 		FlexoObjectImpl.addActionForClass(CreateFlexoBehaviour.createCloningSchemeType, FlexoConceptBehaviouralFacet.class);
-		FlexoObjectImpl.addActionForClass(CreateFlexoBehaviour.createNativationSchemeType, FlexoConcept.class);
-		FlexoObjectImpl.addActionForClass(CreateFlexoBehaviour.createNativationSchemeType, FlexoConceptBehaviouralFacet.class);
+		FlexoObjectImpl.addActionForClass(CreateFlexoBehaviour.createNavigationSchemeType, FlexoConcept.class);
+		FlexoObjectImpl.addActionForClass(CreateFlexoBehaviour.createNavigationSchemeType, FlexoConceptBehaviouralFacet.class);
 	}
 
 	public static class CreateActionScheme extends CreateFlexoBehaviour {
