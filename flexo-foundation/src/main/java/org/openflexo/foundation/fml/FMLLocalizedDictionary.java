@@ -175,7 +175,10 @@ public interface FMLLocalizedDictionary extends FMLObject, org.openflexo.localiz
 				logger.warning("Undefined language: " + entry.getLanguage());
 				return;
 			}
-			getDictForLang(lang).put(entry.getKey(), entry.getValue());
+			Hashtable<String, String> dictForLang = getDictForLang(lang);
+			if (dictForLang != null) {
+				dictForLang.put(entry.getKey(), entry.getValue());
+			}
 		}
 
 		private FMLLocalizedEntry getLocalizedEntry(Language language, String key) {
@@ -748,7 +751,7 @@ public interface FMLLocalizedDictionary extends FMLObject, org.openflexo.localiz
 						removeFromLocalizedEntries(e);
 					}
 				}
-				*/
+				 */
 			}
 
 			@Override
