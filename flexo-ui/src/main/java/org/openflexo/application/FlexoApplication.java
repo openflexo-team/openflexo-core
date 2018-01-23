@@ -41,7 +41,6 @@ package org.openflexo.application;
 
 import java.awt.AWTEvent;
 import java.awt.HeadlessException;
-import java.awt.Image;
 import java.awt.Toolkit;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -61,12 +60,9 @@ import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.InvalidParametersException;
 import org.openflexo.foundation.action.NotImplementedException;
 import org.openflexo.help.FlexoHelp;
-import org.openflexo.icon.IconLibrary;
 import org.openflexo.jedit.JEditTextArea;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.logging.FlexoLoggingManager;
-import org.openflexo.module.ModuleLoader;
-import org.openflexo.toolbox.ToolBox;
 import org.openflexo.utils.CancelException;
 import org.openflexo.utils.TooManyFailedAttemptException;
 import org.openflexo.view.FlexoDialog;
@@ -94,10 +90,6 @@ public class FlexoApplication {
 
 	private static boolean isInitialized = false;
 
-	private static Object application;
-
-	private static FlexoApplicationAdapter applicationAdapter;
-
 	public static EventProcessor eventProcessor;
 
 	private static byte[] mem = new byte[1024 * 1024];
@@ -113,31 +105,8 @@ public class FlexoApplication {
 
 		isInitialized = true;
 
-		ModuleLoader moduleLoader = applicationContext.getModuleLoader();
-
 		JEditTextArea.DIALOG_FACTORY = FlexoDialog.DIALOG_FACTORY;
-		try {
-			if (ToolBox.getPLATFORM() == ToolBox.MACOS) {
-				application = Class.forName("com.apple.eawt.Application").newInstance();
-				Method enablePrefMenu = application.getClass().getMethod("setEnabledPreferencesMenu", new Class[] { boolean.class });
-				enablePrefMenu.invoke(application, new Object[] { new Boolean(true) });
-				// ((com.apple.eawt.Application)application).setEnabledPreferencesMenu(true);
-				Method enableAboutMenu = application.getClass().getMethod("setEnabledAboutMenu", new Class[] { boolean.class });
-				enableAboutMenu.invoke(application, new Object[] { new Boolean(true) });
-				// ((com.apple.eawt.Application)application).setDockIconImage(ModuleLoader.getUserType().getIconImage().getImage());
-				Method setDockIconImage = application.getClass().getMethod("setDockIconImage", new Class[] { Image.class });
-				setDockIconImage.invoke(application, new Object[] { IconLibrary.OPENFLEXO_NOTEXT_128.getImage() });
-				applicationAdapter = new FlexoApplicationAdapter(applicationContext);
 
-				Method addApplicationListener = application.getClass().getMethod("addApplicationListener",
-						new Class[] { Class.forName("com.apple.eawt.ApplicationListener") });
-				addApplicationListener.invoke(application, new Object[] { applicationAdapter });
-
-				// ((com.apple.eawt.Application)application).addApplicationListener(applicationAdapter);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 		FlexoHelp.configure(applicationContext.getGeneralPreferences().getLanguage().getIdentifier(),
 				null/*UserType.getCurrentUserType().getIdentifier()*/);
 		FlexoHelp.reloadHelpSet();
@@ -385,7 +354,7 @@ public class FlexoApplication {
 				return true;
 			}
 			else {
-				// Same for exceptions where denali appear only as
+				// Same for exceptions where org.openflexo appear only as
 				// org.openflexo.application.FlexoApplication$EventProcessor.dispatchEvent()
 				int index = msg.indexOf("org.openflexo");
 				String searchedString = "org.openflexo.application.FlexoApplication$EventProcessor.dispatchEvent";

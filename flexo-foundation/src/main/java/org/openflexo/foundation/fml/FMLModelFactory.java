@@ -38,6 +38,7 @@
 
 package org.openflexo.foundation.fml;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -104,6 +105,7 @@ import org.openflexo.model.converter.FlexoVersionConverter;
 import org.openflexo.model.converter.RelativePathResourceConverter;
 import org.openflexo.model.converter.TypeConverter;
 import org.openflexo.model.exceptions.ModelDefinitionException;
+import org.openflexo.model.factory.DeserializationPolicy;
 import org.openflexo.model.factory.EditingContext;
 import org.openflexo.model.factory.ModelFactory;
 
@@ -140,12 +142,22 @@ public class FMLModelFactory extends FGEModelFactoryImpl implements PamelaResour
 		this(virtualModelResource, serviceManager, serviceManager.getTechnologyAdapterService());
 	}
 
+	@Override
+	public Object deserialize(InputStream is, DeserializationPolicy policy) throws Exception {
+		System.out.println("******** deserialize FMLModelFactory " + Integer.toHexString(hashCode()) + " for " + virtualModelResource
+				+ " in thread " + Thread.currentThread() + " is=" + is);
+		return super.deserialize(is, policy);
+	}
+
 	public FMLModelFactory(VirtualModelResource virtualModelResource, FlexoServiceManager serviceManager,
 			TechnologyAdapterService taService) throws ModelDefinitionException {
 
 		super(virtualModelResource != null
 				? retrieveTechnologySpecificClasses(virtualModelResource.getResourceDataClass(), virtualModelResource.getUsedModelSlots())
 				: retrieveTechnologySpecificClasses(taService != null ? taService : serviceManager.getTechnologyAdapterService()));
+
+		System.out.println("******** Initialize FMLModelFactory " + Integer.toHexString(hashCode()) + " for " + virtualModelResource
+				+ " in thread " + Thread.currentThread());
 		this.serviceManager = serviceManager;
 		if (taService == null) {
 			taService = serviceManager.getTechnologyAdapterService();

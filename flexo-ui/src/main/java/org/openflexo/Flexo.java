@@ -69,6 +69,10 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import org.openflexo.application.FlexoApplication;
+import org.openflexo.application.Platform;
+import org.openflexo.application.PlatformHook;
+import org.openflexo.application.PlatformHook.NativeOsCallback;
+import org.openflexo.components.AboutDialog;
 import org.openflexo.components.RequestLoginDialog;
 import org.openflexo.components.SplashWindow;
 import org.openflexo.components.WelcomeDialog;
@@ -81,6 +85,7 @@ import org.openflexo.logging.FlexoLoggingFormatter;
 import org.openflexo.logging.FlexoLoggingManager;
 import org.openflexo.logging.FlexoLoggingManager.LoggingManagerDelegate;
 import org.openflexo.module.Module;
+import org.openflexo.module.ModuleLoader;
 import org.openflexo.module.ModuleLoadingException;
 import org.openflexo.project.LoadProjectTask;
 import org.openflexo.replay.ScenarioPlayer;
@@ -103,6 +108,9 @@ import org.openflexo.view.controller.FlexoController;
  */
 public class Flexo {
 	protected static final Logger logger = Logger.getLogger(Flexo.class.getPackage().getName());
+
+	public static Platform platform;
+	public static PlatformHook platformHook;
 
 	public static boolean isDev = false;
 
@@ -211,7 +219,20 @@ public class Flexo {
 			}
 		}
 
+		platform = Platform.determinePlatform();
+		System.out.println("Platform=" + platform);
+
+		platformHook = Platform.determinePlatform().accept(PlatformHook.CONSTRUCT_FROM_PLATFORM);
+		System.out.println("platformHook=" + platformHook);
+
+		DefaultNativeOsCallback osCallback = new DefaultNativeOsCallback();
+
+		platformHook.setNativeOsCallback(osCallback);
+		// call the really early hook before we do anything else
+		platformHook.preStartupHook();
+
 		FlexoApplication.installEventQueue();
+
 		if (recordMode) {
 			FlexoApplication.eventProcessor.setPreprocessor(new ScenarioRecorder());
 		}
@@ -219,6 +240,8 @@ public class Flexo {
 		if (playMode) {
 			new ScenarioPlayer();
 		}
+
+		platformHook.startupHook(Flexo::askUpdateJava);
 
 		// 1. Very important to initiate first the ResourceLocator. Nothing else. See also issue 463.
 		String resourcepath = getResourcePath();
@@ -243,6 +266,8 @@ public class Flexo {
 				playMode);
 
 		remapStandardOuputs(isDev, applicationContext);
+
+		osCallback.setApplicationContext(applicationContext);
 
 		// FlexoProperties.load();
 		initializeLoggingManager(applicationContext);
@@ -739,6 +764,97 @@ public class Flexo {
 
 	public static void setFileNameToOpen(String filename) {
 		Flexo.fileNameToOpen = filename;
+	}
+
+	private static class DefaultNativeOsCallback implements NativeOsCallback {
+
+		private ApplicationContext applicationContext;
+
+		@Override
+		public void openFiles(List<File> files) {
+			logger.info("Not implemented: open " + files);
+		}
+
+		@Override
+		public boolean handleQuitRequest() {
+			try {
+				getModuleLoader().quit(true);
+				return true;
+			} catch (OperationCancelledException e) {
+				return false;
+			}
+		}
+
+		@Override
+		public void handleAbout() {
+			new AboutDialog();
+		}
+
+		@Override
+		public void handlePreferences() {
+			getApplicationContext().getPreferencesService().showPreferences();
+		}
+
+		public ApplicationContext getApplicationContext() {
+			return applicationContext;
+		}
+
+		public void setApplicationContext(ApplicationContext applicationContext) {
+			this.applicationContext = applicationContext;
+		}
+
+		public ModuleLoader getModuleLoader() {
+			return applicationContext.getModuleLoader();
+		}
+
+	}
+
+	/**
+	 * Asks user to update its version of Java.
+	 * 
+	 * @param updVersion
+	 *            target update version
+	 * @param url
+	 *            download URL
+	 * @param major
+	 *            true for a migration towards a major version of Java (8:9), false otherwise
+	 * @param eolDate
+	 *            the EOL/expiration date
+	 * @since 12270
+	 */
+	public static void askUpdateJava(String updVersion, String url, String eolDate, boolean major) {
+		// TODO one day if required
+		/*ExtendedDialog ed = new ExtendedDialog(
+		        Main.parent,
+		        tr("Outdated Java version"),
+		        tr("OK"), tr("Update Java"), tr("Cancel"));
+		// Check if the dialog has not already been permanently hidden by user
+		if (!ed.toggleEnable("askUpdateJava"+updVersion).toggleCheckState()) {
+		    ed.setButtonIcons("ok", "java", "cancel").setCancelButton(3);
+		    ed.setMinimumSize(new Dimension(480, 300));
+		    ed.setIcon(JOptionPane.WARNING_MESSAGE);
+		    StringBuilder content = new StringBuilder(tr("You are running version {0} of Java.",
+		            "<b>"+System.getProperty("java.version")+"</b>")).append("<br><br>");
+		    if ("Sun Microsystems Inc.".equals(System.getProperty("java.vendor")) && !platform.isOpenJDK()) {
+		        content.append("<b>").append(tr("This version is no longer supported by {0} since {1} and is not recommended for use.",
+		                "Oracle", eolDate)).append("</b><br><br>");
+		    }
+		    content.append("<b>")
+		           .append(major ?
+		                tr("JOSM will soon stop working with this version; we highly recommend you to update to Java {0}.", updVersion) :
+		                tr("You may face critical Java bugs; we highly recommend you to update to Java {0}.", updVersion))
+		           .append("</b><br><br>")
+		           .append(tr("Would you like to update now ?"));
+		    ed.setContent(content.toString());
+		
+		    if (ed.showDialog().getValue() == 2) {
+		        try {
+		            platform.openUrl(url);
+		        } catch (IOException e) {
+		            Logging.warn(e);
+		        }
+		    }
+		}*/
 	}
 
 }
