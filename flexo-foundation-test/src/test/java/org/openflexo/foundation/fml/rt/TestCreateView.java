@@ -105,7 +105,8 @@ public class TestCreateView extends OpenflexoProjectAtRunTimeTestCase {
 
 		assertNotNull(newViewPoint);
 		assertNotNull(newViewPoint.getResource());
-		VirtualModelResource resource = ((VirtualModelResource) newViewPoint.getResource());
+		// Unused VirtualModelResource resource = ((VirtualModelResource)
+		newViewPoint.getResource();
 		// assertTrue(((VirtualModelResource)
 		// newViewPoint.getResource()).getDirectory().exists());
 		// assertTrue(((VirtualModelResource)

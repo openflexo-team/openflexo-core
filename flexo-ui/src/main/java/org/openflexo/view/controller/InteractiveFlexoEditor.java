@@ -166,8 +166,6 @@ public class InteractiveFlexoEditor extends DefaultFlexoEditor {
 	 */
 	private <A extends org.openflexo.foundation.action.FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> A executeAction(
 			final A action, final EventObject event) {
-		final boolean progressIsShowing = ProgressWindow.hasInstance();
-
 		// We do it sooner to embed eventual initializer execution in the record session of the undo manager
 		if (!action.isEmbedded()) {
 			actionWillBePerformed(action);

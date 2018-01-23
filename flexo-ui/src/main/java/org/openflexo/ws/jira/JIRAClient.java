@@ -194,12 +194,12 @@ public class JIRAClient {
 			writeContentType(os, files[0]);
 			os.write(CR_LF); // Close part header
 		}
-		long count = 0;
-		long total = 0;
+		// Unused long count = 0;
+		// Unused long total = 0;
 
-		for (File file : files) {
-			total += file.length();
-		}
+		// Unused for (File file : files) {
+		// Unused total += file.length();
+		// Unused }
 		for (File file : files) {
 			if (isMultipleFiles) {
 				os.write("Content-disposition: attachment; filename=\"").write(file.getName()).write("\"").write(CR_LF);
@@ -214,7 +214,7 @@ public class JIRAClient {
 				while ((read = is.read(b)) > 0 && length > 0) {
 					os.write(b, 0, (int) Math.min(read, length));
 					length -= read;
-					count += read;
+					// Unused count += read;
 					/*if (progress != null) {
 						progress.setProgress((double) count / total);
 					}*/

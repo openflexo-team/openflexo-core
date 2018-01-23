@@ -436,7 +436,7 @@ public abstract class FlexoModule<M extends FlexoModule<M>> implements DataFlexo
 		}
 		// Is there some modules loaded ?
 		Collection<Module<?>> leftModules = getModuleLoader().getLoadedModules();
-		Module<?> moiMeme = getModule();
+		// Unused Module<?> moiMeme = getModule();
 		leftModules.remove(getModule());
 		if (leftModules.size() > 0) {
 			try {

@@ -43,7 +43,6 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.jdom2.JDOMException;
@@ -178,25 +177,25 @@ public class FlexoServerInstanceManager extends FlexoServiceImpl {
 	}
 
 	private void filterAddressBook(FlexoServerAddressBook book) {
-		for (FlexoServerInstance instance : new ArrayList<>(book.getInstances())) {
-			/*if (instance.getUserTypes().size() > 0) {
-				boolean keepIt = false;
-				for (String userType : instance.getUserTypes()) {
-					UserType u = UserType.getUserTypeNamed(userType);
-					if (UserType.getCurrentUserType().equals(u)) {
-						keepIt = true;
-						break;
-					}
+		// Unused for (FlexoServerInstance instance : new ArrayList<>(book.getInstances())) {
+		/*if (instance.getUserTypes().size() > 0) {
+			boolean keepIt = false;
+			for (String userType : instance.getUserTypes()) {
+				UserType u = UserType.getUserTypeNamed(userType);
+				if (UserType.getCurrentUserType().equals(u)) {
+					keepIt = true;
+					break;
 				}
-				if (!keepIt) {
-					book.removeFromInstances(instance);
-				} else if (StringUtils.isEmpty(instance.getRestURL())) {
-					if (instance.getURL() != null) {
-						instance.setRestURL(instance.getURL() + "Flexo/rest");
-					}
+			}
+			if (!keepIt) {
+				book.removeFromInstances(instance);
+			} else if (StringUtils.isEmpty(instance.getRestURL())) {
+				if (instance.getURL() != null) {
+					instance.setRestURL(instance.getURL() + "Flexo/rest");
 				}
-			}*/
-		}
+			}
+		}*/
+		// Unused }
 	}
 
 	@Override

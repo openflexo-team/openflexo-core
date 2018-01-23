@@ -93,7 +93,7 @@ public class PlatformHookOsx implements PlatformHook, InvocationHandler {
 			// We'll just ignore this for now. The user will still be able to close Openflexo by closing all its windows.
 			logger.warning("Failed to register with OSX: " + ex);
 		}
-		checkExpiredJava(callback);
+		// Unused checkExpiredJava(callback);
 	}
 
 	@Override

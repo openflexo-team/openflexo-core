@@ -211,7 +211,8 @@ public interface FragmentActorReference<F extends FlexoDocFragment<?, ?>> extend
 				}
 
 				// Retrieve template fragment
-				F templateFragment = (F) ((FlexoFragmentRole) getFlexoRole()).getFragment();
+				// Unused F templateFragment = (F)
+				((FlexoFragmentRole<?, ?, ?>) getFlexoRole()).getFragment();
 
 				if (aFragment != null) {
 					for (FlexoDocElement<?, ?> element : aFragment.getElements()) {

@@ -41,7 +41,6 @@ package org.openflexo.prefs;
 import java.util.List;
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenter.ResourceCenterEntry;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
 import org.openflexo.model.annotations.Adder;
@@ -55,8 +54,8 @@ import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLElement;
 
 /**
- * Preferences encoding all user declared resource centers
- * the ones that are declared at the "system-level" (i.e. globally or from the classpath) are not stored in user preferences
+ * Preferences encoding all user declared resource centers the ones that are declared at the "system-level" (i.e. globally or from the
+ * classpath) are not stored in user preferences
  * 
  * @author sguerin, xtof
  * 
@@ -92,7 +91,8 @@ public interface ResourceCenterPreferences extends ServicePreferences<FlexoResou
 
 	public void ensureResourceEntryIsNoMorePresent(ResourceCenterEntry<?> entry);
 
-	/** Implementation Class 
+	/**
+	 * Implementation Class
 	 * 
 	 * @author sylvain
 	 *
@@ -102,12 +102,12 @@ public interface ResourceCenterPreferences extends ServicePreferences<FlexoResou
 		private static final Logger logger = Logger.getLogger(ResourceCenterPreferences.class.getPackage().getName());
 
 		@Override
-		public void addToResourceCenterEntries(ResourceCenterEntry<?> aResourceCenterEntry){
-			if (!aResourceCenterEntry.isSystemEntry()){
-				this.performSuperAdder(RESOURCE_CENTER_ENTRIES_KEY,aResourceCenterEntry);
-				}
+		public void addToResourceCenterEntries(ResourceCenterEntry<?> aResourceCenterEntry) {
+			if (!aResourceCenterEntry.isSystemEntry()) {
+				this.performSuperAdder(RESOURCE_CENTER_ENTRIES_KEY, aResourceCenterEntry);
+			}
 		}
-		
+
 		@Override
 		public void ensureResourceEntryIsPresent(ResourceCenterEntry<?> entry) {
 

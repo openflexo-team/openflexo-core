@@ -13,11 +13,9 @@ import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
-import java.util.Date;
 import java.util.List;
 
 import org.openflexo.toolbox.StringUtils;
-import org.openflexo.toolbox.ToolBox;
 
 /**
  * This interface allows platform (operating system) dependent code to be bundled into self-contained classes.
@@ -334,15 +332,15 @@ public interface PlatformHook {
 	 * @since 12270 (signature)
 	 * @since 12219
 	 */
+	/* Not used 
 	default void checkExpiredJava(JavaExpirationCallback callback) {
 		Date expiration = ToolBox.getJavaExpirationDate();
 		if (expiration != null && expiration.before(new Date())) {
-			String version = ToolBox.getJavaLatestVersion();
-			/*callback.askUpdateJava(version != null ? version : "latest",
-					Config.getPref().get("java.update.url", "https://www.java.com/download"),
-					DateUtils.getDateFormat(DateFormat.MEDIUM).format(expiration), false);*/
-		}
-	}
+			String version = ToolBox.getJavaLatestVersion();*/
+	/*callback.askUpdateJava(version != null ? version : "latest",
+			Config.getPref().get("java.update.url", "https://www.java.com/download"),
+			DateUtils.getDateFormat(DateFormat.MEDIUM).format(expiration), false);*/
+	/*}}*/
 
 	/**
 	 * Called when interfacing with native OS functions. Currently only used with macOS. The callback must perform all GUI-related tasks

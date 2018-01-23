@@ -156,16 +156,16 @@ public class FIBDocImageSelector<T extends FlexoDrawingRun<D, TA>, D extends Fle
 				Element endCharElement = styledDocument.getCharacterElement(end);
 
 				FlexoDocObject<?, ?> startDocObject = null;
-				FlexoDocObject<?, ?> endDocObject = null;
+				// Unused FlexoDocObject<?, ?> endDocObject = null;
 
 				if (startCharElement instanceof AbstractDocumentElement
 						&& ((AbstractDocumentElement<?, ?, ?>) startCharElement).getDocObject() instanceof FlexoDocElement) {
 					startDocObject = ((AbstractDocumentElement<?, ?, ?>) startCharElement).getDocObject();
 				}
-				if (endCharElement instanceof AbstractDocumentElement
-						&& ((AbstractDocumentElement<?, ?, ?>) endCharElement).getDocObject() instanceof FlexoDocElement) {
-					endDocObject = ((AbstractDocumentElement<?, ?, ?>) endCharElement).getDocObject();
-				}
+				// Unused if (endCharElement instanceof AbstractDocumentElement
+				// Unused && ((AbstractDocumentElement<?, ?, ?>) endCharElement).getDocObject() instanceof FlexoDocElement) {
+				// Unused endDocObject = ((AbstractDocumentElement<?, ?, ?>) endCharElement).getDocObject();
+				// Unused }
 
 				System.out.println("Pour l'element: " + startCharElement);
 				System.out.println("Pour l'element par: " + styledDocument.getParagraphElement(start));

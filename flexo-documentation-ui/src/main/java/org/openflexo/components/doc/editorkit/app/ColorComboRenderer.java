@@ -64,7 +64,7 @@ public class ColorComboRenderer extends JLabel implements ListCellRenderer<Color
 			setBorder(new CompoundBorder(new MatteBorder(2, 10, 2, 10, m_nonFocusColor), new LineBorder(Color.black)));
 
 		if (obj instanceof Color) {
-			m_color = (Color) obj;
+			m_color = obj;
 			setBackground(m_color);
 			setText(" ");
 		}
@@ -83,6 +83,7 @@ public class ColorComboRenderer extends JLabel implements ListCellRenderer<Color
 	 * @param g
 	 *            graphics context
 	 */
+	@Override
 	public void paintComponent(Graphics g) {
 		setBackground(m_color);
 

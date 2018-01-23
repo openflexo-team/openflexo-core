@@ -38,15 +38,17 @@
 
 package org.openflexo.view;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Window;
 import java.util.List;
 import java.util.StringTokenizer;
 import java.util.Vector;
 import java.util.logging.Logger;
-import javax.swing.*;
+
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 
 import org.openflexo.foundation.fml.rt.logging.FMLConsole;
-import org.openflexo.foundation.fml.rt.logging.FMLConsole.LogLevel;
 import org.openflexo.foundation.fml.rt.logging.FMLLogRecord;
 import org.openflexo.foundation.fml.rt.logging.FMLLoggingFilter;
 import org.openflexo.foundation.fml.rt.logging.FMLLoggingFilter.FilterType;

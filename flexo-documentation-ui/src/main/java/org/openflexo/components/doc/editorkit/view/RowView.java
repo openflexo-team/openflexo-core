@@ -91,7 +91,7 @@ public class RowView extends BoxView {
 		Rectangle alloc = (a instanceof Rectangle) ? (Rectangle) a : a.getBounds();
 		int n = getViewCount();
 		RowElement<?, ?> row = (RowElement<?, ?>) this.getElement();
-		int cellWidth = (row.getWidth() / row.getChildCount());
+		// Unused int cellWidth = (row.getWidth() / row.getChildCount());
 		int shift = 0;
 		for (int i = 0; i < n; i++) {
 			Rectangle tempRect = new Rectangle(alloc.x + shift, alloc.y, row.getCellWidth(i), alloc.height);

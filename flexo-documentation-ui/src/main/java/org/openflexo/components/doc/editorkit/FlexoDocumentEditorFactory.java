@@ -311,14 +311,14 @@ public class FlexoDocumentEditorFactory<D extends FlexoDocument<D, TA>, TA exten
 			}
 		}
 		StringBuffer sb = new StringBuffer();
-		boolean isFirst = true;
+		// Unused boolean isFirst = true;
 		for (int i = 0; i <= level; i++) {
 			while (i >= numbering.size()) {
 				numbering.add(1);
 			}
 			// Disactivate numbering
 			// sb.append((isFirst ? "" : ".") + numbering.get(i));
-			isFirst = false;
+			// Unused isFirst = false;
 		}
 		return sb.toString();
 	}

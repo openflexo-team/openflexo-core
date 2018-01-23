@@ -473,7 +473,7 @@ public class TestPopulateVirtualModelInstance extends OpenflexoProjectAtRunTimeT
 
 		log("testReloadProject()");
 
-		FlexoProject<File> oldProject = project;
+		// Unused FlexoProject<File> oldProject = project;
 		String oldViewURI = newView.getURI();
 
 		editor = reloadProject(project);

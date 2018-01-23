@@ -282,7 +282,7 @@ public class TestEmbeddedFlexoConceptInstances extends OpenflexoProjectAtRunTime
 
 		System.out.println("FML=" + actionScheme.getFMLRepresentation());
 
-		FlexoConceptInstance a, b1, b2, c1, c2;
+		FlexoConceptInstance a, b1, b2;// Unused , c1, c2
 
 		assertEquals(1, vmi2.getAllRootFlexoConceptInstances().size());
 		assertNotNull(a = vmi2.getAllRootFlexoConceptInstances().get(0));
@@ -292,10 +292,10 @@ public class TestEmbeddedFlexoConceptInstances extends OpenflexoProjectAtRunTime
 		assertNotNull(b2 = a.getEmbeddedFlexoConceptInstances().get(1));
 
 		assertEquals(1, b1.getEmbeddedFlexoConceptInstances().size());
-		assertNotNull(c1 = b1.getEmbeddedFlexoConceptInstances().get(0));
+		assertNotNull(b1.getEmbeddedFlexoConceptInstances().get(0));
 
 		assertEquals(1, b2.getEmbeddedFlexoConceptInstances().size());
-		assertNotNull(c2 = b2.getEmbeddedFlexoConceptInstances().get(0));
+		assertNotNull(b2.getEmbeddedFlexoConceptInstances().get(0));
 
 	}
 
