@@ -91,7 +91,7 @@ public class DoubleSpinEdit extends JPanel{
       lst_=new FocusListener() {
         public void focusLost(FocusEvent e) {
           try {
-            double v=new Double(m_textValue.getText()).doubleValue();
+            double v=Double.valueOf(m_textValue.getText()).doubleValue();
             if ((v<=maxValue) && (v>=minValue) && (minValue<maxValue)) {
                 value=v;
             }

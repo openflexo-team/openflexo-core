@@ -152,7 +152,7 @@ public class FlexoObjectIDManager {
 			}
 			badObjects.add(o);
 		}
-		FlexoProjectObject old = used.put(new Long(o.getFlexoID()), o);
+		FlexoProjectObject old = used.put(Long.valueOf(o.getFlexoID()), o);
 		if (old != null && old != o) {
 			long newID = o.getProject().getNewFlexoID();
 			if (logger.isLoggable(Level.WARNING)) {
