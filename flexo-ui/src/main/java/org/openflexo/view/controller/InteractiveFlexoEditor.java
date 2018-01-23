@@ -68,6 +68,7 @@ import org.openflexo.foundation.action.FlexoUndoManager;
 import org.openflexo.foundation.action.LongRunningAction;
 import org.openflexo.foundation.fml.rt.action.ActionSchemeActionFactory;
 import org.openflexo.foundation.fml.rt.action.DeletionSchemeActionFactory;
+import org.openflexo.foundation.nature.FlexoNature;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.ResourceUpdateHandler;
 import org.openflexo.foundation.task.LongRunningActionTask;
@@ -297,10 +298,19 @@ public class InteractiveFlexoEditor extends DefaultFlexoEditor {
 		return false;
 	}
 
+	/**
+	 * Focus on supplied object, trying to display a view adapted to supplied displayNature
+	 * 
+	 * @param object
+	 * @param displayNature
+	 */
 	@Override
-	public void focusOn(FlexoObject object) {
-
+	public <O extends FlexoObject> void focusOn(O object, FlexoNature<O> displayNature) {
 		// Only interactive editor handle this
+
+		if (displayNature != null) {
+			getModuleLoader().getActiveModule().getFlexoController().switchToPerspective(displayNature);
+		}
 		getModuleLoader().getActiveModule().getFlexoController().setCurrentEditedObjectAsModuleView(object);
 		getModuleLoader().getActiveModule().getFlexoController().getSelectionManager().setSelectedObject(object);
 	}

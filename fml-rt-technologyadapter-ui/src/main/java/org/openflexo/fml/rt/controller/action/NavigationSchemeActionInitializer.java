@@ -44,6 +44,7 @@ import java.util.logging.Logger;
 import javax.swing.Icon;
 
 import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.action.FlexoActionFinalizer;
 import org.openflexo.foundation.action.FlexoActionInitializer;
@@ -101,7 +102,9 @@ public class NavigationSchemeActionInitializer
 				if (action.getTargetObject() != null) {
 					// Editor will handle switch to right module and perspective, and select target object
 					System.out.println("-------------> Du coup, focus sur " + action.getTargetObject());
-					getEditor().focusOn(action.getTargetObject());
+					FlexoObject targetObject = action.getTargetObject();
+					focusOnTargetObject(targetObject, action);
+					// getEditor().focusOn(targetObject, (FlexoNature) action.getFlexoBehaviour().getDisplayNature(targetObject));
 					return true;
 				}
 				else {
@@ -109,6 +112,10 @@ public class NavigationSchemeActionInitializer
 				}
 			}
 		};
+	}
+
+	private <O extends FlexoObject> void focusOnTargetObject(O targetObject, NavigationSchemeAction action) {
+		getEditor().focusOn(targetObject, action.getFlexoBehaviour().getDisplayNature(targetObject));
 	}
 
 	@Override
