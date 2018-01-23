@@ -129,7 +129,7 @@ public abstract class FlexoObservable extends KVCFlexoObject implements HasPrope
 				flexoObservers.add(new WeakReference<>(o));
 				if (observerClasses.get(o.getClass()) == null) {
 					// Add an entry for this kind of observer
-					observerClasses.put(o.getClass(), new Boolean(true));
+					observerClasses.put(o.getClass(), Boolean.TRUE);
 				}
 			}
 		}

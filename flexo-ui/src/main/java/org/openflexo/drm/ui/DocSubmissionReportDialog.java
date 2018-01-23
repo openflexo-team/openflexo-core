@@ -311,7 +311,7 @@ public class DocSubmissionReportDialog extends FlexoDialog {
 			_report = report;
 			_shouldImport = new Vector<>();
 			for (int i = 0; i < _report.size(); i++) {
-				_shouldImport.add(new Boolean(true));
+				_shouldImport.add(Boolean.TRUE);
 			}
 		}
 
@@ -420,14 +420,14 @@ public class DocSubmissionReportDialog extends FlexoDialog {
 
 		public void selectAll() {
 			for (int i = 0; i < _shouldImport.size(); i++) {
-				_shouldImport.setElementAt(new Boolean(true), i);
+				_shouldImport.setElementAt(Boolean.TRUE, i);
 				fireTableCellUpdated(i, 0);
 			}
 		}
 
 		public void deselectAll() {
 			for (int i = 0; i < _shouldImport.size(); i++) {
-				_shouldImport.setElementAt(new Boolean(false), i);
+				_shouldImport.setElementAt(Boolean.FALSE, i);
 				fireTableCellUpdated(i, 0);
 			}
 		}
