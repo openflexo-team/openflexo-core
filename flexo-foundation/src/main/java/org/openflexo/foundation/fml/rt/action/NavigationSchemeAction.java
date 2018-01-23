@@ -147,7 +147,7 @@ public class NavigationSchemeAction extends AbstractActionSchemeAction<Navigatio
 			logger.warning("No navigation scheme. Please investigate !");
 			return null;
 		}
-		return getFlexoBehaviour().evaluateTargetObject(getFlexoConceptInstance());
+		return getFlexoBehaviour().evaluateTargetObject(this);
 	}
 
 }
