@@ -122,6 +122,7 @@ import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.fml.rt.VirtualModelInstanceObject;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.foundation.fml.rt.rm.FMLRTVirtualModelInstanceResource;
+import org.openflexo.foundation.nature.FlexoNature;
 import org.openflexo.foundation.project.FlexoProjectReference;
 import org.openflexo.foundation.project.FlexoProjectResource;
 import org.openflexo.foundation.project.ProjectLoader;
@@ -1084,6 +1085,9 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 			perspective.willShow();
 			controllerModel.setCurrentPerspective(perspective);
 		}
+	}
+
+	public void switchToPerspective(FlexoNature<?> nature) {
 	}
 
 	/**

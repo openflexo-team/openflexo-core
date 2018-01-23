@@ -48,6 +48,7 @@ import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.action.NavigationSchemeActionFactory;
+import org.openflexo.foundation.nature.FlexoNature;
 import org.openflexo.model.annotations.DefineValidationRule;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -73,6 +74,13 @@ public interface NavigationScheme extends AbstractActionScheme {
 	public void setTargetObject(DataBinding<?> targetObject);
 
 	public FlexoObject evaluateTargetObject(RunTimeEvaluationContext evaluationContext);
+
+	/**
+	 * Returns nature which we will try to use to display target object
+	 * 
+	 * @return
+	 */
+	public <O extends FlexoObject> FlexoNature<O> getDisplayNature(O targetObject);
 
 	public static abstract class NavigationSchemeImpl extends AbstractActionSchemeImpl implements NavigationScheme {
 
@@ -121,6 +129,16 @@ public interface NavigationScheme extends AbstractActionScheme {
 		@Override
 		public NavigationSchemeActionFactory getActionFactory(FlexoConceptInstance fci) {
 			return new NavigationSchemeActionFactory(this, fci);
+		}
+
+		/**
+		 * Returns nature which we will try to use to display target object
+		 * 
+		 * @return
+		 */
+		@Override
+		public <O extends FlexoObject> FlexoNature<O> getDisplayNature(O targetObject) {
+			return null;
 		}
 
 	}

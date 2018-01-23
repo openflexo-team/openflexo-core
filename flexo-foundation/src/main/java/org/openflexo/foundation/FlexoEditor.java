@@ -50,6 +50,7 @@ import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.action.FlexoUndoManager;
 import org.openflexo.foundation.fml.rt.FMLRunTimeEngine;
 import org.openflexo.foundation.fml.rt.logging.FMLConsole;
+import org.openflexo.foundation.nature.FlexoNature;
 import org.openflexo.foundation.resource.ResourceUpdateHandler;
 import org.openflexo.foundation.utils.FlexoProgressFactory;
 
@@ -127,7 +128,13 @@ public interface FlexoEditor {
 
 	public boolean performResourceScanning();
 
-	public void focusOn(FlexoObject object);
+	/**
+	 * Focus on supplied object, trying to display a view adapted to supplied displayNature
+	 * 
+	 * @param object
+	 * @param displayNature
+	 */
+	public <O extends FlexoObject> void focusOn(O object, FlexoNature<O> displayNature);
 
 	public FlexoUndoManager getUndoManager();
 

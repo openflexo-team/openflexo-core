@@ -51,6 +51,7 @@ import org.openflexo.foundation.action.FlexoUndoManager;
 import org.openflexo.foundation.fml.rt.FMLRunTimeEngine;
 import org.openflexo.foundation.fml.rt.SynchronousFMLRunTimeEngine;
 import org.openflexo.foundation.fml.rt.logging.FMLConsole;
+import org.openflexo.foundation.nature.FlexoNature;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.ResourceUpdateHandler;
 import org.openflexo.foundation.utils.FlexoProgressFactory;
@@ -124,8 +125,14 @@ public class DefaultFlexoEditor implements FlexoEditor {
 		return null;
 	}
 
+	/**
+	 * Focus on supplied object, trying to display a view adapted to supplied displayNature
+	 * 
+	 * @param object
+	 * @param displayNature
+	 */
 	@Override
-	public void focusOn(FlexoObject object) {
+	public <O extends FlexoObject> void focusOn(O object, FlexoNature<O> displayNature) {
 		// Only interactive editor handle this
 	}
 
