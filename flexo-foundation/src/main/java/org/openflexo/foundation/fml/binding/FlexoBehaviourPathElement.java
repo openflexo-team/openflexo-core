@@ -182,9 +182,9 @@ public class FlexoBehaviourPathElement extends FunctionPathElement implements Pr
 		// + getFlexoBehaviour().getFlexoConcept());
 		// Thread.dumpStack();
 
-		Object[] args = new Object[getFunction().getArguments().size()];
-		int i = 0;
-
+		// Object[] args = new Object[getFunction().getArguments().size()];
+		/*int i = 0;
+		
 		for (FlexoBehaviourParameter param : getFunction().getArguments()) {
 			try {
 				args[i] = TypeUtils.castTo(getParameter(param).getBindingValue(context), param.getType());
@@ -193,7 +193,7 @@ public class FlexoBehaviourPathElement extends FunctionPathElement implements Pr
 				throw new InvocationTargetTransformException(e);
 			}
 			i++;
-		}
+		}*/
 		try {
 			// logger.warning("Please implements execution of FlexoBehaviourPathElement here !!!! context=" + context + " of "
 			// + context.getClass() + " target=" + target);
@@ -225,13 +225,14 @@ public class FlexoBehaviourPathElement extends FunctionPathElement implements Pr
 				}
 				for (FlexoBehaviourParameter p : getFlexoBehaviour().getParameters()) {
 					DataBinding<?> param = getParameter(p);
-					Object paramValue = param.getBindingValue(context);
+					Object paramValue = TypeUtils.castTo(param.getBindingValue(context), p.getType());
 					// logger.fine("For parameter " + param + " value is " + paramValue);
 					if (paramValue != null) {
 						actionSchemeAction.setParameterValue(p, paramValue);
 					}
 				}
 				actionSchemeAction.doAction();
+
 				if (actionSchemeAction.hasActionExecutionSucceeded()) {
 					logger.fine("Successfully performed ActionScheme " + getFlexoBehaviour() + " for " + fci);
 					return actionSchemeAction.getReturnedValue();
@@ -245,9 +246,9 @@ public class FlexoBehaviourPathElement extends FunctionPathElement implements Pr
 			StringBuffer warningMessage = new StringBuffer(
 					"While evaluating edition scheme " + getFlexoBehaviour() + " exception occured: " + e.getMessage());
 			warningMessage.append(", object = " + target);
-			for (i = 0; i < getFunction().getArguments().size(); i++) {
+			/*for (i = 0; i < getFunction().getArguments().size(); i++) {
 				warningMessage.append(", arg[" + i + "] = " + args[i]);
-			}
+			}*/
 			logger.warning(warningMessage.toString());
 		} catch (InvocationTargetException e) {
 			e.printStackTrace();
