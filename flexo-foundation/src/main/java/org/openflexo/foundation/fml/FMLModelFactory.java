@@ -144,8 +144,8 @@ public class FMLModelFactory extends FGEModelFactoryImpl implements PamelaResour
 
 	@Override
 	public Object deserialize(InputStream is, DeserializationPolicy policy) throws Exception {
-		System.out.println("******** deserialize FMLModelFactory " + Integer.toHexString(hashCode()) + " for " + virtualModelResource
-				+ " in thread " + Thread.currentThread() + " is=" + is);
+		// System.out.println("******** deserialize FMLModelFactory " + Integer.toHexString(hashCode()) + " for " + virtualModelResource
+		// + " in thread " + Thread.currentThread() + " is=" + is);
 		return super.deserialize(is, policy);
 	}
 
@@ -156,8 +156,8 @@ public class FMLModelFactory extends FGEModelFactoryImpl implements PamelaResour
 				? retrieveTechnologySpecificClasses(virtualModelResource.getResourceDataClass(), virtualModelResource.getUsedModelSlots())
 				: retrieveTechnologySpecificClasses(taService != null ? taService : serviceManager.getTechnologyAdapterService()));
 
-		System.out.println("******** Initialize FMLModelFactory " + Integer.toHexString(hashCode()) + " for " + virtualModelResource
-				+ " in thread " + Thread.currentThread());
+		// System.out.println("******** Initialize FMLModelFactory " + Integer.toHexString(hashCode()) + " for " + virtualModelResource
+		// + " in thread " + Thread.currentThread());
 		this.serviceManager = serviceManager;
 		if (taService == null) {
 			taService = serviceManager.getTechnologyAdapterService();
