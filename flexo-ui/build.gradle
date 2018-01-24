@@ -13,7 +13,9 @@ dependencies {
   compile flexoHelp()
 
   // external dep
-  compile group: "org.openflexo.utils", name: "macos_ui_simulation", version: "1.1"
+  if (!JavaVersion.current().isJava9Compatible()) {
+  	compile group: "org.openflexo.utils", name: "macos_ui_simulation", version: "1.1"
+  }
 }
 
 // To be able to use private apple api
