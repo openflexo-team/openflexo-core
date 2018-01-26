@@ -320,7 +320,7 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData/*<Vi
 		}
 
 		@Override
-		public final void setChanged() {
+		public final synchronized void setChanged() {
 			super.setChanged();
 			if (getResourceData() != null) {
 				getResourceData().setIsModified();

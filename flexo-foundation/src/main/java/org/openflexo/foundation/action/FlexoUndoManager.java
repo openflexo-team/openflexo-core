@@ -137,7 +137,7 @@ public class FlexoUndoManager extends UndoManager {
 	}
 
 	@Override
-	public CompoundEdit startRecording(String presentationName) {
+	public synchronized CompoundEdit startRecording(String presentationName) {
 		if (logger.isLoggable(Level.FINE)) {
 			logger.fine("FlexoUndoManager: START RECORDING " + presentationName);
 		}

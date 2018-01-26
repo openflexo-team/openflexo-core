@@ -401,7 +401,7 @@ public class DocItemFolder extends DRMObject {
 
 		@Override
 		public ValidationIssue<R, DocItemFolder> applyValidation(final DocItemFolder object) {
-			final DocItemFolder folder = (DocItemFolder) object;
+			final DocItemFolder folder = object;
 			ProblemIssue<R, DocItemFolder> issue = null;
 			if (folder.getPrimaryDocItem() == null) {
 				issue = new ValidationError<>((R) this, object, "doc_item_folder_($object.identifier)_has_no_primary_doc_item");

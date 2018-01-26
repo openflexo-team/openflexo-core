@@ -132,7 +132,7 @@ public class ApproveVersion extends FlexoAction<ApproveVersion, DocItem, DocItem
 
 	public DocItem getDocItem() {
 		if (_docItem == null) {
-			if (getFocusedObject() != null && getFocusedObject() instanceof DocItem) {
+			if (getFocusedObject() != null) {
 				_docItem = getFocusedObject();
 			}
 		}

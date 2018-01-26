@@ -222,7 +222,7 @@ public class Test {
 						}
 					}
 					else {
-						int width = ((CellElement) cell).getWidth() - 4;
+						int width = ((CellElement<?, ?>) cell).getWidth() - 4;
 						for (int i = 0; i < widths.length; i++) {
 							widths[i] = width / dlg.getColumnCount();
 						}

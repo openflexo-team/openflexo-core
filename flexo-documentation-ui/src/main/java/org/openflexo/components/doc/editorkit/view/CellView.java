@@ -69,7 +69,7 @@ public class CellView extends BoxView {
 	 */
 	public CellView(Element elem) {
 		super(elem, View.Y_AXIS);
-		CellElement cell = (CellElement) this.getElement();
+		CellElement<?, ?> cell = (CellElement<?, ?>) this.getElement();
 		Insets margins = cell.getMargins();
 
 		this.setInsets((short) (margins.top), (short) (margins.left), (short) (margins.bottom), (short) (margins.right));
@@ -86,12 +86,11 @@ public class CellView extends BoxView {
 	@Override
 	public float getPreferredSpan(int axis) {
 		float span = 0;
+		CellElement<?, ?> cell = (CellElement<?, ?>) getElement();
 		if (axis == View.X_AXIS) {
-			CellElement cell = (CellElement) getElement();
 			span = cell.getWidth();
 		}
 		else {
-			CellElement cell = (CellElement) getElement();
 			span = Math.max(super.getPreferredSpan(axis), cell.getHeight());
 		}
 		return span;
@@ -108,12 +107,11 @@ public class CellView extends BoxView {
 	@Override
 	public float getMinimumSpan(int axis) {
 		float span = 0;
+		CellElement<?, ?> cell = (CellElement<?, ?>) getElement();
 		if (axis == View.X_AXIS) {
-			CellElement cell = (CellElement) getElement();
 			span = cell.getWidth();
 		}
 		else {
-			CellElement cell = (CellElement) getElement();
 			span = Math.max(super.getMinimumSpan(axis), cell.getHeight());
 		}
 		return span;
@@ -130,12 +128,11 @@ public class CellView extends BoxView {
 	@Override
 	public float getMaximumSpan(int axis) {
 		float span = 0;
+		CellElement<?, ?> cell = (CellElement<?, ?>) getElement();
 		if (axis == View.X_AXIS) {
-			CellElement cell = (CellElement) getElement();
 			span = cell.getWidth();
 		}
 		else {
-			CellElement cell = (CellElement) getElement();
 			span = Math.max(super.getMaximumSpan(axis), cell.getHeight());
 		}
 		return span;
@@ -202,7 +199,7 @@ public class CellView extends BoxView {
 	 */
 	@Override
 	protected void layout(int width, int height) {
-		CellElement cell = (CellElement) this.getElement();
+		CellElement<?, ?> cell = (CellElement<?, ?>) this.getElement();
 		Insets margins = cell.getMargins();
 		this.setInsets((short) (margins.top), (short) (margins.left), (short) (margins.bottom), (short) (margins.right));
 		super.layout(width, height);
@@ -220,7 +217,7 @@ public class CellView extends BoxView {
 	public void paint(Graphics g, Shape a) {
 		Rectangle alloc = (a instanceof Rectangle) ? (Rectangle) a : a.getBounds();
 		super.paint(g, a);
-		CellElement cell = (CellElement) getElement();
+		CellElement<?, ?> cell = (CellElement<?, ?>) getElement();
 		BorderAttributes ba = (BorderAttributes) cell.getAttribute("BorderAttributes");
 
 		Color oldColor = g.getColor();

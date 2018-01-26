@@ -66,7 +66,7 @@ public class IOFlexoException extends FlexoException {
 	}
 
 	@Override
-	public IOException getCause() {
+	public synchronized IOException getCause() {
 		return getTargetException();
 	}
 

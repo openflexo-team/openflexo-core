@@ -127,10 +127,7 @@ public class FIBDocFragmentSelector<F extends FlexoDocFragment<D, TA>, D extends
 		}
 
 		F newFragment = null;
-		if (elements.size() == 0) {
-			newFragment = null;
-		}
-		else if (elements.size() == 1) {
+		if (elements.size() == 1) {
 			FlexoDocElement<D, TA> startElement = elements.get(0);
 			try {
 				newFragment = (F) document.getFragment(startElement, startElement);
@@ -146,9 +143,7 @@ public class FIBDocFragmentSelector<F extends FlexoDocFragment<D, TA>, D extends
 				newFragment = (F) document.getFragment(startElement, endElement);
 			} catch (FragmentConsistencyException e) {
 				System.out.println("This fragment is not valid: start=" + startElement + " end=" + endElement);
-				newFragment = null;
 			}
-
 		}
 		// System.out.println("fragment=" + newFragment);
 		setEditedObject(newFragment);
@@ -230,7 +225,6 @@ public class FIBDocFragmentSelector<F extends FlexoDocFragment<D, TA>, D extends
 						newFragment = (F) getDocument().getFragment(startElement, endElement);
 					} catch (FragmentConsistencyException exception) {
 						System.out.println("This fragment is not valid: start=" + startElement + " end=" + endElement);
-						newFragment = null;
 					}
 
 				}
@@ -276,11 +270,11 @@ public class FIBDocFragmentSelector<F extends FlexoDocFragment<D, TA>, D extends
 					FlexoDocument<?, ?> doc = null;
 					if (selection != null) {
 						for (Object o : selection) {
-							if (o instanceof FlexoDocElement && ((FlexoDocElement) o).getFlexoDocument() != null) {
+							if (o instanceof FlexoDocElement && ((FlexoDocElement<?, ?>) o).getFlexoDocument() != null) {
 								if (doc == null) {
-									doc = ((FlexoDocElement) o).getFlexoDocument();
+									doc = ((FlexoDocElement<?, ?>) o).getFlexoDocument();
 								}
-								if (doc == ((FlexoDocElement) o).getFlexoDocument()) {
+								if (doc == ((FlexoDocElement<?, ?>) o).getFlexoDocument()) {
 									elements.add((FlexoDocElement<?, ?>) o);
 								}
 							}

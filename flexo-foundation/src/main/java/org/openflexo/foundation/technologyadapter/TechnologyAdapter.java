@@ -344,7 +344,7 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 	 * @param serializationArtefact
 	 * @return
 	 */
-	private <RF extends ITechnologySpecificFlexoResourceFactory<R, RD, TA>, R extends TechnologyAdapterResource<RD, TA>, RD extends ResourceData<RD> & TechnologyObject<TA>, TA extends TechnologyAdapter, I> R tryToLookupResource(
+	private static <RF extends ITechnologySpecificFlexoResourceFactory<R, RD, TA>, R extends TechnologyAdapterResource<RD, TA>, RD extends ResourceData<RD> & TechnologyObject<TA>, TA extends TechnologyAdapter, I> R tryToLookupResource(
 			RF resourceFactory, FlexoResourceCenter<I> resourceCenter, I serializationArtefact) {
 
 		try {

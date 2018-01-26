@@ -104,9 +104,11 @@ public class XMLUtils {
 	}
 
 	public static boolean saveXMLFile(org.jdom2.Document document, File aFile) {
-		try {
-			return saveXMLFile(document, new FileOutputStream(aFile));
+		try (FileOutputStream fos = new FileOutputStream(aFile)) {
+			return saveXMLFile(document, fos);
 		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		return false;
@@ -151,13 +153,17 @@ public class XMLUtils {
 
 	public static Document parseXMLFile(String xmlFilePath) throws Exception {
 		File f = new File(xmlFilePath);
-		FileInputStream fis = new FileInputStream(f);
-		return parseXML(fis);
+		try (FileInputStream fis = new FileInputStream(f)) {
+			Document result = parseXML(fis);
+			return result;
+		}
 	}
 
 	public static Document parseXMLFile(File f) throws Exception {
-		FileInputStream fis = new FileInputStream(f);
-		return parseXML(fis);
+		try (FileInputStream fis = new FileInputStream(f)) {
+			Document result = parseXML(fis);
+			return result;
+		}
 	}
 
 	/**
@@ -184,13 +190,13 @@ public class XMLUtils {
 	}
 
 	public static Element elementFromString(String s) throws Exception {
-		ByteArrayInputStream bis = new ByteArrayInputStream(s.getBytes());
-		InputStreamReader reader = new InputStreamReader(bis, Charset.forName("utf8"));
-		org.xml.sax.InputSource is = new org.xml.sax.InputSource(reader);
-		// org.xml.sax.InputSource is = new org.xml.sax.InputSource(bis);
-		Element e = parseXMLFile(is).getDocumentElement();
-		bis.close();
-		return e;
+		try (ByteArrayInputStream bis = new ByteArrayInputStream(s.getBytes());
+				InputStreamReader reader = new InputStreamReader(bis, Charset.forName("utf8"))) {
+			org.xml.sax.InputSource is = new org.xml.sax.InputSource(reader);
+			// org.xml.sax.InputSource is = new org.xml.sax.InputSource(bis);
+			Element e = parseXMLFile(is).getDocumentElement();
+			return e;
+		}
 	}
 
 	public static String replaceAllSpecialChar(String s) {
@@ -227,19 +233,18 @@ public class XMLUtils {
 	}
 
 	public static org.jdom2.Document readXMLFile(File f) throws JDOMException, IOException {
-		FileInputStream fio = new FileInputStream(f);
-		SAXBuilder parser = new SAXBuilder();
-		org.jdom2.Document reply = parser.build(fio);
-		return reply;
+		try (FileInputStream fio = new FileInputStream(f)) {
+			SAXBuilder parser = new SAXBuilder();
+			org.jdom2.Document reply = parser.build(fio);
+			return reply;
+		}
 	}
 
 	public static org.jdom2.Element getElement(org.jdom2.Parent parent, String name) {
 		Iterator<org.jdom2.Element> it = parent.getDescendants(new ElementFilter(name));
 		if (it.hasNext()) {
-			return (org.jdom2.Element) it.next();
+			return it.next();
 		}
-		else {
-			return null;
-		}
+		return null;
 	}
 }

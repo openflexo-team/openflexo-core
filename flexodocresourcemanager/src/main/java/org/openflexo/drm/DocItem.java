@@ -276,7 +276,7 @@ public class DocItem extends DRMObject {
 	public Vector<DocItem> getDerivedInheritanceChildItems() {
 		Vector<DocItem> returned = new Vector<>();
 		for (Enumeration<DocItem> en = getInheritanceChildItems().elements(); en.hasMoreElements();) {
-			DocItem next = (DocItem) en.nextElement();
+			DocItem next = en.nextElement();
 			if (!next.isPublished()) {
 				returned.addAll(next.getDerivedInheritanceChildItems());
 			}
@@ -535,7 +535,7 @@ public class DocItem extends DRMObject {
 
 	public boolean hasBeenApproved() {
 		for (Enumeration<DocItemAction> en = getActions().elements(); en.hasMoreElements();) {
-			DocItemAction next = (DocItemAction) en.nextElement();
+			DocItemAction next = en.nextElement();
 			if (next.isApproved()) {
 				return true;
 			}
@@ -546,7 +546,7 @@ public class DocItem extends DRMObject {
 	public DocItemAction getLastApprovedActionForLanguage(Language language) {
 		DocItemAction returned = null;
 		for (Enumeration<DocItemAction> en = getActions().elements(); en.hasMoreElements();) {
-			DocItemAction next = (DocItemAction) en.nextElement();
+			DocItemAction next = en.nextElement();
 			if (/*next.getVersion().getLanguage() == language &&*/next.isApproved()) {
 				returned = next;
 			}
@@ -557,7 +557,7 @@ public class DocItem extends DRMObject {
 	public DocItemAction getLastPendingActionForLanguage(Language language) {
 		DocItemAction returned = null;
 		for (Enumeration<DocItemAction> en = getActions().elements(); en.hasMoreElements();) {
-			DocItemAction next = (DocItemAction) en.nextElement();
+			DocItemAction next = en.nextElement();
 			if (/*next.getVersion().getLanguage() == language &&*/next.isPending()) {
 				returned = next;
 			}
@@ -568,7 +568,7 @@ public class DocItem extends DRMObject {
 	public DocItemAction getLastActionForLanguage(Language language) {
 		DocItemAction returned = null;
 		for (Enumeration<DocItemAction> en = getActions().elements(); en.hasMoreElements();) {
-			DocItemAction next = (DocItemAction) en.nextElement();
+			DocItemAction next = en.nextElement();
 			// if (next.getVersion().getLanguage() == language) {
 			returned = next;
 			// }
@@ -638,7 +638,7 @@ public class DocItem extends DRMObject {
 
 		@Override
 		public ValidationIssue<R, DocItem> applyValidation(final DocItem object) {
-			final DocItem item = (DocItem) object;
+			final DocItem item = object;
 			ProblemIssue<R, DocItem> issue = null;
 			if (item.getStatusForLanguage(_language) == NO_DOCUMENTED) {
 				issue = new ValidationError<>((R) this, object,

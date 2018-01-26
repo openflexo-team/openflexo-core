@@ -76,7 +76,7 @@ public class RefuseVersion extends FlexoAction<RefuseVersion, DocItem, DocItem> 
 
 		@Override
 		public boolean isEnabledForSelection(DocItem object, Vector<DocItem> globalSelection) {
-			return object instanceof DocItem && getPendingActions(object).size() > 0;
+			return object != null && getPendingActions(object).size() > 0;
 		}
 
 	};
@@ -128,7 +128,7 @@ public class RefuseVersion extends FlexoAction<RefuseVersion, DocItem, DocItem> 
 
 	public DocItem getDocItem() {
 		if (_docItem == null) {
-			if (getFocusedObject() != null && getFocusedObject() instanceof DocItem) {
+			if (getFocusedObject() != null) {
 				_docItem = getFocusedObject();
 			}
 		}

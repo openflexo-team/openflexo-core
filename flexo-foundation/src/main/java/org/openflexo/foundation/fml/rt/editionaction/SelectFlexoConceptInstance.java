@@ -476,7 +476,7 @@ public interface SelectFlexoConceptInstance<VMI extends VirtualModelInstance<VMI
 			return null;
 		}
 
-		private boolean expressionUsesSelectedBindingVariable(Expression exp) {
+		private static boolean expressionUsesSelectedBindingVariable(Expression exp) {
 			List<BindingVariable> allBVs = exp.getAllBindingVariables();
 			for (BindingVariable v : allBVs) {
 				if (v instanceof FetchRequestConditionSelectedBindingVariable) {
