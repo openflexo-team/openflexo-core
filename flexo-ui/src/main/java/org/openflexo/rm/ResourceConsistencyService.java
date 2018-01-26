@@ -215,9 +215,9 @@ public class ResourceConsistencyService extends FlexoServiceImpl {
 	private void informOfConflictedResourceSet(ConflictedResourceSet conflict) {
 		if (skip != 0) {
 			System.out.println("Conflict: " + informationMessageForConflictSet(conflict));
-			skip = FlexoController.selectOption(
+			/*skip = FlexoController.selectOption(
 					"<html> <h3> URI conflicts have been found:</h3></br>" + informationMessageForConflictSet(conflict) + "</html>",
-					options2, "OK");
+					options2, "OK");*/
 		}
 	}
 
