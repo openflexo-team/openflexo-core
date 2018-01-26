@@ -66,6 +66,7 @@ import org.openflexo.foundation.fml.FlexoBehaviourParametersValuesType;
 import org.openflexo.foundation.fml.FlexoBehaviourType;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
+import org.openflexo.foundation.fml.FlexoEnum;
 import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.TechnologySpecificType;
 import org.openflexo.foundation.fml.VirtualModel;
@@ -197,6 +198,10 @@ public class FMLBindingFactory extends JavaBindingFactory {
 			else if (pType instanceof FlexoConceptInstanceType) {
 				List<SimplePathElement> returned = new ArrayList<>();
 				FlexoConcept concept = ((FlexoConceptInstanceType) pType).getFlexoConcept();
+
+				if (concept instanceof FlexoEnum) {
+					returned.add(new EnumValuesPathElement(parent, (FlexoEnum) concept));
+				}
 
 				if (concept != null) {
 					for (FlexoProperty<?> pr : concept.getAccessibleProperties()) {
