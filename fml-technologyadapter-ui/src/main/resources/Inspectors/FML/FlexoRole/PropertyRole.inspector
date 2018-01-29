@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Panel className="org.openflexo.gina.FIBInspector" layout="border"
+<Panel className="org.openflexo.gina.utils.FIBInspector" layout="border"
 	titleFont="SansSerif,0,12" darkLevel="0"
 	dataClassName="org.openflexo.foundation.ontology.fml.PropertyRole"
 	controllerClassName="org.openflexo.fml.controller.FMLFIBInspectorController"

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Panel className="org.openflexo.gina.FIBInspector" layout="border" titleFont="SansSerif,0,12" darkLevel="0" dataClassName="org.openflexo.foundation.FlexoProject" controllerClassName="org.openflexo.inspector.FIBInspectorController" font="SansSerif,0,12" name="Inspector">
+<Panel className="org.openflexo.gina.utils.FIBInspector" layout="border" titleFont="SansSerif,0,12" darkLevel="0" dataClassName="org.openflexo.foundation.FlexoProject" controllerClassName="org.openflexo.inspector.FIBInspectorController" font="SansSerif,0,12" name="Inspector">
   <TabPanel name="Tab" constraints="border(location=center)">
     <Tab title="Basic" layout="twocols" titleFont="SansSerif,0,12" darkLevel="0" opaque="false" useScrollBar="true" horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED" verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED" name="BasicTab">
       <Label label="name" constraints="twocols(expandHorizontally=false;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=5;location=left)" name="ProjectNameLabel" localize="true" />
