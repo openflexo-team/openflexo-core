@@ -95,12 +95,12 @@ public class VirtualModelPasteHandler extends FlexoPasteHandler<VirtualModel> {
 
 			if (focusedObject instanceof VirtualModelResource) {
 				// In this case, FlexoConcept will be pasted as a FlexoConcept in a VirtualModel
-				return new DefaultPastingContext<VirtualModel>(((VirtualModelResource) focusedObject).getVirtualModel(), event);
+				return new DefaultPastingContext<>(((VirtualModelResource) focusedObject).getVirtualModel(), event);
 			}
 
 			if (focusedObject instanceof FlexoConceptObject) {
 				// In this case, FlexoConcept will be pasted as a FlexoConcept in a VirtualModel
-				return new DefaultPastingContext<VirtualModel>(((FlexoConceptObject) focusedObject).getOwningVirtualModel(), event);
+				return new DefaultPastingContext<>(((FlexoConceptObject) focusedObject).getOwningVirtualModel(), event);
 			}
 		}
 
@@ -267,7 +267,7 @@ public class VirtualModelPasteHandler extends FlexoPasteHandler<VirtualModel> {
 		// Nothing to do
 	}
 
-	private String translateName(FlexoConceptObject object) {
+	private static String translateName(FlexoConceptObject object) {
 		String oldName = object.getName();
 		if (StringUtils.isEmpty(oldName)) {
 			return null;

@@ -76,7 +76,6 @@ import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.model.exceptions.ModelDefinitionException;
-import org.openflexo.model.factory.AccessibleProxyObject;
 import org.openflexo.model.validation.ValidationIssue;
 import org.openflexo.model.validation.ValidationReport;
 import org.openflexo.rm.Resource;
@@ -85,8 +84,7 @@ import org.openflexo.toolbox.FileSystemMetaDataManager;
 import org.openflexo.toolbox.FileUtils;
 import org.openflexo.toolbox.IProgress;
 
-public abstract class VirtualModelResourceImpl extends PamelaResourceImpl<VirtualModel, FMLModelFactory>
-		implements VirtualModelResource, AccessibleProxyObject {
+public abstract class VirtualModelResourceImpl extends PamelaResourceImpl<VirtualModel, FMLModelFactory> implements VirtualModelResource {
 
 	static final Logger logger = Logger.getLogger(VirtualModelResourceImpl.class.getPackage().getName());
 

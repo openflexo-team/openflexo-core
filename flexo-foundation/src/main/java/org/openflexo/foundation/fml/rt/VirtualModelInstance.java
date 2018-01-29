@@ -74,7 +74,6 @@ import org.openflexo.foundation.fml.rt.rm.AbstractVirtualModelInstanceResource;
 import org.openflexo.foundation.fml.rt.rm.FMLRTVirtualModelInstanceResourceFactory;
 import org.openflexo.foundation.resource.CannotRenameException;
 import org.openflexo.foundation.resource.FlexoResource;
-import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.technologyadapter.FlexoModel;
 import org.openflexo.foundation.technologyadapter.ModelRepository;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
@@ -115,8 +114,8 @@ import org.openflexo.toolbox.StringUtils;
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(VirtualModelInstance.VirtualModelInstanceImpl.class)
-public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>, TA extends TechnologyAdapter> extends FlexoConceptInstance,
-		ResourceData<VMI>, FlexoModel<VMI, VirtualModel>, TechnologyObject<TA>, IndexableContainer<FlexoConceptInstance> {
+public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>, TA extends TechnologyAdapter>
+		extends FlexoConceptInstance, FlexoModel<VMI, VirtualModel>, TechnologyObject<TA>, IndexableContainer<FlexoConceptInstance> {
 
 	public static final String EVENT_FIRED = "EventFired";
 
@@ -411,7 +410,7 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 
 		private List<FlexoConceptInstance> rootFlexoConceptInstances = new ArrayList<>();
 
-		private Map<Type, Map<String, FlexoConceptInstanceIndex>> indexes = new WeakHashMap<>();
+		private Map<Type, Map<String, FlexoConceptInstanceIndex<?>>> indexes = new WeakHashMap<>();
 
 		/**
 		 * Default constructor with
@@ -598,9 +597,9 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 				@Override
 				public void run() {
 					if (!isDeleted()) {
-						getPropertyChangeSupport().firePropertyChange(
-								"allRootFlexoConceptInstances", (lastNotifiedRootFlexoConceptInstances != null
-										? new ArrayList<>(lastNotifiedRootFlexoConceptInstances) : null),
+						getPropertyChangeSupport().firePropertyChange("allRootFlexoConceptInstances",
+								(lastNotifiedRootFlexoConceptInstances != null ? new ArrayList<>(lastNotifiedRootFlexoConceptInstances)
+										: null),
 								new ArrayList<>(getAllRootFlexoConceptInstances()));
 						lastNotifiedRootFlexoConceptInstances = new ArrayList<>(getAllRootFlexoConceptInstances());
 						willNotifyAllRootFlexoConceptInstancesMayHaveChanged = false;
@@ -1084,7 +1083,7 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 			}
 
 			// When not found, delegate it to the container virtual model instance
-			if (returned == null && getContainerVirtualModelInstance() != null && getContainerVirtualModelInstance() != this) {
+			if (getContainerVirtualModelInstance() != null && getContainerVirtualModelInstance() != this) {
 				return getContainerVirtualModelInstance().getValue(variable);
 			}
 
@@ -1252,7 +1251,7 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 			}*/
 
 			if (type instanceof FlexoConceptInstanceType) {
-				Map<String, FlexoConceptInstanceIndex> mapForType = indexes.get(type);
+				Map<String, FlexoConceptInstanceIndex<?>> mapForType = indexes.get(type);
 				if (mapForType == null) {
 					mapForType = new WeakHashMap<>();
 					indexes.put(type, mapForType);
@@ -1289,9 +1288,9 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 		@Override
 		public void contentsAdded(FlexoConceptInstance objectBeeingAdded, FlexoConcept concept) {
 			FlexoConceptInstanceType type = concept.getInstanceType();
-			Map<String, FlexoConceptInstanceIndex> mapForType = indexes.get(type);
+			Map<String, FlexoConceptInstanceIndex<?>> mapForType = indexes.get(type);
 			if (mapForType != null) {
-				for (FlexoConceptInstanceIndex index : mapForType.values()) {
+				for (FlexoConceptInstanceIndex<?> index : mapForType.values()) {
 					index.contentsAdded(objectBeeingAdded);
 				}
 			}
@@ -1300,9 +1299,9 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 		@Override
 		public void contentsRemoved(FlexoConceptInstance objectBeeingRemoved, FlexoConcept concept) {
 			FlexoConceptInstanceType type = concept.getInstanceType();
-			Map<String, FlexoConceptInstanceIndex> mapForType = indexes.get(type);
+			Map<String, FlexoConceptInstanceIndex<?>> mapForType = indexes.get(type);
 			if (mapForType != null) {
-				for (FlexoConceptInstanceIndex index : mapForType.values()) {
+				for (FlexoConceptInstanceIndex<?> index : mapForType.values()) {
 					index.contentsRemoved(objectBeeingRemoved);
 				}
 			}

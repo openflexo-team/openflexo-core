@@ -167,7 +167,7 @@ public class VirtualModelInstancePasteHandler extends FlexoPasteHandler<VirtualM
 			Clipboard leaderClipboard = clipboard.getLeaderClipboard();
 
 			// First put all FCI in a list
-			List<FlexoConceptInstance> fciList = new ArrayList<FlexoConceptInstance>();
+			List<FlexoConceptInstance> fciList = new ArrayList<>();
 
 			if (leaderClipboard.isSingleObject()) {
 				if (leaderClipboard.getSingleContents() instanceof FlexoConceptInstance) {
@@ -186,7 +186,7 @@ public class VirtualModelInstancePasteHandler extends FlexoPasteHandler<VirtualM
 
 				for (ModelSlotInstance<?, ?> msi : getPastingPointHolder().getModelSlotInstances()) {
 					if (msi.getAccessedResourceData() != null && msi.getAccessedResourceData().getResource() instanceof PamelaResource) {
-						PamelaResource modelSlotInstanceResource = (PamelaResource) msi.getAccessedResourceData().getResource();
+						PamelaResource<?, ?> modelSlotInstanceResource = (PamelaResource<?, ?>) msi.getAccessedResourceData().getResource();
 						ModelFactory factory = modelSlotInstanceResource.getFactory();
 
 						Clipboard modelSlotInstanceClipboard = clipboard.getClipboard(modelSlotInstanceResource);
@@ -203,7 +203,7 @@ public class VirtualModelInstancePasteHandler extends FlexoPasteHandler<VirtualM
 
 								prepareModelSlotSpecificClipboard(modelSlotInstanceClipboard, msi, this);
 
-								Map<Object, Object> copiedObjects = new HashMap<Object, Object>();
+								Map<Object, Object> copiedObjects = new HashMap<>();
 
 								// We retain the references for copied objects in this model slot, BEFORE the paste
 								Object[] lastReferenceContents = modelSlotInstanceClipboard.getLastReferenceContents();
