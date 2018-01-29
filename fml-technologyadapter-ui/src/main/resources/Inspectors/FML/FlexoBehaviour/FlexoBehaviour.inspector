@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Inspector xmlns:p="http://www.openflexo.org/pamela/" id="0"
-	p:modelEntity="org.openflexo.gina.utils.FIBInspector" borderLeft="0"
+	p:modelEntity="org.openflexo.gina.FIBInspector" borderLeft="0"
 	sizeAdjustment="OriginalSize" controllerClassName="org.openflexo.fml.controller.FMLFIBInspectorController"
 	border="empty" borderRight="0" trackViewPortWidth="true" font="SansSerif,0,12"
 	align="left" borderBottom="0" titleFont="SansSerif,0,12" borderTop="0"
