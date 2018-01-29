@@ -10,3 +10,6 @@ dependencies {
   testCompile project(':flexo-ui-test')
   testCompile ginaTest()
 }
+tasks.withType(Test) {
+	jvmArgs += ["-Djava.awt.headless=true"]
+}
