@@ -61,7 +61,7 @@ public class InvalidModelDefinitionException extends FlexoException {
 	}
 
 	@Override
-	public ModelDefinitionException getCause() {
+	public synchronized ModelDefinitionException getCause() {
 		return getTargetException();
 	}
 

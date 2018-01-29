@@ -353,7 +353,7 @@ public class FMLRTVirtualModelInstanceResourceFactory extends
 		public String modelVersion;
 	}
 
-	private <I> VirtualModelInstanceInfo findVirtualModelInstanceInfo(FMLRTVirtualModelInstanceResource resource,
+	private static <I> VirtualModelInstanceInfo findVirtualModelInstanceInfo(FMLRTVirtualModelInstanceResource resource,
 			FlexoResourceCenter<I> resourceCenter) {
 
 		VirtualModelInstanceInfo returned = new VirtualModelInstanceInfo();

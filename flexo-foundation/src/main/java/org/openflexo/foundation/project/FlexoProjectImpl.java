@@ -309,7 +309,7 @@ public abstract class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoRe
 	 * Overrides setChanged
 	 */
 	@Override
-	public void setChanged() {
+	public synchronized void setChanged() {
 		super.setChanged();
 	}
 

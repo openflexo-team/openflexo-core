@@ -139,7 +139,7 @@ public class JHIndexer {
 	/**
 	 * create a list of options for the Indexer call
 	 */
-	private String[] getIndexerArguments(File dbDir, File cFile) {
+	private static String[] getIndexerArguments(File dbDir, File cFile) {
 		Vector<String> list = new Vector<>(0);
 		String arg = null;
 		list.addElement("-c");

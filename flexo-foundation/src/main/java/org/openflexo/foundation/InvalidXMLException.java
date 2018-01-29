@@ -60,7 +60,7 @@ public class InvalidXMLException extends FlexoException {
 	}
 
 	@Override
-	public JDOMException getCause() {
+	public synchronized JDOMException getCause() {
 		return getTargetException();
 	}
 

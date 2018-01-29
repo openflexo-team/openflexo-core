@@ -53,11 +53,11 @@ import org.openflexo.foundation.action.copypaste.PastingContext;
 import org.openflexo.foundation.fml.FlexoRole.RoleCloningStrategy;
 import org.openflexo.foundation.fml.PrimitiveRole;
 import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.ActorReference;
+import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.ModelSlotInstance;
-import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.resource.PamelaResource;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.model.exceptions.ModelExecutionException;
@@ -84,8 +84,8 @@ public class VirtualModelInstancePasteHandler extends FlexoPasteHandler<VirtualM
 	}
 
 	@Override
-	public PastingContext<VirtualModelInstance<?, ?>> retrievePastingContext(FlexoObject focusedObject,
-			List<FlexoObject> globalSelection, FlexoClipboard clipboard, Event event) {
+	public PastingContext<VirtualModelInstance<?, ?>> retrievePastingContext(FlexoObject focusedObject, List<FlexoObject> globalSelection,
+			FlexoClipboard clipboard, Event event) {
 
 		if (focusedObject instanceof FMLRTVirtualModelInstance) {
 			return new HeterogeneousPastingContext((VirtualModelInstance<?, ?>) focusedObject, event);
@@ -217,7 +217,7 @@ public class VirtualModelInstancePasteHandler extends FlexoPasteHandler<VirtualM
 									copiedObjects.put(lastReferenceContents[0], copy);
 								}
 								else {
-									List copyList = (List) copy;
+									List<?> copyList = (List<?>) copy;
 									for (int i = 0; i < lastReferenceContents.length; i++) {
 										copiedObjects.put(lastReferenceContents[i], copyList.get(i));
 									}

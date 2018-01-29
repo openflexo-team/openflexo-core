@@ -69,7 +69,7 @@ public class DeleteVirtualModel extends FlexoAction<DeleteVirtualModel, VirtualM
 
 		@Override
 		public boolean isVisibleForSelection(VirtualModel object, Vector<FMLObject> globalSelection) {
-			return object != null && object instanceof VirtualModel;
+			return object != null;
 		}
 
 		@Override

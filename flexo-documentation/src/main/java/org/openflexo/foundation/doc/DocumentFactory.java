@@ -414,12 +414,11 @@ public abstract class DocumentFactory<D extends FlexoDocument<D, TA>, TA extends
 	 * @throws IOException
 	 */
 	protected static byte[] convertImageToByteArray(BufferedImage image) throws IOException {
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		ImageIO.write(image, "jpg", baos);
-		baos.flush();
-		byte[] imageInByte = baos.toByteArray();
-		baos.close();
-		return imageInByte;
+		try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+			ImageIO.write(image, "jpg", baos);
+			baos.flush();
+			byte[] imageInByte = baos.toByteArray();
+			return imageInByte;
+		}
 	}
-
 }

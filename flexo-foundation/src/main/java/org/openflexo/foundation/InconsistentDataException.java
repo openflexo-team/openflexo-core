@@ -60,7 +60,7 @@ public class InconsistentDataException extends FlexoException {
 	}
 
 	@Override
-	public InvalidDataException getCause() {
+	public synchronized InvalidDataException getCause() {
 		return getTargetException();
 	}
 

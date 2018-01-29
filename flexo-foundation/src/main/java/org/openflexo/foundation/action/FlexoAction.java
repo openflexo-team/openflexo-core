@@ -411,7 +411,7 @@ public abstract class FlexoAction<A extends FlexoAction<A, T1, T2>, T1 extends F
 		if (getEditor() != null) {
 			return getEditor().getServiceManager();
 		}
-		else if (getFocusedObject() instanceof FlexoObject) {
+		else if (getFocusedObject() != null) {
 			return ((FlexoObject) getFocusedObject()).getServiceManager();
 		}
 		return null;

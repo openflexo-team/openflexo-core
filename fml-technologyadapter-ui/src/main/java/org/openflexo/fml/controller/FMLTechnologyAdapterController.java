@@ -210,6 +210,7 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 
 	}
 
+	@Override
 	public void initializeAdvancedActions(ControllerActionInitializer actionInitializer) {
 
 		new ValidateActionizer(this, actionInitializer);
@@ -482,12 +483,16 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 				&& ((FlexoBehaviourParameter) object).getFlexoBehaviour() instanceof CreationScheme;
 	}*/
 
-	private String getContainerBinding(WidgetContext widgetContext, String variableName) {
-		return variableName + "." + (StringUtils.isNotEmpty(widgetContext.getFlexoConceptInstanceAccess())
-				? widgetContext.getFlexoConceptInstanceAccess() + "." : "") + widgetContext.getContainer().toString();
+	private static String getContainerBinding(WidgetContext widgetContext, String variableName) {
+		return variableName + "."
+				+ (StringUtils.isNotEmpty(widgetContext.getFlexoConceptInstanceAccess())
+						? widgetContext.getFlexoConceptInstanceAccess() + "."
+						: "")
+				+ widgetContext.getContainer().toString();
 	}
 
-	private FIBWidget makeFlexoResourceSelector(final WidgetContext widgetContext, FIBModelFactory fibModelFactory, String variableName) {
+	private static FIBWidget makeFlexoResourceSelector(final WidgetContext widgetContext, FIBModelFactory fibModelFactory,
+			String variableName) {
 		FIBCustom resourceSelector = fibModelFactory.newFIBCustom();
 		resourceSelector.setBindingFactory(widgetContext.getBindingFactory());
 		Class resourceSelectorClass;
