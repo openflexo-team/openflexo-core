@@ -43,8 +43,7 @@ public interface GitIODelegate extends FileIODelegate {
 		private Repository repository;
 		// private Git git;
 
-		public static GitIODelegate makeFlexoIOGitDelegate(File file, ModelFactory factory, /*File workTree, */ Repository repository)
-				throws IOException {
+		public static GitIODelegate makeFlexoIOGitDelegate(File file, ModelFactory factory, /*File workTree, */ Repository repository) {
 			GitIODelegate fileIODelegate = factory.newInstance(GitIODelegate.class);
 			// Set the gitRepository linked to this file
 			fileIODelegate.setRepository(repository);
@@ -55,39 +54,37 @@ public interface GitIODelegate extends FileIODelegate {
 
 		@Override
 		public void save(FlexoResource<?> resource) {
-
 			System.out.println("******* GIT: Saving resource " + resource);
 
 			GitResourceCenter resourceCenter = (GitResourceCenter) resource.getResourceCenter();
-			Repository repository = resourceCenter.getGitRepository();
-			// Create the file on the disk in the workTree of the Git Repository
-			// setFile(new File(repository.getWorkTree(), resource.getName()));
+			try (Repository repository = resourceCenter.getGitRepository()) {
+				// Create the file on the disk in the workTree of the Git Repository
+				// setFile(new File(repository.getWorkTree(), resource.getName()));
 
-			/*try {
-				getFile().createNewFile();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}*/
-			// Commit the ressource in the repo
-			Git git = new Git(repository);
-			try {
-				System.out.println("Add ressource : " + resource.getName() + " to Git Index of Repository : " + repository.getBranch());
-				DirCache inIndex = git.add().addFilepattern(resource.getName()).call();
-				System.out.println("inIndex=" + inIndex);
-				DirCacheEntry entry = inIndex.getEntry(resource.getName());
-				System.out.println("entry=" + entry);
-				if (entry != null) {
-					setGitObjectId(inIndex.getEntry(resource.getName()).getObjectId());
+				/*try {
+					getFile().createNewFile();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}*/
+				// Commit the ressource in the repo
+				try (Git git = new Git(repository)) {
+					System.out.println("Add ressource : " + resource.getName() + " to Git Index of Repository : " + repository.getBranch());
+					DirCache inIndex = git.add().addFilepattern(resource.getName()).call();
+					System.out.println("inIndex=" + inIndex);
+					DirCacheEntry entry = inIndex.getEntry(resource.getName());
+					System.out.println("entry=" + entry);
+					if (entry != null) {
+						setGitObjectId(inIndex.getEntry(resource.getName()).getObjectId());
+					}
+
+					System.out.println("Commit ressource : " + resource.getName() + " in Repository : " + repository.getBranch());
+					// Unused RevCommit commit =
+					git.commit().setMessage("Ressource ViewPoint committed").call();
+
+				} catch (GitAPIException | IOException e) {
+					e.printStackTrace();
 				}
-
-				System.out.println("Commit ressource : " + resource.getName() + " in Repository : " + repository.getBranch());
-				// Unused RevCommit commit =
-				git.commit().setMessage("Ressource ViewPoint committed").call();
-
-			} catch (GitAPIException | IOException e) {
-				e.printStackTrace();
 			}
-			git.close();
 		}
 
 		@Override
