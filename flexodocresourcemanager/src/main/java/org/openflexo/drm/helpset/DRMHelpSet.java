@@ -65,8 +65,8 @@ public class DRMHelpSet extends KVCFlexoObject {
 	public String version = "1.0";
 	public String title;
 	public Maps maps;
-	public Vector views;
-	public Vector presentations;
+	public Vector<View> views;
+	public Vector<Presentation> presentations;
 
 	public View toc;
 	public View index;
@@ -79,7 +79,7 @@ public class DRMHelpSet extends KVCFlexoObject {
 	private final HSMap _hsMap;
 	private final HSToc _hsToc;
 
-	private final String baseName;
+	// Unused private final String baseName;
 	private final HelpSetConfiguration configuration;
 
 	public DRMHelpSet(DocResourceCenter drc, File directory, String baseName, HelpSetConfiguration config) {
@@ -89,7 +89,7 @@ public class DRMHelpSet extends KVCFlexoObject {
 		Language language = config.getLanguage();
 		org.openflexo.localization.Language lang = org.openflexo.localization.Language.get(language.getIdentifier());
 
-		this.baseName = baseName;
+		// Unused this.baseName = baseName;
 		String helpSetDirectoryName = baseName + "_" + config.getDistributionName() + "_" + language.getIdentifier() + ".helpset";
 		helpSetDirectory = new File(directory, helpSetDirectoryName);
 		try {
@@ -105,8 +105,8 @@ public class DRMHelpSet extends KVCFlexoObject {
 		_hsToc = new HSToc(_drc, language, getTocFile(), configuration);
 
 		maps = new Maps();
-		views = new Vector();
-		presentations = new Vector();
+		views = new Vector<>();
+		presentations = new Vector<>();
 		toc = new View("TOC", FlexoLocalization.getMainLocalizer().localizedForKeyAndLanguage("table_of_content", lang),
 				"javax.help.TOCView", new View.ViewData(getTocFile().getName(), null));
 		index = new View("Index", FlexoLocalization.getMainLocalizer().localizedForKeyAndLanguage("index", lang), "javax.help.IndexView",
@@ -216,10 +216,10 @@ public class DRMHelpSet extends KVCFlexoObject {
 		}
 
 		public static class Toolbar extends KVCFlexoObject {
-			public Vector helpActions;
+			public Vector<HelpAction> helpActions;
 
 			public Toolbar() {
-				helpActions = new Vector();
+				helpActions = new Vector<>();
 			}
 
 			public void add(String helpAction) {

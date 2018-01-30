@@ -443,7 +443,7 @@ public class FlexoDocumentEditor<D extends FlexoDocument<D, TA>, TA extends Tech
 
 		AttributeSet as = getStyledDocument().getCharacterElement(start).getAttributes();
 		System.out.println("Les attributs: " + as);
-		Enumeration en = as.getAttributeNames();
+		Enumeration<?> en = as.getAttributeNames();
 		while (en.hasMoreElements()) {
 			Object attribute = en.nextElement();
 			System.out.println(" > " + attribute + "=" + as.getAttribute(attribute));

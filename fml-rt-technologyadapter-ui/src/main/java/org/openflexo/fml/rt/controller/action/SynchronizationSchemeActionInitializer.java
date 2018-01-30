@@ -74,7 +74,7 @@ public class SynchronizationSchemeActionInitializer
 			@Override
 			public boolean run(EventObject e, SynchronizationSchemeAction action) {
 				getController().willExecute(action);
-				ParametersRetriever<SynchronizationScheme> parameterRetriever = new ParametersRetriever<SynchronizationScheme>(action,
+				ParametersRetriever<SynchronizationScheme> parameterRetriever = new ParametersRetriever<>(action,
 						getController() != null ? getController().getApplicationContext() : null);
 				if (action.escapeParameterRetrievingWhenValid && parameterRetriever.isSkipable()) {
 					return true;

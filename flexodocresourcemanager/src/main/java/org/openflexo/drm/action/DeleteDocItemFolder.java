@@ -81,7 +81,7 @@ public class DeleteDocItemFolder extends FlexoAction {
 
 	};
 
-	DeleteDocItemFolder(FlexoObject focusedObject, Vector globalSelection, FlexoEditor editor) {
+	DeleteDocItemFolder(FlexoObject focusedObject, Vector<?> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 	}
 

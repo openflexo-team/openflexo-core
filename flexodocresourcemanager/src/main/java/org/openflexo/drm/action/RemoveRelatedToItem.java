@@ -75,7 +75,7 @@ public class RemoveRelatedToItem extends FlexoAction {
 
 	private DocItem _docItemToRemove;
 
-	RemoveRelatedToItem(FlexoObject focusedObject, Vector globalSelection, FlexoEditor editor) {
+	RemoveRelatedToItem(FlexoObject focusedObject, Vector<?> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 	}
 

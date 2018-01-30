@@ -59,7 +59,7 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
  */
 @SuppressWarnings("serial")
 public class DocumentElement<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
-		extends FlexoStyledDocument<D, TA>.DocumentRootElement<D> implements AbstractDocumentElement<D, D, TA> {
+		extends FlexoStyledDocument<D, TA>.DocumentRootElement<D> {
 
 	private final FlexoStyledDocument<D, TA> flexoStyledDocument;
 

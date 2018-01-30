@@ -44,9 +44,6 @@ import java.awt.HeadlessException;
 import java.awt.Toolkit;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -260,6 +257,7 @@ public class FlexoApplication {
 		 * ComponentEvent.COMPONENT_SHOWN)) { logger.info("postEvent: "+e); } }
 		 */
 
+		/*
 		private static void printFocusedComponent() {
 			try {
 				Class<?> c = Class.forName("org.openflexo.wkf.view.WKFFrame");
@@ -284,6 +282,7 @@ public class FlexoApplication {
 				e.printStackTrace();
 			}
 		}
+		*/
 
 		/**
 		 * Determines if exception can be ignored.

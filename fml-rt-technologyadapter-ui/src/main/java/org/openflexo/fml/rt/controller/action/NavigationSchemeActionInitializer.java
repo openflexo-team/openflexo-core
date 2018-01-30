@@ -82,7 +82,7 @@ public class NavigationSchemeActionInitializer
 
 				// First retrieve parameters
 
-				ParametersRetriever<NavigationScheme> parameterRetriever = new ParametersRetriever<NavigationScheme>(action,
+				ParametersRetriever<NavigationScheme> parameterRetriever = new ParametersRetriever<>(action,
 						getController() != null ? getController().getApplicationContext() : null);
 				if (action.escapeParameterRetrievingWhenValid && parameterRetriever.isSkipable()) {
 					return true;

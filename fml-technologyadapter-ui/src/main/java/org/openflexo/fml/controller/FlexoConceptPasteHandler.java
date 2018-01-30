@@ -75,7 +75,7 @@ public class FlexoConceptPasteHandler extends FlexoPasteHandler<FlexoConcept> {
 
 		if (focusedObject instanceof FlexoConceptObject) {
 			// In this case, FlexoConcept will be contained in another FlexoConcept
-			return new DefaultPastingContext<FlexoConcept>(((FlexoConceptObject) focusedObject).getFlexoConcept(), event);
+			return new DefaultPastingContext<>(((FlexoConceptObject) focusedObject).getFlexoConcept(), event);
 		}
 
 		return null;
@@ -144,7 +144,7 @@ public class FlexoConceptPasteHandler extends FlexoPasteHandler<FlexoConcept> {
 		// Nothing to do
 	}
 
-	private String translateName(FlexoConceptObject object) {
+	private static String translateName(FlexoConceptObject object) {
 		String oldName = object.getName();
 		if (StringUtils.isEmpty(oldName)) {
 			return null;

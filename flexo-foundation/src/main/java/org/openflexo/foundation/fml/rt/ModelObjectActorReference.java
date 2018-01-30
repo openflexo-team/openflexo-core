@@ -94,7 +94,7 @@ public interface ModelObjectActorReference<T extends FlexoObject> extends ActorR
 		@Override
 		public synchronized T getModellingElement(boolean forceLoading) {
 			if (getResourceData() != null && getResourceData().getResource() instanceof PamelaResource
-					&& ((PamelaResource) getResourceData().getResource()).isIndexing()) {
+					&& ((PamelaResource<?, ?>) getResourceData().getResource()).isIndexing()) {
 				return null;
 			}
 			if (isLoading) {

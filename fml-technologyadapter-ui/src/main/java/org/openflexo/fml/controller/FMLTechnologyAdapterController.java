@@ -446,13 +446,10 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 			if (ep instanceof VirtualModel) {
 				return new VirtualModelView((VirtualModel) ep, controller, perspective);
 			}
-			else {
-				return new StandardFlexoConceptView(ep, controller, perspective);
-			}
-
+			return new StandardFlexoConceptView(ep, controller, perspective);
 		}
 
-		return new EmptyPanel<TechnologyObject<FMLTechnologyAdapter>>(controller, perspective, object);
+		return new EmptyPanel<>(controller, perspective, object);
 	}
 
 	@Override
@@ -495,7 +492,7 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 			String variableName) {
 		FIBCustom resourceSelector = fibModelFactory.newFIBCustom();
 		resourceSelector.setBindingFactory(widgetContext.getBindingFactory());
-		Class resourceSelectorClass;
+		Class<?> resourceSelectorClass;
 		try {
 			resourceSelectorClass = Class.forName("org.openflexo.components.widget.FIBResourceSelector");
 			resourceSelector.setComponentClass(resourceSelectorClass);
@@ -514,12 +511,12 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 
 	}
 
-	private FIBWidget makeFlexoConceptInstanceSelector(final WidgetContext widgetContext, FIBModelFactory fibModelFactory,
+	private static FIBWidget makeFlexoConceptInstanceSelector(final WidgetContext widgetContext, FIBModelFactory fibModelFactory,
 			String variableName) {
 
 		FIBCustom fciSelector = fibModelFactory.newFIBCustom();
 		fciSelector.setBindingFactory(widgetContext.getBindingFactory());
-		Class fciSelectorClass;
+		Class<?> fciSelectorClass;
 		try {
 			fciSelectorClass = Class.forName("org.openflexo.fml.rt.controller.widget.FIBFlexoConceptInstanceSelector");
 			fciSelector.setComponentClass(fciSelectorClass);
@@ -557,11 +554,11 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 
 	}
 
-	private FIBWidget makeVirtualModelInstanceSelector(final WidgetContext widgetContext, FIBModelFactory fibModelFactory,
+	private static FIBWidget makeVirtualModelInstanceSelector(final WidgetContext widgetContext, FIBModelFactory fibModelFactory,
 			String variableName) {
 		FIBCustom vmiSelector = fibModelFactory.newFIBCustom();
 		vmiSelector.setBindingFactory(widgetContext.getBindingFactory());
-		Class fciSelectorClass;
+		Class<?> fciSelectorClass;
 		try {
 			fciSelectorClass = Class.forName("org.openflexo.fml.rt.controller.widget.FIBVirtualModelInstanceSelector");
 			vmiSelector.setComponentClass(fciSelectorClass);
@@ -601,10 +598,10 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 		return vmiSelector;
 	}
 
-	private FIBWidget makeViewSelector(final WidgetContext widgetContext, FIBModelFactory fibModelFactory, String variableName) {
+	private static FIBWidget makeViewSelector(final WidgetContext widgetContext, FIBModelFactory fibModelFactory, String variableName) {
 		FIBCustom viewSelector = fibModelFactory.newFIBCustom();
 		viewSelector.setBindingFactory(widgetContext.getBindingFactory());
-		Class fciSelectorClass;
+		Class<?> fciSelectorClass;
 		try {
 			fciSelectorClass = Class.forName("org.openflexo.fml.rt.controller.widget.FIBViewSelector");
 			viewSelector.setComponentClass(fciSelectorClass);

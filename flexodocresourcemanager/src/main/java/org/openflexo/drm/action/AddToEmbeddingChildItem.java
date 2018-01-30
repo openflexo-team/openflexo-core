@@ -80,7 +80,7 @@ public class AddToEmbeddingChildItem extends FlexoAction {
 	private DocItem _parentDocItem;
 	private DocItem _childDocItem;
 
-	AddToEmbeddingChildItem(FlexoObject focusedObject, Vector globalSelection, FlexoEditor editor) {
+	AddToEmbeddingChildItem(FlexoObject focusedObject, Vector<?> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 	}
 

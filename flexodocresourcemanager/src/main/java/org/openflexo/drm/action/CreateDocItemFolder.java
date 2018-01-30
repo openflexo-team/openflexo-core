@@ -85,7 +85,7 @@ public class CreateDocItemFolder extends FlexoAction {
 	private String _newItemFolderDescription;
 	private DocItemFolder _newDocItemFolder;
 
-	CreateDocItemFolder(FlexoObject focusedObject, Vector globalSelection, FlexoEditor editor) {
+	CreateDocItemFolder(FlexoObject focusedObject, Vector<?> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 	}
 

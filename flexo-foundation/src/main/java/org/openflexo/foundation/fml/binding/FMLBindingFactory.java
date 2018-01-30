@@ -146,7 +146,7 @@ public class FMLBindingFactory extends JavaBindingFactory {
 		if (parent != null) {
 
 			if (parent instanceof FlexoBehaviourParameterValuePathElement) {
-				List<SimplePathElement> returned = new ArrayList<SimplePathElement>(_getAccessibleSimplePathElements(parent));
+				List<SimplePathElement> returned = new ArrayList<>(_getAccessibleSimplePathElements(parent));
 				FlexoBehaviourParameter p = ((FlexoBehaviourParameterValuePathElement) parent).getParameter();
 				returned.add(0, new FlexoBehaviourParameterDefinitionPathElement(parent, p));
 				return returned;

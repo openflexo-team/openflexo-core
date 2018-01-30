@@ -418,7 +418,7 @@ public interface SelectFlexoConceptInstance<VMI extends VirtualModelInstance<VMI
 			return getIndexableTerm(condition) != null;
 		}
 
-		private Expression getIndexableTerm(FetchRequestCondition condition) {
+		private static Expression getIndexableTerm(FetchRequestCondition condition) {
 			if (condition.getCondition() != null && condition.getCondition().getExpression() instanceof BinaryOperatorExpression) {
 				BinaryOperatorExpression binaryExpression = (BinaryOperatorExpression) condition.getCondition().getExpression();
 				Expression leftTerm = binaryExpression.getLeftArgument();
@@ -430,24 +430,18 @@ public interface SelectFlexoConceptInstance<VMI extends VirtualModelInstance<VMI
 						if (rightTermUsesSelectedBindingVariable) {
 							return null;
 						}
-						else {
-							return leftTerm;
-						}
+						return leftTerm;
 					}
-					else {
-						if (rightTermUsesSelectedBindingVariable) {
-							return rightTerm;
-						}
-						else {
-							return null;
-						}
+					if (rightTermUsesSelectedBindingVariable) {
+						return rightTerm;
 					}
+					return null;
 				}
 			}
 			return null;
 		}
 
-		private Expression getOppositeTerm(FetchRequestCondition condition) {
+		private static Expression getOppositeTerm(FetchRequestCondition condition) {
 			if (condition.getCondition() != null && condition.getCondition().getExpression() instanceof BinaryOperatorExpression) {
 				BinaryOperatorExpression binaryExpression = (BinaryOperatorExpression) condition.getCondition().getExpression();
 				Expression leftTerm = binaryExpression.getLeftArgument();

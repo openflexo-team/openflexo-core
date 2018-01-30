@@ -69,7 +69,6 @@ import org.openflexo.model.factory.AccessibleProxyObject;
 import org.openflexo.model.factory.CloneableProxyObject;
 import org.openflexo.model.factory.DeletableProxyObject;
 import org.openflexo.model.factory.EmbeddingType;
-import org.openflexo.model.factory.KeyValueCoding;
 import org.openflexo.model.factory.ModelFactory;
 import org.openflexo.model.validation.Validable;
 
@@ -85,7 +84,7 @@ import org.openflexo.model.validation.Validable;
 @ModelEntity(isAbstract = true)
 @ImplementationClass(FlexoObject.FlexoObjectImpl.class)
 // TODO: remove ReferenceOwner declaration and create a new class
-public interface FlexoObject extends AccessibleProxyObject, DeletableProxyObject, CloneableProxyObject, KeyValueCoding, Validable {
+public interface FlexoObject extends AccessibleProxyObject, DeletableProxyObject, CloneableProxyObject, Validable {
 
 	@PropertyIdentifier(type = String.class)
 	String USER_IDENTIFIER_KEY = "userIdentifier";

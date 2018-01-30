@@ -39,7 +39,6 @@
 package org.openflexo.foundation.fml.binding;
 
 import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 
 import org.openflexo.connie.BindingModel;
 import org.openflexo.foundation.fml.editionaction.FetchRequestCondition;
@@ -50,7 +49,7 @@ import org.openflexo.foundation.fml.editionaction.FetchRequestCondition;
  * @author sylvain
  * 
  */
-public class FetchRequestConditionBindingModel extends BindingModel implements PropertyChangeListener {
+public class FetchRequestConditionBindingModel extends BindingModel {
 
 	private final FetchRequestConditionSelectedBindingVariable selectedBindingVariable;
 

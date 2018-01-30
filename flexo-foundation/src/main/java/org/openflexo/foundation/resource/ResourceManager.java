@@ -97,7 +97,7 @@ import org.openflexo.toolbox.FlexoVersion;
  * @author sylvain
  * 
  */
-public class ResourceManager extends FlexoServiceImpl implements FlexoService, ReferenceOwner {
+public class ResourceManager extends FlexoServiceImpl implements ReferenceOwner {
 
 	protected static final Logger logger = Logger.getLogger(ResourceManager.class.getPackage().getName());
 

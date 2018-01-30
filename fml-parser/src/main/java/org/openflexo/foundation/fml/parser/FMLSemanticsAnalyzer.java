@@ -75,7 +75,7 @@ class FMLSemanticsAnalyzer extends DepthFirstAdapter {
 	public FMLSemanticsAnalyzer(VirtualModel viewPoint, FlexoServiceManager serviceManager) {
 		this.virtualModel = viewPoint;
 		this.serviceManager = serviceManager;
-		parsedFMLObjects = new HashMap<Node, FMLObject>();
+		parsedFMLObjects = new HashMap<>();
 	}
 
 	public VirtualModel getVirtualModel() {

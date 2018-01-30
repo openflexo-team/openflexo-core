@@ -42,7 +42,6 @@ import java.security.InvalidParameterException;
 import java.util.Vector;
 import java.util.logging.Logger;
 
-import org.openflexo.connie.Bindable;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
@@ -66,7 +65,7 @@ import org.openflexo.foundation.fml.FlexoConceptStructuralFacet;
  * <li>may declare a valid description</li>
  * </ul>
  */
-public class CreateExpressionProperty extends AbstractCreateFlexoProperty<CreateExpressionProperty> implements Bindable {
+public class CreateExpressionProperty extends AbstractCreateFlexoProperty<CreateExpressionProperty> {
 
 	private static final Logger logger = Logger.getLogger(CreateExpressionProperty.class.getPackage().getName());
 

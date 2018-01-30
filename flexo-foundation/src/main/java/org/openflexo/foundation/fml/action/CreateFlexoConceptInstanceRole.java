@@ -44,7 +44,6 @@ import java.util.List;
 import java.util.Vector;
 import java.util.logging.Logger;
 
-import org.openflexo.connie.Bindable;
 import org.openflexo.connie.BindingFactory;
 import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.DataBinding;
@@ -79,8 +78,7 @@ import org.openflexo.foundation.technologyadapter.ModelSlot;
  * <li>may declare a valid description</li>
  * </ul>
  */
-public class CreateFlexoConceptInstanceRole extends AbstractCreateFlexoRole<CreateFlexoConceptInstanceRole, FMLRTModelSlot>
-		implements Bindable {
+public class CreateFlexoConceptInstanceRole extends AbstractCreateFlexoRole<CreateFlexoConceptInstanceRole, FMLRTModelSlot> {
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CreateFlexoConceptInstanceRole.class.getPackage().getName());

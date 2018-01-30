@@ -78,7 +78,7 @@ public class FlexoDocFragmentEditorWidget<D extends FlexoDocument<D, TA>, TA ext
 	protected FIBController controller;
 	private FlexoDocFragment<D, TA> fragment;
 
-	private final List<ApplyCancelListener> applyCancelListener = new ArrayList<ApplyCancelListener>();
+	private final List<ApplyCancelListener> applyCancelListener = new ArrayList<>();
 
 	private PropertyChangeSupport pcSupport;
 

@@ -60,7 +60,6 @@ import org.openflexo.foundation.doc.FlexoTextRun;
 import org.openflexo.foundation.doc.TextSelection;
 import org.openflexo.foundation.doc.fml.FragmentActorReference.ElementReference;
 import org.openflexo.foundation.fml.FlexoConcept;
-import org.openflexo.foundation.fml.FlexoConceptObject;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
@@ -89,7 +88,7 @@ import org.openflexo.toolbox.StringUtils;
 @ModelEntity
 @ImplementationClass(TextBinding.TextBindingImpl.class)
 @XMLElement
-public interface TextBinding<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends ModelSlotObject<D>, FlexoConceptObject {
+public interface TextBinding<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends ModelSlotObject<D> {
 
 	@PropertyIdentifier(type = TextSelection.class)
 	public static final String TEXT_SELECTION_KEY = "textSelection";

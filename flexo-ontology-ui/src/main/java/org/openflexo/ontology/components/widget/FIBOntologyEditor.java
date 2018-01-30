@@ -119,14 +119,12 @@ public abstract class FIBOntologyEditor<TA extends TechnologyAdapter> extends Se
 	public void setOntology(IFlexoOntology<TA> context) {
 		IFlexoOntology<TA> oldValue = getOntology();
 		if (oldValue != context) {
-			if (getOntology() instanceof HasPropertyChangeSupport
-					&& ((HasPropertyChangeSupport) getOntology()).getDeletedProperty() != null) {
+			if (getOntology() != null && getOntology().getDeletedProperty() != null) {
 				manager.removeListener(((HasPropertyChangeSupport) getOntology()).getDeletedProperty(), this, getOntology());
 			}
 			getModel().setContext(context);
 			// this.ontology = context;
-			if ((getOntology() instanceof HasPropertyChangeSupport)
-					&& ((HasPropertyChangeSupport) getOntology()).getDeletedProperty() != null) {
+			if ((getOntology() != null) && getOntology().getDeletedProperty() != null) {
 				manager.addListener(((HasPropertyChangeSupport) getOntology()).getDeletedProperty(), this, getOntology());
 			}
 			update();
@@ -394,9 +392,7 @@ public abstract class FIBOntologyEditor<TA extends TechnologyAdapter> extends Se
 		if (isSearching()) {
 			return "done";
 		}
-		else {
-			return "search";
-		}
+		return "search";
 	}
 
 	/**

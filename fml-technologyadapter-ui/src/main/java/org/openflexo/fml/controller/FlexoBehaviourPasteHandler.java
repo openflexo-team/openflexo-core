@@ -80,7 +80,7 @@ public class FlexoBehaviourPasteHandler extends FlexoPasteHandler<FlexoBehaviour
 		}
 		// Paste a FlexoBehaviourParameter from a FlexoBehaviourParameter
 		if (focusedObject instanceof FlexoBehaviourParameter) {
-			return new DefaultPastingContext<FlexoBehaviour>(((FlexoBehaviourParameter) focusedObject).getFlexoBehaviour(), event);
+			return new DefaultPastingContext<>(((FlexoBehaviourParameter) focusedObject).getFlexoBehaviour(), event);
 		}
 
 		return null;
@@ -111,7 +111,7 @@ public class FlexoBehaviourPasteHandler extends FlexoPasteHandler<FlexoBehaviour
 		// nothing to do
 	}
 
-	private String translateName(FlexoBehaviour object) {
+	private static String translateName(FlexoBehaviour object) {
 		String oldName = object.getName();
 		if (StringUtils.isEmpty(oldName)) {
 			return null;

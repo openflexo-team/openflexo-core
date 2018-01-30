@@ -160,7 +160,7 @@ public class SubPropertyOfProperty<TA extends TechnologyAdapter> implements Tech
 
 	@Override
 	public String getSerializationRepresentation() {
-		return new FlexoObjectReference<IFlexoOntologyStructuralProperty<TA>>(ontologyProperty).getStringRepresentation();
+		return new FlexoObjectReference<>(ontologyProperty).getStringRepresentation();
 	}
 
 	@Override

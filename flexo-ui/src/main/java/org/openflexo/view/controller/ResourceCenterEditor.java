@@ -137,7 +137,7 @@ public class ResourceCenterEditor implements HasPropertyChangeSupport {
 		// }
 	}
 
-	public void refreshResourceCenter(FlexoResourceCenter rc) {
+	public void refreshResourceCenter(FlexoResourceCenter<?> rc) {
 		if (rc != null) {
 			logger.info("refreshResourceCenter " + rc);
 			RefreshResourceCenterTask task = new RefreshResourceCenterTask(getRcService(), rc);

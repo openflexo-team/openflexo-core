@@ -80,7 +80,7 @@ public class AddToInheritanceChildItem extends FlexoAction {
 	private DocItem _parentDocItem;
 	private DocItem _childDocItem;
 
-	AddToInheritanceChildItem(FlexoObject focusedObject, Vector globalSelection, FlexoEditor editor) {
+	AddToInheritanceChildItem(FlexoObject focusedObject, Vector<?> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 	}
 

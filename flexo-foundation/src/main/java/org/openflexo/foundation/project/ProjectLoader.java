@@ -75,7 +75,6 @@ import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.localization.LocalizedDelegate;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.toolbox.FileUtils;
-import org.openflexo.toolbox.HasPropertyChangeSupport;
 
 /**
  * This {@link FlexoService} is responsible to provide {@link FlexoEditor}s on {@link FlexoProject}
@@ -83,7 +82,7 @@ import org.openflexo.toolbox.HasPropertyChangeSupport;
  * @author sylvain
  *
  */
-public class ProjectLoader extends FlexoServiceImpl implements HasPropertyChangeSupport, FlexoService {
+public class ProjectLoader extends FlexoServiceImpl {
 
 	private static final Logger logger = Logger.getLogger(ProjectLoader.class.getPackage().getName());
 
@@ -95,7 +94,7 @@ public class ProjectLoader extends FlexoServiceImpl implements HasPropertyChange
 	public static final String ROOT_PROJECTS = "rootProjects";
 
 	private final Map<FlexoProject<?>, FlexoEditor> editors;
-	private Map<Object, FlexoProjectResource> projectResourcesForSerializationArtefacts = new HashMap<Object, FlexoProjectResource>();
+	private Map<Object, FlexoProjectResource> projectResourcesForSerializationArtefacts = new HashMap<>();
 
 	private final List<FlexoProject<?>> rootProjects;
 	// private ModelFactory modelFactory;

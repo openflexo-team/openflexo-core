@@ -41,7 +41,6 @@ package org.openflexo.foundation.nature;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoProject;
-import org.openflexo.foundation.FlexoProjectObject;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -58,7 +57,7 @@ import org.openflexo.model.annotations.Setter;
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(ProjectNature.ProjectNatureImpl.class)
-public interface ProjectNature<N extends ProjectNature<N>> extends FlexoProjectObject, FlexoNature<FlexoProject<?>>, NatureObject<N> {
+public interface ProjectNature<N extends ProjectNature<N>> extends FlexoNature<FlexoProject<?>>, NatureObject<N> {
 
 	public static final String OWNER = "owner";
 

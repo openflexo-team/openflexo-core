@@ -92,6 +92,7 @@ public class JIRAField<O extends JIRAObject<O>> extends JIRAObject<JIRAField<O>>
 			this.items = items;
 		}
 
+		/* Unused
 		private JIRAObject mutateObject(JIRAObject jiraObject) throws SecurityException, InstantiationException, IllegalAccessException,
 				NoSuchFieldException {
 			Class<? extends JIRAObject> target = null;
@@ -106,6 +107,7 @@ public class JIRAField<O extends JIRAObject<O>> extends JIRAObject<JIRAField<O>>
 				return jiraObject;
 			}
 		}
+		*/
 
 		public boolean isSingle() {
 			return !isMultiple();
@@ -163,8 +165,8 @@ public class JIRAField<O extends JIRAObject<O>> extends JIRAObject<JIRAField<O>>
 		this.allowedValues = allowedValues;
 	}
 
-	public <O1 extends JIRAObject<O1>> JIRAField<O1> mutateToFieldOfType(Class<O1> type) throws SecurityException, InstantiationException,
-			IllegalAccessException, NoSuchFieldException {
+	public <O1 extends JIRAObject<O1>> JIRAField<O1> mutateToFieldOfType(Class<O1> type)
+			throws SecurityException, InstantiationException, IllegalAccessException, NoSuchFieldException {
 		JIRAField<O1> mutated = new JIRAField<O1>();
 		mutated.putAll(this);
 		mutated.setAutoCompleteUrl(getAutoCompleteUrl());

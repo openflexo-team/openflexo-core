@@ -80,7 +80,7 @@ public class AddToRelatedToItem extends FlexoAction {
 	private DocItem _parentDocItem;
 	private DocItem _childDocItem;
 
-	AddToRelatedToItem(FlexoObject focusedObject, Vector globalSelection, FlexoEditor editor) {
+	AddToRelatedToItem(FlexoObject focusedObject, Vector<?> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 	}
 

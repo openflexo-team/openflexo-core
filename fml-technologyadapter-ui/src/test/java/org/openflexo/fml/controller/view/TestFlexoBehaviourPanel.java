@@ -165,10 +165,10 @@ public class TestFlexoBehaviourPanel extends OpenflexoFIBTestCase {
 				editor);
 		// createEditionAction1.actionChoice = CreateEditionActionChoice.BuiltInAction;
 		createEditionAction1.setEditionActionClass(ExpressionAction.class);
-		createEditionAction1.setAssignation(new DataBinding<Object>("aString"));
+		createEditionAction1.setAssignation(new DataBinding<>("aString"));
 		createEditionAction1.doAction();
 		AssignationAction<?> action1 = (AssignationAction<?>) createEditionAction1.getNewEditionAction();
-		((ExpressionAction) action1.getAssignableAction()).setExpression(new DataBinding<Object>("'foo'"));
+		((ExpressionAction) action1.getAssignableAction()).setExpression(new DataBinding<>("'foo'"));
 		action1.setName("action1");
 
 		assertEquals(action1, creationScheme.getControlGraph());
@@ -178,20 +178,20 @@ public class TestFlexoBehaviourPanel extends OpenflexoFIBTestCase {
 				editor);
 		// createEditionAction2.actionChoice = CreateEditionActionChoice.BuiltInAction;
 		createEditionAction2.setEditionActionClass(ExpressionAction.class);
-		createEditionAction2.setAssignation(new DataBinding<Object>("aBoolean"));
+		createEditionAction2.setAssignation(new DataBinding<>("aBoolean"));
 		createEditionAction2.doAction();
 		AssignationAction<?> action2 = (AssignationAction<?>) createEditionAction2.getNewEditionAction();
-		((ExpressionAction) action2.getAssignableAction()).setExpression(new DataBinding<Object>("true"));
+		((ExpressionAction) action2.getAssignableAction()).setExpression(new DataBinding<>("true"));
 		action2.setName("action2");
 
 		CreateEditionAction createEditionAction3 = CreateEditionAction.actionType.makeNewAction(creationScheme.getControlGraph(), null,
 				editor);
 		// createEditionAction3.actionChoice = CreateEditionActionChoice.BuiltInAction;
 		createEditionAction3.setEditionActionClass(ExpressionAction.class);
-		createEditionAction3.setAssignation(new DataBinding<Object>("anInteger"));
+		createEditionAction3.setAssignation(new DataBinding<>("anInteger"));
 		createEditionAction3.doAction();
 		AssignationAction<?> action3 = (AssignationAction<?>) createEditionAction3.getNewEditionAction();
-		((ExpressionAction) action3.getAssignableAction()).setExpression(new DataBinding<Object>("8"));
+		((ExpressionAction) action3.getAssignableAction()).setExpression(new DataBinding<>("8"));
 		action3.setName("action3");
 
 		CreateFlexoBehaviour createActionScheme = CreateFlexoBehaviour.actionType.makeNewAction(flexoConceptA, null, editor);
@@ -224,11 +224,11 @@ public class TestFlexoBehaviourPanel extends OpenflexoFIBTestCase {
 				.makeNewAction(conditional1.getThenControlGraph(), null, editor);
 		// createDeclarePatternRoleInCondition1.actionChoice = CreateEditionActionChoice.BuiltInAction;
 		createDeclarePatternRoleInCondition1.setEditionActionClass(ExpressionAction.class);
-		createDeclarePatternRoleInCondition1.setAssignation(new DataBinding<Object>("anInteger"));
+		createDeclarePatternRoleInCondition1.setAssignation(new DataBinding<>("anInteger"));
 		createDeclarePatternRoleInCondition1.doAction();
 		AssignationAction<?> declarePatternRoleInCondition1 = (AssignationAction<?>) createDeclarePatternRoleInCondition1
 				.getNewEditionAction();
-		((ExpressionAction) declarePatternRoleInCondition1.getAssignableAction()).setExpression(new DataBinding<Object>("8"));
+		((ExpressionAction) declarePatternRoleInCondition1.getAssignableAction()).setExpression(new DataBinding<>("8"));
 
 		CreateEditionAction createConditionAction2 = CreateEditionAction.actionType.makeNewAction(actionScheme.getControlGraph(), null,
 				editor);
@@ -244,11 +244,11 @@ public class TestFlexoBehaviourPanel extends OpenflexoFIBTestCase {
 		CreateEditionAction createDeclarePatternRoleInCondition2 = CreateEditionAction.actionType.makeNewAction(conditional2, null, editor);
 		// createDeclarePatternRoleInCondition2.actionChoice = CreateEditionActionChoice.BuiltInAction;
 		createDeclarePatternRoleInCondition2.setEditionActionClass(ExpressionAction.class);
-		createDeclarePatternRoleInCondition2.setAssignation(new DataBinding<Object>("anInteger"));
+		createDeclarePatternRoleInCondition2.setAssignation(new DataBinding<>("anInteger"));
 		createDeclarePatternRoleInCondition2.doAction();
 		AssignationAction<?> declarePatternRoleInCondition2 = (AssignationAction<?>) createDeclarePatternRoleInCondition2
 				.getNewEditionAction();
-		((ExpressionAction) declarePatternRoleInCondition2.getAssignableAction()).setExpression(new DataBinding<Object>("12"));
+		((ExpressionAction) declarePatternRoleInCondition2.getAssignableAction()).setExpression(new DataBinding<>("12"));
 
 	}
 

@@ -41,7 +41,6 @@ package org.openflexo.foundation.fml.rt.editionaction;
 import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Logger;
 
-import org.openflexo.connie.Bindable;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
@@ -69,7 +68,7 @@ import org.openflexo.model.validation.ValidationIssue;
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(BehaviourParameter.BehaviourParameterImpl.class)
-public interface BehaviourParameter<T extends FlexoConceptObject> extends FlexoBehaviourObject, Bindable {
+public interface BehaviourParameter<T extends FlexoConceptObject> extends FlexoBehaviourObject {
 
 	@PropertyIdentifier(type = FlexoConceptObject.class)
 	public static final String OWNER_KEY = "owner";

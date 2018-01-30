@@ -324,16 +324,17 @@ public final class Shortcut {
 			}
 			return super.add(shortcut);
 		}
-
-		void replace(Shortcut newShortcut) {
-			final Optional<Shortcut> existing = findShortcutByKeyOrShortText(-1, NONE, newShortcut.shortText);
-			if (existing.isPresent()) {
-				replaceAll(sc -> existing.get() == sc ? newShortcut : sc);
+		/* Unused
+			void replace(Shortcut newShortcut) {
+				final Optional<Shortcut> existing = findShortcutByKeyOrShortText(-1, NONE, newShortcut.shortText);
+				if (existing.isPresent()) {
+					replaceAll(sc -> existing.get() == sc ? newShortcut : sc);
+				}
+				else {
+					add(newShortcut);
+				}
 			}
-			else {
-				add(newShortcut);
-			}
-		}
+			*/
 	}
 
 	// and here our modifier groups

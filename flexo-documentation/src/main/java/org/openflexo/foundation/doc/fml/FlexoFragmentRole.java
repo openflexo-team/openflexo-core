@@ -156,7 +156,7 @@ public interface FlexoFragmentRole<F extends FlexoDocFragment<D, TA>, D extends 
 		@Override
 		public ValidationIssue<FragmentRoleMustAddressATemplateFragment, FlexoFragmentRole> applyValidation(FlexoFragmentRole role) {
 			if (role.getModelSlot() instanceof FlexoDocumentModelSlot
-					&& ((FlexoDocumentModelSlot) role.getModelSlot()).getTemplateResource() != null) {
+					&& ((FlexoDocumentModelSlot<?>) role.getModelSlot()).getTemplateResource() != null) {
 				if (role.getFragment() == null) {
 					return new ValidationError<>(this, role, "fragment_role_doesn't_reference_any_template_fragment");
 				}

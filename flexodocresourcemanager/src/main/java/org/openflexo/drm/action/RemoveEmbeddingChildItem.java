@@ -74,7 +74,7 @@ public class RemoveEmbeddingChildItem extends FlexoAction {
 
 	private DocItem _docItemToRemove;
 
-	RemoveEmbeddingChildItem(FlexoObject focusedObject, Vector globalSelection, FlexoEditor editor) {
+	RemoveEmbeddingChildItem(FlexoObject focusedObject, Vector<?> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 	}
 

@@ -118,7 +118,7 @@ import org.openflexo.toolbox.StringUtils;
 @Imports({ @Import(FlexoEventInstance.class) })
 // TODO: design issue, we should separate FlexoConceptInstance from RunTimeEvaluationContext
 // This inheritance should disappear
-public interface FlexoConceptInstance extends FlexoObject, VirtualModelInstanceObject, Bindable, RunTimeEvaluationContext {
+public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindable, RunTimeEvaluationContext {
 
 	public static final String DELETED_PROPERTY = "deleted";
 	public static final String EMPTY_STRING = "<empty>";

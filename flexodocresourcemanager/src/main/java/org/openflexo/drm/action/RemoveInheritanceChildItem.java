@@ -74,7 +74,7 @@ public class RemoveInheritanceChildItem extends FlexoAction {
 
 	private DocItem _docItemToRemove;
 
-	RemoveInheritanceChildItem(FlexoObject focusedObject, Vector globalSelection, FlexoEditor editor) {
+	RemoveInheritanceChildItem(FlexoObject focusedObject, Vector<?> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 	}
 

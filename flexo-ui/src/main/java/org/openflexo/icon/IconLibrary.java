@@ -279,12 +279,12 @@ public class IconLibrary {
 	// Model icons
 	// public static final ImageIcon PROJECT_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/Model/Project.gif"));
 
-	public static ImageIcon getIconForValidationIssue(ValidationIssue issue) {
+	public static ImageIcon getIconForValidationIssue(ValidationIssue<?, ?> issue) {
 		if (issue instanceof ValidationWarning) {
-			return ((ValidationWarning) issue).isFixable() ? IconLibrary.FIXABLE_WARNING_ICON : IconLibrary.UNFIXABLE_WARNING_ICON;
+			return ((ValidationWarning<?, ?>) issue).isFixable() ? IconLibrary.FIXABLE_WARNING_ICON : IconLibrary.UNFIXABLE_WARNING_ICON;
 		}
 		else if (issue instanceof ValidationError) {
-			return ((ValidationError) issue).isFixable() ? IconLibrary.FIXABLE_ERROR_ICON : IconLibrary.UNFIXABLE_ERROR_ICON;
+			return ((ValidationError<?, ?>) issue).isFixable() ? IconLibrary.FIXABLE_ERROR_ICON : IconLibrary.UNFIXABLE_ERROR_ICON;
 		}
 		else if (issue instanceof InformationIssue) {
 			return IconLibrary.INFO_ISSUE_ICON;

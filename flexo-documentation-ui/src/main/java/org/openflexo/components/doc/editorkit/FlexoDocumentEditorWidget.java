@@ -75,7 +75,7 @@ public class FlexoDocumentEditorWidget<D extends FlexoDocument<D, TA>, TA extend
 
 	private boolean showToolbar = true;
 
-	private final List<ApplyCancelListener> applyCancelListener = new ArrayList<ApplyCancelListener>();
+	private final List<ApplyCancelListener> applyCancelListener = new ArrayList<>();
 
 	public FlexoDocumentEditorWidget(D document) {
 		super(new BorderLayout());
