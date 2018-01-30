@@ -87,14 +87,12 @@ public class JHIndexer {
 	 */
 	private File writeConfigFile(String prjDir) {
 		String lineSeparator = System.getProperty("line.separator");
-		OutputStream fw = null;
 		File file = new File(prjDir + File.separator + "ixrConf.txt");
 		if (file.exists()) {
 			file.delete();
 		}
 		String[] files = getIndexerFiles(prjDir);
-		try {
-			fw = new FileOutputStream(file);
+		try (OutputStream fw = new FileOutputStream(file)) {
 			String attribute = "IndexRemove " + prjDir + File.separator + lineSeparator;
 			attribute = attribute.replace('\\', '/');
 			fw.write(attribute.getBytes());
