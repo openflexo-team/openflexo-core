@@ -703,9 +703,7 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD> & Accessibl
 		if (it.hasNext()) {
 			return it.next();
 		}
-		else {
-			return null;
-		}
+		return null;
 	}
 
 	/**

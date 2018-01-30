@@ -292,7 +292,7 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 
 	protected final <I> void foundFolder(FlexoResourceCenter<I> resourceCenter, I folder) throws IOException {
 		if (resourceCenter.isDirectory(folder) && !isFolderIgnorable(resourceCenter, folder)) {
-			TechnologyAdapterGlobalRepository globalRepository = getGlobalRepository(resourceCenter);
+			TechnologyAdapterGlobalRepository<?, ?> globalRepository = getGlobalRepository(resourceCenter);
 			// Unused RepositoryFolder newRepositoryFolder =
 			globalRepository.getRepositoryFolder(folder, true);
 			for (ResourceRepository<?, ?> repository : getAllRepositories()) {
@@ -351,14 +351,12 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 			if (resourceFactory.isValidArtefact(serializationArtefact, resourceCenter)) {
 				return resourceFactory.retrieveResource(serializationArtefact, resourceCenter);
 			}
-			else {
-				// Attempt to convert it from older format
-				I convertedSerializationArtefact = resourceFactory.getConvertableArtefact(serializationArtefact, resourceCenter);
-				if (convertedSerializationArtefact != null) {
-					R returned = resourceFactory.retrieveResource(convertedSerializationArtefact, resourceCenter);
-					returned.setNeedsConversion();
-					return returned;
-				}
+			// Attempt to convert it from older format
+			I convertedSerializationArtefact = resourceFactory.getConvertableArtefact(serializationArtefact, resourceCenter);
+			if (convertedSerializationArtefact != null) {
+				R returned = resourceFactory.retrieveResource(convertedSerializationArtefact, resourceCenter);
+				returned.setNeedsConversion();
+				return returned;
 			}
 		} catch (ModelDefinitionException e) {
 			e.printStackTrace();
@@ -591,11 +589,8 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 			returned.setModelSlotTechnologyAdapter(this);
 			return returned;
 		}
-		else {
-			logger.warning("INVESTIGATE: container FlexoConcept is null, unable to create a new ModelSlot!");
-			return null;
-		}
-
+		logger.warning("INVESTIGATE: container FlexoConcept is null, unable to create a new ModelSlot!");
+		return null;
 	}
 
 	/**
