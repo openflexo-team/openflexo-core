@@ -73,8 +73,7 @@ public class FMLParser {
 	 *             if expression was not parsable
 	 */
 	public static FMLCompilationUnit parse(File inputFile, FlexoServiceManager serviceManager) throws ParseException {
-		try {
-			FileReader in = new FileReader(inputFile);
+		try (FileReader in = new FileReader(inputFile)) {
 			System.out.println("Parsing: " + inputFile);
 
 			// Create a Parser instance.
