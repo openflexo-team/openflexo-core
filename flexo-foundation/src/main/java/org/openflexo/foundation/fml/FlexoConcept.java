@@ -1310,7 +1310,7 @@ public interface FlexoConcept extends VirtualModelObject {
 		 */
 		@Override
 		public SynchronizationScheme getSynchronizationScheme() {
-			for (FlexoBehaviour es : getFlexoBehaviours()) {
+			for (FlexoBehaviour es : getAccessibleFlexoBehaviours()) {
 				if (es instanceof SynchronizationScheme) {
 					return (SynchronizationScheme) es;
 				}
