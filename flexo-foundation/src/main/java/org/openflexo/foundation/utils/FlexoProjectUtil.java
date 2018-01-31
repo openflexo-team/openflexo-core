@@ -79,36 +79,21 @@ public class FlexoProjectUtil {
 		File f = getVersionFile(projectDirectory);
 		StringBuilder sb = new StringBuilder();
 		byte[] b = new byte[512];
-		FileInputStream fis;
-		try {
-			fis = new FileInputStream(f);
+		try (FileInputStream fis = new FileInputStream(f)) {
+			int i = 0;
+			while (i > -1) {
+				i = fis.read(b);
+				if (i > -1) {
+					sb.append(new String(b, 0, i, "UTF-8"));
+				}
+			}
 		} catch (FileNotFoundException e) {
 			if (logger.isLoggable(Level.FINE)) {
 				logger.fine(".version file not found in " + projectDirectory.getAbsolutePath());
 			}
 			return null;
-		}
-		int i = 0;
-		while (i > -1) {
-			try {
-				i = fis.read(b);
-				if (i > -1) {
-					sb.append(new String(b, 0, i, "UTF-8"));
-				}
-			} catch (IOException e) {
-				e.printStackTrace();
-				try {
-					fis.close();
-				} catch (IOException e1) {
-					e1.printStackTrace();
-				}
-				return null;
-			}
-		}
-		try {
-			fis.close();
-		} catch (IOException e1) {
-			e1.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 		return new FlexoVersion(sb.toString());
 	}
@@ -123,17 +108,15 @@ public class FlexoProjectUtil {
 		if (!f.exists()) {
 			return false;
 		}
-		else {
-			FlexoVersion v = getVersion(projectDirectory);
-			// bidouille so that Version will accept 1.0.1RC1 as bigger than
-			// 1.0.1beta
-			if (logger.isLoggable(Level.FINE)) {
-				logger.fine("Version is " + v);
-			}
-			// TODO !!!
-			FlexoVersion applicationVersion = new FlexoVersion("1.7");
-			return applicationVersion.isLesserThan(v);
+		FlexoVersion v = getVersion(projectDirectory);
+		// bidouille so that Version will accept 1.0.1RC1 as bigger than
+		// 1.0.1beta
+		if (logger.isLoggable(Level.FINE)) {
+			logger.fine("Version is " + v);
 		}
+		// TODO !!!
+		FlexoVersion applicationVersion = new FlexoVersion("1.7");
+		return applicationVersion.isLesserThan(v);
 	}
 
 	/**

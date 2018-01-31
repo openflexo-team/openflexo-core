@@ -731,11 +731,8 @@ public interface JarResourceCenter extends ResourceRepository<FlexoResource<?>, 
 				}
 				if (propertiesJarEntry != null) {
 					returned = new Properties();
-					InputStream is = propertiesJarEntry.openInputStream();
-					try {
+					try (InputStream is = propertiesJarEntry.openInputStream()) {
 						returned.load(is);
-					} finally {
-						is.close();
 					}
 				}
 			}
@@ -786,9 +783,7 @@ public interface JarResourceCenter extends ResourceRepository<FlexoResource<?>, 
 				}
 				return pathTo;
 			}
-			else {
-				return null;
-			}
+			return null;
 		}
 
 		@Override

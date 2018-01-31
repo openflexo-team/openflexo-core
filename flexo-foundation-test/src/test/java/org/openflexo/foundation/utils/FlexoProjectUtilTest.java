@@ -176,27 +176,31 @@ public class FlexoProjectUtilTest extends TestCase {
 		return createPrjDirectoryWithVersionContent("1.4", "Project14");
 	}
 
+	/* Unused
 	private static File getPrjDirectory144() {
 		return createPrjDirectoryWithVersionContent("1.4.4", "Project144");
 	}
+	*/
 
 	private static File getPrjDirectory999() {
 		return createPrjDirectoryWithVersionContent("9.9.9", "Project999");
 	}
 
+	/* Unused
 	private static File getPrjDirectoryInvalidVersionFile() {
-		return createPrjDirectoryWithVersionContent("a.b.c", "ProjectInvalidVersionFile");
+	return createPrjDirectoryWithVersionContent("a.b.c", "ProjectInvalidVersionFile");
 	}
+	*/
 
 	private static File createPrjDirectoryWithVersionContent(String versionContent, String prjName) {
 		File projectDirectory = createPrjDirectoryWithoutVersionFile(prjName);
 		File versionFile = new File(projectDirectory, ".version");
 		try {
 			versionFile.createNewFile();
-			FileOutputStream fos = new FileOutputStream(versionFile);
-			fos.write(versionContent.getBytes());
-			fos.flush();
-			fos.close();
+			try (FileOutputStream fos = new FileOutputStream(versionFile)) {
+				fos.write(versionContent.getBytes());
+				fos.flush();
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 			fail("Cannot create .version file: " + e.getMessage());

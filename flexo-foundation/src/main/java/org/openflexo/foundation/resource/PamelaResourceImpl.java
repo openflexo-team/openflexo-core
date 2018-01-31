@@ -477,21 +477,12 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD> & Accessibl
 	 * @throws IOException
 	 */
 	private void performXMLSerialization(/* SerializationHandler handler, */File temporaryFile) throws IOException {
-		FileOutputStream out = null;
-		try {
-			out = new FileOutputStream(temporaryFile);
+		try (FileOutputStream out = new FileOutputStream(temporaryFile)) {
 			getFactory().serialize(resourceData, out);
 			out.flush();
-			out.close();
-			out = null;
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new IOException(e);
-		} finally {
-			if (out != null) {
-				out.close();
-			}
-			out = null;
 		}
 	}
 
@@ -685,8 +676,9 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD> & Accessibl
 	 * Read an XML input stream from File and return the parsed Document
 	 */
 	public static Document readXMLFile(File f) throws JDOMException, IOException {
-		FileInputStream fio = new FileInputStream(f);
-		return readXMLInputStream(fio);
+		try (FileInputStream fio = new FileInputStream(f)) {
+			return readXMLInputStream(fio);
+		}
 	}
 
 	/**
