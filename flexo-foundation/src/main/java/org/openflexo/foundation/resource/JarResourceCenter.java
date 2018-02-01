@@ -80,7 +80,6 @@ import org.openflexo.rm.InJarResourceImpl;
 import org.openflexo.rm.JarResourceImpl;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
-import org.openflexo.toolbox.ClassPathUtils;
 import org.openflexo.toolbox.FlexoVersion;
 import org.openflexo.toolbox.IProgress;
 import org.openflexo.xml.XMLRootElementInfo;
@@ -120,7 +119,7 @@ public interface JarResourceCenter extends ResourceRepository<FlexoResource<?>, 
 	 * @throws IOException
 	 */
 	public static void addAllJarFromClassPath(FlexoResourceCenterService rcService) throws IOException {
-		for (JarFile file : ClassPathUtils.getClassPathJarFiles()) {
+		for (JarFile file : getClassPathJarFiles()) {
 			addJarFile(file, rcService);
 		}
 	}
@@ -134,13 +133,37 @@ public interface JarResourceCenter extends ResourceRepository<FlexoResource<?>, 
 	 */
 	public static JarResourceCenter addNamedJarFromClassPath(FlexoResourceCenterService rcService, String name) throws IOException {
 		JarResourceCenter rc = null;
-		for (JarFile file : ClassPathUtils.getClassPathJarFiles()) {
+		for (JarFile file : getClassPathJarFiles()) {
 			if ((file.getName().endsWith(name + ".jar")) || (name.endsWith(".jar") && file.getName().endsWith(name))) {
 				rc = addJarFile(file, rcService);
 				break;
 			}
 		}
 		return rc;
+	}
+
+	private static List<JarFile> getClassPathJarFiles() {
+		List<JarFile> result = new ArrayList<>();
+		// Get the files in the class path
+		List<File> files = new ArrayList<>();
+		StringTokenizer string = new StringTokenizer(System.getProperty("java.class.path"), Character.toString(File.pathSeparatorChar));
+		while (string.hasMoreTokens()) {
+			files.add(new File(string.nextToken()));
+		}
+		for (File jar : files) {
+			if (isJarFile(jar)) {
+				try {
+					result.add(new JarFile(jar));
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return result;
+	}
+
+	private static boolean isJarFile(File jar) {
+		return jar.getName().endsWith(".jar");
 	}
 
 	/**
