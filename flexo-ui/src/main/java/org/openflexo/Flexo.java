@@ -129,7 +129,7 @@ public class Flexo {
 	}
 
 	protected static String getResourcePath() {
-		if (ToolBox.getPLATFORM() == ToolBox.MACOS) {
+		if (ToolBox.isMacOS()) {
 
 			try {
 				Class<?> fileManager = Class.forName("com.apple.eio.FileManager");
@@ -337,7 +337,7 @@ public class Flexo {
 	}
 
 	protected static void initFlexo(InteractiveApplicationContext applicationContext, SplashWindow splashWindow) {
-		if (ToolBox.getPLATFORM() == ToolBox.MACOS) {
+		if (ToolBox.isMacOS()) {
 			System.setProperty("apple.laf.useScreenMenuBar", "true");
 			System.setProperty("apple.awt.graphics.UseQuartz", "true");
 			System.setProperty("apple.awt.rendering", "quality");
@@ -683,7 +683,8 @@ public class Flexo {
 				return FlexoLoggingManager.initialize(applicationContext.getLoggingPreferences().getMaxLogCount(),
 						applicationContext.getLoggingPreferences().getIsLoggingTrace(),
 						applicationContext.getLoggingPreferences().getCustomLoggingFile() != null
-								? applicationContext.getLoggingPreferences().getCustomLoggingFile() : loggingFile,
+								? applicationContext.getLoggingPreferences().getCustomLoggingFile()
+								: loggingFile,
 						applicationContext.getLoggingPreferences().getDefaultLoggingLevel(), new LoggingManagerDelegate() {
 							@Override
 							public void setMaxLogCount(Integer maxLogCount) {

@@ -95,10 +95,10 @@ public final class FlexoFrame extends JFrame implements FlexoActionSource, Prope
 		public void windowActivated(WindowEvent e) {
 			if (!(e.getOppositeWindow() instanceof ProgressWindow) && !(e.getOppositeWindow() instanceof TaskManagerPanel)
 					&& getModuleLoader().isLoaded(getModule().getModule())) {
-				//System.out.println("windowActivated for " + getModule());
-				//System.out.println("Opposite: " + e.getOppositeWindow());
-				//System.out.println("active module: " + getModuleLoader().getActiveModule());
-				//System.out.println("WindowEvent source: " + e.getSource());
+				// System.out.println("windowActivated for " + getModule());
+				// System.out.println("Opposite: " + e.getOppositeWindow());
+				// System.out.println("active module: " + getModuleLoader().getActiveModule());
+				// System.out.println("WindowEvent source: " + e.getSource());
 				switchToModule();
 			}
 		}
@@ -269,7 +269,7 @@ public final class FlexoFrame extends JFrame implements FlexoActionSource, Prope
 		if (defaultFrame != null) {
 			disposeDefaultFrameWhenPossible();
 		}
-		if (ToolBox.getPLATFORM() != ToolBox.WINDOWS) {
+		if (!ToolBox.isWindows()) {
 			setIconImage(controller.getModule().getModule().getBigIcon().getImage());
 		}
 		else {
@@ -428,7 +428,7 @@ public final class FlexoFrame extends JFrame implements FlexoActionSource, Prope
 	}*/
 
 	public void updateWindowModified() {
-		if (ToolBox.getPLATFORM() == ToolBox.MACOS) {
+		if (ToolBox.isMacOS()) {
 			getRootPane().putClientProperty(WINDOW_MODIFIED,
 					getController().getApplicationContext().getResourceManager().getUnsavedResources().size() > 0);
 		}

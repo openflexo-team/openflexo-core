@@ -57,7 +57,7 @@ public class OpenFileInExplorer extends FlexoAction<OpenFileInExplorer, FlexoPro
 	private static final Logger logger = FlexoLogger.getLogger(OpenFileInExplorer.class.getPackage().getName());
 
 	public static FlexoActionFactory<OpenFileInExplorer, FlexoProjectObject, FlexoProjectObject> actionType = new FlexoActionFactory<OpenFileInExplorer, FlexoProjectObject, FlexoProjectObject>(
-			ToolBox.getPLATFORM() == ToolBox.MACOS ? "open_in_finder" : "open_in_explorer", FlexoActionFactory.defaultGroup,
+			ToolBox.isMacOS() ? "open_in_finder" : "open_in_explorer", FlexoActionFactory.defaultGroup,
 			FlexoActionFactory.NORMAL_ACTION_TYPE) {
 
 		/**

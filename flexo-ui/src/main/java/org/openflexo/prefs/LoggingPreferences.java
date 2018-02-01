@@ -134,7 +134,7 @@ public interface LoggingPreferences extends PreferencesContainer {
 		@Override
 		public File getLogDirectory() {
 			File outputDir = new File(System.getProperty("user.home") + "/Library/Logs/OpenFlexo");
-			if (ToolBox.getPLATFORM() == ToolBox.WINDOWS) {
+			if (ToolBox.isWindows()) {
 				boolean ok = false;
 				String appData = System.getenv("LOCALAPPDATA");
 				if (appData != null) {
@@ -155,7 +155,7 @@ public interface LoggingPreferences extends PreferencesContainer {
 					}
 				}
 			}
-			else if (ToolBox.getPLATFORM() == ToolBox.LINUX) {
+			else if (ToolBox.isLinux()) {
 				outputDir = new File(System.getProperty("user.home"), ".openflexo/logs");
 			}
 			return outputDir;

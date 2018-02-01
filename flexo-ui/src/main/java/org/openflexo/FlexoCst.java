@@ -77,14 +77,12 @@ public class FlexoCst extends ColorUtils {
 
 	public static final String OUTPUT_FILES_ENCODING = "UTF-8";
 
-	public static final int META_MASK = ToolBox.getPLATFORM() == ToolBox.MACOS ? InputEvent.META_MASK : InputEvent.CTRL_MASK;
+	public static final int META_MASK = ToolBox.isMacOS() ? InputEvent.META_MASK : InputEvent.CTRL_MASK;
 
-	public static final int MULTI_SELECTION_MASK = ToolBox.getPLATFORM() == ToolBox.MACOS ? InputEvent.META_DOWN_MASK
-			: InputEvent.CTRL_DOWN_MASK;
+	public static final int MULTI_SELECTION_MASK = ToolBox.isMacOS() ? InputEvent.META_DOWN_MASK : InputEvent.CTRL_DOWN_MASK;
 
-	public static final int DELETE_KEY_CODE = ToolBox.getPLATFORM() == ToolBox.MACOS ? KeyEvent.VK_BACK_SPACE : KeyEvent.VK_DELETE;
-	public static final int BACKSPACE_DELETE_KEY_CODE = ToolBox.getPLATFORM() == ToolBox.MACOS ? KeyEvent.VK_DELETE
-			: KeyEvent.VK_BACK_SPACE;
+	public static final int DELETE_KEY_CODE = ToolBox.isMacOS() ? KeyEvent.VK_BACK_SPACE : KeyEvent.VK_DELETE;
+	public static final int BACKSPACE_DELETE_KEY_CODE = ToolBox.isMacOS() ? KeyEvent.VK_DELETE : KeyEvent.VK_BACK_SPACE;
 
 	public static final Font BIG_FONT = new Font("SansSerif", Font.PLAIN, 13);
 

@@ -80,7 +80,7 @@ public abstract class ProjectChooserComponent {
 		this.applicationContext = applicationContext;
 		fileChooser = new FlexoFileChooser(owner);
 		fileChooser.setCurrentDirectory(applicationContext.getAdvancedPrefs().getLastVisitedDirectory());
-		fileChooser.setDialogTitle(ToolBox.getPLATFORM() == ToolBox.MACOS ? getLocales().localizedForKey("select_a_prj_file")
+		fileChooser.setDialogTitle(ToolBox.isMacOS() ? getLocales().localizedForKey("select_a_prj_file")
 				: getLocales().localizedForKey("select_a_prj_directory"));
 		fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
 		fileChooser.setFileFilter(FlexoFileChooserUtils.PROJECT_FILE_FILTER);

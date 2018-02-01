@@ -664,10 +664,8 @@ public class FileMenu extends FlexoMenu {
 	public class QuitItem extends FlexoMenuItem {
 
 		public QuitItem() {
-			super(new QuitAction(), "quit",
-					ToolBox.getPLATFORM() == ToolBox.WINDOWS ? KeyStroke.getKeyStroke(KeyEvent.VK_F4, InputEvent.ALT_MASK)
-							: KeyStroke.getKeyStroke(KeyEvent.VK_Q, FlexoCst.META_MASK),
-					getController(), true);
+			super(new QuitAction(), "quit", ToolBox.isWindows() ? KeyStroke.getKeyStroke(KeyEvent.VK_F4, InputEvent.ALT_MASK)
+					: KeyStroke.getKeyStroke(KeyEvent.VK_Q, FlexoCst.META_MASK), getController(), true);
 		}
 
 	}

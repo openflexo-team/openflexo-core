@@ -92,8 +92,8 @@ public class HelpMenu extends FlexoMenu implements Observer {
 				&& getController().getApplicationContext().getDocResourceManager().getDocResourceCenter() != null) {
 
 			generalHelp = new JMenuItem();
-			generalHelp.setAccelerator(ToolBox.getPLATFORM() == ToolBox.MACOS ? KeyStroke.getKeyStroke(KeyEvent.VK_HELP, 0)
-					: KeyStroke.getKeyStroke(KeyEvent.VK_F1, 0));
+			generalHelp.setAccelerator(
+					ToolBox.isMacOS() ? KeyStroke.getKeyStroke(KeyEvent.VK_HELP, 0) : KeyStroke.getKeyStroke(KeyEvent.VK_F1, 0));
 			generalHelp.setText(FlexoLocalization.getMainLocalizer().localizedForKey("general_help", generalHelp));
 			DocItem drcItem = getController().getApplicationContext().getDocResourceManager().getDocResourceCenterItem();
 			if (drcItem != null) {
@@ -154,7 +154,7 @@ public class HelpMenu extends FlexoMenu implements Observer {
 			}
 		}
 
-		if (ToolBox.getPLATFORM() != ToolBox.MACOS) {
+		if (!ToolBox.isMacOS()) {
 			addSeparator();
 			aboutFlexo = new JMenuItem();
 			aboutFlexo.setText(FlexoLocalization.getMainLocalizer().localizedForKey("about_flexo", aboutFlexo));

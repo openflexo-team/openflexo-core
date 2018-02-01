@@ -355,7 +355,7 @@ public interface AdvancedPrefs extends PreferencesContainer {
 			Boolean b = (Boolean) performSuperGetter(NO_PROXY);
 			if (b == null) {
 				boolean noProxy = true;
-				if (ToolBox.getPLATFORM() == ToolBox.WINDOWS) {
+				if (ToolBox.isWindows()) {
 					try {
 						noProxy = !ProxyUtils.isProxyEnabled();
 						if (logger.isLoggable(Level.INFO)) {
@@ -383,7 +383,7 @@ public interface AdvancedPrefs extends PreferencesContainer {
 		public String getProxyHost() {
 			String proxyHost = (String) performSuperGetter(HTTP_PROXY_HOST);
 			if (proxyHost == null) {
-				if (ToolBox.getPLATFORM() == ToolBox.WINDOWS) {
+				if (ToolBox.isWindows()) {
 					try {
 						if (ProxyUtils.autoDetectSettingsEnabled()) {
 							List<String[]> proxies = ProxyUtils.getProxiesFromAutoConfigURL(ProxyUtils.getAutoConfigURL(), 80);
@@ -418,7 +418,7 @@ public interface AdvancedPrefs extends PreferencesContainer {
 		public Integer getProxyPort() {
 			Integer proxyPort = (Integer) performSuperGetter(HTTP_PROXY_PORT);
 			if (proxyPort == null) {
-				if (ToolBox.getPLATFORM() == ToolBox.WINDOWS) {
+				if (ToolBox.isWindows()) {
 					try {
 						if (ProxyUtils.autoDetectSettingsEnabled()) {
 							List<String[]> proxies = ProxyUtils.getProxiesFromAutoConfigURL(ProxyUtils.getAutoConfigURL(), 80);
@@ -453,7 +453,7 @@ public interface AdvancedPrefs extends PreferencesContainer {
 		public String getSProxyHost() {
 			String proxyHost = (String) performSuperGetter(HTTPS_PROXY_HOST);
 			if (proxyHost == null) {
-				if (ToolBox.getPLATFORM() == ToolBox.WINDOWS) {
+				if (ToolBox.isWindows()) {
 					try {
 						if (ProxyUtils.autoDetectSettingsEnabled()) {
 							List<String[]> proxies = ProxyUtils.getProxiesFromAutoConfigURL(ProxyUtils.getAutoConfigURL(), 443);
@@ -488,7 +488,7 @@ public interface AdvancedPrefs extends PreferencesContainer {
 		public Integer getSProxyPort() {
 			Integer proxyPort = (Integer) performSuperGetter(HTTPS_PROXY_PORT);
 			if (proxyPort == null) {
-				if (ToolBox.getPLATFORM() == ToolBox.WINDOWS) {
+				if (ToolBox.isWindows()) {
 					try {
 						if (ProxyUtils.autoDetectSettingsEnabled()) {
 							List<String[]> proxies = ProxyUtils.getProxiesFromAutoConfigURL(ProxyUtils.getAutoConfigURL(), 443);

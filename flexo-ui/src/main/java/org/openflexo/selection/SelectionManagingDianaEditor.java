@@ -233,7 +233,7 @@ public class SelectionManagingDianaEditor<M extends FlexoObject> extends JDianaI
 					FlexoObject o = controller.getDrawableForDrawingTreeNode(node);
 
 					SelectionManager selectionManager = ((SelectionManagingDianaEditor<?>) controller).getSelectionManager();
-					if (ToolBox.getPLATFORM() == ToolBox.MACOS) {
+					if (ToolBox.isMacOS()) {
 						if (!selectionManager.selectionContains(o)) {
 							if (selectionManager.getSelectionSize() < 2) {
 								selectionManager.setSelectedObject(o);
