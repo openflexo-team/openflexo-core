@@ -95,8 +95,8 @@ import org.openflexo.model.validation.ValidationError;
 import org.openflexo.model.validation.ValidationIssue;
 import org.openflexo.model.validation.ValidationRule;
 import org.openflexo.toolbox.FlexoVersion;
+import org.openflexo.toolbox.JavaUtils;
 import org.openflexo.toolbox.StringUtils;
-import org.openflexo.toolbox.ToolBox;
 
 /**
  * An {@link VirtualModel} is the specification of a model which will be instantied in a {@link View} as a set of federated models. An
@@ -780,7 +780,7 @@ public interface VirtualModel extends FlexoConcept, VirtualModelObject, FlexoMet
 			if (StringUtils.isEmpty(conceptURI.trim())) {
 				return false;
 			}
-			return conceptURI.equals(ToolBox.getJavaName(conceptURI, true, false)) && !isDuplicatedURI(ontologyURI, conceptURI);
+			return conceptURI.equals(JavaUtils.getJavaName(conceptURI)) && !isDuplicatedURI(ontologyURI, conceptURI);
 		}
 
 		/**

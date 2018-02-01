@@ -104,7 +104,7 @@ import org.openflexo.toolbox.FileUtils;
 import org.openflexo.toolbox.FileUtils.CopyStrategy;
 import org.openflexo.toolbox.FlexoVersion;
 import org.openflexo.toolbox.IProgress;
-import org.openflexo.toolbox.ToolBox;
+import org.openflexo.toolbox.JavaUtils;
 import org.openflexo.toolbox.ZipUtils;
 import org.openflexo.xml.XMLRootElementInfo;
 
@@ -198,14 +198,12 @@ public abstract class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoRe
 
 	@Override
 	public String getPrefix() {
-		String prefix = null;
-		if (getProjectName().length() > 2) {
-			prefix = getProjectName().substring(0, 3).toUpperCase();
+		String prefix = getProjectName();
+		if (prefix.length() > 2) {
+			prefix = prefix.substring(0, 3);
 		}
-		else {
-			prefix = getProjectName().toUpperCase();
-		}
-		return ToolBox.getJavaName(prefix, true, false);
+		prefix = prefix.toUpperCase();
+		return JavaUtils.getJavaName(prefix);
 	}
 
 	@Override
