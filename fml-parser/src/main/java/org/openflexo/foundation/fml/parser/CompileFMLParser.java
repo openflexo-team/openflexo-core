@@ -42,7 +42,6 @@ import java.io.File;
 
 import org.openflexo.rm.FileResourceImpl;
 import org.openflexo.rm.ResourceLocator;
-import org.sablecc.sablecc.SableCC;
 
 public class CompileFMLParser {
 
@@ -55,7 +54,7 @@ public class CompileFMLParser {
 		System.out.println("output=" + output);
 		// File output = ((FileResourceImpl) ResourceLocator.locateResource("fml-parser")).getFile();
 		try {
-			SableCC.processGrammar(grammar, output);
+			// SableCC.processGrammar(grammar, output);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
