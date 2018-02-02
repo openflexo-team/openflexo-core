@@ -142,7 +142,7 @@ public interface JarResourceCenter extends ResourceRepository<FlexoResource<?>, 
 		return rc;
 	}
 
-	private static List<JarFile> getClassPathJarFiles() {
+	public static List<JarFile> getClassPathJarFiles() {
 		List<JarFile> result = new ArrayList<>();
 		// Get the files in the class path
 		List<File> files = new ArrayList<>();
@@ -162,7 +162,7 @@ public interface JarResourceCenter extends ResourceRepository<FlexoResource<?>, 
 		return result;
 	}
 
-	private static boolean isJarFile(File jar) {
+	public static boolean isJarFile(File jar) {
 		return jar.getName().endsWith(".jar");
 	}
 
