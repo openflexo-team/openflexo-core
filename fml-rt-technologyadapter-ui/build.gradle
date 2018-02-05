@@ -5,7 +5,7 @@ dependencies {
   // external dep
 
   // testing dep
-  testCompile group: "org.openflexo", name: "gina-test", version: "2.1-SNAPSHOT"
+  testCompile ginaTest()
   testCompile project(':flexo-ui-test')
   testRuntime project(':fml-technologyadapter-ui')
 }
