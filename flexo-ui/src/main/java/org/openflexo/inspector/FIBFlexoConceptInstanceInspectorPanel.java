@@ -130,7 +130,7 @@ public class FIBFlexoConceptInstanceInspectorPanel extends JPanel implements Obs
 		// System.out.println("locales=" + inspector.getLocales());
 
 		FIBView<?, ?> inspectorView = FIBController.makeView(inspector/*.getTabPanel().getSubComponents().get(0)*/,
-				SwingViewFactory.INSTANCE, inspector.getLocales(), false);
+				SwingViewFactory.INSTANCE, inspector.getLocales(), null, false);
 		FIBController controller = inspectorView.getController();
 		if (controller instanceof FlexoFIBController) {
 			((FlexoFIBController) controller).setFlexoController(inspectorController.getFlexoController());

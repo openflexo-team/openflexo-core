@@ -129,7 +129,7 @@ public class FlexoFIBView extends JPanel implements GraphicalFlexoObserver, HasP
 
 		Progress.progress("builing_view");
 
-		fibView = (JFIBView<?, ?>) fibController.buildView(fibComponent, true);
+		fibView = (JFIBView<?, ?>) fibController.buildView(fibComponent, null, true);
 
 		Progress.progress("init_view");
 

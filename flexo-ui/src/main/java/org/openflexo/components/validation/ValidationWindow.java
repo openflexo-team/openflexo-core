@@ -45,8 +45,8 @@ import org.openflexo.ApplicationContext;
 import org.openflexo.editor.SelectAndFocusObjectTask;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.gina.model.FIBComponent;
-import org.openflexo.gina.swing.editor.ComponentValidationWindow;
-import org.openflexo.gina.swing.utils.validation.ValidationPanel;
+import org.openflexo.gina.swing.editor.validation.ComponentValidationWindow;
+import org.openflexo.gina.swing.editor.validation.ValidationDialogPanel;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.localization.LocalizedDelegate;
 import org.openflexo.model.validation.Validable;
@@ -57,7 +57,7 @@ import org.openflexo.selection.SelectionManager;
 import org.openflexo.view.controller.FlexoController;
 
 /**
- * Non-modal window displaying a {@link ValidationPanel} for a {@link FlexoObject}<br>
+ * Non-modal window displaying a {@link ValidationDialogPanel} for a {@link FlexoObject}<br>
  * Selection of issues is synchronized with the {@link FlexoController}'s {@link SelectionManager}
  * 
  * {@link ValidationModel} must be given to validate {@link FlexoObject}
@@ -116,7 +116,7 @@ public class ValidationWindow extends JDialog {
 		return isDisposed;
 	}
 
-	protected class FlexoValidationPanel extends ValidationPanel {
+	protected class FlexoValidationPanel extends ValidationDialogPanel {
 
 		public FlexoValidationPanel(ValidationReport validationReport, ApplicationContext applicationContext,
 				LocalizedDelegate parentLocalizer) {

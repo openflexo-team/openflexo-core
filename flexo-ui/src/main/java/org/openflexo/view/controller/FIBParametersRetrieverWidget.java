@@ -102,7 +102,7 @@ public class FIBParametersRetrieverWidget extends FIBJPanel<FlexoBehaviourAction
 		if (action != null) {
 			fibComponent = (new ParametersRetriever(action, applicationContext)).makeFIB(false, false);
 			controller = makeFIBController(fibComponent, localizer);
-			fibView = (JFIBView<?, ?>) controller.buildView(fibComponent, true);
+			fibView = (JFIBView<?, ?>) controller.buildView(fibComponent, null, true);
 			removeAll();
 			add(fibView.getResultingJComponent(), BorderLayout.CENTER);
 			revalidate();

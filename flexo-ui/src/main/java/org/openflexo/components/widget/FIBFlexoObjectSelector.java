@@ -508,7 +508,7 @@ public abstract class FIBFlexoObjectSelector<T extends FlexoObject> extends Text
 			fibComponent = (FIBContainer) ApplicationFIBLibraryImpl.instance().retrieveFIBComponent(getFIBResource());
 			initFIBComponent(fibComponent);
 			controller = makeCustomFIBController(fibComponent);
-			fibView = (JFIBView<?, ?>) controller.buildView(fibComponent, true);
+			fibView = (JFIBView<?, ?>) controller.buildView(fibComponent, null, true);
 
 			controller.setDataObject(FIBFlexoObjectSelector.this, true);
 

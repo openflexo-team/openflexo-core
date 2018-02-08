@@ -152,7 +152,7 @@ import org.openflexo.foundation.utils.FlexoProgress;
 import org.openflexo.foundation.validation.FlexoValidationModel;
 import org.openflexo.gina.controller.FIBController.Status;
 import org.openflexo.gina.model.FIBMouseEvent;
-import org.openflexo.gina.swing.editor.ComponentValidationWindow;
+import org.openflexo.gina.swing.editor.validation.ComponentValidationWindow;
 import org.openflexo.gina.swing.utils.localization.LocalizedEditor;
 import org.openflexo.gina.utils.InspectorGroup;
 import org.openflexo.icon.FMLIconLibrary;
