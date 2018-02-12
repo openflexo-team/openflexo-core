@@ -374,6 +374,14 @@ public interface FlexoConcept extends VirtualModelObject {
 	public <R> List<R> getDeclaredProperties(Class<R> type);
 
 	/**
+	 * Build and return all accessible key-properties for this {@link FlexoConcept}<br>
+	 * Same semantics as for {@link #getAccessibleProperties()}
+	 * 
+	 * @return
+	 */
+	public List<FlexoProperty<?>> getAccessibleKeyProperties();
+
+	/**
 	 * Build and return the list of all declared {@link FlexoProperty} with supplied type
 	 * 
 	 * @param type
@@ -681,6 +689,10 @@ public interface FlexoConcept extends VirtualModelObject {
 		 * Stores a cache for properties for all end-properties of this {@link FlexoConcept}
 		 */
 		private List<FlexoProperty<?>> accessibleProperties;
+		/**
+		 * Stores a cache for key properties for all end-properties of this {@link FlexoConcept}
+		 */
+		private List<FlexoProperty<?>> accessibleKeyProperties2;
 
 		private ImageIcon bigIcon;
 		private ImageIcon mediumIcon;
@@ -926,6 +938,27 @@ public interface FlexoConcept extends VirtualModelObject {
 			}
 
 			return accessibleProperties;
+		}
+
+		/**
+		 * Build and return all accessible key-properties for this {@link FlexoConcept}<br>
+		 * Same semantics as for {@link #getAccessibleProperties()}
+		 * 
+		 * @return
+		 */
+		@Override
+		public List<FlexoProperty<?>> getAccessibleKeyProperties() {
+
+			// Implements a cache
+			// Do not recompute accessible properties when not required
+
+			List<FlexoProperty<?>> accessibleKeyProperties = new ArrayList<>();
+			for (FlexoProperty<?> p : getAccessibleProperties()) {
+				if (p.isKeyProperty()) {
+					accessibleKeyProperties.add(p);
+				}
+			}
+			return accessibleKeyProperties;
 		}
 
 		@Override

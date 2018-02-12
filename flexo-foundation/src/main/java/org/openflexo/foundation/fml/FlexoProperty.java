@@ -185,6 +185,13 @@ public abstract interface FlexoProperty<T> extends FlexoConceptObject {
 	 */
 	public boolean isNotificationSafe();
 
+	/**
+	 * Return boolean indicating if this {@link FlexoProperty} is a key property (declared in key properties of its declaring FlexoConcept)
+	 * 
+	 * @return
+	 */
+	public boolean isKeyProperty();
+
 	public static abstract class FlexoPropertyImpl<T> extends FlexoConceptObjectImpl implements FlexoProperty<T> {
 
 		// private static final Logger logger = Logger.getLogger(FlexoRole.class.getPackage().getName());
@@ -460,6 +467,21 @@ public abstract interface FlexoProperty<T> extends FlexoConceptObject {
 		public String detailedFMLSpecifications(FMLRepresentationContext context) {
 			return null;
 		}
+
+		/**
+		 * Return boolean indicating if this {@link FlexoProperty} is a key property (declared in key properties of its declaring
+		 * FlexoConcept)
+		 * 
+		 * @return
+		 */
+		@Override
+		public boolean isKeyProperty() {
+			if (getFlexoConcept() != null && getFlexoConcept().getKeyProperties().contains(this)) {
+				return true;
+			}
+			return false;
+		}
+
 	}
 
 	@DefineValidationRule
