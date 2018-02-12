@@ -1068,6 +1068,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 		 */
 		@Override
 		public <T> void setFlexoActor(T object, FlexoRole<T> flexoRole) {
+
 			if (logger.isLoggable(Level.FINE)) {
 				logger.fine(
 						">>>>>>>>> setObjectForFlexoRole flexoRole: " + flexoRole + " set " + object + " was " + getFlexoActor(flexoRole));
@@ -1086,25 +1087,23 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 			else {
 
 				T oldObject = getFlexoActor(flexoRole);
+
 				if (object != oldObject) {
 
 					boolean done = false;
 
-					if (oldObject != null) {
+					List<ActorReference<T>> references = getReferences(flexoRole.getRoleName());
 
-						List<ActorReference<T>> references = getReferences(flexoRole.getRoleName());
-
-						if ((references.size() == 1) && (object != null)) {
-							// Replace existing reference with new value
-							ActorReference<T> ref = references.get(0);
-							ref.setModellingElement(object);
-							done = true;
-						}
-						else if (references.size() > 0) {
-							// Remove all existing references
-							for (ActorReference<T> actorReference : new ArrayList<>(references)) {
-								removeFromActors(actorReference);
-							}
+					if ((references.size() == 1) && (object != null)) {
+						// Replace existing reference with new value
+						ActorReference<T> ref = references.get(0);
+						ref.setModellingElement(object);
+						done = true;
+					}
+					else if (references.size() > 0) {
+						// Remove all existing references
+						for (ActorReference<T> actorReference : new ArrayList<>(references)) {
+							removeFromActors(actorReference);
 						}
 					}
 
