@@ -70,6 +70,7 @@ import org.openflexo.foundation.fml.editionaction.DeleteAction;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.fml.editionaction.ExpressionAction;
 import org.openflexo.foundation.fml.editionaction.LogAction;
+import org.openflexo.foundation.fml.editionaction.NotifyProgressAction;
 import org.openflexo.foundation.fml.editionaction.NotifyPropertyChangedAction;
 import org.openflexo.foundation.fml.editionaction.RemoveFromListAction;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
@@ -100,10 +101,10 @@ import org.openflexo.gina.model.widget.FIBDropDown;
 import org.openflexo.gina.model.widget.FIBLabel;
 import org.openflexo.gina.model.widget.FIBNumber;
 import org.openflexo.gina.model.widget.FIBNumber.NumberType;
-import org.openflexo.gina.utils.InspectorGroup;
 import org.openflexo.gina.model.widget.FIBRadioButtonList;
 import org.openflexo.gina.model.widget.FIBTextArea;
 import org.openflexo.gina.model.widget.FIBTextField;
+import org.openflexo.gina.utils.InspectorGroup;
 import org.openflexo.icon.FMLIconLibrary;
 import org.openflexo.icon.FMLRTIconLibrary;
 import org.openflexo.icon.IconFactory;
@@ -408,6 +409,9 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 		}
 		else if (LogAction.class.isAssignableFrom(editionActionClass)) {
 			return FMLIconLibrary.LOG_ACTION_ICON;
+		}
+		else if (NotifyProgressAction.class.isAssignableFrom(editionActionClass)) {
+			return FMLIconLibrary.NOTIFY_PROGRESS_ACTION_ICON;
 		}
 		else if (NotifyPropertyChangedAction.class.isAssignableFrom(editionActionClass)) {
 			return FMLIconLibrary.NOTIFY_PROPERTY_CHANGED_ACTION_ICON;

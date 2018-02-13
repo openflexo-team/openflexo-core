@@ -189,18 +189,39 @@
 						rows="3" validateOnReturn="true" horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED" />
 				</Panel>
 			</Panel>
-			<CheckBox id="45" selected="true" name="Checkbox" visible="data.supportParameters"
-				data="data.skipConfirmationPanel" index="14" localize="true"
+			<CheckBox selected="true" name="LongRunningActionCheckbox" 
+				data="data.longRunningAction" index="14" localize="true"
 				constraints="twocols(expandHorizontally=true;expandVertically=false;index=14;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)" />
-			<Label id="46" name="SkipConfirmationPanelWhenPossibleLabel" visible="data.supportParameters"
+			<Label name="LongRunningActionLabel"
 				index="15" localize="true" align="left"
 				constraints="twocols(expandHorizontally=true;expandVertically=false;index=15;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
+				label="is_long_running_action" />
+				
+			<Label manageDynamicModel="false" useScrollBar="false" visible="data.longRunningAction"
+				localize="true" align="left" index="16" name="StepsNumberLabel"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;index=2;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)"
+				label="steps_number" readOnly="false" />
+			<Custom manageDynamicModel="true" useScrollBar="false" visible="data.longRunningAction"
+				data="data.stepsNumber" componentClassName="org.openflexo.gina.swing.utils.BindingSelector"
+				opaque="false" name="StepsNumberCC"
+				localize="true" index="17"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;index=2;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=right)"
+				readOnly="false">
+			</Custom>
+			
+			
+			<CheckBox selected="true" name="SkipConfirmationPanelWhenPossibleCheckbox" visible="data.supportParameters"
+				data="data.skipConfirmationPanel" index="18" localize="true"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;index=14;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)" />
+			<Label name="SkipConfirmationPanelWhenPossibleLabel" visible="data.supportParameters"
+				index="19" localize="true" align="left"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;index=15;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
 				label="skip_confirmation_panel_when_possible" />
-			<CheckBox id="47" selected="true" name="Checkbox2" visible="data.supportParameters"
-				data="data.definePopupDefaultSize" index="16" localize="true"
+			<CheckBox id="47" selected="true" name="DefinePopupDefaultSizeCheckbox" visible="data.supportParameters"
+				data="data.definePopupDefaultSize" index="20" localize="true"
 				constraints="twocols(expandHorizontally=true;expandVertically=false;index=16;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)" />
 			<Panel id="48" vGap="0" borderLeft="0" hGap="0" sizeAdjustment="OriginalSize"
-				border="empty" borderRight="0" trackViewPortWidth="true" index="17" visible="data.supportParameters"
+				border="empty" borderRight="0" trackViewPortWidth="true" index="21" visible="data.supportParameters"
 				align="left"
 				constraints="twocols(expandHorizontally=true;expandVertically=false;index=17;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
 				borderBottom="0" borderTitle="Panel" titleFont="SansSerif,0,11"

@@ -79,6 +79,7 @@ import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.fml.editionaction.ExpressionAction;
 import org.openflexo.foundation.fml.editionaction.FetchRequest;
 import org.openflexo.foundation.fml.editionaction.LogAction;
+import org.openflexo.foundation.fml.editionaction.NotifyProgressAction;
 import org.openflexo.foundation.fml.editionaction.NotifyPropertyChangedAction;
 import org.openflexo.foundation.fml.editionaction.RemoveFromListAction;
 import org.openflexo.foundation.fml.editionaction.ReturnStatement;
@@ -174,6 +175,7 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 		addToAvailableActions(ExpressionAction.class, fmlTA);
 		addToAvailableActions(AddClassInstance.class, fmlTA);
 		addToAvailableActions(LogAction.class, fmlTA);
+		addToAvailableActions(NotifyProgressAction.class, fmlTA);
 		addToAvailableActions(ConditionalAction.class, fmlTA);
 		addToAvailableActions(IterationAction.class, fmlTA);
 		addToAvailableActions(WhileAction.class, fmlTA);
@@ -455,6 +457,9 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 		}
 		else if (org.openflexo.foundation.fml.editionaction.LogAction.class.isAssignableFrom(editionActionClass)) {
 			returned = factory.newLogAction();
+		}
+		else if (org.openflexo.foundation.fml.editionaction.NotifyProgressAction.class.isAssignableFrom(editionActionClass)) {
+			returned = factory.newNotifyProgressAction();
 		}
 		else if (org.openflexo.foundation.fml.editionaction.NotifyPropertyChangedAction.class.isAssignableFrom(editionActionClass)) {
 			returned = factory.newNotifyPropertyChangedAction();

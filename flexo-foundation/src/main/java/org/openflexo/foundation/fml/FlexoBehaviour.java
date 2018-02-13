@@ -45,6 +45,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.connie.Bindable;
 import org.openflexo.connie.BindingModel;
+import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.binding.Function;
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.DataModification;
@@ -84,9 +85,6 @@ import org.openflexo.toolbox.StringUtils;
 @Imports({ @Import(ActionScheme.class), @Import(DeletionScheme.class), @Import(NavigationScheme.class),
 		@Import(SynchronizationScheme.class), @Import(CreationScheme.class), @Import(CloningScheme.class), @Import(EventListener.class) })
 public interface FlexoBehaviour extends FlexoBehaviourObject, Function, FMLControlGraphOwner {
-
-	// public static final String FLEXO_BEHAVIOUR_INSTANCE = "flexoBehaviourInstance";
-	// public static final String VIRTUAL_MODEL_INSTANCE = "virtualModelInstance";
 
 	/**
 	 * Visibility for a behaviour
@@ -147,6 +145,8 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, Function, FMLContr
 	@PropertyIdentifier(type = boolean.class)
 	public static final String SKIP_CONFIRMATION_PANEL_KEY = "skipConfirmationPanel";
 	@PropertyIdentifier(type = boolean.class)
+	public static final String LONG_RUNNING_ACTION_KEY = "longRunningAction";
+	@PropertyIdentifier(type = boolean.class)
 	public static final String DEFINE_POPUP_DEFAULT_SIZE_KEY = "definePopupDefaultSize";
 	@PropertyIdentifier(type = int.class)
 	public static final String WIDTH_KEY = "width";
@@ -156,7 +156,8 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, Function, FMLContr
 	public static final String DESCRIPTION_KEY = "description";
 	@PropertyIdentifier(type = Vector.class)
 	public static final String PARAMETERS_KEY = "parameters";
-
+	@PropertyIdentifier(type = DataBinding.class)
+	public static final String STEPS_NUMBER_KEY = "stepsNumber";
 	@PropertyIdentifier(type = FMLControlGraph.class)
 	public static final String CONTROL_GRAPH_KEY = "controlGraph";
 
@@ -209,6 +210,20 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, Function, FMLContr
 
 	@Setter(SKIP_CONFIRMATION_PANEL_KEY)
 	public void setSkipConfirmationPanel(boolean skipConfirmationPanel);
+
+	@Getter(value = LONG_RUNNING_ACTION_KEY, defaultValue = "false")
+	@XMLAttribute
+	public boolean getLongRunningAction();
+
+	@Setter(LONG_RUNNING_ACTION_KEY)
+	public void setLongRunningAction(boolean isLongRunningAction);
+
+	@Getter(value = STEPS_NUMBER_KEY)
+	@XMLAttribute
+	public DataBinding<Integer> getStepsNumber();
+
+	@Setter(STEPS_NUMBER_KEY)
+	public void setStepsNumber(DataBinding<Integer> stepsNumber);
 
 	@Getter(value = DEFINE_POPUP_DEFAULT_SIZE_KEY, defaultValue = "false")
 	@XMLAttribute
@@ -337,6 +352,8 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, Function, FMLContr
 		private final FlexoBehaviourActionType flexoBehaviourActionType = new FlexoBehaviourActionType(this);
 		private final FlexoBehaviourParametersType flexoBehaviourParametersType = new FlexoBehaviourParametersType(this);
 		private final FlexoBehaviourParametersValuesType flexoBehaviourParametersValuesType = new FlexoBehaviourParametersValuesType(this);
+
+		private DataBinding<Integer> stepsNumber;
 
 		@Override
 		public Type getReturnType() {
@@ -741,6 +758,28 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, Function, FMLContr
 		@Override
 		public boolean supportParameters() {
 			return true;
+		}
+
+		@Override
+		public DataBinding<Integer> getStepsNumber() {
+			if (stepsNumber == null) {
+				stepsNumber = new DataBinding<Integer>(this, Integer.class, DataBinding.BindingDefinitionType.GET);
+				stepsNumber.setBindingName("stepsNumber");
+				stepsNumber.setMandatory(false);
+
+			}
+			return stepsNumber;
+		}
+
+		@Override
+		public void setStepsNumber(DataBinding<Integer> stepsNumber) {
+			if (stepsNumber != null) {
+				this.stepsNumber = new DataBinding<Integer>(stepsNumber.toString(), this, Integer.class,
+						DataBinding.BindingDefinitionType.GET);
+				this.stepsNumber.setBindingName("stepsNumber");
+				this.stepsNumber.setMandatory(true);
+			}
+			notifiedBindingChanged(stepsNumber);
 		}
 
 	}

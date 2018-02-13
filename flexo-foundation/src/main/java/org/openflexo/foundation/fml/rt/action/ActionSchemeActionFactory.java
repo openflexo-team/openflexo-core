@@ -63,6 +63,9 @@ public class ActionSchemeActionFactory extends AbstractActionSchemeActionFactory
 	@Override
 	public ActionSchemeAction makeNewAction(FlexoConceptInstance focusedObject, Vector<VirtualModelInstanceObject> globalSelection,
 			FlexoEditor editor) {
+		if (getBehaviour().getLongRunningAction()) {
+			return new LongRunningActionSchemeAction(this, focusedObject, globalSelection, editor);
+		}
 		return new ActionSchemeAction(this, focusedObject, globalSelection, editor);
 	}
 

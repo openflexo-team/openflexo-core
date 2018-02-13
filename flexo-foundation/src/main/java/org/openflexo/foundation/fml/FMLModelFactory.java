@@ -73,6 +73,7 @@ import org.openflexo.foundation.fml.editionaction.ExpressionAction;
 import org.openflexo.foundation.fml.editionaction.FetchRequest;
 import org.openflexo.foundation.fml.editionaction.FetchRequestCondition;
 import org.openflexo.foundation.fml.editionaction.LogAction;
+import org.openflexo.foundation.fml.editionaction.NotifyProgressAction;
 import org.openflexo.foundation.fml.editionaction.NotifyPropertyChangedAction;
 import org.openflexo.foundation.fml.editionaction.RemoveFromListAction;
 import org.openflexo.foundation.fml.editionaction.ReturnStatement;
@@ -571,6 +572,10 @@ public class FMLModelFactory extends FGEModelFactoryImpl implements PamelaResour
 
 	public LogAction newLogAction() {
 		return newInstance(LogAction.class);
+	}
+
+	public NotifyProgressAction newNotifyProgressAction() {
+		return newInstance(NotifyProgressAction.class);
 	}
 
 	public NotifyPropertyChangedAction newNotifyPropertyChangedAction() {
