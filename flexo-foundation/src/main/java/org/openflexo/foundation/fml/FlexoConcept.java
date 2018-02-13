@@ -1571,6 +1571,7 @@ public interface FlexoConcept extends VirtualModelObject {
 		@Override
 		public void addToEmbeddedFlexoConcepts(FlexoConcept aFlexoConcept) {
 			performSuperAdder(EMBEDDED_FLEXO_CONCEPT_KEY, aFlexoConcept);
+			getInnerConceptsFacet().notifiedConceptsChanged();
 			if (getOwningVirtualModel() != null) {
 				getOwningVirtualModel().getInnerConceptsFacet().notifiedConceptsChanged();
 				getOwningVirtualModel().getPropertyChangeSupport().firePropertyChange("allRootFlexoConcepts", null,
@@ -1581,6 +1582,7 @@ public interface FlexoConcept extends VirtualModelObject {
 		@Override
 		public void removeFromEmbeddedFlexoConcepts(FlexoConcept aFlexoConcept) {
 			performSuperRemover(EMBEDDED_FLEXO_CONCEPT_KEY, aFlexoConcept);
+			getInnerConceptsFacet().notifiedConceptsChanged();
 			if (getOwningVirtualModel() != null) {
 				getOwningVirtualModel().getInnerConceptsFacet().notifiedConceptsChanged();
 				getOwningVirtualModel().getPropertyChangeSupport().firePropertyChange("allRootFlexoConcepts", null,

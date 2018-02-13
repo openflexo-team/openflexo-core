@@ -43,6 +43,7 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import org.openflexo.components.validation.RevalidationTask;
+import org.openflexo.connie.annotations.NotificationUnsafe;
 import org.openflexo.fml.controller.validation.FixIssueDialog;
 import org.openflexo.fml.controller.validation.IssueFixing;
 import org.openflexo.foundation.FlexoObject;
@@ -657,135 +658,42 @@ public class FMLFIBController extends FlexoFIBController {
 		System.out.println(receiver.getFMLRepresentation());
 
 		controlGraph.moveWhileSequentiallyAppendingTo(receiver);
-		/*
-		// We first store actual owning context
-		FMLControlGraphOwner owner = controlGraph.getOwner();
-		String ownerContext = controlGraph.getOwnerContext();
-		FMLModelFactory factory = controlGraph.getFMLModelFactory();
-		
-		Sequence parentFlattenedSequence = controlGraph.getParentFlattenedSequence();
-		
-		// We firt disconnect the control graph from its owner
-		if (owner != null) {
-			owner.setControlGraph(null, ownerContext);
-		
-			// Now we instanciate new EmptyControlGraph, and perform the replacement
-			controlGraph.replaceWith(factory.newEmptyControlGraph(), owner, ownerContext);
-		
-			// We reduce owner
-			owner.reduce();
-		}
-		
-		receiver.sequentiallyAppend(controlGraph);
-		
-		// Now this control graph should be dereferenced
-		// We finally call super delete, and this control graph will be really deleted
-		// boolean returned = performSuperDelete(context);
-		
-		// Then we must notify the parent flattenedSequence where this control graph was presented as a sequence
-		// This fixes issue TA-81
-		if (parentFlattenedSequence != null) {
-			parentFlattenedSequence.controlGraphChanged(controlGraph);
-		}
-		
-		// return returned;
-		 */
 	}
 
 	public boolean canMoveControlGraph(FMLControlGraph controlGraph, FMLControlGraph receiver) {
 		return controlGraph != null && controlGraph.getOwner() != receiver;
 	}
 
-	/*@Deprecated
-	public FMLValidationReport getValidationReport(VirtualModel virtualModel) {
-		if (getServiceManager() != null && virtualModel != null) {
-			FMLTechnologyAdapterController tac = getServiceManager().getTechnologyAdapterControllerService()
-					.getTechnologyAdapterController(FMLTechnologyAdapterController.class);
-			return tac.getValidationReport(virtualModel);
+	@NotificationUnsafe
+	public void moveFlexoConcept(FlexoConcept concept, FlexoConcept container) {
+		logger.info("Moving concept " + concept + " into " + container);
+		// Disconnect from former container concept (if any)
+		if (concept.getContainerFlexoConcept() != null) {
+			concept.getContainerFlexoConcept().removeFromEmbeddedFlexoConcepts(concept);
 		}
-		return null;
+		// Disconnect from owner VirtualModel
+		if (concept.getOwner() != null) {
+			concept.getOwner().removeFromFlexoConcepts(concept);
+		}
+		if (container instanceof VirtualModel) {
+			// Normal case
+			((VirtualModel) container).addToFlexoConcepts(concept);
+		}
+		else {
+			// Move in a container FlexoConcept
+			container.getOwner().addToFlexoConcepts(concept);
+			container.addToEmbeddedFlexoConcepts(concept);
+		}
+		revalidate(concept.getOwner());
 	}
-	
-	@Deprecated
-	public ValidationReport getEmbeddedValidationReport(FMLObject object) {
-		if (object == null) {
-			return null;
-		}
-		if (getServiceManager() != null && object.getDeclaringVirtualModel() != null) {
-			FMLTechnologyAdapterController tac = getServiceManager().getTechnologyAdapterControllerService()
-					.getTechnologyAdapterController(FMLTechnologyAdapterController.class);
-			FMLValidationReport fmlVR = tac.getValidationReport(object.getDeclaringVirtualModel());
-			if (fmlVR != null) {
-				return fmlVR.getValidationReport(object);
-			}
-		}
-		return null;
-	}
-	
-	@Deprecated
-	public FMLValidationModel getFMLValidationModel() {
-		if (getServiceManager() != null) {
-			FMLTechnologyAdapterController tac = getServiceManager().getTechnologyAdapterControllerService()
-					.getTechnologyAdapterController(FMLTechnologyAdapterController.class);
-			return tac.getFMLValidationModel();
-		}
-		return null;
-	}*/
 
-	/*@Deprecated
-	@Override
-	protected ImageIcon retrieveIconForObject(Object object) {
-		if (object instanceof VirtualModelResource && ((VirtualModelResource) object).isLoaded()) {
-			return retrieveIconForObject(((VirtualModelResource) object).getLoadedResourceData());
-		}
-		else if (object instanceof VirtualModel) {
-			if (getValidationReport((VirtualModel) object) != null && getValidationReport((VirtualModel) object).getErrors().size() > 0) {
-				return IconFactory.getImageIcon(super.retrieveIconForObject(object), IconLibrary.ERROR);
-			}
-			if (getValidationReport((VirtualModel) object) != null && getValidationReport((VirtualModel) object).getWarnings().size() > 0) {
-				return IconFactory.getImageIcon(super.retrieveIconForObject(object), IconLibrary.WARNING);
-			}
-		}
-		else if (object instanceof FMLObject && ((FMLObject) object).getDeclaringVirtualModel() != null) {
-			ImageIcon returned = fmlObjectsIcons.get(object);
-			if (returned == null) {
-				FMLValidationReport validationReport = getValidationReport(((FMLObject) object).getDeclaringVirtualModel());
-				if (validationReport != null) {
-					// System.out.println("Hop: " + validationReport.getErrors((FMLObject) object) + " of "
-					// + validationReport.getErrors((FMLObject) object).getClass());
-					if (validationReport.hasErrors((FMLObject) object)) {
-						returned = IconFactory.getImageIcon(super.iconForObject(object), IconLibrary.ERROR);
-					}
-					else if (validationReport.hasWarnings((FMLObject) object)) {
-						returned = IconFactory.getImageIcon(super.iconForObject(object), IconLibrary.WARNING);
-					}
-					else {
-						returned = super.iconForObject(object);
-					}
-				}
-				else {
-					System.out.println("Unexpected null validation report for " + object);
-					returned = super.iconForObject(object);
-				}
-				fmlObjectsIcons.put((FMLObject) object, returned);
-			}
-			return returned;
-		}
-	
-		return super.retrieveIconForObject(object);
-	}*/
-
-	/*@Deprecated
-	@Override
-	protected boolean hasErrors(Validable object) {
-		return false;
+	@NotificationUnsafe
+	public boolean canMoveFlexoConcept(FlexoConcept concept, FlexoConcept container) {
+		// System.out.println("on peut bouger " + concept + " dans " + container + " ?");
+		// System.out.println("alors: " + (concept != null && concept != container && concept.getContainerFlexoConcept() != container
+		// && concept.getDeclaringVirtualModel() != container));
+		return concept != null && concept.getContainerFlexoConcept() != container && concept.getDeclaringVirtualModel() != container;
 	}
-	
-	@Deprecated
-	@Override
-	protected boolean hasWarnings(Validable object) {
-		return false;
-	}*/
 
 	private boolean showErrorsWarnings = true;
 
