@@ -152,5 +152,10 @@ public interface FIBBrowserActionAdapter<T extends FlexoObject> extends FIBBrows
 			return actionType;
 		}
 
+		@Override
+		public boolean isSerializable() {
+			return false;
+		}
+
 	}
 }
