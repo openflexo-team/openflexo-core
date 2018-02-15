@@ -548,7 +548,7 @@ public abstract class ResourceRepositoryImpl<R extends FlexoResource<?>, I> exte
 	@Override
 	public FlexoObject getMostSpecializedContainer(R resource1, R resource2) {
 
-		if (resource1 == null || resource1 == null) {
+		if (resource1 == null || resource2 == null) {
 			return null;
 		}
 
