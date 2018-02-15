@@ -99,20 +99,16 @@ public abstract class TechnologySpecificPamelaResourceFactory<R extends Technolo
 	 */
 	@Override
 	protected <I> R registerResource(R resource, FlexoResourceCenter<I> resourceCenter) {
-
 		R returned = super.registerResource(resource, resourceCenter);
-
-		TechnologyContextManager<TA> technologyContextManager = getTechnologyContextManager(resourceCenter.getServiceManager());
-
 		// Register the resource in the global repository of technology adapter
 		if (resourceCenter != null) {
+			TechnologyContextManager<TA> technologyContextManager = getTechnologyContextManager(resourceCenter.getServiceManager());
 			registerResourceInResourceRepository(resource,
 					technologyContextManager.getTechnologyAdapter().getGlobalRepository(resourceCenter));
+			resource.setTechnologyAdapter(technologyContextManager.getTechnologyAdapter());
+			resource.setTechnologyContextManager(technologyContextManager);
+			technologyContextManager.registerResource(resource);
 		}
-		resource.setTechnologyAdapter(technologyContextManager.getTechnologyAdapter());
-		resource.setTechnologyContextManager(technologyContextManager);
-		technologyContextManager.registerResource(resource);
-
 		return returned;
 	}
 
