@@ -414,7 +414,7 @@ public interface SelectFlexoConceptInstance<VMI extends VirtualModelInstance<VMI
 
 		}
 
-		private boolean isIndexableCondition(FetchRequestCondition condition) {
+		private static boolean isIndexableCondition(FetchRequestCondition condition) {
 			return getIndexableTerm(condition) != null;
 		}
 

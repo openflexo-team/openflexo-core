@@ -108,7 +108,7 @@ public class FlexoPropertyPasteHandler extends FlexoPasteHandler<FlexoProperty> 
 		// nothing to do
 	}
 
-	private String translateName(FlexoProperty object) {
+	private static String translateName(FlexoProperty<?> object) {
 		String oldName = object.getName();
 		if (StringUtils.isEmpty(oldName)) {
 			return null;
