@@ -160,13 +160,24 @@ public abstract class FIBAbstractFMLRTObjectSelector<T extends FlexoConceptInsta
 		if (!(getExpectedType() instanceof FlexoConceptInstanceType)) {
 			return false;
 		}
+		FlexoConceptInstanceType fciType = (FlexoConceptInstanceType) getExpectedType();
 		FlexoConceptInstance fci = (FlexoConceptInstance) o;
 
 		if (fci.getEmbeddedFlexoConceptInstances().size() > 0) {
-			return true;
+			// We display this FlexoConceptInstance if this is a potential container of expected type
+			boolean contained = false;
+			FlexoConcept current = fciType.getFlexoConcept();
+			while (current != null) {
+				if (current.isAssignableFrom(fci.getFlexoConcept())) {
+					contained = true;
+				}
+				current = current.getContainerFlexoConcept();
+			}
+			if (contained) {
+				return true;
+			}
 		}
 
-		FlexoConceptInstanceType fciType = (FlexoConceptInstanceType) getExpectedType();
 		return (fciType.getFlexoConcept() == null) || (fciType.getFlexoConcept().isAssignableFrom(fci.getFlexoConcept()));
 
 	}
