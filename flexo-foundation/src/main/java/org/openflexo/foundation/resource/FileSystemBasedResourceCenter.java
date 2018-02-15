@@ -1087,7 +1087,9 @@ public interface FileSystemBasedResourceCenter extends ResourceRepository<FlexoR
 				if (propertiesFiles.length == 1) {
 					try {
 						returned = new Properties();
-						returned.load(new FileReader(propertiesFiles[0]));
+						try (FileReader fr = new FileReader(propertiesFiles[0])) {
+							returned.load(fr);
+						}
 					} catch (FileNotFoundException e) {
 						returned = null;
 					}

@@ -373,12 +373,9 @@ public class Test {
 				if (!filePath.endsWith(".docx")) {
 					filePath += ".docx";
 				}
-				try {
-					FileOutputStream writer = new FileOutputStream(filePath);
+				try (FileOutputStream writer = new FileOutputStream(filePath)) {
 					edit.getEditorKit().write(writer, edit.getDocument(), 0, edit.getDocument().getLength());
-
 					writer.flush();
-					writer.close();
 				} catch (Exception ex) {
 					ex.printStackTrace();
 					System.err.println(ex.getMessage());
@@ -402,11 +399,9 @@ public class Test {
 				if (fc.showOpenDialog(mainFrame) != JFileChooser.APPROVE_OPTION)
 					return;
 				String filePath = fc.getSelectedFile().getPath();
-				try {
-					FileInputStream in = new FileInputStream(filePath);
+				try (FileInputStream in = new FileInputStream(filePath)) {
 					edit.setEditorKit(new FlexoDocumentEditorKit());
 					edit.getEditorKit().read(in, edit.getDocument(), 0);
-					in.close();
 				} catch (Exception ex) {
 					ex.printStackTrace();
 					System.err.println(ex.getMessage());
@@ -468,12 +463,10 @@ public class Test {
 	String oldFilePath;
 
 	public void loadFile(String filePath) {
-		try {
-			oldFilePath = filePath;
-			FileInputStream in = new FileInputStream(filePath);
+		oldFilePath = filePath;
+		try (FileInputStream in = new FileInputStream(filePath)) {
 			edit.getEditorKit().read(in, edit.getDocument(), 0);
 			edit.setCaretPosition(0);
-			in.close();
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}

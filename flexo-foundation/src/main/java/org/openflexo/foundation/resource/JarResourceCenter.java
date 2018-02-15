@@ -153,6 +153,7 @@ public interface JarResourceCenter extends ResourceRepository<FlexoResource<?>, 
 		for (File jar : files) {
 			if (isJarFile(jar)) {
 				try {
+					// TODO: resource leak, here we cannot close the JarFile in the scope, is it close somewhere?
 					result.add(new JarFile(jar));
 				} catch (IOException e) {
 					e.printStackTrace();
@@ -881,6 +882,7 @@ public interface JarResourceCenter extends ResourceRepository<FlexoResource<?>, 
 		public static abstract class JarResourceCenterEntryImpl implements JarResourceCenterEntry {
 			@Override
 			public JarResourceCenter makeResourceCenter(FlexoResourceCenterService rcService) {
+				// Euh pas l'air de causer des soucis
 				JarFile jarFile;
 				try {
 					jarFile = new JarFile(getFile());

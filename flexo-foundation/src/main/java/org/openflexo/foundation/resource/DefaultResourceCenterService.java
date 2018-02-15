@@ -197,6 +197,7 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 							URI jarURI = new URI(jarURL.getProtocol(), jarURL.getUserInfo(), jarURL.getHost(), jarURL.getPort(),
 									jarURL.getPath(), jarURL.getQuery(), jarURL.getRef());
 
+							// TODO : non local resource, is it closed somewhere?
 							rc = JarResourceCenter.addJarFile(new JarFile(new File(jarURI)), this);
 
 						}
@@ -264,11 +265,7 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 				}
 			}
 			if (resourceCenter.isDirectory(serializationArtefact)) {
-				try {
-					foundFolder(resourceCenter, serializationArtefact);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+				foundFolder(resourceCenter, serializationArtefact);
 			}
 		}
 
@@ -335,7 +332,7 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 		return null;
 	}
 
-	protected final <I> void foundFolder(FlexoResourceCenter<I> resourceCenter, I folder) throws IOException {
+	protected final <I> void foundFolder(FlexoResourceCenter<I> resourceCenter, I folder) {
 		if (resourceCenter.isDirectory(folder) && !isFolderIgnorable(resourceCenter, folder)) {
 			// logger.warning("TODO: handle folder for " + folder);
 			/*TechnologyAdapterGlobalRepository globalRepository = getGlobalRepository(resourceCenter);
@@ -459,8 +456,7 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 	 * @author sylvain
 	 * 
 	 */
-	public class ResourceCenterListShouldBeStored implements ServiceNotification {
-	}
+	public class ResourceCenterListShouldBeStored implements ServiceNotification {}
 
 	@Override
 	public void initialize() {
@@ -491,31 +487,30 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 	 * @author sylvain
 	 * 
 	 */
-	public class DefaultPackageResourceCenterIsNotInstalled implements ServiceNotification {
-	}
+	public class DefaultPackageResourceCenterIsNotInstalled implements ServiceNotification {}
 
-	private void notifyWillWrite(File fileBeeingAdded, FileSystemBasedResourceCenter rc) {
+	private static void notifyWillWrite(File fileBeeingAdded, FileSystemBasedResourceCenter rc) {
 		File rootDirectory = rc.getRootDirectory();
 		if (FileUtils.directoryContainsFile(rootDirectory, fileBeeingAdded, true)) {
 			rc.willWrite(fileBeeingAdded);
 		}
 	}
 
-	private void notifyHasBeenWritten(File fileBeeingAdded, FileSystemBasedResourceCenter rc) {
+	private static void notifyHasBeenWritten(File fileBeeingAdded, FileSystemBasedResourceCenter rc) {
 		File rootDirectory = rc.getRootDirectory();
 		if (FileUtils.directoryContainsFile(rootDirectory, fileBeeingAdded, true)) {
 			rc.hasBeenWritten(fileBeeingAdded);
 		}
 	}
 
-	private void notifyWillRename(File fromFile, File toFile, FileSystemBasedResourceCenter rc) {
+	private static void notifyWillRename(File fromFile, File toFile, FileSystemBasedResourceCenter rc) {
 		File rootDirectory = rc.getRootDirectory();
 		if (FileUtils.directoryContainsFile(rootDirectory, toFile, true)) {
 			rc.willRename(fromFile, toFile);
 		}
 	}
 
-	private void notifyWillDelete(File fileBeeingDeleted, FileSystemBasedResourceCenter rc) {
+	private static void notifyWillDelete(File fileBeeingDeleted, FileSystemBasedResourceCenter rc) {
 		File rootDirectory = rc.getRootDirectory();
 		if (FileUtils.directoryContainsFile(rootDirectory, fileBeeingDeleted, true)) {
 			rc.willDelete(fileBeeingDeleted);

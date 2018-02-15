@@ -381,8 +381,9 @@ public class VirtualModelResourceFactory
 
 		// display nice nice
 		xmlOutput.setFormat(Format.getPrettyFormat());
-		xmlOutput.output(document, new FileWriter(xmlFile));
-
+		try (FileWriter fw = new FileWriter(xmlFile)) {
+			xmlOutput.output(document, fw);
+		}
 		System.out.println("File Saved!");
 	}
 
