@@ -171,6 +171,7 @@ public abstract class FlexoResourceFactory<R extends FlexoResource<RD>, RD exten
 		return resourceData;
 	}
 
+	// Beware the exceptions are needed in the children
 	protected <I> R initResourceForCreation(I serializationArtefact, FlexoResourceCenter<I> resourceCenter, String name, String uri)
 			throws ModelDefinitionException {
 		R returned = newInstance(resourceClass);
@@ -192,6 +193,7 @@ public abstract class FlexoResourceFactory<R extends FlexoResource<RD>, RD exten
 		return returned;
 	}
 
+	// Beware the exceptions are needed in the children
 	protected <I> R initResourceForRetrieving(I serializationArtefact, FlexoResourceCenter<I> resourceCenter)
 			throws ModelDefinitionException, IOException {
 		R returned = newInstance(resourceClass);

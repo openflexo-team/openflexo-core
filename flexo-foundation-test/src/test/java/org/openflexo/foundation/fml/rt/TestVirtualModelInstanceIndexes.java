@@ -520,7 +520,7 @@ public class TestVirtualModelInstanceIndexes extends OpenflexoProjectAtRunTimeTe
 
 	@Test
 	@TestOrder(10)
-	public void testIndexes1() throws SaveResourceException {
+	public void testIndexes1() {
 
 		System.out.println("FML VP: " + viewPoint.getFMLRepresentation());
 		System.out.println("FML VM: " + virtualModel.getFMLRepresentation());
@@ -531,7 +531,7 @@ public class TestVirtualModelInstanceIndexes extends OpenflexoProjectAtRunTimeTe
 
 	@Test
 	@TestOrder(11)
-	public void testIndexes2() throws SaveResourceException {
+	public void testIndexes2() {
 
 		performRequest("selectLastName", john, mary, jacky1, jacky2, junior);
 
@@ -539,7 +539,7 @@ public class TestVirtualModelInstanceIndexes extends OpenflexoProjectAtRunTimeTe
 
 	@Test
 	@TestOrder(12)
-	public void testIndexes3() throws SaveResourceException {
+	public void testIndexes3() {
 
 		performRequest("selectAge", jacky1, jacky2);
 
@@ -547,7 +547,7 @@ public class TestVirtualModelInstanceIndexes extends OpenflexoProjectAtRunTimeTe
 
 	@Test
 	@TestOrder(13)
-	public void testIndexes4() throws SaveResourceException {
+	public void testIndexes4() {
 
 		performRequest("selectLastNamePlusAge", john, mary);
 
@@ -555,13 +555,13 @@ public class TestVirtualModelInstanceIndexes extends OpenflexoProjectAtRunTimeTe
 
 	@Test
 	@TestOrder(14)
-	public void testIndexes5() throws SaveResourceException {
+	public void testIndexes5() {
 
 		performRequest("selectLastNameAndAge", john, mary);
 
 	}
 
-	private static void performRequest(String requestName, FlexoConceptInstance... expectedResult) throws SaveResourceException {
+	private static void performRequest(String requestName, FlexoConceptInstance... expectedResult) {
 
 		ActionScheme request1 = (ActionScheme) virtualModel.getFlexoBehaviour(requestName);
 		ActionSchemeActionFactory request1AT = new ActionSchemeActionFactory(request1, newVirtualModelInstance);
@@ -578,7 +578,7 @@ public class TestVirtualModelInstanceIndexes extends OpenflexoProjectAtRunTimeTe
 
 	@Test
 	@TestOrder(15)
-	public void testRepopulateVirtualModelInstance() throws SaveResourceException {
+	public void testRepopulateVirtualModelInstance() {
 
 		log("testRepopulateVirtualModelInstance()");
 
@@ -592,7 +592,7 @@ public class TestVirtualModelInstanceIndexes extends OpenflexoProjectAtRunTimeTe
 
 	@Test
 	@TestOrder(16)
-	public void testModifySomeContents() throws SaveResourceException {
+	public void testModifySomeContents() {
 
 		log("testModifySomeContents()");
 
@@ -604,7 +604,7 @@ public class TestVirtualModelInstanceIndexes extends OpenflexoProjectAtRunTimeTe
 
 	@Test
 	@TestOrder(17)
-	public void testRemoveSomeContents() throws SaveResourceException {
+	public void testRemoveSomeContents() {
 
 		log("testRemoveSomeContents()");
 		deleteInstance(sofia);

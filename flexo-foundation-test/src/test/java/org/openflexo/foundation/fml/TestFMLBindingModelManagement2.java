@@ -277,7 +277,7 @@ public class TestFMLBindingModelManagement2 extends OpenflexoProjectAtRunTimeTes
 
 	@Test
 	@TestOrder(5)
-	public void testCreateFirstIteration() throws SaveResourceException {
+	public void testCreateFirstIteration() {
 
 		// We programmatically implement this code:
 		// ActionScheme testFetchRequestIteration(String aString, Boolean
@@ -403,7 +403,7 @@ public class TestFMLBindingModelManagement2 extends OpenflexoProjectAtRunTimeTes
 
 	@Test
 	@TestOrder(6)
-	public void testCreateSecondIteration() throws SaveResourceException {
+	public void testCreateSecondIteration() {
 
 		// We add a second iteration with no control graph
 		//
@@ -459,7 +459,7 @@ public class TestFMLBindingModelManagement2 extends OpenflexoProjectAtRunTimeTes
 
 	@Test
 	@TestOrder(7)
-	public void moveControlGraph() throws SaveResourceException {
+	public void moveControlGraph() {
 
 		// We move the control graph from one iteration to another one
 		//

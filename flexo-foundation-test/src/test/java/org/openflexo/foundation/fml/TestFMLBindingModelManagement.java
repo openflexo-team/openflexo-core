@@ -293,7 +293,7 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 
 	@Test
 	@TestOrder(5)
-	public void testFlexoRoleBindingModelManagement() throws SaveResourceException {
+	public void testFlexoRoleBindingModelManagement() {
 
 		CreatePrimitiveRole createPR1 = CreatePrimitiveRole.actionType.makeNewAction(flexoConceptA, null, editor);
 		createPR1.setRoleName("aStringInA");
@@ -694,7 +694,7 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 
 	@Test
 	@TestOrder(9)
-	public void testFlexoBehaviourBindingModelManagement() throws SaveResourceException {
+	public void testFlexoBehaviourBindingModelManagement() {
 
 		CreateFlexoBehaviour createCreationScheme = CreateFlexoBehaviour.actionType.makeNewAction(flexoConceptA, null, editor);
 		createCreationScheme.setFlexoBehaviourClass(CreationScheme.class);
@@ -776,7 +776,7 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 
 	@Test
 	@TestOrder(13)
-	public void testEditionActionBindingModelManagement() throws SaveResourceException {
+	public void testEditionActionBindingModelManagement() {
 
 		// We programmatically implement this code:
 		// CreateFlexoBehaviour createActionScheme(boolean aFlag) {

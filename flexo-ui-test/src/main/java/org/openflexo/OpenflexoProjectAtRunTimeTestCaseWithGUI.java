@@ -38,7 +38,6 @@
 
 package org.openflexo;
 
-import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -63,8 +62,6 @@ public abstract class OpenflexoProjectAtRunTimeTestCaseWithGUI extends Openflexo
 		try {
 			FlexoLoggingManager.initialize(-1, true, null, Level.WARNING, null);
 		} catch (SecurityException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}

@@ -38,7 +38,6 @@
 
 package org.openflexo.foundation.fml.rt;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -66,7 +65,7 @@ public interface FMLRTVirtualModelInstanceRepository<I> extends
 		ModelRepository<FMLRTVirtualModelInstanceResource, FMLRTVirtualModelInstance, VirtualModel, FMLRTTechnologyAdapter, FMLTechnologyAdapter, I> {
 
 	public static <I> FMLRTVirtualModelInstanceRepository<I> instanciateNewRepository(FMLRTTechnologyAdapter technologyAdapter,
-			FlexoResourceCenter<I> resourceCenter) throws IOException {
+			FlexoResourceCenter<I> resourceCenter) {
 		ModelFactory factory;
 		try {
 			factory = new ModelFactory(FMLRTVirtualModelInstanceRepository.class);

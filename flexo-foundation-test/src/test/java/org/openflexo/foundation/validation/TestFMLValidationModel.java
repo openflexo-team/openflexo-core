@@ -180,7 +180,7 @@ public class TestFMLValidationModel extends OpenflexoTestCase {
 
 	@Test
 	@TestOrder(2)
-	public void testViewPointValidationRules() throws ModelDefinitionException {
+	public void testViewPointValidationRules() {
 		ValidationRuleSet<?> ruleSet = validationModel.getRuleSet(VirtualModel.class);
 		assertNotNull(ruleSet);
 		System.out.println("ruleSet=" + ruleSet + " size=" + ruleSet.getRulesCount());
@@ -193,7 +193,7 @@ public class TestFMLValidationModel extends OpenflexoTestCase {
 
 	@Test
 	@TestOrder(3)
-	public void testFlexoConceptValidationRules() throws ModelDefinitionException {
+	public void testFlexoConceptValidationRules() {
 		ValidationRuleSet<?> ruleSet = validationModel.getRuleSet(FlexoConcept.class);
 		assertNotNull(ruleSet);
 		System.out.println("ruleSet=" + ruleSet + " size=" + ruleSet.getRulesCount());
@@ -207,7 +207,7 @@ public class TestFMLValidationModel extends OpenflexoTestCase {
 
 	@Test
 	@TestOrder(4)
-	public void testFlexoRoleValidationRules() throws ModelDefinitionException {
+	public void testFlexoRoleValidationRules() {
 		ValidationRuleSet<?> ruleSet = validationModel.getRuleSet(FlexoRole.class);
 		assertNotNull(ruleSet);
 		System.out.println("ruleSet=" + ruleSet + " size=" + ruleSet.getRulesCount());
@@ -219,7 +219,7 @@ public class TestFMLValidationModel extends OpenflexoTestCase {
 
 	@Test
 	@TestOrder(5)
-	public void testModelSlotValidationRules() throws ModelDefinitionException {
+	public void testModelSlotValidationRules() {
 		ValidationRuleSet<?> ruleSet = validationModel.getRuleSet(ModelSlot.class);
 		assertNotNull(ruleSet);
 		System.out.println("ruleSet=" + ruleSet + " size=" + ruleSet.getRulesCount());
@@ -231,7 +231,7 @@ public class TestFMLValidationModel extends OpenflexoTestCase {
 
 	@Test
 	@TestOrder(6)
-	public void testAssignationActionValidationRules() throws ModelDefinitionException {
+	public void testAssignationActionValidationRules() {
 		ValidationRuleSet<?> ruleSet = validationModel.getRuleSet(AssignationAction.class);
 		assertNotNull(ruleSet);
 		System.out.println("ruleSet=" + ruleSet + " size=" + ruleSet.getRulesCount());

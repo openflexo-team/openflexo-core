@@ -100,7 +100,7 @@ public interface GitResourceCenter extends FileSystemBasedResourceCenter {
 		private File gitDir;
 
 		public GitResourceCenterImpl(/*File resourceCenterDirectory, File gitRepository, FlexoResourceCenterService rcService*/)
-				throws IllegalStateException, IOException, GitAPIException {
+				throws IllegalStateException {
 			super();
 			gitIODelegateFactory = new GitIODelegateFactory();
 		}

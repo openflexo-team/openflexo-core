@@ -636,8 +636,7 @@ public class Flexo {
 						FileLock fileLock = fos.getChannel().lock();
 						lockAcquired = true;
 						System.out.println("locked " + fileLock);
-					} catch (IOException e) {
-					} finally {
+					} catch (IOException e) {} finally {
 						if (!lockAcquired) {
 							fos.close();
 						}
@@ -737,10 +736,6 @@ public class Flexo {
 		} catch (SecurityException e) {
 			logger.severe("cannot read logging configuration file : " + System.getProperty("java.util.logging.config.file")
 					+ "\nIt seems the file has read access protection.");
-			e.printStackTrace();
-			return null;
-		} catch (IOException e) {
-			logger.severe("cannot read logging configuration file : " + System.getProperty("java.util.logging.config.file"));
 			e.printStackTrace();
 			return null;
 		}

@@ -179,7 +179,7 @@ public class TestControlGraph extends OpenflexoTestCase {
 
 	@Test
 	@TestOrder(9)
-	public void testCreateSomePatternRolesToConcept() throws SaveResourceException {
+	public void testCreateSomePatternRolesToConcept() {
 
 		CreatePrimitiveRole createPR1 = CreatePrimitiveRole.actionType.makeNewAction(flexoConcept, null, editor);
 		createPR1.setRoleName("aString");
@@ -205,7 +205,7 @@ public class TestControlGraph extends OpenflexoTestCase {
 
 	@Test
 	@TestOrder(10)
-	public void testCreateACreationSchemeInConcept() throws SaveResourceException {
+	public void testCreateACreationSchemeInConcept() {
 
 		log("testCreateACreationSchemeInConcept");
 
@@ -316,7 +316,7 @@ public class TestControlGraph extends OpenflexoTestCase {
 
 	@Test
 	@TestOrder(11)
-	public void testCreateAnActionSchemeInConcept() throws SaveResourceException {
+	public void testCreateAnActionSchemeInConcept() {
 
 		log("testCreateAnActionSchemeInConcept");
 

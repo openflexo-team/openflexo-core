@@ -38,8 +38,6 @@
 
 package org.openflexo.foundation.technologyadapter;
 
-import java.io.IOException;
-
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.exceptions.ModelDefinitionException;
@@ -55,7 +53,7 @@ import org.openflexo.model.factory.ModelFactory;
 public interface TechnologyAdapterGlobalRepository<TA extends TechnologyAdapter, I> extends TechnologyAdapterResourceRepository {
 
 	public static <TA extends TechnologyAdapter, I> TechnologyAdapterGlobalRepository<TA, I> instanciateNewRepository(TA technologyAdapter,
-			FlexoResourceCenter<I> resourceCenter) throws IOException {
+			FlexoResourceCenter<I> resourceCenter) {
 		ModelFactory factory;
 		try {
 			factory = new ModelFactory(TechnologyAdapterGlobalRepository.class);

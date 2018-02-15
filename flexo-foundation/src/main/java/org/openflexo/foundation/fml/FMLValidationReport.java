@@ -76,7 +76,7 @@ public class FMLValidationReport extends ValidationReport {
 
 	private VirtualModel virtualModel;
 
-	public FMLValidationReport(ValidationModel validationModel, VirtualModel virtualModel) throws InterruptedException {
+	public FMLValidationReport(ValidationModel validationModel, VirtualModel virtualModel) {
 		super(validationModel, virtualModel);
 		this.virtualModel = virtualModel;
 	}
@@ -124,7 +124,7 @@ public class FMLValidationReport extends ValidationReport {
 	// private long intermediateTime;
 	// private long endTime;
 
-	private <C extends FMLObject> void reanalyzeBinding(ValidationIssue<? extends BindingIsRequiredAndMustBeValid<C>, C> issue) {
+	private static <C extends FMLObject> void reanalyzeBinding(ValidationIssue<? extends BindingIsRequiredAndMustBeValid<C>, C> issue) {
 		DataBinding<?> db = issue.getCause().getBinding(issue.getValidable());
 		db.markedAsToBeReanalized();
 	}

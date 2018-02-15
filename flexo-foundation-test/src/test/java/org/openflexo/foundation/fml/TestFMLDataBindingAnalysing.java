@@ -264,7 +264,7 @@ public class TestFMLDataBindingAnalysing extends OpenflexoTestCase {
 
 	@Test
 	@TestOrder(9)
-	public void testCreateSomePropertiesToConceptA() throws SaveResourceException {
+	public void testCreateSomePropertiesToConceptA() {
 
 		CreatePrimitiveRole createPR1 = CreatePrimitiveRole.actionType.makeNewAction(flexoConceptA, null, editor);
 		createPR1.setRoleName("aString");
@@ -308,7 +308,7 @@ public class TestFMLDataBindingAnalysing extends OpenflexoTestCase {
 
 	@Test
 	@TestOrder(10)
-	public void testCreateACreationSchemeInConceptA() throws SaveResourceException {
+	public void testCreateACreationSchemeInConceptA() {
 
 		CreateFlexoBehaviour createCreationScheme = CreateFlexoBehaviour.actionType.makeNewAction(flexoConceptA, null, editor);
 		createCreationScheme.setFlexoBehaviourClass(CreationScheme.class);
@@ -361,7 +361,7 @@ public class TestFMLDataBindingAnalysing extends OpenflexoTestCase {
 
 	@Test
 	@TestOrder(11)
-	public void testCreateAnActionSchemeInConceptA() throws SaveResourceException {
+	public void testCreateAnActionSchemeInConceptA() {
 
 		CreateFlexoBehaviour createActionScheme = CreateFlexoBehaviour.actionType.makeNewAction(flexoConceptA, null, editor);
 		createActionScheme.setFlexoBehaviourClass(ActionScheme.class);
@@ -426,7 +426,7 @@ public class TestFMLDataBindingAnalysing extends OpenflexoTestCase {
 
 	@Test
 	@TestOrder(12)
-	public void testCreateAnotherActionSchemeInConceptA() throws SaveResourceException {
+	public void testCreateAnotherActionSchemeInConceptA() {
 
 		CreateFlexoBehaviour createActionScheme = CreateFlexoBehaviour.actionType.makeNewAction(flexoConceptA, null, editor);
 		createActionScheme.setFlexoBehaviourClass(ActionScheme.class);

@@ -50,7 +50,6 @@ import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionFactory;
-import org.openflexo.foundation.action.NotImplementedException;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptObject;
@@ -165,7 +164,7 @@ public abstract class AbstractCreateFlexoProperty<A extends AbstractCreateFlexoP
 		}
 	}
 
-	protected void finalizeDoAction(Object context) throws NotImplementedException, InvalidParameterException {
+	protected void finalizeDoAction(Object context) throws InvalidParameterException {
 		if (getFlexoConcept() != null && getNewFlexoProperty() != null) {
 			getNewFlexoProperty().setDescription(getDescription());
 			getFlexoConcept().addToFlexoProperties(getNewFlexoProperty());

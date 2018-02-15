@@ -40,7 +40,6 @@ package org.openflexo.fml.rt.controller;
 
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.SynchronizationScheme;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
@@ -93,14 +92,14 @@ public class FMLRTFIBController extends FlexoFIBController {
 		return null;
 	}
 
-	public FlexoConceptInstance createFlexoConceptInstance(FlexoConceptInstance container) throws FlexoException {
+	public FlexoConceptInstance createFlexoConceptInstance(FlexoConceptInstance container) {
 		System.out.println("create FCI, container=" + container);
 		CreateFlexoConceptInstance createFCI = CreateFlexoConceptInstance.actionType.makeNewAction(container, null, getEditor());
 		createFCI.doAction();
 		return createFCI.getNewFlexoConceptInstance();
 	}
 
-	public void deleteFlexoConceptInstance(FlexoConceptInstance conceptInstance) throws FlexoException {
+	public void deleteFlexoConceptInstance(FlexoConceptInstance conceptInstance) {
 		System.out.println("delete FCI, container=" + conceptInstance);
 		conceptInstance.delete();
 	}

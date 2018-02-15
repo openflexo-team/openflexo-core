@@ -134,8 +134,6 @@ public abstract class OpenflexoTestCase {
 			FlexoLoggingManager.initialize(-1, true, null, Level.WARNING, null);
 		} catch (SecurityException e) {
 			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
 		}
 	}
 

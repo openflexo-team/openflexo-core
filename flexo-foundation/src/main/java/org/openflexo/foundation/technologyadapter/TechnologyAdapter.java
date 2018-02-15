@@ -650,12 +650,7 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 	public <I> TechnologyAdapterGlobalRepository<?, I> getGlobalRepository(FlexoResourceCenter<I> rc) {
 		TechnologyAdapterGlobalRepository<?, I> returned = globalRepositories.get(rc);
 		if (returned == null) {
-			try {
-				returned = TechnologyAdapterGlobalRepository.instanciateNewRepository(this, rc);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			returned = TechnologyAdapterGlobalRepository.instanciateNewRepository(this, rc);
 			globalRepositories.put(rc, returned);
 		}
 		return returned;
@@ -878,7 +873,7 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 							URL jarURL = new URL(jarPath);
 							URI jarURI = new URI(jarURL.getProtocol(), jarURL.getUserInfo(), jarURL.getHost(), jarURL.getPort(),
 									jarURL.getPath(), jarURL.getQuery(), jarURL.getRef());
-
+							// TODO: non local resource is it closed somewhere
 							rc = JarResourceCenter.addJarFile(new JarFile(new File(jarURI)), serviceManager.getResourceCenterService());
 
 						}

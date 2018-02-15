@@ -38,7 +38,6 @@
 
 package org.openflexo.foundation.fml;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -66,7 +65,7 @@ public interface VirtualModelRepository<I>
 	public List<VirtualModelResource> getTopLevelVirtualModelResources();
 
 	public static <I> VirtualModelRepository<I> instanciateNewRepository(FMLTechnologyAdapter technologyAdapter,
-			FlexoResourceCenter<I> resourceCenter) throws IOException {
+			FlexoResourceCenter<I> resourceCenter) {
 		ModelFactory factory;
 		try {
 			factory = new ModelFactory(VirtualModelRepository.class);

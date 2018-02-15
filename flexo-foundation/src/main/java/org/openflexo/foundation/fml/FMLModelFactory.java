@@ -251,8 +251,8 @@ public class FMLModelFactory extends FGEModelFactoryImpl implements PamelaResour
 		return classes;
 	}
 
-	private static void retrieveTechnologySpecificClassesForModelSlot(Class<? extends ModelSlot<?>> modelSlotClass, List<Class<?>> classes)
-			throws ModelDefinitionException {
+	private static void retrieveTechnologySpecificClassesForModelSlot(Class<? extends ModelSlot<?>> modelSlotClass,
+			List<Class<?>> classes) {
 		classes.add(modelSlotClass);
 		DeclareFlexoRoles prDeclarations = modelSlotClass.getAnnotation(DeclareFlexoRoles.class);
 		if (prDeclarations != null) {

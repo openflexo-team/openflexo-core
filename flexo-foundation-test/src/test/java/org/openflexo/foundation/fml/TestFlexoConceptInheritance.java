@@ -733,7 +733,7 @@ public class TestFlexoConceptInheritance extends OpenflexoProjectAtRunTimeTestCa
 
 	@Test
 	@TestOrder(21)
-	public void testUtils() throws IOException {
+	public void testUtils() {
 
 		assertSame(flexoConceptA, FMLUtils.getMostSpecializedAncestor(flexoConceptA, flexoConceptA));
 		assertSame(flexoConceptA, FMLUtils.getMostSpecializedAncestor(flexoConceptA, flexoConceptB));

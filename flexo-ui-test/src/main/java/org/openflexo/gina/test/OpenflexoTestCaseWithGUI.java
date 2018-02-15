@@ -39,7 +39,6 @@
 package org.openflexo.gina.test;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -71,8 +70,6 @@ public abstract class OpenflexoTestCaseWithGUI extends OpenflexoTestCase {
 		try {
 			FlexoLoggingManager.initialize(-1, true, null, Level.WARNING, null);
 		} catch (SecurityException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}

@@ -40,7 +40,6 @@ package org.openflexo.gina.utils;
 
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.IOException;
 import java.util.logging.Level;
 
 import javax.swing.JSplitPane;
@@ -87,8 +86,6 @@ public class OpenflexoGinaSwingEditorTestCase extends OpenflexoTestCase {
 			FlexoLocalization.initWith(FIBEditor.EDITOR_LOCALIZATION);
 		} catch (SecurityException e) {
 			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
 		}
 
 		initGUI();
@@ -114,8 +111,7 @@ public class OpenflexoGinaSwingEditorTestCase extends OpenflexoTestCase {
 		gcDelegate.tearDown();
 	}
 
-	public FIBEditor instanciateFIBEdition(String title, Resource fibResource, Object data)
-			throws ClassNotFoundException, InstantiationException, IllegalAccessException, UnsupportedLookAndFeelException {
+	public FIBEditor instanciateFIBEdition(String title, Resource fibResource, Object data) {
 
 		final FIBEditor editor = new FIBEditor(FIBLibraryImpl.createInstance(null)) {
 			@Override

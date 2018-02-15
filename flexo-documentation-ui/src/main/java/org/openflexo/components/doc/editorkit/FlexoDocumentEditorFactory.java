@@ -230,7 +230,7 @@ public class FlexoDocumentEditorFactory<D extends FlexoDocument<D, TA>, TA exten
 		iteratePart(p.getRuns());
 	}
 
-	protected void applyParagraphStyle(FlexoParagraphStyle<D, TA> style) throws BadLocationException {
+	protected void applyParagraphStyle(FlexoParagraphStyle<D, TA> style) {
 		if (style != null) {
 			if (style.getParagraphAlignment() != null) {
 				switch (style.getParagraphAlignment()) {
@@ -342,7 +342,7 @@ public class FlexoDocumentEditorFactory<D extends FlexoDocument<D, TA>, TA exten
 		processText(run.getText());
 	}
 
-	protected void applyRunStyle(FlexoRunStyle<D, TA> style) throws BadLocationException {
+	protected void applyRunStyle(FlexoRunStyle<D, TA> style) {
 
 		if (style != null) {
 			if (style.getFontSize() != null) {
@@ -415,7 +415,7 @@ public class FlexoDocumentEditorFactory<D extends FlexoDocument<D, TA>, TA exten
 		}
 	}
 
-	protected void processDrawingRun(FlexoDrawingRun<D, TA> drawingRun) throws BadLocationException {
+	protected void processDrawingRun(FlexoDrawingRun<D, TA> drawingRun) {
 
 		if (drawingRun.getImage() != null) {
 			ImageIcon ii = new ImageIcon(drawingRun.getImage());

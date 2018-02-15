@@ -38,7 +38,6 @@
 
 package org.openflexo.foundation.fml.rt;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -139,12 +138,7 @@ public class FMLRTTechnologyAdapter extends TechnologyAdapter {
 		FMLRTVirtualModelInstanceRepository<I> returned = resourceCenter.retrieveRepository(FMLRTVirtualModelInstanceRepository.class,
 				this);
 		if (returned == null) {
-			try {
-				returned = FMLRTVirtualModelInstanceRepository.instanciateNewRepository(this, resourceCenter);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			returned = FMLRTVirtualModelInstanceRepository.instanciateNewRepository(this, resourceCenter);
 			resourceCenter.registerRepository(returned, FMLRTVirtualModelInstanceRepository.class, this);
 		}
 		return returned;

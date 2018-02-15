@@ -61,7 +61,6 @@ import org.openflexo.foundation.resource.PamelaResourceImpl.IgnoreLoadingEdits;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.model.ModelContext;
 import org.openflexo.model.converter.RelativePathResourceConverter;
-import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.model.factory.EditingContext;
 import org.openflexo.model.factory.ModelFactory;
 
@@ -83,8 +82,7 @@ public abstract class DocumentFactory<D extends FlexoDocument<D, TA>, TA extends
 
 	private RelativePathResourceConverter relativePathResourceConverter;
 
-	public DocumentFactory(ModelContext modelContext, FlexoDocumentResource<D, TA, ?> resource, EditingContext editingContext)
-			throws ModelDefinitionException {
+	public DocumentFactory(ModelContext modelContext, FlexoDocumentResource<D, TA, ?> resource, EditingContext editingContext) {
 		super(modelContext);
 		this.resource = resource;
 		setEditingContext(editingContext);
@@ -273,7 +271,7 @@ public abstract class DocumentFactory<D extends FlexoDocument<D, TA>, TA extends
 	}
 
 	public TextSelection<D, TA> makeTextSelection(FlexoDocFragment<D, TA> fragment, FlexoDocElement<D, TA> startElement, int startRunId,
-			int startCharId, FlexoDocElement<D, TA> endElement, int endRunId, int endCharId) throws FragmentConsistencyException {
+			int startCharId, FlexoDocElement<D, TA> endElement, int endRunId, int endCharId) {
 		TextSelection<D, TA> returned = newInstance(TextSelection.class);
 		returned.setFragment(fragment);
 		returned.setStartElement(startElement);
@@ -384,23 +382,24 @@ public abstract class DocumentFactory<D extends FlexoDocument<D, TA>, TA extends
 	 * @throws IOException
 	 */
 	protected static byte[] convertImageToByteArray(File file) throws FileNotFoundException, IOException {
-		InputStream is = new FileInputStream(file);
-		long length = file.length();
-		// You cannot create an array using a long, it needs to be an int.
-		if (length > Integer.MAX_VALUE) {
-			System.out.println("File too large!!");
+		byte[] bytes;
+		try (InputStream is = new FileInputStream(file)) {
+			long length = file.length();
+			// You cannot create an array using a long, it needs to be an int.
+			if (length > Integer.MAX_VALUE) {
+				System.out.println("File too large!!");
+			}
+			bytes = new byte[(int) length];
+			int offset = 0;
+			int numRead = 0;
+			while (offset < bytes.length && (numRead = is.read(bytes, offset, bytes.length - offset)) >= 0) {
+				offset += numRead;
+			}
+			// Ensure all the bytes have been read
+			if (offset < bytes.length) {
+				System.out.println("Could not completely read file " + file.getName());
+			}
 		}
-		byte[] bytes = new byte[(int) length];
-		int offset = 0;
-		int numRead = 0;
-		while (offset < bytes.length && (numRead = is.read(bytes, offset, bytes.length - offset)) >= 0) {
-			offset += numRead;
-		}
-		// Ensure all the bytes have been read
-		if (offset < bytes.length) {
-			System.out.println("Could not completely read file " + file.getName());
-		}
-		is.close();
 		return bytes;
 	}
 

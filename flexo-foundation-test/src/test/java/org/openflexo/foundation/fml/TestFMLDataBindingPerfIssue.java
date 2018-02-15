@@ -200,7 +200,7 @@ public class TestFMLDataBindingPerfIssue extends OpenflexoTestCase {
 
 	@Test
 	@TestOrder(11)
-	public void testCreateAnActionScheme() throws SaveResourceException {
+	public void testCreateAnActionScheme() {
 
 		CreateFlexoBehaviour createActionScheme = CreateFlexoBehaviour.actionType.makeNewAction(virtualModel, null, editor);
 		createActionScheme.setFlexoBehaviourClass(ActionScheme.class);
