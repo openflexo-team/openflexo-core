@@ -89,4 +89,9 @@ public class EPIRendererPathElement extends SimplePathElement {
 		// Not applicable
 	}
 
+	@Override
+	public boolean isNotificationSafe() {
+		return false;
+	}
+
 }

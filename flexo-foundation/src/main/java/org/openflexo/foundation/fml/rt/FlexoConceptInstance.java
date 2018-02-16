@@ -1782,11 +1782,29 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 			return getOwningVirtualModelInstance();
 		}
 
+		private boolean rendererWasForceRevalidated = false;
+
 		@Override
 		public boolean hasValidRenderer() {
-			return getFlexoConcept() != null && getFlexoConcept().getInspector() != null
-					&& getFlexoConcept().getInspector().getRenderer() != null && getFlexoConcept().getInspector().getRenderer().isSet()
-					&& getFlexoConcept().getInspector().getRenderer().isValid();
+
+			if (getFlexoConcept() != null && getFlexoConcept().getInspector() != null
+					&& getFlexoConcept().getInspector().getRenderer() != null) {
+				if (!getFlexoConcept().getInspector().getRenderer().isValid()) {
+					// Quick and dirty hasck to force revalidate
+					if (!rendererWasForceRevalidated) {
+						String invalidReason = getFlexoConcept().getInspector().getRenderer().invalidBindingReason();
+						getFlexoConcept().getInspector().getRenderer().forceRevalidate();
+						rendererWasForceRevalidated = true;
+						if (getFlexoConcept().getInspector().getRenderer().isValid()) {
+							logger.warning("Please investigate: i was required to force revalidate renderer: "
+									+ getFlexoConcept().getInspector().getRenderer() + " invalid reason=" + invalidReason);
+						}
+					}
+				}
+				return getFlexoConcept().getInspector().getRenderer().isValid();
+			}
+
+			return false;
 		}
 
 		private BindingValueChangeListener<String> rendererChangeListener = null;

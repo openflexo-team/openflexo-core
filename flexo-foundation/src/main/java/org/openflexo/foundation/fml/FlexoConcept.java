@@ -1888,6 +1888,7 @@ public interface FlexoConcept extends VirtualModelObject {
 				embeddedValidable.add(getStructuralFacet());
 				embeddedValidable.add(getBehaviouralFacet());
 				embeddedValidable.add(getInnerConceptsFacet());
+				embeddedValidable.add(getInspector());
 			}
 			return embeddedValidable;
 		}

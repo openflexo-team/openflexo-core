@@ -10,6 +10,8 @@
 'object'_binding_is_not_valid_description='object' binding is not valid description
 'receiver'_binding_is_required_and_must_be_valid='receiver' binding is required and must be valid
 'receiver'_binding_is_required_and_must_be_valid_description='receiver' binding is required and must be valid description
+'renderer'_binding_is_recommanded_and_should_be_valid='renderer' binding is recommanded and should be valid
+'renderer'_binding_is_recommanded_and_should_be_valid_description='renderer' binding is recommanded and should be valid description
 'value'_binding_is_required_and_must_be_valid='value' binding is required and must be valid
 'value'_binding_is_required_and_must_be_valid_description='value' binding is required and must be valid description
 'virtual_model_instance'_binding_is_not_valid='virtual model instance' binding is not valid
