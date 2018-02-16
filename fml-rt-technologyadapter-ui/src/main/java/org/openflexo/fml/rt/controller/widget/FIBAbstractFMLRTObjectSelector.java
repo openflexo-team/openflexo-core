@@ -225,6 +225,7 @@ public abstract class FIBAbstractFMLRTObjectSelector<T extends FlexoConceptInsta
 		return expectedType;
 	}
 
+	@CustomComponentParameter(name = "expectedType", type = CustomComponentParameter.Type.OPTIONAL)
 	public void setExpectedType(Type expectedType) {
 
 		if ((expectedType == null && this.expectedType != null) || (expectedType != null && !expectedType.equals(this.expectedType))) {
@@ -238,6 +239,7 @@ public abstract class FIBAbstractFMLRTObjectSelector<T extends FlexoConceptInsta
 		return expectedFlexoConceptType;
 	}
 
+	@CustomComponentParameter(name = "expectedFlexoConceptType", type = CustomComponentParameter.Type.OPTIONAL)
 	public void setExpectedFlexoConceptType(FlexoConcept expectedFlexoConceptType) {
 
 		if ((expectedFlexoConceptType == null && this.expectedFlexoConceptType != null)
@@ -245,6 +247,25 @@ public abstract class FIBAbstractFMLRTObjectSelector<T extends FlexoConceptInsta
 			FlexoConcept oldValue = this.expectedFlexoConceptType;
 			this.expectedFlexoConceptType = expectedFlexoConceptType;
 			getPropertyChangeSupport().firePropertyChange("expectedFlexoConceptType", oldValue, expectedFlexoConceptType);
+			getPropertyChangeSupport().firePropertyChange("expectedType", null, getExpectedType());
+			getPropertyChangeSupport().firePropertyChange("rootObject", null, getRootObject());
+		}
+	}
+
+	public String getExpectedFlexoConceptTypeURI() {
+		if (expectedFlexoConceptType != null) {
+			return expectedFlexoConceptType.getURI();
+		}
+		return null;
+	}
+
+	@CustomComponentParameter(name = "expectedFlexoConceptTypeURI", type = CustomComponentParameter.Type.OPTIONAL)
+	public void setExpectedFlexoConceptTypeURI(String expectedFlexoConceptTypeURI) {
+
+		if (getServiceManager() != null) {
+			expectedFlexoConceptType = getServiceManager().getVirtualModelLibrary().getFlexoConcept(expectedFlexoConceptTypeURI);
+			System.out.println("sets concept to : " + expectedFlexoConceptType);
+			getPropertyChangeSupport().firePropertyChange("expectedFlexoConceptType", null, expectedFlexoConceptType);
 			getPropertyChangeSupport().firePropertyChange("expectedType", null, getExpectedType());
 			getPropertyChangeSupport().firePropertyChange("rootObject", null, getRootObject());
 		}
