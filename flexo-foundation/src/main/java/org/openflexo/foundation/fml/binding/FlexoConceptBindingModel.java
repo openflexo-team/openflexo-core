@@ -39,7 +39,6 @@
 package org.openflexo.foundation.fml.binding;
 
 import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -72,7 +71,7 @@ import org.openflexo.foundation.technologyadapter.ModelSlot;
  * @author sylvain
  * 
  */
-public class FlexoConceptBindingModel extends BindingModel implements PropertyChangeListener {
+public class FlexoConceptBindingModel extends BindingModel {
 
 	private final FlexoConcept flexoConcept;
 
