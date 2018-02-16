@@ -378,6 +378,7 @@ public class ModuleInspectorController extends Observable implements Observer {
 			returned = inspectorForClass(conceptInstance.getImplementedInterface());
 			// Clone it
 			returned = (FIBInspector) returned.cloneObject();
+			returned.setLocales(getFlexoController().getModuleLocales());
 			// And append tab matching FlexoConceptInspector
 			appendFlexoConceptInspector(concept, returned);
 			flexoConceptInspectors.put(concept, returned);
