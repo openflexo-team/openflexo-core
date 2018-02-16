@@ -186,9 +186,7 @@ public interface VirtualModelInstanceBasedNatureObject<N extends ProjectNature<N
 				}
 				this.virtualModelInstanceURI = aVirtualModelInstance.getURI();
 				this.virtualModelInstanceResource = (FMLRTVirtualModelInstanceResource) aVirtualModelInstance.getResource();
-				if (aVirtualModelInstance != null) {
-					fireVirtualModelInstanceConnected(aVirtualModelInstance);
-				}
+				fireVirtualModelInstanceConnected(aVirtualModelInstance);
 			}
 		}
 

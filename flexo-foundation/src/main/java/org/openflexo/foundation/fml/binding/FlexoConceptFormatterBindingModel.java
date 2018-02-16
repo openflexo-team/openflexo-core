@@ -60,7 +60,7 @@ public class FlexoConceptFormatterBindingModel extends BindingModel {
 	public FlexoConceptFormatterBindingModel(FlexoConceptInspector conceptInspector) {
 		super(conceptInspector.getFlexoConcept() != null ? conceptInspector.getFlexoConcept().getBindingModel() : null);
 		this.conceptInspector = conceptInspector;
-		if (conceptInspector != null && conceptInspector.getPropertyChangeSupport() != null) {
+		if (conceptInspector.getPropertyChangeSupport() != null) {
 			conceptInspector.getPropertyChangeSupport().addPropertyChangeListener(this);
 		}
 

@@ -763,7 +763,7 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, Function, FMLContr
 		@Override
 		public DataBinding<Integer> getStepsNumber() {
 			if (stepsNumber == null) {
-				stepsNumber = new DataBinding<Integer>(this, Integer.class, DataBinding.BindingDefinitionType.GET);
+				stepsNumber = new DataBinding<>(this, Integer.class, DataBinding.BindingDefinitionType.GET);
 				stepsNumber.setBindingName("stepsNumber");
 				stepsNumber.setMandatory(false);
 
@@ -774,8 +774,7 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, Function, FMLContr
 		@Override
 		public void setStepsNumber(DataBinding<Integer> stepsNumber) {
 			if (stepsNumber != null) {
-				this.stepsNumber = new DataBinding<Integer>(stepsNumber.toString(), this, Integer.class,
-						DataBinding.BindingDefinitionType.GET);
+				this.stepsNumber = new DataBinding<>(stepsNumber.toString(), this, Integer.class, DataBinding.BindingDefinitionType.GET);
 				this.stepsNumber.setBindingName("stepsNumber");
 				this.stepsNumber.setMandatory(true);
 			}

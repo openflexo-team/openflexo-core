@@ -56,7 +56,7 @@ public class BehaviourParameterBindingModel extends BindingModel {
 	public BehaviourParameterBindingModel(BehaviourParameter<?> parameter) {
 		super(parameter.getOwner() != null ? parameter.getOwner().getBindingModel() : null);
 		this.parameter = parameter;
-		if (parameter != null && parameter.getPropertyChangeSupport() != null) {
+		if (parameter.getPropertyChangeSupport() != null) {
 			parameter.getPropertyChangeSupport().addPropertyChangeListener(this);
 		}
 	}

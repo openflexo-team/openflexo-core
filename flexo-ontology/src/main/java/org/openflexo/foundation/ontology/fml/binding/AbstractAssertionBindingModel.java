@@ -56,7 +56,7 @@ public class AbstractAssertionBindingModel extends BindingModel {
 	public AbstractAssertionBindingModel(AbstractAssertion abstractAssertion) {
 		super(abstractAssertion.getAction() != null ? abstractAssertion.getAction().getBindingModel() : null);
 		this.abstractAssertion = abstractAssertion;
-		if (abstractAssertion != null && abstractAssertion.getPropertyChangeSupport() != null) {
+		if (abstractAssertion.getPropertyChangeSupport() != null) {
 			abstractAssertion.getPropertyChangeSupport().addPropertyChangeListener(this);
 		}
 	}

@@ -24,7 +24,7 @@ public class FiredEventBindingVariable extends BindingVariable implements Proper
 		super(EVENT_NAME, FlexoConceptInstanceType.getFlexoConceptInstanceType(eventListener.getEventType()), true);
 		this.eventListener = eventListener;
 		lastKnownType = getType();
-		if (eventListener != null && eventListener.getPropertyChangeSupport() != null) {
+		if (eventListener.getPropertyChangeSupport() != null) {
 			eventListener.getPropertyChangeSupport().addPropertyChangeListener(this);
 		}
 	}

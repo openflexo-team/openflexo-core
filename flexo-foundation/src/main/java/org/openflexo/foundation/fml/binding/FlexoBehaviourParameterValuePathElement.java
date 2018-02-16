@@ -63,10 +63,7 @@ public class FlexoBehaviourParameterValuePathElement extends SimplePathElement i
 	public FlexoBehaviourParameterValuePathElement(IBindingPathElement parent, FlexoBehaviourParameter parameter) {
 		super(parent, parameter.getName(), parameter.getType());
 		this.parameter = parameter;
-		if (parameter != null) {
-			lastKnownType = parameter.getType();
-		}
-
+		lastKnownType = parameter.getType();
 	}
 
 	@Override

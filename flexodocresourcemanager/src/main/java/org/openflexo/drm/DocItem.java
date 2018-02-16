@@ -152,9 +152,7 @@ public class DocItem extends DRMObject {
 		logger.fine("Create DocItem " + anIdentifier + " in " + folder.getIdentifier());
 		DocItem returned = new DocItem();
 		returned.identifier = anIdentifier;
-		if (folder != null) {
-			folder.addToItems(returned);
-		}
+		folder.addToItems(returned);
 		returned._isEmbedded = isEmbedded;
 		returned._isHidden = true;
 		return returned;

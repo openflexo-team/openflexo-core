@@ -164,9 +164,7 @@ public class DocItemFolder extends DRMObject {
 	public void setPrimaryDocItem(DocItem primaryDocItem) {
 		if (primaryDocItem.getFolder() == this) {
 			_primaryDocItem = primaryDocItem;
-			if (primaryDocItem != null) {
-				primaryDocItemId = primaryDocItem.getIdentifier();
-			}
+			primaryDocItemId = primaryDocItem.getIdentifier();
 			setChanged();
 		}
 	}

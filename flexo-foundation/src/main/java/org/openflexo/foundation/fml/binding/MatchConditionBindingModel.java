@@ -63,7 +63,7 @@ public class MatchConditionBindingModel extends BindingModel {
 		selectedBindingVariable.setCacheable(false);
 		addToBindingVariables(selectedBindingVariable);
 
-		if (matchCondition != null && matchCondition.getPropertyChangeSupport() != null) {
+		if (matchCondition.getPropertyChangeSupport() != null) {
 			matchCondition.getPropertyChangeSupport().addPropertyChangeListener(this);
 		}
 

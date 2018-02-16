@@ -62,11 +62,11 @@ public class ControlGraphBindingModel<CG extends FMLControlGraph> extends Bindin
 
 		this.controlGraph = controlGraph;
 
-		if (controlGraph != null && controlGraph.getPropertyChangeSupport() != null) {
+		if (controlGraph.getPropertyChangeSupport() != null) {
 			controlGraph.getPropertyChangeSupport().addPropertyChangeListener(this);
 		}
 
-		if (controlGraph != null && controlGraph.getOwner() != null && controlGraph.getOwner().getPropertyChangeSupport() != null) {
+		if (controlGraph.getOwner() != null && controlGraph.getOwner().getPropertyChangeSupport() != null) {
 			controlGraph.getOwner().getPropertyChangeSupport().addPropertyChangeListener(this);
 		}
 

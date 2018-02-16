@@ -73,7 +73,7 @@ public class FlexoBehaviourBindingModel extends BindingModel {
 		parametersBindingVariable = new FlexoBehaviourParametersBindingVariable(flexoBehaviour);
 		addToBindingVariables(parametersBindingVariable);
 
-		if (flexoBehaviour != null && flexoBehaviour.getPropertyChangeSupport() != null) {
+		if (flexoBehaviour.getPropertyChangeSupport() != null) {
 			flexoBehaviour.getPropertyChangeSupport().addPropertyChangeListener(this);
 		}
 

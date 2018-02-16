@@ -67,9 +67,7 @@ public class FlexoConceptFlexoPropertyPathElement<P extends FlexoProperty<?>> ex
 	public FlexoConceptFlexoPropertyPathElement(IBindingPathElement parent, P flexoProperty) {
 		super(parent, flexoProperty.getPropertyName(), flexoProperty.getResultingType());
 		this.flexoProperty = flexoProperty;
-		if (flexoProperty != null) {
-			lastKnownType = flexoProperty.getResultingType();
-		}
+		lastKnownType = flexoProperty.getResultingType();
 	}
 
 	@Override
