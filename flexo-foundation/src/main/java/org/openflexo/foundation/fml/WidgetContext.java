@@ -48,7 +48,7 @@ import org.openflexo.foundation.fml.FlexoBehaviourParameter.WidgetType;
  *
  * Created by charlie on 13/03/2017.
  */
-public interface WidgetContext {
+public interface WidgetContext extends FlexoConceptObject {
 
 	default WidgetType getWidget() {
 		return null;
