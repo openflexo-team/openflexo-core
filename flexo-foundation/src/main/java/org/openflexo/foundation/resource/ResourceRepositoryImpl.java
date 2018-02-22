@@ -502,7 +502,7 @@ public abstract class ResourceRepositoryImpl<R extends FlexoResource<?>, I> exte
 
 	@Override
 	public String toString() {
-		return getClass().getSimpleName() + " with " + getAllResources().size() + " resources";
+		return getImplementedInterface().getSimpleName() + ":" + baseArtefact + "[" + getAllResources().size() + "]";
 	}
 
 	public String debug() {
