@@ -1225,7 +1225,6 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 
 		@Override
 		public FlexoConceptInstanceIndex getIndex(Type type, DataBinding<?> indexableTerm) {
-
 			if (logger.isLoggable(Level.FINE)) {
 				logger.fine("Retrieving index for " + type + " and " + indexableTerm);
 			}
