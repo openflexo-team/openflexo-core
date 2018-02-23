@@ -1180,6 +1180,12 @@ public interface FileSystemBasedResourceCenter extends ResourceRepository<FlexoR
 			}
 			return getDefaultBaseURI();// getRootDirectory().getName();
 		}
+
+		@Override
+		public boolean containsArtefact(File serializationArtefact) {
+			return FileUtils.directoryContainsFile(getRootDirectory(), serializationArtefact, true);
+		}
+
 	}
 
 	@ModelEntity(isAbstract = true)
