@@ -456,7 +456,8 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 	 * @author sylvain
 	 * 
 	 */
-	public class ResourceCenterListShouldBeStored implements ServiceNotification {}
+	public class ResourceCenterListShouldBeStored implements ServiceNotification {
+	}
 
 	@Override
 	public void initialize() {
@@ -487,7 +488,8 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 	 * @author sylvain
 	 * 
 	 */
-	public class DefaultPackageResourceCenterIsNotInstalled implements ServiceNotification {}
+	public class DefaultPackageResourceCenterIsNotInstalled implements ServiceNotification {
+	}
 
 	private static void notifyWillWrite(File fileBeeingAdded, FileSystemBasedResourceCenter rc) {
 		File rootDirectory = rc.getRootDirectory();
@@ -673,8 +675,14 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 
 	@Override
 	public <I> FlexoResourceCenter<I> getResourceCenterContaining(I serializationArtefact) {
-		System.out.println("Je cherche un RC qui pourrait contenir " + serializationArtefact);
-		System.out.println("TODO !!!");
+		for (FlexoResourceCenter<?> rc : getResourceCenters()) {
+			if (rc.getSerializationArtefactClass().isAssignableFrom(serializationArtefact.getClass())) {
+				if (((FlexoResourceCenter<I>) rc).containsArtefact(serializationArtefact)) {
+					return (FlexoResourceCenter<I>) rc;
+				}
+			}
+		}
+
 		return null;
 	}
 
