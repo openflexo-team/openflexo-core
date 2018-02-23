@@ -323,7 +323,7 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 	 */
 	public ImageIcon getIconForTechnologyObject(TechnologyObject<?> object) {
 		if (object != null) {
-			return getIconForTechnologyObject((Class) object.getClass());
+			return getIconForTechnologyObject((Class<? extends TechnologyObject<?>>) object.getClass());
 		}
 		return null;
 	}
@@ -505,7 +505,7 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 	}
 
 	// Override when required
-	public ModuleView<FlexoProject<?>> createFlexoProjectModuleViewForSpecificNature(FlexoProject<?> project, ProjectNature nature,
+	public ModuleView<FlexoProject<?>> createFlexoProjectModuleViewForSpecificNature(FlexoProject<?> project, ProjectNature<?> nature,
 			FlexoController controller, FlexoPerspective perspective) {
 		return null;
 	}

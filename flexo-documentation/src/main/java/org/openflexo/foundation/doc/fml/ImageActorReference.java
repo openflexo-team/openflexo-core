@@ -236,7 +236,7 @@ public interface ImageActorReference<R extends FlexoDrawingRun<?, ?>> extends Ac
 				}
 				else if (objectToRepresent != null) {
 					System.out.println("***************** We have to represent: " + objectToRepresent);
-					Class<? extends ScreenshotableNature> natureClass = imageRole.getNature();
+					Class<? extends ScreenshotableNature<?>> natureClass = imageRole.getNature();
 					BufferedImage image = getServiceManager().getScreenshotService().generateScreenshot(objectToRepresent,
 							(Class) natureClass);
 					if (drawingRun != null) {

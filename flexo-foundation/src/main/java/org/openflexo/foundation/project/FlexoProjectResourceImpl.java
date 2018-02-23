@@ -106,6 +106,7 @@ public abstract class FlexoProjectResourceImpl<I> extends PamelaResourceImpl<Fle
 		return null;
 	}
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	public Class<FlexoProject<I>> getResourceDataClass() {
 		return (Class) FlexoProject.class;

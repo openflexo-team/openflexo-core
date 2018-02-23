@@ -122,15 +122,16 @@ public class PreferencesService extends FlexoServiceImpl implements FlexoService
 
 	}
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private <S extends FlexoService> Class<? extends ServicePreferences<S>> getServicePreferencesClass(S service) {
 		if (service instanceof FlexoResourceCenterService) {
-			return (Class<? extends ServicePreferences<S>>) (Class) ResourceCenterPreferences.class;
+			return (Class) ResourceCenterPreferences.class;
 		}
 		else if (service instanceof TechnologyAdapterService) {
-			return (Class<? extends ServicePreferences<S>>) (Class) TechnologyAdapterPreferences.class;
+			return (Class) TechnologyAdapterPreferences.class;
 		}
 		else if (service instanceof ModuleLoader) {
-			return (Class<? extends ServicePreferences<S>>) (Class) ModuleLoaderPreferences.class;
+			return (Class) ModuleLoaderPreferences.class;
 		}
 		return null;
 	}

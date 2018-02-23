@@ -64,6 +64,7 @@ public class IndividualOfClass<TA extends TechnologyAdapter> implements Technolo
 			super(technologyAdapter);
 		}
 
+		@SuppressWarnings({ "unchecked", "rawtypes" })
 		@Override
 		public Class<IndividualOfClass<?>> getCustomType() {
 			return (Class) IndividualOfClass.class;

@@ -64,6 +64,7 @@ public class SubClassOfClass<TA extends TechnologyAdapter> implements Technology
 			super(technologyAdapter);
 		}
 
+		@SuppressWarnings({ "unchecked", "rawtypes" })
 		@Override
 		public Class<SubClassOfClass<?>> getCustomType() {
 			return (Class) SubClassOfClass.class;

@@ -135,10 +135,8 @@ public abstract interface AddClass<MS extends TypeAwareModelSlot<M, ?>, M extend
 			if (FlexoOntologyVirtualModelNature.INSTANCE.hasNature(getOwningVirtualModel())) {
 				return FlexoOntologyVirtualModelNature.getOntologyClass(ontologyClassURI, getOwningVirtualModel());
 			}
-			else {
-				if (getAssignedFlexoProperty() instanceof ClassRole) {
-					return getAssignedFlexoProperty().getOntologicType();
-				}
+			if (getAssignedFlexoProperty() != null) {
+				return getAssignedFlexoProperty().getOntologicType();
 			}
 			return null;
 		}
@@ -148,7 +146,7 @@ public abstract interface AddClass<MS extends TypeAwareModelSlot<M, ?>, M extend
 		@Override
 		public void setOntologyClass(IFlexoOntologyClass ontologyClass) {
 			if (ontologyClass != null) {
-				if (getAssignedFlexoProperty() instanceof ClassRole) {
+				if (getAssignedFlexoProperty() != null) {
 					if (getAssignedFlexoProperty().getOntologicType().isSuperConceptOf(ontologyClass)) {
 						ontologyClassURI = ontologyClass.getURI();
 					}
@@ -168,8 +166,7 @@ public abstract interface AddClass<MS extends TypeAwareModelSlot<M, ?>, M extend
 		@Override
 		public String _getOntologyClassURI() {
 			if (getOntologyClass() != null) {
-				if (getAssignedFlexoProperty() instanceof ClassRole
-						&& getAssignedFlexoProperty().getOntologicType() == getOntologyClass()) {
+				if (getAssignedFlexoProperty() != null && getAssignedFlexoProperty().getOntologicType() == getOntologyClass()) {
 					// No need to store an overriding type, just use default
 					// provided by pattern property
 					return null;
@@ -249,7 +246,7 @@ public abstract interface AddClass<MS extends TypeAwareModelSlot<M, ?>, M extend
 			@Override
 			protected void fixAction() {
 				AddClass<?, ?, ?> action = getValidable();
-				((AssignationAction) action.getOwner()).setAssignation(new DataBinding<>(flexoRole.getRoleName()));
+				((AssignationAction<?>) action.getOwner()).setAssignation(new DataBinding<>(flexoRole.getRoleName()));
 			}
 
 		}

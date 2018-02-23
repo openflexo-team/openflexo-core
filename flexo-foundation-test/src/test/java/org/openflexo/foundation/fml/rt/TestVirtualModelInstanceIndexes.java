@@ -268,7 +268,7 @@ public class TestVirtualModelInstanceIndexes extends OpenflexoProjectAtRunTimeTe
 		createEditionAction1.setAssignation(new DataBinding<>("firstName"));
 		createEditionAction1.doAction();
 		AssignationAction<?> action1 = (AssignationAction<?>) createEditionAction1.getNewEditionAction();
-		((ExpressionAction) action1.getAssignableAction()).setExpression(new DataBinding<>("parameters.aFirstName"));
+		((ExpressionAction<?>) action1.getAssignableAction()).setExpression(new DataBinding<>("parameters.aFirstName"));
 
 		CreateEditionAction createEditionAction2 = CreateEditionAction.actionType.makeNewAction(creationScheme.getControlGraph(), null,
 				editor);
@@ -276,7 +276,7 @@ public class TestVirtualModelInstanceIndexes extends OpenflexoProjectAtRunTimeTe
 		createEditionAction2.setAssignation(new DataBinding<>("lastName"));
 		createEditionAction2.doAction();
 		AssignationAction<?> action2 = (AssignationAction<?>) createEditionAction2.getNewEditionAction();
-		((ExpressionAction) action2.getAssignableAction()).setExpression(new DataBinding<>("parameters.aLastName"));
+		((ExpressionAction<?>) action2.getAssignableAction()).setExpression(new DataBinding<>("parameters.aLastName"));
 
 		CreateEditionAction createEditionAction3 = CreateEditionAction.actionType.makeNewAction(creationScheme.getControlGraph(), null,
 				editor);
@@ -284,7 +284,7 @@ public class TestVirtualModelInstanceIndexes extends OpenflexoProjectAtRunTimeTe
 		createEditionAction3.setAssignation(new DataBinding<>("age"));
 		createEditionAction3.doAction();
 		AssignationAction<?> action3 = (AssignationAction<?>) createEditionAction3.getNewEditionAction();
-		((ExpressionAction) action3.getAssignableAction()).setExpression(new DataBinding<>("parameters.anAge"));
+		((ExpressionAction<?>) action3.getAssignableAction()).setExpression(new DataBinding<>("parameters.anAge"));
 
 		CreateFlexoBehaviour createDeletionScheme = CreateFlexoBehaviour.actionType.makeNewAction(flexoConcept, null, editor);
 		createDeletionScheme.setFlexoBehaviourClass(DeletionScheme.class);

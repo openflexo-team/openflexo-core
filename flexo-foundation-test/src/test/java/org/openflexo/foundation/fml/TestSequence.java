@@ -180,7 +180,7 @@ public class TestSequence extends OpenflexoTestCase {
 		System.out.println("<-------------- C'est fait");
 
 		declaration4 = (DeclarationAction<?>) createDeclaration4.getNewEditionAction();
-		((ExpressionAction) declaration4.getAssignableAction()).setExpression(new DataBinding<>("4"));
+		((ExpressionAction<?>) declaration4.getAssignableAction()).setExpression(new DataBinding<>("4"));
 
 		System.out.println("FML=" + behaviour.getFMLRepresentation());
 

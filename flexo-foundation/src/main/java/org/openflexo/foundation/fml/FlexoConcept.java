@@ -692,7 +692,7 @@ public interface FlexoConcept extends VirtualModelObject {
 		/**
 		 * Stores a cache for key properties for all end-properties of this {@link FlexoConcept}
 		 */
-		private List<FlexoProperty<?>> accessibleKeyProperties2;
+		// Unused private List<FlexoProperty<?>> accessibleKeyProperties2;
 
 		private ImageIcon bigIcon;
 		private ImageIcon mediumIcon;
@@ -1455,7 +1455,7 @@ public interface FlexoConcept extends VirtualModelObject {
 					newDeletionScheme.getControlGraph().sequentiallyAppend(nullifyStatement);
 				}
 				else {
-					DeleteAction deleteAction = getFMLModelFactory().newDeleteAction();
+					DeleteAction<?> deleteAction = getFMLModelFactory().newDeleteAction();
 					deleteAction.setObject(new DataBinding<>(pr.getPropertyName()));
 					newDeletionScheme.getControlGraph().sequentiallyAppend(deleteAction);
 				}
@@ -1916,8 +1916,7 @@ public interface FlexoConcept extends VirtualModelObject {
 			if (getMediumIconResource() instanceof FileResourceImpl) {
 				return ((FileResourceImpl) getMediumIconResource()).getFile();
 			}
-			else
-				return null;
+			return null;
 		}
 
 		// TODO : this is a Workaround for Fib File selector...It has to be fixed in a more efficient way
@@ -1935,8 +1934,7 @@ public interface FlexoConcept extends VirtualModelObject {
 			if (getSmallIconResource() instanceof FileResourceImpl) {
 				return ((FileResourceImpl) getSmallIconResource()).getFile();
 			}
-			else
-				return null;
+			return null;
 		}
 
 		// TODO : this is a Workaround for Fib File selector...It has to be fixed in a more efficient way

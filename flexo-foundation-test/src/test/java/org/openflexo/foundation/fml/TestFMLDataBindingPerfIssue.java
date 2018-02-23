@@ -212,9 +212,9 @@ public class TestFMLDataBindingPerfIssue extends OpenflexoTestCase {
 				editor);
 		createExpressionAction.setEditionActionClass(ExpressionAction.class);
 		createExpressionAction.doAction();
-		ExpressionAction expression = (ExpressionAction) createExpressionAction.getNewEditionAction();
+		ExpressionAction<String> expression = (ExpressionAction) createExpressionAction.getNewEditionAction();
 		assertNotNull(expression);
-		expression.setExpression(expr1 = new DataBinding<String>("aString"));
+		expression.setExpression(expr1 = new DataBinding<>("aString"));
 		if (!expr1.isValid()) {
 			System.out.println("Not valid: " + expr1);
 			System.out.println("Reason: " + expr1.invalidBindingReason());
@@ -225,16 +225,16 @@ public class TestFMLDataBindingPerfIssue extends OpenflexoTestCase {
 				editor);
 		createExpressionAction2.setEditionActionClass(ExpressionAction.class);
 		createExpressionAction2.doAction();
-		ExpressionAction expression2 = (ExpressionAction) createExpressionAction2.getNewEditionAction();
-		expression2.setExpression(expr2 = new DataBinding<String>("aString+'toto'"));
+		ExpressionAction<String> expression2 = (ExpressionAction) createExpressionAction2.getNewEditionAction();
+		expression2.setExpression(expr2 = new DataBinding<>("aString+'toto'"));
 
 		assertNotNull(expression2);
 		assertTrue(expr2.isValid());
 
 	}
 
-	private static DataBinding<?> expr1;
-	private static DataBinding<?> expr2;
+	private static DataBinding<String> expr1;
+	private static DataBinding<String> expr2;
 
 	@Test
 	@TestOrder(20)

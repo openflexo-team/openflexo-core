@@ -81,7 +81,8 @@ public class CreateIndividualRole extends AbstractCreateFlexoRole<CreateIndividu
 	private final List<Class<? extends FlexoRole<?>>> vmAvailableFlexoRoleTypes = null;
 
 	public static FlexoActionFactory<CreateIndividualRole, FlexoConceptObject, FMLObject> actionType = new FlexoActionFactory<CreateIndividualRole, FlexoConceptObject, FMLObject>(
-			"create_individual_role", FlexoActionFactory.newPropertyMenu, FlexoActionFactory.defaultGroup, FlexoActionFactory.ADD_ACTION_TYPE) {
+			"create_individual_role", FlexoActionFactory.newPropertyMenu, FlexoActionFactory.defaultGroup,
+			FlexoActionFactory.ADD_ACTION_TYPE) {
 
 		/**
 		 * Factory method
@@ -219,6 +220,7 @@ public class CreateIndividualRole extends AbstractCreateFlexoRole<CreateIndividu
 		getPropertyChangeSupport().firePropertyChange("individualType", individualType != null ? null : false, individualType);
 	}
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	public Class<FlexoOntologyModelSlot<?, ?, ?>> getModelSlotType() {
 		return (Class) FlexoOntologyModelSlot.class;

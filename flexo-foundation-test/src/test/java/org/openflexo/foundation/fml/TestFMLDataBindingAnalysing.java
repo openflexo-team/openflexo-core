@@ -128,11 +128,9 @@ public class TestFMLDataBindingAnalysing extends OpenflexoTestCase {
 			return dataBinding;
 
 		}
-		else {
-			System.out.println("Could not Parse " + dataBinding + " defined as " + dataBinding.getUnparsedBinding());
-			fail("Unparseable binding");
-			return null;
-		}
+		System.out.println("Could not Parse " + dataBinding + " defined as " + dataBinding.getUnparsedBinding());
+		fail("Unparseable binding");
+		return null;
 	}
 
 	/**
@@ -323,7 +321,7 @@ public class TestFMLDataBindingAnalysing extends OpenflexoTestCase {
 		createEditionAction1.setAssignation(new DataBinding<>("aString"));
 		createEditionAction1.doAction();
 		AssignationAction<?> action1 = (AssignationAction<?>) createEditionAction1.getNewEditionAction();
-		((ExpressionAction) action1.getAssignableAction()).setExpression(new DataBinding<>("'foo'"));
+		((ExpressionAction<?>) action1.getAssignableAction()).setExpression(new DataBinding<>("'foo'"));
 		action1.setName("action1");
 
 		CreateEditionAction createEditionAction2 = CreateEditionAction.actionType.makeNewAction(creationScheme.getControlGraph(), null,
@@ -334,7 +332,7 @@ public class TestFMLDataBindingAnalysing extends OpenflexoTestCase {
 		createEditionAction2.setAssignation(new DataBinding<>("aBoolean"));
 		createEditionAction2.doAction();
 		AssignationAction<?> action2 = (AssignationAction<?>) createEditionAction2.getNewEditionAction();
-		((ExpressionAction) action2.getAssignableAction()).setExpression(new DataBinding<>("true"));
+		((ExpressionAction<?>) action2.getAssignableAction()).setExpression(new DataBinding<>("true"));
 		action2.setName("action2");
 
 		CreateEditionAction createEditionAction3 = CreateEditionAction.actionType.makeNewAction(creationScheme.getControlGraph(), null,
@@ -345,7 +343,7 @@ public class TestFMLDataBindingAnalysing extends OpenflexoTestCase {
 		createEditionAction3.setAssignation(new DataBinding<>("anInteger"));
 		createEditionAction3.doAction();
 		AssignationAction<?> action3 = (AssignationAction<?>) createEditionAction3.getNewEditionAction();
-		((ExpressionAction) action3.getAssignableAction()).setExpression(new DataBinding<>("8"));
+		((ExpressionAction<?>) action3.getAssignableAction()).setExpression(new DataBinding<>("8"));
 		action3.setName("action3");
 
 		assertTrue(flexoConceptA.getFlexoBehaviours().contains(creationScheme));
@@ -398,7 +396,7 @@ public class TestFMLDataBindingAnalysing extends OpenflexoTestCase {
 		createDeclareFlexoRoleInCondition1.setAssignation(new DataBinding<>("anInteger"));
 		createDeclareFlexoRoleInCondition1.doAction();
 		AssignationAction<?> declareFlexoRoleInCondition1 = (AssignationAction<?>) createDeclareFlexoRoleInCondition1.getNewEditionAction();
-		((ExpressionAction) declareFlexoRoleInCondition1.getAssignableAction()).setExpression(new DataBinding<>("8"));
+		((ExpressionAction<?>) declareFlexoRoleInCondition1.getAssignableAction()).setExpression(new DataBinding<>("8"));
 
 		CreateEditionAction createConditionAction2 = CreateEditionAction.actionType.makeNewAction(actionScheme.getControlGraph(), null,
 				editor);
@@ -420,7 +418,7 @@ public class TestFMLDataBindingAnalysing extends OpenflexoTestCase {
 		createDeclareFlexoRoleInCondition2.setAssignation(new DataBinding<>("anInteger"));
 		createDeclareFlexoRoleInCondition2.doAction();
 		AssignationAction<?> declareFlexoRoleInCondition2 = (AssignationAction<?>) createDeclareFlexoRoleInCondition2.getNewEditionAction();
-		((ExpressionAction) declareFlexoRoleInCondition2.getAssignableAction()).setExpression(new DataBinding<>("12"));
+		((ExpressionAction<?>) declareFlexoRoleInCondition2.getAssignableAction()).setExpression(new DataBinding<>("12"));
 
 	}
 

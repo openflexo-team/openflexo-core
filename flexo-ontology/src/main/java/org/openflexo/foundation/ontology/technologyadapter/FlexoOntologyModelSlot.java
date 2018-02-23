@@ -128,14 +128,15 @@ public interface FlexoOntologyModelSlot<M extends FlexoModel<M, MM> & IFlexoOnto
 		@Override
 		public AddIndividual<? extends FlexoOntologyModelSlot<M, MM, TA>, M, ?> makeAddIndividualAction(IndividualRole<?> flexoRole,
 				AbstractCreationScheme creationScheme) {
+			@SuppressWarnings("unchecked")
 			Class<? extends AddIndividual<? extends FlexoOntologyModelSlot<M, MM, TA>, M, ?>> addIndividualClass = (Class<? extends AddIndividual<? extends FlexoOntologyModelSlot<M, MM, TA>, M, ?>>) getEditionActionClass(
 					AddIndividual.class);
-			AddIndividual returned = makeEditionAction(addIndividualClass);
+			AddIndividual<? extends FlexoOntologyModelSlot<M, MM, TA>, M, ?> returned = makeEditionAction(addIndividualClass);
 			returned.getReceiver().setUnparsedBinding(getName());
 			// returned.setModelSlot(this);
 
 			if (creationScheme.getParameter("uri") != null) {
-				returned.setIndividualName(new DataBinding("parameters.uri"));
+				returned.setIndividualName(new DataBinding<>("parameters.uri"));
 			}
 			return returned;
 		}

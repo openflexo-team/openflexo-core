@@ -261,11 +261,11 @@ public class TestDeleteFlexoConceptObjects extends OpenflexoProjectAtRunTimeTest
 		createEditionAction1.setAssignation(new DataBinding<>("aStringInA"));
 		createEditionAction1.doAction();
 		action1 = (AssignationAction<?>) createEditionAction1.getNewEditionAction();
-		((ExpressionAction) action1.getAssignableAction()).setExpression(new DataBinding<>("'foo'"));
+		((ExpressionAction<?>) action1.getAssignableAction()).setExpression(new DataBinding<>("'foo'"));
 		action1.setName("action1");
 
 		assertTrue(action1.getAssignation().isValid());
-		assertTrue(((ExpressionAction) action1.getAssignableAction()).getExpression().isValid());
+		assertTrue(((ExpressionAction<?>) action1.getAssignableAction()).getExpression().isValid());
 
 		assertTrue(flexoConcept1.getFlexoBehaviours().contains(creationScheme));
 		assertTrue(flexoConcept1.getCreationSchemes().contains(creationScheme));
