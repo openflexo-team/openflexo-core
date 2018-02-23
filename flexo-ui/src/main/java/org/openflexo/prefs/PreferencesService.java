@@ -124,13 +124,13 @@ public class PreferencesService extends FlexoServiceImpl implements FlexoService
 
 	private <S extends FlexoService> Class<? extends ServicePreferences<S>> getServicePreferencesClass(S service) {
 		if (service instanceof FlexoResourceCenterService) {
-			return (Class<? extends ServicePreferences<S>>) (Class) ResourceCenterPreferences.class;
+			return (Class) ResourceCenterPreferences.class;
 		}
 		else if (service instanceof TechnologyAdapterService) {
-			return (Class<? extends ServicePreferences<S>>) (Class) TechnologyAdapterPreferences.class;
+			return (Class) TechnologyAdapterPreferences.class;
 		}
 		else if (service instanceof ModuleLoader) {
-			return (Class<? extends ServicePreferences<S>>) (Class) ModuleLoaderPreferences.class;
+			return (Class) ModuleLoaderPreferences.class;
 		}
 		return null;
 	}
@@ -166,7 +166,7 @@ public class PreferencesService extends FlexoServiceImpl implements FlexoService
 				}
 				savePreferences();
 			}
-			else if (notification instanceof ResourceCenterRemoved && !readOnly()) {
+			else if (notification instanceof ResourceCenterRemoved) {
 				getResourceCenterPreferences().ensureResourceEntryIsNoMorePresent(
 						((ResourceCenterRemoved) notification).getRemovedResourceCenter().getResourceCenterEntry());
 				savePreferences();

@@ -102,6 +102,13 @@ public interface RemoteResourceCenter extends ResourceRepository<FlexoResource<?
 		public void stop() {
 			logger.warning("STOP method needs to be implemented for RemoteResourceCenters");
 		}
+
+		@Override
+		public boolean containsArtefact(Object serializationArtefact) {
+			// TODO
+			return false;
+		}
+
 	}
 
 	@ModelEntity
