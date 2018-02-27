@@ -59,7 +59,7 @@ public class FIBProjectResourcesBrowser extends FIBBrowserView<FlexoProject> {
 
 	public static final Resource FIB_FILE = ResourceLocator.locateResource("Fib/Widget/FIBProjectResourcesBrowser.fib");
 
-	public FIBProjectResourcesBrowser(FlexoProject project, FlexoController controller, LocalizedDelegate locales) {
+	public FIBProjectResourcesBrowser(FlexoProject<?> project, FlexoController controller, LocalizedDelegate locales) {
 		super(project, controller, FIB_FILE, locales);
 	}
 }

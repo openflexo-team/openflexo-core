@@ -39,7 +39,6 @@
 package org.openflexo.foundation.fml.binding;
 
 import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 
 import org.openflexo.connie.BindingModel;
 import org.openflexo.foundation.fml.rt.editionaction.MatchCondition;
@@ -50,7 +49,7 @@ import org.openflexo.foundation.fml.rt.editionaction.MatchCondition;
  * @author sylvain
  * 
  */
-public class MatchConditionBindingModel extends BindingModel implements PropertyChangeListener {
+public class MatchConditionBindingModel extends BindingModel {
 
 	private final MatchConditionSelectedBindingVariable selectedBindingVariable;
 
@@ -64,7 +63,7 @@ public class MatchConditionBindingModel extends BindingModel implements Property
 		selectedBindingVariable.setCacheable(false);
 		addToBindingVariables(selectedBindingVariable);
 
-		if (matchCondition != null && matchCondition.getPropertyChangeSupport() != null) {
+		if (matchCondition.getPropertyChangeSupport() != null) {
 			matchCondition.getPropertyChangeSupport().addPropertyChangeListener(this);
 		}
 

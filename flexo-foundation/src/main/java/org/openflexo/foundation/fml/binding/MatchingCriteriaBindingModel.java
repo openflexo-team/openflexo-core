@@ -56,7 +56,7 @@ public class MatchingCriteriaBindingModel extends BindingModel {
 	public MatchingCriteriaBindingModel(MatchingCriteria criteria) {
 		super(criteria.getAction() != null ? criteria.getAction().getBindingModel() : null);
 		this.criteria = criteria;
-		if (criteria != null && criteria.getPropertyChangeSupport() != null) {
+		if (criteria.getPropertyChangeSupport() != null) {
 			criteria.getPropertyChangeSupport().addPropertyChangeListener(this);
 		}
 	}

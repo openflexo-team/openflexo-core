@@ -47,7 +47,7 @@ import org.openflexo.foundation.DefaultFlexoObject;
 import org.openflexo.model.validation.Validable;
 
 // TODO: convert this model with PAMELA
-public abstract class DRMObject extends DefaultFlexoObject implements Validable {
+public abstract class DRMObject extends DefaultFlexoObject {
 
 	static final Logger logger = Logger.getLogger(DRMObject.class.getPackage().getName());
 

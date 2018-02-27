@@ -39,14 +39,13 @@
 package org.openflexo.foundation.fml.binding;
 
 import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 
 import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.BindingVariable;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
+import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 
 /**
  * This is the {@link BindingModel} exposed by a {@link VirtualModel}<br>
@@ -61,7 +60,7 @@ import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
  * @author sylvain
  * 
  */
-public class VirtualModelBindingModel extends FlexoConceptBindingModel implements PropertyChangeListener {
+public class VirtualModelBindingModel extends FlexoConceptBindingModel {
 
 	// private final VirtualModel virtualModel;
 
@@ -86,7 +85,8 @@ public class VirtualModelBindingModel extends FlexoConceptBindingModel implement
 	 */
 	public VirtualModelBindingModel(VirtualModel virtualModel) {
 		super(virtualModel.getContainerVirtualModel() != null && virtualModel != virtualModel.getContainerVirtualModel()
-				? virtualModel.getContainerVirtualModel().getBindingModel() : null, virtualModel);
+				? virtualModel.getContainerVirtualModel().getBindingModel()
+				: null, virtualModel);
 		// this.virtualModel = virtualModel;
 		// virtualModelInstanceBindingVariable = new BindingVariable(VIRTUAL_MODEL_INSTANCE_PROPERTY,
 		// VirtualModelInstanceType.getVirtualModelInstanceType(virtualModel));
@@ -154,7 +154,8 @@ public class VirtualModelBindingModel extends FlexoConceptBindingModel implement
 			if (evt.getPropertyName().equals(VirtualModel.CONTAINER_VIRTUAL_MODEL_KEY)) {
 				// The VirtualModel changes it's container virtual model
 				setBaseBindingModel(getVirtualModel().getContainerVirtualModel() != null
-						? getVirtualModel().getContainerVirtualModel().getBindingModel() : null);
+						? getVirtualModel().getContainerVirtualModel().getBindingModel()
+						: null);
 				// virtualModelInstanceBindingVariable.setType(getVirtualModelInstanceType());
 				updateContainerVirtualModelListener();
 				updateContainerBindingVariable();

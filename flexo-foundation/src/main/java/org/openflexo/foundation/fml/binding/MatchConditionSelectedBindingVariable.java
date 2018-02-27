@@ -64,15 +64,13 @@ public class MatchConditionSelectedBindingVariable extends BindingVariable imple
 	public MatchConditionSelectedBindingVariable(MatchCondition condition) {
 		super(FetchRequestCondition.SELECTED, condition.getAction() != null ? condition.getAction().getMatchedType() : Object.class, false);
 		this.condition = condition;
-		if (condition != null) {
-			if (condition.getPropertyChangeSupport() != null) {
-				condition.getPropertyChangeSupport().addPropertyChangeListener(this);
-			}
-			InitiateMatching action = condition.getAction();
-			lastKnownType = action != null ? condition.getAction().getMatchedType() : FlexoConceptInstance.class;
-			if (action != null && action.getPropertyChangeSupport() != null) {
-				action.getPropertyChangeSupport().addPropertyChangeListener(this);
-			}
+		if (condition.getPropertyChangeSupport() != null) {
+			condition.getPropertyChangeSupport().addPropertyChangeListener(this);
+		}
+		InitiateMatching action = condition.getAction();
+		lastKnownType = action != null ? condition.getAction().getMatchedType() : FlexoConceptInstance.class;
+		if (action != null && action.getPropertyChangeSupport() != null) {
+			action.getPropertyChangeSupport().addPropertyChangeListener(this);
 		}
 		setCacheable(false);
 	}

@@ -62,10 +62,8 @@ public class IterationActionBindingVariable extends BindingVariable implements P
 	public IterationActionBindingVariable(AbstractIterationAction action) {
 		super(action.getIteratorName(), action.getItemType(), true);
 		this.action = action;
-		if (action != null) {
-			lastKnownType = action.getItemType();
-		}
-		if (action != null && action.getPropertyChangeSupport() != null) {
+		lastKnownType = action.getItemType();
+		if (action.getPropertyChangeSupport() != null) {
 			action.getPropertyChangeSupport().addPropertyChangeListener(this);
 		}
 		if (action instanceof IterationAction && ((IterationAction) action).getIterationAction() != null

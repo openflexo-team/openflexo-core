@@ -58,7 +58,7 @@ public abstract class FIBProjectObjectSelector<T extends FlexoObject> extends FI
 
 	static final Logger logger = Logger.getLogger(FIBProjectObjectSelector.class.getPackage().getName());
 
-	private FlexoProject project;
+	private FlexoProject<?> project;
 
 	public FIBProjectObjectSelector(T editedObject) {
 		super(editedObject);
@@ -70,14 +70,14 @@ public abstract class FIBProjectObjectSelector<T extends FlexoObject> extends FI
 		project = null;
 	}
 
-	public FlexoProject getProject() {
+	public FlexoProject<?> getProject() {
 		return project;
 	}
 
 	@CustomComponentParameter(name = "project", type = CustomComponentParameter.Type.MANDATORY)
-	public void setProject(FlexoProject project) {
+	public void setProject(FlexoProject<?> project) {
 		if (this.project != project) {
-			FlexoProject oldProject = this.project;
+			FlexoProject<?> oldProject = this.project;
 			if (project == null) {
 				if (logger.isLoggable(Level.WARNING)) {
 					logger.warning("Passing null project. If you rely on project this is unlikely to work");

@@ -81,7 +81,7 @@ public class FMLLogRecord {
 			message = message.intern();
 		}
 		this.level = level;
-		if (console != null && console.getKeepLogTrace()) {
+		if (console.getKeepLogTrace()) {
 			stackTrace = new Exception().getStackTrace();
 		}
 	}

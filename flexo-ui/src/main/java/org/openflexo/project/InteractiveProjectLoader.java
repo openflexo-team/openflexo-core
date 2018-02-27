@@ -74,7 +74,7 @@ public class InteractiveProjectLoader extends ProjectLoader {
 
 	private static final Logger logger = Logger.getLogger(InteractiveProjectLoader.class.getPackage().getName());
 
-	protected final Map<FlexoProject, AutoSaveService> autoSaveServices;
+	protected final Map<FlexoProject<?>, AutoSaveService> autoSaveServices;
 
 	public InteractiveProjectLoader() {
 		super();
@@ -189,9 +189,9 @@ public class InteractiveProjectLoader extends ProjectLoader {
 	@Override
 	public void saveProjects(List<FlexoProject<?>> projects) throws SaveResourceExceptionList {
 		List<SaveResourceException> exceptions = new ArrayList<>();
-		Collections.sort(projects, new Comparator<FlexoProject>() {
+		Collections.sort(projects, new Comparator<FlexoProject<?>>() {
 			@Override
-			public int compare(FlexoProject o1, FlexoProject o2) {
+			public int compare(FlexoProject<?> o1, FlexoProject<?> o2) {
 				if (o1.importsProject(o2)) {
 					return 1;
 				}
@@ -203,7 +203,7 @@ public class InteractiveProjectLoader extends ProjectLoader {
 		});
 		try {
 			ProgressWindow.showProgressWindow(FlexoLocalization.getMainLocalizer().localizedForKey("saving"), projects.size());
-			for (FlexoProject project : projects) {
+			for (FlexoProject<?> project : projects) {
 				try {
 					ProgressWindow.setProgressInstance(
 							FlexoLocalization.getMainLocalizer().localizedForKey("saving") + " " + project.getProjectName());

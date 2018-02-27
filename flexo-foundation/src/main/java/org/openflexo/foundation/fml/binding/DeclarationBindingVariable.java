@@ -62,10 +62,8 @@ public class DeclarationBindingVariable extends BindingVariable implements Prope
 		super(action.getVariableName(), action.getAssignableType(), true);
 		this.action = action;
 		setCacheable(false);
-		if (action != null) {
-			lastKnownType = action.getAssignableType();
-		}
-		if (action != null && action.getPropertyChangeSupport() != null) {
+		lastKnownType = action.getAssignableType();
+		if (action.getPropertyChangeSupport() != null) {
 			action.getPropertyChangeSupport().addPropertyChangeListener(this);
 		}
 	}

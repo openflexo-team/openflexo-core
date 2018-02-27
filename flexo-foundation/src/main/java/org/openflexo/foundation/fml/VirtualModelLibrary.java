@@ -72,7 +72,7 @@ import org.openflexo.toolbox.StringUtils;
  * @author sylvain
  * 
  */
-public class VirtualModelLibrary extends DefaultFlexoObject implements FlexoService, Validable {
+public class VirtualModelLibrary extends DefaultFlexoObject implements FlexoService {
 
 	private static final Logger logger = Logger.getLogger(VirtualModelLibrary.class.getPackage().getName());
 

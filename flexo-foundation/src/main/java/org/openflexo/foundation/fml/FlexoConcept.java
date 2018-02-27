@@ -927,9 +927,7 @@ public interface FlexoConcept extends VirtualModelObject {
 				}
 
 				try {
-					if (computedAccessibleProperties != null) {
-						computedAccessibleProperties.addAll(inheritedProperties.values());
-					}
+					computedAccessibleProperties.addAll(inheritedProperties.values());
 				} catch (NullPointerException e) {
 					logger.warning("Something wrong in getAccessibleProperty() evaluation for " + this);
 				}

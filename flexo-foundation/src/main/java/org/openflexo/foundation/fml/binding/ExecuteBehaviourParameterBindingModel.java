@@ -59,7 +59,7 @@ public class ExecuteBehaviourParameterBindingModel extends BindingModel {
 	public ExecuteBehaviourParameterBindingModel(ExecuteBehaviourParameter parameter) {
 		super(parameter.getAction() != null ? parameter.getAction().getBindingModel() : null);
 		this.parameter = parameter;
-		if (parameter != null && parameter.getPropertyChangeSupport() != null) {
+		if (parameter.getPropertyChangeSupport() != null) {
 			parameter.getPropertyChangeSupport().addPropertyChangeListener(this);
 		}
 	}
