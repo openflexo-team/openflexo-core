@@ -91,6 +91,7 @@ public class FIBDocImageSelector<T extends FlexoDrawingRun<D, TA>, D extends Fle
 		return FIB_FILE;
 	}
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public Class<T> getRepresentedType() {
 		return (Class) FlexoDrawingRun.class;

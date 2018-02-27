@@ -89,6 +89,7 @@ public class FIBDocTableSelector<T extends FlexoDocTable<D, TA>, D extends Flexo
 		return FIB_FILE;
 	}
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public Class<T> getRepresentedType() {
 		return (Class) FlexoDocTable.class;
