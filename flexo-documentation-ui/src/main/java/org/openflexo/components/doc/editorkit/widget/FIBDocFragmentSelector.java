@@ -94,10 +94,10 @@ public class FIBDocFragmentSelector<F extends FlexoDocFragment<D, TA>, D extends
 		return FIB_FILE;
 	}
 
-	@SuppressWarnings({ "unchecked" })
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public Class<F> getRepresentedType() {
-		return (Class<F>) FlexoDocFragment.class;
+		return (Class) FlexoDocFragment.class;
 	}
 
 	public D getDocument() {

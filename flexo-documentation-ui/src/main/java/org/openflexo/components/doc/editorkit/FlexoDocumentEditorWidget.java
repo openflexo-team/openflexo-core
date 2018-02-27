@@ -104,10 +104,10 @@ public class FlexoDocumentEditorWidget<D extends FlexoDocument<D, TA>, TA extend
 		// TODO Auto-generated method stub
 	}
 
-	@SuppressWarnings({ "unchecked" })
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public Class<D> getRepresentedType() {
-		return (Class<D>) FlexoDocument.class;
+		return (Class) FlexoDocument.class;
 	}
 
 	public FlexoDocumentEditor<D, TA> getEditor() {
