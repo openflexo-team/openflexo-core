@@ -187,7 +187,7 @@ public class TestStandardFlexoConceptView extends OpenflexoFIBTestCase {
 		createEditionAction1.setAssignation(new DataBinding<>("aString"));
 		createEditionAction1.doAction();
 		AssignationAction<?> action1 = (AssignationAction<?>) createEditionAction1.getNewEditionAction();
-		((ExpressionAction) action1.getAssignableAction()).setExpression(new DataBinding<>("'foo'"));
+		((ExpressionAction<?>) action1.getAssignableAction()).setExpression(new DataBinding<>("'foo'"));
 		action1.setName("action1");
 
 		assertEquals(action1, creationScheme.getControlGraph());
@@ -200,7 +200,7 @@ public class TestStandardFlexoConceptView extends OpenflexoFIBTestCase {
 		createEditionAction2.setAssignation(new DataBinding<>("aBoolean"));
 		createEditionAction2.doAction();
 		AssignationAction<?> action2 = (AssignationAction<?>) createEditionAction2.getNewEditionAction();
-		((ExpressionAction) action2.getAssignableAction()).setExpression(new DataBinding<>("true"));
+		((ExpressionAction<?>) action2.getAssignableAction()).setExpression(new DataBinding<>("true"));
 		action2.setName("action2");
 
 		CreateEditionAction createEditionAction3 = CreateEditionAction.actionType.makeNewAction(creationScheme.getControlGraph(), null,
@@ -210,7 +210,7 @@ public class TestStandardFlexoConceptView extends OpenflexoFIBTestCase {
 		createEditionAction3.setAssignation(new DataBinding<>("anInteger"));
 		createEditionAction3.doAction();
 		AssignationAction<?> action3 = (AssignationAction<?>) createEditionAction3.getNewEditionAction();
-		((ExpressionAction) action3.getAssignableAction()).setExpression(new DataBinding<>("8"));
+		((ExpressionAction<?>) action3.getAssignableAction()).setExpression(new DataBinding<>("8"));
 		action3.setName("action3");
 
 		CreateFlexoBehaviour createActionScheme = CreateFlexoBehaviour.actionType.makeNewAction(flexoConceptA, null, editor);
@@ -247,7 +247,7 @@ public class TestStandardFlexoConceptView extends OpenflexoFIBTestCase {
 		createDeclarePatternRoleInCondition1.doAction();
 		AssignationAction<?> declarePatternRoleInCondition1 = (AssignationAction<?>) createDeclarePatternRoleInCondition1
 				.getNewEditionAction();
-		((ExpressionAction) declarePatternRoleInCondition1.getAssignableAction()).setExpression(new DataBinding<>("8"));
+		((ExpressionAction<?>) declarePatternRoleInCondition1.getAssignableAction()).setExpression(new DataBinding<>("8"));
 
 		CreateEditionAction createConditionAction2 = CreateEditionAction.actionType.makeNewAction(actionScheme.getControlGraph(), null,
 				editor);
@@ -267,7 +267,7 @@ public class TestStandardFlexoConceptView extends OpenflexoFIBTestCase {
 		createDeclarePatternRoleInCondition2.doAction();
 		AssignationAction<?> declarePatternRoleInCondition2 = (AssignationAction<?>) createDeclarePatternRoleInCondition2
 				.getNewEditionAction();
-		((ExpressionAction) declarePatternRoleInCondition2.getAssignableAction()).setExpression(new DataBinding<>("12"));
+		((ExpressionAction<?>) declarePatternRoleInCondition2.getAssignableAction()).setExpression(new DataBinding<>("12"));
 
 	}
 

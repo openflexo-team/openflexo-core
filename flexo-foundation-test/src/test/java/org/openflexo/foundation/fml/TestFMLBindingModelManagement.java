@@ -710,11 +710,11 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		createEditionAction1.setAssignation(new DataBinding<>("aStringInA"));
 		createEditionAction1.doAction();
 		AssignationAction<?> action1 = (AssignationAction<?>) createEditionAction1.getNewEditionAction();
-		((ExpressionAction) action1.getAssignableAction()).setExpression(new DataBinding<>("'foo'"));
+		((ExpressionAction<?>) action1.getAssignableAction()).setExpression(new DataBinding<>("'foo'"));
 		action1.setName("action1");
 
 		assertTrue(action1.getAssignation().isValid());
-		assertTrue(((ExpressionAction) action1.getAssignableAction()).getExpression().isValid());
+		assertTrue(((ExpressionAction<?>) action1.getAssignableAction()).getExpression().isValid());
 
 		CreateEditionAction createEditionAction2 = CreateEditionAction.actionType.makeNewAction(creationScheme.getControlGraph(), null,
 				editor);
@@ -724,11 +724,11 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		createEditionAction2.setAssignation(new DataBinding<>("aBooleanInA"));
 		createEditionAction2.doAction();
 		AssignationAction<?> action2 = (AssignationAction<?>) createEditionAction2.getNewEditionAction();
-		((ExpressionAction) action2.getAssignableAction()).setExpression(new DataBinding<>("true"));
+		((ExpressionAction<?>) action2.getAssignableAction()).setExpression(new DataBinding<>("true"));
 		action2.setName("action2");
 
 		assertTrue(action2.getAssignation().isValid());
-		assertTrue(((ExpressionAction) action2.getAssignableAction()).getExpression().isValid());
+		assertTrue(((ExpressionAction<?>) action2.getAssignableAction()).getExpression().isValid());
 
 		CreateEditionAction createEditionAction3 = CreateEditionAction.actionType.makeNewAction(creationScheme.getControlGraph(), null,
 				editor);
@@ -738,11 +738,11 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		createEditionAction3.setAssignation(new DataBinding<>("anIntegerInA"));
 		createEditionAction3.doAction();
 		AssignationAction<?> action3 = (AssignationAction<?>) createEditionAction3.getNewEditionAction();
-		((ExpressionAction) action3.getAssignableAction()).setExpression(new DataBinding<>("8"));
+		((ExpressionAction<?>) action3.getAssignableAction()).setExpression(new DataBinding<>("8"));
 		action3.setName("action3");
 
 		assertTrue(action3.getAssignation().isValid());
-		assertTrue(((ExpressionAction) action3.getAssignableAction()).getExpression().isValid());
+		assertTrue(((ExpressionAction<?>) action3.getAssignableAction()).getExpression().isValid());
 
 		assertTrue(flexoConceptA.getFlexoBehaviours().contains(creationScheme));
 		assertTrue(flexoConceptA.getCreationSchemes().contains(creationScheme));
@@ -855,7 +855,7 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		createDeclareFlexoRoleInCondition1.doAction();
 		AssignationAction<?> declarePatternRoleInCondition1 = (AssignationAction<?>) createDeclareFlexoRoleInCondition1
 				.getNewEditionAction();
-		((ExpressionAction) declarePatternRoleInCondition1.getAssignableAction()).setExpression(new DataBinding<>("8"));
+		((ExpressionAction<?>) declarePatternRoleInCondition1.getAssignableAction()).setExpression(new DataBinding<>("8"));
 
 		CreateEditionAction createConditionAction2 = CreateEditionAction.actionType.makeNewAction(actionScheme.getControlGraph(), null,
 				editor);
@@ -879,7 +879,7 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		createDeclareFlexoRoleInCondition2.setAssignation(new DataBinding<>("anIntegerInA"));
 		createDeclareFlexoRoleInCondition2.doAction();
 		AssignationAction<?> declareFlexoRoleInCondition2 = (AssignationAction<?>) createDeclareFlexoRoleInCondition2.getNewEditionAction();
-		((ExpressionAction) declareFlexoRoleInCondition2.getAssignableAction()).setExpression(new DataBinding<>("12"));
+		((ExpressionAction<?>) declareFlexoRoleInCondition2.getAssignableAction()).setExpression(new DataBinding<>("12"));
 
 		assertEquals(7, declareFlexoRoleInCondition2.getBindingModel().getBindingVariablesCount());
 
@@ -895,7 +895,7 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 				iteration.getFMLModelFactory().newExpressionAction(new DataBinding<>("container.flexoConceptInstances")));
 		iteration.setIteratorName("fci");
 
-		assertTrue(((ExpressionAction) iteration.getIterationAction()).getExpression().isValid());
+		assertTrue(((ExpressionAction<?>) iteration.getIterationAction()).getExpression().isValid());
 
 		assertEquals(7, iteration.getBindingModel().getBindingVariablesCount());
 		// assertEquals(13,
@@ -912,7 +912,7 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		createDeclareFlexoRoleInIteration1.doAction();
 		AssignationAction<?> declareFlexoRoleInIteration1 = (AssignationAction<?>) createDeclareFlexoRoleInIteration1.getNewEditionAction();
 		assertNotNull(declareFlexoRoleInIteration1);
-		((ExpressionAction) declareFlexoRoleInIteration1.getAssignableAction()).setExpression(new DataBinding<>("\"foo\""));
+		((ExpressionAction<?>) declareFlexoRoleInIteration1.getAssignableAction()).setExpression(new DataBinding<>("\"foo\""));
 
 		FMLModelFactory factory = actionScheme.getFMLModelFactory();
 		System.out.println("actionScheme =\n" + factory.stringRepresentation(actionScheme));
@@ -926,7 +926,7 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		assertNotNull(declareFlexoRoleInIteration1.getInferedBindingModel().bindingVariableNamed("fci"));
 
 		assertTrue(declareFlexoRoleInIteration1.getAssignation().isValid());
-		assertTrue(((ExpressionAction) declareFlexoRoleInIteration1.getAssignableAction()).getExpression().isValid());
+		assertTrue(((ExpressionAction<?>) declareFlexoRoleInIteration1.getAssignableAction()).getExpression().isValid());
 
 		CreateEditionAction createDeclareFlexoRoleInIteration2 = CreateEditionAction.actionType.makeNewAction(iteration.getControlGraph(),
 				null, editor);
@@ -937,7 +937,7 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		createDeclareFlexoRoleInIteration2.doAction();
 		AssignationAction<?> declareFlexoRoleInIteration2 = (AssignationAction<?>) createDeclareFlexoRoleInIteration2.getNewEditionAction();
 		assertNotNull(declareFlexoRoleInIteration2);
-		((ExpressionAction) declareFlexoRoleInIteration2.getAssignableAction())
+		((ExpressionAction<?>) declareFlexoRoleInIteration2.getAssignableAction())
 				.setExpression(new DataBinding<>("fci.toString.substring(3,4) != aStringInA"));
 
 		System.out.println("FML=\n" + actionScheme.getFMLRepresentation());
@@ -947,24 +947,25 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 
 		assertTrue(declareFlexoRoleInIteration2.getAssignation().isValid());
 
-		System.out.println("expression=" + ((ExpressionAction) declareFlexoRoleInIteration2.getAssignableAction()).getExpression());
-		System.out.println("valid=" + ((ExpressionAction) declareFlexoRoleInIteration2.getAssignableAction()).getExpression().isValid());
-		System.out.println(
-				"reason=" + ((ExpressionAction) declareFlexoRoleInIteration2.getAssignableAction()).getExpression().invalidBindingReason());
+		System.out.println("expression=" + ((ExpressionAction<?>) declareFlexoRoleInIteration2.getAssignableAction()).getExpression());
+		System.out.println("valid=" + ((ExpressionAction<?>) declareFlexoRoleInIteration2.getAssignableAction()).getExpression().isValid());
+		System.out.println("reason="
+				+ ((ExpressionAction<?>) declareFlexoRoleInIteration2.getAssignableAction()).getExpression().invalidBindingReason());
 
 		IterationActionBindingVariable fciBindingVariable = (IterationActionBindingVariable) declareFlexoRoleInIteration2.getBindingModel()
 				.bindingVariableNamed("fci");
 		System.out.println("fciBindingVariable=" + fciBindingVariable + " of " + fciBindingVariable.getClass());
 		System.out.println("action=" + fciBindingVariable.getAction());
 		System.out.println("type=" + fciBindingVariable.getType());
-		ExpressionAction expressionAction = (ExpressionAction) ((IterationAction) fciBindingVariable.getAction()).getIterationAction();
+		ExpressionAction<?> expressionAction = (ExpressionAction<?>) ((IterationAction) fciBindingVariable.getAction())
+				.getIterationAction();
 		System.out.println("expressionAction=" + expressionAction.getExpression());
 		System.out.println("valid=" + expressionAction.getExpression().isValid());
 		System.out.println("reason=" + expressionAction.getExpression().invalidBindingReason());
 		System.out.println("expressionAction.type=" + expressionAction.getAssignableType());
 		System.out.println("expressionAction.iterator=" + expressionAction.getIteratorType());
 
-		assertTrue(((ExpressionAction) declareFlexoRoleInIteration2.getAssignableAction()).getExpression().isValid());
+		assertTrue(((ExpressionAction<?>) declareFlexoRoleInIteration2.getAssignableAction()).getExpression().isValid());
 
 		System.out.println(factory.stringRepresentation(actionScheme));
 
@@ -982,8 +983,8 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		assertNotNull(declareFlexoRoleInIteration2.getBindingModel().bindingVariableNamed("iteratorHasChanged"));
 
 		assertEquals("(iteratorHasChanged.toString.substring(3,4) != aStringInA)",
-				((ExpressionAction) declareFlexoRoleInIteration2.getAssignableAction()).getExpression().toString());
-		assertTrue(((ExpressionAction) declareFlexoRoleInIteration2.getAssignableAction()).getExpression().isValid());
+				((ExpressionAction<?>) declareFlexoRoleInIteration2.getAssignableAction()).getExpression().toString());
+		assertTrue(((ExpressionAction<?>) declareFlexoRoleInIteration2.getAssignableAction()).getExpression().isValid());
 
 		System.out.println("FML=\n" + actionScheme.getFMLRepresentation());
 
@@ -1022,7 +1023,7 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 
 	@Test
 	@TestOrder(14)
-	public void testFetchRequestBindingModelManagement() throws SaveResourceException {
+	public void testFetchRequestBindingModelManagement() {
 
 		// We programmatically implement this code:
 		// ActionScheme testFetchRequest(String aString, Boolean aBoolean) {
@@ -1104,7 +1105,7 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 
 	@Test
 	@TestOrder(15)
-	public void testFetchRequestIterationBindingModelManagement() throws SaveResourceException {
+	public void testFetchRequestIterationBindingModelManagement() {
 
 		// We programmatically implement this code:
 		// ActionScheme testFetchRequestIteration(String aString, Boolean
@@ -1194,7 +1195,7 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		createAssignationAction.setDeclarationVariableName("name");
 		createAssignationAction.doAction();
 		DeclarationAction<?> assignation1 = (DeclarationAction<?>) createAssignationAction.getNewEditionAction();
-		((ExpressionAction) assignation1.getAssignableAction()).setExpression(new DataBinding<>("item.aStringInA"));
+		((ExpressionAction<?>) assignation1.getAssignableAction()).setExpression(new DataBinding<>("item.aStringInA"));
 
 		CreateEditionAction createAssignationAction2 = CreateEditionAction.actionType.makeNewAction(fetchRequestIteration.getControlGraph(),
 				null, editor);
@@ -1204,12 +1205,12 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		createAssignationAction2.setAssignation(new DataBinding<>("item.aStringInA"));
 		createAssignationAction2.doAction();
 		AssignationAction<?> assignation2 = (AssignationAction<?>) createAssignationAction2.getNewEditionAction();
-		((ExpressionAction) assignation2.getAssignableAction()).setExpression(new DataBinding<>("name+\"foo\""));
+		((ExpressionAction<?>) assignation2.getAssignableAction()).setExpression(new DataBinding<>("name+\"foo\""));
 
-		assertTrue(((ExpressionAction) assignation1.getAssignableAction()).getExpression().isValid());
+		assertTrue(((ExpressionAction<?>) assignation1.getAssignableAction()).getExpression().isValid());
 		assertTrue(assignation2.getAssignation().isValid());
 
-		assertTrue(((ExpressionAction) assignation2.getAssignableAction()).getExpression().isValid());
+		assertTrue(((ExpressionAction<?>) assignation2.getAssignableAction()).getExpression().isValid());
 
 		assertEquals(7, fetchRequestIteration.getBindingModel().getBindingVariablesCount());
 
@@ -1234,9 +1235,9 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		assertEquals(FlexoConceptInstanceType.getFlexoConceptInstanceType(flexoConceptA),
 				assignation1.getBindingModel().bindingVariableNamed("myConceptInstance").getType());
 
-		assertTrue(((ExpressionAction) assignation1.getAssignableAction()).getExpression().isValid());
+		assertTrue(((ExpressionAction<?>) assignation1.getAssignableAction()).getExpression().isValid());
 		assertTrue(assignation2.getAssignation().isValid());
-		assertTrue(((ExpressionAction) assignation2.getAssignableAction()).getExpression().isValid());
+		assertTrue(((ExpressionAction<?>) assignation2.getAssignableAction()).getExpression().isValid());
 
 		// System.out.println("FML: " + actionScheme.getFMLRepresentation());
 
@@ -1246,7 +1247,7 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 
 	@Test
 	@TestOrder(16)
-	public void testMatchFlexoConceptInstanceBindingModelManagement() throws SaveResourceException {
+	public void testMatchFlexoConceptInstanceBindingModelManagement() {
 
 		// We programmatically implement this code:
 		// ActionScheme testFetchRequestIteration(String aString, Boolean
@@ -1362,10 +1363,10 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		createEditionAction1.setAssignation(new DataBinding<>("aStringInA"));
 		createEditionAction1.doAction();
 		AssignationAction<?> action1 = (AssignationAction<?>) createEditionAction1.getNewEditionAction();
-		((ExpressionAction) action1.getAssignableAction()).setExpression(new DataBinding<>("parameters.aStringParameter"));
+		((ExpressionAction<?>) action1.getAssignableAction()).setExpression(new DataBinding<>("parameters.aStringParameter"));
 
 		assertTrue(action1.getAssignation().isValid());
-		assertTrue(((ExpressionAction) action1.getAssignableAction()).getExpression().isValid());
+		assertTrue(((ExpressionAction<?>) action1.getAssignableAction()).getExpression().isValid());
 
 		CreateEditionAction createEditionAction2 = CreateEditionAction.actionType.makeNewAction(creationScheme.getControlGraph(), null,
 				editor);
@@ -1375,10 +1376,10 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		createEditionAction2.setAssignation(new DataBinding<>("aBooleanInA"));
 		createEditionAction2.doAction();
 		AssignationAction<?> action2 = (AssignationAction<?>) createEditionAction2.getNewEditionAction();
-		((ExpressionAction) action2.getAssignableAction()).setExpression(new DataBinding<>("parameters.aBooleanParameter"));
+		((ExpressionAction<?>) action2.getAssignableAction()).setExpression(new DataBinding<>("parameters.aBooleanParameter"));
 
 		assertTrue(action2.getAssignation().isValid());
-		assertTrue(((ExpressionAction) action2.getAssignableAction()).getExpression().isValid());
+		assertTrue(((ExpressionAction<?>) action2.getAssignableAction()).getExpression().isValid());
 
 		assertNotNull(actionScheme);
 		System.out.println("FML=" + actionScheme.getFMLRepresentation());

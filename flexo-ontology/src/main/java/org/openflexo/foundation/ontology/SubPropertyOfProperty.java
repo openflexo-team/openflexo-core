@@ -65,6 +65,7 @@ public class SubPropertyOfProperty<TA extends TechnologyAdapter> implements Tech
 			super(technologyAdapter);
 		}
 
+		@SuppressWarnings({ "unchecked", "rawtypes" })
 		@Override
 		public Class<SubPropertyOfProperty<?>> getCustomType() {
 			return (Class) SubPropertyOfProperty.class;

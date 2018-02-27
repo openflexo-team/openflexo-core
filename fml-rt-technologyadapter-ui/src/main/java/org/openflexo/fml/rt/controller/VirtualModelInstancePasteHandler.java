@@ -78,6 +78,7 @@ public class VirtualModelInstancePasteHandler extends FlexoPasteHandler<VirtualM
 
 	public static final String COPY_SUFFIX = "-copy";
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public Class<VirtualModelInstance<?, ?>> getPastingPointHolderType() {
 		return (Class) FMLRTVirtualModelInstance.class;

@@ -245,8 +245,7 @@ public abstract interface AddIndividual<MS extends TypeAwareModelSlot<M, ?>, M e
 			if (ontologyClass != null) {
 				if (getAssignedFlexoProperty() instanceof IndividualRole) {
 					if (getAssignedFlexoProperty().getOntologicType() != null) {
-						if (getAssignedFlexoProperty().getOntologicType().isSuperConceptOf(ontologyClass)) {
-						}
+						if (getAssignedFlexoProperty().getOntologicType().isSuperConceptOf(ontologyClass)) {}
 						else {
 							getAssignedFlexoProperty().setOntologicType(ontologyClass);
 						}
@@ -375,7 +374,7 @@ public abstract interface AddIndividual<MS extends TypeAwareModelSlot<M, ?>, M e
 			@Override
 			protected void fixAction() {
 				AddIndividual<?, ?, ?> action = getValidable();
-				((AssignationAction) action.getOwner()).setAssignation(new DataBinding<>(flexoRole.getRoleName()));
+				((AssignationAction<?>) action.getOwner()).setAssignation(new DataBinding<>(flexoRole.getRoleName()));
 			}
 
 		}

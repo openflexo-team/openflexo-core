@@ -58,11 +58,11 @@ public class OntologyUtils {
 		if (someClasses.size() == 1) {
 			return someClasses.iterator().next();
 		}
-		IFlexoOntologyClass[] array = someClasses.toArray(new IFlexoOntologyClass[someClasses.size()]);
+		IFlexoOntologyClass<?>[] array = someClasses.toArray(new IFlexoOntologyClass[someClasses.size()]);
 
 		for (int i = 0; i < someClasses.size(); i++) {
 			for (int j = i + 1; j < someClasses.size(); j++) {
-				IFlexoOntologyClass c1 = array[i];
+				IFlexoOntologyClass<?> c1 = array[i];
 				IFlexoOntologyClass c2 = array[j];
 				if (c1.isSuperClassOf(c2)) {
 					someClasses.remove(c1);

@@ -94,6 +94,7 @@ public class FIBDocFragmentSelector<F extends FlexoDocFragment<D, TA>, D extends
 		return FIB_FILE;
 	}
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public Class<F> getRepresentedType() {
 		return (Class) FlexoDocFragment.class;
@@ -204,17 +205,17 @@ public class FIBDocFragmentSelector<F extends FlexoDocFragment<D, TA>, D extends
 				System.out.println("endCharElement: " + endCharElement);
 				System.out.println("endParElement: " + endParElement);
 
-				FlexoDocElement startElement = null;
-				FlexoDocElement endElement = null;
+				FlexoDocElement<D, TA> startElement = null;
+				FlexoDocElement<D, TA> endElement = null;
 
 				if (startParElement instanceof AbstractDocumentElement
 						&& ((AbstractDocumentElement<?, ?, ?>) startParElement).getDocObject() instanceof FlexoDocElement) {
-					startElement = (FlexoDocElement<?, ?>) ((AbstractDocumentElement<?, ?, ?>) startParElement).getDocObject();
+					startElement = (FlexoDocElement<D, TA>) ((AbstractDocumentElement<?, ?, ?>) startParElement).getDocObject();
 				}
 
 				if (endParElement instanceof AbstractDocumentElement
 						&& ((AbstractDocumentElement<?, ?, ?>) endParElement).getDocObject() instanceof FlexoDocElement) {
-					endElement = (FlexoDocElement<?, ?>) ((AbstractDocumentElement<?, ?, ?>) endParElement).getDocObject();
+					endElement = (FlexoDocElement<D, TA>) ((AbstractDocumentElement<?, ?, ?>) endParElement).getDocObject();
 				}
 
 				F newFragment = null;
@@ -281,9 +282,9 @@ public class FIBDocFragmentSelector<F extends FlexoDocFragment<D, TA>, D extends
 						}
 					}
 					final FlexoDocument<?, ?> docReference = doc;
-					Collections.sort(elements, new Comparator<FlexoDocElement>() {
+					Collections.sort(elements, new Comparator<FlexoDocElement<?, ?>>() {
 						@Override
-						public int compare(FlexoDocElement o1, FlexoDocElement o2) {
+						public int compare(FlexoDocElement<?, ?> o1, FlexoDocElement<?, ?> o2) {
 							return docReference.getElements().indexOf(o1) - docReference.getElements().indexOf(o2);
 						}
 					});
@@ -379,7 +380,7 @@ public class FIBDocFragmentSelector<F extends FlexoDocFragment<D, TA>, D extends
 
 	}
 
-	private void scrollTo(FlexoDocObject object, FlexoDocumentEditorWidget docXEditor) {
+	private void scrollTo(FlexoDocObject<D, TA> object, FlexoDocumentEditorWidget<D, TA> docXEditor) {
 		if (!docXEditor.getEditor().scrollTo(object, false)) {
 			SwingUtilities.invokeLater(new Runnable() {
 				@Override

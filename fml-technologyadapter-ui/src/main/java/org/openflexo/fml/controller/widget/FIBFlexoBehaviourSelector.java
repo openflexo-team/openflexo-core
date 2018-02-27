@@ -69,9 +69,10 @@ public class FIBFlexoBehaviourSelector extends FIBFlexoObjectSelector<FlexoBehav
 		return FIB_FILE_NAME;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public Class<FlexoBehaviour> getRepresentedType() {
-		return (Class) getBehaviourClass();
+		return (Class<FlexoBehaviour>) getBehaviourClass();
 	}
 
 	@Override

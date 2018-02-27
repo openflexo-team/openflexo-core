@@ -228,7 +228,7 @@ public abstract class AbstractCreateFlexoConcept<A extends FlexoAction<A, T1, T2
 					assignAction.setAssignation(new DataBinding<>(entry.getName()));
 					assignAction.doAction();
 					AssignationAction<?> createRightMember = (AssignationAction<?>) assignAction.getNewEditionAction();
-					((ExpressionAction) createRightMember.getAssignableAction())
+					((ExpressionAction<?>) createRightMember.getAssignableAction())
 							.setExpression(new DataBinding<>("parameters." + paramNameForEntry(entry)));
 				}
 

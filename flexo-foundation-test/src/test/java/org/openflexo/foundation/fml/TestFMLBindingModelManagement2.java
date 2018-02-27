@@ -70,7 +70,6 @@ import org.openflexo.foundation.fml.editionaction.ExpressionAction;
 import org.openflexo.foundation.fml.editionaction.FetchRequestCondition;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.fml.rm.VirtualModelResourceFactory;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.editionaction.SelectFlexoConceptInstance;
 import org.openflexo.foundation.resource.DirectoryResourceCenter;
 import org.openflexo.foundation.resource.SaveResourceException;
@@ -345,7 +344,7 @@ public class TestFMLBindingModelManagement2 extends OpenflexoProjectAtRunTimeTes
 		createIterationAction.doAction();
 		iteration1 = (IterationAction) createIterationAction.getNewEditionAction();
 
-		SelectFlexoConceptInstance selectFlexoConceptInstance = iteration1.getFMLModelFactory().newSelectFlexoConceptInstance();
+		SelectFlexoConceptInstance<?> selectFlexoConceptInstance = iteration1.getFMLModelFactory().newSelectFlexoConceptInstance();
 		selectFlexoConceptInstance.setFlexoConceptType(flexoConcept);
 		selectFlexoConceptInstance.setReceiver(new DataBinding<>("container"));
 		iteration1.setIterationAction(selectFlexoConceptInstance);
@@ -368,7 +367,7 @@ public class TestFMLBindingModelManagement2 extends OpenflexoProjectAtRunTimeTes
 		createAssignationAction.setDeclarationVariableName("name");
 		createAssignationAction.doAction();
 		assignation1 = (DeclarationAction<String>) createAssignationAction.getNewEditionAction();
-		((ExpressionAction) assignation1.getAssignableAction()).setExpression(new DataBinding<>("item.aStringInA"));
+		((ExpressionAction<?>) assignation1.getAssignableAction()).setExpression(new DataBinding<>("item.aStringInA"));
 
 		CreateEditionAction createAssignationAction2 = CreateEditionAction.actionType.makeNewAction(iteration1.getControlGraph(), null,
 				editor);
@@ -376,12 +375,12 @@ public class TestFMLBindingModelManagement2 extends OpenflexoProjectAtRunTimeTes
 		createAssignationAction2.setAssignation(new DataBinding<>("item.aStringInA"));
 		createAssignationAction2.doAction();
 		assignation2 = (AssignationAction<String>) createAssignationAction2.getNewEditionAction();
-		((ExpressionAction) assignation2.getAssignableAction()).setExpression(new DataBinding<>("name+\"foo\""));
+		((ExpressionAction<?>) assignation2.getAssignableAction()).setExpression(new DataBinding<>("name+\"foo\""));
 
-		assertTrue(((ExpressionAction) assignation2.getAssignableAction()).getExpression().isValid());
+		assertTrue(((ExpressionAction<?>) assignation2.getAssignableAction()).getExpression().isValid());
 		assertTrue(assignation2.getAssignation().isValid());
 
-		assertTrue(((ExpressionAction) assignation2.getAssignableAction()).getExpression().isValid());
+		assertTrue(((ExpressionAction<?>) assignation2.getAssignableAction()).getExpression().isValid());
 
 		assertEquals(7, iteration1.getBindingModel().getBindingVariablesCount());
 
@@ -429,9 +428,9 @@ public class TestFMLBindingModelManagement2 extends OpenflexoProjectAtRunTimeTes
 		createIterationAction2.doAction();
 		iteration2 = (IterationAction) createIterationAction2.getNewEditionAction();
 
-		SelectFlexoConceptInstance selectFlexoConceptInstance = iteration2.getFMLModelFactory().newSelectFlexoConceptInstance();
+		SelectFlexoConceptInstance<?> selectFlexoConceptInstance = iteration2.getFMLModelFactory().newSelectFlexoConceptInstance();
 		selectFlexoConceptInstance.setFlexoConceptType(flexoConcept);
-		selectFlexoConceptInstance.setReceiver(new DataBinding<VirtualModelInstance<?, ?>>("container"));
+		selectFlexoConceptInstance.setReceiver(new DataBinding<>("container"));
 		iteration2.setIterationAction(selectFlexoConceptInstance);
 		iteration2.setIteratorName("item2");
 

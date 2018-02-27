@@ -225,7 +225,7 @@ public class TestControlGraph extends OpenflexoTestCase {
 		createEditionAction1.setAssignation(new DataBinding<>("aString"));
 		createEditionAction1.doAction();
 		AssignationAction<?> action1 = (AssignationAction<?>) createEditionAction1.getNewEditionAction();
-		((ExpressionAction) action1.getAssignableAction()).setExpression(new DataBinding<>("'foo'"));
+		((ExpressionAction<?>) action1.getAssignableAction()).setExpression(new DataBinding<>("'foo'"));
 		action1.setName("action1");
 
 		assertEquals(action1, creationScheme.getControlGraph());
@@ -239,7 +239,7 @@ public class TestControlGraph extends OpenflexoTestCase {
 		createEditionAction2.setAssignation(new DataBinding<>("aBoolean"));
 		createEditionAction2.doAction();
 		AssignationAction<?> action2 = (AssignationAction<?>) createEditionAction2.getNewEditionAction();
-		((ExpressionAction) action2.getAssignableAction()).setExpression(new DataBinding<>("true"));
+		((ExpressionAction<?>) action2.getAssignableAction()).setExpression(new DataBinding<>("true"));
 		action2.setName("action2");
 
 		assertTrue(creationScheme.getControlGraph() instanceof Sequence);
@@ -265,7 +265,7 @@ public class TestControlGraph extends OpenflexoTestCase {
 		createEditionAction3.setAssignation(new DataBinding<>("anInteger"));
 		createEditionAction3.doAction();
 		AssignationAction<?> action3 = (AssignationAction<?>) createEditionAction3.getNewEditionAction();
-		((ExpressionAction) action3.getAssignableAction()).setExpression(new DataBinding<>("8"));
+		((ExpressionAction<?>) action3.getAssignableAction()).setExpression(new DataBinding<>("8"));
 		action3.setName("action3");
 
 		assertTrue(flexoConcept.getFlexoBehaviours().contains(creationScheme));
@@ -361,7 +361,7 @@ public class TestControlGraph extends OpenflexoTestCase {
 		createDeclarePatternRoleInCondition1.doAction();
 		AssignationAction<?> declarePatternRoleInCondition1 = (AssignationAction<?>) createDeclarePatternRoleInCondition1
 				.getNewEditionAction();
-		((ExpressionAction) declarePatternRoleInCondition1.getAssignableAction()).setExpression(new DataBinding<>("8"));
+		((ExpressionAction<?>) declarePatternRoleInCondition1.getAssignableAction()).setExpression(new DataBinding<>("8"));
 
 		CreateEditionAction createConditionAction2 = CreateEditionAction.actionType.makeNewAction(actionScheme.getControlGraph(), null,
 				editor);
@@ -384,7 +384,7 @@ public class TestControlGraph extends OpenflexoTestCase {
 		createDeclarePatternRoleInCondition2.doAction();
 		AssignationAction<?> declarePatternRoleInCondition2 = (AssignationAction<?>) createDeclarePatternRoleInCondition2
 				.getNewEditionAction();
-		((ExpressionAction) declarePatternRoleInCondition2.getAssignableAction()).setExpression(new DataBinding<>("12"));
+		((ExpressionAction<?>) declarePatternRoleInCondition2.getAssignableAction()).setExpression(new DataBinding<>("12"));
 
 		conditional2.setElseControlGraph(factory.newEmptyControlGraph());
 		CreateEditionAction createDeclarePatternRole2InCondition2 = CreateEditionAction.actionType
@@ -396,7 +396,7 @@ public class TestControlGraph extends OpenflexoTestCase {
 		createDeclarePatternRole2InCondition2.doAction();
 		AssignationAction<?> declarePatternRole2InCondition2 = (AssignationAction<?>) createDeclarePatternRole2InCondition2
 				.getNewEditionAction();
-		((ExpressionAction) declarePatternRole2InCondition2.getAssignableAction()).setExpression(new DataBinding<>("3"));
+		((ExpressionAction<?>) declarePatternRole2InCondition2.getAssignableAction()).setExpression(new DataBinding<>("3"));
 
 		String debug = factory.stringRepresentation(actionScheme);
 		System.out.println("actionScheme:\n" + debug);
