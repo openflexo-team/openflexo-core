@@ -581,4 +581,6 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, ResourceRepository<
 		return false;
 	}
 
+	public boolean containsArtefact(I serializationArtefact);
+
 }

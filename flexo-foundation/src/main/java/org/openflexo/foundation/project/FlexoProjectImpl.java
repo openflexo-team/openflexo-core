@@ -1543,4 +1543,12 @@ public abstract class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoRe
 		// Not applicable
 	}
 
+	@Override
+	public boolean containsArtefact(I serializationArtefact) {
+		if (getDelegateResourceCenter() == null) {
+			return false;
+		}
+		return getDelegateResourceCenter().containsArtefact(serializationArtefact);
+	}
+
 }

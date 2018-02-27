@@ -167,7 +167,7 @@ public class PreferencesService extends FlexoServiceImpl implements FlexoService
 				}
 				savePreferences();
 			}
-			else if (notification instanceof ResourceCenterRemoved && !readOnly()) {
+			else if (notification instanceof ResourceCenterRemoved) {
 				getResourceCenterPreferences().ensureResourceEntryIsNoMorePresent(
 						((ResourceCenterRemoved) notification).getRemovedResourceCenter().getResourceCenterEntry());
 				savePreferences();

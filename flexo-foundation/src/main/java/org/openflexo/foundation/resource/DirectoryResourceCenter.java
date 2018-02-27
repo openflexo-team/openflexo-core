@@ -153,7 +153,10 @@ public interface DirectoryResourceCenter extends FileSystemBasedResourceCenter {
 			@Override
 			public DirectoryResourceCenter makeResourceCenter(FlexoResourceCenterService rcService) {
 				try {
-					return DirectoryResourceCenter.instanciateNewDirectoryResourceCenter(getDirectory(), rcService);
+					DirectoryResourceCenterImpl returned = (DirectoryResourceCenterImpl) DirectoryResourceCenter
+							.instanciateNewDirectoryResourceCenter(getDirectory(), rcService);
+					returned.entry = this;
+					return returned;
 				} catch (IOException e) {
 					e.printStackTrace();
 					return null;

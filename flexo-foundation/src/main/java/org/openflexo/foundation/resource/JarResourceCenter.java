@@ -863,6 +863,12 @@ public interface JarResourceCenter extends ResourceRepository<FlexoResource<?>, 
 			this.delegatingProjectResource = delegatingProjectResource;
 		}
 
+		@Override
+		public boolean containsArtefact(InJarResourceImpl serializationArtefact) {
+			// TODO
+			return false;
+		}
+
 	}
 
 	@ModelEntity
