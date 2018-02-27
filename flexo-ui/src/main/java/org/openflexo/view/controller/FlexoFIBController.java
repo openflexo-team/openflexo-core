@@ -698,4 +698,34 @@ public class FlexoFIBController extends FIBController implements GraphicalFlexoO
 		deleteVirtualModel.doAction();
 	}
 
+	@NotificationUnsafe
+	public void moveFlexoConcept(FlexoConcept concept, FlexoConcept container) {
+		logger.info("Moving concept " + concept + " into " + container);
+		// Disconnect from former container concept (if any)
+		if (concept.getContainerFlexoConcept() != null) {
+			concept.getContainerFlexoConcept().removeFromEmbeddedFlexoConcepts(concept);
+		}
+		// Disconnect from owner VirtualModel
+		if (concept.getOwner() != null) {
+			concept.getOwner().removeFromFlexoConcepts(concept);
+		}
+		if (container instanceof VirtualModel) {
+			// Normal case
+			((VirtualModel) container).addToFlexoConcepts(concept);
+		}
+		else {
+			// Move in a container FlexoConcept
+			container.getOwner().addToFlexoConcepts(concept);
+			container.addToEmbeddedFlexoConcepts(concept);
+		}
+	}
+
+	@NotificationUnsafe
+	public boolean canMoveFlexoConcept(FlexoConcept concept, FlexoConcept container) {
+		// System.out.println("on peut bouger " + concept + " dans " + container + " ?");
+		// System.out.println("alors: " + (concept != null && concept != container && concept.getContainerFlexoConcept() != container
+		// && concept.getDeclaringVirtualModel() != container));
+		return concept != null && concept.getContainerFlexoConcept() != container && concept.getDeclaringVirtualModel() != container;
+	}
+
 }
