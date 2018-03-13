@@ -65,7 +65,6 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
@@ -97,7 +96,6 @@ import org.openflexo.components.ReviewUnsavedDialog;
 import org.openflexo.components.validation.ValidationWindow;
 import org.openflexo.components.widget.FIBResourceManagerBrowser;
 import org.openflexo.connie.annotations.NotificationUnsafe;
-import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.editor.SelectAndFocusObjectTask;
 import org.openflexo.foundation.FlexoEditingContext;
 import org.openflexo.foundation.FlexoEditor;
@@ -107,7 +105,6 @@ import org.openflexo.foundation.FlexoProjectObject;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.PamelaResourceModelFactory;
 import org.openflexo.foundation.action.FlexoAction;
-import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.action.FlexoUndoManager.FlexoActionCompoundEdit;
 import org.openflexo.foundation.action.LoadResourceAction;
 import org.openflexo.foundation.fml.FMLObject;
@@ -262,7 +259,6 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 		flexoFrame.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0),
 				"escape");
 		flexoFrame.getRootPane().getActionMap().put("escape", new AbstractAction() {
-
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				cancelCurrentAction();
@@ -409,7 +405,7 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 	 * 
 	 * @return
 	 */
-	public ControllerActionInitializer createControllerActionInitializer() {
+	protected ControllerActionInitializer createControllerActionInitializer() {
 		return new ControllerActionInitializer(this);
 	}
 
@@ -655,24 +651,20 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 	}
 
 	public void registerShortcuts(ControllerActionInitializer controllerInitializer) {
-		for (final Entry<FlexoActionFactory<?, ?, ?>, ActionInitializer<?, ?, ?>> entry : controllerInitializer.getActionInitializers()
-				.entrySet()) {
-			KeyStroke accelerator = entry.getValue().getShortcut();
-			if (accelerator != null) {
-				registerActionForKeyStroke(new AbstractAction() {
+		controllerInitializer.getActionInitializers().registerShortcuts(this);
+	}
 
-					@Override
-					public void actionPerformed(ActionEvent e) {
-						System.out.println("actionPerformed() with " + entry.getKey());
-						FlexoObject focusedObject = getSelectionManager().getFocusedObject();
-						Vector<FlexoObject> globalSelection = getSelectionManager().getSelection();
-						FlexoActionFactory actionType = entry.getKey();
-						if (TypeUtils.isAssignableTo(focusedObject, actionType.getFocusedObjectType()) && (globalSelection == null
-								|| TypeUtils.isAssignableTo(globalSelection, actionType.getGlobalSelectionType()))) {
-							getEditor().performActionFactory(actionType, focusedObject, globalSelection, e);
-						}
-					}
-				}, accelerator, entry.getKey().getUnlocalizedName());
+	private static class CompoundAction extends AbstractAction {
+		private final List<Action> actions = new ArrayList<>();
+
+		void addToAction(Action action) {
+			actions.add(action);
+		}
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			for (Action action : actions) {
+				action.actionPerformed(e);
 			}
 		}
 	}
@@ -685,21 +677,6 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 			action2 = getFlexoFrame().getRootPane().getActionMap().get(object);
 		}
 		if (action2 != null) {
-			class CompoundAction extends AbstractAction {
-
-				private final List<Action> actions = new ArrayList<>();
-
-				void addToAction(Action action) {
-					actions.add(action);
-				}
-
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					for (Action action : actions) {
-						action.actionPerformed(e);
-					}
-				}
-			}
 			if (action2 instanceof CompoundAction) {
 				((CompoundAction) action2).addToAction(action);
 				return;
@@ -780,7 +757,7 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 		if (validationModel.getRuleFilter() == null) {
 			validationModel.setRuleFilter(new ValidationRuleFilter() {
 				@Override
-				public boolean accept(ValidationRule rule) {
+				public boolean accept(ValidationRule<?, ?> rule) {
 					return getApplicationContext().getGeneralPreferences().isValidationRuleEnabled(rule);
 				}
 			});
@@ -894,6 +871,7 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		dialog.setContentPane(scroll);
 		dialog.addKeyListener(new KeyAdapter() {
+
 			@Override
 			public void keyTyped(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
@@ -903,6 +881,7 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 		});
 		dialog.validate();
 		dialog.pack();
+
 		Window window = null;
 		if (parentComponent instanceof Window) {
 			window = (Window) parentComponent;
@@ -1383,7 +1362,8 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 
 	public String getWindowTitle() {
 		String projectTitle = /*getModule().getModule().requireProject() &&*/getProject() != null
-				? " - " + getProject().getProjectName() + " - " + getProjectDirectory() : "";
+				? " - " + getProject().getProjectName() + " - " + getProjectDirectory()
+				: "";
 		if (getCurrentModuleView() != null) {
 			return getModule().getName() + " : " + getWindowTitleforObject(getCurrentDisplayedObjectAsModuleView()) + projectTitle;
 		}
@@ -1504,8 +1484,9 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 				location = e.getMessage().substring(e.getMessage().indexOf("Location") + 9).trim();
 			}
 			FlexoController.notify(FlexoLocalization.getMainLocalizer().localizedForKey("could_not_connect_to_web_sevice") + ": "
-					+ FlexoLocalization.getMainLocalizer().localizedForKey("the_url_seems_incorrect") + (location != null
-							? "\n" + FlexoLocalization.getMainLocalizer().localizedForKey("try_with_this_one") + " " + location : ""));
+					+ FlexoLocalization.getMainLocalizer().localizedForKey("the_url_seems_incorrect")
+					+ (location != null ? "\n" + FlexoLocalization.getMainLocalizer().localizedForKey("try_with_this_one") + " " + location
+							: ""));
 			return false;
 		} /*
 			if (e instanceof WebApplicationException) {
@@ -1563,7 +1544,8 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 			else {
 				return FlexoController.confirm(FlexoLocalization.getMainLocalizer().localizedForKey("webservice_remote_error") + " \n"
 						+ (e.getMessage() == null || "java.lang.NullPointerException".equals(e.getMessage())
-								? "Check your connection parameters.\nThe service may be temporary unavailable." : e.getMessage())
+								? "Check your connection parameters.\nThe service may be temporary unavailable."
+								: e.getMessage())
 						+ "\n" + FlexoLocalization.getMainLocalizer().localizedForKey("would_you_like_to_try_again?"));
 			}
 		}
@@ -1728,7 +1710,7 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 			}
 		}
 		else if (evt.getSource() instanceof FlexoProject && evt.getPropertyName().equals(ProjectClosedNotification.CLOSE)) {
-			FlexoProject project = (FlexoProject) evt.getSource();
+			FlexoProject<?> project = (FlexoProject<?>) evt.getSource();
 			for (ModuleView<?> view : new ArrayList<>(getViews())) {
 				if (view.getRepresentedObject() instanceof FlexoProjectObject) {
 					if (project.equals(((FlexoProjectObject) view.getRepresentedObject()).getProject())) {
@@ -1762,7 +1744,7 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 	public void selectAndFocusObject(FlexoObject object) {
 		Progress.progress(FlexoLocalization.getMainLocalizer().localizedForKey("select_and_focus") + " " + object);
 		if (object instanceof FlexoProject) {
-			getControllerModel().setCurrentProject((FlexoProject) object);
+			getControllerModel().setCurrentProject((FlexoProject<?>) object);
 		}
 		else {
 			setCurrentEditedObjectAsModuleView(object);
