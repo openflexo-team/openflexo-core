@@ -44,7 +44,6 @@ import java.util.Vector;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject;
 
-public abstract class FlexoActionVisibleCondition<A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> {
-
-	public abstract boolean isVisible(FlexoActionFactory<A, T1, T2> actionType, T1 object, Vector<T2> globalSelection, FlexoEditor editor);
+public interface FlexoActionVisibleCondition<A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> {
+	public boolean isVisible(FlexoActionFactory<A, T1, T2> actionType, T1 object, Vector<T2> globalSelection, FlexoEditor editor);
 }

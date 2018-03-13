@@ -83,7 +83,6 @@ public class DefaultFlexoEditor implements FlexoEditor {
 			@Override
 			public void resourceChanged(FlexoResource<?> resource) {
 				// TODO Auto-generated method stub
-
 			}
 		};
 		console = new FMLConsole(this);
@@ -213,7 +212,8 @@ public class DefaultFlexoEditor implements FlexoEditor {
 	 * @return
 	 */
 	@Override
-	public <A extends FlexoAction<A, ?, ?>> Icon getEnabledIconFor(FlexoActionFactory<A, ?, ?> action) {
+	public <A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> Icon getEnabledIconFor(
+			FlexoActionFactory<A, T1, T2> action) {
 		return null;
 	}
 
@@ -224,7 +224,8 @@ public class DefaultFlexoEditor implements FlexoEditor {
 	 * @return
 	 */
 	@Override
-	public <A extends FlexoAction<A, ?, ?>> Icon getDisabledIconFor(FlexoActionFactory<A, ?, ?> action) {
+	public <A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> Icon getDisabledIconFor(
+			FlexoActionFactory<A, T1, T2> action) {
 		return null;
 	}
 
@@ -237,7 +238,7 @@ public class DefaultFlexoEditor implements FlexoEditor {
 	 * @return
 	 */
 	@Override
-	public <A extends FlexoAction<A, ?, ?>> KeyStroke getKeyStrokeFor(FlexoActionFactory<A, ?, ?> actionFactory) {
+	public KeyStroke getKeyStrokeFor(FlexoActionFactory<?, ?, ?> actionFactory) {
 		return null;
 	}
 

@@ -54,11 +54,11 @@ import org.openflexo.foundation.FlexoObject;
  * @param <T2>
  *            type of objects included in the global selection
  */
-public interface FlexoActionSource {
+public interface FlexoActionSource<T1 extends FlexoObject, T2 extends FlexoObject> {
 
-	public FlexoObject getFocusedObject();
+	public T1 getFocusedObject();
 
-	public List<? extends FlexoObject> getGlobalSelection();
+	public List<T2> getGlobalSelection();
 
 	public FlexoEditor getEditor();
 }

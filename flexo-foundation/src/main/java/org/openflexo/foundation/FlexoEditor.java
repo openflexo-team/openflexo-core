@@ -82,7 +82,7 @@ public interface FlexoEditor {
 	}*/
 
 	/**
-	 * Return project beeing edited/executed
+	 * Return project being edited/executed
 	 * 
 	 * @return
 	 */
@@ -142,7 +142,7 @@ public interface FlexoEditor {
 	 * Execute a {@link FlexoActionFactory}<br>
 	 * 
 	 * More precisely, instantiate and execute a {@link FlexoAction} using supplied {@link FlexoActionFactory}, with supplied focused object
-	 * and global selection, and forword the eventual supplied {@link EventObject}
+	 * and global selection, and forward the eventual supplied {@link EventObject}
 	 * 
 	 * @param actionFactory
 	 * @param focusedObject
@@ -154,7 +154,7 @@ public interface FlexoEditor {
 			FlexoActionFactory<A, T1, T2> actionFactory, T1 focusedObject, Vector<T2> globalSelection, EventObject e);
 
 	/**
-	 * Execute suppliued {@link FlexoAction} (forword the eventual supplied {@link EventObject})<br>
+	 * Execute supplied {@link FlexoAction} (forward the eventual supplied {@link EventObject})<br>
 	 * 
 	 * @param action
 	 * @param e
@@ -192,7 +192,8 @@ public interface FlexoEditor {
 	 * @param actionFactory
 	 * @return
 	 */
-	public <A extends FlexoAction<A, ?, ?>> Icon getEnabledIconFor(FlexoActionFactory<A, ?, ?> actionFactory);
+	public <A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> Icon getEnabledIconFor(
+			FlexoActionFactory<A, T1, T2> actionFactory);
 
 	/**
 	 * Return 'disabled' icon for supplied {@link FlexoActionFactory}
@@ -200,7 +201,8 @@ public interface FlexoEditor {
 	 * @param actionFactory
 	 * @return
 	 */
-	public <A extends FlexoAction<A, ?, ?>> Icon getDisabledIconFor(FlexoActionFactory<A, ?, ?> actionFactory);
+	public <A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> Icon getDisabledIconFor(
+			FlexoActionFactory<A, T1, T2> actionFactory);
 
 	/**
 	 * Return eventual {@link KeyStroke} for supplied {@link FlexoActionFactory}
@@ -208,6 +210,6 @@ public interface FlexoEditor {
 	 * @param actionFactory
 	 * @return
 	 */
-	public <A extends FlexoAction<A, ?, ?>> KeyStroke getKeyStrokeFor(FlexoActionFactory<A, ?, ?> actionFactory);
+	public KeyStroke getKeyStrokeFor(FlexoActionFactory<?, ?, ?> actionFactory);
 
 }
