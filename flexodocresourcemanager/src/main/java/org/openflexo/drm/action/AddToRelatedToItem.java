@@ -48,26 +48,26 @@ import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionFactory;
 
-public class AddToRelatedToItem extends FlexoAction {
+public class AddToRelatedToItem extends FlexoAction<AddToRelatedToItem, FlexoObject, FlexoObject> {
 
-	public static FlexoActionFactory actionType = new FlexoActionFactory("add_related_to_item", FlexoActionFactory.newMenu,
-			FlexoActionFactory.defaultGroup, FlexoActionFactory.ADD_ACTION_TYPE) {
+	public static FlexoActionFactory<AddToRelatedToItem, FlexoObject, FlexoObject> actionType = new FlexoActionFactory<AddToRelatedToItem, FlexoObject, FlexoObject>(
+			"add_related_to_item", FlexoActionFactory.newMenu, FlexoActionFactory.defaultGroup, FlexoActionFactory.ADD_ACTION_TYPE) {
 
 		/**
 		 * Factory method
 		 */
 		@Override
-		public FlexoAction makeNewAction(FlexoObject focusedObject, Vector globalSelection, FlexoEditor editor) {
+		public AddToRelatedToItem makeNewAction(FlexoObject focusedObject, Vector<FlexoObject> globalSelection, FlexoEditor editor) {
 			return new AddToRelatedToItem(focusedObject, globalSelection, editor);
 		}
 
 		@Override
-		public boolean isVisibleForSelection(FlexoObject object, Vector globalSelection) {
+		public boolean isVisibleForSelection(FlexoObject object, Vector<FlexoObject> globalSelection) {
 			return true;
 		}
 
 		@Override
-		public boolean isEnabledForSelection(FlexoObject object, Vector globalSelection) {
+		public boolean isEnabledForSelection(FlexoObject object, Vector<FlexoObject> globalSelection) {
 			return object != null && object instanceof DocItem;
 		}
 
@@ -80,7 +80,7 @@ public class AddToRelatedToItem extends FlexoAction {
 	private DocItem _parentDocItem;
 	private DocItem _childDocItem;
 
-	AddToRelatedToItem(FlexoObject focusedObject, Vector<?> globalSelection, FlexoEditor editor) {
+	private AddToRelatedToItem(FlexoObject focusedObject, Vector<FlexoObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 	}
 

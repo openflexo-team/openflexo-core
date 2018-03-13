@@ -47,26 +47,26 @@ import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionFactory;
 
-public class RemoveEmbeddingChildItem extends FlexoAction {
+public class RemoveEmbeddingChildItem extends FlexoAction<RemoveEmbeddingChildItem, FlexoObject, FlexoObject> {
 
-	public static FlexoActionFactory actionType = new FlexoActionFactory("remove_embedding_child", FlexoActionFactory.defaultGroup,
-			FlexoActionFactory.NORMAL_ACTION_TYPE) {
+	public static FlexoActionFactory<RemoveEmbeddingChildItem, FlexoObject, FlexoObject> actionType = new FlexoActionFactory<RemoveEmbeddingChildItem, FlexoObject, FlexoObject>(
+			"remove_embedding_child", FlexoActionFactory.defaultGroup, FlexoActionFactory.NORMAL_ACTION_TYPE) {
 
 		/**
 		 * Factory method
 		 */
 		@Override
-		public FlexoAction makeNewAction(FlexoObject focusedObject, Vector globalSelection, FlexoEditor editor) {
+		public RemoveEmbeddingChildItem makeNewAction(FlexoObject focusedObject, Vector<FlexoObject> globalSelection, FlexoEditor editor) {
 			return new RemoveEmbeddingChildItem(focusedObject, globalSelection, editor);
 		}
 
 		@Override
-		public boolean isVisibleForSelection(FlexoObject object, Vector globalSelection) {
+		public boolean isVisibleForSelection(FlexoObject object, Vector<FlexoObject> globalSelection) {
 			return true;
 		}
 
 		@Override
-		public boolean isEnabledForSelection(FlexoObject object, Vector globalSelection) {
+		public boolean isEnabledForSelection(FlexoObject object, Vector<FlexoObject> globalSelection) {
 			return object != null && object instanceof DocItem && ((DocItem) object).getEmbeddingParentItem() != null;
 		}
 
@@ -74,7 +74,7 @@ public class RemoveEmbeddingChildItem extends FlexoAction {
 
 	private DocItem _docItemToRemove;
 
-	RemoveEmbeddingChildItem(FlexoObject focusedObject, Vector<?> globalSelection, FlexoEditor editor) {
+	private RemoveEmbeddingChildItem(FlexoObject focusedObject, Vector<FlexoObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 	}
 
