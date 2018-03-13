@@ -78,7 +78,7 @@ public class ResourceCenterPathElement extends SimplePathElement {
 	public Object getBindingValue(Object target, BindingEvaluationContext context) throws TypeMismatchException, NullReferenceException {
 
 		if (target instanceof FlexoBehaviourAction) {
-			return ((FlexoBehaviourAction) target).getVirtualModelInstance().getResourceCenter();
+			return ((FlexoBehaviourAction<?, ?, ?>) target).getVirtualModelInstance().getResourceCenter();
 		}
 		if (target instanceof FlexoConceptInstance) {
 			return ((FlexoConceptInstance) target).getVirtualModelInstance().getResourceCenter();

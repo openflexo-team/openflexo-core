@@ -77,7 +77,7 @@ public class FlexoBehaviourParametersValuesPathElement extends SimplePathElement
 	@Override
 	public Object getBindingValue(Object target, BindingEvaluationContext context) throws TypeMismatchException, NullReferenceException {
 		if (target instanceof FlexoBehaviourAction) {
-			return ((FlexoBehaviourAction) target).getParametersValues();
+			return ((FlexoBehaviourAction<?, ?, ?>) target).getParametersValues();
 		}
 		logger.warning("Please implement me, target=" + target + " of " + target.getClass() + " context=" + context);
 		return null;

@@ -409,7 +409,7 @@ public interface FlexoBehaviourParameter extends FlexoBehaviourObject, FunctionA
 		}*/
 
 		@Override
-		public boolean isValid(FlexoBehaviourAction action, Object value) {
+		public boolean isValid(FlexoBehaviourAction<?, ?, ?> action, Object value) {
 			if (!getIsRequired()) {
 				return true;
 			}
